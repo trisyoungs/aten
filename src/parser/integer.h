@@ -24,6 +24,9 @@
 
 #include "parser/variable.h"
 #include "parser/accessor.h"
+#include "base/namespace.h"
+
+ATEN_BEGIN_NAMESPACE
 
 // Integer Variable
 class IntegerVariable : public Variable
@@ -38,9 +41,9 @@ class IntegerVariable : public Variable
 	*/
 	public:
 	// Return value of node
-	bool execute(ReturnValue &rv);
+	bool execute(ReturnValue& rv);
 	// Set from returnvalue node
-	bool set(ReturnValue &rv);
+	bool set(ReturnValue& rv);
 	// Reset variable
 	void reset();
 
@@ -51,7 +54,7 @@ class IntegerVariable : public Variable
 	// Integer data
 	int integerData_;
 	// Print node contents
-	void nodePrint(int offset, const char *prefix);
+	void nodePrint(int offset, const char* prefix);
 };
 
 // Integer Array Variable
@@ -59,7 +62,7 @@ class IntegerArrayVariable : public ArrayVariable
 {
 	public:
 	// Constructor / Destructor
-	IntegerArrayVariable(TreeNode *sizeexpr, bool constant = FALSE);
+	IntegerArrayVariable(TreeNode* sizeexpr, bool constant = FALSE);
 	~IntegerArrayVariable();
 
 	/*
@@ -67,13 +70,13 @@ class IntegerArrayVariable : public ArrayVariable
 	*/
 	public:
 	// Return value of node
-	bool execute(ReturnValue &rv);
+	bool execute(ReturnValue& rv);
 	// Return value of node as array
-	bool executeAsArray(ReturnValue &rv, int arrayindex);
+	bool executeAsArray(ReturnValue& rv, int arrayIndex);
 	// Set from returnvalue node
-	bool set(ReturnValue &rv);
+	bool set(ReturnValue& rv);
 	// Set from returnvalue node as array
-	bool setAsArray(ReturnValue &rv, int arrayindex);
+	bool setAsArray(ReturnValue& rv, int arrayIndex);
 	// Reset variable
 	void reset();
 
@@ -84,7 +87,7 @@ class IntegerArrayVariable : public ArrayVariable
 	// Integer data
 	int *integerArrayData_;
 	// Print node contents
-	void nodePrint(int offset, const char *prefix);
+	void nodePrint(int offset, const char* prefix);
 
 	public:
 	// Return array pointer
@@ -98,5 +101,6 @@ class IntegerArrayVariable : public ArrayVariable
 	bool initialise();
 };
 
-#endif
+ATEN_END_NAMESPACE
 
+#endif

@@ -24,12 +24,22 @@
 
 #include <QtOpenGL/QGLWidget>
 #include <QtCore/QObject>
+#include "base/messenger.h"
+#include "render/glextensions.h"
+#include "gui/useractions.h"
 #include "base/log.h"
-#include "classes/prefs.h"
 #include "render/renderprimitives.h"
+#include "render/primitiveinfo.h"
 #include "render/textprimitivelist.h"
 #include "render/gridprimitive.h"
-#include "gui/useractions.h"
+#include "base/namespace.h"
+
+ATEN_USING_NAMESPACE
+
+// Forward Declarations (Qt)
+class AtenWindow;
+
+ATEN_BEGIN_NAMESPACE
 
 // Forward Declarations
 class Aten;
@@ -50,8 +60,10 @@ class Viewer : public QGLWidget
 	 * Character / Setup
 	 */
 	private:
-	// Pointer to Aten
+	// Poiner to Aten
 	Aten* aten_;
+	// Poiner to AtenWindow
+	AtenWindow* atenWindow_;
 	// GLExtension pointer stack
 	List<GLExtensions> extensionsStack_;
 	// Width, height, and aspect ratio of the canvas
@@ -75,13 +87,11 @@ class Viewer : public QGLWidget
 	// Mouse focus lost
 	void focusOutEvent(QFocusEvent* event);
 
-	private:
-	// Setup basic GL properties
-	void setupGL();
-
 	public:
-	// Set pointer to Aten's main structure
+	// Set pointer to Aten
 	void setAten(Aten* aten);
+	// Set pointer to AtenWindow
+	void setAtenWindow(AtenWindow* atenWindow);
 	// Return the current height of the drawing area
 	GLsizei contextHeight() const;
 	// Return the current width of the drawing area
@@ -196,6 +206,8 @@ class Viewer : public QGLWidget
 	void useSelectedMode();
 	// Sets the currently selected interact mode
 	void setSelectedMode(UserAction::Action ua, int atomsToPick = -1, void (*callback)(Reflist<Atom,int>*) = NULL);
+	// Cancel any current mode and return to select
+	void cancelCurrentMode();
 	// Return the currently selected mode
 	UserAction::Action selectedMode() const;
 	// Return the currently active mode
@@ -211,7 +223,7 @@ class Viewer : public QGLWidget
 	// Return whether to accept editing actions (i.e. anything other than view manipulation)
 	bool editable();
 	// Returns the clicked atom within a mouse click event
-	Atom *atomClicked();
+	Atom* atomClicked();
 	// Clears the subsel of atoms
 	void clearPicked();
 	// End manual picking
@@ -231,7 +243,7 @@ class Viewer : public QGLWidget
 	// Stick objects for rendering
 	enum LineObject { NormalLineObject, SelectedLineObject, NormalGuiLineObject, SelectedGuiLineObject, nLineObjects };
 	// Glyph triangle style
-	enum GlyphTriangleStyle { SolidTriangle, TransparentTriangle, WireTriangle, nTriangleStyles };
+	enum GlyphTriangleStyle { SolidTriangle, WireTriangle, nTriangleStyles };
 
 	private:
 	// Local copy of model transformation matrix
@@ -272,14 +284,14 @@ class Viewer : public QGLWidget
 	void calculateAdjustments();
 
 	public:
-	// Set transformation matrix
-	void setTransformationMatrix(Matrix& mat, Vec3<double> cellcentre);
 	// Push primitives instance (in specified quality)
 	void pushInstance(Viewer::PrimitiveSet set, const QGLContext *context);
 	// Pop topmost primitive instance
 	void popInstance(Viewer::PrimitiveSet set, const QGLContext *context);
+	// Setup basic GL properties
+	void setupGL();
 	// Render whole scene
-	void renderScene();
+	void renderScene(const GLExtensions* extensions);
 	// Update all primitives (following prefs change, etc.)
 	void updatePrimitives();
 
@@ -289,7 +301,7 @@ class Viewer : public QGLWidget
 	 */
 	private:
 	// Render primitive in specified colour
-	void renderPrimitive(Viewer::TriangleObject obj, Primitive* primitive, bool isTransparent, GLfloat* colour, Matrix& transform, GLenum fillMode = GL_FILL, GLfloat lineWidth = 1.0);
+	void renderPrimitive(Viewer::TriangleObject obj, Primitive& primitive, Vec4<GLfloat>& colour, Matrix& transform, GLenum fillMode = GL_FILL, GLfloat lineWidth = 1.0);
 	// Add text primitive for rendering later
 	void renderTextPrimitive(int x, int y, const char* text, QChar addChar = 0, bool rightalign = FALSE);
 	// Search for primitive associated to specified Grid pointer
@@ -297,7 +309,7 @@ class Viewer : public QGLWidget
 	// Remove grid primitive from list (if it exists)
 	void removeGridPrimitive(Grid* g);
 	// Render bond
-	void renderBond(TriangleObject basicList, TriangleObject selectionList, Matrix A, Vec3<double> vij, Atom* i, Atom::DrawStyle style_i, GLfloat* colour_i, double radius_i, Atom* j, Atom::DrawStyle style_j, GLfloat* colour_j, double radius_j, Bond::BondType bt, double selscale, Bond* b = NULL, bool transparentSel = FALSE, GLfloat *penColour = NULL);
+	void renderBond(Viewer::TriangleObject basicList, Viewer::TriangleObject selectionList, Matrix A, Vec3< double > vij, Atom* i, Prefs::DrawStyle style_i, Vec4<GLfloat>& colour_i, double radius_i, Atom* j, Prefs::DrawStyle style_j, Vec4<GLfloat>& colour_j, double radius_j, Bond::BondType bt, double selscale, Bond* b = 0, bool transparentSel = FALSE);
 	// Setup and render full Model
 	void renderModel(Model* source, bool currentModel, bool renderType);
 	// Render atoms and bonds
@@ -315,11 +327,11 @@ class Viewer : public QGLWidget
 	// Render additional model information (labels, measurements etc.) which need to appear on top of everything else
 	void renderModelOverlays(Model* source);
 	// Render active mode embellishments
-	void renderActiveModes(QPainter& painter, int width, int height);
+	void renderActiveModes(Model* currentModel);
 	// Render addition elements related to selected/active UserActions
 	void renderUserActions(Model* source);
 	// Render addition elements related to visible windows
-	void renderWindowExtras(Model* source);
+// 	void renderWindowExtras(Model* source);		// ATEN2 TODO
 
 
 	/*
@@ -331,5 +343,7 @@ class Viewer : public QGLWidget
 	// Create icon pixmap for specific model
 // 	QPixmap renderModelIcon(Model* source); ATEN2 TODO
 };
+
+ATEN_END_NAMESPACE
 
 #endif

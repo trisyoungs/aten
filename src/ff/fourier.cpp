@@ -22,8 +22,14 @@
 #include "ff/fourier.h"
 #include "model/model.h"
 
-// Singleton Declaration
+ATEN_BEGIN_NAMESPACE
+
+// Static Singleton
 FourierData fourier;
+
+ATEN_END_NAMESPACE
+
+ATEN_USING_NAMESPACE
 
 // Constructor
 FourierData::FourierData()
@@ -44,7 +50,7 @@ FourierData::~FourierData()
 // Clear fourier structure
 void FourierData::clear()
 {
-	msg.enter("FourierData:::clear");
+	Messenger::enter("FourierData:::clear");
 	if (rCos != NULL)
 	{
 		for (int n=0; n<kMax+1; n++) delete[] rCos[n];
@@ -60,14 +66,14 @@ void FourierData::clear()
 	// Set other vars to 'null' values
 	kMax = 0;
 	nAtoms = 0;
-	msg.exit("FourierData:::clear");
+	Messenger::exit("FourierData:::clear");
 }
 
 // Create fourier arrays
 void FourierData::create(int newnAtoms, Vec3<int> newkvec, int newkmax)
 {
 	// Create the rCos and rSin arrays to the specified dimensions.
-	msg.enter("FourierData:::create");
+	Messenger::enter("FourierData:::create");
 	if (rCos != NULL) clear();
 	if (newkmax < 1) printf("FourierData:::create <<<< Bad 'newkmax' passed (< 1) >>>>\n");
 	kMax = newkmax;
@@ -77,8 +83,8 @@ void FourierData::create(int newnAtoms, Vec3<int> newkvec, int newkmax)
 	for (int n=0; n<kMax+1; n++) rCos[n] = new Vec3<double>[nAtoms];
 	rSin = new Vec3<double>*[2*kMax+1];
 	for (int n=0; n<2*kMax+1; n++) rSin[n] = new Vec3<double>[nAtoms];
-	msg.print(Messenger::Verbose,"Created Fourier space for %i atoms, kmax = %i \n",nAtoms, kMax);
-	msg.exit("FourierData:::create");
+	Messenger::print(Messenger::Verbose, "Created Fourier space for %i atoms, kmax = %i \n",nAtoms, kMax);
+	Messenger::exit("FourierData:::create");
 }
 
 void FourierData::calculate(Model* srcmodel)
@@ -90,18 +96,18 @@ void FourierData::calculate(Model* srcmodel)
 void FourierData::calculate(Model* srcmodel, int startatom, int atomstodo)
 {
 	// (Re-)Calculate the range of reciprocal space vectors of the coordinates in the supplied config.
-	msg.enter("FourierData:::calculate");
+	Messenger::enter("FourierData:::calculate");
 	Vec3<double> pos;
 	Matrix fouriermat;
 	int firstsin, n, k, sinpos, i;
 	if (srcmodel->nAtoms() != nAtoms)
 	{
 		printf("Indescribable fourier error! Wrong number of atoms in supplied config.\n");
-		msg.exit("FourierData:::calculate");
+		Messenger::exit("FourierData:::calculate");
 		return;
 	}
 	// Make sure model has a staticatoms space
-	Atom* *modelatoms = srcmodel->atomArray();
+	Atom** modelatoms = srcmodel->atomArray();
 	// Generate reciprocal space coordinates for atoms at each cartesian k-vector.
 	// Only create positive k-vector positions for cos since is an even function. For sin calculate negative
 	// also (odd function), where rSin[k] runs from k=0,2*kmax+1, with k=kmax the central (zero) vector (=complex(1,0)).
@@ -150,24 +156,24 @@ void FourierData::calculate(Model* srcmodel, int startatom, int atomstodo)
 			rSin[kMax-k][i].z = -rSin[kMax+k][i].z;
 		}
 	}
-	msg.exit("FourierData:::calculate");
+	Messenger::exit("FourierData:::calculate");
 }
 
 void FourierData::prepare(Model* srcmodel, Vec3<int> newkvec)
 {
 	// Set up arrays in the fourier class to handle all atoms / maximum kvectors specified.
-	msg.enter("FourierData:::prepare");
+	Messenger::enter("FourierData:::prepare");
 	int newkmax;
 	newkmax = newkvec.max();
 	// Don't delete the arrays, however, if the new nAtoms and kmax match...
 	if ((nAtoms != srcmodel->nAtoms()) || (kMax != newkmax))
 	{
-		msg.print(Messenger::Verbose,"Clearing and recreating fourier arrays...\n");
+		Messenger::print(Messenger::Verbose, "Clearing and recreating fourier arrays...\n");
 		clear();
 		create(srcmodel->nAtoms(), newkvec, newkmax);
 	}
 	cell = srcmodel->cell();
 	// Now we have suitable arrays, we can calculate and store the reciprocal coordinate vectors
 	calculate(srcmodel);
-	msg.exit("FourierData:::prepare");
+	Messenger::exit("FourierData:::prepare");
 }

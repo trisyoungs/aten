@@ -28,6 +28,10 @@
 #include <stdio.h>
 #include <math.h>
 
+#include "base/namespace.h"
+
+ATEN_BEGIN_NAMESPACE
+
 // 3D vector
 template <class T> class Vec3
 {
@@ -572,5 +576,7 @@ template <class T> void Vec3<T>::toSpherical()
 	phi = atan2(y,x);
 	set(rho,phi*DEGRAD,theta*DEGRAD);
 }
+
+ATEN_END_NAMESPACE
 
 #endif

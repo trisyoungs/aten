@@ -22,7 +22,7 @@ typedef struct
   T_ExtInfo;
 
 
-static const char *Ext_BT_or_UA[] =
+static const char* Ext_BT_or_UA[] =
   {
     /*  0 */ "abc",
     /*  1 */ "ba-c",
@@ -54,11 +54,11 @@ typedef struct
 #define SkipWhite(cp) while (*(cp) && (*(cp) == '_' || isspace(*(cp)))) (cp)++
 
 
-static const char *IErr_Corrupt_TabSgName =
+static const char* IErr_Corrupt_TabSgName =
    "Internal Error: Corrupt TabSgName";
 
 
-static int FindSchoenfliesSymbol(const char *SfSymbol)
+static int FindSchoenfliesSymbol(const char* SfSymbol)
 {
   int         SgNumber;
   const char  **TabSymbol;
@@ -93,7 +93,7 @@ static int FindSchoenfliesSymbol(const char *SfSymbol)
 
 
 static int SgLabelCmp(const int SgNumber,
-                      const char *SgLabel, const char *WtdLbl)
+                      const char* SgLabel, const char* WtdLbl)
 {
   const char  *sgl, *wl;
 
@@ -189,7 +189,7 @@ static int SgLabelCmp(const int SgNumber,
 }
 
 
-static int ParseExtension(const char *Ext, T_ExtInfo *ExtInfo)
+static int ParseExtension(const char* Ext, T_ExtInfo *ExtInfo)
 {
   int         i, mode;
   const char  *e, *t;
@@ -271,7 +271,7 @@ static int ParseExtension(const char *Ext, T_ExtInfo *ExtInfo)
 }
 
 
-static void ExpandMonoclinic(int unique_axis, const char *o, char *m)
+static void ExpandMonoclinic(int unique_axis, const char* o, char *m)
 {
   if (*o) *m++ = *o++;
 
@@ -297,7 +297,7 @@ static void ExpandMonoclinic(int unique_axis, const char *o, char *m)
   *m = '\0';
 }
 
-const T_TabSgName *FindTabSgNameEntry(const char *UserSgName, int VolLetter)
+const T_TabSgName *FindTabSgNameEntry(const char* UserSgName, int VolLetter)
 {
 #define                   MaxWtdLbl 20
   char     WtdLblOriginal[MaxWtdLbl    + 1];
@@ -740,7 +740,7 @@ unsigned int SgID_Number(const T_TabSgName *tsgn)
 }
 
 
-int ParseSymXYZ(const char *SymXYZ, T_RTMx *SeitzMx, int FacTr)
+int ParseSymXYZ(const char* SymXYZ, T_RTMx *SeitzMx, int FacTr)
 {
   unsigned int  P_mode;
   int           Row, Column, Sign, GotXYZ, i;
@@ -948,7 +948,7 @@ static int LookupRotMx(T_HallGenerator *HG)
 }
 
 
-int ParseHallSymbol(const char *hsym, T_SgInfo *SgInfo)
+int ParseHallSymbol(const char* hsym, T_SgInfo *SgInfo)
 {
   int                  c, i, pos_hsym;
   const int            *ht;
@@ -974,10 +974,10 @@ int ParseHallSymbol(const char *hsym, T_SgInfo *SgInfo)
       FT_OriginShift
     };
 
-  static const char *Err_Ill_ori_shi_val =
+  static const char* Err_Ill_ori_shi_val =
     "Error: Illegal origin shift value";
 
-  static const char *Err_Too_ori_shi_val =
+  static const char* Err_Too_ori_shi_val =
     "Error: Too much origin shift values";
 
 
@@ -1287,7 +1287,7 @@ int ParseHallSymbol(const char *hsym, T_SgInfo *SgInfo)
 }
 
 
-static const char *PrintSgLabel(const char *lbl, int space, int *n,
+static const char* PrintSgLabel(const char* lbl, int space, int *n,
                                 FILE *fpout)
 {
   while (*lbl && *lbl != ' ')
@@ -1451,7 +1451,7 @@ static void SimplifyFraction(int nume, int deno, int *o_nume, int *o_deno)
 }
 
 
-const char *FormatFraction(int nume, int deno, int Decimal,
+const char* FormatFraction(int nume, int deno, int Decimal,
                            char *Buffer, int SizeBuffer)
 {
   int          n, d;
@@ -1501,13 +1501,13 @@ const char *FormatFraction(int nume, int deno, int Decimal,
 }
 
 
-const char *RTMx2XYZ(const T_RTMx *RTMx, int FacRo, int FacTr,
+const char* RTMx2XYZ(const T_RTMx *RTMx, int FacRo, int FacTr,
                      int Decimal, int TrFirst, int Low,
-                     const char *Seperator,
+                     const char* Seperator,
                      char *BufferXYZ, int SizeBufferXYZ)
 {
-  static const char *UpperXYZ = "XYZ";
-  static const char *LowerXYZ = "xyz";
+  static const char* UpperXYZ = "XYZ";
+  static const char* LowerXYZ = "xyz";
 
   int         i, j, p, iRo, iTr;
   char        *xyz, buf_tr[32];
@@ -1601,7 +1601,7 @@ const char *RTMx2XYZ(const T_RTMx *RTMx, int FacRo, int FacTr,
 
 
 void PrintMapleRTMx(const T_RTMx *RTMx, int FacRo, int FacTr,
-                    const char *Label, FILE *fpout)
+                    const char* Label, FILE *fpout)
 {
   int         i, j, nt;
   const int   *r, *t;

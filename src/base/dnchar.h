@@ -23,6 +23,9 @@
 #define ATEN_DNCHAR_H
 
 #include "templates/list.h"
+#include "base/namespace.h"
+
+ATEN_BEGIN_NAMESPACE
 
 // Dynamic character array
 class Dnchar : public ListItem<Dnchar>
@@ -31,8 +34,8 @@ class Dnchar : public ListItem<Dnchar>
 	// Constructor / Destructor
 	Dnchar();
 	Dnchar(int size);
-	Dnchar(const char *s);
-	Dnchar(int dummyparameter, const char *fmt, ...);
+	Dnchar(const char* s);
+	Dnchar(int dummyparameter, const char* fmt, ...);
 	~Dnchar();
 	// Copy constructor
 	Dnchar(const Dnchar&);
@@ -57,9 +60,9 @@ class Dnchar : public ListItem<Dnchar>
 	// Clear string but don't free
 	void clear();
 	// Set value
-	void set(const char *s);
+	void set(const char* s);
 	// Get value
-	const char *get() const;
+	const char* get() const;
 	// Resize data
 	void createEmpty(int);
 	// Resize data (to be same length as source Dnchar)
@@ -122,9 +125,9 @@ class Dnchar : public ListItem<Dnchar>
 	// Returns true if the string contains a number
 	bool isNumeric() const;
 	// Return the lowercase conversion of the string
-	const char *lower() const;
+	const char* lower() const;
 	// Return the uppercase conversion of the string
-	const char *upper() const;
+	const char* upper() const;
 
 
 	/*
@@ -142,15 +145,17 @@ class Dnchar : public ListItem<Dnchar>
 	*/
 	public:
 	// Concatenate supplied string on to end of this string
-	void strcat(const char *s, int charcount = -1);
+	void strcat(const char* s, int charcount = -1);
 	// Append formatted string (not actually a C string function, but would be useful!)
-	void strcatf(const char *fmt, ...);
+	void strcatf(const char* fmt, ...);
 	// Create formatted string
-	void sprintf(const char *fmt, ...);
+	void sprintf(const char* fmt, ...);
 	// Search for character in string
 	char *strchr(char c) const;
 	// Copy substring of supplied string into this string
-	void substr(const char *source, int pos, int nchars);
+	void substr(const char* source, int pos, int nchars);
 };
+
+ATEN_END_NAMESPACE
 
 #endif

@@ -24,18 +24,20 @@
 #include "base/sysfunc.h"
 #include "model/model.h"
 
+ATEN_USING_NAMESPACE
+
 // Return next best vector for addition of new atom
 bool Atom::nextBondVector(Vec3<double> &vector, Atom::AtomGeometry geometry)
 {
-	msg.enter("Atom::nextBondVector");
+	Messenger::enter("Atom::nextBondVector");
 
 	// Were we given a valid geometry?
 	switch (geometry)
 	{
 		case (Atom::NoGeometry):
 		case (Atom::UnboundGeometry):
-			msg.print("Unsuitable atom geometry (%s) given to Model::growAtom\n", Atom::atomGeometry(geometry));
-			msg.exit("Atom::nextBondVector");
+			Messenger::print("Unsuitable atom geometry (%s) given to Model::growAtom\n", Atom::atomGeometry(geometry));
+			Messenger::exit("Atom::nextBondVector");
 			return FALSE;
 			break;
 	}
@@ -43,8 +45,8 @@ bool Atom::nextBondVector(Vec3<double> &vector, Atom::AtomGeometry geometry)
 	// Only try to find a new bond if we have free bonds to add...
 	if (this->nBonds() >= Atom::atomGeometryNBonds(geometry))
 	{
-		msg.print("Attempted to grow an atom on an existing atom which already has the correct (or greater) number of bonds (%i) for the requested geometry (%s)\n", this->nBonds(), Atom::atomGeometry(geometry));
-		msg.exit("Atom::nextBondVector");
+		Messenger::print("Attempted to grow an atom on an existing atom which already has the correct (or greater) number of bonds (%i) for the requested geometry (%s)\n", this->nBonds(), Atom::atomGeometry(geometry));
+		Messenger::exit("Atom::nextBondVector");
 		return FALSE;
 	}
 
@@ -52,9 +54,9 @@ bool Atom::nextBondVector(Vec3<double> &vector, Atom::AtomGeometry geometry)
 	Atom* atoms[5];
 	static Vec3<double> vec[5], u, v;
 	Matrix rotMat;
-	static double **angleArray = NULL;
+	static double** angleArray = NULL;
 	int n, m, o, p;
-	UnitCell *cell = parent_->cell();
+	UnitCell* cell = parent_->cell();
 	bool foundAngle;
 	
 	// Create angle array if it doesn't already exist
@@ -257,6 +259,6 @@ bool Atom::nextBondVector(Vec3<double> &vector, Atom::AtomGeometry geometry)
 	vector.normalise();
 // 	printf("Final vector is "); vector.print();
 
-	msg.exit("Atom::nextBondVector");
+	Messenger::exit("Atom::nextBondVector");
 	return TRUE;
 }

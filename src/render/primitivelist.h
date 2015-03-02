@@ -25,8 +25,12 @@
 #include "render/primitive.h"
 #include "templates/list.h"
 
-// Forward Declarations
+// Forward Declarations (Qt)
 class QGLContext;
+
+ATEN_BEGIN_NAMESPACE
+
+// Forward Declarations (Aten)
 class Viewer;
 
 // Rendering Primitive List
@@ -61,7 +65,7 @@ class PrimitiveList
 	// Push instance layer
 	void pushInstance(const QGLContext *context, GLExtensions* extensions);
 	// Pop topmost instance layer
-	void popInstance(const QGLContext *context);
+	void popInstance(const QGLContext *context, GLExtensions* extensions);
 	// Return number of instances of topmost primitive
 	int nInstances();
 	// Send to OpenGL (i.e. render)
@@ -73,7 +77,9 @@ class PrimitiveList
 	 */
 	public:
 	// Element access operator
-	Primitive *operator[](int index);
+	Primitive* operator[](int index);
 };
+
+ATEN_END_NAMESPACE
 
 #endif

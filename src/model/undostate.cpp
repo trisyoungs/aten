@@ -19,9 +19,12 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "model/undoevent.h"
 #include "model/undostate.h"
+#include "model/undoevent.h"
 #include "model/model.h"
+#include "base/messenger.h"
+
+ATEN_USING_NAMESPACE
 
 // Constructor
 UndoState::UndoState() : ListItem<UndoState>()
@@ -29,13 +32,13 @@ UndoState::UndoState() : ListItem<UndoState>()
 }
 
 // Set the text associated with the current undo state
-void UndoState::setDescription(const char *s)
+void UndoState::setDescription(const char* s)
 {
 	description_ = s;
 }
 
 // Return the current text associated with the state
-const char *UndoState::description() const
+const char* UndoState::description() const
 {
 	return description_.get();
 }
@@ -79,22 +82,22 @@ int UndoState::endLog(Log::LogType log) const
 // Undo changes detailed in state
 void UndoState::undo(Model* m)
 {
-	msg.enter("UndoState::Undo");
+	Messenger::enter("UndoState::Undo");
 	// Undo the changes stored in the change list
 	for (UndoEvent* u = events_.last(); u != NULL; u = u->prev) u->undo(m);
 	// Set model logs to the old values
 	m->changeLog = startLogs_;
-	msg.exit("UndoState::Undo");
+	Messenger::exit("UndoState::Undo");
 }
 
 // Redo changes detailed in state
 void UndoState::redo(Model* m)
 {
-	msg.enter("UndoState::redo");
+	Messenger::enter("UndoState::redo");
 	for (UndoEvent* u = events_.first(); u != NULL; u = u->next) u->redo(m);
 	// Set model logs to the new values
 	m->changeLog = endLogs_;
-	msg.exit("UndoState::redo");
+	Messenger::exit("UndoState::redo");
 }
 
 // Check differences between logs for start/end points

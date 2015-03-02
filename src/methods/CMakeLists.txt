@@ -3,10 +3,9 @@ calculable.h
 cg.h 
 delaunay.h
 disorderdata.h
+geometry.h 
 linemin.h 
 mc.h 
-md.h 
-geometry.h 
 partition.h
 pdens.h 
 rdf.h 
@@ -16,10 +15,9 @@ cg.cpp
 delaunay.cpp
 disorder.cpp
 disorderdata.cpp
+geometry.cpp 
 linemin.cpp 
 mc.cpp 
-md.cpp 
-geometry.cpp 
 partition.cpp
 pdens.cpp 
 rdf.cpp 

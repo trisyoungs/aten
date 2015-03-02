@@ -13,13 +13,13 @@
 
 #ifndef SGCLIB_C__
 extern
-const char *SgError;
+const char* SgError;
 #ifdef SGCOREDEF__
 extern
 char        SgErrorBuffer[128];
 #endif
 #else
-const char *SgError = NULL;
+const char* SgError = NULL;
 char        SgErrorBuffer[128];
 #endif
 
@@ -138,9 +138,9 @@ typedef struct
 
 #ifndef SGCLIB_C__
 extern
-const char *EI_Name[];
+const char* EI_Name[];
 #else
-const char *EI_Name[] =
+const char* EI_Name[] =
   {
     "Unknown",
     "Enantiomorphic",
@@ -161,9 +161,9 @@ const char *EI_Name[] =
 
 #ifndef SGCLIB_C__
 extern
-const char *XS_Name[];
+const char* XS_Name[];
 #else
-const char *XS_Name[] =
+const char* XS_Name[] =
   {
     "Unknown",
     "Triclinic",
@@ -276,9 +276,9 @@ const int LG_Code_of_PG_Index[] =
 
 #ifndef SGCLIB_C__
 extern
-const char *PG_Names[];
+const char* PG_Names[];
 #else
-const char *PG_Names[] =
+const char* PG_Names[] =
   {
     "Unknown",
     "1",
@@ -899,10 +899,10 @@ const int VolAPointGroups[] =
 #ifndef SGCLIB_C__
 #ifdef SGCOREDEF__
 extern
-const char *SchoenfliesSymbols[];
+const char* SchoenfliesSymbols[];
 #endif
 #else
-const char *SchoenfliesSymbols[] =
+const char* SchoenfliesSymbols[] =
   {
     NULL,
     "C1^1",
@@ -1710,7 +1710,7 @@ const T_TabSgName TabSgName[] =
 
 /* sgclib.c */
 
-void SetSgError(const char *msg);
+void SetSgError(const char* msg);
 int iModPositive(int ix, int iy);
 int traceRotMx(const int *RotMx);
 int deterRotMx(const int *RotMx);
@@ -1746,21 +1746,21 @@ int TransformSgInfo(const T_SgInfo *SgInfo,
 
 /* sgio.c */
 
-extern const T_TabSgName *FindTabSgNameEntry(const char *UserSgName, int VolLetter);
+extern const T_TabSgName *FindTabSgNameEntry(const char* UserSgName, int VolLetter);
 unsigned int SgID_Number(const T_TabSgName *tsgn);
-int ParseSymXYZ(const char *SymXYZ, T_RTMx *SeitzMx, int FacTr);
-extern int ParseHallSymbol(const char *hsym, T_SgInfo *SgInfo);
+int ParseSymXYZ(const char* SymXYZ, T_RTMx *SeitzMx, int FacTr);
+extern int ParseHallSymbol(const char* hsym, T_SgInfo *SgInfo);
 int PrintFullHM_SgName(const T_TabSgName *tsgn, int space, FILE *fpout);
 void PrintTabSgNameEntry(const T_TabSgName *tsgn, int Style, int space,
                          FILE *fpout);
-const char *FormatFraction(int nume, int deno, int Decimal,
+const char* FormatFraction(int nume, int deno, int Decimal,
                            char *Buffer, int SizeBuffer);
-const char *RTMx2XYZ(const T_RTMx *RTMx, int FacRo, int FacTr,
+const char* RTMx2XYZ(const T_RTMx *RTMx, int FacRo, int FacTr,
                      int Decimal, int TrFirst, int Low,
-                     const char *Seperator,
+                     const char* Seperator,
                      char *BufferXYZ, int SizeBufferXYZ);
 void PrintMapleRTMx(const T_RTMx *RTMx, int FacRo, int FacTr,
-                    const char *Label, FILE *fpout);
+                    const char* Label, FILE *fpout);
 extern void ListSgInfo(const T_SgInfo *SgInfo, int F_XYZ, int F_Verbose, FILE *fpout);
 
 

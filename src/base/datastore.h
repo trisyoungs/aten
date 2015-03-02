@@ -23,16 +23,18 @@
 #define ATEN_DATASTORE_H
 
 #include "base/dnchar.h"
-#include <cstdlib>
 #include "templates/list.h"
 #include "parser/returnvalue.h"
+#include "base/namespace.h"
+
+ATEN_BEGIN_NAMESPACE
 
 // Simple string key/value pair class
 class DataStoreItem : public ListItem<DataStoreItem>
 {
 	public:
 	// Constructor / Destructor
-	DataStoreItem(const char *key);
+	DataStoreItem(const char* key);
 
 	/*
 	// Data
@@ -45,9 +47,9 @@ class DataStoreItem : public ListItem<DataStoreItem>
 
 	public:
 	// Retrieve key associated to item
-	const char *key() const;
+	const char* key() const;
 	// Retrieve value associated to pair
-	ReturnValue &data();
+	ReturnValue& data();
 };
 
 // Data store (key/returnvalue)
@@ -70,14 +72,16 @@ class DataStore
 	// Return number of pairs defined
 	int nItems() const;
 	// Set (existing) key/value pair
-	DataStoreItem *addData(const char *key);
+	DataStoreItem *addData(const char* key);
 	// Search to see if specific key is in the table
-	DataStoreItem *searchForKey(const char *key);
+	DataStoreItem *searchForKey(const char* key);
 	// Retrieve data associated to key
-	ReturnValue &dataForKey(const char *key);
+	ReturnValue& dataForKey(const char* key);
 	// Return first key in list
 	DataStoreItem *dataItems();
 };
+
+ATEN_END_NAMESPACE
 
 #endif
 

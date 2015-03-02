@@ -25,6 +25,9 @@
 #include "parser/variable.h"
 #include "parser/accessor.h"
 #include "base/dnchar.h"
+#include "base/namespace.h"
+
+ATEN_BEGIN_NAMESPACE
 
 // String Variable
 class StringVariable : public Variable
@@ -32,19 +35,21 @@ class StringVariable : public Variable
 	public:
 	// Constructor / Destructor
 	StringVariable();
-	StringVariable(const char *s, bool constant = FALSE);
+	StringVariable(const char* s, bool constant = FALSE);
 	~StringVariable();
+
 
 	/*
 	// Set / Get
 	*/
 	public:
 	// Return value of node
-	bool execute(ReturnValue &rv);
+	bool execute(ReturnValue& rv);
 	// Set from returnvalue node
-	bool set(ReturnValue &rv);
+	bool set(ReturnValue& rv);
 	// Reset variable
 	void reset();
+
 
 	/*
 	// Variable Data
@@ -52,8 +57,10 @@ class StringVariable : public Variable
 	private:
 	// Character data
 	Dnchar stringData_;
+
+	private:
 	// Print node contents
-	void nodePrint(int offset, const char *prefix = "");
+	void nodePrint(int offset, const char* prefix = "");
 };
 
 // String Array Variable
@@ -61,36 +68,41 @@ class StringArrayVariable : public Variable
 {
 	public:
 	// Constructor / Destructor
-	StringArrayVariable(TreeNode *sizeexpr, bool constant = FALSE);
+	StringArrayVariable(TreeNode* sizeexpr, bool constant = FALSE);
 	~StringArrayVariable();
+
 
 	/*
 	// Set / Get
 	*/
 	public:
 	// Return value of node
-	bool execute(ReturnValue &rv);
+	bool execute(ReturnValue& rv);
 	// Return value of node as array
-	bool executeAsArray(ReturnValue &rv, int arrayindex);
+	bool executeAsArray(ReturnValue& rv, int arrayIndex);
 	// Set from returnvalue node
-	bool set(ReturnValue &rv);
+	bool set(ReturnValue& rv);
 	// Set from returnvalue node as array
-	bool setAsArray(ReturnValue &rv, int arrayindex);
+	bool setAsArray(ReturnValue& rv, int arrayIndex);
 	// Reset variable
 	void reset();
+
 
 	/*
 	// Variable Data
 	*/
 	private:
 	// TreeNode determining array size on initialisation
-	TreeNode *arraySizeExpression_;
+	TreeNode* arraySizeExpression_;
 	// Array size
 	int arraySize_;
 	// String data
-	Dnchar *stringArrayData_;
+	Dnchar* stringArrayData_;
+
+	private:
 	// Print node contents
-	void nodePrint(int offset, const char *prefix);
+	void nodePrint(int offset, const char* prefix);
+
 
 	/*
 	// Inherited Virtuals
@@ -99,5 +111,7 @@ class StringArrayVariable : public Variable
 	// Initialise node (take over from Variable::initialise())
 	bool initialise();
 };
+
+ATEN_END_NAMESPACE
 
 #endif

@@ -22,6 +22,8 @@
 #include "model/model.h"
 #include "methods/linemin.h"
 
+ATEN_USING_NAMESPACE
+
 // Constructor
 LineMinimiser::LineMinimiser()
 {
@@ -58,44 +60,44 @@ void LineMinimiser::initialise(Model* srcmodel)
 void LineMinimiser::gradientMove(Model* srcmodel, double delta)
 {
 	// Generate a new set of coordinates in destmodel following the normalised gradient vector present in srcmodel, with the stepsize given
-	msg.enter("LineMinimiser::gradientMove");
-	Atom* *srcatoms = srcmodel->atomArray();
-	Atom* *destatoms = tempModel_.atomArray();
+	Messenger::enter("LineMinimiser::gradientMove");
+	Atom** srcatoms = srcmodel->atomArray();
+	Atom** destatoms = tempModel_.atomArray();
 	for (int i=0; i<srcmodel->nAtoms(); ++i)
 	{
 		destatoms[i]->r() = srcatoms[i]->r();
 		if (!srcatoms[i]->isPositionFixed()) destatoms[i]->r() += srcatoms[i]->f() * delta;
 	}
-	msg.exit("LineMinimiser::gradientMove");
+	Messenger::exit("LineMinimiser::gradientMove");
 }
 
 // Perform Golden Search within specified bounds
-void LineMinimiser::goldenSearch(Model* srcmodel, double *bounds, double *energies)
+void LineMinimiser::goldenSearch(Model* srcmodel, double* bounds, double* energies)
 {
-	msg.enter("LineMinimiser::goldenSearch");
+	Messenger::enter("LineMinimiser::goldenSearch");
 	int targetbound;
 	bool success;
 	double enew, newmin, delta[3], x1, x2, a, b, c;
 	// Check convergence, ready for early return
 	if (fabs(bounds[2]-bounds[0]) < tolerance_)
 	{
-		msg.enter("LineMinimiser::goldenSearch");
+		Messenger::enter("LineMinimiser::goldenSearch");
 		return;
 	}
 	delta[0] = bounds[0] - bounds[1];
 	delta[2] = bounds[2] - bounds[1];
-	msg.print(Messenger::Verbose, "Trying Golden Search - left=%12.5e   right=%12.5e\n", delta[0], delta[2]);
+	Messenger::print(Messenger::Verbose, "Trying Golden Search - left=%12.5e   right=%12.5e\n", delta[0], delta[2]);
 	// Select largest of two intervals (0-1 or 1-2) to be the target of the search
 	targetbound = delta[0] > delta[2] ? 0 : 2;
 	newmin = bounds[1] + 0.3819660 * (bounds[targetbound] - bounds[1]);
 	gradientMove(srcmodel, newmin);
 	enew = srcmodel->totalEnergy(&tempModel_, success);
 
-	msg.print(Messenger::Verbose,"--> GOLD point is %12.5e [%12.5e] \n", enew, newmin);
+	Messenger::print(Messenger::Verbose, "--> GOLD point is %12.5e [%12.5e] \n", enew, newmin);
 	// Check new energy against current minimum, then current bounding point. If it is better than neither, search into other section
 	if (enew < energies[1])
 	{
-		msg.print(Messenger::Verbose,"--> GOLD point is lower than current minimum...\n");
+		Messenger::print(Messenger::Verbose, "--> GOLD point is lower than current minimum...\n");
 		// Overwrite the outermost bound with the old minimum
 		bounds[targetbound] = bounds[1];
 		energies[targetbound] = energies[1];
@@ -106,7 +108,7 @@ void LineMinimiser::goldenSearch(Model* srcmodel, double *bounds, double *energi
 	}
 	else if (enew < energies[targetbound])
 	{
-		msg.print(Messenger::Verbose,"--> GOLD point is better than old bounds[%i] : %12.5e [%12.5e]...\n", targetbound, energies[targetbound], bounds[targetbound]);
+		Messenger::print(Messenger::Verbose, "--> GOLD point is better than old bounds[%i] : %12.5e [%12.5e]...\n", targetbound, energies[targetbound], bounds[targetbound]);
 		bounds[targetbound] = newmin;
 		energies[targetbound] = enew;
 		// Recurse into the new region
@@ -115,13 +117,13 @@ void LineMinimiser::goldenSearch(Model* srcmodel, double *bounds, double *energi
 	else
 	{
 	}
-	msg.exit("LineMinimiser::goldenSearch");
+	Messenger::exit("LineMinimiser::goldenSearch");
 }
 
 // Line minimise supplied model along its current gradient vector (forces)
 double LineMinimiser::lineMinimise(Model* srcmodel)
 {
-	msg.enter("LineMinimiser::lineMinimise");
+	Messenger::enter("LineMinimiser::lineMinimise");
 	double enew, ecurrent, bounds[3], energies[3], newmin, a, b, b10, b12;
 	bool failed, leftbound, success;
 	int count = 0;
@@ -134,7 +136,7 @@ double LineMinimiser::lineMinimise(Model* srcmodel)
 	if (srcmodel->nAtoms() != tempModel_.nAtoms())
 	{
 		printf("Internal Error : LineMinimiser's temporary model has not been initialised to the correct size.\n");
-		msg.exit("LineMinimiser::lineMinimise");
+		Messenger::exit("LineMinimiser::lineMinimise");
 		return 0.0;
 	}
 
@@ -145,7 +147,7 @@ double LineMinimiser::lineMinimise(Model* srcmodel)
 	energies[0] = srcmodel->totalEnergy(srcmodel, success);
 	if (!success)
 	{
-		msg.exit("LineMinimiser::lineMinimise");
+		Messenger::exit("LineMinimiser::lineMinimise");
 		return 0.0;
 	}
 	bounds[1] = 0.01;
@@ -174,12 +176,12 @@ double LineMinimiser::lineMinimise(Model* srcmodel)
 		bounds[2] = bounds[1];
 		bounds[1] = enew;
 	}
-	msg.print(Messenger::Verbose,"Initial bounding values/energies = %12.5e (%12.5e) %12.5e (%12.5e) %12.5e (%12.5e)\n",bounds[0],energies[0],bounds[1],energies[1],bounds[2],energies[2]);
+	Messenger::print(Messenger::Verbose, "Initial bounding values/energies = %12.5e (%12.5e) %12.5e (%12.5e) %12.5e (%12.5e)\n",bounds[0],energies[0],bounds[1],energies[1],bounds[2],energies[2]);
 
 	do
 	{
 		// Perform linesearch along the gradient vector
-		msg.print(Messenger::Verbose,"Energies [Bounds] = %12.5e (%12.5e) %12.5e (%12.5e) %12.5e (%12.5e)\n",energies[0],bounds[0],energies[1],bounds[1],energies[2],bounds[2]);
+		Messenger::print(Messenger::Verbose, "Energies [Bounds] = %12.5e (%12.5e) %12.5e (%12.5e) %12.5e (%12.5e)\n",energies[0],bounds[0],energies[1],bounds[1],energies[2],bounds[2]);
 		// Perform parabolic interpolation to find new minimium point
 		b10 = bounds[1] - bounds[0];
 		b12 = bounds[1] - bounds[2];
@@ -191,11 +193,11 @@ double LineMinimiser::lineMinimise(Model* srcmodel)
 		gradientMove(srcmodel, newmin);
 		enew = srcmodel->totalEnergy(&tempModel_, success);
 
-		msg.print(Messenger::Verbose,"PARABOLIC point gives energy %12.5e @ %12.5e\n",enew,newmin);
+		Messenger::print(Messenger::Verbose, "PARABOLIC point gives energy %12.5e @ %12.5e\n",enew,newmin);
 		if (enew < energies[1])
 		{
 			// New point found...
-			msg.print(Messenger::Verbose,"--> PARABOLIC point is new minimum...\n");
+			Messenger::print(Messenger::Verbose, "--> PARABOLIC point is new minimum...\n");
 			ecurrent = enew;
 			// Overwrite the largest of bounds[0] and bounds[2]
 			if (energies[2] > energies[0])
@@ -216,19 +218,19 @@ double LineMinimiser::lineMinimise(Model* srcmodel)
 			// Is the parabolic point better than the relevant bound in that direction?
 			if ((energies[2] - enew) > tolerance_)
 			{
-				msg.print(Messenger::Verbose,"--> PARABOLIC point is better than bounds[2]...\n");
+				Messenger::print(Messenger::Verbose, "--> PARABOLIC point is better than bounds[2]...\n");
 				bounds[2] = newmin;
 				energies[2] = enew;
 			}
 			else if ((energies[0] - enew) > tolerance_)
 			{
-				msg.print(Messenger::Verbose,"--> PARABOLIC point is better than bounds[0]...\n");
+				Messenger::print(Messenger::Verbose, "--> PARABOLIC point is better than bounds[0]...\n");
 				bounds[0] = newmin;
 				energies[0] = enew;
 			}
 			else
 			{
-				msg.print(Messenger::Verbose,"--> PARABOLIC point is worse than all current values...\n");
+				Messenger::print(Messenger::Verbose, "--> PARABOLIC point is worse than all current values...\n");
 				// Try recursive Golden Search instead, into the largest of the two sections.
 				goldenSearch(srcmodel, bounds, energies);
 				ecurrent = energies[1];
@@ -243,7 +245,7 @@ double LineMinimiser::lineMinimise(Model* srcmodel)
 	srcmodel->copyAtomData(&tempModel_, Atom::PositionData);
 	srcmodel->changeLog.add(Log::Coordinates);
 	srcmodel->updateMeasurements();
-	msg.exit("LineMinimiser::lineMinimise");
+	Messenger::exit("LineMinimiser::lineMinimise");
 	return energies[1];
 }
 

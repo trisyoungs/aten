@@ -21,12 +21,13 @@
 
 #include "command/commands.h"
 #include "parser/commandnode.h"
-#include "parser/tree.h"
+#include "model/bundle.h"
 #include "model/model.h"
-#include "classes/prefs.h"
+
+ATEN_USING_NAMESPACE
 
 // Augment bonds in current model ('augment')
-bool Command::function_Augment(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_Augment(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs()->beginUndoState("Augment Bonds");
@@ -37,7 +38,7 @@ bool Command::function_Augment(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Change bond tolerance ('bondtol [tol]')
-bool Command::function_BondTolerance(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_BondTolerance(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (c->hasArg(0)) prefs.setBondTolerance(c->argd(0));
 	rv.set(prefs.bondTolerance());
@@ -45,7 +46,7 @@ bool Command::function_BondTolerance(CommandNode *c, Bundle &obj, ReturnValue &r
 }
 
 // Clear bonds in current model ('clearbonds')
-bool Command::function_ClearBonds(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_ClearBonds(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs()->beginUndoState("Clear Bonding");
@@ -56,7 +57,7 @@ bool Command::function_ClearBonds(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Clear bonds in current model ('clearbonds')
-bool Command::function_ClearSelectedBonds(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_ClearSelectedBonds(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs()->beginUndoState("Clear Bonds in Selection");
@@ -67,7 +68,7 @@ bool Command::function_ClearSelectedBonds(CommandNode *c, Bundle &obj, ReturnVal
 }
 
 // Add bond between atoms ('newbond <atom1> <atom2> [bondtype]')
-bool Command::function_NewBond(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_NewBond(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// Third (optional) argument gives bond type
@@ -91,13 +92,13 @@ bool Command::function_NewBond(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		obj.rs()->bondAtoms(i, j, bt);
 		obj.rs()->endUndoState();
 	}
-	else msg.print("Can't bond atoms - one or both atoms not found.\n");
+	else Messenger::print("Can't bond atoms - one or both atoms not found.\n");
 	rv.reset();
 	return TRUE;
 }
 
 // Calculate bonds in current model ('rebond')
-bool Command::function_ReBond(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_ReBond(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// If we're reading from a file (via a filter) check for prefs override
@@ -118,7 +119,7 @@ bool Command::function_ReBond(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Calculate bonds restricted to pattern molecules ('rebondpatterns')
-bool Command::function_ReBondPatterns(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_ReBondPatterns(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs()->beginUndoState("Calculate Bonding (Patterns)");
@@ -129,7 +130,7 @@ bool Command::function_ReBondPatterns(CommandNode *c, Bundle &obj, ReturnValue &
 }
 
 // Calculate bonds restricted to current selection ('rebondselection')
-bool Command::function_ReBondSelection(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_ReBondSelection(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs()->beginUndoState("Calculate Bonding (Selection)");
@@ -138,4 +139,3 @@ bool Command::function_ReBondSelection(CommandNode *c, Bundle &obj, ReturnValue 
 	rv.reset();
 	return TRUE;
 }
-

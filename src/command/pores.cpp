@@ -21,13 +21,15 @@
 
 #include "command/commands.h"
 #include "parser/commandnode.h"
+#include "methods/partition.h"
 #include "main/aten.h"
-#include "model/model.h"
-#include "base/sysfunc.h"
+#include "parser/tree.h"
 #include "gui/pores.h"
 
+ATEN_USING_NAMESPACE
+
 // Create a partitioning scheme from the current model
-bool Command::function_CreateScheme(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_CreateScheme(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 
@@ -42,14 +44,14 @@ bool Command::function_CreateScheme(CommandNode *c, Bundle &obj, ReturnValue &rv
 	if (c->hasArg(6)) copyToBuilder = c->argb(6);
 
 	// Create temporary partitioning scheme structure
-	PartitioningScheme &scheme = PoresWidget::partitioningScheme();
+	PartitioningScheme& scheme = PoresWidget::partitioningScheme();
 	scheme.initialiseAbsolute(c->argc(0), "Scheme generated from model");
 	Vec3<double> cellDelta(1.0/gridSize.x, 1.0/gridSize.y, 1.0/gridSize.z);
 	scheme.setGridSize(gridSize);
 	Grid &schemeGrid = scheme.grid();
 	double volumeElement = obj.rs()->cell()->volume() / gridSize.dp(gridSize);
 	schemeGrid.setAxes(cellDelta);
-	double ***data = schemeGrid.data3d();
+	double** *data = schemeGrid.data3d();
 	int minimumSize = gridSize.x*gridSize.y*gridSize.z*minSizePcnt;
 
 	// Set all grid data to -1.0 to start with (i.e. all space available)
@@ -63,7 +65,7 @@ bool Command::function_CreateScheme(CommandNode *c, Bundle &obj, ReturnValue &rv
 	}
 	
 	// Now, zero individual cells which model atoms sit in
-	UnitCell *cell = obj.rs()->cell();
+	UnitCell* cell = obj.rs()->cell();
 	Vec3<double> r;
 	// Determine rough atom size (in grid cells....
 	for (Atom* i = obj.rs()->atoms(); i != NULL; i = i->next)
@@ -120,17 +122,17 @@ bool Command::function_CreateScheme(CommandNode *c, Bundle &obj, ReturnValue &rv
 				{
 					// Not big enough, so run modifyRegion again and zero it
 					schemeGrid.modifyRegion(x, y, z, nPartitions+0.5, nPartitions+1.5, 0.0, TRUE);
-					msg.print("Found a partition of %i cells, which is below the threshold size of %i and will be ignored...\n", partitionSize, minimumSize);
+					Messenger::print("Found a partition of %i cells, which is below the threshold size of %i and will be ignored...\n", partitionSize, minimumSize);
 				}
 				else
 				{
 					++nPartitions;
-					msg.print("Found a partition containing %i grid cells (volume = %f cubic Angstroms).\n", partitionSize, partitionSize * volumeElement);
+					Messenger::print("Found a partition containing %i grid cells (volume = %f cubic Angstroms).\n", partitionSize, partitionSize * volumeElement);
 				}
 			}
 		}
 	}
-	msg.print("Found %i partitions in the model.\n", nPartitions);
+	Messenger::print("Found %i partitions in the model.\n", nPartitions);
 	rv.set(nPartitions);
 	
 	// Generate partitions from the new grid data
@@ -139,15 +141,15 @@ bool Command::function_CreateScheme(CommandNode *c, Bundle &obj, ReturnValue &rv
 	// Copy to Disorder builder, if required...
 	if (copyToBuilder)
 	{
-		aten.addPartitioningScheme(scheme);
-		msg.print("Copied scheme to disorder builder.\n");
+		aten_.addPartitioningScheme(scheme);
+		Messenger::print("Copied scheme to disorder builder.\n");
 	}
 	
 	return TRUE;
 }
 
 // Drill pores in current model
-bool Command::function_DrillPores(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_DrillPores(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	
@@ -161,7 +163,7 @@ bool Command::function_DrillPores(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	// Determine origin face vectors, and determine first pore centre coordinates
 	if ((face < 0) || (face > 2))
 	{
-		msg.print("Error: Origin face must be specified as 1 (YZ plane), 2 (XZ plane) or 3 (XY plane).\n");
+		Messenger::print("Error: Origin face must be specified as 1 (YZ plane), 2 (XZ plane) or 3 (XY plane).\n");
 		return FALSE;
 	}
 	Vec3<double> faceA = obj.rs()->cell()->axes().columnAsVec3((face+1)%3);
@@ -184,7 +186,7 @@ bool Command::function_DrillPores(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Select pores atoms
-bool Command::function_SelectPores(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_SelectPores(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 
@@ -198,7 +200,7 @@ bool Command::function_SelectPores(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	// Determine origin face vectors, and determine first pore centre coordinates
 	if ((face < 0) || (face > 2))
 	{
-		msg.print("Error: Origin face must be specified as 1 (YZ plane), 2 (XZ plane) or 3 (XY plane).\n");
+		Messenger::print("Error: Origin face must be specified as 1 (YZ plane), 2 (XZ plane) or 3 (XY plane).\n");
 		return FALSE;
 	}
 	Vec3<double> faceA = obj.rs()->cell()->axes().columnAsVec3((face+1)%3);
@@ -222,7 +224,7 @@ bool Command::function_SelectPores(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Terminate atoms with 'H' or 'OH'
-bool Command::function_Terminate(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_Terminate(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	
@@ -230,7 +232,7 @@ bool Command::function_Terminate(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	obj.rs()->selectNone(TRUE);
 	Atom* i, *j;
 	obj.rs()->beginUndoState("Terminate atoms");
-	for (Refitem<Atom,int> *ri = obj.rs()->selection(); ri != NULL; ri = ri->next)
+	for (Refitem<Atom,int>* ri = obj.rs()->selection(); ri != NULL; ri = ri->next)
 	{
 		i = ri->item;
 		switch (i->element())
@@ -239,7 +241,7 @@ bool Command::function_Terminate(CommandNode *c, Bundle &obj, ReturnValue &rv)
 			case (8):
 				if (i->nBonds() == 0)
 				{
-					msg.print(" ... Warning: Found unbound oxygen in selection ...\n");
+					Messenger::print(" ... Warning: Found unbound oxygen in selection ...\n");
 					obj.rs()->selectAtom(i, TRUE);
 				}
 				else if (i->nBonds() == 1) obj.rs()->growAtom(i, 1, 1.0, Atom::TetrahedralGeometry);
@@ -248,7 +250,7 @@ bool Command::function_Terminate(CommandNode *c, Bundle &obj, ReturnValue &rv)
 			case (14):
 				if (i->nBonds() == 0)
 				{
-					msg.print(" ... Warning: Found unbound silicon in selection ...\n");
+					Messenger::print(" ... Warning: Found unbound silicon in selection ...\n");
 					obj.rs()->selectAtom(i, TRUE);
 				}
 				else for (int n=i->nBonds(); n<4; ++n)
@@ -259,7 +261,7 @@ bool Command::function_Terminate(CommandNode *c, Bundle &obj, ReturnValue &rv)
 				}
 				break;
 			default:
-				msg.print(" ... Skipping atom %i (%s) in termination ...\n", i->id()+1, Elements().symbol(i));
+				Messenger::print(" ... Skipping atom %i (%s) in termination ...\n", i->id()+1, Elements().symbol(i));
 				break;
 		}
 	}
@@ -267,7 +269,7 @@ bool Command::function_Terminate(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	// Select any unbound atoms for inspection by the user
 	if (obj.rs()->nMarked() != 0)
 	{
-		msg.print("Viable unbound atoms were found in the provided selection, and remain selected in the model.\n");
+		Messenger::print("Viable unbound atoms were found in the provided selection, and remain selected in the model.\n");
 		obj.rs()->selectNone();
 		obj.rs()->selectMarkedAtoms();
 	}

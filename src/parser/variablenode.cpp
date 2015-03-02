@@ -20,12 +20,12 @@
 */
 
 #include "parser/variablenode.h"
-#include "parser/returnvalue.h"
 #include "parser/variable.h"
 #include "parser/stepnode.h"
 #include "parser/matrix.h"
 #include "parser/vector.h"
-#include <string.h>
+
+ATEN_USING_NAMESPACE
 
 // Constructor
 VariableNode::VariableNode(Variable *var) : TreeNode()
@@ -56,19 +56,19 @@ Variable *VariableNode::variable()
 }
 
 // Set array index
-void VariableNode::setArrayIndex(TreeNode *index)
+void VariableNode::setArrayIndex(TreeNode* index)
 {
 	arrayIndex_ = index;
 }
 
 // Return array index
-TreeNode *VariableNode::arrayIndex()
+TreeNode* VariableNode::arrayIndex()
 {
 	return arrayIndex_;
 }
 
 // Return name of variable target
-const char *VariableNode::name()
+const char* VariableNode::name()
 {
 	if (variable_ == NULL)
 	{
@@ -81,19 +81,19 @@ const char *VariableNode::name()
 // Finalise path, setting return value and readOnly property from last step node
 void VariableNode::finalisePath()
 {
-	msg.enter("VariableNode::finalisePath");
-	msg.print(Messenger::Parse, "There are %i steps in the pathnode...\n", args_.nItems());
+	Messenger::enter("VariableNode::finalisePath");
+	Messenger::print(Messenger::Parse, "There are %i steps in the pathnode...\n", args_.nItems());
 	// Return type of last argument is return type of PathNode
 	if (args_.last() == NULL) returnType_ = VTypes::NoData;
 	else
 	{
-		StepNode *step = (StepNode*) args_.last()->item;
+		StepNode* step = (StepNode*) args_.last()->item;
 		returnType_ = step->returnType();
 		readOnly_ = step->readOnly();
 		returnsArray_ = ((step->arraySize() > 0) && (step->arrayIndex() == NULL));
 	}
-	msg.print(Messenger::Parse, "Return type of VariableNode path is '%s'. Path contents are %s.\n", VTypes::dataType(returnType_), readOnly_ ? "read-only" : "read-write");
-	msg.exit("VariableNode::finalisePath");
+	Messenger::print(Messenger::Parse, "Return type of VariableNode path is '%s'. Path contents are %s.\n", VTypes::dataType(returnType_), readOnly_ ? "read-only" : "read-write");
+	Messenger::exit("VariableNode::finalisePath");
 }
 
 /*
@@ -101,13 +101,13 @@ void VariableNode::finalisePath()
 */
 
 // Execute command
-bool VariableNode::execute(ReturnValue &rv)
+bool VariableNode::execute(ReturnValue& rv)
 {
-	msg.enter("VariableNode::execute");
+	Messenger::enter("VariableNode::execute");
 	if (variable_ == NULL)
 	{
 		printf("Internal Error: VariableNode contains a NULL Variable pointer and can't be executed.\n");
-		msg.exit("VariableNode::execute");
+		Messenger::exit("VariableNode::execute");
 		return FALSE;
 	}
 	// Call the local variable's execute() function to get the base value
@@ -121,7 +121,7 @@ bool VariableNode::execute(ReturnValue &rv)
 	}
 	// If a path is present (i.e. there are arguments to the VariableNode, then execute it. Otherwise, just return the variable contents
 	// Next, step through accessnodes, passing the returnvalue to each in turn
-	if (result) for (Refitem<TreeNode,int> *ri = args_.first(); ri != NULL; ri = ri->next)
+	if (result) for (Refitem<TreeNode,int>* ri = args_.first(); ri != NULL; ri = ri->next)
 	{
 		result = ri->item->execute(rv);
 		if (!result) break;
@@ -131,13 +131,13 @@ bool VariableNode::execute(ReturnValue &rv)
 // 		printf("Final result of path walk / variable retrieval is:\n");
 // 		rv.info();
 	}
-	else msg.print(Messenger::Verbose, "Variable retrieval failed.\n");
-	msg.exit("VariableNode::execute");
+	else Messenger::print(Messenger::Verbose, "Variable retrieval failed.\n");
+	Messenger::exit("VariableNode::execute");
 	return result;
 }
 
 // Print node contents
-void VariableNode::nodePrint(int offset, const char *prefix)
+void VariableNode::nodePrint(int offset, const char* prefix)
 {
 	if (variable_ == NULL)
 	{
@@ -158,7 +158,7 @@ void VariableNode::nodePrint(int offset, const char *prefix)
 		tab.strcat(prefix);
 
 		printf("[PATH]%s (basevar).", tab.get());
-		for (Refitem<TreeNode,int> *ri = args_.first(); ri != NULL; ri = ri->next)
+		for (Refitem<TreeNode,int>* ri = args_.first(); ri != NULL; ri = ri->next)
 		{
 			ri->item->nodePrint(offset);
 			if (ri->next != NULL) printf(".");
@@ -168,13 +168,13 @@ void VariableNode::nodePrint(int offset, const char *prefix)
 }
 
 // Set from returnvalue node
-bool VariableNode::set(ReturnValue &setrv)
+bool VariableNode::set(ReturnValue& setrv)
 {
-	msg.enter("VariableNode::set");
+	Messenger::enter("VariableNode::set");
 	if (variable_ == NULL)
 	{
 		printf("Internal Error: VariableNode contains a NULL Variable pointer and can't be set.\n");
-		msg.exit("VariableNode::set");
+		Messenger::exit("VariableNode::set");
 		return FALSE;
 	}
 	bool result = TRUE;
@@ -253,7 +253,7 @@ bool VariableNode::set(ReturnValue &setrv)
 		if (result2)
 		{
 			lastresult = executerv;
-			for (Refitem<TreeNode,int> *ri = args_.first(); ri != args_.last(); ri = ri->next)
+			for (Refitem<TreeNode,int>* ri = args_.first(); ri != args_.last(); ri = ri->next)
 			{
 				result = ri->item->execute(executerv);
 				if (!result) break;
@@ -266,10 +266,10 @@ bool VariableNode::set(ReturnValue &setrv)
 			{
 // 				printf("Path set result execute = %s\n", executerv.info());
 				// If the node prior to the last is a vector, we must do something special!
-				Refitem<TreeNode,int> *ri = args_.last()->prev;
+				Refitem<TreeNode,int>* ri = args_.last()->prev;
 				if ((ri != NULL) && (ri->item->returnType() == VTypes::VectorData))
 				{
-//					StepNode *step = (StepNode*) ri->item;
+//					StepNode* step = (StepNode*) ri->item;
 // 					printf("Previous step type = %s.\n", VTypes::dataType(step->returnType()));
 					// We must 'step back' a bit here, taking the current vector result and setting the penultimate step with it
 					result = ((StepNode*) ri->item)->set(lastresult,executerv);
@@ -278,8 +278,8 @@ bool VariableNode::set(ReturnValue &setrv)
 		}
 		else result = FALSE;
 	}
-	if (!result) msg.print(Messenger::Verbose, "Variable set failed.\n");
-	msg.exit("VariableNode::set");
+	if (!result) Messenger::print(Messenger::Verbose, "Variable set failed.\n");
+	Messenger::exit("VariableNode::set");
 	return result;
 }
 
@@ -295,12 +295,12 @@ bool VariableNode::initialise()
 }
 
 // Search accessors (if any) available for linked variable
-StepNode *VariableNode::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist)
+StepNode* VariableNode::findAccessor(const char* s, TreeNode* arrayIndex, TreeNode* argList)
 {
 	if (variable_ == NULL)
 	{
 		printf("Internal Error: No variable stored in VariableNode to use for accessor search.\n");
 		return NULL;
 	}
-	return variable_->findAccessor(s, arrayindex, arglist);
+	return variable_->findAccessor(s, arrayIndex, argList);
 }

@@ -21,11 +21,15 @@
 
 #include "base/progress.h"
 #include "base/messenger.h"
-#include "gui/gui.h"
-#include <stdio.h>
+
+ATEN_BEGIN_NAMESPACE
 
 // Static singleton
 ProgressIndicator progress;
+
+ATEN_END_NAMESPACE
+
+ATEN_USING_NAMESPACE
 
 // Constructor
 ProgressIndicator::ProgressIndicator()
@@ -33,7 +37,6 @@ ProgressIndicator::ProgressIndicator()
 	// Private variables
 	hasJob_ = FALSE;
 	canceled_ = FALSE;
-	hidden_ = FALSE;
 }
 
 // Notify that the progress indicator should be canceled
@@ -43,7 +46,7 @@ void ProgressIndicator::notifyCanceled()
 }
 
 // Instantiate a new progress dialog (or a sub-job of the current one
-int ProgressIndicator::initialise(const char *jobtitle, int stepstodo, bool hidden)
+int ProgressIndicator::initialise(const char* jobtitle, int stepstodo)
 {
 	// Check if a progress indicator job already exists
 	if (!hasJob_)
@@ -56,21 +59,12 @@ int ProgressIndicator::initialise(const char *jobtitle, int stepstodo, bool hidd
 		stepsToDo_ = stepstodo;
 		percent_ = 0;
 		canceled_ = FALSE;
-		hidden_ = hidden;
 		jobTitle_ = jobtitle;
+
 		// If the GUI doesn't exist, call the text-based progress indicator
-		if (gui.exists()) gui.initialiseProgressDialog();
-		else if (!hidden_)
-		{
-			// Don't print anything if we're in quiet mode
-			if (!msg.isQuiet())
-			{
-				printf("%s\n", jobtitle);
-				// Print out the empty progress indicator
-// 				printf("Progress [-]                              (  0%%)");
-// 				fflush(stdout);
-			}
-		}
+// 		if (gui.exists()) gui.initialiseProgressDialog();   ATEN2 TODO
+		if (!Messenger::isQuiet()) printf("%s\n", jobtitle);
+
 		hasJob_ = TRUE;
 		return 1;
 	}
@@ -82,7 +76,7 @@ int ProgressIndicator::initialise(const char *jobtitle, int stepstodo, bool hidd
 }
 
 // Update the progress dialog
-bool ProgressIndicator::update(int id, int currentstep, const char *subtitle)
+bool ProgressIndicator::update(int id, int currentstep, const char* subtitle)
 {
 	if (id != 1) return (!canceled_);
 	currentStep_ = (currentstep == -1 ? currentStep_+1 : currentstep);
@@ -110,13 +104,13 @@ bool ProgressIndicator::update(int id, int currentstep, const char *subtitle)
 	// Has job completion percentage changed much? If so, update
 	if (percent != percent_)
 	{
-		if (gui.exists())
+		if (true)   //gui.exists())  ATEN2 TODO
 		{
 			etaText_.sprintf("%02i:%02i:%02i)", remtime.hour(), remtime.minute(), remtime.second());
 			// Has enough time elapsed for us to show the progress indicator?
-			if (time_.elapsed() > 1000) gui.updateProgressDialog();
+// 			if (time_.elapsed() > 1000) gui.updateProgressDialog();  ATEN2 TODO
 		}
-		else if ((!hidden_) && (time_.elapsed() > 1000))
+		else if (time_.elapsed() > 1000)
 		{
 			etaText_.sprintf("(%-3i%%, ETA %02i:%02i:%02i)", percent, remtime.hour(), remtime.minute(), remtime.second());
 			printf("\rProgress [%c]", twister[c]);
@@ -126,6 +120,7 @@ bool ProgressIndicator::update(int id, int currentstep, const char *subtitle)
 
 			for (n=0; n<ndots; n++) printf(".");
 			for (n=ndots; n<30; n++) printf(" ");
+
 			// Lastly, print percentage and ETA
 			printf("%s", etaText_.get());
 			fflush(stdout);
@@ -149,8 +144,8 @@ void ProgressIndicator::terminate(int id)
 		return;
 	}
 	if (percent_ == -1) return;
-	if (gui.exists()) gui.terminateProgressDialog();
-	else if ((time_.elapsed() >= 250) && (!hidden_)) printf("\n");
+// 	if (gui.exists()) gui.terminateProgressDialog(); ATEN2 TODO
+	if (time_.elapsed() >= 250) printf("\n");
 	hasJob_ = FALSE;
 	jobTitle_ = "";
 	percent_ = -1;
@@ -163,19 +158,19 @@ bool ProgressIndicator::hasJob()
 }
 
 // Return ETA (as text)
-const char *ProgressIndicator::eta()
+const char* ProgressIndicator::eta()
 {
 	return etaText_.get();
 }
 
 // Return major job title
-const char *ProgressIndicator::jobTitle()
+const char* ProgressIndicator::jobTitle()
 {
 	return jobTitle_.get();
 }
 
 // Return minor job title
-const char *ProgressIndicator::subTitle()
+const char* ProgressIndicator::subTitle()
 {
 	return subTitle_.get();
 }

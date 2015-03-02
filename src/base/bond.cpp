@@ -24,15 +24,17 @@
 #include "base/atom.h"
 #include "base/sysfunc.h"
 
+ATEN_USING_NAMESPACE
+
 // BondType enum
-const char *BondTypeKeywords[Bond::nBondTypes] = { "_ANY_", "single", "double", "triple", "aromatic" };
-Bond::BondType Bond::bondType(const char *s, bool reportError)
+const char* BondTypeKeywords[Bond::nBondTypes] = { "_ANY_", "single", "double", "triple", "aromatic" };
+Bond::BondType Bond::bondType(const char* s, bool reportError)
 {
 	Bond::BondType bt = (Bond::BondType) enumSearch("bond type",Bond::nBondTypes,BondTypeKeywords,s,reportError);
 	if ((bt == Bond::nBondTypes) && reportError) enumPrintValid(Bond::nBondTypes,BondTypeKeywords);
 	return bt;
 }
-const char *Bond::bondType(Bond::BondType bt)
+const char* Bond::bondType(Bond::BondType bt)
 {
 	return BondTypeKeywords[bt];
 }
@@ -45,7 +47,7 @@ Bond::BondType Bond::bondType(double order)
 	else if ((order - Bond::Aromatic) < tolerance) return Bond::Aromatic;
 	else 
 	{
-		msg.print("Order %f doesn't readily convert to a BondType - assuming Single.\n", order);
+		Messenger::print("Order %f doesn't readily convert to a BondType - assuming Single.\n", order);
 		return Bond::Single;
 	}
 }
@@ -150,11 +152,11 @@ Atom* Bond::partner(Atom* i)
 // Return bond type that best satisfies the valencies of the atoms involved
 Bond::BondType Bond::augmented() const
 {
-	msg.enter("Bond::augmented");
+	Messenger::enter("Bond::augmented");
 	// If the bond type is aromatic, we never change it here since it has been set from another source
 	if (type_ == Bond::Aromatic)
 	{
-		msg.exit("Bond::augmented");
+		Messenger::exit("Bond::augmented");
 		return type_;
 	}
 	int lowest, n, tbi, tbj, penalty[4], eli, elj;
@@ -168,7 +170,7 @@ Bond::BondType Bond::augmented() const
 //	printf("Total bond orders of IDs %i (%s) and %i (%s) are %i and %i - connection is %ibond with penalty %i\n", atomI_->id()+1, Elements().symbol(atomI_), atomJ_->id()+1, Elements().symbol(atomJ_), tbi, tbj, type_, penalty[0]);
 	if (penalty[0] == 0)
 	{
-		msg.exit("Bond::augmented");
+		Messenger::exit("Bond::augmented");
 		return type_;
 	}
 	// Get penalties associated with single, double, and triple bonds
@@ -179,6 +181,6 @@ Bond::BondType Bond::augmented() const
 	for (n=1; n<4; n++) if (penalty[n] < penalty[lowest]) lowest = n;
 //	if (lowest == 0) printf(" -- Bond type will not be changed\n");
 //	else printf(" -- Connection will be changed to %ibond\n", lowest);
-	msg.exit("Bond::augmented");
+	Messenger::exit("Bond::augmented");
 	return (lowest == 0 ? type_ : Bond::bondType(lowest));
 }

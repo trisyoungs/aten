@@ -24,6 +24,8 @@
 #include "QtGui/QGridLayout"
 #include "QtGui/QWidget"
 
+ATEN_USING_NAMESPACE
+
 /*
 // LayoutData class
 */
@@ -38,13 +40,13 @@ LayoutData::LayoutData() : ListItem<LayoutData>()
 }
 
 // Set associated name of layout
-void LayoutData::setName(const char *name)
+void LayoutData::setName(const char* name)
 {
 	name_ = name;
 }
 
 // Return associated name of layout
-const char *LayoutData::name()
+const char* LayoutData::name()
 {
 	return name_.get();
 }
@@ -111,7 +113,7 @@ void LayoutList::clear()
 }
 
 // Add a new item to the list
-LayoutData *LayoutList::add(const char *name, QGridLayout *layout)
+LayoutData *LayoutList::add(const char* name, QGridLayout *layout)
 {
 	LayoutData *ld = layouts_.add();
 	ld->setName(name);
@@ -120,7 +122,7 @@ LayoutData *LayoutList::add(const char *name, QGridLayout *layout)
 }
 
 // Find existing layout
-LayoutData *LayoutList::find(const char *name)
+LayoutData *LayoutList::find(const char* name)
 {
 	LayoutData *ld;
 	for (ld = layouts_.first(); ld != NULL; ld = ld->next) if (strcmp(name, ld->name()) == 0) break;

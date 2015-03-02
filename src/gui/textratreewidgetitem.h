@@ -25,15 +25,20 @@
 #include <QtGui/QTreeWidget>
 #include "templates/list.h"
 #include "base/datastore.h"
+#include "base/namespace.h"
+
+ATEN_BEGIN_NAMESPACE
 
 // Custom QTreeWidgetItem with additional data storage
 class TExtraTreeWidgetItem : public QTreeWidgetItem, public DataStore
 {
 	public:
 	// Constructors
-	TExtraTreeWidgetItem(QTreeWidgetItem *parent);
+	TExtraTreeWidgetItem(QTreeWidgetItem* parent);
 	TExtraTreeWidgetItem(QTreeWidget *parent);
 };
+
+ATEN_END_NAMESPACE
 
 #endif
 

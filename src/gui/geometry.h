@@ -24,11 +24,25 @@
 
 #include "gui/ui_geometry.h"
 
+// Forward Declarations (Qt)
+class AtenWindow;
+
 // Geometry window
 class GeometryWidget : public QDockWidget
 {
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
+
+	public:
+	// Constructor
+	GeometryWidget(AtenWindow& parent, Qt::WindowFlags flags = 0);
+	// Main form declaration
+	Ui::GeometryWidget ui;
+
+	private:
+	// Reference to main window
+	AtenWindow& parent_;
+
 
 	/*
 	// Window Functions
@@ -57,26 +71,9 @@ class GeometryWidget : public QDockWidget
 	void on_SetNewTorsionButton_clicked(bool checked);
 	void on_NudgeTorsionPlusButton_clicked(bool checked);
 	void on_NudgeTorsionMinusButton_clicked(bool checked);
+
 	protected:
 	void closeEvent(QCloseEvent *event);
-
-	/*
-	// Public Functions
-	*/
-	public:
-
-	/*
-	// Widgets
-	*/
-	private:
-	// Reference to main window
-	AtenWindow& parent_;
-
-	public:
-	// Constructor
-	GeometryWidget(AtenWindow& parent, Qt::WindowFlags flags = 0);
-	// Main form declaration
-	Ui::GeometryWidget ui;
 };
 
 #endif

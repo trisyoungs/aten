@@ -1,6 +1,6 @@
 /*
 	*** Viewer Functions
-	*** src/gui/tcanvas_funcs.cpp
+	*** src/gui/viewer_funcs.cpp
 	Copyright T. Youngs 2007-2015
 
 	This file is part of Aten.
@@ -19,15 +19,16 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "gui/mainwindow.h"
 #include "main/aten.h"
-#include "gui/viewer.uih"
-#include "render/glextensions.h"
+
+ATEN_USING_NAMESPACE
 
 // Constructor
 Viewer::Viewer(QWidget* parent)
 {
 	// Character / Setup
-	aten_ = NULL;
+	atenWindow_ = NULL;
 	contextWidth_ = 0;
 	contextHeight_ = 0;
 
@@ -73,7 +74,7 @@ Viewer::~Viewer()
 // Initialise context widget (when created by Qt)
 void Viewer::initializeGL()
 {
-	msg.enter("Viewer::initializeGL");
+	Messenger::enter("Viewer::initializeGL");
 	
         valid_ = true;
 
@@ -88,15 +89,15 @@ void Viewer::initializeGL()
                 PrimitiveInstance::setGlobalInstanceType(PrimitiveInstance::ListInstance);
         }
 
-	msg.exit("Viewer::initializeGL");
+	Messenger::exit("Viewer::initializeGL");
 }
 
 void Viewer::paintGL()
 {
 	// Do nothing if the canvas is not valid, or we are still drawing from last time, or the Aten pointer has not been set
-	if ((!valid_) || drawing_ || (!aten_))
+	if ((!valid_) || drawing_ || (!atenWindow_))
 	{
-		msg.exit("Viewer::paintGL");
+		Messenger::exit("Viewer::paintGL");
 		return;
 	}
 
@@ -109,7 +110,7 @@ void Viewer::paintGL()
 	{
 		printf("Internal Error: No GLExtensions object on stack.\n");
 		drawing_ = false;
-		msg.exit("Viewer::paintGL");
+		Messenger::exit("Viewer::paintGL");
 		return;
 	}
 
@@ -125,7 +126,7 @@ void Viewer::paintGL()
 	glClear(GL_COLOR_BUFFER_BIT);
 	glClear(GL_DEPTH_BUFFER_BIT);
 
-	renderScene();
+	renderScene(extensions);
 
 	// Set the rendering flag to false
 	drawing_ = false;
@@ -136,7 +137,7 @@ void Viewer::paintGL()
 	// Always revert to lower quality for next pass
 	primitiveSet_ = Viewer::LowQuality;
 
-	msg.exit("Viewer::paintGL");
+	Messenger::exit("Viewer::paintGL");
 }
 
 // Resize function
@@ -149,13 +150,20 @@ void Viewer::resizeGL(int newwidth, int newheight)
 
 void Viewer::focusOutEvent(QFocusEvent *event)
 {
-	parent_.updateWidgets(AtenWindow::StatusBarTarget);
+	atenWindow_->updateWidgets(AtenWindow::StatusBarTarget);
 }
 
 // Set pointer to Aten's main structure
 void Viewer::setAten(Aten* aten)
 {
 	aten_ = aten;
+}
+
+
+// Set pointer to AtenWindow
+void Viewer::setAtenWindow(AtenWindow* atenWindow)
+{
+	atenWindow_ = atenWindow;
 }
 
 // Return the current height of the drawing area
@@ -173,22 +181,18 @@ GLsizei Viewer::contextWidth() const
 // Probe features
 void Viewer::probeFeatures()
 {
-	if (msg.isOutputActive(Messenger::GL))
-	{
-		QGLFormat fmt = context()->format();
-		// Probe this format!
-		printf(" QGLFormat: Alpha buffer is %s.\n", fmt.alpha() ? "enabled" : "disabled");
-		printf(" QGLFormat: Accumulation buffer is %s.\n", fmt.accum() ? "enabled" : "disabled");
-		printf(" QGLFormat: Depth buffer is %s.\n", fmt.depth() ? "enabled" : "disabled");
-		printf(" QGLFormat: Double-buffering is %s.\n", fmt.doubleBuffer() ? "enabled" : "disabled");
-		printf(" QGLFormat: Direct rendering is %s.\n", fmt.directRendering() ? "enabled" : "disabled");
-		printf(" QGLFormat: RGBA colour mode is %s.\n", fmt.rgba() ? "enabled" : "disabled");
-		printf(" QGLFormat: Multisample buffer is %s.\n", fmt.sampleBuffers() ? "enabled" : "disabled");
-		printf(" QGLFormat: Stencil buffer is %s.\n", fmt.stencil() ? "enabled" : "disabled");
-		printf(" QGLWidget: Autoswap buffers is %s.\n", autoBufferSwap() ? "enabled" : "disabled");
-	}
+	// Probe this format!
+	QGLFormat fmt = context()->format();
+	Messenger::print(Messenger::Verbose, "QGLFormat: Alpha buffer is %s.\n", fmt.alpha() ? "enabled" : "disabled");
+	Messenger::print(Messenger::Verbose, "QGLFormat: Accumulation buffer is %s.\n", fmt.accum() ? "enabled" : "disabled");
+	Messenger::print(Messenger::Verbose, "QGLFormat: Depth buffer is %s.\n", fmt.depth() ? "enabled" : "disabled");
+	Messenger::print(Messenger::Verbose, "QGLFormat: Double-buffering is %s.\n", fmt.doubleBuffer() ? "enabled" : "disabled");
+	Messenger::print(Messenger::Verbose, "QGLFormat: Direct rendering is %s.\n", fmt.directRendering() ? "enabled" : "disabled");
+	Messenger::print(Messenger::Verbose, "QGLFormat: RGBA colour mode is %s.\n", fmt.rgba() ? "enabled" : "disabled");
+	Messenger::print(Messenger::Verbose, "QGLFormat: Multisample buffer is %s.\n", fmt.sampleBuffers() ? "enabled" : "disabled");
+	Messenger::print(Messenger::Verbose, "QGLFormat: Stencil buffer is %s.\n", fmt.stencil() ? "enabled" : "disabled");
+	Messenger::print(Messenger::Verbose, "QGLWidget: Autoswap buffers is %s.\n", autoBufferSwap() ? "enabled" : "disabled");
 }
-
 
 // Check for GL error
 void Viewer::checkGlError()
@@ -198,25 +202,18 @@ void Viewer::checkGlError()
 	{
 		switch (glGetError())
 		{
-			case (GL_INVALID_ENUM): msg.print(Messenger::Verbose, "GLenum argument out of range\n"); break;
-			case (GL_INVALID_VALUE): msg.print(Messenger::Verbose, "Numeric argument out of range\n"); break;
-			case (GL_INVALID_OPERATION): msg.print(Messenger::Verbose, "Operation illegal in current state\n"); break;
-			case (GL_STACK_OVERFLOW): msg.print(Messenger::Verbose, "Command would cause a stack overflow\n"); break;
-			case (GL_STACK_UNDERFLOW): msg.print(Messenger::Verbose, "Command would cause a stack underflow\n"); break;
-			case (GL_OUT_OF_MEMORY): msg.print(Messenger::Verbose, "Not enough memory left to execute command\n"); break;
-			case (GL_NO_ERROR): msg.print(Messenger::Verbose, "No GL error\n"); break;
+			case (GL_INVALID_ENUM): Messenger::print(Messenger::Verbose, "GLenum argument out of range\n"); break;
+			case (GL_INVALID_VALUE): Messenger::print(Messenger::Verbose, "Numeric argument out of range\n"); break;
+			case (GL_INVALID_OPERATION): Messenger::print(Messenger::Verbose, "Operation illegal in current state\n"); break;
+			case (GL_STACK_OVERFLOW): Messenger::print(Messenger::Verbose, "Command would cause a stack overflow\n"); break;
+			case (GL_STACK_UNDERFLOW): Messenger::print(Messenger::Verbose, "Command would cause a stack underflow\n"); break;
+			case (GL_OUT_OF_MEMORY): Messenger::print(Messenger::Verbose, "Not enough memory left to execute command\n"); break;
+			case (GL_NO_ERROR): Messenger::print(Messenger::Verbose, "No GL error\n"); break;
 			default:
-				msg.print(Messenger::Verbose, "Unknown GL error?\n");
+				Messenger::print(Messenger::Verbose, "Unknown GL error?\n");
 				break;
 		}
 	} while (glerr != GL_NO_ERROR);
-}
-
-// Refresh widget / scene
-void Viewer::postRedisplay()
-{
-	if ((!valid_) || drawing_) return;
-	update();
 }
 
 // Set whether we are currently rendering offscreen
@@ -231,7 +228,7 @@ void Viewer::setObjectScaling(double scaling)
 	lineWidthScaling_ = scaling;
 
 	// Pass this value on to those that depend on it
-	LineStyle::setLineWidthScale(scaling);
+// 	LineStyle::setLineWidthScale(scaling);
 	TextPrimitive::setTextSizeScale(scaling);
 }
 

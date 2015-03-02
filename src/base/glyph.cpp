@@ -21,23 +21,25 @@
 
 #include "base/glyph.h"
 #include "base/sysfunc.h"
-#include "base/matrix.h"
-#include "classes/prefs.h"
+#include "math/matrix.h"
+#include "base/prefs.h"
 #include "model/model.h"
 
+ATEN_USING_NAMESPACE
+
 // Glyph styles
-const char *GlyphTypeKeywords[Glyph::nGlyphTypes] = { "arrow", "cube", "ellipsoid", "ellipsoidxyz", "line", "quad", "svector", "sphere", "tetrahedron", "text", "text3d", "triangle", "tubearrow", "tubevector", "vector" };
-const char *GlyphTypeNames[Glyph::nGlyphTypes] = { "Arrow", "Cube", "Ellipsoid", "EllipsoidXYZ", "Line", "Quad", "SenseVector", "Sphere", "Tetrahedron", "Text", "Text3D", "Triangle", "TubeArrow", "TubeVector", "Vector" };
+const char* GlyphTypeKeywords[Glyph::nGlyphTypes] = { "arrow", "cube", "ellipsoid", "ellipsoidxyz", "line", "quad", "svector", "sphere", "tetrahedron", "text", "text3d", "triangle", "tubearrow", "tubevector", "vector" };
+const char* GlyphTypeNames[Glyph::nGlyphTypes] = { "Arrow", "Cube", "Ellipsoid", "EllipsoidXYZ", "Line", "Quad", "SenseVector", "Sphere", "Tetrahedron", "Text", "Text3D", "Triangle", "TubeArrow", "TubeVector", "Vector" };
 int GlyphTypeNData[Glyph::nGlyphTypes] = { 2, 2, 3, 4, 2, 4, 3, 2, 4, 1, 1, 3, 2, 2, 2 };
-const char *Glyph::glyphType(Glyph::GlyphType gt)
+const char* Glyph::glyphType(Glyph::GlyphType gt)
 {
 	return GlyphTypeKeywords[gt];
 }
-const char *Glyph::glyphTypeName(Glyph::GlyphType gt)
+const char* Glyph::glyphTypeName(Glyph::GlyphType gt)
 {
 	return GlyphTypeNames[gt];
 }
-Glyph::GlyphType Glyph::glyphType(const char *s, bool reportError)
+Glyph::GlyphType Glyph::glyphType(const char* s, bool reportError)
 {
 	Glyph::GlyphType gt = (Glyph::GlyphType) enumSearch("glyph style", Glyph::nGlyphTypes, GlyphTypeKeywords, s);
 	if ((gt == Glyph::nGlyphTypes) && reportError) enumPrintValid(Glyph::nGlyphTypes,GlyphTypeKeywords);
@@ -49,12 +51,12 @@ int Glyph::nGlyphData(Glyph::GlyphType gt)
 }
 
 // Glyph options
-const char *GlyphOptionKeywords[Glyph::nGlyphOptions] = { "colour", "solid", "text", "wire" };
-const char *Glyph::glyphOption(Glyph::GlyphOption go)
+const char* GlyphOptionKeywords[Glyph::nGlyphOptions] = { "colour", "solid", "text", "wire" };
+const char* Glyph::glyphOption(Glyph::GlyphOption go)
 {
 	return GlyphOptionKeywords[go];
 }
-Glyph::GlyphOption Glyph::glyphOption(const char *s, bool reportError)
+Glyph::GlyphOption Glyph::glyphOption(const char* s, bool reportError)
 {
 	Glyph::GlyphOption go = (Glyph::GlyphOption) enumSearch("glyph option", Glyph::nGlyphOptions, GlyphOptionKeywords, s);
 	if ((go == Glyph::nGlyphOptions) && reportError) enumPrintValid(Glyph::nGlyphOptions,GlyphOptionKeywords);
@@ -108,7 +110,7 @@ void GlyphData::setAtom(Atom* atom)
 	set_ = TRUE;
 	if (atom_ == NULL)
 	{
-		msg.print("Info - NULL atom pointer stored in glyph data, so vector data will be used instead.\n");
+		Messenger::print("Info - NULL atom pointer stored in glyph data, so vector data will be used instead.\n");
 		atomSetLast_ = FALSE;
 	}
 	else atomSetLast_ = TRUE;
@@ -150,7 +152,7 @@ Vec3<double> GlyphData::vector() const
 {
 	if (!atomSetLast_) return vector_;
 	else if (atom_ != NULL) return atom_->r();
-	msg.print("Warning - Atom pointer is defined NULL *and* glyph data has not been set to use vector data ({0,0,0} returned)...\n");
+	Messenger::print("Warning - Atom pointer is defined NULL *and* glyph data has not been set to use vector data ({0,0,0} returned)...\n");
 	return Vec3<double>();
 }
 
@@ -166,23 +168,23 @@ void GlyphData::setColour(double r, double g, double b, double a)
 // Set n'th component of colour
 void GlyphData::setColour(int n, double d)
 {
-	if ((n < 0) || (n > 4)) msg.print( "Tried to set component %i for colour in glyphdata which is out of range.\n", n+1);
+	if ((n < 0) || (n > 4)) Messenger::print( "Tried to set component %i for colour in glyphdata which is out of range.\n", n+1);
 	else colour_[n] = d;
 }
 
 // Return colour
-double *GlyphData::colour()
+double* GlyphData::colour()
 {
 	return colour_;
 }
 
 // Return i'th colour for glyph
-void GlyphData::copyColour(GLfloat *col) const
+void GlyphData::copyColour(Vec4<GLfloat>& col) const
 {
-	col[0] = (GLfloat) colour_[0];
-	col[1] = (GLfloat) colour_[1];
-	col[2] = (GLfloat) colour_[2];
-	col[3] = (GLfloat) colour_[3];
+	col.x = (GLfloat) colour_[0];
+	col.y = (GLfloat) colour_[1];
+	col.z = (GLfloat) colour_[2];
+	col.w = (GLfloat) colour_[3];
 }
 
 /*
@@ -232,7 +234,7 @@ int Glyph::nData() const
 // Return nth data in glyph
 GlyphData *Glyph::data(int i)
 {
-	if ((i < 0) || (i >= data_.nItems())) msg.print( "Tried to get data %i for glyph when it has only %i.\n", i+1, data_.nItems());
+	if ((i < 0) || (i >= data_.nItems())) Messenger::print( "Tried to get data %i for glyph when it has only %i.\n", i+1, data_.nItems());
 	else return data_[i];
 	return NULL;
 }
@@ -285,13 +287,13 @@ void Glyph::setType(GlyphType gt)
 }
 
 // Set text data
-void Glyph::setText(const char *s)
+void Glyph::setText(const char* s)
 {
 	text_ = s;
 }
 
 // Return text data
-const char *Glyph::text() const
+const char* Glyph::text() const
 {
 	return text_.get();
 }

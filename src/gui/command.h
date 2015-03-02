@@ -25,6 +25,12 @@
 #include "gui/ui_command.h"
 #include "templates/reflist.h"
 #include "parser/program.h"
+#include "base/namespace.h"
+
+// Forward Declarations (Qt)
+class AtenWindow;
+
+ATEN_USING_NAMESPACE
 
 // Script/command window
 class CommandWidget : public QDockWidget
@@ -32,12 +38,26 @@ class CommandWidget : public QDockWidget
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
 
+	public:
+	// Constructor
+	CommandWidget(AtenWindow& parent, Qt::WindowFlags flags = 0);
+	// Main form declaration
+	Ui::CommandWidget ui;
+	// Finalise widgets (things that couldn't be done in Qt Designer)
+	void finaliseUi();
+
+	private:
+	// Reference to main window
+	AtenWindow& parent_;
+
+
 	/*
 	// Window Functions
 	*/
 	public:
 	void showWidget();
 	void refresh();
+
 
 	/*
 	// Prompt Page
@@ -95,28 +115,12 @@ class CommandWidget : public QDockWidget
 	// Command Index Page
 	*/
 	private:
-	void repopulateCommandList(const char *search);
+	void repopulateCommandList(const char* search);
 	
 	private slots:
 	void on_ClearSearchButton_clicked(bool checked);
 	void on_CommandSearchEdit_textChanged(QString test);
 	void on_CommandList_currentTextChanged(const QString &text);
-
-
-	/*
-	// Widgets
-	*/
-	private:
-	// Reference to main window
-	AtenWindow& parent_;
-
-	public:
-	// Constructor
-	CommandWidget(AtenWindow& parent, Qt::WindowFlags flags = 0);
-	// Main form declaration
-	Ui::CommandWidget ui;
-	// Finalise widgets (things that couldn't be done in Qt Designer)
-	void finaliseUi();
 };
 
 #endif

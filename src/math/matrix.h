@@ -1,6 +1,6 @@
 /*
 	*** Column-Major (OpenGL-friendly) 4x4 Matrix class
-	*** src/base/matrix.h
+	*** src/math/matrix.h
 	Copyright T. Youngs 2007-2015
 
 	This file is part of Aten.
@@ -32,6 +32,9 @@
 #else
 #include <GL/gl.h>
 #endif
+#include "base/namespace.h"
+
+ATEN_BEGIN_NAMESPACE
 
 // Column-major 4x4 matrix
 class Matrix
@@ -49,13 +52,13 @@ class Matrix
 	// Operators
 	*/
 	public:
-	Matrix operator*(const Matrix &B) const;
+	Matrix operator*(const Matrix& B) const;
 	Matrix operator*(const double a) const;
-	Matrix operator+(const Matrix &B) const;
-	Matrix operator-(const Matrix &B) const;
+	Matrix operator+(const Matrix& B) const;
+	Matrix operator-(const Matrix& B) const;
 	Vec3<double> operator*(const Vec3<double> &v) const;
 	Vec4<double> operator*(const Vec4<double> &v) const;
-	Matrix &operator*=(const Matrix &B);
+	Matrix& operator*=(const Matrix& B);
 	double &operator[](int);
 
 
@@ -70,9 +73,9 @@ class Matrix
 	// Set the zero matrix
 	void zero();
 	// Return matrix array
-	double *matrix();
+	double* matrix();
 	// Return transpose of current matrix
-	Matrix &transpose();
+	Matrix& transpose();
 	// Calculate determinant
 	double determinant();
 	// Invert matrix
@@ -200,14 +203,16 @@ class Matrix
 	// Apply rotational part of matrix to supplied vector coordinates
 	Vec3<double> rotateVector(double x, double y, double z) const;
 	// Multiply against coordinates provided (in GLfloats)
-	void multiply(GLfloat *r, GLfloat *transformed) const;
+	void multiply(GLfloat* r, GLfloat* transformed) const;
 	// Multiply against other matrix, but only rotational part, keeping translation/scaling intact
 	void multiplyRotation(Matrix B);
 	// Remove translation and scaling parts, leaving rotation only
 	void removeTranslationAndScaling();
 	// Copy translation and scaling parts from specified matrix
-	void copyTranslationAndScaling(Matrix &source);
+	void copyTranslationAndScaling(Matrix& source);
 };
+
+ATEN_END_NAMESPACE
 
 #endif
 

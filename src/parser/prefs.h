@@ -25,7 +25,9 @@
 #include "parser/variable.h"
 #include "parser/accessor.h"
 
-// Forward Declarations
+ATEN_BEGIN_NAMESPACE
+
+// Forward Declarations (Aten)
 class TreeNode;
 
 // Prefs Master Variable
@@ -41,19 +43,19 @@ class PreferencesVariable : public Variable
 	*/
 	public:
 	// Accessor list
-	enum Accessors { AllowDialogs, AngleLabelFormat, AromaticRingColour, AtomStyleRadius, BackCull, BackgroundColour, BondStyleRadius, BondTolerance, CacheLimit, CalculateIntra, CalculateVdw, ChargeLabelFormat, ClipFar, ClipNear, ColourScales, ColourScheme, CombinationRule, CommonElements, DashedAromatics, DensityUnit, DepthCue, DepthFar, DepthNear, DistanceLabelFormat, ElecCutoff, ElecMethod, EncoderArgs, EncoderExe, EncoderPostArgs, EncoderPostExe, EnergyUnit, EnergyUpdate, EwaldAlpha, EwaldKMax, EwaldPrecision, ForceRhombohedral, FrameCurrentModel, FrameWholeView, GlobeAxesColour, GlobeColour, GlobeSize, GlyphDefaultColour, HBonds, HBondDotRadius, HDistance, ImageQuality, KeyAction, LabelSize, LevelOfDetailStartZ, LevelOfDetailWidth, LevelsOfDetail, LineAliasing, ManualSwapBuffers, MaxCuboids, MaxRings, MaxRingSize, MaxUndo, ModelUpdate, MopacExe, MouseAction, MouseMoveFilter, MultiSampling, NoQtSettings, PartitionGrid, Perspective, PerspectiveFov, PolygonAliasing, Quality, RenderStyle, ReplicateFold, ReplicateTrim, ReuseQuality, SelectionScale, Shininess, SpecularColour, Spotlight, SpotlightAmbient, SpotlightDiffuse, SpotlightPosition, SpotlightSpecular, StickNormalWidth, StickSelectedWidth, TempDir, TextColour, TransparencyBinStartZ, TransparencyBinWidth, TransparencyCorrect, TransparencyNBins, TransparentSelection, UnitCellAxesColour, UnitCellColour, UsePixelBuffers, VdwCutoff, VibrationArrowColour, ViewRotationGlobe, Warn1056, WireSelectionColour, ZMapping, ZoomThrottle, nAccessors };
+	enum Accessors { AllowDialogs, AngleLabelFormat, AromaticRingColour, AtomStyleRadius, BackCull, BackgroundColour, BondStyleRadius, BondTolerance, CacheLimit, CalculateIntra, CalculateVdw, ChargeLabelFormat, ClipFar, ClipNear, ColourScales, ColourScheme, CombinationRule, CommonElements, DashedAromatics, DensityUnit, DepthCue, DepthFar, DepthNear, DistanceLabelFormat, ElecCutoff, ElecMethod, EncoderArgs, EncoderExe, EncoderPostArgs, EncoderPostExe, EnergyUnit, EnergyUpdate, EwaldAlpha, EwaldKMax, EwaldPrecision, ForceRhombohedral, FrameCurrentModel, FrameWholeView, GlobeAxesColour, GlobeColour, GlobeSize, GlyphDefaultColour, HBonds, HBondDotRadius, HDistance, ImageQuality, KeyAction, LabelSize, LineAliasing, ManualSwapBuffers, MaxCuboids, MaxRings, MaxRingSize, MaxUndo, ModelUpdate, MopacExe, MouseAction, MouseMoveFilter, MultiSampling, NoQtSettings, PartitionGrid, Perspective, PerspectiveFov, PolygonAliasing, Quality, RenderStyle, ReplicateFold, ReplicateTrim, ReuseQuality, SelectionScale, Shininess, SpecularColour, Spotlight, SpotlightAmbient, SpotlightDiffuse, SpotlightPosition, SpotlightSpecular, StickNormalWidth, StickSelectedWidth, TempDir, TextColour, TransparentSelection, UnitCellAxesColour, UnitCellColour, UsePixelBuffers, VdwCutoff, VibrationArrowColour, ViewRotationGlobe, Warn1056, WireSelectionColour, ZMapping, ZoomThrottle, nAccessors };
 	// Function list
 	enum Functions { DummyFunction, nFunctions };
 	// Search variable access list for provided accessor
-	StepNode *findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist = NULL);
+	StepNode* findAccessor(const char* s, TreeNode* arrayIndex, TreeNode* argList = NULL);
 	// Static function to search accessors
-	static StepNode *accessorSearch(const char *s, TreeNode *arrayindex, TreeNode *arglist = NULL);
+	static StepNode* accessorSearch(const char* s, TreeNode* arrayIndex, TreeNode* argList = NULL);
 	// Retrieve desired value
-	static bool retrieveAccessor(int i, ReturnValue &rv, bool hasarrayindex, int arrayIndex = -1);
+	static bool retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex, int arrayIndex = -1);
 	// Set desired value
-	static bool setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newvalue, bool hasarrayindex, int arrayIndex = -1);
+	static bool setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newValue, bool hasArrayIndex, int arrayIndex = -1);
 	// Perform desired function
-	static bool performFunction(int i, ReturnValue &rv, TreeNode *node);
+	static bool performFunction(int i, ReturnValue& rv, TreeNode* node);
 	// Print valid accessors/functions
 	static void printAccessors();
 	// Accessor data
@@ -61,5 +63,7 @@ class PreferencesVariable : public Variable
 	// Function Accessor data
 	static FunctionAccessor functionData[nFunctions];
 };
+
+ATEN_END_NAMESPACE
 
 #endif

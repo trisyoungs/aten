@@ -1,6 +1,6 @@
 /*
-	*** Atom typing routines
-	*** src/energy/typing.cpp
+	*** Model typing routines
+	*** src/model/typing.cpp
 	Copyright T. Youngs 2007-2015
 
 	This file is part of Aten.
@@ -19,13 +19,15 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "base/elements.h"
-#include "main/aten.h"
+// #include "base/elements.h"
+// #include "main/aten.h"
 #include "model/model.h"
 #include "ff/forcefield.h"
 #include "base/pattern.h"
-#include "classes/forcefieldatom.h"
-#include "classes/forcefieldbound.h"
+// #include "base/forcefieldatom.h"
+// #include "base/forcefieldbound.h"
+
+ATEN_USING_NAMESPACE
 
 // Return number of unique (by name) forcefield atom types used over all patterns in the model
 int Model::nUniqueForcefieldTypes() const
@@ -121,73 +123,73 @@ void Model::setAtomType(Atom* i, ForcefieldAtom* ffa, bool fixed)
 void Model::describeAtoms()
 {
 	// Locate ring structure and assign atom hybridisations in all patterns.
-	msg.enter("Model::describeAtoms");
+	Messenger::enter("Model::describeAtoms");
 	for (Pattern* p = patterns_.first(); p != NULL; p = p->next) p->describeAtoms();
-	msg.exit("Model::describeAtoms");
+	Messenger::exit("Model::describeAtoms");
 }
 
 // Type all atoms
-bool Model::typeAll()
+bool Model::typeAll(Forcefield* defaultForcefield)
 {
 	// Perform forcefield typing on all patterns in the model.
 	// Most routines here only use the first molecule in the pattern, so we must propagate the type info
 	// to other molecules at the end.
-	msg.enter("Model::typeAll");
+	Messenger::enter("Model::typeAll");
 	// Must have a valid pattern...
 	createPatterns();
 	if (!arePatternsValid())
 	{
-		msg.print("Atom typing cannot be performed without valid patterns.\nCheck pattern definition, atom ordering, and bond consistency between atoms, or add the default (1*N) pattern for a quick fix.\n");
-		msg.exit("Model::typeAll");
+		Messenger::print("Atom typing cannot be performed without valid patterns.\nCheck pattern definition, atom ordering, and bond consistency between atoms, or add the default (1*N) pattern for a quick fix.\n");
+		Messenger::exit("Model::typeAll");
 		return FALSE;
 	}
 
 	// If no forcefield is set in this model, grab it from the current default forcefield
 	if (forcefield_ == NULL)
 	{
-		if (aten.currentForcefield() != NULL) setForcefield(aten.currentForcefield());
+		if (defaultForcefield != NULL) setForcefield(defaultForcefield);
 		else
 		{
-			msg.print("Error: No forcefield set in model, and no default forcefield is available.\n");
-			msg.exit("Model::typeAll");
+			Messenger::print("Error: No forcefield set in model, and no default forcefield is available.\n");
+			Messenger::exit("Model::typeAll");
 			return FALSE;
 		}
 	}
-	msg.print("Typing all patterns in model '%s' (associated forcefield is '%s')...\n", name_.get(), forcefield_->name());
+	Messenger::print("Typing all patterns in model '%s' (associated forcefield is '%s')...\n", name_.get(), forcefield_->name());
 	
 	// Assign forcefield types to atoms
 	for (Pattern* p = patterns_.first(); p != NULL; p = p->next)
 	{
 		if (!p->typeAtoms())
 		{
-			msg.exit("Model::typeAll");
+			Messenger::exit("Model::typeAll");
 			return FALSE;
 		}
 		// Finally, propagate the data now contained in the initial molecule in each pattern to all other molecules
 		p->propagateAtomtypes();
 		p->propagateBondTypes();
-		msg.print("Done.\n");
+		Messenger::print("Done.\n");
 	}
 	// Log change in the model
 	changeLog.add(Log::Coordinates);
-	msg.exit("Model::typeAll");
+	Messenger::exit("Model::typeAll");
 	return TRUE;
 }
 
 // Set atomtypes of selected atoms
 void Model::selectionSetType(ForcefieldAtom* ffa, bool fixed)
 {
-	msg.enter("Pattern::selectionSetType");
-	for (Refitem<Atom,int> *ri = selection_.first(); ri != NULL; ri = ri->next) setAtomType(ri->item, ffa, fixed);
+	Messenger::enter("Pattern::selectionSetType");
+	for (Refitem<Atom,int>* ri = selection_.first(); ri != NULL; ri = ri->next) setAtomType(ri->item, ffa, fixed);
 	changeLog.add(Log::Coordinates);
-	msg.exit("Pattern::selectionSetType");
+	Messenger::exit("Pattern::selectionSetType");
 }
 
 // Remove typing from the model
 void Model::removeTyping()
 {
 	// Remove all atom typing from the current model
-	msg.enter("Model::removeTyping");
+	Messenger::enter("Model::removeTyping");
 	for (Atom* i = atoms_.first(); i != NULL; i = i->next) setAtomType(i, NULL, FALSE);
-	msg.exit("Model::removeTyping");
+	Messenger::exit("Model::removeTyping");
 }

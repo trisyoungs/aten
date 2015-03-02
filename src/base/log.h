@@ -22,6 +22,10 @@
 #ifndef ATEN_LOG_H
 #define ATEN_LOG_H
 
+#include "base/namespace.h"
+
+ATEN_BEGIN_NAMESPACE
+
 // Log Class
 class Log
 {
@@ -71,5 +75,7 @@ class Log
 	// Print logs
 	void print() const;
 };
+
+ATEN_END_NAMESPACE
 
 #endif

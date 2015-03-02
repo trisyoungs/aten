@@ -24,6 +24,8 @@
 #include "base/dnchar.h"
 #include <cstdio>
 
+ATEN_USING_NAMESPACE
+
 // Constructor
 AtenAbout::AtenAbout(QWidget *parent) : QDialog(parent)
 {

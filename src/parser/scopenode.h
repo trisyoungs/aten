@@ -24,13 +24,16 @@
 
 #include "parser/commandnode.h"
 #include "parser/variablelist.h"
+#include "base/namespace.h"
+
+ATEN_BEGIN_NAMESPACE
 
 // Scoped Command Node
 class ScopeNode : public CommandNode
 {
 	public:
 	// Constructor / Destructor
-	ScopeNode(Command::Function func = Command::NoFunction);
+	ScopeNode(Commands::Function func = Commands::NoFunction);
 	~ScopeNode();
 
 	/*
@@ -47,14 +50,16 @@ class ScopeNode : public CommandNode
 	*/
 	public:
 	// Execute command
-	bool execute(ReturnValue &rv);
+	bool execute(ReturnValue& rv);
 	// Set from returnvalue node
-	bool set(ReturnValue &rv);
+	bool set(ReturnValue& rv);
 	// Initialise node
 	bool initialise();
 	// Print layout of current node
-	void nodePrint(int offset, const char *prefix = "");
+	void nodePrint(int offset, const char* prefix = "");
 
 };
+
+ATEN_END_NAMESPACE
 
 #endif

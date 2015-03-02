@@ -21,22 +21,21 @@
 
 #include "command/commands.h"
 #include "parser/commandnode.h"
-#include "parser/tree.h"
+#include "model/bundle.h"
 #include "model/model.h"
-#include "classes/prefs.h"
-#include "base/messenger.h"
 #include "base/generator.h"
-#include "base/spacegroup.h"
+
+ATEN_USING_NAMESPACE
 
 // Add manual spacegroup generator
-bool Command::function_AddGenerator(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_AddGenerator(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// Convert argument to generator
 	Generator *gen = obj.rs()->cell()->addGenerator();
 	if (!gen->set(c->argc(0)))
 	{
-		msg.print("Failed to create new generator definition.\n");
+		Messenger::print("Failed to create new generator definition.\n");
 		return FALSE;
 	}
 	rv.reset();
@@ -44,7 +43,7 @@ bool Command::function_AddGenerator(CommandNode *c, Bundle &obj, ReturnValue &rv
 }
 
 // Adjust parameter of unit cell
-bool Command::function_AdjustCell(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_AdjustCell(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	UnitCell::CellParameter cp = UnitCell::cellParameter(c->argc(0));
@@ -54,7 +53,7 @@ bool Command::function_AdjustCell(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Set/create unit cell ('cell <a b c> <alpha beta gamma>')
-bool Command::function_Cell(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_Cell(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (obj.rs()->cell()->type() == UnitCell::NoCell) obj.rs()->beginUndoState("Add Cell");
@@ -66,7 +65,7 @@ bool Command::function_Cell(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Set/create unit cell ('cellaxes <ax ay az> <bx by bz> <cx cy cz>')
-bool Command::function_CellAxes(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_CellAxes(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	Matrix mat;
@@ -81,7 +80,7 @@ bool Command::function_CellAxes(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Fold atoms into unit cell
-bool Command::function_Fold(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_Fold(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (c->parent()->parser() == NULL)
@@ -96,7 +95,7 @@ bool Command::function_Fold(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Fold molecules
-bool Command::function_FoldMolecules(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_FoldMolecules(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs()->beginUndoState("Fold Molecules");
@@ -107,7 +106,7 @@ bool Command::function_FoldMolecules(CommandNode *c, Bundle &obj, ReturnValue &r
 }
 
 // Convert fractional coordinates to real coordinates
-bool Command::function_FracToReal(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_FracToReal(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs()->beginUndoState("Convert fractional to real coordinates");
@@ -118,7 +117,7 @@ bool Command::function_FracToReal(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Cleave crystal along Miller plane
-bool Command::function_MillerCut(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_MillerCut(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs()->beginUndoState("Cleave along Miller plane (%i%i%i)", c->argi(0), c->argi(1), c->argi(2));
@@ -130,7 +129,7 @@ bool Command::function_MillerCut(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Remove unit cell
-bool Command::function_NoCell(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_NoCell(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs()->beginUndoState("Remove cell");
@@ -141,7 +140,7 @@ bool Command::function_NoCell(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Do crystal packing in model
-bool Command::function_Pack(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_Pack(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (!c->parent()->isFilter())
@@ -156,17 +155,17 @@ bool Command::function_Pack(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Print cell information ('printcell')
-bool Command::function_PrintCell(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_PrintCell(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	msg.print("Unit cell type for model '%s' is %s\n", obj.rs()->name(), UnitCell::cellType(obj.rs()->cell()->type()));
+	Messenger::print("Unit cell type for model '%s' is %s\n", obj.rs()->name(), UnitCell::cellType(obj.rs()->cell()->type()));
 	if (obj.rs()->cell()->type() != UnitCell::NoCell) obj.rs()->cell()->print();
 	rv.reset();
 	return TRUE;
 }
 
 // Replicate cell ('replicate <negx negy negz> <posx posy posz>')
-bool Command::function_Replicate(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_Replicate(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs()->beginUndoState("Replicate cell");
@@ -177,7 +176,7 @@ bool Command::function_Replicate(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Rotate cell and contents ('rotatecell <axis> <angle>')
-bool Command::function_RotateCell(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_RotateCell(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// Determine supplied axis and get angle
@@ -201,7 +200,7 @@ bool Command::function_RotateCell(CommandNode *c, Bundle &obj, ReturnValue &rv)
 			axis = 2;
 			break;
 		default:
-			msg.print("Unrecognised axis '%c' given to 'rotatecell'.\n",ch);
+			Messenger::print("Unrecognised axis '%c' given to 'rotatecell'.\n",ch);
 			return FALSE;
 			break;
 	}
@@ -214,7 +213,7 @@ bool Command::function_RotateCell(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Scale cell and atom positions ('scale <x y z> [energy?]')
-bool Command::function_Scale(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_Scale(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs()->beginUndoState("Scale cell and atoms");
@@ -225,7 +224,7 @@ bool Command::function_Scale(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Scale cell and molecule COGs ('scalemolecules <x y z> [energy?]')
-bool Command::function_ScaleMolecules(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_ScaleMolecules(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs()->beginUndoState("Scale cell and molecule centres");
@@ -236,7 +235,7 @@ bool Command::function_ScaleMolecules(CommandNode *c, Bundle &obj, ReturnValue &
 }
 
 // Set parameter of unit cell
-bool Command::function_SetCell(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_SetCell(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	UnitCell::CellParameter cp = UnitCell::cellParameter(c->argc(0));
@@ -246,7 +245,7 @@ bool Command::function_SetCell(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Run SGInfo on supplied string
-bool Command::function_SGInfo(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_SGInfo(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	T_SgInfo sg;
 	sg.MaxList = 192;
@@ -257,7 +256,7 @@ bool Command::function_SGInfo(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	const T_TabSgName *tsgn = FindTabSgNameEntry(c->argc(0), 'A');
 	if (tsgn == NULL)
 	{
-		msg.print("Unable to find spacegroup '%s'.\n", c->argc(0));
+		Messenger::print("Unable to find spacegroup '%s'.\n", c->argc(0));
 		return FALSE;
 	}
 // 	SgName = tsgn->HallSymbol;
@@ -285,7 +284,7 @@ bool Command::function_SGInfo(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Set spacegroup
-bool Command::function_Spacegroup(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_Spacegroup(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// If argument passed is an integer, set by integer. If a character, search by spacegroup name

@@ -1,6 +1,6 @@
 /*
 	*** BasisPrimitive Variable and Array
-	*** src/parser/BasisPrimitive.cpp
+	*** src/parser/basisprimitive.cpp
 	Copyright T. Youngs 2007-2015
 
 	This file is part of Aten.
@@ -21,18 +21,20 @@
 
 #include "parser/basisprimitive.h"
 #include "parser/stepnode.h"
-#include "classes/basisshell.h"
+#include "base/basisshell.h"
 #include "math/constants.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+ATEN_USING_NAMESPACE
 
 /*
 // Variable
 */
 
 // Constructor
-BasisPrimitiveVariable::BasisPrimitiveVariable(BasisPrimitive *ptr, bool constant)
+BasisPrimitiveVariable::BasisPrimitiveVariable(BasisPrimitive* ptr, bool constant)
 {
 	// Private variables
 	returnType_ = VTypes::BasisPrimitiveData;
@@ -61,16 +63,16 @@ FunctionAccessor BasisPrimitiveVariable::functionData[BasisPrimitiveVariable::nF
 };
 
 // Search variable access list for provided accessor (call private static function)
-StepNode *BasisPrimitiveVariable::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist)
+StepNode* BasisPrimitiveVariable::findAccessor(const char* s, TreeNode* arrayIndex, TreeNode* argList)
 {
-	return BasisPrimitiveVariable::accessorSearch(s, arrayindex, arglist);
+	return BasisPrimitiveVariable::accessorSearch(s, arrayIndex, argList);
 }
 
 // Private static function to search accessors
-StepNode *BasisPrimitiveVariable::accessorSearch(const char *s, TreeNode *arrayindex, TreeNode *arglist)
+StepNode* BasisPrimitiveVariable::accessorSearch(const char* s, TreeNode* arrayIndex, TreeNode* argList)
 {
-	msg.enter("BasisPrimitiveVariable::accessorSearch");
-	StepNode *result = NULL;
+	Messenger::enter("BasisPrimitiveVariable::accessorSearch");
+	StepNode* result = NULL;
 	int i = 0;
 	i = Variable::searchAccessor(s, nAccessors, accessorData);
 	if (i == -1)
@@ -80,84 +82,84 @@ StepNode *BasisPrimitiveVariable::accessorSearch(const char *s, TreeNode *arrayi
 		i = Variable::searchAccessor(s, nFunctions, functionData);
 		if (i == -1)
 		{
-			msg.print("Error: Type 'BasisPrimitive&' has no member or function named '%s'.\n", s);
+			Messenger::print("Error: Type 'BasisPrimitive&' has no member or function named '%s'.\n", s);
 			printAccessors();
-			msg.exit("BasisPrimitiveVariable::accessorSearch");
+			Messenger::exit("BasisPrimitiveVariable::accessorSearch");
 			return NULL;
 		}
-		msg.print(Messenger::Parse, "FunctionAccessor match = %i (%s)\n", i, functionData[i].name);
-		if (arrayindex != NULL)
+		Messenger::print(Messenger::Parse, "FunctionAccessor match = %i (%s)\n", i, functionData[i].name);
+		if (arrayIndex != NULL)
 		{
-			msg.print("Error: Array index given to 'BasisPrimitive&' function '%s'.\n", s);
-			msg.exit("BasisPrimitiveVariable::accessorSearch");
+			Messenger::print("Error: Array index given to 'BasisPrimitive&' function '%s'.\n", s);
+			Messenger::exit("BasisPrimitiveVariable::accessorSearch");
 			return NULL;
 		}
 		// Add and check supplied arguments...
 		result = new StepNode(i, VTypes::BasisPrimitiveData, functionData[i].returnType);
-		result->addJoinedArguments(arglist);
+		result->addJoinedArguments(argList);
 		if (!result->checkArguments(functionData[i].arguments, functionData[i].name))
 		{
-			msg.print("Error: Syntax for 'BasisPrimitive&' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
+			Messenger::print("Error: Syntax for 'BasisPrimitive&' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
 			delete result;
 			result = NULL;
 		}
 	}
 	else
 	{
-		msg.print(Messenger::Parse, "Accessor match = %i (%s)\n", i, accessorData[i].name);
+		Messenger::print(Messenger::Parse, "Accessor match = %i (%s)\n", i, accessorData[i].name);
 		// Were we given an array index when we didn't want one?
-		if ((accessorData[i].arraySize == 0) && (arrayindex != NULL))
+		if ((accessorData[i].arraySize == 0) && (arrayIndex != NULL))
 		{
-			msg.print("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
+			Messenger::print("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
 			result = NULL;
 		}
 		// Were we given an argument list when we didn't want one?
-		if (arglist != NULL)
+		if (argList != NULL)
 		{
-			msg.print("Error: Argument list given to 'BasisPrimitive&' array member '%s'.\n", s);
-			msg.exit("BasisPrimitiveVariable::accessorSearch");
+			Messenger::print("Error: Argument list given to 'BasisPrimitive&' array member '%s'.\n", s);
+			Messenger::exit("BasisPrimitiveVariable::accessorSearch");
 			return NULL;
 		}
-		result = new StepNode(i, VTypes::BasisPrimitiveData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
+		result = new StepNode(i, VTypes::BasisPrimitiveData, arrayIndex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
 	}
-	msg.exit("BasisPrimitiveVariable::accessorSearch");
+	Messenger::exit("BasisPrimitiveVariable::accessorSearch");
 	return result;
 }
 
 // Retrieve desired value
-bool BasisPrimitiveVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, int arrayIndex)
+bool BasisPrimitiveVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex, int arrayIndex)
 {
-	msg.enter("BasisPrimitiveVariable::retrieveAccessor");
+	Messenger::enter("BasisPrimitiveVariable::retrieveAccessor");
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nAccessors))
 	{
 		printf("Internal Error: Accessor id %i is out of range for BasisPrimitive type.\n", i);
-		msg.exit("BasisPrimitiveVariable::retrieveAccessor");
+		Messenger::exit("BasisPrimitiveVariable::retrieveAccessor");
 		return FALSE;
 	}
 	Accessors acc = (Accessors) i;
 	// Check for correct lack/presence of array index given
 	if ((accessorData[i].arraySize == 0) && hasArrayIndex)
 	{
-		msg.print("Error: Unnecessary array index provided for member '%s'.\n", accessorData[i].name);
-		msg.exit("BasisPrimitiveVariable::retrieveAccessor");
+		Messenger::print("Error: Unnecessary array index provided for member '%s'.\n", accessorData[i].name);
+		Messenger::exit("BasisPrimitiveVariable::retrieveAccessor");
 		return FALSE;
 	}
 	else if ((accessorData[i].arraySize > 0) && (hasArrayIndex))
 	{
 		if ((arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize))
 		{
-			msg.print("Error: Array index out of bounds for member '%s' (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
-			msg.exit("BasisPrimitiveVariable::retrieveAccessor");
+			Messenger::print("Error: Array index out of bounds for member '%s' (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
+			Messenger::exit("BasisPrimitiveVariable::retrieveAccessor");
 			return FALSE;
 		}
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	BasisPrimitive *ptr = (BasisPrimitive*) rv.asPointer(VTypes::BasisPrimitiveData, result);
+	BasisPrimitive* ptr = (BasisPrimitive*) rv.asPointer(VTypes::BasisPrimitiveData, result);
 	if ((!result) || (ptr == NULL))
 	{
-		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::BasisPrimitiveData));
+		Messenger::print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::BasisPrimitiveData));
 		result = FALSE;
 	}
 	if (result) switch (acc)
@@ -168,7 +170,7 @@ bool BasisPrimitiveVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasAr
 		case (BasisPrimitiveVariable::Coefficients):
 			if ((arrayIndex < 1) || (arrayIndex > ptr->nCoefficients()))
 			{
-				msg.print("Array index [%i] is out of range for 'coefficients' member.\n", arrayIndex);
+				Messenger::print("Array index [%i] is out of range for 'coefficients' member.\n", arrayIndex);
 				result = FALSE;
 			}
 			else rv.set(ptr->coefficient(arrayIndex-1));
@@ -178,19 +180,19 @@ bool BasisPrimitiveVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasAr
 			result = FALSE;
 			break;
 	}
-	msg.exit("BasisPrimitiveVariable::retrieveAccessor");
+	Messenger::exit("BasisPrimitiveVariable::retrieveAccessor");
 	return result;
 }
 
 // Set desired value
-bool BasisPrimitiveVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newvalue, bool hasArrayIndex, int arrayIndex)
+bool BasisPrimitiveVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newValue, bool hasArrayIndex, int arrayIndex)
 {
-	msg.enter("BasisPrimitiveVariable::setAccessor");
+	Messenger::enter("BasisPrimitiveVariable::setAccessor");
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nAccessors))
 	{
 		printf("Internal Error: Accessor id %i is out of range for BasisPrimitive type.\n", i);
-		msg.exit("BasisPrimitiveVariable::setAccessor");
+		Messenger::exit("BasisPrimitiveVariable::setAccessor");
 		return FALSE;
 	}
 	Accessors acc = (Accessors) i;
@@ -202,20 +204,20 @@ bool BasisPrimitiveVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnVal
 		{
 			if ((accessorData[i].arraySize > 0) && ( (arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize) ))
 			{
-				msg.print("Error: Array index provided for member '%s' is out of range (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
+				Messenger::print("Error: Array index provided for member '%s' is out of range (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
 				result = FALSE;
 			}
-			if (newvalue.arraySize() > 0)
+			if (newValue.arraySize() > 0)
 			{
-				msg.print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
+				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
 				result = FALSE;
 			}
 		}
 		else
 		{
-			if (newvalue.arraySize() > accessorData[i].arraySize)
+			if (newValue.arraySize() > accessorData[i].arraySize)
 			{
-				msg.print("Error: The array being assigned to member '%s' is larger than the size of the desination array (%i cf. %i).\n", accessorData[i].name, newvalue.arraySize(), accessorData[i].arraySize);
+				Messenger::print("Error: The array being assigned to member '%s' is larger than the size of the desination array (%i cf. %i).\n", accessorData[i].name, newValue.arraySize(), accessorData[i].arraySize);
 				result = FALSE;
 			}
 		}
@@ -223,60 +225,60 @@ bool BasisPrimitiveVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnVal
 	else
 	{
 		// This is not an array member, so cannot be assigned an array unless its a Vector
-		if (newvalue.arraySize() != -1)
+		if (newValue.arraySize() != -1)
 		{
 			if (accessorData[i].returnType != VTypes::VectorData)
 			{
-				msg.print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
+				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
 				result = FALSE;
 			}
-			else if ((newvalue.type() != VTypes::VectorData) && (newvalue.arraySize() != 3))
+			else if ((newValue.type() != VTypes::VectorData) && (newValue.arraySize() != 3))
 			{
-				msg.print("Error: Only an array of size 3 can be assigned to a vector (member '%s').\n", accessorData[i].name);
+				Messenger::print("Error: Only an array of size 3 can be assigned to a vector (member '%s').\n", accessorData[i].name);
 				result = FALSE;
 			}
 		}
 	}
 	if (!result)
 	{
-		msg.exit("BasisPrimitiveVariable::setAccessor");
+		Messenger::exit("BasisPrimitiveVariable::setAccessor");
 		return FALSE;
 	}
 	// Get current data from ReturnValue
-	BasisPrimitive *ptr = (BasisPrimitive*) sourcerv.asPointer(VTypes::BasisPrimitiveData, result);
+	BasisPrimitive* ptr = (BasisPrimitive*) sourcerv.asPointer(VTypes::BasisPrimitiveData, result);
 	if ((!result) || (ptr == NULL))
 	{
-		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::BasisPrimitiveData));
+		Messenger::print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::BasisPrimitiveData));
 		result = FALSE;
 	}
 	if (result) switch (acc)
 	{
 		case (BasisPrimitiveVariable::Exponent):
-			ptr->setExponent( newvalue.asDouble() );
+			ptr->setExponent( newValue.asDouble() );
 			break;
 		default:
 			printf("BasisPrimitiveVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);
 			result = FALSE;
 			break;
 	}
-	msg.exit("BasisPrimitiveVariable::setAccessor");
+	Messenger::exit("BasisPrimitiveVariable::setAccessor");
 	return result;
 }
 
 // Perform desired function
-bool BasisPrimitiveVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
+bool BasisPrimitiveVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 {
-	msg.enter("BasisPrimitiveVariable::performFunction");
+	Messenger::enter("BasisPrimitiveVariable::performFunction");
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nFunctions))
 	{
 		printf("Internal Error: FunctionAccessor id %i is out of range for BasisPrimitive type.\n", i);
-		msg.exit("BasisPrimitiveVariable::performFunction");
+		Messenger::exit("BasisPrimitiveVariable::performFunction");
 		return FALSE;
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	BasisPrimitive *ptr = (BasisPrimitive*) rv.asPointer(VTypes::BasisPrimitiveData, result);
+	BasisPrimitive* ptr = (BasisPrimitive*) rv.asPointer(VTypes::BasisPrimitiveData, result);
 	if (result) switch (i)
 	{
 		case (BasisPrimitiveVariable::AddCoefficient):
@@ -287,7 +289,7 @@ bool BasisPrimitiveVariable::performFunction(int i, ReturnValue &rv, TreeNode *n
 			result = FALSE;
 			break;
 	}
-	msg.exit("BasisPrimitiveVariable::performFunction");
+	Messenger::exit("BasisPrimitiveVariable::performFunction");
 	return result;
 }
 
@@ -296,15 +298,15 @@ void BasisPrimitiveVariable::printAccessors()
 {
 	if (BasisPrimitiveVariable::nAccessors > 0)
 	{
-		msg.print("Valid accessors are:\n");
-		for (int n=0; n<BasisPrimitiveVariable::nAccessors; ++n) msg.print("%s%s%s", n == 0 ? " " : ", ", accessorData[n].name, accessorData[n].arraySize > 0 ? "[]" : "");
-		msg.print("\n");
+		Messenger::print("Valid accessors are:\n");
+		for (int n=0; n<BasisPrimitiveVariable::nAccessors; ++n) Messenger::print("%s%s%s", n == 0 ? " " : ", ", accessorData[n].name, accessorData[n].arraySize > 0 ? "[]" : "");
+		Messenger::print("\n");
 	}
 	if ((BasisPrimitiveVariable::nFunctions > 0) && (strcmp(functionData[0].name,".dummy") != 0))
 	{
-		msg.print("Valid functions are:\n");
-		for (int n=0; n<BasisPrimitiveVariable::nFunctions; ++n) msg.print("%s%s(%s)", n == 0 ? " " : ", ", functionData[n].name, functionData[n].argText);
-		msg.print("\n");
+		Messenger::print("Valid functions are:\n");
+		for (int n=0; n<BasisPrimitiveVariable::nFunctions; ++n) Messenger::print("%s%s(%s)", n == 0 ? " " : ", ", functionData[n].name, functionData[n].argText);
+		Messenger::print("\n");
 	}
 }
 
@@ -313,7 +315,7 @@ void BasisPrimitiveVariable::printAccessors()
 */
 
 // Constructor
-BasisPrimitiveArrayVariable::BasisPrimitiveArrayVariable(TreeNode *sizeexpr, bool constant)
+BasisPrimitiveArrayVariable::BasisPrimitiveArrayVariable(TreeNode* sizeexpr, bool constant)
 {
 	// Private variables
 	returnType_ = VTypes::BasisPrimitiveData;
@@ -325,8 +327,8 @@ BasisPrimitiveArrayVariable::BasisPrimitiveArrayVariable(TreeNode *sizeexpr, boo
 }
 
 // Search variable access list for provided accessor
-StepNode *BasisPrimitiveArrayVariable::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist)
+StepNode* BasisPrimitiveArrayVariable::findAccessor(const char* s, TreeNode* arrayIndex, TreeNode* argList)
 {
-	return BasisPrimitiveVariable::accessorSearch(s, arrayindex, arglist);
+	return BasisPrimitiveVariable::accessorSearch(s, arrayIndex, argList);
 }
 

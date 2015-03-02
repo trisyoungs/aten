@@ -20,14 +20,14 @@
 */
 
 #include "model/model.h"
-#include "classes/prefs.h"
-#include "base/elements.h"
+
+ATEN_USING_NAMESPACE
 
 // Add hydrogens to model
 void Model::hydrogenSatisfy(Atom* target)
 {
 	// Cycles over atoms in model (or only the atom supplied), and works out how many hydrogens (and in which geometry) should be added to each
-	msg.enter("Model::hydrogenSatisfy");
+	Messenger::enter("Model::hydrogenSatisfy");
 	int numh, tbo, nsingle, ndouble, valency, n;
 	Atom* i, *endatom;
 	double bondLength = prefs.hydrogenDistance();
@@ -76,19 +76,19 @@ void Model::hydrogenSatisfy(Atom* target)
 		else if (ndouble != 0) for (n=0; n<numh; ++n) growAtom(i,1,bondLength, Atom::TrigPlanarGeometry);
 		else for (n=0; n<numh; ++n) growAtom(i,1, bondLength, Atom::LinearGeometry);
 	}
-	msg.exit("Model::hydrogenSatisfy");
+	Messenger::exit("Model::hydrogenSatisfy");
 }
 
 // Add a single atom of the type specified to the atom specified
 Atom* Model::growAtom(Atom* i, short int element, double distance, Atom::AtomGeometry geometry, bool bound)
 {
-	msg.enter("Model::growAtom");
+	Messenger::enter("Model::growAtom");
 
 	// Attempt to find suitable bond vector
 	Vec3<double> newVec;
 	if (!i->nextBondVector(newVec, geometry))
 	{
-		msg.print("Failed to find suitable vector for new atom.\n");
+		Messenger::print("Failed to find suitable vector for new atom.\n");
 		return NULL;
 	}
 	
@@ -100,7 +100,7 @@ Atom* Model::growAtom(Atom* i, short int element, double distance, Atom::AtomGeo
 	// Bond atoms if requested
 	if (bound) bondAtoms(i, newAtom, Bond::Single);
 
-	msg.exit("Model::growAtom");
+	Messenger::exit("Model::growAtom");
 	return newAtom;
 }
 

@@ -24,7 +24,7 @@
 
 #include "gui/ui_transform.h"
 
-// Forward Declarations
+// Forward Declarations (Qt)
 class AtenWindow;
 
 // Atom transform window
@@ -32,6 +32,17 @@ class TransformWidget : public QDockWidget
 {
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
+
+	private:
+	// Reference to main window
+	AtenWindow& parent_;
+
+	public:
+	// Constructor / Destructor
+	TransformWidget(AtenWindow& parent, Qt::WindowFlags flags = 0);
+	// Main form declaration
+	Ui::TransformWidget ui;
+
 
 	/*
 	// Window Functions
@@ -92,24 +103,6 @@ class TransformWidget : public QDockWidget
 	void on_ConvertTargetGenerateCButton_clicked(bool on);
 	protected:
 	void closeEvent(QCloseEvent *event);
-
-	/*
-	// Local variables
-	*/
-	private:
-
-	/*
-	// Dialog
-	*/
-	private:
-	// Reference to main window
-	AtenWindow& parent_;
-
-	public:
-	// Constructor / Destructor
-	TransformWidget(AtenWindow& parent, Qt::WindowFlags flags = 0);
-	// Main form declaration
-	Ui::TransformWidget ui;
 };
 
 #endif

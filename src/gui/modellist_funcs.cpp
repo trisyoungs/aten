@@ -19,6 +19,9 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <QtGui/QCloseEvent>
+#include <QtGui/QMouseEvent>
+#include <QtGui/QInputDialog>
 #include "main/aten.h"
 #include "gui/modellist.h"
 #include "gui/mainwindow.h"
@@ -26,6 +29,8 @@
 #include "ff/forcefield.h"
 #include "parser/commandnode.h"
 #include "base/sysfunc.h"
+
+ATEN_USING_NAMESPACE
 
 // Constructor
 ModelListWidget::ModelListWidget(AtenWindow& parent, Qt::WindowFlags flags) : QDockWidget(&parent, flags), parent_(parent)
@@ -60,7 +65,7 @@ void ModelListWidget::showWidget()
 // Refresh the model list
 void ModelListWidget::refresh()
 {
-	msg.enter("ModelListWidget::refresh");
+	Messenger::enter("ModelListWidget::refresh");
 	
 	refreshing_ = TRUE;
 	
@@ -118,7 +123,7 @@ void ModelListWidget::refresh()
 	}
 
 	// The xmodels list now contains any models which are not currently in the QTreeWIdget (but should be...)
-	for (Refitem<Model,int> *ri = xmodels.first(); ri != NULL; ri = ri->next)
+	for (Refitem<Model,int>* ri = xmodels.first(); ri != NULL; ri = ri->next)
 	{
 		TExtraTreeWidgetItem *item = new TExtraTreeWidgetItem(ui.ModelTree);
 		DataStoreItem *dat = item->addData("model");
@@ -133,7 +138,7 @@ void ModelListWidget::refresh()
 	
 	refreshing_ = FALSE;
 	
-	msg.exit("ModelListWidget::refresh");
+	Messenger::exit("ModelListWidget::refresh");
 }
 
 // Refresh text data associated to each model in list
@@ -171,7 +176,7 @@ void ModelListWidget::updateItem(TExtraTreeWidgetItem *item)
 // Return item under mouse (if any)
 TExtraTreeWidgetItem *ModelListWidget::itemUnderMouse(const QPoint &pos)
 {
-	QTreeWidgetItem *twi = ui.ModelTree->itemAt(pos);
+	QTreeWidgetItem* twi = ui.ModelTree->itemAt(pos);
 	if (twi == NULL) return NULL;
 	else return (TExtraTreeWidgetItem*) twi;
 }
@@ -210,7 +215,7 @@ void ModelListWidget::toggleItem(TExtraTreeWidgetItem *twi)
 		if (m == parent_.aten().currentModel())
 		{
 			// Grab the last visible model added to the list
-			Refitem<Model,int> *ri;
+			Refitem<Model,int>* ri;
 			m = NULL;
 			for (ri = parent_.aten().visibleModels(); ri != NULL; ri = ri->next) if (ri->item != parent_.aten().currentModel()) m = ri->item;
 			if (ri == NULL) printf("Internal Error: Couldn't reassign active model in ModelListWidget::treeMouseMoveEvent.\n");
@@ -237,7 +242,7 @@ void ModelListWidget::deselectAll(TExtraTreeWidgetItem *selectitem)
 	TExtraTreeWidgetItem *twi;
 	Model* m;
 	ReturnValue rv;
-	foreach(QTreeWidgetItem *item, ui.ModelTree->selectedItems())
+	foreach(QTreeWidgetItem* item, ui.ModelTree->selectedItems())
 	{
 		twi = (TExtraTreeWidgetItem*) item;
 		rv = twi->dataForKey("model");
@@ -340,7 +345,7 @@ void ModelListWidget::treeMouseDoubleClickEvent(QMouseEvent *event)
 		{
 			// Create a temporary Bundle
 			Bundle bundle(m);
-			CommandNode::run(Command::SetName, "c", qPrintable(text));
+			CommandNode::run(Commands::SetName, "c", qPrintable(text));
 			parent_.updateWidgets(AtenWindow::ModelsTarget);
 		}
 	}
@@ -362,7 +367,7 @@ void ModelListWidget::renameModel(bool checked)
 	{
 		// Create a temporary Bundle
 		Bundle bundle(m);
-		CommandNode::run(Command::SetName, "c", qPrintable(text));
+		CommandNode::run(Commands::SetName, "c", qPrintable(text));
 		parent_.updateWidgets(AtenWindow::ModelsTarget);
 	}
 }
@@ -372,13 +377,13 @@ void ModelListWidget::closeSelectedModels(bool checked)
 {
 	TExtraTreeWidgetItem *twi;
 	Model* m;
-	foreach(QTreeWidgetItem *item, ui.ModelTree->selectedItems())
+	foreach(QTreeWidgetItem* item, ui.ModelTree->selectedItems())
 	{
 		twi = (TExtraTreeWidgetItem*) item;
 		ReturnValue rv = lastClicked_->dataForKey("model");
 		Model* m = (Model*) rv.asPointer(VTypes::ModelData);
 		if (m == NULL) continue;
-		if (!parent_.aten().closeModel(m)) break;
+		if (!parent_.closeModel(m)) break;
 	}
 	// There are probably now no selected models, and potentially none left at all...
 	parent_.updateWidgets(AtenWindow::AllTarget - AtenWindow::ForcefieldsTarget);
@@ -397,7 +402,7 @@ void ModelListWidget::closeUnselectedModels(bool checked)
 	TExtraTreeWidgetItem *twi;
 	for (m = parent_.aten().models(); m != NULL; m = m->next) xmodels.add(m);
 	// ...then prune it with the current model selection from the treeview
-	foreach(QTreeWidgetItem *item, ui.ModelTree->selectedItems())
+	foreach(QTreeWidgetItem* item, ui.ModelTree->selectedItems())
 	{
 		twi = (TExtraTreeWidgetItem*) item;
 		rv = lastClicked_->dataForKey("model");
@@ -406,9 +411,9 @@ void ModelListWidget::closeUnselectedModels(bool checked)
 	}
 
 	// The xmodels list now contains all unselected models....
-	for (Refitem<Model,int> *ri = xmodels.first(); ri != NULL; ri = ri->next)
+	for (Refitem<Model,int>* ri = xmodels.first(); ri != NULL; ri = ri->next)
 	{
-		if (!parent_.aten().closeModel(ri->item)) break;
+		if (!parent_.closeModel(ri->item)) break;
 	}
 	parent_.updateWidgets(AtenWindow::AllTarget - AtenWindow::ForcefieldsTarget);
 }
@@ -421,7 +426,7 @@ void ModelListWidget::closeThisModel(bool checked)
 	// Close clicked model
 	ReturnValue rv = lastClicked_->dataForKey("model");
 	Model* m = (Model*) rv.asPointer(VTypes::ModelData);
-	parent_.aten().closeModel(m);
+	parent_.closeModel(m);
 	parent_.updateWidgets(AtenWindow::AllTarget - AtenWindow::ForcefieldsTarget);
 }
 

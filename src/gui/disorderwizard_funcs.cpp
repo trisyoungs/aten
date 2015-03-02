@@ -79,8 +79,8 @@ int DisorderWizard::run()
 	restart();
 	
 	// Update partition grids
-	int pid = progress.initialise("Generating Partition Info", parent_.aten().nPartitioningSchemes(), FALSE);
-	for (PartitioningScheme *ps = parent_.aten().partitioningSchemes(); ps != NULL; ps = ps->next)
+	int pid = progress.initialise("Generating Partition Info", parent_.aten().nPartitioningSchemes());
+	for (PartitioningScheme* ps = parent_.aten().partitioningSchemes(); ps != NULL; ps = ps->next)
 	{
 		progress.update(pid, -1, ps->name());
 		ps->setGridSize(prefs.partitionGridSize());
@@ -94,7 +94,7 @@ int DisorderWizard::run()
 void DisorderWizard::setComponentData(Model* m)
 {
 	// Find the corresponding QTreeWidgetItem
-	Refitem<QTreeWidgetItem, Model*> *ri = componentModelItems_.containsData(m);
+	Refitem<QTreeWidgetItem, Model*>* ri = componentModelItems_.containsData(m);
 	if (ri == NULL) return;
 	ri->item->setIcon(0, m->icon());
 	Dnchar text;
@@ -138,7 +138,7 @@ void DisorderWizard::updateComponentControls()
 }
 
 // Update data in specified TTreeWidgetItem (from supplied data)
-void DisorderWizard::setPartitionData(QTreeWidgetItem *target, PartitioningScheme *ps)
+void DisorderWizard::setPartitionData(QTreeWidgetItem* target, PartitioningScheme* ps)
 {
 	target->setIcon(0,ps->icon());
 	Dnchar text(-1,"%s\n%s\nNumber of partitions = %i\n", ps->name(), ps->description(), ps->nPartitions());
@@ -150,7 +150,7 @@ void DisorderWizard::setPartitionData(QTreeWidgetItem *target, PartitioningSchem
 void DisorderWizard::pageChanged(int id)
 {
 	TTreeWidgetItem *item;
-	QTreeWidgetItem *qitem, *selectitem;
+	QTreeWidgetItem* qitem, *selectitem;
 	Model* m;
 	Dnchar text;
 	int count;
@@ -211,7 +211,7 @@ void DisorderWizard::pageChanged(int id)
 			partitioningSchemeItems_.clear();
 			selectitem = NULL;
 			
-			for (PartitioningScheme *ps = parent_.aten().partitioningSchemes(); ps != NULL; ps = ps->next)
+			for (PartitioningScheme* ps = parent_.aten().partitioningSchemes(); ps != NULL; ps = ps->next)
 			{
 				qitem = new QTreeWidgetItem(ui.PartitionTree);
 				partitioningSchemeItems_.add(qitem, ps);
@@ -258,7 +258,7 @@ void DisorderWizard::pageChanged(int id)
 			ui.EditComponentsTree->setColumnCount(2);
 			componentModelItems_.clear();
 			selectitem = NULL;
-			foreach (QTreeWidgetItem *qtwi, ui.ChooseComponentsTree->selectedItems())
+			foreach (QTreeWidgetItem* qtwi, ui.ChooseComponentsTree->selectedItems())
 			{
 				TTreeWidgetItem *twi = (TTreeWidgetItem*) qtwi;
 				m = (Model*) twi->data.asPointer(VTypes::ModelData);
@@ -311,9 +311,9 @@ void DisorderWizard::accepted()
 {
 	// Ready to run disordered builder!
 	bool success;
-	if (targetType_ == DisorderWizard::ExistingTarget) success = mc.disorder(existingModel_, partitioningScheme_, TRUE);
-	else if (targetType_ == DisorderWizard::NewTarget) success = mc.disorder(newModel_, partitioningScheme_, TRUE);
-	else success = mc.disorder(newModel_, partitioningScheme_, FALSE);
+	if (targetType_ == DisorderWizard::ExistingTarget) success = mc.disorder(parent_.aten().models(), existingModel_, partitioningScheme_, TRUE);
+	else if (targetType_ == DisorderWizard::NewTarget) success = mc.disorder(parent_.aten().models(), newModel_, partitioningScheme_, TRUE);
+	else success = mc.disorder(parent_.aten().models(), newModel_, partitioningScheme_, FALSE);
 
 	// Clean up
 	newModel_ = NULL;
@@ -344,7 +344,7 @@ void DisorderWizard::on_TargetGenerateRadio_clicked(bool checked)
 // Step 2 / 5 - Select model or define unit cell
 */
 
-void DisorderWizard::on_ExistingModelTree_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous)
+void DisorderWizard::on_ExistingModelTree_currentItemChanged(QTreeWidgetItem* current, QTreeWidgetItem* previous)
 {
 	if (current == NULL) return;
 	TTreeWidgetItem *twi = (TTreeWidgetItem*) current;
@@ -402,10 +402,10 @@ void DisorderWizard::on_PartitionTree_itemSelectionChanged()
 	nextButton->setEnabled(nselected != 0);
 }
 
-void DisorderWizard::on_PartitionTree_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous)
+void DisorderWizard::on_PartitionTree_currentItemChanged(QTreeWidgetItem* current, QTreeWidgetItem* previous)
 {
 	if (current == NULL) return;
-	Refitem<QTreeWidgetItem, PartitioningScheme*> *ri = partitioningSchemeItems_.contains(current);
+	Refitem<QTreeWidgetItem, PartitioningScheme*>* ri = partitioningSchemeItems_.contains(current);
 	if (ri == NULL) return;
 	partitioningScheme_ = ri->data;
 	if (existingModel_ != NULL) existingModel_->changeLog.add(Log::Camera);
@@ -422,7 +422,7 @@ void DisorderWizard::on_PartitionSchemeOptionsButton_clicked(bool checked)
 	if (!partitioningScheme_->hasOptions()) return;
 	if (!partitioningScheme_->showOptions()) return;
 	partitioningScheme_->recalculatePartitions();
-	Refitem<QTreeWidgetItem, PartitioningScheme*> *ri = partitioningSchemeItems_.containsData(partitioningScheme_);
+	Refitem<QTreeWidgetItem, PartitioningScheme*>* ri = partitioningSchemeItems_.containsData(partitioningScheme_);
 	if (ri == NULL) return;
 	setPartitionData(ri->item, ri->data);
 	partitioningScheme_ = ri->data;
@@ -444,9 +444,9 @@ void DisorderWizard::on_ChooseComponentsTree_itemSelectionChanged()
 
 // Step 5 / 5 - Select component populations and partition assignments
 
-void DisorderWizard::on_EditComponentsTree_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous)
+void DisorderWizard::on_EditComponentsTree_currentItemChanged(QTreeWidgetItem* current, QTreeWidgetItem* previous)
 {
-	Refitem<QTreeWidgetItem, Model*> *ri = componentModelItems_.contains(current);
+	Refitem<QTreeWidgetItem, Model*>* ri = componentModelItems_.contains(current);
 	if (ri == NULL) return;
 	componentTarget_ = ri->data;
 	updateComponentControls();
@@ -523,13 +523,13 @@ void DisorderWizard::on_MethodOptionsButton_clicked(bool checked)
 */
 
 // Return currently-selected partitioning scheme
-PartitioningScheme *DisorderWizard::partitioningScheme()
+PartitioningScheme* DisorderWizard::partitioningScheme()
 {
 	return partitioningScheme_;
 }
 
 // Return relevant unit cell
-UnitCell *DisorderWizard::cell()
+UnitCell* DisorderWizard::cell()
 {
 	if (targetType_ == DisorderWizard::ExistingTarget)
 	{

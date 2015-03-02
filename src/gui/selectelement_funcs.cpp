@@ -21,7 +21,7 @@
 
 #include "gui/mainwindow.h"
 #include "gui/selectelement.h"
-#include "classes/prefs.h"
+#include "base/prefs.h"
 #include "base/lineparser.h"
 #include "base/sysfunc.h"
 
@@ -144,7 +144,7 @@ AtenSelectElement::AtenSelectElement(AtenWindow& parent) : QDialog(&parent), par
 			commonButtons_.add(button, z);
 			commonGroupLayout_->addWidget(button);
 		}
-		else msg.print( "Unrecognised element '%s' not added to common elements list.\n", parser.argc(n));
+		else Messenger::print( "Unrecognised element '%s' not added to common elements list.\n", parser.argc(n));
 	}
 }
 
@@ -188,7 +188,7 @@ void AtenSelectElement::CommonElementButton_clicked(bool checked)
 		return;
 	}
 
-	Refitem<QPushButton, int> *ri;
+	Refitem<QPushButton, int>* ri;
 	for (ri = commonButtons_.first(); ri != NULL; ri = ri->next) if (ri->item == button) break;
 	selectedElement_ = (ri != NULL ? ri->data : -1);
 	accept();

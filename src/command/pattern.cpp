@@ -21,11 +21,14 @@
 
 #include "command/commands.h"
 #include "parser/commandnode.h"
+#include "model/bundle.h"
 #include "model/model.h"
 #include "base/pattern.h"
 
+ATEN_USING_NAMESPACE
+
 // Clear current pattern definition ('clearpatterns')
-bool Command::function_ClearPatterns(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_ClearPatterns(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.m->clearPatterns();
@@ -34,7 +37,7 @@ bool Command::function_ClearPatterns(CommandNode *c, Bundle &obj, ReturnValue &r
 }
 
 // Autocreate pattern definition ('createpatterns')
-bool Command::function_CreatePatterns(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_CreatePatterns(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	rv.set( obj.m->createPatterns() );
@@ -42,7 +45,7 @@ bool Command::function_CreatePatterns(CommandNode *c, Bundle &obj, ReturnValue &
 }
 
 // Set working pattern from model ('currentpattern <name>')
-bool Command::function_CurrentPattern(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_CurrentPattern(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	Pattern* p = (c->argType(0) == VTypes::IntegerData ? obj.m->pattern(c->argi(0)-1) : obj.m->findPattern(c->argc(0)));
@@ -52,7 +55,7 @@ bool Command::function_CurrentPattern(CommandNode *c, Bundle &obj, ReturnValue &
 }
 
 // Fix positions of atoms in pattern
-bool Command::function_FixPattern(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_FixPattern(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.p->setAtomsFixed( c->argb(0) );
@@ -61,7 +64,7 @@ bool Command::function_FixPattern(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Select working pattern from model ('getpattern <name>')
-bool Command::function_GetPattern(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_GetPattern(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	Pattern* p = (c->argType(0) == VTypes::IntegerData ? obj.m->pattern(c->argi(0)-1) : obj.m->findPattern(c->argc(0)));
@@ -70,7 +73,7 @@ bool Command::function_GetPattern(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Print pattern definition for current model ('listpatterns')
-bool Command::function_ListPatterns(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_ListPatterns(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.m->printPatterns();
@@ -79,7 +82,7 @@ bool Command::function_ListPatterns(CommandNode *c, Bundle &obj, ReturnValue &rv
 }
 
 // Add manual pattern definition ('newpattern <name> <nmols> <natoms>')
-bool Command::function_NewPattern(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_NewPattern(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	rv.set(VTypes::PatternData, obj.m->addPattern(c->argc(0), c->argi(1), c->argi(2)));

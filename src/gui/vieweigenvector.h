@@ -23,9 +23,19 @@
 #define ATEN_VIEWEIGENVECTORWINDOW_H
 
 #include "gui/ui_vieweigenvector.h"
+#include "base/namespace.h"
 
-// Forward declarations
+// Forward Declarations (Qt)
+class AtenWindow;
+
+ATEN_BEGIN_NAMESPACE
+
+// Forward Declarations (Aten)
 class Model;
+
+ATEN_END_NAMESPACE
+
+ATEN_USING_NAMESPACE
 
 // ViewEigenvector Window
 class AtenViewEigenvector : public QDialog
@@ -34,8 +44,13 @@ class AtenViewEigenvector : public QDialog
 	Q_OBJECT
 
 	public:
+	// Constructor / Destructor
+	AtenViewEigenvector(QWidget *parent = 0, Qt::WindowFlags flags = 0);
+	// Main form declaration
+	Ui::ViewEigenvectorDialog ui;
 	// Table columns
 	enum TableColumns { AtomColumn, ShellColumn, TypeColumn, CoefficientColumn, nColumns };
+
 
 	/*
 	// Window Functions
@@ -44,15 +59,6 @@ class AtenViewEigenvector : public QDialog
 	void showWindow(Model* m, int id);
 	private slots:
 	void dialogFinished(int result);
-
-	/*
-	// Dialog
-	*/
-	public:
-	// Constructor / Destructor
-	AtenViewEigenvector(QWidget *parent = 0, Qt::WindowFlags flags = 0);
-	// Main form declaration
-	Ui::ViewEigenvectorDialog ui;
 };
 
 #endif

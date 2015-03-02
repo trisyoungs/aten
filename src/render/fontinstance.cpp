@@ -22,6 +22,8 @@
 #include "render/fontinstance.h"
 #include "base/messenger.h"
 
+ATEN_USING_NAMESPACE
+
 // Static Members
 QString FontInstance::fontFile_ = "";
 FTFont* FontInstance::font_ = NULL;
@@ -52,7 +54,7 @@ bool FontInstance::setupFont(QString fontName)
 		font_ = newFont;
 
 		// Request unicode character mapping...
-		if (!font_->CharMap(ft_encoding_unicode)) msg.print("Failed to set unicode character mapping for font - special characters may not render correctly.\n");
+		if (!font_->CharMap(ft_encoding_unicode)) Messenger::print("Failed to set unicode character mapping for font - special characters may not render correctly.\n");
 
 // 		font_->Depth(3.0);
 // 		font_->Outset(-.5, 1.5);

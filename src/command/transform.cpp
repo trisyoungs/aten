@@ -21,12 +21,13 @@
 
 #include "command/commands.h"
 #include "parser/commandnode.h"
-#include "parser/tree.h"
+#include "model/bundle.h"
 #include "model/model.h"
-#include "classes/prefs.h"
+
+ATEN_USING_NAMESPACE
 
 // Rotate selection about specified axis / origin
-bool Command::function_AxisRotate(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_AxisRotate(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	double angle;
@@ -64,7 +65,7 @@ bool Command::function_AxisRotate(CommandNode *c, Bundle &obj, ReturnValue &rv)
 			o.set(c->argd(4), c->argd(5), c->argd(6));
 			break;
 		default:
-			msg.print("Odd number of arguments given to 'axisrotate'.\n");
+			Messenger::print("Odd number of arguments given to 'axisrotate'.\n");
 			return FALSE;
 			break;
 	}
@@ -76,7 +77,7 @@ bool Command::function_AxisRotate(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Centre selection at given coordinates
-bool Command::function_Centre(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_Centre(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (c->parent()->parser() == NULL)
@@ -94,7 +95,7 @@ bool Command::function_Centre(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Flip selection's x-coordinates
-bool Command::function_FlipX(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_FlipX(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs()->beginUndoState("Flip x-coordinates of %i atom(s)", obj.rs()->nSelected());
@@ -105,7 +106,7 @@ bool Command::function_FlipX(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Flip selection's y-coordinates
-bool Command::function_FlipY(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_FlipY(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs()->beginUndoState("Flip y-coordinates of %i atom(s)", obj.rs()->nSelected());
@@ -116,7 +117,7 @@ bool Command::function_FlipY(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Flip selection's z-coordinates
-bool Command::function_FlipZ(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_FlipZ(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs()->beginUndoState("Flip z-coordinates of %i atom(s)", obj.rs()->nSelected());
@@ -127,7 +128,7 @@ bool Command::function_FlipZ(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Convert coordinates from one reference frame to another
-bool Command::function_MatrixConvert(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_MatrixConvert(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// Determine which data has been supplied
@@ -194,19 +195,19 @@ bool Command::function_MatrixConvert(CommandNode *c, Bundle &obj, ReturnValue &r
 			return FALSE;
 			break;
 	}
-	if (msg.isOutputActive(Messenger::Verbose))
+	if (Messenger::isOutputActive(Messenger::Verbose))
 	{
-		msg.print("Source matrix:\n");
+		Messenger::print("Source matrix:\n");
 		source.print();
-		msg.print("Target matrix:\n");
+		Messenger::print("Target matrix:\n");
 		target.print();
 	}
 	// Generate necessary rotation matrix
 	source.invert();
 	Matrix rotmat = target * source;
-	if (msg.isOutputActive(Messenger::Verbose))
+	if (Messenger::isOutputActive(Messenger::Verbose))
 	{
-		msg.print("Generated rotation matrix:\n");
+		Messenger::print("Generated rotation matrix:\n");
 		rotmat.print();
 	}
 	// Perform transformation
@@ -218,7 +219,7 @@ bool Command::function_MatrixConvert(CommandNode *c, Bundle &obj, ReturnValue &r
 }
 
 // Transform coordinates using supplied matrix / origin
-bool Command::function_MatrixTransform(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_MatrixTransform(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// Determine which data has been supplied
@@ -247,7 +248,7 @@ bool Command::function_MatrixTransform(CommandNode *c, Bundle &obj, ReturnValue 
 }
 
 // Mirror selection along specified axis
-bool Command::function_Mirror(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_Mirror(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs()->beginUndoState("Mirror %i atoms along %c", obj.rs()->nSelected(), 88+c->argi(0));
@@ -258,7 +259,7 @@ bool Command::function_Mirror(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Convert coordinates (specified in atoms/ids) from one reference frame to another
-bool Command::function_Reorient(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_Reorient(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// Determine which data has been supplied
@@ -299,11 +300,11 @@ bool Command::function_Reorient(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	// Get origin if provided
 	if (c->nArgs() == 18) o.set(c->argd(15), c->argd(16), c->argd(17));
 
-	if (msg.isOutputActive(Messenger::Verbose))
+	if (Messenger::isOutputActive(Messenger::Verbose))
 	{
-		msg.print("Source matrix:\n");
+		Messenger::print("Source matrix:\n");
 		source.print();
-		msg.print("Target matrix:\n");
+		Messenger::print("Target matrix:\n");
 		target.print();
 	}
 	// Generate necessary rotation matrix
@@ -318,26 +319,26 @@ bool Command::function_Reorient(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Alter angle between three specified atoms
-bool Command::function_SetAngle(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_SetAngle(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	rv.reset();
 	Atom* i = c->argType(0) == VTypes::IntegerData ? obj.rs()->atom(c->argi(0)-1) : (Atom*) c->argp(0, VTypes::AtomData);
 	if (i == NULL)
 	{
-		msg.print("Atom 'i' given to 'setangle' is NULL.\n");
+		Messenger::print("Atom 'i' given to 'setangle' is NULL.\n");
 		return FALSE;
 	}
 	Atom* j = c->argType(1) == VTypes::IntegerData ? obj.rs()->atom(c->argi(1)-1) : (Atom*) c->argp(1, VTypes::AtomData);
 	if (j == NULL)
 	{
-		msg.print("Atom 'j' given to 'setangle' is NULL.\n");
+		Messenger::print("Atom 'j' given to 'setangle' is NULL.\n");
 		return FALSE;
 	}
 	Atom* k = c->argType(2) == VTypes::IntegerData ? obj.rs()->atom(c->argi(2)-1) : (Atom*) c->argp(2, VTypes::AtomData);
 	if (k == NULL)
 	{
-		msg.print("Atom 'k' given to 'setangle' is NULL.\n");
+		Messenger::print("Atom 'k' given to 'setangle' is NULL.\n");
 		return FALSE;
 	}
 	// Clear any current marked selection
@@ -349,7 +350,7 @@ bool Command::function_SetAngle(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	// If atom 'i' is now marked, there is a cyclic route connecting the two atoms and we can't proceed
 	if (i->isSelected(TRUE))
 	{
-		msg.print("Can't alter the angle of three atoms i-j-k where 'i' and 'k' exist in the same cyclic moiety, or are unbound and within the same fragment.\n");
+		Messenger::print("Can't alter the angle of three atoms i-j-k where 'i' and 'k' exist in the same cyclic moiety, or are unbound and within the same fragment.\n");
 		return FALSE;
 	}
 	// Get current angle between the three atoms
@@ -365,20 +366,20 @@ bool Command::function_SetAngle(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Alter distance between two specified atoms
-bool Command::function_SetDistance(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_SetDistance(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	rv.reset();
 	Atom* i = c->argType(0) == VTypes::IntegerData ? obj.rs()->atom(c->argi(0)-1) : (Atom*) c->argp(0, VTypes::AtomData);
 	if (i == NULL)
 	{
-		msg.print("Atom 'i' given to 'setdistance' is NULL.\n");
+		Messenger::print("Atom 'i' given to 'setdistance' is NULL.\n");
 		return FALSE;
 	}
 	Atom* j = c->argType(1) == VTypes::IntegerData ? obj.rs()->atom(c->argi(1)-1) : (Atom*) c->argp(1, VTypes::AtomData);
 	if (j == NULL)
 	{
-		msg.print("Atom 'j' given to 'setdistance' is NULL.\n");
+		Messenger::print("Atom 'j' given to 'setdistance' is NULL.\n");
 		return FALSE;
 	}
 	// Clear any current marked selection
@@ -390,7 +391,7 @@ bool Command::function_SetDistance(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	// If atom 'i' is now marked, there is a cyclic route connecting the two atoms and we can't proceed
 	if (i->isSelected(TRUE))
 	{
-		msg.print("Can't alter the distance of two atoms i-j that exist in the same cyclic moiety, or are unbound and within the same fragment.\n");
+		Messenger::print("Can't alter the distance of two atoms i-j that exist in the same cyclic moiety, or are unbound and within the same fragment.\n");
 		return FALSE;
 	}
 	// Grab the minimum image vector between the two atoms, and shift all those currently marked
@@ -405,32 +406,32 @@ bool Command::function_SetDistance(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Alter torsion between four specified atoms
-bool Command::function_SetTorsion(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_SetTorsion(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	rv.reset();
 	Atom* i = c->argType(0) == VTypes::IntegerData ? obj.rs()->atom(c->argi(0)-1) : (Atom*) c->argp(0, VTypes::AtomData);
 	if (i == NULL)
 	{
-		msg.print("Atom 'i' given to 'settorsion' is NULL.\n");
+		Messenger::print("Atom 'i' given to 'settorsion' is NULL.\n");
 		return FALSE;
 	}
 	Atom* j = c->argType(1) == VTypes::IntegerData ? obj.rs()->atom(c->argi(1)-1) : (Atom*) c->argp(1, VTypes::AtomData);
 	if (j == NULL)
 	{
-		msg.print("Atom 'j' given to 'settorsion' is NULL.\n");
+		Messenger::print("Atom 'j' given to 'settorsion' is NULL.\n");
 		return FALSE;
 	}
 	Atom* k = c->argType(2) == VTypes::IntegerData ? obj.rs()->atom(c->argi(2)-1) : (Atom*) c->argp(2, VTypes::AtomData);
 	if (k == NULL)
 	{
-		msg.print("Atom 'k' given to 'settorsion' is NULL.\n");
+		Messenger::print("Atom 'k' given to 'settorsion' is NULL.\n");
 		return FALSE;
 	}
 	Atom* l = c->argType(3) == VTypes::IntegerData ? obj.rs()->atom(c->argi(3)-1) : (Atom*) c->argp(3, VTypes::AtomData);
 	if (l == NULL)
 	{
-		msg.print("Atom 'l' given to 'settorsion' is NULL.\n");
+		Messenger::print("Atom 'l' given to 'settorsion' is NULL.\n");
 		return FALSE;
 	}
 	// Clear any current marked selection
@@ -442,7 +443,7 @@ bool Command::function_SetTorsion(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	// If atom 'i' is now marked, there is a cyclic route connecting the two atoms and we can't proceed
 	if (i->isSelected(TRUE))
 	{
-		msg.print("Can't alter the angle of four atoms i-j-k-l where 'i' or 'j' exists in the same cyclic moiety as 'k' or 'l', or are unbound and within the same fragment.\n");
+		Messenger::print("Can't alter the angle of four atoms i-j-k-l where 'i' or 'j' exists in the same cyclic moiety as 'k' or 'l', or are unbound and within the same fragment.\n");
 		return FALSE;
 	}
 	// Get current torsion between the four atoms
@@ -458,7 +459,7 @@ bool Command::function_SetTorsion(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Translate current selection in local coordinates ('translate dx dy dz')
-bool Command::function_Translate(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_Translate(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	Vec3<double> tvec = c->arg3d(0);
@@ -470,7 +471,7 @@ bool Command::function_Translate(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Translate activeatom ('translateatom <dx dy dz>')
-bool Command::function_TranslateAtom(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_TranslateAtom(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::AtomPointer)) return FALSE;
 	Vec3<double> tvec = c->arg3d(0);
@@ -482,7 +483,7 @@ bool Command::function_TranslateAtom(CommandNode *c, Bundle &obj, ReturnValue &r
 }
 
 // Translate current selection in fractional cell coordinates ('translatecell dx dy dz')
-bool Command::function_TranslateCell(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_TranslateCell(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	Vec3<double> tvec;
@@ -495,7 +496,7 @@ bool Command::function_TranslateCell(CommandNode *c, Bundle &obj, ReturnValue &r
 }
 
 // Translate current selection in world coordinates ('translateworld dx dy dz')
-bool Command::function_TranslateWorld(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_TranslateWorld(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	Vec3<double> tvec;

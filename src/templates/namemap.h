@@ -24,6 +24,9 @@
 
 #include "base/dnchar.h"
 #include "templates/list.h"
+#include "base/namespace.h"
+
+ATEN_BEGIN_NAMESPACE
 
 // Simple string/data pair class
 template <class T> class NameMap : public ListItem< NameMap<T> >
@@ -43,15 +46,15 @@ template <class T> class NameMap : public ListItem< NameMap<T> >
 
 	public:
 	// Set name
-	void setName(const char *name);
+	void setName(const char* name);
 	// Return name
-	const char *name() const;
+	const char* name() const;
 	// Set data
 	void setData(T data);
 	// Return data
 	T data() const;
 	// Set name and data
-	void set(const char *name, T data);
+	void set(const char* name, T data);
 };
 
 // Constructor
@@ -60,13 +63,13 @@ template <class T> NameMap<T>::NameMap() : ListItem< NameMap<T> >()
 }
 
 // Set name
-template <class T> void NameMap<T>::setName(const char *name)
+template <class T> void NameMap<T>::setName(const char* name)
 {
 	name_ = name;
 }
 
 // Returns name
-template <class T> const char *NameMap<T>::name() const
+template <class T> const char* NameMap<T>::name() const
 {
 	return name_.get();
 }
@@ -84,7 +87,7 @@ template <class T> T NameMap<T>::data() const
 }
 
 // Set name and data
-template <class T> void NameMap<T>::set(const char *name, T data)
+template <class T> void NameMap<T>::set(const char* name, T data)
 {
 	name_ = name;
 	data_ = data;
@@ -111,19 +114,19 @@ template <class T> class NameMapList
 	// Set default value
 	void setDefaultValue(T defaultvalue);
 	// Create new entry
-	int add(const char *name, T data);
+	int add(const char* name, T data);
 	// Return number of items defined
 	int nItems();
 	// Return first data item in list
 	NameMap<T> *first();
 	// Return data item associated to name
-	T data(const char *name) const;
+	T data(const char* name) const;
 	// Return nth data item associated to name
 	T data(int n);
 	// Return nth data item name
-	const char *name(int n);
+	const char* name(int n);
 	// Return index in list of supplied item
-	int index(const char *name);
+	int index(const char* name);
 };
 
 // Constructors
@@ -144,7 +147,7 @@ template <class T> void NameMapList<T>::setDefaultValue(T defaultvalue)
 }
 
 // Create new item
-template <class T> int NameMapList<T>::add(const char *name, T data)
+template <class T> int NameMapList<T>::add(const char* name, T data)
 {
 	// Does the named value already exist
 	int n=0;
@@ -176,7 +179,7 @@ template<class T> NameMap<T> *NameMapList<T>::first()
 }
 
 // Retrieve item by name
-template <class T> T NameMapList<T>::data(const char *name) const
+template <class T> T NameMapList<T>::data(const char* name) const
 {
 	NameMap<T> *nm;
 	for (nm = data_.first(); nm != NULL; nm = nm->next) if (strcmp(nm->name(),name) == 0) break;
@@ -191,14 +194,14 @@ template <class T> T NameMapList<T>::data(int id)
 }
 
 // Create new item
-template <class T> const char *NameMapList<T>::name(int id)
+template <class T> const char* NameMapList<T>::name(int id)
 {
 	NameMap<T> *nm = data_[id];
 	return (nm == NULL ? "NULL" : nm->name());
 }
 
 // Return index in list of supplied item
-template <class T> int NameMapList<T>::index(const char *name)
+template <class T> int NameMapList<T>::index(const char* name)
 {
 	int n=0;
 	for (NameMap<T> *nm = data_.first(); nm != NULL; nm = nm->next)
@@ -208,5 +211,7 @@ template <class T> int NameMapList<T>::index(const char *name)
 	}
 	return -1;
 }
+
+ATEN_END_NAMESPACE
 
 #endif

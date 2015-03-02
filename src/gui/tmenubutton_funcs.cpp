@@ -33,7 +33,7 @@ TMenuButton::TMenuButton(QWidget *parent) : QPushButton(parent)
 }
 
 // Add item to menu
-bool TMenuButton::addMenuItem(const char *text, int id)
+bool TMenuButton::addMenuItem(const char* text, int id)
 {
 	// Search for existing item with same ID
 	if (actions_.containsData(id))
@@ -57,7 +57,7 @@ void TMenuButton::menuActionTriggered(bool checked)
 		return;
 	}
 	// Search stored list of QActions
-	for (Refitem<QAction,int> *ri = actions_.first(); ri != NULL; ri = ri->next)
+	for (Refitem<QAction,int>* ri = actions_.first(); ri != NULL; ri = ri->next)
 	{
 		if (action == ri->item)
 		{

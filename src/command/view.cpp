@@ -21,72 +21,68 @@
 
 #include "command/commands.h"
 #include "parser/commandnode.h"
-#include "base/messenger.h"
-#include "gui/gui.h"
 #include "model/model.h"
-#include <ctime>
+#include "main/aten.h"
+#include "gui/mainwindow.h"
+#include <QtCore/QTime>
 
+ATEN_USING_NAMESPACE
 
 // Rotate view about an arbitrary axis
-bool Command::function_AxisRotateView(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_AxisRotateView(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs()->axisRotateView(c->arg3d(0), c->argd(3));
-	parent_.postRedisplay();
 	rv.reset();
 	return TRUE;
 }
 
 // Get current view
-bool Command::function_GetView(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_GetView(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	Matrix rmat = obj.rs()->modelViewMatrix();
-	msg.print( "View [R c] = { %8.4f, %8.4f, %8.4f, %8.4f, %8.4f, %8.4f, %8.4f, %8.4f, %8.4f, %8.4f, %8.4f, %8.4f }\n", rmat[0], rmat[1], rmat[2], rmat[4], rmat[5], rmat[6], rmat[8], rmat[9], rmat[10], rmat[12], rmat[13], rmat[14]);
+	Messenger::print( "View [R c] = { %8.4f, %8.4f, %8.4f, %8.4f, %8.4f, %8.4f, %8.4f, %8.4f, %8.4f, %8.4f, %8.4f, %8.4f }\n", rmat[0], rmat[1], rmat[2], rmat[4], rmat[5], rmat[6], rmat[8], rmat[9], rmat[10], rmat[12], rmat[13], rmat[14]);
 	rv.reset();
 	return TRUE;
 }
 
 // Set orthographic view
-bool Command::function_Orthographic(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_Orthographic(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	prefs.setPerspective(FALSE);
-	parent_.postRedisplay();
 	rv.reset();
 	return TRUE;
 }
 
 // Set perspective view
-bool Command::function_Perspective(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_Perspective(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	prefs.setPerspective(TRUE);
 	if (c->hasArg(0)) prefs.setPerspectiveFov(c->argd(0));
-	parent_.postRedisplay();
 	rv.reset();
 	return TRUE;
 }
 
 // Reset view
-bool Command::function_ResetView(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_ResetView(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	obj.rs()->resetView();
-	parent_.postRedisplay();
+	obj.rs()->resetView(aten_.atenWindow()->ui.MainView->contextWidth(), aten_.atenWindow()->ui.MainView->contextHeight());
 	rv.reset();
 	return TRUE;
 }
 
 // Rotate view
-bool Command::function_RotateView(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_RotateView(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs()->rotateView(c->argd(1), c->argd(0));
-	parent_.postRedisplay();
 	rv.reset();
 	return TRUE;
 }
 
 // Set current view
-bool Command::function_SetView(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_SetView(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	Matrix rmat;
@@ -101,14 +97,10 @@ bool Command::function_SetView(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Render speed test
-bool Command::function_SpeedTest(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_SpeedTest(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	if (!gui.exists())
-	{
-		msg.print("Can't perform rendering speedtest without the GUI.\n");
-		return FALSE;
-	}
+
 	QTime total, split;
 	int msec;
 	total.start();
@@ -121,66 +113,59 @@ bool Command::function_SpeedTest(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		if ((n>0) && (n%100 == 0))
 		{
 			msec = split.restart();
-			msg.print("100 render average = %6.1f fps\n", 1000.0 / msec);
+			Messenger::print("100 render average = %6.1f fps\n", 1000.0 / msec);
 		}
 		obj.rs()->rotateView(5.0,0.0);
-		parent_.postRedisplay();
 	}
 	msec = total.elapsed();
-	msg.print("Performed %i renders over %8.2f seconds (%8.2f/sec).\n", nrenders, msec/1000.0, nrenders/(msec/1000.0));
+	Messenger::print("Performed %i renders over %8.2f seconds (%8.2f/sec).\n", nrenders, msec/1000.0, nrenders/(msec/1000.0));
 	rv.reset();
 	return TRUE;
 }
 
 // Translate view
-bool Command::function_TranslateView(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_TranslateView(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs()->adjustCamera(c->argd(0), c->argd(1), c->argd(2));
-	parent_.postRedisplay();
 	rv.reset();
 	return TRUE;
 }
 
 // View along specified axis
-bool Command::function_ViewAlong(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_ViewAlong(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// Set model rotation matrix to be along the specified axis
 	obj.rs()->viewAlong(c->argd(0), c->argd(1), c->argd(2));
-	parent_.postRedisplay();
 	rv.reset();
 	return TRUE;
 }
 
 // View along specified cell axis
-bool Command::function_ViewAlongCell(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_ViewAlongCell(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// Set model rotation matrix to be along the specified axis
 	obj.rs()->viewAlongCell(c->argd(0), c->argd(1), c->argd(2));
-	parent_.postRedisplay();
 	rv.reset();
 	return TRUE;
 }
 
 // Zoom view
-bool Command::function_ZoomView(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_ZoomView(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs()->adjustCamera(0.0,0.0,c->argd(0));
-	parent_.postRedisplay();
 	rv.reset();
 	return TRUE;
 }
 
 // ZRotate view
-bool Command::function_ZRotateView(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_ZRotateView(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs()->zRotateView(-c->argd(0));
-	parent_.postRedisplay();
 	rv.reset();
 	return TRUE;
 }
-

@@ -24,7 +24,6 @@
 
 #include <QtGui/QFrame>
 #include <QtCore/QObject>
-#include <QtOpenGL/QtOpenGL>
 
 class TColourFrame : public QFrame
 {

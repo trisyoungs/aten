@@ -24,7 +24,9 @@
 
 #include "base/dnchar.h"
 
-// Forward Declarations
+ATEN_BEGIN_NAMESPACE
+
+// Forward Declarations (Aten)
 class Model;
 
 // Calculable Class
@@ -46,13 +48,13 @@ class Calculable : public ListItem<Calculable>
 
 	public:
 	// Set identifiable name of the quantity
-	void setName(const char *s);
+	void setName(const char* s);
 	// Return name of the quantity
-	const char *name() const;
+	const char* name() const;
 	// Set filename of the quantity
-	void setFilename(const char *s);
+	void setFilename(const char* s);
 	// Return filename of the quantity
-	const char *filename() const;
+	const char* filename() const;
 
 	/*
 	// Methods
@@ -67,5 +69,7 @@ class Calculable : public ListItem<Calculable>
 	// Save data
 	virtual bool save()=0;
 };
+
+ATEN_END_NAMESPACE
 
 #endif

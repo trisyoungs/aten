@@ -21,8 +21,10 @@
 
 #include "methods/geometry.h"
 #include "model/model.h"
-#include "classes/site.h"
+#include "base/site.h"
 #include "base/pattern.h"
+
+ATEN_USING_NAMESPACE
 
 // Constructor
 Geometry::Geometry()
@@ -51,14 +53,14 @@ Geometry::~Geometry()
 }
 
 // Set site
-void Geometry::setSite(int i, Site *s)
+void Geometry::setSite(int i, Site* s)
 {
 	if (i < 4) sites_[i] = s;
 	else printf("OUTOFRANGE:Geometry::setSite\n");
 }
 
 // Get site
-Site *Geometry::site(int i)
+Site* Geometry::site(int i)
 {
 	if (i < 4) return sites_[i];
 	else printf("OUTOFRANGE:Geometry::site\n");
@@ -78,31 +80,31 @@ void Geometry::setRange(double d, double w, int n)
 // Initialise structure
 bool Geometry::initialise()
 {
-	msg.enter("Geometry::initialise");
+	Messenger::enter("Geometry::initialise");
 	// Check site definitions....
 	for (nSites_ = 0; nSites_ < 4; nSites_++) if (sites_[nSites_] == NULL) break;
 	if (nSites_ == 0)
 	{
-		msg.print("Geometry::initialise - At least two sites_ must be defined.\n");
-		msg.exit("Geometry::initialise");
+		Messenger::print("Geometry::initialise - At least two sites_ must be defined.\n");
+		Messenger::exit("Geometry::initialise");
 		return FALSE;
 	}
 	// Create the data arrays
 	data_ = new double[nBins_];
 	for (int n=0; n<nBins_; n++) data_[n] = 0.0;
-	msg.print("There are %i bins in geometry '%s', beginning at r = %f.\n", nBins_, name_.get(), lower_);
+	Messenger::print("There are %i bins in geometry '%s', beginning at r = %f.\n", nBins_, name_.get(), lower_);
 	nAdded_ = 0;
-	msg.exit("Geometry::initialise");
+	Messenger::exit("Geometry::initialise");
 	return TRUE;
 }
 
 // Accumulate quantity data from supplied model
 void Geometry::accumulate(Model* sourcemodel)
 {
-	msg.enter("Geometry::accumulate");
+	Messenger::enter("Geometry::accumulate");
 	int m1, m2, m3, m4, bin;
 	static Vec3<double> centre1, centre2, centre3, centre4;
-	UnitCell *cell = sourcemodel->cell();
+	UnitCell* cell = sourcemodel->cell();
 	double geom;
 	if (nSites_ == 2)
 	{
@@ -184,14 +186,14 @@ void Geometry::accumulate(Model* sourcemodel)
 
 	// Increase accumulation counter
 	nAdded_ ++;
-	msg.exit("Geometry::accumulate");
+	Messenger::exit("Geometry::accumulate");
 }
 
 // Finalise
 void Geometry::finalise(Model* sourcemodel)
 {
-	msg.enter("Geometry::finalise");
-	msg.exit("Geometry::finalise");
+	Messenger::enter("Geometry::finalise");
+	Messenger::exit("Geometry::finalise");
 }
 
 // Save measurement data

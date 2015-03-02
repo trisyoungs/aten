@@ -22,18 +22,15 @@
 #include "parser/glyphdata.h"
 #include "parser/stepnode.h"
 #include "base/glyph.h"
-#include "math/constants.h"
-#include "base/elements.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+
+ATEN_USING_NAMESPACE
 
 /*
 // Variable
 */
 
 // Constructor
-GlyphDataVariable::GlyphDataVariable(GlyphData *ptr, bool constant)
+GlyphDataVariable::GlyphDataVariable(GlyphData* ptr, bool constant)
 {
 	// Private variables
 	returnType_ = VTypes::GlyphDataData;
@@ -64,16 +61,16 @@ FunctionAccessor GlyphDataVariable::functionData[GlyphDataVariable::nFunctions] 
 };
 
 // Search variable access list for provided accessor (call private static function)
-StepNode *GlyphDataVariable::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist)
+StepNode* GlyphDataVariable::findAccessor(const char* s, TreeNode* arrayIndex, TreeNode* argList)
 {
-	return GlyphDataVariable::accessorSearch(s, arrayindex, arglist);
+	return GlyphDataVariable::accessorSearch(s, arrayIndex, argList);
 }
 
 // Private static function to search accessors
-StepNode *GlyphDataVariable::accessorSearch(const char *s, TreeNode *arrayindex, TreeNode *arglist)
+StepNode* GlyphDataVariable::accessorSearch(const char* s, TreeNode* arrayIndex, TreeNode* argList)
 {
-	msg.enter("GlyphDataVariable::accessorSearch");
-	StepNode *result = NULL;
+	Messenger::enter("GlyphDataVariable::accessorSearch");
+	StepNode* result = NULL;
 	int i = 0;
 	i = Variable::searchAccessor(s, nAccessors, accessorData);
 	if (i == -1)
@@ -83,84 +80,84 @@ StepNode *GlyphDataVariable::accessorSearch(const char *s, TreeNode *arrayindex,
 		i = Variable::searchAccessor(s, nFunctions, functionData);
 		if (i == -1)
 		{
-			msg.print("Error: Type 'GlyphData&' has no member or function named '%s'.\n", s);
+			Messenger::print("Error: Type 'GlyphData&' has no member or function named '%s'.\n", s);
 			printAccessors();
-			msg.exit("GlyphDataVariable::accessorSearch");
+			Messenger::exit("GlyphDataVariable::accessorSearch");
 			return NULL;
 		}
-		msg.print(Messenger::Parse, "FunctionAccessor match = %i (%s)\n", i, functionData[i].name);
-		if (arrayindex != NULL)
+		Messenger::print(Messenger::Parse, "FunctionAccessor match = %i (%s)\n", i, functionData[i].name);
+		if (arrayIndex != NULL)
 		{
-			msg.print("Error: Array index given to 'GlyphData&' function '%s'.\n", s);
-			msg.exit("GlyphDataVariable::accessorSearch");
+			Messenger::print("Error: Array index given to 'GlyphData&' function '%s'.\n", s);
+			Messenger::exit("GlyphDataVariable::accessorSearch");
 			return NULL;
 		}
 		// Add and check supplied arguments...
 		result = new StepNode(i, VTypes::GlyphDataData, functionData[i].returnType);
-		result->addJoinedArguments(arglist);
+		result->addJoinedArguments(argList);
 		if (!result->checkArguments(functionData[i].arguments, functionData[i].name))
 		{
-			msg.print("Error: Syntax for 'GlyphData&' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
+			Messenger::print("Error: Syntax for 'GlyphData&' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
 			delete result;
 			result = NULL;
 		}
 	}
 	else
 	{
-		msg.print(Messenger::Parse, "Accessor match = %i (%s)\n", i, accessorData[i].name);
+		Messenger::print(Messenger::Parse, "Accessor match = %i (%s)\n", i, accessorData[i].name);
 		// Were we given an array index when we didn't want one?
-		if ((accessorData[i].arraySize == 0) && (arrayindex != NULL))
+		if ((accessorData[i].arraySize == 0) && (arrayIndex != NULL))
 		{
-			msg.print("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
+			Messenger::print("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
 			result = NULL;
 		}
 		// Were we given an argument list when we didn't want one?
-		if (arglist != NULL)
+		if (argList != NULL)
 		{
-			msg.print("Error: Argument list given to 'GlyphData&' array member '%s'.\n", s);
-			msg.exit("GlyphDataVariable::accessorSearch");
+			Messenger::print("Error: Argument list given to 'GlyphData&' array member '%s'.\n", s);
+			Messenger::exit("GlyphDataVariable::accessorSearch");
 			return NULL;
 		}
-		result = new StepNode(i, VTypes::GlyphDataData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
+		result = new StepNode(i, VTypes::GlyphDataData, arrayIndex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
 	}
-	msg.exit("GlyphDataVariable::accessorSearch");
+	Messenger::exit("GlyphDataVariable::accessorSearch");
 	return result;
 }
 
 // Retrieve desired value
-bool GlyphDataVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, int arrayIndex)
+bool GlyphDataVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex, int arrayIndex)
 {
-	msg.enter("GlyphDataVariable::retrieveAccessor");
+	Messenger::enter("GlyphDataVariable::retrieveAccessor");
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nAccessors))
 	{
 		printf("Internal Error: Accessor id %i is out of range for Glyph type.\n", i);
-		msg.exit("GlyphDataVariable::retrieveAccessor");
+		Messenger::exit("GlyphDataVariable::retrieveAccessor");
 		return FALSE;
 	}
 	Accessors acc = (Accessors) i;
 	// Check for correct lack/presence of array index given
 	if ((accessorData[i].arraySize == 0) && hasArrayIndex)
 	{
-		msg.print("Error: Unnecessary array index provided for member '%s'.\n", accessorData[i].name);
-		msg.exit("GlyphDataVariable::retrieveAccessor");
+		Messenger::print("Error: Unnecessary array index provided for member '%s'.\n", accessorData[i].name);
+		Messenger::exit("GlyphDataVariable::retrieveAccessor");
 		return FALSE;
 	}
 	else if ((accessorData[i].arraySize > 0) && (hasArrayIndex))
 	{
 		if ((arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize))
 		{
-			msg.print("Error: Array index out of bounds for member '%s' (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
-			msg.exit("GlyphDataVariable::retrieveAccessor");
+			Messenger::print("Error: Array index out of bounds for member '%s' (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
+			Messenger::exit("GlyphDataVariable::retrieveAccessor");
 			return FALSE;
 		}
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	GlyphData *ptr = (GlyphData*) rv.asPointer(VTypes::GlyphDataData, result);
+	GlyphData* ptr = (GlyphData*) rv.asPointer(VTypes::GlyphDataData, result);
 	if ((!result) || (ptr == NULL))
 	{
-		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::GlyphDataData));
+		Messenger::print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::GlyphDataData));
 		result = FALSE;
 	}
 	if (result) switch (acc)
@@ -183,19 +180,19 @@ bool GlyphDataVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIn
 			result = FALSE;
 			break;
 	}
-	msg.exit("GlyphDataVariable::retrieveAccessor");
+	Messenger::exit("GlyphDataVariable::retrieveAccessor");
 	return result;
 }
 
 // Set desired value
-bool GlyphDataVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newvalue, bool hasArrayIndex, int arrayIndex)
+bool GlyphDataVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newValue, bool hasArrayIndex, int arrayIndex)
 {
-	msg.enter("GlyphDataVariable::setAccessor");
+	Messenger::enter("GlyphDataVariable::setAccessor");
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nAccessors))
 	{
 		printf("Internal Error: Accessor id %i is out of range for Glyph type.\n", i);
-		msg.exit("GlyphDataVariable::setAccessor");
+		Messenger::exit("GlyphDataVariable::setAccessor");
 		return FALSE;
 	}
 	Accessors acc = (Accessors) i;
@@ -207,20 +204,20 @@ bool GlyphDataVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &n
 		{
 			if ((accessorData[i].arraySize > 0) && ( (arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize) ))
 			{
-				msg.print("Error: Array index provided for member '%s' is out of range (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
+				Messenger::print("Error: Array index provided for member '%s' is out of range (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
 				result = FALSE;
 			}
-			if ((newvalue.arraySize() > 0) && (accessorData[i].returnType != VTypes::VectorData))
+			if ((newValue.arraySize() > 0) && (accessorData[i].returnType != VTypes::VectorData))
 			{
-				msg.print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
+				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
 				result = FALSE;
 			}
 		}
 		else
 		{
-			if (newvalue.arraySize() > accessorData[i].arraySize)
+			if (newValue.arraySize() > accessorData[i].arraySize)
 			{
-				msg.print("Error: The array being assigned to member '%s' is larger than the size of the desination array (%i cf. %i).\n", accessorData[i].name, newvalue.arraySize(), accessorData[i].arraySize);
+				Messenger::print("Error: The array being assigned to member '%s' is larger than the size of the desination array (%i cf. %i).\n", accessorData[i].name, newValue.arraySize(), accessorData[i].arraySize);
 				result = FALSE;
 			}
 		}
@@ -228,73 +225,73 @@ bool GlyphDataVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &n
 	else
 	{
 		// This is not an array member, so cannot be assigned an array unless its a Vector
-		if (newvalue.arraySize() != -1)
+		if (newValue.arraySize() != -1)
 		{
 			if (accessorData[i].returnType != VTypes::VectorData)
 			{
-				msg.print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
+				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
 				result = FALSE;
 			}
-			else if ((newvalue.type() != VTypes::VectorData) && (newvalue.arraySize() != 3))
+			else if ((newValue.type() != VTypes::VectorData) && (newValue.arraySize() != 3))
 			{
-				msg.print("Error: Only an array of size 3 can be assigned to a vector (member '%s').\n", accessorData[i].name);
+				Messenger::print("Error: Only an array of size 3 can be assigned to a vector (member '%s').\n", accessorData[i].name);
 				result = FALSE;
 			}
 		}
 	}
 	if (!result)
 	{
-		msg.exit("GlyphDataVariable::setAccessor");
+		Messenger::exit("GlyphDataVariable::setAccessor");
 		return FALSE;
 	}
 	// Get current data from ReturnValue
-	GlyphData *ptr = (GlyphData*) sourcerv.asPointer(VTypes::GlyphDataData, result);
+	GlyphData* ptr = (GlyphData*) sourcerv.asPointer(VTypes::GlyphDataData, result);
 	if ((!result) || (ptr == NULL))
 	{
-		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::GlyphDataData));
+		Messenger::print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::GlyphDataData));
 		result = FALSE;
 	}
 	int n;
 	if (result) switch (acc)
 	{
 		case (GlyphDataVariable::Atom_Ptr):
-			ptr->setAtom( (Atom*) newvalue.asPointer(VTypes::AtomData, result) );
+			ptr->setAtom( (Atom*) newValue.asPointer(VTypes::AtomData, result) );
 			break;
 		case (GlyphDataVariable::AtomData):
-			ptr->setAtomData( (GlyphData::GlyphDataType) newvalue.asInteger() );
+			ptr->setAtomData( (GlyphData::GlyphDataType) newValue.asInteger() );
 			break;
 		case (GlyphDataVariable::Colour):
-			if (newvalue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->setColour(n, newvalue.asVector(result)[n]);
-			else if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setColour(n, newvalue.asDouble(n, result));
-			else if (hasArrayIndex) ptr->setColour(arrayIndex-1, newvalue.asDouble(result));
-			else for (n=0; n<4; ++n) ptr->setColour(n, newvalue.asDouble(result));
+			if (newValue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->setColour(n, newValue.asVector(result)[n]);
+			else if (newValue.arraySize() != -1) for (n=0; n<newValue.arraySize(); ++n) ptr->setColour(n, newValue.asDouble(n, result));
+			else if (hasArrayIndex) ptr->setColour(arrayIndex-1, newValue.asDouble(result));
+			else for (n=0; n<4; ++n) ptr->setColour(n, newValue.asDouble(result));
 			break;
 		case (GlyphDataVariable::Vector):
-			ptr->setVector(newvalue.asVector());
+			ptr->setVector(newValue.asVector());
 			break;
 		default:
 			printf("GlyphDataVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);
 			result = FALSE;
 			break;
 	}
-	msg.exit("GlyphDataVariable::setAccessor");
+	Messenger::exit("GlyphDataVariable::setAccessor");
 	return result;
 }
 
 // Perform desired function
-bool GlyphDataVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
+bool GlyphDataVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 {
-	msg.enter("GlyphDataVariable::performFunction");
+	Messenger::enter("GlyphDataVariable::performFunction");
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nFunctions))
 	{
 		printf("Internal Error: FunctionAccessor id %i is out of range for Glyph type.\n", i);
-		msg.exit("GlyphDataVariable::performFunction");
+		Messenger::exit("GlyphDataVariable::performFunction");
 		return FALSE;
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	GlyphData *ptr = (GlyphData*) rv.asPointer(VTypes::GlyphDataData, result);
+	GlyphData* ptr = (GlyphData*) rv.asPointer(VTypes::GlyphDataData, result);
 	if (result) switch (i)
 	{
 		default:
@@ -302,7 +299,7 @@ bool GlyphDataVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 			result = FALSE;
 			break;
 	}
-	msg.exit("GlyphDataVariable::performFunction");
+	Messenger::exit("GlyphDataVariable::performFunction");
 	return result;
 }
 
@@ -311,15 +308,15 @@ void GlyphDataVariable::printAccessors()
 {
 	if (GlyphDataVariable::nAccessors > 0)
 	{
-		msg.print("Valid accessors are:\n");
-		for (int n=0; n<GlyphDataVariable::nAccessors; ++n) msg.print("%s%s%s", n == 0 ? " " : ", ", accessorData[n].name, accessorData[n].arraySize > 0 ? "[]" : "");
-		msg.print("\n");
+		Messenger::print("Valid accessors are:\n");
+		for (int n=0; n<GlyphDataVariable::nAccessors; ++n) Messenger::print("%s%s%s", n == 0 ? " " : ", ", accessorData[n].name, accessorData[n].arraySize > 0 ? "[]" : "");
+		Messenger::print("\n");
 	}
 	if ((GlyphDataVariable::nFunctions > 0) && (strcmp(functionData[0].name,".dummy") != 0))
 	{
-		msg.print("Valid functions are:\n");
-		for (int n=0; n<GlyphDataVariable::nFunctions; ++n) msg.print("%s%s(%s)", n == 0 ? " " : ", ", functionData[n].name, functionData[n].argText);
-		msg.print("\n");
+		Messenger::print("Valid functions are:\n");
+		for (int n=0; n<GlyphDataVariable::nFunctions; ++n) Messenger::print("%s%s(%s)", n == 0 ? " " : ", ", functionData[n].name, functionData[n].argText);
+		Messenger::print("\n");
 	}
 }
 
@@ -328,7 +325,7 @@ void GlyphDataVariable::printAccessors()
 */
 
 // Constructor
-GlyphDataArrayVariable::GlyphDataArrayVariable(TreeNode *sizeexpr, bool constant)
+GlyphDataArrayVariable::GlyphDataArrayVariable(TreeNode* sizeexpr, bool constant)
 {
 	// Private variables
 	returnType_ = VTypes::GlyphDataData;
@@ -340,8 +337,8 @@ GlyphDataArrayVariable::GlyphDataArrayVariable(TreeNode *sizeexpr, bool constant
 }
 
 // Search variable access list for provided accessor
-StepNode *GlyphDataArrayVariable::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist)
+StepNode* GlyphDataArrayVariable::findAccessor(const char* s, TreeNode* arrayIndex, TreeNode* argList)
 {
-	return GlyphDataVariable::accessorSearch(s, arrayindex, arglist);
+	return GlyphDataVariable::accessorSearch(s, arrayIndex, argList);
 }
 

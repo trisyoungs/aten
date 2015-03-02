@@ -24,8 +24,11 @@
 
 #include "model/model.h"
 #include "model/clipboard.h"
+#include "base/namespace.h"
 
-// Forward declarations
+ATEN_BEGIN_NAMESPACE
+
+// Forward Declarations (Aten)
 class PartitionData;
 class PartitioningScheme;
 
@@ -58,11 +61,11 @@ class DisorderData : public ListItem<DisorderData>
 	// Return requested component density
 	double requestedDensity();
 	// Return name of sourcemodel
-	const char *modelName();
+	const char* modelName();
 	// Returnreference to sourcemodel
 	Model &sourceModel();
 	// Return name of target partition
-	const char *partitionName();
+	const char* partitionName();
 	// Return density of target partition
 	double partitionDensity();
 	// Return partition pointer
@@ -92,7 +95,7 @@ class DisorderData : public ListItem<DisorderData>
 	
 	public:
 	// Prepare copy of sourcemodel in random position (and orientation) in assigned partition
-	void prepareCandidate(const Matrix &volumeElement);
+	void prepareCandidate(const Matrix& volumeElement);
 	// Accept candidate model into rest of population
 	void acceptCandidate();
 	// Reject candidate model
@@ -102,13 +105,13 @@ class DisorderData : public ListItem<DisorderData>
 	// Delete selected candidate
 	void deleteCandidate();
 	// Tweak molecule position / rotation, and place in sourceModel_
-	void tweakCandidate(double maxDistance, double maxAngle, PartitioningScheme *scheme);
+	void tweakCandidate(double maxDistance, double maxAngle, PartitioningScheme* scheme);
 	// Determine whether candidate molecule overlaps with supplied model
-	bool modelOverlaps(Model* other, UnitCell *globalCell);
+	bool modelOverlaps(Model* other, UnitCell* globalCell);
 	// Determine whether candidate molecule overlaps rest of population
-	bool selfOverlaps(UnitCell *globalCell);
+	bool selfOverlaps(UnitCell* globalCell);
 	// Determine whether candidate molecule overlaps with all other insertion models
-	bool otherOverlaps(DisorderData *first, UnitCell *globalCell);
+	bool otherOverlaps(DisorderData *first, UnitCell* globalCell);
 	// Return number of copies added
 	int nAdded();
 	// Return number of successive failures since last successful insertion
@@ -124,5 +127,7 @@ class DisorderData : public ListItem<DisorderData>
 	// Return counting variable
 	int count();
 };
+
+ATEN_END_NAMESPACE
 
 #endif

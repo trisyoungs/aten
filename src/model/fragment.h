@@ -26,8 +26,11 @@
 #include "model/model.h"
 #include <QtGui/QIcon>
 #include "templates/list.h"
+#include "base/namespace.h"
 
-// Forward Declarations
+ATEN_BEGIN_NAMESPACE
+
+// Forward Declarations (Aten)
 class Atom;
 
 // Fragment Model data
@@ -105,9 +108,9 @@ class FragmentGroup : public ListItem<FragmentGroup>
 
 	public:
 	// Set name of group
-	void setName(const char *s);
+	void setName(const char* s);
 	// Return name of group
-	const char *name();
+	const char* name();
 	// Return number of fragments in group
 	int nFragments();
 	// Add new fragment
@@ -118,5 +121,7 @@ class FragmentGroup : public ListItem<FragmentGroup>
 	Fragment *fragments();
 	
 };
+
+ATEN_END_NAMESPACE
 
 #endif

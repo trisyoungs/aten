@@ -11,11 +11,11 @@
 #include "sginfo.h"
 
 
-static const char *Err_Ill_SMx_in_List =
+static const char* Err_Ill_SMx_in_List =
   "Error: Illegal SeitzMx in list";
 
 
-void SetSgError(const char *msg)
+void SetSgError(const char* msg)
 {
   if (SgError == NULL) SgError = msg;
 }
@@ -748,7 +748,7 @@ static int CoreAdd2ListSeitzMx(T_SgInfo *SgInfo, const T_RTMx *NewSMx)
   T_RotMxInfo          RotMxInfo;
   const T_LatticeInfo  *LI;
 
-  static const char *Err_NonXtalOp =
+  static const char* Err_NonXtalOp =
     "Error: Generators produce non-crystallographic operation";
 
 
@@ -793,7 +793,7 @@ int Add2ListSeitzMx(T_SgInfo *SgInfo, const T_RTMx *NewSMx)
   int     iMult, jMult;
   T_RTMx  TrialSMx, *iMultSMx, *jMultSMx;
 
-  static const char *Err_Ill_lattice_translation =
+  static const char* Err_Ill_lattice_translation =
     "Error: Illegal lattice translation";
 
 
@@ -1971,7 +1971,7 @@ static int BuildHSym(T_SgInfo *SgInfo)
   }
   GRT[sizeof SgInfo->Generator_iList / sizeof (*SgInfo->Generator_iList) + 1];
 
-  const char *Digits = "0123456";
+  const char* Digits = "0123456";
 
 
   if (SgInfo->nGenerator == 0) {

@@ -19,17 +19,17 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <QtGui/QCloseEvent>
 #include "base/sysfunc.h"
 #include "base/progress.h"
 #include "gui/mainwindow.h"
 #include "gui/fragments.h"
-#include "gui/build.h"
 #include "gui/ttreewidgetitem.h"
 #include "gui/ttablewidgetitem.h"
-#include "gui/tcanvas.uih"
-#include "model/model.h"
 #include "model/fragment.h"
 #include "main/aten.h"
+
+ATEN_USING_NAMESPACE
 
 // Constructor
 FragmentsWidget::FragmentsWidget(AtenWindow& parent, Qt::WindowFlags flags) : QDockWidget(&parent, flags), parent_(parent)
@@ -70,7 +70,7 @@ Fragment *FragmentsWidget::currentFragment()
 // Refresh the atom list
 void FragmentsWidget::refresh()
 {
-	msg.enter("FragmentsWidget::refresh");
+	Messenger::enter("FragmentsWidget::refresh");
 	
 	TTreeWidgetItem *item, *group;
 	TTableWidgetItem *tabitem;
@@ -85,22 +85,22 @@ void FragmentsWidget::refresh()
 	// Generate icon if necessary (first run only) and allowed (through prefs)
 	if ((!iconsGenerated_) && prefs.generateFragmentIcons())
 	{
-		int nfragments = 0;
-		for (FragmentGroup *fg = parent_.aten().fragmentGroups(); fg != NULL; fg = fg->next) nfragments += fg->nFragments();
-		int pid = progress.initialise("Initialising fragment icons", nfragments, FALSE);
-		for (FragmentGroup *fg = parent_.aten().fragmentGroups(); fg != NULL; fg = fg->next)
+		int nFragments = 0;
+		for (FragmentGroup* fg = parent_.aten().fragmentGroups(); fg != NULL; fg = fg->next) nFragments += fg->nFragments();
+		int pid = progress.initialise("Initialising fragment icons", nFragments);
+		for (FragmentGroup* fg = parent_.aten().fragmentGroups(); fg != NULL; fg = fg->next)
 		{
-			for (Fragment *f = fg->fragments(); f != NULL; f = f->next)
+			for (Fragment* fragment = fg->fragments(); fragment != NULL; fragment = fragment->next)
 			{
-				f->masterModel()->regenerateIcon();
-				progress.update(pid, -1, f->masterModel()->name());
+				fragment->masterModel()->regenerateIcon();
+				progress.update(pid, -1, fragment->masterModel()->name());
 			}
 		}
 		progress.terminate(pid);
 	}
 
 	// Go through all available fragment groups
-	for (FragmentGroup *fg = parent_.aten().fragmentGroups(); fg != NULL; fg = fg->next)
+	for (FragmentGroup* fg = parent_.aten().fragmentGroups(); fg != NULL; fg = fg->next)
 	{
 		// Are there any fragments in this group?
 		if (fg->nFragments() == 0) continue;
@@ -165,10 +165,10 @@ void FragmentsWidget::refresh()
 	for (int n=0; n<3; n++) ui.FragmentTree->resizeColumnToContents(n);
 	ui.FragmentTable->resizeRowsToContents();
 	iconsGenerated_ = TRUE;
-	msg.exit("FragmentsWidget::refresh");
+	Messenger::exit("FragmentsWidget::refresh");
 }
 
-void FragmentsWidget::on_FragmentTree_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous)
+void FragmentsWidget::on_FragmentTree_currentItemChanged(QTreeWidgetItem* current, QTreeWidgetItem* previous)
 {
 	if (current == NULL) currentFragment_ = NULL;
 	else

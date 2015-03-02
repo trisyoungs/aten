@@ -22,12 +22,14 @@
 #include "base/kvmap.h"
 #include <string.h>
 
+ATEN_USING_NAMESPACE
+
 /*
 // KVPair
 */
 
 // Constructor
-KVPair::KVPair(const char *key, const char *value) : ListItem<KVPair>()
+KVPair::KVPair(const char* key, const char* value) : ListItem<KVPair>()
 {
 	// Private variables
 	if (key != NULL) key_ = key;
@@ -35,19 +37,19 @@ KVPair::KVPair(const char *key, const char *value) : ListItem<KVPair>()
 }
 
 // Retrieve key associated to pair
-const char *KVPair::key() const
+const char* KVPair::key() const
 {
 	return key_.get();
 }
 
 // Set value associated to key
-void KVPair::setValue(const char *newvalue)
+void KVPair::setValue(const char* newvalue)
 {
 	value_ = newvalue;
 }
 
 // Retrieve value associated to key
-const char *KVPair::value() const
+const char* KVPair::value() const
 {
 	return value_.get();
 }
@@ -74,7 +76,7 @@ int KVMap::nPairs() const
 }
 
 // Set (existing) key/value pair
-void KVMap::add(const char *key, const char *value)
+void KVMap::add(const char* key, const char* value)
 {
 	// Search for existing value...
 	KVPair *kvp = NULL;
@@ -88,7 +90,7 @@ void KVMap::add(const char *key, const char *value)
 }
 
 // Search map for specified key
-KVPair *KVMap::search(const char *key)
+KVPair *KVMap::search(const char* key) const
 {
 	// Search for existing value...
 	for (KVPair *kvp = pairs_.first(); kvp != NULL; kvp = kvp->next) if (strcmp(kvp->key(),key) == 0) return kvp;
@@ -96,7 +98,7 @@ KVPair *KVMap::search(const char *key)
 }
 
 // Retrieve value associated to key
-const char *KVMap::value(const char *key)
+const char* KVMap::value(const char* key)
 {
 	// Search for existing value...
 	for (KVPair *kvp = pairs_.first(); kvp != NULL; kvp = kvp->next) if (strcmp(kvp->key(),key) == 0) return kvp->value();

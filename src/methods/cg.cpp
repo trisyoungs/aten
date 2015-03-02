@@ -22,12 +22,16 @@
 #include "methods/cg.h"
 #include "model/model.h"
 #include "ff/energystore.h"
-#include "gui/gui.h"
 #include "base/progress.h"
+
+ATEN_BEGIN_NAMESPACE
 
 // Static Singleton
 MethodCg cg;
 
+ATEN_END_NAMESPACE
+
+ATEN_USING_NAMESPACE
 // Constructor
 MethodCg::MethodCg()
 {
@@ -50,12 +54,12 @@ int MethodCg::nCycles() const
 void MethodCg::minimise(Model* srcmodel, double econ, double fcon)
 {
 	// Line Search (Steepest Descent) energy minimisation.
-	msg.enter("MethodCg::minimise");
+	Messenger::enter("MethodCg::minimise");
 	int cycle, i;
 	double currentEnergy, oldEnergy, deltaEnergy = 0.0, lastPrintedEnergy, oldForce, newForce, deltaForce = 0.0, g_old_sq, gamma, g_current_sq;
-	double *g_old;
+	double* g_old;
 	Vec3<double> f;
-	Atom* *modelatoms;
+	Atom** modelatoms;
 	bool linedone, converged, success;
 	Dnchar etatext;
 
@@ -65,7 +69,7 @@ void MethodCg::minimise(Model* srcmodel, double econ, double fcon)
 	// First, create expression for the current model and assign charges
 	if ((!srcmodel->createExpression()) || (srcmodel->nAtoms() == 0))
 	{
-	        msg.exit("MethodCg::minimise");
+	        Messenger::exit("MethodCg::minimise");
 	        return;
 	}
 	
@@ -75,7 +79,7 @@ void MethodCg::minimise(Model* srcmodel, double econ, double fcon)
 	currentEnergy = srcmodel->totalEnergy(srcmodel, success);
 	if (!success)
 	{
-	        msg.exit("MethodCg::minimise");
+	        Messenger::exit("MethodCg::minimise");
 	        return;
 	}
 
@@ -90,10 +94,10 @@ void MethodCg::minimise(Model* srcmodel, double econ, double fcon)
 	// Initialise the line minimiser
 	initialise(srcmodel);
 
-	msg.print("Step      Energy       DeltaE       RMS Force      E(vdW)        E(elec)       E(Bond)      E(Angle)     E(Torsion)\n");
-	msg.print("Init  %12.5e        ---           ---     %12.5e  %12.5e  %12.5e  %12.5e  %12.5e %s\n", currentEnergy, newForce, srcmodel->energy.vdw(), srcmodel->energy.electrostatic(), srcmodel->energy.bond(), srcmodel->energy.angle(), srcmodel->energy.torsion(), gui.exists() ? "" : "--:--:--");
+	Messenger::print("Step      Energy       DeltaE       RMS Force      E(vdW)        E(elec)       E(Bond)      E(Angle)     E(Torsion)\n");
+	Messenger::print("Init  %12.5e        ---           ---     %12.5e  %12.5e  %12.5e  %12.5e  %12.5e %s\n", currentEnergy, newForce, srcmodel->energy.vdw(), srcmodel->energy.electrostatic(), srcmodel->energy.bond(), srcmodel->energy.angle(), srcmodel->energy.torsion(), "--:--:--");
 
-	int pid = progress.initialise("Minimising (CG)", nCycles_, !gui.exists());
+	int pid = progress.initialise("Minimising (CG)", nCycles_);
 
 	srcmodel->normaliseForces(1.0, TRUE);
 
@@ -116,12 +120,12 @@ void MethodCg::minimise(Model* srcmodel, double econ, double fcon)
 		// Print out the step data
 		if (prefs.shouldUpdateEnergy(cycle+1))
 		{
-			msg.print("%-5i %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e %s\n", cycle+1, currentEnergy, currentEnergy-lastPrintedEnergy, newForce, srcmodel->energy.vdw(), srcmodel->energy.electrostatic(), srcmodel->energy.bond(), srcmodel->energy.angle(), srcmodel->energy.torsion(), progress.eta());
+			Messenger::print("%-5i %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e %s\n", cycle+1, currentEnergy, currentEnergy-lastPrintedEnergy, newForce, srcmodel->energy.vdw(), srcmodel->energy.electrostatic(), srcmodel->energy.bond(), srcmodel->energy.angle(), srcmodel->energy.torsion(), progress.eta());
 			lastPrintedEnergy = currentEnergy;
 		}
 		if (converged) break;
 
-		if (prefs.shouldUpdateModel(cycle+1)) parent_.updateWidgets(AtenWindow::CanvasTarget);
+// 		if (prefs.shouldUpdateModel(cycle+1)) parent_.updateWidgets(AtenWindow::CanvasTarget); ATEN2 TODO
 
 		// Store old forces and calculate new forces at the new line-minimised position
 		for (i=0; i<srcmodel->nAtoms()*3; i += 3)
@@ -168,15 +172,15 @@ void MethodCg::minimise(Model* srcmodel, double econ, double fcon)
 	}
  	progress.terminate(pid);
 
-	if (converged) msg.print("Conjugate gradient converged in %i steps.\n",cycle+1);
-	else msg.print("Conjugate gradient did not converge within %i steps.\n",nCycles_);
-	msg.print("Final energy:\n");
+	if (converged) Messenger::print("Conjugate gradient converged in %i steps.\n",cycle+1);
+	else Messenger::print("Conjugate gradient did not converge within %i steps.\n",nCycles_);
+	Messenger::print("Final energy:\n");
 	currentEnergy = srcmodel->totalEnergy(srcmodel, success);
 	srcmodel->energy.print();
 	// Calculate fresh new forces for the model, log changes / update, and exit.
 	srcmodel->calculateForces(srcmodel);
 	srcmodel->updateMeasurements();
 	srcmodel->changeLog.add(Log::Coordinates);
-	msg.exit("MethodCg::minimise");
+	Messenger::exit("MethodCg::minimise");
 }
 

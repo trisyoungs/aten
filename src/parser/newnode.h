@@ -22,11 +22,13 @@
 #ifndef ATEN_NEWNODE_H
 #define ATEN_NEWNODE_H
 
-//#include "parser/commandnode.h"
+#include "parser/treenode.h"
 //#include "parser/variablelist.h"
 #include "parser/treenode.h"
 // #include "parser/vtypes.h"
 // #include "parser/returnvalue.h"
+
+ATEN_BEGIN_NAMESPACE
 
 // 'New' Command Node
 class NewNode : public TreeNode
@@ -35,6 +37,7 @@ class NewNode : public TreeNode
 	// Constructor / Destructor
 	NewNode(VTypes::DataType type);
 	~NewNode();
+
 
 	/*
 	// Variables
@@ -45,19 +48,22 @@ class NewNode : public TreeNode
 	// Pointer to object created
 	void *object_;
 
+
 	/*
 	// Set / Get / Execute
 	*/
 	public:
 	// Execute command
-	bool execute(ReturnValue &rv);
+	bool execute(ReturnValue& rv);
 	// Set from returnvalue node
-	bool set(ReturnValue &rv);
+	bool set(ReturnValue& rv);
 	// Initialise node
 	bool initialise();
 	// Print layout of current node
-	void nodePrint(int offset, const char *prefix = "");
+	void nodePrint(int offset, const char* prefix = "");
 
 };
+
+ATEN_END_NAMESPACE
 
 #endif

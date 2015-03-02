@@ -22,25 +22,27 @@
 #include "base/datastore.h"
 #include <string.h>
 
+ATEN_USING_NAMESPACE
+
 /*
 // DataStoreItem
 */
 
 // Constructor
-DataStoreItem::DataStoreItem(const char *key) : ListItem<DataStoreItem>()
+DataStoreItem::DataStoreItem(const char* key) : ListItem<DataStoreItem>()
 {
 	// Private variables
 	if (key != NULL) key_ = key;
 }
 
 // Retrieve key associated to data
-const char *DataStoreItem::key() const
+const char* DataStoreItem::key() const
 {
 	return key_.get();
 }
 
 // Retrieve value associated to key
-ReturnValue &DataStoreItem::data()
+ReturnValue& DataStoreItem::data()
 {
 	return data_;
 }
@@ -67,7 +69,7 @@ int DataStore::nItems() const
 }
 
 // Add new (or return existing) key/value data
-DataStoreItem *DataStore::addData(const char *key)
+DataStoreItem *DataStore::addData(const char* key)
 {
 	// Search for existing value...
 	DataStoreItem *kvp = NULL;
@@ -81,7 +83,7 @@ DataStoreItem *DataStore::addData(const char *key)
 }
 
 // Search map for specified key
-DataStoreItem *DataStore::searchForKey(const char *key)
+DataStoreItem *DataStore::searchForKey(const char* key)
 {
 	// Search for existing value...
 	for (DataStoreItem *kvp = data_.first(); kvp != NULL; kvp = kvp->next) if (strcmp(kvp->key(),key) == 0) return kvp;
@@ -89,7 +91,7 @@ DataStoreItem *DataStore::searchForKey(const char *key)
 }
 
 // Retrieve data associated to key
-ReturnValue &DataStore::dataForKey(const char *key)
+ReturnValue& DataStore::dataForKey(const char* key)
 {
 	static ReturnValue dummy;
 	// Search for existing value...

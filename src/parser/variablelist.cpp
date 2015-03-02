@@ -50,7 +50,8 @@
 #include "parser/widget.h"
 #include "parser/zmatrix.h"
 #include "parser/zmatrixelement.h"
-#include <string.h>
+
+ATEN_USING_NAMESPACE
 
 // Constructor
 VariableList::VariableList()
@@ -66,7 +67,7 @@ void VariableList::take(Variable *v, bool forcevariable)
 }
 
 // Retrieve a named variable from the list
-Variable *VariableList::find(const char *name) const
+Variable *VariableList::find(const char* name) const
 {
 	Variable* var;
 	for (TreeNode* node = variables_.first(); node != NULL; node = node->next)
@@ -78,7 +79,7 @@ Variable *VariableList::find(const char *name) const
 }
 
 // Create a new variable in the list
-Variable *VariableList::makeVariable(VTypes::DataType type, const char *name, TreeNode *initialValue)
+Variable *VariableList::makeVariable(VTypes::DataType type, const char* name, TreeNode* initialValue)
 {
 	Variable *v = NULL;
 	switch (type)
@@ -196,7 +197,7 @@ Variable *VariableList::makeVariable(VTypes::DataType type, const char *name, Tr
 }
 
 // Create a new array variable in the list
-Variable *VariableList::makeArray(VTypes::DataType type, const char *name, TreeNode *sizeexpr, TreeNode *initialValue)
+Variable *VariableList::makeArray(VTypes::DataType type, const char* name, TreeNode* sizeexpr, TreeNode* initialValue)
 {
 	Variable *var = NULL;
 	switch (type)
@@ -302,7 +303,7 @@ Variable *VariableList::makeArray(VTypes::DataType type, const char *name, TreeN
 }
 
 // Create variable
-Variable *VariableList::create(VTypes::DataType type, const char *name, TreeNode *initialValue)
+Variable *VariableList::create(VTypes::DataType type, const char* name, TreeNode* initialValue)
 {
 	Variable *v = makeVariable(type, name, initialValue);
 	if (v != NULL) variables_.own(v);
@@ -310,13 +311,13 @@ Variable *VariableList::create(VTypes::DataType type, const char *name, TreeNode
 }
 
 // Create variable without owning it
-Variable *VariableList::createFree(VTypes::DataType type, const char *name, TreeNode *initialValue)
+Variable *VariableList::createFree(VTypes::DataType type, const char* name, TreeNode* initialValue)
 {
 	return makeVariable(type, name, initialValue);
 }
 
 // Create a new array variable in the list
-Variable *VariableList::createArray(VTypes::DataType type, const char *name, TreeNode *sizeexpr, TreeNode *initialValue)
+Variable *VariableList::createArray(VTypes::DataType type, const char* name, TreeNode* sizeexpr, TreeNode* initialValue)
 {
 	Variable *var = makeArray(type, name, sizeexpr, initialValue);
 	if (var == NULL) return NULL;
@@ -345,7 +346,7 @@ int VariableList::nVariables() const
 }
 
 // Return first variable in the list (as a TreeNode)
-TreeNode *VariableList::variables() const
+TreeNode* VariableList::variables() const
 {
 	return variables_.first();
 }

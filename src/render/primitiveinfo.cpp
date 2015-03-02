@@ -25,6 +25,8 @@
 #endif
 #include "render/primitiveinfo.h"
 
+ATEN_USING_NAMESPACE
+
 // Constructor
 PrimitiveInfo::PrimitiveInfo() : ListItem<PrimitiveInfo>()
 {
@@ -32,20 +34,17 @@ PrimitiveInfo::PrimitiveInfo() : ListItem<PrimitiveInfo>()
 	primitive_ = NULL;
 	fillMode_ = GL_FILL;
 	lineWidth_ = 1.0f;
-	colour_[0] = 0.0;
-	colour_[1] = 0.0;
-	colour_[2] = 0.0;
-	colour_[3] = 1.0;
+	colour_.set(0.0, 0.0, 0.0, 1.0);
 }
 
 // Set primitive info data
-void PrimitiveInfo::set(Primitive* prim, GLfloat* colour, Matrix& transform, GLenum fillMode, GLfloat lineWidth)
+void PrimitiveInfo::set(Primitive* prim, Vec4<GLfloat>& colour, Matrix& transform, GLenum fillMode, GLfloat lineWidth)
 {
 	primitive_ = prim;
 	localTransform_ = transform;
 	fillMode_ = fillMode;
 	lineWidth_ = lineWidth;
-	if (colour != NULL) for (int n=0; n<4; ++n) colour_[n] = colour[n];
+	colour_ = colour;
 }
 
 // Return pointer to primitive
@@ -61,20 +60,19 @@ Matrix& PrimitiveInfo::localTransform()
 }
 
 // Return colour array
-GLfloat* PrimitiveInfo::colour()
+const Vec4<GLfloat>& PrimitiveInfo::colour() const
 {
 	return colour_;
 }
 
 // Return polygon fill mode
-GLenum PrimitiveInfo::fillMode()
+GLenum PrimitiveInfo::fillMode() const
 {
 	return fillMode_;
 }
 
 // Return line width
-GLfloat PrimitiveInfo::lineWidth()
+GLfloat PrimitiveInfo::lineWidth() const
 {
 	return lineWidth_;
 }
-

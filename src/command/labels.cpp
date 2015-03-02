@@ -21,10 +21,13 @@
 
 #include "command/commands.h"
 #include "parser/commandnode.h"
+#include "model/bundle.h"
 #include "model/model.h"
 
+ATEN_USING_NAMESPACE
+
 // Clear labels in selection
-bool Command::function_ClearLabels(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_ClearLabels(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.rs()->beginUndoState("Clear all labels in selection");
@@ -34,7 +37,7 @@ bool Command::function_ClearLabels(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Add label to current selection or specified atom
-bool Command::function_Label(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_Label(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	Atom::AtomLabel al = Atom::atomLabel(c->argc(0), TRUE);
@@ -58,7 +61,7 @@ bool Command::function_Label(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Remove label from current selection or specified atom
-bool Command::function_RemoveLabel(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_RemoveLabel(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	Atom::AtomLabel al = Atom::atomLabel(c->argc(0), TRUE);
@@ -82,7 +85,7 @@ bool Command::function_RemoveLabel(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Remove all labels from current selection or specified atom
-bool Command::function_RemoveLabels(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_RemoveLabels(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (c->hasArg(0))

@@ -23,10 +23,11 @@
 #include "base/sysfunc.h"
 #include "base/dnchar.h"
 #include <cstring>
-using namespace std;
 #include <cstdio>
 #include <cstdlib>
 #include <cstdarg>
+
+ATEN_USING_NAMESPACE
 
 // Constructors
 Dnchar::Dnchar() : ListItem<Dnchar>()
@@ -47,7 +48,7 @@ Dnchar::Dnchar(int emptysize) : ListItem<Dnchar>()
 	createEmpty(emptysize);
 }
 
-Dnchar::Dnchar(const char *s) : ListItem<Dnchar>()
+Dnchar::Dnchar(const char* s) : ListItem<Dnchar>()
 {
 	// Private variables
 	data_ = NULL;
@@ -57,7 +58,7 @@ Dnchar::Dnchar(const char *s) : ListItem<Dnchar>()
 	set(s);
 }
 
-Dnchar::Dnchar(int dummyparameter, const char *fmt, ...) : ListItem<Dnchar>()
+Dnchar::Dnchar(int dummyparameter, const char* fmt, ...) : ListItem<Dnchar>()
 {
 	// Private variables
 	data_ = NULL;
@@ -113,7 +114,7 @@ void Dnchar::clear()
 }
 
 // Set from C-style string
-void Dnchar::set(const char *s)
+void Dnchar::set(const char* s)
 {
 	// If new size is less than or equal to old size, don't reallocate
 	int newsize = (s == NULL ? 1 : strlen(s) + 1);
@@ -129,7 +130,7 @@ void Dnchar::set(const char *s)
 }
 
 // Get
-const char *Dnchar::get() const
+const char* Dnchar::get() const
 {
 	return (data_ != NULL ? data_ : "");
 }
@@ -232,7 +233,7 @@ void Dnchar::cutStart(int len, Dnchar &target)
 */
 
 // Assignment operator (const char*)
-void Dnchar::operator=(const char *s)
+void Dnchar::operator=(const char* s)
 {
 	set(s);
 }
@@ -245,14 +246,14 @@ void Dnchar::operator=(const Dnchar &source)
 }
 
 // Equality Operator (const char*)
-bool Dnchar::operator==(const char *s) const
+bool Dnchar::operator==(const char* s) const
 {
 	if (data_ == NULL) return (s[0] == '\0');
 	return (strcmp(data_,s) == 0);
 }
 
 // Inequality Operator (const char*)
-bool Dnchar::operator!=(const char *s) const
+bool Dnchar::operator!=(const char* s) const
 {
 	if (data_ == NULL) return (s[0] != '\0');
 	return (strcmp(data_,s) != 0);
@@ -375,14 +376,14 @@ bool Dnchar::isNumeric() const
 }
 
 // Return the lowercase conversion of the string
-const char *Dnchar::lower() const
+const char* Dnchar::lower() const
 {
 	if (data_ == NULL) return "\0";
 	return lowerCase(data_);
 }
 
 // Return the uppercase conversion of the string
-const char *Dnchar::upper() const
+const char* Dnchar::upper() const
 {
 	if (data_ == NULL) return "\0";
 	return upperCase(data_);
@@ -424,7 +425,7 @@ int Dnchar::rFind(char search, char stopat1, char stopat2) const
 */
 
 // String addition
-void Dnchar::strcat(const char *s, int charcount)
+void Dnchar::strcat(const char* s, int charcount)
 {
 	if (charcount == 0) return;
 	// Check whether we need to reallocate
@@ -441,7 +442,7 @@ void Dnchar::strcat(const char *s, int charcount)
 		}
 		data_ = newdata;
 	}
-	for (const char *c = s; *c != '\0'; ++c)
+	for (const char* c = s; *c != '\0'; ++c)
 	{
 		// If we're passed \0, ignore it (since we already have one)
 		// Check size_ of array
@@ -459,7 +460,7 @@ void Dnchar::strcat(const char *s, int charcount)
 }
 
 // Append formatted string
-void Dnchar::strcatf(const char *fmt ...)
+void Dnchar::strcatf(const char* fmt ...)
 {
 	va_list arguments;
 	static char s[8096];
@@ -473,7 +474,7 @@ void Dnchar::strcatf(const char *fmt ...)
 }
 
 // Create formatted string
-void Dnchar::sprintf(const char *fmt ...)
+void Dnchar::sprintf(const char* fmt ...)
 {
 	va_list arguments;
 	static char s[8096];
@@ -492,14 +493,14 @@ char *Dnchar::strchr(char c) const
 }
 
 // Copy substring of supplied string into this string
-void Dnchar::substr(const char *source, int pos, int nchars)
+void Dnchar::substr(const char* source, int pos, int nchars)
 {
 	clear();
 	// Check start position
 	int len = strlen(source);
 	if ((pos < 0) || (pos >= len)) return;
 	// Copy characters
-	const char *c = &source[pos];
+	const char* c = &source[pos];
 	for (int n=0; n<nchars; ++n)
 	{
 		if (*c == '\0') break;

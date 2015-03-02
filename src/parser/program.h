@@ -25,6 +25,12 @@
 #include "base/dnchar.h"
 #include "parser/tree.h"
 #include "parser/scopenode.h"
+#include "base/namespace.h"
+
+ATEN_BEGIN_NAMESPACE
+
+// Forward Declarations (Aten)
+class Aten;
 
 // Program
 class Program : public ListItem<Program>
@@ -56,21 +62,21 @@ class Program : public ListItem<Program>
 	// Clear contents of program, including filters and functions
 	void clear();
 	// Set name of program
-	void setName(const char *s);
+	void setName(const char* s);
 	// Return name of program
-	const char *name();
+	const char* name();
 	// Return associated filename (if any)
-	const char *filename();
+	const char* filename();
 	// Generate program from string 
-	bool generateFromString(const char *s, const char *name, const char *sourceInfo, bool dontPushTree = FALSE, bool clearExisting = TRUE);
+	bool generateFromString(const char* s, const char* name, const char* sourceInfo, bool dontPushTree = FALSE, bool clearExisting = TRUE);
 	// Generate program from string list
-	bool generateFromStringList(Dnchar *stringListHead, const char *name, const char *sourceInfo, bool dontPushTree = FALSE, bool clearExisting = TRUE);
+	bool generateFromStringList(Dnchar* stringListHead, const char* name, const char* sourceInfo, bool dontPushTree = FALSE, bool clearExisting = TRUE);
 	// Generate program from input file
-	bool generateFromFile(const char *filename, const char *name = NULL, bool dontPushTree = FALSE, bool clearExisting = TRUE, bool isFilterFile = FALSE);
+	bool generateFromFile(const char* filename, const char* name = NULL, bool dontPushTree = FALSE, bool clearExisting = TRUE, bool isFilterFile = FALSE);
 	// Reload program (provided it was from a file...)
 	bool reload();
 	// Finalise program
-	bool finalise();
+	bool finalise(Aten& aten);
 	// Return main program
 	Tree* mainProgram();
 	// Add a filter tree
@@ -80,7 +86,7 @@ class Program : public ListItem<Program>
 	// Return whether the Program is being generated from a filter file
 	bool isFromFilterFile();
 	// Execute main program, including GUI options if specified
-	bool execute(ReturnValue &rv);
+	bool execute(ReturnValue& rv);
 	// Print program information
 	void print();
 
@@ -94,13 +100,15 @@ class Program : public ListItem<Program>
 
 	public:
 	// Add a new Program-global function tree
-	Tree* addFunction(const char *name);
+	Tree* addFunction(const char* name);
 	// Search for existing global function
-	Tree* findFunction(const char *s);
+	Tree* findFunction(const char* s);
 	// Return first defined global function
 	Tree* functions();
 	// Execute specified global function
-	bool executeFunction(const char *name, ReturnValue &rv, const char* arglist, ...);
+	bool executeFunction(const char* name, ReturnValue& rv, const char* argList, ...);
 };
+
+ATEN_END_NAMESPACE
 
 #endif

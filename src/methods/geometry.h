@@ -24,7 +24,9 @@
 
 #include "methods/calculable.h"
 
-// Forward Declarations
+ATEN_BEGIN_NAMESPACE
+
+// Forward Declarations (Aten)
 class Site;
 
 // Geometry Class
@@ -40,7 +42,7 @@ class Geometry : public Calculable
 	*/
 	private:
 	// Centres involved in geometry measurement
-	Site *sites_[4];
+	Site* sites_[4];
 	// Number of continuous defined sites
 	int nSites_;
 	
@@ -48,7 +50,7 @@ class Geometry : public Calculable
 	// Set site involved in geometry measurement
 	void setSite(int, Site*);
 	// Get site involved in geometry measurement
-	Site *site(int);
+	Site* site(int);
 
 	/*
 	// Methods
@@ -89,9 +91,11 @@ class Geometry : public Calculable
 	*/
 	private:
 	// Histogram function
-	double *data_;
+	double* data_;
 	// Count for number of added data (i.e. nframes)
 	int nAdded_;
 };
+
+ATEN_END_NAMESPACE
 
 #endif

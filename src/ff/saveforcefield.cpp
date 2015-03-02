@@ -19,18 +19,18 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <fstream>
 #include "ff/forcefield.h"
-#include "classes/forcefieldatom.h"
-#include "classes/forcefieldbound.h"
+#include "base/forcefieldatom.h"
+#include "base/forcefieldbound.h"
 #include "base/kvmap.h"
 #include "base/sysfunc.h"
-#include "templates/namemap.h"
+
+ATEN_USING_NAMESPACE
 
 // Save the specified forcefield
 bool Forcefield::save()
 {
-	msg.enter("Forcefield::save");
+	Messenger::enter("Forcefield::save");
 	bool done, okay, result = TRUE;
 	int success, n, m;
 	Prefs::EnergyUnit ffunit;
@@ -39,8 +39,8 @@ bool Forcefield::save()
 	// Open file for writing
 	if (!parser.openOutput(filename_, TRUE))
 	{
-		msg.print("Couldn't open file '%s' for writing..\n", filename_.get());
-		msg.exit("Forcefield::save");
+		Messenger::print("Couldn't open file '%s' for writing..\n", filename_.get());
+		Messenger::exit("Forcefield::save");
 		return FALSE;
 	}
 
@@ -138,7 +138,7 @@ bool Forcefield::save()
 					parser.writeLineF("%s %s", VTypes::dataType(nm->data()), nm->name());
 					break;
 				default:
-					msg.print("Error: Unsuitable datatype '%s' for data item '%s'.\n", VTypes::dataType(nm->data()), nm->name());
+					Messenger::print("Error: Unsuitable datatype '%s' for data item '%s'.\n", VTypes::dataType(nm->data()), nm->name());
 					result = FALSE;
 					continue;
 			}
@@ -157,7 +157,7 @@ bool Forcefield::save()
 				v = ffa->data(nm->name());
 				if (v == NULL)
 				{
-					msg.print("Warning: Data '%s' has not been defined in type '%s' (id %i).\n", nm->name(), ffa->name(), ffa->typeId());
+					Messenger::print("Warning: Data '%s' has not been defined in type '%s' (id %i).\n", nm->name(), ffa->name(), ffa->typeId());
 					switch (nm->data())
 					{
 						case (VTypes::IntegerData):
@@ -186,7 +186,7 @@ bool Forcefield::save()
 						parser.writeLineF("\"%s\"", rv.asString());
 						break;
 					default:
-						msg.print("Error: Unsuitable datatype '%s' for data item '%s'.\n", VTypes::dataType(nm->data()), nm->name());
+						Messenger::print("Error: Unsuitable datatype '%s' for data item '%s'.\n", VTypes::dataType(nm->data()), nm->name());
 						result = FALSE;
 						continue;
 				}
@@ -201,7 +201,7 @@ bool Forcefield::save()
 	if (generatorFunctionText_.nItems() > 0)
 	{
 		parser.writeLine("function\n");
-		for (Dnchar *d = generatorFunctionText_.first(); d != NULL; d = d->next) parser.writeLineF("%s\n", d->get());
+		for (Dnchar* d = generatorFunctionText_.first(); d != NULL; d = d->next) parser.writeLineF("%s\n", d->get());
 		parser.writeLine("end\n\n");
 	}
 	
@@ -234,13 +234,13 @@ bool Forcefield::save()
 		// First, get populations of specified parameters in each bond form
 		int count[BondFunctions::nBondFunctions];
 		for (n = 0; n < BondFunctions::nBondFunctions; ++n) count[n] = 0;
-		for (ForcefieldBound *ffb = bonds_.first(); ffb != NULL; ffb = ffb->next) ++count[ffb->bondForm()];
+		for (ForcefieldBound* ffb = bonds_.first(); ffb != NULL; ffb = ffb->next) ++count[ffb->bondForm()];
 
 		// Now, write blocks for each form (if necessary)
 		for (n = 0; n < BondFunctions::nBondFunctions; ++n) if (count[n] != 0)
 		{
 			parser.writeLineF("bonds %s\n", BondFunctions::BondFunctions[n].keyword);
-			for (ForcefieldBound *ffb = bonds_.first(); ffb != NULL; ffb = ffb->next)
+			for (ForcefieldBound* ffb = bonds_.first(); ffb != NULL; ffb = ffb->next)
 			{
 				if (ffb->bondForm() != n) continue;
 				parser.writeLineF("%s\t%s", ffb->typeName(0), ffb->typeName(1));
@@ -257,13 +257,13 @@ bool Forcefield::save()
 		// First, get populations of specified parameters in each angle form
 		int count[AngleFunctions::nAngleFunctions];
 		for (n = 0; n < AngleFunctions::nAngleFunctions; ++n) count[n] = 0;
-		for (ForcefieldBound *ffb = angles_.first(); ffb != NULL; ffb = ffb->next) ++count[ffb->angleForm()];
+		for (ForcefieldBound* ffb = angles_.first(); ffb != NULL; ffb = ffb->next) ++count[ffb->angleForm()];
 
 		// Now, write blocks for each form (if necessary)
 		for (n = 0; n < AngleFunctions::nAngleFunctions; ++n) if (count[n] != 0)
 		{
 			parser.writeLineF("angles %s\n", AngleFunctions::AngleFunctions[n].keyword);
-			for (ForcefieldBound *ffb = angles_.first(); ffb != NULL; ffb = ffb->next)
+			for (ForcefieldBound* ffb = angles_.first(); ffb != NULL; ffb = ffb->next)
 			{
 				if (ffb->angleForm() != n) continue;
 				parser.writeLineF("%s\t%s\t%s", ffb->typeName(0), ffb->typeName(1), ffb->typeName(2));
@@ -281,13 +281,13 @@ bool Forcefield::save()
 		// First, get populations of specified parameters in each angle form
 		int count[TorsionFunctions::nTorsionFunctions];
 		for (n = 0; n < TorsionFunctions::nTorsionFunctions; ++n) count[n] = 0;
-		for (ForcefieldBound *ffb = torsions_.first(); ffb != NULL; ffb = ffb->next) ++count[ffb->torsionForm()];
+		for (ForcefieldBound* ffb = torsions_.first(); ffb != NULL; ffb = ffb->next) ++count[ffb->torsionForm()];
 
 		// Now, write blocks for each form (if necessary)
 		for (n = 0; n < TorsionFunctions::nTorsionFunctions; ++n) if (count[n] != 0)
 		{
 			parser.writeLineF("torsions %s\n", TorsionFunctions::TorsionFunctions[n].keyword);
-			for (ForcefieldBound *ffb = torsions_.first(); ffb != NULL; ffb = ffb->next)
+			for (ForcefieldBound* ffb = torsions_.first(); ffb != NULL; ffb = ffb->next)
 			{
 				if (ffb->torsionForm() != n) continue;
 				parser.writeLineF("%s\t%s\t%s\t%s", ffb->typeName(0), ffb->typeName(1), ffb->typeName(2), ffb->typeName(3));
@@ -304,13 +304,13 @@ bool Forcefield::save()
 		// First, get populations of specified parameters in each angle form
 		int count[TorsionFunctions::nTorsionFunctions];
 		for (n = 0; n < TorsionFunctions::nTorsionFunctions; ++n) count[n] = 0;
-		for (ForcefieldBound *ffb = impropers_.first(); ffb != NULL; ffb = ffb->next) ++count[ffb->torsionForm()];
+		for (ForcefieldBound* ffb = impropers_.first(); ffb != NULL; ffb = ffb->next) ++count[ffb->torsionForm()];
 
 		// Now, write blocks for each form (if necessary)
 		for (n = 0; n < TorsionFunctions::nTorsionFunctions; ++n) if (count[n] != 0)
 		{
 			parser.writeLineF("impropers %s\n", TorsionFunctions::TorsionFunctions[n].keyword);
-			for (ForcefieldBound *ffb = impropers_.first(); ffb != NULL; ffb = ffb->next)
+			for (ForcefieldBound* ffb = impropers_.first(); ffb != NULL; ffb = ffb->next)
 			{
 				if (ffb->torsionForm() != n) continue;
 				parser.writeLineF("%s\t%s\t%s\t%s", ffb->typeName(0), ffb->typeName(1), ffb->typeName(2), ffb->typeName(3));
@@ -327,13 +327,13 @@ bool Forcefield::save()
 		// First, get populations of specified parameters in each bond form
 		int count[BondFunctions::nBondFunctions];
 		for (n = 0; n < BondFunctions::nBondFunctions; ++n) count[n] = 0;
-		for (ForcefieldBound *ffb = ureyBradleys_.first(); ffb != NULL; ffb = ffb->next) ++count[ffb->bondForm()];
+		for (ForcefieldBound* ffb = ureyBradleys_.first(); ffb != NULL; ffb = ffb->next) ++count[ffb->bondForm()];
 
 		// Now, write blocks for each form (if necessary)
 		for (n = 0; n < BondFunctions::nBondFunctions; ++n) if (count[n] != 0)
 		{
 			parser.writeLineF("ureybradleys %s\n", BondFunctions::BondFunctions[n].keyword);
-			for (ForcefieldBound *ffb = ureyBradleys_.first(); ffb != NULL; ffb = ffb->next)
+			for (ForcefieldBound* ffb = ureyBradleys_.first(); ffb != NULL; ffb = ffb->next)
 			{
 				if (ffb->bondForm() != n) continue;
 				parser.writeLineF("%s\t%s", ffb->typeName(0), ffb->typeName(1));
@@ -344,9 +344,9 @@ bool Forcefield::save()
 		}
 	}
 
-	msg.print("Done.\n");
+	Messenger::print("Done.\n");
 
-	msg.exit("Forcefield::save");
+	Messenger::exit("Forcefield::save");
 	return TRUE;
 }
 

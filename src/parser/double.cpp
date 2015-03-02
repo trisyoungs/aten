@@ -25,6 +25,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+ATEN_USING_NAMESPACE
+
 /*
 // Variable
 */
@@ -47,11 +49,11 @@ DoubleVariable::~DoubleVariable()
 */
 
 // Set value of variable (real)
-bool DoubleVariable::set(ReturnValue &rv)
+bool DoubleVariable::set(ReturnValue& rv)
 {
 	if (readOnly_)
 	{
-		msg.print("A constant value (in this case a double) cannot be assigned to.\n");
+		Messenger::print("A constant value (in this case a double) cannot be assigned to.\n");
 		return FALSE;
 	}
 	bool success;
@@ -64,7 +66,7 @@ bool DoubleVariable::setFromDouble(double d)
 {
 	if (readOnly_)
 	{
-		msg.print("A constant value (in this case a double) cannot be assigned to.\n");
+		Messenger::print("A constant value (in this case a double) cannot be assigned to.\n");
 		return FALSE;
 	}
 	doubleData_ = d;
@@ -78,14 +80,18 @@ void DoubleVariable::reset()
 }
 
 // Return value of node
-bool DoubleVariable::execute(ReturnValue &rv)
+bool DoubleVariable::execute(ReturnValue& rv)
 {
 	rv.set(doubleData_);
 	return TRUE;
 }
 
+/*
+ * Variable Data
+ */
+
 // Print node contents
-void DoubleVariable::nodePrint(int offset, const char *prefix)
+void DoubleVariable::nodePrint(int offset, const char* prefix)
 {
 	// Construct tabbed offset
 	Dnchar tab(offset+32);
@@ -103,7 +109,7 @@ void DoubleVariable::nodePrint(int offset, const char *prefix)
 */
 
 // Constructor
-DoubleArrayVariable::DoubleArrayVariable(TreeNode *sizeexpr, bool constant)
+DoubleArrayVariable::DoubleArrayVariable(TreeNode* sizeexpr, bool constant)
 {
 	// Private variables
 	returnType_ = VTypes::DoubleData;
@@ -125,11 +131,11 @@ DoubleArrayVariable::~DoubleArrayVariable()
 */
 
 // Set from returnvalue node
-bool DoubleArrayVariable::set(ReturnValue &rv)
+bool DoubleArrayVariable::set(ReturnValue& rv)
 {
 	if (readOnly_)
 	{
-		msg.print("A constant value (in this case a double array) cannot be assigned to.\n");
+		Messenger::print("A constant value (in this case a double array) cannot be assigned to.\n");
 		return FALSE;
 	}
 	if (doubleArrayData_ == NULL)
@@ -148,23 +154,23 @@ bool DoubleArrayVariable::set(ReturnValue &rv)
 			doubleArrayData_[1] = v.y;
 			doubleArrayData_[2] = v.z;
 		}
-		else msg.print("Error setting variable '%s': Array size must be 3 in order to set from a vector.\n", name_.get());
+		else Messenger::print("Error setting variable '%s': Array size must be 3 in order to set from a vector.\n", name_.get());
 	}
 	else if (rv.arraySize() == -1) for (int i=0; i<arraySize_; i++) doubleArrayData_[i] = rv.asDouble(success);
 	else
 	{
-		if (rv.arraySize() != arraySize_) msg.print("Error setting variable '%s': Array sizes do not conform.\n", name_.get());
+		if (rv.arraySize() != arraySize_) Messenger::print("Error setting variable '%s': Array sizes do not conform.\n", name_.get());
 		else for (int i=0; i<arraySize_; i++) doubleArrayData_[i] = rv.asDouble(i, success);
 	}
 	return success;
 }
 
 // Set array element from returnvalue node
-bool DoubleArrayVariable::setAsArray(ReturnValue &rv, int arrayindex)
+bool DoubleArrayVariable::setAsArray(ReturnValue& rv, int arrayIndex)
 {
 	if (readOnly_)
 	{
-		msg.print("A constant value (in this case an integer array?) cannot be assigned to.\n");
+		Messenger::print("A constant value (in this case an integer array?) cannot be assigned to.\n");
 		return FALSE;
 	}
 	if (doubleArrayData_ == NULL)
@@ -173,13 +179,13 @@ bool DoubleArrayVariable::setAsArray(ReturnValue &rv, int arrayindex)
 		return FALSE;
 	}
 	// Check index
-	if ((arrayindex < 0) || (arrayindex >= arraySize_))
+	if ((arrayIndex < 0) || (arrayIndex >= arraySize_))
 	{
-		msg.print("Index %i out of bounds for array '%s'.\n", arrayindex+1, name_.get());
+		Messenger::print("Index %i out of bounds for array '%s'.\n", arrayIndex+1, name_.get());
 		return FALSE;
 	}
 	// Set individual element
-	doubleArrayData_[arrayindex] = rv.asDouble();
+	doubleArrayData_[arrayIndex] = rv.asDouble();
 	return TRUE;
 }
 
@@ -196,7 +202,7 @@ void DoubleArrayVariable::reset()
 	{
 		int count = 0;
 		ReturnValue value;
-		for (Refitem<TreeNode,int> *ri = args_.first(); ri != NULL; ri = ri->next)
+		for (Refitem<TreeNode,int>* ri = args_.first(); ri != NULL; ri = ri->next)
 		{
 			if (!ri->item->execute(value)) doubleArrayData_[count++] = 0;
 			else doubleArrayData_[count++] = value.asDouble();
@@ -206,7 +212,7 @@ void DoubleArrayVariable::reset()
 }
 
 // Return value of node
-bool DoubleArrayVariable::execute(ReturnValue &rv)
+bool DoubleArrayVariable::execute(ReturnValue& rv)
 {
 	if (doubleArrayData_ == NULL)
 	{
@@ -227,20 +233,24 @@ bool DoubleArrayVariable::execute(ReturnValue &rv)
 }
 
 // Return value of node as array
-bool DoubleArrayVariable::executeAsArray(ReturnValue &rv, int arrayindex)
+bool DoubleArrayVariable::executeAsArray(ReturnValue& rv, int arrayIndex)
 {
 	// Check bounds
-	if ((arrayindex < 0) || (arrayindex >= arraySize_))
+	if ((arrayIndex < 0) || (arrayIndex >= arraySize_))
 	{
-		msg.print("Error: Array index %i is out of bounds for array '%s'.\n", arrayindex+1, name_.get());
+		Messenger::print("Error: Array index %i is out of bounds for array '%s'.\n", arrayIndex+1, name_.get());
 		return FALSE;
 	}
-	rv.set( doubleArrayData_[arrayindex] );
+	rv.set( doubleArrayData_[arrayIndex] );
 	return TRUE;
 }
 
+/*
+ * Variable Data
+ */
+
 // Print node contents
-void DoubleArrayVariable::nodePrint(int offset, const char *prefix)
+void DoubleArrayVariable::nodePrint(int offset, const char* prefix)
 {
 	// Construct tabbed offset
 	Dnchar tab(offset+32);
@@ -253,7 +263,7 @@ void DoubleArrayVariable::nodePrint(int offset, const char *prefix)
 }
 
 // Return array pointer
-double *DoubleArrayVariable::arrayData()
+double* DoubleArrayVariable::arrayData()
 {
 	return doubleArrayData_;
 }
@@ -266,7 +276,7 @@ bool DoubleArrayVariable::initialise()
 	ReturnValue newsize;
 	if (!arraySizeExpression_->execute(newsize))
 	{
-		msg.print("Failed to find size for double array '%s'.\n", name_.get());
+		Messenger::print("Failed to find size for double array '%s'.\n", name_.get());
 		return FALSE;
 	}
 	// If the array is already allocated, free it only if the size is different
@@ -279,7 +289,7 @@ bool DoubleArrayVariable::initialise()
 	{
 		int count = 0;
 		ReturnValue value;
-		for (Refitem<TreeNode,int> *ri = args_.first(); ri != NULL; ri = ri->next)
+		for (Refitem<TreeNode,int>* ri = args_.first(); ri != NULL; ri = ri->next)
 		{
 			if (!ri->item->execute(value)) return FALSE;
 			doubleArrayData_[count++] = value.asDouble();

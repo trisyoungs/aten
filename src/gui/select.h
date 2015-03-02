@@ -24,11 +24,33 @@
 
 #include "gui/ui_select.h"
 
+// Forward Declarations (Qt)
+class AtenWindow;
+
 // Selection window
 class SelectWidget : public QDockWidget
 {
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
+
+	public:
+	// Constructor / Destructor
+	SelectWidget(AtenWindow& parent, Qt::WindowFlags flags = 0);
+	// Main form declaration
+	Ui::SelectWidget ui;
+
+	private:
+	// Reference to main window
+	AtenWindow& parent_;
+
+
+	/*
+	// Local variables
+	*/
+	private:
+	// Whether window is refreshing
+	bool refreshing_;
+
 
 	/*
 	// Window Functions
@@ -52,26 +74,6 @@ class SelectWidget : public QDockWidget
 	void on_DeselectForButton_clicked(bool on);
 	protected:
 	void closeEvent(QCloseEvent *event);
-
-	/*
-	// Local variables
-	*/
-	private:
-	// Whether window is refreshing
-	bool refreshing_;
-
-	/*
-	// Dialog
-	*/
-	private:
-	// Reference to main window
-	AtenWindow& parent_;
-
-	public:
-	// Constructor / Destructor
-	SelectWidget(AtenWindow& parent, Qt::WindowFlags flags = 0);
-	// Main form declaration
-	Ui::SelectWidget ui;
 };
 
 #endif

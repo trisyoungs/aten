@@ -21,11 +21,13 @@
 
 #include "command/commands.h"
 #include "parser/commandnode.h"
+#include "model/bundle.h"
 #include "model/model.h"
-#include "base/elements.h"
+
+ATEN_USING_NAMESPACE
 
 // Create new basis function in the current model
-bool Command::function_NewBasisShell(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_NewBasisShell(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// Get shell type argument
@@ -39,7 +41,7 @@ bool Command::function_NewBasisShell(CommandNode *c, Bundle &obj, ReturnValue &r
 }
 
 // Create new eigenvector in the current model
-bool Command::function_NewEigenvector(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_NewEigenvector(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// Optional argument is size of vector. If not present, use current size of basis function array
@@ -51,18 +53,18 @@ bool Command::function_NewEigenvector(CommandNode *c, Bundle &obj, ReturnValue &
 }
 
 // Create new vibration in current model
-bool Command::function_NewVibration(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_NewVibration(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	Vibration *v = obj.rs()->addVibration();
+	Vibration* v = obj.rs()->addVibration();
 	if (c->hasArg(0)) v->setName(c->argc(0));
-	msg.print(Messenger::Verbose, "Added vibration to model '%s'\n", obj.rs()->name());
+	Messenger::print(Messenger::Verbose, "Added vibration to model '%s'\n", obj.rs()->name());
 	rv.set(VTypes::VibrationData, v);
 	return TRUE;
 }
 
 // Print z-matrix for model
-bool Command::function_PrintZMatrix(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_PrintZMatrix(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// Grab (and create) zmatrix for current model

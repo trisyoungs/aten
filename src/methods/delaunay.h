@@ -24,26 +24,28 @@
 
 #include "templates/vector3.h"
 #include "templates/reflist.h"
-#include "classes/grid.h"
+#include "base/grid.h"
+
+ATEN_USING_NAMESPACE
 
 // Delaunay Edge
 class DelaunayEdge : public ListItem<DelaunayEdge>
 {
 	public:
 	// Constructors
-	DelaunayEdge(GridPoint *p1, GridPoint *p2);
+	DelaunayEdge(GridPoint* p1, GridPoint* p2);
 
 	private:
 	// Reference counter
 	int refCount_;
 	// Gridpoints involved in the edge
-	GridPoint *vertexA_, *vertexB_;
+	GridPoint* vertexA_, *vertexB_;
 
 	public:
 	// Return whether edge is between the supplied vertices (in either order)
-	bool connectsVertices(GridPoint *p1, GridPoint *p2);
+	bool connectsVertices(GridPoint* p1, GridPoint* p2);
 	// Return whether the edge uses the specified point
-	bool usesPoint(GridPoint *gp);
+	bool usesPoint(GridPoint* gp);
 	// Add reference to edge
 	void addReference();
 	// Remove reference from edge (returning TRUE if no more references remain)
@@ -51,7 +53,7 @@ class DelaunayEdge : public ListItem<DelaunayEdge>
 	// Return current reference count
 	int refCount();
 	// Return specified vertex
-	GridPoint *vertex(int n);
+	GridPoint* vertex(int n);
 	// Print edge information
 	void print();
 };
@@ -83,11 +85,11 @@ class DelaunayTriangle : public ListItem<DelaunayTriangle>
 	// Return whether circumcircle contains supplied point
 	bool containsPoint(Vec3<double> r);
 	// Return whether triangle uses specified point
-	bool usesPoint(GridPoint *point);
+	bool usesPoint(GridPoint* point);
 	// Return specified edge
 	DelaunayEdge *edge(int n);
 	// Return specified vertex
-	GridPoint *vertex(int n);
+	GridPoint* vertex(int n);
 	// Add reference to triangle
 	void addReference();
 	// Remove reference from triangle (returning TRUE if no more references remain)
@@ -121,15 +123,15 @@ class DelaunayTetrahedron : public ListItem<DelaunayTetrahedron>
 	// Return whether circumsphere contains supplied point
 	bool containsPoint(Vec3<double> r);
 	// Return whether tetrahedron uses specified point
-	bool usesPoint(GridPoint *point);
+	bool usesPoint(GridPoint* point);
 	// Return whether tetrahedron has the supplied faces (in any order)
 	bool hasFaces(DelaunayTriangle *t1, DelaunayTriangle *t2, DelaunayTriangle *t3, DelaunayTriangle *t4); 
 	// Return specified triangle
 	DelaunayTriangle *triangle(int n);
 	// Return specified vertex
-	GridPoint *vertex(int n);
+	GridPoint* vertex(int n);
 	// Return vertex index (0-3) of specified GridPoint
-	int vertexIndex(GridPoint *gp);
+	int vertexIndex(GridPoint* gp);
 	// Print tetrahedron information
 	void print();
 };
@@ -139,7 +141,7 @@ class DelaunaySurface
 {
 	public:
 	// Constructor
-	DelaunaySurface(Grid *g);
+	DelaunaySurface(Grid* g);
 
 	/*
 	// Primitives
@@ -154,7 +156,7 @@ class DelaunaySurface
 	// List of triangles making up the surface
 	List<DelaunayTetrahedron> tetrahedra_;
 	// Create Delaunay edge (or return existing edge)
-	DelaunayEdge *createEdge(GridPoint *p1, GridPoint *p2);
+	DelaunayEdge *createEdge(GridPoint* p1, GridPoint* p2);
 	// Remove specified edge (but only delete if its reference count is zero)
 	void removeEdge(DelaunayEdge *edge);
 	// Create a triangle and add it to the list
@@ -166,7 +168,7 @@ class DelaunaySurface
 	// Remove (delete) specified tetrahedron
 	void removeTetrahedron(DelaunayTetrahedron *tet);
 	// Remove all edges, triangles, and tetrahedra using specified point
-	void removePoint(GridPoint *gp);
+	void removePoint(GridPoint* gp);
 
 	public:
 	// Return start of triangle list
@@ -180,15 +182,15 @@ class DelaunaySurface
 	*/
 	private:
 	// Create mesh from 2D data
-	void create2DMesh(Grid *g);
+	void create2DMesh(Grid* g);
 	// Create 3D mesh
-	void create3DMesh(Grid *g);
+	void create3DMesh(Grid* g);
 	// Add point in 3D
-	void add3DPoint(GridPoint *gp);
+	void add3DPoint(GridPoint* gp);
 
 	public:
 	// Triangulize surface from supplied grid data
-	void create(Grid *g);
+	void create(Grid* g);
 };
 
 #endif

@@ -24,6 +24,8 @@
 #include "base/atom.h"
 #include <stdlib.h>
 
+ATEN_USING_NAMESPACE
+
 // Geometry types
 int MeasurementAtoms[Measurement::nMeasurementTypes] = { 0,2,3,4 };
 int Measurement::nMeasurementAtoms(Measurement::MeasurementType mt)
@@ -35,7 +37,7 @@ int Measurement::nMeasurementAtoms(Measurement::MeasurementType mt)
 Measurement::Measurement() : ListItem<Measurement>()
 {
 	// Private variables
-	type_ = Measurement::None;
+	type_ = Measurement::NoMeasurement;
 	for (int n=0; n<4; ++n) atoms_[n] = NULL;
 	value_ = 0.0;
 	literalValue_ = 0.0;
@@ -87,25 +89,25 @@ Atom* Measurement::atom(int index)
 }
 
 // Return atoms array
-Atom* *Measurement::atoms()
+Atom** Measurement::atoms()
 {
 	return atoms_;
 }
 
 // Calculate
-void Measurement::calculate(UnitCell *cell)
+void Measurement::calculate(UnitCell* cell)
 {
 	switch (type_)
 	{
-		case (Measurement::Distance):
+		case (Measurement::DistanceMeasurement):
 			literalValue_ = cell->distance(atoms_[0],atoms_[1],FALSE);
 			value_ = cell->distance(atoms_[0],atoms_[1]);
 			break;
-		case (Measurement::Angle):
+		case (Measurement::AngleMeasurement):
 			literalValue_ = cell->angle(atoms_[0],atoms_[1],atoms_[2],FALSE);
 			value_ = cell->angle(atoms_[0],atoms_[1],atoms_[2]);
 			break;
-		case (Measurement::Torsion):
+		case (Measurement::TorsionMeasurement):
 			literalValue_ = cell->torsion(atoms_[0],atoms_[1],atoms_[2],atoms_[3],FALSE);
 			value_ = cell->torsion(atoms_[0],atoms_[1],atoms_[2],atoms_[3]);
 			break;
@@ -120,17 +122,17 @@ void Measurement::print() const
 {
 	switch (type_)
 	{
-		case (Measurement::Distance):
-			if (fabs(value_-literalValue_) < 0.0001) msg.print("Distance (%i-%i) = %f\n", atoms_[0]->id()+1, atoms_[1]->id()+1, value_);
-			else msg.print("Distance (%i-%i) = %f (literal = %f)\n", atoms_[0]->id()+1, atoms_[1]->id()+1, value_, literalValue_);
+		case (Measurement::DistanceMeasurement):
+			if (fabs(value_-literalValue_) < 0.0001) Messenger::print("Distance (%i-%i) = %f\n", atoms_[0]->id()+1, atoms_[1]->id()+1, value_);
+			else Messenger::print("Distance (%i-%i) = %f (literal = %f)\n", atoms_[0]->id()+1, atoms_[1]->id()+1, value_, literalValue_);
 			break;
-		case (Measurement::Angle):
-			if (fabs(value_-literalValue_) < 0.0001) msg.print("Angle (%i-%i-%i) = %f\n", atoms_[0]->id()+1, atoms_[1]->id()+1, atoms_[2]->id()+1, value_);
-			else msg.print("Angle (%i-%i-%i) = %f (literal = %f)\n", atoms_[0]->id()+1, atoms_[1]->id()+1, atoms_[2]->id()+1, value_, literalValue_);
+		case (Measurement::AngleMeasurement):
+			if (fabs(value_-literalValue_) < 0.0001) Messenger::print("Angle (%i-%i-%i) = %f\n", atoms_[0]->id()+1, atoms_[1]->id()+1, atoms_[2]->id()+1, value_);
+			else Messenger::print("Angle (%i-%i-%i) = %f (literal = %f)\n", atoms_[0]->id()+1, atoms_[1]->id()+1, atoms_[2]->id()+1, value_, literalValue_);
 			break;
-		case (Measurement::Torsion):
-			if (fabs(value_-literalValue_) < 0.0001) msg.print("Torsion (%i-%i-%i-%i) = %f\n", atoms_[0]->id()+1, atoms_[1]->id()+1, atoms_[2]->id()+1, atoms_[3]->id()+1, value_);
-			else msg.print("Torsion (%i-%i-%i-%i) = %f (literal = %f)\n", atoms_[0]->id()+1, atoms_[1]->id()+1, atoms_[2]->id()+1, atoms_[3]->id()+1, value_, literalValue_);
+		case (Measurement::TorsionMeasurement):
+			if (fabs(value_-literalValue_) < 0.0001) Messenger::print("Torsion (%i-%i-%i-%i) = %f\n", atoms_[0]->id()+1, atoms_[1]->id()+1, atoms_[2]->id()+1, atoms_[3]->id()+1, value_);
+			else Messenger::print("Torsion (%i-%i-%i-%i) = %f (literal = %f)\n", atoms_[0]->id()+1, atoms_[1]->id()+1, atoms_[2]->id()+1, atoms_[3]->id()+1, value_, literalValue_);
 			break;
 		default:
 			printf("Measurement::print <<<< Unrecognised geometry type >>>>\n");

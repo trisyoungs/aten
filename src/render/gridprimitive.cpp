@@ -21,20 +21,22 @@
 
 #include "render/gridprimitive.h"
 
+ATEN_USING_NAMESPACE
+
 // Constructor
-GridPrimitive::GridPrimitive(Grid *source) : ListItem<GridPrimitive>()
+GridPrimitive::GridPrimitive(Grid* source) : ListItem<GridPrimitive>()
 {
 	// Private variables
 	source_ = source;
 	primaryIsTransparent_ = FALSE;
 	secondaryIsTransparent_ = FALSE;
 	
-	// Set both primitives to use no instances
+	// Set both primitives to use no instances	// ATEN2 TODO
 	primaryPrimitive_.setNoInstances();
 	secondaryPrimitive_.setNoInstances();
 	for (int n=0; n<3; ++n)
 	{
-		axisLinePrimitives_[n].setType(GL_LINES);
+// 		axisLinePrimitives_[n].setType(GL_LINES);	// ATEN2 TODO
 		axisLinePrimitives_[n].setNoInstances();
 	}
 }
@@ -52,13 +54,13 @@ Primitive &GridPrimitive::secondaryPrimitive()
 }
 
 // Set source grid pointer
-void GridPrimitive::setSource(Grid *g)
+void GridPrimitive::setSource(Grid* g)
 {
 	source_ = g;
 }
 
 // Return source grid pointer
-Grid *GridPrimitive::source()
+Grid* GridPrimitive::source()
 {
 	return source_;
 }
@@ -82,7 +84,7 @@ Primitive &GridPrimitive::axisLinePrimitive(int axis)
 }
 
 // Return axis text primitive list specified
-List<TextPrimitive3D> &GridPrimitive::axisTextPrimitives(int axis)
+List<TextPrimitive> &GridPrimitive::axisTextPrimitives(int axis)
 {
 	return axisTextPrimitives_[axis];
 }

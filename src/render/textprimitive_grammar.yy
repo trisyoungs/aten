@@ -12,6 +12,8 @@
 int TextPrimitiveParser_lex(void);
 void TextPrimitiveParser_error(char *s);
 
+ATEN_USING_NAMESPACE
+
 %}
 
 // Redeclare function names
@@ -19,7 +21,7 @@ void TextPrimitiveParser_error(char *s);
 
 /* Type Definition */
 %union {
-	TextPrimitive::EscapeSequence escSeq;	/* Escape Sequence id */
+	AtenSpace::TextPrimitive::EscapeSequence escSeq;	/* Escape Sequence id */
 	QString* text;				/* Text string */
 	bool success;				/* TextFragment pointer */
 };

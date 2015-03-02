@@ -69,7 +69,7 @@ void AtenSelectFilter::update()
 	ui.FilterTable->setRowCount( ui.ShowAllCheck->isChecked() ? fullList_->nItems() : partialList_->nItems() );
 	QTableWidgetItem *item;
 	int count = 0;
-	for (Refitem<Tree,int> *ri = first; ri != NULL; ri = ri->next)
+	for (Refitem<Tree,int>* ri = first; ri != NULL; ri = ri->next)
 	{
 		// First column lists the extensions, second column the filter description, third column the source filter file
 		item = new QTableWidgetItem(ri->item->filter.extensionList());

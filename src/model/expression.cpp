@@ -21,13 +21,14 @@
 #include "base/pattern.h"
 #include "model/model.h"
 #include "ff/forcefield.h"
-#include "classes/forcefieldatom.h"
-#include "main/aten.h"
-#include "gui/gui.h"
-#include "gui/forcefields.h"
+#include "base/forcefieldatom.h"
+// #include "main/aten.h"
+// #include "gui/forcefields.h"
+
+ATEN_USING_NAMESPACE
 
 // Return the forcefield used by the model
-Forcefield *Model::forcefield()
+Forcefield* Model::forcefield()
 {
 	return forcefield_;
 }
@@ -35,21 +36,22 @@ Forcefield *Model::forcefield()
 // Create a forcefield containing original atom names for the model
 void Model::createNamesForcefield()
 {
-	if (namesForcefield_ != NULL) msg.print("Warning - an atom names forcefield already exists for model '%s'.\n", name_.get());
-	msg.print("Creating atom names forcefield for model '%s'.\n", name_.get());
-	Dnchar s;
-	s.sprintf("Names kept from Model %s",name_.get());
-	namesForcefield_ = aten.addForcefield(s);
+	// ATEN2 TODO
+// 	if (namesForcefield_ != NULL) Messenger::print("Warning - an atom names forcefield already exists for model '%s'.\n", name_.get());
+// 	Messenger::print("Creating atom names forcefield for model '%s'.\n", name_.get());
+// 	Dnchar s;
+// 	s.sprintf("Names kept from Model %s",name_.get());
+// 	namesForcefield_ = aten.addForcefield(s);
 }
 
 // Return the forcefield containing original atom names for the model
-Forcefield *Model::namesForcefield() const
+Forcefield* Model::namesForcefield() const
 {
 	return namesForcefield_;
 }
 
 // Add name to names forcefield
-ForcefieldAtom* Model::addAtomName(int el, const char *name)
+ForcefieldAtom* Model::addAtomName(int el, const char* name)
 {
 	if (namesForcefield_ == NULL) createNamesForcefield();
 	// Search for this typename in the ff
@@ -78,14 +80,14 @@ bool Model::isExpressionValid() const
 // Clear the current expression
 void Model::clearExpression()
 {
-	msg.enter("Model::clearExpression");
+	Messenger::enter("Model::clearExpression");
 	forcefieldAngles_.clear();
 	forcefieldBonds_.clear();
 	forcefieldTorsions_.clear();
 	uniqueForcefieldTypes_.clear();
 	for (Pattern* p = patterns_.first(); p != NULL; p = p->next) p->deleteExpression();
 	expressionPoint_  = -1;
-	msg.exit("Model::clearExpression");
+	Messenger::exit("Model::clearExpression");
 }
 
 // Manually invalidates the expression
@@ -99,7 +101,7 @@ bool Model::assignForcefieldCharges()
 {
 	// Assign atom-type charges from the currently assigned atom types
 	// Perform forcefield typing if necessary
-	msg.enter("Model::assignForcefieldCharges");
+	Messenger::enter("Model::assignForcefieldCharges");
 	int nfailed = 0;
 	double totalq = 0.0;
 	for (Atom* i = atoms_.first(); i != NULL; i = i->next)
@@ -107,7 +109,7 @@ bool Model::assignForcefieldCharges()
 		if (i->type() == NULL)
 		{
 			nfailed ++;
-			msg.print("Could not assign charge to atom %i since it has no atomtype associated to it.\n", i->id()+1);
+			Messenger::print("Could not assign charge to atom %i since it has no atomtype associated to it.\n", i->id()+1);
 		}
 		else
 		{
@@ -115,41 +117,41 @@ bool Model::assignForcefieldCharges()
 			totalq += i->type()->charge();
 		}
 	}
-	if (nfailed == 0) msg.print("Charges assigned successfully to all atoms.\nTotal charge in model is %f e.\n", totalq);
-	else msg.print("Failed to assign charges to %i atoms.\n", nfailed);
-	msg.exit("Model::assignForcefieldCharges");
+	if (nfailed == 0) Messenger::print("Charges assigned successfully to all atoms.\nTotal charge in model is %f e.\n", totalq);
+	else Messenger::print("Failed to assign charges to %i atoms.\n", nfailed);
+	Messenger::exit("Model::assignForcefieldCharges");
 	return (nfailed == 0);
 }
 
 // Set model's forcefield
-void Model::setForcefield(Forcefield *newff)
+void Model::setForcefield(Forcefield* newff)
 {
 	// Change the associated forcefield of the model to 'newff'
 	if (forcefield_ != newff)
 	{
 		invalidateExpression();
 		forcefield_ = newff;
-		if (forcefield_ == NULL) msg.print("Model '%s' has had its associated forcefield removed.\n", name_.get());
-		else msg.print("Forcefield '%s' now associated with model '%s'.\n", forcefield_->name(), name_.get());
+		if (forcefield_ == NULL) Messenger::print("Model '%s' has had its associated forcefield removed.\n", name_.get());
+		else Messenger::print("Forcefield '%s' now associated with model '%s'.\n", forcefield_->name(), name_.get());
 	}
 }
 
 // Create full forcefield expression for model
-bool Model::createExpression(Choice vdwOnly, Choice allowDummy, Choice assignCharges)
+bool Model::createExpression(Choice vdwOnly, Choice allowDummy, Choice assignCharges, Forcefield* defaultForcefield)
 {
 	// This routine should be called before any operation (or series of operations) requiring calculation of energy / forces. Here, we check the validity / existence of an energy expression for the specified model, and create / recreate if necessary.
-	msg.enter("Model::createExpression");
+	Messenger::enter("Model::createExpression");
 	
 	// Resolve supplied choices
 	vdwOnly.resolve(FALSE);
 	allowDummy.resolve(FALSE);
-	assignCharges.resolve( gui.exists() ? gui.forcefieldsWidget->ui.AssignFFChargesCheck->isChecked() : TRUE);
+	assignCharges.resolve(TRUE);
 	
 	// 0) If the expression is already valid, just update scaling terms in pattern matrices and return
 	if (isExpressionValid() && (vdwOnly == expressionVdwOnly_))
 	{
 		for (Pattern* p = patterns_.first(); p != NULL; p = p->next) p->updateScaleMatrices();
-		msg.exit("Model::createExpression");
+		Messenger::exit("Model::createExpression");
 		return TRUE;
 	}
 
@@ -162,14 +164,14 @@ bool Model::createExpression(Choice vdwOnly, Choice allowDummy, Choice assignCha
 	allForcefieldTypes_.clear();
 	expressionVdwOnly_ = vdwOnly;
 	expressionPoint_ = -1;
-	if (expressionVdwOnly_) msg.print("Creating VDW-only expression for model %s...\n",name_.get());
-	else msg.print("Creating expression for model %s...\n",name_.get());
+	if (expressionVdwOnly_) Messenger::print("Creating VDW-only expression for model %s...\n",name_.get());
+	else Messenger::print("Creating expression for model %s...\n",name_.get());
 	
 	// 1) Assign forcefield types to all atoms
-	if (!typeAll())
+	if (!typeAll(defaultForcefield))
 	{
-		msg.print("Couldn't type atoms.\n");
-		msg.exit("Model::createExpression");
+		Messenger::print("Couldn't type atoms.\n");
+		Messenger::exit("Model::createExpression");
 		return FALSE;
 	}
 	
@@ -184,54 +186,43 @@ bool Model::createExpression(Choice vdwOnly, Choice allowDummy, Choice assignCha
 			if (!p->createExpression(vdwOnly, allowDummy))
 			{
 				// Failed to create an expression for this pattern, so....
-				if (!gui.exists())
+				// What to do?
+				Tree dialog;
+				Dnchar title(-1,"Expression for Pattern '%s'", p->name());
+				TreeGui &ui = dialog.defaultDialog();
+				ui.setProperty(TreeGuiWidgetEvent::TextProperty, title.get());
+				ui.addLabel("", "One or more forcefield terms are not availablefor this pattern:", 1, 1);
+				ui.addRadioGroup("choice");
+				ui.addRadioButton("cancel", "Cancel expression generation", "choice", 1, 1, 2);
+				ui.addRadioButton("dummy", "Add dummy parameters to complete expression for this pattern", "choice", 0, 1, 3);
+				ui.addRadioButton("alldummy", "Add dummy parameters to complete expression for this pattern and any others which need it", "choice", 0, 1, 4);
+				
+				// Run the custom dialog
+				if (dialog.defaultDialog().execute())
 				{
-					msg.print("To force expression generation with missing terms see the optional parameters for the 'createexpression()' command:\n");
-					msg.print("   Syntax: createexpression(%s)\n", Command::data[Command::CreateExpression].argText);
-					msg.print("           %s\n", Command::data[Command::CreateExpression].syntax);
-					msg.exit("Model::createExpression");
-					return FALSE;
+					int choice = ui.asInteger("choice");
+					if (choice == 1)
+					{
+						Messenger::exit("Model::createExpression");
+						return FALSE;
+					}
+					else if (choice == 2)
+					{
+						// Flag generation of dummy terms in expression, and let the loop cycle
+						p->setAddDummyTerms(TRUE);
+						done = FALSE;
+					}
+					else if (choice == 3)
+					{
+						// Flag generation of dummy terms in expression for all patterns, and let the loop cycle
+						allowDummy = Choice::Yes;
+						done = FALSE;
+					}
 				}
 				else
 				{
-					// What to do?
-					Tree dialog;
-					Dnchar title(-1,"Expression for Pattern '%s'", p->name());
-					TreeGui &ui = dialog.defaultDialog();
-					ui.setProperty(TreeGuiWidgetEvent::TextProperty, title.get());
-					ui.addLabel("", "One or more forcefield terms are not availablefor this pattern:", 1, 1);
-					ui.addRadioGroup("choice");
-					ui.addRadioButton("cancel", "Cancel expression generation", "choice", 1, 1, 2);
-					ui.addRadioButton("dummy", "Add dummy parameters to complete expression for this pattern", "choice", 0, 1, 3);
-					ui.addRadioButton("alldummy", "Add dummy parameters to complete expression for this pattern and any others which need it", "choice", 0, 1, 4);
-					
-					// Run the custom dialog
-					if (dialog.defaultDialog().execute())
-					{
-						int choice = ui.asInteger("choice");
-						if (choice == 1)
-						{
-							msg.exit("Model::createExpression");
-							return FALSE;
-						}
-						else if (choice == 2)
-						{
-							// Flag generation of dummy terms in expression, and let the loop cycle
-							p->setAddDummyTerms(TRUE);
-							done = FALSE;
-						}
-						else if (choice == 3)
-						{
-							// Flag generation of dummy terms in expression for all patterns, and let the loop cycle
-							allowDummy = Choice::Yes;
-							done = FALSE;
-						}
-					}
-					else
-					{
-						msg.exit("Model::createExpression");
-						return FALSE;
-					}
+					Messenger::exit("Model::createExpression");
+					return FALSE;
 				}
 			}
 			else done = TRUE;
@@ -246,13 +237,13 @@ bool Model::createExpression(Choice vdwOnly, Choice allowDummy, Choice assignCha
 		case (Electrostatics::None):
 			break;
 		case (Electrostatics::Coulomb):
-			if (cell_.type() != UnitCell::NoCell) msg.print("!!! Coulomb sum requested for periodic model.\n");
+			if (cell_.type() != UnitCell::NoCell) Messenger::print("!!! Coulomb sum requested for periodic model.\n");
 			break;
 		default: // Ewald - issue warnings, but don't return FALSE
 			if (cell_.type() == UnitCell::NoCell)
 			{
-				msg.print("!!! Ewald sum cannot be used for a non-periodic model.\n");
-				//msg.exit("Model::createExpression");
+				Messenger::print("!!! Ewald sum cannot be used for a non-periodic model.\n");
+				//Messenger::exit("Model::createExpression");
 				//return FALSE;
 			}
 			break;
@@ -264,7 +255,7 @@ bool Model::createExpression(Choice vdwOnly, Choice allowDummy, Choice assignCha
 	// 5) Assign charges to atoms (if requested)
 	if (assignCharges && (!assignForcefieldCharges()))
 	{
-		msg.exit("Model::createExpression");
+		Messenger::exit("Model::createExpression");
 		return FALSE;
 	}
 	
@@ -283,9 +274,9 @@ bool Model::createExpression(Choice vdwOnly, Choice allowDummy, Choice assignCha
 			// Check for compatible interaction types between atoms
 			if (ffa->vdwForm() != ffb->vdwForm())
 			{
-				msg.print("Conflicting van der Waals functional forms for atom types '%s' and '%s'.\n", VdwFunctions::VdwFunctions[ffa->vdwForm()].name, VdwFunctions::VdwFunctions[ffb->vdwForm()].name);
-				msg.print("Expression for model cannot be completed.\n");
-				msg.exit("Model::createExpression");
+				Messenger::print("Conflicting van der Waals functional forms for atom types '%s' and '%s'.\n", VdwFunctions::VdwFunctions[ffa->vdwForm()].name, VdwFunctions::VdwFunctions[ffb->vdwForm()].name);
+				Messenger::print("Expression for model cannot be completed.\n");
+				Messenger::exit("Model::createExpression");
 				return FALSE;
 			}
 			// Create item in table
@@ -302,16 +293,16 @@ bool Model::createExpression(Choice vdwOnly, Choice allowDummy, Choice assignCha
 	}
 	
 	expressionPoint_ = changeLog.log(Log::Structure);
-	msg.exit("Model::createExpression");
+	Messenger::exit("Model::createExpression");
 	return TRUE;
 }
 
 // Create lists of forcefield terms in the model
 void Model::createForcefieldLists()
 {
-	msg.enter("Model::createForcefieldLists");
+	Messenger::enter("Model::createForcefieldLists");
 
-	msg.print(Messenger::Verbose, "Constructing global forcefield term lists for model...\n");
+	Messenger::print(Messenger::Verbose, "Constructing global forcefield term lists for model...\n");
 	forcefieldAngles_.clear();
 	forcefieldBonds_.clear();
 	forcefieldTorsions_.clear();
@@ -322,7 +313,7 @@ void Model::createForcefieldLists()
 	// Cycle over patterns, adding their unique forcefield terms to ours...
 	for (Pattern* p = patterns_.first(); p != NULL; p = p->next)
 	{
-		msg.print(Messenger::Verbose, "Pattern '%s' uses %i atom types, %i bond terms, %i angle terms, and %i torsion terms.\n", p->name(), p->nUniqueForcefieldTypes(), p->nForcefieldBonds(), p->nForcefieldAngles(), p->nForcefieldTorsions());
+		Messenger::print(Messenger::Verbose, "Pattern '%s' uses %i atom types, %i bond terms, %i angle terms, and %i torsion terms.\n", p->name(), p->nUniqueForcefieldTypes(), p->nForcefieldBonds(), p->nForcefieldAngles(), p->nForcefieldTorsions());
 
 		// Atom types. We only add types to the list that have a unique type name.
 		for (Refitem<ForcefieldAtom,int> *ffa1 = p->allForcefieldTypes(); ffa1 != NULL; ffa1 = ffa1->next)
@@ -336,27 +327,27 @@ void Model::createForcefieldLists()
 		}
 
 		// Bond terms
-		for (Refitem<ForcefieldBound,int> *ffb = p->forcefieldBonds(); ffb != NULL; ffb = ffb->next)
+		for (Refitem<ForcefieldBound,int>* ffb = p->forcefieldBonds(); ffb != NULL; ffb = ffb->next)
 		{
 			if (forcefieldBonds_.contains(ffb->item) == NULL) forcefieldBonds_.add(ffb->item);
 		}
 
 		// Angle terms
-		for (Refitem<ForcefieldBound,int> *ffb = p->forcefieldAngles(); ffb != NULL; ffb = ffb->next)
+		for (Refitem<ForcefieldBound,int>* ffb = p->forcefieldAngles(); ffb != NULL; ffb = ffb->next)
 		{
 			if (forcefieldAngles_.contains(ffb->item) == NULL) forcefieldAngles_.add(ffb->item);
 		}
 
 		// Torsion terms
-		for (Refitem<ForcefieldBound,int> *ffb = p->forcefieldTorsions(); ffb != NULL; ffb = ffb->next)
+		for (Refitem<ForcefieldBound,int>* ffb = p->forcefieldTorsions(); ffb != NULL; ffb = ffb->next)
 		{
 			if (forcefieldTorsions_.contains(ffb->item) == NULL) forcefieldTorsions_.add(ffb->item);
 		}
 	}
 
-	msg.print(Messenger::Verbose, "Model '%s' uses %i atom types, %i bond terms, %i angle terms, and %i torsion terms over all patterns.\n", name(), nUniqueForcefieldTypes(), nForcefieldBonds(), nForcefieldAngles(), nForcefieldTorsions());
+	Messenger::print(Messenger::Verbose, "Model '%s' uses %i atom types, %i bond terms, %i angle terms, and %i torsion terms over all patterns.\n", name(), nUniqueForcefieldTypes(), nForcefieldBonds(), nForcefieldAngles(), nForcefieldTorsions());
 
-	msg.exit("Model::createForcefieldLists");
+	Messenger::exit("Model::createForcefieldLists");
 }
 
 // Return specified pair data from combination table

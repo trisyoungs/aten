@@ -21,6 +21,8 @@
 
 #include "model/model.h"
 
+ATEN_USING_NAMESPACE
+
 // Retrieve (creating or updating as necessary) the zmatrix for the model
 ZMatrix *Model::zMatrix()
 {
@@ -33,10 +35,10 @@ ZMatrix *Model::zMatrix()
 // Recalculate model atom posions from ZMatrix definition
 void Model::recalculateFromZMatrix()
 {
-	msg.enter("Model::recalculateFromZMatrix");
+	Messenger::enter("Model::recalculateFromZMatrix");
 	Atom* i, *j, *k, *l;
 	// Cycle over each element in the zmatrix, repositioning atoms as we go
-	for (ZMatrixElement *el = zMatrix_.elements(); el != NULL; el = el->next)
+	for (ZMatrixElement* el = zMatrix_.elements(); el != NULL; el = el->next)
 	{
 		// Grab target atom
 		i = el->atom(0);
@@ -54,5 +56,5 @@ void Model::recalculateFromZMatrix()
 	updateMeasurements();
 	// Update logpoint for ZMatrix
 	zMatrixPoint_ = changeLog.log(Log::Coordinates) + changeLog.log(Log::Structure);
-	msg.exit("Model::recalculateFromZMatrix");
+	Messenger::exit("Model::recalculateFromZMatrix");
 }

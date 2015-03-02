@@ -22,13 +22,15 @@
 #include "parser/aten.h"
 #include "parser/stepnode.h"
 #include "math/constants.h"
-#include "classes/prefs.h"
+#include "base/prefs.h"
 #include "model/model.h"
 #include "main/aten.h"
 #include "methods/mc.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+ATEN_USING_NAMESPACE
 
 // Constructors
 AtenVariable::AtenVariable()
@@ -48,9 +50,9 @@ AtenVariable::~AtenVariable()
 */
 
 // Set value of variable
-bool AtenVariable::set(ReturnValue &rv)
+bool AtenVariable::set(ReturnValue& rv)
 {
-	msg.print("A constant value (in this case Aten itself) cannot be assigned to.\n");
+	Messenger::print("A constant value (in this case Aten itself) cannot be assigned to.\n");
 	return FALSE;
 }
 
@@ -61,14 +63,18 @@ void AtenVariable::reset()
 }
 
 // Return value of node
-bool AtenVariable::execute(ReturnValue &rv)
+bool AtenVariable::execute(ReturnValue& rv)
 {
-	rv.set(VTypes::AtenData, &aten);
+	rv.set(VTypes::AtenData, &aten_);
 	return TRUE;
 }
 
+/*
+ * Variable Data
+ */
+
 // Print node contents
-void AtenVariable::nodePrint(int offset, const char *prefix)
+void AtenVariable::nodePrint(int offset, const char* prefix)
 {
 	// Construct tabbed offset
 	Dnchar tab(offset+32);
@@ -77,7 +83,7 @@ void AtenVariable::nodePrint(int offset, const char *prefix)
 	tab.strcat(prefix);
 
 	// Output node data
-	printf("[V]%s&%p (Aten) (constant value)\n", tab.get(), &aten);
+	printf("[V]%s&%p (Aten) (constant value)\n", tab.get(), &aten_);
 }
 
 /*
@@ -103,16 +109,16 @@ FunctionAccessor AtenVariable::functionData[AtenVariable::nFunctions] = {
 };
 
 // Search variable access list for provided accessor (call private static function)
-StepNode *AtenVariable::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist)
+StepNode* AtenVariable::findAccessor(const char* s, TreeNode* arrayIndex, TreeNode* argList)
 {
-	return AtenVariable::accessorSearch(s, arrayindex, arglist);
+	return AtenVariable::accessorSearch(s, arrayIndex, argList);
 }
 
 // Private static function to search accessors
-StepNode *AtenVariable::accessorSearch(const char *s, TreeNode *arrayindex, TreeNode *arglist)
+StepNode* AtenVariable::accessorSearch(const char* s, TreeNode* arrayIndex, TreeNode* argList)
 {
-	msg.enter("AtenVariable::accessorSearch");
-	StepNode *result = NULL;
+	Messenger::enter("AtenVariable::accessorSearch");
+	StepNode* result = NULL;
 	int i = 0;
 	i = Variable::searchAccessor(s, nAccessors, accessorData);
 	if (i == -1)
@@ -122,75 +128,75 @@ StepNode *AtenVariable::accessorSearch(const char *s, TreeNode *arrayindex, Tree
 		i = Variable::searchAccessor(s, nFunctions, functionData);
 		if (i == -1)
 		{
-			msg.print("Error: Type 'Aten&' has no member or function named '%s'.\n", s);
+			Messenger::print("Error: Type 'Aten&' has no member or function named '%s'.\n", s);
 			printAccessors();
-			msg.exit("AtenVariable::accessorSearch");
+			Messenger::exit("AtenVariable::accessorSearch");
 			return NULL;
 		}
-		msg.print(Messenger::Parse, "FunctionAccessor match = %i (%s)\n", i, functionData[i].name);
-		if (arrayindex != NULL)
+		Messenger::print(Messenger::Parse, "FunctionAccessor match = %i (%s)\n", i, functionData[i].name);
+		if (arrayIndex != NULL)
 		{
-			msg.print("Error: Array index given to 'Aten&' function '%s'.\n", s);
-			msg.exit("AtenVariable::accessorSearch");
+			Messenger::print("Error: Array index given to 'Aten&' function '%s'.\n", s);
+			Messenger::exit("AtenVariable::accessorSearch");
 			return NULL;
 		}
 		// Add and check supplied arguments...
 		result = new StepNode(i, VTypes::AtenData, functionData[i].returnType);
-		result->addJoinedArguments(arglist);
+		result->addJoinedArguments(argList);
 		if (!result->checkArguments(functionData[i].arguments, functionData[i].name))
 		{
-			msg.print("Error: Syntax for 'Aten&' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
+			Messenger::print("Error: Syntax for 'Aten&' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
 			delete result;
 			result = NULL;
 		}
 	}
 	else
 	{
-		msg.print(Messenger::Parse, "Accessor match = %i (%s)\n", i, accessorData[i].name);
+		Messenger::print(Messenger::Parse, "Accessor match = %i (%s)\n", i, accessorData[i].name);
 		// Were we given an array index when we didn't want one?
-		if ((accessorData[i].arraySize == 0) && (arrayindex != NULL))
+		if ((accessorData[i].arraySize == 0) && (arrayIndex != NULL))
 		{
-			msg.print("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
+			Messenger::print("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
 			result = NULL;
 		}
 		// Were we given an argument list when we didn't want one?
-		if (arglist != NULL)
+		if (argList != NULL)
 		{
-			msg.print("Error: Argument list given to 'Aten&' array member '%s'.\n", s);
-			msg.exit("AtenVariable::accessorSearch");
+			Messenger::print("Error: Argument list given to 'Aten&' array member '%s'.\n", s);
+			Messenger::exit("AtenVariable::accessorSearch");
 			return NULL;
 		}
-		result = new StepNode(i, VTypes::AtenData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
+		result = new StepNode(i, VTypes::AtenData, arrayIndex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
 	}
-	msg.exit("AtenVariable::accessorSearch");
+	Messenger::exit("AtenVariable::accessorSearch");
 	return result;
 }
 
 // Retrieve desired value
-bool AtenVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, int arrayIndex)
+bool AtenVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex, int arrayIndex)
 {
-	msg.enter("AtenVariable::retrieveAccessor");
+	Messenger::enter("AtenVariable::retrieveAccessor");
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nAccessors))
 	{
 		printf("Internal Error: Accessor id %i is out of range for Aten type.\n", i);
-		msg.exit("AtenVariable::retrieveAccessor");
+		Messenger::exit("AtenVariable::retrieveAccessor");
 		return FALSE;
 	}
 	Accessors acc = (Accessors) i;
 	// Check for correct lack/presence of array index given
 	if ((accessorData[i].arraySize == 0) && hasArrayIndex)
 	{
-		msg.print("Error: Unnecessary array index provided for member '%s'.\n", accessorData[i].name);
-		msg.exit("AtenVariable::retrieveAccessor");
+		Messenger::print("Error: Unnecessary array index provided for member '%s'.\n", accessorData[i].name);
+		Messenger::exit("AtenVariable::retrieveAccessor");
 		return FALSE;
 	}
 	else if ((accessorData[i].arraySize > 0) && (hasArrayIndex))
 	{
 		if ((arrayIndex < (acc == AtenVariable::ElementsMap ? 0 : 1)) || (arrayIndex > accessorData[i].arraySize))
 		{
-			msg.print("Error: Array index out of bounds for member '%s' (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
-			msg.exit("AtenVariable::retrieveAccessor");
+			Messenger::print("Error: Array index out of bounds for member '%s' (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
+			Messenger::exit("AtenVariable::retrieveAccessor");
 			return FALSE;
 		}
 	}
@@ -204,7 +210,7 @@ bool AtenVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 			{
 				if ((arrayIndex < 0) || (arrayIndex > Elements().nElements()))
 				{
-					msg.print("Array index [%i] is out of range for 'elements' member.\n", arrayIndex);
+					Messenger::print("Array index [%i] is out of range for 'elements' member.\n", arrayIndex);
 					result = FALSE;
 				}
 				else rv.set(VTypes::ElementData, &Elements().el[arrayIndex]);
@@ -213,26 +219,26 @@ bool AtenVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 			else rv.set(VTypes::ElementData, &Elements().el[0]);
 			break;
 		case (AtenVariable::Frame):
-			if (aten.currentModel() == NULL) rv.set(VTypes::ModelData, NULL);
-			else rv.set(VTypes::ModelData, aten.currentModel()->renderSourceModel());
+			if (aten_.currentModel() == NULL) rv.set(VTypes::ModelData, NULL);
+			else rv.set(VTypes::ModelData, aten_.currentModel()->renderSourceModel());
 			break;
 		case (AtenVariable::MC):
 			rv.set(VTypes::MonteCarloData, &mc);
 			break;
 		case (AtenVariable::Modeldata):
-			rv.set(VTypes::ModelData, aten.currentModel());
+			rv.set(VTypes::ModelData, aten_.currentModel());
 			break;
 		case (AtenVariable::Models):
 			if (hasArrayIndex)
 			{
-				if ((arrayIndex < 1) || (arrayIndex > aten.nModels()))
+				if ((arrayIndex < 1) || (arrayIndex > aten_.nModels()))
 				{
-					msg.print("Array index [%i] is out of range for 'model' member.\n", arrayIndex);
+					Messenger::print("Array index [%i] is out of range for 'model' member.\n", arrayIndex);
 					result = FALSE;
 				}
-				else m = aten.model(arrayIndex-1);
+				else m = aten_.model(arrayIndex-1);
 			}
-			else m = aten.model(0);
+			else m = aten_.model(0);
 			if (m == NULL) result = FALSE;
 			rv.set(VTypes::ModelData, m);
 			break;
@@ -240,7 +246,7 @@ bool AtenVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 			rv.set(Elements().nElements());
 			break;
 		case (AtenVariable::NModels):
-			rv.set(aten.nModels());
+			rv.set(aten_.nModels());
 			break;
 		case (AtenVariable::Preferences):
 			rv.set(VTypes::PreferencesData, &prefs);
@@ -250,19 +256,19 @@ bool AtenVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 			result = FALSE;
 			break;
 	}
-	msg.exit("AtenVariable::retrieveAccessor");
+	Messenger::exit("AtenVariable::retrieveAccessor");
 	return result;
 }
 
 // Set desired value
-bool AtenVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newvalue, bool hasArrayIndex, int arrayIndex)
+bool AtenVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newValue, bool hasArrayIndex, int arrayIndex)
 {
-	msg.enter("AtenVariable::setAccessor");
+	Messenger::enter("AtenVariable::setAccessor");
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nAccessors))
 	{
 		printf("Internal Error: Accessor id %i is out of range for Aten type.\n", i);
-		msg.exit("AtenVariable::setAccessor");
+		Messenger::exit("AtenVariable::setAccessor");
 		return FALSE;
 	}
 	Accessors acc = (Accessors) i;
@@ -274,20 +280,20 @@ bool AtenVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 		{
 			if ((accessorData[i].arraySize > 0) && ( (arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize) ))
 			{
-				msg.print("Error: Array index provided for member '%s' is out of range (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
+				Messenger::print("Error: Array index provided for member '%s' is out of range (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
 				result = FALSE;
 			}
-			if (newvalue.arraySize() > 0)
+			if (newValue.arraySize() > 0)
 			{
-				msg.print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
+				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
 				result = FALSE;
 			}
 		}
 		else
 		{
-			if (newvalue.arraySize() > accessorData[i].arraySize)
+			if (newValue.arraySize() > accessorData[i].arraySize)
 			{
-				msg.print("Error: The array being assigned to member '%s' is larger than the size of the desination array (%i cf. %i).\n", accessorData[i].name, newvalue.arraySize(), accessorData[i].arraySize);
+				Messenger::print("Error: The array being assigned to member '%s' is larger than the size of the desination array (%i cf. %i).\n", accessorData[i].name, newValue.arraySize(), accessorData[i].arraySize);
 				result = FALSE;
 			}
 		}
@@ -295,27 +301,27 @@ bool AtenVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 	else
 	{
 		// This is not an array member, so cannot be assigned an array unless its a Vector
-		if (newvalue.arraySize() != -1)
+		if (newValue.arraySize() != -1)
 		{
 			if (accessorData[i].returnType != VTypes::VectorData)
 			{
-				msg.print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
+				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
 				result = FALSE;
 			}
-			else if ((newvalue.type() != VTypes::VectorData) && (newvalue.arraySize() != 3))
+			else if ((newValue.type() != VTypes::VectorData) && (newValue.arraySize() != 3))
 			{
-				msg.print("Error: Only an array of size 3 can be assigned to a vector (member '%s').\n", accessorData[i].name);
+				Messenger::print("Error: Only an array of size 3 can be assigned to a vector (member '%s').\n", accessorData[i].name);
 				result = FALSE;
 			}
 		}
 	}
 	if (!result)
 	{
-		msg.exit("AtenVariable::setAccessor");
+		Messenger::exit("AtenVariable::setAccessor");
 		return FALSE;
 	}
 	// Get current data from ReturnValue
-	Aten *ptr = (Aten*) sourcerv.asPointer(VTypes::AtenData, result);
+	Aten* ptr = (Aten*) sourcerv.asPointer(VTypes::AtenData, result);
 	switch (acc)
 	{
 		default:
@@ -323,26 +329,26 @@ bool AtenVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 			result = FALSE;
 			break;
 	}
-	msg.exit("AtenVariable::setAccessor");
+	Messenger::exit("AtenVariable::setAccessor");
 	return result;
 }
 
 // Perform desired function
-bool AtenVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
+bool AtenVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 {
-	msg.enter("AtenVariable::performFunction");
+	Messenger::enter("AtenVariable::performFunction");
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nFunctions))
 	{
 		printf("Internal Error: FunctionAccessor id %i is out of range for Aten type.\n", i);
-		msg.exit("AtenVariable::performFunction");
+		Messenger::exit("AtenVariable::performFunction");
 		return FALSE;
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
 	int el;
 	Prefs::EnergyUnit eu;
-	Aten *ptr = (Aten*) rv.asPointer(VTypes::AtenData, result);
+	Aten* ptr = (Aten*) rv.asPointer(VTypes::AtenData, result);
 	if (result) switch (i)
 	{
 		case (AtenVariable::ConvertEnergy):
@@ -360,7 +366,7 @@ bool AtenVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 			result = FALSE;
 			break;
 	}
-	msg.exit("AtenVariable::performFunction");
+	Messenger::exit("AtenVariable::performFunction");
 	return result;
 }
 
@@ -369,14 +375,14 @@ void AtenVariable::printAccessors()
 {
 	if (AtenVariable::nAccessors > 0)
 	{
-		msg.print("Valid accessors are:\n");
-		for (int n=0; n<AtenVariable::nAccessors; ++n) msg.print("%s%s%s", n == 0 ? " " : ", ", accessorData[n].name, accessorData[n].arraySize > 0 ? "[]" : "");
-		msg.print("\n");
+		Messenger::print("Valid accessors are:\n");
+		for (int n=0; n<AtenVariable::nAccessors; ++n) Messenger::print("%s%s%s", n == 0 ? " " : ", ", accessorData[n].name, accessorData[n].arraySize > 0 ? "[]" : "");
+		Messenger::print("\n");
 	}
 	if ((AtenVariable::nFunctions > 0) && (strcmp(functionData[0].name,".dummy") != 0))
 	{
-		msg.print("Valid functions are:\n");
-		for (int n=0; n<AtenVariable::nFunctions; ++n) msg.print("%s%s(%s)", n == 0 ? " " : ", ", functionData[n].name, functionData[n].argText);
-		msg.print("\n");
+		Messenger::print("Valid functions are:\n");
+		for (int n=0; n<AtenVariable::nFunctions; ++n) Messenger::print("%s%s(%s)", n == 0 ? " " : ", ", functionData[n].name, functionData[n].argText);
+		Messenger::print("\n");
 	}
 }

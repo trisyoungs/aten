@@ -23,13 +23,16 @@
 #define ATEN_PARTITION_H
 
 #include "base/dnchar.h"
-#include "classes/grid.h"
+#include "base/grid.h"
 #include "render/gridprimitive.h"
 #include "parser/program.h"
 #include "parser/usercommandnode.h"
 #include "parser/double.h"
 #include "parser/integer.h"
 #include "methods/disorderdata.h"
+#include "base/namespace.h"
+
+ATEN_BEGIN_NAMESPACE
 
 #define CELLCHUNKSIZE 1000
 
@@ -85,9 +88,9 @@ class PartitionData : public ListItem<PartitionData>
 	// Return id of partition
 	int id();
 	// Set name of partition
-	void setName(const char *s);
+	void setName(const char* s);
 	// Return name of partition
-	const char *name();
+	const char* name();
 	// Clear cells list
 	void clear();
 	// Add cell to list
@@ -151,15 +154,15 @@ class PartitioningScheme : public ListItem<PartitioningScheme>
 	// Setup scheme information from generated program structure
 	bool initialiseFromProgram();
 	// Setup scheme information manually (for absolute grid data)
-	void initialiseAbsolute(const char *name, const char *description);
+	void initialiseAbsolute(const char* name, const char* description);
 	// Set name and description of scheme manually
-	void setName(const char *name, const char *description = NULL);
+	void setName(const char* name, const char* description = NULL);
 	// Return name of partitioning scheme
-	const char *name();
+	const char* name();
 	// Return description of partitioning scheme
-	const char *description();
+	const char* description();
 	// Set named variable in partitionFunction_'s local scope
-	bool setVariable(const char *name, const char *value);
+	bool setVariable(const char* name, const char* value);
 
 
 	/*
@@ -206,7 +209,7 @@ class PartitioningScheme : public ListItem<PartitioningScheme>
 	// Return nth partition in list
 	PartitionData *partition(int id);
 	// Return name of nth partition in list
-	const char *partitionName(int id);
+	const char* partitionName(int id);
 	// Return whether the partition function has any user-definable options
 	bool hasOptions();
 	// Execute dialog for user-definable options in partition function
@@ -224,5 +227,7 @@ class PartitioningScheme : public ListItem<PartitioningScheme>
 	// Copy data from specified partition
 	void copy(PartitioningScheme &source);
 };
+
+ATEN_END_NAMESPACE
 
 #endif

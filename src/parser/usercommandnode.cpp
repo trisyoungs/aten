@@ -22,8 +22,8 @@
 #include "parser/usercommandnode.h"
 #include "parser/tree.h"
 #include "parser/variablenode.h"
-#include "base/sysfunc.h"
-#include <string.h>
+
+ATEN_USING_NAMESPACE
 
 // Constructor
 UserCommandNode::UserCommandNode(Tree* func) : TreeNode()
@@ -41,20 +41,20 @@ UserCommandNode::~UserCommandNode()
 // Check validity of supplied arguments
 bool UserCommandNode::checkArguments()
 {
-	msg.enter("UserCommandNode::checkArguments");
-	msg.print(Messenger::Parse, "Checking the %i argument(s) given to user function '%s'...\n", args_.nItems(), function_->name());
+	Messenger::enter("UserCommandNode::checkArguments");
+	Messenger::print(Messenger::Parse, "Checking the %i argument(s) given to user function '%s'...\n", args_.nItems(), function_->name());
 	bool required;
 	int count = 0;
 	Variable *v;
-	for (TreeNode *arg = function_->args(); arg != NULL; arg = arg->next)
+	for (TreeNode* arg = function_->args(); arg != NULL; arg = arg->next)
 	{
 		v = ((VariableNode*) arg)->variable();
 		// Is this a required argument?
 		required = v->initialValue() == NULL;
 		if (required && (args_.nItems() <= count))
 		{
-			msg.print("Error: Argument %i to user function '%s' is required.\n", count+1, function_->name());
-			msg.exit("UserCommandNode::checkArguments");
+			Messenger::print("Error: Argument %i to user function '%s' is required.\n", count+1, function_->name());
+			Messenger::exit("UserCommandNode::checkArguments");
 			return FALSE;
 		}
 		else if ((!required) && ((args_.nItems() <= count))) break;
@@ -69,8 +69,8 @@ bool UserCommandNode::checkArguments()
 			}
 			else
 			{
-				msg.print("Error: Argument %i to user function '%s' expected %s but was given %s.\n", count+1, function_->name(), VTypes::aDataType(v->returnType()), VTypes::aDataType(args_[count]->item->returnType()));
-				msg.exit("UserCommandNode::checkArguments");
+				Messenger::print("Error: Argument %i to user function '%s' expected %s but was given %s.\n", count+1, function_->name(), VTypes::aDataType(v->returnType()), VTypes::aDataType(args_[count]->item->returnType()));
+				Messenger::exit("UserCommandNode::checkArguments");
 				return FALSE;
 			}
 		}
@@ -81,24 +81,24 @@ bool UserCommandNode::checkArguments()
 		}
 		else
 		{
-			msg.print("Error: Argument %i to user function '%s' expected %s but was given %s.\n", count+1, function_->name(), VTypes::aDataType(v->returnType()), VTypes::aDataType(args_[count]->item->returnType()));
-			msg.exit("UserCommandNode::checkArguments");
+			Messenger::print("Error: Argument %i to user function '%s' expected %s but was given %s.\n", count+1, function_->name(), VTypes::aDataType(v->returnType()), VTypes::aDataType(args_[count]->item->returnType()));
+			Messenger::exit("UserCommandNode::checkArguments");
 			return FALSE;
 		}
 	}
 	// Extra arguments provided?
 	if (args_.nItems() > count)
 	{
-		msg.print("Error: %i extra arguments given to user function '%s'.\n", args_.nItems()-count, function_->name());
-		msg.exit("UserCommandNode::checkArguments");
+		Messenger::print("Error: %i extra arguments given to user function '%s'.\n", args_.nItems()-count, function_->name());
+		Messenger::exit("UserCommandNode::checkArguments");
 		return FALSE;
 	}
-	msg.exit("UserCommandNode::checkArguments");
+	Messenger::exit("UserCommandNode::checkArguments");
 	return TRUE;
 }
 
 // Execute command
-bool UserCommandNode::execute(ReturnValue &rv)
+bool UserCommandNode::execute(ReturnValue& rv)
 {
 	// Check for valid function
 	if (function_ == NULL) return FALSE;
@@ -107,7 +107,7 @@ bool UserCommandNode::execute(ReturnValue &rv)
 	Refitem<TreeNode,int> *value = args_.first();
 	ReturnValue varval;
 	Variable *v;
-	for (TreeNode *arg = function_->args(); arg != NULL; arg = arg->next)
+	for (TreeNode* arg = function_->args(); arg != NULL; arg = arg->next)
 	{
 		// If 'value' is not NULL, execute it and get the value to pass to the argument
 		if (value != NULL)
@@ -132,7 +132,7 @@ bool UserCommandNode::execute(ReturnValue &rv)
 }
 
 // Print node contents
-void UserCommandNode::nodePrint(int offset, const char *prefix)
+void UserCommandNode::nodePrint(int offset, const char* prefix)
 {
 	// Construct tabbed offset
 	Dnchar tab(offset+32);
@@ -144,11 +144,11 @@ void UserCommandNode::nodePrint(int offset, const char *prefix)
 // 	printf("Function id = %p\n", function_);
 	printf("[UC]%s%s (UserCommand) (%i arguments)\n", tab.get(), function_->name(), args_.nItems());
 	// Output Argument data
-	for (Refitem<TreeNode,int> *ri = args_.first(); ri != NULL; ri = ri->next) ri->item->nodePrint(offset+1);
+	for (Refitem<TreeNode,int>* ri = args_.first(); ri != NULL; ri = ri->next) ri->item->nodePrint(offset+1);
 }
 
 // Set from returnvalue node
-bool UserCommandNode::set(ReturnValue &rv)
+bool UserCommandNode::set(ReturnValue& rv)
 {
 	printf("Internal Error: Trying to 'set' a UserCommandNode.\n");
 	return FALSE;
@@ -168,9 +168,9 @@ void UserCommandNode::setFunction(Tree* func)
 }
 
 // Create, run, and free a single command with simple argument list
-bool UserCommandNode::run(Tree* func, ReturnValue &rv, const char *arglist ...)
+bool UserCommandNode::run(Tree* func, ReturnValue& rv, const char* argList ...)
 {
-	msg.enter("UserCommandNode::run");
+	Messenger::enter("UserCommandNode::run");
 	// Local tree to contain usercommandnode and its arguments
 	Tree tree;
 
@@ -179,11 +179,11 @@ bool UserCommandNode::run(Tree* func, ReturnValue &rv, const char *arglist ...)
 	node.parent_ = &tree;
 
 	// Set arguments from supplied list
-	const char *c;
+	const char* c;
 	va_list vars;
-	va_start(vars, arglist);
-	TreeNode *var = NULL;
-	for (c = &arglist[0]; *c != '\0'; c++)
+	va_start(vars, argList);
+	TreeNode* var = NULL;
+	for (c = &argList[0]; *c != '\0'; c++)
 	{
 		switch (*c)
 		{
@@ -195,7 +195,7 @@ bool UserCommandNode::run(Tree* func, ReturnValue &rv, const char *arglist ...)
 				break;
 			case ('c'):
 			case ('s'):
-				var = tree.addConstant(va_arg(vars, const char *));
+				var = tree.addConstant(va_arg(vars, const char* ));
 				break;
 			default:
 				printf("Invalid argument specifier '%c' in UserCommandNode::run.\n", *c);
@@ -207,14 +207,14 @@ bool UserCommandNode::run(Tree* func, ReturnValue &rv, const char *arglist ...)
 	va_end(vars);
 	// Now, run the command...
 	bool result = node.execute(rv);
-	msg.exit("UserCommandNode::run");
+	Messenger::exit("UserCommandNode::run");
 	return result;
 }
 
 // Create, run, and free a single command with simple argument list
-bool UserCommandNode::run(Tree* func, ReturnValue &rv, TreeNode *arglisthead)
+bool UserCommandNode::run(Tree* func, ReturnValue& rv, TreeNode* argListhead)
 {
-	msg.enter("UserCommandNode::run(arglist)");
+	Messenger::enter("UserCommandNode::run(argList)");
 	// Local tree to contain usercommandnode and its arguments
 	Tree tree;
 
@@ -223,10 +223,10 @@ bool UserCommandNode::run(Tree* func, ReturnValue &rv, TreeNode *arglisthead)
 	node.parent_ = &tree;
 
 	// Set arguments from supplied list
-	node.addListArguments(arglisthead);
+	node.addListArguments(argListhead);
 
 	// Now, run the command...
 	bool result = node.execute(rv);
-	msg.exit("UserCommandNode::run(arglist)");
+	Messenger::exit("UserCommandNode::run(argList)");
 	return result;
 }

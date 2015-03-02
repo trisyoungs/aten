@@ -24,9 +24,13 @@
 
 #include "gui/ui_modellist.h"
 #include "gui/textratreewidgetitem.h"
+#include "gui/ttreewidgetitem.h"
+#include "base/namespace.h"
 
-// Forward Declarations
+// Forward Declarations (Qt)
 class AtenWindow;
+
+ATEN_USING_NAMESPACE
 
 // Model List dock widget
 class ModelListWidget : public QDockWidget

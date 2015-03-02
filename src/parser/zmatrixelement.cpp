@@ -21,18 +21,17 @@
 
 #include "parser/zmatrixelement.h"
 #include "parser/stepnode.h"
-#include "classes/zmatrix.h"
+#include "base/zmatrix.h"
 #include "model/model.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+
+ATEN_USING_NAMESPACE
 
 /*
 // Variable
 */
 
 // Constructor
-ZMatrixElementVariable::ZMatrixElementVariable(ZMatrixElement *ptr, bool constant)
+ZMatrixElementVariable::ZMatrixElementVariable(ZMatrixElement* ptr, bool constant)
 {
 	// Private variables
 	returnType_ = VTypes::ZMatrixElementData;
@@ -73,16 +72,16 @@ FunctionAccessor ZMatrixElementVariable::functionData[ZMatrixElementVariable::nF
 };
 
 // Search variable access list for provided accessor (call private static function)
-StepNode *ZMatrixElementVariable::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist)
+StepNode* ZMatrixElementVariable::findAccessor(const char* s, TreeNode* arrayIndex, TreeNode* argList)
 {
-	return ZMatrixElementVariable::accessorSearch(s, arrayindex, arglist);
+	return ZMatrixElementVariable::accessorSearch(s, arrayIndex, argList);
 }
 
 // Private static function to search accessors
-StepNode *ZMatrixElementVariable::accessorSearch(const char *s, TreeNode *arrayindex, TreeNode *arglist)
+StepNode* ZMatrixElementVariable::accessorSearch(const char* s, TreeNode* arrayIndex, TreeNode* argList)
 {
-	msg.enter("ZMatrixElementVariable::accessorSearch");
-	StepNode *result = NULL;
+	Messenger::enter("ZMatrixElementVariable::accessorSearch");
+	StepNode* result = NULL;
 	int i = 0;
 	i = Variable::searchAccessor(s, nAccessors, accessorData);
 	if (i == -1)
@@ -92,84 +91,84 @@ StepNode *ZMatrixElementVariable::accessorSearch(const char *s, TreeNode *arrayi
 		i = Variable::searchAccessor(s, nFunctions, functionData);
 		if (i == -1)
 		{
-			msg.print("Error: Type 'ZMatrixElement&' has no member or function named '%s'.\n", s);
+			Messenger::print("Error: Type 'ZMatrixElement&' has no member or function named '%s'.\n", s);
 			printAccessors();
-			msg.exit("ZMatrixElementVariable::accessorSearch");
+			Messenger::exit("ZMatrixElementVariable::accessorSearch");
 			return NULL;
 		}
-		msg.print(Messenger::Parse, "FunctionAccessor match = %i (%s)\n", i, functionData[i].name);
-		if (arrayindex != NULL)
+		Messenger::print(Messenger::Parse, "FunctionAccessor match = %i (%s)\n", i, functionData[i].name);
+		if (arrayIndex != NULL)
 		{
-			msg.print("Error: Array index given to 'ZMatrixElement&' function '%s'.\n", s);
-			msg.exit("ZMatrixElementVariable::accessorSearch");
+			Messenger::print("Error: Array index given to 'ZMatrixElement&' function '%s'.\n", s);
+			Messenger::exit("ZMatrixElementVariable::accessorSearch");
 			return NULL;
 		}
 		// Add and check supplied arguments...
 		result = new StepNode(i, VTypes::ZMatrixElementData, functionData[i].returnType);
-		result->addJoinedArguments(arglist);
+		result->addJoinedArguments(argList);
 		if (!result->checkArguments(functionData[i].arguments, functionData[i].name))
 		{
-			msg.print("Error: Syntax for 'ZMatrixElement&' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
+			Messenger::print("Error: Syntax for 'ZMatrixElement&' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
 			delete result;
 			result = NULL;
 		}
 	}
 	else
 	{
-		msg.print(Messenger::Parse, "Accessor match = %i (%s)\n", i, accessorData[i].name);
+		Messenger::print(Messenger::Parse, "Accessor match = %i (%s)\n", i, accessorData[i].name);
 		// Were we given an array index when we didn't want one?
-		if ((accessorData[i].arraySize == 0) && (arrayindex != NULL))
+		if ((accessorData[i].arraySize == 0) && (arrayIndex != NULL))
 		{
-			msg.print("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
+			Messenger::print("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
 			result = NULL;
 		}
 		// Were we given an argument list when we didn't want one?
-		if (arglist != NULL)
+		if (argList != NULL)
 		{
-			msg.print("Error: Argument list given to 'ZMatrixElement&' array member '%s'.\n", s);
-			msg.exit("ZMatrixElementVariable::accessorSearch");
+			Messenger::print("Error: Argument list given to 'ZMatrixElement&' array member '%s'.\n", s);
+			Messenger::exit("ZMatrixElementVariable::accessorSearch");
 			return NULL;
 		}
-		result = new StepNode(i, VTypes::ZMatrixElementData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
+		result = new StepNode(i, VTypes::ZMatrixElementData, arrayIndex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
 	}
-	msg.exit("ZMatrixElementVariable::accessorSearch");
+	Messenger::exit("ZMatrixElementVariable::accessorSearch");
 	return result;
 }
 
 // Retrieve desired value
-bool ZMatrixElementVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, int arrayIndex)
+bool ZMatrixElementVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex, int arrayIndex)
 {
-	msg.enter("ZMatrixElementVariable::retrieveAccessor");
+	Messenger::enter("ZMatrixElementVariable::retrieveAccessor");
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nAccessors))
 	{
 		printf("Internal Error: Accessor id %i is out of range for ZMatrixElement type.\n", i);
-		msg.exit("ZMatrixElementVariable::retrieveAccessor");
+		Messenger::exit("ZMatrixElementVariable::retrieveAccessor");
 		return FALSE;
 	}
 	Accessors acc = (Accessors) i;
 	// Check for correct lack/presence of array index given
 	if ((accessorData[i].arraySize == 0) && hasArrayIndex)
 	{
-		msg.print("Error: Unnecessary array index provided for member '%s'.\n", accessorData[i].name);
-		msg.exit("ZMatrixElementVariable::retrieveAccessor");
+		Messenger::print("Error: Unnecessary array index provided for member '%s'.\n", accessorData[i].name);
+		Messenger::exit("ZMatrixElementVariable::retrieveAccessor");
 		return FALSE;
 	}
 	else if ((accessorData[i].arraySize > 0) && (hasArrayIndex))
 	{
 		if ((arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize))
 		{
-			msg.print("Error: Array index out of bounds for member '%s' (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
-			msg.exit("ZMatrixElementVariable::retrieveAccessor");
+			Messenger::print("Error: Array index out of bounds for member '%s' (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
+			Messenger::exit("ZMatrixElementVariable::retrieveAccessor");
 			return FALSE;
 		}
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	ZMatrixElement *ptr = (ZMatrixElement*) rv.asPointer(VTypes::ZMatrixElementData, result);
+	ZMatrixElement* ptr = (ZMatrixElement*) rv.asPointer(VTypes::ZMatrixElementData, result);
 	if ((!result) || (ptr == NULL))
 	{
-		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::ZMatrixElementData));
+		Messenger::print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::ZMatrixElementData));
 		result = FALSE;
 	}
 	if (result) switch (acc)
@@ -221,19 +220,19 @@ bool ZMatrixElementVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasAr
 			result = FALSE;
 			break;
 	}
-	msg.exit("ZMatrixElementVariable::retrieveAccessor");
+	Messenger::exit("ZMatrixElementVariable::retrieveAccessor");
 	return result;
 }
 
 // Set desired value
-bool ZMatrixElementVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newvalue, bool hasArrayIndex, int arrayIndex)
+bool ZMatrixElementVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newValue, bool hasArrayIndex, int arrayIndex)
 {
-	msg.enter("ZMatrixElementVariable::setAccessor");
+	Messenger::enter("ZMatrixElementVariable::setAccessor");
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nAccessors))
 	{
 		printf("Internal Error: Accessor id %i is out of range for ZMatrixElement type.\n", i);
-		msg.exit("ZMatrixElementVariable::setAccessor");
+		Messenger::exit("ZMatrixElementVariable::setAccessor");
 		return FALSE;
 	}
 	Accessors acc = (Accessors) i;
@@ -245,20 +244,20 @@ bool ZMatrixElementVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnVal
 		{
 			if ((accessorData[i].arraySize > 0) && ( (arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize) ))
 			{
-				msg.print("Error: Array index provided for member '%s' is out of range (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
+				Messenger::print("Error: Array index provided for member '%s' is out of range (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
 				result = FALSE;
 			}
-			if ((newvalue.arraySize() > 0) && (accessorData[i].returnType != VTypes::VectorData))
+			if ((newValue.arraySize() > 0) && (accessorData[i].returnType != VTypes::VectorData))
 			{
-				msg.print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
+				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
 				result = FALSE;
 			}
 		}
 		else
 		{
-			if (newvalue.arraySize() > accessorData[i].arraySize)
+			if (newValue.arraySize() > accessorData[i].arraySize)
 			{
-				msg.print("Error: The array being assigned to member '%s' is larger than the size of the desination array (%i cf. %i).\n", accessorData[i].name, newvalue.arraySize(), accessorData[i].arraySize);
+				Messenger::print("Error: The array being assigned to member '%s' is larger than the size of the desination array (%i cf. %i).\n", accessorData[i].name, newValue.arraySize(), accessorData[i].arraySize);
 				result = FALSE;
 			}
 		}
@@ -266,84 +265,84 @@ bool ZMatrixElementVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnVal
 	else
 	{
 		// This is not an array member, so cannot be assigned an array unless its a Vector
-		if (newvalue.arraySize() != -1)
+		if (newValue.arraySize() != -1)
 		{
 			if (accessorData[i].returnType != VTypes::VectorData)
 			{
-				msg.print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
+				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
 				result = FALSE;
 			}
-			else if ((newvalue.type() != VTypes::VectorData) && (newvalue.arraySize() != 3))
+			else if ((newValue.type() != VTypes::VectorData) && (newValue.arraySize() != 3))
 			{
-				msg.print("Error: Only an array of size 3 can be assigned to a vector (member '%s').\n", accessorData[i].name);
+				Messenger::print("Error: Only an array of size 3 can be assigned to a vector (member '%s').\n", accessorData[i].name);
 				result = FALSE;
 			}
 		}
 	}
 	if (!result)
 	{
-		msg.exit("ZMatrixElementVariable::setAccessor");
+		Messenger::exit("ZMatrixElementVariable::setAccessor");
 		return FALSE;
 	}
 	// Get current data from ReturnValue
-	ZMatrixElement *ptr = (ZMatrixElement*) sourcerv.asPointer(VTypes::ZMatrixElementData, result);
+	ZMatrixElement* ptr = (ZMatrixElement*) sourcerv.asPointer(VTypes::ZMatrixElementData, result);
 	if ((!result) || (ptr == NULL))
 	{
-		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::ZMatrixElementData));
+		Messenger::print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::ZMatrixElementData));
 		result = FALSE;
 	}
 	if (result) switch (acc)
 	{
 		case (ZMatrixElementVariable::Angle):
-			ptr->setAngle( newvalue.asDouble() );
+			ptr->setAngle( newValue.asDouble() );
 			break;
 		case (ZMatrixElementVariable::AngleName):
-			ptr->setAngleName( newvalue.asString() );
+			ptr->setAngleName( newValue.asString() );
 			break;
 		case (ZMatrixElementVariable::Distance):
-			ptr->setDistance( newvalue.asDouble() );
+			ptr->setDistance( newValue.asDouble() );
 			break;
 		case (ZMatrixElementVariable::DistanceName):
-			ptr->setDistanceName( newvalue.asString() );
+			ptr->setDistanceName( newValue.asString() );
 			break;
 		case (ZMatrixElementVariable::NegateAngle):
-			ptr->setNegated(1, newvalue.asBool() );
+			ptr->setNegated(1, newValue.asBool() );
 			break;
 		case (ZMatrixElementVariable::NegateDistance):
-			ptr->setNegated(0, newvalue.asBool() );
+			ptr->setNegated(0, newValue.asBool() );
 			break;
 		case (ZMatrixElementVariable::NegateTorsion):
-			ptr->setNegated(2, newvalue.asBool() );
+			ptr->setNegated(2, newValue.asBool() );
 			break;
 		case (ZMatrixElementVariable::Torsion):
-			ptr->setTorsion( newvalue.asDouble() );
+			ptr->setTorsion( newValue.asDouble() );
 			break;
 		case (ZMatrixElementVariable::TorsionName):
-			ptr->setTorsionName( newvalue.asString() );
+			ptr->setTorsionName( newValue.asString() );
 			break;
 		default:
 			printf("ZMatrixElementVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);
 			result = FALSE;
 			break;
 	}
-	msg.exit("ZMatrixElementVariable::setAccessor");
+	Messenger::exit("ZMatrixElementVariable::setAccessor");
 	return result;
 }
 
 // Perform desired function
-bool ZMatrixElementVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
+bool ZMatrixElementVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 {
-	msg.enter("ZMatrixElementVariable::performFunction");
+	Messenger::enter("ZMatrixElementVariable::performFunction");
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nFunctions))
 	{
 		printf("Internal Error: FunctionAccessor id %i is out of range for ZMatrixElement type.\n", i);
-		msg.exit("ZMatrixElementVariable::performFunction");
+		Messenger::exit("ZMatrixElementVariable::performFunction");
 		return FALSE;
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	ZMatrixElement *ptr = (ZMatrixElement*) rv.asPointer(VTypes::ZMatrixElementData, result);
+	ZMatrixElement* ptr = (ZMatrixElement*) rv.asPointer(VTypes::ZMatrixElementData, result);
 	if (result) switch (i)
 	{
 		default:
@@ -351,7 +350,7 @@ bool ZMatrixElementVariable::performFunction(int i, ReturnValue &rv, TreeNode *n
 			result = FALSE;
 			break;
 	}
-	msg.exit("ZMatrixElementVariable::performFunction");
+	Messenger::exit("ZMatrixElementVariable::performFunction");
 	return result;
 }
 
@@ -360,15 +359,15 @@ void ZMatrixElementVariable::printAccessors()
 {
 	if (ZMatrixElementVariable::nAccessors > 0)
 	{
-		msg.print("Valid accessors are:\n");
-		for (int n=0; n<ZMatrixElementVariable::nAccessors; ++n) msg.print("%s%s%s", n == 0 ? " " : ", ", accessorData[n].name, accessorData[n].arraySize > 0 ? "[]" : "");
-		msg.print("\n");
+		Messenger::print("Valid accessors are:\n");
+		for (int n=0; n<ZMatrixElementVariable::nAccessors; ++n) Messenger::print("%s%s%s", n == 0 ? " " : ", ", accessorData[n].name, accessorData[n].arraySize > 0 ? "[]" : "");
+		Messenger::print("\n");
 	}
 	if ((ZMatrixElementVariable::nFunctions > 0) && (strcmp(functionData[0].name,".dummy") != 0))
 	{
-		msg.print("Valid functions are:\n");
-		for (int n=0; n<ZMatrixElementVariable::nFunctions; ++n) msg.print("%s%s(%s)", n == 0 ? " " : ", ", functionData[n].name, functionData[n].argText);
-		msg.print("\n");
+		Messenger::print("Valid functions are:\n");
+		for (int n=0; n<ZMatrixElementVariable::nFunctions; ++n) Messenger::print("%s%s(%s)", n == 0 ? " " : ", ", functionData[n].name, functionData[n].argText);
+		Messenger::print("\n");
 	}
 }
 
@@ -377,7 +376,7 @@ void ZMatrixElementVariable::printAccessors()
 */
 
 // Constructor
-ZMatrixElementArrayVariable::ZMatrixElementArrayVariable(TreeNode *sizeexpr, bool constant)
+ZMatrixElementArrayVariable::ZMatrixElementArrayVariable(TreeNode* sizeexpr, bool constant)
 {
 	// Private variables
 	returnType_ = VTypes::ZMatrixElementData;
@@ -389,7 +388,7 @@ ZMatrixElementArrayVariable::ZMatrixElementArrayVariable(TreeNode *sizeexpr, boo
 }
 
 // Search variable access list for provided accessor
-StepNode *ZMatrixElementArrayVariable::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist)
+StepNode* ZMatrixElementArrayVariable::findAccessor(const char* s, TreeNode* arrayIndex, TreeNode* argList)
 {
-	return ZMatrixElementVariable::accessorSearch(s, arrayindex, arglist);
+	return ZMatrixElementVariable::accessorSearch(s, arrayIndex, argList);
 }

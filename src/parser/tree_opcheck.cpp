@@ -21,15 +21,17 @@
 
 #include "parser/tree.h"
 
+ATEN_USING_NAMESPACE
+
 // Check unary operator type compatibility
-VTypes::DataType Tree::checkUnaryOperatorTypes(Command::Function func, VTypes::DataType type, bool array, bool &returnsarray)
+VTypes::DataType Tree::checkUnaryOperatorTypes(Commands::Function func, VTypes::DataType type, bool array, bool &returnsarray)
 {
-	msg.enter("Tree::checkUnaryOperatorTypes");
+	Messenger::enter("Tree::checkUnaryOperatorTypes");
 	int id = VTypes::dataSinglet(type, array ? 1 : -1);
 	// Check for no data type
 	if (id == VTypes::UntypedData)
 	{
-		msg.exit("Tree::checkUnaryOperatorTypes");
+		Messenger::exit("Tree::checkUnaryOperatorTypes");
 		return VTypes::NoData;
 	}
 	VTypes::DataType result = VTypes::NoData;
@@ -37,10 +39,10 @@ VTypes::DataType Tree::checkUnaryOperatorTypes(Command::Function func, VTypes::D
 	switch (func)
 	{
 		// Postfix and prefix operators (must have integer or real types, or pointer class with list pointers)
-		case (Command::OperatorPostfixIncrease):
-		case (Command::OperatorPostfixDecrease):
-		case (Command::OperatorPrefixIncrease):
-		case (Command::OperatorPrefixDecrease):
+		case (Commands::OperatorPostfixIncrease):
+		case (Commands::OperatorPostfixDecrease):
+		case (Commands::OperatorPrefixIncrease):
+		case (Commands::OperatorPrefixDecrease):
 			switch (id)
 			{
 				case (VTypes::Int):
@@ -62,7 +64,7 @@ VTypes::DataType Tree::checkUnaryOperatorTypes(Command::Function func, VTypes::D
 					break;
 			}
 			break;
-		case (Command::OperatorNegate):
+		case (Commands::OperatorNegate):
 			switch (id)
 			{
 				case (VTypes::Int):
@@ -78,7 +80,7 @@ VTypes::DataType Tree::checkUnaryOperatorTypes(Command::Function func, VTypes::D
 					break;
 			}
 			break;
-		case (Command::OperatorNot):
+		case (Commands::OperatorNot):
 			// Always works, and always returns an integer
 			result = VTypes::IntegerData;
 			break;
@@ -86,33 +88,33 @@ VTypes::DataType Tree::checkUnaryOperatorTypes(Command::Function func, VTypes::D
 			break;
 	}
 	// Print error message if necessary
-	if (result == VTypes::NoData) msg.print("Error: Unary operator %s cannot act on %s.\n", Command::data[func].keyword, VTypes::aDataType(type));
-	msg.exit("Tree::checkUnaryOperatorTypes");
+	if (result == VTypes::NoData) Messenger::print("Error: Unary operator %s cannot act on %s.\n", Commands::command(func), VTypes::aDataType(type));
+	Messenger::exit("Tree::checkUnaryOperatorTypes");
 	return result;
 }
 
 // Check binary operator type compatibility
-VTypes::DataType Tree::checkBinaryOperatorTypes(Command::Function func, VTypes::DataType type1, bool array1, VTypes::DataType type2, bool array2, bool &returnsarray)
+VTypes::DataType Tree::checkBinaryOperatorTypes(Commands::Function func, VTypes::DataType type1, bool array1, VTypes::DataType type2, bool array2, bool &returnsarray)
 {
-	msg.enter("Tree::checkBinaryOperatorTypes");
+	Messenger::enter("Tree::checkBinaryOperatorTypes");
 	int id = VTypes::dataPair(type1, array1 ? 1 : -1, type2, array2 ? 1 : -1);
 	// Check for no data type
 	if (id == VTypes::UntypedData)
 	{
 		// Check validity of left and rhs values
-		if (type1 == VTypes::NoData) msg.print("Error: LHS operator has no type and can't be assigned to.\n");
-		if (type2 == VTypes::NoData) msg.print("Error: RHS operator has no type and can't be assigned to.\n");
-		msg.exit("Tree::checkBinaryOperatorTypes");
+		if (type1 == VTypes::NoData) Messenger::print("Error: LHS operator has no type and can't be assigned to.\n");
+		if (type2 == VTypes::NoData) Messenger::print("Error: RHS operator has no type and can't be assigned to.\n");
+		Messenger::exit("Tree::checkBinaryOperatorTypes");
 		return VTypes::NoData;
 	}
 	VTypes::DataType result = VTypes::NoData;
 	returnsarray = FALSE;
 	switch (func)
 	{
-		case (Command::OperatorAdd):
-		case (Command::OperatorSubtract):
-		case (Command::OperatorAssignmentPlus):
-		case (Command::OperatorAssignmentSubtract):
+		case (Commands::OperatorAdd):
+		case (Commands::OperatorSubtract):
+		case (Commands::OperatorAssignmentPlus):
+		case (Commands::OperatorAssignmentSubtract):
 			switch (id)
 			{
 				case (VTypes::IntInt):
@@ -149,13 +151,13 @@ VTypes::DataType Tree::checkBinaryOperatorTypes(Command::Function func, VTypes::
 					break;
 			}
 			break;
-		case (Command::OperatorAnd):
-		case (Command::OperatorOr):
+		case (Commands::OperatorAnd):
+		case (Commands::OperatorOr):
 			result = VTypes::IntegerData;
 			returnsarray = FALSE;
 			break;
-		case (Command::OperatorDivide):
-		case (Command::OperatorAssignmentDivide):
+		case (Commands::OperatorDivide):
+		case (Commands::OperatorAssignmentDivide):
 			switch (id)
 			{
 				case (VTypes::IntAIntA):
@@ -186,8 +188,8 @@ VTypes::DataType Tree::checkBinaryOperatorTypes(Command::Function func, VTypes::
 					break;
 			}
 			break;
-		case (Command::OperatorAssignmentMultiply):
-		case (Command::OperatorMultiply):
+		case (Commands::OperatorAssignmentMultiply):
+		case (Commands::OperatorMultiply):
 			switch (id)
 			{
 				case (VTypes::IntAIntA):
@@ -227,12 +229,12 @@ VTypes::DataType Tree::checkBinaryOperatorTypes(Command::Function func, VTypes::
 					break;
 			}
 			break;
-		case (Command::OperatorEqualTo):
-		case (Command::OperatorGreaterThan):
-		case (Command::OperatorGreaterThanEqualTo):
-		case (Command::OperatorLessThan):
-		case (Command::OperatorLessThanEqualTo):
-		case (Command::OperatorNotEqualTo):
+		case (Commands::OperatorEqualTo):
+		case (Commands::OperatorGreaterThan):
+		case (Commands::OperatorGreaterThanEqualTo):
+		case (Commands::OperatorLessThan):
+		case (Commands::OperatorLessThanEqualTo):
+		case (Commands::OperatorNotEqualTo):
 			switch (id)
 			{
 				case (VTypes::IntAIntA):
@@ -253,7 +255,7 @@ VTypes::DataType Tree::checkBinaryOperatorTypes(Command::Function func, VTypes::
 					break;
 			}
 			break;
-		case (Command::OperatorPower):
+		case (Commands::OperatorPower):
 			switch (id)
 			{
 				case (VTypes::IntInt):
@@ -264,7 +266,7 @@ VTypes::DataType Tree::checkBinaryOperatorTypes(Command::Function func, VTypes::
 					break;
 			}
 			break;
-		case (Command::OperatorModulus):
+		case (Commands::OperatorModulus):
 			switch (id)
 			{
 				case (VTypes::IntInt):
@@ -272,7 +274,7 @@ VTypes::DataType Tree::checkBinaryOperatorTypes(Command::Function func, VTypes::
 					break;
 			}
 			break;
-		case (Command::OperatorAssignment):
+		case (Commands::OperatorAssignment):
 			// First, special case between Element& and int
 			if ((type1 == VTypes::ElementData) && (type2 == VTypes::IntegerData))
 			{
@@ -319,37 +321,37 @@ VTypes::DataType Tree::checkBinaryOperatorTypes(Command::Function func, VTypes::
 			break;
 	}
 	// Print error message
-	if (result == VTypes::NoData) msg.print("Error: Operator %s cannot act between types %s and %s.\n", Command::data[func].keyword, VTypes::dataType(type1), VTypes::dataType(type2));
-	msg.exit("Tree::checkBinaryOperatorTypes");
+	if (result == VTypes::NoData) Messenger::print("Error: Operator %s cannot act between types %s and %s.\n", Commands::command(func), VTypes::dataType(type1), VTypes::dataType(type2));
+	Messenger::exit("Tree::checkBinaryOperatorTypes");
 	return result;
 }
 
 // Check ternary operator type compatibility
-VTypes::DataType Tree::checkTernaryOperatorTypes(Command::Function func, VTypes::DataType type1, bool array1, VTypes::DataType type2, bool array2, VTypes::DataType type3, bool array3, bool &returnsarray)
+VTypes::DataType Tree::checkTernaryOperatorTypes(Commands::Function func, VTypes::DataType type1, bool array1, VTypes::DataType type2, bool array2, VTypes::DataType type3, bool array3, bool &returnsarray)
 {
-	msg.enter("Tree::checkBinaryOperatorTypes");
+	Messenger::enter("Tree::checkBinaryOperatorTypes");
 	int id = VTypes::dataPair(type1, array1 ? 1 : -1, type2, array2 ? 1 : -1);
 	// Check for no data type
 	if (id == VTypes::UntypedData)
 	{
 		// Check validity of left and rhs values
-		if (type1 == VTypes::NoData) msg.print("Error: LHS operator has no type and can't be assigned to.\n");
-		if (type2 == VTypes::NoData) msg.print("Error: RHS operator has no type and can't be assigned to.\n");
-		msg.exit("Tree::checkBinaryOperatorTypes");
+		if (type1 == VTypes::NoData) Messenger::print("Error: LHS operator has no type and can't be assigned to.\n");
+		if (type2 == VTypes::NoData) Messenger::print("Error: RHS operator has no type and can't be assigned to.\n");
+		Messenger::exit("Tree::checkBinaryOperatorTypes");
 		return VTypes::NoData;
 	}
 	VTypes::DataType result = VTypes::NoData;
 	returnsarray = FALSE;
 	switch (func)
 	{
-		case (Command::OperatorInlineIf):
+		case (Commands::OperatorInlineIf):
 			// Assume that type1 can always be resolved to a bool. Type2 and Type3 must be the same type.
 			if (type2 == type3) result = type2;
-			else msg.print("Error: Type mismatch in arguments for ternary operator '?:' - return value types are '%s' and '%s'.\n", VTypes::dataType(type2), VTypes::dataType(type3));
+			else Messenger::print("Error: Type mismatch in arguments for ternary operator '?:' - return value types are '%s' and '%s'.\n", VTypes::dataType(type2), VTypes::dataType(type3));
 			break;
 		default:
 			break;
 	}
-	msg.exit("Tree::checkTernaryOperatorTypes");
+	Messenger::exit("Tree::checkTernaryOperatorTypes");
 	return result;
 }

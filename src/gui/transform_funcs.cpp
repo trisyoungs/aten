@@ -19,6 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <QtGui/QCloseEvent>
 #include "main/aten.h"
 #include "gui/transform.h"
 #include "gui/mainwindow.h"
@@ -90,7 +91,7 @@ void rotatePickAxisButton_callback(Reflist<Atom,int> *picked)
 void TransformWidget::on_RotatePickAxisButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	parent_.setSelectedMode(UserAction::RotatePickAxisAction,2,&rotatePickAxisButton_callback);
+	(UserAction::RotatePickAxisAction,2,&rotatePickAxisButton_callback);
 }
 
 void TransformWidget::rotateSelection(double direction)
@@ -102,7 +103,7 @@ void TransformWidget::rotateSelection(double direction)
 	o.x = ui.RotateOriginXSpin->value();
 	o.y = ui.RotateOriginYSpin->value();
 	o.z = ui.RotateOriginZSpin->value();
-	CommandNode::run(Command::AxisRotate, "ddddddd", v.x, v.y, v.z, direction * ui.RotateAngleSpin->value(), o.x, o.y, o.z);
+	CommandNode::run(Commands::AxisRotate, "ddddddd", v.x, v.y, v.z, direction * ui.RotateAngleSpin->value(), o.x, o.y, o.z);
 	Model* m = parent_.aten().currentModelOrFrame();
 	m->updateMeasurements();
 	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
@@ -122,7 +123,7 @@ void TransformWidget::on_TransformApplyButton_clicked(bool on)
 	// ...and grab coordinate origin
 	Vec3<double> v;
 	v.set(ui.TransformOriginXSpin->value(), ui.TransformOriginYSpin->value(), ui.TransformOriginZSpin->value());
-	CommandNode::run(Command::MatrixTransform, "dddddddddddd", mat[0], mat[1], mat[2], mat[4], mat[5], mat[6], mat[8], mat[9], mat[10], v.x, v.y, v.z);
+	CommandNode::run(Commands::MatrixTransform, "dddddddddddd", mat[0], mat[1], mat[2], mat[4], mat[5], mat[6], mat[8], mat[9], mat[10], v.x, v.y, v.z);
 
 	parent_.aten().currentModelOrFrame()->updateMeasurements();
 	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
@@ -170,19 +171,19 @@ void transformPickCButton_callback(Reflist<Atom,int> *picked)
 void TransformWidget::on_TransformPickAButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	parent_.setSelectedMode(UserAction::TransformPickAAction,2,&transformPickAButton_callback);
+	parent_.ui.MainView->setSelectedMode(UserAction::TransformPickAAction,2,&transformPickAButton_callback);
 }
 
 void TransformWidget::on_TransformPickBButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	parent_.setSelectedMode(UserAction::TransformPickBAction,2,&transformPickBButton_callback);
+	parent_.ui.MainView->setSelectedMode(UserAction::TransformPickBAction,2,&transformPickBButton_callback);
 }
 
 void TransformWidget::on_TransformPickCButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	parent_.setSelectedMode(UserAction::TransformPickCAction,2,&transformPickCButton_callback);
+	parent_.ui.MainView->setSelectedMode(UserAction::TransformPickCAction,2,&transformPickCButton_callback);
 }
 
 void TransformWidget::on_TransformNormaliseAButton_clicked(bool on)
@@ -333,7 +334,7 @@ void TransformWidget::on_ConvertRotateIntoButton_clicked(bool on)
 	Vec3<double> v;
 	v.set(ui.ConvertOriginXSpin->value(), ui.ConvertOriginYSpin->value(), ui.ConvertOriginZSpin->value());
 
-	CommandNode::run(Command::MatrixConvert, "ddddddddddddddddddddd", source[0], source[1], source[2], source[4], source[5], source[6], source[8], source[9], source[10], target[0], target[1], target[2], target[4], target[5], target[6], target[8], target[9], target[10], v.x, v.y, v.z);
+	CommandNode::run(Commands::MatrixConvert, "ddddddddddddddddddddd", source[0], source[1], source[2], source[4], source[5], source[6], source[8], source[9], source[10], target[0], target[1], target[2], target[4], target[5], target[6], target[8], target[9], target[10], v.x, v.y, v.z);
 
 	parent_.aten().currentModelOrFrame()->updateMeasurements();
 	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
@@ -381,19 +382,19 @@ void convertSourcePickCButton_callback(Reflist<Atom,int> *picked)
 void TransformWidget::on_ConvertSourcePickAButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	parent_.setSelectedMode(UserAction::ConvertSourcePickAAction,2,&convertSourcePickAButton_callback);
+	parent_.ui.MainView->setSelectedMode(UserAction::ConvertSourcePickAAction,2,&convertSourcePickAButton_callback);
 }
 
 void TransformWidget::on_ConvertSourcePickBButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	parent_.setSelectedMode(UserAction::ConvertSourcePickBAction,2,&convertSourcePickBButton_callback);
+	parent_.ui.MainView->setSelectedMode(UserAction::ConvertSourcePickBAction,2,&convertSourcePickBButton_callback);
 }
 
 void TransformWidget::on_ConvertSourcePickCButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	parent_.setSelectedMode(UserAction::ConvertSourcePickCAction,2,&convertSourcePickCButton_callback);
+	parent_.ui.MainView->setSelectedMode(UserAction::ConvertSourcePickCAction,2,&convertSourcePickCButton_callback);
 }
 
 void TransformWidget::on_ConvertSourceNormaliseAButton_clicked(bool on)
@@ -568,19 +569,19 @@ void convertTargetDefineCButton_callback(Reflist<Atom,int> *picked)
 void TransformWidget::on_ConvertTargetPickAButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	parent_.setSelectedMode(UserAction::ConvertTargetPickAAction,2,&convertTargetDefineAButton_callback);
+	parent_.ui.MainView->setSelectedMode(UserAction::ConvertTargetPickAAction,2,&convertTargetDefineAButton_callback);
 }
 
 void TransformWidget::on_ConvertTargetPickBButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	parent_.setSelectedMode(UserAction::ConvertTargetPickBAction,2,&convertTargetDefineBButton_callback);
+	parent_.ui.MainView->setSelectedMode(UserAction::ConvertTargetPickBAction,2,&convertTargetDefineBButton_callback);
 }
 
 void TransformWidget::on_ConvertTargetPickCButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	parent_.setSelectedMode(UserAction::ConvertTargetPickCAction,2,&convertTargetDefineCButton_callback);
+	parent_.ui.MainView->setSelectedMode(UserAction::ConvertTargetPickCAction,2,&convertTargetDefineCButton_callback);
 }
 
 void TransformWidget::on_ConvertTargetNormaliseAButton_clicked(bool on)
@@ -696,7 +697,7 @@ void TransformWidget::on_ConvertTargetGenerateCButton_clicked(bool on)
 void TransformWidget::closeEvent(QCloseEvent *event)
 {
 	// Return to select mode if one of the modes in this window is still selected
-	if (UserAction::isTransformWidgetAction(parent_.selectedMode())) parent_.cancelCurrentMode();
+	if (UserAction::isTransformWidgetAction(parent_.ui.MainView->selectedMode())) parent_.ui.MainView->cancelCurrentMode();
 
 	event->accept();
 }

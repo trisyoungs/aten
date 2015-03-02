@@ -21,15 +21,17 @@
 
 #include "base/lineparser.h"
 #include "base/sysfunc.h"
-#include "base/mathfunc.h"
+#include "math/mathfunc.h"
 #include "math/constants.h"
 #include "base/messenger.h"
 #include <string.h>
 #include <stdarg.h>
 
+ATEN_USING_NAMESPACE
+
 // Parse options
-const char *ParseOptionKeywords[LineParser::nParseOptions] = { "stripcomments", "usequotes", "skipblanks", "stripbrackets", "noescapes", "usecurlies", "normalcommas" };
-LineParser::ParseOption LineParser::parseOption(const char *s)
+const char* ParseOptionKeywords[LineParser::nParseOptions] = { "stripcomments", "usequotes", "skipblanks", "stripbrackets", "noescapes", "usecurlies", "normalcommas" };
+LineParser::ParseOption LineParser::parseOption(const char* s)
 {
 	return (LineParser::ParseOption) (1 << enumSearch("line parser option", LineParser::nParseOptions, ParseOptionKeywords, s));
 }
@@ -68,25 +70,25 @@ void LineParser::reset()
 */
 
 // Return filename of current input file (if any)
-const char *LineParser::inputFilename() const
+const char* LineParser::inputFilename() const
 {
 	return inputFilename_.get();
 }
 
 // Return filename of current output file (if any)
-const char *LineParser::outputFilename() const
+const char* LineParser::outputFilename() const
 {
 	return outputFilename_.get();
 }
 
 // Return pointer to current line
-const char *LineParser::line() const
+const char* LineParser::line() const
 {
 	return line_;
 }
 
 // Set line target
-void LineParser::setLine(const char *s)
+void LineParser::setLine(const char* s)
 {
 	strncpy(line_, s, MAXLINELENGTH);
 	lineLength_ = strlen(line_);
@@ -100,9 +102,9 @@ int LineParser::lastLineNo() const
 }
 
 // Open new file for reading
-bool LineParser::openInput(const char *filename)
+bool LineParser::openInput(const char* filename)
 {
-	msg.enter("LineParser::openInput");
+	Messenger::enter("LineParser::openInput");
 	// Check existing input file
 	if (inputFile_ != NULL)
 	{
@@ -112,25 +114,25 @@ bool LineParser::openInput(const char *filename)
 		inputFile_ = NULL;
 	}
 	// Open new file
-	inputFile_ = new ifstream(filename, ios::in | ios::binary);
+	inputFile_ = new std::ifstream(filename, std::ios::in | std::ios::binary);
 	if (!inputFile_->is_open())
 	{
 		closeFiles();
-		msg.print("Error: Failed to open file '%s' for reading.\n", filename);
-		msg.exit("LineParser::openInput");
+		Messenger::print("Error: Failed to open file '%s' for reading.\n", filename);
+		Messenger::exit("LineParser::openInput");
 		return FALSE;
 	}
 	// Reset variables
 	lastLineNo_ = 0;
 	inputFilename_ = filename;
-	msg.exit("LineParser::openInput");
+	Messenger::exit("LineParser::openInput");
 	return TRUE;
 }
 
 // Open new stream for writing
-bool LineParser::openOutput(const char *filename, bool directOutput)
+bool LineParser::openOutput(const char* filename, bool directOutput)
 {
-	msg.enter("LineParser::openOutput");
+	Messenger::enter("LineParser::openOutput");
 	// Check existing input file
 	if ((outputFile_ != NULL) || (cachedFile_ != NULL))
 	{
@@ -151,19 +153,19 @@ bool LineParser::openOutput(const char *filename, bool directOutput)
 	directOutput_ = directOutput;
 	if (directOutput_)
 	{
-		outputFile_ = new ofstream(filename, ios::out);
+		outputFile_ = new std::ofstream(filename, std::ios::out);
 		if (!outputFile_->is_open())
 		{
 			closeFiles();
-			msg.print("Error: Failed to open file '%s' for writing.\n", filename);
-			msg.exit("LineParser::openOutput");
+			Messenger::print("Error: Failed to open file '%s' for writing.\n", filename);
+			Messenger::exit("LineParser::openOutput");
 			return FALSE;
 		}
 	}
-	else cachedFile_ = new stringstream;
+	else cachedFile_ = new std::stringstream;
 
 	outputFilename_ = filename;
-	msg.exit("LineParser::openOutput");
+	Messenger::exit("LineParser::openOutput");
 	return TRUE;
 }
 
@@ -211,16 +213,16 @@ char LineParser::peek() const
 }
 
 // Tell current position of input stream
-streampos LineParser::tellg() const
+std::streampos LineParser::tellg() const
 {
-	streampos result = 0;
+	std::streampos result = 0;
 	if (inputFile_ != NULL) result = inputFile_->tellg();
 	else printf("Warning: LineParser tried to tellg() on a non-existent input file.\n");
 	return result;
 }
 
 // Seek position in input stream
-void LineParser::seekg(streampos pos)
+void LineParser::seekg(std::streampos pos)
 {
 	if (inputFile_ != NULL)
 	{
@@ -231,7 +233,7 @@ void LineParser::seekg(streampos pos)
 }
 
 // Seek n bytes in specified direction in input stream
-void LineParser::seekg(streamoff off, ios_base::seekdir dir)
+void LineParser::seekg(std::streamoff off, std::ios_base::seekdir dir)
 {
 	if (inputFile_ != NULL) inputFile_->seekg(off, dir);
 	else printf("Warning: LineParser tried to seekg() on a non-existent input file.\n");
@@ -240,8 +242,8 @@ void LineParser::seekg(streamoff off, ios_base::seekdir dir)
 // Rewind input stream to start
 void LineParser::rewind()
 {
-	if (inputFile_ != NULL) inputFile_->seekg(0, ios::beg);
-	else msg.print("No file currently open to rewind.\n");
+	if (inputFile_ != NULL) inputFile_->seekg(0, std::ios::beg);
+	else Messenger::print("No file currently open to rewind.\n");
 }
 
 // Return whether the end of the input stream has been reached (or only whitespace remains)
@@ -251,7 +253,7 @@ bool LineParser::eofOrBlank() const
 	// Simple check first - is this the end of the file?
 	if (inputFile_->eof()) return TRUE;
 	// Otherwise, store the current file position and search for a non-whitespace character (or end of file)
-	streampos pos = inputFile_->tellg();
+	std::streampos pos = inputFile_->tellg();
 	
 	// Skip through whitespace, searching for 'hard' character
 	char c;
@@ -281,17 +283,17 @@ bool LineParser::eofOrBlank() const
 // Read single line from internal file source
 int LineParser::readNextLine(int optionMask)
 {
-	msg.enter("LineParser::readNextLine");
+	Messenger::enter("LineParser::readNextLine");
 	// Returns : 0=ok, 1=error, -1=eof
 	if (inputFile_ == NULL)
 	{
 		printf("Error: No input file open for LineParser::readNextLine.\n");
-		msg.exit("LineParser::readNextLine");
+		Messenger::exit("LineParser::readNextLine");
 		return 1;
 	}
 	if (inputFile_->eof())
 	{
-		msg.exit("LineParser::readNextLine");
+		Messenger::exit("LineParser::readNextLine");
 		return -1;
 	}
 	
@@ -313,12 +315,12 @@ int LineParser::readNextLine(int optionMask)
 			// Check here for overfilling the line_ buffer - perhaps it's a binary file?
 			if (lineLength_ == MAXLINELENGTH)
 			{
-				msg.exit("LineParser::readNextLine");
+				Messenger::exit("LineParser::readNextLine");
 				return -1;
 			}
 		}
 		line_[lineLength_] = '\0';
-		msg.print(Messenger::Parse, "Line from file is: [%s]\n", line_);
+		Messenger::print(Messenger::Parse, "Line from file is: [%s]\n", line_);
 
 		// Remove comments from line
 		if (optionMask&LineParser::StripComments) removeComments(line_);
@@ -344,12 +346,12 @@ int LineParser::readNextLine(int optionMask)
 		{
 			if (inputFile_->eof())
 			{
-				msg.exit("LineParser::readLine");
+				Messenger::exit("LineParser::readLine");
 				return -1;
 			}
 			if (inputFile_->fail())
 			{
-				msg.exit("LineParser::readLine");
+				Messenger::exit("LineParser::readLine");
 				return 1;
 			}
 		}
@@ -358,7 +360,7 @@ int LineParser::readNextLine(int optionMask)
 		++lastLineNo_;
 	} while (result != 0);
 // 	printf("LineParser Returned line = [%s], length = %i\n",line_,lineLength_);
-	msg.exit("LineParser::readNextLine");
+	Messenger::exit("LineParser::readNextLine");
 	return result;
 }
 
@@ -366,7 +368,7 @@ int LineParser::readNextLine(int optionMask)
 bool LineParser::getNextArg(int optionMask, Dnchar* destarg)
 {
 	// Get the next input chunk from the internal string and put into argument specified.
-	msg.enter("LineParser::getNextArg");
+	Messenger::enter("LineParser::getNextArg");
 	int arglen;
 	bool done, hadquotes, failed;
 	char c, quotechar;
@@ -464,7 +466,7 @@ bool LineParser::getNextArg(int optionMask, Dnchar* destarg)
 	if (linePos_ == lineLength_) endOfLine_ = TRUE;
 	// Store the result in the desired destination
 	if (destarg != NULL) *destarg = tempArg_;
-	msg.exit("LineParser::getNextArg");
+	Messenger::exit("LineParser::getNextArg");
 	if (failed) return FALSE;
 	return (arglen == 0 ? (hadquotes ? TRUE : FALSE) : TRUE);
 }
@@ -474,12 +476,12 @@ bool LineParser::getNextN(int optionMask, int length, Dnchar* destarg)
 {
 	// Put the next 'length' characters from line_ into temparg (and put into supplied arg if supplied)
 	// A negative length may be supplied, which we interpret as 'strip trailing spaces'
-	msg.enter("LineParser::getNextN");
+	Messenger::enter("LineParser::getNextN");
 	int arglen = 0;
 	char c;
 	if (lineLength_ == 0)
 	{
-		msg.exit("LineParser::getNextN");
+		Messenger::exit("LineParser::getNextN");
 		return FALSE;
 	}
 	int n, charsleft = lineLength_ - linePos_;
@@ -512,7 +514,7 @@ bool LineParser::getNextN(int optionMask, int length, Dnchar* destarg)
 	if (destarg != NULL) destarg->set(tempArg_);
 	//printf("getNextN found [%s], length = %i\n", tempArg_, arglen);
 	//line_.eraseStart(length);
-	msg.exit("LineParser::getNextN");
+	Messenger::exit("LineParser::getNextN");
 	return TRUE;
 }
 
@@ -520,10 +522,10 @@ bool LineParser::getNextN(int optionMask, int length, Dnchar* destarg)
 void LineParser::getAllArgsDelim(int optionMask)
 {
 	// Parse the string in 'line_' into arguments in 'args'
-	msg.enter("LineParser::getAllArgsDelim");
+	Messenger::enter("LineParser::getAllArgsDelim");
 	arguments_.clear();
 	endOfLine_ = FALSE;
-	Dnchar *arg;
+	Dnchar* arg;
 	while (!endOfLine_)
 	{
 		// Create new, empty dnchar
@@ -531,13 +533,13 @@ void LineParser::getAllArgsDelim(int optionMask)
 		// We must pass on the current optionMask, else it will be reset by the default value in getNextArg()
 		if (getNextArg(optionMask, arg))
 		{
-			msg.print(Messenger::Parse,"getAllArgsDelim arg=%i [%s]\n", arguments_.nItems(), arg->get());
+			Messenger::print(Messenger::Parse,"getAllArgsDelim arg=%i [%s]\n", arguments_.nItems(), arg->get());
 			// Add this char to the list
 			arguments_.own(arg);
 		}
 		else delete arg;
 	}
-	msg.exit("LineParser::getAllArgsDelim");
+	Messenger::exit("LineParser::getAllArgsDelim");
 }
 
 /*
@@ -547,7 +549,7 @@ void LineParser::getAllArgsDelim(int optionMask)
 // Parse delimited (from file)
 int LineParser::getArgsDelim(int optionMask)
 {
-	msg.enter("LineParser::getArgsDelim[ifstream]");
+	Messenger::enter("LineParser::getArgsDelim[ifstream]");
 	bool done = FALSE;
 	int result;
 	// Returns : 0=ok, 1=error, -1=eof
@@ -557,7 +559,7 @@ int LineParser::getArgsDelim(int optionMask)
 		result = readNextLine(optionMask);
 		if (result != 0)
 		{
-			msg.exit("LineParser::getArgsDelim[ifstream]");
+			Messenger::exit("LineParser::getArgsDelim[ifstream]");
 			return result;
 		}
 		// Assume that we will finish after parsing the line we just read in
@@ -566,19 +568,19 @@ int LineParser::getArgsDelim(int optionMask)
 		getAllArgsDelim(optionMask);
 		if ((optionMask&LineParser::SkipBlanks) && (nArgs() == 0)) done = FALSE;
 	} while (!done);
-	msg.exit("LineParser::getArgsDelim[ifstream]");
+	Messenger::exit("LineParser::getArgsDelim[ifstream]");
 	return 0;
 }
 
 // Get rest of current line starting at next delimited part (and put into destination argument if supplied)
 bool LineParser::getRestDelim(Dnchar* destarg)
 {
-	msg.enter("LineParser::getRestDelim");
+	Messenger::enter("LineParser::getRestDelim");
 	int arglen = 0, n, length;
 	char c;
 	if (lineLength_ == 0)
 	{
-		msg.exit("LineParser::getRestDelim");
+		Messenger::exit("LineParser::getRestDelim");
 		return FALSE;
 	}
 	length = lineLength_ - linePos_;
@@ -606,17 +608,17 @@ bool LineParser::getRestDelim(Dnchar* destarg)
 		tempArg_[n] = '\0';
 	}
 	if (destarg != NULL) destarg->set(tempArg_);
-	msg.exit("LineParser::getRestDelim");
+	Messenger::exit("LineParser::getRestDelim");
 	return TRUE;
 }
 
 // Get next argument (delimited) from file stream
 bool LineParser::getArgDelim(int optionMask, Dnchar* destarg)
 {
-	msg.enter("LineParser::getArgDelim");
+	Messenger::enter("LineParser::getArgDelim");
 	bool result = getNextArg(optionMask, destarg);
-	msg.print(Messenger::Parse,"getArgDelim = %s [%s]\n", result ? "TRUE" : "FALSE", destarg->get());
-	msg.exit("LineParser::getArgDelim");
+	Messenger::print(Messenger::Parse,"getArgDelim = %s [%s]\n", result ? "TRUE" : "FALSE", destarg->get());
+	Messenger::exit("LineParser::getArgDelim");
 	return result;
 }
 
@@ -630,7 +632,7 @@ void LineParser::getArgsDelim(int optionMask, const char* s)
 }
 
 // Get next delimited chunk from input stream (not line)
-bool LineParser::getCharsDelim(Dnchar *destarg)
+bool LineParser::getCharsDelim(Dnchar* destarg)
 {
 	int length = 0;
 	bool result = TRUE;
@@ -659,10 +661,10 @@ bool LineParser::getCharsDelim(Dnchar *destarg)
 }
 
 // Get next delimited chunk from string, removing grabbed part
-bool LineParser::getCharsDelim(int optionMask, Dnchar *source, Dnchar *destarg)
+bool LineParser::getCharsDelim(int optionMask, Dnchar* source, Dnchar* destarg)
 {
 	// Get the next input chunk from the internal string and put into argument specified.
-	msg.enter("LineParser::getCharsDelim(int,Dnchar,Dnchar)");
+	Messenger::enter("LineParser::getCharsDelim(int,Dnchar,Dnchar)");
 	int arglen, pos = 0, length = source->length();
 	bool done, hadquotes, failed;
 	char c, quotechar;
@@ -766,13 +768,13 @@ bool LineParser::getCharsDelim(int optionMask, Dnchar *source, Dnchar *destarg)
 	if (destarg != NULL) *destarg = tempArg_;
 	// Trim characters from source string
 	source->eraseStart(pos);
-	msg.exit("LineParser::getCharsDelim(int,Dnchar,Dnchar)");
+	Messenger::exit("LineParser::getCharsDelim(int,Dnchar,Dnchar)");
 	if (failed) return FALSE;
 	return (arglen == 0 ? (hadquotes ? TRUE : FALSE) : TRUE);
 }
 
 // Return a number of characters from the input stream
-const char *LineParser::getChars(int nchars, bool skipeol)
+const char* LineParser::getChars(int nchars, bool skipeol)
 {
 	char c;
 	// Check number of characters requested
@@ -780,7 +782,7 @@ const char *LineParser::getChars(int nchars, bool skipeol)
 	if (nchars == 0) return NULL;
 	else if (nchars > MAXLINELENGTH)
 	{
-		msg.print("Error: The maximum number of characters read at once from a file is currently %i.\n", MAXLINELENGTH);
+		Messenger::print("Error: The maximum number of characters read at once from a file is currently %i.\n", MAXLINELENGTH);
 		return NULL;
 	}
 	else if (nchars < 0)
@@ -846,7 +848,7 @@ int LineParser::getInteger(int nbytes)
 		inputFile_->read((char*) &readi, nbytes);
 		return (int) readi;
 	}
-	else msg.print("Error: Integer of size %i bytes does not correspond to any internal type.\n", nbytes);
+	else Messenger::print("Error: Integer of size %i bytes does not correspond to any internal type.\n", nbytes);
 	return 0;
 }
 
@@ -890,12 +892,12 @@ double LineParser::getDouble(int nbytes)
 		inputFile_->read((char*) &readd, nbytes);
 		return (double) readd;
 	}
-	else msg.print("Error: Double of size %i bytes does not correspond to any internal type.\n", nbytes);
+	else Messenger::print("Error: Double of size %i bytes does not correspond to any internal type.\n", nbytes);
 	return 0.0;
 }
 
 // Read an array of double values from an (unformatted) input file
-int LineParser::getDoubleArray(double *array, int count)
+int LineParser::getDoubleArray(double* array, int count)
 {
 	inputFile_->read((char*) array, count*sizeof(double));
 	if (inputFile_->eof())
@@ -912,47 +914,47 @@ int LineParser::getDoubleArray(double *array, int count)
 }
 
 // Write line to file
-bool LineParser::writeLine(const char *s)
+bool LineParser::writeLine(const char* s)
 {
-	msg.enter("LineParser::writeLine");
+	Messenger::enter("LineParser::writeLine");
 	if (!directOutput_)
 	{
 		if (cachedFile_ == NULL)
 		{
-			msg.print("Unable to delayed-writeLine - destination cache is not open.\n");
-			msg.exit("LineParser::writeLine");
+			Messenger::print("Unable to delayed-writeLine - destination cache is not open.\n");
+			Messenger::exit("LineParser::writeLine");
 			return FALSE;
 		}
 		else *cachedFile_ << s;
 	}
 	else if (outputFile_ == NULL)
 	{
-		msg.print("Unable to direct-writeLine - destination file is not open.\n");
-		msg.exit("LineParser::writeLine");
+		Messenger::print("Unable to direct-writeLine - destination file is not open.\n");
+		Messenger::exit("LineParser::writeLine");
 		return FALSE;
 	}
 	else *outputFile_ << s;
-	msg.exit("LineParser::writeLine");
+	Messenger::exit("LineParser::writeLine");
 	return TRUE;
 }
 
 // Write formatter line to file
-bool LineParser::writeLineF(const char *fmt, ...)
+bool LineParser::writeLineF(const char* fmt, ...)
 {
-	msg.enter("LineParser::writeLine");
+	Messenger::enter("LineParser::writeLine");
 	if (!directOutput_)
 	{
 		if (cachedFile_ == NULL)
 		{
-			msg.print("Unable to delayed-writeLineF - destination cache is not open.\n");
-			msg.exit("LineParser::writeLineF");
+			Messenger::print("Unable to delayed-writeLineF - destination cache is not open.\n");
+			Messenger::exit("LineParser::writeLineF");
 			return FALSE;
 		}
 	}
 	else if (outputFile_ == NULL)
 	{
-		msg.print("Unable to direct-writeLineF - destination file is not open.\n");
-		msg.exit("LineParser::writeLineF");
+		Messenger::print("Unable to direct-writeLineF - destination file is not open.\n");
+		Messenger::exit("LineParser::writeLineF");
 		return FALSE;
 	}
 	
@@ -966,7 +968,7 @@ bool LineParser::writeLineF(const char *fmt, ...)
 	va_end(arguments);
 	if (directOutput_) *outputFile_ << s;
 	else *cachedFile_ << s;
-	msg.exit("LineParser::writeLineF");
+	Messenger::exit("LineParser::writeLineF");
 	return TRUE;
 }
 
@@ -979,7 +981,7 @@ bool LineParser::commitCache()
 		printf("Internal Error: Tried to commit cached writes when direct output was enabled.\n");
 		return FALSE;
 	}
-	ofstream outputFile(outputFilename_);
+	std::ofstream outputFile(outputFilename_);
 	if (outputFile.is_open())
 	{
 		outputFile << cachedFile_->str();
@@ -987,7 +989,7 @@ bool LineParser::commitCache()
 	}
 	else
 	{
-		msg.print("Error: Couldn't open output file '%s' for writing.\n", outputFilename_.get());
+		Messenger::print("Error: Couldn't open output file '%s' for writing.\n", outputFilename_.get());
 		return FALSE;
 	}
 	return TRUE;
@@ -996,18 +998,18 @@ bool LineParser::commitCache()
 // Skip lines from file
 int LineParser::skipLines(int nlines)
 {
-	msg.enter("LineParser::skipLines");
+	Messenger::enter("LineParser::skipLines");
 	int result;
 	for (int n=0; n<nlines; n++)
 	{
 		result = readNextLine(0);
 		if (result != 0)
 		{
-			msg.exit("LineParser::skipLines");
+			Messenger::exit("LineParser::skipLines");
 			return result;
 		}
 	}
-	msg.exit("LineParser::skipLines");
+	Messenger::exit("LineParser::skipLines");
 	return 0;
 }
 
@@ -1022,7 +1024,7 @@ int LineParser::nArgs() const
 }
 
 // Returns the specified argument as a character string
-const char *LineParser::argc(int i)
+const char* LineParser::argc(int i)
 {
 	if ((i < 0) || (i >= nArgs()))
 	{
@@ -1087,12 +1089,12 @@ bool LineParser::hasArg(int i) const
 // Atom type definition functions
 */
 
-const char *LineParser::parseNetaString(Dnchar &source)
+const char* LineParser::parseNetaString(Dnchar &source)
 {
 	// Cut the next atomtype command from the supplied string. Put in 'dest', along with any bracketed
 	// argument part. Use brackets a bit like quotes are used above, except we don't toggle the flag.
 	// Ignore spaces and horizontal tabs. Commas separate commands.
-	msg.enter("LineParser::parseNetaString");
+	Messenger::enter("LineParser::parseNetaString");
 	int n, nchars, bracketlevel;
 	bool done, el_list;
 	static Dnchar typecmd;
@@ -1148,15 +1150,15 @@ const char *LineParser::parseNetaString(Dnchar &source)
 	source.eraseStart(n+1);
 // 	printf("Result = ");
 // 	typecmd.print();
-	msg.exit("LineParser::parseNetaString");
+	Messenger::exit("LineParser::parseNetaString");
 	return typecmd.get();
 }
 
-const char *LineParser::trimNetaKeyword(Dnchar &source)
+const char* LineParser::trimNetaKeyword(Dnchar &source)
 {
 	// Remove the keyword part of the command and put in 'dest', leaving the options (minus brackets)
 	// in the original string. Remove '[' and ']' from keyword since this is only used to keep a list of elements together.
-	msg.enter("LineParser::trimNetaKeyword");
+	Messenger::enter("LineParser::trimNetaKeyword");
 	bool done, equals;
 	static Dnchar keywd;
 	done = FALSE;
@@ -1205,6 +1207,6 @@ const char *LineParser::trimNetaKeyword(Dnchar &source)
 			source.eraseStart(1);
 			source.eraseEnd(1);
 		}
-	msg.exit("LineParser::trimNetaKeyword");
+	Messenger::exit("LineParser::trimNetaKeyword");
 	return keywd.get();
 }

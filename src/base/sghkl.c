@@ -9,7 +9,7 @@
 #include "sginfo.h"
 
 
-static const char *IErr_Inc_SymMx =
+static const char* IErr_Inc_SymMx =
   "Internal Error: Inconsistent symmetry matrices";
 
 

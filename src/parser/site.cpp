@@ -21,19 +21,15 @@
 
 #include "parser/site.h"
 #include "parser/stepnode.h"
-#include "classes/site.h"
-#include "math/constants.h"
-#include "base/elements.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+
+ATEN_USING_NAMESPACE
 
 /*
 // Variable
 */
 
 // Constructor
-SiteVariable::SiteVariable(Site *ptr, bool constant)
+SiteVariable::SiteVariable(Site* ptr, bool constant)
 {
 	// Private variables
 	returnType_ = VTypes::SiteData;
@@ -61,16 +57,16 @@ FunctionAccessor SiteVariable::functionData[SiteVariable::nFunctions] = {
 };
 
 // Search variable access list for provided accessor (call private static function)
-StepNode *SiteVariable::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist)
+StepNode* SiteVariable::findAccessor(const char* s, TreeNode* arrayIndex, TreeNode* argList)
 {
-	return SiteVariable::accessorSearch(s, arrayindex, arglist);
+	return SiteVariable::accessorSearch(s, arrayIndex, argList);
 }
 
 // Private static function to search accessors
-StepNode *SiteVariable::accessorSearch(const char *s, TreeNode *arrayindex, TreeNode *arglist)
+StepNode* SiteVariable::accessorSearch(const char* s, TreeNode* arrayIndex, TreeNode* argList)
 {
-	msg.enter("SiteVariable::accessorSearch");
-	StepNode *result = NULL;
+	Messenger::enter("SiteVariable::accessorSearch");
+	StepNode* result = NULL;
 	int i = 0;
 	i = Variable::searchAccessor(s, nAccessors, accessorData);
 	if (i == -1)
@@ -80,84 +76,84 @@ StepNode *SiteVariable::accessorSearch(const char *s, TreeNode *arrayindex, Tree
 		i = Variable::searchAccessor(s, nFunctions, functionData);
 		if (i == -1)
 		{
-			msg.print("Error: Type 'Site&' has no member or function named '%s'.\n", s);
+			Messenger::print("Error: Type 'Site&' has no member or function named '%s'.\n", s);
 			printAccessors();
-			msg.exit("SiteVariable::accessorSearch");
+			Messenger::exit("SiteVariable::accessorSearch");
 			return NULL;
 		}
-		msg.print(Messenger::Parse, "FunctionAccessor match = %i (%s)\n", i, functionData[i].name);
-		if (arrayindex != NULL)
+		Messenger::print(Messenger::Parse, "FunctionAccessor match = %i (%s)\n", i, functionData[i].name);
+		if (arrayIndex != NULL)
 		{
-			msg.print("Error: Array index given to 'Site&' function '%s'.\n", s);
-			msg.exit("SiteVariable::accessorSearch");
+			Messenger::print("Error: Array index given to 'Site&' function '%s'.\n", s);
+			Messenger::exit("SiteVariable::accessorSearch");
 			return NULL;
 		}
 		// Add and check supplied arguments...
 		result = new StepNode(i, VTypes::SiteData, functionData[i].returnType);
-		result->addJoinedArguments(arglist);
+		result->addJoinedArguments(argList);
 		if (!result->checkArguments(functionData[i].arguments, functionData[i].name))
 		{
-			msg.print("Error: Syntax for 'Site&' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
+			Messenger::print("Error: Syntax for 'Site&' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
 			delete result;
 			result = NULL;
 		}
 	}
 	else
 	{
-		msg.print(Messenger::Parse, "Accessor match = %i (%s)\n", i, accessorData[i].name);
+		Messenger::print(Messenger::Parse, "Accessor match = %i (%s)\n", i, accessorData[i].name);
 		// Were we given an array index when we didn't want one?
-		if ((accessorData[i].arraySize == 0) && (arrayindex != NULL))
+		if ((accessorData[i].arraySize == 0) && (arrayIndex != NULL))
 		{
-			msg.print("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
+			Messenger::print("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
 			result = NULL;
 		}
 		// Were we given an argument list when we didn't want one?
-		if (arglist != NULL)
+		if (argList != NULL)
 		{
-			msg.print("Error: Argument list given to 'Site&' array member '%s'.\n", s);
-			msg.exit("SiteVariable::accessorSearch");
+			Messenger::print("Error: Argument list given to 'Site&' array member '%s'.\n", s);
+			Messenger::exit("SiteVariable::accessorSearch");
 			return NULL;
 		}
-		result = new StepNode(i, VTypes::SiteData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
+		result = new StepNode(i, VTypes::SiteData, arrayIndex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
 	}
-	msg.exit("SiteVariable::accessorSearch");
+	Messenger::exit("SiteVariable::accessorSearch");
 	return result;
 }
 
 // Retrieve desired value
-bool SiteVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, int arrayIndex)
+bool SiteVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex, int arrayIndex)
 {
-	msg.enter("SiteVariable::retrieveAccessor");
+	Messenger::enter("SiteVariable::retrieveAccessor");
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nAccessors))
 	{
 		printf("Internal Error: Accessor id %i is out of range for Site type.\n", i);
-		msg.exit("SiteVariable::retrieveAccessor");
+		Messenger::exit("SiteVariable::retrieveAccessor");
 		return FALSE;
 	}
 	Accessors acc = (Accessors) i;
 	// Check for correct lack/presence of array index given
 	if ((accessorData[i].arraySize == 0) && hasArrayIndex)
 	{
-		msg.print("Error: Unnecessary array index provided for member '%s'.\n", accessorData[i].name);
-		msg.exit("SiteVariable::retrieveAccessor");
+		Messenger::print("Error: Unnecessary array index provided for member '%s'.\n", accessorData[i].name);
+		Messenger::exit("SiteVariable::retrieveAccessor");
 		return FALSE;
 	}
 	else if ((accessorData[i].arraySize > 0) && (hasArrayIndex))
 	{
 		if ((arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize))
 		{
-			msg.print("Error: Array index out of bounds for member '%s' (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
-			msg.exit("SiteVariable::retrieveAccessor");
+			Messenger::print("Error: Array index out of bounds for member '%s' (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
+			Messenger::exit("SiteVariable::retrieveAccessor");
 			return FALSE;
 		}
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	Site *ptr = (Site*) rv.asPointer(VTypes::SiteData, result);
+	Site* ptr = (Site*) rv.asPointer(VTypes::SiteData, result);
 	if ((!result) || (ptr == NULL))
 	{
-		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::SiteData));
+		Messenger::print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::SiteData));
 		result = FALSE;
 	}
 	if (result) switch (acc)
@@ -167,19 +163,19 @@ bool SiteVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 			result = FALSE;
 			break;
 	}
-	msg.exit("SiteVariable::retrieveAccessor");
+	Messenger::exit("SiteVariable::retrieveAccessor");
 	return result;
 }
 
 // Set desired value
-bool SiteVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newvalue, bool hasArrayIndex, int arrayIndex)
+bool SiteVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newValue, bool hasArrayIndex, int arrayIndex)
 {
-	msg.enter("SiteVariable::setAccessor");
+	Messenger::enter("SiteVariable::setAccessor");
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nAccessors))
 	{
 		printf("Internal Error: Accessor id %i is out of range for Site type.\n", i);
-		msg.exit("SiteVariable::setAccessor");
+		Messenger::exit("SiteVariable::setAccessor");
 		return FALSE;
 	}
 	Accessors acc = (Accessors) i;
@@ -191,20 +187,20 @@ bool SiteVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 		{
 			if ((accessorData[i].arraySize > 0) && ( (arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize) ))
 			{
-				msg.print("Error: Array index provided for member '%s' is out of range (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
+				Messenger::print("Error: Array index provided for member '%s' is out of range (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
 				result = FALSE;
 			}
-			if (newvalue.arraySize() > 0)
+			if (newValue.arraySize() > 0)
 			{
-				msg.print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
+				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
 				result = FALSE;
 			}
 		}
 		else
 		{
-			if (newvalue.arraySize() > accessorData[i].arraySize)
+			if (newValue.arraySize() > accessorData[i].arraySize)
 			{
-				msg.print("Error: The array being assigned to member '%s' is larger than the size of the desination array (%i cf. %i).\n", accessorData[i].name, newvalue.arraySize(), accessorData[i].arraySize);
+				Messenger::print("Error: The array being assigned to member '%s' is larger than the size of the desination array (%i cf. %i).\n", accessorData[i].name, newValue.arraySize(), accessorData[i].arraySize);
 				result = FALSE;
 			}
 		}
@@ -212,30 +208,30 @@ bool SiteVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 	else
 	{
 		// This is not an array member, so cannot be assigned an array unless its a Vector
-		if (newvalue.arraySize() != -1)
+		if (newValue.arraySize() != -1)
 		{
 			if (accessorData[i].returnType != VTypes::VectorData)
 			{
-				msg.print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
+				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
 				result = FALSE;
 			}
-			else if ((newvalue.type() != VTypes::VectorData) && (newvalue.arraySize() != 3))
+			else if ((newValue.type() != VTypes::VectorData) && (newValue.arraySize() != 3))
 			{
-				msg.print("Error: Only an array of size 3 can be assigned to a vector (member '%s').\n", accessorData[i].name);
+				Messenger::print("Error: Only an array of size 3 can be assigned to a vector (member '%s').\n", accessorData[i].name);
 				result = FALSE;
 			}
 		}
 	}
 	if (!result)
 	{
-		msg.exit("SiteVariable::setAccessor");
+		Messenger::exit("SiteVariable::setAccessor");
 		return FALSE;
 	}
 	// Get current data from ReturnValue
-	Site *ptr = (Site*) sourcerv.asPointer(VTypes::SiteData, result);
+	Site* ptr = (Site*) sourcerv.asPointer(VTypes::SiteData, result);
 	if ((!result) || (ptr == NULL))
 	{
-		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::SiteData));
+		Messenger::print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::SiteData));
 		result = FALSE;
 	}
 	if (result) switch (acc)
@@ -245,24 +241,24 @@ bool SiteVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 			result = FALSE;
 			break;
 	}
-	msg.exit("SiteVariable::setAccessor");
+	Messenger::exit("SiteVariable::setAccessor");
 	return result;
 }
 
 // Perform desired function
-bool SiteVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
+bool SiteVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 {
-	msg.enter("SiteVariable::performFunction");
+	Messenger::enter("SiteVariable::performFunction");
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nFunctions))
 	{
 		printf("Internal Error: FunctionAccessor id %i is out of range for Site type.\n", i);
-		msg.exit("SiteVariable::performFunction");
+		Messenger::exit("SiteVariable::performFunction");
 		return FALSE;
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	Site *ptr = (Site*) rv.asPointer(VTypes::SiteData, result);
+	Site* ptr = (Site*) rv.asPointer(VTypes::SiteData, result);
 	if (result) switch (i)
 	{
 		default:
@@ -270,7 +266,7 @@ bool SiteVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 			result = FALSE;
 			break;
 	}
-	msg.exit("SiteVariable::performFunction");
+	Messenger::exit("SiteVariable::performFunction");
 	return result;
 }
 
@@ -279,15 +275,15 @@ void SiteVariable::printAccessors()
 {
 	if (SiteVariable::nAccessors > 0)
 	{
-		msg.print("Valid accessors are:\n");
-		for (int n=0; n<SiteVariable::nAccessors; ++n) msg.print("%s%s%s", n == 0 ? " " : ", ", accessorData[n].name, accessorData[n].arraySize > 0 ? "[]" : "");
-		msg.print("\n");
+		Messenger::print("Valid accessors are:\n");
+		for (int n=0; n<SiteVariable::nAccessors; ++n) Messenger::print("%s%s%s", n == 0 ? " " : ", ", accessorData[n].name, accessorData[n].arraySize > 0 ? "[]" : "");
+		Messenger::print("\n");
 	}
 	if ((SiteVariable::nFunctions > 0) && (strcmp(functionData[0].name,".dummy") != 0))
 	{
-		msg.print("Valid functions are:\n");
-		for (int n=0; n<SiteVariable::nFunctions; ++n) msg.print("%s%s(%s)", n == 0 ? " " : ", ", functionData[n].name, functionData[n].argText);
-		msg.print("\n");
+		Messenger::print("Valid functions are:\n");
+		for (int n=0; n<SiteVariable::nFunctions; ++n) Messenger::print("%s%s(%s)", n == 0 ? " " : ", ", functionData[n].name, functionData[n].argText);
+		Messenger::print("\n");
 	}
 }
 
@@ -296,7 +292,7 @@ void SiteVariable::printAccessors()
 */
 
 // Constructor
-SiteArrayVariable::SiteArrayVariable(TreeNode *sizeexpr, bool constant)
+SiteArrayVariable::SiteArrayVariable(TreeNode* sizeexpr, bool constant)
 {
 	// Private variables
 	returnType_ = VTypes::SiteData;
@@ -308,8 +304,8 @@ SiteArrayVariable::SiteArrayVariable(TreeNode *sizeexpr, bool constant)
 }
 
 // Search variable access list for provided accessor
-StepNode *SiteArrayVariable::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist)
+StepNode* SiteArrayVariable::findAccessor(const char* s, TreeNode* arrayIndex, TreeNode* argList)
 {
-	return SiteVariable::accessorSearch(s, arrayindex, arglist);
+	return SiteVariable::accessorSearch(s, arrayIndex, argList);
 }
 

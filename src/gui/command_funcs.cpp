@@ -19,6 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <QtGui/QCloseEvent>
+#include <QtGui/QFileDialog>
 #include "main/aten.h"
 #include "gui/mainwindow.h"
 #include "gui/command.h"
@@ -89,7 +91,7 @@ void CommandWidget::updateVariableList()
 	ui.VariableTable->setColumnCount(3);
 	ui.VariableTable->setHorizontalHeaderLabels(QStringList() << "Variable" << "Type" << "Value");
 	QTableWidgetItem *item;
-	TreeNode *node;
+	TreeNode* node;
 	Variable* var;
 	ReturnValue rv;
 	Dnchar s;
@@ -141,7 +143,7 @@ void CommandWidget::refreshScripts(bool refreshactions, bool refreshlist)
 	if (refreshlist)
 	{
 		ui.ScriptsList->clear();
-		for (Program *script = parent_.aten().scripts(); script != NULL; script = script->next) ui.ScriptsList->addItem(script->filename());
+		for (Program* script = parent_.aten().scripts(); script != NULL; script = script->next) ui.ScriptsList->addItem(script->filename());
 	}
 	// Refresh scripts menu
 	if (refreshactions)
@@ -154,7 +156,7 @@ void CommandWidget::refreshScripts(bool refreshactions, bool refreshlist)
 		}
 		// Clear Reflist and repopulate, along with Scripts menu actions
 		scriptActions_.clear();
-		for (Program *prog = parent_.aten().scripts(); prog != NULL; prog = prog->next)
+		for (Program* prog = parent_.aten().scripts(); prog != NULL; prog = prog->next)
 		{
 			// Create new QAction and add to Reflist
 			QAction *qa = new QAction(this);
@@ -181,14 +183,14 @@ void CommandWidget::on_OpenScriptButton_clicked(bool v)
 		Program* ca = parent_.aten().addScript();
 		if (ca->generateFromFile(qPrintable(filename)))
 		{
-			msg.print("Script file '%s' loaded succesfully.\n", qPrintable(filename));
+			Messenger::print("Script file '%s' loaded succesfully.\n", qPrintable(filename));
 			ui.ScriptsList->addItem(ca->filename());
 			refreshScripts(TRUE,FALSE);
 		}
 		else
 		{
 			parent_.aten().removeScript(ca);
-			msg.print("Failed to load script file '%s'.\n", qPrintable(filename));
+			Messenger::print("Failed to load script file '%s'.\n", qPrintable(filename));
 		}
 	}
 }
@@ -270,11 +272,11 @@ void CommandWidget::on_RunSelectedScriptButton_clicked(bool checked)
 {
 	int row = ui.ScriptsList->currentRow();
 	if (row == -1) return;
-	Program *script = parent_.aten().script(row);
+	Program* script = parent_.aten().script(row);
 	if (script != NULL)
 	{
 		// Execute the script
-		msg.print("Executing script '%s':\n", script->name());
+		Messenger::print("Executing script '%s':\n", script->name());
 		ReturnValue result;
 		script->execute(result);
 	}
@@ -285,7 +287,7 @@ void CommandWidget::on_RemoveSelectedScriptButton_clicked(bool checked)
 {
 	int row = ui.ScriptsList->currentRow();
 	if (row == -1) return;
-	Program *script = parent_.aten().script(row);
+	Program* script = parent_.aten().script(row);
 	if (script != NULL) parent_.aten().removeScript(script);
 	// Better refresh the window and lists
 	refreshScripts();
@@ -301,12 +303,12 @@ void CommandWidget::runScript()
 		return;
 	}
 	// Find the relevant Script entry...
-	Refitem<QAction, Program*> *ri = scriptActions_.contains(action);
+	Refitem<QAction, Program*>* ri = scriptActions_.contains(action);
 	if (ri == NULL) printf("AtenForm::runScript - Could not find QAction in Reflist.\n");
 	else
 	{
 		// Execute the script
-		msg.print("Executing script '%s':\n", ri->data->name());
+		Messenger::print("Executing script '%s':\n", ri->data->name());
 		ReturnValue result;
 		ri->data->execute(result);
 	}
@@ -317,15 +319,16 @@ void CommandWidget::runScript()
 // Command Index Page
 */
 
-void CommandWidget::repopulateCommandList(const char *search)
+void CommandWidget::repopulateCommandList(const char* search)
 {
 	ui.CommandList->clear();
-	for (int cf = Command::Declarations+1; cf < Command::nCommands; ++cf)
+	for (int n = Commands::Declarations+1; n < Commands::nCommands; ++n)
 	{
+		Commands::Function cf = (Commands::Function) n;
 		// Skip over commands beginning with '_' or ones which have no keyword defined (internals)
-		if ((commands.data[cf].keyword == NULL) || (commands.data[cf].keyword[0] == '_')) continue;
-		if (search == NULL) ui.CommandList->insertItem(cf, commands.data[cf].keyword);
-		else if (strstr(commands.data[cf].keyword, search) != 0) ui.CommandList->insertItem(cf, commands.data[cf].keyword);
+		if ((parent_.aten().commandKeyword(cf) == NULL) || (parent_.aten().commandKeyword(cf)[0] == '_')) continue;
+		if (search == NULL) ui.CommandList->insertItem(cf, parent_.aten().commandKeyword(cf));
+		else if (strstr(parent_.aten().commandKeyword(cf), search) != 0) ui.CommandList->insertItem(cf, parent_.aten().commandKeyword(cf));
 	}
 }
 
@@ -345,10 +348,10 @@ void CommandWidget::on_CommandList_currentTextChanged(const QString &text)
 	ui.CommandEdit->clear();
 	if (ui.CommandList->currentRow() == -1) return;
 	// Find keyword
-	Command::Function cf = commands.command(qPrintable(text));
-	if (cf == Command::nCommands) return;
+	Commands::Function cf = Commands::command(qPrintable(text));
+	if (cf == Commands::nCommands) return;
 	Dnchar cmdtext;
- 	cmdtext.sprintf("<b>%s(%s)</b><br/>%s", commands.data[cf].keyword, commands.data[cf].hasArguments() ? commands.data[cf].argText : "", commands.data[cf].syntax);
+ 	cmdtext.sprintf("<b>%s(%s)</b><br/>%s", parent_.aten().commandKeyword(cf), parent_.aten().commandHasArguments(cf) ? parent_.aten().commandArgText(cf) : "", parent_.aten().commandSyntax(cf));
 	ui.CommandEdit->insertHtml(cmdtext.get());
 }
 

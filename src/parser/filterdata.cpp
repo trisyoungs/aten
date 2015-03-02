@@ -22,13 +22,15 @@
 #include "parser/filterdata.h"
 #include "base/sysfunc.h"
 
+ATEN_USING_NAMESPACE
+
 // Filter types
-const char *FilterTypeKeywords[FilterData::nFilterTypes] = { "importmodel", "importtrajectory", "importexpression", "importgrid", "exportmodel", "exporttrajectory", "exportexpression", "exportgrid" };
-const char *FilterData::filterType(FilterData::FilterType ft)
+const char* FilterTypeKeywords[FilterData::nFilterTypes] = { "importmodel", "importtrajectory", "importexpression", "importgrid", "exportmodel", "exporttrajectory", "exportexpression", "exportgrid" };
+const char* FilterData::filterType(FilterData::FilterType ft)
 {
         return FilterTypeKeywords[ft];
 }
-FilterData::FilterType FilterData::filterType(const char *s, bool reportError)
+FilterData::FilterType FilterData::filterType(const char* s, bool reportError)
 {
         FilterData::FilterType ft = (FilterData::FilterType) enumSearch("filter type", FilterData::nFilterTypes, FilterTypeKeywords, s);
 	if ((ft == FilterData::nFilterTypes) && reportError) enumPrintValid(FilterData::nFilterTypes,FilterTypeKeywords);
@@ -41,7 +43,7 @@ FilterData::FilterOption FilterData::filterOption(const char* s)
 {
 	return (FilterData::FilterOption) enumSearch("", FilterData::nFilterOptions, FilterOptionKeywords, s);
 }
-const char *FilterData::filterOption(FilterData::FilterOption fc)
+const char* FilterData::filterOption(FilterData::FilterOption fc)
 {
 	return FilterOptionKeywords[fc];
 }
@@ -76,29 +78,29 @@ int FilterData::id() const
 }
 
 // Return the descriptive name of the filter
-const char *FilterData::name() const
+const char* FilterData::name() const
 {
 	return name_.get();
 }
 
 // Return the short nickname of the filter
-const char *FilterData::nickname() const
+const char* FilterData::nickname() const
 {
 	return nickname_.get();
 }
 
 // Return the first file extension
-Dnchar *FilterData::extensions() const
+Dnchar* FilterData::extensions() const
 {
 	return extensions_.first();
 }
 
 // Return a comma-separated list of file extensions
-const char *FilterData::extensionList() const
+const char* FilterData::extensionList() const
 {
 	static Dnchar extlist(128);
 	extlist.clear();
-	for (Dnchar *d = extensions_.first(); d != NULL; d = d->next)
+	for (Dnchar* d = extensions_.first(); d != NULL; d = d->next)
 	{
 		extlist.strcat(d->get());
 		if (d->next != NULL) extlist.strcat(", ");
@@ -107,7 +109,7 @@ const char *FilterData::extensionList() const
 }
 
 // Return the first alias
-Dnchar *FilterData::exactNames() const
+Dnchar* FilterData::exactNames() const
 {
 	return exactNames_.first();
 }
@@ -119,7 +121,7 @@ int FilterData::nLinesToSearch() const
 }
 
 // Return the first identifying text string
-Dnchar *FilterData::searchStrings() const
+Dnchar* FilterData::searchStrings() const
 {
 	return searchStrings_.first();
 }
@@ -131,18 +133,18 @@ bool FilterData::hasExtension() const
 }
 
 // Return whether the supplied text matches any of the filter's possible extensions
-bool FilterData::doesExtensionMatch(const char *ext) const
+bool FilterData::doesExtensionMatch(const char* ext) const
 {
 	Dnchar lcaseext = lowerCase(ext);
-	for (Dnchar *d = extensions_.first(); d != NULL; d = d->next) if (strcmp(d->lower(), lcaseext.get()) == 0) return TRUE;
+	for (Dnchar* d = extensions_.first(); d != NULL; d = d->next) if (strcmp(d->lower(), lcaseext.get()) == 0) return TRUE;
 	return FALSE;
 }
 
 // Return whether the supplied text matches any of the filter's possible exact filenames
-bool FilterData::doesNameMatch(const char *name) const
+bool FilterData::doesNameMatch(const char* name) const
 {
 	Dnchar lcasename = lowerCase(name);
-	for (Dnchar *d = exactNames_.first(); d != NULL; d = d->next) if (strcmp(d->lower(), lcasename.get()) == 0) return TRUE;
+	for (Dnchar* d = exactNames_.first(); d != NULL; d = d->next) if (strcmp(d->lower(), lcasename.get()) == 0) return TRUE;
 	return FALSE;
 }
 
@@ -159,7 +161,7 @@ Tree* FilterData::partner() const
 }
 
 // Return the file filter
-const char *FilterData::glob() const
+const char* FilterData::glob() const
 {
 	return glob_.get();
 }
@@ -183,25 +185,25 @@ bool FilterData::isExportFilter() const
 }
 
 // Set filter option
-bool FilterData::setOption(Dnchar *name, TreeNode *value)
+bool FilterData::setOption(Dnchar* name, TreeNode* value)
 {
-	msg.enter("FilterData::setOption");
+	Messenger::enter("FilterData::setOption");
 	// Determine filter option supplied
 	FilterData::FilterOption fo = FilterData::filterOption(name->get());
 	if (fo == FilterData::nFilterOptions)
 	{
-		msg.print("Error: '%s' is not a valid filter option.\n", name->get());
-		msg.exit("FilterData::setOption");
+		Messenger::print("Error: '%s' is not a valid filter option.\n", name->get());
+		Messenger::exit("FilterData::setOption");
 		return FALSE;
 	}
 	// Check argument type
 	if (FilterOptionTypes[fo] != value->returnType())
 	{
-		msg.print("Error: Filter option '%s' takes %s value.\n", name->get(), VTypes::dataType(FilterOptionTypes[fo]));
-		msg.exit("FilterData::setOption");
+		Messenger::print("Error: Filter option '%s' takes %s value.\n", name->get(), VTypes::dataType(FilterOptionTypes[fo]));
+		Messenger::exit("FilterData::setOption");
 		return FALSE;
 	}
-	Dnchar *d;
+	Dnchar* d;
 	ReturnValue rv;
 	ElementMap::ZMapType zm;
 	FilterType ft;
@@ -245,7 +247,7 @@ bool FilterData::setOption(Dnchar *name, TreeNode *value)
 			ft = FilterData::filterType(rv.asString());
 			if (ft == FilterData::nFilterTypes)
 			{
-				msg.exit("FilterData::setOption");
+				Messenger::exit("FilterData::setOption");
 				return FALSE;
 			}
 			type_ = ft;
@@ -259,7 +261,7 @@ bool FilterData::setOption(Dnchar *name, TreeNode *value)
 			zm = ElementMap::zMapType(rv.asString());
 			if (zm == ElementMap::nZMapTypes)
 			{
-				msg.exit("FilterData::setOption");
+				Messenger::exit("FilterData::setOption");
 				return FALSE;
 			}
 			zMapType_ = zm;
@@ -267,12 +269,12 @@ bool FilterData::setOption(Dnchar *name, TreeNode *value)
 		default:
 			printf("Internal Error: Unrecognised filter option.\n");
 	}
-	msg.exit("FilterData::setOption");
+	Messenger::exit("FilterData::setOption");
 	return TRUE;
 }
 
 // Return the long description of the filter (including glob)
-const char *FilterData::description()
+const char* FilterData::description()
 {
 	// If the description string is empty, create a new one
 	if (description_.length() < 3) description_.sprintf("%s (%s)",name_.get(),glob_.get());

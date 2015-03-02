@@ -25,10 +25,13 @@
 #include "methods/rdf.h"
 #include "methods/pdens.h"
 #include "methods/geometry.h"
+#include "model/bundle.h"
 #include "model/model.h"
 
+ATEN_USING_NAMESPACE
+
 // Finalise calculated quantites ('finalise')
-bool Command::function_Finalise(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_Finalise(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	for (Calculable *calc = obj.m->pendingQuantities.first(); calc != NULL; calc = calc->next) calc->finalise(obj.m);
@@ -37,7 +40,7 @@ bool Command::function_Finalise(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Accumulate data for current frame ('frameanalyse')
-bool Command::function_FrameAnalyse(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_FrameAnalyse(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// Grab trajectory config for analysis
@@ -48,7 +51,7 @@ bool Command::function_FrameAnalyse(CommandNode *c, Bundle &obj, ReturnValue &rv
 }
 
 // Calculate geometry ('geometry <name> <min> <binwidth> <nbins> <filename> <site1> <site2> [site3 [site4]]')
-bool Command::function_Geometric(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_Geometric(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	Geometry *newgeom = new Geometry;
@@ -67,7 +70,7 @@ bool Command::function_Geometric(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Accumulate data for current model ('modelanalyse')
-bool Command::function_ModelAnalyse(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_ModelAnalyse(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	for (Calculable *calc = obj.m->pendingQuantities.first(); calc != NULL; calc = calc->next) calc->accumulate(obj.m);
@@ -76,7 +79,7 @@ bool Command::function_ModelAnalyse(CommandNode *c, Bundle &obj, ReturnValue &rv
 }
 
 // Request calculation of a 3Ddens ('analyse pdens <name> <grid> <nsteps> <filename> <site1> <site2>')
-bool Command::function_PDens(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_PDens(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	Pdens *newpdens = new Pdens;
@@ -93,13 +96,13 @@ bool Command::function_PDens(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Print current job list ('printjobs')
-bool Command::function_PrintJobs(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_PrintJobs(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	return FALSE;
 }
 
 // Request calculation of an RDF ('rdf <name> <rmin> <binwidth> <nbins> <filename> <site1> <site2>')
-bool Command::function_RDF(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_RDF(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	Rdf *newrdf = new Rdf;
@@ -116,7 +119,7 @@ bool Command::function_RDF(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Save calculated quantities to filenames provided ('savequantities')
-bool Command::function_SaveQuantities(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_SaveQuantities(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	for (Calculable *calc = obj.m->pendingQuantities.first(); calc != NULL; calc = calc->next) calc->save();
@@ -125,7 +128,7 @@ bool Command::function_SaveQuantities(CommandNode *c, Bundle &obj, ReturnValue &
 }
 
 // Calculate quantities over entire trajectory
-bool Command::function_TrajAnalyse(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_TrajAnalyse(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	int n, startframe, totalframes, frameskip, framestodo, framesdone;
@@ -136,7 +139,7 @@ bool Command::function_TrajAnalyse(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	totalframes = obj.m->nTrajectoryFrames();
 	if (totalframes == 0)
 	{
-		msg.print("No trajectory associated to model.\n");
+		Messenger::print("No trajectory associated to model.\n");
 		rv.reset();
 		return FALSE;
 	}
@@ -165,7 +168,7 @@ bool Command::function_TrajAnalyse(CommandNode *c, Bundle &obj, ReturnValue &rv)
 		// Move to next frame
 		if (n != totalframes) obj.m->seekNextTrajectoryFrame();
 	}
-	msg.print("Finished calculating properties - used %i frames from trajectory.\n", framesdone);
+	Messenger::print("Finished calculating properties - used %i frames from trajectory.\n", framesdone);
 	rv.reset();
 	return TRUE;
 }

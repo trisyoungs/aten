@@ -22,11 +22,9 @@
 #include "parser/model.h"
 #include "parser/stepnode.h"
 #include "model/model.h"
-#include "math/constants.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include "main/aten.h"
+
+ATEN_USING_NAMESPACE
 
 /*
 // Variable
@@ -108,70 +106,70 @@ Accessor ModelVariable::accessorData[ModelVariable::nAccessors] = {
 
 // Function data
 FunctionAccessor ModelVariable::functionData[ModelVariable::nFunctions] = {
-	{ "addHydrogen",	VTypes::NoData,		Command::arguments(Command::AddHydrogen),	Command::argText(Command::AddHydrogen) },
-	{ "angleEnergy",	VTypes::DoubleData,	"",						"" },
-	{ "atomWithBit",	VTypes::AtomData,	"i",						"" },
-	{ "augment",		VTypes::NoData,		Command::arguments(Command::Augment),		Command::argText(Command::Augment) },
-	{ "bondEnergy",		VTypes::DoubleData,	"",						"" },
-	{ "charge",		VTypes::NoData,		Command::arguments(Command::Charge),		Command::argText(Command::Charge) },
-	{ "clearBonds",		VTypes::NoData,		Command::arguments(Command::ClearBonds),	Command::argText(Command::ClearBonds) },
-	{ "clearCharges",	VTypes::NoData,		Command::arguments(Command::ClearCharges),	Command::argText(Command::ClearCharges) },
-	{ "clearPatterns",	VTypes::NoData,		"",						Command::argText(Command::ClearPatterns) },
-	{ "clearSelectedBonds",	VTypes::NoData,		Command::arguments(Command::ClearSelectedBonds),Command::argText(Command::ClearSelectedBonds) },
-	{ "copy",		VTypes::NoData,		Command::arguments(Command::Copy),		Command::argText(Command::Copy) },
-	{ "cut",		VTypes::NoData,		Command::arguments(Command::Cut),		Command::argText(Command::Cut) },
-	{ "delete",		VTypes::NoData,		Command::arguments(Command::Delete),		Command::argText(Command::Delete) },
-	{ "deselect",		VTypes::NoData,		Command::arguments(Command::DeSelect),		Command::argText(Command::DeSelect) },
-	{ "elecEnergy",		VTypes::DoubleData,	"",						"" },
-	{ "expand",		VTypes::NoData,		Command::arguments(Command::Expand),		Command::argText(Command::Expand) },
-	{ "finalise",		VTypes::NoData,		Command::arguments(Command::Finalise),		Command::argText(Command::Finalise) },
-	{ "interEnergy",	VTypes::DoubleData,	"",						"" },
-	{ "intraEnergy",	VTypes::DoubleData,	"",						"" },
-	{ "moveToEnd",		VTypes::NoData,		Command::arguments(Command::MoveToEnd),		Command::argText(Command::MoveToEnd) },
-	{ "moveToStart",	VTypes::NoData,		Command::arguments(Command::MoveToStart),	Command::argText(Command::MoveToStart) },
-	{ "newAtom",		VTypes::AtomData,	Command::arguments(Command::NewAtom),		Command::argText(Command::NewAtom) },
-	{ "newAtomFrac",	VTypes::AtomData,	Command::arguments(Command::NewAtomFrac),	Command::argText(Command::NewAtomFrac) },
-	{ "newBasisShell",	VTypes::BasisShellData,	Command::arguments(Command::NewBasisShell),	Command::argText(Command::NewBasisShell) },
-	{ "newBond",		VTypes::BondData,	Command::arguments(Command::NewBond),		Command::argText(Command::NewBond) },
-	{ "newEigenvector",	VTypes::EigenvectorData,Command::arguments(Command::NewEigenvector),	Command::argText(Command::NewEigenvector) },
-	{ "newGlyph",		VTypes::GlyphData,	Command::arguments(Command::NewGlyph),		Command::argText(Command::NewGlyph) },
-	{ "newGrid",		VTypes::GridData,	Command::arguments(Command::NewGrid),		Command::argText(Command::NewGrid) },
-	{ "newPattern",		VTypes::PatternData,	Command::arguments(Command::NewPattern),	Command::argText(Command::NewPattern) },
-	{ "newVibration",	VTypes::VibrationData,	Command::arguments(Command::NewVibration),	Command::argText(Command::NewVibration) },
-	{ "paste",		VTypes::NoData,		Command::arguments(Command::Paste),		Command::argText(Command::Paste) },
-	{ "rebond",		VTypes::NoData,		Command::arguments(Command::ReBond),		Command::argText(Command::ReBond) },
-	{ "rebondPatterns",	VTypes::NoData,		Command::arguments(Command::ReBondPatterns),	Command::argText(Command::ReBondPatterns) },
-	{ "rebondSelection",	VTypes::NoData,		Command::arguments(Command::ReBondSelection),	Command::argText(Command::ReBondSelection) },
-	{ "redo",		VTypes::NoData,		Command::arguments(Command::Redo),		Command::argText(Command::Redo) },
-	{ "reorder",		VTypes::NoData,		Command::arguments(Command::ReOrder),		Command::argText(Command::ReOrder) },
-	{ "saveBitmap",		VTypes::NoData,		Command::arguments(Command::SaveBitmap),	Command::argText(Command::SaveBitmap) },
-	{ "select",		VTypes::NoData,		Command::arguments(Command::Select),		Command::argText(Command::Select) },
-	{ "selectAll",		VTypes::NoData,		Command::arguments(Command::SelectAll),		Command::argText(Command::SelectAll) },
-	{ "selectionAddHydrogen",VTypes::NoData,	Command::arguments(Command::SelectionAddHydrogen),	Command::argText(Command::SelectionAddHydrogen) },
-	{ "selectNone",		VTypes::NoData,		Command::arguments(Command::SelectNone),	Command::argText(Command::SelectNone) },
-	{ "selectTree",		VTypes::NoData,		Command::arguments(Command::SelectTree),	Command::argText(Command::SelectTree) },
-	{ "setupComponent",	VTypes::NoData,		Command::arguments(Command::SetupComponent),	Command::argText(Command::SetupComponent) },
-	{ "shiftDown",		VTypes::NoData,		Command::arguments(Command::ShiftDown),		Command::argText(Command::ShiftDown) },
-	{ "shiftUp",		VTypes::NoData,		Command::arguments(Command::ShiftUp),		Command::argText(Command::ShiftUp) },
-	{ "showAll",		VTypes::NoData,		Command::arguments(Command::ShowAll),		Command::argText(Command::ShowAll) },
-	{ "toAngstroms",	VTypes::NoData,		"",						"" },
-	{ "torsionEnergy",	VTypes::DoubleData,	"",						"" },
-	{ "transmute",		VTypes::NoData,		Command::arguments(Command::Transmute),		Command::argText(Command::Transmute) },
-	{ "undo",		VTypes::NoData,		Command::arguments(Command::Undo),		Command::argText(Command::Undo) },
-	{ "vdwEnergy",		VTypes::DoubleData,	"",						"" }
+	{ "addHydrogen",	VTypes::NoData,		aten_.commandArguments(Commands::AddHydrogen),		aten_.commandArgText(Commands::AddHydrogen) },
+	{ "angleEnergy",	VTypes::DoubleData,	"",							"" },
+	{ "atomWithBit",	VTypes::AtomData,	"i",							"" },
+	{ "augment",		VTypes::NoData,		aten_.commandArguments(Commands::Augment),		aten_.commandArgText(Commands::Augment) },
+	{ "bondEnergy",		VTypes::DoubleData,	"",							"" },
+	{ "charge",		VTypes::NoData,		aten_.commandArguments(Commands::Charge),		aten_.commandArgText(Commands::Charge) },
+	{ "clearBonds",		VTypes::NoData,		aten_.commandArguments(Commands::ClearBonds),		aten_.commandArgText(Commands::ClearBonds) },
+	{ "clearCharges",	VTypes::NoData,		aten_.commandArguments(Commands::ClearCharges),		aten_.commandArgText(Commands::ClearCharges) },
+	{ "clearPatterns",	VTypes::NoData,		"",							aten_.commandArgText(Commands::ClearPatterns) },
+	{ "clearSelectedBonds",	VTypes::NoData,		aten_.commandArguments(Commands::ClearSelectedBonds),	aten_.commandArgText(Commands::ClearSelectedBonds) },
+	{ "copy",		VTypes::NoData,		aten_.commandArguments(Commands::Copy),			aten_.commandArgText(Commands::Copy) },
+	{ "cut",		VTypes::NoData,		aten_.commandArguments(Commands::Cut),			aten_.commandArgText(Commands::Cut) },
+	{ "delete",		VTypes::NoData,		aten_.commandArguments(Commands::Delete),		aten_.commandArgText(Commands::Delete) },
+	{ "deselect",		VTypes::NoData,		aten_.commandArguments(Commands::DeSelect),		aten_.commandArgText(Commands::DeSelect) },
+	{ "elecEnergy",		VTypes::DoubleData,	"",							"" },
+	{ "expand",		VTypes::NoData,		aten_.commandArguments(Commands::Expand),		aten_.commandArgText(Commands::Expand) },
+	{ "finalise",		VTypes::NoData,		aten_.commandArguments(Commands::Finalise),		aten_.commandArgText(Commands::Finalise) },
+	{ "interEnergy",	VTypes::DoubleData,	"",							"" },
+	{ "intraEnergy",	VTypes::DoubleData,	"",							"" },
+	{ "moveToEnd",		VTypes::NoData,		aten_.commandArguments(Commands::MoveToEnd),		aten_.commandArgText(Commands::MoveToEnd) },
+	{ "moveToStart",	VTypes::NoData,		aten_.commandArguments(Commands::MoveToStart),		aten_.commandArgText(Commands::MoveToStart) },
+	{ "newAtom",		VTypes::AtomData,	aten_.commandArguments(Commands::NewAtom),		aten_.commandArgText(Commands::NewAtom) },
+	{ "newAtomFrac",	VTypes::AtomData,	aten_.commandArguments(Commands::NewAtomFrac),		aten_.commandArgText(Commands::NewAtomFrac) },
+	{ "newBasisShell",	VTypes::BasisShellData,	aten_.commandArguments(Commands::NewBasisShell),	aten_.commandArgText(Commands::NewBasisShell) },
+	{ "newBond",		VTypes::BondData,	aten_.commandArguments(Commands::NewBond),		aten_.commandArgText(Commands::NewBond) },
+	{ "newEigenvector",	VTypes::EigenvectorData,aten_.commandArguments(Commands::NewEigenvector),	aten_.commandArgText(Commands::NewEigenvector) },
+	{ "newGlyph",		VTypes::GlyphData,	aten_.commandArguments(Commands::NewGlyph),		aten_.commandArgText(Commands::NewGlyph) },
+	{ "newGrid",		VTypes::GridData,	aten_.commandArguments(Commands::NewGrid),		aten_.commandArgText(Commands::NewGrid) },
+	{ "newPattern",		VTypes::PatternData,	aten_.commandArguments(Commands::NewPattern),		aten_.commandArgText(Commands::NewPattern) },
+	{ "newVibration",	VTypes::VibrationData,	aten_.commandArguments(Commands::NewVibration),		aten_.commandArgText(Commands::NewVibration) },
+	{ "paste",		VTypes::NoData,		aten_.commandArguments(Commands::Paste),		aten_.commandArgText(Commands::Paste) },
+	{ "rebond",		VTypes::NoData,		aten_.commandArguments(Commands::ReBond),		aten_.commandArgText(Commands::ReBond) },
+	{ "rebondPatterns",	VTypes::NoData,		aten_.commandArguments(Commands::ReBondPatterns),	aten_.commandArgText(Commands::ReBondPatterns) },
+	{ "rebondSelection",	VTypes::NoData,		aten_.commandArguments(Commands::ReBondSelection),	aten_.commandArgText(Commands::ReBondSelection) },
+	{ "redo",		VTypes::NoData,		aten_.commandArguments(Commands::Redo),			aten_.commandArgText(Commands::Redo) },
+	{ "reorder",		VTypes::NoData,		aten_.commandArguments(Commands::ReOrder),		aten_.commandArgText(Commands::ReOrder) },
+	{ "saveBitmap",		VTypes::NoData,		aten_.commandArguments(Commands::SaveBitmap),		aten_.commandArgText(Commands::SaveBitmap) },
+	{ "select",		VTypes::NoData,		aten_.commandArguments(Commands::Select),		aten_.commandArgText(Commands::Select) },
+	{ "selectAll",		VTypes::NoData,		aten_.commandArguments(Commands::SelectAll),		aten_.commandArgText(Commands::SelectAll) },
+	{ "selectionAddHydrogen",VTypes::NoData,	aten_.commandArguments(Commands::SelectionAddHydrogen),	aten_.commandArgText(Commands::SelectionAddHydrogen) },
+	{ "selectNone",		VTypes::NoData,		aten_.commandArguments(Commands::SelectNone),		aten_.commandArgText(Commands::SelectNone) },
+	{ "selectTree",		VTypes::NoData,		aten_.commandArguments(Commands::SelectTree),		aten_.commandArgText(Commands::SelectTree) },
+	{ "setupComponent",	VTypes::NoData,		aten_.commandArguments(Commands::SetupComponent),	aten_.commandArgText(Commands::SetupComponent) },
+	{ "shiftDown",		VTypes::NoData,		aten_.commandArguments(Commands::ShiftDown),		aten_.commandArgText(Commands::ShiftDown) },
+	{ "shiftUp",		VTypes::NoData,		aten_.commandArguments(Commands::ShiftUp),		aten_.commandArgText(Commands::ShiftUp) },
+	{ "showAll",		VTypes::NoData,		aten_.commandArguments(Commands::ShowAll),		aten_.commandArgText(Commands::ShowAll) },
+	{ "toAngstroms",	VTypes::NoData,		"",							"" },
+	{ "torsionEnergy",	VTypes::DoubleData,	"",							"" },
+	{ "transmute",		VTypes::NoData,		aten_.commandArguments(Commands::Transmute),		aten_.commandArgText(Commands::Transmute) },
+	{ "undo",		VTypes::NoData,		aten_.commandArguments(Commands::Undo),			aten_.commandArgText(Commands::Undo) },
+	{ "vdwEnergy",		VTypes::DoubleData,	"",							"" }
 };
 
 // Search variable access list for provided accessor (call private static function)
-StepNode *ModelVariable::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist)
+StepNode* ModelVariable::findAccessor(const char* s, TreeNode* arrayIndex, TreeNode* argList)
 {
-	return ModelVariable::accessorSearch(s, arrayindex, arglist);
+	return ModelVariable::accessorSearch(s, arrayIndex, argList);
 }
 
 // Private static function to search accessors
-StepNode *ModelVariable::accessorSearch(const char *s, TreeNode *arrayindex, TreeNode *arglist)
+StepNode* ModelVariable::accessorSearch(const char* s, TreeNode* arrayIndex, TreeNode* argList)
 {
-	msg.enter("ModelVariable::accessorSearch");
-	StepNode *result = NULL;
+	Messenger::enter("ModelVariable::accessorSearch");
+	StepNode* result = NULL;
 	int i = 0;
 	i = Variable::searchAccessor(s, nAccessors, accessorData);
 	if (i == -1)
@@ -181,75 +179,75 @@ StepNode *ModelVariable::accessorSearch(const char *s, TreeNode *arrayindex, Tre
 		i = Variable::searchAccessor(s, nFunctions, functionData);
 		if (i == -1)
 		{
-			msg.print("Error: Type 'Model&' has no member or function named '%s'.\n", s);
+			Messenger::print("Error: Type 'Model&' has no member or function named '%s'.\n", s);
 			printAccessors();
-			msg.exit("ModelVariable::accessorSearch");
+			Messenger::exit("ModelVariable::accessorSearch");
 			return NULL;
 		}
-		msg.print(Messenger::Parse, "FunctionAccessor match = %i (%s)\n", i, functionData[i].name);
-		if (arrayindex != NULL)
+		Messenger::print(Messenger::Parse, "FunctionAccessor match = %i (%s)\n", i, functionData[i].name);
+		if (arrayIndex != NULL)
 		{
-			msg.print("Error: Array index given to 'Model&' function '%s'.\n", s);
-			msg.exit("ModelVariable::accessorSearch");
+			Messenger::print("Error: Array index given to 'Model&' function '%s'.\n", s);
+			Messenger::exit("ModelVariable::accessorSearch");
 			return NULL;
 		}
 		// Add and check supplied arguments...
 		result = new StepNode(i, VTypes::ModelData, functionData[i].returnType);
-		result->addJoinedArguments(arglist);
+		result->addJoinedArguments(argList);
 		if (!result->checkArguments(functionData[i].arguments, functionData[i].name))
 		{
-			msg.print("Error: Syntax for 'Model&' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
+			Messenger::print("Error: Syntax for 'Model&' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
 			delete result;
 			result = NULL;
 		}
 	}
 	else
 	{
-		msg.print(Messenger::Parse, "Accessor match = %i (%s)\n", i, accessorData[i].name);
+		Messenger::print(Messenger::Parse, "Accessor match = %i (%s)\n", i, accessorData[i].name);
 		// Were we given an array index when we didn't want one?
-		if ((accessorData[i].arraySize == 0) && (arrayindex != NULL))
+		if ((accessorData[i].arraySize == 0) && (arrayIndex != NULL))
 		{
-			msg.print("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
+			Messenger::print("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
 			result = NULL;
 		}
 		// Were we given an argument list when we didn't want one?
-		if (arglist != NULL)
+		if (argList != NULL)
 		{
-			msg.print("Error: Argument list given to 'Model&' array member '%s'.\n", s);
-			msg.exit("ModelVariable::accessorSearch");
+			Messenger::print("Error: Argument list given to 'Model&' array member '%s'.\n", s);
+			Messenger::exit("ModelVariable::accessorSearch");
 			return NULL;
 		}
-		result = new StepNode(i, VTypes::ModelData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
+		result = new StepNode(i, VTypes::ModelData, arrayIndex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
 	}
-	msg.exit("ModelVariable::accessorSearch");
+	Messenger::exit("ModelVariable::accessorSearch");
 	return result;
 }
 
 // Retrieve desired value
-bool ModelVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, int arrayIndex)
+bool ModelVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex, int arrayIndex)
 {
-	msg.enter("ModelVariable::retrieveAccessor");
+	Messenger::enter("ModelVariable::retrieveAccessor");
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nAccessors))
 	{
 		printf("Internal Error: Accessor id %i is out of range for Model type.\n", i);
-		msg.exit("ModelVariable::retrieveAccessor");
+		Messenger::exit("ModelVariable::retrieveAccessor");
 		return FALSE;
 	}
 	Accessors acc = (Accessors) i;
 	// Check for correct lack/presence of array index given
 	if ((accessorData[i].arraySize == 0) && hasArrayIndex)
 	{
-		msg.print("Error: Unnecessary array index provided for member '%s'.\n", accessorData[i].name);
-		msg.exit("ModelVariable::retrieveAccessor");
+		Messenger::print("Error: Unnecessary array index provided for member '%s'.\n", accessorData[i].name);
+		Messenger::exit("ModelVariable::retrieveAccessor");
 		return FALSE;
 	}
 	else if ((accessorData[i].arraySize > 0) && (hasArrayIndex))
 	{
 		if ((arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize))
 		{
-			msg.print("Error: Array index out of bounds for member '%s' (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
-			msg.exit("ModelVariable::retrieveAccessor");
+			Messenger::print("Error: Array index out of bounds for member '%s' (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
+			Messenger::exit("ModelVariable::retrieveAccessor");
 			return FALSE;
 		}
 	}
@@ -258,7 +256,7 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex,
 	Model* ptr = (Model*) rv.asPointer(VTypes::ModelData, result);
 	if ((!result) || (ptr == NULL))
 	{
-		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::ModelData));
+		Messenger::print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::ModelData));
 		result = FALSE;
 	}
 	if (result) switch (acc)
@@ -267,7 +265,7 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex,
 			if (!hasArrayIndex) rv.set(VTypes::MeasurementData, ptr->angleMeasurements());
 			else if (arrayIndex > ptr->nAngleMeasurements())
 			{
-				msg.print("Angle array index (%i) is out of bounds for model '%s'\n", arrayIndex, ptr->name());
+				Messenger::print("Angle array index (%i) is out of bounds for model '%s'\n", arrayIndex, ptr->name());
 				result = FALSE;
 			}
 			else rv.set(VTypes::MeasurementData, ptr->angleMeasurement(arrayIndex-1));
@@ -276,7 +274,7 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex,
 			if (!hasArrayIndex) rv.set(VTypes::AtomData, ptr->atoms());
 			else if (arrayIndex > ptr->nAtoms())
 			{
-				msg.print("Atom array index (%i) is out of bounds for model '%s'\n", arrayIndex, ptr->name());
+				Messenger::print("Atom array index (%i) is out of bounds for model '%s'\n", arrayIndex, ptr->name());
 				result = FALSE;
 			}
 			else rv.set(VTypes::AtomData, ptr->atom(arrayIndex-1));
@@ -285,7 +283,7 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex,
 			if (!hasArrayIndex) rv.set(VTypes::BondData, ptr->bonds());
 			else if (arrayIndex > ptr->nBonds())
 			{
-				msg.print("Bond array index (%i) is out of bounds for model '%s'\n", arrayIndex, ptr->name());
+				Messenger::print("Bond array index (%i) is out of bounds for model '%s'\n", arrayIndex, ptr->name());
 				result = FALSE;
 			}
 			else rv.set(VTypes::BondData, ptr->bond(arrayIndex-1));
@@ -309,7 +307,7 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex,
 			if (!hasArrayIndex) rv.set(VTypes::MeasurementData, ptr->distanceMeasurements());
 			else if (arrayIndex > ptr->nDistanceMeasurements())
 			{
-				msg.print("Distance array index (%i) is out of bounds for model '%s'\n", arrayIndex, ptr->name());
+				Messenger::print("Distance array index (%i) is out of bounds for model '%s'\n", arrayIndex, ptr->name());
 				result = FALSE;
 			}
 			else rv.set(VTypes::MeasurementData, ptr->distanceMeasurement(arrayIndex-1));
@@ -325,7 +323,7 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex,
 			}
 			else if (arrayIndex > ptr->nForcefieldAngles())
 			{
-				msg.print("Forcefield angle array index (%i) is out of bounds for model '%s'\n", arrayIndex, ptr->name());
+				Messenger::print("Forcefield angle array index (%i) is out of bounds for model '%s'\n", arrayIndex, ptr->name());
 				result = FALSE;
 			}
 			else rv.set(VTypes::ForcefieldBoundData, ptr->forcefieldAngle(arrayIndex-1)->item, ptr->forcefieldAngle(arrayIndex-1));
@@ -338,7 +336,7 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex,
 			}
 			else if (arrayIndex > ptr->nForcefieldBonds())
 			{
-				msg.print("Forcefield bond array index (%i) is out of bounds for model '%s'\n", arrayIndex, ptr->name());
+				Messenger::print("Forcefield bond array index (%i) is out of bounds for model '%s'\n", arrayIndex, ptr->name());
 				result = FALSE;
 			}
 			else rv.set(VTypes::ForcefieldBoundData, ptr->forcefieldBond(arrayIndex-1)->item, ptr->forcefieldBond(arrayIndex-1));
@@ -351,7 +349,7 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex,
 			}
 			else if (arrayIndex > ptr->nForcefieldTorsions())
 			{
-				msg.print("Forcefield torsion array index (%i) is out of bounds for model '%s'\n", arrayIndex, ptr->name());
+				Messenger::print("Forcefield torsion array index (%i) is out of bounds for model '%s'\n", arrayIndex, ptr->name());
 				result = FALSE;
 			}
 			else rv.set(VTypes::ForcefieldBoundData, ptr->forcefieldTorsion(arrayIndex-1)->item, ptr->forcefieldTorsion(arrayIndex-1));
@@ -367,7 +365,7 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex,
 			}
 			else if (arrayIndex > ptr->nUniqueForcefieldTypes())
 			{
-				msg.print("Forcefield types array index (%i) is out of bounds for model '%s'\n", arrayIndex, ptr->name());
+				Messenger::print("Forcefield types array index (%i) is out of bounds for model '%s'\n", arrayIndex, ptr->name());
 				result = FALSE;
 			}
 			else rv.set(VTypes::ForcefieldAtomData, ptr->uniqueForcefieldType(arrayIndex-1)->item, ptr->uniqueForcefieldType(arrayIndex-1));
@@ -385,13 +383,13 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex,
 			// Only works for a cached trajectory
 			if (!ptr->trajectoryIsCached())
 			{
-				msg.print("Trajectory for model '%s' is not cached - individual frame pointers not available.\n", ptr->name());
+				Messenger::print("Trajectory for model '%s' is not cached - individual frame pointers not available.\n", ptr->name());
 				result = FALSE;
 			}
 			else if (!hasArrayIndex) rv.set(VTypes::ModelData, ptr->trajectoryFrame(0));
 			else if ((arrayIndex < 1) || (arrayIndex > ptr->nTrajectoryFrames()))
 			{
-				msg.print("Frame array index '%i' is out of bounds for model '%s' whose trajectory has %i frames.\n", arrayIndex, ptr->name(), ptr->nTrajectoryFrames());
+				Messenger::print("Frame array index '%i' is out of bounds for model '%s' whose trajectory has %i frames.\n", arrayIndex, ptr->name(), ptr->nTrajectoryFrames());
 				result = FALSE;
 			}
 			else rv.set(VTypes::ModelData, ptr->trajectoryFrame(arrayIndex-1));
@@ -404,7 +402,7 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex,
 			}
 			else if (arrayIndex > ptr->nGlyphs())
 			{
-				msg.print("Glyph array index (%i) is out of bounds for model '%s'\n", arrayIndex, ptr->name());
+				Messenger::print("Glyph array index (%i) is out of bounds for model '%s'\n", arrayIndex, ptr->name());
 				result = FALSE;
 			}
 			else rv.set(VTypes::GlyphData, ptr->glyph(arrayIndex-1));
@@ -417,13 +415,13 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex,
 			}
 			else if (arrayIndex > ptr->nGrids())
 			{
-				msg.print("Grid array index (%i) is out of bounds for model '%s'\n", arrayIndex, ptr->name());
+				Messenger::print("Grid array index (%i) is out of bounds for model '%s'\n", arrayIndex, ptr->name());
 				result = FALSE;
 			}
 			else rv.set(VTypes::GridData, ptr->grid(arrayIndex-1));
 			break;
 		case (ModelVariable::Id):
-			rv.set(aten.modelIndex(ptr)+1);
+			rv.set(aten_.modelIndex(ptr)+1);
 			break;
 		case (ModelVariable::Mass):
 			rv.set(ptr->mass());
@@ -492,7 +490,7 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex,
 			if (!hasArrayIndex) rv.set(VTypes::PatternData, ptr->patterns());
 			else if (arrayIndex > ptr->nPatterns())
 			{
-				msg.print("Pattern array index (%i) is out of bounds for model '%s'\n", arrayIndex, ptr->name());
+				Messenger::print("Pattern array index (%i) is out of bounds for model '%s'\n", arrayIndex, ptr->name());
 				result = FALSE;
 			}
 			else rv.set(VTypes::PatternData, ptr->pattern(arrayIndex-1));
@@ -514,7 +512,7 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex,
 			}
 			else if (arrayIndex > ptr->nSelected())
 			{
-				msg.print("Selection array index (%i) is out of bounds for model '%s'\n", arrayIndex, ptr->name());
+				Messenger::print("Selection array index (%i) is out of bounds for model '%s'\n", arrayIndex, ptr->name());
 				result = FALSE;
 			}
 			else rv.set(VTypes::AtomData, ptr->selected(arrayIndex-1)->item, ptr->selected(arrayIndex-1));
@@ -523,7 +521,7 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex,
 			if (!hasArrayIndex) rv.set(VTypes::MeasurementData, ptr->torsionMeasurements());
 			else if (arrayIndex > ptr->nTorsionMeasurements())
 			{
-				msg.print("Torsions array index (%i) is out of bounds for model '%s'\n", arrayIndex, ptr->name());
+				Messenger::print("Torsions array index (%i) is out of bounds for model '%s'\n", arrayIndex, ptr->name());
 				result = FALSE;
 			}
 			else rv.set(VTypes::MeasurementData, ptr->torsionMeasurement(arrayIndex-1));
@@ -536,19 +534,19 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex,
 			result = FALSE;
 			break;
 	}
-	msg.exit("ModelVariable::retrieveAccessor");
+	Messenger::exit("ModelVariable::retrieveAccessor");
 	return result;
 }
 
 // Set desired value
-bool ModelVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newvalue, bool hasArrayIndex, int arrayIndex)
+bool ModelVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newValue, bool hasArrayIndex, int arrayIndex)
 {
-	msg.enter("ModelVariable::setAccessor");
+	Messenger::enter("ModelVariable::setAccessor");
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nAccessors))
 	{
 		printf("Internal Error: Accessor id %i is out of range for Model type.\n", i);
-		msg.exit("ModelVariable::setAccessor");
+		Messenger::exit("ModelVariable::setAccessor");
 		return FALSE;
 	}
 	Accessors acc = (Accessors) i;
@@ -560,20 +558,20 @@ bool ModelVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newva
 		{
 			if ((accessorData[i].arraySize > 0) && ( (arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize) ))
 			{
-				msg.print("Error: Array index provided for member '%s' is out of range (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
+				Messenger::print("Error: Array index provided for member '%s' is out of range (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
 				result = FALSE;
 			}
-			if (newvalue.arraySize() > 0)
+			if (newValue.arraySize() > 0)
 			{
-				msg.print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
+				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
 				result = FALSE;
 			}
 		}
 		else
 		{
-			if (newvalue.arraySize() > accessorData[i].arraySize)
+			if (newValue.arraySize() > accessorData[i].arraySize)
 			{
-				msg.print("Error: The array being assigned to member '%s' is larger than the size of the desination array (%i cf. %i).\n", accessorData[i].name, newvalue.arraySize(), accessorData[i].arraySize);
+				Messenger::print("Error: The array being assigned to member '%s' is larger than the size of the desination array (%i cf. %i).\n", accessorData[i].name, newValue.arraySize(), accessorData[i].arraySize);
 				result = FALSE;
 			}
 		}
@@ -581,23 +579,23 @@ bool ModelVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newva
 	else
 	{
 		// This is not an array member, so cannot be assigned an array unless its a Vector
-		if (newvalue.arraySize() != -1)
+		if (newValue.arraySize() != -1)
 		{
 			if (accessorData[i].returnType != VTypes::VectorData)
 			{
-				msg.print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
+				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
 				result = FALSE;
 			}
-			else if ((newvalue.type() != VTypes::VectorData) && (newvalue.arraySize() != 3))
+			else if ((newValue.type() != VTypes::VectorData) && (newValue.arraySize() != 3))
 			{
-				msg.print("Error: Only an array of size 3 can be assigned to a vector (member '%s').\n", accessorData[i].name);
+				Messenger::print("Error: Only an array of size 3 can be assigned to a vector (member '%s').\n", accessorData[i].name);
 				result = FALSE;
 			}
 		}
 	}
 	if (!result)
 	{
-		msg.exit("ModelVariable::setAccessor");
+		Messenger::exit("ModelVariable::setAccessor");
 		return FALSE;
 	}
 	// Get current data from ReturnValue
@@ -605,50 +603,50 @@ bool ModelVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newva
 	Model* ptr = (Model*) sourcerv.asPointer(VTypes::ModelData, result);
 	if ((!result) || (ptr == NULL))
 	{
-		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::ModelData));
+		Messenger::print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::ModelData));
 		result = FALSE;
 	}
 	int n;
 	if (result) switch (acc)
 	{
 		case (ModelVariable::Celldata):
-			ptr->setCell( ((UnitCell*) newvalue.asPointer(VTypes::CellData)) );
+			ptr->setCell( ((UnitCell*) newValue.asPointer(VTypes::CellData)) );
 			break;
 		case (ModelVariable::ComponentDensity):
-			ptr->setComponentDensity( newvalue.asDouble() );
+			ptr->setComponentDensity( newValue.asDouble() );
 			break;
 		case (ModelVariable::ComponentPartition):
-			ptr->setComponentPartition( newvalue.asInteger()-1 );
+			ptr->setComponentPartition( newValue.asInteger()-1 );
 			break;
 		case (ModelVariable::ComponentPolicy):
-			inspol = Model::insertionPolicy(newvalue.asString(), TRUE);
+			inspol = Model::insertionPolicy(newValue.asString(), TRUE);
 			if (inspol == Model::nInsertionPolicies) result = FALSE;
 			else ptr->setComponentInsertionPolicy(inspol);
 			break;
 		case (ModelVariable::ComponentPopulation):
-			ptr->setComponentPopulation( newvalue.asInteger() );
+			ptr->setComponentPopulation( newValue.asInteger() );
 			break;
 		case (ModelVariable::FField):
-			ptr->setForcefield( (Forcefield*) newvalue.asPointer(VTypes::ForcefieldData) );
+			ptr->setForcefield( (Forcefield*) newValue.asPointer(VTypes::ForcefieldData) );
 			break;
 		case (ModelVariable::Name):
-			ptr->setName(newvalue.asString());
+			ptr->setName(newValue.asString());
 			break;
 		case (ModelVariable::PropagateStyle):
-			ptr->setTrajectoryPropagateParentStyle( newvalue.asBool() );
+			ptr->setTrajectoryPropagateParentStyle( newValue.asBool() );
 			break;
 		case (ModelVariable::RepeatCellNegative):
-			if (newvalue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->setRepeatCellsNegative(n, newvalue.asVector(result)[n]);
-			else if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setRepeatCellsNegative(n, newvalue.asInteger(n, result));
-			else if (hasArrayIndex) ptr->setRepeatCellsNegative(arrayIndex-1, newvalue.asInteger(result));
-			else for (n=0; n<3; ++n) ptr->setRepeatCellsNegative(n, newvalue.asInteger(result));
+			if (newValue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->setRepeatCellsNegative(n, newValue.asVector(result)[n]);
+			else if (newValue.arraySize() != -1) for (n=0; n<newValue.arraySize(); ++n) ptr->setRepeatCellsNegative(n, newValue.asInteger(n, result));
+			else if (hasArrayIndex) ptr->setRepeatCellsNegative(arrayIndex-1, newValue.asInteger(result));
+			else for (n=0; n<3; ++n) ptr->setRepeatCellsNegative(n, newValue.asInteger(result));
 			ptr->changeLog.add(Log::Style);
 			break;
 		case (ModelVariable::RepeatCellPositive):
-			if (newvalue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->setRepeatCellsPositive(n, newvalue.asVector(result)[n]);
-			else if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setRepeatCellsPositive(n, newvalue.asInteger(n, result));
-			else if (hasArrayIndex) ptr->setRepeatCellsPositive(arrayIndex-1, newvalue.asInteger(result));
-			else for (n=0; n<3; ++n) ptr->setRepeatCellsPositive(n, newvalue.asInteger(result));
+			if (newValue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->setRepeatCellsPositive(n, newValue.asVector(result)[n]);
+			else if (newValue.arraySize() != -1) for (n=0; n<newValue.arraySize(); ++n) ptr->setRepeatCellsPositive(n, newValue.asInteger(n, result));
+			else if (hasArrayIndex) ptr->setRepeatCellsPositive(arrayIndex-1, newValue.asInteger(result));
+			else for (n=0; n<3; ++n) ptr->setRepeatCellsPositive(n, newValue.asInteger(result));
 			ptr->changeLog.add(Log::Style);
 			break;
 		default:
@@ -656,19 +654,19 @@ bool ModelVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newva
 			result = FALSE;
 			break;
 	}
-	msg.exit("ModelVariable::setAccessor");
+	Messenger::exit("ModelVariable::setAccessor");
 	return result;
 }
 
 // Perform desired function
-bool ModelVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
+bool ModelVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 {
-	msg.enter("ModelVariable::performFunction");
+	Messenger::enter("ModelVariable::performFunction");
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nFunctions))
 	{
 		printf("Internal Error: FunctionAccessor id %i is out of range for Model type.\n", i);
-		msg.exit("ModelVariable::performFunction");
+		Messenger::exit("ModelVariable::performFunction");
 		return FALSE;
 	}
 
@@ -683,7 +681,7 @@ bool ModelVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 	if (result) switch (i)
 	{
 		case (ModelVariable::AddHydrogen):
-			result = aten.commands.call(Command::AddHydrogen, node, rv, bundle);
+			result = aten_.callCommand(Commands::AddHydrogen, node, rv, bundle);
 			break;
 		case (ModelVariable::AngleEnergy):
 			rv.set( ptr->angleEnergy(ptr, result));
@@ -694,47 +692,47 @@ bool ModelVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 			for (Atom* j = ptr->atoms(); j != NULL; j = j->next) if (j->bit() == bit) rv.set(VTypes::AtomData, j);
 			break;
  		case (ModelVariable::Augment):
-			result = aten.commands.call(Command::Augment, node, rv, bundle);
+			result = aten_.callCommand(Commands::Augment, node, rv, bundle);
 			break;
 		case (ModelVariable::BondEnergy):
 			rv.set( ptr->bondEnergy(ptr, result));
 			break;
  		case (ModelVariable::Charge):
-			result = aten.commands.call(Command::Charge, node, rv, bundle);
+			result = aten_.callCommand(Commands::Charge, node, rv, bundle);
 			break;
  		case (ModelVariable::ClearBonds):
-			result = aten.commands.call(Command::ClearBonds, node, rv, bundle);
+			result = aten_.callCommand(Commands::ClearBonds, node, rv, bundle);
 			break;
  		case (ModelVariable::ClearCharges):
-			result = aten.commands.call(Command::ClearCharges, node, rv, bundle);
+			result = aten_.callCommand(Commands::ClearCharges, node, rv, bundle);
 			break;
 		case (ModelVariable::ClearPatterns):
 			ptr->clearPatterns();
 			result = TRUE;
 			break;
  		case (ModelVariable::ClearSelectedBonds):
-			result = aten.commands.call(Command::ClearSelectedBonds, node, rv, bundle);
+			result = aten_.callCommand(Commands::ClearSelectedBonds, node, rv, bundle);
 			break;
  		case (ModelVariable::Copy):
-			result = aten.commands.call(Command::Copy, node, rv, bundle);
+			result = aten_.callCommand(Commands::Copy, node, rv, bundle);
 			break;
  		case (ModelVariable::Cut):
-			result = aten.commands.call(Command::Cut, node, rv, bundle);
+			result = aten_.callCommand(Commands::Cut, node, rv, bundle);
 			break;
  		case (ModelVariable::Delete):
-			result = aten.commands.call(Command::Delete, node, rv, bundle);
+			result = aten_.callCommand(Commands::Delete, node, rv, bundle);
 			break;
 		case (ModelVariable::DeSelect):
-			result = aten.commands.call(Command::DeSelect, node, rv, bundle);
+			result = aten_.callCommand(Commands::DeSelect, node, rv, bundle);
 			break;
 		case (ModelVariable::ElectrostaticEnergy):
 			rv.set( ptr->electrostaticEnergy(ptr, result));
 			break;
  		case (ModelVariable::Expand):
-			result = aten.commands.call(Command::Expand, node, rv, bundle);
+			result = aten_.callCommand(Commands::Expand, node, rv, bundle);
 			break;
  		case (ModelVariable::Finalise):
-			result = aten.commands.call(Command::Finalise, node, rv, bundle);
+			result = aten_.callCommand(Commands::Finalise, node, rv, bundle);
 			break;
 		case (ModelVariable::InterEnergy):
 			rv.set( ptr->intermolecularEnergy(ptr, result));
@@ -743,86 +741,86 @@ bool ModelVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 			rv.set( ptr->intramolecularEnergy(ptr, result));
 			break;
  		case (ModelVariable::MoveToEnd):
-			result = aten.commands.call(Command::MoveToEnd, node, rv, bundle);
+			result = aten_.callCommand(Commands::MoveToEnd, node, rv, bundle);
 			break;
  		case (ModelVariable::MoveToStart):
-			result = aten.commands.call(Command::MoveToStart, node, rv, bundle);
+			result = aten_.callCommand(Commands::MoveToStart, node, rv, bundle);
 			break;
  		case (ModelVariable::NewAtom):
-			result = aten.commands.call(Command::NewAtom, node, rv, bundle);
+			result = aten_.callCommand(Commands::NewAtom, node, rv, bundle);
 			break;
  		case (ModelVariable::NewAtomFrac):
-			result = aten.commands.call(Command::NewAtomFrac, node, rv, bundle);
+			result = aten_.callCommand(Commands::NewAtomFrac, node, rv, bundle);
 			break;
  		case (ModelVariable::NewBasisShell):
-			result = aten.commands.call(Command::NewBasisShell, node, rv, bundle);
+			result = aten_.callCommand(Commands::NewBasisShell, node, rv, bundle);
 			break;
  		case (ModelVariable::NewBond):
-			result = aten.commands.call(Command::NewBond, node, rv, bundle);
+			result = aten_.callCommand(Commands::NewBond, node, rv, bundle);
 			break;
  		case (ModelVariable::NewEigenvector):
-			result = aten.commands.call(Command::NewEigenvector, node, rv, bundle);
+			result = aten_.callCommand(Commands::NewEigenvector, node, rv, bundle);
 			break;
  		case (ModelVariable::NewGlyph):
-			result = aten.commands.call(Command::NewGlyph, node, rv, bundle);
+			result = aten_.callCommand(Commands::NewGlyph, node, rv, bundle);
 			break;
  		case (ModelVariable::NewGrid):
-			result = aten.commands.call(Command::NewGrid, node, rv, bundle);
+			result = aten_.callCommand(Commands::NewGrid, node, rv, bundle);
 			break;
 		case (ModelVariable::NewPattern):
 			rv.set(VTypes::PatternData, ptr->addPattern(node->argc(0), node->argi(1), node->argi(2)) );
 			result = (rv.asPointer(VTypes::PatternData) != NULL);
 			break;
  		case (ModelVariable::NewVibration):
-			result = aten.commands.call(Command::NewVibration, node, rv, bundle);
+			result = aten_.callCommand(Commands::NewVibration, node, rv, bundle);
 			break;
  		case (ModelVariable::Paste):
-			result = aten.commands.call(Command::Paste, node, rv, bundle);
+			result = aten_.callCommand(Commands::Paste, node, rv, bundle);
 			break;
  		case (ModelVariable::ReBond):
-			result = aten.commands.call(Command::ReBond, node, rv, bundle);
+			result = aten_.callCommand(Commands::ReBond, node, rv, bundle);
 			break;
  		case (ModelVariable::ReBondPatterns):
-			result = aten.commands.call(Command::ReBondPatterns, node, rv, bundle);
+			result = aten_.callCommand(Commands::ReBondPatterns, node, rv, bundle);
 			break;
  		case (ModelVariable::ReBondSelection):
-			result = aten.commands.call(Command::ReBondSelection, node, rv, bundle);
+			result = aten_.callCommand(Commands::ReBondSelection, node, rv, bundle);
 			break;
  		case (ModelVariable::Redo):
-			result = aten.commands.call(Command::Redo, node, rv, bundle);
+			result = aten_.callCommand(Commands::Redo, node, rv, bundle);
 			break;
  		case (ModelVariable::ReOrder):
-			result = aten.commands.call(Command::ReOrder, node, rv, bundle);
+			result = aten_.callCommand(Commands::ReOrder, node, rv, bundle);
 			break;
  		case (ModelVariable::SaveBitmap):
-			result = aten.commands.call(Command::SaveBitmap, node, rv, bundle);
+			result = aten_.callCommand(Commands::SaveBitmap, node, rv, bundle);
 			break;
  		case (ModelVariable::Select):
-			result = aten.commands.call(Command::Select, node, rv, bundle);
+			result = aten_.callCommand(Commands::Select, node, rv, bundle);
 			break;
  		case (ModelVariable::SelectAll):
-			result = aten.commands.call(Command::SelectAll, node, rv, bundle);
+			result = aten_.callCommand(Commands::SelectAll, node, rv, bundle);
 			break;
  		case (ModelVariable::SelectionAddHydrogen):
-			result = aten.commands.call(Command::SelectionAddHydrogen, node, rv, bundle);
+			result = aten_.callCommand(Commands::SelectionAddHydrogen, node, rv, bundle);
 			break;
  		case (ModelVariable::SelectNone):
-			result = aten.commands.call(Command::SelectNone, node, rv, bundle);
+			result = aten_.callCommand(Commands::SelectNone, node, rv, bundle);
 			break;
  		case (ModelVariable::SelectTree):
-			result = aten.commands.call(Command::SelectTree, node, rv, bundle);
+			result = aten_.callCommand(Commands::SelectTree, node, rv, bundle);
 			break;
  		case (ModelVariable::SetupComponent):
-			result = aten.commands.call(Command::SetupComponent, node, rv, bundle);
+			result = aten_.callCommand(Commands::SetupComponent, node, rv, bundle);
 			break;
  		case (ModelVariable::ShiftDown):
-			result = aten.commands.call(Command::ShiftDown, node, rv, bundle);
+			result = aten_.callCommand(Commands::ShiftDown, node, rv, bundle);
 			break;
  		case (ModelVariable::ShiftUp):
-			result = aten.commands.call(Command::ShiftUp, node, rv, bundle);
+			result = aten_.callCommand(Commands::ShiftUp, node, rv, bundle);
 			break;
 		case (ModelVariable::ShowAll):
-			result = aten.commands.call(Command::ShowAll, node, rv, bundle);
+			result = aten_.callCommand(Commands::ShowAll, node, rv, bundle);
 			break;
  		case (ModelVariable::ToAngstroms):
 			ptr->bohrToAngstrom();
@@ -831,10 +829,10 @@ bool ModelVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 			rv.set( ptr->torsionEnergy(ptr, result));
 			break;
  		case (ModelVariable::Transmute):
-			result = aten.commands.call(Command::Transmute, node, rv, bundle);
+			result = aten_.callCommand(Commands::Transmute, node, rv, bundle);
 			break;
  		case (ModelVariable::Undo):
-			result = aten.commands.call(Command::Undo, node, rv, bundle);
+			result = aten_.callCommand(Commands::Undo, node, rv, bundle);
 			break;
 		case (ModelVariable::VdwEnergy):
 			rv.set( ptr->vdwEnergy(ptr, result));
@@ -844,7 +842,7 @@ bool ModelVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 			result = FALSE;
 			break;
 	}
-	msg.exit("ModelVariable::performFunction");
+	Messenger::exit("ModelVariable::performFunction");
 	return result;
 }
 
@@ -853,15 +851,15 @@ void ModelVariable::printAccessors()
 {
 	if (ModelVariable::nAccessors > 0)
 	{
-		msg.print("Valid accessors are:\n");
-		for (int n=0; n<ModelVariable::nAccessors; ++n) msg.print("%s%s%s", n == 0 ? " " : ", ", accessorData[n].name, accessorData[n].arraySize > 0 ? "[]" : "");
-		msg.print("\n");
+		Messenger::print("Valid accessors are:\n");
+		for (int n=0; n<ModelVariable::nAccessors; ++n) Messenger::print("%s%s%s", n == 0 ? " " : ", ", accessorData[n].name, accessorData[n].arraySize > 0 ? "[]" : "");
+		Messenger::print("\n");
 	}
 	if ((ModelVariable::nFunctions > 0) && (strcmp(functionData[0].name,".dummy") != 0))
 	{
-		msg.print("Valid functions are:\n");
-		for (int n=0; n<ModelVariable::nFunctions; ++n) msg.print("%s%s(%s)", n == 0 ? " " : ", ", functionData[n].name, functionData[n].argText);
-		msg.print("\n");
+		Messenger::print("Valid functions are:\n");
+		for (int n=0; n<ModelVariable::nFunctions; ++n) Messenger::print("%s%s(%s)", n == 0 ? " " : ", ", functionData[n].name, functionData[n].argText);
+		Messenger::print("\n");
 	}
 }
 
@@ -870,7 +868,7 @@ void ModelVariable::printAccessors()
 */
 
 // Constructor
-ModelArrayVariable::ModelArrayVariable(TreeNode *sizeexpr, bool constant)
+ModelArrayVariable::ModelArrayVariable(TreeNode* sizeexpr, bool constant)
 {
 	// Private variables
 	returnType_ = VTypes::ModelData;
@@ -882,7 +880,7 @@ ModelArrayVariable::ModelArrayVariable(TreeNode *sizeexpr, bool constant)
 }
 
 // Search variable access list for provided accessor
-StepNode *ModelArrayVariable::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist)
+StepNode* ModelArrayVariable::findAccessor(const char* s, TreeNode* arrayIndex, TreeNode* argList)
 {
-	return ModelVariable::accessorSearch(s, arrayindex, arglist);
+	return ModelVariable::accessorSearch(s, arrayIndex, argList);
 }

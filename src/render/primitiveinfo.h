@@ -24,8 +24,11 @@
 
 #include "math/matrix.h"
 #include "templates/list.h"
+#include "base/namespace.h"
 
-// Forward Declarations
+ATEN_BEGIN_NAMESPACE
+
+// Forward Declarations (Aten)
 class Primitive;
 
 // Primitive Info
@@ -37,11 +40,11 @@ class PrimitiveInfo : public ListItem<PrimitiveInfo>
 
 	private:
 	// Target primitive
-	Primitive *primitive_;
+	Primitive* primitive_;
 	// Local transformation of primitive
 	Matrix localTransform_;
 	// Colour of primitive (if vertexData_ doesn't contain colour information)
-	GLfloat colour_[4];
+	Vec4<GLfloat> colour_;
 	// Whether to draw the primitive as filled or wireframe polygons
 	GLenum fillMode_;
 	// GL object line width (if type_ == GL_LINE or chunk primitive type == GL_LINES)
@@ -49,17 +52,19 @@ class PrimitiveInfo : public ListItem<PrimitiveInfo>
 	
 	public:
 	// Set primitive info data
-	void set(Primitive *prim, GLfloat *colour, Matrix &transform, GLenum fillMode = GL_FILL, GLfloat lineWidth = 1.0f);
+	void set(Primitive* prim, Vec4<GLfloat>& colour, Matrix& transform, GLenum fillMode = GL_FILL, GLfloat lineWidth = 1.0f);
 	// Return pointer to stored primitive
-	Primitive *primitive();
+	Primitive* primitive();
 	// Return local transformation of primitive
-	Matrix &localTransform();
+	Matrix& localTransform();
 	// Return colour array
-	GLfloat *colour();
+	const Vec4<GLfloat>& colour() const;
 	// Return polygon fill mode
-	GLenum fillMode();
+	GLenum fillMode() const;
 	// Return line width
-	GLfloat lineWidth();
+	GLfloat lineWidth() const;
 };
+
+ATEN_END_NAMESPACE
 
 #endif

@@ -19,6 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <QtGui/QCloseEvent>
 #include "gui/mainwindow.h"
 #include "gui/trajectory.h"
 #include "main/aten.h"
@@ -111,13 +112,13 @@ void TrajectoryWidget::on_TrajectoryPlayPauseButton_clicked(bool checked)
 	{
 		trajectoryTimerId_ = startTimer(ui.TrajectoryDelaySpin->value());
 		trajectoryPlaying_ = TRUE;
-		parent_.setEditable(FALSE);
+		parent_.ui.MainView->setEditable(FALSE);
 	}
 	else
 	{
 		killTimer(trajectoryTimerId_);
 		trajectoryPlaying_ = FALSE;
-		parent_.setEditable(TRUE);
+		parent_.ui.MainView->setEditable(TRUE);
 	}
 	parent_.updateTrajectoryMenu();
 }
@@ -128,7 +129,7 @@ void TrajectoryWidget::on_TrajectoryFrameSlider_valueChanged(int value)
 	if (refreshing_) return;
 	refreshing_ = TRUE;
 	// Slider range is from 1-NFrames, so pass (N-1) to the seekFrame function
-	parent_.aten().current.m->seekTrajectoryFrame(value-1);
+	parent_.aten().currentModel()->seekTrajectoryFrame(value-1);
 	// Set corresponding value in Spin control
 // 	trajectorySpin_->setValue(value);
 	refreshing_ = FALSE;
@@ -141,7 +142,7 @@ void TrajectoryWidget::on_TrajectoryFrameSpin_valueChanged(int value)
 	if (refreshing_) return;
 	refreshing_ = TRUE;
 	// Slider range is from 1-NFrames, so pass (N-1) to the seekTrajectoryFrame function
-	parent_.aten().current.m->seekTrajectoryFrame(value-1);
+	parent_.aten().currentModel()->seekTrajectoryFrame(value-1);
 	// Set corresponding value in Spin control
 // 	trajectorySlider_->setValue(value);
 	refreshing_ = FALSE;

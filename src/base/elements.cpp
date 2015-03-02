@@ -20,32 +20,37 @@
 */
 
 #include "base/elements.h"
-#include "main/aten.h"
 #include "base/sysfunc.h"
 #include "ff/forcefield.h"
-#include "classes/forcefieldatom.h"
+#include "base/forcefieldatom.h"
 #include "base/atom.h"
 
+ATEN_BEGIN_NAMESPACE
+
 // Class return function
-ElementMap &Elements()
+ElementMap& Elements()
 {
 	static ElementMap elementMap_;
 	return elementMap_;
 }
+
+ATEN_END_NAMESPACE
+
+ATEN_USING_NAMESPACE
 
 // Definitions
 #define LANTHANIDES 98
 #define ACTINIDES 99
 
 // ZMapping types
-const char *ZMapTypeKeywords[ElementMap::nZMapTypes] = { "Alpha", "FirstAlpha", "SingleAlpha", "Name", "Numeric", "FF", "Auto" };
-ElementMap::ZMapType ElementMap::zMapType(const char *s, bool reportError)
+const char* ZMapTypeKeywords[ElementMap::nZMapTypes] = { "Alpha", "FirstAlpha", "SingleAlpha", "Name", "Numeric", "FF", "Auto" };
+ElementMap::ZMapType ElementMap::zMapType(const char* s, bool reportError)
 {
 	ElementMap::ZMapType zm = (ElementMap::ZMapType) enumSearch("element mapping style", ElementMap::nZMapTypes, ZMapTypeKeywords, s);
 	if ((zm == nZMapTypes) && reportError) enumPrintValid(ElementMap::nZMapTypes, ZMapTypeKeywords);
 	return zm;
 }
-const char *ElementMap::zMapType(ElementMap::ZMapType zm)
+const char* ElementMap::zMapType(ElementMap::ZMapType zm)
 {
 	return ZMapTypeKeywords[zm];
 }
@@ -319,12 +324,21 @@ void Element::setColour(double r, double g, double b, double a)
 }
 
 // Return colour in supplied vector
-void Element::copyColour(GLfloat *v)
+void Element::copyColour(GLfloat* v) const
 {
 	v[0] = (GLfloat) colour[0];
 	v[1] = (GLfloat) colour[1];
 	v[2] = (GLfloat) colour[2];
 	v[3] = (GLfloat) colour[3];
+}
+
+// Copy the ambient colour of the element into the Vec4 provided
+void Element::copyColour(Vec4<GLfloat>& v) const
+{
+	v.x = (GLfloat) colour[0];
+	v.y = (GLfloat) colour[1];
+	v.z = (GLfloat) colour[2];
+	v.w = (GLfloat) colour[3];
 }
 
 /*
@@ -391,13 +405,13 @@ double ElementMap::atomicMass(Atom* i)
 }
 
 // Return name of atomic number 'i'
-const char *ElementMap::name(Atom* i)
+const char* ElementMap::name(Atom* i)
 {
 	return name(i->element());
 }
 
 // Return symbol of atomic number 'i'
-const char *ElementMap::symbol(Atom* i)
+const char* ElementMap::symbol(Atom* i)
 {
 	return symbol(i->element());
 }
@@ -415,7 +429,7 @@ int ElementMap::bondOrderPenalty(Atom* i, int bo)
 }
 
 // Return the colour of the element
-double *ElementMap::colour(Atom* i)
+double* ElementMap::colour(Atom* i)
 {
 	return colour(i->element());
 }
@@ -439,13 +453,13 @@ double ElementMap::atomicMass(int i) const
 }
 
 // Return name of atomic number 'i'
-const char *ElementMap::name(int i) const
+const char* ElementMap::name(int i) const
 {
 	return el[i].name;
 }
 
 // Return symbol of atomic number 'i'
-const char *ElementMap::symbol(int i) const
+const char* ElementMap::symbol(int i) const
 {
 	return el[i].symbol;
 }
@@ -469,7 +483,7 @@ int ElementMap::bondOrderPenalty(int i, int bo) const
 }
 
 // Return the ambient colour of the element
-double *ElementMap::colour(int i)
+double* ElementMap::colour(int i)
 {
 	return el[i].colour;
 }
@@ -487,29 +501,38 @@ void ElementMap::setColour(int i, double r, double g, double b, double a)
 }
 
 // Return ambient colour in supplied vector
-void ElementMap::copyColour(int i, GLfloat *v) const
+void ElementMap::copyColour(int i, GLfloat* v) const
+{
+	el[i].copyColour(v);
+}
+
+// Copy the colour of the element into the Vec4 provided
+void ElementMap::copyColour(int i, Vec4<GLfloat>& v) const
 {
 	el[i].copyColour(v);
 }
 
 // Convert string from Z to element number
-int ElementMap::numberToZ(const char *s) const
+int ElementMap::numberToZ(const char* number) const
 {
 	// Check that the string is entirely numerical
 	bool isnumber = TRUE;
-	for (int n=0; s[n] != '\0'; n++)
-		if ((s[n] < 48) || (s[n] > 57))
+	for (int n=0; number[n] != '\0'; n++)
+	{
+		if (( number[n] < 48) || ( number[n] > 57))
 		{
 			isnumber = FALSE;
 			break;
 		}
+	}
+
 	if (isnumber)
 	{
 		// Check range of number before returning
-		int i = atoi(s);
+		int i = atoi( number );
 		if ((i < 0) || (i > nElements_))
 		{
-			msg.print("Warning: Converted element number is out of range (%i)\n", i);
+			Messenger::print("Warning: Converted element number is out of range (%i)\n", i);
 			i = 0;
 		}
 		return i;
@@ -518,84 +541,84 @@ int ElementMap::numberToZ(const char *s) const
 }
 
 // Convert string from alpha to element number
-int ElementMap::alphaToZ(const char *s) const
+int ElementMap::alphaToZ(const char* alpha) const
 {
 	// Ignore numbers. Convert up to non-alpha character.
 	static Dnchar cleaned;
 	cleaned.clear();
 	int n;
-	for (n=0; s[n] != '\0'; n++)
+	for (n=0; alpha[n] != '\0'; n++)
 	{
-		if (s[n] == ' ') continue;
-		else if (s[n] > 64 && s[n] < 91) cleaned += s[n];
-		else if (s[n] > 96 && s[n] < 123) cleaned += toupper(s[n]);
-		else if (s[n] == '_') break;
+		if ( alpha[n] == ' ') continue;
+		else if ( alpha[n] > 64 && alpha[n] < 91) cleaned += alpha[n];
+		else if ( alpha[n] > 96 && alpha[n] < 123) cleaned += toupper( alpha[n]);
+		else if ( alpha[n] == '_') break;
 	}
-	for (n=0; n<nElements_; n++) if (cleaned == el[n].ucSymbol) return n;
+	for (n=0; n<nElements_; ++n) if (cleaned == el[n].ucSymbol) return n;
 	return -1;
 }
 
 // Convert string from first alpha part to element number
-int ElementMap::firstAlphaToZ(const char *s) const
+int ElementMap::firstAlphaToZ(const char* alpha) const
 {
 	// Convert up to non-alpha character.
 	static Dnchar cleaned;
 	cleaned.clear();
 	int n;
-	for (n=0; s[n] != '\0'; n++)
+	for (n=0; alpha[n] != '\0'; n++)
 	{
-		if (s[n] == ' ') continue;
-		else if (s[n] > 64 && s[n] < 91) cleaned += s[n];
-		else if (s[n] > 96 && s[n] < 123) cleaned += toupper(s[n]);
+		if ( alpha[n] == ' ') continue;
+		else if ( alpha[n] > 64 && alpha[n] < 91) cleaned += alpha[n];
+		else if ( alpha[n] > 96 && alpha[n] < 123) cleaned += toupper( alpha[n]);
 		else break;
 	}
-	for (n=0; n<nElements_; n++) if (cleaned == el[n].ucSymbol) return n;
+	for (n=0; n<nElements_; ++n) if (cleaned == el[n].ucSymbol) return n;
 	return -1;
 }
 
 // Convert string from first alpha character to element number
-int ElementMap::singleAlphaToZ(const char *s) const
+int ElementMap::singleAlphaToZ(const char* alpha) const
 {
 	// Convert first alpha character.
 	char cleaned[2];
 	int n;
 	cleaned[0] = '\0';
-	for (n=0; s[n] != '\0'; n++)
+	for (n=0; alpha[n] != '\0'; n++)
 	{
-		if (s[n] == ' ') continue;
-		else if (s[n] > 64 && s[n] < 91) cleaned[0] = s[n];
-		else if (s[n] > 96 && s[n] < 123) cleaned[0] = s[n] - 32;
+		if ( alpha[n] == ' ') continue;
+		else if ( alpha[n] > 64 && alpha[n] < 91) cleaned[0] = alpha[n];
+		else if ( alpha[n] > 96 && alpha[n] < 123) cleaned[0] = alpha[n] - 32;
 		else break;
 		if (cleaned[0] != '\0') break;
 	}
 	cleaned[1] = '\0';
-	for (n=0; n<nElements_; n++) if (strcmp(el[n].ucSymbol,cleaned) == 0) return n;
+	for (n=0; n<nElements_; ++n) if (strcmp(el[n].ucSymbol,cleaned) == 0) return n;
 	return -1;
 }
 
 // Convert string from name to element number
-int ElementMap::nameToZ(const char *s) const
+int ElementMap::nameToZ(const char* alpha) const
 {
 	// Ignore numbers. Convert up to non-alpha character.
 	static Dnchar cleaned;
 	cleaned.clear();
 	int n;
-	for (n=0; s[n] != '\0'; n++)
+	for (n=0; alpha[n] != '\0'; n++)
 	{
-		if (s[n] > 64 && s[n] < 91) cleaned += s[n];
-		else if (s[n] > 96 && s[n] < 123) cleaned += toupper(s[n]);
-		else if (s[n] == '_') break;
+		if (alpha[n] > 64 && alpha[n] < 91) cleaned += alpha[n];
+		else if (alpha[n] > 96 && alpha[n] < 123) cleaned += toupper(alpha[n]);
+		else if (alpha[n] == '_') break;
 	}
-	for (n=0; n<nElements_; n++) if (cleaned == el[n].ucName) return n;
+	for (n=0; n<nElements_; ++n) if (cleaned == el[n].ucName) return n;
 	return -1;
 }
 
 // Convert string from fftype to element number
-int ElementMap::ffToZ(const char *s) const
+int ElementMap::ffToZ(const char* s, Forcefield* firstFF) const
 {
 	ForcefieldAtom* ffa;
 	int result = -1;
-	for (Forcefield *ff = aten.forcefields(); ff != NULL; ff = ff->next)
+	for (Forcefield* ff = firstFF; ff != NULL; ff = ff->next)
 	{
 		ffa = ff->findType(s);
 		// Found a match, so find out what element it is...
@@ -606,17 +629,23 @@ int ElementMap::ffToZ(const char *s) const
 }
 
 // Search for element named 'query' in the list of known elements
-int ElementMap::find(const char *query, ElementMap::ZMapType zmt) const
+int ElementMap::find(const char* query, ElementMap::ZMapType zmt, Forcefield* firstFF) const
 {
 	// Get the element number from the element name provided.
-	msg.enter("ElementMap::find");
+	Messenger::enter("ElementMap::find");
 	int result = -1;
 	if (query[0] == '\0')
 	{
-		msg.print("Warning: Element search requested on blank string.\n");
-		msg.exit("ElementMap::find");
+		Messenger::print("Warning: Element search requested on blank string.\n");
+		Messenger::exit("ElementMap::find");
 		return 0;
 	}
+
+	// Attempt conversion of the string first from the users type list
+	NameMap<int> *nm;
+// 	for (nm = aten.typeImportMap.first(); nm != NULL; nm = nm->next)  ATEN2 TODO
+// 		if (strcmp(nm->name(),rv.asString()) == 0) break;
+	
 	// Convert the query string according to the specified rule
 	switch (zmt == ElementMap::nZMapTypes ? prefs.zMapType() : zmt)
 	{
@@ -632,7 +661,7 @@ int ElementMap::find(const char *query, ElementMap::ZMapType zmt) const
 			result = nameToZ(query);
 			if (result != -1) break;
 			// Finally, try FF conversion
-			result = ffToZ(query);
+			result = ffToZ(query, firstFF);
 			break;
 		// Name search
 		case (ElementMap::NameZMap):
@@ -640,7 +669,7 @@ int ElementMap::find(const char *query, ElementMap::ZMapType zmt) const
 			break;
 		// Search loaded forcefields for atom names
 		case (ElementMap::ForcefieldZMap):
-			result = ffToZ(query);
+			result = ffToZ(query, firstFF);
 			// Attempt an alpha conversion if the FF conversion failed
 			if (result == -1) result = alphaToZ(query);
 			break;
@@ -663,6 +692,6 @@ int ElementMap::find(const char *query, ElementMap::ZMapType zmt) const
 		default:
 			break;
 	}
-	msg.exit("ElementMap::find");
+	Messenger::exit("ElementMap::find");
 	return ((result == -1) ? 0 : result);
 }

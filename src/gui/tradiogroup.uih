@@ -29,6 +29,15 @@
 #include "base/lineparser.h"
 #include "templates/reflist.h"
 
+ATEN_BEGIN_NAMESPACE
+
+// Forward Declarations (Aten)
+class LineParser;
+
+ATEN_END_NAMESPACE
+
+ATEN_USING_NAMESPACE
+
 class TRadioGroup : public QGroupBox
 {
 	Q_OBJECT

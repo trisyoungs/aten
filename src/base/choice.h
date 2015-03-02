@@ -22,6 +22,10 @@
 #ifndef ATEN_CHOICE_H
 #define ATEN_CHOICE_H
 
+#include "base/namespace.h"
+
+ATEN_BEGIN_NAMESPACE
+
 // Choice Variable
 class Choice
 {
@@ -58,6 +62,8 @@ class Choice
 	// Conversion
 	operator bool();
 };
+
+ATEN_END_NAMESPACE
 
 #endif
 

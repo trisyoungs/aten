@@ -24,12 +24,14 @@
 #include "parser/treenode.h"
 #include <ctype.h>
 
+ATEN_USING_NAMESPACE
+
 /*
 // Format Chunks
 */
 
 // Constructor
-FormatChunk::FormatChunk(ChunkType type, const char *fmt, TreeNode *arg, VTypes::DataType retrieveType) : ListItem<FormatChunk>()
+FormatChunk::FormatChunk(ChunkType type, const char* fmt, TreeNode* arg, VTypes::DataType retrieveType) : ListItem<FormatChunk>()
 {
 	// Private variables
 	type_ = type;
@@ -37,13 +39,13 @@ FormatChunk::FormatChunk(ChunkType type, const char *fmt, TreeNode *arg, VTypes:
 	arg_ = arg;
 	retrieveType_ = retrieveType;
 	formatLength_ = 0;
-	msg.print(Messenger::Parse, "...created FormatChunk for string '%s'\n", fmt);
+	Messenger::print(Messenger::Parse, "...created FormatChunk for string '%s'\n", fmt);
 
 	// Determine length of format if one was provided
 	if (fmt != NULL)
 	{
 		Dnchar text;
-		for (const char *c = &fmt[1]; isdigit(*c) || (*c == '-'); c++) text += *c;
+		for (const char* c = &fmt[1]; isdigit(*c) || (*c == '-'); c++) text += *c;
 		formatLength_ = atoi(text);
 	}
 }
@@ -55,7 +57,7 @@ FormatChunk::ChunkType FormatChunk::type()
 }
 
 // Return C-style format string *or* plain text data if chunktype is PlainTextChunk
-const char *FormatChunk::cFormat()
+const char* FormatChunk::cFormat()
 {
 	return cFormat_.get();
 }
@@ -73,7 +75,7 @@ int FormatChunk::textLength()
 }
 
 // Return argument id
-TreeNode *FormatChunk::arg()
+TreeNode* FormatChunk::arg()
 {
 	return arg_;
 }
@@ -92,26 +94,26 @@ VTypes::DataType FormatChunk::retrieveType()
 Format::Format(Refitem<TreeNode,int> *firstarg)
 {
 	// Construct a delimited list of chunks with no specific format
-	for (Refitem<TreeNode,int> *ri = firstarg; ri != NULL; ri = ri->next) addDelimitedChunk(ri->item);
+	for (Refitem<TreeNode,int>* ri = firstarg; ri != NULL; ri = ri->next) addDelimitedChunk(ri->item);
 	delimited_ = TRUE;
 	isValid_ = TRUE;
 }
 
 // Constructor
-Format::Format(const char *s, Refitem<TreeNode,int> *firstarg)
+Format::Format(const char* s, Refitem<TreeNode,int> *firstarg)
 {
 	// Private variables
 	isValid_ = TRUE;
 	delimited_ = FALSE;
 
 	// Step through formatting string, looking for '%' symbols (terminated by a non-alpha)
-	const char *c = s;
+	const char* c = s;
 	char prevchar;
 	char plaintext[4098];
 	VTypes::DataType type;
 	bool isformatter = FALSE, isdiscarder, restofline;
 	Refitem<TreeNode,int> *arg = firstarg;
-	msg.print(Messenger::Parse, "Creating Format object from string '%s' (and any supplied arguments)...\n", s);
+	Messenger::print(Messenger::Parse, "Creating Format object from string '%s' (and any supplied arguments)...\n", s);
 	int length = 0;
 	do
 	{
@@ -130,7 +132,7 @@ Format::Format(const char *s, Refitem<TreeNode,int> *firstarg)
 			// Check for a previous format, in which case this one is mangled
 			if (isformatter)
 			{
-				msg.print("Found an unterminated format specifier (%) in format string '%s'.\n", s);
+				Messenger::print("Found an unterminated format specifier (%) in format string '%s'.\n", s);
 				isValid_ = FALSE;
 				return;
 			}
@@ -159,11 +161,11 @@ Format::Format(const char *s, Refitem<TreeNode,int> *firstarg)
 			if ((prevchar == 'l') || (prevchar == 'h') || (prevchar == 'L')) continue;
 
 			plaintext[length] = '\0';
-			msg.print(Messenger::Parse, "Detected format bit [%s]\n", plaintext);
+			Messenger::print(Messenger::Parse, "Detected format bit [%s]\n", plaintext);
 			// Check the terminating character to make sure that its one we recognise *and* is compatible with the type of argument given
 			if ((arg == NULL) && (prevchar != '*'))
 			{
-				msg.print("Formatter '%s' in string has no corresponding argument.\n", plaintext);
+				Messenger::print("Formatter '%s' in string has no corresponding argument.\n", plaintext);
 				isValid_ = FALSE;
 				break;
 			}
@@ -185,18 +187,18 @@ Format::Format(const char *s, Refitem<TreeNode,int> *firstarg)
 						if (prevchar == 'l')
 						{
 							if (type >= VTypes::AtenData) break;
-							msg.print("Format '%s' expects a pointer, but has been given %s.\n", plaintext, VTypes::aDataType(type));
+							Messenger::print("Format '%s' expects a pointer, but has been given %s.\n", plaintext, VTypes::aDataType(type));
 							isValid_ = FALSE;
 						}
 						else if ((prevchar == '\0') || (prevchar == 'h'))
 						{
 							if (type == VTypes::IntegerData) break;
-							msg.print("Format '%s' expects an integer, but has been given %s.\n", plaintext, VTypes::aDataType(type));
+							Messenger::print("Format '%s' expects an integer, but has been given %s.\n", plaintext, VTypes::aDataType(type));
 							isValid_ = FALSE;
 						}
 						else
 						{
-							msg.print("Integer format '%c' cannot be preceeded by the identifier '%c'.\n", *c, prevchar);
+							Messenger::print("Integer format '%c' cannot be preceeded by the identifier '%c'.\n", *c, prevchar);
 							isValid_ = FALSE;
 						}
 						break;
@@ -207,18 +209,18 @@ Format::Format(const char *s, Refitem<TreeNode,int> *firstarg)
 						// If a preceeding 'L' was specified, we complain!
 						if (prevchar == 'L')
 						{
-							msg.print("Output of long doubles (prefixing a floating-point formatter with 'L') is not supported.\n");
+							Messenger::print("Output of long doubles (prefixing a floating-point formatter with 'L') is not supported.\n");
 							isValid_ = FALSE;
 						}
 						else if (prevchar == '\0')
 						{
 							if (type == VTypes::DoubleData) break;
-							msg.print("Format '%s' expects a real, but has been given %s.\n", plaintext, VTypes::aDataType(type));
+							Messenger::print("Format '%s' expects a real, but has been given %s.\n", plaintext, VTypes::aDataType(type));
 							isValid_ = FALSE;
 						}
 						else
 						{
-							msg.print("Floating-point format '%c' cannot be preceeded by the identifier '%c'.\n", *c, prevchar);
+							Messenger::print("Floating-point format '%c' cannot be preceeded by the identifier '%c'.\n", *c, prevchar);
 							isValid_ = FALSE;
 						}
 						break;
@@ -228,15 +230,15 @@ Format::Format(const char *s, Refitem<TreeNode,int> *firstarg)
 					case ('s'):
 						if (prevchar != '\0')
 						{
-							msg.print("String format '%c' cannot be preceeded by the identifier '%c'.\n", tolower(plaintext[length-1]), prevchar);
+							Messenger::print("String format '%c' cannot be preceeded by the identifier '%c'.\n", tolower(plaintext[length-1]), prevchar);
 							isValid_ = FALSE;
 						}
 						if (type == VTypes::StringData) break;
-						msg.print("Format '%s' expects a string, but has been given %s.\n", plaintext, VTypes::aDataType(type));
+						Messenger::print("Format '%s' expects a string, but has been given %s.\n", plaintext, VTypes::aDataType(type));
 						isValid_ = FALSE;
 						break;
 					case ('c'):
-						msg.print("Character format 'c'is not supported.\n");
+						Messenger::print("Character format 'c'is not supported.\n");
 						isValid_ = FALSE;
 						break;
 					// Discard identifier
@@ -245,13 +247,13 @@ Format::Format(const char *s, Refitem<TreeNode,int> *firstarg)
 						type = VTypes::NoData;
 						break;
 					default:
-						msg.print("Unsupported format '%s'.\n", plaintext);
+						Messenger::print("Unsupported format '%s'.\n", plaintext);
 						isValid_ = FALSE;
 						break;
 				}
 			}
 			// Don't use up a variable argument if the specifier was '*'
-			TreeNode *node = (arg == NULL ? NULL : arg->item);
+			TreeNode* node = (arg == NULL ? NULL : arg->item);
 			if (restofline) addGreedyDelimitedChunk(node, type);
 			else addFormattedChunk(plaintext, node, type);
 			if (!isdiscarder) arg = arg->next;
@@ -267,7 +269,7 @@ Format::Format(const char *s, Refitem<TreeNode,int> *firstarg)
 		addPlainTextChunk(plaintext);
 	}
 	// Are there any supplied arguments remaining?
-	if (arg != NULL) msg.print("Warning: Extra data arguments given to format '%s'...\n", s);
+	if (arg != NULL) Messenger::print("Warning: Extra data arguments given to format '%s'...\n", s);
 }
 
 // Destructor
@@ -282,21 +284,21 @@ bool Format::isValid()
 }
 
 // Add new plaintext chunk to format
-void Format::addPlainTextChunk(const char *s)
+void Format::addPlainTextChunk(const char* s)
 {
 	FormatChunk *chunk = new FormatChunk(FormatChunk::PlainTextChunk, s);
 	chunks_.own(chunk);
 }
 
 // Add new formatted chunk to format
-void Format::addFormattedChunk(const char *format, TreeNode *arg, VTypes::DataType retrievetype)
+void Format::addFormattedChunk(const char* format, TreeNode* arg, VTypes::DataType retrievetype)
 {
 	FormatChunk *chunk = new FormatChunk(FormatChunk::FormattedChunk, format, arg, retrievetype);
 	chunks_.own(chunk);
 }
 
 // Add new delimited chunk to format
-void Format::addDelimitedChunk(TreeNode *arg)
+void Format::addDelimitedChunk(TreeNode* arg)
 {
 	if (arg == NULL)
 	{
@@ -308,7 +310,7 @@ void Format::addDelimitedChunk(TreeNode *arg)
 }
 
 // Add new greedy delimited chunk to format
-void Format::addGreedyDelimitedChunk(TreeNode *arg, VTypes::DataType retrievetype)
+void Format::addGreedyDelimitedChunk(TreeNode* arg, VTypes::DataType retrievetype)
 {
 	FormatChunk *chunk = new FormatChunk(FormatChunk::GreedyDelimitedChunk, NULL, arg, retrievetype);
 	chunks_.own(chunk);
@@ -321,7 +323,7 @@ void Format::addGreedyDelimitedChunk(TreeNode *arg, VTypes::DataType retrievetyp
 // Use specified parser to perform formatted read
 int Format::executeRead(LineParser *parser, int optionMask)
 {
-	msg.enter("Format::executeRead");
+	Messenger::enter("Format::executeRead");
 	int nparsed = 0, length;
 	ReturnValue rv;
 	Dnchar bit;
@@ -355,7 +357,7 @@ int Format::executeRead(LineParser *parser, int optionMask)
 				break;
 			default:
 				printf("Internal Error: Action for this type of format chunk (%i) has not been defined.\n", chunk->type());
-				msg.exit("Format::executeRead");
+				Messenger::exit("Format::executeRead");
 				return 1;
 		}
 		// Set the corresponding argument accordingly
@@ -383,12 +385,12 @@ int Format::executeRead(LineParser *parser, int optionMask)
 			if (chunk->retrieveType() != VTypes::NoData) chunk->arg()->set( rv );
 		}
 	}
-	msg.exit("Format::executeRead");
+	Messenger::exit("Format::executeRead");
 	return nparsed;
 }
 
 // Return last written string
-const char *Format::string()
+const char* Format::string()
 {
 	return createdString_;
 }
@@ -396,7 +398,7 @@ const char *Format::string()
 // Write format to internal string
 bool Format::writeToString()
 {
-	msg.enter("Format::writeToString");
+	Messenger::enter("Format::writeToString");
 	char bit[8192];
 	createdString_[0] = '\0';
 	ReturnValue rv;
@@ -413,7 +415,7 @@ bool Format::writeToString()
 				// Check for arrays - bad!
 				if (rv.arraySize() != -1)
 				{
-					msg.print("Error: Array passed to format.\n");
+					Messenger::print("Error: Array passed to format.\n");
 					result = FALSE;
 					break;
 				}
@@ -446,7 +448,7 @@ bool Format::writeToString()
 				// Check for arrays - bad!
 				if (rv.arraySize() != -1)
 				{
-					msg.print("Error: Array passed to format.\n");
+					Messenger::print("Error: Array passed to format.\n");
 					result = FALSE;
 					break;
 				}
@@ -455,42 +457,42 @@ bool Format::writeToString()
 				break;
 			default:
 				printf("Internal Error: Action for this type of format chunk has not been defined.\n");
-				msg.exit("Format::writeToString");
+				Messenger::exit("Format::writeToString");
 				return FALSE;
 		}
 		if (!result) break;
 	}
 	// If this was originally a delimited chunk, append a newline
 	if (delimited_) strcat(createdString_, "\n");
-	msg.exit("Format::writeToString");
+	Messenger::exit("Format::writeToString");
 	return result;
 }
 
 // Parse supplied line according to format
-int Format::read(const char *line, int optionMask)
+int Format::read(const char* line, int optionMask)
 {
-	msg.enter("Format::read[string]");
+	Messenger::enter("Format::read[string]");
 	static LineParser parser;
 	parser.setLine(line);
 	int result = executeRead(&parser, optionMask);
-	msg.exit("Format::read[string]");
+	Messenger::exit("Format::read[string]");
 	return result;
 }
 
 // Read line from file and parse according to format
 int Format::read(LineParser *parser, int optionMask)
 {
-	msg.enter("Format::read[file]");
+	Messenger::enter("Format::read[file]");
 	// Read a new line using the supplied parser
 	if (parser == NULL)
 	{
 		printf("Internal Error: No LineParser given to Format::read.\n");
-		msg.exit("Format::read[file]");
+		Messenger::exit("Format::read[file]");
 		return 1;
 	}
 	// Get next line from file and parse line
 	int result = parser->readNextLine(optionMask);
 	if (result == 0) result = executeRead(parser, optionMask);
-	msg.exit("Format::read[file]");
+	Messenger::exit("Format::read[file]");
 	return result;
 }

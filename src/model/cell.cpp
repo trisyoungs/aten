@@ -24,10 +24,9 @@
 #include "model/clipboard.h"
 #include "model/undoevent.h"
 #include "model/undostate.h"
-#include "base/spacegroup.h"
-#include "base/generator.h"
 #include "base/progress.h"
-#include "classes/prefs.h"
+
+ATEN_USING_NAMESPACE
 
 // Reassemble molecule/fragment, beginning at supplied atom, returning COG of atoms
 Vec3<double> Model::reassembleFragment(Atom* i, int referenceBit, int &count, bool centreOfMass)
@@ -38,7 +37,7 @@ Vec3<double> Model::reassembleFragment(Atom* i, int referenceBit, int &count, bo
 	if (centreOfMass) total *= Elements().atomicMass(i);
 	++count;
 	selectAtom(i, TRUE);
-	for (Refitem<Bond,int> *bref = i->bonds(); bref != NULL; bref = bref->next)
+	for (Refitem<Bond,int>* bref = i->bonds(); bref != NULL; bref = bref->next)
 	{
 		j = bref->item->partner(i);
 		if (!j->hasBit(referenceBit))
@@ -61,7 +60,7 @@ Vec3<double> Model::reassembleFragment(Atom* i, Vec3<double> referencePos, int r
 	if (centreOfMass) total *= Elements().atomicMass(i);
 	++count;
 	selectAtom(i, TRUE);
-	for (Refitem<Bond,int> *bref = i->bonds(); bref != NULL; bref = bref->next)
+	for (Refitem<Bond,int>* bref = i->bonds(); bref != NULL; bref = bref->next)
 	{
 		j = bref->item->partner(i);
 		if (!j->hasBit(referenceBit))
@@ -75,7 +74,7 @@ Vec3<double> Model::reassembleFragment(Atom* i, Vec3<double> referencePos, int r
 }
 
 // Return pointer to unit cell structure
-UnitCell *Model::cell()
+UnitCell* Model::cell()
 {
 	return &cell_;
 }
@@ -83,7 +82,7 @@ UnitCell *Model::cell()
 // Set cell (vectors)
 void Model::setCell(Vec3<double> lengths, Vec3<double> angles)
 {
-	msg.enter("Model::setCell[vectors]");
+	Messenger::enter("Model::setCell[vectors]");
 	Matrix oldaxes = cell_.axes();
 	bool oldhs = (cell_.type() == UnitCell::NoCell ? FALSE : TRUE);
 	// Set new axes 
@@ -97,13 +96,13 @@ void Model::setCell(Vec3<double> lengths, Vec3<double> angles)
 	}
 	changeLog.add(Log::Camera);
 	changeLog.add(Log::Cell);
-	msg.exit("Model::setCell[vectors]");
+	Messenger::exit("Model::setCell[vectors]");
 }
 
 // Set cell (axes)
 void Model::setCell(Matrix axes)
 {
-	msg.enter("Model::setCell[axes]");
+	Messenger::enter("Model::setCell[axes]");
 	Matrix oldaxes = cell_.axes();
 	bool oldhs = (cell_.type() == UnitCell::NoCell ? FALSE : TRUE);
 	// Set new axes 
@@ -117,13 +116,13 @@ void Model::setCell(Matrix axes)
 	}
 	changeLog.add(Log::Camera);
 	changeLog.add(Log::Cell);
-	msg.exit("Model::setCell[axes]");
+	Messenger::exit("Model::setCell[axes]");
 }
 
 // Set cell (parameter)
 void Model::setCell(UnitCell::CellParameter cp, double value)
 {
-	msg.enter("Model::setCell[parameter]");
+	Messenger::enter("Model::setCell[parameter]");
 	Matrix oldaxes = cell_.axes();
 	bool oldhs = (cell_.type() == UnitCell::NoCell ? FALSE : TRUE);
 	// Set new parameter value
@@ -137,15 +136,15 @@ void Model::setCell(UnitCell::CellParameter cp, double value)
 	}
 	changeLog.add(Log::Camera);
 	changeLog.add(Log::Cell);
-	msg.exit("Model::setCell[parameter]");
+	Messenger::exit("Model::setCell[parameter]");
 }
 
 // Set cell (other Cell pointer)
-bool Model::setCell(UnitCell *newcell)
+bool Model::setCell(UnitCell* newcell)
 {
 	if (newcell == NULL)
 	{
-		msg.print("Error: NULL UnitCell pointer passed to Model::setCell().\n");
+		Messenger::print("Error: NULL UnitCell pointer passed to Model::setCell().\n");
 		return FALSE;
 	}
 	else
@@ -169,7 +168,7 @@ bool Model::setCell(UnitCell *newcell)
 // Remove cell
 void Model::removeCell()
 {
-	msg.enter("Model::removeCell");
+	Messenger::enter("Model::removeCell");
 	changeLog.add(Log::Camera);
 	if (recordingState_ != NULL)
 	{
@@ -179,23 +178,23 @@ void Model::removeCell()
 	}
 	cell_.reset();
 	changeLog.add(Log::Cell);
-	msg.exit("Model::removeCell");
+	Messenger::exit("Model::removeCell");
 }
 
 // Fold All Atoms
 void Model::foldAllAtoms()
 {
-	msg.enter("Model::foldAllAtoms");
+	Messenger::enter("Model::foldAllAtoms");
 	// Standard fold - individual atoms
 	for (Atom* i = atoms_.first(); i != NULL; i = i->next) positionAtom(i, cell_.fold(i));
 	changeLog.add(Log::Coordinates);
-	msg.exit("Model::foldAllAtoms");
+	Messenger::exit("Model::foldAllAtoms");
 }
 
 // Fold All Molecules
 void Model::foldAllMolecules()
 {
-	msg.enter("Model::foldAllMolecules");
+	Messenger::enter("Model::foldAllMolecules");
 	int n, m, count;
 	Vec3<double> cog;
 	
@@ -212,23 +211,23 @@ void Model::foldAllMolecules()
 		// If it isn't, translate all atoms so that it is.
 		if (!cell_.isInsideCell(cog)) translateSelectionLocal(cell_.fold(cog) - cog, TRUE);
 	}
-	msg.exit("Model::foldAllMolecules");
+	Messenger::exit("Model::foldAllMolecules");
 }
 
 // Apply individual symmetry generator to current atom selection
 void Model::pack(Generator *gen)
 {
-	msg.enter("Model::pack[generator]");
+	Messenger::enter("Model::pack[generator]");
 	Clipboard clip;
 	Vec3<double> newr;
 	int oldnatoms;
 	// Ignore the identity operator, and leave if there are no atoms marked
 	if ((gen == 0) || (marked_.nItems() == 0))
 	{
-		msg.enter("Model::pack[generator]");
+		Messenger::enter("Model::pack[generator]");
 		return;
 	}
-	msg.print(Messenger::Verbose,"...Applying generator '%s'\n", gen->name());
+	Messenger::print(Messenger::Verbose, "...Applying generator '%s'\n", gen->name());
 	// Store current number of atoms in model
 	oldnatoms = atoms_.nItems();
 	// Copy selection to clipboard
@@ -244,18 +243,18 @@ void Model::pack(Generator *gen)
 		newr = cell_.fracToReal(newr);
 		positionAtom(i, newr);
 	}
-	msg.exit("Model::pack[generator]");
+	Messenger::exit("Model::pack[generator]");
 }
 
 // Apply model's spacegroup symmetry generators
 void Model::pack()
 {
-	msg.enter("Model::pack");
+	Messenger::enter("Model::pack");
 	// Spacegroup should already have been set by a successful call to Model::setSpacegroup()
 	if ((cell_.spacegroupId() == 0) && (cell_.nGenerators() == 0))
 	{
-		msg.print("Crystal packing cannot be performed - no spacegroup set in model and no custom generators defined.\n");
-		msg.exit("Model::pack");
+		Messenger::print("Crystal packing cannot be performed - no spacegroup set in model and no custom generators defined.\n");
+		Messenger::exit("Model::pack");
 		return;
 	}
 	
@@ -263,7 +262,7 @@ void Model::pack()
 	selectAll(TRUE);
 	if (cell_.spacegroupId() != 0)
 	{
-		msg.print("Packing cell from previous spacegroup definition.\n");
+		Messenger::print("Packing cell from previous spacegroup definition.\n");
 		Generator gen;
 		// Code copied verbatim from http://cci.lbl.gov/sginfo/sginfo_loop_symops.html and modified slightly to use Aten's classes
 		int iList, f, nTrV, iTrV, nLoopInv, iLoopInv;
@@ -300,20 +299,20 @@ void Model::pack()
 	}
 	else
 	{
-	 	msg.print("Packing cell from manually-defined generator list...\n");
+	 	Messenger::print("Packing cell from manually-defined generator list...\n");
 		for (Generator *g = cell_.generators(); g != NULL; g = g->next) pack(g);
 	}
 	
 	// Select overlapping atoms and delete
 	selectOverlaps(0.1, TRUE);
 	selectionDelete(TRUE);
-	msg.exit("Model::pack");
+	Messenger::exit("Model::pack");
 }
 
 // Scale cell and contents
 bool Model::scaleCell(const Vec3<double> &scale, bool usecog, bool calcenergy)
 {
-	msg.enter("Model::scaleCell");
+	Messenger::enter("Model::scaleCell");
 	Vec3<double> oldcog, newcog, newpos;
 	UnitCell newcell;
 	Matrix newaxes;
@@ -324,16 +323,16 @@ bool Model::scaleCell(const Vec3<double> &scale, bool usecog, bool calcenergy)
 	// First, make sure we have a cell and a valid pattern (if using cog)
 	if (cell_.type() == UnitCell::NoCell)
 	{
-		msg.print("No cell to scale.\n");
-		msg.exit("Model::scaleCell");
+		Messenger::print("No cell to scale.\n");
+		Messenger::exit("Model::scaleCell");
 		return FALSE;
 	}
 	if (usecog)
 	{
  		if (!createPatterns())
 		{
-			msg.print("Cell contents cannot be scaled by their centres of geometry if a proper pattern definition does not exist.\n");
-			msg.exit("Model::scaleCell");
+			Messenger::print("Cell contents cannot be scaled by their centres of geometry if a proper pattern definition does not exist.\n");
+			Messenger::exit("Model::scaleCell");
 			return FALSE;
 		}
 	}
@@ -350,7 +349,7 @@ bool Model::scaleCell(const Vec3<double> &scale, bool usecog, bool calcenergy)
 	if (calcenergy)
 	{
 		olde = totalEnergy(this, success);
-		if (!success) msg.print("Energy will not be calculated...\n");
+		if (!success) Messenger::print("Energy will not be calculated...\n");
 	}
 	// Cycle over patterns, get COG, convert to old fractional coordinates, then
 	// use new cell to get new local coordinates.
@@ -389,20 +388,20 @@ bool Model::scaleCell(const Vec3<double> &scale, bool usecog, bool calcenergy)
 	if (calcenergy && success)
 	{
 		newe = totalEnergy(this, success);
-		msg.print("Energy change was %12.7e %s\n", newe-olde, Prefs::energyUnit(prefs.energyUnit()));
+		Messenger::print("Energy change was %12.7e %s\n", newe-olde, Prefs::energyUnit(prefs.energyUnit()));
 	}
 
 	// Set new cell and update model
 	setCell(newaxes);
 	changeLog.add(Log::Coordinates);
-	msg.exit("Model::scaleCell");
+	Messenger::exit("Model::scaleCell");
 	return TRUE;
 }
 
 // Replicate Cell
 void Model::replicateCell(const Vec3<double> &neg, const Vec3<double> &pos)
 {
-	msg.enter("Model::replicateCell");
+	Messenger::enter("Model::replicateCell");
 	int count;
 	bool stop;
 	Vec3<double> tvec;
@@ -412,8 +411,8 @@ void Model::replicateCell(const Vec3<double> &neg, const Vec3<double> &pos)
 	// If this isn't a periodic model, exit
 	if (cell_.type() == UnitCell::NoCell)
 	{
-		msg.print("No cell to replicate.\n");
-		msg.exit("Model::replicateCell");
+		Messenger::print("No cell to replicate.\n");
+		Messenger::exit("Model::replicateCell");
 		return;
 	}
 
@@ -441,7 +440,7 @@ void Model::replicateCell(const Vec3<double> &neg, const Vec3<double> &pos)
 
 	// Set up progress indicator
 	count = ( (ipos.x - ineg.x) + 1) * ( (ipos.y - ineg.y) + 1) * ( (ipos.z - ineg.z) + 1);
-	bool pid = progress.initialise("Creating cell copies...", count, FALSE);
+	bool pid = progress.initialise("Creating cell copies...", count);
 
 	// Create cell copies
 	count = 0;
@@ -458,7 +457,7 @@ void Model::replicateCell(const Vec3<double> &neg, const Vec3<double> &pos)
 				tvec += oldaxes.columnAsVec3(2) * kk;
 				//tvec.print();
 				clip.pasteToModel(this,tvec);
-				msg.print(Messenger::Verbose,"Created copy for vector %8.4f %8.4f %8.4f\n",tvec.x,tvec.y,tvec.z);
+				Messenger::print(Messenger::Verbose, "Created copy for vector %8.4f %8.4f %8.4f\n",tvec.x,tvec.y,tvec.z);
 				if (!progress.update(pid)) stop = TRUE;
 			}
 			if (stop) break;
@@ -483,7 +482,7 @@ void Model::replicateCell(const Vec3<double> &neg, const Vec3<double> &pos)
 		Vec3<double> fracr;
 		Matrix cellinverse = cell_.inverse();
 	
-		int pid = progress.initialise("Trimming excess atoms...", atoms_.nItems(), FALSE);
+		int pid = progress.initialise("Trimming excess atoms...", atoms_.nItems());
 		i = atoms_.first();
 		count = 0;
 		while (i != NULL)
@@ -507,17 +506,17 @@ void Model::replicateCell(const Vec3<double> &neg, const Vec3<double> &pos)
 	}
 
 	changeLog.add(Log::Structure);
-	msg.exit("Model::replicateCell");
+	Messenger::exit("Model::replicateCell");
 }
 
 // Rotate cell and contents
 void Model::rotateCell(int axis, double angle)
 {
-	msg.enter("Model::rotateCell");
+	Messenger::enter("Model::rotateCell");
 	if (cell_.type() == UnitCell::NoCell)
 	{
-		msg.print("This model has no cell, and so it can't be rotated.\n");
-		msg.exit("Model::rotateCell");
+		Messenger::print("This model has no cell, and so it can't be rotated.\n");
+		Messenger::exit("Model::rotateCell");
 		return;
 	}
 	Matrix rotmat;
@@ -546,21 +545,21 @@ void Model::rotateCell(int axis, double angle)
 	Vec3<double> origin;
 	matrixTransformSelection(origin,rotmat,TRUE);
 	
-	msg.exit("Model::rotateCell");
+	Messenger::exit("Model::rotateCell");
 }
 
 // Frac to Real
 void Model::fracToReal()
 {
-	msg.enter("Model::fracToReal");
+	Messenger::enter("Model::fracToReal");
 	for (Atom* i = atoms_.first(); i != NULL; i = i->next) i->r() = cell_.fracToReal(i->r());
-	msg.exit("Model::fracToReal");
+	Messenger::exit("Model::fracToReal");
 }
 
 // Calculate and return the density of the system (if periodic)
 double Model::density() const
 {
-	msg.enter("Model::density");
+	Messenger::enter("Model::density");
 	double density;
 	if (cell_.type() != UnitCell::NoCell)
 	{
@@ -578,7 +577,7 @@ double Model::density() const
 		}
 	}
 	else density = -1.0;
-	msg.exit("Model::density");
+	Messenger::exit("Model::density");
 	return density;
 }
 

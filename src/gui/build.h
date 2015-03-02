@@ -23,6 +23,12 @@
 #define ATEN_BUILDWIDGET_H
 
 #include "gui/ui_build.h"
+#include "base/namespace.h"
+
+// Forward Declarations (Qt)
+class AtenWindow;
+
+ATEN_USING_NAMESPACE
 
 // Build (draw) window
 class BuildWidget : public QDockWidget
@@ -31,14 +37,32 @@ class BuildWidget : public QDockWidget
 	Q_OBJECT
 
 	public:
+	// Constructor / Destructor
+	BuildWidget(AtenWindow& parent1, Qt::WindowFlags flags = 0);
 	// Enum for extra bond calculation button menu items
 	enum RebondMenuItems { ModelNoAugmentItem, SelectionItem, SelectionNoAugmentItem, PatternsItem, PatternsNoAugmentItem };
+	// Main form declaration
+	Ui::BuildWidget ui;
+
+	private:
+	// Reference to main window
+	AtenWindow& parent_;
+
+
+	/*
+	// Local variables
+	*/
+	private:
+	// Current custom element
+	int customElement_;
+
 
 	/*
 	// Window Functions
 	*/
 	public:
 	void showWidget();
+
 	private slots:
 	// Edit Tab - Draw
 	void on_ElementHButton_clicked(bool checked);
@@ -61,28 +85,9 @@ class BuildWidget : public QDockWidget
 	// Options Tab
 	void on_BondToleranceSlider_valueChanged(int value);
 	void on_BondToleranceSpin_valueChanged(double value);
+
 	protected:
 	void closeEvent(QCloseEvent *event);
-
-	/*
-	// Local variables
-	*/
-	private:
-	// Current custom element
-	int customElement_;
-
-	/*
-	// Dialog
-	*/
-	private:
-	// Reference to main window
-	AtenWindow& parent_;
-
-	public:
-	// Constructor / Destructor
-	BuildWidget(AtenWindow& parent1, Qt::WindowFlags flags = 0);
-	// Main form declaration
-	Ui::BuildWidget ui;
 };
 
 #endif

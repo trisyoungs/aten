@@ -20,17 +20,23 @@
 */
 
 #include "parser/commandnode.h"
-#include "parser/integer.h"
-#include "parser/double.h"
-#include "parser/character.h"
-#include "parser/variablenode.h"
+#include "parser/tree.h"
+// #include "parser/integer.h"
+// #include "parser/double.h"
+// #include "parser/character.h"
+// #include "parser/variablenode.h"
 #include "main/aten.h"
-#include "model/model.h"
-#include "base/sysfunc.h"
+// #include "model/model.h"
+// #include "base/sysfunc.h"
 #include <string.h>
 
+ATEN_USING_NAMESPACE
+
+// Static members
+// Aten* CommandNode::aten_ = NULL;
+
 // Constructor
-CommandNode::CommandNode(Command::Function func) : TreeNode()
+CommandNode::CommandNode(Commands::Function func) : TreeNode()
 {
 	// Private variables
 	function_ = func;
@@ -38,7 +44,7 @@ CommandNode::CommandNode(Command::Function func) : TreeNode()
 	format_ = NULL;
 }
 
-CommandNode::CommandNode(TreeNode *source)
+CommandNode::CommandNode(TreeNode* source)
 {
 	format_ = NULL;
 	copy(source);	
@@ -50,54 +56,68 @@ CommandNode::~CommandNode()
 	if (format_ != NULL) delete format_;
 }
 
+/*
+ * Link to Aten
+ */
+
+// Return reference to Aten
+Aten& CommandNode::aten()
+{
+	return aten_;
+}
+
+/*
+ * Command Data
+ */
+
 // Prepare function (if possible)
 bool CommandNode::prepFunction()
 {
 	bool result = TRUE;
 	switch (function_)
 	{
-		// For functions that use formats, attempt to create the format *if* the format string is a character constant
-		case (Command::Error):
-		case (Command::Printf):
-		case (Command::Verbose):
-		case (Command::ReadLineFormatted):
-		case (Command::WriteLineFormatted):
-		case (Command::ToA):
+		// For functions that use formats, attempt to create the Format* if* the format string is a character constant
+		case (Commands::Error):
+		case (Commands::Printf):
+		case (Commands::Verbose):
+		case (Commands::ReadLineFormatted):
+		case (Commands::WriteLineFormatted):
+		case (Commands::ToA):
 			if (!args_.first()->item->readOnly()) break;
 			result = createFormat(0,1);
 			break;
-		case (Command::WriteVariable):
-		case (Command::ReadVariable):
+		case (Commands::WriteVariable):
+		case (Commands::ReadVariable):
 			result = createFormat(-1,1);
 			break;
-		case (Command::WriteVariableFormatted):
-		case (Command::ReadVariableFormatted):
+		case (Commands::WriteVariableFormatted):
+		case (Commands::ReadVariableFormatted):
 			if (!args_[1]->item->readOnly()) break;
 			result = createFormat(1,2);
 			break;
-		case (Command::DeSelectFormatted):
-		case (Command::SelectFormatted):
+		case (Commands::DeSelectFormatted):
+		case (Commands::SelectFormatted):
 			if (!args_.first()->item->readOnly()) break;
 			result = createFormat(0,1);
 			break;
 		// For the 'return' function, the return type must match the return type of the parent tree...
-		case (Command::Return):
+		case (Commands::Return):
 			if (parent_->returnType() == VTypes::NoData)
 			{
 				if (!hasArg(0)) break;
-				msg.print("Error: Return value provided when none is required.\n");
+				Messenger::print("Error: Return value provided when none is required.\n");
 				result = FALSE;
 			}
 			else
 			{
 				if ((!hasArg(0)) && (parent_->returnType() != VTypes::NoData))
 				{
-					msg.print("Error: No return value provided.\n");
+					Messenger::print("Error: No return value provided.\n");
 					result = FALSE;
 				}
 				else if (argType(0) != parent_->returnType())
 				{
-					msg.print("Error: Return value of type '%s' provided for function that returns %s.\n", VTypes::dataType(argType(0)), VTypes::aDataType(parent_->returnType()));
+					Messenger::print("Error: Return value of type '%s' provided for function that returns %s.\n", VTypes::dataType(argType(0)), VTypes::aDataType(parent_->returnType()));
 					result = FALSE;
 				}
 			}
@@ -109,15 +129,15 @@ bool CommandNode::prepFunction()
 }
 
 // Get function
-Command::Function CommandNode::function()
+Commands::Function CommandNode::function()
 {
 	return function_;
 }
 
 // Create format node (if necessary) from supplied argument id
-Format *CommandNode::createFormat(int fmtargid, int firstargid)
+Format* CommandNode::createFormat(int fmtargid, int firstargid)
 {
-	msg.enter("CommandNode::createFormat");
+	Messenger::enter("CommandNode::createFormat");
 	// fmtargid = id of argument which contains the formatting string, or -1 for no formatting string (free-form format)
 	// firstargid = id of first data argument
 	// If we do not currently have a format associated to the node, create it regardless
@@ -152,19 +172,19 @@ Format *CommandNode::createFormat(int fmtargid, int firstargid)
 			}
 		}
 	}
-	msg.exit("CommandNode::createFormat");
+	Messenger::exit("CommandNode::createFormat");
 	return (result == FALSE ? NULL : format_);
 }
 
 // Execute command
-bool CommandNode::execute(ReturnValue &rv)
+bool CommandNode::execute(ReturnValue& rv)
 {
 	// Execute the command
-	return aten.commands.call(function_, this, rv);
+	return aten_.callCommand(function_, this, rv);
 }
 
 // Print node contents
-void CommandNode::nodePrint(int offset, const char *prefix)
+void CommandNode::nodePrint(int offset, const char* prefix)
 {
 	// Construct tabbed offset
 	Dnchar tab(offset+32);
@@ -174,13 +194,13 @@ void CommandNode::nodePrint(int offset, const char *prefix)
 
 	// Output node data
 // 	printf("Function id = %p\n", function_);
-	printf("[CN]%s%s (Command) (%i arguments)\n", tab.get(), Command::data[function_].keyword, args_.nItems());
+	printf("[CN]%s%s (Command) (%i arguments)\n", tab.get(), aten_.commandKeyword(function_), args_.nItems());
 	// Output Argument data
-	for (Refitem<TreeNode,int> *ri = args_.first(); ri != NULL; ri = ri->next) ri->item->nodePrint(offset+1);
+	for (Refitem<TreeNode,int>* ri = args_.first(); ri != NULL; ri = ri->next) ri->item->nodePrint(offset+1);
 }
 
 // Set from returnvalue node
-bool CommandNode::set(ReturnValue &rv)
+bool CommandNode::set(ReturnValue& rv)
 {
 	printf("Internal Error: Trying to 'set' a CommandNode.\n");
 	return FALSE;
@@ -194,9 +214,9 @@ bool CommandNode::initialise()
 }
 
 // Create, run, and free a single command with simple arguments
-bool CommandNode::run(Command::Function func, const char *arglist, ...)
+bool CommandNode::run(Commands::Function func, const char* argList, ...)
 {
-	msg.enter("CommandNode::run");
+	Messenger::enter("CommandNode::run");
 	// Local tree to contain commandnode and its arguments
 	Tree tree;
 
@@ -205,11 +225,11 @@ bool CommandNode::run(Command::Function func, const char *arglist, ...)
 	node.parent_ = &tree;
 
 	// Set arguments from supplied list
-	const char *c;
+	const char* c;
 	va_list vars;
-	va_start(vars, arglist);
-	TreeNode *var = NULL;
-	for (c = &arglist[0]; *c != '\0'; c++)
+	va_start(vars, argList);
+	TreeNode* var = NULL;
+	for (c = &argList[0]; *c != '\0'; c++)
 	{
 		switch (*c)
 		{
@@ -221,7 +241,7 @@ bool CommandNode::run(Command::Function func, const char *arglist, ...)
 				break;
 			case ('c'):
 			case ('s'):
-				var = tree.addConstant(va_arg(vars, const char *));
+				var = tree.addConstant(va_arg(vars, const char* ));
 				break;
 			default:
 				printf("Invalid argument specifier '%c' in CommandNode::run.\n", *c);
@@ -234,14 +254,14 @@ bool CommandNode::run(Command::Function func, const char *arglist, ...)
 	// Now, run the command...
 	ReturnValue rv;
 	bool result = node.execute(rv);
-	msg.exit("CommandNode::run");
+	Messenger::exit("CommandNode::run");
 	return result;
 }
 
 // Create, run, and free a single command with simple arguments and specified bundle
-bool CommandNode::run(Command::Function func, Bundle &bundle, const char *arglist, ...)
+bool CommandNode::run(Commands::Function func, Bundle& bundle, const char* argList, ...)
 {
-	msg.enter("CommandNode::run[bundle]");
+	Messenger::enter("CommandNode::run[bundle]");
 	// Local tree to contain commandnode and its arguments
 	Tree tree;
 
@@ -250,11 +270,11 @@ bool CommandNode::run(Command::Function func, Bundle &bundle, const char *arglis
 	node.parent_ = &tree;
 
 	// Set arguments from supplied list
-	const char *c;
+	const char* c;
 	va_list vars;
-	va_start(vars, arglist);
-	TreeNode *var = NULL;
-	for (c = &arglist[0]; *c != '\0'; c++)
+	va_start(vars, argList);
+	TreeNode* var = NULL;
+	for (c = &argList[0]; *c != '\0'; c++)
 	{
 		switch (*c)
 		{
@@ -266,7 +286,7 @@ bool CommandNode::run(Command::Function func, Bundle &bundle, const char *arglis
 				break;
 			case ('c'):
 			case ('s'):
-				var = tree.addConstant(va_arg(vars, const char *));
+				var = tree.addConstant(va_arg(vars, const char* ));
 				break;
 			default:
 				printf("Invalid argument specifier '%c' in CommandNode::run.\n", *c);
@@ -279,13 +299,13 @@ bool CommandNode::run(Command::Function func, Bundle &bundle, const char *arglis
 	// Now, run the command...
 	ReturnValue rv;
 	bool result = node.execute(bundle, rv);
-	msg.exit("CommandNode::run[bundle]");
+	Messenger::exit("CommandNode::run[bundle]");
 	return result;
 }
 
 // Execute command with specified bundle
-bool CommandNode::execute(Bundle &bundle, ReturnValue &rv)
+bool CommandNode::execute(Bundle& bundle, ReturnValue& rv)
 {
 	// Execute the command
-	return aten.commands.call(function_, this, rv, bundle);
+	return aten_.callCommand(function_, this, rv, bundle);
 }

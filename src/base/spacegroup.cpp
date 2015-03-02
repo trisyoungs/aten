@@ -21,6 +21,8 @@
 
 #include "base/spacegroup.h"
 
+ATEN_BEGIN_NAMESPACE
+
 // Define spacegroups and their symmetry generators
 Spacegroup Spacegroups[] = {
 	{ "None",	"None"				}, //   0
@@ -256,3 +258,4 @@ Spacegroup Spacegroups[] = {
 	{ "Ia-3d",	"<i>Ia</i>-3<i>d</i>"		}  // 230
 };
 
+ATEN_END_NAMESPACE

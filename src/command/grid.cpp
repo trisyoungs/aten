@@ -19,16 +19,16 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "main/aten.h"
 #include "command/commands.h"
+#include "main/aten.h"
 #include "parser/commandnode.h"
-#include "model/model.h"
-#include "classes/grid.h"
-#include "classes/prefs.h"
+#include "base/grid.h"
 #include "base/sysfunc.h"
 
+ATEN_USING_NAMESPACE
+
 // Add free grid point data at specified coordinates
-bool Command::function_AddFreePoint(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_AddFreePoint(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::GridPointer)) return FALSE;
 	obj.g->addFreePoint(c->argd(0), c->argd(1), c->argd(2), c->argd(3));
@@ -37,7 +37,7 @@ bool Command::function_AddFreePoint(CommandNode *c, Bundle &obj, ReturnValue &rv
 }
 
 // Add grid point data at specified indices
-bool Command::function_AddGridPoint(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_AddGridPoint(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::GridPointer)) return FALSE;
 	Vec3<int> veci = c->arg3i(0);
@@ -47,7 +47,7 @@ bool Command::function_AddGridPoint(CommandNode *c, Bundle &obj, ReturnValue &rv
 }
 
 // Add next gridpoint in sequence
-bool Command::function_AddNextGridPoint(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_AddNextGridPoint(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::GridPointer)) return FALSE;
 	obj.g->setNextData(c->argd(0));
@@ -56,10 +56,10 @@ bool Command::function_AddNextGridPoint(CommandNode *c, Bundle &obj, ReturnValue
 }
 
 // Return nth grid of model
-bool Command::function_CurrentGrid(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_CurrentGrid(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	Grid *g = NULL;
+	Grid* g = NULL;
 	switch (c->argType(0))
 	{
 		case (VTypes::IntegerData):
@@ -69,7 +69,7 @@ bool Command::function_CurrentGrid(CommandNode *c, Bundle &obj, ReturnValue &rv)
 			g = (Grid*) c->argp(0, VTypes::GridData);
 			break;
 		default:
-			msg.print("Can't convert a variable of type '%s' to a Grid.\n", VTypes::dataType(c->argType(0)));
+			Messenger::print("Can't convert a variable of type '%s' to a Grid.\n", VTypes::dataType(c->argType(0)));
 		break;
 	}
 	if (g == NULL) return FALSE;
@@ -79,7 +79,7 @@ bool Command::function_CurrentGrid(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Finalise current surface
-bool Command::function_FinaliseGrid(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_FinaliseGrid(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::GridPointer)) return FALSE;
 	if (prefs.coordsInBohr()) obj.g->bohrToAngstrom();
@@ -88,10 +88,10 @@ bool Command::function_FinaliseGrid(CommandNode *c, Bundle &obj, ReturnValue &rv
 }
 
 // Return nth grid of model
-bool Command::function_GetGrid(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_GetGrid(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	Grid *g = NULL;
+	Grid* g = NULL;
 	switch (c->argType(0))
 	{
 		case (VTypes::IntegerData):
@@ -101,7 +101,7 @@ bool Command::function_GetGrid(CommandNode *c, Bundle &obj, ReturnValue &rv)
 			g = (Grid*) c->argp(0, VTypes::GridData);
 			break;
 		default:
-			msg.print("Can't convert a variable of type '%s' to a Grid.\n", VTypes::dataType(c->argType(0)));
+			Messenger::print("Can't convert a variable of type '%s' to a Grid.\n", VTypes::dataType(c->argType(0)));
 			break;
 	}
 	if (g == NULL) return FALSE;
@@ -110,7 +110,7 @@ bool Command::function_GetGrid(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Set transparency of primary and secondary grid surfaces
-bool Command::function_GridAlpha(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_GridAlpha(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::GridPointer)) return FALSE;
 	obj.g->setPrimaryAlpha(c->argGLf(0));
@@ -120,7 +120,7 @@ bool Command::function_GridAlpha(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Set grid axes (nine doubles)
-bool Command::function_GridAxes(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_GridAxes(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::GridPointer)) return FALSE;
 	Matrix mat;
@@ -133,7 +133,7 @@ bool Command::function_GridAxes(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Set (positive) colour for grid
-bool Command::function_GridColour(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_GridColour(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::GridPointer)) return FALSE;
 	if (c->hasArg(3)) obj.g->setPrimaryColour(c->argd(0), c->argd(1), c->argd(2), c->argd(3));
@@ -143,7 +143,7 @@ bool Command::function_GridColour(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Set negative colour for grid
-bool Command::function_GridColourSecondary(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_GridColourSecondary(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::GridPointer)) return FALSE;
 	if (c->hasArg(3)) obj.g->setSecondaryColour(c->argd(0), c->argd(1), c->argd(2), c->argd(3));
@@ -153,13 +153,13 @@ bool Command::function_GridColourSecondary(CommandNode *c, Bundle &obj, ReturnVa
 }
 
 // Set colour scale for grid
-bool Command::function_GridColourscale(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_GridColourscale(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::GridPointer)) return FALSE;
 	int cs = c->argi(0);
 	if ((cs < 0) || (cs > 10))
 	{
-		msg.print("ColourScale %i is out of range (1-10, or 0 to use object's internal colour).\n",cs);
+		Messenger::print("ColourScale %i is out of range (1-10, or 0 to use object's internal colour).\n",cs);
 		return FALSE;
 	}
 	obj.g->setColourScale(cs-1);
@@ -168,7 +168,7 @@ bool Command::function_GridColourscale(CommandNode *c, Bundle &obj, ReturnValue 
 }
 
 // Set cubic grid (one double)
-bool Command::function_GridCubic(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_GridCubic(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::GridPointer)) return FALSE;
 	obj.g->setAxes(c->argd(0));
@@ -177,7 +177,7 @@ bool Command::function_GridCubic(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Set primary grid cutoff
-bool Command::function_GridCutoff(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_GridCutoff(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::GridPointer)) return FALSE;
 	obj.g->setLowerPrimaryCutoff(c->argd(0));
@@ -187,7 +187,7 @@ bool Command::function_GridCutoff(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Set secondary grid cutoff
-bool Command::function_GridCutoffSecondary(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_GridCutoffSecondary(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::GridPointer)) return FALSE;
 	obj.g->setLowerSecondaryCutoff(c->argd(0));
@@ -197,12 +197,12 @@ bool Command::function_GridCutoffSecondary(CommandNode *c, Bundle &obj, ReturnVa
 }
 
 // Set loop order to use in 'gridnextpoint'
-bool Command::function_GridLoopOrder(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_GridLoopOrder(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::GridPointer)) return FALSE;
 	if (strlen(c->argc(0)) != 3)
 	{
-		msg.print("A string of three characters must be passed to 'gridlooporder' (got '%s').\n",c->argc(0));
+		Messenger::print("A string of three characters must be passed to 'gridlooporder' (got '%s').\n",c->argc(0));
 		return FALSE;
 	}
 	char ch;
@@ -227,7 +227,7 @@ bool Command::function_GridLoopOrder(CommandNode *c, Bundle &obj, ReturnValue &r
 				obj.g->setLoopOrder(n,2);
 				break;
 			default:
-				msg.print("Unrecognised character (%c) given to 'setgridlooporder' - default value used.\n",ch);
+				Messenger::print("Unrecognised character (%c) given to 'setgridlooporder' - default value used.\n",ch);
 				obj.g->setLoopOrder(n,n);
 				break;
 		}
@@ -237,7 +237,7 @@ bool Command::function_GridLoopOrder(CommandNode *c, Bundle &obj, ReturnValue &r
 }
 
 // Set origin (lower-left-hand corner of grid)
-bool Command::function_GridOrigin(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_GridOrigin(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::GridPointer)) return FALSE;
 	obj.g->setOrigin(c->arg3d(0));
@@ -246,7 +246,7 @@ bool Command::function_GridOrigin(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Set orthorhombic grid (three doubles)
-bool Command::function_GridOrtho(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_GridOrtho(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::GridPointer)) return FALSE;
 	obj.g->setAxes(c->arg3d(0));
@@ -255,7 +255,7 @@ bool Command::function_GridOrtho(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Set whether to draw the secondary grid surfce
-bool Command::function_GridSecondary(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_GridSecondary(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::GridPointer)) return FALSE;
 	if (c->hasArg(0)) obj.g->setUseSecondary(c->argb(0));
@@ -264,7 +264,7 @@ bool Command::function_GridSecondary(CommandNode *c, Bundle &obj, ReturnValue &r
 }
 
 // Set drawing style of grid
-bool Command::function_GridStyle(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_GridStyle(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::GridPointer)) return FALSE;
 	Grid::SurfaceStyle ss = Grid::surfaceStyle(c->argc(0));
@@ -275,7 +275,7 @@ bool Command::function_GridStyle(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Set whether 2D grid uses data value as height component
-bool Command::function_GridUseZ(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_GridUseZ(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::GridPointer)) return FALSE;
 	if (c->hasArg(0)) obj.g->setUseDataForZ(c->argb(0));
@@ -284,7 +284,7 @@ bool Command::function_GridUseZ(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Set visibility of grid data
-bool Command::function_GridVisible(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_GridVisible(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::GridPointer)) return FALSE;
 	if (c->hasArg(0)) obj.g->setVisible(c->argb(0));
@@ -293,7 +293,7 @@ bool Command::function_GridVisible(CommandNode *c, Bundle &obj, ReturnValue &rv)
 }
 
 // Initialise grid, setting extent of grid (number of points in each direction)
-bool Command::function_InitialiseGrid(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_InitialiseGrid(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::GridPointer)) return FALSE;
 	Grid::GridType gt = Grid::gridType(c->argc(0), TRUE);
@@ -303,21 +303,21 @@ bool Command::function_InitialiseGrid(CommandNode *c, Bundle &obj, ReturnValue &
 }
 
 // Load grid ('loadgrid <filename>')
-bool Command::function_LoadGrid(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_LoadGrid(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	Grid *g = NULL;
-	Tree* filter = aten.probeFile(c->argc(0), FilterData::GridImport);
+	Grid* g = NULL;
+	Tree* filter = aten_.probeFile(c->argc(0), FilterData::GridImport);
 	if (filter != NULL) if (filter->executeRead(c->argc(0))) g = obj.g;
 	rv.set(VTypes::GridData, g);
 	return TRUE;
 }
 
 // Create new grid in the current model
-bool Command::function_NewGrid(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_NewGrid(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	obj.g = aten.currentModel()->addGrid();
+	obj.g = aten_.currentModel()->addGrid();
 	obj.g->setName(stripTrailing(c->argc(0)));
 	rv.set(VTypes::GridData, obj.g);
 	return TRUE;

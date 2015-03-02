@@ -20,8 +20,8 @@
 */
 
 #include "model/model.h"
-#include "gui/tcanvas.uih"
-#include "gui/gui.h"
+
+ATEN_USING_NAMESPACE
 
 // Set rendering source
 void Model::setRenderSource(Model::RenderSource rs)
@@ -63,14 +63,14 @@ bool Model::renderFromVibration()
 }
 
 // Set the current modelview matrix
-void Model::setModelViewMatrix(Matrix &rmat)
+void Model::setModelViewMatrix(Matrix& rmat)
 {
 	if (parent_ == NULL) modelViewMatrix_ = rmat;
 	else parent_->setModelViewMatrix(rmat);
 }
 
 // Return the current modelview matrix
-Matrix &Model::modelViewMatrix()
+Matrix& Model::modelViewMatrix()
 {
 	return (parent_ == NULL ? modelViewMatrix_ : parent_->modelViewMatrix());
 }
@@ -82,7 +82,7 @@ GLint *Model::viewportMatrix()
 }
 
 // Return current projection matrix
-Matrix &Model::modelProjectionMatrix()
+Matrix& Model::modelProjectionMatrix()
 {
 	return (parent_ == NULL ? modelProjectionMatrix_ : parent_->modelProjectionMatrix());
 }
@@ -91,7 +91,7 @@ Matrix &Model::modelProjectionMatrix()
 void Model::zRotateView(double dz)
 {
 	// Rotate the whole system by the amounts specified.
-	msg.enter("Model::zRotateView");
+	Messenger::enter("Model::zRotateView");
 	Matrix newrotmat, oldrotmat;
 	if (parent_ == NULL)
 	{
@@ -103,14 +103,14 @@ void Model::zRotateView(double dz)
 		modelViewMatrix_ = newrotmat * modelViewMatrix_;
 	}
 	else parent_->zRotateView(dz);
-	msg.exit("Model::zRotateView");
+	Messenger::exit("Model::zRotateView");
 }
 
 // Adjust Camera
 void Model::adjustCamera(double dx, double dy, double dz)
 {
 	// Adjust the models camera variables
-	msg.enter("Model::adjustCamera");
+	Messenger::enter("Model::adjustCamera");
 	if (parent_ == NULL)
 	{
 		modelViewMatrix_.adjustColumn(3, dx, -dy, dz, 0.0);
@@ -119,39 +119,38 @@ void Model::adjustCamera(double dx, double dy, double dz)
 	}
 	else parent_->adjustCamera(dx, dy, dz);
 	changeLog.add(Log::Camera);
-	msg.exit("Model::adjustCamera");
+	Messenger::exit("Model::adjustCamera");
 }
 
 // Adjust camera zoom
 void Model::adjustZoom(bool zoomin)
 {
-	msg.enter("Model::adjustZoom");
+	Messenger::enter("Model::adjustZoom");
 	double dz = (parent_ == NULL ? -modelViewMatrix_[14] : -parent_->modelViewMatrix()[14]);
 	dz *= prefs.zoomThrottle();
 	if (zoomin) dz = -dz;
 	adjustCamera(0.0,0.0,dz);
 	changeLog.add(Log::Camera);
-	msg.exit("Model::adjustZoom");
+	Messenger::exit("Model::adjustZoom");
 }
 
 // Reset View
-void Model::resetView()
+void Model::resetView(int contextWidth, int contextHeight)
 {
 	// Reset the modelview matrix and the camera
-	msg.enter("Model::resetView");
+	Messenger::enter("Model::resetView");
 	Vec3<double> extremes, rabs, target;
 	Vec4<double> screenr;
-	int width, height;
 	bool done = FALSE;
 	double rad;
-	Matrix &mview = modelViewMatrix();
+	Matrix& mview = modelViewMatrix();
 	mview.setIdentity();
 	mview.setColumn(3,0.0,0.0,0.0,1.0);
 	// Fit model to screen
 	// Crude approach - find largest coordinate and zoom out so that {0,0,largest} is visible on screen
 	for (Atom* i = atoms_.first(); i != NULL; i = i->next)
 	{
-		rad = prefs.styleRadius(i);
+		rad = prefs.styleRadius(i->style(), i->element());
 		rabs = i->r().abs();
 		if (rabs.x > extremes.x) extremes.x = rabs.x + rad;
 		if (rabs.y > extremes.y) extremes.y = rabs.y + rad;
@@ -160,19 +159,7 @@ void Model::resetView()
 	target = (cell_.lengths() * 0.5) + extremes;
 
 	// Now, adjust camera matrix so that this atom is on-screen.
-	// If the GUI exists then use the width and height from the widget context.
-	// If not, use an arbitrary 100x100 canvas size.
-	if (gui.exists())
-	{
-		width = gui.mainCanvas()->contextWidth();
-		height = gui.mainCanvas()->contextHeight();
-	}
-	else
-	{
-		width = 100;
-		height = 100;
-	}
-	setupView(0, 0, width, height);
+	setupView(0, 0, contextWidth, contextHeight);
 
 	// Need to do a check for the viability of the canvas first...
 	if (atoms_.nItems() > 0)
@@ -181,26 +168,26 @@ void Model::resetView()
 		{
 			// Adjust z-translation by 1 Angstrom. Orthographic view needs the projection matrix to be recreated every time
 			mview[14] -= 1.0;
-			if (!prefs.hasPerspective()) setupView(0, 0, width, height);
+			if (!prefs.hasPerspective()) setupView(0, 0, contextWidth, contextHeight);
 
 			// Project our local atom and grab the z screen coordinate
 			modelToWorld(target, &screenr);
 			done = TRUE;
-			if ((screenr.x < 0.0) || (screenr.x > width)) done = FALSE;
-			if ((screenr.y < 0.0) || (screenr.y > height)) done = FALSE;
+			if ((screenr.x < 0.0) || (screenr.x > contextWidth)) done = FALSE;
+			if ((screenr.y < 0.0) || (screenr.y > contextHeight)) done = FALSE;
 			if (screenr.z < 0.0) done = FALSE;
 		} while (!done);
 	}
 	else mview.setColumn(3, 0.0, 0.0, -10.0, 1.0);
 	changeLog.add(Log::Camera);
-	msg.exit("Model::resetView");
+	Messenger::exit("Model::resetView");
 }
 
 // Rotate free
 void Model::axisRotateView(Vec3<double> vec, double angle)
 {
 	// Rotate the whole system by the amounts specified.
-	msg.enter("Model::axisRotateView");
+	Messenger::enter("Model::axisRotateView");
 	Matrix newrotmat, oldrotmat;
 	if (parent_ == NULL)
 	{
@@ -212,13 +199,13 @@ void Model::axisRotateView(Vec3<double> vec, double angle)
 	}
 	else parent_->axisRotateView(vec, angle);
 	changeLog.add(Log::Camera);
-	msg.exit("Model::axisRotateView");
+	Messenger::exit("Model::axisRotateView");
 }
 
 // Set exact rotation of model (angles passed in degrees)
 void Model::setRotation(double rotx, double roty)
 {
-	msg.enter("Model::setRotation");
+	Messenger::enter("Model::setRotation");
 	Matrix temp;
 	if (parent_ == NULL)
 	{
@@ -229,14 +216,14 @@ void Model::setRotation(double rotx, double roty)
 	}
 	else parent_->setRotation(rotx, roty);
 	changeLog.add(Log::Camera);
-	msg.exit("Model::setRotation");
+	Messenger::exit("Model::setRotation");
 }
 
 // Rotate free
 void Model::rotateView(double dx, double dy)
 {
 	// Rotate the whole system by the amounts specified.
-	msg.enter("Model::rotateView");
+	Messenger::enter("Model::rotateView");
 	double rotx, roty;
 	Matrix newrotmat, oldrotmat;
 	if (parent_ == NULL)
@@ -253,11 +240,11 @@ void Model::rotateView(double dx, double dy)
 	}
 	else parent_->rotateView(dx, dy);
 	changeLog.add(Log::Camera);
-	msg.exit("Model::rotateView");
+	Messenger::exit("Model::rotateView");
 }
 
 // Calculate and return inverse of current view matrix
-Matrix &Model::modelViewMatrixInverse()
+Matrix& Model::modelViewMatrixInverse()
 {
 	// Grab current modelview matrix
 	modelViewMatrixInverse_ = (parent_ == NULL ? modelViewMatrix_ : parent_->modelViewMatrix());
@@ -269,20 +256,20 @@ Matrix &Model::modelViewMatrixInverse()
 // Set view to be along the specified cartesian axis
 void Model::viewAlong(double x, double y, double z)
 {
-	msg.enter("Model::viewAlong");
+	Messenger::enter("Model::viewAlong");
 	// Set model rotation matrix to be along the specified axis
 	Vec3<double> v;
 	v.set(x,y,z);
 	v.toSpherical();
 	// setRotation() expects the degrees of rotation about the x and y axes respectively
 	setRotation(-v.y,fabs(v.z-180.0));
-	msg.exit("Model::viewAlong");
+	Messenger::exit("Model::viewAlong");
 }
 
 // Set view to be along the specified cell axis
 void Model::viewAlongCell(double x, double y, double z)
 {
-	msg.enter("Model::viewAlongCell");
+	Messenger::enter("Model::viewAlongCell");
 	// Set model rotation matrix to be along the specified cell axis
 	Vec3<double> v;
 	v.set(x,y,z);
@@ -290,7 +277,7 @@ void Model::viewAlongCell(double x, double y, double z)
 	v.toSpherical();
 	// setRotation() expects the degrees of rotation about the x and y axes respectively
 	setRotation(-v.y,fabs(v.z-180.0));
-	msg.exit("Model::viewAlongCell");
+	Messenger::exit("Model::viewAlongCell");
 }
 
 
@@ -352,7 +339,7 @@ void Model::setupView(GLint x, GLint y, GLint w, GLint h)
 // Project given model coordinates into world coordinates (and screen coordinates if requested)
 Vec3<double> &Model::modelToWorld(Vec3<double> &modelr, Vec4<double> *screenr, double screenradius)
 {
-	msg.enter("Model::modelToWorld");
+	Messenger::enter("Model::modelToWorld");
 	static Vec3<double> worldr;
 	static Matrix vmat;
 	Vec4<double> pos, temp, tempscreen;
@@ -381,14 +368,14 @@ Vec3<double> &Model::modelToWorld(Vec3<double> &modelr, Vec4<double> *screenr, d
 			screenr->w = fabs( (viewportMatrix()[0] + viewportMatrix()[2]*(tempscreen.x+1)*0.5) - screenr->x);
 		}
 	}
-	msg.exit("Model::modelToWorld");
+	Messenger::exit("Model::modelToWorld");
 	return worldr;
 }
 
 // Convert screen coordinates into modelspace coordinates
 Vec3<double> &Model::screenToModel(int x, int y, double z)
 {
-	msg.enter("Model::screenToModel");
+	Messenger::enter("Model::screenToModel");
 	static Vec3<double> modelr;
 	Vec4<double> temp, worldr;
 	int newx, newy;
@@ -427,7 +414,7 @@ Vec3<double> &Model::screenToModel(int x, int y, double z)
 	// Finally, invert to model coordinates
 	modelr = itransform * Vec3<double>(worldr.x, worldr.y, worldr.z);
 	
-	msg.exit("Model::screenToModel");
+	Messenger::exit("Model::screenToModel");
 	return modelr;
 }
 

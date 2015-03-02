@@ -69,7 +69,7 @@ QStringList TPrompt::commandList()
 	return items;
 }
 
-const char *TPrompt::getText()
+const char* TPrompt::getText()
 {
 	// Grab string and add trailing semicolon if required
 	static Dnchar text;

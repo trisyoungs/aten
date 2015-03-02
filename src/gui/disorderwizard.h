@@ -25,9 +25,19 @@
 #include "gui/ui_disorderwizard.h"
 #include "base/cell.h"
 #include "templates/reflist.h"
+#include "base/namespace.h"
 
-// Forward Declarations
+// Forward Declarations (Qt)
+class AtenWindow;
+
+ATEN_BEGIN_NAMESPACE
+
+// Forward Declarations (Aten)
 class PartitioningScheme;
+
+ATEN_END_NAMESPACE
+
+ATEN_USING_NAMESPACE
 
 // Disordered builder window
 class DisorderWizard : public QWizard
@@ -35,51 +45,17 @@ class DisorderWizard : public QWizard
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
 
-	/*
-	// Enumerations
-	*/
 	public:
+	// Constructor
+	DisorderWizard(AtenWindow& parent);
+	// Main form declaration
+	Ui::DisorderWizard ui;
+	// Target model type
 	enum TargetModelType { ExistingTarget, NewTarget, GenerateTarget };
 
-	/*
-	// Window Functions
-	*/
-	public:
-	int run();
 	private:
-	void setComponentData(Model* data);
-	void updateComponentControls();
-	void setPartitionData(QTreeWidgetItem *target, PartitioningScheme *data);
-	private slots:
-	void pageChanged(int id);
-	void rejected();
-	void accepted();
-	// Step 1 / 5 - Select target model type
-	void on_TargetExistingRadio_clicked(bool checked);
-	void on_TargetNewRadio_clicked(bool checked);
-	void on_TargetGenerateRadio_clicked(bool checked);
-	// Step 2 / 5 - Select model or define unit cell
-	void on_ExistingModelTree_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous);
-	void on_ExistingModelTree_itemSelectionChanged();
-	void setCellAbsolute(double value);
-	void setCellRelative(double value);
-	// Step 3 / 5 - Select partitioning scheme for cell
-	void on_PartitionTree_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous);
-	void on_PartitionTree_itemSelectionChanged();
-	void on_PartitionSchemeOptionsButton_clicked(bool checked);
-	// Step 4 / 5 - Select component models
-	void on_ChooseComponentsTree_itemSelectionChanged();
-	// Step 5 / 5 - Select component populations and partition assignments
-	void on_EditComponentsTree_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous);
-	void on_NumberPolicyRadio_clicked(bool checked);
-	void on_DensityPolicyRadio_clicked(bool checked);
-	void on_NumberAndDensityPolicyRadio_clicked(bool checked);
-	void on_RelativePolicyRadio_clicked(bool checked);
-	void on_ComponentPopulationSpin_valueChanged(int value);
-	void on_ComponentDensitySpin_valueChanged(double value);
-	void on_ComponentAllowRotationsCheck_clicked(bool checked);
-	void on_ComponentTargetPartitionCombo_currentIndexChanged(int index);
-	void on_MethodOptionsButton_clicked(bool checked);
+	// Reference to main window
+	AtenWindow& parent_;
 
 
 	/*
@@ -95,7 +71,7 @@ class DisorderWizard : public QWizard
 	// Target model for new model runs
 	Model* newModel_;
 	// Selected partitioning scheme
-	PartitioningScheme *partitioningScheme_;
+	PartitioningScheme* partitioningScheme_;
 	// Reflist of tree items and partitioning schemes
 	Reflist<QTreeWidgetItem, PartitioningScheme*> partitioningSchemeItems_;
 	// Current component (Model*) editing target
@@ -105,23 +81,50 @@ class DisorderWizard : public QWizard
 	
 	public:
 	// Return currently-selected partitioning scheme
-	PartitioningScheme *partitioningScheme();
+	PartitioningScheme* partitioningScheme();
 	// Return relevant unit cell
-	UnitCell *cell();
+	UnitCell* cell();
 
 
 	/*
-	// Dialog
+	// Window Functions
 	*/
-	private:
-	// Reference to main window
-	AtenWindow& parent_;
-
 	public:
-	// Constructor
-	DisorderWizard(AtenWindow& parent);
-	// Main form declaration
-	Ui::DisorderWizard ui;
+	int run();
+	private:
+	void setComponentData(Model* data);
+	void updateComponentControls();
+	void setPartitionData(QTreeWidgetItem* target, PartitioningScheme* data);
+	private slots:
+	void pageChanged(int id);
+	void rejected();
+	void accepted();
+	// Step 1 / 5 - Select target model type
+	void on_TargetExistingRadio_clicked(bool checked);
+	void on_TargetNewRadio_clicked(bool checked);
+	void on_TargetGenerateRadio_clicked(bool checked);
+	// Step 2 / 5 - Select model or define unit cell
+	void on_ExistingModelTree_currentItemChanged(QTreeWidgetItem* current, QTreeWidgetItem* previous);
+	void on_ExistingModelTree_itemSelectionChanged();
+	void setCellAbsolute(double value);
+	void setCellRelative(double value);
+	// Step 3 / 5 - Select partitioning scheme for cell
+	void on_PartitionTree_currentItemChanged(QTreeWidgetItem* current, QTreeWidgetItem* previous);
+	void on_PartitionTree_itemSelectionChanged();
+	void on_PartitionSchemeOptionsButton_clicked(bool checked);
+	// Step 4 / 5 - Select component models
+	void on_ChooseComponentsTree_itemSelectionChanged();
+	// Step 5 / 5 - Select component populations and partition assignments
+	void on_EditComponentsTree_currentItemChanged(QTreeWidgetItem* current, QTreeWidgetItem* previous);
+	void on_NumberPolicyRadio_clicked(bool checked);
+	void on_DensityPolicyRadio_clicked(bool checked);
+	void on_NumberAndDensityPolicyRadio_clicked(bool checked);
+	void on_RelativePolicyRadio_clicked(bool checked);
+	void on_ComponentPopulationSpin_valueChanged(int value);
+	void on_ComponentDensitySpin_valueChanged(double value);
+	void on_ComponentAllowRotationsCheck_clicked(bool checked);
+	void on_ComponentTargetPartitionCombo_currentIndexChanged(int index);
+	void on_MethodOptionsButton_clicked(bool checked);
 };
 
 #endif

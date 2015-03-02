@@ -19,12 +19,17 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <QtGui/QMessageBox>
+#include <QtGui/QColorDialog>
+#include <QtGui/QInputDialog>
+#include <QtGui/QFileDialog>
 #include "main/aten.h"
 #include "gui/prefs.h"
 #include "gui/mainwindow.h"
 #include "gui/selectelement.h"
 #include "gui/tcombobox.h"
 #include "model/model.h"
+#include "ff/forcefield.h"
 #include "base/sysfunc.h"
 
 // Constructor
@@ -47,7 +52,7 @@ AtenPrefs::AtenPrefs(AtenWindow& parent) : QDialog(&parent), parent_(parent)
 // Set controls
 void AtenPrefs::setControls()
 {
-	msg.enter("AtenPrefs::setControls");
+	Messenger::enter("AtenPrefs::setControls");
 	refreshing_ = TRUE;
 
 	// Select the first element in the elements list
@@ -55,14 +60,14 @@ void AtenPrefs::setControls()
 
 	// Set Controls
 	// View Page - Style Tab
-	ui.StickRadiusSpin->setValue(prefs.atomStyleRadius(Atom::StickStyle));
-	ui.TubeRadiusSpin->setValue(prefs.atomStyleRadius(Atom::TubeStyle));
-	ui.SphereRadiusSpin->setValue(prefs.atomStyleRadius(Atom::SphereStyle));
-	ui.ScaledRadiusSpin->setValue(prefs.atomStyleRadius(Atom::ScaledStyle));
-	ui.StickBondRadiusSpin->setValue(prefs.bondStyleRadius(Atom::StickStyle));
-	ui.TubeBondRadiusSpin->setValue(prefs.bondStyleRadius(Atom::TubeStyle));
-	ui.SphereBondRadiusSpin->setValue(prefs.bondStyleRadius(Atom::SphereStyle));
-	ui.ScaledBondRadiusSpin->setValue(prefs.bondStyleRadius(Atom::ScaledStyle));
+	ui.StickRadiusSpin->setValue(prefs.atomStyleRadius(Prefs::StickStyle));
+	ui.TubeRadiusSpin->setValue(prefs.atomStyleRadius(Prefs::TubeStyle));
+	ui.SphereRadiusSpin->setValue(prefs.atomStyleRadius(Prefs::SphereStyle));
+	ui.ScaledRadiusSpin->setValue(prefs.atomStyleRadius(Prefs::ScaledStyle));
+	ui.StickBondRadiusSpin->setValue(prefs.bondStyleRadius(Prefs::StickStyle));
+	ui.TubeBondRadiusSpin->setValue(prefs.bondStyleRadius(Prefs::TubeStyle));
+	ui.SphereBondRadiusSpin->setValue(prefs.bondStyleRadius(Prefs::SphereStyle));
+	ui.ScaledBondRadiusSpin->setValue(prefs.bondStyleRadius(Prefs::ScaledStyle));
 	ui.SelectionScaleSpin->setValue(prefs.selectionScale());
 	ui.AngleLabelFormatEdit->setText(prefs.angleLabelFormat());
 	ui.DistanceLabelFormatEdit->setText(prefs.distanceLabelFormat());
@@ -82,7 +87,7 @@ void AtenPrefs::setControls()
 		QTableWidgetItem *item = new QTableWidgetItem(Prefs::objectColourName( (Prefs::ObjectColour) n ));
 		ui.ColoursTable->setItem(n, 0, item);
 		item = new QTableWidgetItem();
-		double *colour = prefs.colour( (Prefs::ObjectColour) n );
+		double* colour = prefs.colour( (Prefs::ObjectColour) n );
 		qcol.setRgbF( colour[0], colour[1], colour[2], colour[3] );
 		item->setBackgroundColor(qcol);
 		ui.ColoursTable->setItem(n, 1, item);
@@ -92,7 +97,7 @@ void AtenPrefs::setControls()
 	ui.SpotlightAmbientColourFrame->setColour(prefs.spotlightColour(Prefs::AmbientComponent));
 	ui.SpotlightDiffuseColourFrame->setColour(prefs.spotlightColour(Prefs::DiffuseComponent));
 	ui.SpotlightSpecularColourFrame->setColour(prefs.spotlightColour(Prefs::SpecularComponent));
-	double *pos = prefs.spotlightPosition();
+	double* pos = prefs.spotlightPosition();
 	ui.SpotlightPositionXSpin->setValue(pos[0]);
 	ui.SpotlightPositionYSpin->setValue(pos[1]);
 	ui.SpotlightPositionZSpin->setValue(pos[2]);
@@ -100,13 +105,6 @@ void AtenPrefs::setControls()
 	ui.PrimitiveQualitySpin->setValue(prefs.primitiveQuality());
 	ui.ImagePrimitiveQualitySpin->setValue(prefs.imagePrimitiveQuality());
 	ui.ImagePrimitivesGroup->setChecked(!prefs.reusePrimitiveQuality());
-	ui.LevelOfDetailNLevelsSpin->setValue(prefs.levelsOfDetail());
-	ui.LevelOfDetailStartZSpin->setValue(prefs.levelOfDetailStartZ());
-	ui.LevelOfDetailWidthSpin->setValue(prefs.levelOfDetailWidth());
-	ui.TransparencyGroup->setChecked(prefs.transparencyCorrect());
-	ui.TransparencyNSlicesSpin->setValue(prefs.transparencyNBins());
-	ui.TransparencyStartZSpin->setValue(prefs.transparencyBinStartZ());
-	ui.TransparencyBinWidthSpin->setValue(prefs.transparencyBinWidth());
 	ui.LineAliasingCheck->setChecked(prefs.lineAliasing());
 	ui.PolygonAliasingCheck->setChecked(prefs.polygonAliasing());
 	ui.MultiSamplingCheck->setChecked(prefs.multiSampling());
@@ -185,12 +183,15 @@ void AtenPrefs::setControls()
 	Elements().backupData();
 
 	refreshing_ = FALSE;
-	msg.exit("AtenPrefs::setControls");
+	Messenger::exit("AtenPrefs::setControls");
 }
 
 // Close window (accepted)
 void AtenPrefs::on_PrefsOkButton_clicked(bool checked)
 {
+	// Recalculate forcefield energy terms if the glboal energy unit was changed
+	if (prefsBackup_.energyUnit() != prefs.energyUnit()) for (Forcefield* ff = parent_.aten().forcefields(); ff != NULL; ff = ff->next) ff->convertParameters();
+
 	// Copy old preferences values back into main structure, update view and close window
 	parent_.updateControls();
 	parent_.aten().globalLogChange(Log::Style);
@@ -217,9 +218,9 @@ void AtenPrefs::on_PrefsSaveAsDefaultButton_clicked(bool checked)
 	Dnchar filename;
 	filename.sprintf("%s%c%s%cprefs.dat", parent_.aten().homeDir(), PATHSEP, parent_.aten().atenDir(), PATHSEP);
 
-	bool result = prefs.save(filename);
+	bool result = parent_.aten().savePrefs(filename);
 	if (!result) QMessageBox::warning(NULL, "Aten", "User preferences file could not be saved.\n", QMessageBox::Ok, QMessageBox::Ok);
-	else msg.print("Prefs file saved to '%s'\n", filename.get());
+	else Messenger::print("Prefs file saved to '%s'\n", filename.get());
 }
 
 /*
@@ -242,7 +243,7 @@ void AtenPrefs::on_ElementColourButton_clicked(bool checked)
 	int el = ui.ElementList->currentRow();
 	if (el == -1) return;
 	// Get element's current ambient colour and convert into a QColor
-	double *col = Elements().colour(el);
+	double* col = Elements().colour(el);
 	QColor oldcol, newcol;
 	oldcol.setRgbF( col[0], col[1], col[2], col[3] );
 	// Request a colour dialog
@@ -285,7 +286,7 @@ void AtenPrefs::updateAfterViewPrefs()
 // View Page - Style Tab
 */
 
-void AtenPrefs::setRadiusChanged(Atom::DrawStyle ds, double value, bool foratom)
+void AtenPrefs::setRadiusChanged(Prefs::DrawStyle ds, double value, bool foratom)
 {
 	if (refreshing_) return;
 	if (foratom) prefs.setAtomStyleRadius(ds, value);
@@ -295,42 +296,42 @@ void AtenPrefs::setRadiusChanged(Atom::DrawStyle ds, double value, bool foratom)
 
 void AtenPrefs::on_StickRadiusSpin_valueChanged(double value)
 {
-	setRadiusChanged(Atom::StickStyle, value, TRUE);
+	setRadiusChanged(Prefs::StickStyle, value, TRUE);
 }
 
 void AtenPrefs::on_TubeRadiusSpin_valueChanged(double value)
 {
-	setRadiusChanged(Atom::TubeStyle, value, TRUE);
+	setRadiusChanged(Prefs::TubeStyle, value, TRUE);
 }
 
 void AtenPrefs::on_SphereRadiusSpin_valueChanged(double value)
 {
-	setRadiusChanged(Atom::SphereStyle, value, TRUE);
+	setRadiusChanged(Prefs::SphereStyle, value, TRUE);
 }
 
 void AtenPrefs::on_ScaledRadiusSpin_valueChanged(double value)
 {
-	setRadiusChanged(Atom::ScaledStyle, value, TRUE);
+	setRadiusChanged(Prefs::ScaledStyle, value, TRUE);
 }
 
 void AtenPrefs::on_StickBondRadiusSpin_valueChanged(double value)
 {
-	setRadiusChanged(Atom::StickStyle, value, FALSE);
+	setRadiusChanged(Prefs::StickStyle, value, FALSE);
 }
 
 void AtenPrefs::on_TubeBondRadiusSpin_valueChanged(double value)
 {
-	setRadiusChanged(Atom::TubeStyle, value, FALSE);
+	setRadiusChanged(Prefs::TubeStyle, value, FALSE);
 }
 
 void AtenPrefs::on_SphereBondRadiusSpin_valueChanged(double value)
 {
-	setRadiusChanged(Atom::SphereStyle, value, FALSE);
+	setRadiusChanged(Prefs::SphereStyle, value, FALSE);
 }
 
 void AtenPrefs::on_ScaledBondRadiusSpin_valueChanged(double value)
 {
-	setRadiusChanged(Atom::ScaledStyle, value, FALSE);
+	setRadiusChanged(Prefs::ScaledStyle, value, FALSE);
 }
 
 void AtenPrefs::on_SelectionScaleSpin_valueChanged(double value)
@@ -409,7 +410,7 @@ void AtenPrefs::on_ColoursTable_cellDoubleClicked(int row, int column)
 	if (column != 1) return;
 	if (row == -1) return;
 	Prefs::ObjectColour pencol = (Prefs::ObjectColour) row;
-	double *col = prefs.colour(pencol);
+	double* col = prefs.colour(pencol);
 	QColor oldcol, newcol;
 	oldcol.setRgbF( col[0], col[1], col[2], col[3] );
 	// Request a colour dialog
@@ -527,7 +528,7 @@ void AtenPrefs::on_SpotlightPositionZSpin_valueChanged(double value)
 void AtenPrefs::spotlightColourChanged(Prefs::ColourComponent sc)
 {
 	// Get current component colour and convert it to a QColor
-	double *col = prefs.spotlightColour(sc);
+	double* col = prefs.spotlightColour(sc);
 	QColor oldcol, newcol;
 	oldcol.setRgbF( col[0], col[1], col[2], col[3] );
 	// Request a colour dialog
@@ -646,7 +647,7 @@ void AtenPrefs::updateScalePointsList()
 	ui.ScalePointsTable->setRowCount(prefs.colourScale[scale].nPoints());
 	QTableWidgetItem *item;
 	int count = 0;
-	for (ColourScalePoint *csp = prefs.colourScale[scale].firstPoint(); csp != NULL; csp = csp->next)
+	for (ColourScalePoint* csp = prefs.colourScale[scale].firstPoint(); csp != NULL; csp = csp->next)
 	{
 
 		item = new QTableWidgetItem(ftoa(csp->value()));
@@ -676,7 +677,7 @@ void AtenPrefs::on_ScalePointsTable_currentCellChanged(int row, int col, int pre
 	if (scale == -1) return;
 	if (row == -1) return;
 	// Set colour frame and value spin
-	ColourScalePoint *csp = prefs.colourScale[scale].point(row);
+	ColourScalePoint* csp = prefs.colourScale[scale].point(row);
 	ui.PointColourFrame->setColour(csp->colour());
 	ui.PointColourFrame->update();
 	ui.PointValueSpin->setValue(csp->value());
@@ -705,8 +706,8 @@ void AtenPrefs::on_PointColourButton_clicked(bool checked)
 	int id = ui.ScalePointsTable->currentRow();
 	if (id == -1) return;
 	// Get new colour
-	ColourScalePoint *csp = prefs.colourScale[scale].point(id);
-	double *col = csp->colour();
+	ColourScalePoint* csp = prefs.colourScale[scale].point(id);
+	double* col = csp->colour();
 	QColor oldcol, newcol;
 	oldcol.setRgbF( col[0], col[1], col[2], col[3] );
 	// Request a colour dialog
@@ -831,12 +832,12 @@ void AtenPrefs::on_ModelUpdateSpin_valueChanged(int value)
 void AtenPrefs::updateParameterTable()
 {
 	if (!isVisible()) return;
-	msg.enter("AtenPrefs::updateParameterTable");
+	Messenger::enter("AtenPrefs::updateParameterTable");
 	int row = ui.FunctionalFormList->currentRow();
 	if (row == -1)
 	{
 		ui.ParameterTable->setRowCount(0);
-		msg.exit("AtenPrefs::updateParameterTable");
+		Messenger::exit("AtenPrefs::updateParameterTable");
 		return;
 	}
 	int n;
@@ -858,7 +859,7 @@ void AtenPrefs::updateParameterTable()
 		ui.ParameterTable->setCellWidget(n, 1, combo);
 		QObject::connect(combo, SIGNAL(activated(int)), this, SLOT(ParameterRuleChanged(int)));
 	}
-	msg.exit("AtenPrefs::updateParameterTable");
+	Messenger::exit("AtenPrefs::updateParameterTable");
 }
 
 void AtenPrefs::on_CalculateIntraCheck_stateChanged(int state)
@@ -924,11 +925,11 @@ void AtenPrefs::on_FunctionalFormList_currentRowChanged(int row)
 void AtenPrefs::ParameterRuleChanged(int id)
 {
 	// Get current functional form highlighted
-	msg.enter("AtenPrefs::ParameterRuleChanged");
+	Messenger::enter("AtenPrefs::ParameterRuleChanged");
 	int row = ui.FunctionalFormList->currentRow();
 	if (row == -1)
 	{
-		msg.exit("AtenPrefs::ParameterRuleChanged");
+		Messenger::exit("AtenPrefs::ParameterRuleChanged");
 		return;
 	}
 	// Determine ID of sender
@@ -936,12 +937,12 @@ void AtenPrefs::ParameterRuleChanged(int id)
 	if (!combo)
 	{
 		printf("AtenPrefs::ParameterRuleChanged - Sender could not be cast to a TComboBox.\n");
-		msg.exit("AtenPrefs::ParameterRuleChanged");
+		Messenger::exit("AtenPrefs::ParameterRuleChanged");
 		return;
 	}
 	VdwFunctions::VdwFunctions[row].combinationRules[combo->data.asInteger()] = (Combine::CombinationRule) id;
 // 	printf("SET %i %i %i\n", row, combo->integer(), id);
-	msg.exit("AtenPrefs::ParameterRuleChanged");
+	Messenger::exit("AtenPrefs::ParameterRuleChanged");
 }
 
 void AtenPrefs::on_ParameterTable_itemChanged(QTableWidgetItem *w)

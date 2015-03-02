@@ -24,6 +24,9 @@
 
 #include "parser/variable.h"
 #include "parser/accessor.h"
+#include "base/namespace.h"
+
+ATEN_BEGIN_NAMESPACE
 
 // Double Variable
 class DoubleVariable : public Variable
@@ -38,9 +41,9 @@ class DoubleVariable : public Variable
 	*/
 	public:
 	// Return value of node
-	bool execute(ReturnValue &rv);
+	bool execute(ReturnValue& rv);
 	// Set from returnvalue node
-	bool set(ReturnValue &rv);
+	bool set(ReturnValue& rv);
 	// Set from double data
 	bool setFromDouble(double d);
 	// Reset node
@@ -53,7 +56,7 @@ class DoubleVariable : public Variable
 	// Real data
 	double doubleData_;
 	// Print node contents
-	void nodePrint(int offset, const char *prefix = "");
+	void nodePrint(int offset, const char* prefix = "");
 };
 
 // Double Array Variable
@@ -61,7 +64,7 @@ class DoubleArrayVariable : public ArrayVariable
 {
 	public:
 	// Constructor / Destructor
-	DoubleArrayVariable(TreeNode *sizeexpr, bool constant = FALSE);
+	DoubleArrayVariable(TreeNode* sizeexpr, bool constant = FALSE);
 	~DoubleArrayVariable();
 
 	/*
@@ -69,13 +72,13 @@ class DoubleArrayVariable : public ArrayVariable
 	*/
 	public:
 	// Return value of node
-	bool execute(ReturnValue &rv);
+	bool execute(ReturnValue& rv);
 	// Return value of node as array
-	bool executeAsArray(ReturnValue &rv, int arrayindex);
+	bool executeAsArray(ReturnValue& rv, int arrayIndex);
 	// Set from returnvalue node
-	bool set(ReturnValue &rv);
+	bool set(ReturnValue& rv);
 	// Set from returnvalue node as array
-	bool setAsArray(ReturnValue &rv, int arrayindex);
+	bool setAsArray(ReturnValue& rv, int arrayIndex);
 	// Reset variable
 	void reset();
 
@@ -84,13 +87,13 @@ class DoubleArrayVariable : public ArrayVariable
 	*/
 	private:
 	// Real data
-	double *doubleArrayData_;
+	double* doubleArrayData_;
 	// Print node contents
-	void nodePrint(int offset, const char *prefix);
+	void nodePrint(int offset, const char* prefix);
 
 	public:
 	// Return array pointer
-	double *arrayData();
+	double* arrayData();
 
 	/*
 	// Inherited Virtuals
@@ -99,5 +102,7 @@ class DoubleArrayVariable : public ArrayVariable
 	// Initialise node (take over from Variable::initialise())
 	bool initialise();
 };
+
+ATEN_END_NAMESPACE
 
 #endif

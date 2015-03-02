@@ -22,20 +22,22 @@
 #include <math.h>
 #include "base/pattern.h"
 #include "model/model.h"
-#include "classes/prefs.h"
+#include "base/prefs.h"
+
+ATEN_USING_NAMESPACE
 
 // Calculate the internal coulomb energy of the pattern.
 // Consider only the intrapattern interactions of individual molecules  within this pattern.
-void Pattern::coulombIntraPatternEnergy(Model* srcmodel, EnergyStore *estore, int lonemolecule)
+void Pattern::coulombIntraPatternEnergy(Model* srcmodel, EnergyStore* estore, int lonemolecule)
 {
-	msg.enter("Pattern::coulombIntraPatternEnergy");
+	Messenger::enter("Pattern::coulombIntraPatternEnergy");
 	static int i,j,aoff,m1,start1, finish1, con;;
 	static Vec3<double> vec_ij;
 	static double rij, energy_inter, energy_intra, energy, cutoff;
 	PatternAtom* pai, *paj;
 	cutoff = prefs.elecCutoff();
-	Atom* *modelatoms = srcmodel->atomArray();
-	UnitCell *cell = srcmodel->cell();
+	Atom** modelatoms = srcmodel->atomArray();
+	UnitCell* cell = srcmodel->cell();
 	energy_inter = 0.0;
 	energy_intra = 0.0;
 
@@ -72,20 +74,20 @@ void Pattern::coulombIntraPatternEnergy(Model* srcmodel, EnergyStore *estore, in
 	energy_inter *= prefs.elecConvert();
 	estore->add(EnergyStore::CoulombIntraEnergy,energy_intra,id_);
 	estore->add(EnergyStore::CoulombInterEnergy,energy_inter,id_,id_);
-	msg.exit("Pattern::coulombIntraPatternEnergy");
+	Messenger::exit("Pattern::coulombIntraPatternEnergy");
 }
 
 // Calculate the coulomb contribution to the energy from interactions between different molecules of this pattern and the one supplied
-void Pattern::coulombInterPatternEnergy(Model* srcmodel, Pattern* otherPattern, EnergyStore *estore, int molId)
+void Pattern::coulombInterPatternEnergy(Model* srcmodel, Pattern* otherPattern, EnergyStore* estore, int molId)
 {
-	msg.enter("Pattern::coulombInterPatternEnergy");
+	Messenger::enter("Pattern::coulombInterPatternEnergy");
 	static int i,j,aoff1,aoff2,m1,m2,finish1,start1,start2,finish2;
 	static Vec3<double> vec_ij;
 	static double rij, energy_inter, energy, cutoff;
 	PatternAtom* pai, *paj;
 	cutoff = prefs.elecCutoff();
-	Atom* *modelatoms = srcmodel->atomArray();
-	UnitCell *cell = srcmodel->cell();
+	Atom** modelatoms = srcmodel->atomArray();
+	UnitCell* cell = srcmodel->cell();
 	energy_inter = 0.0;
 
 	// Outer loop over molecules in *this* pattern
@@ -155,21 +157,21 @@ void Pattern::coulombInterPatternEnergy(Model* srcmodel, Pattern* otherPattern, 
 
 	energy_inter *= prefs.elecConvert();
 	estore->add(EnergyStore::CoulombInterEnergy,energy_inter,id_,otherPattern->id_);
-	msg.exit("Pattern::coulombInterPatternEnergy");
+	Messenger::exit("Pattern::coulombInterPatternEnergy");
 }
 
 // Calculate the internal coulomb forces in the pattern.
 // Consider only the intrapattern interactions of individual molecules within this pattern.
 void Pattern::coulombIntraPatternForces(Model* srcmodel)
 {
-	msg.enter("Pattern::coulombIntraPatternForces");
+	Messenger::enter("Pattern::coulombIntraPatternForces");
 	static int i, j, aoff, m1, con;
 	static Vec3<double> vec_ij, f_i, tempf;
 	static double rij, factor, cutoff;
 	PatternAtom* pai, *paj;
 	cutoff = prefs.elecCutoff();
-	Atom* *modelatoms = srcmodel->atomArray();
-	UnitCell *cell = srcmodel->cell();
+	Atom** modelatoms = srcmodel->atomArray();
+	UnitCell* cell = srcmodel->cell();
 	aoff = startAtom_;
 	for (m1=0; m1<nMolecules_; m1++)
 	{
@@ -232,20 +234,20 @@ void Pattern::coulombIntraPatternForces(Model* srcmodel)
 		}
 		aoff += nAtoms_;
 	}*/
-	msg.exit("Pattern::coulombIntraPatternForces");
+	Messenger::exit("Pattern::coulombIntraPatternForces");
 }
 
 // Calculate the coulomb forces from interactions between different molecules of this pattern and the one supplied
 void Pattern::coulombInterPatternForces(Model* srcmodel, Pattern* otherPattern)
 {
-	msg.enter("Pattern::coulombInterPatternForces");
+	Messenger::enter("Pattern::coulombInterPatternForces");
 	int i,j,aoff1,aoff2,m1,m2,finish1,start1,start2,finish2;
 	Vec3<double> vec_ij, f_i, tempf;
 	double rij, energy_inter, cutoff, factor;
 	PatternAtom* pai, *paj;
 	cutoff = prefs.elecCutoff();
-	Atom* *modelatoms = srcmodel->atomArray();
-	UnitCell *cell = srcmodel->cell();
+	Atom** modelatoms = srcmodel->atomArray();
+	UnitCell* cell = srcmodel->cell();
 	energy_inter = 0.0;
 
 	// Outer loop over molecules in *this* pattern
@@ -298,6 +300,6 @@ void Pattern::coulombInterPatternForces(Model* srcmodel, Pattern* otherPattern)
 		aoff1 += nAtoms_;
 	}
 
-	msg.exit("Pattern::coulombInterPatternForces");
+	Messenger::exit("Pattern::coulombInterPatternForces");
 }
 

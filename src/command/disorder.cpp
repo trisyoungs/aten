@@ -22,12 +22,13 @@
 #include "command/commands.h"
 #include "parser/commandnode.h"
 #include "main/aten.h"
-#include "model/model.h"
 #include "methods/mc.h"
 #include "base/sysfunc.h"
 
+ATEN_USING_NAMESPACE
+
 // Performs MC insertion ('disorder <scheme>')
-bool Command::function_Disorder(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_Disorder(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	
@@ -36,36 +37,36 @@ bool Command::function_Disorder(CommandNode *c, Bundle &obj, ReturnValue &rv)
 	parser.getArgsDelim(0, c->argc(0));
 	
 	// First argument should always be the scheme name
-	PartitioningScheme *scheme = aten.findPartitioningScheme(parser.argc(0));
+	PartitioningScheme* scheme = aten_.findPartitioningScheme(parser.argc(0));
 	if (scheme == NULL) return FALSE;
 	
 	// Loop over remaining arguments (widget/global variable assignments)
 	for (int n = 1; n < parser.nArgs(); ++n) if (!scheme->setVariable(beforeStr(parser.argc(n),"="), afterStr(parser.argc(n),"="))) return FALSE;
 	
-	msg.print("Performing disordered build for model '%s'\n", obj.m->name());
+	Messenger::print("Performing disordered build for model '%s'\n", obj.m->name());
 	rv.reset();
-	bool result = mc.disorder(obj.m, scheme, c->hasArg(1) ? c->argb(1) : TRUE);
+	bool result = mc.disorder(aten_.models(), obj.m, scheme, c->hasArg(1) ? c->argb(1) : TRUE);
 	return result;
 }
 
 // Print current component list ('listcomponents')
-bool Command::function_ListComponents(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_ListComponents(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	msg.print("Current component specification:\n");
+	Messenger::print("Current component specification:\n");
 	Vec3<double> v1, v2;
 	Dnchar text;
-	msg.print("Model           Policy     Partition  Population   Density\n");
-	for (Model* m = aten.models(); m != NULL; m = m->next)
+	Messenger::print("Model           Policy     Partition  Population   Density\n");
+	for (Model* m = aten_.models(); m != NULL; m = m->next)
 	{
 		if (m->cell()->type() != UnitCell::NoCell) continue;
-		msg.print("%-15s %-10s     %i        %5i    %8.4f\n", m->name(), Model::insertionPolicy(m->componentInsertionPolicy()), m->componentPartition()+1, m->componentPopulation(), m->componentDensity());
+		Messenger::print("%-15s %-10s     %i        %5i    %8.4f\n", m->name(), Model::insertionPolicy(m->componentInsertionPolicy()), m->componentPartition()+1, m->componentPopulation(), m->componentDensity());
 	}
 	rv.reset();
 	return TRUE;
 }
 
 // Setup current model as component for disorder builder
-bool Command::function_SetupComponent(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_SetupComponent(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	Model::InsertionPolicy policy = Model::insertionPolicy(c->argc(0), TRUE);

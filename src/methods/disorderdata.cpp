@@ -23,6 +23,8 @@
 #include "methods/partition.h"
 #include "methods/mc.h"
 
+ATEN_USING_NAMESPACE
+
 // Constructor
 DisorderData::DisorderData() : ListItem<DisorderData>()
 {
@@ -44,18 +46,18 @@ bool DisorderData::initialise(Model* sourceModel, PartitionData *partitionData)
 {
 	if (sourceModel == NULL)
 	{
-		msg.print("Error: DisorderData::initialise() - NULL source model pointer passed.\n");
+		Messenger::print("Error: DisorderData::initialise() - NULL source model pointer passed.\n");
 		return FALSE;
 	}
 	if (sourceModel->nAtoms() == 0)
 	{
-		msg.print("Error: DisorderData::initialise() - source model contains no atoms!\n");
+		Messenger::print("Error: DisorderData::initialise() - source model contains no atoms!\n");
 		return FALSE;
 	}
 	partitionData_ = partitionData;
 	if (partitionData_ == NULL)
 	{
-		msg.print("Error: DisorderData::initialise() - NULL partition data pointer passed.\n");
+		Messenger::print("Error: DisorderData::initialise() - NULL partition data pointer passed.\n");
 		return FALSE;
 	}
 	
@@ -90,7 +92,7 @@ double DisorderData::requestedDensity()
 }
 
 // Return name of sourcemodel
-const char *DisorderData::modelName()
+const char* DisorderData::modelName()
 {
 	return sourceModel_.name();
 }
@@ -102,7 +104,7 @@ Model &DisorderData::sourceModel()
 }
 
 // Return name of target partition
-const char *DisorderData::partitionName()
+const char* DisorderData::partitionName()
 {
 	return partitionData_->name();
 }
@@ -141,7 +143,7 @@ void DisorderData::prepareCandidate(const Matrix& volumeElement)
 	Vec3<double> pos(AtenMath::random(), AtenMath::random(), AtenMath::random());
 	pos.add(ijk[0], ijk[1], ijk[2]);
 	// Now, convert this position into real cell coordinates by multiplying by the volume element
-	pos = volumeElement * pos;
+	pos = volumeElement*  pos;
 	// Are we rotating the model as well?
 	if (sourceModel_.componentRotatable())
 	{
@@ -227,7 +229,7 @@ void DisorderData::deleteCandidate()
 }
 
 // Tweak molecule position / rotation, and place in sourceModel_
-void DisorderData::tweakCandidate(double maxDistance, double maxAngle, PartitioningScheme *scheme)
+void DisorderData::tweakCandidate(double maxDistance, double maxAngle, PartitioningScheme* scheme)
 {
 	// Are we rotating the model as well?
 	static Matrix rotation;
@@ -254,10 +256,10 @@ void DisorderData::tweakCandidate(double maxDistance, double maxAngle, Partition
 }
 
 // Determine whether candidate molecule overlaps with supplied model
-bool DisorderData::modelOverlaps(Model* other, UnitCell *globalCell)
+bool DisorderData::modelOverlaps(Model* other, UnitCell* globalCell)
 {
 	double rij, ri;
-	Atom* *ii = other->atomArray(), **jj = sourceModel_.atomArray();
+	Atom** ii = other->atomArray(), **jj = sourceModel_.atomArray();
 	int i, j;
 	// Perform double loop over candidate molecule atoms and supplied model atoms
 	for (i = 0; i < other->nAtoms(); ++i)
@@ -279,13 +281,13 @@ bool DisorderData::modelOverlaps(Model* other, UnitCell *globalCell)
 }
 
 // Determine whether candidate molecule overlaps rest of population
-bool DisorderData::selfOverlaps(UnitCell *globalCell)
+bool DisorderData::selfOverlaps(UnitCell* globalCell)
 {
 	return modelOverlaps(&targetModel_, globalCell);
 }
 
 // Determine whether candidate molecule overlaps with all other insertion models
-bool DisorderData::otherOverlaps(DisorderData *first, UnitCell *globalCell)
+bool DisorderData::otherOverlaps(DisorderData *first, UnitCell* globalCell)
 {
 	// Go through list of DisorderedData
 	for (DisorderData *dd = first; dd != NULL; dd = dd->next)

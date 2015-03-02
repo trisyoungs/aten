@@ -22,18 +22,19 @@
 #include "command/commands.h"
 #include "parser/commandnode.h"
 #include "methods/mc.h"
-#include "base/messenger.h"
+
+ATEN_USING_NAMESPACE
 
 // Prints the current MC params ('printmc')
-bool Command::function_PrintMC(CommandNode *c, Bundle &obj, ReturnValue &rv)
+bool Commands::function_PrintMC(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	msg.print("Current Monte Carlo Parameters are:\n");
-	msg.print("Move        Allowed  NTrials  MaxStep   EAccept :\n");
+	Messenger::print("Current Monte Carlo Parameters are:\n");
+	Messenger::print("Move        Allowed  NTrials  MaxStep   EAccept :\n");
 	MonteCarlo::MoveType mt;
 	for (int n=0; n<MonteCarlo::nMoveTypes; n++)
 	{
 		mt = (MonteCarlo::MoveType) n;
-		msg.print("%11s   %3s   %4i   %8.3f   %8.2e\n", MonteCarlo::moveTypeKeyword(mt), (mc.isMoveAllowed(mt) ? "Yes" : "No"), mc.nTrials(mt), mc.maxStep(mt), mc.acceptanceEnergy(mt));
+		Messenger::print("%11s   %3s   %4i   %8.3f   %8.2e\n", MonteCarlo::moveTypeKeyword(mt), (mc.isMoveAllowed(mt) ? "Yes" : "No"), mc.nTrials(mt), mc.maxStep(mt), mc.acceptanceEnergy(mt));
 	}
 	rv.reset();
 	return TRUE;

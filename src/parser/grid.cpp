@@ -22,17 +22,16 @@
 #include "parser/grid.h"
 #include "parser/stepnode.h"
 #include "model/model.h"
-#include "classes/grid.h"
-#include "math/constants.h"
-#include "base/elements.h"
-#include <stdio.h>
+#include "base/grid.h"
+
+ATEN_USING_NAMESPACE
 
 /*
 // Variable
 */
 
 // Constructor
-GridVariable::GridVariable(Grid *ptr, bool constant)
+GridVariable::GridVariable(Grid* ptr, bool constant)
 {
 	// Private variables
 	returnType_ = VTypes::GridData;
@@ -93,16 +92,16 @@ FunctionAccessor GridVariable::functionData[GridVariable::nFunctions] = {
 };
 
 // Search variable access list for provided accessor (call private static function)
-StepNode *GridVariable::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist)
+StepNode* GridVariable::findAccessor(const char* s, TreeNode* arrayIndex, TreeNode* argList)
 {
-	return GridVariable::accessorSearch(s, arrayindex, arglist);
+	return GridVariable::accessorSearch(s, arrayIndex, argList);
 }
 
 // Private static function to search accessors
-StepNode *GridVariable::accessorSearch(const char *s, TreeNode *arrayindex, TreeNode *arglist)
+StepNode* GridVariable::accessorSearch(const char* s, TreeNode* arrayIndex, TreeNode* argList)
 {
-	msg.enter("GridVariable::accessorSearch");
-	StepNode *result = NULL;
+	Messenger::enter("GridVariable::accessorSearch");
+	StepNode* result = NULL;
 	int i = 0;
 	i = Variable::searchAccessor(s, nAccessors, accessorData);
 	if (i == -1)
@@ -112,84 +111,84 @@ StepNode *GridVariable::accessorSearch(const char *s, TreeNode *arrayindex, Tree
 		i = Variable::searchAccessor(s, nFunctions, functionData);
 		if (i == -1)
 		{
-			msg.print("Error: Type 'Grid&' has no member or function named '%s'.\n", s);
+			Messenger::print("Error: Type 'Grid&' has no member or function named '%s'.\n", s);
 			printAccessors();
-			msg.exit("GridVariable::accessorSearch");
+			Messenger::exit("GridVariable::accessorSearch");
 			return NULL;
 		}
-		msg.print(Messenger::Parse, "FunctionAccessor match = %i (%s)\n", i, functionData[i].name);
-		if (arrayindex != NULL)
+		Messenger::print(Messenger::Parse, "FunctionAccessor match = %i (%s)\n", i, functionData[i].name);
+		if (arrayIndex != NULL)
 		{
-			msg.print("Error: Array index given to 'Grid&' function '%s'.\n", s);
-			msg.exit("GridVariable::accessorSearch");
+			Messenger::print("Error: Array index given to 'Grid&' function '%s'.\n", s);
+			Messenger::exit("GridVariable::accessorSearch");
 			return NULL;
 		}
 		// Add and check supplied arguments...
 		result = new StepNode(i, VTypes::GridData, functionData[i].returnType);
-		result->addJoinedArguments(arglist);
+		result->addJoinedArguments(argList);
 		if (!result->checkArguments(functionData[i].arguments, functionData[i].name))
 		{
-			msg.print("Error: Syntax for 'Grid&' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
+			Messenger::print("Error: Syntax for 'Grid&' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
 			delete result;
 			result = NULL;
 		}
 	}
 	else
 	{
-		msg.print(Messenger::Parse, "Accessor match = %i (%s)\n", i, accessorData[i].name);
+		Messenger::print(Messenger::Parse, "Accessor match = %i (%s)\n", i, accessorData[i].name);
 		// Were we given an array index when we didn't want one?
-		if ((accessorData[i].arraySize == 0) && (arrayindex != NULL))
+		if ((accessorData[i].arraySize == 0) && (arrayIndex != NULL))
 		{
-			msg.print("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
+			Messenger::print("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
 			result = NULL;
 		}
 		// Were we given an argument list when we didn't want one?
-		if (arglist != NULL)
+		if (argList != NULL)
 		{
-			msg.print("Error: Argument list given to 'Grid&' array member '%s'.\n", s);
-			msg.exit("GridVariable::accessorSearch");
+			Messenger::print("Error: Argument list given to 'Grid&' array member '%s'.\n", s);
+			Messenger::exit("GridVariable::accessorSearch");
 			return NULL;
 		}
-		result = new StepNode(i, VTypes::GridData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
+		result = new StepNode(i, VTypes::GridData, arrayIndex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
 	}
-	msg.exit("GridVariable::accessorSearch");
+	Messenger::exit("GridVariable::accessorSearch");
 	return result;
 }
 
 // Retrieve desired value
-bool GridVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, int arrayIndex)
+bool GridVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex, int arrayIndex)
 {
-	msg.enter("GridVariable::retrieveAccessor");
+	Messenger::enter("GridVariable::retrieveAccessor");
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nAccessors))
 	{
 		printf("Internal Error: Accessor id %i is out of range for Grid type.\n", i);
-		msg.exit("GridVariable::retrieveAccessor");
+		Messenger::exit("GridVariable::retrieveAccessor");
 		return FALSE;
 	}
 	Accessors acc = (Accessors) i;
 	// Check for correct lack/presence of array index given
 	if ((accessorData[i].arraySize == 0) && hasArrayIndex)
 	{
-		msg.print("Error: Unnecessary array index provided for member '%s'.\n", accessorData[i].name);
-		msg.exit("GridVariable::retrieveAccessor");
+		Messenger::print("Error: Unnecessary array index provided for member '%s'.\n", accessorData[i].name);
+		Messenger::exit("GridVariable::retrieveAccessor");
 		return FALSE;
 	}
 	else if ((accessorData[i].arraySize > 0) && (hasArrayIndex))
 	{
 		if ((arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize))
 		{
-			msg.print("Error: Array index out of bounds for member '%s' (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
-			msg.exit("GridVariable::retrieveAccessor");
+			Messenger::print("Error: Array index out of bounds for member '%s' (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
+			Messenger::exit("GridVariable::retrieveAccessor");
 			return FALSE;
 		}
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	Grid *ptr = (Grid*) rv.asPointer(VTypes::GridData, result);
+	Grid* ptr = (Grid*) rv.asPointer(VTypes::GridData, result);
 	if ((!result) || (ptr == NULL))
 	{
-		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::GridData));
+		Messenger::print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::GridData));
 		result = FALSE;
 	}
 	if (result) switch (acc)
@@ -301,19 +300,19 @@ bool GridVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, 
 			result = FALSE;
 			break;
 	}
-	msg.exit("GridVariable::retrieveAccessor");
+	Messenger::exit("GridVariable::retrieveAccessor");
 	return result;
 }
 
 // Set desired value
-bool GridVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newvalue, bool hasArrayIndex, int arrayIndex)
+bool GridVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newValue, bool hasArrayIndex, int arrayIndex)
 {
-	msg.enter("GridVariable::setAccessor");
+	Messenger::enter("GridVariable::setAccessor");
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nAccessors))
 	{
 		printf("Internal Error: Accessor id %i is out of range for Grid type.\n", i);
-		msg.exit("GridVariable::setAccessor");
+		Messenger::exit("GridVariable::setAccessor");
 		return FALSE;
 	}
 	Accessors acc = (Accessors) i;
@@ -325,20 +324,20 @@ bool GridVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 		{
 			if ((accessorData[i].arraySize > 0) && ( (arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize) ))
 			{
-				msg.print("Error: Array index provided for member '%s' is out of range (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
+				Messenger::print("Error: Array index provided for member '%s' is out of range (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
 				result = FALSE;
 			}
-			if (newvalue.arraySize() > 0)
+			if (newValue.arraySize() > 0)
 			{
-				msg.print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
+				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
 				result = FALSE;
 			}
 		}
 		else
 		{
-			if (newvalue.arraySize() > accessorData[i].arraySize)
+			if (newValue.arraySize() > accessorData[i].arraySize)
 			{
-				msg.print("Error: The array being assigned to member '%s' is larger than the size of the desination array (%i cf. %i).\n", accessorData[i].name, newvalue.arraySize(), accessorData[i].arraySize);
+				Messenger::print("Error: The array being assigned to member '%s' is larger than the size of the desination array (%i cf. %i).\n", accessorData[i].name, newValue.arraySize(), accessorData[i].arraySize);
 				result = FALSE;
 			}
 		}
@@ -346,148 +345,148 @@ bool GridVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newval
 	else
 	{
 		// This is not an array member, so cannot be assigned an array unless its a Vector
-		if (newvalue.arraySize() != -1)
+		if (newValue.arraySize() != -1)
 		{
 			if (accessorData[i].returnType != VTypes::VectorData)
 			{
-				msg.print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
+				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
 				result = FALSE;
 			}
-			else if ((newvalue.type() != VTypes::VectorData) && (newvalue.arraySize() != 3))
+			else if ((newValue.type() != VTypes::VectorData) && (newValue.arraySize() != 3))
 			{
-				msg.print("Error: Only an array of size 3 can be assigned to a vector (member '%s').\n", accessorData[i].name);
+				Messenger::print("Error: Only an array of size 3 can be assigned to a vector (member '%s').\n", accessorData[i].name);
 				result = FALSE;
 			}
 		}
 	}
 	if (!result)
 	{
-		msg.exit("GridVariable::setAccessor");
+		Messenger::exit("GridVariable::setAccessor");
 		return FALSE;
 	}
 	// Get current data from ReturnValue
-	Grid *ptr = (Grid*) sourcerv.asPointer(VTypes::GridData, result);
+	Grid* ptr = (Grid*) sourcerv.asPointer(VTypes::GridData, result);
 	int n;
 	if ((!result) || (ptr == NULL))
 	{
-		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::GridData));
+		Messenger::print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::GridData));
 		result = FALSE;
 	}
 	if (result) switch (acc)
 	{
 		case (GridVariable::AxisMajorSpacing):
-			if (newvalue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->setAxisMajorSpacing(n, newvalue.asVector(result)[n]);
-			else if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setAxisMajorSpacing(n, newvalue.asDouble(n, result));
-			else if (hasArrayIndex) ptr->setAxisMajorSpacing(arrayIndex-1, newvalue.asDouble(result));
-			else for (n=0; n<3; ++n) ptr->setAxisMajorSpacing(n, newvalue.asDouble(result));
+			if (newValue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->setAxisMajorSpacing(n, newValue.asVector(result)[n]);
+			else if (newValue.arraySize() != -1) for (n=0; n<newValue.arraySize(); ++n) ptr->setAxisMajorSpacing(n, newValue.asDouble(n, result));
+			else if (hasArrayIndex) ptr->setAxisMajorSpacing(arrayIndex-1, newValue.asDouble(result));
+			else for (n=0; n<3; ++n) ptr->setAxisMajorSpacing(n, newValue.asDouble(result));
 			break;
 		case (GridVariable::AxisMinorTicks):
-			if (newvalue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->setAxisMinorTicks(n, newvalue.asVector(result)[n]);
-			else if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setAxisMinorTicks(n, newvalue.asInteger(n, result));
-			else if (hasArrayIndex) ptr->setAxisMinorTicks(arrayIndex-1, newvalue.asInteger(result));
-			else for (n=0; n<3; ++n) ptr->setAxisMinorTicks(n, newvalue.asInteger(result));
+			if (newValue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->setAxisMinorTicks(n, newValue.asVector(result)[n]);
+			else if (newValue.arraySize() != -1) for (n=0; n<newValue.arraySize(); ++n) ptr->setAxisMinorTicks(n, newValue.asInteger(n, result));
+			else if (hasArrayIndex) ptr->setAxisMinorTicks(arrayIndex-1, newValue.asInteger(result));
+			else for (n=0; n<3; ++n) ptr->setAxisMinorTicks(n, newValue.asInteger(result));
 			break;
 		case (GridVariable::AxisPositionX):
 		case (GridVariable::AxisPositionY):
 		case (GridVariable::AxisPositionZ):
-			if (newvalue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->setAxisPosition(acc-AxisPositionX, n, newvalue.asVector(result)[n]);
-			else if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setAxisPosition(acc-AxisPositionX, n, newvalue.asDouble(n, result));
-			else if (hasArrayIndex) ptr->setAxisPosition(acc-AxisPositionX, arrayIndex-1, newvalue.asDouble(result));
-			else for (n=0; n<3; ++n) ptr->setAxisPosition(acc-AxisPositionX, n, newvalue.asDouble(result));
+			if (newValue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->setAxisPosition(acc-AxisPositionX, n, newValue.asVector(result)[n]);
+			else if (newValue.arraySize() != -1) for (n=0; n<newValue.arraySize(); ++n) ptr->setAxisPosition(acc-AxisPositionX, n, newValue.asDouble(n, result));
+			else if (hasArrayIndex) ptr->setAxisPosition(acc-AxisPositionX, arrayIndex-1, newValue.asDouble(result));
+			else for (n=0; n<3; ++n) ptr->setAxisPosition(acc-AxisPositionX, n, newValue.asDouble(result));
 			break;
 		case (GridVariable::AxisVisible):
-			if (newvalue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->setAxisVisible(n, newvalue.asVector(result)[n]);
-			else if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->setAxisVisible(n, newvalue.asInteger(n, result));
-			else if (hasArrayIndex) ptr->setAxisVisible(arrayIndex-1, newvalue.asBool());
-			else for (n=0; n<3; ++n) ptr->setAxisVisible(n, newvalue.asBool());
+			if (newValue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->setAxisVisible(n, newValue.asVector(result)[n]);
+			else if (newValue.arraySize() != -1) for (n=0; n<newValue.arraySize(); ++n) ptr->setAxisVisible(n, newValue.asInteger(n, result));
+			else if (hasArrayIndex) ptr->setAxisVisible(arrayIndex-1, newValue.asBool());
+			else for (n=0; n<3; ++n) ptr->setAxisVisible(n, newValue.asBool());
 			break;
 		case (GridVariable::Colour):
-			if (newvalue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->primaryColour()[n] = newvalue.asVector(result)[n];
-			else if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->primaryColour()[n] = newvalue.asDouble(n, result);
-			else if (hasArrayIndex) ptr->primaryColour()[arrayIndex-1] = newvalue.asDouble(result);
-			else for (n=0; n<4; ++n) ptr->primaryColour()[n] = newvalue.asDouble(result);
+			if (newValue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->primaryColour()[n] = newValue.asVector(result)[n];
+			else if (newValue.arraySize() != -1) for (n=0; n<newValue.arraySize(); ++n) ptr->primaryColour()[n] = newValue.asDouble(n, result);
+			else if (hasArrayIndex) ptr->primaryColour()[arrayIndex-1] = newValue.asDouble(result);
+			else for (n=0; n<4; ++n) ptr->primaryColour()[n] = newValue.asDouble(result);
 			break;
 		case (GridVariable::ColourScale):
-			ptr->setColourScale( newvalue.asInteger()-1 );
+			ptr->setColourScale( newValue.asInteger()-1 );
 			ptr->setUseColourScale( ptr->colourScale() != 0 );
 			break;
 		case (GridVariable::Cutoff):
-			ptr->setLowerPrimaryCutoff( newvalue.asDouble() );
+			ptr->setLowerPrimaryCutoff( newValue.asDouble() );
 			break;
 		case (GridVariable::DataMaximum):
-			ptr->setDataMaximum( newvalue.asVector() );
+			ptr->setDataMaximum( newValue.asVector() );
 			break;
 		case (GridVariable::DataMinimum):
-			ptr->setDataMinimum( newvalue.asVector() );
+			ptr->setDataMinimum( newValue.asVector() );
 			break;
 		case (GridVariable::Name):
-			ptr->setName( newvalue.asString() );
+			ptr->setName( newValue.asString() );
 			break;
 		case (GridVariable::Origin):
-			ptr->setOrigin( newvalue.asVector() );
+			ptr->setOrigin( newValue.asVector() );
 			break;
 		case (GridVariable::OutlineVolume):
-			ptr->setOutlineVolume( newvalue.asInteger() );
+			ptr->setOutlineVolume( newValue.asInteger() );
 			break;
 		case (GridVariable::Periodic):
-			ptr->setPeriodic( newvalue.asInteger() );
+			ptr->setPeriodic( newValue.asInteger() );
 			break;
 		case (GridVariable::SecondaryColour):
-			if (newvalue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->secondaryColour()[n] = newvalue.asVector(result)[n];
-			else if (newvalue.arraySize() != -1) for (n=0; n<newvalue.arraySize(); ++n) ptr->secondaryColour()[n] = newvalue.asDouble(n, result);
-			else if (hasArrayIndex) ptr->secondaryColour()[arrayIndex-1] = newvalue.asDouble(result);
-			else for (n=0; n<4; ++n) ptr->secondaryColour()[n] = newvalue.asDouble(result);
+			if (newValue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->secondaryColour()[n] = newValue.asVector(result)[n];
+			else if (newValue.arraySize() != -1) for (n=0; n<newValue.arraySize(); ++n) ptr->secondaryColour()[n] = newValue.asDouble(n, result);
+			else if (hasArrayIndex) ptr->secondaryColour()[arrayIndex-1] = newValue.asDouble(result);
+			else for (n=0; n<4; ++n) ptr->secondaryColour()[n] = newValue.asDouble(result);
 			break;
 		case (GridVariable::SecondaryCutoff):
-			ptr->setLowerSecondaryCutoff( newvalue.asDouble() );
+			ptr->setLowerSecondaryCutoff( newValue.asDouble() );
 			break;
 		case (GridVariable::SecondaryUpperCutoff):
-			ptr->setUpperSecondaryCutoff( newvalue.asDouble() );
+			ptr->setUpperSecondaryCutoff( newValue.asDouble() );
 			break;
 		case (GridVariable::ShiftX):
-			ptr->setShift(0, newvalue.asInteger());
+			ptr->setShift(0, newValue.asInteger());
 			break;
 		case (GridVariable::ShiftY):
-			ptr->setShift(1, newvalue.asInteger());
+			ptr->setShift(1, newValue.asInteger());
 			break;
 		case (GridVariable::ShiftZ):
-			ptr->setShift(2, newvalue.asInteger());
+			ptr->setShift(2, newValue.asInteger());
 			break;
 		case (GridVariable::UpperCutoff):
-			ptr->setUpperPrimaryCutoff( newvalue.asDouble() );
+			ptr->setUpperPrimaryCutoff( newValue.asDouble() );
 			break;
 		case (GridVariable::UseColourScale):
-			ptr->setUseColourScale( newvalue.asBool() );
+			ptr->setUseColourScale( newValue.asBool() );
 			break;
 		case (GridVariable::UseDataForZ):
-			ptr->setUseDataForZ( newvalue.asBool() );
+			ptr->setUseDataForZ( newValue.asBool() );
 			break;
 		case (GridVariable::Visible):
-			ptr->setVisible( newvalue.asBool() );
+			ptr->setVisible( newValue.asBool() );
 			break;
 		default:
 			printf("GridVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);
 			result = FALSE;
 			break;
 	}
-	msg.exit("GridVariable::setAccessor");
+	Messenger::exit("GridVariable::setAccessor");
 	return result;
 }
 
 // Perform desired function
-bool GridVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
+bool GridVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 {
-	msg.enter("GridVariable::performFunction");
+	Messenger::enter("GridVariable::performFunction");
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nFunctions))
 	{
 		printf("Internal Error: FunctionAccessor id %i is out of range for Grid type.\n", i);
-		msg.exit("GridVariable::performFunction");
+		Messenger::exit("GridVariable::performFunction");
 		return FALSE;
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	Grid *ptr = (Grid*) rv.asPointer(VTypes::GridData, result);
+	Grid* ptr = (Grid*) rv.asPointer(VTypes::GridData, result);
 	Grid::GridType gt;
 	int nx, ny, nz;
 	if (result) switch (i)
@@ -497,17 +496,17 @@ bool GridVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 			switch (ptr->type())
 			{
 				case (Grid::RegularXYData):
-					if (node->nArgs() == 3) msg.print("Warning: Third dimension given to 'data' function will be ignored...\n");
+					if (node->nArgs() == 3) Messenger::print("Warning: Third dimension given to 'data' function will be ignored...\n");
 					nx = node->argi(0) - 1;
 					ny = node->argi(1) - 1;
 					if ((nx < 0) || (nx >= ptr->nXYZ().x))
 					{
-						msg.print("Error: X value for grid (%i) is out of range (nx = %i)\n", nx+1, ptr->nXYZ().x);
+						Messenger::print("Error: X value for grid (%i) is out of range (nx = %i)\n", nx+1, ptr->nXYZ().x);
 						result = FALSE;
 					}
 					else if ((ny < 0) || (ny >= ptr->nXYZ().y))
 					{
-						msg.print("Error: Y value for grid (%i) is out of range (ny = %i)\n", ny+1, ptr->nXYZ().y);
+						Messenger::print("Error: Y value for grid (%i) is out of range (ny = %i)\n", ny+1, ptr->nXYZ().y);
 						result = FALSE;
 					}
 					else rv.set( ptr->data2d()[nx][ny] );
@@ -515,7 +514,7 @@ bool GridVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 				case (Grid::RegularXYZData):
 					if (node->nArgs() != 3)
 					{
-						msg.print("Error: Third dimension for 3D grid not provided in 'data' function.\n");
+						Messenger::print("Error: Third dimension for 3D grid not provided in 'data' function.\n");
 						result = FALSE;
 						break;
 					}
@@ -524,23 +523,23 @@ bool GridVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 					nz = node->argi(2) - 1;
 					if ((nx < 0) || (nx >= ptr->nXYZ().x))
 					{
-						msg.print("Error: X value for grid (%i) is out of range (nx = %i)\n", nx+1, ptr->nXYZ().x);
+						Messenger::print("Error: X value for grid (%i) is out of range (nx = %i)\n", nx+1, ptr->nXYZ().x);
 						result = FALSE;
 					}
 					else if ((ny < 0) || (ny >= ptr->nXYZ().y))
 					{
-						msg.print("Error: Y value for grid (%i) is out of range (ny = %i)\n", ny+1, ptr->nXYZ().y);
+						Messenger::print("Error: Y value for grid (%i) is out of range (ny = %i)\n", ny+1, ptr->nXYZ().y);
 						result = FALSE;
 					}
 					else if ((nz < 0) || (nz >= ptr->nXYZ().z))
 					{
-						msg.print("Error: Z value for grid (%i) is out of range (nz = %i)\n", nz+1, ptr->nXYZ().z);
+						Messenger::print("Error: Z value for grid (%i) is out of range (nz = %i)\n", nz+1, ptr->nXYZ().z);
 						result = FALSE;
 					}
 					else rv.set( ptr->data3d()[nx][ny][nz] );
 					break;
 				case (Grid::FreeXYZData):
-					msg.print("Free (irregular) grid data cannot be accessed with the 'data' function.\n");
+					Messenger::print("Free (irregular) grid data cannot be accessed with the 'data' function.\n");
 					result = FALSE;
 					break;
 			}
@@ -572,7 +571,7 @@ bool GridVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 			result = FALSE;
 			break;
 	}
-	msg.exit("GridVariable::performFunction");
+	Messenger::exit("GridVariable::performFunction");
 	return result;
 }
 
@@ -581,15 +580,15 @@ void GridVariable::printAccessors()
 {
 	if (GridVariable::nAccessors > 0)
 	{
-		msg.print("Valid accessors are:\n");
-		for (int n=0; n<GridVariable::nAccessors; ++n) msg.print("%s%s%s", n == 0 ? " " : ", ", accessorData[n].name, accessorData[n].arraySize > 0 ? "[]" : "");
-		msg.print("\n");
+		Messenger::print("Valid accessors are:\n");
+		for (int n=0; n<GridVariable::nAccessors; ++n) Messenger::print("%s%s%s", n == 0 ? " " : ", ", accessorData[n].name, accessorData[n].arraySize > 0 ? "[]" : "");
+		Messenger::print("\n");
 	}
 	if ((GridVariable::nFunctions > 0) && (strcmp(functionData[0].name,".dummy") != 0))
 	{
-		msg.print("Valid functions are:\n");
-		for (int n=0; n<GridVariable::nFunctions; ++n) msg.print("%s%s(%s)", n == 0 ? " " : ", ", functionData[n].name, functionData[n].argText);
-		msg.print("\n");
+		Messenger::print("Valid functions are:\n");
+		for (int n=0; n<GridVariable::nFunctions; ++n) Messenger::print("%s%s(%s)", n == 0 ? " " : ", ", functionData[n].name, functionData[n].argText);
+		Messenger::print("\n");
 	}
 }
 
@@ -598,7 +597,7 @@ void GridVariable::printAccessors()
 */
 
 // Constructor
-GridArrayVariable::GridArrayVariable(TreeNode *sizeexpr, bool constant)
+GridArrayVariable::GridArrayVariable(TreeNode* sizeexpr, bool constant)
 {
 	// Private variables
 	returnType_ = VTypes::GridData;
@@ -610,8 +609,8 @@ GridArrayVariable::GridArrayVariable(TreeNode *sizeexpr, bool constant)
 }
 
 // Search variable access list for provided accessor
-StepNode *GridArrayVariable::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist)
+StepNode* GridArrayVariable::findAccessor(const char* s, TreeNode* arrayIndex, TreeNode* argList)
 {
-	return GridVariable::accessorSearch(s, arrayindex, arglist);
+	return GridVariable::accessorSearch(s, arrayIndex, argList);
 }
 

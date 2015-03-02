@@ -19,6 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <QtGui/QCloseEvent>
 #include "main/aten.h"
 #include "gui/position.h"
 #include "gui/mainwindow.h"
@@ -58,7 +59,7 @@ void PositionWidget::on_FlipZButton_clicked(bool checked)
 
 void PositionWidget::flipSelection(int axis)
 {
-	CommandNode::run(Command::Mirror, "i", axis);
+	CommandNode::run(Commands::Mirror, "i", axis);
 	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
 }
 
@@ -79,7 +80,7 @@ void PositionWidget::on_CentreSelectionButton_clicked(bool checked)
 {
 	Vec3<double> centre(ui.CentreXSpin->value(), ui.CentreYSpin->value(), ui.CentreZSpin->value());
 	Vec3<int> lock(ui.CentreLockXCheck->isChecked(), ui.CentreLockYCheck->isChecked(), ui.CentreLockZCheck->isChecked());
-	CommandNode::run(Command::Centre, "dddiii", centre.x, centre.y, centre.z, lock.x, lock.y, lock.z);
+	CommandNode::run(Commands::Centre, "dddiii", centre.x, centre.y, centre.z, lock.x, lock.y, lock.z);
 	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
 }
 
@@ -143,7 +144,7 @@ void PositionWidget::translateSelection(int axis, int dir)
 		// Translate selection in the cell axes of the model
 		if (m->cell()->type() == UnitCell::NoCell)
 		{
-			msg.print("No unit cell defined for model.\n");
+			Messenger::print("No unit cell defined for model.\n");
 			return;
 		}
 		tvec = parent_.aten().currentModelOrFrame()->cell()->axes().columnAsVec3(axis);
@@ -162,7 +163,7 @@ void PositionWidget::translateSelection(int axis, int dir)
 
 void shiftPickAxisButton_callback(Reflist<Atom,int> *picked)
 {
-// 	gui.positionWidget->ui.ShiftPickVectorButton->setChecked(FALSE); ATEN2
+// 	gui.positionWidget->ui.ShiftPickVectorButton->setChecked(FALSE); ATEN2 TODO
 // 	// If there are not two atoms in the list then the mode must have been canceled
 // 	if (picked->nItems() != 2) return;
 // 	Vec3<double> v = picked->last()->item->r() - picked->first()->item->r();
@@ -175,7 +176,7 @@ void shiftPickAxisButton_callback(Reflist<Atom,int> *picked)
 void PositionWidget::on_ShiftPickVectorButton_clicked(bool on)
 {
 	// Enter manual picking mode
-	parent_.setSelectedMode(UserAction::ShiftPickVectorAction,2, &shiftPickAxisButton_callback);
+	parent_.ui.MainView->setSelectedMode(UserAction::ShiftPickVectorAction,2, &shiftPickAxisButton_callback);
 }
 
 void PositionWidget::on_ShiftNormaliseVectorButton_clicked(bool on)
@@ -287,7 +288,7 @@ void PositionWidget::on_RepositionDefineTargetButton_clicked(bool on)
 void PositionWidget::closeEvent(QCloseEvent *event)
 {
 	// Return to select mode if one of the modes in this window is still selected
-	if (UserAction::isPositionWidgetAction(parent_.selectedMode())) parent_.cancelCurrentMode();
+	if (UserAction::isPositionWidgetAction(parent_.ui.MainView->selectedMode())) parent_.ui.MainView->cancelCurrentMode();
 
 	event->accept();
 }

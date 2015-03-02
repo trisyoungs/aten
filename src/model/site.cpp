@@ -20,26 +20,27 @@
 */
 
 #include "model/model.h"
-#include "classes/site.h"
+#include "base/site.h"
 #include "base/pattern.h"
 
+ATEN_USING_NAMESPACE
+
 // Find site by name
-Site *Model::findSite(const char *s)
+Site* Model::findSite(const char* s)
 {
-	msg.enter("Model::findSite");
-	Site *result = NULL;
-	for (result = sites.first(); result != NULL; result = result->next)
-		if (strcmp(result->name(),s) == 0) break;
-	msg.exit("Model::findSite");
+	Messenger::enter("Model::findSite");
+	Site* result = NULL;
+	for (result = sites.first(); result != NULL; result = result->next) if (strcmp(result->name(),s) == 0) break;
+	Messenger::exit("Model::findSite");
 	return result;
 }
 
 // Calculate site centre
-Vec3<double> Model::siteCentre(Site *s, int mol)
+Vec3<double> Model::siteCentre(Site* s, int mol)
 {
-	msg.enter("Model::calculateCentre");
+	Messenger::enter("Model::calculateCentre");
 	int offset, n, ii;
-	Atom* *modelatoms = atomArray();
+	Atom** modelatoms = atomArray();
 	static Vec3<double> firstid, mim, centre;
 	Pattern* sitep = s->pattern();
 	offset = sitep->startAtom();
@@ -52,8 +53,7 @@ Vec3<double> Model::siteCentre(Site *s, int mol)
 		firstid = centre;
 		for (n=1; n<s->atoms.count(); ++n)
 		{
-			mim = cell_.mim(modelatoms[offset + s->atoms.at(n)]->r(), firstid);
-			centre += mim;
+			centre += cell_.mim(modelatoms[offset + n]->r(), firstid);
 		}
 		// Take average
 		centre /= s->atoms.count();
@@ -63,25 +63,24 @@ Vec3<double> Model::siteCentre(Site *s, int mol)
 		// Use all atoms for centre. Grab first as the MIM point
 		centre = modelatoms[offset]->r();
 		firstid = centre;
-		for (n=1; n<sitep->nAtoms(); n++)
+		for (n=1; n<sitep->nAtoms(); ++n)
 		{
-			mim = cell_.mim(modelatoms[offset + n]->r(), firstid);
-			centre += mim;
+			centre += cell_.mim(modelatoms[offset + n]->r(), firstid);
 		}
 		// Take average
 		centre /= sitep->nAtoms();
 	}
 	s->setCentre(centre);
-	msg.exit("Model::calculateCentre");
+	Messenger::exit("Model::calculateCentre");
 	return centre;
 }
 
 // Calculate site local axis system
-Matrix Model::siteAxes(Site *s, int mol)
+Matrix Model::siteAxes(Site* s, int mol)
 {
-	msg.enter("Model::calculateAxes");
+	Messenger::enter("Model::calculateAxes");
 	int offset, n;
-	Atom* *modelatoms = atomArray();
+	Atom** modelatoms = atomArray();
 	static Vec3<double> mim, v1, v2, centre;
 	Matrix axes;
 	ListItem<int> *li;
@@ -119,6 +118,6 @@ Matrix Model::siteAxes(Site *s, int mol)
 	axes.setColumn(2,v1 * v2,0.0);
 	//axes.print();
 	s->setAxes(axes);
-	msg.enter("Model::calculateAxes");
+	Messenger::enter("Model::calculateAxes");
 	return axes;
 }

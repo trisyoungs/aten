@@ -22,10 +22,17 @@
 #ifndef ATEN_COLOURSCALEPOINT_H
 #define ATEN_COLOURSCALEPOINT_H
 
-#include <QtOpenGL/QtOpenGL>
 #include "templates/list.h"
+#include "base/namespace.h"
+#ifdef _MAC
+#include <OpenGL/gl.h>
+#else
+#include <GL/gl.h>
+#endif
 
-// Forward declarations
+ATEN_BEGIN_NAMESPACE
+
+// Forward Declarations (Aten)
 class Grid;
 class ColourScale;
 class ColourScaleDelta;
@@ -59,9 +66,9 @@ class ColourScalePoint : public ListItem<ColourScalePoint>
 	// Set colour
 	void setColour(double r, double g, double b, double a = 1.0);
 	// Copy colour
-	void copyColour(GLfloat *target) const;
+	void copyColour(GLfloat* target) const;
 	// Return pointer to colour array
-	double *colour();
+	double* colour();
 };
 
 // Colour scale delta
@@ -85,13 +92,15 @@ class ColourScaleDelta : public ListItem<ColourScaleDelta>
 	// Check whether the delta 'contains' the supplied value
 	bool containsValue(double d) const;
 	// Create delta from two existing colours
-	void set(ColourScalePoint *point1, ColourScalePoint *point2);
+	void set(ColourScalePoint* point1, ColourScalePoint* point2);
 	// Get colour for value, assuming that v is within the range 0 -> value_
-	void colour(double v, GLfloat *target) const;
+	void colour(double v, GLfloat* target) const;
 	// Return the starting value of the range
 	double start() const;
 	// Return the range of the delta
 	double delta() const;
 };
+
+ATEN_END_NAMESPACE
 
 #endif

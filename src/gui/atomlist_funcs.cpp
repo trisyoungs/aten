@@ -19,17 +19,19 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "base/pattern.h"
+#include <QtGui/QMouseEvent>
+#include "gui/atomlist.h"
 #include "base/sysfunc.h"
 #include "gui/mainwindow.h"
-#include "gui/atomlist.h"
 #include "model/model.h"
 #include "main/aten.h"
-#include "parser/commandnode.h"
 #include "gui/tdoublespindelegate.uih"
-#include "classes/forcefieldatom.h"
+#include "base/forcefieldatom.h"
+#include "base/namespace.h"
 
-const char *AtomListItemHeader[AtomListWidget::nAtomItems] = { "ID", "El", "Type", "X", "Y", "Z", "Q" };
+// ATEN_USING_NAMESPACE
+
+const char* AtomListItemHeader[AtomListWidget::nAtomItems] = { "ID", "El", "Type", "X", "Y", "Z", "Q" };
 bool AtomListItemDelegateType[AtomListWidget::nAtomItems] = { 0, 0, 0, 1, 1, 1, 1 };
 
 /*
@@ -115,7 +117,7 @@ void AtomListWidget::recalculateRowSize()
 	}
 	
 	// Extend atom reference list to new size (if necessary)
-	Refitem<Atom,int> *ri;
+	Refitem<Atom,int>* ri;
 	for (int n=atomItems_.nItems(); n<maxTableRows_; ++n)
 	{
 		ri = atomItems_.add(NULL);
@@ -139,7 +141,7 @@ void AtomListWidget::updateRow(int row)
 	// Go through visible data items, setting relevant column
 	QTableWidgetItem *item;
 	static Vec3<double> r;
-	Refitem<Atom,int> *ri = atomItems_[row];
+	Refitem<Atom,int>* ri = atomItems_[row];
 	if (ri == NULL)
 	{
 		printf("Internal Error - Couldn't get atom reference in AtomListWidget::updateRow()\n");
@@ -216,7 +218,7 @@ void AtomListWidget::updateSelection()
 	// Clear selection in table
 	ui.AtomTable->clearSelection();
 
-	Refitem<Atom,int> *refAtom = atomItems_.first();
+	Refitem<Atom,int>* refAtom = atomItems_.first();
 	Atom* i;
 	for (int row = 0; row < ui.AtomTable->rowCount(); ++row)
 	{
@@ -241,7 +243,7 @@ void AtomListWidget::updateSelection()
 Atom* AtomListWidget::atomInRow(int row)
 {
 	if ((row < 0) || (row > maxTableRows_)) return NULL;
-	Refitem<Atom,int> *ri = atomItems_[row];
+	Refitem<Atom,int>* ri = atomItems_[row];
 	if (ri == NULL) return NULL;
 	return ri->item;
 }
@@ -273,7 +275,7 @@ void AtomListWidget::refresh()
 	if ((!updateAtoms) && (!updateSel))
 	{
 		refreshing_ = FALSE;
-		msg.exit("AtomListWidget::refresh");
+		Messenger::exit("AtomListWidget::refresh");
 		return;
 	}
 
@@ -291,7 +293,7 @@ void AtomListWidget::refresh()
 	currentRootId_ = ui.AtomTableScrollBar->value();
 // 	printf("Scrollbar value is now %i\n", atomId);
 	
-	Refitem<Atom,int> *refAtom = atomItems_.first();
+	Refitem<Atom,int>* refAtom = atomItems_.first();
 	Atom* i;
 	for (int row = 0; row < ui.AtomTable->rowCount(); ++row)
 	{
@@ -327,7 +329,7 @@ void AtomListWidget::refresh()
 	for (int column = 0; column<displayItems_.count(); ++column) ui.AtomTable->resizeColumnToContents(column);
 
 	refreshing_ = FALSE;
-	msg.exit("AtomListWidget::refresh");
+	Messenger::exit("AtomListWidget::refresh");
 }
 
 void AtomListWidget::on_AtomTableScrollBar_valueChanged(int value)
@@ -415,7 +417,7 @@ void AtomListWidget::on_ViewChargeCheck_clicked(bool checked)
 
 void AtomListWidget::on_ShiftUpButton_clicked(bool checked)
 {
-	CommandNode::run(Command::ShiftUp, "i", 1);
+	CommandNode::run(Commands::ShiftUp, "i", 1);
 	updateSelection();
 	refresh();
 	parent_.updateWidgets(AtenWindow::CanvasTarget);
@@ -423,7 +425,7 @@ void AtomListWidget::on_ShiftUpButton_clicked(bool checked)
 
 void AtomListWidget::on_ShiftDownButton_clicked(bool checked)
 {
-	CommandNode::run(Command::ShiftDown, "i", 1);
+	CommandNode::run(Commands::ShiftDown, "i", 1);
 	updateSelection();
 	refresh();
 	parent_.updateWidgets(AtenWindow::CanvasTarget);
@@ -431,7 +433,7 @@ void AtomListWidget::on_ShiftDownButton_clicked(bool checked)
 
 void AtomListWidget::on_MoveToStartButton_clicked(bool checked)
 {
-	CommandNode::run(Command::MoveToStart, "");
+	CommandNode::run(Commands::MoveToStart, "");
 	updateSelection();
 	refresh();
 	parent_.updateWidgets(AtenWindow::CanvasTarget);
@@ -439,7 +441,7 @@ void AtomListWidget::on_MoveToStartButton_clicked(bool checked)
 
 void AtomListWidget::on_MoveToEndButton_clicked(bool checked)
 {
-	CommandNode::run(Command::MoveToEnd, "");
+	CommandNode::run(Commands::MoveToEnd, "");
 	updateSelection();
 	refresh();
 	parent_.updateWidgets(AtenWindow::CanvasTarget);

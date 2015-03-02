@@ -25,6 +25,8 @@
 #include "base/sysfunc.h"
 #include <stdio.h>
 
+ATEN_USING_NAMESPACE
+
 // Constructor
 TProcess::TProcess(QObject *parent) : QProcess(parent)
 {
@@ -39,7 +41,7 @@ void TProcess::processFinished(int exitCode, QProcess::ExitStatus exitStatus)
 }
 
 // Execute specified command
-bool TProcess::execute(const char *command, const char *args, const char *outputfile)
+bool TProcess::execute(const char* command, const char* args, const char* outputfile)
 {
 	// Check on state of any existing process
 	if (state() != QProcess::NotRunning)
@@ -120,11 +122,11 @@ void TProcess::printLineToMessages()
 	if (stdOutput_.isEmpty())
 	{
 		QString line = stream_.readLine() + "\n";
-		msg.print(qPrintable(line));
+		Messenger::print(qPrintable(line));
 	}
 	else
 	{
-		msg.print(stdOutput_.data());
+		Messenger::print(stdOutput_.data());
 		stdOutput_.clear();
 	}
 }

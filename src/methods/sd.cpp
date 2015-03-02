@@ -22,11 +22,16 @@
 #include "methods/sd.h"
 #include "model/model.h"
 #include "ff/energystore.h"
-#include "gui/gui.h"
 #include "base/progress.h"
+
+ATEN_BEGIN_NAMESPACE
 
 // Static Singleton
 MethodSd sd;
+
+ATEN_END_NAMESPACE
+
+ATEN_USING_NAMESPACE
 
 // Constructor
 MethodSd::MethodSd()
@@ -50,7 +55,7 @@ int MethodSd::nCycles() const
 // Minimise Energy w.r.t. coordinates by Steepest Descent
 void MethodSd::minimise(Model* srcmodel, double econ, double fcon, bool simple)
 {
-	msg.enter("MethodSd::minimise");
+	Messenger::enter("MethodSd::minimise");
 	int cycle, nattempts;
 	double oldEnergy, currentEnergy, deltaEnergy, lastPrintedEnergy, oldForce, newForce, deltaForce, stepsize;
 	bool lineDone, converged, success;
@@ -62,7 +67,7 @@ void MethodSd::minimise(Model* srcmodel, double econ, double fcon, bool simple)
 	// First, create expression for the current model and assign charges
 	if ((!srcmodel->createExpression()) || (srcmodel->nAtoms() == 0))
 	{
-	        msg.exit("MethodSd::minimise");
+	        Messenger::exit("MethodSd::minimise");
 	        return;
 	}
 	
@@ -70,7 +75,7 @@ void MethodSd::minimise(Model* srcmodel, double econ, double fcon, bool simple)
 	currentEnergy = srcmodel->totalEnergy(srcmodel, success);
 	if (!success)
 	{
-	        msg.exit("MethodSd::minimise");
+	        Messenger::exit("MethodSd::minimise");
 	        return;
 	}
 	lastPrintedEnergy = currentEnergy;
@@ -86,9 +91,9 @@ void MethodSd::minimise(Model* srcmodel, double econ, double fcon, bool simple)
 	srcmodel->calculateForces(srcmodel);
 	newForce = srcmodel->rmsForce();
 
-	msg.print("Step      Energy       DeltaE       RMS Force      E(vdW)        E(elec)       E(Bond)      E(Angle)     E(Torsion)\n");
-	msg.print("Init  %12.5e       ---      %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e %s\n", currentEnergy, newForce, srcmodel->energy.vdw(), srcmodel->energy.electrostatic(), srcmodel->energy.bond(), srcmodel->energy.angle(), srcmodel->energy.torsion(), gui.exists() ? "" : "--:--:--");
-	int pid = progress.initialise("Minimising (SD)", nCycles_, !gui.exists());
+	Messenger::print("Step      Energy       DeltaE       RMS Force      E(vdW)        E(elec)       E(Bond)      E(Angle)     E(Torsion)\n");
+	Messenger::print("Init  %12.5e       ---      %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e %s\n", currentEnergy, newForce, srcmodel->energy.vdw(), srcmodel->energy.electrostatic(), srcmodel->energy.bond(), srcmodel->energy.angle(), srcmodel->energy.torsion(), "--:--:--");
+	int pid = progress.initialise("Minimising (SD)", nCycles_);
 
 	stepsize = 1.0;
 	for (cycle=0; cycle<nCycles_; cycle++)
@@ -138,19 +143,19 @@ void MethodSd::minimise(Model* srcmodel, double econ, double fcon, bool simple)
 		// Print out the step data
 		if (prefs.shouldUpdateEnergy(cycle+1))
 		{
-			msg.print("%-5i %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e %s\n",cycle+1, currentEnergy, currentEnergy-lastPrintedEnergy, newForce, srcmodel->energy.vdw(), srcmodel->energy.electrostatic(), srcmodel->energy.bond(), srcmodel->energy.angle(), srcmodel->energy.torsion(), progress.eta());
+			Messenger::print("%-5i %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e %s\n",cycle+1, currentEnergy, currentEnergy-lastPrintedEnergy, newForce, srcmodel->energy.vdw(), srcmodel->energy.electrostatic(), srcmodel->energy.bond(), srcmodel->energy.angle(), srcmodel->energy.torsion(), progress.eta());
 			lastPrintedEnergy = currentEnergy;
 		}
 
-		if (prefs.shouldUpdateModel(cycle+1)) parent_.updateWidgets(AtenWindow::CanvasTarget);
+// 		if (prefs.shouldUpdateModel(cycle+1)) parent_.updateWidgets(AtenWindow::CanvasTarget); ATEN2 TODO
 
 		if (lineDone || converged) break;
 	}
 	progress.terminate(pid);
 
-	if (converged) msg.print("Steepest descent converged in %i steps.\n",cycle+1);
-	else msg.print("Steepest descent did not converge within %i steps.\n",nCycles_);
-	msg.print("Final energy:\n");
+	if (converged) Messenger::print("Steepest descent converged in %i steps.\n",cycle+1);
+	else Messenger::print("Steepest descent did not converge within %i steps.\n",nCycles_);
+	Messenger::print("Final energy:\n");
 	currentEnergy = srcmodel->totalEnergy(srcmodel, success);
 	srcmodel->energy.print();
 	
@@ -159,6 +164,6 @@ void MethodSd::minimise(Model* srcmodel, double econ, double fcon, bool simple)
 	srcmodel->updateMeasurements();
 	srcmodel->changeLog.add(Log::Coordinates);
 	
-	msg.exit("MethodSd::minimise");
+	Messenger::exit("MethodSd::minimise");
 }
 

@@ -26,7 +26,7 @@
 */
 
 // Constructor
-DelaunayEdge::DelaunayEdge(GridPoint *p1, GridPoint *p2) : ListItem<DelaunayEdge>()
+DelaunayEdge::DelaunayEdge(GridPoint* p1, GridPoint* p2) : ListItem<DelaunayEdge>()
 {
 	// Private variables
 	refCount_ = 0;
@@ -35,7 +35,7 @@ DelaunayEdge::DelaunayEdge(GridPoint *p1, GridPoint *p2) : ListItem<DelaunayEdge
 }
 
 // Return whether edge contains the supplied points (in either order)
-bool DelaunayEdge::connectsVertices(GridPoint *p1, GridPoint *p2)
+bool DelaunayEdge::connectsVertices(GridPoint* p1, GridPoint* p2)
 {
 	if ((p1 == vertexA_) && (p2 == vertexB_)) return TRUE;
 	if ((p2 == vertexA_) && (p1 == vertexB_)) return TRUE;
@@ -43,7 +43,7 @@ bool DelaunayEdge::connectsVertices(GridPoint *p1, GridPoint *p2)
 }
 
 // Return whether the edge uses the specified point
-bool DelaunayEdge::usesPoint(GridPoint *gp)
+bool DelaunayEdge::usesPoint(GridPoint* gp)
 {
 	if ((gp == vertexA_) || (gp == vertexB_)) return TRUE;
 	return FALSE;
@@ -63,7 +63,7 @@ bool DelaunayEdge::removeReference()
 }
 
 // Return specified vertex
-GridPoint *DelaunayEdge::vertex(int n)
+GridPoint* DelaunayEdge::vertex(int n)
 {
 	if (n == 0) return vertexA_;
 	else if (n == 1) return vertexB_;
@@ -140,7 +140,7 @@ bool DelaunayTriangle::containsPoint(Vec3<double> r)
 }
 
 // Return whether triangle uses specified point
-bool DelaunayTriangle::usesPoint(GridPoint *gp)
+bool DelaunayTriangle::usesPoint(GridPoint* gp)
 {
 	for (int n=0; n<3; ++n) if (edges_[n]->usesPoint(gp)) return TRUE;
 	return FALSE;
@@ -155,7 +155,7 @@ DelaunayEdge *DelaunayTriangle::edge(int n)
 }
 
 // Return specified vertex
-GridPoint *DelaunayTriangle::vertex(int n)
+GridPoint* DelaunayTriangle::vertex(int n)
 {
 	if (n < 2) return edges_[0]->vertex(n);
 	else
@@ -260,7 +260,7 @@ bool DelaunayTetrahedron::containsPoint(Vec3<double> r)
 }
 
 // Return whether tetrahedron uses specified point
-bool DelaunayTetrahedron::usesPoint(GridPoint *gp)
+bool DelaunayTetrahedron::usesPoint(GridPoint* gp)
 {
 	for (int n=0; n<4; ++n) if (triangles_[n]->usesPoint(gp)) return TRUE;
 	return FALSE;
@@ -283,7 +283,7 @@ DelaunayTriangle *DelaunayTetrahedron::triangle(int n)
 }
 
 // Return specified vertex
-GridPoint *DelaunayTetrahedron::vertex(int n)
+GridPoint* DelaunayTetrahedron::vertex(int n)
 {
 	if (n < 3) return triangles_[0]->vertex(n);
 	else for (int m=0; m<3; ++m)
@@ -297,7 +297,7 @@ GridPoint *DelaunayTetrahedron::vertex(int n)
 }
 
 // Return vertex index (0-3) of specified GridPoint
-int DelaunayTetrahedron::vertexIndex(GridPoint *gp)
+int DelaunayTetrahedron::vertexIndex(GridPoint* gp)
 {
 	for (int n=0; n<4; ++n) if (vertex(n) == gp) return n;
 	return -1;
@@ -314,14 +314,14 @@ void DelaunayTetrahedron::print()
 */
 
 // Constructor
-DelaunaySurface::DelaunaySurface(Grid *g)
+DelaunaySurface::DelaunaySurface(Grid* g)
 {
 	create(g);
 }
 
-DelaunayEdge *DelaunaySurface::createEdge(GridPoint *vertexA_, GridPoint *vertexB_)
+DelaunayEdge *DelaunaySurface::createEdge(GridPoint* vertexA_, GridPoint* vertexB_)
 {
-	msg.enter("DelaunaySurface::createEdge");
+	Messenger::enter("DelaunaySurface::createEdge");
 	// Search for existing edge between these points
 	DelaunayEdge *edge;
 	for (edge = edges_.last(); edge != NULL; edge = edge->prev) if (edge->connectsVertices(vertexA_,vertexB_)) break;
@@ -330,21 +330,21 @@ DelaunayEdge *DelaunaySurface::createEdge(GridPoint *vertexA_, GridPoint *vertex
 		edge = new DelaunayEdge(vertexA_,vertexB_);
 		edges_.own(edge);
 	}
-	msg.exit("DelaunaySurface::createEdge");
+	Messenger::exit("DelaunaySurface::createEdge");
 	return edge;
 }
 
 // Delete specified edge, and all other objects that contain it
 void DelaunaySurface::removeEdge(DelaunayEdge *edge)
 {
-	msg.enter("DelaunaySurface::removeEdge");
+	Messenger::enter("DelaunaySurface::removeEdge");
 	// If edge has no references, then just remove it, otherwise decrease reference count by one
 	if (edge->removeReference()) edges_.remove(edge);
-	msg.exit("DelaunaySurface::removeEdge");
+	Messenger::exit("DelaunaySurface::removeEdge");
 }
 
 // Remove all edges, triangles, and tetrahedra using specified point
-void DelaunaySurface::removePoint(GridPoint *gp)
+void DelaunaySurface::removePoint(GridPoint* gp)
 {
 	DelaunayTetrahedron *tet = tetrahedra_.first(), *nexttet;
 	while (tet != NULL)
@@ -358,7 +358,7 @@ void DelaunaySurface::removePoint(GridPoint *gp)
 // Create a triangle and add it to the list
 DelaunayTriangle *DelaunaySurface::createTriangle(DelaunayEdge *v1, DelaunayEdge *v2, DelaunayEdge *v3)
 {
-	msg.enter("DelaunaySurface::createTriangle");
+	Messenger::enter("DelaunaySurface::createTriangle");
 	// Search for existing triangle comprising the three supplied edges
 	DelaunayTriangle *tri;
 	for (tri = triangles_.last(); tri != NULL; tri = tri->prev) if (tri->hasEdges(v1, v2, v3)) break;
@@ -367,14 +367,14 @@ DelaunayTriangle *DelaunaySurface::createTriangle(DelaunayEdge *v1, DelaunayEdge
 		tri = new DelaunayTriangle(v1, v2, v3);
 		triangles_.own(tri);
 	}
-	msg.exit("DelaunaySurface::createTriangle");
+	Messenger::exit("DelaunaySurface::createTriangle");
 	return tri;
 }
 
 // Remove specified triangle, and all other objects that contain it
 void DelaunaySurface::removeTriangle(DelaunayTriangle *tri)
 {
-	msg.enter("DelaunaySurface::removeTriangle");
+	Messenger::enter("DelaunaySurface::removeTriangle");
 	// If there are no current references to this triangle, just delete it
 	if (tri->removeReference())
 	{
@@ -382,13 +382,13 @@ void DelaunaySurface::removeTriangle(DelaunayTriangle *tri)
 		triangles_.remove(tri);
 	}
 // 	else printf("Can't remove triangle - refs still remain.\n");
-	msg.exit("DelaunaySurface::removeTriangle");
+	Messenger::exit("DelaunaySurface::removeTriangle");
 }
 
 // Create a tetrahedron and add it to the list
 DelaunayTetrahedron *DelaunaySurface::createTetrahedron(DelaunayTriangle *t1, DelaunayTriangle *t2, DelaunayTriangle *t3, DelaunayTriangle *t4)
 {
-	msg.enter("DelaunaySurface::createTetrahedron");
+	Messenger::enter("DelaunaySurface::createTetrahedron");
 	// Search for existing tetrahedron?
 	DelaunayTetrahedron *tet = NULL;
 	for (tet = tetrahedra_.first(); tet != NULL; tet = tet->next) if (tet->hasFaces(t1,t2,t3,t4)) break;
@@ -397,18 +397,18 @@ DelaunayTetrahedron *DelaunaySurface::createTetrahedron(DelaunayTriangle *t1, De
 		tet = new DelaunayTetrahedron(t1, t2, t3, t4);
 		tetrahedra_.own(tet);
 	}
-	msg.exit("DelaunaySurface::createTetrahedron");
+	Messenger::exit("DelaunaySurface::createTetrahedron");
 	return tet;
 }
 
 // Remove specified tetrahedron
 void DelaunaySurface::removeTetrahedron(DelaunayTetrahedron *tet)
 {
-	msg.enter("DelaunaySurface::removeTetrahedron");
+	Messenger::enter("DelaunaySurface::removeTetrahedron");
 	// Cycle through triangle faces, removing each one
 	for (int n=0; n<4; ++n) removeTriangle(tet->triangle(n));
 	tetrahedra_.remove(tet);
-	msg.exit("DelaunaySurface::removeTetrahedron");
+	Messenger::exit("DelaunaySurface::removeTetrahedron");
 }
 
 // Return start of triangle list
@@ -428,14 +428,14 @@ DelaunayTetrahedron *DelaunaySurface::tetrahedra()
 */
 
 // Create mesh from 2D data
-void DelaunaySurface::create2DMesh(Grid *g)
+void DelaunaySurface::create2DMesh(Grid* g)
 {
 }
 
 // Create 3D mesh
-void DelaunaySurface::create3DMesh(Grid *g)
+void DelaunaySurface::create3DMesh(Grid* g)
 {
-	msg.enter("DelaunaySurface::create3DMesh");
+	Messenger::enter("DelaunaySurface::create3DMesh");
 	/* 
 	First, create a regular tetrahedron large enough to contain the grid data.
 	From the calculated LLC and URC we can determine a distance which corresponds to the furthest point away.
@@ -476,23 +476,23 @@ void DelaunaySurface::create3DMesh(Grid *g)
 	else if (g->type() == Grid::FreeXYZData)
 	{
 		int count = 0;
-		for (GridPoint *gp = g->gridPoints(); gp != NULL; gp = gp->next) { add3DPoint(gp); printf("Added point %i\n", count++); if (count == limit) break;  }
-// 		for (GridPoint *gp = g->gridPoints(); gp != NULL; gp = gp->next) add3DPoint(gp);
+		for (GridPoint* gp = g->gridPoints(); gp != NULL; gp = gp->next) { add3DPoint(gp); printf("Added point %i\n", count++); if (count == limit) break;  }
+// 		for (GridPoint* gp = g->gridPoints(); gp != NULL; gp = gp->next) add3DPoint(gp);
 	}
 	limit++;
-	msg.print("Created mesh with %i triangles.\n", triangles_.nItems());
+	Messenger::print("Created mesh with %i triangles.\n", triangles_.nItems());
 	printf("Created mesh with %i edges, %i triangles, and %i tetrahedra.\n", edges_.nItems(), triangles_.nItems(), tetrahedra_.nItems());
 	// Remove original bounding tetrahedron
 // 	for (int n=0; n < 4; ++n) removePoint(&boundPoints_[n]);
 	printf("Pruned mesh contains %i edges, %i triangles, and %i tetrahedra.\n", edges_.nItems(), triangles_.nItems(), tetrahedra_.nItems());
 // 	for (DelaunayTetrahedron *tet = tetrahedra_.first(); tet != NULL; tet = tet->next) tet->print();
-	msg.exit("DelaunaySurface::create");
+	Messenger::exit("DelaunaySurface::create");
 }
 
 // Add point in 3D
-void DelaunaySurface::add3DPoint(GridPoint *gp)
+void DelaunaySurface::add3DPoint(GridPoint* gp)
 {
-	msg.enter("DelaunaySurface::add3DPoint");
+	Messenger::enter("DelaunaySurface::add3DPoint");
 	// Create reflist of all existing tetrahedra that this point encroaches.
 	// At the same time, create a reflist of the triangles involved, counting the number of overlapping tetrahedra that use it
 	Reflist<DelaunayTetrahedron,int> overlaps;
@@ -517,7 +517,7 @@ void DelaunaySurface::add3DPoint(GridPoint *gp)
 	if (overlaps.nItems() == 0)
 	{
 		printf("Internal Error : Point {%f,%f,%f} isn't enclosed by any tetrahedron.\n", gp->r().x, gp->r().y, gp->r().z);
-		msg.exit("DelaunaySurface::add3DPoint");
+		Messenger::exit("DelaunaySurface::add3DPoint");
 		return;
 	}
 	// Now, in the list of stored triangles, any whose actual refCount is greater than our stored refcount will still exist after the removal of the tetrahedra in the list. So, with these triangles, create new tetrahedra with our current point
@@ -539,13 +539,13 @@ void DelaunaySurface::add3DPoint(GridPoint *gp)
 	}
 	// Finally, delete all tetrahedra in the reflist
 	for (Refitem<DelaunayTetrahedron,int> *rtet = overlaps.first(); rtet != NULL; rtet = rtet->next) removeTetrahedron(rtet->item);
-	msg.exit("DelaunaySurface::add3DPoint");
+	Messenger::exit("DelaunaySurface::add3DPoint");
 }
 
 // Triangulize surface from supplied grid data
-void DelaunaySurface::create(Grid *g)
+void DelaunaySurface::create(Grid* g)
 {
-	msg.enter("DelaunaySurface::create");
+	Messenger::enter("DelaunaySurface::create");
 	// Select creation routine based on grid data type
 	switch (g->type())
 	{
@@ -557,5 +557,5 @@ void DelaunaySurface::create(Grid *g)
 			create3DMesh(g);
 			break;
 	}
-	msg.exit("DelaunaySurface::create");
+	Messenger::exit("DelaunaySurface::create");
 }

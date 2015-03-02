@@ -21,13 +21,9 @@
 
 #include "command/commands.h"
 #include "parser/commandnode.h"
-#include "main/aten.h"
-#include "model/bundle.h"
-#include "parser/tree.h"
 #include "base/sysfunc.h"
 
-// Static singleton
-Command commands;
+ATEN_USING_NAMESPACE
 
 /* Argument Specification Tokens:
 	Char	Meaning		Acceptable Types in VTypes
@@ -66,7 +62,7 @@ Command commands;
 */
 
 // Command action
-CommandData Command::data[Command::nCommands] = {
+CommandData Commands::data_[Commands::nCommands] = {
 
 	// Operators
 	{ "+",			"..",		VTypes::NoData, "",
@@ -235,7 +231,7 @@ CommandData Command::data[Command::nCommands] = {
 		"",
 		"Automatically augment all bonds in the current model" },
 	{ "bondTolerance",	"n",		VTypes::DoubleData,
-		"double tol = aten.prefs.bondTolerance",
+		"double tol = aten_.prefs.bondTolerance",
 		"Set bonding tolerance for automatic calculation" },
 	{ "clearBonds",		"",		VTypes::NoData,
 		"",
@@ -247,13 +243,13 @@ CommandData Command::data[Command::nCommands] = {
 		"Atom|int i, Atom|int j, string|int|double bondtype = 1",
 		"Create a bond between the two atoms specified" },
 	{ "rebond",		"b",		VTypes::NoData,
-		"bool augment = aten.prefs.augmentAfterRebond",
+		"bool augment = aten_.prefs.augmentAfterRebond",
 		"Calculate bonding in the current model" },
 	{ "rebondPatterns",	"b",		VTypes::NoData,
-		"bool augment = aten.prefs.augmentAfterRebond",
+		"bool augment = aten_.prefs.augmentAfterRebond",
 		"Calculate bonds between atoms, restricted to atoms in pattern molecules" },
 	{ "rebondSelection",	"b",		VTypes::NoData,
-		"bool augment = aten.prefs.augmentAfterRebond",
+		"bool augment = aten_.prefs.augmentAfterRebond",
 		"Calculate bonds between atoms in the current selection" },
 
 	// Build commands
@@ -1274,9 +1270,6 @@ CommandData Command::data[Command::nCommands] = {
 	{ "getEnvI",		"C",		VTypes::IntegerData,
 		"string varname",
 		"Retrieve the named environment variable, converting it to an integer value" },
-	{ "gui",		"",		VTypes::NoData,
-		"",
-		"Start the GUI (if it is not already active)" },
 	{ "_help",		"N",		VTypes::NoData,
 		"int commandid",
 		"(Internal) Provide short help on the command ID supplied" },
@@ -1417,83 +1410,62 @@ CommandData Command::data[Command::nCommands] = {
 		"Rotate the model in the plane of the screen" }
 };
 
+// Return whether command accepts any arguments
+bool CommandData::hasArguments()
+{
+	return arguments[0] == '\0';
+}
+
+/*
+ * Commands
+ */
+
 // Return enumerated command from string
-Command::Function Command::command(const char *s)
+Commands::Function Commands::command(const char* s)
 {
 	// We skip operators and tree-specific nodes
 	int result;
 	Dnchar lcase = lowerCase(s);
-	for (result = Command::Declarations+1; result < Command::nCommands; ++result)
+	for (result = Commands::Declarations+1; result < Commands::nCommands; ++result)
 	{
-		if (strcmp(data[result].keyword,s) == 0) break;
-		if (strcmp(lowerCase(data[result].keyword),lcase) == 0)
+		if (strcmp(data_[result].keyword,s) == 0) break;
+		if (strcmp(lowerCase(data_[result].keyword),lcase) == 0)
 		{
-			msg.print("Warning: '%s' is deprecated - use '%s' instead.\n", s, data[result].keyword);
+			Messenger::print("Warning: '%s' is deprecated - use '%s' instead.\n", s, data_[result].keyword);
 			break;
 		}
 	}
-	return (Command::Function) result;
+	return (Commands::Function) result;
+}
+
+// Return command name
+const char* Commands::command(Commands::Function cf)
+{
+	return data_[cf].keyword;
 }
 
 // Constructor
-Command::Command()
+Commands::Commands(Aten& aten) : aten_(aten)
 {
 	// Create pointer list
 	initPointers();
 }
 
-// Constructor
-Command::~Command()
+// Destructor
+Commands::~Commands()
 {
 }
 
-// Return specified command keyword
-const char *Command::keyword(Command::Function func)
+// Return function data for specified command
+CommandData Commands::data(Commands::Function func)
 {
-	return Command::data[func].keyword;
+	return data_[func];
 }
 
-// Return specified command arguments
-const char *Command::arguments(Command::Function func)
+// Execute specified command
+bool Commands::call(Commands::Function cf, CommandNode* node, Bundle& bundle, ReturnValue& rv)
 {
-	return Command::data[func].arguments;
-}
-
-// Return specified return-value datatype
-VTypes::DataType Command::returnType(Command::Function func)
-{
-	return Command::data[func].returnType;
-}
-
-// Return specified command argument names
-const char *Command::argText(Command::Function func)
-{
-	return Command::data[func].argText;
-}
-
-// Return specified command syntax
-const char *Command::syntax(Command::Function func)
-{
-	return Command::data[func].syntax;
-}
-
-// Return whether command accepts any arguments
-bool CommandData::hasArguments()
-{
-	return (!(arguments[0] == '\0'));
-}
-
-// Execute command
-bool Command::call(Command::Function cf, CommandNode *node, ReturnValue &rv)
-{
-	msg.print(Messenger::Commands, "Calling command '%s' (node is %p)...\n", data[cf].keyword, node);
-	return (this->pointers_[cf])(node, aten.current, rv);
-}
-
-// Execute specified command with specified bundle
-bool Command::call(Command::Function cf, TreeNode *node, ReturnValue &rv, Bundle &bundle)
-{
-	msg.print(Messenger::Commands, "Calling command '%s' (treenode is %p) with custom bundle...\n", data[cf].keyword, node);
-	CommandNode cmdnode(node);
-	return (this->pointers_[cf])(&cmdnode, bundle, rv);
+// 	return CALL_COMMAND(*this,pointers_[cf])(node, bundle, rv);
+	((*this).*(pointers_[cf]))(node, bundle, rv);
+	return ((*this).*(pointers_[cf]))(node, bundle, rv);
 }

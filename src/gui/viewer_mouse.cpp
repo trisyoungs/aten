@@ -19,19 +19,16 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "gui/viewer.uih"
-// #include "gui/fragments.h"
-// #include "gui/build.h"
-// #include "gui/mainwindow.h"
-// #include "model/model.h"
-// #include "model/fragment.h"
-// #include "main/aten.h"
+#include <QtGui/QMouseEvent>
+#include "gui/mainwindow.h"
+#include "gui/fragments.h"
+#include "main/aten.h"
 
 // Qt Signal (mouse press event)
 void Viewer::mousePressEvent(QMouseEvent* event)
 {
 	// Handle button presses (button down) from the mouse
-	msg.enter("Viewer::mousePressEvent");
+	Messenger::enter("Viewer::mousePressEvent");
 	static Prefs::MouseButton button = Prefs::nMouseButtons;
 
 	// End old mode if one is active (i.e. prevent mode overlap on different mouse buttons)
@@ -43,7 +40,7 @@ void Viewer::mousePressEvent(QMouseEvent* event)
 	else if (event->button() == Qt::RightButton) button = Prefs::RightButton;
 	else
 	{
-		msg.exit("Viewer::mousePressEvent");
+		Messenger::exit("Viewer::mousePressEvent");
 		return;
 	}
 	
@@ -60,33 +57,33 @@ void Viewer::mousePressEvent(QMouseEvent* event)
 	if (m != aten_->currentModel())
 	{
 		aten_->setCurrentModel(m);
-		parent_.updateWidgets(AtenWindow::AllTarget-AtenWindow::ModelsTarget-AtenWindow::CanvasTarget);
+		atenWindow_->updateWidgets(AtenWindow::AllTarget-AtenWindow::ModelsTarget-AtenWindow::CanvasTarget);
 	}
 	
 	// Get current active model
-	Model* source = aten.currentModelOrFrame();
+	Model* source = aten_->currentModelOrFrame();
 	if (source == NULL)
 	{
 		printf("Pointless Viewer::mousePressEvent - no source model.\n");
-		msg.exit("Viewer::mousePressEvent");
+		Messenger::exit("Viewer::mousePressEvent");
 		return;
 	}
 
 	// Preliminary check to see if RMB was pressed over an atom - if so , show the popup menu and exit.
 	if ((button == Prefs::RightButton) && editable_)
 	{
-		Atom* tempi = source->atomOnScreen(event->x(), event->y());
+		Atom* tempi = source->atomOnScreen(event->x(), contextHeight_-event->y());
 		if (tempi != NULL)
 		{
-			gui.callContextMenu(tempi, event->globalX(), event->globalY());
-			postRedisplay();
-			msg.exit("Viewer::mousePressEvent");
+			atenWindow_->callContextMenu(tempi, event->globalX(), event->globalY());
+			update();
+			Messenger::exit("Viewer::mousePressEvent");
 			return;
 		}
 	}
 
 	// Determine if there is an atom under the mouse
-	atomClicked_ = source->atomOnScreen(event->x(), event->y());
+	atomClicked_ = source->atomOnScreen(event->x(), contextHeight_-event->y());
 	
 	// Perform atom picking before entering mode (if required)
 	if (pickEnabled_ && (atomClicked_ != NULL))
@@ -95,28 +92,28 @@ void Viewer::mousePressEvent(QMouseEvent* event)
 		if (pickedAtoms_.contains(atomClicked_) == NULL)
 		{
 			pickedAtoms_.add(atomClicked_);
-			msg.print(Messenger::Verbose,"Adding atom %i to canvas subselection.\n",atomClicked_);
+			Messenger::print(Messenger::Verbose, "Adding atom %i to canvas subselection.\n",atomClicked_);
 		}
-		else msg.print(Messenger::Verbose,"Atom %i is already in canvas subselection.\n",atomClicked_);
+		else Messenger::print(Messenger::Verbose, "Atom %i is already in canvas subselection.\n",atomClicked_);
 	}
 	
 	// Activate mode...
 	beginMode(button);
-	msg.exit("Viewer::mousePressEvent");
+	Messenger::exit("Viewer::mousePressEvent");
 }
 
 // Qt Signal (mouse release event)
 void Viewer::mouseReleaseEvent(QMouseEvent *event)
 {
 	// Handle button releases (button up) from the mouse
-	msg.enter("Viewer::mouseReleaseEvent");
+	Messenger::enter("Viewer::mouseReleaseEvent");
 	Prefs::MouseButton button;
 	if (event->button() == Qt::LeftButton) button = Prefs::LeftButton;
 	else if (event->button() == Qt::MidButton) button = Prefs::MiddleButton;
 	else if (event->button() == Qt::RightButton) button = Prefs::RightButton;
 	else
 	{
-		msg.exit("Viewer::mouseReleaseEvent");
+		Messenger::exit("Viewer::mouseReleaseEvent");
 		return;
 	}
 	
@@ -129,9 +126,9 @@ void Viewer::mouseReleaseEvent(QMouseEvent *event)
 	}
 	atomClicked_ = NULL;
 	
-	postRedisplay();
+	update();
 	
-	msg.exit("Viewer::mouseReleaseEvent");
+	Messenger::exit("Viewer::mouseReleaseEvent");
 }
 
 // Qt Signal (mouse move event)
@@ -140,11 +137,11 @@ void Viewer::mouseMoveEvent(QMouseEvent *event)
 	static Vec3<double> delta;
 	
 	// Get current active model
-	Model* source = aten.currentModelOrFrame();
+	Model* source = aten_->currentModelOrFrame();
 	if (source == NULL)
 	{
 		printf("Pointless Viewer::mouseMoveEvent - no source model.\n");
-		msg.exit("Viewer::mouseMoveEvent");
+		Messenger::exit("Viewer::mouseMoveEvent");
 		return;
 	}
 	
@@ -172,11 +169,11 @@ void Viewer::mouseMoveEvent(QMouseEvent *event)
 				source->adjustZoom(delta.y < 0.0);
 				break;
 			case (UserAction::DrawFragmentAction):
-				if (gui.fragmentsWidget->currentFragment() != NULL)
+				if (atenWindow_->fragmentsWidget->currentFragment() != NULL)
 				{
-					if (atomClicked_ == NULL) gui.fragmentsWidget->currentFragment()->rotateOrientedModel(delta.x/2.0,delta.y/2.0);
-					else gui.fragmentsWidget->currentFragment()->rotateAnchoredModel(delta.x, delta.y);
-					postRedisplay();
+					if (atomClicked_ == NULL) atenWindow_->fragmentsWidget->currentFragment()->rotateOrientedModel(delta.x/2.0,delta.y/2.0);
+					else atenWindow_->fragmentsWidget->currentFragment()->rotateAnchoredModel(delta.x, delta.y);
+					update();
 				}
 				break;
 			case (UserAction::TransformRotateXYAction):
@@ -199,14 +196,8 @@ void Viewer::mouseMoveEvent(QMouseEvent *event)
 			default:
 				break;
 		}
-		
-		// Update display (only if mouse move filtering permits)
-		if (mouseMoveCounter_.elapsed() > prefs.mouseMoveFilter())
-		{
-			mouseMoveCounter_.start();
-			postRedisplay();
-		}
 	}
+
 	rMouseLast_.set(event->x(), event->y(), 0.0);
 	setFocus();
 }
@@ -214,14 +205,14 @@ void Viewer::mouseMoveEvent(QMouseEvent *event)
 // Qt Signal (mouse wheel event)
 void Viewer::wheelEvent(QWheelEvent *event)
 {
-	msg.enter("Viewer::modeScroll");
+	Messenger::enter("Viewer::wheelEvent");
 	
 	// Get current active model
-	Model* source = aten.currentModelOrFrame();
+	Model* source = aten_->currentModelOrFrame();
 	if (source == NULL)
 	{
-		printf("Pointless Viewer::modeScroll - no source model.\n");
-		msg.exit("Viewer::modeScroll");
+		printf("Pointless Viewer::wheelEvent - no source model.\n");
+		Messenger::exit("Viewer::wheelEvent");
 		return;
 	}
 
@@ -249,8 +240,10 @@ void Viewer::wheelEvent(QWheelEvent *event)
 		default:
 			break;
 	}
-	postRedisplay();
-	msg.exit("Viewer::modeScroll");
+
+	update();
+
+	Messenger::exit("Viewer::wheelEvent");
 }
 
 // Return mouse coordinates at last mousedown event

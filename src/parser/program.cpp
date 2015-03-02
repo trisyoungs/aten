@@ -19,17 +19,16 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "parser/parser.h"
 #include "parser/program.h"
-#include "parser/usercommandnode.h"
-#include "parser/integer.h"
-#include "parser/double.h"
+#include "parser/parser.h"
 #include "parser/character.h"
 #include "parser/forcefieldatom.h"
 #include "parser/forcefieldbound.h"
 #include "parser/atom.h"
 #include "main/aten.h"
 #include "base/sysfunc.h"
+
+ATEN_USING_NAMESPACE
 
 // Constructors
 Program::Program() : ListItem<Program>()
@@ -55,27 +54,27 @@ void Program::clear()
 }
 
 // Set name of Program
-void Program::setName(const char *s)
+void Program::setName(const char* s)
 {
 	name_ = s;
 }
 
 // Return name of Program
-const char *Program::name()
+const char* Program::name()
 {
 	return name_.get();
 }
 
 // Return filename of source file
-const char *Program::filename()
+const char* Program::filename()
 {
 	return filename_.get();
 }
 
 // Finalise Program
-bool Program::finalise()
+bool Program::finalise(Aten& aten)
 {
-	msg.enter("Program::finalise");
+	Messenger::enter("Program::finalise");
 	
 	// Cycle over generated filters
 	for (Tree* filter = filters_.first(); filter != NULL; filter = filter->next)
@@ -94,12 +93,12 @@ bool Program::finalise()
 					// Does the function have the correct return type?
 					if (func->returnType() != VTypes::IntegerData)
 					{
-						msg.print("Error: 'readHeader' function returns %s when it should return an int (importtrajectory filter '%s').\n", VTypes::aDataType(func->returnType()), filter->filter.name());
-						msg.exit("Program::finalise");
+						Messenger::print("Error: 'readHeader' function returns %s when it should return an int (importtrajectory filter '%s').\n", VTypes::aDataType(func->returnType()), filter->filter.name());
+						Messenger::exit("Program::finalise");
 						return FALSE;
 					}
 				}
-				else msg.print("Warning: 'readHeader' function has not been defined in the importtrajectory filter '%s'.\n", filter->filter.name());
+				else Messenger::print("Warning: 'readHeader' function has not been defined in the importtrajectory filter '%s'.\n", filter->filter.name());
 				filter->filter.setTrajectoryHeaderFunction(func);
 
 				// Search for 'int readFrame()' function
@@ -109,20 +108,20 @@ bool Program::finalise()
 					// Does the function have the correct return type?
 					if (func->returnType() != VTypes::IntegerData)
 					{
-						msg.print("Error: 'readFrame' function returns %s when it should return an int (importtrajectory filter '%s').\n", VTypes::aDataType(func->returnType()), filter->filter.name());
-						msg.exit("Program::finalise");
+						Messenger::print("Error: 'readFrame' function returns %s when it should return an int (importtrajectory filter '%s').\n", VTypes::aDataType(func->returnType()), filter->filter.name());
+						Messenger::exit("Program::finalise");
 						return FALSE;
 					}
 				}
-				else msg.print("Warning: 'readFrame' function has not been defined in the importtrajectory filter '%s'.\n", filter->filter.name());
+				else Messenger::print("Warning: 'readFrame' function has not been defined in the importtrajectory filter '%s'.\n", filter->filter.name());
 				filter->filter.setTrajectoryFrameFunction(func);
 			}
 			
 			// Finalise the tree
 			if (!filter->finalise())
 			{
-				msg.print("Error finalising filter '%s'.\n", filter->filter.name());
-				msg.exit("Program::finalise");
+				Messenger::print("Error finalising filter '%s'.\n", filter->filter.name());
+				Messenger::exit("Program::finalise");
 				return FALSE;
 			}
 		}
@@ -133,13 +132,13 @@ bool Program::finalise()
 	{
 		if (!func->finalise())
 		{
-			msg.print("Error finalising global function '%s'.\n", func->name());
-			msg.exit("Program::finalise");
+			Messenger::print("Error finalising global function '%s'.\n", func->name());
+			Messenger::exit("Program::finalise");
 			return FALSE;
 		}
 	}
 	
-	msg.exit("Program::finalise");
+	Messenger::exit("Program::finalise");
 	return TRUE;
 }
 
@@ -159,61 +158,61 @@ Tree* Program::addFilter()
 }
 
 // Generate Program from string 
-bool Program::generateFromString(const char *s, const char *name, const char *sourceInfo, bool dontpushtree, bool clearExisting)
+bool Program::generateFromString(const char* s, const char* name, const char* sourceInfo, bool dontpushtree, bool clearExisting)
 {
-	msg.enter("Program::generateFromString");
+	Messenger::enter("Program::generateFromString");
 	name_ = name;
 	fromFilterFile_ = FALSE;
 	initialPushTree_ = dontpushtree;
 	bool result = cmdparser.generateFromString(this, s, sourceInfo, initialPushTree_, clearExisting);
-	if (result) result = finalise();
-	msg.exit("Program::generateFromString");
+	if (result) result = finalise(cmdparser.aten());
+	Messenger::exit("Program::generateFromString");
 	return result;
 }
 
 // Generate Program from string list
-bool Program::generateFromStringList(Dnchar *stringListHead, const char *name, const char *sourceInfo, bool dontpushtree, bool clearExisting)
+bool Program::generateFromStringList(Dnchar* stringListHead, const char* name, const char* sourceInfo, bool dontpushtree, bool clearExisting)
 {
-	msg.enter("Program::generateFromStringList");
+	Messenger::enter("Program::generateFromStringList");
 	name_ = name;
 	fromFilterFile_ = FALSE;
 	initialPushTree_ = dontpushtree;
 	bool result = cmdparser.generateFromStringList(this, stringListHead, sourceInfo, initialPushTree_, clearExisting);
-	if (result) result = finalise();
-	msg.exit("Program::generateFromStringList");
+	if (result) result = finalise(cmdparser.aten());
+	Messenger::exit("Program::generateFromStringList");
 	return result;
 }
 
 // Generate Program from input file
-bool Program::generateFromFile(const char *filename, const char *name, bool dontpushtree, bool clearExisting, bool isFilterFile)
+bool Program::generateFromFile(const char* filename, const char* name, bool dontpushtree, bool clearExisting, bool isFilterFile)
 {
-	msg.enter("Program::generateFromFile");
+	Messenger::enter("Program::generateFromFile");
 	filename_ = absoluteFilePath(filename);
 	if (name != NULL) name_ = name;
 	else name_ = filename;
 	fromFilterFile_ = isFilterFile;
 	initialPushTree_ = dontpushtree;
 	bool result = cmdparser.generateFromFile(this, filename, initialPushTree_, clearExisting);
-	if (result) result = finalise();
-	msg.exit("Program::generateFromFile");
+	if (result) result = finalise(cmdparser.aten());
+	Messenger::exit("Program::generateFromFile");
 	return result;
 }
 
 // Reload Program (provided it was from a file...)
 bool Program::reload()
 {
-	msg.enter("Program::reload");
+	Messenger::enter("Program::reload");
 	if (filename_.isEmpty())
 	{
-		msg.print("No filename present in '%s' - can't reload commands.\n", name_.get());
-		msg.exit("Program::reload");
+		Messenger::print("No filename present in '%s' - can't reload commands.\n", name_.get());
+		Messenger::exit("Program::reload");
 		return FALSE;
 	}
 	// Clear old data...
 	clear();
 	bool result = cmdparser.generateFromFile(this, filename_, initialPushTree_);
-	if (result) result = finalise();
-	msg.exit("Program::reload");
+	if (result) result = finalise(cmdparser.aten());
+	Messenger::exit("Program::reload");
 	return result;
 }
 
@@ -234,11 +233,11 @@ bool Program::isFromFilterFile()
 }
 
 // Execute all trees in Program
-bool Program::execute(ReturnValue &rv)
+bool Program::execute(ReturnValue& rv)
 {
-	msg.enter("Program::execute");
+	Messenger::enter("Program::execute");
 	bool result = mainProgram_.execute(rv);
-	msg.exit("Program::execute");
+	Messenger::exit("Program::execute");
 	return result;
 }
 
@@ -257,7 +256,7 @@ void Program::print()
 */
 
 // Add a Program-global function
-Tree* Program::addFunction(const char *name)
+Tree* Program::addFunction(const char* name)
 {
 	Tree* tree = functions_.add();
 	tree->setName(name);
@@ -267,7 +266,7 @@ Tree* Program::addFunction(const char *name)
 }
 
 // Search for existing global function
-Tree* Program::findFunction(const char *name)
+Tree* Program::findFunction(const char* name)
 {
 	Tree* result;
 	for (result = functions_.first(); result != NULL; result = result->next) if (strcmp(result->name(),name) == 0) break;
@@ -281,24 +280,24 @@ Tree* Program::functions()
 }
 
 // Execute specified global function
-bool Program::executeFunction(const char *funcname, ReturnValue &rv, const char *arglist, ...)
+bool Program::executeFunction(const char* funcname, ReturnValue& rv, const char* argList, ...)
 {
-	msg.enter("Program::executeGlobalFunction");
+	Messenger::enter("Program::executeGlobalFunction");
 	// First, locate function with the name supplied
 	Tree* func = findFunction(funcname);
 	if (func == NULL)
 	{
 		printf("Error: No global function named '%s' exists in '%s'.\n", funcname, name_.get());
-		msg.exit("Program::executeGlobalFunction");
+		Messenger::exit("Program::executeGlobalFunction");
 		return FALSE;
 	}
 
 	// Construct list of arguments to pass to function
 	va_list vars;
-	va_start(vars, arglist);
+	va_start(vars, argList);
 	List<TreeNode> args;
-	TreeNode *var;
-	for (const char *c = &arglist[0]; *c != '\0'; c++)
+	TreeNode* var;
+	for (const char* c = &argList[0]; *c != '\0'; c++)
 	{
 		switch (*c)
 		{
@@ -333,6 +332,6 @@ bool Program::executeFunction(const char *funcname, ReturnValue &rv, const char 
 	// Now, pass all the info on to the static 'run' command in UserCommandNode
 	bool success = UserCommandNode::run(func,rv,args.first());
 
-	msg.exit("Program::executeGlobalFunction");
+	Messenger::exit("Program::executeGlobalFunction");
 	return success;
 }

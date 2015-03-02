@@ -21,6 +21,8 @@
 
 #include "render/textprimitivelist.h"
 
+ATEN_USING_NAMESPACE
+
 // Constructor
 TextPrimitiveList::TextPrimitiveList()
 {

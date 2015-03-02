@@ -24,12 +24,14 @@
 
 #include "parser/treenode.h"
 #include "base/dnchar.h"
-#include "templates/vector3.h"
-#include <stdlib.h>
+#include "base/namespace.h"
 
-// Forward Declarations
+ATEN_BEGIN_NAMESPACE
+
+// Forward Declarations (Aten)
 class Accessor;
 class FunctionAccessor;
+class Aten;
 
 // Variable
 class Variable : public TreeNode
@@ -41,31 +43,39 @@ class Variable : public TreeNode
 
 
 	/*
+	 * Pointer to Aten
+	 */
+	protected:
+	// Pointer to Aten
+	static Aten& aten_;
+
+
+	/*
 	// Variable Character
 	*/
 	protected:
 	// Name of the variable
 	Dnchar name_;
 	// Initial value of new variable
-	TreeNode *initialValue_;
+	TreeNode* initialValue_;
 
 	public:
 	// Set name of variable
 	void setName(const char* s);
 	// Get name of variable
-	const char *name() const;
+	const char* name() const;
 	// Set initial value expression
-	bool setInitialValue(TreeNode *node);
+	bool setInitialValue(TreeNode* node);
 	// Return TreeNode corresponding to initial value
-	TreeNode *initialValue() const;
+	TreeNode* initialValue() const;
 	// Execute as an array
-	virtual bool executeAsArray(ReturnValue &rv, int arrayindex);
+	virtual bool executeAsArray(ReturnValue& rv, int arrayIndex);
 	// Set as an array
-	virtual bool setAsArray(ReturnValue &rv, int arrayindex);
+	virtual bool setAsArray(ReturnValue& rv, int arrayIndex);
 	// Reset variable
 	virtual void reset() = 0;
 	// Search accessors (if any) available for node
-	virtual StepNode *findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist = NULL);
+	virtual StepNode* findAccessor(const char* s, TreeNode* arrayIndex, TreeNode* argList = NULL);
 
 
 	/*
@@ -81,9 +91,9 @@ class Variable : public TreeNode
 	*/
 	public:
 	// Search accessor list provided
-	static int searchAccessor(const char *s, int nAccessors, Accessor *accessors);
+	static int searchAccessor(const char* s, int nAccessors, Accessor *accessors);
 	// Search accessor list provided
-	static int searchAccessor(const char *s, int nAccessors, FunctionAccessor *accessors);
+	static int searchAccessor(const char* s, int nAccessors, FunctionAccessor *accessors);
 };
 
 // Array Variable
@@ -96,7 +106,7 @@ class ArrayVariable : public Variable
 
 	protected:
 	// TreeNode determining array size on initialisation
-	TreeNode *arraySizeExpression_;
+	TreeNode* arraySizeExpression_;
 	// Array size
 	int arraySize_;
 
@@ -105,5 +115,6 @@ class ArrayVariable : public Variable
 	int arraySize() const;
 };
 
+ATEN_END_NAMESPACE
 
 #endif

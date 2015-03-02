@@ -23,6 +23,7 @@
 #define ATEN_GLEXTENSIONS_H
 
 #include "templates/list.h"
+#include "base/namespace.h"
 #ifdef _WIN32
 #include <windows.h>
 #include <GL/gl.h>
@@ -30,9 +31,18 @@
 #elif __APPLE__
 #include <OpenGL/gl3.h>
 #else
-#include <GL/glx.h>
+// Need to include glx.h, but this includes Xlib.h which defines 'None', 'Success', and 'Unsorted', not to mention a 'typedef Atom'.
+// So, enclose it in its own namespace to prevent the clash with Aten's Atom class, and undefine 'None' and 'Success' so as not to annoy Qt.
+// namespace hide_X11 {
+#include <GL/glext.h>
+// #undef None
+// #undef Success
+// #undef Unsorted
+// }
 #endif
- 
+
+ATEN_BEGIN_NAMESPACE
+
 // GL Extensions
 class GLExtensions : public ListItem<GLExtensions>
 {
@@ -76,5 +86,7 @@ class GLExtensions : public ListItem<GLExtensions>
 	PFNGLBUFFERSUBDATAPROC glBufferSubData;
 	PFNGLDELETEBUFFERSPROC glDeleteBuffers;
 };
+
+ATEN_END_NAMESPACE
 
 #endif

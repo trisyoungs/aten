@@ -22,6 +22,8 @@
 #include "model/model.h"
 #include "model/clipboard.h"
 
+ATEN_USING_NAMESPACE
+
 // Add new basis function to the list
 BasisShell *Model::addBasisShell()
 {
@@ -75,18 +77,18 @@ int Model::nEigenvectors()
 // Return density of nth eigenvalue at given coordinates
 double Model::eigenvectorDensityAt(int id, Vec3<double> v)
 {
-	msg.enter("Model::eigenvectorDensityAt");
+	Messenger::enter("Model::eigenvectorDensityAt");
 	int n, i = 0;
 	double result = 0.0;
 	// Grab eigenvector pointer
 	if ((id < 0) || (id >= eigenvectors_.nItems()))
 	{
-		msg.print("Illegal eigenvector ID '%i' given to Model::eigenvectorDensityAt.\n", id);
-		msg.exit("Model::eigenvectorDensityAt");
+		Messenger::print("Illegal eigenvector ID '%i' given to Model::eigenvectorDensityAt.\n", id);
+		Messenger::exit("Model::eigenvectorDensityAt");
 		return 0.0;
 	}
 	Eigenvector *evec = eigenvectors_[id];
-	double *eigenvec = evec->eigenvector();
+	double* eigenvec = evec->eigenvector();
 	for (BasisShell *bas = basisShells_.first(); bas != NULL; bas = bas->next)
 	{
 		// Cycle over primitives
@@ -96,14 +98,14 @@ double Model::eigenvectorDensityAt(int id, Vec3<double> v)
 // 			i++;
 // 		}
 	}
-	msg.exit("Model::eigenvectorDensityAt");
+	Messenger::exit("Model::eigenvectorDensityAt");
 	return result;
 }
 
 // Add a new vibration to the model
-Vibration *Model::addVibration(int size)
+Vibration* Model::addVibration(int size)
 {
-	Vibration *vib = vibrations_.add();
+	Vibration* vib = vibrations_.add();
 	vib->initialise(this, size);
 	return vib;
 }
@@ -115,13 +117,13 @@ int Model::nVibrations()
 }
 
 // Return first vibration
-Vibration *Model::vibrations()
+Vibration* Model::vibrations()
 {
 	return vibrations_.first();
 }
 
 // Return n'th vibration
-Vibration *Model::vibration(int n)
+Vibration* Model::vibration(int n)
 {
 	return vibrations_[n];
 }
@@ -129,7 +131,7 @@ Vibration *Model::vibration(int n)
  // Generate trajectory for n'th vibration
 void Model::generateVibration(int index, int nsteps)
 {
-	msg.enter("Model::generateVibration");
+	Messenger::enter("Model::generateVibration");
 	// Delete old vibrations
 	vibrationCurrentFrame_ = NULL;
 	vibrationFrames_.clear();
@@ -139,12 +141,12 @@ void Model::generateVibration(int index, int nsteps)
 	if ((index < 0) || (index >= vibrations_.nItems()))
 	{
 		printf("Internal Error : Vibration index %i given to Model::generateVibration is invalid.\n", index);
-		msg.exit("Model::generateVibration");
+		Messenger::exit("Model::generateVibration");
 		return;
 	}
 
 	// Grab necessary pointers
-	Vibration *vib = vibrations_[index];
+	Vibration* vib = vibrations_[index];
 	double freq = vib->frequency();
 	Vec3<double> *displacements = vib->displacements();
 
@@ -152,7 +154,7 @@ void Model::generateVibration(int index, int nsteps)
 	if (vib->nDisplacements() != atoms_.nItems())
 	{
 		printf("Internal Error : Vibration given to Model::generateVibration contains %i displacements, but there are %i atoms.\n", vib->nDisplacements(), atoms_.nItems());
-		msg.exit("Model::generateVibration");
+		Messenger::exit("Model::generateVibration");
 		return;
 	}
 
@@ -184,7 +186,7 @@ void Model::generateVibration(int index, int nsteps)
 	vibrationForward_ = TRUE;
 	vibrationFrameIndex_ = 0;
 	vibrationCurrentFrame_ = vibrationFrames_.first();
-	msg.exit("Model::generateVibration");
+	Messenger::exit("Model::generateVibration");
 }
 
 // Return current vibration frame
@@ -199,7 +201,7 @@ void Model::setVibrationFrameIndex(int index)
 	// Check frame range
 	if ((index < 0) || (index >= vibrationFrames_.nItems()))
 	{
-		msg.print("Internal Error: Vibration frame index %i is out of range (vibration contains %i frames).\n", index, vibrationFrames_.nItems());
+		Messenger::print("Internal Error: Vibration frame index %i is out of range (vibration contains %i frames).\n", index, vibrationFrames_.nItems());
 		return;
 	}
 	vibrationCurrentFrame_ = vibrationFrames_[index];
@@ -209,12 +211,12 @@ void Model::setVibrationFrameIndex(int index)
 // Move on to next/prev frame (depending on current playback direction)
 void Model::vibrationNextFrame()
 {
-	msg.enter("Model::vibrationNextFrame");
+	Messenger::enter("Model::vibrationNextFrame");
 	// Check for presence of a vibration trajectory
 	if (vibrationFrames_.nItems() == 0)
 	{
 		printf("Internal Error : Model '%s' has no vibration trajectory to display.\n", name_.get());
-		msg.exit("Model::vibrationNextFrame");
+		Messenger::exit("Model::vibrationNextFrame");
 		return;
 	}
 	if (vibrationForward_)
@@ -237,7 +239,7 @@ void Model::vibrationNextFrame()
 	}
 	if (vibrationForward_) ++vibrationFrameIndex_;
 	else --vibrationFrameIndex_;
-	msg.exit("Model::vibrationNextFrame");
+	Messenger::exit("Model::vibrationNextFrame");
 }
 
 // Return index of current vibration frame

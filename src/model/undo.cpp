@@ -22,19 +22,20 @@
 #include "model/model.h"
 #include "model/undoevent.h"
 #include "model/undostate.h"
-#include "classes/prefs.h"
+
+ATEN_USING_NAMESPACE
 
 // Flag that undo/redo should be enabled
 void Model::enableUndoRedo()
 {
-	msg.print(Messenger::Verbose, "Undo/redo has been enabled for model '%s'.\n", name_.get());
+	Messenger::print(Messenger::Verbose, "Undo/redo has been enabled for model '%s'.\n", name_.get());
 	undoRedoEnabled_ = TRUE;
 }
 
 // Flag that undo/redo should be disabled
 void Model::disableUndoRedo()
 {
-	msg.print(Messenger::Verbose, "Undo/redo has been disabled for model '%s'.\n", name_.get());
+	Messenger::print(Messenger::Verbose, "Undo/redo has been disabled for model '%s'.\n", name_.get());
 	undoRedoEnabled_ = FALSE;
 }
 
@@ -51,15 +52,15 @@ UndoState *Model::currentRedoState()
 }
 
 // Start recording a new undo state
-void Model::beginUndoState(const char *fmt, ...)
+void Model::beginUndoState(const char* fmt, ...)
 {
 	if (!undoRedoEnabled_) return;
-	msg.enter("Model::beginUndoState");
+	Messenger::enter("Model::beginUndoState");
 	// First, check that we're not already recording a state
 	if (recordingState_ != NULL)
 	{
 		printf("Model::beginUndoState <<<< Last state has not been stored >>>>\n");
-		msg.exit("Model::beginUndoState");
+		Messenger::exit("Model::beginUndoState");
 		return;
 	}
 	// Create a new state for us to add to
@@ -74,28 +75,28 @@ void Model::beginUndoState(const char *fmt, ...)
 	va_end(arguments);
 	recordingState_->setDescription(msgs);
 	recordingState_->setStartLogs(changeLog);
-	msg.print(Messenger::Verbose,"Undo list prepped for new state.\n");
-	msg.print(Messenger::Verbose,"   --- Logs at start of state are: structure = %i, coords = %i, selection = %i, camera = %i\n", changeLog.log(Log::Structure), changeLog.log(Log::Coordinates), changeLog.log(Log::Selection), changeLog.log(Log::Camera));
-	msg.exit("Model::beginUndoState");
+	Messenger::print(Messenger::Verbose, "Undo list prepped for new state.\n");
+	Messenger::print(Messenger::Verbose, "   --- Logs at start of state are: structure = %i, coords = %i, selection = %i, camera = %i\n", changeLog.log(Log::Structure), changeLog.log(Log::Coordinates), changeLog.log(Log::Selection), changeLog.log(Log::Camera));
+	Messenger::exit("Model::beginUndoState");
 }
 
 // Finish recording the new undo state
 void Model::endUndoState()
 {
 	if (!undoRedoEnabled_) return;
-	msg.enter("Model::endUndoState");
+	Messenger::enter("Model::endUndoState");
 	// Make sure that we have a valid state to store...
 	if (recordingState_ == NULL)
 	{
 		printf("Model::endUndoState <<<< No state to store >>>>\n");
-		msg.exit("Model::endUndoState");
+		Messenger::exit("Model::endUndoState");
 		return;
 	}
 	// ...and that it contains something
 	if (recordingState_->nChanges() == 0)
 	{
 		recordingState_ = NULL;
-		msg.exit("Model::endUndoState");
+		Messenger::exit("Model::endUndoState");
 		return;
 	}
 	recordingState_->setEndLogs(changeLog);
@@ -106,15 +107,15 @@ void Model::endUndoState()
 	undoStates_.own(recordingState_);
 	// Set the current undo level to the new state and nullify the pointer
 	currentUndoState_ = recordingState_;
-	msg.print(Messenger::Verbose,"Undo list now has %i states (%i events caught in last state).\n",undoStates_.nItems(),currentUndoState_->nChanges());
-	msg.print(Messenger::Verbose,"   --- Logs at end of state are: structure = %i, coords = %i, selection = %i\n", changeLog.log(Log::Structure), changeLog.log(Log::Coordinates), changeLog.log(Log::Selection));
+	Messenger::print(Messenger::Verbose, "Undo list now has %i states (%i events caught in last state).\n",undoStates_.nItems(),currentUndoState_->nChanges());
+	Messenger::print(Messenger::Verbose, "   --- Logs at end of state are: structure = %i, coords = %i, selection = %i\n", changeLog.log(Log::Structure), changeLog.log(Log::Coordinates), changeLog.log(Log::Selection));
 	// Nullify the redostate pointer, since we must now be at the top of the undo stack
 	currentRedoState_ = NULL;
 	recordingState_ = NULL;
 	// Check the size of the undoStates_ list - if greater than prefs.maxundo, must remove the first item in the list
 	if (undoStates_.nItems() == (prefs.maxUndoLevels()+1)) undoStates_.remove(undoStates_.first());
 	//listUndoStates();
-	msg.exit("Model::endUndoState");
+	Messenger::exit("Model::endUndoState");
 }
 
 // Return whether an undo state is currently being recorded
@@ -126,8 +127,8 @@ bool Model::recordingUndoState()
 // Perform actions in current Undo state
 void Model::undo()
 {
-	msg.enter("Model::undo");
-	if (currentUndoState_ == NULL) msg.print("Nothing to undo.\n");
+	Messenger::enter("Model::undo");
+	if (currentUndoState_ == NULL) Messenger::print("Nothing to undo.\n");
 	else
 	{
 		// Undo the changes
@@ -144,14 +145,14 @@ void Model::undo()
 		currentRedoState_ = currentUndoState_;
 		currentUndoState_ = currentUndoState_->prev;
 	}
-	msg.exit("Model::undo");
+	Messenger::exit("Model::undo");
 }
 
 // Perform actions in current Redo state
 void Model::redo()
 {
-	msg.enter("Model::redo");
-	if (currentRedoState_ == NULL) msg.print("Nothing to redo.\n");
+	Messenger::enter("Model::redo");
+	if (currentRedoState_ == NULL) Messenger::print("Nothing to redo.\n");
 	else
 	{
 		// Undo the changes
@@ -168,7 +169,7 @@ void Model::redo()
 		currentUndoState_ = currentRedoState_;
 		currentRedoState_ = currentRedoState_->next;
 	}
-	msg.exit("Model::redo");
+	Messenger::exit("Model::redo");
 }
 
 // List undo states and the changes within

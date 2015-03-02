@@ -23,6 +23,7 @@
 #define ATEN_ABOUTWINDOW_H
 
 #include "gui/ui_about.h"
+#include "base/namespace.h"
 
 // About window
 class AtenAbout : public QDialog
@@ -30,27 +31,21 @@ class AtenAbout : public QDialog
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
 
-	/*
-	// Window Functions
-	*/
-	public:
-	void showWindow();
-	private slots:
-	void on_AboutCloseButton_clicked(bool checked);
-
-	/*
-	// Local variables
-	*/
-	private:
-
-	/*
-	// Dialog
-	*/
 	public:
 	// Constructor / Destructor
 	AtenAbout(QWidget *parent = 0);
 	// Main form declaration
 	Ui::AboutDialog ui;
+
+	
+	/*
+	 * Window Functions
+	 */
+	public:
+	void showWindow();
+
+	private slots:
+	void on_AboutCloseButton_clicked(bool checked);
 };
 
 #endif

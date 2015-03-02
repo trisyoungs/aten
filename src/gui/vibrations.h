@@ -23,12 +23,51 @@
 #define ATEN_VIBRATIONSWIDGET_H
 
 #include "gui/ui_vibrations.h"
+#include "base/namespace.h"
+
+// Forward Declarations (Qt)
+class AtenWindow;
+
+ATEN_BEGIN_NAMESPACE
+
+// Forward Declarations (Aten)
+class TreeGui;
+class TreeGuiWidget;
+
+ATEN_END_NAMESPACE
+
+ATEN_USING_NAMESPACE
 
 // Vibrations window
 class VibrationsWidget : public QDockWidget
 {
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
+
+	public:
+	// Constructor / Destructor
+	VibrationsWidget(AtenWindow& parent, Qt::WindowFlags flags = 0);
+	// Main form declaration
+	Ui::VibrationsWidget ui;
+
+	private:
+	// Reference to main window
+	AtenWindow& parent_;
+
+
+	/*
+	// Local variables
+	*/
+	private:
+	// Whether the window is currently refreshing
+	bool refreshing_;
+	// Whether the trajectory is currently playing
+	bool vibrationPlaying_;
+	// ID of rtrajectory timer
+	int vibrationTimerId_;
+	// Flag to prevent overdrawing
+	bool DONTDRAW;
+
 
 	/*
 	// Window Functions
@@ -55,33 +94,6 @@ class VibrationsWidget : public QDockWidget
 	protected:
 	void timerEvent(QTimerEvent*);
 	void closeEvent(QCloseEvent *event);
-
-
-	/*
-	// Local variables
-	*/
-	private:
-	// Whether the window is currently refreshing
-	bool refreshing_;
-	// Whether the trajectory is currently playing
-	bool vibrationPlaying_;
-	// ID of rtrajectory timer
-	int vibrationTimerId_;
-	// Flag to prevent overdrawing
-	bool DONTDRAW;
-
-	/*
-	// Dialog
-	*/
-	private:
-	// Reference to main window
-	AtenWindow& parent_;
-
-	public:
-	// Constructor / Destructor
-	VibrationsWidget(AtenWindow& parent, Qt::WindowFlags flags = 0);
-	// Main form declaration
-	Ui::VibrationsWidget ui;
 };
 
 #endif

@@ -19,13 +19,10 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "base/messenger.h"
-#include "classes/prefs.h"
 #include "model/fragment.h"
-#include "model/model.h"
 #include "model/clipboard.h"
-#include "gui/gui.h"
-#include "gui/tcanvas.uih"
+
+ATEN_USING_NAMESPACE
 
 /*
 // Fragment
@@ -56,13 +53,13 @@ void Fragment::setLinkPartner()
 // Set data from source model
 bool Fragment::setMasterModel(Model* m)
 {
-	msg.enter("Fragment::setMasterModel");
+	Messenger::enter("Fragment::setMasterModel");
 	masterModel_ = m;
 
 	// Define initial link (anchor) atom as first non-element (XX) atom in model (if there is one)
 	if (masterModel_->nUnknownAtoms() == 0)
 	{
-		msg.print(Messenger::Verbose, " ... Fragment model '%s' has no defined anchor point. Assuming first atom.\n", masterModel_->name());
+		Messenger::print(Messenger::Verbose, " ... Fragment model '%s' has no defined anchor point. Assuming first atom.\n", masterModel_->name());
 		masterLinkAtom_ = masterModel_->atoms();
 	}
 	else for (masterLinkAtom_ = masterModel_->atoms(); masterLinkAtom_ != NULL; masterLinkAtom_ = masterLinkAtom_->next) if (masterLinkAtom_->element() == 0) break;
@@ -72,8 +69,8 @@ bool Fragment::setMasterModel(Model* m)
 
 	// Create icon
 	// Store current rendering style so we can reset afterwards
-	Atom::DrawStyle ds = prefs.renderStyle();
-	prefs.setRenderStyle(Atom::SphereStyle);
+	Prefs::DrawStyle oldDrawStyle = prefs.renderStyle();
+	prefs.setRenderStyle(Prefs::SphereStyle);
 
 	// Centre model at 0,0,0 here...
 	masterModel_->selectAll();
@@ -91,9 +88,9 @@ bool Fragment::setMasterModel(Model* m)
 	anchoredModel_.markAll();
 
 	// Reset rendering style
-	prefs.setRenderStyle(ds);
+	prefs.setRenderStyle(oldDrawStyle);
 
-	msg.exit("Fragment::setMasterModel");
+	Messenger::exit("Fragment::setMasterModel");
 	return TRUE;
 }
 
@@ -138,7 +135,7 @@ void Fragment::rotateOrientedModel(double dx, double dy)
 {
 	Matrix rotmat;
 	rotmat.createRotationXY(dy,dx);
-	for (Refitem<Atom,int> *ri = orientedModel_.selection(TRUE); ri != NULL; ri = ri->next) ri->item->r() = rotmat * ri->item->r();
+	for (Refitem<Atom,int>* ri = orientedModel_.selection(TRUE); ri != NULL; ri = ri->next) ri->item->r() = rotmat * ri->item->r();
 }
 
 // Return oriented model pointer
@@ -150,7 +147,7 @@ Model* Fragment::orientedModel()
 // Paste oriented model to target model
 void Fragment::pasteOrientedModel(Vec3<double> origin, Model* target)
 {
-	msg.enter("Fragment::pasteOrientedModel");
+	Messenger::enter("Fragment::pasteOrientedModel");
 
 	// Translate model to correct origin
 	orientedModel_.translateSelectionLocal(origin, TRUE);
@@ -168,13 +165,13 @@ void Fragment::pasteOrientedModel(Vec3<double> origin, Model* target)
 	orientedModel_.translateSelectionLocal(-origin, TRUE);
 	orientedModel_.selectNone();
 	
-	msg.exit("Fragment::pasteOrientedModel");
+	Messenger::exit("Fragment::pasteOrientedModel");
 }
 
 // Adjust anchored model rotation (from mouse delta)
 void Fragment::rotateAnchoredModel(double dx, double dy)
 {
-	msg.enter("Fragment::rotateAnchoredModel");
+	Messenger::enter("Fragment::rotateAnchoredModel");
 
 	// If a link partner exists, adjust axis rotation value. Otherwise, free rotate model
 	if (masterLinkPartner_ != NULL)
@@ -189,16 +186,16 @@ void Fragment::rotateAnchoredModel(double dx, double dy)
 	{
 		Matrix rotmat;
 		rotmat.createRotationXY(dy,dx);
-		for (Refitem<Atom,int> *ri = orientedModel_.selection(TRUE); ri != NULL; ri = ri->next) ri->item->r() = rotmat * ri->item->r();
+		for (Refitem<Atom,int>* ri = orientedModel_.selection(TRUE); ri != NULL; ri = ri->next) ri->item->r() = rotmat * ri->item->r();
 	}
 
-	msg.exit("Fragment::rotateAnchoredModel");
+	Messenger::exit("Fragment::rotateAnchoredModel");
 }
 
 // Return anchored model, oriented to attach to specified atom
 Model* Fragment::anchoredModel(Atom* anchorpoint, bool replace, int &replacebond)
 {
-	msg.enter("Fragment::anchoredModel");
+	Messenger::enter("Fragment::anchoredModel");
 
 	// Determine vector along which our reference vector should point
 	Vec3<double> orientation;
@@ -212,7 +209,7 @@ Model* Fragment::anchoredModel(Atom* anchorpoint, bool replace, int &replacebond
 		// Clamp range of replaced atom id
 		if (replacebond >= anchorpoint->nBonds()) replacebond = 0;
 		// Grab atom along n'th bond
-		Refitem<Bond,int> *ri = anchorpoint->bond(replacebond);
+		Refitem<Bond,int>* ri = anchorpoint->bond(replacebond);
 		orientation = anchorpoint->parent()->cell()->mimVector(anchorpoint, ri->item->partner(anchorpoint));
 		orientation.normalise();
 	}
@@ -220,7 +217,7 @@ Model* Fragment::anchoredModel(Atom* anchorpoint, bool replace, int &replacebond
 	// Have we a valid attachment point?
 	if (orientation.magnitude() < 0.1)
 	{
-		msg.exit("Fragment::anchoredModel");
+		Messenger::exit("Fragment::anchoredModel");
 		return NULL;
 	}
 
@@ -249,21 +246,21 @@ Model* Fragment::anchoredModel(Atom* anchorpoint, bool replace, int &replacebond
 	anchoredModel_.markAll();
 	Matrix A;
 	A.createRotationAxis(xp.x, xp.y, xp.z, -angle, TRUE);
-	for (Refitem<Atom,int> *ri = anchoredModel_.selection(TRUE); ri != NULL; ri = ri->next) ri->item->r() = A * ri->item->r();
+	for (Refitem<Atom,int>* ri = anchoredModel_.selection(TRUE); ri != NULL; ri = ri->next) ri->item->r() = A * ri->item->r();
 
-	msg.exit("Fragment::anchoredModel");
+	Messenger::exit("Fragment::anchoredModel");
 	return &anchoredModel_;	
 }
 
 // Paste anchored model to target model
 void Fragment::pasteAnchoredModel(Atom* anchorpoint, bool replace, int &replacebond, Model* target, bool adjustbond)
 {
-	msg.enter("Fragment::pasteAnchoredModel");
+	Messenger::enter("Fragment::pasteAnchoredModel");
 
 	// Set up anchored model in correct geometry - have we a valid attachment point?
 	if (!anchoredModel(anchorpoint, replace, replacebond))
 	{
-		msg.exit("Fragment::pasteAnchoredModel");
+		Messenger::exit("Fragment::pasteAnchoredModel");
 		return;
 	}
 
@@ -290,7 +287,7 @@ void Fragment::pasteAnchoredModel(Atom* anchorpoint, bool replace, int &replaceb
 		// For safety, clamp range of replaced atom id (shouldn't be necessary)
 		if (replacebond >= anchorpoint->nBonds()) replacebond = 0;
 		// Grab atom along n'th bond
-		Refitem<Bond,int> *ri = anchorpoint->bond(replacebond);
+		Refitem<Bond,int>* ri = anchorpoint->bond(replacebond);
 		target->deleteAtom(ri->item->partner(anchorpoint));
 	}
 
@@ -314,7 +311,7 @@ void Fragment::pasteAnchoredModel(Atom* anchorpoint, bool replace, int &replaceb
 	anchoredModel_.markAll();
 	anchoredModel_.translateSelectionLocal(-linkAtom->r(), TRUE);
 
-	msg.exit("Fragment::pasteAnchoredModel");
+	Messenger::exit("Fragment::pasteAnchoredModel");
 }
 
 /*
@@ -327,13 +324,13 @@ FragmentGroup::FragmentGroup() : ListItem<FragmentGroup>()
 }
 
 // Set name of group
-void FragmentGroup::setName(const char *s)
+void FragmentGroup::setName(const char* s)
 {
 	name_ = s;
 }
 
 // Return name of group
-const char *FragmentGroup::name()
+const char* FragmentGroup::name()
 {
 	return name_.get();
 }

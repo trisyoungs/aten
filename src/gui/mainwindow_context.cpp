@@ -19,6 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <QtGui/QColorDialog>
 #include "main/aten.h"
 #include "gui/mainwindow.h"
 #include "gui/geometry.h"
@@ -29,7 +30,7 @@
 // Update context menu
 void AtenWindow::updateContextMenu()
 {
-	msg.enter("AtenWindow::updateContextMenu");
+	Messenger::enter("AtenWindow::updateContextMenu");
 	Model* viewTarget = aten_.currentModel();
 
 	// Enable bond, angle, and torsion editing
@@ -43,7 +44,7 @@ void AtenWindow::updateContextMenu()
 	
 	// (De)Activate glyph menu items based on number of atoms selected
 	activateGlyphActions(nselected);
-	msg.exit("AtenWindow::updateContextMenu");
+	Messenger::exit("AtenWindow::updateContextMenu");
 }
 
 // Activate glyph actions 
@@ -81,42 +82,42 @@ void AtenWindow::callContextMenu(Atom* undermouse, int x, int y)
 }
 
 // Set atom style
-void AtenWindow::setAtomStyle(Atom::DrawStyle ds)
+void AtenWindow::setAtomStyle(Prefs::DrawStyle ds)
 {
-	if ((contextAtom_ == NULL) || (aten_.currentModelOrFrame()->nSelected() > 1)) CommandNode::run(Command::AtomStyle, "c", Atom::drawStyle(ds));
-	else CommandNode::run(Command::AtomStyle, "ci", Atom::drawStyle(ds), contextAtom_->id()+1);
+	if ((contextAtom_ == NULL) || (aten_.currentModelOrFrame()->nSelected() > 1)) CommandNode::run(Commands::AtomStyle, "c", Prefs::drawStyle(ds));
+	else CommandNode::run(Commands::AtomStyle, "ci", Prefs::drawStyle(ds), contextAtom_->id()+1);
 	contextAtom_ = NULL;
 }
 
 void AtenWindow::on_actionAtomStyleStick_triggered(bool checked)
 {
-	setAtomStyle(Atom::StickStyle);
+	setAtomStyle(Prefs::StickStyle);
 	postRedisplay();
 }
 
 void AtenWindow::on_actionAtomStyleTube_triggered(bool checked)
 {
-	setAtomStyle(Atom::TubeStyle);
+	setAtomStyle(Prefs::TubeStyle);
 	postRedisplay();
 }
 
 void AtenWindow::on_actionAtomStyleSphere_triggered(bool checked)
 {
-	setAtomStyle(Atom::SphereStyle);
+	setAtomStyle(Prefs::SphereStyle);
 	postRedisplay();
 }
 
 void AtenWindow::on_actionAtomStyleScaled_triggered(bool checked)
 {
-	setAtomStyle(Atom::ScaledStyle);
+	setAtomStyle(Prefs::ScaledStyle);
 	postRedisplay();
 }
 
 // Set atom labels
 void AtenWindow::setAtomLabel(Atom::AtomLabel al)
 {
-	if ((contextAtom_ == NULL) || (aten_.currentModelOrFrame()->nSelected() > 1)) CommandNode::run(Command::Label, "c", Atom::atomLabel(al));
-	else CommandNode::run(Command::Label, "ci", Atom::atomLabel(al), contextAtom_->id()+1);
+	if ((contextAtom_ == NULL) || (aten_.currentModelOrFrame()->nSelected() > 1)) CommandNode::run(Commands::Label, "c", Atom::atomLabel(al));
+	else CommandNode::run(Commands::Label, "ci", Atom::atomLabel(al), contextAtom_->id()+1);
 	contextAtom_ = NULL;
 	postRedisplay();
 }
@@ -124,9 +125,9 @@ void AtenWindow::setAtomLabel(Atom::AtomLabel al)
 // Clear atom labels
 void AtenWindow::removeAtomLabels(bool all)
 {
-	if (all) CommandNode::run(Command::ClearLabels, "");
-	else if ((contextAtom_ == NULL) || (aten_.currentModelOrFrame()->nSelected() > 1)) CommandNode::run(Command::RemoveLabels, "");
-	else CommandNode::run(Command::RemoveLabels, "i", contextAtom_->id()+1);
+	if (all) CommandNode::run(Commands::ClearLabels, "");
+	else if ((contextAtom_ == NULL) || (aten_.currentModelOrFrame()->nSelected() > 1)) CommandNode::run(Commands::RemoveLabels, "");
+	else CommandNode::run(Commands::RemoveLabels, "i", contextAtom_->id()+1);
 	contextAtom_ = NULL;
 	postRedisplay();
 }
@@ -169,7 +170,7 @@ void AtenWindow::on_actionAtomLabelClearAll_triggered(bool checked)
 // Reset atom custom colour to element colour
 void AtenWindow::on_actionAtomColourReset_triggered(bool checked)
 {
-	CommandNode::run(Command::RecolourAtoms, "");
+	CommandNode::run(Commands::RecolourAtoms, "");
 	contextAtom_ = NULL;
 	postRedisplay();
 }
@@ -187,46 +188,46 @@ void AtenWindow::on_actionAtomColourSet_triggered(bool checked)
 	newcol.setRgba(QColorDialog::getRgba(oldcol.rgba(), &ok, this));
 	if (!ok) return;
 	// Store new colour
-	CommandNode::run(Command::ColourAtoms, "dddd", newcol.redF(), newcol.greenF(), newcol.blueF(), newcol.alphaF());
+	CommandNode::run(Commands::ColourAtoms, "dddd", newcol.redF(), newcol.greenF(), newcol.blueF(), newcol.alphaF());
 	contextAtom_ = NULL;
 	// Set colour scheme menu option automatically if necessary
 	if (prefs.colourScheme() != Prefs::CustomScheme) ui.actionSchemeCustom->trigger();
-	msg.print("Colouring scheme changed to 'custom'.\n");
+	Messenger::print("Colouring scheme changed to 'custom'.\n");
 	postRedisplay();
 }
 
 // Shift atom order up
 void AtenWindow::on_actionOrderShiftUp_triggered(bool checked)
 {
-	CommandNode::run(Command::ShiftUp, "i", 1);
+	CommandNode::run(Commands::ShiftUp, "i", 1);
 	updateWidgets(AtenWindow::CanvasTarget);
 }
 
 // Shift atom order down
 void AtenWindow::on_actionOrderShiftDown_triggered(bool checked)
 {
-	CommandNode::run(Command::ShiftDown, "i", 1);
+	CommandNode::run(Commands::ShiftDown, "i", 1);
 	updateWidgets(AtenWindow::CanvasTarget);
 }
 
 // Shift atoms to beginning of list
 void AtenWindow::on_actionOrderMoveToStart_triggered(bool checked)
 {
-	CommandNode::run(Command::MoveToStart, "");
+	CommandNode::run(Commands::MoveToStart, "");
 	updateWidgets(AtenWindow::CanvasTarget);
 }
 
 // Shift atoms to end of list
 void AtenWindow::on_actionOrderMoveToEnd_triggered(bool checked)
 {
-	CommandNode::run(Command::MoveToEnd, "");
+	CommandNode::run(Commands::MoveToEnd, "");
 	updateWidgets(AtenWindow::CanvasTarget);
 }
 
 // Reorder atoms in current selection
 void AtenWindow::on_actionOrderReorder_triggered(bool checked)
 {
-	CommandNode::run(Command::ReOrder, "");
+	CommandNode::run(Commands::ReOrder, "");
 	updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
 }
 
@@ -235,13 +236,13 @@ void AtenWindow::setAtomHidden(bool hidden)
 {
 	if ((contextAtom_ == NULL) || (aten_.currentModelOrFrame()->nSelected() > 1)) 
 	{
-		if (hidden) CommandNode::run(Command::Hide, "");
-		else CommandNode::run(Command::Show, "");
+		if (hidden) CommandNode::run(Commands::Hide, "");
+		else CommandNode::run(Commands::Show, "");
 	}
 	else
 	{
-		if (hidden) CommandNode::run(Command::Hide, "i", contextAtom_->id()+1);
-		else CommandNode::run(Command::Show, "i", contextAtom_->id()+1);
+		if (hidden) CommandNode::run(Commands::Hide, "i", contextAtom_->id()+1);
+		else CommandNode::run(Commands::Show, "i", contextAtom_->id()+1);
 	}
 	updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
 }
@@ -258,15 +259,15 @@ void AtenWindow::on_actionAtomProbe_triggered(bool checked)
 
 void AtenWindow::on_actionAtomFixPosition_triggered(bool checked)
 {
-	if ((contextAtom_ == NULL) || (aten_.currentModelOrFrame()->nSelected() > 1)) CommandNode::run(Command::Fix, "");
-	else CommandNode::run(Command::Fix, "i", contextAtom_->id()+1);
+	if ((contextAtom_ == NULL) || (aten_.currentModelOrFrame()->nSelected() > 1)) CommandNode::run(Commands::Fix, "");
+	else CommandNode::run(Commands::Fix, "i", contextAtom_->id()+1);
 	postRedisplay();
 }
 
 void AtenWindow::on_actionAtomFreePosition_triggered(bool checked)
 {
-	if ((contextAtom_ == NULL) || (aten_.currentModelOrFrame()->nSelected() > 1)) CommandNode::run(Command::Free, "");
-	else CommandNode::run(Command::Free, "i", contextAtom_->id()+1);
+	if ((contextAtom_ == NULL) || (aten_.currentModelOrFrame()->nSelected() > 1)) CommandNode::run(Commands::Free, "");
+	else CommandNode::run(Commands::Free, "i", contextAtom_->id()+1);
 	postRedisplay();
 }
 
@@ -287,7 +288,7 @@ void AtenWindow::on_actionSetTorsionAngle_triggered(bool checked)
 
 void AtenWindow::on_actionCentreAtOrigin_triggered(bool checked)
 {
-	CommandNode::run(Command::Centre, "ddd", 0.0, 0.0, 0.0);
+	CommandNode::run(Commands::Centre, "ddd", 0.0, 0.0, 0.0);
 	postRedisplay();
 }
 
@@ -317,13 +318,13 @@ void AtenWindow::createGlyph()
 	}
 	Glyph::GlyphType gt = (Glyph::GlyphType) n;
 	// Create glyph in model
-	CommandNode::run(Command::NewGlyph, "c", Glyph::glyphType(gt));
+	CommandNode::run(Commands::NewGlyph, "c", Glyph::glyphType(gt));
 	// Set data to atom selection
 	Model* viewTarget = aten_.currentModelOrFrame();
 	n = 1;
-	for (Refitem<Atom,int> *ri = viewTarget->selection(); ri != NULL; ri = ri->next)
+	for (Refitem<Atom,int>* ri = viewTarget->selection(); ri != NULL; ri = ri->next)
 	{
-		CommandNode::run(Command::GlyphAtomR, "ii", n, ri->item->id()+1);
+		CommandNode::run(Commands::GlyphAtomR, "ii", n, ri->item->id()+1);
 		n++;
 	}
 	updateWidgets(AtenWindow::CanvasTarget+AtenWindow::GlyphsTarget);

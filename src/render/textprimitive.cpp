@@ -23,6 +23,8 @@
 #include "render/textprimitive_grammar.hh"
 #include "render/fontinstance.h"
 
+ATEN_USING_NAMESPACE
+
 // Static members
 TextPrimitive* TextPrimitive::target_ = NULL;
 QString TextPrimitive::stringSource_;
@@ -74,7 +76,7 @@ void TextPrimitive::setTextSizeScale(double textSizeScale)
 }
 
 // Set data
-void TextPrimitive::set(QString text, Vec3<double> anchorPoint, TextPrimitive::TextAnchor anchorPosition, Vec3<double> adjustmentVector, Matrix& rotation, double textSize)
+void TextPrimitive::set(QString text, Vec3< double > anchorPoint, TextPrimitive::TextAnchor anchorPosition, Vec3< double > adjustmentVector, Matrix rotation, double textSize)
 {
 	// Call the parser
 	generateFragments(this, text);
@@ -318,7 +320,7 @@ int TextPrimitive::lex()
 		TextPrimitive::EscapeSequence es = TextPrimitive::escapeSequence(qPrintable(token));
 		if (es == TextPrimitive::nEscapeSequences)
 		{
-			msg.print(Messenger::Verbose, "Error: String '%s' is not a valid escape sequence.\n", qPrintable(token));
+			Messenger::print(Messenger::Verbose, "Error: String '%s' is not a valid escape sequence.\n", qPrintable(token));
 			return UCR_TP_FAIL;
 		}
 		TextPrimitiveParser_lval.escSeq = es;
@@ -362,7 +364,7 @@ bool TextPrimitive::addFragment(QString text)
 	TextFragment* fragment = fragments_.add();
 	if (formatStack_.nItems() == 0)
 	{
-		msg.print("Internal Error: No TextFormat on stack in TextPrimitive::addFragment().\n");
+		Messenger::print("Internal Error: No TextFormat on stack in TextPrimitive::addFragment().\n");
 		fragment->set(text);
 		return false;
 	}
@@ -387,7 +389,7 @@ bool TextPrimitive::addEscape(TextPrimitive::EscapeSequence escSeq)
 	TextFormat* topMostFormat = formatStack_.last();
 	TextFormat* newFormat = formatStack_.add();
 	if (topMostFormat) (*newFormat) = (*topMostFormat);
-	else msg.print("Internal Error: No topmost TextFormat to copy from in TextPrimitive::addEscape().\n");
+	else Messenger::print("Internal Error: No topmost TextFormat to copy from in TextPrimitive::addEscape().\n");
 
 	// Deal with the escape sequence
 	switch (escSeq)
@@ -415,7 +417,7 @@ bool TextPrimitive::addEscape(TextPrimitive::EscapeSequence escSeq)
 			newFormat->setScale( 0.583 * newFormat->scale() );
 			break;
 		default:
-			msg.print("Escape %i not handled in TextPrimitive::addEscape().\n", escSeq);
+			Messenger::print("Escape %i not handled in TextPrimitive::addEscape().\n", escSeq);
 			return false;
 			break;
 	}

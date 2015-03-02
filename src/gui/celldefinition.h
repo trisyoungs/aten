@@ -24,11 +24,33 @@
 
 #include "gui/ui_celldefinition.h"
 
+// Forward Declarations (Qt)
+class AtenWindow;
+
 // Cell definition dock widget
 class CellDefinitionWidget : public QDockWidget
 {
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
+
+	public:
+	// Constructor / Destructor
+	CellDefinitionWidget(AtenWindow& parent, Qt::WindowFlags flags = 0);
+	// Main form declaration
+	Ui::CellDefinitionWidget ui;
+
+	private:
+	// Reference to main window
+	AtenWindow& parent_;
+
+
+	/*
+	// Local variables
+	*/
+	private:
+	// Whether the window is refreshing
+	bool refreshing_;
+
 
 	/*
 	// Window Functions
@@ -36,10 +58,12 @@ class CellDefinitionWidget : public QDockWidget
 	private:
 	void refreshMatrix();
 	void refreshABC();
+
 	public:
 	void showWidget();
 	void refresh();
 	void cellChanged(int index, double newvalue);
+
 	private slots:
 	void on_CellDefinitionGroup_clicked(bool checked);
 	void on_CellMatrixXXSpin_editingFinished();
@@ -56,28 +80,9 @@ class CellDefinitionWidget : public QDockWidget
 	void on_CellSpacegroupEdit_returnPressed();
 	void on_CellSpacegroupRemoveButton_clicked(bool checked);
 	void on_CellSpacegroupPackButton_clicked(bool checked);
+
 	protected:
 	void closeEvent(QCloseEvent *event);
-
-	/*
-	// Local variables
-	*/
-	private:
-	// Whether the window is refreshing
-	bool refreshing_;
-
-	/*
-	// Dialog
-	*/
-	private:
-	// Reference to main window
-	AtenWindow& parent_;
-
-	public:
-	// Constructor / Destructor
-	CellDefinitionWidget(AtenWindow& parent, Qt::WindowFlags flags = 0);
-	// Main form declaration
-	Ui::CellDefinitionWidget ui;
 };
 
 #endif

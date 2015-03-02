@@ -22,7 +22,11 @@
 #ifndef ATEN_WRAPINT_H
 #define ATEN_WRAPINT_H
 
-// Warpped Integer Variable
+#include "base/namespace.h"
+
+ATEN_BEGIN_NAMESPACE
+
+// Wrapped Integer Variable
 class WrapInt
 {
 	public:
@@ -62,6 +66,8 @@ class WrapInt
 	// Conversion (int)
 	operator int();
 };
+
+ATEN_END_NAMESPACE
 
 #endif
 

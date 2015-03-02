@@ -21,21 +21,17 @@
 
 #include "parser/forcefield.h"
 #include "parser/stepnode.h"
-#include "base/atom.h"
-#include "math/constants.h"
-#include "base/elements.h"
 #include "ff/forcefield.h"
 #include "main/aten.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+
+ATEN_USING_NAMESPACE
 
 /*
 // Variable
 */
 
 // Constructor
-ForcefieldVariable::ForcefieldVariable(Forcefield *ptr, bool constant)
+ForcefieldVariable::ForcefieldVariable(Forcefield* ptr, bool constant)
 {
 	// Private variables
 	returnType_ = VTypes::ForcefieldData;
@@ -67,12 +63,12 @@ Accessor ForcefieldVariable::accessorData[ForcefieldVariable::nAccessors] = {
 
 // Function data
 FunctionAccessor ForcefieldVariable::functionData[ForcefieldVariable::nFunctions] = {
-	{ "addAngle",		VTypes::ForcefieldBoundData,	Command::arguments(Command::AngleDef),	Command::argText(Command::AngleDef) },
-	{ "addBond",		VTypes::ForcefieldBoundData,	Command::arguments(Command::BondDef),	Command::argText(Command::BondDef) },
-	{ "addInter",		VTypes::NoData,			Command::arguments(Command::InterDef),	Command::argText(Command::InterDef) },
-	{ "addTorsion",		VTypes::ForcefieldBoundData,	Command::arguments(Command::TorsionDef),Command::argText(Command::TorsionDef) },
-	{ "addType",		VTypes::ForcefieldAtomData,	Command::arguments(Command::TypeDef),	Command::argText(Command::TypeDef) },
-	{ "finalise",		VTypes::NoData, 		Command::arguments(Command::Finalise),	Command::argText(Command::Finalise) },
+	{ "addAngle",		VTypes::ForcefieldBoundData,	aten_.commandArguments(Commands::AngleDef),	aten_.commandArgText(Commands::AngleDef) },
+	{ "addBond",		VTypes::ForcefieldBoundData,	aten_.commandArguments(Commands::BondDef),	aten_.commandArgText(Commands::BondDef) },
+	{ "addInter",		VTypes::NoData,			aten_.commandArguments(Commands::InterDef),	aten_.commandArgText(Commands::InterDef) },
+	{ "addTorsion",		VTypes::ForcefieldBoundData,	aten_.commandArguments(Commands::TorsionDef),	aten_.commandArgText(Commands::TorsionDef) },
+	{ "addType",		VTypes::ForcefieldAtomData,	aten_.commandArguments(Commands::TypeDef),	aten_.commandArgText(Commands::TypeDef) },
+	{ "finalise",		VTypes::NoData, 		aten_.commandArguments(Commands::Finalise),	aten_.commandArgText(Commands::Finalise) },
 	{ "findAngle",		VTypes::ForcefieldBoundData, 	"CCC",					"string typei, string typej, string typek" },
 	{ "findBond",		VTypes::ForcefieldBoundData, 	"CC",					"string typei, string typej" },
 	{ "findImproper",	VTypes::ForcefieldBoundData, 	"CCCC",					"string typei, string typej, string typek, string typel" },
@@ -82,16 +78,16 @@ FunctionAccessor ForcefieldVariable::functionData[ForcefieldVariable::nFunctions
 };
 
 // Search variable access list for provided accessor (call private static function)
-StepNode *ForcefieldVariable::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist)
+StepNode* ForcefieldVariable::findAccessor(const char* s, TreeNode* arrayIndex, TreeNode* argList)
 {
-	return ForcefieldVariable::accessorSearch(s, arrayindex, arglist);
+	return ForcefieldVariable::accessorSearch(s, arrayIndex, argList);
 }
 
 // Private static function to search accessors
-StepNode *ForcefieldVariable::accessorSearch(const char *s, TreeNode *arrayindex, TreeNode *arglist)
+StepNode* ForcefieldVariable::accessorSearch(const char* s, TreeNode* arrayIndex, TreeNode* argList)
 {
-	msg.enter("ForcefieldVariable::accessorSearch");
-	StepNode *result = NULL;
+	Messenger::enter("ForcefieldVariable::accessorSearch");
+	StepNode* result = NULL;
 	int i = 0;
 	i = Variable::searchAccessor(s, nAccessors, accessorData);
 	if (i == -1)
@@ -101,84 +97,84 @@ StepNode *ForcefieldVariable::accessorSearch(const char *s, TreeNode *arrayindex
 		i = Variable::searchAccessor(s, nFunctions, functionData);
 		if (i == -1)
 		{
-			msg.print("Error: Type 'Forcefield&' has no member or function named '%s'.\n", s);
+			Messenger::print("Error: Type 'Forcefield&' has no member or function named '%s'.\n", s);
 			printAccessors();
-			msg.exit("ForcefieldVariable::accessorSearch");
+			Messenger::exit("ForcefieldVariable::accessorSearch");
 			return NULL;
 		}
-		msg.print(Messenger::Parse, "FunctionAccessor match = %i (%s)\n", i, functionData[i].name);
-		if (arrayindex != NULL)
+		Messenger::print(Messenger::Parse, "FunctionAccessor match = %i (%s)\n", i, functionData[i].name);
+		if (arrayIndex != NULL)
 		{
-			msg.print("Error: Array index given to 'Forcefield&' function '%s'.\n", s);
-			msg.exit("ForcefieldVariable::accessorSearch");
+			Messenger::print("Error: Array index given to 'Forcefield&' function '%s'.\n", s);
+			Messenger::exit("ForcefieldVariable::accessorSearch");
 			return NULL;
 		}
 		// Add and check supplied arguments...
 		result = new StepNode(i, VTypes::ForcefieldData, functionData[i].returnType);
-		result->addJoinedArguments(arglist);
+		result->addJoinedArguments(argList);
 		if (!result->checkArguments(functionData[i].arguments, functionData[i].name))
 		{
-			msg.print("Error: Syntax for 'Forcefield&' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
+			Messenger::print("Error: Syntax for 'Forcefield&' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
 			delete result;
 			result = NULL;
 		}
 	}
 	else
 	{
-		msg.print(Messenger::Parse, "Accessor match = %i (%s)\n", i, accessorData[i].name);
+		Messenger::print(Messenger::Parse, "Accessor match = %i (%s)\n", i, accessorData[i].name);
 		// Were we given an array index when we didn't want one?
-		if ((accessorData[i].arraySize == 0) && (arrayindex != NULL))
+		if ((accessorData[i].arraySize == 0) && (arrayIndex != NULL))
 		{
-			msg.print("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
+			Messenger::print("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
 			result = NULL;
 		}
 		// Were we given an argument list when we didn't want one?
-		if (arglist != NULL)
+		if (argList != NULL)
 		{
-			msg.print("Error: Argument list given to 'Forcefield&' array member '%s'.\n", s);
-			msg.exit("ForcefieldVariable::accessorSearch");
+			Messenger::print("Error: Argument list given to 'Forcefield&' array member '%s'.\n", s);
+			Messenger::exit("ForcefieldVariable::accessorSearch");
 			return NULL;
 		}
-		result = new StepNode(i, VTypes::ForcefieldData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
+		result = new StepNode(i, VTypes::ForcefieldData, arrayIndex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
 	}
-	msg.exit("ForcefieldVariable::accessorSearch");
+	Messenger::exit("ForcefieldVariable::accessorSearch");
 	return result;
 }
 
 // Retrieve desired value
-bool ForcefieldVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, int arrayIndex)
+bool ForcefieldVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex, int arrayIndex)
 {
-	msg.enter("ForcefieldVariable::retrieveAccessor");
+	Messenger::enter("ForcefieldVariable::retrieveAccessor");
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nAccessors))
 	{
 		printf("Internal Error: Accessor id %i is out of range for Forcefield type.\n", i);
-		msg.exit("ForcefieldVariable::retrieveAccessor");
+		Messenger::exit("ForcefieldVariable::retrieveAccessor");
 		return FALSE;
 	}
 	Accessors acc = (Accessors) i;
 	// Check for correct lack/presence of array index given
 	if ((accessorData[i].arraySize == 0) && hasArrayIndex)
 	{
-		msg.print("Error: Unnecessary array index provided for member '%s'.\n", accessorData[i].name);
-		msg.exit("ForcefieldVariable::retrieveAccessor");
+		Messenger::print("Error: Unnecessary array index provided for member '%s'.\n", accessorData[i].name);
+		Messenger::exit("ForcefieldVariable::retrieveAccessor");
 		return FALSE;
 	}
 	else if ((accessorData[i].arraySize > 0) && (hasArrayIndex))
 	{
 		if ((arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize))
 		{
-			msg.print("Error: Array index out of bounds for member '%s' (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
-			msg.exit("ForcefieldVariable::retrieveAccessor");
+			Messenger::print("Error: Array index out of bounds for member '%s' (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
+			Messenger::exit("ForcefieldVariable::retrieveAccessor");
 			return FALSE;
 		}
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	Forcefield *ptr = (Forcefield*) rv.asPointer(VTypes::ForcefieldData, result);
+	Forcefield* ptr = (Forcefield*) rv.asPointer(VTypes::ForcefieldData, result);
 	if ((!result) || (ptr == NULL))
 	{
-		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::ForcefieldData));
+		Messenger::print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::ForcefieldData));
 		result = FALSE;
 	}
 	if (result) switch (acc)
@@ -188,7 +184,7 @@ bool ForcefieldVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayI
 			{
 				if (arrayIndex > ptr->nTypes())
 				{
-					msg.print("Error: Array index is out of bounds for 'atomTypes' accessor (n = %i, nTypes = %i)\n", arrayIndex, ptr->nTypes());
+					Messenger::print("Error: Array index is out of bounds for 'atomTypes' accessor (n = %i, nTypes = %i)\n", arrayIndex, ptr->nTypes());
 					return FALSE;
 				}
 				else rv.set(VTypes::ForcefieldAtomData, ptr->type(arrayIndex-1));
@@ -224,19 +220,19 @@ bool ForcefieldVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayI
 			result = FALSE;
 			break;
 	}
-	msg.exit("ForcefieldVariable::retrieveAccessor");
+	Messenger::exit("ForcefieldVariable::retrieveAccessor");
 	return result;
 }
 
 // Set desired value
-bool ForcefieldVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newvalue, bool hasArrayIndex, int arrayIndex)
+bool ForcefieldVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newValue, bool hasArrayIndex, int arrayIndex)
 {
-	msg.enter("ForcefieldVariable::setAccessor");
+	Messenger::enter("ForcefieldVariable::setAccessor");
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nAccessors))
 	{
 		printf("Internal Error: Accessor id %i is out of range for Forcefield type.\n", i);
-		msg.exit("ForcefieldVariable::setAccessor");
+		Messenger::exit("ForcefieldVariable::setAccessor");
 		return FALSE;
 	}
 	Accessors acc = (Accessors) i;
@@ -248,20 +244,20 @@ bool ForcefieldVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &
 		{
 			if ((accessorData[i].arraySize > 0) && ( (arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize) ))
 			{
-				msg.print("Error: Array index provided for member '%s' is out of range (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
+				Messenger::print("Error: Array index provided for member '%s' is out of range (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
 				result = FALSE;
 			}
-			if (newvalue.arraySize() > 0)
+			if (newValue.arraySize() > 0)
 			{
-				msg.print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
+				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
 				result = FALSE;
 			}
 		}
 		else
 		{
-			if (newvalue.arraySize() > accessorData[i].arraySize)
+			if (newValue.arraySize() > accessorData[i].arraySize)
 			{
-				msg.print("Error: The array being assigned to member '%s' is larger than the size of the desination array (%i cf. %i).\n", accessorData[i].name, newvalue.arraySize(), accessorData[i].arraySize);
+				Messenger::print("Error: The array being assigned to member '%s' is larger than the size of the desination array (%i cf. %i).\n", accessorData[i].name, newValue.arraySize(), accessorData[i].arraySize);
 				result = FALSE;
 			}
 		}
@@ -269,40 +265,40 @@ bool ForcefieldVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &
 	else
 	{
 		// This is not an array member, so cannot be assigned an array unless its a Vector
-		if (newvalue.arraySize() != -1)
+		if (newValue.arraySize() != -1)
 		{
 			if (accessorData[i].returnType != VTypes::VectorData)
 			{
-				msg.print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
+				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
 				result = FALSE;
 			}
-			else if ((newvalue.type() != VTypes::VectorData) && (newvalue.arraySize() != 3))
+			else if ((newValue.type() != VTypes::VectorData) && (newValue.arraySize() != 3))
 			{
-				msg.print("Error: Only an array of size 3 can be assigned to a vector (member '%s').\n", accessorData[i].name);
+				Messenger::print("Error: Only an array of size 3 can be assigned to a vector (member '%s').\n", accessorData[i].name);
 				result = FALSE;
 			}
 		}
 	}
 	if (!result)
 	{
-		msg.exit("ForcefieldVariable::setAccessor");
+		Messenger::exit("ForcefieldVariable::setAccessor");
 		return FALSE;
 	}
 	// Get current data from ReturnValue
-	Forcefield *ptr = (Forcefield*) sourcerv.asPointer(VTypes::ForcefieldData, result);
+	Forcefield* ptr = (Forcefield*) sourcerv.asPointer(VTypes::ForcefieldData, result);
 	if ((!result) || (ptr == NULL))
 	{
-		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::ForcefieldData));
+		Messenger::print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::ForcefieldData));
 		result = FALSE;
 	}
 	Prefs::EnergyUnit eu;
 	if (result) switch (acc)
 	{
 		case (Name):
-			ptr->setName( newvalue.asString() );
+			ptr->setName( newValue.asString() );
 			break;
 		case (Units):
-			eu = Prefs::energyUnit(newvalue.asString(), TRUE);
+			eu = Prefs::energyUnit(newValue.asString(), TRUE);
 			if (eu == Prefs::nEnergyUnits) result = FALSE;
 			else ptr->setEnergyUnit(eu);
 			break;
@@ -311,45 +307,45 @@ bool ForcefieldVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &
 			result = FALSE;
 			break;
 	}
-	msg.exit("ForcefieldVariable::setAccessor");
+	Messenger::exit("ForcefieldVariable::setAccessor");
 	return result;
 }
 
 // Perform desired function
-bool ForcefieldVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
+bool ForcefieldVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 {
-	msg.enter("ForcefieldVariable::performFunction");
+	Messenger::enter("ForcefieldVariable::performFunction");
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nFunctions))
 	{
 		printf("Internal Error: FunctionAccessor id %i is out of range for Forcefield type.\n", i);
-		msg.exit("ForcefieldVariable::performFunction");
+		Messenger::exit("ForcefieldVariable::performFunction");
 		return FALSE;
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	Forcefield *ptr = (Forcefield*) rv.asPointer(VTypes::ForcefieldData, result);
+	Forcefield* ptr = (Forcefield*) rv.asPointer(VTypes::ForcefieldData, result);
 	// Construct temporary bundle object containing our Forcefield pointer
 	Bundle bundle(ptr);
 	if (result) switch (i)
 	{
 		case (ForcefieldVariable::AddAngle):
-			result = aten.commands.call(Command::AngleDef, node, rv, bundle);
+			result = aten_.callCommand(Commands::AngleDef, node, rv, bundle);
 			break;
 		case (ForcefieldVariable::AddBond):
-			result = aten.commands.call(Command::BondDef, node, rv, bundle);
+			result = aten_.callCommand(Commands::BondDef, node, rv, bundle);
 			break;
 		case (ForcefieldVariable::AddInter):
-			result = aten.commands.call(Command::InterDef, node, rv, bundle);
+			result = aten_.callCommand(Commands::InterDef, node, rv, bundle);
 			break;
 		case (ForcefieldVariable::AddTorsion):
-			result = aten.commands.call(Command::TorsionDef, node, rv, bundle);
+			result = aten_.callCommand(Commands::TorsionDef, node, rv, bundle);
 			break;
 		case (ForcefieldVariable::AddType):
-			result = aten.commands.call(Command::TypeDef, node, rv, bundle);
+			result = aten_.callCommand(Commands::TypeDef, node, rv, bundle);
 			break;
 		case (ForcefieldVariable::Finalise):
-			result = aten.commands.call(Command::FinaliseFF, node, rv, bundle);
+			result = aten_.callCommand(Commands::FinaliseFF, node, rv, bundle);
 			break;
 		case (ForcefieldVariable::FindAngle):
 			rv.set(VTypes::ForcefieldBoundData, ptr->findAngle(node->argc(0), node->argc(1), node->argc(2)));
@@ -374,7 +370,7 @@ bool ForcefieldVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 			result = FALSE;
 			break;
 	}
-	msg.exit("ForcefieldVariable::performFunction");
+	Messenger::exit("ForcefieldVariable::performFunction");
 	return result;
 }
 
@@ -383,15 +379,15 @@ void ForcefieldVariable::printAccessors()
 {
 	if (ForcefieldVariable::nAccessors > 0)
 	{
-		msg.print("Valid accessors are:\n");
-		for (int n=0; n<ForcefieldVariable::nAccessors; ++n) msg.print("%s%s%s", n == 0 ? " " : ", ", accessorData[n].name, accessorData[n].arraySize > 0 ? "[]" : "");
-		msg.print("\n");
+		Messenger::print("Valid accessors are:\n");
+		for (int n=0; n<ForcefieldVariable::nAccessors; ++n) Messenger::print("%s%s%s", n == 0 ? " " : ", ", accessorData[n].name, accessorData[n].arraySize > 0 ? "[]" : "");
+		Messenger::print("\n");
 	}
 	if ((ForcefieldVariable::nFunctions > 0) && (strcmp(functionData[0].name,".dummy") != 0))
 	{
-		msg.print("Valid functions are:\n");
-		for (int n=0; n<ForcefieldVariable::nFunctions; ++n) msg.print("%s%s(%s)", n == 0 ? " " : ", ", functionData[n].name, functionData[n].argText);
-		msg.print("\n");
+		Messenger::print("Valid functions are:\n");
+		for (int n=0; n<ForcefieldVariable::nFunctions; ++n) Messenger::print("%s%s(%s)", n == 0 ? " " : ", ", functionData[n].name, functionData[n].argText);
+		Messenger::print("\n");
 	}
 }
 
@@ -400,7 +396,7 @@ void ForcefieldVariable::printAccessors()
 */
 
 // Constructor
-ForcefieldArrayVariable::ForcefieldArrayVariable(TreeNode *sizeexpr, bool constant)
+ForcefieldArrayVariable::ForcefieldArrayVariable(TreeNode* sizeexpr, bool constant)
 {
 	// Private variables
 	returnType_ = VTypes::ForcefieldData;
@@ -412,7 +408,7 @@ ForcefieldArrayVariable::ForcefieldArrayVariable(TreeNode *sizeexpr, bool consta
 }
 
 // Search variable access list for provided accessor
-StepNode *ForcefieldArrayVariable::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist)
+StepNode* ForcefieldArrayVariable::findAccessor(const char* s, TreeNode* arrayIndex, TreeNode* argList)
 {
-	return ForcefieldVariable::accessorSearch(s, arrayindex, arglist);
+	return ForcefieldVariable::accessorSearch(s, arrayIndex, argList);
 }

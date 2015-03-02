@@ -22,6 +22,13 @@
 #ifndef ATEN_MESSENGER_H
 #define ATEN_MESSENGER_H
 
+#include "base/namespace.h"
+
+ATEN_BEGIN_NAMESPACE
+
+// Forward Declarations (Aten)
+/* none */
+
 // Global messaging and program output levels
 class Messenger
 {
@@ -29,50 +36,51 @@ class Messenger
 	// Constructor
 	Messenger();
 	// Messaging output types
-	enum OutputType { All, Calls, Commands, Always, GL, Parse, Test, Typing, Verbose, nOutputTypes };
+	enum OutputType { All, Calls, Commands, Parse, Typing, Verbose, nOutputTypes };
 	// Convert text string to debug mode
-	static OutputType outputType(const char *name, bool reportError = 0);
+	static OutputType outputType(const char* name, bool reportError = 0);
 	// Convert debug mode to text string
-	static const char *outputType(OutputType ot);
+	static const char* outputType(OutputType ot);
+
 
 	/*
 	// Output Modes
 	*/
 	private:
 	// Bitvector of active output levels
-	int outputTypes_;
+	static int outputTypes_;
 	// Call level, used to provide indent for enter/exit info
-	int callLevel_;
+	static int callLevel_;
 	// Quiet mode
-	bool quiet_;
+	static bool quiet_;
 
 	public:
 	// Add an output type to the output bitvector
-	void addOutputType(Messenger::OutputType);
+	static void addOutputType(Messenger::OutputType outputType);
 	// Remove an output type from the output bitvector
-	void removeOutputType(Messenger::OutputType);
+	static void removeOutputType(Messenger::OutputType outputType);
 	// Returns whether the specified output type is active
-	bool isOutputActive(Messenger::OutputType) const;
+	static bool isOutputActive(Messenger::OutputType outputType);
 	// Set status of quiet mode
-	void setQuiet(bool b);
+	static void setQuiet(bool quiet);
 	// Return status of quiet mode
-	bool isQuiet() const;
+	static bool isQuiet();
+
 
 	/*
 	// Messaging functions
 	*/
 	public:
 	// Print normal message
-	void print(const char*, ...) const;
-	// Print rich message (for GUI, plain for console) including html formatting
-	void richPrint(const char*, ...) const;
+	static void print(const char* fmtString, ...);
 	// Print message in specific output level
-	void print(Messenger::OutputType, const char*, ...) const;
-	// Entrances / exits to / from subroutines
-	void enter(const char *callname);
-	void exit(const char *callname);
+	static void print(Messenger::OutputType outputType, const char* fmtString, ...);
+	// Entrance to subroutine
+	static void enter(const char* callName);
+	// Exit from subroutine
+	static void exit(const char* callName);
 };
 
-extern Messenger msg;
+ATEN_END_NAMESPACE
 
 #endif

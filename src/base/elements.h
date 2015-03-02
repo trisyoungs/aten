@@ -22,10 +22,19 @@
 #ifndef ATEN_ELEMENTMAP_H
 #define ATEN_ELEMENTMAP_H
 
-#include <QtOpenGL/QtOpenGL>
+#ifdef _MAC
+#include <OpenGL/gl.h>
+#else
+#include <GL/gl.h>
+#endif
+#include "templates/vector4.h"
+#include "base/namespace.h"
 
-// Forward Declarations
+ATEN_BEGIN_NAMESPACE
+
+// Forward Declarations (Aten)
 class Atom;
+class Forcefield;
 
 // Element
 class Element
@@ -36,13 +45,13 @@ class Element
 	// Mass of element
 	double atomicMass;
 	// Element name
-	const char *name;
+	const char* name;
 	// Uppercase element name
-	const char *ucName;
+	const char* ucName;
 	// Element symbol
-	const char *symbol;
+	const char* symbol;
 	// Uppercase Element symbol
-	const char *ucSymbol;
+	const char* ucSymbol;
 	// Group position in periodic table
 	int group;
 	// Rough elemental radius (for bond calculation etc.)
@@ -59,11 +68,14 @@ class Element
 	// Data by Z
 	*/
 	public:
-	// Copy the ambient colour of the element into the array provided
-	void copyColour(GLfloat *v);
 	// Set ambient colour component of element
 	void setColour(int rgb, double value);
+	// Set ambient colour of element
 	void setColour(double r, double g, double b, double a);
+	// Copy the ambient colour of the element into the array provided
+	void copyColour(GLfloat* v) const;
+	// Copy the ambient colour of the element into the Vec4 provided
+	void copyColour(Vec4<GLfloat>& v) const;
 };
 
 // Element map
@@ -75,38 +87,38 @@ class ElementMap
 	~ElementMap();
 	// Name->Z mapping methods
 	enum ZMapType { AlphaZMap, FirstAlphaZMap, SingleAlphaZMap, NameZMap, NumericZMap, ForcefieldZMap, AutoZMap, nZMapTypes };
-	static ElementMap::ZMapType zMapType(const char *s, bool reportError = 0);
-	static const char *zMapType(ElementMap::ZMapType zm);
+	static ElementMap::ZMapType zMapType(const char* s, bool reportError = 0);
+	static const char* zMapType(ElementMap::ZMapType zm);
 
 	private:
 	// Convert string from Z to element number
-	int numberToZ(const char*) const;
+	int numberToZ(const char* number) const;
 	// Convert string from alpha to element number
-	int alphaToZ(const char*) const;
+	int alphaToZ(const char* alpha) const;
 	// Convert string from alpha (up to non-AZ inc 09) to element number
-	int firstAlphaToZ(const char*) const;
+	int firstAlphaToZ(const char* alpha) const;
 	// Convert string from first alpha (up to non-AZ inc 09) to element number
-	int singleAlphaToZ(const char*) const;
+	int singleAlphaToZ(const char* alpha) const;
 	// Convert string from name to element number
-	int nameToZ(const char*) const;
+	int nameToZ(const char* name) const;
 	// Convert string from fftype to element number
-	int ffToZ(const char*) const;
+	int ffToZ(const char* s, Forcefield* firstFF) const;
 	// Number of defined elements
 	int nElements_;
 	// Storage for copy of element data
-	Element *backupEl_;
+	Element* backupEl_;
 	
 	public:
 	// Element data array
 	static Element el[];
 	// Default element data
-	Element *defaultEl;
+	Element* defaultEl;
 	// Backup current data
 	void backupData();
 	// Restore default element values
 	void restoreData();
 	// Return atomic number of element in string using supplied method (if specified)
-	int find(const char *query, ElementMap::ZMapType = ElementMap::nZMapTypes) const;
+	int find(const char* query, ElementMap::ZMapType zmt = ElementMap::AutoZMap, Forcefield* firstFF = NULL) const;
 	// Return number of defined elements
 	int nElements() const;
 
@@ -120,9 +132,9 @@ class ElementMap
 	// Return atomic mass of atomic number 'i'
 	double atomicMass(int i) const;
 	// Return name of atomic number 'i'
-	const char *name(int i) const;
+	const char* name(int i) const;
 	// Return symbol of atomic number 'i'
-	const char *symbol(int i) const;
+	const char* symbol(int i) const;
 	// Set radius of atomic number 'i'
 	void setAtomicRadius(int i, double r);
 	// Return effective radius of atomic number 'i'
@@ -130,16 +142,19 @@ class ElementMap
 	// Return bond order penalty for TBO 'bo' of atomic number 'i'
 	int bondOrderPenalty(int i, int bo) const;
 	// Return the colour of the element
-	double *colour(int i);
+	double* colour(int i);
 	// Copy the colour of the element into the array provided
-	void copyColour(int i, GLfloat *v) const;
+	void copyColour(int i, GLfloat* v) const;
+	// Copy the colour of the element into the Vec4 provided
+	void copyColour(int i, Vec4<GLfloat>& v) const;
 	// Set colour component of element
 	void setColour(int i, int rgba, double value);
+	// Set colour of element
 	void setColour(int i, double r, double g, double b, double a);
 
 
 	/*
-	// Data by atom*
+	// Data by Atom*
 	*/
 	public:
 	// Return periodic table group number
@@ -147,17 +162,19 @@ class ElementMap
 	// Return atomic mass of atomic number 'i'
 	double atomicMass(Atom* i);
 	// Return name of atomic number 'i'
-	const char *name(Atom* i);
+	const char* name(Atom* i);
 	// Return symbol of atomic number 'i'
-	const char *symbol(Atom* i);
+	const char* symbol(Atom* i);
 	// Return effective radius of atomic number 'i'
 	double atomicRadius(Atom* i);
 	// Return bond order penalty for TBO 'bo' of atomic number 'i'
 	int bondOrderPenalty(Atom* i, int bo);
 	// Return the colour of the element
-	double *colour(Atom* i);
+	double* colour(Atom* i);
 };
 
 extern ElementMap &Elements();
+
+ATEN_END_NAMESPACE
 
 #endif

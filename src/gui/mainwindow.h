@@ -22,24 +22,27 @@
 #ifndef ATEN_MAINWINDOW_H
 #define ATEN_MAINWINDOW_H
 
+#include <QtGui/QButtonGroup>
+#include <QtCore/QSettings>
 #include "base/dnchar.h"
 #include "base/atom.h"
-#include "classes/prefs.h"
+#include "base/prefs.h"
 #include "gui/ui_mainwindow.h"
 #include "gui/ui_prefs.h"
 #include "gui/useractions.h"
 #include "templates/reflist.h"
 #include "base/glyph.h"
+#include "base/namespace.h"
 
 #define MAXRECENTFILES 10
 
-// Forward Declarations 1 - Main Form and Windows
+// Forward Declarations (Aten) 1 - Main Form and Windows
 class AtenAbout;
 class AtenPrefs;
 class AtenForcefieldEditor;
 class AtenProgress;
 
-// Forward Declarations 2 - Dialogs
+// Forward Declarations (Aten) 2 - Dialogs
 class AtenLoadModel;
 class AtenSelectFilter;
 class AtenSelectPattern;
@@ -49,7 +52,7 @@ class AtenViewBasis;
 class AtenViewEigenvector;
 class AtenZMatrix;
 
-// Forward Declarations 3 - Dock Widgets and Wizards
+// Forward Declarations (Aten) 3 - Dock Widgets and Wizards
 class AtomListWidget;
 class BuildWidget;
 class CellDefinitionWidget;
@@ -73,18 +76,15 @@ class TrajectoryWidget;
 class TransformWidget;
 class VibrationsWidget;
 
-// Forward Declarations
-class QLabel;
-class QProgressBar;
-class QPushButton;
-class QFrame;
-class QSettings;
-class QActionGroup;
-class QButtonGroup;
-class QStringListModel;
-class Forest;
+ATEN_BEGIN_NAMESPACE
+
+// Forward Declarations (Aten)
 class Tree;
 class Aten;
+
+ATEN_END_NAMESPACE
+
+ATEN_USING_NAMESPACE
 
 class AtenWindow : public QMainWindow
 {
@@ -132,6 +132,8 @@ class AtenWindow : public QMainWindow
 	void initFilters();
 	// Add a message to the main window's message output box
 	void printMessage(const char*);
+	// Close specified model, saving first if requested
+	bool closeModel(Model* m);
 	// Save before close
 	bool saveBeforeClose();
 	// Return the PID of Aten
@@ -233,7 +235,7 @@ class AtenWindow : public QMainWindow
 	private:
 	// Atom under mouse when context menu was called
 	Atom* contextAtom_;
-	void setAtomStyle(Atom::DrawStyle ds);
+	void setAtomStyle(Prefs::DrawStyle ds);
 	void setAtomLabel(Atom::AtomLabel al);
 	void removeAtomLabels(bool all);
 	void setAtomHidden(bool hidden);
@@ -322,7 +324,6 @@ class AtenWindow : public QMainWindow
 	private slots:
 	void on_actionPreferences_triggered(bool checked);
 	void on_actionReloadFilters_triggered(bool checked);
-	void on_actionShowToolBox_triggered(bool checked);
 	void on_actionStoreDefaultWindowState_triggered(bool checked);
 	void on_actionManualSwapBuffers_triggered(bool checked);
 
@@ -349,7 +350,7 @@ class AtenWindow : public QMainWindow
 	void on_actionSelectElement_triggered(bool checked);
 
 	public:
-	void setActiveStyleAction(Atom::DrawStyle ds);
+	void setActiveStyleAction(Prefs::DrawStyle ds);
 
 
 	/*
@@ -392,7 +393,7 @@ class AtenWindow : public QMainWindow
 	// Set action/button to reflect supplied user action
 	void setActiveUserAction(UserAction::Action ua);
 	// Set message label text
-	void setMessageLabel(const char *s);
+	void setMessageLabel(const char* s);
 
 
 	/*
@@ -490,73 +491,11 @@ class AtenWindow : public QMainWindow
 	/*
 	 * GUI / Interaction
 	 */
-	private:
-	// Active interaction mode of the main canvas
-	UserAction::Action activeMode_;
-	// Selected interaction mode (from GUI)
-	UserAction::Action selectedMode_;
-	// Whether the mouse has moved between begin_mode() and end_mode() calls
-	bool hasMoved_;
-	// Current drawing depth for certain tools
-	double currentDrawDepth_;
-	// Selected drawing element
-	short int sketchElement_;
-	// Whether to accept editing actions (i.e. anything other than view manipulation)
-	bool editable_;
-	// Number of atoms to pick in PickAtomsAction
-	int nAtomsToPick_;
-	// User action before picking mode was entered
-	UserAction::Action actionBeforePick_;
-	// List of picked atoms
-	Reflist<Atom,int> pickedAtoms_;
-	// Pointer to callback function when PickAtomsAction exits
-	void (*pickAtomsCallback_)(Reflist<Atom,int>*);
-	// Atom that was clicked at the start of a mouse press event
-	Atom* atomClicked_;
-	// Whether we are selecting atoms and placing them in the subsel list	
-	bool pickEnabled_;
-	// Reflist of selected atoms and their positions so manipulations may be un-done
-	Reflist< Atom,Vec3<double> > oldPositions_;
-
-	private:
-	// Begin an action on the model (called from MouseButtondown)
-	void beginMode(Prefs::MouseButton button);
-	// End an action on the model (called from MouseButtonup)
-	void endMode(Prefs::MouseButton button);
-	
 	public:
 	// Refreshes specified (or all) dock widgets
 	void updateWidgets(int targets = 0);
 	// Refresh main viewer
 	void postRedisplay();
-	// Set the active mode to the current user mode
-	void useSelectedMode();
-	// Sets the currently selected interact mode
-	void setSelectedMode(UserAction::Action ua, int atomsToPick = -1, void (*callback)(Reflist<Atom,int>*) = NULL);
-	// Cancel any current mode and return to select
-	void cancelCurrentMode();
-	// Return the currently selected mode
-	UserAction::Action selectedMode() const;
-	// Return the currently active mode
-	UserAction::Action activeMode() const;
-	// Set current drawing element
-	void setSketchElement(short int el);
-	// Return current drawing element
-	short int sketchElement() const;
-	// Current drawing depth for certain tools
-	double currentDrawDepth();
-	// Set whether to accept editing actions (i.e. anything other than view manipulation)
-	void setEditable(bool b);
-	// Return whether to accept editing actions (i.e. anything other than view manipulation)
-	bool editable();
-	// Returns the clicked atom within a mouse click event
-	Atom* atomClicked();
-	// Clears the subsel of atoms
-	void clearPicked();
-	// End manual picking
-	void endManualPick(bool resetaction);
-	// Return start of picked atom list
-	Refitem<Atom,int>* pickedAtoms();
 };
 
 #endif

@@ -23,8 +23,11 @@
 #define ATEN_FOURIER_H
 
 #include "templates/vector3.h"
+#include "base/namespace.h"
 
-// Forward declarations
+ATEN_BEGIN_NAMESPACE
+
+// Forward Declarations (Aten)
 class UnitCell;
 class Model;
 
@@ -38,7 +41,7 @@ class FourierData
 	Vec3<double> **rCos, **rSin;
 	int nAtoms, kMax;
 	Vec3<int> kVec;
-	UnitCell *cell;
+	UnitCell* cell;
 	// Parameters used in Ewald sum.
 	double alpha, alphaSq;
 	// Class Functions
@@ -55,5 +58,7 @@ class FourierData
 };
 
 extern FourierData fourier;
+
+ATEN_END_NAMESPACE
 
 #endif

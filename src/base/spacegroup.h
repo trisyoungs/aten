@@ -22,16 +22,22 @@
 #ifndef ATEN_SPACEGROUP_H
 #define ATEN_SPACEGROUP_H
 
+#include "base/namespace.h"
+
+ATEN_BEGIN_NAMESPACE
+
 // Spacegroup
 class Spacegroup
 {
 	public:
 	// Name of the spacegroup (plaintext)
-	const char *name;
+	const char* name;
 	// Name of the spacegroup (formatted)
-	const char *displayName;
+	const char* displayName;
 };
 
 extern Spacegroup Spacegroups[];
+
+ATEN_END_NAMESPACE
 
 #endif

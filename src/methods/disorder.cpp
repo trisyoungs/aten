@@ -24,31 +24,32 @@
 #include "model/model.h"
 #include "methods/disorderdata.h"
 #include "model/clipboard.h"
-#include "gui/gui.h"
 #include "base/sysfunc.h"
 #include "base/progress.h"
 #include "base/pattern.h"
 
+ATEN_USING_NAMESPACE
+
 // Disorder Builder
-bool MonteCarlo::disorder(Model* destmodel, PartitioningScheme *scheme, bool fixedCell)
+bool MonteCarlo::disorder(Model* allModels, Model* destmodel, PartitioningScheme* scheme, bool fixedCell)
 {
-	msg.enter("MonteCarlo::disorder");
+	Messenger::enter("MonteCarlo::disorder");
 	DisorderData *component, *other;
-	Refitem<DisorderData,int> *ri;
+	Refitem<DisorderData,int>* ri;
 	PartitionData *pd;
 	Atom* i;
 	Dnchar cycleText;
 	int n, m, id, cycle, nSatisfied, nInsertions, nRelative = 0, totalToAdd = 0;
 	Vec3<double> r;
-	UnitCell *cell;
+	UnitCell* cell;
 	double delta, firstRelative, firstActual, expectedPop;
 	bool isRelative;
 	
 	// Step 1 - Update cell lists in scheme (if required)
 	if (scheme == NULL)
 	{
-		msg.print("Error: NULL scheme pointer given to disorder builder.\n");
-		msg.exit("MonteCarlo::disorder");
+		Messenger::print("Error: NULL scheme pointer given to disorder builder.\n");
+		Messenger::exit("MonteCarlo::disorder");
 		return FALSE;
 	}
 	// If we are using the default 'cell' scheme, then no need to generate a fine mesh
@@ -66,7 +67,7 @@ bool MonteCarlo::disorder(Model* destmodel, PartitioningScheme *scheme, bool fix
 	cell = targetModel_->cell();
 	List<DisorderData> components_;
 	Reflist<DisorderData, int> componentsOrder_;
-	for (Model* m = aten.models(); m != NULL; m = m->next)
+	for (Model* m = allModels; m != NULL; m = m->next)
 	{
 		if (m->componentInsertionPolicy() == Model::NoPolicy) continue;
 		// Check that we can get the requested partition
@@ -74,26 +75,26 @@ bool MonteCarlo::disorder(Model* destmodel, PartitioningScheme *scheme, bool fix
 
 		if ((id < 0) || (id >= scheme->nPartitions()))
 		{
-			msg.print("Error: Model '%s' targets partition id %i, but it does not exist in the scheme '%s'.\n", m->name(), id+1, scheme->name());
-			msg.exit("MonteCarlo::disorder");
+			Messenger::print("Error: Model '%s' targets partition id %i, but it does not exist in the scheme '%s'.\n", m->name(), id+1, scheme->name());
+			Messenger::exit("MonteCarlo::disorder");
 			return FALSE;
 		}
 		// Do some quick checks on the component to see if its valid
 		switch (m->componentInsertionPolicy())
 		{
 			case (Model::NumberPolicy):
-				if (m->componentPopulation() == 0) msg.print("Warning: Population for component '%s' is set to zero.\n", m->name());
+				if (m->componentPopulation() == 0) Messenger::print("Warning: Population for component '%s' is set to zero.\n", m->name());
 				totalToAdd += m->componentPopulation();
 				break;
 			case (Model::DensityPolicy):
-				if (m->componentDensity() < 0.01) msg.print("Warning: Density for component '%s' is too low (or zero) (%f).\n", m->name(), m->componentDensity());
+				if (m->componentDensity() < 0.01) Messenger::print("Warning: Density for component '%s' is too low (or zero) (%f).\n", m->name(), m->componentDensity());
 				break;
 			case (Model::NumberAndDensityPolicy):
-				if (m->componentPopulation() == 0) msg.print("Warning: Population for component '%s' is set to zero.\n", m->name());
+				if (m->componentPopulation() == 0) Messenger::print("Warning: Population for component '%s' is set to zero.\n", m->name());
 				if (m->componentDensity() < 0.01)
 				{
-					msg.print("Error: Density for component '%s' is too low (or zero) (%f).\n", m->name(), m->componentDensity());
-					msg.exit("MonteCarlo::disorder");
+					Messenger::print("Error: Density for component '%s' is too low (or zero) (%f).\n", m->name(), m->componentDensity());
+					Messenger::exit("MonteCarlo::disorder");
 					return FALSE;
 				}
 				totalToAdd += m->componentPopulation();
@@ -101,23 +102,23 @@ bool MonteCarlo::disorder(Model* destmodel, PartitioningScheme *scheme, bool fix
 			case (Model::RelativePolicy):
 				if (m->componentPopulation() == 0)
 				{
-					msg.print("Error: Population must be specified for component '%s' since it's policy is 'relative'.\n", m->name());
-					msg.exit("MonteCarlo::disorder");
+					Messenger::print("Error: Population must be specified for component '%s' since it's policy is 'relative'.\n", m->name());
+					Messenger::exit("MonteCarlo::disorder");
 					return FALSE;
 				}
 				if (m->componentDensity() < 0.01)
 				{
-					msg.print("Error: Density for component '%s' is too low (or zero) (%f).\n", m->name(), m->componentDensity());
-					msg.exit("MonteCarlo::disorder");
+					Messenger::print("Error: Density for component '%s' is too low (or zero) (%f).\n", m->name(), m->componentDensity());
+					Messenger::exit("MonteCarlo::disorder");
 					return FALSE;
 				}
 				break;
 		}
 		component = (m->componentInsertionPolicy() == Model::RelativePolicy ? components_.prepend() : components_.add());
-		msg.print("Initialising component model '%s' for partition '%s'...\n", m->name(), scheme->partitionName(id));
+		Messenger::print("Initialising component model '%s' for partition '%s'...\n", m->name(), scheme->partitionName(id));
 		if (!component->initialise(m, scheme->partition(id)))
 		{
-			msg.exit("MonteCarlo::disorder");
+			Messenger::exit("MonteCarlo::disorder");
 			return FALSE;
 		}
 		componentsOrder_.add(component);
@@ -126,58 +127,58 @@ bool MonteCarlo::disorder(Model* destmodel, PartitioningScheme *scheme, bool fix
 	}
 	if (components_.nItems() == 0)
 	{
-		msg.print("Error: No component models selected for disorder builder.\n");
-		msg.exit("MonteCarlo::disorder");
+		Messenger::print("Error: No component models selected for disorder builder.\n");
+		Messenger::exit("MonteCarlo::disorder");
 		return FALSE;
 	}
 	
 	// Step 3 - Determine cell size (if applicable) and perform some sanity checks
 	if (!fixedCell)
 	{
-		msg.print("Absolute cell volume is not defined.\n");
+		Messenger::print("Absolute cell volume is not defined.\n");
 		// If we have a free or as-yet-undefined cell, the existing model MUST NOT contain any existing atoms
 		if (targetModel_->nAtoms() != 0)
 		{
-			msg.print("Error: For disorder building with an unspecified cell size the cell cannot contain any existing atoms.\n");
-			msg.exit("MonteCarlo::disorder");
+			Messenger::print("Error: For disorder building with an unspecified cell size the cell cannot contain any existing atoms.\n");
+			Messenger::exit("MonteCarlo::disorder");
 			return FALSE;
 		}
 		
 		// Make double sure that we actually have a unit cell specified at this point
 		if (targetModel_->cell()->type() == UnitCell::NoCell)
 		{
-			msg.print("Error: No unit cell defined. Create a simple unit cell - the lengths will be adjusted automatically by the builder.\n");
-			msg.exit("MonteCarlo::disorder");
+			Messenger::print("Error: No unit cell defined. Create a simple unit cell - the lengths will be adjusted automatically by the builder.\n");
+			Messenger::exit("MonteCarlo::disorder");
 			return FALSE;
 		}
 		
 		// So, we must decide on the final volume of the cell - this means that both a population and a density for each 
 		// component must have been specified - i.e. no 'bulk' components and no 'free' densities
-		msg.print("Calculating cell volume based on component information...\n");
+		Messenger::print("Calculating cell volume based on component information...\n");
 		double totalVolume = 0.0;
 		for (component = components_.first(); component != NULL; component = component->next)
 		{
 			if (component->insertionPolicy() == Model::NoPolicy) continue;
 			if (component->insertionPolicy() != Model::NumberAndDensityPolicy)
 			{
-				msg.print("Error: For disorder building with an unspecified cell size every component must have a population and density specified with policy 'both' (component '%s' does not).\n", component->modelName());
-				msg.exit("MonteCarlo::disorder");
+				Messenger::print("Error: For disorder building with an unspecified cell size every component must have a population and density specified with policy 'both' (component '%s' does not).\n", component->modelName());
+				Messenger::exit("MonteCarlo::disorder");
 				return FALSE;
 			}
 			// All ok, so add component to volume
 			totalVolume += (component->requestedPopulation() * component->sourceModel().mass() / AVOGADRO) / (component->requestedDensity() * 1.0E-24);
 		}
-		msg.print("From the components specified, the new cell will have a volume of %f cubic Angstroms.\n", totalVolume);
+		Messenger::print("From the components specified, the new cell will have a volume of %f cubic Angstroms.\n", totalVolume);
 		double factor = pow(totalVolume,1.0/3.0) / pow(targetModel_->cell()->volume(),1.0/3.0);
 		Matrix axes = targetModel_->cell()->axes();
 		axes.applyScaling(factor,factor,factor);
 		targetModel_->cell()->set(axes);
-		msg.print("Based on original cell, scaling factor is %f, giving new a cell specification of:\n", factor);
+		Messenger::print("Based on original cell, scaling factor is %f, giving new a cell specification of:\n", factor);
 		targetModel_->cell()->print();
 	}
 	
 	// Step 4 - Determine partition volumes and current partition densities (arising from existing model contents)
-	msg.print("Determining partition volumes and starting densities...\n");
+	Messenger::print("Determining partition volumes and starting densities...\n");
 	Matrix volumeElement = targetModel_->cell()->axes();
 	Vec3<int> gridSize = scheme->gridSize();
 	volumeElement.applyScaling(1.0/gridSize.x, 1.0/gridSize.y, 1.0/gridSize.z);
@@ -191,7 +192,7 @@ bool MonteCarlo::disorder(Model* destmodel, PartitioningScheme *scheme, bool fix
 	}
 	
 	// The target model may contain atoms already, so this must be subtracted from the relevant partitions
-	msg.print("Determining current partition densities...\n");
+	Messenger::print("Determining current partition densities...\n");
 	for (i = targetModel_->atoms(); i != NULL; i = i->next)
 	{
 		r = targetModel_->cell()->fold(i->r());
@@ -199,15 +200,15 @@ bool MonteCarlo::disorder(Model* destmodel, PartitioningScheme *scheme, bool fix
 		id = scheme->partitionId(r.x, r.y, r.z);
 		scheme->partition(id)->adjustReducedMass(i);
 	}
-	msg.print("Partition\t\tVolume\tDensity\n");
+	Messenger::print("Partition\t\tVolume\tDensity\n");
 	for (pd = scheme->partitions(); pd != NULL; pd = pd->next)
 	{
-		msg.print("%2i %8s\t%10.2f\t%8.5f\n", pd->id()+1, pd->name(), pd->volume(), pd->density()); 
+		Messenger::print("%2i %8s\t%10.2f\t%8.5f\n", pd->id()+1, pd->name(), pd->volume(), pd->density()); 
 	}
 	
 	// All set up and ready - do the build
-	int pid = progress.initialise("Performing Disorder build", disorderMaxCycles_, !gui.exists());
-	msg.print("Cycle   Component       Region      Pop   (Req)     Density  (Req)        RSF\n");
+	int pid = progress.initialise("Performing Disorder build", disorderMaxCycles_);
+	Messenger::print("Cycle   Component       Region      Pop   (Req)     Density  (Req)        RSF\n");
 	for (cycle = 1; cycle <= disorderMaxCycles_; ++cycle)
 	{
 		// Each cycle will consist of one round of insertions and deletions, and one round of MC shaking (tweaking)
@@ -371,16 +372,16 @@ bool MonteCarlo::disorder(Model* destmodel, PartitioningScheme *scheme, bool fix
 				switch (component->insertionPolicy())
 				{
 					case (Model::NumberPolicy):
-						msg.print("%-5s   %-15s %-10s  %-5i (%-5i)  %8.5f  (   N/A  )  %5.3f\n", cycleText.get(), component->modelName(), component->partitionName(), component->nAdded(), component->requestedPopulation(), component->partitionDensity(), component->scaleFactor());
+						Messenger::print("%-5s   %-15s %-10s  %-5i (%-5i)  %8.5f  (   N/A  )  %5.3f\n", cycleText.get(), component->modelName(), component->partitionName(), component->nAdded(), component->requestedPopulation(), component->partitionDensity(), component->scaleFactor());
 						break;
 					case (Model::DensityPolicy):
-						msg.print("%-5s   %-15s %-10s  %-5i ( N/A )  %8.5f  (%8.5f)  %5.3f\n", cycleText.get(), component->modelName(), component->partitionName(), component->nAdded(), component->partitionDensity(), component->requestedDensity(), component->scaleFactor());
+						Messenger::print("%-5s   %-15s %-10s  %-5i ( N/A )  %8.5f  (%8.5f)  %5.3f\n", cycleText.get(), component->modelName(), component->partitionName(), component->nAdded(), component->partitionDensity(), component->requestedDensity(), component->scaleFactor());
 						break;
 					case (Model::NumberAndDensityPolicy):
-						msg.print("%-5s   %-15s %-10s  %-5i (%-5i)  %8.5f  (%8.5f)  %5.3f\n", cycleText.get(), component->modelName(), component->partitionName(), component->nAdded(), component->requestedPopulation(), component->partitionDensity(), component->requestedDensity(), component->scaleFactor());
+						Messenger::print("%-5s   %-15s %-10s  %-5i (%-5i)  %8.5f  (%8.5f)  %5.3f\n", cycleText.get(), component->modelName(), component->partitionName(), component->nAdded(), component->requestedPopulation(), component->partitionDensity(), component->requestedDensity(), component->scaleFactor());
 						break;
 					case (Model::RelativePolicy):
-						msg.print("%-5s   %-15s %-10s  %-5i (R %-3i)  %8.5f  (%8.5f)  %5.3f\n", cycleText.get(), component->modelName(), component->partitionName(), component->nAdded(), component->requestedPopulation(), component->partitionDensity(), component->requestedDensity(), component->scaleFactor());
+						Messenger::print("%-5s   %-15s %-10s  %-5i (R %-3i)  %8.5f  (%8.5f)  %5.3f\n", cycleText.get(), component->modelName(), component->partitionName(), component->nAdded(), component->requestedPopulation(), component->partitionDensity(), component->requestedDensity(), component->scaleFactor());
 						break;
 				}
 				cycleText.clear();
@@ -390,24 +391,24 @@ bool MonteCarlo::disorder(Model* destmodel, PartitioningScheme *scheme, bool fix
 		// Finished?
 		if (nSatisfied == components_.nItems())
 		{
-			msg.print("Done.\n");
+			Messenger::print("Done.\n");
 			break;
 		}
 
-		gui.processMessages();
+// 		gui.processMessages(); // ATEN2 TODO
 		if (!progress.update(pid))
 		{
-			msg.print("Canceled.\n");
+			Messenger::print("Canceled.\n");
 			break;
 		}
 	}
 	progress.terminate(pid);
 	
 	// Perform a relaxation on the system by attempting to get the component scale ratios back as high as possible
-	pid = progress.initialise("Performing Recovery", disorderRecoveryMaxCycles_, !gui.exists());
-	msg.print("Target scale factor is %f\n", disorderMaximumScaleFactor_);
+	pid = progress.initialise("Performing Recovery", disorderRecoveryMaxCycles_);
+	Messenger::print("Target scale factor is %f\n", disorderMaximumScaleFactor_);
 	
-	msg.print("Cycle   Component       Region      Pop   (Req)     Density  (Req)        RSF    Frac\n");
+	Messenger::print("Cycle   Component       Region      Pop   (Req)     Density  (Req)        RSF    Frac\n");
 	for (cycle=1; cycle<=disorderRecoveryMaxCycles_; ++cycle)
 	{
 		nSatisfied = 0;
@@ -459,16 +460,16 @@ bool MonteCarlo::disorder(Model* destmodel, PartitioningScheme *scheme, bool fix
 				switch (component->insertionPolicy())
 				{
 					case (Model::NumberPolicy):
-						msg.print("%-5s   %-15s %-10s  %-5i (%-5i)  %8.5f  (   N/A  )  %5.3f  %5.3f\n", cycleText.get(), component->modelName(), component->partitionName(), component->nAdded(), component->requestedPopulation(), component->partitionDensity(), component->scaleFactor(), double(component->count())/component->nAdded());
+						Messenger::print("%-5s   %-15s %-10s  %-5i (%-5i)  %8.5f  (   N/A  )  %5.3f  %5.3f\n", cycleText.get(), component->modelName(), component->partitionName(), component->nAdded(), component->requestedPopulation(), component->partitionDensity(), component->scaleFactor(), double(component->count())/component->nAdded());
 						break;
 					case (Model::DensityPolicy):
-						msg.print("%-5s   %-15s %-10s  %-5i ( N/A )  %8.5f  (%8.5f)  %5.3f  %5.3f\n", cycleText.get(), component->modelName(), component->partitionName(), component->nAdded(), component->partitionDensity(), component->requestedDensity(), component->scaleFactor(), double(component->count())/component->nAdded());
+						Messenger::print("%-5s   %-15s %-10s  %-5i ( N/A )  %8.5f  (%8.5f)  %5.3f  %5.3f\n", cycleText.get(), component->modelName(), component->partitionName(), component->nAdded(), component->partitionDensity(), component->requestedDensity(), component->scaleFactor(), double(component->count())/component->nAdded());
 						break;
 					case (Model::NumberAndDensityPolicy):
-						msg.print("%-5s   %-15s %-10s  %-5i (%-5i)  %8.5f  (%8.5f)  %5.3f  %5.3f\n", cycleText.get(), component->modelName(), component->partitionName(), component->nAdded(), component->requestedPopulation(), component->partitionDensity(), component->requestedDensity(), component->scaleFactor(), double(component->count())/component->nAdded());
+						Messenger::print("%-5s   %-15s %-10s  %-5i (%-5i)  %8.5f  (%8.5f)  %5.3f  %5.3f\n", cycleText.get(), component->modelName(), component->partitionName(), component->nAdded(), component->requestedPopulation(), component->partitionDensity(), component->requestedDensity(), component->scaleFactor(), double(component->count())/component->nAdded());
 						break;
 					case (Model::RelativePolicy):
-						msg.print("%-5s   %-15s %-10s  %-5i (R %-3i)  %8.5f  (%8.5f)  %5.3f  %5.3f\n", cycleText.get(), component->modelName(), component->partitionName(), component->nAdded(), component->requestedPopulation(), component->partitionDensity(), component->requestedDensity(), component->scaleFactor(), double(component->count())/component->nAdded());
+						Messenger::print("%-5s   %-15s %-10s  %-5i (R %-3i)  %8.5f  (%8.5f)  %5.3f  %5.3f\n", cycleText.get(), component->modelName(), component->partitionName(), component->nAdded(), component->requestedPopulation(), component->partitionDensity(), component->requestedDensity(), component->scaleFactor(), double(component->count())/component->nAdded());
 						break;
 				}
 				cycleText.clear();
@@ -478,14 +479,14 @@ bool MonteCarlo::disorder(Model* destmodel, PartitioningScheme *scheme, bool fix
 		// Finished?
 		if (nSatisfied == components_.nItems())
 		{
-			msg.print("Done.\n");
+			Messenger::print("Done.\n");
 			break;
 		}
 		
-		gui.processMessages();
+// 		gui.processMessages(); ATEN2 TODO
 		if (!progress.update(pid))
 		{
-			msg.print("Canceled.\n");
+			Messenger::print("Canceled.\n");
 			break;
 		}
 	}
@@ -497,13 +498,13 @@ bool MonteCarlo::disorder(Model* destmodel, PartitioningScheme *scheme, bool fix
 	targetModel_->endUndoState();
 	
 	// Apply a suitable pattern definition to the system, retaining forcefield information from original models
-	msg.print("Applying pattern definition to the new system...\n");
+	Messenger::print("Applying pattern definition to the new system...\n");
 	targetModel_->clearPatterns();
 	for (ri = componentsOrder_.first(); ri != NULL; ri = ri->next)
 	{
 		if (ri->item->nAdded() == 0)
 		{
-			msg.print(" -- No pattern added for insertion model '%s' since zero molecules were added.\n", ri->item->modelName());
+			Messenger::print(" -- No pattern added for insertion model '%s' since zero molecules were added.\n", ri->item->modelName());
 			continue;
 		}
 		Pattern* p = targetModel_->addPattern(ri->item->modelName(), ri->item->nAdded(), ri->item->sourceModel().nAtoms());
@@ -512,7 +513,7 @@ bool MonteCarlo::disorder(Model* destmodel, PartitioningScheme *scheme, bool fix
 	targetModel_->printPatterns();
 	targetModel_->describeAtoms();
 
-	msg.enter("MonteCarlo::disorder");
+	Messenger::enter("MonteCarlo::disorder");
 	return TRUE;
 }
 

@@ -23,8 +23,11 @@
 #define ATEN_CG_H
 
 #include "methods/linemin.h"
+#include "base/namespace.h"
 
-// Forward Declarations
+ATEN_BEGIN_NAMESPACE
+
+// Forward Declarations (Aten)
 class Model;
 
 // Conjugate gradient minimiser
@@ -49,5 +52,7 @@ class MethodCg : public LineMinimiser
 
 // Static Singleton
 extern MethodCg cg;
+
+ATEN_END_NAMESPACE
 
 #endif

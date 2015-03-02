@@ -1,6 +1,6 @@
 /*
 	*** Column-Major (OpenGL-friendly) 4x4 Matrix class
-	*** src/base/matrix.cpp
+	*** src/math/matrix.cpp
 	Copyright T. Youngs 2007-2015
 
 	This file is part of Aten.
@@ -19,7 +19,9 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "base/matrix.h"
+#include "math/matrix.h"
+
+ATEN_USING_NAMESPACE
 
 // Constructor
 Matrix::Matrix()
@@ -32,7 +34,7 @@ Matrix::Matrix()
 */
 
 // Matrix multiply (operator *) (return new matrix)
-Matrix Matrix::operator*(const Matrix &B) const
+Matrix Matrix::operator*(const Matrix& B) const
 {
 	// [ row(A|this).column(B) ]
 	Matrix AB;
@@ -65,14 +67,14 @@ Matrix Matrix::operator*(const double a) const
 	return AB;
 }
 
-Matrix Matrix::operator+(const Matrix &B) const
+Matrix Matrix::operator+(const Matrix& B) const
 {
 	Matrix A;
 	for (int n=0; n<16; ++n) A[n] = matrix_[n] + B.matrix_[n];
 	return A;
 }
 
-Matrix Matrix::operator-(const Matrix &B) const
+Matrix Matrix::operator-(const Matrix& B) const
 {
 	Matrix A;
 	for (int n=0; n<16; ++n) A[n] = matrix_[n] - B.matrix_[n];
@@ -99,7 +101,7 @@ Vec4<double> Matrix::operator*(const Vec4<double> &v) const
 }
 
 // Matrix multiply (operator *=)
-Matrix &Matrix::operator*=(const Matrix &B)
+Matrix& Matrix::operator*=(const Matrix& B)
 {
 	// [ row(A|this).column(B) ]
 	Matrix AB;
@@ -159,11 +161,11 @@ void Matrix::setIdentity()
 // Print matrix
 void Matrix::print() const
 {
-	msg.print("CMaj   [0123]    [4567]    [8901] Translate\n");
-	msg.print("        %8.4f %8.4f %8.4f %8.4f\n", matrix_[0], matrix_[4], matrix_[8], matrix_[12]);
-	msg.print("        %8.4f %8.4f %8.4f %8.4f\n", matrix_[1], matrix_[5], matrix_[9], matrix_[13]);
-	msg.print("        %8.4f %8.4f %8.4f %8.4f\n", matrix_[2], matrix_[6], matrix_[10], matrix_[14]);
-	msg.print("Scale   %8.4f %8.4f %8.4f %8.4f\n", matrix_[3], matrix_[7], matrix_[11], matrix_[15]);
+	Messenger::print("CMaj   [0123]    [4567]    [8901] Translate\n");
+	Messenger::print("        %8.4f %8.4f %8.4f %8.4f\n", matrix_[0], matrix_[4], matrix_[8], matrix_[12]);
+	Messenger::print("        %8.4f %8.4f %8.4f %8.4f\n", matrix_[1], matrix_[5], matrix_[9], matrix_[13]);
+	Messenger::print("        %8.4f %8.4f %8.4f %8.4f\n", matrix_[2], matrix_[6], matrix_[10], matrix_[14]);
+	Messenger::print("Scale   %8.4f %8.4f %8.4f %8.4f\n", matrix_[3], matrix_[7], matrix_[11], matrix_[15]);
 }
 
 // Set zero matrix
@@ -189,13 +191,13 @@ void Matrix::zero()
 
 
 // Return matrix array
-double *Matrix::matrix()
+double* Matrix::matrix()
 {
 	return matrix_;
 }
 
 // Return transpose of current matrix
-Matrix &Matrix::transpose()
+Matrix& Matrix::transpose()
 {
 	static Matrix A;
 	A.matrix_[0] = matrix_[0];
@@ -231,7 +233,7 @@ double Matrix::determinant()
 // Invert matrix
 void Matrix::invert()
 {
-	msg.enter("Matrix::invert");
+	Messenger::enter("Matrix::invert");
 	// Gauss-Jordan Inversion
 	// Invert the supplied matrix using Gauss-Jordan elimination
 	int pivotrows[4], pivotcols[4], pivotrow = 0, pivotcol = 0;
@@ -308,7 +310,7 @@ void Matrix::invert()
 			matrix_[m*4+pivotcols[n]] = element;
 		}
 	}
-	msg.exit("Matrix::invert");
+	Messenger::exit("Matrix::invert");
 }
 
 /*
@@ -859,7 +861,7 @@ Vec3<double> Matrix::transform(Vec3<double> vec) const
 }
 
 // Multiply against coordinates provided
-void Matrix::multiply(GLfloat *r, GLfloat *transformed) const
+void Matrix::multiply(GLfloat* r, GLfloat* transformed) const
 {
 	transformed[0] = r[0]*matrix_[0] + r[1]*matrix_[4] + r[2]*matrix_[8] + matrix_[12];
 	transformed[1] = r[0]*matrix_[1] + r[1]*matrix_[5] + r[2]*matrix_[9] + matrix_[13];
@@ -926,7 +928,7 @@ void Matrix::removeTranslationAndScaling()
 }
 
 // Copy translation and scaling parts from specified matrix
-void Matrix::copyTranslationAndScaling(Matrix &source)
+void Matrix::copyTranslationAndScaling(Matrix& source)
 {
 	matrix_[3] = source.matrix_[3];
 	matrix_[7] = source.matrix_[7];

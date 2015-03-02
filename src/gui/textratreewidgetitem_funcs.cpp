@@ -21,8 +21,10 @@
 
 #include "gui/textratreewidgetitem.h"
 
+ATEN_USING_NAMESPACE
+
 // Constructor
-TExtraTreeWidgetItem::TExtraTreeWidgetItem(QTreeWidgetItem *parent) : QTreeWidgetItem(parent)
+TExtraTreeWidgetItem::TExtraTreeWidgetItem(QTreeWidgetItem* parent) : QTreeWidgetItem(parent)
 {
 	// Private variables
 }

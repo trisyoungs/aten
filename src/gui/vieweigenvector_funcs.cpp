@@ -53,7 +53,7 @@ void AtenViewEigenvector::showWindow(Model* m, int id)
 	Dnchar text;
 	row = 0;
 	Eigenvector *evec = m->eigenvector(id); 
-	double *eigenvec = evec->eigenvector();
+	double* eigenvec = evec->eigenvector();
 	if (evec->isSpherical()) for (bas = m->basisShells(); bas != NULL; bas = bas->next)
 	{
 		++shell;

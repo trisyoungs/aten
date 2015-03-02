@@ -24,10 +24,42 @@
 
 #include "gui/ui_trajectory.h"
 
+// Forward Declarations (Qt)
+class AtenWindow;
+
 class TrajectoryWidget : public QDockWidget
 {
 	// All Qt declarations must include this macro
 	Q_OBJECT
+
+	public:
+	// Constructor
+	TrajectoryWidget(AtenWindow& parent1, Qt::WindowFlags flags = 0);
+	// Main form declaration
+	Ui::TrajectoryWidget ui;
+
+	private:
+	// Reference to main window
+	AtenWindow& parent_;
+
+
+	/*
+	// Local Variables
+	*/
+	private:
+	// Whether widget is currently refreshing
+	bool refreshing_;
+	// Whether the trajectory is currently playing
+	bool trajectoryPlaying_;
+	// ID of rtrajectory timer
+	int trajectoryTimerId_;
+	// Flag to prevent overdrawing
+	bool DONTDRAW;
+
+	public:
+	// Stop trajectory playback
+	void stopTrajectoryPlayback();
+
 
 	/*
 	// Window Functions
@@ -48,38 +80,6 @@ class TrajectoryWidget : public QDockWidget
 	protected:
 	void closeEvent(QCloseEvent *event);
 	void timerEvent(QTimerEvent *event);
-	
-	
-	/*
-	// Local Variables / Functions
-	*/
-	private:
-	// Whether widget is currently refreshing
-	bool refreshing_;
-	// Whether the trajectory is currently playing
-	bool trajectoryPlaying_;
-	// ID of rtrajectory timer
-	int trajectoryTimerId_;
-	// Flag to prevent overdrawing
-	bool DONTDRAW;
-
-	public:
-	// Stop trajectory playback
-	void stopTrajectoryPlayback();
-
-
-	/*
-	// Dialog
-	*/
-	private:
-	// Reference to main window
-	AtenWindow& parent_;
-
-	public:
-	// Constructor
-	TrajectoryWidget(AtenWindow& parent1, Qt::WindowFlags flags = 0);
-	// Main form declaration
-	Ui::TrajectoryWidget ui;
 };
 
 #endif

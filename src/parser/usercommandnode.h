@@ -29,8 +29,11 @@
 #include "parser/treenode.h"
 #include "parser/returnvalue.h"
 #include "parser/format.h"
+#include "base/namespace.h"
 
-// Forward Declarations
+ATEN_BEGIN_NAMESPACE
+
+// Forward Declarations (Aten)
 class Tree;
 
 // User Command Node
@@ -52,18 +55,20 @@ class UserCommandNode : public TreeNode
 	// Check validity of supplied arguments
 	bool checkArguments();
 	// Execute command
-	bool execute(ReturnValue &rv);
+	bool execute(ReturnValue& rv);
 	// Print node contents
-	void nodePrint(int offset, const char *prefix = "");
+	void nodePrint(int offset, const char* prefix = "");
 	// Set from returnvalue node
-	bool set(ReturnValue &rv);
+	bool set(ReturnValue& rv);
 	// Initialise node
 	bool initialise();
 	// Set function pointer
 	void setFunction(Tree* func);
 	// Create, run, and free a single function with simple arguments
-	static bool run(Tree* func, ReturnValue &rv, const char *arglist, ...);
-	static bool run(Tree* func, ReturnValue& rv, TreeNode* arglisthead);
+	static bool run(Tree* func, ReturnValue& rv, const char* argList, ...);
+	static bool run(Tree* func, ReturnValue& rv, TreeNode* argListhead);
 };
+
+ATEN_END_NAMESPACE
 
 #endif

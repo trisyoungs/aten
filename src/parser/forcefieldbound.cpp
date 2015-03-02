@@ -21,18 +21,17 @@
 
 #include "parser/forcefieldbound.h"
 #include "parser/stepnode.h"
-#include "classes/forcefieldbound.h"
-#include "classes/prefs.h"
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
+#include "base/forcefieldbound.h"
+#include "base/prefs.h"
+
+ATEN_USING_NAMESPACE
 
 /*
 // Variable
 */
 
 // Constructor
-ForcefieldBoundVariable::ForcefieldBoundVariable(ForcefieldBound *ptr, bool constant)
+ForcefieldBoundVariable::ForcefieldBoundVariable(ForcefieldBound* ptr, bool constant)
 {
 	// Private variables
 	returnType_ = VTypes::ForcefieldBoundData;
@@ -69,16 +68,16 @@ FunctionAccessor ForcefieldBoundVariable::functionData[ForcefieldBoundVariable::
 };
 
 // Search variable access list for provided accessor (call private static function)
-StepNode *ForcefieldBoundVariable::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist)
+StepNode* ForcefieldBoundVariable::findAccessor(const char* s, TreeNode* arrayIndex, TreeNode* argList)
 {
-	return ForcefieldBoundVariable::accessorSearch(s, arrayindex, arglist);
+	return ForcefieldBoundVariable::accessorSearch(s, arrayIndex, argList);
 }
 
 // Private static function to search accessors
-StepNode *ForcefieldBoundVariable::accessorSearch(const char *s, TreeNode *arrayindex, TreeNode *arglist)
+StepNode* ForcefieldBoundVariable::accessorSearch(const char* s, TreeNode* arrayIndex, TreeNode* argList)
 {
-	msg.enter("ForcefieldBoundVariable::accessorSearch");
-	StepNode *result = NULL;
+	Messenger::enter("ForcefieldBoundVariable::accessorSearch");
+	StepNode* result = NULL;
 	int i = 0;
 	i = Variable::searchAccessor(s, nAccessors, accessorData);
 	if (i == -1)
@@ -88,85 +87,85 @@ StepNode *ForcefieldBoundVariable::accessorSearch(const char *s, TreeNode *array
 		i = Variable::searchAccessor(s, nFunctions, functionData);
 		if (i == -1)
 		{
-			msg.print("Error: Type 'FFBound&' has no member or function named '%s'.\n", s);
+			Messenger::print("Error: Type 'FFBound&' has no member or function named '%s'.\n", s);
 			printAccessors();
-			msg.exit("ForcefieldBoundVariable::accessorSearch");
+			Messenger::exit("ForcefieldBoundVariable::accessorSearch");
 			return NULL;
 		}
-		msg.print(Messenger::Parse, "FunctionAccessor match = %i (%s)\n", i, functionData[i].name);
-		if (arrayindex != NULL)
+		Messenger::print(Messenger::Parse, "FunctionAccessor match = %i (%s)\n", i, functionData[i].name);
+		if (arrayIndex != NULL)
 		{
-			msg.print("Error: Array index given to 'FFBound&' function '%s'.\n", s);
-			msg.exit("ForcefieldBoundVariable::accessorSearch");
+			Messenger::print("Error: Array index given to 'FFBound&' function '%s'.\n", s);
+			Messenger::exit("ForcefieldBoundVariable::accessorSearch");
 			return NULL;
 		}
 		// Add and check supplied arguments...
 		result = new StepNode(i, VTypes::ForcefieldBoundData, functionData[i].returnType);
-		result->addJoinedArguments(arglist);
+		result->addJoinedArguments(argList);
 		if (!result->checkArguments(functionData[i].arguments, functionData[i].name))
 		{
-			msg.print("Error: Syntax for 'FFBound&' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
+			Messenger::print("Error: Syntax for 'FFBound&' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
 			delete result;
 			result = NULL;
 		}
 	}
 	else
 	{
-		msg.print(Messenger::Parse, "Accessor match = %i (%s)\n", i, accessorData[i].name);
+		Messenger::print(Messenger::Parse, "Accessor match = %i (%s)\n", i, accessorData[i].name);
 		// Were we given an array index when we didn't want one?
-		if ((accessorData[i].arraySize == 0) && (arrayindex != NULL))
+		if ((accessorData[i].arraySize == 0) && (arrayIndex != NULL))
 		{
-			msg.print("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
+			Messenger::print("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
 			result = NULL;
 		}
 		// Were we given an argument list when we didn't want one?
-		if (arglist != NULL)
+		if (argList != NULL)
 		{
-			msg.print("Error: Argument list given to 'FFBound&' array member '%s'.\n", s);
-			msg.exit("ForcefieldBoundVariable::accessorSearch");
+			Messenger::print("Error: Argument list given to 'FFBound&' array member '%s'.\n", s);
+			Messenger::exit("ForcefieldBoundVariable::accessorSearch");
 			return NULL;
 		}
-		result = new StepNode(i, VTypes::ForcefieldBoundData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
+		result = new StepNode(i, VTypes::ForcefieldBoundData, arrayIndex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
 	}
-	msg.exit("ForcefieldBoundVariable::accessorSearch");
+	Messenger::exit("ForcefieldBoundVariable::accessorSearch");
 	return result;
 }
 
 // Retrieve desired value
-bool ForcefieldBoundVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, int arrayIndex)
+bool ForcefieldBoundVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex, int arrayIndex)
 {
-	msg.enter("ForcefieldBoundVariable::retrieveAccessor");
+	Messenger::enter("ForcefieldBoundVariable::retrieveAccessor");
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nAccessors))
 	{
 		printf("Internal Error: Accessor id %i is out of range for ForcefieldBound type.\n", i);
-		msg.exit("ForcefieldBoundVariable::retrieveAccessor");
+		Messenger::exit("ForcefieldBoundVariable::retrieveAccessor");
 		return FALSE;
 	}
 	Accessors acc = (Accessors) i;
 	// Check for correct lack/presence of array index given
 	if ((accessorData[i].arraySize == 0) && hasArrayIndex)
 	{
-		msg.print("Error: Unnecessary array index provided for member '%s'.\n", accessorData[i].name);
-		msg.exit("ForcefieldBoundVariable::retrieveAccessor");
+		Messenger::print("Error: Unnecessary array index provided for member '%s'.\n", accessorData[i].name);
+		Messenger::exit("ForcefieldBoundVariable::retrieveAccessor");
 		return FALSE;
 	}
 	else if ((accessorData[i].arraySize > 0) && (hasArrayIndex))
 	{
 		if ((arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize))
 		{
-			msg.print("Error: Array index out of bounds for member '%s' (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
-			msg.exit("ForcefieldBoundVariable::retrieveAccessor");
+			Messenger::print("Error: Array index out of bounds for member '%s' (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
+			Messenger::exit("ForcefieldBoundVariable::retrieveAccessor");
 			return FALSE;
 		}
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
 	int n;
-	ForcefieldBound *ptr = (ForcefieldBound*) rv.asPointer(VTypes::ForcefieldBoundData, result);
+	ForcefieldBound* ptr = (ForcefieldBound*) rv.asPointer(VTypes::ForcefieldBoundData, result);
 	if ((!result) || (ptr == NULL))
 	{
-		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::ForcefieldBoundData));
+		Messenger::print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::ForcefieldBoundData));
 		result = FALSE;
 	}
 	if (result) switch (acc)
@@ -193,7 +192,7 @@ bool ForcefieldBoundVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasA
 			// Must have an array index here...
 			if (!hasArrayIndex)
 			{
-				msg.print("Accessor 'datakeyword' must have an array index.\n");
+				Messenger::print("Accessor 'datakeyword' must have an array index.\n");
 				result = FALSE;
 			}
 			else switch (ptr->type())
@@ -217,7 +216,7 @@ bool ForcefieldBoundVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasA
 			// Must have an array index here...
 			if (!hasArrayIndex)
 			{
-				msg.print("Accessor 'dataname' must have an array index.\n");
+				Messenger::print("Accessor 'dataname' must have an array index.\n");
 				result = FALSE;
 			}
 			else switch (ptr->type())
@@ -240,7 +239,7 @@ bool ForcefieldBoundVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasA
 		case (ForcefieldBoundVariable::EScale):
 			if (ptr->type() != ForcefieldBound::TorsionInteraction)
 			{
-				msg.print("Tried to retrieve the 1-4 coulombic scale factor for a non-torsion bound interaction.\n");
+				Messenger::print("Tried to retrieve the 1-4 coulombic scale factor for a non-torsion bound interaction.\n");
 				result = FALSE;
 			}
 			else rv.set(ptr->elecScale());
@@ -277,7 +276,7 @@ bool ForcefieldBoundVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasA
 		case (ForcefieldBoundVariable::VScale):
 			if (ptr->type() != ForcefieldBound::TorsionInteraction)
 			{
-				msg.print("Tried to retrieve the 1-4 VDW scale factor for a non-torsion bound interaction.\n");
+				Messenger::print("Tried to retrieve the 1-4 VDW scale factor for a non-torsion bound interaction.\n");
 				result = FALSE;
 			}
 			else rv.set(ptr->vdwScale());
@@ -287,19 +286,19 @@ bool ForcefieldBoundVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasA
 			result = FALSE;
 			break;
 	}
-	msg.exit("ForcefieldBoundVariable::retrieveAccessor");
+	Messenger::exit("ForcefieldBoundVariable::retrieveAccessor");
 	return result;
 }
 
 // Set desired value
-bool ForcefieldBoundVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newvalue, bool hasArrayIndex, int arrayIndex)
+bool ForcefieldBoundVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newValue, bool hasArrayIndex, int arrayIndex)
 {
-	msg.enter("ForcefieldBoundVariable::setAccessor");
+	Messenger::enter("ForcefieldBoundVariable::setAccessor");
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nAccessors))
 	{
 		printf("Internal Error: Accessor id %i is out of range for ForcefieldBound type.\n", i);
-		msg.exit("ForcefieldBoundVariable::setAccessor");
+		Messenger::exit("ForcefieldBoundVariable::setAccessor");
 		return FALSE;
 	}
 	Accessors acc = (Accessors) i;
@@ -311,20 +310,20 @@ bool ForcefieldBoundVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnVa
 		{
 			if ((accessorData[i].arraySize > 0) && ( (arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize) ))
 			{
-				msg.print("Error: Array index provided for member '%s' is out of range (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
+				Messenger::print("Error: Array index provided for member '%s' is out of range (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
 				result = FALSE;
 			}
-			if (newvalue.arraySize() > 0)
+			if (newValue.arraySize() > 0)
 			{
-				msg.print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
+				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
 				result = FALSE;
 			}
 		}
 		else
 		{
-			if (newvalue.arraySize() > accessorData[i].arraySize)
+			if (newValue.arraySize() > accessorData[i].arraySize)
 			{
-				msg.print("Error: The array being assigned to member '%s' is larger than the size of the desination array (%i cf. %i).\n", accessorData[i].name, newvalue.arraySize(), accessorData[i].arraySize);
+				Messenger::print("Error: The array being assigned to member '%s' is larger than the size of the desination array (%i cf. %i).\n", accessorData[i].name, newValue.arraySize(), accessorData[i].arraySize);
 				result = FALSE;
 			}
 		}
@@ -332,87 +331,87 @@ bool ForcefieldBoundVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnVa
 	else
 	{
 		// This is not an array member, so cannot be assigned an array unless its a Vector
-		if (newvalue.arraySize() != -1)
+		if (newValue.arraySize() != -1)
 		{
 			if (accessorData[i].returnType != VTypes::VectorData)
 			{
-				msg.print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
+				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
 				result = FALSE;
 			}
-			else if ((newvalue.type() != VTypes::VectorData) && (newvalue.arraySize() != 3))
+			else if ((newValue.type() != VTypes::VectorData) && (newValue.arraySize() != 3))
 			{
-				msg.print("Error: Only an array of size 3 can be assigned to a vector (member '%s').\n", accessorData[i].name);
+				Messenger::print("Error: Only an array of size 3 can be assigned to a vector (member '%s').\n", accessorData[i].name);
 				result = FALSE;
 			}
 		}
 	}
 	if (!result)
 	{
-		msg.exit("ForcefieldBoundVariable::setAccessor");
+		Messenger::exit("ForcefieldBoundVariable::setAccessor");
 		return FALSE;
 	}
 	// Get current data from ReturnValue
-	ForcefieldBound *ptr = (ForcefieldBound*) sourcerv.asPointer(VTypes::ForcefieldBoundData, result);
+	ForcefieldBound* ptr = (ForcefieldBound*) sourcerv.asPointer(VTypes::ForcefieldBoundData, result);
 	if ((!result) || (ptr == NULL))
 	{
-		msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::ForcefieldBoundData));
+		Messenger::print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::ForcefieldBoundData));
 		result = FALSE;
 	}
 	int n;
 	if (result) switch (acc)
 	{
 		case (ForcefieldBoundVariable::Data):
-			if ((newvalue.arraySize() != -1) && (newvalue.arraySize() <= MAXFFPARAMDATA)) for (n=0; n<newvalue.arraySize(); ++n) ptr->setParameter(n, newvalue.asDouble(n, result));
-			else if (hasArrayIndex) ptr->setParameter(arrayIndex-1, newvalue.asDouble());
-			else for (n=0; n<MAXFFPARAMDATA; ++n) ptr->setParameter(n, newvalue.asDouble());
+			if ((newValue.arraySize() != -1) && (newValue.arraySize() <= MAXFFPARAMDATA)) for (n=0; n<newValue.arraySize(); ++n) ptr->setParameter(n, newValue.asDouble(n, result));
+			else if (hasArrayIndex) ptr->setParameter(arrayIndex-1, newValue.asDouble());
+			else for (n=0; n<MAXFFPARAMDATA; ++n) ptr->setParameter(n, newValue.asDouble());
 			break;
 		case (ForcefieldBoundVariable::EScale):
 			if (ptr->type() != ForcefieldBound::TorsionInteraction)
 			{
-				msg.print("Tried to set the 1-4 coulombic scale factor for a non-torsion bound interaction.\n");
+				Messenger::print("Tried to set the 1-4 coulombic scale factor for a non-torsion bound interaction.\n");
 				result = FALSE;
 			}
-			else ptr->setElecScale( newvalue.asDouble() );
+			else ptr->setElecScale( newValue.asDouble() );
 			break;
 		case (ForcefieldBoundVariable::Form):
-			result = ptr->setForm(newvalue.asString());
+			result = ptr->setForm(newValue.asString());
 			break;
 		case (ForcefieldBoundVariable::TypeNames):
-			if ((newvalue.arraySize() != -1) && (newvalue.arraySize() <= MAXFFBOUNDTYPES)) for (n=0; n<newvalue.arraySize(); ++n) ptr->setTypeName(n, newvalue.asString(n, result));
-			else if (hasArrayIndex) ptr->setTypeName(arrayIndex-1, newvalue.asString());
-			else for (n=0; n<MAXFFBOUNDTYPES; ++n) ptr->setTypeName(n, newvalue.asString());
+			if ((newValue.arraySize() != -1) && (newValue.arraySize() <= MAXFFBOUNDTYPES)) for (n=0; n<newValue.arraySize(); ++n) ptr->setTypeName(n, newValue.asString(n, result));
+			else if (hasArrayIndex) ptr->setTypeName(arrayIndex-1, newValue.asString());
+			else for (n=0; n<MAXFFBOUNDTYPES; ++n) ptr->setTypeName(n, newValue.asString());
 			break;
 		case (ForcefieldBoundVariable::VScale):
 			if (ptr->type() != ForcefieldBound::TorsionInteraction)
 			{
-				msg.print("Tried to set the 1-4 coulombic scale factor for a non-torsion bound interaction.\n");
+				Messenger::print("Tried to set the 1-4 coulombic scale factor for a non-torsion bound interaction.\n");
 				result = FALSE;
 			}
-			else ptr->setVdwScale( newvalue.asDouble() );
+			else ptr->setVdwScale( newValue.asDouble() );
 			break;
 		default:
 			printf("ForcefieldBoundVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);
 			result = FALSE;
 			break;
 	}
-	msg.exit("ForcefieldBoundVariable::setAccessor");
+	Messenger::exit("ForcefieldBoundVariable::setAccessor");
 	return result;
 }
 
 // Perform desired function
-bool ForcefieldBoundVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
+bool ForcefieldBoundVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 {
-	msg.enter("ForcefieldBoundVariable::performFunction");
+	Messenger::enter("ForcefieldBoundVariable::performFunction");
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nFunctions))
 	{
 		printf("Internal Error: FunctionAccessor id %i is out of range for ForcefieldBound type.\n", i);
-		msg.exit("ForcefieldBoundVariable::performFunction");
+		Messenger::exit("ForcefieldBoundVariable::performFunction");
 		return FALSE;
 	}
 	// Get current data from ReturnValue
 	bool result = TRUE;
-	ForcefieldBound *ptr = (ForcefieldBound*) rv.asPointer(VTypes::ForcefieldBoundData, result);
+	ForcefieldBound* ptr = (ForcefieldBound*) rv.asPointer(VTypes::ForcefieldBoundData, result);
 	int id;
 	if (result) switch (i)
 	{
@@ -458,7 +457,7 @@ bool ForcefieldBoundVariable::performFunction(int i, ReturnValue &rv, TreeNode *
 			result = FALSE;
 			break;
 	}
-	msg.exit("ForcefieldBoundVariable::performFunction");
+	Messenger::exit("ForcefieldBoundVariable::performFunction");
 	return result;
 }
 
@@ -467,15 +466,15 @@ void ForcefieldBoundVariable::printAccessors()
 {
 	if (ForcefieldBoundVariable::nAccessors > 0)
 	{
-		msg.print("Valid accessors are:\n");
-		for (int n=0; n<ForcefieldBoundVariable::nAccessors; ++n) msg.print("%s%s%s", n == 0 ? " " : ", ", accessorData[n].name, accessorData[n].arraySize > 0 ? "[]" : "");
-		msg.print("\n");
+		Messenger::print("Valid accessors are:\n");
+		for (int n=0; n<ForcefieldBoundVariable::nAccessors; ++n) Messenger::print("%s%s%s", n == 0 ? " " : ", ", accessorData[n].name, accessorData[n].arraySize > 0 ? "[]" : "");
+		Messenger::print("\n");
 	}
 	if ((ForcefieldBoundVariable::nFunctions > 0) && (strcmp(functionData[0].name,".dummy") != 0))
 	{
-		msg.print("Valid functions are:\n");
-		for (int n=0; n<ForcefieldBoundVariable::nFunctions; ++n) msg.print("%s%s(%s)", n == 0 ? " " : ", ", functionData[n].name, functionData[n].argText);
-		msg.print("\n");
+		Messenger::print("Valid functions are:\n");
+		for (int n=0; n<ForcefieldBoundVariable::nFunctions; ++n) Messenger::print("%s%s(%s)", n == 0 ? " " : ", ", functionData[n].name, functionData[n].argText);
+		Messenger::print("\n");
 	}
 }
 
@@ -484,7 +483,7 @@ void ForcefieldBoundVariable::printAccessors()
 */
 
 // Constructor
-ForcefieldBoundArrayVariable::ForcefieldBoundArrayVariable(TreeNode *sizeexpr, bool constant)
+ForcefieldBoundArrayVariable::ForcefieldBoundArrayVariable(TreeNode* sizeexpr, bool constant)
 {
 	// Private variables
 	returnType_ = VTypes::ForcefieldBoundData;
@@ -496,7 +495,7 @@ ForcefieldBoundArrayVariable::ForcefieldBoundArrayVariable(TreeNode *sizeexpr, b
 }
 
 // Search variable access list for provided accessor
-StepNode *ForcefieldBoundArrayVariable::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist)
+StepNode* ForcefieldBoundArrayVariable::findAccessor(const char* s, TreeNode* arrayIndex, TreeNode* argList)
 {
-	return ForcefieldBoundVariable::accessorSearch(s, arrayindex, arglist);
+	return ForcefieldBoundVariable::accessorSearch(s, arrayIndex, argList);
 }

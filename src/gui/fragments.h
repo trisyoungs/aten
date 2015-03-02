@@ -24,17 +24,38 @@
 
 #include "gui/ui_fragments.h"
 #include "base/dnchar.h"
+#include "base/namespace.h"
 
-// Forward declarations
+// Forward Declarations (Qt)
+class AtenWindow;
+class TTreeWidgetItem;
+
+ATEN_BEGIN_NAMESPACE
+
+// Forward Declarations (Aten)
 class Model;
 class Fragment;
-class TTreeWidgetItem;
+
+ATEN_END_NAMESPACE
+
+ATEN_USING_NAMESPACE
 
 // Atom list
 class FragmentsWidget : public QDockWidget
 {
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
+
+	public:
+	// Constructor / Destructor
+	FragmentsWidget(AtenWindow& parent, Qt::WindowFlags flags = 0);
+	// Main form declaration
+	Ui::FragmentsWidget ui;
+	
+	private:
+	// Reference to main window
+	AtenWindow& parent_;
+
 
 	/*
 	// Window Functions
@@ -43,7 +64,7 @@ class FragmentsWidget : public QDockWidget
 	void showWidget();
 	void refresh();
 	private slots:
-	void on_FragmentTree_currentItemChanged(QTreeWidgetItem *current, QTreeWidgetItem *previous);
+	void on_FragmentTree_currentItemChanged(QTreeWidgetItem* current, QTreeWidgetItem* previous);
 	void on_FragmentTree_doubleClicked(const QModelIndex &index);
 	void on_FragmentTable_currentItemChanged(QTableWidgetItem *current, QTableWidgetItem *previous);
 	void on_FragmentTable_doubleClicked(const QModelIndex &index);
@@ -53,6 +74,7 @@ class FragmentsWidget : public QDockWidget
 	void on_ViewAsGridCheck_clicked(bool checked);
 	protected:
 	void closeEvent(QCloseEvent *event);
+
 
 	/*
 	// Local variables
@@ -74,20 +96,6 @@ class FragmentsWidget : public QDockWidget
 	int &bondId();
 	// Return current drawing fragment
 	Fragment *currentFragment();
-	
-
-	/*
-	// Dialog
-	*/
-	private:
-	// Reference to main window
-	AtenWindow& parent_;
-
-	public:
-	// Constructor / Destructor
-	FragmentsWidget(AtenWindow& parent, Qt::WindowFlags flags = 0);
-	// Main form declaration
-	Ui::FragmentsWidget ui;
 };
 
 #endif

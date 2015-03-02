@@ -20,39 +20,49 @@
 */
 
 #include "main/aten.h"
+#include "parser/parser.h"
 #include "main/version.h"
+#include "parser/commandnode.h"
 #include "gui/mainwindow.h"
-#include "base/messenger.h"
-#include "math/mathfunc.h"
-#include <time.h>
-#include <ctime>
-#include <iostream>
+#include <QtGui/QApplication>
+#include <QtOpenGL/QtOpenGL>
 
-int main(int argc, char *argv[])
+ATEN_BEGIN_NAMESPACE
+
+// Create main Aten objects, and create static members for other classes
+Aten MrAten;
+CommandParser cmdparser(MrAten);
+Aten& CommandNode::aten_ = MrAten;
+Aten& Variable::aten_ = MrAten;
+Aten& Tree::aten_ = MrAten;
+
+ATEN_END_NAMESPACE
+
+ATEN_USING_NAMESPACE
+
+// External Object Declarations
+int main(int argc, char* argv[])
 {
-	// Create main Aten object
-	Aten aten;
-
 	/* Parse early command-line options */
-	if (!aten.parseCliEarly(argc, argv)) return -1;
+	if (!MrAten.parseCliEarly(argc, argv)) return -1;
 
 	/* Print GPL license information */
-	msg.print(Messenger::Verbose, "Aten version %s, Copyright (C) 2007-2010  T. Youngs.\n", ATENVERSION);
-	msg.print(Messenger::Verbose, "SVN repository is %s.\n", ATENURL);
-	msg.print(Messenger::Verbose, "Aten uses Space Group Info (c) 1994-96 Ralf W. Grosse-Kunstleve.\n");
-	msg.print(Messenger::Verbose, "Aten comes with ABSOLUTELY NO WARRANTY.\n");
-	msg.print(Messenger::Verbose, "This is free software, and you are welcome to redistribute it under certain conditions.\n");
-	msg.print(Messenger::Verbose, "For more details read the GPL at <http://www.gnu.org/copyleft/gpl.html>.\n\n");
+	Messenger::print(Messenger::Verbose, "Aten version %s, Copyright (C) 2007-2010  T. Youngs.\n", ATENVERSION);
+	Messenger::print(Messenger::Verbose, "SVN repository is %s.\n", ATENURL);
+	Messenger::print(Messenger::Verbose, "Aten uses Space Group Info (c) 1994-96 Ralf W. Grosse-Kunstleve.\n");
+	Messenger::print(Messenger::Verbose, "Aten comes with ABSOLUTELY NO WARRANTY.\n");
+	Messenger::print(Messenger::Verbose, "This is free software, and you are welcome to redistribute it under certain conditions.\n");
+	Messenger::print(Messenger::Verbose, "For more details read the GPL at <http://www.gnu.org/copyleft/gpl.html>.\n\n");
 
 	/* Set random seed */
 	srand( (unsigned)time( NULL ) );
 
 	/* Get environment variables */
-	if (getenv("HOME") != '\0') aten.setHomeDir(getenv("HOME"));
-	else aten.setHomeDir( getenv("USERPROFILE") );
-	aten.setWorkDir(getenv("PWD"));
-	if (!aten.dataDirSet()) aten.setDataDir(getenv("ATENDATA"));
-	msg.print(Messenger::Verbose, "Home directory is %s, working directory is %s, data directory is %s.\n", aten.homeDir(), aten.workDir(), aten.dataDir());
+	if (getenv("HOME") != '\0') MrAten.setHomeDir(getenv("HOME"));
+	else MrAten.setHomeDir( getenv("USERPROFILE") );
+	MrAten.setWorkDir(getenv("PWD"));
+	if (!MrAten.dataDirSet()) MrAten.setDataDir(getenv("ATENDATA"));
+	Messenger::print(Messenger::Verbose, "Home directory is %s, working directory is %s, data directory is %s.\n", MrAten.homeDir(), MrAten.workDir(), MrAten.dataDir());
 
 	/* Create the main QApplication */
 	QApplication app(argc, argv, QApplication::GuiClient);
@@ -68,33 +78,33 @@ int main(int argc, char *argv[])
 	QGLFormat::defaultFormat().setSampleBuffers(true);
 
 	/* Create the main window */
-	AtenForm mainWindow;
+	AtenWindow mainWindow(MrAten);
 
 	/* Reconstruct combination rule functions */
 	Combine::regenerateEquations();
 
 	/* Read in includes (if unsuccessful, a messagebox will be raised in the GUI) */
-	if (prefs.loadIncludes()) aten.openIncludes();
+	if (prefs.loadIncludes()) MrAten.openIncludes();
 
 	/* Read in file filters (if unsuccessful, a messagebox will be raised in the GUI) */
 	/* This will also set dataDir_ to a valid value (provided one could be found in a default search location) */
-	if (prefs.loadFilters()) aten.openFilters();
+	if (prefs.loadFilters()) MrAten.openFilters();
 	
 	/* Load in fragments */
-	if (prefs.loadFragments()) aten.openFragments();
+	if (prefs.loadFragments()) MrAten.openFragments();
 	
 	/* Load in partitions */
-	if (prefs.loadPartitions()) aten.openPartitions();
+	if (prefs.loadPartitions()) MrAten.openPartitions();
 	
 	/* Load in program and user preferences */
-	if (!prefs.load()) return -1;
+	if (!MrAten.loadPrefs()) return -1;
 	
 	/* Parse program arguments - return value is how many models were loaded, or -1 for some kind of failure */
-	if (aten.parseCli(argc,argv) == -1) return -1;
+	if (MrAten.parseCli(argc,argv) == -1) return -1;
 
 	/* Enter the correct program mode */
 	int result = 0;
-	switch (aten.programMode())
+	switch (MrAten.programMode())
 	{
 		case (Aten::GuiMode):
 			/* Show the main window */
@@ -104,23 +114,27 @@ int main(int argc, char *argv[])
 			result =  app.exec();
 			break;
 		case (Aten::BatchMode):
-			msg.print("Batch mode in effect - models will be processed and saved.\n");
-			aten.processModels();
-			aten.saveModels();
+			Messenger::print("Batch mode in effect - models will be processed and saved.\n");
+			MrAten.processModels();
+			MrAten.saveModels();
 			break;
 		case (Aten::ExportMode):
-			msg.print("Export mode in effect - models will be exported to the specified format.\n");
-			aten.exportModels();
+			Messenger::print("Export mode in effect - models will be exported to the specified format.\n");
+			MrAten.exportModels();
 			break;
 		case (Aten::ProcessMode):
-			msg.print("Process mode in effect - models will be processed and loaded in the GUI.\n");
-			aten.processModels();
-			gui.run();
+			Messenger::print("Process mode in effect - models will be processed and loaded in the GUI.\n");
+			MrAten.processModels();
+			/* Show the main window */
+			mainWindow.show();
+
+			/* Enter Qt's main events loop */
+			result =  app.exec();
 			break;
 		case (Aten::BatchExportMode):
-			msg.print("BatchExport mode in effect - models will be processed and exported to the specified format.\n");
-			aten.processModels();
-			aten.exportModels();
+			Messenger::print("BatchExport mode in effect - models will be processed and exported to the specified format.\n");
+			MrAten.processModels();
+			MrAten.exportModels();
 			break;
 		default:
 			break;

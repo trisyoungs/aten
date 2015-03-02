@@ -23,11 +23,20 @@
 #define ATEN_SELECTPATTERNDIALOG_H
 
 #include "gui/ui_selectpattern.h"
+#include "base/namespace.h"
 
-// Forward Declarations
+// Forward Declarations (Qt)
+class AtenWindow;
+
+ATEN_BEGIN_NAMESPACE
+
+// Forward Declarations (Aten)
 class Pattern;
 class Model;
-class AtenWindow;
+
+ATEN_END_NAMESPACE
+
+ATEN_USING_NAMESPACE
 
 // Select Pattern Dialog
 class AtenSelectPattern : public QDialog
@@ -40,11 +49,20 @@ class AtenSelectPattern : public QDialog
 	AtenWindow& parent_;
 
 	public:
-	// Constructor / Destructor
+	// Constructor
 	AtenSelectPattern(AtenWindow& parent);
-	~AtenSelectPattern();
 	// Main form declaration
 	Ui::AtenSelectPattern ui;
+
+	
+	/*
+	 * Local Variables
+	 */
+	private:
+	// Current model target
+	Model* currentModel_;
+	// Pattern selected in list
+	Pattern* selectedPattern_;
 
 
 	/*
@@ -53,16 +71,6 @@ class AtenSelectPattern : public QDialog
 	private slots:
 	void on_PatternTable_doubleClicked(const QModelIndex &index);
 	void on_PatternTable_itemSelectionChanged();
-
-	
-	/*
-	 * Local Variables
-	*/
-	private:
-	// Current model target
-	Model* currentModel_;
-	// Pattern selected in list
-	Pattern* selectedPattern_;
 
 
 	/*

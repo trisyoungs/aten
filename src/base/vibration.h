@@ -25,8 +25,11 @@
 #include "base/dnchar.h"
 #include "templates/list.h"
 #include "templates/vector3.h"
+#include "base/namespace.h"
 
-// Forward declarations
+ATEN_BEGIN_NAMESPACE
+
+// Forward Declarations (Aten)
 class Model;
 
 // Vibrational mode
@@ -63,9 +66,9 @@ class Vibration : public ListItem<Vibration>
 	// Initialise to specified size
 	void initialise(Model* parent, int size = -1);
 	// Set associated name
-	void setName(const char *name);
+	void setName(const char* name);
 	// Return associated name of the vibration
-	const char *name() const;
+	const char* name() const;
 	// Set frequency of the vibration
 	void setFrequency(double freq);
 	// Return frequency of the vibration
@@ -91,5 +94,7 @@ class Vibration : public ListItem<Vibration>
 	// Return n'th displacement data
 	Vec3<double> displacement(int n) const;
 };
+
+ATEN_END_NAMESPACE
 
 #endif

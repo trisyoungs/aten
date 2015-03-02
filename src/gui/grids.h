@@ -23,16 +23,47 @@
 #define ATEN_GRIDSWIDGET_H
 
 #include "gui/ui_grids.h"
+#include "base/namespace.h"
 
-// Forward Declarations
+// Forward Declarations (Qt)
 class QMenuBar;
+class AtenWindow;
+
+ATEN_BEGIN_NAMESPACE
+
+// Forward Declarations (Aten)
 class Grid;
+
+ATEN_END_NAMESPACE
+
+ATEN_USING_NAMESPACE
 
 // Grids window
 class GridsWidget : public QDockWidget
 {
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
+
+	public:
+	// Constructor / Destructor
+	GridsWidget(AtenWindow& parent, Qt::WindowFlags flags = 0);
+	// Main form declaration
+	Ui::GridsWidget ui;
+
+	private:
+	// Reference to main window
+	AtenWindow& parent_;
+
+
+	/*
+	// Local variables
+	*/
+	private:
+	// Whether the window is currently refreshing
+	bool refreshing_;
+	// Menu bar for window
+	QMenuBar* menuBar_;
+
 
 	/*
 	// Window Functions
@@ -41,13 +72,15 @@ class GridsWidget : public QDockWidget
 	void showWidget();
 	void refresh();
 	void loadGrid();
+
 	private:
-	Grid *getCurrentGrid();
-	void addGridToList(Grid *g);
+	Grid* getCurrentGrid();
+	void addGridToList(Grid* g);
 	void refreshGridInfo();
 	void gridOriginChanged(int component, double value);
 	void gridAxisChanged(int axis, int component, double value);
 	void gridShiftChanged();
+
 	private slots:
 	// Menu
 	void on_actionGridLoad_triggered(bool checked);
@@ -108,30 +141,9 @@ class GridsWidget : public QDockWidget
 	void on_OrbitalOriginZSpin_valueChanged(double d);
 	void on_OrbitalSpacingSpin_valueChanged(double d);
 	void on_OrbitalPointsSpin_valueChanged(int i);
+
 	protected:
 	void closeEvent(QCloseEvent *event);
-
-	/*
-	// Local variables
-	*/
-	private:
-	// Whether the window is currently refreshing
-	bool refreshing_;
-	// Menu bar for window
-	QMenuBar *menuBar_;
-
-	/*
-	// Dialog
-	*/
-	private:
-	// Reference to main window
-	AtenWindow& parent_;
-
-	public:
-	// Constructor / Destructor
-	GridsWidget(AtenWindow& parent, Qt::WindowFlags flags = 0);
-	// Main form declaration
-	Ui::GridsWidget ui;
 };
 
 #endif

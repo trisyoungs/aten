@@ -22,53 +22,43 @@
 #include "base/atom.h"
 #include "base/bond.h"
 #include "base/sysfunc.h"
-#include "classes/forcefieldatom.h"
+#include "base/forcefieldatom.h"
 #include "model/model.h"
 #include "base/elements.h"
+#include "base/namespace.h"
 
-// Atom drawing styles
-const char *DrawStyleKeywords[Atom::nDrawStyles] = { "Stick", "Tube", "Sphere", "Scaled", "Individual" };
-Atom::DrawStyle Atom::drawStyle(const char *s, bool reportError)
-{
-	Atom::DrawStyle ds = (Atom::DrawStyle) enumSearch("draw style", Atom::nDrawStyles, DrawStyleKeywords, s, reportError);
-	if ((ds == Atom::nDrawStyles) && reportError) enumPrintValid(Atom::nDrawStyles,DrawStyleKeywords);
-	return ds;
-}
-const char *Atom::drawStyle(Atom::DrawStyle i)
-{
-	return DrawStyleKeywords[i];
-}
+ATEN_USING_NAMESPACE
 
 // Atom labels
-const char *AtomLabelKeywords[Atom::nLabelTypes] = { "id", "element", "type", "ffequiv", "charge" };
-Atom::AtomLabel Atom::atomLabel(const char *s, bool reportError)
+const char* AtomLabelKeywords[Atom::nLabelTypes] = { "id", "element", "type", "ffequiv", "charge" };
+Atom::AtomLabel Atom::atomLabel(const char* s, bool reportError)
 {
 	Atom::AtomLabel al = (Atom::AtomLabel) enumSearch("atom label", Atom::nLabelTypes, AtomLabelKeywords, s, reportError);
 	if ((al == Atom::nLabelTypes) && reportError) enumPrintValid(Atom::nLabelTypes,AtomLabelKeywords);
 	return al;
 }
-const char *Atom::atomLabel(Atom::AtomLabel al)
+const char* Atom::atomLabel(Atom::AtomLabel al)
 {
 	return AtomLabelKeywords[al];
 }
 
 // Atom environment
-const char *AtomEnvironmentText[Atom::nEnvironments] = { "unspecified", "unbound", "pure", "nonpure", "aromatic" };
-const char *Atom::atomEnvironment(Atom::AtomEnvironment ae)
+const char* AtomEnvironmentText[Atom::nEnvironments] = { "unspecified", "unbound", "pure", "nonpure", "aromatic" };
+const char* Atom::atomEnvironment(Atom::AtomEnvironment ae)
 {
 	return AtomEnvironmentText[ae];
 }
 
 // Geometries about atomic centres
-const char *AtomGeometryKeywords[Atom::nAtomGeometries] = { "unspecified", "unbound", "onebond", "linear", "tshape", "trigonal", "tetrahedral", "sqplanar", "tbp", "octahedral" };
+const char* AtomGeometryKeywords[Atom::nAtomGeometries] = { "unspecified", "unbound", "onebond", "linear", "tshape", "trigonal", "tetrahedral", "sqplanar", "tbp", "octahedral" };
 int AtomGeometryNBonds[Atom::nAtomGeometries] = { 0, 0, 1, 2, 3, 3, 4, 4, 5, 6 };
-Atom::AtomGeometry Atom::atomGeometry(const char *s, bool reportError)
+Atom::AtomGeometry Atom::atomGeometry(const char* s, bool reportError)
 {
 	Atom::AtomGeometry ag = (Atom::AtomGeometry) enumSearch("atom geometry",Atom::nAtomGeometries,AtomGeometryKeywords,s, reportError);
 	if ((ag == Atom::nAtomGeometries) && reportError) enumPrintValid(Atom::nAtomGeometries,AtomGeometryKeywords);
 	return ag;
 }
-const char *Atom::atomGeometry(Atom::AtomGeometry i)
+const char* Atom::atomGeometry(Atom::AtomGeometry i)
 {
 	return AtomGeometryKeywords[i];
 }
@@ -91,7 +81,7 @@ Atom::Atom() : ListItem<Atom>()
 	selected_ = FALSE;
 	hidden_ = FALSE;
 	marked_ = FALSE;
-	style_ = StickStyle;
+	style_ = Prefs::StickStyle;
 	labels_ = 0;
 	parent_ = NULL;
 	id_ = -1;
@@ -232,7 +222,7 @@ bool Atom::isPositionFixed() const
 int Atom::nHydrogens()
 {
 	int nh = 0;
-	for (Refitem<Bond,int> *bref = bonds_.first(); bref != NULL; bref = bref->next) if (bref->item->partner(this)->element() == 1) nh++;
+	for (Refitem<Bond,int>* bref = bonds_.first(); bref != NULL; bref = bref->next) if (bref->item->partner(this)->element() == 1) nh++;
 	return nh;
 }
 
@@ -309,16 +299,16 @@ void Atom::copyStyle(Atom* source)
 void Atom::print() const
 {
 	// Note: We print the 'visual' id (id_ + 1) and not the internal id (id_)
-	msg.print("Atom ID %i (%s):\n", id_+1, Elements().name(element_));
-	msg.print(" %s, %s, individual style is %s.\n", (selected_ ? "Selected" : "Not selected"), (hidden_ ? "hidden" : "not hidden"), drawStyle(style_));
-	msg.print(" Coordinates : %8.4f %8.4f %8.4f\n",r_.x,r_.y,r_.z);
-	msg.print("  Velocities : %8.4f %8.4f %8.4f\n",v_.x,v_.y,v_.z);
-	msg.print("      Forces : %8.4f %8.4f %8.4f\n",f_.x,f_.y,f_.z);
-	msg.print("      Charge : %8.4f\n",charge_);
-	msg.print("      FFType : %s\n",(type_ != NULL ? type_->name() : "None"));
-	msg.print("       Bonds : %i\n",bonds_.nItems());
-	msg.print(" Environment : %s\n",Atom::atomEnvironment(environment_));
-	msg.print("        O.S. : %i\n",os_);
+	Messenger::print("Atom ID %i (%s):\n", id_+1, Elements().name(element_));
+	Messenger::print(" %s, %s, individual style is %s.\n", (selected_ ? "Selected" : "Not selected"), (hidden_ ? "hidden" : "not hidden"), Prefs::drawStyle(style_));
+	Messenger::print(" Coordinates : %8.4f %8.4f %8.4f\n",r_.x,r_.y,r_.z);
+	Messenger::print("  Velocities : %8.4f %8.4f %8.4f\n",v_.x,v_.y,v_.z);
+	Messenger::print("      Forces : %8.4f %8.4f %8.4f\n",f_.x,f_.y,f_.z);
+	Messenger::print("      Charge : %8.4f\n",charge_);
+	Messenger::print("      FFType : %s\n",(type_ != NULL ? type_->name() : "None"));
+	Messenger::print("       Bonds : %i\n",bonds_.nItems());
+	Messenger::print(" Environment : %s\n",Atom::atomEnvironment(environment_));
+	Messenger::print("        O.S. : %i\n",os_);
 }
 
 // Print summary
@@ -326,7 +316,7 @@ void Atom::printSummary() const
 {
 	// Print format :" Id     El   FFType   FFId          X             Y             Z              Q       Sel Fix \n");
 	// Note: We print the 'visual' id (id_ + 1) and not the internal id (id_)
-	msg.print(" %-5i  %-3s  %-8s %-6i %13.6e %13.6e %13.6e  %13.6e  %c  %c%c\n", id_+1, Elements().symbol(element_), type_ != NULL ? type_->name() : "None", type_ != NULL ? type_->typeId() : 0, r_.x, r_.y, r_.z, charge_, selected_ ? 'x' : ' ', fixedPosition_ ? 'R' : ' ', fixedType_ ? 'T' : ' ');
+	Messenger::print(" %-5i  %-3s  %-8s %-6i %13.6e %13.6e %13.6e  %13.6e  %c  %c%c\n", id_+1, Elements().symbol(element_), type_ != NULL ? type_->name() : "None", type_ != NULL ? type_->typeId() : 0, r_.x, r_.y, r_.z, charge_, selected_ ? 'x' : ' ', fixedPosition_ ? 'R' : ' ', fixedType_ ? 'T' : ' ');
 }
 
 /*
@@ -340,15 +330,15 @@ int Atom::nBonds() const
 }
 
 // Return the current bond list
-Refitem<Bond,int> *Atom::bonds()
+Refitem<Bond,int>* Atom::bonds()
 {
 	return bonds_.first();
 }
 
 // Return nth bond in the list
-Refitem<Bond,int> *Atom::bond(int index)
+Refitem<Bond,int>* Atom::bond(int index)
 {
-	if ((index < 0) || (index >= bonds_.nItems())) msg.print("Bond index %i is out of range for atom.\n", index);
+	if ((index < 0) || (index >= bonds_.nItems())) Messenger::print("Bond index %i is out of range for atom.\n", index);
 	else return bonds_[index];
 	return NULL;
 }
@@ -368,13 +358,13 @@ void Atom::acceptBond(Bond *b)
 // Detach bond
 void Atom::detachBond(Bond *xbond)
 {
-	msg.enter("Atom::detachBond");
+	Messenger::enter("Atom::detachBond");
 	// Remove the reference to the bond from the Reflist on the atom.
 	bonds_.remove(xbond);
 	// Mark pointer as NULL.
 	if (xbond->atomI() == this) xbond->setAtomI(NULL);
 	else xbond->setAtomJ(NULL);
-	msg.exit("Atom::detachBond");
+	Messenger::exit("Atom::detachBond");
 }
 
 // Total bond order
@@ -382,19 +372,19 @@ int Atom::totalBondOrder()
 {
 	// Calculate the total bond order of the atom
 	// Returned result is 2*actual bond order (to account for aromatic bonds [BO = 1.5])
-	msg.enter("Atom::totalBondOrder");
+	Messenger::enter("Atom::totalBondOrder");
 	double result = 0;
-	for (Refitem<Bond,int> *bref = bonds_.first(); bref != NULL; bref = bref->next) result += bref->item->order();
-	msg.exit("Atom::totalBondOrder");
+	for (Refitem<Bond,int>* bref = bonds_.first(); bref != NULL; bref = bref->next) result += bref->item->order();
+	Messenger::exit("Atom::totalBondOrder");
 	return int(result * 2.0 + 0.1);
 }
 
 // Find bond to atom 'j'
 Bond *Atom::findBond(Atom* j)
 {
-	msg.enter("Atom::findBond");
+	Messenger::enter("Atom::findBond");
 	Bond *result = NULL;
-	for (Refitem<Bond,int> *bref = bonds_.first(); bref != NULL; bref = bref->next)
+	for (Refitem<Bond,int>* bref = bonds_.first(); bref != NULL; bref = bref->next)
 	{
 		if (bref->item->partner(this) == j)
 		{
@@ -402,35 +392,35 @@ Bond *Atom::findBond(Atom* j)
 			break;
 		}
 	}
-	msg.exit("Atom::findBond");
+	Messenger::exit("Atom::findBond");
 	return result;
 }
 
 // Return bond order with specified bond partner
 double Atom::bondOrder(Atom* j)
 {
-	msg.enter("Atom::bondOrder");
+	Messenger::enter("Atom::bondOrder");
 	// First, find the bond
 	Bond *b = findBond(j);
 	// Criticality check
 	if (b == NULL)
 	{
 		printf("Atom::bondOrder : No bond exists between specified atoms.\n");
-		msg.exit("Atom::bondOrder");
+		Messenger::exit("Atom::bondOrder");
 		return 0.0;
 	}
-	msg.exit("Atom::bondOrder");
+	Messenger::exit("Atom::bondOrder");
 	return b->order();
 }
 
 // Determine bonding geometry
 Atom::AtomGeometry Atom::geometry()
 {
-	msg.enter("Atom::geometry");
+	Messenger::enter("Atom::geometry");
 	Atom::AtomGeometry result = Atom::UnboundGeometry;
 	double angle, largest;
 	Bond *b1, *b2;
-	Refitem<Bond,int> *bref1, *bref2;
+	Refitem<Bond,int>* bref1, *bref2;
 	result = Atom::NoGeometry;
 	// Separate the tests by number of bound atoms...
 	switch (nBonds())
@@ -494,28 +484,28 @@ Atom::AtomGeometry Atom::geometry()
 			else if ((angle >= 115.0) && (angle < 125.0)) result = Atom::SquarePlanarGeometry;
 			break;
 	}
-	msg.exit("Atom::geometry");
+	Messenger::exit("Atom::geometry");
 	return result;
 }
 
 // Return if the local bound geometry of the atom is planar (within a certain tolerance)
 bool Atom::isPlanar(double tolerance)
 {
-	msg.enter("Atom::isPlanar");
+	Messenger::enter("Atom::isPlanar");
 	// Simple cases first
 	if (bonds_.nItems() == 1)
 	{
-		msg.exit("Atom::isPlanar");
+		Messenger::exit("Atom::isPlanar");
 		return FALSE;
 	}
 	if (bonds_.nItems() == 2)
 	{
-		msg.exit("Atom::isPlanar");
+		Messenger::exit("Atom::isPlanar");
 		return TRUE;
 	}
 	// Any other case is more complex.
 	bool result = TRUE;
-	Refitem<Bond,int> *ri = bonds_.first();
+	Refitem<Bond,int>* ri = bonds_.first();
 	// Take the first two bound atom vectors and get the cross product to define the plane's normal
 	Vec3<double> v1 = parent_->cell()->mimVector(this, ri->item->partner(this));
 	v1.normalise();
@@ -538,7 +528,7 @@ bool Atom::isPlanar(double tolerance)
 			break;
 		}
 	}
-	msg.exit("Atom::isPlanar");
+	Messenger::exit("Atom::isPlanar");
 	return result;
 }
 
@@ -546,7 +536,7 @@ bool Atom::isPlanar(double tolerance)
 void Atom::addBoundToReflist(Reflist<Atom,int> *rlist)
 {
 	// Add all atoms bound to the supplied atom to the atomReflist.
-	for (Refitem<Bond,int> *bref = bonds(); bref != NULL; bref = bref->next)
+	for (Refitem<Bond,int>* bref = bonds(); bref != NULL; bref = bref->next)
 		rlist->add(bref->item->partner(this), bref->item->type());
 }
 
@@ -555,7 +545,7 @@ Vec3<double> Atom::findBondPlane(Atom* other, Bond *excludedBond, const Vec3<dou
 {
 	// Given this atom, another (j), and a bond node on 'this' between them, determine the plane of the bond if possible.
 	Vec3<double> rk, xp, vijnorm;
-	Refitem<Bond,int> *bref;
+	Refitem<Bond,int>* bref;
 	Atom* origin;
 
 	vijnorm = vij;
@@ -648,13 +638,13 @@ int Atom::id() const
 }
 
 // Return data set for atom
-const char *Atom::data()
+const char* Atom::data()
 {
 	return data_;
 }
 
 // Set data for atom
-void Atom::setData(const char *s)
+void Atom::setData(const char* s)
 {
 	// Delete any old data and set new
 	if (data_ != NULL) delete[] data_;
@@ -706,13 +696,13 @@ int Atom::bit()
 */
 
 // Sets the drawing style of the atom
-void Atom::setStyle(Atom::DrawStyle style)
+void Atom::setStyle(Prefs::DrawStyle style)
 {
 	style_ = style;
 }
 
 // Returns the drawing style of the atom
-Atom::DrawStyle Atom::style() const
+Prefs::DrawStyle Atom::style() const
 {
 	return style_;
 }
@@ -765,7 +755,7 @@ void Atom::setColour(double r, double g, double b, double a)
 // Set n'th component of custom colour
 void Atom::setColour(int n, double d)
 {
-	if ((n < 0) || (n > 4)) msg.print( "Tried to set component %i for atom colour which is out of range.\n", n+1);
+	if ((n < 0) || (n > 4)) Messenger::print( "Tried to set component %i for atom colour which is out of range.\n", n+1);
 	else colour_[n] = d;
 }
 
@@ -776,16 +766,16 @@ void Atom::setColourFromElement()
 }
 
 // Return custom colour
-double *Atom::colour()
+double* Atom::colour()
 {
 	return colour_;
 }
 
 // Copy custom colour
-void Atom::copyColour(GLfloat *c) const
+void Atom::copyColour(Vec4<GLfloat>& col) const
 {
-	 c[0] = (GLfloat) colour_[0];
-	 c[1] = (GLfloat) colour_[1];
-	 c[2] = (GLfloat) colour_[2];
-	 c[3] = (GLfloat) colour_[3];
+	 col.x = (GLfloat) colour_[0];
+	 col.y = (GLfloat) colour_[1];
+	 col.z = (GLfloat) colour_[2];
+	 col.w = (GLfloat) colour_[3];
 }

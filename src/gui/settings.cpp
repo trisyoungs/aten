@@ -19,6 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <QtCore/QFileInfo>
 #include "base/sysfunc.h"
 #include "gui/mainwindow.h"
 #include "gui/command.h"
@@ -33,7 +34,7 @@ void AtenWindow::loadSettings()
 	QFileInfo fi1, fi2;
 	Dnchar filename;
 	QStringList commandHistory, selectHistory, selectForHistory, selectNetaHistory;
-	Program *prog, *loadedscript;
+	Program* prog, *loadedscript;
 	int n;
 
 	// Toolbar visibility / position
@@ -62,15 +63,15 @@ void AtenWindow::loadSettings()
 
 	// Probe user history file...
 	filename.sprintf("%s%c%s%chistory.txt", aten_.homeDir(), PATHSEP, aten_.atenDir(), PATHSEP);
-	msg.print("Looking for program history file '%s'...\n", filename.get());
+	Messenger::print("Looking for program history file '%s'...\n", filename.get());
 	if (fileExists(filename))
 	{
-		msg.print("Program history file found in '%s'\n", filename.get());
+		Messenger::print("Program history file found in '%s'\n", filename.get());
 		LineParser parser;
 		Dnchar arg, data;
 		if (!parser.openInput(filename))
 		{
-			msg.print("Failed to open program history file.\n");
+			Messenger::print("Failed to open program history file.\n");
 			return;
 		}
 		while (!parser.eofOrBlank())
@@ -107,11 +108,11 @@ void AtenWindow::loadSettings()
 					else
 					{
 						prog = aten_.addScript();
-						if (prog->generateFromFile(data, data)) msg.print("Successfully loaded script file '%s'.\n", data.get());
+						if (prog->generateFromFile(data, data)) Messenger::print("Successfully loaded script file '%s'.\n", data.get());
 						else
 						{
 							aten_.removeScript(prog);
-							msg.print("Failed to load script file '%s'.\n", data.get());
+							Messenger::print("Failed to load script file '%s'.\n", data.get());
 						}
 					}
 					break;
@@ -128,7 +129,7 @@ void AtenWindow::loadSettings()
 		}
 		parser.closeFiles();
 	}
-	else msg.print("Program history file not found.\n");
+	else Messenger::print("Program history file not found.\n");
 	
 	// Update GUI controls
 	commandWidget->setCommandList(commandHistory);
@@ -141,7 +142,7 @@ void AtenWindow::saveSettings()
 	// Open new file for writing...
 	Dnchar filename;
 	filename.sprintf("%s%c%s%chistory.txt", aten_.homeDir(), PATHSEP, aten_.atenDir(), PATHSEP);
-	msg.print("Savung program history file '%s'...", filename.get());
+	Messenger::print("Savung program history file '%s'...", filename.get());
 	LineParser historyFile;
 	historyFile.openOutput(filename, TRUE);
 	
@@ -161,7 +162,7 @@ void AtenWindow::saveSettings()
 		}
 		
 		// Scripts
-		for (Program *prog = aten_.scripts(); prog != NULL; prog = prog->next)
+		for (Program* prog = aten_.scripts(); prog != NULL; prog = prog->next)
 		{
 			line.sprintf("Script  %s\n", prog->filename());
 			historyFile.writeLine(line);
@@ -199,7 +200,7 @@ void AtenWindow::saveSettings()
 	}
 	
 	historyFile.closeFiles();
-	msg.print("Done.\n");
+	Messenger::print("Done.\n");
 }
 
 

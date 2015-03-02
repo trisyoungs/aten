@@ -46,7 +46,7 @@ void TColourFrame::setColour(QColor &c)
 }
 
 // Set brush colour (with array of GLfloats)
-void TColourFrame::setColour(double *col)
+void TColourFrame::setColour(double* col)
 {
 	QColor rgb;
 	rgb.setRgbF(col[0],col[1],col[2],1.0f);

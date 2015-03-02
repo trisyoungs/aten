@@ -23,13 +23,16 @@
 #include "parser/stepnode.h"
 #include "parser/treegui.h"
 #include "gui/treegui.h"
+#include "base/prefs.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <base/progress.h>
 
+ATEN_USING_NAMESPACE
+
 // Constructors
-DialogVariable::DialogVariable(TreeGui *ptr, bool constant)
+DialogVariable::DialogVariable(TreeGui* ptr, bool constant)
 {
 	// Private variables
 	returnType_ = VTypes::DialogData;
@@ -81,16 +84,16 @@ FunctionAccessor DialogVariable::functionData[DialogVariable::nFunctions] = {
 };
 
 // Search variable access list for provided accessor (call private static function)
-StepNode *DialogVariable::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist)
+StepNode* DialogVariable::findAccessor(const char* s, TreeNode* arrayIndex, TreeNode* argList)
 {
-	return DialogVariable::accessorSearch(s, arrayindex, arglist);
+	return DialogVariable::accessorSearch(s, arrayIndex, argList);
 }
 
 // Private static function to search accessors
-StepNode *DialogVariable::accessorSearch(const char *s, TreeNode *arrayindex, TreeNode *arglist)
+StepNode* DialogVariable::accessorSearch(const char* s, TreeNode* arrayIndex, TreeNode* argList)
 {
-	msg.enter("DialogVariable::accessorSearch");
-	StepNode *result = NULL;
+	Messenger::enter("DialogVariable::accessorSearch");
+	StepNode* result = NULL;
 	int i = 0;
 	i = Variable::searchAccessor(s, nAccessors, accessorData);
 	if (i == -1)
@@ -100,84 +103,84 @@ StepNode *DialogVariable::accessorSearch(const char *s, TreeNode *arrayindex, Tr
 		i = Variable::searchAccessor(s, nFunctions, functionData);
 		if (i == -1)
 		{
-			msg.print("Error: Type 'Dialog&' has no member or function named '%s'.\n", s);
+			Messenger::print("Error: Type 'Dialog&' has no member or function named '%s'.\n", s);
 			printAccessors();
-			msg.exit("DialogVariable::accessorSearch");
+			Messenger::exit("DialogVariable::accessorSearch");
 			return NULL;
 		}
-		msg.print(Messenger::Parse, "FunctionAccessor match = %i (%s)\n", i, functionData[i].name);
-		if (arrayindex != NULL)
+		Messenger::print(Messenger::Parse, "FunctionAccessor match = %i (%s)\n", i, functionData[i].name);
+		if (arrayIndex != NULL)
 		{
-			msg.print("Error: Array index given to 'Dialog&' function '%s'.\n", s);
-			msg.exit("DialogVariable::accessorSearch");
+			Messenger::print("Error: Array index given to 'Dialog&' function '%s'.\n", s);
+			Messenger::exit("DialogVariable::accessorSearch");
 			return NULL;
 		}
 		// Add and check supplied arguments...
 		result = new StepNode(i, VTypes::DialogData, functionData[i].returnType);
-		result->addJoinedArguments(arglist);
+		result->addJoinedArguments(argList);
 		if (!result->checkArguments(functionData[i].arguments, functionData[i].name))
 		{
-			msg.print("Error: Syntax for 'Dialog&' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
+			Messenger::print("Error: Syntax for 'Dialog&' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
 			delete result;
 			result = NULL;
 		}
 	}
 	else
 	{
-		msg.print(Messenger::Parse, "Accessor match = %i (%s)\n", i, accessorData[i].name);
+		Messenger::print(Messenger::Parse, "Accessor match = %i (%s)\n", i, accessorData[i].name);
 		// Were we given an array index when we didn't want one?
-		if ((accessorData[i].arraySize == 0) && (arrayindex != NULL))
+		if ((accessorData[i].arraySize == 0) && (arrayIndex != NULL))
 		{
-			msg.print("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
+			Messenger::print("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
 			result = NULL;
 		}
 		// Were we given an argument list when we didn't want one?
-		if (arglist != NULL)
+		if (argList != NULL)
 		{
-			msg.print("Error: Argument list given to 'Dialog&' array member '%s'.\n", s);
-			msg.exit("DialogVariable::accessorSearch");
+			Messenger::print("Error: Argument list given to 'Dialog&' array member '%s'.\n", s);
+			Messenger::exit("DialogVariable::accessorSearch");
 			return NULL;
 		}
-		result = new StepNode(i, VTypes::DialogData, arrayindex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
+		result = new StepNode(i, VTypes::DialogData, arrayIndex, accessorData[i].returnType, accessorData[i].isReadOnly, accessorData[i].arraySize);
 	}
-	msg.exit("DialogVariable::accessorSearch");
+	Messenger::exit("DialogVariable::accessorSearch");
 	return result;
 }
 
 // Retrieve desired value
-bool DialogVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex, int arrayIndex)
+bool DialogVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex, int arrayIndex)
 {
-	msg.enter("DialogVariable::retrieveAccessor");
+	Messenger::enter("DialogVariable::retrieveAccessor");
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nAccessors))
 	{
 		printf("Internal Error: Accessor id %i is out of range for Aten type.\n", i);
-		msg.exit("DialogVariable::retrieveAccessor");
+		Messenger::exit("DialogVariable::retrieveAccessor");
 		return FALSE;
 	}
 	Accessors acc = (Accessors) i;
 	// Check for correct lack/presence of array index given
 	if ((accessorData[i].arraySize == 0) && hasArrayIndex)
 	{
-		msg.print("Error: Unnecessary array index provided for member '%s'.\n", accessorData[i].name);
-		msg.exit("DialogVariable::retrieveAccessor");
+		Messenger::print("Error: Unnecessary array index provided for member '%s'.\n", accessorData[i].name);
+		Messenger::exit("DialogVariable::retrieveAccessor");
 		return FALSE;
 	}
 	else if ((accessorData[i].arraySize > 0) && (hasArrayIndex))
 	{
 		if ((arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize))
 		{
-			msg.print("Error: Array index out of bounds for member '%s' (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
-			msg.exit("DialogVariable::retrieveAccessor");
+			Messenger::print("Error: Array index out of bounds for member '%s' (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
+			Messenger::exit("DialogVariable::retrieveAccessor");
 			return FALSE;
 		}
 	}
 	// Variables used in retrieval
 	bool result = TRUE;
-	TreeGui *ptr = (TreeGui*) rv.asPointer(VTypes::DialogData, result);
+	TreeGui* ptr = (TreeGui*) rv.asPointer(VTypes::DialogData, result);
 	if ((!result) || (ptr == NULL))
 	{
-	        msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::DialogData));
+	        Messenger::print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::DialogData));
 	        result = FALSE;
 	}
 	if (result) switch (acc)
@@ -193,19 +196,19 @@ bool DialogVariable::retrieveAccessor(int i, ReturnValue &rv, bool hasArrayIndex
 			result = FALSE;
 			break;
 	}
-	msg.exit("DialogVariable::retrieveAccessor");
+	Messenger::exit("DialogVariable::retrieveAccessor");
 	return result;
 }
 
 // Set desired value
-bool DialogVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newvalue, bool hasArrayIndex, int arrayIndex)
+bool DialogVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newValue, bool hasArrayIndex, int arrayIndex)
 {
-	msg.enter("DialogVariable::setAccessor");
+	Messenger::enter("DialogVariable::setAccessor");
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nAccessors))
 	{
 		printf("Internal Error: Accessor id %i is out of range for Aten type.\n", i);
-		msg.exit("DialogVariable::setAccessor");
+		Messenger::exit("DialogVariable::setAccessor");
 		return FALSE;
 	}
 	Accessors acc = (Accessors) i;
@@ -217,20 +220,20 @@ bool DialogVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newv
 		{
 			if ((accessorData[i].arraySize > 0) && ( (arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize) ))
 			{
-				msg.print("Error: Array index provided for member '%s' is out of range (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
+				Messenger::print("Error: Array index provided for member '%s' is out of range (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
 				result = FALSE;
 			}
-			if (newvalue.arraySize() > 0)
+			if (newValue.arraySize() > 0)
 			{
-				msg.print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
+				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
 				result = FALSE;
 			}
 		}
 		else
 		{
-			if (newvalue.arraySize() > accessorData[i].arraySize)
+			if (newValue.arraySize() > accessorData[i].arraySize)
 			{
-				msg.print("Error: The array being assigned to member '%s' is larger than the size of the desination array (%i cf. %i).\n", accessorData[i].name, newvalue.arraySize(), accessorData[i].arraySize);
+				Messenger::print("Error: The array being assigned to member '%s' is larger than the size of the desination array (%i cf. %i).\n", accessorData[i].name, newValue.arraySize(), accessorData[i].arraySize);
 				result = FALSE;
 			}
 		}
@@ -238,58 +241,58 @@ bool DialogVariable::setAccessor(int i, ReturnValue &sourcerv, ReturnValue &newv
 	else
 	{
 		// This is not an array member, so cannot be assigned an array unless its a Vector
-		if (newvalue.arraySize() != -1)
+		if (newValue.arraySize() != -1)
 		{
 			if (accessorData[i].returnType != VTypes::VectorData)
 			{
-				msg.print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
+				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
 				result = FALSE;
 			}
-			else if ((newvalue.type() != VTypes::VectorData) && (newvalue.arraySize() != 3))
+			else if ((newValue.type() != VTypes::VectorData) && (newValue.arraySize() != 3))
 			{
-				msg.print("Error: Only an array of size 3 can be assigned to a vector (member '%s').\n", accessorData[i].name);
+				Messenger::print("Error: Only an array of size 3 can be assigned to a vector (member '%s').\n", accessorData[i].name);
 				result = FALSE;
 			}
 		}
 	}
 	if (!result)
 	{
-		msg.exit("DialogVariable::setAccessor");
+		Messenger::exit("DialogVariable::setAccessor");
 		return FALSE;
 	}
 	// Get current data from ReturnValue
-	TreeGui *ptr = (TreeGui*) sourcerv.asPointer(VTypes::DialogData, result);
+	TreeGui* ptr = (TreeGui*) sourcerv.asPointer(VTypes::DialogData, result);
 	if ((!result) || (ptr == NULL))
 	{
-	        msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::DialogData));
+	        Messenger::print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::DialogData));
 	        result = FALSE;
 	}
 	switch (acc)
 	{
 		case (DialogVariable::Title):
-			ptr->setProperty(TreeGuiWidgetEvent::TextProperty, newvalue.asString());
+			ptr->setProperty(TreeGuiWidgetEvent::TextProperty, newValue.asString());
 			break;
 		case (DialogVariable::VerticalFill):
-			if (ptr->qtWidgetObject()) ptr->qtWidgetObject()->setAutoFillVertical(newvalue.asBool());
+			if (ptr->qtWidgetObject()) ptr->qtWidgetObject()->setAutoFillVertical(newValue.asBool());
 			break;
 		default:
 			printf("DialogVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);
 			result = FALSE;
 			break;
 	}
-	msg.exit("DialogVariable::setAccessor");
+	Messenger::exit("DialogVariable::setAccessor");
 	return result;
 }
 
 // Perform desired function
-bool DialogVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
+bool DialogVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 {
-	msg.enter("DialogVariable::performFunction");
+	Messenger::enter("DialogVariable::performFunction");
 	// Cast 'i' into Accessors enum value
 	if ((i < 0) || (i >= nFunctions))
 	{
 		printf("Internal Error: FunctionAccessor id %i is out of range for Aten type.\n", i);
-		msg.exit("DialogVariable::performFunction");
+		Messenger::exit("DialogVariable::performFunction");
 		return FALSE;
 	}
 	// Get current data from ReturnValue
@@ -297,10 +300,10 @@ bool DialogVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 	Vec3<double> v;
 	TreeGuiWidget *w;
 	bool result = TRUE;
-	TreeGui *ptr = (TreeGui*) rv.asPointer(VTypes::DialogData, result);
+	TreeGui* ptr = (TreeGui*) rv.asPointer(VTypes::DialogData, result);
 	if ((!result) || (ptr == NULL))
 	{
-	        msg.print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::DialogData));
+	        Messenger::print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::DialogData));
 	        result = FALSE;
 	}
 	if (result) switch (i)
@@ -414,7 +417,7 @@ bool DialogVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 			if (w != NULL) rv.set(w->asDouble());
 			else
 			{
-				msg.print("Error: No Widget named '%s' exists in the dialog '%s'.\n", node->argc(0), ptr->name());
+				Messenger::print("Error: No Widget named '%s' exists in the dialog '%s'.\n", node->argc(0), ptr->name());
 				result = FALSE;
 			}
 			break;
@@ -423,7 +426,7 @@ bool DialogVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 			if (w != NULL) rv.set(w->asInteger());
 			else
 			{
-				msg.print("Error: No Widget named '%s' exists in the dialog '%s'.\n", node->argc(0), ptr->name());
+				Messenger::print("Error: No Widget named '%s' exists in the dialog '%s'.\n", node->argc(0), ptr->name());
 				result = FALSE;
 			}
 			break;
@@ -432,7 +435,7 @@ bool DialogVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 			if (w != NULL) rv.set(w->asCharacter());
 			else
 			{
-				msg.print("Error: No Widget named '%s' exists in the dialog '%s'.\n", node->argc(0), ptr->name());
+				Messenger::print("Error: No Widget named '%s' exists in the dialog '%s'.\n", node->argc(0), ptr->name());
 				result = FALSE;
 			}
 			break;
@@ -441,21 +444,21 @@ bool DialogVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 			if (w != NULL) v.x = w->asDouble();
 			else
 			{
-				msg.print("Error: No Widget named '%s' exists in the dialog '%s'.\n", node->argc(0), ptr->name());
+				Messenger::print("Error: No Widget named '%s' exists in the dialog '%s'.\n", node->argc(0), ptr->name());
 				result = FALSE;
 			}
 			w = ptr->findWidget(node->argc(1));
 			if (w != NULL) v.y = w->asDouble();
 			else
 			{
-				msg.print("Error: No Widget named '%s' exists in the dialog '%s'.\n", node->argc(1), ptr->name());
+				Messenger::print("Error: No Widget named '%s' exists in the dialog '%s'.\n", node->argc(1), ptr->name());
 				result = FALSE;
 			}
 			w = ptr->findWidget(node->argc(2));
 			if (w != NULL) v.z = w->asDouble();
 			else
 			{
-				msg.print("Error: No Widget named '%s' exists in the dialog '%s'.\n", node->argc(2), ptr->name());
+				Messenger::print("Error: No Widget named '%s' exists in the dialog '%s'.\n", node->argc(2), ptr->name());
 				result = FALSE;
 			}
 			rv.set(v);
@@ -464,7 +467,7 @@ bool DialogVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 			w = ptr->findWidget(node->argc(0));
 			if (w == NULL)
 			{
-				msg.print("Error: No Widget named '%s' exists in the dialog '%s'.\n", node->argc(0), ptr->name());
+				Messenger::print("Error: No Widget named '%s' exists in the dialog '%s'.\n", node->argc(0), ptr->name());
 				result = FALSE;
 			}
 			rv.set(w->asInteger() == node->argi(1));
@@ -473,7 +476,7 @@ bool DialogVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 			w = ptr->findWidget(node->argc(0));
 			if (w == NULL)
 			{
-				msg.print("Error: No Widget named '%s' exists in the dialog '%s'.\n", node->argc(0), ptr->name());
+				Messenger::print("Error: No Widget named '%s' exists in the dialog '%s'.\n", node->argc(0), ptr->name());
 				result = FALSE;
 			}
 			rv.set((w->asInteger() >= node->argi(1)) && (w->asInteger() <= node->argi(2)));
@@ -482,14 +485,14 @@ bool DialogVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 			w = ptr->findWidget(node->argc(0));
 			if (w == NULL)
 			{
-				msg.print("Error: No Widget named '%s' exists in the dialog '%s'.\n", node->argc(0), ptr->name());
+				Messenger::print("Error: No Widget named '%s' exists in the dialog '%s'.\n", node->argc(0), ptr->name());
 				result = FALSE;
 			}
 			rv.set(strcmp(w->asCharacter(), node->argc(1)) == 0);
 			break;
 		case (DialogVariable::Show):
 			// If the GUI exists, or it doesn't but we allow dialogs to be raised, show it
-			if (gui.exists() || prefs.allowDialogs()) rv.set(ptr->execute());
+			if (prefs.allowDialogs()) rv.set(ptr->execute());
 			else rv.set(TRUE);
 			break;
 		case (DialogVariable::Widget):
@@ -501,7 +504,7 @@ bool DialogVariable::performFunction(int i, ReturnValue &rv, TreeNode *node)
 			result = FALSE;
 			break;
 	}
-	msg.exit("DialogVariable::performFunction");
+	Messenger::exit("DialogVariable::performFunction");
 	return result;
 }
 
@@ -510,15 +513,15 @@ void DialogVariable::printAccessors()
 {
 	if (DialogVariable::nAccessors > 0)
 	{
-		msg.print("Valid accessors are:\n");
-		for (int n=0; n<DialogVariable::nAccessors; ++n) msg.print("%s%s%s", n == 0 ? " " : ", ", accessorData[n].name, accessorData[n].arraySize > 0 ? "[]" : "");
-		msg.print("\n");
+		Messenger::print("Valid accessors are:\n");
+		for (int n=0; n<DialogVariable::nAccessors; ++n) Messenger::print("%s%s%s", n == 0 ? " " : ", ", accessorData[n].name, accessorData[n].arraySize > 0 ? "[]" : "");
+		Messenger::print("\n");
 	}
 	if ((DialogVariable::nFunctions > 0) && (strcmp(functionData[0].name,".dummy") != 0))
 	{
-		msg.print("Valid functions are:\n");
-		for (int n=0; n<DialogVariable::nFunctions; ++n) msg.print("%s%s(%s)", n == 0 ? " " : ", ", functionData[n].name, functionData[n].argText);
-		msg.print("\n");
+		Messenger::print("Valid functions are:\n");
+		for (int n=0; n<DialogVariable::nFunctions; ++n) Messenger::print("%s%s(%s)", n == 0 ? " " : ", ", functionData[n].name, functionData[n].argText);
+		Messenger::print("\n");
 	}
 }
 
@@ -527,7 +530,7 @@ void DialogVariable::printAccessors()
 */
 
 // Constructor
-DialogArrayVariable::DialogArrayVariable(TreeNode *sizeexpr, bool constant)
+DialogArrayVariable::DialogArrayVariable(TreeNode* sizeexpr, bool constant)
 {
 	// Private variables
 	returnType_ = VTypes::DialogData;
@@ -539,7 +542,7 @@ DialogArrayVariable::DialogArrayVariable(TreeNode *sizeexpr, bool constant)
 }
 
 // Search variable access list for provided accessor
-StepNode *DialogArrayVariable::findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist)
+StepNode* DialogArrayVariable::findAccessor(const char* s, TreeNode* arrayIndex, TreeNode* argList)
 {
-	return DialogVariable::accessorSearch(s, arrayindex, arglist);
+	return DialogVariable::accessorSearch(s, arrayIndex, argList);
 }

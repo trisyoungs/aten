@@ -19,6 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <QtGui/QMessageBox>
 #include "main/aten.h"
 #include "gui/mainwindow.h"
 #include "gui/prefs.h"
@@ -70,8 +71,9 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 	// Seutp user interface
 	ui.setupUi(this);
 
-	// Set pointer to Aten in the Viewer
+	// Set pointer to Aten and AtenWindow in the Viewer
 	ui.MainView->setAten(&aten_);
+	ui.MainView->setAtenWindow(this);
 
 	// Private variables
 	saveModelFilter_ = NULL;
@@ -133,7 +135,7 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 	updateWidgets();
 
 	// Reset view of all loaded models
-	for (Model* m = aten.models(); m != NULL; m = m->next) if (!prefs.keepView()) m->resetView();
+	for (Model* m = aten.models(); m != NULL; m = m->next) if (!prefs.keepView()) m->resetView(ui.MainView->contextWidth(), ui.MainView->contextHeight());
 
 	postRedisplay();
 
@@ -146,7 +148,7 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 	{
 		// Construct the messagebox text
 		QString text("One or more filters could not be loaded properly on startup.\nCheck shell output or run Settings->Reload Filters to diagnose the problem.\nFilters with errors were:\n");
-		for (Dnchar *d = aten.failedFilters(); d != NULL; d = d->next)
+		for (Dnchar* d = aten.failedFilters(); d != NULL; d = d->next)
 		{
 			text += "\t";
 			text += d->get();
@@ -156,11 +158,11 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 	}
 
 	// Add GNU GPL message to statusbox
-	msg.print("<b>Aten</b> version %s (%s@%s) built on %s, Copyright (C) 2007-2013  T. Youngs.\n", ATENVERSION, ATENURL, ATENREVISION, ATENDATE);
-	msg.print("<b>Aten</b> uses Space Group Info (c) 1994-96 Ralf W. Grosse-Kunstleve.\n");
-	msg.print("<b>Aten</b> comes with ABSOLUTELY NO WARRANTY.\n");
-	msg.print("This is free software, and you are welcome to redistribute it under certain conditions.\n");
-	msg.print("For more details read the GPL at <http://www.gnu.org/copyleft/gpl.html>.\n\n");
+	Messenger::print("<b>Aten</b> version %s (%s@%s) built on %s, Copyright (C) 2007-2013  T. Youngs.\n", ATENVERSION, ATENURL, ATENREVISION, ATENDATE);
+	Messenger::print("<b>Aten</b> uses Space Group Info (c) 1994-96 Ralf W. Grosse-Kunstleve.\n");
+	Messenger::print("<b>Aten</b> comes with ABSOLUTELY NO WARRANTY.\n");
+	Messenger::print("This is free software, and you are welcome to redistribute it under certain conditions.\n");
+	Messenger::print("For more details read the GPL at <http://www.gnu.org/copyleft/gpl.html>.\n\n");
 
 	// Set some preferences back to their default values
 	prefs.setZMapType(ElementMap::AutoZMap, FALSE);
@@ -171,6 +173,20 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 AtenWindow::~AtenWindow()
 {
 }
+
+/*
+ * Aten Reference
+ */
+
+// Return reference to Aten
+Aten& AtenWindow::aten()
+{
+	return aten_;
+}
+
+/*
+ * Window Functions
+ */
 
 // Catch window close event
 void AtenWindow::closeEvent(QCloseEvent *event)
@@ -189,7 +205,7 @@ void AtenWindow::closeEvent(QCloseEvent *event)
 */
 
 // Print message
-void AtenWindow::printMessage(const char *s)
+void AtenWindow::printMessage(const char* s)
 {
 	static char str[8096];
 	static int n;
@@ -198,6 +214,61 @@ void AtenWindow::printMessage(const char *s)
 	str[n] = '\0';
 	messagesWidget->ui.MessagesBrowser->moveCursor(QTextCursor::End);
 	messagesWidget->ui.MessagesBrowser->append(str);
+}
+
+// Close specified model, saving first if requested
+bool AtenWindow::closeModel(Model* m)
+{
+	// If the current model has been modified, ask for confirmation before we close it
+	Dnchar text;
+	Tree* filter;
+	if (m->changeLog.isModified())
+	{
+		// Create a modal message dialog
+		text.sprintf("Model '%s' has been modified.\n", m->name());
+		int returnvalue = QMessageBox::warning(this, "Aten", text.get(), QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel, QMessageBox::Save);
+		switch (returnvalue)
+		{
+			// Discard changes
+			case (QMessageBox::Discard):
+				aten_.removeModel(m);
+				// Update GUI
+				updateWidgets(AtenWindow::AllTarget);
+				break;
+				// Cancel close
+			case (QMessageBox::Cancel):
+				return FALSE;
+				// Save model before quit
+			case (QMessageBox::Save):
+				// Temporarily disable undo/redo for the model, save, and re-enable
+				m->disableUndoRedo();
+				// If model has a filter set, just save it
+				filter = m->filter();
+				if (filter != NULL) filter->executeWrite(m->filename());
+				else if (runSaveModelDialog())
+				{
+					m->setFilter(saveModelFilter_);
+					m->setFilename(saveModelFilename_.get());
+					if (!saveModelFilter_->executeWrite(saveModelFilename_.get()))
+					{
+						Messenger::print("Not saved.\n");
+						m->enableUndoRedo();
+						return FALSE;
+					}
+				}
+				else
+				{
+					m->enableUndoRedo();
+					return FALSE;
+				}
+				aten_.removeModel(m);
+				// Update GUI
+				updateWidgets(AtenWindow::AllTarget);
+				break;
+		}
+	}
+	else aten_.removeModel(m);
+	return TRUE;
 }
 
 // Check the status of all models, asking to save before close if necessary
@@ -319,9 +390,9 @@ void AtenWindow::updateWidgets(int targets)
 		if (lastAction == UserAction::NoAction) text.clear();
 		
 		// If current action is not the same as the last action, recreate string
-		if (lastAction != selectedMode())
+		if (lastAction != ui.MainView->selectedMode())
 		{
-			lastAction = selectedMode();
+			lastAction = ui.MainView->selectedMode();
 			text.sprintf("<b>%s:</b> %s", UserActions[lastAction].name, UserActions[lastAction].unModified);
 			if (UserActions[lastAction].shiftModified[0] != '\0') text.strcatf(", <b>+shift</b> %s", UserActions[lastAction].shiftModified);
 			if (UserActions[lastAction].ctrlModified[0] != '\0') text.strcatf(", <b>+ctrl</b> %s", UserActions[lastAction].ctrlModified);
@@ -334,6 +405,13 @@ void AtenWindow::updateWidgets(int targets)
 	
 	// Request redraw of the main canvas
 	if (targets&AtenWindow::CanvasTarget) postRedisplay();
+}
+
+// Refresh widget / scene
+void AtenWindow::postRedisplay()
+{
+// 	if ((!valid_) || drawing_) return;
+	ui.MainView->update();
 }
 
 // Update GUI after model change (or different model selected)
@@ -467,14 +545,6 @@ void AtenWindow::updateWindowTitle()
 	setWindowTitle(title.get());
 }
 
-// Cancel any current mode and return to select
-void AtenWindow::cancelCurrentMode()
-{
-	// If the previous mode was DrawFragment, flag a complete redraw of the current model
-	if (selectedMode() == UserAction::DrawFragmentAction) aten_.currentModel()->changeLog.add(Log::Style);
-	ui.actionSelectAtoms->trigger();
-}
-
 // Load recent file
 void AtenWindow::loadRecent()
 {
@@ -493,10 +563,10 @@ void AtenWindow::loadRecent()
 	// See if any loaded model filename matches this filename
 	for (m = aten_.models(); m != NULL; m = m->next)
 	{
-		msg.print(Messenger::Verbose,"Checking loaded models for '%s': %s\n",filename.get(),m->filename());
+		Messenger::print(Messenger::Verbose, "Checking loaded models for '%s': %s\n", filename.get(), m->filename());
 		if (filename == m->filename())
 		{
-			msg.print(Messenger::Verbose,"Matched filename to loaded model.\n");
+			Messenger::print(Messenger::Verbose, "Matched filename to loaded model.\n");
 			aten_.setCurrentModel(m);
 			// Update GUI
 			updateWidgets(AtenWindow::AllTarget);
@@ -529,7 +599,7 @@ void AtenWindow::loadRecent()
 }
 
 // Add file to top of recent list
-void AtenWindow::addRecent(const char *filename)
+void AtenWindow::addRecent(const char* filename)
 {
 	// Find unused (i.e. still hidden) recent file action
 	int last, n;
@@ -616,8 +686,8 @@ void AtenWindow::uaButtonClicked(int id)
 	else if (button->isChecked())
 	{
 		// Activate the relevant mode, bu tonly if it isn't already active
-		if (selectedMode() == (UserAction::Action) id) return;
-		setSelectedMode((UserAction::Action) id);
+		if (ui.MainView->selectedMode() == (UserAction::Action) id) return;
+		ui.MainView->setSelectedMode((UserAction::Action) id);
 	}
 }
 
@@ -650,7 +720,7 @@ void AtenWindow::setActiveUserAction(UserAction::Action ua)
 }
 
 // Set message label text
-void AtenWindow::setMessageLabel(const char *s)
+void AtenWindow::setMessageLabel(const char* s)
 {
 	messageLabel_->setText(s);
 }

@@ -20,7 +20,7 @@
 */
 
 #include "gui/mainwindow.h"
-#include "classes/prefs.h"
+#include "base/prefs.h"
 
 void AtenWindow::on_actionMouseInteract_triggered(bool checked)
 {

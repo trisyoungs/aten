@@ -24,15 +24,58 @@
 
 #include "gui/ui_glyphs.h"
 #include "math/constants.h"
+#include "base/namespace.h"
 
-// Forward Declarations
+// Forward Declarations (Qt)
+class AtenWindow;
+
+ATEN_BEGIN_NAMESPACE
+
+// Forward Declarations (Aten)
 class Glyph;
+
+ATEN_END_NAMESPACE
+
+ATEN_USING_NAMESPACE
 
 // Glyphs dock widget
 class GlyphsWidget : public QDockWidget
 {
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
+
+	public:
+	// Constructor / Destructor
+	GlyphsWidget(AtenWindow& parent, Qt::WindowFlags flags = 0);
+	// Main form declaration
+	Ui::GlyphsWidget ui;
+
+	private:
+	// Reference to main window
+	AtenWindow& parent_;
+
+
+	/*
+	// Local variables and functions
+	*/
+	private:
+	// Local widget pointers
+	QRadioButton *dataAtomRadio[MAXGLYPHDATA], *dataValueRadio[MAXGLYPHDATA];
+	QSpinBox *dataAtomIdSpin[MAXGLYPHDATA];
+	QComboBox *dataAtomDataCombo[MAXGLYPHDATA];
+	QDoubleSpinBox *dataValueXSpin[MAXGLYPHDATA], *dataValueYSpin[MAXGLYPHDATA], *dataValueZSpin[MAXGLYPHDATA];
+	TColourFrame *dataColourFrame[MAXGLYPHDATA];
+	QWidget *dataTabWidget[MAXGLYPHDATA];
+	QWidget *dataAtomWidget[MAXGLYPHDATA], *dataValueWidget[MAXGLYPHDATA];
+	// Whether the widget should refresh when it is next shown
+	bool shouldRefresh_;
+	// Whether widget is refreshing
+	bool refreshing_;
+	// Update current glyph data
+	void updateData(Glyph* g);
+	// Update controls (i.e. enable/disable widgets in data groups)
+	void updateControls(Glyph* g);
+
 
 	/*
 	// Window Functions
@@ -85,49 +128,17 @@ class GlyphsWidget : public QDockWidget
 	void on_Data2ColourButton_clicked(bool checked);
 	void on_Data3ColourButton_clicked(bool checked);
 	void on_Data4ColourButton_clicked(bool checked);
+
 	private:
 	// Add item to list
-	void addItemToList(Glyph *g);
+	void addItemToList(Glyph* g);
 	void dataAtomIdChanged(int id, int value);
 	void dataValueChanged(int id, int component, double value);
 	void dataValueChanged(int id, double x, double y, double z);
 	void dataColourChanged(int id);
+
 	protected:
 	void closeEvent(QCloseEvent *event);
-
-	/*
-	// Local variables and functions
-	*/
-	private:
-	// Local widget pointers
-	QRadioButton *dataAtomRadio[MAXGLYPHDATA], *dataValueRadio[MAXGLYPHDATA];
-	QSpinBox *dataAtomIdSpin[MAXGLYPHDATA];
-	QComboBox *dataAtomDataCombo[MAXGLYPHDATA];
-	QDoubleSpinBox *dataValueXSpin[MAXGLYPHDATA], *dataValueYSpin[MAXGLYPHDATA], *dataValueZSpin[MAXGLYPHDATA];
-	TColourFrame *dataColourFrame[MAXGLYPHDATA];
-	QWidget *dataTabWidget[MAXGLYPHDATA];
-	QWidget *dataAtomWidget[MAXGLYPHDATA], *dataValueWidget[MAXGLYPHDATA];
-	// Whether the widget should refresh when it is next shown
-	bool shouldRefresh_;
-	// Whether widget is refreshing
-	bool refreshing_;
-	// Update current glyph data
-	void updateData(Glyph *g);
-	// Update controls (i.e. enable/disable widgets in data groups)
-	void updateControls(Glyph *g);
-
-	/*
-	// Dialog
-	*/
-	private:
-	// Reference to main window
-	AtenWindow& parent_;
-
-	public:
-	// Constructor / Destructor
-	GlyphsWidget(AtenWindow& parent, Qt::WindowFlags flags = 0);
-	// Main form declaration
-	Ui::GlyphsWidget ui;
 };
 
 #endif

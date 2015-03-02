@@ -19,6 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <QtGui/QCloseEvent>
 #include "main/aten.h"
 #include "gui/mainwindow.h"
 #include "gui/select.h"
@@ -56,37 +57,37 @@ void SelectWidget::setHistories(QStringList select, QStringList forlist, QString
 
 void SelectWidget::on_SelectAllButton_clicked(bool on)
 {
-	CommandNode::run(Command::SelectAll, "");
+	CommandNode::run(Commands::SelectAll, "");
 	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
 }
 
 void SelectWidget::on_SelectNoneButton_clicked(bool on)
 {
-	CommandNode::run(Command::SelectNone, "");
+	CommandNode::run(Commands::SelectNone, "");
 	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
 }
 
 void SelectWidget::on_SelectionExpandButton_clicked(bool on)
 {
-	CommandNode::run(Command::Expand, "");
+	CommandNode::run(Commands::Expand, "");
 	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
 }
 
 void SelectWidget::on_SelectionInvertButton_clicked(bool on)
 {
-	CommandNode::run(Command::Invert, "");
+	CommandNode::run(Commands::Invert, "");
 	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
 }
 
 void SelectWidget::on_SelectButton_clicked(bool on)
 {
-	CommandNode::run(Command::Select, "c", qPrintable(ui.SelectCombo->currentText()));
+	CommandNode::run(Commands::Select, "c", qPrintable(ui.SelectCombo->currentText()));
 	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
 }
 
 void SelectWidget::on_DeselectButton_clicked(bool on)
 {
-	CommandNode::run(Command::DeSelect, "c", qPrintable(ui.SelectCombo->currentText()));
+	CommandNode::run(Commands::DeSelect, "c", qPrintable(ui.SelectCombo->currentText()));
 	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
 }
 
@@ -106,10 +107,10 @@ void SelectWidget::on_SelectTypeButton_clicked(bool on)
 {
 	// Make sure we have a valid element
 	int el = Elements().find(qPrintable(ui.TypeElementEdit->text()));
-	if (el == 0) msg.print("Invalid element '%s'\n", qPrintable(ui.TypeElementEdit->text()));
+	if (el == 0) Messenger::print("Invalid element '%s'\n", qPrintable(ui.TypeElementEdit->text()));
 	else
 	{
-		CommandNode::run(Command::SelectType, "ic", el, qPrintable(ui.SelectNetaCombo->currentText()));
+		CommandNode::run(Commands::SelectType, "ic", el, qPrintable(ui.SelectNetaCombo->currentText()));
 		parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
 	}
 }
@@ -118,23 +119,23 @@ void SelectWidget::on_DeselectTypeButton_clicked(bool on)
 {
 	// Make sure we have a valid element
 	int el = Elements().find(qPrintable(ui.TypeElementEdit->text()));
-	if (el == 0) msg.print("Invalid element '%s'\n", qPrintable(ui.TypeElementEdit->text()));
+	if (el == 0) Messenger::print("Invalid element '%s'\n", qPrintable(ui.TypeElementEdit->text()));
 	else
 	{
-		CommandNode::run(Command::DeSelectType, "ic", el, qPrintable(ui.SelectNetaCombo->currentText()));
+		CommandNode::run(Commands::DeSelectType, "ic", el, qPrintable(ui.SelectNetaCombo->currentText()));
 		parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
 	}
 }
 
 void SelectWidget::on_SelectForButton_clicked(bool on)
 {
-	CommandNode::run(Command::SelectType, "c", qPrintable(ui.SelectForCombo->currentText()));
+	CommandNode::run(Commands::SelectType, "c", qPrintable(ui.SelectForCombo->currentText()));
 	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
 }
 
 void SelectWidget::on_DeselectForButton_clicked(bool on)
 {
-	CommandNode::run(Command::DeSelectType, "c", qPrintable(ui.SelectForCombo->currentText()));
+	CommandNode::run(Commands::DeSelectType, "c", qPrintable(ui.SelectForCombo->currentText()));
 	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
 }
 

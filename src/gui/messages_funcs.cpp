@@ -19,6 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <QtGui/QCloseEvent>
 #include "gui/mainwindow.h"
 #include "gui/messages.h"
 
@@ -46,7 +47,7 @@ void MessagesWidget::on_MessagesBrowser_anchorClicked(const QUrl &link)
 	Program program;
 	if (!program.generateFromString(qPrintable(link.toString()), "MessageLinkCommand", "Message Link Commane"))
 	{
-		msg.print("Unable to construct commands from context link.\n");
+		Messenger::print("Unable to construct commands from context link.\n");
 		return;
 	}
 	

@@ -13,7 +13,6 @@ ${CMAKE_BINARY_DIR}
 set(qtproject_SRCS
   useractions.h
   useractions.cpp
-  gui.h 
   tcombobox.h
   textratreewidgetitem.h
   ttreewidgetitem.h
@@ -33,7 +32,6 @@ set(qtproject_SRCS
   geometry_funcs.cpp
   glyphs_funcs.cpp
   grids_funcs.cpp
-  gui.cpp
   layoutlist.cpp
   loadmodel_funcs.cpp
   mainmenuactions.cpp
@@ -47,6 +45,7 @@ set(qtproject_SRCS
   position_funcs.cpp
   prefs_funcs.cpp
   progress_funcs.cpp
+  saveimage_funcs.cpp
   scriptmovie_funcs.cpp
   select_funcs.cpp
   selectelement_funcs.cpp
@@ -54,11 +53,14 @@ set(qtproject_SRCS
   selectpattern_funcs.cpp
   selectvariable_funcs.cpp
   settings.cpp
+  viewer_glyph.cpp
   viewer_funcs.cpp
   viewer_key.cpp
+  viewer_model.cpp
   viewer_mouse.cpp
   viewer_scene.cpp
   viewer_user.cpp
+  viewer_useractions.cpp
   tcolourframe_funcs.cpp
   tcombobox_funcs.cpp
   tmenubutton_funcs.cpp
@@ -104,6 +106,7 @@ SET(pro_MOC_HDRS
   position.h
   prefs.h
   progress.h
+  saveimage.h
   scriptmovie.h
   select.h
   selectelement.h
@@ -127,6 +130,7 @@ SET(pro_MOC_HDRS
   tradiogroup.uih
   ttablewidget.uih
   ttreewidget.uih
+  viewer.uih
 )
 QT4_WRAP_CPP(pro_MOC_SRCS ${pro_MOC_HDRS} OPTIONS -f)
 
@@ -153,6 +157,7 @@ SET(pro_UIS
   position.ui
   prefs.ui
   progress.ui
+  saveimage.ui
   scriptmovie.ui
   select.ui
   selectelement.ui

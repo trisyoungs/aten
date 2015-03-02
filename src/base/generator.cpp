@@ -26,16 +26,18 @@
 #include "base/sginfo.h"
 #include <string.h>
 
+ATEN_USING_NAMESPACE
+
 // Constructor
 Generator::Generator() : ListItem<Generator>()
 {
 }
 
 // Set partial element of matrix or translation vector
-void Generator::setMatrixPart(int row, const char *s)
+void Generator::setMatrixPart(int row, const char* s)
 {
 	// The string provided either contains (-)xyz, or a translation amount
-	const char *c;
+	const char* c;
 	int multiplier = 0;
 	// Check for plus/minus signs
 	c = &s[0];
@@ -58,20 +60,20 @@ void Generator::setMatrixPart(int row, const char *s)
 }
 
 // Set from plain text string
-bool Generator::set(const char *s)
+bool Generator::set(const char* s)
 {
-	msg.enter("Generator::set");
+	Messenger::enter("Generator::set");
 	static LineParser lp;
 	char part[32], sub[16];
 	int n, count;
-	const char *c;
+	const char* c;
 	
 	// Split line into three arguments
 	lp.getArgsDelim(0, s);
 	if (lp.nArgs() != 3)
 	{
-		msg.print("Tried to set a symmetry Generator from text ('%s') that didn't split into three arguments.\n", s);
-		msg.exit("Generator::set");
+		Messenger::print("Tried to set a symmetry Generator from text ('%s') that didn't split into three arguments.\n", s);
+		Messenger::exit("Generator::set");
 		return FALSE;
 	}
 	
@@ -107,7 +109,7 @@ bool Generator::set(const char *s)
 		}
 	}
 
-	msg.exit("Generator::set");
+	Messenger::exit("Generator::set");
 	return TRUE;
 }
 
@@ -126,13 +128,13 @@ void Generator::setTranslation(double tx, double ty, double tz, double divisor)
 }
 
 // Return name of generator
-const char *Generator::name() const
+const char* Generator::name() const
 {
 	return name_.get();
 }
 
 // Return matrix of generator
-Matrix &Generator::matrix()
+Matrix& Generator::matrix()
 {
 	return matrix_;
 }

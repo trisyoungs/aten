@@ -19,6 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <QtGui/QCloseEvent>
 #include "main/aten.h"
 #include "model/model.h"
 #include "gui/mainwindow.h"
@@ -74,7 +75,7 @@ void CellTransformWidget::refresh()
 
 void CellTransformWidget::on_CellReplicateButton_clicked(bool checked)
 {
-	CommandNode::run(Command::Replicate, "dddddd", ui.CellReplicateNegXSpin->value(), ui.CellReplicateNegYSpin->value(), ui.CellReplicateNegZSpin->value(), ui.CellReplicatePosXSpin->value(), ui.CellReplicatePosYSpin->value(),  ui.CellReplicatePosZSpin->value());
+	CommandNode::run(Commands::Replicate, "dddddd", ui.CellReplicateNegXSpin->value(), ui.CellReplicateNegYSpin->value(), ui.CellReplicateNegZSpin->value(), ui.CellReplicatePosXSpin->value(), ui.CellReplicatePosYSpin->value(),  ui.CellReplicatePosZSpin->value());
 	parent_.updateWidgets(AtenWindow::CanvasTarget);
 }
 
@@ -130,8 +131,8 @@ void CellTransformWidget::on_CellReplicatePosZSpin_valueChanged(double d)
 
 void CellTransformWidget::on_CellScaleButton_clicked(bool checked)
 {
-	if (ui.CellScaleUseCogsCheck->isChecked()) CommandNode::run(Command::ScaleMolecules, "dddi", ui.CellScaleXSpin->value(), ui.CellScaleYSpin->value(), ui.CellScaleZSpin->value(), ui.CellScaleCalculateEnergyCheck->isChecked());
-	else CommandNode::run(Command::Scale, "dddi", ui.CellScaleXSpin->value(), ui.CellScaleYSpin->value(), ui.CellScaleZSpin->value(), ui.CellScaleCalculateEnergyCheck->isChecked());
+	if (ui.CellScaleUseCogsCheck->isChecked()) CommandNode::run(Commands::ScaleMolecules, "dddi", ui.CellScaleXSpin->value(), ui.CellScaleYSpin->value(), ui.CellScaleZSpin->value(), ui.CellScaleCalculateEnergyCheck->isChecked());
+	else CommandNode::run(Commands::Scale, "dddi", ui.CellScaleXSpin->value(), ui.CellScaleYSpin->value(), ui.CellScaleZSpin->value(), ui.CellScaleCalculateEnergyCheck->isChecked());
 	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget+AtenWindow::CellTarget);
 }
 
@@ -174,13 +175,13 @@ void CellTransformWidget::on_CellRotateZAnticlockwise_clicked(bool checked)
 
 void CellTransformWidget::on_MillerCutButton_clicked(bool checked)
 {
-	CommandNode::run(Command::MillerCut, "iiii", ui.MillerHSpin->value(), ui.MillerKSpin->value(), ui.MillerLSpin->value(), ui.MillerInRadio->isChecked());
+	CommandNode::run(Commands::MillerCut, "iiii", ui.MillerHSpin->value(), ui.MillerKSpin->value(), ui.MillerLSpin->value(), ui.MillerInRadio->isChecked());
 	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
 }
 
 void CellTransformWidget::on_MillerSelectButton_clicked(bool checked)
 {
-	CommandNode::run(Command::SelectMiller, "iiii", ui.MillerHSpin->value(), ui.MillerKSpin->value(), ui.MillerLSpin->value(), ui.MillerInRadio->isChecked());
+	CommandNode::run(Commands::SelectMiller, "iiii", ui.MillerHSpin->value(), ui.MillerKSpin->value(), ui.MillerLSpin->value(), ui.MillerInRadio->isChecked());
 	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
 }
 

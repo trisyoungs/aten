@@ -19,6 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <QtGui/QCloseEvent>
+#include <QtGui/QColorDialog>
 #include "gui/mainwindow.h"
 #include "gui/glyphs.h"
 #include "gui/tlistwidgetitem.h"
@@ -90,7 +92,7 @@ void GlyphsWidget::showWidget()
 }
 
 // Add item to list
-void GlyphsWidget::addItemToList(Glyph *g)
+void GlyphsWidget::addItemToList(Glyph* g)
 {
 	QString s;
 	s = itoa(ui.GlyphList->count()+1);
@@ -109,7 +111,7 @@ void GlyphsWidget::refresh()
 	// Clear any existing items
 	ui.GlyphList->clear();
 	Model* m = parent_.aten().currentModelOrFrame();
-	for (Glyph *g = m->glyphs(); g != NULL; g = g->next) addItemToList(g);
+	for (Glyph* g = m->glyphs(); g != NULL; g = g->next) addItemToList(g);
 	// Set initial selection
 	ui.GlyphList->setCurrentRow(0);
 	// Update control data
@@ -122,7 +124,7 @@ void GlyphsWidget::refresh()
 }
 
 // Update current glyph data
-void GlyphsWidget::updateData(Glyph *g)
+void GlyphsWidget::updateData(Glyph* g)
 {
 	if (g == NULL) return;
 	// Set data in widgets
@@ -150,7 +152,7 @@ void GlyphsWidget::updateData(Glyph *g)
 }
 
 // Update controls (i.e. enable/disable widgets in data groups)
-void GlyphsWidget::updateControls(Glyph *g)
+void GlyphsWidget::updateControls(Glyph* g)
 {
 	if (g == NULL)
 	{
@@ -189,7 +191,7 @@ void GlyphsWidget::updateControls(Glyph *g)
 void GlyphsWidget::on_GlyphList_currentRowChanged(int row)
 {
 	if (refreshing_) return;
-	Glyph *g = (row == -1 ? NULL : parent_.aten().currentModelOrFrame()->glyph(row));
+	Glyph* g = (row == -1 ? NULL : parent_.aten().currentModelOrFrame()->glyph(row));
 	refreshing_ = TRUE;
 	updateData(g);
 	updateControls(g);
@@ -213,7 +215,7 @@ void GlyphsWidget::on_GlyphList_itemSelectionChanged()
 		updateControls(NULL);
 		refreshing_ = FALSE;
 	}
-	Glyph *g;
+	Glyph* g;
 	for (int i = 0; i<ui.GlyphList->count(); ++i)
 	{
 		g = (Glyph*) ((TListWidgetItem*) ui.GlyphList->item(i))->data.asPointer(VTypes::GlyphData);
@@ -226,8 +228,8 @@ void GlyphsWidget::on_GlyphAddButton_clicked(bool checked)
 {
 	Model* m = parent_.aten().currentModelOrFrame();
 	if (m == NULL) return;
-	for (Glyph *g = m->glyphs(); g != NULL; g = g->next) g->setSelected(FALSE);
-	Glyph *g = m->addGlyph(Glyph::ArrowGlyph);
+	for (Glyph* g = m->glyphs(); g != NULL; g = g->next) g->setSelected(FALSE);
+	Glyph* g = m->addGlyph(Glyph::ArrowGlyph);
 	addItemToList(g);
 	// Deselect any previously-selected items - easiest way is to temporarily change selection mode
 	ui.GlyphList->setSelectionMode(QAbstractItemView::SingleSelection);
@@ -247,7 +249,7 @@ void GlyphsWidget::on_GlyphDeleteSelectedButton_clicked(bool checked)
 	int row = ui.GlyphList->currentRow();
 	QList<QListWidgetItem*> items = ui.GlyphList->selectedItems();
 	Model* m = parent_.aten().currentModelOrFrame();
-	Glyph *g;
+	Glyph* g;
 	for (int i = items.size()-1; i>=0; --i)
 	{
 		g = (Glyph*) ((TListWidgetItem*) items.at(i))->data.asPointer(VTypes::GlyphData);
@@ -263,7 +265,7 @@ void GlyphsWidget::on_GlyphDeleteSelectedButton_clicked(bool checked)
 void GlyphsWidget::on_GlyphSelectAllButton_clicked(bool checked)
 {
 	Model* m = parent_.aten().currentModelOrFrame();
-	Glyph *g;
+	Glyph* g;
 	refreshing_ = TRUE;
 	for (int i = 0; i<ui.GlyphList->count(); ++i)
 	{
@@ -278,7 +280,7 @@ void GlyphsWidget::on_GlyphSelectAllButton_clicked(bool checked)
 void GlyphsWidget::on_GlyphSelectNoneButton_clicked(bool checked)
 {
 	Model* m = parent_.aten().currentModelOrFrame();
-	Glyph *g = m->glyphs();
+	Glyph* g = m->glyphs();
 	refreshing_ = TRUE;
 	QList<QListWidgetItem*> items = ui.GlyphList->selectedItems();
 	for (int i = items.size()-1; i>=0; --i)
@@ -293,7 +295,7 @@ void GlyphsWidget::on_GlyphSelectNoneButton_clicked(bool checked)
 
 void GlyphsWidget::on_GlyphInvertSelectionButton_clicked(bool checked)
 {
-	Glyph *g;
+	Glyph* g;
 	refreshing_ = TRUE;
 	for (int i = 0; i<ui.GlyphList->count(); ++i)
 	{
@@ -308,20 +310,20 @@ void GlyphsWidget::on_GlyphInvertSelectionButton_clicked(bool checked)
 void GlyphsWidget::on_GlyphHideAllButton_clicked(bool checked)
 {
 	Model* m = parent_.aten().currentModelOrFrame();
-	for (Glyph *g = m->glyphs(); g != NULL; g = g->next) g->setVisible(FALSE);
+	for (Glyph* g = m->glyphs(); g != NULL; g = g->next) g->setVisible(FALSE);
 	parent_.postRedisplay();
 }
 
 void GlyphsWidget::on_GlyphHideNoneButton_clicked(bool checked)
 {
 	Model* m = parent_.aten().currentModelOrFrame();
-	for (Glyph *g = m->glyphs(); g != NULL; g = g->next) g->setVisible(TRUE);
+	for (Glyph* g = m->glyphs(); g != NULL; g = g->next) g->setVisible(TRUE);
 	parent_.postRedisplay();
 }
 
 void GlyphsWidget::on_GlyphHideSelectedButton_clicked(bool checked)
 {
-	Glyph *g;
+	Glyph* g;
 	for (int i = 0; i<ui.GlyphList->count(); ++i)
 	{
 		g = (Glyph*) ((TListWidgetItem*) ui.GlyphList->item(i))->data.asPointer(VTypes::GlyphData);
@@ -335,7 +337,7 @@ void GlyphsWidget::on_GlyphTypeCombo_currentIndexChanged(int row)
 	if (refreshing_) return;
 	// Loop over list of selected items and set new atom id
 	QList<QListWidgetItem*> items = ui.GlyphList->selectedItems();
-	Glyph *g;
+	Glyph* g;
 	QString s;
 	TListWidgetItem *item;
 	Glyph::GlyphType gt = (Glyph::GlyphType) row;
@@ -358,7 +360,7 @@ void GlyphsWidget::on_GlyphLineEdit_returnPressed()
 	if (refreshing_) return;
 	// Loop over list of selected items and set new atom id
 	QList<QListWidgetItem*> items = ui.GlyphList->selectedItems();
-	Glyph *g;
+	Glyph* g;
 	for (int i = 0; i < items.size(); ++i)
 	{
 		g = (Glyph*) ((TListWidgetItem*) items.at(i))->data.asPointer(VTypes::GlyphData);
@@ -373,7 +375,7 @@ void GlyphsWidget::on_GlyphVisibleCheck_clicked(bool checked)
 	if (refreshing_) return;
 	// Loop over list of selected items and set new atom id
 	QList<QListWidgetItem*> items = ui.GlyphList->selectedItems();
-	Glyph *g;
+	Glyph* g;
 	for (int i = 0; i < items.size(); ++i)
 	{
 		g = (Glyph*) ((TListWidgetItem*) items.at(i))->data.asPointer(VTypes::GlyphData);
@@ -560,11 +562,11 @@ void GlyphsWidget::dataAtomIdChanged(int id, int value)
 	if (refreshing_) return;
 	// Loop over list of selected items and set new atom id
 	QList<QListWidgetItem*> items = ui.GlyphList->selectedItems();
-	Glyph *g;
+	Glyph* g;
 	for (int i = 0; i < items.size(); ++i)
 	{
 		g = (Glyph*) ((TListWidgetItem*) items.at(i))->data.asPointer(VTypes::GlyphData);
-		if (id >= g->nData()) msg.print("Can't set atom id in data %i for a '%s' glyph (out of range)...\n", id+1, Glyph::glyphType(g->type()));
+		if (id >= g->nData()) Messenger::print("Can't set atom id in data %i for a '%s' glyph (out of range)...\n", id+1, Glyph::glyphType(g->type()));
 		else g->data(id)->setAtom( g->parent()->atom(value) );
 	}
 	parent_.aten().currentModelOrFrame()->changeLog.add(Log::Glyphs);
@@ -576,11 +578,11 @@ void GlyphsWidget::dataValueChanged(int id, int component, double value)
 	if (refreshing_) return;
 	// Loop over list of selected items and set new atom id
 	QList<QListWidgetItem*> items = ui.GlyphList->selectedItems();
-	Glyph *g;
+	Glyph* g;
 	for (int i = 0; i < items.size(); ++i)
 	{
 		g = (Glyph*) ((TListWidgetItem*) items.at(i))->data.asPointer(VTypes::GlyphData);
-		if (id >= g->nData()) msg.print("Can't set literal value data %i for a '%s' glyph (out of range)...\n", id+1, Glyph::glyphType(g->type()));
+		if (id >= g->nData()) Messenger::print("Can't set literal value data %i for a '%s' glyph (out of range)...\n", id+1, Glyph::glyphType(g->type()));
 		else g->data(id)->setVector(component, value);
 	}
 	parent_.aten().currentModelOrFrame()->changeLog.add(Log::Glyphs);
@@ -592,11 +594,11 @@ void GlyphsWidget::dataValueChanged(int id, double x, double y, double z)
 	if (refreshing_) return;
 	// Loop over list of selected items and set new atom id
 	QList<QListWidgetItem*> items = ui.GlyphList->selectedItems();
-	Glyph *g;
+	Glyph* g;
 	for (int i = 0; i < items.size(); ++i)
 	{
 		g = (Glyph*) ((TListWidgetItem*) items.at(i))->data.asPointer(VTypes::GlyphData);
-		if (id >= g->nData()) msg.print("Can't set literal value data %i for a '%s' glyph (out of range)...\n", id+1, Glyph::glyphType(g->type()));
+		if (id >= g->nData()) Messenger::print("Can't set literal value data %i for a '%s' glyph (out of range)...\n", id+1, Glyph::glyphType(g->type()));
 		else g->data(id)->setVector(x, y, z);
 	}
 	parent_.aten().currentModelOrFrame()->changeLog.add(Log::Glyphs);
@@ -618,11 +620,11 @@ void GlyphsWidget::dataColourChanged(int id)
 
 	// Loop over list of selected items and set new colour
 	QList<QListWidgetItem*> items = ui.GlyphList->selectedItems();
-	Glyph *gl;
+	Glyph* gl;
 	for (int i = 0; i < items.size(); ++i)
 	{
 		gl = (Glyph*) ((TListWidgetItem*) items.at(i))->data.asPointer(VTypes::GlyphData);
-		if (id >= gl->nData()) msg.print("Can't set colour for data %i for a '%s' glyph (out of range)...\n", id+1, Glyph::glyphType(gl->type()));
+		if (id >= gl->nData()) Messenger::print("Can't set colour for data %i for a '%s' glyph (out of range)...\n", id+1, Glyph::glyphType(gl->type()));
 		else gl->data(id)->setColour(newcol.redF(), newcol.greenF(), newcol.blueF(), newcol.alphaF());
 	}
 	parent_.aten().currentModelOrFrame()->changeLog.add(Log::Glyphs);

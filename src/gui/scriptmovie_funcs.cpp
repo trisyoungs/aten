@@ -19,13 +19,16 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <QtGui/QCloseEvent>
+#include <QtGui/QFileDialog>
+#include <QtGui/QMessageBox>
+#include "gui/tprocess.uih"
 #include "main/aten.h"
 #include "gui/scriptmovie.h"
 #include "gui/mainwindow.h"
 #include "base/progress.h"
 #include "parser/commandnode.h"
 #include "base/sysfunc.h"
-#include "gui/tprocess.uih"
 
 // Constructor
 ScriptMovieWidget::ScriptMovieWidget(AtenWindow& parent, Qt::WindowFlags flags) : QDockWidget(&parent, flags), parent_(parent)
@@ -134,7 +137,7 @@ void ScriptMovieWidget::on_SaveScriptedMovieButton_clicked(bool on)
 	basename.sprintf("%s%caten-movie-%i-%i-%%09i.png", prefs.tempDir(), PATHSEP, parent_.pid(), runid);
 	parent_.aten().initialiseImageRedirect(basename, maxframes);
 	
-	int progid = progress.initialise("Saving scripted movie frames...", -1, FALSE);
+	int progid = progress.initialise("Saving scripted movie frames...", -1);
 	bool canceled = FALSE;
 	ReturnValue rv;
 	script.execute(rv);
@@ -152,10 +155,10 @@ void ScriptMovieWidget::on_SaveScriptedMovieButton_clicked(bool on)
 	encoderArgs.replace("OUTPUT", qPrintable(filename));
 	encoderArgs.replace("FILES", basename.get());
 	encoderArgs.replace("FPS", itoa(fps));
-	msg.print("Command to run will be '%s %s'\n", prefs.encoderExe(), qPrintable(encoderArgs));
+	Messenger::print("Command to run will be '%s %s'\n", prefs.encoderExe(), qPrintable(encoderArgs));
 	if (!encoderProcess.execute(prefs.encoderExe(),qPrintable(encoderArgs),NULL))
 	{
-		msg.print("Error: Failed to run encoder command.\n");
+		Messenger::print("Error: Failed to run encoder command.\n");
 		return;
 	}
 
@@ -177,10 +180,10 @@ void ScriptMovieWidget::on_SaveScriptedMovieButton_clicked(bool on)
 		encoderArgs.replace("OUTPUT", qPrintable(filename));
 		encoderArgs.replace("FILES", basename.get());
 		encoderArgs.replace("FPS", itoa(fps));
-		msg.print("Command to run will be '%s %s'\n", prefs.encoderPostExe(), qPrintable(encoderArgs));
+		Messenger::print("Command to run will be '%s %s'\n", prefs.encoderPostExe(), qPrintable(encoderArgs));
 		if (!postProcess.execute(prefs.encoderPostExe(),qPrintable(encoderArgs),NULL))
 		{
-			msg.print("Error: Failed to run encoder post-processing command.\n");
+			Messenger::print("Error: Failed to run encoder post-processing command.\n");
 		}
 		else while (!postProcess.finished())
 		{
@@ -192,7 +195,7 @@ void ScriptMovieWidget::on_SaveScriptedMovieButton_clicked(bool on)
 
 	// Cancel image redirection and perform cleanup
 	int nframes = parent_.aten().cancelImageRedirect();
-	bool pid = progress.initialise("Cleaning up...", nframes, FALSE);
+	bool pid = progress.initialise("Cleaning up...", nframes);
 	for (int n = 0; n < nframes; ++n)
 	{
 		basename.sprintf("%s%caten-movie-%i-%i-%09i.png", prefs.tempDir(), PATHSEP, parent_.pid(), runid, n);

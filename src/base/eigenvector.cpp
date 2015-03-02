@@ -25,6 +25,8 @@
 #include "base/messenger.h"
 #include <stdio.h>
 
+ATEN_USING_NAMESPACE
+
 // Constructor
 Eigenvector::Eigenvector() : ListItem<Eigenvector>()
 {
@@ -65,13 +67,13 @@ bool Eigenvector::isSpherical()
 }
 
 // Set text name of eigenvalue
-void Eigenvector::setName(const char *name)
+void Eigenvector::setName(const char* name)
 {
 	name_ = name;
 }
 
 // Return text 'name' of eigenvalue
-const char *Eigenvector::name() const
+const char* Eigenvector::name() const
 {
 	return name_.get();
 }
@@ -79,20 +81,20 @@ const char *Eigenvector::name() const
 // Set array index
 void Eigenvector::setValue(int index, double value)
 {
-	if ((index < 0) || (index >= size_)) msg.print("Array index %i is out of range for eigenvector's array.\n", index);
+	if ((index < 0) || (index >= size_)) Messenger::print("Array index %i is out of range for eigenvector's array.\n", index);
 	else eigenvector_[index] = value;
 }
 
 // Return array value specified
 double Eigenvector::value(int index)
 {
-	if ((index < 0) || (index >= size_)) msg.print("Array index %i is out of range for eigenvector's array.\n", index);
+	if ((index < 0) || (index >= size_)) Messenger::print("Array index %i is out of range for eigenvector's array.\n", index);
 	else return eigenvector_[index];
 	return 0.0;
 }
 
 // Return array pointer
-double *Eigenvector::eigenvector()
+double* Eigenvector::eigenvector()
 {
 	if (eigenvector_ == NULL) printf("Warning - Eigenvector array has not yet been created.\n");
 	return eigenvector_;

@@ -69,7 +69,7 @@ Pattern* AtenSelectPattern::selectPattern(Model* source)
 	// Clear list and repopulate
 	QTableWidgetItem *item;
 	int count = 0;
-	Forcefield *ff;
+	Forcefield* ff;
 	ui.PatternTable->clear();
 	ui.PatternTable->setHorizontalHeaderLabels(QStringList() << "Pattern" << "Forcefield");
 	ui.PatternTable->setRowCount(currentModel_->nPatterns());

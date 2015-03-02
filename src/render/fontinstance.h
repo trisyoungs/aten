@@ -26,7 +26,9 @@
 #include <FTGL/ftgl.h>
 #include <QtCore/QString>
 
-// Forward Declarations
+ATEN_BEGIN_NAMESPACE
+
+// Forward Declarations (Aten)
 /* none */
 
 // Static Font Instance
@@ -64,5 +66,7 @@ class FontInstance
 	// Calculate bounding box height for specified string
 	static double boundingBoxHeight(QString text);
 };
+
+ATEN_END_NAMESPACE
 
 #endif

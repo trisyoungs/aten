@@ -26,6 +26,11 @@
 #include "gui/ttreewidgetitem.h"
 #include <QtGui/QTableWidget>
 #include <QtCore/QObject>
+#include "base/namespace.h"
+
+ATEN_USING_NAMESPACE
+
+ATEN_BEGIN_NAMESPACE
 
 class TTableWidget : public QTableWidget
 {
@@ -40,5 +45,7 @@ class TTableWidget : public QTableWidget
 	void mouseReleaseEvent(QMouseEvent *event);
 	void mouseMoveEvent(QMouseEvent *event);
 };
+
+ATEN_END_NAMESPACE
 
 #endif

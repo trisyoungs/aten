@@ -25,10 +25,13 @@
 #include "base/dnchar.h"
 #include "math/constants.h"
 #include "templates/list.h"
+#include "base/namespace.h"
 
-// Forward Declarations
+// Forward Declarations (Qt)
 class QGridLayout;
 class QWidget;
+
+ATEN_BEGIN_NAMESPACE
 
 // QGridLayout*/int/int class
 class LayoutData : public ListItem<LayoutData>
@@ -48,9 +51,9 @@ class LayoutData : public ListItem<LayoutData>
 
 	public:
 	// Set associated name of layout
-	void setName(const char *name);
+	void setName(const char* name);
 	// Return associated name of layout
-	const char *name();
+	const char* name();
 	// Set layout pointer
 	void setLayout(QGridLayout *layout);
 	// Return layout pointer
@@ -78,9 +81,11 @@ class LayoutList
 	// Clear list
 	void clear();
 	// Add new item to the list
-	LayoutData *add(const char *name, QGridLayout *layout);
+	LayoutData *add(const char* name, QGridLayout *layout);
 	// Find existing layout
-	LayoutData *find(const char *name);
+	LayoutData *find(const char* name);
 };
+
+ATEN_END_NAMESPACE
 
 #endif

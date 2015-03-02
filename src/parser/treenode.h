@@ -26,9 +26,16 @@
 #include "templates/reflist.h"
 #include "templates/vector3.h"
 #include "parser/vtypes.h"
-#include <QtOpenGL/QtOpenGL>
+#ifdef _MAC
+#include <OpenGL/gl.h>
+#else
+#include <GL/gl.h>
+#endif
+#include "base/namespace.h"
 
-// Forward declarations
+ATEN_BEGIN_NAMESPACE
+
+// Forward Declarations (Aten)
 class ScopeNode;
 class StepNode;
 class Tree;
@@ -41,11 +48,11 @@ class TreeNode : public ListItem<TreeNode>
 	TreeNode();
 	virtual ~TreeNode();
 	// Argument list pointers
-	TreeNode *nextArgument, *prevArgument;
+	TreeNode* nextArgument, *prevArgument;
 	// Node Types
 	enum NodeType { BasicNode, CmdNode, ScopedNode, VarNode, VarWrapperNode, SteppedNode, ArrayVarNode, ArrayConstantNode, UserCmdNode, GuiWidgetNode, NewNode, nNodeTypes };
 	// Copy data
-	void copy(TreeNode *source);
+	void copy(TreeNode* source);
 
 
 	/*
@@ -79,17 +86,17 @@ class TreeNode : public ListItem<TreeNode>
 	// Return datatype of nth argument
 	VTypes::DataType argType(int i);
 	// Add list of arguments formas as a plain List<TreeNode>, beginning from supplied list head
-	void addListArguments(TreeNode *leaf);
+	void addListArguments(TreeNode* leaf);
 	// Add list of arguments joined by parser, probably with list tail supplied
-	void addJoinedArguments(TreeNode *args);
+	void addJoinedArguments(TreeNode* args);
 	// Add multiple arguments to node
 	void addArguments(int nargs, ...);
 	// Add multiple arguments to node
-	void addArgument(TreeNode *arg);
+	void addArgument(TreeNode* arg);
 	// Check arguments stored in argument list
-	bool checkArguments(const char *arglist, const char *funcname);
+	bool checkArguments(const char* argList, const char* funcname);
 	// Return (execute) argument specified
-	bool arg(int i, ReturnValue &rv);
+	bool arg(int i, ReturnValue& rv);
 	// Return (execute) argument specified as a bool
 	bool argb(int i);
 	// Return (execute) argument specified as an integer
@@ -101,7 +108,7 @@ class TreeNode : public ListItem<TreeNode>
 	// Return (execute) argument specified as a GLFloat
 	GLfloat argGLf(int i);
 	// Return (execute) argument specified as a character
-	const char *argc(int i);
+	const char* argc(int i);
 	// Return (execute) argument specified as a vector
 	Vec3<double> argv(int i);
 	// Return (execute) argument specified as a pointer
@@ -113,9 +120,9 @@ class TreeNode : public ListItem<TreeNode>
 	// Return (execute) triplet of 'GLfloat' arguments, starting from argument specified
 	Vec3<GLfloat> arg3GLf(int i);
 	// Return the TreeNode corresponding to the argument, rather than executing it
-	TreeNode *argNode(int i);
+	TreeNode* argNode(int i);
 	// Set argument specified from ReturnValue
-	bool setArg(int i, ReturnValue &rv);
+	bool setArg(int i, ReturnValue& rv);
 	// Return whether argument i was given
 	bool hasArg(int i);
 
@@ -151,15 +158,17 @@ class TreeNode : public ListItem<TreeNode>
 	*/
 	public:
 	// Set from returnvalue node
-	virtual bool set(ReturnValue &rv) = 0;
+	virtual bool set(ReturnValue& rv) = 0;
 	// Get reduced value of node
-	virtual bool execute(ReturnValue &rv) = 0;
+	virtual bool execute(ReturnValue& rv) = 0;
 	// Print layout of current node
-	virtual void nodePrint(int offset, const char *prefix = "") = 0;
+	virtual void nodePrint(int offset, const char* prefix = "") = 0;
 	// Reset node
 	virtual bool initialise() = 0;
 	// Search accessors (if any) available for node
-	virtual StepNode *findAccessor(const char *s, TreeNode *arrayindex, TreeNode *arglist = NULL);
+	virtual StepNode* findAccessor(const char* s, TreeNode* arrayIndex, TreeNode* argList = NULL);
 };
+
+ATEN_END_NAMESPACE
 
 #endif
