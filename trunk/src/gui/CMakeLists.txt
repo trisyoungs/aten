@@ -120,7 +120,6 @@ SET(pro_MOC_HDRS
   viewbasis.h
   vieweigenvector.h
   zmatrix.h
-  tcanvas.uih
   tdoublespindelegate.uih
   tcolourframe.uih
   tintegerspindelegate.uih

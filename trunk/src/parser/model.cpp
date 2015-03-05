@@ -106,56 +106,56 @@ Accessor ModelVariable::accessorData[ModelVariable::nAccessors] = {
 
 // Function data
 FunctionAccessor ModelVariable::functionData[ModelVariable::nFunctions] = {
-	{ "addHydrogen",	VTypes::NoData,		aten_.commandArguments(Commands::AddHydrogen),		aten_.commandArgText(Commands::AddHydrogen) },
+	{ "addHydrogen",	VTypes::NoData,		aten_->commandArguments(Commands::AddHydrogen),		aten_->commandArgText(Commands::AddHydrogen) },
 	{ "angleEnergy",	VTypes::DoubleData,	"",							"" },
 	{ "atomWithBit",	VTypes::AtomData,	"i",							"" },
-	{ "augment",		VTypes::NoData,		aten_.commandArguments(Commands::Augment),		aten_.commandArgText(Commands::Augment) },
+	{ "augment",		VTypes::NoData,		aten_->commandArguments(Commands::Augment),		aten_->commandArgText(Commands::Augment) },
 	{ "bondEnergy",		VTypes::DoubleData,	"",							"" },
-	{ "charge",		VTypes::NoData,		aten_.commandArguments(Commands::Charge),		aten_.commandArgText(Commands::Charge) },
-	{ "clearBonds",		VTypes::NoData,		aten_.commandArguments(Commands::ClearBonds),		aten_.commandArgText(Commands::ClearBonds) },
-	{ "clearCharges",	VTypes::NoData,		aten_.commandArguments(Commands::ClearCharges),		aten_.commandArgText(Commands::ClearCharges) },
-	{ "clearPatterns",	VTypes::NoData,		"",							aten_.commandArgText(Commands::ClearPatterns) },
-	{ "clearSelectedBonds",	VTypes::NoData,		aten_.commandArguments(Commands::ClearSelectedBonds),	aten_.commandArgText(Commands::ClearSelectedBonds) },
-	{ "copy",		VTypes::NoData,		aten_.commandArguments(Commands::Copy),			aten_.commandArgText(Commands::Copy) },
-	{ "cut",		VTypes::NoData,		aten_.commandArguments(Commands::Cut),			aten_.commandArgText(Commands::Cut) },
-	{ "delete",		VTypes::NoData,		aten_.commandArguments(Commands::Delete),		aten_.commandArgText(Commands::Delete) },
-	{ "deselect",		VTypes::NoData,		aten_.commandArguments(Commands::DeSelect),		aten_.commandArgText(Commands::DeSelect) },
+	{ "charge",		VTypes::NoData,		aten_->commandArguments(Commands::Charge),		aten_->commandArgText(Commands::Charge) },
+	{ "clearBonds",		VTypes::NoData,		aten_->commandArguments(Commands::ClearBonds),		aten_->commandArgText(Commands::ClearBonds) },
+	{ "clearCharges",	VTypes::NoData,		aten_->commandArguments(Commands::ClearCharges),		aten_->commandArgText(Commands::ClearCharges) },
+	{ "clearPatterns",	VTypes::NoData,		"",							aten_->commandArgText(Commands::ClearPatterns) },
+	{ "clearSelectedBonds",	VTypes::NoData,		aten_->commandArguments(Commands::ClearSelectedBonds),	aten_->commandArgText(Commands::ClearSelectedBonds) },
+	{ "copy",		VTypes::NoData,		aten_->commandArguments(Commands::Copy),			aten_->commandArgText(Commands::Copy) },
+	{ "cut",		VTypes::NoData,		aten_->commandArguments(Commands::Cut),			aten_->commandArgText(Commands::Cut) },
+	{ "delete",		VTypes::NoData,		aten_->commandArguments(Commands::Delete),		aten_->commandArgText(Commands::Delete) },
+	{ "deselect",		VTypes::NoData,		aten_->commandArguments(Commands::DeSelect),		aten_->commandArgText(Commands::DeSelect) },
 	{ "elecEnergy",		VTypes::DoubleData,	"",							"" },
-	{ "expand",		VTypes::NoData,		aten_.commandArguments(Commands::Expand),		aten_.commandArgText(Commands::Expand) },
-	{ "finalise",		VTypes::NoData,		aten_.commandArguments(Commands::Finalise),		aten_.commandArgText(Commands::Finalise) },
+	{ "expand",		VTypes::NoData,		aten_->commandArguments(Commands::Expand),		aten_->commandArgText(Commands::Expand) },
+	{ "finalise",		VTypes::NoData,		aten_->commandArguments(Commands::Finalise),		aten_->commandArgText(Commands::Finalise) },
 	{ "interEnergy",	VTypes::DoubleData,	"",							"" },
 	{ "intraEnergy",	VTypes::DoubleData,	"",							"" },
-	{ "moveToEnd",		VTypes::NoData,		aten_.commandArguments(Commands::MoveToEnd),		aten_.commandArgText(Commands::MoveToEnd) },
-	{ "moveToStart",	VTypes::NoData,		aten_.commandArguments(Commands::MoveToStart),		aten_.commandArgText(Commands::MoveToStart) },
-	{ "newAtom",		VTypes::AtomData,	aten_.commandArguments(Commands::NewAtom),		aten_.commandArgText(Commands::NewAtom) },
-	{ "newAtomFrac",	VTypes::AtomData,	aten_.commandArguments(Commands::NewAtomFrac),		aten_.commandArgText(Commands::NewAtomFrac) },
-	{ "newBasisShell",	VTypes::BasisShellData,	aten_.commandArguments(Commands::NewBasisShell),	aten_.commandArgText(Commands::NewBasisShell) },
-	{ "newBond",		VTypes::BondData,	aten_.commandArguments(Commands::NewBond),		aten_.commandArgText(Commands::NewBond) },
-	{ "newEigenvector",	VTypes::EigenvectorData,aten_.commandArguments(Commands::NewEigenvector),	aten_.commandArgText(Commands::NewEigenvector) },
-	{ "newGlyph",		VTypes::GlyphData,	aten_.commandArguments(Commands::NewGlyph),		aten_.commandArgText(Commands::NewGlyph) },
-	{ "newGrid",		VTypes::GridData,	aten_.commandArguments(Commands::NewGrid),		aten_.commandArgText(Commands::NewGrid) },
-	{ "newPattern",		VTypes::PatternData,	aten_.commandArguments(Commands::NewPattern),		aten_.commandArgText(Commands::NewPattern) },
-	{ "newVibration",	VTypes::VibrationData,	aten_.commandArguments(Commands::NewVibration),		aten_.commandArgText(Commands::NewVibration) },
-	{ "paste",		VTypes::NoData,		aten_.commandArguments(Commands::Paste),		aten_.commandArgText(Commands::Paste) },
-	{ "rebond",		VTypes::NoData,		aten_.commandArguments(Commands::ReBond),		aten_.commandArgText(Commands::ReBond) },
-	{ "rebondPatterns",	VTypes::NoData,		aten_.commandArguments(Commands::ReBondPatterns),	aten_.commandArgText(Commands::ReBondPatterns) },
-	{ "rebondSelection",	VTypes::NoData,		aten_.commandArguments(Commands::ReBondSelection),	aten_.commandArgText(Commands::ReBondSelection) },
-	{ "redo",		VTypes::NoData,		aten_.commandArguments(Commands::Redo),			aten_.commandArgText(Commands::Redo) },
-	{ "reorder",		VTypes::NoData,		aten_.commandArguments(Commands::ReOrder),		aten_.commandArgText(Commands::ReOrder) },
-	{ "saveBitmap",		VTypes::NoData,		aten_.commandArguments(Commands::SaveBitmap),		aten_.commandArgText(Commands::SaveBitmap) },
-	{ "select",		VTypes::NoData,		aten_.commandArguments(Commands::Select),		aten_.commandArgText(Commands::Select) },
-	{ "selectAll",		VTypes::NoData,		aten_.commandArguments(Commands::SelectAll),		aten_.commandArgText(Commands::SelectAll) },
-	{ "selectionAddHydrogen",VTypes::NoData,	aten_.commandArguments(Commands::SelectionAddHydrogen),	aten_.commandArgText(Commands::SelectionAddHydrogen) },
-	{ "selectNone",		VTypes::NoData,		aten_.commandArguments(Commands::SelectNone),		aten_.commandArgText(Commands::SelectNone) },
-	{ "selectTree",		VTypes::NoData,		aten_.commandArguments(Commands::SelectTree),		aten_.commandArgText(Commands::SelectTree) },
-	{ "setupComponent",	VTypes::NoData,		aten_.commandArguments(Commands::SetupComponent),	aten_.commandArgText(Commands::SetupComponent) },
-	{ "shiftDown",		VTypes::NoData,		aten_.commandArguments(Commands::ShiftDown),		aten_.commandArgText(Commands::ShiftDown) },
-	{ "shiftUp",		VTypes::NoData,		aten_.commandArguments(Commands::ShiftUp),		aten_.commandArgText(Commands::ShiftUp) },
-	{ "showAll",		VTypes::NoData,		aten_.commandArguments(Commands::ShowAll),		aten_.commandArgText(Commands::ShowAll) },
+	{ "moveToEnd",		VTypes::NoData,		aten_->commandArguments(Commands::MoveToEnd),		aten_->commandArgText(Commands::MoveToEnd) },
+	{ "moveToStart",	VTypes::NoData,		aten_->commandArguments(Commands::MoveToStart),		aten_->commandArgText(Commands::MoveToStart) },
+	{ "newAtom",		VTypes::AtomData,	aten_->commandArguments(Commands::NewAtom),		aten_->commandArgText(Commands::NewAtom) },
+	{ "newAtomFrac",	VTypes::AtomData,	aten_->commandArguments(Commands::NewAtomFrac),		aten_->commandArgText(Commands::NewAtomFrac) },
+	{ "newBasisShell",	VTypes::BasisShellData,	aten_->commandArguments(Commands::NewBasisShell),	aten_->commandArgText(Commands::NewBasisShell) },
+	{ "newBond",		VTypes::BondData,	aten_->commandArguments(Commands::NewBond),		aten_->commandArgText(Commands::NewBond) },
+	{ "newEigenvector",	VTypes::EigenvectorData,aten_->commandArguments(Commands::NewEigenvector),	aten_->commandArgText(Commands::NewEigenvector) },
+	{ "newGlyph",		VTypes::GlyphData,	aten_->commandArguments(Commands::NewGlyph),		aten_->commandArgText(Commands::NewGlyph) },
+	{ "newGrid",		VTypes::GridData,	aten_->commandArguments(Commands::NewGrid),		aten_->commandArgText(Commands::NewGrid) },
+	{ "newPattern",		VTypes::PatternData,	aten_->commandArguments(Commands::NewPattern),		aten_->commandArgText(Commands::NewPattern) },
+	{ "newVibration",	VTypes::VibrationData,	aten_->commandArguments(Commands::NewVibration),		aten_->commandArgText(Commands::NewVibration) },
+	{ "paste",		VTypes::NoData,		aten_->commandArguments(Commands::Paste),		aten_->commandArgText(Commands::Paste) },
+	{ "rebond",		VTypes::NoData,		aten_->commandArguments(Commands::ReBond),		aten_->commandArgText(Commands::ReBond) },
+	{ "rebondPatterns",	VTypes::NoData,		aten_->commandArguments(Commands::ReBondPatterns),	aten_->commandArgText(Commands::ReBondPatterns) },
+	{ "rebondSelection",	VTypes::NoData,		aten_->commandArguments(Commands::ReBondSelection),	aten_->commandArgText(Commands::ReBondSelection) },
+	{ "redo",		VTypes::NoData,		aten_->commandArguments(Commands::Redo),			aten_->commandArgText(Commands::Redo) },
+	{ "reorder",		VTypes::NoData,		aten_->commandArguments(Commands::ReOrder),		aten_->commandArgText(Commands::ReOrder) },
+	{ "saveBitmap",		VTypes::NoData,		aten_->commandArguments(Commands::SaveBitmap),		aten_->commandArgText(Commands::SaveBitmap) },
+	{ "select",		VTypes::NoData,		aten_->commandArguments(Commands::Select),		aten_->commandArgText(Commands::Select) },
+	{ "selectAll",		VTypes::NoData,		aten_->commandArguments(Commands::SelectAll),		aten_->commandArgText(Commands::SelectAll) },
+	{ "selectionAddHydrogen",VTypes::NoData,	aten_->commandArguments(Commands::SelectionAddHydrogen),	aten_->commandArgText(Commands::SelectionAddHydrogen) },
+	{ "selectNone",		VTypes::NoData,		aten_->commandArguments(Commands::SelectNone),		aten_->commandArgText(Commands::SelectNone) },
+	{ "selectTree",		VTypes::NoData,		aten_->commandArguments(Commands::SelectTree),		aten_->commandArgText(Commands::SelectTree) },
+	{ "setupComponent",	VTypes::NoData,		aten_->commandArguments(Commands::SetupComponent),	aten_->commandArgText(Commands::SetupComponent) },
+	{ "shiftDown",		VTypes::NoData,		aten_->commandArguments(Commands::ShiftDown),		aten_->commandArgText(Commands::ShiftDown) },
+	{ "shiftUp",		VTypes::NoData,		aten_->commandArguments(Commands::ShiftUp),		aten_->commandArgText(Commands::ShiftUp) },
+	{ "showAll",		VTypes::NoData,		aten_->commandArguments(Commands::ShowAll),		aten_->commandArgText(Commands::ShowAll) },
 	{ "toAngstroms",	VTypes::NoData,		"",							"" },
 	{ "torsionEnergy",	VTypes::DoubleData,	"",							"" },
-	{ "transmute",		VTypes::NoData,		aten_.commandArguments(Commands::Transmute),		aten_.commandArgText(Commands::Transmute) },
-	{ "undo",		VTypes::NoData,		aten_.commandArguments(Commands::Undo),			aten_.commandArgText(Commands::Undo) },
+	{ "transmute",		VTypes::NoData,		aten_->commandArguments(Commands::Transmute),		aten_->commandArgText(Commands::Transmute) },
+	{ "undo",		VTypes::NoData,		aten_->commandArguments(Commands::Undo),			aten_->commandArgText(Commands::Undo) },
 	{ "vdwEnergy",		VTypes::DoubleData,	"",							"" }
 };
 
@@ -421,7 +421,7 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex,
 			else rv.set(VTypes::GridData, ptr->grid(arrayIndex-1));
 			break;
 		case (ModelVariable::Id):
-			rv.set(aten_.modelIndex(ptr)+1);
+			rv.set(aten_->modelIndex(ptr)+1);
 			break;
 		case (ModelVariable::Mass):
 			rv.set(ptr->mass());
@@ -681,7 +681,7 @@ bool ModelVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 	if (result) switch (i)
 	{
 		case (ModelVariable::AddHydrogen):
-			result = aten_.callCommand(Commands::AddHydrogen, node, rv, bundle);
+			result = aten_->callCommand(Commands::AddHydrogen, node, rv, bundle);
 			break;
 		case (ModelVariable::AngleEnergy):
 			rv.set( ptr->angleEnergy(ptr, result));
@@ -692,47 +692,47 @@ bool ModelVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 			for (Atom* j = ptr->atoms(); j != NULL; j = j->next) if (j->bit() == bit) rv.set(VTypes::AtomData, j);
 			break;
  		case (ModelVariable::Augment):
-			result = aten_.callCommand(Commands::Augment, node, rv, bundle);
+			result = aten_->callCommand(Commands::Augment, node, rv, bundle);
 			break;
 		case (ModelVariable::BondEnergy):
 			rv.set( ptr->bondEnergy(ptr, result));
 			break;
  		case (ModelVariable::Charge):
-			result = aten_.callCommand(Commands::Charge, node, rv, bundle);
+			result = aten_->callCommand(Commands::Charge, node, rv, bundle);
 			break;
  		case (ModelVariable::ClearBonds):
-			result = aten_.callCommand(Commands::ClearBonds, node, rv, bundle);
+			result = aten_->callCommand(Commands::ClearBonds, node, rv, bundle);
 			break;
  		case (ModelVariable::ClearCharges):
-			result = aten_.callCommand(Commands::ClearCharges, node, rv, bundle);
+			result = aten_->callCommand(Commands::ClearCharges, node, rv, bundle);
 			break;
 		case (ModelVariable::ClearPatterns):
 			ptr->clearPatterns();
 			result = TRUE;
 			break;
  		case (ModelVariable::ClearSelectedBonds):
-			result = aten_.callCommand(Commands::ClearSelectedBonds, node, rv, bundle);
+			result = aten_->callCommand(Commands::ClearSelectedBonds, node, rv, bundle);
 			break;
  		case (ModelVariable::Copy):
-			result = aten_.callCommand(Commands::Copy, node, rv, bundle);
+			result = aten_->callCommand(Commands::Copy, node, rv, bundle);
 			break;
  		case (ModelVariable::Cut):
-			result = aten_.callCommand(Commands::Cut, node, rv, bundle);
+			result = aten_->callCommand(Commands::Cut, node, rv, bundle);
 			break;
  		case (ModelVariable::Delete):
-			result = aten_.callCommand(Commands::Delete, node, rv, bundle);
+			result = aten_->callCommand(Commands::Delete, node, rv, bundle);
 			break;
 		case (ModelVariable::DeSelect):
-			result = aten_.callCommand(Commands::DeSelect, node, rv, bundle);
+			result = aten_->callCommand(Commands::DeSelect, node, rv, bundle);
 			break;
 		case (ModelVariable::ElectrostaticEnergy):
 			rv.set( ptr->electrostaticEnergy(ptr, result));
 			break;
  		case (ModelVariable::Expand):
-			result = aten_.callCommand(Commands::Expand, node, rv, bundle);
+			result = aten_->callCommand(Commands::Expand, node, rv, bundle);
 			break;
  		case (ModelVariable::Finalise):
-			result = aten_.callCommand(Commands::Finalise, node, rv, bundle);
+			result = aten_->callCommand(Commands::Finalise, node, rv, bundle);
 			break;
 		case (ModelVariable::InterEnergy):
 			rv.set( ptr->intermolecularEnergy(ptr, result));
@@ -741,86 +741,86 @@ bool ModelVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 			rv.set( ptr->intramolecularEnergy(ptr, result));
 			break;
  		case (ModelVariable::MoveToEnd):
-			result = aten_.callCommand(Commands::MoveToEnd, node, rv, bundle);
+			result = aten_->callCommand(Commands::MoveToEnd, node, rv, bundle);
 			break;
  		case (ModelVariable::MoveToStart):
-			result = aten_.callCommand(Commands::MoveToStart, node, rv, bundle);
+			result = aten_->callCommand(Commands::MoveToStart, node, rv, bundle);
 			break;
  		case (ModelVariable::NewAtom):
-			result = aten_.callCommand(Commands::NewAtom, node, rv, bundle);
+			result = aten_->callCommand(Commands::NewAtom, node, rv, bundle);
 			break;
  		case (ModelVariable::NewAtomFrac):
-			result = aten_.callCommand(Commands::NewAtomFrac, node, rv, bundle);
+			result = aten_->callCommand(Commands::NewAtomFrac, node, rv, bundle);
 			break;
  		case (ModelVariable::NewBasisShell):
-			result = aten_.callCommand(Commands::NewBasisShell, node, rv, bundle);
+			result = aten_->callCommand(Commands::NewBasisShell, node, rv, bundle);
 			break;
  		case (ModelVariable::NewBond):
-			result = aten_.callCommand(Commands::NewBond, node, rv, bundle);
+			result = aten_->callCommand(Commands::NewBond, node, rv, bundle);
 			break;
  		case (ModelVariable::NewEigenvector):
-			result = aten_.callCommand(Commands::NewEigenvector, node, rv, bundle);
+			result = aten_->callCommand(Commands::NewEigenvector, node, rv, bundle);
 			break;
  		case (ModelVariable::NewGlyph):
-			result = aten_.callCommand(Commands::NewGlyph, node, rv, bundle);
+			result = aten_->callCommand(Commands::NewGlyph, node, rv, bundle);
 			break;
  		case (ModelVariable::NewGrid):
-			result = aten_.callCommand(Commands::NewGrid, node, rv, bundle);
+			result = aten_->callCommand(Commands::NewGrid, node, rv, bundle);
 			break;
 		case (ModelVariable::NewPattern):
 			rv.set(VTypes::PatternData, ptr->addPattern(node->argc(0), node->argi(1), node->argi(2)) );
 			result = (rv.asPointer(VTypes::PatternData) != NULL);
 			break;
  		case (ModelVariable::NewVibration):
-			result = aten_.callCommand(Commands::NewVibration, node, rv, bundle);
+			result = aten_->callCommand(Commands::NewVibration, node, rv, bundle);
 			break;
  		case (ModelVariable::Paste):
-			result = aten_.callCommand(Commands::Paste, node, rv, bundle);
+			result = aten_->callCommand(Commands::Paste, node, rv, bundle);
 			break;
  		case (ModelVariable::ReBond):
-			result = aten_.callCommand(Commands::ReBond, node, rv, bundle);
+			result = aten_->callCommand(Commands::ReBond, node, rv, bundle);
 			break;
  		case (ModelVariable::ReBondPatterns):
-			result = aten_.callCommand(Commands::ReBondPatterns, node, rv, bundle);
+			result = aten_->callCommand(Commands::ReBondPatterns, node, rv, bundle);
 			break;
  		case (ModelVariable::ReBondSelection):
-			result = aten_.callCommand(Commands::ReBondSelection, node, rv, bundle);
+			result = aten_->callCommand(Commands::ReBondSelection, node, rv, bundle);
 			break;
  		case (ModelVariable::Redo):
-			result = aten_.callCommand(Commands::Redo, node, rv, bundle);
+			result = aten_->callCommand(Commands::Redo, node, rv, bundle);
 			break;
  		case (ModelVariable::ReOrder):
-			result = aten_.callCommand(Commands::ReOrder, node, rv, bundle);
+			result = aten_->callCommand(Commands::ReOrder, node, rv, bundle);
 			break;
  		case (ModelVariable::SaveBitmap):
-			result = aten_.callCommand(Commands::SaveBitmap, node, rv, bundle);
+			result = aten_->callCommand(Commands::SaveBitmap, node, rv, bundle);
 			break;
  		case (ModelVariable::Select):
-			result = aten_.callCommand(Commands::Select, node, rv, bundle);
+			result = aten_->callCommand(Commands::Select, node, rv, bundle);
 			break;
  		case (ModelVariable::SelectAll):
-			result = aten_.callCommand(Commands::SelectAll, node, rv, bundle);
+			result = aten_->callCommand(Commands::SelectAll, node, rv, bundle);
 			break;
  		case (ModelVariable::SelectionAddHydrogen):
-			result = aten_.callCommand(Commands::SelectionAddHydrogen, node, rv, bundle);
+			result = aten_->callCommand(Commands::SelectionAddHydrogen, node, rv, bundle);
 			break;
  		case (ModelVariable::SelectNone):
-			result = aten_.callCommand(Commands::SelectNone, node, rv, bundle);
+			result = aten_->callCommand(Commands::SelectNone, node, rv, bundle);
 			break;
  		case (ModelVariable::SelectTree):
-			result = aten_.callCommand(Commands::SelectTree, node, rv, bundle);
+			result = aten_->callCommand(Commands::SelectTree, node, rv, bundle);
 			break;
  		case (ModelVariable::SetupComponent):
-			result = aten_.callCommand(Commands::SetupComponent, node, rv, bundle);
+			result = aten_->callCommand(Commands::SetupComponent, node, rv, bundle);
 			break;
  		case (ModelVariable::ShiftDown):
-			result = aten_.callCommand(Commands::ShiftDown, node, rv, bundle);
+			result = aten_->callCommand(Commands::ShiftDown, node, rv, bundle);
 			break;
  		case (ModelVariable::ShiftUp):
-			result = aten_.callCommand(Commands::ShiftUp, node, rv, bundle);
+			result = aten_->callCommand(Commands::ShiftUp, node, rv, bundle);
 			break;
 		case (ModelVariable::ShowAll):
-			result = aten_.callCommand(Commands::ShowAll, node, rv, bundle);
+			result = aten_->callCommand(Commands::ShowAll, node, rv, bundle);
 			break;
  		case (ModelVariable::ToAngstroms):
 			ptr->bohrToAngstrom();
@@ -829,10 +829,10 @@ bool ModelVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 			rv.set( ptr->torsionEnergy(ptr, result));
 			break;
  		case (ModelVariable::Transmute):
-			result = aten_.callCommand(Commands::Transmute, node, rv, bundle);
+			result = aten_->callCommand(Commands::Transmute, node, rv, bundle);
 			break;
  		case (ModelVariable::Undo):
-			result = aten_.callCommand(Commands::Undo, node, rv, bundle);
+			result = aten_->callCommand(Commands::Undo, node, rv, bundle);
 			break;
 		case (ModelVariable::VdwEnergy):
 			rv.set( ptr->vdwEnergy(ptr, result));

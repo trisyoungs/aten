@@ -47,7 +47,7 @@ void ScopeNode::createGlobalVariables()
 bool ScopeNode::execute(ReturnValue& rv)
 {
 	// Execute the command
-	return aten().callCommand(function_, this, rv);
+	return aten()->callCommand(function_, this, rv);
 }
 
 // Set from returnvalue node

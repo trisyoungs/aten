@@ -21,19 +21,13 @@
 
 #include "parser/commandnode.h"
 #include "parser/tree.h"
-// #include "parser/integer.h"
-// #include "parser/double.h"
-// #include "parser/character.h"
-// #include "parser/variablenode.h"
 #include "main/aten.h"
-// #include "model/model.h"
-// #include "base/sysfunc.h"
 #include <string.h>
 
 ATEN_USING_NAMESPACE
 
 // Static members
-// Aten* CommandNode::aten_ = NULL;
+Aten* CommandNode::aten_ = NULL;
 
 // Constructor
 CommandNode::CommandNode(Commands::Function func) : TreeNode()
@@ -61,9 +55,15 @@ CommandNode::~CommandNode()
  */
 
 // Return reference to Aten
-Aten& CommandNode::aten()
+Aten* CommandNode::aten()
 {
 	return aten_;
+}
+
+// Set pointer to Aten
+void CommandNode::setAten(Aten* aten)
+{
+	aten_ = aten;
 }
 
 /*
@@ -180,7 +180,7 @@ Format* CommandNode::createFormat(int fmtargid, int firstargid)
 bool CommandNode::execute(ReturnValue& rv)
 {
 	// Execute the command
-	return aten_.callCommand(function_, this, rv);
+	return aten_->callCommand(function_, this, rv);
 }
 
 // Print node contents
@@ -194,7 +194,7 @@ void CommandNode::nodePrint(int offset, const char* prefix)
 
 	// Output node data
 // 	printf("Function id = %p\n", function_);
-	printf("[CN]%s%s (Command) (%i arguments)\n", tab.get(), aten_.commandKeyword(function_), args_.nItems());
+	printf("[CN]%s%s (Command) (%i arguments)\n", tab.get(), aten_->commandKeyword(function_), args_.nItems());
 	// Output Argument data
 	for (Refitem<TreeNode,int>* ri = args_.first(); ri != NULL; ri = ri->next) ri->item->nodePrint(offset+1);
 }
@@ -307,5 +307,5 @@ bool CommandNode::run(Commands::Function func, Bundle& bundle, const char* argLi
 bool CommandNode::execute(Bundle& bundle, ReturnValue& rv)
 {
 	// Execute the command
-	return aten_.callCommand(function_, this, rv, bundle);
+	return aten_->callCommand(function_, this, rv, bundle);
 }

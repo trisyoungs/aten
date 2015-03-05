@@ -754,7 +754,7 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue&
 			{
 				ptr->setEnergyUnit(eu);
 				// Loop over stored forcefields and convert energetic parameters
-				for (Forcefield* ff = aten_.forcefields(); ff != NULL; ff = ff->next) ff->convertParameters();
+				for (Forcefield* ff = aten_->forcefields(); ff != NULL; ff = ff->next) ff->convertParameters();
 			}
 			else result = FALSE;
 			break;

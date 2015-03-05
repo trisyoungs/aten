@@ -134,26 +134,26 @@ step:
 steplist:
 	step 						{ }
 	| steplist '.' step				{ }
-	| steplist error				{ msg.print("Error formulating path.\n"); YYABORT; }
+	| steplist error				{ Messenger::print("Error formulating path.\n"); YYABORT; }
 	;
 
 /* Pre-Existing Variable */
 variable:
 	VAR '[' expression ']'				{
 		$$ = cmdparser.wrapVariable($1,$3);
-		if ($$ == NULL) { msg.print("Error in variable expression (code 1)\n"); YYABORT; }
+		if ($$ == NULL) { Messenger::print("Error in variable expression (code 1)\n"); YYABORT; }
 		}
 	| VAR						{
 		$$ = cmdparser.wrapVariable($1);
-		if ($$ == NULL) { msg.print("Error in variable expression (code 2)\n"); YYABORT; }
+		if ($$ == NULL) { Messenger::print("Error in variable expression (code 2)\n"); YYABORT; }
 		}
 	| VARSAMESCOPE '[' expression ']'			{
 		$$ = cmdparser.wrapVariable($1,$3);
-		if ($$ == NULL) { msg.print("Error in variable expression (code 3)\n"); YYABORT; }
+		if ($$ == NULL) { Messenger::print("Error in variable expression (code 3)\n"); YYABORT; }
 		}
 	| VARSAMESCOPE					{
 		$$ = cmdparser.wrapVariable($1);
-		if ($$ == NULL) { msg.print("Error in variable expression (code 4)\n"); YYABORT; }
+		if ($$ == NULL) { Messenger::print("Error in variable expression (code 4)\n"); YYABORT; }
 		}
 	| variable '.' 					{
 		cmdparser.createPath($1);
@@ -161,7 +161,7 @@ variable:
 		$$ = cmdparser.finalisePath();
 		}
 	| variable '('					{
-		msg.print("Can't use a variable as a function. Did you mean '[' instead?\n"); $$ = NULL;
+		Messenger::print("Can't use a variable as a function. Did you mean '[' instead?\n"); $$ = NULL;
 		}
 	;
 
@@ -174,15 +174,15 @@ function:
 	FUNCCALL '(' ')'				{
 		$$ = cmdparser.addFunction( (Commands::Function) $1);
 		if ($$ == NULL) YYABORT;
-		msg.print(Messenger::Parse, "PARSER : function : function '%i'\n", Commands::command((Commands::Function) $1));
+		Messenger::print(Messenger::Parse, "PARSER : function : function '%i'\n", Commands::command((Commands::Function) $1));
 		}
 	| FUNCCALL '(' expressionlist ')'		{
 		$$ = cmdparser.addFunctionWithArglist( (Commands::Function) $1,$3);
 		if ($$ == NULL) YYABORT;
-		msg.print(Messenger::Parse, "PARSER : function : function '%i' with exprlist\n", Commands::command((Commands::Function) $1));
+		Messenger::print(Messenger::Parse, "PARSER : function : function '%i' with exprlist\n", Commands::command((Commands::Function) $1));
 		}
 	| FUNCCALL error				{
-		msg.print("Error: Missing brackets after function call?\n");
+		Messenger::print("Error: Missing brackets after function call?\n");
 		YYABORT;
 		}
 	;
@@ -192,15 +192,15 @@ userfunction:
 	USERFUNCCALL '(' ')'				{
 		$$ = cmdparser.addUserFunction($1);
 		if ($$ == NULL) YYABORT;
-		msg.print(Messenger::Parse,"PARSER : userfunction : function '%s'\n", $1->name());
+		Messenger::print(Messenger::Parse,"PARSER : userfunction : function '%s'\n", $1->name());
 		}
 	| USERFUNCCALL '(' expressionlist ')'		{
 		$$ = cmdparser.addUserFunction($1,$3);
 		if ($$ == NULL) YYABORT;
-		msg.print(Messenger::Parse,"PARSER : userfunction : function '%s' with expressionlist\n", $1->name());
+		Messenger::print(Messenger::Parse,"PARSER : userfunction : function '%s' with expressionlist\n", $1->name());
 		}
 	| USERFUNCCALL error				{
-		msg.print("Error: Missing brackets after function call?\n");
+		Messenger::print("Error: Missing brackets after function call?\n");
 		YYABORT;
 		}
 	;
@@ -224,7 +224,7 @@ ARRAYCONST:
 assignment:
 	variable '=' expression				{ $$ = cmdparser.addOperator(Commands::OperatorAssignment,$1,$3); if ($$ == NULL) YYABORT; }
 	| variable '=' ARRAYCONST			{ $$ = cmdparser.addOperator(Commands::OperatorAssignment,$1,$3); if ($$ == NULL) YYABORT; }
-	| variable '=' error				{ msg.print("Mangled expression used in assignment.\n"); YYABORT; }
+	| variable '=' error				{ Messenger::print("Mangled expression used in assignment.\n"); YYABORT; }
 	;
 
 /* Expression */
@@ -260,7 +260,7 @@ expression:
 	| '!' expression				{ $$ = cmdparser.addOperator(Commands::OperatorNot, $2); if ($$ == NULL) YYABORT; }
 	| expression '?' expression ':' expression	{ $$ = cmdparser.addOperator(Commands::OperatorInlineIf, $1, $3, $5); if ($$ == NULL) YYABORT; }
 	| ATEN_NEW VTYPE				{ $$ = cmdparser.addNew(yylval.vtype); if ($$ == NULL) YYABORT; }
-	| NEWTOKEN					{ msg.print("Error: '%s' has not been declared as a function or a variable.\n", yylval.name->get()); YYABORT; }
+	| NEWTOKEN					{ Messenger::print("Error: '%s' has not been declared as a function or a variable.\n", yylval.name->get()); YYABORT; }
 	;
 
 /* Expression List */
@@ -273,7 +273,7 @@ expressionlist:
 		$$ = Tree::joinArguments($3,$1);
 		}
 	| expressionlist expression			{
-		msg.print("Error: Missing comma between items.\n");
+		Messenger::print("Error: Missing comma between items.\n");
 		YYABORT;
 		}
 	;
@@ -286,41 +286,41 @@ expressionlist:
 variablename:
 	VAR 						{
 		tokenName = yylval.variable->name();
-		msg.print(Messenger::Parse,"PARSER : variablename : existing var '%s'\n", tokenName.get());
-		msg.print("Warning - declaration of variable '%s' in %s hides a previous declaration.\n", tokenName.get(), cmdparser.sourceInfo());
+		Messenger::print(Messenger::Parse,"PARSER : variablename : existing var '%s'\n", tokenName.get());
+		Messenger::print("Warning - declaration of variable '%s' in %s hides a previous declaration.\n", tokenName.get(), cmdparser.sourceInfo());
 		$$ = &tokenName;
 		}
 	| FUNCCALL					{
 		tokenName = Commands::command((Commands::Function) yylval.functionId);
-		msg.print(Messenger::Parse,"PARSER : variablename : existing built-in function '%s'\n", tokenName.get());
+		Messenger::print(Messenger::Parse,"PARSER : variablename : existing built-in function '%s'\n", tokenName.get());
 		$$ = &tokenName;
 		}
 	| VARSAMESCOPE					{
 		tokenName = yylval.variable->name();
-		msg.print(Messenger::Parse,"PARSER : variablename : existing var '%s' in same scope\n", tokenName.get());
-		msg.print("Error: Declaration of variable '%s' in %s conflicts with a previous declaration.\n", tokenName.get(), cmdparser.sourceInfo());
+		Messenger::print(Messenger::Parse,"PARSER : variablename : existing var '%s' in same scope\n", tokenName.get());
+		Messenger::print("Error: Declaration of variable '%s' in %s conflicts with a previous declaration.\n", tokenName.get(), cmdparser.sourceInfo());
 		YYABORT;
 		}
 	| constant					{
 		tokenName = yylval.variable->name();
-		msg.print(Messenger::Parse,"PARSER : variablename : constant '%s'\n", tokenName.get());
-		msg.print("Error: Constant value found in declaration.\n");
+		Messenger::print(Messenger::Parse,"PARSER : variablename : constant '%s'\n", tokenName.get());
+		Messenger::print("Error: Constant value found in declaration.\n");
 		YYABORT;
 		}
 	| USERFUNCCALL					{
 		tokenName = yylval.tree->name();
-		msg.print(Messenger::Parse,"PARSER : variablename : existing user function '%s'\n", tokenName.get());
-		msg.print("Error: Existing user-defined function '%s' in %s cannot be redeclared.\n", tokenName.get(), cmdparser.sourceInfo());
+		Messenger::print(Messenger::Parse,"PARSER : variablename : existing user function '%s'\n", tokenName.get());
+		Messenger::print("Error: Existing user-defined function '%s' in %s cannot be redeclared.\n", tokenName.get(), cmdparser.sourceInfo());
 		YYABORT;
 		}
 	| VTYPE						{
-		msg.print(Messenger::Parse,"PARSER : variablename : variable type-name '%s'\n", VTypes::dataType(yylval.vtype));
-		msg.print("Error: Type-name used in variable declaration.\n");
+		Messenger::print(Messenger::Parse,"PARSER : variablename : variable type-name '%s'\n", VTypes::dataType(yylval.vtype));
+		Messenger::print("Error: Type-name used in variable declaration.\n");
 		YYABORT;
 		}
 	| NEWTOKEN savetokenname			{
-		msg.print(Messenger::Parse,"PARSER : variablename : new token '%s'\n", tokenName.get());
-		if (declaredType == VTypes::NoData) { msg.print("Token '%s' is undeclared.\n", tokenName.get()); YYABORT; }
+		Messenger::print(Messenger::Parse,"PARSER : variablename : new token '%s'\n", tokenName.get());
+		if (declaredType == VTypes::NoData) { Messenger::print("Token '%s' is undeclared.\n", tokenName.get()); YYABORT; }
 		$$ = $1;
 		}
 	;
@@ -328,19 +328,19 @@ variablename:
 /* Variable name with assigned value */
 assignedvariablename:
 	variablename '=' ARRAYCONST			{
-		msg.print(Messenger::Parse,"PARSER : assignedvariablename : var '%s' with array assignment\n", tokenName.get());
+		Messenger::print(Messenger::Parse,"PARSER : assignedvariablename : var '%s' with array assignment\n", tokenName.get());
 		$$ = cmdparser.addVariable(declaredType, &tokenName, $3, globalDeclarations);
 		}
 	| variablename '[' expression ']' '=' expression {
-		msg.print(Messenger::Parse,"PARSER : assignedvariablename : array var '%s' with expr assignment\n", tokenName.get());
+		Messenger::print(Messenger::Parse,"PARSER : assignedvariablename : array var '%s' with expr assignment\n", tokenName.get());
 		$$ = cmdparser.addArrayVariable(declaredType, &tokenName, $3, $6, globalDeclarations);
 		}
 	| variablename '[' expression ']' '=' ARRAYCONST {
-		msg.print(Messenger::Parse,"PARSER : assignedvariablename : array var '%s' with array assignment\n", tokenName.get());
+		Messenger::print(Messenger::Parse,"PARSER : assignedvariablename : array var '%s' with array assignment\n", tokenName.get());
 		$$ = cmdparser.addArrayVariable(declaredType, &tokenName, $3, $6, globalDeclarations);
 		}
 	| variablename '=' expression 			{
-		msg.print(Messenger::Parse,"PARSER : assignedvariablename : var '%s' with expr assignment\n", tokenName.get());
+		Messenger::print(Messenger::Parse,"PARSER : assignedvariablename : var '%s' with expr assignment\n", tokenName.get());
 		$$ = cmdparser.addVariable(declaredType, &tokenName, $3, globalDeclarations);
 		}
 	;
@@ -348,11 +348,11 @@ assignedvariablename:
 /* Variable List Item */
 variablelistitem:
 	variablename					{
-		msg.print(Messenger::Parse,"PARSER : assignedvariablename : var '%s'\n", tokenName.get());
+		Messenger::print(Messenger::Parse,"PARSER : assignedvariablename : var '%s'\n", tokenName.get());
 		$$ = cmdparser.addVariable(declaredType, &tokenName, NULL, globalDeclarations);
 		}
 	| variablename '[' expression ']' 		{
-		msg.print(Messenger::Parse,"PARSER : assignedvariablename : array var '%s'\n", tokenName.get());
+		Messenger::print(Messenger::Parse,"PARSER : assignedvariablename : array var '%s'\n", tokenName.get());
 		$$ = cmdparser.addArrayVariable(declaredType, &tokenName, $3, NULL, globalDeclarations);
 		}
 	| assignedvariablename 				{
@@ -369,7 +369,7 @@ variablelist:
 		$$ = Tree::joinArguments($3,$1);
 		}
 	| variablelist variablelistitem			{
-		msg.print("Error: Missing comma between declarations?\n");
+		Messenger::print("Error: Missing comma between declarations?\n");
 		YYABORT;
 		}
 	;
@@ -377,11 +377,11 @@ variablelist:
 /* Typed Variable List Single */
 typedvariablelistitem:
 	VTYPE savetype variablename			{
-		msg.print(Messenger::Parse,"PARSER : typedvariablelistitem : var '%s'\n", tokenName.get());
+		Messenger::print(Messenger::Parse,"PARSER : typedvariablelistitem : var '%s'\n", tokenName.get());
 		$$ = cmdparser.addVariable(declaredType, &tokenName);
 		}
 	| VTYPE savetype variablename '=' expression 	{
-		msg.print(Messenger::Parse,"PARSER : typedvariablelistitem : var '%s' with expr assignment\n", tokenName.get());
+		Messenger::print(Messenger::Parse,"PARSER : typedvariablelistitem : var '%s' with expr assignment\n", tokenName.get());
 		$$ = cmdparser.addVariable(declaredType, &tokenName, $5);
 		}
 	;
@@ -395,7 +395,7 @@ typedvariablelist:
 		$$ = Tree::joinArguments($3,$1);
 		}
 	| typedvariablelist typedvariablelistitem	{
-		msg.print("Error: Missing comma between declarations?\n");
+		Messenger::print("Error: Missing comma between declarations?\n");
 		YYABORT;
 		}
 	;
@@ -403,17 +403,17 @@ typedvariablelist:
 /* Variable Declaration Statement */
 declaration:
 	ATEN_GLOBAL setglobal VTYPE savetype variablelist unsetglobal	{
-		msg.print(Messenger::Parse,"PARSER : global declaration : standard variable declaration list\n");
+		Messenger::print(Messenger::Parse,"PARSER : global declaration : standard variable declaration list\n");
 		$$ = cmdparser.addDeclarations($5);
 		declaredType = VTypes::NoData;
 		}
 	| VTYPE savetype variablelist			{
-		msg.print(Messenger::Parse,"PARSER : declaration : standard variable declaration list\n");
+		Messenger::print(Messenger::Parse,"PARSER : declaration : standard variable declaration list\n");
 		$$ = cmdparser.addDeclarations($3);
 		declaredType = VTypes::NoData;
 		}
 	| VTYPE savetype error				{
-		msg.print("Illegal use of reserved word '%s'.\n", VTypes::dataType(declaredType));
+		Messenger::print("Illegal use of reserved word '%s'.\n", VTypes::dataType(declaredType));
 		YYABORT;
 		}
 	;
@@ -425,13 +425,13 @@ declaration:
 /* User-Defined Function Declaration */
 functiondeclaration:
 	ATEN_VOID cleartype NEWTOKEN pushfunc '(' ')' block {
-		msg.print(Messenger::Parse,"PARSER : functiondeclaration : user-defined subroutine (VOID return value, no arguments)\n");
+		Messenger::print(Messenger::Parse,"PARSER : functiondeclaration : user-defined subroutine (VOID return value, no arguments)\n");
 		if (!cmdparser.addStatement($7)) YYABORT;
 		cmdparser.popTree();
 		declaredType = VTypes::NoData;
 		}
 	| ATEN_VOID cleartype NEWTOKEN pushfunc '(' typedvariablelist ')' {
-		msg.print(Messenger::Parse,"PARSER : functiondeclaration : user-defined subroutine (VOID return value, arguments)\n");
+		Messenger::print(Messenger::Parse,"PARSER : functiondeclaration : user-defined subroutine (VOID return value, arguments)\n");
 		if (!$4->addLocalFunctionArguments($6)) YYABORT;
 		} block {
 		if (!cmdparser.addStatement($9)) YYABORT;
@@ -439,13 +439,13 @@ functiondeclaration:
 		declaredType = VTypes::NoData;
 		}
 	| VTYPE savetype NEWTOKEN pushfunc '(' ')' block {
-		msg.print(Messenger::Parse,"PARSER : functiondeclaration : user-defined function (%s return value, no arguments)\n", VTypes::dataType($4->returnType()));
+		Messenger::print(Messenger::Parse,"PARSER : functiondeclaration : user-defined function (%s return value, no arguments)\n", VTypes::dataType($4->returnType()));
 		if (!cmdparser.addStatement($7)) YYABORT;
 		cmdparser.popTree();
 		declaredType = VTypes::NoData;
 		}
 	| VTYPE savetype NEWTOKEN pushfunc '(' typedvariablelist ')' {
-		msg.print(Messenger::Parse,"PARSER : functiondeclaration : user-defined function (%s return value, arguments)\n", VTypes::dataType($4->returnType()));
+		Messenger::print(Messenger::Parse,"PARSER : functiondeclaration : user-defined function (%s return value, arguments)\n", VTypes::dataType($4->returnType()));
 		if (!$4->addLocalFunctionArguments($6)) YYABORT;
 		} block {
 		if (!cmdparser.addStatement($9)) YYABORT;
@@ -547,8 +547,8 @@ flowstatement:
 		$$ = cmdparser.joinCommands($2, cmdparser.addFunction(Commands::For, $4,$6,$8,$10)); cmdparser.popScope();
 		}
 	| ATEN_FOR pushscope '(' variable ATEN_IN expression ')'	{
-		if ($4->returnType() <= VTypes::VectorData) { msg.print("Error: For/In loop variable must be of pointer type.\n"); YYABORT; }
-		if ($4->returnType() != $6->returnType()) { msg.print("Error: For/In loop variable is not being assigned the correct type.\n"); YYABORT; }
+		if ($4->returnType() <= VTypes::VectorData) { Messenger::print("Error: For/In loop variable must be of pointer type.\n"); YYABORT; }
+		if ($4->returnType() != $6->returnType()) { Messenger::print("Error: For/In loop variable is not being assigned the correct type.\n"); YYABORT; }
 		} blockment {
 		$$ = cmdparser.joinCommands($2, cmdparser.addFunction(Commands::ForIn,$4,$6,$9));
 		cmdparser.popScope();
@@ -556,13 +556,13 @@ flowstatement:
 	| ATEN_FOR pushscope '(' VTYPE savetype variablename ATEN_IN expression ')' { 
 		if (declaredType <= VTypes::VectorData)
 		{
-			msg.print("Error: For/In loop variable must be of pointer type.\n");
+			Messenger::print("Error: For/In loop variable must be of pointer type.\n");
 			YYABORT;
 		}
 		tempNode = cmdparser.addVariable(declaredType, &tokenName);
 		if (declaredType != $8->returnType())
 		{
-			msg.print("Error: For/In loop variable is not being assigned the correct type.\n");
+			Messenger::print("Error: For/In loop variable is not being assigned the correct type.\n");
 			YYABORT;
 		}
 		} blockment {
@@ -580,7 +580,7 @@ flowstatement:
 	| ATEN_SWITCH '(' expression ')' 		{
 		if (($3->returnType() != VTypes::IntegerData) && ($3->returnType() != VTypes::StringData))
 		{
-			msg.print("Error: Switch value must be of integer or string type.\n");
+			Messenger::print("Error: Switch value must be of integer or string type.\n");
 			YYABORT;
 		}
 		} '{' caselist '}' {
@@ -594,11 +594,11 @@ caselabel:
 	ATEN_CASE '(' expression ')' ':'		{
 		if (($3->returnType() != VTypes::IntegerData) && ($3->returnType() != VTypes::StringData))
 		{
-			msg.print("Error: Case value must be of integer or string type.\n");
+			Messenger::print("Error: Case value must be of integer or string type.\n");
 			YYABORT;
 		}
 		$$ = cmdparser.addFunction(Commands::Case, $3);
-		if ($$ == NULL) { msg.print("Error: Invalid case expression.\n"); YYABORT; }
+		if ($$ == NULL) { Messenger::print("Error: Invalid case expression.\n"); YYABORT; }
 		}
 	| ATEN_DEFAULT ':'				{
 		$$ = cmdparser.addFunction(Commands::Default);
@@ -626,11 +626,11 @@ caselist:
 filteroptions:
 	NEWTOKEN savetokenname '=' constant		{
 		if (!cmdparser.setFilterOption(&tokenName, $4)) YYABORT;
-		msg.print(Messenger::Parse,"PARSER : filteroptions : filter option '%s'\n", tokenName.get());
+		Messenger::print(Messenger::Parse,"PARSER : filteroptions : filter option '%s'\n", tokenName.get());
 		}
 	| filteroptions ',' NEWTOKEN savetokenname '=' constant {
 		if (!cmdparser.setFilterOption(&tokenName, $6)) YYABORT;
-		msg.print(Messenger::Parse,"PARSER : filteroptions : filter option '%s'\n", tokenName.get());
+		Messenger::print(Messenger::Parse,"PARSER : filteroptions : filter option '%s'\n", tokenName.get());
 		}
 	;
 
@@ -639,7 +639,7 @@ filter:
 	FILTERBLOCK pushfilter '(' filteroptions ')' block 	{
 		if (($6 != NULL) && (!cmdparser.addStatement($6))) YYABORT;
 		cmdparser.popTree();
-		msg.print(Messenger::Parse,"PARSER : completed filter definition\n");
+		Messenger::print(Messenger::Parse,"PARSER : completed filter definition\n");
 		}
 	;
 
@@ -673,7 +673,7 @@ pushstepname:
 
 pushfunc:
 	/* empty */					{
-		msg.print(Messenger::Parse,"PARSER : pushfunc : function/statement '%s'\n", yylval.name->get());
+		Messenger::print(Messenger::Parse,"PARSER : pushfunc : function/statement '%s'\n", yylval.name->get());
 		$$ = cmdparser.pushFunction(yylval.name->get(), declaredType);
 		/*cmdparser.pushScope();*/
 		}
@@ -681,7 +681,7 @@ pushfunc:
 
 pushfilter:
 	/* empty */					{
-		msg.print(Messenger::Parse,"PARSER : pushfilter : new filter definition\n");
+		Messenger::print(Messenger::Parse,"PARSER : pushfilter : new filter definition\n");
 		cmdparser.pushFilter();
 		}
 	;

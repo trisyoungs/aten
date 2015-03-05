@@ -219,26 +219,26 @@ bool AtenVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex, 
 			else rv.set(VTypes::ElementData, &Elements().el[0]);
 			break;
 		case (AtenVariable::Frame):
-			if (aten_.currentModel() == NULL) rv.set(VTypes::ModelData, NULL);
-			else rv.set(VTypes::ModelData, aten_.currentModel()->renderSourceModel());
+			if (aten_->currentModel() == NULL) rv.set(VTypes::ModelData, NULL);
+			else rv.set(VTypes::ModelData, aten_->currentModel()->renderSourceModel());
 			break;
 		case (AtenVariable::MC):
 			rv.set(VTypes::MonteCarloData, &mc);
 			break;
 		case (AtenVariable::Modeldata):
-			rv.set(VTypes::ModelData, aten_.currentModel());
+			rv.set(VTypes::ModelData, aten_->currentModel());
 			break;
 		case (AtenVariable::Models):
 			if (hasArrayIndex)
 			{
-				if ((arrayIndex < 1) || (arrayIndex > aten_.nModels()))
+				if ((arrayIndex < 1) || (arrayIndex > aten_->nModels()))
 				{
 					Messenger::print("Array index [%i] is out of range for 'model' member.\n", arrayIndex);
 					result = FALSE;
 				}
-				else m = aten_.model(arrayIndex-1);
+				else m = aten_->model(arrayIndex-1);
 			}
-			else m = aten_.model(0);
+			else m = aten_->model(0);
 			if (m == NULL) result = FALSE;
 			rv.set(VTypes::ModelData, m);
 			break;
@@ -246,7 +246,7 @@ bool AtenVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex, 
 			rv.set(Elements().nElements());
 			break;
 		case (AtenVariable::NModels):
-			rv.set(aten_.nModels());
+			rv.set(aten_->nModels());
 			break;
 		case (AtenVariable::Preferences):
 			rv.set(VTypes::PreferencesData, &prefs);

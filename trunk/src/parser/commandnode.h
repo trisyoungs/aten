@@ -51,12 +51,14 @@ class CommandNode : public TreeNode
 	 * Link to Aten
 	 */
 	private:
-	// Reference to Aten
-	static Aten& aten_;
+	// Pointer to Aten
+	static Aten* aten_;
 
 	public:
-	// Return reference to Aten
-	Aten& aten();
+	// Set pointer to Aten
+	static void setAten(Aten* aten);
+	// Return pointer to Aten
+	Aten* aten();
 
 
 	/*

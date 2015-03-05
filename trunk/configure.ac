@@ -3,7 +3,7 @@
 AC_PREREQ(2.60)
 
 # Set program name, version, bug-address and source directory
-m4_define([ATEN_VERSION],[1.909])
+m4_define([ATEN_VERSION],[1.910])
 AC_INIT(aten,ATEN_VERSION,tris@projectaten.net)
 AC_CONFIG_SRCDIR([src/main.cpp])
 
@@ -122,7 +122,7 @@ if test "x$with_qt" = "x"; then
   PKG_CHECK_MODULES(QTOPENGL, QtOpenGL >= 4.1.0)
 fi
 GUI_LDLIBS="$FTGL_LIBS $FREETYPE_LIBS $QTGUI_LIBS $QTOPENGL_LIBS -lreadline -lncurses -lGL -lfreetype"
-GUI_CFLAGS="$FREETYPE_CFLAGS $QTGUI_CFLAGS -I$RLINCDIR $CHECK_FLAGS"
+GUI_CFLAGS="$FREETYPE_CFLAGS -DDEBUG $QTGUI_CFLAGS -I$RLINCDIR $CHECK_FLAGS"
 
 VERSION=ATEN_VERSION
 # Perform Makefile substitutions
