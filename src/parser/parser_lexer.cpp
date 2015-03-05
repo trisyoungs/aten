@@ -321,7 +321,7 @@ int CommandParser::lex()
 			}
 			
 			// Not in global scope - was it passed as a CLI value?
-			v = aten_.findPassedValue(token);
+			v = aten_->findPassedValue(token);
 			if (v != NULL)
 			{
 				Messenger::print(Messenger::Parse, "LEXER (%p): ...which is an existing value passed through the CLI (->VAR).\n", tree_);
@@ -355,7 +355,7 @@ int CommandParser::lex()
 
 			// Is it a user-defined function keyword in the global (Forest-wide) scope, or Aten's global scope?
 			func = program_->findFunction(token);
-			if (func == NULL) func = aten_.findIncludeFunction(token);
+			if (func == NULL) func = aten_->findIncludeFunction(token);
 			if (func != NULL)
 			{
 				Messenger::print(Messenger::Parse, "LEXER (%p): ... which is a used-defined Forest-global function (->USERFUNCCALL).\n", tree_);

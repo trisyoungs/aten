@@ -32,6 +32,9 @@
 
 ATEN_USING_NAMESPACE
 
+// Static members
+Aten* Tree::aten_ = NULL;
+
 // Constructors
 Tree::Tree() : ListItem<Tree>()
 {
@@ -56,6 +59,20 @@ Tree::~Tree()
 {
 	clear();
 }
+
+/*
+ * Link to Aten
+ */
+
+// Set pointer to Aten
+void Tree::setAten(Aten* aten)
+{
+	aten_ = aten;
+}
+
+/*
+ * Character
+ */
 
 // Set parent
 void Tree::setParent(Program* prog)
@@ -304,9 +321,9 @@ bool Tree::execute(ReturnValue& rv)
 		{
 			case (FilterData::ExpressionExport):
 				// Turn on export type mapping
-				if (aten_.typeExportMap.nPairs() != 0) aten_.setTypeExportMapping(TRUE);
+				if (aten_->typeExportMap.nPairs() != 0) aten_->setTypeExportMapping(TRUE);
 				// Create expression for model
-				if (!aten_.currentModel()->createExpression())
+				if (!aten_->currentModel()->createExpression())
 				{
 					Messenger::exit("Tree::execute");
 					return FALSE;
@@ -314,7 +331,7 @@ bool Tree::execute(ReturnValue& rv)
 				break;
 			case (FilterData::ModelExport):
 				// Turn on export type mapping
-				if (aten_.typeExportMap.nPairs() != 0) aten_.setTypeExportMapping(TRUE);
+				if (aten_->typeExportMap.nPairs() != 0) aten_->setTypeExportMapping(TRUE);
 				break;
 			default:
 				break;
@@ -358,7 +375,7 @@ bool Tree::execute(ReturnValue& rv)
 			case (FilterData::ExpressionExport):
 			case (FilterData::ModelExport):
 				// Turn off export type mapping
-				aten_.setTypeExportMapping(FALSE);
+				aten_->setTypeExportMapping(FALSE);
 				break;
 			default:
 				break;
@@ -569,12 +586,12 @@ TreeNode* Tree::addFunctionWithArglist(Commands::Function func, TreeNode* argLis
 	leaf->setParent(this);
 	
 	// Store the function's return type
-	leaf->setReturnType(aten_.commandReturnType(func));
+	leaf->setReturnType(aten_->commandReturnType(func));
 	
 	// Check that the correct arguments were given to the command and run any prep functions
-	if (!leaf->checkArguments(aten_.commandArguments(func), Commands::command(func)))
+	if (!leaf->checkArguments(aten_->commandArguments(func), Commands::command(func)))
 	{
-		Messenger::print("Error: Function syntax is '%s(%s)'.\n", Commands::command(func), aten_.commandArgText(func));
+		Messenger::print("Error: Function syntax is '%s(%s)'.\n", Commands::command(func), aten_->commandArgText(func));
 		leaf = NULL;
 	}
 	else if (!leaf->prepFunction()) leaf = NULL;
@@ -596,11 +613,11 @@ TreeNode* Tree::addFunction(Commands::Function func, TreeNode* a1, TreeNode* a2,
 	if (a4 != NULL) leaf->addArgument(a4);
 	leaf->setParent(this);
 	// Store the function's return type
-	leaf->setReturnType(aten_.commandReturnType(func));
+	leaf->setReturnType(aten_->commandReturnType(func));
 	// Check that the correct arguments were given to the command and run any prep functions
-	if (!leaf->checkArguments(aten_.commandArguments(func), Commands::command(func)))
+	if (!leaf->checkArguments(aten_->commandArguments(func), Commands::command(func)))
 	{
-		Messenger::print("Error: Function syntax is '%s(%s)'.\n", Commands::command(func), aten_.commandArgText(func));
+		Messenger::print("Error: Function syntax is '%s(%s)'.\n", Commands::command(func), aten_->commandArgText(func));
 		leaf = NULL;
 	}
 	else if (!leaf->prepFunction()) leaf = NULL;
@@ -639,7 +656,7 @@ TreeNode* Tree::addDeclarations(TreeNode* declist)
 	leaf->addJoinedArguments(declist);
 	leaf->setParent(this);
 	// Check that the correct arguments were given to the command and run any prep functions
-	if (!leaf->checkArguments(aten_.commandArguments(Commands::Declarations), Commands::command(Commands::Declarations))) leaf = NULL;
+	if (!leaf->checkArguments(aten_->commandArguments(Commands::Declarations), Commands::command(Commands::Declarations))) leaf = NULL;
 	Messenger::exit("Tree::addDeclarations");
 	return leaf;
 }
@@ -906,7 +923,7 @@ Variable *Tree::findLocalVariable(const char* name, int &scopelevel)
 // 	}
 	
 // 	// Not in global scope - was it passed as a CLI value?
-// 	result = aten_.findPassedValue(name);
+// 	result = aten_->findPassedValue(name);
 // 	if (result != NULL)
 // 	{
 // 		scopelevel = 2;

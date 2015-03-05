@@ -25,45 +25,13 @@
 #include "parser/commandnode.h"
 #include "gui/mainwindow.h"
 #include <QtGui/QApplication>
-#include <QtOpenGL/QtOpenGL>
-
-ATEN_BEGIN_NAMESPACE
-
-// Create main Aten objects, and create static members for other classes
-Aten MrAten;
-CommandParser cmdparser(MrAten);
-Aten& CommandNode::aten_ = MrAten;
-Aten& Variable::aten_ = MrAten;
-Aten& Tree::aten_ = MrAten;
-
-ATEN_END_NAMESPACE
+// #include <QtOpenGL/QtOpenGL>
 
 ATEN_USING_NAMESPACE
 
-// External Object Declarations
+// External Object Declarationsi
 int main(int argc, char* argv[])
 {
-	/* Parse early command-line options */
-	if (!MrAten.parseCliEarly(argc, argv)) return -1;
-
-	/* Print GPL license information */
-	Messenger::print(Messenger::Verbose, "Aten version %s, Copyright (C) 2007-2010  T. Youngs.\n", ATENVERSION);
-	Messenger::print(Messenger::Verbose, "SVN repository is %s.\n", ATENURL);
-	Messenger::print(Messenger::Verbose, "Aten uses Space Group Info (c) 1994-96 Ralf W. Grosse-Kunstleve.\n");
-	Messenger::print(Messenger::Verbose, "Aten comes with ABSOLUTELY NO WARRANTY.\n");
-	Messenger::print(Messenger::Verbose, "This is free software, and you are welcome to redistribute it under certain conditions.\n");
-	Messenger::print(Messenger::Verbose, "For more details read the GPL at <http://www.gnu.org/copyleft/gpl.html>.\n\n");
-
-	/* Set random seed */
-	srand( (unsigned)time( NULL ) );
-
-	/* Get environment variables */
-	if (getenv("HOME") != '\0') MrAten.setHomeDir(getenv("HOME"));
-	else MrAten.setHomeDir( getenv("USERPROFILE") );
-	MrAten.setWorkDir(getenv("PWD"));
-	if (!MrAten.dataDirSet()) MrAten.setDataDir(getenv("ATENDATA"));
-	Messenger::print(Messenger::Verbose, "Home directory is %s, working directory is %s, data directory is %s.\n", MrAten.homeDir(), MrAten.workDir(), MrAten.dataDir());
-
 	/* Create the main QApplication */
 	QApplication app(argc, argv, QApplication::GuiClient);
 	QCoreApplication::setOrganizationName("ProjectAten");
@@ -76,6 +44,30 @@ int main(int argc, char* argv[])
 
 	/* Tweak the default QGLFormat */
 	QGLFormat::defaultFormat().setSampleBuffers(true);
+
+	/* Create main Aten object before anything else, since this sets pointers in other dependent static objects */
+	Aten MrAten;
+
+	/* Parse early command-line options */
+	if (!MrAten.parseCliEarly(argc, argv)) return -1;
+
+	/* Print GPL license information */
+	Messenger::print(Messenger::Verbose, "Aten version %s, Copyright (C) 2007-2015 T. Youngs.\n", ATENVERSION);
+	Messenger::print(Messenger::Verbose, "SVN repository is %s.\n", ATENURL);
+	Messenger::print(Messenger::Verbose, "Aten uses Space Group Info (c) 1994-96 Ralf W. Grosse-Kunstleve.\n");
+	Messenger::print(Messenger::Verbose, "Aten comes with ABSOLUTELY NO WARRANTY.\n");
+	Messenger::print(Messenger::Verbose, "This is free software, and you are welcome to redistribute it under certain conditions.\n");
+	Messenger::print(Messenger::Verbose, "For more details read the GPL at <http://www.gnu.org/copyleft/gpl.html>.\n\n");
+
+	/* Set random seed */
+	srand( (unsigned) time(NULL) );
+
+	/* Get environment variables */
+	if (getenv("HOME") != '\0') MrAten.setHomeDir(getenv("HOME"));
+	else MrAten.setHomeDir( getenv("USERPROFILE") );
+	MrAten.setWorkDir(getenv("PWD"));
+	if (!MrAten.dataDirSet()) MrAten.setDataDir(getenv("ATENDATA"));
+	Messenger::print(Messenger::Verbose, "Home directory is %s, working directory is %s, data directory is %s.\n", MrAten.homeDir(), MrAten.workDir(), MrAten.dataDir());
 
 	/* Create the main window */
 	AtenWindow mainWindow(MrAten);

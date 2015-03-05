@@ -25,6 +25,9 @@
 
 ATEN_USING_NAMESPACE
 
+// Static members
+Aten* Variable::aten_ = NULL;
+
 /*
 // Variable
 */
@@ -41,6 +44,16 @@ Variable::Variable() : TreeNode()
 // Destructor (virtual)
 Variable::~Variable()
 {
+}
+
+/*
+ * Link to Aten
+ */
+
+// Set pointer to Aten
+void Variable::setAten(Aten* aten)
+{
+	aten_ = aten;
 }
 
 /*

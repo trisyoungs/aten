@@ -40,7 +40,7 @@ class CommandParser
 {
 	public:
 	// Constructor / Destructor
-	CommandParser(Aten& aten);
+	CommandParser();
 	~CommandParser();
 	// Symbolic tokens - array of corresponding values refers to Bison's tokens
 	enum SymbolToken { AssignSymbol, GEQSymbol, LEQSymbol, CNEQSymbol, FNEQSymbol, PlusEqSymbol, MinusEqSymbol, TimesEqSymbol, DivideEqSymbol, PlusPlusSymbol, MinusMinusSymbol, AndSymbol, OrSymbol, nSymbolTokens };
@@ -55,11 +55,14 @@ class CommandParser
 	 */
 	private:
 	// Reference to Aten
-	Aten& aten_;
+	static Aten* aten_;
 
 	public:
 	// Return reference to Aten
-	Aten& aten();
+	static Aten* aten();
+
+	// Set pointer to Aten
+	static void setAten(Aten* aten);
 
 
 	/*

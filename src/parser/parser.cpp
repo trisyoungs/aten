@@ -22,14 +22,21 @@
 #include "parser/parser.h"
 #include "parser/program.h"
 
+ATEN_BEGIN_NAMESPACE
+
+// External Declaration and Static Members
+CommandParser cmdparser;
+Aten* CommandParser::aten_ = NULL;
+
+ATEN_END_NAMESPACE
+
 ATEN_USING_NAMESPACE
 
 // External Declarations
 int CommandParser_parse();
 
 // Constructor
-CommandParser::CommandParser(Aten& aten) : aten_(aten)
-	// Private variables
+CommandParser::CommandParser()
 {
 	reset();
 }
@@ -43,10 +50,16 @@ CommandParser::~CommandParser()
  * Link to Aten
  */
 
-// Return reference to Aten
-Aten& CommandParser::aten()
+// Return pointer to Aten
+Aten* CommandParser::aten()
 {
 	return aten_;
+}
+
+// Set pointer to Aten
+void CommandParser::setAten(Aten* aten)
+{
+	aten_ = aten;
 }
 
 /*

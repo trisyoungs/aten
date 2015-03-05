@@ -223,7 +223,7 @@ bool ForcefieldAtomVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasAr
 			else rv.set(VdwFunctions::VdwFunctions[ptr->vdwForm()].parameters[arrayIndex-1]);
 			break;
 		case (ForcefieldAtomVariable::Equivalent):
-			if (aten_.typeExportMapping()) rv.set(aten_.typeExportConvert(ptr->equivalent()));
+			if (aten_->typeExportMapping()) rv.set(aten_->typeExportConvert(ptr->equivalent()));
 			else rv.set(ptr->equivalent());
 			break;
 		case (ForcefieldAtomVariable::FField):
@@ -239,7 +239,7 @@ bool ForcefieldAtomVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasAr
 			rv.set(ptr->elementMass());
 			break;
 		case (ForcefieldAtomVariable::Name):
-			if (aten_.typeExportMapping()) rv.set(aten_.typeExportConvert(ptr->name()));
+			if (aten_->typeExportMapping()) rv.set(aten_->typeExportConvert(ptr->name()));
 			else rv.set(ptr->name());
 			break;
 		case (ForcefieldAtomVariable::Neta):

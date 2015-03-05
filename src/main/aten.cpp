@@ -31,6 +31,9 @@
 #include "base/pattern.h"
 #include "base/sysfunc.h"
 #include "parser/aten.h"
+#include "parser/commandnode.h"
+#include "parser/variable.h"
+#include "parser/tree.h"
 
 ATEN_USING_NAMESPACE
 
@@ -38,6 +41,11 @@ ATEN_USING_NAMESPACE
 Aten::Aten() : commands_(*this)
 {
 	printf("Aten constructor.\n");
+	
+	CommandNode::setAten(this);
+	Variable::setAten(this);
+	Tree::setAten(this);
+
 	// Models
 	modelId_ = 0;
 	targetModelList_ = Aten::MainModelList;

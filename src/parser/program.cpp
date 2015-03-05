@@ -72,7 +72,7 @@ const char* Program::filename()
 }
 
 // Finalise Program
-bool Program::finalise(Aten& aten)
+bool Program::finalise(Aten* aten)
 {
 	Messenger::enter("Program::finalise");
 	
@@ -82,7 +82,7 @@ bool Program::finalise(Aten& aten)
 		// Register file filters with the master
 		if (filter->isFilter())
 		{
-			aten.registerFilter(filter, filter->filter.type());
+			aten->registerFilter(filter, filter->filter.type());
 			// For trajectory import filters, we expect to find the two functions readHeader and readFrame, both returning integers
 			if (filter->filter.type() == FilterData::TrajectoryImport)
 			{

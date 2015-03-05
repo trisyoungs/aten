@@ -63,12 +63,12 @@ Accessor ForcefieldVariable::accessorData[ForcefieldVariable::nAccessors] = {
 
 // Function data
 FunctionAccessor ForcefieldVariable::functionData[ForcefieldVariable::nFunctions] = {
-	{ "addAngle",		VTypes::ForcefieldBoundData,	aten_.commandArguments(Commands::AngleDef),	aten_.commandArgText(Commands::AngleDef) },
-	{ "addBond",		VTypes::ForcefieldBoundData,	aten_.commandArguments(Commands::BondDef),	aten_.commandArgText(Commands::BondDef) },
-	{ "addInter",		VTypes::NoData,			aten_.commandArguments(Commands::InterDef),	aten_.commandArgText(Commands::InterDef) },
-	{ "addTorsion",		VTypes::ForcefieldBoundData,	aten_.commandArguments(Commands::TorsionDef),	aten_.commandArgText(Commands::TorsionDef) },
-	{ "addType",		VTypes::ForcefieldAtomData,	aten_.commandArguments(Commands::TypeDef),	aten_.commandArgText(Commands::TypeDef) },
-	{ "finalise",		VTypes::NoData, 		aten_.commandArguments(Commands::Finalise),	aten_.commandArgText(Commands::Finalise) },
+	{ "addAngle",		VTypes::ForcefieldBoundData,	aten_->commandArguments(Commands::AngleDef),	aten_->commandArgText(Commands::AngleDef) },
+	{ "addBond",		VTypes::ForcefieldBoundData,	aten_->commandArguments(Commands::BondDef),	aten_->commandArgText(Commands::BondDef) },
+	{ "addInter",		VTypes::NoData,			aten_->commandArguments(Commands::InterDef),	aten_->commandArgText(Commands::InterDef) },
+	{ "addTorsion",		VTypes::ForcefieldBoundData,	aten_->commandArguments(Commands::TorsionDef),	aten_->commandArgText(Commands::TorsionDef) },
+	{ "addType",		VTypes::ForcefieldAtomData,	aten_->commandArguments(Commands::TypeDef),	aten_->commandArgText(Commands::TypeDef) },
+	{ "finalise",		VTypes::NoData, 		aten_->commandArguments(Commands::Finalise),	aten_->commandArgText(Commands::Finalise) },
 	{ "findAngle",		VTypes::ForcefieldBoundData, 	"CCC",					"string typei, string typej, string typek" },
 	{ "findBond",		VTypes::ForcefieldBoundData, 	"CC",					"string typei, string typej" },
 	{ "findImproper",	VTypes::ForcefieldBoundData, 	"CCCC",					"string typei, string typej, string typek, string typel" },
@@ -330,22 +330,22 @@ bool ForcefieldVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 	if (result) switch (i)
 	{
 		case (ForcefieldVariable::AddAngle):
-			result = aten_.callCommand(Commands::AngleDef, node, rv, bundle);
+			result = aten_->callCommand(Commands::AngleDef, node, rv, bundle);
 			break;
 		case (ForcefieldVariable::AddBond):
-			result = aten_.callCommand(Commands::BondDef, node, rv, bundle);
+			result = aten_->callCommand(Commands::BondDef, node, rv, bundle);
 			break;
 		case (ForcefieldVariable::AddInter):
-			result = aten_.callCommand(Commands::InterDef, node, rv, bundle);
+			result = aten_->callCommand(Commands::InterDef, node, rv, bundle);
 			break;
 		case (ForcefieldVariable::AddTorsion):
-			result = aten_.callCommand(Commands::TorsionDef, node, rv, bundle);
+			result = aten_->callCommand(Commands::TorsionDef, node, rv, bundle);
 			break;
 		case (ForcefieldVariable::AddType):
-			result = aten_.callCommand(Commands::TypeDef, node, rv, bundle);
+			result = aten_->callCommand(Commands::TypeDef, node, rv, bundle);
 			break;
 		case (ForcefieldVariable::Finalise):
-			result = aten_.callCommand(Commands::FinaliseFF, node, rv, bundle);
+			result = aten_->callCommand(Commands::FinaliseFF, node, rv, bundle);
 			break;
 		case (ForcefieldVariable::FindAngle):
 			rv.set(VTypes::ForcefieldBoundData, ptr->findAngle(node->argc(0), node->argc(1), node->argc(2)));

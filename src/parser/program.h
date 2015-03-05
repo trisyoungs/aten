@@ -76,7 +76,7 @@ class Program : public ListItem<Program>
 	// Reload program (provided it was from a file...)
 	bool reload();
 	// Finalise program
-	bool finalise(Aten& aten);
+	bool finalise(Aten* aten);
 	// Return main program
 	Tree* mainProgram();
 	// Add a filter tree

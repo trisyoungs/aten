@@ -47,7 +47,11 @@ class Variable : public TreeNode
 	 */
 	protected:
 	// Pointer to Aten
-	static Aten& aten_;
+	static Aten* aten_;
+
+	public:
+	// Set pointer to Aten
+	static void setAten(Aten* aten);
 
 
 	/*

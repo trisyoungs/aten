@@ -21,8 +21,8 @@
 
 #include "gui/layoutlist.h"
 #include <string.h>
-#include "QtGui/QGridLayout"
-#include "QtGui/QWidget"
+#include <QtGui/QGridLayout>
+#include <QtGui/QWidget>
 
 ATEN_USING_NAMESPACE
 

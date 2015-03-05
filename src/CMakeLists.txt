@@ -1,5 +1,6 @@
 add_subdirectory(gui)
 add_subdirectory(base)
+add_subdirectory(math)
 add_subdirectory(command)
 add_subdirectory(parser)
 add_subdirectory(ff)

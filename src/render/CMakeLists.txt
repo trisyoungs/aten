@@ -7,7 +7,11 @@ add_library(render
   primitiveinstance.h
   primitivelist.h
   renderprimitives.h
+  textformat.h
+  textfragment.h
+  textprimitive_grammar.hh
   textprimitive.h
+  textprimitivelist.h
   vertexchunk.h
   fontinstance.cpp
   gridprimitive.cpp
@@ -18,7 +22,11 @@ add_library(render
   primitivelist.cpp
   renderprimitives.cpp
   surface.cpp
+  textformat.cpp
+  textfragment.cpp
   textprimitive.cpp
+  textprimitive_grammar.cc
+  textprimitivelist.cpp
   vertexchunk.cpp
 )
 
