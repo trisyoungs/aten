@@ -337,7 +337,7 @@ void Model::setupView(GLint x, GLint y, GLint w, GLint h)
 }
 
 // Project given model coordinates into world coordinates (and screen coordinates if requested)
-Vec3<double> &Model::modelToWorld(Vec3<double> &modelr, Vec4<double> *screenr, double screenradius)
+Vec3<double> &Model::modelToWorld(Vec3<double> &modelr, Vec4<double>* screenr, double screenradius)
 {
 	Messenger::enter("Model::modelToWorld");
 	static Vec3<double> worldr;

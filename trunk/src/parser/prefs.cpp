@@ -63,7 +63,7 @@ Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
 	{ "clipNear",			VTypes::DoubleData,		0, FALSE },
 	{ "colourScales",		VTypes::ColourScaleData,	10, TRUE },
 	{ "colourScheme",		VTypes::StringData,		0, FALSE },
-	{ "combinationRule",		VTypes::StringData,		Combine::nCombinationRules, FALSE },
+	{ "combinationRule",		VTypes::StringData,		CombinationRules::nCombinationRules, FALSE },
 	{ "commonElements",		VTypes::StringData,		0, FALSE },
 	{ "dashedAromatics",		VTypes::IntegerData,		0, FALSE },
 	{ "densityUnit",		VTypes::StringData,		0, FALSE },
@@ -301,8 +301,8 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArray
 			rv.set(Prefs::colouringScheme(ptr->colourScheme()));
 			break;
 		case (PreferencesVariable::CombinationRule):
-			if (hasArrayIndex) rv.set( ptr->combinationRule( (Combine::CombinationRule) (arrayIndex-1)) );
-			else rv.setArray( VTypes::StringData, ptr->combinationRules(), Combine::nCombinationRules);
+			if (hasArrayIndex) rv.set( ptr->combinationRule( (CombinationRules::CombinationRule) (arrayIndex-1)) );
+			else rv.setArray( VTypes::StringData, ptr->combinationRules(), CombinationRules::nCombinationRules);
 			break;
 		case (PreferencesVariable::CommonElements):
 			rv.set(ptr->commonElements());
@@ -693,17 +693,17 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue&
 			else result = FALSE;
 			break;
 		case (PreferencesVariable::CombinationRule):
-			if (newValue.arraySize() == Combine::nCombinationRules) for (n=0; n<Combine::nCombinationRules; ++n)
+			if (newValue.arraySize() == CombinationRules::nCombinationRules) for (n=0; n<CombinationRules::nCombinationRules; ++n)
 			{
-				ptr->setCombinationRule( (Combine::CombinationRule) n, newValue.asString(n, result));
+				ptr->setCombinationRule( (CombinationRules::CombinationRule) n, newValue.asString(n, result));
 			}
 			else if (hasArrayIndex)
 			{
-				ptr->setCombinationRule( (Combine::CombinationRule) (arrayIndex-1), newValue.asString(result));
+				ptr->setCombinationRule( (CombinationRules::CombinationRule) (arrayIndex-1), newValue.asString(result));
 			}
-			else for (n=0; n<Combine::nCombinationRules; ++n) ptr->setCombinationRule((Combine::CombinationRule) n, newValue.asString(result));
+			else for (n=0; n<CombinationRules::nCombinationRules; ++n) ptr->setCombinationRule((CombinationRules::CombinationRule) n, newValue.asString(result));
 			// Regenerate equations to check
-			if (!Combine::regenerateEquations()) result = FALSE;
+			if (!aten_->combinationRules().regenerateEquations()) result = FALSE;
 			break;
 		case (PreferencesVariable::CommonElements):
 			ptr->setCommonElements( newValue.asString(result) );

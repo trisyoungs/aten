@@ -357,7 +357,7 @@ void Ring::clear()
 }
 
 // Add atoms_.to Reflist
-void Ring::addAtomsToReflist(Reflist<Atom,int> *rlist, Atom* i)
+void Ring::addAtomsToReflist(Reflist<Atom,int>* rlist, Atom* i)
 {
 	// Add all atoms_.in the ring 'r' to the list, excluding the atom 'i'
 	for (Refitem<Atom,int>* ra = atoms_.first(); ra != NULL; ra = ra->next) if (ra->item != i) rlist->add(ra->item);

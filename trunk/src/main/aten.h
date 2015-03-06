@@ -232,6 +232,8 @@ class Aten
 	private:
 	// List of loaded forcefields
 	List<Forcefield> forcefields_;
+	// Combination rules
+	CombinationRules combinationRules_;
 
 	public:
 	// Add a new forcefield
@@ -258,6 +260,8 @@ class Aten
 	void removeForcefield(Forcefield*);
 	// Remove FF references from the model list
 	void dereferenceForcefield(Forcefield*);
+	// Return combination rules
+	CombinationRules& combinationRules();
 
 
 	/*

@@ -64,7 +64,7 @@ Glyph* Model::glyphs() const
 }
 
 // Return first text glyph in list (if any)
-Refitem<Glyph,int> *Model::textGlyphs() const
+Refitem<Glyph,int>* Model::textGlyphs() const
 {
 	return textGlyphs_.first();
 }

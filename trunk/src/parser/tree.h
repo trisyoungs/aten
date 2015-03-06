@@ -137,7 +137,7 @@ class Tree : public ListItem<Tree>
 	// Return first argument defined (for function)
 	TreeNode* args() const;
 	// Return first in stack of scopenodes
-	Refitem<ScopeNode,int> *scopeNodes();
+	Refitem<ScopeNode,int>* scopeNodes();
 	
 
 	/*

@@ -330,9 +330,9 @@ class Pattern : public ListItem<Pattern>
 	// Return first forcefield torsion of the pattern
 	Refitem<ForcefieldBound,int>* forcefieldTorsions();
 	// Return first (unique by name) forcefield type of the pattern
-	Refitem<ForcefieldAtom,int> *uniqueForcefieldTypes();
+	Refitem<ForcefieldAtom,int>* uniqueForcefieldTypes();
 	// Return first (unique by pointer) forcefield type of the pattern
-	Refitem<ForcefieldAtom,int> *allForcefieldTypes();
+	Refitem<ForcefieldAtom,int>* allForcefieldTypes();
 	// Return selected forcefield bond of the pattern
 	Refitem<ForcefieldBound,int>* forcefieldBond(int i);
 	// Return selected forcefield angle of the pattern
@@ -340,9 +340,9 @@ class Pattern : public ListItem<Pattern>
 	// Return selected forcefield torsion of the pattern
 	Refitem<ForcefieldBound,int>* forcefieldTorsion(int i);
 	// Return selected (unique by name) forcefield type of the pattern
-	Refitem<ForcefieldAtom,int> *uniqueForcefieldType(int i);
+	Refitem<ForcefieldAtom,int>* uniqueForcefieldType(int i);
 	// Return selected (unique by pointer) forcefield type of the pattern
-	Refitem<ForcefieldAtom,int> *allForcefieldType(int i);
+	Refitem<ForcefieldAtom,int>* allForcefieldType(int i);
 	// Return whether the positions of all molecules/atoms in the pattern are fixed in minimisations
 	bool areAtomsFixed() const;
 	// Set whether the positions of all molecules/atoms in the pattern are fixed in minimisations

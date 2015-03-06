@@ -310,7 +310,7 @@ void Model::pack()
 }
 
 // Scale cell and contents
-bool Model::scaleCell(const Vec3<double> &scale, bool usecog, bool calcenergy)
+bool Model::scaleCell(const Vec3<double>& scale, bool useCog)
 {
 	Messenger::enter("Model::scaleCell");
 	Vec3<double> oldcog, newcog, newpos;
@@ -327,7 +327,7 @@ bool Model::scaleCell(const Vec3<double> &scale, bool usecog, bool calcenergy)
 		Messenger::exit("Model::scaleCell");
 		return FALSE;
 	}
-	if (usecog)
+	if (useCog)
 	{
  		if (!createPatterns())
 		{
@@ -336,24 +336,16 @@ bool Model::scaleCell(const Vec3<double> &scale, bool usecog, bool calcenergy)
 			return FALSE;
 		}
 	}
-	
-	// Create expression for energy calculation?
-	if (calcenergy) calcenergy = createExpression();
 
 	// Copy original cell axes, expand and save for later
 	newaxes = cell_.axes();
 	newaxes.columnMultiply(scale);
 	newcell.set(newaxes);
-	// We need a working configuration (for COG calculations)
-	foldAllAtoms();
-	if (calcenergy)
-	{
-		olde = totalEnergy(this, success);
-		if (!success) Messenger::print("Energy will not be calculated...\n");
-	}
+
 	// Cycle over patterns, get COG, convert to old fractional coordinates, then
 	// use new cell to get new local coordinates.
-	if (usecog)
+	foldAllAtoms();
+	if (useCog)
 	{
 		for (Pattern* p = patterns_.first(); p != NULL; p = p->next)
 		{
@@ -382,13 +374,6 @@ bool Model::scaleCell(const Vec3<double> &scale, bool usecog, bool calcenergy)
 			newpos = newcell.fracToReal(cell_.realToFrac(i->r()));
 			positionAtom(i,newpos);
 		}
-	}
-
-	// Calculate new energy before leaving...
-	if (calcenergy && success)
-	{
-		newe = totalEnergy(this, success);
-		Messenger::print("Energy change was %12.7e %s\n", newe-olde, Prefs::energyUnit(prefs.energyUnit()));
 	}
 
 	// Set new cell and update model

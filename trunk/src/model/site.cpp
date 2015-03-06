@@ -83,7 +83,7 @@ Matrix Model::siteAxes(Site* s, int mol)
 	Atom** modelatoms = atomArray();
 	static Vec3<double> mim, v1, v2, centre;
 	Matrix axes;
-	ListItem<int> *li;
+	ListItem<int>* li;
 	Pattern* sitep = s->pattern();
 	offset = sitep->startAtom();
 	offset += sitep->nAtoms() * mol;

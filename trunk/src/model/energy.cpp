@@ -29,8 +29,9 @@ ATEN_USING_NAMESPACE
 double Model::totalEnergy(Model* srcmodel, bool &success)
 {
 	Messenger::enter("Model::totalEnergy");
+
 	// Check the expression validity
-	if (!createExpression())
+	if (!isExpressionValid())
 	{
 		Messenger::print("Model::totalEnergy - No valid energy expression defined for model.\n");
 		success = FALSE;
@@ -132,8 +133,9 @@ double Model::totalEnergy(Model* srcmodel, bool &success)
 double Model::moleculeEnergy(Model* srcmodel, Pattern* molpattern, int molecule, bool &success)
 {
 	Messenger::enter("Model::moleculeEnergy");
+
 	// Check the expression validity
-	if (!createExpression())
+	if (!isExpressionValid())
 	{
 		Messenger::print("Model::moleculeEnergy - No valid energy expression defined for model.\n");
 		success = FALSE;
@@ -204,8 +206,9 @@ double Model::moleculeEnergy(Model* srcmodel, Pattern* molpattern, int molecule,
 double Model::angleEnergy(Model* config, bool &success)
 {
 	Messenger::enter("Model::angleEnergy");
+
 	// Check the expression validity
-	if (!createExpression())
+	if (!isExpressionValid())
 	{
 		Messenger::print("Model::angleEnergy - No valid energy expression defined for model.\n");
 		success = FALSE;
@@ -227,8 +230,9 @@ double Model::angleEnergy(Model* config, bool &success)
 double Model::bondEnergy(Model* config, bool &success)
 {
 	Messenger::enter("Model::bondEnergy");
+
 	// Check the expression validity
-	if (!createExpression())
+	if (!isExpressionValid())
 	{
 		Messenger::print("Model::bondEnergy - No valid energy expression defined for model.\n");
 		success = FALSE;
@@ -250,8 +254,9 @@ double Model::bondEnergy(Model* config, bool &success)
 double Model::electrostaticEnergy(Model* config, bool &success)
 {
 	Messenger::enter("Model::coulombEnergy");
+
 	// Check the expression validity
-	if (!createExpression())
+	if (!isExpressionValid())
 	{
 		Messenger::print("Model::coulombEnergy - No valid energy expression defined for model.\n");
 		success = FALSE;
@@ -336,8 +341,9 @@ double Model::intramolecularEnergy(Model* config, bool &success)
 double Model::torsionEnergy(Model* config, bool &success)
 {
 	Messenger::enter("Model::torsionEnergy");
+
 	// Check the expression validity
-	if (!createExpression())
+	if (!isExpressionValid())
 	{
 		Messenger::print("Model::torsionEnergy - No valid energy expression defined for model.\n");
 		success = FALSE;
@@ -359,8 +365,9 @@ double Model::torsionEnergy(Model* config, bool &success)
 double Model::vdwEnergy(Model* config, bool &success)
 {
 	Messenger::enter("Model::vdwEnergy");
+
 	// Check the expression validity
-	if (!createExpression())
+	if (!isExpressionValid())
 	{
 		Messenger::print("Model::vdwEnergy - No valid energy expression defined for model.\n");
 		success = FALSE;
@@ -401,14 +408,16 @@ bool Model::calculateForces(Model* srcmodel)
 {
 	// Calculate the forces for the atoms of 'srcmodel' from the expression defined in the *this model
 	Messenger::enter("Model::calculateForces");
+
 	// Check the expression validity
-	if (!createExpression())
+	if (!isExpressionValid())
 	{
 		Messenger::print("calculateForces : No valid energy expression defined for model.\n");
 		Messenger::exit("Model::calculateForces");
 		return FALSE;
 	}
 	srcmodel->zeroForces();
+
 	// Cycle through patterns, calculate the intrapattern forces for each
 	Pattern* p, *p2;
 	p = patterns_.first();

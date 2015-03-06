@@ -163,7 +163,7 @@ bool Pattern::vdwIntraPatternEnergy(Model* srcmodel, EnergyStore* estore, int lo
 	Vec3<double> vec_ij;
 	double U, rij, energy_inter, energy_intra, cutoff;
 	PatternAtom* pai, *paj;
-	PointerPair<ForcefieldAtom,double> *pp;
+	PointerPair<ForcefieldAtom,double>* pp;
 	cutoff = prefs.vdwCutoff();
 	Atom** modelatoms = srcmodel->atomArray();
 	UnitCell* cell = srcmodel->cell();
@@ -218,7 +218,7 @@ bool Pattern::vdwInterPatternEnergy(Model* srcmodel, Pattern* otherPattern, Ener
 	static Vec3<double> vec_ij;
 	static double rij, energy_inter, cutoff, U;
 	PatternAtom* pai, *paj;
-	PointerPair<ForcefieldAtom,double> *pp;
+	PointerPair<ForcefieldAtom,double>* pp;
 	cutoff = prefs.vdwCutoff();
 	Atom** modelatoms = srcmodel->atomArray();
 	UnitCell* cell = srcmodel->cell();
@@ -310,7 +310,7 @@ bool Pattern::vdwIntraPatternForces(Model* srcmodel)
 	Vec3<double> vec_ij, f_i, tempf;
 	double cutoff, rij;
 	PatternAtom* pai, *paj;
-	PointerPair<ForcefieldAtom,double> *pp;
+	PointerPair<ForcefieldAtom,double>* pp;
 	cutoff = prefs.vdwCutoff();
 	Atom** modelatoms = srcmodel->atomArray();
 	UnitCell* cell = srcmodel->cell();
@@ -366,7 +366,7 @@ bool Pattern::vdwInterPatternForces(Model* srcmodel, Pattern* otherPattern)
 	Vec3<double> vec_ij, f_i, tempf;
 	double rij, cutoff;
 	PatternAtom* pai, *paj;
-	PointerPair<ForcefieldAtom,double> *pp;
+	PointerPair<ForcefieldAtom,double>* pp;
 	cutoff = prefs.vdwCutoff();
 	Atom** modelatoms = srcmodel->atomArray();
 	UnitCell* cell = srcmodel->cell();
@@ -435,7 +435,7 @@ bool Pattern::vdwCorrectEnergy(UnitCell* cell, EnergyStore* estore)
 	static double energy, rho, cutoff, du_dr, sigma, epsilon, sigmar3, sigmar9, volume, vrs;
 	PatternAtom* pai, *paj;
 	double* paramsi, *paramsj;
-	PointerPair<ForcefieldAtom,double> *pp;
+	PointerPair<ForcefieldAtom,double>* pp;
 	cutoff = prefs.vdwCutoff();
 
 	// The way the patterns are stored does not give direct access to the number of different
@@ -458,7 +458,7 @@ bool Pattern::vdwCorrectEnergy(UnitCell* cell, EnergyStore* estore)
 				{
 					j++;
 					paramsj = paj->data()->parameters();
-// 					Combine::CombinationRule *crflags = VdwFunctions::VdwFunctions[p2->atoms_[j]->data()->vdwForm()].combinationRules;
+// 					CombinationRules::CombinationRule *crflags = VdwFunctions::VdwFunctions[p2->atoms_[j]->data()->vdwForm()].combinationRules;
 					switch (p2->atoms_[j]->data()->vdwForm())
 					{
 						case (VdwFunctions::None):
@@ -468,9 +468,7 @@ bool Pattern::vdwCorrectEnergy(UnitCell* cell, EnergyStore* estore)
 						case (VdwFunctions::Lj):
 						case (VdwFunctions::LjGeometric):
 							// U = 4/3 * eps * sigma**3 * ( 1/3 * (s/r)**9 - (s/r)**3
-// 							epsilon = Combine::combine( crflags[VdwFunctions::LjEpsilon], paramsi[VdwFunctions::LjEpsilon], paramsj[VdwFunctions::LjEpsilon] );
-// 							sigma = Combine::combine( crflags[VdwFunctions::LjSigma], paramsi[VdwFunctions::LjSigma], paramsj[VdwFunctions::LjSigma] ) * vrs;
-				// 			a = Combine::combine( crflags[VdwFunctions::LjN], paramsi[VdwFunctions::LjN], paramsj[VdwFunctions::LjN] );
+							
 							// Find relevant (pre-combined) parameters
 							pp = parent_->combinedParameters(p1->atoms_[i]->data(), p2->atoms_[j]->data());
 							if (pp == NULL) break;

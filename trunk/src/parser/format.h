@@ -79,8 +79,8 @@ class Format
 {
 	public:
 	// Constructors / Destructor
-	Format(Refitem<TreeNode,int> *firstarg);
-	Format(const char* format, Refitem<TreeNode,int> *firstarg);
+	Format(Refitem<TreeNode,int>* firstarg);
+	Format(const char* format, Refitem<TreeNode,int>* firstarg);
 	~Format();
 
 

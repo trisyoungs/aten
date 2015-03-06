@@ -26,7 +26,7 @@
 #include "base/sysfunc.h"
 
 // Static members
-PartitioningScheme PoresWidget::partitioningScheme_;
+// PartitioningScheme PoresWidget::partitioningScheme_;
 
 // Constructor
 PoresWidget::PoresWidget(AtenWindow& parent, Qt::WindowFlags flags) : QDockWidget(&parent, flags), parent_(parent)

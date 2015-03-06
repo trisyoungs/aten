@@ -56,3 +56,4 @@ Manual TODO:
 Remove level of detail and transparency options from Prefs.
 More examples (e.g. slab generation)
 Remove 'gui' keyword.
+Remove 'calcEnergy' optional args from scaleMolecules and scaleCell.

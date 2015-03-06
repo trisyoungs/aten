@@ -209,7 +209,7 @@ int Aten::nVisibleModels()
 }
 
 // Return reflist of visible models
-Refitem<Model,int> *Aten::visibleModels()
+Refitem<Model,int>* Aten::visibleModels()
 {
 	return visibleModels_.first();
 }

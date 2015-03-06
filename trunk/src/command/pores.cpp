@@ -44,7 +44,9 @@ bool Commands::function_CreateScheme(CommandNode* c, Bundle& obj, ReturnValue& r
 	if (c->hasArg(6)) copyToBuilder = c->argb(6);
 
 	// Create temporary partitioning scheme structure
-	PartitioningScheme& scheme = PoresWidget::partitioningScheme();
+	// ATEN2 TODO
+// 	PartitioningScheme& scheme = aten_.atenWindow()->ui.PoresWidget.partitioningScheme();
+	PartitioningScheme scheme;
 	scheme.initialiseAbsolute(c->argc(0), "Scheme generated from model");
 	Vec3<double> cellDelta(1.0/gridSize.x, 1.0/gridSize.y, 1.0/gridSize.z);
 	scheme.setGridSize(gridSize);

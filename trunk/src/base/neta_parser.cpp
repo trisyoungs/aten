@@ -218,10 +218,10 @@ NetaNode *NetaParser::link(NetaNode *node1, NetaNode *node2)
 }
 
 // Create element/type list item
-Refitem<ForcefieldAtom,int> *NetaParser::createElementType(int eltype)
+Refitem<ForcefieldAtom,int>* NetaParser::createElementType(int eltype)
 {
 	Messenger::enter("NetaParser::createElementType");
-	Refitem<ForcefieldAtom,int> *newitem = new Refitem<ForcefieldAtom,int>;
+	Refitem<ForcefieldAtom,int>* newitem = new Refitem<ForcefieldAtom,int>;
 	newitem->item = NULL;
 	newitem->data = eltype;
 	Messenger::exit("NetaParser::createElementType");
@@ -229,11 +229,11 @@ Refitem<ForcefieldAtom,int> *NetaParser::createElementType(int eltype)
 }
 
 // Join element/type list items
-Refitem<ForcefieldAtom,int> *NetaParser::joinElementTypes(Refitem<ForcefieldAtom,int> *type1, Refitem<ForcefieldAtom,int> *type2)
+Refitem<ForcefieldAtom,int>* NetaParser::joinElementTypes(Refitem<ForcefieldAtom,int>* type1, Refitem<ForcefieldAtom,int>* type2)
 {
 	Messenger::enter("NetaParser::joinElementTypes");
 	// Find tail of list begun by type1
-	Refitem<ForcefieldAtom,int> *tail = type1;
+	Refitem<ForcefieldAtom,int>* tail = type1;
 	while (tail->next != NULL) tail = tail->next;
 	// Append on type2
 	type2->prev = tail;

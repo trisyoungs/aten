@@ -126,7 +126,7 @@ class VectorArrayVariable : public Variable
 	// Array size
 	int arraySize_;
 	// Vector data
-	Vec3<double> *vectorArrayData_;
+	Vec3<double>* vectorArrayData_;
 	// Print node contents
 	void nodePrint(int offset, const char* prefix);
 

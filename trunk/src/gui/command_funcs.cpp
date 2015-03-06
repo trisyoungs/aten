@@ -84,7 +84,7 @@ void CommandWidget::updateVariableList()
 {
 	// Count number of variables
 	int count = 0;
-	for (Refitem<ScopeNode,int> *sn = interactiveProgram_.mainProgram()->scopeNodes(); sn != NULL; sn = sn->next) count += sn->item->variables.nVariables();
+	for (Refitem<ScopeNode,int>* sn = interactiveProgram_.mainProgram()->scopeNodes(); sn != NULL; sn = sn->next) count += sn->item->variables.nVariables();
 	// Reset table
 	ui.VariableTable->clear();
 	ui.VariableTable->setRowCount(count);
@@ -95,7 +95,7 @@ void CommandWidget::updateVariableList()
 	Variable* var;
 	ReturnValue rv;
 	Dnchar s;
-	for (Refitem<ScopeNode,int> *sn = interactiveProgram_.mainProgram()->scopeNodes(); sn != NULL; sn = sn->next)
+	for (Refitem<ScopeNode,int>* sn = interactiveProgram_.mainProgram()->scopeNodes(); sn != NULL; sn = sn->next)
 	{
 		count = 0;
 		for (node = sn->item->variables.variables(); node != NULL; node = node->next)

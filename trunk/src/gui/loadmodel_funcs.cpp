@@ -158,7 +158,7 @@ Tree* AtenLoadModel::selectedFormat()
 {
 	// Return the filter selected in the combo (or NULL if <Auto Detect> was selected)
 	int i = ui.FormatCombo->currentIndex();
-	Refitem<Tree,int> *filter = (i == 0 ? NULL : parent_.aten().filter(FilterData::ModelImport, i-1));
+	Refitem<Tree,int>* filter = (i == 0 ? NULL : parent_.aten().filter(FilterData::ModelImport, i-1));
 	return (filter != NULL ? filter->item : NULL);
 }
 

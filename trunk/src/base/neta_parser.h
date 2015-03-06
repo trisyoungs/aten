@@ -102,9 +102,9 @@ class NetaParser
 	// Link two nodes together (with direct pointers)
 	NetaNode *link(NetaNode *node1, NetaNode *node2);
 	// Create element/type list item
-	Refitem<ForcefieldAtom,int> *createElementType(int eltype);
+	Refitem<ForcefieldAtom,int>* createElementType(int eltype);
 	// Join element/type list items
-	Refitem<ForcefieldAtom,int> *joinElementTypes(Refitem<ForcefieldAtom,int> *type1, Refitem<ForcefieldAtom,int> *type2);
+	Refitem<ForcefieldAtom,int>* joinElementTypes(Refitem<ForcefieldAtom,int>* type1, Refitem<ForcefieldAtom,int>* type2);
 	// Create keyword node in current NETA structure
 	NetaNode *createKeywordNode(Neta::NetaKeyword nk);
 	// Create geometry node in current NETA structure

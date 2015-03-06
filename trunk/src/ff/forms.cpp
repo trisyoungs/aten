@@ -27,27 +27,6 @@
 
 ATEN_USING_NAMESPACE
 
-// Static Singleton
-Program Combine::combinationRules_;
-
-// Combination rules
-const char* CombinationRuleKeywords[Combine::nCombinationRules] = { "arithmetic", "geometric", "custom1", "custom2", "custom3" };
-const char* CombinationRuleNames[Combine::nCombinationRules] = { "Arithmetic Mean [(a+b)/2]", "Geometric Mean [sqrt(a*b)]", "Custom Rule 1", "Custom Rule 2", "Custom Rule 3" };
-Combine::CombinationRule Combine::combinationRule(const char* s, bool reportError)
-{
-	Combine::CombinationRule cr = (Combine::CombinationRule) enumSearch("combination rule",Combine::nCombinationRules,CombinationRuleKeywords,s);
-	if ((cr == Combine::nCombinationRules) && reportError) enumPrintValid(Combine::nCombinationRules,CombinationRuleKeywords);
-	return cr;
-}
-const char* Combine::combinationRule(CombinationRule cr)
-{
-	return CombinationRuleKeywords[cr];
-}
-const char* Combine::combinationRuleName(CombinationRule cr)
-{
-	return CombinationRuleNames[cr];
-}
-
 // Electrostatic model
 const char* ElecMethodKeywords[Electrostatics::nElectrostatics] = { "none", "coulomb", "ewald", "ewaldauto" };
 const char* Electrostatics::elecMethod(Electrostatics::ElecMethod i)
@@ -61,39 +40,6 @@ Electrostatics::ElecMethod Electrostatics::elecMethod(const char* s, bool report
 	return em;
 }
 
-// Regenerate combination rule function trees
-bool Combine::regenerateEquations()
-{
-	Messenger::enter("Combine::regenerateEquations");
-	Combine::CombinationRule cr;
-	List<Dnchar> eqns;
-	Dnchar* eqn;
-	for (int n=0; n<Combine::nCombinationRules; ++n)
-	{
-		cr = (Combine::CombinationRule) n;
-		eqn = eqns.add();
-		eqn->sprintf("double %s(double a, double b) { double c = 0.0; %s; return c; }", Combine::combinationRule(cr), prefs.combinationRule(cr));
-	}
-	bool success = combinationRules_.generateFromStringList(eqns.first(), "CombinationRules", "Combination Rule", TRUE);
-	Messenger::exit("Combine::regenerateEquations");
-	return success;
-}
-
-// Execute combination rule with parameters specified
-double Combine::combine(Combine::CombinationRule cr, double a, double b)
-{
-	Messenger::enter("Combine::combine");
-	ReturnValue rv;
-	if (!combinationRules_.executeFunction(Combine::combinationRule(cr), rv, "dd", a, b))
-	{
-		printf("Internal Error: Couldn't find function corresponding to combination rule.\n");
-		Messenger::exit("Combine::combine");
-		return 0.0;
-	}
-	Messenger::exit("Combine::combine");
-	return rv.asDouble();
-}
-
 // VDW potential forms
 FunctionData VdwFunctions::VdwFunctions[VdwFunctions::nVdwFunctions] = {
 	{ "None", "none", 0,
@@ -104,32 +50,32 @@ FunctionData VdwFunctions::VdwFunctions[VdwFunctions::nVdwFunctions] = {
 		{ "Epsilon", "Radius", "Power" },
 		{ "epsilon", "r", "n" },
 		{ 1, 0, 0, 0, 0, 0 }, { 0.0, 0.0, 1.0, 0.0, 0.0, 0.0 },
-		{ Combine::GeometricRule, Combine::ArithmeticRule, Combine::ArithmeticRule } },
+		{ CombinationRules::GeometricRule, CombinationRules::ArithmeticRule, CombinationRules::ArithmeticRule } },
 	{ "Lennard-Jones 12-6", "lj", 2,
 		{ "Epsilon", "Sigma" },
 		{ "epsilon", "sigma" },
 		{ 1, 0, 0, 0, 0, 0 }, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 },
-		{ Combine::GeometricRule, Combine::ArithmeticRule, Combine::ArithmeticRule } },
+		{ CombinationRules::GeometricRule, CombinationRules::ArithmeticRule, CombinationRules::ArithmeticRule } },
 	{ "Lennard-Jones 12-6 (geometric rules)", "ljgeom", 2,
 		{ "Epsilon", "Sigma" },
 		{ "epsilon", "sigma" },
 		{ 1, 0, 0, 0, 0, 0 }, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 },
-		{ Combine::GeometricRule, Combine::GeometricRule, Combine::ArithmeticRule } },
+		{ CombinationRules::GeometricRule, CombinationRules::GeometricRule, CombinationRules::ArithmeticRule } },
 	{ "Lennard-Jones AB", "ljab", 2,
 		{ "A", "B" },
 		{ "a", "b" },
 		{ 1, 1, 0, 0, 0, 0 }, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 },
-		{ Combine::GeometricRule, Combine::GeometricRule } },
+		{ CombinationRules::GeometricRule, CombinationRules::GeometricRule } },
 	{ "Buckingham", "buck", 3,
 		{ "A", "B", "C" },
 		{ "a", "b", "c" },
 		{ 1, 0, 1, 0, 0, 0 }, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 },
-		{ Combine::GeometricRule, Combine::GeometricRule, Combine::GeometricRule } },
+		{ CombinationRules::GeometricRule, CombinationRules::GeometricRule, CombinationRules::GeometricRule } },
 	{ "Morse", "morse", 3,
 		{ "D", "K", "Eq. Dist" },
 		{ "d", "k", "eq" },
 		{ 1, 0, 0, 0, 0, 0 }, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 },
-		{ Combine::GeometricRule, Combine::ArithmeticRule, Combine::GeometricRule } }
+		{ CombinationRules::GeometricRule, CombinationRules::ArithmeticRule, CombinationRules::GeometricRule } }
 };
 VdwFunctions::VdwFunction VdwFunctions::vdwFunction(const char* s, bool reportError)
 {

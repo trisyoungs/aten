@@ -322,8 +322,9 @@ bool Tree::execute(ReturnValue& rv)
 			case (FilterData::ExpressionExport):
 				// Turn on export type mapping
 				if (aten_->typeExportMap.nPairs() != 0) aten_->setTypeExportMapping(TRUE);
+
 				// Create expression for model
-				if (!aten_->currentModel()->createExpression())
+				if (!aten_->currentModel()->createExpression(Choice(), Choice(), Choice(), aten_->currentForcefield(), aten_->combinationRules()))
 				{
 					Messenger::exit("Tree::execute");
 					return FALSE;
@@ -1065,7 +1066,7 @@ TreeNode* Tree::args() const
 }
 
 // Return first in stack of scopenodes
-Refitem<ScopeNode,int> *Tree::scopeNodes()
+Refitem<ScopeNode,int>* Tree::scopeNodes()
 {
 	return scopeStack_.first();
 }

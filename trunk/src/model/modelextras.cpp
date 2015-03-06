@@ -148,7 +148,7 @@ void Model::generateVibration(int index, int nsteps)
 	// Grab necessary pointers
 	Vibration* vib = vibrations_[index];
 	double freq = vib->frequency();
-	Vec3<double> *displacements = vib->displacements();
+	Vec3<double>* displacements = vib->displacements();
 
 	// Check number of atoms against number of defined displacements
 	if (vib->nDisplacements() != atoms_.nItems())

@@ -101,7 +101,7 @@ void VibrationsWidget::refreshDisplacements()
 	if (row == -1) return;
 	Model* m = parent_.aten().currentModelOrFrame();
 	Vibration* vib = m->vibration(row);
-	Vec3<double> *displacements = vib->displacements();
+	Vec3<double>* displacements = vib->displacements();
 	QTableWidgetItem *item;
 	ui.DisplacementsTable->setRowCount(vib->nDisplacements());
 	int n;

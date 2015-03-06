@@ -76,7 +76,7 @@ void TransformWidget::on_RotateDefineAxisButton_clicked(bool on)
 	ui.RotateAxisZSpin->setValue(v.z);
 }
 
-void rotatePickAxisButton_callback(Reflist<Atom,int> *picked)
+void rotatePickAxisButton_callback(Reflist<Atom,int>* picked)
 {
 // 	ui.RotatePickAxisButton->setChecked(FALSE); ATEN2 TODO
 // 	// If there are not two atoms in the list then the mode must have been canceled
@@ -129,7 +129,7 @@ void TransformWidget::on_TransformApplyButton_clicked(bool on)
 	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
 }
 
-void transformPickAButton_callback(Reflist<Atom,int> *picked)
+void transformPickAButton_callback(Reflist<Atom,int>* picked)
 {
 // 	ui.TransformPickAButton->setChecked(FALSE); ATEN2 TODO
 // 	// If there are not two atoms in the list then the mode must have been canceled
@@ -142,7 +142,7 @@ void transformPickAButton_callback(Reflist<Atom,int> *picked)
 // 	ui.TransformMatrixAZSpin->setValue(v.z);
 }
 
-void transformPickBButton_callback(Reflist<Atom,int> *picked)
+void transformPickBButton_callback(Reflist<Atom,int>* picked)
 {
 // 	ui.TransformPickBButton->setChecked(FALSE); ATEN2 TODO
 // 	// If there are not two atoms in the list then the mode must have been canceled
@@ -155,7 +155,7 @@ void transformPickBButton_callback(Reflist<Atom,int> *picked)
 // 	ui.TransformMatrixBZSpin->setValue(v.z);
 }
 
-void transformPickCButton_callback(Reflist<Atom,int> *picked)
+void transformPickCButton_callback(Reflist<Atom,int>* picked)
 {
 // 	ui.TransformPickCButton->setChecked(FALSE); ATEN2 TODO
 // 	// If there are not two atoms in the list then the mode must have been canceled
@@ -340,7 +340,7 @@ void TransformWidget::on_ConvertRotateIntoButton_clicked(bool on)
 	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
 }
 
-void convertSourcePickAButton_callback(Reflist<Atom,int> *picked)
+void convertSourcePickAButton_callback(Reflist<Atom,int>* picked)
 {
 // 	ui.ConvertSourcePickAButton->setChecked(FALSE); ATEN2 TODO
 // 	// If there are not two atoms in the list then the mode must have been canceled
@@ -353,7 +353,7 @@ void convertSourcePickAButton_callback(Reflist<Atom,int> *picked)
 // 	ui.ConvertSourceMatrixAZSpin->setValue(v.z);
 }
 
-void convertSourcePickBButton_callback(Reflist<Atom,int> *picked)
+void convertSourcePickBButton_callback(Reflist<Atom,int>* picked)
 {
 // 	ui.ConvertSourcePickBButton->setChecked(FALSE); ATEN2 TODO
 // 	// If there are not two atoms in the list then the mode must have been canceled
@@ -366,7 +366,7 @@ void convertSourcePickBButton_callback(Reflist<Atom,int> *picked)
 // 	ui.ConvertSourceMatrixBZSpin->setValue(v.z);
 }
 
-void convertSourcePickCButton_callback(Reflist<Atom,int> *picked)
+void convertSourcePickCButton_callback(Reflist<Atom,int>* picked)
 {
 // 	ui.ConvertSourcePickCButton->setChecked(FALSE); ATEN2 TODO
 // 	// If there are not two atoms in the list then the mode must have been canceled
@@ -527,7 +527,7 @@ void TransformWidget::on_ConvertDefineOriginButton_clicked(bool on)
 	ui.ConvertOriginZSpin->setValue(v.z);
 }
 
-void convertTargetDefineAButton_callback(Reflist<Atom,int> *picked)
+void convertTargetDefineAButton_callback(Reflist<Atom,int>* picked)
 {
 // 	ui.ConvertTargetPickAButton->setChecked(FALSE); ATEN2 TODO
 // 	// If there are not two atoms in the list then the mode must have been canceled
@@ -540,7 +540,7 @@ void convertTargetDefineAButton_callback(Reflist<Atom,int> *picked)
 // 	ui.ConvertTargetMatrixAZSpin->setValue(v.z);
 }
 
-void convertTargetDefineBButton_callback(Reflist<Atom,int> *picked)
+void convertTargetDefineBButton_callback(Reflist<Atom,int>* picked)
 {
 // 	ui.ConvertTargetPickBButton->setChecked(FALSE); ATEN2 TODO
 // 	// If there are not two atoms in the list then the mode must have been canceled
@@ -553,7 +553,7 @@ void convertTargetDefineBButton_callback(Reflist<Atom,int> *picked)
 // 	ui.ConvertTargetMatrixBZSpin->setValue(v.z);
 }
 
-void convertTargetDefineCButton_callback(Reflist<Atom,int> *picked)
+void convertTargetDefineCButton_callback(Reflist<Atom,int>* picked)
 {
 // 	ui.ConvertTargetPickCButton->setChecked(FALSE);  ATEN2 TODO
 // 	// If there are not two atoms in the list then the mode must have been canceled

@@ -415,7 +415,7 @@ bool ForcefieldAtomVariable::performFunction(int i, ReturnValue& rv, TreeNode* n
 				break;
 			}
 			// Combine parameters
-			rv.set(Combine::combine(VdwFunctions::VdwFunctions[ptr->vdwForm()].combinationRules[param], ptr->parameter(param), at2->parameter(param)));
+			rv.set(aten_->combinationRules().combine(VdwFunctions::VdwFunctions[ptr->vdwForm()].combinationRules[param], ptr->parameter(param), at2->parameter(param)));
 			break;
 		case (ForcefieldAtomVariable::DataD):
 		case (ForcefieldAtomVariable::DataI):

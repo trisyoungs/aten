@@ -72,9 +72,6 @@ int main(int argc, char* argv[])
 	/* Create the main window */
 	AtenWindow mainWindow(MrAten);
 
-	/* Reconstruct combination rule functions */
-	Combine::regenerateEquations();
-
 	/* Read in includes (if unsuccessful, a messagebox will be raised in the GUI) */
 	if (prefs.loadIncludes()) MrAten.openIncludes();
 
@@ -90,6 +87,9 @@ int main(int argc, char* argv[])
 	
 	/* Load in program and user preferences */
 	if (!MrAten.loadPrefs()) return -1;
+
+	/* Reconstruct combination rule functions */
+	MrAten.combinationRules().regenerateEquations();
 	
 	/* Parse program arguments - return value is how many models were loaded, or -1 for some kind of failure */
 	if (MrAten.parseCli(argc,argv) == -1) return -1;

@@ -533,7 +533,7 @@ bool Atom::isPlanar(double tolerance)
 }
 
 // Add bound neighbours to Reflist
-void Atom::addBoundToReflist(Reflist<Atom,int> *rlist)
+void Atom::addBoundToReflist(Reflist<Atom,int>* rlist)
 {
 	// Add all atoms bound to the supplied atom to the atomReflist.
 	for (Refitem<Bond,int>* bref = bonds(); bref != NULL; bref = bref->next)

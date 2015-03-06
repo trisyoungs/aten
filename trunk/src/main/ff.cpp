@@ -107,6 +107,50 @@ Forcefield* Aten::findForcefield(const char* s) const
 	return ff;
 }
 
+// Return the first ff in the list
+Forcefield* Aten::forcefields() const
+{
+	return forcefields_.first();
+}
+
+// Return the nth ff in the list
+Forcefield* Aten::forcefield(int n)
+{
+	return forcefields_[n];
+}
+
+// Return the number of loaded forcefields
+int Aten::nForcefields() const
+{
+	return forcefields_.nItems();
+}
+
+// Set active forcefield
+void Aten::setCurrentForcefield(Forcefield* ff)
+{
+	current_.ff = ff;
+	if (current_.ff == NULL) Messenger::print("Default forcefield has been unset.\n");
+	else Messenger::print("Default forcefield is now '%s'.\n", current_.ff->name());
+}
+
+// Set active forcefield by ID
+void Aten::setCurrentForcefield(int id)
+{
+	setCurrentForcefield(forcefields_[id]);
+}
+
+// Return the active forcefield
+Forcefield* Aten::currentForcefield() const
+{
+	return current_.ff;
+}
+
+// Return ID of current forcefield
+int Aten::currentForcefieldId() const
+{
+	return forcefields_.indexOf(current_.ff);
+}
+
 // Dereference forcefield
 void Aten::dereferenceForcefield(Forcefield* xff)
 {
@@ -151,46 +195,8 @@ void Aten::dereferenceForcefield(Forcefield* xff)
 	Messenger::exit("Aten::dereferenceForcefield");
 }
 
-// Return the first ff in the list
-Forcefield* Aten::forcefields() const
+// Return combination rules
+CombinationRules& Aten::combinationRules()
 {
-	return forcefields_.first();
-}
-
-// Return the nth ff in the list
-Forcefield* Aten::forcefield(int n)
-{
-	return forcefields_[n];
-}
-
-// Return the number of loaded forcefields
-int Aten::nForcefields() const
-{
-	return forcefields_.nItems();
-}
-
-// Set active forcefield
-void Aten::setCurrentForcefield(Forcefield* ff)
-{
-	current_.ff = ff;
-	if (current_.ff == NULL) Messenger::print("Default forcefield has been unset.\n");
-	else Messenger::print("Default forcefield is now '%s'.\n", current_.ff->name());
-}
-
-// Set active forcefield by ID
-void Aten::setCurrentForcefield(int id)
-{
-	setCurrentForcefield(forcefields_[id]);
-}
-
-// Return the active forcefield
-Forcefield* Aten::currentForcefield() const
-{
-	return current_.ff;
-}
-
-// Return ID of current forcefield
-int Aten::currentForcefieldId() const
-{
-	return forcefields_.indexOf(current_.ff);
+	return combinationRules_;
 }

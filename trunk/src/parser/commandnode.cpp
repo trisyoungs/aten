@@ -142,7 +142,7 @@ Format* CommandNode::createFormat(int fmtargid, int firstargid)
 	// firstargid = id of first data argument
 	// If we do not currently have a format associated to the node, create it regardless
 	bool result = FALSE;
-	Refitem<TreeNode,int> *firstarg = firstargid >= args_.nItems() ? NULL : args_[firstargid];
+	Refitem<TreeNode,int>* firstarg = firstargid >= args_.nItems() ? NULL : args_[firstargid];
 	if (format_ == NULL)
 	{
 		result = TRUE;

@@ -117,7 +117,7 @@ void Viewer::renderScene(const GLExtensions* extensions)
 	Messenger::enter("Viewer::renderScene");
 	QColor color;
 	QRect currentBox;
-	Refitem<Model,int> *first, localri;
+	Refitem<Model,int>* first, localri;
 	int px, py, nperrow = prefs.nModelsPerRow(), nRows, col, row, nModels;
 	bool modelIsCurrentModel;
 	Model* m;
