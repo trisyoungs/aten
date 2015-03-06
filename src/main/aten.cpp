@@ -34,13 +34,16 @@
 #include "parser/commandnode.h"
 #include "parser/variable.h"
 #include "parser/tree.h"
+#include "parser/parser.h"
 
 ATEN_USING_NAMESPACE
 
 // Constructor
 Aten::Aten() : commands_(*this)
 {
+	// Set Aten pointers in dependent classes
 	CommandNode::setAten(this);
+	CommandParser::setAten(this);
 	Variable::setAten(this);
 	Tree::setAten(this);
 

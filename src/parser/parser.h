@@ -184,7 +184,7 @@ class CommandParser
 	// Add a global declaration list
 	TreeNode* addGlobalDeclarations(TreeNode* declist);
 	// Wrap named variable (and array index)
-	TreeNode* wrapVariable(Variable *var, TreeNode* arrayIndex = NULL);
+	TreeNode* wrapVariable(Variable* var, TreeNode* arrayIndex = NULL);
 	// Add variable to topmost ScopeNode
 	TreeNode* addVariable(VTypes::DataType type, Dnchar* name, TreeNode* initialValue = NULL, bool global = FALSE);
 	// Add array variable to topmost ScopeNode

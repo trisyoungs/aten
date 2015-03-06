@@ -78,7 +78,7 @@ void ScopeNode::nodePrint(int offset, const char* prefix)
 	int n = 1;
 	for (TreeNode* tn = variables.variables(); tn != NULL; tn = tn->next)
 	{
-		Variable *v = (Variable*) tn;
+		Variable* v = (Variable*) tn;
 		printf("%s --> %3i: %s (%s)\n", tab.get(), n++, v->name(), VTypes::dataType(v->returnType()));
 		if (v->initialValue() != NULL) v->initialValue()->nodePrint(offset+1, "init: ");
 	}

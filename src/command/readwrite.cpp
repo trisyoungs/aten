@@ -233,13 +233,13 @@ bool Commands::function_ReadDoubleArray(CommandNode* c, Bundle& obj, ReturnValue
 		Messenger::print("Error: First argument to 'readDoubleArray' is not a variable.\n");
 		return FALSE;
 	}
-	Variable *v = ((VariableNode*) c->argNode(0))->variable();
+	Variable* v = ((VariableNode*) c->argNode(0))->variable();
 	if ((v->nodeType() != TreeNode::ArrayVarNode) || (v->returnType() != VTypes::DoubleData))
 	{
 		Messenger::print("Error: Variable argument to 'readDoubleArray' is not an array of doubles.\n");
 		return FALSE;
 	}
-	DoubleArrayVariable *av = (DoubleArrayVariable*) ((VariableNode*) c->argNode(0))->variable();
+	DoubleArrayVariable* av = (DoubleArrayVariable*) ((VariableNode*) c->argNode(0))->variable();
 	if (count > av->arraySize())
 	{
 		Messenger::print("Error: Requested number of data for 'readDoubleArray' (%i) exceeds size of supplied array (%i).\n", count, av->arraySize());
@@ -280,13 +280,13 @@ bool Commands::function_ReadIntegerArray(CommandNode* c, Bundle& obj, ReturnValu
 		Messenger::print("Error: First argument to 'readIntegerArray' is not a variable.\n");
 		return FALSE;
 	}
-	Variable *v = ((VariableNode*) c->argNode(0))->variable();
+	Variable* v = ((VariableNode*) c->argNode(0))->variable();
 	if ((v->nodeType() != TreeNode::ArrayVarNode) || (v->returnType() != VTypes::IntegerData))
 	{
 		Messenger::print("Error: Variable argument to 'readIntegerArray' is not an array of integers.\n");
 		return FALSE;
 	}
-	IntegerArrayVariable *av = (IntegerArrayVariable*) ((VariableNode*) c->argNode(0))->variable();
+	IntegerArrayVariable* av = (IntegerArrayVariable*) ((VariableNode*) c->argNode(0))->variable();
 	if (count > av->arraySize())
 	{
 		Messenger::print("Error: Requested number of data for 'readIntegerArray' (%i) exceeds size of supplied array (%i).\n", count, av->arraySize());

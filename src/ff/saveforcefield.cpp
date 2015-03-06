@@ -146,7 +146,7 @@ bool Forcefield::save()
 		}
 		parser.writeLine("\"\n");
 
-		Variable *v;
+		Variable* v;
 		ReturnValue rv;
 		for (ForcefieldAtom* ffa = types_.second(); ffa != NULL; ffa = ffa->next)
 		{

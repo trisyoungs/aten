@@ -562,7 +562,7 @@ bool TreeNode::checkArguments(const char* argList, const char* funcname)
 				Messenger::print("Argument %i to function '%s' must be an array.\n", count+1, funcname);
 				result = FALSE;
 			}
-			Variable *v = ((VariableNode*) argNode(count))->variable();
+			Variable* v = ((VariableNode*) argNode(count))->variable();
 			if (v->nodeType() != TreeNode::ArrayVarNode)
 			{
 				Messenger::print("Argument %i to function '%s' must be an array.\n", count+1, funcname);

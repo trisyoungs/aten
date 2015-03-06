@@ -36,9 +36,9 @@ AtenSelectVariable::AtenSelectVariable(AtenWindow& parent) : QDialog(&parent), p
 }
 
 // Get variable of given type, based on Table row number
-Variable *AtenSelectVariable::getVariable(int row)
+Variable* AtenSelectVariable::getVariable(int row)
 {
-	Variable *v = NULL;
+	Variable* v = NULL;
 	if (row == -1) v = NULL;
 	else
 	{
@@ -74,7 +74,7 @@ void AtenSelectVariable::on_VariableTable_itemSelectionChanged()
 }
 
 // Select a variable of the specified type from the zmatrix provided
-Variable *AtenSelectVariable::selectVariable(ZMatrix *zmat, int vartype, Variable *currentVar, bool currentNegate)
+Variable* AtenSelectVariable::selectVariable(ZMatrix *zmat, int vartype, Variable* currentVar, bool currentNegate)
 {
 	// Check source
 	if (zmat == NULL) return NULL;

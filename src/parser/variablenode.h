@@ -34,7 +34,7 @@ class VariableNode : public TreeNode
 {
 	public:
 	// Constructor / Destructor
-	VariableNode(Variable *v = NULL);
+	VariableNode(Variable* v = NULL);
 	~VariableNode();
 
 	/*
@@ -48,7 +48,7 @@ class VariableNode : public TreeNode
 	
 	public:
 	// Set variable target
-	void setVariable(Variable *v);
+	void setVariable(Variable* v);
 	// Get variable target
 	Variable* variable();
 	// Set array index

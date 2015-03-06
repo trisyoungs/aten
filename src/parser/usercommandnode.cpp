@@ -45,7 +45,7 @@ bool UserCommandNode::checkArguments()
 	Messenger::print(Messenger::Parse, "Checking the %i argument(s) given to user function '%s'...\n", args_.nItems(), function_->name());
 	bool required;
 	int count = 0;
-	Variable *v;
+	Variable* v;
 	for (TreeNode* arg = function_->args(); arg != NULL; arg = arg->next)
 	{
 		v = ((VariableNode*) arg)->variable();
@@ -106,7 +106,7 @@ bool UserCommandNode::execute(ReturnValue& rv)
 	// Poke arguments into the functions argument variables
 	Refitem<TreeNode,int>* value = args_.first();
 	ReturnValue varval;
-	Variable *v;
+	Variable* v;
 	for (TreeNode* arg = function_->args(); arg != NULL; arg = arg->next)
 	{
 		// If 'value' is not NULL, execute it and get the value to pass to the argument
