@@ -218,6 +218,7 @@ bool CommandParser::generate()
 {
 	Messenger::enter("CommandParser::generate");
 	expectPathStep_ = FALSE;
+
 	// Perform the parsing
 	int result = CommandParser_parse();
 	if (result != 0)
@@ -238,7 +239,7 @@ bool CommandParser::generateFromString(Program* prog, const char* s, const char*
 	// Clear any data in the existing Program (if requested)
 	if (prog == NULL)
 	{
-		printf("Internal Error: No Forest passed to CommandParser::generateFromString.\n");
+		printf("Internal Error: No Program passed to CommandParser::generateFromString.\n");
 		Messenger::exit("CommandParser::generateFromString");
 		return FALSE;
 	}
@@ -273,7 +274,7 @@ bool CommandParser::generateFromStringList(Program* prog, Dnchar* stringListHead
 	// Clear any data in the existing Program
 	if (prog == NULL)
 	{
-		printf("Internal Error: No Forest passed to CommandParser::generateFromStringList.\n");
+		printf("Internal Error: No Program passed to CommandParser::generateFromStringList.\n");
 		Messenger::exit("CommandParser::generateFromStringList");
 		return FALSE;
 	}
@@ -306,10 +307,10 @@ bool CommandParser::generateFromStringList(Program* prog, Dnchar* stringListHead
 bool CommandParser::generateFromFile(Program* prog, const char* filename, bool dontPushTree, bool clearExisting)
 {
 	Messenger::enter("CommandParser::generateFromFile");
-	// Clear any data in the existing Program (if reqeusted)
+	// Clear any data in the existing Program (if requested)
 	if (prog == NULL)
 	{
-		printf("Internal Error: No Forest passed to CommandParser::generateFromFile.\n");
+		printf("Internal Error: No Program passed to CommandParser::generateFromFile.\n");
 		Messenger::exit("CommandParser::generateFromFile");
 		return FALSE;
 	}
@@ -510,7 +511,7 @@ TreeNode* CommandParser::addDeclarations(TreeNode* declist)
 }
 
 // Wrap named variable (and array index)
-TreeNode* CommandParser::wrapVariable(Variable *var, TreeNode* arrayIndex)
+TreeNode* CommandParser::wrapVariable(Variable* var, TreeNode* arrayIndex)
 {
 	return tree()->wrapVariable(var, arrayIndex);
 }

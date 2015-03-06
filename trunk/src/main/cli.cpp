@@ -872,7 +872,7 @@ bool Aten::addPassedValue(VTypes::DataType type, const char* name, const char* v
 {
 	// Search for existing passed value of this name...
 	if (passedValues_.find(name)) return FALSE;
-	Variable *var = NULL;
+	Variable* var = NULL;
 	if (type == VTypes::IntegerData) var = new IntegerVariable(atoi(value), TRUE);
 	else if (type == VTypes::DoubleData) var = new DoubleVariable(atof(value), TRUE);
 	else if (type == VTypes::StringData) var = new StringVariable(value, TRUE);
@@ -883,7 +883,7 @@ bool Aten::addPassedValue(VTypes::DataType type, const char* name, const char* v
 }
 
 // Find passed value
-Variable *Aten::findPassedValue(const char* name) const
+Variable* Aten::findPassedValue(const char* name) const
 {
 	return passedValues_.find(name);
 }

@@ -197,9 +197,9 @@ class Tree : public ListItem<Tree>
 	// Add array 'constant'
 	TreeNode* addArrayConstant(TreeNode* values);
 	// Search for variable in current local scope
-	Variable *findLocalVariable(const char* name, int &scopelevel);
+	Variable* findLocalVariable(const char* name, int &scopelevel);
 	// Wrap named variable (and array index)
-	TreeNode* wrapVariable(Variable *var, TreeNode* arrayIndex = NULL);
+	TreeNode* wrapVariable(Variable* var, TreeNode* arrayIndex = NULL);
 	// Return local scope's variable list
 	const VariableList &localVariables() const;
 	// Return global scope's variable list

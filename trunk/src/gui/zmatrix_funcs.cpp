@@ -102,11 +102,11 @@ void AtenZMatrix::refresh(bool forceupdate)
 	ui.VariablesTable->setColumnCount(2);
 	ui.VariablesTable->setHorizontalHeaderLabels(QStringList() << "Var" << "Value");
 	ReturnValue rv;
-	Variable *var;
+	Variable* var;
 	count = 0;
 	for (int n=0; n<zMatrix_->nDistances(); ++n)
 	{
-		Variable *var = zMatrix_->distance(n);
+		Variable* var = zMatrix_->distance(n);
 		item = new QTableWidgetItem(var->name());
 		ui.VariablesTable->setItem(count, 0, item);
 		var->execute(rv);
@@ -116,7 +116,7 @@ void AtenZMatrix::refresh(bool forceupdate)
 	}
 	for (int n=0; n<zMatrix_->nAngles(); ++n)
 	{
-		Variable *var = zMatrix_->angle(n);
+		Variable* var = zMatrix_->angle(n);
 		item = new QTableWidgetItem( var->name());
 		ui.VariablesTable->setItem(count, 0, item);
 		var->execute(rv);
@@ -126,7 +126,7 @@ void AtenZMatrix::refresh(bool forceupdate)
 	}
 	for (int n=0; n<zMatrix_->nTorsions(); ++n)
 	{
-		Variable *var = zMatrix_->torsion(n);
+		Variable* var = zMatrix_->torsion(n);
 		item = new QTableWidgetItem( var->name());
 		ui.VariablesTable->setItem(count, 0, item);
 		var->execute(rv);
@@ -142,7 +142,7 @@ void AtenZMatrix::refresh(bool forceupdate)
 void AtenZMatrix::on_ZMatrixTable_cellDoubleClicked(int row, int column)
 {
 	if (refreshing_) return;
-	Variable *newvar, *oldvar;
+	Variable* newvar, *oldvar;
 	ZMatrixElement* el;
 	bool changed = FALSE;
 
@@ -221,7 +221,7 @@ void AtenZMatrix::on_VariablesTable_itemChanged(QTableWidgetItem *w)
 	if (refreshing_) return;
 	int row = ui.VariablesTable->row(w);
 	int column = ui.VariablesTable->column(w);
-	Variable *var;
+	Variable* var;
 
 	// Grab existing variable
 	if (row < zMatrix_->nDistances()) var = zMatrix_->distance(row);

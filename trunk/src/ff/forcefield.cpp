@@ -798,7 +798,7 @@ void Forcefield::convertParameters()
 	ForcefieldAtom* ffa;
 	int n;
 	Dnchar* param;
-	Variable *v;
+	Variable* v;
 	ReturnValue newvalue, oldvalue;
 	// VDW and extra defined data - skip first definition which is '_NDEF_'
 	for (ffa = types_.first()->next; ffa != NULL; ffa = ffa->next)

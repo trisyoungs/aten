@@ -214,7 +214,7 @@ bool Tree::setAccessibleVariable(const char* name, const char* value)
 	}
 	else
 	{
-		Variable *var = globalVariables().find(name);
+		Variable* var = globalVariables().find(name);
 		if (var != NULL)
 		{
 			Messenger::print(Messenger::Verbose, "Found global variable '%s' in filter '%s' - setting value to '%s'\n", name, value);
@@ -719,19 +719,19 @@ TreeNode* Tree::addConstant(VTypes::DataType type, Dnchar* token)
 {
 	if (type == VTypes::IntegerData)
 	{
-		IntegerVariable *var = new IntegerVariable(atoi(token->get()), TRUE);
+		IntegerVariable* var = new IntegerVariable(atoi(token->get()), TRUE);
 		nodes_.own(var);
 		return var;
 	}
 	else if (type == VTypes::DoubleData)
 	{
-		DoubleVariable *var = new DoubleVariable(atof(token->get()), TRUE);
+		DoubleVariable* var = new DoubleVariable(atof(token->get()), TRUE);
 		nodes_.own(var);
 		return var;
 	}
 	else if (type == VTypes::StringData)
 	{
-		StringVariable *var = new StringVariable(token->get(), TRUE);
+		StringVariable* var = new StringVariable(token->get(), TRUE);
 		nodes_.own(var);
 		return var;
 	}
@@ -742,7 +742,7 @@ TreeNode* Tree::addConstant(VTypes::DataType type, Dnchar* token)
 // Add integer constant
 TreeNode* Tree::addConstant(int i)
 {
-	IntegerVariable *var = new IntegerVariable(i, TRUE);
+	IntegerVariable* var = new IntegerVariable(i, TRUE);
 	nodes_.own(var);
 	return var;
 }
@@ -750,7 +750,7 @@ TreeNode* Tree::addConstant(int i)
 // Add double constant
 TreeNode* Tree::addConstant(double d)
 {
-	DoubleVariable *var = new DoubleVariable(d, TRUE);
+	DoubleVariable* var = new DoubleVariable(d, TRUE);
 	nodes_.own(var);
 	return var;
 }
@@ -758,7 +758,7 @@ TreeNode* Tree::addConstant(double d)
 // Add string constant
 TreeNode* Tree::addConstant(const char* s)
 {
-	StringVariable *var = new StringVariable(s, TRUE);
+	StringVariable* var = new StringVariable(s, TRUE);
 	nodes_.own(var);
 	return var;
 }
@@ -766,7 +766,7 @@ TreeNode* Tree::addConstant(const char* s)
 // Add Element constant
 TreeNode* Tree::addElementConstant(int el)
 {
-	ElementVariable *var;
+	ElementVariable* var;
 	if ((el < 1) || (el > Elements().nElements())) var = new ElementVariable(NULL,TRUE);
 	else var = new ElementVariable(&Elements().el[el], TRUE);
 	nodes_.own(var);
@@ -802,7 +802,7 @@ TreeNode* Tree::addVariable(VTypes::DataType type, Dnchar* name, TreeNode* initi
 		}
 	}
 	// Create the supplied variable in the list of the topmost scope
-	Variable *var = scope->variables.create(type, name->get(), initialValue);
+	Variable* var = scope->variables.create(type, name->get(), initialValue);
 	if (!var)
 	{
 // 		printf("Failed to create variable '%s' in local scope.\n", name->get());
@@ -831,7 +831,7 @@ TreeNode* Tree::addArrayVariable(VTypes::DataType type, Dnchar* name, TreeNode* 
 		scope = ri->item;
 	}
 	// Create the supplied variable in the list of the topmost scope
-	Variable *var = scope->variables.createArray(type, name->get(), sizeexpr, initialvalue);
+	Variable* var = scope->variables.createArray(type, name->get(), sizeexpr, initialvalue);
 	if (!var)
 	{
 		printf("Internal Error: Failed to create array variable '%s' in local scope.\n", name->get());
@@ -888,7 +888,7 @@ TreeNode* Tree::addArrayConstant(TreeNode* values)
 	else if (nstrings > 0) dt = VTypes::StringData;
 	else if (ndoubles > 0) dt = VTypes::DoubleData;
 	else dt = VTypes::IntegerData;
-	Variable *var = ri->item->variables.createArrayConstant(dt, nvalues);
+	Variable* var = ri->item->variables.createArrayConstant(dt, nvalues);
 	var->setParent(this);
 	var->addJoinedArguments(values);
 	nodes_.own(var);
@@ -896,9 +896,9 @@ TreeNode* Tree::addArrayConstant(TreeNode* values)
 }
 
 // Search for variable in current scope
-Variable *Tree::findLocalVariable(const char* name, int &scopelevel)
+Variable* Tree::findLocalVariable(const char* name, int &scopelevel)
 {
-	Variable *result = NULL;
+	Variable* result = NULL;
 	scopelevel = 0;
 	Messenger::print(Messenger::Parse, "Searching scope for variable '%s'...\n", name);
 	// Search the current ScopeNode list for the variable name requested
@@ -937,7 +937,7 @@ Variable *Tree::findLocalVariable(const char* name, int &scopelevel)
 }
 
 // Wrap named variable (and array index)
-TreeNode* Tree::wrapVariable(Variable *var, TreeNode* arrayIndex)
+TreeNode* Tree::wrapVariable(Variable* var, TreeNode* arrayIndex)
 {
 	// If an array index was given, check that the target variable is actually an array....
 	if (arrayIndex && (var->nodeType() != TreeNode::ArrayVarNode))
@@ -1108,7 +1108,7 @@ bool Tree::addLocalFunctionArguments(TreeNode* argList)
 	// Wrap the argument variables supplied
 	for (node = first; node != NULL; node = node->nextArgument)
 	{
-		Variable *var = (Variable*) node;
+		Variable* var = (Variable*) node;
 		vnode = new VariableNode(var);
 		arguments_.own(vnode);
 		vnode->setParent(this);

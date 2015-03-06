@@ -250,7 +250,7 @@ bool PartitioningScheme::initialiseFromProgram()
 
 	ReturnValue rv;
 	bool success;
-	Variable *v;
+	Variable* v;
 	int scopelevel, nparts;
 	
 	// Retrieve name
@@ -395,7 +395,7 @@ bool PartitioningScheme::setVariable(const char* name, const char* value)
 	}
 	// Search for global variable by that name...
 	bool result;
-	Variable *var = schemeDefinition_.mainProgram()->globalVariables().find(name);
+	Variable* var = schemeDefinition_.mainProgram()->globalVariables().find(name);
 	if (var != NULL)
 	{
 		Messenger::print(Messenger::Verbose, "Found global variable '%s' in partitioning scheme '%s' - setting value to '%s'\n", name, name_.get(), value);

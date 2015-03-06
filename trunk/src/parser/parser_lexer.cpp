@@ -276,7 +276,7 @@ int CommandParser::lex()
 			}
 
 			// Is it an existing variable in scope?
-			Variable *v;
+			Variable* v;
 			if (tree_ != NULL)
 			{
 				// Search the variable lists currently in scope...
@@ -353,12 +353,12 @@ int CommandParser::lex()
 				}
 			}
 
-			// Is it a user-defined function keyword in the global (Forest-wide) scope, or Aten's global scope?
+			// Is it a user-defined function keyword in the global (Program-wide) scope, or Aten's global scope?
 			func = program_->findFunction(token);
 			if (func == NULL) func = aten_->findIncludeFunction(token);
 			if (func != NULL)
 			{
-				Messenger::print(Messenger::Parse, "LEXER (%p): ... which is a used-defined Forest-global function (->USERFUNCCALL).\n", tree_);
+				Messenger::print(Messenger::Parse, "LEXER (%p): ... which is a used-defined Program-global function (->USERFUNCCALL).\n", tree_);
 				CommandParser_lval.tree = func;
 				return USERFUNCCALL;
 			}

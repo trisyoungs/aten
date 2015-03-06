@@ -49,7 +49,7 @@ class ZMatrixElement : public ListItem<ZMatrixElement>
 	// Atom pointers (first = target, second-fourth = distance, angle, torsion specifiers)
 	Atom* atoms_[4];
 	// Variables holding defined distance, angle, and torsion values
-	Variable *values_[3];
+	Variable* values_[3];
 	// Flags stating whether the negative of the variable value should be used instead
 	bool negated_[3];
 
@@ -65,9 +65,9 @@ class ZMatrixElement : public ListItem<ZMatrixElement>
 	// Retrieve n'th negate flag
 	bool negated(int id);
 	// Set distance (geometry variable 0)
-	void setDistanceVariable(Variable *v);
+	void setDistanceVariable(Variable* v);
 	// Retrieve distance variable (geometry variable 0)
-	Variable *distanceVariable();
+	Variable* distanceVariable();
 	// Set distance variable name (geometry variable 0)
 	void setDistanceName(const char* name);
 	// Retrieve distance variable name (geometry variable 0)
@@ -77,9 +77,9 @@ class ZMatrixElement : public ListItem<ZMatrixElement>
 	// Retrieve distance value (geometry variable 0)
 	double distance();
 	// Set angle (geometry variable 1)
-	void setAngleVariable(Variable *v);
+	void setAngleVariable(Variable* v);
 	// Retrieve angle variable (geometry variable 1)
-	Variable *angleVariable();
+	Variable* angleVariable();
 	// Set angle variable name (geometry variable 1)
 	void setAngleName(const char* name);
 	// Retrieve angle variable name (geometry variable 1)
@@ -89,9 +89,9 @@ class ZMatrixElement : public ListItem<ZMatrixElement>
 	// Retrieve angle value (geometry variable 1)
 	double angle();
 	// Set torsion (geometry variable 2)
-	void setTorsionVariable(Variable *v);
+	void setTorsionVariable(Variable* v);
 	// Retrieve torsion variable (geometry variable 2)
-	Variable *torsionVariable();
+	Variable* torsionVariable();
 	// Set torsion variable name (geometry variable 2)
 	void setTorsionName(const char* name);
 	// Retrieve torsion variable name (geometry variable 2)
@@ -141,19 +141,19 @@ class ZMatrix
 	// Return start of angles list
 	TreeNode* angles();
 	// Return specified angle variable
-	Variable *angle(int index);
+	Variable* angle(int index);
 	// Return number of defined distance variables
 	int nDistances();
 	// Return start of distances list
 	TreeNode* distances();
 	// Return specified distance variable
-	Variable *distance(int index);
+	Variable* distance(int index);
 	// Return number of defined torsion variables
 	int nTorsions();
 	// Return start of torsions list
 	TreeNode* torsions();
 	// Return specified torsion variable
-	Variable *torsion(int index);
+	Variable* torsion(int index);
 
 
 	/*
@@ -171,7 +171,7 @@ class ZMatrix
 	// Create for specified model
 	void create(Model* source, bool usebonds);
 	// Set variable value and recalculate atom positions in model
-	void setVariable(Variable *v, double value);
+	void setVariable(Variable* v, double value);
 	// Print zmatrix
 	void print();
 };

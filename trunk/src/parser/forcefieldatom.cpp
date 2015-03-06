@@ -384,7 +384,7 @@ bool ForcefieldAtomVariable::performFunction(int i, ReturnValue& rv, TreeNode* n
 	int param;
 	ForcefieldAtom* at2;
 	ForcefieldAtom* ptr = (ForcefieldAtom*) rv.asPointer(VTypes::ForcefieldAtomData, result);
-	Variable *v;
+	Variable* v;
 	int id;
 	ReturnValue resultrv;
 	if (result) switch (i)

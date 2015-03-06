@@ -28,7 +28,7 @@
 ATEN_USING_NAMESPACE
 
 // Constructor
-VariableNode::VariableNode(Variable *var) : TreeNode()
+VariableNode::VariableNode(Variable* var) : TreeNode()
 {
 	// Private variables
 	variable_ = var;
@@ -44,13 +44,13 @@ VariableNode::~VariableNode()
 }
 
 // Set function
-void VariableNode::setVariable(Variable *variable)
+void VariableNode::setVariable(Variable* variable)
 {
 	variable_ = variable;
 }
 
 // Get function
-Variable *VariableNode::variable()
+Variable* VariableNode::variable()
 {
 	return variable_;
 }

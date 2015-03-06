@@ -91,13 +91,13 @@ bool ZMatrixElement::negated(int id)
 	return FALSE;
 }
 // Set distance (geometry variable 0)
-void ZMatrixElement::setDistanceVariable(Variable *v)
+void ZMatrixElement::setDistanceVariable(Variable* v)
 {
 	values_[0] = v;
 }
 
 // Retrieve distance variable (geometry variable 0)
-Variable *ZMatrixElement::distanceVariable()
+Variable* ZMatrixElement::distanceVariable()
 {
 	return values_[0];
 }
@@ -145,13 +145,13 @@ double ZMatrixElement::distance()
 }
 
 // Set angle (geometry variable 1)
-void ZMatrixElement::setAngleVariable(Variable *v)
+void ZMatrixElement::setAngleVariable(Variable* v)
 {
 	values_[1] = v;
 }
 
 // Retrieve angle variable (geometry variable 1)
-Variable *ZMatrixElement::angleVariable()
+Variable* ZMatrixElement::angleVariable()
 {
 	return values_[1];
 }
@@ -199,13 +199,13 @@ double ZMatrixElement::angle()
 }
 
 // Set torsion (geometry variable 2)
-void ZMatrixElement::setTorsionVariable(Variable *v)
+void ZMatrixElement::setTorsionVariable(Variable* v)
 {
 	values_[2] = v;
 }
 
 // Retrieve torsion variable (geometry variable 2)
-Variable *ZMatrixElement::torsionVariable()
+Variable* ZMatrixElement::torsionVariable()
 {
 	return values_[2];
 }
@@ -292,7 +292,7 @@ ZMatrixElement* ZMatrix::addElement(Reflist<Atom,int>& atoms)
 	Messenger::enter("ZMatrix::addElement");
 	int i;
 	Dnchar name;
-	DoubleVariable *v;
+	DoubleVariable* v;
 	// Create a new element structure, and store a maximum of 4 atoms from list in the element's array
 	ZMatrixElement* zel = elements_.add();
 	zel->setParent(this);
@@ -489,7 +489,7 @@ TreeNode* ZMatrix::angles()
 }
 
 // Return specified angle variable
-Variable *ZMatrix::angle(int index)
+Variable* ZMatrix::angle(int index)
 {
 	if ((index < 0) || (index >= angles_.nVariables())) printf("Array index %i is out of bounds for ZMatrix::angles\n", index);
 	else return (Variable*) angles_.variable(index);
@@ -509,7 +509,7 @@ TreeNode* ZMatrix::distances()
 }
 
 // Return specified distance variable
-Variable *ZMatrix::distance(int index)
+Variable* ZMatrix::distance(int index)
 {
 	if ((index < 0) || (index >= distances_.nVariables())) printf("Array index %i is out of bounds for ZMatrix::distances\n", index);
 	else return (Variable*) distances_.variable(index);
@@ -529,7 +529,7 @@ TreeNode* ZMatrix::torsions()
 }
 
 // Return specified torsion variable
-Variable *ZMatrix::torsion(int index)
+Variable* ZMatrix::torsion(int index)
 {
 	if ((index < 0) || (index >= torsions_.nVariables())) printf("Array index %i is out of bounds for ZMatrix::torsions\n", index);
 	else return (Variable*) torsions_.variable(index);
@@ -537,7 +537,7 @@ Variable *ZMatrix::torsion(int index)
 }
 
 // Set variable value and update
-void ZMatrix::setVariable(Variable *v, double value)
+void ZMatrix::setVariable(Variable* v, double value)
 {
 	Messenger::enter("ZMatrix::setVariable");
 	// Check for NULL pointer
@@ -588,19 +588,19 @@ void ZMatrix::print()
 	ReturnValue rv;
 	for (int n=0; n<distances_.nVariables(); ++n)
 	{
-		Variable *var = distances_.variable(n);
+		Variable* var = distances_.variable(n);
 		var->execute(rv);
 		printf("  %s   %f\n", var->name(), rv.asDouble());
 	}
 	for (int n=0; n<angles_.nVariables(); ++n)
 	{
-		Variable *var = angles_.variable(n);
+		Variable* var = angles_.variable(n);
 		var->execute(rv);
 		printf("  %s   %f\n", var->name(), rv.asDouble());
 	}
 	for (int n=0; n<torsions_.nVariables(); ++n)
 	{
-		Variable *var = torsions_.variable(n);
+		Variable* var = torsions_.variable(n);
 		var->execute(rv);
 		printf("  %s   %f\n", var->name(), rv.asDouble());
 	}

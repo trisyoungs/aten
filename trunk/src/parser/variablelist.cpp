@@ -59,7 +59,7 @@ VariableList::VariableList()
 }
 
 // Pass a newly-created variable / constant to the list for it to take ownership of
-void VariableList::take(Variable *v, bool forcevariable)
+void VariableList::take(Variable* v, bool forcevariable)
 {
 	// Check the readonly status to determine where we put it
 	if (v->readOnly() && (!forcevariable)) constants_.own(v);
@@ -67,7 +67,7 @@ void VariableList::take(Variable *v, bool forcevariable)
 }
 
 // Retrieve a named variable from the list
-Variable *VariableList::find(const char* name) const
+Variable* VariableList::find(const char* name) const
 {
 	Variable* var;
 	for (TreeNode* node = variables_.first(); node != NULL; node = node->next)
@@ -79,9 +79,9 @@ Variable *VariableList::find(const char* name) const
 }
 
 // Create a new variable in the list
-Variable *VariableList::makeVariable(VTypes::DataType type, const char* name, TreeNode* initialValue)
+Variable* VariableList::makeVariable(VTypes::DataType type, const char* name, TreeNode* initialValue)
 {
-	Variable *v = NULL;
+	Variable* v = NULL;
 	switch (type)
 	{
 		case (VTypes::NoData):
@@ -197,9 +197,9 @@ Variable *VariableList::makeVariable(VTypes::DataType type, const char* name, Tr
 }
 
 // Create a new array variable in the list
-Variable *VariableList::makeArray(VTypes::DataType type, const char* name, TreeNode* sizeexpr, TreeNode* initialValue)
+Variable* VariableList::makeArray(VTypes::DataType type, const char* name, TreeNode* sizeexpr, TreeNode* initialValue)
 {
-	Variable *var = NULL;
+	Variable* var = NULL;
 	switch (type)
 	{
 		case (VTypes::AtomData):
@@ -303,23 +303,23 @@ Variable *VariableList::makeArray(VTypes::DataType type, const char* name, TreeN
 }
 
 // Create variable
-Variable *VariableList::create(VTypes::DataType type, const char* name, TreeNode* initialValue)
+Variable* VariableList::create(VTypes::DataType type, const char* name, TreeNode* initialValue)
 {
-	Variable *v = makeVariable(type, name, initialValue);
+	Variable* v = makeVariable(type, name, initialValue);
 	if (v != NULL) variables_.own(v);
 	return v;
 }
 
 // Create variable without owning it
-Variable *VariableList::createFree(VTypes::DataType type, const char* name, TreeNode* initialValue)
+Variable* VariableList::createFree(VTypes::DataType type, const char* name, TreeNode* initialValue)
 {
 	return makeVariable(type, name, initialValue);
 }
 
 // Create a new array variable in the list
-Variable *VariableList::createArray(VTypes::DataType type, const char* name, TreeNode* sizeexpr, TreeNode* initialValue)
+Variable* VariableList::createArray(VTypes::DataType type, const char* name, TreeNode* sizeexpr, TreeNode* initialValue)
 {
-	Variable *var = makeArray(type, name, sizeexpr, initialValue);
+	Variable* var = makeArray(type, name, sizeexpr, initialValue);
 	if (var == NULL) return NULL;
 	variables_.own(var);
 	var->setName(name);
@@ -327,12 +327,12 @@ Variable *VariableList::createArray(VTypes::DataType type, const char* name, Tre
 }
 
 // Create a new array constant in the list
-Variable *VariableList::createArrayConstant(VTypes::DataType type, int size)
+Variable* VariableList::createArrayConstant(VTypes::DataType type, int size)
 {
 	// Create a new constant integer to store the size of the array
-	Variable *sizeconst = new IntegerVariable(size, TRUE);
+	Variable* sizeconst = new IntegerVariable(size, TRUE);
 	constants_.own(sizeconst);
-	Variable *var = makeArray(type, "constarray", sizeconst);
+	Variable* var = makeArray(type, "constarray", sizeconst);
 	if (var == NULL) return NULL;
 	var->setReadOnly();
 // 	constants_.own(var);
@@ -352,7 +352,7 @@ TreeNode* VariableList::variables() const
 }
 
 // Return specified variable in the list (slow)
-Variable *VariableList::variable(int index)
+Variable* VariableList::variable(int index)
 {
 	if ((index < 0) || (index >= variables_.nItems())) printf("Array index %i is out of bounds for VariableList::variable()\n", index);
 	else
