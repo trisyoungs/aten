@@ -303,7 +303,7 @@ void Aten::partnerFilters()
 Tree* Aten::findFilter(FilterData::FilterType ft, const char* nickname) const
 {
 	Messenger::enter("Aten::findFilter");
-	Refitem<Tree,int> *result;
+	Refitem<Tree,int>* result;
 	for (result = filters_[ft].first(); result != NULL; result = result->next)
 		if (strcmp(result->item->filter.nickname(), nickname) == 0) break;
 	if (result == NULL) Messenger::print("No %s filter with nickname '%s' defined.\n", FilterData::filterType(ft), nickname);
@@ -315,7 +315,7 @@ Tree* Aten::findFilter(FilterData::FilterType ft, const char* nickname) const
 Tree* Aten::findFilterByDescription(FilterData::FilterType ft, const char* description) const
 {
 	Messenger::enter("Aten::findFilterByDescription");
-	Refitem<Tree,int> *result;
+	Refitem<Tree,int>* result;
 	for (result = filters_[ft].first(); result != NULL; result = result->next)
 		if (strcmp(result->item->filter.description(), description) == 0) break;
 // 	if (result == NULL) Messenger::print("Internal Error: No %s filter matches description '%s'.\n", FilterData::filterType(ft), description);
@@ -324,13 +324,13 @@ Tree* Aten::findFilterByDescription(FilterData::FilterType ft, const char* descr
 }
 
 // Return first filter refitem in list (of a given type)
-Refitem<Tree,int> *Aten::filters(FilterData::FilterType ft) const
+Refitem<Tree,int>* Aten::filters(FilterData::FilterType ft) const
 {
 	return filters_[ft].first();
 }
 
 // Return nth filter in list (of a given type)
-Refitem<Tree,int> *Aten::filter(FilterData::FilterType ft, int index)
+Refitem<Tree,int>* Aten::filter(FilterData::FilterType ft, int index)
 {
 	if ((index < 0) || (index >= filters_[ft].nItems()))
 	{
@@ -347,7 +347,7 @@ int Aten::nFilters(FilterData::FilterType ft) const
 }
 
 // Return pointer to list of filters of given type
-Reflist<Tree,int> *Aten::filterList(FilterData::FilterType ft)
+Reflist<Tree,int>* Aten::filterList(FilterData::FilterType ft)
 {
 	return &filters_[ft];
 }

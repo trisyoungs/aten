@@ -1,20 +1,22 @@
 add_library(ff
-energystore.h
-forcefield.h
-forms.h
-angle.cpp 
-bond.cpp 
-coulomb.cpp 
-energystore.cpp
-ewald.cpp 
-expression.cpp
-forcefield.cpp
-forms.cpp
-loadforcefield.cpp
-rules.cpp 
-saveforcefield.cpp
-torsion.cpp 
-vdw.cpp
+  combine.h
+  energystore.h
+  forcefield.h
+  forms.h
+  angle.cpp 
+  bond.cpp 
+  combine.cpp
+  coulomb.cpp 
+  energystore.cpp
+  ewald.cpp 
+  expression.cpp
+  forcefield.cpp
+  forms.cpp
+  loadforcefield.cpp
+  rules.cpp 
+  saveforcefield.cpp
+  torsion.cpp 
+  vdw.cpp
 )
 
 add_library(fourier

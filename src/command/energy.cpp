@@ -23,6 +23,7 @@
 #include "parser/commandnode.h"
 #include "model/bundle.h"
 #include "model/model.h"
+#include "main/aten.h"
 
 ATEN_USING_NAMESPACE
 
@@ -65,11 +66,14 @@ bool Commands::function_Electrostatics(CommandNode* c, Bundle& obj, ReturnValue&
 bool Commands::function_FrameEnergy(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+
 	double energy;
 	bool success;
-	if (!obj.m->createExpression()) return FALSE;
+
+	if (!obj.m->createExpression(Choice(), Choice(), Choice(), aten_.currentForcefield(), aten_.combinationRules())) return FALSE;
 	energy = obj.m->totalEnergy(obj.rs(), success);
 	rv.set(energy);
+
 	return success;
 }
 
@@ -79,9 +83,11 @@ bool Commands::function_ModelEnergy(CommandNode* c, Bundle& obj, ReturnValue& rv
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	double energy;
 	bool success;
-	if (!obj.m->createExpression()) return FALSE;
+	
+	if (!obj.m->createExpression(Choice(), Choice(), Choice(), aten_.currentForcefield(), aten_.combinationRules())) return FALSE;
 	energy = obj.m->totalEnergy(obj.m, success);
 	rv.set(energy);
+
 	return success;
 }
 

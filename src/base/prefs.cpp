@@ -345,11 +345,11 @@ Prefs::Prefs()
 	vdwCutoff_ = 50.0;
 	elecCutoff_ = 50.0;
 	validEwaldAuto_ = FALSE;
-	combinationRules_[Combine::ArithmeticRule] = "c = (a+b)*0.5";
-	combinationRules_[Combine::GeometricRule] = "c = sqrt(a*b)";
-	combinationRules_[Combine::CustomRule1] = "c = a+b";
-	combinationRules_[Combine::CustomRule2] = "c = a+b";
-	combinationRules_[Combine::CustomRule3] = "c = a+b";
+	combinationRules_[CombinationRules::ArithmeticRule] = "c = (a+b)*0.5";
+	combinationRules_[CombinationRules::GeometricRule] = "c = sqrt(a*b)";
+	combinationRules_[CombinationRules::CustomRule1] = "c = a+b";
+	combinationRules_[CombinationRules::CustomRule2] = "c = a+b";
+	combinationRules_[CombinationRules::CustomRule3] = "c = a+b";
 	partitionGridSize_.set(50,50,50);
 
 	// Rendering Options
@@ -1599,13 +1599,13 @@ double Prefs::elecCutoff() const
 }
 
 // Set combination rule equation
-void Prefs::setCombinationRule(Combine::CombinationRule cr, const char* s)
+void Prefs::setCombinationRule(CombinationRules::CombinationRule cr, const char* s)
 {
 	combinationRules_[cr] = s;
 }
 
 // Return combination rule equation
-const char* Prefs::combinationRule(Combine::CombinationRule cr) const
+const char* Prefs::combinationRule(CombinationRules::CombinationRule cr) const
 {
 	return combinationRules_[cr].get();
 }

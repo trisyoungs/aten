@@ -23,6 +23,7 @@
 #include "parser/commandnode.h"
 #include "model/bundle.h"
 #include "model/model.h"
+#include <main/aten.h>
 
 ATEN_USING_NAMESPACE
 
@@ -30,7 +31,7 @@ ATEN_USING_NAMESPACE
 bool Commands::function_FrameForces(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	if (!obj.m->createExpression()) return FALSE;
+	if (!obj.m->createExpression(Choice(), Choice(), Choice(), aten_.currentForcefield(), aten_.combinationRules())) return FALSE;
 	bool success = obj.m->calculateForces(obj.rs());
 	rv.reset();
 	return success;
@@ -40,7 +41,7 @@ bool Commands::function_FrameForces(CommandNode* c, Bundle& obj, ReturnValue& rv
 bool Commands::function_ModelForces(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	if (!obj.m->createExpression()) return FALSE;
+	if (!obj.m->createExpression(Choice(), Choice(), Choice(), aten_.currentForcefield(), aten_.combinationRules())) return FALSE;
 	bool success = obj.m->calculateForces(obj.m);
 	rv.reset();
 	return success;

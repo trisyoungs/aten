@@ -36,13 +36,13 @@ int Model::nUniqueForcefieldTypes() const
 }
 
 // Return the list of forcefield types in the model
-Refitem <ForcefieldAtom,int> *Model::uniqueForcefieldTypes()
+Refitem <ForcefieldAtom,int>* Model::uniqueForcefieldTypes()
 {
 	return uniqueForcefieldTypes_.first();
 }
 
 // Return the nth forcefield type interaction in the model
-Refitem <ForcefieldAtom,int> *Model::uniqueForcefieldType(int i)
+Refitem <ForcefieldAtom,int>* Model::uniqueForcefieldType(int i)
 {
 	return uniqueForcefieldTypes_[i];
 }
@@ -54,13 +54,13 @@ int Model::nForcefieldBonds() const
 }
 
 // Return the first in the list of forcefield bond interactions in the model
-Refitem <ForcefieldBound,int> *Model::forcefieldBonds()
+Refitem <ForcefieldBound,int>* Model::forcefieldBonds()
 {
 	return forcefieldBonds_.first();
 }
 
 // Return the nth forcefield bond interaction in the model
-Refitem <ForcefieldBound,int> *Model::forcefieldBond(int i)
+Refitem <ForcefieldBound,int>* Model::forcefieldBond(int i)
 {
 	return forcefieldBonds_[i];
 }
@@ -72,13 +72,13 @@ int Model::nForcefieldAngles() const
 }
 
 // Return the first in the list of forcefield angle interactions in the model
-Refitem <ForcefieldBound,int> *Model::forcefieldAngles()
+Refitem <ForcefieldBound,int>* Model::forcefieldAngles()
 {
 	return forcefieldAngles_.first();
 }
 
 // Return the nth forcefield angle interaction in the model
-Refitem <ForcefieldBound,int> *Model::forcefieldAngle(int i)
+Refitem <ForcefieldBound,int>* Model::forcefieldAngle(int i)
 {
 	return forcefieldAngles_[i];
 }
@@ -90,13 +90,13 @@ int Model::nForcefieldTorsions() const
 }
 
 // Return the first in the list of forcefield torsion interactions in the model
-Refitem <ForcefieldBound,int> *Model::forcefieldTorsions()
+Refitem <ForcefieldBound,int>* Model::forcefieldTorsions()
 {
 	return forcefieldTorsions_.first();
 }
 
 // Return the nth forcefield torsion interaction in the model
-Refitem <ForcefieldBound,int> *Model::forcefieldTorsion(int i)
+Refitem <ForcefieldBound,int>* Model::forcefieldTorsion(int i)
 {
 	return forcefieldTorsions_[i];
 }

@@ -104,7 +104,7 @@ bool UserCommandNode::execute(ReturnValue& rv)
 	if (function_ == NULL) return FALSE;
 
 	// Poke arguments into the functions argument variables
-	Refitem<TreeNode,int> *value = args_.first();
+	Refitem<TreeNode,int>* value = args_.first();
 	ReturnValue varval;
 	Variable *v;
 	for (TreeNode* arg = function_->args(); arg != NULL; arg = arg->next)

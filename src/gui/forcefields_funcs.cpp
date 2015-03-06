@@ -316,7 +316,7 @@ void ForcefieldsWidget::on_UntypeModelButton_clicked(bool checked)
 
 void ForcefieldsWidget::on_CreateExpressionButton_clicked(bool clicked)
 {
-	parent_.aten().currentModelOrFrame()->createExpression(Choice::Default, Choice::Default, ui.AssignFFChargesCheck->isChecked() ? Choice::Yes : Choice::No );
+	parent_.aten().currentModelOrFrame()->createExpression(Choice::Default, Choice::Default, ui.AssignFFChargesCheck->isChecked() ? Choice::Yes : Choice::No, parent_.aten().currentForcefield(), parent_.aten().combinationRules());
 }
 
 /*

@@ -64,7 +64,7 @@ void AtenSelectFilter::on_ShowAllCheck_clicked(bool checked)
 void AtenSelectFilter::update()
 {
 	ui.FilterTable->clear();
-	Refitem<Tree,int> *first = (ui.ShowAllCheck->isChecked() ? fullList_->first() : partialList_->first());
+	Refitem<Tree,int>* first = (ui.ShowAllCheck->isChecked() ? fullList_->first() : partialList_->first());
 	ui.FilterTable->setHorizontalHeaderLabels(QStringList() << "Extension(s)" << "Filter" << "Source");
 	ui.FilterTable->setRowCount( ui.ShowAllCheck->isChecked() ? fullList_->nItems() : partialList_->nItems() );
 	QTableWidgetItem *item;

@@ -38,12 +38,22 @@ double econverge = 0.001, fconverge = 0.01, linetolerance = 0.0001;
 bool Commands::function_CGMinimise(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+
+	// Ensure we have a valid expression
+	if (!obj.rs()->createExpression(Choice(), Choice(), Choice(), aten_.currentForcefield(), aten_.combinationRules()))
+	{
+		Messenger::print("Failed to create expression - minimisation can't be performed.\n");
+		return false;
+	}
+
 	cg.setTolerance(linetolerance);
 	cg.setNCycles( c->hasArg(0) ? c->argi(0) : 100);
+
 	// Store current positions of atoms so we can undo the minimisation
 	Reflist< Atom, Vec3<double> > oldpos;
 	for (Atom* i = obj.rs()->atoms(); i != NULL; i = i->next) oldpos.add(i, i->r());
 	cg.minimise(obj.rs(), econverge, fconverge);
+
 	// Finalise the 'transformation' (creates an undo state)
 	obj.rs()->finalizeTransform(oldpos, "Minimise (Conjugate Gradient)", TRUE);
 	rv.reset();
@@ -72,10 +82,12 @@ bool Commands::function_MCMinimise(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	mc.setNCycles( c->hasArg(0) ? c->argi(0) : 100);
+
 	// Store current positions of atoms so we can undo the minimisation
 	Reflist< Atom, Vec3<double> > oldpos;
 	for (Atom* i = obj.rs()->atoms(); i != NULL; i = i->next) oldpos.add(i, i->r());
 	mc.minimise(obj.rs(), econverge, fconverge);
+
 	// Finalise the 'transformation' (creates an undo state)
 	obj.rs()->finalizeTransform(oldpos, "Minimise (Monte Carlo)", TRUE);
 	rv.reset();
@@ -204,8 +216,17 @@ bool Commands::function_MopacMinimise(CommandNode* c, Bundle& obj, ReturnValue& 
 bool Commands::function_SDMinimise(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+
+	// Ensure we have a valid expression
+	if (!obj.rs()->createExpression(Choice(), Choice(), Choice(), aten_.currentForcefield(), aten_.combinationRules()))
+	{
+		Messenger::print("Failed to create expression - minimisation can't be performed.\n");
+		return false;
+	}
+
 	sd.setTolerance(linetolerance);
 	sd.setNCycles( c->hasArg(0) ? c->argi(0) : 100);
+
 	// Store current positions of atoms so we can undo the minimisation
 	Reflist< Atom, Vec3<double> > oldpos;
 	for (Atom* i = obj.rs()->atoms(); i != NULL; i = i->next) oldpos.add(i, i->r());

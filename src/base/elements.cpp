@@ -642,7 +642,7 @@ int ElementMap::find(const char* query, ElementMap::ZMapType zmt, Forcefield* fi
 	}
 
 	// Attempt conversion of the string first from the users type list
-	NameMap<int> *nm;
+	NameMap<int>* nm;
 // 	for (nm = aten.typeImportMap.first(); nm != NULL; nm = nm->next)  ATEN2 TODO
 // 		if (strcmp(nm->name(),rv.asString()) == 0) break;
 	

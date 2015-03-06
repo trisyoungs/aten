@@ -506,7 +506,7 @@ NetaLogicNode::~NetaLogicNode()
 
 
 // Validation function (virtual)
-int NetaLogicNode::score(Atom* target, Reflist<Atom,int> *nbrs, Reflist<Ring,int>* rings, NetaContextNode *context, Reflist<Atom,int>& path, int level)
+int NetaLogicNode::score(Atom* target, Reflist<Atom,int>* nbrs, Reflist<Ring,int>* rings, NetaContextNode *context, Reflist<Atom,int>& path, int level)
 {
 	Messenger::enter("NetaLogicNode::score");
 	int score1 = -1, score2 = -1, totalscore = -1;
@@ -677,13 +677,13 @@ NetaNode *NetaBoundNode::clone(Neta *newparent)
 }
 
 // Set bound data
-void NetaBoundNode::set(Refitem<ForcefieldAtom,int> *elemtypes, NetaNode *innerneta, Bond::BondType bt)
+void NetaBoundNode::set(Refitem<ForcefieldAtom,int>* elemtypes, NetaNode *innerneta, Bond::BondType bt)
 {
 	Messenger::enter("NetaBoundNode::set");
 	bondType_ = bt;
 	innerNeta_ = innerneta;
 	// Take items from list
-	Refitem<ForcefieldAtom,int> *item = elemtypes, *nextitem = NULL;
+	Refitem<ForcefieldAtom,int>* item = elemtypes, *nextitem = NULL;
 	while (item != NULL)
 	{
 		// Store next item pointer
@@ -789,7 +789,7 @@ const char* NetaBoundNode::elementsAndTypesString()
 }
 
 // Validation function (virtual)
-int NetaBoundNode::score(Atom* target, Reflist<Atom,int> *nbrs, Reflist<Ring,int>* rings, NetaContextNode *context, Reflist<Atom,int>& path, int level)
+int NetaBoundNode::score(Atom* target, Reflist<Atom,int>* nbrs, Reflist<Ring,int>* rings, NetaContextNode *context, Reflist<Atom,int>& path, int level)
 {
 	Messenger::enter("NetaBoundNode::score");
 	int totalscore = -1, n, boundscore;
@@ -890,7 +890,7 @@ NetaKeywordNode::~NetaKeywordNode()
 }
 
 // Validation function (virtual)
-int NetaKeywordNode::score(Atom* target, Reflist<Atom,int> *nbrs, Reflist<Ring,int>* rings, NetaContextNode *context, Reflist<Atom,int>& path, int level)
+int NetaKeywordNode::score(Atom* target, Reflist<Atom,int>* nbrs, Reflist<Ring,int>* rings, NetaContextNode *context, Reflist<Atom,int>& path, int level)
 {
 	Messenger::enter("NetaKeywordNode::score");
 	int totalscore = -1;
@@ -1009,7 +1009,7 @@ NetaGeometryNode::~NetaGeometryNode()
 }
 
 // Validation function (virtual)
-int NetaGeometryNode::score(Atom* target, Reflist<Atom,int> *nbrs, Reflist<Ring,int>* rings, NetaContextNode *context, Reflist<Atom,int>& path, int level)
+int NetaGeometryNode::score(Atom* target, Reflist<Atom,int>* nbrs, Reflist<Ring,int>* rings, NetaContextNode *context, Reflist<Atom,int>& path, int level)
 {
 	Messenger::enter("NetaGeometryNode::score");
 	int totalscore = -1;
@@ -1076,7 +1076,7 @@ NetaValueNode::~NetaValueNode()
 }
 
 // Validation function (virtual)
-int NetaValueNode::score(Atom* target, Reflist<Atom,int> *nbrs, Reflist<Ring,int>* rings, NetaContextNode *context, Reflist<Atom,int>& path, int level)
+int NetaValueNode::score(Atom* target, Reflist<Atom,int>* nbrs, Reflist<Ring,int>* rings, NetaContextNode *context, Reflist<Atom,int>& path, int level)
 {
 	Messenger::enter("NetaValueNode::score");
 	int totalscore = -1, n;
@@ -1184,7 +1184,7 @@ NetaRootNode::~NetaRootNode()
 }
 
 // Validation function (virtual)
-int NetaRootNode::score(Atom* target, Reflist<Atom,int> *nbrs, Reflist<Ring,int>* rings, NetaContextNode *context, Reflist<Atom,int>& path, int level)
+int NetaRootNode::score(Atom* target, Reflist<Atom,int>* nbrs, Reflist<Ring,int>* rings, NetaContextNode *context, Reflist<Atom,int>& path, int level)
 {
 	return (innerNeta_ != NULL ? innerNeta_->score(target, nbrs, rings, this, path, level) : 0);
 }
@@ -1248,7 +1248,7 @@ Ring *NetaRingNode::currentRing()
 }
 
 // Validation function (virtual)
-int NetaRingNode::score(Atom* target, Reflist<Atom,int> *nbrs, Reflist<Ring,int>* rings, NetaContextNode *context, Reflist<Atom,int>& path, int level)
+int NetaRingNode::score(Atom* target, Reflist<Atom,int>* nbrs, Reflist<Ring,int>* rings, NetaContextNode *context, Reflist<Atom,int>& path, int level)
 {
 	Messenger::enter("NetaRingNode::score");
 	int totalscore = -1, n;
@@ -1388,7 +1388,7 @@ NetaChainNode::~NetaChainNode()
 }
 
 // Private (recursive) scoring function
-int NetaChainNode::score(NetaNode *currentNode, int nRepeat, Atom* target, Reflist<Atom,int> *nbrs, Reflist<Ring,int>* rings, Reflist<Atom,int>& path, int level)
+int NetaChainNode::score(NetaNode *currentNode, int nRepeat, Atom* target, Reflist<Atom,int>* nbrs, Reflist<Ring,int>* rings, Reflist<Atom,int>& path, int level)
 {
 	Messenger::enter("NetaChainNode::score(private)");
 	int totalscore = -1, atomscore = -1;
@@ -1456,7 +1456,7 @@ int NetaChainNode::score(NetaNode *currentNode, int nRepeat, Atom* target, Refli
 }
 
 // Validation function (virtual)
-int NetaChainNode::score(Atom* target, Reflist<Atom,int> *nbrs, Reflist<Ring,int>* rings, NetaContextNode *context, Reflist<Atom,int>& path, int level)
+int NetaChainNode::score(Atom* target, Reflist<Atom,int>* nbrs, Reflist<Ring,int>* rings, NetaContextNode *context, Reflist<Atom,int>& path, int level)
 {
 	Messenger::enter("NetaChainNode::score");
 	int totalscore = -1, n;
@@ -1581,7 +1581,7 @@ void NetaMeasurementNode::setRemoveNeighbours(bool b)
 }
 
 // Private (recursive) scoring function
-int NetaMeasurementNode::score(NetaNode *currentNode, int nRepeat, Atom* target, Reflist<Atom,int> *nbrs, Reflist<Ring,int>* rings, Reflist<Atom,int>& path, int level)
+int NetaMeasurementNode::score(NetaNode *currentNode, int nRepeat, Atom* target, Reflist<Atom,int>* nbrs, Reflist<Ring,int>* rings, Reflist<Atom,int>& path, int level)
 {
 	Messenger::enter("NetaMeasurementNode::score(private)");
 	int totalscore = -1, atomscore = -1;
@@ -1684,7 +1684,7 @@ int NetaMeasurementNode::score(NetaNode *currentNode, int nRepeat, Atom* target,
 }
 
 // Validation function (virtual)
-int NetaMeasurementNode::score(Atom* target, Reflist<Atom,int> *nbrs, Reflist<Ring,int>* rings, NetaContextNode *context, Reflist<Atom,int>& path, int level)
+int NetaMeasurementNode::score(Atom* target, Reflist<Atom,int>* nbrs, Reflist<Ring,int>* rings, NetaContextNode *context, Reflist<Atom,int>& path, int level)
 {
 	Messenger::enter("NetaMeasurementNode::score");
 	int totalscore = -1, n;

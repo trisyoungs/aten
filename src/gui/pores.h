@@ -55,11 +55,11 @@ class PoresWidget : public QDockWidget
 	*/
 	private:
 	// Partitioning scheme
-	static PartitioningScheme partitioningScheme_;
+	PartitioningScheme partitioningScheme_;
 	
 	public:
 	// Return the widgets partitioning scheme
-	static PartitioningScheme &partitioningScheme();
+	PartitioningScheme& partitioningScheme();
 
 
 	/*

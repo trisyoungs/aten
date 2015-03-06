@@ -779,7 +779,7 @@ class Prefs
 	// Whether the automatic Ewald setup is valid
 	bool validEwaldAuto_;
 	// Combination rule equations
-	Dnchar combinationRules_[Combine::nCombinationRules];
+	Dnchar combinationRules_[CombinationRules::nCombinationRules];
 	// Grid size for PartitioningSchemes
 	Vec3<int> partitionGridSize_;
 
@@ -825,9 +825,9 @@ class Prefs
 	// Return the electrostatic cutoff radius
 	double elecCutoff() const;
 	// Set combination rule equation
-	void setCombinationRule(Combine::CombinationRule cr, const char* s);
+	void setCombinationRule(CombinationRules::CombinationRule cr, const char* s);
 	// Return combination rule equation
-	const char* combinationRule(Combine::CombinationRule cr) const;
+	const char* combinationRule(CombinationRules::CombinationRule cr) const;
 	// Return array of combination rule equations
 	Dnchar* combinationRules();
 	// Set grid size for PartitioningSchemes

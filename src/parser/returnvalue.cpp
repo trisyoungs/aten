@@ -346,7 +346,7 @@ void ReturnValue::setArray(VTypes::DataType type, void *array, int arraysize)
 	else if (type_ == VTypes::VectorData)
 	{
 		arrayV_ = new Vec3<double>[arraySize_];
-		Vec3<double> *source = (Vec3<double>*) array;
+		Vec3<double>* source = (Vec3<double>*) array;
 		for (i = 0; i < arraySize_; ++i) arrayV_[i] = source[i];
 	}
 	else

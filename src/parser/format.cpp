@@ -91,7 +91,7 @@ VTypes::DataType FormatChunk::retrieveType()
 */
 
 // Constructor
-Format::Format(Refitem<TreeNode,int> *firstarg)
+Format::Format(Refitem<TreeNode,int>* firstarg)
 {
 	// Construct a delimited list of chunks with no specific format
 	for (Refitem<TreeNode,int>* ri = firstarg; ri != NULL; ri = ri->next) addDelimitedChunk(ri->item);
@@ -100,7 +100,7 @@ Format::Format(Refitem<TreeNode,int> *firstarg)
 }
 
 // Constructor
-Format::Format(const char* s, Refitem<TreeNode,int> *firstarg)
+Format::Format(const char* s, Refitem<TreeNode,int>* firstarg)
 {
 	// Private variables
 	isValid_ = TRUE;
@@ -112,7 +112,7 @@ Format::Format(const char* s, Refitem<TreeNode,int> *firstarg)
 	char plaintext[4098];
 	VTypes::DataType type;
 	bool isformatter = FALSE, isdiscarder, restofline;
-	Refitem<TreeNode,int> *arg = firstarg;
+	Refitem<TreeNode,int>* arg = firstarg;
 	Messenger::print(Messenger::Parse, "Creating Format object from string '%s' (and any supplied arguments)...\n", s);
 	int length = 0;
 	do

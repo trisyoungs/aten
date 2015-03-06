@@ -374,13 +374,13 @@ Refitem<ForcefieldBound,int>* Pattern::forcefieldTorsions()
 }
 
 // Return first unique (by name) forcefield type used in the pattern
-Refitem<ForcefieldAtom,int> *Pattern::uniqueForcefieldTypes()
+Refitem<ForcefieldAtom,int>* Pattern::uniqueForcefieldTypes()
 {
 	return uniqueForcefieldTypes_.first();
 }
 
 // Return first unique (by pointer) forcefield type used in the pattern
-Refitem<ForcefieldAtom,int> *Pattern::allForcefieldTypes()
+Refitem<ForcefieldAtom,int>* Pattern::allForcefieldTypes()
 {
 	return allForcefieldTypes_.first();
 }
@@ -404,7 +404,7 @@ Refitem<ForcefieldBound,int>* Pattern::forcefieldTorsion(int i)
 }
 
 // Return selected forcefield type used in the pattern
-Refitem<ForcefieldAtom,int> *Pattern::uniqueForcefieldType(int i)
+Refitem<ForcefieldAtom,int>* Pattern::uniqueForcefieldType(int i)
 {
 	return uniqueForcefieldTypes_[i];
 }

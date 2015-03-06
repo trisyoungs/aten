@@ -950,7 +950,7 @@ void AtenWindow::on_actionModelFFUntype_triggered(bool checked)
 // Create energy expression for model
 void AtenWindow::on_actionModelCreateExpression_triggered(bool checked)
 {
-	aten_.currentModelOrFrame()->createExpression(Choice(), Choice(), Choice(), aten_.currentForcefield());
+	aten_.currentModelOrFrame()->createExpression(Choice(), Choice(), Choice(), aten_.currentForcefield(), aten_.combinationRules());
 	updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
 }
 

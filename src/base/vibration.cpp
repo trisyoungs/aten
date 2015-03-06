@@ -137,7 +137,7 @@ void Vibration::setDisplacement(int n, Vec3<double> v)
 }
 
 // Return displacement array
-Vec3<double> *Vibration::displacements()
+Vec3<double>* Vibration::displacements()
 {
 	return displacements_;
 }

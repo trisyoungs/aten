@@ -23,32 +23,10 @@
 #define ATEN_FORMS_H
 
 #include "math/constants.h"
-#include "parser/program.h"
 #include "base/namespace.h"
+#include "ff/combine.h"
 
 ATEN_BEGIN_NAMESPACE
-
-// Combination Rule Data
-class Combine
-{
-	public:
-	// Combination rules
-	enum CombinationRule { ArithmeticRule, GeometricRule, CustomRule1, CustomRule2, CustomRule3, nCombinationRules };
-	static CombinationRule combinationRule(const char* name, bool reportError = 0);
-	static const char* combinationRule(CombinationRule cr);
-	static const char* combinationRuleName(CombinationRule cr);
-
-	/*
-	// Functions
-	*/
-	public:
-	// Regenerate combination rule function trees
-	static bool regenerateEquations();
-	// Execute combination rule with parameters specified
-	static double combine(CombinationRule cr, double a, double b);
-	// Static function trees for combination rule equations
-	static Program combinationRules_;
-};
 
 // Function Definition
 class FunctionData
@@ -69,7 +47,7 @@ class FunctionData
 	// Default values for parameters
 	double defaultValues[MAXFFPARAMDATA];
 	// Combination rule to use (Vdw Functions only)
-	Combine::CombinationRule combinationRules[MAXFFPARAMDATA];
+	CombinationRules::CombinationRule combinationRules[MAXFFPARAMDATA];
 };
 
 // VDW Potential Functions

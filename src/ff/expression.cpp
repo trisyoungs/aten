@@ -50,7 +50,7 @@ bool Pattern::createExpression(bool vdwOnly, bool allowDummy, Forcefield* defaul
 	// Temp vars for type storage
 	ForcefieldAtom* ti, *tj, *tk, *tl;
 	int ii, jj, kk, ll, n, m;
-	QList<int> *bonding;
+	QList<int>* bonding;
 	bonding = new QList<int>[nAtoms_];
 	// Clear old arrays
 	atoms_.clear();

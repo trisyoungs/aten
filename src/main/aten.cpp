@@ -40,8 +40,6 @@ ATEN_USING_NAMESPACE
 // Constructor
 Aten::Aten() : commands_(*this)
 {
-	printf("Aten constructor.\n");
-	
 	CommandNode::setAten(this);
 	Variable::setAten(this);
 	Tree::setAten(this);

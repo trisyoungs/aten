@@ -38,7 +38,7 @@ class FourierData
 	// Constructor / Destructor
 	FourierData();
 	~FourierData();
-	Vec3<double> **rCos, **rSin;
+	Vec3<double>* *rCos, **rSin;
 	int nAtoms, kMax;
 	Vec3<int> kVec;
 	UnitCell* cell;

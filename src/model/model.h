@@ -269,7 +269,7 @@ class Model : public ListItem<Model>
 	// Replicate cell to create supercell
 	void replicateCell(const Vec3<double>&, const Vec3<double>&);
 	// Scale cell and contents
-	bool scaleCell(const Vec3<double> &scale, bool usecogs, bool calcenergy);
+	bool scaleCell(const Vec3<double>& scale, bool useCog);
 	// Rotate cell and contents
 	void rotateCell(int axis, double angle);
 	// Return the density of the model
@@ -283,7 +283,7 @@ class Model : public ListItem<Model>
 	// Bonds in the model
 	List<Bond> bonds_;
 	// Atom reflists (pointers) for bond calculation
-	Reflist<Atom,double> *bondingCuboids_, *bondingOverlays_;
+	Reflist<Atom,double>* bondingCuboids_, *bondingOverlays_;
 	// Number of cuboids in atom reflists
 	int nCuboids_;
 	// Integer number of boxes in each direction
@@ -483,7 +483,7 @@ class Model : public ListItem<Model>
 	// Set-up viewport and projection matrices
 	void setupView(GLint x, GLint y, GLint w, GLint h);
 	// Project given model coordinates into world coordinates (and screen coordinates if Vec3 is supplied)
-	Vec3<double> &modelToWorld(Vec3<double> &pos, Vec4<double> *screenr = NULL, double screenradius = 0.0);
+	Vec3<double> &modelToWorld(Vec3<double> &pos, Vec4<double>* screenr = NULL, double screenradius = 0.0);
 	// Convert screen coordinates into modelspace coordinates
 	Vec3<double> &screenToModel(int x, int y, double z);
 	// Set positive repeat cell value
@@ -592,11 +592,11 @@ class Model : public ListItem<Model>
 	// Return number of unique (by name) atom types in model
 	int nUniqueForcefieldTypes() const;
 	// Return the first item in the list of unique types in the model
-	Refitem<ForcefieldAtom,int> *uniqueForcefieldTypes();
+	Refitem<ForcefieldAtom,int>* uniqueForcefieldTypes();
 	// Return the unique type specified
-	Refitem<ForcefieldAtom,int> *uniqueForcefieldType(int i);
+	Refitem<ForcefieldAtom,int>* uniqueForcefieldType(int i);
 	// Create total energy function shell for the model
-	bool createExpression(Choice vdwOnly = Choice(), Choice allowDummy = Choice(), Choice assignCharges = Choice(), Forcefield* defaultForcefield = NULL);
+	bool createExpression(Choice vdwOnly, Choice allowDummy, Choice assignCharges, Forcefield* defaultForcefield, CombinationRules& combine);
 	// Return whether the expression is valid
 	bool isExpressionValid() const;
 	// Clear the current expression
@@ -606,7 +606,7 @@ class Model : public ListItem<Model>
 	// Generate parameters for total energy function
 	void fillExpression(int);
 	// Return specified pair data from combination table
-	PointerPair<ForcefieldAtom,double> *combinedParameters(ForcefieldAtom* at1, ForcefieldAtom* at2);
+	PointerPair<ForcefieldAtom,double>* combinedParameters(ForcefieldAtom* at1, ForcefieldAtom* at2);
 
 
 	/*
@@ -1032,7 +1032,7 @@ class Model : public ListItem<Model>
 	// Return first glyph in list (if any)
 	Glyph* glyphs() const;
 	// Return first text glyph in list (if any)
-	Refitem<Glyph,int> *textGlyphs() const;
+	Refitem<Glyph,int>* textGlyphs() const;
 	// Return specific glyph
 	Glyph* glyph(int n);
 	// Return vector for data point in Glyph

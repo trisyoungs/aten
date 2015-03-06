@@ -58,7 +58,7 @@ class Vibration : public ListItem<Vibration>
 	// Number of displacements defined in vibration
 	int nDisplacements_;
 	// Displacement vectors for each associated atom
-	Vec3<double> *displacements_;
+	Vec3<double>* displacements_;
 
 	public:
 	// Return parent model
@@ -90,7 +90,7 @@ class Vibration : public ListItem<Vibration>
 	// Set specified displacement data (vector)
 	void setDisplacement(int n, Vec3<double> v);
 	// Return displacements array
-	Vec3<double> *displacements();
+	Vec3<double>* displacements();
 	// Return n'th displacement data
 	Vec3<double> displacement(int n) const;
 };

@@ -379,7 +379,7 @@ int Aten::parseCli(int argc, char *argv[])
 	Forcefield* ff;
 	LineParser parser;
 	ElementMap::ZMapType zm;
-	NameMap<int> *nmi;
+	NameMap<int>* nmi;
 	Model* model;
 	Program* script, tempProgram;
 	ReturnValue rv;

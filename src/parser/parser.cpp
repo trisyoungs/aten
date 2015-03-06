@@ -345,12 +345,12 @@ bool CommandParser::generateFromFile(Program* prog, const char* filename, bool d
 // Return current tree target, raising warning and setting fail flag if no tree is defined...
 Tree* CommandParser::tree()
 {
-	static Tree dummyTree;
+// 	static Tree dummyTree;
 	if (tree_ == NULL)
 	{
 		failed_ = TRUE;
 		Messenger::print("Internal Error: Parser tried to do something to a non-existent tree.\n");
-		return &dummyTree;
+		return NULL;
 	}
 	else return tree_;
 }

@@ -65,7 +65,7 @@ void MethodSd::minimise(Model* srcmodel, double econ, double fcon, bool simple)
 	// Prepare the calculation
 	*/
 	// First, create expression for the current model and assign charges
-	if ((!srcmodel->createExpression()) || (srcmodel->nAtoms() == 0))
+	if ((!srcmodel->isExpressionValid()) || (srcmodel->nAtoms() == 0))
 	{
 	        Messenger::exit("MethodSd::minimise");
 	        return;

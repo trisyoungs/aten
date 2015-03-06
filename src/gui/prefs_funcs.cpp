@@ -844,7 +844,7 @@ void AtenPrefs::updateParameterTable()
 	QStringList combrules;
 	TComboBox *combo;
 	QTableWidgetItem *item;
-	for (n=0; n<Combine::nCombinationRules; ++n) combrules << Combine::combinationRuleName( (Combine::CombinationRule) n);
+	for (n=0; n<CombinationRules::nCombinationRules; ++n) combrules << CombinationRules::combinationRuleName( (CombinationRules::CombinationRule) n);
 	ui.ParameterTable->setColumnCount(2);
 	ui.ParameterTable->setRowCount(VdwFunctions::VdwFunctions[row].nParameters);
 	for (n=0; n<VdwFunctions::VdwFunctions[row].nParameters; ++n)
@@ -940,7 +940,7 @@ void AtenPrefs::ParameterRuleChanged(int id)
 		Messenger::exit("AtenPrefs::ParameterRuleChanged");
 		return;
 	}
-	VdwFunctions::VdwFunctions[row].combinationRules[combo->data.asInteger()] = (Combine::CombinationRule) id;
+	VdwFunctions::VdwFunctions[row].combinationRules[combo->data.asInteger()] = (CombinationRules::CombinationRule) id;
 // 	printf("SET %i %i %i\n", row, combo->integer(), id);
 	Messenger::exit("AtenPrefs::ParameterRuleChanged");
 }

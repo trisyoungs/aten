@@ -139,7 +139,7 @@ bool Commands::function_CreateExpression(CommandNode* c, Bundle& obj, ReturnValu
 	if (c->hasArg(0)) vdwOnly = c->argb(0) ? Choice::Yes : Choice::No;
 	if (c->hasArg(1)) allowDummy = c->argb(1) ? Choice::Yes : Choice::No;
 	if (c->hasArg(2)) assignCharges = c->argb(2) ? Choice::Yes : Choice::No;
-	bool result = obj.m->createExpression(vdwOnly, allowDummy, assignCharges);
+	bool result = obj.m->createExpression(vdwOnly, allowDummy, assignCharges, aten_.currentForcefield(), aten_.combinationRules());
 	rv.set(result);
 	return TRUE;
 }
@@ -483,7 +483,7 @@ bool Commands::function_GetCombinationRule(CommandNode* c, Bundle& obj, ReturnVa
 	int param = VdwFunctions::vdwParameter(form, c->argc(1), TRUE);
 	if (param == VdwFunctions::VdwFunctions[form].nParameters) return FALSE;
 	// Everything OK, so return combination rule in use
-	rv.set(Combine::combinationRule( VdwFunctions::VdwFunctions[form].combinationRules[param] ));
+	rv.set(CombinationRules::combinationRule( VdwFunctions::VdwFunctions[form].combinationRules[param] ));
 	return TRUE;
 }
 
@@ -552,7 +552,7 @@ bool Commands::function_Map(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	// Get each argument and parse it internally
 	int el;
-	NameMap<int> *nm;
+	NameMap<int>* nm;
 	LineParser parser;
 	for (int m=0; m<c->nArgs(); m++)
 	{
@@ -624,7 +624,7 @@ bool Commands::function_RecreateExpression(CommandNode* c, Bundle& obj, ReturnVa
 	if (c->hasArg(0)) vdwOnly = c->argb(0) ? Choice::Yes : Choice::No;
 	if (c->hasArg(1)) allowDummy = c->argb(1) ? Choice::Yes : Choice::No;
 	if (c->hasArg(2)) assignCharges = c->argb(2) ? Choice::Yes : Choice::No;
-	if (!obj.m->createExpression(vdwOnly, allowDummy, assignCharges)) return FALSE;
+	if (!obj.m->createExpression(vdwOnly, allowDummy, assignCharges, aten_.currentForcefield(), aten_.combinationRules())) return FALSE;
 	rv.reset();
 	return TRUE;
 }
@@ -676,8 +676,8 @@ bool Commands::function_SetCombinationRule(CommandNode* c, Bundle& obj, ReturnVa
 	if (param == VdwFunctions::VdwFunctions[form].nParameters) return FALSE;
 	
 	// Finally, search combination rule
-	Combine::CombinationRule cr = Combine::combinationRule(c->argc(2), TRUE);
-	if (cr == Combine::nCombinationRules) return FALSE;
+	CombinationRules::CombinationRule cr = CombinationRules::combinationRule(c->argc(2), TRUE);
+	if (cr == CombinationRules::nCombinationRules) return FALSE;
 	
 	// Everything OK, so set data
 	VdwFunctions::VdwFunctions[form].combinationRules[param] = cr;

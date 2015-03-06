@@ -67,7 +67,7 @@ void MethodCg::minimise(Model* srcmodel, double econ, double fcon)
 	// Prepare the calculation
 	*/
 	// First, create expression for the current model and assign charges
-	if ((!srcmodel->createExpression()) || (srcmodel->nAtoms() == 0))
+	if ((!srcmodel->isExpressionValid()) || (srcmodel->nAtoms() == 0))
 	{
 	        Messenger::exit("MethodCg::minimise");
 	        return;
@@ -177,6 +177,7 @@ void MethodCg::minimise(Model* srcmodel, double econ, double fcon)
 	Messenger::print("Final energy:\n");
 	currentEnergy = srcmodel->totalEnergy(srcmodel, success);
 	srcmodel->energy.print();
+
 	// Calculate fresh new forces for the model, log changes / update, and exit.
 	srcmodel->calculateForces(srcmodel);
 	srcmodel->updateMeasurements();
