@@ -65,6 +65,8 @@
 // Constructor
 AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 {
+	Messenger::enter("AtenWindow::AtenWindow()");
+
 	// Initialise Qt's icons resource
 	Q_INIT_RESOURCE(icons);
 
@@ -157,16 +159,11 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 		QMessageBox::warning(NULL, "Aten", text, QMessageBox::Ok, QMessageBox::Ok);
 	}
 
-	// Add GNU GPL message to statusbox
-	Messenger::print("<b>Aten</b> version %s (%s@%s) built on %s, Copyright (C) 2007-2013  T. Youngs.\n", ATENVERSION, ATENURL, ATENREVISION, ATENDATE);
-	Messenger::print("<b>Aten</b> uses Space Group Info (c) 1994-96 Ralf W. Grosse-Kunstleve.\n");
-	Messenger::print("<b>Aten</b> comes with ABSOLUTELY NO WARRANTY.\n");
-	Messenger::print("This is free software, and you are welcome to redistribute it under certain conditions.\n");
-	Messenger::print("For more details read the GPL at <http://www.gnu.org/copyleft/gpl.html>.\n\n");
-
 	// Set some preferences back to their default values
 	prefs.setZMapType(ElementMap::AutoZMap, FALSE);
 	prefs.setKeepView(FALSE);
+
+	Messenger::exit("AtenWindow::AtenWindow()");
 }
 
 // Destructor

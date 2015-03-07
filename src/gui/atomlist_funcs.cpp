@@ -253,6 +253,8 @@ void AtomListWidget::refresh()
 {
 	if (refreshing_) return;
 
+	Messenger::enter("AtomListWidget::refresh");
+
 	refreshing_ = TRUE;
 
 	// Check the current active model against the last one we represented in the list

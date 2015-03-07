@@ -1429,10 +1429,10 @@ Commands::Function Commands::command(const char* s)
 	for (result = Commands::Declarations+1; result < Commands::nCommands; ++result)
 	{
 		if (strcmp(data_[result].keyword,s) == 0) break;
-		if (strcmp(lowerCase(data_[result].keyword),lcase) == 0)
+		if (strcmp(lowerCase(data_[result].keyword), lcase) == 0)
 		{
-			Messenger::print("Warning: '%s' is deprecated - use '%s' instead.\n", s, data_[result].keyword);
-			break;
+			Messenger::print("Didn't recognised command '%s' - did you mean '%s' instead?\n", s, data_[result].keyword);
+			return Commands::nCommands;
 		}
 	}
 	return (Commands::Function) result;

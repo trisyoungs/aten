@@ -89,10 +89,10 @@ void Aten::openFilters()
 	if (found)
 	{
 		partnerFilters();
-		Messenger::print(Messenger::Verbose, "Found (import/export):  Models (%i/%i) ", filters_[FilterData::ModelImport].nItems(), filters_[FilterData::ModelExport].nItems());
-		Messenger::print(Messenger::Verbose, "Trajectory (%i/%i) ", filters_[FilterData::TrajectoryImport].nItems(), filters_[FilterData::TrajectoryExport].nItems());
-		Messenger::print(Messenger::Verbose, "Expression (%i/%i) ", filters_[FilterData::ExpressionImport].nItems(), filters_[FilterData::ExpressionExport].nItems());
-		Messenger::print(Messenger::Verbose, "Grid (%i/%i)\n", filters_[FilterData::GridImport].nItems(), filters_[FilterData::GridExport].nItems());
+		Messenger::print("Found (import/export):  Models (%i/%i) ", filters_[FilterData::ModelImport].nItems(), filters_[FilterData::ModelExport].nItems());
+		Messenger::print("Trajectory (%i/%i) ", filters_[FilterData::TrajectoryImport].nItems(), filters_[FilterData::TrajectoryExport].nItems());
+		Messenger::print("Expression (%i/%i) ", filters_[FilterData::ExpressionImport].nItems(), filters_[FilterData::ExpressionExport].nItems());
+		Messenger::print("Grid (%i/%i)\n", filters_[FilterData::GridImport].nItems(), filters_[FilterData::GridExport].nItems());
 	}
 	Messenger::exit("Aten::openFilters");
 }
@@ -171,7 +171,6 @@ int Aten::reloadFilters()
 	// Load filters
 	path.sprintf("%s%cfilters", dataDir_.get(), PATHSEP);
 	path = qPrintable(QDir::toNativeSeparators(path.get()));
-
 	Messenger::print("Reading filters from '%s'...\n", path.get());
 	int result = parseFilterDir(path);
 
@@ -203,7 +202,8 @@ int Aten::parseFilterDir(const char* path)
 {
 	Messenger::enter("Aten::parseFilterDir");
 	int i, nfailed = 0;
-	Dnchar s("--> ");
+	Dnchar s(-1, "FILTERS --> [%s] ", path);
+
 	// First check - does this directory actually exist
 	QDir filterdir(path);
 	if (!filterdir.exists())
@@ -211,6 +211,7 @@ int Aten::parseFilterDir(const char* path)
 		Messenger::exit("Aten::parseFilterDir");
 		return -1;
 	}
+
 	// Filter the directory contents - show only files and exclude '.' and '..'
 	QStringList filterlist = filterdir.entryList(QDir::Files | QDir::NoDotAndDotDot, QDir::Name);
 	for (i=0; i<filterlist.size(); i++)

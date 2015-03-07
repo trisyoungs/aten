@@ -86,7 +86,7 @@ filter(type="importmodel",name="EPSR ATO File", nickname="ato", extension="ato",
 		for (n=0; n<nrot; ++n)
 		{
 			// Read line to find out which type of definition this is...
-			if (!readline(dummy)) error("Error reading type of rotation group %i.\n", n+1);
+			if (!readLine(dummy)) error("Error reading type of rotation group %i.\n", n+1);
 			// Skip axis line
 			skipLine(1);
 			// If a DIHedral, we expect an integer which defines the number of constraints? Skip this number of lines

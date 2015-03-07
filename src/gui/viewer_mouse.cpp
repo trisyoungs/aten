@@ -105,8 +105,8 @@ void Viewer::mousePressEvent(QMouseEvent* event)
 // Qt Signal (mouse release event)
 void Viewer::mouseReleaseEvent(QMouseEvent *event)
 {
-	// Handle button releases (button up) from the mouse
 	Messenger::enter("Viewer::mouseReleaseEvent");
+
 	Prefs::MouseButton button;
 	if (event->button() == Qt::LeftButton) button = Prefs::LeftButton;
 	else if (event->button() == Qt::MidButton) button = Prefs::MiddleButton;
@@ -135,7 +135,9 @@ void Viewer::mouseReleaseEvent(QMouseEvent *event)
 void Viewer::mouseMoveEvent(QMouseEvent *event)
 {
 	static Vec3<double> delta;
-	
+
+	Messenger::enter("Viewer::mouseMoveEvent");
+
 	// Get current active model
 	Model* source = aten_->currentModelOrFrame();
 	if (source == NULL)
