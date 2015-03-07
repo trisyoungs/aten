@@ -120,11 +120,11 @@ class RenderPrimitives
 	// Set the desired primitive quality
 	void setQuality(int quality);	
 	// (Re)Generate primitive vertex arrays (if necessary)
-	void recreatePrimitives(bool force = false);
+	void recreatePrimitives();
 	// Push instance layer for all primitives
-	void pushInstance(const QGLContext* context, GLExtensions* extensions, bool forceRegenerate = false);
+	void pushInstance(const QGLContext* context, GLExtensions* extensions);
 	// Pop last instance layer
-	void popInstance(const QGLContext* context, AtenSpace::GLExtensions* extensions);
+	void popInstance(const QGLContext* context, GLExtensions* extensions);
 	// Return number of instances currently pushed
 	int nInstances();
 };

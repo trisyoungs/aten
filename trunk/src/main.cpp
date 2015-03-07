@@ -20,12 +20,9 @@
 */
 
 #include "main/aten.h"
-#include "parser/parser.h"
 #include "main/version.h"
-#include "parser/commandnode.h"
 #include "gui/mainwindow.h"
 #include <QtGui/QApplication>
-// #include <QtOpenGL/QtOpenGL>
 
 ATEN_USING_NAMESPACE
 
@@ -52,12 +49,12 @@ int main(int argc, char* argv[])
 	if (!MrAten.parseCliEarly(argc, argv)) return -1;
 
 	/* Print GPL license information */
-	Messenger::print(Messenger::Verbose, "Aten version %s, Copyright (C) 2007-2015 T. Youngs.\n", ATENVERSION);
-	Messenger::print(Messenger::Verbose, "SVN repository is %s.\n", ATENURL);
-	Messenger::print(Messenger::Verbose, "Aten uses Space Group Info (c) 1994-96 Ralf W. Grosse-Kunstleve.\n");
-	Messenger::print(Messenger::Verbose, "Aten comes with ABSOLUTELY NO WARRANTY.\n");
-	Messenger::print(Messenger::Verbose, "This is free software, and you are welcome to redistribute it under certain conditions.\n");
-	Messenger::print(Messenger::Verbose, "For more details read the GPL at <http://www.gnu.org/copyleft/gpl.html>.\n\n");
+	Messenger::print("Aten version %s, Copyright (C) 2007-2015 T. Youngs.\n", ATENVERSION);
+	Messenger::print("SVN repository is %s.\n", ATENURL);
+	Messenger::print("Aten uses Space Group Info (c) 1994-96 Ralf W. Grosse-Kunstleve.\n");
+	Messenger::print("Aten comes with ABSOLUTELY NO WARRANTY.\n");
+	Messenger::print("This is free software, and you are welcome to redistribute it under certain conditions.\n");
+	Messenger::print("For more details read the GPL at <http://www.gnu.org/copyleft/gpl.html>.\n\n");
 
 	/* Set random seed */
 	srand( (unsigned) time(NULL) );
@@ -68,9 +65,6 @@ int main(int argc, char* argv[])
 	MrAten.setWorkDir(getenv("PWD"));
 	if (!MrAten.dataDirSet()) MrAten.setDataDir(getenv("ATENDATA"));
 	Messenger::print(Messenger::Verbose, "Home directory is %s, working directory is %s, data directory is %s.\n", MrAten.homeDir(), MrAten.workDir(), MrAten.dataDir());
-
-	/* Create the main window */
-	AtenWindow mainWindow(MrAten);
 
 	/* Read in includes (if unsuccessful, a messagebox will be raised in the GUI) */
 	if (prefs.loadIncludes()) MrAten.openIncludes();
@@ -84,7 +78,10 @@ int main(int argc, char* argv[])
 	
 	/* Load in partitions */
 	if (prefs.loadPartitions()) MrAten.openPartitions();
-	
+
+	/* Create the main window */
+	AtenWindow mainWindow(MrAten);
+
 	/* Load in program and user preferences */
 	if (!MrAten.loadPrefs()) return -1;
 
@@ -93,7 +90,7 @@ int main(int argc, char* argv[])
 	
 	/* Parse program arguments - return value is how many models were loaded, or -1 for some kind of failure */
 	if (MrAten.parseCli(argc,argv) == -1) return -1;
-
+	
 	/* Enter the correct program mode */
 	int result = 0;
 	switch (MrAten.programMode())

@@ -162,7 +162,7 @@ void RenderPrimitives::setQuality(int quality)
 }
 	
 // (Re)Generate primitives
-void RenderPrimitives::recreatePrimitives(bool force)
+void RenderPrimitives::recreatePrimitives()
 {
 	Messenger::enter("RenderPrimitives::recreatePrimitives");
 
@@ -170,7 +170,7 @@ void RenderPrimitives::recreatePrimitives(bool force)
 	int n, m, nStacks, nSlices;
 	
 	// If current quality is the same as the requested quality, do nothing
-	if ((requestedQuality_ == currentQuality_) && (!force))
+	if (requestedQuality_ == currentQuality_)
 	{
 		Messenger::exit("RenderPrimitives::recreatePrimitives");
 		return;
@@ -340,13 +340,10 @@ void RenderPrimitives::recreatePrimitives(bool force)
 }
 
 // Create instance for primitives
-void RenderPrimitives::pushInstance(const QGLContext* context, GLExtensions* extensions, bool forceRegenerate)
+void RenderPrimitives::pushInstance(const QGLContext* context, GLExtensions* extensions)
 {
 	Messenger::enter("RenderPrimitives::pushInstance");
-	
-	// Recreate primitives
-	recreatePrimitives(forceRegenerate);
-	
+
 	// Push instances
 	atom_.pushInstance(context, extensions);
 	selectedAtom_.pushInstance(context, extensions);

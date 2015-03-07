@@ -142,7 +142,7 @@ void AtenWindow::saveSettings()
 	// Open new file for writing...
 	Dnchar filename;
 	filename.sprintf("%s%c%s%chistory.txt", aten_.homeDir(), PATHSEP, aten_.atenDir(), PATHSEP);
-	Messenger::print("Savung program history file '%s'...", filename.get());
+	Messenger::print("Saving program history file '%s'...", filename.get());
 	LineParser historyFile;
 	historyFile.openOutput(filename, TRUE);
 	

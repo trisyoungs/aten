@@ -96,6 +96,8 @@ void Primitive::pushInstance(const QGLContext* context, GLExtensions* extensions
 	// Does this primitive use instances?
 	if (!useInstances_) return;
 
+	Messenger::enter("Primitive::pushInstance");
+
 	// Clear the error flag
 	glGetError();
 

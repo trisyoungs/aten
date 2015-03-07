@@ -27,16 +27,21 @@ ATEN_USING_NAMESPACE
 // Constructor
 Viewer::Viewer(QWidget* parent)
 {
+	Messenger::enter("Viewer::Viewer()");
+
 	// Character / Setup
 	atenWindow_ = NULL;
 	contextWidth_ = 0;
 	contextHeight_ = 0;
 
 	// Rendering
-	drawing_ = FALSE;
+	valid_ = false;
+	drawing_ = false;
 	lastSource_ = NULL;
 	lastSourceFrameId_ = -1;
 	primitiveSet_ = Viewer::LowQuality;
+	sphereAtomAdjustment_ = 1.0;
+	scaledAtomAdjustments_.createEmpty(Elements().nElements());
 
 	// Atom Selection
 	atomClicked_ = NULL;
@@ -60,6 +65,8 @@ Viewer::Viewer(QWidget* parent)
 
 	// Prevent QPainter from autofilling widget background
 	setAutoFillBackground(FALSE);
+
+	Messenger::exit("Viewer::Viewer()");
 }
 
 // Destructor
@@ -80,6 +87,10 @@ void Viewer::initializeGL()
 
         // Create a GLExtensions object to probe features and give when pushing instances etc.
         GLExtensions* extensions = extensionsStack_.add();
+	Messenger::print(Messenger::Verbose, "New GLExtensions %p pushed onto stack (now %i on stack)\n", extensions, extensionsStack_.nItems());
+
+	// Update primitives if necessary
+	updatePrimitives();
 
         // Check for vertex buffer extensions
         if ((!extensions->hasVBO()) && (PrimitiveInstance::globalInstanceType() == PrimitiveInstance::VBOInstance))
@@ -95,11 +106,9 @@ void Viewer::initializeGL()
 void Viewer::paintGL()
 {
 	// Do nothing if the canvas is not valid, or we are still drawing from last time, or the Aten pointer has not been set
-	if ((!valid_) || drawing_ || (!atenWindow_))
-	{
-		Messenger::exit("Viewer::paintGL");
-		return;
-	}
+	if ((!valid_) || drawing_ || (!atenWindow_)) return;
+
+	Messenger::enter("Viewer::paintGL");
 
 	// Set the drawing flag so we don't have any rendering clashes
 	drawing_ = true;

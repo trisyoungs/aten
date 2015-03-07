@@ -116,6 +116,7 @@ bool Commands::function_DeleteModel(CommandNode* c, Bundle& obj, ReturnValue& rv
 bool Commands::function_FinaliseModel(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+
 	// If this command is being run from a filter, set the output filter in the model.
 	if (c->parent()->isFilter())
 	{
@@ -124,6 +125,7 @@ bool Commands::function_FinaliseModel(CommandNode* c, Bundle& obj, ReturnValue& 
 		obj.m->setFilename(c->parent()->parser()->inputFilename());
 		obj.m->setFilter(t->filter.partner());
 	}
+
 	// Do various necessary calculations
 	if (prefs.coordsInBohr()) obj.m->bohrToAngstrom();
 	obj.m->renumberAtoms();
@@ -131,18 +133,22 @@ bool Commands::function_FinaliseModel(CommandNode* c, Bundle& obj, ReturnValue& 
 	obj.m->calculateMass();
 	obj.m->selectNone();
 	obj.m->regenerateIcon();
+
 	// Print out some useful info on the model that we've just read in
 	Messenger::print(Messenger::Verbose, "Model  : %s\n", obj.m->name());
 	Messenger::print(Messenger::Verbose, "Atoms  : %i\n", obj.m->nAtoms());
 	Messenger::print(Messenger::Verbose, "Cell   : %s\n", UnitCell::cellType(obj.m->cell()->type()));
 	if (obj.m->cell()->type() != UnitCell::NoCell) obj.m->cell()->print();
+
 	// If a trajectory exists for this model, by default we view from trajectory in the GUI
 	if (obj.m->nTrajectoryFrames() > 0) obj.m->setRenderSource(Model::TrajectorySource);
+
 	// Lastly, reset all the log points and start afresh
 	obj.m->enableUndoRedo();
 	obj.m->changeLog.reset();
 	obj.m->changeLog.updateSavePoint();
 	rv.reset();
+
 	return TRUE;
 }
 

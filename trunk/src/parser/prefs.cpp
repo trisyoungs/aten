@@ -25,6 +25,7 @@
 #include "parser/commandnode.h"
 #include "main/aten.h"
 #include "ff/forcefield.h"
+#include "gui/mainwindow.h"
 
 ATEN_USING_NAMESPACE
 
@@ -649,6 +650,7 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue&
 			if (newValue.arraySize() == (Prefs::nDrawStyles - 1)) for (n=0; n<Prefs::nDrawStyles-1; ++n) ptr->setAtomStyleRadius( (Prefs::DrawStyle) n, newValue.asDouble(n, result));
 			else if (hasArrayIndex) ptr->setAtomStyleRadius( (Prefs::DrawStyle) (arrayIndex-1), newValue.asDouble(result));
 			else for (n=0; n<Prefs::nDrawStyles-1; ++n) ptr->setAtomStyleRadius( (Prefs::DrawStyle) n, newValue.asDouble(result));
+			aten_->atenWindow()->ui.MainView->updatePrimitives();
 // 			engine().updatePrimitives();	//ATEN2 TODO
 			break;
 		case (PreferencesVariable::BackCull):

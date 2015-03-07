@@ -33,6 +33,7 @@
 #include "render/textprimitivelist.h"
 #include "render/gridprimitive.h"
 #include "base/namespace.h"
+#include "templates/array.h"
 
 ATEN_USING_NAMESPACE
 
@@ -248,8 +249,10 @@ class Viewer : public QGLWidget
 	private:
 	// Local copy of model transformation matrix
 	Matrix modelTransformationMatrix_;
-	// Atom bond adjustment distances
-	double sphereAtomAdjustment_, *scaledAtomAdjustments_;
+	// Sphere atom bond adjustment distances
+	double sphereAtomAdjustment_;
+	// Scaled atom bond adjustment distances
+	Array<double> scaledAtomAdjustments_;
 	// Primitive sets for on and offscreen rendering
 	RenderPrimitives primitives_[Viewer::nPrimitiveSets];
 	// Current source primitive set
@@ -278,10 +281,6 @@ class Viewer : public QGLWidget
 	bool activePrimitiveLists_[Viewer::nTriangleObjects];
 	// Flag stating whether to rebuild stick primitives
 	bool rebuildSticks_;
-
-	private:
-	// Calculate atom/bond adjustments
-	void calculateAdjustments();
 
 	public:
 	// Push primitives instance (in specified quality)
