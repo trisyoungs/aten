@@ -1,7 +1,7 @@
 /*
 	*** Rendering Primitive
 	*** src/render/primitive.h
-	Copyright T. Youngs 2013-2014
+	Copyright T. Youngs 2013-2015
 
 	This file is part of Aten.
 
@@ -28,9 +28,8 @@
 #include "glext.h"
 #endif
 #include "render/primitiveinstance.h"
-#include "render/vertexchunk.h"
 #include "math/matrix.h"
-#include "templates/list.h"
+#include "templates/array.h"
 #include "base/namespace.h"
 
 ATEN_BEGIN_NAMESPACE
@@ -51,30 +50,44 @@ class Primitive : public ListItem<Primitive>
 	 * Data
 	 */
 	private:
-	// Vertex chunk for this primitive
-	VertexChunk vertexChunk_;
-	// Whether vertexData_ array also contains colour information
-	bool colouredVertexData_;
-	// GL object drawing method
+	// Vertex data array
+	Array<GLfloat> vertexData_;
+	// Number of vertices defined in vertexData_
+	int nDefinedVertices_;
+	// Index data array
+	Array<GLuint> indexData_;
+	// GL primitive type (GL_TRIANGLES, GL_LINES etc.)
 	GLenum type_;
-	// Stack of OpenGL VBO or display list IDs and the contexts in which they were created
-	List<PrimitiveInstance> instances_;
-	// Flag stating whether or not instances should be used for this primitive
-	bool useInstances_;
+	// Number of vertices per primitive type
+	int verticesPerType_;
+	// Number of data points per vertex
+	int dataPerVertex_;
+	// Whether vertex data array also contains colour information
+	bool colouredVertexData_;
 
 	public:
 	// Initialise primitive storage
-	void initialise(int maxVertices, int maxIndices, GLenum type, bool colourData);
+	void initialise(GLenum type, bool colourData);
 	// Forget all data, leaving arrays intact
 	void forgetAll();
 	// Return number of vertices currently defined in primitive
 	int nDefinedVertices() const;
 	// Return number of indices currently defined in primitive
 	int nDefinedIndices() const;
-	// Return vertex chunk
-	const VertexChunk& vertexChunk();
 	// Return whether vertex data contains colour information
 	bool colouredVertexData() const;
+
+
+	/*
+	 * Instances
+	 */
+	private:
+	// Stack of OpenGL VBO or display list IDs and the contexts in which they were created
+	List<PrimitiveInstance> instances_;
+	// Flag stating whether or not instances should be used for this primitive
+	bool useInstances_;
+
+	public:
 	// Flag that this primitive should not use instances (rendering will use vertex arrays)
 	void setNoInstances();
 	// Push instance layer from current vertex chunk list
@@ -83,8 +96,6 @@ class Primitive : public ListItem<Primitive>
 	void popInstance(const QGLContext *context, GLExtensions* extensions);
 	// Return number of instances available
 	int nInstances();
-	// Send to OpenGL (i.e. render)
-	void sendToGL() const;
 
 
 	/*
@@ -94,19 +105,19 @@ class Primitive : public ListItem<Primitive>
 	// Define next vertex and normal
 	GLuint defineVertex(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloat ny, GLfloat nz);
 	// Define next vertex and normal (as Vec3<double>)
-	GLuint defineVertex(Vec3<double> vertex, Vec3<double> normal);
+	GLuint defineVertex(Vec3<double>& vertex, Vec3<double>& normal);
+	// Define next vertex, normal, and colour
+	GLuint defineVertex(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloat ny, GLfloat nz, GLfloat r, GLfloat g, GLfloat b, GLfloat a);
 	// Define next vertex and normal
 	GLuint defineVertex(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloat ny, GLfloat nz, Vec4<GLfloat>& colour);
 	// Define next vertex, normal, and colour
-	GLuint defineVertex(GLfloat x, GLfloat y, GLfloat z, GLfloat nx, GLfloat ny, GLfloat nz, GLfloat r, GLfloat g, GLfloat b, GLfloat a);
-	// Define next vertex, normal, and colour
 	GLuint defineVertex(GLfloat x, GLfloat y, GLfloat z, Vec3<double>& normal, Vec4<GLfloat>& colour);
 	// Define next vertex, normal, and colour (as Vec3<double>s and array)
-	GLuint defineVertex(Vec3<double> &v, Vec3<double> &u, Vec4<GLfloat> &colour);
+	GLuint defineVertex(Vec3<double>& v, Vec3<double>& u, Vec4<GLfloat>& colour);
 	// Define next index double
-	bool defineIndices(GLuint a, GLuint b);
+	void defineIndices(GLuint a, GLuint b);
 	// Define next index triple
-	bool defineIndices(GLuint a, GLuint b, GLuint c);
+	void defineIndices(GLuint a, GLuint b, GLuint c);
 
 
 	/*
@@ -131,6 +142,14 @@ class Primitive : public ListItem<Primitive>
 	void plotCube(double size, int nSubs, double ox, double oy, double oz);
 	// Create wireframe, crossed cube centred at zero
 	void plotCrossedCube(double size, int nSubs, double ox, double oy, double oz);
+
+
+	/*
+	 * OpenGL
+	 */
+	public:
+	// Send to OpenGL (i.e. render)
+	void sendToGL();
 };
 
 ATEN_END_NAMESPACE
