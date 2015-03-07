@@ -39,6 +39,7 @@ Viewer::Viewer(QWidget* parent)
 	drawing_ = false;
 	lastSource_ = NULL;
 	lastSourceFrameId_ = -1;
+	renderingOffScreen_ = false;
 	primitiveSet_ = Viewer::LowQuality;
 	sphereAtomAdjustment_ = 1.0;
 	scaledAtomAdjustments_.createEmpty(Elements().nElements());
@@ -88,9 +89,6 @@ void Viewer::initializeGL()
         // Create a GLExtensions object to probe features and give when pushing instances etc.
         GLExtensions* extensions = extensionsStack_.add();
 	Messenger::print(Messenger::Verbose, "New GLExtensions %p pushed onto stack (now %i on stack)\n", extensions, extensionsStack_.nItems());
-
-	// Update primitives if necessary
-	updatePrimitives();
 
         // Check for vertex buffer extensions
         if ((!extensions->hasVBO()) && (PrimitiveInstance::globalInstanceType() == PrimitiveInstance::VBOInstance))

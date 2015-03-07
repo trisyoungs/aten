@@ -122,6 +122,11 @@ void Viewer::renderScene(const GLExtensions* extensions)
 	bool modelIsCurrentModel;
 	Model* m;
 
+	// Before we do anything else, make sure primitives are up-to-date
+	updatePrimitives(primitiveSet_);
+
+	// Make sure all models are up-to-date (after making list...) ATEN2 TODO
+
 	// Set the first item to consider - set localri to the passed iconSource (if there was one)
 // 	localri.item = NULL;	// ATEN2 TODO
 	nModels = aten_->nVisibleModels();
@@ -150,7 +155,7 @@ void Viewer::renderScene(const GLExtensions* extensions)
 		if (m == aten_->currentModel())
 		{
 			modelIsCurrentModel = TRUE;
-			currentBox.setRect(col*px, row*py, px, py);
+// 			currentBox.setRect(col*px, row*py, px, py);
 		}
 		else modelIsCurrentModel = FALSE;
 
@@ -184,7 +189,7 @@ void Viewer::renderScene(const GLExtensions* extensions)
 	static QFont font;
 	static QBrush nobrush(Qt::NoBrush), solidbrush(Qt::SolidPattern);
 	static QPen pen;
-	QPainter painter;
+	QPainter painter(this);
 
 	// Need to offset QPainter vertically if using pixelbuffers
 // 	if ((renderType != OnscreenScene) && (prefs.usePixelBuffers()))  ATEN2 TODO
@@ -231,11 +236,11 @@ void Viewer::renderScene(const GLExtensions* extensions)
 }
 
 // Update all primitives (following prefs change, etc.)
-void Viewer::updatePrimitives()
+void Viewer::updatePrimitives(Viewer::PrimitiveSet targetSet)
 {
 	// Set (possibly new) quality
-	primitives_[LowQuality].setQuality(prefs.primitiveQuality());
-	primitives_[HighQuality].setQuality(prefs.imagePrimitiveQuality());
+	int quality = (targetSet == Viewer::LowQuality ? prefs.primitiveQuality() : prefs.imagePrimitiveQuality());
+	primitives_[targetSet].setQuality(quality);
 
 	// Recalculate adjustments for bond positioning
 	double atomradius, bondradius, theta;
@@ -268,12 +273,9 @@ void Viewer::updatePrimitives()
 		return;
 	}
 
-	// Generate new VBOs / display lists - pop and push a context
-	for (int n=0; n<nPrimitiveSets; ++n) if (primitives_[n].nInstances() != 0)
-	{
-		primitives_[n].popInstance(context(), extensions);
-		primitives_[n].pushInstance(context(), extensions);
-	}
+	// Pop and push a context
+	primitives_[targetSet].recreatePrimitives();
 
-	primitives_[Viewer::LowQuality].recreatePrimitives();
+	if (primitives_[targetSet].nInstances() != 0) primitives_[targetSet].popInstance(context(), extensions);
+	primitives_[targetSet].pushInstance(context(), extensions);
 }

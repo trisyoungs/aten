@@ -146,12 +146,12 @@ void Viewer::mouseMoveEvent(QMouseEvent *event)
 		Messenger::exit("Viewer::mouseMoveEvent");
 		return;
 	}
-	
+
 	// Perform action associated with mode (if any)
 	if ((activeMode_ != UserAction::NoAction) || (selectedMode_ == UserAction::DrawFragmentAction))
 	{
 		// Calculate new delta.
-		delta.set(event->x(), event->y(),0.0);
+		delta.set(event->x(), event->y(), 0.0);
 		delta = delta - rMouseLast_;
 		// Use activeMode_ to determine what needs to be performed
 		switch (activeMode_)
@@ -202,6 +202,10 @@ void Viewer::mouseMoveEvent(QMouseEvent *event)
 
 	rMouseLast_.set(event->x(), event->y(), 0.0);
 	setFocus();
+
+	update();
+
+	Messenger::exit("Viewer::mouseMoveEvent");
 }
 
 // Qt Signal (mouse wheel event)

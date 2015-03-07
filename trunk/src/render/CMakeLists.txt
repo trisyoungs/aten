@@ -12,7 +12,6 @@ add_library(render
   textprimitive_grammar.hh
   textprimitive.h
   textprimitivelist.h
-  vertexchunk.h
   fontinstance.cpp
   gridprimitive.cpp
   glextensions.cpp
@@ -27,7 +26,6 @@ add_library(render
   textprimitive.cpp
   textprimitive_grammar.cc
   textprimitivelist.cpp
-  vertexchunk.cpp
 )
 
 include_directories(

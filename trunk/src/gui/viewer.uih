@@ -292,7 +292,7 @@ class Viewer : public QGLWidget
 	// Render whole scene
 	void renderScene(const GLExtensions* extensions);
 	// Update all primitives (following prefs change, etc.)
-	void updatePrimitives();
+	void updatePrimitives( Viewer::PrimitiveSet targetSet );
 
 
 	/*

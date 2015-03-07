@@ -277,7 +277,6 @@ void AtenPrefs::on_ElementRadiusSpin_valueChanged(double value)
 void AtenPrefs::updateAfterViewPrefs()
 {
 	if (refreshing_) return;
-	parent_.ui.MainView->updatePrimitives();
 	parent_.aten().globalLogChange(Log::Style);
 	parent_.postRedisplay();
 }
