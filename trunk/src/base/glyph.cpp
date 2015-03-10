@@ -64,7 +64,7 @@ Glyph::GlyphOption Glyph::glyphOption(const char* s, bool reportError)
 }
 
 /*
- * // GlyphData
+ * GlyphData
  */
 
 // Constructor
@@ -188,8 +188,8 @@ void GlyphData::copyColour(Vec4<GLfloat>& col) const
 }
 
 /*
-// Glyph
-*/
+ * Glyph
+ */
 
 // Constructor
 Glyph::Glyph() : ListItem<Glyph>()
@@ -198,7 +198,7 @@ Glyph::Glyph() : ListItem<Glyph>()
 	selected_ = FALSE;
 	visible_ = TRUE;
 	solid_ = TRUE;
-	rotation_ = NULL;
+	rotated_ = false;
 	type_ = Glyph::nGlyphTypes;
 	parent_ = NULL;
 }
@@ -211,33 +211,17 @@ void Glyph::operator=(Glyph &source)
 	selected_ = source.selected_;
 	visible_ = source.visible_;
 	solid_ = source.solid_;
-	// Rotation matrix (if it exists)
-	if (rotation_ != NULL) delete rotation_;
-	if (source.rotation_ == NULL) rotation_ = NULL;
-	else
-	{
-		rotation_ = new Matrix();
-		*rotation_ = *source.rotation_;
-	}
+	rotation_ = source.rotation_;
+
 	// Glyph data
 	data_.clear();
 	data_.createEmpty( Glyph::nGlyphData(type_) );
 	for (int n=0; n<Glyph::nGlyphData(type_); ++n) *data_[n] =  *(source.data_[n]);
 }	
 
-// Returns the number of data set for the Glyph
-int Glyph::nData() const
-{
-	return data_.nItems();
-}
-
-// Return nth data in glyph
-GlyphData *Glyph::data(int i)
-{
-	if ((i < 0) || (i >= data_.nItems())) Messenger::print( "Tried to get data %i for glyph when it has only %i.\n", i+1, data_.nItems());
-	else return data_[i];
-	return NULL;
-}
+/*
+ * Data
+ */
 
 // Set parent model
 void Glyph::setParent(Model* parent)
@@ -287,22 +271,108 @@ void Glyph::setType(GlyphType gt)
 }
 
 // Set text data
-void Glyph::setText(const char* s)
+void Glyph::setText(QString text)
 {
-	text_ = s;
+	text_ = text;
 }
 
 // Return text data
-const char* Glyph::text() const
+QString Glyph::text() const
 {
-	return text_.get();
+	return text_;
+}
+
+// Returns the number of data set for the Glyph
+int Glyph::nData() const
+{
+	return data_.nItems();
+}
+
+// Return nth data in glyph
+GlyphData* Glyph::data(int i)
+{
+	if ((i < 0) || (i >= data_.nItems())) Messenger::print( "Tried to get data %i for glyph when it has only %i.\n", i+1, data_.nItems());
+	else return data_[i];
+	return NULL;
 }
 
 // Set colour
 void Glyph::setColour(double r, double g, double b, double a)
 {
-	for (GlyphData *gd = data_.first(); gd != NULL; gd = gd->next) gd->setColour(r, g, b, a);
+	for (GlyphData* gd = data_.first(); gd != NULL; gd = gd->next) gd->setColour(r, g, b, a);
 }
+
+// Apply stored rotation matrix to supplied matrix, if there is one
+bool Glyph::applyRotation(Matrix& A)
+{
+	if (rotated_) A *= rotation_;
+	else return false;
+	return true;
+}
+
+// Return stored rotation matrix
+const Matrix& Glyph::rotation() const
+{
+	return rotation_;
+}
+
+// Set element of rotation matrix
+void Glyph::setRotationElement(int el, double d)
+{
+	rotation_.matrix()[el] = d;
+	rotated_ = true;
+}
+
+// Get element of rotation matrix
+double Glyph::getRotationElement(int el)
+{
+	return rotation_.matrix()[el];
+}
+
+// Reset current rotation matrix
+void Glyph::resetRotation()
+{
+	rotation_.setIdentity();
+	rotated_ = false;
+}
+
+// Rotate about X axis
+void Glyph::rotateX(double angle)
+{
+	rotation_.applyRotationAxis(1.0, 0.0, 0.0, angle, FALSE);
+	rotated_ = true;
+}
+
+// Rotate about Y axis
+void Glyph::rotateY(double angle)
+{
+	rotation_.applyRotationAxis(0.0, 1.0, 0.0, angle, FALSE);
+	rotated_ = true;
+}
+
+// Rotate about Z axis
+void Glyph::rotateZ(double angle)
+{
+	rotation_.applyRotationAxis(0.0, 0.0, 1.0, angle, FALSE);
+	rotated_ = true;
+}
+
+// Rotate about arbitrary axis
+void Glyph::rotate(double x, double y, double z, double angle)
+{
+	rotation_.applyRotationAxis(x, y, z, angle, TRUE);
+	rotated_ = true;
+}
+
+// Return whether rotation matrix has been modified
+bool Glyph::rotated() const
+{
+	return rotated_;
+}
+
+/*
+ * Style
+ */
 
 // Set whether the Glyph is selected
 void Glyph::setSelected(bool isselected)
@@ -341,63 +411,3 @@ bool Glyph::isSolid() const
 	return solid_;
 }
 
-// Return whether glyph has been rotated
-bool Glyph::rotated() const
-{
-	return (rotation_ != NULL);
-}
-
-// Return rotation matrix
-Matrix *Glyph::matrix()
-{
-	return rotation_;
-}
-
-// Set element of rotation matrix
-void Glyph::setRotationElement(int el, double d)
-{
-	if (rotation_ == NULL) rotation_ = new Matrix;
-	rotation_->matrix()[el] = d;
-}
-
-// Get element of rotation matrix
-double Glyph::getRotationElement(int el)
-{
-	if (rotation_ == NULL) rotation_ = new Matrix;
-	return rotation_->matrix()[el];
-}
-
-// Reset (delete) current rotation matrix
-void Glyph::resetRotation()
-{
-	if (rotation_ != NULL) delete rotation_;
-	rotation_ = NULL;
-}
-
-// Rotate about X axis
-void Glyph::rotateX(double angle)
-{
-	if (rotation_ == NULL) rotation_ = new Matrix;
-	rotation_->applyRotationAxis(1.0,0.0,0.0,angle,FALSE);
-}
-
-// Rotate about Y axis
-void Glyph::rotateY(double angle)
-{
-	if (rotation_ == NULL) rotation_ = new Matrix;
-	rotation_->applyRotationAxis(0.0,1.0,0.0,angle,FALSE);
-}
-
-// Rotate about Z axis
-void Glyph::rotateZ(double angle)
-{
-	if (rotation_ == NULL) rotation_ = new Matrix;
-	rotation_->applyRotationAxis(0.0,0.0,1.0,angle,FALSE);
-}
-
-// Rotate about arbitrary axis
-void Glyph::rotate(double x, double y, double z, double angle)
-{
-	if (rotation_ == NULL) rotation_ = new Matrix;
-	rotation_->applyRotationAxis(x, y, z, angle, TRUE);
-}

@@ -197,7 +197,7 @@ bool GlyphVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex,
 			rv.set( ptr->isSolid() );
 			break;
 		case (GlyphVariable::Text):
-			rv.set( ptr->text() );
+			rv.set( qPrintable(ptr->text()) );
 			break;
 		case (GlyphVariable::Type):
 			rv.set( Glyph::glyphType(ptr->type()) );

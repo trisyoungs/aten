@@ -5,8 +5,8 @@ add_library(render
   primitive.h
   primitiveinfo.h
   primitiveinstance.h
-  primitivelist.h
-  renderprimitives.h
+  primitiveset.h
+  rendergroup.h
   textformat.h
   textfragment.h
   textprimitive_grammar.hh
@@ -18,8 +18,10 @@ add_library(render
   primitive.cpp
   primitiveinfo.cpp
   primitiveinstance.cpp
-  primitivelist.cpp
-  renderprimitives.cpp
+  primitiveset.cpp
+  rendergroup.cpp
+  rendergroup_glyph.cpp
+  rendergroup_model.cpp
   surface.cpp
   textformat.cpp
   textfragment.cpp

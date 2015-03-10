@@ -1,6 +1,6 @@
 noinst_LIBRARIES = libmodel.a
 
-libmodel_a_SOURCES = atom.cpp bond.cpp build.cpp bundle.cpp cell.cpp clipboard.cpp component.cpp energy.cpp expression.cpp fragment.cpp glyph.cpp grid.cpp measure.cpp model.cpp modelextras.cpp molecule.cpp pattern.cpp select.cpp selection.cpp site.cpp trajectory.cpp transform.cpp typing.cpp undo.cpp undoevent.cpp undostate.cpp view.cpp zmatrix.cpp
+libmodel_a_SOURCES = atom.cpp bond.cpp build.cpp bundle.cpp cell.cpp clipboard.cpp component.cpp energy.cpp expression.cpp fragment.cpp glyph.cpp grid.cpp measure.cpp model.cpp modelextras.cpp molecule.cpp pattern.cpp render.cpp select.cpp selection.cpp site.cpp trajectory.cpp transform.cpp typing.cpp undo.cpp undoevent.cpp undostate.cpp view.cpp zmatrix.cpp
 
 noinst_HEADERS = bundle.h clipboard.h fragment.h model.h undoevent.h undostate.h
 

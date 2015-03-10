@@ -134,7 +134,7 @@ void GlyphsWidget::updateData(Glyph* g)
 	// Set individual data groups
 	for (int n=0; n<g->nData(); ++n)
 	{
-		GlyphData *gd = g->data(n);
+		GlyphData* gd = g->data(n);
 		if (gd->atomSetLast())
 		{
 			dataAtomIdSpin[n]->setValue(gd->atom() == NULL ? 0 : gd->atom()->id()+1);
@@ -165,7 +165,7 @@ void GlyphsWidget::updateControls(Glyph* g)
 		// Set individual data groups
 		for (int n=0; n<g->nData(); ++n)
 		{
-			GlyphData *gd = g->data(n);
+			GlyphData* gd = g->data(n);
 			dataTabWidget[n]->setEnabled(TRUE);
 			if (gd->atomSetLast())
 			{
@@ -364,7 +364,7 @@ void GlyphsWidget::on_GlyphLineEdit_returnPressed()
 	for (int i = 0; i < items.size(); ++i)
 	{
 		g = (Glyph*) ((TListWidgetItem*) items.at(i))->data.asPointer(VTypes::GlyphData);
-		g->setText(qPrintable(ui.GlyphLineEdit->text()));
+		g->setText(ui.GlyphLineEdit->text());
 	}
 	parent_.aten().currentModelOrFrame()->changeLog.add(Log::Glyphs);
 	parent_.postRedisplay();

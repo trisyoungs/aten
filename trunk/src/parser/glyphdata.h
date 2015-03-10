@@ -35,7 +35,7 @@ class GlyphDataVariable : public PointerVariable
 {
 	public:
 	// Constructor / Destructor
-	GlyphDataVariable(GlyphData *g = NULL, bool constant = FALSE);
+	GlyphDataVariable(GlyphData* g = NULL, bool constant = FALSE);
 	~GlyphDataVariable();
 
 

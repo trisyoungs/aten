@@ -53,7 +53,6 @@ set(qtproject_SRCS
   selectpattern_funcs.cpp
   selectvariable_funcs.cpp
   settings.cpp
-  viewer_glyph.cpp
   viewer_funcs.cpp
   viewer_key.cpp
   viewer_model.cpp

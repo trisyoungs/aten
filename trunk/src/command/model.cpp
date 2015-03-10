@@ -129,7 +129,10 @@ bool Commands::function_FinaliseModel(CommandNode* c, Bundle& obj, ReturnValue& 
 	// Do various necessary calculations
 	if (prefs.coordsInBohr()) obj.m->bohrToAngstrom();
 	obj.m->renumberAtoms();
+	printf("kjflkj\n");
+	printf("Obj.m = %p, window = %p\n", obj.m, aten_.atenWindow());
 	if (!prefs.keepView()) obj.m->resetView(aten_.atenWindow()->ui.MainView->width(), aten_.atenWindow()->ui.MainView->height());
+	printf("DONE\n");
 	obj.m->calculateMass();
 	obj.m->selectNone();
 	obj.m->regenerateIcon();

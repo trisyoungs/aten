@@ -1,6 +1,6 @@
 /*
-	*** Aten version information
-	*** src/main/version.h
+	*** Model rendering
+	*** src/model/render.cpp
 	Copyright T. Youngs 2007-2015
 
 	This file is part of Aten.
@@ -19,12 +19,21 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_VERSION_H
-#define ATEN_VERSION_H
+#include "model/model.h"
+// #include "base/pattern.h"
 
-#define ATENVERSION "1.915"
-#define ATENREVISION "1915"
-#define ATENDATE "Thu 28 Jun - 13:36"
-#define ATENURL "http://aten.googlecode.com/svn/trunk"
+ATEN_USING_NAMESPACE
 
-#endif
+// Return renderGroup, regenerating if necessary
+RenderGroup& Model::renderGroup(PrimitiveSet& primitiveSet)
+{
+	// Check the logs, and decide if we need to regenerate the primitive list for the model
+	if (renderGroupPoint_ == changeLog.log(Log::Total)) return renderGroup_;
+
+	renderGroup_.clear();
+
+	renderGroup_.createAtomsAndBonds(primitiveSet, this, Matrix());
+
+	return renderGroup_;
+}
+

@@ -22,6 +22,7 @@ model.cpp
 modelextras.cpp 
 molecule.cpp 
 pattern.cpp 
+render.cpp
 select.cpp 
 selection.cpp
 site.cpp 

@@ -50,6 +50,8 @@ Fix image saving - in particular scaling & offset when saving large image (what 
 Make UserActions a member of something (Viewer?).
 Move Primitive rendering lists from Viewer to individual Model, and add feature to only specify matrix when necessary (for speed, reusing previous matrix otherwise).
 Fix Grid rimitive generation (need to know nVertices ahead of time...). Perhaps add a feature to Primitive to allow 'temporary' vertices/indices to be added (using old-style VertexChunk lists) and then 'committed' with a single array being created.
+Optimise basic primitives to use vertex/index arrays instead of just vertices (also check end caps of spheres).
+Check selected atom rendering (probably broken).
 
 
 Manual TODO:

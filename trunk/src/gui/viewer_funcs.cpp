@@ -37,12 +37,8 @@ Viewer::Viewer(QWidget* parent)
 	// Rendering
 	valid_ = false;
 	drawing_ = false;
-	lastSource_ = NULL;
-	lastSourceFrameId_ = -1;
 	renderingOffScreen_ = false;
 	primitiveSet_ = Viewer::LowQuality;
-	sphereAtomAdjustment_ = 1.0;
-	scaledAtomAdjustments_.createEmpty(Elements().nElements());
 
 	// Atom Selection
 	atomClicked_ = NULL;

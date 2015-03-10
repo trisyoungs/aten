@@ -83,6 +83,12 @@ int Primitive::nDefinedIndices() const
 	return indexData_.nItems();
 }
 
+// GL primitive type (GL_TRIANGLES, GL_LINES etc.)
+GLenum Primitive::type()
+{
+	return type_;
+}
+
 // Return whether vertex data contains colour information
 bool Primitive::colouredVertexData() const
 {

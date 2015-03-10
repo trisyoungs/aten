@@ -74,6 +74,8 @@ class Primitive : public ListItem<Primitive>
 	int nDefinedVertices() const;
 	// Return number of indices currently defined in primitive
 	int nDefinedIndices() const;
+	// GL primitive type (GL_TRIANGLES, GL_LINES etc.)
+	GLenum type();
 	// Return whether vertex data contains colour information
 	bool colouredVertexData() const;
 
