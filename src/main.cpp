@@ -66,6 +66,12 @@ int main(int argc, char* argv[])
 	if (!MrAten.dataDirSet()) MrAten.setDataDir(getenv("ATENDATA"));
 	Messenger::print(Messenger::Verbose, "Home directory is %s, working directory is %s, data directory is %s.\n", MrAten.homeDir(), MrAten.workDir(), MrAten.dataDir());
 
+	/* Create the main window */
+	AtenWindow mainWindow(MrAten);
+
+	/* Set AtenWindow pointer in MrAten */
+	MrAten.setAtenWindow(&mainWindow);
+
 	/* Read in includes (if unsuccessful, a messagebox will be raised in the GUI) */
 	if (prefs.loadIncludes()) MrAten.openIncludes();
 
@@ -78,9 +84,6 @@ int main(int argc, char* argv[])
 	
 	/* Load in partitions */
 	if (prefs.loadPartitions()) MrAten.openPartitions();
-
-	/* Create the main window */
-	AtenWindow mainWindow(MrAten);
 
 	/* Load in program and user preferences */
 	if (!MrAten.loadPrefs()) return -1;
@@ -97,7 +100,7 @@ int main(int argc, char* argv[])
 	{
 		case (Aten::GuiMode):
 			/* Show the main window */
-			mainWindow.show();
+			mainWindow.updateAndShow();
 
 			/* Enter Qt's main events loop */
 			result =  app.exec();
@@ -114,8 +117,9 @@ int main(int argc, char* argv[])
 		case (Aten::ProcessMode):
 			Messenger::print("Process mode in effect - models will be processed and loaded in the GUI.\n");
 			MrAten.processModels();
+
 			/* Show the main window */
-			mainWindow.show();
+			mainWindow.updateAndShow();
 
 			/* Enter Qt's main events loop */
 			result =  app.exec();

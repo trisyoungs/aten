@@ -135,8 +135,10 @@ void Viewer::renderScene(const GLExtensions* extensions)
 	// Clear view
 	glViewport(0, 0, contextWidth_, contextHeight_);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	textPrimitives_.clear();
-	
+
+	// Reset local renderGroup_
+	renderGroup_.clear();
+
 	// Set up some useful values
 	nRows = nModels / nperrow + ( nModels %nperrow == 0 ? 0 : 1);
 	py = contextHeight_ / nRows;
@@ -151,24 +153,22 @@ void Viewer::renderScene(const GLExtensions* extensions)
 		m = ri->item;
 		if (m == NULL) continue;
 
-		// Store coordinates for box if this is the current model
+		// Render the whole model
+		renderModel(m, col*px, contextHeight_-(row+1)*py, px, py);
+
+		// Render additional data for active model
 		if (m == aten_->currentModel())
 		{
-			modelIsCurrentModel = TRUE;
-// 			currentBox.setRect(col*px, row*py, px, py);
+			// Render embellishments for current UserAction
+			renderUserActions(m);
+
+			// Render extras arising from open tool windows (current model only)
+	// 		renderWindowExtras(source);	// ATEN2 TODO
 		}
-		else modelIsCurrentModel = FALSE;
 
-		// Vibration frame?
-		m = m->renderSourceModel();
-		if (m->renderFromVibration() && (m->vibrationCurrentFrame() != NULL)) m = m->vibrationCurrentFrame();
+		// Render overlays
+	// 	renderModelOverlays(source); // ATEN2 TODO Text labels!
 
-		// Determine desired pixel range and set up view(port)
-		checkGlError();
-		m->setupView(col*px, contextHeight_-(row+1)*py, px, py);
-
-		// Render the 3D parts of the model
-		renderModel(m, modelIsCurrentModel, false);	// ATEN2 TODO
 
 		// Increase counters
 		++col;
@@ -178,38 +178,11 @@ void Viewer::renderScene(const GLExtensions* extensions)
 			++row;
 		}
 	}
-
-// 	// Select QPaintDevice* for QPainter
-// 	QPaintDevice* targetDevice = NULL;
-// 	if ((renderType != OnscreenScene) && prefs.usePixelBuffers()) targetDevice = pixelBuffer_;
-// 	else if (context != canvasContext_) targetDevice = QGLContext::currentContext()->device();
-// 	else targetDevice = gui.mainCanvas();
 	
 	// Start of QPainter code
-	static QFont font;
-	static QBrush nobrush(Qt::NoBrush), solidbrush(Qt::SolidPattern);
-	static QPen pen;
+	QBrush nobrush(Qt::NoBrush), solidbrush(Qt::SolidPattern);
+	QPen pen;
 	QPainter painter(this);
-
-	// Need to offset QPainter vertically if using pixelbuffers
-// 	if ((renderType != OnscreenScene) && (prefs.usePixelBuffers()))  ATEN2 TODO
-// 	{
-// 		painter.translate(0, painter.viewport().height()-height);
-// 	}
-
-	// Text Primitives
-	GLfloat colour[4];
-	double fontSize = (prefs.labelSize()/100.0) * contextHeight_;
-	font.setPointSizeF(fontSize);
-	painter.setFont(font);
-	painter.setRenderHint(QPainter::Antialiasing);
-	prefs.copyColour(Prefs::TextColour, colour);
-	color.setRgbF(colour[0], colour[1], colour[2], colour[3]);
-	solidbrush.setColor(color);
-	painter.setBrush(solidbrush);
-	painter.setPen(Qt::SolidLine);
-	painter.setPen(color);
-// 	textPrimitives_.renderAll(painter, fontSize);  ATEN2 TODO
 
 	// Draw box around current model
 	color.setRgbF(0.0,0.0,0.0,1.0);
@@ -236,34 +209,14 @@ void Viewer::renderScene(const GLExtensions* extensions)
 }
 
 // Update all primitives (following prefs change, etc.)
-void Viewer::updatePrimitives(Viewer::PrimitiveSet targetSet)
+void Viewer::updatePrimitives(Viewer::PrimitiveQuality targetQuality)
 {
 	// Set (possibly new) quality
-	int quality = (targetSet == Viewer::LowQuality ? prefs.primitiveQuality() : prefs.imagePrimitiveQuality());
-	primitives_[targetSet].setQuality(quality);
+	int quality = (targetQuality == Viewer::LowQuality ? prefs.primitiveQuality() : prefs.imagePrimitiveQuality());
+	primitives_[targetQuality].setQuality(quality);
 
-	// Recalculate adjustments for bond positioning
-	double atomradius, bondradius, theta;
-	int i;
-
-	// Triangle formed between atom radius (H), bond radius (O), and unknown (A)
-	// Determine angle between H and O and calculate adjustment (=H-A)
-
-	// Sphere Style
-	atomradius = prefs.atomStyleRadius(Prefs::SphereStyle);
-	bondradius = prefs.bondStyleRadius(Prefs::SphereStyle);
-	theta = asin(bondradius / atomradius);
-	sphereAtomAdjustment_ = atomradius - atomradius*cos(theta);
-
-	// Scaled Style
-	theta = asin(bondradius / atomradius);
-	sphereAtomAdjustment_ = atomradius - atomradius*cos(theta);
-	for (i = 0; i<Elements().nElements(); ++i)
-	{
-		atomradius = prefs.atomStyleRadius(Prefs::ScaledStyle) * Elements().el[i].atomicRadius;
-		theta = asin(bondradius / atomradius);
-		scaledAtomAdjustments_[i] = (atomradius - atomradius*cos(theta));
-	}
+	// Recalculate adjustments in PrimitiveSets
+	primitives_[targetQuality].calculateAdjustments();
 
 	// Grab topmost GLExtensions object
 	GLExtensions* extensions = extensionsStack_.last();
@@ -274,8 +227,8 @@ void Viewer::updatePrimitives(Viewer::PrimitiveSet targetSet)
 	}
 
 	// Pop and push a context
-	primitives_[targetSet].recreatePrimitives();
+	primitives_[targetQuality].recreatePrimitives();
 
-	if (primitives_[targetSet].nInstances() != 0) primitives_[targetSet].popInstance(context(), extensions);
-	primitives_[targetSet].pushInstance(context(), extensions);
+	if (primitives_[targetQuality].nInstances() != 0) primitives_[targetQuality].popInstance(context(), extensions);
+	primitives_[targetQuality].pushInstance(context(), extensions);
 }

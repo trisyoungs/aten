@@ -28,7 +28,8 @@
 #include "render/glextensions.h"
 #include "gui/useractions.h"
 #include "base/log.h"
-#include "render/renderprimitives.h"
+#include "render/primitiveset.h"
+#include "render/rendergroup.h"
 #include "render/primitiveinfo.h"
 #include "render/textprimitivelist.h"
 #include "render/gridprimitive.h"
@@ -237,10 +238,8 @@ class Viewer : public QGLWidget
 	 * Scene Rendering
 	 */
 	public:
-	// Triangle-based Objects for rendering
-	enum TriangleObject { BasicObject, AtomSelectionObject, GridObject, GlyphObject, GuiObject, nTriangleObjects };
-	// Primitive Set
-	enum PrimitiveSet { LowQuality, HighQuality, nPrimitiveSets };
+	// Primitive Quality
+	enum PrimitiveQuality { LowQuality, HighQuality };
 	// Stick objects for rendering
 	enum LineObject { NormalLineObject, SelectedLineObject, NormalGuiLineObject, SelectedGuiLineObject, nLineObjects };
 	// Glyph triangle style
@@ -249,82 +248,30 @@ class Viewer : public QGLWidget
 	private:
 	// Local copy of model transformation matrix
 	Matrix modelTransformationMatrix_;
-	// Sphere atom bond adjustment distances
-	double sphereAtomAdjustment_;
-	// Scaled atom bond adjustment distances
-	Array<double> scaledAtomAdjustments_;
 	// Primitive sets for on and offscreen rendering
-	RenderPrimitives primitives_[Viewer::nPrimitiveSets];
+	PrimitiveSet primitives_[2];
 	// Current source primitive set
-	Viewer::PrimitiveSet primitiveSet_;
-	// Flag indicating that next render should completely clear all filtered primitive lists
-	bool clearListsFlag_;
-	// Last rendered model
-	Model* lastSource_;
-	// ID of last trajectory frame displayed (if any)
-	int lastSourceFrameId_;
-	// Logs for last rendered source model
-	Log lastLog_;
-	// List of filtered solid primitives
-	List<PrimitiveInfo> solidPrimitives_[Viewer::nTriangleObjects];
-	//  Line primitives
-	Primitive linePrimitives_[Viewer::nLineObjects];
-	// Text primitives
-	TextPrimitiveList textPrimitives_;
-	// Grid primitives (for all models)
-	List<GridPrimitive> gridPrimitives_;
-	// Glyph triangle primitives
-	Primitive glyphTriangles_[Viewer::nTriangleStyles];
-	// Glyph line primitives
-	Primitive glyphLines_;
-	// Flags indicating which primitive lists are open for rebuilding
-	bool activePrimitiveLists_[Viewer::nTriangleObjects];
-	// Flag stating whether to rebuild stick primitives
-	bool rebuildSticks_;
+	Viewer::PrimitiveQuality primitiveSet_;
 
 	public:
-	// Push primitives instance (in specified quality)
-	void pushInstance(Viewer::PrimitiveSet set, const QGLContext *context);
-	// Pop topmost primitive instance
-	void popInstance(Viewer::PrimitiveSet set, const QGLContext *context);
 	// Setup basic GL properties
 	void setupGL();
 	// Render whole scene
 	void renderScene(const GLExtensions* extensions);
 	// Update all primitives (following prefs change, etc.)
-	void updatePrimitives( Viewer::PrimitiveSet targetSet );
+	void updatePrimitives(PrimitiveQuality targetSet);
 
 
 	/*
 	 * Object Rendering Functions
 	 */
 	private:
-	// Render primitive in specified colour
-	void renderPrimitive(Viewer::TriangleObject obj, Primitive& primitive, Vec4<GLfloat>& colour, Matrix& transform, GLenum fillMode = GL_FILL, GLfloat lineWidth = 1.0);
-	// Add text primitive for rendering later
-	void renderTextPrimitive(int x, int y, const char* text, QChar addChar = 0, bool rightalign = FALSE);
-	// Search for primitive associated to specified Grid pointer
-	GridPrimitive* findGridPrimitive(Grid* g);
-	// Remove grid primitive from list (if it exists)
-	void removeGridPrimitive(Grid* g);
-	// Render bond
-	void renderBond(Viewer::TriangleObject basicList, Viewer::TriangleObject selectionList, Matrix A, Vec3< double > vij, Atom* i, Prefs::DrawStyle style_i, Vec4<GLfloat>& colour_i, double radius_i, Atom* j, Prefs::DrawStyle style_j, Vec4<GLfloat>& colour_j, double radius_j, Bond::BondType bt, double selscale, Bond* b = 0, bool transparentSel = FALSE);
+	// Local RenderGroup, for useractions etc.
+	RenderGroup renderGroup_;
+
+	private:
 	// Setup and render full Model
-	void renderModel(Model* source, bool currentModel, bool renderType);
-	// Render atoms and bonds
-	void renderAtomsAndBonds(Model* source, Matrix baseTransform = Matrix(), bool isFragment = FALSE);
-	// Render model cell
-	void renderCell(Model* source);
-	// Render grids
-	void renderGrids(Model* source);
-	// Render text for grids
-	void renderGridText(Model* source);
-	// Render 3D glyphs
-	void renderGlyphs(Model* source);
-	// Render text glyphs
-	void renderTextGlyphs(Model* source);
-	// Render additional model information (labels, measurements etc.) which need to appear on top of everything else
-	void renderModelOverlays(Model* source);
+	void renderModel(Model* source, int viewPortX, int viewPortY, int viewPortWidth, int viewPortHeight);
 	// Render active mode embellishments
 	void renderActiveModes(Model* currentModel);
 	// Render addition elements related to selected/active UserActions
@@ -334,8 +281,8 @@ class Viewer : public QGLWidget
 
 
 	/*
-	// Rendering
-	*/
+	 * Rendering
+	 */
 	public:
 	// Create pixmap of whole scene
 // 	QPixmap renderSceneImage(RenderEngine::PrimitiveSet set, int w, int h); ATEN2 TODO

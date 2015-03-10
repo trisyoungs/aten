@@ -1,6 +1,6 @@
 /*
-	*** Rendering Engine Primitives
-	*** src/render/engine_primitives.cpp
+	*** Primitive Set
+	*** src/render/primitiveset.cpp
 	Copyright T. Youngs 2007-2015
 
 	This file is part of Aten.
@@ -19,21 +19,18 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "render/renderprimitives.h"
-// #include "base/messenger.h"
+#include "render/primitiveset.h"
 #include "base/prefs.h"
-// #include "base/forcefieldatom.h"
-// #include "model/model.h"
-// #include "gui/gui.h"
-// #include "gui/tcanvas.uih"
-// #include "main/aten.h"
-// #include <math.h>
 
 ATEN_USING_NAMESPACE
 
 // Constructor
-RenderPrimitives::RenderPrimitives()
+PrimitiveSet::PrimitiveSet()
 {
+	// Adjustments
+	sphereAtomAdjustment_ = 1.0;
+	scaledAtomAdjustments_.createEmpty(Elements().nElements());
+
 	// Primitives
 	requestedQuality_ = -1;
 	currentQuality_ = -1;
@@ -41,8 +38,51 @@ RenderPrimitives::RenderPrimitives()
 }
 
 // Destructor
-RenderPrimitives::~RenderPrimitives()
+PrimitiveSet::~PrimitiveSet()
 {
+}
+
+/*
+ * Adjustments for primitives
+ */
+
+// Recalculate adjustments
+void PrimitiveSet::calculateAdjustments()
+{
+	// Recalculate adjustments for bond positioning
+	double atomradius, bondradius, theta;
+	int i;
+
+	// Triangle formed between atom radius (H), bond radius (O), and unknown (A)
+	// Determine angle between H and O and calculate adjustment (=H-A)
+
+	// Sphere Style
+	atomradius = prefs.atomStyleRadius(Prefs::SphereStyle);
+	bondradius = prefs.bondStyleRadius(Prefs::SphereStyle);
+	theta = asin(bondradius / atomradius);
+	sphereAtomAdjustment_ = atomradius - atomradius*cos(theta);
+
+	// Scaled Style
+	theta = asin(bondradius / atomradius);
+	sphereAtomAdjustment_ = atomradius - atomradius*cos(theta);
+	for (i = 0; i<Elements().nElements(); ++i)
+	{
+		atomradius = prefs.atomStyleRadius(Prefs::ScaledStyle) * Elements().el[i].atomicRadius;
+		theta = asin(bondradius / atomradius);
+		scaledAtomAdjustments_[i] = (atomradius - atomradius*cos(theta));
+	}
+}
+
+// Return current sphereAtomAdjustment
+double PrimitiveSet::sphereAtomAdjustment()
+{
+	return sphereAtomAdjustment_;
+}
+
+// Return current sphereAtomAdjustment
+double PrimitiveSet::scaledAtomAdjustment(int element)
+{
+	return scaledAtomAdjustments_[element];
 }
 
 /*
@@ -50,103 +90,103 @@ RenderPrimitives::~RenderPrimitives()
  */
 
 // Return atom primitive
-Primitive& RenderPrimitives::atom()
+Primitive& PrimitiveSet::atom()
 {
 	return atom_;
 }
 
 // Return selected atom primitive
-Primitive& RenderPrimitives::selectedAtom()
+Primitive& PrimitiveSet::selectedAtom()
 {
 	return selectedAtom_;
 }
 
 // Return bond primitive
-Primitive& RenderPrimitives::bond(Prefs::DrawStyle drawStyle, Bond::BondType bondType)
+Primitive& PrimitiveSet::bond(Prefs::DrawStyle drawStyle, Bond::BondType bondType)
 {
 	return bonds_[drawStyle][bondType];
 }
 
 // Return selected bond primitive
-Primitive& RenderPrimitives::selectedBond(Prefs::DrawStyle drawStyle, Bond::BondType bondType)
+Primitive& PrimitiveSet::selectedBond(Prefs::DrawStyle drawStyle, Bond::BondType bondType)
 {
 	return selectedBonds_[drawStyle][bondType];
 }
 
 // Return line ring primitive
-Primitive& RenderPrimitives::lineRing()
+Primitive& PrimitiveSet::lineRing()
 {
 	return lineRing_;
 }
 
 // Return segmented line ring primitive
-Primitive& RenderPrimitives::segmentedLineRing()
+Primitive& PrimitiveSet::segmentedLineRing()
 {
 	return segmentedLineRing_;
 }
 
 // Return tube ring primitive
-Primitive& RenderPrimitives::tubeRing()
+Primitive& PrimitiveSet::tubeRing()
 {
 	return tubeRing_;
 }
 
 // Return segmented tube ring primitive
-Primitive& RenderPrimitives::segmentedTubeRing()
+Primitive& PrimitiveSet::segmentedTubeRing()
 {
 	return segmentedTubeRing_;
 }
 
 // Return cube primitive
-Primitive& RenderPrimitives::cube()
+Primitive& PrimitiveSet::cube()
 {
 	return cube_;
 }
 
 // Return wiret cube primitive
-Primitive& RenderPrimitives::wireCube()
+Primitive& PrimitiveSet::wireCube()
 {
 	return wireCube_;
 }
 
 // Return origin cube primitive
-Primitive& RenderPrimitives::originCube()
+Primitive& PrimitiveSet::originCube()
 {
 	return originCube_;
 }
 
 // Return sphere primitive
-Primitive& RenderPrimitives::sphere()
+Primitive& PrimitiveSet::sphere()
 {
 	return sphere_;
 }
 
 // Return cylinder primitive
-Primitive& RenderPrimitives::cylinder()
+Primitive& PrimitiveSet::cylinder()
 {
 	return cylinder_;
 }
 
 // Return cone primitive
-Primitive& RenderPrimitives::cone()
+Primitive& PrimitiveSet::cone()
 {
 	return cone_;
 }
 
 // Return crossed cube primitive
-Primitive& RenderPrimitives::crossedCube()
+Primitive& PrimitiveSet::crossedCube()
 {
 	return crossedCube_;
 }
 
 // Return cell axes primitive
-Primitive& RenderPrimitives::cellAxes()
+Primitive& PrimitiveSet::cellAxes()
 {
 	return cellAxes_;
 }
 
 // Return rotation globe primitive
-Primitive& RenderPrimitives::rotationGlobe()
+Primitive& PrimitiveSet::rotationGlobe()
 {
 	return rotationGlobe_;
 }
@@ -156,15 +196,15 @@ Primitive& RenderPrimitives::rotationGlobe()
  */
 
 // Set the desired primitive quality
-void RenderPrimitives::setQuality(int quality)
+void PrimitiveSet::setQuality(int quality)
 {
 	requestedQuality_ = quality;
 }
 	
 // (Re)Generate primitives
-void RenderPrimitives::recreatePrimitives()
+void PrimitiveSet::recreatePrimitives()
 {
-	Messenger::enter("RenderPrimitives::recreatePrimitives");
+	Messenger::enter("PrimitiveSet::recreatePrimitives");
 
 	double radius, aRadius[Prefs::nDrawStyles], bRadius[Prefs::nDrawStyles], selScale;
 	int n, m, nStacks, nSlices;
@@ -172,7 +212,7 @@ void RenderPrimitives::recreatePrimitives()
 	// If current quality is the same as the requested quality, do nothing
 	if (requestedQuality_ == currentQuality_)
 	{
-		Messenger::exit("RenderPrimitives::recreatePrimitives");
+		Messenger::exit("PrimitiveSet::recreatePrimitives");
 		return;
 	}
 
@@ -335,13 +375,13 @@ void RenderPrimitives::recreatePrimitives()
 	rotationGlobe_.plotCylinder(0.0f, 0.7f, 0.0f, 0.0f, 0.3f, 0.0f, 0.2f, 0.0f, 8, 10);
 	rotationGlobe_.plotCylinder(0.0f, 0.0f, 0.7f, 0.0f, 0.0f, 0.3f, 0.2f, 0.0f, 8, 10);
 	
-	Messenger::exit("RenderPrimitives::recreatePrimitives");
+	Messenger::exit("PrimitiveSet::recreatePrimitives");
 }
 
 // Create instance for primitives
-void RenderPrimitives::pushInstance(const QGLContext* context, GLExtensions* extensions)
+void PrimitiveSet::pushInstance(const QGLContext* context, GLExtensions* extensions)
 {
-	Messenger::enter("RenderPrimitives::pushInstance");
+	Messenger::enter("PrimitiveSet::pushInstance");
 
 	// Push instances
 	atom_.pushInstance(context, extensions);
@@ -370,13 +410,13 @@ void RenderPrimitives::pushInstance(const QGLContext* context, GLExtensions* ext
 
 	++nInstances_;
 
-	Messenger::exit("RenderPrimitives::pushInstance");
+	Messenger::exit("PrimitiveSet::pushInstance");
 }
 
 // Pop topmost instance for primitives
-void RenderPrimitives::popInstance(const QGLContext *context, GLExtensions* extensions)
+void PrimitiveSet::popInstance(const QGLContext *context, GLExtensions* extensions)
 {
-	Messenger::enter("RenderPrimitives::popInstance");
+	Messenger::enter("PrimitiveSet::popInstance");
 
 	atom_.popInstance(context, extensions);
 	selectedAtom_.popInstance(context, extensions);
@@ -404,11 +444,11 @@ void RenderPrimitives::popInstance(const QGLContext *context, GLExtensions* exte
 	
 	--nInstances_;
 
-	Messenger::exit("RenderPrimitives::popInstance");
+	Messenger::exit("PrimitiveSet::popInstance");
 }
 
 // Return number of instances currently pushed
-int RenderPrimitives::nInstances()
+int PrimitiveSet::nInstances()
 {
 	return nInstances_;
 }

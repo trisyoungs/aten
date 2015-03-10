@@ -56,9 +56,9 @@ class GridPrimitive : public ListItem<GridPrimitive>
 	
 	public:
 	// Return primary primitive
-	Primitive &primaryPrimitive();
+	Primitive& primaryPrimitive();
 	// Return secondary primitive
-	Primitive &secondaryPrimitive();
+	Primitive& secondaryPrimitive();
 	// Set source grid pointer
 	void setSource(Grid* g);
 	// Return source grid pointer

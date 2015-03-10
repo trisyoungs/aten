@@ -114,14 +114,16 @@ class AtenWindow : public QMainWindow
 	/*
 	 * Window Functions
 	 */
+	protected:
+	void closeEvent(QCloseEvent *event);
+
 	public:
 	// Finalise GUI
 	void finaliseUi();
 	// Set controls to reflect program variables
 	void setControls();
-
-	protected:
-	void closeEvent(QCloseEvent *event);
+	// Update and show
+	void updateAndShow();
 
 
 	/*

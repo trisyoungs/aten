@@ -26,6 +26,7 @@
 #include "templates/list.h"
 #include "templates/vector3.h"
 #include "templates/vector4.h"
+#include "math/matrix.h"
 #include "base/namespace.h"
 #ifdef _MAC
 #include <OpenGL/gl.h>
@@ -38,7 +39,6 @@ ATEN_BEGIN_NAMESPACE
 // Forward Declarations (Aten)
 class Model;
 class Atom;
-class Matrix;
 
 // Glyph data
 class GlyphData : public ListItem<GlyphData>
@@ -111,37 +111,47 @@ class Glyph : public ListItem<Glyph>
 	static const char* glyphOption(GlyphOption gt);
 	static GlyphOption glyphOption(const char* name, bool reportError = 0);
 
+
+	/*
+	 * Data
+	 */
 	private:
+	// Parent model
+	Model* parent_;
 	// Style of Glyph
 	GlyphType type_;
 	// Text data
-	Dnchar text_;
-	// Parent model
-	Model* parent_;
+	QString text_;
 	// Vector data for Glyph
 	List<GlyphData> data_;
 	// Rotation matrix for the glyph (NULL if not rotated)
-	Matrix *rotation_;
+	Matrix rotation_;
+	// Whether rotation matrix has been modified
+	bool rotated_;
 
 	public:
-	// Returns the number of data set for the Glyph
-	int nData() const;
-	// Return the n'th datapoint of the glyph
-	GlyphData *data(int i);
+	// Set parent model
+	void setParent(Model* parent);
+	// Return parent model
+	Model* parent();
 	// Set style of Glyph
 	void setType(GlyphType gt);
 	// Return style of Glyph
 	GlyphType type() const;
 	// Set text data
-	void setText(const char* s);
+	void setText(QString text);
 	// Return text data
-	const char* text() const;
+	QString text() const;
+	// Returns the number of data set for the Glyph
+	int nData() const;
+	// Return the n'th datapoint of the glyph
+	GlyphData* data(int i);
 	// Set colour of all datapoints
 	void setColour(double r, double g, double b, double a = 1.0f);
-	// Return whether glyph has been rotated (whether a rotation matrix exists)
-	bool rotated() const;
-	// Return rotation matrix
-	Matrix *matrix();
+	// Apply stored rotation matrix to supplied matrix, if it has been modified
+	bool applyRotation(Matrix& A);
+	// Return stored rotation matrix
+	const Matrix& rotation() const;
 	// Set element of rotation matrix
 	void setRotationElement(int el, double d);
 	// Get element of rotation matrix
@@ -156,14 +166,13 @@ class Glyph : public ListItem<Glyph>
 	void rotateY(double angle);
 	// Rotate about Z axis
 	void rotateZ(double angle);
-	// Set parent model
-	void setParent(Model* parent);
-	// Return parent model
-	Model* parent();
+	// Return whether rotation matrix has been modified
+	bool rotated() const;
+
 
 	/*
-	// Style
-	*/
+	 * Style
+	 */
 	private:
 	// Whether glyph is selected
 	bool selected_;

@@ -115,6 +115,8 @@ void Viewer::renderUserActions(Model* source)
 	Fragment *frag;
 
 	// Draw on the selection highlights (for atoms in the canvas' pickedAtoms list)
+	prefs.copyColour(Prefs::TextColour, colour_i);
+	glColor4f(colour_i.x, colour_i.y, colour_i.z, colour_i.w);
 	for (Refitem<Atom,int>* ri = pickedAtoms_.first(); ri != NULL; ri = ri->next)
 	{
 		// Get Atom pointer
@@ -123,14 +125,15 @@ void Viewer::renderUserActions(Model* source)
 		// Move to local atom position
 		A.setIdentity();
 		A.applyTranslation(i->r());
-		prefs.copyColour(Prefs::TextColour, colour_i);
 
 		// Draw a wireframe sphere at the atoms position
 		style_i = (prefs.renderStyle() == Prefs::IndividualStyle ? i->style() : prefs.renderStyle());
 		radius_i = prefs.atomStyleRadius(style_i);
 		if (style_i == Prefs::ScaledStyle) radius_i *= Elements().el[i->element()].atomicRadius;
 		A.applyScaling(radius_i, radius_i, radius_i);
-		renderPrimitive(Viewer::GuiObject, primitives_[primitiveSet_].selectedAtom(), colour_i, A, GL_LINE);
+		A *= modelTransformationMatrix_;
+		glLoadMatrixd(A.matrix());
+		primitives_[primitiveSet_].selectedAtom();
 	}
 
 	// Active user actions
@@ -147,8 +150,8 @@ void Viewer::renderUserActions(Model* source)
 			pos = atomClicked_->r();
 			style_i = (prefs.renderStyle() == Prefs::IndividualStyle ? atomClicked_->style() : prefs.renderStyle());
 			if (style_i == Prefs::TubeStyle) radius_i = 0.0;
-			else if (style_i == Prefs::ScaledStyle) radius_i = prefs.styleRadius(Prefs::ScaledStyle, atomClicked_->element()) - scaledAtomAdjustments_[atomClicked_->element()];
-			else radius_i = prefs.styleRadius(style_i, atomClicked_->element()) - sphereAtomAdjustment_;
+			else if (style_i == Prefs::ScaledStyle) radius_i = prefs.styleRadius(Prefs::ScaledStyle, atomClicked_->element()) - primitives_[primitiveSet_].scaledAtomAdjustment(atomClicked_->element());
+			else radius_i = prefs.styleRadius(style_i, atomClicked_->element()) - primitives_[primitiveSet_].sphereAtomAdjustment();
 
 			// We need to project a point from the mouse position onto the canvas plane, unless the mouse is over an existing atom in which case we snap to its position instead
 			j = source->atomOnScreen(rMouseLast_.x, rMouseLast_.y);
@@ -166,8 +169,8 @@ void Viewer::renderUserActions(Model* source)
 				style_j = (prefs.renderStyle() == Prefs::IndividualStyle ? j->style() : prefs.renderStyle());
 			}
 			if (style_j == Prefs::TubeStyle) radius_j = 0.0;
-			else if (style_j == Prefs::ScaledStyle) radius_j = prefs.styleRadius(Prefs::ScaledStyle, j->element()) - scaledAtomAdjustments_[sketchElement_];
-			else radius_j = prefs.styleRadius(style_j, j->element()) - sphereAtomAdjustment_;
+			else if (style_j == Prefs::ScaledStyle) radius_j = prefs.styleRadius(Prefs::ScaledStyle, j->element()) - primitives_[primitiveSet_].scaledAtomAdjustment(sketchElement_);
+			else radius_j = prefs.styleRadius(style_j, j->element()) - primitives_[primitiveSet_].sphereAtomAdjustment();
 			v -= pos;
 
 			// Select colour
@@ -199,11 +202,12 @@ void Viewer::renderUserActions(Model* source)
 			A.applyTranslation(pos);
 			
 			// Render new (temporary) bond
-			renderBond(GuiObject, GuiObject, A, v, atomClicked_, style_i, colour_i, radius_i, j, style_j, colour_j, radius_j, bt, prefs.selectionScale(), NULL, false);
+			// ATEN2 TODO Add a RenderGroup to Viewer, in order to store the bond primitive?
+// 			renderBond(GuiObject, GuiObject, A, v, atomClicked_, style_i, colour_i, radius_i, j, style_j, colour_j, radius_j, bt, prefs.selectionScale(), NULL, false);
 			
 			// Draw text showing distance
 			text.sprintf("r = %f ", v.magnitude());
-			renderTextPrimitive(rMouseLast_.x, contextHeight_-rMouseLast_.y, text.get(), 0x212b);
+// 			renderTextPrimitive(rMouseLast_.x, contextHeight_-rMouseLast_.y, text.get(), 0x212b);
 			break;
 	}
 	
@@ -225,11 +229,11 @@ void Viewer::renderUserActions(Model* source)
 				A.setIdentity();
 				A.applyTranslation(pos);
 				// Did we find a valid anchor point?
-				if (m != NULL) renderAtomsAndBonds(m, A, TRUE);
+				if (m != NULL) renderGroup_.createAtomsAndBonds(primitives_[primitiveSet_], m, A);
 				else
 				{
 					prefs.copyColour(Prefs::TextColour, colour_i);
-					renderPrimitive(Viewer::GuiObject, primitives_[primitiveSet_].crossedCube(), colour_i, A, GL_LINE, 2.0);
+					renderGroup_.addLines(primitives_[primitiveSet_].crossedCube(), A, colour_i, 2.0);
 				}
 			}
 			else
@@ -240,7 +244,7 @@ void Viewer::renderUserActions(Model* source)
 				else pos = source->screenToModel(rMouseLast_.x, rMouseLast_.y, prefs.drawDepth());
 				A.setIdentity();
 				A.applyTranslation(pos);
-				renderAtomsAndBonds(frag->orientedModel(), A, TRUE);
+				renderGroup_.createAtomsAndBonds(primitives_[primitiveSet_], frag->orientedModel(), A);
 			}
 			break;
 	}

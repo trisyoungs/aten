@@ -28,27 +28,28 @@
 ATEN_USING_NAMESPACE
 
 // Constructor
-PrimitiveInfo::PrimitiveInfo() : ListItem<PrimitiveInfo>()
+PrimitiveInfo::PrimitiveInfo(Primitive& prim, Matrix& transform, GLfloat lineWidth) : ListItem<PrimitiveInfo>(), primitive_(prim), localTransform_(transform), lineWidth_(lineWidth)
 {
 	// Private variables
-	primitive_ = NULL;
-	fillMode_ = GL_FILL;
-	lineWidth_ = 1.0f;
-	colour_.set(0.0, 0.0, 0.0, 1.0);
+	colour_[0] = 0.0;
+	colour_[1] = 0.0;
+	colour_[2] = 0.0;
+	colour_[3] = 1.0;
+	if (lineWidth_ < 0.0) lineWidth_ = 1.0;
 }
 
-// Set primitive info data
-void PrimitiveInfo::set(Primitive* prim, Vec4<GLfloat>& colour, Matrix& transform, GLenum fillMode, GLfloat lineWidth)
+// Constructor
+PrimitiveInfo::PrimitiveInfo(Primitive& prim, Matrix& transform, Vec4<GLfloat>& colour, GLfloat lineWidth) : ListItem<PrimitiveInfo>(), primitive_(prim), localTransform_(transform), lineWidth_(lineWidth)
 {
-	primitive_ = prim;
-	localTransform_ = transform;
-	fillMode_ = fillMode;
-	lineWidth_ = lineWidth;
-	colour_ = colour;
+	if (lineWidth_ < 0.0) lineWidth_ = 1.0;
+	colour_[0] = colour.x;
+	colour_[1] = colour.y;
+	colour_[2] = colour.z;
+	colour_[3] = colour.w;
 }
 
-// Return pointer to primitive
-Primitive* PrimitiveInfo::primitive()
+// Return reference to primitive
+Primitive& PrimitiveInfo::primitive()
 {
 	return primitive_;
 }
@@ -60,18 +61,12 @@ Matrix& PrimitiveInfo::localTransform()
 }
 
 // Return colour array
-const Vec4<GLfloat>& PrimitiveInfo::colour() const
+const GLfloat* PrimitiveInfo::colour() const
 {
 	return colour_;
 }
 
-// Return polygon fill mode
-GLenum PrimitiveInfo::fillMode() const
-{
-	return fillMode_;
-}
-
-// Return line width
+// Line width to use for primitive (if appropriate)
 GLfloat PrimitiveInfo::lineWidth() const
 {
 	return lineWidth_;

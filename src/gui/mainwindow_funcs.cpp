@@ -141,24 +141,6 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 
 	postRedisplay();
 
-	// Display message box warning if there was a filter load error
-	if (aten.nFiltersFailed() == -1)
-	{
-		QMessageBox::warning(NULL, "Aten", "Filters could not be found.\nNo import/export will be possible.\nSet the environment variable ATENDATA to point to Aten's data directory (e.g. 'export ATENDATA=/usr/local/aten/data'), or run with --atendata <dir>.\n", QMessageBox::Ok, QMessageBox::Ok);
-	}
-	else if (aten.nFiltersFailed() > 0)
-	{
-		// Construct the messagebox text
-		QString text("One or more filters could not be loaded properly on startup.\nCheck shell output or run Settings->Reload Filters to diagnose the problem.\nFilters with errors were:\n");
-		for (Dnchar* d = aten.failedFilters(); d != NULL; d = d->next)
-		{
-			text += "\t";
-			text += d->get();
-			if (d->next != NULL) text += "\n";
-		}
-		QMessageBox::warning(NULL, "Aten", text, QMessageBox::Ok, QMessageBox::Ok);
-	}
-
 	// Set some preferences back to their default values
 	prefs.setZMapType(ElementMap::AutoZMap, FALSE);
 	prefs.setKeepView(FALSE);

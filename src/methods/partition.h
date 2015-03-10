@@ -120,7 +120,7 @@ class PartitionData : public ListItem<PartitionData>
 	// Return nth component in list
 	DisorderData *component(int id);
 	// Return grid primitive instance for this partition
-	GridPrimitive &gridPrimitive();
+	GridPrimitive& gridPrimitive();
 };
 
 // Partitioning Scheme for Disordered Builder

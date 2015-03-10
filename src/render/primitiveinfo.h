@@ -35,33 +35,28 @@ class Primitive;
 class PrimitiveInfo : public ListItem<PrimitiveInfo>
 {
 	public:
-	// Constructor
-	PrimitiveInfo();
+	// Constructors
+	PrimitiveInfo(Primitive& prim, Matrix& transform, GLfloat lineWidth = -1.0);
+	PrimitiveInfo(Primitive& prim, Matrix& transform, Vec4<GLfloat>& colour, GLfloat lineWidth = -1.0);
 
 	private:
 	// Target primitive
-	Primitive* primitive_;
+	Primitive& primitive_;
 	// Local transformation of primitive
 	Matrix localTransform_;
 	// Colour of primitive (if vertexData_ doesn't contain colour information)
-	Vec4<GLfloat> colour_;
-	// Whether to draw the primitive as filled or wireframe polygons
-	GLenum fillMode_;
-	// GL object line width (if type_ == GL_LINE or chunk primitive type == GL_LINES)
+	GLfloat colour_[4];
+	// Line width to use for primitive (if appropriate)
 	GLfloat lineWidth_;
 	
 	public:
-	// Set primitive info data
-	void set(Primitive* prim, Vec4<GLfloat>& colour, Matrix& transform, GLenum fillMode = GL_FILL, GLfloat lineWidth = 1.0f);
-	// Return pointer to stored primitive
-	Primitive* primitive();
+	// Return reference to stored primitive
+	Primitive& primitive();
 	// Return local transformation of primitive
 	Matrix& localTransform();
 	// Return colour array
-	const Vec4<GLfloat>& colour() const;
-	// Return polygon fill mode
-	GLenum fillMode() const;
-	// Return line width
+	const GLfloat* colour() const;
+	// Line width to use for primitive (if appropriate)
 	GLfloat lineWidth() const;
 };
 

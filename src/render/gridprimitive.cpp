@@ -42,13 +42,13 @@ GridPrimitive::GridPrimitive(Grid* source) : ListItem<GridPrimitive>()
 }
 
 // Return primary primitive
-Primitive &GridPrimitive::primaryPrimitive()
+Primitive& GridPrimitive::primaryPrimitive()
 {
 	return primaryPrimitive_;
 }
 
 // Return secondary primitive
-Primitive &GridPrimitive::secondaryPrimitive()
+Primitive& GridPrimitive::secondaryPrimitive()
 {
 	return secondaryPrimitive_;
 }
@@ -78,7 +78,7 @@ bool GridPrimitive::secondaryIsTransparent()
 }
 
 // Return axis line primitive specified
-Primitive &GridPrimitive::axisLinePrimitive(int axis)
+Primitive& GridPrimitive::axisLinePrimitive(int axis)
 {
 	return axisLinePrimitives_[axis];
 }

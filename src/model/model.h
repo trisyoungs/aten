@@ -38,6 +38,7 @@
 #include "base/vibration.h"
 #include "base/zmatrix.h"
 #include "base/namespace.h"
+#include "render/rendergroup.h"
 
 ATEN_BEGIN_NAMESPACE
 
@@ -53,6 +54,7 @@ class AtomAddress;
 class Calculable;
 class Measurement;
 class Grid;
+class PrimiiveSet;
 
 // Model
 class Model : public ListItem<Model>
@@ -1217,6 +1219,20 @@ class Model : public ListItem<Model>
 	int vibrationFrameIndex();
 	// Set current frame index 
 	void setVibrationFrameIndex(int index);
+
+
+	/*
+	 * Rendering
+	 */
+	private:
+	// Primitives representing model, or current vibration / trajectory frame
+	RenderGroup renderGroup_;
+	// Logpoint at which renderGroup_ was last created
+	int renderGroupPoint_;
+
+	public:
+	// Return renderGroup, regenerating if necessary
+	RenderGroup& renderGroup(PrimitiveSet& primitiveSet);
 };
 
 ATEN_END_NAMESPACE

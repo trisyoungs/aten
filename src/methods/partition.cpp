@@ -202,7 +202,7 @@ DisorderData *PartitionData::component(int id)
 }
 
 // Return grid primitive instance for this partition
-GridPrimitive &PartitionData::gridPrimitive()
+GridPrimitive& PartitionData::gridPrimitive()
 {
 	return gridPrimitive_;
 }
@@ -466,7 +466,7 @@ void PartitioningScheme::createPartitionsFromGrid()
 	// Generate GridPrimitives for each partition
 	for (PartitionData *pd = partitions_.first(); pd != NULL; pd = pd->next)
 	{
-		GridPrimitive &prim = pd->gridPrimitive();
+		GridPrimitive& prim = pd->gridPrimitive();
 		prim.setSource(&grid_);
 		grid_.setLowerPrimaryCutoff(pd->id()-0.5);
 		grid_.setUpperPrimaryCutoff(pd->id()+0.5);
@@ -542,7 +542,7 @@ void PartitioningScheme::recalculatePartitions()
 	// Generate GridPrimitives for each partition
 	for (PartitionData *pd = partitions_.first(); pd != NULL; pd = pd->next)
 	{
-		GridPrimitive &prim = pd->gridPrimitive();
+		GridPrimitive& prim = pd->gridPrimitive();
 		prim.setSource(&grid_);
 		grid_.setLowerPrimaryCutoff(pd->id()-0.5);
 		grid_.setUpperPrimaryCutoff(pd->id()+0.5);

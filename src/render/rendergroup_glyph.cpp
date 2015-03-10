@@ -1,6 +1,6 @@
 /*
 	*** Glyph Rendering
-	*** src/gui/viewer_glyph.cpp
+	*** src/render/rendergroup_glyph.cpp
 	Copyright T. Youngs 2007-2015
 
 	This file is part of Aten.
@@ -19,17 +19,19 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-// #include "classes/prefs.h"
+#include "render/rendergroup.h"
+#include "render/primitiveset.h"
 #include "model/model.h"
-#include "gui/viewer.uih"
+#include "base/prefs.h"
+
+ATEN_USING_NAMESPACE
 
 // Render glyphs
-void Viewer::renderGlyphs(Model* source)
+void RenderGroup::createGlyphs(PrimitiveSet& primitiveSet, Model* source)
 {
 	Messenger::enter("Viewer::renderGlyphs");
 	Matrix A, B;
 	Vec3<double> r[4], u;
-	Viewer::GlyphTriangleStyle ts;
 	Vec4<GLfloat> colour[4], textColour;
 	double phi, rij;
 	int n, i;
@@ -53,8 +55,8 @@ void Viewer::renderGlyphs(Model* source)
 				r[1] = g->data(1)->vector();
 				g->data(0)->copyColour(colour[0]);
 				// Draw simple line from tail to head points
-				glyphLines_.defineVertex(r[0].x, r[0].y, r[0].z, 0.0, 0.0, 1.0, colour[0]);
-				glyphLines_.defineVertex(r[1].x, r[1].y, r[1].z, 0.0, 0.0, 1.0, colour[0]);
+				extraNormalLines_.defineVertex(r[0].x, r[0].y, r[0].z, 0.0, 0.0, 1.0, colour[0]);
+				extraNormalLines_.defineVertex(r[1].x, r[1].y, r[1].z, 0.0, 0.0, 1.0, colour[0]);
 				// Draw cylinder arrowhead in wireframe
 				A.setIdentity();
 				A.applyTranslation(r[0]);
@@ -67,14 +69,14 @@ void Viewer::renderGlyphs(Model* source)
 				// Move to endpoint
 				A.applyTranslationZ(rij*arrowBodyLength);
 				A.applyScaling(0.2,0.2,rij*arrowHeadLength/arrowBodyLength);
-				renderPrimitive(Viewer::GlyphObject, primitives_[primitiveSet_].cone(), colour[0], A, GL_LINE);
+				addTriangles(primitiveSet.cone(), A, colour[0], GL_LINE);
 				break;
 			// Line - start = data[0], end = data[1]
 			case (Glyph::LineGlyph):
 				r[1] = g->data(1)->vector();
 				g->data(0)->copyColour(colour[0]);
-				glyphLines_.defineVertex(r[0].x, r[0].y, r[0].z, 0.0, 0.0, 1.0, colour[0]);
-				glyphLines_.defineVertex(r[1].x, r[1].y, r[1].z, 0.0, 0.0, 1.0, colour[0]);
+				extraNormalLines_.defineVertex(r[0].x, r[0].y, r[0].z, 0.0, 0.0, 1.0, colour[0]);
+				extraNormalLines_.defineVertex(r[1].x, r[1].y, r[1].z, 0.0, 0.0, 1.0, colour[0]);
 				break;
 			// Sphere - centre = data[0], scale = data[1]
 			case (Glyph::SphereGlyph):
@@ -82,17 +84,17 @@ void Viewer::renderGlyphs(Model* source)
 				g->data(0)->copyColour(colour[0]);
 				A.setIdentity();
 				A.applyTranslation(r[0]);
-				if (g->rotated()) A *= (*g->matrix());
+				g->applyRotation(A);
 				A.applyScaling(r[1]);
 				if (g->isSolid())
 				{
-					renderPrimitive(Viewer::GlyphObject, primitives_[primitiveSet_].sphere(), colour[0], A, GL_FILL);
-					if (g->isSelected()) renderPrimitive(Viewer::GlyphObject, primitives_[primitiveSet_].sphere(), textColour, A, GL_LINE, 2.0);
+					addTriangles(primitiveSet.sphere(), A, colour[0]);
+					if (g->isSelected()) addTriangles(primitiveSet.sphere(), A, textColour, GL_LINE);
 				}
 				else
 				{
-					if (g->isSelected()) renderPrimitive(Viewer::GlyphObject, primitives_[primitiveSet_].sphere(), textColour, A, GL_LINE, 3.0);
-					else renderPrimitive(Viewer::GlyphObject, primitives_[primitiveSet_].sphere(), colour[0], A, GL_LINE, 1.0);
+					if (g->isSelected()) addTriangles(primitiveSet.sphere(), A, textColour, GL_LINE);
+					else addTriangles(primitiveSet.sphere(), A, colour[0], GL_LINE);
 				}
 				break;
 			// Cube - centre = data[0], scale = data[1]
@@ -101,17 +103,17 @@ void Viewer::renderGlyphs(Model* source)
 				g->data(0)->copyColour(colour[0]);
 				A.setIdentity();
 				A.applyTranslation(r[0]);
-				if (g->rotated()) A *= (*g->matrix());
+				g->applyRotation(A);
 				A.applyScaling(r[1]);
 				if (g->isSolid())
 				{
-					renderPrimitive(Viewer::GlyphObject, primitives_[primitiveSet_].cube(), colour[0], A, GL_FILL);
-					if (g->isSelected()) renderPrimitive(Viewer::GlyphObject, primitives_[primitiveSet_].cube(), textColour, A, GL_LINE, 2.0);
+					addTriangles(primitiveSet.cube(), A, colour[0], GL_FILL);
+					if (g->isSelected()) addTriangles(primitiveSet.cube(), A, textColour, GL_LINE);
 				}
 				else
 				{
-					if (g->isSelected()) renderPrimitive(Viewer::GlyphObject, primitives_[primitiveSet_].cube(), textColour, A, GL_LINE, 3);
-					else renderPrimitive(Viewer::GlyphObject, primitives_[primitiveSet_].cube(), colour[0], A, GL_LINE, 1.0);
+					if (g->isSelected()) addTriangles(primitiveSet.cube(), A, textColour, GL_LINE);
+					else addTriangles(primitiveSet.cube(), A, colour[0], GL_LINE);
 				}
 				break;
 			// Triangle - vertex 1 = data[0], vertex 2 = data[1], vertex 3 = data[2]
@@ -124,16 +126,23 @@ void Viewer::renderGlyphs(Model* source)
 				// Work out normal
 				u = (r[1] - r[0]) * (r[2] - r[0]);
 				u.normalise();
-				if (g->isSolid()) ts = Viewer::SolidTriangle;
-				else ts = Viewer::WireTriangle;
-				glyphTriangles_[ts].defineVertex(r[0], u, colour[0]);
-				glyphTriangles_[ts].defineVertex(r[1], u, colour[1]);
-				glyphTriangles_[ts].defineVertex(r[2], u, colour[2]);
-				if (g->isSelected())
+				if (g->isSolid())
 				{
-					glyphTriangles_[Viewer::WireTriangle].defineVertex(r[0], u, textColour);
-					glyphTriangles_[Viewer::WireTriangle].defineVertex(r[1], u, textColour);
-					glyphTriangles_[Viewer::WireTriangle].defineVertex(r[2], u, textColour);
+					extraSolidTriangles_.defineVertex(r[0], u, colour[0]);
+					extraSolidTriangles_.defineVertex(r[1], u, colour[1]);
+					extraSolidTriangles_.defineVertex(r[2], u, colour[2]);
+				}
+				else if (!g->isSelected())
+				{
+					extraWireTriangles_.defineVertex(r[0], u, colour[0]);
+					extraWireTriangles_.defineVertex(r[1], u, colour[1]);
+					extraWireTriangles_.defineVertex(r[2], u, colour[2]);
+				}
+				else
+				{
+					extraWireTriangles_.defineVertex(r[0], u, textColour);
+					extraWireTriangles_.defineVertex(r[1], u, textColour);
+					extraWireTriangles_.defineVertex(r[2], u, textColour);
 				}
 				break;
 			// Quad - vertex 1 = data[0], vertex 2 = data[1], vertex 3 = data[2], vertex 4 = data[3]
@@ -150,19 +159,23 @@ void Viewer::renderGlyphs(Model* source)
 					// Work out normal
 					u = (r[n+1] - r[n]) * (r[n+2] - r[n]);
 					u.normalise();
-					if (g->isSolid()) ts = Viewer::SolidTriangle;
-					else ts = Viewer::WireTriangle;
-					i = n;
-					glyphTriangles_[ts].defineVertex(r[i], u, colour[i]);
-					++i;
-					glyphTriangles_[ts].defineVertex(r[i], u, colour[i]);
-					++i;
-					glyphTriangles_[ts].defineVertex(r[i], u, colour[i]);
-					if (g->isSelected())
+					if (g->isSolid())
 					{
-						glyphTriangles_[Viewer::WireTriangle].defineVertex(r[n], u, textColour);
-						glyphTriangles_[Viewer::WireTriangle].defineVertex(r[n+1], u, textColour);
-						glyphTriangles_[Viewer::WireTriangle].defineVertex(r[n+2], u, textColour);
+						extraSolidTriangles_.defineVertex(r[n], u, colour[n]);
+						extraSolidTriangles_.defineVertex(r[n+1], u, colour[n+1]);
+						extraSolidTriangles_.defineVertex(r[n+2], u, colour[n+2]);
+					}
+					else if (!g->isSelected())
+					{
+						extraWireTriangles_.defineVertex(r[n], u, colour[n]);
+						extraWireTriangles_.defineVertex(r[n+1], u, colour[n+1]);
+						extraWireTriangles_.defineVertex(r[n+2], u, colour[n+2]);
+					}
+					else
+					{
+						extraWireTriangles_.defineVertex(r[n], u, textColour);
+						extraWireTriangles_.defineVertex(r[n+1], u, textColour);
+						extraWireTriangles_.defineVertex(r[n+2], u, textColour);
 					}
 				}
 				break;
@@ -180,18 +193,23 @@ void Viewer::renderGlyphs(Model* source)
 					// Work out normal
 					u = (r[(n+1)%4] - r[n]) * (r[(n+2)%4] - r[n]);
 					u.normalise();
-					if (g->isSolid()) ts = Viewer::SolidTriangle;
-					else ts = Viewer::WireTriangle;
-					glyphTriangles_[ts].defineVertex(r[n], u, colour[n]);
-					i = (n+1)%4;
-					glyphTriangles_[ts].defineVertex(r[i], u, colour[i]);
-					i = (n+2)%4;
-					glyphTriangles_[ts].defineVertex(r[i], u, colour[i]);
-					if (g->isSelected())
+					if (g->isSolid())
 					{
-						glyphTriangles_[Viewer::WireTriangle].defineVertex(r[n], u, textColour);
-						glyphTriangles_[Viewer::WireTriangle].defineVertex(r[(n+1)%4], u, textColour);
-						glyphTriangles_[Viewer::WireTriangle].defineVertex(r[(n+2)%4], u, textColour);
+						extraSolidTriangles_.defineVertex(r[n], u, colour[n]);
+						extraSolidTriangles_.defineVertex(r[(n+1)%4], u, colour[(n+1)%4]);
+						extraSolidTriangles_.defineVertex(r[(n+2)%4], u, colour[(n+2)%4]);
+					}
+					else if (!g->isSelected())
+					{
+						extraWireTriangles_.defineVertex(r[n], u, colour[n]);
+						extraWireTriangles_.defineVertex(r[(n+1)%4], u, colour[(n+1)%4]);
+						extraWireTriangles_.defineVertex(r[(n+2)%4], u, colour[(n+2)%4]);
+					}
+					else
+					{
+						extraWireTriangles_.defineVertex(r[n], u, textColour);
+						extraWireTriangles_.defineVertex(r[(n+1)%4], u, textColour);
+						extraWireTriangles_.defineVertex(r[(n+2)%4], u, textColour);
 					}
 				}
 				break;
@@ -217,18 +235,22 @@ void Viewer::renderGlyphs(Model* source)
 				A.multiplyRotation(B);
 				if (g->isSolid())
 				{
-					renderPrimitive(Viewer::GlyphObject, primitives_[primitiveSet_].sphere(), colour[0], A, GL_FILL);
-					if (g->isSelected()) renderPrimitive(Viewer::GlyphObject, primitives_[primitiveSet_].sphere(), textColour, A, GL_LINE, 2.0);
+					addTriangles(primitiveSet.sphere(), A, colour[0], GL_FILL);
+					if (g->isSelected()) addTriangles(primitiveSet.sphere(), A, textColour, GL_LINE);
 				}
 				else
 				{
-					if (g->isSelected()) renderPrimitive(Viewer::GlyphObject, primitives_[primitiveSet_].sphere(), textColour, A, GL_LINE, 3.0);
-					else renderPrimitive(Viewer::GlyphObject, primitives_[primitiveSet_].sphere(), colour[0], A, GL_LINE, 1.0);
+					if (g->isSelected()) addTriangles(primitiveSet.sphere(), A, textColour, GL_LINE);
+					else addTriangles(primitiveSet.sphere(), A, colour[0], GL_LINE, 1.0);
 				}
 				break;
-			// Text - handled in Viewer::renderTextGlyphs()
+			// Text (2D)
 			case (Glyph::TextGlyph):
+				r[0] = g->data(0)->vector();
+				addText2D(r[0].x, r[0].y, g->text());
+				break;
 			case (Glyph::Text3DGlyph):
+				addText3D(g->data(0)->vector(), g->text());
 				break;
 			// Tube arrow - tail = data[0], head = data[1]
 			case (Glyph::TubeArrowGlyph):
@@ -245,11 +267,11 @@ void Viewer::renderGlyphs(Model* source)
 				else A.applyRotationAxis(-r[2].y, r[2].x, 0.0, phi, TRUE);
 				// Draw cylinder
 				A.applyScaling(0.1,0.1,rij*arrowBodyLength);
-				renderPrimitive(Viewer::GlyphObject, primitives_[primitiveSet_].cylinder(), colour[0], A, g->isSolid() ? GL_FILL : GL_LINE);
+				addTriangles(primitiveSet.cylinder(), A, colour[0], g->isSolid() ? GL_FILL : GL_LINE);
 				// Move to endpoint
 				A.applyTranslationZ(1.0);
 				A.applyScaling(2.0,2.0,arrowHeadLength/arrowBodyLength);
-				renderPrimitive(Viewer::GlyphObject, primitives_[primitiveSet_].cone(), colour[0], A, g->isSolid() ? GL_FILL : GL_LINE);
+				addTriangles(primitiveSet.cone(), A, colour[0], g->isSolid() ? GL_FILL : GL_LINE);
 				break;
 			// Tube vector - centre = data[0], vector = data[1]
 			case (Glyph::TubeVectorGlyph):
@@ -266,11 +288,11 @@ void Viewer::renderGlyphs(Model* source)
 				else A.applyRotationAxis(-r[1].y, r[1].x, 0.0, phi, TRUE);
 				// Draw cylinder
 				A.applyScaling(0.1,0.1,rij*arrowBodyLength);
-				renderPrimitive(Viewer::GlyphObject, primitives_[primitiveSet_].cylinder(), colour[0], A, g->isSolid() ? GL_FILL : GL_LINE);
+				addTriangles(primitiveSet.cylinder(), A, colour[0], g->isSolid() ? GL_FILL : GL_LINE);
 				// Move to endpoint
 				A.applyTranslationZ(1.0);
 				A.applyScaling(2.0,2.0,arrowHeadLength/arrowBodyLength);
-				renderPrimitive(Viewer::GlyphObject, primitives_[primitiveSet_].cone(), colour[0], A, g->isSolid() ? GL_FILL : GL_LINE);
+				addTriangles(primitiveSet.cone(), A, colour[0], g->isSolid() ? GL_FILL : GL_LINE);
 				break;
 			// Vector - center = data[0], vector = data[1]
 			case (Glyph::VectorGlyph):
@@ -278,8 +300,8 @@ void Viewer::renderGlyphs(Model* source)
 				r[0] -= r[1]*0.5;
 				g->data(0)->copyColour(colour[0]);
 				// Draw simple line from tail to head points, since we have adjusted along half the vector above
-				glyphLines_.defineVertex(r[0].x, r[0].y, r[0].z, 0.0, 0.0, 1.0, colour[0]);
-				glyphLines_.defineVertex(r[0].x+r[1].x, r[0].y+r[1].y, r[0].z+r[1].z, 0.0, 0.0, 1.0, colour[0]);
+				extraNormalLines_.defineVertex(r[0].x, r[0].y, r[0].z, 0.0, 0.0, 1.0, colour[0]);
+				extraNormalLines_.defineVertex(r[0].x+r[1].x, r[0].y+r[1].y, r[0].z+r[1].z, 0.0, 0.0, 1.0, colour[0]);
 				// Draw cylinder arrowhead in wireframe
 				A.setIdentity();
 				A.applyTranslation(r[0]);
@@ -291,46 +313,10 @@ void Viewer::renderGlyphs(Model* source)
 				// Move to endpoint
 				A.applyTranslationZ(rij*arrowBodyLength);
 				A.applyScaling(0.2, 0.2, rij*arrowHeadLength/arrowBodyLength);
-				renderPrimitive(Viewer::GlyphObject, primitives_[primitiveSet_].cone(), colour[0], A, GL_LINE);
+				addTriangles(primitiveSet.cone(), A, colour[0], GL_LINE);
 				break;
 		}
 	}
-	
-	A.setIdentity();
-	renderPrimitive(Viewer::GlyphObject, glyphTriangles_[Viewer::SolidTriangle], colour[0], A);	// ATEN2 TODO
-	renderPrimitive(Viewer::GlyphObject, glyphTriangles_[Viewer::WireTriangle], colour[0], A, GL_LINE);
-	renderPrimitive(Viewer::GlyphObject, glyphLines_, colour[0], A, GL_LINE);
+
 	Messenger::exit("Viewer::renderGlyphs");
-}
-
-// Render text glyphs
-void Viewer::renderTextGlyphs(Model* source)
-{
-	Vec3<double> r1, r2;
-	Vec4<double> screenr;
-	GLfloat textcolour[4];
-	Glyph* g;
-
-	// Copy text colour
-	prefs.copyColour(Prefs::TextColour, textcolour);
-	
-	for (Refitem<Glyph,int>* ri = source->textGlyphs(); ri != NULL; ri = ri->next)
-	{
-		// Get glyph pointer
-		g = ri->item;
-
-		// Check if glyph is visible
-		if (!g->isVisible()) continue;
-		
-		// Grab first coordinate (always used)
-		r1 = g->data(0)->vector();
-		
-		if (g->type() == Glyph::TextGlyph) renderTextPrimitive(r1.x, r1.y, g->text());
-		else if (g->type() == Glyph::Text3DGlyph)
-		{
-			r2 = source->modelToWorld(r1, &screenr);
-			if (r2.z < -1.0) renderTextPrimitive(screenr.x, screenr.y, g->text());
-		}
-		else printf("Internal Error: Found non-text glyph in textglyphs list...\n");
-	}
 }

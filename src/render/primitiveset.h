@@ -1,6 +1,6 @@
 /*
-	*** Rendering Engine Primitives
-	*** src/render/engine_primitives.h
+	*** Rendering Primitive Set
+	*** src/render/primitiveset.h
 	Copyright T. Youngs 2007-2015
 
 	This file is part of Aten.
@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_RENDERPRIMITIVES_H
-#define ATEN_RENDERPRIMITIVES_H
+#ifndef ATEN_PRIMITIVESET_H
+#define ATEN_PRIMITIVESET_H
 
 #ifdef _WIN32
 #include <windows.h>
@@ -40,13 +40,31 @@ ATEN_BEGIN_NAMESPACE
 // Forward Declarations (Aten)
 class GLExtensions;
 
-// Rendering Primitives
-class RenderPrimitives
+// Primitive Set
+class PrimitiveSet
 {
 	public:
 	// Constructor / Destructor
-	RenderPrimitives();
-	~RenderPrimitives();
+	PrimitiveSet();
+	~PrimitiveSet();
+
+
+	/*
+	 * Adjustments for primitives
+	 */
+	private:
+	// Sphere atom bond adjustment distances
+	double sphereAtomAdjustment_;
+	// Scaled atom bond adjustment distances
+	Array<double> scaledAtomAdjustments_;
+
+	public:
+	// Recalculate adjustments
+	void calculateAdjustments();
+	// Return current sphereAtomAdjustment
+	double sphereAtomAdjustment();
+	// Return current sphereAtomAdjustment
+	double scaledAtomAdjustment(int element);
 
 
 	/*
