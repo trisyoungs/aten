@@ -92,7 +92,7 @@ int NetaParser::lex()
 				// Check for previous exponential in number
 				if (hasexp)
 				{
-					Messenger::print("Error: Number has two exponentiations (e/E).\n");
+					Messenger::print("Error: Number has two exponentiations (e/E).");
 					return 0;
 				}
 				token += 'E';
@@ -126,8 +126,8 @@ int NetaParser::lex()
 			integer = FALSE;
 			NetaParser_lval.doubleConst = atof(beforeChar(token,'E')) * pow(10.0, atof(afterChar(token,'E')));
 		}
-		if (integer) Messenger::print(Messenger::Parse, "NETA : found an integer constant [%s] [%i]\n", token.get(), NetaParser_lval.intConst);
-		else Messenger::print(Messenger::Parse, "NETA : found a floating-point constant [%s] [%e]\n", token.get(), NetaParser_lval.doubleConst);
+		if (integer) Messenger::print(Messenger::Parse, "NETA : found an integer constant [%s] [%i]", token.get(), NetaParser_lval.intConst);
+		else Messenger::print(Messenger::Parse, "NETA : found a floating-point constant [%s] [%e]", token.get(), NetaParser_lval.doubleConst);
 		return (integer ? INTCONST : DOUBLECONST);
 	}
 
@@ -143,20 +143,20 @@ int NetaParser::lex()
 		}
 		while (isalnum(c) || (c == '_'));
 		unGetChar();
-		Messenger::print(Messenger::Typing, "NETA : found an alpha token [%s]...\n", token.get());
+		Messenger::print(Messenger::Typing, "NETA : found an alpha token [%s]...", token.get());
 
 		// Element Symbol (or 'Any')
 		if (token == "Any")
 		{
 			NetaParser_lval.intConst = 0;
-			Messenger::print(Messenger::Typing, "NETA : ...which is the any element symbol (Any)\n");
+			Messenger::print(Messenger::Typing, "NETA : ...which is the any element symbol (Any)");
 			return ELEMENT;
 		}
 		for (n=0; n<Elements().nElements(); ++n) if (token == Elements().symbol(n)) break;
 		if (n < Elements().nElements())
 		{
 			NetaParser_lval.intConst = n;
-			Messenger::print(Messenger::Typing, "NETA : ...which is a an element symbol (%i)\n",n);
+			Messenger::print(Messenger::Typing, "NETA : ...which is a an element symbol (%i)",n);
 			return ELEMENT;
 		}
 
@@ -164,7 +164,7 @@ int NetaParser::lex()
 		Neta::NetaKeyword nk = Neta::netaKeyword(token, FALSE);
 		if (nk != Neta::nNetaKeywords)
 		{
-			Messenger::print(Messenger::Typing, "NETA : ...which is a keyword (->NETAKEY)\n");
+			Messenger::print(Messenger::Typing, "NETA : ...which is a keyword (->NETAKEY)");
 			NetaParser_lval.netaKey = nk;
 			return NETAKEY;
 		}
@@ -173,7 +173,7 @@ int NetaParser::lex()
 		Atom::AtomGeometry ag = Atom::atomGeometry(token, FALSE);
 		if (ag != Atom::nAtomGeometries)
 		{
-			Messenger::print(Messenger::Typing, "NETA : ...which is a geometry (->NETAGEOMETRYTYPE)\n");
+			Messenger::print(Messenger::Typing, "NETA : ...which is a geometry (->NETAGEOMETRYTYPE)");
 			NetaParser_lval.atomGeom = ag;
 			return NETAGEOMETRYTYPE;
 		}
@@ -182,13 +182,13 @@ int NetaParser::lex()
 		Neta::NetaValue nv = Neta::netaValue(token, FALSE);
 		if (nv == Neta::RepeatValue)
 		{
-			Messenger::print(Messenger::Typing, "NETA : ...which is a repeat value (->NETAREPEAT)\n");
+			Messenger::print(Messenger::Typing, "NETA : ...which is a repeat value (->NETAREPEAT)");
 			NetaParser_lval.netaVal = nv;
 			return NETAREPEAT;
 		}
 		else if (nv != Neta::nNetaValues)
 		{
-			Messenger::print(Messenger::Typing, "NETA : ...which is a value (->NETAVAL)\n");
+			Messenger::print(Messenger::Typing, "NETA : ...which is a value (->NETAVAL)");
 			NetaParser_lval.netaVal = nv;
 			return NETAVAL;
 		}
@@ -197,7 +197,7 @@ int NetaParser::lex()
 		Neta::NetaExpander ne = Neta::netaExpander(token, FALSE);
 		if (ne != Neta::nNetaExpanders)
 		{
-			Messenger::print(Messenger::Typing, "NETA : ...which is an expander (->NETAEXP)\n");
+			Messenger::print(Messenger::Typing, "NETA : ...which is an expander (->NETAEXP)");
 			if (ne == Neta::RingExpander) return NETARING;
 			else if (ne == Neta::ChainExpander) return NETACHAIN;
 			else if (ne == Neta::GeometryExpander) return NETAGEOMETRY;
@@ -209,13 +209,13 @@ int NetaParser::lex()
 		Bond::BondType bt = Bond::bondType(token, FALSE);
 		if (bt != Bond::nBondTypes)
 		{
-			Messenger::print(Messenger::Typing, "NETA : ...which is a bond type (->INTCONST, %i)\n", bt);
+			Messenger::print(Messenger::Typing, "NETA : ...which is a bond type (->INTCONST, %i)", bt);
 			NetaParser_lval.intConst = bt;
 			return INTCONST;
 		}
 
 		// If we get to here then we have found an unrecognised alphanumeric token
-		Messenger::print(Messenger::Typing, "NETA : ...which is unrecognised (->TOKEN)\n");
+		Messenger::print(Messenger::Typing, "NETA : ...which is unrecognised (->TOKEN)");
 		lastUnknownToken_ = token;
 		return TOKEN;
 	}
@@ -224,7 +224,7 @@ int NetaParser::lex()
 	// Return immediately in the case of brackets, commas etc.
 	if ((c == '(') || (c == ')') || (c == ',') || (c == '[') || (c == ']') || (c == '-') || (c == '~') || (c == '&') || ( c == '!') || (c == '$') || (c == '=') || (c == '?') || (c == ':'))
 	{
-		Messenger::print(Messenger::Typing, "NETA : found symbol [%c]\n",c);
+		Messenger::print(Messenger::Typing, "NETA : found symbol [%c]",c);
 		return c;
 	}
 	token += c;
@@ -236,17 +236,17 @@ int NetaParser::lex()
 	{
 		c = getChar();
 		token += c;
-		Messenger::print(Messenger::Typing, "NETA : found symbol [%s]\n",token.get());
+		Messenger::print(Messenger::Typing, "NETA : found symbol [%s]",token.get());
 		NetaSymbolToken st = (NetaSymbolToken) enumSearch("", nNetaSymbolTokens, NetaSymbolTokenKeywords, token);
 		if (st != nNetaSymbolTokens) return NetaSymbolTokenValues[st];
-		else Messenger::print("Error: Unrecognised symbol found in input (%s).\n", token.get());
+		else Messenger::print("Error: Unrecognised symbol found in input (%s).", token.get());
  	}
 	else
 	{
 		// Make sure that this is a known symbol
 		if ((c == '$') || (c == '%') || (c == '&') || (c == '@') || (c == '?') || (c == ':'))
 		{
-			Messenger::print("Error: Unrecognised symbol found in input (%c).\n", c);
+			Messenger::print("Error: Unrecognised symbol found in input (%c).", c);
 		}
 		else return c;
 	}

@@ -38,12 +38,12 @@ void Aten::openFilters()
 	QStringList paths;
 	if (!dataDir_.isEmpty())
 	{
-		Messenger::print(Messenger::Verbose, "Aten::openFilters() - data directory is '%s'.\n", dataDir_.get());
+		Messenger::print(Messenger::Verbose, "Aten::openFilters() - data directory is '%s'.", dataDir_.get());
 		paths << dataDir_.get();
 	}
 	else
 	{
-		Messenger::print(Messenger::Verbose, "Data directory has not yet been set. Default locations will be searched...\n");
+		Messenger::print(Messenger::Verbose, "Data directory has not yet been set. Default locations will be searched...");
 		// Default locations
 		paths << "/usr/share/aten";
 		paths << "/usr/local/share/aten";
@@ -56,7 +56,7 @@ void Aten::openFilters()
 	{
 		path.sprintf("%s/filters", qPrintable(paths.at(i)));
 		path = qPrintable(QDir::toNativeSeparators(path.get()));
-		Messenger::print(Messenger::Verbose, "Looking for filters in '%s'...\n", path.get());
+		Messenger::print(Messenger::Verbose, "Looking for filters in '%s'...", path.get());
 		nfailed = parseFilterDir(path);
 		if (nfailed == -1) continue;	// Directory not found
 		found = TRUE;
@@ -67,21 +67,21 @@ void Aten::openFilters()
 
 	if (!found)
 	{
-		Messenger::print("No filters found in any known default locations.\n");
-		Messenger::print("Probable solutions:\n");
-		Messenger::print("  1) Set the environment variable ATENDATA to point to the installed location of the filters\n");
-		Messenger::print("         e.g. (in Linux) 'export ATENDATA=/usr/share/aten/'\n");
-		Messenger::print("  2) Set the environment variable ATENDATA to point to the location of the 'data' directory in the source tree\n");
-		Messenger::print("         e.g. (in Linux) 'export ATENDATA=/home/bob/src/aten-1.2/data)\n");
-		Messenger::print("  3) Use the command-line switch --atendata <dir> to specify either of the above locations\n");
-		Messenger::print("         e.g. (in Linux) 'aten --atendata /home/bob/src/aten-1.2/data\n");
+		Messenger::print("No filters found in any known default locations.");
+		Messenger::print("Probable solutions:");
+		Messenger::print("  1) Set the environment variable ATENDATA to point to the installed location of the filters");
+		Messenger::print("         e.g. (in Linux) 'export ATENDATA=/usr/share/aten/'");
+		Messenger::print("  2) Set the environment variable ATENDATA to point to the location of the 'data' directory in the source tree");
+		Messenger::print("         e.g. (in Linux) 'export ATENDATA=/home/bob/src/aten-1.2/data)");
+		Messenger::print("  3) Use the command-line switch --atendata <dir> to specify either of the above locations");
+		Messenger::print("         e.g. (in Linux) 'aten --atendata /home/bob/src/aten-1.2/data");
 		nFiltersFailed_ = -1;
 	}
 
 	// Try to load user filters - we don't mind if the directory doesn't exist...
 	path.sprintf("%s%c%s%cfilters%c", homeDir_.get(), PATHSEP, atenDir_.get(), PATHSEP, PATHSEP);
 	path = qPrintable(QDir::toNativeSeparators(path.get()));
-	Messenger::print(Messenger::Verbose, "Looking for user filters in '%s'...\n", path.get());
+	Messenger::print(Messenger::Verbose, "Looking for user filters in '%s'...", path.get());
 	nfailed = parseFilterDir(path);
 	if (nfailed > 0) nFiltersFailed_ += nfailed;
 
@@ -92,7 +92,7 @@ void Aten::openFilters()
 		Messenger::print("Found (import/export):  Models (%i/%i) ", filters_[FilterData::ModelImport].nItems(), filters_[FilterData::ModelExport].nItems());
 		Messenger::print("Trajectory (%i/%i) ", filters_[FilterData::TrajectoryImport].nItems(), filters_[FilterData::TrajectoryExport].nItems());
 		Messenger::print("Expression (%i/%i) ", filters_[FilterData::ExpressionImport].nItems(), filters_[FilterData::ExpressionExport].nItems());
-		Messenger::print("Grid (%i/%i)\n", filters_[FilterData::GridImport].nItems(), filters_[FilterData::GridExport].nItems());
+		Messenger::print("Grid (%i/%i)", filters_[FilterData::GridImport].nItems(), filters_[FilterData::GridExport].nItems());
 	}
 	Messenger::exit("Aten::openFilters");
 }
@@ -105,7 +105,7 @@ bool Aten::openFilter(const char* filename)
 	Program* f = filterPrograms_.add();
 	if (!f->generateFromFile(filename, filename, TRUE, TRUE, TRUE))
 	{
-		Messenger::print("Failed to load filters from '%s'...\n", filename);
+		Messenger::print("Failed to load filters from '%s'...", filename);
 		failedFilters_.add()->set( filename );
 		filterPrograms_.remove(f);
 		Messenger::exit("Aten::openFilter");
@@ -155,7 +155,7 @@ int Aten::reloadFilters()
 {
 	Messenger::enter("Aten::reloadFilters");
 	Dnchar path;
-	Messenger::print("Clearing current filters....\n");
+	Messenger::print("Clearing current filters....");
 	filters_[FilterData::ModelImport].clear();
 	filters_[FilterData::ModelExport].clear();
 	filters_[FilterData::TrajectoryImport].clear();
@@ -171,7 +171,7 @@ int Aten::reloadFilters()
 	// Load filters
 	path.sprintf("%s%cfilters", dataDir_.get(), PATHSEP);
 	path = qPrintable(QDir::toNativeSeparators(path.get()));
-	Messenger::print("Reading filters from '%s'...\n", path.get());
+	Messenger::print("Reading filters from '%s'...", path.get());
 	int result = parseFilterDir(path);
 
 	// Print out info and partner filters 
@@ -179,7 +179,7 @@ int Aten::reloadFilters()
 	Messenger::print("Found (import/export):  Models (%i/%i) ", filters_[FilterData::ModelImport].nItems(), filters_[FilterData::ModelExport].nItems());
 	Messenger::print("Trajectory (%i/%i) ", filters_[FilterData::TrajectoryImport].nItems(), filters_[FilterData::TrajectoryExport].nItems());
 	Messenger::print("Expression (%i/%i) ", filters_[FilterData::ExpressionImport].nItems(), filters_[FilterData::ExpressionExport].nItems());
-	Messenger::print("Grid (%i/%i)\n", filters_[FilterData::GridImport].nItems(), filters_[FilterData::GridExport].nItems());
+	Messenger::print("Grid (%i/%i)", filters_[FilterData::GridImport].nItems(), filters_[FilterData::GridExport].nItems());
 
 	Messenger::exit("Aten::reloadFilters");
 	return result;
@@ -223,7 +223,7 @@ int Aten::parseFilterDir(const char* path)
 		filename += filterlist.at(i);
 		if (!f->generateFromFile(qPrintable(QDir::toNativeSeparators(filename)), qPrintable(filterlist.at(i)), TRUE, TRUE, TRUE))
 		{
-			Messenger::print("Failed to load filters from '%s'...\n", qPrintable(filterlist.at(i)));
+			Messenger::print("Failed to load filters from '%s'...", qPrintable(filterlist.at(i)));
 			failedFilters_.add()->set( qPrintable(QDir::toNativeSeparators(filename)) );
 			nfailed ++;
 			filterPrograms_.remove(f);
@@ -262,7 +262,7 @@ void Aten::partnerFilters()
 				exp = rj->item;
 				if (importid == exp->filter.id())
 				{
-					Messenger::print(Messenger::Verbose, "--- Partnering model filters for '%s', id = %i\n", imp->filter.nickname(), imp->filter.id());
+					Messenger::print(Messenger::Verbose, "--- Partnering model filters for '%s', id = %i", imp->filter.nickname(), imp->filter.id());
 					imp->filter.setPartner(exp);
 					break;
 				}
@@ -270,8 +270,8 @@ void Aten::partnerFilters()
 		}
 		s.strcatf(" %s[r%c]", imp->filter.nickname(), exp == NULL ? 'o' : 'w');
 	}
-	s+= '\n';
 	Messenger::print(s);
+
 	s = "Grid Formats :";
 	for (ri = filters_[FilterData::GridImport].first(); ri != NULL; ri = ri->next)
 	{
@@ -286,7 +286,7 @@ void Aten::partnerFilters()
 				exp = rj->item;
 				if (importid == exp->filter.id())
 				{
-					Messenger::print(Messenger::Verbose, "--- Partnering grid filters for '%s', id = %i\n", imp->filter.nickname(), imp->filter.id());
+					Messenger::print(Messenger::Verbose, "--- Partnering grid filters for '%s', id = %i", imp->filter.nickname(), imp->filter.id());
 					imp->filter.setPartner(exp);
 					printf("w]");
 					break;
@@ -295,8 +295,8 @@ void Aten::partnerFilters()
 		}
 		s.strcatf(" %s[r%c]", imp->filter.nickname(), exp == NULL ? 'o' : 'w');
 	}
-	s += '\n';
 	Messenger::print(s);
+
 	Messenger::exit("Aten::partnerFilters");
 }
 
@@ -307,7 +307,7 @@ Tree* Aten::findFilter(FilterData::FilterType ft, const char* nickname) const
 	Refitem<Tree,int>* result;
 	for (result = filters_[ft].first(); result != NULL; result = result->next)
 		if (strcmp(result->item->filter.nickname(), nickname) == 0) break;
-	if (result == NULL) Messenger::print("No %s filter with nickname '%s' defined.\n", FilterData::filterType(ft), nickname);
+	if (result == NULL) Messenger::print("No %s filter with nickname '%s' defined.", FilterData::filterType(ft), nickname);
 	Messenger::exit("Aten::findFilter");
 	return (result == NULL ? NULL : result->item);
 }
@@ -319,7 +319,7 @@ Tree* Aten::findFilterByDescription(FilterData::FilterType ft, const char* descr
 	Refitem<Tree,int>* result;
 	for (result = filters_[ft].first(); result != NULL; result = result->next)
 		if (strcmp(result->item->filter.description(), description) == 0) break;
-// 	if (result == NULL) Messenger::print("Internal Error: No %s filter matches description '%s'.\n", FilterData::filterType(ft), description);
+// 	if (result == NULL) Messenger::print("Internal Error: No %s filter matches description '%s'.", FilterData::filterType(ft), description);
 	Messenger::exit("Aten::findFilterByDescription");
 	return (result == NULL ? NULL : result->item);
 }
@@ -356,10 +356,10 @@ Reflist<Tree,int>* Aten::filterList(FilterData::FilterType ft)
 // Print list of valid filter nicknames
 void Aten::printValidNicknames(FilterData::FilterType ft)
 {
-	Messenger::print("Valid %s nicknames are:\n", FilterData::filterType(ft));
-	if (filters_[ft].nItems() == 0) Messenger::print("  <None Available>\n");
+	Messenger::print("Valid %s nicknames are:", FilterData::filterType(ft));
+	if (filters_[ft].nItems() == 0) Messenger::print("  <None Available>");
 	for (Refitem<Tree,int>* ri = filters_[ft].first(); ri != NULL; ri = ri->next)
-		Messenger::print("  %-15s %s\n", ri->item->filter.nickname(), ri->item->filter.name());
+		Messenger::print("  %-15s %s", ri->item->filter.nickname(), ri->item->filter.name());
 }
 
 // Return filter strings for file dialogs

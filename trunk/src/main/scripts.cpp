@@ -61,7 +61,7 @@ Program* Aten::scripts()
 // Return n'th script in list
 Program* Aten::script(int n)
 {
-	if ((n < 0) || (n >= scripts_.nItems())) Messenger::print("Script %i is out of range.\n", n);
+	if ((n < 0) || (n >= scripts_.nItems())) Messenger::print("Script %i is out of range.", n);
 	else return scripts_[n];
 	return NULL;
 }

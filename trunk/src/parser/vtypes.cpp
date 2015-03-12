@@ -92,12 +92,12 @@ int VTypes::dataPair(DataType type1, int arraysize1, DataType type2, int arraysi
 {
 	if ((type1 == VTypes::NoData) || (type2 == VTypes::NoData))
 	{
-		Messenger::print(Messenger::Verbose, "One or both arguments have no data type.\n");
+		Messenger::print(Messenger::Verbose, "One or both arguments have no data type.");
 		return UntypedData;
 	}
 	if ((arraysize1 > 0) && (arraysize2 > 0) && (arraysize1 != arraysize2))
 	{
-		Messenger::print("Array sizes do not conform.\n");
+		Messenger::print("Array sizes do not conform.");
 		return ArrayMisMatch;
 	}
 	int bit1 = (1 << (type1 < AtenData ? type1-1 : AtenData-1)) << (arraysize1 != -1 ? AtenData : 0);
@@ -109,7 +109,7 @@ int VTypes::dataSinglet(DataType type1, int arraysize1)
 {
 	if (type1 == VTypes::NoData)
 	{
-		Messenger::print("Argument has no data type.\n");
+		Messenger::print("Argument has no data type.");
 		return UntypedData;
 	}
 	return ((1 << (type1 < AtenData ? type1-1 : AtenData-1)) << (arraysize1 != -1 ? AtenData : 0));

@@ -147,7 +147,7 @@ void Aten::initialiseImageRedirect(const char* filenameFormat, int maxImages)
 	maxRedirectedImages_ = maxImages;
 	redirectedImageFormat_ = filenameFormat;
 	redirectedImagesActive_ = TRUE;
-	Messenger::print(Messenger::Verbose, "Image redirect active - name format = [%s], maxImages = %i\n", redirectedImageFormat_.get(), maxRedirectedImages_);
+	Messenger::print(Messenger::Verbose, "Image redirect active - name format = [%s], maxImages = %i", redirectedImageFormat_.get(), maxRedirectedImages_);
 }
 
 // Return next filename for image redirection

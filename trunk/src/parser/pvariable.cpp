@@ -36,7 +36,7 @@ bool PointerVariable::set(ReturnValue& rv)
 {
 	if (readOnly_)
 	{
-		Messenger::print("A constant value (in this case %s) cannot be assigned to.\n", VTypes::aDataType(returnType_));
+		Messenger::print("A constant value (in this case %s) cannot be assigned to.", VTypes::aDataType(returnType_));
 		return FALSE;
 	}
 	bool success;
@@ -92,7 +92,7 @@ bool PointerArrayVariable::set(ReturnValue& rv)
 {
 	if (readOnly_)
 	{
-		Messenger::print("A constant value (in this case %s array) cannot be assigned to.\n", VTypes::aDataType(returnType_));
+		Messenger::print("A constant value (in this case %s array) cannot be assigned to.", VTypes::aDataType(returnType_));
 		return FALSE;
 	}
 	if (pointerArrayData_ == NULL)
@@ -106,7 +106,7 @@ bool PointerArrayVariable::set(ReturnValue& rv)
 	{
 		if (rv.arraySize() != arraySize_)
 		{
-			Messenger::print("Error setting variable '%s': Array sizes do not conform.\n", name_.get());
+			Messenger::print("Error setting variable '%s': Array sizes do not conform.", name_.get());
 			return FALSE;
 		}
 		bool success;
@@ -121,7 +121,7 @@ bool PointerArrayVariable::setAsArray(ReturnValue& rv, int arrayIndex)
 {
 	if (readOnly_)
 	{
-		Messenger::print("A constant value (in this case %s array?) cannot be assigned to.\n", VTypes::aDataType(returnType_));
+		Messenger::print("A constant value (in this case %s array?) cannot be assigned to.", VTypes::aDataType(returnType_));
 		return FALSE;
 	}
 	if (pointerArrayData_ == NULL)
@@ -132,7 +132,7 @@ bool PointerArrayVariable::setAsArray(ReturnValue& rv, int arrayIndex)
 	// Check index
 	if ((arrayIndex < 0) || (arrayIndex >= arraySize_))
 	{
-		Messenger::print("Index %i out of bounds for array '%s'.\n", arrayIndex+1, name_.get());
+		Messenger::print("Index %i out of bounds for array '%s'.", arrayIndex+1, name_.get());
 		return FALSE;
 	}
 	// Set individual element
@@ -189,7 +189,7 @@ bool PointerArrayVariable::executeAsArray(ReturnValue& rv, int arrayIndex)
 	// Check bounds
 	if ((arrayIndex < 0) || (arrayIndex >= arraySize_))
 	{
-		Messenger::print("Error: Array index %i is out of bounds for array '%s'.\n", arrayIndex+1, name_.get());
+		Messenger::print("Error: Array index %i is out of bounds for array '%s'.", arrayIndex+1, name_.get());
 		return FALSE;
 	}
 	rv.set( returnType_, pointerArrayData_[arrayIndex] );
@@ -218,7 +218,7 @@ bool PointerArrayVariable::initialise()
 	ReturnValue newsize;
 	if (!arraySizeExpression_->execute(newsize))
 	{
-		Messenger::print("Failed to find size for %s array '%s'.\n", VTypes::aDataType(returnType_), name_.get());
+		Messenger::print("Failed to find size for %s array '%s'.", VTypes::aDataType(returnType_), name_.get());
 		return FALSE;
 	}
 	// If the array is already allocated, free it only if the size is different

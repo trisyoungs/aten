@@ -33,7 +33,7 @@ void Model::positionMolecule(Pattern* p, int mol, const Vec3<double> &v)
 	Atom** modelatoms = atomArray();
 	pnatoms = p->nAtoms();
 	offset = p->startAtom() + pnatoms * mol;
-	Messenger::print(Messenger::Verbose, "Model::positionMolecule : Moving %i atoms starting at %i (config can hold %i atoms)\n", pnatoms, offset, atoms_.nItems());
+	Messenger::print(Messenger::Verbose, "Model::positionMolecule : Moving %i atoms starting at %i (config can hold %i atoms)", pnatoms, offset, atoms_.nItems());
 	if (offset < atoms_.nItems())
 	{
 		cog = p->calculateCog(mol,this);
@@ -62,7 +62,7 @@ void Model::translateMolecule(Pattern* p, int mol, const Vec3<double> &v)
 	Atom** modelatoms = atomArray();
 	pnatoms = p->nAtoms();
 	offset = p->startAtom() + pnatoms * mol;
-	Messenger::print(Messenger::Verbose, "Model::translateMolecule : Moving %i atoms starting at %i (%i atoms currently in model)\n", pnatoms, offset, atoms_.nItems());
+	Messenger::print(Messenger::Verbose, "Model::translateMolecule : Moving %i atoms starting at %i (%i atoms currently in model)", pnatoms, offset, atoms_.nItems());
 	if (offset < atoms_.nItems()) for (n=offset; n<offset+pnatoms; n++) modelatoms[n]->r() += v;
 	else printf("Model::translateMolecule : Requested a molecule past end of model contents. (%s %i)\n", p->name(), mol); 
 	Messenger::exit("Model::translateMolecule");

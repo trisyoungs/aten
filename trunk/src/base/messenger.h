@@ -23,6 +23,7 @@
 #define ATEN_MESSENGER_H
 
 #include "base/namespace.h"
+#include <QtCore/QStringList>
 
 ATEN_BEGIN_NAMESPACE
 
@@ -44,7 +45,7 @@ class Messenger
 
 
 	/*
-	// Output Modes
+	// Output Control
 	*/
 	private:
 	// Bitvector of active output levels
@@ -53,6 +54,8 @@ class Messenger
 	static int callLevel_;
 	// Quiet mode
 	static bool quiet_;
+	// Print all messages to console (i.e. when GUI does not yet exist)
+	static bool printToConsole_;
 
 	public:
 	// Add an output type to the output bitvector
@@ -65,12 +68,22 @@ class Messenger
 	static void setQuiet(bool quiet);
 	// Return status of quiet mode
 	static bool isQuiet();
+	// Set status console printing
+	static void setPrintToConsole(bool printToConsole);
 
 
 	/*
 	// Messaging functions
 	*/
+	private:
+	// Maximum size of string list buffer
+	static int bufferSize_;
+	// List of recent messages
+	static QStringList messageBuffer_;
+
 	public:
+	// Return list of messages in buffer
+	static QStringList& messageBuffer();
 	// Print normal message
 	static void print(const char* fmtString, ...);
 	// Print message in specific output level

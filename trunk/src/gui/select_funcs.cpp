@@ -107,7 +107,7 @@ void SelectWidget::on_SelectTypeButton_clicked(bool on)
 {
 	// Make sure we have a valid element
 	int el = Elements().find(qPrintable(ui.TypeElementEdit->text()));
-	if (el == 0) Messenger::print("Invalid element '%s'\n", qPrintable(ui.TypeElementEdit->text()));
+	if (el == 0) Messenger::print("Invalid element '%s'", qPrintable(ui.TypeElementEdit->text()));
 	else
 	{
 		CommandNode::run(Commands::SelectType, "ic", el, qPrintable(ui.SelectNetaCombo->currentText()));
@@ -119,7 +119,7 @@ void SelectWidget::on_DeselectTypeButton_clicked(bool on)
 {
 	// Make sure we have a valid element
 	int el = Elements().find(qPrintable(ui.TypeElementEdit->text()));
-	if (el == 0) Messenger::print("Invalid element '%s'\n", qPrintable(ui.TypeElementEdit->text()));
+	if (el == 0) Messenger::print("Invalid element '%s'", qPrintable(ui.TypeElementEdit->text()));
 	else
 	{
 		CommandNode::run(Commands::DeSelectType, "ic", el, qPrintable(ui.SelectNetaCombo->currentText()));

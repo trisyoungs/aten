@@ -349,11 +349,11 @@ bool Neta::createBasic(Atom* i, bool explicitBondType, double torsionTolerance)
 
 	if (!netaparser.createNeta(this, typeDesc, NULL))
 	{
-		Messenger::print("Failed to create type description in Neta::createBasic().\n");
+		Messenger::print("Failed to create type description in Neta::createBasic().");
 		return false;
 	}
 
-	Messenger::print(Messenger::Verbose, "Create basic NETA for atom %p : %s\n", i, typeDesc.get());
+	Messenger::print(Messenger::Verbose, "Create basic NETA for atom %p : %s", i, typeDesc.get());
 
 	return true;
 }
@@ -426,7 +426,7 @@ void NetaNode::printScore(int level, const char* fmt, ...)
 	vsprintf(msgs,fmt,arguments);
 	va_end(arguments);
 	// Output node data
-	Messenger::print(Messenger::Typing, "NETA%03i:%s%s\n", level, tab.get(), msgs);
+	Messenger::print(Messenger::Typing, "NETA%03i:%s%s", level, tab.get(), msgs);
 }
 
 /*
@@ -710,15 +710,15 @@ void NetaBoundNode::linkReferenceTypes()
 		// Find referenced type in forcefield
 		if (parent()->parentForcefield() == NULL)
 		{
-			Messenger::print("Warning: Type '%s' (id %i) contains references to other types, but no parent Forcefield is defined.\n");
-			Messenger::print("         --> Reset to '0' (Any element)\n");
+			Messenger::print("Warning: Type '%s' (id %i) contains references to other types, but no parent Forcefield is defined.");
+			Messenger::print("         --> Reset to '0' (Any element)");
 			ri->data = 0;
 		}
 		else
 		{
 			ffa = parent()->parentForcefield()->findType(abs(ri->data));
 			ri->item = ffa;
-			if (ffa == NULL) Messenger::print("Warning: Type '%s' (id %i) references type id %i in it's NETA description, but type id %i has not been defined in the forcefield.\n", parent()->parentForcefieldAtom()->name(), parent()->parentForcefieldAtom()->typeId(), abs(ri->data), abs(ri->data));
+			if (ffa == NULL) Messenger::print("Warning: Type '%s' (id %i) references type id %i in it's NETA description, but type id %i has not been defined in the forcefield.", parent()->parentForcefieldAtom()->name(), parent()->parentForcefieldAtom()->typeId(), abs(ri->data), abs(ri->data));
 		}
 	}
 }
@@ -767,7 +767,7 @@ const char* NetaBoundNode::elementsAndTypesString()
 			s = "=";
 			break;
 		default:
-			Messenger::print("NETA Internal Error: Can't convert this bond type to a single character.\n");
+			Messenger::print("NETA Internal Error: Can't convert this bond type to a single character.");
 			s = "_";
 			break;
 	}
@@ -799,7 +799,7 @@ int NetaBoundNode::score(Atom* target, Reflist<Atom,int>* nbrs, Reflist<Ring,int
 	// Pointer check
 	if (nbrs == NULL)
 	{
-		Messenger::print("NETA Internal Error: Called NetaBoundNode::score() without a valid neighbour list.\n");
+		Messenger::print("NETA Internal Error: Called NetaBoundNode::score() without a valid neighbour list.");
 		Messenger::exit("NetaBoundNode::score");
 		return -1;
 	}
@@ -818,7 +818,7 @@ int NetaBoundNode::score(Atom* target, Reflist<Atom,int>* nbrs, Reflist<Ring,int
 				Bond *b = target->findBond(ri->item);
 				if (b == NULL)
 				{
-					Messenger::print("NETA Internal Error: Couldn't find bond between atom ids %i and %i to check type.\n", target->id(), ri->item->id());
+					Messenger::print("NETA Internal Error: Couldn't find bond between atom ids %i and %i to check type.", target->id(), ri->item->id());
 					Messenger::exit("NetaBoundNode::score");
 					return -1;
 				}
@@ -905,7 +905,7 @@ int NetaKeywordNode::score(Atom* target, Reflist<Atom,int>* nbrs, Reflist<Ring,i
 			else if (target->environment() == Atom::AromaticEnvironment) totalscore = 1;
 			break;
 		case (Neta::NoRingKeyword):
-			if (context->nodeType() == NetaNode::RingNode) Messenger::print("NETA: Invalid context (Ring) for 'noring' keyword.\n");
+			if (context->nodeType() == NetaNode::RingNode) Messenger::print("NETA: Invalid context (Ring) for 'noring' keyword.");
 			else
 			{
 				totalscore = 1;
@@ -917,7 +917,7 @@ int NetaKeywordNode::score(Atom* target, Reflist<Atom,int>* nbrs, Reflist<Ring,i
 			else if (target->environment() != Atom::AromaticEnvironment) totalscore = 1;
 			break;
 		case (Neta::NotPrevKeyword):
-			if (context->nodeType() == NetaNode::RootNode) Messenger::print("NETA: Invalid context for 'notprev' keyword.\n");
+			if (context->nodeType() == NetaNode::RootNode) Messenger::print("NETA: Invalid context for 'notprev' keyword.");
 			else if (context->nodeType() == NetaNode::RingNode)
 			{
 				totalscore = (((NetaRingNode*) context)->currentRing()->containsAtom( parent()->targetAtom() ) ? -1 : 1);
@@ -931,7 +931,7 @@ int NetaKeywordNode::score(Atom* target, Reflist<Atom,int>* nbrs, Reflist<Ring,i
 			}
 			break;
 		case (Neta::NotSelfKeyword):
-			if (context->nodeType() == NetaNode::RootNode) Messenger::print("NETA: Invalid context for 'notself' keyword.\n");
+			if (context->nodeType() == NetaNode::RootNode) Messenger::print("NETA: Invalid context for 'notself' keyword.");
 			else if (context->nodeType() == NetaNode::RingNode)
 			{
 				totalscore = (((NetaRingNode*) context)->currentRing()->containsAtom( parent()->targetAtom() ) ? -1 : 1);
@@ -946,7 +946,7 @@ int NetaKeywordNode::score(Atom* target, Reflist<Atom,int>* nbrs, Reflist<Ring,i
 			if (target->isPlanar(15.0)) totalscore = 1;
 			break;
 		default:
-			Messenger::print("Internal NETA Error: Unrecognised keyword in NetaKeywordNode::score.\n");
+			Messenger::print("Internal NETA Error: Unrecognised keyword in NetaKeywordNode::score.");
 			break;
 	}
 	// Check for reverse logic
@@ -1085,7 +1085,7 @@ int NetaValueNode::score(Atom* target, Reflist<Atom,int>* nbrs, Reflist<Ring,int
 	switch (netaValue_)
 	{
 		case (Neta::BondValue):
-			if (path.last() == NULL) Messenger::print("NETA: Invalid context for 'bond=xxx' in NETA for type %s/%i.\n", parent()->parentForcefieldAtom()->name(), parent()->parentForcefieldAtom()->typeId());
+			if (path.last() == NULL) Messenger::print("NETA: Invalid context for 'bond=xxx' in NETA for type %s/%i.", parent()->parentForcefieldAtom()->name(), parent()->parentForcefieldAtom()->typeId());
 			else
 			{
 				b = target->findBond(path.last()->item);
@@ -1121,7 +1121,7 @@ int NetaValueNode::score(Atom* target, Reflist<Atom,int>* nbrs, Reflist<Ring,int
 			}
 			break;
 		default:
-			Messenger::print("Internal NETA Error: Unrecognised value in NetaValueNode::score.\n");
+			Messenger::print("Internal NETA Error: Unrecognised value in NetaValueNode::score.");
 			break;
 	}
 	// Check for reverse logic
@@ -1259,7 +1259,7 @@ int NetaRingNode::score(Atom* target, Reflist<Atom,int>* nbrs, Reflist<Ring,int>
 	// Pointer check
 	if (rings == NULL)
 	{
-		Messenger::print("NETA Internal Error: Called NetaRingNode::score() without a valid ring list.\n");
+		Messenger::print("NETA Internal Error: Called NetaRingNode::score() without a valid ring list.");
 		Messenger::exit("NetaRingNode::score");
 		return -1;
 	}
@@ -1313,7 +1313,7 @@ int NetaRingNode::score(Atom* target, Reflist<Atom,int>* nbrs, Reflist<Ring,int>
 			if (totalscore == 0) totalscore = -1;
 			break;
 		case (NetaNode::RingNode):
-			Messenger::print("NETA Error: Specifying a 'ring' directly inside another 'ring' is meaningless.\n");
+			Messenger::print("NETA Error: Specifying a 'ring' directly inside another 'ring' is meaningless.");
 			totalscore = -1;
 			break;
 		default:
@@ -1472,7 +1472,7 @@ int NetaChainNode::score(Atom* target, Reflist<Atom,int>* nbrs, Reflist<Ring,int
 		si = scores.add(ri, 0);
 		boundList.clear();
 		boundList.add(ri->item);
-		if (linearNeta_ == NULL) { si->data = 0; Messenger::print("Warning: No chain description specified in 'chain' command.\n"); }
+		if (linearNeta_ == NULL) { si->data = 0; Messenger::print("Warning: No chain description specified in 'chain' command."); }
 		else si->data = score(linearNeta_, 1, target, &boundList, rings, path, level);
 	}
 
@@ -1696,7 +1696,7 @@ int NetaMeasurementNode::score(Atom* target, Reflist<Atom,int>* nbrs, Reflist<Ri
 	// Check for a linearNeta_ definition
 	if (linearNeta_ == NULL)
 	{
-		Messenger::print("Internal Error: No chain description specified in NetaMeasurementNode.\n");
+		Messenger::print("Internal Error: No chain description specified in NetaMeasurementNode.");
 		Messenger::exit("NetaMeasurementNode::score");
 		return -1;
 	}

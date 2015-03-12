@@ -320,7 +320,7 @@ int TextPrimitive::lex()
 		TextPrimitive::EscapeSequence es = TextPrimitive::escapeSequence(qPrintable(token));
 		if (es == TextPrimitive::nEscapeSequences)
 		{
-			Messenger::print(Messenger::Verbose, "Error: String '%s' is not a valid escape sequence.\n", qPrintable(token));
+			Messenger::print(Messenger::Verbose, "Error: String '%s' is not a valid escape sequence.", qPrintable(token));
 			return UCR_TP_FAIL;
 		}
 		TextPrimitiveParser_lval.escSeq = es;
@@ -364,7 +364,7 @@ bool TextPrimitive::addFragment(QString text)
 	TextFragment* fragment = fragments_.add();
 	if (formatStack_.nItems() == 0)
 	{
-		Messenger::print("Internal Error: No TextFormat on stack in TextPrimitive::addFragment().\n");
+		Messenger::print("Internal Error: No TextFormat on stack in TextPrimitive::addFragment().");
 		fragment->set(text);
 		return false;
 	}
@@ -389,7 +389,7 @@ bool TextPrimitive::addEscape(TextPrimitive::EscapeSequence escSeq)
 	TextFormat* topMostFormat = formatStack_.last();
 	TextFormat* newFormat = formatStack_.add();
 	if (topMostFormat) (*newFormat) = (*topMostFormat);
-	else Messenger::print("Internal Error: No topmost TextFormat to copy from in TextPrimitive::addEscape().\n");
+	else Messenger::print("Internal Error: No topmost TextFormat to copy from in TextPrimitive::addEscape().");
 
 	// Deal with the escape sequence
 	switch (escSeq)
@@ -417,7 +417,7 @@ bool TextPrimitive::addEscape(TextPrimitive::EscapeSequence escSeq)
 			newFormat->setScale( 0.583 * newFormat->scale() );
 			break;
 		default:
-			Messenger::print("Escape %i not handled in TextPrimitive::addEscape().\n", escSeq);
+			Messenger::print("Escape %i not handled in TextPrimitive::addEscape().", escSeq);
 			return false;
 			break;
 	}

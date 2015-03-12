@@ -86,7 +86,7 @@ void Model::clearMeasurements()
 	angleMeasurements_.clear();
 	distanceMeasurements_.clear();
 	torsionMeasurements_.clear();
-	changeLog.add(Log::Camera);
+	changeLog.add(Log::Labels);
 }
 
 // Add distance measurement
@@ -377,7 +377,7 @@ void Model::addMeasurementsInSelection(Measurement::MeasurementType gt)
 		default:
 			break;
 	}
-	changeLog.add(Log::Camera);
+	changeLog.add(Log::Labels);
 	Messenger::exit("Model::addMeasurementsInSelection");
 }
 

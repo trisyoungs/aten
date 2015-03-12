@@ -69,17 +69,17 @@ bool Commands::function_Getenvi(CommandNode* c, Bundle& obj, ReturnValue& rv)
 bool Commands::function_Help(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 // 	Commands::Function cf = commands.command(c->argc(0));
-// 	if (cf == Commands::nCommands) Messenger::print("help: Unrecognised command '%s'.\n", c->argc(0));
+// 	if (cf == Commands::nCommands) Messenger::print("help: Unrecognised command '%s'.", c->argc(0));
 	int i = c->argi(0);
 	if ((i < 0) || (i >= Commands::nCommands))
 	{
-		Messenger::print("Unrecognised command passed to 'help'.\n");
+		Messenger::print("Unrecognised command passed to 'help'.");
 		return false;
 	}
 
 	Commands::Function cf = (Commands::Function) i;
-	if (Commands::data(cf).hasArguments()) Messenger::print("%s(%s)\n       %s\n", Commands::data(cf).keyword, Commands::data(cf).argText, Commands::data(cf).syntax);
-	else Messenger::print("%s\n       %s\n", Commands::data(cf).keyword, Commands::data(cf).syntax);
+	if (Commands::data(cf).hasArguments()) Messenger::print("%s(%s)\n       %s", Commands::data(cf).keyword, Commands::data(cf).argText, Commands::data(cf).syntax);
+	else Messenger::print("%s\n       %s", Commands::data(cf).keyword, Commands::data(cf).syntax);
 	return TRUE;
 }
 
@@ -113,7 +113,7 @@ bool Commands::function_SearchCommands(CommandNode* c, Bundle& obj, ReturnValue&
 	{
 		Commands::Function cf = (Commands::Function) i;
 		if (strstr(Commands::data(cf).keyword, lcase.get()) != NULL)
-		Messenger::print("  %-15s : %s\n", Commands::data(cf).keyword, Commands::data(cf).syntax);
+		Messenger::print("  %-15s : %s", Commands::data(cf).keyword, Commands::data(cf).syntax);
 	}
 	return TRUE;
 }

@@ -81,14 +81,14 @@ const char* Eigenvector::name() const
 // Set array index
 void Eigenvector::setValue(int index, double value)
 {
-	if ((index < 0) || (index >= size_)) Messenger::print("Array index %i is out of range for eigenvector's array.\n", index);
+	if ((index < 0) || (index >= size_)) Messenger::print("Array index %i is out of range for eigenvector's array.", index);
 	else eigenvector_[index] = value;
 }
 
 // Return array value specified
 double Eigenvector::value(int index)
 {
-	if ((index < 0) || (index >= size_)) Messenger::print("Array index %i is out of range for eigenvector's array.\n", index);
+	if ((index < 0) || (index >= size_)) Messenger::print("Array index %i is out of range for eigenvector's array.", index);
 	else return eigenvector_[index];
 	return 0.0;
 }

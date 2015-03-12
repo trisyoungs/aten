@@ -41,7 +41,7 @@ void Viewer::renderModel(Model* source, int viewPortX, int viewPortY, int viewPo
 		Messenger::exit("Viewer::renderModel");
 		return;
 	}
-	Messenger::print(Messenger::Verbose, " --> RENDERING BEGIN : source model pointer = %p, renderpoint = %d\n", source, source->changeLog.log(Log::Total));
+	Messenger::print(Messenger::Verbose, " --> RENDERING BEGIN : source model pointer = %p, renderpoint = %d", source, source->changeLog.log(Log::Total));
 
 	// Setup view for model, in the supplied viewport
 	source->setupView(viewPortX, viewPortY, viewPortWidth, viewPortHeight);

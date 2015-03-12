@@ -115,15 +115,15 @@ StepNode* AtomVariable::accessorSearch(const char* s, TreeNode* arrayIndex, Tree
 		i = Variable::searchAccessor(s, nFunctions, functionData);
 		if (i == -1)
 		{
-			Messenger::print("Error: Type 'Atom&' has no member or function named '%s'.\n", s);
+			Messenger::print("Error: Type 'Atom&' has no member or function named '%s'.", s);
 			printAccessors();
 			Messenger::exit("AtomVariable::accessorSearch");
 			return NULL;
 		}
-		Messenger::print(Messenger::Parse, "FunctionAccessor match = %i (%s)\n", i, functionData[i].name);
+		Messenger::print(Messenger::Parse, "FunctionAccessor match = %i (%s)", i, functionData[i].name);
 		if (arrayIndex != NULL)
 		{
-			Messenger::print("Error: Array index given to 'Atom&' function '%s'.\n", s);
+			Messenger::print("Error: Array index given to 'Atom&' function '%s'.", s);
 			Messenger::exit("AtomVariable::accessorSearch");
 			return NULL;
 		}
@@ -132,24 +132,24 @@ StepNode* AtomVariable::accessorSearch(const char* s, TreeNode* arrayIndex, Tree
 		result->addJoinedArguments(argList);
 		if (!result->checkArguments(functionData[i].arguments, functionData[i].name))
 		{
-			Messenger::print("Error: Syntax for 'Atom&' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
+			Messenger::print("Error: Syntax for 'Atom&' function '%s' is '%s(%s)'.", functionData[i].name, functionData[i].name, functionData[i].argText );
 			delete result;
 			result = NULL;
 		}
 	}
 	else
 	{
-		Messenger::print(Messenger::Parse, "Accessor match = %i (%s)\n", i, accessorData[i].name);
+		Messenger::print(Messenger::Parse, "Accessor match = %i (%s)", i, accessorData[i].name);
 		// Were we given an array index when we didn't want one?
 		if ((accessorData[i].arraySize == 0) && (arrayIndex != NULL))
 		{
-			Messenger::print("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
+			Messenger::print("Error: Irrelevant array index provided for member '%s'.", accessorData[i].name);
 			result = NULL;
 		}
 		// Were we given an argument list when we didn't want one?
 		if (argList != NULL)
 		{
-			Messenger::print("Error: Argument list given to 'Atom&' array member '%s'.\n", s);
+			Messenger::print("Error: Argument list given to 'Atom&' array member '%s'.", s);
 			Messenger::exit("AtomVariable::accessorSearch");
 			return NULL;
 		}
@@ -174,7 +174,7 @@ bool AtomVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex, 
 	// Check for correct lack/presence of array index given
 	if ((accessorData[i].arraySize == 0) && hasArrayIndex)
 	{
-		Messenger::print("Error: Unnecessary array index provided for member '%s'.\n", accessorData[i].name);
+		Messenger::print("Error: Unnecessary array index provided for member '%s'.", accessorData[i].name);
 		Messenger::exit("AtomVariable::retrieveAccessor");
 		return FALSE;
 	}
@@ -182,7 +182,7 @@ bool AtomVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex, 
 	{
 		if ((arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize))
 		{
-			Messenger::print("Error: Array index out of bounds for member '%s' (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
+			Messenger::print("Error: Array index out of bounds for member '%s' (%i, range is 1-%i).", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
 			Messenger::exit("AtomVariable::retrieveAccessor");
 			return FALSE;
 		}
@@ -192,7 +192,7 @@ bool AtomVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex, 
 	Atom* ptr = (Atom*) rv.asPointer(VTypes::AtomData, result);
 	if ((!result) || (ptr == NULL))
 	{
-		Messenger::print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::AtomData));
+		Messenger::print("Invalid (NULL) %s reference encountered.", VTypes::dataType(VTypes::AtomData));
 		result = FALSE;
 	}
 	if (result) switch (acc)
@@ -204,7 +204,7 @@ bool AtomVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex, 
 			if (!hasArrayIndex) rv.set( VTypes::BondData, ptr->bonds() == NULL ? NULL : ptr->bonds()->item, ptr->bonds());
 			else if (arrayIndex > ptr->nBonds())
 			{
-				Messenger::print("Bond array index (%i) is out of bounds for atom '%i'\n", arrayIndex, ptr->id()+1);
+				Messenger::print("Bond array index (%i) is out of bounds for atom '%i'", arrayIndex, ptr->id()+1);
 				result = FALSE;
 			}
 			else rv.set( VTypes::BondData, ptr->bond(arrayIndex-1) == NULL ? NULL : ptr->bond(arrayIndex-1)->item, ptr->bond(arrayIndex-1));
@@ -231,7 +231,7 @@ bool AtomVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex, 
 			if (ptr->parent()) rv.set((ptr->parent()->cell()->inverse() * ptr->r()).get(acc - AtomVariable::FracX));
 			else
 			{
-				Messenger::print("Can't retrieve the fractional coordinate of an unparented Atom (since it has no associated UnitCell).\n");
+				Messenger::print("Can't retrieve the fractional coordinate of an unparented Atom (since it has no associated UnitCell).");
 				result = FALSE;
 			}
 			break;
@@ -318,12 +318,12 @@ bool AtomVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newVal
 		{
 			if ((accessorData[i].arraySize > 0) && ( (arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize) ))
 			{
-				Messenger::print("Error: Array index provided for member '%s' is out of range (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
+				Messenger::print("Error: Array index provided for member '%s' is out of range (%i, range is 1-%i).", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
 				result = FALSE;
 			}
 			if (newValue.arraySize() > 0)
 			{
-				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
+				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.", accessorData[i].name);
 				result = FALSE;
 			}
 		}
@@ -331,7 +331,7 @@ bool AtomVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newVal
 		{
 			if (newValue.arraySize() > accessorData[i].arraySize)
 			{
-				Messenger::print("Error: The array being assigned to member '%s' is larger than the size of the desination array (%i cf. %i).\n", accessorData[i].name, newValue.arraySize(), accessorData[i].arraySize);
+				Messenger::print("Error: The array being assigned to member '%s' is larger than the size of the desination array (%i cf. %i).", accessorData[i].name, newValue.arraySize(), accessorData[i].arraySize);
 				result = FALSE;
 			}
 		}
@@ -343,12 +343,12 @@ bool AtomVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newVal
 		{
 			if (accessorData[i].returnType != VTypes::VectorData)
 			{
-				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
+				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.", accessorData[i].name);
 				result = FALSE;
 			}
 			else if ((newValue.type() != VTypes::VectorData) && (newValue.arraySize() != 3))
 			{
-				Messenger::print("Error: Only an array of size 3 can be assigned to a vector (member '%s').\n", accessorData[i].name);
+				Messenger::print("Error: Only an array of size 3 can be assigned to a vector (member '%s').", accessorData[i].name);
 				result = FALSE;
 			}
 		}
@@ -366,7 +366,7 @@ bool AtomVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newVal
 	Atom* ptr = (Atom*) sourcerv.asPointer(VTypes::AtomData, result);
 	if ((!result) || (ptr == NULL))
 	{
-		Messenger::print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::AtomData));
+		Messenger::print("Invalid (NULL) %s reference encountered.", VTypes::dataType(VTypes::AtomData));
 		result = FALSE;
 	}
 	Model* ptrParent = ptr->parent();
@@ -390,7 +390,7 @@ bool AtomVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newVal
 			el = (Element*) newValue.asPointer(VTypes::ElementData);
 			if (el == NULL)
 			{
-				Messenger::print("Invalid (NULL) element reference encountered while setting atom's element.\n");
+				Messenger::print("Invalid (NULL) element reference encountered while setting atom's element.");
 				result = FALSE;
 			}
 			else if (&Elements().el[ptr->element()] != el)
@@ -425,7 +425,7 @@ bool AtomVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newVal
 			}
 			else
 			{
-				Messenger::print("Can't set the fractional coordinate of an unparented Atom (since it has no associated UnitCell).\n");
+				Messenger::print("Can't set the fractional coordinate of an unparented Atom (since it has no associated UnitCell).");
 				result = FALSE;
 			}
 			break;
@@ -535,7 +535,7 @@ bool AtomVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 		case (AtomVariable::Copy):
 			if (!((Atom*) node->argp(0, VTypes::AtomData)))
 			{
-				Messenger::print("Error: NULL pointer given to Atom's 'copy' function.\n");
+				Messenger::print("Error: NULL pointer given to Atom's 'copy' function.");
 				result = FALSE;
 			}
 			else if (ptrParent)
@@ -573,15 +573,15 @@ void AtomVariable::printAccessors()
 {
 	if (AtomVariable::nAccessors > 0)
 	{
-		Messenger::print("Valid accessors are:\n");
+		Messenger::print("Valid accessors are:");
 		for (int n=0; n<AtomVariable::nAccessors; ++n) Messenger::print("%s%s%s", n == 0 ? " " : ", ", accessorData[n].name, accessorData[n].arraySize > 0 ? "[]" : "");
-		Messenger::print("\n");
+		Messenger::print("");
 	}
 	if ((AtomVariable::nFunctions > 0) && (strcmp(functionData[0].name,".dummy") != 0))
 	{
-		Messenger::print("Valid functions are:\n");
+		Messenger::print("Valid functions are:");
 		for (int n=0; n<AtomVariable::nFunctions; ++n) Messenger::print("%s%s(%s)", n == 0 ? " " : ", ", functionData[n].name, functionData[n].argText);
-		Messenger::print("\n");
+		Messenger::print("");
 	}
 }
 

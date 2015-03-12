@@ -65,7 +65,7 @@ bool Commands::function_AxisRotate(CommandNode* c, Bundle& obj, ReturnValue& rv)
 			o.set(c->argd(4), c->argd(5), c->argd(6));
 			break;
 		default:
-			Messenger::print("Odd number of arguments given to 'axisrotate'.\n");
+			Messenger::print("Odd number of arguments given to 'axisrotate'.");
 			return FALSE;
 			break;
 	}
@@ -197,9 +197,9 @@ bool Commands::function_MatrixConvert(CommandNode* c, Bundle& obj, ReturnValue& 
 	}
 	if (Messenger::isOutputActive(Messenger::Verbose))
 	{
-		Messenger::print("Source matrix:\n");
+		Messenger::print("Source matrix:");
 		source.print();
-		Messenger::print("Target matrix:\n");
+		Messenger::print("Target matrix:");
 		target.print();
 	}
 	// Generate necessary rotation matrix
@@ -207,7 +207,7 @@ bool Commands::function_MatrixConvert(CommandNode* c, Bundle& obj, ReturnValue& 
 	Matrix rotmat = target * source;
 	if (Messenger::isOutputActive(Messenger::Verbose))
 	{
-		Messenger::print("Generated rotation matrix:\n");
+		Messenger::print("Generated rotation matrix:");
 		rotmat.print();
 	}
 	// Perform transformation
@@ -302,9 +302,9 @@ bool Commands::function_Reorient(CommandNode* c, Bundle& obj, ReturnValue& rv)
 
 	if (Messenger::isOutputActive(Messenger::Verbose))
 	{
-		Messenger::print("Source matrix:\n");
+		Messenger::print("Source matrix:");
 		source.print();
-		Messenger::print("Target matrix:\n");
+		Messenger::print("Target matrix:");
 		target.print();
 	}
 	// Generate necessary rotation matrix
@@ -326,19 +326,19 @@ bool Commands::function_SetAngle(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	Atom* i = c->argType(0) == VTypes::IntegerData ? obj.rs()->atom(c->argi(0)-1) : (Atom*) c->argp(0, VTypes::AtomData);
 	if (i == NULL)
 	{
-		Messenger::print("Atom 'i' given to 'setangle' is NULL.\n");
+		Messenger::print("Atom 'i' given to 'setangle' is NULL.");
 		return FALSE;
 	}
 	Atom* j = c->argType(1) == VTypes::IntegerData ? obj.rs()->atom(c->argi(1)-1) : (Atom*) c->argp(1, VTypes::AtomData);
 	if (j == NULL)
 	{
-		Messenger::print("Atom 'j' given to 'setangle' is NULL.\n");
+		Messenger::print("Atom 'j' given to 'setangle' is NULL.");
 		return FALSE;
 	}
 	Atom* k = c->argType(2) == VTypes::IntegerData ? obj.rs()->atom(c->argi(2)-1) : (Atom*) c->argp(2, VTypes::AtomData);
 	if (k == NULL)
 	{
-		Messenger::print("Atom 'k' given to 'setangle' is NULL.\n");
+		Messenger::print("Atom 'k' given to 'setangle' is NULL.");
 		return FALSE;
 	}
 	// Clear any current marked selection
@@ -350,7 +350,7 @@ bool Commands::function_SetAngle(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	// If atom 'i' is now marked, there is a cyclic route connecting the two atoms and we can't proceed
 	if (i->isSelected(TRUE))
 	{
-		Messenger::print("Can't alter the angle of three atoms i-j-k where 'i' and 'k' exist in the same cyclic moiety, or are unbound and within the same fragment.\n");
+		Messenger::print("Can't alter the angle of three atoms i-j-k where 'i' and 'k' exist in the same cyclic moiety, or are unbound and within the same fragment.");
 		return FALSE;
 	}
 	// Get current angle between the three atoms
@@ -373,13 +373,13 @@ bool Commands::function_SetDistance(CommandNode* c, Bundle& obj, ReturnValue& rv
 	Atom* i = c->argType(0) == VTypes::IntegerData ? obj.rs()->atom(c->argi(0)-1) : (Atom*) c->argp(0, VTypes::AtomData);
 	if (i == NULL)
 	{
-		Messenger::print("Atom 'i' given to 'setdistance' is NULL.\n");
+		Messenger::print("Atom 'i' given to 'setdistance' is NULL.");
 		return FALSE;
 	}
 	Atom* j = c->argType(1) == VTypes::IntegerData ? obj.rs()->atom(c->argi(1)-1) : (Atom*) c->argp(1, VTypes::AtomData);
 	if (j == NULL)
 	{
-		Messenger::print("Atom 'j' given to 'setdistance' is NULL.\n");
+		Messenger::print("Atom 'j' given to 'setdistance' is NULL.");
 		return FALSE;
 	}
 	// Clear any current marked selection
@@ -391,7 +391,7 @@ bool Commands::function_SetDistance(CommandNode* c, Bundle& obj, ReturnValue& rv
 	// If atom 'i' is now marked, there is a cyclic route connecting the two atoms and we can't proceed
 	if (i->isSelected(TRUE))
 	{
-		Messenger::print("Can't alter the distance of two atoms i-j that exist in the same cyclic moiety, or are unbound and within the same fragment.\n");
+		Messenger::print("Can't alter the distance of two atoms i-j that exist in the same cyclic moiety, or are unbound and within the same fragment.");
 		return FALSE;
 	}
 	// Grab the minimum image vector between the two atoms, and shift all those currently marked
@@ -413,25 +413,25 @@ bool Commands::function_SetTorsion(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	Atom* i = c->argType(0) == VTypes::IntegerData ? obj.rs()->atom(c->argi(0)-1) : (Atom*) c->argp(0, VTypes::AtomData);
 	if (i == NULL)
 	{
-		Messenger::print("Atom 'i' given to 'settorsion' is NULL.\n");
+		Messenger::print("Atom 'i' given to 'settorsion' is NULL.");
 		return FALSE;
 	}
 	Atom* j = c->argType(1) == VTypes::IntegerData ? obj.rs()->atom(c->argi(1)-1) : (Atom*) c->argp(1, VTypes::AtomData);
 	if (j == NULL)
 	{
-		Messenger::print("Atom 'j' given to 'settorsion' is NULL.\n");
+		Messenger::print("Atom 'j' given to 'settorsion' is NULL.");
 		return FALSE;
 	}
 	Atom* k = c->argType(2) == VTypes::IntegerData ? obj.rs()->atom(c->argi(2)-1) : (Atom*) c->argp(2, VTypes::AtomData);
 	if (k == NULL)
 	{
-		Messenger::print("Atom 'k' given to 'settorsion' is NULL.\n");
+		Messenger::print("Atom 'k' given to 'settorsion' is NULL.");
 		return FALSE;
 	}
 	Atom* l = c->argType(3) == VTypes::IntegerData ? obj.rs()->atom(c->argi(3)-1) : (Atom*) c->argp(3, VTypes::AtomData);
 	if (l == NULL)
 	{
-		Messenger::print("Atom 'l' given to 'settorsion' is NULL.\n");
+		Messenger::print("Atom 'l' given to 'settorsion' is NULL.");
 		return FALSE;
 	}
 	// Clear any current marked selection
@@ -443,7 +443,7 @@ bool Commands::function_SetTorsion(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	// If atom 'i' is now marked, there is a cyclic route connecting the two atoms and we can't proceed
 	if (i->isSelected(TRUE))
 	{
-		Messenger::print("Can't alter the angle of four atoms i-j-k-l where 'i' or 'j' exists in the same cyclic moiety as 'k' or 'l', or are unbound and within the same fragment.\n");
+		Messenger::print("Can't alter the angle of four atoms i-j-k-l where 'i' or 'j' exists in the same cyclic moiety as 'k' or 'l', or are unbound and within the same fragment.");
 		return FALSE;
 	}
 	// Get current torsion between the four atoms

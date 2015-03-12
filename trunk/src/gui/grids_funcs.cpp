@@ -259,7 +259,7 @@ void GridsWidget::on_actionGridCopy_triggered(bool checked)
 	Grid* g = getCurrentGrid();
 	if (g == NULL)
 	{
-		Messenger::print("No grid selected to copy.\n");
+		Messenger::print("No grid selected to copy.");
 		return;
 	}
 	parent_.aten().copyGrid(g);
@@ -270,7 +270,7 @@ void GridsWidget::on_actionGridCut_triggered(bool checked)
 	Grid* g = getCurrentGrid();
 	if (g == NULL)
 	{
-		Messenger::print("No grid selected to cut.\n");
+		Messenger::print("No grid selected to cut.");
 		return;
 	}
 	Model* m = parent_.aten().currentModelOrFrame();
@@ -302,7 +302,7 @@ void GridsWidget::on_actionGridPaste_triggered(bool checked)
 	Grid* g = parent_.aten().gridClipboard();
 	if (g == NULL)
 	{
-		Messenger::print("No grid data on clipboard.\n");
+		Messenger::print("No grid data on clipboard.");
 		return;
 	}
 	Model* m = parent_.aten().currentModelOrFrame();
@@ -807,7 +807,7 @@ void GridsWidget::on_ViewEigenvectorButton_clicked(bool checked)
 	int row = ui.OrbitalTable->currentRow();
 	if (row == -1) 
 	{
-		Messenger::print("No orbital selected!\n");
+		Messenger::print("No orbital selected!");
 		return;
 	}
 
@@ -820,7 +820,7 @@ void GridsWidget::on_OrbitalCalculateButton_clicked(bool checked)
 	int row = ui.OrbitalTable->currentRow();
 	if (row == -1)
 	{
-		Messenger::print("No orbital selected!\n");
+		Messenger::print("No orbital selected!");
 		return;
 	}
 	// Generate a new grid in the current model

@@ -31,8 +31,8 @@ bool Commands::function_Copy(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	aten_.userClipboard->copySelection(obj.rs());
-	Messenger::print("%i atoms copied to clipboard.\n", aten_.userClipboard->nAtoms());
-	Messenger::print(Messenger::Verbose, "Copied selection (%i atoms) from model %s\n", aten_.userClipboard->nAtoms(), obj.rs()->name());
+	Messenger::print("%i atoms copied to clipboard.", aten_.userClipboard->nAtoms());
+	Messenger::print(Messenger::Verbose, "Copied selection (%i atoms) from model %s", aten_.userClipboard->nAtoms(), obj.rs()->name());
 	return TRUE;
 }
 
@@ -40,10 +40,10 @@ bool Commands::function_Copy(CommandNode* c, Bundle& obj, ReturnValue& rv)
 bool Commands::function_Cut(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	obj.rs()->beginUndoState("Cut %i atom%s\n",obj.rs()->nSelected(),(obj.rs()->nSelected() == 1 ? "" : "s"));
+	obj.rs()->beginUndoState("Cut %i atom%s",obj.rs()->nSelected(),(obj.rs()->nSelected() == 1 ? "" : "s"));
 	aten_.userClipboard->cutSelection(obj.rs());
 	obj.rs()->endUndoState();
-	Messenger::print("%i atoms cut to clipboard.\n", aten_.userClipboard->nAtoms());
+	Messenger::print("%i atoms cut to clipboard.", aten_.userClipboard->nAtoms());
 	return TRUE;
 }
 
@@ -52,10 +52,10 @@ bool Commands::function_Delete(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	int n = obj.rs()->nSelected();
-	obj.rs()->beginUndoState("Delete %i atom%s\n", n, (n == 1 ? "" : "s"));
+	obj.rs()->beginUndoState("Delete %i atom%s", n, (n == 1 ? "" : "s"));
 	obj.rs()->selectionDelete();
 	obj.rs()->endUndoState();
-	Messenger::print("%i atom%s deleted from model.\n", n, (n == 1 ? "" : "s"));
+	Messenger::print("%i atom%s deleted from model.", n, (n == 1 ? "" : "s"));
 	return TRUE;
 }
 
@@ -64,7 +64,7 @@ bool Commands::function_Paste(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	int n = aten_.userClipboard->nAtoms();
-	obj.rs()->beginUndoState("Paste %i atom%s\n", n, (n == 1 ? "" : "s"));
+	obj.rs()->beginUndoState("Paste %i atom%s", n, (n == 1 ? "" : "s"));
 	if (!c->hasArg(2)) aten_.userClipboard->pasteToModel(obj.rs());
 	else
 	{
@@ -72,7 +72,7 @@ bool Commands::function_Paste(CommandNode* c, Bundle& obj, ReturnValue& rv)
 		aten_.userClipboard->pasteToModel(obj.rs(), shift);
 	}
 	obj.rs()->endUndoState();
-	Messenger::print("%i atom%s pasted to model.\n", n, (n == 1 ? "" : "s"));
+	Messenger::print("%i atom%s pasted to model.", n, (n == 1 ? "" : "s"));
 	return TRUE;
 }
 

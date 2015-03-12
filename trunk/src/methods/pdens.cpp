@@ -88,7 +88,7 @@ bool Pdens::initialise()
 	// Check site definitions....
 	if ((sites_[0] == NULL) || (sites_[1] == NULL))
 	{
-		Messenger::print("Pdens::initialise - At least one site has NULL value.\n");
+		Messenger::print("Pdens::initialise - At least one site has NULL value.");
 		Messenger::exit("calculable::initialise");
 		return FALSE;
 	}
@@ -104,7 +104,7 @@ bool Pdens::initialise()
 			for (o=0; o<totalSteps_; o++) data_[n][m][o] = 0.0;
 		}
 	}
-	Messenger::print("There are %i gridpoints of %f Angstrom along each cartesian axis in pdens '%s'.\n", totalSteps_, stepSize_, name_.get());
+	Messenger::print("There are %i gridpoints of %f Angstrom along each cartesian axis in pdens '%s'.", totalSteps_, stepSize_, name_.get());
 	nAdded_ = 0;
 	Messenger::exit("Pdens::initialise");
 	return TRUE;

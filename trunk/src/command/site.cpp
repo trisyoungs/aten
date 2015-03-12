@@ -59,16 +59,16 @@ bool Commands::function_ListSites(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	Site* s = obj.m->sites.first();
-	if (s == NULL) Messenger::print("No sites defined for model '%s'.\n",obj.m->name());
+	if (s == NULL) Messenger::print("No sites defined for model '%s'.",obj.m->name());
 	else
 	{
-		Messenger::print("Site list for model '%s':\n",obj.m->name());
+		Messenger::print("Site list for model '%s':",obj.m->name());
 		for (s = s; s != NULL; s = s->next)
 		{
 			Messenger::print(" %15s %15s  ",s->name(), s->pattern()->name());
 			if (s->atoms.count() == 0) Messenger::print("All atoms assumed (none defined)");
 			else for (int n=0; n<s->atoms.count(); ++n) Messenger::print(" %i", s->atoms.at(n));
-			Messenger::print("\n");
+			Messenger::print("");
 		}
 	}
 	rv.reset();
@@ -81,7 +81,7 @@ bool Commands::function_GetSite(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	Site* s;
 	for (s = obj.m->sites.first(); s != NULL; s = s->next) if (strcmp(s->name(),c->argc(0)) == 0) break;
-	if (s == NULL) Messenger::print("No site '%s' defined in model '%s'.\n", c->argc(0), obj.m->name());
+	if (s == NULL) Messenger::print("No site '%s' defined in model '%s'.", c->argc(0), obj.m->name());
 	else obj.s = s;
 	rv.reset();
 	return FALSE;

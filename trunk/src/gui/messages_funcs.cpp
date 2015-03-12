@@ -47,7 +47,7 @@ void MessagesWidget::on_MessagesBrowser_anchorClicked(const QUrl &link)
 	Program program;
 	if (!program.generateFromString(qPrintable(link.toString()), "MessageLinkCommand", "Message Link Commane"))
 	{
-		Messenger::print("Unable to construct commands from context link.\n");
+		Messenger::print("Unable to construct commands from context link.");
 		return;
 	}
 	

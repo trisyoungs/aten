@@ -38,7 +38,7 @@ void Aten::addFragmentFromSelection(Model* source, const char* parentgroup)
 	}
 	if (source->nSelected() == 0)
 	{
-		Messenger::print("Source model '%s' has no selected atoms from which to make a fragment.\n", source->name());
+		Messenger::print("Source model '%s' has no selected atoms from which to make a fragment.", source->name());
 		Messenger::exit("Aten::addFragmentFromSelection");
 		return;
 	}
@@ -143,12 +143,12 @@ void Aten::openFragments()
 
 	// Default search path should have already been set by openFilters()...
 	path.sprintf("%s%cfragments", dataDir_.get(), PATHSEP);
-	Messenger::print(Messenger::Verbose, "Looking for fragments in '%s'...\n", qPrintable(QDir::toNativeSeparators(path.get())));
+	Messenger::print(Messenger::Verbose, "Looking for fragments in '%s'...", qPrintable(QDir::toNativeSeparators(path.get())));
 	nfailed = parseFragmentDir(path, "Ungrouped");
 
 	// Try to load user fragments - we don't mind if the directory doesn't exist...
 	path.sprintf("%s%c%s%cfragments%c", homeDir_.get(), PATHSEP, atenDir_.get(), PATHSEP, PATHSEP);
-	Messenger::print(Messenger::Verbose, "Looking for user fragments in '%s'...\n", path.get());
+	Messenger::print(Messenger::Verbose, "Looking for user fragments in '%s'...", path.get());
 	nfailed = parseFragmentDir(path, "Ungrouped");
 
 	// Return model creation to main list
@@ -158,7 +158,7 @@ void Aten::openFragments()
 	// Print out info
 	int nfragments = 0;
 	for (FragmentGroup *fg = fragmentGroups_.first(); fg != NULL; fg = fg->next) nfragments += fg->nFragments();
-	Messenger::print("Loaded %i fragments into library.\n", nfragments);
+	Messenger::print("Loaded %i fragments into library.", nfragments);
 
 	Messenger::exit("Aten::openFragments");
 }

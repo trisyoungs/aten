@@ -220,7 +220,7 @@ void AtenPrefs::on_PrefsSaveAsDefaultButton_clicked(bool checked)
 
 	bool result = parent_.aten().savePrefs(filename);
 	if (!result) QMessageBox::warning(NULL, "Aten", "User preferences file could not be saved.\n", QMessageBox::Ok, QMessageBox::Ok);
-	else Messenger::print("Prefs file saved to '%s'\n", filename.get());
+	else Messenger::print("Prefs file saved to '%s'", filename.get());
 }
 
 /*
@@ -564,7 +564,6 @@ void AtenPrefs::on_SpotlightSpecularColourButton_clicked(bool checked)
 void AtenPrefs::on_ShininessSpin_valueChanged(int value)
 {
 	prefs.setShininess(value);
-	parent_.aten().currentModel()->changeLog.add(Log::Camera);
 	parent_.postRedisplay();
 }
 

@@ -139,7 +139,7 @@ bool Commands::function_TrajAnalyse(CommandNode* c, Bundle& obj, ReturnValue& rv
 	totalframes = obj.m->nTrajectoryFrames();
 	if (totalframes == 0)
 	{
-		Messenger::print("No trajectory associated to model.\n");
+		Messenger::print("No trajectory associated to model.");
 		rv.reset();
 		return FALSE;
 	}
@@ -168,7 +168,7 @@ bool Commands::function_TrajAnalyse(CommandNode* c, Bundle& obj, ReturnValue& rv
 		// Move to next frame
 		if (n != totalframes) obj.m->seekNextTrajectoryFrame();
 	}
-	Messenger::print("Finished calculating properties - used %i frames from trajectory.\n", framesdone);
+	Messenger::print("Finished calculating properties - used %i frames from trajectory.", framesdone);
 	rv.reset();
 	return TRUE;
 }

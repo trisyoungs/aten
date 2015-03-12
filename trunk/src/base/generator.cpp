@@ -72,7 +72,7 @@ bool Generator::set(const char* s)
 	lp.getArgsDelim(0, s);
 	if (lp.nArgs() != 3)
 	{
-		Messenger::print("Tried to set a symmetry Generator from text ('%s') that didn't split into three arguments.\n", s);
+		Messenger::print("Tried to set a symmetry Generator from text ('%s') that didn't split into three arguments.", s);
 		Messenger::exit("Generator::set");
 		return FALSE;
 	}

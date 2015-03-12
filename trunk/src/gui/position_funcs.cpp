@@ -129,14 +129,14 @@ void PositionWidget::translateSelection(int axis, int dir)
 	{
 		// Translate selection in the cartesian axes of the model
 		tvec *= step;
-		m->beginUndoState("Translate Cartesian (%i atom(s), %f %f %f)\n", m->nSelected(), tvec.x, tvec.y, tvec.z);
+		m->beginUndoState("Translate Cartesian (%i atom(s), %f %f %f)", m->nSelected(), tvec.x, tvec.y, tvec.z);
 		m->translateSelectionLocal(tvec);
 	}
 	else if (ui.TranslateWorldFrameRadio->isChecked())
 	{
 		// Translate selection in the world (view) axes
 		tvec *= step;
-		m->beginUndoState("Translate Screen (%i atom(s), %f %f %f)\n", m->nSelected(), tvec.x, tvec.y, tvec.z);
+		m->beginUndoState("Translate Screen (%i atom(s), %f %f %f)", m->nSelected(), tvec.x, tvec.y, tvec.z);
 		m->translateSelectionWorld(tvec);
 	}
 	else if (ui.TranslateCellFrameRadio->isChecked())
@@ -144,12 +144,12 @@ void PositionWidget::translateSelection(int axis, int dir)
 		// Translate selection in the cell axes of the model
 		if (m->cell()->type() == UnitCell::NoCell)
 		{
-			Messenger::print("No unit cell defined for model.\n");
+			Messenger::print("No unit cell defined for model.");
 			return;
 		}
 		tvec = parent_.aten().currentModelOrFrame()->cell()->axes().columnAsVec3(axis);
 		tvec *= double(dir) * step;
-		m->beginUndoState("Translate Cell (%i atom(s), %f %f %f)\n", m->nSelected(), tvec.x, tvec.y, tvec.z);
+		m->beginUndoState("Translate Cell (%i atom(s), %f %f %f)", m->nSelected(), tvec.x, tvec.y, tvec.z);
 		m->translateSelectionLocal(tvec);
 	}
 	m->endUndoState();
@@ -227,7 +227,7 @@ void PositionWidget::on_ShiftVectorPositiveButton_clicked(bool checked)
 	v.z = ui.ShiftVectorZSpin->value();
 	v *= ui.ShiftVectorDeltaSpin->value();
 	Model* m = parent_.aten().currentModelOrFrame();
-	m->beginUndoState("Vector shift %i atom(s) {%f,%f,%f}\n",m->nSelected(),v.x,v.y,v.z);
+	m->beginUndoState("Vector shift %i atom(s) {%f,%f,%f}",m->nSelected(),v.x,v.y,v.z);
 	m->translateSelectionLocal(v);
 	m->endUndoState();
 	m->updateMeasurements();
@@ -242,7 +242,7 @@ void PositionWidget::on_ShiftVectorNegativeButton_clicked(bool checked)
 	v.z = ui.ShiftVectorZSpin->value();
 	v *= -ui.ShiftVectorDeltaSpin->value();
 	Model* m = parent_.aten().currentModelOrFrame();
-	m->beginUndoState("Vector shift %i atom(s) {%f,%f,%f}\n",m->nSelected(),v.x,v.y,v.z);
+	m->beginUndoState("Vector shift %i atom(s) {%f,%f,%f}",m->nSelected(),v.x,v.y,v.z);
 	m->translateSelectionLocal(v);
 	m->endUndoState();
 	m->updateMeasurements();
@@ -260,7 +260,7 @@ void PositionWidget::on_RepositionSelectionButton_clicked(bool on)
 	v.y = ui.RepositionTargetYSpin->value() - ui.RepositionReferenceYSpin->value();
 	v.z = ui.RepositionTargetZSpin->value() - ui.RepositionReferenceZSpin->value();
 	Model* m = parent_.aten().currentModelOrFrame();
-	m->beginUndoState("Reposition %i atom(s) {%f,%f,%f}\n",m->nSelected(),v.x,v.y,v.z);
+	m->beginUndoState("Reposition %i atom(s) {%f,%f,%f}",m->nSelected(),v.x,v.y,v.z);
 	m->translateSelectionLocal(v);
 	m->endUndoState();
 	m->updateMeasurements();

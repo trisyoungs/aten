@@ -349,7 +349,7 @@ bool MonteCarlo::minimise(Model* srcmodel, double econ, double fcon)
 	// Prepare the calculation
 	*/
         // First, create expression for the current model and assign charges
-	Messenger::print("Creating expression for target model...\n");
+	Messenger::print("Creating expression for target model...");
         if ((!srcmodel->isExpressionValid()) || (srcmodel->nAtoms() == 0))
 	{
 		Messenger::exit("MonteCarlo::minimise");
@@ -363,8 +363,8 @@ bool MonteCarlo::minimise(Model* srcmodel, double econ, double fcon)
 	// Create ratio array (not per-pattern, just per move type)
 	createRatioArray(1);
 
-	Messenger::print("Beginning Monte Carlo minimise...\n\n");
-	Messenger::print(" Step     Energy        Delta          VDW          Elec        T%%  R%%  Z%%  I%%  D%%\n");
+	Messenger::print("Beginning Monte Carlo minimise...\n");
+	Messenger::print(" Step     Energy        Delta          VDW          Elec        T%%  R%%  Z%%  I%%  D%%");
 
 	// Calculate initial reference energy
 	currentEnergy = srcmodel->totalEnergy(srcmodel, success);
@@ -376,7 +376,7 @@ bool MonteCarlo::minimise(Model* srcmodel, double econ, double fcon)
 	currentVdwEnergy = srcmodel->energy.vdw();
 	currentElecEnergy = srcmodel->energy.electrostatic();
 	lastPrintedEnergy = currentEnergy;
-	Messenger::print("--     %13.6e               %13.6e %13.6e\n", currentEnergy,  currentVdwEnergy, currentElecEnergy);
+	Messenger::print("--     %13.6e               %13.6e %13.6e", currentEnergy,  currentVdwEnergy, currentElecEnergy);
 
 	// Cycle through move types; try and perform nTrials_ for each; move on.
 	// For each attempt, select a random molecule in a random pattern

@@ -36,44 +36,44 @@ bool Aten::loadPrefs()
 	// Program preferences
 	found = FALSE;
 	fileName.sprintf("%s%c%s%cprefs.dat", homeDir_.get(), PATHSEP, atenDir_.get(), PATHSEP);
-	Messenger::print("Looking for program preferences file '%s'...\n", fileName.get());
+	Messenger::print("Looking for program preferences file '%s'...", fileName.get());
 	if (fileExists(fileName)) found = TRUE;
 	else
 	{
 		// Try .txt extension instead
 		fileName.sprintf("%s%c%s%cprefs.txt", homeDir_.get(), PATHSEP, atenDir_.get(), PATHSEP);
-		Messenger::print("Looking for program preferences file '%s'...\n", fileName.get());
+		Messenger::print("Looking for program preferences file '%s'...", fileName.get());
 		if (fileExists(fileName)) found = TRUE;
 	}
 	if (found)
 	{
-		Messenger::print("Program preferences file found in '%s'\n", fileName.get());
+		Messenger::print("Program preferences file found in '%s'", fileName.get());
 		Program prefscmds;
 		result = prefscmds.generateFromFile(fileName, "Program Preferences");
 		if (result) result = prefscmds.execute(rv);
 	}
-	else Messenger::print("Program preferences file not found.\n");
+	else Messenger::print("Program preferences file not found.");
 
 	// User preferences
 	found = FALSE;
 	fileName.sprintf("%s%c%s%cuser.dat", homeDir_.get(), PATHSEP, atenDir_.get(), PATHSEP);
-	Messenger::print("Looking for user preferences file '%s'...\n", fileName.get());
+	Messenger::print("Looking for user preferences file '%s'...", fileName.get());
 	if (fileExists(fileName)) found = TRUE;
 	else
 	{
 		// Try .txt extension instead
 		fileName.sprintf("%s%c%s%cuser.txt", homeDir_.get(), PATHSEP, atenDir_.get(), PATHSEP);
-		Messenger::print("Looking for user preferences file '%s'...\n", fileName.get());
+		Messenger::print("Looking for user preferences file '%s'...", fileName.get());
 		if (fileExists(fileName)) found = TRUE;
 	}
 	if (found)
 	{
-		Messenger::print("User preferences file found in '%s'\n", fileName.get());
+		Messenger::print("User preferences file found in '%s'", fileName.get());
 		Program prefscmds;
 		result = prefscmds.generateFromFile(fileName, "User Preferences");
 		if (result) result = prefscmds.execute(rv);
 	}
-	else Messenger::print("User preferences file not found.\n");
+	else Messenger::print("User preferences file not found.");
 	Messenger::exit("Aten::loadPrefs");
 	return TRUE;
 }

@@ -111,15 +111,15 @@ StepNode* CellVariable::accessorSearch(const char* s, TreeNode* arrayIndex, Tree
 		i = Variable::searchAccessor(s, nFunctions, functionData);
 		if (i == -1)
 		{
-			Messenger::print("Error: Type 'Cell&' has no member or function named '%s'.\n", s);
+			Messenger::print("Error: Type 'Cell&' has no member or function named '%s'.", s);
 			printAccessors();
 			Messenger::exit("CellVariable::accessorSearch");
 			return NULL;
 		}
-		Messenger::print(Messenger::Parse, "FunctionAccessor match = %i (%s)\n", i, functionData[i].name);
+		Messenger::print(Messenger::Parse, "FunctionAccessor match = %i (%s)", i, functionData[i].name);
 		if (arrayIndex != NULL)
 		{
-			Messenger::print("Error: Array index given to 'Cell&' function '%s'.\n", s);
+			Messenger::print("Error: Array index given to 'Cell&' function '%s'.", s);
 			Messenger::exit("CellVariable::accessorSearch");
 			return NULL;
 		}
@@ -128,24 +128,24 @@ StepNode* CellVariable::accessorSearch(const char* s, TreeNode* arrayIndex, Tree
 		result->addJoinedArguments(argList);
 		if (!result->checkArguments(functionData[i].arguments, functionData[i].name))
 		{
-			Messenger::print("Error: Syntax for 'Cell&' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
+			Messenger::print("Error: Syntax for 'Cell&' function '%s' is '%s(%s)'.", functionData[i].name, functionData[i].name, functionData[i].argText );
 			delete result;
 			result = NULL;
 		}
 	}
 	else
 	{
-		Messenger::print(Messenger::Parse, "Accessor match = %i (%s)\n", i, accessorData[i].name);
+		Messenger::print(Messenger::Parse, "Accessor match = %i (%s)", i, accessorData[i].name);
 		// Were we given an array index when we didn't want one?
 		if ((accessorData[i].arraySize == 0) && (arrayIndex != NULL))
 		{
-			Messenger::print("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
+			Messenger::print("Error: Irrelevant array index provided for member '%s'.", accessorData[i].name);
 			result = NULL;
 		}
 		// Were we given an argument list when we didn't want one?
 		if (argList != NULL)
 		{
-			Messenger::print("Error: Argument list given to 'Cell&' array member '%s'.\n", s);
+			Messenger::print("Error: Argument list given to 'Cell&' array member '%s'.", s);
 			Messenger::exit("CellVariable::accessorSearch");
 			return NULL;
 		}
@@ -170,7 +170,7 @@ bool CellVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex, 
 	// Check for correct lack/presence of array index given
 	if ((accessorData[i].arraySize == 0) && hasArrayIndex)
 	{
-		Messenger::print("Error: Unnecessary array index provided for member '%s'.\n", accessorData[i].name);
+		Messenger::print("Error: Unnecessary array index provided for member '%s'.", accessorData[i].name);
 		Messenger::exit("CellVariable::retrieveAccessor");
 		return FALSE;
 	}
@@ -178,7 +178,7 @@ bool CellVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex, 
 	{
 		if ((arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize))
 		{
-			Messenger::print("Error: Array index out of bounds for member '%s' (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
+			Messenger::print("Error: Array index out of bounds for member '%s' (%i, range is 1-%i).", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
 			Messenger::exit("CellVariable::retrieveAccessor");
 			return FALSE;
 		}
@@ -188,7 +188,7 @@ bool CellVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex, 
 	UnitCell* ptr = (UnitCell*) rv.asPointer(VTypes::CellData, result);
 	if ((!result) || (ptr == NULL))
 	{
-		Messenger::print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::CellData));
+		Messenger::print("Invalid (NULL) %s reference encountered.", VTypes::dataType(VTypes::CellData));
 		result = FALSE;
 	}
 	if (result) switch (acc)
@@ -228,7 +228,7 @@ bool CellVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex, 
 		case (CellVariable::Matrix):
 			if ((arrayIndex < 1) || (arrayIndex > 9))
 			{
-				Messenger::print("Array index [%i] is out of range for 'matrix' member.\n", arrayIndex);
+				Messenger::print("Array index [%i] is out of range for 'matrix' member.", arrayIndex);
 				result = FALSE;
 			}
 			else rv.set(ptr->axes()[((arrayIndex-1)/3)*4+(arrayIndex-1)%3]);
@@ -274,12 +274,12 @@ bool CellVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newVal
 		{
 			if ((accessorData[i].arraySize > 0) && ( (arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize) ))
 			{
-				Messenger::print("Error: Array index provided for member '%s' is out of range (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
+				Messenger::print("Error: Array index provided for member '%s' is out of range (%i, range is 1-%i).", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
 				result = FALSE;
 			}
 			if (newValue.arraySize() > 0)
 			{
-				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
+				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.", accessorData[i].name);
 				result = FALSE;
 			}
 		}
@@ -287,7 +287,7 @@ bool CellVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newVal
 		{
 			if (newValue.arraySize() > accessorData[i].arraySize)
 			{
-				Messenger::print("Error: The array being assigned to member '%s' is larger than the size of the desination array (%i cf. %i).\n", accessorData[i].name, newValue.arraySize(), accessorData[i].arraySize);
+				Messenger::print("Error: The array being assigned to member '%s' is larger than the size of the desination array (%i cf. %i).", accessorData[i].name, newValue.arraySize(), accessorData[i].arraySize);
 				result = FALSE;
 			}
 		}
@@ -299,12 +299,12 @@ bool CellVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newVal
 		{
 			if (accessorData[i].returnType != VTypes::VectorData)
 			{
-				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
+				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.", accessorData[i].name);
 				result = FALSE;
 			}
 			else if ((newValue.type() != VTypes::VectorData) && (newValue.arraySize() != 3))
 			{
-				Messenger::print("Error: Only an array of size 3 can be assigned to a vector (member '%s').\n", accessorData[i].name);
+				Messenger::print("Error: Only an array of size 3 can be assigned to a vector (member '%s').", accessorData[i].name);
 				result = FALSE;
 			}
 		}
@@ -319,7 +319,7 @@ bool CellVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newVal
 	UnitCell* ptr = (UnitCell*) sourcerv.asPointer(VTypes::CellData, result);
 	if ((!result) || (ptr == NULL))
 	{
-		Messenger::print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::CellData));
+		Messenger::print("Invalid (NULL) %s reference encountered.", VTypes::dataType(VTypes::CellData));
 		result = FALSE;
 	}
 	
@@ -396,7 +396,7 @@ bool CellVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 				ii = (Atom*) node->argp(0, VTypes::AtomData);
 				if (ii == NULL)
 				{
-					Messenger::print("Error: Source atom given to cell 'mim' function is NULL.\n");
+					Messenger::print("Error: Source atom given to cell 'mim' function is NULL.");
 					result = FALSE;
 					break;
 				}
@@ -408,7 +408,7 @@ bool CellVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 				jj = (Atom*) node->argp(1, VTypes::AtomData);
 				if (jj == NULL)
 				{
-					Messenger::print("Error: Reference atom given to cell 'mim' function is NULL.\n");
+					Messenger::print("Error: Reference atom given to cell 'mim' function is NULL.");
 					result = FALSE;
 					break;
 				}
@@ -423,7 +423,7 @@ bool CellVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 				ii = (Atom*) node->argp(0, VTypes::AtomData);
 				if (ii == NULL)
 				{
-					Messenger::print("Error: Source atom given to cell 'mimVector' function is NULL.\n");
+					Messenger::print("Error: Source atom given to cell 'mimVector' function is NULL.");
 					result = FALSE;
 					break;
 				}
@@ -435,7 +435,7 @@ bool CellVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 				jj = (Atom*) node->argp(1, VTypes::AtomData);
 				if (jj == NULL)
 				{
-					Messenger::print("Error: Reference atom given to cell 'mimVector' function is NULL.\n");
+					Messenger::print("Error: Reference atom given to cell 'mimVector' function is NULL.");
 					result = FALSE;
 					break;
 				}
@@ -452,7 +452,7 @@ bool CellVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 			ii = (Atom*) node->argp(0, VTypes::AtomData);
 			if (ii == NULL)
 			{
-				Messenger::print("Error: Target atom given to cell 'translateAtom' function is NULL.\n");
+				Messenger::print("Error: Target atom given to cell 'translateAtom' function is NULL.");
 				result = FALSE;
 				break;
 			}
@@ -472,15 +472,15 @@ void CellVariable::printAccessors()
 {
 	if (CellVariable::nAccessors > 0)
 	{
-		Messenger::print("Valid accessors are:\n");
+		Messenger::print("Valid accessors are:");
 		for (int n=0; n<CellVariable::nAccessors; ++n) Messenger::print("%s%s%s", n == 0 ? " " : ", ", accessorData[n].name, accessorData[n].arraySize > 0 ? "[]" : "");
-		Messenger::print("\n");
+		Messenger::print("");
 	}
 	if ((CellVariable::nFunctions > 0) && (strcmp(functionData[0].name,".dummy") != 0))
 	{
-		Messenger::print("Valid functions are:\n");
+		Messenger::print("Valid functions are:");
 		for (int n=0; n<CellVariable::nFunctions; ++n) Messenger::print("%s%s(%s)", n == 0 ? " " : ", ", functionData[n].name, functionData[n].argText);
-		Messenger::print("\n");
+		Messenger::print("");
 	}
 }
 

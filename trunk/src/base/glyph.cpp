@@ -110,7 +110,7 @@ void GlyphData::setAtom(Atom* atom)
 	set_ = TRUE;
 	if (atom_ == NULL)
 	{
-		Messenger::print("Info - NULL atom pointer stored in glyph data, so vector data will be used instead.\n");
+		Messenger::print("Info - NULL atom pointer stored in glyph data, so vector data will be used instead.");
 		atomSetLast_ = FALSE;
 	}
 	else atomSetLast_ = TRUE;
@@ -152,7 +152,7 @@ Vec3<double> GlyphData::vector() const
 {
 	if (!atomSetLast_) return vector_;
 	else if (atom_ != NULL) return atom_->r();
-	Messenger::print("Warning - Atom pointer is defined NULL *and* glyph data has not been set to use vector data ({0,0,0} returned)...\n");
+	Messenger::print("Warning - Atom pointer is defined NULL *and* glyph data has not been set to use vector data ({0,0,0} returned)...");
 	return Vec3<double>();
 }
 
@@ -168,7 +168,7 @@ void GlyphData::setColour(double r, double g, double b, double a)
 // Set n'th component of colour
 void GlyphData::setColour(int n, double d)
 {
-	if ((n < 0) || (n > 4)) Messenger::print( "Tried to set component %i for colour in glyphdata which is out of range.\n", n+1);
+	if ((n < 0) || (n > 4)) Messenger::print( "Tried to set component %i for colour in glyphdata which is out of range.", n+1);
 	else colour_[n] = d;
 }
 
@@ -291,7 +291,7 @@ int Glyph::nData() const
 // Return nth data in glyph
 GlyphData* Glyph::data(int i)
 {
-	if ((i < 0) || (i >= data_.nItems())) Messenger::print( "Tried to get data %i for glyph when it has only %i.\n", i+1, data_.nItems());
+	if ((i < 0) || (i >= data_.nItems())) Messenger::print( "Tried to get data %i for glyph when it has only %i.", i+1, data_.nItems());
 	else return data_[i];
 	return NULL;
 }

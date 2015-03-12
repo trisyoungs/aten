@@ -43,23 +43,23 @@ Forcefield* Aten::loadForcefield(const char* filename)
 	bool result;
 	Forcefield* newff = forcefields_.add();
 	// First try - actual / absolute path
-	Messenger::print(Messenger::Verbose, "Looking for forcefield in absolute path (%s)...\n",filename);
+	Messenger::print(Messenger::Verbose, "Looking for forcefield in absolute path (%s)...",filename);
 	if (fileExists(filename)) result = newff->load(filename);
 	else
 	{
 		// Second try - aten.dataDir/ff
 		filepath.sprintf("%s%cff%c%s", dataDir_.get(), PATHSEP, PATHSEP, filename);
-		Messenger::print(Messenger::Verbose, "Looking for forcefield in installed location (%s)...\n",filepath.get());
+		Messenger::print(Messenger::Verbose, "Looking for forcefield in installed location (%s)...",filepath.get());
 		if (fileExists(filepath)) result = newff->load(filepath);
 		else
 		{
 			// Last try - user home datadir/ff
 			filepath.sprintf("%s%c%s%cff%c%s", homeDir_.get(), PATHSEP, atenDir_.get(), PATHSEP, PATHSEP, filename);
-			Messenger::print(Messenger::Verbose, "Looking for forcefield in user's data directory (%s)...\n",filepath.get());
+			Messenger::print(Messenger::Verbose, "Looking for forcefield in user's data directory (%s)...",filepath.get());
 			if (fileExists(filepath)) result = newff->load(filepath);
 			else
 			{
-				Messenger::print("Can't find forcefield file '%s' in any location.\n", filename);
+				Messenger::print("Can't find forcefield file '%s' in any location.", filename);
 				result = FALSE;
 			}
 		}
@@ -67,11 +67,11 @@ Forcefield* Aten::loadForcefield(const char* filename)
 	if (result)
 	{
 		current_.ff = newff;
-		Messenger::print("Forcefield '%s' is now the default.\n", newff->name());
+		Messenger::print("Forcefield '%s' is now the default.", newff->name());
 	}
 	else
 	{
-		Messenger::print("Couldn't load forcefield file '%s'.\n", filename);
+		Messenger::print("Couldn't load forcefield file '%s'.", filename);
 		forcefields_.remove(newff);
 		newff = NULL;
 	}
@@ -102,7 +102,7 @@ Forcefield* Aten::findForcefield(const char* s) const
 	Messenger::enter("Aten::findForcefield");
 	Forcefield* ff;
 	for (ff = forcefields_.first(); ff != NULL; ff = ff->next) if (strcmp(s,ff->name()) == 0) break;
-	if (ff == NULL) Messenger::print("Forcefield '%s' is not loaded.\n",s);
+	if (ff == NULL) Messenger::print("Forcefield '%s' is not loaded.",s);
 	Messenger::exit("Aten::findForcefield");
 	return ff;
 }
@@ -129,8 +129,8 @@ int Aten::nForcefields() const
 void Aten::setCurrentForcefield(Forcefield* ff)
 {
 	current_.ff = ff;
-	if (current_.ff == NULL) Messenger::print("Default forcefield has been unset.\n");
-	else Messenger::print("Default forcefield is now '%s'.\n", current_.ff->name());
+	if (current_.ff == NULL) Messenger::print("Default forcefield has been unset.");
+	else Messenger::print("Default forcefield is now '%s'.", current_.ff->name());
 }
 
 // Set active forcefield by ID

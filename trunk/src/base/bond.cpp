@@ -47,7 +47,7 @@ Bond::BondType Bond::bondType(double order)
 	else if ((order - Bond::Aromatic) < tolerance) return Bond::Aromatic;
 	else 
 	{
-		Messenger::print("Order %f doesn't readily convert to a BondType - assuming Single.\n", order);
+		Messenger::print("Order %f doesn't readily convert to a BondType - assuming Single.", order);
 		return Bond::Single;
 	}
 }

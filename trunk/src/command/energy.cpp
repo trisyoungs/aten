@@ -39,7 +39,7 @@ bool Commands::function_Electrostatics(CommandNode* c, Bundle& obj, ReturnValue&
 		case (Electrostatics::Ewald):
 			if (!c->hasArg(4))
 			{
-				Messenger::print("Must supply the alpha parameter and kmax vectors to used this electrostatics option.\n");
+				Messenger::print("Must supply the alpha parameter and kmax vectors to used this electrostatics option.");
 				return FALSE;
 			}
 			prefs.setEwaldAlpha(c->argd(1));
@@ -49,7 +49,7 @@ bool Commands::function_Electrostatics(CommandNode* c, Bundle& obj, ReturnValue&
 		case (Electrostatics::EwaldAuto):
 			if (!c->hasArg(1))
 			{
-				Messenger::print("Must supply the Ewald precision parameter to used this electrostatics option.\n");
+				Messenger::print("Must supply the Ewald precision parameter to used this electrostatics option.");
 				return FALSE;
 			}
 			prefs.ewaldPrecision().set(c->argd(1));

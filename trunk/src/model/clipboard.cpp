@@ -184,7 +184,7 @@ void Clipboard::copySelection(Model* m, bool quiet)
 	Messenger::enter("Clipboard::copySelection");
 	if (m->nSelected() == 0)
 	{
-		Messenger::print("Nothing selected to copy.\n");
+		Messenger::print("Nothing selected to copy.");
 		Messenger::exit("Clipboard::copySelection");
 		return;
 	}
@@ -200,7 +200,7 @@ void Clipboard::copySelection(Model* m, bool quiet)
 	// Copy bonds
 	if (!quiet) Messenger::print("bonds...");
 	copyBonds();
-	if (!quiet) Messenger::print(" Done.\n");
+	if (!quiet) Messenger::print(" Done.");
 	
 	Messenger::exit("Clipboard::copySelection");
 }
@@ -211,7 +211,7 @@ void Clipboard::copyMarked(Model* m)
 	Messenger::enter("Clipboard::copyMarked");
 	if (m->nMarked() == 0)
 	{
-		Messenger::print("Nothing marked to copy.\n");
+		Messenger::print("Nothing marked to copy.");
 		Messenger::exit("Clipboard::copyMarked");
 		return;
 	}
@@ -245,7 +245,7 @@ void Clipboard::copyAll(Model* m, bool quiet)
 	
 	// Copy bonds
 	copyBonds();
-	if (!quiet) Messenger::print(" Done.\n");
+	if (!quiet) Messenger::print(" Done.");
 	
 	Messenger::exit("Clipboard::copyAll");
 }

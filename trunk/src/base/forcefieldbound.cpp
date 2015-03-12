@@ -132,18 +132,18 @@ bool ForcefieldBound::setForm(const char* form)
 		case (ForcefieldBound::BondInteraction):
 		case (ForcefieldBound::UreyBradleyInteraction):
 			newform = BondFunctions::bondFunction(form);
-			if (newform == BondFunctions::nBondFunctions) Messenger::print("Unrecognised functional form (%s) for %s interaction.\n", form, ForcefieldBoundKeywords[type_]);
+			if (newform == BondFunctions::nBondFunctions) Messenger::print("Unrecognised functional form (%s) for %s interaction.", form, ForcefieldBoundKeywords[type_]);
 			else setBondForm((BondFunctions::BondFunction) newform);
 			break;
 		case (ForcefieldBound::AngleInteraction):
 			newform = AngleFunctions::angleFunction(form);
-			if (newform == AngleFunctions::nAngleFunctions) Messenger::print("Unrecognised functional form (%s) for %s interaction.\n", form, ForcefieldBoundKeywords[type_]);
+			if (newform == AngleFunctions::nAngleFunctions) Messenger::print("Unrecognised functional form (%s) for %s interaction.", form, ForcefieldBoundKeywords[type_]);
 			else setAngleForm((AngleFunctions::AngleFunction) newform);
 			break;
 		case (ForcefieldBound::TorsionInteraction):
 		case (ForcefieldBound::ImproperInteraction):
 			newform = TorsionFunctions::torsionFunction(form);
-			if (newform == TorsionFunctions::nTorsionFunctions) Messenger::print("Unrecognised functional form (%s) for %s interaction.\n", form, ForcefieldBoundKeywords[type_]);
+			if (newform == TorsionFunctions::nTorsionFunctions) Messenger::print("Unrecognised functional form (%s) for %s interaction.", form, ForcefieldBoundKeywords[type_]);
 			else setTorsionForm((TorsionFunctions::TorsionFunction) newform);
 		break;
 		default:

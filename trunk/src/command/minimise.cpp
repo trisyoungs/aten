@@ -42,7 +42,7 @@ bool Commands::function_CGMinimise(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	// Ensure we have a valid expression
 	if (!obj.rs()->createExpression(Choice(), Choice(), Choice(), aten_.currentForcefield(), aten_.combinationRules()))
 	{
-		Messenger::print("Failed to create expression - minimisation can't be performed.\n");
+		Messenger::print("Failed to create expression - minimisation can't be performed.");
 		return false;
 	}
 
@@ -104,19 +104,19 @@ bool Commands::function_MopacMinimise(CommandNode* c, Bundle& obj, ReturnValue& 
 	Tree* mopacexport = aten_.findFilter(FilterData::ModelExport, "mopac");
 	if (mopacexport == NULL)
 	{
-		Messenger::print("Error: Couldn't find MOPAC export filter.\n");
+		Messenger::print("Error: Couldn't find MOPAC export filter.");
 		return FALSE;
 	}
 	Tree* mopacimport = aten_.findFilter(FilterData::ModelImport, "mopacarc");
 	if (mopacimport == NULL)
 	{
-		Messenger::print("Error: Couldn't find MOPAC arc import filter.\n");
+		Messenger::print("Error: Couldn't find MOPAC arc import filter.");
 		return FALSE;
 	}
 	// Check that defined MOPAC exe exists
 	if (!fileExists(prefs.mopacExe()))
 	{
-		Messenger::print("Error: MOPAC excutable doesn't appear to be at '%s'.\n", prefs.mopacExe());
+		Messenger::print("Error: MOPAC excutable doesn't appear to be at '%s'.", prefs.mopacExe());
 		return FALSE;
 	}
 	// Grab/create various filenames and paths
@@ -132,7 +132,7 @@ bool Commands::function_MopacMinimise(CommandNode* c, Bundle& obj, ReturnValue& 
 	mopacArc.sprintf("%s%caten-mopac-%i-%i.arc", prefs.tempDir(), PATHSEP, QApplication::applicationPid(), runid);
 	mopacOut.sprintf("%s%caten-mopac-%i-%i.out", prefs.tempDir(), '/', QApplication::applicationPid(), runid);
 	mopacCmd.sprintf("\"%s\" \"%s\"", prefs.mopacExe(), mopacInput.get());
-	Messenger::print("Command to run will be '%s'\n", mopacCmd.get());
+	Messenger::print("Command to run will be '%s'", mopacCmd.get());
 	
 	// Save input file
 	LineParser parser;
@@ -159,7 +159,7 @@ bool Commands::function_MopacMinimise(CommandNode* c, Bundle& obj, ReturnValue& 
 	// Ready to run command....
 	if (!mopacProcess.execute(mopacCmd, NULL, mopacOut))
 	{
-		Messenger::print("Error: Failed to run MOPAC. Is it installed correctly?\n");
+		Messenger::print("Error: Failed to run MOPAC. Is it installed correctly?");
 		return FALSE;
 	}
 
@@ -174,7 +174,7 @@ bool Commands::function_MopacMinimise(CommandNode* c, Bundle& obj, ReturnValue& 
 	// Check for existence of output file....
 	if (!fileExists(mopacArc))
 	{
-		Messenger::print("Error: Can't locate MOPAC output '%s'.\n", mopacArc.get());
+		Messenger::print("Error: Can't locate MOPAC output '%s'.", mopacArc.get());
 		return FALSE;
 	}
 
@@ -185,7 +185,7 @@ bool Commands::function_MopacMinimise(CommandNode* c, Bundle& obj, ReturnValue& 
 	Model* m = aten_.workingModels();
 	if (m == NULL)
 	{
-		Messenger::print("Error: No results model found.\n");
+		Messenger::print("Error: No results model found.");
 		return FALSE;
 	}
 
@@ -220,7 +220,7 @@ bool Commands::function_SDMinimise(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	// Ensure we have a valid expression
 	if (!obj.rs()->createExpression(Choice(), Choice(), Choice(), aten_.currentForcefield(), aten_.combinationRules()))
 	{
-		Messenger::print("Failed to create expression - minimisation can't be performed.\n");
+		Messenger::print("Failed to create expression - minimisation can't be performed.");
 		return false;
 	}
 

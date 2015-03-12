@@ -118,7 +118,7 @@ bool Commands::function_MeasureSelected(CommandNode* c, Bundle& obj, ReturnValue
 			obj.rs()->endUndoState();
 			break;
 		default:
-			Messenger::print("%i does not represent a geometry type (number of atoms involved).\n", c->argi(0));
+			Messenger::print("%i does not represent a geometry type (number of atoms involved).", c->argi(0));
 			return FALSE;
 			break;
 	}

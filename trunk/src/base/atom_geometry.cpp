@@ -36,7 +36,7 @@ bool Atom::nextBondVector(Vec3<double> &vector, Atom::AtomGeometry geometry)
 	{
 		case (Atom::NoGeometry):
 		case (Atom::UnboundGeometry):
-			Messenger::print("Unsuitable atom geometry (%s) given to Model::growAtom\n", Atom::atomGeometry(geometry));
+			Messenger::print("Unsuitable atom geometry (%s) given to Model::growAtom", Atom::atomGeometry(geometry));
 			Messenger::exit("Atom::nextBondVector");
 			return FALSE;
 			break;
@@ -45,7 +45,7 @@ bool Atom::nextBondVector(Vec3<double> &vector, Atom::AtomGeometry geometry)
 	// Only try to find a new bond if we have free bonds to add...
 	if (this->nBonds() >= Atom::atomGeometryNBonds(geometry))
 	{
-		Messenger::print("Attempted to grow an atom on an existing atom which already has the correct (or greater) number of bonds (%i) for the requested geometry (%s)\n", this->nBonds(), Atom::atomGeometry(geometry));
+		Messenger::print("Attempted to grow an atom on an existing atom which already has the correct (or greater) number of bonds (%i) for the requested geometry (%s)", this->nBonds(), Atom::atomGeometry(geometry));
 		Messenger::exit("Atom::nextBondVector");
 		return FALSE;
 	}

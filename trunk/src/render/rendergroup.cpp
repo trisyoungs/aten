@@ -159,15 +159,10 @@ void RenderGroup::sendToGL(Matrix& modelTransformationMatrix)
 {
 	Matrix A;
 
-	transparentTrianglePrimitives_.clear();
-	boldLinePrimitives_.clear();
-	extraNormalLines_.forgetAll();
-	extraBoldLines_.forgetAll();
-
 	// Solid triangles
 	glEnable(GL_LIGHTING);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	for (PrimitiveInfo *pi = solidTrianglePrimitives_.first(); pi != NULL; pi = pi->next)
+	for (PrimitiveInfo* pi = solidTrianglePrimitives_.first(); pi != NULL; pi = pi->next)
 	{
 		Primitive& primitive = pi->primitive();
 		if (!primitive.colouredVertexData()) glColor4fv(pi->colour());
@@ -183,7 +178,7 @@ void RenderGroup::sendToGL(Matrix& modelTransformationMatrix)
 	// Wire triangles
 	glDisable(GL_LIGHTING);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	for (PrimitiveInfo *pi = wireTrianglePrimitives_.first(); pi != NULL; pi = pi->next)
+	for (PrimitiveInfo* pi = wireTrianglePrimitives_.first(); pi != NULL; pi = pi->next)
 	{
 		Primitive& primitive = pi->primitive();
 		if (!primitive.colouredVertexData()) glColor4fv(pi->colour());
@@ -201,7 +196,7 @@ void RenderGroup::sendToGL(Matrix& modelTransformationMatrix)
 	glDisable(GL_LIGHTING);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	glLineWidth(1.0f);
-	for (PrimitiveInfo *pi = normalLinePrimitives_.first(); pi != NULL; pi = pi->next)
+	for (PrimitiveInfo* pi = normalLinePrimitives_.first(); pi != NULL; pi = pi->next)
 	{
 		Primitive& primitive = pi->primitive();
 		if (!primitive.colouredVertexData()) glColor4fv(pi->colour());
@@ -218,7 +213,7 @@ void RenderGroup::sendToGL(Matrix& modelTransformationMatrix)
 	glDisable(GL_LIGHTING);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	glLineWidth(3.0f);
-	for (PrimitiveInfo *pi = boldLinePrimitives_.first(); pi != NULL; pi = pi->next)
+	for (PrimitiveInfo* pi = boldLinePrimitives_.first(); pi != NULL; pi = pi->next)
 	{
 		Primitive& primitive = pi->primitive();
 		if (!primitive.colouredVertexData()) glColor4fv(pi->colour());
@@ -234,7 +229,7 @@ void RenderGroup::sendToGL(Matrix& modelTransformationMatrix)
 	// Transparent triangles
 	glEnable(GL_LIGHTING);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	for (PrimitiveInfo *pi = transparentTrianglePrimitives_.first(); pi != NULL; pi = pi->next)
+	for (PrimitiveInfo* pi = transparentTrianglePrimitives_.first(); pi != NULL; pi = pi->next)
 	{
 		Primitive& primitive = pi->primitive();
 		if (!primitive.colouredVertexData()) glColor4fv(pi->colour());

@@ -43,7 +43,7 @@ int Model::nMarked() const
 void Model::markAll()
 {
 	selectAll(TRUE);
-	Messenger::print(Messenger::Verbose, "All atoms marked.\n");
+	Messenger::print(Messenger::Verbose, "All atoms marked.");
 }
 
 // Match marked atoms to current selection
@@ -51,7 +51,7 @@ void Model::markSelectedAtoms()
 {
 	selectNone(TRUE);
 	for (Refitem<Atom,int>* ri = selection_.first(); ri != NULL; ri = ri->next) selectAtom(ri->item, TRUE);
-	Messenger::print(Messenger::Verbose, "There are now %i atoms marked.\n", marked_.nItems());
+	Messenger::print(Messenger::Verbose, "There are now %i atoms marked.", marked_.nItems());
 }
 
 // Select marked atoms
@@ -101,7 +101,7 @@ void Model::selectAtom(Atom* i, bool markonly)
 void Model::selectAtom(int id, bool markonly)
 {
 	Atom* i = atom(id);
-	if (i == NULL) Messenger::print("Can't %s atom %i\n", markonly ? "mark" : "select", id+1);
+	if (i == NULL) Messenger::print("Can't %s atom %i", markonly ? "mark" : "select", id+1);
 	else selectAtom(i, markonly);
 }
 
@@ -138,7 +138,7 @@ void Model::deselectAtom(Atom* i, bool markonly)
 void Model::deselectAtom(int id, bool markonly)
 {
 	Atom* i = atom(id);
-	if (i == NULL) Messenger::print("Can't %s atom %i\n", markonly ? "unmark" : "deselect", id+1);
+	if (i == NULL) Messenger::print("Can't %s atom %i", markonly ? "unmark" : "deselect", id+1);
 	else deselectAtom(i, markonly);
 }
 
@@ -403,7 +403,7 @@ int Model::selectType(int element, const char* typedesc, bool markonly, bool des
 	testat.setCharacterElement(element);
 	if (!netaparser.createNeta(&testat, typedesc, NULL))
 	{
-		Messenger::print("Failed to create type description.\n");
+		Messenger::print("Failed to create type description.");
 		Messenger::exit("Model::selectType");
 		return -1;
 	}
@@ -430,7 +430,7 @@ int Model::selectType(int element, const char* typedesc, bool markonly, bool des
 	// Update model
 	changeLog.add(Log::Selection);
 	// Write results
-	Messenger::print("Type description score = %i. Matched %i atoms.\n", matchscore, count);
+	Messenger::print("Type description score = %i. Matched %i atoms.", matchscore, count);
 	Messenger::exit("Model::selectType");
 	return count;
 }
@@ -461,7 +461,7 @@ void Model::selectPattern(Pattern* p, bool markonly, bool deselect)
 	for (Pattern* modelp = patterns_.first(); modelp != NULL; modelp = modelp->next) if (p == modelp) found = TRUE;
 	if (!found)
 	{
-		Messenger::print("Pattern does not belong to this model, or is out of date.\n");
+		Messenger::print("Pattern does not belong to this model, or is out of date.");
 		Messenger::exit("Model::selectPattern");
 		return;
 	}
@@ -580,7 +580,7 @@ void Model::selectOverlaps(double tolerance, bool markonly)
 						dist = cell_.distance(i,j);
 						if (dist < tolerance)
 						{
-							Messenger::print(Messenger::Verbose, "Atom %i (%s) is %f from atom %i (%s).\n", j->id()+1, Elements().symbol(j), dist, i->id()+1, Elements().symbol(i));
+							Messenger::print(Messenger::Verbose, "Atom %i (%s) is %f from atom %i (%s).", j->id()+1, Elements().symbol(j), dist, i->id()+1, Elements().symbol(i));
 							selectAtom(j, markonly);
 							++count;
 						}
@@ -603,7 +603,7 @@ void Model::selectOverlaps(double tolerance, bool markonly)
 	}
 	// Free bonding cuboids
 	freeBondingCuboids();
-	Messenger::print("%i overlapping atoms selected.\n", count);
+	Messenger::print("%i overlapping atoms selected.", count);
 	Messenger::exit("Model::selectOverlaps");
 }
 
@@ -678,7 +678,7 @@ void Model::selectMiller(int h, int k, int l, bool inside, bool markonly)
 	Messenger::enter("Model::selectMiller");
 	if (cell_.type() == UnitCell::NoCell)
 	{
-		Messenger::print("Can't use Miller planes on a non-periodic model.\n");
+		Messenger::print("Can't use Miller planes on a non-periodic model.");
 		Messenger::exit("Model::selectMiller");
 		return;
 	}
@@ -709,7 +709,7 @@ void Model::selectLine(Vec3<double> line, Vec3<double> point, double dr, bool ma
 	double denom = line.dp(line);
 	if (denom < 1.0e-6)
 	{
-		Messenger::print("Line parameters appear to be corrupt.\n");
+		Messenger::print("Line parameters appear to be corrupt.");
 		Messenger::exit("Model::selectLine");
 		return;
 	}

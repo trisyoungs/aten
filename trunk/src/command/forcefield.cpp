@@ -42,13 +42,13 @@ bool Commands::function_AngleDef(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	for (n=1; n<4; n++)
 	{
 		if ((strchr(c->argc(n),'*') == NULL) && (obj.ff->findType(c->argc(n)) == NULL))
-			Messenger::print("\t... Warning - angle atom '%s' does not exist in the forcefield!\n", c->argc(n));
+			Messenger::print("\t... Warning - angle atom '%s' does not exist in the forcefield!", c->argc(n));
 	}
 	// Create new ff_bond structure
 	ForcefieldBound* ffb = obj.ff->addAngle(anglestyle);
 	for (n=1; n<4; n++) ffb->setTypeName(n-1,c->argc(n));
 	for (n=4; n<MAXFFPARAMDATA+4; n++) if (c->hasArg(n)) ffb->setParameter(n-4, c->argd(n));
-	Messenger::print(Messenger::Verbose, "Angle %i : %s-%s-%s  %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f\n", obj.ff->nAngles(), ffb->typeName(0), ffb->typeName(1) , ffb->typeName(2), ffb->parameter(0), ffb->parameter(1), ffb->parameter(2), ffb->parameter(3), ffb->parameter(4), ffb->parameter(5));
+	Messenger::print(Messenger::Verbose, "Angle %i : %s-%s-%s  %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f", obj.ff->nAngles(), ffb->typeName(0), ffb->typeName(1) , ffb->typeName(2), ffb->parameter(0), ffb->parameter(1), ffb->parameter(2), ffb->parameter(3), ffb->parameter(4), ffb->parameter(5));
 	rv.set(VTypes::ForcefieldBoundData, ffb);
 	return TRUE;
 }
@@ -59,7 +59,7 @@ bool Commands::function_AutoConversionUnit(CommandNode* c, Bundle& obj, ReturnVa
 	// Check that a valid file source/destination exists.
 	if (!c->parent()->isFilter())
 	{
-		Messenger::print("The 'autoconversionunit' command can only be used from within a Filter.\n");
+		Messenger::print("The 'autoconversionunit' command can only be used from within a Filter.");
 		return FALSE;
 	}
 	if (c->hasArg(0))
@@ -85,13 +85,13 @@ bool Commands::function_BondDef(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	for (n=1; n<3; n++)
 	{
 		if ((strchr(c->argc(n),'*') == NULL) && (obj.ff->findType(c->argc(n)) == NULL))
-			Messenger::print("\t... Warning - bond atom '%s' does not exist in the forcefield!\n", c->argc(n));
+			Messenger::print("\t... Warning - bond atom '%s' does not exist in the forcefield!", c->argc(n));
 	}
 	// Create new ff_bond structure
 	ForcefieldBound* ffb = obj.ff->addBond(bondstyle);
 	for (n=1; n<3; n++) ffb->setTypeName(n-1, c->argc(n));
 	for (n=3; n<MAXFFPARAMDATA+3; n++) if (c->hasArg(n)) ffb->setParameter(n-3, c->argd(n));
-	Messenger::print(Messenger::Verbose, "Bond %i : %s-%s  %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f\n", obj.ff->nBonds(), ffb->typeName(0), ffb->typeName(1) , ffb->parameter(0), ffb->parameter(1), ffb->parameter(2), ffb->parameter(3), ffb->parameter(4), ffb->parameter(5)); 
+	Messenger::print(Messenger::Verbose, "Bond %i : %s-%s  %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f", obj.ff->nBonds(), ffb->typeName(0), ffb->typeName(1) , ffb->parameter(0), ffb->parameter(1), ffb->parameter(2), ffb->parameter(3), ffb->parameter(4), ffb->parameter(5)); 
 	rv.set(VTypes::ForcefieldBoundData, ffb);
 	return TRUE;
 }
@@ -162,7 +162,7 @@ bool Commands::function_CurrentFF(CommandNode* c, Bundle& obj, ReturnValue& rv)
 				ff = (Forcefield*) c->argp(0, VTypes::ForcefieldData);
 				break;
 			default:
-				Messenger::print("Can't convert a variable of type '%s' into a Forcefield.\n", VTypes::dataType(c->argType(0)));
+				Messenger::print("Can't convert a variable of type '%s' into a Forcefield.", VTypes::dataType(c->argType(0)));
 				break;
 		}
 		if (ff == NULL)	return FALSE;
@@ -192,7 +192,7 @@ bool Commands::function_DeleteFF(CommandNode* c, Bundle& obj, ReturnValue& rv)
 				ff = (Forcefield*) c->argp(0, VTypes::ForcefieldData);
 				break;
 			default:
-				Messenger::print("Can't convert a variable of type '%s' into a Forcefield.\n", VTypes::dataType(c->argType(0)));
+				Messenger::print("Can't convert a variable of type '%s' into a Forcefield.", VTypes::dataType(c->argType(0)));
 				break;
 		}
 		if (ff == NULL)	return FALSE;
@@ -243,7 +243,7 @@ bool Commands::function_ExportMap(CommandNode* c, Bundle& obj, ReturnValue& rv)
 		{
 			if (strchr(parser.argc(n),'=') == NULL)
 			{
-				Messenger::print("Mangled exportmap value found (i.e. it contains no '='): '%s'.\n", parser.argc(n));
+				Messenger::print("Mangled exportmap value found (i.e. it contains no '='): '%s'.", parser.argc(n));
 				continue;
 			}
 			aten_.typeExportMap.add(beforeChar(parser.argc(n),'='), afterChar(parser.argc(n),'='));
@@ -285,12 +285,12 @@ bool Commands::function_FFPattern(CommandNode* c, Bundle& obj, ReturnValue& rv)
 				p = (Pattern*) c->argp(0, VTypes::ModelData);
 				break;
 			default:
-				Messenger::print("Can't convert a variable of type '%s' into a Forcefield.\n", VTypes::dataType(c->argType(0)));
+				Messenger::print("Can't convert a variable of type '%s' into a Forcefield.", VTypes::dataType(c->argType(0)));
 				break;
 		}
 		if (p == NULL)
 		{
-			Messenger::print("Invalid pattern specified - current model unchanged.\n");
+			Messenger::print("Invalid pattern specified - current model unchanged.");
 			return FALSE;
 		}
 		p->setForcefield(obj.ff);
@@ -304,13 +304,13 @@ bool Commands::function_FinaliseFF(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ForcefieldPointer)) return FALSE;
 	// Print some information about the terms read in from the forcefield
-	Messenger::print("Forcefield now contains:\n");
-	Messenger::print("\t%i type descriptions\n", obj.ff->nTypes() - 1);
-	Messenger::print("\t%i bond definitions\n", obj.ff->nBonds());
-	Messenger::print("\t%i angle definitions\n", obj.ff->nAngles());
-	Messenger::print("\t%i torsion definitions\n", obj.ff->nTorsions());
+	Messenger::print("Forcefield now contains:");
+	Messenger::print("\t%i type descriptions", obj.ff->nTypes() - 1);
+	Messenger::print("\t%i bond definitions", obj.ff->nBonds());
+	Messenger::print("\t%i angle definitions", obj.ff->nAngles());
+	Messenger::print("\t%i torsion definitions", obj.ff->nTorsions());
 	// Check that some forcefield types were defined...
-	if (obj.ff->nTypes() <= 1) Messenger::print("Warning - no types are defined in this forcefield.\n");
+	if (obj.ff->nTypes() <= 1) Messenger::print("Warning - no types are defined in this forcefield.");
 	// Link forcefield type references (&N) to their actual forcefield types
 	for (ForcefieldAtom* ffa = obj.ff->types(); ffa != NULL; ffa = ffa->next) ffa->neta()->linkReferenceTypes();
 	// Convert energetic units in the forcefield to the internal units of the program
@@ -327,8 +327,8 @@ bool Commands::function_FixType(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	ForcefieldAtom* ffa = obj.ff->findType(c->argi(0));
 	if (ffa == NULL)
 	{
-		if (c->argType(0) == VTypes::IntegerData) Messenger::print("Forcefield type ID %i not defined in forcefield '%s'.\n", c->argi(0), obj.ff->name());
-		else if (c->argType(0) == VTypes::StringData) Messenger::print("Forcefield type '%s' not defined in forcefield '%s'.\n", c->argc(0), obj.ff->name());
+		if (c->argType(0) == VTypes::IntegerData) Messenger::print("Forcefield type ID %i not defined in forcefield '%s'.", c->argi(0), obj.ff->name());
+		else if (c->argType(0) == VTypes::StringData) Messenger::print("Forcefield type '%s' not defined in forcefield '%s'.", c->argc(0), obj.ff->name());
 		rv.reset();
 		return FALSE;
 	}
@@ -337,12 +337,12 @@ bool Commands::function_FixType(CommandNode* c, Bundle& obj, ReturnValue& rv)
 		Atom* i = c->argType(1) == VTypes::IntegerData ? obj.m->atom(c->argi(1)-1) : (Atom*) c->argp(1, VTypes::AtomData);
 		if (i == NULL) return FALSE;
 		obj.m->setAtomType(i, ffa, TRUE);
-		Messenger::print("Atom type for atom id %i fixed to %i (%s/%s).\n", i->id()+1, c->argi(0), ffa->name(), ffa->equivalent());
+		Messenger::print("Atom type for atom id %i fixed to %i (%s/%s).", i->id()+1, c->argi(0), ffa->name(), ffa->equivalent());
 	}
 	else for (Refitem<Atom,int>* ri = obj.rs()->selection(); ri != NULL; ri = ri->next)
 	{
 		obj.m->setAtomType(ri->item, ffa, TRUE);
-		Messenger::print("Atom type for atom id %i fixed to %i (%s/%s).\n", ri->item->id()+1, c->argi(0), ffa->name(), ffa->equivalent());
+		Messenger::print("Atom type for atom id %i fixed to %i (%s/%s).", ri->item->id()+1, c->argi(0), ffa->name(), ffa->equivalent());
 	}
 	obj.m->changeLog.add(Log::Structure);
 	rv.reset();
@@ -377,12 +377,12 @@ bool Commands::function_GenerateAngle(CommandNode* c, Bundle& obj, ReturnValue& 
 	{
 		if (atoms[i] == NULL)
 		{
-			Messenger::print("Atom %i given to 'generateangle' is NULL.\n", i);
+			Messenger::print("Atom %i given to 'generateangle' is NULL.", i);
 			return FALSE;
 		}
 		if (atoms[i]->type() == NULL)
 		{
-			Messenger::print("Atom %i given to 'generateangle' has no forcefield atom assigned.\n", i);
+			Messenger::print("Atom %i given to 'generateangle' has no forcefield atom assigned.", i);
 			return FALSE;
 		}
 	}
@@ -405,12 +405,12 @@ bool Commands::function_GenerateBond(CommandNode* c, Bundle& obj, ReturnValue& r
 	{
 		if (atoms[i] == NULL)
 		{
-			Messenger::print("Atom %i given to 'generatebond' is NULL.\n", i);
+			Messenger::print("Atom %i given to 'generatebond' is NULL.", i);
 			return FALSE;
 		}
 		if (atoms[i]->type() == NULL)
 		{
-			Messenger::print("Atom %i given to 'generatebond' has no forcefield atom assigned.\n", i);
+			Messenger::print("Atom %i given to 'generatebond' has no forcefield atom assigned.", i);
 			return FALSE;
 		}
 	}
@@ -433,12 +433,12 @@ bool Commands::function_GenerateTorsion(CommandNode* c, Bundle& obj, ReturnValue
 	{
 		if (atoms[i] == NULL)
 		{
-			Messenger::print("Atom %i given to 'generatetorsion' is NULL.\n", i);
+			Messenger::print("Atom %i given to 'generatetorsion' is NULL.", i);
 			return FALSE;
 		}
 		if (atoms[i]->type() == NULL)
 		{
-			Messenger::print("Atom %i given to 'generatetorsion' has no forcefield atom assigned.\n", i);
+			Messenger::print("Atom %i given to 'generatetorsion' has no forcefield atom assigned.", i);
 			return FALSE;
 		}
 	}
@@ -458,13 +458,13 @@ bool Commands::function_GenerateVdw(CommandNode* c, Bundle& obj, ReturnValue& rv
 	// Check atom and associated type pointers
 	if (i == NULL)
 	{
-		Messenger::print("Atom given to 'generatevdw' is NULL.\n");
+		Messenger::print("Atom given to 'generatevdw' is NULL.");
 		return FALSE;
 	}
 	ForcefieldAtom* ffa = i->type();
 	if (ffa == NULL)
 	{
-		Messenger::print("Atom given to 'generatevdw' has no forcefield atom assigned.\n");
+		Messenger::print("Atom given to 'generatevdw' has no forcefield atom assigned.");
 		return FALSE;
 	}
 	if (ffa->vdwForm() == VdwFunctions::None) obj.ff->generateVdw(i);
@@ -503,7 +503,7 @@ bool Commands::function_GetFF(CommandNode* c, Bundle& obj, ReturnValue& rv)
 			ff = (Forcefield*) c->argp(0, VTypes::ForcefieldData);
 			break;
 		default:
-			Messenger::print("Can't convert a variable of type '%s' into a Forcefield.\n", VTypes::dataType(c->argType(0)));
+			Messenger::print("Can't convert a variable of type '%s' into a Forcefield.", VTypes::dataType(c->argType(0)));
 			break;
 	}
 	if (ff == NULL)	return FALSE;
@@ -522,13 +522,13 @@ bool Commands::function_InterDef(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	ForcefieldAtom* ffa = obj.ff->findType(c->argi(1));
 	if (ffa == NULL)
 	{
-		Messenger::print("TypeId %i has not been defined - can't define VDW data.\n",c->argi(1));
+		Messenger::print("TypeId %i has not been defined - can't define VDW data.",c->argi(1));
 		return FALSE;
 	}
 	ffa->setVdwForm(vdwstyle);
 	ffa->setCharge(c->argd(2));
 	for (int i=3; i<MAXFFPARAMDATA+3; i++) if (c->hasArg(i)) ffa->setParameter(i-3, c->argd(i));
-	Messenger::print(Messenger::Verbose, "VDW Data %i : %s %8.4f %8.4f %8.4f %8.4f\n", ffa->typeId(), ffa->name(), ffa->parameter(0), ffa->parameter(1), ffa->parameter(2), ffa->charge());
+	Messenger::print(Messenger::Verbose, "VDW Data %i : %s %8.4f %8.4f %8.4f %8.4f", ffa->typeId(), ffa->name(), ffa->parameter(0), ffa->parameter(1), ffa->parameter(2), ffa->charge());
 	rv.reset();
 	return TRUE;
 }
@@ -541,7 +541,7 @@ bool Commands::function_LoadFF(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	else
 	{
 		if (c->hasArg(1)) ff->setName(c->argc(1));
-		Messenger::print("Forcefield '%s' loaded, name '%s'\n", c->argc(0), ff->name());
+		Messenger::print("Forcefield '%s' loaded, name '%s'", c->argc(0), ff->name());
 	}
 	rv.set(VTypes::ForcefieldData, ff);
 	return TRUE;
@@ -561,11 +561,11 @@ bool Commands::function_Map(CommandNode* c, Bundle& obj, ReturnValue& rv)
 		{
 			if (strchr(parser.argc(n),'=') == NULL)
 			{
-				Messenger::print("Mangled map value found (i.e. it contains no '='): '%s'.\n", parser.argc(n));
+				Messenger::print("Mangled map value found (i.e. it contains no '='): '%s'.", parser.argc(n));
 				continue;
 			}
 			el = Elements().find(afterChar(parser.argc(n), '='), ElementMap::AlphaZMap);
-			if (el == 0) Messenger::print("Unrecognised element '%s' in type map.\n",afterChar(parser.argc(n),'='));
+			if (el == 0) Messenger::print("Unrecognised element '%s' in type map.",afterChar(parser.argc(n),'='));
 			else
 			{
 				nm = aten_.typeImportMap.add();
@@ -588,11 +588,11 @@ bool Commands::function_NewFF(CommandNode* c, Bundle& obj, ReturnValue& rv)
 // Print expression setup
 bool Commands::function_PrintSetup(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	Messenger::print("Current Energy Setup:\n");
-	Messenger::print("Intramolecular Terms : %s\n", (prefs.calculateIntra() ? "On" : "Off"));
-	Messenger::print("       van der Waals : %s\n", (prefs.calculateVdw() ? "On" : "Off"));
-	Messenger::print("      Electrostatics : %s\n", Electrostatics::elecMethod(prefs.electrostaticsMethod()));
-	Messenger::print("             Cutoffs : %13.6e (VDW)  %13.6e (elec)\n", prefs.vdwCutoff(), prefs.elecCutoff());
+	Messenger::print("Current Energy Setup:");
+	Messenger::print("Intramolecular Terms : %s", (prefs.calculateIntra() ? "On" : "Off"));
+	Messenger::print("       van der Waals : %s", (prefs.calculateVdw() ? "On" : "Off"));
+	Messenger::print("      Electrostatics : %s", Electrostatics::elecMethod(prefs.electrostaticsMethod()));
+	Messenger::print("             Cutoffs : %13.6e (VDW)  %13.6e (elec)", prefs.vdwCutoff(), prefs.elecCutoff());
 	rv.reset();
 	return TRUE;
 }
@@ -605,10 +605,10 @@ bool Commands::function_PrintType(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	ForcefieldAtom* ffa = obj.ff->findType(c->argi(0));
 	if (ffa == NULL)
 	{
-		Messenger::print("Error: Type id %i is not defined in forcefield '%s'.\n", c->argi(0), obj.ff->name());
+		Messenger::print("Error: Type id %i is not defined in forcefield '%s'.", c->argi(0), obj.ff->name());
 		return FALSE;
 	}
-	Messenger::print("Internal NETA description for type '%i' (%s, equivalent = %s)\n", ffa->typeId(), ffa->name(), ffa->equivalent());
+	Messenger::print("Internal NETA description for type '%i' (%s, equivalent = %s)", ffa->typeId(), ffa->name(), ffa->equivalent());
 	ffa->neta()->print();
 	rv.reset();
 	return TRUE;
@@ -646,7 +646,7 @@ bool Commands::function_SaveExpression(CommandNode* c, Bundle& obj, ReturnValue&
 	{
 		// Print list of valid filter nicknames
 		aten_.printValidNicknames(FilterData::ExpressionExport);
-		Messenger::print("Not saved.\n");
+		Messenger::print("Not saved.");
 		return FALSE;
 	}
 
@@ -657,8 +657,8 @@ bool Commands::function_SaveExpression(CommandNode* c, Bundle& obj, ReturnValue&
 	obj.rs()->disableUndoRedo();
 	bool result = filter->executeWrite(c->argc(1));
 	obj.rs()->enableUndoRedo();
-	if (result) Messenger::print("Expression for model '%s' saved to file '%s' (%s)\n", obj.rs()->name(), c->argc(1), filter->filter.name());
-	else Messenger::print("Failed to save expression for model '%s'.\n", obj.rs()->name());
+	if (result) Messenger::print("Expression for model '%s' saved to file '%s' (%s)", obj.rs()->name(), c->argc(1), filter->filter.name());
+	else Messenger::print("Failed to save expression for model '%s'.", obj.rs()->name());
 	return result;
 }
 
@@ -699,14 +699,14 @@ bool Commands::function_TorsionDef(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	for (n=1; n<4; n++)
 	{
 		if ((strchr(c->argc(n),'*') == NULL) && (obj.ff->findType(c->argc(n)) == NULL))
-			Messenger::print("\t... Warning - torsion atom '%s' does not exist in the forcefield!\n", c->argc(n));
+			Messenger::print("\t... Warning - torsion atom '%s' does not exist in the forcefield!", c->argc(n));
 	}
 	
 	// Create new ff_bond structure
 	ForcefieldBound* ffb = obj.ff->addTorsion(torsionstyle);
 	for (n=1; n<5; n++) ffb->setTypeName(n-1,c->argc(n));
 	for (n=5; n<MAXFFPARAMDATA+3; n++) if (c->hasArg(n)) ffb->setParameter(n-5, c->argd(n));
-	Messenger::print(Messenger::Verbose, "TORSION %i : %s-%s-%s-%s  %8.4f %8.4f %8.4f %8.4f, escale=%8.4f vscale=%8.4f\n", obj.ff->nTorsions(), ffb->typeName(0), ffb->typeName(1), ffb->typeName(2), ffb->typeName(3), ffb->parameter(0), ffb->parameter(1), ffb->parameter(2), ffb->parameter(3), ffb->parameter(4), ffb->parameter(5));
+	Messenger::print(Messenger::Verbose, "TORSION %i : %s-%s-%s-%s  %8.4f %8.4f %8.4f %8.4f, escale=%8.4f vscale=%8.4f", obj.ff->nTorsions(), ffb->typeName(0), ffb->typeName(1), ffb->typeName(2), ffb->typeName(3), ffb->parameter(0), ffb->parameter(1), ffb->parameter(2), ffb->parameter(3), ffb->parameter(4), ffb->parameter(5));
 	rv.set(VTypes::ForcefieldBoundData, ffb);
 	return TRUE;
 }
@@ -720,7 +720,7 @@ bool Commands::function_TypeDef(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	ForcefieldAtom* idsearch = obj.ff->findType(newffid);
 	if (idsearch != NULL)
 	{
-		Messenger::print("Duplicate forcefield type ID '%i' - already used by type '%s'.\n", newffid, idsearch->name());
+		Messenger::print("Duplicate forcefield type ID '%i' - already used by type '%s'.", newffid, idsearch->name());
 		return FALSE;
 	}
 	ForcefieldAtom* ffa = obj.ff->addType();
@@ -752,7 +752,7 @@ bool Commands::function_TypeTest(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	ForcefieldAtom* ffa = obj.ff->findType(c->argi(0));
 	if (ffa == NULL)
 	{
-		Messenger::print("Type ID %i does not exist in the forcefield '%s'.\n",c->argi(0), obj.ff->name());
+		Messenger::print("Type ID %i does not exist in the forcefield '%s'.",c->argi(0), obj.ff->name());
 		return FALSE;
 	}
 	else
@@ -767,8 +767,8 @@ bool Commands::function_TypeTest(CommandNode* c, Bundle& obj, ReturnValue& rv)
 			else if (c->argType(1) == VTypes::IntegerData) i = obj.m->atomArray()[c->argi(1)-1];
 			Pattern* p = obj.m->pattern(i);
 			int score = ffa->neta()->matchAtom(i,p->ringList(),obj.m);
-			if (score > 0) Messenger::print("Atom %i matched type %i (%s) with score %i.\n", i->id()+1, ffa->typeId(), ffa->name(), score);
-			else Messenger::print("Atom %i did not match type %i (%s).\n", i->id()+1, ffa->typeId(), ffa->name());
+			if (score > 0) Messenger::print("Atom %i matched type %i (%s) with score %i.", i->id()+1, ffa->typeId(), ffa->name(), score);
+			else Messenger::print("Atom %i did not match type %i (%s).", i->id()+1, ffa->typeId(), ffa->name());
 			rv.set(score);
 		}
 		else return FALSE;
@@ -783,7 +783,7 @@ bool Commands::function_Units(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	Prefs::EnergyUnit newunit = Prefs::energyUnit(c->argc(0));
 	if (newunit == Prefs::nEnergyUnits) return FALSE;
 	obj.ff->setEnergyUnit(newunit);
-	Messenger::print("Forcefield energy unit set to %s\n", Prefs::energyUnit(newunit));
+	Messenger::print("Forcefield energy unit set to %s", Prefs::energyUnit(newunit));
 	rv.reset();
 	return TRUE;
 }

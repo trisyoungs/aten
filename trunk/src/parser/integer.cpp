@@ -49,7 +49,7 @@ bool IntegerVariable::set(ReturnValue& rv)
 {
 	if (readOnly_)
 	{
-		Messenger::print("A constant value (in this case an integer) cannot be assigned to.\n");
+		Messenger::print("A constant value (in this case an integer) cannot be assigned to.");
 		return FALSE;
 	}
 	bool success;
@@ -116,7 +116,7 @@ bool IntegerArrayVariable::set(ReturnValue& rv)
 {
 	if (readOnly_)
 	{
-		Messenger::print("A constant value (in this case an int array) cannot be assigned to.\n");
+		Messenger::print("A constant value (in this case an int array) cannot be assigned to.");
 		return FALSE;
 	}
 	if (integerArrayData_ == NULL)
@@ -135,7 +135,7 @@ bool IntegerArrayVariable::set(ReturnValue& rv)
 			integerArrayData_[1] = v.y;
 			integerArrayData_[2] = v.z;
 		}
-		else Messenger::print("Error setting variable '%s': Array size must be 3 in order to set from a vector.\n", name_.get());
+		else Messenger::print("Error setting variable '%s': Array size must be 3 in order to set from a vector.", name_.get());
 	}
 	else if (rv.arraySize() == -1) for (int i=0; i<arraySize_; i++) integerArrayData_[i] = rv.asDouble(success);
 	else
@@ -151,7 +151,7 @@ bool IntegerArrayVariable::setAsArray(ReturnValue& rv, int arrayIndex)
 {
 	if (readOnly_)
 	{
-		Messenger::print("A constant value (in this case an integer array?) cannot be assigned to.\n");
+		Messenger::print("A constant value (in this case an integer array?) cannot be assigned to.");
 		return FALSE;
 	}
 	if (integerArrayData_ == NULL)
@@ -162,7 +162,7 @@ bool IntegerArrayVariable::setAsArray(ReturnValue& rv, int arrayIndex)
 	// Check index
 	if ((arrayIndex < 0) || (arrayIndex >= arraySize_))
 	{
-		Messenger::print("Index %i out of bounds for array '%s'.\n", arrayIndex+1, name_.get());
+		Messenger::print("Index %i out of bounds for array '%s'.", arrayIndex+1, name_.get());
 		return FALSE;
 	}
 	// Set individual element
@@ -219,7 +219,7 @@ bool IntegerArrayVariable::executeAsArray(ReturnValue& rv, int arrayIndex)
 	// Check bounds
 	if ((arrayIndex < 0) || (arrayIndex >= arraySize_))
 	{
-		Messenger::print("Error: Array index %i is out of bounds for array '%s'.\n", arrayIndex+1, name_.get());
+		Messenger::print("Error: Array index %i is out of bounds for array '%s'.", arrayIndex+1, name_.get());
 		return FALSE;
 	}
 	rv.set( integerArrayData_[arrayIndex] );
@@ -253,7 +253,7 @@ bool IntegerArrayVariable::initialise()
 	ReturnValue newsize;
 	if (!arraySizeExpression_->execute(newsize))
 	{
-		Messenger::print("Failed to find size for int array '%s'.\n", name_.get());
+		Messenger::print("Failed to find size for int array '%s'.", name_.get());
 		return FALSE;
 	}
 	// If the array is already allocated, free it only if the size is different

@@ -42,7 +42,7 @@ bool Commands::function_GetView(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	Matrix rmat = obj.rs()->modelViewMatrix();
-	Messenger::print( "View [R c] = { %8.4f, %8.4f, %8.4f, %8.4f, %8.4f, %8.4f, %8.4f, %8.4f, %8.4f, %8.4f, %8.4f, %8.4f }\n", rmat[0], rmat[1], rmat[2], rmat[4], rmat[5], rmat[6], rmat[8], rmat[9], rmat[10], rmat[12], rmat[13], rmat[14]);
+	Messenger::print( "View [R c] = { %8.4f, %8.4f, %8.4f, %8.4f, %8.4f, %8.4f, %8.4f, %8.4f, %8.4f, %8.4f, %8.4f, %8.4f }", rmat[0], rmat[1], rmat[2], rmat[4], rmat[5], rmat[6], rmat[8], rmat[9], rmat[10], rmat[12], rmat[13], rmat[14]);
 	rv.reset();
 	return TRUE;
 }
@@ -113,12 +113,12 @@ bool Commands::function_SpeedTest(CommandNode* c, Bundle& obj, ReturnValue& rv)
 		if ((n>0) && (n%100 == 0))
 		{
 			msec = split.restart();
-			Messenger::print("100 render average = %6.1f fps\n", 1000.0 / msec);
+			Messenger::print("100 render average = %6.1f fps", 1000.0 / msec);
 		}
 		obj.rs()->rotateView(5.0,0.0);
 	}
 	msec = total.elapsed();
-	Messenger::print("Performed %i renders over %8.2f seconds (%8.2f/sec).\n", nrenders, msec/1000.0, nrenders/(msec/1000.0));
+	Messenger::print("Performed %i renders over %8.2f seconds (%8.2f/sec).", nrenders, msec/1000.0, nrenders/(msec/1000.0));
 	rv.reset();
 	return TRUE;
 }

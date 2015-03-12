@@ -49,12 +49,12 @@ int main(int argc, char* argv[])
 	if (!MrAten.parseCliEarly(argc, argv)) return -1;
 
 	/* Print GPL license information */
-	Messenger::print("Aten version %s, Copyright (C) 2007-2015 T. Youngs.\n", ATENVERSION);
-	Messenger::print("SVN repository is %s.\n", ATENURL);
-	Messenger::print("Aten uses Space Group Info (c) 1994-96 Ralf W. Grosse-Kunstleve.\n");
-	Messenger::print("Aten comes with ABSOLUTELY NO WARRANTY.\n");
-	Messenger::print("This is free software, and you are welcome to redistribute it under certain conditions.\n");
-	Messenger::print("For more details read the GPL at <http://www.gnu.org/copyleft/gpl.html>.\n\n");
+	Messenger::print("Aten version %s, Copyright (C) 2007-2015 T. Youngs.", ATENVERSION);
+	Messenger::print("SVN repository is %s.", ATENURL);
+	Messenger::print("Aten uses Space Group Info (c) 1994-96 Ralf W. Grosse-Kunstleve.");
+	Messenger::print("Aten comes with ABSOLUTELY NO WARRANTY.");
+	Messenger::print("This is free software, and you are welcome to redistribute it under certain conditions.");
+	Messenger::print("For more details read the GPL at <http://www.gnu.org/copyleft/gpl.html>.");
 
 	/* Set random seed */
 	srand( (unsigned) time(NULL) );
@@ -64,7 +64,7 @@ int main(int argc, char* argv[])
 	else MrAten.setHomeDir( getenv("USERPROFILE") );
 	MrAten.setWorkDir(getenv("PWD"));
 	if (!MrAten.dataDirSet()) MrAten.setDataDir(getenv("ATENDATA"));
-	Messenger::print(Messenger::Verbose, "Home directory is %s, working directory is %s, data directory is %s.\n", MrAten.homeDir(), MrAten.workDir(), MrAten.dataDir());
+	Messenger::print(Messenger::Verbose, "Home directory is %s, working directory is %s, data directory is %s.", MrAten.homeDir(), MrAten.workDir(), MrAten.dataDir());
 
 	/* Create the main window */
 	AtenWindow mainWindow(MrAten);
@@ -106,16 +106,16 @@ int main(int argc, char* argv[])
 			result =  app.exec();
 			break;
 		case (Aten::BatchMode):
-			Messenger::print("Batch mode in effect - models will be processed and saved.\n");
+			Messenger::print("Batch mode in effect - models will be processed and saved.");
 			MrAten.processModels();
 			MrAten.saveModels();
 			break;
 		case (Aten::ExportMode):
-			Messenger::print("Export mode in effect - models will be exported to the specified format.\n");
+			Messenger::print("Export mode in effect - models will be exported to the specified format.");
 			MrAten.exportModels();
 			break;
 		case (Aten::ProcessMode):
-			Messenger::print("Process mode in effect - models will be processed and loaded in the GUI.\n");
+			Messenger::print("Process mode in effect - models will be processed and loaded in the GUI.");
 			MrAten.processModels();
 
 			/* Show the main window */
@@ -125,7 +125,7 @@ int main(int argc, char* argv[])
 			result =  app.exec();
 			break;
 		case (Aten::BatchExportMode):
-			Messenger::print("BatchExport mode in effect - models will be processed and exported to the specified format.\n");
+			Messenger::print("BatchExport mode in effect - models will be processed and exported to the specified format.");
 			MrAten.processModels();
 			MrAten.exportModels();
 			break;

@@ -168,7 +168,7 @@ void Model::deleteAtom(Atom* xatom, bool noupdate)
 	Messenger::enter("Model::deleteAtom");
 	// The atom may be present in other, unassociated lists (e.g. measurements), so we must
 	// also check those lists for this atom and remove it.
-	if (xatom == NULL) Messenger::print("No atom to delete.\n");
+	if (xatom == NULL) Messenger::print("No atom to delete.");
 	else
 	{
 		// Remove measurements
@@ -200,7 +200,7 @@ void Model::deleteAtom(Atom* xatom, bool noupdate)
 void Model::transmuteAtom(Atom* i, short int el)
 {
 	Messenger::enter("Model::transmuteAtom");
-	if (i == NULL) Messenger::print("No atom to transmute.\n");
+	if (i == NULL) Messenger::print("No atom to transmute.");
 	else
 	{
 		short int oldel = i->element();
@@ -274,7 +274,7 @@ Atom* Model::atom(int n)
 	// Check range first
 	if ((n < 0) || (n >= atoms_.nItems()))
 	{
-		Messenger::print("Atom id '%i' is out of range for model '%s'.\n", n+1, name_.get());
+		Messenger::print("Atom id '%i' is out of range for model '%s'.", n+1, name_.get());
 		Messenger::exit("Model::atom");
 		return NULL;
 	}
@@ -499,7 +499,7 @@ double Model::forcefieldMass() const
 	{
 		if (i->type() == NULL)
 		{
-			Messenger::print("Error: Atom id %i doesn't have a forcefield type - using atom mass instead...\n", i->id()+1);
+			Messenger::print("Error: Atom id %i doesn't have a forcefield type - using atom mass instead...", i->id()+1);
 			ffmass += Elements().atomicMass(i);
 		}
 		else ffmass += i->type()->elementMass();
@@ -550,13 +550,13 @@ void Model::copyAtomStyle(Model* source)
 	Messenger::enter("Model::copyAtomStyle");
 	if (source == NULL)
 	{
-		Messenger::print("Internal Error: NULL reference passed to MOdel::copyAtomStyle()\n");
+		Messenger::print("Internal Error: NULL reference passed to MOdel::copyAtomStyle()");
 		Messenger::exit("Model::copyAtomStyle");
 	}
 	// Perform only one check - that the number of atoms is the same
 	if (source->nAtoms() != atoms_.nItems())
 	{
-		Messenger::print("Error: Can't copy parent model's atom style becuase it has a different number of atoms (%i cf. %i)\n", source->nAtoms(), atoms_.nItems());
+		Messenger::print("Error: Can't copy parent model's atom style becuase it has a different number of atoms (%i cf. %i)", source->nAtoms(), atoms_.nItems());
 		Messenger::exit("Model::copyParentStyle");
 	}
 	// Do the loop

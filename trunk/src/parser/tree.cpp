@@ -168,18 +168,18 @@ bool Tree::finalise()
 		// Does the function have the correct argument definition?
 		if ((createDefaultDialogFunction_->nArgs() != 1) || (createDefaultDialogFunction_->args()->returnType() != VTypes::DialogData))
 		{
-			Messenger::print("Error: a 'createDefaultDialog' function exists, but has the wrong argument definition (it should take a single argument of type Dialog).\n");
+			Messenger::print("Error: a 'createDefaultDialog' function exists, but has the wrong argument definition (it should take a single argument of type Dialog).");
 			Messenger::exit("Tree::finalise");
 			return FALSE;
 		}
 		// Does the function have the correct return type?
 		if (createDefaultDialogFunction_->returnType() != VTypes::NoData)
 		{
-			Messenger::print("Error: a 'createDefaultDialog' function exists, but has the wrong return type (which should be 'void').\n");
+			Messenger::print("Error: a 'createDefaultDialog' function exists, but has the wrong return type (which should be 'void').");
 			Messenger::exit("Tree::finalise");
 			return FALSE;
 		}
-		Messenger::print(Messenger::Verbose, " --> Found 'createDefaultDialog' function in tree '%s'\n", name_.get());
+		Messenger::print(Messenger::Verbose, " --> Found 'createDefaultDialog' function in tree '%s'", name_.get());
 	}
 	
 	// Call finalise on any child trees
@@ -209,7 +209,7 @@ bool Tree::setAccessibleVariable(const char* name, const char* value)
 	TreeGuiWidget *w = defaultDialog().findWidget(name);
 	if (w != NULL)
 	{
-		Messenger::print(Messenger::Verbose, "Found default dialog widget '%s' - setting value to '%s'\n", name, value);
+		Messenger::print(Messenger::Verbose, "Found default dialog widget '%s' - setting value to '%s'", name, value);
 		result = defaultDialog().setWidgetValue(name, value);
 	}
 	else
@@ -217,14 +217,14 @@ bool Tree::setAccessibleVariable(const char* name, const char* value)
 		Variable* var = globalVariables().find(name);
 		if (var != NULL)
 		{
-			Messenger::print(Messenger::Verbose, "Found global variable '%s' in filter '%s' - setting value to '%s'\n", name, value);
+			Messenger::print(Messenger::Verbose, "Found global variable '%s' in filter '%s' - setting value to '%s'", name, value);
 			rv = value;
 			result = var->set(rv);
 		}
 	}
 	
 	// Success?
-	if (!result) Messenger::print("Error: Failed to find a widget (or a global variable) named '%s' in the current target.\n", name);
+	if (!result) Messenger::print("Error: Failed to find a widget (or a global variable) named '%s' in the current target.", name);
 	return result;
 }
 
@@ -340,13 +340,13 @@ bool Tree::execute(ReturnValue& rv)
 	}
 	for (Refitem<TreeNode,int>* ri = statements_.first(); ri != NULL; ri = ri->next)
 	{
-		Messenger::print(Messenger::Commands, "Executing tree statement %p...\n", ri->item);
+		Messenger::print(Messenger::Commands, "Executing tree statement %p...", ri->item);
 // 		ri->item->nodePrint(1);
 		result = ri->item->execute(rv);
 		// Catch failures arising from 'return' statements
 		if (acceptedFail_ == Commands::Return)
 		{
-			Messenger::print(Messenger::Parse, "Execution of tree ended early because we returned.\n");
+			Messenger::print(Messenger::Parse, "Execution of tree ended early because we returned.");
 			result = TRUE;
 			break;
 		}
@@ -385,9 +385,9 @@ bool Tree::execute(ReturnValue& rv)
 	// Do a couple of things regardless of the type of tree
 	prefs.setAutoConversionUnit(Prefs::nEnergyUnits);
 	// Print some final verbose output
-	if (isFilter()) Messenger::print(Messenger::Parse, "Final result from execution of %s filter (id = %i) tree '%s' (in Program '%s') is %s\n", FilterData::filterType(filter.type()), filter.id(), filter.name(), parent_->name(), rv.info());
-	else Messenger::print(Messenger::Parse, "Final result from execution of tree '%s' (in Program '%s') is %s\n", name_.get(), parent_->name(), rv.info());
-	if (!result) Messenger::print(Messenger::Parse, "Execution FAILED.\n");
+	if (isFilter()) Messenger::print(Messenger::Parse, "Final result from execution of %s filter (id = %i) tree '%s' (in Program '%s') is %s", FilterData::filterType(filter.type()), filter.id(), filter.name(), parent_->name(), rv.info());
+	else Messenger::print(Messenger::Parse, "Final result from execution of tree '%s' (in Program '%s') is %s", name_.get(), parent_->name(), rv.info());
+	if (!result) Messenger::print(Messenger::Parse, "Execution FAILED.");
 	Messenger::exit("Tree::execute");
 	return result;
 }
@@ -400,7 +400,7 @@ bool Tree::execute(LineParser *parser, ReturnValue& rv)
 	parser_ = parser;
 	if (parser_ == NULL)
 	{
-		Messenger::print("Error: NULL parsing source passed.\n");
+		Messenger::print("Error: NULL parsing source passed.");
 		Messenger::exit("Tree::execute[LineParser]");
 		return FALSE;
 	}
@@ -453,7 +453,7 @@ bool Tree::executeWrite(const char* filename, ReturnValue& rv)
 	
 	// If we were *not* using directOutput_ and the commands were executed successfully, write the cached data here
 	if (result) result = parser_->commitCache();
-	else Messenger::print("Command execution generated errors or was canceled (through a dialog) - cached data not written to file.\n");
+	else Messenger::print("Command execution generated errors or was canceled (through a dialog) - cached data not written to file.");
 
 	// Done - tidy up
 	parser_->closeFiles();
@@ -512,7 +512,7 @@ bool Tree::addStatement(TreeNode* leaf)
 		printf("Internal Error: NULL TreeNode passed to Tree::addStatement().\n");
 		return FALSE;
 	}
-	Messenger::print(Messenger::Parse, "Added statement node %p\n", leaf);
+	Messenger::print(Messenger::Parse, "Added statement node %p", leaf);
 	leaf->setParent(this);
 	statements_.add(leaf);
 	return TRUE;
@@ -533,7 +533,7 @@ TreeNode* Tree::addOperator(Commands::Function func, TreeNode* arg1, TreeNode* a
 	// Create new command node
 	CommandNode* leaf = new CommandNode(func);
 	nodes_.own(leaf);
-	Messenger::print(Messenger::Parse, "Added operator '%s' (%p)...\n", Commands::command(func), leaf);
+	Messenger::print(Messenger::Parse, "Added operator '%s' (%p)...", Commands::command(func), leaf);
 	
 	// Add arguments and set parent
 	leaf->addArguments(1,arg1);
@@ -555,13 +555,13 @@ TreeNode* Tree::addNew(VTypes::DataType type)
 	// Check supplied type....
 	if (type < VTypes::AtenData)
 	{
-		Messenger::print("Error : Plain datatypes cannot (and need not) be new'd in this way.\n");
+		Messenger::print("Error : Plain datatypes cannot (and need not) be new'd in this way.");
 		Messenger::exit("Tree::addNew");
 		return NULL;
 	}
 	if (!VTypes::userCanCreate(type))
 	{
-		Messenger::print("Error : This datatype (%s) cannot be created in this way, or its usage is restricted by Aten.\n", VTypes::dataType(type));
+		Messenger::print("Error : This datatype (%s) cannot be created in this way, or its usage is restricted by Aten.", VTypes::dataType(type));
 		Messenger::exit("Tree::addNew");
 		return NULL;
 	}
@@ -580,7 +580,7 @@ TreeNode* Tree::addFunctionWithArglist(Commands::Function func, TreeNode* argLis
 	// Create new command node
 	CommandNode* leaf = new CommandNode(func);
 	nodes_.own(leaf);
-	Messenger::print(Messenger::Parse, "Added function '%s' (%p)...\n", Commands::command(func), leaf);
+	Messenger::print(Messenger::Parse, "Added function '%s' (%p)...", Commands::command(func), leaf);
 	
 	// Add argument list to node and set parent
 	leaf->addJoinedArguments(argList);
@@ -592,7 +592,7 @@ TreeNode* Tree::addFunctionWithArglist(Commands::Function func, TreeNode* argLis
 	// Check that the correct arguments were given to the command and run any prep functions
 	if (!leaf->checkArguments(aten_->commandArguments(func), Commands::command(func)))
 	{
-		Messenger::print("Error: Function syntax is '%s(%s)'.\n", Commands::command(func), aten_->commandArgText(func));
+		Messenger::print("Error: Function syntax is '%s(%s)'.", Commands::command(func), aten_->commandArgText(func));
 		leaf = NULL;
 	}
 	else if (!leaf->prepFunction()) leaf = NULL;
@@ -607,7 +607,7 @@ TreeNode* Tree::addFunction(Commands::Function func, TreeNode* a1, TreeNode* a2,
 	// Create new command node
 	CommandNode* leaf = new CommandNode(func);
 	nodes_.own(leaf);
-	Messenger::print(Messenger::Parse, "Added function '%s' (%p)...\n", Commands::command(func), leaf);
+	Messenger::print(Messenger::Parse, "Added function '%s' (%p)...", Commands::command(func), leaf);
 	if (a1 != NULL) leaf->addArgument(a1);
 	if (a2 != NULL) leaf->addArgument(a2);
 	if (a3 != NULL) leaf->addArgument(a3);
@@ -618,7 +618,7 @@ TreeNode* Tree::addFunction(Commands::Function func, TreeNode* a1, TreeNode* a2,
 	// Check that the correct arguments were given to the command and run any prep functions
 	if (!leaf->checkArguments(aten_->commandArguments(func), Commands::command(func)))
 	{
-		Messenger::print("Error: Function syntax is '%s(%s)'.\n", Commands::command(func), aten_->commandArgText(func));
+		Messenger::print("Error: Function syntax is '%s(%s)'.", Commands::command(func), aten_->commandArgText(func));
 		leaf = NULL;
 	}
 	else if (!leaf->prepFunction()) leaf = NULL;
@@ -633,7 +633,7 @@ TreeNode* Tree::addUserFunction(Tree* func, TreeNode* argList)
 	// Create new command node
 	UserCommandNode* leaf = new UserCommandNode(func);
 	nodes_.own(leaf);
-	Messenger::print(Messenger::Parse, "Added user function '%s' (%p)...\n", func->name(), leaf);
+	Messenger::print(Messenger::Parse, "Added user function '%s' (%p)...", func->name(), leaf);
 	// Add argument list to node and set parent
 	leaf->addJoinedArguments(argList);
 	leaf->setParent(this);
@@ -652,7 +652,7 @@ TreeNode* Tree::addDeclarations(TreeNode* declist)
 	// Create new command node
 	CommandNode* leaf = new CommandNode(Commands::Declarations);
 	nodes_.own(leaf);
-	Messenger::print(Messenger::Parse, "Added declarations node (%p)...\n", leaf);
+	Messenger::print(Messenger::Parse, "Added declarations node (%p)...", leaf);
 	// Add argument list to node and set parent
 	leaf->addJoinedArguments(declist);
 	leaf->setParent(this);
@@ -667,7 +667,7 @@ TreeNode* Tree::joinArguments(TreeNode* arg1, TreeNode* arg2)
 {
 	arg1->prevArgument = arg2;
 	arg2->nextArgument = arg1;
-	Messenger::print(Messenger::Parse, "Joining arguments %p and %p\n", arg1, arg2);
+	Messenger::print(Messenger::Parse, "Joining arguments %p and %p", arg1, arg2);
 	return arg1;
 }
 
@@ -679,7 +679,7 @@ TreeNode* Tree::joinCommands(TreeNode* node1, TreeNode* node2)
 	leaf->setParent(this);
 	if (node1 != NULL) leaf->addArgument(node1);
 	if (node2 != NULL) leaf->addArgument(node2);
-	Messenger::print(Messenger::Parse, "Joined command nodes %p and %p (joiner node is %p)\n", node1, node2, leaf);
+	Messenger::print(Messenger::Parse, "Joined command nodes %p and %p (joiner node is %p)", node1, node2, leaf);
 	return leaf;
 }
 
@@ -691,7 +691,7 @@ TreeNode* Tree::pushScope(Commands::Function func)
 	scopeStack_.add(node,func);
 	// The second scope node added to the tree will be the basic local one (in the case of a function)
 	if (scopeStack_.nItems() == 2) localScope_ = node;
-	Messenger::print(Messenger::Parse, "ScopeNode %p is pushed.\n", node);
+	Messenger::print(Messenger::Parse, "ScopeNode %p is pushed.", node);
 	return node;
 }
 
@@ -706,7 +706,7 @@ bool Tree::popScope()
 	}
 	ScopeNode* temp = ri->item;
 	scopeStack_.remove(ri);
-	Messenger::print(Messenger::Parse, "ScopeNode %p is popped.\n", temp);
+	Messenger::print(Messenger::Parse, "ScopeNode %p is popped.", temp);
 	return TRUE;
 }
 
@@ -735,7 +735,7 @@ TreeNode* Tree::addConstant(VTypes::DataType type, Dnchar* token)
 		nodes_.own(var);
 		return var;
 	}
-	else printf("Internal Error: Don't know how to create a constant of type '%s' for Tree.\n", VTypes::dataType(type));
+	else printf("Internal Error: Don't know how to create a constant of type '%s' for Tree.", VTypes::dataType(type));
 	return NULL;
 }
 
@@ -776,8 +776,8 @@ TreeNode* Tree::addElementConstant(int el)
 // Add variable to topmost scope
 TreeNode* Tree::addVariable(VTypes::DataType type, Dnchar* name, TreeNode* initialValue, bool global)
 {
-	if (global) Messenger::print(Messenger::Parse, "A new global variable '%s' is being created with type %s.\n", name->get(), VTypes::dataType(type));
-	else Messenger::print(Messenger::Parse, "A new variable '%s' is being created with type %s.\n", name->get(), VTypes::dataType(type));
+	if (global) Messenger::print(Messenger::Parse, "A new global variable '%s' is being created with type %s.", name->get(), VTypes::dataType(type));
+	else Messenger::print(Messenger::Parse, "A new variable '%s' is being created with type %s.", name->get(), VTypes::dataType(type));
 
 	// Get topmost scopenode or, if global variable, the parent programs global scopenode
 	ScopeNode* scope;
@@ -797,7 +797,7 @@ TreeNode* Tree::addVariable(VTypes::DataType type, Dnchar* name, TreeNode* initi
 	{
 		if ((initialValue->nodeType() == TreeNode::ArrayVarNode) || (initialValue->nodeType() == TreeNode::ArrayConstantNode))
 		{
-			Messenger::print("Error: A non-array variable cannot be initialised from an array.\n");
+			Messenger::print("Error: A non-array variable cannot be initialised from an array.");
 			return NULL;
 		}
 	}
@@ -808,15 +808,15 @@ TreeNode* Tree::addVariable(VTypes::DataType type, Dnchar* name, TreeNode* initi
 // 		printf("Failed to create variable '%s' in local scope.\n", name->get());
 		return NULL;
 	}
-	Messenger::print(Messenger::Parse, "Created variable '%s' in scopenode %p\n", name->get(), scope);
+	Messenger::print(Messenger::Parse, "Created variable '%s' in scopenode %p", name->get(), scope);
 	return var;
 }
 
 // Add array variable to topmost ScopeNode using the most recently declared type
 TreeNode* Tree::addArrayVariable(VTypes::DataType type, Dnchar* name, TreeNode* sizeexpr, TreeNode* initialvalue, bool global)
 {
-	if (global) Messenger::print(Messenger::Parse, "A new global array variable '%s' is being created with type %s.\n", name->get(), VTypes::dataType(type));
-	else Messenger::print(Messenger::Parse, "A new array variable '%s' is being created with type %s.\n", name->get(), VTypes::dataType(type));
+	if (global) Messenger::print(Messenger::Parse, "A new global array variable '%s' is being created with type %s.", name->get(), VTypes::dataType(type));
+	else Messenger::print(Messenger::Parse, "A new array variable '%s' is being created with type %s.", name->get(), VTypes::dataType(type));
 	// Get topmost scopenode or, if global variable, the parent programs global scopenode
 	ScopeNode* scope;
 	if (global) scope = &globalScope_;
@@ -837,7 +837,7 @@ TreeNode* Tree::addArrayVariable(VTypes::DataType type, Dnchar* name, TreeNode* 
 		printf("Internal Error: Failed to create array variable '%s' in local scope.\n", name->get());
 		return NULL;
 	}
-	Messenger::print(Messenger::Parse, "Created array variable '%s' in scopenode %p\n", name->get(), scope);
+	Messenger::print(Messenger::Parse, "Created array variable '%s' in scopenode %p", name->get(), scope);
 	return var;
 }
 
@@ -880,7 +880,7 @@ TreeNode* Tree::addArrayConstant(TreeNode* values)
 	// Check for bad data in array specification
 	if (baddata)
 	{
-		Messenger::print("Error: Incompatible mixture of data types found in array declaration.\n");
+		Messenger::print("Error: Incompatible mixture of data types found in array declaration.");
 		return NULL;
 	}
 	// Type of array will be 'highest' type that we found
@@ -900,15 +900,15 @@ Variable* Tree::findLocalVariable(const char* name, int &scopelevel)
 {
 	Variable* result = NULL;
 	scopelevel = 0;
-	Messenger::print(Messenger::Parse, "Searching scope for variable '%s'...\n", name);
+	Messenger::print(Messenger::Parse, "Searching scope for variable '%s'...", name);
 	// Search the current ScopeNode list for the variable name requested
 	for (Refitem<ScopeNode,int>* ri = scopeStack_.last(); ri != NULL; ri = ri->prev)
 	{
-		Messenger::print(Messenger::Parse," ... scopenode %p...\n", ri->item);
+		Messenger::print(Messenger::Parse," ... scopenode %p...", ri->item);
 		result = ri->item->variables.find(name);
 		if (result != NULL)
 		{
-			Messenger::print(Messenger::Parse, "...variable '%s' found at a scope level of %i.\n", name, scopelevel);
+			Messenger::print(Messenger::Parse, "...variable '%s' found at a scope level of %i.", name, scopelevel);
 			return result;
 		}
 		--scopelevel;
@@ -919,7 +919,7 @@ Variable* Tree::findLocalVariable(const char* name, int &scopelevel)
 // 	if (result != NULL)
 // 	{
 // 		scopelevel = 1;
-// 		Messenger::print(Messenger::Parse, "...variable '%s' found at global scope.\n", name);
+// 		Messenger::print(Messenger::Parse, "...variable '%s' found at global scope.", name);
 // 		return result;
 // 	}
 	
@@ -928,11 +928,11 @@ Variable* Tree::findLocalVariable(const char* name, int &scopelevel)
 // 	if (result != NULL)
 // 	{
 // 		scopelevel = 2;
-// 		Messenger::print(Messenger::Parse, "...variable '%s' found as a passed value.\n", name);
+// 		Messenger::print(Messenger::Parse, "...variable '%s' found as a passed value.", name);
 // 		return result;
 // 	}
 	
-	Messenger::print(Messenger::Parse, "...no variable '%s' found in any scope.\n", name);
+	Messenger::print(Messenger::Parse, "...no variable '%s' found in any scope.", name);
 	return NULL;
 }
 
@@ -942,7 +942,7 @@ TreeNode* Tree::wrapVariable(Variable* var, TreeNode* arrayIndex)
 	// If an array index was given, check that the target variable is actually an array....
 	if (arrayIndex && (var->nodeType() != TreeNode::ArrayVarNode))
 	{
-		Messenger::print("Error: Array index given to variable '%s', but it is not an array.\n", var->name());
+		Messenger::print("Error: Array index given to variable '%s', but it is not an array.", var->name());
 		return NULL;
 	}
 	VariableNode *vnode = new VariableNode(var);
@@ -975,7 +975,7 @@ TreeNode* Tree::createPath(TreeNode* node)
 	Messenger::enter("Tree::createPath");
 	VariableNode *vnode = (VariableNode*) node;
 	pathStack_.add(vnode, vnode);
-	Messenger::print(Messenger::Parse, "A new path has been started, beginning from variable '%s'.\n", vnode->name());
+	Messenger::print(Messenger::Parse, "A new path has been started, beginning from variable '%s'.", vnode->name());
 	Messenger::exit("Tree::createPath");
 	return vnode;
 }
@@ -988,12 +988,12 @@ TreeNode* Tree::finalisePath()
 	Refitem<VariableNode,TreeNode*>* ri = pathStack_.last();
 	if (ri == NULL)
 	{
-		Messenger::print("Internal Error: No path on stack to finalise.\n");
+		Messenger::print("Internal Error: No path on stack to finalise.");
 		return NULL;
 	}
 	ri->item->finalisePath();
 	TreeNode* result = ri->item;
-	Messenger::print(Messenger::Parse, "Path beginning from variable '%s' has been finalised.\n", ri->item->name());
+	Messenger::print(Messenger::Parse, "Path beginning from variable '%s' has been finalised.", ri->item->name());
 	pathStack_.remove(ri);
 	Messenger::exit("Tree::finalisePath");
 	return result;
@@ -1016,7 +1016,7 @@ bool Tree::expandPath(Dnchar* name, TreeNode* arrayIndex, TreeNode* argList)
 		printf("Internal Error: No path on stack to expand with accessor '%s'.\n", name->get());
 		return FALSE;
 	}
-	Messenger::print(Messenger::Parse,"Tree is evaluating accessor '%s' as step %i from the basenode '%s'...\n", name->get(), ri->item->nArgs()+1, ri->item->name());
+	Messenger::print(Messenger::Parse,"Tree is evaluating accessor '%s' as step %i from the basenode '%s'...", name->get(), ri->item->nArgs()+1, ri->item->name());
 	
 	// If the last step was an array and an array index was not give, we complain!
 	if (ri->item != ri->data)
@@ -1024,7 +1024,7 @@ bool Tree::expandPath(Dnchar* name, TreeNode* arrayIndex, TreeNode* argList)
 		StepNode* laststep = (StepNode*) ri->data;
 		if ((laststep->arraySize() > 0) && (laststep->arrayIndex() == NULL))
 		{
-			Messenger::print("Previous step in path requires an array index to be specified.\n");
+			Messenger::print("Previous step in path requires an array index to be specified.");
 			Messenger::exit("Tree::expandPath");
 			return FALSE;
 		}
@@ -1035,20 +1035,20 @@ bool Tree::expandPath(Dnchar* name, TreeNode* arrayIndex, TreeNode* argList)
 	// If we found a valid accessor, update the pathstack entry
 	if (result)
 	{
-		Messenger::print(Messenger::Parse,"...OK - matching accessor found: return type is %s\n", VTypes::dataType(result->returnType()));
+		Messenger::print(Messenger::Parse,"...OK - matching accessor found: return type is %s", VTypes::dataType(result->returnType()));
 		ri->data = (TreeNode*) result;
 		nodes_.own(result);
 		// Finalise the path before we remove it
 		Refitem<VariableNode,TreeNode*>* ri = pathStack_.last();
 		if (ri == NULL)
 		{
-			Messenger::print("Internal Error: No path on stack to expand!\n");
+			Messenger::print("Internal Error: No path on stack to expand!");
 			Messenger::exit("Tree::expandPath");
 			return FALSE;
 		}
 		ri->item->addArgument(result);
 	}
-// 	else Messenger::print("Error: Object of type '%s' has no matching accessor for '%s'.\n", VTypes::dataType(ri->data->returnType()), name->get());
+// 	else Messenger::print("Error: Object of type '%s' has no matching accessor for '%s'.", VTypes::dataType(ri->data->returnType()), name->get());
 	Messenger::exit("Tree::expandPath");
 	return result;
 }

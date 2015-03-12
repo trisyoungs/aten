@@ -287,8 +287,8 @@ bool Aten::parseCliEarly(int argc, char *argv[])
 				case (1):
 					if (!hasArg)
 					{
-						if (isShort) Messenger::print(" '-%c' requires an argument.\n", cliSwitches[opt].shortOpt);
-						else Messenger::print(" '--%s' requires an argument.\n", cliSwitches[opt].longOpt);
+						if (isShort) Messenger::print(" '-%c' requires an argument.", cliSwitches[opt].shortOpt);
+						else Messenger::print(" '--%s' requires an argument.", cliSwitches[opt].longOpt);
 						return FALSE;
 					}
 					break;
@@ -302,7 +302,7 @@ bool Aten::parseCliEarly(int argc, char *argv[])
 			{
 				case (Cli::AtenDataSwitch):
 					setDataDir(argtext.get());
-					Messenger::print("Will search for filters in '%s'.\n", argtext.get());
+					Messenger::print("Will search for filters in '%s'.", argtext.get());
 					break;
 				// Turn on debug messages for calls (or specified output)
 				case (Cli::DebugSwitch):
@@ -341,7 +341,7 @@ bool Aten::parseCliEarly(int argc, char *argv[])
 					break;
 				// Turn off display list usage
 				case (Cli::NoListsSwitch):
-					Messenger::print("OpenGL display lists will not be used.\n");
+					Messenger::print("OpenGL display lists will not be used.");
 					PrimitiveInstance::setGlobalInstanceType(PrimitiveInstance::NoInstances);
 					break;
 				// Run in silent mode (no CLI output)
@@ -350,12 +350,12 @@ bool Aten::parseCliEarly(int argc, char *argv[])
 					break;
 				// Turn on VBO usage
 				case (Cli::VBOSwitch):
-					Messenger::print("OpenGL Vertex Buffer Objects will be used.\n");
+					Messenger::print("OpenGL Vertex Buffer Objects will be used.");
 					PrimitiveInstance::setGlobalInstanceType(PrimitiveInstance::VBOInstance);
 					break;
 				// Turn on verbose messaging
 				case (Cli::VerboseSwitch):
-					Messenger::print("Verbosity enabled.\n");
+					Messenger::print("Verbosity enabled.");
 					Messenger::addOutputType(Messenger::Verbose);
 					break;
 				// Print version and exit
@@ -399,7 +399,7 @@ int Aten::parseCli(int argc, char *argv[])
 			// Manually-exclude some specific (and extremely annoying) extraneous command line options
 			if (strncmp(argv[argn],"-psn",4) == 0)
 			{
-				Messenger::print("Found (and ignored) OSX-added '%s'.\n",argv[argn]);
+				Messenger::print("Found (and ignored) OSX-added '%s'.",argv[argn]);
 				continue;
 			}
 			// Is this a long or short option?
@@ -446,8 +446,8 @@ int Aten::parseCli(int argc, char *argv[])
 				case (1):
 					if (!hasArg)
 					{
-						if (isShort) Messenger::print(" '-%c' requires an argument.\n", cliSwitches[opt].shortOpt);
-						else Messenger::print(" '--%s' requires an argument.\n", cliSwitches[opt].longOpt);
+						if (isShort) Messenger::print(" '-%c' requires an argument.", cliSwitches[opt].shortOpt);
+						else Messenger::print(" '--%s' requires an argument.", cliSwitches[opt].longOpt);
 						return -1;
 					}
 					break;
@@ -743,11 +743,11 @@ int Aten::parseCli(int argc, char *argv[])
 					script = addScript();
 					if (script->generateFromFile(argText.get(), "CliScript"))
 					{
-						Messenger::print("Successfully loaded script.\n");
+						Messenger::print("Successfully loaded script.");
 						programMode_ = Aten::CommandMode;
 						if (!script->execute(rv))
 						{
-							Messenger::print("Script execution failed.\n");
+							Messenger::print("Script execution failed.");
 							return -1;
 						}
 						// Need to check program mode after each script since it can be changed

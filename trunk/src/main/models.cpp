@@ -128,6 +128,7 @@ Model* Aten::addModel()
 	Messenger::enter("Aten::addModel");
 	Dnchar newname;
 	Model* m = NULL;
+
 	// Check current list target for model creation
 	switch (targetModelList_)
 	{
@@ -168,11 +169,11 @@ void Aten::removeModel(Model* xmodel)
 {
 	// Remove this model from the model_list in the main window
 	Messenger::enter("Aten::removeModel");
-	Model* m;
-	// Delete the current model, but don't allow there to be zero models...
-	if (models_.nItems() == 1) m = addModel();
-	else m = (xmodel->next != NULL ? xmodel->next : xmodel->prev);
+
+	// Set next available model
+	Model* m = (xmodel->next != NULL ? xmodel->next : xmodel->prev);
 	setCurrentModel(m);
+
 	// Delete the old model
 	models_.remove(xmodel);
 	visibleModels_.remove(xmodel);
@@ -182,7 +183,6 @@ void Aten::removeModel(Model* xmodel)
 // Find model by name
 Model* Aten::findModel(const char* s) const
 {
-	// Search model list for name 's' (script function)
 	Messenger::enter("Aten::findModel");
 	Model* result = NULL;
 	for (result = models_.first(); result != NULL; result = result->next) if (strcmp(s,result->name()) == 0) break;

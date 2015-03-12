@@ -40,6 +40,7 @@ Model::Model() : ListItem<Model>()
 	modelViewMatrix_.setIdentity();
 	modelViewMatrix_[14] = -10.0;
 	renderSource_ = Model::ModelSource;
+	renderGroupPoint_ = -1;
 	renderFromVibration_ = FALSE;
 	repeatCellsNegative_.set(0,0,0);
 	repeatCellsPositive_.set(0,0,0);
@@ -354,12 +355,12 @@ void Model::clearCharges()
 void Model::print() const
 {
 	Messenger::enter("Model::print");
-	Messenger::print("   Name : %s\n", name_.get());
-	Messenger::print("   File : %s\n", filename_.get());
-	Messenger::print("   Mass : %f\n", mass_);
-	if (cell_.type() != UnitCell::NoCell) Messenger::print("   Cell : %s\nDensity : %f %s\n", UnitCell::cellType(cell_.type()), density(), Prefs::densityUnit(prefs.densityUnit()));
-	Messenger::print("  Atoms : %i\n", atoms_.nItems());
-	Messenger::print(" Id     El   FFType    FFId         X             Y             Z              Q      Sel Fix\n");
+	Messenger::print("   Name : %s", name_.get());
+	Messenger::print("   File : %s", filename_.get());
+	Messenger::print("   Mass : %f", mass_);
+	if (cell_.type() != UnitCell::NoCell) Messenger::print("   Cell : %s\nDensity : %f %s", UnitCell::cellType(cell_.type()), density(), Prefs::densityUnit(prefs.densityUnit()));
+	Messenger::print("  Atoms : %i", atoms_.nItems());
+	Messenger::print(" Id     El   FFType    FFId         X             Y             Z              Q      Sel Fix");
 	// Print from pattern definition if possible, otherwise just use model atom list
 	Atom* i;
 	int n;
@@ -380,10 +381,10 @@ void Model::print() const
 // Print points information
 void Model::printLogs() const
 {
-	Messenger::print("Logs for model '%s':\n",name_.get());
+	Messenger::print("Logs for model '%s':",name_.get());
 	changeLog.print();
-	Messenger::print("Expression point : %i\n", expressionPoint_);
-	Messenger::print("  Patterns point : %i\n", patternsPoint_);
+	Messenger::print("Expression point : %i", expressionPoint_);
+	Messenger::print("  Patterns point : %i", patternsPoint_);
 }
 
 // Print Forces
@@ -442,7 +443,7 @@ void Model::copyAtomData(Model* srcmodel, int dat)
 		if ((dat&Atom::FixedData) || (dat == Atom::AllData)) i->setPositionFixed(j->isPositionFixed());
 		j = j->next;
 	}
-	//Messenger::print(Messenger::Verbose, "Copied data for %i atoms from model '%s' to model '%s'.\n", count);
+	//Messenger::print(Messenger::Verbose, "Copied data for %i atoms from model '%s' to model '%s'.", count);
 // name(), srcmodel->name());
 	Messenger::exit("Model::copyAtomData");
 }
@@ -480,7 +481,7 @@ void Model::copyAtomData(Model* srcmodel, int dat, int startatom, int ncopy)
 				if ((dat&Atom::ChargeData) || (dat == Atom::AllData)) ii[n]->setCharge(jj[n]->charge());
 				if ((dat&Atom::FixedData) || (dat == Atom::AllData)) ii[n]->setPositionFixed(jj[n]->isPositionFixed());
 			}
-			Messenger::print(Messenger::Verbose, "Copied data for %i atoms starting at %i from model '%s' to model '%s'.\n", ncopy, startatom, name_.get(), srcmodel->name_.get());
+			Messenger::print(Messenger::Verbose, "Copied data for %i atoms starting at %i from model '%s' to model '%s'.", ncopy, startatom, name_.get(), srcmodel->name_.get());
 		}
 	}
 	Messenger::exit("Model::copyAtomData[range]");

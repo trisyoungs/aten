@@ -347,7 +347,7 @@ void Ring::print() const
 	Messenger::print(Messenger::Verbose, "Ring has %i atoms: ",atoms_.nItems());
 	for (Refitem<Atom,int>* ra = atoms_.first(); ra != NULL; ra = ra->next)
 		Messenger::print(Messenger::Verbose, "%s(%i),", Elements().symbol(ra->item),ra->data);
-	Messenger::print(Messenger::Verbose, "\n");
+	Messenger::print(Messenger::Verbose, "");
 }
 
 // Clear atoms_.in reflist

@@ -795,7 +795,7 @@ void Prefs::setClipFar(double d)
 // Sets the shininess of GL objects
 void Prefs::setShininess(int n)
 {
-	if ((n < 0) || (n > 127)) Messenger::print("The option 'shininess' must be an integer between 0 and 127.\n");
+	if ((n < 0) || (n > 127)) Messenger::print("The option 'shininess' must be an integer between 0 and 127.");
 	else shininess_ = n;
 }
 
@@ -1064,9 +1064,9 @@ int Prefs::cacheLimit() const
 // Sets the style of element conversion to use
 void Prefs::setZMapType(ElementMap::ZMapType i)
 {
-	if (fixedZMapType_) Messenger::print("Ignored change of ZMapping type to '%s' since it is currently fixed to '%s'.\n", ElementMap::zMapType(i), ElementMap::zMapType(zMapType_));
+	if (fixedZMapType_) Messenger::print("Ignored change of ZMapping type to '%s' since it is currently fixed to '%s'.", ElementMap::zMapType(i), ElementMap::zMapType(zMapType_));
 	else zMapType_ = i;
-	Messenger::print(Messenger::Verbose, "ZMapping type is now %s\n", ElementMap::zMapType(zMapType_));
+	Messenger::print(Messenger::Verbose, "ZMapping type is now %s", ElementMap::zMapType(zMapType_));
 }
 
 
@@ -1258,7 +1258,7 @@ int Prefs::maxRingSize() const
 // Set the maximum ring size allowed
 void Prefs::setMaxRingSize(int i)
 {
-	if (i < 3) Messenger::print("The option 'maxringsize' cannot be set to less than 3.\n");
+	if (i < 3) Messenger::print("The option 'maxringsize' cannot be set to less than 3.");
 	else maxRingSize_ = i;
 }
 

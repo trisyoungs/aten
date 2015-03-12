@@ -60,7 +60,7 @@ void PoresWidget::on_PoreSelectButton_clicked(bool checked)
 	Model* m = parent_.aten().currentModelOrFrame();
 	if (m->cell()->type() == UnitCell::NoCell)
 	{
-		Messenger::print("Can't drill pores in a non-periodic model.\n");
+		Messenger::print("Can't drill pores in a non-periodic model.");
 		return;
 	}
 
@@ -80,7 +80,7 @@ void PoresWidget::on_PoreSelectAndCutButton_clicked(bool checked)
 	Model* m =parent_.aten().currentModelOrFrame();
 	if (m->cell()->type() == UnitCell::NoCell)
 	{
-		Messenger::print("Can't drill pores in a non-periodic model.\n");
+		Messenger::print("Can't drill pores in a non-periodic model.");
 		return;
 	}
 
@@ -104,7 +104,7 @@ void PoresWidget::on_TerminateButton_clicked(bool checked)
 	Model* m =parent_.aten().currentModelOrFrame();
 	if (m->nSelected() == 0)
 	{
-		Messenger::print("No atoms selected in current model, so nothing to terminate.\n");
+		Messenger::print("No atoms selected in current model, so nothing to terminate.");
 		return;
 	}
 
@@ -123,7 +123,7 @@ void PoresWidget::on_GenerateSchemeButton_clicked(bool checked)
 	Model* m =parent_.aten().currentModelOrFrame();
 	if (m->cell()->type() == UnitCell::NoCell)
 	{
-		Messenger::print("Can't generate a partitioning scheme for a non-periodic model.\n");
+		Messenger::print("Can't generate a partitioning scheme for a non-periodic model.");
 		return;
 	}
 
@@ -159,7 +159,7 @@ void PoresWidget::on_CopySchemeButton_clicked(bool checked)
 	Model* m =parent_.aten().currentModelOrFrame();
 	if (m->cell()->type() == UnitCell::NoCell)
 	{
-		Messenger::print("Can't generate a partitioning scheme for a non-periodic model.\n");
+		Messenger::print("Can't generate a partitioning scheme for a non-periodic model.");
 		return;
 	}
 

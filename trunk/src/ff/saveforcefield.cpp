@@ -39,7 +39,7 @@ bool Forcefield::save()
 	// Open file for writing
 	if (!parser.openOutput(filename_, TRUE))
 	{
-		Messenger::print("Couldn't open file '%s' for writing..\n", filename_.get());
+		Messenger::print("Couldn't open file '%s' for writing..", filename_.get());
 		Messenger::exit("Forcefield::save");
 		return FALSE;
 	}
@@ -138,7 +138,7 @@ bool Forcefield::save()
 					parser.writeLineF("%s %s", VTypes::dataType(nm->data()), nm->name());
 					break;
 				default:
-					Messenger::print("Error: Unsuitable datatype '%s' for data item '%s'.\n", VTypes::dataType(nm->data()), nm->name());
+					Messenger::print("Error: Unsuitable datatype '%s' for data item '%s'.", VTypes::dataType(nm->data()), nm->name());
 					result = FALSE;
 					continue;
 			}
@@ -157,7 +157,7 @@ bool Forcefield::save()
 				v = ffa->data(nm->name());
 				if (v == NULL)
 				{
-					Messenger::print("Warning: Data '%s' has not been defined in type '%s' (id %i).\n", nm->name(), ffa->name(), ffa->typeId());
+					Messenger::print("Warning: Data '%s' has not been defined in type '%s' (id %i).", nm->name(), ffa->name(), ffa->typeId());
 					switch (nm->data())
 					{
 						case (VTypes::IntegerData):
@@ -186,7 +186,7 @@ bool Forcefield::save()
 						parser.writeLineF("\"%s\"", rv.asString());
 						break;
 					default:
-						Messenger::print("Error: Unsuitable datatype '%s' for data item '%s'.\n", VTypes::dataType(nm->data()), nm->name());
+						Messenger::print("Error: Unsuitable datatype '%s' for data item '%s'.", VTypes::dataType(nm->data()), nm->name());
 						result = FALSE;
 						continue;
 				}
@@ -344,7 +344,7 @@ bool Forcefield::save()
 		}
 	}
 
-	Messenger::print("Done.\n");
+	Messenger::print("Done.");
 
 	Messenger::exit("Forcefield::save");
 	return TRUE;

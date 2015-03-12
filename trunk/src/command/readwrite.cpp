@@ -43,7 +43,7 @@ bool Commands::function_Eof(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	// Check that a valid file source/destination exists.
 	if (c->parent()->parser() == NULL)
 	{
-		Messenger::print("Error: Tried to call 'eof' without a valid filesource.\n");
+		Messenger::print("Error: Tried to call 'eof' without a valid filesource.");
 		return FALSE;
 	}
 	else if (!c->parent()->parser()->isFileGoodForReading()) rv.set(TRUE);
@@ -57,12 +57,12 @@ bool Commands::function_FilterFileName(CommandNode* c, Bundle& obj, ReturnValue&
 	// Check that a valid file source/destination exists.
 	if (c->parent()->parser() == NULL)
 	{
-		Messenger::print("Error: Tried to call 'filterFilename' without a valid filesource.\n");
+		Messenger::print("Error: Tried to call 'filterFilename' without a valid filesource.");
 		return FALSE;
 	}
 	else if (!c->parent()->parser()->isFileGoodForReading())
 	{
-		Messenger::print("The 'filterFilename' command can only be used from within an import filter.\n");
+		Messenger::print("The 'filterFilename' command can only be used from within an import filter.");
 		return FALSE;
 	}
 	rv.set(c->parent()->parser()->inputFilename());
@@ -75,7 +75,7 @@ bool Commands::function_Find(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	// Check that a valid file source/destination exists.
 	if (!c->parent()->isFileGoodForReading())
 	{
-		Messenger::print("No valid filesource available for the 'find' command.\n");
+		Messenger::print("No valid filesource available for the 'find' command.");
 		return FALSE;
 	}
 	// Store current stream position in case the string is not found
@@ -111,7 +111,7 @@ bool Commands::function_GetLine(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	// Check that a valid file source/destination exists.
 	if (!c->parent()->isFileGoodForReading())
 	{
-		Messenger::print("No valid filesource available for the 'getLine' command.\n");
+		Messenger::print("No valid filesource available for the 'getLine' command.");
 		return FALSE;
 	}
 	int result = c->parent()->parser()->readNextLine(c->parent()->readOptions());
@@ -129,7 +129,7 @@ bool Commands::function_NextArg(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	// Check that a valid file source/destination exists.
 	if (!c->parent()->isFileGoodForReading())
 	{
-		Messenger::print("No valid filesource available for the 'readNext' command.\n");
+		Messenger::print("No valid filesource available for the 'readNext' command.");
 		return FALSE;
 	}
 	Dnchar arg;
@@ -160,14 +160,14 @@ bool Commands::function_PeekChar(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	// Check that a valid file source/destination exists.
 	if (!c->parent()->isFileGoodForReading())
 	{
-		Messenger::print("No valid filesource available for the 'peekChar' command.\n");
+		Messenger::print("No valid filesource available for the 'peekChar' command.");
 		return FALSE;
 	}
 	char s[2];
 	s[0] = c->parent()->parser()->peek();
 	s[1] = '\0';
 	rv.set(s);
-	Messenger::print(Messenger::Commands,"Peek got character '%i'\n", s[0]);
+	Messenger::print(Messenger::Commands,"Peek got character '%i'", s[0]);
 	return TRUE;
 }
 
@@ -177,14 +177,14 @@ bool Commands::function_PeekCharI(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	// Check that a valid file source/destination exists.
 	if (!c->parent()->isFileGoodForReading())
 	{
-		Messenger::print("No valid filesource available for the 'peekCharI' command.\n");
+		Messenger::print("No valid filesource available for the 'peekCharI' command.");
 		return FALSE;
 	}
 	char s[2];
 	s[0] = c->parent()->parser()->peek();
 	s[1] = '\0';
 	rv.set(s);
-	Messenger::print(Messenger::Commands,"Peek got character '%i'\n", s[0]);
+	Messenger::print(Messenger::Commands,"Peek got character '%i'", s[0]);
 	return TRUE;
 }
 
@@ -194,12 +194,12 @@ bool Commands::function_ReadChars(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	// Check that a valid file source/destination exists.
 	if (!c->parent()->isFileGoodForReading())
 	{
-		Messenger::print("No valid filesource available for the 'readChars' command.\n");
+		Messenger::print("No valid filesource available for the 'readChars' command.");
 		return FALSE;
 	}
 	if (c->hasArg(1)) rv.set( c->parent()->parser()->getChars(c->argi(0), c->argb(1)) );
 	else rv.set( c->parent()->parser()->getChars(c->argi(0)) );
-	Messenger::print(Messenger::Commands,"Unformatted char read got '%s'\n", rv.asString());
+	Messenger::print(Messenger::Commands,"Unformatted char read got '%s'", rv.asString());
 	return TRUE;
 }
 
@@ -209,11 +209,11 @@ bool Commands::function_ReadDouble(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	// Check that a valid file source/destination exists.
 	if (!c->parent()->isFileGoodForReading())
 	{
-		Messenger::print("No valid filesource available for the 'readDouble' command.\n");
+		Messenger::print("No valid filesource available for the 'readDouble' command.");
 		return FALSE;
 	}
 	rv.set( c->parent()->parser()->getDouble(c->hasArg(0) ? c->argi(0) : 0) );
-	Messenger::print(Messenger::Commands,"Unformatted double read got '%f'\n", rv.asDouble());
+	Messenger::print(Messenger::Commands,"Unformatted double read got '%f'", rv.asDouble());
 	return TRUE;
 }
 
@@ -223,30 +223,30 @@ bool Commands::function_ReadDoubleArray(CommandNode* c, Bundle& obj, ReturnValue
 	// Check that a valid file source/destination exists.
 	if (!c->parent()->isFileGoodForReading())
 	{
-		Messenger::print("No valid filesource available for the 'readDoubleArray' command.\n");
+		Messenger::print("No valid filesource available for the 'readDoubleArray' command.");
 		return FALSE;
 	}
 	// Get the array pointer from the supplied argument, and check size against number of items requested
 	int count = c->argi(1);
 	if (c->argNode(0)->nodeType() != TreeNode::VarWrapperNode)
 	{
-		Messenger::print("Error: First argument to 'readDoubleArray' is not a variable.\n");
+		Messenger::print("Error: First argument to 'readDoubleArray' is not a variable.");
 		return FALSE;
 	}
 	Variable* v = ((VariableNode*) c->argNode(0))->variable();
 	if ((v->nodeType() != TreeNode::ArrayVarNode) || (v->returnType() != VTypes::DoubleData))
 	{
-		Messenger::print("Error: Variable argument to 'readDoubleArray' is not an array of doubles.\n");
+		Messenger::print("Error: Variable argument to 'readDoubleArray' is not an array of doubles.");
 		return FALSE;
 	}
 	DoubleArrayVariable* av = (DoubleArrayVariable*) ((VariableNode*) c->argNode(0))->variable();
 	if (count > av->arraySize())
 	{
-		Messenger::print("Error: Requested number of data for 'readDoubleArray' (%i) exceeds size of supplied array (%i).\n", count, av->arraySize());
+		Messenger::print("Error: Requested number of data for 'readDoubleArray' (%i) exceeds size of supplied array (%i).", count, av->arraySize());
 		return FALSE;
 	}
 	rv.set( c->parent()->parser()->getDoubleArray( av->arrayData(), count) );
-	Messenger::print(Messenger::Commands,"Unformatted double read returned code %i.\n", rv.asInteger());
+	Messenger::print(Messenger::Commands,"Unformatted double read returned code %i.", rv.asInteger());
 	return TRUE;
 }
 
@@ -256,11 +256,11 @@ bool Commands::function_ReadInteger(CommandNode* c, Bundle& obj, ReturnValue& rv
 	// Check that a valid file source/destination exists.
 	if (!c->parent()->isFileGoodForReading())
 	{
-		Messenger::print("No valid filesource available for the 'readInteger' command.\n");
+		Messenger::print("No valid filesource available for the 'readInteger' command.");
 		return FALSE;
 	}
 	rv.set( c->parent()->parser()->getInteger( c->hasArg(0) ? c->argi(0) : 0 ) );
-	Messenger::print(Messenger::Commands,"Unformatted integer read got '%i'\n", rv.asInteger());
+	Messenger::print(Messenger::Commands,"Unformatted integer read got '%i'", rv.asInteger());
 	return TRUE;
 }
 
@@ -270,30 +270,30 @@ bool Commands::function_ReadIntegerArray(CommandNode* c, Bundle& obj, ReturnValu
 	// Check that a valid file source/destination exists.
 	if (!c->parent()->isFileGoodForReading())
 	{
-		Messenger::print("No valid filesource available for the 'readIntegerArray' command.\n");
+		Messenger::print("No valid filesource available for the 'readIntegerArray' command.");
 		return FALSE;
 	}
 	// Get the array pointer from the supplied argument, and check size against number of items requested
 	int count = c->argi(1);
 	if (c->argNode(0)->nodeType() != TreeNode::VarWrapperNode)
 	{
-		Messenger::print("Error: First argument to 'readIntegerArray' is not a variable.\n");
+		Messenger::print("Error: First argument to 'readIntegerArray' is not a variable.");
 		return FALSE;
 	}
 	Variable* v = ((VariableNode*) c->argNode(0))->variable();
 	if ((v->nodeType() != TreeNode::ArrayVarNode) || (v->returnType() != VTypes::IntegerData))
 	{
-		Messenger::print("Error: Variable argument to 'readIntegerArray' is not an array of integers.\n");
+		Messenger::print("Error: Variable argument to 'readIntegerArray' is not an array of integers.");
 		return FALSE;
 	}
 	IntegerArrayVariable* av = (IntegerArrayVariable*) ((VariableNode*) c->argNode(0))->variable();
 	if (count > av->arraySize())
 	{
-		Messenger::print("Error: Requested number of data for 'readIntegerArray' (%i) exceeds size of supplied array (%i).\n", count, av->arraySize());
+		Messenger::print("Error: Requested number of data for 'readIntegerArray' (%i) exceeds size of supplied array (%i).", count, av->arraySize());
 		return FALSE;
 	}
 	rv.set( c->parent()->parser()->getIntegerArray( av->arrayData(), count) );
-	Messenger::print(Messenger::Commands,"Unformatted integer read returned code %i.\n", rv.asInteger());
+	Messenger::print(Messenger::Commands,"Unformatted integer read returned code %i.", rv.asInteger());
 	return TRUE;
 }
 
@@ -303,7 +303,7 @@ bool Commands::function_ReadLine(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	// Check that a valid file source/destination exists.
 	if (!c->parent()->isFileGoodForReading())
 	{
-		Messenger::print("No valid filesource available for the 'readLine' command.\n");
+		Messenger::print("No valid filesource available for the 'readLine' command.");
 		return FALSE;
 	}
 	Format* format = c->createFormat(-1,0);
@@ -322,7 +322,7 @@ bool Commands::function_ReadLineFormatted(CommandNode* c, Bundle& obj, ReturnVal
 	// Check that a valid file source/destination exists.
 	if (!c->parent()->isFileGoodForReading())
 	{
-		Messenger::print("No valid filesource available for the 'readLineF' command.\n");
+		Messenger::print("No valid filesource available for the 'readLineF' command.");
 		return FALSE;
 	}
 	Format* format = c->createFormat(0,1);
@@ -341,7 +341,7 @@ bool Commands::function_ReadNext(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	// Check that a valid file source/destination exists.
 	if (!c->parent()->isFileGoodForReading())
 	{
-		Messenger::print("No valid filesource available for the 'readNext' command.\n");
+		Messenger::print("No valid filesource available for the 'readNext' command.");
 		return FALSE;
 	}
 	Dnchar arg;
@@ -393,7 +393,7 @@ bool Commands::function_Rewind(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	// Check that a valid file source/destination exists.
 	if (!c->parent()->parser()->isFileGoodForReading())
 	{
-		Messenger::print("No valid filesource available for the 'rewind' command.\n");
+		Messenger::print("No valid filesource available for the 'rewind' command.");
 		return FALSE;
 	}
 	c->parent()->parser()->rewind();
@@ -406,7 +406,7 @@ bool Commands::function_SkipChars(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	// Check that a valid file source/destination exists.
 	if (!c->parent()->isFileGoodForReading())
 	{
-		Messenger::print("No valid filesource available for the 'skipChars' command.\n");
+		Messenger::print("No valid filesource available for the 'skipChars' command.");
 		return FALSE;
 	}
 	c->parent()->parser()->skipChars(c->argi(0));
@@ -419,7 +419,7 @@ bool Commands::function_SkipLine(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	// Check that a valid file source/destination exists.
 	if (!c->parent()->isFileGoodForReading())
 	{
-		Messenger::print("No valid filesource available for the 'skipLine' command.\n");
+		Messenger::print("No valid filesource available for the 'skipLine' command.");
 		return FALSE;
 	}
 	c->parent()->parser()->skipLines( c->hasArg(0) ? c->argi(0) : 1 );
@@ -432,7 +432,7 @@ bool Commands::function_WriteLine(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	// Check that a valid file source/destination exists.
 	if (!c->parent()->isFileGoodForWriting())
 	{
-		Messenger::print("No valid filesource available for the 'writeLine' command.\n");
+		Messenger::print("No valid filesource available for the 'writeLine' command.");
 		return FALSE;
 	}
 	Format* format = c->createFormat(-1,0);
@@ -444,7 +444,7 @@ bool Commands::function_WriteLine(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	// Create the string to be output
 	if (!format->writeToString())
 	{
-		Messenger::print("Failed to format string for output.\n");
+		Messenger::print("Failed to format string for output.");
 		return FALSE;
 	}
 	c->parent()->parser()->writeLine(format->string());
@@ -457,7 +457,7 @@ bool Commands::function_WriteLineFormatted(CommandNode* c, Bundle& obj, ReturnVa
 	// Check that a valid file source/destination exists.
 	if (!c->parent()->isFileGoodForWriting())
 	{
-		Messenger::print("No valid filesource available for the 'writeLineF' command.\n");
+		Messenger::print("No valid filesource available for the 'writeLineF' command.");
 		return FALSE;
 	}
 	Format* format = c->createFormat(0,1);
@@ -469,7 +469,7 @@ bool Commands::function_WriteLineFormatted(CommandNode* c, Bundle& obj, ReturnVa
 	// Create the string to be output
 	if (!format->writeToString())
 	{
-		Messenger::print("Failed to format string for output.\n");
+		Messenger::print("Failed to format string for output.");
 		return FALSE;
 	}
 	c->parent()->parser()->writeLine(format->string());
@@ -488,7 +488,7 @@ bool Commands::function_WriteVariable(CommandNode* c, Bundle& obj, ReturnValue& 
 	// Create the string to be output
 	if (!format->writeToString())
 	{
-		Messenger::print("Failed to format string for output.\n");
+		Messenger::print("Failed to format string for output.");
 		return FALSE;
 	}
 	ReturnValue string;
@@ -509,7 +509,7 @@ bool Commands::function_WriteVariableFormatted(CommandNode* c, Bundle& obj, Retu
 	// Create the string to be output
 	if (!format->writeToString())
 	{
-		Messenger::print("Failed to format string for output.\n");
+		Messenger::print("Failed to format string for output.");
 		return FALSE;
 	}
 	ReturnValue string;

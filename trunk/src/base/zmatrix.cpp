@@ -105,7 +105,7 @@ Variable* ZMatrixElement::distanceVariable()
 // Set distance variable name (geometry variable 0)
 void ZMatrixElement::setDistanceName(const char* name)
 {
-	if (values_[0] == NULL) Messenger::print("Warning: No distance variable exists in ZMatrixElement, so can't set its name.\n");
+	if (values_[0] == NULL) Messenger::print("Warning: No distance variable exists in ZMatrixElement, so can't set its name.");
 	else values_[0]->setName(name);
 }
 
@@ -114,7 +114,7 @@ const char* ZMatrixElement::distanceName()
 {
 	static Dnchar name;
 	name.clear();
-	if (values_[0] == NULL) Messenger::print("Warning: No distance variable exists in ZMatrixElement from which to return a value.\n");
+	if (values_[0] == NULL) Messenger::print("Warning: No distance variable exists in ZMatrixElement from which to return a value.");
 	else
 	{
 		if (negated_[0]) name.sprintf("-%s",values_[0]->name());
@@ -127,7 +127,7 @@ const char* ZMatrixElement::distanceName()
 void ZMatrixElement::setDistance(double value)
 {
 	// Set variable value for distance, and recalculate model
-	if (values_[0] == NULL) Messenger::print("Warning: No distance variable exists in ZMatrixElement to set.\n");
+	if (values_[0] == NULL) Messenger::print("Warning: No distance variable exists in ZMatrixElement to set.");
 	else parent_->setVariable(values_[0], value);
 }
 
@@ -135,7 +135,7 @@ void ZMatrixElement::setDistance(double value)
 double ZMatrixElement::distance()
 {
 	static ReturnValue rv;
-	if (values_[0] == NULL) Messenger::print("Warning: No distance variable exists in ZMatrixElement from which to return a value.\n");
+	if (values_[0] == NULL) Messenger::print("Warning: No distance variable exists in ZMatrixElement from which to return a value.");
 	else
 	{
 		values_[0]->execute(rv);
@@ -159,7 +159,7 @@ Variable* ZMatrixElement::angleVariable()
 // Set angle variable name (geometry variable 1)
 void ZMatrixElement::setAngleName(const char* name)
 {
-	if (values_[1] == NULL) Messenger::print("Warning: No angle variable exists in ZMatrixElement, so can't set its name.\n");
+	if (values_[1] == NULL) Messenger::print("Warning: No angle variable exists in ZMatrixElement, so can't set its name.");
 	else values_[1]->setName(name);
 }
 
@@ -168,7 +168,7 @@ const char* ZMatrixElement::angleName()
 {
 	static Dnchar name;
 	name.clear();
-	if (values_[1] == NULL) Messenger::print("Warning: No angle variable exists in ZMatrixElement from which to return a value.\n");
+	if (values_[1] == NULL) Messenger::print("Warning: No angle variable exists in ZMatrixElement from which to return a value.");
 	else
 	{
 		if (negated_[1]) name.sprintf("-%s",values_[1]->name());
@@ -181,7 +181,7 @@ const char* ZMatrixElement::angleName()
 void ZMatrixElement::setAngle(double value)
 {
 	// Set variable value for angle, and recalculate model
-	if (values_[1] == NULL) Messenger::print("Warning: No angle variable exists in ZMatrixElement to set.\n");
+	if (values_[1] == NULL) Messenger::print("Warning: No angle variable exists in ZMatrixElement to set.");
 	else parent_->setVariable(values_[1], value);
 }
 
@@ -189,7 +189,7 @@ void ZMatrixElement::setAngle(double value)
 double ZMatrixElement::angle()
 {
 	static ReturnValue rv;
-	if (values_[1] == NULL) Messenger::print("Warning: No angle variable exists in ZMatrixElement from which to return a value.\n");
+	if (values_[1] == NULL) Messenger::print("Warning: No angle variable exists in ZMatrixElement from which to return a value.");
 	else
 	{
 		values_[1]->execute(rv);
@@ -213,7 +213,7 @@ Variable* ZMatrixElement::torsionVariable()
 // Set torsion variable name (geometry variable 2)
 void ZMatrixElement::setTorsionName(const char* name)
 {
-	if (values_[2] == NULL) Messenger::print("Warning: No torsion variable exists in ZMatrixElement, so can't set its name.\n");
+	if (values_[2] == NULL) Messenger::print("Warning: No torsion variable exists in ZMatrixElement, so can't set its name.");
 	else values_[2]->setName(name);
 }
 
@@ -222,7 +222,7 @@ const char* ZMatrixElement::torsionName()
 {
 	static Dnchar name;
 	name.clear();
-	if (values_[2] == NULL) Messenger::print("Warning: No torsion variable exists in ZMatrixElement from which to return a value.\n");
+	if (values_[2] == NULL) Messenger::print("Warning: No torsion variable exists in ZMatrixElement from which to return a value.");
 	else
 	{
 		if (negated_[2]) name.sprintf("-%s",values_[2]->name());
@@ -235,7 +235,7 @@ const char* ZMatrixElement::torsionName()
 void ZMatrixElement::setTorsion(double value)
 {
 	// Set variable value for torsion, and recalculate model
-	if (values_[2] == NULL) Messenger::print("Warning: No torsion variable exists in ZMatrixElement to set.\n");
+	if (values_[2] == NULL) Messenger::print("Warning: No torsion variable exists in ZMatrixElement to set.");
 	else parent_->setVariable(values_[2], value);
 }
 
@@ -243,7 +243,7 @@ void ZMatrixElement::setTorsion(double value)
 double ZMatrixElement::torsion()
 {
 	static ReturnValue rv;
-	if (values_[2] == NULL) Messenger::print("Warning: No torsion variable exists in ZMatrixElement from which to return a value.\n");
+	if (values_[2] == NULL) Messenger::print("Warning: No torsion variable exists in ZMatrixElement from which to return a value.");
 	else
 	{
 		values_[2]->execute(rv);
@@ -433,7 +433,7 @@ void ZMatrix::create(Model* source, bool usebonds)
 				}
 				if (bestpath.nItems() != atomlist.nItems())
 				{
-					Messenger::print("Internal Error: Failed to create ZMatrix using connectivity.\n");
+					Messenger::print("Internal Error: Failed to create ZMatrix using connectivity.");
 					Messenger::exit("ZMatrix::create");
 					return;
 				}

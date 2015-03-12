@@ -123,16 +123,16 @@ void Measurement::print() const
 	switch (type_)
 	{
 		case (Measurement::DistanceMeasurement):
-			if (fabs(value_-literalValue_) < 0.0001) Messenger::print("Distance (%i-%i) = %f\n", atoms_[0]->id()+1, atoms_[1]->id()+1, value_);
-			else Messenger::print("Distance (%i-%i) = %f (literal = %f)\n", atoms_[0]->id()+1, atoms_[1]->id()+1, value_, literalValue_);
+			if (fabs(value_-literalValue_) < 0.0001) Messenger::print("Distance (%i-%i) = %f", atoms_[0]->id()+1, atoms_[1]->id()+1, value_);
+			else Messenger::print("Distance (%i-%i) = %f (literal = %f)", atoms_[0]->id()+1, atoms_[1]->id()+1, value_, literalValue_);
 			break;
 		case (Measurement::AngleMeasurement):
-			if (fabs(value_-literalValue_) < 0.0001) Messenger::print("Angle (%i-%i-%i) = %f\n", atoms_[0]->id()+1, atoms_[1]->id()+1, atoms_[2]->id()+1, value_);
-			else Messenger::print("Angle (%i-%i-%i) = %f (literal = %f)\n", atoms_[0]->id()+1, atoms_[1]->id()+1, atoms_[2]->id()+1, value_, literalValue_);
+			if (fabs(value_-literalValue_) < 0.0001) Messenger::print("Angle (%i-%i-%i) = %f", atoms_[0]->id()+1, atoms_[1]->id()+1, atoms_[2]->id()+1, value_);
+			else Messenger::print("Angle (%i-%i-%i) = %f (literal = %f)", atoms_[0]->id()+1, atoms_[1]->id()+1, atoms_[2]->id()+1, value_, literalValue_);
 			break;
 		case (Measurement::TorsionMeasurement):
-			if (fabs(value_-literalValue_) < 0.0001) Messenger::print("Torsion (%i-%i-%i-%i) = %f\n", atoms_[0]->id()+1, atoms_[1]->id()+1, atoms_[2]->id()+1, atoms_[3]->id()+1, value_);
-			else Messenger::print("Torsion (%i-%i-%i-%i) = %f (literal = %f)\n", atoms_[0]->id()+1, atoms_[1]->id()+1, atoms_[2]->id()+1, atoms_[3]->id()+1, value_, literalValue_);
+			if (fabs(value_-literalValue_) < 0.0001) Messenger::print("Torsion (%i-%i-%i-%i) = %f", atoms_[0]->id()+1, atoms_[1]->id()+1, atoms_[2]->id()+1, atoms_[3]->id()+1, value_);
+			else Messenger::print("Torsion (%i-%i-%i-%i) = %f (literal = %f)", atoms_[0]->id()+1, atoms_[1]->id()+1, atoms_[2]->id()+1, atoms_[3]->id()+1, value_, literalValue_);
 			break;
 		default:
 			printf("Measurement::print <<<< Unrecognised geometry type >>>>\n");

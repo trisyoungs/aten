@@ -36,13 +36,13 @@ Tree* Aten::probeFile(const char* filename, FilterData::FilterType probetype)
 	probefile.open(filename, std::ios::in);
 	if (!probefile.is_open())
 	{
-		Messenger::print("File '%s' does not exist.\n", filename);
+		Messenger::print("File '%s' does not exist.", filename);
 		Messenger::exit("Aten::probeFile");
 		return NULL;
 	}
 	if (filename[0] == '\0')
 	{
-		Messenger::print("Filename is empty.\n");
+		Messenger::print("Filename is empty.");
 		Messenger::exit("Aten::probeFile");
 		return NULL;
 	}
@@ -74,7 +74,7 @@ Tree* Aten::probeFile(const char* filename, FilterData::FilterType probetype)
 			{
 				if (strcmp(d->get(),dotPos) == 0)
 				{
-					Messenger::print(Messenger::Verbose, "PROBE: Filter extension [%s] matches file extension.\n", d->get()); 
+					Messenger::print(Messenger::Verbose, "PROBE: Filter extension [%s] matches file extension.", d->get()); 
 					break;
 				}
 			}
@@ -101,7 +101,7 @@ Tree* Aten::probeFile(const char* filename, FilterData::FilterType probetype)
 					if (m == -1) break;
 					if (m == 1)
 					{
-						Messenger::print("File error encountered while searching for identifying string.\n");
+						Messenger::print("File error encountered while searching for identifying string.");
 						break;
 					}
 					else if (strstr(parser.line(), d->get()) != NULL)
@@ -122,8 +122,8 @@ Tree* Aten::probeFile(const char* filename, FilterData::FilterType probetype)
 		break;
 	}
 
-	if (result == NULL) Messenger::print("Couldn't determine format of file '%s'.\n",filename);
-	else Messenger::print(Messenger::Verbose, "Aten::probeFile - Selected filter '%s'\n", result->filter.name());
+	if (result == NULL) Messenger::print("Couldn't determine format of file '%s'.",filename);
+	else Messenger::print(Messenger::Verbose, "Aten::probeFile - Selected filter '%s'", result->filter.name());
 	Messenger::exit("Aten::probeFile");
 	return result;
 }

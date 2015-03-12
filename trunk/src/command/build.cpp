@@ -43,7 +43,7 @@ bool Commands::function_AddHydrogen(CommandNode* c, Bundle& obj, ReturnValue& rv
 		else if (v1.type() == VTypes::AtomData) i = (Atom*) v1.asPointer(VTypes::AtomData);
 		else
 		{
-			Messenger::print("Optional argument to 'addhydrogen' must be a variable of Integer or Atom type.\n");
+			Messenger::print("Optional argument to 'addhydrogen' must be a variable of Integer or Atom type.");
 			return FALSE;
 		}
 		obj.rs()->hydrogenSatisfy(i);
@@ -68,7 +68,7 @@ bool Commands::function_Bohr(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	for (int n=0; n<c->nArgs(); ++n)
 	{
 		// Check for valid pointer
-		if (c->argp(n, c->argType(n)) == NULL) Messenger::print("Argument %i passed to 'bohr' is a NULL pointer.\n", n+1);
+		if (c->argp(n, c->argType(n)) == NULL) Messenger::print("Argument %i passed to 'bohr' is a NULL pointer.", n+1);
 		else switch (c->argType(n))
 		{
 			case (VTypes::AtomData):
@@ -88,15 +88,15 @@ bool Commands::function_Bohr(CommandNode* c, Bundle& obj, ReturnValue& rv)
 				break;			case (VTypes::IntegerData):
 			case (VTypes::DoubleData):
 			case (VTypes::StringData):
-				Messenger::print("No valid conversion for ordinary types.\n");
+				Messenger::print("No valid conversion for ordinary types.");
 				result = FALSE;
 				break;
 			case (VTypes::ElementData):
-				Messenger::print("No valid Bohr conversion for type '%s'.\n", VTypes::dataType(c->argType(n)));
+				Messenger::print("No valid Bohr conversion for type '%s'.", VTypes::dataType(c->argType(n)));
 				result = FALSE;
 				break;
 			default:
-				Messenger::print("Bohr conversion for type '%s' not implemented.\n", VTypes::dataType(c->argType(n)));
+				Messenger::print("Bohr conversion for type '%s' not implemented.", VTypes::dataType(c->argType(n)));
 				result = FALSE;
 				break;
 		}
@@ -176,7 +176,7 @@ bool Commands::function_GrowAtom(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	else if (v1.type() == VTypes::AtomData) i = (Atom*) v1.asPointer(VTypes::AtomData);
 	else
 	{
-		Messenger::print("Second argument to 'growAtom' must be a variable of int or Atom type.\n");
+		Messenger::print("Second argument to 'growAtom' must be a variable of int or Atom type.");
 		return FALSE;
 	}
 	
@@ -210,7 +210,7 @@ bool Commands::function_InsertAtom(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	int id = c->argi(1);
 	if ((id < 1) || (id > (obj.rs()->nAtoms()+1)))
 	{
-		Messenger::print("Requested ID for new atom (%i) is out of range (target model has %i atoms).\n", id, obj.rs()->nAtoms());
+		Messenger::print("Requested ID for new atom (%i) is out of range (target model has %i atoms).", id, obj.rs()->nAtoms());
 		return FALSE;
 	}
 	Vec3<double> pos = (c->hasArg(4) ? c->arg3d(2) : obj.rs()->penPosition());
@@ -326,7 +326,7 @@ bool Commands::function_NewAtomFrac(CommandNode* c, Bundle& obj, ReturnValue& rv
 	else if (r.y > 1.0) r.y -= 1.0;
 	if (r.z < 0.0) r.z += 1.0;
 	else if (r.z > 1.0) r.z -= 1.0;	
-	if (obj.rs()->cell()->type() == UnitCell::NoCell) Messenger::print("Warning: No unit cell present - atom added with supplied coordinates.\n");
+	if (obj.rs()->cell()->type() == UnitCell::NoCell) Messenger::print("Warning: No unit cell present - atom added with supplied coordinates.");
 	else r = obj.rs()->cell()->fracToReal(r);
 	obj.rs()->beginUndoState("Draw atom (fractional)");
 	if (c->hasArg(9)) aten_.current().i = obj.rs()->addAtom(el, r, c->arg3d(4), c->arg3d(7));

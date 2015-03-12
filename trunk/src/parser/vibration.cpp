@@ -83,15 +83,15 @@ StepNode* VibrationVariable::accessorSearch(const char* s, TreeNode* arrayIndex,
 		i = Variable::searchAccessor(s, nFunctions, functionData);
 		if (i == -1)
 		{
-			Messenger::print("Error: Type 'Vibration&' has no member or function named '%s'.\n", s);
+			Messenger::print("Error: Type 'Vibration&' has no member or function named '%s'.", s);
 			printAccessors();
 			Messenger::exit("VibrationVariable::accessorSearch");
 			return NULL;
 		}
-		Messenger::print(Messenger::Parse, "FunctionAccessor match = %i (%s)\n", i, functionData[i].name);
+		Messenger::print(Messenger::Parse, "FunctionAccessor match = %i (%s)", i, functionData[i].name);
 		if (arrayIndex != NULL)
 		{
-			Messenger::print("Error: Array index given to 'Vibration&' function '%s'.\n", s);
+			Messenger::print("Error: Array index given to 'Vibration&' function '%s'.", s);
 			Messenger::exit("VibrationVariable::accessorSearch");
 			return NULL;
 		}
@@ -100,24 +100,24 @@ StepNode* VibrationVariable::accessorSearch(const char* s, TreeNode* arrayIndex,
 		result->addJoinedArguments(argList);
 		if (!result->checkArguments(functionData[i].arguments, functionData[i].name))
 		{
-			Messenger::print("Error: Syntax for 'Vibration&' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
+			Messenger::print("Error: Syntax for 'Vibration&' function '%s' is '%s(%s)'.", functionData[i].name, functionData[i].name, functionData[i].argText );
 			delete result;
 			result = NULL;
 		}
 	}
 	else
 	{
-		Messenger::print(Messenger::Parse, "Accessor match = %i (%s)\n", i, accessorData[i].name);
+		Messenger::print(Messenger::Parse, "Accessor match = %i (%s)", i, accessorData[i].name);
 		// Were we given an array index when we didn't want one?
 		if ((accessorData[i].arraySize == 0) && (arrayIndex != NULL))
 		{
-			Messenger::print("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
+			Messenger::print("Error: Irrelevant array index provided for member '%s'.", accessorData[i].name);
 			result = NULL;
 		}
 		// Were we given an argument list when we didn't want one?
 		if (argList != NULL)
 		{
-			Messenger::print("Error: Argument list given to 'Vibration&' array member '%s'.\n", s);
+			Messenger::print("Error: Argument list given to 'Vibration&' array member '%s'.", s);
 			Messenger::exit("VibrationVariable::accessorSearch");
 			return NULL;
 		}
@@ -142,7 +142,7 @@ bool VibrationVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIn
 	// Check for correct lack/presence of array index given
 	if ((accessorData[i].arraySize == 0) && hasArrayIndex)
 	{
-		Messenger::print("Error: Unnecessary array index provided for member '%s'.\n", accessorData[i].name);
+		Messenger::print("Error: Unnecessary array index provided for member '%s'.", accessorData[i].name);
 		Messenger::exit("VibrationVariable::retrieveAccessor");
 		return FALSE;
 	}
@@ -150,7 +150,7 @@ bool VibrationVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIn
 	{
 		if ((arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize))
 		{
-			Messenger::print("Error: Array index out of bounds for member '%s' (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
+			Messenger::print("Error: Array index out of bounds for member '%s' (%i, range is 1-%i).", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
 			Messenger::exit("VibrationVariable::retrieveAccessor");
 			return FALSE;
 		}
@@ -160,7 +160,7 @@ bool VibrationVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIn
 	Vibration* ptr = (Vibration*) rv.asPointer(VTypes::VibrationData, result);
 	if ((!result) || (ptr == NULL))
 	{
-		Messenger::print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::VibrationData));
+		Messenger::print("Invalid (NULL) %s reference encountered.", VTypes::dataType(VTypes::VibrationData));
 		result = FALSE;
 	}
 	if (result) switch (acc)
@@ -169,7 +169,7 @@ bool VibrationVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIn
 			if (!hasArrayIndex) rv.set( ptr->displacement(0) );
 			else if (arrayIndex > ptr->nDisplacements())
 			{
-				Messenger::print("Displacement array index (%i) is out of bounds for vibration.\n", arrayIndex);
+				Messenger::print("Displacement array index (%i) is out of bounds for vibration.", arrayIndex);
 				result = FALSE;
 			}
 			else rv.set( ptr->displacement(arrayIndex-1) );
@@ -218,12 +218,12 @@ bool VibrationVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& n
 		{
 			if ((accessorData[i].arraySize > 0) && ( (arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize) ))
 			{
-				Messenger::print("Error: Array index provided for member '%s' is out of range (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
+				Messenger::print("Error: Array index provided for member '%s' is out of range (%i, range is 1-%i).", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
 				result = FALSE;
 			}
 			if (newValue.arraySize() > 0)
 			{
-				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
+				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.", accessorData[i].name);
 				result = FALSE;
 			}
 		}
@@ -231,7 +231,7 @@ bool VibrationVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& n
 		{
 			if ((newValue.arraySize() > 0) && (newValue.arraySize() != accessorData[i].arraySize))
 			{
-				Messenger::print("Error: The array being assigned to member '%s' is not of the same size (%i cf. %i).\n", accessorData[i].name, newValue.arraySize(), accessorData[i].arraySize);
+				Messenger::print("Error: The array being assigned to member '%s' is not of the same size (%i cf. %i).", accessorData[i].name, newValue.arraySize(), accessorData[i].arraySize);
 				result = FALSE;
 			}
 		}
@@ -243,12 +243,12 @@ bool VibrationVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& n
 		{
 			if (accessorData[i].returnType != VTypes::VectorData)
 			{
-				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
+				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.", accessorData[i].name);
 				result = FALSE;
 			}
 			else if ((newValue.type() != VTypes::VectorData) && (newValue.arraySize() != 3))
 			{
-				Messenger::print("Error: Only an array of size 3 can be assigned to a vector (member '%s').\n", accessorData[i].name);
+				Messenger::print("Error: Only an array of size 3 can be assigned to a vector (member '%s').", accessorData[i].name);
 				result = FALSE;
 			}
 		}
@@ -264,7 +264,7 @@ bool VibrationVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& n
 	Vibration* ptr = (Vibration*) sourcerv.asPointer(VTypes::VibrationData, result);
 	if ((!result) || (ptr == NULL))
 	{
-		Messenger::print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::VibrationData));
+		Messenger::print("Invalid (NULL) %s reference encountered.", VTypes::dataType(VTypes::VibrationData));
 		result = FALSE;
 	}
 	// Set value based on enumerated id
@@ -274,7 +274,7 @@ bool VibrationVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& n
 			if (!hasArrayIndex) ptr->setDisplacement(arrayIndex-1, newValue.asVector() );
 			else if (arrayIndex > ptr->nDisplacements())
 			{
-				Messenger::print("Displacement array index (%i) is out of bounds for vibration.\n", arrayIndex);
+				Messenger::print("Displacement array index (%i) is out of bounds for vibration.", arrayIndex);
 				result = FALSE;
 			}
 			else ptr->setDisplacement(arrayIndex-1, newValue.asVector() );
@@ -330,15 +330,15 @@ void VibrationVariable::printAccessors()
 {
 	if (VibrationVariable::nAccessors > 0)
 	{
-		Messenger::print("Valid accessors are:\n");
+		Messenger::print("Valid accessors are:");
 		for (int n=0; n<VibrationVariable::nAccessors; ++n) Messenger::print("%s%s%s", n == 0 ? " " : ", ", accessorData[n].name, accessorData[n].arraySize > 0 ? "[]" : "");
-		Messenger::print("\n");
+		Messenger::print("");
 	}
 	if ((VibrationVariable::nFunctions > 0) && (strcmp(functionData[0].name,".dummy") != 0))
 	{
-		Messenger::print("Valid functions are:\n");
+		Messenger::print("Valid functions are:");
 		for (int n=0; n<VibrationVariable::nFunctions; ++n) Messenger::print("%s%s(%s)", n == 0 ? " " : ", ", functionData[n].name, functionData[n].argText);
-		Messenger::print("\n");
+		Messenger::print("");
 	}
 }
 

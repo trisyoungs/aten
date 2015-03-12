@@ -88,7 +88,7 @@ void CommandParser::reset()
 // Print error information and location
 void CommandParser::printErrorInfo()
 {
-	if (source_ != CommandParser::StringSource) Messenger::print("Error occurred here (line %i in file '%s'):\n", parser_.lastLineNo(), parser_.inputFilename());
+	if (source_ != CommandParser::StringSource) Messenger::print("Error occurred here (line %i in file '%s'):", parser_.lastLineNo(), parser_.inputFilename());
 	// QUICK'n'DIRTY!
 	int i;
 	char *temp = new char[stringLength_+32];
@@ -98,8 +98,8 @@ void CommandParser::printErrorInfo()
 	for (i=tokenStart_; i<stringPos_; i++) temp[i] = '^';
 	temp[stringPos_] = '\0';
 	// Print current string
-	Messenger::print(" %s\n", stringSource_.get());
-	Messenger::print(" %s^\n", temp);
+	Messenger::print(" %s", stringSource_.get());
+	Messenger::print(" %s^", temp);
 	delete[] temp;
 }
 
@@ -251,7 +251,7 @@ bool CommandParser::generateFromString(Program* prog, const char* s, const char*
 	{
 		tree_ = program_->mainProgram();
 		stack_.add(tree_, FALSE);
-		Messenger::print(Messenger::Parse, "Main program stacked - %p\n", tree_);
+		Messenger::print(Messenger::Parse, "Main program stacked - %p", tree_);
 	}
 	
 	// Store the source string
@@ -259,7 +259,7 @@ bool CommandParser::generateFromString(Program* prog, const char* s, const char*
 	stringSource_ = s;
 	stringPos_ = 0;
 	stringLength_ = stringSource_.length();
-	Messenger::print(Messenger::Parse, "Parser source string is '%s', length is %i\n", stringSource_.get(), stringLength_);
+	Messenger::print(Messenger::Parse, "Parser source string is '%s', length is %i", stringSource_.get(), stringLength_);
 	source_ = CommandParser::StringSource;
 	bool result = generate();
 	reset();
@@ -286,7 +286,7 @@ bool CommandParser::generateFromStringList(Program* prog, Dnchar* stringListHead
 	{
 		tree_ = program_->mainProgram();
 		stack_.add(tree_, FALSE);
-		Messenger::print(Messenger::Parse, "Main program stacked - %p\n", tree_);
+		Messenger::print(Messenger::Parse, "Main program stacked - %p", tree_);
 	}
 	
 	// Store the source strings
@@ -294,7 +294,7 @@ bool CommandParser::generateFromStringList(Program* prog, Dnchar* stringListHead
 	stringListSource_ = stringListHead;
 	stringPos_ = 0;
 	stringLength_ = 0;
-	Messenger::print(Messenger::Parse, "Parser source is now string list.\n");
+	Messenger::print(Messenger::Parse, "Parser source is now string list.");
 	source_ = CommandParser::StringListSource;
 	bool result = generate();
 	stringListSource_ = NULL;
@@ -322,7 +322,7 @@ bool CommandParser::generateFromFile(Program* prog, const char* filename, bool d
 	{
 		tree_ = program_->mainProgram();
 		stack_.add(tree_, FALSE);
-		Messenger::print(Messenger::Parse, "Main program stacked - %p\n", tree_);
+		Messenger::print(Messenger::Parse, "Main program stacked - %p", tree_);
 	}
 	
 	// Open the file
@@ -350,7 +350,7 @@ Tree* CommandParser::tree()
 	if (tree_ == NULL)
 	{
 		failed_ = TRUE;
-		Messenger::print("Internal Error: Parser tried to do something to a non-existent tree.\n");
+		Messenger::print("Internal Error: Parser tried to do something to a non-existent tree.");
 		return NULL;
 	}
 	else return tree_;
@@ -361,19 +361,19 @@ void CommandParser::pushFilter()
 {
 	tree_ = program_->addFilter();
 	stack_.add(tree_, TRUE);
-	Messenger::print(Messenger::Parse, "New filter stacked - %p\n", tree_);
+	Messenger::print(Messenger::Parse, "New filter stacked - %p", tree_);
 }
 
 // Push function (into topmost tree)
 Tree* CommandParser::pushFunction(const char* name, VTypes::DataType returntype)
 {
 	// If there is no current tree target then we add a global function...
-	if (tree_ != NULL) Messenger::print(Messenger::Parse, "Pushing function onto tree %p (%s)\n", tree_, tree_->name());
+	if (tree_ != NULL) Messenger::print(Messenger::Parse, "Pushing function onto tree %p (%s)", tree_, tree_->name());
 	if (tree_ == NULL) tree_ = program_->addFunction(name);
 	else tree_ = tree_->addLocalFunction(name);
 	tree_->setReturnType(returntype);
 	stack_.add(tree_, FALSE);
-	Messenger::print(Messenger::Parse, "New function stacked (return type is %s) - %p\n", VTypes::dataType(tree_->returnType()), tree_);
+	Messenger::print(Messenger::Parse, "New function stacked (return type is %s) - %p", VTypes::dataType(tree_->returnType()), tree_);
 	return tree_;
 }
 
@@ -386,9 +386,9 @@ void CommandParser::popTree()
 	if (ri->data)
 	{
 		// Can use the 'isFilter' member function to check for the lack of a proper type
-		if (!ri->item->isFilter()) Messenger::print("WARNING - Filter '%s' has not been provided a filter type.\n", ri->item->filter.name());
+		if (!ri->item->isFilter()) Messenger::print("WARNING - Filter '%s' has not been provided a filter type.", ri->item->filter.name());
 	}
-	Messenger::print(Messenger::Parse, "Removing tree %p from stack (%i remain).\n", ri->item, stack_.nItems()-1);
+	Messenger::print(Messenger::Parse, "Removing tree %p from stack (%i remain).", ri->item, stack_.nItems()-1);
 	stack_.remove( stack_.last() );
 	// Set current tree target to the top tree now on the stack
 	ri = stack_.last();

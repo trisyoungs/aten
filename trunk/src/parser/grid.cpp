@@ -111,15 +111,15 @@ StepNode* GridVariable::accessorSearch(const char* s, TreeNode* arrayIndex, Tree
 		i = Variable::searchAccessor(s, nFunctions, functionData);
 		if (i == -1)
 		{
-			Messenger::print("Error: Type 'Grid&' has no member or function named '%s'.\n", s);
+			Messenger::print("Error: Type 'Grid&' has no member or function named '%s'.", s);
 			printAccessors();
 			Messenger::exit("GridVariable::accessorSearch");
 			return NULL;
 		}
-		Messenger::print(Messenger::Parse, "FunctionAccessor match = %i (%s)\n", i, functionData[i].name);
+		Messenger::print(Messenger::Parse, "FunctionAccessor match = %i (%s)", i, functionData[i].name);
 		if (arrayIndex != NULL)
 		{
-			Messenger::print("Error: Array index given to 'Grid&' function '%s'.\n", s);
+			Messenger::print("Error: Array index given to 'Grid&' function '%s'.", s);
 			Messenger::exit("GridVariable::accessorSearch");
 			return NULL;
 		}
@@ -128,24 +128,24 @@ StepNode* GridVariable::accessorSearch(const char* s, TreeNode* arrayIndex, Tree
 		result->addJoinedArguments(argList);
 		if (!result->checkArguments(functionData[i].arguments, functionData[i].name))
 		{
-			Messenger::print("Error: Syntax for 'Grid&' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
+			Messenger::print("Error: Syntax for 'Grid&' function '%s' is '%s(%s)'.", functionData[i].name, functionData[i].name, functionData[i].argText );
 			delete result;
 			result = NULL;
 		}
 	}
 	else
 	{
-		Messenger::print(Messenger::Parse, "Accessor match = %i (%s)\n", i, accessorData[i].name);
+		Messenger::print(Messenger::Parse, "Accessor match = %i (%s)", i, accessorData[i].name);
 		// Were we given an array index when we didn't want one?
 		if ((accessorData[i].arraySize == 0) && (arrayIndex != NULL))
 		{
-			Messenger::print("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
+			Messenger::print("Error: Irrelevant array index provided for member '%s'.", accessorData[i].name);
 			result = NULL;
 		}
 		// Were we given an argument list when we didn't want one?
 		if (argList != NULL)
 		{
-			Messenger::print("Error: Argument list given to 'Grid&' array member '%s'.\n", s);
+			Messenger::print("Error: Argument list given to 'Grid&' array member '%s'.", s);
 			Messenger::exit("GridVariable::accessorSearch");
 			return NULL;
 		}
@@ -170,7 +170,7 @@ bool GridVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex, 
 	// Check for correct lack/presence of array index given
 	if ((accessorData[i].arraySize == 0) && hasArrayIndex)
 	{
-		Messenger::print("Error: Unnecessary array index provided for member '%s'.\n", accessorData[i].name);
+		Messenger::print("Error: Unnecessary array index provided for member '%s'.", accessorData[i].name);
 		Messenger::exit("GridVariable::retrieveAccessor");
 		return FALSE;
 	}
@@ -178,7 +178,7 @@ bool GridVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex, 
 	{
 		if ((arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize))
 		{
-			Messenger::print("Error: Array index out of bounds for member '%s' (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
+			Messenger::print("Error: Array index out of bounds for member '%s' (%i, range is 1-%i).", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
 			Messenger::exit("GridVariable::retrieveAccessor");
 			return FALSE;
 		}
@@ -188,7 +188,7 @@ bool GridVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex, 
 	Grid* ptr = (Grid*) rv.asPointer(VTypes::GridData, result);
 	if ((!result) || (ptr == NULL))
 	{
-		Messenger::print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::GridData));
+		Messenger::print("Invalid (NULL) %s reference encountered.", VTypes::dataType(VTypes::GridData));
 		result = FALSE;
 	}
 	if (result) switch (acc)
@@ -324,12 +324,12 @@ bool GridVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newVal
 		{
 			if ((accessorData[i].arraySize > 0) && ( (arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize) ))
 			{
-				Messenger::print("Error: Array index provided for member '%s' is out of range (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
+				Messenger::print("Error: Array index provided for member '%s' is out of range (%i, range is 1-%i).", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
 				result = FALSE;
 			}
 			if (newValue.arraySize() > 0)
 			{
-				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
+				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.", accessorData[i].name);
 				result = FALSE;
 			}
 		}
@@ -337,7 +337,7 @@ bool GridVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newVal
 		{
 			if (newValue.arraySize() > accessorData[i].arraySize)
 			{
-				Messenger::print("Error: The array being assigned to member '%s' is larger than the size of the desination array (%i cf. %i).\n", accessorData[i].name, newValue.arraySize(), accessorData[i].arraySize);
+				Messenger::print("Error: The array being assigned to member '%s' is larger than the size of the desination array (%i cf. %i).", accessorData[i].name, newValue.arraySize(), accessorData[i].arraySize);
 				result = FALSE;
 			}
 		}
@@ -349,12 +349,12 @@ bool GridVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newVal
 		{
 			if (accessorData[i].returnType != VTypes::VectorData)
 			{
-				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
+				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.", accessorData[i].name);
 				result = FALSE;
 			}
 			else if ((newValue.type() != VTypes::VectorData) && (newValue.arraySize() != 3))
 			{
-				Messenger::print("Error: Only an array of size 3 can be assigned to a vector (member '%s').\n", accessorData[i].name);
+				Messenger::print("Error: Only an array of size 3 can be assigned to a vector (member '%s').", accessorData[i].name);
 				result = FALSE;
 			}
 		}
@@ -369,7 +369,7 @@ bool GridVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newVal
 	int n;
 	if ((!result) || (ptr == NULL))
 	{
-		Messenger::print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::GridData));
+		Messenger::print("Invalid (NULL) %s reference encountered.", VTypes::dataType(VTypes::GridData));
 		result = FALSE;
 	}
 	if (result) switch (acc)
@@ -496,17 +496,17 @@ bool GridVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 			switch (ptr->type())
 			{
 				case (Grid::RegularXYData):
-					if (node->nArgs() == 3) Messenger::print("Warning: Third dimension given to 'data' function will be ignored...\n");
+					if (node->nArgs() == 3) Messenger::print("Warning: Third dimension given to 'data' function will be ignored...");
 					nx = node->argi(0) - 1;
 					ny = node->argi(1) - 1;
 					if ((nx < 0) || (nx >= ptr->nXYZ().x))
 					{
-						Messenger::print("Error: X value for grid (%i) is out of range (nx = %i)\n", nx+1, ptr->nXYZ().x);
+						Messenger::print("Error: X value for grid (%i) is out of range (nx = %i)", nx+1, ptr->nXYZ().x);
 						result = FALSE;
 					}
 					else if ((ny < 0) || (ny >= ptr->nXYZ().y))
 					{
-						Messenger::print("Error: Y value for grid (%i) is out of range (ny = %i)\n", ny+1, ptr->nXYZ().y);
+						Messenger::print("Error: Y value for grid (%i) is out of range (ny = %i)", ny+1, ptr->nXYZ().y);
 						result = FALSE;
 					}
 					else rv.set( ptr->data2d()[nx][ny] );
@@ -514,7 +514,7 @@ bool GridVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 				case (Grid::RegularXYZData):
 					if (node->nArgs() != 3)
 					{
-						Messenger::print("Error: Third dimension for 3D grid not provided in 'data' function.\n");
+						Messenger::print("Error: Third dimension for 3D grid not provided in 'data' function.");
 						result = FALSE;
 						break;
 					}
@@ -523,23 +523,23 @@ bool GridVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 					nz = node->argi(2) - 1;
 					if ((nx < 0) || (nx >= ptr->nXYZ().x))
 					{
-						Messenger::print("Error: X value for grid (%i) is out of range (nx = %i)\n", nx+1, ptr->nXYZ().x);
+						Messenger::print("Error: X value for grid (%i) is out of range (nx = %i)", nx+1, ptr->nXYZ().x);
 						result = FALSE;
 					}
 					else if ((ny < 0) || (ny >= ptr->nXYZ().y))
 					{
-						Messenger::print("Error: Y value for grid (%i) is out of range (ny = %i)\n", ny+1, ptr->nXYZ().y);
+						Messenger::print("Error: Y value for grid (%i) is out of range (ny = %i)", ny+1, ptr->nXYZ().y);
 						result = FALSE;
 					}
 					else if ((nz < 0) || (nz >= ptr->nXYZ().z))
 					{
-						Messenger::print("Error: Z value for grid (%i) is out of range (nz = %i)\n", nz+1, ptr->nXYZ().z);
+						Messenger::print("Error: Z value for grid (%i) is out of range (nz = %i)", nz+1, ptr->nXYZ().z);
 						result = FALSE;
 					}
 					else rv.set( ptr->data3d()[nx][ny][nz] );
 					break;
 				case (Grid::FreeXYZData):
-					Messenger::print("Free (irregular) grid data cannot be accessed with the 'data' function.\n");
+					Messenger::print("Free (irregular) grid data cannot be accessed with the 'data' function.");
 					result = FALSE;
 					break;
 			}
@@ -580,15 +580,15 @@ void GridVariable::printAccessors()
 {
 	if (GridVariable::nAccessors > 0)
 	{
-		Messenger::print("Valid accessors are:\n");
+		Messenger::print("Valid accessors are:");
 		for (int n=0; n<GridVariable::nAccessors; ++n) Messenger::print("%s%s%s", n == 0 ? " " : ", ", accessorData[n].name, accessorData[n].arraySize > 0 ? "[]" : "");
-		Messenger::print("\n");
+		Messenger::print("");
 	}
 	if ((GridVariable::nFunctions > 0) && (strcmp(functionData[0].name,".dummy") != 0))
 	{
-		Messenger::print("Valid functions are:\n");
+		Messenger::print("Valid functions are:");
 		for (int n=0; n<GridVariable::nFunctions; ++n) Messenger::print("%s%s(%s)", n == 0 ? " " : ", ", functionData[n].name, functionData[n].argText);
-		Messenger::print("\n");
+		Messenger::print("");
 	}
 }
 

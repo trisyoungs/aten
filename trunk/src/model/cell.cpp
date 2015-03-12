@@ -94,7 +94,6 @@ void Model::setCell(Vec3<double> lengths, Vec3<double> angles)
 		newchange->set(oldaxes, cell_.axes(), oldhs, TRUE);
 		recordingState_->addEvent(newchange);
 	}
-	changeLog.add(Log::Camera);
 	changeLog.add(Log::Cell);
 	Messenger::exit("Model::setCell[vectors]");
 }
@@ -114,7 +113,6 @@ void Model::setCell(Matrix axes)
 		newchange->set(oldaxes, cell_.axes(), oldhs, TRUE);
 		recordingState_->addEvent(newchange);
 	}
-	changeLog.add(Log::Camera);
 	changeLog.add(Log::Cell);
 	Messenger::exit("Model::setCell[axes]");
 }
@@ -134,7 +132,6 @@ void Model::setCell(UnitCell::CellParameter cp, double value)
 		newchange->set(oldaxes, cell_.axes(), oldhs, TRUE);
 		recordingState_->addEvent(newchange);
 	}
-	changeLog.add(Log::Camera);
 	changeLog.add(Log::Cell);
 	Messenger::exit("Model::setCell[parameter]");
 }
@@ -144,7 +141,7 @@ bool Model::setCell(UnitCell* newcell)
 {
 	if (newcell == NULL)
 	{
-		Messenger::print("Error: NULL UnitCell pointer passed to Model::setCell().\n");
+		Messenger::print("Error: NULL UnitCell pointer passed to Model::setCell().");
 		return FALSE;
 	}
 	else
@@ -160,7 +157,6 @@ bool Model::setCell(UnitCell* newcell)
 			recordingState_->addEvent(newchange);
 		}
 	}
-	changeLog.add(Log::Camera);
 	changeLog.add(Log::Cell);
 	return TRUE;
 }
@@ -169,7 +165,6 @@ bool Model::setCell(UnitCell* newcell)
 void Model::removeCell()
 {
 	Messenger::enter("Model::removeCell");
-	changeLog.add(Log::Camera);
 	if (recordingState_ != NULL)
 	{
 		CellEvent *newchange = new CellEvent;
@@ -227,7 +222,7 @@ void Model::pack(Generator *gen)
 		Messenger::enter("Model::pack[generator]");
 		return;
 	}
-	Messenger::print(Messenger::Verbose, "...Applying generator '%s'\n", gen->name());
+	Messenger::print(Messenger::Verbose, "...Applying generator '%s'", gen->name());
 	// Store current number of atoms in model
 	oldnatoms = atoms_.nItems();
 	// Copy selection to clipboard
@@ -253,7 +248,7 @@ void Model::pack()
 	// Spacegroup should already have been set by a successful call to Model::setSpacegroup()
 	if ((cell_.spacegroupId() == 0) && (cell_.nGenerators() == 0))
 	{
-		Messenger::print("Crystal packing cannot be performed - no spacegroup set in model and no custom generators defined.\n");
+		Messenger::print("Crystal packing cannot be performed - no spacegroup set in model and no custom generators defined.");
 		Messenger::exit("Model::pack");
 		return;
 	}
@@ -262,7 +257,7 @@ void Model::pack()
 	selectAll(TRUE);
 	if (cell_.spacegroupId() != 0)
 	{
-		Messenger::print("Packing cell from previous spacegroup definition.\n");
+		Messenger::print("Packing cell from previous spacegroup definition.");
 		Generator gen;
 		// Code copied verbatim from http://cci.lbl.gov/sginfo/sginfo_loop_symops.html and modified slightly to use Aten's classes
 		int iList, f, nTrV, iTrV, nLoopInv, iLoopInv;
@@ -299,7 +294,7 @@ void Model::pack()
 	}
 	else
 	{
-	 	Messenger::print("Packing cell from manually-defined generator list...\n");
+	 	Messenger::print("Packing cell from manually-defined generator list...");
 		for (Generator *g = cell_.generators(); g != NULL; g = g->next) pack(g);
 	}
 	
@@ -323,7 +318,7 @@ bool Model::scaleCell(const Vec3<double>& scale, bool useCog)
 	// First, make sure we have a cell and a valid pattern (if using cog)
 	if (cell_.type() == UnitCell::NoCell)
 	{
-		Messenger::print("No cell to scale.\n");
+		Messenger::print("No cell to scale.");
 		Messenger::exit("Model::scaleCell");
 		return FALSE;
 	}
@@ -331,7 +326,7 @@ bool Model::scaleCell(const Vec3<double>& scale, bool useCog)
 	{
  		if (!createPatterns())
 		{
-			Messenger::print("Cell contents cannot be scaled by their centres of geometry if a proper pattern definition does not exist.\n");
+			Messenger::print("Cell contents cannot be scaled by their centres of geometry if a proper pattern definition does not exist.");
 			Messenger::exit("Model::scaleCell");
 			return FALSE;
 		}
@@ -396,7 +391,7 @@ void Model::replicateCell(const Vec3<double> &neg, const Vec3<double> &pos)
 	// If this isn't a periodic model, exit
 	if (cell_.type() == UnitCell::NoCell)
 	{
-		Messenger::print("No cell to replicate.\n");
+		Messenger::print("No cell to replicate.");
 		Messenger::exit("Model::replicateCell");
 		return;
 	}
@@ -442,7 +437,7 @@ void Model::replicateCell(const Vec3<double> &neg, const Vec3<double> &pos)
 				tvec += oldaxes.columnAsVec3(2) * kk;
 				//tvec.print();
 				clip.pasteToModel(this,tvec);
-				Messenger::print(Messenger::Verbose, "Created copy for vector %8.4f %8.4f %8.4f\n",tvec.x,tvec.y,tvec.z);
+				Messenger::print(Messenger::Verbose, "Created copy for vector %8.4f %8.4f %8.4f",tvec.x,tvec.y,tvec.z);
 				if (!progress.update(pid)) stop = TRUE;
 			}
 			if (stop) break;
@@ -500,7 +495,7 @@ void Model::rotateCell(int axis, double angle)
 	Messenger::enter("Model::rotateCell");
 	if (cell_.type() == UnitCell::NoCell)
 	{
-		Messenger::print("This model has no cell, and so it can't be rotated.\n");
+		Messenger::print("This model has no cell, and so it can't be rotated.");
 		Messenger::exit("Model::rotateCell");
 		return;
 	}

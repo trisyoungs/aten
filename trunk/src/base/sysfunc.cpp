@@ -211,7 +211,7 @@ void enumPrintValid(int nitems, const char* *list)
 		if ((strcmp(list[i],"_NULL_") == 0) || (list[i][0] == '_')) continue;
 		Messenger::print("%s ", lowerCase(list[i]));
 	}
-	Messenger::print("\n");
+	Messenger::print("");
 }
 
 // Convert the number 'n' to a string representation.

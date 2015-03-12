@@ -91,8 +91,8 @@ void MethodSd::minimise(Model* srcmodel, double econ, double fcon, bool simple)
 	srcmodel->calculateForces(srcmodel);
 	newForce = srcmodel->rmsForce();
 
-	Messenger::print("Step      Energy       DeltaE       RMS Force      E(vdW)        E(elec)       E(Bond)      E(Angle)     E(Torsion)\n");
-	Messenger::print("Init  %12.5e       ---      %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e %s\n", currentEnergy, newForce, srcmodel->energy.vdw(), srcmodel->energy.electrostatic(), srcmodel->energy.bond(), srcmodel->energy.angle(), srcmodel->energy.torsion(), "--:--:--");
+	Messenger::print("Step      Energy       DeltaE       RMS Force      E(vdW)        E(elec)       E(Bond)      E(Angle)     E(Torsion)");
+	Messenger::print("Init  %12.5e       ---      %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e %s", currentEnergy, newForce, srcmodel->energy.vdw(), srcmodel->energy.electrostatic(), srcmodel->energy.bond(), srcmodel->energy.angle(), srcmodel->energy.torsion(), "--:--:--");
 	int pid = progress.initialise("Minimising (SD)", nCycles_);
 
 	stepsize = 1.0;
@@ -143,7 +143,7 @@ void MethodSd::minimise(Model* srcmodel, double econ, double fcon, bool simple)
 		// Print out the step data
 		if (prefs.shouldUpdateEnergy(cycle+1))
 		{
-			Messenger::print("%-5i %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e %s\n",cycle+1, currentEnergy, currentEnergy-lastPrintedEnergy, newForce, srcmodel->energy.vdw(), srcmodel->energy.electrostatic(), srcmodel->energy.bond(), srcmodel->energy.angle(), srcmodel->energy.torsion(), progress.eta());
+			Messenger::print("%-5i %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e %s",cycle+1, currentEnergy, currentEnergy-lastPrintedEnergy, newForce, srcmodel->energy.vdw(), srcmodel->energy.electrostatic(), srcmodel->energy.bond(), srcmodel->energy.angle(), srcmodel->energy.torsion(), progress.eta());
 			lastPrintedEnergy = currentEnergy;
 		}
 
@@ -153,9 +153,9 @@ void MethodSd::minimise(Model* srcmodel, double econ, double fcon, bool simple)
 	}
 	progress.terminate(pid);
 
-	if (converged) Messenger::print("Steepest descent converged in %i steps.\n",cycle+1);
-	else Messenger::print("Steepest descent did not converge within %i steps.\n",nCycles_);
-	Messenger::print("Final energy:\n");
+	if (converged) Messenger::print("Steepest descent converged in %i steps.",cycle+1);
+	else Messenger::print("Steepest descent did not converge within %i steps.",nCycles_);
+	Messenger::print("Final energy:");
 	currentEnergy = srcmodel->totalEnergy(srcmodel, success);
 	srcmodel->energy.print();
 	

@@ -88,15 +88,15 @@ StepNode* EnergyStoreVariable::accessorSearch(const char* s, TreeNode* arrayInde
 		i = Variable::searchAccessor(s, nFunctions, functionData);
 		if (i == -1)
 		{
-			Messenger::print("Error: Type 'EnergyStore&' has no member or function named '%s'.\n", s);
+			Messenger::print("Error: Type 'EnergyStore&' has no member or function named '%s'.", s);
 			printAccessors();
 			Messenger::exit("EnergyStoreVariable::accessorSearch");
 			return NULL;
 		}
-		Messenger::print(Messenger::Parse, "FunctionAccessor match = %i (%s)\n", i, functionData[i].name);
+		Messenger::print(Messenger::Parse, "FunctionAccessor match = %i (%s)", i, functionData[i].name);
 		if (arrayIndex != NULL)
 		{
-			Messenger::print("Error: Array index given to 'EnergyStore&' function '%s'.\n", s);
+			Messenger::print("Error: Array index given to 'EnergyStore&' function '%s'.", s);
 			Messenger::exit("EnergyStoreVariable::accessorSearch");
 			return NULL;
 		}
@@ -105,24 +105,24 @@ StepNode* EnergyStoreVariable::accessorSearch(const char* s, TreeNode* arrayInde
 		result->addJoinedArguments(argList);
 		if (!result->checkArguments(functionData[i].arguments, functionData[i].name))
 		{
-			Messenger::print("Error: Syntax for 'EnergyStore&' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
+			Messenger::print("Error: Syntax for 'EnergyStore&' function '%s' is '%s(%s)'.", functionData[i].name, functionData[i].name, functionData[i].argText );
 			delete result;
 			result = NULL;
 		}
 	}
 	else
 	{
-		Messenger::print(Messenger::Parse, "Accessor match = %i (%s)\n", i, accessorData[i].name);
+		Messenger::print(Messenger::Parse, "Accessor match = %i (%s)", i, accessorData[i].name);
 		// Were we given an array index when we didn't want one?
 		if ((accessorData[i].arraySize == 0) && (arrayIndex != NULL))
 		{
-			Messenger::print("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
+			Messenger::print("Error: Irrelevant array index provided for member '%s'.", accessorData[i].name);
 			result = NULL;
 		}
 		// Were we given an argument list when we didn't want one?
 		if (argList != NULL)
 		{
-			Messenger::print("Error: Argument list given to 'EnergyStore&' array member '%s'.\n", s);
+			Messenger::print("Error: Argument list given to 'EnergyStore&' array member '%s'.", s);
 			Messenger::exit("EnergyStoreVariable::accessorSearch");
 			return NULL;
 		}
@@ -147,7 +147,7 @@ bool EnergyStoreVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArray
 	// Check for correct lack/presence of array index given
 	if ((accessorData[i].arraySize == 0) && hasArrayIndex)
 	{
-		Messenger::print("Error: Unnecessary array index provided for member '%s'.\n", accessorData[i].name);
+		Messenger::print("Error: Unnecessary array index provided for member '%s'.", accessorData[i].name);
 		Messenger::exit("EnergyStoreVariable::retrieveAccessor");
 		return FALSE;
 	}
@@ -155,7 +155,7 @@ bool EnergyStoreVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArray
 	{
 		if ((arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize))
 		{
-			Messenger::print("Error: Array index out of bounds for member '%s' (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
+			Messenger::print("Error: Array index out of bounds for member '%s' (%i, range is 1-%i).", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
 			Messenger::exit("EnergyStoreVariable::retrieveAccessor");
 			return FALSE;
 		}
@@ -165,7 +165,7 @@ bool EnergyStoreVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArray
 	EnergyStore* ptr = (EnergyStore*) rv.asPointer(VTypes::EnergyStoreData, result);
 	if ((!result) || (ptr == NULL))
 	{
-		Messenger::print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::EnergyStoreData));
+		Messenger::print("Invalid (NULL) %s reference encountered.", VTypes::dataType(VTypes::EnergyStoreData));
 		result = FALSE;
 	}
 	if (result) switch (acc)
@@ -220,12 +220,12 @@ bool EnergyStoreVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue&
 		{
 			if ((accessorData[i].arraySize > 0) && ( (arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize) ))
 			{
-				Messenger::print("Error: Array index provided for member '%s' is out of range (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
+				Messenger::print("Error: Array index provided for member '%s' is out of range (%i, range is 1-%i).", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
 				result = FALSE;
 			}
 			if (newValue.arraySize() > 0)
 			{
-				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
+				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.", accessorData[i].name);
 				result = FALSE;
 			}
 		}
@@ -233,7 +233,7 @@ bool EnergyStoreVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue&
 		{
 			if (newValue.arraySize() > accessorData[i].arraySize)
 			{
-				Messenger::print("Error: The array being assigned to member '%s' is larger than the size of the desination array (%i cf. %i).\n", accessorData[i].name, newValue.arraySize(), accessorData[i].arraySize);
+				Messenger::print("Error: The array being assigned to member '%s' is larger than the size of the desination array (%i cf. %i).", accessorData[i].name, newValue.arraySize(), accessorData[i].arraySize);
 				result = FALSE;
 			}
 		}
@@ -245,12 +245,12 @@ bool EnergyStoreVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue&
 		{
 			if (accessorData[i].returnType != VTypes::VectorData)
 			{
-				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
+				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.", accessorData[i].name);
 				result = FALSE;
 			}
 			else if ((newValue.type() != VTypes::VectorData) && (newValue.arraySize() != 3))
 			{
-				Messenger::print("Error: Only an array of size 3 can be assigned to a vector (member '%s').\n", accessorData[i].name);
+				Messenger::print("Error: Only an array of size 3 can be assigned to a vector (member '%s').", accessorData[i].name);
 				result = FALSE;
 			}
 		}
@@ -264,7 +264,7 @@ bool EnergyStoreVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue&
 	EnergyStore* ptr = (EnergyStore*) sourcerv.asPointer(VTypes::EnergyStoreData, result);
 	if ((!result) || (ptr == NULL))
 	{
-		Messenger::print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::EnergyStoreData));
+		Messenger::print("Invalid (NULL) %s reference encountered.", VTypes::dataType(VTypes::EnergyStoreData));
 		result = FALSE;
 	}
 	if (result) switch (acc)
@@ -308,15 +308,15 @@ void EnergyStoreVariable::printAccessors()
 {
 	if (EnergyStoreVariable::nAccessors > 0)
 	{
-		Messenger::print("Valid accessors are:\n");
+		Messenger::print("Valid accessors are:");
 		for (int n=0; n<EnergyStoreVariable::nAccessors; ++n) Messenger::print("%s%s%s", n == 0 ? " " : ", ", accessorData[n].name, accessorData[n].arraySize > 0 ? "[]" : "");
-		Messenger::print("\n");
+		Messenger::print("");
 	}
 	if ((EnergyStoreVariable::nFunctions > 0) && (strcmp(functionData[0].name,".dummy") != 0))
 	{
-		Messenger::print("Valid functions are:\n");
+		Messenger::print("Valid functions are:");
 		for (int n=0; n<EnergyStoreVariable::nFunctions; ++n) Messenger::print("%s%s(%s)", n == 0 ? " " : ", ", functionData[n].name, functionData[n].argText);
-		Messenger::print("\n");
+		Messenger::print("");
 	}
 }
 

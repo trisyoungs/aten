@@ -198,21 +198,17 @@ void AtenWindow::printMessage(const char* s)
 // Close specified model, saving first if requested
 bool AtenWindow::closeModel(Model* m)
 {
-	// If the current model has been modified, ask for confirmation before we close it
 	Dnchar text;
 	Tree* filter;
 	if (m->changeLog.isModified())
 	{
 		// Create a modal message dialog
-		text.sprintf("Model '%s' has been modified.\n", m->name());
+		text.sprintf("Model '%s' has been modified.", m->name());
 		int returnvalue = QMessageBox::warning(this, "Aten", text.get(), QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel, QMessageBox::Save);
 		switch (returnvalue)
 		{
 			// Discard changes
 			case (QMessageBox::Discard):
-				aten_.removeModel(m);
-				// Update GUI
-				updateWidgets(AtenWindow::AllTarget);
 				break;
 				// Cancel close
 			case (QMessageBox::Cancel):
@@ -230,7 +226,7 @@ bool AtenWindow::closeModel(Model* m)
 					m->setFilename(saveModelFilename_.get());
 					if (!saveModelFilter_->executeWrite(saveModelFilename_.get()))
 					{
-						Messenger::print("Not saved.\n");
+						Messenger::print("Not saved.");
 						m->enableUndoRedo();
 						return FALSE;
 					}
@@ -240,65 +236,28 @@ bool AtenWindow::closeModel(Model* m)
 					m->enableUndoRedo();
 					return FALSE;
 				}
-				aten_.removeModel(m);
-				// Update GUI
-				updateWidgets(AtenWindow::AllTarget);
 				break;
 		}
 	}
-	else aten_.removeModel(m);
+
+	// Remove model and update gui
+	aten_.removeModel(m);
+
+	// Update GUI
+	updateWidgets(AtenWindow::AllTarget);
+	
 	return TRUE;
 }
 
 // Check the status of all models, asking to save before close if necessary
 bool AtenWindow::saveBeforeClose()
 {
-	Dnchar text;
-	int returnvalue;
-	ReturnValue rv;
-	Tree* f;
-	for (Model* m = aten_.models(); m != NULL; m = m->next)
+	while (aten_.models())
 	{
-		if (m->changeLog.isModified())
-		{
-			aten_.setCurrentModel(m, TRUE);
-			// Create a model message dialog
-			text.sprintf("Model '%s' has been modified.\n", m->name());
-			returnvalue = QMessageBox::warning(this, "Aten", text.get(), QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel, QMessageBox::Save);
-			switch (returnvalue)
-			{
-				// Discard changes
-				case (QMessageBox::Discard):
-					break;
-				// Cancel quit and return to app
-				case (QMessageBox::Cancel):
-					return FALSE;
-				// Save model before quit
-				case (QMessageBox::Save):
-					// Temporarily disable undo/redo for the model, save, and re-enable
-					m->disableUndoRedo();
-					// If model has a filter set, just save it
-					f = m->filter();
-					if (f != NULL) f->executeWrite(m->filename(), rv);
-					else if (runSaveModelDialog())
-					{
-						m->setFilter(saveModelFilter_);
-						m->setFilename(saveModelFilename_.get());
-						saveModelFilter_->executeWrite(m->filename(), rv);
-					}
-					else
-					{
-						m->enableUndoRedo();
-						return FALSE;
-					}
-					m->enableUndoRedo();
-					break;
-			}
-		}
+		if (!closeModel(aten_.models())) return false;
 	}
-	return TRUE;
+	return true;
 }
-
 
 // Return the PID of Aten
 int AtenWindow::pid()
@@ -399,6 +358,8 @@ void AtenWindow::updateMainWindow()
 	// Update status bar
 	QString s;
 	Model* m = aten_.currentModel();
+	if (m == NULL) return;
+
 	// First label - atom and trajectory frame information
 	if (m->hasTrajectory())
 	{
@@ -542,10 +503,10 @@ void AtenWindow::loadRecent()
 	// See if any loaded model filename matches this filename
 	for (m = aten_.models(); m != NULL; m = m->next)
 	{
-		Messenger::print(Messenger::Verbose, "Checking loaded models for '%s': %s\n", filename.get(), m->filename());
+		Messenger::print(Messenger::Verbose, "Checking loaded models for '%s': %s", filename.get(), m->filename());
 		if (filename == m->filename())
 		{
-			Messenger::print(Messenger::Verbose, "Matched filename to loaded model.\n");
+			Messenger::print(Messenger::Verbose, "Matched filename to loaded model.");
 			aten_.setCurrentModel(m);
 			// Update GUI
 			updateWidgets(AtenWindow::AllTarget);
@@ -558,7 +519,6 @@ void AtenWindow::loadRecent()
 	{
 		ReturnValue rv;
 		filter->executeRead(filename.get(), rv);
-		aten_.currentModel()->changeLog.add(Log::Camera);
 		aten_.currentModel()->regenerateIcon();
 		// Update GUI
 		updateWidgets(AtenWindow::AllTarget);

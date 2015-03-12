@@ -93,12 +93,12 @@ bool Program::finalise(Aten* aten)
 					// Does the function have the correct return type?
 					if (func->returnType() != VTypes::IntegerData)
 					{
-						Messenger::print("Error: 'readHeader' function returns %s when it should return an int (importtrajectory filter '%s').\n", VTypes::aDataType(func->returnType()), filter->filter.name());
+						Messenger::print("Error: 'readHeader' function returns %s when it should return an int (importtrajectory filter '%s').", VTypes::aDataType(func->returnType()), filter->filter.name());
 						Messenger::exit("Program::finalise");
 						return FALSE;
 					}
 				}
-				else Messenger::print("Warning: 'readHeader' function has not been defined in the importtrajectory filter '%s'.\n", filter->filter.name());
+				else Messenger::print("Warning: 'readHeader' function has not been defined in the importtrajectory filter '%s'.", filter->filter.name());
 				filter->filter.setTrajectoryHeaderFunction(func);
 
 				// Search for 'int readFrame()' function
@@ -108,19 +108,19 @@ bool Program::finalise(Aten* aten)
 					// Does the function have the correct return type?
 					if (func->returnType() != VTypes::IntegerData)
 					{
-						Messenger::print("Error: 'readFrame' function returns %s when it should return an int (importtrajectory filter '%s').\n", VTypes::aDataType(func->returnType()), filter->filter.name());
+						Messenger::print("Error: 'readFrame' function returns %s when it should return an int (importtrajectory filter '%s').", VTypes::aDataType(func->returnType()), filter->filter.name());
 						Messenger::exit("Program::finalise");
 						return FALSE;
 					}
 				}
-				else Messenger::print("Warning: 'readFrame' function has not been defined in the importtrajectory filter '%s'.\n", filter->filter.name());
+				else Messenger::print("Warning: 'readFrame' function has not been defined in the importtrajectory filter '%s'.", filter->filter.name());
 				filter->filter.setTrajectoryFrameFunction(func);
 			}
 			
 			// Finalise the tree
 			if (!filter->finalise())
 			{
-				Messenger::print("Error finalising filter '%s'.\n", filter->filter.name());
+				Messenger::print("Error finalising filter '%s'.", filter->filter.name());
 				Messenger::exit("Program::finalise");
 				return FALSE;
 			}
@@ -132,7 +132,7 @@ bool Program::finalise(Aten* aten)
 	{
 		if (!func->finalise())
 		{
-			Messenger::print("Error finalising global function '%s'.\n", func->name());
+			Messenger::print("Error finalising global function '%s'.", func->name());
 			Messenger::exit("Program::finalise");
 			return FALSE;
 		}
@@ -204,7 +204,7 @@ bool Program::reload()
 	Messenger::enter("Program::reload");
 	if (filename_.isEmpty())
 	{
-		Messenger::print("No filename present in '%s' - can't reload commands.\n", name_.get());
+		Messenger::print("No filename present in '%s' - can't reload commands.", name_.get());
 		Messenger::exit("Program::reload");
 		return FALSE;
 	}

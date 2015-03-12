@@ -125,7 +125,7 @@ void Model::rotateSelectionVector(Vec3<double> origin, Vec3<double> vector, doub
 	Vec3<double> tempv;
 	if (selection(markonly) == NULL)
 	{
-		if (!markonly) Messenger::print("No atoms selected!\n");
+		if (!markonly) Messenger::print("No atoms selected!");
 		Messenger::exit("Model::rotateSelectionVector");
 		return;
 	}

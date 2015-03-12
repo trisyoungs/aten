@@ -53,7 +53,7 @@ void Pattern::torsionEnergy(Model* srcmodel, EnergyStore* estore, int molecule)
 			switch (pb->data()->torsionForm())
 			{
 				case (TorsionFunctions::None):
-					Messenger::print("Warning: No function is specified for torsion energy %i-%i-%i-%i.\n", i, j, k, l);
+					Messenger::print("Warning: No function is specified for torsion energy %i-%i-%i-%i.", i, j, k, l);
 				case (TorsionFunctions::Ignore):
 					break;
 				case (TorsionFunctions::Cosine): 
@@ -115,7 +115,7 @@ void Pattern::torsionEnergy(Model* srcmodel, EnergyStore* estore, int molecule)
 					k9 = ffb->parameter(TorsionFunctions::Pol9K9);
 					energy += k1 + cos(chi)*(k2 + cos(chi)*(k3 + cos(chi)*(k4 + cos(chi)*(k5 + cos(chi)*(k6 + cos(chi)*(k7 + cos(chi)*(k8 + cos(chi)*k9)))))));
 				default:
-					Messenger::print( "No equation coded for torsion energy of type '%s'.\n",  TorsionFunctions::TorsionFunctions[ffb->torsionForm()].name);
+					Messenger::print( "No equation coded for torsion energy of type '%s'.",  TorsionFunctions::TorsionFunctions[ffb->torsionForm()].name);
 					break;
 			}
 			//printf("TENG - molstart = %i: %i-%i-%i-%i (%i-%i-%i-%i) = %f (tot = %f)\n",aoff,i,j,k,l,pb->atomId(0),pb->atomId(1),pb->atomId(2),pb->atomId(3), phi,energy);
@@ -238,7 +238,7 @@ void Pattern::torsionForces(Model* srcmodel)
 			switch (pb->data()->torsionForm())
 			{
 				case (TorsionFunctions::None):
-					Messenger::print("Warning: No function is specified for torsion force %i-%i-%i-%i.\n", i, j, k, l);
+					Messenger::print("Warning: No function is specified for torsion force %i-%i-%i-%i.", i, j, k, l);
 				case (TorsionFunctions::Ignore):
 					du_dphi = 0.0;
 					break;

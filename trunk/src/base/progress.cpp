@@ -63,7 +63,7 @@ int ProgressIndicator::initialise(const char* jobtitle, int stepstodo)
 
 		// If the GUI doesn't exist, call the text-based progress indicator
 // 		if (gui.exists()) gui.initialiseProgressDialog();   ATEN2 TODO
-		if (!Messenger::isQuiet()) printf("%s\n", jobtitle);
+		if (!Messenger::isQuiet()) printf("%s", jobtitle);
 
 		hasJob_ = TRUE;
 		return 1;

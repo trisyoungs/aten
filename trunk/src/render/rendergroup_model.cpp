@@ -30,7 +30,7 @@
 ATEN_USING_NAMESPACE
 
 // Render bond
-void RenderGroup::createBond(PrimitiveSet& primitiveSet, Matrix& A, Vec3<double> vij, Atom* i, Prefs::DrawStyle style_i, Vec4<GLfloat>& colour_i, double radius_i, Atom* j, Prefs::DrawStyle style_j, Vec4<GLfloat>& colour_j, double radius_j, Bond::BondType bt, double selscale, Bond* b, bool transparentSel)
+void RenderGroup::createBond(PrimitiveSet& primitiveSet, Matrix A, Vec3<double> vij, Atom* i, Prefs::DrawStyle style_i, Vec4<GLfloat>& colour_i, double radius_i, Atom* j, Prefs::DrawStyle style_j, Vec4<GLfloat>& colour_j, double radius_j, Bond::BondType bt, double selscale, Bond* b, bool transparentSel)
 {
 	double dvisible, selvisible, factor, rij, phi;
 	Vec3<double> ri, rj, localx, localy, localz, stickpos, dx, normz;
@@ -90,7 +90,7 @@ void RenderGroup::createBond(PrimitiveSet& primitiveSet, Matrix& A, Vec3<double>
 	B.addTranslation(j->r() - i->r());
 	B.applyTranslationZ(-radius_j);
 	B.applyScalingZ(-dvisible);
-	
+
 	// Draw first bond half
 	switch (style_i)
 	{
@@ -284,7 +284,8 @@ void RenderGroup::createAtomsAndBonds(PrimitiveSet& primitiveSet, Model* source,
 			default:
 				break;
 		}
-		// Store copy of alpha value
+
+		// Store copy of alpha value, since we might need to overwrite it later
 		alpha_i = colour_i[3];
 		
 		// Get atom style and render associated object
@@ -304,7 +305,7 @@ void RenderGroup::createAtomsAndBonds(PrimitiveSet& primitiveSet, Model* source,
 			radius_i = aradius[style_i];
 			if (style_i == Prefs::ScaledStyle) radius_i *= Elements().el[i->element()].atomicRadius;
 			A = atomTransform;
-			A.applyScaling(radius_i,radius_i,radius_i);
+			A.applyScaling(radius_i, radius_i, radius_i);
 			addTriangles(primitiveSet.atom(), A, colour_i);
 			if (i->isSelected())
 			{

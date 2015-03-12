@@ -192,14 +192,14 @@ bool FilterData::setOption(Dnchar* name, TreeNode* value)
 	FilterData::FilterOption fo = FilterData::filterOption(name->get());
 	if (fo == FilterData::nFilterOptions)
 	{
-		Messenger::print("Error: '%s' is not a valid filter option.\n", name->get());
+		Messenger::print("Error: '%s' is not a valid filter option.", name->get());
 		Messenger::exit("FilterData::setOption");
 		return FALSE;
 	}
 	// Check argument type
 	if (FilterOptionTypes[fo] != value->returnType())
 	{
-		Messenger::print("Error: Filter option '%s' takes %s value.\n", name->get(), VTypes::dataType(FilterOptionTypes[fo]));
+		Messenger::print("Error: Filter option '%s' takes %s value.", name->get(), VTypes::dataType(FilterOptionTypes[fo]));
 		Messenger::exit("FilterData::setOption");
 		return FALSE;
 	}

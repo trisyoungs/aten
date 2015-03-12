@@ -532,7 +532,7 @@ int ElementMap::numberToZ(const char* number) const
 		int i = atoi( number );
 		if ((i < 0) || (i > nElements_))
 		{
-			Messenger::print("Warning: Converted element number is out of range (%i)\n", i);
+			Messenger::print("Warning: Converted element number is out of range (%i)", i);
 			i = 0;
 		}
 		return i;
@@ -636,7 +636,7 @@ int ElementMap::find(const char* query, ElementMap::ZMapType zmt, Forcefield* fi
 	int result = -1;
 	if (query[0] == '\0')
 	{
-		Messenger::print("Warning: Element search requested on blank string.\n");
+		Messenger::print("Warning: Element search requested on blank string.");
 		Messenger::exit("ElementMap::find");
 		return 0;
 	}

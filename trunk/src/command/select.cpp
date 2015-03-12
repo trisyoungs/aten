@@ -79,7 +79,7 @@ bool selectAtoms(Model* m, TreeNode* node, bool deselect)
 				// Arguments for ranges cannot have '+' in them
 				if ((from.strchr('+')) || (to.strchr('+')))
 				{
-					Messenger::print("Range symbol (+) cannot be given in static range X-Y (input was '%s-%s').\n", from.get(), to.get());
+					Messenger::print("Range symbol (+) cannot be given in static range X-Y (input was '%s-%s').", from.get(), to.get());
 					return FALSE;
 				}
 			}
@@ -92,7 +92,7 @@ bool selectAtoms(Model* m, TreeNode* node, bool deselect)
 				else if (from.lastChar() == '+') plus = 1;
 				else
 				{
-					Messenger::print("Invalid range symbol (+) given in middle of selection element '%s'.\n", from.get());
+					Messenger::print("Invalid range symbol (+) given in middle of selection element '%s'.", from.get());
 					return FALSE;
 				}
 			}
@@ -113,7 +113,7 @@ bool selectAtoms(Model* m, TreeNode* node, bool deselect)
 					i = Elements().find(from, ElementMap::AlphaZMap);
 					if (i == 0)
 					{
-						Messenger::print("Unrecognised element (%s) in select.\n", from.get());
+						Messenger::print("Unrecognised element (%s) in select.", from.get());
 						return FALSE;
 					}
 					if (plus == 0) (deselect ? m->deselectElement(i) : m->selectElement(i));
@@ -135,13 +135,13 @@ bool selectAtoms(Model* m, TreeNode* node, bool deselect)
 					i = Elements().find(from, ElementMap::AlphaZMap);
 					if (i == 0)
 					{
-						Messenger::print("Unrecognised element (%s) on left-hand side of range.\n", from.get());
+						Messenger::print("Unrecognised element (%s) on left-hand side of range.", from.get());
 						return FALSE;
 					}
 					j = Elements().find(to, ElementMap::AlphaZMap);
 					if (j == 0)
 					{
-						Messenger::print("Unrecognised element (%s) on right-hand side of range.\n", to.get());
+						Messenger::print("Unrecognised element (%s) on right-hand side of range.", to.get());
 						return FALSE;
 					}
 					for (n=i; n <= j; n++) (deselect ? m->deselectElement(n) : m->selectElement(n));
@@ -152,7 +152,7 @@ bool selectAtoms(Model* m, TreeNode* node, bool deselect)
 	}
 	else
 	{
-		Messenger::print("Cannot (de)select atoms based on supplied %s.\n", VTypes::dataType(value.type()));
+		Messenger::print("Cannot (de)select atoms based on supplied %s.", VTypes::dataType(value.type()));
 		return FALSE;
 	}
 	return TRUE;
@@ -182,7 +182,7 @@ bool Commands::function_DeSelectFor(CommandNode* c, Bundle& obj, ReturnValue& rv
 	Program program;
 	if (!program.generateFromString(code, "SelectionCode", "Selection Code"))
 	{
-		Messenger::print("Error: Couldn't construct selection code.\n");
+		Messenger::print("Error: Couldn't construct selection code.");
 		rv.reset();
 		return FALSE;
 	}
@@ -191,7 +191,7 @@ bool Commands::function_DeSelectFor(CommandNode* c, Bundle& obj, ReturnValue& rv
 	Tree* function = program.mainProgram()->findLocalFunction("internalDeselectAtom");
 	if (function == NULL)
 	{
-		Messenger::print("Internal Error: Couldn't find generated deselection function.\n");
+		Messenger::print("Internal Error: Couldn't find generated deselection function.");
 		return FALSE;
 	}
 	Tree tree;
@@ -225,7 +225,7 @@ bool Commands::function_DeSelectFormatted(CommandNode* c, Bundle& obj, ReturnVal
 	Format* format = c->createFormat(0,1);
 	if (!format->writeToString())
 	{
-		Messenger::print("Failed to format string for output.\n");
+		Messenger::print("Failed to format string for output.");
 		return FALSE;
 	}
 	LineParser parser;
@@ -257,7 +257,7 @@ bool Commands::function_DeSelectType(CommandNode* c, Bundle& obj, ReturnValue& r
 			return TRUE;
 		}
 	}
-	else Messenger::print("Can't test atomtype description without a valid pattern definition!\n");
+	else Messenger::print("Can't test atomtype description without a valid pattern definition!");
 	rv.reset();
 	return FALSE;
 }
@@ -335,7 +335,7 @@ bool Commands::function_SelectFFType(CommandNode* c, Bundle& obj, ReturnValue& r
 	Forcefield* ff = obj.rs()->forcefield();
 	if (ff == NULL)
 	{
-		Messenger::print("No forcefield associated to model.\n");
+		Messenger::print("No forcefield associated to model.");
 		return FALSE;
 	}
 	// Store current number of selected atoms
@@ -365,7 +365,7 @@ bool Commands::function_SelectFor(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	Program program;
 	if (!program.generateFromString(code, "SelectionCode", "Selection Code"))
 	{
-		Messenger::print("Error: Couldn't construct selection code.\n");
+		Messenger::print("Error: Couldn't construct selection code.");
 		rv.reset();
 		return FALSE;
 	}
@@ -373,7 +373,7 @@ bool Commands::function_SelectFor(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	Tree* function = program.mainProgram()->findLocalFunction("internalSelectAtom");
 	if (function == NULL)
 	{
-		Messenger::print("Internal Error: Couldn't find generated selection function.\n");
+		Messenger::print("Internal Error: Couldn't find generated selection function.");
 		return FALSE;
 	}
 	Tree tree;
@@ -407,7 +407,7 @@ bool Commands::function_SelectFormatted(CommandNode* c, Bundle& obj, ReturnValue
 	Format* format = c->createFormat(0,1);
 	if (!format->writeToString())
 	{
-		Messenger::print("Failed to format string for output.\n");
+		Messenger::print("Failed to format string for output.");
 		return FALSE;
 	}
 	LineParser parser;
@@ -517,7 +517,7 @@ bool Commands::function_SelectPattern(CommandNode* c, Bundle& obj, ReturnValue& 
 	}
 	else p = obj.p;
 	int nselected = obj.rs()->nSelected();
-	if (p == NULL) Messenger::print("No pattern in which to select atoms.\n");
+	if (p == NULL) Messenger::print("No pattern in which to select atoms.");
 	else
 	{
 		obj.rs()->beginUndoState("Select pattern '%s'", p->name());
@@ -579,7 +579,7 @@ bool Commands::function_SelectType(CommandNode* c, Bundle& obj, ReturnValue& rv)
 			return TRUE;
 		}
 	}
-	else Messenger::print("Can't test atomtype description without a valid pattern definition!\n");
+	else Messenger::print("Can't test atomtype description without a valid pattern definition!");
 	rv.reset();
 	return FALSE;
 }

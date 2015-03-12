@@ -250,15 +250,15 @@ bool Grid::initialise(Grid::GridType type, Vec3<int> nXYZ)
 		case (Grid::RegularXYData):
 			nXYZ_ = nXYZ;
 			result = allocateArrays();
-			if (result) Messenger::print("Initialised grid structure for regular 2D XY data, %i points total.\n", nXYZ_.x*nXYZ_.y);
+			if (result) Messenger::print("Initialised grid structure for regular 2D XY data, %i points total.", nXYZ_.x*nXYZ_.y);
 			break;
 		case (Grid::RegularXYZData):
 			nXYZ_ = nXYZ;
 			result = allocateArrays();
-			if (result) Messenger::print("Initialised grid structure for regular 3D XY data, %i points total.\n", nXYZ_.x*nXYZ_.y*nXYZ_.z);
+			if (result) Messenger::print("Initialised grid structure for regular 3D XY data, %i points total.", nXYZ_.x*nXYZ_.y*nXYZ_.z);
 			break;
 		case (Grid::FreeXYZData):
-			Messenger::print("Initialised grid structure for free 3D XYZ data.\n");
+			Messenger::print("Initialised grid structure for free 3D XYZ data.");
 			break;
 		default:
 			break;
@@ -873,7 +873,7 @@ bool Grid::allocateArrays()
 			// Check point limits (secondary only)
 			if (nXYZ_.min() < 1)
 			{
-				Messenger::print("Can't allocate 3D grid array - One or more grid limits are secondary (%i,%i,%i).\n", nXYZ_.x, nXYZ_.y, nXYZ_.z);
+				Messenger::print("Can't allocate 3D grid array - One or more grid limits are secondary (%i,%i,%i).", nXYZ_.x, nXYZ_.y, nXYZ_.z);
 				Messenger::exit("Grid::allocateArrays");
 				return FALSE;
 			}
@@ -889,7 +889,7 @@ bool Grid::allocateArrays()
 			// Check point limits (secondary only)
 			if ((nXYZ_.x < 1) || (nXYZ_.y < 1))
 			{
-				Messenger::print("Can't allocate 2D grid array - One or more grid limits are secondary (%i,%i).\n", nXYZ_.x, nXYZ_.y);
+				Messenger::print("Can't allocate 2D grid array - One or more grid limits are secondary (%i,%i).", nXYZ_.x, nXYZ_.y);
 				Messenger::exit("Grid::allocateArrays");
 				return FALSE;
 			}
@@ -994,17 +994,17 @@ void Grid::setData(int x, int y, int z, double d)
 	// Check limits against npoints vector
 	if ((x < 0) || (x >= nXYZ_.x))
 	{
-		Messenger::print("X index %i is outside array bounds (0 to %i) for grid data.\n", x, nXYZ_.x-1);
+		Messenger::print("X index %i is outside array bounds (0 to %i) for grid data.", x, nXYZ_.x-1);
 		return;
 	}
 	else if ((y < 0) || (y >= nXYZ_.y))
 	{
-		Messenger::print("Y index %i is outside array bounds (0 to %i) for grid data.\n", y, nXYZ_.y-1);
+		Messenger::print("Y index %i is outside array bounds (0 to %i) for grid data.", y, nXYZ_.y-1);
 		return;
 	}
 	else if ((type_ == Grid::RegularXYData) && ((z < 0) || (z >= nXYZ_.z)))
 	{
-		Messenger::print("Z index %i is outside array bounds (0 to %i) for grid data.\n", z, nXYZ_.z-1);
+		Messenger::print("Z index %i is outside array bounds (0 to %i) for grid data.", z, nXYZ_.z-1);
 		return;
 	}
 	// Okay, so store data
@@ -1020,7 +1020,7 @@ void Grid::setNextData(double d)
 	// Check limit
 	if (dataFull_ == TRUE)
 	{
-		Messenger::print("Grid::setNextData - Array already full.\n");
+		Messenger::print("Grid::setNextData - Array already full.");
 		return;
 	}
 	// Set current point referenced by currentpoint and increase it

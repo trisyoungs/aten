@@ -82,8 +82,9 @@ class Viewer : public QGLWidget
 	protected:
 	// Initialise context widget (when created by Qt)
 	void initializeGL();
-	// General repaint callbacks
-	void paintGL();
+	// Repaint
+// 	void paintGL();
+	void paintEvent(QPaintEvent* event);
 	// Resize function
 	void resizeGL(int, int);
 	// Mouse focus lost
@@ -256,8 +257,8 @@ class Viewer : public QGLWidget
 	public:
 	// Setup basic GL properties
 	void setupGL();
-	// Render whole scene
-	void renderScene(const GLExtensions* extensions);
+	// Render models
+	void renderModels(const GLExtensions* extensions);
 	// Update all primitives (following prefs change, etc.)
 	void updatePrimitives(PrimitiveQuality targetSet);
 

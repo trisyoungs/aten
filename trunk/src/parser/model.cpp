@@ -179,15 +179,15 @@ StepNode* ModelVariable::accessorSearch(const char* s, TreeNode* arrayIndex, Tre
 		i = Variable::searchAccessor(s, nFunctions, functionData);
 		if (i == -1)
 		{
-			Messenger::print("Error: Type 'Model&' has no member or function named '%s'.\n", s);
+			Messenger::print("Error: Type 'Model&' has no member or function named '%s'.", s);
 			printAccessors();
 			Messenger::exit("ModelVariable::accessorSearch");
 			return NULL;
 		}
-		Messenger::print(Messenger::Parse, "FunctionAccessor match = %i (%s)\n", i, functionData[i].name);
+		Messenger::print(Messenger::Parse, "FunctionAccessor match = %i (%s)", i, functionData[i].name);
 		if (arrayIndex != NULL)
 		{
-			Messenger::print("Error: Array index given to 'Model&' function '%s'.\n", s);
+			Messenger::print("Error: Array index given to 'Model&' function '%s'.", s);
 			Messenger::exit("ModelVariable::accessorSearch");
 			return NULL;
 		}
@@ -196,24 +196,24 @@ StepNode* ModelVariable::accessorSearch(const char* s, TreeNode* arrayIndex, Tre
 		result->addJoinedArguments(argList);
 		if (!result->checkArguments(functionData[i].arguments, functionData[i].name))
 		{
-			Messenger::print("Error: Syntax for 'Model&' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
+			Messenger::print("Error: Syntax for 'Model&' function '%s' is '%s(%s)'.", functionData[i].name, functionData[i].name, functionData[i].argText );
 			delete result;
 			result = NULL;
 		}
 	}
 	else
 	{
-		Messenger::print(Messenger::Parse, "Accessor match = %i (%s)\n", i, accessorData[i].name);
+		Messenger::print(Messenger::Parse, "Accessor match = %i (%s)", i, accessorData[i].name);
 		// Were we given an array index when we didn't want one?
 		if ((accessorData[i].arraySize == 0) && (arrayIndex != NULL))
 		{
-			Messenger::print("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
+			Messenger::print("Error: Irrelevant array index provided for member '%s'.", accessorData[i].name);
 			result = NULL;
 		}
 		// Were we given an argument list when we didn't want one?
 		if (argList != NULL)
 		{
-			Messenger::print("Error: Argument list given to 'Model&' array member '%s'.\n", s);
+			Messenger::print("Error: Argument list given to 'Model&' array member '%s'.", s);
 			Messenger::exit("ModelVariable::accessorSearch");
 			return NULL;
 		}
@@ -238,7 +238,7 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex,
 	// Check for correct lack/presence of array index given
 	if ((accessorData[i].arraySize == 0) && hasArrayIndex)
 	{
-		Messenger::print("Error: Unnecessary array index provided for member '%s'.\n", accessorData[i].name);
+		Messenger::print("Error: Unnecessary array index provided for member '%s'.", accessorData[i].name);
 		Messenger::exit("ModelVariable::retrieveAccessor");
 		return FALSE;
 	}
@@ -246,7 +246,7 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex,
 	{
 		if ((arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize))
 		{
-			Messenger::print("Error: Array index out of bounds for member '%s' (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
+			Messenger::print("Error: Array index out of bounds for member '%s' (%i, range is 1-%i).", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
 			Messenger::exit("ModelVariable::retrieveAccessor");
 			return FALSE;
 		}
@@ -256,7 +256,7 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex,
 	Model* ptr = (Model*) rv.asPointer(VTypes::ModelData, result);
 	if ((!result) || (ptr == NULL))
 	{
-		Messenger::print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::ModelData));
+		Messenger::print("Invalid (NULL) %s reference encountered.", VTypes::dataType(VTypes::ModelData));
 		result = FALSE;
 	}
 	if (result) switch (acc)
@@ -265,7 +265,7 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex,
 			if (!hasArrayIndex) rv.set(VTypes::MeasurementData, ptr->angleMeasurements());
 			else if (arrayIndex > ptr->nAngleMeasurements())
 			{
-				Messenger::print("Angle array index (%i) is out of bounds for model '%s'\n", arrayIndex, ptr->name());
+				Messenger::print("Angle array index (%i) is out of bounds for model '%s'", arrayIndex, ptr->name());
 				result = FALSE;
 			}
 			else rv.set(VTypes::MeasurementData, ptr->angleMeasurement(arrayIndex-1));
@@ -274,7 +274,7 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex,
 			if (!hasArrayIndex) rv.set(VTypes::AtomData, ptr->atoms());
 			else if (arrayIndex > ptr->nAtoms())
 			{
-				Messenger::print("Atom array index (%i) is out of bounds for model '%s'\n", arrayIndex, ptr->name());
+				Messenger::print("Atom array index (%i) is out of bounds for model '%s'", arrayIndex, ptr->name());
 				result = FALSE;
 			}
 			else rv.set(VTypes::AtomData, ptr->atom(arrayIndex-1));
@@ -283,7 +283,7 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex,
 			if (!hasArrayIndex) rv.set(VTypes::BondData, ptr->bonds());
 			else if (arrayIndex > ptr->nBonds())
 			{
-				Messenger::print("Bond array index (%i) is out of bounds for model '%s'\n", arrayIndex, ptr->name());
+				Messenger::print("Bond array index (%i) is out of bounds for model '%s'", arrayIndex, ptr->name());
 				result = FALSE;
 			}
 			else rv.set(VTypes::BondData, ptr->bond(arrayIndex-1));
@@ -307,7 +307,7 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex,
 			if (!hasArrayIndex) rv.set(VTypes::MeasurementData, ptr->distanceMeasurements());
 			else if (arrayIndex > ptr->nDistanceMeasurements())
 			{
-				Messenger::print("Distance array index (%i) is out of bounds for model '%s'\n", arrayIndex, ptr->name());
+				Messenger::print("Distance array index (%i) is out of bounds for model '%s'", arrayIndex, ptr->name());
 				result = FALSE;
 			}
 			else rv.set(VTypes::MeasurementData, ptr->distanceMeasurement(arrayIndex-1));
@@ -323,7 +323,7 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex,
 			}
 			else if (arrayIndex > ptr->nForcefieldAngles())
 			{
-				Messenger::print("Forcefield angle array index (%i) is out of bounds for model '%s'\n", arrayIndex, ptr->name());
+				Messenger::print("Forcefield angle array index (%i) is out of bounds for model '%s'", arrayIndex, ptr->name());
 				result = FALSE;
 			}
 			else rv.set(VTypes::ForcefieldBoundData, ptr->forcefieldAngle(arrayIndex-1)->item, ptr->forcefieldAngle(arrayIndex-1));
@@ -336,7 +336,7 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex,
 			}
 			else if (arrayIndex > ptr->nForcefieldBonds())
 			{
-				Messenger::print("Forcefield bond array index (%i) is out of bounds for model '%s'\n", arrayIndex, ptr->name());
+				Messenger::print("Forcefield bond array index (%i) is out of bounds for model '%s'", arrayIndex, ptr->name());
 				result = FALSE;
 			}
 			else rv.set(VTypes::ForcefieldBoundData, ptr->forcefieldBond(arrayIndex-1)->item, ptr->forcefieldBond(arrayIndex-1));
@@ -349,7 +349,7 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex,
 			}
 			else if (arrayIndex > ptr->nForcefieldTorsions())
 			{
-				Messenger::print("Forcefield torsion array index (%i) is out of bounds for model '%s'\n", arrayIndex, ptr->name());
+				Messenger::print("Forcefield torsion array index (%i) is out of bounds for model '%s'", arrayIndex, ptr->name());
 				result = FALSE;
 			}
 			else rv.set(VTypes::ForcefieldBoundData, ptr->forcefieldTorsion(arrayIndex-1)->item, ptr->forcefieldTorsion(arrayIndex-1));
@@ -365,7 +365,7 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex,
 			}
 			else if (arrayIndex > ptr->nUniqueForcefieldTypes())
 			{
-				Messenger::print("Forcefield types array index (%i) is out of bounds for model '%s'\n", arrayIndex, ptr->name());
+				Messenger::print("Forcefield types array index (%i) is out of bounds for model '%s'", arrayIndex, ptr->name());
 				result = FALSE;
 			}
 			else rv.set(VTypes::ForcefieldAtomData, ptr->uniqueForcefieldType(arrayIndex-1)->item, ptr->uniqueForcefieldType(arrayIndex-1));
@@ -383,13 +383,13 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex,
 			// Only works for a cached trajectory
 			if (!ptr->trajectoryIsCached())
 			{
-				Messenger::print("Trajectory for model '%s' is not cached - individual frame pointers not available.\n", ptr->name());
+				Messenger::print("Trajectory for model '%s' is not cached - individual frame pointers not available.", ptr->name());
 				result = FALSE;
 			}
 			else if (!hasArrayIndex) rv.set(VTypes::ModelData, ptr->trajectoryFrame(0));
 			else if ((arrayIndex < 1) || (arrayIndex > ptr->nTrajectoryFrames()))
 			{
-				Messenger::print("Frame array index '%i' is out of bounds for model '%s' whose trajectory has %i frames.\n", arrayIndex, ptr->name(), ptr->nTrajectoryFrames());
+				Messenger::print("Frame array index '%i' is out of bounds for model '%s' whose trajectory has %i frames.", arrayIndex, ptr->name(), ptr->nTrajectoryFrames());
 				result = FALSE;
 			}
 			else rv.set(VTypes::ModelData, ptr->trajectoryFrame(arrayIndex-1));
@@ -402,7 +402,7 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex,
 			}
 			else if (arrayIndex > ptr->nGlyphs())
 			{
-				Messenger::print("Glyph array index (%i) is out of bounds for model '%s'\n", arrayIndex, ptr->name());
+				Messenger::print("Glyph array index (%i) is out of bounds for model '%s'", arrayIndex, ptr->name());
 				result = FALSE;
 			}
 			else rv.set(VTypes::GlyphData, ptr->glyph(arrayIndex-1));
@@ -415,7 +415,7 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex,
 			}
 			else if (arrayIndex > ptr->nGrids())
 			{
-				Messenger::print("Grid array index (%i) is out of bounds for model '%s'\n", arrayIndex, ptr->name());
+				Messenger::print("Grid array index (%i) is out of bounds for model '%s'", arrayIndex, ptr->name());
 				result = FALSE;
 			}
 			else rv.set(VTypes::GridData, ptr->grid(arrayIndex-1));
@@ -490,7 +490,7 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex,
 			if (!hasArrayIndex) rv.set(VTypes::PatternData, ptr->patterns());
 			else if (arrayIndex > ptr->nPatterns())
 			{
-				Messenger::print("Pattern array index (%i) is out of bounds for model '%s'\n", arrayIndex, ptr->name());
+				Messenger::print("Pattern array index (%i) is out of bounds for model '%s'", arrayIndex, ptr->name());
 				result = FALSE;
 			}
 			else rv.set(VTypes::PatternData, ptr->pattern(arrayIndex-1));
@@ -512,7 +512,7 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex,
 			}
 			else if (arrayIndex > ptr->nSelected())
 			{
-				Messenger::print("Selection array index (%i) is out of bounds for model '%s'\n", arrayIndex, ptr->name());
+				Messenger::print("Selection array index (%i) is out of bounds for model '%s'", arrayIndex, ptr->name());
 				result = FALSE;
 			}
 			else rv.set(VTypes::AtomData, ptr->selected(arrayIndex-1)->item, ptr->selected(arrayIndex-1));
@@ -521,7 +521,7 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex,
 			if (!hasArrayIndex) rv.set(VTypes::MeasurementData, ptr->torsionMeasurements());
 			else if (arrayIndex > ptr->nTorsionMeasurements())
 			{
-				Messenger::print("Torsions array index (%i) is out of bounds for model '%s'\n", arrayIndex, ptr->name());
+				Messenger::print("Torsions array index (%i) is out of bounds for model '%s'", arrayIndex, ptr->name());
 				result = FALSE;
 			}
 			else rv.set(VTypes::MeasurementData, ptr->torsionMeasurement(arrayIndex-1));
@@ -558,12 +558,12 @@ bool ModelVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newVa
 		{
 			if ((accessorData[i].arraySize > 0) && ( (arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize) ))
 			{
-				Messenger::print("Error: Array index provided for member '%s' is out of range (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
+				Messenger::print("Error: Array index provided for member '%s' is out of range (%i, range is 1-%i).", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
 				result = FALSE;
 			}
 			if (newValue.arraySize() > 0)
 			{
-				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
+				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.", accessorData[i].name);
 				result = FALSE;
 			}
 		}
@@ -571,7 +571,7 @@ bool ModelVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newVa
 		{
 			if (newValue.arraySize() > accessorData[i].arraySize)
 			{
-				Messenger::print("Error: The array being assigned to member '%s' is larger than the size of the desination array (%i cf. %i).\n", accessorData[i].name, newValue.arraySize(), accessorData[i].arraySize);
+				Messenger::print("Error: The array being assigned to member '%s' is larger than the size of the desination array (%i cf. %i).", accessorData[i].name, newValue.arraySize(), accessorData[i].arraySize);
 				result = FALSE;
 			}
 		}
@@ -583,12 +583,12 @@ bool ModelVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newVa
 		{
 			if (accessorData[i].returnType != VTypes::VectorData)
 			{
-				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
+				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.", accessorData[i].name);
 				result = FALSE;
 			}
 			else if ((newValue.type() != VTypes::VectorData) && (newValue.arraySize() != 3))
 			{
-				Messenger::print("Error: Only an array of size 3 can be assigned to a vector (member '%s').\n", accessorData[i].name);
+				Messenger::print("Error: Only an array of size 3 can be assigned to a vector (member '%s').", accessorData[i].name);
 				result = FALSE;
 			}
 		}
@@ -603,7 +603,7 @@ bool ModelVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newVa
 	Model* ptr = (Model*) sourcerv.asPointer(VTypes::ModelData, result);
 	if ((!result) || (ptr == NULL))
 	{
-		Messenger::print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::ModelData));
+		Messenger::print("Invalid (NULL) %s reference encountered.", VTypes::dataType(VTypes::ModelData));
 		result = FALSE;
 	}
 	int n;
@@ -851,15 +851,15 @@ void ModelVariable::printAccessors()
 {
 	if (ModelVariable::nAccessors > 0)
 	{
-		Messenger::print("Valid accessors are:\n");
+		Messenger::print("Valid accessors are:");
 		for (int n=0; n<ModelVariable::nAccessors; ++n) Messenger::print("%s%s%s", n == 0 ? " " : ", ", accessorData[n].name, accessorData[n].arraySize > 0 ? "[]" : "");
-		Messenger::print("\n");
+		Messenger::print("");
 	}
 	if ((ModelVariable::nFunctions > 0) && (strcmp(functionData[0].name,".dummy") != 0))
 	{
-		Messenger::print("Valid functions are:\n");
+		Messenger::print("Valid functions are:");
 		for (int n=0; n<ModelVariable::nFunctions; ++n) Messenger::print("%s%s(%s)", n == 0 ? " " : ", ", functionData[n].name, functionData[n].argText);
-		Messenger::print("\n");
+		Messenger::print("");
 	}
 }
 

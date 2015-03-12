@@ -51,7 +51,7 @@ void Pattern::bondEnergy(Model* srcmodel, EnergyStore* estore, int molecule)
 			switch (pb->data()->bondForm())
 			{
 				case (BondFunctions::None):
-					Messenger::print("Warning: No function is specified for bond energy %i-%i.\n", i, j);
+					Messenger::print("Warning: No function is specified for bond energy %i-%i.", i, j);
 				case (BondFunctions::Ignore):
 					energy = 0.0;
 					break;
@@ -79,7 +79,7 @@ void Pattern::bondEnergy(Model* srcmodel, EnergyStore* estore, int molecule)
 					energy = d * ( expo*expo );
 					break;
 				default:
-					Messenger::print( "No equation coded for bond energy of type '%s'.\n", BondFunctions::BondFunctions[pb->data()->bondForm()].name);
+					Messenger::print( "No equation coded for bond energy of type '%s'.", BondFunctions::BondFunctions[pb->data()->bondForm()].name);
 					energy = 0.0;
 					break;
 			}
@@ -121,7 +121,7 @@ void Pattern::bondForces(Model* srcmodel)
 			switch (pb->data()->bondForm())
 			{
 				case (BondFunctions::None):
-					Messenger::print("Warning: No function is specified for bond force %i-%i.\n", i, j);
+					Messenger::print("Warning: No function is specified for bond force %i-%i.", i, j);
 				case (BondFunctions::Ignore):
 					du_dr = 0.0;
 					break;
@@ -146,7 +146,7 @@ void Pattern::bondForces(Model* srcmodel)
 					du_dr = 2.0 * beta * d * (1.0 - expo) * expo;
 					break;
 				default:
-					Messenger::print( "No equation coded for bond forces of type '%s'.\n", BondFunctions::BondFunctions[pb->data()->bondForm()].name);;
+					Messenger::print( "No equation coded for bond forces of type '%s'.", BondFunctions::BondFunctions[pb->data()->bondForm()].name);;
 					break;
 			}
 			// Calculate forces

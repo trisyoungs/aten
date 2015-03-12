@@ -83,7 +83,7 @@ void FourierData::create(int newnAtoms, Vec3<int> newkvec, int newkmax)
 	for (int n=0; n<kMax+1; n++) rCos[n] = new Vec3<double>[nAtoms];
 	rSin = new Vec3<double>*[2*kMax+1];
 	for (int n=0; n<2*kMax+1; n++) rSin[n] = new Vec3<double>[nAtoms];
-	Messenger::print(Messenger::Verbose, "Created Fourier space for %i atoms, kmax = %i \n",nAtoms, kMax);
+	Messenger::print(Messenger::Verbose, "Created Fourier space for %i atoms, kmax = %i ",nAtoms, kMax);
 	Messenger::exit("FourierData:::create");
 }
 
@@ -168,7 +168,7 @@ void FourierData::prepare(Model* srcmodel, Vec3<int> newkvec)
 	// Don't delete the arrays, however, if the new nAtoms and kmax match...
 	if ((nAtoms != srcmodel->nAtoms()) || (kMax != newkmax))
 	{
-		Messenger::print(Messenger::Verbose, "Clearing and recreating fourier arrays...\n");
+		Messenger::print(Messenger::Verbose, "Clearing and recreating fourier arrays...");
 		clear();
 		create(srcmodel->nAtoms(), newkvec, newkmax);
 	}

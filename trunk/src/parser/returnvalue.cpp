@@ -373,48 +373,48 @@ void ReturnValue::setArray(Vec3<int> vec)
 void ReturnValue::setElement(int id, int i)
 {
 	if ((type_ == VTypes::IntegerData) && (id >= 0) && (id < arraySize_)) arrayI_[id] = i;
-	else Messenger::print("Error: Tried to set an integer array element when none existed/wrong type.\n");
+	else Messenger::print("Error: Tried to set an integer array element when none existed/wrong type.");
 }
 
 // Set array element from real value
 void ReturnValue::setElement(int id, double d)
 {
 	if ((type_ == VTypes::DoubleData) && (id >= 0) && (id < arraySize_)) arrayD_[id] = d;
-	else Messenger::print("Error: Tried to set a double array element when none existed/wrong type.\n");
+	else Messenger::print("Error: Tried to set a double array element when none existed/wrong type.");
 }
 
 // Set array element from character value
 void ReturnValue::setElement(int id, const char* s)
 {
 	if ((type_ == VTypes::StringData) && (id >= 0) && (id < arraySize_)) arrayS_[id] = s;
-	else Messenger::print("Error: Tried to set a string array element when none existed/wrong type.\n");
+	else Messenger::print("Error: Tried to set a string array element when none existed/wrong type.");
 }
 
 // Set array element from vector value
 void ReturnValue::setElement(int id, Vec3<double> v)
 {
 	if ((type_ == VTypes::VectorData) && (id >= 0) && (id < arraySize_)) arrayV_[id] = v;
-	else Messenger::print("Error: Tried to set a vector array element when none existed/wrong type.\n");
+	else Messenger::print("Error: Tried to set a vector array element when none existed/wrong type.");
 }
 
 // Set array element from pointer value
 void ReturnValue::setElement(int id, VTypes::DataType type, void* ptr)
 {
 	if ((type_ == type) && (id >= 0) && (id < arraySize_)) arrayP_[id] = ptr;
-	else Messenger::print("Error: Tried to set a pointer array element when none existed/wrong type.\n");
+	else Messenger::print("Error: Tried to set a pointer array element when none existed/wrong type.");
 }
 
 // Return actual vector object for in-place modification
 Vec3<double>& ReturnValue::vector()
 {
-	if (type_ != VTypes::VectorData) Messenger::print("Error: Returning reference to ReturnValue::valueV_ but type is not 'vector' (%s).\n", VTypes::dataType(type_));
+	if (type_ != VTypes::VectorData) Messenger::print("Error: Returning reference to ReturnValue::valueV_ but type is not 'vector' (%s).", VTypes::dataType(type_));
 	return valueV_;
 }
 
 // Return actual matrix object for in-place modification
 Matrix& ReturnValue::matrix()
 {
-	if (type_ != VTypes::MatrixData) Messenger::print("Error: Returning reference to ReturnValue::valueM_ but type is not 'matrix'.\n",  VTypes::dataType(type_));
+	if (type_ != VTypes::MatrixData) Messenger::print("Error: Returning reference to ReturnValue::valueM_ but type is not 'matrix'.",  VTypes::dataType(type_));
 	return valueM_;
 }
 
@@ -426,11 +426,11 @@ Matrix& ReturnValue::matrix()
 int ReturnValue::asInteger(bool &success)
 {
 	success = TRUE;
-	if (arraySize_ != -1) Messenger::print("Cannot return a whole array as a single integer.\n");
+	if (arraySize_ != -1) Messenger::print("Cannot return a whole array as a single integer.");
 	else switch (type_)
 	{
 		case (VTypes::NoData):
-			Messenger::print("Internal error: No data in ReturnValue to return as an integer!\n");
+			Messenger::print("Internal error: No data in ReturnValue to return as an integer!");
 			success = FALSE;
 			return 0;
 			break;
@@ -447,7 +447,7 @@ int ReturnValue::asInteger(bool &success)
 			return (valueP_ == NULL ? 0 : ((Element*) valueP_)->z);
 			break;
 		default:
-			Messenger::print("ReturnValue::asInteger() doesn't recognise this type (%s).\n", VTypes::dataType(type_));
+			Messenger::print("ReturnValue::asInteger() doesn't recognise this type (%s).", VTypes::dataType(type_));
 			break;
 	}
 	success = FALSE;
@@ -458,11 +458,11 @@ int ReturnValue::asInteger(bool &success)
 double ReturnValue::asDouble(bool &success)
 {
 	success = TRUE;
-	if (arraySize_ != -1) Messenger::print("Cannot return a whole array as a single double.\n");
+	if (arraySize_ != -1) Messenger::print("Cannot return a whole array as a single double.");
 	else switch (type_)
 	{
 		case (VTypes::NoData):
-			Messenger::print("Internal error: No data in ReturnValue to return as a real!\n");
+			Messenger::print("Internal error: No data in ReturnValue to return as a real!");
 			success = FALSE;
 			return 0.0;
 			break;
@@ -476,7 +476,7 @@ double ReturnValue::asDouble(bool &success)
 			return valueS_.asDouble();
 			break;
 		default:
-			Messenger::print("ReturnValue::asDouble() doesn't recognise this type (%s).\n", VTypes::dataType(type_));
+			Messenger::print("ReturnValue::asDouble() doesn't recognise this type (%s).", VTypes::dataType(type_));
 			break;
 	}
 	success = FALSE;
@@ -491,7 +491,7 @@ const char* ReturnValue::asString(bool &success)
 	if (arraySize_ != -1)
 	{
 		// Use valueS_ to store the result....
-// 		Messenger::print("Cannot return a whole array as a single string.\n");
+// 		Messenger::print("Cannot return a whole array as a single string.");
 // 		valueS_.createEmpty(1024);
 		valueS_.clear();
 		valueS_.strcat("{ ");
@@ -501,7 +501,7 @@ const char* ReturnValue::asString(bool &success)
 			switch (type_)
 			{
 				case (VTypes::NoData):
-					Messenger::print("Internal error: No data in ReturnValue to return as a string!\n");
+					Messenger::print("Internal error: No data in ReturnValue to return as a string!");
 					success = FALSE;
 					return "_NULL_";
 					break;
@@ -526,7 +526,7 @@ const char* ReturnValue::asString(bool &success)
 	else switch (type_)
 	{
 		case (VTypes::NoData):
-			Messenger::print("Internal error: No data in ReturnValue to return as a string!\n");
+			Messenger::print("Internal error: No data in ReturnValue to return as a string!");
 			success = FALSE;
 			return "_NULL_";
 			break;
@@ -546,7 +546,7 @@ const char* ReturnValue::asString(bool &success)
 			break;
 		default:
 			// All pointer types
-			Messenger::print("Cannot return a pointer as a string.\n");
+			Messenger::print("Cannot return a pointer as a string.");
 			break;
 	}
 	success = FALSE;
@@ -560,25 +560,25 @@ Vec3<double> ReturnValue::asVector(bool &success)
 	switch (type_)
 	{
 		case (VTypes::NoData):
-			Messenger::print("Internal error: No data in ReturnValue to return as a vector!\n");
+			Messenger::print("Internal error: No data in ReturnValue to return as a vector!");
 			success = FALSE;
 			return Vec3<double>();
 			break;
 		case (VTypes::IntegerData):
 			if (arraySize_ == -1) return Vec3<double>(valueI_, valueI_, valueI_);
 			else if (arraySize_ == 3) return Vec3<double>( arrayI_[0], arrayI_[1], arrayI_[2] );
-			else Messenger::print("Cannot return an array of this size (%i) as a single vector of integers.\n", arraySize_);
+			else Messenger::print("Cannot return an array of this size (%i) as a single vector of integers.", arraySize_);
 			break;
 		case (VTypes::DoubleData):
 			if (arraySize_ == -1) return Vec3<double>(valueD_, valueD_, valueD_);
 			else if (arraySize_ == 3) return Vec3<double>( arrayD_[0], arrayD_[1], arrayD_[2] );
-			else Messenger::print("Cannot return an array of this size (%i) as a single vector of doubles.\n", arraySize_);
+			else Messenger::print("Cannot return an array of this size (%i) as a single vector of doubles.", arraySize_);
 			break;
 		case (VTypes::VectorData):
 			return valueV_;
 			break;
 		default:
-			Messenger::print("Cannot convert return value of type '%s' into a vector.\n", VTypes::dataType(type_));
+			Messenger::print("Cannot convert return value of type '%s' into a vector.", VTypes::dataType(type_));
 			break;
 	}
 	success = FALSE;
@@ -592,33 +592,33 @@ Matrix ReturnValue::asMatrix(bool &success)
 	switch (type_)
 	{
 		case (VTypes::NoData):
-			Messenger::print("Internal error: No data in ReturnValue to return as a matrix!\n");
+			Messenger::print("Internal error: No data in ReturnValue to return as a matrix!");
 			break;
 		case (VTypes::IntegerData):
-			if (arraySize_ == -1) Messenger::print("Cannot return a single integer as a matrix.\n");
+			if (arraySize_ == -1) Messenger::print("Cannot return a single integer as a matrix.");
 			else if (arraySize_ == 9)
 			{
 				Matrix result;
 				for (int n=0; n<9; ++n) result[(n)/3*4+(n)%3] = arrayI_[n];
 				return result;
 			}
-			else Messenger::print("Cannot return an array of this size (%i) as a single matrix of doubles.\n", arraySize_);
+			else Messenger::print("Cannot return an array of this size (%i) as a single matrix of doubles.", arraySize_);
 			break;
 		case (VTypes::DoubleData):
-			if (arraySize_ == -1) Messenger::print("Cannot return a single double as a matrix.\n");
+			if (arraySize_ == -1) Messenger::print("Cannot return a single double as a matrix.");
 			else if (arraySize_ == 9)
 			{
 				Matrix result;
 				for (int n=0; n<9; ++n) result[(n)/3*4+(n)%3] = arrayD_[n];
 				return result;
 			}
-			else Messenger::print("Cannot return an array of this size (%i) as a single matrix of doubles.\n", arraySize_);
+			else Messenger::print("Cannot return an array of this size (%i) as a single matrix of doubles.", arraySize_);
 			break;
 		case (VTypes::MatrixData):
 			return valueM_;
 			break;
 		default:
-			Messenger::print("Cannot convert return value of type '%s' into a matrix.\n", VTypes::dataType(type_));
+			Messenger::print("Cannot convert return value of type '%s' into a matrix.", VTypes::dataType(type_));
 			break;
 	}
 	success = FALSE;
@@ -629,11 +629,11 @@ Matrix ReturnValue::asMatrix(bool &success)
 void *ReturnValue::asPointer(VTypes::DataType ptrtype, bool &success)
 {
 	success = TRUE;
-	if (arraySize_ != -1) Messenger::print("Cannot return a whole array as a single pointer.\n");
+	if (arraySize_ != -1) Messenger::print("Cannot return a whole array as a single pointer.");
 	else switch (type_)
 	{
 		case (VTypes::NoData):
-			Messenger::print("Error: No data in ReturnValue to return as a pointer!\n");
+			Messenger::print("Error: No data in ReturnValue to return as a pointer!");
 			success = FALSE;
 			return NULL;
 			break;
@@ -646,20 +646,20 @@ void *ReturnValue::asPointer(VTypes::DataType ptrtype, bool &success)
 				int el = asInteger();
 				if ((el < 0) || (el > Elements().nElements()))
 				{
-					Messenger::print("Warning: Conversion of integer value %i does not correspond to a defined element. Returning '0' (undefined element 'XX').\n", el);
+					Messenger::print("Warning: Conversion of integer value %i does not correspond to a defined element. Returning '0' (undefined element 'XX').", el);
 					el = 0;
 				}
 				return &Elements().el[el];
 			}
 			else if (arraySize_ == -1)
 			{
-				Messenger::print("Error: A value of type '%s' cannot be cast into a pointer of type '%s'.\n", VTypes::dataType(type_), VTypes::dataType(ptrtype));
+				Messenger::print("Error: A value of type '%s' cannot be cast into a pointer of type '%s'.", VTypes::dataType(type_), VTypes::dataType(ptrtype));
 				success = FALSE;
 				return NULL;
 			}
 			else if (ptrtype != type_)
 			{
-				Messenger::print("Error: An array pointer of type '%s' cannot be cast into an array pointer of type '%s'.\n", VTypes::dataType(type_), VTypes::dataType(ptrtype));
+				Messenger::print("Error: An array pointer of type '%s' cannot be cast into an array pointer of type '%s'.", VTypes::dataType(type_), VTypes::dataType(ptrtype));
 				success = FALSE;
 				return NULL;
 			}
@@ -669,7 +669,7 @@ void *ReturnValue::asPointer(VTypes::DataType ptrtype, bool &success)
 			// Check that internal pointer type matches requested pointer type
 			if (ptrtype != type_)
 			{
-				Messenger::print("Error: A pointer of type '%s' cannot be cast into a pointer of type '%s'.\n", VTypes::dataType(type_), VTypes::dataType(ptrtype));
+				Messenger::print("Error: A pointer of type '%s' cannot be cast into a pointer of type '%s'.", VTypes::dataType(type_), VTypes::dataType(ptrtype));
 				success = FALSE;
 				return NULL;
 			}
@@ -692,18 +692,18 @@ int ReturnValue::asInteger(int index, bool &success)
 	success = TRUE;
 	if (arraySize_ == -1)
 	{
-		Messenger::print("Internal Error: ReturnValue doesn't contain an array of values.\n");
+		Messenger::print("Internal Error: ReturnValue doesn't contain an array of values.");
 		success = FALSE;
 	}
 	else if ((index < 0) || (index >= arraySize_))
 	{
-		Messenger::print("Internal Error: Index %i out of bounds for ReturnValue array.\n", index);
+		Messenger::print("Internal Error: Index %i out of bounds for ReturnValue array.", index);
 		success = FALSE;
 	}
 	else switch (type_)
 	{
 		case (VTypes::NoData):
-			Messenger::print("Internal error: No data in ReturnValue to return as an integer!\n");
+			Messenger::print("Internal error: No data in ReturnValue to return as an integer!");
 			success = FALSE;
 			return 0;
 			break;
@@ -717,7 +717,7 @@ int ReturnValue::asInteger(int index, bool &success)
 			return atoi( arrayS_[index].get() );
 			break;
 		default:
-			Messenger::print("ReturnValue::asInteger(id) doesn't recognise this type (%s).\n", VTypes::dataType(type_));
+			Messenger::print("ReturnValue::asInteger(id) doesn't recognise this type (%s).", VTypes::dataType(type_));
 			break;
 	}
 	success = FALSE;
@@ -730,18 +730,18 @@ double ReturnValue::asDouble(int index, bool &success)
 	success = TRUE;
 	if (arraySize_ == -1)
 	{
-		Messenger::print("Internal Error: ReturnValue doesn't contain an array of values.\n");
+		Messenger::print("Internal Error: ReturnValue doesn't contain an array of values.");
 		success = FALSE;
 	}
 	else if ((index < 0) || (index >= arraySize_))
 	{
-		Messenger::print("Internal Error: Index %i out of bounds for ReturnValue array.\n", index);
+		Messenger::print("Internal Error: Index %i out of bounds for ReturnValue array.", index);
 		success = FALSE;
 	}
 	else switch (type_)
 	{
 		case (VTypes::NoData):
-			Messenger::print("Internal error: No data in ReturnValue to return as a double!\n");
+			Messenger::print("Internal error: No data in ReturnValue to return as a double!");
 			success = FALSE;
 			return 0;
 			break;
@@ -755,7 +755,7 @@ double ReturnValue::asDouble(int index, bool &success)
 			return atof( arrayS_[index].get() );
 			break;
 		default:
-			Messenger::print("ReturnValue::asDouble(id) doesn't recognise this type (%s).\n", VTypes::dataType(type_));
+			Messenger::print("ReturnValue::asDouble(id) doesn't recognise this type (%s).", VTypes::dataType(type_));
 			break;
 	}
 	success = FALSE;
@@ -769,18 +769,18 @@ const char* ReturnValue::asString(int index, bool &success)
 	success = TRUE;
 	if (arraySize_ == -1)
 	{
-		Messenger::print("Internal Error: ReturnValue doesn't contain an array of values.\n");
+		Messenger::print("Internal Error: ReturnValue doesn't contain an array of values.");
 		success = FALSE;
 	}
 	else if ((index < 0) || (index >= arraySize_))
 	{
-		Messenger::print("Internal Error: Index %i out of bounds for ReturnValue array.\n", index);
+		Messenger::print("Internal Error: Index %i out of bounds for ReturnValue array.", index);
 		success = FALSE;
 	}
 	else switch (type_)
 	{
 		case (VTypes::NoData):
-			Messenger::print("Internal error: No data in ReturnValue to return as a character!\n");
+			Messenger::print("Internal error: No data in ReturnValue to return as a character!");
 			success = FALSE;
 			return "_NULL_";
 			break;
@@ -794,7 +794,7 @@ const char* ReturnValue::asString(int index, bool &success)
 			return arrayS_[index].get();
 			break;
 		case (VTypes::VectorData):
-			Messenger::print("Cannot convert return value of type 'vector' into a string.\n");
+			Messenger::print("Cannot convert return value of type 'vector' into a string.");
 			break;
 		default:
 			// All pointer types
@@ -815,18 +815,18 @@ Vec3<double> ReturnValue::asVector(int index, bool &success)
 	int i;
 	if (arraySize_ == -1)
 	{
-		Messenger::print("Internal Error: ReturnValue doesn't contain an array of values.\n");
+		Messenger::print("Internal Error: ReturnValue doesn't contain an array of values.");
 		success = FALSE;
 	}
 	else if ((index < 0) || (index >= arraySize_))
 	{
-		Messenger::print("Internal Error: Index %i out of bounds for ReturnValue array.\n", index);
+		Messenger::print("Internal Error: Index %i out of bounds for ReturnValue array.", index);
 		success = FALSE;
 	}
 	else switch (type_)
 	{
 		case (VTypes::NoData):
-			Messenger::print("Internal error: No data in ReturnValue to return as a character!\n");
+			Messenger::print("Internal error: No data in ReturnValue to return as a character!");
 			success = FALSE;
 			return Vec3<double>();
 			break;
@@ -842,7 +842,7 @@ Vec3<double> ReturnValue::asVector(int index, bool &success)
 			return arrayV_[index];
 			break;
 		default:
-			Messenger::print("Cannot convert return value of type '%s' into a vector.\n", VTypes::dataType(type_));
+			Messenger::print("Cannot convert return value of type '%s' into a vector.", VTypes::dataType(type_));
 			break;
 	}
 	success = FALSE;
@@ -854,18 +854,18 @@ void *ReturnValue::asPointer(int index, VTypes::DataType ptrtype, bool &success)
 	success = TRUE;
 	if (arraySize_ == -1)
 	{
-		Messenger::print("Internal Error: ReturnValue doesn't contain an array of values.\n");
+		Messenger::print("Internal Error: ReturnValue doesn't contain an array of values.");
 		success = FALSE;
 	}
 	else if ((index < 0) || (index >= arraySize_))
 	{
-		Messenger::print("Internal Error: Index %i out of bounds for ReturnValue array.\n", index);
+		Messenger::print("Internal Error: Index %i out of bounds for ReturnValue array.", index);
 		success =FALSE;
 	}
 	else switch (type_)
 	{
 		case (VTypes::NoData):
-			Messenger::print("Error: No data in ReturnValue to return as a pointer!\n");
+			Messenger::print("Error: No data in ReturnValue to return as a pointer!");
 			success = FALSE;
 			return NULL;
 			break;
@@ -873,7 +873,7 @@ void *ReturnValue::asPointer(int index, VTypes::DataType ptrtype, bool &success)
 		case (VTypes::DoubleData):
 		case (VTypes::StringData):
 		case (VTypes::VectorData):
-			Messenger::print("Error: An array element of type '%s' cannot be cast into an array element of type '%s'.\n", VTypes::dataType(type_), VTypes::dataType(ptrtype));
+			Messenger::print("Error: An array element of type '%s' cannot be cast into an array element of type '%s'.", VTypes::dataType(type_), VTypes::dataType(ptrtype));
 			success = FALSE;
 			return NULL;
 			break;
@@ -881,7 +881,7 @@ void *ReturnValue::asPointer(int index, VTypes::DataType ptrtype, bool &success)
 			// Check that internal pointer type matches requested pointer type
 			if (ptrtype != type_)
 			{
-				Messenger::print("Error: A pointer of type '%s' cannot be cast into a pointer of type '%s'.\n", VTypes::dataType(type_), VTypes::dataType(ptrtype));
+				Messenger::print("Error: A pointer of type '%s' cannot be cast into a pointer of type '%s'.", VTypes::dataType(type_), VTypes::dataType(ptrtype));
 				success = FALSE;
 				return NULL;
 			}
@@ -963,7 +963,7 @@ bool ReturnValue::asBool()
 			return valueS_.asBool();
 			break;
 		case (VTypes::VectorData):
-			Messenger::print("Can't convert an object of type 'vector' into a bool.\n");
+			Messenger::print("Can't convert an object of type 'vector' into a bool.");
 			return FALSE;
 			break;
 		default:
@@ -1121,7 +1121,7 @@ bool ReturnValue::increase()
 			else valueP_ = ((ZMatrixElement*) valueP_)->next;
 			break;
 		default:
-			Messenger::print("Internal Error: No 'increase' has been defined for %s.\n", VTypes::aDataType(type_));
+			Messenger::print("Internal Error: No 'increase' has been defined for %s.", VTypes::aDataType(type_));
 			break;
 	}
 	return result;
@@ -1269,7 +1269,7 @@ bool ReturnValue::decrease()
 			else valueP_ = ((ZMatrixElement*) valueP_)->prev;
 			break;
 		default:
-			Messenger::print("Internal Error: No 'decrease' has been defined for %s.\n", VTypes::aDataType(type_));
+			Messenger::print("Internal Error: No 'decrease' has been defined for %s.", VTypes::aDataType(type_));
 			break;
 	}
 	return result;
