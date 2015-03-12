@@ -61,7 +61,7 @@ bool StringVariable::set(ReturnValue& rv)
 {
 	if (readOnly_)
 	{
-		Messenger::print("A constant value (in this case a character) cannot be assigned to.\n");
+		Messenger::print("A constant value (in this case a character) cannot be assigned to.");
 		return FALSE;
 	}
 	bool success;
@@ -131,7 +131,7 @@ bool StringArrayVariable::set(ReturnValue& rv)
 {
 	if (readOnly_)
 	{
-		Messenger::print("A constant value (in this case an integer array) cannot be assigned to.\n");
+		Messenger::print("A constant value (in this case an integer array) cannot be assigned to.");
 		return FALSE;
 	}
 	if (stringArrayData_ == NULL)
@@ -145,7 +145,7 @@ bool StringArrayVariable::set(ReturnValue& rv)
 	{
 		if (rv.arraySize() != arraySize_)
 		{
-			Messenger::print("Error setting variable '%s': Array sizes do not conform.\n", name_.get());
+			Messenger::print("Error setting variable '%s': Array sizes do not conform.", name_.get());
 			return FALSE;
 		}
 		bool success;
@@ -160,7 +160,7 @@ bool StringArrayVariable::setAsArray(ReturnValue& rv, int arrayIndex)
 {
 	if (readOnly_)
 	{
-		Messenger::print("A constant value (in this case an integer array?) cannot be assigned to.\n");
+		Messenger::print("A constant value (in this case an integer array?) cannot be assigned to.");
 		return FALSE;
 	}
 	if (stringArrayData_ == NULL)
@@ -171,7 +171,7 @@ bool StringArrayVariable::setAsArray(ReturnValue& rv, int arrayIndex)
 	// Check index
 	if ((arrayIndex < 0) || (arrayIndex >= arraySize_))
 	{
-		Messenger::print("Index %i out of bounds for array '%s'.\n", arrayIndex+1, name_.get());
+		Messenger::print("Index %i out of bounds for array '%s'.", arrayIndex+1, name_.get());
 		return FALSE;
 	}
 	// Set individual element
@@ -228,7 +228,7 @@ bool StringArrayVariable::executeAsArray(ReturnValue& rv, int arrayIndex)
 	// Check bounds
 	if ((arrayIndex < 0) || (arrayIndex >= arraySize_))
 	{
-		Messenger::print("Error: Array index %i is out of bounds for array '%s'.\n", arrayIndex+1, name_.get());
+		Messenger::print("Error: Array index %i is out of bounds for array '%s'.", arrayIndex+1, name_.get());
 		return FALSE;
 	}
 	rv.set( stringArrayData_[arrayIndex].get() );
@@ -256,7 +256,7 @@ bool StringArrayVariable::initialise()
 	ReturnValue newsize;
 	if (!arraySizeExpression_->execute(newsize))
 	{
-		Messenger::print("Failed to find size for string array '%s'.\n", name_.get());
+		Messenger::print("Failed to find size for string array '%s'.", name_.get());
 		return FALSE;
 	}
 	// If the array is already allocated, free it only if the size is different

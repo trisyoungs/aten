@@ -88,7 +88,7 @@ VTypes::DataType Tree::checkUnaryOperatorTypes(Commands::Function func, VTypes::
 			break;
 	}
 	// Print error message if necessary
-	if (result == VTypes::NoData) Messenger::print("Error: Unary operator %s cannot act on %s.\n", Commands::command(func), VTypes::aDataType(type));
+	if (result == VTypes::NoData) Messenger::print("Error: Unary operator %s cannot act on %s.", Commands::command(func), VTypes::aDataType(type));
 	Messenger::exit("Tree::checkUnaryOperatorTypes");
 	return result;
 }
@@ -102,8 +102,8 @@ VTypes::DataType Tree::checkBinaryOperatorTypes(Commands::Function func, VTypes:
 	if (id == VTypes::UntypedData)
 	{
 		// Check validity of left and rhs values
-		if (type1 == VTypes::NoData) Messenger::print("Error: LHS operator has no type and can't be assigned to.\n");
-		if (type2 == VTypes::NoData) Messenger::print("Error: RHS operator has no type and can't be assigned to.\n");
+		if (type1 == VTypes::NoData) Messenger::print("Error: LHS operator has no type and can't be assigned to.");
+		if (type2 == VTypes::NoData) Messenger::print("Error: RHS operator has no type and can't be assigned to.");
 		Messenger::exit("Tree::checkBinaryOperatorTypes");
 		return VTypes::NoData;
 	}
@@ -321,7 +321,7 @@ VTypes::DataType Tree::checkBinaryOperatorTypes(Commands::Function func, VTypes:
 			break;
 	}
 	// Print error message
-	if (result == VTypes::NoData) Messenger::print("Error: Operator %s cannot act between types %s and %s.\n", Commands::command(func), VTypes::dataType(type1), VTypes::dataType(type2));
+	if (result == VTypes::NoData) Messenger::print("Error: Operator %s cannot act between types %s and %s.", Commands::command(func), VTypes::dataType(type1), VTypes::dataType(type2));
 	Messenger::exit("Tree::checkBinaryOperatorTypes");
 	return result;
 }
@@ -335,8 +335,8 @@ VTypes::DataType Tree::checkTernaryOperatorTypes(Commands::Function func, VTypes
 	if (id == VTypes::UntypedData)
 	{
 		// Check validity of left and rhs values
-		if (type1 == VTypes::NoData) Messenger::print("Error: LHS operator has no type and can't be assigned to.\n");
-		if (type2 == VTypes::NoData) Messenger::print("Error: RHS operator has no type and can't be assigned to.\n");
+		if (type1 == VTypes::NoData) Messenger::print("Error: LHS operator has no type and can't be assigned to.");
+		if (type2 == VTypes::NoData) Messenger::print("Error: RHS operator has no type and can't be assigned to.");
 		Messenger::exit("Tree::checkBinaryOperatorTypes");
 		return VTypes::NoData;
 	}
@@ -347,7 +347,7 @@ VTypes::DataType Tree::checkTernaryOperatorTypes(Commands::Function func, VTypes
 		case (Commands::OperatorInlineIf):
 			// Assume that type1 can always be resolved to a bool. Type2 and Type3 must be the same type.
 			if (type2 == type3) result = type2;
-			else Messenger::print("Error: Type mismatch in arguments for ternary operator '?:' - return value types are '%s' and '%s'.\n", VTypes::dataType(type2), VTypes::dataType(type3));
+			else Messenger::print("Error: Type mismatch in arguments for ternary operator '?:' - return value types are '%s' and '%s'.", VTypes::dataType(type2), VTypes::dataType(type3));
 			break;
 		default:
 			break;

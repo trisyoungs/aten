@@ -155,10 +155,10 @@ void ScriptMovieWidget::on_SaveScriptedMovieButton_clicked(bool on)
 	encoderArgs.replace("OUTPUT", qPrintable(filename));
 	encoderArgs.replace("FILES", basename.get());
 	encoderArgs.replace("FPS", itoa(fps));
-	Messenger::print("Command to run will be '%s %s'\n", prefs.encoderExe(), qPrintable(encoderArgs));
+	Messenger::print("Command to run will be '%s %s'", prefs.encoderExe(), qPrintable(encoderArgs));
 	if (!encoderProcess.execute(prefs.encoderExe(),qPrintable(encoderArgs),NULL))
 	{
-		Messenger::print("Error: Failed to run encoder command.\n");
+		Messenger::print("Error: Failed to run encoder command.");
 		return;
 	}
 
@@ -180,10 +180,10 @@ void ScriptMovieWidget::on_SaveScriptedMovieButton_clicked(bool on)
 		encoderArgs.replace("OUTPUT", qPrintable(filename));
 		encoderArgs.replace("FILES", basename.get());
 		encoderArgs.replace("FPS", itoa(fps));
-		Messenger::print("Command to run will be '%s %s'\n", prefs.encoderPostExe(), qPrintable(encoderArgs));
+		Messenger::print("Command to run will be '%s %s'", prefs.encoderPostExe(), qPrintable(encoderArgs));
 		if (!postProcess.execute(prefs.encoderPostExe(),qPrintable(encoderArgs),NULL))
 		{
-			Messenger::print("Error: Failed to run encoder post-processing command.\n");
+			Messenger::print("Error: Failed to run encoder post-processing command.");
 		}
 		else while (!postProcess.finished())
 		{

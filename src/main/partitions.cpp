@@ -42,7 +42,7 @@ void Aten::openPartitions()
 	if (success) success = ps->initialiseFromProgram();
 	if (!success)
 	{
-		Messenger::print("Failed to create default partition!\n");
+		Messenger::print("Failed to create default partition!");
 		failedPartitioningSchemes_.add()->set("none");
 		nfailed ++;
 		partitioningSchemes_.remove(ps);
@@ -52,12 +52,12 @@ void Aten::openPartitions()
 	QStringList paths;
 	if (!dataDir_.isEmpty())
 	{
-		Messenger::print(Messenger::Verbose, "Aten::openPartitions() - data directory is '%s'.\n", dataDir_.get());
+		Messenger::print(Messenger::Verbose, "Aten::openPartitions() - data directory is '%s'.", dataDir_.get());
 		paths << dataDir_.get();
 	}
 	else
 	{
-		Messenger::print(Messenger::Verbose, "Data directory has not yet been set. Default locations will be searched...\n");
+		Messenger::print(Messenger::Verbose, "Data directory has not yet been set. Default locations will be searched...");
 		// Default locations
 		paths << "/usr/share/aten";
 		paths << "/usr/local/share/aten";
@@ -70,7 +70,7 @@ void Aten::openPartitions()
 	{
 		path.sprintf("%s/partitions", qPrintable(paths.at(i)));
 		path = qPrintable(QDir::toNativeSeparators(path.get()));
-		Messenger::print(Messenger::Verbose, "Looking for partitions in '%s'...\n", path.get());
+		Messenger::print(Messenger::Verbose, "Looking for partitions in '%s'...", path.get());
 		nfailed = parsePartitionsDir(path);
 		if (nfailed == -1) continue;	// Directory not found
 		found = TRUE;
@@ -79,12 +79,12 @@ void Aten::openPartitions()
 		break;
 	}
 
-	if (!found) Messenger::print("No partitions found in any known default locations.\n");
+	if (!found) Messenger::print("No partitions found in any known default locations.");
 
 	// Try to load user partitions - we don't mind if the directory doesn't exist...
 	path.sprintf("%s%c%s%cpartitions%c", homeDir_.get(), PATHSEP, atenDir_.get(), PATHSEP, PATHSEP);
 	path = qPrintable(QDir::toNativeSeparators(path.get()));
-	Messenger::print(Messenger::Verbose, "Looking for user partitions in '%s'...\n", path.get());
+	Messenger::print(Messenger::Verbose, "Looking for user partitions in '%s'...", path.get());
 	nfailed = parsePartitionsDir(path);
 	if (nfailed > 0) nPartitioningSchemesFailed_ += nfailed;
 
@@ -118,7 +118,7 @@ int Aten::parsePartitionsDir(const char* path)
 		
 		if (!success)
 		{
-			Messenger::print("Failed to load partitions from '%s'...\n", qPrintable(partitionlist.at(i)));
+			Messenger::print("Failed to load partitions from '%s'...", qPrintable(partitionlist.at(i)));
 			failedPartitioningSchemes_.add()->set( qPrintable(QDir::toNativeSeparators(filename)) );
 			nfailed ++;
 			partitioningSchemes_.remove(ps);
@@ -147,7 +147,7 @@ bool Aten::openPartition(const char* filename)
 	
 	if ((!success) || (!ps->initialiseFromProgram()))
 	{
-		Messenger::print("Failed to load partition from '%s'...\n", filename);
+		Messenger::print("Failed to load partition from '%s'...", filename);
 		failedPartitioningSchemes_.add()->set( filename );
 		partitioningSchemes_.remove(ps);
 		Messenger::exit("Aten::openPartition");
@@ -177,9 +177,9 @@ PartitioningScheme  *Aten::findPartitioningScheme(const char* name)
 	for (scheme = partitioningSchemes_.first(); scheme != NULL; scheme = scheme->next) if (strcmp(name, scheme->name()) == 0) break;
 	if (scheme == NULL) 
 	{
-		Messenger::print("Error: No such scheme '%s'.\n", name);
-		Messenger::print("Available schemes are:\n");
-		for (scheme = partitioningSchemes_.first(); scheme != NULL; scheme = scheme->next) Messenger::print("  %10s  %s\n", scheme->name(), scheme->description());
+		Messenger::print("Error: No such scheme '%s'.", name);
+		Messenger::print("Available schemes are:");
+		for (scheme = partitioningSchemes_.first(); scheme != NULL; scheme = scheme->next) Messenger::print("  %10s  %s", scheme->name(), scheme->description());
 		return NULL;
 	}
 	else return scheme;

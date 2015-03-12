@@ -142,7 +142,7 @@ bool TreeNode::setArg(int i, ReturnValue& rv)
 	if (args_[i]->item->readOnly())
 	{
 		args_[i]->item->nodePrint(0);
-		Messenger::print("Argument %i is read-only and can't be set.\n", i);
+		Messenger::print("Argument %i is read-only and can't be set.", i);
 		return FALSE;
 	}
 	return args_[i]->item->set(rv);
@@ -181,7 +181,7 @@ void TreeNode::addArguments(int nargs, ...)
 	// Add arguments in the order they were provided
 	for (int n=0; n<nargs; n++) addArgument(va_arg(vars, TreeNode*));
 	va_end(vars);
-	Messenger::print(Messenger::Parse,"Node %p now has %i arguments.\n", this, args_.nItems());
+	Messenger::print(Messenger::Parse,"Node %p now has %i arguments.", this, args_.nItems());
 }
 
 // Add multiple arguments to node
@@ -194,9 +194,9 @@ void TreeNode::addArgument(TreeNode* arg)
 bool TreeNode::checkArguments(const char* argList, const char* funcname)
 {
 	Messenger::enter("TreeNode::checkArguments");
-	Messenger::print(Messenger::Parse, "Checking the %i argument(s) given to function '%s'...\n", args_.nItems(), funcname);
+	Messenger::print(Messenger::Parse, "Checking the %i argument(s) given to function '%s'...", args_.nItems(), funcname);
 	const char* c = NULL, *altargs = argList;
-	Messenger::print(Messenger::Parse, "...argument list is [%s]\n", altargs);
+	Messenger::print(Messenger::Parse, "...argument list is [%s]", altargs);
 	char upc;
 	int count = 0, ngroup = -1, repeat = 0;
 	bool optional = FALSE, requirevar = FALSE, result, cluster = FALSE, array = FALSE, reset = TRUE;
@@ -295,7 +295,7 @@ bool TreeNode::checkArguments(const char* argList, const char* funcname)
 			}
 		}
 		if (*c == '\0') break;
-		Messenger::print(Messenger::Parse,"...next/current argument token is '%c', opt=%s, reqvar=%s, repeat=%i, ngroup=%i\n", *c, optional ? "true" : "false", requirevar ? "TRUE" : "FALSE", repeat, ngroup);
+		Messenger::print(Messenger::Parse,"...next/current argument token is '%c', opt=%s, reqvar=%s, repeat=%i, ngroup=%i", *c, optional ? "true" : "false", requirevar ? "TRUE" : "FALSE", repeat, ngroup);
 		// If we have gone over the number of arguments provided, is this an optional argument?
 		if (count >= args_.nItems())
 		{
@@ -303,15 +303,15 @@ bool TreeNode::checkArguments(const char* argList, const char* funcname)
 			{
 				// If an alternative argument list is present, check this before we fail...
 				if (altargs != NULL) { reset = TRUE; continue; }
-				Messenger::print("Error: The function '%s' requires argument %i.\n", funcname, count+1);
-// 				Messenger::print("       Command syntax is '%s(%s)'.\n", funcname, Commands::data[function_].argText);
+				Messenger::print("Error: The function '%s' requires argument %i.", funcname, count+1);
+// 				Messenger::print("       Command syntax is '%s(%s)'.", funcname, Commands::data[function_].argText);
 				Messenger::exit("TreeNode::checkArguments");
 				return FALSE;
 			}
 			else if (cluster && (ngroup != 0))
 			{
-				Messenger::print("Error: The optional argument %i to function '%s' is part of a group and must be specified.\n", count+1, funcname);
-// 				Messenger::print("       Command syntax is '%s(%s)'.\n", funcname, argList);
+				Messenger::print("Error: The optional argument %i to function '%s' is part of a group and must be specified.", count+1, funcname);
+// 				Messenger::print("       Command syntax is '%s(%s)'.", funcname, argList);
 				Messenger::exit("TreeNode::checkArguments");
 				return FALSE;
 			}
@@ -331,7 +331,7 @@ bool TreeNode::checkArguments(const char* argList, const char* funcname)
 				if ((rtype != VTypes::IntegerData) && (rtype != VTypes::AtomData))
 				{
 					if (altargs != NULL) { reset = TRUE; continue; }
-					Messenger::print("Argument %i to function '%s' must be an int or an Atom.\n", count+1, funcname);
+					Messenger::print("Argument %i to function '%s' must be an int or an Atom.", count+1, funcname);
 					result = FALSE;
 				}
 				break;
@@ -340,7 +340,7 @@ bool TreeNode::checkArguments(const char* argList, const char* funcname)
 				if (rtype == VTypes::NoData)
 				{
 					if (altargs != NULL) { reset = TRUE; continue; }
-					Messenger::print("Argument %i to function '%s' must return something!\n", count+1, funcname);
+					Messenger::print("Argument %i to function '%s' must return something!", count+1, funcname);
 					result = FALSE;
 				}
 				break;
@@ -349,7 +349,7 @@ bool TreeNode::checkArguments(const char* argList, const char* funcname)
 				if (rtype != VTypes::StringData)
 				{
 					if (altargs != NULL) { reset = TRUE; continue; }
-					Messenger::print("Argument %i to function '%s' must be a character string.\n", count+1, funcname);
+					Messenger::print("Argument %i to function '%s' must be a character string.", count+1, funcname);
 					result = FALSE;
 				}
 				break;	
@@ -358,7 +358,7 @@ bool TreeNode::checkArguments(const char* argList, const char* funcname)
 				if (rtype != VTypes::DoubleData)
 				{
 					if (altargs != NULL) { reset = TRUE; continue; }
-					Messenger::print("Argument %i to function '%s' must be a double.\n", count+1, funcname);
+					Messenger::print("Argument %i to function '%s' must be a double.", count+1, funcname);
 					result = FALSE;
 				}
 				break;
@@ -367,7 +367,7 @@ bool TreeNode::checkArguments(const char* argList, const char* funcname)
 				if ((rtype != VTypes::IntegerData) && (rtype != VTypes::AtomData) && (rtype != VTypes::DoubleData) && (rtype != VTypes::StringData) && (rtype != VTypes::ElementData))
 				{
 					if (altargs != NULL) { reset = TRUE; continue; }
-					Messenger::print("Argument %i to function '%s' must be an int, double, string or an Atom.\n", count+1, funcname);
+					Messenger::print("Argument %i to function '%s' must be an int, double, string or an Atom.", count+1, funcname);
 					result = FALSE;
 				}
 				break;
@@ -376,7 +376,7 @@ bool TreeNode::checkArguments(const char* argList, const char* funcname)
 				if ((rtype != VTypes::IntegerData) && (rtype != VTypes::ForcefieldData) && (rtype != VTypes::StringData))
 				{
 					if (altargs != NULL) { reset = TRUE; continue; }
-					Messenger::print("Argument %i to function '%s' must be an int, a Forcefield or a string.\n", count+1, funcname);
+					Messenger::print("Argument %i to function '%s' must be an int, a Forcefield or a string.", count+1, funcname);
 					result = FALSE;
 				}
 				break;
@@ -385,7 +385,7 @@ bool TreeNode::checkArguments(const char* argList, const char* funcname)
 				if ((rtype != VTypes::IntegerData) && (rtype != VTypes::GridData) ) //&& (rtype != VTypes::StringData))
 				{
 					if (altargs != NULL) { reset = TRUE; continue; }
-					Messenger::print("Argument %i to function '%s' must be an int or a Grid.\n", count+1, funcname);
+					Messenger::print("Argument %i to function '%s' must be an int or a Grid.", count+1, funcname);
 					result = FALSE;
 				}
 				break;
@@ -394,7 +394,7 @@ bool TreeNode::checkArguments(const char* argList, const char* funcname)
 				if (rtype != VTypes::BondData)
 				{
 					if (altargs != NULL) { reset = TRUE; continue; }
-					Messenger::print("Argument %i to function '%s' must be a Bond.\n", count+1, funcname);
+					Messenger::print("Argument %i to function '%s' must be a Bond.", count+1, funcname);
 					result = FALSE;
 				}
 				break;
@@ -403,7 +403,7 @@ bool TreeNode::checkArguments(const char* argList, const char* funcname)
 				if (rtype != VTypes::IntegerData)
 				{
 					if (altargs != NULL) { reset = TRUE; continue; }
-					Messenger::print("Argument %i to function '%s' must be an int.\n", count+1, funcname);
+					Messenger::print("Argument %i to function '%s' must be an int.", count+1, funcname);
 					result = FALSE;
 				}
 				break;
@@ -412,7 +412,7 @@ bool TreeNode::checkArguments(const char* argList, const char* funcname)
 				if (rtype != VTypes::AtomData)
 				{
 					if (altargs != NULL) { reset = TRUE; continue; }
-					Messenger::print("Argument %i to function '%s' must be an Atom.\n", count+1, funcname);
+					Messenger::print("Argument %i to function '%s' must be an Atom.", count+1, funcname);
 					result = FALSE;
 				}
 				break;
@@ -421,7 +421,7 @@ bool TreeNode::checkArguments(const char* argList, const char* funcname)
 				if (rtype != VTypes::CellData)
 				{
 					if (altargs != NULL) { reset = TRUE; continue; }
-					Messenger::print("Argument %i to function '%s' must be a UnitCell.\n", count+1, funcname);
+					Messenger::print("Argument %i to function '%s' must be a UnitCell.", count+1, funcname);
 					result = FALSE;
 				}
 				break;
@@ -430,7 +430,7 @@ bool TreeNode::checkArguments(const char* argList, const char* funcname)
 				if ((rtype != VTypes::IntegerData) && (rtype != VTypes::ModelData) && (rtype != VTypes::StringData))
 				{
 					if (altargs != NULL) { reset = TRUE; continue; }
-					Messenger::print("Argument %i to function '%s' must be an int, a Model or a string.\n", count+1, funcname);
+					Messenger::print("Argument %i to function '%s' must be an int, a Model or a string.", count+1, funcname);
 					result = FALSE;
 				}
 				break;
@@ -439,7 +439,7 @@ bool TreeNode::checkArguments(const char* argList, const char* funcname)
 				if ((rtype != VTypes::IntegerData) && (rtype != VTypes::DoubleData))
 				{
 					if (altargs != NULL) { reset = TRUE; continue; }
-					Messenger::print("Argument %i to function '%s' must be a number.\n", count+1, funcname);
+					Messenger::print("Argument %i to function '%s' must be a number.", count+1, funcname);
 					result = FALSE;
 				}
 				break;
@@ -448,7 +448,7 @@ bool TreeNode::checkArguments(const char* argList, const char* funcname)
 				if (rtype != VTypes::ForcefieldAtomData)
 				{
 					if (altargs != NULL) { reset = TRUE; continue; }
-					Messenger::print("Argument %i to function '%s' must be an FFAtom.\n", count+1, funcname);
+					Messenger::print("Argument %i to function '%s' must be an FFAtom.", count+1, funcname);
 					result = FALSE;
 				}
 				break;
@@ -457,7 +457,7 @@ bool TreeNode::checkArguments(const char* argList, const char* funcname)
 				if ((rtype != VTypes::IntegerData) && (rtype != VTypes::PatternData) && (rtype != VTypes::StringData))
 				{
 					if (altargs != NULL) { reset = TRUE; continue; }
-					Messenger::print("Argument %i to function '%s' must be an int, a Patternor a string.\n", count+1, funcname);
+					Messenger::print("Argument %i to function '%s' must be an int, a Patternor a string.", count+1, funcname);
 					result = FALSE;
 				}
 				break;
@@ -466,7 +466,7 @@ bool TreeNode::checkArguments(const char* argList, const char* funcname)
 				if ((rtype != VTypes::IntegerData) && (rtype != VTypes::DoubleData) && (rtype != VTypes::StringData))
 				{
 					if (altargs != NULL) { reset = TRUE; continue; }
-					Messenger::print("Argument %i to function '%s' must be a number or a string.\n", count+1, funcname);
+					Messenger::print("Argument %i to function '%s' must be a number or a string.", count+1, funcname);
 					result = FALSE;
 				}
 				break;
@@ -475,7 +475,7 @@ bool TreeNode::checkArguments(const char* argList, const char* funcname)
 				if ((rtype != VTypes::IntegerData) && (rtype != VTypes::StringData))
 				{
 					if (altargs != NULL) { reset = TRUE; continue; }
-					Messenger::print("Argument %i to function '%s' must be a number or a string.\n", count+1, funcname);
+					Messenger::print("Argument %i to function '%s' must be a number or a string.", count+1, funcname);
 					result = FALSE;
 				}
 				break;
@@ -484,7 +484,7 @@ bool TreeNode::checkArguments(const char* argList, const char* funcname)
 				if (rtype != VTypes::VectorData)
 				{
 					if (altargs != NULL) { reset = TRUE; continue; }
-					Messenger::print("Argument %i to function '%s' must be a vector.\n", count+1, funcname);
+					Messenger::print("Argument %i to function '%s' must be a vector.", count+1, funcname);
 					result = FALSE;
 				}
 				break;	
@@ -493,7 +493,7 @@ bool TreeNode::checkArguments(const char* argList, const char* funcname)
 				if (argNode(count)->nodeType() != TreeNode::VarWrapperNode)
 				{
 					if (altargs != NULL) { reset = TRUE; continue; }
-					Messenger::print("Argument %i to function '%s' must be a variable of some kind.\n", count+1, funcname);
+					Messenger::print("Argument %i to function '%s' must be a variable of some kind.", count+1, funcname);
 					result = FALSE;
 				}
 				break;
@@ -502,7 +502,7 @@ bool TreeNode::checkArguments(const char* argList, const char* funcname)
 				if ((rtype != VTypes::AtomData) && (rtype != VTypes::VectorData))
 				{
 					if (altargs != NULL) { reset = TRUE; continue; }
-					Messenger::print("Argument %i to function '%s' must be a vector or an Atom.\n", count+1, funcname);
+					Messenger::print("Argument %i to function '%s' must be a vector or an Atom.", count+1, funcname);
 					result = FALSE;
 				}
 				break;
@@ -511,7 +511,7 @@ bool TreeNode::checkArguments(const char* argList, const char* funcname)
 				if (rtype < VTypes::AtomData)
 				{
 					if (altargs != NULL) { reset = TRUE; continue; }
-					Messenger::print("Argument %i to function '%s' must be a reference of some kind.\n", count+1, funcname);
+					Messenger::print("Argument %i to function '%s' must be a reference of some kind.", count+1, funcname);
 					result = FALSE;
 				}
 				break;
@@ -520,7 +520,7 @@ bool TreeNode::checkArguments(const char* argList, const char* funcname)
 				if (rtype != VTypes::WidgetData)
 				{
 					if (altargs != NULL) { reset = TRUE; continue; }
-					Messenger::print("Argument %i to function '%s' must be a widget.\n", count+1, funcname);
+					Messenger::print("Argument %i to function '%s' must be a widget.", count+1, funcname);
 					result = FALSE;
 				}
 				break;
@@ -551,7 +551,7 @@ bool TreeNode::checkArguments(const char* argList, const char* funcname)
 		// Was this argument requested to be a modifiable variable value?
 		if (requirevar && argNode(count)->readOnly())
 		{
-			Messenger::print("Argument %i to function '%s' must be a variable and not a constant.\n", count+1, funcname);
+			Messenger::print("Argument %i to function '%s' must be a variable and not a constant.", count+1, funcname);
 			result = FALSE;
 		}
 		// Was this argument requested to be an array (*not* an array element)?
@@ -559,18 +559,18 @@ bool TreeNode::checkArguments(const char* argList, const char* funcname)
 		{
 			if (argNode(count)->nodeType() != TreeNode::VarWrapperNode)
 			{
-				Messenger::print("Argument %i to function '%s' must be an array.\n", count+1, funcname);
+				Messenger::print("Argument %i to function '%s' must be an array.", count+1, funcname);
 				result = FALSE;
 			}
 			Variable* v = ((VariableNode*) argNode(count))->variable();
 			if (v->nodeType() != TreeNode::ArrayVarNode)
 			{
-				Messenger::print("Argument %i to function '%s' must be an array.\n", count+1, funcname);
+				Messenger::print("Argument %i to function '%s' must be an array.", count+1, funcname);
 				result = FALSE;
 			}
 			else if (((VariableNode*) argNode(count))->arrayIndex() != NULL)
 			{
-				Messenger::print("Argument %i to function '%s' must be an array and not an array element.\n", count+1, funcname);
+				Messenger::print("Argument %i to function '%s' must be an array and not an array element.", count+1, funcname);
 				result = FALSE;
 			}
 		}
@@ -584,7 +584,7 @@ bool TreeNode::checkArguments(const char* argList, const char* funcname)
 	// End of the argument specification - do we still have arguments left over in the command?
 	if (result && (args_.nItems() > count))
 	{
-		Messenger::print("Error: %i extra arguments given to function '%s'.\n", args_.nItems()-count, funcname);
+		Messenger::print("Error: %i extra arguments given to function '%s'.", args_.nItems()-count, funcname);
 		Messenger::exit("TreeNode::checkArguments");
 		return FALSE;
 	}
@@ -614,9 +614,9 @@ bool TreeNode::argb(int i)
 	static ReturnValue rv;
 	bool success;
 	bool result;
-	if (!args_[i]->item->execute(rv)) Messenger::print("Couldn't retrieve argument %i.\n", i+1);
+	if (!args_[i]->item->execute(rv)) Messenger::print("Couldn't retrieve argument %i.", i+1);
 	result = (rv.asInteger(success) > 0);
-	if (!success) Messenger::print("Couldn't cast argument %i into an integer.\n", i+1);
+	if (!success) Messenger::print("Couldn't cast argument %i into an integer.", i+1);
 	return result;
 }
 
@@ -631,9 +631,9 @@ int TreeNode::argi(int i)
 	static ReturnValue rv;
 	bool success;
 	int result = 0;
-	if (!args_[i]->item->execute(rv)) Messenger::print("Couldn't retrieve argument %i.\n", i+1);
+	if (!args_[i]->item->execute(rv)) Messenger::print("Couldn't retrieve argument %i.", i+1);
 	result = rv.asInteger(success);
-	if (!success) Messenger::print("Couldn't cast argument %i into an integer.\n", i+1);
+	if (!success) Messenger::print("Couldn't cast argument %i into an integer.", i+1);
 	return result;
 }
 
@@ -649,7 +649,7 @@ short int TreeNode::argz(int i)
 	Atom* atm;
 	short int result = 0;
 	Element* elem;
-	if (!args_[i]->item->execute(rv)) Messenger::print("Couldn't retrieve argument %i.\n", i+1);
+	if (!args_[i]->item->execute(rv)) Messenger::print("Couldn't retrieve argument %i.", i+1);
 	switch (rv.type())
 	{
 		case (VTypes::IntegerData):
@@ -671,7 +671,7 @@ short int TreeNode::argz(int i)
 			result = elem == 0 ? 0 : elem->z;
 			break;
 		default:
-			Messenger::print("Couldn't cast argument %i (%s) into an atomic number.\n", i+1, VTypes::aDataType(rv.type()));
+			Messenger::print("Couldn't cast argument %i (%s) into an atomic number.", i+1, VTypes::aDataType(rv.type()));
 			break;
 	}
 	return result;
@@ -688,9 +688,9 @@ double TreeNode::argd(int i)
 	static ReturnValue rv;
 	bool success;
 	double result = 0.0;
-	if (!args_[i]->item->execute(rv)) Messenger::print("Couldn't retrieve argument %i.\n", i+1);
+	if (!args_[i]->item->execute(rv)) Messenger::print("Couldn't retrieve argument %i.", i+1);
 	result = rv.asDouble(success);
-	if (!success) Messenger::print("Couldn't cast argument %i into a real.\n", i+1);
+	if (!success) Messenger::print("Couldn't cast argument %i into a real.", i+1);
 	return result;
 }
 
@@ -711,9 +711,9 @@ const char* TreeNode::argc(int i)
 	static ReturnValue rv[MAXNODEARGS];
 	bool success;
 	const char* result = NULL;
-	if (!args_[i]->item->execute(rv[i])) Messenger::print("Couldn't retrieve argument %i.\n", i+1);
+	if (!args_[i]->item->execute(rv[i])) Messenger::print("Couldn't retrieve argument %i.", i+1);
 	result = rv[i].asString(success);
-	if (!success) Messenger::print("Couldn't cast argument %i into a character.\n", i+1);
+	if (!success) Messenger::print("Couldn't cast argument %i into a character.", i+1);
 	return result;
 }
 
@@ -733,7 +733,7 @@ Vec3<double> TreeNode::argv(int i)
 	}
 	static ReturnValue rv;
 	bool success;
-	if (!args_[i]->item->execute(rv)) Messenger::print("Couldn't retrieve argument %i.\n", i+1);
+	if (!args_[i]->item->execute(rv)) Messenger::print("Couldn't retrieve argument %i.", i+1);
 	return rv.asVector(success);
 }
 
@@ -742,15 +742,15 @@ void *TreeNode::argp(int i, VTypes::DataType type)
 {
 	if ((i < 0) || (i >= args_.nItems()))
 	{
-		printf("TreeNode::argp : Argument index %i is out of range (node = %p).\n", i, this);
+		printf("TreeNode::argp : Argument index %i is out of range (node = %p).", i, this);
 		return FALSE;
 	}
 	static ReturnValue rv;
 	bool success;
 	void *result = NULL;
-	if (!args_[i]->item->execute(rv)) Messenger::print("Couldn't retrieve argument %i.\n", i+1);
+	if (!args_[i]->item->execute(rv)) Messenger::print("Couldn't retrieve argument %i.", i+1);
 	result = rv.asPointer(type, success);
-	if (!success) Messenger::print("Couldn't cast argument %i into a pointer of type '%s'.\n", i+1, VTypes::dataType(type));
+	if (!success) Messenger::print("Couldn't cast argument %i into a pointer of type '%s'.", i+1, VTypes::dataType(type));
 	return result;
 }
 

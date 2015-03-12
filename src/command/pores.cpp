@@ -124,17 +124,17 @@ bool Commands::function_CreateScheme(CommandNode* c, Bundle& obj, ReturnValue& r
 				{
 					// Not big enough, so run modifyRegion again and zero it
 					schemeGrid.modifyRegion(x, y, z, nPartitions+0.5, nPartitions+1.5, 0.0, TRUE);
-					Messenger::print("Found a partition of %i cells, which is below the threshold size of %i and will be ignored...\n", partitionSize, minimumSize);
+					Messenger::print("Found a partition of %i cells, which is below the threshold size of %i and will be ignored...", partitionSize, minimumSize);
 				}
 				else
 				{
 					++nPartitions;
-					Messenger::print("Found a partition containing %i grid cells (volume = %f cubic Angstroms).\n", partitionSize, partitionSize * volumeElement);
+					Messenger::print("Found a partition containing %i grid cells (volume = %f cubic Angstroms).", partitionSize, partitionSize * volumeElement);
 				}
 			}
 		}
 	}
-	Messenger::print("Found %i partitions in the model.\n", nPartitions);
+	Messenger::print("Found %i partitions in the model.", nPartitions);
 	rv.set(nPartitions);
 	
 	// Generate partitions from the new grid data
@@ -144,7 +144,7 @@ bool Commands::function_CreateScheme(CommandNode* c, Bundle& obj, ReturnValue& r
 	if (copyToBuilder)
 	{
 		aten_.addPartitioningScheme(scheme);
-		Messenger::print("Copied scheme to disorder builder.\n");
+		Messenger::print("Copied scheme to disorder builder.");
 	}
 	
 	return TRUE;
@@ -165,7 +165,7 @@ bool Commands::function_DrillPores(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	// Determine origin face vectors, and determine first pore centre coordinates
 	if ((face < 0) || (face > 2))
 	{
-		Messenger::print("Error: Origin face must be specified as 1 (YZ plane), 2 (XZ plane) or 3 (XY plane).\n");
+		Messenger::print("Error: Origin face must be specified as 1 (YZ plane), 2 (XZ plane) or 3 (XY plane).");
 		return FALSE;
 	}
 	Vec3<double> faceA = obj.rs()->cell()->axes().columnAsVec3((face+1)%3);
@@ -202,7 +202,7 @@ bool Commands::function_SelectPores(CommandNode* c, Bundle& obj, ReturnValue& rv
 	// Determine origin face vectors, and determine first pore centre coordinates
 	if ((face < 0) || (face > 2))
 	{
-		Messenger::print("Error: Origin face must be specified as 1 (YZ plane), 2 (XZ plane) or 3 (XY plane).\n");
+		Messenger::print("Error: Origin face must be specified as 1 (YZ plane), 2 (XZ plane) or 3 (XY plane).");
 		return FALSE;
 	}
 	Vec3<double> faceA = obj.rs()->cell()->axes().columnAsVec3((face+1)%3);
@@ -243,7 +243,7 @@ bool Commands::function_Terminate(CommandNode* c, Bundle& obj, ReturnValue& rv)
 			case (8):
 				if (i->nBonds() == 0)
 				{
-					Messenger::print(" ... Warning: Found unbound oxygen in selection ...\n");
+					Messenger::print(" ... Warning: Found unbound oxygen in selection ...");
 					obj.rs()->selectAtom(i, TRUE);
 				}
 				else if (i->nBonds() == 1) obj.rs()->growAtom(i, 1, 1.0, Atom::TetrahedralGeometry);
@@ -252,7 +252,7 @@ bool Commands::function_Terminate(CommandNode* c, Bundle& obj, ReturnValue& rv)
 			case (14):
 				if (i->nBonds() == 0)
 				{
-					Messenger::print(" ... Warning: Found unbound silicon in selection ...\n");
+					Messenger::print(" ... Warning: Found unbound silicon in selection ...");
 					obj.rs()->selectAtom(i, TRUE);
 				}
 				else for (int n=i->nBonds(); n<4; ++n)
@@ -263,7 +263,7 @@ bool Commands::function_Terminate(CommandNode* c, Bundle& obj, ReturnValue& rv)
 				}
 				break;
 			default:
-				Messenger::print(" ... Skipping atom %i (%s) in termination ...\n", i->id()+1, Elements().symbol(i));
+				Messenger::print(" ... Skipping atom %i (%s) in termination ...", i->id()+1, Elements().symbol(i));
 				break;
 		}
 	}
@@ -271,7 +271,7 @@ bool Commands::function_Terminate(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	// Select any unbound atoms for inspection by the user
 	if (obj.rs()->nMarked() != 0)
 	{
-		Messenger::print("Viable unbound atoms were found in the provided selection, and remain selected in the model.\n");
+		Messenger::print("Viable unbound atoms were found in the provided selection, and remain selected in the model.");
 		obj.rs()->selectNone();
 		obj.rs()->selectMarkedAtoms();
 	}

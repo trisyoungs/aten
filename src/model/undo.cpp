@@ -28,14 +28,14 @@ ATEN_USING_NAMESPACE
 // Flag that undo/redo should be enabled
 void Model::enableUndoRedo()
 {
-	Messenger::print(Messenger::Verbose, "Undo/redo has been enabled for model '%s'.\n", name_.get());
+	Messenger::print(Messenger::Verbose, "Undo/redo has been enabled for model '%s'.", name_.get());
 	undoRedoEnabled_ = TRUE;
 }
 
 // Flag that undo/redo should be disabled
 void Model::disableUndoRedo()
 {
-	Messenger::print(Messenger::Verbose, "Undo/redo has been disabled for model '%s'.\n", name_.get());
+	Messenger::print(Messenger::Verbose, "Undo/redo has been disabled for model '%s'.", name_.get());
 	undoRedoEnabled_ = FALSE;
 }
 
@@ -75,8 +75,8 @@ void Model::beginUndoState(const char* fmt, ...)
 	va_end(arguments);
 	recordingState_->setDescription(msgs);
 	recordingState_->setStartLogs(changeLog);
-	Messenger::print(Messenger::Verbose, "Undo list prepped for new state.\n");
-	Messenger::print(Messenger::Verbose, "   --- Logs at start of state are: structure = %i, coords = %i, selection = %i, camera = %i\n", changeLog.log(Log::Structure), changeLog.log(Log::Coordinates), changeLog.log(Log::Selection), changeLog.log(Log::Camera));
+	Messenger::print(Messenger::Verbose, "Undo list prepped for new state.");
+	Messenger::print(Messenger::Verbose, "   --- Logs at start of state are: structure = %i, coords = %i, selection = %i", changeLog.log(Log::Structure), changeLog.log(Log::Coordinates), changeLog.log(Log::Selection));
 	Messenger::exit("Model::beginUndoState");
 }
 
@@ -107,8 +107,8 @@ void Model::endUndoState()
 	undoStates_.own(recordingState_);
 	// Set the current undo level to the new state and nullify the pointer
 	currentUndoState_ = recordingState_;
-	Messenger::print(Messenger::Verbose, "Undo list now has %i states (%i events caught in last state).\n",undoStates_.nItems(),currentUndoState_->nChanges());
-	Messenger::print(Messenger::Verbose, "   --- Logs at end of state are: structure = %i, coords = %i, selection = %i\n", changeLog.log(Log::Structure), changeLog.log(Log::Coordinates), changeLog.log(Log::Selection));
+	Messenger::print(Messenger::Verbose, "Undo list now has %i states (%i events caught in last state).",undoStates_.nItems(),currentUndoState_->nChanges());
+	Messenger::print(Messenger::Verbose, "   --- Logs at end of state are: structure = %i, coords = %i, selection = %i", changeLog.log(Log::Structure), changeLog.log(Log::Coordinates), changeLog.log(Log::Selection));
 	// Nullify the redostate pointer, since we must now be at the top of the undo stack
 	currentRedoState_ = NULL;
 	recordingState_ = NULL;
@@ -128,7 +128,7 @@ bool Model::recordingUndoState()
 void Model::undo()
 {
 	Messenger::enter("Model::undo");
-	if (currentUndoState_ == NULL) Messenger::print("Nothing to undo.\n");
+	if (currentUndoState_ == NULL) Messenger::print("Nothing to undo.");
 	else
 	{
 		// Undo the changes
@@ -152,7 +152,7 @@ void Model::undo()
 void Model::redo()
 {
 	Messenger::enter("Model::redo");
-	if (currentRedoState_ == NULL) Messenger::print("Nothing to redo.\n");
+	if (currentRedoState_ == NULL) Messenger::print("Nothing to redo.");
 	else
 	{
 		// Undo the changes

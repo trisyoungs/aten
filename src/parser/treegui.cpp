@@ -283,7 +283,7 @@ bool TreeGuiWidget::setInitialProperties(int minval, int maxval, int value)
 	// Check / set limits
 	if (maxval < minval)
 	{
-		Messenger::print("Error setting widget integer properties: max > min.\n");
+		Messenger::print("Error setting widget integer properties: max > min.");
 		return FALSE;
 	}
 	minimumI_ = minval;
@@ -291,7 +291,7 @@ bool TreeGuiWidget::setInitialProperties(int minval, int maxval, int value)
 	// Check / set value
 	if ((value < minimumI_) || (value  > maximumI_))
 	{
-		Messenger::print("Warning: Value given when setting widget integer properties is out of defined limits (%i to %i) and has been reset to %i.\n", value, minimumI_, maximumI_, minimumI_);
+		Messenger::print("Warning: Value given when setting widget integer properties is out of defined limits (%i to %i) and has been reset to %i.", value, minimumI_, maximumI_, minimumI_);
 		valueI_ = minimumI_;
 	}
 	else valueI_ = value;
@@ -304,7 +304,7 @@ bool TreeGuiWidget::setInitialProperties(double minval, double maxval, double va
 	// Check / set limits
 	if (maxval < minval)
 	{
-		Messenger::print("Error setting widget double properties: max > min.\n");
+		Messenger::print("Error setting widget double properties: max > min.");
 		return FALSE;
 	}
 	minimumD_ = minval;
@@ -312,7 +312,7 @@ bool TreeGuiWidget::setInitialProperties(double minval, double maxval, double va
 	// Check / set value
 	if ((value < minimumD_) || (value  > maximumD_))
 	{
-		Messenger::print("Warning: Value given when setting widget double properties is out of defined limits (%f to %f) and has been reset to %f.\n", value, minimumD_, maximumD_, minimumD_);
+		Messenger::print("Warning: Value given when setting widget double properties is out of defined limits (%f to %f) and has been reset to %f.", value, minimumD_, maximumD_, minimumD_);
 		valueD_ = minimumD_;
 	}
 	else valueD_ = value;
@@ -344,7 +344,7 @@ int TreeGuiWidget::nItems()
 bool TreeGuiWidget::isGoodValue(int i, bool printError)
 {
 	bool result = ((i >= minimumI_) && (i <= maximumI_));
-	if (!result && printError) Messenger::print("Error: Value %i is out of range for widget '%s'.\n\tValid range is %i to %i.\n", i, name_.get(), minimumI_, maximumI_);
+	if (!result && printError) Messenger::print("Error: Value %i is out of range for widget '%s'.\n\tValid range is %i to %i.", i, name_.get(), minimumI_, maximumI_);
 	return result;
 }
 
@@ -352,7 +352,7 @@ bool TreeGuiWidget::isGoodValue(int i, bool printError)
 bool TreeGuiWidget::isGoodValue(double d, bool printError)
 {
 	bool result = ((d >= minimumD_) && (d <= maximumD_));
-	if (!result && printError) Messenger::print("Error: Value %f is out of range for widget '%s'.\n\tValid range is %f to %f.\n", d, name_.get(), minimumD_, maximumD_);
+	if (!result && printError) Messenger::print("Error: Value %f is out of range for widget '%s'.\n\tValid range is %f to %f.", d, name_.get(), minimumD_, maximumD_);
 	return result;
 }
 
@@ -521,7 +521,7 @@ bool TreeGuiWidget::setProperty(TreeGuiWidgetEvent::EventProperty property, Retu
 				int i = rv.asInteger();
 				if (!isGoodValue(i))
 				{
-					Messenger::print("Dialog Warning: Value (%i) is out of range for this widget (%s) whose minimum/maximum values are %i and %i respectively. Value reset to %i.\n", i, name_.get(), minimumI_, maximumI_, i < minimumI_ ? minimumI_ : maximumI_);
+					Messenger::print("Dialog Warning: Value (%i) is out of range for this widget (%s) whose minimum/maximum values are %i and %i respectively. Value reset to %i.", i, name_.get(), minimumI_, maximumI_, i < minimumI_ ? minimumI_ : maximumI_);
 					i = i < minimumI_ ? minimumI_ : maximumI_;
 				}
 				valueI_ = i;
@@ -537,12 +537,12 @@ bool TreeGuiWidget::setProperty(TreeGuiWidgetEvent::EventProperty property, Retu
 				// Check range
 				if ((type_ == TreeGuiWidget::IntegerSpinWidget) && (!isGoodValue(rv.asInteger())))
 				{
-					Messenger::print("Dialog Warning: Value (%i) is out of range for this widget (%s) whose minimum/maximum values are %i and %i respectively. Value reset to %i.\n", rv.asInteger(), name_.get(), minimumI_, maximumI_, rv.asInteger() < minimumI_ ? minimumI_ : maximumI_);
+					Messenger::print("Dialog Warning: Value (%i) is out of range for this widget (%s) whose minimum/maximum values are %i and %i respectively. Value reset to %i.", rv.asInteger(), name_.get(), minimumI_, maximumI_, rv.asInteger() < minimumI_ ? minimumI_ : maximumI_);
 					rv = rv.asInteger() < minimumI_ ? minimumI_ : maximumI_;
 				}
 				else if ((type_ == TreeGuiWidget::DoubleSpinWidget) && (!isGoodValue(rv.asDouble())))
 				{
-					Messenger::print("Dialog Warning: Value (%f) is out of range for this widget (%s) whose minimum/maximum values are %f and %f respectively. Value reset to %f.\n", rv.asDouble(), name_.get(), minimumD_, maximumD_, rv.asDouble() < minimumD_ ? minimumD_ : maximumD_);
+					Messenger::print("Dialog Warning: Value (%f) is out of range for this widget (%s) whose minimum/maximum values are %f and %f respectively. Value reset to %f.", rv.asDouble(), name_.get(), minimumD_, maximumD_, rv.asDouble() < minimumD_ ? minimumD_ : maximumD_);
 					rv = rv.asDouble() < minimumD_ ? minimumD_ : maximumD_;
 				}
 				if (type_ == TreeGuiWidget::IntegerSpinWidget) valueI_ = rv.asInteger();
@@ -553,12 +553,12 @@ bool TreeGuiWidget::setProperty(TreeGuiWidgetEvent::EventProperty property, Retu
 			{
 				if ((type_ == TreeGuiWidget::IntegerSpinWidget) && (rv.asInteger() > maximumI_))
 				{
-					Messenger::print("Dialog Warning: Minimum (%i) is higher than the current maximum (%i) for this widget (%s). Value reset to %i.\n", rv.asInteger(), name_.get(), maximumI_, maximumI_);
+					Messenger::print("Dialog Warning: Minimum (%i) is higher than the current maximum (%i) for this widget (%s). Value reset to %i.", rv.asInteger(), name_.get(), maximumI_, maximumI_);
 					rv = maximumI_;
 				}
 				else if ((type_ == TreeGuiWidget::DoubleSpinWidget) && (rv.asDouble() > maximumD_))
 				{
-					Messenger::print("Dialog Warning: Minimum (%f) is higher than the current maximum (%f) for this widget (%s). Value reset to %f.\n", rv.asDouble(), name_.get(), maximumD_, maximumD_);
+					Messenger::print("Dialog Warning: Minimum (%f) is higher than the current maximum (%f) for this widget (%s). Value reset to %f.", rv.asDouble(), name_.get(), maximumD_, maximumD_);
 					rv = maximumD_;
 				}
 				if (type_ == TreeGuiWidget::IntegerSpinWidget) minimumI_ = rv.asInteger();
@@ -568,13 +568,13 @@ bool TreeGuiWidget::setProperty(TreeGuiWidgetEvent::EventProperty property, Retu
 				if ((type_ == TreeGuiWidget::IntegerSpinWidget) && (valueI_ < minimumI_))
 				{
 					valueI_ = minimumI_;
-					Messenger::print("Value of widget %s altered to conform to new min/max value.\n", name_.get());
+					Messenger::print("Value of widget %s altered to conform to new min/max value.", name_.get());
 					propertyChanged_[TreeGuiWidgetEvent::ValueProperty] = TRUE;
 				}
 				else if ((type_ == TreeGuiWidget::DoubleSpinWidget) && (valueD_ < minimumD_))
 				{
 					valueD_ = minimumD_;
-					Messenger::print("Value of widget %s altered to conform to new min/max value.\n", name_.get());
+					Messenger::print("Value of widget %s altered to conform to new min/max value.", name_.get());
 					propertyChanged_[TreeGuiWidgetEvent::ValueProperty] = TRUE;
 				}
 			}
@@ -582,12 +582,12 @@ bool TreeGuiWidget::setProperty(TreeGuiWidgetEvent::EventProperty property, Retu
 			{
 				if ((type_ == TreeGuiWidget::IntegerSpinWidget) && (rv.asInteger() < minimumI_))
 				{
-					Messenger::print("Dialog Warning: Maximum (%i) is lower than the current minimum (%i) for this widget (%s). Value reset to %i.\n", rv.asInteger(), name_.get(), minimumI_, minimumI_);
+					Messenger::print("Dialog Warning: Maximum (%i) is lower than the current minimum (%i) for this widget (%s). Value reset to %i.", rv.asInteger(), name_.get(), minimumI_, minimumI_);
 					rv = minimumI_;
 				}
 				else if ((type_ == TreeGuiWidget::DoubleSpinWidget) && (rv.asDouble() < minimumD_))
 				{
-					Messenger::print("Dialog Warning: Maximum (%f) is lower than the current minimum (%f) for this widget (%s). Value reset to %f.\n", rv.asDouble(), name_.get(), minimumD_, minimumD_);
+					Messenger::print("Dialog Warning: Maximum (%f) is lower than the current minimum (%f) for this widget (%s). Value reset to %f.", rv.asDouble(), name_.get(), minimumD_, minimumD_);
 					rv = minimumD_;
 				}
 				if (type_ == TreeGuiWidget::IntegerSpinWidget) maximumI_ = rv.asInteger();
@@ -597,13 +597,13 @@ bool TreeGuiWidget::setProperty(TreeGuiWidgetEvent::EventProperty property, Retu
 				if ((type_ == TreeGuiWidget::IntegerSpinWidget) && (valueI_ > maximumI_))
 				{
 					valueI_ = maximumI_;
-					Messenger::print("Value of widget %s altered to conform to new min/max value.\n", name_.get());
+					Messenger::print("Value of widget %s altered to conform to new min/max value.", name_.get());
 					propertyChanged_[TreeGuiWidgetEvent::ValueProperty] = TRUE;
 				}
 				else if ((type_ == TreeGuiWidget::DoubleSpinWidget) && (valueD_ > maximumD_))
 				{
 					valueD_ = maximumD_;
-					Messenger::print("Value of widget %s altered to conform to new min/max value.\n", name_.get());
+					Messenger::print("Value of widget %s altered to conform to new min/max value.", name_.get());
 					propertyChanged_[TreeGuiWidgetEvent::ValueProperty] = TRUE;
 				}
 			}
@@ -624,7 +624,7 @@ bool TreeGuiWidget::setProperty(TreeGuiWidgetEvent::EventProperty property, Retu
 						Messenger::print("Dialog Error: Item '%s' does not exist in the combo '%s'.\nValid values are:\n\t", rv.asString(), name_.get());
 						for (Dnchar* d = items_.first(); d != NULL; d = d->next)
 						{
-							if (d->next == NULL) Messenger::print("\"%s\"\n", d->get());
+							if (d->next == NULL) Messenger::print("\"%s\"", d->get());
 							else Messenger::print("\"%s\", ", d->get());
 						}
 						Messenger::exit("TreeGuiWidget::setProperty");
@@ -638,7 +638,7 @@ bool TreeGuiWidget::setProperty(TreeGuiWidgetEvent::EventProperty property, Retu
 				// Check range
 				if (!isGoodValue(i))
 				{
-					Messenger::print("Dialog Warning: Value (%i) is out of range for this widget (%s) whose minimum/maximum values are %i and %i respectively. Value reset to %i.\n", i, name_.get(), minimumI_, maximumI_, i < minimumI_ ? minimumI_ : maximumI_);
+					Messenger::print("Dialog Warning: Value (%i) is out of range for this widget (%s) whose minimum/maximum values are %i and %i respectively. Value reset to %i.", i, name_.get(), minimumI_, maximumI_, i < minimumI_ ? minimumI_ : maximumI_);
 					i = i < minimumI_ ? minimumI_ : maximumI_;
 				}
 				valueI_ = i;
@@ -651,7 +651,7 @@ bool TreeGuiWidget::setProperty(TreeGuiWidgetEvent::EventProperty property, Retu
 				// Parse new items list
 				LineParser parser;
 				parser.getArgsDelim(LineParser::UseQuotes, rv.asString());
-				if (parser.nArgs() == 0) Messenger::print("Dialog Warning: Recreated combo items list is empty.\n");
+				if (parser.nArgs() == 0) Messenger::print("Dialog Warning: Recreated combo items list is empty.");
 				else
 				{
 					for (int n=0; n<parser.nArgs(); ++n) addItem(parser.argc(n));
@@ -680,7 +680,7 @@ bool TreeGuiWidget::setProperty(TreeGuiWidgetEvent::EventProperty property, Retu
 	// Did we succeed?
 	if (!done)
 	{
-		Messenger::print("Cannot set '%s' property for a widget of type '%s' (%s)).\n", TreeGuiWidgetEvent::eventProperty(property), TreeGuiWidget::widgetType(type_), name_.get());
+		Messenger::print("Cannot set '%s' property for a widget of type '%s' (%s)).", TreeGuiWidgetEvent::eventProperty(property), TreeGuiWidget::widgetType(type_), name_.get());
 		Messenger::exit("TreeGuiWidget::setProperty");
 		return FALSE;
 	}
@@ -754,7 +754,7 @@ void TreeGuiWidget::addWidget(TreeGuiWidget *widget, int left, int top, int addT
 			qtWidgetObject_->addWidget(widget->qtWidgetObject(), left, top, addToWidth, addToHeight);
 			break;
 		default:
-			Messenger::print("Error: Widget '%s' does not have a layout, and so addWidget() cannot be used.\n", name_.get());
+			Messenger::print("Error: Widget '%s' does not have a layout, and so addWidget() cannot be used.", name_.get());
 			break;
 	}
 	Messenger::exit("TreeGuiWidget::addWidget");
@@ -774,7 +774,7 @@ TreeGuiWidget *TreeGuiWidget::addCheck(const char* name, const char* label, int 
 	// Set control limits
 	if (!widget->setInitialProperties(0, 1, state))
 	{
-		Messenger::print("Error when setting up check widget '%s'.\n", name);
+		Messenger::print("Error when setting up check widget '%s'.", name);
 		Messenger::exit("TreeGuiWidget::addCheck");
 		return NULL;
 	}
@@ -802,7 +802,7 @@ TreeGuiWidget *TreeGuiWidget::addCombo(const char* name, const char* label, cons
 	// Parse items list
 	LineParser parser;
 	parser.getArgsDelim(LineParser::UseQuotes, items);
-	if (parser.nArgs() == 0) Messenger::print("Warning: Combo box created with no items.\n");
+	if (parser.nArgs() == 0) Messenger::print("Warning: Combo box created with no items.");
 	else
 	{
 		for (int n=0; n<parser.nArgs(); ++n) widget->addItem(parser.argc(n));
@@ -830,7 +830,7 @@ TreeGuiWidget *TreeGuiWidget::addDoubleSpin(const char* name, const char* label,
 	}
 	
 	// Set control limits
-	if (!widget->setInitialProperties(min, max, value)) Messenger::print("Error when setting up double spin widget '%s'.\n", name);
+	if (!widget->setInitialProperties(min, max, value)) Messenger::print("Error when setting up double spin widget '%s'.", name);
 	// Create complementary Qt control?
 	if (parent_->qtTreeGui() != NULL)
 	{
@@ -853,7 +853,7 @@ TreeGuiWidget *TreeGuiWidget::addEdit(const char* name, const char* label, const
 	}
 	
 	// Set control properties
-	if (!widget->setInitialProperties(text)) Messenger::print("Error when setting up edit widget '%s'.\n", name);
+	if (!widget->setInitialProperties(text)) Messenger::print("Error when setting up edit widget '%s'.", name);
 	// Create complementary Qt control?
 	if (parent_->qtTreeGui() != NULL)
 	{
@@ -920,7 +920,7 @@ TreeGuiWidget *TreeGuiWidget::addIntegerSpin(const char* name, const char* label
 	// Set control limits
 	if (!widget->setInitialProperties(min, max, value))
 	{
-		Messenger::print("Error when setting up integer spin widget '%s'.\n", name);
+		Messenger::print("Error when setting up integer spin widget '%s'.", name);
 		return NULL;
 	}
 	// Create complementary Qt control?
@@ -956,7 +956,7 @@ TreeGuiWidget *TreeGuiWidget::addPage(const char* name, const char* label)
 	// Is this a tab widget?
 	if ((type_ != TreeGuiWidget::TabWidget) && (type_ != TreeGuiWidget::StackWidget))
 	{
-		Messenger::print("Error: Attempted to add a page to a widget that isn't a tab or a stack (%s).\n", name_.get());
+		Messenger::print("Error: Attempted to add a page to a widget that isn't a tab or a stack (%s).", name_.get());
 		Messenger::exit("TreeGuiWidget::addPage");
 		return NULL;
 	}
@@ -983,13 +983,13 @@ TreeGuiWidget *TreeGuiWidget::addRadioButton(const char* name, const char* label
 	TreeGuiWidget *group = parent_->findWidget(radioGroup);
 	if (group == NULL)
 	{
-		Messenger::print("Error: Couldn't find radiogroup named '%s'.\n", radioGroup);
+		Messenger::print("Error: Couldn't find radiogroup named '%s'.", radioGroup);
 		Messenger::exit("TreeGuiWidget::addRadioButton");
 		return NULL;
 	}
 	if (group->type() != TreeGuiWidget::RadioGroupWidget)
 	{
-		Messenger::print("Error: Attempted to add a radiobutton to a non-radiogroup widget (%s).\n", radioGroup);
+		Messenger::print("Error: Attempted to add a radiobutton to a non-radiogroup widget (%s).", radioGroup);
 		Messenger::exit("TreeGuiWidget::addRadioButton");
 		return NULL;
 	}
@@ -1055,7 +1055,7 @@ bool TreeGuiWidget::addSpacer(bool expandHorizontal, bool expandVertical, int l,
 			result = qtWidgetObject_->addSpacer(expandHorizontal, expandVertical, l, t, xw, xh);
 			break;
 		default:
-			Messenger::print("Error: Widget '%s' does not have a layout, and so addSpacer() cannot be used.\n", name_.get());
+			Messenger::print("Error: Widget '%s' does not have a layout, and so addSpacer() cannot be used.", name_.get());
 			result = FALSE;
 			break;
 	}
@@ -1112,7 +1112,7 @@ int TreeGuiWidget::asInteger()
 	switch (type_)
 	{
 		case (TreeGuiWidget::DoubleSpinWidget):
-			Messenger::print("Warning: Converting double value to integer when retrieving doublespin widget's value (%s).\n", name_.get());
+			Messenger::print("Warning: Converting double value to integer when retrieving doublespin widget's value (%s).", name_.get());
 			result = int(valueD_);
 			break;
 		case (TreeGuiWidget::RadioGroupWidget):
@@ -1126,12 +1126,12 @@ int TreeGuiWidget::asInteger()
 			break;
 		case (TreeGuiWidget::EditWidget):
 		case (TreeGuiWidget::LabelWidget):
-			Messenger::print("Warning: Converting string value to integer when retrieving widget value (%s).\n", name_.get());
+			Messenger::print("Warning: Converting string value to integer when retrieving widget value (%s).", name_.get());
 			result = atoi(text_.get());
 			break;
 		case (TreeGuiWidget::DialogWidget):
 		case (TreeGuiWidget::PageWidget):
-			Messenger::print("Warning: Don't know how to retrieve an integer value for this widget (%s).\n", name_.get());
+			Messenger::print("Warning: Don't know how to retrieve an integer value for this widget (%s).", name_.get());
 			result = 0;
 			break;
 		default:
@@ -1158,17 +1158,17 @@ double TreeGuiWidget::asDouble()
 		case (TreeGuiWidget::RadioButtonWidget):
 		case (TreeGuiWidget::TabWidget):
 		case (TreeGuiWidget::StackWidget):
-			Messenger::print("Warning: Converting integer value to double when retrieving widget value (%s).\n", name_.get());
+			Messenger::print("Warning: Converting integer value to double when retrieving widget value (%s).", name_.get());
 			result = double(valueI_);
 			break;
 		case (TreeGuiWidget::EditWidget):
 		case (TreeGuiWidget::LabelWidget):
-			Messenger::print("Warning: Converting string value to double when retrieving widget value (%s).\n", name_.get());
+			Messenger::print("Warning: Converting string value to double when retrieving widget value (%s).", name_.get());
 			result = atof(text_.get());
 			break;
 		case (TreeGuiWidget::DialogWidget):
 		case (TreeGuiWidget::PageWidget):
-			Messenger::print("Warning: Don't know how to retrieve a double value for this widget (%s).\n", name_.get());
+			Messenger::print("Warning: Don't know how to retrieve a double value for this widget (%s).", name_.get());
 			result = 0.0;
 			break;
 		default:
@@ -1186,7 +1186,7 @@ const char* TreeGuiWidget::asCharacter()
 	switch (type_)
 	{
 		case (TreeGuiWidget::DoubleSpinWidget):
-			Messenger::print(Messenger::Verbose, "Warning: Converting double value to string when retrieving doublespin widget (%s).\n", name_.get());
+			Messenger::print(Messenger::Verbose, "Warning: Converting double value to string when retrieving doublespin widget (%s).", name_.get());
 			result = ftoa(valueD_);
 			break;
 		case (TreeGuiWidget::RadioGroupWidget):
@@ -1195,7 +1195,7 @@ const char* TreeGuiWidget::asCharacter()
 		case (TreeGuiWidget::RadioButtonWidget):
 		case (TreeGuiWidget::TabWidget):
 		case (TreeGuiWidget::StackWidget):
-			Messenger::print(Messenger::Verbose, "Warning: Converting integer value to string when retrieving widget (%s).\n", name_.get());
+			Messenger::print(Messenger::Verbose, "Warning: Converting integer value to string when retrieving widget (%s).", name_.get());
 			result = itoa(valueI_);
 			break;
 		case (TreeGuiWidget::ComboWidget):
@@ -1207,7 +1207,7 @@ const char* TreeGuiWidget::asCharacter()
 			break;
 		case (TreeGuiWidget::DialogWidget):
 		case (TreeGuiWidget::PageWidget):
-			Messenger::print("Warning: Don't know how to retrieve a string value for this widget (%s).\n", name_.get());
+			Messenger::print("Warning: Don't know how to retrieve a string value for this widget (%s).", name_.get());
 			result = "NULL";
 			break;
 		default:
@@ -1316,7 +1316,7 @@ TreeGuiWidget *TreeGui::createWidget(const char* name, TreeGuiWidget::WidgetType
 	// Does this name already exist?
 	if (findWidget(name))
 	{
-		Messenger::print("Error: A widget named '%s' already exists in the dialog, and cannot be duplicated.\n", name);
+		Messenger::print("Error: A widget named '%s' already exists in the dialog, and cannot be duplicated.", name);
 		return NULL;
 	}
 	TreeGuiWidget *widget = widgets_.add();
@@ -1390,7 +1390,7 @@ void TreeGui::listWidgets()
 				// Nothing to print...
 				continue;
 		}
-		Messenger::print("%s\n", s.get());
+		Messenger::print("%s", s.get());
 	}
 }
 
@@ -1401,8 +1401,8 @@ bool TreeGui::setWidgetValue(const char* name, int i)
 	TreeGuiWidget *widget = findWidget(name);
 	if (widget == NULL)
 	{
-		Messenger::print("Error: No widget named '%s' exists in this dialog (calling setWidgetValue).\n", name);
-		Messenger::print("Valid widgets are:\n");
+		Messenger::print("Error: No widget named '%s' exists in this dialog (calling setWidgetValue).", name);
+		Messenger::print("Valid widgets are:");
 		listWidgets();
 		return FALSE;
 	}
@@ -1416,8 +1416,8 @@ bool TreeGui::setWidgetValue(const char* name, double d)
 	TreeGuiWidget *widget = findWidget(name);
 	if (widget == NULL)
 	{
-		Messenger::print("Error: No widget named '%s' exists in this dialog (calling setWidgetValue).\n", name);
-		Messenger::print("Valid widgets are:\n");
+		Messenger::print("Error: No widget named '%s' exists in this dialog (calling setWidgetValue).", name);
+		Messenger::print("Valid widgets are:");
 		listWidgets();
 		return FALSE;
 	}
@@ -1431,8 +1431,8 @@ bool TreeGui::setWidgetValue(const char* name, const char* s)
 	TreeGuiWidget *widget = findWidget(name);
 	if (widget == NULL)
 	{
-		Messenger::print("Error: No widget named '%s' exists in this dialog (calling setWidgetValue).\n", name);
-		Messenger::print("Valid widgets are:\n");
+		Messenger::print("Error: No widget named '%s' exists in this dialog (calling setWidgetValue).", name);
+		Messenger::print("Valid widgets are:");
 		listWidgets();
 		return FALSE;
 	}
@@ -1446,8 +1446,8 @@ int TreeGui::asInteger(const char* name)
 	TreeGuiWidget *widget = findWidget(name);
 	if (widget == NULL)
 	{
-		Messenger::print("Error: No widget named '%s' exists in this dialog (calling asInteger).\n", name);
-		Messenger::print("Valid widgets are:\n");
+		Messenger::print("Error: No widget named '%s' exists in this dialog (calling asInteger).", name);
+		Messenger::print("Valid widgets are:");
 		listWidgets();
 		return FALSE;
 	}
@@ -1461,8 +1461,8 @@ double TreeGui::asDouble(const char* name)
 	TreeGuiWidget *widget = findWidget(name);
 	if (widget == NULL)
 	{
-		Messenger::print("Error: No widget named '%s' exists in this dialog (calling asDouble).\n", name);
-		Messenger::print("Valid widgets are:\n");
+		Messenger::print("Error: No widget named '%s' exists in this dialog (calling asDouble).", name);
+		Messenger::print("Valid widgets are:");
 		listWidgets();
 		return 0.0;
 	}
@@ -1476,8 +1476,8 @@ const char* TreeGui::asCharacter(const char* name)
 	TreeGuiWidget *widget = findWidget(name);
 	if (widget == NULL)
 	{
-		Messenger::print("Error: No widget named '%s' exists in this dialog (calling asCharacter).\n", name);
-		Messenger::print("Valid widgets are:\n");
+		Messenger::print("Error: No widget named '%s' exists in this dialog (calling asCharacter).", name);
+		Messenger::print("Valid widgets are:");
 		listWidgets();
 		return "NULL";
 	}
@@ -1492,8 +1492,8 @@ Vec3<double> TreeGui::asVec3(const char* name1, const char* name2, const char* n
 	TreeGuiWidget *widget = findWidget(name1);
 	if (widget == NULL)
 	{
-		Messenger::print("Error: No widget named '%s' exists in this dialog (calling asVector).\n", name1);
-		Messenger::print("Valid widgets are:\n");
+		Messenger::print("Error: No widget named '%s' exists in this dialog (calling asVector).", name1);
+		Messenger::print("Valid widgets are:");
 		listWidgets();
 		return FALSE;
 	}
@@ -1502,8 +1502,8 @@ Vec3<double> TreeGui::asVec3(const char* name1, const char* name2, const char* n
 	widget = findWidget(name2);
 	if (widget == NULL)
 	{
-		Messenger::print("Error: No widget named '%s' exists in this dialog (calling asVector).\n", name2);
-		Messenger::print("Valid widgets are:\n");
+		Messenger::print("Error: No widget named '%s' exists in this dialog (calling asVector).", name2);
+		Messenger::print("Valid widgets are:");
 		listWidgets();
 		return FALSE;
 	}
@@ -1512,8 +1512,8 @@ Vec3<double> TreeGui::asVec3(const char* name1, const char* name2, const char* n
 	widget = findWidget(name3);
 	if (widget == NULL)
 	{
-		Messenger::print("Error: No widget named '%s' exists in this dialog (calling asVector).\n", name3);
-		Messenger::print("Valid widgets are:\n");
+		Messenger::print("Error: No widget named '%s' exists in this dialog (calling asVector).", name3);
+		Messenger::print("Valid widgets are:");
 		listWidgets();
 		return FALSE;
 	}

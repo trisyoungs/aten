@@ -52,7 +52,7 @@ void Pattern::angleEnergy(Model* srcmodel, EnergyStore* estore, int molecule)
 			switch (pb->data()->angleForm())
 			{
 				case (AngleFunctions::None):
-					Messenger::print("Warning: No function is specified for angle energy %i-%i-%i.\n", i, j, k);
+					Messenger::print("Warning: No function is specified for angle energy %i-%i-%i.", i, j, k);
 				case (AngleFunctions::Ignore):
 					break;
 				case (AngleFunctions::Harmonic): 
@@ -93,7 +93,7 @@ void Pattern::angleEnergy(Model* srcmodel, EnergyStore* estore, int molecule)
 					energy += 0.5 * forcek * rij * rij;
 					break;
 				default:
-					Messenger::print( "No equation coded for angle energy of type '%s'.\n", AngleFunctions::AngleFunctions[pb->data()->angleForm()].name);
+					Messenger::print( "No equation coded for angle energy of type '%s'.", AngleFunctions::AngleFunctions[pb->data()->angleForm()].name);
 					break;
 
 			}
@@ -140,7 +140,7 @@ void Pattern::angleForces(Model* srcmodel)
 			switch (pb->data()->angleForm())
 			{
 				case (AngleFunctions::None):
-					Messenger::print("Warning: No function is specified for angle force %i-%i-%i.\n", i, j, k);
+					Messenger::print("Warning: No function is specified for angle force %i-%i-%i.", i, j, k);
 				case (AngleFunctions::Ignore):
 					du_dtheta = 0.0;
 					break;
@@ -180,7 +180,7 @@ void Pattern::angleForces(Model* srcmodel)
 					du_dtheta = -forcek * (rij - eq);
 					break;
 				default:
-					Messenger::print( "No equation coded for angle force of type '%s'.\n", AngleFunctions::AngleFunctions[pb->data()->angleForm()].name);
+					Messenger::print( "No equation coded for angle force of type '%s'.", AngleFunctions::AngleFunctions[pb->data()->angleForm()].name);
 					break;
 			}
 

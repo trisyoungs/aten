@@ -34,6 +34,8 @@ RenderGroup& Model::renderGroup(PrimitiveSet& primitiveSet)
 
 	renderGroup_.createAtomsAndBonds(primitiveSet, this, Matrix());
 
+	renderGroupPoint_ = changeLog.log(Log::Total);
+
 	return renderGroup_;
 }
 

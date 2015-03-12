@@ -69,7 +69,7 @@ bool Commands::function_CurrentGrid(CommandNode* c, Bundle& obj, ReturnValue& rv
 			g = (Grid*) c->argp(0, VTypes::GridData);
 			break;
 		default:
-			Messenger::print("Can't convert a variable of type '%s' to a Grid.\n", VTypes::dataType(c->argType(0)));
+			Messenger::print("Can't convert a variable of type '%s' to a Grid.", VTypes::dataType(c->argType(0)));
 		break;
 	}
 	if (g == NULL) return FALSE;
@@ -101,7 +101,7 @@ bool Commands::function_GetGrid(CommandNode* c, Bundle& obj, ReturnValue& rv)
 			g = (Grid*) c->argp(0, VTypes::GridData);
 			break;
 		default:
-			Messenger::print("Can't convert a variable of type '%s' to a Grid.\n", VTypes::dataType(c->argType(0)));
+			Messenger::print("Can't convert a variable of type '%s' to a Grid.", VTypes::dataType(c->argType(0)));
 			break;
 	}
 	if (g == NULL) return FALSE;
@@ -159,7 +159,7 @@ bool Commands::function_GridColourscale(CommandNode* c, Bundle& obj, ReturnValue
 	int cs = c->argi(0);
 	if ((cs < 0) || (cs > 10))
 	{
-		Messenger::print("ColourScale %i is out of range (1-10, or 0 to use object's internal colour).\n",cs);
+		Messenger::print("ColourScale %i is out of range (1-10, or 0 to use object's internal colour).",cs);
 		return FALSE;
 	}
 	obj.g->setColourScale(cs-1);
@@ -202,7 +202,7 @@ bool Commands::function_GridLoopOrder(CommandNode* c, Bundle& obj, ReturnValue& 
 	if (obj.notifyNull(Bundle::GridPointer)) return FALSE;
 	if (strlen(c->argc(0)) != 3)
 	{
-		Messenger::print("A string of three characters must be passed to 'gridlooporder' (got '%s').\n",c->argc(0));
+		Messenger::print("A string of three characters must be passed to 'gridlooporder' (got '%s').",c->argc(0));
 		return FALSE;
 	}
 	char ch;
@@ -227,7 +227,7 @@ bool Commands::function_GridLoopOrder(CommandNode* c, Bundle& obj, ReturnValue& 
 				obj.g->setLoopOrder(n,2);
 				break;
 			default:
-				Messenger::print("Unrecognised character (%c) given to 'setgridlooporder' - default value used.\n",ch);
+				Messenger::print("Unrecognised character (%c) given to 'setgridlooporder' - default value used.",ch);
 				obj.g->setLoopOrder(n,n);
 				break;
 		}

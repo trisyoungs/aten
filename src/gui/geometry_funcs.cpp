@@ -155,7 +155,7 @@ void GeometryWidget::on_SetNewDistanceButton_clicked(bool checked)
 	Model* m = parent_.aten().currentModelOrFrame();
 	if (m->nSelected() != 2)
 	{
-		Messenger::print("Can't set distance - %i atoms are selected but 2 are required.\n", m->nSelected());
+		Messenger::print("Can't set distance - %i atoms are selected but 2 are required.", m->nSelected());
 		return;
 	}
 	Atom* i, *j;
@@ -172,7 +172,7 @@ void GeometryWidget::on_NudgeDistancePlusButton_clicked(bool checked)
 	Model* m = parent_.aten().currentModelOrFrame();
 	if (m->nSelected() != 2)
 	{
-		Messenger::print("Can't nudge distance - %i atoms are selected but 2 are required.\n", m->nSelected());
+		Messenger::print("Can't nudge distance - %i atoms are selected but 2 are required.", m->nSelected());
 		return;
 	}
 	Atom* i, *j;
@@ -190,7 +190,7 @@ void GeometryWidget::on_NudgeDistanceMinusButton_clicked(bool checked)
 	Model* m = parent_.aten().currentModelOrFrame();
 	if (m->nSelected() != 2)
 	{
-		Messenger::print("Can't nudge distance - %i atoms are selected but 2 are required.\n", m->nSelected());
+		Messenger::print("Can't nudge distance - %i atoms are selected but 2 are required.", m->nSelected());
 		return;
 	}
 	Atom* i, *j;
@@ -212,7 +212,7 @@ void GeometryWidget::on_SetNewAngleButton_clicked(bool checked)
 	Model* m = parent_.aten().currentModelOrFrame();
 	if (m->nSelected() != 3)
 	{
-		Messenger::print("Can't set angle - %i atoms are selected but 3 are required.\n", m->nSelected());
+		Messenger::print("Can't set angle - %i atoms are selected but 3 are required.", m->nSelected());
 		return;
 	}
 	Atom* i, *j, *k;
@@ -230,7 +230,7 @@ void GeometryWidget::on_NudgeAnglePlusButton_clicked(bool checked)
 	Model* m = parent_.aten().currentModelOrFrame();
 	if (m->nSelected() != 3)
 	{
-		Messenger::print("Can't nudge angle - %i atoms are selected but 3 are required.\n", m->nSelected());
+		Messenger::print("Can't nudge angle - %i atoms are selected but 3 are required.", m->nSelected());
 		return;
 	}
 	Atom* i, *j, *k;
@@ -249,7 +249,7 @@ void GeometryWidget::on_NudgeAngleMinusButton_clicked(bool checked)
 	Model* m = parent_.aten().currentModelOrFrame();
 	if (m->nSelected() != 3)
 	{
-		Messenger::print("Can't nudge angle - %i atoms are selected but 3 are required.\n", m->nSelected());
+		Messenger::print("Can't nudge angle - %i atoms are selected but 3 are required.", m->nSelected());
 		return;
 	}
 	Atom* i, *j, *k;
@@ -272,7 +272,7 @@ void GeometryWidget::on_SetNewTorsionButton_clicked(bool checked)
 	Model* m = parent_.aten().currentModelOrFrame();
 	if (m->nSelected() != 4)
 	{
-		Messenger::print("Can't set torsion angle - %i atoms are selected but 4 are required.\n", m->nSelected());
+		Messenger::print("Can't set torsion angle - %i atoms are selected but 4 are required.", m->nSelected());
 		return;
 	}
 	Atom* i, *j, *k, *l;
@@ -291,7 +291,7 @@ void GeometryWidget::on_NudgeTorsionPlusButton_clicked(bool checked)
 	Model* m = parent_.aten().currentModelOrFrame();
 	if (m->nSelected() != 4)
 	{
-		Messenger::print("Can't nudge torsion angle - %i atoms are selected but 4 are required.\n", m->nSelected());
+		Messenger::print("Can't nudge torsion angle - %i atoms are selected but 4 are required.", m->nSelected());
 		return;
 	}
 	Atom* i, *j, *k, *l;
@@ -311,7 +311,7 @@ void GeometryWidget::on_NudgeTorsionMinusButton_clicked(bool checked)
 	Model* m = parent_.aten().currentModelOrFrame();
 	if (m->nSelected() != 4)
 	{
-		Messenger::print("Can't nudge torsion angle - %i atoms are selected but 4 are required.\n", m->nSelected());
+		Messenger::print("Can't nudge torsion angle - %i atoms are selected but 4 are required.", m->nSelected());
 		return;
 	}
 	Atom* i, *j, *k, *l;

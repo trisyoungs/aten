@@ -35,7 +35,7 @@ bool Commands::function_AddGenerator(CommandNode* c, Bundle& obj, ReturnValue& r
 	Generator *gen = obj.rs()->cell()->addGenerator();
 	if (!gen->set(c->argc(0)))
 	{
-		Messenger::print("Failed to create new generator definition.\n");
+		Messenger::print("Failed to create new generator definition.");
 		return FALSE;
 	}
 	rv.reset();
@@ -158,7 +158,7 @@ bool Commands::function_Pack(CommandNode* c, Bundle& obj, ReturnValue& rv)
 bool Commands::function_PrintCell(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	Messenger::print("Unit cell type for model '%s' is %s\n", obj.rs()->name(), UnitCell::cellType(obj.rs()->cell()->type()));
+	Messenger::print("Unit cell type for model '%s' is %s", obj.rs()->name(), UnitCell::cellType(obj.rs()->cell()->type()));
 	if (obj.rs()->cell()->type() != UnitCell::NoCell) obj.rs()->cell()->print();
 	rv.reset();
 	return TRUE;
@@ -200,7 +200,7 @@ bool Commands::function_RotateCell(CommandNode* c, Bundle& obj, ReturnValue& rv)
 			axis = 2;
 			break;
 		default:
-			Messenger::print("Unrecognised axis '%c' given to 'rotatecell'.\n",ch);
+			Messenger::print("Unrecognised axis '%c' given to 'rotatecell'.",ch);
 			return FALSE;
 			break;
 	}
@@ -256,7 +256,7 @@ bool Commands::function_SGInfo(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	const T_TabSgName *tsgn = FindTabSgNameEntry(c->argc(0), 'A');
 	if (tsgn == NULL)
 	{
-		Messenger::print("Unable to find spacegroup '%s'.\n", c->argc(0));
+		Messenger::print("Unable to find spacegroup '%s'.", c->argc(0));
 		return FALSE;
 	}
 // 	SgName = tsgn->HallSymbol;

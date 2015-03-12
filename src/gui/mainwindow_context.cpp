@@ -192,7 +192,7 @@ void AtenWindow::on_actionAtomColourSet_triggered(bool checked)
 	contextAtom_ = NULL;
 	// Set colour scheme menu option automatically if necessary
 	if (prefs.colourScheme() != Prefs::CustomScheme) ui.actionSchemeCustom->trigger();
-	Messenger::print("Colouring scheme changed to 'custom'.\n");
+	Messenger::print("Colouring scheme changed to 'custom'.");
 	postRedisplay();
 }
 

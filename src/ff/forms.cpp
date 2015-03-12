@@ -84,7 +84,7 @@ VdwFunctions::VdwFunction VdwFunctions::vdwFunction(const char* s, bool reportEr
 		if (strcmp(VdwFunctions::VdwFunctions[i].keyword,s) == 0) break;
 	if ((i == VdwFunctions::nVdwFunctions) && reportError)
 	{
-		Messenger::print("Invalid VDW functional form '%s'.\n", s);
+		Messenger::print("Invalid VDW functional form '%s'.", s);
 		printValid();
 	}
 	return (VdwFunctions::VdwFunction) i;
@@ -96,10 +96,10 @@ int VdwFunctions::vdwParameter(VdwFunction form, const char* s, bool reportError
 		if (strcmp(VdwFunctions::VdwFunctions[form].parameterKeywords[i],s) == 0) break;
 	if ((i == VdwFunctions::VdwFunctions[form].nParameters) && reportError)
 	{
-		Messenger::print("Invalid parameter '%s' for VDW functional form '%s'.\n", s, VdwFunctions::VdwFunctions[form].name);
+		Messenger::print("Invalid parameter '%s' for VDW functional form '%s'.", s, VdwFunctions::VdwFunctions[form].name);
 		Messenger::print("Valid parameters are:\n   ");
 		for (int n=0; n< VdwFunctions::VdwFunctions[form].nParameters; n++) Messenger::print("%s ",VdwFunctions::VdwFunctions[form].parameterKeywords[n]);
-		Messenger::print("\n");
+		Messenger::print("");
 	}
 	return i;
 }
@@ -107,7 +107,7 @@ void VdwFunctions::printValid()
 {
 	Messenger::print("Valid forms are:\n   ");
 	for (int i=1; i< VdwFunctions::nVdwFunctions; i++) Messenger::print("%s ",VdwFunctions::VdwFunctions[i].keyword);
-	Messenger::print("\n");
+	Messenger::print("");
 }
 
 // Bond potential forms
@@ -140,7 +140,7 @@ BondFunctions::BondFunction BondFunctions::bondFunction(const char* s, bool repo
 		if (strcmp(BondFunctions::BondFunctions[i].keyword,s) == 0) break;
 	if ((i == BondFunctions::nBondFunctions) && reportError)
 	{
-		Messenger::print("Invalid bond functional form '%s'.\n", s);
+		Messenger::print("Invalid bond functional form '%s'.", s);
 		printValid();
 	}
 	return (BondFunctions::BondFunction) i;
@@ -152,10 +152,10 @@ int BondFunctions::bondParameter(BondFunction form, const char* s, bool reportEr
 		if (strcmp(BondFunctions::BondFunctions[form].parameterKeywords[i],s) == 0) break;
 	if ((i == BondFunctions::BondFunctions[form].nParameters) && reportError)
 	{
-		Messenger::print("Invalid parameter '%s' for bond functional form '%s'.\n", s, BondFunctions::BondFunctions[form].name);
+		Messenger::print("Invalid parameter '%s' for bond functional form '%s'.", s, BondFunctions::BondFunctions[form].name);
 		Messenger::print("Valid parameters are:\n   ");
 		for (int n=0; n< BondFunctions::BondFunctions[form].nParameters; n++) Messenger::print("%s ",BondFunctions::BondFunctions[form].parameterKeywords[n]);
-		Messenger::print("\n");
+		Messenger::print("");
 	}
 	return i;
 }
@@ -163,7 +163,7 @@ void BondFunctions::printValid()
 {
 	Messenger::print("Valid forms are:\n   ");
 	for (int i=1; i< BondFunctions::nBondFunctions; i++) Messenger::print("%s ",BondFunctions::BondFunctions[i].keyword);
-	Messenger::print("\n");
+	Messenger::print("");
 }
 
 // Angle potential forms
@@ -204,7 +204,7 @@ AngleFunctions::AngleFunction AngleFunctions::angleFunction(const char* s, bool 
 		if (strcmp(AngleFunctions::AngleFunctions[i].keyword,s) == 0) break;
 	if ((i == AngleFunctions::nAngleFunctions) && reportError)
 	{
-		Messenger::print("Invalid angle functional form '%s'.\n", s);
+		Messenger::print("Invalid angle functional form '%s'.", s);
 		printValid();
 	}
 	return (AngleFunctions::AngleFunction) i;
@@ -216,10 +216,10 @@ int AngleFunctions::angleParameter(AngleFunction form, const char* s, bool repor
 		if (strcmp(AngleFunctions::AngleFunctions[form].parameterKeywords[i],s) == 0) break;
 	if ((i == AngleFunctions::AngleFunctions[form].nParameters) && reportError)
 	{
-		Messenger::print("Invalid parameter '%s' for bond functional form '%s'.\n", s, AngleFunctions::AngleFunctions[form].name);
+		Messenger::print("Invalid parameter '%s' for bond functional form '%s'.", s, AngleFunctions::AngleFunctions[form].name);
 		Messenger::print("Valid parameters are:\n   ");
 		for (int n=0; n< AngleFunctions::AngleFunctions[form].nParameters; n++) Messenger::print("%s ",AngleFunctions::AngleFunctions[form].parameterKeywords[n]);
-		Messenger::print("\n");
+		Messenger::print("");
 	}
 	return i;
 }
@@ -227,7 +227,7 @@ void AngleFunctions::printValid()
 {
 	Messenger::print("Valid forms are:\n   ");
 	for (int i=1; i< AngleFunctions::nAngleFunctions; i++) Messenger::print("%s ",AngleFunctions::AngleFunctions[i].keyword);
-	Messenger::print("\n");
+	Messenger::print("");
 }
 
 // Torsion potential forms
@@ -276,7 +276,7 @@ TorsionFunctions::TorsionFunction TorsionFunctions::torsionFunction(const char* 
 		if (strcmp(TorsionFunctions::TorsionFunctions[i].keyword,s) == 0) break;
 	if ((i ==  TorsionFunctions::nTorsionFunctions) && reportError)
 	{
-		Messenger::print("Invalid torsion functional form '%s'.\n", s);
+		Messenger::print("Invalid torsion functional form '%s'.", s);
 		printValid();
 	}
 	return (TorsionFunctions::TorsionFunction) i;
@@ -288,10 +288,10 @@ int TorsionFunctions::torsionParameter(TorsionFunction form, const char* s, bool
 		if (strcmp(TorsionFunctions::TorsionFunctions[form].parameterKeywords[i],s) == 0) break;
 	if ((i == TorsionFunctions::TorsionFunctions[form].nParameters) && reportError)
 	{
-		Messenger::print("Invalid parameter '%s' for bond functional form '%s'.\n", s, TorsionFunctions::TorsionFunctions[form].name);
+		Messenger::print("Invalid parameter '%s' for bond functional form '%s'.", s, TorsionFunctions::TorsionFunctions[form].name);
 		Messenger::print("Valid parameters are:\n   ");
 		for (int n=0; n< TorsionFunctions::TorsionFunctions[form].nParameters; n++) Messenger::print("%s ",TorsionFunctions::TorsionFunctions[form].parameterKeywords[n]);
-		Messenger::print("\n");
+		Messenger::print("");
 	}
 	return i;
 }
@@ -299,5 +299,5 @@ void TorsionFunctions::printValid()
 {
 	Messenger::print("Valid forms are:\n   ");
 	for (int i=1; i< TorsionFunctions::nTorsionFunctions; i++) Messenger::print("%s ",TorsionFunctions::TorsionFunctions[i].keyword);
-	Messenger::print("\n");
+	Messenger::print("");
 }

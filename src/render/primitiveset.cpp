@@ -257,8 +257,8 @@ void PrimitiveSet::recreatePrimitives()
 	// Atom Styles (Prefs::StickStyle, Prefs::TubeStyle, and Prefs::SphereStyle)
 	atom_.initialise(GL_TRIANGLES, false);
 	atom_.plotSphere(1.0, nStacks, nSlices);
-	selectedAtom_.initialise(GL_LINES, false);
-	selectedAtom_.plotSphere( selScale, nStacks, nSlices);
+	selectedAtom_.initialise(GL_TRIANGLES, false);
+	selectedAtom_.plotSphere(selScale, nStacks, nSlices);
 	
 	// Bond primitive accuracy
 	nStacks = std::max(1, (int) (currentQuality_*0.25));
@@ -271,9 +271,9 @@ void PrimitiveSet::recreatePrimitives()
 	bonds_[Prefs::TubeStyle][Bond::Single].plotCylinder(0,0,0,0,0,1, bRadius[Prefs::TubeStyle], bRadius[Prefs::TubeStyle], nStacks, nSlices);
 	bonds_[Prefs::SphereStyle][Bond::Single].plotCylinder(0,0,0,0,0,1, bRadius[Prefs::SphereStyle], bRadius[Prefs::SphereStyle], nStacks, nSlices);
 	bonds_[Prefs::ScaledStyle][Bond::Single].plotCylinder(0,0,0,0,0,1, bRadius[Prefs::ScaledStyle], bRadius[Prefs::ScaledStyle], nStacks, nSlices);
-	selectedBonds_[Prefs::TubeStyle][Bond::Single].initialise(GL_LINES, false);
-	selectedBonds_[Prefs::SphereStyle][Bond::Single].initialise(GL_LINES, false);
-	selectedBonds_[Prefs::ScaledStyle][Bond::Single].initialise(GL_LINES, false);
+	selectedBonds_[Prefs::TubeStyle][Bond::Single].initialise(GL_TRIANGLES, false);
+	selectedBonds_[Prefs::SphereStyle][Bond::Single].initialise(GL_TRIANGLES, false);
+	selectedBonds_[Prefs::ScaledStyle][Bond::Single].initialise(GL_TRIANGLES, false);
 	selectedBonds_[Prefs::TubeStyle][Bond::Single].plotCylinder(0,0,0,0,0,1, bRadius[Prefs::TubeStyle]*selScale, bRadius[Prefs::TubeStyle]*selScale, nStacks, nSlices);
 	selectedBonds_[Prefs::SphereStyle][Bond::Single].plotCylinder(0,0,0,0,0,1, bRadius[Prefs::SphereStyle]*selScale, bRadius[Prefs::SphereStyle]*selScale, nStacks, nSlices);
 	selectedBonds_[Prefs::ScaledStyle][Bond::Single].plotCylinder(0,0,0,0,0,1, bRadius[Prefs::ScaledStyle]*selScale, bRadius[Prefs::ScaledStyle]*selScale, nStacks, nSlices);

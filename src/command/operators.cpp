@@ -70,7 +70,7 @@ bool Commands::function_OperatorAdd(CommandNode* c, Bundle& obj, ReturnValue& rv
 			else { Vec3<double> v(rhs.asDouble(0,b), rhs.asDouble(1,b), rhs.asDouble(2,b)); rv.set(v + lhs.asVector()); } break;
 		case (VTypes::StrStr): s = lhs.asString(b); s.strcat(rhs.asString(b)); rv.set(s); break;
 		default:
-			Messenger::print("The operator '+' cannot act between %s and %s.\n", VTypes::aDataType(rv.type(),rv.arraySize()), VTypes::aDataType(rhs.type(),rhs.arraySize()));
+			Messenger::print("The operator '+' cannot act between %s and %s.", VTypes::aDataType(rv.type(),rv.arraySize()), VTypes::aDataType(rhs.type(),rhs.arraySize()));
 	}
 	return b;
 }
@@ -164,7 +164,7 @@ bool Commands::function_OperatorDivide(CommandNode* c, Bundle& obj, ReturnValue&
 		case (VTypes::VecDblA): if (rhs.arraySize() != 3) b = FALSE;
 			else { Vec3<double> v(rhs.asDouble(0,b), rhs.asDouble(1,b), rhs.asDouble(2,b)); rv.set(v / lhs.asVector()); } break;
 		default:
-			Messenger::print("The operator '/' cannot act between %s and %s.\n", VTypes::aDataType(rv.type(),rv.arraySize()), VTypes::aDataType(rhs.type(),rhs.arraySize()));
+			Messenger::print("The operator '/' cannot act between %s and %s.", VTypes::aDataType(rv.type(),rv.arraySize()), VTypes::aDataType(rhs.type(),rhs.arraySize()));
 	}
 	return b;
 }
@@ -197,7 +197,7 @@ bool Commands::function_OperatorEqualTo(CommandNode* c, Bundle& obj, ReturnValue
 		case (VTypes::PtrPtr): if (lhs.asPointer(lhs.type(),b) != rhs.asPointer(rhs.type(),b)) result = 0; break;
 		case (VTypes::PtrInt): if ( ((long int) lhs.asPointer(lhs.type(),b)) != ((long int) rhs.asInteger(b))) result = 0; break;
 		default:
-			Messenger::print("The operator '==' cannot act between %s and %s.\n", VTypes::aDataType(rv.type(),rv.arraySize()), VTypes::aDataType(rhs.type(),rhs.arraySize()));
+			Messenger::print("The operator '==' cannot act between %s and %s.", VTypes::aDataType(rv.type(),rv.arraySize()), VTypes::aDataType(rhs.type(),rhs.arraySize()));
 	}
 	rv.set(result);
 	return b;
@@ -231,7 +231,7 @@ bool Commands::function_OperatorGreaterThan(CommandNode* c, Bundle& obj, ReturnV
 		case (VTypes::PtrPtr): if (lhs.asPointer(lhs.type(),b) <= rhs.asPointer(rhs.type(),b)) result = 0; break;
 		case (VTypes::PtrInt): if ( ((long int) lhs.asPointer(lhs.type(),b)) <= ((long int) rhs.asInteger(b))) result = 0; break;
 		default:
-			Messenger::print("The operator '>' cannot act between %s and %s.\n", VTypes::aDataType(rv.type(),rv.arraySize()), VTypes::aDataType(rhs.type(),rhs.arraySize()));
+			Messenger::print("The operator '>' cannot act between %s and %s.", VTypes::aDataType(rv.type(),rv.arraySize()), VTypes::aDataType(rhs.type(),rhs.arraySize()));
 	}
 	rv.set(result);
 	return b;
@@ -265,7 +265,7 @@ bool Commands::function_OperatorGreaterThanEqualTo(CommandNode* c, Bundle& obj, 
 		case (VTypes::PtrPtr): if (lhs.asPointer(lhs.type(),b) < rhs.asPointer(rhs.type(),b)) result = 0; break;
 		case (VTypes::PtrInt): if ( ((long int) lhs.asPointer(lhs.type(),b)) < ((long int) rhs.asInteger(b))) result = 0; break;
 		default:
-			Messenger::print("The operator '>=' cannot act between %s and %s.\n", VTypes::aDataType(rv.type(),rv.arraySize()), VTypes::aDataType(rhs.type(),rhs.arraySize()));
+			Messenger::print("The operator '>=' cannot act between %s and %s.", VTypes::aDataType(rv.type(),rv.arraySize()), VTypes::aDataType(rhs.type(),rhs.arraySize()));
 	}
 	rv.set(result);
 	return b;
@@ -317,7 +317,7 @@ bool Commands::function_OperatorLessThan(CommandNode* c, Bundle& obj, ReturnValu
 		case (VTypes::PtrPtr): if (lhs.asPointer(lhs.type(),b) >= rhs.asPointer(rhs.type(),b)) result = 0; break;
 		case (VTypes::PtrInt): if ( ((long int) lhs.asPointer(lhs.type(),b)) >= ((long int) rhs.asInteger(b))) result = 0; break;
 		default:
-			Messenger::print("The operator '<' cannot act between %s and %s.\n", VTypes::aDataType(rv.type(),rv.arraySize()), VTypes::aDataType(rhs.type(),rhs.arraySize()));
+			Messenger::print("The operator '<' cannot act between %s and %s.", VTypes::aDataType(rv.type(),rv.arraySize()), VTypes::aDataType(rhs.type(),rhs.arraySize()));
 	}
 	rv.set(result);
 	return b;
@@ -351,7 +351,7 @@ bool Commands::function_OperatorLessThanEqualTo(CommandNode* c, Bundle& obj, Ret
 		case (VTypes::PtrPtr): if (lhs.asPointer(lhs.type(),b) > rhs.asPointer(rhs.type(),b)) result = 0; break;
 		case (VTypes::PtrInt): if ( ((long int) lhs.asPointer(lhs.type(),b)) > ((long int) rhs.asInteger(b))) result = 0; break;
 		default:
-			Messenger::print("The operator '<=' cannot act between %s and %s.\n", VTypes::aDataType(rv.type(),rv.arraySize()), VTypes::aDataType(rhs.type(),rhs.arraySize()));
+			Messenger::print("The operator '<=' cannot act between %s and %s.", VTypes::aDataType(rv.type(),rv.arraySize()), VTypes::aDataType(rhs.type(),rhs.arraySize()));
 	}
 	rv.set(result);
 	return b;
@@ -371,7 +371,7 @@ bool Commands::function_OperatorModulus(CommandNode* c, Bundle& obj, ReturnValue
 	{
 		case (VTypes::IntInt): rv.set(lhs.asInteger(b) % rhs.asInteger(b)); break;
 		default:
-			Messenger::print("The operator '/' cannot act between %s and %s.\n", VTypes::aDataType(rv.type(),rv.arraySize()), VTypes::aDataType(rhs.type(),rhs.arraySize()));
+			Messenger::print("The operator '/' cannot act between %s and %s.", VTypes::aDataType(rv.type(),rv.arraySize()), VTypes::aDataType(rhs.type(),rhs.arraySize()));
 	}
 	return b;
 }
@@ -418,7 +418,7 @@ bool Commands::function_OperatorMultiply(CommandNode* c, Bundle& obj, ReturnValu
 		case (VTypes::VecDblA): if (rhs.arraySize() != 3) b = FALSE;
 			else { Vec3<double> v(rhs.asDouble(0,b), rhs.asDouble(1,b), rhs.asDouble(2,b)); rv.set(v * lhs.asVector()); } break;
 		default:
-			Messenger::print("The operator '*' cannot act between %s and %s.\n", VTypes::aDataType(rv.type(),rv.arraySize()), VTypes::aDataType(rhs.type(),rhs.arraySize()));
+			Messenger::print("The operator '*' cannot act between %s and %s.", VTypes::aDataType(rv.type(),rv.arraySize()), VTypes::aDataType(rhs.type(),rhs.arraySize()));
 	}
 	return b;
 }
@@ -450,7 +450,7 @@ bool Commands::function_OperatorNegate(CommandNode* c, Bundle& obj, ReturnValue&
 			rv.set(-rv.asVector());
 			break;
 		default:
-			Messenger::print("Can't negate %s.\n", VTypes::aDataType(c->argType(0)));
+			Messenger::print("Can't negate %s.", VTypes::aDataType(c->argType(0)));
 			return FALSE;
 	}
 	return TRUE;
@@ -493,7 +493,7 @@ bool Commands::function_OperatorNotEqualTo(CommandNode* c, Bundle& obj, ReturnVa
 		case (VTypes::PtrPtr): if (lhs.asPointer(lhs.type(),b) == rhs.asPointer(rhs.type(),b)) result = 0; break;
 		case (VTypes::PtrInt): if ( ((long int) lhs.asPointer(lhs.type(),b)) == ((long int) rhs.asInteger(b))) result = 0; break;
 		default:
-			Messenger::print("The operator '!=' cannot act between %s and %s.\n", VTypes::aDataType(rv.type(),rv.arraySize()), VTypes::aDataType(rhs.type(),rhs.arraySize()));
+			Messenger::print("The operator '!=' cannot act between %s and %s.", VTypes::aDataType(rv.type(),rv.arraySize()), VTypes::aDataType(rhs.type(),rhs.arraySize()));
 	}
 	rv.set(result);
 	return b;
@@ -566,7 +566,7 @@ bool Commands::function_OperatorPower(CommandNode* c, Bundle& obj, ReturnValue& 
 		case (VTypes::DblInt):
 		case (VTypes::DblDbl): rv.set(pow(lhs.asDouble(b),rhs.asDouble(b))); break;
 		default:
-			Messenger::print("The operator '^' cannot act between %s and %s.\n", VTypes::aDataType(rv.type(),rv.arraySize()), VTypes::aDataType(rhs.type(),rhs.arraySize()));
+			Messenger::print("The operator '^' cannot act between %s and %s.", VTypes::aDataType(rv.type(),rv.arraySize()), VTypes::aDataType(rhs.type(),rhs.arraySize()));
 	}
 	return b;
 }
@@ -612,7 +612,7 @@ bool Commands::function_OperatorSubtract(CommandNode* c, Bundle& obj, ReturnValu
 		case (VTypes::VecDblA): if (rhs.arraySize() != 3) b = FALSE;
 			else { Vec3<double> v(rhs.asDouble(0,b), rhs.asDouble(1,b), rhs.asDouble(2,b)); rv.set(v - lhs.asVector()); } break;
 		default:
-			Messenger::print("The operator '-' cannot act between %s and %s.\n", VTypes::aDataType(rv.type(),rv.arraySize()), VTypes::aDataType(rhs.type(),rhs.arraySize()));
+			Messenger::print("The operator '-' cannot act between %s and %s.", VTypes::aDataType(rv.type(),rv.arraySize()), VTypes::aDataType(rhs.type(),rhs.arraySize()));
 	}
 	return b;
 }

@@ -86,18 +86,18 @@ void LineMinimiser::goldenSearch(Model* srcmodel, double* bounds, double* energi
 	}
 	delta[0] = bounds[0] - bounds[1];
 	delta[2] = bounds[2] - bounds[1];
-	Messenger::print(Messenger::Verbose, "Trying Golden Search - left=%12.5e   right=%12.5e\n", delta[0], delta[2]);
+	Messenger::print(Messenger::Verbose, "Trying Golden Search - left=%12.5e   right=%12.5e", delta[0], delta[2]);
 	// Select largest of two intervals (0-1 or 1-2) to be the target of the search
 	targetbound = delta[0] > delta[2] ? 0 : 2;
 	newmin = bounds[1] + 0.3819660 * (bounds[targetbound] - bounds[1]);
 	gradientMove(srcmodel, newmin);
 	enew = srcmodel->totalEnergy(&tempModel_, success);
 
-	Messenger::print(Messenger::Verbose, "--> GOLD point is %12.5e [%12.5e] \n", enew, newmin);
+	Messenger::print(Messenger::Verbose, "--> GOLD point is %12.5e [%12.5e] ", enew, newmin);
 	// Check new energy against current minimum, then current bounding point. If it is better than neither, search into other section
 	if (enew < energies[1])
 	{
-		Messenger::print(Messenger::Verbose, "--> GOLD point is lower than current minimum...\n");
+		Messenger::print(Messenger::Verbose, "--> GOLD point is lower than current minimum...");
 		// Overwrite the outermost bound with the old minimum
 		bounds[targetbound] = bounds[1];
 		energies[targetbound] = energies[1];
@@ -108,7 +108,7 @@ void LineMinimiser::goldenSearch(Model* srcmodel, double* bounds, double* energi
 	}
 	else if (enew < energies[targetbound])
 	{
-		Messenger::print(Messenger::Verbose, "--> GOLD point is better than old bounds[%i] : %12.5e [%12.5e]...\n", targetbound, energies[targetbound], bounds[targetbound]);
+		Messenger::print(Messenger::Verbose, "--> GOLD point is better than old bounds[%i] : %12.5e [%12.5e]...", targetbound, energies[targetbound], bounds[targetbound]);
 		bounds[targetbound] = newmin;
 		energies[targetbound] = enew;
 		// Recurse into the new region
@@ -176,12 +176,12 @@ double LineMinimiser::lineMinimise(Model* srcmodel)
 		bounds[2] = bounds[1];
 		bounds[1] = enew;
 	}
-	Messenger::print(Messenger::Verbose, "Initial bounding values/energies = %12.5e (%12.5e) %12.5e (%12.5e) %12.5e (%12.5e)\n",bounds[0],energies[0],bounds[1],energies[1],bounds[2],energies[2]);
+	Messenger::print(Messenger::Verbose, "Initial bounding values/energies = %12.5e (%12.5e) %12.5e (%12.5e) %12.5e (%12.5e)",bounds[0],energies[0],bounds[1],energies[1],bounds[2],energies[2]);
 
 	do
 	{
 		// Perform linesearch along the gradient vector
-		Messenger::print(Messenger::Verbose, "Energies [Bounds] = %12.5e (%12.5e) %12.5e (%12.5e) %12.5e (%12.5e)\n",energies[0],bounds[0],energies[1],bounds[1],energies[2],bounds[2]);
+		Messenger::print(Messenger::Verbose, "Energies [Bounds] = %12.5e (%12.5e) %12.5e (%12.5e) %12.5e (%12.5e)",energies[0],bounds[0],energies[1],bounds[1],energies[2],bounds[2]);
 		// Perform parabolic interpolation to find new minimium point
 		b10 = bounds[1] - bounds[0];
 		b12 = bounds[1] - bounds[2];
@@ -193,11 +193,11 @@ double LineMinimiser::lineMinimise(Model* srcmodel)
 		gradientMove(srcmodel, newmin);
 		enew = srcmodel->totalEnergy(&tempModel_, success);
 
-		Messenger::print(Messenger::Verbose, "PARABOLIC point gives energy %12.5e @ %12.5e\n",enew,newmin);
+		Messenger::print(Messenger::Verbose, "PARABOLIC point gives energy %12.5e @ %12.5e",enew,newmin);
 		if (enew < energies[1])
 		{
 			// New point found...
-			Messenger::print(Messenger::Verbose, "--> PARABOLIC point is new minimum...\n");
+			Messenger::print(Messenger::Verbose, "--> PARABOLIC point is new minimum...");
 			ecurrent = enew;
 			// Overwrite the largest of bounds[0] and bounds[2]
 			if (energies[2] > energies[0])
@@ -218,19 +218,19 @@ double LineMinimiser::lineMinimise(Model* srcmodel)
 			// Is the parabolic point better than the relevant bound in that direction?
 			if ((energies[2] - enew) > tolerance_)
 			{
-				Messenger::print(Messenger::Verbose, "--> PARABOLIC point is better than bounds[2]...\n");
+				Messenger::print(Messenger::Verbose, "--> PARABOLIC point is better than bounds[2]...");
 				bounds[2] = newmin;
 				energies[2] = enew;
 			}
 			else if ((energies[0] - enew) > tolerance_)
 			{
-				Messenger::print(Messenger::Verbose, "--> PARABOLIC point is better than bounds[0]...\n");
+				Messenger::print(Messenger::Verbose, "--> PARABOLIC point is better than bounds[0]...");
 				bounds[0] = newmin;
 				energies[0] = enew;
 			}
 			else
 			{
-				Messenger::print(Messenger::Verbose, "--> PARABOLIC point is worse than all current values...\n");
+				Messenger::print(Messenger::Verbose, "--> PARABOLIC point is worse than all current values...");
 				// Try recursive Golden Search instead, into the largest of the two sections.
 				goldenSearch(srcmodel, bounds, energies);
 				ecurrent = energies[1];

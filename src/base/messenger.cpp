@@ -21,8 +21,7 @@
 
 #include "base/messenger.h"
 #include "base/sysfunc.h"
-#include <QtCore/QString>
-#include <QtCore/QRegExp>
+#include <QtCore/QTextStream>
 #include <stdarg.h>
 #include <stdio.h>
 
@@ -32,6 +31,9 @@ ATEN_USING_NAMESPACE
 int Messenger::outputTypes_ = 0;
 int Messenger::callLevel_ = 0;
 bool Messenger::quiet_ = false;
+bool Messenger::printToConsole_ = true;
+int Messenger::bufferSize_ = 100;
+QStringList Messenger::messageBuffer_;
 
 // Message output types
 const char* OutputTypeKeywords[] = { "all", "calls", "commands", "parse", "typing", "verbose" };
@@ -50,6 +52,10 @@ const char* Messenger::outputType(Messenger::OutputType ot)
 Messenger::Messenger()
 {
 }
+
+/*
+ * Output Control
+ */
 
 // Add a debug level to the debug output bitvector
 void Messenger::addOutputType(Messenger::OutputType outputType)
@@ -85,21 +91,41 @@ bool Messenger::isQuiet()
 	return quiet_;
 }
 
+// Set status console printing
+void Messenger::setPrintToConsole(bool printToConsole)
+{
+	printToConsole_ = printToConsole;
+}
+
+/*
+ * Messaging Functions
+ */
+
+// Return list of messages in buffer
+QStringList& Messenger::messageBuffer()
+{
+	return messageBuffer_;
+}
+
 // Standard message
 void Messenger::print(const char* fmtString, ...)
 {
 	// If program is in quiet mode, don't print anything to stdout
 	if (quiet_) return;
 
-	// Otherwise, print to stdout. Also print to stdout if debuglevel >= msglevel.
+	// Create message
 	va_list arguments;
-	static char msgs[8096];
-	msgs[0] = '\0';
-	// Parse the argument list (...) and internally write the output string into msgs[]
 	va_start(arguments, fmtString);
-	vsprintf(msgs, fmtString, arguments);
-	printf("%s", msgs);
+	QString message;
+	message.vsprintf(fmtString, arguments);
 	va_end(arguments);
+
+	// Add to buffer (at start), and reduce buffer to max allowable size
+	messageBuffer_.prepend(message);
+	while (messageBuffer_.count() > bufferSize_) messageBuffer_.removeLast();
+	
+	if (printToConsole_) QTextStream(stdout) << message << endl;
+
 }
 
 // Standard message in specific output level
@@ -108,15 +134,18 @@ void Messenger::print(Messenger::OutputType outputType, const char* fmtString, .
 	// If program is in quiet mode, or the output type isn't active, return now
 	if (quiet_ || (! isOutputActive(outputType))) return;
 
-	// Process arguments list
+	// Create message
 	va_list arguments;
-	static char msgs[8096];
-	msgs[0] = '\0';
-	// Parse the argument list (...) and internally write the output string into msgs[]
 	va_start(arguments, fmtString);
-	vsprintf(msgs, fmtString ,arguments);
-	printf("%s", msgs);
+	QString message;
+	message.vsprintf(fmtString, arguments);
 	va_end(arguments);
+
+	// Add to buffer (at start), and reduce buffer to max allowable size
+	messageBuffer_.prepend(message);
+	while (messageBuffer_.count() > bufferSize_) messageBuffer_.removeLast();
+	
+	if (printToConsole_) QTextStream(stdout) << message << endl;
 }
 
 // Function enter
@@ -126,7 +155,7 @@ void Messenger::enter(const char* callname)
 
 	printf("%2i ",callLevel_);
 	for (int n=0; n<callLevel_; n++) printf("--");
-	printf("Begin : %s...\n", callname);
+	printf("Begin : %s...", callname);
 	++callLevel_;
 }
 
@@ -138,5 +167,5 @@ void Messenger::exit(const char* callName)
 	--callLevel_;
 	printf("%2i ", callLevel_);
 	for (int n=0; n<callLevel_; n++) printf("--");
-	printf("End   : %s.\n", callName);
+	printf("End   : %s.", callName);
 }

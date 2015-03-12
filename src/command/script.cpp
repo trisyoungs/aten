@@ -30,9 +30,9 @@ ATEN_USING_NAMESPACE
 // List available scripts
 bool Commands::function_ListScripts(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (aten_.nScripts() == 0) Messenger::print("No scripts loaded.\n");
-	else Messenger::print("Currently loaded scripts:\n");
-	for (Program* prog = aten_.scripts(); prog != NULL; prog = prog->next) Messenger::print("  %s (%s)\n", prog->filename(), prog->name());
+	if (aten_.nScripts() == 0) Messenger::print("No scripts loaded.");
+	else Messenger::print("Currently loaded scripts:");
+	for (Program* prog = aten_.scripts(); prog != NULL; prog = prog->next) Messenger::print("  %s (%s)", prog->filename(), prog->name());
 	rv.reset();
 	return TRUE;
 }
@@ -62,11 +62,11 @@ bool Commands::function_RunScript(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	for (prog = aten_.scripts(); prog != NULL; prog = prog->next) if (strcmp(c->argc(0), prog->name()) == 0) break;
 	if (prog != NULL)
 	{
-		Messenger::print("Executing script '%s':\n",c->argc(0));
+		Messenger::print("Executing script '%s':",c->argc(0));
 		ReturnValue result;
 		prog->execute(result);
 	}
-	else Messenger::print("Couldn't find script '%s'.\n",c->argc(0));
+	else Messenger::print("Couldn't find script '%s'.",c->argc(0));
 	rv.reset();
 	return TRUE;
 }

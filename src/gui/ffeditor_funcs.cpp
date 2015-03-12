@@ -388,7 +388,7 @@ void AtenForcefieldEditor::on_FFEditorTestTypeButton_clicked(bool on)
 // 	ForcefieldAtom* ffa = targetForcefield_->type(row+1);
 // 	m->selectNone(TRUE);
 // 	m->selectType(ffa->element(), ffa->netaString(), TRUE, FALSE);
-// 	Messenger::print("Type description matched %i atoms in current model.\n", m->nMarked());
+// 	Messenger::print("Type description matched %i atoms in current model.", m->nMarked());
 }
 
 // Item in type table edited
@@ -414,7 +414,7 @@ void AtenForcefieldEditor::on_FFEditorTypesTable_itemChanged(QTableWidgetItem *w
 			old = targetForcefield_->findByTypeId(n, ffa);
 			if (old != NULL)
 			{
-				text.sprintf("Another type with id %i already exists (%s).\n", n, old->name());
+				text.sprintf("Another type with id %i already exists (%s).", n, old->name());
 				returnvalue = QMessageBox::warning(this, "Forcefield Editor", text.get(), QMessageBox::Ok);
 				// Set the table value item back to the old value
 				w->setText(itoa(ffa->typeId()));

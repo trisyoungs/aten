@@ -263,7 +263,7 @@ bool PartitioningScheme::initialiseFromProgram()
 	}
 	else
 	{
-		Messenger::print("No 'name' variable defined in this partitioning scheme.\n");
+		Messenger::print("No 'name' variable defined in this partitioning scheme.");
 		name_ = "???";
 	}
 
@@ -277,7 +277,7 @@ bool PartitioningScheme::initialiseFromProgram()
 	}
 	else
 	{
-		Messenger::print("No 'description' variable defined in this partitioning scheme.\n");
+		Messenger::print("No 'description' variable defined in this partitioning scheme.");
 		description_ = "???";
 	}
 
@@ -285,17 +285,17 @@ bool PartitioningScheme::initialiseFromProgram()
 	v = schemeDefinition_.mainProgram()->findLocalVariable("nPartitions", scopelevel);
 	if (v == NULL)
 	{
-		Messenger::print("Error: No 'nPartitions' variable defined in partitioning scheme '%s'\n", name_.get());
+		Messenger::print("Error: No 'nPartitions' variable defined in partitioning scheme '%s'", name_.get());
 		Messenger::exit("PartitioningScheme::initialiseFromProgram");
 		return FALSE;
 	}
-	Messenger::print(Messenger::Verbose, "  --> Found 'nPartitions' variable in partitioning scheme '%s'.\n", name_.get());
+	Messenger::print(Messenger::Verbose, "  --> Found 'nPartitions' variable in partitioning scheme '%s'.", name_.get());
 	v->initialise();
 	success = v->execute(rv);
 	nparts  = rv.asInteger();
 	if (nparts < 1)
 	{
-		Messenger::print("Error: Invalid 'nPartitions' (%i) found in partitioning scheme '%s'\n", nparts, name_.get());
+		Messenger::print("Error: Invalid 'nPartitions' (%i) found in partitioning scheme '%s'", nparts, name_.get());
 		Messenger::exit("PartitioningScheme::initialiseFromProgram");
 		return FALSE;
 	}
@@ -305,10 +305,10 @@ bool PartitioningScheme::initialiseFromProgram()
 	
 	// Locate 'partition' function
 	partitionFunction_ = schemeDefinition_.mainProgram()->findLocalFunction("partition");
-	if (partitionFunction_) Messenger::print(Messenger::Verbose, "  --> Found 'partition' function in partitioning scheme '%s'.\n", name_.get());
+	if (partitionFunction_) Messenger::print(Messenger::Verbose, "  --> Found 'partition' function in partitioning scheme '%s'.", name_.get());
 	else
 	{
-		Messenger::print("Error: No 'partition' function defined in partitioning scheme '%s'\n", name_.get());
+		Messenger::print("Error: No 'partition' function defined in partitioning scheme '%s'", name_.get());
 		Messenger::exit("PartitioningScheme::initialiseFromProgram");
 		return FALSE;
 	}
@@ -316,10 +316,10 @@ bool PartitioningScheme::initialiseFromProgram()
 
 	// Locate 'partitionName' function
 	partitionNameFunction_ = schemeDefinition_.mainProgram()->findLocalFunction("partitionName");
-	if (partitionNameFunction_) Messenger::print(Messenger::Verbose, "  --> Found 'partitionName' function in partitioning scheme '%s'.\n", name_.get());
+	if (partitionNameFunction_) Messenger::print(Messenger::Verbose, "  --> Found 'partitionName' function in partitioning scheme '%s'.", name_.get());
 	else
 	{
-		Messenger::print("Error: No 'partitionName' function defined in partitioning scheme '%s'\n", name_.get());
+		Messenger::print("Error: No 'partitionName' function defined in partitioning scheme '%s'", name_.get());
 		Messenger::exit("PartitioningScheme::initialiseFromProgram");
 		return FALSE;
 	}
@@ -329,7 +329,7 @@ bool PartitioningScheme::initialiseFromProgram()
 	partitionOptionsFunction_ = schemeDefinition_.mainProgram()->findLocalFunction("partitionOptions");
 	if (partitionOptionsFunction_)
 	{
-		Messenger::print(Messenger::Verbose, "  --> Found 'partitionOptions' function in partitioning scheme '%s'.\n", name_.get());
+		Messenger::print(Messenger::Verbose, "  --> Found 'partitionOptions' function in partitioning scheme '%s'.", name_.get());
 		partitionOptionsNode_.setFunction(partitionOptionsFunction_);
 		hasOptions_ = TRUE;
 	}
@@ -338,7 +338,7 @@ bool PartitioningScheme::initialiseFromProgram()
 	// Run main partition tree so all variables / globals are set
 	if (!schemeDefinition_.mainProgram()->execute(rv))
 	{
-		Messenger::print("Error: Failed to run through partitioning scheme code.\n");
+		Messenger::print("Error: Failed to run through partitioning scheme code.");
 		Messenger::exit("PartitioningScheme::initialiseFromProgram");
 		return FALSE;
 	}
@@ -389,7 +389,7 @@ bool PartitioningScheme::setVariable(const char* name, const char* value)
 	Messenger::enter("PartitioningScheme::setVariable");
 	if (partitionFunction_ == NULL)
 	{
-		Messenger::print("Internal Error: No partitionFunction_ defined for variable search.\n");
+		Messenger::print("Internal Error: No partitionFunction_ defined for variable search.");
 		Messenger::exit("PartitioningScheme::setVariable");
 		return FALSE;
 	}
@@ -398,7 +398,7 @@ bool PartitioningScheme::setVariable(const char* name, const char* value)
 	Variable* var = schemeDefinition_.mainProgram()->globalVariables().find(name);
 	if (var != NULL)
 	{
-		Messenger::print(Messenger::Verbose, "Found global variable '%s' in partitioning scheme '%s' - setting value to '%s'\n", name, name_.get(), value);
+		Messenger::print(Messenger::Verbose, "Found global variable '%s' in partitioning scheme '%s' - setting value to '%s'", name, name_.get(), value);
 		ReturnValue rv(value);
 		var->set(rv);
 		result = TRUE;
@@ -483,7 +483,7 @@ void PartitioningScheme::recalculatePartitions()
 	// If this scheme contains static data then there's nothingn to be done
 	if (staticData_)
 	{
-		Messenger::print(Messenger::Verbose, "Scheme '%s' contains static data, so nothing to recalculate.\n", name_.get());
+		Messenger::print(Messenger::Verbose, "Scheme '%s' contains static data, so nothing to recalculate.", name_.get());
 		Messenger::exit("PartitioningScheme::updatePartitions");
 		return;
 	}
@@ -491,7 +491,7 @@ void PartitioningScheme::recalculatePartitions()
 	// If log point has not changed, do nothing
 	if (changeLog_ == partitionLogPoint_)
 	{
-		Messenger::print(Messenger::Verbose, "Log point for partitions in scheme '%s' is up to date.\n", name_.get());
+		Messenger::print(Messenger::Verbose, "Log point for partitions in scheme '%s' is up to date.", name_.get());
 		Messenger::exit("PartitioningScheme::updatePartitions");
 		return;
 	}

@@ -39,7 +39,7 @@ FormatChunk::FormatChunk(ChunkType type, const char* fmt, TreeNode* arg, VTypes:
 	arg_ = arg;
 	retrieveType_ = retrieveType;
 	formatLength_ = 0;
-	Messenger::print(Messenger::Parse, "...created FormatChunk for string '%s'\n", fmt);
+	Messenger::print(Messenger::Parse, "...created FormatChunk for string '%s'", fmt);
 
 	// Determine length of format if one was provided
 	if (fmt != NULL)
@@ -113,7 +113,7 @@ Format::Format(const char* s, Refitem<TreeNode,int>* firstarg)
 	VTypes::DataType type;
 	bool isformatter = FALSE, isdiscarder, restofline;
 	Refitem<TreeNode,int>* arg = firstarg;
-	Messenger::print(Messenger::Parse, "Creating Format object from string '%s' (and any supplied arguments)...\n", s);
+	Messenger::print(Messenger::Parse, "Creating Format object from string '%s' (and any supplied arguments)...", s);
 	int length = 0;
 	do
 	{
@@ -132,7 +132,7 @@ Format::Format(const char* s, Refitem<TreeNode,int>* firstarg)
 			// Check for a previous format, in which case this one is mangled
 			if (isformatter)
 			{
-				Messenger::print("Found an unterminated format specifier (%) in format string '%s'.\n", s);
+				Messenger::print("Found an unterminated format specifier (%) in format string '%s'.", s);
 				isValid_ = FALSE;
 				return;
 			}
@@ -161,11 +161,11 @@ Format::Format(const char* s, Refitem<TreeNode,int>* firstarg)
 			if ((prevchar == 'l') || (prevchar == 'h') || (prevchar == 'L')) continue;
 
 			plaintext[length] = '\0';
-			Messenger::print(Messenger::Parse, "Detected format bit [%s]\n", plaintext);
+			Messenger::print(Messenger::Parse, "Detected format bit [%s]", plaintext);
 			// Check the terminating character to make sure that its one we recognise *and* is compatible with the type of argument given
 			if ((arg == NULL) && (prevchar != '*'))
 			{
-				Messenger::print("Formatter '%s' in string has no corresponding argument.\n", plaintext);
+				Messenger::print("Formatter '%s' in string has no corresponding argument.", plaintext);
 				isValid_ = FALSE;
 				break;
 			}
@@ -187,18 +187,18 @@ Format::Format(const char* s, Refitem<TreeNode,int>* firstarg)
 						if (prevchar == 'l')
 						{
 							if (type >= VTypes::AtenData) break;
-							Messenger::print("Format '%s' expects a pointer, but has been given %s.\n", plaintext, VTypes::aDataType(type));
+							Messenger::print("Format '%s' expects a pointer, but has been given %s.", plaintext, VTypes::aDataType(type));
 							isValid_ = FALSE;
 						}
 						else if ((prevchar == '\0') || (prevchar == 'h'))
 						{
 							if (type == VTypes::IntegerData) break;
-							Messenger::print("Format '%s' expects an integer, but has been given %s.\n", plaintext, VTypes::aDataType(type));
+							Messenger::print("Format '%s' expects an integer, but has been given %s.", plaintext, VTypes::aDataType(type));
 							isValid_ = FALSE;
 						}
 						else
 						{
-							Messenger::print("Integer format '%c' cannot be preceeded by the identifier '%c'.\n", *c, prevchar);
+							Messenger::print("Integer format '%c' cannot be preceeded by the identifier '%c'.", *c, prevchar);
 							isValid_ = FALSE;
 						}
 						break;
@@ -209,18 +209,18 @@ Format::Format(const char* s, Refitem<TreeNode,int>* firstarg)
 						// If a preceeding 'L' was specified, we complain!
 						if (prevchar == 'L')
 						{
-							Messenger::print("Output of long doubles (prefixing a floating-point formatter with 'L') is not supported.\n");
+							Messenger::print("Output of long doubles (prefixing a floating-point formatter with 'L') is not supported.");
 							isValid_ = FALSE;
 						}
 						else if (prevchar == '\0')
 						{
 							if (type == VTypes::DoubleData) break;
-							Messenger::print("Format '%s' expects a real, but has been given %s.\n", plaintext, VTypes::aDataType(type));
+							Messenger::print("Format '%s' expects a real, but has been given %s.", plaintext, VTypes::aDataType(type));
 							isValid_ = FALSE;
 						}
 						else
 						{
-							Messenger::print("Floating-point format '%c' cannot be preceeded by the identifier '%c'.\n", *c, prevchar);
+							Messenger::print("Floating-point format '%c' cannot be preceeded by the identifier '%c'.", *c, prevchar);
 							isValid_ = FALSE;
 						}
 						break;
@@ -230,15 +230,15 @@ Format::Format(const char* s, Refitem<TreeNode,int>* firstarg)
 					case ('s'):
 						if (prevchar != '\0')
 						{
-							Messenger::print("String format '%c' cannot be preceeded by the identifier '%c'.\n", tolower(plaintext[length-1]), prevchar);
+							Messenger::print("String format '%c' cannot be preceeded by the identifier '%c'.", tolower(plaintext[length-1]), prevchar);
 							isValid_ = FALSE;
 						}
 						if (type == VTypes::StringData) break;
-						Messenger::print("Format '%s' expects a string, but has been given %s.\n", plaintext, VTypes::aDataType(type));
+						Messenger::print("Format '%s' expects a string, but has been given %s.", plaintext, VTypes::aDataType(type));
 						isValid_ = FALSE;
 						break;
 					case ('c'):
-						Messenger::print("Character format 'c'is not supported.\n");
+						Messenger::print("Character format 'c'is not supported.");
 						isValid_ = FALSE;
 						break;
 					// Discard identifier
@@ -247,7 +247,7 @@ Format::Format(const char* s, Refitem<TreeNode,int>* firstarg)
 						type = VTypes::NoData;
 						break;
 					default:
-						Messenger::print("Unsupported format '%s'.\n", plaintext);
+						Messenger::print("Unsupported format '%s'.", plaintext);
 						isValid_ = FALSE;
 						break;
 				}
@@ -269,7 +269,7 @@ Format::Format(const char* s, Refitem<TreeNode,int>* firstarg)
 		addPlainTextChunk(plaintext);
 	}
 	// Are there any supplied arguments remaining?
-	if (arg != NULL) Messenger::print("Warning: Extra data arguments given to format '%s'...\n", s);
+	if (arg != NULL) Messenger::print("Warning: Extra data arguments given to format '%s'...", s);
 }
 
 // Destructor
@@ -415,7 +415,7 @@ bool Format::writeToString()
 				// Check for arrays - bad!
 				if (rv.arraySize() != -1)
 				{
-					Messenger::print("Error: Array passed to format.\n");
+					Messenger::print("Error: Array passed to format.");
 					result = FALSE;
 					break;
 				}
@@ -448,7 +448,7 @@ bool Format::writeToString()
 				// Check for arrays - bad!
 				if (rv.arraySize() != -1)
 				{
-					Messenger::print("Error: Array passed to format.\n");
+					Messenger::print("Error: Array passed to format.");
 					result = FALSE;
 					break;
 				}

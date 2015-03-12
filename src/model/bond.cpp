@@ -50,7 +50,7 @@ void Model::bondAtoms(Atom* i, Atom* j, Bond::BondType bt)
 {
         // Create a new bond each atom and add them to the atom's own lists.
 	Messenger::enter("Model::bondAtoms");
-	if (i == j) Messenger::print("Cannot bond an atom to itself!\n");
+	if (i == j) Messenger::print("Cannot bond an atom to itself!");
 	else
 	{
 		// Search for old bond between atoms
@@ -101,7 +101,7 @@ void Model::bondAtoms(int ii, int jj, Bond::BondType bt)
         // Create a new bond for each atom and add them to the atom's own lists.
 	Messenger::enter("Model::bondAtoms[int]");
 	//printf("Atom ids given to Model::bondAtoms() are %i and %i (natoms=%i)\n",ii,jj,atoms_.nItems());
-	if (ii == jj) Messenger::print("Cannot bond an atom to itself!\n");
+	if (ii == jj) Messenger::print("Cannot bond an atom to itself!");
 	else
 	{
 		// First, locate the two atoms with the specified id's
@@ -231,7 +231,7 @@ void Model::initialiseBondingCuboids()
 		if (cuboidBoxes_.max() > prefs.maxCuboids())
 		{
 			size += 1.0;
-			Messenger::print(Messenger::Verbose, "Too many cuboids (%ix%ix%i) - bonding cuboid size increased to %f.\n", cuboidBoxes_.x, cuboidBoxes_.y, cuboidBoxes_.z, size);
+			Messenger::print(Messenger::Verbose, "Too many cuboids (%ix%ix%i) - bonding cuboid size increased to %f.", cuboidBoxes_.x, cuboidBoxes_.y, cuboidBoxes_.z, size);
 		}
 	} while (cuboidBoxes_.max() > prefs.maxCuboids());
 	cuboidYZ_ = cuboidBoxes_.y * cuboidBoxes_.z;
@@ -419,7 +419,7 @@ void Model::calculateBonding(bool augment)
 	freeBondingCuboids();
 	// Augment?
 	if (augment) augmentBonding();
-	Messenger::print(Messenger::Verbose, "Done.\n");
+	Messenger::print(Messenger::Verbose, "Done.");
 	Messenger::exit("Model::calculateBonding");
 }
 
@@ -444,7 +444,7 @@ void Model::calculateBonding(bool augment)
 // 	printf("radsum*tol = %f, dist = %f\n",radsum*tolerance,dist);
 // 			if (dist < radsum*tolerance) bondAtoms(i,j,Bond::Single);
 // 		}
-// 	Messenger::print(Messenger::Verbose, "Done.\n");
+// 	Messenger::print(Messenger::Verbose, "Done.");
 // 	Messenger::exit("Model::calculateBonding");
 // }
 
@@ -500,7 +500,7 @@ void Model::patternCalculateBonding(bool augment)
 	}
 	// Augment?
 	if (augment) augmentBonding();
-	Messenger::print(" Done.\n");
+	Messenger::print(" Done.");
 	Messenger::exit("Model::patternCalculateBonding");
 }
 
@@ -584,7 +584,7 @@ void Model::augmentBonding()
 	Messenger::enter("Model::augmentBonding");
 	if (!createPatterns())
 	{
-		Messenger::print("Can't augment bonding without a valid pattern.\n");
+		Messenger::print("Can't augment bonding without a valid pattern.");
 		Messenger::exit("Model::augmentBonding");
 		return;
 	}

@@ -53,7 +53,7 @@ bool Commands::function_Error(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	}
 	if (fmt->writeToString())
 	{
-		Messenger::print("%s\n",fmt->string());
+		Messenger::print("%s",fmt->string());
 		QMessageBox::critical(NULL, "Aten", fmt->string(), QMessageBox::Ok, QMessageBox::Ok);
 	}
 	c->parent()->setAcceptedFail(Commands::Error);
@@ -71,7 +71,7 @@ bool Commands::function_Message(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	}
 	if (fmt->writeToString())
 	{
-		Messenger::print("[%s] %s\n",c->argc(0), fmt->string());
+		Messenger::print("[%s] %s",c->argc(0), fmt->string());
 		QMessageBox::information(NULL, c->argc(0), fmt->string(), QMessageBox::Ok, QMessageBox::Ok);
 	}
 	else return FALSE;
@@ -111,7 +111,7 @@ bool Commands::function_Verbose(CommandNode* c, Bundle& obj, ReturnValue& rv)
 		return FALSE;
 	}
 	if (!Messenger::isOutputActive(Messenger::Verbose)) return TRUE;
-	if (fmt->writeToString()) Messenger::print(Messenger::Verbose, "%s\n",fmt->string());
+	if (fmt->writeToString()) Messenger::print(Messenger::Verbose, "%s",fmt->string());
 	else return FALSE;
 	return TRUE;
 }

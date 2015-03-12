@@ -183,14 +183,14 @@ void CommandWidget::on_OpenScriptButton_clicked(bool v)
 		Program* ca = parent_.aten().addScript();
 		if (ca->generateFromFile(qPrintable(filename)))
 		{
-			Messenger::print("Script file '%s' loaded succesfully.\n", qPrintable(filename));
+			Messenger::print("Script file '%s' loaded succesfully.", qPrintable(filename));
 			ui.ScriptsList->addItem(ca->filename());
 			refreshScripts(TRUE,FALSE);
 		}
 		else
 		{
 			parent_.aten().removeScript(ca);
-			Messenger::print("Failed to load script file '%s'.\n", qPrintable(filename));
+			Messenger::print("Failed to load script file '%s'.", qPrintable(filename));
 		}
 	}
 }
@@ -276,7 +276,7 @@ void CommandWidget::on_RunSelectedScriptButton_clicked(bool checked)
 	if (script != NULL)
 	{
 		// Execute the script
-		Messenger::print("Executing script '%s':\n", script->name());
+		Messenger::print("Executing script '%s':", script->name());
 		ReturnValue result;
 		script->execute(result);
 	}
@@ -308,7 +308,7 @@ void CommandWidget::runScript()
 	else
 	{
 		// Execute the script
-		Messenger::print("Executing script '%s':\n", ri->data->name());
+		Messenger::print("Executing script '%s':", ri->data->name());
 		ReturnValue result;
 		ri->data->execute(result);
 	}

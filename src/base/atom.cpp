@@ -299,16 +299,16 @@ void Atom::copyStyle(Atom* source)
 void Atom::print() const
 {
 	// Note: We print the 'visual' id (id_ + 1) and not the internal id (id_)
-	Messenger::print("Atom ID %i (%s):\n", id_+1, Elements().name(element_));
-	Messenger::print(" %s, %s, individual style is %s.\n", (selected_ ? "Selected" : "Not selected"), (hidden_ ? "hidden" : "not hidden"), Prefs::drawStyle(style_));
-	Messenger::print(" Coordinates : %8.4f %8.4f %8.4f\n",r_.x,r_.y,r_.z);
-	Messenger::print("  Velocities : %8.4f %8.4f %8.4f\n",v_.x,v_.y,v_.z);
-	Messenger::print("      Forces : %8.4f %8.4f %8.4f\n",f_.x,f_.y,f_.z);
-	Messenger::print("      Charge : %8.4f\n",charge_);
-	Messenger::print("      FFType : %s\n",(type_ != NULL ? type_->name() : "None"));
-	Messenger::print("       Bonds : %i\n",bonds_.nItems());
-	Messenger::print(" Environment : %s\n",Atom::atomEnvironment(environment_));
-	Messenger::print("        O.S. : %i\n",os_);
+	Messenger::print("Atom ID %i (%s):", id_+1, Elements().name(element_));
+	Messenger::print(" %s, %s, individual style is %s.", (selected_ ? "Selected" : "Not selected"), (hidden_ ? "hidden" : "not hidden"), Prefs::drawStyle(style_));
+	Messenger::print(" Coordinates : %8.4f %8.4f %8.4f",r_.x,r_.y,r_.z);
+	Messenger::print("  Velocities : %8.4f %8.4f %8.4f",v_.x,v_.y,v_.z);
+	Messenger::print("      Forces : %8.4f %8.4f %8.4f",f_.x,f_.y,f_.z);
+	Messenger::print("      Charge : %8.4f",charge_);
+	Messenger::print("      FFType : %s",(type_ != NULL ? type_->name() : "None"));
+	Messenger::print("       Bonds : %i",bonds_.nItems());
+	Messenger::print(" Environment : %s",Atom::atomEnvironment(environment_));
+	Messenger::print("        O.S. : %i",os_);
 }
 
 // Print summary
@@ -316,7 +316,7 @@ void Atom::printSummary() const
 {
 	// Print format :" Id     El   FFType   FFId          X             Y             Z              Q       Sel Fix \n");
 	// Note: We print the 'visual' id (id_ + 1) and not the internal id (id_)
-	Messenger::print(" %-5i  %-3s  %-8s %-6i %13.6e %13.6e %13.6e  %13.6e  %c  %c%c\n", id_+1, Elements().symbol(element_), type_ != NULL ? type_->name() : "None", type_ != NULL ? type_->typeId() : 0, r_.x, r_.y, r_.z, charge_, selected_ ? 'x' : ' ', fixedPosition_ ? 'R' : ' ', fixedType_ ? 'T' : ' ');
+	Messenger::print(" %-5i  %-3s  %-8s %-6i %13.6e %13.6e %13.6e  %13.6e  %c  %c%c", id_+1, Elements().symbol(element_), type_ != NULL ? type_->name() : "None", type_ != NULL ? type_->typeId() : 0, r_.x, r_.y, r_.z, charge_, selected_ ? 'x' : ' ', fixedPosition_ ? 'R' : ' ', fixedType_ ? 'T' : ' ');
 }
 
 /*
@@ -338,7 +338,7 @@ Refitem<Bond,int>* Atom::bonds()
 // Return nth bond in the list
 Refitem<Bond,int>* Atom::bond(int index)
 {
-	if ((index < 0) || (index >= bonds_.nItems())) Messenger::print("Bond index %i is out of range for atom.\n", index);
+	if ((index < 0) || (index >= bonds_.nItems())) Messenger::print("Bond index %i is out of range for atom.", index);
 	else return bonds_[index];
 	return NULL;
 }
@@ -755,7 +755,7 @@ void Atom::setColour(double r, double g, double b, double a)
 // Set n'th component of custom colour
 void Atom::setColour(int n, double d)
 {
-	if ((n < 0) || (n > 4)) Messenger::print( "Tried to set component %i for atom colour which is out of range.\n", n+1);
+	if ((n < 0) || (n > 4)) Messenger::print( "Tried to set component %i for atom colour which is out of range.", n+1);
 	else colour_[n] = d;
 }
 

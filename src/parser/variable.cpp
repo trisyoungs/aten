@@ -84,7 +84,7 @@ bool Variable::initialise()
 			if (set(rv)) return TRUE;
 			else
 			{
-				Messenger::print("Error: Failed to initialise variable '%s'.\n", name_.get());
+				Messenger::print("Error: Failed to initialise variable '%s'.", name_.get());
 				return FALSE;
 			}
 		}
@@ -106,15 +106,15 @@ bool Variable::setInitialValue(TreeNode* node)
 		case (VTypes::DoubleData):
 			if ((dt != VTypes::IntegerData) && (dt != VTypes::DoubleData))
 			{
-				Messenger::print("Error: Initial value for '%s' is of an incompatible type (%s).\n", name_.get(), VTypes::dataType(dt));
+				Messenger::print("Error: Initial value for '%s' is of an incompatible type (%s).", name_.get(), VTypes::dataType(dt));
 				return FALSE;
 			}
-			if ((returnType_ == VTypes::IntegerData) && (dt == VTypes::DoubleData)) Messenger::print("Warning: Initial value for integer variable '%s' is a double and will lose precision.\n", name_.get());
+			if ((returnType_ == VTypes::IntegerData) && (dt == VTypes::DoubleData)) Messenger::print("Warning: Initial value for integer variable '%s' is a double and will lose precision.", name_.get());
 			break;
 		case (VTypes::VectorData):
 			if ((dt != VTypes::IntegerData) && (dt != VTypes::DoubleData) && (dt != returnType_))
 			{
-				Messenger::print("Error: Initial value for '%s' is of an incompatible type (%s).\n", name_.get(), VTypes::dataType(dt));
+				Messenger::print("Error: Initial value for '%s' is of an incompatible type (%s).", name_.get(), VTypes::dataType(dt));
 				return FALSE;
 			}
 			break;
@@ -122,7 +122,7 @@ bool Variable::setInitialValue(TreeNode* node)
 		default:
 			if (returnType_ == dt) break;
 			if ((dt == VTypes::IntegerData) && (returnType_ > VTypes::VectorData)) break;
-			Messenger::print("Error: Initial value for variable '%s' is of an incompatible type (%s).\n", name_.get(), VTypes::dataType(dt));
+			Messenger::print("Error: Initial value for variable '%s' is of an incompatible type (%s).", name_.get(), VTypes::dataType(dt));
 			return FALSE;
 			break;
 	}
@@ -139,7 +139,7 @@ TreeNode* Variable::initialValue() const
 bool Variable::executeAsArray(ReturnValue& rv, int arrayIndex)
 {
 	// Secondary array 'retrieval' executor
-	Messenger::print("Error: Variable '%s' is not an array.\n", name_.get());
+	Messenger::print("Error: Variable '%s' is not an array.", name_.get());
 	return FALSE;
 }
 
@@ -147,7 +147,7 @@ bool Variable::executeAsArray(ReturnValue& rv, int arrayIndex)
 bool Variable::setAsArray(ReturnValue& rv, int arrayIndex)
 {
 	// Secondary array 'set' executor
-	Messenger::print("Error: Variable '%s' is not an array.\n", name_.get());
+	Messenger::print("Error: Variable '%s' is not an array.", name_.get());
 	return FALSE;
 }
 

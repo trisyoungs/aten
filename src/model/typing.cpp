@@ -139,7 +139,7 @@ bool Model::typeAll(Forcefield* defaultForcefield)
 	createPatterns();
 	if (!arePatternsValid())
 	{
-		Messenger::print("Atom typing cannot be performed without valid patterns.\nCheck pattern definition, atom ordering, and bond consistency between atoms, or add the default (1*N) pattern for a quick fix.\n");
+		Messenger::print("Atom typing cannot be performed without valid patterns.\nCheck pattern definition, atom ordering, and bond consistency between atoms, or add the default (1*N) pattern for a quick fix.");
 		Messenger::exit("Model::typeAll");
 		return FALSE;
 	}
@@ -150,12 +150,12 @@ bool Model::typeAll(Forcefield* defaultForcefield)
 		if (defaultForcefield != NULL) setForcefield(defaultForcefield);
 		else
 		{
-			Messenger::print("Error: No forcefield set in model, and no default forcefield is available.\n");
+			Messenger::print("Error: No forcefield set in model, and no default forcefield is available.");
 			Messenger::exit("Model::typeAll");
 			return FALSE;
 		}
 	}
-	Messenger::print("Typing all patterns in model '%s' (associated forcefield is '%s')...\n", name_.get(), forcefield_->name());
+	Messenger::print("Typing all patterns in model '%s' (associated forcefield is '%s')...", name_.get(), forcefield_->name());
 	
 	// Assign forcefield types to atoms
 	for (Pattern* p = patterns_.first(); p != NULL; p = p->next)
@@ -168,7 +168,7 @@ bool Model::typeAll(Forcefield* defaultForcefield)
 		// Finally, propagate the data now contained in the initial molecule in each pattern to all other molecules
 		p->propagateAtomtypes();
 		p->propagateBondTypes();
-		Messenger::print("Done.\n");
+		Messenger::print("Done.");
 	}
 	// Log change in the model
 	changeLog.add(Log::Coordinates);

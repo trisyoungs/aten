@@ -83,15 +83,15 @@ StepNode* MeasurementVariable::accessorSearch(const char* s, TreeNode* arrayInde
 		i = Variable::searchAccessor(s, nFunctions, functionData);
 		if (i == -1)
 		{
-			Messenger::print("Error: Type 'Measurement&' has no member or function named '%s'.\n", s);
+			Messenger::print("Error: Type 'Measurement&' has no member or function named '%s'.", s);
 			printAccessors();
 			Messenger::exit("MeasurementVariable::accessorSearch");
 			return NULL;
 		}
-		Messenger::print(Messenger::Parse, "FunctionAccessor match = %i (%s)\n", i, functionData[i].name);
+		Messenger::print(Messenger::Parse, "FunctionAccessor match = %i (%s)", i, functionData[i].name);
 		if (arrayIndex != NULL)
 		{
-			Messenger::print("Error: Array index given to 'Measurement&' function '%s'.\n", s);
+			Messenger::print("Error: Array index given to 'Measurement&' function '%s'.", s);
 			Messenger::exit("MeasurementVariable::accessorSearch");
 			return NULL;
 		}
@@ -100,24 +100,24 @@ StepNode* MeasurementVariable::accessorSearch(const char* s, TreeNode* arrayInde
 		result->addJoinedArguments(argList);
 		if (!result->checkArguments(functionData[i].arguments, functionData[i].name))
 		{
-			Messenger::print("Error: Syntax for 'Measurement&' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
+			Messenger::print("Error: Syntax for 'Measurement&' function '%s' is '%s(%s)'.", functionData[i].name, functionData[i].name, functionData[i].argText );
 			delete result;
 			result = NULL;
 		}
 	}
 	else
 	{
-		Messenger::print(Messenger::Parse, "Accessor match = %i (%s)\n", i, accessorData[i].name);
+		Messenger::print(Messenger::Parse, "Accessor match = %i (%s)", i, accessorData[i].name);
 		// Were we given an array index when we didn't want one?
 		if ((accessorData[i].arraySize == 0) && (arrayIndex != NULL))
 		{
-			Messenger::print("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
+			Messenger::print("Error: Irrelevant array index provided for member '%s'.", accessorData[i].name);
 			result = NULL;
 		}
 		// Were we given an argument list when we didn't want one?
 		if (argList != NULL)
 		{
-			Messenger::print("Error: Argument list given to 'Measurement&' array member '%s'.\n", s);
+			Messenger::print("Error: Argument list given to 'Measurement&' array member '%s'.", s);
 			Messenger::exit("MeasurementVariable::accessorSearch");
 			return NULL;
 		}
@@ -142,7 +142,7 @@ bool MeasurementVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArray
 	// Check for correct lack/presence of array index given
 	if ((accessorData[i].arraySize == 0) && hasArrayIndex)
 	{
-		Messenger::print("Error: Unnecessary array index provided for member '%s'.\n", accessorData[i].name);
+		Messenger::print("Error: Unnecessary array index provided for member '%s'.", accessorData[i].name);
 		Messenger::exit("MeasurementVariable::retrieveAccessor");
 		return FALSE;
 	}
@@ -150,7 +150,7 @@ bool MeasurementVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArray
 	{
 		if ((arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize))
 		{
-			Messenger::print("Error: Array index out of bounds for member '%s' (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
+			Messenger::print("Error: Array index out of bounds for member '%s' (%i, range is 1-%i).", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
 			Messenger::exit("MeasurementVariable::retrieveAccessor");
 			return FALSE;
 		}
@@ -160,7 +160,7 @@ bool MeasurementVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArray
 	Measurement* ptr = (Measurement*) rv.asPointer(VTypes::MeasurementData, result);
 	if ((!result) || (ptr == NULL))
 	{
-		Messenger::print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::MeasurementData));
+		Messenger::print("Invalid (NULL) %s reference encountered.", VTypes::dataType(VTypes::MeasurementData));
 		result = FALSE;
 	}
 	if (result) switch (acc)
@@ -168,7 +168,7 @@ bool MeasurementVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArray
 		case (MeasurementVariable::Atoms):
 			if ((arrayIndex < 1) || (arrayIndex > 4))
 			{
-				Messenger::print("Array index [%i] is out of range for 'atoms' member.\n", arrayIndex);
+				Messenger::print("Array index [%i] is out of range for 'atoms' member.", arrayIndex);
 				result = FALSE;
 			}
 			else rv.set(VTypes::AtomData, ptr->atom(arrayIndex-1));
@@ -220,12 +220,12 @@ bool MeasurementVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue&
 		{
 			if ((accessorData[i].arraySize > 0) && ( (arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize) ))
 			{
-				Messenger::print("Error: Array index provided for member '%s' is out of range (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
+				Messenger::print("Error: Array index provided for member '%s' is out of range (%i, range is 1-%i).", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
 				result = FALSE;
 			}
 			if (newValue.arraySize() > 0)
 			{
-				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
+				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.", accessorData[i].name);
 				result = FALSE;
 			}
 		}
@@ -233,7 +233,7 @@ bool MeasurementVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue&
 		{
 			if (newValue.arraySize() > accessorData[i].arraySize)
 			{
-				Messenger::print("Error: The array being assigned to member '%s' is larger than the size of the desination array (%i cf. %i).\n", accessorData[i].name, newValue.arraySize(), accessorData[i].arraySize);
+				Messenger::print("Error: The array being assigned to member '%s' is larger than the size of the desination array (%i cf. %i).", accessorData[i].name, newValue.arraySize(), accessorData[i].arraySize);
 				result = FALSE;
 			}
 		}
@@ -245,12 +245,12 @@ bool MeasurementVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue&
 		{
 			if (accessorData[i].returnType != VTypes::VectorData)
 			{
-				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
+				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.", accessorData[i].name);
 				result = FALSE;
 			}
 			else if ((newValue.type() != VTypes::VectorData) && (newValue.arraySize() != 3))
 			{
-				Messenger::print("Error: Only an array of size 3 can be assigned to a vector (member '%s').\n", accessorData[i].name);
+				Messenger::print("Error: Only an array of size 3 can be assigned to a vector (member '%s').", accessorData[i].name);
 				result = FALSE;
 			}
 		}
@@ -264,7 +264,7 @@ bool MeasurementVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue&
 	Measurement* ptr = (Measurement*) sourcerv.asPointer(VTypes::MeasurementData, result);
 	if ((!result) || (ptr == NULL))
 	{
-		Messenger::print("Invalid (NULL) %s reference encountered.\n", VTypes::dataType(VTypes::MeasurementData));
+		Messenger::print("Invalid (NULL) %s reference encountered.", VTypes::dataType(VTypes::MeasurementData));
 		result = FALSE;
 	}
 	if (result) switch (acc)
@@ -308,15 +308,15 @@ void MeasurementVariable::printAccessors()
 {
 	if (MeasurementVariable::nAccessors > 0)
 	{
-		Messenger::print("Valid accessors are:\n");
+		Messenger::print("Valid accessors are:");
 		for (int n=0; n<MeasurementVariable::nAccessors; ++n) Messenger::print("%s%s%s", n == 0 ? " " : ", ", accessorData[n].name, accessorData[n].arraySize > 0 ? "[]" : "");
-		Messenger::print("\n");
+		Messenger::print("");
 	}
 	if ((MeasurementVariable::nFunctions > 0) && (strcmp(functionData[0].name,".dummy") != 0))
 	{
-		Messenger::print("Valid functions are:\n");
+		Messenger::print("Valid functions are:");
 		for (int n=0; n<MeasurementVariable::nFunctions; ++n) Messenger::print("%s%s(%s)", n == 0 ? " " : ", ", functionData[n].name, functionData[n].argText);
-		Messenger::print("\n");
+		Messenger::print("");
 	}
 }
 

@@ -480,7 +480,7 @@ void DelaunaySurface::create3DMesh(Grid* g)
 // 		for (GridPoint* gp = g->gridPoints(); gp != NULL; gp = gp->next) add3DPoint(gp);
 	}
 	limit++;
-	Messenger::print("Created mesh with %i triangles.\n", triangles_.nItems());
+	Messenger::print("Created mesh with %i triangles.", triangles_.nItems());
 	printf("Created mesh with %i edges, %i triangles, and %i tetrahedra.\n", edges_.nItems(), triangles_.nItems(), tetrahedra_.nItems());
 	// Remove original bounding tetrahedron
 // 	for (int n=0; n < 4; ++n) removePoint(&boundPoints_[n]);

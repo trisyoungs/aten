@@ -43,7 +43,7 @@ bool Commands::function_Disorder(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	// Loop over remaining arguments (widget/global variable assignments)
 	for (int n = 1; n < parser.nArgs(); ++n) if (!scheme->setVariable(beforeStr(parser.argc(n),"="), afterStr(parser.argc(n),"="))) return FALSE;
 	
-	Messenger::print("Performing disordered build for model '%s'\n", obj.m->name());
+	Messenger::print("Performing disordered build for model '%s'", obj.m->name());
 	rv.reset();
 	bool result = mc.disorder(aten_.models(), obj.m, scheme, c->hasArg(1) ? c->argb(1) : TRUE);
 	return result;
@@ -52,14 +52,14 @@ bool Commands::function_Disorder(CommandNode* c, Bundle& obj, ReturnValue& rv)
 // Print current component list ('listcomponents')
 bool Commands::function_ListComponents(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	Messenger::print("Current component specification:\n");
+	Messenger::print("Current component specification:");
 	Vec3<double> v1, v2;
 	Dnchar text;
-	Messenger::print("Model           Policy     Partition  Population   Density\n");
+	Messenger::print("Model           Policy     Partition  Population   Density");
 	for (Model* m = aten_.models(); m != NULL; m = m->next)
 	{
 		if (m->cell()->type() != UnitCell::NoCell) continue;
-		Messenger::print("%-15s %-10s     %i        %5i    %8.4f\n", m->name(), Model::insertionPolicy(m->componentInsertionPolicy()), m->componentPartition()+1, m->componentPopulation(), m->componentDensity());
+		Messenger::print("%-15s %-10s     %i        %5i    %8.4f", m->name(), Model::insertionPolicy(m->componentInsertionPolicy()), m->componentPartition()+1, m->componentPopulation(), m->componentDensity());
 	}
 	rv.reset();
 	return TRUE;

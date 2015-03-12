@@ -83,7 +83,7 @@ double Model::eigenvectorDensityAt(int id, Vec3<double> v)
 	// Grab eigenvector pointer
 	if ((id < 0) || (id >= eigenvectors_.nItems()))
 	{
-		Messenger::print("Illegal eigenvector ID '%i' given to Model::eigenvectorDensityAt.\n", id);
+		Messenger::print("Illegal eigenvector ID '%i' given to Model::eigenvectorDensityAt.", id);
 		Messenger::exit("Model::eigenvectorDensityAt");
 		return 0.0;
 	}
@@ -201,7 +201,7 @@ void Model::setVibrationFrameIndex(int index)
 	// Check frame range
 	if ((index < 0) || (index >= vibrationFrames_.nItems()))
 	{
-		Messenger::print("Internal Error: Vibration frame index %i is out of range (vibration contains %i frames).\n", index, vibrationFrames_.nItems());
+		Messenger::print("Internal Error: Vibration frame index %i is out of range (vibration contains %i frames).", index, vibrationFrames_.nItems());
 		return;
 	}
 	vibrationCurrentFrame_ = vibrationFrames_[index];

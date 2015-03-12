@@ -58,10 +58,10 @@ Model* Model::trajectoryFrame(int n)
 	Model* frame = NULL;
 	if (trajectoryFramesAreCached_)
 	{
-		if ((n < 0) || (n >= nTrajectoryFrames())) Messenger::print("Frame %i is out of range for trajectory associated to model '%s'.\n", n, name_.get());
+		if ((n < 0) || (n >= nTrajectoryFrames())) Messenger::print("Frame %i is out of range for trajectory associated to model '%s'.", n, name_.get());
 		else frame = trajectoryFrames_[n];
 	}
-	else Messenger::print("Trajectory for model '%s' is not cached: individual frames not available.\n", name_.get());
+	else Messenger::print("Trajectory for model '%s' is not cached: individual frames not available.", name_.get());
 	return frame;
 }
 
@@ -112,7 +112,7 @@ bool Model::initialiseTrajectory(const char* fname, Tree* f)
 	// Open the specified file
 	if (!trajectoryParser_.openInput(fname))
 	{
-		Messenger::print("Trajectory file '%s' couldn't be opened.\n",fname);
+		Messenger::print("Trajectory file '%s' couldn't be opened.",fname);
 		clearTrajectory();
 		Messenger::exit("Model::initialiseTrajectory");
 		return FALSE;
@@ -125,14 +125,14 @@ bool Model::initialiseTrajectory(const char* fname, Tree* f)
 	trajectoryFrameFunction_ = f->filter.trajectoryFrameFunction();
 	if (trajectoryHeaderFunction_ == NULL)
 	{
-		Messenger::print("Error initialising trajectory: Filter '%s' contains no 'int readHeader()' function.\n", trajectoryFilter_->filter.name());
+		Messenger::print("Error initialising trajectory: Filter '%s' contains no 'int readHeader()' function.", trajectoryFilter_->filter.name());
 		clearTrajectory();
 		Messenger::exit("Model::initialiseTrajectory");
 		return FALSE;
 	}
 	if (trajectoryFrameFunction_ == NULL)
 	{
-		Messenger::print("Error initialising trajectory: Filter '%s' contains no 'int readFrame()' function.\n", trajectoryFilter_->filter.name());
+		Messenger::print("Error initialising trajectory: Filter '%s' contains no 'int readFrame()' function.", trajectoryFilter_->filter.name());
 		clearTrajectory();
 		Messenger::exit("Model::initialiseTrajectory");
 		return FALSE;
@@ -149,7 +149,7 @@ bool Model::initialiseTrajectory(const char* fname, Tree* f)
 	// Read header
 	if (!trajectoryHeaderFunction_->execute(&trajectoryParser_, rv) || (rv.asInteger() != 1))
 	{
-		Messenger::print("Error reading header of trajectory file.\n");
+		Messenger::print("Error reading header of trajectory file.");
 		clearTrajectory();
 		Messenger::exit("Model::initialiseTrajectory");
 		return FALSE;
@@ -159,7 +159,7 @@ bool Model::initialiseTrajectory(const char* fname, Tree* f)
 	std::streampos firstframe = trajectoryParser_.tellg();
 
 	// Determine frame size and number of frames in file
-	Messenger::print(Messenger::Verbose, "Testing trajectory frame read...\n");
+	Messenger::print(Messenger::Verbose, "Testing trajectory frame read...");
 	//printf("Initialised config\n");
 	Model* newframe = addTrajectoryFrame();
 	setRenderSource(Model::TrajectorySource);
@@ -167,7 +167,7 @@ bool Model::initialiseTrajectory(const char* fname, Tree* f)
 	// Read first frame
 	if (!trajectoryFrameFunction_->execute(&trajectoryParser_, rv) || (rv.asInteger() != 1))
 	{
-		Messenger::print("Error testing frame read from trajectory.\n");
+		Messenger::print("Error testing frame read from trajectory.");
 		clearTrajectory();
 		setRenderSource(Model::ModelSource);
 		Messenger::exit("Model::initialiseTrajectory");
@@ -176,8 +176,8 @@ bool Model::initialiseTrajectory(const char* fname, Tree* f)
 	newframe->enableUndoRedo();
 	std::streampos secondframe = trajectoryParser_.tellg();
 	trajectoryFrameSize_ = secondframe - firstframe;
-	if ((trajectoryFrameSize_/1024) < 10) Messenger::print("Single frame is %i bytes.\n", trajectoryFrameSize_);
-	else Messenger::print("Single frame is (approximately) %i kb.\n", trajectoryFrameSize_/1024);
+	if ((trajectoryFrameSize_/1024) < 10) Messenger::print("Single frame is %i bytes.", trajectoryFrameSize_);
+	else Messenger::print("Single frame is (approximately) %i kb.", trajectoryFrameSize_/1024);
 	trajectoryParser_.seekg(0, std::ios::end);
 	std::streampos endoffile = trajectoryParser_.tellg();
 	nTrajectoryFileFrames_ = (endoffile - firstframe) / trajectoryFrameSize_;
@@ -186,15 +186,15 @@ bool Model::initialiseTrajectory(const char* fname, Tree* f)
 	trajectoryParser_.seekg(secondframe);
 
 	// Pre-Cache frame(s)
-	Messenger::print("Successfully associated trajectory.\n"); 
-	Messenger::print("Number of frames in file : %i\n", nTrajectoryFileFrames_);
+	Messenger::print("Successfully associated trajectory."); 
+	Messenger::print("Number of frames in file : %i", nTrajectoryFileFrames_);
 	trajectoryFrameIndex_ = 0;
 
 	// If we are caching the trajectory, read in all remaining frames here. Otherwise, we're happy with just the first
-	Messenger::print("Estimated trajectory size is %i kb, cache limit = %i kb\n", nTrajectoryFileFrames_ * trajectoryFrameSize_/1024, prefs.cacheLimit());
+	Messenger::print("Estimated trajectory size is %i kb, cache limit = %i kb", nTrajectoryFileFrames_ * trajectoryFrameSize_/1024, prefs.cacheLimit());
 	if ((nTrajectoryFileFrames_ * trajectoryFrameSize_)/1024 < prefs.cacheLimit())
 	{
-		Messenger::print("Caching all frames from trajectory...\n");
+		Messenger::print("Caching all frames from trajectory...");
  		int pid = progress.initialise("Caching Frames", nTrajectoryFileFrames_);
 		// Read all frames from trajectory file
 		for (int n=1; n<nTrajectoryFileFrames_; n++)
@@ -205,7 +205,7 @@ bool Model::initialiseTrajectory(const char* fname, Tree* f)
 			if ((!success) || (rv.asInteger() != 1))
 			{
 				removeTrajectoryFrame(newframe);
-				Messenger::print("Error during read of frame %i.\n", n);
+				Messenger::print("Error during read of frame %i.", n);
 				break;
 			}
 			newframe->enableUndoRedo();
@@ -214,11 +214,11 @@ bool Model::initialiseTrajectory(const char* fname, Tree* f)
 		nTrajectoryFileFrames_ = 0;
 		trajectoryFramesAreCached_ = TRUE;
 		trajectoryParser_.closeFiles();
-		Messenger::print("Cached %i frames from file.\n", nTrajectoryFrames());
+		Messenger::print("Cached %i frames from file.", nTrajectoryFrames());
 	}
 	else
 	{
-		Messenger::print( "Trajectory will not be cached in memory.\n");
+		Messenger::print( "Trajectory will not be cached in memory.");
 		trajectoryOffsets_ = new std::streampos[nTrajectoryFileFrames_+10];
 		trajectoryOffsets_[0] = firstframe;
 		trajectoryOffsets_[1] = secondframe;
@@ -261,13 +261,13 @@ void Model::seekFirstTrajectoryFrame()
 	// Check that a trajectory exists!
 	if (nTrajectoryFrames() == 0)
 	{
-		Messenger::print("No trajectory is available.\n");
+		Messenger::print("No trajectory is available.");
 		Messenger::exit("Model::seekFirstTrajectoryFrame");
 		return;
 	}
 	if (trajectoryFrameIndex_ == 0)
 	{
-		Messenger::print("Already at start of trajectory.\n");
+		Messenger::print("Already at start of trajectory.");
 		Messenger::exit("Model::seekFirstTrajectoryFrame");
 		return;
 	}
@@ -277,7 +277,6 @@ void Model::seekFirstTrajectoryFrame()
 		trajectoryFrameIndex_ = 0;
 	}
 	else seekTrajectoryFrame(0);
-	changeLog.add(Log::Camera);
 	Messenger::exit("Model::seekFirstTrajectoryFrame");
 }
 
@@ -289,13 +288,13 @@ void Model::seekNextTrajectoryFrame()
 	// Check that a trajectory exists!
 	if (nTrajectoryFrames() == 0)
 	{
-		Messenger::print("No trajectory is available.\n");
+		Messenger::print("No trajectory is available.");
 		Messenger::exit("Model::seekNextTrajectoryFrame");
 		return;
 	}
 	if (trajectoryFrameIndex_ == nTrajectoryFrames()-1)
 	{
-		Messenger::print("Already at end of trajectory (frame %i).\n", trajectoryFrameIndex_+1);
+		Messenger::print("Already at end of trajectory (frame %i).", trajectoryFrameIndex_+1);
 		Messenger::exit("Model::seekNextTrajectoryFrame");
 		return;
 	}
@@ -305,7 +304,6 @@ void Model::seekNextTrajectoryFrame()
 		trajectoryCurrentFrame_ = trajectoryCurrentFrame_->next;
 	}
 	else seekTrajectoryFrame(trajectoryFrameIndex_+1);
-	changeLog.add(Log::Camera);
 	//printf("Frame = %p, parent = %p (model = %p)\n",trajectoryCurrentFrame_,trajectoryCurrentFrame_->trajectoryParent_,this);
 	Messenger::exit("Model::seekNextTrajectoryFrame");
 }
@@ -318,13 +316,13 @@ void Model::seekPreviousTrajectoryFrame()
 	// Check that a trajectory exists!
 	if (nTrajectoryFrames() == 0)
 	{
-		Messenger::print("No trajectory is available.\n");
+		Messenger::print("No trajectory is available.");
 		Messenger::exit("Model::seekPreviousTrajectoryFrame");
 		return;
 	}
 	if (trajectoryFrameIndex_ == 0)
 	{
-		Messenger::print("Already at start of trajectory.\n");
+		Messenger::print("Already at start of trajectory.");
 		Messenger::exit("Model::seekPreviousTrajectoryFrame");
 		return;
 	}
@@ -334,7 +332,6 @@ void Model::seekPreviousTrajectoryFrame()
 		trajectoryCurrentFrame_ = trajectoryCurrentFrame_->prev;
 	}
 	else seekTrajectoryFrame(trajectoryFrameIndex_-1);
-	changeLog.add(Log::Camera);
 	Messenger::exit("Model::seekPreviousTrajectoryFrame");
 }
 
@@ -346,13 +343,13 @@ void Model::seekLastTrajectoryFrame()
 	// Check that a trajectory exists!
 	if (nTrajectoryFrames() == 0)
 	{
-		Messenger::print("No trajectory is available.\n");
+		Messenger::print("No trajectory is available.");
 		Messenger::exit("Model::seekLastTrajectoryFrame");
 		return;
 	}
 	if (trajectoryFrameIndex_ == nTrajectoryFrames()-1)
 	{
-		Messenger::print("Already at end of trajectory (frame %i).\n", trajectoryFrameIndex_+1);
+		Messenger::print("Already at end of trajectory (frame %i).", trajectoryFrameIndex_+1);
 		Messenger::exit("Model::seekNextTrajectoryFrame");
 		return;
 	}
@@ -362,7 +359,6 @@ void Model::seekLastTrajectoryFrame()
 		trajectoryFrameIndex_ = nTrajectoryFrames()-1;
 	}
 	else seekTrajectoryFrame(nTrajectoryFrames()-1);
-	changeLog.add(Log::Camera);
 	Messenger::exit("Model::seekLastTrajectoryFrame");
 }
 
@@ -374,19 +370,19 @@ void Model::seekTrajectoryFrame(int frameno, bool quiet)
 	// Check that a trajectory exists!
 	if (nTrajectoryFrames() == 0)
 	{
-		Messenger::print("No trajectory is available.\n");
+		Messenger::print("No trajectory is available.");
 		Messenger::exit("Model::seekTrajectoryFrame");
 		return;
 	}
 	if ((frameno < 0) || (frameno > nTrajectoryFrames()-1))
 	{
-		Messenger::print("Frame %i is out of range for current trajectory (which has %i frames).\n", frameno+1, nTrajectoryFrames());
+		Messenger::print("Frame %i is out of range for current trajectory (which has %i frames).", frameno+1, nTrajectoryFrames());
 		Messenger::exit("Model::seekTrajectoryFrame");
 		return;
 	}
 	if (trajectoryFrameIndex_ == frameno)
 	{
-		Messenger::print("Already at specified frame (%i).\n", frameno+1);
+		Messenger::print("Already at specified frame (%i).", frameno+1);
 		Messenger::exit("Model::seekTrajectoryFrame");
 		return;
 	}
@@ -405,7 +401,7 @@ void Model::seekTrajectoryFrame(int frameno, bool quiet)
 			success = trajectoryFrameFunction_->execute(&trajectoryParser_, rv);
 			if ((!success) || (rv.asInteger() != 1))
 			{
-				Messenger::print("Failed to seek to frame %i.\n", frameno+1);
+				Messenger::print("Failed to seek to frame %i.", frameno+1);
 				Messenger::exit("Model::seekTrajectoryFrame");
 				return;
 			}
@@ -429,7 +425,7 @@ void Model::seekTrajectoryFrame(int frameno, bool quiet)
 				success = trajectoryFrameFunction_->execute(&trajectoryParser_, rv);
 				if ((!success) || (rv.asInteger() != 1))
 				{
-					Messenger::print("Failed to read frame %i in trajectory.\n",trajectoryFrameIndex_+1);
+					Messenger::print("Failed to read frame %i in trajectory.",trajectoryFrameIndex_+1);
 					Messenger::exit("Model::seekTrajectoryFrame");
 					return;
 				}
@@ -440,11 +436,10 @@ void Model::seekTrajectoryFrame(int frameno, bool quiet)
 				trajectoryOffsets_[trajectoryHighestFrameOffset_] = trajectoryParser_.tellg();
 			}
 		}
-		trajectoryCurrentFrame_->changeLog.add(Log::Camera);
 		trajectoryCurrentFrame_->changeLog.add(Log::Structure);
 	}
 	trajectoryFrameIndex_ = frameno;
-	if (!quiet) Messenger::print("Seek to frame %i\n", trajectoryFrameIndex_+1);
+	if (!quiet) Messenger::print("Seek to frame %i", trajectoryFrameIndex_+1);
 	Messenger::exit("Model::seekTrajectoryFrame");
 }
 
@@ -466,7 +461,7 @@ void Model::trajectoryCopyAtomStyle(Model* source)
 	Messenger::enter("Model::trajectoryCopyAtomStyle");
 	if (source == NULL)
 	{
-		Messenger::print("Internal Error: NULL model pointer passed to Model::trajectoryCopyAtomStyle.\n");
+		Messenger::print("Internal Error: NULL model pointer passed to Model::trajectoryCopyAtomStyle.");
 		Messenger::exit("Model::trajectoryCopyAtomStyle");
 		return;
 	}

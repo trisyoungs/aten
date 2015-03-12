@@ -144,7 +144,7 @@ AtenSelectElement::AtenSelectElement(AtenWindow& parent) : QDialog(&parent), par
 			commonButtons_.add(button, z);
 			commonGroupLayout_->addWidget(button);
 		}
-		else Messenger::print( "Unrecognised element '%s' not added to common elements list.\n", parser.argc(n));
+		else Messenger::print( "Unrecognised element '%s' not added to common elements list.", parser.argc(n));
 	}
 }
 

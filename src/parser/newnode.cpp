@@ -98,7 +98,7 @@ NewNode::~NewNode()
 			delete (ZMatrix*) object_;
 			break;
 		default:
-			Messenger::print("Internal Error: NewNode doesn't know how to delete a variable of type %s.\n", VTypes::dataType(type_));
+			Messenger::print("Internal Error: NewNode doesn't know how to delete a variable of type %s.", VTypes::dataType(type_));
 			break;
 	}
 }
@@ -110,7 +110,7 @@ bool NewNode::execute(ReturnValue& rv)
 	switch (type_)
 	{
 		case (VTypes::NoData):
-			Messenger::print("Internal Error: No data type set in NewNode::execute().\n");
+			Messenger::print("Internal Error: No data type set in NewNode::execute().");
 			rv.reset();
 			return FALSE;
 			break;
@@ -160,7 +160,7 @@ bool NewNode::execute(ReturnValue& rv)
 			object_ = new ZMatrix;
 			break;
 		default:
-			Messenger::print("Internal Error: NewNode doesn't know how to create a variable of type %s.\n", VTypes::dataType(type_));
+			Messenger::print("Internal Error: NewNode doesn't know how to create a variable of type %s.", VTypes::dataType(type_));
 			rv.reset();
 			return FALSE;
 			break;

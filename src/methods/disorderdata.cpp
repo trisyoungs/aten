@@ -46,18 +46,18 @@ bool DisorderData::initialise(Model* sourceModel, PartitionData *partitionData)
 {
 	if (sourceModel == NULL)
 	{
-		Messenger::print("Error: DisorderData::initialise() - NULL source model pointer passed.\n");
+		Messenger::print("Error: DisorderData::initialise() - NULL source model pointer passed.");
 		return FALSE;
 	}
 	if (sourceModel->nAtoms() == 0)
 	{
-		Messenger::print("Error: DisorderData::initialise() - source model contains no atoms!\n");
+		Messenger::print("Error: DisorderData::initialise() - source model contains no atoms!");
 		return FALSE;
 	}
 	partitionData_ = partitionData;
 	if (partitionData_ == NULL)
 	{
-		Messenger::print("Error: DisorderData::initialise() - NULL partition data pointer passed.\n");
+		Messenger::print("Error: DisorderData::initialise() - NULL partition data pointer passed.");
 		return FALSE;
 	}
 	

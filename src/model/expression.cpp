@@ -37,8 +37,8 @@ Forcefield* Model::forcefield()
 void Model::createNamesForcefield()
 {
 	// ATEN2 TODO
-// 	if (namesForcefield_ != NULL) Messenger::print("Warning - an atom names forcefield already exists for model '%s'.\n", name_.get());
-// 	Messenger::print("Creating atom names forcefield for model '%s'.\n", name_.get());
+// 	if (namesForcefield_ != NULL) Messenger::print("Warning - an atom names forcefield already exists for model '%s'.", name_.get());
+// 	Messenger::print("Creating atom names forcefield for model '%s'.", name_.get());
 // 	Dnchar s;
 // 	s.sprintf("Names kept from Model %s",name_.get());
 // 	namesForcefield_ = aten.addForcefield(s);
@@ -109,7 +109,7 @@ bool Model::assignForcefieldCharges()
 		if (i->type() == NULL)
 		{
 			nfailed ++;
-			Messenger::print("Could not assign charge to atom %i since it has no atomtype associated to it.\n", i->id()+1);
+			Messenger::print("Could not assign charge to atom %i since it has no atomtype associated to it.", i->id()+1);
 		}
 		else
 		{
@@ -117,8 +117,8 @@ bool Model::assignForcefieldCharges()
 			totalq += i->type()->charge();
 		}
 	}
-	if (nfailed == 0) Messenger::print("Charges assigned successfully to all atoms.\nTotal charge in model is %f e.\n", totalq);
-	else Messenger::print("Failed to assign charges to %i atoms.\n", nfailed);
+	if (nfailed == 0) Messenger::print("Charges assigned successfully to all atoms.\nTotal charge in model is %f e.", totalq);
+	else Messenger::print("Failed to assign charges to %i atoms.", nfailed);
 	Messenger::exit("Model::assignForcefieldCharges");
 	return (nfailed == 0);
 }
@@ -131,8 +131,8 @@ void Model::setForcefield(Forcefield* newff)
 	{
 		invalidateExpression();
 		forcefield_ = newff;
-		if (forcefield_ == NULL) Messenger::print("Model '%s' has had its associated forcefield removed.\n", name_.get());
-		else Messenger::print("Forcefield '%s' now associated with model '%s'.\n", forcefield_->name(), name_.get());
+		if (forcefield_ == NULL) Messenger::print("Model '%s' has had its associated forcefield removed.", name_.get());
+		else Messenger::print("Forcefield '%s' now associated with model '%s'.", forcefield_->name(), name_.get());
 	}
 }
 
@@ -164,13 +164,13 @@ bool Model::createExpression(Choice vdwOnly, Choice allowDummy, Choice assignCha
 	allForcefieldTypes_.clear();
 	expressionVdwOnly_ = vdwOnly;
 	expressionPoint_ = -1;
-	if (expressionVdwOnly_) Messenger::print("Creating VDW-only expression for model %s...\n",name_.get());
-	else Messenger::print("Creating expression for model %s...\n",name_.get());
+	if (expressionVdwOnly_) Messenger::print("Creating VDW-only expression for model %s...",name_.get());
+	else Messenger::print("Creating expression for model %s...",name_.get());
 	
 	// 1) Assign forcefield types to all atoms
 	if (!typeAll(defaultForcefield))
 	{
-		Messenger::print("Couldn't type atoms.\n");
+		Messenger::print("Couldn't type atoms.");
 		Messenger::exit("Model::createExpression");
 		return FALSE;
 	}
@@ -237,12 +237,12 @@ bool Model::createExpression(Choice vdwOnly, Choice allowDummy, Choice assignCha
 		case (Electrostatics::None):
 			break;
 		case (Electrostatics::Coulomb):
-			if (cell_.type() != UnitCell::NoCell) Messenger::print("!!! Coulomb sum requested for periodic model.\n");
+			if (cell_.type() != UnitCell::NoCell) Messenger::print("!!! Coulomb sum requested for periodic model.");
 			break;
 		default: // Ewald - issue warnings, but don't return FALSE
 			if (cell_.type() == UnitCell::NoCell)
 			{
-				Messenger::print("!!! Ewald sum cannot be used for a non-periodic model.\n");
+				Messenger::print("!!! Ewald sum cannot be used for a non-periodic model.");
 				//Messenger::exit("Model::createExpression");
 				//return FALSE;
 			}
@@ -274,8 +274,8 @@ bool Model::createExpression(Choice vdwOnly, Choice allowDummy, Choice assignCha
 			// Check for compatible interaction types between atoms
 			if (ffa->vdwForm() != ffb->vdwForm())
 			{
-				Messenger::print("Conflicting van der Waals functional forms for atom types '%s' and '%s'.\n", VdwFunctions::VdwFunctions[ffa->vdwForm()].name, VdwFunctions::VdwFunctions[ffb->vdwForm()].name);
-				Messenger::print("Expression for model cannot be completed.\n");
+				Messenger::print("Conflicting van der Waals functional forms for atom types '%s' and '%s'.", VdwFunctions::VdwFunctions[ffa->vdwForm()].name, VdwFunctions::VdwFunctions[ffb->vdwForm()].name);
+				Messenger::print("Expression for model cannot be completed.");
 				Messenger::exit("Model::createExpression");
 				return FALSE;
 			}
@@ -305,7 +305,7 @@ void Model::createForcefieldLists()
 {
 	Messenger::enter("Model::createForcefieldLists");
 
-	Messenger::print(Messenger::Verbose, "Constructing global forcefield term lists for model...\n");
+	Messenger::print(Messenger::Verbose, "Constructing global forcefield term lists for model...");
 	forcefieldAngles_.clear();
 	forcefieldBonds_.clear();
 	forcefieldTorsions_.clear();
@@ -316,7 +316,7 @@ void Model::createForcefieldLists()
 	// Cycle over patterns, adding their unique forcefield terms to ours...
 	for (Pattern* p = patterns_.first(); p != NULL; p = p->next)
 	{
-		Messenger::print(Messenger::Verbose, "Pattern '%s' uses %i atom types, %i bond terms, %i angle terms, and %i torsion terms.\n", p->name(), p->nUniqueForcefieldTypes(), p->nForcefieldBonds(), p->nForcefieldAngles(), p->nForcefieldTorsions());
+		Messenger::print(Messenger::Verbose, "Pattern '%s' uses %i atom types, %i bond terms, %i angle terms, and %i torsion terms.", p->name(), p->nUniqueForcefieldTypes(), p->nForcefieldBonds(), p->nForcefieldAngles(), p->nForcefieldTorsions());
 
 		// Atom types. We only add types to the list that have a unique type name.
 		for (Refitem<ForcefieldAtom,int>* ffa1 = p->allForcefieldTypes(); ffa1 != NULL; ffa1 = ffa1->next)
@@ -348,7 +348,7 @@ void Model::createForcefieldLists()
 		}
 	}
 
-	Messenger::print(Messenger::Verbose, "Model '%s' uses %i atom types, %i bond terms, %i angle terms, and %i torsion terms over all patterns.\n", name(), nUniqueForcefieldTypes(), nForcefieldBonds(), nForcefieldAngles(), nForcefieldTorsions());
+	Messenger::print(Messenger::Verbose, "Model '%s' uses %i atom types, %i bond terms, %i angle terms, and %i torsion terms over all patterns.", name(), nUniqueForcefieldTypes(), nForcefieldBonds(), nForcefieldAngles(), nForcefieldTorsions());
 
 	Messenger::exit("Model::createForcefieldLists");
 }

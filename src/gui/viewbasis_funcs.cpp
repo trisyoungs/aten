@@ -48,7 +48,7 @@ void AtenViewBasis::showWindow(Model* m)
 	if ((target_->basisShells() == NULL) && (target_->parent() != NULL))
 	{
 		target_ = target_->parent();
-		Messenger::print("No basis definition found in trajectory frame - looking in parent model...\n");
+		Messenger::print("No basis definition found in trajectory frame - looking in parent model...");
 	}
 	// Determine total row count
 	BasisShell *bas;

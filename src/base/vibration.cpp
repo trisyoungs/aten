@@ -57,7 +57,7 @@ void Vibration::initialise(Model* parent, int size)
 		if (parent_ == NULL) printf("Warning - When initialising a Vibration without a specified size, the parent model must be valid.\n");
 		else nDisplacements_ = parent_->nAtoms();
 	}
-	if (nDisplacements_ < 1) Messenger::print("Warning - No displacement data array created for vibration.\n");
+	if (nDisplacements_ < 1) Messenger::print("Warning - No displacement data array created for vibration.");
 	else displacements_ = new Vec3<double>[nDisplacements_];
 }
 
@@ -118,21 +118,21 @@ int Vibration::nDisplacements()
 // Set specified displacement data (set of doubles)
 void Vibration::setDisplacement(int n, double dx, double dy, double dz)
 {
-	if ((n < 0) || (n >= nDisplacements_)) Messenger::print("Warning - Displacement index %i is out of range for vibration.\n", n);
+	if ((n < 0) || (n >= nDisplacements_)) Messenger::print("Warning - Displacement index %i is out of range for vibration.", n);
 	else displacements_[n].set(dx, dy, dz);
 }
 
 // Set specified displacement data (individual component)
 void Vibration::setDisplacement(int n, int component, double d)
 {
-	if ((n < 0) || (n >= nDisplacements_)) Messenger::print("Warning - Displacement index %i is out of range for vibration.\n", n);
+	if ((n < 0) || (n >= nDisplacements_)) Messenger::print("Warning - Displacement index %i is out of range for vibration.", n);
 	else displacements_[n].set(component, d);
 }
 
 // Set specified displacement data (vector)
 void Vibration::setDisplacement(int n, Vec3<double> v)
 {
-	if ((n < 0) || (n >= nDisplacements_)) Messenger::print("Warning - Displacement index %i is out of range for vibration.\n", n);
+	if ((n < 0) || (n >= nDisplacements_)) Messenger::print("Warning - Displacement index %i is out of range for vibration.", n);
 	else displacements_[n] = v;
 }
 
@@ -145,7 +145,7 @@ Vec3<double>* Vibration::displacements()
 // Return n'th displacement data
 Vec3<double> Vibration::displacement(int n) const
 {
-	if ((n < 0) || (n >= nDisplacements_)) Messenger::print("Warning - Displacement index %i is out of range for vibration.\n", n);
+	if ((n < 0) || (n >= nDisplacements_)) Messenger::print("Warning - Displacement index %i is out of range for vibration.", n);
 	else return displacements_[n];
 	return Vec3<double>();
 }

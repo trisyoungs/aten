@@ -119,7 +119,7 @@ int BasisPrimitive::nCoefficients() const
 // Return specified contraction coefficient
 double BasisPrimitive::coefficient(int index)
 {
-	if ((index < 0) || (index >= coefficients_.count())) Messenger::print("Coefficient index %i is out of bounds.\n", index);
+	if ((index < 0) || (index >= coefficients_.count())) Messenger::print("Coefficient index %i is out of bounds.", index);
 	else return coefficients_.at(index);
 	return 0.0;
 }
@@ -176,7 +176,7 @@ BasisPrimitive* BasisShell::primitives()
 // Return n'th defined primitive
 BasisPrimitive* BasisShell::primitive(int id)
 {
-	if ((id < 0) || (id >= primitives_.nItems())) Messenger::print("Index %i is out of range for primitives list.\n", id);
+	if ((id < 0) || (id >= primitives_.nItems())) Messenger::print("Index %i is out of range for primitives list.", id);
 	else return primitives_[id];
 	return NULL;
 }

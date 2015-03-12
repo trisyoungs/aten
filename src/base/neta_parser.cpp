@@ -46,7 +46,7 @@ NetaParser::NetaParser()
 // Print error information and location
 void NetaParser::printErrorInfo()
 {
-	if (isFileSource_) Messenger::print("Error occurred here (line %i in file '%s'):\n", parser_.lastLineNo(), parser_.inputFilename());
+	if (isFileSource_) Messenger::print("Error occurred here (line %i in file '%s'):", parser_.lastLineNo(), parser_.inputFilename());
 	// QUICK'n'DIRTY!
 	int i;
 	char *temp = new char[stringLength_+32];
@@ -56,8 +56,8 @@ void NetaParser::printErrorInfo()
 	for (i=tokenStart_; i<stringPos_; i++) temp[i] = '^';
 	temp[stringPos_] = '\0';
 	// Print current string
-	Messenger::print(" %s\n", stringSource_.get());
-	Messenger::print(" %s^\n", temp);
+	Messenger::print(" %s", stringSource_.get());
+	Messenger::print(" %s^", temp);
 	delete[] temp;
 }
 
@@ -148,14 +148,14 @@ bool NetaParser::createNeta(Neta *target, const char* s, Forcefield* parentff)
 	// Check for existing current target...
 	if (neta_ != NULL)
 	{
-		Messenger::print("Internal Error: NetaParser was already busy creating a NETA description when another was started.\n");
+		Messenger::print("Internal Error: NetaParser was already busy creating a NETA description when another was started.");
 		Messenger::exit("NetaParser::createNeta");
 		return FALSE;
 	}
 	// Was a valid pointer passed?
 	if (target == NULL)
 	{
-		Messenger::print("Error: NULL pointer passed to NetaParser::createNeta.\n");
+		Messenger::print("Error: NULL pointer passed to NetaParser::createNeta.");
 		Messenger::exit("NetaParser::createNeta");
 		return FALSE;
 	}
@@ -167,7 +167,7 @@ bool NetaParser::createNeta(Neta *target, const char* s, Forcefield* parentff)
 	stringSource_ = s;
 	stringPos_ = 0;
 	stringLength_ = stringSource_.length();
-	Messenger::print(Messenger::Typing, "Parser source string is '%s', length is %i\n", stringSource_.get(), stringLength_);
+	Messenger::print(Messenger::Typing, "Parser source string is '%s', length is %i", stringSource_.get(), stringLength_);
 	isFileSource_ = FALSE;
 	// Perform the parsing
 	contextStack_.clear();
@@ -276,7 +276,7 @@ NetaNode *NetaParser::createValueNode(Neta::NetaValue nv, Neta::NetaValueCompari
 	{
 		if (contextStack_.nItems() == 0)
 		{
-			Messenger::print("Error: Repeat value ('n') given in an invalid context.\n");
+			Messenger::print("Error: Repeat value ('n') given in an invalid context.");
 			Messenger::exit("NetaParser::createValueNode");
 			return NULL;
 		}
@@ -345,7 +345,7 @@ NetaNode *NetaParser::findDefine(const char* name)
 	Neta *neta = targetParentForcefield_->typeDefine(name);
 	if (neta == NULL)
 	{
-		Messenger::print("Error: Type define '%s' has not been defined.\n", name);
+		Messenger::print("Error: Type define '%s' has not been defined.", name);
 		return NULL;
 	}
 	NetaNode *node = neta_->clone(neta->description());

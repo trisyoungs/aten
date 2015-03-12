@@ -108,7 +108,7 @@ void VibrationsWidget::refreshDisplacements()
 	Atom* i = m->atoms();
 	for (n=0; n<vib->nDisplacements(); ++n)
 	{
-		if (i == NULL) Messenger::print("Warning - More displacements defined in Vibration than there are atoms in the parent model.\n");
+		if (i == NULL) Messenger::print("Warning - More displacements defined in Vibration than there are atoms in the parent model.");
 		item = new QTableWidgetItem();
 		item->setText(i == NULL ? "NULL" : Elements().symbol(i));
 		ui.DisplacementsTable->setItem(n, 0, item);
@@ -251,7 +251,7 @@ void VibrationsWidget::resetTimer(int delay)
 
 void VibrationsWidget::timerEvent(QTimerEvent*)
 {
-	if (DONTDRAW) Messenger::print(Messenger::Verbose, "VibrationsWidget - Still drawing previous frame...\n");
+	if (DONTDRAW) Messenger::print(Messenger::Verbose, "VibrationsWidget - Still drawing previous frame...");
 	else
 	{
 		DONTDRAW = TRUE;

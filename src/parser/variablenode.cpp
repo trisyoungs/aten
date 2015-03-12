@@ -82,7 +82,7 @@ const char* VariableNode::name()
 void VariableNode::finalisePath()
 {
 	Messenger::enter("VariableNode::finalisePath");
-	Messenger::print(Messenger::Parse, "There are %i steps in the pathnode...\n", args_.nItems());
+	Messenger::print(Messenger::Parse, "There are %i steps in the pathnode...", args_.nItems());
 	// Return type of last argument is return type of PathNode
 	if (args_.last() == NULL) returnType_ = VTypes::NoData;
 	else
@@ -92,7 +92,7 @@ void VariableNode::finalisePath()
 		readOnly_ = step->readOnly();
 		returnsArray_ = ((step->arraySize() > 0) && (step->arrayIndex() == NULL));
 	}
-	Messenger::print(Messenger::Parse, "Return type of VariableNode path is '%s'. Path contents are %s.\n", VTypes::dataType(returnType_), readOnly_ ? "read-only" : "read-write");
+	Messenger::print(Messenger::Parse, "Return type of VariableNode path is '%s'. Path contents are %s.", VTypes::dataType(returnType_), readOnly_ ? "read-only" : "read-write");
 	Messenger::exit("VariableNode::finalisePath");
 }
 
@@ -131,7 +131,7 @@ bool VariableNode::execute(ReturnValue& rv)
 // 		printf("Final result of path walk / variable retrieval is:\n");
 // 		rv.info();
 	}
-	else Messenger::print(Messenger::Verbose, "Variable retrieval failed.\n");
+	else Messenger::print(Messenger::Verbose, "Variable retrieval failed.");
 	Messenger::exit("VariableNode::execute");
 	return result;
 }
@@ -278,7 +278,7 @@ bool VariableNode::set(ReturnValue& setrv)
 		}
 		else result = FALSE;
 	}
-	if (!result) Messenger::print(Messenger::Verbose, "Variable set failed.\n");
+	if (!result) Messenger::print(Messenger::Verbose, "Variable set failed.");
 	Messenger::exit("VariableNode::set");
 	return result;
 }

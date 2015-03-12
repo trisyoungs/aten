@@ -215,7 +215,7 @@ void ForcefieldAtom::addData(const char* name, double d)
 {
 	// Does this data already exist?
 	Variable* v = data_.find(name);
-	if (v != NULL) Messenger::print("Warning: Data '%s' for forcefield atom already exists and will be overwritten.\n", name);
+	if (v != NULL) Messenger::print("Warning: Data '%s' for forcefield atom already exists and will be overwritten.", name);
 	v = new DoubleVariable(d, FALSE);
 	v->setName(name);
 	data_.take(v);
@@ -225,7 +225,7 @@ void ForcefieldAtom::addData(const char* name, int i)
 {
 	// Does this data already exist?
 	Variable* v = data_.find(name);
-	if (v != NULL) Messenger::print("Warning: Data '%s' for forcefield atom already exists and will be overwritten.\n", name);
+	if (v != NULL) Messenger::print("Warning: Data '%s' for forcefield atom already exists and will be overwritten.", name);
 	v = new IntegerVariable(i, FALSE);
 	v->setName(name);
 	data_.take(v);
@@ -235,7 +235,7 @@ void ForcefieldAtom::addData(const char* name, const char* s)
 {
 	// Does this data already exist?
 	Variable* v = data_.find(name);
-	if (v != NULL) Messenger::print("Warning: Data '%s' for forcefield atom already exists and will be overwritten.\n", name);
+	if (v != NULL) Messenger::print("Warning: Data '%s' for forcefield atom already exists and will be overwritten.", name);
 	v = new StringVariable(s, FALSE);
 	v->setName(name);
 	data_.take(v);
@@ -245,7 +245,7 @@ void ForcefieldAtom::addData(const char* name, const char* s)
 Variable* ForcefieldAtom::data(const char* s, bool reportError)
 {
 	Variable* v = data_.find(s);
-	if ((v == NULL) && reportError) Messenger::print("Error: Forcefield atom '%s' does not contain any data named '%s'.\n", name_.get(), s);
+	if ((v == NULL) && reportError) Messenger::print("Error: Forcefield atom '%s' does not contain any data named '%s'.", name_.get(), s);
 	return v;
 }
 

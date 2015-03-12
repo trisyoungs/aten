@@ -1431,7 +1431,7 @@ Commands::Function Commands::command(const char* s)
 		if (strcmp(data_[result].keyword,s) == 0) break;
 		if (strcmp(lowerCase(data_[result].keyword), lcase) == 0)
 		{
-			Messenger::print("Didn't recognised command '%s' - did you mean '%s' instead?\n", s, data_[result].keyword);
+			Messenger::print("Didn't recognised command '%s' - did you mean '%s' instead?", s, data_[result].keyword);
 			return Commands::nCommands;
 		}
 	}
@@ -1465,7 +1465,5 @@ CommandData Commands::data(Commands::Function func)
 // Execute specified command
 bool Commands::call(Commands::Function cf, CommandNode* node, Bundle& bundle, ReturnValue& rv)
 {
-// 	return CALL_COMMAND(*this,pointers_[cf])(node, bundle, rv);
-	((*this).*(pointers_[cf]))(node, bundle, rv);
 	return ((*this).*(pointers_[cf]))(node, bundle, rv);
 }

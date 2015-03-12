@@ -33,7 +33,7 @@ double Model::totalEnergy(Model* srcmodel, bool &success)
 	// Check the expression validity
 	if (!isExpressionValid())
 	{
-		Messenger::print("Model::totalEnergy - No valid energy expression defined for model.\n");
+		Messenger::print("Model::totalEnergy - No valid energy expression defined for model.");
 		success = FALSE;
 		Messenger::exit("Model::totalEnergy");
 		return 0.0;
@@ -64,7 +64,7 @@ double Model::totalEnergy(Model* srcmodel, bool &success)
 		// Only valid for a periodic system...
 		if (srcmodel->cell_.type() == UnitCell::NoCell)
 		{
-			Messenger::print("Error: Ewald sum is not applicable to non-periodic models.\n");
+			Messenger::print("Error: Ewald sum is not applicable to non-periodic models.");
 			success = FALSE;
 			Messenger::exit("Model::moleculeEnergy");
 			return 0.0;
@@ -137,7 +137,7 @@ double Model::moleculeEnergy(Model* srcmodel, Pattern* molpattern, int molecule,
 	// Check the expression validity
 	if (!isExpressionValid())
 	{
-		Messenger::print("Model::moleculeEnergy - No valid energy expression defined for model.\n");
+		Messenger::print("Model::moleculeEnergy - No valid energy expression defined for model.");
 		success = FALSE;
 		Messenger::exit("Model::moleculeEnergy");
 		return 0.0;
@@ -158,7 +158,7 @@ double Model::moleculeEnergy(Model* srcmodel, Pattern* molpattern, int molecule,
 			// Only valid for a periodic system...
 			if (srcmodel->cell_.type() == UnitCell::NoCell)
 			{
-				Messenger::print("Error: Ewald sum is not applicable to non-periodic models.\n");
+				Messenger::print("Error: Ewald sum is not applicable to non-periodic models.");
 				success = FALSE;
 				Messenger::exit("Model::moleculeEnergy");
 				return 0.0;
@@ -210,7 +210,7 @@ double Model::angleEnergy(Model* config, bool &success)
 	// Check the expression validity
 	if (!isExpressionValid())
 	{
-		Messenger::print("Model::angleEnergy - No valid energy expression defined for model.\n");
+		Messenger::print("Model::angleEnergy - No valid energy expression defined for model.");
 		success = FALSE;
 		Messenger::exit("Model::angleEnergy");
 		return 0.0;
@@ -234,7 +234,7 @@ double Model::bondEnergy(Model* config, bool &success)
 	// Check the expression validity
 	if (!isExpressionValid())
 	{
-		Messenger::print("Model::bondEnergy - No valid energy expression defined for model.\n");
+		Messenger::print("Model::bondEnergy - No valid energy expression defined for model.");
 		success = FALSE;
 		Messenger::exit("Model::bondEnergy");
 		return 0.0;
@@ -258,7 +258,7 @@ double Model::electrostaticEnergy(Model* config, bool &success)
 	// Check the expression validity
 	if (!isExpressionValid())
 	{
-		Messenger::print("Model::coulombEnergy - No valid energy expression defined for model.\n");
+		Messenger::print("Model::coulombEnergy - No valid energy expression defined for model.");
 		success = FALSE;
 		Messenger::exit("Model::coulombEnergy");
 		return 0.0;
@@ -276,7 +276,7 @@ double Model::electrostaticEnergy(Model* config, bool &success)
 			// Only valid for a periodic system...
 			if (config->cell_.type() == UnitCell::NoCell)
 			{
-				Messenger::print("Error: Ewald sum is not applicable to non-periodic models.\n");
+				Messenger::print("Error: Ewald sum is not applicable to non-periodic models.");
 				success = FALSE;
 				Messenger::exit("Model::coulombEnergy");
 				return 0.0;
@@ -345,7 +345,7 @@ double Model::torsionEnergy(Model* config, bool &success)
 	// Check the expression validity
 	if (!isExpressionValid())
 	{
-		Messenger::print("Model::torsionEnergy - No valid energy expression defined for model.\n");
+		Messenger::print("Model::torsionEnergy - No valid energy expression defined for model.");
 		success = FALSE;
 		Messenger::exit("Model::torsionEnergy");
 		return 0.0;
@@ -369,7 +369,7 @@ double Model::vdwEnergy(Model* config, bool &success)
 	// Check the expression validity
 	if (!isExpressionValid())
 	{
-		Messenger::print("Model::vdwEnergy - No valid energy expression defined for model.\n");
+		Messenger::print("Model::vdwEnergy - No valid energy expression defined for model.");
 		success = FALSE;
 		Messenger::exit("Model::vdwEnergy");
 		return 0.0;
@@ -412,7 +412,7 @@ bool Model::calculateForces(Model* srcmodel)
 	// Check the expression validity
 	if (!isExpressionValid())
 	{
-		Messenger::print("calculateForces : No valid energy expression defined for model.\n");
+		Messenger::print("calculateForces : No valid energy expression defined for model.");
 		Messenger::exit("Model::calculateForces");
 		return FALSE;
 	}
@@ -434,7 +434,7 @@ bool Model::calculateForces(Model* srcmodel)
 			// Only valid for a periodic system...
 			if (srcmodel->cell_.type() == UnitCell::NoCell)
 			{
-				Messenger::print("Error: Ewald sum is not applicable to non-periodic models.\n");
+				Messenger::print("Error: Ewald sum is not applicable to non-periodic models.");
 				Messenger::exit("Model::calculateForces");
 				return FALSE;
 			}

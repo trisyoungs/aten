@@ -84,7 +84,7 @@ void Viewer::initializeGL()
 
         // Create a GLExtensions object to probe features and give when pushing instances etc.
         GLExtensions* extensions = extensionsStack_.add();
-	Messenger::print(Messenger::Verbose, "New GLExtensions %p pushed onto stack (now %i on stack)\n", extensions, extensionsStack_.nItems());
+	Messenger::print(Messenger::Verbose, "New GLExtensions %p pushed onto stack (now %i on stack)", extensions, extensionsStack_.nItems());
 
         // Check for vertex buffer extensions
         if ((!extensions->hasVBO()) && (PrimitiveInstance::globalInstanceType() == PrimitiveInstance::VBOInstance))
@@ -97,7 +97,7 @@ void Viewer::initializeGL()
 	Messenger::exit("Viewer::initializeGL");
 }
 
-void Viewer::paintGL()
+void Viewer::paintEvent(QPaintEvent* event)
 {
 	// Do nothing if the canvas is not valid, or we are still drawing from last time, or the Aten pointer has not been set
 	if ((!valid_) || drawing_ || (!atenWindow_)) return;
@@ -107,6 +107,10 @@ void Viewer::paintGL()
 	// Set the drawing flag so we don't have any rendering clashes
 	drawing_ = true;
 
+	// Clear view
+	glViewport(0, 0, contextWidth_, contextHeight_);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	
 	// Grab topmost GLExtensions pointer
 	GLExtensions* extensions = extensionsStack_.last();
 	if (extensions == NULL)
@@ -129,7 +133,26 @@ void Viewer::paintGL()
 	glClear(GL_COLOR_BUFFER_BIT);
 	glClear(GL_DEPTH_BUFFER_BIT);
 
-	renderScene(extensions);
+	renderModels(extensions);
+
+	// Create a QPainter
+	QPainter painter(this);
+
+	// Grab message buffer
+	QStringList& messages = Messenger::messageBuffer();
+	int margin = 4;
+	QRectF textRect(margin, margin, contextWidth_-2*margin, contextHeight_-2*margin);
+	for (int n=0; n<messages.count(); ++n)
+	{
+		textRect.setWidth(contextWidth_-2*margin);
+		painter.drawText(textRect, Qt::AlignBottom | Qt::TextWordWrap, messages.at(n), &textRect);
+
+		// Translate bounding rectangle upwards and check to make sure we are still on-screen
+		textRect.translate(0.0, -textRect.height());
+		if (textRect.bottom() < margin) break;
+	}
+
+	painter.end();
 
 	// Set the rendering flag to false
 	drawing_ = false;
@@ -186,15 +209,15 @@ void Viewer::probeFeatures()
 {
 	// Probe this format!
 	QGLFormat fmt = context()->format();
-	Messenger::print(Messenger::Verbose, "QGLFormat: Alpha buffer is %s.\n", fmt.alpha() ? "enabled" : "disabled");
-	Messenger::print(Messenger::Verbose, "QGLFormat: Accumulation buffer is %s.\n", fmt.accum() ? "enabled" : "disabled");
-	Messenger::print(Messenger::Verbose, "QGLFormat: Depth buffer is %s.\n", fmt.depth() ? "enabled" : "disabled");
-	Messenger::print(Messenger::Verbose, "QGLFormat: Double-buffering is %s.\n", fmt.doubleBuffer() ? "enabled" : "disabled");
-	Messenger::print(Messenger::Verbose, "QGLFormat: Direct rendering is %s.\n", fmt.directRendering() ? "enabled" : "disabled");
-	Messenger::print(Messenger::Verbose, "QGLFormat: RGBA colour mode is %s.\n", fmt.rgba() ? "enabled" : "disabled");
-	Messenger::print(Messenger::Verbose, "QGLFormat: Multisample buffer is %s.\n", fmt.sampleBuffers() ? "enabled" : "disabled");
-	Messenger::print(Messenger::Verbose, "QGLFormat: Stencil buffer is %s.\n", fmt.stencil() ? "enabled" : "disabled");
-	Messenger::print(Messenger::Verbose, "QGLWidget: Autoswap buffers is %s.\n", autoBufferSwap() ? "enabled" : "disabled");
+	Messenger::print(Messenger::Verbose, "QGLFormat: Alpha buffer is %s.", fmt.alpha() ? "enabled" : "disabled");
+	Messenger::print(Messenger::Verbose, "QGLFormat: Accumulation buffer is %s.", fmt.accum() ? "enabled" : "disabled");
+	Messenger::print(Messenger::Verbose, "QGLFormat: Depth buffer is %s.", fmt.depth() ? "enabled" : "disabled");
+	Messenger::print(Messenger::Verbose, "QGLFormat: Double-buffering is %s.", fmt.doubleBuffer() ? "enabled" : "disabled");
+	Messenger::print(Messenger::Verbose, "QGLFormat: Direct rendering is %s.", fmt.directRendering() ? "enabled" : "disabled");
+	Messenger::print(Messenger::Verbose, "QGLFormat: RGBA colour mode is %s.", fmt.rgba() ? "enabled" : "disabled");
+	Messenger::print(Messenger::Verbose, "QGLFormat: Multisample buffer is %s.", fmt.sampleBuffers() ? "enabled" : "disabled");
+	Messenger::print(Messenger::Verbose, "QGLFormat: Stencil buffer is %s.", fmt.stencil() ? "enabled" : "disabled");
+	Messenger::print(Messenger::Verbose, "QGLWidget: Autoswap buffers is %s.", autoBufferSwap() ? "enabled" : "disabled");
 }
 
 // Check for GL error
@@ -205,15 +228,15 @@ void Viewer::checkGlError()
 	{
 		switch (glGetError())
 		{
-			case (GL_INVALID_ENUM): Messenger::print(Messenger::Verbose, "GLenum argument out of range\n"); break;
-			case (GL_INVALID_VALUE): Messenger::print(Messenger::Verbose, "Numeric argument out of range\n"); break;
-			case (GL_INVALID_OPERATION): Messenger::print(Messenger::Verbose, "Operation illegal in current state\n"); break;
-			case (GL_STACK_OVERFLOW): Messenger::print(Messenger::Verbose, "Command would cause a stack overflow\n"); break;
-			case (GL_STACK_UNDERFLOW): Messenger::print(Messenger::Verbose, "Command would cause a stack underflow\n"); break;
-			case (GL_OUT_OF_MEMORY): Messenger::print(Messenger::Verbose, "Not enough memory left to execute command\n"); break;
-			case (GL_NO_ERROR): Messenger::print(Messenger::Verbose, "No GL error\n"); break;
+			case (GL_INVALID_ENUM): Messenger::print(Messenger::Verbose, "GLenum argument out of range"); break;
+			case (GL_INVALID_VALUE): Messenger::print(Messenger::Verbose, "Numeric argument out of range"); break;
+			case (GL_INVALID_OPERATION): Messenger::print(Messenger::Verbose, "Operation illegal in current state"); break;
+			case (GL_STACK_OVERFLOW): Messenger::print(Messenger::Verbose, "Command would cause a stack overflow"); break;
+			case (GL_STACK_UNDERFLOW): Messenger::print(Messenger::Verbose, "Command would cause a stack underflow"); break;
+			case (GL_OUT_OF_MEMORY): Messenger::print(Messenger::Verbose, "Not enough memory left to execute command"); break;
+			case (GL_NO_ERROR): Messenger::print(Messenger::Verbose, "No GL error"); break;
 			default:
-				Messenger::print(Messenger::Verbose, "Unknown GL error?\n");
+				Messenger::print(Messenger::Verbose, "Unknown GL error?");
 				break;
 		}
 	} while (glerr != GL_NO_ERROR);

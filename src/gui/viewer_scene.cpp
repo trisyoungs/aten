@@ -111,8 +111,8 @@ void Viewer::setupGL()
 	Messenger::exit("Viewer::setupGL");
 }
 
-// Perform main rendering
-void Viewer::renderScene(const GLExtensions* extensions)
+// Render models
+void Viewer::renderModels(const GLExtensions* extensions)
 {
 	Messenger::enter("Viewer::renderScene");
 	QColor color;
@@ -131,10 +131,6 @@ void Viewer::renderScene(const GLExtensions* extensions)
 // 	localri.item = NULL;	// ATEN2 TODO
 	nModels = aten_->nVisibleModels();
 	first = aten_->visibleModels();
-
-	// Clear view
-	glViewport(0, 0, contextWidth_, contextHeight_);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// Reset local renderGroup_
 	renderGroup_.clear();
@@ -182,28 +178,28 @@ void Viewer::renderScene(const GLExtensions* extensions)
 	// Start of QPainter code
 	QBrush nobrush(Qt::NoBrush), solidbrush(Qt::SolidPattern);
 	QPen pen;
-	QPainter painter(this);
+// 	QPainter painter(this);
+// 
+// 	// Draw box around current model
+// 	color.setRgbF(0.0,0.0,0.0,1.0);
+// 	pen.setColor(color);
+// 	pen.setWidth(2);
+// 	painter.setBrush(nobrush);
+// 	painter.setPen(Qt::SolidLine);
+// 	painter.setPen(pen);
 
-	// Draw box around current model
-	color.setRgbF(0.0,0.0,0.0,1.0);
-	pen.setColor(color);
-	pen.setWidth(2);
-	painter.setBrush(nobrush);
-	painter.setPen(Qt::SolidLine);
-	painter.setPen(pen);
-
-	if (prefs.frameCurrentModel()) painter.drawRect(currentBox);
-	if (prefs.frameWholeView())
-	{
-		currentBox.setRect(0, 0, contextWidth_, contextHeight_);
-		painter.drawRect(currentBox);
-	}
+// 	if (prefs.frameCurrentModel()) painter.drawRect(currentBox);
+// 	if (prefs.frameWholeView())
+// 	{
+// 		currentBox.setRect(0, 0, contextWidth_, contextHeight_);
+// 		painter.drawRect(currentBox);
+// 	}
 
 	// Render active user modes
 // 	if (renderType == OnscreenScene) renderActiveModes(painter, width, height);  ATEN2 TODO
 
 	// Done
-	painter.end();
+// 	painter.end();
 
 	Messenger::exit("Viewer::renderScene");
 }
@@ -222,7 +218,7 @@ void Viewer::updatePrimitives(Viewer::PrimitiveQuality targetQuality)
 	GLExtensions* extensions = extensionsStack_.last();
 	if (extensions == NULL)
 	{
-		Messenger::print("Internal Error: No GLEXtensions object on stack in Viewer::updatePrimitives().\n");
+		Messenger::print("Internal Error: No GLEXtensions object on stack in Viewer::updatePrimitives().");
 		return;
 	}
 

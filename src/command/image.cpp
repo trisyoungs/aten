@@ -43,10 +43,10 @@ int movieSetup(bool pre, int height)
 		// Check that defined encoder exe exists
 		if (!fileExists(prefs.encoderExe()))
 		{
-			Messenger::print("Error: Encoder excutable doesn't appear to exist ('%s').\n", prefs.encoderExe());
+			Messenger::print("Error: Encoder excutable doesn't appear to exist ('%s').", prefs.encoderExe());
 			return FALSE;
 		}
-		else Messenger::print(Messenger::Verbose, "Found encoder executable ('%s').\n", prefs.encoderExe());
+		else Messenger::print(Messenger::Verbose, "Found encoder executable ('%s').", prefs.encoderExe());
 
 		// Save some current view preferences
 		framemodel = prefs.frameCurrentModel();
@@ -64,7 +64,7 @@ int movieSetup(bool pre, int height)
 			runid = AtenMath::randomimax();
 			basename.sprintf("%s%caten-movie-%i-%i-%09i.png", prefs.tempDir(), PATHSEP, QApplication::applicationPid(), runid, 0);
 		} while (fileExists(basename));
-		Messenger::print("First temporary basename for movie images is '%s'.\n", basename.get());
+		Messenger::print("First temporary basename for movie images is '%s'.", basename.get());
 
 		return runid;
 	}
@@ -85,12 +85,12 @@ bool moviePostProcess(QStringList files, int runid, const char* movieFilename, i
 	parser.openOutput(framesFile, TRUE);
 	if (parser.isFileGoodForWriting())
 	{
-		foreach (QString str, files) parser.writeLineF("%s\n", qPrintable(str));
+		foreach (QString str, files) parser.writeLineF("%s", qPrintable(str));
 		parser.closeFiles();
 	}
 	else
 	{
-		Messenger::print("Error: Couldn't create framelist file '%s'.\n", framesFile.get());
+		Messenger::print("Error: Couldn't create framelist file '%s'.", framesFile.get());
 		return FALSE;
 	}
 
@@ -104,10 +104,10 @@ bool moviePostProcess(QStringList files, int runid, const char* movieFilename, i
 	encoderArgs.replace("OUTPUT", quotedMovieFilename.get());
 	encoderArgs.replace("FILES", atFramesFile.get());
 	encoderArgs.replace("FPS", itoa(fps));
-	Messenger::print("Command to run will be '%s %s'\n", prefs.encoderExe(), qPrintable(encoderArgs));
+	Messenger::print("Command to run will be '%s %s'", prefs.encoderExe(), qPrintable(encoderArgs));
 	if (!encoderProcess.execute(prefs.encoderExe(),qPrintable(encoderArgs),NULL))
 	{
-		Messenger::print("Error: Failed to run encoder command.\n");
+		Messenger::print("Error: Failed to run encoder command.");
 		return FALSE;
 	}
 
@@ -129,10 +129,10 @@ bool moviePostProcess(QStringList files, int runid, const char* movieFilename, i
 		encoderArgs.replace("FILES", atFramesFile.get());
 		encoderArgs.replace("FPS", itoa(fps));
 
-		Messenger::print("Post-process command to run will be '%s %s'\n", prefs.encoderPostExe(), qPrintable(encoderArgs));
+		Messenger::print("Post-process command to run will be '%s %s'", prefs.encoderPostExe(), qPrintable(encoderArgs));
 		if (!postProcess.execute(prefs.encoderPostExe(),qPrintable(encoderArgs),NULL))
 		{
-			Messenger::print("Error: Failed to run encoder post-processing command.\n");
+			Messenger::print("Error: Failed to run encoder post-processing command.");
 			return FALSE;
 		}
 		
@@ -168,7 +168,7 @@ bool Commands::function_SaveBitmap(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	Aten::BitmapFormat bf = Aten::bitmapFormat(c->argc(0));
 	if (bf == Aten::nBitmapFormats)
 	{
-		Messenger::print("Unrecognised bitmap format.\n");
+		Messenger::print("Unrecognised bitmap format.");
 		return FALSE;
 	}
 
@@ -193,7 +193,7 @@ bool Commands::function_SaveBitmap(CommandNode* c, Bundle& obj, ReturnValue& rv)
 		const char* fileName = aten_.nextRedirectedFilename();
 		if (isEmpty(fileName))
 		{
-			Messenger::print("Maximum number of frames for image redirect reached. Raising error...\n");
+			Messenger::print("Maximum number of frames for image redirect reached. Raising error...");
 			result = FALSE;
 		}
 		else
@@ -220,7 +220,7 @@ bool Commands::function_SaveMovie(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	// Check that a trajectory exists for the current model
 	if (!obj.m->hasTrajectory())
 	{
-		Messenger::print("No trajectory associated to current model.\n");
+		Messenger::print("No trajectory associated to current model.");
 		return FALSE;
 	}
 
@@ -259,7 +259,7 @@ bool Commands::function_SaveMovie(CommandNode* c, Bundle& obj, ReturnValue& rv)
 		if (!progress.update(progid,n))
 		{
 			canceled = TRUE;
-			Messenger::print("Canceled.\n");
+			Messenger::print("Canceled.");
 			break;
 		}
 	}
@@ -298,7 +298,7 @@ bool Commands::function_SaveVibrationMovie(CommandNode* c, Bundle& obj, ReturnVa
 	Vibration* vib = obj.rs()->vibration(vibrationId);
 	if (!vib)
 	{
-		Messenger::print("Specified vibration (id %i) does not exist in current model.\n", vibrationId);
+		Messenger::print("Specified vibration (id %i) does not exist in current model.", vibrationId);
 		return FALSE;
 	}
 	
@@ -330,7 +330,7 @@ bool Commands::function_SaveVibrationMovie(CommandNode* c, Bundle& obj, ReturnVa
 		if (!progress.update(progid,n))
 		{
 			canceled = TRUE;
-			Messenger::print("Canceled.\n");
+			Messenger::print("Canceled.");
 			break;
 		}
 	}

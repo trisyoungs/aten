@@ -105,19 +105,19 @@ bool CommandNode::prepFunction()
 			if (parent_->returnType() == VTypes::NoData)
 			{
 				if (!hasArg(0)) break;
-				Messenger::print("Error: Return value provided when none is required.\n");
+				Messenger::print("Error: Return value provided when none is required.");
 				result = FALSE;
 			}
 			else
 			{
 				if ((!hasArg(0)) && (parent_->returnType() != VTypes::NoData))
 				{
-					Messenger::print("Error: No return value provided.\n");
+					Messenger::print("Error: No return value provided.");
 					result = FALSE;
 				}
 				else if (argType(0) != parent_->returnType())
 				{
-					Messenger::print("Error: Return value of type '%s' provided for function that returns %s.\n", VTypes::dataType(argType(0)), VTypes::aDataType(parent_->returnType()));
+					Messenger::print("Error: Return value of type '%s' provided for function that returns %s.", VTypes::dataType(argType(0)), VTypes::aDataType(parent_->returnType()));
 					result = FALSE;
 				}
 			}

@@ -92,7 +92,7 @@ bool Commands::function_NewBond(CommandNode* c, Bundle& obj, ReturnValue& rv)
 		obj.rs()->bondAtoms(i, j, bt);
 		obj.rs()->endUndoState();
 	}
-	else Messenger::print("Can't bond atoms - one or both atoms not found.\n");
+	else Messenger::print("Can't bond atoms - one or both atoms not found.");
 	rv.reset();
 	return TRUE;
 }

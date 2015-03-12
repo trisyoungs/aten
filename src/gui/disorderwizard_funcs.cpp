@@ -352,7 +352,6 @@ void DisorderWizard::on_ExistingModelTree_currentItemChanged(QTreeWidgetItem* cu
 	if (existingModel_ == NULL) return;
 	existingModel_ = existingModel_->renderSourceModel();
 	parent_.aten().setCurrentModel(existingModel_, TRUE);
-	if (existingModel_ != NULL) existingModel_->changeLog.add(Log::Camera);
 	parent_.updateWidgets(AtenWindow::AllTarget);
 }
 
@@ -408,8 +407,6 @@ void DisorderWizard::on_PartitionTree_currentItemChanged(QTreeWidgetItem* curren
 	Refitem<QTreeWidgetItem, PartitioningScheme*>* ri = partitioningSchemeItems_.contains(current);
 	if (ri == NULL) return;
 	partitioningScheme_ = ri->data;
-	if (existingModel_ != NULL) existingModel_->changeLog.add(Log::Camera);
-	else if (newModel_ != NULL) newModel_->changeLog.add(Log::Camera);
 	parent_.updateWidgets(AtenWindow::CanvasTarget);
 	// Enable/disable options button based on presence of custom dialog widgets...
 	ui.PartitionSchemeOptionsButton->setEnabled(partitioningScheme_->hasOptions());
@@ -426,8 +423,6 @@ void DisorderWizard::on_PartitionSchemeOptionsButton_clicked(bool checked)
 	if (ri == NULL) return;
 	setPartitionData(ri->item, ri->data);
 	partitioningScheme_ = ri->data;
-	if (existingModel_ != NULL) existingModel_->changeLog.add(Log::Camera);
-	else if (newModel_ != NULL) newModel_->changeLog.add(Log::Camera);
 	parent_.updateWidgets(AtenWindow::CanvasTarget);
 }
 

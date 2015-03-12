@@ -63,15 +63,15 @@ void AtenWindow::loadSettings()
 
 	// Probe user history file...
 	filename.sprintf("%s%c%s%chistory.txt", aten_.homeDir(), PATHSEP, aten_.atenDir(), PATHSEP);
-	Messenger::print("Looking for program history file '%s'...\n", filename.get());
+	Messenger::print("Looking for program history file '%s'...", filename.get());
 	if (fileExists(filename))
 	{
-		Messenger::print("Program history file found in '%s'\n", filename.get());
+		Messenger::print("Program history file found in '%s'", filename.get());
 		LineParser parser;
 		Dnchar arg, data;
 		if (!parser.openInput(filename))
 		{
-			Messenger::print("Failed to open program history file.\n");
+			Messenger::print("Failed to open program history file.");
 			return;
 		}
 		while (!parser.eofOrBlank())
@@ -108,11 +108,11 @@ void AtenWindow::loadSettings()
 					else
 					{
 						prog = aten_.addScript();
-						if (prog->generateFromFile(data, data)) Messenger::print("Successfully loaded script file '%s'.\n", data.get());
+						if (prog->generateFromFile(data, data)) Messenger::print("Successfully loaded script file '%s'.", data.get());
 						else
 						{
 							aten_.removeScript(prog);
-							Messenger::print("Failed to load script file '%s'.\n", data.get());
+							Messenger::print("Failed to load script file '%s'.", data.get());
 						}
 					}
 					break;
@@ -129,7 +129,7 @@ void AtenWindow::loadSettings()
 		}
 		parser.closeFiles();
 	}
-	else Messenger::print("Program history file not found.\n");
+	else Messenger::print("Program history file not found.");
 	
 	// Update GUI controls
 	commandWidget->setCommandList(commandHistory);
@@ -200,7 +200,7 @@ void AtenWindow::saveSettings()
 	}
 	
 	historyFile.closeFiles();
-	Messenger::print("Done.\n");
+	Messenger::print("Done.");
 }
 
 

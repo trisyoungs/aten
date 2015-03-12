@@ -58,7 +58,7 @@ void Aten::exportModels()
 		// Make sure that the new filename is not the same as the old filename
 		if (filename == m->filename())
 		{
-			Messenger::print("Export filename generated is identical to the original (%s) - not converted.\n", filename.get());
+			Messenger::print("Export filename generated is identical to the original (%s) - not converted.", filename.get());
 			continue;
 		}
 		m->setFilter(exportFilter_);
@@ -66,8 +66,8 @@ void Aten::exportModels()
 		
 		// Temporarily disable undo/redo for the model, save, and re-enable
 		m->disableUndoRedo();
-		if (exportFilter_->executeWrite(filename)) Messenger::print("Model '%s' saved to file '%s' (%s)\n", m->name(), filename.get(), exportFilter_->filter.name());
-		else Messenger::print("Failed to save model '%s'.\n", m->name());
+		if (exportFilter_->executeWrite(filename)) Messenger::print("Model '%s' saved to file '%s' (%s)", m->name(), filename.get(), exportFilter_->filter.name());
+		else Messenger::print("Failed to save model '%s'.", m->name());
 		m->enableUndoRedo();
 	}
 	Messenger::exit("Aten::exportModels");
@@ -110,12 +110,12 @@ void Aten::saveModels()
 		Tree* t = m->filter();
 		if (t == NULL)
 		{
-			Messenger::print("No export filter available for model '%s'. Not saved.\n", m->name());
+			Messenger::print("No export filter available for model '%s'. Not saved.", m->name());
 			continue;
 		}
 		if (t->filter.type() != FilterData::ModelExport)
 		{
-			Messenger::print("No export filter for model '%s' (format '%s'). Not saved.\n", m->name(), t->filter.nickname());
+			Messenger::print("No export filter for model '%s' (format '%s'). Not saved.", m->name(), t->filter.nickname());
 			continue;
 		}
 		

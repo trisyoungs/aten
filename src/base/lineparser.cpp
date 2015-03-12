@@ -118,7 +118,7 @@ bool LineParser::openInput(const char* filename)
 	if (!inputFile_->is_open())
 	{
 		closeFiles();
-		Messenger::print("Error: Failed to open file '%s' for reading.\n", filename);
+		Messenger::print("Error: Failed to open file '%s' for reading.", filename);
 		Messenger::exit("LineParser::openInput");
 		return FALSE;
 	}
@@ -157,7 +157,7 @@ bool LineParser::openOutput(const char* filename, bool directOutput)
 		if (!outputFile_->is_open())
 		{
 			closeFiles();
-			Messenger::print("Error: Failed to open file '%s' for writing.\n", filename);
+			Messenger::print("Error: Failed to open file '%s' for writing.", filename);
 			Messenger::exit("LineParser::openOutput");
 			return FALSE;
 		}
@@ -243,7 +243,7 @@ void LineParser::seekg(std::streamoff off, std::ios_base::seekdir dir)
 void LineParser::rewind()
 {
 	if (inputFile_ != NULL) inputFile_->seekg(0, std::ios::beg);
-	else Messenger::print("No file currently open to rewind.\n");
+	else Messenger::print("No file currently open to rewind.");
 }
 
 // Return whether the end of the input stream has been reached (or only whitespace remains)
@@ -320,7 +320,7 @@ int LineParser::readNextLine(int optionMask)
 			}
 		}
 		line_[lineLength_] = '\0';
-		Messenger::print(Messenger::Parse, "Line from file is: [%s]\n", line_);
+		Messenger::print(Messenger::Parse, "Line from file is: [%s]", line_);
 
 		// Remove comments from line
 		if (optionMask&LineParser::StripComments) removeComments(line_);
@@ -359,7 +359,7 @@ int LineParser::readNextLine(int optionMask)
 		linePos_ = 0;
 		++lastLineNo_;
 	} while (result != 0);
-// 	printf("LineParser Returned line = [%s], length = %i\n",line_,lineLength_);
+// 	printf("LineParser Returned line = [%s], length = %i",line_,lineLength_);
 	Messenger::exit("LineParser::readNextLine");
 	return result;
 }
@@ -512,7 +512,7 @@ bool LineParser::getNextN(int optionMask, int length, Dnchar* destarg)
 	tempArg_[arglen] = '\0';
 	if (striptrailing) for (n = arglen-1; (tempArg_[n] == ' ') || (tempArg_[n] == '\t'); --n) tempArg_[n] = '\0'; 
 	if (destarg != NULL) destarg->set(tempArg_);
-	//printf("getNextN found [%s], length = %i\n", tempArg_, arglen);
+	//printf("getNextN found [%s], length = %i", tempArg_, arglen);
 	//line_.eraseStart(length);
 	Messenger::exit("LineParser::getNextN");
 	return TRUE;
@@ -533,7 +533,7 @@ void LineParser::getAllArgsDelim(int optionMask)
 		// We must pass on the current optionMask, else it will be reset by the default value in getNextArg()
 		if (getNextArg(optionMask, arg))
 		{
-			Messenger::print(Messenger::Parse,"getAllArgsDelim arg=%i [%s]\n", arguments_.nItems(), arg->get());
+			Messenger::print(Messenger::Parse,"getAllArgsDelim arg=%i [%s]", arguments_.nItems(), arg->get());
 			// Add this char to the list
 			arguments_.own(arg);
 		}
@@ -617,7 +617,7 @@ bool LineParser::getArgDelim(int optionMask, Dnchar* destarg)
 {
 	Messenger::enter("LineParser::getArgDelim");
 	bool result = getNextArg(optionMask, destarg);
-	Messenger::print(Messenger::Parse,"getArgDelim = %s [%s]\n", result ? "TRUE" : "FALSE", destarg->get());
+	Messenger::print(Messenger::Parse,"getArgDelim = %s [%s]", result ? "TRUE" : "FALSE", destarg->get());
 	Messenger::exit("LineParser::getArgDelim");
 	return result;
 }
@@ -782,7 +782,7 @@ const char* LineParser::getChars(int nchars, bool skipeol)
 	if (nchars == 0) return NULL;
 	else if (nchars > MAXLINELENGTH)
 	{
-		Messenger::print("Error: The maximum number of characters read at once from a file is currently %i.\n", MAXLINELENGTH);
+		Messenger::print("Error: The maximum number of characters read at once from a file is currently %i.", MAXLINELENGTH);
 		return NULL;
 	}
 	else if (nchars < 0)
@@ -848,7 +848,7 @@ int LineParser::getInteger(int nbytes)
 		inputFile_->read((char*) &readi, nbytes);
 		return (int) readi;
 	}
-	else Messenger::print("Error: Integer of size %i bytes does not correspond to any internal type.\n", nbytes);
+	else Messenger::print("Error: Integer of size %i bytes does not correspond to any internal type.", nbytes);
 	return 0;
 }
 
@@ -892,7 +892,7 @@ double LineParser::getDouble(int nbytes)
 		inputFile_->read((char*) &readd, nbytes);
 		return (double) readd;
 	}
-	else Messenger::print("Error: Double of size %i bytes does not correspond to any internal type.\n", nbytes);
+	else Messenger::print("Error: Double of size %i bytes does not correspond to any internal type.", nbytes);
 	return 0.0;
 }
 
@@ -921,7 +921,7 @@ bool LineParser::writeLine(const char* s)
 	{
 		if (cachedFile_ == NULL)
 		{
-			Messenger::print("Unable to delayed-writeLine - destination cache is not open.\n");
+			Messenger::print("Unable to delayed-writeLine - destination cache is not open.");
 			Messenger::exit("LineParser::writeLine");
 			return FALSE;
 		}
@@ -929,7 +929,7 @@ bool LineParser::writeLine(const char* s)
 	}
 	else if (outputFile_ == NULL)
 	{
-		Messenger::print("Unable to direct-writeLine - destination file is not open.\n");
+		Messenger::print("Unable to direct-writeLine - destination file is not open.");
 		Messenger::exit("LineParser::writeLine");
 		return FALSE;
 	}
@@ -946,14 +946,14 @@ bool LineParser::writeLineF(const char* fmt, ...)
 	{
 		if (cachedFile_ == NULL)
 		{
-			Messenger::print("Unable to delayed-writeLineF - destination cache is not open.\n");
+			Messenger::print("Unable to delayed-writeLineF - destination cache is not open.");
 			Messenger::exit("LineParser::writeLineF");
 			return FALSE;
 		}
 	}
 	else if (outputFile_ == NULL)
 	{
-		Messenger::print("Unable to direct-writeLineF - destination file is not open.\n");
+		Messenger::print("Unable to direct-writeLineF - destination file is not open.");
 		Messenger::exit("LineParser::writeLineF");
 		return FALSE;
 	}
@@ -989,7 +989,7 @@ bool LineParser::commitCache()
 	}
 	else
 	{
-		Messenger::print("Error: Couldn't open output file '%s' for writing.\n", outputFilename_.get());
+		Messenger::print("Error: Couldn't open output file '%s' for writing.", outputFilename_.get());
 		return FALSE;
 	}
 	return TRUE;
@@ -1163,7 +1163,7 @@ const char* LineParser::trimNetaKeyword(Dnchar &source)
 	static Dnchar keywd;
 	done = FALSE;
 	equals = FALSE;
-// 	printf("String given to trimAtomKeyword = '%s'\n",source.get());
+// 	printf("String given to trimAtomKeyword = '%s'",source.get());
 	keywd.createEmpty(source);
 	int n;
 	for (n=0; n<source.length(); n++)
@@ -1199,7 +1199,7 @@ const char* LineParser::trimNetaKeyword(Dnchar &source)
 	// Trim off the keyword part
 	if (equals) source.eraseStart(n+1);
 	else source.eraseStart(n);
-	//printf("RESULT in trim atkeywd = '%s'\n",dest.get());
+	//printf("RESULT in trim atkeywd = '%s'",dest.get());
 	// Remove brackets if they're there
 	if (source.length() != 0) 
 		if (source[0] == '(')

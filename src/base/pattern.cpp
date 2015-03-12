@@ -527,8 +527,8 @@ const char* Pattern::name() const
 void Pattern::setForcefield(Forcefield* newff)
 {	
 	forcefield_ = newff;
-	if (forcefield_ != NULL) Messenger::print("Forcefield '%s' is now assigned to pattern '%s'.\n", forcefield_->name(), name());
-	else Messenger::print("Pattern '%s' now has no associated forcefield.\n", name());
+	if (forcefield_ != NULL) Messenger::print("Forcefield '%s' is now assigned to pattern '%s'.", forcefield_->name(), name());
+	else Messenger::print("Pattern '%s' now has no associated forcefield.", name());
 }
 
 // Gets the forcefield associated with the pattern
@@ -618,7 +618,7 @@ void Pattern::initialise(int patid, int start, int mols, int atomsmol)
 	if (startAtom_ > parent_->nAtoms())
 	{
 		// Can't get first atom (probably the pattern extends past nAtoms_)
-		Messenger::print("Initial atom in pattern is past end of model's atom list (%i).\n",endAtom_);
+		Messenger::print("Initial atom in pattern is past end of model's atom list (%i).",endAtom_);
 		firstAtom_ = NULL;
 	}
 	else
@@ -629,7 +629,7 @@ void Pattern::initialise(int patid, int start, int mols, int atomsmol)
 		for (int n=0; n<startAtom_; n++) i = i->next;
 		firstAtom_ = i;
 	}
-	Messenger::print(Messenger::Verbose, "New pattern node : start=%i, nMols=%i, nAtoms/mol=%i, totalAtoms=%i, name=%s\n", startAtom_+1, nMolecules_, nAtoms_, totalAtoms_, name_.get());
+	Messenger::print(Messenger::Verbose, "New pattern node : start=%i, nMols=%i, nAtoms/mol=%i, totalAtoms=%i, name=%s", startAtom_+1, nMolecules_, nAtoms_, totalAtoms_, name_.get());
 	Messenger::exit("Pattern::initialise");
 }
 
@@ -699,13 +699,13 @@ void Pattern::createMatrices()
 	int n, m, a1, a2;
 	PatternBound* pb;
 
-	if (conMatrix_ != NULL) Messenger::print("Pattern::createMatrices : Warning - connectivity matrix was already allocated.\n");
+	if (conMatrix_ != NULL) Messenger::print("Pattern::createMatrices : Warning - connectivity matrix was already allocated.");
 	conMatrix_ = new int*[nAtoms_];
 	for (n=0; n<nAtoms_; n++) conMatrix_[n] = new int[nAtoms_];
-	if (vdwScaleMatrix_ != NULL) Messenger::print("Pattern::createMatrices : Warning - VDW scaling matrix was already allocated.\n");
+	if (vdwScaleMatrix_ != NULL) Messenger::print("Pattern::createMatrices : Warning - VDW scaling matrix was already allocated.");
 	vdwScaleMatrix_ = new double*[nAtoms_];
 	for (n=0; n<nAtoms_; n++) vdwScaleMatrix_[n] = new double[nAtoms_];
-	if (elecScaleMatrix_ != NULL) Messenger::print("Pattern::createMatrices : Warning - electrostatic scaling matrix was already allocated.\n");
+	if (elecScaleMatrix_ != NULL) Messenger::print("Pattern::createMatrices : Warning - electrostatic scaling matrix was already allocated.");
 	elecScaleMatrix_ = new double*[nAtoms_];
 	for (n=0; n<nAtoms_; n++) elecScaleMatrix_[n] = new double[nAtoms_];
 
@@ -833,7 +833,7 @@ void Pattern::createMatrices()
 			conMatrix_[pb->atomId(3)][pb->atomId(0)] = 3;
 		}
 	}
-	Messenger::print("done.\n");
+	Messenger::print("done.");
 
 // 	printf("Connectivity Matrix\n");
 // 	for (n=0; n<nAtoms_; n++)
@@ -932,8 +932,8 @@ bool Pattern::validate()
 	// 1) Check number of atoms does not exceed number in model
 	if (startAtom_+totalAtoms_ > mnAtoms_)
 	{
-		Messenger::print("Pattern's last atom is beyond the number of atoms in the model.\n");
-		Messenger::print("No pattern defined for model.\n");
+		Messenger::print("Pattern's last atom is beyond the number of atoms in the model.");
+		Messenger::print("No pattern defined for model.");
 		// Can't do much else if this is the case, so break early.
 		Messenger::exit("Pattern::validate");
 		return FALSE;
@@ -973,7 +973,7 @@ bool Pattern::validate()
 			}
 			if (!ok)
 			{
-				Messenger::print("Pattern failed element composition test at molecule %i.\n",m+1);
+				Messenger::print("Pattern failed element composition test at molecule %i.",m+1);
 				result = FALSE;
 				break;
 			}
@@ -983,7 +983,7 @@ bool Pattern::validate()
 	delete elcomp2;
 	// 3) Bonding within molecules in pattern
 	//TODO
-	if (!result) Messenger::print("No pattern defined for model.\n");
+	if (!result) Messenger::print("No pattern defined for model.");
 	Messenger::exit("Pattern::validate");
 	return result;
 }
@@ -1049,7 +1049,7 @@ Vec3<double> Pattern::calculateCog(int mol, Model* srcmodel)
 	Messenger::enter("Pattern::calculateCog");
 	int offset = startAtom_ + mol*nAtoms_;
 	if (srcmodel == NULL) srcmodel = parent_;
-	Messenger::print(Messenger::Verbose, "Calculating COG for pattern '%s', molecule %i (starting at %i, nMols=%i)\n", name_.get(), mol, offset, nMolecules_);
+	Messenger::print(Messenger::Verbose, "Calculating COG for pattern '%s', molecule %i (starting at %i, nMols=%i)", name_.get(), mol, offset, nMolecules_);
 	static Vec3<double> cog, mim_i;
 	UnitCell* cell = srcmodel->cell();
 	Atom** modelatoms = srcmodel->atomArray();
@@ -1072,14 +1072,14 @@ Vec3<double> Pattern::calculateCom(int mol, Model* srcmodel)
 {
 	// Calculate the centre of geometry for this molecule
 	Messenger::enter("Pattern::calculateCom");
-	Messenger::print(Messenger::Verbose, "Calculating centre-of-mass for molecule %i in pattern '%s' (pattern nMols=%i)\n", mol, name_.get(), nMolecules_);
+	Messenger::print(Messenger::Verbose, "Calculating centre-of-mass for molecule %i in pattern '%s' (pattern nMols=%i)", mol, name_.get(), nMolecules_);
 	Vec3<double> com;
 	if (srcmodel == NULL) srcmodel = parent_;
 	double massnorm = 0.0;
 	static Vec3<double> mim_i;
 	int offset = startAtom_ + mol*nAtoms_;
 	com.zero();
-	Messenger::print(Messenger::Verbose, "molecule_com : Offset = %i\n", offset);
+	Messenger::print(Messenger::Verbose, "molecule_com : Offset = %i", offset);
 	UnitCell* cell = srcmodel->cell();
 	Atom** modelatoms = srcmodel->atomArray();
 	for (int a1=offset; a1<offset+nAtoms_; a1++)
@@ -1155,7 +1155,7 @@ void Pattern::propagateBondTypes()
 				else for (o=0; o<abs(offset); o++) k = k->prev;
 				// 'k' now points to the bond partner of 'j'
 				b2 = j->findBond(k);
-				if (b2 == NULL) Messenger::print("Bizarre fatal error. Couldn't find bond in Pattern::propagateBondTypes\n");
+				if (b2 == NULL) Messenger::print("Bizarre fatal error. Couldn't find bond in Pattern::propagateBondTypes");
 				else b2->setType(b1->type());
 				bref = bref->next;
 			}
@@ -1254,8 +1254,8 @@ void Pattern::findRings()
 		i = i->next;
 		if (!okay) break;
 	}
-	if ((!okay) && (rings_.nItems() == prefs.maxRings())) Messenger::print("Maximum number of rings (%i) reached for pattern '%s'...\n", prefs.maxRings(), name_.get());
-	Messenger::print(Messenger::Verbose, "Pattern '%s' contains %i cycles of %i atoms or less.\n", name_.get(), rings_.nItems(), prefs.maxRingSize());
+	if ((!okay) && (rings_.nItems() == prefs.maxRings())) Messenger::print("Maximum number of rings (%i) reached for pattern '%s'...", prefs.maxRings(), name_.get());
+	Messenger::print(Messenger::Verbose, "Pattern '%s' contains %i cycles of %i atoms or less.", name_.get(), rings_.nItems(), prefs.maxRingSize());
 	Messenger::exit("Pattern::findRings");
 }
 
@@ -1294,7 +1294,7 @@ bool Pattern::ringSearch(Atom* i, Ring *currentpath)
 					// Check to see if this ring already exists in the rings_ list...
 					if (!isRingInList(currentpath))
 					{
-						Messenger::print(Messenger::Verbose, " --- Storing current ring.\n");
+						Messenger::print(Messenger::Verbose, " --- Storing current ring.");
 						if (rings_.nItems() == prefs.maxRings()) maxreached = TRUE;
 						else
 						{
@@ -1317,7 +1317,7 @@ bool Pattern::ringSearch(Atom* i, Ring *currentpath)
 			if (done || maxreached) break;
 		}
 		// Return the list to its original state
-		Messenger::print(Messenger::Verbose, " --- Removing atom %s[%p] from current path...\n",Elements().symbol(i),i);
+		Messenger::print(Messenger::Verbose, " --- Removing atom %s[%p] from current path...",Elements().symbol(i),i);
 		currentpath->removeAtom(currentpath->lastAtom());
 	}
 // 	else printf(" --- Atom is already in list, or adding it exceeds specified ringsize.\n");
@@ -1359,7 +1359,7 @@ void Pattern::augment()
 	Bond::BondType bt;
 	int n, nHeavy, totalpenalty, ringpenalty, newpenalty, m, o, p;
 
-	Messenger::print("Augmenting bonds in pattern %s...\n",name_.get());
+	Messenger::print("Augmenting bonds in pattern %s...",name_.get());
 	/*
 	Assume the structure is chemically 'correct' - i.e. each atom is bound to a likely number of other atoms.
 	If hydrogens are missing then the results will be unpredictable.
@@ -1489,10 +1489,10 @@ void Pattern::augment()
 	// Stage 4 - Attempt to fix any problems, mostly with (poly)cyclic systems
 	// Get total, reference bond order penalty for the molecule - we will try to reduce this as much as possible if we can
 	totalpenalty = totalBondOrderPenalty();
-	Messenger::print(Messenger::Verbose, "Bond order penalty after first pass is %i.\n", totalpenalty);
+	Messenger::print(Messenger::Verbose, "Bond order penalty after first pass is %i.", totalpenalty);
 	if (totalpenalty > 0)
 	{
-		Messenger::print("...Augmentation second pass...\n");
+		Messenger::print("...Augmentation second pass...");
 		// Construct bond reference list for the first molecule, storing current bond type in extradata for our base reference
 		Reflist<Bond,Bond::BondType> bondlist;
 		i = firstAtom_;
@@ -1565,7 +1565,7 @@ void Pattern::augment()
 			}
 
 		}
-		Messenger::print(Messenger::Verbose, "Bond order penalty after second pass is %i.\n", totalpenalty);
+		Messenger::print(Messenger::Verbose, "Bond order penalty after second pass is %i.", totalpenalty);
 	}
 	// Copy bond types from extradata back into first pattern molecule, using the parent_ so it may be undone
 	propagateBondTypes();
@@ -1577,7 +1577,7 @@ void printstuff(Pattern* p)
 	Atom* i = p->firstAtom();
 	for (int n=0; n<p->nAtoms(); n++)
 	{
-		Messenger::print(Messenger::Verbose, "Atom %i, %s[%i], nbonds=%i, type=%s\n", n, Elements().symbol(i),
+		Messenger::print(Messenger::Verbose, "Atom %i, %s[%i], nbonds=%i, type=%s", n, Elements().symbol(i),
 			i->id(),i->nBonds(),Atom::atomEnvironment(i->environment()));
 		i = i->next;
 	}
@@ -1591,17 +1591,17 @@ void printstuff(Pattern* p)
 void Pattern::describeAtoms()
 {
 	// 1) Locate ring structures
-	Messenger::print(Messenger::Verbose, "Detecting rings in pattern '%s'...\n", name_.get());
+	Messenger::print(Messenger::Verbose, "Detecting rings in pattern '%s'...", name_.get());
 	findRings();
 	// 2) Reset atom environments
-	Messenger::print(Messenger::Verbose, "Determining atom environments in pattern '%s'...\n", name_.get());
+	Messenger::print(Messenger::Verbose, "Determining atom environments in pattern '%s'...", name_.get());
 	clearEnvironments();
 	printstuff(this);
 	// 3) Assign hybridisation types
 	assignEnvironments();
 	printstuff(this);
 	// 4) Go through the ring list and see if any are aromatic
-	Messenger::print(Messenger::Verbose, "Assigning ring aromaticities in pattern '%s'...\n", name_.get());
+	Messenger::print(Messenger::Verbose, "Assigning ring aromaticities in pattern '%s'...", name_.get());
 	for (Ring *r = rings_.first(); r != NULL; r = r->next) r->detectType();
 }
 
@@ -1684,7 +1684,7 @@ bool Pattern::typeAtoms()
 		ff = parent_->forcefield();
 		if (ff == NULL)
 		{
-			Messenger::print("ATEN2 TODO: This was removed - a ff must be set before getting here.\n");
+			Messenger::print("ATEN2 TODO: This was removed - a ff must be set before getting here.");
 			return false;
 // 			Messenger::print("Typing pattern %s (using default forcefield)...", name());
 // 			ff = aten.currentForcefield();
@@ -1694,7 +1694,7 @@ bool Pattern::typeAtoms()
 	else Messenger::print("Typing pattern %s (using associated forcefield '%s')...", name(), ff->name());	
 	if (ff == NULL)
 	{
-		Messenger::print("Can't type pattern '%s' - no forcefield associated to pattern or model, and no default set.\n", name_.get());
+		Messenger::print("Can't type pattern '%s' - no forcefield associated to pattern or model, and no default set.", name_.get());
 		Messenger::exit("Pattern::typeAtoms");
 		return FALSE;
 	}
@@ -1709,13 +1709,13 @@ bool Pattern::typeAtoms()
 			i = i->next;
 			continue;
 		}
-		Messenger::print(Messenger::Typing,"Pattern::typeAtoms : FFTyping atom number %i, element %s\n", a, Elements().symbol(i->element()));
+		Messenger::print(Messenger::Typing,"Pattern::typeAtoms : FFTyping atom number %i, element %s", a, Elements().symbol(i->element()));
 		bestmatch = 0;
 		parent_->setAtomType(i, NULL, FALSE);
 		// Check for element 'XX' first
 		if (i->element() == 0)
 		{
-			Messenger::print("Failed to type atom %i since it has no element type.\n",i->id()+1);
+			Messenger::print("Failed to type atom %i since it has no element type.",i->id()+1);
 			nfailed ++;
 			result = FALSE;
 		}
@@ -1729,9 +1729,9 @@ bool Pattern::typeAtoms()
 			if (i->element() != at->characterElement()) continue;
 			
 			// See how well this ff description matches the environment of our atom 'i'
-			Messenger::print(Messenger::Typing,"Pattern::typeAtoms : Matching type id %i\n",ffa->typeId());
+			Messenger::print(Messenger::Typing,"Pattern::typeAtoms : Matching type id %i",ffa->typeId());
 			newmatch = at->matchAtom(i,&rings_,parent_);
-			Messenger::print(Messenger::Typing,"Pattern::typeAtoms : ...Total match score for type %i = %i\n", ffa->typeId(), newmatch);
+			Messenger::print(Messenger::Typing,"Pattern::typeAtoms : ...Total match score for type %i = %i", ffa->typeId(), newmatch);
 			if (newmatch > bestmatch)
 			{
 				// Better match found...
@@ -1741,15 +1741,15 @@ bool Pattern::typeAtoms()
 		}
 		if (i->type() == NULL)
 		{
-			Messenger::print("Failed to type atom - %s, id = %i, nbonds = %i.\n", Elements().name(i), i->id()+1, i->nBonds());
+			Messenger::print("Failed to type atom - %s, id = %i, nbonds = %i.", Elements().name(i), i->id()+1, i->nBonds());
 			nfailed ++;
 			result = FALSE;
 		}
-		else Messenger::print(Messenger::Typing,"Assigned forcefield type for atom is : %i (%s)\n", i->type()->typeId(), i->type()->name());
+		else Messenger::print(Messenger::Typing,"Assigned forcefield type for atom is : %i (%s)", i->type()->typeId(), i->type()->name());
 		i = i->next;
 	}
 	// Print warning if we failed...
-	if (nfailed != 0) Messenger::print("Failed to type %i atoms in pattern '%s'.\n", nfailed, name_.get());
+	if (nfailed != 0) Messenger::print("Failed to type %i atoms in pattern '%s'.", nfailed, name_.get());
 	Messenger::exit("Pattern::typeAtoms");
 	return result;
 }

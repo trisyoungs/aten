@@ -63,7 +63,6 @@ void AtenWindow::on_actionFileOpen_triggered(bool checked)
 		{
 			if (!filter->executeRead(loadModelDialog.selectedFilename())) return;
 			addRecent(loadModelDialog.selectedFilename());
-			aten_.currentModelOrFrame()->changeLog.add(Log::Camera);
 			aten_.currentModelOrFrame()->regenerateIcon();
 			updateWidgets(AtenWindow::AllTarget);
 		}
@@ -135,7 +134,7 @@ bool AtenWindow::runSaveModelDialog()
 		}
 		saveModelFilter_ = filter;
 		saveModelFilename_ = qPrintable(filename);
-		if (filter == NULL) Messenger::print("No filter selected to save file '%s'. Not saved.\n", saveModelFilename_.get());
+		if (filter == NULL) Messenger::print("No filter selected to save file '%s'. Not saved.", saveModelFilename_.get());
 		return (saveModelFilter_ == NULL ? FALSE : TRUE);
 	}
 	else return FALSE;
@@ -161,9 +160,9 @@ void AtenWindow::on_actionFileSaveAs_triggered(bool checked)
 		if (saveModelFilter_->executeWrite(saveModelFilename_.get()))
 		{
 			m->changeLog.updateSavePoint();
-			Messenger::print("Model '%s' saved to file '%s' (%s)\n", m->name(), saveModelFilename_.get(), saveModelFilter_->filter.name());
+			Messenger::print("Model '%s' saved to file '%s' (%s)", m->name(), saveModelFilename_.get(), saveModelFilter_->filter.name());
 		}
-		else Messenger::print("Failed to save model '%s'.\n", m->name());
+		else Messenger::print("Failed to save model '%s'.", m->name());
 		m->enableUndoRedo();
 		updateWidgets();
 	}
@@ -191,9 +190,9 @@ void AtenWindow::on_actionFileSave_triggered(bool checked)
 			if (saveModelFilter_->executeWrite(saveModelFilename_.get()))
 			{
 				m->changeLog.updateSavePoint();
-				Messenger::print("Model '%s' saved to file '%s' (%s)\n", m->name(), saveModelFilename_.get(), saveModelFilter_->filter.name());
+				Messenger::print("Model '%s' saved to file '%s' (%s)", m->name(), saveModelFilename_.get(), saveModelFilter_->filter.name());
 			}
-			else Messenger::print("Failed to save model '%s'.\n", m->name());
+			else Messenger::print("Failed to save model '%s'.", m->name());
 			m->enableUndoRedo();
 		}
 	}
@@ -212,7 +211,7 @@ void AtenWindow::on_actionFileSave_triggered(bool checked)
 void AtenWindow::on_actionExportOptions_triggered(bool checked)
 {
 	Model* m = aten_.currentModelOrFrame();
-	if (m->filter() == NULL) Messenger::print("No filter currently assigned to model '%s', so there are no export options.\n", m->name());
+	if (m->filter() == NULL) Messenger::print("No filter currently assigned to model '%s', so there are no export options.", m->name());
 	else m->filter()->defaultDialog().execute();
 }
 
@@ -681,7 +680,7 @@ void AtenWindow::on_actionTrajectoryOpen_triggered(bool checked)
 			m->initialiseTrajectory(qPrintable(filename), filter);
 			updateTrajectoryMenu();
 		}
-		else Messenger::print( "Couldn't determine trajectory file format.\n");
+		else Messenger::print( "Couldn't determine trajectory file format.");
 		updateWidgets(AtenWindow::AllTarget);
 	}
 }
@@ -757,7 +756,7 @@ void AtenWindow::on_actionTrajectorySaveMovie_triggered(bool checked)
 	height = atoi(afterChar(geometry,'x'));
 	if ((width < 1) || (height < 1))
 	{
-		Dnchar message(-1, "The geometry '%s' is not valid since one (or both) components are less than 1.\n", geometry.get());
+		Dnchar message(-1, "The geometry '%s' is not valid since one (or both) components are less than 1.", geometry.get());
 		QMessageBox::warning(this, "Aten", message.get(), QMessageBox::Ok);
 		return;
 	}
@@ -901,13 +900,13 @@ void AtenWindow::on_actionSaveExpression_triggered(bool checked)
 			}
 		}
 		Model* m = aten_.currentModelOrFrame();
-		if (filter == NULL) Messenger::print("No filter selected to save file '%s'. Not saved.\n", qPrintable(filename));
+		if (filter == NULL) Messenger::print("No filter selected to save file '%s'. Not saved.", qPrintable(filename));
 		else
 		{
 			// Temporarily disable undo/redo for the model, save expression, and re-enable
 			m->disableUndoRedo();
-			if (filter->executeWrite(qPrintable(filename))) Messenger::print("Expression for model '%s' saved to file '%s' (%s)\n", m->name(), qPrintable(filename), filter->filter.name());
-			else Messenger::print("Failed to save expression for model '%s'.\n", m->name());
+			if (filter->executeWrite(qPrintable(filename))) Messenger::print("Expression for model '%s' saved to file '%s' (%s)", m->name(), qPrintable(filename), filter->filter.name());
+			else Messenger::print("Failed to save expression for model '%s'.", m->name());
 			m->enableUndoRedo();
 		}
 	}

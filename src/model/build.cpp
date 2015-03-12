@@ -88,7 +88,7 @@ Atom* Model::growAtom(Atom* i, short int element, double distance, Atom::AtomGeo
 	Vec3<double> newVec;
 	if (!i->nextBondVector(newVec, geometry))
 	{
-		Messenger::print("Failed to find suitable vector for new atom.\n");
+		Messenger::print("Failed to find suitable vector for new atom.");
 		return NULL;
 	}
 	

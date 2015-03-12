@@ -98,14 +98,14 @@ bool Rdf::initialise()
 	// Check site definitions....
 	if ((sites_[0] == NULL) || (sites_[1] == NULL))
 	{
-		Messenger::print("Rdf::initialise - At least one site has NULL value.\n");
+		Messenger::print("Rdf::initialise - At least one site has NULL value.");
 		Messenger::exit("Rdf::initialise");
 		return FALSE;
 	}
 	// Create the data_ arrays
 	data_ = new double[nBins_];
 	for (int n=0; n<nBins_; n++) data_[n] = 0.0;
-	Messenger::print("There are %i bins in rdf '%s', beginning at r = %f.\n", nBins_, name_.get(), lower_);
+	Messenger::print("There are %i bins in rdf '%s', beginning at r = %f.", nBins_, name_.get(), lower_);
 	nAdded_ = 0;
 	Messenger::exit("Rdf::initialise");
 	return TRUE;

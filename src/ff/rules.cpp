@@ -70,14 +70,14 @@ bool Forcefield::generateVdw(Atom* i)
 	// Call the generator function.....
 	if (vdwGenerator_ == NULL)
 	{
-		Messenger::print("Error - Tried to call VDW generator function in forcefield '%s', but it is not defined.\n", name_.get());
+		Messenger::print("Error - Tried to call VDW generator function in forcefield '%s', but it is not defined.", name_.get());
 		Messenger::exit("Forcefield::generateVdw");
 		return FALSE;
 	}
 	// Check atom pointers
 	if (i == NULL)
 	{
-		Messenger::print("Internal Error - NULL atom passed to VDW generator function in forcefield '%s' (pointers: %p).\n", name_.get(), i);
+		Messenger::print("Internal Error - NULL atom passed to VDW generator function in forcefield '%s' (pointers: %p).", name_.get(), i);
 		Messenger::exit("Forcefield::generateVdw");
 		return FALSE;
 	}
@@ -87,7 +87,7 @@ bool Forcefield::generateVdw(Atom* i)
 	ReturnValue rv;
 	if (!generatorFunctions_.executeFunction("vdwgenerator", rv, "y", ffi))
 	{
-		Messenger::print("Error - Failed to generate Vdw function data for atom type.\n");
+		Messenger::print("Error - Failed to generate Vdw function data for atom type.");
 		ffi->setVdwForm(VdwFunctions::None);
 		Messenger::exit("Forcefield::generateVdw");
 		return FALSE;
@@ -103,14 +103,14 @@ ForcefieldBound* Forcefield::generateBond(Atom* i, Atom* j)
 	// Check for presence of the generator function.....
 	if (bondGenerator_ == NULL)
 	{
-		Messenger::print("Error - Tried to call bond generator function in forcefield '%s', but it is not defined.\n", name_.get());
+		Messenger::print("Error - Tried to call bond generator function in forcefield '%s', but it is not defined.", name_.get());
 		Messenger::exit("Forcefield::generateBond");
 		return NULL;
 	}
 	// Check atom pointers
 	if ((i == NULL) || (j == NULL))
 	{
-		Messenger::print("Internal Error - NULL atom(s) passed to bond generator function in forcefield '%s' (pointers: %p %p).\n", name_.get(), i, j);
+		Messenger::print("Internal Error - NULL atom(s) passed to bond generator function in forcefield '%s' (pointers: %p %p).", name_.get(), i, j);
 		Messenger::exit("Forcefield::generateBond");
 		return NULL;
 	}
@@ -122,7 +122,7 @@ ForcefieldBound* Forcefield::generateBond(Atom* i, Atom* j)
 	ReturnValue rv;
 	if (!generatorFunctions_.executeFunction("bondgenerator", rv, "zaa", newbond, i, j))
 	{
-		Messenger::print("Error - Failed to generate function data for bond.\n");
+		Messenger::print("Error - Failed to generate function data for bond.");
 		newbond = NULL;
 	}
 	Messenger::exit("Forcefield::generateBond");
@@ -136,14 +136,14 @@ ForcefieldBound* Forcefield::generateAngle(Atom* i, Atom* j, Atom* k)
 	// Check for presence of the generator function.....
 	if (angleGenerator_ == NULL)
 	{
-		Messenger::print("Error - Tried to call angle generator function in forcefield '%s', but it is not defined.\n", name_.get());
+		Messenger::print("Error - Tried to call angle generator function in forcefield '%s', but it is not defined.", name_.get());
 		Messenger::exit("Forcefield::generateAngle");
 		return NULL;
 	}
 	// Check atom pointers
 	if ((i == NULL) || (j == NULL) || (k == NULL))
 	{
-		Messenger::print("Internal Error - NULL atom(s) passed to angle generator function in forcefield '%s' (pointers: %p %p %p).\n", name_.get(), i, j, k);
+		Messenger::print("Internal Error - NULL atom(s) passed to angle generator function in forcefield '%s' (pointers: %p %p %p).", name_.get(), i, j, k);
 		Messenger::exit("Forcefield::generateAngle");
 		return NULL;
 	}
@@ -156,7 +156,7 @@ ForcefieldBound* Forcefield::generateAngle(Atom* i, Atom* j, Atom* k)
 	ReturnValue rv;
 	if (!generatorFunctions_.executeFunction("anglegenerator", rv, "zaaa", newangle, i, j, k))
 	{
-		Messenger::print("Error - Failed to generate function data for angle.\n");
+		Messenger::print("Error - Failed to generate function data for angle.");
 		newangle = NULL;
 	}
 	Messenger::exit("Forcefield::generateAngle");
@@ -170,14 +170,14 @@ ForcefieldBound* Forcefield::generateTorsion(Atom* i, Atom* j, Atom* k, Atom* l)
 	// Check for presence of the generator function.....
 	if (torsionGenerator_ == NULL)
 	{
-		Messenger::print("Error - Tried to call torsion generator function in forcefield '%s', but it is not defined.\n", name_.get());
+		Messenger::print("Error - Tried to call torsion generator function in forcefield '%s', but it is not defined.", name_.get());
 		Messenger::exit("Forcefield::generateTorsion");
 		return NULL;
 	}
 	// Check atom pointers
 	if ((i == NULL) || (j == NULL) || (k == NULL) || (l == NULL))
 	{
-		Messenger::print("Internal Error - NULL atom(s) passed to torsion generator function in forcefield '%s' (pointers: %p %p %p %p).\n", name_.get(), i, j, k, l);
+		Messenger::print("Internal Error - NULL atom(s) passed to torsion generator function in forcefield '%s' (pointers: %p %p %p %p).", name_.get(), i, j, k, l);
 		Messenger::exit("Forcefield::generateTorsion");
 		return NULL;
 	}
@@ -191,7 +191,7 @@ ForcefieldBound* Forcefield::generateTorsion(Atom* i, Atom* j, Atom* k, Atom* l)
 	ReturnValue rv;
 	if (!generatorFunctions_.executeFunction("torsiongenerator", rv, "zaaaa", newtorsion, i, j, k, l))
 	{
-		Messenger::print("Error - Failed to generate function data for torsion.\n");
+		Messenger::print("Error - Failed to generate function data for torsion.");
 		newtorsion = NULL;
 	}
 	Messenger::exit("Forcefield::generateTorsion");

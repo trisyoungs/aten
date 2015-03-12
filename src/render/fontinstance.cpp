@@ -54,7 +54,7 @@ bool FontInstance::setupFont(QString fontName)
 		font_ = newFont;
 
 		// Request unicode character mapping...
-		if (!font_->CharMap(ft_encoding_unicode)) Messenger::print("Failed to set unicode character mapping for font - special characters may not render correctly.\n");
+		if (!font_->CharMap(ft_encoding_unicode)) Messenger::print("Failed to set unicode character mapping for font - special characters may not render correctly.");
 
 // 		font_->Depth(3.0);
 // 		font_->Outset(-.5, 1.5);

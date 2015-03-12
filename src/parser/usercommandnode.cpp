@@ -42,7 +42,7 @@ UserCommandNode::~UserCommandNode()
 bool UserCommandNode::checkArguments()
 {
 	Messenger::enter("UserCommandNode::checkArguments");
-	Messenger::print(Messenger::Parse, "Checking the %i argument(s) given to user function '%s'...\n", args_.nItems(), function_->name());
+	Messenger::print(Messenger::Parse, "Checking the %i argument(s) given to user function '%s'...", args_.nItems(), function_->name());
 	bool required;
 	int count = 0;
 	Variable* v;
@@ -53,7 +53,7 @@ bool UserCommandNode::checkArguments()
 		required = v->initialValue() == NULL;
 		if (required && (args_.nItems() <= count))
 		{
-			Messenger::print("Error: Argument %i to user function '%s' is required.\n", count+1, function_->name());
+			Messenger::print("Error: Argument %i to user function '%s' is required.", count+1, function_->name());
 			Messenger::exit("UserCommandNode::checkArguments");
 			return FALSE;
 		}
@@ -69,7 +69,7 @@ bool UserCommandNode::checkArguments()
 			}
 			else
 			{
-				Messenger::print("Error: Argument %i to user function '%s' expected %s but was given %s.\n", count+1, function_->name(), VTypes::aDataType(v->returnType()), VTypes::aDataType(args_[count]->item->returnType()));
+				Messenger::print("Error: Argument %i to user function '%s' expected %s but was given %s.", count+1, function_->name(), VTypes::aDataType(v->returnType()), VTypes::aDataType(args_[count]->item->returnType()));
 				Messenger::exit("UserCommandNode::checkArguments");
 				return FALSE;
 			}
@@ -81,7 +81,7 @@ bool UserCommandNode::checkArguments()
 		}
 		else
 		{
-			Messenger::print("Error: Argument %i to user function '%s' expected %s but was given %s.\n", count+1, function_->name(), VTypes::aDataType(v->returnType()), VTypes::aDataType(args_[count]->item->returnType()));
+			Messenger::print("Error: Argument %i to user function '%s' expected %s but was given %s.", count+1, function_->name(), VTypes::aDataType(v->returnType()), VTypes::aDataType(args_[count]->item->returnType()));
 			Messenger::exit("UserCommandNode::checkArguments");
 			return FALSE;
 		}
@@ -89,7 +89,7 @@ bool UserCommandNode::checkArguments()
 	// Extra arguments provided?
 	if (args_.nItems() > count)
 	{
-		Messenger::print("Error: %i extra arguments given to user function '%s'.\n", args_.nItems()-count, function_->name());
+		Messenger::print("Error: %i extra arguments given to user function '%s'.", args_.nItems()-count, function_->name());
 		Messenger::exit("UserCommandNode::checkArguments");
 		return FALSE;
 	}

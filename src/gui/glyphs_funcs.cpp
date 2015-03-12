@@ -566,7 +566,7 @@ void GlyphsWidget::dataAtomIdChanged(int id, int value)
 	for (int i = 0; i < items.size(); ++i)
 	{
 		g = (Glyph*) ((TListWidgetItem*) items.at(i))->data.asPointer(VTypes::GlyphData);
-		if (id >= g->nData()) Messenger::print("Can't set atom id in data %i for a '%s' glyph (out of range)...\n", id+1, Glyph::glyphType(g->type()));
+		if (id >= g->nData()) Messenger::print("Can't set atom id in data %i for a '%s' glyph (out of range)...", id+1, Glyph::glyphType(g->type()));
 		else g->data(id)->setAtom( g->parent()->atom(value) );
 	}
 	parent_.aten().currentModelOrFrame()->changeLog.add(Log::Glyphs);
@@ -582,7 +582,7 @@ void GlyphsWidget::dataValueChanged(int id, int component, double value)
 	for (int i = 0; i < items.size(); ++i)
 	{
 		g = (Glyph*) ((TListWidgetItem*) items.at(i))->data.asPointer(VTypes::GlyphData);
-		if (id >= g->nData()) Messenger::print("Can't set literal value data %i for a '%s' glyph (out of range)...\n", id+1, Glyph::glyphType(g->type()));
+		if (id >= g->nData()) Messenger::print("Can't set literal value data %i for a '%s' glyph (out of range)...", id+1, Glyph::glyphType(g->type()));
 		else g->data(id)->setVector(component, value);
 	}
 	parent_.aten().currentModelOrFrame()->changeLog.add(Log::Glyphs);
@@ -598,7 +598,7 @@ void GlyphsWidget::dataValueChanged(int id, double x, double y, double z)
 	for (int i = 0; i < items.size(); ++i)
 	{
 		g = (Glyph*) ((TListWidgetItem*) items.at(i))->data.asPointer(VTypes::GlyphData);
-		if (id >= g->nData()) Messenger::print("Can't set literal value data %i for a '%s' glyph (out of range)...\n", id+1, Glyph::glyphType(g->type()));
+		if (id >= g->nData()) Messenger::print("Can't set literal value data %i for a '%s' glyph (out of range)...", id+1, Glyph::glyphType(g->type()));
 		else g->data(id)->setVector(x, y, z);
 	}
 	parent_.aten().currentModelOrFrame()->changeLog.add(Log::Glyphs);
@@ -624,7 +624,7 @@ void GlyphsWidget::dataColourChanged(int id)
 	for (int i = 0; i < items.size(); ++i)
 	{
 		gl = (Glyph*) ((TListWidgetItem*) items.at(i))->data.asPointer(VTypes::GlyphData);
-		if (id >= gl->nData()) Messenger::print("Can't set colour for data %i for a '%s' glyph (out of range)...\n", id+1, Glyph::glyphType(gl->type()));
+		if (id >= gl->nData()) Messenger::print("Can't set colour for data %i for a '%s' glyph (out of range)...", id+1, Glyph::glyphType(gl->type()));
 		else gl->data(id)->setColour(newcol.redF(), newcol.greenF(), newcol.blueF(), newcol.alphaF());
 	}
 	parent_.aten().currentModelOrFrame()->changeLog.add(Log::Glyphs);

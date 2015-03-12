@@ -119,7 +119,7 @@ void ColourScale::setPoint(int position, double value, double r, double g, doubl
 	// Check position supplied
 	if ((position < 0) || (position >= points_.nItems()))
 	{
-		Messenger::print( "Scale point position to set (%i) is invalid - nItems = %i.\n", position, points_.nItems());
+		Messenger::print( "Scale point position to set (%i) is invalid - nItems = %i.", position, points_.nItems());
 		Messenger::exit("ColourScale::setPoint");
 		return;
 	}
@@ -151,7 +151,7 @@ void ColourScale::removePoint(int position)
 	// Check position supplied
 	if ((position < 0) || (position >= points_.nItems()))
 	{
-		Messenger::print( "Scale point position to set (%i) is invalid - nItems = %i.\n", position, points_.nItems());
+		Messenger::print( "Scale point position to set (%i) is invalid - nItems = %i.", position, points_.nItems());
 		Messenger::exit("ColourScale::removePoint");
 		return;
 	}

@@ -62,7 +62,7 @@ bool Commands::function_ChargeFromModel(CommandNode* c, Bundle& obj, ReturnValue
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (obj.rs() == obj.m) 
 	{
-		Messenger::print("Error - 'chargefrommodel' requires an active trajectory frame in the current model.\n");
+		Messenger::print("Error - 'chargefrommodel' requires an active trajectory frame in the current model.");
 		return FALSE;
 	}
 	else obj.rs()->copyAtomData(obj.m, Atom::ChargeData);

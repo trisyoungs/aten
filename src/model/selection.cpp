@@ -163,7 +163,7 @@ Vec3<double> Model::selectionCentreOfMass() const
 			i = ri->item;
 			if (i->element() == 0)
 			{
-				Messenger::print("Warning - selection contains an unknown element - mass assumed to be 1.0\n");
+				Messenger::print("Warning - selection contains an unknown element - mass assumed to be 1.0");
 				massnorm += 1.0;
 				result += cell_.mim(i, selection_.first()->item);
 			}
@@ -256,7 +256,7 @@ void Model::reorderSelectedAtoms()
 	// Is there a selection?
 	if (selection_.nItems() == 0)
 	{
-		Messenger::print("No atoms selected - no reordering to be performed.\n");
+		Messenger::print("No atoms selected - no reordering to be performed.");
 		Messenger::exit("Model::reorderSelectedAtoms");
 		return;
 	}
@@ -270,7 +270,7 @@ void Model::reorderSelectedAtoms()
 	int diff, n;
 
 	// First we will make sure that all molecular fragments in the current selection contain consecutive atoms
-	Messenger::print("Enforcing consecutive atom numbering in all molecular fragments...\n");
+	Messenger::print("Enforcing consecutive atom numbering in all molecular fragments...");
 	Reflist<Atom,int> selectedAtoms = targetAtoms;
 	while (selectedAtoms.first())
 	{
@@ -318,14 +318,14 @@ void Model::reorderSelectedAtoms()
 		{
 			if (rk->data.first()->matchAtom(rj->item, &dummyRingList, this) != -1) nMatched++;
 		}
-		Messenger::print(Messenger::Verbose, "Testing constructed NETA for atom index %i : nMatched = %i\n", rk->item->id(), nMatched);
+		Messenger::print(Messenger::Verbose, "Testing constructed NETA for atom index %i : nMatched = %i", rk->item->id(), nMatched);
 		if (nMatched == 0)
 		{
-			Messenger::print("Internal Error: Atom type for reference fragment atom %i failed to detect it.\n", referenceId);
+			Messenger::print("Internal Error: Atom type for reference fragment atom %i failed to detect it.", referenceId);
 			return;
 		}
-		else if (nMatched == 1) Messenger::print("Typing for reference fragment atom %i tested successfully.\n");
-		else Messenger::print("Typing for reference fragment atom %i is not unique - reordering of symmetric subgroups may not be exact.\n");
+		else if (nMatched == 1) Messenger::print("Typing for reference fragment atom %i tested successfully.");
+		else Messenger::print("Typing for reference fragment atom %i is not unique - reordering of symmetric subgroups may not be exact.");
 	}
 
 	// We will create a pattern here to allow us to get a connectivity matrix easily
@@ -335,7 +335,7 @@ void Model::reorderSelectedAtoms()
 	referencePattern.createMatrices();
 
 	// We now select fragments sequentially, and reorder the atoms in each one...
-	Messenger::print("Reordering atoms in individual fragments...\n");
+	Messenger::print("Reordering atoms in individual fragments...");
 	while (selectedAtoms.first())
 	{
 		// Tree select this fragment, and do some basic checking...
@@ -343,7 +343,7 @@ void Model::reorderSelectedAtoms()
 		selectTree(selectedAtoms.first()->item, TRUE);
 		if (marked_.nItems() != referenceFragment.nItems())
 		{
-			Messenger::print("Warning: Skipping fragment with atom ids %i to %i since it has a different number of atoms to the reference (first) fragment.\n", marked_.first()->item->id()+1, marked_.last()->item->id()+1);
+			Messenger::print("Warning: Skipping fragment with atom ids %i to %i since it has a different number of atoms to the reference (first) fragment.", marked_.first()->item->id()+1, marked_.last()->item->id()+1);
 			for (ri = marked_.first(); ri != NULL; ri = ri->next) selectedAtoms.remove(ri->item);
 			continue;
 		}
@@ -373,14 +373,14 @@ void Model::reorderSelectedAtoms()
 						// Check that we haven't reached the maximum (sensible) number of definitions (where the tolerance is 90 degrees
 						if (rj->data.nItems() == 9)
 						{
-							Messenger::print("Error: Reached maximum torsion tolerance of 90 degrees, and no atoms were matched.\n");
+							Messenger::print("Error: Reached maximum torsion tolerance of 90 degrees, and no atoms were matched.");
 							break;
 						}
 						else
 						{
 							neta = rj->data.add();
 							neta->createBasic(rj->item, FALSE, rj->data.nItems() * 10.0);
-							Messenger::print("Created neta for reference atom %i with torsion tolerance of %f\n", referenceId, rj->data.nItems()*10.0);
+							Messenger::print("Created neta for reference atom %i with torsion tolerance of %f", referenceId, rj->data.nItems()*10.0);
 						}
 					}
 				}
@@ -390,11 +390,11 @@ void Model::reorderSelectedAtoms()
 			// Did we find a match?
 			if (ri == NULL)
 			{
-				Messenger::print("Error: Failed to find a match for reference atom %i in fragment with atom ids %i to %i.\n", referenceId, marked_.first()->item->id()+1, marked_.last()->item->id()+1);
+				Messenger::print("Error: Failed to find a match for reference atom %i in fragment with atom ids %i to %i.", referenceId, marked_.first()->item->id()+1, marked_.last()->item->id()+1);
 				Messenger::exit("Model::reorderSelectedAtoms");
 				return;
 			}
-			if (netaLevel >= 4) Messenger::print("Warning: Matched atom to reference index %i with torsion tolerance of %f...\n", referenceId, netaLevel*10.0);
+			if (netaLevel >= 4) Messenger::print("Warning: Matched atom to reference index %i with torsion tolerance of %f...", referenceId, netaLevel*10.0);
 
 			// Yes we did! Now, check it's position - is it in the correct place?
 			if (((ri->item->id() - rootId) - referenceId) != 0) swapAtoms(atoms_[rootId+referenceId], ri->item);

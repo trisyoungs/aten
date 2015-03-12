@@ -92,9 +92,9 @@ void Viewer::mousePressEvent(QMouseEvent* event)
 		if (pickedAtoms_.contains(atomClicked_) == NULL)
 		{
 			pickedAtoms_.add(atomClicked_);
-			Messenger::print(Messenger::Verbose, "Adding atom %i to canvas subselection.\n",atomClicked_);
+			Messenger::print(Messenger::Verbose, "Adding atom %i to canvas subselection.",atomClicked_);
 		}
-		else Messenger::print(Messenger::Verbose, "Atom %i is already in canvas subselection.\n",atomClicked_);
+		else Messenger::print(Messenger::Verbose, "Atom %i is already in canvas subselection.",atomClicked_);
 	}
 	
 	// Activate mode...

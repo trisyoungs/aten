@@ -85,14 +85,14 @@ bool Geometry::initialise()
 	for (nSites_ = 0; nSites_ < 4; nSites_++) if (sites_[nSites_] == NULL) break;
 	if (nSites_ == 0)
 	{
-		Messenger::print("Geometry::initialise - At least two sites_ must be defined.\n");
+		Messenger::print("Geometry::initialise - At least two sites_ must be defined.");
 		Messenger::exit("Geometry::initialise");
 		return FALSE;
 	}
 	// Create the data arrays
 	data_ = new double[nBins_];
 	for (int n=0; n<nBins_; n++) data_[n] = 0.0;
-	Messenger::print("There are %i bins in geometry '%s', beginning at r = %f.\n", nBins_, name_.get(), lower_);
+	Messenger::print("There are %i bins in geometry '%s', beginning at r = %f.", nBins_, name_.get(), lower_);
 	nAdded_ = 0;
 	Messenger::exit("Geometry::initialise");
 	return TRUE;

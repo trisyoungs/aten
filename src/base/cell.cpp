@@ -320,14 +320,14 @@ bool UnitCell::setSpacegroup(const char* name, bool forceRhombohedral)
 	const T_TabSgName *tsgn = FindTabSgNameEntry(name, 'A');
 	if (tsgn == NULL)
 	{
-		Messenger::print("Unable to find spacegroup '%s'.\n", name);
+		Messenger::print("Unable to find spacegroup '%s'.", name);
 		Messenger::exit("UnitCell::setSpacegroup");
 		return FALSE;
 	}
 	// Check for hexagonal basis, and whether to force rhombohedral basis
 	if (strcmp(tsgn->Extension, "H") == 0)
 	{
-		if (!forceRhombohedral) Messenger::print("Warning: Spacegroup has hexagonal basis.\n");
+		if (!forceRhombohedral) Messenger::print("Warning: Spacegroup has hexagonal basis.");
 		else
 		{
 			Dnchar newname(128);
@@ -336,11 +336,11 @@ bool UnitCell::setSpacegroup(const char* name, bool forceRhombohedral)
 			tsgn = FindTabSgNameEntry(newname.get(), 'A');
 			if (tsgn == NULL)
 			{
-				Messenger::print("Unable to find spacegroup '%s'.\n", name);
+				Messenger::print("Unable to find spacegroup '%s'.", name);
 				Messenger::exit("UnitCell::setSpacegroup");
 				return FALSE;
 			}
-			Messenger::print("Spacegroup %s forced into rhombohedral basis.\n", tsgn->SgLabels);
+			Messenger::print("Spacegroup %s forced into rhombohedral basis.", tsgn->SgLabels);
 		}
 	}
 	spacegroupId_ = tsgn->SgNumber;
@@ -356,7 +356,7 @@ bool UnitCell::setSpacegroup(const char* name, bool forceRhombohedral)
 	// Do some book-keeping and derive crystal system, point group, and - if not already set - find the entry in the internal table of space group symbols
 	CompleteSgInfo(&spacegroup_);
 
-	Messenger::print(Messenger::Verbose, "Space group belongs to the %s crystal system.\n", XS_Name[spacegroup_.XtalSystem]);
+	Messenger::print(Messenger::Verbose, "Space group belongs to the %s crystal system.", XS_Name[spacegroup_.XtalSystem]);
 	return TRUE;
 }
 
@@ -500,7 +500,7 @@ void UnitCell::calculateReciprocal()
 	switch (type_)
 	{
 		case (UnitCell::NoCell):
-			Messenger::print("Cell : Can't calculate reciprocal cell - no cell defined.\n");
+			Messenger::print("Cell : Can't calculate reciprocal cell - no cell defined.");
 			break;
 		case (UnitCell::CubicCell):
 		case (UnitCell::OrthorhombicCell):
@@ -806,8 +806,8 @@ Vec3<double> UnitCell::randomPos() const
 // Print
 void UnitCell::print()
 {
-	Messenger::print("\t        x        y        z          l\n");
-	Messenger::print("\t[ A <%8.4f %8.4f %8.4f > %8.4f [alpha=%8.3f]\n", axes_[0], axes_[1], axes_[2], lengths_.x, angles_.x);
-	Messenger::print("\t[ B <%8.4f %8.4f %8.4f > %8.4f [ beta=%8.3f]\n", axes_[4], axes_[5], axes_[6], lengths_.y, angles_.y);
-	Messenger::print("\t[ C <%8.4f %8.4f %8.4f > %8.4f [gamma=%8.3f]\n", axes_[8], axes_[9], axes_[10], lengths_.z, angles_.z);
+	Messenger::print("\t        x        y        z          l");
+	Messenger::print("\t[ A <%8.4f %8.4f %8.4f > %8.4f [alpha=%8.3f]", axes_[0], axes_[1], axes_[2], lengths_.x, angles_.x);
+	Messenger::print("\t[ B <%8.4f %8.4f %8.4f > %8.4f [ beta=%8.3f]", axes_[4], axes_[5], axes_[6], lengths_.y, angles_.y);
+	Messenger::print("\t[ C <%8.4f %8.4f %8.4f > %8.4f [gamma=%8.3f]", axes_[8], axes_[9], axes_[10], lengths_.z, angles_.z);
 }

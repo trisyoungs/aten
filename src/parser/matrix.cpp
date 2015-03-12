@@ -67,7 +67,7 @@ bool MatrixVariable::set(ReturnValue& rv)
 {
 	if (readOnly_)
 	{
-		Messenger::print("A constant value (in this case a matrix) cannot be assigned to.\n");
+		Messenger::print("A constant value (in this case a matrix) cannot be assigned to.");
 		return FALSE;
 	}
 	bool success = FALSE;
@@ -82,7 +82,7 @@ bool MatrixVariable::set(ReturnValue& rv)
 	}
 	else
 	{
-		Messenger::print("Error: Array assigned to matrix variable must contain nine elements.\n");
+		Messenger::print("Error: Array assigned to matrix variable must contain nine elements.");
 		success = FALSE;
 	}
 	return success;
@@ -187,14 +187,14 @@ StepNode* MatrixVariable::accessorSearch(const char* s, TreeNode* arrayIndex, Tr
 		i = Variable::searchAccessor(s, nFunctions, functionData);
 		if (i == -1)
 		{
-			Messenger::print("Error: Type 'Matrix' has no member or function named '%s'.\n", s);
+			Messenger::print("Error: Type 'Matrix' has no member or function named '%s'.", s);
 			Messenger::exit("MatrixVariable::accessorSearch");
 			return NULL;
 		}
-		Messenger::print(Messenger::Parse, "FunctionAccessor match = %i (%s)\n", i, functionData[i].name);
+		Messenger::print(Messenger::Parse, "FunctionAccessor match = %i (%s)", i, functionData[i].name);
 		if (arrayIndex != NULL)
 		{
-			Messenger::print("Error: Array index given to 'Matrix' function '%s'.\n", s);
+			Messenger::print("Error: Array index given to 'Matrix' function '%s'.", s);
 			Messenger::exit("MatrixVariable::accessorSearch");
 			return NULL;
 		}
@@ -203,24 +203,24 @@ StepNode* MatrixVariable::accessorSearch(const char* s, TreeNode* arrayIndex, Tr
 		result->addJoinedArguments(argList);
 		if (!result->checkArguments(functionData[i].arguments, functionData[i].name))
 		{
-			Messenger::print("Error: Syntax for 'Matrix' function '%s' is '%s(%s)'.\n", functionData[i].name, functionData[i].name, functionData[i].argText );
+			Messenger::print("Error: Syntax for 'Matrix' function '%s' is '%s(%s)'.", functionData[i].name, functionData[i].name, functionData[i].argText );
 			delete result;
 			result = NULL;
 		}
 	}
 	else
 	{
-		Messenger::print(Messenger::Parse, "Accessor match = %i (%s)\n", i, accessorData[i].name);
+		Messenger::print(Messenger::Parse, "Accessor match = %i (%s)", i, accessorData[i].name);
 		// Were we given an array index when we didn't want one?
 		if ((accessorData[i].arraySize == 0) && (arrayIndex != NULL))
 		{
-			Messenger::print("Error: Irrelevant array index provided for member '%s'.\n", accessorData[i].name);
+			Messenger::print("Error: Irrelevant array index provided for member '%s'.", accessorData[i].name);
 			result = NULL;
 		}
 		// Were we given an argument list when we didn't want one?
 		if (argList != NULL)
 		{
-			Messenger::print("Error: Argument list given to 'Matrix&' array member '%s'.\n", s);
+			Messenger::print("Error: Argument list given to 'Matrix&' array member '%s'.", s);
 			Messenger::exit("MatrixVariable::accessorSearch");
 			return NULL;
 		}
@@ -245,7 +245,7 @@ bool MatrixVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex
 	// Check for correct lack/presence of array index given
 	if (hasArrayIndex)
 	{
-		Messenger::print("Error: Unnecessary array index provided for member '%s'.\n", accessorData[i].name);
+		Messenger::print("Error: Unnecessary array index provided for member '%s'.", accessorData[i].name);
 		Messenger::exit("MatrixVariable::retrieveAccessor");
 		return FALSE;
 	}
@@ -297,12 +297,12 @@ bool MatrixVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newV
 		{
 			if ((accessorData[i].arraySize > 0) && ( (arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize) ))
 			{
-				Messenger::print("Error: Array index provided for member '%s' is out of range (%i, range is 1-%i).\n", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
+				Messenger::print("Error: Array index provided for member '%s' is out of range (%i, range is 1-%i).", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
 				result = FALSE;
 			}
 			if (newValue.arraySize() > 0)
 			{
-				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
+				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.", accessorData[i].name);
 				result = FALSE;
 			}
 		}
@@ -310,7 +310,7 @@ bool MatrixVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newV
 		{
 			if (newValue.arraySize() > accessorData[i].arraySize)
 			{
-				Messenger::print("Error: The array being assigned to member '%s' is larger than the size of the desination array (%i cf. %i).\n", accessorData[i].name, newValue.arraySize(), accessorData[i].arraySize);
+				Messenger::print("Error: The array being assigned to member '%s' is larger than the size of the desination array (%i cf. %i).", accessorData[i].name, newValue.arraySize(), accessorData[i].arraySize);
 				result = FALSE;
 			}
 		}
@@ -322,12 +322,12 @@ bool MatrixVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newV
 		{
 			if (accessorData[i].returnType != VTypes::MatrixData)
 			{
-				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.\n", accessorData[i].name);
+				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.", accessorData[i].name);
 				result = FALSE;
 			}
 			else if ((newValue.type() != VTypes::MatrixData) && (newValue.arraySize() != 9))
 			{
-				Messenger::print("Error: Only an array of size 9 can be assigned to a matrix (member '%s').\n", accessorData[i].name);
+				Messenger::print("Error: Only an array of size 9 can be assigned to a matrix (member '%s').", accessorData[i].name);
 				result = FALSE;
 			}
 		}
@@ -416,7 +416,7 @@ bool MatrixArrayVariable::set(ReturnValue& rv)
 {
 	if (readOnly_)
 	{
-		Messenger::print("A constant value (in this case a matrix array) cannot be assigned to.\n");
+		Messenger::print("A constant value (in this case a matrix array) cannot be assigned to.");
 		return FALSE;
 	}
 	if (matrixArrayData_ == NULL)
@@ -434,7 +434,7 @@ bool MatrixArrayVariable::setAsArray(ReturnValue& rv, int arrayIndex)
 {
 	if (readOnly_)
 	{
-		Messenger::print("A constant value (in this case a matrix array?) cannot be assigned to.\n");
+		Messenger::print("A constant value (in this case a matrix array?) cannot be assigned to.");
 		return FALSE;
 	}
 	if (matrixArrayData_ == NULL)
@@ -445,7 +445,7 @@ bool MatrixArrayVariable::setAsArray(ReturnValue& rv, int arrayIndex)
 	// Check index
 	if ((arrayIndex < 0) || (arrayIndex >= arraySize_))
 	{
-		Messenger::print("Index %i out of bounds for array '%s'.\n", arrayIndex+1, name_.get());
+		Messenger::print("Index %i out of bounds for array '%s'.", arrayIndex+1, name_.get());
 		return FALSE;
 	}
 	// Set individual element
@@ -468,7 +468,7 @@ void MatrixArrayVariable::reset()
 // Return value of node
 bool MatrixArrayVariable::execute(ReturnValue& rv)
 {
-	Messenger::print("A whole matrix array ('%s') cannot be passed as a value.\n", name_.get());
+	Messenger::print("A whole matrix array ('%s') cannot be passed as a value.", name_.get());
 	return FALSE;
 }
 
@@ -478,7 +478,7 @@ bool MatrixArrayVariable::executeAsArray(ReturnValue& rv, int arrayIndex)
 	// Check bounds
 	if ((arrayIndex < 0) || (arrayIndex >= arraySize_))
 	{
-		Messenger::print("Error: Array index %i is out of bounds for array '%s'.\n", arrayIndex+1, name_.get());
+		Messenger::print("Error: Array index %i is out of bounds for array '%s'.", arrayIndex+1, name_.get());
 		return FALSE;
 	}
 	rv.set( matrixArrayData_[arrayIndex] );
@@ -506,7 +506,7 @@ bool MatrixArrayVariable::initialise()
 	ReturnValue newsize;
 	if (!arraySizeExpression_->execute(newsize))
 	{
-		Messenger::print("Failed to find size for matrix array '%s'.\n", name_.get());
+		Messenger::print("Failed to find size for matrix array '%s'.", name_.get());
 		return FALSE;
 	}
 	// If the array is already allocated, free it only if the size is different

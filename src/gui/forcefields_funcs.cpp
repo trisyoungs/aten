@@ -244,7 +244,7 @@ void ForcefieldsWidget::on_SaveForcefieldButton_clicked(bool checked)
 	else
 	{
 		// Save forcefield under filename currently in 'filenanme'
-		Messenger::print("Saving forcefield '%s' to file '%s'...\n", ff->name(), ff->filename());
+		Messenger::print("Saving forcefield '%s' to file '%s'...", ff->name(), ff->filename());
 		ff->save();
 	}
 }
@@ -262,7 +262,7 @@ void ForcefieldsWidget::on_SaveForcefieldAsButton_clicked(bool checked)
 	ff->setFilename(qPrintable(filename));
 	
 	// Save forcefield under filename currently in 'filenanme'
-	Messenger::print("Saving forcefield '%s' to file '%s'...\n", ff->name(), ff->filename());
+	Messenger::print("Saving forcefield '%s' to file '%s'...", ff->name(), ff->filename());
 	ff->save();
 }
 
@@ -332,7 +332,7 @@ void ForcefieldsWidget::on_ManualTypeSetButton_clicked(bool checked)
 	if ((m == NULL) || (ff == NULL)) return;
 	if (m->forcefield() != ff)
 	{
-		Messenger::print("The type you are trying to assign is in a different forcefield to that assigned to the model.\n");
+		Messenger::print("The type you are trying to assign is in a different forcefield to that assigned to the model.");
 		return;
 	}
 	// Get the selected row in the FFTypeList
@@ -343,7 +343,7 @@ void ForcefieldsWidget::on_ManualTypeSetButton_clicked(bool checked)
 	if (ffa != NULL)
 	{
 		m->selectionSetType(ffa, TRUE);
-		Messenger::print("Manually set types of %i atoms.\n", parent_.aten().currentModel()->nSelected());
+		Messenger::print("Manually set types of %i atoms.", parent_.aten().currentModel()->nSelected());
 	}
 	parent_.updateWidgets(AtenWindow::CanvasTarget);
 }
@@ -352,7 +352,7 @@ void ForcefieldsWidget::on_ManualTypeSetButton_clicked(bool checked)
 void ForcefieldsWidget::on_ManualTypeClearButton_clicked(bool checked)
 {
 	parent_.aten().currentModel()->selectionSetType(NULL, FALSE);
-	Messenger::print("Cleared types of %i atoms.\n", parent_.aten().currentModel()->nSelected());
+	Messenger::print("Cleared types of %i atoms.", parent_.aten().currentModel()->nSelected());
 	parent_.updateWidgets(AtenWindow::CanvasTarget);
 }
 
@@ -370,7 +370,7 @@ void ForcefieldsWidget::on_ManualTypeTestButton_clicked(bool checked)
 		Neta *at = ffa->neta();
 		if (m->createPatterns())
 		{
-			Messenger::print("Testing atom type '%s' (id = %i) from forcefield '%s' on current selection:\n", ffa->name(), ffa->typeId(), ff->name());
+			Messenger::print("Testing atom type '%s' (id = %i) from forcefield '%s' on current selection:", ffa->name(), ffa->typeId(), ff->name());
 			// Prepare for typing
 			m->describeAtoms();
 			int matchscore;
@@ -381,9 +381,9 @@ void ForcefieldsWidget::on_ManualTypeTestButton_clicked(bool checked)
 				if (ri->item->element() == at->characterElement())
 				{
 					matchscore = at->matchAtom(ri->item, p->ringList(), m);
-					Messenger::print("Atom %i (%s) matched type with score %i.\n", ri->item->id()+1, Elements().symbol(ri->item), matchscore);
+					Messenger::print("Atom %i (%s) matched type with score %i.", ri->item->id()+1, Elements().symbol(ri->item), matchscore);
 				}
-				else Messenger::print("Atom %i (%s) is the wrong element for this type.\n", ri->item->id()+1, Elements().symbol(ri->item));
+				else Messenger::print("Atom %i (%s) is the wrong element for this type.", ri->item->id()+1, Elements().symbol(ri->item));
 			}
 		}
 	}
@@ -396,7 +396,7 @@ void ForcefieldsWidget::on_ManualTypeEdit_returnPressed()
 	int el = Elements().find(qPrintable(ui.ManualTypeEdit->text()), ElementMap::AlphaZMap);
 	if (el == -1)
 	{
-		Messenger::print("Unknown element '%s'\n",qPrintable(ui.ManualTypeEdit->text()));
+		Messenger::print("Unknown element '%s'",qPrintable(ui.ManualTypeEdit->text()));
 		ui.ManualTypeEdit->setText("H");
 		typelistElement_ = 1;
 	}

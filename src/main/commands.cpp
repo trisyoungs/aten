@@ -62,14 +62,14 @@ const char* Aten::commandSyntax(Commands::Function func)
 // Execute command
 bool Aten::callCommand(Commands::Function cf, CommandNode* node, ReturnValue& rv)
 {
-	Messenger::print(Messenger::Commands, "Calling command '%s' (node is %p)...\n", commandKeyword(cf), node);
+	Messenger::print(Messenger::Commands, "Calling command '%s' (node is %p)...", commandKeyword(cf), node);
 	return commands_.call(cf, node, current_, rv);
 }
 
 // Execute specified command with specified bundle
 bool Aten::callCommand(Commands::Function cf, TreeNode* node, ReturnValue& rv, Bundle& bundle)
 {
-	Messenger::print(Messenger::Commands, "Calling command '%s' (treenode is %p) with custom bundle...\n", commandKeyword(cf), node);
+	Messenger::print(Messenger::Commands, "Calling command '%s' (treenode is %p) with custom bundle...", commandKeyword(cf), node);
 	CommandNode cmdNode(node);
 	return commands_.call(cf, &cmdNode, bundle, rv);
 }

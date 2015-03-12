@@ -78,7 +78,7 @@ void AtomEvent::undo(Model* m)
 	{
 		// We delete the atom at the position referenced by the ID in the atom
 		id = atomData_.id();
-		Messenger::print(Messenger::Verbose, "Reversing atom creation - atom id = %i\n", id);
+		Messenger::print(Messenger::Verbose, "Reversing atom creation - atom id = %i", id);
 		m->deleteAtom(modelatoms[id]);
 	}
 	else
@@ -86,7 +86,7 @@ void AtomEvent::undo(Model* m)
 		Atom* i;
 		// Insert a new atom at the position before the stored atom id
 		id = atomData_.id();
-		Messenger::print(Messenger::Verbose, "Replaying atom creation - atom id = %i\n", id);
+		Messenger::print(Messenger::Verbose, "Replaying atom creation - atom id = %i", id);
 		if (id == 0) i = m->addCopy(NULL, &atomData_);
 		else i = m->addCopy(modelatoms[id-1], &atomData_);
 	}
@@ -135,13 +135,13 @@ void BondEvent::undo(Model* m)
 	if (direction_ == UndoEvent::Undo)
 	{
 		// Delete bond between stored atom ids
-		Messenger::print(Messenger::Verbose, "Reversing bond creation - atom ids = %i %i\n", targetId1_, targetId2_);
+		Messenger::print(Messenger::Verbose, "Reversing bond creation - atom ids = %i %i", targetId1_, targetId2_);
 		m->unbondAtoms(i,j);
 	}
 	else
 	{
 		// Add bond between stored atom ids
-		Messenger::print(Messenger::Verbose, "Reversing bond deletion - atom ids = %i %i\n", targetId1_, targetId2_);
+		Messenger::print(Messenger::Verbose, "Reversing bond deletion - atom ids = %i %i", targetId1_, targetId2_);
 		m->bondAtoms(i,j,bondType_);
 	}
 	Messenger::exit("BondEvent::undo");
@@ -190,12 +190,12 @@ void BondTypeEvent::undo(Model* m)
 	Bond *b = i->findBond(j);
 	if (direction_ == UndoEvent::Undo)
 	{
-		Messenger::print(Messenger::Verbose, "Reversing bond order change - atoms %i-%i, old = %i, new = %i\n", targetId1_, targetId2_, newBondType_, oldBondType_);
+		Messenger::print(Messenger::Verbose, "Reversing bond order change - atoms %i-%i, old = %i, new = %i", targetId1_, targetId2_, newBondType_, oldBondType_);
 		m->changeBond(b, oldBondType_);
 	}
 	else
 	{
-		Messenger::print(Messenger::Verbose, "Replaying bond order change - atoms %i-%i, old = %i, new = %i\n", targetId1_, targetId2_, oldBondType_, newBondType_);
+		Messenger::print(Messenger::Verbose, "Replaying bond order change - atoms %i-%i, old = %i, new = %i", targetId1_, targetId2_, oldBondType_, newBondType_);
 		m->changeBond(b, newBondType_);
 	}
 	Messenger::exit("BondTypeEvent::undo");
@@ -240,13 +240,13 @@ void CellEvent::undo(Model* m)
 	// Cell change - from newLengths/Angles to oldLengths/Angles (UndoEvent::Undo) or vice versa (UndoEvent::Redo)
 	if (direction_ == UndoEvent::Undo)
 	{
-		Messenger::print(Messenger::Verbose, "Reversing cell change\n");
+		Messenger::print(Messenger::Verbose, "Reversing cell change");
 		if (!oldHasCell_) m->removeCell();
 		else m->setCell(oldAxes_);
 	}
 	else
 	{
-		Messenger::print(Messenger::Verbose, "Replaying cell change\n");
+		Messenger::print(Messenger::Verbose, "Replaying cell change");
 		if (!newHasCell_) m->removeCell();
 		else m->setCell(newAxes_);
 	}
@@ -293,12 +293,12 @@ void ChargeEvent::undo(Model* m)
 	i = modelatoms[targetId_];
 	if (direction_ == UndoEvent::Undo)
 	{
-		Messenger::print(Messenger::Verbose, "Reversing atom charge change - atom %i, from %i to %i\n", targetId_, newCharge_, oldCharge_);
+		Messenger::print(Messenger::Verbose, "Reversing atom charge change - atom %i, from %i to %i", targetId_, newCharge_, oldCharge_);
 		i->setCharge(oldCharge_);
 	}
 	else
 	{
-		Messenger::print(Messenger::Verbose, "Replaying atom charge change - atom %i, from %i to %i\n", targetId_, oldCharge_, newCharge_);
+		Messenger::print(Messenger::Verbose, "Replaying atom charge change - atom %i, from %i to %i", targetId_, oldCharge_, newCharge_);
 		i->setCharge(newCharge_);
 	}
 	Messenger::exit("ChargeEvent::undo");
@@ -392,12 +392,12 @@ void ColourEvent::undo(Model* m)
 	i = modelatoms[targetId_];
 	if (direction_ == UndoEvent::Undo)
 	{
-		Messenger::print(Messenger::Verbose, "Reversing atom colour - atom id = %i\n", targetId_);
+		Messenger::print(Messenger::Verbose, "Reversing atom colour - atom id = %i", targetId_);
 		m->atomSetColour(i, oldColour_[0], oldColour_[1], oldColour_[2], oldColour_[3]);
 	}
 	else
 	{
-		Messenger::print(Messenger::Verbose, "Replaying atom colour - atom id = %i\n", targetId_);
+		Messenger::print(Messenger::Verbose, "Replaying atom colour - atom id = %i", targetId_);
 		m->atomSetColour(i, newColour_[0], newColour_[1], newColour_[2], newColour_[3]);
 	}
 	Messenger::exit("ColourEvent::undo");
@@ -442,12 +442,12 @@ void FixFreeEvent::undo(Model* m)
 	i = modelatoms[targetId_];
 	if (direction_ == UndoEvent::Undo)
 	{
-		Messenger::print(Messenger::Verbose, "Reversing atom fix - atom id = %i\n", targetId_);
+		Messenger::print(Messenger::Verbose, "Reversing atom fix - atom id = %i", targetId_);
 		m->atomSetFixed(i, FALSE);
 	}
 	else
 	{
-		Messenger::print(Messenger::Verbose, "Replaying atom fix - atom id = %i\n", targetId_);
+		Messenger::print(Messenger::Verbose, "Replaying atom fix - atom id = %i", targetId_);
 		m->atomSetFixed(i, TRUE);
 	}
 	Messenger::exit("FixFreeEvent::undo");
@@ -492,12 +492,12 @@ void HideEvent::undo(Model* m)
 	i = modelatoms[targetId_];
 	if (direction_ == UndoEvent::Undo)
 	{
-		Messenger::print(Messenger::Verbose, "Reversing atom hide - atom id = %i\n", targetId_);
+		Messenger::print(Messenger::Verbose, "Reversing atom hide - atom id = %i", targetId_);
 		m->atomSetHidden(i, FALSE);
 	}
 	else
 	{
-		Messenger::print(Messenger::Verbose, "Replaying atom hide - atom id = %i\n", targetId_);
+		Messenger::print(Messenger::Verbose, "Replaying atom hide - atom id = %i", targetId_);
 		m->atomSetHidden(i, TRUE);
 	}
 	Messenger::exit("HideEvent::undo");
@@ -540,12 +540,12 @@ void IdShiftEvent::undo(Model* m)
 	// Atom list position change - -data[1] (UndoEvent::Undo) or +data[1] places in list (UndoEvent::Redo)
 	if (direction_ == UndoEvent::Undo)
 	{
-		Messenger::print(Messenger::Verbose, "Reversing atom shift - atom %i moves %i places\n", targetId_+delta_, -delta_);
+		Messenger::print(Messenger::Verbose, "Reversing atom shift - atom %i moves %i places", targetId_+delta_, -delta_);
 		m->moveAtom(targetId_+delta_, -delta_);
 	}
 	else
 	{
-		Messenger::print(Messenger::Verbose, "Performing atom shift - atom %i moves %i places\n", targetId_, delta_);
+		Messenger::print(Messenger::Verbose, "Performing atom shift - atom %i moves %i places", targetId_, delta_);
 		m->moveAtom(targetId_, delta_);
 	}
 	Messenger::exit("IdShiftEvent::undo");
@@ -586,7 +586,7 @@ void IdSwapEvent::undo(Model* m)
 {
 	Messenger::enter("IdSwapEvent::undo");
 	// Atom swap change - same regardless of direction
-	Messenger::print(Messenger::Verbose, "Applying atom swap - atoms %i and %i\n", firstId_, secondId_);
+	Messenger::print(Messenger::Verbose, "Applying atom swap - atoms %i and %i", firstId_, secondId_);
 
 	m->swapAtoms(firstId_, secondId_);
 
@@ -632,12 +632,12 @@ void LabelEvent::undo(Model* m)
 	i = modelatoms[targetId_];
 	if (direction_ == UndoEvent::Undo)
 	{
-		Messenger::print(Messenger::Verbose, "Reversing atom label change - atom %i, from %i to %i\n", targetId_, newLabels_, oldLabels_);
+		Messenger::print(Messenger::Verbose, "Reversing atom label change - atom %i, from %i to %i", targetId_, newLabels_, oldLabels_);
 		i->setLabels(oldLabels_);
 	}
 	else
 	{
-		Messenger::print(Messenger::Verbose, "Replaying atom label change - atom %i, from %i to %i\n", targetId_, oldLabels_, newLabels_);
+		Messenger::print(Messenger::Verbose, "Replaying atom label change - atom %i, from %i to %i", targetId_, oldLabels_, newLabels_);
 		i->setLabels(newLabels_);
 	}
 	Messenger::exit("LabelEvent::undo");
@@ -690,7 +690,7 @@ void MeasurementEvent::undo(Model* m)
 	l = modelatoms[targetId_[3]];
 	if (direction_ == UndoEvent::Undo)
 	{
-		Messenger::print(Messenger::Verbose, "Reversing measurement - type = %i\n", type_);
+		Messenger::print(Messenger::Verbose, "Reversing measurement - type = %i", type_);
 		if (type_ == Measurement::DistanceMeasurement) me = m->findDistanceMeasurement(i, j);
 		if (type_ == Measurement::AngleMeasurement) me = m->findAngleMeasurement(i, j, k);
 		if (type_ == Measurement::TorsionMeasurement) me = m->findTorsionMeasurement(i, j, k, l);
@@ -699,7 +699,7 @@ void MeasurementEvent::undo(Model* m)
 	}
 	else
 	{
-		Messenger::print(Messenger::Verbose, "Replaying measurement - type = %i\n", type_);
+		Messenger::print(Messenger::Verbose, "Replaying measurement - type = %i", type_);
 		m->addMeasurement(type_, i, j, k, l);
 	}
 	Messenger::exit("MeasurementEvent::undo");
@@ -742,11 +742,11 @@ void ModelRenameEvent::undo(Model* m)
 	// Model Rename, to oldName_ (UndoEvent::Undo) or newName_ (UndoEvent::Redo)
 	if (direction_ == UndoEvent::Undo)
 	{
-		Messenger::print(Messenger::Verbose, "Reversing model rename - to %i\n", oldName_.get());
+		Messenger::print(Messenger::Verbose, "Reversing model rename - to %i", oldName_.get());
 	}
 	else
 	{
-		Messenger::print(Messenger::Verbose, "Replaying model rename - to %i\n", newName_.get());
+		Messenger::print(Messenger::Verbose, "Replaying model rename - to %i", newName_.get());
 	}
 	Messenger::exit("ModelRenameEvent::undo");
 }
@@ -790,12 +790,12 @@ void SelectEvent::undo(Model* m)
 	i = modelatoms[targetId_];
 	if (direction_ == UndoEvent::Undo)
 	{
-		Messenger::print(Messenger::Verbose, "Reversing atom selection - atom id = %i\n", targetId_);
+		Messenger::print(Messenger::Verbose, "Reversing atom selection - atom id = %i", targetId_);
 		m->deselectAtom(i);
 	}
 	else
 	{
-		Messenger::print(Messenger::Verbose, "Replaying atom selection - atom id = %i\n", targetId_);
+		Messenger::print(Messenger::Verbose, "Replaying atom selection - atom id = %i", targetId_);
 		m->selectAtom(i);
 	}
 	Messenger::exit("SelectEvent::undo");
@@ -840,12 +840,12 @@ void TranslateEvent::undo(Model* m)
 	i = modelatoms[targetId_];
 	if (direction_ == UndoEvent::Undo)
 	{
-		Messenger::print(Messenger::Verbose, "Reversing atom translation - atom %i, subtracting %f %f %f\n", targetId_, delta_.x, delta_.y, delta_.z);
+		Messenger::print(Messenger::Verbose, "Reversing atom translation - atom %i, subtracting %f %f %f", targetId_, delta_.x, delta_.y, delta_.z);
 		i->r() -= delta_;
 	}
 	else
 	{
-		Messenger::print(Messenger::Verbose, "Replaying atom translation - atom %i, adding %f %f %f\n", targetId_, delta_.x, delta_.y, delta_.z);
+		Messenger::print(Messenger::Verbose, "Replaying atom translation - atom %i, adding %f %f %f", targetId_, delta_.x, delta_.y, delta_.z);
 		i->r() += delta_;
 	}
 	Messenger::exit("TranslateEvent::undo");
@@ -891,12 +891,12 @@ void StyleEvent::undo(Model* m)
 	i = modelatoms[targetId_];
 	if (direction_ == UndoEvent::Undo)
 	{
-		Messenger::print(Messenger::Verbose, "Reversing atom style change - atom %i, old = %i, new = %i\n", targetId_, newStyle_, oldStyle_);
+		Messenger::print(Messenger::Verbose, "Reversing atom style change - atom %i, old = %i, new = %i", targetId_, newStyle_, oldStyle_);
 		m->atomSetStyle(i, oldStyle_);
 	}
 	else
 	{
-		Messenger::print(Messenger::Verbose, "Replaying atom style change - atom %i, old = %i, new = %i\n", targetId_, oldStyle_, newStyle_);
+		Messenger::print(Messenger::Verbose, "Replaying atom style change - atom %i, old = %i, new = %i", targetId_, oldStyle_, newStyle_);
 		m->atomSetStyle(i, newStyle_);
 	}
 	Messenger::exit("StyleEvent::undo");
@@ -942,12 +942,12 @@ void TransmuteEvent::undo(Model* m)
 	i = modelatoms[targetId_];
 	if (direction_ == UndoEvent::Undo)
 	{
-		Messenger::print(Messenger::Verbose, "Reversing atom transmute - atom %i, old = %i, new = %i\n", targetId_, newEl_, oldEl_);
+		Messenger::print(Messenger::Verbose, "Reversing atom transmute - atom %i, old = %i, new = %i", targetId_, newEl_, oldEl_);
 		m->transmuteAtom(i, oldEl_);
 	}
 	else
 	{
-		Messenger::print(Messenger::Verbose, "Replaying atom transmute - atom %i, old = %i, new = %i\n", targetId_, oldEl_, newEl_);
+		Messenger::print(Messenger::Verbose, "Replaying atom transmute - atom %i, old = %i, new = %i", targetId_, oldEl_, newEl_);
 		m->transmuteAtom(i, newEl_);
 	}
 	Messenger::exit("TransmuteEvent::undo");
