@@ -229,7 +229,7 @@ int Atom::nHydrogens()
 // Check the ff type of the atom against the supplied value
 bool Atom::typeIs(ForcefieldAtom* type) const
 {
-	return (type == type ? TRUE : FALSE);
+	return (type == type_);
 }
 
 // Set the environment of the atom
