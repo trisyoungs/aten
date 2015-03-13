@@ -27,14 +27,14 @@
 // Forward Declarations (Qt)
 class AtenWindow;
 
-class TrajectoryWidget : public QDockWidget
+class TrajectoryWidget : public QWidget
 {
 	// All Qt declarations must include this macro
 	Q_OBJECT
 
 	public:
 	// Constructor
-	TrajectoryWidget(AtenWindow& parent1, Qt::WindowFlags flags = 0);
+	TrajectoryWidget(AtenWindow& parent, Qt::WindowFlags flags = 0);
 	// Main form declaration
 	Ui::TrajectoryWidget ui;
 

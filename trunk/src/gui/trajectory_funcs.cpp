@@ -25,7 +25,7 @@
 #include "main/aten.h"
 
 // Constructor
-TrajectoryWidget::TrajectoryWidget(AtenWindow& parent, Qt::WindowFlags flags) : QDockWidget(&parent, flags), parent_(parent)
+TrajectoryWidget::TrajectoryWidget(AtenWindow& parent, Qt::WindowFlags flags) : QWidget(&parent, flags), parent_(parent)
 {
 	ui.setupUi(this);
 	
@@ -169,8 +169,8 @@ void TrajectoryWidget::timerEvent(QTimerEvent *event)
 void TrajectoryWidget::widgetLocationChanged(Qt::DockWidgetArea area)
 {
 	// If in the top or bottom dock areas, set the layout to be horizontal, otherwise make it vertical
-	if (isFloating() || (area == Qt::LeftDockWidgetArea) || (area == Qt::RightDockWidgetArea)) ui.VerticalLayout->addWidget(ui.FrameSelectWidget, 0);
-	else ui.HorizontalLayout->addWidget(ui.FrameSelectWidget, 10);
+// 	if (isFloating() || (area == Qt::LeftDockWidgetArea) || (area == Qt::RightDockWidgetArea)) ui.VerticalLayout->addWidget(ui.FrameSelectWidget, 0);
+// 	else ui.HorizontalLayout->addWidget(ui.FrameSelectWidget, 10);
 }
 
 // Window closed
