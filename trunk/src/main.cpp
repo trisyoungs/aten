@@ -23,6 +23,7 @@
 #include "main/version.h"
 #include "gui/mainwindow.h"
 #include <QtGui/QApplication>
+#include <time.h>
 
 ATEN_USING_NAMESPACE
 

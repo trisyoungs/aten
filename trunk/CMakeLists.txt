@@ -25,6 +25,7 @@ set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}")
 find_package(Qt4 REQUIRED)
 find_package(READLINE REQUIRED)
 include(FindBISON)
+find_package(BISON REQUIRED)
 
 # Perform system-specific setup
 # -- Windows

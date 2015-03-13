@@ -1,4 +1,7 @@
+BISON_TARGET(TextPrimitiveParser textprimitive_grammar.yy ${CMAKE_CURRENT_BINARY_DIR}/textprimitive_grammar.cc)
+
 add_library(render
+  ${BISON_TextPrimitiveParser_OUTPUTS}
   fontinstance.h
   glextensions.h
   gridprimitive.h
@@ -9,7 +12,6 @@ add_library(render
   rendergroup.h
   textformat.h
   textfragment.h
-  textprimitive_grammar.hh
   textprimitive.h
   textprimitivelist.h
   fontinstance.cpp
@@ -26,7 +28,6 @@ add_library(render
   textformat.cpp
   textfragment.cpp
   textprimitive.cpp
-  textprimitive_grammar.cc
   textprimitivelist.cpp
 )
 
