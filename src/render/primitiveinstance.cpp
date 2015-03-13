@@ -21,7 +21,9 @@
 
 // Need to include <QtCore/QString>, <GL/glx.h>, and then "render/glextensions.h" in that order, to prevent hideous errors.
 #include <QtCore/QString>
+#ifndef _WIN32
 #include <GL/glx.h>
+#endif
 #include "render/glextensions.h"
 #include "render/primitiveinstance.h"
 

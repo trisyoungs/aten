@@ -1,4 +1,7 @@
+BISON_TARGET(CommandParser grammar.yy ${CMAKE_CURRENT_BINARY_DIR}/grammar.cc)
+
 add_library(parser
+${BISON_CommandParser_OUTPUTS}
 accessor.h
 aten.h
 atom.h
@@ -20,7 +23,6 @@ forcefieldatom.h
 forcefieldbound.h
 forcefield.h
 format.h
-grammar.hh
 glyph.h
 glyphdata.h
 grid.h
@@ -75,7 +77,6 @@ forcefield.cpp
 format.cpp
 glyph.cpp
 glyphdata.cpp
-grammar.cc
 grid.cpp
 integer.cpp
 matrix.cpp

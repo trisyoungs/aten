@@ -1,4 +1,7 @@
+BISON_TARGET(NetaParser neta_grammar.yy ${CMAKE_CURRENT_BINARY_DIR}/neta_grammar.cc)
+
 add_library(base
+${BISON_NetaParser_OUTPUTS}
 atomaddress.cpp
 atom.cpp
 atom_geometry.cpp
@@ -22,7 +25,6 @@ log.cpp
 measurement.cpp
 messenger.cpp
 neta.cpp
-neta_grammar.cc
 neta_lexer.cpp
 neta_parser.cpp
 pattern.cpp
@@ -54,7 +56,6 @@ kvmap.h
 lineparser.h
 log.h
 neta.h
-neta_grammar.hh
 neta_parser.h
 measurement.h
 messenger.h
