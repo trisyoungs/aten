@@ -62,6 +62,26 @@
 #include "gui/transform.h"
 #include "gui/vibrations.h"
 
+void AtenWindow::on_TestToolButton_customContextMenuRequested(const QPoint& point)
+{
+	static TrajectoryWidget twid(*this, Qt::FramelessWindowHint | Qt::Popup);
+	twid.show();
+	printf("lksjdlkjkl\n");
+}
+
+void AtenWindow::on_TestToolButton_clicked(bool checked)
+{
+	static TrajectoryWidget twid(*this, Qt::FramelessWindowHint | Qt::Popup);
+	twid.show();
+	printf("Cursor = %i %i\n", QCursor::pos().x(), QCursor::pos().y());
+	printf("Tool = %i %i\n", mapToParent(ui.TestToolButton->pos()).x(), mapToParent(ui.TestToolButton->pos()).y());
+	QPoint newPos = mapToGlobal(ui.TestToolButton->pos());
+	printf("New = %i %i\n", newPos.x(), newPos.y());
+	twid.move(newPos);
+	printf("clicked.\n");
+}
+
+
 // Constructor
 AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 {
@@ -115,7 +135,7 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 	trajectoryWidget = new TrajectoryWidget(*this, Qt::Tool);
 	transformWidget = new TransformWidget(*this, Qt::Tool);
 	vibrationsWidget = new VibrationsWidget(*this, Qt::Tool);
-	dockWidgets_ << atomListWidget << buildWidget << cellDefinitionWidget << cellTransformWidget << commandWidget << fragmentsWidget << geometryWidget << glyphsWidget << gridsWidget << messagesWidget << modelListWidget << poresWidget << positionWidget << scriptMovieWidget << selectWidget << trajectoryWidget << transformWidget << vibrationsWidget;
+	dockWidgets_ << atomListWidget << buildWidget << cellDefinitionWidget << cellTransformWidget << commandWidget << fragmentsWidget << geometryWidget << glyphsWidget << gridsWidget << messagesWidget << modelListWidget << poresWidget << positionWidget << scriptMovieWidget << selectWidget << transformWidget << vibrationsWidget;
 
 	// Set up misc things for Qt (QActionGroups etc.) that we couldn't do in Designer
 	finaliseUi();

@@ -365,6 +365,14 @@ class AtenWindow : public QMainWindow
 
 
 	/*
+	 * NEW TOOLBAR TEST
+	 */
+	private slots:
+	void on_TestToolButton_customContextMenuRequested(const QPoint& point);
+	void on_TestToolButton_clicked(bool checked);
+
+
+	/*
 	 * Local Widgets and Routines
 	 */
 	private:

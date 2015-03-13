@@ -2121,7 +2121,7 @@ yyreduce:
     {
 		(yyval.node) = cmdparser.addFunction( (Commands::Function) (yyvsp[(1) - (3)].functionId));
 		if ((yyval.node) == NULL) YYABORT;
-		Messenger::print(Messenger::Parse, "PARSER : function : function '%i'", Commands::command((Commands::Function) (yyvsp[(1) - (3)].functionId)));
+		Messenger::print(Messenger::Parse, "PARSER : function : function '%i'\n", Commands::command((Commands::Function) (yyvsp[(1) - (3)].functionId)));
 		}
     break;
 
@@ -2131,7 +2131,7 @@ yyreduce:
     {
 		(yyval.node) = cmdparser.addFunctionWithArglist( (Commands::Function) (yyvsp[(1) - (4)].functionId),(yyvsp[(3) - (4)].node));
 		if ((yyval.node) == NULL) YYABORT;
-		Messenger::print(Messenger::Parse, "PARSER : function : function '%i' with exprlist", Commands::command((Commands::Function) (yyvsp[(1) - (4)].functionId)));
+		Messenger::print(Messenger::Parse, "PARSER : function : function '%i' with exprlist\n", Commands::command((Commands::Function) (yyvsp[(1) - (4)].functionId)));
 		}
     break;
 
@@ -2150,7 +2150,7 @@ yyreduce:
     {
 		(yyval.node) = cmdparser.addUserFunction((yyvsp[(1) - (3)].tree));
 		if ((yyval.node) == NULL) YYABORT;
-		Messenger::print(Messenger::Parse,"PARSER : userfunction : function '%s'", (yyvsp[(1) - (3)].tree)->name());
+		Messenger::print(Messenger::Parse,"PARSER : userfunction : function '%s'\n", (yyvsp[(1) - (3)].tree)->name());
 		}
     break;
 
@@ -2160,7 +2160,7 @@ yyreduce:
     {
 		(yyval.node) = cmdparser.addUserFunction((yyvsp[(1) - (4)].tree),(yyvsp[(3) - (4)].node));
 		if ((yyval.node) == NULL) YYABORT;
-		Messenger::print(Messenger::Parse,"PARSER : userfunction : function '%s' with expressionlist", (yyvsp[(1) - (4)].tree)->name());
+		Messenger::print(Messenger::Parse,"PARSER : userfunction : function '%s' with expressionlist\n", (yyvsp[(1) - (4)].tree)->name());
 		}
     break;
 
@@ -2389,7 +2389,7 @@ yyreduce:
   case 65:
 /* Line 1792 of yacc.c  */
 #line 263 "grammar.yy"
-    { Messenger::print("Error: '%s' has not been declared as a function or a variable.", yylval.name->get()); YYABORT; }
+    { Messenger::print("Error: '%s' has not been declared as a function or a variable.\n", yylval.name->get()); YYABORT; }
     break;
 
   case 66:
@@ -2423,8 +2423,8 @@ yyreduce:
 #line 287 "grammar.yy"
     {
 		tokenName = yylval.variable->name();
-		Messenger::print(Messenger::Parse,"PARSER : variablename : existing var '%s'", tokenName.get());
-		Messenger::print("Warning - declaration of variable '%s' in %s hides a previous declaration.", tokenName.get(), cmdparser.sourceInfo());
+		Messenger::print(Messenger::Parse,"PARSER : variablename : existing var '%s'\n", tokenName.get());
+		Messenger::print("Warning - declaration of variable '%s' in %s hides a previous declaration.\n", tokenName.get(), cmdparser.sourceInfo());
 		(yyval.name) = &tokenName;
 		}
     break;
@@ -2434,7 +2434,7 @@ yyreduce:
 #line 293 "grammar.yy"
     {
 		tokenName = Commands::command((Commands::Function) yylval.functionId);
-		Messenger::print(Messenger::Parse,"PARSER : variablename : existing built-in function '%s'", tokenName.get());
+		Messenger::print(Messenger::Parse,"PARSER : variablename : existing built-in function '%s'\n", tokenName.get());
 		(yyval.name) = &tokenName;
 		}
     break;
@@ -2444,8 +2444,8 @@ yyreduce:
 #line 298 "grammar.yy"
     {
 		tokenName = yylval.variable->name();
-		Messenger::print(Messenger::Parse,"PARSER : variablename : existing var '%s' in same scope", tokenName.get());
-		Messenger::print("Error: Declaration of variable '%s' in %s conflicts with a previous declaration.", tokenName.get(), cmdparser.sourceInfo());
+		Messenger::print(Messenger::Parse,"PARSER : variablename : existing var '%s' in same scope\n", tokenName.get());
+		Messenger::print("Error: Declaration of variable '%s' in %s conflicts with a previous declaration.\n", tokenName.get(), cmdparser.sourceInfo());
 		YYABORT;
 		}
     break;
@@ -2455,7 +2455,7 @@ yyreduce:
 #line 304 "grammar.yy"
     {
 		tokenName = yylval.variable->name();
-		Messenger::print(Messenger::Parse,"PARSER : variablename : constant '%s'", tokenName.get());
+		Messenger::print(Messenger::Parse,"PARSER : variablename : constant '%s'\n", tokenName.get());
 		Messenger::print("Error: Constant value found in declaration.\n");
 		YYABORT;
 		}
@@ -2466,8 +2466,8 @@ yyreduce:
 #line 310 "grammar.yy"
     {
 		tokenName = yylval.tree->name();
-		Messenger::print(Messenger::Parse,"PARSER : variablename : existing user function '%s'", tokenName.get());
-		Messenger::print("Error: Existing user-defined function '%s' in %s cannot be redeclared.", tokenName.get(), cmdparser.sourceInfo());
+		Messenger::print(Messenger::Parse,"PARSER : variablename : existing user function '%s'\n", tokenName.get());
+		Messenger::print("Error: Existing user-defined function '%s' in %s cannot be redeclared.\n", tokenName.get(), cmdparser.sourceInfo());
 		YYABORT;
 		}
     break;
@@ -2476,7 +2476,7 @@ yyreduce:
 /* Line 1792 of yacc.c  */
 #line 316 "grammar.yy"
     {
-		Messenger::print(Messenger::Parse,"PARSER : variablename : variable type-name '%s'", VTypes::dataType(yylval.vtype));
+		Messenger::print(Messenger::Parse,"PARSER : variablename : variable type-name '%s'\n", VTypes::dataType(yylval.vtype));
 		Messenger::print("Error: Type-name used in variable declaration.\n");
 		YYABORT;
 		}
@@ -2486,8 +2486,8 @@ yyreduce:
 /* Line 1792 of yacc.c  */
 #line 321 "grammar.yy"
     {
-		Messenger::print(Messenger::Parse,"PARSER : variablename : new token '%s'", tokenName.get());
-		if (declaredType == VTypes::NoData) { Messenger::print("Token '%s' is undeclared.", tokenName.get()); YYABORT; }
+		Messenger::print(Messenger::Parse,"PARSER : variablename : new token '%s'\n", tokenName.get());
+		if (declaredType == VTypes::NoData) { Messenger::print("Token '%s' is undeclared.\n", tokenName.get()); YYABORT; }
 		(yyval.name) = (yyvsp[(1) - (2)].name);
 		}
     break;
@@ -2496,7 +2496,7 @@ yyreduce:
 /* Line 1792 of yacc.c  */
 #line 330 "grammar.yy"
     {
-		Messenger::print(Messenger::Parse,"PARSER : assignedvariablename : var '%s' with array assignment", tokenName.get());
+		Messenger::print(Messenger::Parse,"PARSER : assignedvariablename : var '%s' with array assignment\n", tokenName.get());
 		(yyval.node) = cmdparser.addVariable(declaredType, &tokenName, (yyvsp[(3) - (3)].node), globalDeclarations);
 		}
     break;
@@ -2505,7 +2505,7 @@ yyreduce:
 /* Line 1792 of yacc.c  */
 #line 334 "grammar.yy"
     {
-		Messenger::print(Messenger::Parse,"PARSER : assignedvariablename : array var '%s' with expr assignment", tokenName.get());
+		Messenger::print(Messenger::Parse,"PARSER : assignedvariablename : array var '%s' with expr assignment\n", tokenName.get());
 		(yyval.node) = cmdparser.addArrayVariable(declaredType, &tokenName, (yyvsp[(3) - (6)].node), (yyvsp[(6) - (6)].node), globalDeclarations);
 		}
     break;
@@ -2514,7 +2514,7 @@ yyreduce:
 /* Line 1792 of yacc.c  */
 #line 338 "grammar.yy"
     {
-		Messenger::print(Messenger::Parse,"PARSER : assignedvariablename : array var '%s' with array assignment", tokenName.get());
+		Messenger::print(Messenger::Parse,"PARSER : assignedvariablename : array var '%s' with array assignment\n", tokenName.get());
 		(yyval.node) = cmdparser.addArrayVariable(declaredType, &tokenName, (yyvsp[(3) - (6)].node), (yyvsp[(6) - (6)].node), globalDeclarations);
 		}
     break;
@@ -2523,7 +2523,7 @@ yyreduce:
 /* Line 1792 of yacc.c  */
 #line 342 "grammar.yy"
     {
-		Messenger::print(Messenger::Parse,"PARSER : assignedvariablename : var '%s' with expr assignment", tokenName.get());
+		Messenger::print(Messenger::Parse,"PARSER : assignedvariablename : var '%s' with expr assignment\n", tokenName.get());
 		(yyval.node) = cmdparser.addVariable(declaredType, &tokenName, (yyvsp[(3) - (3)].node), globalDeclarations);
 		}
     break;
@@ -2532,7 +2532,7 @@ yyreduce:
 /* Line 1792 of yacc.c  */
 #line 350 "grammar.yy"
     {
-		Messenger::print(Messenger::Parse,"PARSER : assignedvariablename : var '%s'", tokenName.get());
+		Messenger::print(Messenger::Parse,"PARSER : assignedvariablename : var '%s'\n", tokenName.get());
 		(yyval.node) = cmdparser.addVariable(declaredType, &tokenName, NULL, globalDeclarations);
 		}
     break;
@@ -2541,7 +2541,7 @@ yyreduce:
 /* Line 1792 of yacc.c  */
 #line 354 "grammar.yy"
     {
-		Messenger::print(Messenger::Parse,"PARSER : assignedvariablename : array var '%s'", tokenName.get());
+		Messenger::print(Messenger::Parse,"PARSER : assignedvariablename : array var '%s'\n", tokenName.get());
 		(yyval.node) = cmdparser.addArrayVariable(declaredType, &tokenName, (yyvsp[(3) - (4)].node), NULL, globalDeclarations);
 		}
     break;
@@ -2583,7 +2583,7 @@ yyreduce:
 /* Line 1792 of yacc.c  */
 #line 379 "grammar.yy"
     {
-		Messenger::print(Messenger::Parse,"PARSER : typedvariablelistitem : var '%s'", tokenName.get());
+		Messenger::print(Messenger::Parse,"PARSER : typedvariablelistitem : var '%s'\n", tokenName.get());
 		(yyval.node) = cmdparser.addVariable(declaredType, &tokenName);
 		}
     break;
@@ -2592,7 +2592,7 @@ yyreduce:
 /* Line 1792 of yacc.c  */
 #line 383 "grammar.yy"
     {
-		Messenger::print(Messenger::Parse,"PARSER : typedvariablelistitem : var '%s' with expr assignment", tokenName.get());
+		Messenger::print(Messenger::Parse,"PARSER : typedvariablelistitem : var '%s' with expr assignment\n", tokenName.get());
 		(yyval.node) = cmdparser.addVariable(declaredType, &tokenName, (yyvsp[(5) - (5)].node));
 		}
     break;
@@ -2646,7 +2646,7 @@ yyreduce:
 /* Line 1792 of yacc.c  */
 #line 415 "grammar.yy"
     {
-		Messenger::print("Illegal use of reserved word '%s'.", VTypes::dataType(declaredType));
+		Messenger::print("Illegal use of reserved word '%s'.\n", VTypes::dataType(declaredType));
 		YYABORT;
 		}
     break;
@@ -2685,7 +2685,7 @@ yyreduce:
 /* Line 1792 of yacc.c  */
 #line 441 "grammar.yy"
     {
-		Messenger::print(Messenger::Parse,"PARSER : functiondeclaration : user-defined function (%s return value, no arguments)", VTypes::dataType((yyvsp[(4) - (7)].tree)->returnType()));
+		Messenger::print(Messenger::Parse,"PARSER : functiondeclaration : user-defined function (%s return value, no arguments)\n", VTypes::dataType((yyvsp[(4) - (7)].tree)->returnType()));
 		if (!cmdparser.addStatement((yyvsp[(7) - (7)].node))) YYABORT;
 		cmdparser.popTree();
 		declaredType = VTypes::NoData;
@@ -2696,7 +2696,7 @@ yyreduce:
 /* Line 1792 of yacc.c  */
 #line 447 "grammar.yy"
     {
-		Messenger::print(Messenger::Parse,"PARSER : functiondeclaration : user-defined function (%s return value, arguments)", VTypes::dataType((yyvsp[(4) - (7)].tree)->returnType()));
+		Messenger::print(Messenger::Parse,"PARSER : functiondeclaration : user-defined function (%s return value, arguments)\n", VTypes::dataType((yyvsp[(4) - (7)].tree)->returnType()));
 		if (!(yyvsp[(4) - (7)].tree)->addLocalFunctionArguments((yyvsp[(6) - (7)].node))) YYABORT;
 		}
     break;
@@ -3031,7 +3031,7 @@ yyreduce:
 #line 627 "grammar.yy"
     {
 		if (!cmdparser.setFilterOption(&tokenName, (yyvsp[(4) - (4)].node))) YYABORT;
-		Messenger::print(Messenger::Parse,"PARSER : filteroptions : filter option '%s'", tokenName.get());
+		Messenger::print(Messenger::Parse,"PARSER : filteroptions : filter option '%s'\n", tokenName.get());
 		}
     break;
 
@@ -3040,7 +3040,7 @@ yyreduce:
 #line 631 "grammar.yy"
     {
 		if (!cmdparser.setFilterOption(&tokenName, (yyvsp[(6) - (6)].node))) YYABORT;
-		Messenger::print(Messenger::Parse,"PARSER : filteroptions : filter option '%s'", tokenName.get());
+		Messenger::print(Messenger::Parse,"PARSER : filteroptions : filter option '%s'\n", tokenName.get());
 		}
     break;
 
@@ -3094,7 +3094,7 @@ yyreduce:
 /* Line 1792 of yacc.c  */
 #line 675 "grammar.yy"
     {
-		Messenger::print(Messenger::Parse,"PARSER : pushfunc : function/statement '%s'", yylval.name->get());
+		Messenger::print(Messenger::Parse,"PARSER : pushfunc : function/statement '%s'\n", yylval.name->get());
 		(yyval.tree) = cmdparser.pushFunction(yylval.name->get(), declaredType);
 		/*cmdparser.pushScope();*/
 		}
