@@ -74,10 +74,11 @@ void AtenWindow::on_TestToolButton_clicked(bool checked)
 	static TrajectoryWidget twid(*this, Qt::FramelessWindowHint | Qt::Popup);
 	twid.show();
 	printf("Cursor = %i %i\n", QCursor::pos().x(), QCursor::pos().y());
-	printf("Tool = %i %i\n", mapToParent(ui.TestToolButton->pos()).x(), mapToParent(ui.TestToolButton->pos()).y());
+	QPoint toolPos = ui.TestToolButton->parentWidget()->mapToGlobal(ui.TestToolButton->pos()+QPoint(0,ui.TestToolButton->height()));
+	printf("Tool = %i %i\n", toolPos.x(), toolPos.y());
 	QPoint newPos = mapToGlobal(ui.TestToolButton->pos());
-	printf("New = %i %i\n", newPos.x(), newPos.y());
-	twid.move(newPos);
+	printf("New = %i %i\n", toolPos.x(), toolPos.y());
+	twid.move(toolPos);
 	printf("clicked.\n");
 }
 

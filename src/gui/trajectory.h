@@ -78,8 +78,9 @@ class TrajectoryWidget : public QWidget
 	void on_TrajectoryFrameSpin_valueChanged(int value);
 	void widgetLocationChanged(Qt::DockWidgetArea area); 
 	protected:
-	void closeEvent(QCloseEvent *event);
-	void timerEvent(QTimerEvent *event);
+	void closeEvent(QCloseEvent* event);
+	void timerEvent(QTimerEvent* event);
+	void hideEvent(QHideEvent* event);
 };
 
 #endif
