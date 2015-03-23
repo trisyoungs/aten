@@ -22,7 +22,9 @@
 #ifndef ATEN_CALCULABLE_H
 #define ATEN_CALCULABLE_H
 
-#include "base/dnchar.h"
+#include <QtCore/QString>
+#include "templates/list.h"
+#include "base/namespace.h"
 
 ATEN_BEGIN_NAMESPACE
 
@@ -37,35 +39,36 @@ class Calculable : public ListItem<Calculable>
 	Calculable();
 	virtual ~Calculable();
 
+
 	/*
 	// Identity
 	*/
 	protected:
 	// Identifiable name of the quantity
-	Dnchar name_;
+	QString name_;
 	// Filename (of loaded file or target to be saved)
-	Dnchar filename_;
+	QString filename_;
 
 	public:
 	// Set identifiable name of the quantity
-	void setName(const char* s);
+	void setName(QString s);
 	// Return name of the quantity
-	const char* name() const;
+	QString name() const;
 	// Set filename of the quantity
-	void setFilename(const char* s);
+	void setFilename(QString s);
 	// Return filename of the quantity
-	const char* filename() const;
+	QString filename() const;
 
 	/*
 	// Methods
 	*/
 	public:
 	// Accumulate quantity data from supplied config
-	virtual void accumulate(Model*)=0;
+	virtual void accumulate(Model* sourceModel)=0;
 	// Initialise - check sites, create arrays etc.
 	virtual bool initialise()=0;
 	// Finalise data
-	virtual void finalise(Model*)=0;
+	virtual void finalise(Model* sourceModel)=0;
 	// Save data
 	virtual bool save()=0;
 };

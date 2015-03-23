@@ -55,14 +55,14 @@ class Neta : public ListItem<Neta>
 	~Neta();
 	// NETA Keywords
 	enum NetaKeyword { AliphaticKeyword, AromaticKeyword, NoRingKeyword, NonAromaticKeyword, NotPrevKeyword, NotSelfKeyword, PlanarKeyword, nNetaKeywords };
-	static NetaKeyword netaKeyword(const char* s, bool reportError = FALSE);
+	static NetaKeyword netaKeyword(QString s, bool reportError = false);
 	static const char* netaKeyword(NetaKeyword nk);
 	// NETA expanders
 	enum NetaExpander { BoundExpanded, ChainExpander, DoublyBoundExpander, GeometryExpander, PathExpander, RingExpander, nNetaExpanders };
-	static NetaExpander netaExpander(const char* s, bool reportError = FALSE);
+	static NetaExpander netaExpander(QString s, bool reportError = false);
 	// NETA values
 	enum NetaValue { BondValue, NBondsValue, NHydrogensValue, OxidationStateValue, RepeatValue, SizeValue, nNetaValues };
-	static NetaValue netaValue(const char* s, bool reportError = FALSE);
+	static NetaValue netaValue(QString s, bool reportError = false);
 	static const char* netaValue(NetaValue nv);
 	// NETA Value comparison operators
 	enum NetaValueComparison { EqualTo, NotEqualTo, GreaterThan, LessThan, GreaterThanEqualTo, LessThanEqualTo, nNetaValueComparisons };
@@ -88,9 +88,9 @@ class Neta : public ListItem<Neta>
 	// Owned node list
 	List<NetaNode> ownedNodes_;
 	// Top of NETA nodelist describing the type
-	NetaRootNode *description_;
+	NetaRootNode* description_;
 	// Reference name (if a define)
-	Dnchar name_;
+	QString name_;
 
 	public:
 	// Set parent forcefield
@@ -106,17 +106,17 @@ class Neta : public ListItem<Neta>
 	// Return character element
 	int characterElement() const;
 	// Take ownership of selected node
-	void ownNode(NetaNode *node);
+	void ownNode(NetaNode* node);
 	// Return reference name (if a define)
-	const char* name() const;
+	QString name() const;
 	// Set reference name (if a define)
-	void setName(const char* s);
+	void setName(QString name);
 	// Return top of description nodelist
-	NetaRootNode *description();
+	NetaRootNode* description();
 	// Print
 	void print() const;
 	// Print (append) NETA string to target Dnchar
-	void netaPrint(Dnchar &target) const;
+	void netaPrint(QString& neta) const;
 
 
 	/*
@@ -132,7 +132,7 @@ class Neta : public ListItem<Neta>
 
 	public:
 	// Clone nodes (and own them) beginning from the node supplied
-	NetaNode *clone(NetaNode *topnode);
+	NetaNode* clone(NetaNode* topnode);
 	// Clear all associated node data (but leave character element as-is)
 	void clear();
 	// Return current atom target
@@ -157,7 +157,7 @@ class NetaNode : public ListItem<NetaNode>
 	NetaNode();
 	virtual ~NetaNode();
 	// Linear node pointers
-	NetaNode *prevNode, *nextNode;
+	NetaNode* prevNode, *nextNode;
 	// Neta node types
 	enum NetaNodeType { BoundNode, ChainNode, ElementNode, GeometryNode, KeywordNode, LogicNode, MeasurementNode, RingNode, RootNode, ValueNode, nNetaNodeTypes };
 
@@ -169,7 +169,7 @@ class NetaNode : public ListItem<NetaNode>
 
 	private:
 	// Parent NETA structure
-	Neta *parent_;
+	Neta* parent_;
 
 	public:
 	// Return node type
@@ -179,17 +179,17 @@ class NetaNode : public ListItem<NetaNode>
 	// Set node to use reverse logic
 	void setReverseLogic();
 	// Return parent NETA structure
-	Neta *parent();
+	Neta* parent();
 	// Set parent NETA structure
-	void setParent(Neta *neta);
+	void setParent(Neta* neta);
 	// Validation function
-	virtual int score(Atom* target, Reflist<Atom,int>* nbrs, Reflist<Ring,int>* rings, NetaContextNode *context, Reflist<Atom,int>& path, int level)=0;
+	virtual int score(Atom* target, Reflist<Atom,int>* nbrs, Reflist<Ring,int>* rings, NetaContextNode* context, Reflist<Atom,int>& path, int level)=0;
 	// Print node contents
 	virtual void nodePrint(int offset, const char* prefix)=0;
 	// Print (append) NETA representation of node contents
-	virtual void netaPrint(Dnchar &neta)=0;
+	virtual void netaPrint(QString& neta)=0;
 	// Clone node structure
-	virtual NetaNode *clone(Neta *newparent)=0;
+	virtual NetaNode* clone(Neta* newparent)=0;
 	// Print contextual score
 	static void printScore(int level, const char* fmt, ...);
 };
@@ -208,9 +208,9 @@ class NetaContextNode : public NetaNode
 	// Repetition logic
 	Neta::NetaValueComparison repeatComparison_;
 	// Inner NETA description
-	NetaNode *innerNeta_;
+	NetaNode* innerNeta_;
 	// Inner linear NETA description (used by ChainNode)
-	NetaNode *linearNeta_;
+	NetaNode* linearNeta_;
 
 	public:
 	// Set repetition specifier
@@ -220,11 +220,11 @@ class NetaContextNode : public NetaNode
 	// Set value comparison
 	void setRepeatComparison(Neta::NetaValueComparison nvc);
 	// Set inner neta description
-	void setInnerNeta(NetaNode *innerneta, NetaNode *linearneta = NULL);
+	void setInnerNeta(NetaNode* innerneta, NetaNode* linearneta = NULL);
 	// Return inner neta description
-	NetaNode *innerNeta();
+	NetaNode* innerNeta();
 	// Clone node structure
-	NetaNode *clone(Neta *newparent);
+	NetaNode* clone(Neta* newparent);
 };
 
 // NETA logic node
@@ -232,24 +232,24 @@ class NetaLogicNode : public NetaNode
 {
 	public:
 	// Constructor / Destructor
-	NetaLogicNode(Neta::NetaLogicType nt, NetaNode *arg1, NetaNode *arg2);
+	NetaLogicNode(Neta::NetaLogicType nt, NetaNode* arg1, NetaNode* arg2);
 	~NetaLogicNode();
 	
 	private:
 	// Logic type
 	Neta::NetaLogicType netaLogic_;
 	// Specification(s)
-	NetaNode *argument1_, *argument2_;
+	NetaNode* argument1_, *argument2_;
 
 	public:
 	// Validation function (virtual)
-	int score(Atom* target, Reflist<Atom,int>* nbrs, Reflist<Ring,int>* rings, NetaContextNode *context, Reflist<Atom,int>& path, int level);
+	int score(Atom* target, Reflist<Atom,int>* nbrs, Reflist<Ring,int>* rings, NetaContextNode* context, Reflist<Atom,int>& path, int level);
 	// Print node contents
 	void nodePrint(int offset, const char* prefix);
 	// Print (append) NETA representation of node contents
-	void netaPrint(Dnchar &neta);
+	void netaPrint(QString& neta);
 	// Clone node structure
-	NetaNode *clone(Neta *newparent);
+	NetaNode* clone(Neta* newparent);
 };
 
 // NETA Bound atom node
@@ -268,21 +268,21 @@ class NetaBoundNode : public NetaContextNode
 	// Validation function to check supplied atom against allowed elements and types
 	int atomScore(Atom* target);
 	// Create formatted element/type list
-	const char* elementsAndTypesString();
+	QString elementsAndTypesString();
 
 	public:
 	// Set node data
-	void set(Refitem<ForcefieldAtom,int>* elemtypes, NetaNode *innerneta, Bond::BondType bondtype);
+	void set(Refitem<ForcefieldAtom,int>* elemtypes, NetaNode* innerneta, Bond::BondType bondtype);
 	// Link forcefield type references in elementtype lists
 	void linkReferenceTypes();
 	// Validation function (virtual)
-	int score(Atom* target, Reflist<Atom,int>* nbrs, Reflist<Ring,int>* rings, NetaContextNode *context, Reflist<Atom,int>& path, int level);
+	int score(Atom* target, Reflist<Atom,int>* nbrs, Reflist<Ring,int>* rings, NetaContextNode* context, Reflist<Atom,int>& path, int level);
 	// Print node contents
 	void nodePrint(int offset, const char* prefix);
 	// Print (append) NETA representation of node contents
-	void netaPrint(Dnchar &neta);
+	void netaPrint(QString& neta);
 	// Clone node structure
-	NetaNode *clone(Neta *newparent);
+	NetaNode* clone(Neta* newparent);
 };
 
 // NETA keyword node
@@ -299,13 +299,13 @@ class NetaKeywordNode : public NetaNode
 
 	public:
 	// Validation function (virtual)
-	int score(Atom* target, Reflist<Atom,int>* nbrs, Reflist<Ring,int>* rings, NetaContextNode *context, Reflist<Atom,int>& path, int level);
+	int score(Atom* target, Reflist<Atom,int>* nbrs, Reflist<Ring,int>* rings, NetaContextNode* context, Reflist<Atom,int>& path, int level);
 	// Print node contents
 	void nodePrint(int offset, const char* prefix);
 	// Print (append) NETA representation of node contents
-	void netaPrint(Dnchar &neta);
+	void netaPrint(QString& neta);
 	// Clone node structure
-	NetaNode *clone(Neta *newparent);
+	NetaNode* clone(Neta* newparent);
 };
 
 // NETA geometry node
@@ -322,13 +322,13 @@ class NetaGeometryNode : public NetaNode
 
 	public:
 	// Validation function (virtual)
-	int score(Atom* target, Reflist<Atom,int>* nbrs, Reflist<Ring,int>* rings, NetaContextNode *context, Reflist<Atom,int>& path, int level);
+	int score(Atom* target, Reflist<Atom,int>* nbrs, Reflist<Ring,int>* rings, NetaContextNode* context, Reflist<Atom,int>& path, int level);
 	// Print node contents
 	void nodePrint(int offset, const char* prefix);
 	// Print (append) NETA representation of node contents
-	void netaPrint(Dnchar &neta);
+	void netaPrint(QString& neta);
 	// Clone node structure
-	NetaNode *clone(Neta *newparent);
+	NetaNode* clone(Neta* newparent);
 };
 
 // NETA Value comparison node
@@ -349,13 +349,13 @@ class NetaValueNode : public NetaNode
 
 	public:
 	// Validation function (virtual)
-	int score(Atom* target, Reflist<Atom,int>* nbrs, Reflist<Ring,int>* rings, NetaContextNode *context, Reflist<Atom,int>& path, int level);
+	int score(Atom* target, Reflist<Atom,int>* nbrs, Reflist<Ring,int>* rings, NetaContextNode* context, Reflist<Atom,int>& path, int level);
 	// Print node contents
 	void nodePrint(int offset, const char* prefix);
 	// Print (append) NETA representation of node contents
-	void netaPrint(Dnchar &neta);
+	void netaPrint(QString& neta);
 	// Clone node structure
-	NetaNode *clone(Neta *newparent);
+	NetaNode* clone(Neta* newparent);
 };
 
 // Root type
@@ -368,13 +368,13 @@ class NetaRootNode : public NetaContextNode
 	
 	public:
 	// Validation function (virtual)
-	int score(Atom* target, Reflist<Atom,int>* nbrs, Reflist<Ring,int>* rings, NetaContextNode *context, Reflist<Atom,int>& path, int level);
+	int score(Atom* target, Reflist<Atom,int>* nbrs, Reflist<Ring,int>* rings, NetaContextNode* context, Reflist<Atom,int>& path, int level);
 	// Print node contents
 	void nodePrint(int offset, const char* prefix);
 	// Print (append) NETA representation of node contents
-	void netaPrint(Dnchar &neta);
+	void netaPrint(QString& neta);
 	// Clone node structure
-	NetaNode *clone(Neta *newparent);
+	NetaNode* clone(Neta* newparent);
 };
 
 // Ring type
@@ -393,13 +393,13 @@ class NetaRingNode : public NetaContextNode
 	// Retrieve current ring under consideration
 	Ring *currentRing();
 	// Validation function (virtual)
-	int score(Atom* target, Reflist<Atom,int>* nbrs, Reflist<Ring,int>* rings, NetaContextNode *context, Reflist<Atom,int>& path, int level);
+	int score(Atom* target, Reflist<Atom,int>* nbrs, Reflist<Ring,int>* rings, NetaContextNode* context, Reflist<Atom,int>& path, int level);
 	// Print node contents
 	void nodePrint(int offset, const char* prefix);
 	// Print (append) NETA representation of node contents
-	void netaPrint(Dnchar &neta);
+	void netaPrint(QString& neta);
 	// Clone node structure
-	NetaNode *clone(Neta *newparent);
+	NetaNode* clone(Neta* newparent);
 };
 
 // Chain type
@@ -414,17 +414,17 @@ class NetaChainNode : public NetaContextNode
 	// Current chain of matched atoms
 	Reflist<Atom,int> currentChain_;
 	// Private (recursive) scoring function
-	int score(NetaNode *currentNode, int nrepeat, Atom* target, Reflist<Atom,int>* nbrs, Reflist<Ring,int>* rings, Reflist<Atom,int>& path, int level);
+	int score(NetaNode* currentNode, int nrepeat, Atom* target, Reflist<Atom,int>* nbrs, Reflist<Ring,int>* rings, Reflist<Atom,int>& path, int level);
 
 	public:
 	// Validation function (virtual)
-	int score(Atom* target, Reflist<Atom,int>* nbrs, Reflist<Ring,int>* rings, NetaContextNode *context, Reflist<Atom,int>& path, int level);
+	int score(Atom* target, Reflist<Atom,int>* nbrs, Reflist<Ring,int>* rings, NetaContextNode* context, Reflist<Atom,int>& path, int level);
 	// Print node contents
 	void nodePrint(int offset, const char* prefix);
 	// Print (append) NETA representation of node contents
-	void netaPrint(Dnchar &neta);
+	void netaPrint(QString& neta);
 	// Clone node structure
-	NetaNode *clone(Neta *newparent);
+	NetaNode* clone(Neta* newparent);
 };
 
 // Measurement type
@@ -445,7 +445,7 @@ class NetaMeasurementNode : public NetaContextNode
 	// Allowed tolerance between measured / required value
 	double tolerance_;
 	// Private (recursive) scoring function
-	int score(NetaNode *currentNode, int nrepeat, Atom* target, Reflist<Atom,int>* nbrs, Reflist<Ring,int>* rings, Reflist<Atom,int>& path, int level);
+	int score(NetaNode* currentNode, int nrepeat, Atom* target, Reflist<Atom,int>* nbrs, Reflist<Ring,int>* rings, Reflist<Atom,int>& path, int level);
 
 	public:
 	// Set required value
@@ -453,13 +453,13 @@ class NetaMeasurementNode : public NetaContextNode
 	// Set whether a match should remove atoms from allowable paths for other nodes
 	void setRemoveNeighbours(bool b);
 	// Validation function (virtual)
-	int score(Atom* target, Reflist<Atom,int>* nbrs, Reflist<Ring,int>* rings, NetaContextNode *context, Reflist<Atom,int>& path, int level);
+	int score(Atom* target, Reflist<Atom,int>* nbrs, Reflist<Ring,int>* rings, NetaContextNode* context, Reflist<Atom,int>& path, int level);
 	// Print node contents
 	void nodePrint(int offset, const char* prefix);
 	// Print (append) NETA representation of node contents
-	void netaPrint(Dnchar &neta);
+	void netaPrint(QString& neta);
 	// Clone node structure
-	NetaNode *clone(Neta *newparent);
+	NetaNode* clone(Neta* newparent);
 };
 
 ATEN_END_NAMESPACE

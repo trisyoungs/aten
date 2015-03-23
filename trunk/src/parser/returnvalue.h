@@ -38,6 +38,7 @@ class ReturnValue : public ListItem<ReturnValue>
 	ReturnValue();
 	ReturnValue(int i);
 	ReturnValue(double d);
+	ReturnValue(QString s);
 	ReturnValue(const char* s);
 	ReturnValue(Vec3<double> v);
 	ReturnValue(Matrix m);
@@ -47,15 +48,13 @@ class ReturnValue : public ListItem<ReturnValue>
 	void operator=(const ReturnValue& rv);
 	void operator=(double d);
 	void operator=(int i);
-	void operator=(const char* s);
+	void operator=(QString s);
 
 
 	/*
 	// Data
 	*/
 	private:
-	// Temporary variable for converted string return
-	Dnchar tempString_;
 	// Data type contained in class
 	VTypes::DataType type_;
 	// Size of array (if an array is stored (-1 otherwise)
@@ -63,17 +62,19 @@ class ReturnValue : public ListItem<ReturnValue>
 	// Variable members for returns
 	int valueI_;
 	double valueD_;
-	Dnchar valueS_;
+	QString valueS_;
 	Vec3<double> valueV_;
 	Matrix valueM_;
 	void* valueP_, *valueRefitem_;
 	// Array members for returns
 	int* arrayI_;
 	double* arrayD_;
-	Dnchar* arrayS_;
+	QString* arrayS_;
 	Vec3<double>* arrayV_;
 	Matrix* arrayM_;
-	void **arrayP_;
+	void** arrayP_;
+
+	private:
 	// Clear any current array data
 	void clearArrayData();
 
@@ -97,7 +98,7 @@ class ReturnValue : public ListItem<ReturnValue>
 	// Set from real value
 	void set(double d);
 	// Set from character value
-	void set(const char* s);
+	void set(QString s);
 	// Set from vector value
 	void set(Vec3<double> v);
 	// Set from individual vector data
@@ -115,7 +116,7 @@ class ReturnValue : public ListItem<ReturnValue>
 	// Set array element from real value
 	void setElement(int id, double d);
 	// Set array element from character value
-	void setElement(int id, const char* s);
+	void setElement(int id, QString s);
 	// Set array element from vector value
 	void setElement(int id, Vec3<double> v);
 	// Set array element from vector value
@@ -133,31 +134,31 @@ class ReturnValue : public ListItem<ReturnValue>
 	*/
 	public:
 	// Return integer value
-	int asInteger(bool &success);
+	int asInteger(bool& success);
 	// Return real value
-	double asDouble(bool &success);
+	double asDouble(bool& success);
 	// Return character string
-	const char* asString(bool &success);
+	QString asString(bool& success);
 	// Return vector data
-	Vec3<double> asVector(bool &success);
+	Vec3<double> asVector(bool& success);
 	// Return matrix data
-	Matrix asMatrix(bool &success);
+	Matrix asMatrix(bool& success);
 	// Return pointer data
-	void *asPointer(VTypes::DataType type, bool &success);
+	void *asPointer(VTypes::DataType type, bool& success);
 	// Return pointer refitem data
 	void *refPointer();
 	// Return integer element value
-	int asInteger(int index, bool &success);
+	int asInteger(int index, bool& success);
 	// Return real element value
-	double asDouble(int index, bool &success);
+	double asDouble(int index, bool& success);
 	// Return character string element
-	const char* asString(int index, bool &success);
+	QString asString(int index, bool& success);
 	// Return vector element data
-	Vec3<double> asVector(int index, bool &success);
+	Vec3<double> asVector(int index, bool& success);
 	// Return matrix element data
-	Vec3<double> asMatrix(int index, bool &success);
+	Vec3<double> asMatrix(int index, bool& success);
 	// Return pointer element data
-	void *asPointer(int index, VTypes::DataType type, bool &success);
+	void* asPointer(int index, VTypes::DataType type, bool& success);
 	// Return array size of data
 	int arraySize();
 
@@ -171,7 +172,7 @@ class ReturnValue : public ListItem<ReturnValue>
 	// Return real value
 	double asDouble();
 	// Return character string
-	const char* asString();
+	QString asString();
 	// Return vector data
 	Vec3<double> asVector();
 	// Return matrix data

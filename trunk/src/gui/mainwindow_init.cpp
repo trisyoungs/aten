@@ -225,11 +225,10 @@ void AtenWindow::updateAndShow()
 	{
 		// Construct the messagebox text
 		QString text("One or more filters could not be loaded properly on startup.\nCheck shell output or run Settings->Reload Filters to diagnose the problem.\nFilters with errors were:\n");
-		for (Dnchar* d = aten_.failedFilters(); d != NULL; d = d->next)
+		for (int n=0; n<aten_.failedFilters().count(); ++n)
 		{
 			text += "\t";
-			text += d->get();
-			if (d->next != NULL) text += "\n";
+			text += aten_.failedFilters().at(n) + "\n";
 		}
 		QMessageBox::warning(NULL, "Aten", text, QMessageBox::Ok, QMessageBox::Ok);
 	}

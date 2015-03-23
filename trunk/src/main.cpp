@@ -60,18 +60,15 @@ int main(int argc, char* argv[])
 	/* Set random seed */
 	srand( (unsigned) time(NULL) );
 
-	/* Get environment variables */
-	if (getenv("HOME") != '\0') MrAten.setHomeDir(getenv("HOME"));
-	else MrAten.setHomeDir( getenv("USERPROFILE") );
-	MrAten.setWorkDir(getenv("PWD"));
-	if (!MrAten.dataDirSet()) MrAten.setDataDir(getenv("ATENDATA"));
-	Messenger::print(Messenger::Verbose, "Home directory is %s, working directory is %s, data directory is %s.", MrAten.homeDir(), MrAten.workDir(), MrAten.dataDir());
-
 	/* Create the main window */
 	AtenWindow mainWindow(MrAten);
 
 	/* Set AtenWindow pointer in MrAten */
 	MrAten.setAtenWindow(&mainWindow);
+
+	/* Find/set directory locations */
+	MrAten.setDirectories();
+	Messenger::print(Messenger::Verbose, "Home directory is %s, working directory is %s, data directory is %s.", qPrintable(MrAten.homeDir().path()), qPrintable(MrAten.workDir().path()), qPrintable(MrAten.dataDir().path()));
 
 	/* Read in includes (if unsuccessful, a messagebox will be raised in the GUI) */
 	if (prefs.loadIncludes()) MrAten.openIncludes();

@@ -108,7 +108,7 @@ class TreeNode : public ListItem<TreeNode>
 	// Return (execute) argument specified as a GLFloat
 	GLfloat argGLf(int i);
 	// Return (execute) argument specified as a character
-	const char* argc(int i);
+	QString argc(int i);
 	// Return (execute) argument specified as a vector
 	Vec3<double> argv(int i);
 	// Return (execute) argument specified as a pointer
@@ -166,7 +166,7 @@ class TreeNode : public ListItem<TreeNode>
 	// Reset node
 	virtual bool initialise() = 0;
 	// Search accessors (if any) available for node
-	virtual StepNode* findAccessor(const char* s, TreeNode* arrayIndex, TreeNode* argList = NULL);
+	virtual StepNode* findAccessor(QString name, TreeNode* arrayIndex, TreeNode* argList = NULL);
 };
 
 ATEN_END_NAMESPACE

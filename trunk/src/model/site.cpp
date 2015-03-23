@@ -26,11 +26,11 @@
 ATEN_USING_NAMESPACE
 
 // Find site by name
-Site* Model::findSite(const char* s)
+Site* Model::findSite(QString siteName)
 {
 	Messenger::enter("Model::findSite");
 	Site* result = NULL;
-	for (result = sites.first(); result != NULL; result = result->next) if (strcmp(result->name(),s) == 0) break;
+	for (result = sites.first(); result != NULL; result = result->next) if (result->name() == siteName) break;
 	Messenger::exit("Model::findSite");
 	return result;
 }
@@ -39,12 +39,14 @@ Site* Model::findSite(const char* s)
 Vec3<double> Model::siteCentre(Site* s, int mol)
 {
 	Messenger::enter("Model::calculateCentre");
+
 	int offset, n, ii;
 	Atom** modelatoms = atomArray();
 	static Vec3<double> firstid, mim, centre;
 	Pattern* sitep = s->pattern();
 	offset = sitep->startAtom();
 	offset += sitep->nAtoms() * mol;
+
 	// If no atoms are in the list, use all atoms in the molecule
 	if (s->atoms.count() != 0)
 	{
@@ -71,6 +73,7 @@ Vec3<double> Model::siteCentre(Site* s, int mol)
 		centre /= sitep->nAtoms();
 	}
 	s->setCentre(centre);
+
 	Messenger::exit("Model::calculateCentre");
 	return centre;
 }

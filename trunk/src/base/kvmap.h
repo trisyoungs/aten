@@ -22,7 +22,6 @@
 #ifndef ATEN_KVMAP_H
 #define ATEN_KVMAP_H
 
-#include "base/dnchar.h"
 #include <cstdlib>
 #include "templates/list.h"
 #include "base/namespace.h"
@@ -34,24 +33,24 @@ class KVPair : public ListItem<KVPair>
 {
 	public:
 	// Constructor / Destructor
-	KVPair(const char* key = NULL, const char* value = NULL);
+	KVPair(QString key = QString(), QString value = QString());
 
 	/*
 	// Data
 	*/
 	private:
 	// Key
-	Dnchar key_;
+	QString key_;
 	// Value
-	Dnchar value_;
+	QString value_;
 
 	public:
 	// Retrieve key associated to pair
-	const char* key() const;
+	QString key() const;
 	// Set value associated to pair
-	void setValue(const char* value);
+	void setValue(QString value);
 	// Retrieve value associated to pair
-	const char* value() const;
+	QString value() const;
 };
 
 // Simple string key/value list class
@@ -74,13 +73,13 @@ class KVMap
 	// Return number of pairs defined
 	int nPairs() const;
 	// Set (existing) key/value pair
-	void add(const char* key, const char* value);
+	void add(QString key, QString value);
 	// Search to see if specific key is in the table
-	KVPair *search(const char* key) const;
+	KVPair* search(QString key) const;
 	// Retrieve value associated to key
-	const char* value(const char* key);
+	QString value(QString key);
 	// Return first key in list
-	KVPair *pairs();
+	KVPair* pairs();
 };
 
 ATEN_END_NAMESPACE

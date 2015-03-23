@@ -22,7 +22,6 @@
 #ifndef ATEN_FORCEFIELDBOUND_H
 #define ATEN_FORCEFIELDBOUND_H
 
-#include "base/dnchar.h"
 #include "ff/forms.h"
 #include "base/namespace.h"
 
@@ -45,7 +44,7 @@ class ForcefieldBound : public ListItem<ForcefieldBound>
 	// Form of bound interaction type
 	int form_;
 	// Forcefield types involved in this term
-	Dnchar typeNames_[MAXFFBOUNDTYPES];
+	QString typeNames_[MAXFFBOUNDTYPES];
 	// Interaction parameter data
 	double params_[MAXFFPARAMDATA];
 	// Electrostatic scale factor (if torsion)
@@ -59,7 +58,7 @@ class ForcefieldBound : public ListItem<ForcefieldBound>
 	// Return the type of bound interaction
 	BoundType type() const;
 	// Return functional form text
-	const char* formText() const;
+	QString formText() const;
 	// Return the functional form (cast as a bond style)
 	BondFunctions::BondFunction bondForm() const;
 	// Return the functional form (cast as a angle style)
@@ -73,7 +72,7 @@ class ForcefieldBound : public ListItem<ForcefieldBound>
 	// Set the torsion functional form
 	void setTorsionForm(TorsionFunctions::TorsionFunction tf);
 	// Set the functional form by name
-	bool setForm(const char* form);
+	bool setForm(QString form);
 	// Set the parameter data specified
 	void setParameter(int i, double d);
 	// Return parameter data specified
@@ -81,11 +80,11 @@ class ForcefieldBound : public ListItem<ForcefieldBound>
 	// Return pointer to parameter array
 	double* parameters();
 	// Return the atom type 'n'
-	const char* typeName(int n) const;
+	QString typeName( int n ) const;
 	// Return the atom type array
-	Dnchar* typeNames();
+	QString* typeNames();
 	// Set the atom type 'n'
-	void setTypeName(int n, const char* s);
+	void setTypeName(int n, QString s);
 	// Set both 1-4 scale factors
 	void setScaleFactors(double escale, double vscale);
 	// Set electrostatic scale factor
@@ -97,7 +96,11 @@ class ForcefieldBound : public ListItem<ForcefieldBound>
 	// Return VDW scale factor (if torsion)
 	double vdwScale() const;
 	// Return if supplied names match those stored (in either 'direction')
-	bool namesMatch(const char* namei, const char* namej,const char* namek = NULL, const char* namel = NULL);
+	bool namesMatch(QString namei, QString namej);
+	// Return if supplied names match those stored (in either 'direction')
+	bool namesMatch(QString namei, QString namej, QString namek);
+	// Return if supplied names match those stored (in either 'direction')
+	bool namesMatch(QString namei, QString namej, QString namek, QString namel);
 };
 
 ATEN_END_NAMESPACE

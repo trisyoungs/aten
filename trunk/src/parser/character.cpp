@@ -40,7 +40,7 @@ StringVariable::StringVariable()
 }
 
 
-StringVariable::StringVariable(const char* s, bool constant) : stringData_(s)
+StringVariable::StringVariable(QString s, bool constant) : stringData_(s)
 {
 	// Private variables
 	returnType_ = VTypes::StringData;
@@ -78,7 +78,7 @@ void StringVariable::reset()
 // Return value of node
 bool StringVariable::execute(ReturnValue& rv)
 {
-	rv.set(stringData_.get());
+	rv.set(stringData_);
 	return TRUE;
 }
 
@@ -96,8 +96,8 @@ void StringVariable::nodePrint(int offset, const char* prefix)
 	tab.strcat(prefix);
 
 	// Output node data
-	if (readOnly_) printf("[C]%s\"%s\" (constant value)\n", tab.get(), stringData_.get());
-	else printf("[V]%s\"%s\" (variable, name=%s)\n", tab.get(), stringData_.get(), name_.get());
+	if (readOnly_) printf("[C]%s\"%s\" (constant value)\n", tab.get(), qPrintable(stringData_));
+	else printf("[V]%s\"%s\" (variable, name=%s)\n", tab.get(), qPrintable(stringData_), qPrintable(name_));
 }
 
 
@@ -136,7 +136,7 @@ bool StringArrayVariable::set(ReturnValue& rv)
 	}
 	if (stringArrayData_ == NULL)
 	{
-		printf("Internal Error: Array '%s' has not been initialised.\n", name_.get());
+		printf("Internal Error: Array '%s' has not been initialised.\n", qPrintable(name_));
 		return FALSE;
 	}
 	// Is the supplied ReturnValue an array?
@@ -145,7 +145,7 @@ bool StringArrayVariable::set(ReturnValue& rv)
 	{
 		if (rv.arraySize() != arraySize_)
 		{
-			Messenger::print("Error setting variable '%s': Array sizes do not conform.", name_.get());
+			Messenger::print("Error setting variable '%s': Array sizes do not conform.", qPrintable(name_));
 			return FALSE;
 		}
 		bool success;
@@ -165,13 +165,13 @@ bool StringArrayVariable::setAsArray(ReturnValue& rv, int arrayIndex)
 	}
 	if (stringArrayData_ == NULL)
 	{
-		printf("Internal Error: Array '%s' has not been initialised.\n", name_.get());
+		printf("Internal Error: Array '%s' has not been initialised.\n", qPrintable(name_));
 		return FALSE;
 	}
 	// Check index
 	if ((arrayIndex < 0) || (arrayIndex >= arraySize_))
 	{
-		Messenger::print("Index %i out of bounds for array '%s'.", arrayIndex+1, name_.get());
+		Messenger::print("Index %i out of bounds for array '%s'.", arrayIndex+1, qPrintable(name_));
 		return FALSE;
 	}
 	// Set individual element
@@ -184,7 +184,7 @@ void StringArrayVariable::reset()
 {
 	if (stringArrayData_ == NULL)
 	{
-		printf("Internal Error: Array '%s' has not been initialised.\n", name_.get());
+		printf("Internal Error: Array '%s' has not been initialised.\n", qPrintable(name_));
 		return;
 	}
 	// Loop over array elements and set them - for constant arrays only change non-constant subvalues
@@ -208,12 +208,12 @@ bool StringArrayVariable::execute(ReturnValue& rv)
 	{
 		if (!readOnly_)
 		{
-			printf("Internal Error: Array '%s' has not been initialised and can't be executed.\n", name_.get());
+			printf("Internal Error: Array '%s' has not been initialised and can't be executed.\n", qPrintable(name_));
 			return FALSE;
 		}
 		if (!initialise())
 		{
-			printf("Internal Error: Array '%s' failed to initialise and so can't be executed.\n", name_.get());
+			printf("Internal Error: Array '%s' failed to initialise and so can't be executed.\n", qPrintable(name_));
 			return FALSE;
 		}
 	}
@@ -228,10 +228,10 @@ bool StringArrayVariable::executeAsArray(ReturnValue& rv, int arrayIndex)
 	// Check bounds
 	if ((arrayIndex < 0) || (arrayIndex >= arraySize_))
 	{
-		Messenger::print("Error: Array index %i is out of bounds for array '%s'.", arrayIndex+1, name_.get());
+		Messenger::print("Error: Array index %i is out of bounds for array '%s'.", arrayIndex+1, qPrintable(name_));
 		return FALSE;
 	}
-	rv.set( stringArrayData_[arrayIndex].get() );
+	rv.set( stringArrayData_[arrayIndex] );
 	return TRUE;
 }
 
@@ -245,7 +245,7 @@ void StringArrayVariable::nodePrint(int offset, const char* prefix)
 	tab.strcat(prefix);
 
 	// Output node data
-	printf("[V]%s (integer array, name=%s, current size=%i)\n", tab.get(), name_.get(), arraySize_);
+	printf("[V]%s (integer array, name=%s, current size=%i)\n", tab.get(), qPrintable(name_), arraySize_);
 }
 
 // Initialise array
@@ -256,14 +256,21 @@ bool StringArrayVariable::initialise()
 	ReturnValue newsize;
 	if (!arraySizeExpression_->execute(newsize))
 	{
-		Messenger::print("Failed to find size for string array '%s'.", name_.get());
+		Messenger::print("Failed to find size for string array '%s'.", qPrintable(name_));
 		return FALSE;
 	}
+
 	// If the array is already allocated, free it only if the size is different
-	if ((arraySize_ != newsize.asInteger()) && (stringArrayData_ != NULL)) { delete[] stringArrayData_; stringArrayData_ = NULL; }
+	if ((arraySize_ != newsize.asInteger()) && (stringArrayData_ != NULL))
+	{
+		delete[] stringArrayData_;
+		stringArrayData_ = NULL;
+	}
+
 	// Store new array size
 	arraySize_ = newsize.asInteger();
-	if ((arraySize_ > 0) && (stringArrayData_ == NULL)) stringArrayData_ = new Dnchar[arraySize_];
+	if ((arraySize_ > 0) && (stringArrayData_ == NULL)) stringArrayData_ = new QString[arraySize_];
+
 	// In the case of constant arrays, use the argument list of the TreeNode to set the array elements
 	if (readOnly_)
 	{

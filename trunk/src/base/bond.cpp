@@ -28,7 +28,7 @@ ATEN_USING_NAMESPACE
 
 // BondType enum
 const char* BondTypeKeywords[Bond::nBondTypes] = { "_ANY_", "single", "double", "triple", "aromatic" };
-Bond::BondType Bond::bondType(const char* s, bool reportError)
+Bond::BondType Bond::bondType(QString s, bool reportError)
 {
 	Bond::BondType bt = (Bond::BondType) enumSearch("bond type",Bond::nBondTypes,BondTypeKeywords,s,reportError);
 	if ((bt == Bond::nBondTypes) && reportError) enumPrintValid(Bond::nBondTypes,BondTypeKeywords);

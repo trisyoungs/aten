@@ -22,12 +22,12 @@
 #ifndef ATEN_LINEPARSER_H
 #define ATEN_LINEPARSER_H
 
-#include "base/dnchar.h"
 #include "math/constants.h"
 #include "templates/list.h"
 #include <fstream>
 #include <iostream>
 #include <sstream>
+#include <QtCore/QStringList>
 #include "base/namespace.h"
 
 ATEN_BEGIN_NAMESPACE
@@ -45,8 +45,8 @@ class LineParser
 	LineParser();
 	~LineParser();
 	// Parse Options
-	enum ParseOption { StripComments=1, UseQuotes=2, SkipBlanks=4, StripBrackets=8, NoEscapes=16, UseCurlies=32, NormalCommas=64, nParseOptions=7 };
-	static ParseOption parseOption(const char*);
+	enum ParseOption { Defaults = 0, StripComments = 1, UseQuotes = 2, SkipBlanks = 4, StripBrackets = 8, NoEscapes = 16, UseCurlies = 32, NormalCommas = 64, nParseOptions = 7 };
+	static ParseOption parseOption(QString s);
 
 
 	/*
@@ -54,11 +54,11 @@ class LineParser
 	*/
 	private:
 	// Current input filename (if any)
-	Dnchar inputFilename_;
+	QString inputFilename_;
 	// CUrrent output filename (if any)
-	Dnchar outputFilename_;
+	QString outputFilename_;
 	// Line to parse
-	char line_[MAXLINELENGTH];
+	QString line_;
 	// Length of line_
 	int lineLength_;
 	// Current reading position in line
@@ -66,31 +66,31 @@ class LineParser
 	// Integer line number of last read line
 	int lastLineNo_;
 	// Source stream for reading
-	std::ifstream *inputFile_;
+	std::ifstream* inputFile_;
 	// Target stream for writing
-	std::ofstream *outputFile_;
+	std::ofstream* outputFile_;
 	// Target stream for cached writing
-	std::stringstream *cachedFile_;
+	std::stringstream* cachedFile_;
 
 	public:
 	// Reset data
 	void reset();
 	// Return filename of current inputFile (if any)
-	const char* inputFilename() const;
+	QString inputFilename() const;
 	// Return filename of current outputFile (if any)
-	const char* outputFilename() const;
+	QString outputFilename() const;
 	// Return pointer to start of current line
-	const char* line() const;
+	QString line() const;
 	// Set line target
-	void setLine(const char* s);
+	void setLine(QString line);
 	// Return integer line number of last read line
 	int lastLineNo() const;
 	// Return read-only status of file
 	bool isFileReadOnly() const;
 	// Open new file for reading
-	bool openInput(const char* filename);
+	bool openInput(QString filename);
 	// Open new stream for writing
-	bool openOutput(const char* filename, bool directOutput);
+	bool openOutput(QString filename, bool directOutput);
 	// Close file(s)
 	void closeFiles();
 	// Return whether current file source is good for reading
@@ -122,40 +122,40 @@ class LineParser
 
 	public:
 	// Gets next delimited arg from internal line
-	bool getNextArg(int optionMask, Dnchar* destarg);
+	bool getNextArg(int optionMask, QString& destArg);
 	// Gets next n chars from internal line
-	bool getNextN(int optionMask, int length, Dnchar* destarg = NULL);
+	bool getNextN(int optionMask, int length, QString& destArg);
 	// Read line from file and do delimited parse
 	int getArgsDelim(int optionMask);
 	// Get rest of line starting at next delimited part
-	bool getRestDelim(Dnchar* destarg = NULL);
+	bool getRestDelim(QString& destArg);
 	// Set line and parse using delimiters
-	void getArgsDelim(int optionMask, const char* s);
+	void getArgsDelim(int optionMask, QString line);
 	// Get next delimited chunk from file (not line)
-	bool getCharsDelim(Dnchar* destarg = NULL);
+	bool getCharsDelim(QString& destArg);
 	// Get next delimited chunk from string, removing grabbed part
-	bool getCharsDelim(int optionMask, Dnchar* source, Dnchar* destarg);
+	bool getCharsDelim(int optionMask, QString& source, QString& destArg);
 	// Read next line from internal source file, setting as parsing source
 	int readNextLine(int optionMask);
 	// Skip 'n' lines from internal file
 	int skipLines(int nskip);
 	// Get next delimited argument from internal line
-	bool getArgDelim(int optionMask, Dnchar* destarg);
+	bool getArgDelim(int optionMask, QString& destArg);
 	// Return a number of characters from the input stream
-	const char* getChars(int nchars, bool skipeol = TRUE);
+	QString getChars(int nchars, bool skipeol = TRUE);
 	// Skip a number of characters from the input stream
 	void skipChars(int nchars);
 	// Return an integer value from reading 'n' chars of an (unformatted) input file
 	int getInteger(int nbytes = 0);
 	// Fill an array of integer values from reading of an (unformatted) input file
-	int getIntegerArray(int *array, int count);
+	int getIntegerArray(int* array, int count);
 	// Return a double value from reading 'n' chars of an (unformatted) input file
 	double getDouble(int nbytes = 0);
 	// Fill an array of double values from reading of an (unformatted) input file
 	int getDoubleArray(double* array, int count);
 	// Write line to file
-	bool writeLine(const char* s);
-	// Write formatter line to file
+	bool writeLine(QString line);
+	// Write formatted line to file
 	bool writeLineF(const char* fmt, ...);
 	// Commit cached output stream to actual output file
 	bool commitCache();
@@ -165,10 +165,8 @@ class LineParser
 	// Argument Data
 	*/
 	private:
-	// Temporary string variable
-	char tempArg_[MAXLINELENGTH];
 	// Parsed arguments
-	List<Dnchar> arguments_;
+	QStringList arguments_;
 	// Whether the end of the string has been found in get_next_arg()
 	bool endOfLine_;
 
@@ -176,7 +174,7 @@ class LineParser
 	// Returns number of arguments grabbed from last parse
 	int nArgs() const;
 	// Returns the specified argument as a character string
-	const char* argc(int i);
+	QString argc( int i );
 	// Returns the specified argument as an integer
 	int argi(int i);
 	// Returns the specified argument as a double
@@ -187,16 +185,6 @@ class LineParser
 	float argf(int i);
 	// Returns whether the specified argument exists
 	bool hasArg(int i) const;
-
-
-	/*
-	// Atom type parsing
-	*/
-	public:
-	// Remove atomtype description from string and return it
-	const char* parseNetaString(Dnchar&);
-	// Remove keyword from string and return it
-	const char* trimNetaKeyword(Dnchar&);
 };
 
 ATEN_END_NAMESPACE

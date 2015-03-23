@@ -82,7 +82,7 @@ void IntegerVariable::nodePrint(int offset, const char* prefix)
 
 	// Output node data
 	if (readOnly_) printf("[C]%s%i (constant value)\n", tab.get(), integerData_);
-	else printf("[V]%s%i (variable, name=%s)\n", tab.get(), integerData_, name_.get());
+	else printf("[V]%s%i (variable, name=%s)\n", tab.get(), integerData_, qPrintable(name_));
 }
 
 /*
@@ -121,7 +121,7 @@ bool IntegerArrayVariable::set(ReturnValue& rv)
 	}
 	if (integerArrayData_ == NULL)
 	{
-		printf("Internal Error: Array '%s' has not been initialised.\n", name_.get());
+		printf("Internal Error: Array '%s' has not been initialised.\n", qPrintable(name_));
 		return FALSE;
 	}
 	bool success = FALSE;
@@ -135,12 +135,12 @@ bool IntegerArrayVariable::set(ReturnValue& rv)
 			integerArrayData_[1] = v.y;
 			integerArrayData_[2] = v.z;
 		}
-		else Messenger::print("Error setting variable '%s': Array size must be 3 in order to set from a vector.", name_.get());
+		else Messenger::print("Error setting variable '%s': Array size must be 3 in order to set from a vector.", qPrintable(name_));
 	}
 	else if (rv.arraySize() == -1) for (int i=0; i<arraySize_; i++) integerArrayData_[i] = rv.asDouble(success);
 	else
 	{
-		if (rv.arraySize() != arraySize_) Messenger::print("Error setting variable '%s': Array sizes do not conform.\n", name_.get());
+		if (rv.arraySize() != arraySize_) Messenger::print("Error setting variable '%s': Array sizes do not conform.\n", qPrintable(name_));
 		else for (int i=0; i<arraySize_; i++) integerArrayData_[i] = rv.asInteger(i, success);
 	}
 	return success;
@@ -156,13 +156,13 @@ bool IntegerArrayVariable::setAsArray(ReturnValue& rv, int arrayIndex)
 	}
 	if (integerArrayData_ == NULL)
 	{
-		printf("Internal Error: Array '%s' has not been initialised.\n", name_.get());
+		printf("Internal Error: Array '%s' has not been initialised.\n", qPrintable(name_));
 		return FALSE;
 	}
 	// Check index
 	if ((arrayIndex < 0) || (arrayIndex >= arraySize_))
 	{
-		Messenger::print("Index %i out of bounds for array '%s'.", arrayIndex+1, name_.get());
+		Messenger::print("Index %i out of bounds for array '%s'.", arrayIndex+1, qPrintable(name_));
 		return FALSE;
 	}
 	// Set individual element
@@ -175,7 +175,7 @@ void IntegerArrayVariable::reset()
 {
 	if (integerArrayData_ == NULL)
 	{
-		printf("Internal Error: Array '%s' has not been initialised.\n", name_.get());
+		printf("Internal Error: Array '%s' has not been initialised.\n", qPrintable(name_));
 		return;
 	}
 	// Loop over array elements and set them - for constant arrays only change non-constant subvalues
@@ -199,12 +199,12 @@ bool IntegerArrayVariable::execute(ReturnValue& rv)
 	{
 		if (!readOnly_)
 		{
-			printf("Internal Error: Array '%s' has not been initialised and can't be executed.\n", name_.get());
+			printf("Internal Error: Array '%s' has not been initialised and can't be executed.\n", qPrintable(name_));
 			return FALSE;
 		}
 		if (!initialise())
 		{
-			printf("Internal Error: Array '%s' failed to initialise and so can't be executed.\n", name_.get());
+			printf("Internal Error: Array '%s' failed to initialise and so can't be executed.\n", qPrintable(name_));
 			return FALSE;
 		}
 	}
@@ -219,7 +219,7 @@ bool IntegerArrayVariable::executeAsArray(ReturnValue& rv, int arrayIndex)
 	// Check bounds
 	if ((arrayIndex < 0) || (arrayIndex >= arraySize_))
 	{
-		Messenger::print("Error: Array index %i is out of bounds for array '%s'.", arrayIndex+1, name_.get());
+		Messenger::print("Error: Array index %i is out of bounds for array '%s'.", arrayIndex+1, qPrintable(name_));
 		return FALSE;
 	}
 	rv.set( integerArrayData_[arrayIndex] );
@@ -236,7 +236,7 @@ void IntegerArrayVariable::nodePrint(int offset, const char* prefix)
 	tab.strcat(prefix);
 
 	// Output node data
-	printf("[V]%s (integer array, name=%s, current size=%i)\n", tab.get(), name_.get(), arraySize_);
+	printf("[V]%s (integer array, name=%s, current size=%i)\n", tab.get(), qPrintable(name_), arraySize_);
 }
 
 // Return array pointer
@@ -253,7 +253,7 @@ bool IntegerArrayVariable::initialise()
 	ReturnValue newsize;
 	if (!arraySizeExpression_->execute(newsize))
 	{
-		Messenger::print("Failed to find size for int array '%s'.", name_.get());
+		Messenger::print("Failed to find size for int array '%s'.", qPrintable(name_));
 		return FALSE;
 	}
 	// If the array is already allocated, free it only if the size is different

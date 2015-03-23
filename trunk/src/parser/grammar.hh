@@ -142,10 +142,9 @@ extern int CommandParser_debug;
 typedef union YYSTYPE
 {
 /* Line 2058 of yacc.c  */
-#line 34 "grammar.yy"
+#line 35 "grammar.yy"
 
 	int functionId;			/* Function enum id */
-	Dnchar* name;			/* character pointer for names */
 	TreeNode* node;			/* node pointer */
 	Variable* variable;		/* variable pointer */
 	Tree* tree;			/* function (tree) pointer */
@@ -155,7 +154,7 @@ typedef union YYSTYPE
 
 
 /* Line 2058 of yacc.c  */
-#line 159 "grammar.hh"
+#line 158 "grammar.hh"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

@@ -40,21 +40,21 @@ template <class T> class NameMap : public ListItem< NameMap<T> >
 	*/
 	private:
 	// Character data
-	Dnchar name_;
+	QString name_;
 	// Data type B
 	T data_;
 
 	public:
 	// Set name
-	void setName(const char* name);
+	void setName(QString name);
 	// Return name
-	const char* name() const;
+	QString name() const;
 	// Set data
 	void setData(T data);
 	// Return data
 	T data() const;
 	// Set name and data
-	void set(const char* name, T data);
+	void set(QString name, T data);
 };
 
 // Constructor
@@ -63,15 +63,15 @@ template <class T> NameMap<T>::NameMap() : ListItem< NameMap<T> >()
 }
 
 // Set name
-template <class T> void NameMap<T>::setName(const char* name)
+template <class T> void NameMap<T>::setName(QString name)
 {
 	name_ = name;
 }
 
 // Returns name
-template <class T> const char* NameMap<T>::name() const
+template <class T> QString NameMap<T>::name() const
 {
-	return name_.get();
+	return name_;
 }
 
 // Set data
@@ -87,7 +87,7 @@ template <class T> T NameMap<T>::data() const
 }
 
 // Set name and data
-template <class T> void NameMap<T>::set(const char* name, T data)
+template <class T> void NameMap<T>::set(QString name, T data)
 {
 	name_ = name;
 	data_ = data;
@@ -114,19 +114,19 @@ template <class T> class NameMapList
 	// Set default value
 	void setDefaultValue(T defaultvalue);
 	// Create new entry
-	int add(const char* name, T data);
+	int add(QString name, T data);
 	// Return number of items defined
 	int nItems();
 	// Return first data item in list
-	NameMap<T> *first();
+	NameMap<T>* first();
 	// Return data item associated to name
-	T data(const char* name) const;
+	T data(QString name) const;
 	// Return nth data item associated to name
 	T data(int n);
 	// Return nth data item name
-	const char* name(int n);
+	QString name(int n);
 	// Return index in list of supplied item
-	int index(const char* name);
+	int index(QString name);
 };
 
 // Constructors
@@ -147,14 +147,14 @@ template <class T> void NameMapList<T>::setDefaultValue(T defaultvalue)
 }
 
 // Create new item
-template <class T> int NameMapList<T>::add(const char* name, T data)
+template <class T> int NameMapList<T>::add(QString name, T data)
 {
 	// Does the named value already exist
 	int n=0;
 	NameMap<T> *nm;
 	for (nm = data_.first(); nm != NULL; nm = nm->next)
 	{
-		if (strcmp(nm->name(),name) == 0) break;
+		if (nm->name() == name) break;
 		++n;
 	}
 	if (nm == NULL)
@@ -173,40 +173,40 @@ template <class T> int NameMapList<T>::nItems()
 }
 
 // Return first data item in list
-template<class T> NameMap<T> *NameMapList<T>::first()
+template<class T> NameMap<T>* NameMapList<T>::first()
 {
 	return data_.first();
 }
 
 // Retrieve item by name
-template <class T> T NameMapList<T>::data(const char* name) const
+template <class T> T NameMapList<T>::data(QString name) const
 {
-	NameMap<T> *nm;
-	for (nm = data_.first(); nm != NULL; nm = nm->next) if (strcmp(nm->name(),name) == 0) break;
+	NameMap<T>* nm;
+	for (nm = data_.first(); nm != NULL; nm = nm->next) if (nm->name() == name) break;
 	return (nm == NULL ? defaultValue_ : nm->data());
 }
 
 // Create new item
 template <class T> T NameMapList<T>::data(int id)
 {
-	NameMap<T> *nm = data_[id];
+	NameMap<T>* nm = data_[id];
 	return (nm == NULL ? defaultValue_ : nm->data());
 }
 
 // Create new item
-template <class T> const char* NameMapList<T>::name(int id)
+template <class T> QString NameMapList<T>::name(int n)
 {
-	NameMap<T> *nm = data_[id];
+	NameMap<T>* nm = data_[n];
 	return (nm == NULL ? "NULL" : nm->name());
 }
 
 // Return index in list of supplied item
-template <class T> int NameMapList<T>::index(const char* name)
+template <class T> int NameMapList<T>::index(QString name)
 {
 	int n=0;
 	for (NameMap<T> *nm = data_.first(); nm != NULL; nm = nm->next)
 	{
-		if (strcmp(nm->name(),name) == 0) return n;
+		if (nm->name() == name) return n;
 		++n;
 	}
 	return -1;

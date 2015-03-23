@@ -29,11 +29,11 @@ ATEN_USING_NAMESPACE
 
 // Electrostatic model
 const char* ElecMethodKeywords[Electrostatics::nElectrostatics] = { "none", "coulomb", "ewald", "ewaldauto" };
-const char* Electrostatics::elecMethod(Electrostatics::ElecMethod i)
+const char* Electrostatics::elecMethod(Electrostatics::ElecMethod em)
 {
-	return ElecMethodKeywords[i];
+	return ElecMethodKeywords[em];
 }
-Electrostatics::ElecMethod Electrostatics::elecMethod(const char* s, bool reportError)
+Electrostatics::ElecMethod Electrostatics::elecMethod(QString s, bool reportError)
 {
 	Electrostatics::ElecMethod em = (Electrostatics::ElecMethod) enumSearch("electrostatics method", Electrostatics::nElectrostatics, ElecMethodKeywords,s);
 	if ((em == Electrostatics::nElectrostatics) && reportError) enumPrintValid(Electrostatics::nElectrostatics,ElecMethodKeywords);
@@ -77,36 +77,34 @@ FunctionData VdwFunctions::VdwFunctions[VdwFunctions::nVdwFunctions] = {
 		{ 1, 0, 0, 0, 0, 0 }, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 },
 		{ CombinationRules::GeometricRule, CombinationRules::ArithmeticRule, CombinationRules::GeometricRule } }
 };
-VdwFunctions::VdwFunction VdwFunctions::vdwFunction(const char* s, bool reportError)
+VdwFunctions::VdwFunction VdwFunctions::vdwFunction(QString s, bool reportError)
 {
 	int i;
-	for (i=0; i < VdwFunctions::nVdwFunctions; i++)
-		if (strcmp(VdwFunctions::VdwFunctions[i].keyword,s) == 0) break;
+	for (i=0; i < VdwFunctions::nVdwFunctions; i++) if (s == VdwFunctions::VdwFunctions[i].keyword) break;
 	if ((i == VdwFunctions::nVdwFunctions) && reportError)
 	{
-		Messenger::print("Invalid VDW functional form '%s'.", s);
+		Messenger::print("Invalid VDW functional form '%s'.", qPrintable(s));
 		printValid();
 	}
 	return (VdwFunctions::VdwFunction) i;
 }
-int VdwFunctions::vdwParameter(VdwFunction form, const char* s, bool reportError)
+int VdwFunctions::vdwParameter(VdwFunction form, QString s, bool reportError)
 {
 	int i;
-	for (i=0; i < VdwFunctions::VdwFunctions[form].nParameters; i++)
-		if (strcmp(VdwFunctions::VdwFunctions[form].parameterKeywords[i],s) == 0) break;
+	for (i=0; i < VdwFunctions::VdwFunctions[form].nParameters; i++) if (s == VdwFunctions::VdwFunctions[form].parameterKeywords[i]) break;
 	if ((i == VdwFunctions::VdwFunctions[form].nParameters) && reportError)
 	{
-		Messenger::print("Invalid parameter '%s' for VDW functional form '%s'.", s, VdwFunctions::VdwFunctions[form].name);
-		Messenger::print("Valid parameters are:\n   ");
-		for (int n=0; n< VdwFunctions::VdwFunctions[form].nParameters; n++) Messenger::print("%s ",VdwFunctions::VdwFunctions[form].parameterKeywords[n]);
+		Messenger::print("Invalid parameter '%s' for VDW functional form '%s'.", qPrintable(s), VdwFunctions::VdwFunctions[form].name);
+		Messenger::print("Valid parameters are:");
+		for (int n=0; n< VdwFunctions::VdwFunctions[form].nParameters; n++) Messenger::print("%s ", VdwFunctions::VdwFunctions[form].parameterKeywords[n]);
 		Messenger::print("");
 	}
 	return i;
 }
 void VdwFunctions::printValid()
 {
-	Messenger::print("Valid forms are:\n   ");
-	for (int i=1; i< VdwFunctions::nVdwFunctions; i++) Messenger::print("%s ",VdwFunctions::VdwFunctions[i].keyword);
+	Messenger::print("Valid forms are:");
+	for (int i=1; i< VdwFunctions::nVdwFunctions; i++) Messenger::print("%s ", VdwFunctions::VdwFunctions[i].keyword);
 	Messenger::print("");
 }
 
@@ -133,36 +131,34 @@ FunctionData BondFunctions::BondFunctions[BondFunctions::nBondFunctions] = {
 		{ "d", "k", "eq" },
 		{ 1, 0, 0, 0, 0, 0 }, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 } }
 };
-BondFunctions::BondFunction BondFunctions::bondFunction(const char* s, bool reportError)
+BondFunctions::BondFunction BondFunctions::bondFunction(QString s, bool reportError)
 {
 	int i;
-	for (i=0; i < BondFunctions::nBondFunctions; i++)
-		if (strcmp(BondFunctions::BondFunctions[i].keyword,s) == 0) break;
+	for (i=0; i < BondFunctions::nBondFunctions; ++i) if (s == BondFunctions::BondFunctions[i].keyword) break;
 	if ((i == BondFunctions::nBondFunctions) && reportError)
 	{
-		Messenger::print("Invalid bond functional form '%s'.", s);
+		Messenger::print("Invalid bond functional form '%s'.", qPrintable(s));
 		printValid();
 	}
 	return (BondFunctions::BondFunction) i;
 }
-int BondFunctions::bondParameter(BondFunction form, const char* s, bool reportError)
+int BondFunctions::bondParameter(BondFunction form, QString s, bool reportError)
 {
 	int i;
-	for (i=0; i < BondFunctions::BondFunctions[form].nParameters; i++)
-		if (strcmp(BondFunctions::BondFunctions[form].parameterKeywords[i],s) == 0) break;
+	for (i=0; i < BondFunctions::BondFunctions[form].nParameters; i++) if (s == BondFunctions::BondFunctions[form].parameterKeywords[i]) break;
 	if ((i == BondFunctions::BondFunctions[form].nParameters) && reportError)
 	{
-		Messenger::print("Invalid parameter '%s' for bond functional form '%s'.", s, BondFunctions::BondFunctions[form].name);
-		Messenger::print("Valid parameters are:\n   ");
-		for (int n=0; n< BondFunctions::BondFunctions[form].nParameters; n++) Messenger::print("%s ",BondFunctions::BondFunctions[form].parameterKeywords[n]);
+		Messenger::print("Invalid parameter '%s' for bond functional form '%s'.", qPrintable(s), BondFunctions::BondFunctions[form].name);
+		Messenger::print("Valid parameters are:");
+		for (int n=0; n< BondFunctions::BondFunctions[form].nParameters; n++) Messenger::print("%s ", BondFunctions::BondFunctions[form].parameterKeywords[n]);
 		Messenger::print("");
 	}
 	return i;
 }
 void BondFunctions::printValid()
 {
-	Messenger::print("Valid forms are:\n   ");
-	for (int i=1; i< BondFunctions::nBondFunctions; i++) Messenger::print("%s ",BondFunctions::BondFunctions[i].keyword);
+	Messenger::print("Valid forms are:");
+	for (int i=1; i< BondFunctions::nBondFunctions; i++) Messenger::print("%s ", BondFunctions::BondFunctions[i].keyword);
 	Messenger::print("");
 }
 
@@ -197,36 +193,34 @@ FunctionData AngleFunctions::AngleFunctions[AngleFunctions::nAngleFunctions] = {
 		{ "k", "eq" },
 		{ 1, 0, 0, 0, 0, 0 }, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 } }
 };
-AngleFunctions::AngleFunction AngleFunctions::angleFunction(const char* s, bool reportError)
+AngleFunctions::AngleFunction AngleFunctions::angleFunction(QString s, bool reportError)
 {
 	int i;
-	for (i=0; i < AngleFunctions::nAngleFunctions; i++)
-		if (strcmp(AngleFunctions::AngleFunctions[i].keyword,s) == 0) break;
+	for (i=0; i < AngleFunctions::nAngleFunctions; i++) if (s == AngleFunctions::AngleFunctions[i].keyword) break;
 	if ((i == AngleFunctions::nAngleFunctions) && reportError)
 	{
-		Messenger::print("Invalid angle functional form '%s'.", s);
+		Messenger::print("Invalid angle functional form '%s'.", qPrintable(s));
 		printValid();
 	}
 	return (AngleFunctions::AngleFunction) i;
 }
-int AngleFunctions::angleParameter(AngleFunction form, const char* s, bool reportError)
+int AngleFunctions::angleParameter(AngleFunction form, QString s, bool reportError)
 {
 	int i;
-	for (i=0; i < AngleFunctions::AngleFunctions[form].nParameters; i++)
-		if (strcmp(AngleFunctions::AngleFunctions[form].parameterKeywords[i],s) == 0) break;
+	for (i=0; i < AngleFunctions::AngleFunctions[form].nParameters; i++) if (s == AngleFunctions::AngleFunctions[form].parameterKeywords[i]) break;
 	if ((i == AngleFunctions::AngleFunctions[form].nParameters) && reportError)
 	{
-		Messenger::print("Invalid parameter '%s' for bond functional form '%s'.", s, AngleFunctions::AngleFunctions[form].name);
-		Messenger::print("Valid parameters are:\n   ");
-		for (int n=0; n< AngleFunctions::AngleFunctions[form].nParameters; n++) Messenger::print("%s ",AngleFunctions::AngleFunctions[form].parameterKeywords[n]);
+		Messenger::print("Invalid parameter '%s' for bond functional form '%s'.", qPrintable(s), AngleFunctions::AngleFunctions[form].name);
+		Messenger::print("Valid parameters are:");
+		for (int n=0; n< AngleFunctions::AngleFunctions[form].nParameters; n++) Messenger::print("%s ", AngleFunctions::AngleFunctions[form].parameterKeywords[n]);
 		Messenger::print("");
 	}
 	return i;
 }
 void AngleFunctions::printValid()
 {
-	Messenger::print("Valid forms are:\n   ");
-	for (int i=1; i< AngleFunctions::nAngleFunctions; i++) Messenger::print("%s ",AngleFunctions::AngleFunctions[i].keyword);
+	Messenger::print("Valid forms are:");
+	for (int i=1; i< AngleFunctions::nAngleFunctions; i++) Messenger::print("%s ", AngleFunctions::AngleFunctions[i].keyword);
 	Messenger::print("");
 }
 
@@ -269,35 +263,33 @@ FunctionData TorsionFunctions::TorsionFunctions[TorsionFunctions::nTorsionFuncti
 		{ "k1", "k2", "k3", "k4", "k5", "k6", "k7", "k8", "k9" },
 		{ 1, 1, 1, 1, 1, 1, 1, 1, 1 }, { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0 } }
 };
-TorsionFunctions::TorsionFunction TorsionFunctions::torsionFunction(const char* s, bool reportError)
+TorsionFunctions::TorsionFunction TorsionFunctions::torsionFunction(QString s, bool reportError)
 {
 	int i;
-	for (i=0; i < TorsionFunctions::nTorsionFunctions; i++)
-		if (strcmp(TorsionFunctions::TorsionFunctions[i].keyword,s) == 0) break;
-	if ((i ==  TorsionFunctions::nTorsionFunctions) && reportError)
+	for (i=0; i < TorsionFunctions::nTorsionFunctions; i++) if (s == TorsionFunctions::TorsionFunctions[i].keyword) break;
+	if ((i == TorsionFunctions::nTorsionFunctions) && reportError)
 	{
-		Messenger::print("Invalid torsion functional form '%s'.", s);
+		Messenger::print("Invalid torsion functional form '%s'.", qPrintable(s));
 		printValid();
 	}
 	return (TorsionFunctions::TorsionFunction) i;
 }
-int TorsionFunctions::torsionParameter(TorsionFunction form, const char* s, bool reportError)
+int TorsionFunctions::torsionParameter(TorsionFunction form, QString s, bool reportError)
 {
 	int i;
-	for (i=0; i < TorsionFunctions::TorsionFunctions[form].nParameters; i++)
-		if (strcmp(TorsionFunctions::TorsionFunctions[form].parameterKeywords[i],s) == 0) break;
+	for (i=0; i < TorsionFunctions::TorsionFunctions[form].nParameters; i++) if (s == TorsionFunctions::TorsionFunctions[form].parameterKeywords[i]) break;
 	if ((i == TorsionFunctions::TorsionFunctions[form].nParameters) && reportError)
 	{
-		Messenger::print("Invalid parameter '%s' for bond functional form '%s'.", s, TorsionFunctions::TorsionFunctions[form].name);
-		Messenger::print("Valid parameters are:\n   ");
-		for (int n=0; n< TorsionFunctions::TorsionFunctions[form].nParameters; n++) Messenger::print("%s ",TorsionFunctions::TorsionFunctions[form].parameterKeywords[n]);
+		Messenger::print("Invalid parameter '%s' for bond functional form '%s'.", qPrintable(s), TorsionFunctions::TorsionFunctions[form].name);
+		Messenger::print("Valid parameters are:");
+		for (int n=0; n< TorsionFunctions::TorsionFunctions[form].nParameters; n++) Messenger::print("%s ", TorsionFunctions::TorsionFunctions[form].parameterKeywords[n]);
 		Messenger::print("");
 	}
 	return i;
 }
 void TorsionFunctions::printValid()
 {
-	Messenger::print("Valid forms are:\n   ");
-	for (int i=1; i< TorsionFunctions::nTorsionFunctions; i++) Messenger::print("%s ",TorsionFunctions::TorsionFunctions[i].keyword);
+	Messenger::print("Valid forms are:");
+	for (int i=1; i< TorsionFunctions::nTorsionFunctions; i++) Messenger::print("%s ", TorsionFunctions::TorsionFunctions[i].keyword);
 	Messenger::print("");
 }

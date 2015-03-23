@@ -49,7 +49,7 @@ bool Commands::function_NewSite(CommandNode* c, Bundle& obj, ReturnValue& rv)
 			obj.s->atoms << parser.argi(n) - 1;
 		}
 	}
-	Messenger::print("New site added for model: '%s', for pattern '%s', %i atoms defined%s", obj.s->name(), p->name(), obj.s->atoms.count(), (obj.s->atoms.count() == 0 ? " (will use centre of geometry)\n" : "\n"));
+	Messenger::print("New site added for model: '%s', for pattern '%s', %i atoms defined%s", qPrintable(obj.s->name()), qPrintable(p->name()), obj.s->atoms.count(), (obj.s->atoms.count() == 0 ? " (will use centre of geometry)\n" : "\n"));
 	rv.reset();
 	return TRUE;
 }
@@ -59,13 +59,13 @@ bool Commands::function_ListSites(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	Site* s = obj.m->sites.first();
-	if (s == NULL) Messenger::print("No sites defined for model '%s'.",obj.m->name());
+	if (s == NULL) Messenger::print("No sites defined for model '%s'.", qPrintable(obj.m->name()));
 	else
 	{
-		Messenger::print("Site list for model '%s':",obj.m->name());
+		Messenger::print("Site list for model '%s':", qPrintable(obj.m->name()));
 		for (s = s; s != NULL; s = s->next)
 		{
-			Messenger::print(" %15s %15s  ",s->name(), s->pattern()->name());
+			Messenger::print(" %15s %15s  ", qPrintable(s->name()), qPrintable(s->pattern()->name()));
 			if (s->atoms.count() == 0) Messenger::print("All atoms assumed (none defined)");
 			else for (int n=0; n<s->atoms.count(); ++n) Messenger::print(" %i", s->atoms.at(n));
 			Messenger::print("");
@@ -80,8 +80,8 @@ bool Commands::function_GetSite(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	Site* s;
-	for (s = obj.m->sites.first(); s != NULL; s = s->next) if (strcmp(s->name(),c->argc(0)) == 0) break;
-	if (s == NULL) Messenger::print("No site '%s' defined in model '%s'.", c->argc(0), obj.m->name());
+	for (s = obj.m->sites.first(); s != NULL; s = s->next) if (s->name() == c->argc(0)) break;
+	if (s == NULL) Messenger::print("No site '%s' defined in model '%s'.", qPrintable(c->argc(0)), qPrintable(obj.m->name()));
 	else obj.s = s;
 	rv.reset();
 	return FALSE;

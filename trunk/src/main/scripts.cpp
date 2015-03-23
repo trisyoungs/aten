@@ -20,17 +20,6 @@
 */
 
 #include "main/aten.h"
-// #include "main/version.h"
-// #include "gui/mainwindow.h"
-// #include "gui/grids.h"
-// #include "gui/modellist.h"
-// #include "model/model.h"
-// #include "model/clipboard.h"
-// #include "ff/forcefield.h"
-// #include "base/grid.h"
-// #include "base/pattern.h"
-// #include "base/sysfunc.h"
-// #include "parser/aten.h"
 
 ATEN_USING_NAMESPACE
 

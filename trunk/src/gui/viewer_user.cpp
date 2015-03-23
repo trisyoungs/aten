@@ -272,7 +272,7 @@ void Viewer::endMode(Prefs::MouseButton button)
 	Atom* atoms[4], *i;
 	Bond *b;
 	Bond::BondType bt;
-	Fragment *frag;
+	Fragment* frag;
 	
 	// Get current active model
 	Model* source = aten_->currentModelOrFrame();

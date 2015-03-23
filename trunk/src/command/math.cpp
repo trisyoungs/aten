@@ -21,8 +21,6 @@
 
 #include "command/commands.h"
 #include "parser/commandnode.h"
-// #include "math/constants.h"
-// #include <math.h>
 
 ATEN_USING_NAMESPACE
 

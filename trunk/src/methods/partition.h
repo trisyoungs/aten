@@ -64,7 +64,7 @@ class PartitionData : public ListItem<PartitionData>
 	// Integer id of partition
 	int id_;
 	// Name of the partition
-	Dnchar name_;
+	QString name_;
 	// Number of cells in partition
 	int nCells_;
 	// List of basic coordinates of cells
@@ -82,15 +82,15 @@ class PartitionData : public ListItem<PartitionData>
 	
 	public:
 	// Copy data from specified PartitionData
-	void copy(PartitionData *source);
+	void copy(PartitionData* source);
 	// Set id of partition
 	void setId(int id);
 	// Return id of partition
 	int id();
 	// Set name of partition
-	void setName(const char* s);
+	void setName(QString s);
 	// Return name of partition
-	const char* name();
+	QString name();
 	// Clear cells list
 	void clear();
 	// Add cell to list
@@ -138,9 +138,9 @@ class PartitioningScheme : public ListItem<PartitioningScheme>
 	// Program defining scheme, variables and functions
 	Program schemeDefinition_;
 	// Name of scheme (retrieved fron name() function)
-	Dnchar name_;
+	QString name_;
 	// Description of scheme (retrieved from description() function)
-	Dnchar description_;
+	QString description_;
 	// Pointer to partition() function
 	Tree* partitionFunction_;
 	// Pointer to partitionName() function
@@ -154,15 +154,15 @@ class PartitioningScheme : public ListItem<PartitioningScheme>
 	// Setup scheme information from generated program structure
 	bool initialiseFromProgram();
 	// Setup scheme information manually (for absolute grid data)
-	void initialiseAbsolute(const char* name, const char* description);
+	void initialiseAbsolute(QString name, QString description);
 	// Set name and description of scheme manually
-	void setName(const char* name, const char* description = NULL);
+	void setName(QString name, QString description = QString());
 	// Return name of partitioning scheme
-	const char* name();
+	QString name();
 	// Return description of partitioning scheme
-	const char* description();
+	QString description();
 	// Set named variable in partitionFunction_'s local scope
-	bool setVariable(const char* name, const char* value);
+	bool setVariable(QString name, QString value);
 
 
 	/*
@@ -205,11 +205,11 @@ class PartitioningScheme : public ListItem<PartitioningScheme>
 	// Clear partition component lists
 	void clearComponentLists();
 	// Return first partition in list
-	PartitionData *partitions();
+	PartitionData* partitions();
 	// Return nth partition in list
-	PartitionData *partition(int id);
+	PartitionData* partition(int id);
 	// Return name of nth partition in list
-	const char* partitionName(int id);
+	QString partitionName(int id);
 	// Return whether the partition function has any user-definable options
 	bool hasOptions();
 	// Execute dialog for user-definable options in partition function
@@ -217,7 +217,7 @@ class PartitioningScheme : public ListItem<PartitioningScheme>
 	// Return partition in which simple (unit) coordinate falls
 	int partitionId(double x, double y, double z);
 	// Return the grid structure
-	Grid &grid();
+	Grid& grid();
 	// Return icon containing illustrative partitions
 	QIcon &icon();
 	// Set gridsize to use for calculation

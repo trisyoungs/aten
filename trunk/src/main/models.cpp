@@ -126,33 +126,29 @@ int Aten::nModels() const
 Model* Aten::addModel()
 {
 	Messenger::enter("Aten::addModel");
-	Dnchar newname;
-	Model* m = NULL;
 
 	// Check current list target for model creation
+	Model* m = NULL;
 	switch (targetModelList_)
 	{
 		case (Aten::MainModelList):
 			m = models_.add();
 			m->setType(Model::ParentModelType);
-			newname.sprintf("Unnamed%03i", ++modelId_);
-			m->setName(newname);
+			m->setName(QString("Unnamed%1").arg(++modelId_, 3, 10, QChar('0')));
 			m->changeLog.reset();
 			setCurrentModel(m, TRUE);
 			break;
 		case (Aten::FragmentLibraryList):
 			m = fragmentModels_.add();
 			m->setType(Model::ParentModelType);
-			newname.sprintf("Fragment%03i", ++fragmentModelId_);
-			m->setName(newname);
+			m->setName(QString("Fragment%1").arg(++fragmentModelId_, 3, 10, QChar('0')));
 			m->changeLog.reset();
 			m->disableUndoRedo();
 			break;
 		case (Aten::WorkingModelList):
 			m = workingModels_.add();
 			m->setType(Model::ParentModelType);
-			newname.sprintf("TempModel%03i", workingModels_.nItems());
-			m->setName(newname);
+			m->setName(QString("TempModel%1").arg(workingModels_.nItems(), 3, 10, QChar('0')));
 			m->changeLog.reset();
 			m->disableUndoRedo();
 			break;
@@ -160,6 +156,7 @@ Model* Aten::addModel()
 			printf("Internal Error: No target list set for model creation.\n");
 			break;
 	}
+
 	Messenger::exit("Aten::addModel");
 	return m;
 }
@@ -181,11 +178,11 @@ void Aten::removeModel(Model* xmodel)
 }
 
 // Find model by name
-Model* Aten::findModel(const char* s) const
+Model* Aten::findModel(QString name) const
 {
 	Messenger::enter("Aten::findModel");
 	Model* result = NULL;
-	for (result = models_.first(); result != NULL; result = result->next) if (strcmp(s,result->name()) == 0) break;
+	for (result = models_.first(); result != NULL; result = result->next) if (name == result->name()) break;
 	Messenger::exit("Aten::findModel");
 	return result ;
 }

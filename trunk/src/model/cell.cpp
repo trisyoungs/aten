@@ -210,19 +210,21 @@ void Model::foldAllMolecules()
 }
 
 // Apply individual symmetry generator to current atom selection
-void Model::pack(Generator *gen)
+void Model::pack(Generator* gen)
 {
 	Messenger::enter("Model::pack[generator]");
 	Clipboard clip;
 	Vec3<double> newr;
 	int oldnatoms;
+
 	// Ignore the identity operator, and leave if there are no atoms marked
 	if ((gen == 0) || (marked_.nItems() == 0))
 	{
 		Messenger::enter("Model::pack[generator]");
 		return;
 	}
-	Messenger::print(Messenger::Verbose, "...Applying generator '%s'", gen->name());
+	Messenger::print(Messenger::Verbose, "...Applying generator '%s'", qPrintable(gen->name()));
+
 	// Store current number of atoms in model
 	oldnatoms = atoms_.nItems();
 	// Copy selection to clipboard
@@ -245,6 +247,7 @@ void Model::pack(Generator *gen)
 void Model::pack()
 {
 	Messenger::enter("Model::pack");
+
 	// Spacegroup should already have been set by a successful call to Model::setSpacegroup()
 	if ((cell_.spacegroupId() == 0) && (cell_.nGenerators() == 0))
 	{
@@ -295,12 +298,13 @@ void Model::pack()
 	else
 	{
 	 	Messenger::print("Packing cell from manually-defined generator list...");
-		for (Generator *g = cell_.generators(); g != NULL; g = g->next) pack(g);
+		for (Generator* g = cell_.generators(); g != NULL; g = g->next) pack(g);
 	}
 	
 	// Select overlapping atoms and delete
 	selectOverlaps(0.1, TRUE);
 	selectionDelete(TRUE);
+
 	Messenger::exit("Model::pack");
 }
 

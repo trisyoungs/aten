@@ -197,7 +197,8 @@ void VibrationsWidget::on_SaveImageButton_clicked(bool checked)
 
 void VibrationsWidget::on_SaveMovieButton_clicked(bool checked)
 {
-	static Dnchar geometry(-1,"%ix%i", (int) parent_.ui.MainView->width(), (int) parent_.ui.MainView->height());
+	QString geometry;
+	geometry.sprintf("%ix%i", (int) parent_.ui.MainView->width(), (int) parent_.ui.MainView->height());
 	int width, height;
 	
 	Tree dialog;
@@ -210,12 +211,12 @@ void VibrationsWidget::on_SaveMovieButton_clicked(bool checked)
 	if (!dialog.defaultDialog().execute()) return;
 	
 	// Retrieve widget values
-	geometry = dialogui.asCharacter("geometry");
-	width = atoi(beforeChar(geometry,'x'));
-	height = atoi(afterChar(geometry,'x'));
+	geometry = dialogui.asString("geometry");
+// 	width = atoi(beforeChar(geometry,'x'));	ATEN2 TODO
+// 	height = atoi(afterChar(geometry,'x'));
 	if ((width < 1) || (height < 1))
 	{
-		Dnchar message(-1, "The geometry '%s' is not valid since one (or both) components are less than 1.\n", geometry.get());
+		Dnchar message(-1, "The geometry '%s' is not valid since one (or both) components are less than 1.\n", qPrintable(geometry));
 		QMessageBox::warning(this, "Aten", message.get(), QMessageBox::Ok);
 		return;
 	}

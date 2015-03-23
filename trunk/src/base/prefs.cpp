@@ -34,7 +34,7 @@ ATEN_USING_NAMESPACE
 
 // Drawing styles
 const char* DrawStyleKeywords[Prefs::nDrawStyles] = { "Stick", "Tube", "Sphere", "Scaled", "Individual" };
-Prefs::DrawStyle Prefs::drawStyle(const char* s, bool reportError)
+Prefs::DrawStyle Prefs::drawStyle(QString s, bool reportError)
 {
 	Prefs::DrawStyle ds = (Prefs::DrawStyle) enumSearch("draw style", Prefs::nDrawStyles, DrawStyleKeywords, s, reportError);
 	if ((ds == Prefs::nDrawStyles) && reportError) enumPrintValid(Prefs::nDrawStyles,DrawStyleKeywords);
@@ -47,7 +47,7 @@ const char* Prefs::drawStyle(Prefs::DrawStyle i)
 
 // Colour Schemes
 const char* ColouringSchemeKeywords[Prefs::nColouringSchemes] = { "Charge", "Element", "Force", "Velocity", "Custom" };
-Prefs::ColouringScheme Prefs::colouringScheme(const char* s, bool reportError)
+Prefs::ColouringScheme Prefs::colouringScheme(QString s, bool reportError)
 {
 	Prefs::ColouringScheme cs = (Prefs::ColouringScheme) enumSearch("colour scheme",Prefs::nColouringSchemes,ColouringSchemeKeywords,s);
 	if ((cs == Prefs::nColouringSchemes) && reportError) enumPrintValid(Prefs::nColouringSchemes,ColouringSchemeKeywords);
@@ -60,7 +60,7 @@ const char* Prefs::colouringScheme(ColouringScheme cs)
 
 // Mouse buttons
 const char* MouseButtonKeywords[Prefs::nMouseButtons] = { "Left", "Middle", "Right", "Wheel" };
-Prefs::MouseButton Prefs::mouseButton(const char* s, bool reportError)
+Prefs::MouseButton Prefs::mouseButton(QString s, bool reportError)
 {
 	Prefs::MouseButton mb = (Prefs::MouseButton) enumSearch("mouse button", Prefs::nMouseButtons, MouseButtonKeywords, s);
 	if ((mb == Prefs::nMouseButtons) && reportError) enumPrintValid(Prefs::nMouseButtons,MouseButtonKeywords);
@@ -73,7 +73,7 @@ const char* Prefs::mouseButton(Prefs::MouseButton i)
 
 // Mouse actions
 const char* MouseActionKeywords[Prefs::nMouseActions] = { "None", "Rotate", "Translate", "Interact", "Zoom", "Z-Rotate" };
-Prefs::MouseAction Prefs::mouseAction(const char* s, bool reportError)
+Prefs::MouseAction Prefs::mouseAction(QString s, bool reportError)
 {
 	Prefs::MouseAction ma = (Prefs::MouseAction) enumSearch("mouse action", Prefs::nMouseActions,  MouseActionKeywords, s);
 	if ((ma == Prefs::nMouseActions) && reportError) enumPrintValid(Prefs::nMouseActions,MouseActionKeywords);
@@ -86,7 +86,7 @@ const char* Prefs::mouseAction(Prefs::MouseAction i)
 
 // Key modifiers
 const char* ModifierKeyKeywords[Prefs::nModifierKeys] = { "Shift", "Ctrl", "Alt" };
-Prefs::ModifierKey Prefs::modifierKey(const char* s, bool reportError)
+Prefs::ModifierKey Prefs::modifierKey(QString s, bool reportError)
 {
 	Prefs::ModifierKey mk = (Prefs::ModifierKey) enumSearch("modifier key", Prefs::nModifierKeys, ModifierKeyKeywords, s);
 	if ((mk == Prefs::nModifierKeys) && reportError) enumPrintValid(Prefs::nModifierKeys,ModifierKeyKeywords);
@@ -99,7 +99,7 @@ const char* Prefs::modifierKey(Prefs::ModifierKey i)
 
 // Key actions
 const char* KeyActionKeywords[Prefs::nKeyActions] = { "None", "Transform", "ZRotate" };
-Prefs::KeyAction Prefs::keyAction(const char* s, bool reportError)
+Prefs::KeyAction Prefs::keyAction(QString s, bool reportError)
 {
 	Prefs::KeyAction ka = (Prefs::KeyAction) enumSearch("key action", Prefs::nKeyActions, KeyActionKeywords, s);
 	if ((ka == Prefs::nKeyActions) && reportError) enumPrintValid(Prefs::nKeyActions,KeyActionKeywords);
@@ -113,7 +113,7 @@ const char* Prefs::keyAction(Prefs::KeyAction i)
 // Colours
 const char* ObjectColourKeywords[Prefs::nObjectColours] = { "ring", "bg", "fixedatom", "globeaxes", "globe", "glyph", "hbond", "specular", "text", "unitcellaxes", "unitcell", "vibrationarrow", "wireselection" };
 const char* ObjectColourNames[Prefs::nObjectColours] = { "Aromatic Ring", "Background", "Fixed Atom", "Globe Axes", "Globe", "Glyph Default", "Hydrogen Bond", "Specular", "Text", "Unit Cell Axes", "Unit Cell", "Vibration Arrow", "Wire Selection" };
-Prefs::ObjectColour Prefs::objectColour(const char* s, bool reportError)
+Prefs::ObjectColour Prefs::objectColour(QString s, bool reportError)
 {
 	Prefs::ObjectColour pc = (Prefs::ObjectColour) enumSearch("colour", Prefs::nObjectColours, ObjectColourKeywords, s);
 	if ((pc == Prefs::nObjectColours) && reportError) enumPrintValid(Prefs::nObjectColours,ObjectColourKeywords);
@@ -134,7 +134,7 @@ const char* Prefs::densityUnit(Prefs::DensityUnit i)
 {
 	return DensityUnitKeywords[i];
 }
-Prefs::DensityUnit Prefs::densityUnit(const char* s, bool reportError)
+Prefs::DensityUnit Prefs::densityUnit(QString s, bool reportError)
 {
 	Prefs::DensityUnit du = (Prefs::DensityUnit) enumSearch("density unit", Prefs::nDensityUnits, DensityUnitKeywords, s);
 	if ((du == Prefs::nDensityUnits) && reportError) enumPrintValid(Prefs::nDensityUnits,DensityUnitKeywords);
@@ -148,7 +148,7 @@ const char* Prefs::energyUnit(Prefs::EnergyUnit i)
 {
 	return EnergyUnitKeywords[i];
 }
-Prefs::EnergyUnit Prefs::energyUnit(const char* s, bool reportError)
+Prefs::EnergyUnit Prefs::energyUnit(QString s, bool reportError)
 {
 	Prefs::EnergyUnit eu = (Prefs::EnergyUnit) enumSearch("energy unit", Prefs::nEnergyUnits, EnergyUnitKeywords, s);
 	if ((eu == Prefs::nEnergyUnits) && reportError) enumPrintValid(Prefs::nEnergyUnits,EnergyUnitKeywords);
@@ -164,7 +164,7 @@ const char* Prefs::historyType(Prefs::HistoryType i)
 {
 	return HistoryTypeKeywords[i];
 }
-Prefs::HistoryType Prefs::historyType(const char* s, bool reportError)
+Prefs::HistoryType Prefs::historyType(QString s, bool reportError)
 {
 	Prefs::HistoryType ht = (Prefs::HistoryType) enumSearch("history type", Prefs::nHistoryTypes, HistoryTypeKeywords, s);
 	if ((ht == Prefs::nHistoryTypes) && reportError) enumPrintValid(Prefs::nHistoryTypes,HistoryTypeKeywords);
@@ -1437,15 +1437,15 @@ void Prefs::setAllowDialogs(bool b)
 }
 
 // Set list of common elements in SelectElement dialog
-void Prefs::setCommonElements(const char* s)
+void Prefs::setCommonElements(QString elementsList)
 {
-	commonElements_ = s;
+	commonElements_ = elementsList;
 }
 
 // Return list of common elements to use in SelectElement dialog
-const char* Prefs::commonElements() const
+QString Prefs::commonElements() const
 {
-	return commonElements_.get();
+	return commonElements_;
 }
 
 // Set the maximum number of undo levels allowed
@@ -1599,19 +1599,19 @@ double Prefs::elecCutoff() const
 }
 
 // Set combination rule equation
-void Prefs::setCombinationRule(CombinationRules::CombinationRule cr, const char* s)
+void Prefs::setCombinationRule(CombinationRules::CombinationRule cr, QString rule)
 {
-	combinationRules_[cr] = s;
+	combinationRules_[cr] = rule;
 }
 
 // Return combination rule equation
-const char* Prefs::combinationRule(CombinationRules::CombinationRule cr) const
+QString Prefs::combinationRule(CombinationRules::CombinationRule cr) const
 {
-	return combinationRules_[cr].get();
+	return combinationRules_[cr];
 }
 
 // Return array of combination rule equations
-Dnchar* Prefs::combinationRules()
+QString* Prefs::combinationRules()
 {
 	return combinationRules_;
 }
@@ -1639,39 +1639,39 @@ Vec3<int> Prefs::partitionGridSize()
 */
 
 // Set C-style format for distance label values
-void Prefs::setDistanceLabelFormat(const char* format)
+void Prefs::setDistanceLabelFormat(QString cFormat)
 {
-	distanceLabelFormat_ = format;
+	distanceLabelFormat_ = cFormat;
 }
 
 // Return C-style format for distance label values
-const char* Prefs::distanceLabelFormat()
+QString Prefs::distanceLabelFormat()
 {
-	return distanceLabelFormat_.get();
+	return distanceLabelFormat_;
 }
 
 // Set C-style format for angle label values
-void Prefs::setAngleLabelFormat(const char* format)
+void Prefs::setAngleLabelFormat(QString cFormat)
 {
-	angleLabelFormat_ = format;
+	angleLabelFormat_ = cFormat;
 }
 
 // Return C-style format for angle label values
-const char* Prefs::angleLabelFormat()
+QString Prefs::angleLabelFormat()
 {
-	return angleLabelFormat_.get();
+	return angleLabelFormat_;
 }
 
 // Set C-style format for charge label values
-void Prefs::setChargeLabelFormat(const char* format)
+void Prefs::setChargeLabelFormat(QString cFormat)
 {
-	chargeLabelFormat_ = format;
+	chargeLabelFormat_ = cFormat;
 }
 
 // Return C-style format for charge label values
-const char* Prefs::chargeLabelFormat()
+QString Prefs::chargeLabelFormat()
 {
-	return chargeLabelFormat_.get();
+	return chargeLabelFormat_;
 }
 
 // Set the scale of labels in the model
@@ -1775,73 +1775,73 @@ void Prefs::setHydrogenBondDotRadius(double r)
 */
 
 // Set temp directory
-void Prefs::setTempDir(const char* path)
+void Prefs::setTempDir(QDir path)
 {
 	tempDir_ = path;
 }
 
 // Return the temp directory path
-const char* Prefs::tempDir() const
+QDir Prefs::tempDir() const
 {
-	return tempDir_.get();
+	return tempDir_;
 }
 
 // Location of MOPAC executable
-void Prefs::setMopacExe(const char* exe)
+void Prefs::setMopacExe(QString exe)
 {
 	mopacExe_ = exe;
 }
 
 // Return the location of the MOPAC executable
-const char* Prefs::mopacExe() const
+QString Prefs::mopacExe() const
 {
-	return mopacExe_.get();
+	return mopacExe_;
 }
 
 // Encoder command
-void Prefs::setEncoderExe(const char* exe)
+void Prefs::setEncoderExe(QString exe)
 {
 	encoderExe_ = exe;
 }
 
 // Return encoder command
-const char* Prefs::encoderExe() const
+QString Prefs::encoderExe() const
 {
-	return encoderExe_.get();
+	return encoderExe_;
 }
 
 // Encoder arguments
-void Prefs::setEncoderArguments(const char* arguments)
+void Prefs::setEncoderArguments(QString arguments)
 {
 	encoderArguments_ = arguments;
 }
 
 // Return encoder arguments
-const char* Prefs::encoderArguments() const
+QString Prefs::encoderArguments() const
 {
-	return encoderArguments_.get();
+	return encoderArguments_;
 }
 
 // Video encoder post-process command
-void Prefs::setEncoderPostExe(const char* exe)
+void Prefs::setEncoderPostExe(QString exe)
 {
 	encoderPostExe_ = exe;
 }
 
 // Return the video encoder post-process command
-const char* Prefs::encoderPostExe() const
+QString Prefs::encoderPostExe() const
 {
-	return encoderPostExe_.get();
+	return encoderPostExe_;
 }
 
 // Video encoder post-process arguments
-void Prefs::setEncoderPostArguments(const char* arguments)
+void Prefs::setEncoderPostArguments(QString arguments)
 {
 	encoderPostArguments_ = arguments;
 }
 
 // Return the video encoder post-process arguments
-const char* Prefs::encoderPostArguments() const
+QString Prefs::encoderPostArguments() const
 {
-	return encoderPostArguments_.get();
+	return encoderPostArguments_;
 }

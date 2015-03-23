@@ -69,7 +69,7 @@ class Model : public ListItem<Model>
 	enum ModelType { ParentModelType, TrajectoryFrameType, VibrationFrameType };
 	// Component Insertion Policies
 	enum InsertionPolicy { NoPolicy, NumberPolicy, DensityPolicy, NumberAndDensityPolicy, RelativePolicy, nInsertionPolicies };
-	static InsertionPolicy insertionPolicy(const char* name, bool reportError = 0);
+	static InsertionPolicy insertionPolicy(QString s, bool reportError = false);
 	static const char* insertionPolicy(InsertionPolicy);
 
 
@@ -78,11 +78,11 @@ class Model : public ListItem<Model>
 	 */
 	private:
 	// Name of model
-	Dnchar name_;
+	QString name_;
 	// Format of model when loaded / last saved
 	Tree* filter_;
 	// Filename of model when loaded / last saved
-	Dnchar filename_;
+	QString filename_;
 	// Parent model (if a trajectory or vibration frame)
 	Model* parent_;
 	// Type of model
@@ -94,17 +94,17 @@ class Model : public ListItem<Model>
 
 	public:
 	// Sets the filename of the model
-	void setFilename(const char* s);
+	void setFilename(QString filename);
 	// Return the stored filename of the model
-	const char* filename() const;
+	QString filename() const;
 	// Sets the file filter of the model
 	void setFilter(Tree* f);
 	// Return the stored file filter of the model
 	Tree* filter() const;
 	// Sets the name of the model
-	void setName(const char* s);
+	void setName(QString name);
 	// Return the name of the model
-	const char* name() const;
+	QString name() const;
 	// Clear all data in model
 	void clear();
 	// Print information about the model (inc atoms)
@@ -263,7 +263,7 @@ class Model : public ListItem<Model>
 	// Fold all atoms into the cell
 	void foldAllAtoms();
 	// Apply the given symmetry generator to the current atom selection in the model
-	void pack(Generator *gen);
+	void pack(Generator* gen);
 	// Apply the symmetry operators listed in the model's cell's spacegroup
 	void pack();
 	// Fold all molecules into the cell
@@ -387,7 +387,7 @@ class Model : public ListItem<Model>
 	// DeSelect all atoms of the same element as the atom with the specified id
 	void deselectElement(int el, bool markOnly = FALSE);
 	// Select all atoms which match the provided type
-	int selectType(int element, const char* typedesc, bool markOnly = FALSE, bool deselect = FALSE);
+	int selectType(int element, QString typeDesc, bool markOnly = FALSE, bool deselect = FALSE);
 	// Select all atoms within cutoff of specified atom
 	void selectRadial(Atom* i, double d);
 	// Return the first selected atom in the model (if any)
@@ -534,7 +534,7 @@ class Model : public ListItem<Model>
 	// Return the forcefield containing original atom names for the model
 	Forcefield* namesForcefield() const;
 	// Add name to names forcefield
-	ForcefieldAtom* addAtomName(int el, const char* name);
+	ForcefieldAtom* addAtomName(int el, QString name);
 	// Remove reference to names forcefield
 	void removeNamesForcefield();
 
@@ -622,23 +622,23 @@ class Model : public ListItem<Model>
 	// Storage for energy
 	EnergyStore energy;
 	// Calculate (and return) the total energy of the specified model configuration
-	double totalEnergy(Model* config, bool &success);
+	double totalEnergy(Model* config, bool& success);
 	// Calculate (and return) the total interaction energy of the specified pattern molecule with the remainder
-	double moleculeEnergy(Model* config, Pattern* molpattern, int molecule, bool &success);
+	double moleculeEnergy(Model* config, Pattern* molpattern, int molecule, bool& success);
 	// Calculate and return the total angle energy of the model
-	double angleEnergy(Model* config, bool &success);
+	double angleEnergy(Model* config, bool& success);
 	// Calculate and return the total bond energy of the model
-	double bondEnergy(Model* config, bool &success);
+	double bondEnergy(Model* config, bool& success);
 	// Calculate and return the total electrostatic energy of the model
-	double electrostaticEnergy(Model* config, bool &success);
+	double electrostaticEnergy(Model* config, bool& success);
 	// Calculate and return the total intermolecular energy of the model
-	double intermolecularEnergy(Model* config, bool &success);
+	double intermolecularEnergy(Model* config, bool& success);
 	// Calculate and return the total intramolecular energy of the model
-	double intramolecularEnergy(Model* config, bool &success);
+	double intramolecularEnergy(Model* config, bool& success);
 	// Calculate and return the total torsion energy of the model
-	double torsionEnergy(Model* config, bool &success);
+	double torsionEnergy(Model* config, bool& success);
 	// Calculate and return the total van der Waals energy of the model
-	double vdwEnergy(Model* config, bool &success);
+	double vdwEnergy(Model* config, bool& success);
 	// Calculate forces in the specified model configuration
 	bool calculateForces(Model* config);
 	// Prints out atomic forces
@@ -664,7 +664,7 @@ class Model : public ListItem<Model>
 
 	public:
 	// Create a new pattern node
-	Pattern* addPattern(const char* name, int nMols, int nAtomsPerMol);
+	Pattern* addPattern(QString name, int nMols, int nAtomsPerMol);
 	// Cut the pattern from the list
 	void cutPattern(Pattern* pattern);
 	// Own the specified pattern (bool = whether to set ownermodel)
@@ -680,7 +680,7 @@ class Model : public ListItem<Model>
 	// Return the last pattern node of the model
 	Pattern* lastPattern() const;
 	// Find pattern by name
-	Pattern* findPattern(const char* name) const;
+	Pattern* findPattern(QString name) const;
 	// Autocreate patterns for the model
 	bool createPatterns();
 	// Create default pattern
@@ -700,11 +700,11 @@ class Model : public ListItem<Model>
 	// Calculate bonding restricted to patterns
 	void patternCalculateBonding(bool augment);
 	// Position specified molecule within pattern
-	void positionMolecule(Pattern*, int, const Vec3<double>&);
+	void positionMolecule(Pattern* pattern, int molecule, const Vec3<double>& pos);
 	// Translate specified molecule within pattern
-	void translateMolecule(Pattern*, int, const Vec3<double>&);
+	void translateMolecule(Pattern* pattern, int molecule, const Vec3<double>& delta);
 	// Rotate specified molecule within pattern
-	void rotateMolecule(Pattern*, int, double, double);
+	void rotateMolecule(Pattern* pattern, int molecule, double rotx, double roty);
 	// Set the hidden flag on atoms of the specified molecule
 	void hideMolecule(Pattern*, int, bool);
 	// Print patterns
@@ -800,9 +800,9 @@ class Model : public ListItem<Model>
 	*/
 	private:
 	// Name associated with trajectory file
-	Dnchar trajectoryName_;
+	QString trajectoryName_;
 	// Filename of file
-	Dnchar trajectoryFilename_;
+	QString trajectoryFilename_;
 	// Filter for trajectory file
 	Tree* trajectoryFilter_;
 	// Header and frame read functions from filter
@@ -810,7 +810,7 @@ class Model : public ListItem<Model>
 	// Trajectory file parser
 	LineParser trajectoryParser_;
 	// File offsets for frames
-	std::streampos *trajectoryOffsets_;
+	std::streampos* trajectoryOffsets_;
 	// Number of highest frame file offset stored
 	int trajectoryHighestFrameOffset_;
 	// Size of one frame
@@ -840,11 +840,11 @@ class Model : public ListItem<Model>
 	// Return whether the trajectory is cached (if there is one)
 	bool trajectoryIsCached() const;
 	// Initialise trajectory from file specified
-	bool initialiseTrajectory(const char*, Tree*);
+	bool initialiseTrajectory(QString filename, Tree* filter);
 	// Reinitialise (clear) the associated trajectory
 	void clearTrajectory();
-	// Set the format of the trajectory
-	void setTrajectoryFilter(Tree* f);
+	// Set the filter for the trajectory
+	void setTrajectoryFilter(Tree* filter);
 	// Return the trajectory file pointer
 	std::ifstream *trajectoryFile();
 	// Return the current frame pointer
@@ -980,7 +980,7 @@ class Model : public ListItem<Model>
 	// List of site definitions
 	List<Site> sites;
 	// Find site by name
-	Site* findSite(const char*);
+	Site* findSite(QString siteName);
 	// Calculate site centre from config and molecule ID supplied
 	Vec3<double> siteCentre(Site* s, int molid);
 	// Calculate local coordinate system for site / molecule ID supplied

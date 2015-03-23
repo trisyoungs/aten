@@ -22,7 +22,6 @@
 #ifndef ATEN_FRAGMENTDATA_H
 #define ATEN_FRAGMENTDATA_H
 
-#include "base/dnchar.h"
 #include "model/model.h"
 #include <QtGui/QIcon>
 #include "templates/list.h"
@@ -102,23 +101,23 @@ class FragmentGroup : public ListItem<FragmentGroup>
 	*/
 	private:
 	// Name of the group
-	Dnchar name_;
+	QString name_;
 	// List of fragments in this group
 	List<Fragment> fragments_;
 
 	public:
 	// Set name of group
-	void setName(const char* s);
+	void setName(QString name);
 	// Return name of group
-	const char* name();
+	QString name();
 	// Return number of fragments in group
 	int nFragments();
 	// Add new fragment
-	Fragment *addFragment();
+	Fragment* addFragment();
 	// Remove existing fragment
-	void removeFragment(Fragment *frag);
+	void removeFragment(Fragment* frag);
 	// Return first fragment in group
-	Fragment *fragments();
+	Fragment* fragments();
 	
 };
 

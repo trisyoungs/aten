@@ -26,7 +26,7 @@ ATEN_USING_NAMESPACE
 
 // Basis Function Types
 const char* BasisShellTypeKeywords[BasisShell::nBasisShellTypes] = { "none", "s", "p", "d", "f", "g", "l" };
-BasisShell::BasisShellType BasisShell::basisShellType(const char* s, bool reportError)
+BasisShell::BasisShellType BasisShell::basisShellType(QString s, bool reportError)
 {
 	BasisShell::BasisShellType bft = (BasisShell::BasisShellType) enumSearch("basis shell type", BasisShell::nBasisShellTypes, BasisShellTypeKeywords, s, reportError);
 	if ((bft == BasisShell::nBasisShellTypes) && reportError) enumPrintValid(BasisShell::nBasisShellTypes, BasisShellTypeKeywords);

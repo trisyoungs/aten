@@ -79,7 +79,8 @@ void ScriptMovieWidget::on_SaveScriptedMovieButton_clicked(bool on)
 		return;
 	}
 	
-	static Dnchar geometry(-1,"%ix%i", (int) parent_.ui.MainView->width(), (int) parent_.ui.MainView->height());
+	QString geometry;
+	geometry.sprintf("%ix%i", (int) parent_.ui.MainView->width(), (int) parent_.ui.MainView->height());
 	int width, height;
 	
 	Tree dialog;
@@ -92,12 +93,12 @@ void ScriptMovieWidget::on_SaveScriptedMovieButton_clicked(bool on)
 	if (!dialog.defaultDialog().execute()) return;
 
 	// Retrieve widget values
-	geometry = ui.asCharacter("geometry");
-	width = atoi(beforeChar(geometry,'x'));
-	height = atoi(afterChar(geometry,'x'));
+	geometry = ui.asString("geometry");
+// 	width = atoi(beforeChar(geometry,'x'));	// ATEN2 TODO
+// 	height = atoi(afterChar(geometry,'x'));
 	if ((width < 1) || (height < 1))
 	{
-		Dnchar message(-1, "The geometry '%s' is not valid since one (or both) components are less than 1.\n", geometry.get());
+		Dnchar message(-1, "The geometry '%s' is not valid since one (or both) components are less than 1.\n", qPrintable(geometry));
 		QMessageBox::warning(this, "Aten", message.get(), QMessageBox::Ok);
 		return;
 	}
@@ -113,10 +114,11 @@ void ScriptMovieWidget::on_SaveScriptedMovieButton_clicked(bool on)
 	currentDirectory.setPath(filename);
 	
 	// Check that defined encoder exe exists
-	if (!fileExists(prefs.encoderExe()))
+	QFileInfo fileInfo(prefs.encoderExe());
+	if (!fileInfo.exists())
 	{
-		Dnchar message(-1, "Error: Encoder excutable doesn't appear to exist ('%s').\n", prefs.encoderExe());
-		QMessageBox::warning(this, "Aten", message.get(), QMessageBox::Ok);
+		QString message = "Error: Encoder executable doesn't appear to exist ('" + prefs.encoderExe() + "').";
+		QMessageBox::warning(this, "Aten", message, QMessageBox::Ok);
 		return;
 	}
 	
@@ -128,13 +130,14 @@ void ScriptMovieWidget::on_SaveScriptedMovieButton_clicked(bool on)
 	
 	// Generate unique file basename and initialise image redirection
 	int runid;
-	Dnchar basename;
+	QString basename;
 	do
 	{
 		runid = AtenMath::randomimax();
-		basename.sprintf("%s%caten-movie-%i-%i-%09i.png", prefs.tempDir(), PATHSEP, parent_.pid(), runid, 0);
-	} while (fileExists(basename));
-	basename.sprintf("%s%caten-movie-%i-%i-%%09i.png", prefs.tempDir(), PATHSEP, parent_.pid(), runid);
+		basename = prefs.tempDir().filePath("aten-movie-%1-%2-%3.arc").arg(QApplication::applicationPid(), runid).arg(0, 9, 10, QChar('0'));
+		fileInfo.setFile(basename);
+	} while (fileInfo.exists());
+// 	basename.sprintf("%s%caten-movie-%i-%i-%%09i.png", qPrintable(prefs.tempDir()), PATHSEP, parent_.pid(), runid); ATEN2 TODO
 	parent_.aten().initialiseImageRedirect(basename, maxframes);
 	
 	int progid = progress.initialise("Saving scripted movie frames...", -1);
@@ -149,14 +152,15 @@ void ScriptMovieWidget::on_SaveScriptedMovieButton_clicked(bool on)
 
 	// Now run external program to create movie
 	TProcess encoderProcess;
+
 	// Grab encoder command and replace
-	basename.sprintf("%s%caten-movie-%i-%i-*.png", prefs.tempDir(), PATHSEP, parent_.pid(), runid);
+	basename = prefs.tempDir().filePath("aten-movie-%1-%2-*.png").arg(QApplication::applicationPid(), runid);
 	QString encoderArgs = prefs.encoderArguments();
 	encoderArgs.replace("OUTPUT", qPrintable(filename));
-	encoderArgs.replace("FILES", basename.get());
-	encoderArgs.replace("FPS", itoa(fps));
-	Messenger::print("Command to run will be '%s %s'", prefs.encoderExe(), qPrintable(encoderArgs));
-	if (!encoderProcess.execute(prefs.encoderExe(),qPrintable(encoderArgs),NULL))
+	encoderArgs.replace("FILES", basename);
+	encoderArgs.replace("FPS", QString::number(fps));
+	Messenger::print("Command to run will be '%s %s'", qPrintable(prefs.encoderExe()), qPrintable(encoderArgs));
+	if (!encoderProcess.execute(prefs.encoderExe(), qPrintable(encoderArgs), NULL))
 	{
 		Messenger::print("Error: Failed to run encoder command.");
 		return;
@@ -178,10 +182,10 @@ void ScriptMovieWidget::on_SaveScriptedMovieButton_clicked(bool on)
 		// Grab encoder command and replace
 		QString encoderArgs = prefs.encoderPostArguments();
 		encoderArgs.replace("OUTPUT", qPrintable(filename));
-		encoderArgs.replace("FILES", basename.get());
-		encoderArgs.replace("FPS", itoa(fps));
-		Messenger::print("Command to run will be '%s %s'", prefs.encoderPostExe(), qPrintable(encoderArgs));
-		if (!postProcess.execute(prefs.encoderPostExe(),qPrintable(encoderArgs),NULL))
+		encoderArgs.replace("FILES", basename);
+		encoderArgs.replace("FPS", QString::number(fps));
+		Messenger::print("Command to run will be '%s %s'", qPrintable(prefs.encoderPostExe()), qPrintable(encoderArgs));
+		if (!postProcess.execute(prefs.encoderPostExe(), encoderArgs, NULL))
 		{
 			Messenger::print("Error: Failed to run encoder post-processing command.");
 		}
@@ -198,8 +202,8 @@ void ScriptMovieWidget::on_SaveScriptedMovieButton_clicked(bool on)
 	bool pid = progress.initialise("Cleaning up...", nframes);
 	for (int n = 0; n < nframes; ++n)
 	{
-		basename.sprintf("%s%caten-movie-%i-%i-%09i.png", prefs.tempDir(), PATHSEP, parent_.pid(), runid, n);
-		QFile::remove(basename.get());
+		basename = prefs.tempDir().filePath("aten-movie-%1-%2-%3.arc").arg(QApplication::applicationPid(), runid).arg(n, 9, 10, QChar('0'));
+		QFile::remove(basename);
 		if (!progress.update(pid,n)) break;
 	}
 	progress.terminate(pid);

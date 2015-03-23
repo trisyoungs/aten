@@ -84,7 +84,7 @@ Glyph* Model::glyph(int n)
 Vec3<double> Model::glyphVector(Glyph* g, int dataid) const
 {
 	Atom* i;
-	if ((dataid < 0) || (dataid >= g->nData())) Messenger::print( "Tried to get vector %i from glyph when it has only %i in total.", dataid+1, g->nData());
+	if ((dataid < 0) || (dataid >= g->nData())) Messenger::print("Tried to get vector %i from glyph when it has only %i in total.", dataid+1, g->nData());
 	else
 	{
 		if (g->data(dataid)->atomSetLast())
@@ -92,13 +92,13 @@ Vec3<double> Model::glyphVector(Glyph* g, int dataid) const
 			i = g->data(dataid)->atom();
 			if (i == NULL)
 			{
-				Messenger::print( "Atom was apparently set last in glyph, but stored pointer is NULL.");
+				Messenger::print("Atom was apparently set last in glyph, but stored pointer is NULL.");
 				return Vec3<double>();
 			}
 // 			// Check range of stored atom id
 // 			if (id >= atoms_.nItems())
 // 			{
-// 				Messenger::print( "Atom ID set in glyph (%i) is outside range for model.", id);
+// 				Messenger::print("Atom ID set in glyph (%i) is outside range for model.", id);
 // 				return Vec3<double>();
 // 			}
 // 			Atom* i = atoms_[id];

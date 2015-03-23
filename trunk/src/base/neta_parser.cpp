@@ -46,17 +46,17 @@ NetaParser::NetaParser()
 // Print error information and location
 void NetaParser::printErrorInfo()
 {
-	if (isFileSource_) Messenger::print("Error occurred here (line %i in file '%s'):", parser_.lastLineNo(), parser_.inputFilename());
+	if (isFileSource_) Messenger::print("Error occurred here (line %i in file '%s'):", parser_.lastLineNo(), qPrintable(parser_.inputFilename()));
 	// QUICK'n'DIRTY!
 	int i;
 	char *temp = new char[stringLength_+32];
 	for (i=0; i<stringLength_+32; ++i) temp[i] = '\0';
-	for (i=0; i<tokenStart_; i++) temp[i] = (stringSource_[i] == '\t' ? '\t' : ' ');
+	for (i=0; i<tokenStart_; i++) temp[i] = (stringSource_.at(i) == '\t' ? '\t' : ' ');
 	if (functionStart_ > -1) for (i=functionStart_; i<stringPos_; i++) if (temp[i] != '\t') temp[i] = '-';
 	for (i=tokenStart_; i<stringPos_; i++) temp[i] = '^';
 	temp[stringPos_] = '\0';
 	// Print current string
-	Messenger::print(" %s", stringSource_.get());
+	Messenger::print(" %s", qPrintable(stringSource_));
 	Messenger::print(" %s^", temp);
 	delete[] temp;
 }
@@ -86,9 +86,11 @@ char NetaParser::getChar()
 			stringPos_ = 0;
 		}
 	}
+
 	// Return current character
 	if (stringPos_ == stringLength_) return '\0';
-	c = stringSource_[stringPos_];
+	c = stringSource_.at(stringPos_).toAscii();
+
 	// Increment string position
 	stringPos_++;
 	return c;
@@ -101,13 +103,13 @@ char NetaParser::peekChar()
 	if (isFileSource_)
 	{
 		if (stringPos_ == stringLength_) return parser_.peek();
-		c = stringSource_[stringPos_];
+		c = stringSource_.at(stringPos_).toAscii();
 	}
 	else
 	{
 		// Return current character
 		if (stringPos_ == stringLength_) return '\0';
-		c = stringSource_[stringPos_];
+		c = stringSource_.at(stringPos_).toAscii();
 	}
 	return c;
 }
@@ -119,9 +121,9 @@ void NetaParser::unGetChar()
 	{
 		// If we are at position 0, then we need the last character from the previous line!
 		if (stringPos_ == 0) printf("Fix Required: last character from previous line...\n");
-		else stringPos_ --;
+		else --stringPos_;
 	}
-	else stringPos_--;
+	else --stringPos_;
 }
 
 /*
@@ -136,15 +138,16 @@ void NetaParser::popContext()
 }
 
 // Return name of last unrecognised token
-const char* NetaParser::lastUnknownToken()
+QString NetaParser::lastUnknownToken()
 {
-	return lastUnknownToken_.get();
+	return lastUnknownToken_;
 }
 
 // Create and return NETA structure from supplied character element and string
-bool NetaParser::createNeta(Neta *target, const char* s, Forcefield* parentff)
+bool NetaParser::createNeta(Neta* target, QString neta, Forcefield* parentff)
 {
 	Messenger::enter("NetaParser::createNeta");
+
 	// Check for existing current target...
 	if (neta_ != NULL)
 	{
@@ -152,6 +155,7 @@ bool NetaParser::createNeta(Neta *target, const char* s, Forcefield* parentff)
 		Messenger::exit("NetaParser::createNeta");
 		return FALSE;
 	}
+
 	// Was a valid pointer passed?
 	if (target == NULL)
 	{
@@ -159,16 +163,19 @@ bool NetaParser::createNeta(Neta *target, const char* s, Forcefield* parentff)
 		Messenger::exit("NetaParser::createNeta");
 		return FALSE;
 	}
+
 	// Store new pointer targets
 	neta_ = target;
 	neta_->clear();
 	targetParentForcefield_ = parentff;
+
 	// Store the source string
-	stringSource_ = s;
+	stringSource_ = neta;
 	stringPos_ = 0;
 	stringLength_ = stringSource_.length();
-	Messenger::print(Messenger::Typing, "Parser source string is '%s', length is %i", stringSource_.get(), stringLength_);
+	Messenger::print(Messenger::Typing, "Parser source string is '%s', length is %i", qPrintable(stringSource_), stringLength_);
 	isFileSource_ = FALSE;
+
 	// Perform the parsing
 	contextStack_.clear();
 	int result = NetaParser_parse();
@@ -179,40 +186,47 @@ bool NetaParser::createNeta(Neta *target, const char* s, Forcefield* parentff)
 	}
 // 	neta_->print();
 	neta_ = NULL;
+
 	Messenger::exit("NetaParser::createNeta");
 	return (result != 0 ? FALSE : TRUE);
 }
 
 // Set description (called by lexer)
-void NetaParser::setDescription(NetaNode *desc)
+void NetaParser::setDescription(NetaNode* desc)
 {
 	Messenger::enter("NetaParser::setDescription");
-	NetaRootNode *rootnode = new NetaRootNode();
+
+	NetaRootNode* rootnode = new NetaRootNode();
 	rootnode->setInnerNeta(desc);
 	neta_->ownedNodes_.own(rootnode);
 	neta_->description_ = rootnode;
+
 	Messenger::exit("NetaParser::setDescription");
 }
 
 // Join two nodes together
-NetaNode *NetaParser::join(Neta::NetaLogicType logic, NetaNode *node1, NetaNode *node2)
+NetaNode* NetaParser::join(Neta::NetaLogicType logic, NetaNode* node1, NetaNode* node2)
 {
 	Messenger::enter("NetaParser::join");
-	NetaLogicNode *newnode = new NetaLogicNode(logic, node1, node2);
+
+	NetaLogicNode* newnode = new NetaLogicNode(logic, node1, node2);
 	newnode->setParent(neta_);
 	neta_->ownedNodes_.own(newnode);
+
 	Messenger::exit("NetaParser::join");
 	return newnode;	
 }
 
 // Link two nodes together
-NetaNode *NetaParser::link(NetaNode *node1, NetaNode *node2)
+NetaNode* NetaParser::link(NetaNode* node1, NetaNode* node2)
 {
 	Messenger::enter("NetaParser::link");
-	NetaNode *tail = node1;
+
+	NetaNode* tail = node1;
 	while (tail->nextNode != NULL) tail = tail->nextNode;
 	tail->nextNode = node2;
 	node2->prevNode = tail;
+
 	Messenger::exit("NetaParser::link");
 	return node1;
 }
@@ -221,56 +235,66 @@ NetaNode *NetaParser::link(NetaNode *node1, NetaNode *node2)
 Refitem<ForcefieldAtom,int>* NetaParser::createElementType(int eltype)
 {
 	Messenger::enter("NetaParser::createElementType");
-	Refitem<ForcefieldAtom,int>* newitem = new Refitem<ForcefieldAtom,int>;
-	newitem->item = NULL;
-	newitem->data = eltype;
+
+	Refitem<ForcefieldAtom,int>* newItem = new Refitem<ForcefieldAtom,int>;
+	newItem->item = NULL;
+	newItem->data = eltype;
+
 	Messenger::exit("NetaParser::createElementType");
-	return newitem;
+	return newItem;
 }
 
 // Join element/type list items
 Refitem<ForcefieldAtom,int>* NetaParser::joinElementTypes(Refitem<ForcefieldAtom,int>* type1, Refitem<ForcefieldAtom,int>* type2)
 {
 	Messenger::enter("NetaParser::joinElementTypes");
+
 	// Find tail of list begun by type1
 	Refitem<ForcefieldAtom,int>* tail = type1;
 	while (tail->next != NULL) tail = tail->next;
+
 	// Append on type2
 	type2->prev = tail;
 	tail->next = type2;
+
 	Messenger::exit("NetaParser::joinElementTypes");
 	return type1;
 }
 
 // Create keyword node in current NETA structure
-NetaNode *NetaParser::createKeywordNode(Neta::NetaKeyword nk)
+NetaNode* NetaParser::createKeywordNode(Neta::NetaKeyword nk)
 {
 	Messenger::enter("NetaParser::createKeywordNode");
-	NetaKeywordNode *newnode = new NetaKeywordNode(nk);
-	newnode->setParent(neta_);
-	neta_->ownedNodes_.own(newnode);
+
+	NetaKeywordNode* newNode = new NetaKeywordNode(nk);
+	newNode->setParent(neta_);
+	neta_->ownedNodes_.own(newNode);
+
 	Messenger::exit("NetaParser::createKeywordNode");
-	return newnode;
+	return newNode;
 }
 
 // Create geometry node in current NETA structure
-NetaNode *NetaParser::createGeometryNode(Atom::AtomGeometry ag)
+NetaNode* NetaParser::createGeometryNode(Atom::AtomGeometry ag)
 {
 	Messenger::enter("NetaParser::createGeometryNode");
-	NetaGeometryNode *newnode = new NetaGeometryNode(ag);
-	newnode->setParent(neta_);
-	neta_->ownedNodes_.own(newnode);
+
+	NetaGeometryNode* newNode = new NetaGeometryNode(ag);
+	newNode->setParent(neta_);
+	neta_->ownedNodes_.own(newNode);
+
 	Messenger::exit("NetaParser::createGeometryNode");
-	return newnode;
+	return newNode;
 }
 
 // Create value node in current NETA structure
-NetaNode *NetaParser::createValueNode(Neta::NetaValue nv, Neta::NetaValueComparison nvc, int value)
+NetaNode* NetaParser::createValueNode(Neta::NetaValue nv, Neta::NetaValueComparison nvc, int value)
 {
 	Messenger::enter("NetaParser::createValueNode");
-	NetaValueNode *newnode = new NetaValueNode(nv, nvc, value);
-	newnode->setParent(neta_);
-	neta_->ownedNodes_.own(newnode);
+
+	NetaValueNode* newNode = new NetaValueNode(nv, nvc, value);
+	newNode->setParent(neta_);
+	neta_->ownedNodes_.own(newNode);
 	// If the NetaValue is 'n' (the repeat number) then add this info to the topmost ContextNode
 	if (nv == Neta::RepeatValue)
 	{
@@ -283,72 +307,88 @@ NetaNode *NetaParser::createValueNode(Neta::NetaValue nv, Neta::NetaValueCompari
 		contextStack_.last()->item->setRepeat(value);
 		contextStack_.last()->item->setRepeatComparison(nvc);
 	}
+
 	Messenger::exit("NetaParser::createValueNode");
-	return newnode;
+	return newNode;
 }
 
 // Create expander node in current NETA structure
-NetaBoundNode *NetaParser::createBoundNode()
+NetaBoundNode* NetaParser::createBoundNode()
 {
 	Messenger::enter("NetaParser::createBoundNode");
-	NetaBoundNode *newnode = new NetaBoundNode();
-	newnode->setParent(neta_);
-	contextStack_.add(newnode);
+
+	NetaBoundNode* newNode = new NetaBoundNode();
+	newNode->setParent(neta_);
+	contextStack_.add(newNode);
 // 	printf("Added stacknode %p - %i in list\n", newnode, contextStack_.nItems());
-	neta_->ownedNodes_.own(newnode);
+	neta_->ownedNodes_.own(newNode);
+
 	Messenger::exit("NetaParser::createBoundNode");
-	return newnode;
+	return newNode;
 }
 
 // Create ring node in current NETA structure
-NetaRingNode *NetaParser::createRingNode()
+NetaRingNode* NetaParser::createRingNode()
 {
 	Messenger::enter("NetaParser::createRingNode");
-	NetaRingNode *newnode = new NetaRingNode();
-	newnode->setParent(neta_);
-	contextStack_.add(newnode);
-	neta_->ownedNodes_.own(newnode);
+
+	NetaRingNode* newNode = new NetaRingNode();
+	newNode->setParent(neta_);
+	contextStack_.add(newNode);
+	neta_->ownedNodes_.own(newNode);
+
 	Messenger::exit("NetaParser::createRingNode");
-	return newnode;
+	return newNode;
 }
 
 // Create chain node in current NETA structure
-NetaChainNode *NetaParser::createChainNode()
+NetaChainNode* NetaParser::createChainNode()
 {
 	Messenger::enter("NetaParser::createChainNode");
-	NetaChainNode *newnode = new NetaChainNode();
-	newnode->setParent(neta_);
-	contextStack_.add(newnode);
-	neta_->ownedNodes_.own(newnode);
+
+	NetaChainNode* newNode = new NetaChainNode();
+	newNode->setParent(neta_);
+	contextStack_.add(newNode);
+	neta_->ownedNodes_.own(newNode);
+
 	Messenger::exit("NetaParser::createChainNode");
-	return newnode;
+	return newNode;
 }
 
 // Create measurement node in current NETA structure
-NetaMeasurementNode *NetaParser::createMeasurementNode(bool removeNeighbours)
+NetaMeasurementNode* NetaParser::createMeasurementNode(bool removeNeighbours)
 {
 	Messenger::enter("NetaParser::createMeasurementNode");
-	NetaMeasurementNode *newnode = new NetaMeasurementNode();
-	newnode->setParent(neta_);
-	newnode->setRemoveNeighbours(removeNeighbours);
-	contextStack_.add(newnode);
-	neta_->ownedNodes_.own(newnode);
+
+	NetaMeasurementNode* newNode = new NetaMeasurementNode();
+	newNode->setParent(neta_);
+	newNode->setRemoveNeighbours(removeNeighbours);
+	contextStack_.add(newNode);
+	neta_->ownedNodes_.own(newNode);
+
 	Messenger::exit("NetaParser::createMeasurementNode");
-	return newnode;
+	return newNode;
 }
 
 // Find named define in forcefield
-NetaNode *NetaParser::findDefine(const char* name)
+NetaNode* NetaParser::findDefine(QString name)
 {
 	Messenger::enter("NetaParser::findDefine");
-	if (targetParentForcefield_ == NULL) return NULL;
-	Neta *neta = targetParentForcefield_->typeDefine(name);
-	if (neta == NULL)
+
+	if (targetParentForcefield_ == NULL)
 	{
-		Messenger::print("Error: Type define '%s' has not been defined.", name);
+		Messenger::exit("NetaParser::findDefine");
 		return NULL;
 	}
-	NetaNode *node = neta_->clone(neta->description());
+	Neta* neta = targetParentForcefield_->typeDefine(name);
+	if (neta == NULL)
+	{
+		Messenger::print("Error: Type define '%s' has not been defined.", qPrintable(name));
+		Messenger::exit("NetaParser::findDefine");
+		return NULL;
+	}
+	NetaNode* node = neta_->clone(neta->description());
+
 	Messenger::exit("NetaParser::findDefine");
 	return node;
 }

@@ -93,7 +93,7 @@ void Viewer::renderActiveModes(Model* currentModel)
 			for (n = -i; n <= i; n++)
 			{
 				if ((n%skip) != 0) continue;
-				painter.drawText(halfw + n*dx - (n < 0 ? 8 : 3), contextHeight_, itoa(n));
+				painter.drawText(halfw + n*dx - (n < 0 ? 8 : 3), contextHeight_, QString::number(n));
 			}
 			break;
 		default:
@@ -112,7 +112,7 @@ void Viewer::renderUserActions(Model* source)
 	Bond::BondType bt = Bond::Single;
 	double radius_i, radius_j;
 	Dnchar text;
-	Fragment *frag;
+	Fragment* frag;
 
 	// Draw on the selection highlights (for atoms in the canvas' pickedAtoms list)
 	prefs.copyColour(Prefs::TextColour, colour_i);

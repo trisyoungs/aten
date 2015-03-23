@@ -22,7 +22,6 @@
 #ifndef ATEN_FORCEFIELD_H
 #define ATEN_FORCEFIELD_H
 
-#include "base/dnchar.h"
 #include "base/lineparser.h"
 #include "base/prefs.h"
 #include "base/neta.h"
@@ -47,7 +46,7 @@ class Forcefield : public ListItem<Forcefield>
 	~Forcefield();
         // Forcefield Commands
 	enum ForcefieldCommand { AnglesCommand, BondsCommand, ConvertCommand, DataCommand, DefinesCommand, EScaleCommand, EquivalentsCommand, FunctionCommand, ImproperCommand, InterCommand, MessageCommand, NameCommand, TorsionsCommand, TypesCommand, UATypesCommand, UnitsCommand, UreyBradleyCommand, VdwCommand, VScaleCommand, nForcefieldCommands };
-        static ForcefieldCommand forcefieldCommand(const char* s);
+        static ForcefieldCommand forcefieldCommand(QString s);
 	// Local parser
 	LineParser ffparser;
 
@@ -57,21 +56,21 @@ class Forcefield : public ListItem<Forcefield>
 	*/
 	private:
 	// Title of Forcefield
-	Dnchar name_;
+	QString name_;
 	// Filename
-	Dnchar filename_;
+	QString filename_;
 	// Energy unit of the forcefield parameters
 	Prefs::EnergyUnit energyUnit_;
 
 	public:
 	// Sets the name of the Forcefield
-	void setName(const char* s);
+	void setName(QString name);
 	// Returns the name of the Forcefield
-	const char* name();
+	QString name();
 	// Set filename
-	void setFilename(const char* s);
+	void setFilename(QString filename);
 	// Return filename
-	const char* filename();
+	QString filename();
 	// Return internal energy unit of forcefield
 	Prefs::EnergyUnit energyUnit();
 	// Set internal energy unit of forcefield
@@ -101,15 +100,15 @@ class Forcefield : public ListItem<Forcefield>
 	// Get the atomtype specified by the ffid number passed
 	ForcefieldAtom* findType(int id);
 	// Find the named atomtype
-	ForcefieldAtom* findType(const char* name);
+	ForcefieldAtom* findType(QString name);
 	// Returns the ForcefieldAtom with the typeId provided
 	ForcefieldAtom* findByTypeId(int id, ForcefieldAtom* excluding = NULL);
 	// Return number of type defines in forcefield
 	int nTypeDefines();
 	// Return type defines list
-	Neta *typeDefines();
+	Neta* typeDefines();
 	// Find type define
-	Neta *typeDefine(const char* name);
+	Neta* typeDefine(QString name);
 	// Returns whether the specified forcefield type is contained in this forcefield
 	bool containsType(ForcefieldAtom* type);
 
@@ -133,7 +132,7 @@ class Forcefield : public ListItem<Forcefield>
 	// Retrieve bond data corresponding to specified atomtype id's
 	ForcefieldBound* findBond(ForcefieldAtom* ffi, ForcefieldAtom* ffj);
 	// Retrieve bond data corresponding to specified names
-	ForcefieldBound* findBond(const char* typei, const char* typej);
+	ForcefieldBound* findBond(QString typei, QString typej);
 
 
 	/*
@@ -155,7 +154,7 @@ class Forcefield : public ListItem<Forcefield>
 	// Retrieve angle data corresponding to specified atomtype id's
 	ForcefieldBound* findAngle(ForcefieldAtom* ffi, ForcefieldAtom* ffj, ForcefieldAtom* ffk);
 	// Retrieve angle data corresponding to specified names
-	ForcefieldBound* findAngle(const char* typei, const char* typej, const char* typek);
+	ForcefieldBound* findAngle(QString typei, QString typej, QString typek);
 	
 
 	/*
@@ -177,7 +176,7 @@ class Forcefield : public ListItem<Forcefield>
 	// Retrieve torsion data corresponding to specified atomtype id's
 	ForcefieldBound* findTorsion(ForcefieldAtom* ffi, ForcefieldAtom* ffj, ForcefieldAtom* ffk, ForcefieldAtom* ffl);
 	// Retrieve torsion data corresponding to specified names
-	ForcefieldBound* findTorsion(const char* typei, const char* typej, const char* typek, const char* typel);
+	ForcefieldBound* findTorsion(QString typei, QString typej, QString typek, QString typel);
 
 
 	/*
@@ -199,7 +198,7 @@ class Forcefield : public ListItem<Forcefield>
 	// Retrieve improper torsion data corresponding to specified atomtype id's
 	ForcefieldBound* findImproper(ForcefieldAtom*, ForcefieldAtom*, ForcefieldAtom*, ForcefieldAtom*);
 	// Retrieve improper torsion data corresponding to specified names
-	ForcefieldBound* findImproper(const char* typei, const char* typej, const char* typek, const char* typel);
+	ForcefieldBound* findImproper(QString typei, QString typej, QString typek, QString typel);
 
 
 	/*
@@ -221,7 +220,7 @@ class Forcefield : public ListItem<Forcefield>
 	// Retrieve Urey-Bradley data corresponding to specified atomtype id's
 	ForcefieldBound* findUreyBradley(ForcefieldAtom*, ForcefieldAtom*, ForcefieldAtom*);
 	// Retrieve Urey-Bradley data corresponding to specified names
-	ForcefieldBound* findUreyBradley(const char* typei, const char* typej, const char* typek);
+	ForcefieldBound* findUreyBradley(QString typei, QString typej, QString typek);
 	
 
 	/*
@@ -229,9 +228,9 @@ class Forcefield : public ListItem<Forcefield>
 	*/
 	private:
 	// List of data values that have units of energy (and thus should be converted)
-	List<Dnchar> energyData_;
+	QStringList energyData_;
 	// Generator function program listings
-	List<Dnchar> generatorFunctionText_;
+	QStringList generatorFunctionText_;
 	// Container for generator functions defined in this forcefield
 	Program generatorFunctions_;
 	// Pointer to vdw generation function (if one is defined)
@@ -245,9 +244,9 @@ class Forcefield : public ListItem<Forcefield>
 
 	public:
 	// Add energy data value to list of those flagged as energies
-	void addEnergyData(const char* s);
+	void addEnergyData(QString s);
 	// Return list of energy data values
-	Dnchar* energyData();
+	QStringList energyData();
 	// Return pointer to vdw generation function (if one is defined)
 	Tree* vdwGenerator();
 	// Return pointer to bond generation function (if one is defined)
@@ -271,13 +270,11 @@ class Forcefield : public ListItem<Forcefield>
 	*/
 	public:
 	// Character-match the atomtype names supplied
-	int matchType(const char* source, const char* target);
-	// Character-match the atomtype names supplied
-	int matchType(const Dnchar &a, const Dnchar &b);
+	int matchType(QString source, QString target);
 	// Match names of atomtypes supplied to strings supplied
-	int matchTypes(ForcefieldAtom* ffi, ForcefieldAtom* ffj, const char* typei, const char* typej);
+	int matchTypes(ForcefieldAtom* ffi, ForcefieldAtom* ffj, QString typei, QString typej);
 	// Match names of supplied typenames and test names 
-	int matchTypes(const char* testi, const char* testj, const char* typei, const char* typej);
+	int matchTypes(QString testi, QString testj, QString typei, QString typej);
 
 
 	/*
@@ -291,7 +288,7 @@ class Forcefield : public ListItem<Forcefield>
 	// Reads in the united atom type definitions
 	bool readUnitedAtomTypes();
 	// Reads in extra data for atoms
-	bool readData(const char* vars);
+	bool readData(QString vars);
 	// Read in generator function definitions
 	bool readFunctions();
 	// Reads in and applies equivalent atomtype names
@@ -311,7 +308,7 @@ class Forcefield : public ListItem<Forcefield>
 
 	public:
 	// Load Forcefield from the filename supplied
-	bool load(const char* filename);
+	bool load(QString filename);
 	// Save forcefield under its current filename
 	bool save();
 

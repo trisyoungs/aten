@@ -41,9 +41,22 @@ bool Commands::function_Disorder(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	if (scheme == NULL) return FALSE;
 	
 	// Loop over remaining arguments (widget/global variable assignments)
-	for (int n = 1; n < parser.nArgs(); ++n) if (!scheme->setVariable(beforeStr(parser.argc(n),"="), afterStr(parser.argc(n),"="))) return FALSE;
-	
-	Messenger::print("Performing disordered build for model '%s'", obj.m->name());
+	for (int n = 1; n < parser.nArgs(); ++n)
+	{
+		QStringList items = parser.argc(n).split('=');
+		if (items.count() != 2)
+		{
+			Messenger::print("Couldn't split supplied string '%s' into variable/value pair.\n", qPrintable(parser.argc(n)));
+			return false;
+		}
+		else if (!scheme->setVariable(items.at(0), items.at(1)))
+		{
+			Messenger::print("Failed to set variable '%s'.\n", qPrintable(items.at(0)));
+			return false;
+		}
+	}
+
+	Messenger::print("Performing disordered build for model '%s'", qPrintable(obj.m->name()));
 	rv.reset();
 	bool result = mc.disorder(aten_.models(), obj.m, scheme, c->hasArg(1) ? c->argb(1) : TRUE);
 	return result;
@@ -59,7 +72,7 @@ bool Commands::function_ListComponents(CommandNode* c, Bundle& obj, ReturnValue&
 	for (Model* m = aten_.models(); m != NULL; m = m->next)
 	{
 		if (m->cell()->type() != UnitCell::NoCell) continue;
-		Messenger::print("%-15s %-10s     %i        %5i    %8.4f", m->name(), Model::insertionPolicy(m->componentInsertionPolicy()), m->componentPartition()+1, m->componentPopulation(), m->componentDensity());
+		Messenger::print("%-15s %-10s     %i        %5i    %8.4f", qPrintable(m->name()), Model::insertionPolicy(m->componentInsertionPolicy()), m->componentPartition()+1, m->componentPopulation(), m->componentDensity());
 	}
 	rv.reset();
 	return TRUE;

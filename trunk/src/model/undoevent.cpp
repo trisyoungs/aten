@@ -727,11 +727,11 @@ ModelRenameEvent::~ModelRenameEvent()
 }
 
 // Set change 
-void ModelRenameEvent::set(const char* oldname, const char* newname)
+void ModelRenameEvent::set(QString oldName, QString newName)
 {
 	Messenger::enter("ModelRenameEvent::set");
-	oldName_ = oldname;
-	newName_ = newname;
+	oldName_ = oldName;
+	newName_ = newName;
 	Messenger::exit("ModelRenameEvent::set");
 }
 
@@ -742,11 +742,11 @@ void ModelRenameEvent::undo(Model* m)
 	// Model Rename, to oldName_ (UndoEvent::Undo) or newName_ (UndoEvent::Redo)
 	if (direction_ == UndoEvent::Undo)
 	{
-		Messenger::print(Messenger::Verbose, "Reversing model rename - to %i", oldName_.get());
+		Messenger::print(Messenger::Verbose, "Reversing model rename - to %i", qPrintable(oldName_));
 	}
 	else
 	{
-		Messenger::print(Messenger::Verbose, "Replaying model rename - to %i", newName_.get());
+		Messenger::print(Messenger::Verbose, "Replaying model rename - to %i", qPrintable(newName_));
 	}
 	Messenger::exit("ModelRenameEvent::undo");
 }
@@ -754,8 +754,8 @@ void ModelRenameEvent::undo(Model* m)
 // Print event info
 void ModelRenameEvent::print()
 {
-	if (direction_ == UndoEvent::Undo) printf("       Model rename from %s to %s\n", newName_.get(), oldName_.get());
-	else printf("       Model rename from %s to %s\n", oldName_.get(), newName_.get());
+	if (direction_ == UndoEvent::Undo) printf("       Model rename from %s to %s\n", qPrintable(newName_), qPrintable(oldName_));
+	else printf("       Model rename from %s to %s\n",  qPrintable(oldName_), qPrintable(newName_));
 }
 
 /*

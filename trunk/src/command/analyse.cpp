@@ -34,7 +34,7 @@ ATEN_USING_NAMESPACE
 bool Commands::function_Finalise(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	for (Calculable *calc = obj.m->pendingQuantities.first(); calc != NULL; calc = calc->next) calc->finalise(obj.m);
+	for (Calculable* calc = obj.m->pendingQuantities.first(); calc != NULL; calc = calc->next) calc->finalise(obj.m);
 	rv.reset();
 	return TRUE;
 }
@@ -45,7 +45,7 @@ bool Commands::function_FrameAnalyse(CommandNode* c, Bundle& obj, ReturnValue& r
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// Grab trajectory config for analysis
 	Model* frame = obj.m->trajectoryCurrentFrame();
-	for (Calculable *calc = obj.m->pendingQuantities.first(); calc != NULL; calc = calc->next) calc->accumulate(frame);
+	for (Calculable* calc = obj.m->pendingQuantities.first(); calc != NULL; calc = calc->next) calc->accumulate(frame);
 	rv.reset();
 	return TRUE;
 }
@@ -54,26 +54,29 @@ bool Commands::function_FrameAnalyse(CommandNode* c, Bundle& obj, ReturnValue& r
 bool Commands::function_Geometric(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	Geometry *newgeom = new Geometry;
-	obj.m->pendingQuantities.own(newgeom);
+	Geometry* newGeom = new Geometry;
+	obj.m->pendingQuantities.own(newGeom);
+
 	// Set quantity name and destination filename
-	newgeom->setName(c->argc(0));
-	newgeom->setFilename(c->argc(4));
+	newGeom->setName(c->argc(0));
+	newGeom->setFilename(c->argc(4));
+
 	// Associate sites to quantity
-	newgeom->setSite(0,obj.m->findSite(c->argc(5)));
-	newgeom->setSite(1,obj.m->findSite(c->argc(6)));
-	if (c->hasArg(7)) newgeom->setSite(1,obj.m->findSite(c->argc(7)));
-	if (c->hasArg(8)) newgeom->setSite(1,obj.m->findSite(c->argc(8)));
-	newgeom->setRange(c->argd(1), c->argd(2), c->argi(3));
+	newGeom->setSite(0, obj.m->findSite(c->argc(5)));
+	newGeom->setSite(1, obj.m->findSite(c->argc(6)));
+	if (c->hasArg(7)) newGeom->setSite(1, obj.m->findSite(c->argc(7)));
+	if (c->hasArg(8)) newGeom->setSite(1, obj.m->findSite(c->argc(8)));
+	newGeom->setRange(c->argd(1), c->argd(2), c->argi(3));
+
 	rv.reset();
-	return (newgeom->initialise() ? TRUE : FALSE);
+	return (newGeom->initialise() ? TRUE : FALSE);
 }
 
 // Accumulate data for current model ('modelanalyse')
 bool Commands::function_ModelAnalyse(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	for (Calculable *calc = obj.m->pendingQuantities.first(); calc != NULL; calc = calc->next) calc->accumulate(obj.m);
+	for (Calculable* calc = obj.m->pendingQuantities.first(); calc != NULL; calc = calc->next) calc->accumulate(obj.m);
 	rv.reset();
 	return TRUE;
 }
@@ -82,17 +85,20 @@ bool Commands::function_ModelAnalyse(CommandNode* c, Bundle& obj, ReturnValue& r
 bool Commands::function_PDens(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	Pdens *newpdens = new Pdens;
-	obj.m->pendingQuantities.own(newpdens);
+	Pdens* newPDens = new Pdens;
+	obj.m->pendingQuantities.own(newPDens);
+
 	// Set pdens name and destination filename
-	newpdens->setName(c->argc(0));
-	newpdens->setFilename(c->argc(3));
+	newPDens->setName(c->argc(0));
+	newPDens->setFilename(c->argc(3));
+
 	// Associate sites to quantity
-	newpdens->setSite(0,obj.m->findSite(c->argc(4)));
-	newpdens->setSite(1,obj.m->findSite(c->argc(5)));
-	newpdens->setRange(c->argd(1), c->argi(2));
+	newPDens->setSite(0, obj.m->findSite(c->argc(4)));
+	newPDens->setSite(1, obj.m->findSite(c->argc(5)));
+	newPDens->setRange(c->argd(1), c->argi(2));
+
 	rv.reset();
-	return (newpdens->initialise() ? TRUE : FALSE);
+	return (newPDens->initialise() ? TRUE : FALSE);
 }
 
 // Print current job list ('printjobs')
@@ -105,24 +111,27 @@ bool Commands::function_PrintJobs(CommandNode* c, Bundle& obj, ReturnValue& rv)
 bool Commands::function_RDF(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	Rdf *newrdf = new Rdf;
-	obj.m->pendingQuantities.own(newrdf);
+	Rdf* newRdf = new Rdf;
+	obj.m->pendingQuantities.own(newRdf);
+
 	// Set RDF name and destination filename
-	newrdf->setName(c->argc(0));
-	newrdf->setFilename(c->argc(4));
+	newRdf->setName(c->argc(0));
+	newRdf->setFilename(c->argc(4));
+
 	// Associate sites to quantity
-	newrdf->setSite(0,obj.m->findSite(c->argc(5)));
-	newrdf->setSite(1,obj.m->findSite(c->argc(6)));
-	newrdf->setRange(c->argd(1), c->argd(2), c->argi(3));
+	newRdf->setSite(0, obj.m->findSite(c->argc(5)));
+	newRdf->setSite(1, obj.m->findSite(c->argc(6)));
+	newRdf->setRange(c->argd(1), c->argd(2), c->argi(3));
+
 	rv.reset();
-	return (newrdf->initialise() ? TRUE : FALSE);
+	return (newRdf->initialise() ? TRUE : FALSE);
 }
 
 // Save calculated quantities to filenames provided ('savequantities')
 bool Commands::function_SaveQuantities(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	for (Calculable *calc = obj.m->pendingQuantities.first(); calc != NULL; calc = calc->next) calc->save();
+	for (Calculable* calc = obj.m->pendingQuantities.first(); calc != NULL; calc = calc->next) calc->save();
 	rv.reset();
 	return TRUE;
 }
@@ -134,7 +143,7 @@ bool Commands::function_TrajAnalyse(CommandNode* c, Bundle& obj, ReturnValue& rv
 	int n, startframe, totalframes, frameskip, framestodo, framesdone;
 	bool calculate;
 	Model* frame;
-	Calculable *calc;
+	Calculable* calc;
 	// Check that the model has a trajectory associated to it
 	totalframes = obj.m->nTrajectoryFrames();
 	if (totalframes == 0)
@@ -143,10 +152,12 @@ bool Commands::function_TrajAnalyse(CommandNode* c, Bundle& obj, ReturnValue& rv
 		rv.reset();
 		return FALSE;
 	}
+
 	// Get start frame, frame skip, and frames to do (if supplied)
 	startframe = c->argi(0);
 	frameskip = c->argi(1);
 	framestodo = (c->hasArg(2) ? c->argi(2) : -1);
+
 	// Rewind trajectory to first frame and begin
 	obj.m->seekFirstTrajectoryFrame();
 	framesdone = 0;
@@ -163,12 +174,15 @@ bool Commands::function_TrajAnalyse(CommandNode* c, Bundle& obj, ReturnValue& rv
 			for (calc = obj.m->pendingQuantities.first(); calc != NULL; calc = calc->next) calc->accumulate(frame);
 			framesdone ++;
 		}
+
 		// Check for required number of frames completed
 		if (framesdone == framestodo) break;
+
 		// Move to next frame
 		if (n != totalframes) obj.m->seekNextTrajectoryFrame();
 	}
 	Messenger::print("Finished calculating properties - used %i frames from trajectory.", framesdone);
+
 	rv.reset();
 	return TRUE;
 }

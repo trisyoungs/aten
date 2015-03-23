@@ -38,7 +38,6 @@ set(qtproject_SRCS
   mainwindow_context.cpp
   mainwindow_funcs.cpp
   mainwindow_init.cpp
-  messages_funcs.cpp
   modellist_funcs.cpp
   mouseactions.cpp
   pores_funcs.cpp
@@ -99,7 +98,6 @@ SET(pro_MOC_HDRS
   layoutlist.h
   loadmodel.h
   mainwindow.h
-  messages.h
   modellist.h
   pores.h
   position.h
@@ -149,7 +147,6 @@ SET(pro_UIS
   grids.ui
   loadmodel.ui
   mainwindow.ui
-  messages.ui
   modellist.ui
   pores.ui
   position.ui

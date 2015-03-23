@@ -49,10 +49,9 @@ int CommandParser::lex()
 	}
 
 	int n;
-	bool done, integer, hasexp;
-	static Dnchar token, name;
-	char quotechar, c;
-	token.clear();
+	bool done, integer, hasExp;
+	QString token;
+	char quoteChar, c;
 
 	// Skip over whitespace
 	while ((c = getChar()) == ' ' || c == '\t' || c == '\r' || c == '\n' );
@@ -72,15 +71,15 @@ int CommandParser::lex()
 		expectPathStep_ = TRUE;
 		return '.';
 	}
-	
+
 	/*
 	// Number Detection - Either '.' or  a digit begins a number
 	*/
-	if (c == '.' || isdigit (c))
+	if (c == '.' || isdigit(c))
 	{
 		// Default to integer, unless first char is '.'
 		integer = (c == '.' ? FALSE : TRUE);
-		hasexp = FALSE;
+		hasExp = FALSE;
 		token += c;
 		done = FALSE;
 		do
@@ -95,18 +94,18 @@ int CommandParser::lex()
 			else if ((c == 'e') || (c == 'E'))
 			{
 				// Check for previous exponential in number
-				if (hasexp)
+				if (hasExp)
 				{
 					Messenger::print("Error: Number has two exponentiations (e/E).");
 					return 0;
 				}
 				token += 'E';
-				hasexp = TRUE;
+				hasExp = TRUE;
 			}
 			else if ((c == '-') || (c == '+'))
 			{
 				// We allow '-' or '+' only as part of an exponentiation, so if it is not preceeded by 'E' we stop parsing
-				if ((!token.isEmpty()) && (token.lastChar() != 'E'))
+				if ((!token.isEmpty()) && (!token.endsWith('E')))
 				{
 					unGetChar();
 					done = TRUE;
@@ -120,19 +119,19 @@ int CommandParser::lex()
 			}
 		} while (!done);
 		// We now have the number as a text token...
-		if (!hasexp)
+		if (!hasExp)
 		{
-			if (integer) CommandParser_lval.intConst = atoi(token);
-			else CommandParser_lval.doubleConst = atof(token);
+			if (integer) CommandParser_lval.intConst = token.toInt();
+			else CommandParser_lval.doubleConst = token.toDouble();
 		}
 		else
 		{
 			// Exponentiations are always returned as a double
 			integer = FALSE;
-			CommandParser_lval.doubleConst = atof(beforeChar(token,'E')) * pow(10.0, atof(afterChar(token,'E')));
+			CommandParser_lval.doubleConst = token.toDouble();
 		}
-		if (integer) Messenger::print(Messenger::Parse, "LEXER (%p): found an integer constant [%s] [%i]", tree_, token.get(), CommandParser_lval.intConst);
-		else Messenger::print(Messenger::Parse, "LEXER (%p): found a floating-point constant [%s] [%e]", tree_, token.get(), CommandParser_lval.doubleConst);
+		if (integer) Messenger::print(Messenger::Parse, "LEXER (%p): found an integer constant [%s] [%i]", tree_, qPrintable(token), CommandParser_lval.intConst);
+		else Messenger::print(Messenger::Parse, "LEXER (%p): found a floating-point constant [%s] [%e]", tree_, qPrintable(token), CommandParser_lval.doubleConst);
 		return (integer ? INTCONST : DOUBLECONST);
 	}
 
@@ -141,7 +140,7 @@ int CommandParser::lex()
 	*/
 	if ((c == '"') || ( c == '\''))
 	{
-		quotechar = c;
+		quoteChar = c;
 		// Just read everything until we find a matching quote
 		done = FALSE;
 		do
@@ -164,7 +163,7 @@ int CommandParser::lex()
 						token += c2; break;
 				}
 			}
-			else if (c == quotechar) done = TRUE;
+			else if (c == quoteChar) done = TRUE;
 			else if (c == '\0')
 			{
 				Messenger::print("Runaway character constant in input.");
@@ -172,9 +171,8 @@ int CommandParser::lex()
 			}
 			else token += c;
 		} while (!done);
-		Messenger::print(Messenger::Parse, "LEXER (%p): found a literal string [%s]...",tree_,token.get());
-		name = token;
-		CommandParser_lval.name = &name;
+		Messenger::print(Messenger::Parse, "LEXER (%p): found a literal string [%s]...",tree_, qPrintable(token));
+		lexedName_ = token;
 		return CHARCONST;
 	}
 
@@ -190,7 +188,8 @@ int CommandParser::lex()
 		}
 		while (isalnum(c) || (c == '_'));
 		unGetChar();
-		Messenger::print(Messenger::Parse, "LEXER (%p): found an alpha token [%s]...", tree_, token.get());
+		Messenger::print(Messenger::Parse, "LEXER (%p): found an alpha token [%s]...", tree_, qPrintable(token));
+
 		// Skip over keyword detection if we are expecting a path step
 		if (!expectPathStep_)
 		{
@@ -236,11 +235,11 @@ int CommandParser::lex()
 			}
 
 			// Element symbol?
-			for (n=0; n<Elements().nElements(); ++n) if (strcmp(token,Elements().symbol(n)) == 0) break;
+			for (n=0; n<Elements().nElements(); ++n) if (token == Elements().symbol(n)) break;
 			if (n < Elements().nElements())
 			{
 				CommandParser_lval.intConst = n;
-				Messenger::print(Messenger::Parse, "LEXER (%p): ...which is a an element symbol (%i)",tree_,n);
+				Messenger::print(Messenger::Parse, "LEXER (%p): ...which is a an element symbol (%i)", tree_, n);
 				return ELEMENTCONST;
 			}
 
@@ -369,15 +368,13 @@ int CommandParser::lex()
 		{
 			expectPathStep_ = FALSE;
 			Messenger::print(Messenger::Parse, "LEXER (%p): ...which we assume is a path step (->STEPTOKEN)", tree_);
-			name = token;
-			CommandParser_lval.name = &name;
+			lexedName_ = token;
 			return STEPTOKEN;
 		}
 
 		// If we get to here then we have found an unrecognised alphanumeric token
 		Messenger::print(Messenger::Parse, "LEXER (%p): ...which is unrecognised (->NEWTOKEN)", tree_);
-		name = token;
-		CommandParser_lval.name = &name;
+		lexedName_ = token;
 		return NEWTOKEN;
 	}
 
@@ -399,10 +396,10 @@ int CommandParser::lex()
 	{
 		c = getChar();
 		token += c;
-		Messenger::print(Messenger::Parse, "LEXER (%p): found symbol [%s]",tree_,token.get());
-		SymbolToken st = (SymbolToken) enumSearch("", nSymbolTokens, SymbolTokenKeywords, token.get());
+		Messenger::print(Messenger::Parse, "LEXER (%p): found symbol [%s]", tree_, qPrintable(token));
+		SymbolToken st = (SymbolToken) enumSearch("", nSymbolTokens, SymbolTokenKeywords, qPrintable(token));
 		if (st != nSymbolTokens) return SymbolTokenValues[st];
-		else Messenger::print("Error: Unrecognised symbol found in input (%s).", token.get());
+		else Messenger::print("Error: Unrecognised symbol found in input (%s).", qPrintable(token));
  	}
 	else
 	{

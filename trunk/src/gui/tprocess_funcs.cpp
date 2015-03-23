@@ -41,7 +41,7 @@ void TProcess::processFinished(int exitCode, QProcess::ExitStatus exitStatus)
 }
 
 // Execute specified command
-bool TProcess::execute(const char* command, const char* args, const char* outputfile)
+bool TProcess::execute(QString command, QString args, QString outputfile)
 {
 	// Check on state of any existing process
 	if (state() != QProcess::NotRunning)
@@ -56,7 +56,7 @@ bool TProcess::execute(const char* command, const char* args, const char* output
 	outputFile_.close();
 	stream_.flush();
 	stream_.setDevice(NULL);
-	if (isEmpty(outputfile)) outputFileSpecified_ = FALSE;
+	if (outputfile.isEmpty()) outputFileSpecified_ = FALSE;
 	else
 	{
 		outputFile_.setFileName(outputfile);
@@ -67,12 +67,12 @@ bool TProcess::execute(const char* command, const char* args, const char* output
 	if (args == NULL) start(command);
 	else
 	{
-		Dnchar cmdplusargs(-1,"%s %s", command, args);
-		start(cmdplusargs.get());
+		QString cmdPlusArgs = command + " " + args;
+		start(cmdPlusArgs);
 	}
 	if (!waitForStarted(1000))
 	{
-		printf("Error: Failed to run command '%s'\n", command);
+		printf("Error: Failed to run command '%s'\n", qPrintable(command));
 		return FALSE;
 	}
 

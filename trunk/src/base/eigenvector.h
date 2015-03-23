@@ -22,7 +22,7 @@
 #ifndef ATEN_EIGENVECTOR_H
 #define ATEN_EIGENVECTOR_H
 
-#include "base/dnchar.h"
+#include "templates/list.h"
 #include "base/namespace.h"
 
 ATEN_BEGIN_NAMESPACE
@@ -40,7 +40,7 @@ class Eigenvector : public ListItem<Eigenvector>
 	*/
 	private:
 	// Name (typically symmetry type) of eigenvector
-	Dnchar name_;
+	QString name_;
 	// Whether the coefficients correspond to spherical (TRUE) or cartesian (FALSE) basis functions
 	bool isSpherical_;
 	// Size of eigenvector when created
@@ -60,9 +60,9 @@ class Eigenvector : public ListItem<Eigenvector>
 	// Return whether coefficients correspond to spherical or cartesian functions
 	bool isSpherical();
 	// Set text name of eigenvalue
-	void setName(const char* name);
+	void setName(QString name);
 	// Return text 'name' of eigenvalue
-	const char* name() const;
+	QString name() const;
 	// Set array index
 	void setValue(int index, double value);
 	// Return array value specified

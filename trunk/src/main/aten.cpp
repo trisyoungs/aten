@@ -62,15 +62,7 @@ Aten::Aten() : commands_(*this)
 	maxRedirectedImages_ = 100;
 
 	// Misc 
-	#ifdef _WIN32
-	homeDir_ = "C:\\";
-	atenDir_ = "aten";
-	#else
-	homeDir_ = "/tmp";
-	atenDir_ = ".aten";
-	#endif
 	nFiltersFailed_ = 0;
-	dataDirSet_ = FALSE;
 
 	// Clipboards
 	userClipboard = new Clipboard;
@@ -127,11 +119,11 @@ bool Aten::typeExportMapping() const
 }
 
 // Convert supplied type name according to export type map
-const char* Aten::typeExportConvert(const char* oldname) const
+QString Aten::typeExportConvert(QString oldName) const
 {
-	if (!typeExportMapping_) return oldname;
-	KVPair *kvp = typeExportMap.search(oldname);
-	return (kvp == NULL ? oldname : kvp->value());
+	if (!typeExportMapping_) return oldName;
+	KVPair* kvp = typeExportMap.search(oldName);
+	return (kvp == NULL ? oldName : kvp->value());
 }
 
 // Return whether saveImage redirect is active (for scripted movie making)
@@ -141,22 +133,22 @@ bool Aten::redirectedImagesActive()
 }
 
 // Initialise image redirection
-void Aten::initialiseImageRedirect(const char* filenameFormat, int maxImages)
+void Aten::initialiseImageRedirect(QString filenameFormat, int maxImages)
 {
 	redirectedImageCount_ = 0;
 	maxRedirectedImages_ = maxImages;
 	redirectedImageFormat_ = filenameFormat;
 	redirectedImagesActive_ = TRUE;
-	Messenger::print(Messenger::Verbose, "Image redirect active - name format = [%s], maxImages = %i", redirectedImageFormat_.get(), maxRedirectedImages_);
+	Messenger::print(Messenger::Verbose, "Image redirect active - name format = [%s], maxImages = %i", qPrintable(redirectedImageFormat_), maxRedirectedImages_);
 }
 
 // Return next filename for image redirection
-const char* Aten::nextRedirectedFilename()
+QString Aten::nextRedirectedFilename()
 {
 	if (redirectedImageCount_ == maxRedirectedImages_) return NULL;
-	static Dnchar filename;
-	filename.sprintf(redirectedImageFormat_.get(), redirectedImageCount_++);
-	return filename.get();
+	QString filename;
+	filename.sprintf(qPrintable(redirectedImageFormat_), redirectedImageCount_++);
+	return filename;
 }
 
 // Cancel image redirection
@@ -170,53 +162,89 @@ int Aten::cancelImageRedirect()
 // Locations
 */
 
-// Set location of users's home directory
-void Aten::setHomeDir(const char* path)
-{
-	homeDir_ = path;
-}
-
 // Return the home directory path
-const char* Aten::homeDir() const
+QDir Aten::homeDir() const
 {
-	return homeDir_.get();
-}
-
-// Set working directory
-void Aten::setWorkDir(const char* path)
-{
-	workDir_ = path;
+	return homeDir_;
 }
 
 // Return the working directory path
-const char* Aten::workDir() const
+QDir Aten::workDir() const
 {
-	return workDir_.get();
-}
-
-// Set data directory
-void Aten::setDataDir(const char* path)
-{
-	dataDir_ = path;
-	dataDirSet_ = TRUE;
+	return workDir_;
 }
 
 // Return the data directory path
-const char* Aten::dataDir() const
+QDir Aten::dataDir() const
 {
-	return dataDir_.get();
+	return dataDir_;
 }
 
-// Return whether the data dir has already been set
-bool Aten::dataDirSet() const
+// Return full path of file in data directory
+QString Aten::dataDirectoryFile(QString filename)
 {
-	return dataDirSet_;
+	return QDir::toNativeSeparators(dataDir_.absoluteFilePath(filename));
 }
 
-// Return the aten directory
-const char* Aten::atenDir() const
+// Return full path of file in user's Aten directory
+QString Aten::atenDirectoryFile(QString filename)
 {
-	return atenDir_.get();
+	QDir atenDir = homeDir_.absoluteFilePath(atenDirName_);
+	return QDir::toNativeSeparators(atenDir.absoluteFilePath(filename));
+}
+
+// Set/get necessary directories
+void Aten::setDirectories()
+{
+	Messenger::enter("Aten::setDirectories()");
+
+	// User's home directory
+#ifdef _WIN32
+	if (getenv("USERPROFILE") != '\0') homeDIr_ = getenv("USERPROFILE");
+	else homeDir_ = "C:\\";
+#else
+	if (getenv("HOME") != '\0') homeDir_ = getenv("HOME");	
+	else homeDir_ = "/tmp";
+#endif
+
+	// Name of user's aten directory in user's home directory
+#ifdef _WIN32
+	atenDirName_ = "aten";
+#else
+	atenDirName_ = ".aten";
+#endif
+
+	// Working directory
+	workDir_ = getenv("PWD");
+
+
+	// Construct a list of possible paths, including the current value of dataDir_
+	QStringList paths;
+	if (dataDir_ != QDir()) paths << dataDir_.path();
+	else if (getenv("ATENDATA") != '\0') paths << getenv("ATENDATA");
+	paths << "/usr/share/aten";
+	paths << "/usr/local/share/aten";
+	paths << "../share/aten";
+	paths << QApplication::applicationDirPath() + "/../share/aten";
+	paths << QApplication::applicationDirPath() + "/../SharedSupport";
+
+	// Check each one until we find one that exists
+	for (int i=0; i < paths.size(); ++i)
+	{
+		QDir path = paths.at(i);
+		Messenger::print("Checking for data directory '%s'...", qPrintable(path.absolutePath()));
+		if (path.exists())
+		{
+			Messenger::print("Data directory exists at '%s' - using this path...", qPrintable(path.absolutePath()));
+			dataDir_ = path;
+
+			Messenger::enter("Aten::setDataDir()");
+			return;
+		}
+	}
+	Messenger::print("No valid data directory found in any location.");
+
+	Messenger::enter("Aten::setDirectories()");
 }
 
 /*

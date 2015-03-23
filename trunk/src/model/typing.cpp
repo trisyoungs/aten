@@ -19,13 +19,9 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-// #include "base/elements.h"
-// #include "main/aten.h"
 #include "model/model.h"
 #include "ff/forcefield.h"
 #include "base/pattern.h"
-// #include "base/forcefieldatom.h"
-// #include "base/forcefieldbound.h"
 
 ATEN_USING_NAMESPACE
 
@@ -155,7 +151,7 @@ bool Model::typeAll(Forcefield* defaultForcefield)
 			return FALSE;
 		}
 	}
-	Messenger::print("Typing all patterns in model '%s' (associated forcefield is '%s')...", name_.get(), forcefield_->name());
+	Messenger::print("Typing all patterns in model '%s' (associated forcefield is '%s')...", qPrintable(name_), qPrintable(forcefield_->name()));
 	
 	// Assign forcefield types to atoms
 	for (Pattern* p = patterns_.first(); p != NULL; p = p->next)
@@ -170,6 +166,7 @@ bool Model::typeAll(Forcefield* defaultForcefield)
 		p->propagateBondTypes();
 		Messenger::print("Done.");
 	}
+
 	// Log change in the model
 	changeLog.add(Log::Coordinates);
 	Messenger::exit("Model::typeAll");

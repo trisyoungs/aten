@@ -48,7 +48,7 @@ class Vibration : public ListItem<Vibration>
 	// Parent model
 	Model* parent_;
 	// Name of the vibration
-	Dnchar name_;
+	QString name_;
 	// Frequency of the vibration
 	double frequency_;
 	// Intensity of the vibration
@@ -66,9 +66,9 @@ class Vibration : public ListItem<Vibration>
 	// Initialise to specified size
 	void initialise(Model* parent, int size = -1);
 	// Set associated name
-	void setName(const char* name);
+	void setName(QString name);
 	// Return associated name of the vibration
-	const char* name() const;
+	QString name() const;
 	// Set frequency of the vibration
 	void setFrequency(double freq);
 	// Return frequency of the vibration

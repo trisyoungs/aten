@@ -71,7 +71,8 @@ void CommandParser::reset()
 {
 	parser_.closeFiles();
 	source_ = StringSource;
-	stringListSource_ = NULL;
+	stringListSource_.clear();
+	stringListSourceIndex_ = -1;
 	stringPos_ = -1;
 	tokenStart_ = 0;
 	functionStart_ = -1;
@@ -88,7 +89,7 @@ void CommandParser::reset()
 // Print error information and location
 void CommandParser::printErrorInfo()
 {
-	if (source_ != CommandParser::StringSource) Messenger::print("Error occurred here (line %i in file '%s'):", parser_.lastLineNo(), parser_.inputFilename());
+	if (source_ != CommandParser::StringSource) Messenger::print("Error occurred here (line %i in file '%s'):", qPrintable(parser_.lastLineNo()), qPrintable(parser_.inputFilename()));
 	// QUICK'n'DIRTY!
 	int i;
 	char *temp = new char[stringLength_+32];
@@ -98,22 +99,28 @@ void CommandParser::printErrorInfo()
 	for (i=tokenStart_; i<stringPos_; i++) temp[i] = '^';
 	temp[stringPos_] = '\0';
 	// Print current string
-	Messenger::print(" %s", stringSource_.get());
+	Messenger::print(" %s", qPrintable(stringSource_));
 	Messenger::print(" %s^", temp);
 	delete[] temp;
 }
 
 // Return short info on the current parsing source (filename, line number etc.)
-const char* CommandParser::sourceInfo()
+QString CommandParser::sourceInfo()
 {
 	// If its a file source, construct a suitable string. Otherwise, just return sourceInfo_ as is.
 	if (source_ == CommandParser::FileSource)
 	{
 		sourceInfo_.clear();
-		sourceInfo_.sprintf("file '%s' (line %i)", parser_.inputFilename(), parser_.lastLineNo());
+		sourceInfo_.sprintf("file '%s' (line %i)", qPrintable(parser_.inputFilename()), parser_.lastLineNo());
 	}
 	
-	return sourceInfo_.get();
+	return sourceInfo_;
+}
+
+// Return current lexed name (if any)
+QString CommandParser::lexedName()
+{
+	return lexedName_;	
 }
 
 /*
@@ -129,7 +136,6 @@ CommandParser::ParserSource CommandParser::source()
 // Get next character from current input stream
 char CommandParser::getChar()
 {
-	char c = 0;
 	// Are we at the end of the current string?
 	if (stringPos_ == stringLength_)
 	{
@@ -143,9 +149,11 @@ char CommandParser::getChar()
 				break;
 			case (CommandParser::StringListSource):
 				// Are there any more strings to read in?
-				if (stringListSource_ == NULL) return 0;
-				stringSource_ = stringListSource_->get();
-				stringListSource_ = stringListSource_->next;
+				if (stringListSourceIndex_ == -1) return 0;
+
+				stringSource_ = stringListSource_.at(stringListSourceIndex_);
+				++stringListSourceIndex_;
+				if (stringListSourceIndex_ >= stringListSource_.count()) stringListSourceIndex_ = -1;
 				stringLength_ = stringSource_.length();
 				stringPos_ = 0;
 				break;
@@ -156,9 +164,10 @@ char CommandParser::getChar()
 				break;
 		}
 	}
+
 	// Return current char
-	c = stringSource_[stringPos_];
-	stringPos_++;
+	char c = stringSource_.at(stringPos_).toAscii();
+	++stringPos_;
 	return c;
 }
 
@@ -169,18 +178,18 @@ char CommandParser::peekChar()
 	switch (source_)
 	{
 		case (CommandParser::FileSource):
-			c = (stringPos_ == stringLength_ ? parser_.peek() : stringSource_[stringPos_]);
+			c = (stringPos_ == stringLength_ ? parser_.peek() : stringSource_.at(stringPos_).toAscii());
 			break;
 		case (CommandParser::StringListSource):
 			if (stringPos_ == stringLength_)
 			{
-				if (stringListSource_ == NULL) c = 0;
+				if (stringListSourceIndex_ == -1) c = 0;
 				else c = '\n';
 			}
-			else c = stringSource_[stringPos_];
+			else c = stringSource_.at(stringPos_).toAscii();
 			break;
 		case (CommandParser::StringSource):
-			c = (stringPos_ == stringLength_ ? 0 : stringSource_[stringPos_]);
+			c = (stringPos_ == stringLength_ ? 0 : stringSource_.at(stringPos_).toAscii());
 			break;
 		default:
 			break;
@@ -233,9 +242,10 @@ bool CommandParser::generate()
 }
 
 // Fill target Program from specified character string
-bool CommandParser::generateFromString(Program* prog, const char* s, const char* sourceInfo, bool dontPushTree, bool clearExisting)
+bool CommandParser::generateFromString(Program* prog, QString string, QString sourceInfo, bool dontPushTree, bool clearExisting)
 {
 	Messenger::enter("CommandParser::generateFromString");
+
 	// Clear any data in the existing Program (if requested)
 	if (prog == NULL)
 	{
@@ -256,21 +266,23 @@ bool CommandParser::generateFromString(Program* prog, const char* s, const char*
 	
 	// Store the source string
 	sourceInfo_ = sourceInfo;
-	stringSource_ = s;
+	stringSource_ = string;
 	stringPos_ = 0;
 	stringLength_ = stringSource_.length();
-	Messenger::print(Messenger::Parse, "Parser source string is '%s', length is %i", stringSource_.get(), stringLength_);
+	Messenger::print(Messenger::Parse, "Parser source string is '%s', length is %i", qPrintable(stringSource_), stringLength_);
 	source_ = CommandParser::StringSource;
 	bool result = generate();
 	reset();
+
 	Messenger::exit("CommandParser::generateFromString");
 	return result;
 }
 
 // Populate target Program from specified string list
-bool CommandParser::generateFromStringList(Program* prog, Dnchar* stringListHead, const char* sourceInfo, bool dontPushTree, bool clearExisting)
+bool CommandParser::generateFromStringList(Program* prog, QStringList stringList, QString sourceInfo, bool dontPushTree, bool clearExisting)
 {
 	Messenger::enter("CommandParser::generateFromStringList");
+
 	// Clear any data in the existing Program
 	if (prog == NULL)
 	{
@@ -291,22 +303,31 @@ bool CommandParser::generateFromStringList(Program* prog, Dnchar* stringListHead
 	
 	// Store the source strings
 	sourceInfo_ = sourceInfo;
-	stringListSource_ = stringListHead;
+	stringListSource_ = stringList;
+	stringSource_.clear();
+	stringListSourceIndex_ = -1;
+	if (stringListSource_.count() > 0)
+	{
+		stringSource_ = stringListSource_.at(0);
+		if (stringListSource_.count() > 1) stringListSourceIndex_ = 1;
+	}
+	
 	stringPos_ = 0;
 	stringLength_ = 0;
 	Messenger::print(Messenger::Parse, "Parser source is now string list.");
 	source_ = CommandParser::StringListSource;
 	bool result = generate();
-	stringListSource_ = NULL;
 	reset();
+
 	Messenger::exit("CommandParser::generateFromStringList");
 	return result;
 }
 
 // Fill target Program from specified file
-bool CommandParser::generateFromFile(Program* prog, const char* filename, bool dontPushTree, bool clearExisting)
+bool CommandParser::generateFromFile(Program* prog, QString filename, bool dontPushTree, bool clearExisting)
 {
 	Messenger::enter("CommandParser::generateFromFile");
+
 	// Clear any data in the existing Program (if requested)
 	if (prog == NULL)
 	{
@@ -365,10 +386,10 @@ void CommandParser::pushFilter()
 }
 
 // Push function (into topmost tree)
-Tree* CommandParser::pushFunction(const char* name, VTypes::DataType returntype)
+Tree* CommandParser::pushFunction(QString name, VTypes::DataType returntype)
 {
 	// If there is no current tree target then we add a global function...
-	if (tree_ != NULL) Messenger::print(Messenger::Parse, "Pushing function onto tree %p (%s)", tree_, tree_->name());
+	if (tree_ != NULL) Messenger::print(Messenger::Parse, "Pushing function onto tree %p (%s)", tree_, qPrintable(tree_->name()));
 	if (tree_ == NULL) tree_ = program_->addFunction(name);
 	else tree_ = tree_->addLocalFunction(name);
 	tree_->setReturnType(returntype);
@@ -386,7 +407,7 @@ void CommandParser::popTree()
 	if (ri->data)
 	{
 		// Can use the 'isFilter' member function to check for the lack of a proper type
-		if (!ri->item->isFilter()) Messenger::print("WARNING - Filter '%s' has not been provided a filter type.", ri->item->filter.name());
+		if (!ri->item->isFilter()) Messenger::print("WARNING - Filter '%s' has not been provided a filter type.", qPrintable(ri->item->filter.name()));
 	}
 	Messenger::print(Messenger::Parse, "Removing tree %p from stack (%i remain).", ri->item, stack_.nItems()-1);
 	stack_.remove( stack_.last() );
@@ -421,7 +442,7 @@ TreeNode* CommandParser::addConstant(double d)
 }
 
 // Add string constant
-TreeNode* CommandParser::addConstant(const char* s)
+TreeNode* CommandParser::addConstant(QString s)
 {
 	return tree()->addConstant(s);
 }
@@ -439,7 +460,7 @@ TreeNode* CommandParser::createPath(TreeNode* var)
 }
 
 // Expand topmost path
-bool CommandParser::expandPath(Dnchar* name, TreeNode* arrayIndex, TreeNode* argList)
+bool CommandParser::expandPath(QString name, TreeNode* arrayIndex, TreeNode* argList)
 {
 	return tree()->expandPath(name, arrayIndex, argList);
 }
@@ -517,13 +538,13 @@ TreeNode* CommandParser::wrapVariable(Variable* var, TreeNode* arrayIndex)
 }
 
 // Add variable to topmost ScopeNode
-TreeNode* CommandParser::addVariable(VTypes::DataType type, Dnchar* name, TreeNode* initialValue, bool global)
+TreeNode* CommandParser::addVariable(VTypes::DataType type, QString name, TreeNode* initialValue, bool global)
 {
 	return tree()->addVariable(type, name, initialValue, global);
 }
 
 // Add array variable to topmost ScopeNode
-TreeNode* CommandParser::addArrayVariable(VTypes::DataType type, Dnchar* name, TreeNode* sizeexpr, TreeNode* initialvalue, bool global)
+TreeNode* CommandParser::addArrayVariable(VTypes::DataType type, QString name, TreeNode* sizeexpr, TreeNode* initialvalue, bool global)
 {
 	return tree()->addArrayVariable(type, name, sizeexpr, initialvalue, global);
 }
@@ -539,7 +560,7 @@ TreeNode* CommandParser::addArrayConstant(TreeNode* values)
 */
 
 // Set filter option
-bool CommandParser::setFilterOption(Dnchar* name, TreeNode* value)
+bool CommandParser::setFilterOption(QString name, TreeNode* value)
 {
 	return tree()->filter.setOption(name, value);	
 }

@@ -120,7 +120,7 @@ template <class K, class V> class KVTable
 	// Retrieve value associated to key
 	V value(K key);
 	// Retrieve value associated to key, also setting success flag if the key was/wasn't found
-	V value(K key, bool &success);
+	V value(K key, bool& success);
 	// Return first pair in list
 	KVData<K,V> *pairs();
 };
@@ -176,7 +176,7 @@ template <class K, class V> V KVTable<K,V>::value(K key)
 }
 
 // Retrieve value associated to key, also setting success flag if the key was/wasn't found
-template <class K, class V> V KVTable<K,V>::value(K key, bool &success)
+template <class K, class V> V KVTable<K,V>::value(K key, bool& success)
 {
 	// Search for existing value...
 	success = TRUE;

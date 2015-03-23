@@ -87,22 +87,22 @@ class ElementMap
 	~ElementMap();
 	// Name->Z mapping methods
 	enum ZMapType { AlphaZMap, FirstAlphaZMap, SingleAlphaZMap, NameZMap, NumericZMap, ForcefieldZMap, AutoZMap, nZMapTypes };
-	static ElementMap::ZMapType zMapType(const char* s, bool reportError = 0);
+	static ElementMap::ZMapType zMapType(QString s, bool reportError = false);
 	static const char* zMapType(ElementMap::ZMapType zm);
 
 	private:
 	// Convert string from Z to element number
-	int numberToZ(const char* number) const;
+	int numberToZ(QString number) const;
 	// Convert string from alpha to element number
-	int alphaToZ(const char* alpha) const;
+	int alphaToZ(QString alpha) const;
 	// Convert string from alpha (up to non-AZ inc 09) to element number
-	int firstAlphaToZ(const char* alpha) const;
+	int firstAlphaToZ(QString alpha) const;
 	// Convert string from first alpha (up to non-AZ inc 09) to element number
-	int singleAlphaToZ(const char* alpha) const;
+	int singleAlphaToZ(QString alpha) const;
 	// Convert string from name to element number
-	int nameToZ(const char* name) const;
+	int nameToZ(QString name) const;
 	// Convert string from fftype to element number
-	int ffToZ(const char* s, Forcefield* firstFF) const;
+	int ffToZ(QString s, Forcefield* firstFF) const;
 	// Number of defined elements
 	int nElements_;
 	// Storage for copy of element data
@@ -118,7 +118,7 @@ class ElementMap
 	// Restore default element values
 	void restoreData();
 	// Return atomic number of element in string using supplied method (if specified)
-	int find(const char* query, ElementMap::ZMapType zmt = ElementMap::AutoZMap, Forcefield* firstFF = NULL) const;
+	int find(QString query, ElementMap::ZMapType zmt = ElementMap::AutoZMap, Forcefield* firstFF = NULL) const;
 	// Return number of defined elements
 	int nElements() const;
 

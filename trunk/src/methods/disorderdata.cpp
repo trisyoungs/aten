@@ -42,7 +42,7 @@ DisorderData::DisorderData() : ListItem<DisorderData>()
 */
 
 // Initialise structure
-bool DisorderData::initialise(Model* sourceModel, PartitionData *partitionData)
+bool DisorderData::initialise(Model* sourceModel, PartitionData* partitionData)
 {
 	if (sourceModel == NULL)
 	{
@@ -92,19 +92,19 @@ double DisorderData::requestedDensity()
 }
 
 // Return name of sourcemodel
-const char* DisorderData::modelName()
+QString DisorderData::modelName()
 {
 	return sourceModel_.name();
 }
 
 // Return reference to source model
-Model &DisorderData::sourceModel()
+Model& DisorderData::sourceModel()
 {
 	return sourceModel_;
 }
 
 // Return name of target partition
-const char* DisorderData::partitionName()
+QString DisorderData::partitionName()
 {
 	return partitionData_->name();
 }
@@ -116,7 +116,7 @@ double DisorderData::partitionDensity()
 }
 
 // Return partition pointer
-PartitionData *DisorderData::partition()
+PartitionData* DisorderData::partition()
 {
 	return partitionData_;
 }

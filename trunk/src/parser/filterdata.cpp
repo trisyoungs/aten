@@ -30,7 +30,7 @@ const char* FilterData::filterType(FilterData::FilterType ft)
 {
         return FilterTypeKeywords[ft];
 }
-FilterData::FilterType FilterData::filterType(const char* s, bool reportError)
+FilterData::FilterType FilterData::filterType(QString s, bool reportError)
 {
         FilterData::FilterType ft = (FilterData::FilterType) enumSearch("filter type", FilterData::nFilterTypes, FilterTypeKeywords, s);
 	if ((ft == FilterData::nFilterTypes) && reportError) enumPrintValid(FilterData::nFilterTypes,FilterTypeKeywords);
@@ -39,7 +39,7 @@ FilterData::FilterType FilterData::filterType(const char* s, bool reportError)
 
 // Filter options
 const char* FilterOptionKeywords[FilterData::nFilterOptions] =  { "exact", "extension", "glob", "id", "name", "nickname", "search", "type", "within", "zmap" };
-FilterData::FilterOption FilterData::filterOption(const char* s)
+FilterData::FilterOption FilterData::filterOption(QString s)
 {
 	return (FilterData::FilterOption) enumSearch("", FilterData::nFilterOptions, FilterOptionKeywords, s);
 }
@@ -57,8 +57,8 @@ FilterData::FilterData()
 	hasExtension_ = FALSE;
 	hasZmapping_ = FALSE;
 	zMapType_ = ElementMap::AlphaZMap;
-	name_.set("unnamed filter");
-	glob_.set("*");
+	name_ = "unnamed filter";
+	glob_ = "*";
 	nLinesToSearch_ = 10;
 	id_ = -1;
 	partner_ = NULL;
@@ -78,40 +78,39 @@ int FilterData::id() const
 }
 
 // Return the descriptive name of the filter
-const char* FilterData::name() const
+QString FilterData::name() const
 {
-	return name_.get();
+	return name_;
 }
 
 // Return the short nickname of the filter
-const char* FilterData::nickname() const
+QString FilterData::nickname() const
 {
-	return nickname_.get();
+	return nickname_;
 }
 
 // Return the first file extension
-Dnchar* FilterData::extensions() const
+QStringList FilterData::extensions() const
 {
-	return extensions_.first();
+	return extensions_;
 }
 
 // Return a comma-separated list of file extensions
-const char* FilterData::extensionList() const
+QString FilterData::extensionList() const
 {
-	static Dnchar extlist(128);
-	extlist.clear();
-	for (Dnchar* d = extensions_.first(); d != NULL; d = d->next)
+	QString extList;
+	for (int n=0; n<extensions_.count(); ++n)
 	{
-		extlist.strcat(d->get());
-		if (d->next != NULL) extlist.strcat(", ");
+		if (! extList.isEmpty()) extList += ", ";
+		extList += extensions_.at(n);
 	}
-	return extlist.get();
+	return extList;
 }
 
 // Return the first alias
-Dnchar* FilterData::exactNames() const
+QStringList FilterData::exactNames() const
 {
-	return exactNames_.first();
+	return exactNames_;
 }
 
 // Return the number of lines to search for defining strings
@@ -121,9 +120,9 @@ int FilterData::nLinesToSearch() const
 }
 
 // Return the first identifying text string
-Dnchar* FilterData::searchStrings() const
+QStringList FilterData::searchStrings() const
 {
-	return searchStrings_.first();
+	return searchStrings_;
 }
 
 // Return whether filter has an extension
@@ -133,19 +132,19 @@ bool FilterData::hasExtension() const
 }
 
 // Return whether the supplied text matches any of the filter's possible extensions
-bool FilterData::doesExtensionMatch(const char* ext) const
+bool FilterData::doesExtensionMatch(QString ext) const
 {
-	Dnchar lcaseext = lowerCase(ext);
-	for (Dnchar* d = extensions_.first(); d != NULL; d = d->next) if (strcmp(d->lower(), lcaseext.get()) == 0) return TRUE;
-	return FALSE;
+	QString extLower = ext.toLower();
+	for (int n=0; n<extensions_.count(); ++n) if (extensions_.at(n).toLower() == extLower) return true;
+	return false;
 }
 
 // Return whether the supplied text matches any of the filter's possible exact filenames
-bool FilterData::doesNameMatch(const char* name) const
+bool FilterData::doesNameMatch(QString name) const
 {
-	Dnchar lcasename = lowerCase(name);
-	for (Dnchar* d = exactNames_.first(); d != NULL; d = d->next) if (strcmp(d->lower(), lcasename.get()) == 0) return TRUE;
-	return FALSE;
+	QString nameLower = name.toLower();
+	for (int n=0; n<exactNames_.count(); ++n)  if (exactNames_.at(n).toLower() == nameLower) return true;
+	return false;
 }
 
 // Set the partner filter
@@ -161,9 +160,9 @@ Tree* FilterData::partner() const
 }
 
 // Return the file filter
-const char* FilterData::glob() const
+QString FilterData::glob() const
 {
-	return glob_.get();
+	return glob_;
 }
 
 // Set the type of filter
@@ -185,25 +184,24 @@ bool FilterData::isExportFilter() const
 }
 
 // Set filter option
-bool FilterData::setOption(Dnchar* name, TreeNode* value)
+bool FilterData::setOption(QString name, TreeNode* value)
 {
 	Messenger::enter("FilterData::setOption");
 	// Determine filter option supplied
-	FilterData::FilterOption fo = FilterData::filterOption(name->get());
+	FilterData::FilterOption fo = FilterData::filterOption(name);
 	if (fo == FilterData::nFilterOptions)
 	{
-		Messenger::print("Error: '%s' is not a valid filter option.", name->get());
+		Messenger::print("Error: '%s' is not a valid filter option.", qPrintable(name));
 		Messenger::exit("FilterData::setOption");
 		return FALSE;
 	}
 	// Check argument type
 	if (FilterOptionTypes[fo] != value->returnType())
 	{
-		Messenger::print("Error: Filter option '%s' takes %s value.", name->get(), VTypes::dataType(FilterOptionTypes[fo]));
+		Messenger::print("Error: Filter option '%s' takes %s value.", qPrintable(name), VTypes::dataType(FilterOptionTypes[fo]));
 		Messenger::exit("FilterData::setOption");
 		return FALSE;
 	}
-	Dnchar* d;
 	ReturnValue rv;
 	ElementMap::ZMapType zm;
 	FilterType ft;
@@ -214,12 +212,12 @@ bool FilterData::setOption(Dnchar* name, TreeNode* value)
 		case (FilterData::ExactOption):
 			if (!value->execute(rv)) printf("Error retrieving 'exact' filter option value.\n");
 			parser.getArgsDelim(0, rv.asString());
-			for (n = 0; n < parser.nArgs(); ++n) exactNames_.add()->set(parser.argc(n));
+			for (n = 0; n < parser.nArgs(); ++n) exactNames_ << parser.argc(n);
 			break;
 		case (FilterData::ExtensionOption):
 			if (!value->execute(rv)) printf("Error retrieving 'extension' filter option value.\n");
 			parser.getArgsDelim(0, rv.asString());
-			for (n = 0; n < parser.nArgs(); ++n) extensions_.add()->set(parser.argc(n));
+			for (n = 0; n < parser.nArgs(); ++n) extensions_ << parser.argc(n);
 			break;
 		case (FilterData::GlobOption):
 			if (!value->execute(rv)) printf("Error retrieving 'glob' filter option value.\n");
@@ -238,9 +236,8 @@ bool FilterData::setOption(Dnchar* name, TreeNode* value)
 			nickname_ = rv.asString();
 			break;
 		case (FilterData::SearchOption):
-			d = searchStrings_.add();
 			if (!value->execute(rv)) printf("Error retrieving filter option value.\n");
-			d->set(rv.asString());
+			searchStrings_ << rv.asString();
 			break;
 		case (FilterData::TypeOption):
 			if (!value->execute(rv)) printf("Error retrieving filter type value.\n");
@@ -274,11 +271,11 @@ bool FilterData::setOption(Dnchar* name, TreeNode* value)
 }
 
 // Return the long description of the filter (including glob)
-const char* FilterData::description()
+QString FilterData::description()
 {
 	// If the description string is empty, create a new one
-	if (description_.length() < 3) description_.sprintf("%s (%s)",name_.get(),glob_.get());
-	return description_.get();
+	if (description_.length() < 3) description_.sprintf("%s (%s)", qPrintable(name_), qPrintable(glob_));
+	return description_;
 }
 
 // Set trajectory header function

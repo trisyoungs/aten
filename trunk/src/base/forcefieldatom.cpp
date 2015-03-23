@@ -32,7 +32,7 @@ ATEN_USING_NAMESPACE
 ForcefieldAtom::ForcefieldAtom() : ListItem<ForcefieldAtom>()
 {
 	// Private variables
-	name_.set("Unnamed");
+	name_ = "Unnamed";
 	typeId_ = -1;
 	charge_ = 0.0;
 	vdwForm_ = VdwFunctions::None;
@@ -99,62 +99,62 @@ double ForcefieldAtom::charge() const
 }
 
 // Set the name of the type
-void ForcefieldAtom::setName(const char* s)
+void ForcefieldAtom::setName(QString name)
 {
-	name_ = s;
+	name_ = name;
 }
 
 // Returns the name of the type
-const char* ForcefieldAtom::name() const
+QString ForcefieldAtom::name() const
 {
-	return name_.get();
+	return name_;
 }
 
 // Set the equivalent name of the type
-void ForcefieldAtom::setEquivalent(const char* s)
+void ForcefieldAtom::setEquivalent(QString equivName)
 {
-	equivalent_ = s;
+	equivalent_ = equivName;
 }
 
 // Returns the equivalent name of the type
-const char* ForcefieldAtom::equivalent() const
+QString ForcefieldAtom::equivalent() const
 {
-	return equivalent_.get();
+	return equivalent_;
 }
 
 // Set the description of the type
-void ForcefieldAtom::setDescription(const char* s)
+void ForcefieldAtom::setDescription(QString s)
 {
 	description_ = s;
 }
 
 // Returns the description of the type
-const char* ForcefieldAtom::description() const
+QString ForcefieldAtom::description() const
 {
-	return description_.get();
+	return description_;
 }
 
 // Set atomtype string and generate new type description
-bool ForcefieldAtom::setNeta(const char* s, Forcefield* parent)
+bool ForcefieldAtom::setNeta(QString neta, Forcefield* parent)
 {
-	netaString_ = s;
+	netaString_ = neta;
 	// If supplied parent is NULL, use current parent (if not also NULL)
 	if (parent == NULL)
 	{
 		parent = parent_;
 		if (parent == NULL) printf("ForcefieldAtom::setNeta has no valid parent forcefield.\n");
 	}
-	return netaparser.createNeta(&neta_, s, parent);
+	return netaparser.createNeta(&neta_, netaString_, parent);
 }
 
 // Return original typestring
-const char* ForcefieldAtom::netaString() const
+QString ForcefieldAtom::netaString() const
 {
-	return netaString_.get();
+	return netaString_;
 }
 
 // Returns the atomtype description
-Neta *ForcefieldAtom::neta()
+Neta* ForcefieldAtom::neta()
 {
 	return &neta_;
 }
@@ -211,46 +211,46 @@ bool ForcefieldAtom::isUnitedAtom() const
 }
 
 // Add associated data
-void ForcefieldAtom::addData(const char* name, double d)
+void ForcefieldAtom::addData(QString name, double d)
 {
 	// Does this data already exist?
 	Variable* v = data_.find(name);
-	if (v != NULL) Messenger::print("Warning: Data '%s' for forcefield atom already exists and will be overwritten.", name);
+	if (v != NULL) Messenger::print("Warning: Data '%s' for forcefield atom already exists and will be overwritten.", qPrintable(name));
 	v = new DoubleVariable(d, FALSE);
 	v->setName(name);
 	data_.take(v);
 }
 
-void ForcefieldAtom::addData(const char* name, int i)
+void ForcefieldAtom::addData(QString name, int i)
 {
 	// Does this data already exist?
 	Variable* v = data_.find(name);
-	if (v != NULL) Messenger::print("Warning: Data '%s' for forcefield atom already exists and will be overwritten.", name);
+	if (v != NULL) Messenger::print("Warning: Data '%s' for forcefield atom already exists and will be overwritten.", qPrintable(name));
 	v = new IntegerVariable(i, FALSE);
 	v->setName(name);
 	data_.take(v);
 }
 
-void ForcefieldAtom::addData(const char* name, const char* s)
+void ForcefieldAtom::addData(QString name, QString s)
 {
 	// Does this data already exist?
 	Variable* v = data_.find(name);
-	if (v != NULL) Messenger::print("Warning: Data '%s' for forcefield atom already exists and will be overwritten.", name);
+	if (v != NULL) Messenger::print("Warning: Data '%s' for forcefield atom already exists and will be overwritten.", qPrintable(name));
 	v = new StringVariable(s, FALSE);
 	v->setName(name);
 	data_.take(v);
 }
 
 // Retrieve named variable
-Variable* ForcefieldAtom::data(const char* s, bool reportError)
+Variable* ForcefieldAtom::data(QString s, bool reportError)
 {
 	Variable* v = data_.find(s);
-	if ((v == NULL) && reportError) Messenger::print("Error: Forcefield atom '%s' does not contain any data named '%s'.", name_.get(), s);
+	if ((v == NULL) && reportError) Messenger::print("Error: Forcefield atom '%s' does not contain any data named '%s'.", qPrintable(name_), qPrintable(s));
 	return v;
 }
 
 // Return variable list
-VariableList *ForcefieldAtom::data()
+VariableList* ForcefieldAtom::data()
 {
 	return &data_;	
 }

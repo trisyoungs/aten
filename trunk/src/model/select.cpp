@@ -396,12 +396,12 @@ void Model::deselectElement(int el, bool markonly)
 }
 
 // Select all atoms which match the provided type
-int Model::selectType(int element, const char* typedesc, bool markonly, bool deselect)
+int Model::selectType(int element, QString typeDesc, bool markonly, bool deselect)
 {
 	Messenger::enter("Model::selectType");
 	Neta testat;
 	testat.setCharacterElement(element);
-	if (!netaparser.createNeta(&testat, typedesc, NULL))
+	if (!netaparser.createNeta(&testat, typeDesc, NULL))
 	{
 		Messenger::print("Failed to create type description.");
 		Messenger::exit("Model::selectType");

@@ -53,7 +53,7 @@ bool Commands::function_Error(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	}
 	if (fmt->writeToString())
 	{
-		Messenger::print("%s",fmt->string());
+		Messenger::print(fmt->string());
 		QMessageBox::critical(NULL, "Aten", fmt->string(), QMessageBox::Ok, QMessageBox::Ok);
 	}
 	c->parent()->setAcceptedFail(Commands::Error);
@@ -71,7 +71,7 @@ bool Commands::function_Message(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	}
 	if (fmt->writeToString())
 	{
-		Messenger::print("[%s] %s",c->argc(0), fmt->string());
+		Messenger::print("[%s] %s", qPrintable(c->argc(0)), qPrintable(fmt->string()));
 		QMessageBox::information(NULL, c->argc(0), fmt->string(), QMessageBox::Ok, QMessageBox::Ok);
 	}
 	else return FALSE;
@@ -87,7 +87,7 @@ bool Commands::function_Printf(CommandNode* c, Bundle& obj, ReturnValue& rv)
 		printf("Error - No format defined in 'printf' command.\n");
 		return FALSE;
 	}
-	if (fmt->writeToString()) Messenger::print("%s", fmt->string());
+	if (fmt->writeToString()) Messenger::print(fmt->string());
 	else return FALSE;
 	return TRUE;
 }
@@ -111,7 +111,7 @@ bool Commands::function_Verbose(CommandNode* c, Bundle& obj, ReturnValue& rv)
 		return FALSE;
 	}
 	if (!Messenger::isOutputActive(Messenger::Verbose)) return TRUE;
-	if (fmt->writeToString()) Messenger::print(Messenger::Verbose, "%s",fmt->string());
+	if (fmt->writeToString()) Messenger::print(Messenger::Verbose, "%s", qPrintable(fmt->string()));
 	else return FALSE;
 	return TRUE;
 }

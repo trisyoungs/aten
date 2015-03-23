@@ -76,11 +76,4 @@
 // Maximum number of elements in periodic table
 #define MAXELEMENTS 120
 
-// Path separator
-#ifdef _WIN32
-const char PATHSEP = '\\';
-#else
-const char PATHSEP = '/';
-#endif
-
 #endif

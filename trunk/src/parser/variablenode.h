@@ -56,7 +56,7 @@ class VariableNode : public TreeNode
 	// Return array index
 	TreeNode* arrayIndex();	
 	// Return name of variable target
-	const char* name();
+	QString name();
 	// Finalise variable path (if there is one)
 	void finalisePath();
 
@@ -73,7 +73,7 @@ class VariableNode : public TreeNode
 	// Initialise node
 	bool initialise();
 	// Search accessors (if any) available for linked variable
-	StepNode* findAccessor(const char* s, TreeNode* arrayIndex, TreeNode* argList = NULL);
+	StepNode* findAccessor(QString name, TreeNode* arrayIndex, TreeNode* argList = NULL);
 };
 
 ATEN_END_NAMESPACE

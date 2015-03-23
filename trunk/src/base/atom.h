@@ -50,7 +50,7 @@ class Atom : public ListItem<Atom>
 	~Atom();
 	// Atom label enum
 	enum AtomLabel { IdLabel, ElementLabel, TypeLabel, EquivLabel, ChargeLabel, nLabelTypes };
-	static AtomLabel atomLabel(const char* name, bool reportError = 0);
+	static AtomLabel atomLabel(QString s, bool reportError = false);
 	static const char* atomLabel(Atom::AtomLabel al);
 	// Atom structure data
 	enum AtomData { AllData=0, PositionData=1, ForceData=2, VelocityData=4, ChargeData=8, FixedData=16, ElementData=32 };
@@ -59,7 +59,7 @@ class Atom : public ListItem<Atom>
 	static const char* atomEnvironment(Atom::AtomEnvironment ae);
 	// Geometries about atomic centres
 	enum AtomGeometry { NoGeometry, UnboundGeometry, OneBondGeometry, LinearGeometry, TShapeGeometry, TrigPlanarGeometry, TetrahedralGeometry, SquarePlanarGeometry, TrigBipyramidGeometry, OctahedralGeometry, nAtomGeometries };
-	static AtomGeometry atomGeometry(const char* name, bool reportError = 0);
+	static AtomGeometry atomGeometry(QString s, bool reportError = false);
 	static const char* atomGeometry(Atom::AtomGeometry ag);
 	static int atomGeometryNBonds(Atom::AtomGeometry ag);
 

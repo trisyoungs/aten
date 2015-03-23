@@ -701,7 +701,7 @@ GLfloat TreeNode::argGLf(int i)
 }
 
 // Return (execute) argument specified as a character
-const char* TreeNode::argc(int i)
+QString TreeNode::argc(int i)
 {
 	if ((i < 0) || (i >= args_.nItems()))
 	{
@@ -710,7 +710,7 @@ const char* TreeNode::argc(int i)
 	}
 	static ReturnValue rv[MAXNODEARGS];
 	bool success;
-	const char* result = NULL;
+	QString result;
 	if (!args_[i]->item->execute(rv[i])) Messenger::print("Couldn't retrieve argument %i.", i+1);
 	result = rv[i].asString(success);
 	if (!success) Messenger::print("Couldn't cast argument %i into a character.", i+1);
@@ -809,7 +809,7 @@ TreeNode* TreeNode::argNode(int i)
 */
 
 // Search accessors (if any) available for node
-StepNode* TreeNode::findAccessor(const char* s, TreeNode* arrayIndex, TreeNode* argList)
+StepNode* TreeNode::findAccessor(QString name, TreeNode* arrayIndex, TreeNode* argList)
 {
 	// Default is to return NULL since there are no accessors available
 	printf("Internal Error: This node type does not have any accessors.\n");

@@ -26,7 +26,6 @@
 #include "templates/list.h"
 #include "templates/reflist.h"
 #include "math/constants.h"
-#include "base/dnchar.h"
 #include "base/namespace.h"
 
 ATEN_BEGIN_NAMESPACE
@@ -152,7 +151,7 @@ class Pattern : public ListItem<Pattern>
 	// Specific forcefield to use (otherwise use model->ffs)
 	Forcefield* forcefield_;
 	// Short name of the pattern (initially set to "n*m")
-	Dnchar name_;
+	QString name_;
 	// Remove atom from local list
 	void deleteAtom(Atom*);
 
@@ -210,9 +209,9 @@ class Pattern : public ListItem<Pattern>
 	// Returns whether the pattern is fixed
 	bool isFixed() const;
 	// Sets the name of the pattern 
-	void setName(const char* s);
+	void setName(QString name);
 	// Returns the pattern name
-	const char* name() const;
+	QString name() const;
 	// Sets the forcefield to use in the pattern
 	void setForcefield(Forcefield* newff);
 	// Gets the forcefield associated with the pattern

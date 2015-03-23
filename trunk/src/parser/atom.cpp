@@ -96,26 +96,26 @@ FunctionAccessor AtomVariable::functionData[AtomVariable::nFunctions] = {
 };
 
 // Search variable access list for provided accessor (call private static function)
-StepNode* AtomVariable::findAccessor(const char* s, TreeNode* arrayIndex, TreeNode* argList)
+StepNode* AtomVariable::findAccessor(QString name, TreeNode* arrayIndex, TreeNode* argList)
 {
-	return AtomVariable::accessorSearch(s, arrayIndex, argList);
+	return AtomVariable::accessorSearch(name, arrayIndex, argList);
 }
 
 // Private static function to search accessors
-StepNode* AtomVariable::accessorSearch(const char* s, TreeNode* arrayIndex, TreeNode* argList)
+StepNode* AtomVariable::accessorSearch(QString name, TreeNode* arrayIndex, TreeNode* argList)
 {
 	Messenger::enter("AtomVariable::accessorSearch");
 	StepNode* result = NULL;
 	int i = 0;
-	i = Variable::searchAccessor(s, nAccessors, accessorData);
+	i = Variable::searchAccessor(name, nAccessors, accessorData);
 	if (i == -1)
 	{
 		// No accessor found - is it a function definition?
 		// for (i = 0; i < nFunctions; i++) if (strcmp(functionData[i].name,s) == 0) break;
-		i = Variable::searchAccessor(s, nFunctions, functionData);
+		i = Variable::searchAccessor(name, nFunctions, functionData);
 		if (i == -1)
 		{
-			Messenger::print("Error: Type 'Atom&' has no member or function named '%s'.", s);
+			Messenger::print("Error: Type 'Atom&' has no member or function named '%s'.", qPrintable(name));
 			printAccessors();
 			Messenger::exit("AtomVariable::accessorSearch");
 			return NULL;
@@ -123,7 +123,7 @@ StepNode* AtomVariable::accessorSearch(const char* s, TreeNode* arrayIndex, Tree
 		Messenger::print(Messenger::Parse, "FunctionAccessor match = %i (%s)", i, functionData[i].name);
 		if (arrayIndex != NULL)
 		{
-			Messenger::print("Error: Array index given to 'Atom&' function '%s'.", s);
+			Messenger::print("Error: Array index given to 'Atom&' function '%s'.", qPrintable(name));
 			Messenger::exit("AtomVariable::accessorSearch");
 			return NULL;
 		}
@@ -149,7 +149,7 @@ StepNode* AtomVariable::accessorSearch(const char* s, TreeNode* arrayIndex, Tree
 		// Were we given an argument list when we didn't want one?
 		if (argList != NULL)
 		{
-			Messenger::print("Error: Argument list given to 'Atom&' array member '%s'.", s);
+			Messenger::print("Error: Argument list given to 'Atom&' array member '%s'.", qPrintable(name));
 			Messenger::exit("AtomVariable::accessorSearch");
 			return NULL;
 		}
@@ -384,7 +384,7 @@ bool AtomVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newVal
 			else for (n=0; n<4; ++n) ptr->setColour(n, newValue.asDouble(result));
 			break;
 		case (AtomVariable::Data):
-			ptr->setData(newValue.asString());
+			ptr->setData(qPrintable(newValue.asString()));
 			break;
 		case (AtomVariable::ElementInfo):
 			el = (Element*) newValue.asPointer(VTypes::ElementData);
@@ -602,7 +602,7 @@ AtomArrayVariable::AtomArrayVariable(TreeNode* sizeexpr, bool constant)
 }
 
 // Search variable access list for provided accessor
-StepNode* AtomArrayVariable::findAccessor(const char* s, TreeNode* arrayIndex, TreeNode* argList)
+StepNode* AtomArrayVariable::findAccessor(QString name, TreeNode* arrayIndex, TreeNode* argList)
 {
-	return AtomVariable::accessorSearch(s, arrayIndex, argList);
+	return AtomVariable::accessorSearch(name, arrayIndex, argList);
 }

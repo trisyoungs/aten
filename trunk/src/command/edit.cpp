@@ -32,7 +32,7 @@ bool Commands::function_Copy(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	aten_.userClipboard->copySelection(obj.rs());
 	Messenger::print("%i atoms copied to clipboard.", aten_.userClipboard->nAtoms());
-	Messenger::print(Messenger::Verbose, "Copied selection (%i atoms) from model %s", aten_.userClipboard->nAtoms(), obj.rs()->name());
+	Messenger::print(Messenger::Verbose, "Copied selection (%i atoms) from model %s", aten_.userClipboard->nAtoms(), qPrintable(obj.m->name()));
 	return TRUE;
 }
 

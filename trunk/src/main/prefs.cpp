@@ -29,61 +29,58 @@ ATEN_USING_NAMESPACE
 bool Aten::loadPrefs()
 {
 	Messenger::enter("Aten::loadPrefs");
-	Dnchar fileName;
+	QFileInfo fileInfo;
 	ReturnValue rv;
 	bool result, found;
 
-	// Program preferences
+	// Aten's preferences
 	found = FALSE;
-	fileName.sprintf("%s%c%s%cprefs.dat", homeDir_.get(), PATHSEP, atenDir_.get(), PATHSEP);
-	Messenger::print("Looking for program preferences file '%s'...", fileName.get());
-	if (fileExists(fileName)) found = TRUE;
-	else
+	QString filename = atenDirectoryFile("prefs.dat");
+	fileInfo.setFile(filename);
+	Messenger::print("Looking for user preferences file '%s'...", qPrintable(filename));
+	if (fileInfo.exists())
 	{
-		// Try .txt extension instead
-		fileName.sprintf("%s%c%s%cprefs.txt", homeDir_.get(), PATHSEP, atenDir_.get(), PATHSEP);
-		Messenger::print("Looking for program preferences file '%s'...", fileName.get());
-		if (fileExists(fileName)) found = TRUE;
-	}
-	if (found)
-	{
-		Messenger::print("Program preferences file found in '%s'", fileName.get());
-		Program prefscmds;
-		result = prefscmds.generateFromFile(fileName, "Program Preferences");
-		if (result) result = prefscmds.execute(rv);
-	}
-	else Messenger::print("Program preferences file not found.");
-
-	// User preferences
-	found = FALSE;
-	fileName.sprintf("%s%c%s%cuser.dat", homeDir_.get(), PATHSEP, atenDir_.get(), PATHSEP);
-	Messenger::print("Looking for user preferences file '%s'...", fileName.get());
-	if (fileExists(fileName)) found = TRUE;
-	else
-	{
-		// Try .txt extension instead
-		fileName.sprintf("%s%c%s%cuser.txt", homeDir_.get(), PATHSEP, atenDir_.get(), PATHSEP);
-		Messenger::print("Looking for user preferences file '%s'...", fileName.get());
-		if (fileExists(fileName)) found = TRUE;
-	}
-	if (found)
-	{
-		Messenger::print("User preferences file found in '%s'", fileName.get());
-		Program prefscmds;
-		result = prefscmds.generateFromFile(fileName, "User Preferences");
-		if (result) result = prefscmds.execute(rv);
+		Messenger::print("Program preferences file found at '%s'", qPrintable(filename));
+		Program prefsCmds;
+		result = prefsCmds.generateFromFile(filename, "Program Preferences");
+		if (result) result = prefsCmds.execute(rv);
 	}
 	else Messenger::print("User preferences file not found.");
+
+	// Program preferences
+	found = FALSE;
+	QString filename = atenDirectoryFile("user.dat");
+	fileInfo.setFile(filename);
+	Messenger::print("Looking for user preferences file '%s'...", qPrintable(filename));
+	if (fileInfo.exists()) found = TRUE;
+	else
+	{
+		// Try .txt extension instead
+		filename = atenDirectoryFile("user.txt");
+		fileInfo.setFile(filename);
+		Messenger::print("Looking for user preferences file '%s'...", qPrintable(filename));
+		if (fileInfo.exists()) found = TRUE;
+	}
+	if (found)
+	{
+		Messenger::print("User preferences file found in '%s'", qPrintable(filename));
+		Program prefsCmds;
+		result = prefsCmds.generateFromFile(filename, "User Preferences");
+		if (result) result = prefsCmds.execute(rv);
+	}
+	else Messenger::print("User preferences file not found.");
+
 	Messenger::exit("Aten::loadPrefs");
 	return TRUE;
 }
 
 // Save user preferences file
-bool Aten::savePrefs(const char* fileName)
+bool Aten::savePrefs(QString fileName)
 {
 	Messenger::enter("Aten::savePrefs");
+
 	bool result = TRUE;
-	Dnchar line;
+	QString line;
 	int n, i;
 	LineParser prefsfile;
 	prefsfile.openOutput(fileName, TRUE);
@@ -111,31 +108,33 @@ bool Aten::savePrefs(const char* fileName)
 		prefsfile.writeLine("// Program Preferences\n");
 		Prefs defaults;
 		ReturnValue rv;
-		Dnchar newvalue, defaultvalue;		
+		QString newValue, defaultValue;
 		for (i = 0; i < PreferencesVariable::nAccessors; ++i)
 		{
 			rv.set(VTypes::PreferencesData, this);
+
 			// Convert original new value to string representation
 			if (!PreferencesVariable::retrieveAccessor(i, rv, FALSE)) continue;
-			if (rv.type() == VTypes::DoubleData) newvalue.sprintf("%10.5e", rv.asDouble());
-			else newvalue = rv.asString();
+			if (rv.type() == VTypes::DoubleData) newValue.sprintf("%10.5e", rv.asDouble());
+			else newValue = rv.asString();
 			
 			// Convert default value to string representation
 			rv.set(VTypes::PreferencesData, &defaults);
 			if (!PreferencesVariable::retrieveAccessor(i, rv, FALSE)) continue;
-			if (rv.type() == VTypes::DoubleData) defaultvalue.sprintf("%10.5e", rv.asDouble());
-			else defaultvalue = rv.asString();
+			if (rv.type() == VTypes::DoubleData) defaultValue.sprintf("%10.5e", rv.asDouble());
+			else defaultValue = rv.asString();
 
 			// Compare the two strings - if different, write the prefs value to the file....
-// 			printf("acc = %i [%s], default = '%s', new = '%s'\n", i, PreferencesVariable::accessorData[i].name, defaultvalue.get(), newvalue.get());
-			if (strcmp(defaultvalue.get(), newvalue.get()) == 0) continue;
-			if ((PreferencesVariable::accessorData[i].returnType == VTypes::StringData) && (PreferencesVariable::accessorData[i].arraySize == 0)) line.sprintf("aten.prefs.%s = \"%s\";\n", PreferencesVariable::accessorData[i].name, newvalue.get());
-			else line.sprintf("aten.prefs.%s = %s;\n", PreferencesVariable::accessorData[i].name, newvalue.get());
+// 			printf("acc = %i [%s], default = '%s', new = '%s'\n", i, PreferencesVariable::accessorData[i].name, defaultValue.get(), newValue.get());
+			if (defaultValue == newValue) continue;
+			if ((PreferencesVariable::accessorData[i].returnType == VTypes::StringData) && (PreferencesVariable::accessorData[i].arraySize == 0)) line.sprintf("aten.prefs.%s = \"%s\";\n", PreferencesVariable::accessorData[i].name, qPrintable(newValue));
+			else line.sprintf("aten.prefs.%s = %s;\n", PreferencesVariable::accessorData[i].name, qPrintable(newValue));
 			prefsfile.writeLine(line);
 		}
 	}
 	else result = FALSE;
 	prefsfile.closeFiles();
+
 	Messenger::exit("Aten::savePrefs");
 	return result;
 }

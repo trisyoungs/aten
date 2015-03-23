@@ -160,26 +160,26 @@ FunctionAccessor ModelVariable::functionData[ModelVariable::nFunctions] = {
 };
 
 // Search variable access list for provided accessor (call private static function)
-StepNode* ModelVariable::findAccessor(const char* s, TreeNode* arrayIndex, TreeNode* argList)
+StepNode* ModelVariable::findAccessor(QString name, TreeNode* arrayIndex, TreeNode* argList)
 {
-	return ModelVariable::accessorSearch(s, arrayIndex, argList);
+	return ModelVariable::accessorSearch(name, arrayIndex, argList);
 }
 
 // Private static function to search accessors
-StepNode* ModelVariable::accessorSearch(const char* s, TreeNode* arrayIndex, TreeNode* argList)
+StepNode* ModelVariable::accessorSearch(QString name, TreeNode* arrayIndex, TreeNode* argList)
 {
 	Messenger::enter("ModelVariable::accessorSearch");
 	StepNode* result = NULL;
 	int i = 0;
-	i = Variable::searchAccessor(s, nAccessors, accessorData);
+	i = Variable::searchAccessor(name, nAccessors, accessorData);
 	if (i == -1)
 	{
 		// No accessor found - is it a function definition?
 		// for (i = 0; i < nFunctions; i++) if (strcmp(functionData[i].name,s) == 0) break;
-		i = Variable::searchAccessor(s, nFunctions, functionData);
+		i = Variable::searchAccessor(name, nFunctions, functionData);
 		if (i == -1)
 		{
-			Messenger::print("Error: Type 'Model&' has no member or function named '%s'.", s);
+			Messenger::print("Error: Type 'Model&' has no member or function named '%s'.", qPrintable(name));
 			printAccessors();
 			Messenger::exit("ModelVariable::accessorSearch");
 			return NULL;
@@ -187,7 +187,7 @@ StepNode* ModelVariable::accessorSearch(const char* s, TreeNode* arrayIndex, Tre
 		Messenger::print(Messenger::Parse, "FunctionAccessor match = %i (%s)", i, functionData[i].name);
 		if (arrayIndex != NULL)
 		{
-			Messenger::print("Error: Array index given to 'Model&' function '%s'.", s);
+			Messenger::print("Error: Array index given to 'Model&' function named '%s'.", qPrintable(name));
 			Messenger::exit("ModelVariable::accessorSearch");
 			return NULL;
 		}
@@ -213,7 +213,7 @@ StepNode* ModelVariable::accessorSearch(const char* s, TreeNode* arrayIndex, Tre
 		// Were we given an argument list when we didn't want one?
 		if (argList != NULL)
 		{
-			Messenger::print("Error: Argument list given to 'Model&' array member '%s'.", s);
+			Messenger::print("Error: Argument list given to 'Model&' array member '%s'.", qPrintable(name));
 			Messenger::exit("ModelVariable::accessorSearch");
 			return NULL;
 		}
@@ -265,7 +265,7 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex,
 			if (!hasArrayIndex) rv.set(VTypes::MeasurementData, ptr->angleMeasurements());
 			else if (arrayIndex > ptr->nAngleMeasurements())
 			{
-				Messenger::print("Angle array index (%i) is out of bounds for model '%s'", arrayIndex, ptr->name());
+				Messenger::print("Angle array index (%i) is out of bounds for model '%s'", arrayIndex, qPrintable(ptr->name()));
 				result = FALSE;
 			}
 			else rv.set(VTypes::MeasurementData, ptr->angleMeasurement(arrayIndex-1));
@@ -274,7 +274,7 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex,
 			if (!hasArrayIndex) rv.set(VTypes::AtomData, ptr->atoms());
 			else if (arrayIndex > ptr->nAtoms())
 			{
-				Messenger::print("Atom array index (%i) is out of bounds for model '%s'", arrayIndex, ptr->name());
+				Messenger::print("Atom array index (%i) is out of bounds for model '%s'", arrayIndex, qPrintable(ptr->name()));
 				result = FALSE;
 			}
 			else rv.set(VTypes::AtomData, ptr->atom(arrayIndex-1));
@@ -283,7 +283,7 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex,
 			if (!hasArrayIndex) rv.set(VTypes::BondData, ptr->bonds());
 			else if (arrayIndex > ptr->nBonds())
 			{
-				Messenger::print("Bond array index (%i) is out of bounds for model '%s'", arrayIndex, ptr->name());
+				Messenger::print("Bond array index (%i) is out of bounds for model '%s'", arrayIndex, qPrintable(ptr->name()));
 				result = FALSE;
 			}
 			else rv.set(VTypes::BondData, ptr->bond(arrayIndex-1));
@@ -307,7 +307,7 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex,
 			if (!hasArrayIndex) rv.set(VTypes::MeasurementData, ptr->distanceMeasurements());
 			else if (arrayIndex > ptr->nDistanceMeasurements())
 			{
-				Messenger::print("Distance array index (%i) is out of bounds for model '%s'", arrayIndex, ptr->name());
+				Messenger::print("Distance array index (%i) is out of bounds for model '%s'", arrayIndex, qPrintable(ptr->name()));
 				result = FALSE;
 			}
 			else rv.set(VTypes::MeasurementData, ptr->distanceMeasurement(arrayIndex-1));
@@ -323,7 +323,7 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex,
 			}
 			else if (arrayIndex > ptr->nForcefieldAngles())
 			{
-				Messenger::print("Forcefield angle array index (%i) is out of bounds for model '%s'", arrayIndex, ptr->name());
+				Messenger::print("Forcefield angle array index (%i) is out of bounds for model '%s'", arrayIndex, qPrintable(ptr->name()));
 				result = FALSE;
 			}
 			else rv.set(VTypes::ForcefieldBoundData, ptr->forcefieldAngle(arrayIndex-1)->item, ptr->forcefieldAngle(arrayIndex-1));
@@ -336,7 +336,7 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex,
 			}
 			else if (arrayIndex > ptr->nForcefieldBonds())
 			{
-				Messenger::print("Forcefield bond array index (%i) is out of bounds for model '%s'", arrayIndex, ptr->name());
+				Messenger::print("Forcefield bond array index (%i) is out of bounds for model '%s'", arrayIndex, qPrintable(ptr->name()));
 				result = FALSE;
 			}
 			else rv.set(VTypes::ForcefieldBoundData, ptr->forcefieldBond(arrayIndex-1)->item, ptr->forcefieldBond(arrayIndex-1));
@@ -349,7 +349,7 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex,
 			}
 			else if (arrayIndex > ptr->nForcefieldTorsions())
 			{
-				Messenger::print("Forcefield torsion array index (%i) is out of bounds for model '%s'", arrayIndex, ptr->name());
+				Messenger::print("Forcefield torsion array index (%i) is out of bounds for model '%s'", arrayIndex, qPrintable(ptr->name()));
 				result = FALSE;
 			}
 			else rv.set(VTypes::ForcefieldBoundData, ptr->forcefieldTorsion(arrayIndex-1)->item, ptr->forcefieldTorsion(arrayIndex-1));
@@ -365,7 +365,7 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex,
 			}
 			else if (arrayIndex > ptr->nUniqueForcefieldTypes())
 			{
-				Messenger::print("Forcefield types array index (%i) is out of bounds for model '%s'", arrayIndex, ptr->name());
+				Messenger::print("Forcefield types array index (%i) is out of bounds for model '%s'", arrayIndex, qPrintable(ptr->name()));
 				result = FALSE;
 			}
 			else rv.set(VTypes::ForcefieldAtomData, ptr->uniqueForcefieldType(arrayIndex-1)->item, ptr->uniqueForcefieldType(arrayIndex-1));
@@ -383,13 +383,13 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex,
 			// Only works for a cached trajectory
 			if (!ptr->trajectoryIsCached())
 			{
-				Messenger::print("Trajectory for model '%s' is not cached - individual frame pointers not available.", ptr->name());
+				Messenger::print("Trajectory for model '%s' is not cached - individual frame pointers not available.", qPrintable(ptr->name()));
 				result = FALSE;
 			}
 			else if (!hasArrayIndex) rv.set(VTypes::ModelData, ptr->trajectoryFrame(0));
 			else if ((arrayIndex < 1) || (arrayIndex > ptr->nTrajectoryFrames()))
 			{
-				Messenger::print("Frame array index '%i' is out of bounds for model '%s' whose trajectory has %i frames.", arrayIndex, ptr->name(), ptr->nTrajectoryFrames());
+				Messenger::print("Frame array index '%i' is out of bounds for model '%s' whose trajectory has %i frames.", arrayIndex, qPrintable(ptr->name()), ptr->nTrajectoryFrames());
 				result = FALSE;
 			}
 			else rv.set(VTypes::ModelData, ptr->trajectoryFrame(arrayIndex-1));
@@ -402,7 +402,7 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex,
 			}
 			else if (arrayIndex > ptr->nGlyphs())
 			{
-				Messenger::print("Glyph array index (%i) is out of bounds for model '%s'", arrayIndex, ptr->name());
+				Messenger::print("Glyph array index (%i) is out of bounds for model '%s'", arrayIndex, qPrintable(ptr->name()));
 				result = FALSE;
 			}
 			else rv.set(VTypes::GlyphData, ptr->glyph(arrayIndex-1));
@@ -415,7 +415,7 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex,
 			}
 			else if (arrayIndex > ptr->nGrids())
 			{
-				Messenger::print("Grid array index (%i) is out of bounds for model '%s'", arrayIndex, ptr->name());
+				Messenger::print("Grid array index (%i) is out of bounds for model '%s'", arrayIndex, qPrintable(ptr->name()));
 				result = FALSE;
 			}
 			else rv.set(VTypes::GridData, ptr->grid(arrayIndex-1));
@@ -490,7 +490,7 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex,
 			if (!hasArrayIndex) rv.set(VTypes::PatternData, ptr->patterns());
 			else if (arrayIndex > ptr->nPatterns())
 			{
-				Messenger::print("Pattern array index (%i) is out of bounds for model '%s'", arrayIndex, ptr->name());
+				Messenger::print("Pattern array index (%i) is out of bounds for model '%s'", arrayIndex, qPrintable(ptr->name()));
 				result = FALSE;
 			}
 			else rv.set(VTypes::PatternData, ptr->pattern(arrayIndex-1));
@@ -512,7 +512,7 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex,
 			}
 			else if (arrayIndex > ptr->nSelected())
 			{
-				Messenger::print("Selection array index (%i) is out of bounds for model '%s'", arrayIndex, ptr->name());
+				Messenger::print("Selection array index (%i) is out of bounds for model '%s'", arrayIndex, qPrintable(ptr->name()));
 				result = FALSE;
 			}
 			else rv.set(VTypes::AtomData, ptr->selected(arrayIndex-1)->item, ptr->selected(arrayIndex-1));
@@ -521,7 +521,7 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex,
 			if (!hasArrayIndex) rv.set(VTypes::MeasurementData, ptr->torsionMeasurements());
 			else if (arrayIndex > ptr->nTorsionMeasurements())
 			{
-				Messenger::print("Torsions array index (%i) is out of bounds for model '%s'", arrayIndex, ptr->name());
+				Messenger::print("Torsions array index (%i) is out of bounds for model '%s'", arrayIndex, qPrintable(ptr->name()));
 				result = FALSE;
 			}
 			else rv.set(VTypes::MeasurementData, ptr->torsionMeasurement(arrayIndex-1));
@@ -880,7 +880,7 @@ ModelArrayVariable::ModelArrayVariable(TreeNode* sizeexpr, bool constant)
 }
 
 // Search variable access list for provided accessor
-StepNode* ModelArrayVariable::findAccessor(const char* s, TreeNode* arrayIndex, TreeNode* argList)
+StepNode* ModelArrayVariable::findAccessor(QString name, TreeNode* arrayIndex, TreeNode* argList)
 {
-	return ModelVariable::accessorSearch(s, arrayIndex, argList);
+	return ModelVariable::accessorSearch(name, arrayIndex, argList);
 }

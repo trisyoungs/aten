@@ -42,12 +42,13 @@ class NetaParser
 	// Symbolic tokens - array of corresponding values refers to Bison's tokens
 	enum NetaSymbolToken { GEQSymbol, LEQSymbol, CNEQSymbol, FNEQSymbol, nNetaSymbolTokens };
 
+
 	/*
 	// Character Stream
 	*/
 	private:
 	// Character string source
-	Dnchar stringSource_;
+	QString stringSource_;
 	// Integer position in stringSource, total length of string, and starting position of current token/function
 	int stringPos_, stringLength_, tokenStart_, functionStart_;
 	// Line parser
@@ -75,6 +76,7 @@ class NetaParser
 	// Print error information and location
 	void printErrorInfo();
 
+
 	/*
 	// Node Functions
 	*/
@@ -82,45 +84,45 @@ class NetaParser
 	// Node context stack
 	Reflist<NetaContextNode,int> contextStack_;
 	// Current NETA structure target
-	Neta *neta_;
+	Neta* neta_;
 	// Current NETA target structure parent
 	Forcefield* targetParentForcefield_;
 	// Name of last unrecognised token
-	Dnchar lastUnknownToken_;
+	QString lastUnknownToken_;
 
 	public:
 	// Pop topmost node of contextStack_
 	void popContext();
 	// Return name of last unrecognised token
-	const char* lastUnknownToken();
+	QString lastUnknownToken();
 	// Create guts of within supplied NETA structure from supplied character element and string
-	bool createNeta(Neta *target, const char* netastring, Forcefield* ffparent);
+	bool createNeta(Neta* target, QString neta, Forcefield* parentff );
 	// Set description (called by lexer)
-	void setDescription(NetaNode *desc);
+	void setDescription(NetaNode* desc);
 	// Join two nodes together
-	NetaNode *join(Neta::NetaLogicType logic, NetaNode *node1, NetaNode *node2);
+	NetaNode* join(Neta::NetaLogicType logic, NetaNode* node1, NetaNode* node2);
 	// Link two nodes together (with direct pointers)
-	NetaNode *link(NetaNode *node1, NetaNode *node2);
+	NetaNode* link(NetaNode* node1, NetaNode* node2);
 	// Create element/type list item
 	Refitem<ForcefieldAtom,int>* createElementType(int eltype);
 	// Join element/type list items
 	Refitem<ForcefieldAtom,int>* joinElementTypes(Refitem<ForcefieldAtom,int>* type1, Refitem<ForcefieldAtom,int>* type2);
 	// Create keyword node in current NETA structure
-	NetaNode *createKeywordNode(Neta::NetaKeyword nk);
+	NetaNode* createKeywordNode(Neta::NetaKeyword nk);
 	// Create geometry node in current NETA structure
-	NetaNode *createGeometryNode(Atom::AtomGeometry ag);
+	NetaNode* createGeometryNode(Atom::AtomGeometry ag);
 	// Create value node in current NETA structure
-	NetaNode *createValueNode(Neta::NetaValue nv, Neta::NetaValueComparison nvc, int value);
+	NetaNode* createValueNode(Neta::NetaValue nv, Neta::NetaValueComparison nvc, int value);
 	// Create bound node in current NETA structure
-	NetaBoundNode *createBoundNode();
+	NetaBoundNode* createBoundNode();
 	// Create ring node in current NETA structure
-	NetaRingNode *createRingNode();
+	NetaRingNode* createRingNode();
 	// Create chain node in current NETA structure
-	NetaChainNode *createChainNode();
+	NetaChainNode* createChainNode();
 	// Create measurement node in current NETA structure
-	NetaMeasurementNode *createMeasurementNode(bool removeNeighbours);
+	NetaMeasurementNode* createMeasurementNode(bool removeNeighbours);
 	// Find named define in forcefield
-	NetaNode *findDefine(const char* name);
+	NetaNode* findDefine(QString name);
 };
 
 // External declaration

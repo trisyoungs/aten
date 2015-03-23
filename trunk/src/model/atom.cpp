@@ -24,7 +24,6 @@
 #include "model/undoevent.h"
 #include "base/atom.h"
 #include "base/pattern.h"
-// #include "base/elements.h"
 #include "base/forcefieldatom.h"
 
 ATEN_USING_NAMESPACE
@@ -274,7 +273,7 @@ Atom* Model::atom(int n)
 	// Check range first
 	if ((n < 0) || (n >= atoms_.nItems()))
 	{
-		Messenger::print("Atom id '%i' is out of range for model '%s'.", n+1, name_.get());
+		Messenger::print("Atom id '%i' is out of range for model '%s'.", n+1, qPrintable(name_));
 		Messenger::exit("Model::atom");
 		return NULL;
 	}

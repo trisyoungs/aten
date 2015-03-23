@@ -22,7 +22,6 @@
 #ifndef ATEN_FORMAT_H
 #define ATEN_FORMAT_H
 
-#include "base/dnchar.h"
 #include "base/lineparser.h"
 #include "parser/vtypes.h"
 #include "templates/list.h"
@@ -41,7 +40,7 @@ class FormatChunk : public ListItem<FormatChunk>
 	// Node types
 	enum ChunkType { PlainTextChunk, FormattedChunk, DelimitedChunk, GreedyDelimitedChunk, nChunkTypes };
 	// Constructors
-	FormatChunk(ChunkType type, const char* fmt, TreeNode* arg = NULL, VTypes::DataType retrieveType = VTypes::NoData);
+	FormatChunk(ChunkType type, QString cFormat, TreeNode* arg = NULL, VTypes::DataType retrieveType = VTypes::NoData);
 
 
 	/*
@@ -51,7 +50,7 @@ class FormatChunk : public ListItem<FormatChunk>
 	// Type of chunk
 	ChunkType type_;
 	// C-style format relevant to chunk *or* plain text data if PlainTextChunk
-	Dnchar cFormat_;
+	QString cFormat_;
 	// Length of formatted argument (if one was supplied)
 	int formatLength_;
 	// Argument pointing to source (in the case of read) or destination (in the case of write) command arguments
@@ -63,7 +62,7 @@ class FormatChunk : public ListItem<FormatChunk>
 	// Return chunktype
 	ChunkType type();
 	// Return C-style format string *or* plain text data if chunktype is PlainTextChunk
-	const char* cFormat();
+	QString cFormat();
 	// Return length of formatted chunk
 	int formatLength();
 	// Return length of plaintext (cFormat)
@@ -80,7 +79,7 @@ class Format
 	public:
 	// Constructors / Destructor
 	Format(Refitem<TreeNode,int>* firstarg);
-	Format(const char* format, Refitem<TreeNode,int>* firstarg);
+	Format(QString cFormat, Refitem<TreeNode,int>* firstarg);
 	~Format();
 
 
@@ -95,11 +94,11 @@ class Format
 	// Chunk list
 	List<FormatChunk> chunks_;
 	// Created string
-	char createdString_[8192];
+	QString createdString_;
 	// Add new plaintext chunk to format
-	void addPlainTextChunk(const char* s);
+	void addPlainTextChunk(QString plainText);
 	// Add new formatted chunk to format
-	void addFormattedChunk(const char* format, TreeNode* arg, VTypes::DataType retrievetype);
+	void addFormattedChunk(QString cFormat, TreeNode* arg, VTypes::DataType retrievetype);
 	// Add new delimited chunk to format
 	void addDelimitedChunk(TreeNode* arg);
 	// Add new greedy delimited chunk to format
@@ -119,11 +118,11 @@ class Format
 
 	public:
 	// Return last written string
-	const char* string();
+	QString string();
 	// Write format to internal string
 	bool writeToString();
 	// Read line and parse according to format
-	int read(const char* line, int optionMask);
+	int read(QString line, int optionMask);
 	// Read line from file and parse according to format
 	int read(LineParser *parser, int optionMask);
 };

@@ -32,7 +32,7 @@ void AtenWindow::loadSettings()
 {
 	QString key;
 	QFileInfo fi1, fi2;
-	Dnchar filename;
+	QString filename;
 	QStringList commandHistory, selectHistory, selectForHistory, selectNetaHistory;
 	Program* prog, *loadedscript;
 	int n;
@@ -51,7 +51,7 @@ void AtenWindow::loadSettings()
 	do
 	{
 		key = "CommandHistory";
-		key += itoa(n);
+		key += QString::number(n);
 		if (settings_.contains(key))
 		{
 			commandHistory << settings_.value(key).toString();
@@ -62,13 +62,14 @@ void AtenWindow::loadSettings()
 	settings_.sync();
 
 	// Probe user history file...
-	filename.sprintf("%s%c%s%chistory.txt", aten_.homeDir(), PATHSEP, aten_.atenDir(), PATHSEP);
-	Messenger::print("Looking for program history file '%s'...", filename.get());
-	if (fileExists(filename))
+	filename = aten_.atenDirectoryFile("history.txt");
+	Messenger::print("Looking for program history file '%s'...", qPrintable(filename));
+	QFileInfo fileInfo(filename);
+	if (fileInfo.exists())
 	{
-		Messenger::print("Program history file found in '%s'", filename.get());
+		Messenger::print("Program history file found in '%s'", qPrintable(filename));
 		LineParser parser;
-		Dnchar arg, data;
+		QString arg, data;
 		if (!parser.openInput(filename))
 		{
 			Messenger::print("Failed to open program history file.");
@@ -78,16 +79,18 @@ void AtenWindow::loadSettings()
 		{
 			// Get first part of line - the identifier for the information which follows it
 			if (parser.readNextLine(LineParser::SkipBlanks) == 1) break;
-			if (!parser.getArgDelim(LineParser::SkipBlanks, &arg)) break;
+			if (!parser.getArgDelim(LineParser::SkipBlanks, arg)) break;
+
 			// Get remainder of line, which is the data to store
-			if (!parser.getRestDelim(&data)) break;
+			if (!parser.getRestDelim(data)) break;
+
 			// Determine history type
 			Prefs::HistoryType ht = Prefs::historyType(arg, TRUE);
 			if (ht == Prefs::nHistoryTypes) continue;
 			switch (ht)
 			{
 				case (Prefs::CommandHistory):
-					commandHistory << data.get();
+					commandHistory << data;
 					break;
 				case (Prefs::RecentFileHistory):
 					addRecent(data);
@@ -95,7 +98,7 @@ void AtenWindow::loadSettings()
 				case (Prefs::ScriptHistory):
 					// Has this script already been loaded?
 					// Use a couple of QFileInfo's to find out...
-					fi1.setFile(data.get());
+					fi1.setFile(data);
 					for (loadedscript = aten_.scripts(); loadedscript != NULL; loadedscript = loadedscript->next)
 					{
 						fi2.setFile(loadedscript->filename());
@@ -103,27 +106,27 @@ void AtenWindow::loadSettings()
 					}
 					if (loadedscript != NULL)
 					{
-						printf("Script '%s' appears to have been loaded already - will not load it a second time.\n", data.get());
+						printf("Script '%s' appears to have been loaded already - will not load it a second time.\n", qPrintable(data));
 					}
 					else
 					{
 						prog = aten_.addScript();
-						if (prog->generateFromFile(data, data)) Messenger::print("Successfully loaded script file '%s'.", data.get());
+						if (prog->generateFromFile(data, data)) Messenger::print("Successfully loaded script file '%s'.", qPrintable(data));
 						else
 						{
 							aten_.removeScript(prog);
-							Messenger::print("Failed to load script file '%s'.", data.get());
+							Messenger::print("Failed to load script file '%s'.", qPrintable(data));
 						}
 					}
 					break;
 				case (Prefs::SelectForHistory):
-					selectForHistory << data.get();
+					selectForHistory << data;
 					break;
 				case (Prefs::SelectHistory):
-					selectHistory << data.get();
+					selectHistory << data;
 					break;
 				case (Prefs::SelectNetaHistory):
-					selectNetaHistory << data.get();
+					selectNetaHistory << data;
 					break;
 			}
 		}
@@ -140,15 +143,14 @@ void AtenWindow::loadSettings()
 void AtenWindow::saveSettings()
 {
 	// Open new file for writing...
-	Dnchar filename;
-	filename.sprintf("%s%c%s%chistory.txt", aten_.homeDir(), PATHSEP, aten_.atenDir(), PATHSEP);
-	Messenger::print("Saving program history file '%s'...", filename.get());
+	QString filename = aten_.atenDirectoryFile("history.txt");
+	Messenger::print("Saving program history file '%s'...", qPrintable(filename));
 	LineParser historyFile;
 	historyFile.openOutput(filename, TRUE);
 	
 	if (historyFile.isFileGoodForWriting())
 	{
-		Dnchar line;
+		QString line;
 		int n;
 		QStringList history;
 		
@@ -164,7 +166,7 @@ void AtenWindow::saveSettings()
 		// Scripts
 		for (Program* prog = aten_.scripts(); prog != NULL; prog = prog->next)
 		{
-			line.sprintf("Script  %s\n", prog->filename());
+			line.sprintf("Script  %s\n", qPrintable(prog->filename()));
 			historyFile.writeLine(line);
 		}
 
@@ -172,7 +174,7 @@ void AtenWindow::saveSettings()
 		history = commandWidget->commandList();
 		for (n=0; n < history.count(); ++n)
 		{
-			line.sprintf("Command  %s\n", qPrintable(history[n]));
+			line.sprintf("Command  %s\n", qPrintable(history.at(n)));
 			historyFile.writeLine(line);
 		}
 		

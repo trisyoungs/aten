@@ -65,7 +65,6 @@ class GeometryWidget;
 class GlyphsWidget;
 class GridsWidget;
 class MDWidget;
-class MessagesWidget;
 class ModelListWidget;
 class PoresWidget;
 class PositionWidget;
@@ -132,8 +131,6 @@ class AtenWindow : public QMainWindow
 	public:
 	// Initialise GUI file filters array
 	void initFilters();
-	// Add a message to the main window's message output box
-	void printMessage(const char*);
 	// Close specified model, saving first if requested
 	bool closeModel(Model* m);
 	// Save before close
@@ -389,7 +386,7 @@ class AtenWindow : public QMainWindow
 	// Filter set from save model dialog
 	Tree* saveModelFilter_;
 	// Filename set from save model dialog
-	Dnchar saveModelFilename_;
+	QString saveModelFilename_;
 
 	private slots:
 	// Change current user action
@@ -437,11 +434,11 @@ class AtenWindow : public QMainWindow
 
 	private:
 	// Pointers to recent file actions
-	QAction *actionRecentFile[MAXRECENTFILES];
+	QAction* actionRecentFile[MAXRECENTFILES];
 
 	public:
 	// Add file to top of recent list
-	void addRecent(const char*);
+	void addRecent(QString filename);
 
 
 	/*
@@ -478,8 +475,6 @@ class AtenWindow : public QMainWindow
 	GlyphsWidget *glyphsWidget;
 	// Grids dock widget
 	GridsWidget *gridsWidget;
-	// Messages dock widget
-	MessagesWidget *messagesWidget;
 	// Model List dock widget
 	ModelListWidget *modelListWidget;
 	// Pore builder dock widget

@@ -50,7 +50,7 @@ class TProcess : public QProcess
 
 	public:
 	// Execute specified command with arguments and followed output file provided
-	bool execute(const char *command, const char *args, const char *outputfile);
+	bool execute(QString command, QString args, QString outputfile);
 	// Return whether process is finished
 	bool finished();
 	// Return whether new (any) output is available for reading from the output file

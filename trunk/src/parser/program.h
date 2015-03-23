@@ -46,9 +46,9 @@ class Program : public ListItem<Program>
 	*/
 	private:
 	// Name, if any
-	Dnchar name_;
+	QString name_;
 	// Original source filename, if any
-	Dnchar filename_;
+	QString filename_;
 	// Main program
 	Tree mainProgram_;
 	// List of filters belonging to this program
@@ -62,17 +62,17 @@ class Program : public ListItem<Program>
 	// Clear contents of program, including filters and functions
 	void clear();
 	// Set name of program
-	void setName(const char* s);
+	void setName(QString name);
 	// Return name of program
-	const char* name();
+	QString name();
 	// Return associated filename (if any)
-	const char* filename();
+	QString filename();
 	// Generate program from string 
-	bool generateFromString(const char* s, const char* name, const char* sourceInfo, bool dontPushTree = FALSE, bool clearExisting = TRUE);
+	bool generateFromString(QString string, QString name, QString sourceInfo, bool dontPushTree = FALSE, bool clearExisting = TRUE);
 	// Generate program from string list
-	bool generateFromStringList(Dnchar* stringListHead, const char* name, const char* sourceInfo, bool dontPushTree = FALSE, bool clearExisting = TRUE);
+	bool generateFromStringList(QStringList stringList, QString name, QString sourceInfo, bool dontPushTree = FALSE, bool clearExisting = TRUE);
 	// Generate program from input file
-	bool generateFromFile(const char* filename, const char* name = NULL, bool dontPushTree = FALSE, bool clearExisting = TRUE, bool isFilterFile = FALSE);
+	bool generateFromFile(QString filename, QString name, bool dontPushTree = FALSE, bool clearExisting = TRUE, bool isFilterFile = FALSE);
 	// Reload program (provided it was from a file...)
 	bool reload();
 	// Finalise program
@@ -100,13 +100,13 @@ class Program : public ListItem<Program>
 
 	public:
 	// Add a new Program-global function tree
-	Tree* addFunction(const char* name);
+	Tree* addFunction(QString name);
 	// Search for existing global function
-	Tree* findFunction(const char* s);
+	Tree* findFunction(QString functionName);
 	// Return first defined global function
 	Tree* functions();
 	// Execute specified global function
-	bool executeFunction(const char* name, ReturnValue& rv, const char* argList, ...);
+	bool executeFunction(QString functionName, ReturnValue& rv, const char* argList, ...);
 };
 
 ATEN_END_NAMESPACE

@@ -22,13 +22,14 @@
 #ifndef ATEN_SYSFUNC_H
 #define ATEN_SYSFUNC_H
 
+#include <QtCore/QString>
+
 // Number/string conversion
 const char* itoa(int);
 const char* ftoa(double);
 const char* ftoa(double, const char*);
 
 // String functions
-const char* absoluteFilePath(const char*);
 const char* removePath(const char*);
 const char* upperCase(const char*);
 const char* lowerCase(const char*);
@@ -41,12 +42,12 @@ const char* stripTrailing(const char*);
 const char* replaceChars(const char* s, const char* charstoreplace, char r);
 const char* stripChars(const char* s, const char* charstostrip);
 int countChars(const char* string, const char* searchchars, int offset = 0);
-void removeComments(char *s);
+void removeComments(QString& line);
 bool isEmpty(const char* s);
 
 // Enum search and print
-int enumSearch(const char* name, int nitems, const char* *list, const char* query, bool reportError = 1);
-void enumPrintValid(int nitems, const char* *list);
+int enumSearch(QString enumName, int nItems, const char* itemArray[], QString name, bool reportError = true);
+void enumPrintValid(int nItems, const char* itemArray[]);
 
 // Files
 bool fileExists(const char* filename);

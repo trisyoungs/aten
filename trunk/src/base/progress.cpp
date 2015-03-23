@@ -46,7 +46,7 @@ void ProgressIndicator::notifyCanceled()
 }
 
 // Instantiate a new progress dialog (or a sub-job of the current one
-int ProgressIndicator::initialise(const char* jobtitle, int stepstodo)
+int ProgressIndicator::initialise(QString jobtitle, int stepstodo)
 {
 	// Check if a progress indicator job already exists
 	if (!hasJob_)
@@ -63,7 +63,7 @@ int ProgressIndicator::initialise(const char* jobtitle, int stepstodo)
 
 		// If the GUI doesn't exist, call the text-based progress indicator
 // 		if (gui.exists()) gui.initialiseProgressDialog();   ATEN2 TODO
-		if (!Messenger::isQuiet()) printf("%s", jobtitle);
+		if (!Messenger::isQuiet()) printf("%s", qPrintable(jobtitle));
 
 		hasJob_ = TRUE;
 		return 1;
@@ -76,7 +76,7 @@ int ProgressIndicator::initialise(const char* jobtitle, int stepstodo)
 }
 
 // Update the progress dialog
-bool ProgressIndicator::update(int id, int currentstep, const char* subtitle)
+bool ProgressIndicator::update(int id, int currentstep, QString subtitle)
 {
 	if (id != 1) return (!canceled_);
 	currentStep_ = (currentstep == -1 ? currentStep_+1 : currentstep);
@@ -122,7 +122,7 @@ bool ProgressIndicator::update(int id, int currentstep, const char* subtitle)
 			for (n=ndots; n<30; n++) printf(" ");
 
 			// Lastly, print percentage and ETA
-			printf("%s", etaText_.get());
+			printf("%s", qPrintable(etaText_));
 			fflush(stdout);
 		}
 	}
@@ -158,21 +158,21 @@ bool ProgressIndicator::hasJob()
 }
 
 // Return ETA (as text)
-const char* ProgressIndicator::eta()
+QString ProgressIndicator::eta()
 {
-	return etaText_.get();
+	return etaText_;
 }
 
 // Return major job title
-const char* ProgressIndicator::jobTitle()
+QString ProgressIndicator::jobTitle()
 {
-	return jobTitle_.get();
+	return jobTitle_;
 }
 
 // Return minor job title
-const char* ProgressIndicator::subTitle()
+QString ProgressIndicator::subTitle()
 {
-	return subTitle_.get();
+	return subTitle_;
 }
 
 // Return number of steps to do

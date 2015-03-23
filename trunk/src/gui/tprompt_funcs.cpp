@@ -146,7 +146,7 @@ void TPrompt::promptTextEdited(QString text)
 	if (results.size() > 0) commandList_->setCurrentItem(results.first());
 }
 
-void TPrompt::promptListSingleClicked(QListWidgetItem *item)
+void TPrompt::promptListSingleClicked(QListWidgetItem* item)
 {
 	if (item == NULL) return;
 	// Store current line edit text
@@ -156,7 +156,7 @@ void TPrompt::promptListSingleClicked(QListWidgetItem *item)
 	commandPrompt_->setFocus();
 }
 
-void TPrompt::promptListDoubleClicked(QListWidgetItem *item)
+void TPrompt::promptListDoubleClicked(QListWidgetItem* item)
 {
 	if (item == NULL) return;
 	// Store current line edit text

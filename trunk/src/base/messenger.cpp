@@ -37,7 +37,7 @@ QStringList Messenger::messageBuffer_;
 
 // Message output types
 const char* OutputTypeKeywords[] = { "all", "calls", "commands", "parse", "typing", "verbose" };
-Messenger::OutputType Messenger::outputType(const char* s, bool reportError)
+Messenger::OutputType Messenger::outputType(QString s, bool reportError)
 {
 	Messenger::OutputType ot = (Messenger::OutputType) enumSearch("output type",Messenger::nOutputTypes,OutputTypeKeywords,s);
 	if ((ot == Messenger::nOutputTypes) && reportError) enumPrintValid(Messenger::nOutputTypes,OutputTypeKeywords);
@@ -107,10 +107,10 @@ QStringList& Messenger::messageBuffer()
 	return messageBuffer_;
 }
 
-// Standard message
+// Print formatted normal message
 void Messenger::print(const char* fmtString, ...)
 {
-	// If program is in quiet mode, don't print anything to stdout
+	// If program is in quiet mode, don't print anything
 	if (quiet_) return;
 
 	// Create message
@@ -125,7 +125,85 @@ void Messenger::print(const char* fmtString, ...)
 	while (messageBuffer_.count() > bufferSize_) messageBuffer_.removeLast();
 	
 	if (printToConsole_) QTextStream(stdout) << message << endl;
+}
 
+// Print formatted warning message
+void Messenger::warn(const char* fmtString, ...)
+{
+	// If program is in quiet mode, don't print anything
+	if (quiet_) return;
+
+	// Create message
+	va_list arguments;
+	va_start(arguments, fmtString);
+	QString message;
+	message.vsprintf(fmtString, arguments);
+	va_end(arguments);
+
+	// Add to buffer (at start), and reduce buffer to max allowable size
+	messageBuffer_.prepend(message);
+	while (messageBuffer_.count() > bufferSize_) messageBuffer_.removeLast();
+	
+	if (printToConsole_) QTextStream(stdout) << message << endl;
+}
+
+// Print formatted error message
+void Messenger::error(const char* fmtString, ...)
+{
+	// If program is in quiet mode, don't print anything
+	if (quiet_) return;
+
+	// Create message
+	va_list arguments;
+	va_start(arguments, fmtString);
+	QString message;
+	message.vsprintf(fmtString, arguments);
+	va_end(arguments);
+
+	// Add to buffer (at start), and reduce buffer to max allowable size
+	messageBuffer_.prepend(message);
+	while (messageBuffer_.count() > bufferSize_) messageBuffer_.removeLast();
+	
+	if (printToConsole_) QTextStream(stdout) << message << endl;
+}
+
+// Print normal message (QString)
+void Messenger::print(QString string)
+{
+	// If program is in quiet mode, don't print anything
+	if (quiet_) return;
+
+	// Add to buffer (at start), and reduce buffer to max allowable size
+	messageBuffer_.prepend(string);
+	while (messageBuffer_.count() > bufferSize_) messageBuffer_.removeLast();
+	
+	if (printToConsole_) QTextStream(stdout) << string << endl;
+}
+
+// Print warning message (QString)
+void Messenger::warn(QString string)
+{
+	// If program is in quiet mode, don't print anything
+	if (quiet_) return;
+
+	// Add to buffer (at start), and reduce buffer to max allowable size
+	messageBuffer_.prepend(string);
+	while (messageBuffer_.count() > bufferSize_) messageBuffer_.removeLast();
+	
+	if (printToConsole_) QTextStream(stdout) << string << endl;
+}
+
+// Print error message (QString)
+void Messenger::error(QString string)
+{
+	// If program is in quiet mode, don't print anything
+	if (quiet_) return;
+
+	// Add to buffer (at start), and reduce buffer to max allowable size
+	messageBuffer_.prepend(string);
+	while (messageBuffer_.count() > bufferSize_) messageBuffer_.removeLast();
+	
+	if (printToConsole_) QTextStream(stdout) << string << endl;
 }
 
 // Standard message in specific output level
@@ -155,7 +233,7 @@ void Messenger::enter(const char* callname)
 
 	printf("%2i ",callLevel_);
 	for (int n=0; n<callLevel_; n++) printf("--");
-	printf("Begin : %s...", callname);
+	printf("Begin : %s...\n", callname);
 	++callLevel_;
 }
 
@@ -167,5 +245,5 @@ void Messenger::exit(const char* callName)
 	--callLevel_;
 	printf("%2i ", callLevel_);
 	for (int n=0; n<callLevel_; n++) printf("--");
-	printf("End   : %s.", callName);
+	printf("End   : %s.\n", callName);
 }

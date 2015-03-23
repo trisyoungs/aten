@@ -81,26 +81,26 @@ FunctionAccessor PatternVariable::functionData[PatternVariable::nFunctions] = {
 };
 
 // Search variable access list for provided accessor (call private static function)
-StepNode* PatternVariable::findAccessor(const char* s, TreeNode* arrayIndex, TreeNode* argList)
+StepNode* PatternVariable::findAccessor(QString name, TreeNode* arrayIndex, TreeNode* argList)
 {
-	return PatternVariable::accessorSearch(s, arrayIndex, argList);
+	return PatternVariable::accessorSearch(name, arrayIndex, argList);
 }
 
 // Private static function to search accessors
-StepNode* PatternVariable::accessorSearch(const char* s, TreeNode* arrayIndex, TreeNode* argList)
+StepNode* PatternVariable::accessorSearch(QString name, TreeNode* arrayIndex, TreeNode* argList)
 {
 	Messenger::enter("PatternVariable::accessorSearch");
 	StepNode* result = NULL;
 	int i = 0;
-	i = Variable::searchAccessor(s, nAccessors, accessorData);
+	i = Variable::searchAccessor(name, nAccessors, accessorData);
 	if (i == -1)
 	{
 		// No accessor found - is it a function definition?
 		// for (i = 0; i < nFunctions; i++) if (strcmp(functionData[i].name,s) == 0) break;
-		i = Variable::searchAccessor(s, nFunctions, functionData);
+		i = Variable::searchAccessor(name, nFunctions, functionData);
 		if (i == -1)
 		{
-			Messenger::print("Error: Type 'Pattern&' has no member or function named '%s'.", s);
+			Messenger::print("Error: Type 'Pattern&' has no member or function named '%s'.", qPrintable(name));
 			printAccessors();
 			Messenger::exit("PatternVariable::accessorSearch");
 			return NULL;
@@ -108,7 +108,7 @@ StepNode* PatternVariable::accessorSearch(const char* s, TreeNode* arrayIndex, T
 		Messenger::print(Messenger::Parse, "FunctionAccessor match = %i (%s)", i, functionData[i].name);
 		if (arrayIndex != NULL)
 		{
-			Messenger::print("Error: Array index given to 'Pattern&' function '%s'.", s);
+			Messenger::print("Error: Array index given to 'Pattern&' function named '%s'.", qPrintable(name));
 			Messenger::exit("PatternVariable::accessorSearch");
 			return NULL;
 		}
@@ -134,7 +134,7 @@ StepNode* PatternVariable::accessorSearch(const char* s, TreeNode* arrayIndex, T
 		// Were we given an argument list when we didn't want one?
 		if (argList != NULL)
 		{
-			Messenger::print("Error: Argument list given to 'Pattern&' array member '%s'.", s);
+			Messenger::print("Error: Argument list given to 'Pattern&' array member '%s'.", qPrintable(name));
 			Messenger::exit("PatternVariable::accessorSearch");
 			return NULL;
 		}
@@ -186,7 +186,7 @@ bool PatternVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayInde
 			if (!hasArrayIndex) rv.set(VTypes::PatternBoundData, ptr->angles());
 			else if (arrayIndex > ptr->nAngles())
 			{
-				Messenger::print("Angle array index (%i) is out of bounds for pattern '%s'", arrayIndex, ptr->name());
+				Messenger::print("Angle array index (%i) is out of bounds for pattern '%s'", arrayIndex, qPrintable(ptr->name()));
 				result = FALSE;
 			}
 			else rv.set(VTypes::PatternBoundData, ptr->angle(arrayIndex-1));
@@ -195,7 +195,7 @@ bool PatternVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayInde
 			if (!hasArrayIndex) rv.set(VTypes::AtomData, ptr->parent()->atom(ptr->startAtom()));
 			else if (arrayIndex > ptr->totalAtoms())
 			{
-				Messenger::print("Atom array index (%i) is out of bounds for pattern '%s'", arrayIndex, ptr->name());
+				Messenger::print("Atom array index (%i) is out of bounds for pattern '%s'", arrayIndex, qPrintable(ptr->name()));
 				result = FALSE;
 			}
 			else rv.set(VTypes::AtomData, ptr->parent()->atom(arrayIndex-1+ptr->startAtom()));
@@ -204,7 +204,7 @@ bool PatternVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayInde
 			if (!hasArrayIndex) rv.set(VTypes::PatternBoundData, ptr->bonds());
 			else if (arrayIndex > ptr->nBonds())
 			{
-				Messenger::print("Bond array index (%i) is out of bounds for pattern '%s'", arrayIndex, ptr->name());
+				Messenger::print("Bond array index (%i) is out of bounds for pattern '%s'", arrayIndex, qPrintable(ptr->name()));
 				result = FALSE;
 			}
 			else rv.set(VTypes::PatternBoundData, ptr->bond(arrayIndex-1));
@@ -217,7 +217,7 @@ bool PatternVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayInde
 			}
 			else if (arrayIndex > ptr->nForcefieldAngles())
 			{
-				Messenger::print("Forcefield angle array index (%i) is out of bounds for pattern '%s'", arrayIndex, ptr->name());
+				Messenger::print("Forcefield angle array index (%i) is out of bounds for pattern '%s'", arrayIndex, qPrintable(ptr->name()));
 				result = FALSE;
 			}
 			else rv.set(VTypes::ForcefieldBoundData, ptr->forcefieldAngle(arrayIndex-1)->item, ptr->forcefieldAngle(arrayIndex-1));
@@ -230,7 +230,7 @@ bool PatternVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayInde
 			}
 			else if (arrayIndex > ptr->nForcefieldBonds())
 			{
-				Messenger::print("Forcefield bond array index (%i) is out of bounds for pattern '%s'", arrayIndex, ptr->name());
+				Messenger::print("Forcefield bond array index (%i) is out of bounds for pattern '%s'", arrayIndex, qPrintable(ptr->name()));
 				result = FALSE;
 			}
 			else rv.set(VTypes::ForcefieldBoundData, ptr->forcefieldBond(arrayIndex-1)->item, ptr->forcefieldBond(arrayIndex-1));
@@ -243,7 +243,7 @@ bool PatternVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayInde
 			}
 			else if (arrayIndex > ptr->nForcefieldTorsions())
 			{
-				Messenger::print("Forcefield torsion array index (%i) is out of bounds for pattern '%s'", arrayIndex, ptr->name());
+				Messenger::print("Forcefield torsion array index (%i) is out of bounds for pattern '%s'", arrayIndex, qPrintable(ptr->name()));
 				result = FALSE;
 			}
 			else rv.set(VTypes::ForcefieldBoundData, ptr->forcefieldTorsion(arrayIndex-1)->item, ptr->forcefieldTorsion(arrayIndex-1));
@@ -256,7 +256,7 @@ bool PatternVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayInde
 			}
 			else if (arrayIndex > ptr->nUniqueForcefieldTypes())
 			{
-				Messenger::print("Forcefield types array index (%i) is out of bounds for pattern '%s'", arrayIndex, ptr->name());
+				Messenger::print("Forcefield types array index (%i) is out of bounds for pattern '%s'", arrayIndex, qPrintable(ptr->name()));
 				result = FALSE;
 			}
 			else rv.set(VTypes::ForcefieldAtomData, ptr->uniqueForcefieldType(arrayIndex-1)->item, ptr->uniqueForcefieldType(arrayIndex-1));
@@ -280,7 +280,7 @@ bool PatternVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayInde
 			rv.set(ptr->endAtom() + 1);
 			break;
 		case (PatternVariable::Name):
-			rv.set(ptr->name());
+			rv.set(qPrintable(ptr->name()));
 			break;
 		case (PatternVariable::NAngles):
 			rv.set(ptr->nAngles());
@@ -316,7 +316,7 @@ bool PatternVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayInde
 			if (!hasArrayIndex) rv.set(VTypes::PatternBoundData, ptr->torsions());
 			else if (arrayIndex > ptr->nTorsions())
 			{
-				Messenger::print("Torsion array index (%i) is out of bounds for pattern '%s'", arrayIndex, ptr->name());
+				Messenger::print("Torsion array index (%i) is out of bounds for pattern '%s'", arrayIndex, qPrintable(ptr->name()));
 				result = FALSE;
 			}
 			else rv.set(VTypes::PatternBoundData, ptr->torsion(arrayIndex-1));
@@ -439,13 +439,13 @@ bool PatternVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 			id_i = node->argi(0) - 1;
 			if ((id_i < 0) || (id_i >= ptr->nAtoms()))
 			{
-				Messenger::print("First atom id %i is out of range for 'atomsinring' function in pattern '%s'.", id_i, ptr->name());
+				Messenger::print("First atom id %i is out of range for 'atomsinring' function in pattern '%s'.", id_i, qPrintable(ptr->name()));
 				result = FALSE;
 			}
 			id_j = node->hasArg(1) ? node->argi(1)-1 : -1;
 			if ((id_j != -1) && ((id_j < 0) || (id_j >= ptr->nAtoms())))
 			{
-				Messenger::print("Second atom id %i is out of range for 'atomsinring' function in pattern '%s'.", id_j, ptr->name());
+				Messenger::print("Second atom id %i is out of range for 'atomsinring' function in pattern '%s'.", id_j, qPrintable(ptr->name()));
 				result = FALSE;
 			}
 			if (result) rv.set(ptr->atomsInRing(id_i, id_j));
@@ -454,7 +454,7 @@ bool PatternVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 			index = node->argi(0);
 			if ((index < 1) || (index > ptr->nMolecules()))
 			{
-				Messenger::print("Molecule id %i is out of range for 'cog' function in pattern '%s'.", index, ptr->name());
+				Messenger::print("Molecule id %i is out of range for 'cog' function in pattern '%s'.", index, qPrintable(ptr->name()));
 				result = FALSE;
 			}
 			else rv.set(ptr->calculateCog(index-1));
@@ -463,7 +463,7 @@ bool PatternVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 			index = node->argi(0);
 			if ((index < 1) || (index > ptr->nMolecules()))
 			{
-				Messenger::print("Molecule id %i is out of range for 'com' function in pattern '%s'.", index, ptr->name());
+				Messenger::print("Molecule id %i is out of range for 'com' function in pattern '%s'.", index, qPrintable(ptr->name()));
 				result = FALSE;
 			}
 			else rv.set(ptr->calculateCom(index-1));
@@ -511,7 +511,7 @@ PatternArrayVariable::PatternArrayVariable(TreeNode* sizeexpr, bool constant)
 }
 
 // Search variable access list for provided accessor
-StepNode* PatternArrayVariable::findAccessor(const char* s, TreeNode* arrayIndex, TreeNode* argList)
+StepNode* PatternArrayVariable::findAccessor(QString name, TreeNode* arrayIndex, TreeNode* argList)
 {
-	return PatternVariable::accessorSearch(s, arrayIndex, argList);
+	return PatternVariable::accessorSearch(name, arrayIndex, argList);
 }

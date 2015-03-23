@@ -21,14 +21,13 @@
 
 #include "command/commands.h"
 #include "parser/commandnode.h"
-// #include "gui/gui.h"
 #include "gui/mainwindow.h"
-// #include "gui/tcanvas.uih"
 #include "gui/tprocess.uih"
 #include "model/model.h"
 #include "base/prefs.h"
 #include "base/sysfunc.h"
 #include <QtGui/QApplication>
+#include <QtCore/QFileInfo>
 #include "base/progress.h"
 #include "main/aten.h"
 
@@ -41,12 +40,13 @@ int movieSetup(bool pre, int height)
 	if (pre)
 	{
 		// Check that defined encoder exe exists
-		if (!fileExists(prefs.encoderExe()))
+		QFileInfo fileInfo(prefs.encoderExe());
+		if (!fileInfo.exists())
 		{
-			Messenger::print("Error: Encoder excutable doesn't appear to exist ('%s').", prefs.encoderExe());
+			Messenger::print("Error: Encoder excutable doesn't appear to exist ('%s').", qPrintable(prefs.encoderExe()));
 			return FALSE;
 		}
-		else Messenger::print(Messenger::Verbose, "Found encoder executable ('%s').", prefs.encoderExe());
+		else Messenger::print(Messenger::Verbose, "Found encoder executable ('%s').", qPrintable(prefs.encoderExe()));
 
 		// Save some current view preferences
 		framemodel = prefs.frameCurrentModel();
@@ -58,13 +58,14 @@ int movieSetup(bool pre, int height)
 		
 		// Generate unique file basename
 		int runid;
-		Dnchar basename;
+		QString basename;
 		do
 		{
 			runid = AtenMath::randomimax();
-			basename.sprintf("%s%caten-movie-%i-%i-%09i.png", prefs.tempDir(), PATHSEP, QApplication::applicationPid(), runid, 0);
-		} while (fileExists(basename));
-		Messenger::print("First temporary basename for movie images is '%s'.", basename.get());
+			basename = prefs.tempDir().filePath("aten-movie-%1-%2-%3.png").arg(QApplication::applicationPid(), runid).arg(0, 9, 10, QChar('0'));
+			fileInfo.setFile(basename);
+		} while (fileInfo.exists());
+		Messenger::print("First temporary basename for movie images is '%s'.", qPrintable(basename));
 
 		return runid;
 	}
@@ -77,10 +78,10 @@ int movieSetup(bool pre, int height)
 }
 
 // Perform post-processing on saved movie frames
-bool moviePostProcess(QStringList files, int runid, const char* movieFilename, int fps)
+bool moviePostProcess(QStringList files, int runid, QString movieFilename, int fps)
 {
 	// Create filelist on disk
-	Dnchar framesFile(-1, "%s%caten-movie-%i-%i-files.txt", prefs.tempDir(), PATHSEP, QApplication::applicationPid(), runid);
+	QString framesFile = prefs.tempDir().filePath("aten-movie-%1-%2-files.txt").arg(QApplication::applicationPid(), runid);
 	LineParser parser;
 	parser.openOutput(framesFile, TRUE);
 	if (parser.isFileGoodForWriting())
@@ -90,7 +91,7 @@ bool moviePostProcess(QStringList files, int runid, const char* movieFilename, i
 	}
 	else
 	{
-		Messenger::print("Error: Couldn't create framelist file '%s'.", framesFile.get());
+		Messenger::print("Error: Couldn't create framelist file '%s'.", qPrintable(framesFile));
 		return FALSE;
 	}
 
@@ -99,12 +100,12 @@ bool moviePostProcess(QStringList files, int runid, const char* movieFilename, i
 	
 	// Grab encoder command and replace control strings
 	QString encoderArgs = prefs.encoderArguments();
-	Dnchar quotedMovieFilename(-1, "\"%s\"", movieFilename);
-	Dnchar atFramesFile(-1, "@\"%s\"", framesFile.get());
-	encoderArgs.replace("OUTPUT", quotedMovieFilename.get());
-	encoderArgs.replace("FILES", atFramesFile.get());
-	encoderArgs.replace("FPS", itoa(fps));
-	Messenger::print("Command to run will be '%s %s'", prefs.encoderExe(), qPrintable(encoderArgs));
+	QString quotedMovieFilename = '"' + movieFilename + '"';
+	QString atFramesFile = "@\"" + framesFile + "\"";
+	encoderArgs.replace("OUTPUT", quotedMovieFilename);
+	encoderArgs.replace("FILES", atFramesFile);
+	encoderArgs.replace("FPS", QString::number(fps));
+	Messenger::print("Command to run will be '%s %s'", qPrintable(prefs.encoderExe()), qPrintable(encoderArgs));
 	if (!encoderProcess.execute(prefs.encoderExe(),qPrintable(encoderArgs),NULL))
 	{
 		Messenger::print("Error: Failed to run encoder command.");
@@ -125,11 +126,11 @@ bool moviePostProcess(QStringList files, int runid, const char* movieFilename, i
 		TProcess postProcess;
 		// Grab encoder command and replace
 		encoderArgs = prefs.encoderPostArguments();
-		encoderArgs.replace("OUTPUT", quotedMovieFilename.get());
-		encoderArgs.replace("FILES", atFramesFile.get());
-		encoderArgs.replace("FPS", itoa(fps));
+		encoderArgs.replace("OUTPUT", quotedMovieFilename);
+		encoderArgs.replace("FILES", atFramesFile);
+		encoderArgs.replace("FPS", QString::number(fps));
 
-		Messenger::print("Post-process command to run will be '%s %s'", prefs.encoderPostExe(), qPrintable(encoderArgs));
+		Messenger::print("Post-process command to run will be '%s %s'", qPrintable(prefs.encoderPostExe()), qPrintable(encoderArgs));
 		if (!postProcess.execute(prefs.encoderPostExe(),qPrintable(encoderArgs),NULL))
 		{
 			Messenger::print("Error: Failed to run encoder post-processing command.");
@@ -146,7 +147,7 @@ bool moviePostProcess(QStringList files, int runid, const char* movieFilename, i
 	}
 
 	// Cleanup
-	QFile::remove(framesFile.get());
+	QFile::remove(framesFile);
 	bool pid = progress.initialise("Cleaning up...", files.size());
 	int n = 0;
 	foreach (QString str, files)
@@ -190,8 +191,8 @@ bool Commands::function_SaveBitmap(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	// Has image saving been redirected? If so, use filename provided by Aten
  	if (aten_.redirectedImagesActive())
 	{
-		const char* fileName = aten_.nextRedirectedFilename();
-		if (isEmpty(fileName))
+		QString fileName = aten_.nextRedirectedFilename();
+		if (fileName.isEmpty())
 		{
 			Messenger::print("Maximum number of frames for image redirect reached. Raising error...");
 			result = FALSE;
@@ -245,16 +246,16 @@ bool Commands::function_SaveMovie(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	obj.m->setRenderSource(Model::TrajectorySource);
 	int progid = progress.initialise("Saving trajectory movie frames...", lastFrame-firstFrame);
 	bool canceled = FALSE;
-	Dnchar basename;
+	QString basename;
 	QStringList files;
 	for (int n = firstFrame; n <= lastFrame; n += (1+frameSkip))
 	{
 		obj.m->seekTrajectoryFrame(n, TRUE);
-		basename.sprintf("%s%caten-movie-%i-%i-%09i.png", prefs.tempDir(), PATHSEP, QApplication::applicationPid(), runid, n);
+		basename = prefs.tempDir().filePath("aten-movie-%1-%2-%3.png").arg(QApplication::applicationPid(), runid).arg(n, 9, 10, QChar('0'));
 
 		pixmap = aten_.currentViewAsPixmap(width, height);
-		pixmap.save(basename.get(), "png", -1);
-		files << basename.get();
+		pixmap.save(basename, "png", -1);
+		files << basename;
 
 		if (!progress.update(progid,n))
 		{
@@ -316,16 +317,16 @@ bool Commands::function_SaveVibrationMovie(CommandNode* c, Bundle& obj, ReturnVa
 
 	int progid = progress.initialise("Saving vibration movie frames...", framesPerVibration);
 	bool canceled = FALSE;
-	Dnchar basename;
+	QString basename;
 	for (int n = 0; n < framesPerVibration; ++n)
 	{
 		obj.rs()->setVibrationFrameIndex(n);
 		
-		basename.sprintf("%s%caten-movie-%i-%i-%09i.png", prefs.tempDir(), PATHSEP, QApplication::applicationPid(), runid, n);
+		basename = prefs.tempDir().filePath("aten-movie-%1-%2-%3.png").arg(QApplication::applicationPid(), runid).arg(n, 9, 10, QChar('0'));
 // 		parent_.postRedisplay();
 
 		pixmap = aten_.currentViewAsPixmap(width, height);
-		pixmap.save(basename.get(), "png", -1);
+		pixmap.save(basename, "png", -1);
 		
 		if (!progress.update(progid,n))
 		{
@@ -345,14 +346,14 @@ bool Commands::function_SaveVibrationMovie(CommandNode* c, Bundle& obj, ReturnVa
 		// First half...
 		for (n=0; n<framesPerVibration; ++n)
 		{
-			basename.sprintf("%s%caten-movie-%i-%i-%09i.png", prefs.tempDir(), PATHSEP, QApplication::applicationPid(), runid, n);
-			files << basename.get();
+			basename = prefs.tempDir().filePath("aten-movie-%1-%2-%3.png").arg(QApplication::applicationPid(), runid).arg(n, 9, 10, QChar('0'));
+			files << basename;
 		}
-		// First half...
+		// Second half...
 		for (n=framesPerVibration-1; n>0; --n)
 		{
-			basename.sprintf("%s%caten-movie-%i-%i-%09i.png", prefs.tempDir(), PATHSEP, QApplication::applicationPid(), runid, n);
-			files << basename.get();
+			basename = prefs.tempDir().filePath("aten-movie-%1-%2-%3.png").arg(QApplication::applicationPid(), runid).arg(n, 9, 10, QChar('0'));
+			files << basename;
 		}
 	}
 

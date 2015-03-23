@@ -67,19 +67,19 @@ void VariableList::take(Variable* v, bool forcevariable)
 }
 
 // Retrieve a named variable from the list
-Variable* VariableList::find(const char* name) const
+Variable* VariableList::find(QString name) const
 {
 	Variable* var;
 	for (TreeNode* node = variables_.first(); node != NULL; node = node->next)
 	{
 		var = (Variable*) node;
-		if (strcmp(name,var->name()) == 0) return var;
+		if (name == var->name()) return var;
 	}
 	return NULL;
 }
 
 // Create a new variable in the list
-Variable* VariableList::makeVariable(VTypes::DataType type, const char* name, TreeNode* initialValue)
+Variable* VariableList::makeVariable(VTypes::DataType type, QString name, TreeNode* initialValue)
 {
 	Variable* v = NULL;
 	switch (type)
@@ -197,94 +197,94 @@ Variable* VariableList::makeVariable(VTypes::DataType type, const char* name, Tr
 }
 
 // Create a new array variable in the list
-Variable* VariableList::makeArray(VTypes::DataType type, const char* name, TreeNode* sizeexpr, TreeNode* initialValue)
+Variable* VariableList::makeArray(VTypes::DataType type, QString name, TreeNode* sizeExpr, TreeNode* initialValue)
 {
 	Variable* var = NULL;
 	switch (type)
 	{
 		case (VTypes::AtomData):
-			var = new AtomArrayVariable(sizeexpr);
+			var = new AtomArrayVariable(sizeExpr);
 			break;
 		case (VTypes::BasisPrimitiveData):
-			var = new BasisPrimitiveArrayVariable(sizeexpr);
+			var = new BasisPrimitiveArrayVariable(sizeExpr);
 			break;
 		case (VTypes::BasisShellData):
-			var = new BasisShellArrayVariable(sizeexpr);
+			var = new BasisShellArrayVariable(sizeExpr);
 			break;
 		case (VTypes::BondData):
-			var = new BondArrayVariable(sizeexpr);
+			var = new BondArrayVariable(sizeExpr);
 			break;
 		case (VTypes::CellData):
-			var = new CellArrayVariable(sizeexpr);
+			var = new CellArrayVariable(sizeExpr);
 			break;
 		case (VTypes::ColourScaleData):
-			var = new ColourScaleArrayVariable(sizeexpr);
+			var = new ColourScaleArrayVariable(sizeExpr);
 			break;
 		case (VTypes::ColourScalePointData):
-			var = new ColourScalePointArrayVariable(sizeexpr);
+			var = new ColourScalePointArrayVariable(sizeExpr);
 			break;
 		case (VTypes::DialogData):
-			var = new DialogArrayVariable(sizeexpr);
+			var = new DialogArrayVariable(sizeExpr);
 			break;
 		case (VTypes::EigenvectorData):
-			var = new EigenvectorArrayVariable(sizeexpr);
+			var = new EigenvectorArrayVariable(sizeExpr);
 			break;
 		case (VTypes::IntegerData):
-			var = new IntegerArrayVariable(sizeexpr);
+			var = new IntegerArrayVariable(sizeExpr);
 			break;
 		case (VTypes::DoubleData):
-			var = new DoubleArrayVariable(sizeexpr);
+			var = new DoubleArrayVariable(sizeExpr);
 			break;
 		case (VTypes::ForcefieldData):
-			var = new ForcefieldArrayVariable(sizeexpr);
+			var = new ForcefieldArrayVariable(sizeExpr);
 			break;
 		case (VTypes::ForcefieldAtomData):
-			var = new ForcefieldAtomArrayVariable(sizeexpr);
+			var = new ForcefieldAtomArrayVariable(sizeExpr);
 			break;
 		case (VTypes::ForcefieldBoundData):
-			var = new ForcefieldBoundArrayVariable(sizeexpr);
+			var = new ForcefieldBoundArrayVariable(sizeExpr);
 			break;
 		case (VTypes::GlyphData):
-			var = new GlyphArrayVariable(sizeexpr);
+			var = new GlyphArrayVariable(sizeExpr);
 			break;
 		case (VTypes::GlyphDataData):
-			var = new GlyphDataArrayVariable(sizeexpr);
+			var = new GlyphDataArrayVariable(sizeExpr);
 			break;
 		case (VTypes::GridData):
-			var = new GridArrayVariable(sizeexpr);
+			var = new GridArrayVariable(sizeExpr);
 			break;
 		case (VTypes::MeasurementData):
-			var = new MeasurementArrayVariable(sizeexpr);
+			var = new MeasurementArrayVariable(sizeExpr);
 			break;
 		case (VTypes::ModelData):
-			var = new ModelArrayVariable(sizeexpr);
+			var = new ModelArrayVariable(sizeExpr);
 			break;
 		case (VTypes::PatternData):
-			var = new PatternArrayVariable(sizeexpr);
+			var = new PatternArrayVariable(sizeExpr);
 			break;
 		case (VTypes::PatternBoundData):
-			var = new PatternBoundArrayVariable(sizeexpr);
+			var = new PatternBoundArrayVariable(sizeExpr);
 			break;
 		case (VTypes::StringData):
-			var = new StringArrayVariable(sizeexpr);
+			var = new StringArrayVariable(sizeExpr);
 			break;
 		case (VTypes::VectorData):
-			var = new VectorArrayVariable(sizeexpr);
+			var = new VectorArrayVariable(sizeExpr);
 			break;
 		case (VTypes::MatrixData):
-			var = new MatrixArrayVariable(sizeexpr);
+			var = new MatrixArrayVariable(sizeExpr);
 			break;
 		case (VTypes::VibrationData):
-			var = new VibrationArrayVariable(sizeexpr);
+			var = new VibrationArrayVariable(sizeExpr);
 			break;
 		case (VTypes::WidgetData):
-			var = new WidgetArrayVariable(sizeexpr);
+			var = new WidgetArrayVariable(sizeExpr);
 			break;
 		case (VTypes::ZMatrixData):
-			var = new ZMatrixArrayVariable(sizeexpr);
+			var = new ZMatrixArrayVariable(sizeExpr);
 			break;
 		case (VTypes::ZMatrixElementData):
-			var = new ZMatrixElementArrayVariable(sizeexpr);
+			var = new ZMatrixElementArrayVariable(sizeExpr);
 			break;
 		default:
 			printf("Internal Error: Don't know how to create an array of type %s.\n", VTypes::dataType(type));
@@ -303,7 +303,7 @@ Variable* VariableList::makeArray(VTypes::DataType type, const char* name, TreeN
 }
 
 // Create variable
-Variable* VariableList::create(VTypes::DataType type, const char* name, TreeNode* initialValue)
+Variable* VariableList::create(VTypes::DataType type, QString name, TreeNode* initialValue)
 {
 	Variable* v = makeVariable(type, name, initialValue);
 	if (v != NULL) variables_.own(v);
@@ -311,13 +311,13 @@ Variable* VariableList::create(VTypes::DataType type, const char* name, TreeNode
 }
 
 // Create variable without owning it
-Variable* VariableList::createFree(VTypes::DataType type, const char* name, TreeNode* initialValue)
+Variable* VariableList::createFree(VTypes::DataType type, QString name, TreeNode* initialValue)
 {
 	return makeVariable(type, name, initialValue);
 }
 
 // Create a new array variable in the list
-Variable* VariableList::createArray(VTypes::DataType type, const char* name, TreeNode* sizeexpr, TreeNode* initialValue)
+Variable* VariableList::createArray(VTypes::DataType type, QString name, TreeNode* sizeexpr, TreeNode* initialValue)
 {
 	Variable* var = makeArray(type, name, sizeexpr, initialValue);
 	if (var == NULL) return NULL;

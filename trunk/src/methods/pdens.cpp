@@ -85,6 +85,7 @@ void Pdens::setRange(double ss, int n)
 bool Pdens::initialise()
 {
 	Messenger::enter("Pdens::initialise");
+
 	// Check site definitions....
 	if ((sites_[0] == NULL) || (sites_[1] == NULL))
 	{
@@ -92,6 +93,7 @@ bool Pdens::initialise()
 		Messenger::exit("calculable::initialise");
 		return FALSE;
 	}
+
 	// Create the data_ array
 	int n, m, o;
 	data_ = new double**[totalSteps_];
@@ -104,8 +106,9 @@ bool Pdens::initialise()
 			for (o=0; o<totalSteps_; o++) data_[n][m][o] = 0.0;
 		}
 	}
-	Messenger::print("There are %i gridpoints of %f Angstrom along each cartesian axis in pdens '%s'.", totalSteps_, stepSize_, name_.get());
+	Messenger::print("There are %i gridpoints of %f Angstrom along each cartesian axis in pdens '%s'.", totalSteps_, stepSize_, qPrintable(name_));
 	nAdded_ = 0;
+
 	Messenger::exit("Pdens::initialise");
 	return TRUE;
 }
@@ -114,11 +117,13 @@ bool Pdens::initialise()
 void Pdens::accumulate(Model* sourcemodel)
 {
 	Messenger::enter("Pdens::accumulate");
+
 	int m1, m2;
 	static Vec3<double> centre1, centre2, mimd;
 	static Vec3<int> gridPoint;
 	Matrix axes;
 	UnitCell* cell = sourcemodel->cell();
+
 	// Loop over molecules for site1
 	for (m1=0; m1 < sites_[0]->pattern()->nMolecules(); m1++)
 	{
@@ -140,8 +145,10 @@ void Pdens::accumulate(Model* sourcemodel)
 			addPoint(gridPoint);
 		}
 	}
+
 	// Increase accumulation counter
 	nAdded_ ++;
+
 	Messenger::exit("Pdens::accumulate");
 }
 
@@ -171,11 +178,11 @@ void Pdens::finalise(Model* sourcemodel)
 	Messenger::exit("Pdens::finalise");
 }
 
-// Save RDF data_
+// Save pdens data_
 bool Pdens::save()
 {
 	int n, m, o;
-	std::ofstream output(filename_.get(), std::ios::out);
+	std::ofstream output(qPrintable(filename_), std::ios::out);
 	for (n=0; n<totalSteps_; n++)
 		for (m=0; m<totalSteps_; m++)
 			for (o=0; o<totalSteps_; o++) output << data_[n][m][o] << "\n";

@@ -35,7 +35,7 @@ class StringVariable : public Variable
 	public:
 	// Constructor / Destructor
 	StringVariable();
-	StringVariable(const char* s, bool constant = FALSE);
+	StringVariable(QString s, bool constant = FALSE);
 	~StringVariable();
 
 
@@ -56,7 +56,7 @@ class StringVariable : public Variable
 	*/
 	private:
 	// Character data
-	Dnchar stringData_;
+	QString stringData_;
 
 	private:
 	// Print node contents
@@ -97,7 +97,7 @@ class StringArrayVariable : public Variable
 	// Array size
 	int arraySize_;
 	// String data
-	Dnchar* stringArrayData_;
+	QString* stringArrayData_;
 
 	private:
 	// Print node contents

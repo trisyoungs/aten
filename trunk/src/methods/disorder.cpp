@@ -36,7 +36,7 @@ bool MonteCarlo::disorder(Model* allModels, Model* destmodel, PartitioningScheme
 	Messenger::enter("MonteCarlo::disorder");
 	DisorderData *component, *other;
 	Refitem<DisorderData,int>* ri;
-	PartitionData *pd;
+	PartitionData* pd;
 	Atom* i;
 	Dnchar cycleText;
 	int n, m, id, cycle, nSatisfied, nInsertions, nRelative = 0, totalToAdd = 0;
@@ -75,7 +75,7 @@ bool MonteCarlo::disorder(Model* allModels, Model* destmodel, PartitioningScheme
 
 		if ((id < 0) || (id >= scheme->nPartitions()))
 		{
-			Messenger::print("Error: Model '%s' targets partition id %i, but it does not exist in the scheme '%s'.", m->name(), id+1, scheme->name());
+			Messenger::print("Error: Model '%s' targets partition id %i, but it does not exist in the scheme '%s'.", qPrintable(m->name()), id+1, qPrintable(scheme->name()));
 			Messenger::exit("MonteCarlo::disorder");
 			return FALSE;
 		}
@@ -83,17 +83,17 @@ bool MonteCarlo::disorder(Model* allModels, Model* destmodel, PartitioningScheme
 		switch (m->componentInsertionPolicy())
 		{
 			case (Model::NumberPolicy):
-				if (m->componentPopulation() == 0) Messenger::print("Warning: Population for component '%s' is set to zero.", m->name());
+				if (m->componentPopulation() == 0) Messenger::print("Warning: Population for component '%s' is set to zero.", qPrintable(m->name()));
 				totalToAdd += m->componentPopulation();
 				break;
 			case (Model::DensityPolicy):
-				if (m->componentDensity() < 0.01) Messenger::print("Warning: Density for component '%s' is too low (or zero) (%f).", m->name(), m->componentDensity());
+				if (m->componentDensity() < 0.01) Messenger::print("Warning: Density for component '%s' is too low (or zero) (%f).", qPrintable(m->name()), m->componentDensity());
 				break;
 			case (Model::NumberAndDensityPolicy):
-				if (m->componentPopulation() == 0) Messenger::print("Warning: Population for component '%s' is set to zero.", m->name());
+				if (m->componentPopulation() == 0) Messenger::print("Warning: Population for component '%s' is set to zero.", qPrintable(m->name()));
 				if (m->componentDensity() < 0.01)
 				{
-					Messenger::print("Error: Density for component '%s' is too low (or zero) (%f).", m->name(), m->componentDensity());
+					Messenger::print("Error: Density for component '%s' is too low (or zero) (%f).", qPrintable(m->name()), m->componentDensity());
 					Messenger::exit("MonteCarlo::disorder");
 					return FALSE;
 				}
@@ -102,20 +102,20 @@ bool MonteCarlo::disorder(Model* allModels, Model* destmodel, PartitioningScheme
 			case (Model::RelativePolicy):
 				if (m->componentPopulation() == 0)
 				{
-					Messenger::print("Error: Population must be specified for component '%s' since it's policy is 'relative'.", m->name());
+					Messenger::print("Error: Population must be specified for component '%s' since it's policy is 'relative'.", qPrintable(m->name()));
 					Messenger::exit("MonteCarlo::disorder");
 					return FALSE;
 				}
 				if (m->componentDensity() < 0.01)
 				{
-					Messenger::print("Error: Density for component '%s' is too low (or zero) (%f).", m->name(), m->componentDensity());
+					Messenger::print("Error: Density for component '%s' is too low (or zero) (%f).", qPrintable(m->name()), m->componentDensity());
 					Messenger::exit("MonteCarlo::disorder");
 					return FALSE;
 				}
 				break;
 		}
 		component = (m->componentInsertionPolicy() == Model::RelativePolicy ? components_.prepend() : components_.add());
-		Messenger::print("Initialising component model '%s' for partition '%s'...", m->name(), scheme->partitionName(id));
+		Messenger::print("Initialising component model '%s' for partition '%s'...", qPrintable(m->name()), qPrintable(scheme->partitionName(id)));
 		if (!component->initialise(m, scheme->partition(id)))
 		{
 			Messenger::exit("MonteCarlo::disorder");
@@ -161,7 +161,7 @@ bool MonteCarlo::disorder(Model* allModels, Model* destmodel, PartitioningScheme
 			if (component->insertionPolicy() == Model::NoPolicy) continue;
 			if (component->insertionPolicy() != Model::NumberAndDensityPolicy)
 			{
-				Messenger::print("Error: For disorder building with an unspecified cell size every component must have a population and density specified with policy 'both' (component '%s' does not).", component->modelName());
+				Messenger::print("Error: For disorder building with an unspecified cell size every component must have a population and density specified with policy 'both' (component '%s' does not).", qPrintable(component->modelName()));
 				Messenger::exit("MonteCarlo::disorder");
 				return FALSE;
 			}
@@ -203,7 +203,7 @@ bool MonteCarlo::disorder(Model* allModels, Model* destmodel, PartitioningScheme
 	Messenger::print("Partition\t\tVolume\tDensity");
 	for (pd = scheme->partitions(); pd != NULL; pd = pd->next)
 	{
-		Messenger::print("%2i %8s\t%10.2f\t%8.5f", pd->id()+1, pd->name(), pd->volume(), pd->density()); 
+		Messenger::print("%2i %8s\t%10.2f\t%8.5f", pd->id()+1, qPrintable(pd->name()), pd->volume(), pd->density()); 
 	}
 	
 	// All set up and ready - do the build
@@ -372,16 +372,16 @@ bool MonteCarlo::disorder(Model* allModels, Model* destmodel, PartitioningScheme
 				switch (component->insertionPolicy())
 				{
 					case (Model::NumberPolicy):
-						Messenger::print("%-5s   %-15s %-10s  %-5i (%-5i)  %8.5f  (   N/A  )  %5.3f", cycleText.get(), component->modelName(), component->partitionName(), component->nAdded(), component->requestedPopulation(), component->partitionDensity(), component->scaleFactor());
+						Messenger::print("%-5s   %-15s %-10s  %-5i (%-5i)  %8.5f  (   N/A  )  %5.3f", cycleText.get(), qPrintable(component->modelName()), qPrintable(component->partitionName()), component->nAdded(), component->requestedPopulation(), component->partitionDensity(), component->scaleFactor());
 						break;
 					case (Model::DensityPolicy):
-						Messenger::print("%-5s   %-15s %-10s  %-5i ( N/A )  %8.5f  (%8.5f)  %5.3f", cycleText.get(), component->modelName(), component->partitionName(), component->nAdded(), component->partitionDensity(), component->requestedDensity(), component->scaleFactor());
+						Messenger::print("%-5s   %-15s %-10s  %-5i ( N/A )  %8.5f  (%8.5f)  %5.3f", cycleText.get(), qPrintable(component->modelName()), qPrintable(component->partitionName()), component->nAdded(), component->partitionDensity(), component->requestedDensity(), component->scaleFactor());
 						break;
 					case (Model::NumberAndDensityPolicy):
-						Messenger::print("%-5s   %-15s %-10s  %-5i (%-5i)  %8.5f  (%8.5f)  %5.3f", cycleText.get(), component->modelName(), component->partitionName(), component->nAdded(), component->requestedPopulation(), component->partitionDensity(), component->requestedDensity(), component->scaleFactor());
+						Messenger::print("%-5s   %-15s %-10s  %-5i (%-5i)  %8.5f  (%8.5f)  %5.3f", cycleText.get(), qPrintable(component->modelName()), qPrintable(component->partitionName()), component->nAdded(), component->requestedPopulation(), component->partitionDensity(), component->requestedDensity(), component->scaleFactor());
 						break;
 					case (Model::RelativePolicy):
-						Messenger::print("%-5s   %-15s %-10s  %-5i (R %-3i)  %8.5f  (%8.5f)  %5.3f", cycleText.get(), component->modelName(), component->partitionName(), component->nAdded(), component->requestedPopulation(), component->partitionDensity(), component->requestedDensity(), component->scaleFactor());
+						Messenger::print("%-5s   %-15s %-10s  %-5i (R %-3i)  %8.5f  (%8.5f)  %5.3f", cycleText.get(), qPrintable(component->modelName()), qPrintable(component->partitionName()), component->nAdded(), component->requestedPopulation(), component->partitionDensity(), component->requestedDensity(), component->scaleFactor());
 						break;
 				}
 				cycleText.clear();
@@ -460,16 +460,16 @@ bool MonteCarlo::disorder(Model* allModels, Model* destmodel, PartitioningScheme
 				switch (component->insertionPolicy())
 				{
 					case (Model::NumberPolicy):
-						Messenger::print("%-5s   %-15s %-10s  %-5i (%-5i)  %8.5f  (   N/A  )  %5.3f  %5.3f", cycleText.get(), component->modelName(), component->partitionName(), component->nAdded(), component->requestedPopulation(), component->partitionDensity(), component->scaleFactor(), double(component->count())/component->nAdded());
+						Messenger::print("%-5s   %-15s %-10s  %-5i (%-5i)  %8.5f  (   N/A  )  %5.3f  %5.3f", cycleText.get(), qPrintable(component->modelName()), qPrintable(component->partitionName()), component->nAdded(), component->requestedPopulation(), component->partitionDensity(), component->scaleFactor(), double(component->count())/component->nAdded());
 						break;
 					case (Model::DensityPolicy):
-						Messenger::print("%-5s   %-15s %-10s  %-5i ( N/A )  %8.5f  (%8.5f)  %5.3f  %5.3f", cycleText.get(), component->modelName(), component->partitionName(), component->nAdded(), component->partitionDensity(), component->requestedDensity(), component->scaleFactor(), double(component->count())/component->nAdded());
+						Messenger::print("%-5s   %-15s %-10s  %-5i ( N/A )  %8.5f  (%8.5f)  %5.3f  %5.3f", cycleText.get(), qPrintable(component->modelName()), qPrintable(component->partitionName()), component->nAdded(), component->partitionDensity(), component->requestedDensity(), component->scaleFactor(), double(component->count())/component->nAdded());
 						break;
 					case (Model::NumberAndDensityPolicy):
-						Messenger::print("%-5s   %-15s %-10s  %-5i (%-5i)  %8.5f  (%8.5f)  %5.3f  %5.3f", cycleText.get(), component->modelName(), component->partitionName(), component->nAdded(), component->requestedPopulation(), component->partitionDensity(), component->requestedDensity(), component->scaleFactor(), double(component->count())/component->nAdded());
+						Messenger::print("%-5s   %-15s %-10s  %-5i (%-5i)  %8.5f  (%8.5f)  %5.3f  %5.3f", cycleText.get(), qPrintable(component->modelName()), qPrintable(component->partitionName()), component->nAdded(), component->requestedPopulation(), component->partitionDensity(), component->requestedDensity(), component->scaleFactor(), double(component->count())/component->nAdded());
 						break;
 					case (Model::RelativePolicy):
-						Messenger::print("%-5s   %-15s %-10s  %-5i (R %-3i)  %8.5f  (%8.5f)  %5.3f  %5.3f", cycleText.get(), component->modelName(), component->partitionName(), component->nAdded(), component->requestedPopulation(), component->partitionDensity(), component->requestedDensity(), component->scaleFactor(), double(component->count())/component->nAdded());
+						Messenger::print("%-5s   %-15s %-10s  %-5i (R %-3i)  %8.5f  (%8.5f)  %5.3f  %5.3f", cycleText.get(), qPrintable(component->modelName()), qPrintable(component->partitionName()), component->nAdded(), component->requestedPopulation(), component->partitionDensity(), component->requestedDensity(), component->scaleFactor(), double(component->count())/component->nAdded());
 						break;
 				}
 				cycleText.clear();
@@ -504,7 +504,7 @@ bool MonteCarlo::disorder(Model* allModels, Model* destmodel, PartitioningScheme
 	{
 		if (ri->item->nAdded() == 0)
 		{
-			Messenger::print(" -- No pattern added for insertion model '%s' since zero molecules were added.", ri->item->modelName());
+			Messenger::print(" -- No pattern added for insertion model '%s' since zero molecules were added.", qPrintable(ri->item->modelName()));
 			continue;
 		}
 		Pattern* p = targetModel_->addPattern(ri->item->modelName(), ri->item->nAdded(), ri->item->sourceModel().nAtoms());

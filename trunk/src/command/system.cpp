@@ -44,7 +44,7 @@ bool Commands::function_Debug(CommandNode* c, Bundle& obj, ReturnValue& rv)
 // Retrieve environment variable
 bool Commands::function_Getenv(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (getenv(c->argc(0)) != '\0') rv.set(getenv(c->argc(0)));
+	if (getenv(qPrintable(c->argc(0))) != '\0') rv.set(getenv(qPrintable(c->argc(0))));
 	else rv.set("");
 	return TRUE;
 }
@@ -52,7 +52,11 @@ bool Commands::function_Getenv(CommandNode* c, Bundle& obj, ReturnValue& rv)
 // Retrieve environment variable as a floating point value
 bool Commands::function_Getenvf(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (getenv(c->argc(0)) != '\0') rv.set( atof(getenv(c->argc(0))) );
+	if (getenv(qPrintable(c->argc(0))) != '\0')
+	{
+		QString s = getenv(qPrintable(c->argc(0)));
+		rv.set(s.toDouble());
+	}
 	else rv.set(0.0);
 	return TRUE;
 }
@@ -60,7 +64,11 @@ bool Commands::function_Getenvf(CommandNode* c, Bundle& obj, ReturnValue& rv)
 // Retrieve environment variable as an integer value
 bool Commands::function_Getenvi(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (getenv(c->argc(0)) != '\0') rv.set( atoi(getenv(c->argc(0))) );
+	if (getenv(qPrintable(c->argc(0))) != '\0')
+	{
+		QString s = getenv(qPrintable(c->argc(0)));
+		rv.set(s.toInt());
+	}
 	else rv.set(0);
 	return TRUE;
 }
@@ -108,12 +116,11 @@ bool Commands::function_Quit(CommandNode* c, Bundle& obj, ReturnValue& rv)
 // Search available commands
 bool Commands::function_SearchCommands(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	Dnchar lcase = lowerCase(c->argc(0));
+	QString lcase = c->argc(0).toLower();
 	for (int i = 0; i < Commands::nCommands; ++i)
 	{
 		Commands::Function cf = (Commands::Function) i;
-		if (strstr(Commands::data(cf).keyword, lcase.get()) != NULL)
-		Messenger::print("  %-15s : %s", Commands::data(cf).keyword, Commands::data(cf).syntax);
+		if (QString(Commands::data(cf).keyword).contains(lcase)) Messenger::print("  %-15s : %s", Commands::data(cf).keyword, Commands::data(cf).syntax);
 	}
 	return TRUE;
 }

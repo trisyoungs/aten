@@ -20,7 +20,6 @@
 */
 
 #include "model/model.h"
-// #include "base/pattern.h"
 
 ATEN_USING_NAMESPACE
 

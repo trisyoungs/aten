@@ -70,19 +70,23 @@ class CommandParser
 	*/
 	private:
 	// Character string source
-	Dnchar stringSource_;
+	QString stringSource_;
 	// Character string list source
-	Dnchar* stringListSource_;
+	QStringList stringListSource_;
+	// Character string list source and index
+	int stringListSourceIndex_;
 	// Integer position in stringSource, total length of string, and starting position of current token/function
 	int stringPos_, stringLength_, tokenStart_, functionStart_;
 	// Line parser
 	LineParser parser_;
 	// Local string used to construct source info
-	Dnchar sourceInfo_;
+	QString sourceInfo_;
 	// Current input type to parser
 	ParserSource source_;
 	// Whether the next token to expect is a path step
 	bool expectPathStep_;
+	// Current lexed name (if any)
+	QString lexedName_;
 
 	public:
 	// Reset structure ready for next source
@@ -104,9 +108,11 @@ class CommandParser
 	// Print error information and location
 	void printErrorInfo();
 	// Set source information string (if not from a file)
-	void setSourceInfo(const char* s);
+	void setSourceInfo(QString sourceInfo);
 	// Return short info on the current parsing source (filename, line number etc.)
-	const char* sourceInfo();
+	QString sourceInfo();
+	// Return current lexed name (if any)
+	QString lexedName();
 
 
 	/*
@@ -124,11 +130,11 @@ class CommandParser
 	// Perform tree generation (base function, called by generateFrom*)
 	bool generate();
 	// Populate target Program from specified character string
-	bool generateFromString(Program* prog, const char* s, const char* sourceInfo, bool dontPushTree = FALSE, bool clearExisting = TRUE);
+	bool generateFromString(Program* prog, QString string, QString sourceInfo, bool dontPushTree = FALSE, bool clearExisting = TRUE);
 	// Populate target Program from specified string list
-	bool generateFromStringList(Program* prog, Dnchar* stringListHead, const char* sourceInfo, bool dontPushTree = FALSE, bool clearExisting = TRUE);
+	bool generateFromStringList(Program* prog, QStringList stringList, QString sourceInfo, bool dontPushTree = FALSE, bool clearExisting = TRUE);
 	// Populate target Program from specified file(name)
-	bool generateFromFile(Program* prog, const char* filename, bool dontPushTree = FALSE, bool clearExisting = TRUE);
+	bool generateFromFile(Program* prog, QString filename, bool dontPushTree = FALSE, bool clearExisting = TRUE);
 
 	public:
 	// Return current Tree target, raising warning and setting fail flag if no tree is defined...
@@ -136,7 +142,7 @@ class CommandParser
 	// Push filter
 	void pushFilter();
 	// Push function
-	Tree* pushFunction(const char* name, VTypes::DataType returntype);
+	Tree* pushFunction(QString name, VTypes::DataType returntype);
 	// Pop tree (or function) from stack
 	void popTree();
 	// Discard current tree and its contents
@@ -152,13 +158,13 @@ class CommandParser
 	// Add double constant
 	TreeNode* addConstant(double d);
 	// Add string constant
-	TreeNode* addConstant(const char* s);
+	TreeNode* addConstant(QString s);
 	// Add Element constant
 	TreeNode* addElementConstant(int el);
 	// Create a new path on the stack with the specified base 'variable'
 	TreeNode* createPath(TreeNode* var);
 	// Expand topmost path
-	bool expandPath(Dnchar* name, TreeNode* arrayIndex = NULL, TreeNode* argList = NULL);
+	bool expandPath(QString name, TreeNode* arrayIndex = NULL, TreeNode* argList = NULL);
 	// Finalise and remove the topmost path on the stack
 	TreeNode* finalisePath();
 	// Join two commands together
@@ -186,9 +192,9 @@ class CommandParser
 	// Wrap named variable (and array index)
 	TreeNode* wrapVariable(Variable* var, TreeNode* arrayIndex = NULL);
 	// Add variable to topmost ScopeNode
-	TreeNode* addVariable(VTypes::DataType type, Dnchar* name, TreeNode* initialValue = NULL, bool global = FALSE);
+	TreeNode* addVariable(VTypes::DataType type, QString name, TreeNode* initialValue = NULL, bool global = FALSE);
 	// Add array variable to topmost ScopeNode
-	TreeNode* addArrayVariable(VTypes::DataType type, Dnchar* name, TreeNode* sizeexpr, TreeNode* initialvalue = NULL, bool global = FALSE);
+	TreeNode* addArrayVariable(VTypes::DataType type, QString name, TreeNode* sizeexpr, TreeNode* initialvalue = NULL, bool global = FALSE);
 	// Add array 'constant'
 	TreeNode* addArrayConstant(TreeNode* values);
 
@@ -198,7 +204,7 @@ class CommandParser
 	*/
 	public:
 	// Set filter option
-	bool setFilterOption(Dnchar* name, TreeNode* value);
+	bool setFilterOption(QString name, TreeNode* value);
 };
 
 // External declaration

@@ -34,45 +34,48 @@ Generator::Generator() : ListItem<Generator>()
 }
 
 // Set partial element of matrix or translation vector
-void Generator::setMatrixPart(int row, const char* s)
+void Generator::setMatrixPart(int row, QString part)
 {
 	// The string provided either contains (-)xyz, or a translation amount
-	const char* c;
+	int pos = 0;
 	int multiplier = 0;
+
 	// Check for plus/minus signs
-	c = &s[0];
-	if (*c == '-') multiplier = -1;
-	else if (*c == '+') multiplier = 1;
+	if (part.at(0) == '-') multiplier = -1;
+	else if (part.at(0) == '+') multiplier = 1;
+
 	// Skip to next character if necessary
 	if (multiplier == 0) multiplier = 1;
-	else c = &s[1];
+	else ++pos;
+
 	//printf("MULTIPLIER = %i, original=[%s], now=[%s]\n", multiplier, s, c);
 	// Now, check if this character is x, y, or z.
-	if ( (*c >= 88) && (*c <= 90) ) matrix_[(*c-88)*4+row] = multiplier;
-	else if ( (*c >= 120) && (*c <= 122) ) matrix_[(*c-120)*4+row] = multiplier;
+	if (part.at(pos).isUpper()) matrix_[(part.at(pos).toAscii()-88)*4+row] = multiplier;
+	else if (part.at(pos).isLower()) matrix_[(part.at(pos).toAscii()-120)*4+row] = multiplier;
 	else
 	{
 		// Must be a number, and hence part of the translation vector
-		int num = atoi(beforeChar(s,'/')), denom = atoi(afterChar(s,'/'));
-		double t = (double) num / (double) denom;
-		matrix_[12+row] = t;
+		QStringList parts = part.split("/");
+		if (parts.count() != 2) Messenger::print("Generator::setMatrixPart() - Mangled Generator matrix passed (%s).", qPrintable(part));
+		else matrix_[12+row] = parts.at(0).toDouble() / parts.at(1).toDouble();
 	}
 }
 
 // Set from plain text string
-bool Generator::set(const char* s)
+bool Generator::set(QString xyzName)
 {
 	Messenger::enter("Generator::set");
-	static LineParser lp;
-	char part[32], sub[16];
+
+	LineParser lp;
+	QString part, sub;
 	int n, count;
 	const char* c;
 	
 	// Split line into three arguments
-	lp.getArgsDelim(0, s);
+	lp.getArgsDelim(0, xyzName);
 	if (lp.nArgs() != 3)
 	{
-		Messenger::print("Tried to set a symmetry Generator from text ('%s') that didn't split into three arguments.", s);
+		Messenger::print("Tried to set a symmetry Generator from text ('%s') that didn't split into three arguments.", qPrintable(xyzName));
 		Messenger::exit("Generator::set");
 		return FALSE;
 	}
@@ -84,29 +87,24 @@ bool Generator::set(const char* s)
 	for (n=0; n<3; ++n)
 	{
 		// Copy parser argument into temporary string
-		strcpy(part, lp.argc(n));
-		c = &part[0];
-		count = 0;
+		part = lp.argc(n);
+		sub.clear();
+
 		// Step through characters in 'part', adding until we find a (second) 'delimiting' character
-		while (*c != '\0')
+		for (int i = 0; i < part.count(); ++i)
 		{
-			if ( ( (*c == '-') || (*c == '+') ) && (count != 0))
+			// Store old sub-part if we find a new delimiting character, and sub is not empty
+			if ( ( (part.at(i) == '-') || (part.at(i) == '+') ) && (!sub.isEmpty()))
 			{
 				// This constitutes a sub-part of the string
-				sub[count] = '\0';
 				setMatrixPart(n, sub);
-				count = 0;
+				sub.clear();
 			}
-			sub[count] = *c;
-			++count;
-			++c;
+			sub += part.at(i);
 		}
+
 		// Check for remaining 'item'
-		if (count != 0)
-		{
-			sub[count] = '\0';
-			setMatrixPart(n, sub);
-		}
+		if (!sub.isEmpty()) setMatrixPart(n, sub);
 	}
 
 	Messenger::exit("Generator::set");
@@ -128,9 +126,9 @@ void Generator::setTranslation(double tx, double ty, double tz, double divisor)
 }
 
 // Return name of generator
-const char* Generator::name() const
+QString Generator::name() const
 {
-	return name_.get();
+	return name_;
 }
 
 // Return matrix of generator

@@ -68,7 +68,7 @@ TreeNode* VariableNode::arrayIndex()
 }
 
 // Return name of variable target
-const char* VariableNode::name()
+QString VariableNode::name()
 {
 	if (variable_ == NULL)
 	{
@@ -295,12 +295,12 @@ bool VariableNode::initialise()
 }
 
 // Search accessors (if any) available for linked variable
-StepNode* VariableNode::findAccessor(const char* s, TreeNode* arrayIndex, TreeNode* argList)
+StepNode* VariableNode::findAccessor(QString name, TreeNode* arrayIndex, TreeNode* argList)
 {
 	if (variable_ == NULL)
 	{
 		printf("Internal Error: No variable stored in VariableNode to use for accessor search.\n");
 		return NULL;
 	}
-	return variable_->findAccessor(s, arrayIndex, argList);
+	return variable_->findAccessor(name, arrayIndex, argList);
 }

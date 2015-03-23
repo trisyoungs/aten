@@ -28,14 +28,14 @@ ATEN_USING_NAMESPACE
 // Flag that undo/redo should be enabled
 void Model::enableUndoRedo()
 {
-	Messenger::print(Messenger::Verbose, "Undo/redo has been enabled for model '%s'.", name_.get());
+	Messenger::print(Messenger::Verbose, "Undo/redo has been enabled for model '%s'.", qPrintable(name_));
 	undoRedoEnabled_ = TRUE;
 }
 
 // Flag that undo/redo should be disabled
 void Model::disableUndoRedo()
 {
-	Messenger::print(Messenger::Verbose, "Undo/redo has been disabled for model '%s'.", name_.get());
+	Messenger::print(Messenger::Verbose, "Undo/redo has been disabled for model '%s'.", qPrintable(name_));
 	undoRedoEnabled_ = FALSE;
 }
 
@@ -100,21 +100,27 @@ void Model::endUndoState()
 		return;
 	}
 	recordingState_->setEndLogs(changeLog);
+
 	// Delete all redo (i.e. future) states from the undo list
 	if (currentUndoState_ == NULL) undoStates_.clear();
-	else for (UndoState *u = currentUndoState_->next; u != NULL; u = undoStates_.removeAndGetNext(u)); 
+	else for (UndoState *u = currentUndoState_->next; u != NULL; u = undoStates_.removeAndGetNext(u));
+
 	// Add the new state to the end of the undo level list
 	undoStates_.own(recordingState_);
+
 	// Set the current undo level to the new state and nullify the pointer
 	currentUndoState_ = recordingState_;
 	Messenger::print(Messenger::Verbose, "Undo list now has %i states (%i events caught in last state).",undoStates_.nItems(),currentUndoState_->nChanges());
 	Messenger::print(Messenger::Verbose, "   --- Logs at end of state are: structure = %i, coords = %i, selection = %i", changeLog.log(Log::Structure), changeLog.log(Log::Coordinates), changeLog.log(Log::Selection));
+
 	// Nullify the redostate pointer, since we must now be at the top of the undo stack
 	currentRedoState_ = NULL;
 	recordingState_ = NULL;
+
 	// Check the size of the undoStates_ list - if greater than prefs.maxundo, must remove the first item in the list
 	if (undoStates_.nItems() == (prefs.maxUndoLevels()+1)) undoStates_.remove(undoStates_.first());
 	//listUndoStates();
+
 	Messenger::exit("Model::endUndoState");
 }
 
@@ -141,6 +147,7 @@ void Model::undo()
 		changeLog.setLog(Log::Misc, currentUndoState_->startLog(Log::Misc));
 		changeLog.setLog(Log::Glyphs, currentUndoState_->startLog(Log::Glyphs));
 		changeLog.setLog(Log::Grids, currentUndoState_->startLog(Log::Grids));
+
 		// Set new undo/redo pointers
 		currentRedoState_ = currentUndoState_;
 		currentUndoState_ = currentUndoState_->prev;
@@ -165,6 +172,7 @@ void Model::redo()
 		changeLog.setLog(Log::Misc, currentRedoState_->endLog(Log::Misc));
 		changeLog.setLog(Log::Glyphs, currentRedoState_->endLog(Log::Glyphs));
 		changeLog.setLog(Log::Grids, currentRedoState_->endLog(Log::Grids));
+
 		// Set new undo/redo pointers
 		currentUndoState_ = currentRedoState_;
 		currentRedoState_ = currentRedoState_->next;
@@ -177,7 +185,7 @@ void Model::listUndoStates()
 {
 	Dnchar suffix;
 	int count = 0;
-	printf("Current UndoStates in Model '%s' are:\n", name_.get());
+	printf("Current UndoStates in Model '%s' are:\n", qPrintable(name_));
 	for (UndoState *u = undoStates_.first(); u != NULL; u = u->next)
 	{
 		count ++;

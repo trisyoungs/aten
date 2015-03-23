@@ -57,7 +57,7 @@ void AtenViewBasis::showWindow(Model* m)
 	Dnchar text;
 	for (bas = target_->basisShells(); bas != NULL; bas = bas->next) row += bas->nPrimitives();
 	ui.BasisTable->setRowCount(row);
-	ui.BasisShellsLabel->setText(itoa(target_->nBasisShells()));
+	ui.BasisShellsLabel->setText(QString::number(target_->nBasisShells()));
 	// Populate table
 	QTableWidgetItem *tabitem;
 	row = 0;
@@ -77,7 +77,7 @@ void AtenViewBasis::showWindow(Model* m)
 		}
 		// Add in shell data
 		tabitem = new QTableWidgetItem();
-		tabitem->setText(itoa(shell));
+		tabitem->setText(QString::number(shell));
 		ui.BasisTable->setItem(row, AtenViewBasis::ShellColumn, tabitem);
 		tabitem = new QTableWidgetItem();
 		tabitem->setText(BasisShell::basisShellType(bas->type()));
@@ -99,7 +99,7 @@ void AtenViewBasis::showWindow(Model* m)
 			row++;
 		}
 	}
-	ui.BasisCartesiansLabel->setText(itoa(ncartesians));
+	ui.BasisCartesiansLabel->setText(QString::number(ncartesians));
 	// Resize columns
 	for (n=0; n<AtenViewBasis::nColumns; ++n) ui.BasisTable->resizeColumnToContents(n);
 	show();

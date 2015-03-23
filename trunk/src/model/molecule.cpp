@@ -49,7 +49,7 @@ void Model::positionMolecule(Pattern* p, int mol, const Vec3<double> &v)
 			modelatoms[n]->r() = newpos;
 		}
 	}
-	else printf("Model::positionMolecule : Requested a molecule past end of config contents. (%s %i)\n",p->name(),mol); 
+	else printf("Model::positionMolecule : Requested a molecule past end of config contents. (%s %i)\n", qPrintable(p->name()), mol); 
 	Messenger::exit("Model::positionMolecule");
 }
 
@@ -64,7 +64,7 @@ void Model::translateMolecule(Pattern* p, int mol, const Vec3<double> &v)
 	offset = p->startAtom() + pnatoms * mol;
 	Messenger::print(Messenger::Verbose, "Model::translateMolecule : Moving %i atoms starting at %i (%i atoms currently in model)", pnatoms, offset, atoms_.nItems());
 	if (offset < atoms_.nItems()) for (n=offset; n<offset+pnatoms; n++) modelatoms[n]->r() += v;
-	else printf("Model::translateMolecule : Requested a molecule past end of model contents. (%s %i)\n", p->name(), mol); 
+	else printf("Model::translateMolecule : Requested a molecule past end of model contents. (%s %i)\n", qPrintable(p->name()), mol);  
 	Messenger::exit("Model::translateMolecule");
 }
 
@@ -96,7 +96,7 @@ void Model::rotateMolecule(Pattern* p, int mol, double rotx, double roty)
 			modelatoms[n]->r() = newpos;
 		}
 	}
-	else printf("Model::rotateMolecule : Requested a molecule past end of model contents. (%s %i)\n", p->name(), mol); 
+	else printf("Model::rotateMolecule : Requested a molecule past end of model contents. (%s %i)\n", qPrintable(p->name()), mol); 
 	Messenger::exit("Model::rotateMolecule");
 }
 
@@ -109,6 +109,6 @@ void Model::hideMolecule(Pattern* p, int mol, bool visible)
 	pnatoms = p->nAtoms();
 	offset = p->startAtom() + pnatoms * mol;
 	if (offset < atoms_.nItems()) for (n=offset; n<offset+pnatoms; n++) modelatoms[n]->setHidden(visible);
-	else printf("Model::hideMolecule : Requested a molecule past end of model contents. (%s %i)\n", p->name(), mol); 
+	else printf("Model::hideMolecule : Requested a molecule past end of model contents. (%s %i)\n", qPrintable(p->name()), mol); 
 	Messenger::exit("Model::hideMolecule");
 }

@@ -53,6 +53,13 @@ Fix Grid rimitive generation (need to know nVertices ahead of time...). Perhaps 
 Optimise basic primitives to use vertex/index arrays instead of just vertices (also check end caps of spheres).
 Check picked atom rendering (probably broken).
 Optimise primitive drawing / generation by allowing use of GL_TRIANGLE_STRIP?
+Allow message printing in different colours, dependent on type of message (e.g. Error = RED, warning = orange, success = Green).
+Remove replaceChars command (since it is now exactly the same as replaceStr).
+Make data directories in Aten into QDir (from QString).
+Remove PATHSEP (and use toNativeSeparators etc).
+Note not related to Aten2 - pdens visualising areas of low probability (less than bulk) to see excluded areas?
+Split fragment.cpp into Fragment and FragmentGroup.
+Removed itoa, ftoa and other old routines from base/sysfunc.h.
 
 
 Manual TODO:
@@ -60,3 +67,4 @@ Remove level of detail and transparency options from Prefs.
 More examples (e.g. slab generation)
 Remove 'gui' keyword.
 Remove 'calcEnergy' optional args from scaleMolecules and scaleCell.
+Remove replaceChars (after command is removed).

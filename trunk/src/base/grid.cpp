@@ -35,7 +35,7 @@ ATEN_USING_NAMESPACE
 
 // Grid data types
 const char* GridTypeKeywords[Grid::nGridTypes] = { "none", "regularxy", "regularxyz", "freexyz" };
-Grid::GridType Grid::gridType(const char* s, bool reportError)
+Grid::GridType Grid::gridType(QString s, bool reportError)
 {
 	Grid::GridType gt = (Grid::GridType) enumSearch("grid type", Grid::nGridTypes, GridTypeKeywords, s, reportError);
 	if ((gt == Grid::nGridTypes) && reportError) enumPrintValid(Grid::nGridTypes,GridTypeKeywords);
@@ -48,7 +48,7 @@ const char* Grid::gridType(Grid::GridType i)
 
 // Surface rendering styles
 const char* SurfaceStyleKeywords[] = { "grid", "points", "triangles", "solid" };
-Grid::SurfaceStyle Grid::surfaceStyle(const char* s)
+Grid::SurfaceStyle Grid::surfaceStyle(QString s)
 {
 	return (Grid::SurfaceStyle) enumSearch("surface style", Grid::nSurfaceStyles, SurfaceStyleKeywords, s);
 }
@@ -163,7 +163,7 @@ Grid::~Grid()
 }
 
 // Assignment operator
-void Grid::operator=(Grid &source)
+void Grid::operator=(Grid& source)
 {
 	// Copy PODs directly
 	type_ = source.type_;
@@ -227,15 +227,15 @@ void Grid::operator=(Grid &source)
 */
 
 // Set name of Grid data
-void Grid::setName(const char* s)
+void Grid::setName(QString s)
 {
 	name_ = s;
 }
 
 // Return name of Grid data
-const char* Grid::name() const
+QString Grid::name() const
 {
-	return name_.get();
+	return name_;
 }
 
 // Initialise grid of specified type and size (if relevant)

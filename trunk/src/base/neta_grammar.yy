@@ -87,10 +87,10 @@ node:
 	| bound						{ $$ = $1; }
 	| '$' TOKEN					{
 		$$ = netaparser.findDefine(netaparser.lastUnknownToken());
-		if ($$ == NULL) { Messenger::print("Error: NETA description references a non-existent 'define' name (%s)\n", netaparser.lastUnknownToken()); YYABORT; }
+		if ($$ == NULL) { Messenger::print("Error: NETA description references a non-existent 'define' name (%s)\n", qPrintable(netaparser.lastUnknownToken())); YYABORT; }
 		}
 	| TOKEN						{
-		Messenger::print("Error: NETA description contains an unrecognised keyword (%s)\n", netaparser.lastUnknownToken());
+		Messenger::print("Error: NETA description contains an unrecognised keyword (%s)\n", qPrintable(netaparser.lastUnknownToken()));
 		YYABORT;
 		}
 	| INTCONST					{ Messenger::print("Error: Stray integer constant found in NETA description.\n"); YYABORT; }

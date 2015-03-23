@@ -30,7 +30,7 @@ ATEN_USING_NAMESPACE
 
 // NETA Keywords
 const char* NetaKeywordKeywords[Neta::nNetaKeywords] = { "alphatic", "aromatic", "noring", "nonaromatic", "notprev", "notself", "planar" };
-Neta::NetaKeyword Neta::netaKeyword(const char* s, bool reportError)
+Neta::NetaKeyword Neta::netaKeyword(QString s, bool reportError)
 {
 	Neta::NetaKeyword n = (Neta::NetaKeyword) enumSearch("NETA keyword",Neta::nNetaKeywords,NetaKeywordKeywords,s, reportError);
 	if ((n == Neta::nNetaKeywords) && reportError) enumPrintValid(Neta::nNetaKeywords,NetaKeywordKeywords);
@@ -43,7 +43,7 @@ const char* Neta::netaKeyword(Neta::NetaKeyword nk)
 
 // NETA values
 const char* NetaValueKeywords[Neta::nNetaValues] = { "bond", "nbonds", "nh", "os", "n", "size" };
-Neta::NetaValue Neta::netaValue(const char* s, bool reportError)
+Neta::NetaValue Neta::netaValue(QString s, bool reportError)
 {
 	Neta::NetaValue n = (Neta::NetaValue) enumSearch("NETA value",Neta::nNetaValues,NetaValueKeywords,s, reportError);
 	if ((n == Neta::nNetaValues) && reportError) enumPrintValid(Neta::nNetaValues,NetaValueKeywords);
@@ -56,7 +56,7 @@ const char* Neta::netaValue(Neta::NetaValue nv)
 
 // NETA expanders
 const char* NetaExpanderKeywords[Neta::nNetaExpanders] = { "-", "chain", "=", "geometry", "path", "ring" };
-Neta::NetaExpander Neta::netaExpander(const char* s, bool reportError)
+Neta::NetaExpander Neta::netaExpander(QString s, bool reportError)
 {
 	Neta::NetaExpander n = (Neta::NetaExpander) enumSearch("NETA expander",Neta::nNetaExpanders,NetaExpanderKeywords,s, reportError);
 	if ((n == Neta::nNetaExpanders) && reportError) enumPrintValid(Neta::nNetaExpanders,NetaExpanderKeywords);
@@ -163,25 +163,25 @@ int Neta::characterElement() const
 }
 
 // Take ownership of selected node
-void Neta::ownNode(NetaNode *node)
+void Neta::ownNode(NetaNode* node)
 {
 	ownedNodes_.own(node);
 }
 
 // Return reference name (if a define)
-const char* Neta::name() const
+QString Neta::name() const
 {
-	return name_.get();
+	return name_;
 }
 
 // Set reference name (if a define)
-void Neta::setName(const char* s)
+void Neta::setName(QString name)
 {
-	name_ = s;
+	name_ = name;
 }
 
 // Return top of description nodelist
-NetaRootNode *Neta::description()
+NetaRootNode* Neta::description()
 {
 	return description_;
 }
@@ -190,26 +190,26 @@ NetaRootNode *Neta::description()
 void Neta::print() const
 {
 	printf("Character element is %i\n", characterElement_);
-	Dnchar neta(1024);
+	QString neta;
 	if (description_ != NULL) description_->netaPrint(neta);
-	printf("NETA string is '%s'\n", neta.get());
+	printf("NETA string is '%s'\n", qPrintable(neta));
 	printf("Node description is:\n");
 	if (description_ != NULL) description_->nodePrint(0,"");
 	else printf("   None defined.\n");
 }
 
 // Print Atom Type data to Dnchar supplied
-void Neta::netaPrint(Dnchar &target) const
+void Neta::netaPrint(QString& neta) const
 {
-	target.clear();
-	if (description_ != NULL) description_->netaPrint(target);
+	neta = "";
+	if (description_ != NULL) description_->netaPrint(neta);
 }
 
 // Clone nodes (and own them) beginning from the node supplied
-NetaNode *Neta::clone(NetaNode *topnode)
+NetaNode* Neta::clone(NetaNode* topnode)
 {
 	Messenger::enter("Neta::clone");
-	NetaNode *result;
+	NetaNode* result;
 	// Just call top node's routine, and get the result
 	if (topnode == NULL) result = NULL;
 	else result = topnode->clone(this);
@@ -281,8 +281,8 @@ int Neta::matchAtom(Atom* i, List<Ring>* rings, Model* parent)
 void Neta::linkReferenceTypes()
 {
 	Messenger::enter("Neta::linkReferenceTypes");
-	NetaBoundNode *bnode;
-	for (NetaNode *node = ownedNodes_.first(); node != NULL; node = node->next)
+	NetaBoundNode* bnode;
+	for (NetaNode* node = ownedNodes_.first(); node != NULL; node = node->next)
 	{
 		if (node->nodeType() != NetaNode::BoundNode) continue;
 		bnode = (NetaBoundNode*) node;
@@ -306,7 +306,7 @@ bool Neta::createBasic(Atom* i, bool explicitBondType, double torsionTolerance)
 	Refitem<Bond,int>* rb, *rb2, *rb3;
 	Bond* b, *b2, *b3;
 	char bondType;
-	Dnchar typeDesc(-1, "nbonds=%i", i->nBonds()), torsionDesc;
+	QString typeDesc = "nbonds=" + QString::number(i->nBonds()), torsionDesc, bit;
 	for (rb = i->bonds(); rb != NULL; rb = rb->next)
 	{
 		b = rb->item;
@@ -316,7 +316,8 @@ bool Neta::createBasic(Atom* i, bool explicitBondType, double torsionTolerance)
 		else if (b->type() == Bond::Single) bondType = '-';
 		else if (b->type() == Bond::Double) bondType = '=';
 		else bondType = '~';
-		typeDesc.strcatf(",%c%s(nbonds=%i", bondType, ElementMap().symbol(j->element()), j->nBonds());
+		bit.sprintf(",%c%s(nbonds=%i", bondType, ElementMap().symbol(j->element()), j->nBonds());
+		typeDesc += bit;
 
 		// Loop over secondary atoms
 		for (rb2 = j->bonds(); rb2 != NULL; rb2 = rb2->next)
@@ -329,7 +330,8 @@ bool Neta::createBasic(Atom* i, bool explicitBondType, double torsionTolerance)
 			else if (b2->type() == Bond::Single) bondType = '-';
 			else if (b2->type() == Bond::Double) bondType = '=';
 			else bondType = '~';
-			typeDesc.strcatf(",%c%s(nbonds=%i)", bondType, ElementMap().symbol(k->element()), k->nBonds());
+			bit.sprintf(",%c%s(nbonds=%i)", bondType, ElementMap().symbol(k->element()), k->nBonds());
+			typeDesc += bit;
 
 			if ((torsionTolerance > 0.0) && i->parent())
 			{
@@ -339,13 +341,14 @@ bool Neta::createBasic(Atom* i, bool explicitBondType, double torsionTolerance)
 					l = b3->partner(k);
 					if (l == j) continue;
 // 					if (l->element() == 1) continue;
-					torsionDesc.strcatf(",geometry(%f,%f,~%s,~%s,~%s)", i->parent()->torsion(i, j, k, l), torsionTolerance, ElementMap().symbol(j), ElementMap().symbol(k), ElementMap().symbol(l));
+					bit.sprintf(",geometry(%f,%f,~%s,~%s,~%s)", i->parent()->torsion(i, j, k, l), torsionTolerance, ElementMap().symbol(j), ElementMap().symbol(k), ElementMap().symbol(l));
+					torsionDesc += bit;
 				}
 			}
 		}
 		typeDesc += ')';
 	}
-	if (!torsionDesc.isEmpty()) typeDesc.strcatf("%s", torsionDesc.get());
+	if (!torsionDesc.isEmpty()) typeDesc += torsionDesc;
 
 	if (!netaparser.createNeta(this, typeDesc, NULL))
 	{
@@ -353,7 +356,7 @@ bool Neta::createBasic(Atom* i, bool explicitBondType, double torsionTolerance)
 		return false;
 	}
 
-	Messenger::print(Messenger::Verbose, "Create basic NETA for atom %p : %s", i, typeDesc.get());
+	Messenger::print(Messenger::Verbose, "Create basic NETA for atom %p : %s", i, qPrintable(typeDesc));
 
 	return true;
 }
@@ -398,13 +401,13 @@ bool NetaNode::reverseLogic() const
 }
 
 // Return parent NETA structure
-Neta *NetaNode::parent()
+Neta* NetaNode::parent()
 {
 	return parent_;
 }
 
 // Set parent NETA structure
-void NetaNode::setParent(Neta *neta)
+void NetaNode::setParent(Neta* neta)
 {
 	parent_ = neta;
 }
@@ -466,20 +469,20 @@ void NetaContextNode::setRepeatComparison(Neta::NetaValueComparison nvc)
 }
 
 // Set inner neta
-void NetaContextNode::setInnerNeta(NetaNode *innerneta, NetaNode *linearneta)
+void NetaContextNode::setInnerNeta(NetaNode* innerneta, NetaNode* linearneta)
 {
 	innerNeta_ = innerneta;
 	linearNeta_ = linearneta;
 }
 
 // Return inner neta description
-NetaNode *NetaContextNode::innerNeta()
+NetaNode* NetaContextNode::innerNeta()
 {
 	return innerNeta_;
 }
 
 // Clone node structure
-NetaNode *NetaContextNode::clone(Neta *newparent)
+NetaNode* NetaContextNode::clone(Neta* newparent)
 {
 	printf("NetaContextNode::clone() should never be called (supposed new parent was %p).\n", newparent);
 	return NULL;
@@ -490,7 +493,7 @@ NetaNode *NetaContextNode::clone(Neta *newparent)
 */
 
 // Constructor
-NetaLogicNode::NetaLogicNode(Neta::NetaLogicType nt, NetaNode *arg1, NetaNode *arg2)
+NetaLogicNode::NetaLogicNode(Neta::NetaLogicType nt, NetaNode* arg1, NetaNode* arg2)
 {
 	// Private variables
 	nodeType_ = NetaNode::LogicNode;
@@ -506,7 +509,7 @@ NetaLogicNode::~NetaLogicNode()
 
 
 // Validation function (virtual)
-int NetaLogicNode::score(Atom* target, Reflist<Atom,int>* nbrs, Reflist<Ring,int>* rings, NetaContextNode *context, Reflist<Atom,int>& path, int level)
+int NetaLogicNode::score(Atom* target, Reflist<Atom,int>* nbrs, Reflist<Ring,int>* rings, NetaContextNode* context, Reflist<Atom,int>& path, int level)
 {
 	Messenger::enter("NetaLogicNode::score");
 	int score1 = -1, score2 = -1, totalscore = -1;
@@ -564,7 +567,7 @@ void NetaLogicNode::nodePrint(int offset, const char* prefix)
 }
 
 // Print (append) NETA representation of node contents
-void NetaLogicNode::netaPrint(Dnchar &neta)
+void NetaLogicNode::netaPrint(QString& neta)
 {
 	Messenger::enter("NetaLogicNode::netaPrint");
 	argument1_->netaPrint(neta);
@@ -577,7 +580,7 @@ void NetaLogicNode::netaPrint(Dnchar &neta)
 			neta += '|';
 			break;
 		case (Neta::NetaAndNotLogic):
-			neta.strcat("&!");
+			neta += "&!";
 			break;
 		default:
 			printf("Internal Error: Unrecognised logic in Neta::netaPrint.\n");
@@ -588,10 +591,10 @@ void NetaLogicNode::netaPrint(Dnchar &neta)
 }
 
 // Clone node structure
-NetaNode *NetaLogicNode::clone(Neta *newparent)
+NetaNode* NetaLogicNode::clone(Neta* newparent)
 {
 	Messenger::enter("NetaLogicNode::clone");
-	NetaLogicNode *node = new NetaLogicNode(netaLogic_, NULL, NULL);
+	NetaLogicNode* node = new NetaLogicNode(netaLogic_, NULL, NULL);
 	node->setParent(newparent);
 	node->reverseLogic_ = reverseLogic_;
 	node->nodeType_ = nodeType_;
@@ -644,10 +647,10 @@ void NetaBoundNode::nodePrint(int offset, const char* prefix)
 }
 
 // Print (append) NETA representation of node contents
-void NetaBoundNode::netaPrint(Dnchar &neta)
+void NetaBoundNode::netaPrint(QString& neta)
 {
 	Messenger::enter("NetaBoundNode::netaPrint");
-	neta.strcat(elementsAndTypesString());
+	neta += elementsAndTypesString();
 	if (innerNeta_ != NULL)
 	{
 		neta += '(';
@@ -660,10 +663,10 @@ void NetaBoundNode::netaPrint(Dnchar &neta)
 }
 
 // Clone node structure
-NetaNode *NetaBoundNode::clone(Neta *newparent)
+NetaNode* NetaBoundNode::clone(Neta* newparent)
 {
 	Messenger::enter("NetaBoundNode::clone");
-	NetaBoundNode *node = new NetaBoundNode();
+	NetaBoundNode* node = new NetaBoundNode();
 	node->setParent(newparent);
 	node->reverseLogic_ = reverseLogic_;
 	node->nodeType_ = nodeType_;
@@ -677,7 +680,7 @@ NetaNode *NetaBoundNode::clone(Neta *newparent)
 }
 
 // Set bound data
-void NetaBoundNode::set(Refitem<ForcefieldAtom,int>* elemtypes, NetaNode *innerneta, Bond::BondType bt)
+void NetaBoundNode::set(Refitem<ForcefieldAtom,int>* elemtypes, NetaNode* innerneta, Bond::BondType bt)
 {
 	Messenger::enter("NetaBoundNode::set");
 	bondType_ = bt;
@@ -718,7 +721,7 @@ void NetaBoundNode::linkReferenceTypes()
 		{
 			ffa = parent()->parentForcefield()->findType(abs(ri->data));
 			ri->item = ffa;
-			if (ffa == NULL) Messenger::print("Warning: Type '%s' (id %i) references type id %i in it's NETA description, but type id %i has not been defined in the forcefield.", parent()->parentForcefieldAtom()->name(), parent()->parentForcefieldAtom()->typeId(), abs(ri->data), abs(ri->data));
+			if (ffa == NULL) Messenger::print("Warning: Type '%s' (id %i) references type id %i in it's NETA description, but type id %i has not been defined in the forcefield.", qPrintable(parent()->parentForcefieldAtom()->name()), parent()->parentForcefieldAtom()->typeId(), abs(ri->data), abs(ri->data));
 		}
 	}
 }
@@ -750,11 +753,10 @@ int NetaBoundNode::atomScore(Atom* target)
 }
 
 // Create formatted element/type list
-const char* NetaBoundNode::elementsAndTypesString()
+QString NetaBoundNode::elementsAndTypesString()
 {
 	Messenger::enter("NetaBoundNode::elementsAndTypesString");
-	static Dnchar s;
-	s.clear();
+	QString s;
 	switch (bondType_)
 	{
 		case (Bond::Any):
@@ -778,10 +780,10 @@ const char* NetaBoundNode::elementsAndTypesString()
 		if ((ri->item != NULL) || (ri->data < 0))
 		{
 			s += '&';
-			s.strcat(itoa(abs(ri->data)));
+			s += QString::number(abs(ri->data));
 		}
-		else if (ri->data == 0) s.strcat("Any");
-		else s.strcat(Elements().symbol(ri->data));
+		else if (ri->data == 0) s += "Any";
+		else s += Elements().symbol(ri->data);
 	}
 	if (allowedElementsAndTypes_.nItems() != 1) s += ']';
 	Messenger::exit("NetaBoundNode::elementsAndTypesString");
@@ -789,7 +791,7 @@ const char* NetaBoundNode::elementsAndTypesString()
 }
 
 // Validation function (virtual)
-int NetaBoundNode::score(Atom* target, Reflist<Atom,int>* nbrs, Reflist<Ring,int>* rings, NetaContextNode *context, Reflist<Atom,int>& path, int level)
+int NetaBoundNode::score(Atom* target, Reflist<Atom,int>* nbrs, Reflist<Ring,int>* rings, NetaContextNode* context, Reflist<Atom,int>& path, int level)
 {
 	Messenger::enter("NetaBoundNode::score");
 	int totalscore = -1, n, boundscore;
@@ -867,7 +869,7 @@ int NetaBoundNode::score(Atom* target, Reflist<Atom,int>* nbrs, Reflist<Ring,int
 	}
 	// Check for reverse logic
 	if (reverseLogic_) totalscore = (totalscore == -1 ? 1 : -1);
-	NetaNode::printScore(level, "Bound Check (%i of %s) = %i", repeat_ == -1 ? 1 : repeat_, elementsAndTypesString(), totalscore);
+	NetaNode::printScore(level, "Bound Check (%i of %s) = %i", repeat_ == -1 ? 1 : repeat_, qPrintable(elementsAndTypesString()), totalscore);
 	Messenger::exit("NetaBoundNode::score");
 	return totalscore;
 }
@@ -890,7 +892,7 @@ NetaKeywordNode::~NetaKeywordNode()
 }
 
 // Validation function (virtual)
-int NetaKeywordNode::score(Atom* target, Reflist<Atom,int>* nbrs, Reflist<Ring,int>* rings, NetaContextNode *context, Reflist<Atom,int>& path, int level)
+int NetaKeywordNode::score(Atom* target, Reflist<Atom,int>* nbrs, Reflist<Ring,int>* rings, NetaContextNode* context, Reflist<Atom,int>& path, int level)
 {
 	Messenger::enter("NetaKeywordNode::score");
 	int totalscore = -1;
@@ -971,18 +973,18 @@ void NetaKeywordNode::nodePrint(int offset, const char* prefix)
 }
 
 // Print (append) NETA representation of node contents
-void NetaKeywordNode::netaPrint(Dnchar &neta)
+void NetaKeywordNode::netaPrint(QString& neta)
 {
 	Messenger::enter("NetaKeywordNode::netaPrint");
-	neta.strcat(Neta::netaKeyword(netaKeyword_));
+	neta += Neta::netaKeyword(netaKeyword_);
 	Messenger::exit("NetaKeywordNode::netaPrint");
 }
 
 // Clone node structure
-NetaNode *NetaKeywordNode::clone(Neta *newparent)
+NetaNode* NetaKeywordNode::clone(Neta* newparent)
 {
 	Messenger::enter("NetaKeywordNode::clone");
-	NetaKeywordNode *node = new NetaKeywordNode(netaKeyword_);
+	NetaKeywordNode* node = new NetaKeywordNode(netaKeyword_);
 	node->setParent(newparent);
 	node->reverseLogic_ = reverseLogic_;
 	node->nodeType_ = nodeType_;
@@ -1009,7 +1011,7 @@ NetaGeometryNode::~NetaGeometryNode()
 }
 
 // Validation function (virtual)
-int NetaGeometryNode::score(Atom* target, Reflist<Atom,int>* nbrs, Reflist<Ring,int>* rings, NetaContextNode *context, Reflist<Atom,int>& path, int level)
+int NetaGeometryNode::score(Atom* target, Reflist<Atom,int>* nbrs, Reflist<Ring,int>* rings, NetaContextNode* context, Reflist<Atom,int>& path, int level)
 {
 	Messenger::enter("NetaGeometryNode::score");
 	int totalscore = -1;
@@ -1036,18 +1038,18 @@ void NetaGeometryNode::nodePrint(int offset, const char* prefix)
 }
 
 // Print (append) NETA representation of node contents
-void NetaGeometryNode::netaPrint(Dnchar &neta)
+void NetaGeometryNode::netaPrint(QString& neta)
 {
 	Messenger::enter("NetaGeometryNode::netaPrint");
-	neta.strcat(Atom::atomGeometry(geometry_));
+	neta += Atom::atomGeometry(geometry_);
 	Messenger::exit("NetaGeometryNode::netaPrint");
 }
 
 // Clone node structure
-NetaNode *NetaGeometryNode::clone(Neta *newparent)
+NetaNode* NetaGeometryNode::clone(Neta* newparent)
 {
 	Messenger::enter("NetaGeometryNode::clone");
-	NetaGeometryNode *node = new NetaGeometryNode(geometry_);
+	NetaGeometryNode* node = new NetaGeometryNode(geometry_);
 	node->setParent(newparent);
 	node->reverseLogic_ = reverseLogic_;
 	node->nodeType_ = nodeType_;
@@ -1076,7 +1078,7 @@ NetaValueNode::~NetaValueNode()
 }
 
 // Validation function (virtual)
-int NetaValueNode::score(Atom* target, Reflist<Atom,int>* nbrs, Reflist<Ring,int>* rings, NetaContextNode *context, Reflist<Atom,int>& path, int level)
+int NetaValueNode::score(Atom* target, Reflist<Atom,int>* nbrs, Reflist<Ring,int>* rings, NetaContextNode* context, Reflist<Atom,int>& path, int level)
 {
 	Messenger::enter("NetaValueNode::score");
 	int totalscore = -1, n;
@@ -1085,7 +1087,7 @@ int NetaValueNode::score(Atom* target, Reflist<Atom,int>* nbrs, Reflist<Ring,int
 	switch (netaValue_)
 	{
 		case (Neta::BondValue):
-			if (path.last() == NULL) Messenger::print("NETA: Invalid context for 'bond=xxx' in NETA for type %s/%i.", parent()->parentForcefieldAtom()->name(), parent()->parentForcefieldAtom()->typeId());
+			if (path.last() == NULL) Messenger::print("NETA: Invalid context for 'bond=xxx' in NETA for type %s/%i.", qPrintable(parent()->parentForcefieldAtom()->name()), parent()->parentForcefieldAtom()->typeId());
 			else
 			{
 				b = target->findBond(path.last()->item);
@@ -1145,20 +1147,20 @@ void NetaValueNode::nodePrint(int offset, const char* prefix)
 }
 
 // Print (append) NETA representation of node contents
-void NetaValueNode::netaPrint(Dnchar &neta)
+void NetaValueNode::netaPrint(QString& neta)
 {
 	Messenger::enter("NetaValueNode::netaPrint");
-	neta.strcat(Neta::netaValue(netaValue_));
-	neta.strcat(Neta::netaValueComparison(netaComparison_));
-	neta.strcat(itoa(value_));
+	neta += Neta::netaValue(netaValue_);
+	neta += Neta::netaValueComparison(netaComparison_);
+	neta += QString::number(value_);
 	Messenger::exit("NetaValueNode::netaPrint");
 }
 
 // Clone node structure
-NetaNode *NetaValueNode::clone(Neta *newparent)
+NetaNode* NetaValueNode::clone(Neta* newparent)
 {
 	Messenger::enter("NetaValueNode::clone");
-	NetaValueNode *node = new NetaValueNode(netaValue_, netaComparison_, value_);
+	NetaValueNode* node = new NetaValueNode(netaValue_, netaComparison_, value_);
 	node->setParent(newparent);
 	node->reverseLogic_ = reverseLogic_;
 	node->nodeType_ = nodeType_;
@@ -1184,7 +1186,7 @@ NetaRootNode::~NetaRootNode()
 }
 
 // Validation function (virtual)
-int NetaRootNode::score(Atom* target, Reflist<Atom,int>* nbrs, Reflist<Ring,int>* rings, NetaContextNode *context, Reflist<Atom,int>& path, int level)
+int NetaRootNode::score(Atom* target, Reflist<Atom,int>* nbrs, Reflist<Ring,int>* rings, NetaContextNode* context, Reflist<Atom,int>& path, int level)
 {
 	return (innerNeta_ != NULL ? innerNeta_->score(target, nbrs, rings, this, path, level) : 0);
 }
@@ -1204,7 +1206,7 @@ void NetaRootNode::nodePrint(int offset, const char* prefix)
 }
 
 // Print (append) NETA representation of node contents
-void NetaRootNode::netaPrint(Dnchar &neta)
+void NetaRootNode::netaPrint(QString& neta)
 {
 	Messenger::enter("NetaRootNode::netaPrint");
 	if (innerNeta_ != NULL) innerNeta_->netaPrint(neta);
@@ -1212,10 +1214,10 @@ void NetaRootNode::netaPrint(Dnchar &neta)
 }
 
 // Clone node structure
-NetaNode *NetaRootNode::clone(Neta *newparent)
+NetaNode* NetaRootNode::clone(Neta* newparent)
 {
 	Messenger::enter("NetaRootNode::clone");
-	NetaRootNode *node = new NetaRootNode();
+	NetaRootNode* node = new NetaRootNode();
 	node->setParent(newparent);
 	node->reverseLogic_ = reverseLogic_;
 	node->nodeType_ = nodeType_;
@@ -1248,7 +1250,7 @@ Ring *NetaRingNode::currentRing()
 }
 
 // Validation function (virtual)
-int NetaRingNode::score(Atom* target, Reflist<Atom,int>* nbrs, Reflist<Ring,int>* rings, NetaContextNode *context, Reflist<Atom,int>& path, int level)
+int NetaRingNode::score(Atom* target, Reflist<Atom,int>* nbrs, Reflist<Ring,int>* rings, NetaContextNode* context, Reflist<Atom,int>& path, int level)
 {
 	Messenger::enter("NetaRingNode::score");
 	int totalscore = -1, n;
@@ -1343,10 +1345,10 @@ void NetaRingNode::nodePrint(int offset, const char* prefix)
 }
 
 // Print (append) NETA representation of node contents
-void NetaRingNode::netaPrint(Dnchar &neta)
+void NetaRingNode::netaPrint(QString& neta)
 {
 	Messenger::enter("NetaRingNode::netaPrint");
-	neta.strcat("ring");
+	neta += "ring";
 	if (innerNeta_ != NULL)
 	{
 		neta += '(';
@@ -1357,10 +1359,10 @@ void NetaRingNode::netaPrint(Dnchar &neta)
 }
 
 // Clone node structure
-NetaNode *NetaRingNode::clone(Neta *newparent)
+NetaNode* NetaRingNode::clone(Neta* newparent)
 {
 	Messenger::enter("NetaRingNode::clone");
-	NetaRingNode *node = new NetaRingNode();
+	NetaRingNode* node = new NetaRingNode();
 	node->setParent(newparent);
 	node->reverseLogic_ = reverseLogic_;
 	node->nodeType_ = nodeType_;
@@ -1388,7 +1390,7 @@ NetaChainNode::~NetaChainNode()
 }
 
 // Private (recursive) scoring function
-int NetaChainNode::score(NetaNode *currentNode, int nRepeat, Atom* target, Reflist<Atom,int>* nbrs, Reflist<Ring,int>* rings, Reflist<Atom,int>& path, int level)
+int NetaChainNode::score(NetaNode* currentNode, int nRepeat, Atom* target, Reflist<Atom,int>* nbrs, Reflist<Ring,int>* rings, Reflist<Atom,int>& path, int level)
 {
 	Messenger::enter("NetaChainNode::score(private)");
 	int totalscore = -1, atomscore = -1;
@@ -1435,7 +1437,7 @@ int NetaChainNode::score(NetaNode *currentNode, int nRepeat, Atom* target, Refli
 			else
 			{
 				// Cast the next node pointer up to a BoundNode and get its repeat value
-				NetaContextNode *ncn = (NetaContextNode*) (currentNode->nextNode);
+				NetaContextNode* ncn = (NetaContextNode*) (currentNode->nextNode);
 // 				printf("ncn = %p, repeat is %i, last atom id is %i\n", ncn, ncn->repeat(), currentChain_.last() == NULL ? -999 : currentChain_.last()->item->id());
 				path.add(target);
 				atomscore = score(ncn, ncn->repeat() == -1 ? 1 : ncn->repeat(), i, &boundList, rings, path, level);
@@ -1456,7 +1458,7 @@ int NetaChainNode::score(NetaNode *currentNode, int nRepeat, Atom* target, Refli
 }
 
 // Validation function (virtual)
-int NetaChainNode::score(Atom* target, Reflist<Atom,int>* nbrs, Reflist<Ring,int>* rings, NetaContextNode *context, Reflist<Atom,int>& path, int level)
+int NetaChainNode::score(Atom* target, Reflist<Atom,int>* nbrs, Reflist<Ring,int>* rings, NetaContextNode* context, Reflist<Atom,int>& path, int level)
 {
 	Messenger::enter("NetaChainNode::score");
 	int totalscore = -1, n;
@@ -1520,10 +1522,10 @@ void NetaChainNode::nodePrint(int offset, const char* prefix)
 }
 
 // Print (append) NETA representation of node contents
-void NetaChainNode::netaPrint(Dnchar &neta)
+void NetaChainNode::netaPrint(QString& neta)
 {
 	Messenger::enter("NetaChainNode::netaPrint");
-	neta.strcat("chain");
+	neta += "chain";
 	if (innerNeta_ != NULL)
 	{
 		neta += '(';
@@ -1534,10 +1536,10 @@ void NetaChainNode::netaPrint(Dnchar &neta)
 }
 
 // Clone node structure
-NetaNode *NetaChainNode::clone(Neta *newparent)
+NetaNode* NetaChainNode::clone(Neta* newparent)
 {
 	Messenger::enter("NetaChainNode::clone");
-	NetaChainNode *node = new NetaChainNode();
+	NetaChainNode* node = new NetaChainNode();
 	node->setParent(newparent);
 	node->reverseLogic_ = reverseLogic_;
 	node->nodeType_ = nodeType_;
@@ -1581,7 +1583,7 @@ void NetaMeasurementNode::setRemoveNeighbours(bool b)
 }
 
 // Private (recursive) scoring function
-int NetaMeasurementNode::score(NetaNode *currentNode, int nRepeat, Atom* target, Reflist<Atom,int>* nbrs, Reflist<Ring,int>* rings, Reflist<Atom,int>& path, int level)
+int NetaMeasurementNode::score(NetaNode* currentNode, int nRepeat, Atom* target, Reflist<Atom,int>* nbrs, Reflist<Ring,int>* rings, Reflist<Atom,int>& path, int level)
 {
 	Messenger::enter("NetaMeasurementNode::score(private)");
 	int totalscore = -1, atomscore = -1;
@@ -1663,7 +1665,7 @@ int NetaMeasurementNode::score(NetaNode *currentNode, int nRepeat, Atom* target,
 			else
 			{
 				// Cast the next node pointer up to a BoundNode and get its repeat value
-				NetaContextNode *ncn = (NetaContextNode*) (currentNode->nextNode);
+				NetaContextNode* ncn = (NetaContextNode*) (currentNode->nextNode);
 // 				printf("ncn = %p, repeat is %i, last atom id is %i\n", ncn, ncn->repeat(), currentChain_.last() == NULL ? -999 : currentChain_.last()->item->id());
 				path.add(target);
 				atomscore = score(ncn, ncn->repeat() == -1 ? 1 : ncn->repeat(), i, &boundList, rings, path, level);
@@ -1684,7 +1686,7 @@ int NetaMeasurementNode::score(NetaNode *currentNode, int nRepeat, Atom* target,
 }
 
 // Validation function (virtual)
-int NetaMeasurementNode::score(Atom* target, Reflist<Atom,int>* nbrs, Reflist<Ring,int>* rings, NetaContextNode *context, Reflist<Atom,int>& path, int level)
+int NetaMeasurementNode::score(Atom* target, Reflist<Atom,int>* nbrs, Reflist<Ring,int>* rings, NetaContextNode* context, Reflist<Atom,int>& path, int level)
 {
 	Messenger::enter("NetaMeasurementNode::score");
 	int totalscore = -1, n;
@@ -1763,13 +1765,13 @@ void NetaMeasurementNode::nodePrint(int offset, const char* prefix)
 }
 
 // Print (append) NETA representation of node contents
-void NetaMeasurementNode::netaPrint(Dnchar &neta)
+void NetaMeasurementNode::netaPrint(QString& neta)
 {
 	Messenger::enter("NetaMeasurementNode::netaPrint");
-	neta.strcat("m");
+	neta += "m";
 	if (innerNeta_ != NULL)
 	{
-		neta.strcatf("(%f,%f,", requiredValue_, tolerance_);
+		neta += "(" + QString::number(requiredValue_) + "," + QString::number(tolerance_) + ",";
 		if (innerNeta_ != NULL) innerNeta_->netaPrint(neta);
 		neta += ')';
 	}
@@ -1777,10 +1779,10 @@ void NetaMeasurementNode::netaPrint(Dnchar &neta)
 }
 
 // Clone node structure
-NetaNode *NetaMeasurementNode::clone(Neta *newparent)
+NetaNode* NetaMeasurementNode::clone(Neta* newparent)
 {
 	Messenger::enter("NetaMeasurementNode::clone");
-	NetaMeasurementNode *node = new NetaMeasurementNode();
+	NetaMeasurementNode* node = new NetaMeasurementNode();
 	node->setParent(newparent);
 	node->reverseLogic_ = reverseLogic_;
 	node->nodeType_ = nodeType_;

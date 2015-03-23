@@ -36,7 +36,7 @@ Aten* Variable::aten_ = NULL;
 Variable::Variable() : TreeNode()
 {
 	// Private variables
-	name_.set("unnamedvariable");
+	name_ = "unnamedvariable";
 	initialValue_ = NULL;
 	nodeType_ = TreeNode::VarNode;
 }
@@ -61,15 +61,15 @@ void Variable::setAten(Aten* aten)
  */
 
 // Set name of variable
-void Variable::setName(const char* s)
+void Variable::setName(QString name)
 {
-	name_.set(s);
+	name_ = name;
 }
 
 // Get name of variable
-const char* Variable::name() const
+QString Variable::name() const
 {
-	return name_.get();
+	return name_;
 }
 
 // Initialise variable
@@ -84,7 +84,7 @@ bool Variable::initialise()
 			if (set(rv)) return TRUE;
 			else
 			{
-				Messenger::print("Error: Failed to initialise variable '%s'.", name_.get());
+				Messenger::print("Error: Failed to initialise variable '%s'.", qPrintable(name_));
 				return FALSE;
 			}
 		}
@@ -106,15 +106,15 @@ bool Variable::setInitialValue(TreeNode* node)
 		case (VTypes::DoubleData):
 			if ((dt != VTypes::IntegerData) && (dt != VTypes::DoubleData))
 			{
-				Messenger::print("Error: Initial value for '%s' is of an incompatible type (%s).", name_.get(), VTypes::dataType(dt));
+				Messenger::print("Error: Initial value for '%s' is of an incompatible type (%s).", qPrintable(name_), VTypes::dataType(dt));
 				return FALSE;
 			}
-			if ((returnType_ == VTypes::IntegerData) && (dt == VTypes::DoubleData)) Messenger::print("Warning: Initial value for integer variable '%s' is a double and will lose precision.", name_.get());
+			if ((returnType_ == VTypes::IntegerData) && (dt == VTypes::DoubleData)) Messenger::print("Warning: Initial value for integer variable '%s' is a double and will lose precision.", qPrintable(name_));
 			break;
 		case (VTypes::VectorData):
 			if ((dt != VTypes::IntegerData) && (dt != VTypes::DoubleData) && (dt != returnType_))
 			{
-				Messenger::print("Error: Initial value for '%s' is of an incompatible type (%s).", name_.get(), VTypes::dataType(dt));
+				Messenger::print("Error: Initial value for '%s' is of an incompatible type (%s).", qPrintable(name_), VTypes::dataType(dt));
 				return FALSE;
 			}
 			break;
@@ -122,7 +122,7 @@ bool Variable::setInitialValue(TreeNode* node)
 		default:
 			if (returnType_ == dt) break;
 			if ((dt == VTypes::IntegerData) && (returnType_ > VTypes::VectorData)) break;
-			Messenger::print("Error: Initial value for variable '%s' is of an incompatible type (%s).", name_.get(), VTypes::dataType(dt));
+			Messenger::print("Error: Initial value for variable '%s' is of an incompatible type (%s).", qPrintable(name_), VTypes::dataType(dt));
 			return FALSE;
 			break;
 	}
@@ -139,7 +139,7 @@ TreeNode* Variable::initialValue() const
 bool Variable::executeAsArray(ReturnValue& rv, int arrayIndex)
 {
 	// Secondary array 'retrieval' executor
-	Messenger::print("Error: Variable '%s' is not an array.", name_.get());
+	Messenger::print("Error: Variable '%s' is not an array.", qPrintable(name_));
 	return FALSE;
 }
 
@@ -147,12 +147,12 @@ bool Variable::executeAsArray(ReturnValue& rv, int arrayIndex)
 bool Variable::setAsArray(ReturnValue& rv, int arrayIndex)
 {
 	// Secondary array 'set' executor
-	Messenger::print("Error: Variable '%s' is not an array.", name_.get());
+	Messenger::print("Error: Variable '%s' is not an array.", qPrintable(name_));
 	return FALSE;
 }
 
 // Search accessors (if any) available for node
-StepNode* Variable::findAccessor(const char* s, TreeNode* arrayIndex, TreeNode* argList)
+StepNode* Variable::findAccessor(QString name, TreeNode* arrayIndex, TreeNode* argList)
 {
 	// Default is to return NULL since no accessors are defined
 	printf("Error: No accessors are available for a variable of type '%s'.\n", VTypes::dataType(returnType_));
@@ -160,18 +160,18 @@ StepNode* Variable::findAccessor(const char* s, TreeNode* arrayIndex, TreeNode* 
 }
 
 // Search accessor list provided
-int Variable::searchAccessor(const char* s, int nAccessors, Accessor *accessors)
+int Variable::searchAccessor(QString name, int nAccessors, Accessor *accessors)
 {
 	// Search for accessor (case-sensitive)
-	for (int i = 0; i < nAccessors; ++i) if (strcmp(accessors[i].name,s) == 0) return i;
+	for (int i = 0; i < nAccessors; ++i) if (name == accessors[i].name) return i;
 	return -1;
 }
 
 // Search accessor list provided
-int Variable::searchAccessor(const char* s, int nAccessors, FunctionAccessor *accessors)
+int Variable::searchAccessor(QString name, int nAccessors, FunctionAccessor *accessors)
 {
 	// Search for accessor (case-sensitive)
-	for (int i = 0; i < nAccessors; ++i) if (strcmp(accessors[i].name,s) == 0) return i;
+	for (int i = 0; i < nAccessors; ++i) if (name == accessors[i].name) return i;
 	return -1;
 }
 

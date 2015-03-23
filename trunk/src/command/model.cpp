@@ -20,15 +20,11 @@
 */
 
 #include "command/commands.h"
-// #include "parser/tree.h"
 #include "parser/commandnode.h"
 #include "main/aten.h"
 #include "ff/forcefield.h"
 #include "model/model.h"
-// #include "model/clipboard.h"
-// #include "base/prefs.h"
 #include "base/sysfunc.h"
-// #include "base/vibration.h"
 #include "gui/mainwindow.h"
 
 ATEN_USING_NAMESPACE
@@ -73,10 +69,10 @@ bool Commands::function_CurrentModel(CommandNode* c, Bundle& obj, ReturnValue& r
 		else
 		{
 			aten_.setCurrentModel(m,TRUE);
-			Messenger::print("Current model is now '%s'.", aten_.currentModel()->name());
+			Messenger::print("Current model is now '%s'.", qPrintable(aten_.currentModel()->name()));
 		}
 	}
-	else Messenger::print("Current model is '%s'.", aten_.currentModel()->name());
+	else Messenger::print("Current model is '%s'.", qPrintable(aten_.currentModel()->name()));
 	rv.set(VTypes::ModelData, aten_.currentModel());
 	return TRUE;
 }
@@ -109,7 +105,7 @@ bool Commands::function_DeleteModel(CommandNode* c, Bundle& obj, ReturnValue& rv
 	}
 	else
 	{
-		Messenger::print("No model named '%s' is available, or integer id %i is out of range.", c->argc(0), c->argi(0));
+		Messenger::print("No model named '%s' is available, or integer id %i is out of range.", qPrintable(c->argc(0)), c->argi(0));
 		return FALSE;
 	}
 }
@@ -137,7 +133,7 @@ bool Commands::function_FinaliseModel(CommandNode* c, Bundle& obj, ReturnValue& 
 	obj.m->regenerateIcon();
 
 	// Print out some useful info on the model that we've just read in
-	Messenger::print(Messenger::Verbose, "Model  : %s", obj.m->name());
+	Messenger::print(Messenger::Verbose, "Model  : %s", qPrintable(obj.m->name()));
 	Messenger::print(Messenger::Verbose, "Atoms  : %i", obj.m->nAtoms());
 	Messenger::print(Messenger::Verbose, "Cell   : %s", UnitCell::cellType(obj.m->cell()->type()));
 	if (obj.m->cell()->type() != UnitCell::NoCell) obj.m->cell()->print();
@@ -190,7 +186,7 @@ bool Commands::function_GetModel(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	}
 	else
 	{
-		Messenger::print("No model named '%s' is available, or integer id %i is out of range.", c->argc(0), c->argi(0));
+		Messenger::print("No model named '%s' is available, or integer id %i is out of range.", qPrintable(c->argc(0)), c->argi(0));
 		return FALSE;
 	}
 }
@@ -222,7 +218,7 @@ bool Commands::function_ListModels(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (aten_.nModels() != 0) Messenger::print("Name            NAtoms  Forcefield");
 	for (Model* m = aten_.models(); m != NULL; m = m->next)
-		Messenger::print("%-15s %5i  %-15s", m->name(),m->nAtoms(),(m->forcefield() != NULL ? m->forcefield()->name() : "None"));
+		Messenger::print("%-15s %5i  %-15s", qPrintable(m->name()), m->nAtoms(), (m->forcefield() != NULL ? qPrintable(m->forcefield()->name()) : "None"));
 	rv.reset();
 	return TRUE;
 }
@@ -249,7 +245,12 @@ bool Commands::function_LoadModel(CommandNode* c, Bundle& obj, ReturnValue& rv)
 		}
 		
 		// Loop over remaining arguments which are widget/global variable assignments
-		for (int n = 1; n < parser.nArgs(); ++n) if (!filter->setAccessibleVariable(beforeStr(parser.argc(n),"="), afterStr(parser.argc(n),"="))) return FALSE;
+		QStringList items;
+		for (int n = 1; n < parser.nArgs(); ++n)
+		{
+			items = parser.argc(n).split('=');
+			if (!filter->setAccessibleVariable(items.at(0), items.at(1))) return FALSE;
+		}
 	}
 	else filter = aten_.probeFile(c->argc(0), FilterData::ModelImport);
 	rv.set(0);
@@ -299,8 +300,8 @@ bool Commands::function_ModelTemplate(CommandNode* c, Bundle& obj, ReturnValue& 
 bool Commands::function_NewModel(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	obj.m = aten_.addModel();
-	obj.m->setName(stripTrailing(c->argc(0)));
-	Messenger::print(Messenger::Verbose, "Created model '%s'", obj.m->name());
+	obj.m->setName(c->argc(0).trimmed());
+	Messenger::print(Messenger::Verbose, "Created model '%s'", qPrintable(obj.m->name()));
 	// Check to see whether we are using a filter, enabling undo/redo if not
 	if (!c->parent()->isFilter()) obj.m->enableUndoRedo();
 	rv.set(VTypes::ModelData, obj.m);
@@ -315,7 +316,7 @@ bool Commands::function_NextModel(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	else
 	{
 		aten_.setCurrentModel(obj.m->next, TRUE);
-		Messenger::print("Current model is now '%s'.", obj.m->name());
+		Messenger::print("Current model is now '%s'.", qPrintable(obj.m->name()));
 	}
 	rv.set(VTypes::ModelData, obj.m);
 	return TRUE;
@@ -344,7 +345,7 @@ bool Commands::function_PrevModel(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	else
 	{
 		aten_.setCurrentModel(obj.m->prev, TRUE);
-		Messenger::print("Current model is now '%s'.",obj.m->name());
+		Messenger::print("Current model is now '%s'.", qPrintable(obj.m->name()));
 	}
 	rv.set(VTypes::ModelData, obj.m);
 	return TRUE;
@@ -371,7 +372,12 @@ bool Commands::function_SaveModel(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	}
 
 	// Loop over remaining arguments which are widget/global variable assignments
-	for (int n = 1; n < parser.nArgs(); ++n) if (!filter->setAccessibleVariable(beforeStr(parser.argc(n),"="), afterStr(parser.argc(n),"="))) return FALSE;
+	QStringList items;
+	for (int n = 1; n < parser.nArgs(); ++n)
+	{
+		items = parser.argc(n).split('=');
+		if (!filter->setAccessibleVariable(items.at(0), items.at(1))) return FALSE;
+	}
 	
 	obj.rs()->setFilter(filter);
 	obj.rs()->setFilename(c->argc(1));
@@ -382,9 +388,9 @@ bool Commands::function_SaveModel(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	if (result)
 	{
 		obj.rs()->changeLog.updateSavePoint();
-		Messenger::print("Model '%s' saved to file '%s' (%s)", obj.rs()->name(), obj.rs()->filename(), filter->filter.name());
+		Messenger::print("Model '%s' saved to file '%s' (%s)", qPrintable(obj.rs()->name()), qPrintable(obj.rs()->filename()), qPrintable(filter->filter.name()));
 	}
-	else Messenger::print("Failed to save model '%s'.", obj.rs()->name());
+	else Messenger::print("Failed to save model '%s'.", qPrintable(obj.rs()->name()));
 	obj.rs()->enableUndoRedo();
 	rv.set(result);
 	return TRUE;
@@ -394,17 +400,20 @@ bool Commands::function_SaveModel(CommandNode* c, Bundle& obj, ReturnValue& rv)
 bool Commands::function_SaveSelection(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+
 	// Find filter with a nickname matching that given in argc(0)
 	Tree* filter = aten_.findFilter(FilterData::ModelExport, c->argc(0));
+
 	// Check that a suitable format was found
 	if (filter == NULL)
 	{
 		Messenger::print("Valid model export nicknames are:");
 		for (Refitem<Tree,int>* ri = aten_.filters(FilterData::ModelExport); ri != NULL; ri = ri->next)
-			Messenger::print("  %-15s %s", ri->item->filter.nickname(), ri->item->filter.name());
+			Messenger::print("  %-15s %s", qPrintable(ri->item->filter.nickname()), qPrintable(ri->item->filter.name()));
 		Messenger::print("Not saved.");
 		return FALSE;
 	}
+
 	// Is anything selected in the source model?
 	if (obj.rs()->nSelected() == 0)
 	{
@@ -412,6 +421,7 @@ bool Commands::function_SaveSelection(CommandNode* c, Bundle& obj, ReturnValue& 
 		rv.set(FALSE);
 		return FALSE;
 	}
+
 	// Create a copy of the current basic model info, and then copy the selection of atoms
 	Model m;
 	Clipboard clip;
@@ -422,13 +432,15 @@ bool Commands::function_SaveSelection(CommandNode* c, Bundle& obj, ReturnValue& 
 	clip.pasteToModel(&m, FALSE);
 	Bundle oldbundle = obj;
 	obj.m = &m;
+
 	// Temporarily disable undo/redo for the model, save, and re-enable
 	obj.rs()->disableUndoRedo();
 	bool result = filter->executeWrite(m.filename());
 	obj.rs()->enableUndoRedo();
 	obj = oldbundle;
-	if (result) Messenger::print("Selection from model '%s' saved to file '%s' (%s)", m.name(), m.filename(), filter->filter.name());
-	else Messenger::print("Failed to save selection from model '%s'.", m.name());
+	if (result) Messenger::print("Selection from model '%s' saved to file '%s' (%s)", qPrintable(m.name()), qPrintable(m.filename()), qPrintable(filter->filter.name()));
+	else Messenger::print("Failed to save selection from model '%s'.", qPrintable(m.name()));
+
 	rv.set(result);
 	return TRUE;
 }
@@ -440,7 +452,7 @@ bool Commands::function_SetName(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	obj.rs()->beginUndoState("Rename Model");
 	obj.rs()->setName(c->argc(0));
 	obj.rs()->endUndoState();
-	Messenger::print(Messenger::Verbose, "Renamed model to '%s'", obj.rs()->name());
+	Messenger::print(Messenger::Verbose, "Renamed model to '%s'", qPrintable(obj.rs()->name()));
 	return TRUE;
 }
 

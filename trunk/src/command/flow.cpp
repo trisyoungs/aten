@@ -199,8 +199,8 @@ bool Commands::function_Return(CommandNode* c, Bundle& obj, ReturnValue& rv)
 // Switch statement
 bool Commands::function_Switch(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	ReturnValue switchval, caseval;
-	if (!c->arg(0, switchval)) return FALSE;
+	ReturnValue switchVal, caseVal;
+	if (!c->arg(0, switchVal)) return FALSE;
 	int index = 1;
 	CommandNode* node;
 	bool result, execute = FALSE;
@@ -245,11 +245,11 @@ bool Commands::function_Switch(CommandNode* c, Bundle& obj, ReturnValue& rv)
 				}
 				else if ((node->function() == Commands::Case) && (!execute))
 				{
-					if (!c->arg(index, caseval)) return FALSE;
+					if (!c->arg(index, caseVal)) return FALSE;
 // 					printf("Index %i is a case node whose value is %s..\n", index, caseval.info());
 					// Do comparison...
-					if ((switchval.type() == VTypes::IntegerData) && (caseval.type() == VTypes::IntegerData)) result = (switchval.asInteger() == caseval.asInteger());
-					else result = (strcmp(switchval.asString(), caseval.asString()) == 0);
+					if ((switchVal.type() == VTypes::IntegerData) && (caseVal.type() == VTypes::IntegerData)) result = (switchVal.asInteger() == caseVal.asInteger());
+					else result = switchVal.asString() == caseVal.asString();
 					// Flag to enter into execution state if values matched
 					if (result) execute = TRUE;
 				}

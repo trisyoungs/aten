@@ -42,7 +42,7 @@ const char* MonteCarlo::moveTypeKeyword(MonteCarlo::MoveType mt)
 	return MoveTypeKeywords[mt];
 }
 
-MonteCarlo::MoveType MonteCarlo::moveType(const char* s, bool reportError)
+MonteCarlo::MoveType MonteCarlo::moveType(QString s, bool reportError)
 {
 	MonteCarlo::MoveType mt = (MonteCarlo::MoveType) enumSearch("Monte Carlo move", MonteCarlo::nMoveTypes, MoveTypeKeywords, s);
 	if ((mt == MonteCarlo::nMoveTypes) && reportError) enumPrintValid(MonteCarlo::nMoveTypes,MoveTypeKeywords);

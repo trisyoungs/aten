@@ -83,9 +83,9 @@ class FragmentsWidget : public QDockWidget
 	// Whether fragment icons have been generated yet
 	bool iconsGenerated_;
 	// Current drawing fragment
-	Fragment *currentFragment_;
+	Fragment* currentFragment_;
 	// Text string to filter fragments by
-	Dnchar filterText_;
+	QString filterText_;
 	// Index of bond to orient along on target atom
 	int bondId_;
 
@@ -95,7 +95,7 @@ class FragmentsWidget : public QDockWidget
 	// Return bondId (as reference so it can be reset by associated Fragment routines)
 	int &bondId();
 	// Return current drawing fragment
-	Fragment *currentFragment();
+	Fragment* currentFragment();
 };
 
 #endif

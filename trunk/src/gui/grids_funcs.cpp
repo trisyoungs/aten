@@ -153,7 +153,7 @@ void GridsWidget::refreshGridInfo()
 	// Set minimum, maximum, and cutoff, and stepsizes for spins
 	ui.GridMinimumLabel->setText(ftoa(g->minimum()));
 	ui.GridMaximumLabel->setText(ftoa(g->maximum()));
-	ui.GridNPointsLabel->setText(itoa(g->nXYZ().x*g->nXYZ().y*g->nXYZ().z));
+	ui.GridNPointsLabel->setText(QString::number(g->nXYZ().x*g->nXYZ().y*g->nXYZ().z));
 	ui.GridLowerCutoffSpin->setMinimum(g->minimum());
 	ui.GridLowerCutoffSpin->setMaximum(g->maximum());
 	ui.GridLowerCutoffSpin->setValue(g->lowerPrimaryCutoff());
@@ -285,7 +285,7 @@ void GridsWidget::on_actionGridDelete_triggered(bool checked)
 	if (refreshing_) return;
 	// Get currently selected grid(s) and set data
 	Grid* g;
-	foreach (QListWidgetItem *qlwi, ui.GridList->selectedItems())
+	foreach (QListWidgetItem* qlwi, ui.GridList->selectedItems())
 	{
 		TListWidgetItem *item = (TListWidgetItem*) qlwi;
 		// Get grid pointer
@@ -422,7 +422,7 @@ void GridsWidget::gridOriginChanged(int component, double value)
 	if (refreshing_) return;
 	// Get currently selected grid(s) and set data
 	Grid* g;
-	foreach (QListWidgetItem *qlwi, ui.GridList->selectedItems())
+	foreach (QListWidgetItem* qlwi, ui.GridList->selectedItems())
 	{
 		TListWidgetItem *item = (TListWidgetItem*) qlwi;
 		// Get grid pointer
@@ -441,7 +441,7 @@ void GridsWidget::gridAxisChanged(int axis, int component, double value)
 	if (refreshing_) return;
 	// Get currently selected grid(s) and set data
 	Grid* g;
-	foreach (QListWidgetItem *qlwi, ui.GridList->selectedItems())
+	foreach (QListWidgetItem* qlwi, ui.GridList->selectedItems())
 	{
 		TListWidgetItem *item = (TListWidgetItem*) qlwi;
 		// Get grid pointer
@@ -463,7 +463,7 @@ void GridsWidget::on_GridList_currentRowChanged(int row)
 }
 
 // Item in grid list has changed?
-void GridsWidget::on_GridList_itemClicked(QListWidgetItem *item)
+void GridsWidget::on_GridList_itemClicked(QListWidgetItem* item)
 {
 	// Cast item to our own TListWidgetItem
 	TListWidgetItem *titem = (TListWidgetItem*) item;
@@ -489,7 +489,7 @@ void GridsWidget::on_GridLowerCutoffSpin_editingFinished()
 	if (refreshing_) return;
 	// Get currently selected grid(s) and set data
 	Grid* g;
-	foreach (QListWidgetItem *qlwi, ui.GridList->selectedItems())
+	foreach (QListWidgetItem* qlwi, ui.GridList->selectedItems())
 	{
 		TListWidgetItem *item = (TListWidgetItem*) qlwi;
 		// Get grid pointer
@@ -505,7 +505,7 @@ void GridsWidget::on_GridUpperCutoffSpin_editingFinished()
 	if (refreshing_) return;
 	// Get currently selected grid(s) and set data
 	Grid* g;
-	foreach (QListWidgetItem *qlwi, ui.GridList->selectedItems())
+	foreach (QListWidgetItem* qlwi, ui.GridList->selectedItems())
 	{
 		TListWidgetItem *item = (TListWidgetItem*) qlwi;
 		// Get grid pointer
@@ -521,7 +521,7 @@ void GridsWidget::on_GridLowerCutoff2Spin_editingFinished()
 	if (refreshing_) return;
 	// Get currently selected grid(s) and set data
 	Grid* g;
-	foreach (QListWidgetItem *qlwi, ui.GridList->selectedItems())
+	foreach (QListWidgetItem* qlwi, ui.GridList->selectedItems())
 	{
 		TListWidgetItem *item = (TListWidgetItem*) qlwi;
 		// Get grid pointer
@@ -537,7 +537,7 @@ void GridsWidget::on_GridUpperCutoff2Spin_editingFinished()
 	if (refreshing_) return;
 	// Get currently selected grid(s) and set data
 	Grid* g;
-	foreach (QListWidgetItem *qlwi, ui.GridList->selectedItems())
+	foreach (QListWidgetItem* qlwi, ui.GridList->selectedItems())
 	{
 		TListWidgetItem *item = (TListWidgetItem*) qlwi;
 		// Get grid pointer
@@ -553,7 +553,7 @@ void GridsWidget::on_GridStyleCombo_currentIndexChanged(int index)
 	if (refreshing_) return;
 	// Get currently selected grid(s) and set data
 	Grid* g;
-	foreach (QListWidgetItem *qlwi, ui.GridList->selectedItems())
+	foreach (QListWidgetItem* qlwi, ui.GridList->selectedItems())
 	{
 		TListWidgetItem *item = (TListWidgetItem*) qlwi;
 		// Get grid pointer
@@ -568,7 +568,7 @@ void GridsWidget::on_GridOutlineVolumeCheck_clicked(bool checked)
 	if (refreshing_) return;
 	// Get currently selected grid(s) and set data
 	Grid* g;
-	foreach (QListWidgetItem *qlwi, ui.GridList->selectedItems())
+	foreach (QListWidgetItem* qlwi, ui.GridList->selectedItems())
 	{
 		TListWidgetItem *item = (TListWidgetItem*) qlwi;
 		// Get grid pointer
@@ -583,7 +583,7 @@ void GridsWidget::on_GridFillEnclosedVolumeCheck_clicked(bool checked)
 	if (refreshing_) return;
 	// Get currently selected grid(s) and set data
 	Grid* g;
-	foreach (QListWidgetItem *qlwi, ui.GridList->selectedItems())
+	foreach (QListWidgetItem* qlwi, ui.GridList->selectedItems())
 	{
 		TListWidgetItem *item = (TListWidgetItem*) qlwi;
 		// Get grid pointer
@@ -598,7 +598,7 @@ void GridsWidget::on_GridPeriodicCheck_clicked(bool checked)
 	if (refreshing_) return;
 	// Get currently selected grid(s) and set data
 	Grid* g;
-	foreach (QListWidgetItem *qlwi, ui.GridList->selectedItems())
+	foreach (QListWidgetItem* qlwi, ui.GridList->selectedItems())
 	{
 		TListWidgetItem *item = (TListWidgetItem*) qlwi;
 		// Get grid pointer
@@ -624,7 +624,7 @@ void GridsWidget::on_GridPrimaryColourButton_clicked(bool checked)
 	if (!ok) return;
 	// Store new colour
 	// Get currently selected grid(s) and set data
-	foreach (QListWidgetItem *qlwi, ui.GridList->selectedItems())
+	foreach (QListWidgetItem* qlwi, ui.GridList->selectedItems())
 	{
 		TListWidgetItem *item = (TListWidgetItem*) qlwi;
 		// Get grid pointer
@@ -652,7 +652,7 @@ void GridsWidget::on_GridSecondaryColourButton_clicked(bool checked)
 	if (!ok) return;
 	// Store new colour
 	// Get currently selected grid(s) and set data
-	foreach (QListWidgetItem *qlwi, ui.GridList->selectedItems())
+	foreach (QListWidgetItem* qlwi, ui.GridList->selectedItems())
 	{
 		TListWidgetItem *item = (TListWidgetItem*) qlwi;
 		// Get grid pointer
@@ -669,7 +669,7 @@ void GridsWidget::on_GridColourscaleSpin_valueChanged(int n)
 	if (refreshing_) return;
 	// Get currently selected grid(s) and set data
 	Grid* g;
-	foreach (QListWidgetItem *qlwi, ui.GridList->selectedItems())
+	foreach (QListWidgetItem* qlwi, ui.GridList->selectedItems())
 	{
 		TListWidgetItem *item = (TListWidgetItem*) qlwi;
 		// Get grid pointer
@@ -688,7 +688,7 @@ void GridsWidget::on_GridSecondaryCutoffCheck_clicked(bool checked)
 	if (refreshing_) return;
 	// Get currently selected grid(s) and set data
 	Grid* g;
-	foreach (QListWidgetItem *qlwi, ui.GridList->selectedItems())
+	foreach (QListWidgetItem* qlwi, ui.GridList->selectedItems())
 	{
 		TListWidgetItem *item = (TListWidgetItem*) qlwi;
 		// Get grid pointer
@@ -710,7 +710,7 @@ void GridsWidget::gridShiftChanged()
 	if (refreshing_) return;
 	// Get currently selected grid(s) and set data
 	Grid* g;
-	foreach (QListWidgetItem *qlwi, ui.GridList->selectedItems())
+	foreach (QListWidgetItem* qlwi, ui.GridList->selectedItems())
 	{
 		TListWidgetItem *item = (TListWidgetItem*) qlwi;
 		// Get grid pointer
