@@ -98,10 +98,10 @@ void DisorderWizard::setComponentData(Model* m)
 	if (ri == NULL) return;
 	ri->item->setIcon(0, m->icon());
 	Dnchar text;
-	text.sprintf("%s\nPolicy: %s", m->name(), Model::insertionPolicy(m->componentInsertionPolicy()));
+	text.sprintf("%s\nPolicy: %s", qPrintable(m->name()), Model::insertionPolicy(m->componentInsertionPolicy()));
 	if (m->componentInsertionPolicy() != Model::DensityPolicy) text.strcatf("\nPopulation: %i", m->componentPopulation());
 	if (m->componentInsertionPolicy() != Model::NumberPolicy) text.strcatf("\nDensity: %f", m->componentDensity());
-	text.strcatf("\nPartition: %i %s", m->componentPartition()+1, partitioningScheme_->partitionName(m->componentPartition()));
+	text.strcatf("\nPartition: %i %s", m->componentPartition()+1, qPrintable(partitioningScheme_->partitionName(m->componentPartition())));
 	ri->item->setText(1, text.get());
 	ri->item->setTextAlignment(1, Qt::AlignLeft | Qt::AlignTop);
 }
@@ -141,7 +141,7 @@ void DisorderWizard::updateComponentControls()
 void DisorderWizard::setPartitionData(QTreeWidgetItem* target, PartitioningScheme* ps)
 {
 	target->setIcon(0,ps->icon());
-	Dnchar text(-1,"%s\n%s\nNumber of partitions = %i\n", ps->name(), ps->description(), ps->nPartitions());
+	Dnchar text(-1,"%s\n%s\nNumber of partitions = %i\n", qPrintable(ps->name()), qPrintable(ps->description()), ps->nPartitions());
 	target->setText(1,text.get());
 	target->setTextAlignment(1, Qt::AlignLeft | Qt::AlignTop);
 }
@@ -286,7 +286,7 @@ void DisorderWizard::pageChanged(int id)
 			ui.ComponentTargetPartitionCombo->clear();
 			for (int n = 0; n < partitioningScheme_->nPartitions(); ++n)
 			{
-				text.sprintf("%i %s", n+1, partitioningScheme_->partitionName(n));
+				text.sprintf("%i %s", n+1, qPrintable(partitioningScheme_->partitionName(n)));
 				ui.ComponentTargetPartitionCombo->addItem(text.get());
 			}
 			refreshing_ = FALSE;

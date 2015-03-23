@@ -112,7 +112,7 @@ void AtenForcefieldEditor::populate(Forcefield* ff)
 	ui.FFEditorTypesTable->setHorizontalHeaderLabels(QStringList() << "TypeID" << "El" << "Name" << "Equiv" << "NETA" << "Description");
 	for (ForcefieldAtom* ffa = ff->types()->next; ffa != NULL; ffa = ffa->next)
 	{
-		item = new QTableWidgetItem(itoa(ffa->typeId()));
+		item = new QTableWidgetItem(QString::number(ffa->typeId()));
 		ui.FFEditorTypesTable->setItem(count, TypeColumn::Id, item);
 		item = new QTableWidgetItem(Elements().symbol(ffa->neta()->characterElement()));
 		ui.FFEditorTypesTable->setItem(count, TypeColumn::Element, item);
@@ -137,7 +137,7 @@ void AtenForcefieldEditor::populate(Forcefield* ff)
 	for (ForcefieldAtom* ffa = ff->types()->next; ffa != NULL; ffa = ffa->next)
 	{
 		params = ffa->parameters();
-		item = new QTableWidgetItem(itoa(ffa->typeId()));
+		item = new QTableWidgetItem(QString::number(ffa->typeId()));
 		item->setFlags(Qt::ItemIsSelectable);
 		ui.FFEditorAtomsTable->setItem(count, AtomColumn::Id, item);
 		item = new QTableWidgetItem(ffa->name());
@@ -396,13 +396,16 @@ void AtenForcefieldEditor::on_FFEditorTypesTable_itemChanged(QTableWidgetItem *w
 {
 	if ((targetForcefield_ == NULL) || updating_) return;
 	updating_ = TRUE;
+
 	// Get position of changed item (skipping _NDEF_)
 	int row = ui.FFEditorTypesTable->row(w) + 1;
 	int column = ui.FFEditorTypesTable->column(w);
+
 	// Get pointer to forcefield type from edited row
 	ForcefieldAtom* ffa = targetForcefield_->type(row);
+
 	// Set new data based on the column edited
-	Dnchar text;
+	QString text;
 	ForcefieldAtom* old;
 	int n, returnvalue;
 	switch (column)
@@ -414,10 +417,11 @@ void AtenForcefieldEditor::on_FFEditorTypesTable_itemChanged(QTableWidgetItem *w
 			old = targetForcefield_->findByTypeId(n, ffa);
 			if (old != NULL)
 			{
-				text.sprintf("Another type with id %i already exists (%s).", n, old->name());
-				returnvalue = QMessageBox::warning(this, "Forcefield Editor", text.get(), QMessageBox::Ok);
+				text.sprintf("Another type with id %i already exists (%s).", n, qPrintable(old->name()));
+				returnvalue = QMessageBox::warning(this, "Forcefield Editor", qPrintable(text), QMessageBox::Ok);
+
 				// Set the table value item back to the old value
-				w->setText(itoa(ffa->typeId()));
+				w->setText(QString::number(ffa->typeId()));
 			}
 			else ffa->setTypeId(n);
 			break;
@@ -458,18 +462,19 @@ void AtenForcefieldEditor::updateVdwLabels(ForcefieldAtom* ffa)
 		return;
 	}
 	VdwFunctions::VdwFunction vf = ffa->vdwForm();
+
 	// Construct labels
-	Dnchar text;
+	QString text;
 	text.sprintf("%s (%s)", VdwFunctions::VdwFunctions[vf].name, VdwFunctions::VdwFunctions[vf].keyword);
-	ui.FFEditorAtomFormLabel->setText(text.get());
+	ui.FFEditorAtomFormLabel->setText(text);
 	text.clear();
 	for (int n=0; n<VdwFunctions::VdwFunctions[vf].nParameters; ++n)
 	{
-		if (n != 0) text.strcat(", ");
-		if (VdwFunctions::VdwFunctions[vf].isEnergyParameter[n]) text.strcatf("<b>%s</b>", VdwFunctions::VdwFunctions[vf].parameterKeywords[n]);
-		else text.strcatf("%s", VdwFunctions::VdwFunctions[vf].parameterKeywords[n]);
+		if (n != 0) text += ", ";
+		if (VdwFunctions::VdwFunctions[vf].isEnergyParameter[n]) text += VdwFunctions::VdwFunctions[vf].parameterKeywords[n];
+		else text += VdwFunctions::VdwFunctions[vf].parameterKeywords[n];
 	}
-	ui.FFEditorAtomParametersLabel->setText(text.get());
+	ui.FFEditorAtomParametersLabel->setText(text);
 }
 
 // Vdw interaction type changed

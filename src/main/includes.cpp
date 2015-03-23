@@ -29,111 +29,76 @@ ATEN_USING_NAMESPACE
 void Aten::openIncludes()
 {
 	Messenger::enter("Aten::openIncludes");
-	Dnchar path;
-	bool found = FALSE;
-	int nfailed;
 
 	nIncludesFailed_ = 0;
 	failedIncludes_.clear();
 
-	// Construct a list of possible locations for the Includes
-	QStringList paths;
-	if (!dataDir_.isEmpty())
-	{
-		Messenger::print(Messenger::Verbose, "Aten::openIncludes() - data directory is '%s'.", dataDir_.get());
-		paths << dataDir_.get();
-	}
-	else
-	{
-		Messenger::print(Messenger::Verbose, "Data directory has not yet been set. Default locations will be searched...");
-		// Default locations
-		paths << "/usr/share/aten";
-		paths << "/usr/local/share/aten";
-		paths << "../share/aten";
-		paths << QApplication::applicationDirPath() + "/../share/aten";
-		paths << QApplication::applicationDirPath() + "/../SharedSupport";
-	}
-
-	for (int i=0; i < paths.size(); i++)
-	{
-		path.sprintf("%s/includes", qPrintable(paths.at(i)));
-		path = qPrintable(QDir::toNativeSeparators(path.get()));
-		Messenger::print(Messenger::Verbose, "Looking for includes in '%s'...", path.get());
-		nfailed = parseIncludeDir(path);
-		if (nfailed == -1) continue;	// Directory not found
-		found = TRUE;
-		nIncludesFailed_ += nfailed;
-		dataDir_ = qPrintable(QDir::toNativeSeparators(paths.at(i)));
-		break;
-	}
-
-	if (!found) Messenger::print("No includes found in any known default locations.");
+	QDir includesDir = dataDirectoryFile("includes");
+	Messenger::print(Messenger::Verbose, "Looking for includes in '%s'...", qPrintable(includesDir.path()));
+	int nFailed = parseIncludeDir(includesDir);
+	if (nFailed > 0) nIncludesFailed_ += nFailed;
 
 	// Try to load user includes - we don't mind if the directory doesn't exist...
-	path.sprintf("%s%c%s%cincludes%c", homeDir_.get(), PATHSEP, atenDir_.get(), PATHSEP, PATHSEP);
-	path = qPrintable(QDir::toNativeSeparators(path.get()));
-	Messenger::print(Messenger::Verbose, "Looking for user includes in '%s'...", path.get());
-	nfailed = parseIncludeDir(path);
-	if (nfailed > 0) nIncludesFailed_ += nfailed;
+	includesDir = atenDirectoryFile("includes");
+	Messenger::print(Messenger::Verbose, "Looking for user includes in '%s'...", qPrintable(includesDir.path()));
+	nFailed = parseIncludeDir(includesDir);
+	if (nFailed > 0) nIncludesFailed_ += nFailed;
 
 	for (Tree* tree = includeFunctions_.functions(); tree != NULL; tree = tree->next)
-		Messenger::print(Messenger::Verbose, " Included Function : %s", tree->name());
+		Messenger::print(Messenger::Verbose, "Included Function : %s", qPrintable(tree->name()));
 
 	Messenger::exit("Aten::openIncludes");
 }
 
 // Parse include directory
-int Aten::parseIncludeDir(const char* path)
+int Aten::parseIncludeDir(QDir path)
 {
 	Messenger::enter("Aten::parseIncludeDir");
-	int i, nfailed = 0;
-	Dnchar s(-1, "INCLUDES --> [%s] ", path);
+
+	int i, nFailed = 0;
+	QString s = "INCLUDES --> [" + path.absolutePath() + "] ";
+	
 	// First check - does this directory actually exist
-	QDir includedir(path);
-	if (!includedir.exists())
+	if (!path.exists())
 	{
 		Messenger::exit("Aten::parseIncludeDir");
 		return -1;
 	}
+
 	// Include the directory contents - show only files and exclude '.' and '..'
-	QStringList includelist = includedir.entryList(QDir::Files | QDir::NoDotAndDotDot, QDir::Name);
-	for (i=0; i<includelist.size(); i++)
+	QStringList includeList = path.entryList(QDir::Files | QDir::NoDotAndDotDot, QDir::Name);
+	for (i=0; i< includeList.size(); i++)
 	{
-		// Construct filter Program...
-		QString filename(path);
-		filename += "/";
-		filename += includelist.at(i);
-		if (!includeFunctions_.generateFromFile(qPrintable(QDir::toNativeSeparators(filename)), qPrintable(includelist.at(i)), TRUE, FALSE, FALSE))
+		// Load filter Program...
+		QString filename = QDir::toNativeSeparators(path.absoluteFilePath(includeList.at(i)));
+		if (!includeFunctions_.generateFromFile(qPrintable(QDir::toNativeSeparators(filename)), qPrintable(includeList.at(i)), TRUE, FALSE, FALSE))
 		{
-			Messenger::print("Failed to load includes from '%s'...", qPrintable(includelist.at(i)));
-			failedIncludes_.add()->set( qPrintable(QDir::toNativeSeparators(filename)) );
-			nfailed ++;
+			Messenger::print("Failed to load includes from '%s'...", qPrintable(includeList.at(i)));
+			failedIncludes_ << filename;
+			++nFailed;
 		}
-		else
-		{
-			// Add on a bit of useful text to print out
-			s.strcatf("%s  ", qPrintable(includelist.at(i)));
-		}
+		else s += includeList.at(i) + "  ";
 	}
-	s += '\n';
 	Messenger::print(s);
 
 	Messenger::exit("Aten::parseIncludeDir");
-	return nfailed;
+	return nFailed;
 }
 
 // Load include from specified filename
-bool Aten::openInclude(const char* filename)
+bool Aten::openInclude(QString filename)
 {
 	Messenger::enter("Aten::openInclude");
+
 	// Construct includes Program...
 	if (!includeFunctions_.generateFromFile(filename, filename, TRUE, FALSE, FALSE))
 	{
-		Messenger::print("Failed to load includes from '%s'...", filename);
-		failedIncludes_.add()->set( filename );
+		Messenger::print("Failed to load includes from '%s'...", qPrintable(filename));
+		failedIncludes_ << filename;
 		Messenger::exit("Aten::openInclude");
 		return FALSE;
 	}
+
 	Messenger::exit("Aten::openInclude");
 	return TRUE;
 }
@@ -145,13 +110,13 @@ int Aten::nIncludesFailed() const
 }
 
 // Return list of failed includes
-Dnchar* Aten::failedIncludes() const
+QStringList Aten::failedIncludes() const
 {
-	return failedIncludes_.first();
+	return failedIncludes_;
 }
 
 // Find global include function by name
-Tree* Aten::findIncludeFunction(const char* name)
+Tree* Aten::findIncludeFunction(QString name)
 {
 	return includeFunctions_.findFunction(name);
 }

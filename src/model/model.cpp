@@ -112,15 +112,15 @@ Model::~Model()
 }
 
 // Sets the filename of the model
-void Model::setFilename(const char* s)
+void Model::setFilename(QString filename)
 {
-	filename_ = s;
+	filename_ = filename;
 }
 
 // Return the stored filename of the model
-const char* Model::filename() const
+QString Model::filename() const
 {
-	return filename_.get();
+	return filename_;
 }
 
 // Sets the file filter of the model
@@ -136,23 +136,23 @@ Tree* Model::filter() const
 }
 
 // Sets the name of the model
-void Model::setName(const char* s)
+void Model::setName(QString name)
 {
 	changeLog.add(Log::Misc);
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
 		ModelRenameEvent *newchange = new ModelRenameEvent;
-		newchange->set(name_.get(), s);
+		newchange->set(name_, name);
 		recordingState_->addEvent(newchange);
 	}
-	name_ = s;
+	name_ = name;
 }
 
 // Return the name of the model
-const char* Model::name() const
+QString Model::name() const
 {
-	return name_.get();
+	return name_;
 }
 
 // Clear
@@ -355,8 +355,8 @@ void Model::clearCharges()
 void Model::print() const
 {
 	Messenger::enter("Model::print");
-	Messenger::print("   Name : %s", name_.get());
-	Messenger::print("   File : %s", filename_.get());
+	Messenger::print("   Name : %s", qPrintable(name_));
+	Messenger::print("   File : %s", qPrintable(filename_));
 	Messenger::print("   Mass : %f", mass_);
 	if (cell_.type() != UnitCell::NoCell) Messenger::print("   Cell : %s\nDensity : %f %s", UnitCell::cellType(cell_.type()), density(), Prefs::densityUnit(prefs.densityUnit()));
 	Messenger::print("  Atoms : %i", atoms_.nItems());
@@ -381,7 +381,7 @@ void Model::print() const
 // Print points information
 void Model::printLogs() const
 {
-	Messenger::print("Logs for model '%s':",name_.get());
+	Messenger::print("Logs for model '%s':", qPrintable(name_));
 	changeLog.print();
 	Messenger::print("Expression point : %i", expressionPoint_);
 	Messenger::print("  Patterns point : %i", patternsPoint_);
@@ -481,7 +481,7 @@ void Model::copyAtomData(Model* srcmodel, int dat, int startatom, int ncopy)
 				if ((dat&Atom::ChargeData) || (dat == Atom::AllData)) ii[n]->setCharge(jj[n]->charge());
 				if ((dat&Atom::FixedData) || (dat == Atom::AllData)) ii[n]->setPositionFixed(jj[n]->isPositionFixed());
 			}
-			Messenger::print(Messenger::Verbose, "Copied data for %i atoms starting at %i from model '%s' to model '%s'.", ncopy, startatom, name_.get(), srcmodel->name_.get());
+			Messenger::print(Messenger::Verbose, "Copied data for %i atoms starting at %i from model '%s' to model '%s'.", ncopy, startatom, qPrintable(name_), qPrintable(srcmodel->name()));
 		}
 	}
 	Messenger::exit("Model::copyAtomData[range]");

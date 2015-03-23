@@ -215,7 +215,7 @@ void Model::vibrationNextFrame()
 	// Check for presence of a vibration trajectory
 	if (vibrationFrames_.nItems() == 0)
 	{
-		printf("Internal Error : Model '%s' has no vibration trajectory to display.\n", name_.get());
+		printf("Internal Error : Model '%s' has no vibration trajectory to display.\n", qPrintable(name_));
 		Messenger::exit("Model::vibrationNextFrame");
 		return;
 	}

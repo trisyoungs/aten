@@ -49,9 +49,9 @@ class ModelVariable : public PointerVariable
 	enum Functions { AddHydrogen, AngleEnergy, AtomWithBit, Augment, BondEnergy, Charge, ClearBonds, ClearCharges, ClearPatterns, ClearSelectedBonds, Copy, Cut, Delete, DeSelect, ElectrostaticEnergy, Expand, Finalise, InterEnergy, IntraEnergy, MoveToEnd, MoveToStart, NewAtom, NewAtomFrac, NewBasisShell, NewBond, NewEigenvector, NewGlyph, NewGrid, NewPattern, NewVibration, Paste, ReBond, ReBondPatterns, ReBondSelection, Redo, ReOrder, SaveBitmap, Select, SelectAll, SelectionAddHydrogen, SelectNone, SelectTree, SetupComponent, ShiftDown, ShiftUp, ShowAll, ToAngstroms, TorsionEnergy, Transmute, Undo, VdwEnergy, nFunctions };
 
 	// Search variable access list for provided accessor
-	StepNode* findAccessor(const char* s, TreeNode* arrayIndex, TreeNode* argList = NULL);
+	StepNode* findAccessor(QString name, TreeNode* arrayIndex, TreeNode* argList = NULL);
 	// Static function to search accessors
-	static StepNode* accessorSearch(const char* s, TreeNode* arrayIndex, TreeNode* argList = NULL);
+	static StepNode* accessorSearch(QString name, TreeNode* arrayIndex, TreeNode* argList = NULL);
 	// Retrieve desired value
 	static bool retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex, int arrayIndex = -1);
 	// Set desired value
@@ -79,7 +79,7 @@ class ModelArrayVariable : public PointerArrayVariable
 	*/
 	public:
 	// Search variable access list for provided accessor
-	StepNode* findAccessor(const char* s, TreeNode* arrayIndex, TreeNode* argList = NULL);
+	StepNode* findAccessor(QString name, TreeNode* arrayIndex, TreeNode* argList = NULL);
 };
 
 ATEN_END_NAMESPACE

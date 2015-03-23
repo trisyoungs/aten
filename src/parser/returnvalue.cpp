@@ -67,6 +67,12 @@ ReturnValue::ReturnValue(const char* s) : ListItem<ReturnValue>()
 	arraySize_ = -1;
 	valueS_ = s;
 }
+ReturnValue::ReturnValue(QString s) : ListItem<ReturnValue>()
+{
+	type_ = VTypes::StringData;
+	arraySize_ = -1;
+	valueS_ = s;
+}
 ReturnValue::ReturnValue(Vec3<double> v) : ListItem<ReturnValue>()
 {
 	type_ = VTypes::VectorData;
@@ -118,7 +124,7 @@ void ReturnValue::operator=(const ReturnValue& source)
 			if (arraySize_ == -1) valueS_ = source.valueS_;
 			else
 			{
-				arrayS_ = new Dnchar[arraySize_];
+				arrayS_ = new QString[arraySize_];
 				for (int i=0; i<arraySize_; ++i) arrayS_[i] = source.arrayS_[i];
 			}
 			break;
@@ -161,7 +167,7 @@ void ReturnValue::operator=(int i)
 }
 
 // Operator =
-void ReturnValue::operator=(const char* s)
+void ReturnValue::operator=(QString s)
 {
 	clearArrayData();
 	type_ = VTypes::StringData;
@@ -218,7 +224,7 @@ const char* ReturnValue::info()
 			else result.sprintf("%i elements (array of %s)", arraySize_, VTypes::dataType(type_));
 			break;
 		case (VTypes::StringData):
-			if (arraySize_ == -1) result.sprintf("'%s' (%s)", valueS_.get(), VTypes::dataType(type_));
+			if (arraySize_ == -1) result.sprintf("'%s' (%s)", qPrintable(valueS_), VTypes::dataType(type_));
 			else result.sprintf("%i elements (array of %s)", arraySize_, VTypes::dataType(type_));
 			break;
 		case (VTypes::VectorData):
@@ -268,7 +274,7 @@ void ReturnValue::set(double d)
 }
 
 // Set from character value
-void ReturnValue::set(const char* s)
+void ReturnValue::set(QString  s)
 {
 	clearArrayData();
 	type_ = VTypes::StringData;
@@ -339,8 +345,8 @@ void ReturnValue::setArray(VTypes::DataType type, void *array, int arraysize)
 	}
 	else if (type_ == VTypes::StringData)
 	{
-		arrayS_ = new Dnchar[arraySize_];
-		Dnchar* source = (Dnchar*) array;
+		arrayS_ = new QString[arraySize_];
+		QString* source = (QString*) array;
 		for (i = 0; i < arraySize_; ++i) arrayS_[i] = source[i];
 	}
 	else if (type_ == VTypes::VectorData)
@@ -384,7 +390,7 @@ void ReturnValue::setElement(int id, double d)
 }
 
 // Set array element from character value
-void ReturnValue::setElement(int id, const char* s)
+void ReturnValue::setElement(int id, QString s)
 {
 	if ((type_ == VTypes::StringData) && (id >= 0) && (id < arraySize_)) arrayS_[id] = s;
 	else Messenger::print("Error: Tried to set a string array element when none existed/wrong type.");
@@ -423,7 +429,7 @@ Matrix& ReturnValue::matrix()
 */
 
 // Return as integer value
-int ReturnValue::asInteger(bool &success)
+int ReturnValue::asInteger(bool& success)
 {
 	success = TRUE;
 	if (arraySize_ != -1) Messenger::print("Cannot return a whole array as a single integer.");
@@ -441,7 +447,7 @@ int ReturnValue::asInteger(bool &success)
 			return (int)valueD_;
 			break;
 		case (VTypes::StringData):
-			return valueS_.asInteger();
+			return valueS_.toInt();
 			break;
 		case (VTypes::ElementData):
 			return (valueP_ == NULL ? 0 : ((Element*) valueP_)->z);
@@ -455,7 +461,7 @@ int ReturnValue::asInteger(bool &success)
 }
 
 // Return as real value
-double ReturnValue::asDouble(bool &success)
+double ReturnValue::asDouble(bool& success)
 {
 	success = TRUE;
 	if (arraySize_ != -1) Messenger::print("Cannot return a whole array as a single double.");
@@ -473,7 +479,7 @@ double ReturnValue::asDouble(bool &success)
 			return valueD_;
 			break;
 		case (VTypes::StringData):
-			return valueS_.asDouble();
+			return valueS_.toDouble();
 			break;
 		default:
 			Messenger::print("ReturnValue::asDouble() doesn't recognise this type (%s).", VTypes::dataType(type_));
@@ -484,65 +490,61 @@ double ReturnValue::asDouble(bool &success)
 }
 
 // Return as character string
-const char* ReturnValue::asString(bool &success)
+QString ReturnValue::asString(bool& success)
 {
-	static Dnchar converted;
+	QString tempString;
 	success = TRUE;
 	if (arraySize_ != -1)
 	{
-		// Use valueS_ to store the result....
-// 		Messenger::print("Cannot return a whole array as a single string.");
-// 		valueS_.createEmpty(1024);
-		valueS_.clear();
-		valueS_.strcat("{ ");
+		// Create a new string with all the array elements in it
+		tempString += "{ ";
 		for (int i=0; i<arraySize_; ++i)
 		{
-			if (i != 0) valueS_.strcat(", ");
+			if (i != 0) tempString += ", ";
 			switch (type_)
 			{
 				case (VTypes::NoData):
 					Messenger::print("Internal error: No data in ReturnValue to return as a string!");
 					success = FALSE;
-					return "_NULL_";
+					return QString("_NULL_");
 					break;
 				case (VTypes::IntegerData):
-					valueS_.strcat(itoa(arrayI_[i]));
+					tempString += QString::number(arrayI_[i]);
 					break;
 				case (VTypes::DoubleData):
-					valueS_.strcat(ftoa(arrayD_[i]));
+					tempString += QString::number(arrayD_[i]);
 					break;
 				case (VTypes::StringData):
-					valueS_ += '"';
-					valueS_.strcat(arrayS_[i].get());
-					valueS_ += '"';
+					tempString += '"';
+					tempString += arrayS_[i];
+					tempString += '"';
 					break;
 				default:
 					break;
 			}
 		}
-		valueS_.strcat(" }");
-		return valueS_.get();
+		tempString += " }";
+		return tempString;
 	}
 	else switch (type_)
 	{
 		case (VTypes::NoData):
 			Messenger::print("Internal error: No data in ReturnValue to return as a string!");
 			success = FALSE;
-			return "_NULL_";
+			return QString("_NULL_");
 			break;
 		case (VTypes::IntegerData):
-			return itoa(valueI_);
+			return QString::number(valueI_);
 			break;
 		case (VTypes::DoubleData):
-			return ftoa(valueD_);
+			return QString::number(valueD_);
 			break;
 		case (VTypes::StringData):
-			return valueS_.get();
+			return valueS_;
 			break;
 		case (VTypes::VectorData):
-			converted.sprintf("{%f,%f,%f}", valueV_.x, valueV_.y, valueV_.z);
-			tempString_ = converted;
-			return tempString_;
+			tempString.sprintf("{%f,%f,%f}", valueV_.x, valueV_.y, valueV_.z);
+			return tempString;
 			break;
 		default:
 			// All pointer types
@@ -550,11 +552,11 @@ const char* ReturnValue::asString(bool &success)
 			break;
 	}
 	success = FALSE;
-	return "NULL";
+	return "";
 }
 
 // Return as vector value
-Vec3<double> ReturnValue::asVector(bool &success)
+Vec3<double> ReturnValue::asVector(bool& success)
 {
 	success = TRUE;
 	switch (type_)
@@ -586,7 +588,7 @@ Vec3<double> ReturnValue::asVector(bool &success)
 }
 
 // Return as Matrix
-Matrix ReturnValue::asMatrix(bool &success)
+Matrix ReturnValue::asMatrix(bool& success)
 {
 	success = TRUE;
 	switch (type_)
@@ -626,7 +628,7 @@ Matrix ReturnValue::asMatrix(bool &success)
 }
 
 // Return as pointer
-void *ReturnValue::asPointer(VTypes::DataType ptrtype, bool &success)
+void *ReturnValue::asPointer(VTypes::DataType ptrtype, bool& success)
 {
 	success = TRUE;
 	if (arraySize_ != -1) Messenger::print("Cannot return a whole array as a single pointer.");
@@ -687,7 +689,7 @@ void *ReturnValue::refPointer()
 }
 
 // Return integer element value
-int ReturnValue::asInteger(int index, bool &success)
+int ReturnValue::asInteger(int index, bool& success)
 {
 	success = TRUE;
 	if (arraySize_ == -1)
@@ -714,7 +716,7 @@ int ReturnValue::asInteger(int index, bool &success)
 			return (int) arrayD_[index];
 			break;
 		case (VTypes::StringData):
-			return atoi( arrayS_[index].get() );
+			return arrayS_[index].toInt();
 			break;
 		default:
 			Messenger::print("ReturnValue::asInteger(id) doesn't recognise this type (%s).", VTypes::dataType(type_));
@@ -725,7 +727,7 @@ int ReturnValue::asInteger(int index, bool &success)
 }
 
 // Return double element value
-double ReturnValue::asDouble(int index, bool &success)
+double ReturnValue::asDouble(int index, bool& success)
 {
 	success = TRUE;
 	if (arraySize_ == -1)
@@ -752,7 +754,7 @@ double ReturnValue::asDouble(int index, bool &success)
 			return arrayD_[index];
 			break;
 		case (VTypes::StringData):
-			return atof( arrayS_[index].get() );
+			return arrayS_[index].toDouble();
 			break;
 		default:
 			Messenger::print("ReturnValue::asDouble(id) doesn't recognise this type (%s).", VTypes::dataType(type_));
@@ -763,9 +765,9 @@ double ReturnValue::asDouble(int index, bool &success)
 }
 
 // Return as character string
-const char* ReturnValue::asString(int index, bool &success)
+QString ReturnValue::asString(int index, bool& success)
 {
-	static Dnchar converted;
+	QString converted;
 	success = TRUE;
 	if (arraySize_ == -1)
 	{
@@ -791,7 +793,7 @@ const char* ReturnValue::asString(int index, bool &success)
 			return ftoa( arrayD_[index] );
 			break;
 		case (VTypes::StringData):
-			return arrayS_[index].get();
+			return arrayS_[index];
 			break;
 		case (VTypes::VectorData):
 			Messenger::print("Cannot convert return value of type 'vector' into a string.");
@@ -799,8 +801,7 @@ const char* ReturnValue::asString(int index, bool &success)
 		default:
 			// All pointer types
 			converted.sprintf("%p", valueP_);
-			tempString_ = converted;
-			return tempString_;
+			return converted;
 			break;
 	}
 	success = FALSE;
@@ -808,7 +809,7 @@ const char* ReturnValue::asString(int index, bool &success)
 }
 
 // Return as vector value
-Vec3<double> ReturnValue::asVector(int index, bool &success)
+Vec3<double> ReturnValue::asVector(int index, bool& success)
 {
 	success = TRUE;
 	double d;
@@ -849,7 +850,7 @@ Vec3<double> ReturnValue::asVector(int index, bool &success)
 	return Vec3<double>();
 }
 
-void *ReturnValue::asPointer(int index, VTypes::DataType ptrtype, bool &success)
+void *ReturnValue::asPointer(int index, VTypes::DataType type, bool& success)
 {
 	success = TRUE;
 	if (arraySize_ == -1)
@@ -873,15 +874,15 @@ void *ReturnValue::asPointer(int index, VTypes::DataType ptrtype, bool &success)
 		case (VTypes::DoubleData):
 		case (VTypes::StringData):
 		case (VTypes::VectorData):
-			Messenger::print("Error: An array element of type '%s' cannot be cast into an array element of type '%s'.", VTypes::dataType(type_), VTypes::dataType(ptrtype));
+			Messenger::print("Error: An array element of type '%s' cannot be cast into an array element of type '%s'.", VTypes::dataType(type_), VTypes::dataType(type));
 			success = FALSE;
 			return NULL;
 			break;
 		default:
 			// Check that internal pointer type matches requested pointer type
-			if (ptrtype != type_)
+			if (type != type_)
 			{
-				Messenger::print("Error: A pointer of type '%s' cannot be cast into a pointer of type '%s'.", VTypes::dataType(type_), VTypes::dataType(ptrtype));
+				Messenger::print("Error: A pointer of type '%s' cannot be cast into a pointer of type '%s'.", VTypes::dataType(type_), VTypes::dataType(type));
 				success = FALSE;
 				return NULL;
 			}
@@ -917,14 +918,14 @@ double ReturnValue::asDouble()
 }
 
 // Return as character value
-const char* ReturnValue::asString()
+QString ReturnValue::asString()
 {
 	static bool success;
 	return asString(success);
 }
 
 // Return as pointer value
-void *ReturnValue::asPointer(VTypes::DataType type)
+void* ReturnValue::asPointer(VTypes::DataType type)
 {
 	static bool success;
 	return asPointer(type, success);
@@ -946,7 +947,7 @@ Matrix ReturnValue::asMatrix()
 // Return as boolean value
 bool ReturnValue::asBool()
 {
-	static Dnchar booltest;
+	QString lcase;
 	if (arraySize_ > 0) return TRUE;
 	switch (type_)
 	{
@@ -960,7 +961,18 @@ bool ReturnValue::asBool()
 			return (valueD_ > 0.0);
 			break;
 		case (VTypes::StringData):
-			return valueS_.asBool();
+			lcase = valueS_.toLower();
+			if (lcase == "off") return FALSE;
+			else if (lcase == "on") return TRUE;
+			else if (lcase == "no") return FALSE;
+			else if (lcase == "yes") return TRUE;
+			else if (lcase == "false") return FALSE;
+			else if (lcase == "true") return TRUE;
+			else
+			{
+				Messenger::print("Character constant '%s' doesn't translate directly to a boolean value - FALSE assumed.\n", qPrintable(lcase));
+				return FALSE;
+			}
 			break;
 		case (VTypes::VectorData):
 			Messenger::print("Can't convert an object of type 'vector' into a bool.");

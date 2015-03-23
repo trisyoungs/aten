@@ -20,7 +20,6 @@
 */
 
 #include "methods/calculable.h"
-// #include <stdlib.h>
 
 ATEN_USING_NAMESPACE
 
@@ -35,25 +34,25 @@ Calculable::~Calculable()
 }
 
 // Set identifiable name of the quantity
-void Calculable::setName(const char* s)
+void Calculable::setName(QString s)
 {
 	name_ = s;
 }
 
 // Return name of the quantity
-const char* Calculable::name() const
+QString Calculable::name() const
 {
-	return name_.get();
+	return name_;
 }
 
 // Set filename of the quantity
-void Calculable::setFilename(const char* s)
+void Calculable::setFilename(QString filename)
 {
-	filename_ = s;
+	filename_ = filename;
 }
 
 // Return filename of the quantity
-const char* Calculable::filename() const
+QString Calculable::filename() const
 {
-	return filename_.get();
+	return filename_;
 }

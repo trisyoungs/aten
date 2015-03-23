@@ -52,7 +52,7 @@ class ColourScale : public ListItem<ColourScale>
 	*/
 	private:
 	// Name of the colourscale
-	Dnchar name_;
+	QString name_;
 	// Whether the colourscale is currently visible
 	bool visible_;
 	// Whether colours are interpolated between points in the scale
@@ -60,9 +60,9 @@ class ColourScale : public ListItem<ColourScale>
 
 	public:
 	// Set the name of the colourscale
-	void setName(const char* s);
+	void setName(QString name);
 	// Return the name of the colourscale
-	const char* name() const;
+	QString name() const;
 	// Set whether the colourscale is visible
 	void setVisible(bool b);
 	// Return whether the colourscale is visible
@@ -71,6 +71,7 @@ class ColourScale : public ListItem<ColourScale>
 	void setInterpolated(bool b);
 	// Return whether the colourscale is interpolated
 	bool interpolated() const;
+
 
 	/*
 	// Data and data range

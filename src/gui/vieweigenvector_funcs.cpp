@@ -67,7 +67,7 @@ void AtenViewEigenvector::showWindow(Model* m, int id)
 			ui.EigenvectorTable->setItem(row, AtenViewEigenvector::AtomColumn, tabitem);
 			// Add in shell data
 			tabitem = new QTableWidgetItem();
-			tabitem->setText(itoa(shell));
+			tabitem->setText(QString::number(shell));
 			ui.EigenvectorTable->setItem(row, AtenViewEigenvector::ShellColumn, tabitem);
 			tabitem = new QTableWidgetItem();
 			tabitem->setText(BasisShell::sphericalFunction(bas->type(), n));
@@ -91,7 +91,7 @@ void AtenViewEigenvector::showWindow(Model* m, int id)
 			ui.EigenvectorTable->setItem(row, AtenViewEigenvector::AtomColumn, tabitem);
 			// Add in shell data
 			tabitem = new QTableWidgetItem();
-			tabitem->setText(itoa(shell));
+			tabitem->setText(QString::number(shell));
 			ui.EigenvectorTable->setItem(row, AtenViewEigenvector::ShellColumn, tabitem);
 			tabitem = new QTableWidgetItem();
 			tabitem->setText(BasisShell::cartesianFunction(bas->type(), n));

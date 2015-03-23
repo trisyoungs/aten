@@ -24,7 +24,6 @@
 #include "parser/variablenode.h"
 #include "parser/double.h"
 #include "parser/integer.h"
-// #include <cstring>
 
 ATEN_USING_NAMESPACE
 
@@ -78,6 +77,7 @@ bool Commands::function_Find(CommandNode* c, Bundle& obj, ReturnValue& rv)
 		Messenger::print("No valid filesource available for the 'find' command.");
 		return FALSE;
 	}
+
 	// Store current stream position in case the string is not found
 	std::streampos currentpos = c->parent()->parser()->tellg();
 	bool found = FALSE;
@@ -86,10 +86,12 @@ bool Commands::function_Find(CommandNode* c, Bundle& obj, ReturnValue& rv)
 		// Get line from file
 		int result = c->parent()->parser()->readNextLine(c->parent()->readOptions());
 		if (result != 0) break;
+
 		// Check for string
-		if (strstr(c->parent()->parser()->line(), c->argc(0)) != '\0')
+		if (c->parent()->parser()->line().contains(c->argc(0)))
 		{
 			found = TRUE;
+
 			// Store the line if a second argument was given
 			if (c->hasArg(1))
 			{
@@ -99,6 +101,7 @@ bool Commands::function_Find(CommandNode* c, Bundle& obj, ReturnValue& rv)
 			break;
 		}
 	} while (1);
+
 	// Rewind file to previous position if not found
 	if (!found) c->parent()->parser()->seekg(currentpos);
 	rv.set( found ? 1 : 0 );
@@ -132,10 +135,10 @@ bool Commands::function_NextArg(CommandNode* c, Bundle& obj, ReturnValue& rv)
 		Messenger::print("No valid filesource available for the 'readNext' command.");
 		return FALSE;
 	}
-	Dnchar arg;
-	rv.set( c->parent()->parser()->getCharsDelim(&arg) );
+	QString arg;
+	rv.set( c->parent()->parser()->getCharsDelim(arg) );
 	ReturnValue argrv;
-	argrv.set(arg.get());
+	argrv.set(arg);
 	c->setArg(0, argrv);
 	return TRUE;
 }
@@ -143,13 +146,13 @@ bool Commands::function_NextArg(CommandNode* c, Bundle& obj, ReturnValue& rv)
 // Get next whitespace-delimited argument from specified variable file
 bool Commands::function_NextVariableArg(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	Dnchar source = c->argc(0);
-	Dnchar arg;
-	rv.set( c->parent()->parser()->getCharsDelim(c->parent()->readOptions(), &source, &arg) );
+	QString source = c->argc(0);
+	QString arg;
+	rv.set( c->parent()->parser()->getCharsDelim(c->parent()->readOptions(), source, arg) );
 	ReturnValue argrv;
-	argrv.set(arg.get());
+	argrv.set(arg);
 	c->setArg(1, argrv);
-	argrv.set(source.get());
+	argrv.set(source);
 	c->setArg(0, argrv);
 	return TRUE;
 }
@@ -199,7 +202,7 @@ bool Commands::function_ReadChars(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	}
 	if (c->hasArg(1)) rv.set( c->parent()->parser()->getChars(c->argi(0), c->argb(1)) );
 	else rv.set( c->parent()->parser()->getChars(c->argi(0)) );
-	Messenger::print(Messenger::Commands,"Unformatted char read got '%s'", rv.asString());
+	Messenger::print(Messenger::Commands,"Unformatted char read got '%s'", qPrintable(rv.asString()));
 	return TRUE;
 }
 
@@ -344,10 +347,10 @@ bool Commands::function_ReadNext(CommandNode* c, Bundle& obj, ReturnValue& rv)
 		Messenger::print("No valid filesource available for the 'readNext' command.");
 		return FALSE;
 	}
-	Dnchar arg;
-	rv.set( c->parent()->parser()->getArgDelim(c->parent()->readOptions(), &arg));
+	QString arg;
+	rv.set( c->parent()->parser()->getArgDelim(c->parent()->readOptions(), arg));
 	ReturnValue argrv;
-	argrv.set(arg.get());
+	argrv.set(arg);
 	c->setArg(0, argrv);
 	return TRUE;
 }

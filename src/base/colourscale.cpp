@@ -33,15 +33,15 @@ ColourScale::ColourScale() : ListItem<ColourScale>()
 }
 
 // Set the name of the colourscale
-void ColourScale::setName(const char* s)
+void ColourScale::setName(QString name)
 {
-	name_ = s;
+	name_ = name;
 }
 
 // Return the name of the colourscale
-const char* ColourScale::name() const
+QString ColourScale::name() const
 {
-	return name_.get();
+	return name_;
 }
 
 // Set whether the colourscale is visible
@@ -119,7 +119,7 @@ void ColourScale::setPoint(int position, double value, double r, double g, doubl
 	// Check position supplied
 	if ((position < 0) || (position >= points_.nItems()))
 	{
-		Messenger::print( "Scale point position to set (%i) is invalid - nItems = %i.", position, points_.nItems());
+		Messenger::print("Scale point position to set (%i) is invalid - nItems = %i.", position, points_.nItems());
 		Messenger::exit("ColourScale::setPoint");
 		return;
 	}
@@ -151,7 +151,7 @@ void ColourScale::removePoint(int position)
 	// Check position supplied
 	if ((position < 0) || (position >= points_.nItems()))
 	{
-		Messenger::print( "Scale point position to set (%i) is invalid - nItems = %i.", position, points_.nItems());
+		Messenger::print("Scale point position to set (%i) is invalid - nItems = %i.", position, points_.nItems());
 		Messenger::exit("ColourScale::removePoint");
 		return;
 	}

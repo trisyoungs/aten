@@ -84,26 +84,26 @@ FunctionAccessor DialogVariable::functionData[DialogVariable::nFunctions] = {
 };
 
 // Search variable access list for provided accessor (call private static function)
-StepNode* DialogVariable::findAccessor(const char* s, TreeNode* arrayIndex, TreeNode* argList)
+StepNode* DialogVariable::findAccessor(QString name, TreeNode* arrayIndex, TreeNode* argList)
 {
-	return DialogVariable::accessorSearch(s, arrayIndex, argList);
+	return DialogVariable::accessorSearch(name, arrayIndex, argList);
 }
 
 // Private static function to search accessors
-StepNode* DialogVariable::accessorSearch(const char* s, TreeNode* arrayIndex, TreeNode* argList)
+StepNode* DialogVariable::accessorSearch(QString name, TreeNode* arrayIndex, TreeNode* argList)
 {
 	Messenger::enter("DialogVariable::accessorSearch");
 	StepNode* result = NULL;
 	int i = 0;
-	i = Variable::searchAccessor(s, nAccessors, accessorData);
+	i = Variable::searchAccessor(name, nAccessors, accessorData);
 	if (i == -1)
 	{
 		// No accessor found - is it a function definition?
 		// for (i = 0; i < nFunctions; i++) if (strcmp(functionData[i].name,s) == 0) break;
-		i = Variable::searchAccessor(s, nFunctions, functionData);
+		i = Variable::searchAccessor(name, nFunctions, functionData);
 		if (i == -1)
 		{
-			Messenger::print("Error: Type 'Dialog&' has no member or function named '%s'.", s);
+			Messenger::print("Error: Type 'Dialog&' has no member or function named '%s'.", qPrintable(name));
 			printAccessors();
 			Messenger::exit("DialogVariable::accessorSearch");
 			return NULL;
@@ -111,7 +111,7 @@ StepNode* DialogVariable::accessorSearch(const char* s, TreeNode* arrayIndex, Tr
 		Messenger::print(Messenger::Parse, "FunctionAccessor match = %i (%s)", i, functionData[i].name);
 		if (arrayIndex != NULL)
 		{
-			Messenger::print("Error: Array index given to 'Dialog&' function '%s'.", s);
+			Messenger::print("Error: Array index given to 'Dialog&' function named '%s'.", qPrintable(name));
 			Messenger::exit("DialogVariable::accessorSearch");
 			return NULL;
 		}
@@ -137,7 +137,7 @@ StepNode* DialogVariable::accessorSearch(const char* s, TreeNode* arrayIndex, Tr
 		// Were we given an argument list when we didn't want one?
 		if (argList != NULL)
 		{
-			Messenger::print("Error: Argument list given to 'Dialog&' array member '%s'.", s);
+			Messenger::print("Error: Argument list given to 'Dialog&' array member '%s'.", qPrintable(name));
 			Messenger::exit("DialogVariable::accessorSearch");
 			return NULL;
 		}
@@ -298,7 +298,7 @@ bool DialogVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 	// Get current data from ReturnValue
 	int xw, xh, l, t;
 	Vec3<double> v;
-	TreeGuiWidget *w;
+	TreeGuiWidget* w;
 	bool result = TRUE;
 	TreeGui* ptr = (TreeGui*) rv.asPointer(VTypes::DialogData, result);
 	if ((!result) || (ptr == NULL))
@@ -417,7 +417,7 @@ bool DialogVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 			if (w != NULL) rv.set(w->asDouble());
 			else
 			{
-				Messenger::print("Error: No Widget named '%s' exists in the dialog '%s'.", node->argc(0), ptr->name());
+				Messenger::print("Error: No Widget named '%s' exists in the dialog '%s'.", qPrintable(node->argc(0)), qPrintable(ptr->name()));
 				result = FALSE;
 			}
 			break;
@@ -426,7 +426,7 @@ bool DialogVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 			if (w != NULL) rv.set(w->asInteger());
 			else
 			{
-				Messenger::print("Error: No Widget named '%s' exists in the dialog '%s'.", node->argc(0), ptr->name());
+				Messenger::print("Error: No Widget named '%s' exists in the dialog '%s'.", qPrintable(node->argc(0)), qPrintable(ptr->name()));
 				result = FALSE;
 			}
 			break;
@@ -435,7 +435,7 @@ bool DialogVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 			if (w != NULL) rv.set(w->asCharacter());
 			else
 			{
-				Messenger::print("Error: No Widget named '%s' exists in the dialog '%s'.", node->argc(0), ptr->name());
+				Messenger::print("Error: No Widget named '%s' exists in the dialog '%s'.", qPrintable(node->argc(0)), qPrintable(ptr->name()));
 				result = FALSE;
 			}
 			break;
@@ -444,21 +444,21 @@ bool DialogVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 			if (w != NULL) v.x = w->asDouble();
 			else
 			{
-				Messenger::print("Error: No Widget named '%s' exists in the dialog '%s'.", node->argc(0), ptr->name());
+				Messenger::print("Error: No Widget named '%s' exists in the dialog '%s'.", qPrintable(node->argc(0)), qPrintable(ptr->name()));
 				result = FALSE;
 			}
 			w = ptr->findWidget(node->argc(1));
 			if (w != NULL) v.y = w->asDouble();
 			else
 			{
-				Messenger::print("Error: No Widget named '%s' exists in the dialog '%s'.", node->argc(1), ptr->name());
+				Messenger::print("Error: No Widget named '%s' exists in the dialog '%s'.", qPrintable(node->argc(1)), qPrintable(ptr->name()));
 				result = FALSE;
 			}
 			w = ptr->findWidget(node->argc(2));
 			if (w != NULL) v.z = w->asDouble();
 			else
 			{
-				Messenger::print("Error: No Widget named '%s' exists in the dialog '%s'.", node->argc(2), ptr->name());
+				Messenger::print("Error: No Widget named '%s' exists in the dialog '%s'.", qPrintable(node->argc(2)), qPrintable(ptr->name()));
 				result = FALSE;
 			}
 			rv.set(v);
@@ -467,7 +467,7 @@ bool DialogVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 			w = ptr->findWidget(node->argc(0));
 			if (w == NULL)
 			{
-				Messenger::print("Error: No Widget named '%s' exists in the dialog '%s'.", node->argc(0), ptr->name());
+				Messenger::print("Error: No Widget named '%s' exists in the dialog '%s'.", qPrintable(node->argc(0)), qPrintable(ptr->name()));
 				result = FALSE;
 			}
 			rv.set(w->asInteger() == node->argi(1));
@@ -476,7 +476,7 @@ bool DialogVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 			w = ptr->findWidget(node->argc(0));
 			if (w == NULL)
 			{
-				Messenger::print("Error: No Widget named '%s' exists in the dialog '%s'.", node->argc(0), ptr->name());
+				Messenger::print("Error: No Widget named '%s' exists in the dialog '%s'.", qPrintable(node->argc(0)), qPrintable(ptr->name()));
 				result = FALSE;
 			}
 			rv.set((w->asInteger() >= node->argi(1)) && (w->asInteger() <= node->argi(2)));
@@ -485,10 +485,10 @@ bool DialogVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 			w = ptr->findWidget(node->argc(0));
 			if (w == NULL)
 			{
-				Messenger::print("Error: No Widget named '%s' exists in the dialog '%s'.", node->argc(0), ptr->name());
+				Messenger::print("Error: No Widget named '%s' exists in the dialog '%s'.", qPrintable(node->argc(0)), qPrintable(ptr->name()));
 				result = FALSE;
 			}
-			rv.set(strcmp(w->asCharacter(), node->argc(1)) == 0);
+			rv.set(node->argc(1) == w->asCharacter());
 			break;
 		case (DialogVariable::Show):
 			// If the GUI exists, or it doesn't but we allow dialogs to be raised, show it
@@ -542,7 +542,7 @@ DialogArrayVariable::DialogArrayVariable(TreeNode* sizeexpr, bool constant)
 }
 
 // Search variable access list for provided accessor
-StepNode* DialogArrayVariable::findAccessor(const char* s, TreeNode* arrayIndex, TreeNode* argList)
+StepNode* DialogArrayVariable::findAccessor(QString name, TreeNode* arrayIndex, TreeNode* argList)
 {
-	return DialogVariable::accessorSearch(s, arrayIndex, argList);
+	return DialogVariable::accessorSearch(name, arrayIndex, argList);
 }

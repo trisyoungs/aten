@@ -34,7 +34,7 @@ const char* UnitCell::cellType(UnitCell::CellType i)
 {
 	return CellTypeKeywords[i];
 }
-UnitCell::CellType UnitCell::cellType(const char* s, bool reportError)
+UnitCell::CellType UnitCell::cellType(QString s, bool reportError)
 {
 	UnitCell::CellType ct = (UnitCell::CellType) enumSearch("cell type",UnitCell::nCellTypes,CellTypeKeywords,s);
 	if ((ct == UnitCell::nCellTypes) && reportError) enumPrintValid(UnitCell::nCellTypes,CellTypeKeywords);
@@ -43,7 +43,7 @@ UnitCell::CellType UnitCell::cellType(const char* s, bool reportError)
 
 // Cell definition parameters
 const char* CellParameterKeywords[UnitCell::nCellParameters] = { "a", "b", "c", "alpha", "beta", "gamma", "ax", "ay", "az", "bx", "by", "bz", "cx", "cy", "cz" };
-UnitCell::CellParameter UnitCell::cellParameter(const char* s)
+UnitCell::CellParameter UnitCell::cellParameter(QString s)
 {
 	return (CellParameter) enumSearch("cell parameter",UnitCell::nCellParameters,CellParameterKeywords,s);
 }
@@ -311,16 +311,16 @@ double UnitCell::density() const
 */
 
 // Set spacegroup from supplied spacegroup name
-bool UnitCell::setSpacegroup(const char* name, bool forceRhombohedral)
+bool UnitCell::setSpacegroup(QString name, bool forceRhombohedral)
 {
 	Messenger::enter("UnitCell::setSpacegroup");
 	// This is basically a chunk of verbatim code from 'sgquick.c'
 
 	// Do a table lookup of the sg text (assume volume is 'A')
-	const T_TabSgName *tsgn = FindTabSgNameEntry(name, 'A');
+	const T_TabSgName *tsgn = FindTabSgNameEntry(qPrintable(name), 'A');
 	if (tsgn == NULL)
 	{
-		Messenger::print("Unable to find spacegroup '%s'.", name);
+		Messenger::print("Unable to find spacegroup '%s'.", qPrintable(name));
 		Messenger::exit("UnitCell::setSpacegroup");
 		return FALSE;
 	}
@@ -336,7 +336,7 @@ bool UnitCell::setSpacegroup(const char* name, bool forceRhombohedral)
 			tsgn = FindTabSgNameEntry(newname.get(), 'A');
 			if (tsgn == NULL)
 			{
-				Messenger::print("Unable to find spacegroup '%s'.", name);
+				Messenger::print("Unable to find spacegroup '%s'.", qPrintable(name));
 				Messenger::exit("UnitCell::setSpacegroup");
 				return FALSE;
 			}
@@ -379,7 +379,7 @@ const char* UnitCell::spacegroupName() const
 }
 
 // Add manual generator
-Generator *UnitCell::addGenerator()
+Generator* UnitCell::addGenerator()
 {
 	return generators_.add();
 }
@@ -391,7 +391,7 @@ int UnitCell::nGenerators() const
 }
 
 // Return first manually-defined generator
-Generator *UnitCell::generators()
+Generator* UnitCell::generators()
 {
 	return generators_.first();
 }

@@ -69,7 +69,7 @@ void AtenZMatrix::refresh(bool forceupdate)
 		i = zel->atom(1);
 		if (i != NULL)
 		{
-			item = new QTableWidgetItem(itoa(i->id()+1));
+			item = new QTableWidgetItem(QString::number(i->id()+1));
 			ui.ZMatrixTable->setItem(count, AtenZMatrix::DistanceAtomColumn, item);
 			item = new QTableWidgetItem(zel->distanceVariable()->name());
 			ui.ZMatrixTable->setItem(count, AtenZMatrix::DistanceColumn, item);
@@ -78,7 +78,7 @@ void AtenZMatrix::refresh(bool forceupdate)
 			i = zel->atom(2);
 			if (i != NULL)
 			{
-				item = new QTableWidgetItem(itoa(i->id()+1));
+				item = new QTableWidgetItem(QString::number(i->id()+1));
 				ui.ZMatrixTable->setItem(count, AtenZMatrix::AngleAtomColumn, item);
 				item = new QTableWidgetItem(zel->angleVariable()->name());
 				ui.ZMatrixTable->setItem(count, AtenZMatrix::AngleColumn, item);
@@ -87,7 +87,7 @@ void AtenZMatrix::refresh(bool forceupdate)
 				i = zel->atom(3);
 				if (i != NULL)
 				{
-					item = new QTableWidgetItem(itoa(i->id()+1));
+					item = new QTableWidgetItem(QString::number(i->id()+1));
 					ui.ZMatrixTable->setItem(count, AtenZMatrix::TorsionAtomColumn, item);
 					item = new QTableWidgetItem(zel->torsionVariable()->name());
 					ui.ZMatrixTable->setItem(count, AtenZMatrix::TorsionColumn, item);

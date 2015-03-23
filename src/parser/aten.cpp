@@ -109,26 +109,26 @@ FunctionAccessor AtenVariable::functionData[AtenVariable::nFunctions] = {
 };
 
 // Search variable access list for provided accessor (call private static function)
-StepNode* AtenVariable::findAccessor(const char* s, TreeNode* arrayIndex, TreeNode* argList)
+StepNode* AtenVariable::findAccessor(QString name, TreeNode* arrayIndex, TreeNode* argList)
 {
-	return AtenVariable::accessorSearch(s, arrayIndex, argList);
+	return AtenVariable::accessorSearch(name, arrayIndex, argList);
 }
 
 // Private static function to search accessors
-StepNode* AtenVariable::accessorSearch(const char* s, TreeNode* arrayIndex, TreeNode* argList)
+StepNode* AtenVariable::accessorSearch(QString name, TreeNode* arrayIndex, TreeNode* argList)
 {
 	Messenger::enter("AtenVariable::accessorSearch");
 	StepNode* result = NULL;
 	int i = 0;
-	i = Variable::searchAccessor(s, nAccessors, accessorData);
+	i = Variable::searchAccessor(name, nAccessors, accessorData);
 	if (i == -1)
 	{
 		// No accessor found - is it a function definition?
 		// for (i = 0; i < nFunctions; i++) if (strcmp(functionData[i].name,s) == 0) break;
-		i = Variable::searchAccessor(s, nFunctions, functionData);
+		i = Variable::searchAccessor(name, nFunctions, functionData);
 		if (i == -1)
 		{
-			Messenger::print("Error: Type 'Aten&' has no member or function named '%s'.", s);
+			Messenger::print("Error: Type 'Aten&' has no member or function named '%s'.", qPrintable(name));
 			printAccessors();
 			Messenger::exit("AtenVariable::accessorSearch");
 			return NULL;
@@ -136,7 +136,7 @@ StepNode* AtenVariable::accessorSearch(const char* s, TreeNode* arrayIndex, Tree
 		Messenger::print(Messenger::Parse, "FunctionAccessor match = %i (%s)", i, functionData[i].name);
 		if (arrayIndex != NULL)
 		{
-			Messenger::print("Error: Array index given to 'Aten&' function '%s'.", s);
+			Messenger::print("Error: Array index given to 'Aten&' function '%s'.", qPrintable(name));
 			Messenger::exit("AtenVariable::accessorSearch");
 			return NULL;
 		}
@@ -162,7 +162,7 @@ StepNode* AtenVariable::accessorSearch(const char* s, TreeNode* arrayIndex, Tree
 		// Were we given an argument list when we didn't want one?
 		if (argList != NULL)
 		{
-			Messenger::print("Error: Argument list given to 'Aten&' array member '%s'.", s);
+			Messenger::print("Error: Argument list given to 'Aten&' array member '%s'.", qPrintable(name));
 			Messenger::exit("AtenVariable::accessorSearch");
 			return NULL;
 		}

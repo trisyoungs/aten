@@ -28,6 +28,7 @@
 #include "base/sysfunc.h"
 #include "gui/tprocess.uih"
 #include <QtGui/QApplication>
+#include <QtCore/QFileInfo>
 
 ATEN_USING_NAMESPACE
 
@@ -113,35 +114,40 @@ bool Commands::function_MopacMinimise(CommandNode* c, Bundle& obj, ReturnValue& 
 		Messenger::print("Error: Couldn't find MOPAC arc import filter.");
 		return FALSE;
 	}
+
 	// Check that defined MOPAC exe exists
-	if (!fileExists(prefs.mopacExe()))
+	QFileInfo fileInfo(prefs.mopacExe());
+	if (!fileInfo.exists())
 	{
-		Messenger::print("Error: MOPAC excutable doesn't appear to be at '%s'.", prefs.mopacExe());
+		Messenger::print("Error: MOPAC excutable '%s' doesn't exists.", qPrintable(prefs.mopacExe()));
 		return FALSE;
 	}
+
 	// Grab/create various filenames and paths
 	TProcess mopacProcess;
-	Dnchar mopacInput, mopacArc, mopacCmd, mopacOut;
+	QString mopacInput, mopacArc, mopacCmd, mopacOut;
 	int runid;
+
 	// Determine unique filename
 	do
 	{
 		runid = AtenMath::randomimax();
-		mopacInput.sprintf("%s%caten-mopac-%i-%i.mop", prefs.tempDir(), PATHSEP, QApplication::applicationPid(), runid);
-	} while (fileExists(mopacInput));
-	mopacArc.sprintf("%s%caten-mopac-%i-%i.arc", prefs.tempDir(), PATHSEP, QApplication::applicationPid(), runid);
-	mopacOut.sprintf("%s%caten-mopac-%i-%i.out", prefs.tempDir(), '/', QApplication::applicationPid(), runid);
-	mopacCmd.sprintf("\"%s\" \"%s\"", prefs.mopacExe(), mopacInput.get());
-	Messenger::print("Command to run will be '%s'", mopacCmd.get());
+		mopacInput = prefs.tempDir().filePath("aten-mopac-%1-%2.mop").arg(QApplication::applicationPid(), runid);
+		fileInfo.setFile(mopacInput);
+	} while (fileInfo.exists());
+	mopacArc = prefs.tempDir().filePath("aten-mopac-%1-%2.arc").arg(QApplication::applicationPid(), runid);
+	mopacOut = prefs.tempDir().filePath("aten-mopac-%1-%2.out").arg(QApplication::applicationPid(), runid);
+	mopacCmd.sprintf("\"%s\" \"%s\"", qPrintable(prefs.mopacExe()), qPrintable(mopacInput));
+	Messenger::print("Command to run will be '%s'", qPrintable(mopacCmd));
 	
 	// Save input file
 	LineParser parser;
 	parser.openOutput(mopacInput, TRUE);
 	int opt;
-	if (c->hasArg(0)) parser.writeLineF("MOZYME BFGS %s\n",c->argc(0));
+	if (c->hasArg(0)) parser.writeLineF("MOZYME BFGS %s\n", qPrintable(c->argc(0)));
 	else parser.writeLine("MOZYME BFGS PM6 RHF SINGLET\n");
-	parser.writeLineF("Temporary MOPAC Job Input  : %s\n", mopacInput.get());
-	parser.writeLineF("Temporary MOPAC Job Output : %s\n", mopacArc.get());	
+	parser.writeLineF("Temporary MOPAC Job Input  : %s\n", qPrintable(mopacInput));
+	parser.writeLineF("Temporary MOPAC Job Output : %s\n", qPrintable(mopacArc));	
 	for (Atom* i = aten_.currentModelOrFrame()->atoms(); i != NULL; i = i->next)
 	{
 		opt = 1 - i->isPositionFixed();
@@ -172,15 +178,17 @@ bool Commands::function_MopacMinimise(CommandNode* c, Bundle& obj, ReturnValue& 
 	}
 	
 	// Check for existence of output file....
-	if (!fileExists(mopacArc))
+	fileInfo.setFile(mopacArc);
+	if (!fileInfo.exists())
 	{
-		Messenger::print("Error: Can't locate MOPAC output '%s'.", mopacArc.get());
+		Messenger::print("Error: Can't locate MOPAC output '%s'.", qPrintable(mopacArc));
 		return FALSE;
 	}
 
 	// Time to load in the results
 	aten_.setUseWorkingList(TRUE);
-	int result = CommandNode::run(Commands::LoadModel, "c", mopacArc.get());
+	int result = CommandNode::run(Commands::LoadModel, "c", qPrintable(mopacArc));
+
 	// There should now be a model in the working model list (our results)
 	Model* m = aten_.workingModels();
 	if (m == NULL)
@@ -190,14 +198,15 @@ bool Commands::function_MopacMinimise(CommandNode* c, Bundle& obj, ReturnValue& 
 	}
 
 	// Cleanup
-	QFile::remove(mopacArc.get());
-	QFile::remove(mopacOut.get());
-	QFile::remove(mopacInput.get());
+	QFile::remove(qPrintable(mopacArc));
+	QFile::remove(qPrintable(mopacOut));
+	QFile::remove(qPrintable(mopacInput));
 
 	// Copy the atoms into a temporary model
 	Model tempmodel;
 	tempmodel.copy(m);
 	aten_.setUseWorkingList(FALSE);
+
 	// Start a new undostate in the original model
 	//printf("Target for new coords = %p\n", obj.rs);
 	obj.rs()->beginUndoState("MOPAC geometry optimisation");

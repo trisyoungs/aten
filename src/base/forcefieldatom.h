@@ -23,7 +23,6 @@
 #define ATEN_FORCEFIELDATOM_H
 
 #include "base/neta.h"
-#include "base/dnchar.h"
 #include "ff/forms.h"
 #include "parser/variablelist.h"
 #include "base/namespace.h"
@@ -43,6 +42,7 @@ class ForcefieldAtom : public ListItem<ForcefieldAtom>
 	// Copy structure
 	void copy(ForcefieldAtom* source);
 
+
 	/*
 	// Properties
 	*/
@@ -52,13 +52,13 @@ class ForcefieldAtom : public ListItem<ForcefieldAtom>
 	// Unique ffid of atom type in Forcefield
 	int typeId_;
 	// Name of atom type
-	Dnchar name_;
+	QString name_;
 	// Equivalent name of atom type for intramolecular searching
-	Dnchar equivalent_;
+	QString equivalent_;
 	// Description of atom type
-	Dnchar description_;
+	QString description_;
 	// Original atomtype string used to create the atomtype
-	Dnchar netaString_;
+	QString netaString_;
 	// Atomtype description
 	Neta neta_;
 	// Parameter data
@@ -96,23 +96,23 @@ class ForcefieldAtom : public ListItem<ForcefieldAtom>
 	// Returns the charge of the type
 	double charge() const;
 	// Set the name of the type
-	void setName(const char* s);
+	void setName(QString name);
 	// Returns the name of the type
-	const char* name() const;
+	QString name() const;
 	// Set the equivalent name of the type
-	void setEquivalent(const char* s);
+	void setEquivalent(QString s);
 	// Returns the equivalent name of the type
-	const char* equivalent() const;
+	QString equivalent() const;
 	// Set the description of the type
-	void setDescription(const char* s);
+	void setDescription(QString s);
 	// Returns the description of the type
-	const char* description() const;
+	QString description() const;
 	// Returns the atomtype description
-	Neta *neta();
+	Neta* neta();
 	// Set the NETA string (and calculate new atomtype)
-	bool setNeta(const char* s, Forcefield* parent);
-	// Returns the original atomtype string
-	const char* netaString() const;
+	bool setNeta(QString neta, Forcefield* parent);
+	// Returns the original NETA string
+	QString netaString() const;
 	// Set the parameter data specified
 	void setParameter(int i, double d);
 	// Return parameter data specified
@@ -130,13 +130,13 @@ class ForcefieldAtom : public ListItem<ForcefieldAtom>
 	// Return whether this is a united-atom type (i.e. has had its mass set explicitly)
 	bool isUnitedAtom() const;
 	// Add associated data
-	void addData(const char* name, double d);
-	void addData(const char* name, int i);
-	void addData(const char* name, const char* );
+	void addData(QString name, double d);
+	void addData(QString name, int i);
+	void addData(QString name, QString s);
 	// Retrieve named variable
-	Variable* data(const char* s, bool reportError = TRUE);
+	Variable* data(QString s, bool reportError = TRUE);
 	// Return variable list
-	VariableList *data();
+	VariableList* data();
 };
 
 ATEN_END_NAMESPACE

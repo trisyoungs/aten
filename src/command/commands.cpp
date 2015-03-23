@@ -1421,17 +1421,17 @@ bool CommandData::hasArguments()
  */
 
 // Return enumerated command from string
-Commands::Function Commands::command(const char* s)
+Commands::Function Commands::command(QString name)
 {
 	// We skip operators and tree-specific nodes
 	int result;
-	Dnchar lcase = lowerCase(s);
+	QString lcase = name.toLower();
 	for (result = Commands::Declarations+1; result < Commands::nCommands; ++result)
 	{
-		if (strcmp(data_[result].keyword,s) == 0) break;
-		if (strcmp(lowerCase(data_[result].keyword), lcase) == 0)
+		if (data_[result].keyword == name) break;
+		if (data_[result].keyword == lcase)
 		{
-			Messenger::print("Didn't recognised command '%s' - did you mean '%s' instead?", s, data_[result].keyword);
+			Messenger::print("Didn't recognised command '%s' - did you mean '%s' instead?", qPrintable(name), data_[result].keyword);
 			return Commands::nCommands;
 		}
 	}

@@ -46,10 +46,10 @@ class UnitCell
 	// Cell types
 	enum CellType { NoCell, CubicCell, OrthorhombicCell, ParallelepipedCell, nCellTypes };
 	static const char* cellType(CellType);
-	static CellType cellType(const char* name, bool reportError = 0);
+	static CellType cellType(QString s, bool reportError = false);
 	// Cell definition parameters
 	enum CellParameter { CellA, CellB, CellC, CellAlpha, CellBeta, CellGamma, CellAX, CellAY, CellAZ, CellBX, CellBY, CellBZ, CellCX, CellCY, CellCZ, nCellParameters };
-	static CellParameter cellParameter(const char* );
+	static CellParameter cellParameter(QString s);
 	// Assignment operator
 	void operator=(UnitCell &source);
 
@@ -143,7 +143,7 @@ class UnitCell
 
 	public:
 	// Set spacegroup from supplied spacegroup name
-	bool setSpacegroup(const char* name, bool forceRhombohedral);
+	bool setSpacegroup(QString name, bool forceRhombohedral);
 	// Return SgInfo spacegroup structure (if it exists)
 	T_SgInfo *spacegroup();
 	// Return spacegroup name in defined SgInfo structure
@@ -151,11 +151,11 @@ class UnitCell
 	// Return the spacegroup of the model
 	int spacegroupId() const;
 	// Add manual generator
-	Generator *addGenerator();
+	Generator* addGenerator();
 	// Return number of manual generators defined
 	int nGenerators() const;
 	// Return first in reflist of manually-defined generators
-	Generator *generators();
+	Generator* generators();
 
 
 	/*

@@ -148,26 +148,26 @@ FunctionAccessor PreferencesVariable::functionData[PreferencesVariable::nFunctio
 };
 
 // Search variable access list for provided accessor (call private static function)
-StepNode* PreferencesVariable::findAccessor(const char* s, TreeNode* arrayIndex, TreeNode* argList)
+StepNode* PreferencesVariable::findAccessor(QString name, TreeNode* arrayIndex, TreeNode* argList)
 {
-	return PreferencesVariable::accessorSearch(s, arrayIndex, argList);
+	return PreferencesVariable::accessorSearch(name, arrayIndex, argList);
 }
 
 // Private static function to search accessors
-StepNode* PreferencesVariable::accessorSearch(const char* s, TreeNode* arrayIndex, TreeNode* argList)
+StepNode* PreferencesVariable::accessorSearch(QString name, TreeNode* arrayIndex, TreeNode* argList)
 {
 	Messenger::enter("PreferencesVariable::accessorSearch");
 	StepNode* result = NULL;
 	int i = 0;
-	i = Variable::searchAccessor(s, nAccessors, accessorData);
+	i = Variable::searchAccessor(name, nAccessors, accessorData);
 	if (i == -1)
 	{
 		// No accessor found - is it a function definition?
 		// for (i = 0; i < nFunctions; i++) if (strcmp(functionData[i].name,s) == 0) break;
-		i = Variable::searchAccessor(s, nFunctions, functionData);
+		i = Variable::searchAccessor(name, nFunctions, functionData);
 		if (i == -1)
 		{
-			Messenger::print("Error: Type 'Prefs&' has no member or function named '%s'.", s);
+			Messenger::print("Error: Type 'Prefs&' has no member or function named '%s'.", qPrintable(name));
 			printAccessors();
 			Messenger::exit("PreferencesVariable::accessorSearch");
 			return NULL;
@@ -175,7 +175,7 @@ StepNode* PreferencesVariable::accessorSearch(const char* s, TreeNode* arrayInde
 		Messenger::print(Messenger::Parse, "FunctionAccessor match = %i (%s)", i, functionData[i].name);
 		if (arrayIndex != NULL)
 		{
-			Messenger::print("Error: Array index given to 'Prefs&' function '%s'.", s);
+			Messenger::print("Error: Array index given to 'Prefs&' function named '%s'.", qPrintable(name));
 			Messenger::exit("PreferencesVariable::accessorSearch");
 			return NULL;
 		}
@@ -201,7 +201,7 @@ StepNode* PreferencesVariable::accessorSearch(const char* s, TreeNode* arrayInde
 		// Were we given an argument list when we didn't want one?
 		if (argList != NULL)
 		{
-			Messenger::print("Error: Argument list given to 'Prefs&' array member '%s'.", s);
+			Messenger::print("Error: Argument list given to 'Prefs&' array member '%s'.", qPrintable(name));
 			Messenger::exit("PreferencesVariable::accessorSearch");
 			return NULL;
 		}
@@ -504,7 +504,7 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArray
 			rv.set( ptr->stickLineSelectedWidth() );
 			break;
 		case (PreferencesVariable::TempDir):
-			rv.set( ptr->tempDir() );
+			rv.set( ptr->tempDir().path() );
 			break;
 		case (PreferencesVariable::TextColour):
 			if (hasArrayIndex) rv.set( ptr->colour(Prefs::TextColour)[arrayIndex-1] );

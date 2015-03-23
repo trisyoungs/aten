@@ -22,7 +22,7 @@
 #ifndef ATEN_ATEN_H
 #define ATEN_ATEN_H
 
-#include "base/dnchar.h"
+#include <QtCore/QDir>
 #include "base/kvmap.h"
 #include "base/prefs.h"
 #include "model/bundle.h"
@@ -103,7 +103,7 @@ class Aten
 	// Remove specified model from the list
 	void removeModel(Model* xmodel);
 	// Find model by name
-	Model* findModel(const char* name) const;
+	Model* findModel(QString name) const;
 	// Set visible flag for specified model
 	void setModelVisible(Model* m, bool visible);
 	// Return number of visible models
@@ -123,9 +123,9 @@ class Aten
 	// How many filters had errors on startup
 	int nFiltersFailed_;
 	// Filenames (including paths) of filters that failed to load
-	List<Dnchar> failedFilters_;
+	QStringList failedFilters_;
 	// Parse directory index and load filters
-	int parseFilterDir(const char* path);
+	int parseFilterDir(QDir path);
 	// Set export partners for import filters
 	void partnerFilters();
 	// List of Filter programs
@@ -141,35 +141,35 @@ class Aten
 	// Load filters
 	void openFilters();
 	// Load filter from specified filename
-	bool openFilter(const char* filename);
+	bool openFilter(QString filename);
 	// Create filter strings for file dialogs
 	void createFileDialogFilters();
 	// Register a filter of a given type
-	void registerFilter(Tree* filter, FilterData::FilterType ft);
+	void registerFilter(Tree* filter, FilterData::FilterType filterType);
 	// Whether filters loaded succesfully on startup
 	int nFiltersFailed() const;
 	// Return first item in failed filter list
-	Dnchar* failedFilters() const;
+	QStringList failedFilters() const;
 	// Reload filters
 	int reloadFilters();
 	// Probe file for its format
-	Tree* probeFile(const char* filename, FilterData::FilterType);
+	Tree* probeFile(QString filename, FilterData::FilterType filterType);
 	// Find filter of specified type with nickname provided
-	Tree* findFilter(FilterData::FilterType ft, const char* nickname) const;
+	Tree* findFilter(FilterData::FilterType filterType, QString nickname) const;
 	// Find filter by description
-	Tree* findFilterByDescription(FilterData::FilterType ft, const char* description) const;
+	Tree* findFilterByDescription(FilterData::FilterType filterType, QString description) const;
 	// Return first filter in list (of a given type)
-	Refitem<Tree,int>* filters(FilterData::FilterType ft) const;
+	Refitem<Tree,int>* filters(FilterData::FilterType filterType) const;
 	// Return nth filter in list (of a given type)
-	Refitem<Tree,int>* filter(FilterData::FilterType ft, int index);
+	Refitem<Tree,int>* filter(FilterData::FilterType filterType, int index);
 	// Return number of filters of a given type
-	int nFilters(FilterData::FilterType ft) const;
+	int nFilters(FilterData::FilterType filterType) const;
 	// Return pointer to list of filters of given type
-	Reflist<Tree,int>* filterList(FilterData::FilterType ft);
+	Reflist<Tree,int>* filterList(FilterData::FilterType filterType);
 	// Print list of valid filter nicknames
-	void printValidNicknames(FilterData::FilterType ft);
+	void printValidNicknames(FilterData::FilterType filterType);
 	// Return filter strings for file dialogs
-	const QString& fileDialogFilters(FilterData::FilterType ft) const;
+	const QString& fileDialogFilters(FilterData::FilterType filterType) const;
 	// Return filter strings for bitmap file dialogs
 	const QString& bitmapFileDialogFilters() const;
 
@@ -183,39 +183,39 @@ class Aten
 	// How many include files had errors on startup
 	int nIncludesFailed_;
 	// Filenames (including paths) of includes that failed to load
-	List<Dnchar> failedIncludes_;
+	QStringList failedIncludes_;
 	// Parse directory index and load includes
-	int parseIncludeDir(const char* path);
+	int parseIncludeDir(QDir path);
 	// Programs containing partitioning schemes
 	List<PartitioningScheme> partitioningSchemes_;
 	// How many partitioning files had errors on startup
 	int nPartitioningSchemesFailed_;
 	// Filenames (including paths) of partitions that failed to load
-	List<Dnchar> failedPartitioningSchemes_;
+	QStringList failedPartitioningSchemes_;
 	// Parse directory index and load includes
-	int parsePartitionsDir(const char* path);
+	int parsePartitionsDir(QDir path);
 	
 	public:
 	// Load global include functions
 	void openIncludes();
 	// Load include from specified filename
-	bool openInclude(const char* filename);
+	bool openInclude(QString filename);
 	// Whether includes loaded succesfully on startup
 	int nIncludesFailed() const;
 	// Return first item in failed includes list
-	Dnchar* failedIncludes() const;
+	QStringList failedIncludes() const;
 	// Find global include function by name
-	Tree* findIncludeFunction(const char* name);
+	Tree* findIncludeFunction(QString name);
 	// Load global partition functions
 	void openPartitions();
 	// Load partition from specified filename
-	bool openPartition(const char* filename);
+	bool openPartition(QString filename);
 	// Whether partitions loaded succesfully on startup
 	int nPartitioningSchemesFailed() const;
 	// Return first item in failed partitions list
-	Dnchar* failedPartitioningSchemes() const;
+	QStringList failedPartitioningSchemes() const;
 	// Find named partitioning scheme
-	PartitioningScheme* findPartitioningScheme(const char* name);
+	PartitioningScheme* findPartitioningScheme(QString name);
 	// Return number of partitioning schemes in the list
 	int nPartitioningSchemes();
 	// Return first partitioning scheme in the list
@@ -237,11 +237,11 @@ class Aten
 
 	public:
 	// Add a new forcefield
-	Forcefield* addForcefield(const char* name = NULL);
+	Forcefield* addForcefield(QString name = QString());
 	// Load the specified forcefield
-	Forcefield* loadForcefield(const char* filename);
+	Forcefield* loadForcefield(QString filename);
 	// Find forcefield by name
-	Forcefield* findForcefield(const char* name) const;
+	Forcefield* findForcefield(QString name) const;
 	// Return the first ff in the list
 	Forcefield* forcefields() const;
 	// Return the nth forcefield in the list
@@ -285,33 +285,27 @@ class Aten
 	 */
 	private:
 	// Location of user's home directory
-	Dnchar homeDir_;
+	QDir homeDir_;
 	// Current working directory
-	Dnchar workDir_;
+	QDir workDir_;
 	// Data directory
-	Dnchar dataDir_;
-	// Whether data dir has been set
-	bool dataDirSet_;
+	QDir dataDir_;
 	// Name of user's 'aten' directory within their homedir
-	Dnchar atenDir_;
+	QString atenDirName_;
 
 	public:
-	// Set location of users's home directory
-	void setHomeDir(const char* path);
 	// Return the current home directory location
-	const char* homeDir() const;
-	// Set working directory
-	void setWorkDir(const char* path);
+	QDir homeDir() const;
 	// Return the current working directory
-	const char* workDir() const;
-	// Set data directory
-	void setDataDir(const char* path);
+	QDir workDir() const;
 	// Return the data directory path
-	const char* dataDir() const;
-	// Return whether the data dir has already been set
-	bool dataDirSet() const;
-	// Return the aten directory name
-	const char* atenDir() const;
+	QDir dataDir() const;
+	// Return full path of file in Aten's data directory
+	QString dataDirectoryFile(QString filename);
+	// Return full path of file in user's Aten directory
+	QString atenDirectoryFile(QString filename);
+	// Set/get necessary directories
+	void setDirectories();
 
 
 	/*
@@ -355,12 +349,11 @@ class Aten
 	// Whether saveImage redirect is active (for scripted movie making)
 	bool redirectedImagesActive_;
 	// Format string (containing only a single variable integer) for image redirect filenames
-	Dnchar redirectedImageFormat_;
+	QString redirectedImageFormat_;
 	// Current count for image file (increased each time redirectedImageFilename() is called)
 	int redirectedImageCount_;
 	// Maximum allowed images to be saved before 'saveimage' command raises an error
 	int maxRedirectedImages_;
-	
 
 	public:
 	// Element map name conversions to apply on load
@@ -372,13 +365,13 @@ class Aten
 	// Return whether type export conversion is enabled
 	bool typeExportMapping() const;
 	// Convert supplied type name according to export type map
-	const char* typeExportConvert(const char* s) const;
+	QString typeExportConvert(QString typeName) const;
 	// Return whether saveImage redirect is active (for scripted movie making)
 	bool redirectedImagesActive();
 	// Initialise image redirection
-	void initialiseImageRedirect(const char* filenameFormat, int maxFrames);
+	void initialiseImageRedirect(QString filenameFormat, int maxFrames);
 	// Return next filename for image redirection
-	const char* nextRedirectedFilename();
+	QString nextRedirectedFilename();
 	// Cancel image redirection, returning number of images saved
 	int cancelImageRedirect();
 
@@ -392,7 +385,7 @@ class Aten
 	// Variable list holding vars set from CLI
 	VariableList passedValues_;
 	// Add passed value
-	bool addPassedValue(VTypes::DataType dt, const char* name, const char* value);
+	bool addPassedValue(VTypes::DataType dt, QString name, QString value);
 
 	public:
 	// Parse early command line options, before filter / prefs load
@@ -400,7 +393,7 @@ class Aten
 	// Parse command line options (after filter / prefs load
 	int parseCli(int, char**);
 	// Find passed value
-	Variable* findPassedValue(const char* name) const;
+	Variable* findPassedValue(QString name) const;
 
 
 	/*
@@ -460,15 +453,15 @@ class Aten
 	// Groups of fragments within the library
 	List<FragmentGroup> fragmentGroups_;
 	// Search for name fragment group
-	FragmentGroup* findFragmentGroup(const char* name);
+	FragmentGroup* findFragmentGroup( QString name );
 	// Internal count for naming new fragments
 	int fragmentModelId_;
 	// Parse fragment directory
-	bool parseFragmentDir(const char* path, const char* groupname);
+	bool parseFragmentDir(QDir path, QString groupName);
 
 	public:
 	// Add new fragment model from specified model's current selection
-	void addFragmentFromSelection(Model* source, const char* parentgroup);
+	void addFragmentFromSelection(Model* source, QString parentGroup);
 	// Load fragment library
 	void openFragments();
 	// Return first fragment library
@@ -507,7 +500,7 @@ class Aten
 	public:
 	// Bitmap formats
 	enum BitmapFormat { BitmapBMP, BitmapPG, BitmapPNG, BitmapPPM, BitmapXBM, BitmapX11, nBitmapFormats };
-	static Aten::BitmapFormat bitmapFormat(const char* name, bool reportError = 0);
+	static Aten::BitmapFormat bitmapFormat(QString s, bool reportError = false);
 	static Aten::BitmapFormat bitmapFormatFromFilter(const char* s);
 	static const char* bitmapFormatFilter(Aten::BitmapFormat bf);
 	static const char* bitmapFormatExtension(Aten::BitmapFormat bf);
@@ -526,7 +519,7 @@ class Aten
 	// Load user preferences file
 	bool loadPrefs();
 	// Save user preferences file
-	bool savePrefs(const char* fileName);
+	bool savePrefs(QString fileName);
 };
 
 ATEN_END_NAMESPACE

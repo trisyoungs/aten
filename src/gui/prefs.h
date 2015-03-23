@@ -185,8 +185,8 @@ class AtenPrefs : public QDialog
 	void on_PointColourButton_clicked(bool checked);
 	void on_AddPointButton_clicked(bool checked);
 	void on_RemovePointButton_clicked(bool checked);
-	void on_ScaleList_itemClicked(QListWidgetItem *item);
-	void on_ScaleList_itemDoubleClicked(QListWidgetItem *item);
+	void on_ScaleList_itemClicked(QListWidgetItem* item);
+	void on_ScaleList_itemDoubleClicked(QListWidgetItem* item);
 
 
 	/*

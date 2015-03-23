@@ -21,9 +21,7 @@
 
 #include "model/model.h"
 #include "parser/tree.h"
-// #include "base/prefs.h"
 #include "base/progress.h"	
-// #include <fstream>
 
 ATEN_USING_NAMESPACE
 
@@ -58,10 +56,10 @@ Model* Model::trajectoryFrame(int n)
 	Model* frame = NULL;
 	if (trajectoryFramesAreCached_)
 	{
-		if ((n < 0) || (n >= nTrajectoryFrames())) Messenger::print("Frame %i is out of range for trajectory associated to model '%s'.", n, name_.get());
+		if ((n < 0) || (n >= nTrajectoryFrames())) Messenger::print("Frame %i is out of range for trajectory associated to model '%s'.", n, qPrintable(name_));
 		else frame = trajectoryFrames_[n];
 	}
-	else Messenger::print("Trajectory for model '%s' is not cached: individual frames not available.", name_.get());
+	else Messenger::print("Trajectory for model '%s' is not cached: individual frames not available.", qPrintable(name_));
 	return frame;
 }
 
@@ -100,7 +98,7 @@ void Model::clearTrajectory()
 }
 
 // Initialise trajectory
-bool Model::initialiseTrajectory(const char* fname, Tree* f)
+bool Model::initialiseTrajectory(QString filename, Tree* filter)
 {
 	// Associate the supplied trajectory file with the model
 	Messenger::enter("Model::initialiseTrajectory");
@@ -110,29 +108,29 @@ bool Model::initialiseTrajectory(const char* fname, Tree* f)
 	clearTrajectory();
 	
 	// Open the specified file
-	if (!trajectoryParser_.openInput(fname))
+	if (!trajectoryParser_.openInput(filename))
 	{
-		Messenger::print("Trajectory file '%s' couldn't be opened.",fname);
+		Messenger::print("Trajectory file '%s' couldn't be opened.", qPrintable(filename));
 		clearTrajectory();
 		Messenger::exit("Model::initialiseTrajectory");
 		return FALSE;
 	}
 	
 	// Associate the file with the trajectory, and grab header and frame read functions
-	trajectoryFilename_ = fname;
-	trajectoryFilter_ = f;
-	trajectoryHeaderFunction_ = f->filter.trajectoryHeaderFunction();
-	trajectoryFrameFunction_ = f->filter.trajectoryFrameFunction();
+	trajectoryFilename_ = filename;
+	trajectoryFilter_ = filter;
+	trajectoryHeaderFunction_ = filter->filter.trajectoryHeaderFunction();
+	trajectoryFrameFunction_ = filter->filter.trajectoryFrameFunction();
 	if (trajectoryHeaderFunction_ == NULL)
 	{
-		Messenger::print("Error initialising trajectory: Filter '%s' contains no 'int readHeader()' function.", trajectoryFilter_->filter.name());
+		Messenger::print("Error initialising trajectory: Filter '%s' contains no 'int readHeader()' function.", qPrintable(trajectoryFilter_->filter.name()));
 		clearTrajectory();
 		Messenger::exit("Model::initialiseTrajectory");
 		return FALSE;
 	}
 	if (trajectoryFrameFunction_ == NULL)
 	{
-		Messenger::print("Error initialising trajectory: Filter '%s' contains no 'int readFrame()' function.", trajectoryFilter_->filter.name());
+		Messenger::print("Error initialising trajectory: Filter '%s' contains no 'int readFrame()' function.", qPrintable(trajectoryFilter_->filter.name()));
 		clearTrajectory();
 		Messenger::exit("Model::initialiseTrajectory");
 		return FALSE;
@@ -140,7 +138,7 @@ bool Model::initialiseTrajectory(const char* fname, Tree* f)
 	ReturnValue rv;
 	
 	// Execute main filter program (in case there are dialog options etc.)
-	if (!f->execute(rv))
+	if (!filter->execute(rv))
 	{
 		Messenger::exit("Model::initialiseTrajectory");
 		return FALSE;
@@ -156,12 +154,12 @@ bool Model::initialiseTrajectory(const char* fname, Tree* f)
 	}
 	
 	// Store this file position, since it should represent the start of the frame data
-	std::streampos firstframe = trajectoryParser_.tellg();
+	std::streampos firstFramePos = trajectoryParser_.tellg();
 
 	// Determine frame size and number of frames in file
 	Messenger::print(Messenger::Verbose, "Testing trajectory frame read...");
 	//printf("Initialised config\n");
-	Model* newframe = addTrajectoryFrame();
+	Model* newFrame = addTrajectoryFrame();
 	setRenderSource(Model::TrajectorySource);
 
 	// Read first frame
@@ -173,17 +171,17 @@ bool Model::initialiseTrajectory(const char* fname, Tree* f)
 		Messenger::exit("Model::initialiseTrajectory");
 		return FALSE;
 	}
-	newframe->enableUndoRedo();
-	std::streampos secondframe = trajectoryParser_.tellg();
-	trajectoryFrameSize_ = secondframe - firstframe;
+	newFrame->enableUndoRedo();
+	std::streampos secondFramePos = trajectoryParser_.tellg();
+	trajectoryFrameSize_ = secondFramePos - firstFramePos;
 	if ((trajectoryFrameSize_/1024) < 10) Messenger::print("Single frame is %i bytes.", trajectoryFrameSize_);
 	else Messenger::print("Single frame is (approximately) %i kb.", trajectoryFrameSize_/1024);
 	trajectoryParser_.seekg(0, std::ios::end);
-	std::streampos endoffile = trajectoryParser_.tellg();
-	nTrajectoryFileFrames_ = (endoffile - firstframe) / trajectoryFrameSize_;
+	std::streampos endOfFilePos = trajectoryParser_.tellg();
+	nTrajectoryFileFrames_ = (endOfFilePos - firstFramePos) / trajectoryFrameSize_;
 
 	// Skip back to end of first frame ready to read in next frame...
-	trajectoryParser_.seekg(secondframe);
+	trajectoryParser_.seekg(secondFramePos);
 
 	// Pre-Cache frame(s)
 	Messenger::print("Successfully associated trajectory."); 
@@ -200,15 +198,15 @@ bool Model::initialiseTrajectory(const char* fname, Tree* f)
 		for (int n=1; n<nTrajectoryFileFrames_; n++)
 		{
  			if (!progress.update(pid,n)) break;
-			newframe = addTrajectoryFrame();
+			newFrame = addTrajectoryFrame();
 			success = trajectoryFrameFunction_->execute(&trajectoryParser_, rv);
 			if ((!success) || (rv.asInteger() != 1))
 			{
-				removeTrajectoryFrame(newframe);
+				removeTrajectoryFrame(newFrame);
 				Messenger::print("Error during read of frame %i.", n);
 				break;
 			}
-			newframe->enableUndoRedo();
+			newFrame->enableUndoRedo();
 		}
  		progress.terminate(pid);
 		nTrajectoryFileFrames_ = 0;
@@ -218,10 +216,10 @@ bool Model::initialiseTrajectory(const char* fname, Tree* f)
 	}
 	else
 	{
-		Messenger::print( "Trajectory will not be cached in memory.");
+		Messenger::print("Trajectory will not be cached in memory.");
 		trajectoryOffsets_ = new std::streampos[nTrajectoryFileFrames_+10];
-		trajectoryOffsets_[0] = firstframe;
-		trajectoryOffsets_[1] = secondframe;
+		trajectoryOffsets_[0] = firstFramePos;
+		trajectoryOffsets_[1] = secondFramePos;
 		trajectoryHighestFrameOffset_ = 1;
 	}
 	Messenger::exit("Model::initialiseTrajectory");
@@ -232,15 +230,15 @@ bool Model::initialiseTrajectory(const char* fname, Tree* f)
 Model* Model::addTrajectoryFrame()
 {
 	Messenger::enter("Model::addFrame");	
-	Model* newframe = trajectoryFrames_.add();
-	newframe->setType(Model::TrajectoryFrameType);
+	Model* newFrame = trajectoryFrames_.add();
+	newFrame->setType(Model::TrajectoryFrameType);
 	// Set trajectoryCurrentFrame_ here (always points to the last added frame)
-	trajectoryCurrentFrame_ = newframe;
-	newframe->setParent(this);
+	trajectoryCurrentFrame_ = newFrame;
+	newFrame->setParent(this);
 	if (trajectoryFrames_.nItems() > 1) trajectoryFramesAreCached_ = TRUE;
 	trajectoryFrameIndex_ = trajectoryFrames_.nItems()-1;
 	Messenger::exit("Model::addFrame");	
-	return newframe;
+	return newFrame;
 }
 
 // Delete cached frame from trajectory

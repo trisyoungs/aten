@@ -69,7 +69,7 @@ class Tree : public ListItem<Tree>
 	// Program parent
 	Program* parent_;
 	// Tree name (if any)
-	Dnchar name_;
+	QString name_;
 	// Type of tree
 	Tree::TreeType type_;
 	// Return type (used if defined as a function)
@@ -81,9 +81,9 @@ class Tree : public ListItem<Tree>
 	// Return parent
 	Program* parent() const;
 	// Set name of tree
-	void setName(const char* s);
+	void setName(QString name);
 	// Return name of tree
-	const char* name() const;
+	QString name() const;
 	// Set type
 	void setType(Tree::TreeType type);
 	// Return type
@@ -129,7 +129,7 @@ class Tree : public ListItem<Tree>
 	// Create a new path on the stack with the specified base 'variable'
 	TreeNode* createPath(TreeNode* var);
 	// Expand topmost path
-	bool expandPath(Dnchar* name, TreeNode* arrayIndex = NULL, TreeNode* argList = NULL);
+	bool expandPath(QString name, TreeNode* arrayIndex = NULL, TreeNode* argList = NULL);
 	// Finalise and remove the topmost path on the stack
 	TreeNode* finalisePath();
 	// Return number of arguments defined (for function)
@@ -187,23 +187,23 @@ class Tree : public ListItem<Tree>
 	// Add double constant
 	TreeNode* addConstant(double d);
 	// Add string constant
-	TreeNode* addConstant(const char* s);
+	TreeNode* addConstant(QString s);
 	// Add Element constant
 	TreeNode* addElementConstant(int el);
 	// Add variable to topmost ScopeNode
-	TreeNode* addVariable(VTypes::DataType type, Dnchar* name, TreeNode* initialValue = NULL, bool global = FALSE);
+	TreeNode* addVariable(VTypes::DataType type, QString name, TreeNode* initialValue = NULL, bool global = FALSE);
 	// Add array variable to topmost ScopeNode
-	TreeNode* addArrayVariable(VTypes::DataType type, Dnchar* name, TreeNode* sizeexpr, TreeNode* initialvalue = NULL, bool global = FALSE);
+	TreeNode* addArrayVariable(VTypes::DataType type, QString name, TreeNode* sizeexpr, TreeNode* initialvalue = NULL, bool global = FALSE);
 	// Add array 'constant'
 	TreeNode* addArrayConstant(TreeNode* values);
 	// Search for variable in current local scope
-	Variable* findLocalVariable(const char* name, int &scopelevel);
+	Variable* findLocalVariable(QString name, int &scopelevel);
 	// Wrap named variable (and array index)
 	TreeNode* wrapVariable(Variable* var, TreeNode* arrayIndex = NULL);
 	// Return local scope's variable list
-	const VariableList &localVariables() const;
+	const VariableList& localVariables() const;
 	// Return global scope's variable list
-	const VariableList &globalVariables() const;
+	const VariableList& globalVariables() const;
 
 
 	/*
@@ -215,9 +215,9 @@ class Tree : public ListItem<Tree>
 
 	public:
 	// Search for existing local function
-	Tree* findLocalFunction(const char* name) const;
+	Tree* findLocalFunction(QString functionName) const;
 	// Add new local function
-	Tree* addLocalFunction(const char* name);
+	Tree* addLocalFunction(QString functionName);
 	// Add list of variable arguments to topmost function
 	bool addLocalFunctionArguments(TreeNode* argList);
 
@@ -247,9 +247,9 @@ class Tree : public ListItem<Tree>
 
 	public:
 	// Return default dialog structure
-	TreeGui &defaultDialog();
+	TreeGui& defaultDialog();
 	// Create and return new, temporary dialog
-	TreeGui *createDialog(const char* title = NULL);
+	TreeGui* createDialog(QString title);
 	// Delete specified temporary dialogs
 	void deleteDialogs();
 
@@ -269,7 +269,7 @@ class Tree : public ListItem<Tree>
 
 	public:
 	// Set widget or global variable value
-	bool setAccessibleVariable(const char* name, const char* value);
+	bool setAccessibleVariable(QString name, QString value);
 	// Add read option
 	void addReadOption(LineParser::ParseOption po);
 	// Remove read option
@@ -291,13 +291,13 @@ class Tree : public ListItem<Tree>
 	// Execute, using specified parser as input/output source
 	bool execute(LineParser *parser, ReturnValue& rv);
 	// Execute, opening specified file as input source
-	bool executeRead(const char* filename, ReturnValue& rv);
+	bool executeRead(QString filename, ReturnValue& rv);
 	// Execute, with specified filename as data target
-	bool executeWrite(const char* filename, ReturnValue& rv);
+	bool executeWrite(QString filename, ReturnValue& rv);
 	// Execute, opening specified file as input source (no return value)
-	bool executeRead(const char* filename);
+	bool executeRead(QString filename);
 	// Execute, with specified filename as data target (no return value)
-	bool executeWrite(const char* filename);
+	bool executeWrite(QString filename);
 	// Return number of times tree has been run
 	int runCount();
 };

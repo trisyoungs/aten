@@ -58,7 +58,7 @@ bool Commands::function_FinaliseFrame(CommandNode* c, Bundle& obj, ReturnValue& 
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (obj.rs() == obj.m)
 	{
-		Messenger::print( "Current model does not appear to be a trajectory frame.");
+		Messenger::print("Current model does not appear to be a trajectory frame.");
 		return FALSE;
 	}
 	// Do various necessary calculations
@@ -83,7 +83,7 @@ bool Commands::function_FirstFrame(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (obj.m->nTrajectoryFrames() == 0)
 	{
-		Messenger::print("No trajectory associated to model '%s'.",obj.m->name());
+		Messenger::print("No trajectory associated to model '%s'.", qPrintable(obj.m->name()));
 		return FALSE;
 	}
 	obj.m->seekFirstTrajectoryFrame();
@@ -97,7 +97,7 @@ bool Commands::function_LastFrame(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (obj.m->nTrajectoryFrames() == 0)
 	{
-		Messenger::print("No trajectory associated to model '%s'.",obj.m->name());
+		Messenger::print("No trajectory associated to model '%s'.", qPrintable(obj.m->name()));
 		return FALSE;
 	}
 	obj.m->seekLastTrajectoryFrame();
@@ -122,7 +122,7 @@ bool Commands::function_NextFrame(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (obj.m->nTrajectoryFrames() == 0)
 	{
-		Messenger::print("No trajectory associated to model '%s'.",obj.m->name());
+		Messenger::print("No trajectory associated to model '%s'.", qPrintable(obj.m->name()));
 		return FALSE;
 	}
 	obj.m->seekNextTrajectoryFrame();
@@ -136,7 +136,7 @@ bool Commands::function_PrevFrame(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (obj.m->nTrajectoryFrames() == 0)
 	{
-		Messenger::print("No trajectory associated to model '%s'.",obj.m->name());
+		Messenger::print("No trajectory associated to model '%s'.", qPrintable(obj.m->name()));
 		return FALSE;
 	}
 	obj.m->seekPreviousTrajectoryFrame();
@@ -150,7 +150,7 @@ bool Commands::function_SeekFrame(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	if (obj.m->nTrajectoryFrames() == 0)
 	{
-		Messenger::print("No trajectory associated to model '%s'.",obj.m->name());
+		Messenger::print("No trajectory associated to model '%s'.", qPrintable(obj.m->name()));
 		return FALSE;
 	}
 	obj.m->seekTrajectoryFrame(c->argi(0)-1);

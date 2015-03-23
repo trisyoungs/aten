@@ -25,7 +25,7 @@
 ATEN_USING_NAMESPACE
 
 // Add new fragment model from specified model's current selection
-void Aten::addFragmentFromSelection(Model* source, const char* parentgroup)
+void Aten::addFragmentFromSelection(Model* source, QString parentGroup)
 {
 	Messenger::enter("Aten::addFragmentFromSelection");
 
@@ -38,7 +38,7 @@ void Aten::addFragmentFromSelection(Model* source, const char* parentgroup)
 	}
 	if (source->nSelected() == 0)
 	{
-		Messenger::print("Source model '%s' has no selected atoms from which to make a fragment.", source->name());
+		Messenger::print("Source model '%s' has no selected atoms from which to make a fragment.", qPrintable(source->name()));
 		Messenger::exit("Aten::addFragmentFromSelection");
 		return;
 	}
@@ -53,16 +53,16 @@ void Aten::addFragmentFromSelection(Model* source, const char* parentgroup)
 	clip.pasteToModel(m, FALSE);
 
 	// Does the named fragment group already exist? If not, create new one
-	FragmentGroup *fg = findFragmentGroup( parentgroup == NULL ? "New Fragments" : parentgroup );
+	FragmentGroup* fg = findFragmentGroup( parentGroup == NULL ? "New Fragments" : parentGroup );
 	if (fg == NULL)
 	{
 		// Add default fragment group...
 		fg = fragmentGroups_.add();
-		fg->setName(parentgroup);
+		fg->setName(parentGroup);
 	}
 
 	// Store the last model on the list.
-	Fragment *f = fg->addFragment();
+	Fragment* f = fg->addFragment();
 	if (!f->setMasterModel(m)) fg->removeFragment(f);
 	else m->regenerateIcon();
 
@@ -73,42 +73,39 @@ void Aten::addFragmentFromSelection(Model* source, const char* parentgroup)
 }
 
 // Parse fragment directory
-bool Aten::parseFragmentDir(const char* path, const char* groupname)
+bool Aten::parseFragmentDir(QDir path, QString groupName)
 {
 	Messenger::enter("Aten::parseFragmentDir");
 	int i;
 	Tree* t;
-	Fragment *f;
-	FragmentGroup *fg;
+	Fragment* f;
+	FragmentGroup* fg;
 	QPixmap pixmap;
 
 	// First check - does this directory actually exist
-	QDir fragmentdir(path);
-	if (!fragmentdir.exists())
+	if (!path.exists())
 	{
 		Messenger::exit("Aten::parseFragmentDir");
 		return FALSE;
 	}
 
 	// Filter the directory contents - show only files and exclude '.' and '..'
-	QStringList fragmentlist = fragmentdir.entryList(QDir::Files | QDir::NoDotAndDotDot, QDir::Name);
-	for (i=0; i<fragmentlist.size(); i++)
+	QStringList fragmentList = path.entryList(QDir::Files | QDir::NoDotAndDotDot, QDir::Name);
+	for (i=0; i< fragmentList.size(); i++)
 	{
 		// Construct full filepath
-		QString filename(path);
-		filename += "/";
-		filename += fragmentlist.at(i);
+		QString filename = path.absoluteFilePath(fragmentList.at(i));
 		t = probeFile(qPrintable(filename), FilterData::ModelImport);
 		if (t == NULL) continue;
 		if (!t->executeRead(qPrintable(filename))) continue;
 
 		// Does the named fragment group already exist? If not, create new one
-		fg = findFragmentGroup(groupname);
+		fg = findFragmentGroup(groupName);
 		if (fg == NULL)
 		{
 			// Add default fragment group...
 			fg = fragmentGroups_.add();
-			fg->setName(groupname);
+			fg->setName(groupName);
 		}
 
 		// Store the last model on the list.
@@ -117,14 +114,12 @@ bool Aten::parseFragmentDir(const char* path, const char* groupname)
 	}
 
 	// Check for other directories
-	fragmentlist = fragmentdir.entryList(QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name);
-	for (i=0; i<fragmentlist.size(); i++)
+	QStringList subDirList = path.entryList(QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name);
+	for (i=0; i< subDirList.size(); i++)
 	{
 		// Construct full filepath
-		QString filename(path);
-		filename += "/";
-		filename += fragmentlist.at(i);
-		parseFragmentDir(qPrintable(filename), qPrintable(fragmentlist.at(i)));
+		QDir subDir = path.absoluteFilePath(subDirList.at(i));
+		parseFragmentDir(subDir, subDirList.at(i));
 	}
 
 	Messenger::exit("Aten::parseFragmentDir");
@@ -135,43 +130,43 @@ bool Aten::parseFragmentDir(const char* path, const char* groupname)
 void Aten::openFragments()
 {
 	Messenger::enter("Aten::openFragments");
-	Dnchar path;
-	int nfailed;
+	QDir path;
+	int nFailed;
 
 	// Redirect model creation to fragment list
 	targetModelList_ = Aten::FragmentLibraryList;
 
 	// Default search path should have already been set by openFilters()...
-	path.sprintf("%s%cfragments", dataDir_.get(), PATHSEP);
-	Messenger::print(Messenger::Verbose, "Looking for fragments in '%s'...", qPrintable(QDir::toNativeSeparators(path.get())));
-	nfailed = parseFragmentDir(path, "Ungrouped");
+	path = dataDirectoryFile("fragments");
+	Messenger::print(Messenger::Verbose, "Looking for fragments in '%s'...", qPrintable(path.absolutePath()));
+	nFailed = parseFragmentDir(path, "Ungrouped");
 
 	// Try to load user fragments - we don't mind if the directory doesn't exist...
-	path.sprintf("%s%c%s%cfragments%c", homeDir_.get(), PATHSEP, atenDir_.get(), PATHSEP, PATHSEP);
-	Messenger::print(Messenger::Verbose, "Looking for user fragments in '%s'...", path.get());
-	nfailed = parseFragmentDir(path, "Ungrouped");
+	path = atenDirectoryFile("fragments");
+	Messenger::print(Messenger::Verbose, "Looking for user fragments in '%s'...", qPrintable(path.absolutePath()));
+	nFailed = parseFragmentDir(path, "Ungrouped");
 
 	// Return model creation to main list
 	targetModelList_ = Aten::MainModelList;
 	setCurrentModel(NULL);
 
 	// Print out info
-	int nfragments = 0;
-	for (FragmentGroup *fg = fragmentGroups_.first(); fg != NULL; fg = fg->next) nfragments += fg->nFragments();
-	Messenger::print("Loaded %i fragments into library.", nfragments);
+	int nFragments = 0;
+	for (FragmentGroup* fg = fragmentGroups_.first(); fg != NULL; fg = fg->next) nFragments += fg->nFragments();
+	Messenger::print("Loaded %i fragments into library.", nFragments);
 
 	Messenger::exit("Aten::openFragments");
 }
 
 // Search for name fragment group
-FragmentGroup *Aten::findFragmentGroup(const char* name)
+FragmentGroup* Aten::findFragmentGroup(QString name)
 {
-	for (FragmentGroup *fg = fragmentGroups_.first(); fg != NULL; fg = fg->next) if (strcmp(name,fg->name()) == 0) return fg;
+	for (FragmentGroup* fg = fragmentGroups_.first(); fg != NULL; fg = fg->next) if (name == fg->name()) return fg;
 	return NULL;
 }
 
 // Return head of fragments list
-FragmentGroup *Aten::fragmentGroups()
+FragmentGroup* Aten::fragmentGroups()
 {
 	return fragmentGroups_.first();
 }

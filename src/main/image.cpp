@@ -29,7 +29,7 @@ ATEN_USING_NAMESPACE
 // Bitmap Image Formats (conform to allowable pixmap formats in Qt)
 const char* bitmapFormatFilters[Aten::nBitmapFormats] = { "Windows Bitmap (*.bmp)", "Joint Photographic Experts Group (*.jpg)", "Portable Network Graphics (*.png)", "Portable Pixmap (*.ppm)", "X11 Bitmap (*.xbm)", "X11 Pixmap (*.xpm)" };
 const char* bitmapFormatExtensions[Aten::nBitmapFormats] = { "bmp", "jpg", "png", "ppm", "xbm", "xpm" };
-Aten::BitmapFormat Aten::bitmapFormat(const char* s, bool reportError)
+Aten::BitmapFormat Aten::bitmapFormat(QString s, bool reportError)
 {
 	Aten::BitmapFormat bf = (Aten::BitmapFormat) enumSearch("bitmap format", Aten::nBitmapFormats, bitmapFormatExtensions, s);
 	if ((bf == Aten::nBitmapFormats) && reportError) enumPrintValid(Aten::nBitmapFormats, bitmapFormatExtensions);

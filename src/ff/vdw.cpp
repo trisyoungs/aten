@@ -35,7 +35,7 @@ double VdwEnergy(VdwFunctions::VdwFunction type, double rij, double* params, int
 	switch (type)
 	{
 		case (VdwFunctions::None):
-			Messenger::print( "Warning: No function is specified for vdW energy %i-%i.", i, j);
+			Messenger::print("Warning: No function is specified for vdW energy %i-%i.", i, j);
 			U = 0.0;
 			break;
 		case (VdwFunctions::InversePower):
@@ -97,7 +97,7 @@ Vec3<double> VdwForces(VdwFunctions::VdwFunction type, Vec3<double> vecij, doubl
 	switch (type)
 	{
 		case (VdwFunctions::None):
-			Messenger::print( "Warning: No function is specified for vdW forces %i-%i.", i, j);
+			Messenger::print("Warning: No function is specified for vdW forces %i-%i.", i, j);
 			du_dr = 0.0;
 			break;
 		case (VdwFunctions::InversePower):
@@ -462,7 +462,7 @@ bool Pattern::vdwCorrectEnergy(UnitCell* cell, EnergyStore* estore)
 					switch (p2->atoms_[j]->data()->vdwForm())
 					{
 						case (VdwFunctions::None):
-							Messenger::print( "Warning: No function is specified for vdW energy correction %i-%i.", i, j);
+							Messenger::print("Warning: No function is specified for vdW energy correction %i-%i.", i, j);
 							du_dr = 0.0;
 							break;
 						case (VdwFunctions::Lj):

@@ -39,7 +39,7 @@ class Bond : public ListItem<Bond>
 	// Bond types
 	enum BondType { Any = 0, Single, Double, Triple, Aromatic, nBondTypes };
 	// Bond type from text
-	static BondType bondType(const char* name, bool reportError = 0);
+	static BondType bondType(QString s, bool reportError = false);
 	// Bond type from order
 	static BondType bondType(double order);
 	// BondType Keywords

@@ -356,11 +356,11 @@ class ModelRenameEvent : public UndoEvent
 	
 	private:
 	// Change data
-	Dnchar oldName_, newName_;
+	QString oldName_, newName_;
 
 	public:
 	// Set change data
-	void set(const char* oldname, const char* newname);
+	void set(QString oldName, QString newName);
 	// Undo stored change
 	void undo(Model* m);
 	// Print change information

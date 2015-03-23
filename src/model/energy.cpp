@@ -26,7 +26,7 @@
 ATEN_USING_NAMESPACE
 
 // Calculate total energy of model (from supplied coordinates)
-double Model::totalEnergy(Model* srcmodel, bool &success)
+double Model::totalEnergy(Model* srcmodel, bool& success)
 {
 	Messenger::enter("Model::totalEnergy");
 
@@ -130,7 +130,7 @@ double Model::totalEnergy(Model* srcmodel, bool &success)
 }
 
 // Calculate total interaction energy of specified molecule with remainder of model
-double Model::moleculeEnergy(Model* srcmodel, Pattern* molpattern, int molecule, bool &success)
+double Model::moleculeEnergy(Model* srcmodel, Pattern* molpattern, int molecule, bool& success)
 {
 	Messenger::enter("Model::moleculeEnergy");
 
@@ -203,7 +203,7 @@ double Model::moleculeEnergy(Model* srcmodel, Pattern* molpattern, int molecule,
 }
 
 // Calculate and return the total angle energy of the model
-double Model::angleEnergy(Model* config, bool &success)
+double Model::angleEnergy(Model* config, bool& success)
 {
 	Messenger::enter("Model::angleEnergy");
 
@@ -227,7 +227,7 @@ double Model::angleEnergy(Model* config, bool &success)
 }
 
 // Calculate and return the total bond energy of the model
-double Model::bondEnergy(Model* config, bool &success)
+double Model::bondEnergy(Model* config, bool& success)
 {
 	Messenger::enter("Model::bondEnergy");
 
@@ -251,7 +251,7 @@ double Model::bondEnergy(Model* config, bool &success)
 }
 
 // Calculate and return the total coulomb energy of the model
-double Model::electrostaticEnergy(Model* config, bool &success)
+double Model::electrostaticEnergy(Model* config, bool& success)
 {
 	Messenger::enter("Model::coulombEnergy");
 
@@ -316,7 +316,7 @@ double Model::electrostaticEnergy(Model* config, bool &success)
 }
 
 // Calculate and return the total intermolecular energy of the model
-double Model::intermolecularEnergy(Model* config, bool &success)
+double Model::intermolecularEnergy(Model* config, bool& success)
 {
 	double interenergy = vdwEnergy(config, success);
 	if (!success) return 0.0;
@@ -326,7 +326,7 @@ double Model::intermolecularEnergy(Model* config, bool &success)
 }
 
 // Calculate and return the total intramolecular energy of the model
-double Model::intramolecularEnergy(Model* config, bool &success)
+double Model::intramolecularEnergy(Model* config, bool& success)
 {
 	double intraenergy = bondEnergy(config, success);
 	if (!success) return 0.0;
@@ -338,7 +338,7 @@ double Model::intramolecularEnergy(Model* config, bool &success)
 }
 
 // Calculate and return the total torsion energy of the model
-double Model::torsionEnergy(Model* config, bool &success)
+double Model::torsionEnergy(Model* config, bool& success)
 {
 	Messenger::enter("Model::torsionEnergy");
 
@@ -362,7 +362,7 @@ double Model::torsionEnergy(Model* config, bool &success)
 }
 
 // Calculate and return the total van der Waals energy of the model
-double Model::vdwEnergy(Model* config, bool &success)
+double Model::vdwEnergy(Model* config, bool& success)
 {
 	Messenger::enter("Model::vdwEnergy");
 

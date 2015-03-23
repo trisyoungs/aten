@@ -59,15 +59,15 @@ class Variable : public TreeNode
 	*/
 	protected:
 	// Name of the variable
-	Dnchar name_;
+	QString name_;
 	// Initial value of new variable
 	TreeNode* initialValue_;
 
 	public:
 	// Set name of variable
-	void setName(const char* s);
+	void setName(QString name);
 	// Get name of variable
-	const char* name() const;
+	QString name() const;
 	// Set initial value expression
 	bool setInitialValue(TreeNode* node);
 	// Return TreeNode corresponding to initial value
@@ -79,7 +79,7 @@ class Variable : public TreeNode
 	// Reset variable
 	virtual void reset() = 0;
 	// Search accessors (if any) available for node
-	virtual StepNode* findAccessor(const char* s, TreeNode* arrayIndex, TreeNode* argList = NULL);
+	virtual StepNode* findAccessor(QString name, TreeNode* arrayIndex, TreeNode* argList = NULL);
 
 
 	/*
@@ -95,9 +95,9 @@ class Variable : public TreeNode
 	*/
 	public:
 	// Search accessor list provided
-	static int searchAccessor(const char* s, int nAccessors, Accessor *accessors);
+	static int searchAccessor(QString name, int nAccessors, Accessor *accessors);
 	// Search accessor list provided
-	static int searchAccessor(const char* s, int nAccessors, FunctionAccessor *accessors);
+	static int searchAccessor(QString name, int nAccessors, FunctionAccessor *accessors);
 };
 
 // Array Variable

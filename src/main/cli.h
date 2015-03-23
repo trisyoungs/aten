@@ -22,12 +22,18 @@
 #ifndef ATEN_CLI_H
 #define ATEN_CLI_H
 
+#include <QtCore/QString>
+#include "base/namespace.h"
+
+ATEN_BEGIN_NAMESPACE
+
 // Command option data
 class Cli
 {
 	public:
 	// Command line switches
 	enum CliSwitch { AtenDataSwitch, BatchSwitch, BohrSwitch, BondSwitch, CacheSwitch, CentreSwitch, CommandSwitch, DebugSwitch, DialogsSwitch, DoubleSwitch, ExportSwitch, ExportMapSwitch, ExpressionSwitch, FilterSwitch, ForcefieldSwitch, FoldSwitch, FormatSwitch, GridSwitch, HelpSwitch, IntSwitch, InteractiveSwitch, KeepNamesSwitch, KeepTypesSwitch, KeepViewSwitch, LoadFromListSwitch, MapSwitch, NewModelSwitch, NicknamesSwitch, NoBondSwitch, NoCentreSwitch, NoFiltersSwitch, NoFoldSwitch, NoFragmentsSwitch, NoFragmentIconsSwitch, NoIncludesSwitch, NoListsSwitch, NoPackSwitch, NoPartitionsSwitch, NoQtSettingsSwitch, PackSwitch, PipeSwitch, ProcessSwitch, QuietSwitch, ScriptSwitch, StringSwitch, TrajectorySwitch, UndoLevelSwitch, VBOSwitch, VerboseSwitch, VersionSwitch, ZmapSwitch, nSwitchItems };
+
 
 	/*
 	// Description of command line option
@@ -46,6 +52,7 @@ class Cli
 	// Description of option
 	const char* description;
 
+
 	/*
 	// Member functions
 	*/
@@ -53,7 +60,9 @@ class Cli
 	// Search for short option
 	static Cli::CliSwitch cliSwitch(char c);
 	// Search for long option
-	static Cli::CliSwitch cliSwitch(const char* s);
+	static Cli::CliSwitch cliSwitch(QString s);
 };
+
+ATEN_END_NAMESPACE
 
 #endif

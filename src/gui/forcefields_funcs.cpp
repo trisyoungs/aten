@@ -125,7 +125,7 @@ void ForcefieldsWidget::refreshTypes()
 	{
 		if (ffa->neta()->characterElement() != typelistElement_) continue;
 		ui.FFTypeTable->setRowCount(count+1);
-		item = new QTableWidgetItem(itoa(ffa->typeId()));
+		item = new QTableWidgetItem(QString::number(ffa->typeId()));
 		ui.FFTypeTable->setItem(count, 0, item);
 		item = new QTableWidgetItem(ffa->name());
 		ui.FFTypeTable->setItem(count, 1, item);
@@ -244,7 +244,7 @@ void ForcefieldsWidget::on_SaveForcefieldButton_clicked(bool checked)
 	else
 	{
 		// Save forcefield under filename currently in 'filenanme'
-		Messenger::print("Saving forcefield '%s' to file '%s'...", ff->name(), ff->filename());
+		Messenger::print("Saving forcefield '%s' to file '%s'...", qPrintable(ff->name()), qPrintable(ff->filename()));
 		ff->save();
 	}
 }
@@ -262,7 +262,7 @@ void ForcefieldsWidget::on_SaveForcefieldAsButton_clicked(bool checked)
 	ff->setFilename(qPrintable(filename));
 	
 	// Save forcefield under filename currently in 'filenanme'
-	Messenger::print("Saving forcefield '%s' to file '%s'...", ff->name(), ff->filename());
+	Messenger::print("Saving forcefield '%s' to file '%s'...", qPrintable(ff->name()), qPrintable(ff->filename()));
 	ff->save();
 }
 
@@ -367,10 +367,10 @@ void ForcefieldsWidget::on_ManualTypeTestButton_clicked(bool checked)
 	if (ffa != NULL)
 	{
 		Model* m = parent_.aten().currentModel();
-		Neta *at = ffa->neta();
+		Neta* at = ffa->neta();
 		if (m->createPatterns())
 		{
-			Messenger::print("Testing atom type '%s' (id = %i) from forcefield '%s' on current selection:", ffa->name(), ffa->typeId(), ff->name());
+			Messenger::print("Testing atom type '%s' (id = %i) from forcefield '%s' on current selection:", qPrintable(ffa->name()), ffa->typeId(), qPrintable(ff->name()));
 			// Prepare for typing
 			m->describeAtoms();
 			int matchscore;

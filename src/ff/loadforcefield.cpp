@@ -27,7 +27,7 @@
 ATEN_USING_NAMESPACE
 
 // Load the specified forcefield
-bool Forcefield::load(const char* filename)
+bool Forcefield::load(QString filename)
 {
 	Messenger::enter("Forcefield::load");
 	bool done, okay;
@@ -36,10 +36,10 @@ bool Forcefield::load(const char* filename)
 	// Open file for reading
 	ffparser.openInput(filename);
 	// Store the filename of the forcefield
-	filename_.set(filename);
+	filename_ = filename;
 	// Now follows blocks of keywords
 	done = FALSE;
-	Messenger::print("Opening forcefield : %s...",filename);
+	Messenger::print("Opening forcefield : %s...", qPrintable(filename));
 	do
 	{
 		okay = FALSE;
@@ -56,12 +56,12 @@ bool Forcefield::load(const char* filename)
 		switch (forcefieldCommand(ffparser.argc(0)))
 		{
 			case (Forcefield::MessageCommand):
-				Messenger::print("####\t %s",ffparser.argc(1));
+				Messenger::print("####\t %s", qPrintable(ffparser.argc(1)));
 				okay = TRUE;
 				break;
 			case (Forcefield::NameCommand):
-				name_.set(ffparser.argc(1));
-				Messenger::print("\t: '%s'",name_.get());
+				name_ = ffparser.argc(1);
+				Messenger::print("\t: '%s'", qPrintable(name_));
 				okay = TRUE;
 				break;
 			case (Forcefield::UnitsCommand):
@@ -127,7 +127,7 @@ bool Forcefield::load(const char* filename)
 				okay = FALSE;
 				break;
 			default:
-				Messenger::print("Unrecognised forcefield keyword '%s'.",ffparser.argc(0));
+				Messenger::print("Unrecognised forcefield keyword '%s'.", qPrintable(ffparser.argc(0)));
 				break;
 		}
 		// Check on 'okay'
@@ -159,7 +159,7 @@ bool Forcefield::readDefines()
 	Messenger::enter("Forcefield::readDefines");
 	int success, nadded = 0;
 	bool done;
-	Neta *neta;
+	Neta* neta;
 	done = FALSE;
 	// Format of lines is 'name "neta"'
 	do
@@ -172,12 +172,13 @@ bool Forcefield::readDefines()
 			Messenger::exit("Forcefield::readDefines");
 			return FALSE;
 		}
-		else if (strcmp(ffparser.argc(0),"end") == 0) break;
+		else if (ffparser.argc(0) == "end") break;
+
 		// Search for this define name to make sure it hasn't already been used
-		for (neta = typeDefines_.first(); neta != NULL; neta = neta->next) if (strcmp(ffparser.argc(0), neta->name()) == 0) break;
+		for (neta = typeDefines_.first(); neta != NULL; neta = neta->next) if (ffparser.argc(0) == neta->name()) break;
 		if (neta != NULL)
 		{
-			Messenger::print("Error: Duplicate type define name specified (%s) at line %i.", ffparser.argc(0), ffparser.lastLineNo());
+			Messenger::print("Error: Duplicate type define name specified (%s) at line %i.", qPrintable(ffparser.argc(0)), ffparser.lastLineNo());
 			Messenger::exit("Forcefield::readDefines");
 			return FALSE;
 		}
@@ -217,20 +218,22 @@ bool Forcefield::readTypes()
 			Messenger::exit("Forcefield::readTypes");
 			return FALSE;
 		}
-		else if (strcmp(ffparser.argc(0),"end") == 0) break;
+		else if (ffparser.argc(0) == "end") break;
+
 		// Search for this ID to make sure it hasn't already been used
 		newffid = ffparser.argi(0);
 		idsearch = findType(newffid);
 		if (idsearch != NULL)
 		{
-			Messenger::print("Duplicate forcefield type ID '%i' - already used by type '%s'.", newffid, idsearch->name());
+			Messenger::print("Duplicate forcefield type ID '%i' - already used by type '%s'.", newffid, qPrintable(idsearch->name()));
 			Messenger::exit("Forcefield::readTypes");
 			return FALSE;
 		}
 		ffa = types_.add();
-		nadded ++;
+		++nadded;
 		ffa->setParent(this);
 		ffa->setTypeId(newffid);
+
 		// Check number of items on line in file
 		if (ffparser.nArgs() < 4)
 		{
@@ -242,7 +245,7 @@ bool Forcefield::readTypes()
 		int el = Elements().find(ffparser.argc(2), ElementMap::AlphaZMap);
 		if (el == 0)
 		{
-			Messenger::print("Error: Unrecognised element '%s' found for forcefield type '%s' (%i).", ffparser.argc(2), ffa->name(), ffa->typeId());
+			Messenger::print("Error: Unrecognised element '%s' found for forcefield type '%s' (%i).", qPrintable(ffparser.argc(2)), qPrintable(ffa->name()), ffa->typeId());
 			Messenger::exit("Forcefield::readTypes");
 			return FALSE;
 		}
@@ -281,13 +284,13 @@ bool Forcefield::readUnitedAtomTypes()
 			Messenger::exit("Forcefield::readUnitedAtomTypes");
 			return FALSE;
 		}
-		else if (strcmp(ffparser.argc(0),"end") == 0) break;
+		else if (ffparser.argc(0) == "end") break;
 		// Search for this ID to make sure it hasn't already been used
 		newffid = ffparser.argi(0);
 		idsearch = findType(newffid);
 		if (idsearch != NULL)
 		{
-			Messenger::print("Duplicate forcefield type ID '%i' - already used by type '%s'.", newffid, idsearch->name());
+			Messenger::print("Duplicate forcefield type ID '%i' - already used by type '%s'.", newffid, qPrintable(idsearch->name()));
 			Messenger::exit("Forcefield::readTypes");
 			return FALSE;
 		}
@@ -307,7 +310,7 @@ bool Forcefield::readUnitedAtomTypes()
 		int el = Elements().find(ffparser.argc(2), ElementMap::AlphaZMap);
 		if (el == 0)
 		{
-			Messenger::print("Error: Unrecognised element '%s' found for forcefield type '%s' (%i).", ffparser.argc(2), ffa->name(), ffa->typeId());
+			Messenger::print("Error: Unrecognised element '%s' found for forcefield type '%s' (%i).", qPrintable(ffparser.argc(2)), qPrintable(ffa->name()), ffa->typeId());
 			Messenger::exit("Forcefield::readUnitedAtomTypes");
 			return FALSE;
 		}
@@ -328,11 +331,13 @@ bool Forcefield::readUnitedAtomTypes()
 }
 
 // Reads in extra data for atoms
-bool Forcefield::readData(const char* vars)
+bool Forcefield::readData(QString vars)
 {
 	Messenger::enter("Forcefield::readData");
+
 	// Store current number of data defined, since there may be multiple 'data' blocks given
 	int lastn = typeData_.nItems();
+
 	// First, parse list of data items to get name
 	typeData_.setDefaultValue(VTypes::nDataTypes);
 	LineParser parser;
@@ -344,12 +349,13 @@ bool Forcefield::readData(const char* vars)
 		VTypes::DataType vt = VTypes::dataType(parser.argc(n));
 		if (vt == VTypes::nDataTypes)
 		{
-			Messenger::print("Unrecognised type ('%s') found in list in 'data' block header.", parser.argc(0));
+			Messenger::print("Unrecognised type ('%s') found in list in 'data' block header.", qPrintable(parser.argc(0)));
 			Messenger::exit("Forcefield::readData");
 			return FALSE;
 		}
 		typeData_.add(parser.argc(n+1), vt);
 	}
+
 	// Next, each line contains the forcefield atom to which the data relates, the type name (for bookkeeping, nothing more)
 	// and then the data in the order specified in the header above.
 	bool done = FALSE;
@@ -364,7 +370,8 @@ bool Forcefield::readData(const char* vars)
 			Messenger::exit("Forcefield::readData");
 			return FALSE;
 		}
-		else if (strcmp(ffparser.argc(0),"end") == 0) break;
+		else if (ffparser.argc(0) == "end") break;
+
 		// Search for this ffatom ID and retrieve it
 		ForcefieldAtom* ffa = findType(ffparser.argi(0));
 		if (ffa == NULL)
@@ -374,13 +381,14 @@ bool Forcefield::readData(const char* vars)
 			return FALSE;
 		}
 		nadded ++;
+
 		// Get data from lines in the order it was specified above
 		for (n=2; n<ffparser.nArgs(); ++n)
 		{
 			// If the parser argument is blank we've run out of arguments early
 			if (!ffparser.hasArg(n))
 			{
-				Messenger::print("Warning: Forcefield atom id %i (%s) has an incomplete set of data (line %i in file).", ffa->typeId(), ffa->name(), ffparser.lastLineNo());
+				Messenger::print("Warning: Forcefield atom id %i (%s) has an incomplete set of data (line %i in file).", ffa->typeId(), qPrintable(ffa->name()), ffparser.lastLineNo());
 				continue;
 			}
 			index = lastn + n - 2;
@@ -425,23 +433,25 @@ bool Forcefield::readFunctions()
 			Messenger::exit("Forcefield::readFunctions");
 			return FALSE;
 		}
-		if (strcmp(ffparser.argc(0),"end") != 0)
+		if (ffparser.argc(0) != "end")
 		{
 			// Add line to internal list and continue
-			Dnchar* newline = generatorFunctionText_.add();
-			newline->set(ffparser.line());
+			generatorFunctionText_ << ffparser.line();
 		}
 		else done = TRUE;
 	} while (!done);
+
 	// Check for empty string list
-	if (generatorFunctionText_.nItems() == 0)
+	if (generatorFunctionText_.count() == 0)
 	{
 		Messenger::print("Found an empty 'functions' block - ignored.");
 		Messenger::exit("Forcefield::readFunctions");
 		return TRUE;
 	}
+
 	// Now, attempt to parser the lines we just read in to create functions....
-	bool result = generatorFunctions_.generateFromStringList(generatorFunctionText_.first(), "GeneratorFuncs", "Generator Function", TRUE);
+	bool result = generatorFunctions_.generateFromStringList(generatorFunctionText_, "GeneratorFuncs", "Generator Function", TRUE);
+
 	// Search for functions we recognise
 	vdwGenerator_ = generatorFunctions_.findFunction("vdwgenerator");
 	if (vdwGenerator_) Messenger::print("\t: Found 'vdwgenerator' function.");
@@ -455,6 +465,7 @@ bool Forcefield::readFunctions()
 	torsionGenerator_ = generatorFunctions_.findFunction("torsiongenerator");
 	if (torsionGenerator_) Messenger::print("\t: Found 'torsiongenerator' function.");
 	else Messenger::print("\t: Warning - No 'torsiongenerator' function defined.");
+
 	Messenger::exit("Forcefield::readFunctions");
 	return result;
 }
@@ -477,12 +488,12 @@ bool Forcefield::readEquivalents()
 		success = ffparser.getArgsDelim(LineParser::SkipBlanks);
 		if (success != 0)
 		{
-			if (success == 1) Messenger::print("File error while reading equivalents data for atom %i.",count+1);
-			if (success == -1) Messenger::print("End of file while reading equivalents data for atom %i.",count+1);
+			if (success == 1) Messenger::print("File error while reading equivalents data for atom %i.", count+1);
+			if (success == -1) Messenger::print("End of file while reading equivalents data for atom %i.", count+1);
 			Messenger::exit("Forcefield::readEquivalents");
 			return FALSE;
 		}
-		if (strcmp(ffparser.argc(0),"end") == 0) done = TRUE;
+		if (ffparser.argc(0) == "end") done = TRUE;
 		else
 		{
 			// Format of lines is : equivname_  fftype1  fftype2  ... fftypeN
@@ -495,7 +506,8 @@ bool Forcefield::readEquivalents()
 			count ++;
 		}
 	} while (!done);
-	Messenger::print("\t: Processed %i atomtype equivalents.",count);
+	Messenger::print("\t: Processed %i atomtype equivalents.", count);
+
 	Messenger::exit("Forcefield::readEquivalents");
 	return TRUE;
 }
@@ -512,7 +524,7 @@ bool Forcefield::readInter()
 	if (vdwstyle == VdwFunctions::nVdwFunctions)
 	{
 		vdwstyle = VdwFunctions::None;
-		Messenger::print("VDW functional form not recognised - '%s'",ffparser.argc(1));
+		Messenger::print("VDW functional form not recognised - '%s'", qPrintable(ffparser.argc(1)));
 		return FALSE;
 	}
 	bool done = FALSE;
@@ -523,30 +535,31 @@ bool Forcefield::readInter()
 		success = ffparser.getArgsDelim(LineParser::SkipBlanks);
 		if (success != 0)
 		{
-			if (success == 1) Messenger::print("File error reading VDW data for atom %i.",count+1);
-			if (success == -1) Messenger::print("End of file while reading VDW data for atom %i.",count+1);
+			if (success == 1) Messenger::print("File error reading VDW data for atom %i.", count+1);
+			if (success == -1) Messenger::print("End of file while reading VDW data for atom %i.", count+1);
 			Messenger::exit("Forcefield::readInter");
 			return FALSE;
 		}
-		if (strcmp(ffparser.argc(0),"end") == 0) done = TRUE;
+		if (ffparser.argc(0) == "end") done = TRUE;
 		else
 		{
 			// Need not specify the data in the same order as for the type data above, so search for the fftype read in...
 			ffa = findType(ffparser.argi(0));
 			if (ffa == NULL)
 			{
-				Messenger::print("Unrecognised forcefield atom id in VDW list: '%s'", ffparser.argc(0));
+				Messenger::print("Unrecognised forcefield atom id in VDW list: '%s'", qPrintable(ffparser.argc(0)));
 				Messenger::exit("Forcefield::readInter");
 				return FALSE;
 			}
 			ffa->setCharge(ffparser.argd(2));
 			ffa->setVdwForm(vdwstyle);
 			for (n=0; n<MAXFFPARAMDATA; n++) if (ffparser.hasArg(n+3)) ffa->setParameter(n, ffparser.argd(n+3));
-			Messenger::print(Messenger::Verbose, "VDW Data %i : %s q=%8.4f, f%8.4f %8.4f %8.4f %8.4f", ffa->typeId(), ffa->name(), ffa->charge(), ffa->parameter(0), ffa->parameter(1), ffa->parameter(2), ffa->parameter(3), ffa->parameter(4), ffa->parameter(5));
+			Messenger::print(Messenger::Verbose, "VDW Data %i : %s q=%8.4f, f%8.4f %8.4f %8.4f %8.4f", ffa->typeId(), qPrintable(ffa->name()), ffa->charge(), ffa->parameter(0), ffa->parameter(1), ffa->parameter(2), ffa->parameter(3), ffa->parameter(4), ffa->parameter(5));
 			count ++;
 		}
 	} while (!done);
 	Messenger::print("\t: Read in %i atomic VDW parameters (%s)", count, VdwFunctions::VdwFunctions[vdwstyle].name);
+
 	Messenger::exit("Forcefield::readInter");
 	return TRUE;
 }
@@ -563,7 +576,7 @@ bool Forcefield::readBonds()
 	if (bondstyle == BondFunctions::nBondFunctions)
 	{
 		bondstyle = BondFunctions::None;
-		Messenger::print("Bond stretch functional form not recognised - '%s'",ffparser.argc(1));
+		Messenger::print("Bond stretch functional form not recognised - '%s'", qPrintable(ffparser.argc(1)));
 		return FALSE;
 	}
 	count = 0;
@@ -573,29 +586,29 @@ bool Forcefield::readBonds()
 		success = ffparser.getArgsDelim(LineParser::SkipBlanks);
 		if (success != 0)
 		{
-			if (success == 1) Messenger::print("File error reading bond data %i.",count+1);
-			if (success == -1) Messenger::print("End of file error reading bond data %i.",count+1);
+			if (success == 1) Messenger::print("File error reading bond data %i.", count+1);
+			if (success == -1) Messenger::print("End of file error reading bond data %i.", count+1);
 			Messenger::exit("Forcefield::readBonds");
 			return FALSE;
 		}
-		if (strcmp(ffparser.argc(0),"end") == 0) done = TRUE;
+		if (ffparser.argc(0) == "end") done = TRUE;
 		else
 		{
-			// Do the best checking we can on the fftypes. If one contains a wildcard '?', then we must allow it.
+			// Do the best checking we can on the fftypes. If one contains a wildcard '*', then we must allow it.
 			// If not, then check to see that it references an atomname in the atomtypes list
 			for (n=0; n<2; n++)
 			{
-				if ((strchr(ffparser.argc(n),'*') == NULL) && (findType(ffparser.argc(n)) == NULL))
-					Messenger::print("\t... Warning - bond atom '%s' does not exist in the forcefield!", ffparser.argc(n));
+				if ((!ffparser.argc(n).contains('*')) && (!findType(ffparser.argc(n))))
+					Messenger::print("\t... Warning - bond atom '%s' does not exist in the forcefield!", qPrintable(ffparser.argc(n)));
 			}
 			// Create new ff_bond structure
 			newffbond = bonds_.add();
 			newffbond->setType(ForcefieldBound::BondInteraction);
-			newffbond->setTypeName(0,ffparser.argc(0));
-			newffbond->setTypeName(1,ffparser.argc(1));
+			newffbond->setTypeName(0, ffparser.argc(0));
+			newffbond->setTypeName(1, ffparser.argc(1));
 			newffbond->setBondForm(bondstyle);
 			for (n=0; n<MAXFFPARAMDATA; n++) if (ffparser.hasArg(n+2)) newffbond->setParameter(n, ffparser.argd(n+2));
-			Messenger::print(Messenger::Verbose, "BOND %i : %s-%s  %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f", n, newffbond->typeName(0), newffbond->typeName(1) , newffbond->parameter(0), newffbond->parameter(1), newffbond->parameter(2), newffbond->parameter(3), newffbond->parameter(4), newffbond->parameter(5)); 
+			Messenger::print(Messenger::Verbose, "BOND %i : %s-%s  %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f", n, qPrintable(newffbond->typeName(0)), qPrintable(newffbond->typeName(1)) , newffbond->parameter(0), newffbond->parameter(1), newffbond->parameter(2), newffbond->parameter(3), newffbond->parameter(4), newffbond->parameter(5)); 
 			count ++;
 		}
 	} while (!done);
@@ -615,7 +628,7 @@ bool Forcefield::readAngles()
 	if (anglestyle == AngleFunctions::nAngleFunctions)
 	{
 		anglestyle = AngleFunctions::None;
-		Messenger::print("Angle bend functional form not recognised - '%s'",ffparser.argc(1));
+		Messenger::print("Angle bend functional form not recognised - '%s'", qPrintable(ffparser.argc(1)));
 		return FALSE;
 	}
 	bool done = FALSE;
@@ -631,15 +644,15 @@ bool Forcefield::readAngles()
 			Messenger::exit("Forcefield::readAngles");
 			return FALSE;
 		}
-		if (strcmp(ffparser.argc(0),"end") == 0) done = TRUE;
+		if (ffparser.argc(0) == "end") done = TRUE;
 		else
 		{
 			// Do the best checking we can on the fftypes. If one contains a wildcard '*', then we must allow it.
 			// If not, then check to see that it references an atomname in the atomtypes list
 			for (n=0; n<3; n++)
 			{
-				if ((strchr(ffparser.argc(n),'*') == NULL) && (findType(ffparser.argc(n)) == NULL))
-					Messenger::print("\t... Warning - angle atom '%s' does not exist in the forcefield!",ffparser.argc(n));
+				if ((!ffparser.argc(n).contains('*')) && (!findType(ffparser.argc(n))))
+					Messenger::print("\t... Warning - angle atom '%s' does not exist in the forcefield!", qPrintable(ffparser.argc(n)));
 			}
 			// Create new ff_angle structure
 			newffangle = angles_.add();
@@ -649,7 +662,7 @@ bool Forcefield::readAngles()
 			newffangle->setTypeName(2, ffparser.argc(2));
 			newffangle->setAngleForm(anglestyle);
 			for (n=0; n<MAXFFPARAMDATA; n++) if (ffparser.hasArg(n+3)) newffangle->setParameter(n,ffparser.argd(n+3));
-			Messenger::print(Messenger::Verbose, "ANGLE %i : %s-%s-%s  %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f", n, newffangle->typeName(0), newffangle->typeName(1), newffangle->typeName(2), newffangle->parameter(0), newffangle->parameter(1), newffangle->parameter(2), newffangle->parameter(3), newffangle->parameter(4), newffangle->parameter(5)); 
+			Messenger::print(Messenger::Verbose, "ANGLE %i : %s-%s-%s  %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f", n, qPrintable(newffangle->typeName(0)), qPrintable(newffangle->typeName(1)), qPrintable(newffangle->typeName(2)), newffangle->parameter(0), newffangle->parameter(1), newffangle->parameter(2), newffangle->parameter(3), newffangle->parameter(4), newffangle->parameter(5)); 
 			count ++;
 		}
 	} while (!done);
@@ -670,7 +683,7 @@ bool Forcefield::readTorsions()
 	if (torsionstyle == TorsionFunctions::nTorsionFunctions)
 	{
 		torsionstyle = TorsionFunctions::None;
-		Messenger::print("Torsion twist functional form not recognised - '%s'",ffparser.argc(1));
+		Messenger::print("Torsion twist functional form not recognised - '%s'", qPrintable(ffparser.argc(1)));
 		return FALSE;
 	}
 	// Have new scaling factors been provided?
@@ -699,27 +712,27 @@ bool Forcefield::readTorsions()
 			Messenger::exit("Forcefield::readTorsions");
 			return FALSE;
 		}
-		if (strcmp(ffparser.argc(0),"end") == 0) done = TRUE;
+		if (ffparser.argc(0) == "end") done = TRUE;
 		else
 		{
 			// Do the best checking we can on the fftypes. If one contains a wildcard '*', then we must allow it.
 			// If not, then check to see that it references an atomname in the atomtypes list
 			for (n=0; n<4; n++)
 			{
-				if ((strchr(ffparser.argc(n),'*') == NULL) && (findType(ffparser.argc(n)) == NULL))
-					Messenger::print("\t... Warning - torsion atom '%s' does not exist in the forcefield!",ffparser.argc(n));
+				if ((!ffparser.argc(n).contains('*')) && (!findType(ffparser.argc(n))))
+					Messenger::print("\t... Warning - torsion atom '%s' does not exist in the forcefield!", qPrintable(ffparser.argc(n)));
 			}
 			// Create new ff_angle structure
 			newfftorsion = torsions_.add();
 			newfftorsion->setType(ForcefieldBound::TorsionInteraction);
-			newfftorsion->setTypeName(0,ffparser.argc(0));
-			newfftorsion->setTypeName(1,ffparser.argc(1));
-			newfftorsion->setTypeName(2,ffparser.argc(2));
-			newfftorsion->setTypeName(3,ffparser.argc(3));
+			newfftorsion->setTypeName(0, ffparser.argc(0));
+			newfftorsion->setTypeName(1, ffparser.argc(1));
+			newfftorsion->setTypeName(2, ffparser.argc(2));
+			newfftorsion->setTypeName(3, ffparser.argc(3));
 			newfftorsion->setTorsionForm(torsionstyle);
 			newfftorsion->setScaleFactors(escale, vscale);
 			for (n=0; n<MAXFFPARAMDATA; n++) if (ffparser.hasArg(n+4)) newfftorsion->setParameter(n, ffparser.argd(n+4));
-			Messenger::print(Messenger::Verbose, "TORSION %i : %s  %s  %s  %s  %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f", n, newfftorsion->typeName(0), newfftorsion->typeName(1), newfftorsion->typeName(2), newfftorsion->typeName(3), newfftorsion->parameter(0), newfftorsion->parameter(1), newfftorsion->parameter(2), newfftorsion->parameter(3), newfftorsion->parameter(4), newfftorsion->parameter(5));
+			Messenger::print(Messenger::Verbose, "TORSION %i : %s  %s  %s  %s  %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f", n, qPrintable(newfftorsion->typeName(0)), qPrintable(newfftorsion->typeName(1)), qPrintable(newfftorsion->typeName(2)), qPrintable(newfftorsion->typeName(3)), newfftorsion->parameter(0), newfftorsion->parameter(1), newfftorsion->parameter(2), newfftorsion->parameter(3), newfftorsion->parameter(4), newfftorsion->parameter(5));
 			count ++;
 		}
 	} while (!done);
@@ -739,7 +752,7 @@ bool Forcefield::readImpropers()
 	if (torsionstyle == TorsionFunctions::nTorsionFunctions)
 	{
 		torsionstyle = TorsionFunctions::None;
-		Messenger::print("Improper torsion functional form not recognised - '%s'",ffparser.argc(1));
+		Messenger::print("Improper torsion functional form not recognised - '%s'", qPrintable(ffparser.argc(1)));
 		TorsionFunctions::printValid();
 		return FALSE;
 	}
@@ -756,27 +769,27 @@ bool Forcefield::readImpropers()
 			Messenger::exit("Forcefield::readImpropers");
 			return FALSE;
 		}
-		if (strcmp(ffparser.argc(0),"end") == 0) done = TRUE;
+		if (ffparser.argc(0) == "end") done = TRUE;
 		else
 		{
 			// Do the best checking we can on the fftypes. If one contains a wildcard '*', then we must allow it.
 			// If not, then check to see that it references an atomname in the atomtypes list
 			for (n=0; n<4; n++)
 			{
-				if ((strchr(ffparser.argc(n),'*') == NULL) && (findType(ffparser.argc(n)) == NULL))
-					Messenger::print("\t... Warning - improper torsion atom '%s' does not exist in the forcefield!",ffparser.argc(n));
+				if ((!ffparser.argc(n).contains('*')) && (!findType(ffparser.argc(n))))
+					Messenger::print("\t... Warning - improper torsion atom '%s' does not exist in the forcefield!", qPrintable(ffparser.argc(n)));
 			}
 			// Create new ff_angle structure
 			newffimproper = impropers_.add();
 			newffimproper->setType(ForcefieldBound::ImproperInteraction);
-			newffimproper->setTypeName(0,ffparser.argc(0));
-			newffimproper->setTypeName(1,ffparser.argc(1));
-			newffimproper->setTypeName(2,ffparser.argc(2));
-			newffimproper->setTypeName(3,ffparser.argc(3));
+			newffimproper->setTypeName(0, ffparser.argc(0));
+			newffimproper->setTypeName(1, ffparser.argc(1));
+			newffimproper->setTypeName(2, ffparser.argc(2));
+			newffimproper->setTypeName(3, ffparser.argc(3));
 			newffimproper->setTorsionForm(torsionstyle);
 			newffimproper->setScaleFactors(1.0,1.0);
 			for (n=0; n<MAXFFPARAMDATA; n++) if (ffparser.hasArg(n+4)) newffimproper->setParameter(n, ffparser.argd(n+4));
-			Messenger::print(Messenger::Verbose, "IMPROPER %i : %s  %s  %s  %s  %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f", n, newffimproper->typeName(0), newffimproper->typeName(1), newffimproper->typeName(2), newffimproper->typeName(3), newffimproper->parameter(0), newffimproper->parameter(1), newffimproper->parameter(2), newffimproper->parameter(3), newffimproper->parameter(4), newffimproper->parameter(5));
+			Messenger::print(Messenger::Verbose, "IMPROPER %i : %s  %s  %s  %s  %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f", n, qPrintable(newffimproper->typeName(0)), qPrintable(newffimproper->typeName(1)), qPrintable(newffimproper->typeName(2)), qPrintable(newffimproper->typeName(3)), newffimproper->parameter(0), newffimproper->parameter(1), newffimproper->parameter(2), newffimproper->parameter(3), newffimproper->parameter(4), newffimproper->parameter(5));
 			count ++;
 		}
 	} while (!done);
@@ -796,7 +809,7 @@ bool Forcefield::readUreyBradley()
 	if (bondstyle == BondFunctions::nBondFunctions)
 	{
 		bondstyle = BondFunctions::None;
-		Messenger::print("Urey-Bradley (bond) functional form not recognised - '%s'",ffparser.argc(1));
+		Messenger::print("Urey-Bradley (bond) functional form not recognised - '%s'", qPrintable(ffparser.argc(1)));
 		BondFunctions::printValid();
 		return FALSE;
 	}
@@ -813,29 +826,30 @@ bool Forcefield::readUreyBradley()
 			Messenger::exit("Forcefield::readUreyBradley");
 			return FALSE;
 		}
-		if (strcmp(ffparser.argc(0),"end") == 0) done = TRUE;
+		if (ffparser.argc(0) == "end") done = TRUE;
 		else
 		{
 			// Do the best checking we can on the fftypes. If one contains a wildcard '*', then we must allow it.
 			// If not, then check to see that it references an atomname in the atomtypes list
 			for (n=0; n<3; n++)
 			{
-				if ((strchr(ffparser.argc(n),'*') == NULL) && (findType(ffparser.argc(n)) == NULL))
-					Messenger::print("\t... Warning - Urey-Bradley atom '%s' does not exist in the forcefield!",ffparser.argc(n));
+				if ((!ffparser.argc(n).contains('*')) && (!findType(ffparser.argc(n))))
+					Messenger::print("\t... Warning - Urey-Bradley atom '%s' does not exist in the forcefield!", qPrintable(ffparser.argc(n)));
 			}
 			// Create new ff_angle structure
 			newffurey = ureyBradleys_.add();
 			newffurey->setType(ForcefieldBound::UreyBradleyInteraction);
-			newffurey->setTypeName(0,ffparser.argc(0));
-			newffurey->setTypeName(1,ffparser.argc(1));
-			newffurey->setTypeName(2,ffparser.argc(2));
+			newffurey->setTypeName(0, ffparser.argc(0));
+			newffurey->setTypeName(1, ffparser.argc(1));
+			newffurey->setTypeName(2, ffparser.argc(2));
 			newffurey->setBondForm(bondstyle);
 			for (n=0; n<MAXFFPARAMDATA; n++) if (ffparser.hasArg(n+3)) newffurey->setParameter(n, ffparser.argd(n+3));
-			Messenger::print(Messenger::Verbose, "UREY-BRADLEY %i : %s  %s  %s  %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f", n, newffurey->typeName(0), newffurey->typeName(1), newffurey->typeName(2), newffurey->parameter(0), newffurey->parameter(1), newffurey->parameter(2), newffurey->parameter(3), newffurey->parameter(4), newffurey->parameter(5));
+			Messenger::print(Messenger::Verbose, "UREY-BRADLEY %i : %s  %s  %s  %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f", n, qPrintable(newffurey->typeName(0)), qPrintable(newffurey->typeName(1)), qPrintable(newffurey->typeName(2)), newffurey->parameter(0), newffurey->parameter(1), newffurey->parameter(2), newffurey->parameter(3), newffurey->parameter(4), newffurey->parameter(5));
 			count ++;
 		}
 	} while (!done);
 	Messenger::print("\t: Read in %i Urey-Bradley definitions (%s)", count, BondFunctions::BondFunctions[bondstyle].name);
+
 	Messenger::exit("Forcefield::readUreyBradley");
 	return TRUE;
 }

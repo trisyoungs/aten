@@ -529,7 +529,7 @@ bool StepNode::initialise()
 }
 
 // Static function to search accessors of type represented by this path step
-StepNode* StepNode::findAccessor(const char* s, TreeNode* arrayIndex, TreeNode* argList)
+StepNode* StepNode::findAccessor(QString name, TreeNode* arrayIndex, TreeNode* argList)
 {
 	Messenger::enter("StepNode::findAccessor");
 	// From the return type of the node, determine which (static) function to call
@@ -540,91 +540,91 @@ StepNode* StepNode::findAccessor(const char* s, TreeNode* arrayIndex, TreeNode* 
 			printf("Internal Error: StepNode was expecting NoData.\n");
 			break;
 		case (VTypes::AtomData):
-			result = AtomVariable::accessorSearch(s, arrayIndex, argList);
+			result = AtomVariable::accessorSearch(name, arrayIndex, argList);
 			break;
 		case (VTypes::BasisPrimitiveData):
-			result = BasisPrimitiveVariable::accessorSearch(s, arrayIndex, argList);
+			result = BasisPrimitiveVariable::accessorSearch(name, arrayIndex, argList);
 			break;
 		case (VTypes::BasisShellData):
-			result = BasisShellVariable::accessorSearch(s, arrayIndex, argList);
+			result = BasisShellVariable::accessorSearch(name, arrayIndex, argList);
 			break;
 		case (VTypes::BondData):
-			result = BondVariable::accessorSearch(s, arrayIndex, argList);
+			result = BondVariable::accessorSearch(name, arrayIndex, argList);
 			break;
 		case (VTypes::CellData):
-			result = CellVariable::accessorSearch(s, arrayIndex, argList);
+			result = CellVariable::accessorSearch(name, arrayIndex, argList);
 			break;
 		case (VTypes::ColourScaleData):
-			result = ColourScaleVariable::accessorSearch(s, arrayIndex, argList);
+			result = ColourScaleVariable::accessorSearch(name, arrayIndex, argList);
 			break;
 		case (VTypes::ColourScalePointData):
-			result = ColourScalePointVariable::accessorSearch(s, arrayIndex, argList);
+			result = ColourScalePointVariable::accessorSearch(name, arrayIndex, argList);
 			break;
 		case (VTypes::DialogData):
-			result = DialogVariable::accessorSearch(s, arrayIndex, argList);
+			result = DialogVariable::accessorSearch(name, arrayIndex, argList);
 			break;
 		case (VTypes::EigenvectorData):
-			result = EigenvectorVariable::accessorSearch(s, arrayIndex, argList);
+			result = EigenvectorVariable::accessorSearch(name, arrayIndex, argList);
 			break;
 		case (VTypes::ElementData):
-			result = ElementVariable::accessorSearch(s, arrayIndex, argList);
+			result = ElementVariable::accessorSearch(name, arrayIndex, argList);
 			break;
 		case (VTypes::EnergyStoreData):
-			result = EnergyStoreVariable::accessorSearch(s, arrayIndex, argList);
+			result = EnergyStoreVariable::accessorSearch(name, arrayIndex, argList);
 			break;
 		case (VTypes::ForcefieldData):
-			result = ForcefieldVariable::accessorSearch(s, arrayIndex, argList);
+			result = ForcefieldVariable::accessorSearch(name, arrayIndex, argList);
 			break;
 		case (VTypes::ForcefieldAtomData):
-			result = ForcefieldAtomVariable::accessorSearch(s, arrayIndex, argList);
+			result = ForcefieldAtomVariable::accessorSearch(name, arrayIndex, argList);
 			break;
 		case (VTypes::ForcefieldBoundData):
-			result = ForcefieldBoundVariable::accessorSearch(s, arrayIndex, argList);
+			result = ForcefieldBoundVariable::accessorSearch(name, arrayIndex, argList);
 			break;
 		case (VTypes::GlyphData):
-			result = GlyphVariable::accessorSearch(s, arrayIndex, argList);
+			result = GlyphVariable::accessorSearch(name, arrayIndex, argList);
 			break;
 		case (VTypes::GlyphDataData):
-			result = GlyphDataVariable::accessorSearch(s, arrayIndex, argList);
+			result = GlyphDataVariable::accessorSearch(name, arrayIndex, argList);
 			break;
 		case (VTypes::GridData):
-			result = GridVariable::accessorSearch(s, arrayIndex, argList);
+			result = GridVariable::accessorSearch(name, arrayIndex, argList);
 			break;
 		case (VTypes::MatrixData):
-			result = VectorVariable::accessorSearch(s, arrayIndex, argList);
+			result = VectorVariable::accessorSearch(name, arrayIndex, argList);
 			break;
 		case (VTypes::MeasurementData):
-			result = MeasurementVariable::accessorSearch(s, arrayIndex, argList);
+			result = MeasurementVariable::accessorSearch(name, arrayIndex, argList);
 			break;
 		case (VTypes::ModelData):
-			result = ModelVariable::accessorSearch(s, arrayIndex, argList);
+			result = ModelVariable::accessorSearch(name, arrayIndex, argList);
 			break;
 		case (VTypes::MonteCarloData):
-			result = MonteCarloVariable::accessorSearch(s, arrayIndex, argList);
+			result = MonteCarloVariable::accessorSearch(name, arrayIndex, argList);
 			break;
 		case (VTypes::PatternData):
-			result = PatternVariable::accessorSearch(s, arrayIndex, argList);
+			result = PatternVariable::accessorSearch(name, arrayIndex, argList);
 			break;
 		case (VTypes::PatternBoundData):
-			result = PatternBoundVariable::accessorSearch(s, arrayIndex, argList);
+			result = PatternBoundVariable::accessorSearch(name, arrayIndex, argList);
 			break;
 		case (VTypes::PreferencesData):
-			result = PreferencesVariable::accessorSearch(s, arrayIndex, argList);
+			result = PreferencesVariable::accessorSearch(name, arrayIndex, argList);
 			break;
 		case (VTypes::SiteData):
-			result = SiteVariable::accessorSearch(s, arrayIndex, argList);
+			result = SiteVariable::accessorSearch(name, arrayIndex, argList);
 			break;
 		case (VTypes::VectorData):
-			result = VectorVariable::accessorSearch(s, arrayIndex, argList);
+			result = VectorVariable::accessorSearch(name, arrayIndex, argList);
 			break;
 		case (VTypes::WidgetData):
-			result = WidgetVariable::accessorSearch(s, arrayIndex, argList);
+			result = WidgetVariable::accessorSearch(name, arrayIndex, argList);
 			break;
 		case (VTypes::ZMatrixData):
-			result = ZMatrixVariable::accessorSearch(s, arrayIndex, argList);
+			result = ZMatrixVariable::accessorSearch(name, arrayIndex, argList);
 			break;
 		case (VTypes::ZMatrixElementData):
-			result = ZMatrixElementVariable::accessorSearch(s, arrayIndex, argList);
+			result = ZMatrixElementVariable::accessorSearch(name, arrayIndex, argList);
 			break;
 		default:
 			printf("Internal Error: StepNode doesn't know how to search for accessors in type '%s'.\n", VTypes::dataType(returnType_));

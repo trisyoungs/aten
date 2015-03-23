@@ -49,21 +49,21 @@ class VariableList
 	// List of constants
 	List<TreeNode> constants_;
 	// Create variable of specified type
-	static Variable* makeVariable(VTypes::DataType type, const char* name, TreeNode* initialValue = NULL);
+	static Variable* makeVariable(VTypes::DataType type, QString name, TreeNode* initialValue = NULL);
 	// Create a new array variable in the list
-	Variable* makeArray(VTypes::DataType type, const char* name, TreeNode* sizeexpr, TreeNode* initialValue = NULL);
+	Variable* makeArray(VTypes::DataType type, QString name, TreeNode* sizeexpr, TreeNode* initialValue = NULL);
 
 	public:
 	// Pass a newly-created variable / constant to the list for it to take ownership of
 	void take(Variable* v, bool forcevariable = FALSE);
 	// Retrieve a named variable from the list
-	Variable* find(const char* name) const;
+	Variable* find(QString name) const;
 	// Create a new variable in the list
-	Variable* create(VTypes::DataType type, const char* name, TreeNode* initialValue = NULL);
+	Variable* create(VTypes::DataType type, QString name, TreeNode* initialValue = NULL);
 	// Create a new variable
-	Variable* createFree(VTypes::DataType type, const char* name, TreeNode* initialValue = NULL);
+	Variable* createFree(VTypes::DataType type, QString name, TreeNode* initialValue = NULL);
 	// Create a new array variable in the list
-	Variable* createArray(VTypes::DataType type, const char* name, TreeNode* sizeexpr, TreeNode* initialValue = NULL);
+	Variable* createArray(VTypes::DataType type, QString name, TreeNode* sizeexpr, TreeNode* initialValue = NULL);
 	// Create a new array constant in the list
 	Variable* createArrayConstant(VTypes::DataType type, int size);
 	// Return the number of variables (not constants) contained in the list

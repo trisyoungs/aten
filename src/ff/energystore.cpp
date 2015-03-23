@@ -403,6 +403,7 @@ void EnergyStore::printEwald()
 void EnergyStore::printVdwMatrix(Model* m)
 {
 	Messenger::enter("EnergyStore::printVdwMatrix");
+	QString data, bit;
 	int count1, count2;
 	Pattern* p1, *p2;
 	if (!calculated_)
@@ -411,22 +412,26 @@ void EnergyStore::printVdwMatrix(Model* m)
 		Messenger::exit("EnergyStore::printVdwMatrix");
 		return;
 	}
+
 	// Print out VDW energy decomposition
-	printf("VDW Interaction Energy:\n     Pattern         Intra  ");
-	for (p1 = m->patterns(); p1 != NULL; p1 = p1->next) printf("%13s  ",p1->name());
-	printf("\n");
+	Messenger::print("VDW Interaction Energy:");
+	Messenger::print("     Pattern         Intra  ");
+	data.clear();
+	for (p1 = m->patterns(); p1 != NULL; p1 = p1->next) data += bit.sprintf("%13s  ", qPrintable(p1->name()));
+	Messenger::print(data);
+	
 	count1 = 0;
 	for (p1 = m->patterns(); p1 != NULL; p1 = p1->next)
 	{
 		count2 = 0;
-		printf("%13s  %13.6e  ",p1->name(),vdwIntra_[count1]);
+		data = bit.sprintf("%13s  %13.6e  ", qPrintable(p1->name()), vdwIntra_[count1]);
 		for (p2 = m->patterns(); p2 != NULL; p2 = p2->next)
 		{
-			printf("%13.6e  ",vdwInter_[count1][count2]);
-			count2 ++;
+			data += bit.sprintf("%13.6e  ", vdwInter_[count1][count2]);
+			++count2;
 		}
-		printf("\n");
-		count1 ++;
+		Messenger::print(data);
+		++count1;
 	}
 	Messenger::exit("EnergyStore::printVdwMatrix");
 }
@@ -435,6 +440,8 @@ void EnergyStore::printVdwMatrix(Model* m)
 void EnergyStore::printElecMatrix(Model* m)
 {
 	Messenger::enter("EnergyStore::printElecMatrix");
+
+	QString data, bit;
 	int count1, count2;
 	Pattern* p1, *p2;
 	double energy;
@@ -446,40 +453,47 @@ void EnergyStore::printElecMatrix(Model* m)
 	}
 	Electrostatics::ElecMethod et = prefs.electrostaticsMethod();
 	count1 = 0;
+
 	// Print out electrostatic energy decomposition
-	printf("Electrostatic Interaction Energy:\n      Pattern          Intra  ");
-	for (p1 = m->patterns(); p1 != NULL; p1 = p1->next) printf("%13s  ",p1->name());
-	printf("\n");
+	Messenger::print("Electrostatic Interaction Energy:");
+	Messenger::print("      Pattern          Intra  ");
+	for (p1 = m->patterns(); p1 != NULL; p1 = p1->next) data += bit.sprintf("%13s  ", qPrintable(p1->name()));
+	Messenger::print(data);
+
 	count1 = 0;
 	for (p1 = m->patterns(); p1 != NULL; p1 = p1->next)
 	{
 		count2 = 0;
+		data.clear();
 		switch (et)
 		{
+			// Coulomb sum
 			case (Electrostatics::Coulomb):
-				printf("%13s  %13.6e  ",p1->name(),coulombIntra_[count1]);
+				data.sprintf("%13s  %13.6e  ", qPrintable(p1->name()), coulombIntra_[count1]);
 				for (p2 = m->patterns(); p2 != NULL; p2 = p2->next)
 				{
-					printf("%13.6e  ",coulombInter_[count1][count2]);
-					count2 ++;
+					data.sprintf("%13.6e  ", coulombInter_[count1][count2]);
+					++count2;
 				}
 				break;
-			default:	 // Ewald
+			// Ewald sum
+			default:
 				energy = ewaldRealIntra_[count1] + ewaldRecipIntra_[count1] - ewaldMolCorrect_[count1];
-				printf("%13s  %13.6e  ",p1->name(),energy);
+				data.sprintf("%13s  %13.6e  ", qPrintable(p1->name()), energy);
 				for (p2 = m->patterns(); p2 != NULL; p2 = p2->next)
 				{
 					energy = ewaldRealInter_[count1][count2] + ewaldRecipInter_[count1][count2];
 					if (count1 == count2) energy -= ewaldSelfCorrect_[count1];
 					else energy += ewaldRecipInter_[count1][count2];
-					printf("%13.6e  ",energy);
-					count2 ++;
+					data += bit.sprintf("%13.6e  ", energy);
+					++count2;
 				}
 				break;
 		}
-		printf("\n");
-		count1 ++;
+		Messenger::print(data);
+		++count1;
 	}
+
 	Messenger::exit("EnergyStore::printElecMatrix");
 }
 
@@ -487,6 +501,8 @@ void EnergyStore::printElecMatrix(Model* m)
 void EnergyStore::printInterMatrix(Model* m)
 {
 	Messenger::enter("EnergyStore::printInterMatrix");
+
+	QString data, bit;
 	int count1, count2;
 	Pattern* p1, *p2;
 	double energyInter, energyIntra;
@@ -497,10 +513,13 @@ void EnergyStore::printInterMatrix(Model* m)
 		return;
 	}
 	Electrostatics::ElecMethod et = prefs.electrostaticsMethod();
+
 	// Print out total interpattern energy decomposition
-	printf("Total Interaction Energy:\n      Pattern          Intra  ");
-	for (p1 = m->patterns(); p1 != NULL; p1 = p1->next) printf("%13s  ",p1->name());
-	printf("\n");
+	Messenger::print("Total Interaction Energy:");
+	Messenger::print("      Pattern          Intra  ");
+	for (p1 = m->patterns(); p1 != NULL; p1 = p1->next) data += bit.sprintf("%13s  ", qPrintable(p1->name()));
+	Messenger::print(data);
+
 	count1 = 0;
 	for (p1 = m->patterns(); p1 != NULL; p1 = p1->next)
 	{
@@ -518,8 +537,9 @@ void EnergyStore::printInterMatrix(Model* m)
 				energyIntra += ewaldRealIntra_[count1] + ewaldRecipIntra_[count1] - ewaldMolCorrect_[count1];
 				break;
 		}
-		printf("%13s  %13.6e  ",p1->name(),energyIntra);
+
 		// Calculate total interpattern contributions
+		data.sprintf("%13s  %13.6e  ", qPrintable(p1->name()), energyIntra);
 		for (p2 = m->patterns(); p2 != NULL; p2 = p2->next)
 		{
 			energyInter = vdwInter_[count1][count2];
@@ -536,11 +556,11 @@ void EnergyStore::printInterMatrix(Model* m)
 					else energyInter += ewaldRecipInter_[count1][count2];
 					break;
 			}
-			printf("%13.6e  ",energyInter);
-			count2 ++;
+			data += bit.sprintf("%13.6e  ", energyInter);
+			++count2;
 		}
-		printf("\n");
-		count1 ++;
+		Messenger::print(data);
+		++count1;
 	}
 	Messenger::exit("EnergyStore::printInterMatrix");
 }
@@ -549,6 +569,7 @@ void EnergyStore::printInterMatrix(Model* m)
 void EnergyStore::printIntraMatrix(Model* m)
 {
 	Messenger::enter("EnergyStore::printIntraMatrix");
+
 	int count1;
 	Pattern* p1;
 	double energy;
@@ -558,14 +579,16 @@ void EnergyStore::printIntraMatrix(Model* m)
 		Messenger::exit("EnergyStore::printIntraMatrix");
 		return;
 	}
+
 	// Print out intramolecular energy decomposition
-	printf("Intramolecular Energy:\n     Pattern         Total       Per Mol         Bond         Angle       Torsion \n");
+	Messenger::print("Intramolecular Energy:");
+	Messenger::print("     Pattern         Total       Per Mol         Bond         Angle       Torsion");
 	count1 = 0;
 	for (p1 = m->patterns(); p1 != NULL; p1 = p1->next)
 	{
 		energy = bond_[count1] + angle_[count1] + torsion_[count1] + ureyBradley_[count1];
-		printf("%13s  %13.6e  %13.6e  %13.6e  %13.6e  %13.6e\n", p1->name(), energy, energy/p1->nMolecules(), bond_[count1], angle_[count1], torsion_[count1]);
-		count1 ++;
+		Messenger::print("%13s  %13.6e  %13.6e  %13.6e  %13.6e  %13.6e\n", qPrintable(p1->name()), energy, energy/p1->nMolecules(), bond_[count1], angle_[count1], torsion_[count1]);
+		++count1;
 	}
 	Messenger::exit("EnergyStore::printIntraMatrix");
 }

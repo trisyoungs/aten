@@ -35,7 +35,7 @@ const char* DataTypeKeywords[VTypes::nDataTypes] = { "_NODATA", "int", "double",
 bool DataTypeUserCreatable[VTypes::nDataTypes] = { FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, /*Aten*/ FALSE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, /*Dialog*/ FALSE, TRUE, /*Element*/ FALSE, /*EnergyStore*/ FALSE, TRUE, TRUE, TRUE, TRUE, /*GlyphData*/ FALSE, TRUE, /*MC*/ FALSE, /*Measurement*/ FALSE, /*Model*/ FALSE, /*Pattern*/ FALSE, /*PatternBound*/ FALSE, /*Prefs*/ FALSE, /*Site*/ FALSE, TRUE, /*Widget*/ FALSE, TRUE, /*ZMatrixElement*/ FALSE };
 
 // Return datatype based on supplied name
-VTypes::DataType VTypes::dataType(const char* s, bool reportError)
+VTypes::DataType VTypes::dataType(QString s, bool reportError)
 {
 	VTypes::DataType dt = (VTypes::DataType) enumSearch("", VTypes::nDataTypes, DataTypeKeywords, s);
 	if ((dt == VTypes::nDataTypes) && reportError) enumPrintValid(VTypes::nDataTypes,DataTypeKeywords);
@@ -68,14 +68,13 @@ bool VTypes::userCanCreate(DataType dt)
 }
 
 // Determine datatype based on literal value of string
-VTypes::DataType VTypes::determineType(const char* s)
+VTypes::DataType VTypes::determineType(QString s)
 {
 	// Try to determine type_ of the argument
 	int ch, nn = 0, nch = 0, ndp = 0, npm = 0, ne = 0;
-	unsigned int i;
-	for (i = 0; i < strlen(s); i++)
+	for (int i = 0; i < s.length(); ++i)
 	{
-		ch = s[i];
+		ch = s.at(i).toAscii();
 		if ((ch > 47) && (ch < 58)) nn ++;
 		else if (ch == '.') ndp ++;
 		else if ((ch == '-') || (ch == '+')) npm ++;

@@ -165,7 +165,7 @@ void AtomListWidget::updateRow(int row)
 		switch (displayItems_.at(column))
 		{
 			case (AtomListWidget::AtomIdItem):
-				item->setText(itoa(i->id()+1));
+				item->setText(QString::number(i->id()+1));
 				break;
 			case (AtomListWidget::AtomElementItem):
 				item->setText(Elements().symbol(i));

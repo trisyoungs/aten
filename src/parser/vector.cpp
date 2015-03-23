@@ -121,7 +121,7 @@ void VectorVariable::nodePrint(int offset, const char* prefix)
 		reCreate();
 		printf("[C]%s{%f,%f,%f} (constant value)\n", tab.get(), vectorData_.x, vectorData_.y, vectorData_.z);
 	}
-	else printf("[V]%s{%f,%f,%f} (variable, name=%s)\n", tab.get(), vectorData_.x, vectorData_.y, vectorData_.z, name_.get());
+	else printf("[V]%s{%f,%f,%f} (variable, name=%s)\n", tab.get(), vectorData_.x, vectorData_.y, vectorData_.z, qPrintable(name_));
 	delete[] tab;
 }
 
@@ -143,33 +143,33 @@ FunctionAccessor VectorVariable::functionData[VectorVariable::nFunctions] = {
 };
 
 // Search variable access list for provided accessor (call private static function)
-StepNode* VectorVariable::findAccessor(const char* s, TreeNode* arrayIndex, TreeNode* argList)
+StepNode* VectorVariable::findAccessor(QString name, TreeNode* arrayIndex, TreeNode* argList)
 {
-	return VectorVariable::accessorSearch(s, arrayIndex, argList);
+	return VectorVariable::accessorSearch(name, arrayIndex, argList);
 }
 
 // Private static function to search accessors
-StepNode* VectorVariable::accessorSearch(const char* s, TreeNode* arrayIndex, TreeNode* argList)
+StepNode* VectorVariable::accessorSearch(QString name, TreeNode* arrayIndex, TreeNode* argList)
 {
 	Messenger::enter("VectorVariable::accessorSearch");
 	StepNode* result = NULL;
 	int i = 0;
-	i = Variable::searchAccessor(s, nAccessors, accessorData);
+	i = Variable::searchAccessor(name, nAccessors, accessorData);
 	if (i == -1)
 	{
 		// No accessor found - is it a function definition?
 		// for (i = 0; i < nFunctions; i++) if (strcmp(functionData[i].name,s) == 0) break;
-		i = Variable::searchAccessor(s, nFunctions, functionData);
+		i = Variable::searchAccessor(name, nFunctions, functionData);
 		if (i == -1)
 		{
-			Messenger::print("Error: Type 'Vector' has no member or function named '%s'.", s);
+			Messenger::print("Error: Type 'Vector' has no member or function named '%s'.", qPrintable(name));
 			Messenger::exit("VectorVariable::accessorSearch");
 			return NULL;
 		}
 		Messenger::print(Messenger::Parse, "FunctionAccessor match = %i (%s)", i, functionData[i].name);
 		if (arrayIndex != NULL)
 		{
-			Messenger::print("Error: Array index given to 'Vector' function '%s'.", s);
+			Messenger::print("Error: Array index given to 'Vector' function named '%s'.", qPrintable(name));
 			Messenger::exit("VectorVariable::accessorSearch");
 			return NULL;
 		}
@@ -195,7 +195,7 @@ StepNode* VectorVariable::accessorSearch(const char* s, TreeNode* arrayIndex, Tr
 		// Were we given an argument list when we didn't want one?
 		if (argList != NULL)
 		{
-			Messenger::print("Error: Argument list given to 'Vector&' array member '%s'.", s);
+			Messenger::print("Error: Argument list given to 'Vector&' array member '%s'.", qPrintable(name));
 			Messenger::exit("VectorVariable::accessorSearch");
 			return NULL;
 		}
@@ -393,7 +393,7 @@ bool VectorArrayVariable::set(ReturnValue& rv)
 	}
 	if (vectorArrayData_ == NULL)
 	{
-		printf("Internal Error: Array '%s' has not been initialised.\n", name_.get());
+		printf("Internal Error: Array '%s' has not been initialised.\n", qPrintable(name_));
 		return FALSE;
 	}
 	// Loop over array elements and set them
@@ -411,13 +411,13 @@ bool VectorArrayVariable::setAsArray(ReturnValue& rv, int arrayIndex)
 	}
 	if (vectorArrayData_ == NULL)
 	{
-		printf("Internal Error: Array '%s' has not been initialised.", name_.get());
+		printf("Internal Error: Array '%s' has not been initialised.", qPrintable(name_));
 		return FALSE;
 	}
 	// Check index
 	if ((arrayIndex < 0) || (arrayIndex >= arraySize_))
 	{
-		Messenger::print("Index %i out of bounds for array '%s'.", arrayIndex+1, name_.get());
+		Messenger::print("Index %i out of bounds for array '%s'.", arrayIndex+1, qPrintable(name_));
 		return FALSE;
 	}
 	// Set individual element
@@ -430,7 +430,7 @@ void VectorArrayVariable::reset()
 {
 	if (vectorArrayData_ == NULL)
 	{
-		printf("Internal Error: Array '%s' has not been initialised.\n", name_.get());
+		printf("Internal Error: Array '%s' has not been initialised.\n", qPrintable(name_));
 		return;
 	}
 	// Loop over array elements and set them
@@ -440,7 +440,7 @@ void VectorArrayVariable::reset()
 // Return value of node
 bool VectorArrayVariable::execute(ReturnValue& rv)
 {
-	Messenger::print("A whole vector array ('%s') cannot be passed as a value.", name_.get());
+	Messenger::print("A whole vector array ('%s') cannot be passed as a value.", qPrintable(name_));
 	return FALSE;
 }
 
@@ -450,7 +450,7 @@ bool VectorArrayVariable::executeAsArray(ReturnValue& rv, int arrayIndex)
 	// Check bounds
 	if ((arrayIndex < 0) || (arrayIndex >= arraySize_))
 	{
-		Messenger::print("Error: Array index %i is out of bounds for array '%s'.", arrayIndex+1, name_.get());
+		Messenger::print("Error: Array index %i is out of bounds for array '%s'.", arrayIndex+1, qPrintable(name_));
 		return FALSE;
 	}
 	rv.set( vectorArrayData_[arrayIndex] );
@@ -467,7 +467,7 @@ void VectorArrayVariable::nodePrint(int offset, const char* prefix)
 	tab.strcat(prefix);
 
 	// Output node data
-	printf("[V]%s (integer array, name=%s, current size=%i)\n", tab.get(), name_.get(), arraySize_);
+	printf("[V]%s (integer array, name=%s, current size=%i)\n", tab.get(), qPrintable(name_), arraySize_);
 }
 
 // Initialise array
@@ -478,7 +478,7 @@ bool VectorArrayVariable::initialise()
 	ReturnValue newsize;
 	if (!arraySizeExpression_->execute(newsize))
 	{
-		Messenger::print("Failed to find size for vector array '%s'.", name_.get());
+		Messenger::print("Failed to find size for vector array '%s'.", qPrintable(name_));
 		return FALSE;
 	}
 	// If the array is already allocated, free it only if the size is different
@@ -500,7 +500,7 @@ bool VectorArrayVariable::initialise()
 }
 
 // Search variable access list for provided accessor
-StepNode* VectorArrayVariable::findAccessor(const char* s, TreeNode* arrayIndex, TreeNode* argList)
+StepNode* VectorArrayVariable::findAccessor(QString name, TreeNode* arrayIndex, TreeNode* argList)
 {
-	return VectorVariable::accessorSearch(s, arrayIndex, argList);
+	return VectorVariable::accessorSearch(name, arrayIndex, argList);
 }

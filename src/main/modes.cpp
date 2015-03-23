@@ -38,7 +38,8 @@ void Aten::setExportFilter(Tree* filter)
 void Aten::exportModels()
 {
 	Messenger::enter("Aten::exportModels");
-	Dnchar filename;
+	QFileInfo fileInfo;
+	QString filename;
 
 	// Loop over loaded models
 	for (Model* m = models_.first(); m != NULL; m = m->next)
@@ -46,19 +47,14 @@ void Aten::exportModels()
 		// Set current model
 		setCurrentModel(m, TRUE);
 
-		// Generate new filename for model.
-		filename = m->filename();
-		int n = filename.rFind('.', '/', '\\');
-		filename.eraseFrom(n);
-
-		// Append new suffix
-		filename += '.';
-		filename.strcat(exportFilter_->filter.extensions()->get());
+		// Generate new filename for model, with new suffix
+		fileInfo.setFile(m->filename());
+		filename = fileInfo.absolutePath() + fileInfo.baseName() + "." + exportFilter_->filter.extensions().first();
 
 		// Make sure that the new filename is not the same as the old filename
 		if (filename == m->filename())
 		{
-			Messenger::print("Export filename generated is identical to the original (%s) - not converted.", filename.get());
+			Messenger::print("Export filename generated is identical to the original (%s) - not converted.", qPrintable(filename));
 			continue;
 		}
 		m->setFilter(exportFilter_);
@@ -66,8 +62,8 @@ void Aten::exportModels()
 		
 		// Temporarily disable undo/redo for the model, save, and re-enable
 		m->disableUndoRedo();
-		if (exportFilter_->executeWrite(filename)) Messenger::print("Model '%s' saved to file '%s' (%s)", m->name(), filename.get(), exportFilter_->filter.name());
-		else Messenger::print("Failed to save model '%s'.", m->name());
+		if (exportFilter_->executeWrite(filename)) Messenger::print("Model '%s' saved to file '%s' (%s)", qPrintable(m->name()), qPrintable(filename), qPrintable(exportFilter_->filter.name()));
+		else Messenger::print("Failed to save model '%s'.", qPrintable(m->name()));
 		m->enableUndoRedo();
 	}
 	Messenger::exit("Aten::exportModels");
@@ -107,20 +103,18 @@ void Aten::saveModels()
 	{
 		setCurrentModel(m, TRUE);
 		// Check model's filter - it will be the import filter, so try to get the partner
-		Tree* t = m->filter();
-		if (t == NULL)
+		Tree* filter = m->filter();
+		if (filter == NULL)
 		{
-			Messenger::print("No export filter available for model '%s'. Not saved.", m->name());
+			Messenger::print("No export filter available for model '%s'. Not saved.", qPrintable(m->name()));
 			continue;
 		}
-		if (t->filter.type() != FilterData::ModelExport)
+		if (filter->filter.type() != FilterData::ModelExport)
 		{
-			Messenger::print("No export filter for model '%s' (format '%s'). Not saved.", m->name(), t->filter.nickname());
+			Messenger::print("No export filter for model '%s' (format '%s'). Not saved.", qPrintable(m->name()), qPrintable(filter->filter.nickname()));
 			continue;
 		}
 		
-		Dnchar filename;
-		filename = m->filename();
-		if (!filename.isEmpty()) t->executeWrite(m->filename());
+		if (!m->filename().isEmpty()) filter->executeWrite(m->filename());
 	}
 }

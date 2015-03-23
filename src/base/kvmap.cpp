@@ -29,7 +29,7 @@ ATEN_USING_NAMESPACE
 */
 
 // Constructor
-KVPair::KVPair(const char* key, const char* value) : ListItem<KVPair>()
+KVPair::KVPair(QString key, QString value) : ListItem<KVPair>()
 {
 	// Private variables
 	if (key != NULL) key_ = key;
@@ -37,21 +37,21 @@ KVPair::KVPair(const char* key, const char* value) : ListItem<KVPair>()
 }
 
 // Retrieve key associated to pair
-const char* KVPair::key() const
+QString KVPair::key() const
 {
-	return key_.get();
+	return key_;
 }
 
 // Set value associated to key
-void KVPair::setValue(const char* newvalue)
+void KVPair::setValue(QString value)
 {
-	value_ = newvalue;
+	value_ = value;
 }
 
 // Retrieve value associated to key
-const char* KVPair::value() const
+QString KVPair::value() const
 {
-	return value_.get();
+	return value_;
 }
 
 /*
@@ -76,11 +76,11 @@ int KVMap::nPairs() const
 }
 
 // Set (existing) key/value pair
-void KVMap::add(const char* key, const char* value)
+void KVMap::add(QString key, QString value)
 {
 	// Search for existing value...
-	KVPair *kvp = NULL;
-	for (kvp = pairs_.first(); kvp != NULL; kvp = kvp->next) if (strcmp(kvp->key(),key) == 0) break;
+	KVPair* kvp = NULL;
+	for (kvp = pairs_.first(); kvp != NULL; kvp = kvp->next) if (kvp->key() == key) break;
 	if (kvp == NULL)
 	{
 		kvp = new KVPair(key,value);
@@ -90,23 +90,23 @@ void KVMap::add(const char* key, const char* value)
 }
 
 // Search map for specified key
-KVPair *KVMap::search(const char* key) const
+KVPair* KVMap::search(QString key) const
 {
 	// Search for existing value...
-	for (KVPair *kvp = pairs_.first(); kvp != NULL; kvp = kvp->next) if (strcmp(kvp->key(),key) == 0) return kvp;
+	for (KVPair* kvp = pairs_.first(); kvp != NULL; kvp = kvp->next) if (kvp->key() == key) return kvp;
 	return NULL;
 }
 
 // Retrieve value associated to key
-const char* KVMap::value(const char* key)
+QString KVMap::value(QString key)
 {
 	// Search for existing value...
-	for (KVPair *kvp = pairs_.first(); kvp != NULL; kvp = kvp->next) if (strcmp(kvp->key(),key) == 0) return kvp->value();
+	for (KVPair* kvp = pairs_.first(); kvp != NULL; kvp = kvp->next) if (kvp->key() == key) return kvp->value();
 	return NULL;
 }
 
 // Return first key in list
-KVPair *KVMap::pairs()
+KVPair* KVMap::pairs()
 {
 	return pairs_.first();
 }

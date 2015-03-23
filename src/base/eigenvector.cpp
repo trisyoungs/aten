@@ -67,15 +67,15 @@ bool Eigenvector::isSpherical()
 }
 
 // Set text name of eigenvalue
-void Eigenvector::setName(const char* name)
+void Eigenvector::setName(QString name)
 {
 	name_ = name;
 }
 
 // Return text 'name' of eigenvalue
-const char* Eigenvector::name() const
+QString Eigenvector::name() const
 {
-	return name_.get();
+	return name_;
 }
 
 // Set array index

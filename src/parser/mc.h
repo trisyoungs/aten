@@ -48,9 +48,9 @@ class MonteCarloVariable : public Variable
 	// Function list
 	enum Functions { AcceptanceEnergy, MaxStep, MoveAllowed, NTrials, SetAcceptanceEnergy, SetMaxStep, SetMoveAllowed, SetNTrials, nFunctions };
 	// Search variable access list for provided accessor
-	StepNode* findAccessor(const char* s, TreeNode* arrayIndex, TreeNode* argList = NULL);
+	StepNode* findAccessor(QString name, TreeNode* arrayIndex, TreeNode* argList = NULL);
 	// Static function to search accessors
-	static StepNode* accessorSearch(const char* s, TreeNode* arrayIndex, TreeNode* argList = NULL);
+	static StepNode* accessorSearch(QString name, TreeNode* arrayIndex, TreeNode* argList = NULL);
 	// Retrieve desired value
 	static bool retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex, int arrayIndex = -1);
 	// Set desired value

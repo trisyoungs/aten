@@ -95,7 +95,7 @@ void GlyphsWidget::showWidget()
 void GlyphsWidget::addItemToList(Glyph* g)
 {
 	QString s;
-	s = itoa(ui.GlyphList->count()+1);
+	s = QString::number(ui.GlyphList->count()+1);
 	s += ". ";
 	s += Glyph::glyphType(g->type());
 	TListWidgetItem *item = new TListWidgetItem(ui.GlyphList);
@@ -346,7 +346,7 @@ void GlyphsWidget::on_GlyphTypeCombo_currentIndexChanged(int row)
 		item = (TListWidgetItem*) items.at(i);
 		g = (Glyph*) item->data.asPointer(VTypes::GlyphData);
 		g->setType(gt);
-		s = itoa(ui.GlyphList->row(item)+1);
+		s = QString::number(ui.GlyphList->row(item)+1);
 		s += ". ";
 		s += Glyph::glyphType(gt);
 		item->setText(s);

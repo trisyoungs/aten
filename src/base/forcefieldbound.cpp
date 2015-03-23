@@ -59,7 +59,7 @@ ForcefieldBound::BoundType ForcefieldBound::type() const
 	return type_;
 }
 // Return the form text for the bound interaction
-const char* ForcefieldBound::formText() const
+QString ForcefieldBound::formText() const
 {
 	switch (type_)
 	{
@@ -123,7 +123,7 @@ void ForcefieldBound::setTorsionForm(TorsionFunctions::TorsionFunction tf)
 }
 
 // Set the functional form by name, without changing any existing parameters
-bool ForcefieldBound::setForm(const char* form)
+bool ForcefieldBound::setForm(QString form)
 {
 	// Based on the current type of the ForcefieldBound, convert text to enum
 	int newform = -1;
@@ -132,18 +132,18 @@ bool ForcefieldBound::setForm(const char* form)
 		case (ForcefieldBound::BondInteraction):
 		case (ForcefieldBound::UreyBradleyInteraction):
 			newform = BondFunctions::bondFunction(form);
-			if (newform == BondFunctions::nBondFunctions) Messenger::print("Unrecognised functional form (%s) for %s interaction.", form, ForcefieldBoundKeywords[type_]);
+			if (newform == BondFunctions::nBondFunctions) Messenger::print("Unrecognised functional form (%s) for %s interaction.", qPrintable(form), ForcefieldBoundKeywords[type_]);
 			else setBondForm((BondFunctions::BondFunction) newform);
 			break;
 		case (ForcefieldBound::AngleInteraction):
 			newform = AngleFunctions::angleFunction(form);
-			if (newform == AngleFunctions::nAngleFunctions) Messenger::print("Unrecognised functional form (%s) for %s interaction.", form, ForcefieldBoundKeywords[type_]);
+			if (newform == AngleFunctions::nAngleFunctions) Messenger::print("Unrecognised functional form (%s) for %s interaction.", qPrintable(form), ForcefieldBoundKeywords[type_]);
 			else setAngleForm((AngleFunctions::AngleFunction) newform);
 			break;
 		case (ForcefieldBound::TorsionInteraction):
 		case (ForcefieldBound::ImproperInteraction):
 			newform = TorsionFunctions::torsionFunction(form);
-			if (newform == TorsionFunctions::nTorsionFunctions) Messenger::print("Unrecognised functional form (%s) for %s interaction.", form, ForcefieldBoundKeywords[type_]);
+			if (newform == TorsionFunctions::nTorsionFunctions) Messenger::print("Unrecognised functional form (%s) for %s interaction.", qPrintable(form), ForcefieldBoundKeywords[type_]);
 			else setTorsionForm((TorsionFunctions::TorsionFunction) newform);
 		break;
 		default:
@@ -175,23 +175,23 @@ double* ForcefieldBound::parameters()
 }
 
 // Return the atom type 'n'
-const char* ForcefieldBound::typeName(int n) const
+QString ForcefieldBound::typeName(int n) const
 {
-	return (n < MAXFFBOUNDTYPES ? typeNames_[n].get() : "OUTOFRANGE");
+	return (n < MAXFFBOUNDTYPES ? typeNames_[n] : "OUTOFRANGE");
 }
 
 // Return the atom type array
-Dnchar* ForcefieldBound::typeNames()
+QString* ForcefieldBound::typeNames()
 {
 	return &typeNames_[0];
 }
 
 // Set the atom type 'n'
-void ForcefieldBound::setTypeName(int n, const char* s)
+void ForcefieldBound::setTypeName(int n, QString name)
 {
 	// Check range
 	if ((n < 0) || (n > MAXFFBOUNDTYPES)) printf("setAtomType - index %i is out of range.\n",n);
-	else typeNames_[n] = s;
+	else typeNames_[n] = name;
 }
 
 // Set 1-4 scale factors
@@ -226,36 +226,37 @@ double ForcefieldBound::vdwScale() const
 }
 
 // Return if supplied names match those stored (in either 'direction')
-bool ForcefieldBound::namesMatch(const char* namei, const char* namej, const char* namek, const char* namel)
+bool ForcefieldBound::namesMatch(QString namei, QString namej)
 {
-	if (namek == NULL)
+	// Bond interaction
+	if ((typeNames_[0] == namei) && (typeNames_[1] == namej)) return TRUE;
+	else if ((typeNames_[0] == namej) && (typeNames_[1] == namei)) return TRUE;
+	return FALSE;
+}
+
+// Return if supplied names match those stored (in either 'direction')
+bool ForcefieldBound::namesMatch(QString namei, QString namej, QString namek)
+{
+	// Angle interaction
+	if (typeNames_[1] != namej) return FALSE;
+	if ((typeNames_[0] == namei) && (typeNames_[2] == namek)) return TRUE;
+	else if ((typeNames_[0] == namek) && (typeNames_[2] == namei)) return TRUE;
+	return FALSE;
+}
+
+// Return if supplied names match those stored (in either 'direction')
+bool ForcefieldBound::namesMatch(QString namei, QString namej, QString namek, QString namel)
+{
+	// Torsion interaction
+	if ((typeNames_[1] == namej) && (typeNames_[2] == namek))
 	{
-		// Bond interaction
-		if ((typeNames_[0] == namei) && (typeNames_[1] == namej)) return TRUE;
-		else if ((typeNames_[0] == namej) && (typeNames_[1] == namei)) return TRUE;
-		return FALSE;
+		if ((typeNames_[0] == namei) && (typeNames_[3] == namel)) return TRUE;
+		else return FALSE;
 	}
-	else if (namel == NULL)
+	else if ((typeNames_[2] == namej) && (typeNames_[1] == namek))
 	{
-		// Angle interaction
-		if (typeNames_[1] != namej) return FALSE;
-		if ((typeNames_[0] == namei) && (typeNames_[2] == namek)) return TRUE;
-		else if ((typeNames_[0] == namek) && (typeNames_[2] == namei)) return TRUE;
-		return FALSE;
+		if ((typeNames_[3] == namei) && (typeNames_[0] == namel)) return TRUE;
+		else return FALSE;
 	}
-	else
-	{
-		// Torsion interaction
-		if ((typeNames_[1] == namej) && (typeNames_[2] == namek))
-		{
-			if ((typeNames_[0] == namei) && (typeNames_[3] == namel)) return TRUE;
-			else return FALSE;
-		}
-		else if ((typeNames_[2] == namej) && (typeNames_[1] == namek))
-		{
-			if ((typeNames_[3] == namei) && (typeNames_[0] == namel)) return TRUE;
-			else return FALSE;
-		}
-		return FALSE;
-	}
+	return FALSE;
 }

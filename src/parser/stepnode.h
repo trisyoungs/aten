@@ -74,7 +74,7 @@ class StepNode : public TreeNode
 	// Reset node
 	bool initialise();
 	// Search accessors for the type represented by this node
-	StepNode* findAccessor(const char* s, TreeNode* arrayIndex, TreeNode* argList = NULL);
+	StepNode* findAccessor(QString name, TreeNode* arrayIndex, TreeNode* argList = NULL);
 };
 
 ATEN_END_NAMESPACE

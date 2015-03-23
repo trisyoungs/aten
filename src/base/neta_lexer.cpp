@@ -51,9 +51,9 @@ int NetaParser::lex()
 
 	int n;
 	bool done;
-	static Dnchar token;
+	static QString token;
 	char c;
-	static Dnchar name;
+// 	static QString name;
 	token.clear();
 
 	// Skip over whitespace
@@ -101,7 +101,7 @@ int NetaParser::lex()
 			else if ((c == '-') || (c == '+'))
 			{
 				// We allow '-' or '+' only as part of an exponentiation, so if it is not preceeded by 'E' we stop parsing
-				if ((!token.isEmpty()) && (token.lastChar() != 'E'))
+				if ((!token.isEmpty()) && (!token.endsWith("E")))
 				{
 					unGetChar();
 					done = TRUE;
@@ -114,20 +114,21 @@ int NetaParser::lex()
 				done = TRUE;
 			}
 		} while (!done);
+
 		// We now have the number as a text token...
 		if (!hasexp)
 		{
-			if (integer) NetaParser_lval.intConst = atoi(token);
-			else NetaParser_lval.doubleConst = atof(token);
+			if (integer) NetaParser_lval.intConst = token.toInt();
+			else NetaParser_lval.doubleConst = token.toDouble();
 		}
 		else
 		{
 			// Exponentiations are always returned as a double
 			integer = FALSE;
-			NetaParser_lval.doubleConst = atof(beforeChar(token,'E')) * pow(10.0, atof(afterChar(token,'E')));
+			NetaParser_lval.doubleConst = token.toDouble();
 		}
-		if (integer) Messenger::print(Messenger::Parse, "NETA : found an integer constant [%s] [%i]", token.get(), NetaParser_lval.intConst);
-		else Messenger::print(Messenger::Parse, "NETA : found a floating-point constant [%s] [%e]", token.get(), NetaParser_lval.doubleConst);
+		if (integer) Messenger::print(Messenger::Parse, "NETA : found an integer constant [%s] [%i]", qPrintable(token), NetaParser_lval.intConst);
+		else Messenger::print(Messenger::Parse, "NETA : found a floating-point constant [%s] [%e]", qPrintable(token), NetaParser_lval.doubleConst);
 		return (integer ? INTCONST : DOUBLECONST);
 	}
 
@@ -143,7 +144,7 @@ int NetaParser::lex()
 		}
 		while (isalnum(c) || (c == '_'));
 		unGetChar();
-		Messenger::print(Messenger::Typing, "NETA : found an alpha token [%s]...", token.get());
+		Messenger::print(Messenger::Typing, "NETA : found an alpha token [%s]...", qPrintable(token));
 
 		// Element Symbol (or 'Any')
 		if (token == "Any")
@@ -236,10 +237,10 @@ int NetaParser::lex()
 	{
 		c = getChar();
 		token += c;
-		Messenger::print(Messenger::Typing, "NETA : found symbol [%s]",token.get());
+		Messenger::print(Messenger::Typing, "NETA : found symbol [%s]", qPrintable(token));
 		NetaSymbolToken st = (NetaSymbolToken) enumSearch("", nNetaSymbolTokens, NetaSymbolTokenKeywords, token);
 		if (st != nNetaSymbolTokens) return NetaSymbolTokenValues[st];
-		else Messenger::print("Error: Unrecognised symbol found in input (%s).", token.get());
+		else Messenger::print("Error: Unrecognised symbol found in input (%s).", qPrintable(token));
  	}
 	else
 	{

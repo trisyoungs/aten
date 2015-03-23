@@ -23,10 +23,7 @@
 #define ATEN_NEWNODE_H
 
 #include "parser/treenode.h"
-//#include "parser/variablelist.h"
 #include "parser/treenode.h"
-// #include "parser/vtypes.h"
-// #include "parser/returnvalue.h"
 
 ATEN_BEGIN_NAMESPACE
 

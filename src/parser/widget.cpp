@@ -75,25 +75,25 @@ FunctionAccessor WidgetVariable::functionData[WidgetVariable::nFunctions] = {
 };
 
 // Search variable access list for provided accessor (call private static function)
-StepNode* WidgetVariable::findAccessor(const char* s, TreeNode* arrayIndex, TreeNode* argList)
+StepNode* WidgetVariable::findAccessor(QString name, TreeNode* arrayIndex, TreeNode* argList)
 {
-	return WidgetVariable::accessorSearch(s, arrayIndex, argList);
+	return WidgetVariable::accessorSearch(name, arrayIndex, argList);
 }
 
 // Private static function to search accessors
-StepNode* WidgetVariable::accessorSearch(const char* s, TreeNode* arrayIndex, TreeNode* argList)
+StepNode* WidgetVariable::accessorSearch(QString name, TreeNode* arrayIndex, TreeNode* argList)
 {
 	Messenger::enter("WidgetVariable::accessorSearch");
 	StepNode* result = NULL;
 	int i = 0;
-	i = Variable::searchAccessor(s, nAccessors, accessorData);
+	i = Variable::searchAccessor(name, nAccessors, accessorData);
 	if (i == -1)
 	{
 		// No accessor found - is it a function definition?
-		i = Variable::searchAccessor(s, nFunctions, functionData);
+		i = Variable::searchAccessor(name, nFunctions, functionData);
 		if (i == -1)
 		{
-			Messenger::print("Error: Type 'dialog&' has no member or function named '%s'.", s);
+			Messenger::print("Error: Type 'dialog&' has no member or function named '%s'.", qPrintable(name));
 			printAccessors();
 			Messenger::exit("WidgetVariable::accessorSearch");
 			return NULL;
@@ -101,7 +101,7 @@ StepNode* WidgetVariable::accessorSearch(const char* s, TreeNode* arrayIndex, Tr
 		Messenger::print(Messenger::Parse, "FunctionAccessor match = %i (%s)", i, functionData[i].name);
 		if (arrayIndex != NULL)
 		{
-			Messenger::print("Error: Array index given to 'dialog&' function '%s'.", s);
+			Messenger::print("Error: Array index given to 'dialog&' function named '%s'.", qPrintable(name));
 			Messenger::exit("WidgetVariable::accessorSearch");
 			return NULL;
 		}
@@ -127,7 +127,7 @@ StepNode* WidgetVariable::accessorSearch(const char* s, TreeNode* arrayIndex, Tr
 		// Were we given an argument list when we didn't want one?
 		if (argList != NULL)
 		{
-			Messenger::print("Error: Argument list given to 'Widget&' array member '%s'.", s);
+			Messenger::print("Error: Argument list given to 'Widget&' array member '%s'.", qPrintable(name));
 			Messenger::exit("WidgetVariable::accessorSearch");
 			return NULL;
 		}
@@ -298,7 +298,7 @@ bool WidgetVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 	TreeGuiWidgetEvent *event;
 	TreeGuiWidgetEvent::EventProperty eventProperty;
 	TreeGuiWidgetEvent::EventType eventType;
-	TreeGuiWidget *targetWidget;
+	TreeGuiWidget* targetWidget;
 	ReturnValue value;
 	bool result = TRUE;
 	TreeGuiWidget* ptr = (TreeGuiWidget*) rv.asPointer(VTypes::WidgetData, result);
@@ -431,7 +431,7 @@ bool WidgetVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 			targetWidget = ptr->parent()->findWidget(node->argc(3));
 			if (targetWidget == NULL)
 			{
-				Messenger::print("Error: No widget named '%s' is defined in the current dialog.", node->argc(3));
+				Messenger::print("Error: No widget named '%s' is defined in the current dialog.", qPrintable(node->argc(3)));
 				break;
 			}
 			eventProperty = TreeGuiWidgetEvent::eventProperty(node->argc(4), TRUE);
@@ -488,7 +488,7 @@ bool WidgetVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 			targetWidget = ptr->parent()->findWidget(node->argc(2));
 			if (targetWidget == NULL)
 			{
-				Messenger::print("Error: No widget named '%s' is defined in the current dialog.", node->argc(2));
+				Messenger::print("Error: No widget named '%s' is defined in the current dialog.", qPrintable(node->argc(2)));
 				break;
 			}
 			eventProperty = TreeGuiWidgetEvent::eventProperty(node->argc(3), TRUE);
@@ -555,7 +555,7 @@ WidgetArrayVariable::WidgetArrayVariable(TreeNode* sizeexpr, bool constant)
 }
 
 // Search variable access list for provided accessor
-StepNode* WidgetArrayVariable::findAccessor(const char* s, TreeNode* arrayIndex, TreeNode* argList)
+StepNode* WidgetArrayVariable::findAccessor(QString name, TreeNode* arrayIndex, TreeNode* argList)
 {
-	return WidgetVariable::accessorSearch(s, arrayIndex, argList);
+	return WidgetVariable::accessorSearch(name, arrayIndex, argList);
 }

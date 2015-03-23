@@ -58,7 +58,7 @@ bool Commands::function_NewVibration(CommandNode* c, Bundle& obj, ReturnValue& r
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	Vibration* v = obj.rs()->addVibration();
 	if (c->hasArg(0)) v->setName(c->argc(0));
-	Messenger::print(Messenger::Verbose, "Added vibration to model '%s'", obj.rs()->name());
+	Messenger::print(Messenger::Verbose, "Added vibration to model '%s'", qPrintable(obj.rs()->name()));
 	rv.set(VTypes::VibrationData, v);
 	return TRUE;
 }

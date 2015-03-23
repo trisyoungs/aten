@@ -41,14 +41,14 @@ bool Commands::function_AngleDef(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	// If not, then check to see that it references an atomname in the atomtypes list
 	for (n=1; n<4; n++)
 	{
-		if ((strchr(c->argc(n),'*') == NULL) && (obj.ff->findType(c->argc(n)) == NULL))
-			Messenger::print("\t... Warning - angle atom '%s' does not exist in the forcefield!", c->argc(n));
+		if ((!c->argc(n).contains('*')) && (!obj.ff->findType(c->argc(n))))
+			Messenger::print("\t... Warning - angle atom '%s' does not exist in the forcefield!", qPrintable(c->argc(n)));
 	}
 	// Create new ff_bond structure
 	ForcefieldBound* ffb = obj.ff->addAngle(anglestyle);
 	for (n=1; n<4; n++) ffb->setTypeName(n-1,c->argc(n));
 	for (n=4; n<MAXFFPARAMDATA+4; n++) if (c->hasArg(n)) ffb->setParameter(n-4, c->argd(n));
-	Messenger::print(Messenger::Verbose, "Angle %i : %s-%s-%s  %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f", obj.ff->nAngles(), ffb->typeName(0), ffb->typeName(1) , ffb->typeName(2), ffb->parameter(0), ffb->parameter(1), ffb->parameter(2), ffb->parameter(3), ffb->parameter(4), ffb->parameter(5));
+	Messenger::print(Messenger::Verbose, "Angle %i : %s-%s-%s  %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f", obj.ff->nAngles(), qPrintable(ffb->typeName(0)), qPrintable(ffb->typeName(1)) , qPrintable(ffb->typeName(2)), ffb->parameter(0), ffb->parameter(1), ffb->parameter(2), ffb->parameter(3), ffb->parameter(4), ffb->parameter(5));
 	rv.set(VTypes::ForcefieldBoundData, ffb);
 	return TRUE;
 }
@@ -84,14 +84,14 @@ bool Commands::function_BondDef(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	// If not, then check to see that it references an atomname in the atomtypes list
 	for (n=1; n<3; n++)
 	{
-		if ((strchr(c->argc(n),'*') == NULL) && (obj.ff->findType(c->argc(n)) == NULL))
-			Messenger::print("\t... Warning - bond atom '%s' does not exist in the forcefield!", c->argc(n));
+		if ((!c->argc(n).contains('*')) && (!obj.ff->findType(c->argc(n))))
+			Messenger::print("\t... Warning - bond atom '%s' does not exist in the forcefield!", qPrintable(c->argc(n)));
 	}
 	// Create new ff_bond structure
 	ForcefieldBound* ffb = obj.ff->addBond(bondstyle);
-	for (n=1; n<3; n++) ffb->setTypeName(n-1, c->argc(n));
+	for (n=1; n<3; n++) ffb->setTypeName(n-1, qPrintable(c->argc(n)));
 	for (n=3; n<MAXFFPARAMDATA+3; n++) if (c->hasArg(n)) ffb->setParameter(n-3, c->argd(n));
-	Messenger::print(Messenger::Verbose, "Bond %i : %s-%s  %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f", obj.ff->nBonds(), ffb->typeName(0), ffb->typeName(1) , ffb->parameter(0), ffb->parameter(1), ffb->parameter(2), ffb->parameter(3), ffb->parameter(4), ffb->parameter(5)); 
+	Messenger::print(Messenger::Verbose, "Bond %i : %s-%s  %8.4f %8.4f %8.4f %8.4f %8.4f %8.4f", obj.ff->nBonds(), qPrintable(ffb->typeName(0)), qPrintable(ffb->typeName(1)), ffb->parameter(0), ffb->parameter(1), ffb->parameter(2), ffb->parameter(3), ffb->parameter(4), ffb->parameter(5)); 
 	rv.set(VTypes::ForcefieldBoundData, ffb);
 	return TRUE;
 }
@@ -220,7 +220,7 @@ bool Commands::function_Equivalent(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	for (int n=1; n<c->nArgs(); ++n)
 	{
 		// Split command into comma-delimited sections
-		parser.getArgsDelim(0, c->argc(n));
+		parser.getArgsDelim(0, qPrintable(c->argc(n)));
 		for (int i=0; i<parser.nArgs(); ++i)
 		{
 			for (ffa = obj.ff->types(); ffa != NULL; ffa = ffa->next)
@@ -241,12 +241,15 @@ bool Commands::function_ExportMap(CommandNode* c, Bundle& obj, ReturnValue& rv)
 		parser.getArgsDelim(0, c->argc(m));
 		for (int n=0; n<parser.nArgs(); n++)
 		{
-			if (strchr(parser.argc(n),'=') == NULL)
+			if (!parser.argc(n).contains('='))
 			{
-				Messenger::print("Mangled exportmap value found (i.e. it contains no '='): '%s'.", parser.argc(n));
+				Messenger::print("Mangled exportmap value found (i.e. it contains no '='): '%s'.", qPrintable(parser.argc(n)));
 				continue;
 			}
-			aten_.typeExportMap.add(beforeChar(parser.argc(n),'='), afterChar(parser.argc(n),'='));
+
+			// Split into value/argument
+			QStringList items = parser.argc(n).split('=');
+			aten_.typeExportMap.add(items.at(0), items.at(1));
 		}
 	}
 	rv.reset();
@@ -327,8 +330,8 @@ bool Commands::function_FixType(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	ForcefieldAtom* ffa = obj.ff->findType(c->argi(0));
 	if (ffa == NULL)
 	{
-		if (c->argType(0) == VTypes::IntegerData) Messenger::print("Forcefield type ID %i not defined in forcefield '%s'.", c->argi(0), obj.ff->name());
-		else if (c->argType(0) == VTypes::StringData) Messenger::print("Forcefield type '%s' not defined in forcefield '%s'.", c->argc(0), obj.ff->name());
+		if (c->argType(0) == VTypes::IntegerData) Messenger::print("Forcefield type ID %i not defined in forcefield '%s'.", c->argi(0), qPrintable(obj.ff->name()));
+		else if (c->argType(0) == VTypes::StringData) Messenger::print("Forcefield type '%s' not defined in forcefield '%s'.", qPrintable(c->argc(0)), qPrintable(obj.ff->name()));
 		rv.reset();
 		return FALSE;
 	}
@@ -337,12 +340,12 @@ bool Commands::function_FixType(CommandNode* c, Bundle& obj, ReturnValue& rv)
 		Atom* i = c->argType(1) == VTypes::IntegerData ? obj.m->atom(c->argi(1)-1) : (Atom*) c->argp(1, VTypes::AtomData);
 		if (i == NULL) return FALSE;
 		obj.m->setAtomType(i, ffa, TRUE);
-		Messenger::print("Atom type for atom id %i fixed to %i (%s/%s).", i->id()+1, c->argi(0), ffa->name(), ffa->equivalent());
+		Messenger::print("Atom type for atom id %i fixed to %i (%s/%s).", i->id()+1, c->argi(0), qPrintable(ffa->name()), qPrintable(ffa->equivalent()));
 	}
 	else for (Refitem<Atom,int>* ri = obj.rs()->selection(); ri != NULL; ri = ri->next)
 	{
 		obj.m->setAtomType(ri->item, ffa, TRUE);
-		Messenger::print("Atom type for atom id %i fixed to %i (%s/%s).", ri->item->id()+1, c->argi(0), ffa->name(), ffa->equivalent());
+		Messenger::print("Atom type for atom id %i fixed to %i (%s/%s).", ri->item->id()+1, c->argi(0), qPrintable(ffa->name()), qPrintable(ffa->equivalent()));
 	}
 	obj.m->changeLog.add(Log::Structure);
 	rv.reset();
@@ -528,7 +531,7 @@ bool Commands::function_InterDef(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	ffa->setVdwForm(vdwstyle);
 	ffa->setCharge(c->argd(2));
 	for (int i=3; i<MAXFFPARAMDATA+3; i++) if (c->hasArg(i)) ffa->setParameter(i-3, c->argd(i));
-	Messenger::print(Messenger::Verbose, "VDW Data %i : %s %8.4f %8.4f %8.4f %8.4f", ffa->typeId(), ffa->name(), ffa->parameter(0), ffa->parameter(1), ffa->parameter(2), ffa->charge());
+	Messenger::print(Messenger::Verbose, "VDW Data %i : %s %8.4f %8.4f %8.4f %8.4f", ffa->typeId(), qPrintable(ffa->name()), ffa->parameter(0), ffa->parameter(1), ffa->parameter(2), ffa->charge());
 	rv.reset();
 	return TRUE;
 }
@@ -541,7 +544,7 @@ bool Commands::function_LoadFF(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	else
 	{
 		if (c->hasArg(1)) ff->setName(c->argc(1));
-		Messenger::print("Forcefield '%s' loaded, name '%s'", c->argc(0), ff->name());
+		Messenger::print("Forcefield '%s' loaded, name '%s'", qPrintable(c->argc(0)), qPrintable(ff->name()));
 	}
 	rv.set(VTypes::ForcefieldData, ff);
 	return TRUE;
@@ -559,17 +562,20 @@ bool Commands::function_Map(CommandNode* c, Bundle& obj, ReturnValue& rv)
 		parser.getArgsDelim(0, c->argc(m));
 		for (int n=0; n<parser.nArgs(); n++)
 		{
-			if (strchr(parser.argc(n),'=') == NULL)
+			if (!parser.argc(n).contains('='))
 			{
-				Messenger::print("Mangled map value found (i.e. it contains no '='): '%s'.", parser.argc(n));
+				Messenger::print("Mangled map value found (i.e. it contains no '='): '%s'.", qPrintable(parser.argc(n)));
 				continue;
 			}
-			el = Elements().find(afterChar(parser.argc(n), '='), ElementMap::AlphaZMap);
-			if (el == 0) Messenger::print("Unrecognised element '%s' in type map.",afterChar(parser.argc(n),'='));
+
+			// Split into value/argument
+			QStringList items = parser.argc(n).split('=');
+			el = Elements().find(items.at(1), ElementMap::AlphaZMap);
+			if (el == 0) Messenger::print("Unrecognised element '%s' in type map.", qPrintable(items.at(1)));
 			else
 			{
 				nm = aten_.typeImportMap.add();
-				nm->set(beforeChar(parser.argc(n),'='), el);
+				nm->set(items.at(0), el);
 			}
 		}
 	}
@@ -605,10 +611,10 @@ bool Commands::function_PrintType(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	ForcefieldAtom* ffa = obj.ff->findType(c->argi(0));
 	if (ffa == NULL)
 	{
-		Messenger::print("Error: Type id %i is not defined in forcefield '%s'.", c->argi(0), obj.ff->name());
+		Messenger::print("Error: Type id %i is not defined in forcefield '%s'.", c->argi(0), qPrintable(obj.ff->name()));
 		return FALSE;
 	}
-	Messenger::print("Internal NETA description for type '%i' (%s, equivalent = %s)", ffa->typeId(), ffa->name(), ffa->equivalent());
+	Messenger::print("Internal NETA description for type '%i' (%s, equivalent = %s)", ffa->typeId(), qPrintable(ffa->name()), qPrintable(ffa->equivalent()));
 	ffa->neta()->print();
 	rv.reset();
 	return TRUE;
@@ -651,14 +657,18 @@ bool Commands::function_SaveExpression(CommandNode* c, Bundle& obj, ReturnValue&
 	}
 
 	// Loop over remaining arguments which are widget/global variable assignments
-	for (int n = 1; n < parser.nArgs(); ++n) if (!filter->setAccessibleVariable(beforeStr(parser.argc(n),"="), afterStr(parser.argc(n),"="))) return FALSE;
+	for (int n = 1; n < parser.nArgs(); ++n)
+	{
+		QStringList items = parser.argc(n).split('=');
+		if (!filter->setAccessibleVariable(items.at(0), items.at(1))) return FALSE;
+	}
 
 	// Temporarily disable undo/redo for the model, save, and re-enable
 	obj.rs()->disableUndoRedo();
 	bool result = filter->executeWrite(c->argc(1));
 	obj.rs()->enableUndoRedo();
-	if (result) Messenger::print("Expression for model '%s' saved to file '%s' (%s)", obj.rs()->name(), c->argc(1), filter->filter.name());
-	else Messenger::print("Failed to save expression for model '%s'.", obj.rs()->name());
+	if (result) Messenger::print("Expression for model '%s' saved to file '%s' (%s)", qPrintable(obj.rs()->name()), qPrintable(c->argc(1)), qPrintable(filter->filter.name()));
+	else Messenger::print("Failed to save expression for model '%s'.", qPrintable(obj.rs()->name()));
 	return result;
 }
 
@@ -698,15 +708,15 @@ bool Commands::function_TorsionDef(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	// If not, then check to see that it references an atomname in the atomtypes list
 	for (n=1; n<4; n++)
 	{
-		if ((strchr(c->argc(n),'*') == NULL) && (obj.ff->findType(c->argc(n)) == NULL))
-			Messenger::print("\t... Warning - torsion atom '%s' does not exist in the forcefield!", c->argc(n));
+		if ((!c->argc(n).contains('*')) && (!obj.ff->findType(c->argc(n))))
+			Messenger::print("\t... Warning - torsion atom '%s' does not exist in the forcefield!", qPrintable(c->argc(n)));
 	}
 	
 	// Create new ff_bond structure
 	ForcefieldBound* ffb = obj.ff->addTorsion(torsionstyle);
 	for (n=1; n<5; n++) ffb->setTypeName(n-1,c->argc(n));
 	for (n=5; n<MAXFFPARAMDATA+3; n++) if (c->hasArg(n)) ffb->setParameter(n-5, c->argd(n));
-	Messenger::print(Messenger::Verbose, "TORSION %i : %s-%s-%s-%s  %8.4f %8.4f %8.4f %8.4f, escale=%8.4f vscale=%8.4f", obj.ff->nTorsions(), ffb->typeName(0), ffb->typeName(1), ffb->typeName(2), ffb->typeName(3), ffb->parameter(0), ffb->parameter(1), ffb->parameter(2), ffb->parameter(3), ffb->parameter(4), ffb->parameter(5));
+	Messenger::print(Messenger::Verbose, "TORSION %i : %s-%s-%s-%s  %8.4f %8.4f %8.4f %8.4f, escale=%8.4f vscale=%8.4f", obj.ff->nTorsions(), qPrintable(ffb->typeName(0)), qPrintable(ffb->typeName(1)), qPrintable(ffb->typeName(2)), qPrintable(ffb->typeName(3)), ffb->parameter(0), ffb->parameter(1), ffb->parameter(2), ffb->parameter(3), ffb->parameter(4), ffb->parameter(5));
 	rv.set(VTypes::ForcefieldBoundData, ffb);
 	return TRUE;
 }
@@ -720,7 +730,7 @@ bool Commands::function_TypeDef(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	ForcefieldAtom* idsearch = obj.ff->findType(newffid);
 	if (idsearch != NULL)
 	{
-		Messenger::print("Duplicate forcefield type ID '%i' - already used by type '%s'.", newffid, idsearch->name());
+		Messenger::print("Duplicate forcefield type ID '%i' - already used by type '%s'.", newffid, qPrintable(idsearch->name()));
 		return FALSE;
 	}
 	ForcefieldAtom* ffa = obj.ff->addType();
@@ -752,7 +762,7 @@ bool Commands::function_TypeTest(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	ForcefieldAtom* ffa = obj.ff->findType(c->argi(0));
 	if (ffa == NULL)
 	{
-		Messenger::print("Type ID %i does not exist in the forcefield '%s'.",c->argi(0), obj.ff->name());
+		Messenger::print("Type ID %i does not exist in the forcefield '%s'.",c->argi(0), qPrintable(obj.ff->name()));
 		return FALSE;
 	}
 	else
@@ -767,8 +777,8 @@ bool Commands::function_TypeTest(CommandNode* c, Bundle& obj, ReturnValue& rv)
 			else if (c->argType(1) == VTypes::IntegerData) i = obj.m->atomArray()[c->argi(1)-1];
 			Pattern* p = obj.m->pattern(i);
 			int score = ffa->neta()->matchAtom(i,p->ringList(),obj.m);
-			if (score > 0) Messenger::print("Atom %i matched type %i (%s) with score %i.", i->id()+1, ffa->typeId(), ffa->name(), score);
-			else Messenger::print("Atom %i did not match type %i (%s).", i->id()+1, ffa->typeId(), ffa->name());
+			if (score > 0) Messenger::print("Atom %i matched type %i (%s) with score %i.", i->id()+1, ffa->typeId(), qPrintable(ffa->name()), score);
+			else Messenger::print("Atom %i did not match type %i (%s).", i->id()+1, ffa->typeId(), qPrintable(ffa->name()));
 			rv.set(score);
 		}
 		else return FALSE;

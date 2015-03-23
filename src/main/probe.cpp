@@ -28,74 +28,70 @@
 ATEN_USING_NAMESPACE
 
 // Probe model
-Tree* Aten::probeFile(const char* filename, FilterData::FilterType probetype)
+Tree* Aten::probeFile(QString filename, FilterData::FilterType filterType)
 {
 	Messenger::enter("Aten::probeFile");
-	// Before we do the proper checking, make sure that the file exists and is readable
-	std::ifstream probefile;
-	probefile.open(filename, std::ios::in);
-	if (!probefile.is_open())
-	{
-		Messenger::print("File '%s' does not exist.", filename);
-		Messenger::exit("Aten::probeFile");
-		return NULL;
-	}
-	if (filename[0] == '\0')
+
+	// Check for empty filename
+	if (filename.isEmpty())
 	{
 		Messenger::print("Filename is empty.");
 		Messenger::exit("Aten::probeFile");
 		return NULL;
 	}
-	probefile.close();
+
+	// Before we do the proper checking, make sure that the file exists and is readable
+	QFileInfo fileInfo(filename);
+	if ((!fileInfo.exists()) || (!fileInfo.isReadable()))
+	{
+		Messenger::print("File '%s' does not exist or is not readable.", qPrintable(filename));
+		Messenger::exit("Aten::probeFile");
+		return NULL;
+	}
+
 	LineParser parser;
 	int n, m;
-	const char* dotPos;
-	Dnchar nameOnly, *d;
 	Refitem<Tree,int>* ri;
-	Tree* f = NULL, *result = NULL;
-
-	// Get position of file extention and pure filename
-	dotPos = strrchr(filename,'.');
-	if (dotPos != NULL) dotPos++;
-	nameOnly = removePath(filename);
+	Tree* filter = NULL, *result = NULL;
 
 	// Go through list of filters and do checks...
-	for (ri = filters_[probetype].first(); ri != NULL; ri = ri->next)
+	for (ri = filters_[filterType].first(); ri != NULL; ri = ri->next)
 	{
-		f = ri->item;
+		filter = ri->item;
 
 		// Check filename extensions *or* exact names (if either were provided)
-		if (f->filter.extensions() != NULL)
+		if (filter->filter.extensions().count() > 0)
 		{
 			// If a file extension is not present on the filename, then the filter is not a match
-			if (dotPos == NULL) continue;
+			if (fileInfo.suffix().isEmpty()) continue;
+
 			// Otherwise, try to match extension - if no match, then the filter is not a match
-			for (d = f->filter.extensions(); d != NULL; d = d->next)
+			for (n=0; n<filter->filter.extensions().count(); ++n)
 			{
-				if (strcmp(d->get(),dotPos) == 0)
+				if (filter->filter.extensions().at(n) == fileInfo.suffix())
 				{
-					Messenger::print(Messenger::Verbose, "PROBE: Filter extension [%s] matches file extension.", d->get()); 
+					Messenger::print(Messenger::Verbose, "PROBE: Filter '%s' matches file extension (%s).", qPrintable(filter->name()), qPrintable(fileInfo.suffix()));
 					break;
 				}
 			}
-			if (d == NULL) continue;
+			if (n >= filter->filter.extensions().count()) continue;
 		}
-		else if (f->filter.exactNames() != NULL)
+		else if (filter->filter.exactNames().count() > 0)
 		{
-			for (d = f->filter.exactNames(); d != NULL; d = d->next) if (*d == nameOnly) break;
-			if (d == NULL) continue;
+			for (n=0; n<filter->filter.exactNames().count(); ++n) if (filter->filter.exactNames().at(n) == fileInfo.fileName()) break;
+			if (n >= filter->filter.exactNames().count()) continue;
 		}
 		
 		// Try to match text within files
-		if (f->filter.searchStrings() != NULL)
+		if (filter->filter.searchStrings().count() > 0)
 		{
 			bool found = FALSE;
 			parser.openInput(filename);
-			for (d = f->filter.searchStrings(); d != NULL; d = d->next)
+			for (n=0; n<filter->filter.searchStrings().count(); ++n)
 			{
 				// Make sure file is completely rewound
 				parser.rewind();
-				for (n = 0; n<f->filter.nLinesToSearch(); n++)
+				for (int linesToSearch = 0; linesToSearch<filter->filter.nLinesToSearch(); ++linesToSearch)
 				{
 					m = parser.readNextLine(0);
 					if (m == -1) break;
@@ -104,7 +100,7 @@ Tree* Aten::probeFile(const char* filename, FilterData::FilterType probetype)
 						Messenger::print("File error encountered while searching for identifying string.");
 						break;
 					}
-					else if (strstr(parser.line(), d->get()) != NULL)
+					else if (parser.line().contains(filter->filter.searchStrings().at(n)))
 					{
 						found = TRUE;
 						break;
@@ -118,12 +114,13 @@ Tree* Aten::probeFile(const char* filename, FilterData::FilterType probetype)
 		}
 
 		// If we reach this point, then the filter is a match
-		result = f;
+		result = filter;
 		break;
 	}
 
-	if (result == NULL) Messenger::print("Couldn't determine format of file '%s'.",filename);
-	else Messenger::print(Messenger::Verbose, "Aten::probeFile - Selected filter '%s'", result->filter.name());
+	if (result == NULL) Messenger::print("Couldn't determine format of file '%s'.", qPrintable(filename));
+	else Messenger::print(Messenger::Verbose, "Aten::probeFile - Selected filter '%s'", qPrintable(result->filter.name()));
+
 	Messenger::exit("Aten::probeFile");
 	return result;
 }

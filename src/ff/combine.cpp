@@ -29,7 +29,7 @@ ATEN_USING_NAMESPACE
 // Combination rules
 const char* CombinationRuleKeywords[CombinationRules::nCombinationRules] = { "arithmetic", "geometric", "custom1", "custom2", "custom3" };
 const char* CombinationRuleNames[CombinationRules::nCombinationRules] = { "Arithmetic Mean [(a+b)/2]", "Geometric Mean [sqrt(a*b)]", "Custom Rule 1", "Custom Rule 2", "Custom Rule 3" };
-CombinationRules::CombinationRule CombinationRules::combinationRule(const char* s, bool reportError)
+CombinationRules::CombinationRule CombinationRules::combinationRule(QString s, bool reportError)
 {
 	CombinationRules::CombinationRule cr = (CombinationRules::CombinationRule) enumSearch("combination rule",CombinationRules::nCombinationRules,CombinationRuleKeywords,s);
 	if ((cr == CombinationRules::nCombinationRules) && reportError) enumPrintValid(CombinationRules::nCombinationRules,CombinationRuleKeywords);
@@ -49,15 +49,15 @@ bool CombinationRules::regenerateEquations()
 {
 	Messenger::enter("CombinationRules::regenerateEquations");
 	CombinationRules::CombinationRule cr;
-	List<Dnchar> eqns;
-	Dnchar* eqn;
+	QStringList equations;
 	for (int n=0; n<CombinationRules::nCombinationRules; ++n)
 	{
 		cr = (CombinationRules::CombinationRule) n;
-		eqn = eqns.add();
-		eqn->sprintf("double %s(double a, double b) { double c = 0.0; %s; return c; }", CombinationRules::combinationRule(cr), prefs.combinationRule(cr));
+		QString equation;
+		equation.sprintf("double %s(double a, double b) { double c = 0.0; %s; return c; }", CombinationRules::combinationRule(cr), qPrintable(prefs.combinationRule(cr)));
+		equations << equation;
 	}
-	bool success = combinationRules_.generateFromStringList(eqns.first(), "CombinationRules", "Combination Rule", TRUE);
+	bool success = combinationRules_.generateFromStringList(equations, "CombinationRules", "Combination Rule", TRUE);
 	Messenger::exit("CombinationRules::regenerateEquations");
 	return success;
 }

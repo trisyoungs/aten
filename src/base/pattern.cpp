@@ -172,7 +172,7 @@ void Pattern::addAtomData(Atom* i, ForcefieldAtom* ffa)
 	allForcefieldTypes_.addUnique(ffa);
 	// Add this to the unique types list if it isn't there already (type name equivalants in force)
 	int n;
-	for (n=0; n<uniqueForcefieldTypes_.nItems(); ++n) if (strcmp(uniqueForcefieldTypes_[n]->item->name(),ffa->name()) == 0) break;
+	for (n=0; n<uniqueForcefieldTypes_.nItems(); ++n) if (uniqueForcefieldTypes_[n]->item->name() == ffa->name()) break;
 	if (n == uniqueForcefieldTypes_.nItems()) uniqueForcefieldTypes_.add(ffa, 1);
 	else uniqueForcefieldTypes_[n]->data = uniqueForcefieldTypes_[n]->data + 1;
 	pa->setForcefieldDataId(n);
@@ -512,23 +512,23 @@ bool Pattern::isFixed() const
 }
 
 // Sets the name of the pattern 
-void Pattern::setName(const char* s)
+void Pattern::setName(QString name)
 {
-	name_ = s;
+	name_ = name;
 }
 
 // Returns the pattern name
-const char* Pattern::name() const
+QString Pattern::name() const
 {
-	return name_.get();
+	return name_;
 }
 
 // Sets the forcefield to use in the pattern
 void Pattern::setForcefield(Forcefield* newff)
 {	
 	forcefield_ = newff;
-	if (forcefield_ != NULL) Messenger::print("Forcefield '%s' is now assigned to pattern '%s'.", forcefield_->name(), name());
-	else Messenger::print("Pattern '%s' now has no associated forcefield.", name());
+	if (forcefield_ != NULL) Messenger::print("Forcefield '%s' is now assigned to pattern '%s'.", qPrintable(forcefield_->name()), qPrintable(name_));
+	else Messenger::print("Pattern '%s' now has no associated forcefield.", qPrintable(name_));
 }
 
 // Gets the forcefield associated with the pattern
@@ -555,11 +555,6 @@ bool Pattern::isBondingOk() const
 	return testBonding_;
 }
 
-// Postfix increment
-Pattern* Pattern::operator++()
-{
-	return (this->next);
-}
 
 // Returns a pointer to the ring list structure
 List<Ring>* Pattern::ringList()
@@ -599,14 +594,15 @@ bool Pattern::atomsInRing(int id_i, int id_j)
 // Initialise
 void Pattern::initialise(int patid, int start, int mols, int atomsmol)
 {
-	// Initialise atom pointers / values in pattern.
 	Messenger::enter("Pattern::initialise");
+
 	if (parent_ == NULL)
 	{
 		printf("Internal Error: Owner model has not been set in pattern!\n");
 		Messenger::exit("Pattern::initialise");
 		return;
 	}
+
 	// Store parameters
 	id_ = patid;
 	nMolecules_ = mols;			// Number of molecules in pattern
@@ -614,6 +610,7 @@ void Pattern::initialise(int patid, int start, int mols, int atomsmol)
 	totalAtoms_ = mols*nAtoms_;		// Total number of atoms described by the pattern
 	startAtom_ = start;			// Starting atom (integer position in atom list)
 	endAtom_ = start + nAtoms_ - 1;		// Last atom in first molecule (integer position in atom list)
+
 	// Set atom pointers
 	if (startAtom_ > parent_->nAtoms())
 	{
@@ -629,20 +626,22 @@ void Pattern::initialise(int patid, int start, int mols, int atomsmol)
 		for (int n=0; n<startAtom_; n++) i = i->next;
 		firstAtom_ = i;
 	}
-	Messenger::print(Messenger::Verbose, "New pattern node : start=%i, nMols=%i, nAtoms/mol=%i, totalAtoms=%i, name=%s", startAtom_+1, nMolecules_, nAtoms_, totalAtoms_, name_.get());
+	Messenger::print(Messenger::Verbose, "New pattern node : start=%i, nMols=%i, nAtoms/mol=%i, totalAtoms=%i, name=%s", startAtom_+1, nMolecules_, nAtoms_, totalAtoms_, qPrintable(name_));
+
 	Messenger::exit("Pattern::initialise");
 }
 
 // Empty the selected pattern
 void Pattern::empty()
 {
-	// Set all variables to reflect an empty pattern
 	Messenger::enter("Pattern::empty");
+
 	// Zero everything except nAtoms_
 	firstAtom_ = NULL;
 	lastAtom_ = NULL;
 	nMolecules_ = 0;
 	totalAtoms_ = 0;
+
 	Messenger::exit("Pattern::empty");
 }
 
@@ -868,7 +867,7 @@ void Pattern::updateScaleMatrices()
 		j = pb->atomId(3);
 		if ((i < 0) || (i >= nAtoms_) || (j < 0) || (j >= nAtoms_))
 		{
-			printf("Internal Error : One or both atom IDs (%i, %i) associated to torsion patternbound are invalid for pattern '%s'.\n", i, j, name_.get());
+			printf("Internal Error : One or both atom IDs (%i, %i) associated to torsion patternbound are invalid for pattern '%s'.\n", i, j, qPrintable(name_));
 			continue;
 		}
 		vdwScaleMatrix_[i][j] = pb->data()->vdwScale();
@@ -884,7 +883,7 @@ void Pattern::updateScaleMatrices()
 		j = pb->atomId(2);
 		if ((i < 0) || (i >= nAtoms_) || (j < 0) || (j >= nAtoms_))
 		{
-			printf("Internal Error : One or both atom IDs (%i, %i) associated to angle patternbound are invalid for pattern '%s'.\n", i, j, name_.get());
+			printf("Internal Error : One or both atom IDs (%i, %i) associated to angle patternbound are invalid for pattern '%s'.\n", i, j, qPrintable(name_));
 			continue;
 		}
 		vdwScaleMatrix_[i][j] = 0.0;
@@ -898,7 +897,7 @@ void Pattern::updateScaleMatrices()
 		j = pb->atomId(1);
 		if ((i < 0) || (i >= nAtoms_) || (j < 0) || (j >= nAtoms_))
 		{
-			printf("Internal Error : One or both atom IDs (%i, %i) associated to torsion patternbound are invalid for pattern '%s'.\n", i, j, name_.get());
+			printf("Internal Error : One or both atom IDs (%i, %i) associated to torsion patternbound are invalid for pattern '%s'.\n", i, j, qPrintable(name_));
 			continue;
 		}
 		vdwScaleMatrix_[i][j] = 0.0;
@@ -1045,15 +1044,16 @@ ForcefieldBound* Pattern::createDummyTorsion(ForcefieldAtom* i, ForcefieldAtom* 
 // Calculate centre of geometry for molecule 'mol' in pattern, from (Model) config supplied or parent_ if NULL
 Vec3<double> Pattern::calculateCog(int mol, Model* srcmodel)
 {
-	// Calculate the centre of geometry for this molecule
 	Messenger::enter("Pattern::calculateCog");
+
 	int offset = startAtom_ + mol*nAtoms_;
 	if (srcmodel == NULL) srcmodel = parent_;
-	Messenger::print(Messenger::Verbose, "Calculating COG for pattern '%s', molecule %i (starting at %i, nMols=%i)", name_.get(), mol, offset, nMolecules_);
+	Messenger::print(Messenger::Verbose, "Calculating COG for pattern '%s', molecule %i (starting at %i, nMols=%i)", qPrintable(name_), mol, offset, nMolecules_);
 	static Vec3<double> cog, mim_i;
 	UnitCell* cell = srcmodel->cell();
 	Atom** modelatoms = srcmodel->atomArray();
 	cog = modelatoms[offset]->r();
+
 	for (int a1=1; a1 < nAtoms_; ++a1)
 	{
 		// Do minimum image w.r.t. first atom in molecule
@@ -1063,6 +1063,7 @@ Vec3<double> Pattern::calculateCog(int mol, Model* srcmodel)
 		++offset;
 	}
 	cog /= nAtoms_;
+
 	Messenger::exit("Pattern::calculateCog");
 	return cog;
 }
@@ -1070,9 +1071,9 @@ Vec3<double> Pattern::calculateCog(int mol, Model* srcmodel)
 // Calculate centre of mass for molecule 'mol' in pattern, from config supplied
 Vec3<double> Pattern::calculateCom(int mol, Model* srcmodel)
 {
-	// Calculate the centre of geometry for this molecule
 	Messenger::enter("Pattern::calculateCom");
-	Messenger::print(Messenger::Verbose, "Calculating centre-of-mass for molecule %i in pattern '%s' (pattern nMols=%i)", mol, name_.get(), nMolecules_);
+
+	Messenger::print(Messenger::Verbose, "Calculating centre-of-mass for molecule %i in pattern '%s' (pattern nMols=%i)", mol, qPrintable(name_), nMolecules_);
 	Vec3<double> com;
 	if (srcmodel == NULL) srcmodel = parent_;
 	double massnorm = 0.0;
@@ -1082,6 +1083,7 @@ Vec3<double> Pattern::calculateCom(int mol, Model* srcmodel)
 	Messenger::print(Messenger::Verbose, "molecule_com : Offset = %i", offset);
 	UnitCell* cell = srcmodel->cell();
 	Atom** modelatoms = srcmodel->atomArray();
+
 	for (int a1=offset; a1<offset+nAtoms_; a1++)
 	{
 		// Do minimum image w.r.t. first atom in molecule
@@ -1090,6 +1092,7 @@ Vec3<double> Pattern::calculateCom(int mol, Model* srcmodel)
 		massnorm += Elements().atomicMass(modelatoms[a1]->element());
 	}
 	com /= massnorm;
+
 	Messenger::exit("Pattern::calculateCom");
 	return com;
 }
@@ -1231,10 +1234,12 @@ void Pattern::deleteAtomsFromEnd(int count)
 void Pattern::findRings()
 {
 	Messenger::enter("Pattern::findRings");
+
 	int n, rsize;
 	bool okay = TRUE;
 	Atom* i;
 	Ring path;
+
 	// Loop over atoms, searching for rings on each
 	i = firstAtom_;
 	for (n=0; n<nAtoms_; n++)
@@ -1254,8 +1259,9 @@ void Pattern::findRings()
 		i = i->next;
 		if (!okay) break;
 	}
-	if ((!okay) && (rings_.nItems() == prefs.maxRings())) Messenger::print("Maximum number of rings (%i) reached for pattern '%s'...", prefs.maxRings(), name_.get());
-	Messenger::print(Messenger::Verbose, "Pattern '%s' contains %i cycles of %i atoms or less.", name_.get(), rings_.nItems(), prefs.maxRingSize());
+	if ((!okay) && (rings_.nItems() == prefs.maxRings())) Messenger::print("Maximum number of rings (%i) reached for pattern '%s'...", prefs.maxRings(), qPrintable(name_));
+	Messenger::print(Messenger::Verbose, "Pattern '%s' contains %i cycles of %i atoms or less.", qPrintable(name_), rings_.nItems(), prefs.maxRingSize());
+
 	Messenger::exit("Pattern::findRings");
 }
 
@@ -1359,7 +1365,7 @@ void Pattern::augment()
 	Bond::BondType bt;
 	int n, nHeavy, totalpenalty, ringpenalty, newpenalty, m, o, p;
 
-	Messenger::print("Augmenting bonds in pattern %s...",name_.get());
+	Messenger::print("Augmenting bonds in pattern %s...",qPrintable(name_));
 	/*
 	Assume the structure is chemically 'correct' - i.e. each atom is bound to a likely number of other atoms.
 	If hydrogens are missing then the results will be unpredictable.
@@ -1591,17 +1597,17 @@ void printstuff(Pattern* p)
 void Pattern::describeAtoms()
 {
 	// 1) Locate ring structures
-	Messenger::print(Messenger::Verbose, "Detecting rings in pattern '%s'...", name_.get());
+	Messenger::print(Messenger::Verbose, "Detecting rings in pattern '%s'...", qPrintable(name_));
 	findRings();
 	// 2) Reset atom environments
-	Messenger::print(Messenger::Verbose, "Determining atom environments in pattern '%s'...", name_.get());
+	Messenger::print(Messenger::Verbose, "Determining atom environments in pattern '%s'...", qPrintable(name_));
 	clearEnvironments();
 	printstuff(this);
 	// 3) Assign hybridisation types
 	assignEnvironments();
 	printstuff(this);
 	// 4) Go through the ring list and see if any are aromatic
-	Messenger::print(Messenger::Verbose, "Assigning ring aromaticities in pattern '%s'...", name_.get());
+	Messenger::print(Messenger::Verbose, "Assigning ring aromaticities in pattern '%s'...", qPrintable(name_));
 	for (Ring *r = rings_.first(); r != NULL; r = r->next) r->detectType();
 }
 
@@ -1670,12 +1676,13 @@ bool Pattern::typeAtoms()
 	// accept a different atom type if we manage to match a complete set containing more rules.
 	// Return FALSE if one or more atoms could not be typed
 	Messenger::enter("Pattern::typeAtoms");
-	int a, newmatch, bestmatch, nfailed;
-	Neta *at;
+	int a, newMatch, bestMatch, nFailed;
+	Neta* at;
 	Atom* i;
 	Forcefield* ff;
 	ForcefieldAtom* ffa;
 	bool result = TRUE;
+
 	// Select the forcefield we're typing with. First, if this pattern doesn't have a specific ff, take the model's ff
 	ff = forcefield_;
 	if (ff == NULL)
@@ -1686,21 +1693,21 @@ bool Pattern::typeAtoms()
 		{
 			Messenger::print("ATEN2 TODO: This was removed - a ff must be set before getting here.");
 			return false;
-// 			Messenger::print("Typing pattern %s (using default forcefield)...", name());
+// 			Messenger::print("Typing pattern %s (using default forcefield)...", qPrintable(name_));
 // 			ff = aten.currentForcefield();
 		}
-		else Messenger::print("Typing pattern %s (inheriting Model's forcefield '%s')...", name(), ff->name());
+		else Messenger::print("Typing pattern %s (inheriting Model's forcefield '%s')...", qPrintable(name_), qPrintable(ff->name()));
 	}
-	else Messenger::print("Typing pattern %s (using associated forcefield '%s')...", name(), ff->name());	
+	else Messenger::print("Typing pattern %s (using associated forcefield '%s')...", qPrintable(name_), qPrintable(ff->name()));	
 	if (ff == NULL)
 	{
-		Messenger::print("Can't type pattern '%s' - no forcefield associated to pattern or model, and no default set.", name_.get());
+		Messenger::print("Can't type pattern '%s' - no forcefield associated to pattern or model, and no default set.", qPrintable(name_));
 		Messenger::exit("Pattern::typeAtoms");
 		return FALSE;
 	}
 	// Loop over atoms in the pattern's molecule
 	i = firstAtom_;
-	nfailed = 0;
+	nFailed = 0;
 	for (a=0; a<nAtoms_; ++a)
 	{
 		// Check to see if this atom type has been manually set
@@ -1710,15 +1717,17 @@ bool Pattern::typeAtoms()
 			continue;
 		}
 		Messenger::print(Messenger::Typing,"Pattern::typeAtoms : FFTyping atom number %i, element %s", a, Elements().symbol(i->element()));
-		bestmatch = 0;
+		bestMatch = 0;
 		parent_->setAtomType(i, NULL, FALSE);
+
 		// Check for element 'XX' first
 		if (i->element() == 0)
 		{
-			Messenger::print("Failed to type atom %i since it has no element type.",i->id()+1);
-			nfailed ++;
+			Messenger::print("Failed to type atom %i since it has no element type.", i->id()+1);
+			nFailed ++;
 			result = FALSE;
 		}
+
 		// Loop over forcefield atom types
 		for (ffa = ff->types(); ffa != NULL; ffa = ffa->next)
 		{
@@ -1729,27 +1738,27 @@ bool Pattern::typeAtoms()
 			if (i->element() != at->characterElement()) continue;
 			
 			// See how well this ff description matches the environment of our atom 'i'
-			Messenger::print(Messenger::Typing,"Pattern::typeAtoms : Matching type id %i",ffa->typeId());
-			newmatch = at->matchAtom(i,&rings_,parent_);
-			Messenger::print(Messenger::Typing,"Pattern::typeAtoms : ...Total match score for type %i = %i", ffa->typeId(), newmatch);
-			if (newmatch > bestmatch)
+			Messenger::print(Messenger::Typing,"Pattern::typeAtoms : Matching type id %i", ffa->typeId());
+			newMatch = at->matchAtom(i, &rings_, parent_);
+			Messenger::print(Messenger::Typing,"Pattern::typeAtoms : ...Total match score for type %i = %i", ffa->typeId(), newMatch);
+			if (newMatch > bestMatch)
 			{
 				// Better match found...
-				bestmatch = newmatch;
+				bestMatch = newMatch;
 				i->setType(ffa);
 			}
 		}
 		if (i->type() == NULL)
 		{
 			Messenger::print("Failed to type atom - %s, id = %i, nbonds = %i.", Elements().name(i), i->id()+1, i->nBonds());
-			nfailed ++;
+			nFailed ++;
 			result = FALSE;
 		}
-		else Messenger::print(Messenger::Typing,"Assigned forcefield type for atom is : %i (%s)", i->type()->typeId(), i->type()->name());
+		else Messenger::print(Messenger::Typing,"Assigned forcefield type for atom is : %i (%s)", i->type()->typeId(), qPrintable(i->type()->name()));
 		i = i->next;
 	}
 	// Print warning if we failed...
-	if (nfailed != 0) Messenger::print("Failed to type %i atoms in pattern '%s'.", nfailed, name_.get());
+	if (nFailed != 0) Messenger::print("Failed to type %i atoms in pattern '%s'.", nFailed, qPrintable(name_));
 	Messenger::exit("Pattern::typeAtoms");
 	return result;
 }

@@ -70,7 +70,7 @@ void PointerVariable::nodePrint(int offset, const char* prefix)
 
 	// Output node data
 	if (readOnly_) printf("%s%p (%s) (constant value)\n", tab.get(), pointerData_, VTypes::dataType(returnType_));
-	else printf("%s%p (%s) (variable, name=%s)\n", tab.get(), pointerData_, VTypes::dataType(returnType_), name_.get());
+	else printf("%s%p (%s) (variable, name=%s)\n", tab.get(), pointerData_, VTypes::dataType(returnType_), qPrintable(name_));
 }
 
 /*
@@ -97,7 +97,7 @@ bool PointerArrayVariable::set(ReturnValue& rv)
 	}
 	if (pointerArrayData_ == NULL)
 	{
-		printf("Internal Error: Array '%s' has not been initialised.\n", name_.get());
+		printf("Internal Error: Array '%s' has not been initialised.\n", qPrintable(name_));
 		return FALSE;
 	}
 	// Is the supplied ReturnValue an array?
@@ -106,7 +106,7 @@ bool PointerArrayVariable::set(ReturnValue& rv)
 	{
 		if (rv.arraySize() != arraySize_)
 		{
-			Messenger::print("Error setting variable '%s': Array sizes do not conform.", name_.get());
+			Messenger::print("Error setting variable '%s': Array sizes do not conform.", qPrintable(name_));
 			return FALSE;
 		}
 		bool success;
@@ -126,15 +126,17 @@ bool PointerArrayVariable::setAsArray(ReturnValue& rv, int arrayIndex)
 	}
 	if (pointerArrayData_ == NULL)
 	{
-		printf("Internal Error: Array '%s' has not been initialised.\n", name_.get());
+		printf("Internal Error: Array '%s' has not been initialised.\n", qPrintable(name_));
 		return FALSE;
 	}
+
 	// Check index
 	if ((arrayIndex < 0) || (arrayIndex >= arraySize_))
 	{
-		Messenger::print("Index %i out of bounds for array '%s'.", arrayIndex+1, name_.get());
+		Messenger::print("Index %i out of bounds for array '%s'.", arrayIndex+1, qPrintable(name_));
 		return FALSE;
 	}
+
 	// Set individual element
 	pointerArrayData_[arrayIndex] = rv.asPointer(returnType_);
 	return TRUE;
@@ -145,7 +147,7 @@ void PointerArrayVariable::reset()
 {
 	if (pointerArrayData_ == NULL)
 	{
-		printf("Internal Error: Array '%s' has not been initialised.\n", name_.get());
+		printf("Internal Error: Array '%s' has not been initialised.\n", qPrintable(name_));
 		return;
 	}
 	// Loop over array elements and set them - for constant arrays only change non-constant subvalues
@@ -169,12 +171,12 @@ bool PointerArrayVariable::execute(ReturnValue& rv)
 	{
 		if (!readOnly_)
 		{
-			printf("Internal Error: Array '%s' has not been initialised and can't be executed.\n", name_.get());
+			printf("Internal Error: Array '%s' has not been initialised and can't be executed.\n", qPrintable(name_));
 			return FALSE;
 		}
 		if (!initialise())
 		{
-			printf("Internal Error: Array '%s' failed to initialise and so can't be executed.\n", name_.get());
+			printf("Internal Error: Array '%s' failed to initialise and so can't be executed.\n", qPrintable(name_));
 			return FALSE;
 		}
 	}
@@ -189,7 +191,7 @@ bool PointerArrayVariable::executeAsArray(ReturnValue& rv, int arrayIndex)
 	// Check bounds
 	if ((arrayIndex < 0) || (arrayIndex >= arraySize_))
 	{
-		Messenger::print("Error: Array index %i is out of bounds for array '%s'.", arrayIndex+1, name_.get());
+		Messenger::print("Error: Array index %i is out of bounds for array '%s'.", arrayIndex+1, qPrintable(name_));
 		return FALSE;
 	}
 	rv.set( returnType_, pointerArrayData_[arrayIndex] );
@@ -207,7 +209,7 @@ void PointerArrayVariable::nodePrint(int offset, const char* prefix)
 	tab.strcat(prefix);
 
 	// Output node data
-	printf("[V]%s (%s array, name=%s, current size=%i)\n", tab.get(), VTypes::dataType(returnType_), name_.get(), arraySize_);
+	printf("[V]%s (%s array, name=%s, current size=%i)\n", tab.get(), VTypes::dataType(returnType_), qPrintable(name_), arraySize_);
 }
 
 // Initialise array
@@ -218,11 +220,17 @@ bool PointerArrayVariable::initialise()
 	ReturnValue newsize;
 	if (!arraySizeExpression_->execute(newsize))
 	{
-		Messenger::print("Failed to find size for %s array '%s'.", VTypes::aDataType(returnType_), name_.get());
+		Messenger::print("Failed to find size for %s array '%s'.", VTypes::aDataType(returnType_), qPrintable(name_));
 		return FALSE;
 	}
+
 	// If the array is already allocated, free it only if the size is different
-	if ((arraySize_ != newsize.asInteger()) && (pointerArrayData_ != NULL)) { delete[] pointerArrayData_; pointerArrayData_ = NULL; }
+	if ((arraySize_ != newsize.asInteger()) && (pointerArrayData_ != NULL))
+	{
+		delete[] pointerArrayData_;
+		pointerArrayData_ = NULL;
+	}
+
 	// Store new array size
 	arraySize_ = newsize.asInteger();
 	if ((arraySize_ > 0) && (pointerArrayData_ == NULL)) pointerArrayData_ = new void*[arraySize_];

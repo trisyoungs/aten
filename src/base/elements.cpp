@@ -44,7 +44,7 @@ ATEN_USING_NAMESPACE
 
 // ZMapping types
 const char* ZMapTypeKeywords[ElementMap::nZMapTypes] = { "Alpha", "FirstAlpha", "SingleAlpha", "Name", "Numeric", "FF", "Auto" };
-ElementMap::ZMapType ElementMap::zMapType(const char* s, bool reportError)
+ElementMap::ZMapType ElementMap::zMapType(QString s, bool reportError)
 {
 	ElementMap::ZMapType zm = (ElementMap::ZMapType) enumSearch("element mapping style", ElementMap::nZMapTypes, ZMapTypeKeywords, s);
 	if ((zm == nZMapTypes) && reportError) enumPrintValid(ElementMap::nZMapTypes, ZMapTypeKeywords);
@@ -513,23 +513,22 @@ void ElementMap::copyColour(int i, Vec4<GLfloat>& v) const
 }
 
 // Convert string from Z to element number
-int ElementMap::numberToZ(const char* number) const
+int ElementMap::numberToZ(QString number) const
 {
 	// Check that the string is entirely numerical
-	bool isnumber = TRUE;
-	for (int n=0; number[n] != '\0'; n++)
+	bool isNumber = TRUE;
+	for (int n=0; n<number.length(); ++n)
 	{
-		if (( number[n] < 48) || ( number[n] > 57))
-		{
-			isnumber = FALSE;
-			break;
-		}
+		if (number.at(n).isDigit()) continue;
+
+		isNumber = FALSE;
+		break;
 	}
 
-	if (isnumber)
+	if (isNumber)
 	{
 		// Check range of number before returning
-		int i = atoi( number );
+		int i = number.toInt();
 		if ((i < 0) || (i > nElements_))
 		{
 			Messenger::print("Warning: Converted element number is out of range (%i)", i);
@@ -541,80 +540,74 @@ int ElementMap::numberToZ(const char* number) const
 }
 
 // Convert string from alpha to element number
-int ElementMap::alphaToZ(const char* alpha) const
+int ElementMap::alphaToZ(QString alpha) const
 {
 	// Ignore numbers. Convert up to non-alpha character.
-	static Dnchar cleaned;
-	cleaned.clear();
+	QString stripped;
 	int n;
-	for (n=0; alpha[n] != '\0'; n++)
+	for (n=0; n<alpha.length(); ++n)
 	{
-		if ( alpha[n] == ' ') continue;
-		else if ( alpha[n] > 64 && alpha[n] < 91) cleaned += alpha[n];
-		else if ( alpha[n] > 96 && alpha[n] < 123) cleaned += toupper( alpha[n]);
-		else if ( alpha[n] == '_') break;
+		if (alpha.at(n) == ' ') continue;
+		else if (alpha.at(n).isUpper()) stripped += alpha.at(n);
+		else if (alpha.at(n).isLower()) stripped += alpha.at(n).toUpper();
+		else if (alpha[n] == '_') break;
 	}
-	for (n=0; n<nElements_; ++n) if (cleaned == el[n].ucSymbol) return n;
+	for (n=0; n<nElements_; ++n) if (stripped == el[n].ucSymbol) return n;
 	return -1;
 }
 
 // Convert string from first alpha part to element number
-int ElementMap::firstAlphaToZ(const char* alpha) const
+int ElementMap::firstAlphaToZ(QString alpha) const
 {
 	// Convert up to non-alpha character.
-	static Dnchar cleaned;
-	cleaned.clear();
+	QString stripped;
 	int n;
-	for (n=0; alpha[n] != '\0'; n++)
+	for (n=0; n<alpha.length(); ++n)
 	{
-		if ( alpha[n] == ' ') continue;
-		else if ( alpha[n] > 64 && alpha[n] < 91) cleaned += alpha[n];
-		else if ( alpha[n] > 96 && alpha[n] < 123) cleaned += toupper( alpha[n]);
+		if (alpha.at(n) == ' ') continue;
+		else if (alpha.at(n).isUpper()) stripped += alpha.at(n);
+		else if (alpha.at(n).isLower()) stripped += alpha.at(n).toUpper();
 		else break;
 	}
-	for (n=0; n<nElements_; ++n) if (cleaned == el[n].ucSymbol) return n;
+	for (n=0; n<nElements_; ++n) if (stripped == el[n].ucSymbol) return n;
 	return -1;
 }
 
 // Convert string from first alpha character to element number
-int ElementMap::singleAlphaToZ(const char* alpha) const
+int ElementMap::singleAlphaToZ(QString alpha) const
 {
 	// Convert first alpha character.
-	char cleaned[2];
+	QString stripped;
 	int n;
-	cleaned[0] = '\0';
-	for (n=0; alpha[n] != '\0'; n++)
+	for (n=0; n<alpha.length(); ++n)
 	{
-		if ( alpha[n] == ' ') continue;
-		else if ( alpha[n] > 64 && alpha[n] < 91) cleaned[0] = alpha[n];
-		else if ( alpha[n] > 96 && alpha[n] < 123) cleaned[0] = alpha[n] - 32;
+		if (alpha[n] == ' ') continue;
+		else if (alpha.at(n).isUpper()) { stripped += alpha.at(n); break; }
+		else if (alpha.at(n).isLower()) { stripped += alpha.at(n).toUpper(); break; }
 		else break;
-		if (cleaned[0] != '\0') break;
 	}
-	cleaned[1] = '\0';
-	for (n=0; n<nElements_; ++n) if (strcmp(el[n].ucSymbol,cleaned) == 0) return n;
+	for (n=0; n<nElements_; ++n) if (stripped == el[n].ucSymbol) return n;
 	return -1;
 }
 
 // Convert string from name to element number
-int ElementMap::nameToZ(const char* alpha) const
+int ElementMap::nameToZ(QString alpha) const
 {
 	// Ignore numbers. Convert up to non-alpha character.
-	static Dnchar cleaned;
-	cleaned.clear();
+	QString stripped;
 	int n;
-	for (n=0; alpha[n] != '\0'; n++)
+	for (n=0; n<alpha.length(); ++n)
 	{
-		if (alpha[n] > 64 && alpha[n] < 91) cleaned += alpha[n];
-		else if (alpha[n] > 96 && alpha[n] < 123) cleaned += toupper(alpha[n]);
-		else if (alpha[n] == '_') break;
+		if (alpha.at(n).isUpper()) stripped += alpha.at(n);
+		else if (alpha.at(n).isLower()) stripped += alpha.at(n).toUpper();
+		else if (alpha.at(n) == '_') break;
 	}
-	for (n=0; n<nElements_; ++n) if (cleaned == el[n].ucName) return n;
+	for (n=0; n<nElements_; ++n) if (stripped == el[n].ucName) return n;
 	return -1;
 }
 
 // Convert string from fftype to element number
-int ElementMap::ffToZ(const char* s, Forcefield* firstFF) const
+int ElementMap::ffToZ(QString s, Forcefield* firstFF) const
 {
 	ForcefieldAtom* ffa;
 	int result = -1;
@@ -629,12 +622,12 @@ int ElementMap::ffToZ(const char* s, Forcefield* firstFF) const
 }
 
 // Search for element named 'query' in the list of known elements
-int ElementMap::find(const char* query, ElementMap::ZMapType zmt, Forcefield* firstFF) const
+int ElementMap::find(QString query, ElementMap::ZMapType zmt, Forcefield* firstFF) const
 {
 	// Get the element number from the element name provided.
 	Messenger::enter("ElementMap::find");
 	int result = -1;
-	if (query[0] == '\0')
+	if (query.isEmpty())
 	{
 		Messenger::print("Warning: Element search requested on blank string.");
 		Messenger::exit("ElementMap::find");

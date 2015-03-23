@@ -193,7 +193,7 @@ void Clipboard::copySelection(Model* m, bool quiet)
 	clear();
 	
 	// Copy atoms
-	if (!quiet) Messenger::print("Copying %i atoms from model '%s'...", m->nSelected(), m->name());
+	if (!quiet) Messenger::print("Copying %i atoms from model '%s'...", m->nSelected(), qPrintable(m->name()));
 	for (Refitem<Atom,int>* ri = m->selection(); ri != NULL; ri = ri->next) copyAtom(ri->item);
 	renumberAtoms();
 	
@@ -238,7 +238,7 @@ void Clipboard::copyAll(Model* m, bool quiet)
 	clear();
 	
 	// Copy atoms
-	if (!quiet) Messenger::print("Copying all atoms from model '%s'...", m->name());
+	if (!quiet) Messenger::print("Copying all atoms from model '%s'...", qPrintable(m->name()));
 	for (Atom* i = m->atoms(); i != NULL; i = i->next) copyAtom(i);
 	renumberAtoms();
 	if (!quiet) Messenger::print("bonds...");

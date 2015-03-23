@@ -92,26 +92,26 @@ FunctionAccessor CellVariable::functionData[CellVariable::nFunctions] = {
 };
 
 // Search variable access list for provided accessor (call private static function)
-StepNode* CellVariable::findAccessor(const char* s, TreeNode* arrayIndex, TreeNode* argList)
+StepNode* CellVariable::findAccessor(QString name, TreeNode* arrayIndex, TreeNode* argList)
 {
-	return CellVariable::accessorSearch(s, arrayIndex, argList);
+	return CellVariable::accessorSearch(name, arrayIndex, argList);
 }
 
 // Private static function to search accessors
-StepNode* CellVariable::accessorSearch(const char* s, TreeNode* arrayIndex, TreeNode* argList)
+StepNode* CellVariable::accessorSearch(QString name, TreeNode* arrayIndex, TreeNode* argList)
 {
 	Messenger::enter("CellVariable::accessorSearch");
 	StepNode* result = NULL;
 	int i = 0;
-	i = Variable::searchAccessor(s, nAccessors, accessorData);
+	i = Variable::searchAccessor(name, nAccessors, accessorData);
 	if (i == -1)
 	{
 		// No accessor found - is it a function definition?
 		// for (i = 0; i < nFunctions; i++) if (strcmp(functionData[i].name,s) == 0) break;
-		i = Variable::searchAccessor(s, nFunctions, functionData);
+		i = Variable::searchAccessor(name, nFunctions, functionData);
 		if (i == -1)
 		{
-			Messenger::print("Error: Type 'Cell&' has no member or function named '%s'.", s);
+			Messenger::print("Error: Type 'Cell&' has no member or function named '%s'.", qPrintable(name));
 			printAccessors();
 			Messenger::exit("CellVariable::accessorSearch");
 			return NULL;
@@ -119,7 +119,7 @@ StepNode* CellVariable::accessorSearch(const char* s, TreeNode* arrayIndex, Tree
 		Messenger::print(Messenger::Parse, "FunctionAccessor match = %i (%s)", i, functionData[i].name);
 		if (arrayIndex != NULL)
 		{
-			Messenger::print("Error: Array index given to 'Cell&' function '%s'.", s);
+			Messenger::print("Error: Array index given to 'Cell&' function named '%s'.", qPrintable(name));
 			Messenger::exit("CellVariable::accessorSearch");
 			return NULL;
 		}
@@ -145,7 +145,7 @@ StepNode* CellVariable::accessorSearch(const char* s, TreeNode* arrayIndex, Tree
 		// Were we given an argument list when we didn't want one?
 		if (argList != NULL)
 		{
-			Messenger::print("Error: Argument list given to 'Cell&' array member '%s'.", s);
+			Messenger::print("Error: Argument list given to 'Cell&' array member '%s'.", qPrintable(name));
 			Messenger::exit("CellVariable::accessorSearch");
 			return NULL;
 		}
@@ -351,7 +351,7 @@ bool CellVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newVal
 			else ptr->setParameter( (UnitCell::CellParameter) ((arrayIndex-1) + UnitCell::CellAX), newValue.asDouble());
 			break;
 		case (CellVariable::SpacegroupId):
-			ptr->setSpacegroup( newValue.asString(), prefs.forceRhombohedral() );
+			ptr->setSpacegroup( qPrintable(newValue.asString()), prefs.forceRhombohedral() );
 			break;
 		default:
 			printf("CellVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);
@@ -501,7 +501,7 @@ CellArrayVariable::CellArrayVariable(TreeNode* sizeexpr, bool constant)
 }
 
 // Search variable access list for provided accessor
-StepNode* CellArrayVariable::findAccessor(const char* s, TreeNode* arrayIndex, TreeNode* argList)
+StepNode* CellArrayVariable::findAccessor(QString name, TreeNode* arrayIndex, TreeNode* argList)
 {
-	return CellVariable::accessorSearch(s, arrayIndex, argList);
+	return CellVariable::accessorSearch(name, arrayIndex, argList);
 }

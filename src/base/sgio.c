@@ -885,7 +885,7 @@ int ParseSymXYZ(const char* SymXYZ, T_RTMx *SeitzMx, int FacTr)
 }
 
 
-static int LookupRotMx(T_HallGenerator *HG)
+static int LookupRotMx(T_HallGenerator* HG)
 {
   int                   i, f, refaxis, dircode;
   int                   iNextBasis, nNextBasis;

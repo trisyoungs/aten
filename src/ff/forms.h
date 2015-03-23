@@ -55,8 +55,8 @@ namespace VdwFunctions
 {
 	enum VdwFunction { None, InversePower, Lj, LjGeometric, LjAB, Buckingham, Morse, nVdwFunctions };
 	extern FunctionData VdwFunctions[];
-	VdwFunction vdwFunction(const char* s, bool reportError = FALSE);
-	int vdwParameter(VdwFunction, const char* s, bool reportError = FALSE);
+	VdwFunction vdwFunction(QString s, bool reportError = false);
+	int vdwParameter(VdwFunction, QString s, bool reportError = false);
 	void printValid();
 	enum LjParameter { LjEpsilon, LjSigma };
 	enum LjABParameter { LjA, LjB };
@@ -70,8 +70,8 @@ namespace BondFunctions
 {
 	enum BondFunction { None, Ignore, Constraint, Harmonic, Morse, nBondFunctions };
 	extern FunctionData BondFunctions[];
-	BondFunction bondFunction(const char* s, bool reportError = FALSE);
-	int bondParameter(BondFunction, const char* s, bool reportError = FALSE);
+	BondFunction bondFunction(QString s, bool reportError = false);
+	int bondParameter(BondFunction, QString s, bool reportError = false);
 	void printValid();
 	enum HarmonicParameter { HarmonicK, HarmonicEq };
 	enum ConstraintParameter { ConstraintK, ConstraintEq };
@@ -83,8 +83,8 @@ namespace AngleFunctions
 {
 	enum AngleFunction { None, Ignore, Harmonic, Cosine, Cos2, HarmonicCosine, BondConstraint, nAngleFunctions };
 	extern FunctionData AngleFunctions[];
-	AngleFunction angleFunction(const char* s, bool reportError = FALSE);
-	int angleParameter(AngleFunction, const char* s, bool reportError = FALSE);
+	AngleFunction angleFunction(QString s, bool reportError = false);
+	int angleParameter(AngleFunction, QString s, bool reportError = false);
 	void printValid();
 	enum HarmonicParameter { HarmonicK, HarmonicEq };
 	enum CosineParameter { CosineK, CosineN, CosineEq, CosineS };
@@ -98,8 +98,8 @@ namespace TorsionFunctions
 {
 	enum TorsionFunction { None, Ignore, Cosine, Cos3, Cos4, Cos3C, CosCos, Dreiding, Pol9, nTorsionFunctions };
 	extern FunctionData TorsionFunctions[];
-	TorsionFunction torsionFunction(const char* s, bool reportError = FALSE);
-	int torsionParameter(TorsionFunction, const char* s, bool reportError = FALSE);
+	TorsionFunction torsionFunction(QString s, bool reportError = false);
+	int torsionParameter(TorsionFunction, QString s, bool reportError = false);
 	void printValid();
 	enum CosineParameter { CosineK, CosineN, CosineEq, CosineS };
 	enum Cos3Parameter { Cos3K1, Cos3K2, Cos3K3 };
@@ -115,8 +115,8 @@ namespace Electrostatics
 {
 	// Electrostatic model
 	enum ElecMethod { None, Coulomb, Ewald, EwaldAuto, nElectrostatics };
-	const char* elecMethod(ElecMethod);
-	ElecMethod elecMethod(const char* name, bool reportError = FALSE);
+	const char* elecMethod(ElecMethod em);
+	ElecMethod elecMethod(QString s, bool reportError = FALSE);
 }
 
 ATEN_END_NAMESPACE

@@ -52,7 +52,6 @@
 #include "gui/geometry.h"
 #include "gui/glyphs.h"
 #include "gui/grids.h"
-#include "gui/messages.h"
 #include "gui/modellist.h"
 #include "gui/pores.h"
 #include "gui/position.h"
@@ -127,7 +126,6 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 	geometryWidget = new GeometryWidget(*this, Qt::Tool);
 	glyphsWidget = new GlyphsWidget(*this, Qt::Tool);
 	gridsWidget = new GridsWidget(*this, Qt::Tool);
-	messagesWidget = new MessagesWidget(*this, Qt::Tool);
 	modelListWidget = new ModelListWidget(*this, Qt::Tool);
 	positionWidget = new PositionWidget(*this, Qt::Tool);
 	poresWidget = new PoresWidget(*this, Qt::Tool);
@@ -136,7 +134,7 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 	trajectoryWidget = new TrajectoryWidget(*this, Qt::Tool);
 	transformWidget = new TransformWidget(*this, Qt::Tool);
 	vibrationsWidget = new VibrationsWidget(*this, Qt::Tool);
-	dockWidgets_ << atomListWidget << buildWidget << cellDefinitionWidget << cellTransformWidget << commandWidget << fragmentsWidget << geometryWidget << glyphsWidget << gridsWidget << messagesWidget << modelListWidget << poresWidget << positionWidget << scriptMovieWidget << selectWidget << transformWidget << vibrationsWidget;
+	dockWidgets_ << atomListWidget << buildWidget << cellDefinitionWidget << cellTransformWidget << commandWidget << fragmentsWidget << geometryWidget << glyphsWidget << gridsWidget << modelListWidget << poresWidget << positionWidget << scriptMovieWidget << selectWidget << transformWidget << vibrationsWidget;
 
 	// Set up misc things for Qt (QActionGroups etc.) that we couldn't do in Designer
 	finaliseUi();
@@ -204,28 +202,16 @@ void AtenWindow::closeEvent(QCloseEvent *event)
 // Methods
 */
 
-// Print message
-void AtenWindow::printMessage(const char* s)
-{
-	static char str[8096];
-	static int n;
-	// Remove the '\n' from the end of s (if it has one)
-	for (n=0; s[n] != '\0'; n++) str[n] = (s[n] == '\n' ? ' ' : s[n]);
-	str[n] = '\0';
-	messagesWidget->ui.MessagesBrowser->moveCursor(QTextCursor::End);
-	messagesWidget->ui.MessagesBrowser->append(str);
-}
-
 // Close specified model, saving first if requested
 bool AtenWindow::closeModel(Model* m)
 {
-	Dnchar text;
+	QString text;
 	Tree* filter;
 	if (m->changeLog.isModified())
 	{
 		// Create a modal message dialog
-		text.sprintf("Model '%s' has been modified.", m->name());
-		int returnvalue = QMessageBox::warning(this, "Aten", text.get(), QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel, QMessageBox::Save);
+		text.sprintf("Model '%s' has been modified.", qPrintable(m->name()));
+		int returnvalue = QMessageBox::warning(this, "Aten", text, QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel, QMessageBox::Save);
 		switch (returnvalue)
 		{
 			// Discard changes
@@ -244,8 +230,8 @@ bool AtenWindow::closeModel(Model* m)
 				else if (runSaveModelDialog())
 				{
 					m->setFilter(saveModelFilter_);
-					m->setFilename(saveModelFilename_.get());
-					if (!saveModelFilter_->executeWrite(saveModelFilename_.get()))
+					m->setFilename(saveModelFilename_);
+					if (!saveModelFilter_->executeWrite(saveModelFilename_))
 					{
 						Messenger::print("Not saved.");
 						m->enableUndoRedo();
@@ -387,15 +373,15 @@ void AtenWindow::updateMainWindow()
 		if (m->renderSourceModel() == m)
 		{
 			s = "(Parent of ";
-			s += itoa(m->nTrajectoryFrames());
+			s += QString::number(m->nTrajectoryFrames());
 			s += " frames) ";
 		}
 		else
 		{
 			s = "(Frame ";
-			s += itoa(m->trajectoryFrameIndex()+1);
+			s += QString::number(m->trajectoryFrameIndex()+1);
 			s += " of ";
-			s += itoa(m->nTrajectoryFrames());
+			s += QString::number(m->nTrajectoryFrames());
 			s += ") ";
 		}
 		trajectoryWidget->refresh();
@@ -403,31 +389,33 @@ void AtenWindow::updateMainWindow()
 	updateTrajectoryMenu();
 
 	m = m->renderSourceModel();
-	s += itoa(m->nAtoms());
+	s += QString::number(m->nAtoms());
 	s += " Atoms ";
+
 	// Add on unknown atom information
 	if (m->nUnknownAtoms() != 0)
 	{
 		s += " (<b>";
-		s += itoa(m->nUnknownAtoms());
+		s += QString::number(m->nUnknownAtoms());
 		s += " unknown</b>) ";
 	}
 	if (m->nSelected() != 0)
 	{
 		s += "(<b>";
-		s += itoa(m->nSelected());
+		s += QString::number(m->nSelected());
 		s += " selected</b>) ";
 	}
-	s += ftoa(m->mass());
+	s += QString::number(m->mass());
 	s += " g mol<sup>-1</sup> ";
 	infoLabel1_->setText(s);
+
 	// Second label - cell information
 	UnitCell::CellType ct = m->cell()->type();
 	if (ct != UnitCell::NoCell)
 	{
 		s = UnitCell::cellType(ct);
 		s += ", ";
-		s += ftoa(m->density());
+		s += QString::number(m->density());
 		switch (prefs.densityUnit())
 		{
 			case (Prefs::GramsPerCm):
@@ -501,30 +489,33 @@ void AtenWindow::updateTrajectoryMenu()
 void AtenWindow::updateWindowTitle()
 {
 	Model* m = aten_.currentModel();
-	Dnchar title;
-	title.sprintf("Aten (v%s) - %s (%s)%s", ATENVERSION, m->name(), m->filename()[0] == '\0' ? "<<no filename>>" : m->filename(), m->changeLog.isModified() ? " [Modified]" : "");
-	setWindowTitle(title.get());
+	QString title;
+	title.sprintf("Aten (v%s) - %s (%s)%s", ATENVERSION, qPrintable(m->name()), m->filename().isEmpty() ? "<<no filename>>" : qPrintable(m->filename()), m->changeLog.isModified() ? " [Modified]" : "");
+	setWindowTitle(title);
 }
 
 // Load recent file
 void AtenWindow::loadRecent()
 {
-	Dnchar filename;
+	QString filename;
 	Model* m;
 	Tree* filter;
+
 	// Cast sending QAction and grab filename
-	QAction *action = qobject_cast<QAction*> (sender());
+	QAction* action = qobject_cast<QAction*> (sender());
 	if (!action)
 	{
 		printf("AtenWindow::loadRecent - Sender was not a QAction.\n");
 		return;
 	}
+
 	// Grab the filename from the action
-	filename = qPrintable(action->data().toString());
+	filename = action->data().toString();
+
 	// See if any loaded model filename matches this filename
 	for (m = aten_.models(); m != NULL; m = m->next)
 	{
-		Messenger::print(Messenger::Verbose, "Checking loaded models for '%s': %s", filename.get(), m->filename());
+		Messenger::print(Messenger::Verbose, "Checking loaded models for '%s': %s", qPrintable(filename), qPrintable(m->filename()));
 		if (filename == m->filename())
 		{
 			Messenger::print(Messenger::Verbose, "Matched filename to loaded model.");
@@ -534,12 +525,13 @@ void AtenWindow::loadRecent()
 			return;
 		}
 	}
+
 	// If we get to here then the model is not currently loaded...
-	filter = aten_.probeFile(filename.get(), FilterData::ModelImport);
+	filter = aten_.probeFile(filename, FilterData::ModelImport);
 	if (filter != NULL)
 	{
 		ReturnValue rv;
-		filter->executeRead(filename.get(), rv);
+		filter->executeRead(filename, rv);
 		aten_.currentModel()->regenerateIcon();
 		// Update GUI
 		updateWidgets(AtenWindow::AllTarget);
@@ -559,12 +551,13 @@ void AtenWindow::loadRecent()
 }
 
 // Add file to top of recent list
-void AtenWindow::addRecent(const char* filename)
+void AtenWindow::addRecent(QString filename)
 {
 	// Find unused (i.e. still hidden) recent file action
 	int last, n;
-	Dnchar temp;
+	QString temp;
 	for (last=0; last<MAXRECENTFILES; last++) if (!actionRecentFile[last]->isVisible()) break;
+
 	// 'last' now holds the first empty slot in the recent files list.
 	// If 'last' == MAXRECENTFILES then shuffle top 'n-1' down a position and add at '0'.
 	if (last == MAXRECENTFILES)
@@ -573,15 +566,16 @@ void AtenWindow::addRecent(const char* filename)
 		for (n=MAXRECENTFILES-2; n>=0; n--)
 		{
 			actionRecentFile[n+1]->setData(actionRecentFile[n]->data());
-			temp.sprintf("&%i %s", n+1, removePath(qPrintable(actionRecentFile[n]->data().toString())));
-			actionRecentFile[n+1]->setText(temp.get());
+			temp.sprintf("&%i %s", n+1, qPrintable(actionRecentFile[n]->data().toString()));
+			actionRecentFile[n+1]->setText(temp);
 			actionRecentFile[n+1]->setData(actionRecentFile[n]->data());
 		}
 		last = 0;
 	}
+
 	// Set the new data
-	temp.sprintf("&%i %s (%s)",last,removePath(filename),filename);
-	actionRecentFile[last]->setText(temp.get());
+	temp.sprintf("&%i %s", last, qPrintable(filename));
+	actionRecentFile[last]->setText(temp);
 	actionRecentFile[last]->setData(filename);
 	actionRecentFile[last]->setVisible(TRUE);
 }

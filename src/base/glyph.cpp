@@ -39,7 +39,7 @@ const char* Glyph::glyphTypeName(Glyph::GlyphType gt)
 {
 	return GlyphTypeNames[gt];
 }
-Glyph::GlyphType Glyph::glyphType(const char* s, bool reportError)
+Glyph::GlyphType Glyph::glyphType(QString s, bool reportError)
 {
 	Glyph::GlyphType gt = (Glyph::GlyphType) enumSearch("glyph style", Glyph::nGlyphTypes, GlyphTypeKeywords, s);
 	if ((gt == Glyph::nGlyphTypes) && reportError) enumPrintValid(Glyph::nGlyphTypes,GlyphTypeKeywords);
@@ -56,7 +56,7 @@ const char* Glyph::glyphOption(Glyph::GlyphOption go)
 {
 	return GlyphOptionKeywords[go];
 }
-Glyph::GlyphOption Glyph::glyphOption(const char* s, bool reportError)
+Glyph::GlyphOption Glyph::glyphOption(QString s, bool reportError)
 {
 	Glyph::GlyphOption go = (Glyph::GlyphOption) enumSearch("glyph option", Glyph::nGlyphOptions, GlyphOptionKeywords, s);
 	if ((go == Glyph::nGlyphOptions) && reportError) enumPrintValid(Glyph::nGlyphOptions,GlyphOptionKeywords);
@@ -168,7 +168,7 @@ void GlyphData::setColour(double r, double g, double b, double a)
 // Set n'th component of colour
 void GlyphData::setColour(int n, double d)
 {
-	if ((n < 0) || (n > 4)) Messenger::print( "Tried to set component %i for colour in glyphdata which is out of range.", n+1);
+	if ((n < 0) || (n > 4)) Messenger::print("Tried to set component %i for colour in glyphdata which is out of range.", n+1);
 	else colour_[n] = d;
 }
 
@@ -291,7 +291,7 @@ int Glyph::nData() const
 // Return nth data in glyph
 GlyphData* Glyph::data(int i)
 {
-	if ((i < 0) || (i >= data_.nItems())) Messenger::print( "Tried to get data %i for glyph when it has only %i.", i+1, data_.nItems());
+	if ((i < 0) || (i >= data_.nItems())) Messenger::print("Tried to get data %i for glyph when it has only %i.", i+1, data_.nItems());
 	else return data_[i];
 	return NULL;
 }

@@ -55,21 +55,21 @@ Pattern* Site::pattern()
 }
 
 // Set name of site
-void Site::setName(const char* s)
+void Site::setName(QString name)
 {
-	name_ = s;
+	name_ = name;
 }
 
 // Get name of site
-const char* Site::name()
+QString Site::name()
 {
-	return name_.get();
+	return name_;
 }
 
 // Set type of site centre
-void Site::setType(SiteType st)
+void Site::setType(SiteType type)
 {
-	type_ = st;
+	type_ = type;
 }
 
 // Set centre of site

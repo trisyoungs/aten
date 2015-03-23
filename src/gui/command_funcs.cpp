@@ -181,11 +181,11 @@ void CommandWidget::on_OpenScriptButton_clicked(bool v)
 
 		// Create script and model variables within it
 		Program* ca = parent_.aten().addScript();
-		if (ca->generateFromFile(qPrintable(filename)))
+		if (ca->generateFromFile(filename, filename))
 		{
 			Messenger::print("Script file '%s' loaded succesfully.", qPrintable(filename));
 			ui.ScriptsList->addItem(ca->filename());
-			refreshScripts(TRUE,FALSE);
+			refreshScripts(TRUE, FALSE);
 		}
 		else
 		{
@@ -202,7 +202,8 @@ void CommandWidget::on_ReloadAllScriptsButton_clicked(bool checked)
 	while (script != NULL)
 	{
 		// Check that the file still exists
-		if (!fileExists(script->filename()))
+		QFileInfo info(script->filename());
+		if (!info.exists())
 		{
 			Tree dialog;
 			TreeGuiWidget* group;
@@ -276,7 +277,7 @@ void CommandWidget::on_RunSelectedScriptButton_clicked(bool checked)
 	if (script != NULL)
 	{
 		// Execute the script
-		Messenger::print("Executing script '%s':", script->name());
+		Messenger::print("Executing script '%s':", qPrintable(script->name()));
 		ReturnValue result;
 		script->execute(result);
 	}
@@ -308,7 +309,7 @@ void CommandWidget::runScript()
 	else
 	{
 		// Execute the script
-		Messenger::print("Executing script '%s':", ri->data->name());
+		Messenger::print("Executing script '%s':", qPrintable(ri->data->name()));
 		ReturnValue result;
 		ri->data->execute(result);
 	}

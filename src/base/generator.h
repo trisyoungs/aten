@@ -22,7 +22,6 @@
 #ifndef ATEN_GENERATOR_H
 #define ATEN_GENERATOR_H
 
-#include "base/dnchar.h"
 #include "math/matrix.h"
 #include "templates/list.h"
 #include "base/namespace.h"
@@ -41,23 +40,23 @@ class Generator : public ListItem<Generator>
 	*/
 	private:
 	// Generator text (if any)
-	Dnchar name_;
+	QString name_;
 	// Generator matrix
 	Matrix matrix_;
 	// Set partial element of matrix in specified row
-	void setMatrixPart(int row, const char* s);
+	void setMatrixPart(int row, QString part);
 
 	public:
 	// Set from XYZ-style name
-	bool set(const char* xyz);
+	bool set(QString xyzName);
 	// Set rotation matrix row (not including translation vector)
 	void setRotationRow(int row, double x, double y, double z);
 	// Set translation column
 	void setTranslation(double tx, double ty, double tz, double divisor);
 	// Return text 'name' of generator
-	const char* name() const;
+	QString name() const;
 	// Return operator matrix of generator
-	 Matrix& matrix();
+	Matrix& matrix();
 };
 
 ATEN_END_NAMESPACE

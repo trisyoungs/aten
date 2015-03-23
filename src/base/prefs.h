@@ -29,6 +29,7 @@
 #include "base/dnchar.h"
 #include "base/choice.h"
 #include "base/namespace.h"
+#include <QtCore/QDir>
 
 ATEN_BEGIN_NAMESPACE
 
@@ -44,40 +45,40 @@ class Prefs
 	public:
 	// Mouse buttons
 	enum MouseButton { LeftButton, MiddleButton, RightButton, WheelButton, nMouseButtons };
-	static MouseButton mouseButton(const char* name, bool reportError = 0);
+	static MouseButton mouseButton(QString s, bool reportError = false);
 	static const char* mouseButton(MouseButton mb);
 	// Mouse Actions
 	enum MouseAction { NoAction, RotateAction, TranslateAction, InteractAction, ZoomAction, ZRotateAction, nMouseActions };
-	static MouseAction mouseAction(const char* name, bool reportError = 0);
+	static MouseAction mouseAction(QString s, bool reportError = false);
 	static const char* mouseAction(MouseAction ma);
 	// Modifier keys
 	enum ModifierKey { ShiftKey, CtrlKey, AltKey, nModifierKeys };
-	static ModifierKey modifierKey(const char* name, bool reportError = 0);
+	static ModifierKey modifierKey(QString s, bool reportError = false);
 	static const char* modifierKey(ModifierKey mk);
 	// Modifier actions
 	enum KeyAction { NoKeyAction, ManipulateKeyAction, ZrotateKeyAction, nKeyActions };
-	static KeyAction keyAction(const char* name, bool reportError = 0);
+	static KeyAction keyAction(QString s, bool reportError = false);
 	static const char* keyAction(KeyAction ka);
 	// Property/Object Colours
 	enum ObjectColour { AromaticRingColour, BackgroundColour, FixedAtomColour, GlobeAxesColour, GlobeColour, GlyphDefaultColour, HydrogenBondColour, SpecularColour, TextColour, UnitCellAxesColour, UnitCellColour, VibrationArrowColour, WireSelectionColour, nObjectColours };
 	static const char* objectColour(ObjectColour oc);
 	static const char* objectColourName(ObjectColour oc);
-	static ObjectColour objectColour(const char* name, bool reportError = 0);
+	static ObjectColour objectColour(QString s, bool reportError = false);
 	// Energy Units
 	enum EnergyUnit { Joules, KiloJoules, Calories, KiloCalories, Kelvin, ElectronVolts, Hartree, nEnergyUnits };
 	static const char* energyUnit(EnergyUnit eu);
-	static EnergyUnit energyUnit(const char* name, bool reportError = 0);
+	static EnergyUnit energyUnit(QString s, bool reportError = false);
 	// Density calculation units
 	enum DensityUnit { GramsPerCm, AtomsPerAngstrom, nDensityUnits };
 	static const char* densityUnit(DensityUnit du);
-	static DensityUnit densityUnit(const char* name, bool reportError = 0);
+	static DensityUnit densityUnit(QString s, bool reportError = false);
 	// Drawing style enum
 	enum DrawStyle { StickStyle, TubeStyle, SphereStyle, ScaledStyle, IndividualStyle, nDrawStyles };
-	static DrawStyle drawStyle(const char* name, bool reportError = 0);
+	static DrawStyle drawStyle(QString s, bool reportError = false);
 	static const char* drawStyle(DrawStyle);	
 	// Atom colouring scheme
 	enum ColouringScheme { ChargeScheme, ElementScheme, ForceScheme, VelocityScheme, CustomScheme, nColouringSchemes };
-	static ColouringScheme colouringScheme(const char* name, bool reportError = 0);
+	static ColouringScheme colouringScheme(QString s, bool reportError = false);
 	static const char* colouringScheme(ColouringScheme cs);
 	// Drawing guide geometry
 	enum GuideGeometry { SquareGuide, HexagonalGuide, nGuideGeometries };
@@ -86,7 +87,7 @@ class Prefs
 	// GUI history types
 	enum HistoryType { CommandHistory, RecentFileHistory, ScriptHistory, SelectForHistory, SelectHistory, SelectNetaHistory, nHistoryTypes };
 	static const char* historyType(HistoryType ht);
-	static HistoryType historyType(const char* name, bool reportError = 0);
+	static HistoryType historyType(QString s, bool reportError = false);
 	
 	public:
 	// Constructor
@@ -264,11 +265,11 @@ class Prefs
 	*/
 	private:
 	// C-style format for distance label values
-	Dnchar distanceLabelFormat_;
+	QString distanceLabelFormat_;
 	// C-style format for angle label values
-	Dnchar angleLabelFormat_;
+	QString angleLabelFormat_;
 	// C-style format for charge label values
-	Dnchar chargeLabelFormat_;
+	QString chargeLabelFormat_;
 	// Relative size for text labels, in percentage of view height
 	double labelSize_;
 	// Flag to manually perform swapBuffers
@@ -288,17 +289,17 @@ class Prefs
 	
 	public:
 	// Set C-style format for distance label values
-	void setDistanceLabelFormat(const char* format);
+	void setDistanceLabelFormat(QString cFormat);
 	// Return C-style format for distance label values
-	const char* distanceLabelFormat();
+	QString distanceLabelFormat();
 	// Set C-style format for angle label values
-	void setAngleLabelFormat(const char* format);
+	void setAngleLabelFormat(QString cFormat);
 	// Return C-style format for angle label values
-	const char* angleLabelFormat();
+	QString angleLabelFormat();
 	// Set C-style format for charge label values
-	void setChargeLabelFormat(const char* format);
+	void setChargeLabelFormat(QString cFormat);
 	// Return C-style format for charge label values
-	const char* chargeLabelFormat();
+	QString chargeLabelFormat();
 	// Set the pointsize of labels in the model
 	void setLabelSize(double size);
 	// Return the current label pointsize
@@ -599,7 +600,7 @@ class Prefs
 	// Maximum number of undo levels (-1 for unlimited)
 	int maxUndoLevels_;
 	// List of common drawing elements to put in SelectElement dialog
-	Dnchar commonElements_;
+	QString commonElements_;
 	// Whether to load Qt window/toolbar settings on startup
 	bool loadQtSettings_;
 	// Maximum distance allowed between consecutive improper torsion atoms
@@ -665,9 +666,9 @@ class Prefs
 	// Return the maximum number of undo levels allowed
 	int maxUndoLevels() const;
 	// Set list of common elements in SelectElement dialog
-	void setCommonElements(const char* s);
+	void setCommonElements(QString elementsList);
 	// Return list of common elements to use in SelectElement dialog
-	const char* commonElements() const;
+	QString commonElements() const;
 	// Return whether to load Qt window/toolbar settings on startup
 	bool loadQtSettings();
 	// set whether to load Qt window/toolbar settings on startup
@@ -779,7 +780,7 @@ class Prefs
 	// Whether the automatic Ewald setup is valid
 	bool validEwaldAuto_;
 	// Combination rule equations
-	Dnchar combinationRules_[CombinationRules::nCombinationRules];
+	QString combinationRules_[CombinationRules::nCombinationRules];
 	// Grid size for PartitioningSchemes
 	Vec3<int> partitionGridSize_;
 
@@ -825,11 +826,11 @@ class Prefs
 	// Return the electrostatic cutoff radius
 	double elecCutoff() const;
 	// Set combination rule equation
-	void setCombinationRule(CombinationRules::CombinationRule cr, const char* s);
+	void setCombinationRule(CombinationRules::CombinationRule cr, QString equation);
 	// Return combination rule equation
-	const char* combinationRule(CombinationRules::CombinationRule cr) const;
+	QString combinationRule(CombinationRules::CombinationRule cr) const;
 	// Return array of combination rule equations
-	Dnchar* combinationRules();
+	QString* combinationRules();
 	// Set grid size for PartitioningSchemes
 	void setPartitionGridSize(Vec3<int> newSize);
 	// Set grid size for PartitioningSchemes (element)
@@ -843,43 +844,43 @@ class Prefs
 	*/
 	private:
 	// Location of temporary directory
-	Dnchar tempDir_;
+	QDir tempDir_;
 	// Location of MOPAC executable
-	Dnchar mopacExe_;
+	QString mopacExe_;
 	// Video encoder executable
-	Dnchar encoderExe_;
+	QString encoderExe_;
 	// Video encoder arguments
-	Dnchar encoderArguments_;
+	QString encoderArguments_;
 	// Video encoder post-process executable
-	Dnchar encoderPostExe_;
+	QString encoderPostExe_;
 	// Video encoder post-process arguments
-	Dnchar encoderPostArguments_;
+	QString encoderPostArguments_;
 
 	public:
 	// Set temp directory
-	void setTempDir(const char* path);
+	void setTempDir(QDir path);
 	// Return the temp directory path
-	const char* tempDir() const;
+	QDir tempDir() const;
 	// Location of MOPAC executable
-	void setMopacExe(const char* exe);
+	void setMopacExe(QString exe);
 	// Return the location of the MOPAC executable
-	const char* mopacExe() const;
+	QString mopacExe() const;
 	// Video encoder command
-	void setEncoderExe(const char* exe);
+	void setEncoderExe(QString exe);
 	// Return the video encoder command
-	const char* encoderExe() const;
+	QString encoderExe() const;
 	// Video encoder arguments
-	void setEncoderArguments(const char* arguments);
+	void setEncoderArguments(QString arguments);
 	// Return the video encoder arguments
-	const char* encoderArguments() const;
+	QString encoderArguments() const;
 	// Video encoder post-process command
-	void setEncoderPostExe(const char* exe);
+	void setEncoderPostExe(QString exe);
 	// Return the video encoder post-process command
-	const char* encoderPostExe() const;
+	QString encoderPostExe() const;
 	// Video encoder post-process arguments
-	void setEncoderPostArguments(const char* arguments);
+	void setEncoderPostArguments(QString arguments);
 	// Return the video encoder post-process arguments
-	const char* encoderPostArguments() const;
+	QString encoderPostArguments() const;
 };
 
 extern Prefs prefs;

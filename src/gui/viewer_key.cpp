@@ -134,7 +134,7 @@ void Viewer::keyPressEvent(QKeyEvent *event)
 			// Cycle link atom....
 			if (keyModifier_[Prefs::AltKey])
 			{
-				Fragment *frag = atenWindow_->fragmentsWidget->currentFragment();	// ATEN2 TODO
+				Fragment* frag = atenWindow_->fragmentsWidget->currentFragment();	// ATEN2 TODO
 				if (frag == NULL) break;
 				frag->cycleLinkAtom();
 				refresh = TRUE;

@@ -69,13 +69,13 @@ class Grid : public ListItem<Grid>
 	~Grid();
 	// Grid type
 	enum GridType { NoData, RegularXYData, RegularXYZData, FreeXYZData, nGridTypes };
-	static GridType gridType(const char* s, bool reportError);
+	static GridType gridType(QString s, bool reportError);
 	static const char* gridType(Grid::GridType gt);
 	// Surface rendering styles
 	enum SurfaceStyle { PointSurface, TriangleSurface, SolidSurface, nSurfaceStyles };
-	static SurfaceStyle surfaceStyle(const char* s);
+	static SurfaceStyle surfaceStyle(QString s);
 	// Assignment operator
-	void operator=(Grid &source);
+	void operator=(Grid& source);
 
 
 	/*
@@ -85,15 +85,15 @@ class Grid : public ListItem<Grid>
 	// Parent model
 	Model* parent_;
 	// Name of the Grid data
-	Dnchar name_;
+	QString name_;
 	// Type of data contained in the class
 	GridType type_;
 
 	public:
 	// Set name of Grid data
-	void setName(const char* s);
+	void setName(QString name);
 	// Return name of Grid data
-	const char* name() const;
+	QString name() const;
 	// Initialise grid to specified type and size
 	bool initialise(GridType type, Vec3<int> nXYZ);
 	// Return type of Grid data

@@ -27,7 +27,7 @@
 ATEN_USING_NAMESPACE
 
 // Add Forcefield
-Forcefield* Aten::addForcefield(const char* name)
+Forcefield* Aten::addForcefield(QString name)
 {
 	current_.ff = forcefields_.add();
 	if (name != NULL) current_.ff->setName(name);
@@ -35,31 +35,37 @@ Forcefield* Aten::addForcefield(const char* name)
 }
 
 // Load forcefield
-Forcefield* Aten::loadForcefield(const char* filename)
+Forcefield* Aten::loadForcefield(QString ffFile)
 {
 	Messenger::enter("Aten::loadForcefield");
+
 	// Try some different locations to find the supplied forcefield.
-	static Dnchar filepath;
+	QString filename;
+	QFileInfo fileInfo;
 	bool result;
 	Forcefield* newff = forcefields_.add();
+
 	// First try - actual / absolute path
-	Messenger::print(Messenger::Verbose, "Looking for forcefield in absolute path (%s)...",filename);
-	if (fileExists(filename)) result = newff->load(filename);
+	fileInfo.setFile(ffFile);
+	Messenger::print(Messenger::Verbose, "Looking for forcefield in absolute path (%s)...", qPrintable(ffFile));
+	if (fileInfo.exists()) result = newff->load(ffFile);
 	else
 	{
 		// Second try - aten.dataDir/ff
-		filepath.sprintf("%s%cff%c%s", dataDir_.get(), PATHSEP, PATHSEP, filename);
-		Messenger::print(Messenger::Verbose, "Looking for forcefield in installed location (%s)...",filepath.get());
-		if (fileExists(filepath)) result = newff->load(filepath);
+		filename = dataDirectoryFile("ff/"+ffFile);
+		fileInfo.setFile(filename);
+		Messenger::print(Messenger::Verbose, "Looking for forcefield in installed location (%s)...", qPrintable(filename));
+		if (fileInfo.exists()) result = newff->load(filename);
 		else
 		{
 			// Last try - user home datadir/ff
-			filepath.sprintf("%s%c%s%cff%c%s", homeDir_.get(), PATHSEP, atenDir_.get(), PATHSEP, PATHSEP, filename);
-			Messenger::print(Messenger::Verbose, "Looking for forcefield in user's data directory (%s)...",filepath.get());
-			if (fileExists(filepath)) result = newff->load(filepath);
+			filename = atenDirectoryFile("ff/"+ffFile);
+			fileInfo.setFile(filename);
+			Messenger::print(Messenger::Verbose, "Looking for forcefield in user's data directory (%s)...", qPrintable(filename));
+			if (fileInfo.exists()) result = newff->load(filename);
 			else
 			{
-				Messenger::print("Can't find forcefield file '%s' in any location.", filename);
+				Messenger::print("Can't find forcefield file '%s' in any location.", qPrintable(ffFile));
 				result = FALSE;
 			}
 		}
@@ -67,11 +73,11 @@ Forcefield* Aten::loadForcefield(const char* filename)
 	if (result)
 	{
 		current_.ff = newff;
-		Messenger::print("Forcefield '%s' is now the default.", newff->name());
+		Messenger::print("Forcefield '%s' is now the default.", qPrintable(newff->name()));
 	}
 	else
 	{
-		Messenger::print("Couldn't load forcefield file '%s'.", filename);
+		Messenger::print("Couldn't load forcefield file '%s'.", qPrintable(ffFile));
 		forcefields_.remove(newff);
 		newff = NULL;
 	}
@@ -96,13 +102,12 @@ void Aten::removeForcefield(Forcefield* xff)
 }
 
 // Find forcefield by name
-Forcefield* Aten::findForcefield(const char* s) const
+Forcefield* Aten::findForcefield(QString name) const
 {
-	// Search forcefield list for name 's' (script function)
 	Messenger::enter("Aten::findForcefield");
 	Forcefield* ff;
-	for (ff = forcefields_.first(); ff != NULL; ff = ff->next) if (strcmp(s,ff->name()) == 0) break;
-	if (ff == NULL) Messenger::print("Forcefield '%s' is not loaded.",s);
+	for (ff = forcefields_.first(); ff != NULL; ff = ff->next) if (name == ff->name()) break;
+	if (ff == NULL) Messenger::print("Forcefield '%s' is not loaded.", qPrintable(name));
 	Messenger::exit("Aten::findForcefield");
 	return ff;
 }
@@ -130,7 +135,7 @@ void Aten::setCurrentForcefield(Forcefield* ff)
 {
 	current_.ff = ff;
 	if (current_.ff == NULL) Messenger::print("Default forcefield has been unset.");
-	else Messenger::print("Default forcefield is now '%s'.", current_.ff->name());
+	else Messenger::print("Default forcefield is now '%s'.", qPrintable(current_.ff->name()));
 }
 
 // Set active forcefield by ID

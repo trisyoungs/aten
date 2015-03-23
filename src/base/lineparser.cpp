@@ -31,7 +31,7 @@ ATEN_USING_NAMESPACE
 
 // Parse options
 const char* ParseOptionKeywords[LineParser::nParseOptions] = { "stripcomments", "usequotes", "skipblanks", "stripbrackets", "noescapes", "usecurlies", "normalcommas" };
-LineParser::ParseOption LineParser::parseOption(const char* s)
+LineParser::ParseOption LineParser::parseOption(QString s)
 {
 	return (LineParser::ParseOption) (1 << enumSearch("line parser option", LineParser::nParseOptions, ParseOptionKeywords, s));
 }
@@ -70,28 +70,28 @@ void LineParser::reset()
 */
 
 // Return filename of current input file (if any)
-const char* LineParser::inputFilename() const
+QString LineParser::inputFilename() const
 {
-	return inputFilename_.get();
+	return inputFilename_;
 }
 
 // Return filename of current output file (if any)
-const char* LineParser::outputFilename() const
+QString LineParser::outputFilename() const
 {
-	return outputFilename_.get();
+	return outputFilename_;
 }
 
 // Return pointer to current line
-const char* LineParser::line() const
+QString LineParser::line() const
 {
 	return line_;
 }
 
 // Set line target
-void LineParser::setLine(const char* s)
+void LineParser::setLine(QString s)
 {
-	strncpy(line_, s, MAXLINELENGTH);
-	lineLength_ = strlen(line_);
+	line_ = s;
+	lineLength_ = line_.length();
 	linePos_ = 0;
 }
 
@@ -102,9 +102,10 @@ int LineParser::lastLineNo() const
 }
 
 // Open new file for reading
-bool LineParser::openInput(const char* filename)
+bool LineParser::openInput(QString filename)
 {
 	Messenger::enter("LineParser::openInput");
+
 	// Check existing input file
 	if (inputFile_ != NULL)
 	{
@@ -113,26 +114,30 @@ bool LineParser::openInput(const char* filename)
 		delete inputFile_;
 		inputFile_ = NULL;
 	}
+
 	// Open new file
-	inputFile_ = new std::ifstream(filename, std::ios::in | std::ios::binary);
+	inputFile_ = new std::ifstream(qPrintable(filename), std::ios::in | std::ios::binary);
 	if (!inputFile_->is_open())
 	{
 		closeFiles();
-		Messenger::print("Error: Failed to open file '%s' for reading.", filename);
+		Messenger::print("Error: Failed to open file '%s' for reading.", qPrintable(filename));
 		Messenger::exit("LineParser::openInput");
 		return FALSE;
 	}
+
 	// Reset variables
 	lastLineNo_ = 0;
 	inputFilename_ = filename;
+
 	Messenger::exit("LineParser::openInput");
 	return TRUE;
 }
 
 // Open new stream for writing
-bool LineParser::openOutput(const char* filename, bool directOutput)
+bool LineParser::openOutput(QString filename, bool directOutput)
 {
 	Messenger::enter("LineParser::openOutput");
+
 	// Check existing input file
 	if ((outputFile_ != NULL) || (cachedFile_ != NULL))
 	{
@@ -149,22 +154,23 @@ bool LineParser::openOutput(const char* filename, bool directOutput)
 			cachedFile_ = NULL;
 		}
 	}
+
 	// Open new file
 	directOutput_ = directOutput;
 	if (directOutput_)
 	{
-		outputFile_ = new std::ofstream(filename, std::ios::out);
+		outputFile_ = new std::ofstream(qPrintable(filename), std::ios::out);
 		if (!outputFile_->is_open())
 		{
 			closeFiles();
-			Messenger::print("Error: Failed to open file '%s' for writing.", filename);
+			Messenger::print("Error: Failed to open file '%s' for writing.", qPrintable(filename));
 			Messenger::exit("LineParser::openOutput");
 			return FALSE;
 		}
 	}
 	else cachedFile_ = new std::stringstream;
-
 	outputFilename_ = filename;
+
 	Messenger::exit("LineParser::openOutput");
 	return TRUE;
 }
@@ -284,6 +290,11 @@ bool LineParser::eofOrBlank() const
 int LineParser::readNextLine(int optionMask)
 {
 	Messenger::enter("LineParser::readNextLine");
+
+	// Reset line contents
+	lineLength_ = 0;
+	line_.clear();
+
 	// Returns : 0=ok, 1=error, -1=eof
 	if (inputFile_ == NULL)
 	{
@@ -298,11 +309,10 @@ int LineParser::readNextLine(int optionMask)
 	}
 	
 	// Loop until we get 'suitable' line from file
-	int nchars, nspaces, result = 0;
+	int nSpaces, result = 0;
 	do
 	{
 		char chr;
-		lineLength_ = 0;
 		while(inputFile_->get(chr).good())
 		{
 			if (chr == '\r')
@@ -311,7 +321,9 @@ int LineParser::readNextLine(int optionMask)
 				break;
 			}
 			else if (chr == '\n') break;
-			line_[lineLength_++] = chr;
+			line_ += chr;
+			++lineLength_;
+
 			// Check here for overfilling the line_ buffer - perhaps it's a binary file?
 			if (lineLength_ == MAXLINELENGTH)
 			{
@@ -319,8 +331,7 @@ int LineParser::readNextLine(int optionMask)
 				return -1;
 			}
 		}
-		line_[lineLength_] = '\0';
-		Messenger::print(Messenger::Parse, "Line from file is: [%s]", line_);
+		Messenger::print(Messenger::Parse, "Line from file is: [%s]", qPrintable(line_));
 
 		// Remove comments from line
 		if (optionMask&LineParser::StripComments) removeComments(line_);
@@ -329,14 +340,9 @@ int LineParser::readNextLine(int optionMask)
 		if (optionMask&LineParser::SkipBlanks)
 		{
 			// Now, see if our line contains only blanks
-			nchars = 0;
-			nspaces = 0;
-			for (char *c = line_; *c != '\0'; c++)
-			{
-				nchars++;
-				if (isspace(*c)) nspaces++;
-			}
-			if (nchars == nspaces) result = -1;
+			nSpaces = 0;
+			for (int n=0; n<line_.length(); ++n) if (line_.at(n).isSpace()) ++nSpaces;
+			if (line_.length() == nSpaces) result = -1;
 			else result = 0;
 		}
 		else result = 0;
@@ -355,7 +361,7 @@ int LineParser::readNextLine(int optionMask)
 				return 1;
 			}
 		}
-		lineLength_ = strlen(line_);
+		lineLength_ = line_.length();
 		linePos_ = 0;
 		++lastLineNo_;
 	} while (result != 0);
@@ -365,28 +371,25 @@ int LineParser::readNextLine(int optionMask)
 }
 
 // Gets next delimited arg from internal line
-bool LineParser::getNextArg(int optionMask, Dnchar* destarg)
+bool LineParser::getNextArg(int optionMask, QString& destArg)
 {
-	// Get the next input chunk from the internal string and put into argument specified.
 	Messenger::enter("LineParser::getNextArg");
-	int arglen;
-	bool done, hadquotes, failed;
-	char c, quotechar;
-	failed = FALSE;
-	done = FALSE;
-	hadquotes = FALSE;
-	quotechar = '\0';
+	bool done = false, hadQuotes = false, failed = false;
+	char c, quoteChar = '\0';
 	endOfLine_ = FALSE;
-	arglen = 0;
+
+	// Clear destination argument
+	destArg.clear();
+
 	if (endOfLine_)
 	{
-		destarg->clear();
 // 		printf("Lineparser is at end of line - returning...\n");
 		return TRUE;
 	}
+
 	while (linePos_ < lineLength_)
 	{
-		c = line_[linePos_];
+		c = line_.at(linePos_).toAscii();
 		switch (c)
 		{
 			// End of line markers
@@ -400,52 +403,52 @@ bool LineParser::getNextArg(int optionMask, Dnchar* destarg)
 			case (','):	// Comma
 				if (optionMask&LineParser::NormalCommas)
 				{
-					tempArg_[arglen++] = c;
+					destArg += c;
 					break;
 				}
 			case (9):	// Horizontal Tab
 			case (' '):	// Space
-				if (quotechar != '\0') tempArg_[arglen++] = c;
-				else if (arglen != 0) done = TRUE;
+				if (quoteChar != '\0') destArg += c;
+				else if (!destArg.isEmpty()) done = TRUE;
 				break;
 			// Quote marks
 			// If LineParser::UseQuotes, keep delimiters and other quote marks inside the quoted text.
 			case (34):	// Double quotes
 			case (39):	// Single quotes
 				if (!(optionMask&LineParser::UseQuotes)) break;
-				if (quotechar == '\0') quotechar = c;
-				else if (quotechar == c)
+				if (quoteChar == '\0') quoteChar = c;
+				else if (quoteChar == c)
 				{
-					quotechar = '\0';
-					hadquotes = TRUE;
+					quoteChar = '\0';
+					hadQuotes = TRUE;
 					done = TRUE;
 				}
-				else tempArg_[arglen++] = c;
+				else destArg += c;
 				break;
 			// Curly brackets - treat in the same way as quotes
 			case ('{'):
 			case ('}'):
 				// If explicitly not useing braces, add as normal character
-				if (!(optionMask&LineParser::UseCurlies)) tempArg_[arglen++] = c;
+				if (!(optionMask&LineParser::UseCurlies)) destArg += c;
 				else
 				{
-					// If the quotechar is a left brace and we have a right brace, stop quoting
-					if ((quotechar == '{') && (c == '}'))
+					// If the quoteChar is a left brace and we have a right brace, stop quoting
+					if ((quoteChar == '{') && (c == '}'))
 					{
-						quotechar = '\0';
+						quoteChar = '\0';
 						break;
 					}
 					// If we are already quoting by some other means, add character and exit
-					if (quotechar != '\0') tempArg_[arglen++] = c;
+					if (quoteChar != '\0') destArg += c;
 					// No previous quoting, so begin quoting if '{'
-					if (c == '{') quotechar = '{';
+					if (c == '{') quoteChar = '{';
 				}
 				break;
 			// Parentheses
 			case ('('):	// Left parenthesis
 			case (')'):	// Right parenthesis
 				if (optionMask&LineParser::StripBrackets) break;
-				tempArg_[arglen++] = c;
+				destArg += c;
 				break;
 			// Comment markers
 			case ('#'):	// "#" Rest/all of line is a comment
@@ -454,66 +457,63 @@ bool LineParser::getNextArg(int optionMask, Dnchar* destarg)
 				break;
 			// Normal character
 			default: 
-				tempArg_[arglen++] = c;
+				destArg += c;
 				break;
 		}
 		// Increment line position
 		++linePos_;
 		if (done || failed) break;
 	}
-	// Finalise argument
-	tempArg_[arglen] = '\0';
+
+	// Check for end of the input line
 	if (linePos_ == lineLength_) endOfLine_ = TRUE;
-	// Store the result in the desired destination
-	if (destarg != NULL) *destarg = tempArg_;
+
 	Messenger::exit("LineParser::getNextArg");
 	if (failed) return FALSE;
-	return (arglen == 0 ? (hadquotes ? TRUE : FALSE) : TRUE);
+	return (destArg.isEmpty() ? (hadQuotes ? TRUE : FALSE) : TRUE);
 }
 
 // Rip next n characters
-bool LineParser::getNextN(int optionMask, int length, Dnchar* destarg)
+bool LineParser::getNextN(int optionMask, int length, QString& destArg)
 {
+	Messenger::enter("LineParser::getNextN");
+
+	// Clear destination argument
+	destArg.clear();
+
 	// Put the next 'length' characters from line_ into temparg (and put into supplied arg if supplied)
 	// A negative length may be supplied, which we interpret as 'strip trailing spaces'
-	Messenger::enter("LineParser::getNextN");
-	int arglen = 0;
-	char c;
 	if (lineLength_ == 0)
 	{
 		Messenger::exit("LineParser::getNextN");
 		return FALSE;
 	}
-	int n, charsleft = lineLength_ - linePos_;
-	bool striptrailing = (length < 0);
+
+	int n, charsLeft = lineLength_ - linePos_;
+	bool stripTrailing = (length < 0);
 	length = abs(length);
-	if (length > charsleft) length = charsleft;
+	if (length > charsLeft) length = charsLeft;
 	//if (length > lineLength_) length = lineLength_;
-	for (n=0; n<length; n++)
+	for (n=0; n<length; ++n)
 	{
-		c = line_[linePos_];
-		switch (c)
+		switch (line_.at(n).toAscii())
 		{
 			// Brackets
 			case ('('):	// Left parenthesis
 			case (')'):	// Right parenthesis
 				if (optionMask&LineParser::StripBrackets) break;
-				tempArg_[arglen] = c;
-				arglen ++;
+				destArg += line_.at(n);
 				break;
 			default:
-				tempArg_[arglen] = c;
-				arglen ++;
+				destArg += line_.at(n);
 				break;
 		}
-		linePos_ ++;
+		++linePos_;
 	}
-	// Add terminating character to temparg
-	tempArg_[arglen] = '\0';
-	if (striptrailing) for (n = arglen-1; (tempArg_[n] == ' ') || (tempArg_[n] == '\t'); --n) tempArg_[n] = '\0'; 
-	if (destarg != NULL) destarg->set(tempArg_);
-	//printf("getNextN found [%s], length = %i", tempArg_, arglen);
-	//line_.eraseStart(length);
+
+	// Strip trailing spaces from destination argument
+	if (stripTrailing) for (n = destArg.length()-1; (destArg.at(n) == ' ') || (destArg.at(n) == '\t'); --n) destArg.chop(1); 
+
 	Messenger::exit("LineParser::getNextN");
 	return TRUE;
 }
@@ -525,19 +525,18 @@ void LineParser::getAllArgsDelim(int optionMask)
 	Messenger::enter("LineParser::getAllArgsDelim");
 	arguments_.clear();
 	endOfLine_ = FALSE;
-	Dnchar* arg;
+	QString arg;
 	while (!endOfLine_)
 	{
-		// Create new, empty dnchar
-		arg = new Dnchar;
+		// Clear our argument
+		arg.clear();
+
 		// We must pass on the current optionMask, else it will be reset by the default value in getNextArg()
 		if (getNextArg(optionMask, arg))
 		{
-			Messenger::print(Messenger::Parse,"getAllArgsDelim arg=%i [%s]", arguments_.nItems(), arg->get());
-			// Add this char to the list
-			arguments_.own(arg);
+			Messenger::print(Messenger::Parse,"getAllArgsDelim arg=%i [%s]", arguments_.count(), qPrintable(arg));
+			arguments_ << arg;
 		}
-		else delete arg;
 	}
 	Messenger::exit("LineParser::getAllArgsDelim");
 }
@@ -573,10 +572,11 @@ int LineParser::getArgsDelim(int optionMask)
 }
 
 // Get rest of current line starting at next delimited part (and put into destination argument if supplied)
-bool LineParser::getRestDelim(Dnchar* destarg)
+bool LineParser::getRestDelim(QString& destArg)
 {
 	Messenger::enter("LineParser::getRestDelim");
-	int arglen = 0, n, length;
+
+	int n, length;
 	char c;
 	if (lineLength_ == 0)
 	{
@@ -586,57 +586,55 @@ bool LineParser::getRestDelim(Dnchar* destarg)
 	length = lineLength_ - linePos_;
 	for (n=0; n<length; n++)
 	{
-		c = line_[linePos_];
+		c = line_.at(linePos_).toAscii();
 		switch (c)
 		{
 			// Ignore whitespace occuring before first proper character
 			case (' '):
 			case ('\0'):
-				if (arglen != 0) tempArg_[arglen++] = c;
+				if (!destArg.isEmpty()) destArg += c;
 				break;
 			default:
-				tempArg_[arglen++] = c;
+				destArg += c;
 				break;
 		}
 		linePos_ ++;
 	}
-	// Add terminating character to temparg - strip whitespace at end if there is any...
-	tempArg_[arglen] = '\0';
-	for (n=arglen-1; n>0; --n)
-	{
-		if ((tempArg_[n] != ' ') && (tempArg_[n] != '\t')) break;
-		tempArg_[n] = '\0';
-	}
-	if (destarg != NULL) destarg->set(tempArg_);
+
+	// Strip whitespace from start and end of destArg if there is any...
+	destArg = destArg.trimmed();
+
 	Messenger::exit("LineParser::getRestDelim");
 	return TRUE;
 }
 
 // Get next argument (delimited) from file stream
-bool LineParser::getArgDelim(int optionMask, Dnchar* destarg)
+bool LineParser::getArgDelim(int optionMask, QString& destArg)
 {
 	Messenger::enter("LineParser::getArgDelim");
-	bool result = getNextArg(optionMask, destarg);
-	Messenger::print(Messenger::Parse,"getArgDelim = %s [%s]", result ? "TRUE" : "FALSE", destarg->get());
+
+	bool result = getNextArg(optionMask, destArg);
+	Messenger::print(Messenger::Parse,"getArgDelim = %s [%s]", result ? "TRUE" : "FALSE", qPrintable(destArg));
+
 	Messenger::exit("LineParser::getArgDelim");
 	return result;
 }
 
 // Parse all arguments (delimited) from string
-void LineParser::getArgsDelim(int optionMask, const char* s)
+void LineParser::getArgsDelim(int optionMask, QString line)
 {
-	strcpy(line_,s);
-	lineLength_ = strlen(line_);
+	line_ = line;
+	lineLength_ = line_.length();
 	linePos_ = 0;
 	getAllArgsDelim(optionMask);
 }
 
 // Get next delimited chunk from input stream (not line)
-bool LineParser::getCharsDelim(Dnchar* destarg)
+bool LineParser::getCharsDelim(QString& destArg)
 {
-	int length = 0;
 	bool result = TRUE;
 	char c;
+	destArg.clear();
 	while (!inputFile_->eof())
 	{
 		inputFile_->get(c);
@@ -644,38 +642,32 @@ bool LineParser::getCharsDelim(Dnchar* destarg)
 		{
 			// Eat DOS-style line terminator
 			if ((c == '\r') && (inputFile_->peek() == '\n')) inputFile_->get(c);
-			if (length != 0) break;
+			if (!destArg.isEmpty()) break;
 			else continue;
 		}
 		if (c == '\0')
 		{
-			if (length == 0) result = FALSE;
+			if (destArg.isEmpty()) result = FALSE;
 			break;
 		}
-		tempArg_[length] = c;
-		++length;
+		destArg += c;
 	}
-	tempArg_[length] = '\0';
-	if (destarg != NULL) destarg->set(tempArg_);
 	return result;
 }
 
 // Get next delimited chunk from string, removing grabbed part
-bool LineParser::getCharsDelim(int optionMask, Dnchar* source, Dnchar* destarg)
+bool LineParser::getCharsDelim(int optionMask, QString& line, QString& destArg)
 {
 	// Get the next input chunk from the internal string and put into argument specified.
 	Messenger::enter("LineParser::getCharsDelim(int,Dnchar,Dnchar)");
-	int arglen, pos = 0, length = source->length();
-	bool done, hadquotes, failed;
-	char c, quotechar;
-	failed = FALSE;
-	done = FALSE;
-	hadquotes = FALSE;
-	quotechar = '\0';
-	arglen = 0;
+	int pos = 0, length = line.length();
+	bool done = false, hadQuotes = false, failed = false;
+	char c, quoteChar = '\0';
+	destArg.clear();
+
 	while (pos < length)
 	{
-		c = (*source)[pos];
+		c = line.at(pos).toAscii();
 		switch (c)
 		{
 			// End of line markers
@@ -688,64 +680,49 @@ bool LineParser::getCharsDelim(int optionMask, Dnchar* source, Dnchar* destarg)
 			case (9):	// Horizontal Tab
 			case (' '):	// Space
 			case (','):	// Comma
-				if (quotechar != '\0')
-				{
-					tempArg_[arglen] = c;
-					arglen ++;
-				}
-				else if (arglen != 0) done = TRUE;
+				if (quoteChar != '\0') destArg += c;
+				else if (!destArg.isEmpty()) done = TRUE;
 				break;
 			// Quote marks
 			// If LineParser::UseQuotes, keep delimiters and other quote marks inside the quoted text.
 			case (34):	// Double quotes
 			case (39):	// Single quotes
 				if (!(optionMask&LineParser::UseQuotes)) break;
-				if (quotechar == '\0') quotechar = c;
-				else if (quotechar == c)
+				if (quoteChar == '\0') quoteChar = c;
+				else if (quoteChar == c)
 				{
-					quotechar = '\0';
-					hadquotes = TRUE;
+					quoteChar = '\0';
+					hadQuotes = TRUE;
 					done = TRUE;
 				}
-				else
-				{
-					tempArg_[arglen] = c;
-					arglen ++;
-				}
+				else destArg += c;
 				break;
 			// Curly brackets - treat in the same way as quotes
 			case ('{'):
 			case ('}'):
-				if (!(optionMask&LineParser::UseCurlies))
-				{
-					// Just add as normal character
-					tempArg_[arglen] = c;
-					arglen ++;
-				}
+				// If not using curlies, just add as a normal character
+				if (!(optionMask&LineParser::UseCurlies)) destArg += c;
 				else
 				{
-					// If the quotechar is a left brace and we have a right brace, stop quoting
-					if ((quotechar == '{') && (c == '}'))
+					// If the quoteChar is a left brace and we have a right brace, stop quoting
+					if ((quoteChar == '{') && (c == '}'))
 					{
-						quotechar = '\0';
+						quoteChar = '\0';
 						break;
 					}
+
 					// If we are already quoting by some other means, add character and exit
-					if (quotechar != '\0')
-					{
-						tempArg_[arglen] = c;
-						arglen ++;
-					}
+					if (quoteChar != '\0') destArg += c;
+
 					// No previous quoting, so begin quoting if '{'
-					if (c == '{') quotechar = '{';
+					if (c == '{') quoteChar = '{';
 				}
 				break;
 			// Parentheses
 			case ('('):	// Left parenthesis
 			case (')'):	// Right parenthesis
 				if (optionMask&LineParser::StripBrackets) break;
-				tempArg_[arglen] = c;
-				arglen ++;
+				destArg += c;
 				break;
 			// Comment markers
 			case ('#'):	// "#" Rest/all of line is a comment
@@ -754,50 +731,51 @@ bool LineParser::getCharsDelim(int optionMask, Dnchar* source, Dnchar* destarg)
 				break;
 			// Normal character
 			default: 
-				tempArg_[arglen] = c;
-				arglen ++;
+				destArg += c;
 				break;
 		}
 		// Increment line position
 		pos ++;
 		if (done || failed) break;
 	}
-	// Finalise argument
-	tempArg_[arglen] = '\0';
-	// Store the result in the desired destination
-	if (destarg != NULL) *destarg = tempArg_;
+
 	// Trim characters from source string
-	source->eraseStart(pos);
-	Messenger::exit("LineParser::getCharsDelim(int,Dnchar,Dnchar)");
+	line.remove(0, pos);
+
+	Messenger::exit("LineParser::getCharsDelim(int,QString,QString)");
 	if (failed) return FALSE;
-	return (arglen == 0 ? (hadquotes ? TRUE : FALSE) : TRUE);
+	return (destArg.isEmpty() ? (hadQuotes ? TRUE : FALSE) : TRUE);
 }
 
 // Return a number of characters from the input stream
-const char* LineParser::getChars(int nchars, bool skipeol)
+QString LineParser::getChars(int nChars, bool skipeol)
 {
+	QString result;
 	char c;
 	// Check number of characters requested
-	int i=0;
-	if (nchars == 0) return NULL;
-	else if (nchars > MAXLINELENGTH)
+	int i = 0;
+	if (nChars == 0) return NULL;
+	else if (nChars > MAXLINELENGTH)
 	{
 		Messenger::print("Error: The maximum number of characters read at once from a file is currently %i.", MAXLINELENGTH);
-		return NULL;
+		return QString();
 	}
-	else if (nchars < 0)
+	else if (nChars < 0)
 	{
-		tempArg_[0] = '\0';
-		for (int i=nchars; i<0; i++) inputFile_->unget();
+		for (int i= nChars; i<0; i++) inputFile_->unget();
 	}
-	else for (i=0; i < nchars; ++i)
+	else for (i=0; i < nChars; ++i)
 	{
 		inputFile_->get(c);
-		if (skipeol) while ((c == '\n') || (c == '\r')) { if (inputFile_->eof()) break; inputFile_->get(c); }
-		tempArg_[i] = c;
+		if (skipeol) while ((c == '\n') || (c == '\r'))
+		{
+			if (inputFile_->eof()) break;
+			inputFile_->get(c);
+		}
+		result += c;
 		if (inputFile_->eof()) break;
 	}
-	tempArg_[i] = '\0';
+
 	if (inputFile_->eof())
 	{
 // 		closeFile();
@@ -808,7 +786,8 @@ const char* LineParser::getChars(int nchars, bool skipeol)
 // 		closeFile();
 		return NULL;
 	}
-	return tempArg_;
+	
+	return result;
 }
 
 // Skip a number of characters from the input stream
@@ -914,7 +893,7 @@ int LineParser::getDoubleArray(double* array, int count)
 }
 
 // Write line to file
-bool LineParser::writeLine(const char* s)
+bool LineParser::writeLine(QString s)
 {
 	Messenger::enter("LineParser::writeLine");
 	if (!directOutput_)
@@ -925,7 +904,7 @@ bool LineParser::writeLine(const char* s)
 			Messenger::exit("LineParser::writeLine");
 			return FALSE;
 		}
-		else *cachedFile_ << s;
+		else *cachedFile_ << qPrintable(s);
 	}
 	else if (outputFile_ == NULL)
 	{
@@ -933,12 +912,12 @@ bool LineParser::writeLine(const char* s)
 		Messenger::exit("LineParser::writeLine");
 		return FALSE;
 	}
-	else *outputFile_ << s;
+	else *outputFile_ << qPrintable(s);
 	Messenger::exit("LineParser::writeLine");
 	return TRUE;
 }
 
-// Write formatter line to file
+// Write formatted line to file
 bool LineParser::writeLineF(const char* fmt, ...)
 {
 	Messenger::enter("LineParser::writeLine");
@@ -981,7 +960,7 @@ bool LineParser::commitCache()
 		printf("Internal Error: Tried to commit cached writes when direct output was enabled.\n");
 		return FALSE;
 	}
-	std::ofstream outputFile(outputFilename_);
+	std::ofstream outputFile(qPrintable(outputFilename_));
 	if (outputFile.is_open())
 	{
 		outputFile << cachedFile_->str();
@@ -989,7 +968,7 @@ bool LineParser::commitCache()
 	}
 	else
 	{
-		Messenger::print("Error: Couldn't open output file '%s' for writing.", outputFilename_.get());
+		Messenger::print("Error: Couldn't open output file '%s' for writing.", qPrintable(outputFilename_));
 		return FALSE;
 	}
 	return TRUE;
@@ -1020,18 +999,18 @@ int LineParser::skipLines(int nlines)
 // Returns number of arguments grabbed from last parse
 int LineParser::nArgs() const
 {
-	return arguments_.nItems();
+	return arguments_.count();
 }
 
 // Returns the specified argument as a character string
-const char* LineParser::argc(int i)
+QString LineParser::argc(int i)
 {
 	if ((i < 0) || (i >= nArgs()))
 	{
 		printf("Warning: Argument %i is out of range - returning \"NULL\"...\n", i);
 		return "NULL";
 	}
-	return arguments_[i]->get();
+	return arguments_.at(i);
 }
 
 // Returns the specified argument as an integer
@@ -1042,7 +1021,7 @@ int LineParser::argi(int i)
 		printf("Warning: Argument %i is out of range - returning 0...\n", i);
 		return 0;
 	}
-	return arguments_[i]->asInteger();
+	return arguments_.at(i).toInt();
 }
 
 // Returns the specified argument as a double
@@ -1053,7 +1032,7 @@ double LineParser::argd(int i)
 		printf("Warning: Argument %i is out of range - returning 0.0...\n", i);
 		return 0.0;
 	}
-	return arguments_[i]->asDouble();
+	return arguments_.at(i).toDouble();
 }
 
 // Returns the specified argument as a bool
@@ -1064,7 +1043,14 @@ bool LineParser::argb(int i)
 		printf("Warning: Argument %i is out of range - returning FALSE...\n", i);
 		return FALSE;
 	}
-	return arguments_[i]->asBool();
+	QString lower = arguments_.at(i).toLower();
+	if (lower == "off") return false;
+	else if (lower == "on") return true;
+	else if (lower == "no") return false;
+	else if (lower == "yes") return true;
+	else if (lower == "false") return false;
+	else if (lower == "true") return true;
+	return false;
 }
 
 // Returns the specified argument as a float
@@ -1083,130 +1069,4 @@ bool LineParser::hasArg(int i) const
 {
 	if ((i < 0) || (i >= nArgs())) return FALSE;
 	return TRUE;
-}
-
-/*
-// Atom type definition functions
-*/
-
-const char* LineParser::parseNetaString(Dnchar &source)
-{
-	// Cut the next atomtype command from the supplied string. Put in 'dest', along with any bracketed
-	// argument part. Use brackets a bit like quotes are used above, except we don't toggle the flag.
-	// Ignore spaces and horizontal tabs. Commas separate commands.
-	Messenger::enter("LineParser::parseNetaString");
-	int n, nchars, bracketlevel;
-	bool done, el_list;
-	static Dnchar typecmd;
-	nchars = 0;
-	bracketlevel = 0;
-	el_list = FALSE;
-	done = FALSE;
-	typecmd.createEmpty(source);
-// 	source.print();
-	for (n=0; n<source.length(); n++)
-	{
-		switch (source[n])
-		{
-			case (32):	// Space
-				break;
-			case (10):	// Line feed (\n) - Signals end of the keyword.
-				done = TRUE;
-				break;
-			case (13):	// Carriage Return - Signals end of the keyword.
-				done = TRUE;
-				break;
-			case (44):	// Comma - end of keyword or separator in element list
-				if (bracketlevel == 0 && !el_list) done = TRUE;
-				else typecmd += ',';
-				break;
-			case (9):	// Horizontal Tab
-				break;
-			case (40):	// "(" - Signals beginning of options list
-				bracketlevel ++;
-				typecmd += '(';
-				break;
-			case (41):	// ")" - Signals end of options list
-				bracketlevel --;
-				typecmd += ')';
-				break;
-			case (91):	// "[" - Signals beginning of element list
-				el_list = TRUE;
-				// If we're inside brackets, *don't* remove it
-				if (bracketlevel != 0) typecmd += source[n];
-				break;
-			case (93):	// "]" - Signals end of element list
-				el_list = FALSE;
-				// If we're inside brackets, *don't* remove it
-				if (bracketlevel != 0) typecmd += source[n];
-				break;
-			default: 
-				typecmd += source[n];
-				break;
-		}
-		if (done) break;
-	}
-	// Strip off the keyword characters from the string.
-	source.eraseStart(n+1);
-// 	printf("Result = ");
-// 	typecmd.print();
-	Messenger::exit("LineParser::parseNetaString");
-	return typecmd.get();
-}
-
-const char* LineParser::trimNetaKeyword(Dnchar &source)
-{
-	// Remove the keyword part of the command and put in 'dest', leaving the options (minus brackets)
-	// in the original string. Remove '[' and ']' from keyword since this is only used to keep a list of elements together.
-	Messenger::enter("LineParser::trimNetaKeyword");
-	bool done, equals;
-	static Dnchar keywd;
-	done = FALSE;
-	equals = FALSE;
-// 	printf("String given to trimAtomKeyword = '%s'",source.get());
-	keywd.createEmpty(source);
-	int n;
-	for (n=0; n<source.length(); n++)
-	{
-		switch (source[n])
-		{
-			case (40):	// "(" - if present signals start of options
-				done = TRUE;
-				break;
-			case (10):	// Line feed (\n) - Signals end of the keyword.
-				done = TRUE;
-				break;
-			case (13):	// Carriage Return - Signals end of the keyword.
-				done = TRUE;
-				break;
-			case (61):	// "=" - Signals keyword/single option delimiter (unless first character)
-				if (n == 0) keywd += source[n];
-				else
-				{
-					done = TRUE;
-					equals = TRUE;
-				}
-				break;
-			case (91):	// '['
-			case (93):	// ']'
-				break;
-			default: 
-				keywd += source[n]; 
-				break;
-		}
-		if (done) break;
-	}
-	// Trim off the keyword part
-	if (equals) source.eraseStart(n+1);
-	else source.eraseStart(n);
-	//printf("RESULT in trim atkeywd = '%s'",dest.get());
-	// Remove brackets if they're there
-	if (source.length() != 0) 
-		if (source[0] == '(')
-		{
-			source.eraseStart(1);
-			source.eraseEnd(1);
-		}
-	Messenger::exit("LineParser::trimNetaKeyword");
-	return keywd.get();
 }

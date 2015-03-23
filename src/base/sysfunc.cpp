@@ -29,15 +29,6 @@
 
 ATEN_USING_NAMESPACE
 
-// Return full, absolute filename including path
-const char* absoluteFilePath(const char* s)
-{
-	QFileInfo info(s);
-	static Dnchar result;
-	result = qPrintable(info.absoluteFilePath());
-	return result.get();
-}
-
 // Remove path in front of filename
 const char* removePath(const char* s)
 {
@@ -125,39 +116,41 @@ const char* afterStr(const char* s, const char* search)
 }
 
 // Remove comments from line
-void removeComments(char *s)
+void removeComments(QString& line)
 {
-	char *c, quotechar = '\0';
+	QChar c, quoteChar = '\0';
 	bool escaped = FALSE;
-	for (c = s; *c != '\0'; ++c)
+// 	for (c = s; *c != '\0'; ++c)
+	for (int n=0; n<line.length(); ++n)
 	{
+		// Get current char
+		c = line.at(n);
+
 		// Remember current quoting info...
-		if (*c == '"')
+		if (c == '"')
 		{
-			if (quotechar == '\0') quotechar = '"';
-			    else if (quotechar == '"') quotechar = '\0';
+			if (quoteChar == '\0') quoteChar = '"';
+			else if (quoteChar == '"') quoteChar = '\0';
 		}
-		if (*c == '\'')
+		if (c == '\'')
 		{
-			if (quotechar == '\0') quotechar = '\'';
-			    else if (quotechar == '\'') quotechar = '\0';
+			if (quoteChar == '\0') quoteChar = '\'';
+			else if (quoteChar == '\'') quoteChar = '\0';
 		}
-		if ((*c == '#') && (!escaped) && (quotechar == '\0'))
+		if ((c == '#') && (!escaped) && (quoteChar == '\0'))
 		{
-			*c = '\0';
-		break;
+			line.chop(line.length()-n);
+			break;
 		}
-		else if ((*c == '/') && (!escaped) && (quotechar == '\0'))
+		else if ((c == '/') && (!escaped) && (quoteChar == '\0'))
 		{
-			char *c2 = c;
-			c2++;
-			if (*c2 == '/')
+			if (line.at(n+1) == '/')
 			{
-				*c = '\0';
+				line.chop(line.length()-n);
 				break;
 			}
 		}
-		escaped = *c == '\\';
+		escaped = (c == '\\');
 	}
 }
 
@@ -184,32 +177,28 @@ bool isEmpty(const char* s)
 }
 
 // Search enum list for text
-int enumSearch(const char* name, int maxn, const char* *itemlist, const char* query, bool reportError)
+int enumSearch(QString enumName, int nItems, const char* itemArray[], QString query, bool reportError)
 {
-	static Dnchar lowerq, lowers;
-	int result = maxn, i;
-	lowerq = lowerCase(query);
-	for (i=0; i<maxn; i++)
+	QString lowerQuery;
+	lowerQuery = query.toLower();
+	for (int i=0; i<nItems; ++i)
 	{
-		lowers = lowerCase(itemlist[i]);
-		if (lowerq == lowers)
-		{
-			result = i;
-			break;
-		}
+		if (lowerQuery == QString(itemArray[i]).toLower()) return i;
 	}
-	if ((result == maxn) && (name[0] != '\0') && reportError) printf("Unrecognised %s '%s'\n",name,query);
-	return result;
+
+	// No match
+	if ((!enumName.isEmpty()) && reportError) Messenger::print("Unrecognised %s '%s'", qPrintable(enumName), qPrintable(query));
+	return nItems;
 }
 
 // Print valid enum values
-void enumPrintValid(int nitems, const char* *list)
+void enumPrintValid(int nItems, const char* itemArray[])
 {
-	Messenger::print("Valid values are:\n    ");
-	for (int i=0; i < nitems; i++)
+	Messenger::print("Valid values are:");
+	for (int i=0; i<nItems; ++i)
 	{
-		if ((strcmp(list[i],"_NULL_") == 0) || (list[i][0] == '_')) continue;
-		Messenger::print("%s ", lowerCase(list[i]));
+		if (itemArray[i][0] == '_') continue;
+		Messenger::print("%s ", itemArray[i]);
 	}
 	Messenger::print("");
 }

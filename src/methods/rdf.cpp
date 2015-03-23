@@ -95,6 +95,7 @@ void Rdf::setRange(double d, double w, int n)
 bool Rdf::initialise()
 {
 	Messenger::enter("Rdf::initialise");
+
 	// Check site definitions....
 	if ((sites_[0] == NULL) || (sites_[1] == NULL))
 	{
@@ -102,11 +103,13 @@ bool Rdf::initialise()
 		Messenger::exit("Rdf::initialise");
 		return FALSE;
 	}
+
 	// Create the data_ arrays
 	data_ = new double[nBins_];
 	for (int n=0; n<nBins_; n++) data_[n] = 0.0;
-	Messenger::print("There are %i bins in rdf '%s', beginning at r = %f.", nBins_, name_.get(), lower_);
+	Messenger::print("There are %i bins in rdf '%s', beginning at r = %f.", nBins_, qPrintable(name_), lower_);
 	nAdded_ = 0;
+
 	Messenger::exit("Rdf::initialise");
 	return TRUE;
 }
@@ -115,9 +118,11 @@ bool Rdf::initialise()
 void Rdf::accumulate(Model* sourcemodel)
 {
 	Messenger::enter("Rdf::accumulate");
+
 	int m1, m2, bin;
 	static Vec3<double> centre1, centre2, mimd;
 	UnitCell* cell = sourcemodel->cell();
+
 	// Loop over molecules for site1
 	for (m1=0; m1 < sites_[0]->pattern()->nMolecules(); m1++)
 	{
@@ -135,8 +140,10 @@ void Rdf::accumulate(Model* sourcemodel)
 			if (bin < nBins_) data_[bin] += 1.0;
 		}
 	}
-	// Increase nAdded_umulation counter
+
+	// Increase counter
 	nAdded_ ++;
+
 	Messenger::exit("Rdf::accumulate");
 }
 
@@ -146,8 +153,10 @@ void Rdf::finalise(Model* sourcemodel)
 	Messenger::enter("Rdf::finalise");
 	int n;
 	double factor, r1, r2, numDensity;
+
 	// Normalise the rdf w.r.t. number of frames and number of central molecules
-	for (n=0; n<nBins_; n++) data_[n] /= double(nAdded_) * sites_[0]->pattern()->nMolecules() ;
+	for (n=0; n<nBins_; n++) data_[n] /= double(nAdded_) * sites_[0]->pattern()->nMolecules();
+	
 	// Normalise nAdded_ording to number density of sites_ in RDF shells
 	numDensity = sites_[1]->pattern()->nMolecules() / sourcemodel->cell()->volume();
 	for (n=0; n<nBins_; n++)
@@ -156,8 +165,8 @@ void Rdf::finalise(Model* sourcemodel)
 		r2 = r1 + binWidth_;
 		factor = (4.0 / 3.0) * PI * (r2*r2*r2 - r1*r1*r1) * numDensity;
 		data_[n] /= factor;
-
 	}
+
 	Messenger::exit("Rdf::finalise");
 }
 

@@ -50,7 +50,7 @@ bool Commands::function_CreateScheme(CommandNode* c, Bundle& obj, ReturnValue& r
 	scheme.initialiseAbsolute(c->argc(0), "Scheme generated from model");
 	Vec3<double> cellDelta(1.0/gridSize.x, 1.0/gridSize.y, 1.0/gridSize.z);
 	scheme.setGridSize(gridSize);
-	Grid &schemeGrid = scheme.grid();
+	Grid& schemeGrid = scheme.grid();
 	double volumeElement = obj.rs()->cell()->volume() / gridSize.dp(gridSize);
 	schemeGrid.setAxes(cellDelta);
 	double** *data = schemeGrid.data3d();

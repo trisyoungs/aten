@@ -55,16 +55,15 @@ AtenSelectElement::AtenSelectElement(AtenWindow& parent) : QDialog(&parent), par
 	for (n=1; n<19; n++)
 	{
 		label = new QLabel(this);
-		label->setText(itoa(n));
+		label->setText(QString::number(n));
 		gl->addWidget(label, 0, n);
-		//cs_label(itoa(n),table,n,n+1,0,1);
 	}
 
 	// First column - Period number
 	for (n=1; n<8; n++)
 	{
 		label = new QLabel(this);
-		label->setText(itoa(n));
+		label->setText(QString::number(n));
 		gl->addWidget(label, n, 0);
 	}
 
@@ -144,7 +143,7 @@ AtenSelectElement::AtenSelectElement(AtenWindow& parent) : QDialog(&parent), par
 			commonButtons_.add(button, z);
 			commonGroupLayout_->addWidget(button);
 		}
-		else Messenger::print( "Unrecognised element '%s' not added to common elements list.", parser.argc(n));
+		else Messenger::print("Unrecognised element '%s' not added to common elements list.", qPrintable(parser.argc(n)));
 	}
 }
 

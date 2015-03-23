@@ -71,7 +71,7 @@ void ModelListWidget::refresh()
 	
 	// Set number of visible models and model total
 	ui.ModelsPerRowSpin->setValue(prefs.nModelsPerRow());
-	ui.TotalLoadedModelsLabel->setText(itoa(parent_.aten().nModels()));
+	ui.TotalLoadedModelsLabel->setText(QString::number(parent_.aten().nModels()));
 	ui.ModelTree->setColumnCount(2);
 
 // 	// Clear the current list
@@ -161,7 +161,7 @@ void ModelListWidget::updateItem(TExtraTreeWidgetItem *item)
 		m->regenerateIcon();
 		item->setIcon(0,m->icon());
 		Dnchar text;
-		text.sprintf("%s\nFF: %s\n", m->name(), m->forcefield() == NULL ? "<default>" : m->forcefield()->name());
+		text.sprintf("%s\nFF: %s\n", qPrintable(m->name()), m->forcefield() == NULL ? "<default>" : qPrintable(m->forcefield()->name()));
 		item->setText(1, text.get());
 		item->setTextAlignment(1, Qt::AlignLeft | Qt::AlignTop);
 		// Update log value

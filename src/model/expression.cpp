@@ -22,8 +22,6 @@
 #include "model/model.h"
 #include "ff/forcefield.h"
 #include "base/forcefieldatom.h"
-// #include "main/aten.h"
-// #include "gui/forcefields.h"
 
 ATEN_USING_NAMESPACE
 
@@ -37,10 +35,10 @@ Forcefield* Model::forcefield()
 void Model::createNamesForcefield()
 {
 	// ATEN2 TODO
-// 	if (namesForcefield_ != NULL) Messenger::print("Warning - an atom names forcefield already exists for model '%s'.", name_.get());
-// 	Messenger::print("Creating atom names forcefield for model '%s'.", name_.get());
+// 	if (namesForcefield_ != NULL) Messenger::print("Warning - an atom names forcefield already exists for model '%s'.", qPrintable(name_));
+// 	Messenger::print("Creating atom names forcefield for model '%s'.", qPrintable(name_));
 // 	Dnchar s;
-// 	s.sprintf("Names kept from Model %s",name_.get());
+// 	s.sprintf("Names kept from Model %s",qPrintable(name_));
 // 	namesForcefield_ = aten.addForcefield(s);
 }
 
@@ -51,7 +49,7 @@ Forcefield* Model::namesForcefield() const
 }
 
 // Add name to names forcefield
-ForcefieldAtom* Model::addAtomName(int el, const char* name)
+ForcefieldAtom* Model::addAtomName(int el, QString name)
 {
 	if (namesForcefield_ == NULL) createNamesForcefield();
 	// Search for this typename in the ff
@@ -131,8 +129,8 @@ void Model::setForcefield(Forcefield* newff)
 	{
 		invalidateExpression();
 		forcefield_ = newff;
-		if (forcefield_ == NULL) Messenger::print("Model '%s' has had its associated forcefield removed.", name_.get());
-		else Messenger::print("Forcefield '%s' now associated with model '%s'.", forcefield_->name(), name_.get());
+		if (forcefield_ == NULL) Messenger::print("Model '%s' has had its associated forcefield removed.", qPrintable(name_));
+		else Messenger::print("Forcefield '%s' now associated with model '%s'.", qPrintable(forcefield_->name()), qPrintable(name_));
 	}
 }
 
@@ -164,8 +162,8 @@ bool Model::createExpression(Choice vdwOnly, Choice allowDummy, Choice assignCha
 	allForcefieldTypes_.clear();
 	expressionVdwOnly_ = vdwOnly;
 	expressionPoint_ = -1;
-	if (expressionVdwOnly_) Messenger::print("Creating VDW-only expression for model %s...",name_.get());
-	else Messenger::print("Creating expression for model %s...",name_.get());
+	if (expressionVdwOnly_) Messenger::print("Creating VDW-only expression for model %s...",qPrintable(name_));
+	else Messenger::print("Creating expression for model %s...",qPrintable(name_));
 	
 	// 1) Assign forcefield types to all atoms
 	if (!typeAll(defaultForcefield))
@@ -188,9 +186,10 @@ bool Model::createExpression(Choice vdwOnly, Choice allowDummy, Choice assignCha
 				// Failed to create an expression for this pattern, so....
 				// What to do?
 				Tree dialog;
-				Dnchar title(-1,"Expression for Pattern '%s'", p->name());
+				QString title;
+				title.sprintf("Expression for Pattern '%s'", qPrintable(p->name()));
 				TreeGui &ui = dialog.defaultDialog();
-				ui.setProperty(TreeGuiWidgetEvent::TextProperty, title.get());
+				ui.setProperty(TreeGuiWidgetEvent::TextProperty, title);
 				ui.addLabel("", "One or more forcefield terms are not availablefor this pattern:", 1, 1);
 				ui.addRadioGroup("choice");
 				ui.addRadioButton("cancel", "Cancel expression generation", "choice", 1, 1, 2);
@@ -316,7 +315,7 @@ void Model::createForcefieldLists()
 	// Cycle over patterns, adding their unique forcefield terms to ours...
 	for (Pattern* p = patterns_.first(); p != NULL; p = p->next)
 	{
-		Messenger::print(Messenger::Verbose, "Pattern '%s' uses %i atom types, %i bond terms, %i angle terms, and %i torsion terms.", p->name(), p->nUniqueForcefieldTypes(), p->nForcefieldBonds(), p->nForcefieldAngles(), p->nForcefieldTorsions());
+		Messenger::print(Messenger::Verbose, "Pattern '%s' uses %i atom types, %i bond terms, %i angle terms, and %i torsion terms.", qPrintable(p->name()), p->nUniqueForcefieldTypes(), p->nForcefieldBonds(), p->nForcefieldAngles(), p->nForcefieldTorsions());
 
 		// Atom types. We only add types to the list that have a unique type name.
 		for (Refitem<ForcefieldAtom,int>* ffa1 = p->allForcefieldTypes(); ffa1 != NULL; ffa1 = ffa1->next)
@@ -324,7 +323,7 @@ void Model::createForcefieldLists()
 			// Add to list of unique (by pointer) types
 			allForcefieldTypes_.addUnique(ffa1->item);
 			// Add to list of unique (by name) types
-			for (ffa2 = uniqueForcefieldTypes_.first(); ffa2 != NULL; ffa2 = ffa2->next) if (strcmp(ffa1->item->name(),ffa2->item->name()) == 0) break;
+			for (ffa2 = uniqueForcefieldTypes_.first(); ffa2 != NULL; ffa2 = ffa2->next) if (ffa1->item->name() == ffa2->item->name()) break;
 			if (ffa2 != NULL) continue;
 			uniqueForcefieldTypes_.add(ffa1->item);
 		}
@@ -348,7 +347,7 @@ void Model::createForcefieldLists()
 		}
 	}
 
-	Messenger::print(Messenger::Verbose, "Model '%s' uses %i atom types, %i bond terms, %i angle terms, and %i torsion terms over all patterns.", name(), nUniqueForcefieldTypes(), nForcefieldBonds(), nForcefieldAngles(), nForcefieldTorsions());
+	Messenger::print(Messenger::Verbose, "Model '%s' uses %i atom types, %i bond terms, %i angle terms, and %i torsion terms over all patterns.", qPrintable(name_), nUniqueForcefieldTypes(), nForcefieldBonds(), nForcefieldAngles(), nForcefieldTorsions());
 
 	Messenger::exit("Model::createForcefieldLists");
 }
@@ -362,6 +361,6 @@ PointerPair<ForcefieldAtom,double>* Model::combinedParameters(ForcefieldAtom* at
 		return NULL;
 	}
 	PointerPair<ForcefieldAtom,double>* pp = combinationTable_.find(at1, at2);
-	if (pp == NULL) printf("Internal Error : Couldn't find combined parameters for atom types '%s' and '%s'.\n", at1->name(), at2->name());
+	if (pp == NULL) printf("Internal Error : Couldn't find combined parameters for atom types '%s' and '%s'.\n", qPrintable(at1->name()), qPrintable(at2->name()));
 	return pp;
 }

@@ -20,7 +20,6 @@
 */
 
 #include "model/model.h"
-// #include "main/aten.h"
 #include "ff/forcefield.h"
 #include "base/forcefieldatom.h"
 #include "base/forcefieldbound.h"
@@ -68,14 +67,14 @@ bool Pattern::createExpression(bool vdwOnly, bool allowDummy, Forcefield* defaul
 	if (ff == NULL) ff = defaultForcefield;
 	if (ff == NULL)
 	{
-		Messenger::print("Can't complete expression for pattern '%s' - no forcefield associated to pattern or model, and no default set.", name_.get());
+		Messenger::print("Can't complete expression for pattern '%s' - no forcefield associated to pattern or model, and no default set.", qPrintable(name_));
 		Messenger::exit("Pattern::createExpression");
 		return FALSE;
 	}
 	if (vdwOnly)
 	{
 		noIntramolecular_ = TRUE;
-		Messenger::print("Expression for pattern '%s' contains Atomtype terms only.", name_.get());
+		Messenger::print("Expression for pattern '%s' contains Atomtype terms only.", qPrintable(name_));
 	}
 	else
 	{
@@ -98,13 +97,13 @@ bool Pattern::createExpression(bool vdwOnly, bool allowDummy, Forcefield* defaul
 		// Some totals are double counted, so...
 		nBonds /= 2;
 		nTorsions /= 2;
-		Messenger::print("Basic pattern '%s' contains %i bonds, %i angles, and %i torsions. Impropers and Urey-Bradley terms (if any) will be added later.", name_.get(), nBonds, nAngles, nTorsions);
+		Messenger::print("Basic pattern '%s' contains %i bonds, %i angles, and %i torsions. Impropers and Urey-Bradley terms (if any) will be added later.", qPrintable(name_), nBonds, nAngles, nTorsions);
 	}
 	// Fill the energy expression for the pattern.
 	// The structure that we create will include a static array of pointers
 	// to the original atomic elements, to ease the generation of the expression.
-	Messenger::print("Fleshing out expression for %i atoms in pattern '%s'...", totalAtoms_, name_.get());
-	Messenger::print("... Using forcefield '%s'...", ff->name());
+	Messenger::print("Fleshing out expression for %i atoms in pattern '%s'...", totalAtoms_, qPrintable(name_));
+	Messenger::print("... Using forcefield '%s'...", qPrintable(ff->name()));
 	// Construct the atom list.
 	// If any atom has not been assigned a type, we *still* include it in the list
 	ai = firstAtom_;
@@ -112,7 +111,7 @@ bool Pattern::createExpression(bool vdwOnly, bool allowDummy, Forcefield* defaul
 	{
 		if (ai == NULL)
 		{
-			Messenger::print("Fatal Error: Fell off end of atom list while assigning types - can't complete expression for pattern '%s'.", name_.get());
+			Messenger::print("Fatal Error: Fell off end of atom list while assigning types - can't complete expression for pattern '%s'.", qPrintable(name_));
 			Messenger::exit("Pattern::fillExpression");
 			return FALSE;
 		}
@@ -181,13 +180,13 @@ bool Pattern::createExpression(bool vdwOnly, bool allowDummy, Forcefield* defaul
 					// Check ffb - if it's still NULL we couldn't find a definition
 					if (ffb == NULL)
 					{
-						Messenger::print("!!! No FF definition for bond %s-%s.", ti->equivalent(), tj->equivalent());
+						Messenger::print("!!! No FF definition for bond %s-%s.", qPrintable(ti->equivalent()), qPrintable(tj->equivalent()));
 						incomplete_ = TRUE;
 						ibonds ++;
 					}
 					else
 					{
-						Messenger::print(Messenger::Verbose, "Bond %s-%s data : %f %f %f %f",ti->equivalent(), tj->equivalent(), ffb->parameter(0), ffb->parameter(1), ffb->parameter(2), ffb->parameter(3));
+						Messenger::print(Messenger::Verbose, "Bond %s-%s data : %f %f %f %f", qPrintable(ti->equivalent()), qPrintable(tj->equivalent()), ffb->parameter(0), ffb->parameter(1), ffb->parameter(2), ffb->parameter(3));
 					}
 					// Update the bonding array counters
 					bonding[ii] << jj;
@@ -251,13 +250,13 @@ bool Pattern::createExpression(bool vdwOnly, bool allowDummy, Forcefield* defaul
 					// Check ffb and raise warning if NULL
 					if (ffb == NULL)
 					{
-						Messenger::print("!!! No FF definition for torsion %s-%s-%s-%s.", ti->equivalent(), tj->equivalent(), tk->equivalent(), tl->equivalent());
+						Messenger::print("!!! No FF definition for torsion %s-%s-%s-%s.", qPrintable(ti->equivalent()), qPrintable(tj->equivalent()), qPrintable(tk->equivalent()), qPrintable(tl->equivalent()));
 						incomplete_ = TRUE;
 						itorsions ++;
 					}
 					else
 					{
-						Messenger::print(Messenger::Verbose, "Torsion %s-%s-%s-%s data : %f %f %f %f", ti->equivalent(), tj->equivalent(), tk->equivalent(), tl->equivalent(), ffb->parameter(0), ffb->parameter(1), ffb->parameter(2), ffb->parameter(3));
+						Messenger::print(Messenger::Verbose, "Torsion %s-%s-%s-%s data : %f %f %f %f", qPrintable(ti->equivalent()), qPrintable(tj->equivalent()), qPrintable(tk->equivalent()), qPrintable(tl->equivalent()), ffb->parameter(0), ffb->parameter(1), ffb->parameter(2), ffb->parameter(3));
 					}
 				}
 			}
@@ -295,13 +294,13 @@ bool Pattern::createExpression(bool vdwOnly, bool allowDummy, Forcefield* defaul
 					// Check ffb and raise warning if NULL
 					if (ffb == NULL)
 					{
-						Messenger::print("!!! No FF definition for angle %s-%s-%s.", ti->equivalent(), tj->equivalent(), tk->equivalent());
+						Messenger::print("!!! No FF definition for angle %s-%s-%s.", qPrintable(ti->equivalent()), qPrintable(tj->equivalent()), qPrintable(tk->equivalent()));
 						incomplete_ = TRUE;
 						iangles ++;
 					}
 					else
 					{
-						Messenger::print(Messenger::Verbose, "Angle %s-%s-%s data : %f %f %f %f", ti->equivalent(), tj->equivalent(), tk->equivalent(), ffb->parameter(0), ffb->parameter(1), ffb->parameter(2), ffb->parameter(3));
+						Messenger::print(Messenger::Verbose, "Angle %s-%s-%s data : %f %f %f %f", qPrintable(ti->equivalent()), qPrintable(tj->equivalent()), qPrintable(tk->equivalent()), ffb->parameter(0), ffb->parameter(1), ffb->parameter(2), ffb->parameter(3));
 						// Check here for Urey-Bradley definition involving the same atoms.
 						// We don't mind if there isn't one
 						ffb = ff->findUreyBradley(ti,tj,tk);
@@ -329,7 +328,7 @@ bool Pattern::createExpression(bool vdwOnly, bool allowDummy, Forcefield* defaul
 					// Atom cannot have been used before in this improper...
 					for (m=0; m<n; ++m) if (ipa[n] == ipa[m]) break;
 					if (m != n) continue;
-					if (strcmp(ipa[n]->atom()->type()->equivalent(), ffb->typeName(n)) == 0) break;
+					if (ipa[n]->atom()->type()->equivalent() == ffb->typeName(n)) break;
 				}
 				// If no match is found, no atoms match this improper so exit
 				if (ipa[n] == NULL) break;
@@ -352,7 +351,7 @@ bool Pattern::createExpression(bool vdwOnly, bool allowDummy, Forcefield* defaul
 			// If we get here, then we did, so add this improper to the torsion array
 			nImpropers++;
 			addTorsionData(ffb, ipa[0]->atom()->id()-startAtom_, ipa[1]->atom()->id()-startAtom_, ipa[2]->atom()->id()-startAtom_, ipa[3]->atom()->id()-startAtom_);
-			Messenger::print(Messenger::Verbose, "Improper %s-%s-%s-%s data : %f %f %f %f", ipa[0]->atom()->type()->equivalent(), ipa[1]->atom()->type()->equivalent(), ipa[2]->atom()->type()->equivalent(), ipa[3]->atom()->type()->equivalent(), ffb->parameter(0), ffb->parameter(1), ffb->parameter(2), ffb->parameter(3));
+			Messenger::print(Messenger::Verbose, "Improper %s-%s-%s-%s data : %f %f %f %f", qPrintable(ipa[0]->atom()->type()->equivalent()), qPrintable(ipa[1]->atom()->type()->equivalent()), qPrintable(ipa[2]->atom()->type()->equivalent()), qPrintable(ipa[3]->atom()->type()->equivalent()), ffb->parameter(0), ffb->parameter(1), ffb->parameter(2), ffb->parameter(3));
 
 		}
 		

@@ -31,7 +31,7 @@ ATEN_USING_NAMESPACE
 
 // Atom labels
 const char* AtomLabelKeywords[Atom::nLabelTypes] = { "id", "element", "type", "ffequiv", "charge" };
-Atom::AtomLabel Atom::atomLabel(const char* s, bool reportError)
+Atom::AtomLabel Atom::atomLabel(QString s, bool reportError)
 {
 	Atom::AtomLabel al = (Atom::AtomLabel) enumSearch("atom label", Atom::nLabelTypes, AtomLabelKeywords, s, reportError);
 	if ((al == Atom::nLabelTypes) && reportError) enumPrintValid(Atom::nLabelTypes,AtomLabelKeywords);
@@ -52,7 +52,7 @@ const char* Atom::atomEnvironment(Atom::AtomEnvironment ae)
 // Geometries about atomic centres
 const char* AtomGeometryKeywords[Atom::nAtomGeometries] = { "unspecified", "unbound", "onebond", "linear", "tshape", "trigonal", "tetrahedral", "sqplanar", "tbp", "octahedral" };
 int AtomGeometryNBonds[Atom::nAtomGeometries] = { 0, 0, 1, 2, 3, 3, 4, 4, 5, 6 };
-Atom::AtomGeometry Atom::atomGeometry(const char* s, bool reportError)
+Atom::AtomGeometry Atom::atomGeometry(QString s, bool reportError)
 {
 	Atom::AtomGeometry ag = (Atom::AtomGeometry) enumSearch("atom geometry",Atom::nAtomGeometries,AtomGeometryKeywords,s, reportError);
 	if ((ag == Atom::nAtomGeometries) && reportError) enumPrintValid(Atom::nAtomGeometries,AtomGeometryKeywords);
@@ -305,9 +305,9 @@ void Atom::print() const
 	Messenger::print("  Velocities : %8.4f %8.4f %8.4f",v_.x,v_.y,v_.z);
 	Messenger::print("      Forces : %8.4f %8.4f %8.4f",f_.x,f_.y,f_.z);
 	Messenger::print("      Charge : %8.4f",charge_);
-	Messenger::print("      FFType : %s",(type_ != NULL ? type_->name() : "None"));
-	Messenger::print("       Bonds : %i",bonds_.nItems());
-	Messenger::print(" Environment : %s",Atom::atomEnvironment(environment_));
+	Messenger::print("      FFType : %s", (type_ != NULL ? qPrintable(type_->name()) : "None"));
+	Messenger::print("       Bonds : %i", bonds_.nItems());
+	Messenger::print(" Environment : %s", Atom::atomEnvironment(environment_));
 	Messenger::print("        O.S. : %i",os_);
 }
 
@@ -316,7 +316,7 @@ void Atom::printSummary() const
 {
 	// Print format :" Id     El   FFType   FFId          X             Y             Z              Q       Sel Fix \n");
 	// Note: We print the 'visual' id (id_ + 1) and not the internal id (id_)
-	Messenger::print(" %-5i  %-3s  %-8s %-6i %13.6e %13.6e %13.6e  %13.6e  %c  %c%c", id_+1, Elements().symbol(element_), type_ != NULL ? type_->name() : "None", type_ != NULL ? type_->typeId() : 0, r_.x, r_.y, r_.z, charge_, selected_ ? 'x' : ' ', fixedPosition_ ? 'R' : ' ', fixedType_ ? 'T' : ' ');
+	Messenger::print(" %-5i  %-3s  %-8s %-6i %13.6e %13.6e %13.6e  %13.6e  %c  %c%c", id_+1, Elements().symbol(element_), type_ != NULL ? qPrintable(type_->name()) : "None", type_ != NULL ? type_->typeId() : 0, r_.x, r_.y, r_.z, charge_, selected_ ? 'x' : ' ', fixedPosition_ ? 'R' : ' ', fixedType_ ? 'T' : ' ');
 }
 
 /*
@@ -755,7 +755,7 @@ void Atom::setColour(double r, double g, double b, double a)
 // Set n'th component of custom colour
 void Atom::setColour(int n, double d)
 {
-	if ((n < 0) || (n > 4)) Messenger::print( "Tried to set component %i for atom colour which is out of range.", n+1);
+	if ((n < 0) || (n > 4)) Messenger::print("Tried to set component %i for atom colour which is out of range.", n+1);
 	else colour_[n] = d;
 }
 

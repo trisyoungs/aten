@@ -200,15 +200,15 @@ bool Commands::function_GridCutoffSecondary(CommandNode* c, Bundle& obj, ReturnV
 bool Commands::function_GridLoopOrder(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::GridPointer)) return FALSE;
-	if (strlen(c->argc(0)) != 3)
+	if (c->argc(0).length() != 3)
 	{
-		Messenger::print("A string of three characters must be passed to 'gridlooporder' (got '%s').",c->argc(0));
+		Messenger::print("A string of three characters must be passed to 'gridlooporder' (got '%s').", qPrintable(c->argc(0)));
 		return FALSE;
 	}
 	char ch;
 	for (int n=0; n<3; n++)
 	{
-		ch = c->argc(0)[n];
+		ch = c->argc(0).at(n).toAscii();
 		switch (ch)
 		{
 			case ('X'):
@@ -227,7 +227,7 @@ bool Commands::function_GridLoopOrder(CommandNode* c, Bundle& obj, ReturnValue& 
 				obj.g->setLoopOrder(n,2);
 				break;
 			default:
-				Messenger::print("Unrecognised character (%c) given to 'setgridlooporder' - default value used.",ch);
+				Messenger::print("Unrecognised character (%c) given to 'setgridlooporder' - default value used.", ch);
 				obj.g->setLoopOrder(n,n);
 				break;
 		}
@@ -318,7 +318,7 @@ bool Commands::function_NewGrid(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	obj.g = aten_.currentModel()->addGrid();
-	obj.g->setName(stripTrailing(c->argc(0)));
+	obj.g->setName(c->argc(0).trimmed());
 	rv.set(VTypes::GridData, obj.g);
 	return TRUE;
 }

@@ -57,7 +57,7 @@ class Site : public ListItem<Site>
 	// Molecule mask definition
 	// TODO Select a subset of molecules based on some kind of criteria
 	// Name of site
-	Dnchar name_;
+	QString name_;
 
 	public:
 	// Set the pattern pointer for the atom
@@ -65,9 +65,10 @@ class Site : public ListItem<Site>
 	// Returns the current pattern for the atom
 	Pattern* pattern();
 	// Set name of site
-	void setName(const char* s);
+	void setName(QString name);
 	// Get name of site
-	const char* name();
+	QString name();
+
 
 	/*
 	// Site Centre

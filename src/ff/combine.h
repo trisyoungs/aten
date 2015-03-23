@@ -33,7 +33,7 @@ class CombinationRules
 	public:
 	// Combination rules
 	enum CombinationRule { ArithmeticRule, GeometricRule, CustomRule1, CustomRule2, CustomRule3, nCombinationRules };
-	static CombinationRule combinationRule(const char* name, bool reportError = 0);
+	static CombinationRule combinationRule(QString s, bool reportError = false);
 	static const char* combinationRule(CombinationRule cr);
 	static const char* combinationRuleName(CombinationRule cr);
 

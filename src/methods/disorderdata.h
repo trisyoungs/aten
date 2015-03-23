@@ -49,11 +49,11 @@ class DisorderData : public ListItem<DisorderData>
 	// Insertion model containing copies of source model
 	Model targetModel_;
 	// Target partition data
-	PartitionData *partitionData_;
+	PartitionData* partitionData_;
 	
 	public:
 	// Initialise structure
-	bool initialise(Model* sourceModel, PartitionData *partitionData);
+	bool initialise(Model* sourceModel, PartitionData* partitionData);
 	// Return insertion policy of source model
 	Model::InsertionPolicy insertionPolicy();
 	// Return requested component population
@@ -61,15 +61,15 @@ class DisorderData : public ListItem<DisorderData>
 	// Return requested component density
 	double requestedDensity();
 	// Return name of sourcemodel
-	const char* modelName();
+	QString modelName();
 	// Returnreference to sourcemodel
-	Model &sourceModel();
+	Model& sourceModel();
 	// Return name of target partition
-	const char* partitionName();
+	QString partitionName();
 	// Return density of target partition
 	double partitionDensity();
 	// Return partition pointer
-	PartitionData *partition();
+	PartitionData* partition();
 	// Copy contents of component across to specified model
 	void copyTo(Model* target);
 

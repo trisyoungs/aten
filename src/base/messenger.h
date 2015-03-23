@@ -39,7 +39,7 @@ class Messenger
 	// Messaging output types
 	enum OutputType { All, Calls, Commands, Parse, Typing, Verbose, nOutputTypes };
 	// Convert text string to debug mode
-	static OutputType outputType(const char* name, bool reportError = 0);
+	static OutputType outputType(QString s, bool reportError = false);
 	// Convert debug mode to text string
 	static const char* outputType(OutputType ot);
 
@@ -84,8 +84,18 @@ class Messenger
 	public:
 	// Return list of messages in buffer
 	static QStringList& messageBuffer();
-	// Print normal message
+	// Print formatted normal message
 	static void print(const char* fmtString, ...);
+	// Print formatted warning message
+	static void warn(const char* fmtString, ...);
+	// Print formatted warning message
+	static void error(const char* fmtString, ...);
+	// Print normal message
+	static void print(QString string);
+	// Print normal message
+	static void warn(QString string);
+	// Print normal message
+	static void error(QString string);
 	// Print message in specific output level
 	static void print(Messenger::OutputType outputType, const char* fmtString, ...);
 	// Entrance to subroutine

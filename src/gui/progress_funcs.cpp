@@ -38,7 +38,7 @@ void AtenProgress::on_CancelButton_clicked(bool checked)
 // Set minor job title (if one exists)
 void AtenProgress::setSubTitle()
 {
-	if (strcmp(progress.subTitle(),"") != 0)
+	if (!progress.subTitle().isEmpty())
 	{
 		ui.SubTitleLabel->setText(progress.subTitle());
 		ui.SubTitleLabel->setEnabled(TRUE);

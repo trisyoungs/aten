@@ -59,7 +59,7 @@ bool Fragment::setMasterModel(Model* m)
 	// Define initial link (anchor) atom as first non-element (XX) atom in model (if there is one)
 	if (masterModel_->nUnknownAtoms() == 0)
 	{
-		Messenger::print(Messenger::Verbose, " ... Fragment model '%s' has no defined anchor point. Assuming first atom.", masterModel_->name());
+		Messenger::print(Messenger::Verbose, " ... Fragment model '%s' has no defined anchor point. Assuming first atom.", qPrintable(masterModel_->name()));
 		masterLinkAtom_ = masterModel_->atoms();
 	}
 	else for (masterLinkAtom_ = masterModel_->atoms(); masterLinkAtom_ != NULL; masterLinkAtom_ = masterLinkAtom_->next) if (masterLinkAtom_->element() == 0) break;
@@ -324,15 +324,15 @@ FragmentGroup::FragmentGroup() : ListItem<FragmentGroup>()
 }
 
 // Set name of group
-void FragmentGroup::setName(const char* s)
+void FragmentGroup::setName(QString name)
 {
-	name_ = s;
+	name_ = name;
 }
 
 // Return name of group
-const char* FragmentGroup::name()
+QString FragmentGroup::name()
 {
-	return name_.get();
+	return name_;
 }
 
 // Return number of fragments in group
@@ -342,19 +342,19 @@ int FragmentGroup::nFragments()
 }
 
 // Add new fragment
-Fragment *FragmentGroup::addFragment()
+Fragment* FragmentGroup::addFragment()
 {
 	return fragments_.add();
 }
 
 // Remove existing fragment
-void FragmentGroup::removeFragment(Fragment *frag)
+void FragmentGroup::removeFragment(Fragment* frag)
 {
 	fragments_.remove(frag);
 }
 
 // Return first fragment in group
-Fragment *FragmentGroup::fragments()
+Fragment* FragmentGroup::fragments()
 {
 	return fragments_.first();
 }

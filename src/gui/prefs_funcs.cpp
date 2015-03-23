@@ -40,7 +40,7 @@ AtenPrefs::AtenPrefs(AtenWindow& parent) : QDialog(&parent), parent_(parent)
 	refreshing_ = FALSE;
 
 	// Add elements to element list and select first item
-	QListWidgetItem *item;
+	QListWidgetItem* item;
 	for (int i=0; i<Elements().nElements(); ++i)
 	{
 		item = new QListWidgetItem(ui.ElementList);
@@ -139,12 +139,10 @@ void AtenPrefs::setControls()
 	ui.ModelUpdateSpin->setValue(prefs.modelUpdate());
 
 	// Set pen colours and colourscale names and checks
-	Dnchar name;
 	for (int n=0; n<10; n++)
 	{
-		QListWidgetItem *item = ui.ScaleList->item(n);
-		name.sprintf("%i. %s", n+1, prefs.colourScale[n].name());
-		item->setText(name.get());
+		QListWidgetItem* item = ui.ScaleList->item(n);
+		item->setText(QString::number(n+1) + ". " + prefs.colourScale[n].name());
 		item->setCheckState( prefs.colourScale[n].visible() ? Qt::Checked : Qt::Unchecked);
 	}
 	updateScalePointsList();
@@ -162,7 +160,7 @@ void AtenPrefs::setControls()
 	ui.EwaldManualKYSpin->setValue(prefs.ewaldKMax().y);
 	ui.EwaldManualKZSpin->setValue(prefs.ewaldKMax().z);
 	ui.FunctionalFormList->clear();
-	QListWidgetItem *listitem;
+	QListWidgetItem* listitem;
 	for (int n=0; n<VdwFunctions::nVdwFunctions; ++n)
 	{
 		listitem = new QListWidgetItem(ui.FunctionalFormList);
@@ -171,7 +169,7 @@ void AtenPrefs::setControls()
 	ui.FunctionalFormList->setCurrentRow(0);
 
 	// External Programs
-	ui.TemporaryDirEdit->setText(prefs.tempDir());
+	ui.TemporaryDirEdit->setText(prefs.tempDir().path());
 	ui.MopacExecutableEdit->setText(prefs.mopacExe());
 	ui.EncoderExecutableEdit->setText(prefs.encoderExe());
 	ui.EncoderArgumentsEdit->setText(prefs.encoderArguments());
@@ -215,12 +213,10 @@ void AtenPrefs::on_PrefsCancelButton_clicked(bool checked)
 // Store current prefs values as defaults
 void AtenPrefs::on_PrefsSaveAsDefaultButton_clicked(bool checked)
 {
-	Dnchar filename;
-	filename.sprintf("%s%c%s%cprefs.dat", parent_.aten().homeDir(), PATHSEP, parent_.aten().atenDir(), PATHSEP);
-
+	QString filename = parent_.aten().atenDirectoryFile("prefs.dat");
 	bool result = parent_.aten().savePrefs(filename);
 	if (!result) QMessageBox::warning(NULL, "Aten", "User preferences file could not be saved.\n", QMessageBox::Ok, QMessageBox::Ok);
-	else Messenger::print("Prefs file saved to '%s'", filename.get());
+	else Messenger::print("Prefs file saved to '%s'", qPrintable(filename));
 }
 
 /*
@@ -745,7 +741,7 @@ void AtenPrefs::on_RemovePointButton_clicked(bool checked)
 	updateScalePointsList();
 }
 
-void AtenPrefs::on_ScaleList_itemClicked(QListWidgetItem *item)
+void AtenPrefs::on_ScaleList_itemClicked(QListWidgetItem* item)
 {
 	// Get row number associated with item
 	int row = ui.ScaleList->row(item);
@@ -755,7 +751,7 @@ void AtenPrefs::on_ScaleList_itemClicked(QListWidgetItem *item)
 	parent_.postRedisplay();
 }
 
-void AtenPrefs::on_ScaleList_itemDoubleClicked(QListWidgetItem *item)
+void AtenPrefs::on_ScaleList_itemDoubleClicked(QListWidgetItem* item)
 {
 	// Get row number associated with item
 	int row = ui.ScaleList->row(item);
@@ -954,18 +950,18 @@ void AtenPrefs::on_ParameterTable_itemChanged(QTableWidgetItem *w)
 
 void AtenPrefs::on_TemporaryDirButton_clicked(bool checked)
 {
-	static QString dir = prefs.tempDir();
-	dir = QFileDialog::getExistingDirectory(this, "Select temporary directory", dir, QFileDialog::ShowDirsOnly);
-	if (!dir.isEmpty())
+	QDir dir = prefs.tempDir();
+	dir = QFileDialog::getExistingDirectory(this, "Select temporary directory", prefs.tempDir().path(), QFileDialog::ShowDirsOnly);
+	if (dir.exists())
 	{
-		prefs.setTempDir( qPrintable(dir) );
-		ui.TemporaryDirEdit->setText(dir);
+		prefs.setTempDir(dir);
+		ui.TemporaryDirEdit->setText(dir.path());
 	}
 }
 
 void AtenPrefs::on_TemporaryDirEdit_textEdited(const QString &text)
 {
-	prefs.setTempDir( qPrintable(text) );
+	prefs.setTempDir(QDir(text));
 }
 
 void AtenPrefs::on_MopacExecutableButton_clicked(bool checked)

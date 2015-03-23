@@ -69,9 +69,9 @@ class ZMatrixElement : public ListItem<ZMatrixElement>
 	// Retrieve distance variable (geometry variable 0)
 	Variable* distanceVariable();
 	// Set distance variable name (geometry variable 0)
-	void setDistanceName(const char* name);
+	void setDistanceName(QString name);
 	// Retrieve distance variable name (geometry variable 0)
-	const char* distanceName();
+	QString distanceName();
 	// Set distance value
 	void setDistance(double value);
 	// Retrieve distance value (geometry variable 0)
@@ -81,9 +81,9 @@ class ZMatrixElement : public ListItem<ZMatrixElement>
 	// Retrieve angle variable (geometry variable 1)
 	Variable* angleVariable();
 	// Set angle variable name (geometry variable 1)
-	void setAngleName(const char* name);
+	void setAngleName(QString name);
 	// Retrieve angle variable name (geometry variable 1)
-	const char* angleName();
+	QString angleName();
 	// Set angle value
 	void setAngle(double value);
 	// Retrieve angle value (geometry variable 1)
@@ -93,9 +93,9 @@ class ZMatrixElement : public ListItem<ZMatrixElement>
 	// Retrieve torsion variable (geometry variable 2)
 	Variable* torsionVariable();
 	// Set torsion variable name (geometry variable 2)
-	void setTorsionName(const char* name);
+	void setTorsionName(QString name);
 	// Retrieve torsion variable name (geometry variable 2)
-	const char* torsionName();
+	QString torsionName();
 	// Set torsion value
 	void setTorsion(double value);
 	// Retrieve torsion value (geometry variable 2)

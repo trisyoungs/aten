@@ -28,8 +28,6 @@
 
 ATEN_BEGIN_NAMESPACE
 
-extern Dnchar s;
-
 // Progress Indicator Data
 class ProgressIndicator
 {
@@ -45,7 +43,7 @@ class ProgressIndicator
 	// Variables for the position and maximum of the text progress dialog
 	int stepsToDo_, percent_, currentStep_;
 	// ETA and Jobtitle texts
-	Dnchar etaText_, jobTitle_, subTitle_;
+	QString etaText_, jobTitle_, subTitle_;
 	// Flags to indicate whether indicator is active
 	bool hasJob_;
 	
@@ -53,19 +51,19 @@ class ProgressIndicator
 	// Notify that the progress indicator should be canceled
 	void notifyCanceled();
 	// Instantiate a new progress dialog (or a sub-job) of the current one
-	int initialise(const char* jobtitle, int stepstodo);
+	int initialise(QString jobtitle, int stepstodo);
 	// Update the progress dialog
-	bool update(int id, int currentstep = -1, const char* subtitle = NULL);
+	bool update(int id, int currentstep = -1, QString subtitle = QString());
 	// Terminate the progress dialog
 	void terminate(int id);
 	// Return whether a major job is in progress
 	bool hasJob();
 	// Return ETA (as text)
-	const char* eta();
+	QString eta();
 	// Return major job title
-	const char* jobTitle();
+	QString jobTitle();
 	// Return minor job title
-	const char* subTitle();
+	QString subTitle();
 	// Return number of steps to do
 	int stepsToDo();
 	// Return current step number

@@ -25,7 +25,6 @@
 #include "model/model.h"
 #include "base/prefs.h"
 #include "render/primitiveinstance.h"
-// #include "parser/tree.h"
 #include "base/sysfunc.h"
 #include <iostream>
 #include <readline/readline.h>
@@ -36,7 +35,7 @@
 
 ATEN_USING_NAMESPACE
 
-// Definitions of possible CLI options (id,keyword,arg(0=none,1=req,2=opt),argtext,description)
+// Definitions of possible CLI options (id,keyword,arg(0=none,1=req,2=opt),argText,description)
 Cli cliSwitches[] = {
 	{ Cli::AtenDataSwitch,		'\0',"atendata",	1,
 		"<dir>",
@@ -208,13 +207,13 @@ Cli::CliSwitch Cli::cliSwitch(char c)
 }
 
 // Search for long option
-Cli::CliSwitch Cli::cliSwitch(const char* s)
+Cli::CliSwitch Cli::cliSwitch(QString s)
 {
 	int n;
 	for (n=0; n<Cli::nSwitchItems; ++n)
 	{
 		if (cliSwitches[n].longOpt[0] == '\0') continue;
-		if (strcmp(s, cliSwitches[n].longOpt) == 0) break;
+		if (s == cliSwitches[n].longOpt) break;
 	}
 	return (Cli::CliSwitch) n;
 }
@@ -225,58 +224,77 @@ bool Aten::parseCliEarly(int argc, char *argv[])
 	int argn, opt;
 	bool isShort, hasArg;
 	Messenger::OutputType ot;
-	Dnchar arg;
-	Dnchar argtext;
+	QString arg, argText;
+
 	// Cycle over program arguments and available CLI options (skip [0] which is the binary name)
 	argn = 0;
 	while (argn < (argc-1))
 	{
-		argn++;
+		++argn;
+
 		// Check for null argument
 		if (argv[argn][0] == '\0') continue;
+
 		// Check for a CLI argument (presence of '-')
 		if (argv[argn][0] == '-')
 		{
 			// Manually-exclude some specific (and extremely annoying) extraneous command line options
-			if (strncmp(argv[argn],"-psn",4) == 0)
+			if (strncmp(argv[argn], "-psn", 4) == 0)
 			{
-				printf("Found (and ignored) OSX-added '%s'.\n",argv[argn]);
+				printf("Found (and ignored) OSX-added '%s'.\n", argv[argn]);
 				continue;
 			}
+
 			// Is this a long or short option?
 			isShort = (argv[argn][1] != '-');
 			if (isShort)
 			{
 				arg = &argv[argn][1];
-				argtext.clear();
+				argText.clear();
 				if ((argv[argn][1] != '\0') && (argv[argn][2] != '\0'))
 				{
 					isShort = FALSE;
-					arg = beforeChar(&argv[argn][1], '=');
-					argtext = afterChar(&argv[argn][1], '=');
+					QStringList items = QString(&argv[argn][1]).split('=');
+					if (items.count() != 2)
+					{
+						printf("Short option '%s' failed to pass correctly - did you forget the '='?", &argv[argn][1]);
+						return false;
+					}
+					arg = items.at(0);
+					argText = items.at(1);
 				}
 			}
 			else
 			{
-				arg = beforeChar(&argv[argn][2], '=');
-				argtext = afterChar(&argv[argn][2], '=');
+				QStringList items = QString(&argv[argn][2]).split('=');
+				if (items.count() != 2)
+				{
+					printf("Long option '%s' failed to pass correctly - did you forget the '='?", &argv[argn][2]);
+					return false;
+				}
+				arg = items.at(0);
+				argText = items.at(1);
 			}
+
 			// Search for option...
-			opt = (isShort ? Cli::cliSwitch(arg[0]) : Cli::cliSwitch(arg.get()));
+			opt = (isShort ? Cli::cliSwitch(arg.at(0).toAscii()) : Cli::cliSwitch(arg));
+
 			// Check to see if we matched any of the known CLI switches
 			if (opt == Cli::nSwitchItems)
 			{
-				printf("Unrecognised command-line option '%s%s'.\n", isShort ? "-" : "--", arg.get());
+				printf("Unrecognised command-line option '%s%s'.\n", isShort ? "-" : "--", qPrintable(arg));
 				return FALSE;
 			}
+
 			// Check if an argument to the switch has been supplied...
-			if (argtext != "") hasArg = TRUE;
+			if (!argText.isEmpty()) hasArg = TRUE;
 			else if ((argn < (argc-1)) && (argv[argn+1][0] != '-') && (cliSwitches[opt].argument != 0))
 			{
 				hasArg = TRUE;
-				argtext = argv[++argn];
+				argText = argv[++argn];
 			}
 			else hasArg = FALSE;
+
 			// ...and whether it expects one
 			switch (cliSwitches[opt].argument)
 			{
@@ -296,20 +314,22 @@ bool Aten::parseCliEarly(int argc, char *argv[])
 				case (2):
 					break;
 			}
+
 			// Ready to perform switch action!
 			// We recognise only a specific selection of switches here, mostly to do with debugging / versioning etc.
 			switch (opt)
 			{
+				// Set data directory location
 				case (Cli::AtenDataSwitch):
-					setDataDir(argtext.get());
-					Messenger::print("Will search for filters in '%s'.", argtext.get());
+					dataDir_ = argText;
+					Messenger::print("Will search for filters in '%s'.", qPrintable(argText));
 					break;
 				// Turn on debug messages for calls (or specified output)
 				case (Cli::DebugSwitch):
 					if (!hasArg) Messenger::addOutputType(Messenger::Calls);
 					else
 					{
-						ot = Messenger::outputType(argtext.get(), TRUE);
+						ot = Messenger::outputType(argText, TRUE);
 						if (ot != Messenger::nOutputTypes) Messenger::addOutputType(ot);
 						else return FALSE;
 					}
@@ -375,7 +395,7 @@ int Aten::parseCli(int argc, char *argv[])
 	int argn, opt, nTried = 0, n, el, i;
 	bool isShort, hasArg;
 	char* line;
-	Dnchar arg, argText, varName, varValue, prompt;
+	QString arg, argText, prompt;
 	Forcefield* ff;
 	LineParser parser;
 	ElementMap::ZMapType zm;
@@ -385,6 +405,7 @@ int Aten::parseCli(int argc, char *argv[])
 	ReturnValue rv;
 	Tree* filter, *modelFilter = NULL;
 	Program interactiveScript;
+	QStringList items;
 
 	// Cycle over program arguments and available CLI options (skip [0] which is the binary name)
 	argn = 0;
@@ -402,6 +423,7 @@ int Aten::parseCli(int argc, char *argv[])
 				Messenger::print("Found (and ignored) OSX-added '%s'.",argv[argn]);
 				continue;
 			}
+
 			// Is this a long or short option?
 			isShort = (argv[argn][1] != '-');
 			if (isShort)
@@ -420,14 +442,17 @@ int Aten::parseCli(int argc, char *argv[])
 				arg = beforeChar(&argv[argn][2], '=');
 				argText = afterChar(&argv[argn][2], '=');
 			}
+
 			// Search for option...
-			opt = (isShort ? Cli::cliSwitch(arg[0]) : Cli::cliSwitch(arg.get()));
+			opt = (isShort ? Cli::cliSwitch(arg.at(0).toAscii()) : Cli::cliSwitch(arg));
+
 			// Check to see if we matched any of the known CLI switches
 			if (opt == Cli::nSwitchItems)
 			{
-				printf("Unrecognised command-line option '%s%s'.\n", isShort ? "-" : "--", arg.get());
+				printf("Unrecognised command-line option '%s%s'.\n", isShort ? "-" : "--", qPrintable(arg));
 				return -1;
 			}
+
 			// Check if an argument to the switch has been supplied...
 			if (argText != "") hasArg = TRUE;
 			else if ((argn < (argc-1)) && (argv[argn+1][0] != '-') && (cliSwitches[opt].argument != 0))
@@ -436,6 +461,7 @@ int Aten::parseCli(int argc, char *argv[])
 				argText = argv[++argn];
 			}
 			else hasArg = FALSE;
+
 			// ...and whether it expects one
 			switch (cliSwitches[opt].argument)
 			{
@@ -455,6 +481,7 @@ int Aten::parseCli(int argc, char *argv[])
 				case (2):
 					break;
 			}
+
 			// Ready to perform switch action!
 			switch (opt)
 			{
@@ -493,7 +520,7 @@ int Aten::parseCli(int argc, char *argv[])
 					break;
 				// Set trajectory cache limit
 				case (Cli::CacheSwitch):
-					prefs.setCacheLimit(argText.asInteger());
+					prefs.setCacheLimit(argText.toInt());
 					break;
 				// Force model centering on load (for non-periodic systems)
 				case (Cli::CentreSwitch):
@@ -504,12 +531,12 @@ int Aten::parseCli(int argc, char *argv[])
 					if ((programMode_ == Aten::BatchMode) || (programMode_ == Aten::ProcessMode) || (programMode_ == Aten::BatchExportMode))
 					{
 						script = addBatchCommand();
-						if (!script->generateFromString(argText.get(), "BatchCommand", "Batch Command")) return -1;
+						if (!script->generateFromString(argText, "BatchCommand", "Batch Command")) return -1;
 					}
 					else
 					{
 						tempProgram.clear();
-						if (tempProgram.generateFromString(argText.get(), "CLI Command", "CLI Command"))
+						if (tempProgram.generateFromString(argText, "CLI Command", "CLI Command"))
 						{
 							if (!tempProgram.execute(rv)) return -1;
 						}
@@ -529,7 +556,7 @@ int Aten::parseCli(int argc, char *argv[])
 					}
 
 					// Parse the first option so we can get the filter nickname and any filter options
-					parser.getArgsDelim(LineParser::UseQuotes, argText.get());
+					parser.getArgsDelim(LineParser::UseQuotes, argText);
 					
 					// First part of argument is nickname
 					filter = findFilter(FilterData::ModelExport, parser.argc(0));
@@ -542,7 +569,11 @@ int Aten::parseCli(int argc, char *argv[])
 					}
 
 					// Loop over remaining arguments which are widget/global variable assignments
-					for (i = 1; i < parser.nArgs(); ++i) if (!filter->setAccessibleVariable(beforeStr(parser.argc(i),"="), afterStr(parser.argc(i),"="))) return -1;
+					for (i = 1; i < parser.nArgs(); ++i)
+					{
+						items = parser.argc(i).split('=');
+						if (!filter->setAccessibleVariable(items.at(0), items.at(1))) return -1;
+					}
 
 					setExportFilter(filter);
 					if (programMode_ == Aten::BatchMode) programMode_ = Aten::BatchExportMode;
@@ -551,23 +582,27 @@ int Aten::parseCli(int argc, char *argv[])
 				// Set export type remappings
 				case (Cli::ExportMapSwitch):
 					// Get the argument and parse it internally
-					parser.getArgsDelim(0, argText.get());
-					if (strchr(parser.argc(n),'=') == NULL)
+					parser.getArgsDelim(0, argText);
+					for (n=0; n<parser.nArgs(); n++) 
 					{
-						printf("Mangled exportmap value found (i.e. it contains no '='): '%s'.\n", parser.argc(n));
-						return -1;
+						QStringList items = parser.argc(n).split('=');
+						if (items.count() != 2)
+						{
+							printf("Mangled exportmap value found: '%s'.\n", qPrintable(parser.argc(n)));
+							return -1;
+						}
+						typeExportMap.add(items.at(0), items.at(1));
 					}
-					for (n=0; n<parser.nArgs(); n++) typeExportMap.add(beforeChar(parser.argc(n),'='), afterChar(parser.argc(n), '='));
 					break;
 				// Load expression
 				case (Cli::ExpressionSwitch):
-					filter = probeFile(argText.get(), FilterData::ExpressionImport);
+					filter = probeFile(argText, FilterData::ExpressionImport);
 					if (filter == NULL) return -1;
-					else if (!filter->executeRead(argText.get())) return -1;
+					else if (!filter->executeRead(argText)) return -1;
 					break;
 				// Load additional filter data from specified filename
 				case (Cli::FilterSwitch):
-					if (!openFilter(argText.get())) return -1;
+					if (!openFilter(argText)) return -1;
 					break;
 				// Force folding (MIM'ing) of atoms in periodic systems on load
 				case (Cli::FoldSwitch):
@@ -575,12 +610,12 @@ int Aten::parseCli(int argc, char *argv[])
 					break;
 				// Load the specified forcefield
 				case (Cli::ForcefieldSwitch):
-					ff = loadForcefield(argText.get());
+					ff = loadForcefield(argText);
 					if (ff == NULL) return -1;
 					break;
 				// Set forced model load format
 				case (Cli::FormatSwitch):
-					modelFilter = findFilter(FilterData::ModelImport, argText.get());
+					modelFilter = findFilter(FilterData::ModelImport, argText);
 					if (modelFilter == NULL)
 					{
 						// Print list of valid filter nicknames
@@ -590,25 +625,24 @@ int Aten::parseCli(int argc, char *argv[])
 					break;
 				// Load surface
 				case (Cli::GridSwitch):
-					filter = probeFile(argText.get(), FilterData::GridImport);
+					filter = probeFile(argText, FilterData::GridImport);
 					if (filter == NULL) return -1;
-					else if (!filter->executeRead(argText.get())) return -1;
+					else if (!filter->executeRead(argText)) return -1;
 					break;
 				// Pass value
 				case (Cli::DoubleSwitch):
 				case (Cli::IntSwitch):
 				case (Cli::StringSwitch):
 					// Split argument into name and value
-					varName = beforeChar(argText.get(), '=');
-					varValue = afterChar(argText.get(), '=');
-					if (passedValues_.find(varName.get()) != NULL)
+					items = argText.split('=');
+					if (passedValues_.find(items.at(0)) != NULL)
 					{
-						printf("Error: Passed variable named '%s' has already been declared.\n", varName.get());
+						printf("Error: Passed variable named '%s' has already been declared.\n", qPrintable(items.at(0)));
 						return -1;
 					}
-					else if (opt == Cli::IntSwitch) addPassedValue(VTypes::IntegerData, varName.get(), varValue.get());
-					else if (opt == Cli::DoubleSwitch) addPassedValue(VTypes::DoubleData, varName.get(), varValue.get());
-					else if (opt == Cli::StringSwitch) addPassedValue(VTypes::StringData, varName.get(), varValue.get());
+					else if (opt == Cli::IntSwitch) addPassedValue(VTypes::IntegerData, qPrintable(items.at(0)), qPrintable(items.at(1)));
+					else if (opt == Cli::DoubleSwitch) addPassedValue(VTypes::DoubleData, qPrintable(items.at(0)), qPrintable(items.at(1)));
+					else if (opt == Cli::StringSwitch) addPassedValue(VTypes::StringData, qPrintable(items.at(0)), qPrintable(items.at(1)));
 					break;
 				// Enter interactive mode
 				case (Cli::InteractiveSwitch):
@@ -618,7 +652,7 @@ int Aten::parseCli(int argc, char *argv[])
 					do
 					{
 						// Get string from user
-						line = readline(prompt);
+						line = readline(qPrintable(prompt));
 						interactiveScript.mainProgram()->reset(FALSE);
 						if (interactiveScript.generateFromString(line, "InteractiveCommand", "InteractiveMode", FALSE, FALSE)) interactiveScript.execute(rv);
 						// Add the command to the history and delete it 
@@ -652,7 +686,7 @@ int Aten::parseCli(int argc, char *argv[])
 					break;
 				// Load models from list in file
 				case (Cli::LoadFromListSwitch):
-					if (!parser.openInput(argText.get())) return -1;
+					if (!parser.openInput(argText)) return -1;
 					while (!parser.eofOrBlank())
 					{
 						parser.readNextLine(LineParser::StripComments);
@@ -666,24 +700,25 @@ int Aten::parseCli(int argc, char *argv[])
 				// Set type mappings
 				case (Cli::MapSwitch):
 					// Get the argument and parse it internally
-					parser.getArgsDelim(0, argText.get());
+					parser.getArgsDelim(0, argText);
 					for (n=0; n<parser.nArgs(); n++)
 					{
-						if (strchr(parser.argc(n),'=') == NULL)
+						items = parser.argc(n).split('=');
+						if (items.count() != 2)
 						{
-							printf("Mangled map value found (i.e. it contains no '='): '%s'.\n", parser.argc(n));
+							printf("Mangled map value found: '%s'.\n", qPrintable(parser.argc(n)));
 							return -1;
 						}
-						el = Elements().find(afterChar(parser.argc(n), '='), ElementMap::AlphaZMap);
+						el = Elements().find(items.at(1), ElementMap::AlphaZMap);
 						if (el == 0)
 						{
-							printf("Unrecognised element '%s' in type map.\n",afterChar(parser.argc(n),'='));
+							printf("Unrecognised element '%s' in type map.\n", qPrintable(items.at(1)));
 							return -1;
 						}
 						else
 						{
 							nmi = typeImportMap.add();
-							nmi->set(beforeChar(parser.argc(n),'='), el);
+							nmi->set(items.at(0), el);
 						}
 					}
 					break;
@@ -741,7 +776,7 @@ int Aten::parseCli(int argc, char *argv[])
 				// Load and run a script file
 				case (Cli::ScriptSwitch):
 					script = addScript();
-					if (script->generateFromFile(argText.get(), "CliScript"))
+					if (script->generateFromFile(argText, "CliScript"))
 					{
 						Messenger::print("Successfully loaded script.");
 						programMode_ = Aten::CommandMode;
@@ -769,18 +804,18 @@ int Aten::parseCli(int argc, char *argv[])
 					}
 					else
 					{
-						Tree* filter = probeFile(argText.get(), FilterData::TrajectoryImport);
+						Tree* filter = probeFile(argText, FilterData::TrajectoryImport);
 						if (filter == NULL) return -1;
-						if (!current_.m->initialiseTrajectory(argText.get(),filter)) return -1;
+						if (!current_.m->initialiseTrajectory(argText,filter)) return -1;
 					}
 					break;
 				// Set maximum number of undolevels per model
 				case (Cli::UndoLevelSwitch):
-					prefs.setMaxUndoLevels(argText.asInteger());
+					prefs.setMaxUndoLevels(argText.toInt());
 					break;
 				// Set the type of element (Z) mapping to use in name conversion
 				case (Cli::ZmapSwitch):
-					zm = ElementMap::zMapType(argText.get(), TRUE);
+					zm = ElementMap::zMapType(argText, TRUE);
 					if (zm != ElementMap::nZMapTypes) prefs.setZMapType(zm, TRUE);
 					else return -1;
 					break;
@@ -815,27 +850,28 @@ int Aten::parseCli(int argc, char *argv[])
 	if (readcin)
 	{
 		// Grab all lines from cin to a temporary stringlist....
-		List<Dnchar> commands;
+		QStringList commands;
 		char line[8096];
+		QString s;
 		while (std::cin.good() && (!std::cin.eof()))
 		{
 			std::cin.getline(line, 8095);
+			s = line;
 			// Remove any commented part of line
-			removeComments(line);
-			if (isEmpty(line)) continue;
-			Dnchar* s = commands.add();
-			s->set(line);
+// 			removeComments(line); // ATEN2 TODO Check to see if this works when commented out
+			if (s.isEmpty()) continue;
+			commands << s;
 		}
 		// Create and execute commands
 		if ((programMode_ == Aten::BatchMode) || (programMode_ == Aten::ProcessMode) || (programMode_ == Aten::BatchExportMode))
 		{
 			script = addBatchCommand();
-			if (!script->generateFromStringList(commands.first(), "BatchCommand", "Batch Command")) return -1;
+			if (!script->generateFromStringList(commands, "BatchCommand", "Batch Command")) return -1;
 		}
 		else
 		{
 			tempProgram.clear();
-			if (tempProgram.generateFromStringList(commands.first(), "CLI Command (cin)", "CLI Command from STDIN"))
+			if (tempProgram.generateFromStringList(commands, "CLI Command (cin)", "CLI Command from STDIN"))
 			{
 				if (!tempProgram.execute(rv)) return -1;
 			}
@@ -868,13 +904,13 @@ void Aten::printUsage() const
 }
 
 // Add passed value
-bool Aten::addPassedValue(VTypes::DataType type, const char* name, const char* value)
+bool Aten::addPassedValue(VTypes::DataType type, QString name, QString value)
 {
 	// Search for existing passed value of this name...
 	if (passedValues_.find(name)) return FALSE;
 	Variable* var = NULL;
-	if (type == VTypes::IntegerData) var = new IntegerVariable(atoi(value), TRUE);
-	else if (type == VTypes::DoubleData) var = new DoubleVariable(atof(value), TRUE);
+	if (type == VTypes::IntegerData) var = new IntegerVariable(value.toInt(), TRUE);
+	else if (type == VTypes::DoubleData) var = new DoubleVariable(value.toDouble(), TRUE);
 	else if (type == VTypes::StringData) var = new StringVariable(value, TRUE);
 	else printf("Internal Error: Don't know how to create a passed value of type '%s'.\n", VTypes::dataType(type));
 	var->setName(name);
@@ -883,7 +919,7 @@ bool Aten::addPassedValue(VTypes::DataType type, const char* name, const char* v
 }
 
 // Find passed value
-Variable* Aten::findPassedValue(const char* name) const
+Variable* Aten::findPassedValue(QString name) const
 {
 	return passedValues_.find(name);
 }

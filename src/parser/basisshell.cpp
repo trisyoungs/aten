@@ -65,26 +65,26 @@ FunctionAccessor BasisShellVariable::functionData[BasisShellVariable::nFunctions
 };
 
 // Search variable access list for provided accessor (call private static function)
-StepNode* BasisShellVariable::findAccessor(const char* s, TreeNode* arrayIndex, TreeNode* argList)
+StepNode* BasisShellVariable::findAccessor(QString name, TreeNode* arrayIndex, TreeNode* argList)
 {
-	return BasisShellVariable::accessorSearch(s, arrayIndex, argList);
+	return BasisShellVariable::accessorSearch(name, arrayIndex, argList);
 }
 
 // Private static function to search accessors
-StepNode* BasisShellVariable::accessorSearch(const char* s, TreeNode* arrayIndex, TreeNode* argList)
+StepNode* BasisShellVariable::accessorSearch(QString name, TreeNode* arrayIndex, TreeNode* argList)
 {
 	Messenger::enter("BasisShellVariable::accessorSearch");
 	StepNode* result = NULL;
 	int i = 0;
-	i = Variable::searchAccessor(s, nAccessors, accessorData);
+	i = Variable::searchAccessor(name, nAccessors, accessorData);
 	if (i == -1)
 	{
 		// No accessor found - is it a function definition?
 		// for (i = 0; i < nFunctions; i++) if (strcmp(functionData[i].name,s) == 0) break;
-		i = Variable::searchAccessor(s, nFunctions, functionData);
+		i = Variable::searchAccessor(name, nFunctions, functionData);
 		if (i == -1)
 		{
-			Messenger::print("Error: Type 'BasisShell&' has no member or function named '%s'.", s);
+			Messenger::print("Error: Type 'BasisShell&' has no member or function named '%s'.", qPrintable(name));
 			printAccessors();
 			Messenger::exit("BasisShellVariable::accessorSearch");
 			return NULL;
@@ -92,7 +92,7 @@ StepNode* BasisShellVariable::accessorSearch(const char* s, TreeNode* arrayIndex
 		Messenger::print(Messenger::Parse, "FunctionAccessor match = %i (%s)", i, functionData[i].name);
 		if (arrayIndex != NULL)
 		{
-			Messenger::print("Error: Array index given to 'BasisShell&' function '%s'.", s);
+			Messenger::print("Error: Array index given to 'BasisShell&' function '%s'.", qPrintable(name));
 			Messenger::exit("BasisShellVariable::accessorSearch");
 			return NULL;
 		}
@@ -118,7 +118,7 @@ StepNode* BasisShellVariable::accessorSearch(const char* s, TreeNode* arrayIndex
 		// Were we given an argument list when we didn't want one?
 		if (argList != NULL)
 		{
-			Messenger::print("Error: Argument list given to 'BasisShell&' array member '%s'.", s);
+			Messenger::print("Error: Argument list given to 'BasisShell&' array member '%s'.", qPrintable(name));
 			Messenger::exit("BasisShellVariable::accessorSearch");
 			return NULL;
 		}
@@ -343,8 +343,8 @@ BasisShellArrayVariable::BasisShellArrayVariable(TreeNode* sizeexpr, bool consta
 }
 
 // Search variable access list for provided accessor
-StepNode* BasisShellArrayVariable::findAccessor(const char* s, TreeNode* arrayIndex, TreeNode* argList)
+StepNode* BasisShellArrayVariable::findAccessor(QString name, TreeNode* arrayIndex, TreeNode* argList)
 {
-	return BasisShellVariable::accessorSearch(s, arrayIndex, argList);
+	return BasisShellVariable::accessorSearch(name, arrayIndex, argList);
 }
 

@@ -20,12 +20,7 @@
 */
 
 #include "gui/viewer.uih"
-// #include "render/primitiveset.h"
-// #include "base/forcefieldatom.h"
 #include "model/model.h"
-// #include "base/pattern.h"
-// #include "base/sysfunc.h"
-// #include "main/aten.h"
 
 ATEN_USING_NAMESPACE
 

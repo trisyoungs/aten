@@ -81,6 +81,7 @@ void Geometry::setRange(double d, double w, int n)
 bool Geometry::initialise()
 {
 	Messenger::enter("Geometry::initialise");
+
 	// Check site definitions....
 	for (nSites_ = 0; nSites_ < 4; nSites_++) if (sites_[nSites_] == NULL) break;
 	if (nSites_ == 0)
@@ -89,10 +90,11 @@ bool Geometry::initialise()
 		Messenger::exit("Geometry::initialise");
 		return FALSE;
 	}
+
 	// Create the data arrays
 	data_ = new double[nBins_];
 	for (int n=0; n<nBins_; n++) data_[n] = 0.0;
-	Messenger::print("There are %i bins in geometry '%s', beginning at r = %f.", nBins_, name_.get(), lower_);
+	Messenger::print("There are %i bins in geometry '%s', beginning at r = %f.", nBins_, qPrintable(name_), lower_);
 	nAdded_ = 0;
 	Messenger::exit("Geometry::initialise");
 	return TRUE;

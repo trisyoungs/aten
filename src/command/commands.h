@@ -586,7 +586,7 @@ class Commands
 		nCommands
 	};
 	// Return enumerated command id from string
-	static Commands::Function command(const char* s);
+	static Commands::Function command(QString name);
 	// Return command name
 	static const char* command(Commands::Function cf);
 

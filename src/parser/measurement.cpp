@@ -64,26 +64,26 @@ FunctionAccessor MeasurementVariable::functionData[MeasurementVariable::nFunctio
 };
 
 // Search variable access list for provided accessor (call private static function)
-StepNode* MeasurementVariable::findAccessor(const char* s, TreeNode* arrayIndex, TreeNode* argList)
+StepNode* MeasurementVariable::findAccessor(QString name, TreeNode* arrayIndex, TreeNode* argList)
 {
-	return MeasurementVariable::accessorSearch(s, arrayIndex, argList);
+	return MeasurementVariable::accessorSearch(name, arrayIndex, argList);
 }
 
 // Private static function to search accessors
-StepNode* MeasurementVariable::accessorSearch(const char* s, TreeNode* arrayIndex, TreeNode* argList)
+StepNode* MeasurementVariable::accessorSearch(QString name, TreeNode* arrayIndex, TreeNode* argList)
 {
 	Messenger::enter("MeasurementVariable::accessorSearch");
 	StepNode* result = NULL;
 	int i = 0;
-	i = Variable::searchAccessor(s, nAccessors, accessorData);
+	i = Variable::searchAccessor(name, nAccessors, accessorData);
 	if (i == -1)
 	{
 		// No accessor found - is it a function definition?
 		// for (i = 0; i < nFunctions; i++) if (strcmp(functionData[i].name,s) == 0) break;
-		i = Variable::searchAccessor(s, nFunctions, functionData);
+		i = Variable::searchAccessor(name, nFunctions, functionData);
 		if (i == -1)
 		{
-			Messenger::print("Error: Type 'Measurement&' has no member or function named '%s'.", s);
+			Messenger::print("Error: Type 'Measurement&' has no member or function named '%s'.", qPrintable(name));
 			printAccessors();
 			Messenger::exit("MeasurementVariable::accessorSearch");
 			return NULL;
@@ -91,7 +91,7 @@ StepNode* MeasurementVariable::accessorSearch(const char* s, TreeNode* arrayInde
 		Messenger::print(Messenger::Parse, "FunctionAccessor match = %i (%s)", i, functionData[i].name);
 		if (arrayIndex != NULL)
 		{
-			Messenger::print("Error: Array index given to 'Measurement&' function '%s'.", s);
+			Messenger::print("Error: Array index given to 'Measurement&' function named '%s'.", qPrintable(name));
 			Messenger::exit("MeasurementVariable::accessorSearch");
 			return NULL;
 		}
@@ -117,7 +117,7 @@ StepNode* MeasurementVariable::accessorSearch(const char* s, TreeNode* arrayInde
 		// Were we given an argument list when we didn't want one?
 		if (argList != NULL)
 		{
-			Messenger::print("Error: Argument list given to 'Measurement&' array member '%s'.", s);
+			Messenger::print("Error: Argument list given to 'Measurement&' array member '%s'.", qPrintable(name));
 			Messenger::exit("MeasurementVariable::accessorSearch");
 			return NULL;
 		}
@@ -337,7 +337,7 @@ MeasurementArrayVariable::MeasurementArrayVariable(TreeNode* sizeexpr, bool cons
 }
 
 // Search variable access list for provided accessor
-StepNode* MeasurementArrayVariable::findAccessor(const char* s, TreeNode* arrayIndex, TreeNode* argList)
+StepNode* MeasurementArrayVariable::findAccessor(QString name, TreeNode* arrayIndex, TreeNode* argList)
 {
-	return MeasurementVariable::accessorSearch(s, arrayIndex, argList);
+	return MeasurementVariable::accessorSearch(name, arrayIndex, argList);
 }

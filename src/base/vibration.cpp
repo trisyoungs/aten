@@ -62,15 +62,15 @@ void Vibration::initialise(Model* parent, int size)
 }
 
 // Set associated name
-void Vibration::setName(const char* name)
+void Vibration::setName(QString name)
 {
 	name_ = name;
 }
 
 // Return associated name of the vibration
-const char* Vibration::name() const
+QString Vibration::name() const
 {
-	return name_.get();
+	return name_;
 }
 
 // Set frequency of the vibration

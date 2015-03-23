@@ -39,24 +39,24 @@ bool Forcefield::save()
 	// Open file for writing
 	if (!parser.openOutput(filename_, TRUE))
 	{
-		Messenger::print("Couldn't open file '%s' for writing..", filename_.get());
+		Messenger::print("Couldn't open file '%s' for writing..", qPrintable(filename_));
 		Messenger::exit("Forcefield::save");
 		return FALSE;
 	}
 
 	// Write forcefield name and energy units
-	parser.writeLineF("name \"%s\"\n\n", name_.get());
+	parser.writeLineF("name \"%s\"\n\n", qPrintable(name_));
 	parser.writeLineF("units %s\n\n", Prefs::energyUnit(energyUnit_));
 
 	// Global type definitions
 	if (typeDefines_.nItems() != 0)
 	{
 		parser.writeLine("defines\n");
-		Dnchar typedefine;
-		for (Neta *neta = typeDefines_.first(); neta != NULL; neta = neta->next)
+		QString typeDefine;
+		for (Neta* neta = typeDefines_.first(); neta != NULL; neta = neta->next)
 		{
-			neta->netaPrint(typedefine);
-			parser.writeLineF("%s\t\"%s\"\n", neta->name(), typedefine.get());
+			neta->netaPrint(typeDefine);
+			parser.writeLineF("%s\t\"%s\"\n", qPrintable(neta->name()), qPrintable(typeDefine));
 		}
 		parser.writeLine("end\n\n");
 	}
@@ -72,8 +72,8 @@ bool Forcefield::save()
 		{
 			// Skip UATypes in this pass...
 			if (ffa->isUnitedAtom()) continue;
-			if (isEmpty(ffa->description())) parser.writeLineF("%i\t%s\t%s\t\"%s\"\n", ffa->typeId(), ffa->name(), Elements().symbol(ffa->element()), ffa->netaString());
-			else parser.writeLineF("%i\t%s\t%s\t\"%s\"\t\"%s\"\n", ffa->typeId(), ffa->name(), Elements().symbol(ffa->element()), ffa->netaString(), ffa->description());
+			if (ffa->description().isEmpty()) parser.writeLineF("%i\t%s\t%s\t\"%s\"\n", ffa->typeId(), qPrintable(ffa->name()), Elements().symbol(ffa->element()), qPrintable(ffa->netaString()));
+			else parser.writeLineF("%i\t%s\t%s\t\"%s\"\t\"%s\"\n", ffa->typeId(), qPrintable(ffa->name()), Elements().symbol(ffa->element()), qPrintable(ffa->netaString()), qPrintable(ffa->description()));
 		}
 		parser.writeLine("end\n\n");
 	}
@@ -85,8 +85,8 @@ bool Forcefield::save()
 			// Skip normal types in this pass...
 			if (!ffa->isUnitedAtom()) continue;
 				
-			if (isEmpty(ffa->description())) parser.writeLineF("%i\t%s\t%s\t%f\t\"%s\"\n", ffa->typeId(), ffa->name(), Elements().symbol(ffa->element()), ffa->elementMass(), ffa->netaString());
-			else parser.writeLineF("%i\t%s\t%s\t\"%s\"\t\"%s\"\n", ffa->typeId(), ffa->name(), Elements().symbol(ffa->element()), ffa->netaString(), ffa->description());
+			if (ffa->description().isEmpty()) parser.writeLineF("%i\t%s\t%s\t%f\t\"%s\"\n", ffa->typeId(), qPrintable(ffa->name()), Elements().symbol(ffa->element()), ffa->elementMass(), qPrintable(ffa->netaString()));
+			else parser.writeLineF("%i\t%s\t%s\t\"%s\"\t\"%s\"\n", ffa->typeId(), qPrintable(ffa->name()), Elements().symbol(ffa->element()), qPrintable(ffa->netaString()), qPrintable(ffa->description()));
 		}
 		parser.writeLine("end\n\n");
 	}
@@ -94,32 +94,23 @@ bool Forcefield::save()
 	// Atomtype Equivalents
 	// Loop over defined atomtypes, checking equivalent name with atomtype name. If different, search the KVMap for the equivalent name. If found, add the atomtype name to the list, otherwise start a new entry and add it to that
 	KVMap equivalentMap;
-	KVPair *kvp;
-	Dnchar tname(100);
+	KVPair* kvp;
 	for (ForcefieldAtom* ffa = types_.second(); ffa != NULL; ffa = ffa->next)
 	{
 		// Are equivalent and type names the same? If so, just continue.
-		if (strcmp(ffa->equivalent(),ffa->name()) == 0) continue;
+		if (ffa->equivalent() == ffa->name()) continue;
 		
 		// Equivalent and type names not the same, so search equivalentMap for the equivalent name
 		kvp = equivalentMap.search(ffa->equivalent());
-		tname.sprintf(" %s ",ffa->name());
-		if (kvp == NULL) equivalentMap.add(ffa->equivalent(), tname.get());
-		else
-		{
-			// Does the atomtype name already exist in the list? There probably shouldn't, but check anyway.
-			if (strstr(kvp->value(),tname.get()) == 0)
-			{
-				tname.sprintf("%s %s ", kvp->value(), tname.get());
-				kvp->setValue(tname.get());
-			}
-		}
+		if (kvp == NULL) equivalentMap.add(ffa->equivalent(), ffa->name());
+		else kvp->setValue(kvp->value() + " " + ffa->name());
 	}
+
 	// Now, loop over stored lists and write out to file
 	if (equivalentMap.nPairs() != 0)
 	{
 		parser.writeLine("equivalents\n");
-		for (kvp = equivalentMap.pairs(); kvp != NULL; kvp = kvp->next) parser.writeLineF("%s\t%s\n", kvp->key(), kvp->value());
+		for (kvp = equivalentMap.pairs(); kvp != NULL; kvp = kvp->next) parser.writeLineF("%s\t%s\n", qPrintable(kvp->key()), qPrintable(kvp->value()));
 		parser.writeLine("end\n\n");
 	}
 
@@ -128,17 +119,17 @@ bool Forcefield::save()
 	{
 		// Write header, including variable type/name definitions
 		parser.writeLine("data \"");
-		for (NameMap<VTypes::DataType> *nm = typeData_.first(); nm != NULL; nm = nm->next)
+		for (NameMap<VTypes::DataType>* nm = typeData_.first(); nm != NULL; nm = nm->next)
 		{
 			switch (nm->data())
 			{
 				case (VTypes::IntegerData):
 				case (VTypes::DoubleData):
 				case (VTypes::StringData):
-					parser.writeLineF("%s %s", VTypes::dataType(nm->data()), nm->name());
+					parser.writeLineF("%s %s", VTypes::dataType(nm->data()), qPrintable(nm->name()));
 					break;
 				default:
-					Messenger::print("Error: Unsuitable datatype '%s' for data item '%s'.", VTypes::dataType(nm->data()), nm->name());
+					Messenger::print("Error: Unsuitable datatype '%s' for data item '%s'.", VTypes::dataType(nm->data()), qPrintable(nm->name()));
 					result = FALSE;
 					continue;
 			}
@@ -150,14 +141,14 @@ bool Forcefield::save()
 		ReturnValue rv;
 		for (ForcefieldAtom* ffa = types_.second(); ffa != NULL; ffa = ffa->next)
 		{
-			parser.writeLineF("%i\t%s\t", ffa->typeId(), ffa->name());
-			for (NameMap<VTypes::DataType> *nm = typeData_.first(); nm != NULL; nm = nm->next)
+			parser.writeLineF("%i\t%s\t", ffa->typeId(), qPrintable(ffa->name()));
+			for (NameMap<VTypes::DataType>* nm = typeData_.first(); nm != NULL; nm = nm->next)
 			{
 				// Find data...
 				v = ffa->data(nm->name());
 				if (v == NULL)
 				{
-					Messenger::print("Warning: Data '%s' has not been defined in type '%s' (id %i).", nm->name(), ffa->name(), ffa->typeId());
+					Messenger::print("Warning: Data '%s' has not been defined in type '%s' (id %i).", qPrintable(nm->name()), qPrintable(ffa->name()), ffa->typeId());
 					switch (nm->data())
 					{
 						case (VTypes::IntegerData):
@@ -183,10 +174,10 @@ bool Forcefield::save()
 						parser.writeLineF("%e", rv.asDouble());
 						break;
 					case (VTypes::StringData):
-						parser.writeLineF("\"%s\"", rv.asString());
+						parser.writeLineF("\"%s\"", qPrintable(rv.asString()));
 						break;
 					default:
-						Messenger::print("Error: Unsuitable datatype '%s' for data item '%s'.", VTypes::dataType(nm->data()), nm->name());
+						Messenger::print("Error: Unsuitable datatype '%s' for data item '%s'.", VTypes::dataType(nm->data()), qPrintable(nm->name()));
 						result = FALSE;
 						continue;
 				}
@@ -198,10 +189,10 @@ bool Forcefield::save()
 	}
 
 	// Generator Functions
-	if (generatorFunctionText_.nItems() > 0)
+	if (generatorFunctionText_.count() > 0)
 	{
 		parser.writeLine("function\n");
-		for (Dnchar* d = generatorFunctionText_.first(); d != NULL; d = d->next) parser.writeLineF("%s\n", d->get());
+		for (n=0; n<generatorFunctionText_.count(); ++n) parser.writeLineF("%s\n", qPrintable(generatorFunctionText_.at(n)));
 		parser.writeLine("end\n\n");
 	}
 	
@@ -220,7 +211,7 @@ bool Forcefield::save()
 			for (ForcefieldAtom* ffa = types_.second(); ffa != NULL; ffa = ffa->next)
 			{
 				if (ffa->vdwForm() != n) continue;
-				parser.writeLineF("%i\t%s\t%f", ffa->typeId(), ffa->name(), ffa->charge());
+				parser.writeLineF("%i\t%s\t%f", ffa->typeId(), qPrintable(ffa->name()), ffa->charge());
 				for (m=0; m<VdwFunctions::VdwFunctions[n].nParameters; ++m) parser.writeLineF("\t%f", ffa->parameter(m));
 				parser.writeLine("\n");
 			}
@@ -243,7 +234,7 @@ bool Forcefield::save()
 			for (ForcefieldBound* ffb = bonds_.first(); ffb != NULL; ffb = ffb->next)
 			{
 				if (ffb->bondForm() != n) continue;
-				parser.writeLineF("%s\t%s", ffb->typeName(0), ffb->typeName(1));
+				parser.writeLineF("%s\t%s", qPrintable(ffb->typeName(0)), qPrintable(ffb->typeName(1)));
 				for (m=0; m<BondFunctions::BondFunctions[n].nParameters; ++m) parser.writeLineF("\t%f", ffb->parameter(m));
 				parser.writeLineF("\n");
 			}
@@ -266,7 +257,7 @@ bool Forcefield::save()
 			for (ForcefieldBound* ffb = angles_.first(); ffb != NULL; ffb = ffb->next)
 			{
 				if (ffb->angleForm() != n) continue;
-				parser.writeLineF("%s\t%s\t%s", ffb->typeName(0), ffb->typeName(1), ffb->typeName(2));
+				parser.writeLineF("%s\t%s\t%s", qPrintable(ffb->typeName(0)), qPrintable(ffb->typeName(1)), qPrintable(ffb->typeName(2)));
 				for (m=0; m<AngleFunctions::AngleFunctions[n].nParameters; ++m) parser.writeLineF("\t%f", ffb->parameter(m));
 				parser.writeLineF("\n");
 			}
@@ -290,7 +281,7 @@ bool Forcefield::save()
 			for (ForcefieldBound* ffb = torsions_.first(); ffb != NULL; ffb = ffb->next)
 			{
 				if (ffb->torsionForm() != n) continue;
-				parser.writeLineF("%s\t%s\t%s\t%s", ffb->typeName(0), ffb->typeName(1), ffb->typeName(2), ffb->typeName(3));
+				parser.writeLineF("%s\t%s\t%s\t%s", qPrintable(ffb->typeName(0)), qPrintable(ffb->typeName(1)), qPrintable(ffb->typeName(2)), qPrintable(ffb->typeName(3)));
 				for (m=0; m<TorsionFunctions::TorsionFunctions[n].nParameters; ++m) parser.writeLineF("\t%f", ffb->parameter(m));
 				parser.writeLineF("\n");
 			}
@@ -313,7 +304,7 @@ bool Forcefield::save()
 			for (ForcefieldBound* ffb = impropers_.first(); ffb != NULL; ffb = ffb->next)
 			{
 				if (ffb->torsionForm() != n) continue;
-				parser.writeLineF("%s\t%s\t%s\t%s", ffb->typeName(0), ffb->typeName(1), ffb->typeName(2), ffb->typeName(3));
+				parser.writeLineF("%s\t%s\t%s\t%s", qPrintable(ffb->typeName(0)), qPrintable(ffb->typeName(1)), qPrintable(ffb->typeName(2)), qPrintable(ffb->typeName(3)));
 				for (m=0; m<TorsionFunctions::TorsionFunctions[n].nParameters; ++m) parser.writeLineF("\t%f", ffb->parameter(m));
 				parser.writeLineF("\n");
 			}
@@ -336,7 +327,7 @@ bool Forcefield::save()
 			for (ForcefieldBound* ffb = ureyBradleys_.first(); ffb != NULL; ffb = ffb->next)
 			{
 				if (ffb->bondForm() != n) continue;
-				parser.writeLineF("%s\t%s", ffb->typeName(0), ffb->typeName(1));
+				parser.writeLineF("%s\t%s", qPrintable(ffb->typeName(0)), qPrintable(ffb->typeName(1)));
 				for (int n=0; n<BondFunctions::BondFunctions[n].nParameters; ++n) parser.writeLineF("\t%f", ffb->parameter(n));
 				parser.writeLineF("\n");
 			}

@@ -21,13 +21,8 @@
 
 #include "command/commands.h"
 #include "parser/commandnode.h"
-// #include "base/mathfunc.h"
-// #include <stdio.h>
-// #include <string.h>
 
 ATEN_USING_NAMESPACE
-
-Dnchar s;
 
 // Add two quantities together
 bool Commands::function_OperatorAdd(CommandNode* c, Bundle& obj, ReturnValue& rv)
@@ -40,15 +35,30 @@ bool Commands::function_OperatorAdd(CommandNode* c, Bundle& obj, ReturnValue& rv
 	if (id < 0) b = FALSE;
 	else switch (id)
 	{
-		case (VTypes::IntAIntA): for (int i=0; i<lhs.arraySize(); ++i) lhs.setElement(i, lhs.asInteger(i,b) + rhs.asInteger(i,b)); rv = lhs; break;
+		case (VTypes::IntAIntA):
+			for (int i=0; i<lhs.arraySize(); ++i) lhs.setElement(i, lhs.asInteger(i,b) + rhs.asInteger(i,b));
+			rv = lhs;
+			break;
 		case (VTypes::IntADblA):
 		case (VTypes::DblAIntA):
-		case (VTypes::DblADblA): for (int i=0; i<lhs.arraySize(); ++i) lhs.setElement(i, lhs.asDouble(i,b) + rhs.asDouble(i,b)); rv = lhs; break;
-		case (VTypes::StrAStrA): for (int i=0; i<lhs.arraySize(); ++i) { s = lhs.asString(i,b); s.strcat(rhs.asString(i,b)); lhs.setElement(i,s); } rv = lhs; break;
+		case (VTypes::DblADblA):
+			for (int i=0; i<lhs.arraySize(); ++i) lhs.setElement(i, lhs.asDouble(i,b) + rhs.asDouble(i,b));
+			rv = lhs;
+			break;
+		case (VTypes::StrAStrA):
+			for (int i=0; i<lhs.arraySize(); ++i) lhs.setElement(i, lhs.asString() + rhs.asString());
+			rv = lhs;
+			break;
 		case (VTypes::IntAInt):
-		case (VTypes::IntADbl): for (int i=0; i<lhs.arraySize(); ++i) lhs.setElement(i, lhs.asInteger(i,b) + rhs.asInteger(b)); rv = lhs; break;
+		case (VTypes::IntADbl):
+			for (int i=0; i<lhs.arraySize(); ++i) lhs.setElement(i, lhs.asInteger(i,b) + rhs.asInteger(b));
+			rv = lhs;
+			break;
 		case (VTypes::DblAInt):
-		case (VTypes::DblADbl): for (int i=0; i<lhs.arraySize(); ++i) lhs.setElement(i, lhs.asDouble(i,b) + rhs.asDouble(b)); rv = lhs; break;
+		case (VTypes::DblADbl):
+			for (int i=0; i<lhs.arraySize(); ++i) lhs.setElement(i, lhs.asDouble(i,b) + rhs.asDouble(b));
+			rv = lhs;
+			break;
 // 		case (VTypes::IntIntA):
 // 		case (VTypes::IntDblA): for (int i=0; i<rhs.arraySize(); ++i) rhs.setElement(i, rhs.asInteger(i,b) + lhs.asInteger(b)); rv = rhs; break;
 // 		case (VTypes::DblIntA):
@@ -63,14 +73,21 @@ bool Commands::function_OperatorAdd(CommandNode* c, Bundle& obj, ReturnValue& rv
 		case (VTypes::IntVec):
 		case (VTypes::DblVec): rv.set(rhs.asVector(b) + lhs.asDouble(b)); break;
 		case (VTypes::IntAVec):
-		case (VTypes::DblAVec): if (lhs.arraySize() != 3) b = FALSE;
-			else { Vec3<double> v(lhs.asDouble(0,b), lhs.asDouble(1,b), lhs.asDouble(2,b)); rv.set(v + rhs.asVector()); } break;
+		case (VTypes::DblAVec):
+			if (lhs.arraySize() != 3) b = FALSE;
+			else rv.set(Vec3<double>(lhs.asDouble(0,b), lhs.asDouble(1,b), lhs.asDouble(2,b)) + rhs.asVector());
+			break;
 		case (VTypes::VecIntA):
-		case (VTypes::VecDblA): if (rhs.arraySize() != 3) b = FALSE;
-			else { Vec3<double> v(rhs.asDouble(0,b), rhs.asDouble(1,b), rhs.asDouble(2,b)); rv.set(v + lhs.asVector()); } break;
-		case (VTypes::StrStr): s = lhs.asString(b); s.strcat(rhs.asString(b)); rv.set(s); break;
+		case (VTypes::VecDblA):
+			if (rhs.arraySize() != 3) b = FALSE;
+			else rv.set(Vec3<double>(rhs.asDouble(0,b), rhs.asDouble(1,b), rhs.asDouble(2,b)) + lhs.asVector());
+			break;
+		case (VTypes::StrStr):
+			rv.set(lhs.asString() + rhs.asString(b));
+			break;
 		default:
-			Messenger::print("The operator '+' cannot act between %s and %s.", VTypes::aDataType(rv.type(),rv.arraySize()), VTypes::aDataType(rhs.type(),rhs.arraySize()));
+			Messenger::print("The operator '+' cannot act between %s and %s.", VTypes::aDataType(rv.type(), rv.arraySize()), VTypes::aDataType(rhs.type(),rhs.arraySize()));
+			break;
 	}
 	return b;
 }
@@ -182,20 +199,56 @@ bool Commands::function_OperatorEqualTo(CommandNode* c, Bundle& obj, ReturnValue
 	if (id < 0) b = FALSE;
 	else switch (id)
 	{
-		case (VTypes::IntAIntA): for (int i=0; i<lhs.arraySize(); ++i) if (lhs.asInteger(i,b) != rhs.asInteger(i,b)) { result = 0; break; } break;
+		case (VTypes::IntAIntA):
+			for (int i=0; i<lhs.arraySize(); ++i) if (lhs.asInteger(i,b) != rhs.asInteger(i,b))
+			{
+				result = 0;
+				break;
+			}
+			break;
 		case (VTypes::IntADblA):
 		case (VTypes::DblAIntA):
-		case (VTypes::DblADblA): for (int i=0; i<lhs.arraySize(); ++i) if (lhs.asDouble(i,b) != rhs.asDouble(i,b)) { result = 0; break; } break;
-		case (VTypes::StrAStrA): for (int i=0; i<lhs.arraySize(); ++i) if (strcmp(lhs.asString(i,b), rhs.asString(i,b)) != 0) { result = 0; break; } break;
-		case (VTypes::PtrAPtrA): for (int i=0; i<lhs.arraySize(); ++i) if (lhs.asPointer(i,lhs.type(),b) != rhs.asPointer(i,rhs.type(),b)) { result = 0; break; } break;
-		case (VTypes::IntInt): if (lhs.asInteger(b) != rhs.asInteger(b)) result = 0; break;
-		case (VTypes::IntPtr): if ( ((long int) lhs.asInteger(b)) != ((long int) rhs.asPointer(rhs.type(),b))) result = 0; break;
+		case (VTypes::DblADblA):
+			for (int i=0; i<lhs.arraySize(); ++i) if (lhs.asDouble(i,b) != rhs.asDouble(i,b))
+			{
+				result = 0;
+				break;
+			}
+			break;
+		case (VTypes::StrAStrA):
+			for (int i=0; i<lhs.arraySize(); ++i) if (lhs.asString(i,b) != rhs.asString(i,b))
+			{
+				result = 0;
+				break;
+			}
+			break;
+		case (VTypes::PtrAPtrA):
+			for (int i=0; i<lhs.arraySize(); ++i) if (lhs.asPointer(i,lhs.type(),b) != rhs.asPointer(i,rhs.type(),b))
+			{
+				result = 0;
+				break;
+			}
+			break;
+		case (VTypes::IntInt):
+			if (lhs.asInteger(b) != rhs.asInteger(b)) result = 0;
+			break;
+		case (VTypes::IntPtr):
+			if ( ((long int) lhs.asInteger(b)) != ((long int) rhs.asPointer(rhs.type(),b))) result = 0;
+			break;
 		case (VTypes::IntDbl):
 		case (VTypes::DblInt):
-		case (VTypes::DblDbl): if (lhs.asDouble(b) != rhs.asDouble(b)) result = 0; break;
-		case (VTypes::StrStr): if (strcmp(lhs.asString(b), rhs.asString(b)) != 0) result = 0; break;
-		case (VTypes::PtrPtr): if (lhs.asPointer(lhs.type(),b) != rhs.asPointer(rhs.type(),b)) result = 0; break;
-		case (VTypes::PtrInt): if ( ((long int) lhs.asPointer(lhs.type(),b)) != ((long int) rhs.asInteger(b))) result = 0; break;
+		case (VTypes::DblDbl):
+			if (lhs.asDouble(b) != rhs.asDouble(b)) result = 0;
+			break;
+		case (VTypes::StrStr):
+			if (lhs.asString(b) != rhs.asString(b)) result = 0;
+			break;
+		case (VTypes::PtrPtr):
+			if (lhs.asPointer(lhs.type(),b) != rhs.asPointer(rhs.type(),b)) result = 0;
+			break;
+		case (VTypes::PtrInt):
+			if ( ((long int) lhs.asPointer(lhs.type(),b)) != ((long int) rhs.asInteger(b))) result = 0;
+			break;
 		default:
 			Messenger::print("The operator '==' cannot act between %s and %s.", VTypes::aDataType(rv.type(),rv.arraySize()), VTypes::aDataType(rhs.type(),rhs.arraySize()));
 	}
@@ -216,20 +269,56 @@ bool Commands::function_OperatorGreaterThan(CommandNode* c, Bundle& obj, ReturnV
 	if (id < 0) b = FALSE;
 	else switch (id)
 	{
-		case (VTypes::IntAIntA): for (int i=0; i<lhs.arraySize(); ++i) if (lhs.asInteger(i,b) <= rhs.asInteger(i,b)) { result = 0; break; } break;
+		case (VTypes::IntAIntA):
+			for (int i=0; i<lhs.arraySize(); ++i) if (lhs.asInteger(i,b) <= rhs.asInteger(i,b))
+			{
+				result = 0;
+				break;
+			}
+			break;
 		case (VTypes::IntADblA):
 		case (VTypes::DblAIntA):
-		case (VTypes::DblADblA): for (int i=0; i<lhs.arraySize(); ++i) if (lhs.asDouble(i,b) <= rhs.asDouble(i,b)) { result = 0; break; } break;
-		case (VTypes::StrAStrA): for (int i=0; i<lhs.arraySize(); ++i) if (strcmp(lhs.asString(i,b), rhs.asString(i,b)) <= 0) { result = 0; break; } break;
-		case (VTypes::PtrAPtrA): for (int i=0; i<lhs.arraySize(); ++i) if (lhs.asPointer(i,lhs.type(),b) <= rhs.asPointer(i,rhs.type(),b)) { result = 0; break; } break;
-		case (VTypes::IntInt): if (lhs.asInteger(b) <= rhs.asInteger(b)) result = 0; break;
-		case (VTypes::IntPtr): if ( ((long int) lhs.asInteger(b)) <= ((long int) rhs.asPointer(lhs.type(),b))) result = 0; break;
+		case (VTypes::DblADblA):
+			for (int i=0; i<lhs.arraySize(); ++i) if (lhs.asDouble(i,b) <= rhs.asDouble(i,b))
+			{
+				result = 0;
+				break;
+			}
+			break;
+		case (VTypes::StrAStrA):
+			for (int i=0; i<lhs.arraySize(); ++i) if (lhs.asString(i,b) <= rhs.asString(i,b))
+			{
+				result = 0;
+				break;
+			}
+			break;
+		case (VTypes::PtrAPtrA):
+			for (int i=0; i<lhs.arraySize(); ++i) if (lhs.asPointer(i,lhs.type(),b) <= rhs.asPointer(i,rhs.type(),b))
+			{
+				result = 0;
+				break;
+			}
+			break;
+		case (VTypes::IntInt):
+			if (lhs.asInteger(b) <= rhs.asInteger(b)) result = 0;
+			break;
+		case (VTypes::IntPtr):
+			if ( ((long int) lhs.asInteger(b)) <= ((long int) rhs.asPointer(lhs.type(),b))) result = 0;
+			break;
 		case (VTypes::IntDbl):
 		case (VTypes::DblInt):
-		case (VTypes::DblDbl): if (lhs.asDouble(b) <= rhs.asDouble(b)) result = 0; break;
-		case (VTypes::StrStr): if (strcmp(lhs.asString(b), rhs.asString(b)) <= 0) result = 0; break;
-		case (VTypes::PtrPtr): if (lhs.asPointer(lhs.type(),b) <= rhs.asPointer(rhs.type(),b)) result = 0; break;
-		case (VTypes::PtrInt): if ( ((long int) lhs.asPointer(lhs.type(),b)) <= ((long int) rhs.asInteger(b))) result = 0; break;
+		case (VTypes::DblDbl):
+			if (lhs.asDouble(b) <= rhs.asDouble(b)) result = 0;
+			break;
+		case (VTypes::StrStr):
+			if (lhs.asString(b) <= rhs.asString(b)) result = 0;
+			break;
+		case (VTypes::PtrPtr):
+			if (lhs.asPointer(lhs.type(),b) <= rhs.asPointer(rhs.type(),b)) result = 0;
+			break;
+		case (VTypes::PtrInt):
+			if ( ((long int) lhs.asPointer(lhs.type(),b)) <= ((long int) rhs.asInteger(b))) result = 0;
+			break;
 		default:
 			Messenger::print("The operator '>' cannot act between %s and %s.", VTypes::aDataType(rv.type(),rv.arraySize()), VTypes::aDataType(rhs.type(),rhs.arraySize()));
 	}
@@ -250,22 +339,57 @@ bool Commands::function_OperatorGreaterThanEqualTo(CommandNode* c, Bundle& obj, 
 	if (id < 0) b = FALSE;
 	else switch (id)
 	{
-		case (VTypes::IntAIntA): for (int i=0; i<lhs.arraySize(); ++i) if (lhs.asInteger(i,b) < rhs.asInteger(i,b)) { result = 0; break; } break;
+		case (VTypes::IntAIntA):
+			for (int i=0; i<lhs.arraySize(); ++i) if (lhs.asInteger(i,b) < rhs.asInteger(i,b))
+			{
+				result = 0;
+				break;
+			}
+			break;
 		case (VTypes::IntADblA):
 		case (VTypes::DblAIntA):
-		case (VTypes::DblADblA): for (int i=0; i<lhs.arraySize(); ++i) if (lhs.asDouble(i,b) < rhs.asDouble(i,b)) { result = 0; break; } break;
-		case (VTypes::StrAStrA): for (int i=0; i<lhs.arraySize(); ++i) if (strcmp(lhs.asString(i,b), rhs.asString(i,b)) < 0) { result = 0; break; } break;
-		case (VTypes::PtrAPtrA): for (int i=0; i<lhs.arraySize(); ++i) if (lhs.asPointer(i,lhs.type(),b) < rhs.asPointer(i,rhs.type(),b)) { result = 0; break; } break;
-		case (VTypes::IntInt): if (lhs.asInteger(b) < rhs.asInteger(b)) result = 0; break;
-		case (VTypes::IntPtr): if ( ((long int) lhs.asInteger(b)) < ((long int) rhs.asPointer(lhs.type(),b))) result = 0; break;
+		case (VTypes::DblADblA):
+			for (int i=0; i<lhs.arraySize(); ++i) if (lhs.asDouble(i,b) < rhs.asDouble(i,b))
+			{
+				result = 0;
+				break;
+			}
+			break;
+		case (VTypes::StrAStrA):
+			for (int i=0; i<lhs.arraySize(); ++i) if (lhs.asString(i,b) < rhs.asString(i,b))
+			{
+				result = 0;
+				break;
+			}
+			break;
+		case (VTypes::PtrAPtrA): for (int i=0; i<lhs.arraySize(); ++i) if (lhs.asPointer(i,lhs.type(),b) < rhs.asPointer(i,rhs.type(),b))
+			{
+				result = 0;
+				break;
+			}
+			break;
+		case (VTypes::IntInt):
+			if (lhs.asInteger(b) < rhs.asInteger(b)) result = 0;
+			break;
+		case (VTypes::IntPtr):
+			if ( ((long int) lhs.asInteger(b)) < ((long int) rhs.asPointer(lhs.type(),b))) result = 0;
+			break;
 		case (VTypes::IntDbl):
 		case (VTypes::DblInt):
-		case (VTypes::DblDbl): if (lhs.asDouble(b) < rhs.asDouble(b)) result = 0; break;
-		case (VTypes::StrStr): if (strcmp(lhs.asString(b), rhs.asString(b)) < 0) result = 0; break;
-		case (VTypes::PtrPtr): if (lhs.asPointer(lhs.type(),b) < rhs.asPointer(rhs.type(),b)) result = 0; break;
-		case (VTypes::PtrInt): if ( ((long int) lhs.asPointer(lhs.type(),b)) < ((long int) rhs.asInteger(b))) result = 0; break;
+		case (VTypes::DblDbl):
+			if (lhs.asDouble(b) < rhs.asDouble(b)) result = 0;
+			break;
+		case (VTypes::StrStr):
+			if (lhs.asString(b) < rhs.asString(b)) result = 0;
+			break;
+		case (VTypes::PtrPtr):
+			if (lhs.asPointer(lhs.type(),b) < rhs.asPointer(rhs.type(),b)) result = 0;
+			break;
+		case (VTypes::PtrInt):
+			if ( ((long int) lhs.asPointer(lhs.type(),b)) < ((long int) rhs.asInteger(b))) result = 0;
+			break;
 		default:
-			Messenger::print("The operator '>=' cannot act between %s and %s.", VTypes::aDataType(rv.type(),rv.arraySize()), VTypes::aDataType(rhs.type(),rhs.arraySize()));
+			Messenger::print("The operator '>=' cannot act between %s and %s.", VTypes::aDataType(rv.type(), rv.arraySize()), VTypes::aDataType(rhs.type(),rhs.arraySize()));
 	}
 	rv.set(result);
 	return b;
@@ -302,20 +426,56 @@ bool Commands::function_OperatorLessThan(CommandNode* c, Bundle& obj, ReturnValu
 	if (id < 0) b = FALSE;
 	else switch (id)
 	{
-		case (VTypes::IntAIntA): for (int i=0; i<lhs.arraySize(); ++i) if (lhs.asInteger(i,b) >= rhs.asInteger(i,b)) { result = 0; break; } break;
+		case (VTypes::IntAIntA):
+			for (int i=0; i<lhs.arraySize(); ++i) if (lhs.asInteger(i,b) >= rhs.asInteger(i,b))
+			{
+				result = 0;
+				break;
+			}
+			break;
 		case (VTypes::IntADblA):
 		case (VTypes::DblAIntA):
-		case (VTypes::DblADblA): for (int i=0; i<lhs.arraySize(); ++i) if (lhs.asDouble(i,b) >= rhs.asDouble(i,b)) { result = 0; break; } break;
-		case (VTypes::StrAStrA): for (int i=0; i<lhs.arraySize(); ++i) if (strcmp(lhs.asString(i,b), rhs.asString(i,b)) >= 0) { result = 0; break; } break;
-		case (VTypes::PtrAPtrA): for (int i=0; i<lhs.arraySize(); ++i) if (lhs.asPointer(i,lhs.type(),b) >= rhs.asPointer(i,rhs.type(),b)) { result = 0; break; } break;
-		case (VTypes::IntInt): if (lhs.asInteger(b) >= rhs.asInteger(b)) result = 0; break;
-		case (VTypes::IntPtr): if ( ((long int) lhs.asInteger(b)) >= ((long int) rhs.asPointer(lhs.type(),b))) result = 0; break;
+		case (VTypes::DblADblA):
+			for (int i=0; i<lhs.arraySize(); ++i) if (lhs.asDouble(i,b) >= rhs.asDouble(i,b))
+			{
+				result = 0;
+				break;
+			}
+			break;
+		case (VTypes::StrAStrA):
+			for (int i=0; i<lhs.arraySize(); ++i) if (lhs.asString(i,b) >= rhs.asString(i,b))
+			{
+				result = 0;
+				break;
+			}
+			break;
+		case (VTypes::PtrAPtrA):
+			for (int i=0; i<lhs.arraySize(); ++i) if (lhs.asPointer(i,lhs.type(),b) >= rhs.asPointer(i,rhs.type(),b))
+			{
+				result = 0;
+				break;
+			}
+			break;
+		case (VTypes::IntInt):
+			if (lhs.asInteger(b) >= rhs.asInteger(b)) result = 0;
+			break;
+		case (VTypes::IntPtr):
+			if ( ((long int) lhs.asInteger(b)) >= ((long int) rhs.asPointer(lhs.type(),b))) result = 0;
+			break;
 		case (VTypes::IntDbl):
 		case (VTypes::DblInt):
-		case (VTypes::DblDbl): if (lhs.asDouble(b) >= rhs.asDouble(b)) result = 0; break;
-		case (VTypes::StrStr): if (strcmp(lhs.asString(b), rhs.asString(b)) >= 0) result = 0; break;
-		case (VTypes::PtrPtr): if (lhs.asPointer(lhs.type(),b) >= rhs.asPointer(rhs.type(),b)) result = 0; break;
-		case (VTypes::PtrInt): if ( ((long int) lhs.asPointer(lhs.type(),b)) >= ((long int) rhs.asInteger(b))) result = 0; break;
+		case (VTypes::DblDbl):
+			if (lhs.asDouble(b) >= rhs.asDouble(b)) result = 0;
+			break;
+		case (VTypes::StrStr):
+			if (lhs.asString(b) >= rhs.asString(b)) result = 0;
+			break;
+		case (VTypes::PtrPtr):
+			if (lhs.asPointer(lhs.type(),b) >= rhs.asPointer(rhs.type(),b)) result = 0;
+			break;
+		case (VTypes::PtrInt):
+			if ( ((long int) lhs.asPointer(lhs.type(),b)) >= ((long int) rhs.asInteger(b))) result = 0;
+			break;
 		default:
 			Messenger::print("The operator '<' cannot act between %s and %s.", VTypes::aDataType(rv.type(),rv.arraySize()), VTypes::aDataType(rhs.type(),rhs.arraySize()));
 	}
@@ -336,20 +496,56 @@ bool Commands::function_OperatorLessThanEqualTo(CommandNode* c, Bundle& obj, Ret
 	if (id < 0) b = FALSE;
 	else switch (id)
 	{
-		case (VTypes::IntAIntA): for (int i=0; i<lhs.arraySize(); ++i) if (lhs.asInteger(i,b) > rhs.asInteger(i,b)) { result = 0; break; } break;
+		case (VTypes::IntAIntA):
+			for (int i=0; i<lhs.arraySize(); ++i) if (lhs.asInteger(i,b) > rhs.asInteger(i,b))
+			{
+				result = 0;
+				break;
+			}
+			break;
 		case (VTypes::IntADblA):
 		case (VTypes::DblAIntA):
-		case (VTypes::DblADblA): for (int i=0; i<lhs.arraySize(); ++i) if (lhs.asDouble(i,b) > rhs.asDouble(i,b)) { result = 0; break; } break;
-		case (VTypes::StrAStrA): for (int i=0; i<lhs.arraySize(); ++i) if (strcmp(lhs.asString(i,b), rhs.asString(i,b)) > 0) { result = 0; break; } break;
-		case (VTypes::PtrAPtrA): for (int i=0; i<lhs.arraySize(); ++i) if (lhs.asPointer(i,lhs.type(),b) > rhs.asPointer(i,rhs.type(),b)) { result = 0; break; } break;
-		case (VTypes::IntInt): if (lhs.asInteger(b) > rhs.asInteger(b)) result = 0; break;
-		case (VTypes::IntPtr): if ( ((long int) lhs.asInteger(b)) > ((long int) rhs.asPointer(lhs.type(),b))) result = 0; break;
+		case (VTypes::DblADblA):
+			for (int i=0; i<lhs.arraySize(); ++i) if (lhs.asDouble(i,b) > rhs.asDouble(i,b))
+			{
+				result = 0;
+				break;
+			}
+			break;
+		case (VTypes::StrAStrA):
+			for (int i=0; i<lhs.arraySize(); ++i) if (lhs.asString(i,b) > rhs.asString(i,b))
+			{
+				result = 0;
+				break;
+			}
+			break;
+		case (VTypes::PtrAPtrA):
+			for (int i=0; i<lhs.arraySize(); ++i) if (lhs.asPointer(i,lhs.type(),b) > rhs.asPointer(i,rhs.type(),b))
+			{
+				result = 0;
+				break;
+			}
+			break;
+		case (VTypes::IntInt):
+			if (lhs.asInteger(b) > rhs.asInteger(b)) result = 0;
+			break;
+		case (VTypes::IntPtr):
+			if ( ((long int) lhs.asInteger(b)) > ((long int) rhs.asPointer(lhs.type(),b))) result = 0;
+			break;
 		case (VTypes::IntDbl):
 		case (VTypes::DblInt):
-		case (VTypes::DblDbl): if (lhs.asDouble(b) > rhs.asDouble(b)) result = 0; break;
-		case (VTypes::StrStr): if (strcmp(lhs.asString(b), rhs.asString(b)) > 0) result = 0; break;
-		case (VTypes::PtrPtr): if (lhs.asPointer(lhs.type(),b) > rhs.asPointer(rhs.type(),b)) result = 0; break;
-		case (VTypes::PtrInt): if ( ((long int) lhs.asPointer(lhs.type(),b)) > ((long int) rhs.asInteger(b))) result = 0; break;
+		case (VTypes::DblDbl):
+			if (lhs.asDouble(b) > rhs.asDouble(b)) result = 0;
+			break;
+		case (VTypes::StrStr):
+			if (lhs.asString(b) > rhs.asString(b)) result = 0;
+			break;
+		case (VTypes::PtrPtr):
+			if (lhs.asPointer(lhs.type(),b) > rhs.asPointer(rhs.type(),b)) result = 0;
+			break;
+		case (VTypes::PtrInt):
+			if ( ((long int) lhs.asPointer(lhs.type(),b)) > ((long int) rhs.asInteger(b))) result = 0;
+			break;
 		default:
 			Messenger::print("The operator '<=' cannot act between %s and %s.", VTypes::aDataType(rv.type(),rv.arraySize()), VTypes::aDataType(rhs.type(),rhs.arraySize()));
 	}
@@ -478,20 +674,56 @@ bool Commands::function_OperatorNotEqualTo(CommandNode* c, Bundle& obj, ReturnVa
 	if (id < 0) b = FALSE;
 	else switch (id)
 	{
-		case (VTypes::IntAIntA): for (int i=0; i<lhs.arraySize(); ++i) if (lhs.asInteger(i,b) == rhs.asInteger(i,b)) { result = 0; break; } break;
+		case (VTypes::IntAIntA):
+			for (int i=0; i<lhs.arraySize(); ++i) if (lhs.asInteger(i,b) == rhs.asInteger(i,b))
+			{
+				result = 0;
+				break;
+			}
+			break;
 		case (VTypes::IntADblA):
 		case (VTypes::DblAIntA):
-		case (VTypes::DblADblA): for (int i=0; i<lhs.arraySize(); ++i) if (lhs.asDouble(i,b) == rhs.asDouble(i,b)) { result = 0; break; } break;
-		case (VTypes::StrAStrA): for (int i=0; i<lhs.arraySize(); ++i) if (strcmp(lhs.asString(i,b), rhs.asString(i,b)) == 0) { result = 0; break; } break;
-		case (VTypes::PtrAPtrA): for (int i=0; i<lhs.arraySize(); ++i) if (lhs.asPointer(i,lhs.type(),b) == rhs.asPointer(i,rhs.type(),b)) { result = 0; break; } break;
-		case (VTypes::IntInt): if (lhs.asInteger(b) == rhs.asInteger(b)) result = 0; break;
-		case (VTypes::IntPtr): if ( ((long int) lhs.asInteger(b)) == ((long int) rhs.asPointer(lhs.type(),b))) result = 0; break;
+		case (VTypes::DblADblA):
+			for (int i=0; i<lhs.arraySize(); ++i) if (lhs.asDouble(i,b) == rhs.asDouble(i,b))
+			{
+				result = 0;
+				break;
+			}
+			break;
+		case (VTypes::StrAStrA):
+			for (int i=0; i<lhs.arraySize(); ++i) if (lhs.asString(i,b) == rhs.asString(i,b))
+			{
+				result = 0;
+				break;
+			}
+			break;
+		case (VTypes::PtrAPtrA):
+			for (int i=0; i<lhs.arraySize(); ++i) if (lhs.asPointer(i,lhs.type(),b) == rhs.asPointer(i,rhs.type(),b))
+			{
+				result = 0;
+				break;
+			}
+			break;
+		case (VTypes::IntInt):
+			if (lhs.asInteger(b) == rhs.asInteger(b)) result = 0;
+			break;
+		case (VTypes::IntPtr):
+			if ( ((long int) lhs.asInteger(b)) == ((long int) rhs.asPointer(lhs.type(),b))) result = 0;
+			break;
 		case (VTypes::IntDbl):
 		case (VTypes::DblInt):
-		case (VTypes::DblDbl): if (lhs.asDouble(b) == rhs.asDouble(b)) result = 0; break;
-		case (VTypes::StrStr): if (strcmp(lhs.asString(b), rhs.asString(b)) == 0) result = 0; break;
-		case (VTypes::PtrPtr): if (lhs.asPointer(lhs.type(),b) == rhs.asPointer(rhs.type(),b)) result = 0; break;
-		case (VTypes::PtrInt): if ( ((long int) lhs.asPointer(lhs.type(),b)) == ((long int) rhs.asInteger(b))) result = 0; break;
+		case (VTypes::DblDbl):
+			if (lhs.asDouble(b) == rhs.asDouble(b)) result = 0;
+			break;
+		case (VTypes::StrStr):
+			if (lhs.asString(b) == rhs.asString(b)) result = 0;
+			break;
+		case (VTypes::PtrPtr):
+			if (lhs.asPointer(lhs.type(),b) == rhs.asPointer(rhs.type(),b)) result = 0;
+			break;
+		case (VTypes::PtrInt):
+			if ( ((long int) lhs.asPointer(lhs.type(),b)) == ((long int) rhs.asInteger(b))) result = 0;
+			break;
 		default:
 			Messenger::print("The operator '!=' cannot act between %s and %s.", VTypes::aDataType(rv.type(),rv.arraySize()), VTypes::aDataType(rhs.type(),rhs.arraySize()));
 	}

@@ -29,7 +29,6 @@
 #include "templates/namemap.h"
 #include "templates/list.h"
 #include "templates/reflist.h"
-#include "base/dnchar.h"
 #include "base/elements.h"
 #include "base/lineparser.h"
 #include "base/namespace.h"
@@ -46,10 +45,10 @@ class FilterData
 	// Filter Types
 	enum FilterType { ModelImport, TrajectoryImport, ExpressionImport, GridImport, ModelExport, TrajectoryExport, ExpressionExport, GridExport, nFilterTypes };
 	static const char* filterType(FilterType ft);
-	static FilterType filterType(const char* s, bool reportError = FALSE);
+	static FilterType filterType(QString s, bool reportError = false);
 	// Filter commands
 	enum FilterOption { ExactOption, ExtensionOption, GlobOption, IdOption, NameOption, NicknameOption, SearchOption, TypeOption, WithinOption, ZMapOption, nFilterOptions };
-	static FilterOption filterOption(const char* s);
+	static FilterOption filterOption(QString s);
 	static const char* filterOption(FilterOption fo);
 
 
@@ -62,23 +61,23 @@ class FilterData
 	// Type of data the filter describes
 	FilterType type_;
 	// Long name of the filter
-	Dnchar name_;
+	QString name_;
 	// Nickname for the filter
-	Dnchar nickname_;
+	QString nickname_;
 	// File extension(s)
-	List<Dnchar> extensions_;
+	QStringList extensions_;
 	// Number of lines to search when looking for any of the searchStrings_
 	int nLinesToSearch_;
 	// List of identifying search strings
-	List<Dnchar> searchStrings_;
+	QStringList searchStrings_;
 	// File filter glob (for gui)
-	Dnchar glob_;
+	QString glob_;
 	// Partner filter
 	Tree* partner_;
 	// Filter description
-	Dnchar description_;
+	QString description_;
 	// Filename alias list
-	List<Dnchar> exactNames_;
+	QStringList exactNames_;
 	// Whether the file has an associated extension
 	bool hasExtension_;
 	// Whether separate zmapping has been defined
@@ -96,7 +95,7 @@ class FilterData
 	 */
 	public:
 	// Set option by name
-	bool setOption(Dnchar* name, TreeNode* value);
+	bool setOption(QString name, TreeNode* value);
 	// Set the type of filter
 	void setType(FilterType ft);
 	// Set the partner filter
@@ -114,37 +113,37 @@ class FilterData
 	// Return the ID of the filter
 	int id() const;
 	// Return the descriptive name of the filter
-	const char* name() const;
+	QString name() const;
 	// Return the short nickname of the filter
-	const char* nickname() const;
-	// Return the first file extension
-	Dnchar* extensions() const;
+	QString nickname() const;
+	// Return lst of file extensions
+	QStringList extensions() const;
 	// Return a comma-separated list of file extensions
-	const char* extensionList() const;
+	QString extensionList() const;
 	// Return the first alias
-	Dnchar* exactNames() const;
+	QStringList exactNames() const;
 	// Return the number of identifying strings defined
 	int nIdStrings() const;
 	// Return the number of lines to search for the identifying strings
 	int nLinesToSearch() const;
 	// Return the first identifying search string
-	Dnchar* searchStrings() const;
+	QStringList searchStrings() const;
 	// Return whether filter has an extension
 	bool hasExtension() const;
 	// Return whether the supplied text matches any of the filter's possible extensions
-	bool doesExtensionMatch(const char* ext) const;
+	bool doesExtensionMatch(QString ext) const;
 	// Return whether the supplied text matches any of the filter's possible exact filenames
-	bool doesNameMatch(const char* name) const;
+	bool doesNameMatch(QString name) const;
 	// Return the partner filter
 	Tree* partner() const;
 	// Return the file filter
-	const char* glob() const;
+	QString glob() const;
 	// Return the type of filter
 	FilterType type() const;
 	// Return if the filter is an export filter
 	bool isExportFilter() const;
 	// Return (after creation if it is needed) the long description of the filter (including glob)
-	const char* description();
+	QString description();
 	// Return trajectory header function
 	Tree* trajectoryHeaderFunction() const;
 	// Return trajectory frame function

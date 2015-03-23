@@ -62,7 +62,7 @@ int &FragmentsWidget::bondId()
 }
 
 // Return current drawing fragment
-Fragment *FragmentsWidget::currentFragment()
+Fragment* FragmentsWidget::currentFragment()
 {
 	return currentFragment_;
 }
@@ -123,15 +123,16 @@ void FragmentsWidget::refresh()
 
 		column = 0;
 		// Go through fragments in group
-		for (Fragment *f = fg->fragments(); f != NULL; f = f->next)
+		for (Fragment* f = fg->fragments(); f != NULL; f = f->next)
 		{
-			// Filter?
-			if (!filterText_.isEmpty() && (strstr(lowerCase(f->masterModel()->name()), filterText_.get()) == 0)) continue;
+			// Filter this fragment?
+			if ((!filterText_.isEmpty()) && (!f->masterModel()->name().contains(filterText_, Qt::CaseInsensitive))) continue;
+
 			// Add item to TTreeWidget
 			item = new TTreeWidgetItem(group);
 			item->data.set(VTypes::ModelData, f);		// No VTypes::FragmentData, so set as a Model instead
 			item->setIcon(1,f->icon());
-			item->setText(2,itoa(f->masterModel()->nAtoms()));
+			item->setText(2, QString::number(f->masterModel()->nAtoms()));
 			item->setText(3,f->masterModel()->name());
 
 			// Add item to TTableWidget

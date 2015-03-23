@@ -103,24 +103,22 @@ Variable* ZMatrixElement::distanceVariable()
 }
 
 // Set distance variable name (geometry variable 0)
-void ZMatrixElement::setDistanceName(const char* name)
+void ZMatrixElement::setDistanceName(QString name)
 {
 	if (values_[0] == NULL) Messenger::print("Warning: No distance variable exists in ZMatrixElement, so can't set its name.");
 	else values_[0]->setName(name);
 }
 
 // Retrieve distance variable name (geometry variable 0)
-const char* ZMatrixElement::distanceName()
+QString ZMatrixElement::distanceName()
 {
-	static Dnchar name;
-	name.clear();
-	if (values_[0] == NULL) Messenger::print("Warning: No distance variable exists in ZMatrixElement from which to return a value.");
-	else
+	if (values_[0] == NULL)
 	{
-		if (negated_[0]) name.sprintf("-%s",values_[0]->name());
-		else name = values_[0]->name();
+		Messenger::print("Warning: No distance variable exists in ZMatrixElement from which to return a value.");
+		return QString();
 	}
-	return name.get();
+	if (negated_[0]) return QString("-" + values_[0]->name());
+	else return values_[0]->name();
 }
 
 // Set distance value
@@ -157,24 +155,22 @@ Variable* ZMatrixElement::angleVariable()
 }
 
 // Set angle variable name (geometry variable 1)
-void ZMatrixElement::setAngleName(const char* name)
+void ZMatrixElement::setAngleName(QString name)
 {
 	if (values_[1] == NULL) Messenger::print("Warning: No angle variable exists in ZMatrixElement, so can't set its name.");
 	else values_[1]->setName(name);
 }
 
 // Retrieve angle variable name (geometry variable 0)
-const char* ZMatrixElement::angleName()
+QString ZMatrixElement::angleName()
 {
-	static Dnchar name;
-	name.clear();
-	if (values_[1] == NULL) Messenger::print("Warning: No angle variable exists in ZMatrixElement from which to return a value.");
-	else
+	if (values_[1] == NULL)
 	{
-		if (negated_[1]) name.sprintf("-%s",values_[1]->name());
-		else name = values_[1]->name();
+		Messenger::print("Warning: No angle variable exists in ZMatrixElement from which to return a value.");
+		return QString();
 	}
-	return name.get();
+	if (negated_[1]) return QString("-" + values_[1]->name());
+	else return values_[1]->name();
 }
 
 // Set angle value
@@ -211,24 +207,22 @@ Variable* ZMatrixElement::torsionVariable()
 }
 
 // Set torsion variable name (geometry variable 2)
-void ZMatrixElement::setTorsionName(const char* name)
+void ZMatrixElement::setTorsionName(QString name)
 {
 	if (values_[2] == NULL) Messenger::print("Warning: No torsion variable exists in ZMatrixElement, so can't set its name.");
 	else values_[2]->setName(name);
 }
 
 // Retrieve torsion variable name (geometry variable 0)
-const char* ZMatrixElement::torsionName()
+QString ZMatrixElement::torsionName()
 {
-	static Dnchar name;
-	name.clear();
-	if (values_[2] == NULL) Messenger::print("Warning: No torsion variable exists in ZMatrixElement from which to return a value.");
-	else
+	if (values_[2] == NULL)
 	{
-		if (negated_[2]) name.sprintf("-%s",values_[2]->name());
-		else name = values_[2]->name();
+		Messenger::print("Warning: No torsion variable exists in ZMatrixElement from which to return a value.");
+		return QString();
 	}
-	return name.get();
+	if (negated_[2]) return QString("-" + values_[2]->name());
+	else return values_[2]->name();
 }
 
 // Set torsion value
@@ -574,11 +568,11 @@ void ZMatrix::print()
 				l = zel->atom(3);
 				if (l != NULL)
 				{
-					printf("%-4s %-4i %-6s %-4i %-6s %-4i %-6s\n", Elements().symbol(i), j->id()+1, zel->distanceVariable()->name(), k->id()+1, zel->angleVariable()->name(), l->id()+1, zel->torsionVariable()->name());
+					printf("%-4s %-4i %-6s %-4i %-6s %-4i %-6s\n", Elements().symbol(i), j->id()+1, qPrintable(zel->distanceVariable()->name()), k->id()+1, qPrintable(zel->angleVariable()->name()), l->id()+1, qPrintable(zel->torsionVariable()->name()));
 				}
-				else printf("%-4s %-4i %-6s %-4i %-6s\n", Elements().symbol(i), j->id()+1, zel->distanceVariable()->name(), k->id()+1, zel->angleVariable()->name());
+				else printf("%-4s %-4i %-6s %-4i %-6s\n", Elements().symbol(i), j->id()+1, qPrintable(zel->distanceVariable()->name()), k->id()+1, qPrintable(zel->angleVariable()->name()));
 			}
-			else printf("%-4s %-4i %-6s\n", Elements().symbol(i), j->id()+1, zel->distanceVariable()->name());
+			else printf("%-4s %-4i %-6s\n", Elements().symbol(i), j->id()+1, qPrintable(zel->distanceVariable()->name()));
 		}
 		else printf("%-4s\n", Elements().symbol(i));
 	}
@@ -590,18 +584,18 @@ void ZMatrix::print()
 	{
 		Variable* var = distances_.variable(n);
 		var->execute(rv);
-		printf("  %s   %f\n", var->name(), rv.asDouble());
+		printf("  %s   %f\n", qPrintable(var->name()), rv.asDouble());
 	}
 	for (int n=0; n<angles_.nVariables(); ++n)
 	{
 		Variable* var = angles_.variable(n);
 		var->execute(rv);
-		printf("  %s   %f\n", var->name(), rv.asDouble());
+		printf("  %s   %f\n", qPrintable(var->name()), rv.asDouble());
 	}
 	for (int n=0; n<torsions_.nVariables(); ++n)
 	{
 		Variable* var = torsions_.variable(n);
 		var->execute(rv);
-		printf("  %s   %f\n", var->name(), rv.asDouble());
+		printf("  %s   %f\n", qPrintable(var->name()), rv.asDouble());
 	}
 }
