@@ -240,7 +240,7 @@ bool CellVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex, 
 			rv.set(ptr->spacegroupName());
 			break;
 		case (CellVariable::Type):
-			rv.set(lowerCase(UnitCell::cellType(ptr->type())));
+			rv.set(UnitCell::cellType(ptr->type()));
 			break;
 		case (CellVariable::Volume):
 			rv.set(ptr->volume());

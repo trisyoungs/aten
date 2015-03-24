@@ -83,7 +83,7 @@ bool AtenWindow::runSaveModelDialog()
 		// Store path for next use
 		currentDirectory_.setPath(filename);
 		// Grab file extension and search for it in our current lists...
-		Dnchar ext = afterLastChar(qPrintable(filename), '.');
+		QString ext = QFileInfo(filename).suffix();
 		Reflist<Tree,int> filters;
 		if (ext.isEmpty())
 		{
@@ -112,7 +112,7 @@ bool AtenWindow::runSaveModelDialog()
 			// Does this extension uniquely identify a specific filter?
 			for (Refitem<Tree,int>* ri = aten_.filters(FilterData::ModelExport); ri != NULL; ri = ri->next)
 			{
-				if (ri->item->filter.doesExtensionMatch(ext.get())) filters.add(ri->item);
+				if (ri->item->filter.doesExtensionMatch(ext)) filters.add(ri->item);
 			}
 			Messenger::print(Messenger::Verbose, "Extension of filename '%s' matches %i filters...", qPrintable(filename), filters.nItems());
 			// If only one filter matched the filename extension, use it. Otherwise, ask for confirmation *or* list all filters.
@@ -849,13 +849,14 @@ void AtenWindow::on_actionSaveExpression_triggered(bool checked)
 	{
 		// Store path for next use
 		currentDirectory_.setPath(filename);
-		// Grab file extension and search for it in our current lists...
-		Dnchar ext = afterLastChar(qPrintable(filename), '.');
+	
+		// Get file info
+		QFileInfo fileInfo(filename);
+	
 		// Does this extension uniquely identify a specific filter?
 		Reflist<Tree,int> filters;
-		if (ext.isEmpty())
+		if (fileInfo.suffix().isEmpty())
 		{
-			QFileInfo fileInfo( filename );
 			// Does this filename uniquely identify a specific filter?
 			for (Refitem<Tree,int>* ri = aten_.filters(FilterData::ExpressionExport); ri != NULL; ri = ri->next)
 			{
@@ -879,7 +880,7 @@ void AtenWindow::on_actionSaveExpression_triggered(bool checked)
 		{
 			for (Refitem<Tree,int>* ri = aten_.filters(FilterData::ExpressionExport); ri != NULL; ri = ri->next)
 			{
-				if (ri->item->filter.doesExtensionMatch(ext.get())) filters.add(ri->item);
+				if (ri->item->filter.doesExtensionMatch(fileInfo.suffix())) filters.add(ri->item);
 			}
 			Messenger::print(Messenger::Verbose, "Extension of filename '%s' matches %i filters...", qPrintable(filename), filters.nItems());
 

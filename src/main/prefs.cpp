@@ -49,7 +49,7 @@ bool Aten::loadPrefs()
 
 	// Program preferences
 	found = FALSE;
-	QString filename = atenDirectoryFile("user.dat");
+	filename = atenDirectoryFile("user.dat");
 	fileInfo.setFile(filename);
 	Messenger::print("Looking for user preferences file '%s'...", qPrintable(filename));
 	if (fileInfo.exists()) found = TRUE;

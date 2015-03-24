@@ -1002,7 +1002,7 @@ class Model : public ListItem<Model>
 	*/
 	public:
 	// Return the empirical formula of the selected atoms
-	void selectionEmpirical(Dnchar&, bool markOnly, bool addspaces = FALSE) const;
+	QString selectionEmpirical(bool markOnly, bool addSpaces = false ) const;
 	// Get selection's centre of geometry
 	Vec3<double> selectionCentreOfGeometry() const;
 	// Get selection's centre of mass
@@ -1010,9 +1010,9 @@ class Model : public ListItem<Model>
 	// Reorder bound atoms/fragments within the selection so that they are consecutive
 	void reorderSelectedAtoms();
 	// Creates a string of the element symbols in the selection
-	void selectionAtomFingerprint(Dnchar&);
+	QString selectionAtomFingerprint();
 	// Creates a characteristic string of the bonds in the selection
-	void selectionBondFingerprint(Dnchar&);
+	QString selectionBondFingerprint();
 
 
 	/*

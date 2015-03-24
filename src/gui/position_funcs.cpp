@@ -170,7 +170,7 @@ void shiftPickAxisButton_callback(Reflist<Atom,int>* picked)
 // 	gui.positionWidget->ui.ShiftVectorXSpin->setValue(v.x);
 // 	gui.positionWidget->ui.ShiftVectorYSpin->setValue(v.y);
 // 	gui.positionWidget->ui.ShiftVectorZSpin->setValue(v.z);
-// 	gui.positionWidget->ui.ShiftVectorMagnitudeLabel->setText(ftoa(v.magnitude()));
+// 	gui.positionWidget->ui.ShiftVectorMagnitudeLabel->setText(QString::number(v.magnitude()));
 }
 
 void PositionWidget::on_ShiftPickVectorButton_clicked(bool on)
@@ -198,7 +198,7 @@ void PositionWidget::on_ShiftVectorXSpin_valueChanged(double value)
 	v.x = ui.ShiftVectorXSpin->value();
 	v.y = ui.ShiftVectorYSpin->value();
 	v.z = ui.ShiftVectorZSpin->value();
-	ui.ShiftVectorMagnitudeLabel->setText(ftoa(v.magnitude()));
+	ui.ShiftVectorMagnitudeLabel->setText(QString::number(v.magnitude()));
 }
 
 void PositionWidget::on_ShiftVectorYSpin_valueChanged(double value)
@@ -207,7 +207,7 @@ void PositionWidget::on_ShiftVectorYSpin_valueChanged(double value)
 	v.x = ui.ShiftVectorXSpin->value();
 	v.y = ui.ShiftVectorYSpin->value();
 	v.z = ui.ShiftVectorZSpin->value();
-	ui.ShiftVectorMagnitudeLabel->setText(ftoa(v.magnitude()));
+	ui.ShiftVectorMagnitudeLabel->setText(QString::number(v.magnitude()));
 }
 
 void PositionWidget::on_ShiftVectorZSpin_valueChanged(double value)
@@ -216,7 +216,7 @@ void PositionWidget::on_ShiftVectorZSpin_valueChanged(double value)
 	v.x = ui.ShiftVectorXSpin->value();
 	v.y = ui.ShiftVectorYSpin->value();
 	v.z = ui.ShiftVectorZSpin->value();
-	ui.ShiftVectorMagnitudeLabel->setText(ftoa(v.magnitude()));
+	ui.ShiftVectorMagnitudeLabel->setText(QString::number(v.magnitude()));
 }
 
 void PositionWidget::on_ShiftVectorPositiveButton_clicked(bool checked)

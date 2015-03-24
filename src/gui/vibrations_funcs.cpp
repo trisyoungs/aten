@@ -113,13 +113,13 @@ void VibrationsWidget::refreshDisplacements()
 		item->setText(i == NULL ? "NULL" : Elements().symbol(i));
 		ui.DisplacementsTable->setItem(n, 0, item);
 		item = new QTableWidgetItem();
-		item->setText(ftoa(displacements[n].x));
+		item->setText(QString::number(displacements[n].x));
 		ui.DisplacementsTable->setItem(n, 1, item);
 		item = new QTableWidgetItem();
-		item->setText(ftoa(displacements[n].y));
+		item->setText(QString::number(displacements[n].y));
 		ui.DisplacementsTable->setItem(n, 2, item);
 		item = new QTableWidgetItem();
-		item->setText(ftoa(displacements[n].z));
+		item->setText(QString::number(displacements[n].z));
 		ui.DisplacementsTable->setItem(n, 3, item);
 		i = i->next;
 	}

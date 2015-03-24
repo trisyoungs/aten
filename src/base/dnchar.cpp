@@ -336,7 +336,7 @@ bool Dnchar::asBool() const
 {
 	// Convert string to boolean
 	bool result = FALSE;
-	Dnchar lcase(lowerCase(data_));
+	QString lcase = QString(data_).toLower();
 	if (lcase == "off") result = FALSE;
 	else if (lcase == "on") result = TRUE;
 	else if (lcase == "no") result = FALSE;
@@ -345,7 +345,7 @@ bool Dnchar::asBool() const
 	else if (lcase == "true") result = TRUE;
 	else
 	{
-		std::printf("Character constant '%s' doesn't translate directly to a boolean value - FALSE assumed.\n", lcase.get());
+		std::printf("Character constant '%s' doesn't translate directly to a boolean value - FALSE assumed.\n", qPrintable(lcase));
 		result = FALSE;
 	}
 	return result;
@@ -379,14 +379,16 @@ bool Dnchar::isNumeric() const
 const char* Dnchar::lower() const
 {
 	if (data_ == NULL) return "\0";
-	return lowerCase(data_);
+// 	return lowerCase(data_);
+	return "TOLOWER_IS_BROKEN___DNCHAR_WILL_BE_REMOVED";
 }
 
 // Return the uppercase conversion of the string
 const char* Dnchar::upper() const
 {
 	if (data_ == NULL) return "\0";
-	return upperCase(data_);
+// 	return upperCase(data_);
+	return "TOLOWER_IS_BROKEN___DNCHAR_WILL_BE_REMOVED";
 }
 
 /*

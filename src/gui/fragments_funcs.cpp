@@ -216,7 +216,7 @@ void FragmentsWidget::on_FragmentTable_doubleClicked(const QModelIndex &index)
 
 void FragmentsWidget::on_FragmentFilterEdit_textChanged(const QString &text)
 {
-	filterText_ = lowerCase(qPrintable(text));
+	filterText_ = text.toLower();
 	refresh();
 }
 

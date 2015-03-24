@@ -143,7 +143,7 @@ void AtenForcefieldEditor::populate(Forcefield* ff)
 		item = new QTableWidgetItem(ffa->name());
 		item->setFlags(Qt::ItemIsSelectable);
 		ui.FFEditorAtomsTable->setItem(count, AtomColumn::Name, item);
-		item = new QTableWidgetItem(ftoa(ffa->charge()));
+		item = new QTableWidgetItem(QString::number(ffa->charge()));
 		ui.FFEditorAtomsTable->setItem(count, AtomColumn::Charge, item);
 		combo = new TComboBox(this);
 		combo->setMinimumSize(64,24);
@@ -154,7 +154,7 @@ void AtenForcefieldEditor::populate(Forcefield* ff)
 		QObject::connect(combo, SIGNAL(activated(int)), this, SLOT(VdwFunctionChanged(int)));
 		for (int n=0; n<MAXFFPARAMDATA; n++)
 		{
-			item = new QTableWidgetItem(ftoa(params[n]));
+			item = new QTableWidgetItem(QString::number(params[n]));
 			ui.FFEditorAtomsTable->setItem(count, AtomColumn::Data1+n, item);
 		}
 		count ++;
@@ -185,7 +185,7 @@ void AtenForcefieldEditor::populate(Forcefield* ff)
 		QObject::connect(combo, SIGNAL(activated(int)), this, SLOT(BondFunctionChanged(int)));
 		for (int n=0; n<MAXFFPARAMDATA; n++)
 		{
-			item = new QTableWidgetItem(ftoa(params[n]));
+			item = new QTableWidgetItem(QString::number(params[n]));
 			ui.FFEditorBondsTable->setItem(count, BondColumn::Data1+n, item);
 		}
 		count ++;
@@ -218,7 +218,7 @@ void AtenForcefieldEditor::populate(Forcefield* ff)
 		QObject::connect(combo, SIGNAL(activated(int)), this, SLOT(AngleFunctionChanged(int)));
 		for (int n=0; n<MAXFFPARAMDATA; n++)
 		{
-			item = new QTableWidgetItem(ftoa(params[n]));
+			item = new QTableWidgetItem(QString::number(params[n]));
 			ui.FFEditorAnglesTable->setItem(count, AngleColumn::Data1+n, item);
 		}
 		count ++;
@@ -257,7 +257,7 @@ void AtenForcefieldEditor::populate(Forcefield* ff)
 		ui.FFEditorTorsionsTable->setItem(count, TorsionColumn::VdwScale, item);
 		for (int n=0; n<MAXFFPARAMDATA; n++)
 		{
-			item = new QTableWidgetItem(ftoa(params[n]));
+			item = new QTableWidgetItem(QString::number(params[n]));
 			ui.FFEditorTorsionsTable->setItem(count, TorsionColumn::Data1+n, item);
 		}
 		count ++;
@@ -296,7 +296,7 @@ void AtenForcefieldEditor::populate(Forcefield* ff)
 		ui.FFEditorImpropersTable->setItem(count, TorsionColumn::VdwScale, item);
 		for (int n=0; n<MAXFFPARAMDATA; n++)
 		{
-			item = new QTableWidgetItem(ftoa(params[n]));
+			item = new QTableWidgetItem(QString::number(params[n]));
 			ui.FFEditorImpropersTable->setItem(count, TorsionColumn::Data1+n, item);
 		}
 		count ++;
@@ -329,7 +329,7 @@ void AtenForcefieldEditor::populate(Forcefield* ff)
 		QObject::connect(combo, SIGNAL(activated(int)), this, SLOT(BondFunctionChanged(int)));
 		for (int n=0; n<MAXFFPARAMDATA; n++)
 		{
-			item = new QTableWidgetItem(ftoa(params[n]));
+			item = new QTableWidgetItem(QString::number(params[n]));
 			ui.FFEditorUreyBradleysTable->setItem(count, AngleColumn::Data1+n, item);
 		}
 		count ++;

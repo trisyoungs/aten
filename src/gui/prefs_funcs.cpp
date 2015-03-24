@@ -228,7 +228,7 @@ void AtenPrefs::on_ElementList_currentRowChanged(int row)
 	// Update the info for the current element
 	ui.ElementNameLabel->setText(Elements().name(row));
 	ui.ElementSymbolLabel->setText(Elements().symbol(row));
-	ui.ElementMassLabel->setText(ftoa(Elements().atomicMass(row)));
+	ui.ElementMassLabel->setText(QString::number(Elements().atomicMass(row)));
 	ui.ElementColourFrame->setColour(Elements().colour(row));
 	ui.ElementRadiusSpin->setValue(Elements().atomicRadius(row));
 }
@@ -644,7 +644,7 @@ void AtenPrefs::updateScalePointsList()
 	for (ColourScalePoint* csp = prefs.colourScale[scale].firstPoint(); csp != NULL; csp = csp->next)
 	{
 
-		item = new QTableWidgetItem(ftoa(csp->value()));
+		item = new QTableWidgetItem(QString::number(csp->value()));
 		ui.ScalePointsTable->setItem(count, 0, item);
 		item = new QTableWidgetItem();
 		csp->copyColour(colour);
@@ -686,7 +686,7 @@ void AtenPrefs::on_PointValueSpin_valueChanged(double d)
 	if (id == -1) return;
 	// Set value in colourscale
 	prefs.colourScale[scale].setPointValue(id, d);
-	ui.ScalePointsTable->item(id, 0)->setText(ftoa(d));
+	ui.ScalePointsTable->item(id, 0)->setText(QString::number(d));
 	// Update display
 	parent_.aten().currentModel()->changeLog.add(Log::Style);
 	parent_.postRedisplay();

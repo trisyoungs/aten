@@ -174,16 +174,16 @@ void AtomListWidget::updateRow(int row)
 				item->setText((i->type() == NULL ? "" : i->type()->name()));
 				break;
 			case (AtomListWidget::AtomXItem):
-				item->setText(ftoa(r.x));
+				item->setText(QString::number(r.x));
 				break;
 			case (AtomListWidget::AtomYItem):
-				item->setText(ftoa(r.y));
+				item->setText(QString::number(r.y));
 				break;
 			case (AtomListWidget::AtomZItem):
-				item->setText(ftoa(r.z));
+				item->setText(QString::number(r.z));
 				break;
 			case (AtomListWidget::AtomQItem):
-				item->setText(ftoa(i->charge()));
+				item->setText(QString::number(i->charge()));
 				break;
 		}
 		if (AtomListItemDelegateType[displayItems_.at(column)] == 0) item->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable);
@@ -647,7 +647,7 @@ void AtomListWidget::tableItemChanged(QTableWidgetItem *item)
 				listLastModel_->positionAtom(i, v);
 				listLastModel_->endUndoState();
 			}
-			else item->setText(ftoa(v[element]));
+			else item->setText(QString::number(v[element]));
 			break;
 		case (AtomListWidget::AtomQItem):
 			valueD = item->text().toDouble(&success);
@@ -657,7 +657,7 @@ void AtomListWidget::tableItemChanged(QTableWidgetItem *item)
 				listLastModel_->atomSetCharge(i, valueD);
 				listLastModel_->endUndoState();
 			}
-			else item->setText(ftoa(i->charge()));
+			else item->setText(QString::number(i->charge()));
 			break;
 		default:
 			printf("Internal Error: This column contains no editable data!\n");

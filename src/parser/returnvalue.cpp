@@ -787,10 +787,10 @@ QString ReturnValue::asString(int index, bool& success)
 			return "_NULL_";
 			break;
 		case (VTypes::IntegerData):
-			return itoa( arrayI_[index] );
+			return QString::number(arrayI_[index]);
 			break;
 		case (VTypes::DoubleData):
-			return ftoa( arrayD_[index] );
+			return QString::number(arrayD_[index]);
 			break;
 		case (VTypes::StringData):
 			return arrayS_[index];
