@@ -88,12 +88,12 @@ void AtenViewBasis::showWindow(Model* m)
 		for (prim = bas->primitives(); prim != NULL; prim = prim->next)
 		{
 			tabitem = new QTableWidgetItem();
-			tabitem->setText(ftoa(prim->exponent()));
+			tabitem->setText(QString::number(prim->exponent()));
 			ui.BasisTable->setItem(row, AtenViewBasis::ExponentColumn, tabitem);
 			for (n = 0; n < prim->nCoefficients(); ++n)
 			{
 				tabitem = new QTableWidgetItem();
-				tabitem->setText(ftoa(prim->coefficient(n)));
+				tabitem->setText(QString::number(prim->coefficient(n)));
 				ui.BasisTable->setItem(row, AtenViewBasis::CoefficientColumn+n, tabitem);
 			}
 			row++;

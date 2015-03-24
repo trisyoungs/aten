@@ -106,10 +106,10 @@ void GridsWidget::refresh()
 		tabitem->setText(vec->name());
 		ui.OrbitalTable->setItem(count, 0, tabitem);
 		tabitem = new QTableWidgetItem();
-		tabitem->setText(ftoa(vec->occupancy()));
+		tabitem->setText(QString::number(vec->occupancy()));
 		ui.OrbitalTable->setItem(count, 1, tabitem);
 		tabitem = new QTableWidgetItem();
-		tabitem->setText(ftoa(vec->eigenvalue()));
+		tabitem->setText(QString::number(vec->eigenvalue()));
 		ui.OrbitalTable->setItem(count, 2, tabitem);
 		count++;
 	}
@@ -151,8 +151,8 @@ void GridsWidget::refreshGridInfo()
 
 	refreshing_ = TRUE;
 	// Set minimum, maximum, and cutoff, and stepsizes for spins
-	ui.GridMinimumLabel->setText(ftoa(g->minimum()));
-	ui.GridMaximumLabel->setText(ftoa(g->maximum()));
+	ui.GridMinimumLabel->setText(QString::number(g->minimum()));
+	ui.GridMaximumLabel->setText(QString::number(g->maximum()));
 	ui.GridNPointsLabel->setText(QString::number(g->nXYZ().x*g->nXYZ().y*g->nXYZ().z));
 	ui.GridLowerCutoffSpin->setMinimum(g->minimum());
 	ui.GridLowerCutoffSpin->setMaximum(g->maximum());
@@ -174,12 +174,12 @@ void GridsWidget::refreshGridInfo()
 	ui.GridLowerCutoff2Spin->setEnabled( g->useSecondary() );
 	ui.GridUpperCutoff2Spin->setEnabled( g->useSecondary() );
 	// Set sum data labels
-	ui.GridTotalPositiveSumLabel->setText(ftoa(g->totalPositiveSum()));
-	ui.GridTotalNegativeSumLabel->setText(ftoa(g->totalNegativeSum()));
+	ui.GridTotalPositiveSumLabel->setText(QString::number(g->totalPositiveSum()));
+	ui.GridTotalNegativeSumLabel->setText(QString::number(g->totalNegativeSum()));
 	double total = g->totalPositiveSum() + fabs(g->totalNegativeSum());
-	ui.GridTotalAbsoluteLabel->setText(ftoa(total));
-	ui.GridPrimaryPercentLabel->setText(ftoa(100.0*g->partialPrimarySum()/total));
-	ui.GridSecondaryPercentLabel->setText(ftoa(100.0*g->partialSecondarySum()/total));
+	ui.GridTotalAbsoluteLabel->setText(QString::number(total));
+	ui.GridPrimaryPercentLabel->setText(QString::number(100.0*g->partialPrimarySum()/total));
+	ui.GridSecondaryPercentLabel->setText(QString::number(100.0*g->partialSecondarySum()/total));
 	// Set origin and axes
 	Vec3<double> origin = g->origin();
 	ui.GridOriginXSpin->setValue(origin.x);

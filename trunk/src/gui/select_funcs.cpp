@@ -145,11 +145,10 @@ void SelectWidget::refresh()
 
 	// Update selection text details
 	// First label, total number of selected atoms.
-	Dnchar text(-1,"Total selected : %i\n", m->nSelected());
-	ui.SelectionLabel1->setText(text.get());
+	ui.SelectionLabel1->setText("Total selected : " + QString::number(m->nSelected()));
+	
 	// Second label contains empirical formula of selection
-	m->selectionEmpirical(text, FALSE, TRUE);
-	ui.SelectionLabel2->setText(text.get());
+	ui.SelectionLabel2->setText(m->selectionEmpirical(FALSE, TRUE));
 }
 
 void SelectWidget::closeEvent(QCloseEvent *event)

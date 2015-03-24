@@ -408,45 +408,52 @@ void Model::reorderSelectedAtoms()
 }
 
 // Get empirical formula of selection
-void Model::selectionEmpirical(Dnchar &target, bool markonly, bool addspaces) const
+QString Model::selectionEmpirical(bool markOnly, bool addSpaces) const
 {
 	Messenger::enter("Model::selectionEmpirical");
-	int n, count, elcount[MAXELEMENTS];
-	target.clear();
-	// Reset element counters
-	for (n=0; n<MAXELEMENTS; n++) elcount[n] = 0;
-	Atom* i = atoms_.first();
-	while (i != NULL)
+
+	Array<int> elcount(MAXELEMENTS);
+	Refitem<Atom,int>* firstAtom = (markOnly ? marked_.first() : selection_.first());
+
+	// Loop over atoms in list
+	Atom* i;
+	for (Refitem<Atom,int>* ri = firstAtom; ri != NULL; ri = ri->next)
 	{
-		if (i->isSelected(markonly)) elcount[i->element()] ++;
-		i = i->next;
+		i = ri->item;
+		if (i != NULL) ++elcount[i->element()];
+		else printf("Internal Error: Reflist had a NULL atom pointer in Model::selectionEmpirical().\n");
 	}
+
 	// Construct element string
-	count = 0;
-	for (n=MAXELEMENTS-1; n>0; n--)
+	QString result;
+	for (int n=MAXELEMENTS-1; n>0; --n)
+	{
 		if (elcount[n] != 0)
 		{
-			if ((count>0) && addspaces) target.strcat(" ");
-			target.strcat(Elements().symbol(n));
-			if (elcount[n] > 1) target.strcat(itoa(elcount[n]));
-			count++;
+			if ((!result.isEmpty()) & addSpaces) result += QString(" ") + Elements().symbol(n);
+			else result += Elements().symbol(n);
+			if (elcount[n] > 1) result += QString::number(elcount[n]);
 		}
+	}
+
 	Messenger::exit("Model::selectionEmpirical");
+	return result;
 }
 
 // Get atom fingerprint of current selection
-void Model::selectionAtomFingerprint(Dnchar &target)
+QString Model::selectionAtomFingerprint()
 {
 	Messenger::enter("Model::selectionAtomFingerprint");
-	target.clear();
+
 	if (selection_.first() == NULL)
 	{
 		Messenger::exit("Model::selectionAtomFingerprint");
-		return;
+		return QString();
 	}
 	Refitem<Atom,int>* ri = selection_.first();
 	int lastel = ri->item->element(), newel;
 	int count = 1;
+	QString result;
 	Atom* i;
 	for (ri = ri->next; ri != NULL; ri = ri->next)
 	{
@@ -456,28 +463,32 @@ void Model::selectionAtomFingerprint(Dnchar &target)
 		if (newel == lastel) count ++;
 		else
 		{
-			target.strcat(Elements().symbol(i));
-			target.strcat(itoa(count));
+			result += Elements().symbol(i);
+			result += QString::number(count);
 			lastel = newel;
 			count = 0;
 		}
 	}
+
 	// Check for last element chunk
 	if (count != 0)
 	{
-		target.strcat(Elements().symbol(lastel));
-		target.strcat(itoa(count));
+		result += Elements().symbol(lastel);
+		result += QString::number(count);
 	}
+
 	Messenger::exit("Model::selectionAtomFingerprint");
+	return result;
 }
 
 // Get bond fingerprint of current selection
-void Model::selectionBondFingerprint(Dnchar &target)
+QString Model::selectionBondFingerprint()
 {
 	Messenger::enter("Model::selectionBondFingerprint");
-	target.clear();
+
 	int count = 0, diff;
 	Refitem<Bond,int>* ri;
+	QString result;
 	Atom* i = atoms_.first();
 	Atom* j;
 	while (i != NULL)
@@ -489,13 +500,7 @@ void Model::selectionBondFingerprint(Dnchar &target)
 			{
 				j = ri->item->partner(i);
 				diff = j->id() - i->id();
-				if (diff > 0)
-				{
-					target.strcat(itoa(count));
-					target += '-';
-					target.strcat(itoa(count + diff));
-					target += ' ';
-				}
+				if (diff > 0) result += QString::number(count) + "-" + QString::number(count+diff) + " ";
 				ri = ri->next;
 			}
 			count ++;
@@ -503,4 +508,5 @@ void Model::selectionBondFingerprint(Dnchar &target)
 		i = i->next;
 	}
 	Messenger::exit("Model::selectionBondFingerprint");
+	return result;
 }

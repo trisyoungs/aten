@@ -24,26 +24,8 @@
 
 #include <QtCore/QString>
 
-// Number/string conversion
-const char* itoa(int);
-const char* ftoa(double);
-const char* ftoa(double, const char*);
-
 // String functions
-const char* removePath(const char*);
-const char* upperCase(const char*);
-const char* lowerCase(const char*);
-const char* beforeChar(const char*, char);
-const char* afterChar(const char*, char);
-const char* afterLastChar(const char*, char);
-const char* beforeStr(const char*, const char*);
-const char* afterStr(const char*, const char*);
-const char* stripTrailing(const char*);
-const char* replaceChars(const char* s, const char* charstoreplace, char r);
-const char* stripChars(const char* s, const char* charstostrip);
-int countChars(const char* string, const char* searchchars, int offset = 0);
 void removeComments(QString& line);
-bool isEmpty(const char* s);
 
 // Enum search and print
 int enumSearch(QString enumName, int nItems, const char* itemArray[], QString name, bool reportError = true);

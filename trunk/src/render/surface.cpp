@@ -717,7 +717,7 @@ void GridPrimitive::createAxes()
 				v.add(i, origin[i] < 0.5*(axisRealRange[i] + axisRealMin[i]) ? -tickSize1 : tickSize1);
 				i = (n+2)%3;
 				v.add(i, origin[i] < 0.5*(axisRealRange[i] + axisRealMin[i]) ? -tickSize2 : tickSize2);
-				axisTextPrimitives_[n].add()->set(ftoa(value, "%3.0f"), v, TextPrimitive::MiddleLeftAnchor, Vec3<double>(), Matrix(), 1.0); // ATEN2 TODO
+// 				axisTextPrimitives_[n].add()->set(QString::number(value, "%3.0f"), v, TextPrimitive::MiddleLeftAnchor, Vec3<double>(), Matrix(), 1.0); // ATEN2 TODO
 			}
 
 			// Add on delta

@@ -257,7 +257,7 @@ bool Aten::parseCliEarly(int argc, char *argv[])
 					QStringList items = QString(&argv[argn][1]).split('=');
 					if (items.count() != 2)
 					{
-						printf("Short option '%s' failed to pass correctly - did you forget the '='?", &argv[argn][1]);
+						printf("Short option '%s' failed to pass correctly in cliEarly() - did you forget the '='?", &argv[argn][1]);
 						return false;
 					}
 					arg = items.at(0);
@@ -269,7 +269,7 @@ bool Aten::parseCliEarly(int argc, char *argv[])
 				QStringList items = QString(&argv[argn][2]).split('=');
 				if (items.count() != 2)
 				{
-					printf("Long option '%s' failed to pass correctly - did you forget the '='?", &argv[argn][2]);
+					printf("Long option '%s' failed to pass correctly in cliEarly() - did you forget the '='?", &argv[argn][2]);
 					return false;
 				}
 				arg = items.at(0);
@@ -433,14 +433,26 @@ int Aten::parseCli(int argc, char *argv[])
 				if ((argv[argn][1] != '\0') && (argv[argn][2] != '\0'))
 				{
 					isShort = FALSE;
-					arg = beforeChar(&argv[argn][1], '=');
-					argText = afterChar(&argv[argn][1], '=');
+					QStringList items = QString(&argv[argn][1]).split('=');
+					if (items.count() != 2)
+					{
+						printf("Short option '%s' failed to pass correctly - did you forget the '='?", &argv[argn][1]);
+						return false;
+					}
+					arg = items.at(0);
+					argText = items.at(1);
 				}
 			}
 			else
 			{
-				arg = beforeChar(&argv[argn][2], '=');
-				argText = afterChar(&argv[argn][2], '=');
+				QStringList items = QString(&argv[argn][2]).split('=');
+				if (items.count() != 2)
+				{
+					printf("Long option '%s' failed to pass correctly - did you forget the '='?", &argv[argn][2]);
+					return false;
+				}
+					arg = items.at(0);
+					argText = items.at(1);
 			}
 
 			// Search for option...
