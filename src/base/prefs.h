@@ -26,7 +26,6 @@
 #include "math/doubleexp.h"
 #include "base/elements.h"
 #include "base/colourscale.h"
-#include "base/dnchar.h"
 #include "base/choice.h"
 #include "base/namespace.h"
 #include <QtCore/QDir>
@@ -555,10 +554,10 @@ class Prefs
 	private:
 	// User-definable mouse button actions
 	MouseAction mouseAction_[Prefs::nMouseButtons];
-	Dnchar mouseActionTexts_[Prefs::nMouseButtons];
+	QString mouseActionTexts_[Prefs::nMouseButtons];
 	// User-definable key modifier actions
 	KeyAction keyAction_[Prefs::nModifierKeys];
-	Dnchar keyActionTexts_[Prefs::nModifierKeys];
+	QString keyActionTexts_[Prefs::nModifierKeys];
 	// Zoom 'throttle'
 	double zoomThrottle_;
 
@@ -568,13 +567,13 @@ class Prefs
 	// Return the action associated with the specified mouse button
 	MouseAction mouseAction(MouseButton mb) const;
 	// Return array of (derived) mouse action texts
-	Dnchar* mouseActionTexts();
+	QString* mouseActionTexts();
 	// Sets the modifier key for the specified action
 	void setKeyAction(ModifierKey mk, KeyAction ka);
 	// Return the action associated with the specified keymod button
 	KeyAction keyAction(ModifierKey mk) const;
 	// Return array of (derived) key action texts
-	Dnchar* keyActionTexts();
+	QString* keyActionTexts();
 	// Sets the zoom throttle
 	void setZoomThrottle(double throtvalue);
 	// Returns the zoom throttle

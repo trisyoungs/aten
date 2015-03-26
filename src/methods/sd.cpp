@@ -59,7 +59,6 @@ void MethodSd::minimise(Model* srcmodel, double econ, double fcon, bool simple)
 	int cycle, nattempts;
 	double oldEnergy, currentEnergy, deltaEnergy, lastPrintedEnergy, oldForce, newForce, deltaForce, stepsize;
 	bool lineDone, converged, success;
-	Dnchar etatext;
 
 	/*
 	// Prepare the calculation

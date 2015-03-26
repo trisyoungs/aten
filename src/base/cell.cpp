@@ -330,10 +330,9 @@ bool UnitCell::setSpacegroup(QString name, bool forceRhombohedral)
 		if (!forceRhombohedral) Messenger::print("Warning: Spacegroup has hexagonal basis.");
 		else
 		{
-			Dnchar newname(128);
-			newname = tsgn->SgLabels;
-			newname.strcat(":R");
-			tsgn = FindTabSgNameEntry(newname.get(), 'A');
+			QString newName = tsgn->SgLabels;
+			newName += ":R";
+			tsgn = FindTabSgNameEntry(qPrintable(newName), 'A');
 			if (tsgn == NULL)
 			{
 				Messenger::print("Unable to find spacegroup '%s'.", qPrintable(name));

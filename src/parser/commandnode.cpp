@@ -188,14 +188,14 @@ bool CommandNode::execute(ReturnValue& rv)
 void CommandNode::nodePrint(int offset, const char* prefix)
 {
 	// Construct tabbed offset
-	Dnchar tab(offset+32);
+	QString tab;
 	for (int n=0; n<offset-1; n++) tab += '\t';
-	if (offset > 1) tab.strcat("   |--> ");
-	tab.strcat(prefix);
+	if (offset > 1) tab += "   |--> ";
+	tab += prefix;
 
 	// Output node data
 // 	printf("Function id = %p\n", function_);
-	printf("[CN]%s%s (Command) (%i arguments)\n", tab.get(), aten_->commandKeyword(function_), args_.nItems());
+	printf("[CN]%s%s (Command) (%i arguments)\n", qPrintable(tab), aten_->commandKeyword(function_), args_.nItems());
 	// Output Argument data
 	for (Refitem<TreeNode,int>* ri = args_.first(); ri != NULL; ri = ri->next) ri->item->nodePrint(offset+1);
 }

@@ -98,8 +98,7 @@ void ScriptMovieWidget::on_SaveScriptedMovieButton_clicked(bool on)
 // 	height = atoi(afterChar(geometry,'x'));
 	if ((width < 1) || (height < 1))
 	{
-		Dnchar message(-1, "The geometry '%s' is not valid since one (or both) components are less than 1.\n", qPrintable(geometry));
-		QMessageBox::warning(this, "Aten", message.get(), QMessageBox::Ok);
+		QMessageBox::warning(this, "Aten", "The geometry '" + geometry + "' is not valid since one (or both) components are less than 1.", QMessageBox::Ok);
 		return;
 	}
 	int maxframes = ui.asInteger("maxframes");

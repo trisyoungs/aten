@@ -84,7 +84,7 @@ void GeometryWidget::updateLabels()
 	if (m->nSelected() < 2) return;
 	double value;
 	Atom* i, *j, *k, *l;
-	Dnchar text;
+	QString text;
 	Refitem<Atom,int>* ri = m->selection();
 	i = ri->item;
 	j = ri->next->item;
@@ -94,20 +94,20 @@ void GeometryWidget::updateLabels()
 		case (2):
 			value = m->distance(i,j);
 			text.sprintf("%f (atoms %i-%i)", value, i->id()+1, j->id()+1);
-			ui.DistanceLabel->setText(text.get());
+			ui.DistanceLabel->setText(text);
 			break;
 		case (3):
 			k = ri->item;
 			value = m->angle(i,j,k);
 			text.sprintf("%f (atoms %i-%i-%i)", value, i->id()+1, j->id()+1, k->id()+1);
-			ui.AngleLabel->setText(text.get());
+			ui.AngleLabel->setText(text);
 			break;
 		case (4):
 			k = ri->item;
 			l = ri->next->item;
 			value = m->torsion(i,j,k,l);
 			text.sprintf("%f (atoms %i-%i-%i-%i)", value, i->id()+1, j->id()+1, k->id()+1, l->id()+1);
-			ui.TorsionLabel->setText(text.get());
+			ui.TorsionLabel->setText(text);
 			break;
 		default:
 			break;

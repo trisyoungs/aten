@@ -504,9 +504,8 @@ void AtenForcefieldEditor::on_FFEditorAtomsTable_itemChanged(QTableWidgetItem *w
 	// Get pointer to forcefield type from edited row
 	ForcefieldAtom* ffa = targetForcefield_->type(row);
 	// Set new data based on the column edited
-	Dnchar text;
 	int n;
-	QComboBox *combo;
+	QComboBox* combo;
 	switch (column)
 	{
 		// Forcefield TypeId
@@ -567,17 +566,17 @@ void AtenForcefieldEditor::updateBondsLabels(ForcefieldBound* ffb)
 	}
 	BondFunctions::BondFunction bf = ffb->bondForm();
 	// Construct labels
-	Dnchar text;
+	QString text;
 	text.sprintf("%s (%s)", BondFunctions::BondFunctions[bf].name, BondFunctions::BondFunctions[bf].keyword);
-	ui.FFEditorBondFormLabel->setText(text.get());
+	ui.FFEditorBondFormLabel->setText(text);
 	text.clear();
 	for (int n=0; n<BondFunctions::BondFunctions[bf].nParameters; ++n)
 	{
-		if (n != 0) text.strcat(", ");
-		if (BondFunctions::BondFunctions[bf].isEnergyParameter[n]) text.strcatf("<b>%s</b>", BondFunctions::BondFunctions[bf].parameterKeywords[n]);
-		else text.strcatf("%s", BondFunctions::BondFunctions[bf].parameterKeywords[n]);
+		if (n != 0) text += ", ";
+		if (BondFunctions::BondFunctions[bf].isEnergyParameter[n]) text += "<b>" + QString(BondFunctions::BondFunctions[bf].parameterKeywords[n]) + "</b>";
+		else text += BondFunctions::BondFunctions[bf].parameterKeywords[n];
 	}
-	ui.FFEditorBondParametersLabel->setText(text.get());
+	ui.FFEditorBondParametersLabel->setText(text);
 }
 
 // Bond interaction type changed
@@ -650,17 +649,17 @@ void AtenForcefieldEditor::updateAnglesLabels(ForcefieldBound* ffb)
 	}
 	AngleFunctions::AngleFunction bf = ffb->angleForm();
 	// Construct labels
-	Dnchar text;
+	QString text;
 	text.sprintf("%s (%s)", AngleFunctions::AngleFunctions[bf].name, AngleFunctions::AngleFunctions[bf].keyword);
-	ui.FFEditorAngleFormLabel->setText(text.get());
+	ui.FFEditorAngleFormLabel->setText(text);
 	text.clear();
 	for (int n=0; n<AngleFunctions::AngleFunctions[bf].nParameters; ++n)
 	{
-		if (n != 0) text.strcat(", ");
-		if (AngleFunctions::AngleFunctions[bf].isEnergyParameter[n]) text.strcatf("<b>%s</b>", AngleFunctions::AngleFunctions[bf].parameterKeywords[n]);
-		else text.strcatf("%s", AngleFunctions::AngleFunctions[bf].parameterKeywords[n]);
+		if (n != 0) text += ", ";
+		if (AngleFunctions::AngleFunctions[bf].isEnergyParameter[n]) text += "<b>" + QString(AngleFunctions::AngleFunctions[bf].parameterKeywords[n]) + "</b>";
+		else text += AngleFunctions::AngleFunctions[bf].parameterKeywords[n];
 	}
-	ui.FFEditorAngleParametersLabel->setText(text.get());
+	ui.FFEditorAngleParametersLabel->setText(text);
 }
 
 // Angle interaction type changed
@@ -734,17 +733,17 @@ void AtenForcefieldEditor::updateTorsionsLabels(ForcefieldBound* ffb)
 	}
 	TorsionFunctions::TorsionFunction bf = ffb->torsionForm();
 	// Construct labels
-	Dnchar text;
+	QString text;
 	text.sprintf("%s (%s)", TorsionFunctions::TorsionFunctions[bf].name, TorsionFunctions::TorsionFunctions[bf].keyword);
-	ui.FFEditorTorsionFormLabel->setText(text.get());
+	ui.FFEditorTorsionFormLabel->setText(text);
 	text.clear();
 	for (int n=0; n<TorsionFunctions::TorsionFunctions[bf].nParameters; ++n)
 	{
-		if (n != 0) text.strcat(", ");
-		if (TorsionFunctions::TorsionFunctions[bf].isEnergyParameter[n]) text.strcatf("<b>%s</b>", TorsionFunctions::TorsionFunctions[bf].parameterKeywords[n]);
-		else text.strcatf("%s", TorsionFunctions::TorsionFunctions[bf].parameterKeywords[n]);
+		if (n != 0) text += ", ";
+		if (TorsionFunctions::TorsionFunctions[bf].isEnergyParameter[n]) text += "<b>" + QString(TorsionFunctions::TorsionFunctions[bf].parameterKeywords[n]) + "</b>";
+		else text += TorsionFunctions::TorsionFunctions[bf].parameterKeywords[n];
 	}
-	ui.FFEditorTorsionParametersLabel->setText(text.get());
+	ui.FFEditorTorsionParametersLabel->setText(text);
 }
 
 // Torsion interaction type changed
@@ -827,17 +826,17 @@ void AtenForcefieldEditor::updateImpropersLabels(ForcefieldBound* ffb)
 	}
 	TorsionFunctions::TorsionFunction bf = ffb->torsionForm();
 	// Construct labels
-	Dnchar text;
+	QString text;
 	text.sprintf("%s (%s)", TorsionFunctions::TorsionFunctions[bf].name, TorsionFunctions::TorsionFunctions[bf].keyword);
-	ui.FFEditorImproperFormLabel->setText(text.get());
+	ui.FFEditorImproperFormLabel->setText(text);
 	text.clear();
 	for (int n=0; n<TorsionFunctions::TorsionFunctions[bf].nParameters; ++n)
 	{
-		if (n != 0) text.strcat(", ");
-		if (TorsionFunctions::TorsionFunctions[bf].isEnergyParameter[n]) text.strcatf("<b>%s</b>", TorsionFunctions::TorsionFunctions[bf].parameterKeywords[n]);
-		else text.strcatf("%s", TorsionFunctions::TorsionFunctions[bf].parameterKeywords[n]);
+		if (n != 0) text += ", ";
+		if (TorsionFunctions::TorsionFunctions[bf].isEnergyParameter[n]) text += "<b>" + QString(TorsionFunctions::TorsionFunctions[bf].parameterKeywords[n]) + "</b>";
+		else text += TorsionFunctions::TorsionFunctions[bf].parameterKeywords[n];
 	}
-	ui.FFEditorImproperParametersLabel->setText(text.get());
+	ui.FFEditorImproperParametersLabel->setText(text);
 }
 
 // Item in impropers table edited
@@ -906,17 +905,17 @@ void AtenForcefieldEditor::updateUreyBradleysLabels(ForcefieldBound* ffb)
 	}
 	BondFunctions::BondFunction bf = ffb->bondForm();
 	// Construct labels
-	Dnchar text;
+	QString text;
 	text.sprintf("%s (%s)", BondFunctions::BondFunctions[bf].name, BondFunctions::BondFunctions[bf].keyword);
-	ui.FFEditorUreyBradleyFormLabel->setText(text.get());
+	ui.FFEditorUreyBradleyFormLabel->setText(text);
 	text.clear();
 	for (int n=0; n<BondFunctions::BondFunctions[bf].nParameters; ++n)
 	{
-		if (n != 0) text.strcat(", ");
-		if (BondFunctions::BondFunctions[bf].isEnergyParameter[n]) text.strcatf("<b>%s</b>", BondFunctions::BondFunctions[bf].parameterKeywords[n]);
-		else text.strcatf("%s", BondFunctions::BondFunctions[bf].parameterKeywords[n]);
+		if (n != 0) text += ", ";
+		if (BondFunctions::BondFunctions[bf].isEnergyParameter[n]) text += "<b>" + QString(BondFunctions::BondFunctions[bf].parameterKeywords[n]) + "</b>";
+		else text += "%s", BondFunctions::BondFunctions[bf].parameterKeywords[n];
 	}
-	ui.FFEditorUreyBradleyParametersLabel->setText(text.get());
+	ui.FFEditorUreyBradleyParametersLabel->setText(text);
 }
 
 // Item in angles table edited

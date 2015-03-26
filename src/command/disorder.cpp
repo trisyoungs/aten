@@ -67,7 +67,6 @@ bool Commands::function_ListComponents(CommandNode* c, Bundle& obj, ReturnValue&
 {
 	Messenger::print("Current component specification:");
 	Vec3<double> v1, v2;
-	Dnchar text;
 	Messenger::print("Model           Policy     Partition  Population   Density");
 	for (Model* m = aten_.models(); m != NULL; m = m->next)
 	{

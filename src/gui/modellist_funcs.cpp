@@ -126,7 +126,7 @@ void ModelListWidget::refresh()
 	for (Refitem<Model,int>* ri = xmodels.first(); ri != NULL; ri = ri->next)
 	{
 		TExtraTreeWidgetItem *item = new TExtraTreeWidgetItem(ui.ModelTree);
-		DataStoreItem *dat = item->addData("model");
+		DataStoreItem* dat = item->addData("model");
 		dat->data().set(VTypes::ModelData, ri->item);
 		dat = item->addData("log");
 		dat->data().set(-1);
@@ -146,8 +146,7 @@ void ModelListWidget::updateItem(TExtraTreeWidgetItem *item)
 {
 	ReturnValue rv;
 	Model* m;
-	Dnchar text;
-	
+
 	// Get model pointer from item
 	rv = item->dataForKey("model");
 	m = (Model*) rv.asPointer(VTypes::ModelData);
@@ -160,9 +159,9 @@ void ModelListWidget::updateItem(TExtraTreeWidgetItem *item)
 	{
 		m->regenerateIcon();
 		item->setIcon(0,m->icon());
-		Dnchar text;
+		QString text;
 		text.sprintf("%s\nFF: %s\n", qPrintable(m->name()), m->forcefield() == NULL ? "<default>" : qPrintable(m->forcefield()->name()));
-		item->setText(1, text.get());
+		item->setText(1, text);
 		item->setTextAlignment(1, Qt::AlignLeft | Qt::AlignTop);
 		// Update log value
 		item->dataForKey("log").set(m->changeLog.log(Log::Structure));

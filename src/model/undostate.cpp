@@ -32,19 +32,19 @@ UndoState::UndoState() : ListItem<UndoState>()
 }
 
 // Set the text associated with the current undo state
-void UndoState::setDescription(const char* s)
+void UndoState::setDescription(QString description)
 {
-	description_ = s;
+	description_ = description;
 }
 
 // Return the current text associated with the state
-const char* UndoState::description() const
+QString UndoState::description() const
 {
-	return description_.get();
+	return description_;
 }
 
 // Add event to undostate
-void UndoState::addEvent(UndoEvent *ue)
+void UndoState::addEvent(UndoEvent* ue)
 {
 	events_.own(ue);
 }

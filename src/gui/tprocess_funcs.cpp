@@ -21,7 +21,6 @@
 
 #include "gui/tprocess.uih"
 #include "base/messenger.h"
-#include "base/dnchar.h"
 #include "base/sysfunc.h"
 #include <stdio.h>
 

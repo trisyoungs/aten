@@ -20,7 +20,6 @@
 */
 
 #include "base/generator.h"
-#include "base/dnchar.h"
 #include "base/lineparser.h"
 #include "base/sysfunc.h"
 #include "base/sginfo.h"

@@ -22,7 +22,6 @@
 #ifndef ATEN_VIBRATION_H
 #define ATEN_VIBRATION_H
 
-#include "base/dnchar.h"
 #include "templates/list.h"
 #include "templates/vector3.h"
 #include "base/namespace.h"

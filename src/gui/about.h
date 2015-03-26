@@ -23,7 +23,6 @@
 #define ATEN_ABOUTWINDOW_H
 
 #include "gui/ui_about.h"
-#include "base/namespace.h"
 
 // About window
 class AtenAbout : public QDialog

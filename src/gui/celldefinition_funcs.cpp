@@ -82,12 +82,15 @@ void CellDefinitionWidget::refresh()
 	// Set label to show cell volume (do this before early exit check so we update the cell volume after widget-enforced cell changes)
 	Model* m = parent_.aten().currentModelOrFrame();
 	if (m == NULL) return;
+
 	UnitCell* cell = m->cell();
 	UnitCell::CellType ct = cell->type();
-	Dnchar label(-1, " Volume : %10.3f &#8491;<sup>3</sup>", cell->volume());
-	ui.CellVolumeLabel->setText(label.get());
+	QString label;
+	label.sprintf(" Volume : %10.3f &#8491;<sup>3</sup>", cell->volume());
+	ui.CellVolumeLabel->setText(label);
 	if (refreshing_) return;
 	else refreshing_ = TRUE;
+
 	// Update the widgets on the page to reflect the current model's unit cell
 	if (ct == UnitCell::NoCell)
 	{
@@ -103,12 +106,14 @@ void CellDefinitionWidget::refresh()
 		ui.CellDefinitionGroup->setChecked(TRUE);
 		ui.CellSpacegroupGroup->setEnabled(TRUE);
 	}
+
 	// Set values in spin boxes
 	refreshMatrix();
 	refreshABC();
+
 	// Set spacegroup label
 	label.sprintf("%s (%i)\n", Spacegroups[m->cell()->spacegroupId()].name,  m->cell()->spacegroupId());
-	ui.SpacegroupLabel->setText(label.get());
+	ui.SpacegroupLabel->setText(label);
 	refreshing_ = FALSE;
 }
 
@@ -118,9 +123,9 @@ void CellDefinitionWidget::on_DefineFromABCButton_clicked(bool checked)
 	if (refreshing_) return;
 	CommandNode::run(Commands::Cell, "dddddd", ui.CellLengthASpin->value(), ui.CellLengthBSpin->value(), ui.CellLengthCSpin->value(), ui.CellAngleASpin->value(), ui.CellAngleBSpin->value(), ui.CellAngleCSpin->value());
 	Model* m = parent_.aten().currentModelOrFrame();
-	Dnchar label;
+	QString label;
 	label.sprintf(" Volume : %10.3f &#8491;<sup>3</sup>", m->cell()->volume());
-	ui.CellVolumeLabel->setText(label.get());
+	ui.CellVolumeLabel->setText(label);
 	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::CellTarget);
 }
 
@@ -131,9 +136,9 @@ void CellDefinitionWidget::cellChanged(int index, double newvalue)
 	// Check supplied matrix index of supplied value to determine if it has changed...
 	if ((index != -1) && (fabs(m->cell()->axes()[index] - newvalue) < 1.0E-7)) return;
 	CommandNode::run(Commands::CellAxes, "ddddddddd", ui.CellMatrixXXSpin->value(), ui.CellMatrixXYSpin->value(), ui.CellMatrixXZSpin->value(), ui.CellMatrixYXSpin->value(), ui.CellMatrixYYSpin->value(), ui.CellMatrixYZSpin->value(), ui.CellMatrixZXSpin->value(), ui.CellMatrixZYSpin->value(), ui.CellMatrixZZSpin->value());
-	Dnchar label;
+	QString label;
 	label.sprintf(" Volume : %10.3f &#8491;<sup>3</sup>", m->cell()->volume());
-	ui.CellVolumeLabel->setText(label.get());
+	ui.CellVolumeLabel->setText(label);
 	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::CellTarget);
 }
 
@@ -144,31 +149,31 @@ void CellDefinitionWidget::cellChanged(int index, double newvalue)
 void CellDefinitionWidget::on_CellMatrixXXSpin_editingFinished()
 {
 	// Cast sender as QDoubleSpinBox
-	QDoubleSpinBox *spin = qobject_cast<QDoubleSpinBox*> (sender());
+	QDoubleSpinBox* spin = qobject_cast<QDoubleSpinBox*> (sender());
 	if (spin == NULL) return;
-	cellChanged(0,spin->value());
+	cellChanged(0, spin->value());
 }
 
 void CellDefinitionWidget::on_CellMatrixXYSpin_editingFinished()
 {
 	// Cast sender as QDoubleSpinBox
-	QDoubleSpinBox *spin = qobject_cast<QDoubleSpinBox*> (sender());
+	QDoubleSpinBox* spin = qobject_cast<QDoubleSpinBox*> (sender());
 	if (spin == NULL) return;
-	cellChanged(1,spin->value());
+	cellChanged(1, spin->value());
 }
 
 void CellDefinitionWidget::on_CellMatrixXZSpin_editingFinished()
 {
 	// Cast sender as QDoubleSpinBox
-	QDoubleSpinBox *spin = qobject_cast<QDoubleSpinBox*> (sender());
+	QDoubleSpinBox* spin = qobject_cast<QDoubleSpinBox*> (sender());
 	if (spin == NULL) return;
-	cellChanged(2,spin->value());
+	cellChanged(2, spin->value());
 }
 
 void CellDefinitionWidget::on_CellMatrixYXSpin_editingFinished()
 {
 	// Cast sender as QDoubleSpinBox
-	QDoubleSpinBox *spin = qobject_cast<QDoubleSpinBox*> (sender());
+	QDoubleSpinBox* spin = qobject_cast<QDoubleSpinBox*> (sender());
 	if (spin == NULL) return;
 	cellChanged(3,spin->value());
 }
@@ -176,7 +181,7 @@ void CellDefinitionWidget::on_CellMatrixYXSpin_editingFinished()
 void CellDefinitionWidget::on_CellMatrixYYSpin_editingFinished()
 {
 	// Cast sender as QDoubleSpinBox
-	QDoubleSpinBox *spin = qobject_cast<QDoubleSpinBox*> (sender());
+	QDoubleSpinBox* spin = qobject_cast<QDoubleSpinBox*> (sender());
 	if (spin == NULL) return;
 	cellChanged(4,spin->value());
 }
@@ -184,7 +189,7 @@ void CellDefinitionWidget::on_CellMatrixYYSpin_editingFinished()
 void CellDefinitionWidget::on_CellMatrixYZSpin_editingFinished()
 {
 	// Cast sender as QDoubleSpinBox
-	QDoubleSpinBox *spin = qobject_cast<QDoubleSpinBox*> (sender());
+	QDoubleSpinBox* spin = qobject_cast<QDoubleSpinBox*> (sender());
 	if (spin == NULL) return;
 	cellChanged(5,spin->value());
 }
@@ -192,7 +197,7 @@ void CellDefinitionWidget::on_CellMatrixYZSpin_editingFinished()
 void CellDefinitionWidget::on_CellMatrixZXSpin_editingFinished()
 {
 	// Cast sender as QDoubleSpinBox
-	QDoubleSpinBox *spin = qobject_cast<QDoubleSpinBox*> (sender());
+	QDoubleSpinBox* spin = qobject_cast<QDoubleSpinBox*> (sender());
 	if (spin == NULL) return;
 	cellChanged(6,spin->value());
 }
@@ -200,7 +205,7 @@ void CellDefinitionWidget::on_CellMatrixZXSpin_editingFinished()
 void CellDefinitionWidget::on_CellMatrixZYSpin_editingFinished()
 {
 	// Cast sender as QDoubleSpinBox
-	QDoubleSpinBox *spin = qobject_cast<QDoubleSpinBox*> (sender());
+	QDoubleSpinBox* spin = qobject_cast<QDoubleSpinBox*> (sender());
 	if (spin == NULL) return;
 	cellChanged(7,spin->value());
 }
@@ -208,7 +213,7 @@ void CellDefinitionWidget::on_CellMatrixZYSpin_editingFinished()
 void CellDefinitionWidget::on_CellMatrixZZSpin_editingFinished()
 {
 	// Cast sender as QDoubleSpinBox
-	QDoubleSpinBox *spin = qobject_cast<QDoubleSpinBox*> (sender());
+	QDoubleSpinBox* spin = qobject_cast<QDoubleSpinBox*> (sender());
 	if (spin == NULL) return;
 	cellChanged(8,spin->value());
 }
@@ -246,9 +251,9 @@ void CellDefinitionWidget::on_CellSpacegroupSetButton_clicked(bool checked)
 	ui.CellSpacegroupEdit->setText("");
 	// Set spacegroup label
 	Model* m = parent_.aten().currentModelOrFrame();
-	Dnchar label;
+	QString label;
 	label.sprintf("%s (%i)\n", Spacegroups[m->cell()->spacegroupId()].name, m->cell()->spacegroupId());
-	ui.SpacegroupLabel->setText(label.get());
+	ui.SpacegroupLabel->setText(label);
 }
 
 void CellDefinitionWidget::on_CellSpacegroupRemoveButton_clicked(bool checked)

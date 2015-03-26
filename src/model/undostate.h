@@ -22,7 +22,6 @@
 #ifndef ATEN_UNDOSTATE_H
 #define ATEN_UNDOSTATE_H
 
-#include "base/dnchar.h"
 #include "base/log.h"
 #include "templates/list.h"
 #include "base/namespace.h"
@@ -48,7 +47,7 @@ class UndoState : public ListItem<UndoState>
 	// List of atomic changes for this level
 	List<UndoEvent> events_;
 	// Short text describing the change
-	Dnchar description_;
+	QString description_;
 	// Logs at start of state
 	Log startLogs_;
 	// Logs at end of state
@@ -56,7 +55,7 @@ class UndoState : public ListItem<UndoState>
 
 	public:
 	// Add event to state
-	void addEvent(UndoEvent *ue);
+	void addEvent(UndoEvent* ue);
 	// Return number of changes in list
 	int nChanges() const;
 	// Set logs at start of state
@@ -70,9 +69,9 @@ class UndoState : public ListItem<UndoState>
 	// Check difference between Change::StructureLog and Change::CoordinateLog between start/end points
 	bool doLogsDiffer() const;
 	// Set the text associated with the current undo state
-	void setDescription(const char* s);
+	void setDescription(QString description);
 	// Return the current text associated with the state
-	const char* description() const;
+	QString description() const;
 	// Undo the changes specified in the state
 	void undo(Model* m);
 	// Redo the changes specified in the state

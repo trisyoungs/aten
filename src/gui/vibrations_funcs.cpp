@@ -54,14 +54,14 @@ void VibrationsWidget::refresh()
 	Messenger::enter("VibrationsWidget::refresh");
 	refreshing_ = TRUE;
 	Model* m = parent_.aten().currentModelOrFrame();
-	Dnchar text;
+	QString text;
 	ui.VibrationsList->clear();
 	ui.DisplacementsTable->clear();
 	int count = 0;
 	for (Vibration* vib = m->vibrations(); vib != NULL; vib = vib->next)
 	{
 		text.sprintf("%i. Freq=%f\n", ++count, vib->frequency());
-		ui.VibrationsList->addItem(text.get());
+		ui.VibrationsList->addItem(text);
 	}
 	ui.VibrationsList->setCurrentRow(0);
 	// Disable widgets if there are no vibrations loaded
@@ -216,8 +216,8 @@ void VibrationsWidget::on_SaveMovieButton_clicked(bool checked)
 // 	height = atoi(afterChar(geometry,'x'));
 	if ((width < 1) || (height < 1))
 	{
-		Dnchar message(-1, "The geometry '%s' is not valid since one (or both) components are less than 1.\n", qPrintable(geometry));
-		QMessageBox::warning(this, "Aten", message.get(), QMessageBox::Ok);
+		QString message = "The geometry '" + geometry + "' is not valid since one (or both) components are less than 1.\n";
+		QMessageBox::warning(this, "Aten", message, QMessageBox::Ok);
 		return;
 	}
 	int ncycles = dialogui.asInteger("cycles");

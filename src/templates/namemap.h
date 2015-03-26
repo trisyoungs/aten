@@ -22,7 +22,6 @@
 #ifndef ATEN_NAMEMAP_H
 #define ATEN_NAMEMAP_H
 
-#include "base/dnchar.h"
 #include "templates/list.h"
 #include "base/namespace.h"
 
@@ -34,6 +33,7 @@ template <class T> class NameMap : public ListItem< NameMap<T> >
 	public:
 	// Constructor / Destructor
 	NameMap<T>();
+
 
 	/*
 	// Data

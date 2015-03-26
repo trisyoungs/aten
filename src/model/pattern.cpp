@@ -192,9 +192,8 @@ bool Model::createPatterns()
 	Messenger::enter("Model::createPatterns");
 	int n, atomid, nsel2, nmols, idi, idj, idoff, count;
 	bool same;
-	Dnchar emp;
+	QString empirical;
 	Clipboard patclip;
-	emp.createEmpty(1024);
 	Pattern* p;
 	Refitem<Bond,int>* rb;
 	Atom* i, *selectSource;
@@ -258,7 +257,7 @@ bool Model::createPatterns()
 		if (nmols == 0)
 		{
 			patclip.copyMarked(this);
-			selectionEmpirical(emp, TRUE);
+			empirical = selectionEmpirical(TRUE);
 			nmols = 1;
 		}
 		else
@@ -339,10 +338,10 @@ bool Model::createPatterns()
 			else
 			{
 				// Not the same as the last stored pattern, so store old data and start a new one
-				Messenger::print(Messenger::Verbose, "New pattern found: %s", emp.get());
-				p = addPattern(emp.get(), nmols, patclip.nAtoms());
+				Messenger::print(Messenger::Verbose, "New pattern found: %s", qPrintable(empirical));
+				p = addPattern(qPrintable(empirical), nmols, patclip.nAtoms());
 				patclip.copyMarked(this);
-				selectionEmpirical(emp, TRUE);
+				empirical = selectionEmpirical(TRUE);
 				nmols = 1;
 			}
 		}
@@ -350,8 +349,8 @@ bool Model::createPatterns()
 	// Store last pattern data 
 	if (nmols != 0)
 	{
-		Messenger::print(Messenger::Verbose, "New pattern found: %s", emp.get());
-		p = addPattern(emp.get(), nmols, patclip.nAtoms());
+		Messenger::print(Messenger::Verbose, "New pattern found: %s", qPrintable(empirical));
+		p = addPattern(qPrintable(empirical), nmols, patclip.nAtoms());
 	}
 
 	// Describe the atoms / rings in the patterns

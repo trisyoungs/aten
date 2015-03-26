@@ -328,7 +328,7 @@ void AtenWindow::updateWidgets(int targets)
 
 	if (targets&AtenWindow::StatusBarTarget)
 	{
-		static Dnchar text(512);
+		QString text;
 		static UserAction::Action lastAction = UserAction::NoAction;
 		
 		// Initialise string if NoAction
@@ -339,12 +339,12 @@ void AtenWindow::updateWidgets(int targets)
 		{
 			lastAction = ui.MainView->selectedMode();
 			text.sprintf("<b>%s:</b> %s", UserActions[lastAction].name, UserActions[lastAction].unModified);
-			if (UserActions[lastAction].shiftModified[0] != '\0') text.strcatf(", <b>+shift</b> %s", UserActions[lastAction].shiftModified);
-			if (UserActions[lastAction].ctrlModified[0] != '\0') text.strcatf(", <b>+ctrl</b> %s", UserActions[lastAction].ctrlModified);
-			if (UserActions[lastAction].altModified[0] != '\0') text.strcatf(", <b>+alt</b> %s", UserActions[lastAction].altModified);
+			if (UserActions[lastAction].shiftModified[0] != '\0') text += ", <b>+shift</b> %s" + QString(UserActions[lastAction].shiftModified);
+			if (UserActions[lastAction].ctrlModified[0] != '\0') text += ", <b>+ctrl</b> %s" + QString(UserActions[lastAction].ctrlModified);
+			if (UserActions[lastAction].altModified[0] != '\0') text += ", <b>+alt</b> %s" + QString(UserActions[lastAction].altModified);
 		}
+
 		// Set text in statusbar widget
-// 		if (clear) this->setMessageLabel("");  TGAY
 		this->setMessageLabel(text);
 	}
 	
@@ -603,7 +603,6 @@ void AtenWindow::updateControls()
 // Update undo/redo actions in Edit menu
 void AtenWindow::updateUndoRedo()
 {
-	Dnchar text;
 	Model* m = aten_.currentModelOrFrame();
 	// Check the model's state pointers
 	if (m->currentUndoState() == NULL)
@@ -613,8 +612,7 @@ void AtenWindow::updateUndoRedo()
 	}
 	else
 	{
-		text.sprintf("Undo (%s)", m->currentUndoState()->description());
-		ui.actionEditUndo->setText(text.get());
+		ui.actionEditUndo->setText("Undo (" + m->currentUndoState()->description() + ")");
 		ui.actionEditUndo->setEnabled(TRUE);
 	}
 	if (m->currentRedoState() == NULL)
@@ -624,8 +622,7 @@ void AtenWindow::updateUndoRedo()
 	}
 	else
 	{
-		text.sprintf("Redo (%s)", m->currentRedoState()->description());
-		ui.actionEditRedo->setText(text.get());
+		ui.actionEditRedo->setText("Redo (" + m->currentUndoState()->description() + ")");
 		ui.actionEditRedo->setEnabled(TRUE);
 	}
 }
@@ -674,7 +671,7 @@ void AtenWindow::setActiveUserAction(UserAction::Action ua)
 }
 
 // Set message label text
-void AtenWindow::setMessageLabel(const char* s)
+void AtenWindow::setMessageLabel(QString message)
 {
-	messageLabel_->setText(s);
+	messageLabel_->setText(message);
 }

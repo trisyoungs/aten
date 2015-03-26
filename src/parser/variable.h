@@ -23,7 +23,6 @@
 #define ATEN_VARIABLE_H
 
 #include "parser/treenode.h"
-#include "base/dnchar.h"
 #include "base/namespace.h"
 
 ATEN_BEGIN_NAMESPACE

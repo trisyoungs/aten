@@ -285,7 +285,7 @@ ZMatrixElement* ZMatrix::addElement(Reflist<Atom,int>& atoms)
 {
 	Messenger::enter("ZMatrix::addElement");
 	int i;
-	Dnchar name;
+	QString name;
 	DoubleVariable* v;
 	// Create a new element structure, and store a maximum of 4 atoms from list in the element's array
 	ZMatrixElement* zel = elements_.add();
@@ -308,24 +308,24 @@ ZMatrixElement* ZMatrix::addElement(Reflist<Atom,int>& atoms)
 	{
 		v = new DoubleVariable(parent_->distance(zel->atom(0), zel->atom(1)), FALSE);
 		distances_.take(v);
-		name.sprintf("d%i",distances_.nVariables());
-		v->setName(name.get());
+		name.sprintf("d%i", distances_.nVariables());
+		v->setName(name);
 		zel->setDistanceVariable(v);
 	}
 	if (i > 2)
 	{
 		v = new DoubleVariable(parent_->angle(zel->atom(0), zel->atom(1), zel->atom(2)), FALSE);
 		angles_.take(v);
-		name.sprintf("a%i",angles_.nVariables());
-		v->setName(name.get());
+		name.sprintf("a%i", angles_.nVariables());
+		v->setName(name);
 		zel->setAngleVariable(v);
 	}
 	if (i > 3)
 	{
 		v = new DoubleVariable(parent_->torsion(zel->atom(0), zel->atom(1), zel->atom(2), zel->atom(3)), FALSE);
 		torsions_.take(v);
-		name.sprintf("t%i",torsions_.nVariables());
-		v->setName(name.get());
+		name.sprintf("t%i", torsions_.nVariables());
+		v->setName(name);
 		zel->setTorsionVariable(v);
 	}
 	Messenger::exit("ZMatrix::addElement");

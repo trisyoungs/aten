@@ -22,7 +22,6 @@
 #ifndef ATEN_UNDOEVENT_H
 #define ATEN_UNDOEVENT_H
 
-#include "base/dnchar.h"
 #include "base/atom.h"
 #include "base/bond.h"
 #include "base/glyph.h"

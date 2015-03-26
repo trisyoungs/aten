@@ -22,7 +22,6 @@
 #ifndef ATEN_LOADMODELWINDOW_H
 #define ATEN_LOADMODELWINDOW_H
 
-#include "base/dnchar.h"
 #include "gui/ui_loadmodel.h"
 #include "base/namespace.h"
 
@@ -63,13 +62,13 @@ class AtenLoadModel : public QDialog
 	// Whether the window is currently refreshing its controls
 	bool refreshing_;
 	// Filename in edit box
-	Dnchar selectedFilename_;
+	QString selectedFilename_;
 
 	public:
 	// Return the selected format (if any)
 	Tree* selectedFormat();
 	// Return filename
-	const char* selectedFilename();
+	QString selectedFilename();
 
 
 	/*

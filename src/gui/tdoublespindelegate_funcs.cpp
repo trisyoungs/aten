@@ -34,7 +34,7 @@ TDoubleSpinDelegate::TDoubleSpinDelegate(QObject *parent, double vmin, double vm
 QWidget *TDoubleSpinDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
 	// Create editor widget (in this case a double spin box) and set some properties
-	QDoubleSpinBox *editor = new QDoubleSpinBox(parent);
+	QDoubleSpinBox* editor = new QDoubleSpinBox(parent);
 	editor->setMinimum(min_);
 	editor->setMaximum(max_);
 	editor->setSingleStep(step_);
@@ -48,14 +48,14 @@ void TDoubleSpinDelegate::setEditorData(QWidget *editor, const QModelIndex &inde
 {
 	double value = index.model()->data(index, Qt::EditRole).toDouble();
 
-	QDoubleSpinBox *spinBox = static_cast<QDoubleSpinBox*>(editor);
+	QDoubleSpinBox* spinBox = static_cast<QDoubleSpinBox*>(editor);
 	spinBox->setValue(value);
 }
 
 // Get value from editing widget, and set back in model
 void TDoubleSpinDelegate::setModelData(QWidget *editor, QAbstractItemModel* model, const QModelIndex &index) const
 {
-	QDoubleSpinBox *spinBox = static_cast<QDoubleSpinBox*>(editor);
+	QDoubleSpinBox* spinBox = static_cast<QDoubleSpinBox*>(editor);
 	spinBox->interpretText();
 	double value = spinBox->value();
 

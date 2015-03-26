@@ -337,12 +337,10 @@ bool MonteCarlo::minimise(Model* srcmodel, double econ, double fcon)
 	// Validity of forcefield and energy setup must be performed before calling and is *not* checked here.
 	Messenger::enter("MonteCarlo::minimise");
 	int n, cycle, nmoves, move, mol, randpat, npats;
-	Dnchar s;
 	double newEnergy, currentEnergy, lastPrintedEnergy, currentVdwEnergy, currentElecEnergy, phi, theta;
 	double deltaMoleculeEnergy, deltaVdwEnergy, deltaElecEnergy, referenceMoleculeEnergy, referenceVdwEnergy, referenceElecEnergy;
 	Vec3<double> v;
 	double beta = 1.0 / (prefs.gasConstant() * temperature_);
-	Dnchar etatext;
 	bool success;
 
 	/*
@@ -466,10 +464,10 @@ bool MonteCarlo::minimise(Model* srcmodel, double econ, double fcon)
 
 		if (prefs.shouldUpdateEnergy(cycle))
 		{
-			s.sprintf(" %-5i %13.6e %13.6e %13.6e %13.6e", cycle, currentEnergy, currentEnergy-lastPrintedEnergy, currentVdwEnergy, currentElecEnergy);
-			for (n=0; n<MonteCarlo::nMoveTypes; n++) s.strcatf(" %3i", int(acceptanceRatio_[0][n]*100.0));
-			s.strcatf("  %s\n", etatext.get());
-			Messenger::print(s.get());
+			QString s;
+			s.sprintf(" %-5i %13.6e %13.6e %13.6e %13.6e ", cycle, currentEnergy, currentEnergy-lastPrintedEnergy, currentVdwEnergy, currentElecEnergy);
+			for (n=0; n<MonteCarlo::nMoveTypes; n++) s += QString::number(int(acceptanceRatio_[0][n]*100.0), 10, 3) + " ";
+			Messenger::print(s);
 			lastPrintedEnergy = currentEnergy;
 		}
 		

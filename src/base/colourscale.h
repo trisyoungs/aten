@@ -25,7 +25,6 @@
 #include "templates/list.h"
 #include "templates/reflist.h"
 #include "templates/vector4.h"
-#include "base/dnchar.h"
 #include "base/colourscalepoint.h"
 #include "base/namespace.h"
 #ifdef _MAC

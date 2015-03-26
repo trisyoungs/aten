@@ -54,7 +54,7 @@ void AtenViewBasis::showWindow(Model* m)
 	BasisShell *bas;
 	BasisPrimitive* prim;
 	int row = 0, shell, lastid = -1, n, ncartesians = 0;
-	Dnchar text;
+	QString text;
 	for (bas = target_->basisShells(); bas != NULL; bas = bas->next) row += bas->nPrimitives();
 	ui.BasisTable->setRowCount(row);
 	ui.BasisShellsLabel->setText(QString::number(target_->nBasisShells()));
@@ -72,7 +72,7 @@ void AtenViewBasis::showWindow(Model* m)
 			lastid = bas->atomId();
 			tabitem = new QTableWidgetItem();
 			text.sprintf("%i (%s)\n", lastid+1, m->atom(lastid) != NULL ? Elements().symbol(m->atom(lastid)) : "NULL");
-			tabitem->setText(text.get());
+			tabitem->setText(text);
 			ui.BasisTable->setItem(row, AtenViewBasis::AtomIdColumn, tabitem);
 		}
 		// Add in shell data

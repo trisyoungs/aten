@@ -38,7 +38,6 @@ bool MonteCarlo::disorder(Model* allModels, Model* destmodel, PartitioningScheme
 	Refitem<DisorderData,int>* ri;
 	PartitionData* pd;
 	Atom* i;
-	Dnchar cycleText;
 	int n, m, id, cycle, nSatisfied, nInsertions, nRelative = 0, totalToAdd = 0;
 	Vec3<double> r;
 	UnitCell* cell;
@@ -366,25 +365,23 @@ bool MonteCarlo::disorder(Model* allModels, Model* destmodel, PartitioningScheme
 		*/
 		if ((cycle%100 == 0) || (nSatisfied == components_.nItems()))
 		{
-			cycleText.sprintf("%-5i", cycle);
 			for (component = components_.first(); component != NULL; component = component->next)
 			{
 				switch (component->insertionPolicy())
 				{
 					case (Model::NumberPolicy):
-						Messenger::print("%-5s   %-15s %-10s  %-5i (%-5i)  %8.5f  (   N/A  )  %5.3f", cycleText.get(), qPrintable(component->modelName()), qPrintable(component->partitionName()), component->nAdded(), component->requestedPopulation(), component->partitionDensity(), component->scaleFactor());
+						Messenger::print("%-5i   %-15s %-10s  %-5i (%-5i)  %8.5f  (   N/A  )  %5.3f", cycle, qPrintable(component->modelName()), qPrintable(component->partitionName()), component->nAdded(), component->requestedPopulation(), component->partitionDensity(), component->scaleFactor());
 						break;
 					case (Model::DensityPolicy):
-						Messenger::print("%-5s   %-15s %-10s  %-5i ( N/A )  %8.5f  (%8.5f)  %5.3f", cycleText.get(), qPrintable(component->modelName()), qPrintable(component->partitionName()), component->nAdded(), component->partitionDensity(), component->requestedDensity(), component->scaleFactor());
+						Messenger::print("%-5i   %-15s %-10s  %-5i ( N/A )  %8.5f  (%8.5f)  %5.3f", cycle, qPrintable(component->modelName()), qPrintable(component->partitionName()), component->nAdded(), component->partitionDensity(), component->requestedDensity(), component->scaleFactor());
 						break;
 					case (Model::NumberAndDensityPolicy):
-						Messenger::print("%-5s   %-15s %-10s  %-5i (%-5i)  %8.5f  (%8.5f)  %5.3f", cycleText.get(), qPrintable(component->modelName()), qPrintable(component->partitionName()), component->nAdded(), component->requestedPopulation(), component->partitionDensity(), component->requestedDensity(), component->scaleFactor());
+						Messenger::print("%-5i   %-15s %-10s  %-5i (%-5i)  %8.5f  (%8.5f)  %5.3f", cycle, qPrintable(component->modelName()), qPrintable(component->partitionName()), component->nAdded(), component->requestedPopulation(), component->partitionDensity(), component->requestedDensity(), component->scaleFactor());
 						break;
 					case (Model::RelativePolicy):
-						Messenger::print("%-5s   %-15s %-10s  %-5i (R %-3i)  %8.5f  (%8.5f)  %5.3f", cycleText.get(), qPrintable(component->modelName()), qPrintable(component->partitionName()), component->nAdded(), component->requestedPopulation(), component->partitionDensity(), component->requestedDensity(), component->scaleFactor());
+						Messenger::print("%-5i   %-15s %-10s  %-5i (R %-3i)  %8.5f  (%8.5f)  %5.3f", cycle, qPrintable(component->modelName()), qPrintable(component->partitionName()), component->nAdded(), component->requestedPopulation(), component->partitionDensity(), component->requestedDensity(), component->scaleFactor());
 						break;
 				}
-				cycleText.clear();
 			}
 		}
 		
@@ -454,25 +451,23 @@ bool MonteCarlo::disorder(Model* allModels, Model* destmodel, PartitioningScheme
 		*/
 		if ((cycle%5 == 0) || (nSatisfied == components_.nItems()))
 		{
-			cycleText.sprintf("%-5i", cycle);
 			for (component = components_.first(); component != NULL; component = component->next)
 			{
 				switch (component->insertionPolicy())
 				{
 					case (Model::NumberPolicy):
-						Messenger::print("%-5s   %-15s %-10s  %-5i (%-5i)  %8.5f  (   N/A  )  %5.3f  %5.3f", cycleText.get(), qPrintable(component->modelName()), qPrintable(component->partitionName()), component->nAdded(), component->requestedPopulation(), component->partitionDensity(), component->scaleFactor(), double(component->count())/component->nAdded());
+						Messenger::print("%-5i   %-15s %-10s  %-5i (%-5i)  %8.5f  (   N/A  )  %5.3f  %5.3f", cycle, qPrintable(component->modelName()), qPrintable(component->partitionName()), component->nAdded(), component->requestedPopulation(), component->partitionDensity(), component->scaleFactor(), double(component->count())/component->nAdded());
 						break;
 					case (Model::DensityPolicy):
-						Messenger::print("%-5s   %-15s %-10s  %-5i ( N/A )  %8.5f  (%8.5f)  %5.3f  %5.3f", cycleText.get(), qPrintable(component->modelName()), qPrintable(component->partitionName()), component->nAdded(), component->partitionDensity(), component->requestedDensity(), component->scaleFactor(), double(component->count())/component->nAdded());
+						Messenger::print("%-5i   %-15s %-10s  %-5i ( N/A )  %8.5f  (%8.5f)  %5.3f  %5.3f", cycle, qPrintable(component->modelName()), qPrintable(component->partitionName()), component->nAdded(), component->partitionDensity(), component->requestedDensity(), component->scaleFactor(), double(component->count())/component->nAdded());
 						break;
 					case (Model::NumberAndDensityPolicy):
-						Messenger::print("%-5s   %-15s %-10s  %-5i (%-5i)  %8.5f  (%8.5f)  %5.3f  %5.3f", cycleText.get(), qPrintable(component->modelName()), qPrintable(component->partitionName()), component->nAdded(), component->requestedPopulation(), component->partitionDensity(), component->requestedDensity(), component->scaleFactor(), double(component->count())/component->nAdded());
+						Messenger::print("%-5i   %-15s %-10s  %-5i (%-5i)  %8.5f  (%8.5f)  %5.3f  %5.3f", cycle, qPrintable(component->modelName()), qPrintable(component->partitionName()), component->nAdded(), component->requestedPopulation(), component->partitionDensity(), component->requestedDensity(), component->scaleFactor(), double(component->count())/component->nAdded());
 						break;
 					case (Model::RelativePolicy):
-						Messenger::print("%-5s   %-15s %-10s  %-5i (R %-3i)  %8.5f  (%8.5f)  %5.3f  %5.3f", cycleText.get(), qPrintable(component->modelName()), qPrintable(component->partitionName()), component->nAdded(), component->requestedPopulation(), component->partitionDensity(), component->requestedDensity(), component->scaleFactor(), double(component->count())/component->nAdded());
+						Messenger::print("%-5i   %-15s %-10s  %-5i (R %-3i)  %8.5f  (%8.5f)  %5.3f  %5.3f", cycle, qPrintable(component->modelName()), qPrintable(component->partitionName()), component->nAdded(), component->requestedPopulation(), component->partitionDensity(), component->requestedDensity(), component->scaleFactor(), double(component->count())/component->nAdded());
 						break;
 				}
-				cycleText.clear();
 			}
 		}
 		

@@ -75,14 +75,14 @@ bool IntegerVariable::execute(ReturnValue& rv)
 void IntegerVariable::nodePrint(int offset, const char* prefix)
 {
 	// Construct tabbed offset
-	Dnchar tab(offset+32);
+	QString tab;
 	for (int n=0; n<offset-1; n++) tab += '\t';
-	if (offset > 1) tab.strcat("   |--> ");
-	tab.strcat(prefix);
+	if (offset > 1) tab += "   |--> ";
+	tab += prefix;
 
 	// Output node data
-	if (readOnly_) printf("[C]%s%i (constant value)\n", tab.get(), integerData_);
-	else printf("[V]%s%i (variable, name=%s)\n", tab.get(), integerData_, qPrintable(name_));
+	if (readOnly_) printf("[C]%s%i (constant value)\n", qPrintable(tab), integerData_);
+	else printf("[V]%s%i (variable, name=%s)\n", qPrintable(tab), integerData_, qPrintable(name_));
 }
 
 /*
@@ -230,13 +230,13 @@ bool IntegerArrayVariable::executeAsArray(ReturnValue& rv, int arrayIndex)
 void IntegerArrayVariable::nodePrint(int offset, const char* prefix)
 {
 	// Construct tabbed offset
-	Dnchar tab(offset+32);
+	QString tab;
 	for (int n=0; n<offset-1; n++) tab += '\t';
-	if (offset > 1) tab.strcat("   |--> ");
-	tab.strcat(prefix);
+	if (offset > 1) tab += "   |--> ";
+	tab += prefix;
 
 	// Output node data
-	printf("[V]%s (integer array, name=%s, current size=%i)\n", tab.get(), qPrintable(name_), arraySize_);
+	printf("[V]%s (integer array, name=%s, current size=%i)\n", qPrintable(tab), qPrintable(name_), arraySize_);
 }
 
 // Return array pointer

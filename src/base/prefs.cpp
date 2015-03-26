@@ -961,7 +961,7 @@ Prefs::MouseAction Prefs::mouseAction(Prefs::MouseButton mb) const
 }
 
 // Return array of (derived) mouse action texts
-Dnchar* Prefs::mouseActionTexts()
+QString* Prefs::mouseActionTexts()
 {
 	return mouseActionTexts_;
 }
@@ -980,7 +980,7 @@ Prefs::KeyAction Prefs::keyAction(Prefs::ModifierKey mk) const
 }
 
 // Return array of (derived) key action texts
-Dnchar* Prefs::keyActionTexts()
+QString* Prefs::keyActionTexts()
 {
 	return keyActionTexts_;
 }

@@ -22,7 +22,6 @@
 #ifndef ATEN_PARTITION_H
 #define ATEN_PARTITION_H
 
-#include "base/dnchar.h"
 #include "base/grid.h"
 #include "render/gridprimitive.h"
 #include "parser/program.h"

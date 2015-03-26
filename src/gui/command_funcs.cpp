@@ -94,7 +94,7 @@ void CommandWidget::updateVariableList()
 	TreeNode* node;
 	Variable* var;
 	ReturnValue rv;
-	Dnchar s;
+	QString s;
 	for (Refitem<ScopeNode,int>* sn = interactiveProgram_.mainProgram()->scopeNodes(); sn != NULL; sn = sn->next)
 	{
 		count = 0;
@@ -110,7 +110,7 @@ void CommandWidget::updateVariableList()
 			else
 			{
 				s.sprintf("%p", rv.asPointer(rv.type()));
-				item = new QTableWidgetItem(s.get());
+				item = new QTableWidgetItem(s);
 			}
 			ui.VariableTable->setItem(count, 2, item);
 			++count;
@@ -351,9 +351,9 @@ void CommandWidget::on_CommandList_currentTextChanged(const QString &text)
 	// Find keyword
 	Commands::Function cf = Commands::command(qPrintable(text));
 	if (cf == Commands::nCommands) return;
-	Dnchar cmdtext;
- 	cmdtext.sprintf("<b>%s(%s)</b><br/>%s", parent_.aten().commandKeyword(cf), parent_.aten().commandHasArguments(cf) ? parent_.aten().commandArgText(cf) : "", parent_.aten().commandSyntax(cf));
-	ui.CommandEdit->insertHtml(cmdtext.get());
+	QString cmdText;
+ 	cmdText.sprintf("<b>%s(%s)</b><br/>%s", parent_.aten().commandKeyword(cf), parent_.aten().commandHasArguments(cf) ? parent_.aten().commandArgText(cf) : "", parent_.aten().commandSyntax(cf));
+	ui.CommandEdit->insertHtml(cmdText);
 }
 
 void CommandWidget::closeEvent(QCloseEvent *event)

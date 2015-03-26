@@ -22,7 +22,6 @@
 #ifndef ATEN_PROGRAM_H
 #define ATEN_PROGRAM_H
 
-#include "base/dnchar.h"
 #include "parser/tree.h"
 #include "parser/scopenode.h"
 #include "base/namespace.h"

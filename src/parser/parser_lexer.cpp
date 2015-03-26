@@ -20,7 +20,6 @@
 */
 
 #include "main/aten.h"
-#include "base/dnchar.h"
 #include "parser/parser.h"
 #include "base/sysfunc.h"
 

@@ -50,7 +50,7 @@ void AtenViewEigenvector::showWindow(Model* m, int id)
 	ui.EigenvectorTable->setRowCount(m->nCartesianBasisFunctions());
 	// Loop over basis shells and their primitives....
 	QTableWidgetItem *tabitem;
-	Dnchar text;
+	QString text;
 	row = 0;
 	Eigenvector *evec = m->eigenvector(id); 
 	double* eigenvec = evec->eigenvector();
@@ -63,7 +63,7 @@ void AtenViewEigenvector::showWindow(Model* m, int id)
 			// Atom column
 			tabitem = new QTableWidgetItem();
 			text.sprintf("%i (%s)\n", bas->atomId()+1, m->atom(bas->atomId()) != NULL ? Elements().symbol(m->atom(bas->atomId())) : "NULL");
-			tabitem->setText(text.get());
+			tabitem->setText(text);
 			ui.EigenvectorTable->setItem(row, AtenViewEigenvector::AtomColumn, tabitem);
 			// Add in shell data
 			tabitem = new QTableWidgetItem();
@@ -87,7 +87,7 @@ void AtenViewEigenvector::showWindow(Model* m, int id)
 			// Atom column
 			tabitem = new QTableWidgetItem();
 			text.sprintf("%i (%s)\n", bas->atomId()+1, m->atom(bas->atomId()) != NULL ? Elements().symbol(m->atom(bas->atomId())) : "NULL");
-			tabitem->setText(text.get());
+			tabitem->setText(text);
 			ui.EigenvectorTable->setItem(row, AtenViewEigenvector::AtomColumn, tabitem);
 			// Add in shell data
 			tabitem = new QTableWidgetItem();

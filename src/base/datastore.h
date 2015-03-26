@@ -22,7 +22,6 @@
 #ifndef ATEN_DATASTORE_H
 #define ATEN_DATASTORE_H
 
-#include "base/dnchar.h"
 #include "templates/list.h"
 #include "parser/returnvalue.h"
 #include "base/namespace.h"
@@ -34,20 +33,21 @@ class DataStoreItem : public ListItem<DataStoreItem>
 {
 	public:
 	// Constructor / Destructor
-	DataStoreItem(const char* key);
+	DataStoreItem(QString key);
+
 
 	/*
 	// Data
 	*/
 	private:
 	// Key
-	Dnchar key_;
+	QString key_;
 	// Data
 	ReturnValue data_;
 
 	public:
 	// Retrieve key associated to item
-	const char* key() const;
+	QString key() const;
 	// Retrieve value associated to pair
 	ReturnValue& data();
 };
@@ -58,6 +58,7 @@ class DataStore
 	public:
 	// Constructor / Destructor
 	DataStore();
+
 
 	/*
 	// Data
@@ -72,13 +73,13 @@ class DataStore
 	// Return number of pairs defined
 	int nItems() const;
 	// Set (existing) key/value pair
-	DataStoreItem *addData(const char* key);
+	DataStoreItem* addData(QString key);
 	// Search to see if specific key is in the table
-	DataStoreItem *searchForKey(const char* key);
+	DataStoreItem* searchForKey(QString key);
 	// Retrieve data associated to key
-	ReturnValue& dataForKey(const char* key);
+	ReturnValue& dataForKey(QString key);
 	// Return first key in list
-	DataStoreItem *dataItems();
+	DataStoreItem* dataItems();
 };
 
 ATEN_END_NAMESPACE

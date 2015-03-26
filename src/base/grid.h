@@ -23,7 +23,6 @@
 #define ATEN_GRID_H
 
 #include "templates/vector3.h"
-#include "base/dnchar.h"
 #include "base/cell.h"
 #include "math/constants.h"
 #include "base/namespace.h"

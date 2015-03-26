@@ -40,15 +40,15 @@ LayoutData::LayoutData() : ListItem<LayoutData>()
 }
 
 // Set associated name of layout
-void LayoutData::setName(const char* name)
+void LayoutData::setName(QString name)
 {
 	name_ = name;
 }
 
 // Return associated name of layout
-const char* LayoutData::name()
+QString LayoutData::name()
 {
-	return name_.get();
+	return name_;
 }
 
 // Set layout pointer
@@ -113,18 +113,18 @@ void LayoutList::clear()
 }
 
 // Add a new item to the list
-LayoutData *LayoutList::add(const char* name, QGridLayout *layout)
+LayoutData* LayoutList::add(QString name, QGridLayout *layout)
 {
-	LayoutData *ld = layouts_.add();
+	LayoutData* ld = layouts_.add();
 	ld->setName(name);
 	ld->setLayout(layout);
 	return ld;
 }
 
 // Find existing layout
-LayoutData *LayoutList::find(const char* name)
+LayoutData* LayoutList::find(QString name)
 {
-	LayoutData *ld;
-	for (ld = layouts_.first(); ld != NULL; ld = ld->next) if (strcmp(name, ld->name()) == 0) break;
+	LayoutData* ld;
+	for (ld = layouts_.first(); ld != NULL; ld = ld->next) if (name == ld->name()) break;
 	return ld;
 }

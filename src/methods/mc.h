@@ -23,7 +23,6 @@
 #define ATEN_MONTECARLO_H
 
 #include "templates/list.h"
-#include "base/dnchar.h"
 #include "base/namespace.h"
 
 ATEN_BEGIN_NAMESPACE

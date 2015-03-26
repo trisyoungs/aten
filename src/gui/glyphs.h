@@ -62,8 +62,8 @@ class GlyphsWidget : public QDockWidget
 	// Local widget pointers
 	QRadioButton *dataAtomRadio[MAXGLYPHDATA], *dataValueRadio[MAXGLYPHDATA];
 	QSpinBox *dataAtomIdSpin[MAXGLYPHDATA];
-	QComboBox *dataAtomDataCombo[MAXGLYPHDATA];
-	QDoubleSpinBox *dataValueXSpin[MAXGLYPHDATA], *dataValueYSpin[MAXGLYPHDATA], *dataValueZSpin[MAXGLYPHDATA];
+	QComboBox* dataAtomDataCombo[MAXGLYPHDATA];
+	QDoubleSpinBox* dataValueXSpin[MAXGLYPHDATA], *dataValueYSpin[MAXGLYPHDATA], *dataValueZSpin[MAXGLYPHDATA];
 	TColourFrame *dataColourFrame[MAXGLYPHDATA];
 	QWidget *dataTabWidget[MAXGLYPHDATA];
 	QWidget *dataAtomWidget[MAXGLYPHDATA], *dataValueWidget[MAXGLYPHDATA];

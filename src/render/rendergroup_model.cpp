@@ -224,7 +224,6 @@ void RenderGroup::createAtomsAndBonds(PrimitiveSet& primitiveSet, Model* source,
 	Vec4<GLfloat> colour_i, colour_j, penColour;
 	GLfloat alpha_i;
 	int id_i, labels, m, n, el_j;
-	Dnchar text;
 	double selscale, radius_i, radius_j, phi, mag, best, delta;
 	double aradius[Prefs::nDrawStyles];
 	Atom *i, *j, *k, *l, **atoms;

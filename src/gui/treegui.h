@@ -23,7 +23,6 @@
 #define ATEN_TREEGUIQT_H
 
 #include "gui/ui_treegui.h"
-#include "base/dnchar.h"
 #include "templates/list.h"
 #include "base/namespace.h"
 

@@ -54,12 +54,8 @@ Optimise basic primitives to use vertex/index arrays instead of just vertices (a
 Check picked atom rendering (probably broken).
 Optimise primitive drawing / generation by allowing use of GL_TRIANGLE_STRIP?
 Allow message printing in different colours, dependent on type of message (e.g. Error = RED, warning = orange, success = Green).
-Remove replaceChars command (since it is now exactly the same as replaceStr).
-Make data directories in Aten into QDir (from QString).
-Remove PATHSEP (and use toNativeSeparators etc).
 Note not related to Aten2 - pdens visualising areas of low probability (less than bulk) to see excluded areas?
 Split fragment.cpp into Fragment and FragmentGroup.
-Removed itoa, ftoa and other old routines from base/sysfunc.h.
 
 
 Manual TODO:

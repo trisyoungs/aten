@@ -207,9 +207,9 @@ void ReturnValue::reset()
 }
 
 // Return string of contained data
-const char* ReturnValue::info()
+QString ReturnValue::info()
 {
-	static Dnchar result;
+	QString result;
 	switch (type_)
 	{
 		case (VTypes::NoData):

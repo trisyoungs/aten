@@ -25,7 +25,6 @@
 #include "base/lineparser.h"
 #include "parser/tree.h"
 #include "templates/reflist.h"
-#include "base/dnchar.h"
 #include "base/namespace.h"
 
 ATEN_BEGIN_NAMESPACE

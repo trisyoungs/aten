@@ -68,21 +68,21 @@ bool ScopeNode::initialise()
 void ScopeNode::nodePrint(int offset, const char* prefix)
 {
 	// Construct tabbed offset
-	Dnchar tab(offset+32);
+	QString tab;
 	for (int n=0; n<offset-1; n++) tab += '\t';
-	if (offset > 1) tab.strcat("   |--> ");
-	tab.strcat(prefix);
+	if (offset > 1) tab += "   |--> ";
+	tab += prefix;
 
 	// Output node data
-	printf("[SN]%s (Scoped Node) (%i variables)\n", tab.get(), variables.nVariables());
+	printf("[SN]%s (Scoped Node) (%i variables)\n", qPrintable(tab), variables.nVariables());
 	int n = 1;
 	for (TreeNode* tn = variables.variables(); tn != NULL; tn = tn->next)
 	{
 		Variable* v = (Variable*) tn;
-		printf("%s --> %3i: %s (%s)\n", tab.get(), n++, qPrintable(v->name()), VTypes::dataType(v->returnType()));
+		printf("%s --> %3i: %s (%s)\n", qPrintable(tab), n++, qPrintable(v->name()), VTypes::dataType(v->returnType()));
 		if (v->initialValue() != NULL) v->initialValue()->nodePrint(offset+1, "init: ");
 	}
-	printf("[SN]%s%s (Command) (%i arguments)\n", tab.get(), Commands::command(function_), args_.nItems());
+	printf("[SN]%s%s (Command) (%i arguments)\n", qPrintable(tab), Commands::command(function_), args_.nItems());
 	// Output Argument data
 	for (Refitem<TreeNode,int>* ri = args_.first(); ri != NULL; ri = ri->next) ri->item->nodePrint(offset+1);
 }

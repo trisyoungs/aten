@@ -496,7 +496,7 @@ void PartitioningScheme::recalculatePartitions()
 	}
 
 	// Recalculate grid points
-	double** *data = data = grid_.data3d();
+	double*** data = data = grid_.data3d();
 	
 	// Clear partition data
 	for (PartitionData* pd = partitions_.first(); pd != NULL; pd = pd->next) pd->clear();
@@ -509,8 +509,8 @@ void PartitioningScheme::recalculatePartitions()
 	double x, y, z;
 
 	// Okay, do the calculation
-	Dnchar text(-1, "Generating partition data for scheme '%s'", qPrintable(name_));
-	int progid = progress.initialise(text.get(), gridSize_.x);
+	QString text = "Generating partition data for scheme '" + name_ + "'";
+	int progid = progress.initialise(text, gridSize_.x);
 	x = 0.5*dx;
 	for (i=0; i<gridSize_.x; ++i)
 	{

@@ -24,7 +24,6 @@
 
 #include "base/atom.h"
 #include "base/bond.h"
-#include "base/dnchar.h"
 #include "base/ring.h"
 #include "templates/list.h"
 #include "templates/reflist.h"
@@ -115,7 +114,7 @@ class Neta : public ListItem<Neta>
 	NetaRootNode* description();
 	// Print
 	void print() const;
-	// Print (append) NETA string to target Dnchar
+	// Print (append) NETA string to target string
 	void netaPrint(QString& neta) const;
 
 

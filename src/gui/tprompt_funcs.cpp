@@ -19,7 +19,6 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "base/dnchar.h"
 #include "gui/tprompt.uih"
 #include <QtGui/QPainter>
 #include <QtGui/QLayout>
@@ -69,21 +68,21 @@ QStringList TPrompt::commandList()
 	return items;
 }
 
-const char* TPrompt::getText()
+QString TPrompt::getText()
 {
 	// Grab string and add trailing semicolon if required
-	static Dnchar text;
-	text = qPrintable(commandPrompt_->text());
+	QString text = commandPrompt_->text();
 	commandPrompt_->setText("");
+
 	// If there's nothing 'useful' in the LineEdit, don't update the list...
 	if (!text.isEmpty())
 	{
 		// Add the text we just saved to the list, unless it is a duplicate of an existing entry
-		QList<QListWidgetItem*> results = commandList_->findItems(text.get(), Qt::MatchFixedString);
-		if (results.size() == 0) commandList_->addItem(text.get());
+		QList<QListWidgetItem*> results = commandList_->findItems(text, Qt::MatchFixedString);
+		if (results.size() == 0) commandList_->addItem(text);
 		commandList_->setCurrentRow(-1);
 	}
-	return text.get();
+	return text;
 }
 
 void TPrompt::keyPressEvent(QKeyEvent *event)
@@ -98,19 +97,19 @@ void TPrompt::keyPressEvent(QKeyEvent *event)
 			if (index == -1)
 			{
 				// Store current text
-				lastPromptText_ = qPrintable(commandPrompt_->text());
+				lastPromptText_ = commandPrompt_->text();
 				index = commandList_->count()-1;
 			}
 			else index--;
 			if (index == -1)
 			{
 				commandList_->setCurrentRow(-1);
-				commandPrompt_->setText( lastPromptText_.get() );
+				commandPrompt_->setText(lastPromptText_);
 			}
 			else
 			{
 				commandList_->setCurrentRow(index);
-				commandPrompt_->setText( commandList_->item(index)->text() );
+				commandPrompt_->setText(commandList_->item(index)->text());
 			}
 			break;
 		case (Qt::Key_Down):
@@ -119,19 +118,19 @@ void TPrompt::keyPressEvent(QKeyEvent *event)
 			if (index == -1)
 			{
 				// Store current text
-				lastPromptText_ = qPrintable(commandPrompt_->text());
+				lastPromptText_ = commandPrompt_->text();
 				index = 0;
 			}
 			else index++;
 			if (index == commandList_->count())
 			{
 				commandList_->setCurrentRow(-1);
-				commandPrompt_->setText( lastPromptText_.get() );
+				commandPrompt_->setText(lastPromptText_);
 			}
 			else
 			{
 				commandList_->setCurrentRow(index);
-				commandPrompt_->setText( commandList_->item(index)->text() );
+				commandPrompt_->setText(commandList_->item(index)->text());
 			}
 			break;
 		default:
@@ -149,20 +148,24 @@ void TPrompt::promptTextEdited(QString text)
 void TPrompt::promptListSingleClicked(QListWidgetItem* item)
 {
 	if (item == NULL) return;
+
 	// Store current line edit text
-	lastPromptText_ = qPrintable(commandPrompt_->text());
+	lastPromptText_ = commandPrompt_->text();
+
 	// Take the text of the item and place it in the line edit
-	commandPrompt_->setText( item->text() );
+	commandPrompt_->setText(item->text());
 	commandPrompt_->setFocus();
 }
 
 void TPrompt::promptListDoubleClicked(QListWidgetItem* item)
 {
 	if (item == NULL) return;
+
 	// Store current line edit text
-	lastPromptText_ = qPrintable(commandPrompt_->text());
+	lastPromptText_ = commandPrompt_->text();
+
 	// Take the text of the item and place it in the line edit
-	commandPrompt_->setText( item->text() );
+	commandPrompt_->setText(item->text());
 	emit returnPressed();
 }
 

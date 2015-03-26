@@ -35,9 +35,7 @@ void AtenWindow::finaliseUi()
 	int n;
 
 	// Set the title of the main window to reflect the version
-	Dnchar title;
-	title.sprintf("Aten (%s)", ATENVERSION);
-	setWindowTitle(title.get());
+	setWindowTitle("Aten v2 PRERELEASE (" + QString(ATENVERSION) + ")");
 
 	// Set up recent files list (create all actions first)
 	for (n=0; n<MAXRECENTFILES; n++)
