@@ -20,7 +20,6 @@
 */
 
 #include "math/constants.h"
-#include "base/dnchar.h"
 #include "base/messenger.h"
 #include <fstream>
 #include <iostream>

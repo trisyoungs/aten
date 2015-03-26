@@ -658,8 +658,8 @@ bool LineParser::getCharsDelim(QString& destArg)
 // Get next delimited chunk from string, removing grabbed part
 bool LineParser::getCharsDelim(int optionMask, QString& line, QString& destArg)
 {
-	// Get the next input chunk from the internal string and put into argument specified.
-	Messenger::enter("LineParser::getCharsDelim(int,Dnchar,Dnchar)");
+	Messenger::enter("LineParser::getCharsDelim(int,QString,QString)");
+
 	int pos = 0, length = line.length();
 	bool done = false, hadQuotes = false, failed = false;
 	char c, quoteChar = '\0';

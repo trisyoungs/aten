@@ -129,7 +129,7 @@ bool StepNode::execute(ReturnValue& rv)
 		}
 		if ((arrayrv.type() != VTypes::IntegerData) && (arrayrv.type() != VTypes::DoubleData) && (arrayrv.type() != VTypes::ElementData))
 		{
-			printf("Invalid datatype used as an array index (%s).\n", arrayrv.info());
+			printf("Invalid datatype used as an array index (%s).\n", qPrintable(arrayrv.info()));
 			return FALSE;
 		}
 		i = arrayrv.asInteger();
@@ -402,7 +402,7 @@ bool StepNode::set(ReturnValue& executerv, ReturnValue& setrv)
 		}
 		if ((arrayrv.type() != VTypes::IntegerData) && (arrayrv.type() != VTypes::DoubleData) && (arrayrv.type() != VTypes::ElementData))
 		{
-			printf("Invalid datatype used as an array index (%s).\n", arrayrv.info());
+			printf("Invalid datatype used as an array index (%s).\n", qPrintable(arrayrv.info()));
 			return FALSE;
 		}
 		i = arrayrv.asInteger();

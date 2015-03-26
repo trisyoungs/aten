@@ -22,7 +22,6 @@
 #ifndef ATEN_LAYOUTLIST_H
 #define ATEN_LAYOUTLIST_H
 
-#include "base/dnchar.h"
 #include "math/constants.h"
 #include "templates/list.h"
 #include "base/namespace.h"
@@ -33,7 +32,7 @@ class QWidget;
 
 ATEN_BEGIN_NAMESPACE
 
-// QGridLayout*/int/int class
+// LayoutData class
 class LayoutData : public ListItem<LayoutData>
 {
 	public:
@@ -42,20 +41,20 @@ class LayoutData : public ListItem<LayoutData>
 
 	private:
 	// Associated name of layout (e.g. group name)
-	Dnchar name_;
+	QString name_;
 	// Layout pointer
-	QGridLayout *layout_;
+	QGridLayout* layout_;
 	// Current row and column in layout
 	int row_;
 	int column_;
 
 	public:
 	// Set associated name of layout
-	void setName(const char* name);
+	void setName(QString name);
 	// Return associated name of layout
-	const char* name();
+	QString name();
 	// Set layout pointer
-	void setLayout(QGridLayout *layout);
+	void setLayout(QGridLayout* layout);
 	// Return layout pointer
 	QGridLayout *layout();
 	// Return current column number (and increase by number specified)
@@ -81,9 +80,9 @@ class LayoutList
 	// Clear list
 	void clear();
 	// Add new item to the list
-	LayoutData *add(const char* name, QGridLayout *layout);
+	LayoutData* add(QString name, QGridLayout *layout);
 	// Find existing layout
-	LayoutData *find(const char* name);
+	LayoutData* find(QString name);
 };
 
 ATEN_END_NAMESPACE

@@ -24,7 +24,6 @@
 
 #include "parser/variable.h"
 #include "parser/accessor.h"
-#include "base/dnchar.h"
 #include "base/namespace.h"
 
 ATEN_BEGIN_NAMESPACE

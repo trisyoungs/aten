@@ -28,7 +28,6 @@
 #include "parser/treegui.h"
 #include "parser/scopenode.h"
 #include "command/commands.h"
-#include "base/dnchar.h"
 #include "base/namespace.h"
 
 ATEN_BEGIN_NAMESPACE
@@ -181,7 +180,7 @@ class Tree : public ListItem<Tree>
 
 	public:
 	// Add constant value to topmost scope
-	TreeNode* addConstant(VTypes::DataType type, Dnchar* token);
+	TreeNode* addConstant(VTypes::DataType type, QString token);
 	// Add integer constant
 	TreeNode* addConstant(int i);
 	// Add double constant

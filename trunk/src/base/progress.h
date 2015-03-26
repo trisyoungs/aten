@@ -22,7 +22,6 @@
 #ifndef ATEN_PROGRESSINDICATOR_H
 #define ATEN_PROGRESSINDICATOR_H
 
-#include "base/dnchar.h"
 #include <QtCore/QTime>
 #include "base/namespace.h"
 

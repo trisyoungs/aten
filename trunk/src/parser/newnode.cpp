@@ -190,11 +190,11 @@ bool NewNode::initialise()
 void NewNode::nodePrint(int offset, const char* prefix)
 {
 	// Construct tabbed offset
-	Dnchar tab(offset+32);
+	QString tab;
 	for (int n=0; n<offset-1; n++) tab += '\t';
-	if (offset > 1) tab.strcat("   |--> ");
-	tab.strcat(prefix);
+	if (offset > 1) tab += "   |--> ";
+	tab += prefix;
 
 	// Output node data
-	printf("[NN]%s ('New' Node) (type = %s)\n", tab.get(), VTypes::dataType(type_));
+	printf("[NN]%s ('New' Node) (type = %s)\n", qPrintable(tab), VTypes::dataType(type_));
 }

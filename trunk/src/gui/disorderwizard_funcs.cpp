@@ -97,12 +97,12 @@ void DisorderWizard::setComponentData(Model* m)
 	Refitem<QTreeWidgetItem, Model*>* ri = componentModelItems_.containsData(m);
 	if (ri == NULL) return;
 	ri->item->setIcon(0, m->icon());
-	Dnchar text;
+	QString text;
 	text.sprintf("%s\nPolicy: %s", qPrintable(m->name()), Model::insertionPolicy(m->componentInsertionPolicy()));
-	if (m->componentInsertionPolicy() != Model::DensityPolicy) text.strcatf("\nPopulation: %i", m->componentPopulation());
-	if (m->componentInsertionPolicy() != Model::NumberPolicy) text.strcatf("\nDensity: %f", m->componentDensity());
-	text.strcatf("\nPartition: %i %s", m->componentPartition()+1, qPrintable(partitioningScheme_->partitionName(m->componentPartition())));
-	ri->item->setText(1, text.get());
+	if (m->componentInsertionPolicy() != Model::DensityPolicy) text += QString("\nPopulation: %1").arg(m->componentPopulation());
+	if (m->componentInsertionPolicy() != Model::NumberPolicy) text += QString("\nDensity: %1").arg(m->componentDensity());
+	text += QString("\nPartition: %1 %2").arg(m->componentPartition()+1).arg(partitioningScheme_->partitionName(m->componentPartition()));
+	ri->item->setText(1, text);
 	ri->item->setTextAlignment(1, Qt::AlignLeft | Qt::AlignTop);
 }
 
@@ -141,8 +141,9 @@ void DisorderWizard::updateComponentControls()
 void DisorderWizard::setPartitionData(QTreeWidgetItem* target, PartitioningScheme* ps)
 {
 	target->setIcon(0,ps->icon());
-	Dnchar text(-1,"%s\n%s\nNumber of partitions = %i\n", qPrintable(ps->name()), qPrintable(ps->description()), ps->nPartitions());
-	target->setText(1,text.get());
+	QString text;
+	text.sprintf("%s\n%s\nNumber of partitions = %i\n", qPrintable(ps->name()), qPrintable(ps->description()), ps->nPartitions());
+	target->setText(1,text);
 	target->setTextAlignment(1, Qt::AlignLeft | Qt::AlignTop);
 }
 
@@ -152,7 +153,6 @@ void DisorderWizard::pageChanged(int id)
 	TTreeWidgetItem *item;
 	QTreeWidgetItem* qitem, *selectitem;
 	Model* m;
-	Dnchar text;
 	int count;
 	switch (id)
 	{
@@ -286,8 +286,8 @@ void DisorderWizard::pageChanged(int id)
 			ui.ComponentTargetPartitionCombo->clear();
 			for (int n = 0; n < partitioningScheme_->nPartitions(); ++n)
 			{
-				text.sprintf("%i %s", n+1, qPrintable(partitioningScheme_->partitionName(n)));
-				ui.ComponentTargetPartitionCombo->addItem(text.get());
+				QString text = QString::number(n+1) + " " + partitioningScheme_->partitionName(n);
+				ui.ComponentTargetPartitionCombo->addItem(text);
 			}
 			refreshing_ = FALSE;
 			updateComponentControls();

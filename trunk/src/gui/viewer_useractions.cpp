@@ -31,7 +31,6 @@
 void Viewer::renderActiveModes(Model* currentModel)
 {
 	// Variables
-	Dnchar text;
 	QColor color;
 	QBrush nobrush(Qt::NoBrush);
 	GLfloat colour[4];
@@ -111,7 +110,7 @@ void Viewer::renderUserActions(Model* source)
 	Vec3<double> pos, v;
 	Bond::BondType bt = Bond::Single;
 	double radius_i, radius_j;
-	Dnchar text;
+	QString text;
 	Fragment* frag;
 
 	// Draw on the selection highlights (for atoms in the canvas' pickedAtoms list)

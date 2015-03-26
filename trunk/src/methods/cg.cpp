@@ -61,7 +61,6 @@ void MethodCg::minimise(Model* srcmodel, double econ, double fcon)
 	Vec3<double> f;
 	Atom** modelatoms;
 	bool linedone, converged, success;
-	Dnchar etatext;
 
 	/*
 	// Prepare the calculation

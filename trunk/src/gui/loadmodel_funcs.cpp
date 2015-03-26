@@ -52,8 +52,8 @@ void AtenLoadModel::on_BrowseButton_clicked(bool checked)
 	QString selFilter;
 	selectedFilename_ = qPrintable(QFileDialog::getOpenFileName(this, "Select Model File", currentDirectory_.path(), parent_.aten().fileDialogFilters(FilterData::ModelImport), &selFilter));
 	// Store path for next use
-	currentDirectory_.setPath(selectedFilename_.get());
-	ui.FilenameEdit->setText(selectedFilename_.get());
+	currentDirectory_.setPath(selectedFilename_);
+	ui.FilenameEdit->setText(selectedFilename_);
 }
 
 void AtenLoadModel::on_RebondCombo_activated(int index)
@@ -163,7 +163,7 @@ Tree* AtenLoadModel::selectedFormat()
 }
 
 // Return filename
-const char* AtenLoadModel::selectedFilename()
+QString AtenLoadModel::selectedFilename()
 {
-	return selectedFilename_.get();
+	return selectedFilename_;
 }

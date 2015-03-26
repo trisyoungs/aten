@@ -178,7 +178,6 @@ void ForcefieldsWidget::on_ForcefieldMinimiseButton_clicked(bool checked)
 	// Set convergence criteria and get maxcycles data
 	CommandNode::run(Commands::Converge, "dd", pow(10.0,ui.EnergyConvergeSpin->value()), pow(10.0,ui.ForceConvergeSpin->value()));
 	int maxcycles = ui.MinimiseCyclesSpin->value();
-	Dnchar options;
 	
 	// Perform the minimisation
 	switch (ui.MinimiserMethodCombo->currentIndex())
@@ -206,9 +205,10 @@ void ForcefieldsWidget::on_ForcefieldMinimiseButton_clicked(bool checked)
 void ForcefieldsWidget::on_MopacMinimiseButton_clicked(bool checked)
 {
 	// Construct command string from GUI widget options
-	Dnchar options(-1, "BFGS %s %s %s CHARGE=%i", qPrintable(ui.MopacHFCombo->currentText()), qPrintable(ui.MopacHamiltonianCombo->currentText()), 	qPrintable(ui.MopacSpinCombo->currentText()), ui.MopacChargeSpin->value());
-	if (ui.MopacMozymeCheck->isChecked()) options.strcat(" MOZYME");
-	CommandNode::run(Commands::MopacMinimise, "c", options.get());
+	QString options;
+	options.sprintf("BFGS %s %s %s CHARGE=%i", qPrintable(ui.MopacHFCombo->currentText()), qPrintable(ui.MopacHamiltonianCombo->currentText()), 	qPrintable(ui.MopacSpinCombo->currentText()), ui.MopacChargeSpin->value());
+	if (ui.MopacMozymeCheck->isChecked()) options += " MOZYME";
+	CommandNode::run(Commands::MopacMinimise, "c", qPrintable(options));
 	parent_.updateWidgets(AtenWindow::AtomsTarget+AtenWindow::CanvasTarget);
 }
 			

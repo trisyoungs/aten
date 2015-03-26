@@ -21,6 +21,7 @@
 
 #include "base/progress.h"
 #include "base/messenger.h"
+#include <stdio.h>
 
 ATEN_BEGIN_NAMESPACE
 

@@ -23,7 +23,6 @@
 #define ATEN_FRAGMENTWIDGET_H
 
 #include "gui/ui_fragments.h"
-#include "base/dnchar.h"
 #include "base/namespace.h"
 
 // Forward Declarations (Qt)

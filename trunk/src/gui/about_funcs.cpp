@@ -21,10 +21,7 @@
 
 #include "main/version.h"
 #include "gui/about.h"
-#include "base/dnchar.h"
 #include <cstdio>
-
-ATEN_USING_NAMESPACE
 
 // Constructor
 AtenAbout::AtenAbout(QWidget *parent) : QDialog(parent)
@@ -32,9 +29,10 @@ AtenAbout::AtenAbout(QWidget *parent) : QDialog(parent)
 	ui.setupUi(this);
 
 	// Setup label contents
-	Dnchar label;
+	;
+	QString label;
 	label.sprintf("%s (r%s)", ATENVERSION, ATENREVISION);
-	ui.VersionLabel->setText(label.get());
+	ui.VersionLabel->setText(label);
 	ui.DateLabel->setText(ATENDATE);
 	ui.UrlLabel->setText(ATENURL);
 }

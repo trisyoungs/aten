@@ -77,13 +77,13 @@ bool AtenVariable::execute(ReturnValue& rv)
 void AtenVariable::nodePrint(int offset, const char* prefix)
 {
 	// Construct tabbed offset
-	Dnchar tab(offset+32);
+	QString tab;
 	for (int n=0; n<offset-1; n++) tab += '\t';
-	if (offset > 1) tab.strcat("   |--> ");
-	tab.strcat(prefix);
+	if (offset > 1) tab += "   |--> ";
+	tab += prefix;
 
 	// Output node data
-	printf("[V]%s&%p (Aten) (constant value)\n", tab.get(), &aten_);
+	printf("[V]%s&%p (Aten) (constant value)\n", qPrintable(tab), &aten_);
 }
 
 /*

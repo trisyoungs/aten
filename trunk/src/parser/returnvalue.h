@@ -23,8 +23,8 @@
 #define ATEN_RETURNVALUE_H
 
 #include "parser/vtypes.h"
-#include "base/dnchar.h"
 #include "math/matrix.h"
+#include "templates/list.h"
 #include "templates/vector3.h"
 #include "base/namespace.h"
 
@@ -84,7 +84,7 @@ class ReturnValue : public ListItem<ReturnValue>
 	// Reset data
 	void reset();
 	// Return string of contained data
-	const char* info();
+	QString info();
 	// Return unique 'pair' code based on return types
 	int dataPair(ReturnValue& source);
 

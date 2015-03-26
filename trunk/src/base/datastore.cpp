@@ -29,16 +29,16 @@ ATEN_USING_NAMESPACE
 */
 
 // Constructor
-DataStoreItem::DataStoreItem(const char* key) : ListItem<DataStoreItem>()
+DataStoreItem::DataStoreItem(QString key) : ListItem<DataStoreItem>()
 {
 	// Private variables
 	if (key != NULL) key_ = key;
 }
 
 // Retrieve key associated to data
-const char* DataStoreItem::key() const
+QString DataStoreItem::key() const
 {
-	return key_.get();
+	return key_;
 }
 
 // Retrieve value associated to key
@@ -69,11 +69,11 @@ int DataStore::nItems() const
 }
 
 // Add new (or return existing) key/value data
-DataStoreItem *DataStore::addData(const char* key)
+DataStoreItem* DataStore::addData(QString key)
 {
 	// Search for existing value...
-	DataStoreItem *kvp = NULL;
-	for (kvp = data_.first(); kvp != NULL; kvp = kvp->next) if (strcmp(kvp->key(),key) == 0) break;
+	DataStoreItem* kvp = NULL;
+	for (kvp = data_.first(); kvp != NULL; kvp = kvp->next) if (kvp->key() == key) break;
 	if (kvp == NULL)
 	{
 		kvp = new DataStoreItem(key);
@@ -83,26 +83,25 @@ DataStoreItem *DataStore::addData(const char* key)
 }
 
 // Search map for specified key
-DataStoreItem *DataStore::searchForKey(const char* key)
+DataStoreItem* DataStore::searchForKey(QString key)
 {
 	// Search for existing value...
-	for (DataStoreItem *kvp = data_.first(); kvp != NULL; kvp = kvp->next) if (strcmp(kvp->key(),key) == 0) return kvp;
+	for (DataStoreItem* kvp = data_.first(); kvp != NULL; kvp = kvp->next) if (kvp->key() == key) return kvp;
 	return NULL;
 }
 
 // Retrieve data associated to key
-ReturnValue& DataStore::dataForKey(const char* key)
+ReturnValue& DataStore::dataForKey(QString key)
 {
 	static ReturnValue dummy;
 	// Search for existing value...
-	for (DataStoreItem *kvp = data_.first(); kvp != NULL; kvp = kvp->next) if (strcmp(kvp->key(),key) == 0) return kvp->data();
-	printf("Warning: Requested data for key '%s' in DataStore, but no such item was present.\n", key);
+	for (DataStoreItem* kvp = data_.first(); kvp != NULL; kvp = kvp->next) if (kvp->key() == key) return kvp->data();
+	printf("Warning: Requested data for key '%s' in DataStore, but no such item was present.\n", qPrintable(key));
 	return dummy;
 }
 
 // Return first key in list
-DataStoreItem *DataStore::dataItems()
+DataStoreItem* DataStore::dataItems()
 {
 	return data_.first();
 }
-

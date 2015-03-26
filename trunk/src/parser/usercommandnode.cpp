@@ -135,14 +135,14 @@ bool UserCommandNode::execute(ReturnValue& rv)
 void UserCommandNode::nodePrint(int offset, const char* prefix)
 {
 	// Construct tabbed offset
-	Dnchar tab(offset+32);
+	QString tab;
 	for (int n=0; n<offset-1; n++) tab += '\t';
-	if (offset > 1) tab.strcat("   |--> ");
-	tab.strcat(prefix);
+	if (offset > 1) tab += "   |--> ";
+	tab += prefix;
 
 	// Output node data
 // 	printf("Function id = %p\n", function_);
-	printf("[UC]%s%s (UserCommand) (%i arguments)\n", tab.get(), qPrintable(function_->name()), args_.nItems());
+	printf("[UC]%s%s (UserCommand) (%i arguments)\n", qPrintable(tab), qPrintable(function_->name()), args_.nItems());
 	// Output Argument data
 	for (Refitem<TreeNode,int>* ri = args_.first(); ri != NULL; ri = ri->next) ri->item->nodePrint(offset+1);
 }

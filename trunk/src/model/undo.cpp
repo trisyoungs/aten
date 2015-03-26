@@ -183,7 +183,7 @@ void Model::redo()
 // List undo states and the changes within
 void Model::listUndoStates()
 {
-	Dnchar suffix;
+	QString suffix;
 	int count = 0;
 	printf("Current UndoStates in Model '%s' are:\n", qPrintable(name_));
 	for (UndoState *u = undoStates_.first(); u != NULL; u = u->next)
@@ -191,8 +191,8 @@ void Model::listUndoStates()
 		count ++;
 		if (currentUndoState_ == u) suffix = "(Current Undo State)";
 		else if (currentRedoState_ == u) suffix = "(Current Redo State)";
-		printf(" %3i : '%s'\n", count, u->description());
-		printf("       Ptr=%p, %4i changes %s\n", u, u->nChanges(), suffix.get());
+		printf(" %3i : '%s'\n", count, qPrintable(u->description()));
+		printf("       Ptr=%p, %4i changes %s\n", u, u->nChanges(), qPrintable(suffix));
 		u->print();
 	}	
 }

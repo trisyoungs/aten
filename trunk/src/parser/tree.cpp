@@ -719,23 +719,23 @@ bool Tree::popScope()
 */
 
 // Add constant value to tompost scope
-TreeNode* Tree::addConstant(VTypes::DataType type, Dnchar* token)
+TreeNode* Tree::addConstant(VTypes::DataType type, QString token)
 {
 	if (type == VTypes::IntegerData)
 	{
-		IntegerVariable* var = new IntegerVariable(atoi(token->get()), TRUE);
+		IntegerVariable* var = new IntegerVariable(token.toInt(), TRUE);
 		nodes_.own(var);
 		return var;
 	}
 	else if (type == VTypes::DoubleData)
 	{
-		DoubleVariable* var = new DoubleVariable(atof(token->get()), TRUE);
+		DoubleVariable* var = new DoubleVariable(token.toDouble(), TRUE);
 		nodes_.own(var);
 		return var;
 	}
 	else if (type == VTypes::StringData)
 	{
-		StringVariable* var = new StringVariable(token->get(), TRUE);
+		StringVariable* var = new StringVariable(token, TRUE);
 		nodes_.own(var);
 		return var;
 	}

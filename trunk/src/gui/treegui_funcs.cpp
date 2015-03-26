@@ -139,7 +139,7 @@ void QtWidgetObject::updateQt()
 	}
 	else if (treeGuiWidget_->type() == TreeGuiWidget::ComboWidget)
 	{
-		QComboBox *combo = static_cast<QComboBox*>(qWidget_);
+		QComboBox* combo = static_cast<QComboBox*>(qWidget_);
 		if (!combo) printf("Critical Error: Couldn't cast stored qWidget_ pointer into QComboBox.\n");
 		else
 		{
@@ -156,7 +156,7 @@ void QtWidgetObject::updateQt()
 	}
 	else if (treeGuiWidget_->type() == TreeGuiWidget::DoubleSpinWidget)
 	{
-		QDoubleSpinBox *spin = static_cast<QDoubleSpinBox*>(qWidget_);
+		QDoubleSpinBox* spin = static_cast<QDoubleSpinBox*>(qWidget_);
 		if (!spin) printf("Critical Error: Couldn't cast stored qWidget_ pointer into QDoubleSpinBox.\n");
 		else
 		{
@@ -257,13 +257,13 @@ void QtWidgetObject::updateCLI()
 	}
 	else if (treeGuiWidget_->type() == TreeGuiWidget::ComboWidget)
 	{
-		QComboBox *combo = static_cast<QComboBox*>(qWidget_);
+		QComboBox* combo = static_cast<QComboBox*>(qWidget_);
 		if (!combo) printf("Critical Error: Couldn't cast stored qWidget_ pointer into QComboBox.\n");
 		else treeGuiWidget_->setProperty(TreeGuiWidgetEvent::ValueProperty, combo->currentIndex()+1);
 	}
 	else if (treeGuiWidget_->type() == TreeGuiWidget::DoubleSpinWidget)
 	{
-		QDoubleSpinBox *spin = static_cast<QDoubleSpinBox*>(qWidget_);
+		QDoubleSpinBox* spin = static_cast<QDoubleSpinBox*>(qWidget_);
 		if (!spin) printf("Critical Error: Couldn't cast stored qWidget_ pointer into QDoubleSpinBox.\n");
 		else treeGuiWidget_->setProperty(TreeGuiWidgetEvent::ValueProperty, spin->value());
 	}
@@ -453,7 +453,7 @@ void AtenTreeGuiDialog::comboWidget_currentIndexChanged(int row)
 	if (updating_ || (!isVisible())) return;
 	// Cast sender into combobox
 	updating_ = TRUE;
-	QComboBox *combo = (QComboBox*) sender();
+	QComboBox* combo = (QComboBox*) sender();
 	if (!combo)
 	{
 		printf("AtenTreeGuiDialog::comboWidget_currentIndexChanged - Sender could not be cast into a QComboBox.\n");
@@ -478,7 +478,7 @@ void AtenTreeGuiDialog::doubleSpinWidget_valueChanged(double d)
 	if (updating_ || (!isVisible())) return;
 	// Cast sender into double spin widget
 	updating_ = TRUE;
-	QDoubleSpinBox *spin = static_cast<QDoubleSpinBox*>(sender());
+	QDoubleSpinBox* spin = static_cast<QDoubleSpinBox*>(sender());
 	if (!spin)
 	{
 		printf("AtenTreeGuiDialog::doubleSpinWidget_valueChanged - Sender could not be cast into a QDoubleSpinBox.\n");
@@ -688,7 +688,7 @@ QtWidgetObject* AtenTreeGuiDialog::addCheck(TreeGuiWidget* widget, QString label
 QtWidgetObject* AtenTreeGuiDialog::addCombo(TreeGuiWidget* widget, QString label)
 {
 	QtWidgetObject* qtwo = widgetObjects_.add();
-	QComboBox *combo = new QComboBox(this);
+	QComboBox* combo = new QComboBox(this);
 	qtwo->set(widget, combo, label);
 	// Add items to combo and set current index
 	for (int n=0; n<widget->comboItems().count(); ++n) combo->addItem(widget->comboItems().at(n));
@@ -714,7 +714,7 @@ QtWidgetObject* AtenTreeGuiDialog::addDialogLayout(TreeGui *treeGui)
 QtWidgetObject* AtenTreeGuiDialog::addDoubleSpin(TreeGuiWidget* widget, QString label, double step)
 {
 	QtWidgetObject* qtwo = widgetObjects_.add();
-	QDoubleSpinBox *spin = new QDoubleSpinBox(this);
+	QDoubleSpinBox* spin = new QDoubleSpinBox(this);
 	qtwo->set(widget, spin, label);
 	spin->setRange(widget->minimumD(), widget->maximumD());
 	spin->setValue(widget->valueD());

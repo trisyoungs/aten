@@ -22,7 +22,6 @@
 #ifndef ATEN_GLYPH_H
 #define ATEN_GLYPH_H
 
-#include "base/dnchar.h"
 #include "templates/list.h"
 #include "templates/vector3.h"
 #include "templates/vector4.h"

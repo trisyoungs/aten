@@ -24,7 +24,6 @@
 
 #include <QtGui/QButtonGroup>
 #include <QtCore/QSettings>
-#include "base/dnchar.h"
 #include "base/atom.h"
 #include "base/prefs.h"
 #include "gui/ui_mainwindow.h"
@@ -400,7 +399,7 @@ class AtenWindow : public QMainWindow
 	// Set action/button to reflect supplied user action
 	void setActiveUserAction(UserAction::Action ua);
 	// Set message label text
-	void setMessageLabel(const char* s);
+	void setMessageLabel(QString message);
 
 
 	/*

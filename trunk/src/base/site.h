@@ -25,7 +25,6 @@
 #include "math/matrix.h"
 #include "templates/vector3.h"
 #include "templates/list.h"
-#include "base/dnchar.h"
 #include <QtCore/QList>
 #include "base/namespace.h"
 

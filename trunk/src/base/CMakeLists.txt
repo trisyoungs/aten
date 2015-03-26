@@ -1,93 +1,91 @@
 BISON_TARGET(NetaParser neta_grammar.yy ${CMAKE_CURRENT_BINARY_DIR}/neta_grammar.cc)
 
 add_library(base
-${BISON_NetaParser_OUTPUTS}
-atomaddress.cpp
-atom.cpp
-atom_geometry.cpp
-basisshell.cpp
-bond.cpp
-cell.cpp
-choice.cpp
-colourscale.cpp
-colourscalepoint.cpp
-datastore.cpp
-dnchar.cpp
-eigenvector.cpp
-elements.cpp
-forcefieldatom.cpp
-forcefieldbound.cpp
-grid.cpp
-glyph.cpp
-kvmap.cpp
-lineparser.cpp
-log.cpp
-measurement.cpp
-messenger.cpp
-neta.cpp
-neta_lexer.cpp
-neta_parser.cpp
-pattern.cpp
-prefs.cpp
-progress.cpp
-ring.cpp
-site.cpp
-sysfunc.cpp
-vibration.cpp
-wrapint.cpp
-zmatrix.cpp
-atomaddress.h
-atom.h
-basisshell.h
-bond.h
-cell.h
-choice.h
-colourscale.h
-colourscalepoint.h
-datastore.h
-dnchar.h
-eigenvector.h
-elements.h
-forcefieldatom.h
-forcefieldbound.h
-glyph.h
-grid.h
-kvmap.h
-lineparser.h
-log.h
-neta.h
-neta_parser.h
-measurement.h
-messenger.h
-pattern.h
-prefs.h
-progress.h
-ring.h
-site.h
-sysfunc.h
-vibration.h
-wrapint.h
-zmatrix.h
+  ${BISON_NetaParser_OUTPUTS}
+  atomaddress.cpp
+  atom.cpp
+  atom_geometry.cpp
+  basisshell.cpp
+  bond.cpp
+  cell.cpp
+  choice.cpp
+  colourscale.cpp
+  colourscalepoint.cpp
+  datastore.cpp
+  eigenvector.cpp
+  elements.cpp
+  forcefieldatom.cpp
+  forcefieldbound.cpp
+  grid.cpp
+  glyph.cpp
+  kvmap.cpp
+  lineparser.cpp
+  log.cpp
+  measurement.cpp
+  messenger.cpp
+  neta.cpp
+  neta_lexer.cpp
+  neta_parser.cpp
+  pattern.cpp
+  prefs.cpp
+  progress.cpp
+  ring.cpp
+  site.cpp
+  sysfunc.cpp
+  vibration.cpp
+  wrapint.cpp
+  zmatrix.cpp
+  atomaddress.h
+  atom.h
+  basisshell.h
+  bond.h
+  cell.h
+  choice.h
+  colourscale.h
+  colourscalepoint.h
+  datastore.h
+  eigenvector.h
+  elements.h
+  forcefieldatom.h
+  forcefieldbound.h
+  glyph.h
+  grid.h
+  kvmap.h
+  lineparser.h
+  log.h
+  neta.h
+  neta_parser.h
+  measurement.h
+  messenger.h
+  pattern.h
+  prefs.h
+  progress.h
+  ring.h
+  site.h
+  sysfunc.h
+  vibration.h
+  wrapint.h
+  zmatrix.h
 )
 
 add_library(sg
-generator.h
-spacegroup.h
-sginfo.h
-generator.cpp 
-sgclib.c
-sgfind.c
-sghkl.c
-sgio.c
-sgsi.c
-spacegroup.cpp
+  generator.h
+  spacegroup.h
+  sginfo.h
+  generator.cpp 
+  sgclib.c
+  sgfind.c
+  sghkl.c
+  sgio.c
+  sgsi.c
+  spacegroup.cpp
 )
 
 include_directories(
-../
-${QT_INCLUDE_DIR}
-${CMAKE_SOURCE_DIR}
-${CMAKE_BINARY_DIR}
-${CMAKE_BINARY_DIR}/src
-${CMAKE_SOURCE_DIR}/src/gui
+  ../
+  ${QT_INCLUDE_DIR}
+  ${CMAKE_SOURCE_DIR}
+  ${CMAKE_BINARY_DIR}
+  ${CMAKE_BINARY_DIR}/src
+  ${CMAKE_SOURCE_DIR}/src/gui
 )

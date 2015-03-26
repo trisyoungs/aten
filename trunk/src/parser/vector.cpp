@@ -110,19 +110,18 @@ bool VectorVariable::execute(ReturnValue& rv)
 void VectorVariable::nodePrint(int offset, const char* prefix)
 {
 	// Construct tabbed offset
-	Dnchar tab(offset+32);
+	QString tab;
 	for (int n=0; n<offset-1; n++) tab += '\t';
-	if (offset > 1) tab.strcat("   |--> ");
-	tab.strcat(prefix);
+	if (offset > 1) tab += "   |--> ";
+	tab += prefix;
 
 	// Output node data
 	if (readOnly_)
 	{
 		reCreate();
-		printf("[C]%s{%f,%f,%f} (constant value)\n", tab.get(), vectorData_.x, vectorData_.y, vectorData_.z);
+		printf("[C]%s{%f,%f,%f} (constant value)\n", qPrintable(tab), vectorData_.x, vectorData_.y, vectorData_.z);
 	}
-	else printf("[V]%s{%f,%f,%f} (variable, name=%s)\n", tab.get(), vectorData_.x, vectorData_.y, vectorData_.z, qPrintable(name_));
-	delete[] tab;
+	else printf("[V]%s{%f,%f,%f} (variable, name=%s)\n", qPrintable(tab), vectorData_.x, vectorData_.y, vectorData_.z, qPrintable(name_));
 }
 
 /*
@@ -461,13 +460,13 @@ bool VectorArrayVariable::executeAsArray(ReturnValue& rv, int arrayIndex)
 void VectorArrayVariable::nodePrint(int offset, const char* prefix)
 {
 	// Construct tabbed offset
-	Dnchar tab(offset+32);
+	QString tab;
 	for (int n=0; n<offset-1; n++) tab += '\t';
-	if (offset > 1) tab.strcat("   |--> ");
-	tab.strcat(prefix);
+	if (offset > 1) tab += "   |--> ";
+	tab += prefix;
 
 	// Output node data
-	printf("[V]%s (integer array, name=%s, current size=%i)\n", tab.get(), qPrintable(name_), arraySize_);
+	printf("[V]%s (integer array, name=%s, current size=%i)\n", qPrintable(tab), qPrintable(name_), arraySize_);
 }
 
 // Initialise array

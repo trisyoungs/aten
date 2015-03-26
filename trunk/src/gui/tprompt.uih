@@ -24,16 +24,11 @@
 
 #include <QtGui/QWidget>
 #include <QtCore/QObject>
-#include "base/dnchar.h"
 
 // Qt Forward Declarations
 class QListWidget;
 class QListWidgetItem;
 class QLineEdit;
-
-ATEN_USING_NAMESPACE
-
-ATEN_BEGIN_NAMESPACE
 
 // Forward declarations
 /* none */
@@ -46,18 +41,18 @@ class TPrompt : public QWidget
 	TPrompt(QWidget *parent = 0);
 
 	private:
-	QListWidget *commandList_;
-	QLineEdit *commandPrompt_;
-	Dnchar lastPromptText_;
+	QListWidget* commandList_;
+	QLineEdit* commandPrompt_;
+	QString lastPromptText_;
 
 	public slots:
 	void promptReturnPressed();
 	void promptTextEdited(QString);
-	void promptListSingleClicked(QListWidgetItem *item);
-	void promptListDoubleClicked(QListWidgetItem *item);
+	void promptListSingleClicked(QListWidgetItem* item);
+	void promptListDoubleClicked(QListWidgetItem* item);
 
 	protected:
-	void keyPressEvent(QKeyEvent *event);
+	void keyPressEvent(QKeyEvent* event);
 
 	public:
 	// Set list of commands in command tab
@@ -65,12 +60,10 @@ class TPrompt : public QWidget
 	// Return list of commands stored in command tab
 	QStringList commandList();
 	// Return text in command edit
-	const char *getText();
+	QString getText();
 
 	signals:
 	void returnPressed();
 };
-
-ATEN_END_NAMESPACE
 
 #endif

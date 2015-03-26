@@ -68,9 +68,9 @@ void PoresWidget::on_PoreSelectButton_clicked(bool checked)
 	int nx = ui.ArrayXSpin->value(), ny = ui.ArrayYSpin->value();
 	int face = ui.OriginPlaneCombo->currentIndex()+1;
 	Vec3<double> v(ui.PoreVectorX->value(), ui.PoreVectorY->value(), ui.PoreVectorZ->value());
-	Dnchar geometry = qPrintable(ui.PoreGeometryCombo->currentText());
+	QString geometry = ui.PoreGeometryCombo->currentText();
 	double sizeParam = ui.PoreSizeSpin->value();
-	CommandNode::run(Commands::SelectPores, "cdiiiddd", geometry.get(), sizeParam, nx, ny, face, v.x, v.y, v.z);
+	CommandNode::run(Commands::SelectPores, "cdiiiddd", qPrintable(geometry), sizeParam, nx, ny, face, v.x, v.y, v.z);
 	parent_.postRedisplay();
 }
 
@@ -88,9 +88,9 @@ void PoresWidget::on_PoreSelectAndCutButton_clicked(bool checked)
 	int nx = ui.ArrayXSpin->value(), ny = ui.ArrayYSpin->value();
 	int face = ui.OriginPlaneCombo->currentIndex()+1;
 	Vec3<double> v(ui.PoreVectorX->value(), ui.PoreVectorY->value(), ui.PoreVectorZ->value());
-	Dnchar geometry = qPrintable(ui.PoreGeometryCombo->currentText());
+	QString geometry = ui.PoreGeometryCombo->currentText();
 	double sizeParam = ui.PoreSizeSpin->value();
-	CommandNode::run(Commands::DrillPores, "cdiiiddd", geometry.get(), sizeParam, nx, ny, face, v.x, v.y, v.z);
+	CommandNode::run(Commands::DrillPores, "cdiiiddd", qPrintable(geometry), sizeParam, nx, ny, face, v.x, v.y, v.z);
 	parent_.postRedisplay();
 }
 
@@ -145,12 +145,9 @@ void PoresWidget::on_GenerateSchemeButton_clicked(bool checked)
 		pd->calculateVolume(elementVolume);
 		volume += pd->volume();
 	}
-	Dnchar s;
 	ui.PartitionNumberLabel->setText( QString::number(partitioningScheme_.nPartitions()-1) );
-	s.sprintf("%10.2f", volume);
-	ui.PartitionVolumeLabel->setText( s.get() );
-	s.sprintf("%5.1f %%", 100.0*volume/m->cell()->volume());
-	ui.PartitionVolumePercentLabel->setText( s.get() );
+	ui.PartitionVolumeLabel->setText( QString::number(volume, 'f', 2) );
+	ui.PartitionVolumePercentLabel->setText( QString::number(100.0*volume/m->cell()->volume(), 'f', 2) + "%" );
 	parent_.postRedisplay();
 }
 

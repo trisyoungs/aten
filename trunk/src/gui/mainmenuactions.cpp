@@ -757,8 +757,8 @@ void AtenWindow::on_actionTrajectorySaveMovie_triggered(bool checked)
 // 	height = atoi(afterChar(geometry,'x'));
 	if ((width < 1) || (height < 1))
 	{
-		Dnchar message(-1, "The geometry '%s' is not valid since one (or both) components are less than 1.", qPrintable(geometry));
-		QMessageBox::warning(this, "Aten", message.get(), QMessageBox::Ok);
+		QString message = "The geometry '" + geometry + "' is not valid since one (or both) components are less than 1.";
+		QMessageBox::warning(this, "Aten", message, QMessageBox::Ok);
 		return;
 	}
 	int firstframe = ui.asInteger("firstframe");

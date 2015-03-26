@@ -23,7 +23,6 @@
 #define ATEN_UNITCELL_H
 
 #include "base/generator.h"
-#include "base/dnchar.h"
 #include "templates/vector3.h"
 #include "templates/reflist.h"
 #define SGCOREDEF__

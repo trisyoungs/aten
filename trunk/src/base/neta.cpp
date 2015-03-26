@@ -198,7 +198,7 @@ void Neta::print() const
 	else printf("   None defined.\n");
 }
 
-// Print Atom Type data to Dnchar supplied
+// Print Atom Type data to string supplied
 void Neta::netaPrint(QString& neta) const
 {
 	neta = "";
@@ -416,9 +416,9 @@ void NetaNode::setParent(Neta* neta)
 void NetaNode::printScore(int level, const char* fmt, ...)
 {
 	// Construct tabbed offset
-	Dnchar tab(level+32);
+	QString tab;
 	for (int n=0; n<level-1; n++) tab += '\t';
-	if (level > 1) tab.strcat("   |--> ");
+	if (level > 1) tab += "   |--> ";
 	if (level == 1) tab += '\t';
 
 	va_list arguments;
@@ -429,7 +429,7 @@ void NetaNode::printScore(int level, const char* fmt, ...)
 	vsprintf(msgs,fmt,arguments);
 	va_end(arguments);
 	// Output node data
-	Messenger::print(Messenger::Typing, "NETA%03i:%s%s", level, tab.get(), msgs);
+	Messenger::print(Messenger::Typing, "NETA%03i:%s%s", level, qPrintable(tab), msgs);
 }
 
 /*
@@ -554,14 +554,14 @@ int NetaLogicNode::score(Atom* target, Reflist<Atom,int>* nbrs, Reflist<Ring,int
 void NetaLogicNode::nodePrint(int offset, const char* prefix)
 {
 	// Construct tabbed offset
-	Dnchar tab(offset+32);
+	QString tab;
 	for (int n=0; n<offset-1; n++) tab += '\t';
-	if (offset > 1) tab.strcat("   |--> ");
+	if (offset > 1) tab += "   |--> ";
 	if (offset == 1) tab += '\t';
-	tab.strcat(prefix);
+	tab += prefix;
 
 	// Output node data
-	printf("%s (Logic Node: %s)\n", tab.get(), Neta::netaLogic(netaLogic_));
+	printf("%s (Logic Node: %s)\n", qPrintable(tab), Neta::netaLogic(netaLogic_));
 	argument1_->nodePrint(offset+1, "");
 	argument2_->nodePrint(offset+1, "");
 }
@@ -625,16 +625,16 @@ NetaBoundNode::~NetaBoundNode()
 void NetaBoundNode::nodePrint(int offset, const char* prefix)
 {
 	// Construct tabbed offset
-	Dnchar tab(offset+32);
+	QString tab;
 	for (int n=0; n<offset-1; n++) tab += '\t';
-	if (offset > 1) tab.strcat("   |--> ");
+	if (offset > 1) tab += "   |--> ";
 	if (offset == 1) tab += '\t';
-	tab.strcat(prefix);
+	tab += prefix;
 	// Output node data
-	printf("%s (Bound Node: %s)\n", tab.get(), Bond::bondType(bondType_));
+	printf("%s (Bound Node: %s)\n", qPrintable(tab), Bond::bondType(bondType_));
 	// Print element/type info
-	printf("%s    Number of allowed elements/types defined = %i\n", tab.get(), allowedElementsAndTypes_.nItems());
-	printf("%s      ", tab.get());
+	printf("%s    Number of allowed elements/types defined = %i\n", qPrintable(tab), allowedElementsAndTypes_.nItems());
+	printf("%s      ", qPrintable(tab));
 	for (Refitem<ForcefieldAtom,int>* ri = allowedElementsAndTypes_.first(); ri != NULL; ri = ri->next)
 	{
 		if (ri->data == 0) printf("Any ");
@@ -643,7 +643,7 @@ void NetaBoundNode::nodePrint(int offset, const char* prefix)
 	}
 	printf("\n");
 	if (innerNeta_ != NULL) innerNeta_->nodePrint(offset+1, "");
-	else printf("%s   -> No Inner Description\n", tab.get());
+	else printf("%s   -> No Inner Description\n", qPrintable(tab));
 }
 
 // Print (append) NETA representation of node contents
@@ -962,14 +962,14 @@ int NetaKeywordNode::score(Atom* target, Reflist<Atom,int>* nbrs, Reflist<Ring,i
 void NetaKeywordNode::nodePrint(int offset, const char* prefix)
 {
 	// Construct tabbed offset
-	Dnchar tab(offset+32);
+	QString tab;
 	for (int n=0; n<offset-1; n++) tab += '\t';
-	if (offset > 1) tab.strcat("   |--> ");
+	if (offset > 1) tab += "   |--> ";
 	if (offset == 1) tab += '\t';
-	tab.strcat(prefix);
+	tab += prefix;
 
 	// Output node data
-	printf("%s (Keyword Node: %s)\n", tab.get(), Neta::netaKeyword(netaKeyword_));
+	printf("%s (Keyword Node: %s)\n", qPrintable(tab), Neta::netaKeyword(netaKeyword_));
 }
 
 // Print (append) NETA representation of node contents
@@ -1028,13 +1028,13 @@ int NetaGeometryNode::score(Atom* target, Reflist<Atom,int>* nbrs, Reflist<Ring,
 void NetaGeometryNode::nodePrint(int offset, const char* prefix)
 {
 	// Construct tabbed offset
-	Dnchar tab(offset+32);
+	QString tab;
 	for (int n=0; n<offset-1; n++) tab += '\t';
-	if (offset > 1) tab.strcat("   |--> ");
+	if (offset > 1) tab += "   |--> ";
 	if (offset == 1) tab += '\t';
-	tab.strcat(prefix);
+	tab += prefix;
 	// Output node data
-	printf("%s (Geometry Node: %s)\n", tab.get(), Atom::atomGeometry(geometry_));
+	printf("%s (Geometry Node: %s)\n", qPrintable(tab), Atom::atomGeometry(geometry_));
 }
 
 // Print (append) NETA representation of node contents
@@ -1137,13 +1137,13 @@ int NetaValueNode::score(Atom* target, Reflist<Atom,int>* nbrs, Reflist<Ring,int
 void NetaValueNode::nodePrint(int offset, const char* prefix)
 {
 	// Construct tabbed offset
-	Dnchar tab(offset+32);
+	QString tab;
 	for (int n=0; n<offset-1; n++) tab += '\t';
-	if (offset > 1) tab.strcat("   |--> ");
+	if (offset > 1) tab += "   |--> ";
 	if (offset == 1) tab += '\t';
-	tab.strcat(prefix);
+	tab += prefix;
 	// Output node data
-	printf("%s (Value Node: %s %s %i)\n", tab.get(), Neta::netaValue(netaValue_), Neta::netaValueComparison(netaComparison_), value_);
+	printf("%s (Value Node: %s %s %i)\n", qPrintable(tab), Neta::netaValue(netaValue_), Neta::netaValueComparison(netaComparison_), value_);
 }
 
 // Print (append) NETA representation of node contents
@@ -1195,13 +1195,13 @@ int NetaRootNode::score(Atom* target, Reflist<Atom,int>* nbrs, Reflist<Ring,int>
 void NetaRootNode::nodePrint(int offset, const char* prefix)
 {
 	// Construct tabbed offset
-	Dnchar tab(offset+32);
+	QString tab;
 	for (int n=0; n<offset-1; n++) tab += '\t';
-	if (offset > 1) tab.strcat("   |--> ");
+	if (offset > 1) tab += "   |--> ";
 	if (offset == 1) tab += '\t';
-	tab.strcat(prefix);
+	tab += prefix;
 	// Output node data
-	printf("%s (Root Node:)\n", tab.get());
+	printf("%s (Root Node:)\n", qPrintable(tab));
 	if (innerNeta_ != NULL) innerNeta_->nodePrint(offset+1, prefix);
 }
 
@@ -1333,15 +1333,15 @@ int NetaRingNode::score(Atom* target, Reflist<Atom,int>* nbrs, Reflist<Ring,int>
 void NetaRingNode::nodePrint(int offset, const char* prefix)
 {
 	// Construct tabbed offset
-	Dnchar tab(offset+32);
+	QString tab;
 	for (int n=0; n<offset-1; n++) tab += '\t';
-	if (offset > 1) tab.strcat("   |--> ");
+	if (offset > 1) tab += "   |--> ";
 	if (offset == 1) tab += '\t';
-	tab.strcat(prefix);
+	tab += prefix;
 	// Output node data
-	printf("%s (Ring Node:)\n", tab.get());
+	printf("%s (Ring Node:)\n", qPrintable(tab));
 	if (innerNeta_ != NULL) innerNeta_->nodePrint(offset+1, "");
-	else printf("%s   -> No Inner Description\n", tab.get());
+	else printf("%s   -> No Inner Description\n", qPrintable(tab));
 }
 
 // Print (append) NETA representation of node contents
@@ -1510,15 +1510,15 @@ int NetaChainNode::score(Atom* target, Reflist<Atom,int>* nbrs, Reflist<Ring,int
 void NetaChainNode::nodePrint(int offset, const char* prefix)
 {
 	// Construct tabbed offset
-	Dnchar tab(offset+32);
+	QString tab;
 	for (int n=0; n<offset-1; n++) tab += '\t';
-	if (offset > 1) tab.strcat("   |--> ");
+	if (offset > 1) tab += "   |--> ";
 	if (offset == 1) tab += '\t';
-	tab.strcat(prefix);
+	tab += prefix;
 	// Output node data
-	printf("%s (Chain Node:)\n", tab.get());
+	printf("%s (Chain Node:)\n", qPrintable(tab));
 	if (innerNeta_ != NULL) innerNeta_->nodePrint(offset+1, "");
-	else printf("%s   -> No Inner Description\n", tab.get());
+	else printf("%s   -> No Inner Description\n", qPrintable(tab));
 }
 
 // Print (append) NETA representation of node contents
@@ -1753,15 +1753,15 @@ int NetaMeasurementNode::score(Atom* target, Reflist<Atom,int>* nbrs, Reflist<Ri
 void NetaMeasurementNode::nodePrint(int offset, const char* prefix)
 {
 	// Construct tabbed offset
-	Dnchar tab(offset+32);
+	QString tab;
 	for (int n=0; n<offset-1; n++) tab += '\t';
-	if (offset > 1) tab.strcat("   |--> ");
+	if (offset > 1) tab += "   |--> ";
 	if (offset == 1) tab += '\t';
-	tab.strcat(prefix);
+	tab += prefix;
 	// Output node data
-	printf("%s (Measurement Node:)\n", tab.get());
+	printf("%s (Measurement Node:)\n", qPrintable(tab));
 	if (innerNeta_ != NULL) innerNeta_->nodePrint(offset+1, "");
-	else printf("%s   -> No Inner Description\n", tab.get());
+	else printf("%s   -> No Inner Description\n", qPrintable(tab));
 }
 
 // Print (append) NETA representation of node contents

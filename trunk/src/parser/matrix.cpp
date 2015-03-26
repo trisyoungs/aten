@@ -129,19 +129,18 @@ bool MatrixVariable::execute(ReturnValue& rv)
 void MatrixVariable::nodePrint(int offset, const char* prefix)
 {
 	// Construct tabbed offset
-	Dnchar tab(offset+32);
+	QString tab;
 	for (int n=0; n<offset-1; n++) tab += '\t';
-	if (offset > 1) tab.strcat("   |--> ");
-	tab.strcat(prefix);
+	if (offset > 1) tab += "   |--> ";
+	tab += prefix;
 
 	// Output node data
 	if (readOnly_)
 	{
 		reCreate();
-		printf("[C]%s{%f,%f,%f,%f,%f,%f,%f,%f,%f} (constant value)\n", tab.get(), matrixData_[0], matrixData_[1], matrixData_[2], matrixData_[4], matrixData_[5], matrixData_[6], matrixData_[8], matrixData_[9], matrixData_[10]);
+		printf("[C]%s{%f,%f,%f,%f,%f,%f,%f,%f,%f} (constant value)\n", qPrintable(tab), matrixData_[0], matrixData_[1], matrixData_[2], matrixData_[4], matrixData_[5], matrixData_[6], matrixData_[8], matrixData_[9], matrixData_[10]);
 	}
-	else printf("[V]%s{%f,%f,%f,%f,%f,%f,%f,%f,%f} (variable, name=%s)\n", tab.get(), matrixData_[0], matrixData_[1], matrixData_[2], matrixData_[4], matrixData_[5], matrixData_[6], matrixData_[8], matrixData_[9], matrixData_[10], qPrintable(name_));
-	delete[] tab;
+	else printf("[V]%s{%f,%f,%f,%f,%f,%f,%f,%f,%f} (variable, name=%s)\n", qPrintable(tab), matrixData_[0], matrixData_[1], matrixData_[2], matrixData_[4], matrixData_[5], matrixData_[6], matrixData_[8], matrixData_[9], matrixData_[10], qPrintable(name_));
 }
 
 /*
@@ -489,13 +488,13 @@ bool MatrixArrayVariable::executeAsArray(ReturnValue& rv, int arrayIndex)
 void MatrixArrayVariable::nodePrint(int offset, const char* prefix)
 {
 	// Construct tabbed offset
-	Dnchar tab(offset+32);
+	QString tab;
 	for (int n=0; n<offset-1; n++) tab += '\t';
-	if (offset > 1) tab.strcat("   |--> ");
-	tab.strcat(prefix);
+	if (offset > 1) tab += "   |--> ";
+	tab += prefix;
 
 	// Output node data
-	printf("[V]%s (integer array, name=%s, current size=%i)\n", tab.get(), qPrintable(name_), arraySize_);
+	printf("[V]%s (integer array, name=%s, current size=%i)\n", qPrintable(tab), qPrintable(name_), arraySize_);
 }
 
 // Initialise array
