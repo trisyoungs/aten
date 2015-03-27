@@ -174,12 +174,12 @@ function:
 	FUNCCALL '(' ')'				{
 		$$ = cmdparser.addFunction( (Commands::Function) $1);
 		if ($$ == NULL) YYABORT;
-		Messenger::print(Messenger::Parse, "PARSER : function : function '%i'", Commands::command((Commands::Function) $1));
+		Messenger::print(Messenger::Parse, "PARSER : function : function '%s'", Commands::command((Commands::Function) $1));
 		}
 	| FUNCCALL '(' expressionlist ')'		{
 		$$ = cmdparser.addFunctionWithArglist( (Commands::Function) $1,$3);
 		if ($$ == NULL) YYABORT;
-		Messenger::print(Messenger::Parse, "PARSER : function : function '%i' with exprlist", Commands::command((Commands::Function) $1));
+		Messenger::print(Messenger::Parse, "PARSER : function : function '%s' with exprlist", Commands::command((Commands::Function) $1));
 		}
 	| FUNCCALL error				{
 		Messenger::print("Error: Missing brackets after function call?");
@@ -342,7 +342,7 @@ assignedvariablename:
 		$$ = cmdparser.addArrayVariable(declaredType, tokenName, $3, $6, globalDeclarations);
 		}
 	| variablename '=' expression 			{
-		Messenger::print(Messenger::Parse,"PARSER : assignedvariablename : var '%s' with expr asdasdassignment", qPrintable(variableName));
+		Messenger::print(Messenger::Parse,"PARSER : assignedvariablename : var '%s' with expr assignment", qPrintable(variableName));
 		$$ = cmdparser.addVariable(declaredType, tokenName, $3, globalDeclarations);
 		}
 	;

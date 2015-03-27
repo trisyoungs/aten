@@ -56,7 +56,7 @@ int Aten::parseIncludeDir(QDir path)
 	Messenger::enter("Aten::parseIncludeDir");
 
 	int i, nFailed = 0;
-	QString s = "INCLUDES --> [" + path.absolutePath() + "] ";
+	QString s = "Includes --> [" + path.absolutePath() + "] ";
 	
 	// First check - does this directory actually exist
 	if (!path.exists())

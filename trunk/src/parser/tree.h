@@ -260,7 +260,7 @@ class Tree : public ListItem<Tree>
 	// Read options for parser
 	int readOptions_;
 	// Current input stream target, in the form of a LineParser
-	LineParser *parser_;
+	LineParser* parser_;
 	// Flag to indicate that recent failure of this token is known and we should continue
 	Commands::Function acceptedFail_;
 	// Number of times tree has been run
@@ -276,7 +276,7 @@ class Tree : public ListItem<Tree>
 	// Return read options
 	int readOptions() const;
 	// Return the current LineParser pointer
-	LineParser *parser();
+	LineParser* parser();
 	// Return whether the LineParser is ready for file reading
 	bool isFileGoodForReading() const;
 	// Return whether the LineParser is ready for file writing
@@ -288,7 +288,7 @@ class Tree : public ListItem<Tree>
 	// Execute
 	bool execute(ReturnValue& rv);
 	// Execute, using specified parser as input/output source
-	bool execute(LineParser *parser, ReturnValue& rv);
+	bool execute(LineParser* parser, ReturnValue& rv);
 	// Execute, opening specified file as input source
 	bool executeRead(QString filename, ReturnValue& rv);
 	// Execute, with specified filename as data target

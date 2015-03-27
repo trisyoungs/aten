@@ -110,6 +110,7 @@ bool Commands::function_Quit(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	aten_.atenWindow()->saveBeforeClose();
 
 	c->parent()->setAcceptedFail(Commands::Quit);
+
 	return FALSE;
 }
 

@@ -29,9 +29,9 @@
 #include <iostream>
 #include <readline/readline.h>
 #include <readline/history.h>
-#include <parser/double.h>
-#include <parser/integer.h>
-#include <parser/character.h>
+#include "parser/double.h"
+#include "parser/integer.h"
+#include "parser/character.h"
 
 ATEN_USING_NAMESPACE
 
@@ -410,7 +410,7 @@ int Aten::parseCli(int argc, char *argv[])
 			// Manually-exclude some specific (and extremely annoying) extraneous command line options
 			if (strncmp(argv[argn],"-psn",4) == 0)
 			{
-				Messenger::print("Found (and ignored) OSX-added '%s'.",argv[argn]);
+				Messenger::print("Found (and ignored) OSX-added '%s'.", argv[argn]);
 				continue;
 			}
 
@@ -531,6 +531,7 @@ int Aten::parseCli(int argc, char *argv[])
 						if (tempProgram.generateFromString(argText, "CLI Command", "CLI Command"))
 						{
 							if (!tempProgram.execute(rv)) return -1;
+							else if (tempProgram.mainProgram()->acceptedFail() == Commands::Quit) return 0;
 						}
 						else return -1;
 					}
@@ -871,7 +872,7 @@ int Aten::parseCli(int argc, char *argv[])
 		}
 	}
 
-	return models_.nItems();
+	return 1;
 }
 
 // Usage help

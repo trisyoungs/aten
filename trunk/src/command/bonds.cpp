@@ -56,7 +56,7 @@ bool Commands::function_ClearBonds(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	return TRUE;
 }
 
-// Clear bonds in current model ('clearbonds')
+// Clear selected bonds in current model ('clearselectedbonds')
 bool Commands::function_ClearSelectedBonds(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
@@ -71,6 +71,7 @@ bool Commands::function_ClearSelectedBonds(CommandNode* c, Bundle& obj, ReturnVa
 bool Commands::function_NewBond(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+
 	// Third (optional) argument gives bond type
 	Bond::BondType bt = Bond::Single;
 	if (c->hasArg(2))
@@ -82,6 +83,7 @@ bool Commands::function_NewBond(CommandNode* c, Bundle& obj, ReturnValue& rv)
 		if ((n < 1) || (n > 3))	bt = Bond::bondType(c->argc(2));
 		else bt = (Bond::BondType) n;
 	}
+
 	// Add the bond
 	Atom* i = c->argType(0) == VTypes::IntegerData ? obj.rs()->atom(c->argi(0)-1) : (Atom*) c->argp(0, VTypes::AtomData);
 	Atom* j = c->argType(1) == VTypes::IntegerData ? obj.rs()->atom(c->argi(1)-1) : (Atom*) c->argp(1, VTypes::AtomData);
@@ -93,6 +95,7 @@ bool Commands::function_NewBond(CommandNode* c, Bundle& obj, ReturnValue& rv)
 		obj.rs()->endUndoState();
 	}
 	else Messenger::print("Can't bond atoms - one or both atoms not found.");
+
 	rv.reset();
 	return TRUE;
 }
@@ -101,6 +104,7 @@ bool Commands::function_NewBond(CommandNode* c, Bundle& obj, ReturnValue& rv)
 bool Commands::function_ReBond(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+
 	// If we're reading from a file (via a filter) check for prefs override
 	if (c->parent()->parser() == NULL)
 	{
@@ -115,6 +119,7 @@ bool Commands::function_ReBond(CommandNode* c, Bundle& obj, ReturnValue& rv)
 		obj.rs()->calculateBonding( c->hasArg(0) ? c->argb(0) : prefs.augmentAfterRebond() );
 	}
 	rv.reset();
+
 	return TRUE;
 }
 

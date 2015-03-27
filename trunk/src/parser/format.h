@@ -114,7 +114,7 @@ class Format
 	*/
 	private:
 	// Use specified parser to perform formatted read
-	int executeRead(LineParser *parser, int optionMask);
+	int executeRead(LineParser* parser, int optionMask);
 
 	public:
 	// Return last written string
@@ -124,7 +124,7 @@ class Format
 	// Read line and parse according to format
 	int read(QString line, int optionMask);
 	// Read line from file and parse according to format
-	int read(LineParser *parser, int optionMask);
+	int read(LineParser* parser, int optionMask);
 };
 
 ATEN_END_NAMESPACE
