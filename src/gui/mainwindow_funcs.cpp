@@ -106,14 +106,6 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 	infoLabel2_ = NULL;
 	messageLabel_ = NULL;
 
-	// If no model loaded, add one
-	if (aten.nModels() == 0)
-	{
-		Model* m = aten.addModel();
-		m->enableUndoRedo();
-		m->regenerateIcon();
-	}
-
 	// Create dock widgets
 	atomListWidget = new AtomListWidget(*this, Qt::Tool);
 	buildWidget = new BuildWidget(*this, Qt::Tool);

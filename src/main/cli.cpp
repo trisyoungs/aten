@@ -255,25 +255,15 @@ bool Aten::parseCliEarly(int argc, char *argv[])
 				{
 					isShort = FALSE;
 					QStringList items = QString(&argv[argn][1]).split('=');
-					if (items.count() != 2)
-					{
-						printf("Short option '%s' failed to pass correctly in cliEarly() - did you forget the '='?", &argv[argn][1]);
-						return false;
-					}
 					arg = items.at(0);
-					argText = items.at(1);
+					if (items.count() == 2) argText = items.at(1);
 				}
 			}
 			else
 			{
 				QStringList items = QString(&argv[argn][2]).split('=');
-				if (items.count() != 2)
-				{
-					printf("Long option '%s' failed to pass correctly in cliEarly() - did you forget the '='?", &argv[argn][2]);
-					return false;
-				}
 				arg = items.at(0);
-				argText = items.at(1);
+				if (items.count() == 2) argText = items.at(1);
 			}
 
 			// Search for option...
@@ -305,8 +295,8 @@ bool Aten::parseCliEarly(int argc, char *argv[])
 				case (1):
 					if (!hasArg)
 					{
-						if (isShort) Messenger::print(" '-%c' requires an argument.", cliSwitches[opt].shortOpt);
-						else Messenger::print(" '--%s' requires an argument.", cliSwitches[opt].longOpt);
+						if (isShort) Messenger::print("Usage Error: '-%c' requires an argument.", cliSwitches[opt].shortOpt);
+						else Messenger::print("Usage Error: '--%s' requires an argument.", cliSwitches[opt].longOpt);
 						return FALSE;
 					}
 					break;
@@ -434,25 +424,15 @@ int Aten::parseCli(int argc, char *argv[])
 				{
 					isShort = FALSE;
 					QStringList items = QString(&argv[argn][1]).split('=');
-					if (items.count() != 2)
-					{
-						printf("Short option '%s' failed to pass correctly - did you forget the '='?", &argv[argn][1]);
-						return false;
-					}
 					arg = items.at(0);
-					argText = items.at(1);
+					if (items.count() == 2) argText = items.at(1);
 				}
 			}
 			else
 			{
 				QStringList items = QString(&argv[argn][2]).split('=');
-				if (items.count() != 2)
-				{
-					printf("Long option '%s' failed to pass correctly - did you forget the '='?", &argv[argn][2]);
-					return false;
-				}
-					arg = items.at(0);
-					argText = items.at(1);
+				arg = items.at(0);
+				if (items.count() == 2) argText = items.at(1);
 			}
 
 			// Search for option...
@@ -484,8 +464,8 @@ int Aten::parseCli(int argc, char *argv[])
 				case (1):
 					if (!hasArg)
 					{
-						if (isShort) Messenger::print(" '-%c' requires an argument.", cliSwitches[opt].shortOpt);
-						else Messenger::print(" '--%s' requires an argument.", cliSwitches[opt].longOpt);
+						if (isShort) Messenger::print("Usage Error: '-%c' requires an argument.", cliSwitches[opt].shortOpt);
+						else Messenger::print("Usage Error: '--%s' requires an argument.", cliSwitches[opt].longOpt);
 						return -1;
 					}
 					break;

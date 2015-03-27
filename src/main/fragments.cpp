@@ -72,29 +72,63 @@ void Aten::addFragmentFromSelection(Model* source, QString parentGroup)
 	Messenger::exit("Aten::addFragmentFromSelection");
 }
 
+// Load fragment library
+void Aten::openFragments()
+{
+	Messenger::enter("Aten::openFragments");
+	int nFailed;
+
+	// Redirect model creation to fragment list
+	targetModelList_ = Aten::FragmentLibraryList;
+
+	// Default search path should have already been set by openFilters()...
+	QDir path = dataDirectoryFile("fragments");
+	Messenger::print(Messenger::Verbose, "Looking for fragments in '%s'...", qPrintable(path.path()));
+	nFailed = parseFragmentDir(path, "Ungrouped");
+
+	// Try to load user fragments - we don't mind if the directory doesn't exist...
+	path = atenDirectoryFile("fragments");
+	Messenger::print(Messenger::Verbose, "Looking for user fragments in '%s'...", qPrintable(path.path()));
+	nFailed = parseFragmentDir(path, "Ungrouped");
+
+	// Return model creation to main list
+	targetModelList_ = Aten::MainModelList;
+	setCurrentModel(NULL);
+
+	// Print out info
+	int nFragments = 0;
+	for (FragmentGroup* fg = fragmentGroups_.first(); fg != NULL; fg = fg->next) nFragments += fg->nFragments();
+	Messenger::print("Loaded %i fragments into library.", nFragments);
+
+	Messenger::exit("Aten::openFragments");
+}
+
+
 // Parse fragment directory
 bool Aten::parseFragmentDir(QDir path, QString groupName)
 {
 	Messenger::enter("Aten::parseFragmentDir");
+
+	// First check - does this directory actually exist
+	if (!path.exists())
+	{
+		Messenger::warn("Fragment directory '%s' does not exist.", qPrintable(path.path()));
+		Messenger::exit("Aten::parseFragmentDir");
+		return FALSE;
+	}
+
 	int i;
 	Tree* t;
 	Fragment* f;
 	FragmentGroup* fg;
 	QPixmap pixmap;
 
-	// First check - does this directory actually exist
-	if (!path.exists())
-	{
-		Messenger::exit("Aten::parseFragmentDir");
-		return FALSE;
-	}
-
 	// Filter the directory contents - show only files and exclude '.' and '..'
 	QStringList fragmentList = path.entryList(QDir::Files | QDir::NoDotAndDotDot, QDir::Name);
-	for (i=0; i< fragmentList.size(); i++)
+	for (i=0; i<fragmentList.size(); i++)
 	{
 		// Construct full filepath
-		QString filename = path.absoluteFilePath(fragmentList.at(i));
+		QString filename = path.filePath(fragmentList.at(i));
 		t = probeFile(qPrintable(filename), FilterData::ModelImport);
 		if (t == NULL) continue;
 		if (!t->executeRead(qPrintable(filename))) continue;
@@ -115,47 +149,15 @@ bool Aten::parseFragmentDir(QDir path, QString groupName)
 
 	// Check for other directories
 	QStringList subDirList = path.entryList(QDir::Dirs | QDir::NoDotAndDotDot, QDir::Name);
-	for (i=0; i< subDirList.size(); i++)
+	for (i=0; i< subDirList.size(); ++i)
 	{
 		// Construct full filepath
-		QDir subDir = path.absoluteFilePath(subDirList.at(i));
+		QDir subDir = path.filePath(subDirList.at(i));
 		parseFragmentDir(subDir, subDirList.at(i));
 	}
 
 	Messenger::exit("Aten::parseFragmentDir");
 	return TRUE;
-}
-
-// Load fragment library
-void Aten::openFragments()
-{
-	Messenger::enter("Aten::openFragments");
-	QDir path;
-	int nFailed;
-
-	// Redirect model creation to fragment list
-	targetModelList_ = Aten::FragmentLibraryList;
-
-	// Default search path should have already been set by openFilters()...
-	path = dataDirectoryFile("fragments");
-	Messenger::print(Messenger::Verbose, "Looking for fragments in '%s'...", qPrintable(path.absolutePath()));
-	nFailed = parseFragmentDir(path, "Ungrouped");
-
-	// Try to load user fragments - we don't mind if the directory doesn't exist...
-	path = atenDirectoryFile("fragments");
-	Messenger::print(Messenger::Verbose, "Looking for user fragments in '%s'...", qPrintable(path.absolutePath()));
-	nFailed = parseFragmentDir(path, "Ungrouped");
-
-	// Return model creation to main list
-	targetModelList_ = Aten::MainModelList;
-	setCurrentModel(NULL);
-
-	// Print out info
-	int nFragments = 0;
-	for (FragmentGroup* fg = fragmentGroups_.first(); fg != NULL; fg = fg->next) nFragments += fg->nFragments();
-	Messenger::print("Loaded %i fragments into library.", nFragments);
-
-	Messenger::exit("Aten::openFragments");
 }
 
 // Search for name fragment group

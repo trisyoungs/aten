@@ -50,6 +50,7 @@ Model* Aten::workingModels() const
 void Aten::setCurrentModel(Model* m, bool deselectOthers)
 {
 	Messenger::enter("Aten::setCurrentModel");
+
 	if (m == NULL)
 	{
 		current_.clear();
@@ -62,6 +63,7 @@ void Aten::setCurrentModel(Model* m, bool deselectOthers)
 	current_.p = m->patterns();
 	current_.g = m->grids();
 	current_.i = NULL;
+
 	// Deselect all other models if specified
 	if (deselectOthers)
 	{
@@ -69,8 +71,10 @@ void Aten::setCurrentModel(Model* m, bool deselectOthers)
 		for (Refitem<Model,int>* ri = visibleModels_.first(); ri != NULL; ri = ri->next) ri->item->setVisible(FALSE);
 		visibleModels_.clear();
 	}
+
 	// Its the current model, so it must be visible also... add to visible list
 	setModelVisible(m, TRUE);
+
 	Messenger::exit("Aten::setCurrentModel");
 }
 
@@ -164,7 +168,6 @@ Model* Aten::addModel()
 // Remove model
 void Aten::removeModel(Model* xmodel)
 {
-	// Remove this model from the model_list in the main window
 	Messenger::enter("Aten::removeModel");
 
 	// Set next available model
@@ -174,6 +177,7 @@ void Aten::removeModel(Model* xmodel)
 	// Delete the old model
 	models_.remove(xmodel);
 	visibleModels_.remove(xmodel);
+
 	Messenger::exit("Aten::removeModel");
 }
 
@@ -181,8 +185,10 @@ void Aten::removeModel(Model* xmodel)
 Model* Aten::findModel(QString name) const
 {
 	Messenger::enter("Aten::findModel");
+
 	Model* result = NULL;
 	for (result = models_.first(); result != NULL; result = result->next) if (name == result->name()) break;
+
 	Messenger::exit("Aten::findModel");
 	return result ;
 }
@@ -193,6 +199,7 @@ void Aten::setModelVisible(Model* m, bool visible)
 	// Check model pointer
 	if (m == NULL) return;
 	m->setVisible(visible);
+
 	// Search list for specified model
 	Refitem<Model,int>* ri = visibleModels_.contains(m);
 	if ((ri == NULL) && visible) visibleModels_.add(m);

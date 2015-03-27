@@ -215,11 +215,11 @@ void AtenWindow::setControls()
 void AtenWindow::updateAndShow()
 {
 	// Display message box warning if there was a filter load error
-	if (aten_.nFiltersFailed() == -1)
+	if (aten_.nFilterPrograms() == 0)
 	{
 		QMessageBox::warning(NULL, "Aten", "Filters could not be found.\nNo import/export will be possible.\nSet the environment variable ATENDATA to point to Aten's data directory (e.g. 'export ATENDATA=/usr/local/aten/data'), or run with --atendata <dir>.\n", QMessageBox::Ok, QMessageBox::Ok);
 	}
-	else if (aten_.nFiltersFailed() > 0)
+	else if (aten_.failedFilters().count() > 0)
 	{
 		// Construct the messagebox text
 		QString text("One or more filters could not be loaded properly on startup.\nCheck shell output or run Settings->Reload Filters to diagnose the problem.\nFilters with errors were:\n");

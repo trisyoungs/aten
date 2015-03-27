@@ -108,6 +108,7 @@ bool Commands::function_Bohr(CommandNode* c, Bundle& obj, ReturnValue& rv)
 bool Commands::function_Chain(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+
 	// In the first form, draw element at current pen position. In the second, add at the specified coordinates
 	obj.rs()->beginUndoState("Draw Chain");
 	Atom* i;
@@ -283,6 +284,7 @@ bool Commands::function_MoveToStart(CommandNode* c, Bundle& obj, ReturnValue& rv
 bool Commands::function_NewAtom(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+
 	// Determine element (based on type of variable provided)
 	short int el = c->argz(0);
 	obj.rs()->beginUndoState("Draw Atom");
@@ -290,6 +292,7 @@ bool Commands::function_NewAtom(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	else if (c->hasArg(6)) aten_.current().i = obj.rs()->addAtom(el, c->arg3d(1), c->arg3d(4));
 	else if (c->hasArg(3)) aten_.current().i = obj.rs()->addAtom(el, c->arg3d(1));
 	else aten_.current().i = obj.rs()->addAtomAtPen(el);
+
 	// Add the name to the model's namesForcefield, if requested and it exists
  	if (prefs.keepNames())
  	{
@@ -310,6 +313,7 @@ bool Commands::function_NewAtom(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	}
 	obj.rs()->endUndoState();
 	rv.set(VTypes::AtomData, aten_.current().i);
+
 	return TRUE;
 }
 

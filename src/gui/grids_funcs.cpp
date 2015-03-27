@@ -63,9 +63,18 @@ void GridsWidget::refresh()
 {
 	Messenger::enter("GridsWidget::refresh");
 
-	// Clear and refresh the grids list
 	refreshing_ = TRUE;
+
+	// Clear and refresh the grids list
 	ui.GridList->clear();
+
+	if (!parent_.aten().currentModelOrFrame())
+	{
+		refreshing_ = false;
+		Messenger::exit("GridsWidget::refresh");
+		return;
+	}
+
 	Model* m;
 	if (ui.ShowAllGridsCheck->isChecked())
 	{
@@ -90,6 +99,7 @@ void GridsWidget::refresh()
 		m = parent_.aten().currentModelOrFrame();
 		for (Grid* g = m->grids(); g != NULL; g = g->next) addGridToList(g);
 	}
+
 	// Select the first item
 	ui.GridList->setCurrentRow(0);
 	refreshGridInfo();
