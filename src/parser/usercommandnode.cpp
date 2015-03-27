@@ -125,7 +125,7 @@ bool UserCommandNode::execute(ReturnValue& rv)
 		}
 	}
 	// We must pass the current input 'state' of this node's parent tree - give it the LineParser pointer...
-	LineParser *parser = parent_->parser();
+	LineParser* parser = parent_->parser();
 	bool result;
 	result = parser == NULL ? function_->execute(rv) : function_->execute(parser, rv);
 	return result;

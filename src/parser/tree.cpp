@@ -248,7 +248,7 @@ int Tree::readOptions() const
 }
 
 // Return parser object pointer
-LineParser *Tree::parser()
+LineParser* Tree::parser()
 {
 	return parser_;
 }
@@ -344,6 +344,7 @@ bool Tree::execute(ReturnValue& rv)
 		Messenger::print(Messenger::Commands, "Executing tree statement %p...", ri->item);
 // 		ri->item->nodePrint(1);
 		result = ri->item->execute(rv);
+
 		// Catch failures arising from 'return' statements
 		if (acceptedFail_ == Commands::Return)
 		{
@@ -353,6 +354,7 @@ bool Tree::execute(ReturnValue& rv)
 		}
 		else if (acceptedFail_ == Commands::Quit)
 		{
+			Messenger::print(Messenger::Parse, "Execution of tree ended early because we quit.");
 			result = TRUE;
 			break;
 		}
@@ -383,20 +385,24 @@ bool Tree::execute(ReturnValue& rv)
 				break;
 		}
 	}
+
 	// Do a couple of things regardless of the type of tree
 	prefs.setAutoConversionUnit(Prefs::nEnergyUnits);
+
 	// Print some final verbose output
 	if (isFilter()) Messenger::print(Messenger::Parse, "Final result from execution of %s filter (id = %i) tree '%s' (in Program '%s') is %s", FilterData::filterType(filter.type()), filter.id(), qPrintable(filter.name()), qPrintable(parent_->name()), qPrintable(rv.info()));
-	else Messenger::print(Messenger::Parse, "Final result from execution of tree '%s' (in Program '%s') is %s", qPrintable(filter.name()), qPrintable(parent_->name()), qPrintable(rv.info()));
+	else Messenger::print(Messenger::Parse, "Final result from execution of tree '%s' (in Program '%s') is %s", qPrintable(name_), qPrintable(parent_->name()), qPrintable(rv.info()));
 	if (!result) Messenger::print(Messenger::Parse, "Execution FAILED.");
+
 	Messenger::exit("Tree::execute");
 	return result;
 }
 
 // Execute tree using provided parsing source
-bool Tree::execute(LineParser *parser, ReturnValue& rv)
+bool Tree::execute(LineParser* parser, ReturnValue& rv)
 {
 	Messenger::enter("Tree::execute[LineParser]");
+
 	// Check LineParser
 	parser_ = parser;
 	if (parser_ == NULL)
@@ -405,9 +411,11 @@ bool Tree::execute(LineParser *parser, ReturnValue& rv)
 		Messenger::exit("Tree::execute[LineParser]");
 		return FALSE;
 	}
+
 	// Execute the commands
 	bool result = execute(rv);
 	parser_ = NULL;
+
 	Messenger::exit("Tree::execute[LineParser]");
 	return result;
 }

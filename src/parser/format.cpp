@@ -317,12 +317,13 @@ void Format::addGreedyDelimitedChunk(TreeNode* arg, VTypes::DataType retrievetyp
 */
 
 // Use specified parser to perform formatted read
-int Format::executeRead(LineParser *parser, int optionMask)
+int Format::executeRead(LineParser* parser, int optionMask)
 {
 	Messenger::enter("Format::executeRead");
 	int nparsed = 0, length;
 	ReturnValue rv;
 	QString bit;
+
 	// Cycle through the list of FormatChunks
 	for (FormatChunk* chunk = chunks_.first(); chunk != NULL; chunk = chunk->next)
 	{
@@ -356,6 +357,7 @@ int Format::executeRead(LineParser *parser, int optionMask)
 				Messenger::exit("Format::executeRead");
 				return 1;
 		}
+
 		// Set the corresponding argument accordingly
 		if (chunk->type() != FormatChunk::PlainTextChunk)
 		{
@@ -479,7 +481,7 @@ int Format::read(QString line, int optionMask)
 }
 
 // Read line from file and parse according to format
-int Format::read(LineParser *parser, int optionMask)
+int Format::read(LineParser* parser, int optionMask)
 {
 	Messenger::enter("Format::read[file]");
 	// Read a new line using the supplied parser

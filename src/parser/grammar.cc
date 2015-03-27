@@ -2121,7 +2121,7 @@ yyreduce:
     {
 		(yyval.node) = cmdparser.addFunction( (Commands::Function) (yyvsp[(1) - (3)].functionId));
 		if ((yyval.node) == NULL) YYABORT;
-		Messenger::print(Messenger::Parse, "PARSER : function : function '%i'", Commands::command((Commands::Function) (yyvsp[(1) - (3)].functionId)));
+		Messenger::print(Messenger::Parse, "PARSER : function : function '%s'", Commands::command((Commands::Function) (yyvsp[(1) - (3)].functionId)));
 		}
     break;
 
@@ -2131,7 +2131,7 @@ yyreduce:
     {
 		(yyval.node) = cmdparser.addFunctionWithArglist( (Commands::Function) (yyvsp[(1) - (4)].functionId),(yyvsp[(3) - (4)].node));
 		if ((yyval.node) == NULL) YYABORT;
-		Messenger::print(Messenger::Parse, "PARSER : function : function '%i' with exprlist", Commands::command((Commands::Function) (yyvsp[(1) - (4)].functionId)));
+		Messenger::print(Messenger::Parse, "PARSER : function : function '%s' with exprlist", Commands::command((Commands::Function) (yyvsp[(1) - (4)].functionId)));
 		}
     break;
 
@@ -2525,7 +2525,7 @@ yyreduce:
 /* Line 1792 of yacc.c  */
 #line 344 "grammar.yy"
     {
-		Messenger::print(Messenger::Parse,"PARSER : assignedvariablename : var '%s' with expr asdasdassignment", qPrintable(variableName));
+		Messenger::print(Messenger::Parse,"PARSER : assignedvariablename : var '%s' with expr assignment", qPrintable(variableName));
 		(yyval.node) = cmdparser.addVariable(declaredType, tokenName, (yyvsp[(3) - (3)].node), globalDeclarations);
 		}
     break;

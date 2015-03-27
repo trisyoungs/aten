@@ -551,6 +551,7 @@ int LineParser::getArgsDelim(int optionMask)
 	Messenger::enter("LineParser::getArgsDelim[ifstream]");
 	bool done = FALSE;
 	int result;
+
 	// Returns : 0=ok, 1=error, -1=eof
 	do
 	{
@@ -567,6 +568,7 @@ int LineParser::getArgsDelim(int optionMask)
 		getAllArgsDelim(optionMask);
 		if ((optionMask&LineParser::SkipBlanks) && (nArgs() == 0)) done = FALSE;
 	} while (!done);
+
 	Messenger::exit("LineParser::getArgsDelim[ifstream]");
 	return 0;
 }
@@ -576,15 +578,18 @@ bool LineParser::getRestDelim(QString& destArg)
 {
 	Messenger::enter("LineParser::getRestDelim");
 
-	int n, length;
-	char c;
+	// Clear destination string
+	destArg.clear();
+
 	if (lineLength_ == 0)
 	{
 		Messenger::exit("LineParser::getRestDelim");
 		return FALSE;
 	}
-	length = lineLength_ - linePos_;
-	for (n=0; n<length; n++)
+
+	int n, length = lineLength_ - linePos_;
+	char c;
+	for (n=0; n<length; ++n)
 	{
 		c = line_.at(linePos_).toAscii();
 		switch (c)

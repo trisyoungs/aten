@@ -135,7 +135,7 @@ Commands::Function CommandNode::function()
 }
 
 // Create format node (if necessary) from supplied argument id
-Format* CommandNode::createFormat(int fmtargid, int firstargid)
+Format* CommandNode::createFormat(int fmtArgId, int firstArgId)
 {
 	Messenger::enter("CommandNode::createFormat");
 
@@ -143,11 +143,11 @@ Format* CommandNode::createFormat(int fmtargid, int firstargid)
 	// firstargid = id of first data argument
 	// If we do not currently have a format associated to the node, create it regardless
 	bool result = FALSE;
-	Refitem<TreeNode,int>* firstarg = firstargid >= args_.nItems() ? NULL : args_[firstargid];
+	Refitem<TreeNode,int>* firstarg = firstArgId >= args_.nItems() ? NULL : args_[firstArgId];
 	if (format_ == NULL)
 	{
 		result = TRUE;
-		format_ = fmtargid == -1 ? new Format(firstarg) : new Format(argc(fmtargid), firstarg);
+		format_ = fmtArgId == -1 ? new Format(firstarg) : new Format(argc(fmtArgId), firstarg);
 		if (!format_->isValid())
 		{
 			result = FALSE;
@@ -158,13 +158,13 @@ Format* CommandNode::createFormat(int fmtargid, int firstargid)
 	else
 	{
 		// So a format already exists. If the source argument is a constant (or there is no source argument) don't recreate it
-		if ((fmtargid == -1) || (argNode(fmtargid)->readOnly())) result = TRUE;
+		if ((fmtArgId == -1) || (argNode(fmtArgId)->readOnly())) result = TRUE;
 		else
 		{
 			// Delete old format
 			delete format_;
 			// Create new format
-			format_ = fmtargid == -1 ? new Format(firstarg) : new Format(argc(fmtargid), firstarg);
+			format_ = fmtArgId == -1 ? new Format(firstarg) : new Format(argc(fmtArgId), firstarg);
 			if (!format_->isValid())
 			{
 				result = FALSE;
@@ -173,6 +173,7 @@ Format* CommandNode::createFormat(int fmtargid, int firstargid)
 			}
 		}
 	}
+
 	Messenger::exit("CommandNode::createFormat");
 	return (result == FALSE ? NULL : format_);
 }

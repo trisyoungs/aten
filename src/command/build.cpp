@@ -321,6 +321,7 @@ bool Commands::function_NewAtom(CommandNode* c, Bundle& obj, ReturnValue& rv)
 bool Commands::function_NewAtomFrac(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+
 	short int el = c->argz(0);
 	// Check for presence of unit cell
 	Vec3<double> r = c->arg3d(1);
@@ -336,14 +337,15 @@ bool Commands::function_NewAtomFrac(CommandNode* c, Bundle& obj, ReturnValue& rv
 	if (c->hasArg(9)) aten_.current().i = obj.rs()->addAtom(el, r, c->arg3d(4), c->arg3d(7));
 	else if (c->hasArg(6)) aten_.current().i = obj.rs()->addAtom(el, r, c->arg3d(4));
 	else aten_.current().i = obj.rs()->addAtom(el, r);
+
 	// Add the name to the model's namesForcefield, if requested and it exists
- 	if (prefs.keepNames())
- 	{
+	if (prefs.keepNames())
+	{
 		ForcefieldAtom* ffa = obj.rs()->addAtomName(el, c->argc(0));
- 		aten_.current().i->setType(ffa);
- 		if (ffa != NULL) aten_.current().i->setTypeFixed(TRUE);
- 	}
- 	if (prefs.keepTypes())
+		aten_.current().i->setType(ffa);
+		if (ffa != NULL) aten_.current().i->setTypeFixed(TRUE);
+	}
+	if (prefs.keepTypes())
 	{
 		ForcefieldAtom* ffa;
 		for (Forcefield* ff = aten_.forcefields(); ff != NULL; ff = ff->next)
@@ -355,6 +357,7 @@ bool Commands::function_NewAtomFrac(CommandNode* c, Bundle& obj, ReturnValue& rv
 		if (ffa != NULL) aten_.current().i->setTypeFixed(TRUE);
 	}
 	obj.rs()->endUndoState();
+
 	rv.set(VTypes::AtomData, aten_.current().i);
 	return TRUE;
 }

@@ -88,8 +88,8 @@ int main(int argc, char* argv[])
 	/* Reconstruct combination rule functions */
 	MrAten.combinationRules().regenerateEquations();
 	
-	/* Parse program arguments - return value is how many models were loaded, or -1 for some kind of failure */
-	if (MrAten.parseCli(argc,argv) == -1) return -1;
+	/* Parse program arguments - returns -1 for failure, 0 for quit, or 1 for success */
+	if (!MrAten.parseCli(argc,argv)) return -1;
 
 	/* Enter the correct program mode */
 	int result = 0;
