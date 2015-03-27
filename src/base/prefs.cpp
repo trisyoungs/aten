@@ -224,13 +224,6 @@ Prefs::Prefs()
 	primitiveQuality_ = 10;
 	imagePrimitiveQuality_ = 50;
 	reusePrimitiveQuality_ = FALSE;
-	levelsOfDetail_ = 8;
-	levelOfDetailWidth_ = 25.0;
-	levelOfDetailStartZ_ = 25.0;
-	transparencyCorrect_ = TRUE;
-	transparencyNBins_ = 1000;
-	transparencyBinStartZ_ = 0.0;
-	transparencyBinWidth_ = 0.2;
 	frameCurrentModel_ = TRUE;
 	transparentSelectionStyle_ = TRUE;
 
@@ -295,8 +288,6 @@ Prefs::Prefs()
 	replicateTrim_ = TRUE;
 	forceRhombohedral_ = FALSE;
 	augmentAfterRebond_ = TRUE;
-	warning1056_ = FALSE;
-	allowDeprecated_ = TRUE;
 	loadIncludes_ = TRUE;
 	loadPartitions_ = TRUE;
 	loadFragments_ = TRUE;
@@ -1332,24 +1323,6 @@ void Prefs::setForceRhombohedral(bool b)
 bool Prefs::forceRhombohedral() const
 {
 	return forceRhombohedral_;
-}
-
-// Whether to display warning for version 1.5 (r1056) newness
-bool Prefs::warning1056() const
-{
-	return warning1056_;
-}
-
-// Set whether to display warning for version 1.5 (r1056) newness
-void Prefs::setWarning1056(bool b)
-{
-	warning1056_ = b;
-}
-
-// Return whether to allow deprecated command/function names (i.e. un-capitalised)
-bool Prefs::allowDeprecated() const
-{
-	return allowDeprecated_;
 }
 
 // Whether to load filters on startup

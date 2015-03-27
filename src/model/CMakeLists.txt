@@ -1,39 +1,41 @@
 add_library(model
-bundle.h
-clipboard.h
-fragment.h
-model.h
-undoevent.h
-undostate.h
-atom.cpp 
-bond.cpp 
-build.cpp 
-bundle.cpp
-cell.cpp 
-clipboard.cpp
-component.cpp
-energy.cpp 
-expression.cpp 
-fragment.cpp
-glyph.cpp
-grid.cpp
-measure.cpp 
-model.cpp 
-modelextras.cpp 
-molecule.cpp 
-pattern.cpp 
-render.cpp
-select.cpp 
-selection.cpp
-site.cpp 
-trajectory.cpp 
-transform.cpp 
-typing.cpp 
-undo.cpp 
-undoevent.cpp
-undostate.cpp
-view.cpp
-zmatrix.cpp
+  bundle.h
+  clipboard.h
+  fragment.h
+  fragmentgroup.h
+  model.h
+  undoevent.h
+  undostate.h
+  atom.cpp 
+  bond.cpp 
+  build.cpp 
+  bundle.cpp
+  cell.cpp 
+  clipboard.cpp
+  component.cpp
+  energy.cpp 
+  expression.cpp 
+  fragment.cpp
+  fragmentgroup.cpp
+  glyph.cpp
+  grid.cpp
+  measure.cpp 
+  model.cpp 
+  modelextras.cpp 
+  molecule.cpp 
+  pattern.cpp 
+  render.cpp
+  select.cpp 
+  selection.cpp
+  site.cpp 
+  trajectory.cpp 
+  transform.cpp 
+  typing.cpp 
+  undo.cpp 
+  undoevent.cpp
+  undostate.cpp
+  view.cpp
+  zmatrix.cpp
 )
 
 include_directories(

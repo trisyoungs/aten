@@ -113,20 +113,6 @@ class Prefs
 	bool reusePrimitiveQuality_;
 	// General quality of primitives on saved images
 	int imagePrimitiveQuality_;
-	// Number of levels of detail for rendering primitives
-	int levelsOfDetail_;
-	// Level of detail start z-distance
-	double levelOfDetailStartZ_;
-	// Level of detail slice 'width'
-	double levelOfDetailWidth_;
-	// Whether transparency correction is enabled
-	bool transparencyCorrect_;
-	// Number of bins to use in transparency sorting
-	int transparencyNBins_;
-	// Starting Z-depth of transparency bins
-	double transparencyBinStartZ_;
-	// Width of individual transparency Z-bin
-	double transparencyBinWidth_;
 
 	public:
 	// Return whether to frame current model in view
@@ -608,10 +594,6 @@ class Prefs
 	bool augmentAfterRebond_;
 	// Force spacegroups that are in hexagonal basis to be in rhombohedral basis
 	bool forceRhombohedral_;
-	// Display warning for version 1.5 (r1056) newness
-	bool warning1056_;
-	// Whether to allow deprecated command/function names (i.e. un-capitalised)
-	bool allowDeprecated_;
 	// Whether to load filters on startup
 	bool loadFilters_;
 	// Whether to load includes on startup
@@ -684,12 +666,6 @@ class Prefs
 	bool forceRhombohedral() const;
 	// Set whether rhombohedral (over hexagonal) spacegroup basis is to be forced
 	void setForceRhombohedral(bool b);
-	// Return whether to display warning for version 1.5 (r1056) newness
-	bool warning1056() const;
-	// Set whether to display warning for version 1.5 (r1056) newness
-	void setWarning1056(bool b);
-	// Return whether to allow deprecated command/function names (i.e. un-capitalised)
-	bool allowDeprecated() const;
 	// Return whether to load filters on startup
 	bool loadFilters() const;
 	// Set whether to load filters on startup

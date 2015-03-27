@@ -1150,7 +1150,7 @@ class Model : public ListItem<Model>
 
 	public:
 	// Retrieve (creating or updating as necessary) the zmatrix for the model
-	ZMatrix *zMatrix();
+	ZMatrix* zMatrix();
 	// Recalculate model atom posions from ZMatrix definition
 	void recalculateFromZMatrix();
 

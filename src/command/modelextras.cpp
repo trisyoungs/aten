@@ -68,7 +68,7 @@ bool Commands::function_PrintZMatrix(CommandNode* c, Bundle& obj, ReturnValue& r
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// Grab (and create) zmatrix for current model
-	ZMatrix *zmat = obj.rs()->zMatrix();
+	ZMatrix* zmat = obj.rs()->zMatrix();
 	if (zmat == NULL) return FALSE;
 	
 	zmat->print();
