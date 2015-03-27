@@ -27,6 +27,7 @@
 #include "base/prefs.h"
 #include "model/bundle.h"
 #include "model/fragment.h"
+#include "model/fragmentgroup.h"
 #include "templates/list.h"
 #include "parser/program.h"
 #include "parser/variablelist.h"

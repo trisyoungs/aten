@@ -35,6 +35,7 @@ add_library(base
   vibration.cpp
   wrapint.cpp
   zmatrix.cpp
+  zmatrixelement.cpp
   atomaddress.h
   atom.h
   basisshell.h
@@ -66,6 +67,7 @@ add_library(base
   vibration.h
   wrapint.h
   zmatrix.h
+  zmatrixelement.h
 )
 
 add_library(sg

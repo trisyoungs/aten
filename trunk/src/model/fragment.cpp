@@ -1,5 +1,5 @@
 /*
-	*** Fragment Model Data
+	*** Fragment Model
 	*** src/model/fragment.cpp
 	Copyright T. Youngs 2007-2015
 
@@ -23,10 +23,6 @@
 #include "model/clipboard.h"
 
 ATEN_USING_NAMESPACE
-
-/*
-// Fragment
-*/
 
 // Constructor
 Fragment::Fragment() : ListItem<Fragment>()
@@ -101,7 +97,7 @@ Model* Fragment::masterModel()
 }
 
 // Return pixmap (from masterModel_)
-QIcon &Fragment::icon()
+QIcon& Fragment::icon()
 {
 	return masterModel_->icon();
 }
@@ -313,49 +309,3 @@ void Fragment::pasteAnchoredModel(Atom* anchorpoint, bool replace, int &replaceb
 
 	Messenger::exit("Fragment::pasteAnchoredModel");
 }
-
-/*
-// Fragment Group
-*/
-
-// Constructor
-FragmentGroup::FragmentGroup() : ListItem<FragmentGroup>()
-{
-}
-
-// Set name of group
-void FragmentGroup::setName(QString name)
-{
-	name_ = name;
-}
-
-// Return name of group
-QString FragmentGroup::name()
-{
-	return name_;
-}
-
-// Return number of fragments in group
-int FragmentGroup::nFragments()
-{
-	return fragments_.nItems();
-}
-
-// Add new fragment
-Fragment* FragmentGroup::addFragment()
-{
-	return fragments_.add();
-}
-
-// Remove existing fragment
-void FragmentGroup::removeFragment(Fragment* frag)
-{
-	fragments_.remove(frag);
-}
-
-// Return first fragment in group
-Fragment* FragmentGroup::fragments()
-{
-	return fragments_.first();
-}
-

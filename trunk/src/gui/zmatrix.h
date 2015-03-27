@@ -64,7 +64,7 @@ class AtenZMatrix : public QDialog
 	// Whether the widget is currently refreshing
 	bool refreshing_;
 	// ZMatrix target
-	ZMatrix *zMatrix_;
+	ZMatrix* zMatrix_;
 
 
 	/*

@@ -74,7 +74,7 @@ void AtenSelectVariable::on_VariableTable_itemSelectionChanged()
 }
 
 // Select a variable of the specified type from the zmatrix provided
-Variable* AtenSelectVariable::selectVariable(ZMatrix *zmat, int vartype, Variable* currentVar, bool currentNegate)
+Variable* AtenSelectVariable::selectVariable(ZMatrix* zmat, int vartype, Variable* currentVar, bool currentNegate)
 {
 	// Check source
 	if (zmat == NULL) return NULL;

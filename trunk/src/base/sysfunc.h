@@ -31,7 +31,4 @@ void removeComments(QString& line);
 int enumSearch(QString enumName, int nItems, const char* itemArray[], QString name, bool reportError = true);
 void enumPrintValid(int nItems, const char* itemArray[]);
 
-// Files
-bool fileExists(const char* filename);
-
 #endif

@@ -19,11 +19,10 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_FRAGMENTDATA_H
-#define ATEN_FRAGMENTDATA_H
+#ifndef ATEN_FRAGMENT_H
+#define ATEN_FRAGMENT_H
 
 #include "model/model.h"
-#include <QtGui/QIcon>
 #include "templates/list.h"
 #include "base/namespace.h"
 
@@ -58,7 +57,7 @@ class Fragment : public ListItem<Fragment>
 	// Return model pointer
 	Model* masterModel();
 	// Return icon (from masterModel_)
-	QIcon &icon();
+	QIcon& icon();
 	// Cycle link atom
 	void cycleLinkAtom();
 
@@ -87,38 +86,6 @@ class Fragment : public ListItem<Fragment>
 	Model* anchoredModel(Atom* anchorpoint, bool replace, int &replacebond);
 	// Paste anchored model to target model
 	void pasteAnchoredModel(Atom* anchorpoint, bool replace, int& replacebond, Model* target, bool adjustbond);
-};
-
-// Fragment Library
-class FragmentGroup : public ListItem<FragmentGroup>
-{
-	public:
-	// Constructor
-	FragmentGroup();
-
-	/*
-	// Data
-	*/
-	private:
-	// Name of the group
-	QString name_;
-	// List of fragments in this group
-	List<Fragment> fragments_;
-
-	public:
-	// Set name of group
-	void setName(QString name);
-	// Return name of group
-	QString name();
-	// Return number of fragments in group
-	int nFragments();
-	// Add new fragment
-	Fragment* addFragment();
-	// Remove existing fragment
-	void removeFragment(Fragment* frag);
-	// Return first fragment in group
-	Fragment* fragments();
-	
 };
 
 ATEN_END_NAMESPACE

@@ -136,7 +136,6 @@ Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
 	{ "vdwCutoff",			VTypes::DoubleData,		0, FALSE },
 	{ "vibrationArrowColour",	VTypes::DoubleData,		4, FALSE },
 	{ "viewRotationGlobe",		VTypes::IntegerData,		0, FALSE },
-	{ "warn1056",			VTypes::IntegerData,		0, FALSE },
 	{ "wireSelectionColour",	VTypes::DoubleData,		4, FALSE },
 	{ "zMap",			VTypes::StringData,		0, FALSE },
 	{ "zoomThrottle",		VTypes::DoubleData,		0, FALSE }
@@ -533,9 +532,6 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArray
 			break;
 		case (PreferencesVariable::ViewRotationGlobe):
 			rv.set( ptr->viewRotationGlobe() );
-			break;
-		case (PreferencesVariable::Warn1056):
-			rv.set( ptr->warning1056() );
 			break;
 		case (PreferencesVariable::WireSelectionColour):
 			if (hasArrayIndex) rv.set( ptr->colour(Prefs::WireSelectionColour)[arrayIndex-1] );
@@ -1006,9 +1002,6 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue&
 			break;
 		case (PreferencesVariable::ViewRotationGlobe):
 			ptr->setViewRotationGlobe( newValue.asBool() );
-			break;
-		case (PreferencesVariable::Warn1056):
-			ptr->setWarning1056( newValue.asBool() );
 			break;
 		case (PreferencesVariable::WireSelectionColour):
 			if (newValue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->setColour(Prefs::WireSelectionColour, n, newValue.asVector(result)[n]);
