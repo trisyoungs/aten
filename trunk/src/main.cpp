@@ -74,7 +74,6 @@ int main(int argc, char* argv[])
 	if (prefs.loadIncludes()) MrAten.openIncludes();
 
 	/* Read in file filters (if unsuccessful, a messagebox will be raised in the GUI) */
-	/* This will also set dataDir_ to a valid value (provided one could be found in a default search location) */
 	if (prefs.loadFilters()) MrAten.openFilters();
 	
 	/* Load in fragments */
@@ -91,12 +90,20 @@ int main(int argc, char* argv[])
 	
 	/* Parse program arguments - return value is how many models were loaded, or -1 for some kind of failure */
 	if (MrAten.parseCli(argc,argv) == -1) return -1;
-	
+
 	/* Enter the correct program mode */
 	int result = 0;
 	switch (MrAten.programMode())
 	{
 		case (Aten::GuiMode):
+			// If no model loaded, add one
+			if (MrAten.nModels() == 0)
+			{
+				Model* m = MrAten.addModel();
+				m->enableUndoRedo();
+				m->regenerateIcon();
+			}
+
 			/* Show the main window */
 			mainWindow.updateAndShow();
 

@@ -257,6 +257,13 @@ void AtomListWidget::refresh()
 
 	refreshing_ = TRUE;
 
+	if (!parent_.aten().currentModelOrFrame())
+	{
+		refreshing_ = false;
+		Messenger::exit("AtomListWidget::refresh");
+		return;
+	}
+
 	// Check the current active model against the last one we represented in the list
 	bool updateSel = FALSE, updateAtoms = FALSE;
 	Model* m = parent_.aten().currentModelOrFrame();

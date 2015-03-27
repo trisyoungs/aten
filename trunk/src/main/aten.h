@@ -121,12 +121,8 @@ class Aten
 	 * Filters
 	 */
 	private:
-	// How many filters had errors on startup
-	int nFiltersFailed_;
 	// Filenames (including paths) of filters that failed to load
 	QStringList failedFilters_;
-	// Parse directory index and load filters
-	int parseFilterDir(QDir path);
 	// Set export partners for import filters
 	void partnerFilters();
 	// List of Filter programs
@@ -138,6 +134,10 @@ class Aten
 	// Filter strings for bitmap file dialogs
 	QString bitmapFileDialogFilters_;
 
+	private:
+	// Parse directory index and load filters
+	int parseFilterDir(QDir path);
+
 	public:
 	// Load filters
 	void openFilters();
@@ -147,8 +147,8 @@ class Aten
 	void createFileDialogFilters();
 	// Register a filter of a given type
 	void registerFilter(Tree* filter, FilterData::FilterType filterType);
-	// Whether filters loaded succesfully on startup
-	int nFiltersFailed() const;
+	// Return current number of filter programs
+	int nFilterPrograms() const;
 	// Return first item in failed filter list
 	QStringList failedFilters() const;
 	// Reload filters
@@ -453,18 +453,20 @@ class Aten
 	List<Model> fragmentModels_;
 	// Groups of fragments within the library
 	List<FragmentGroup> fragmentGroups_;
-	// Search for name fragment group
-	FragmentGroup* findFragmentGroup( QString name );
 	// Internal count for naming new fragments
 	int fragmentModelId_;
+
+	private:
 	// Parse fragment directory
 	bool parseFragmentDir(QDir path, QString groupName);
+	// Search for name fragment group
+	FragmentGroup* findFragmentGroup(QString name);
 
 	public:
-	// Add new fragment model from specified model's current selection
-	void addFragmentFromSelection(Model* source, QString parentGroup);
 	// Load fragment library
 	void openFragments();
+	// Add new fragment model from specified model's current selection
+	void addFragmentFromSelection(Model* source, QString parentGroup);
 	// Return first fragment library
 	FragmentGroup* fragmentGroups();
 

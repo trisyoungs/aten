@@ -61,9 +61,6 @@ Aten::Aten() : commands_(*this)
 	redirectedImageCount_ = 0;
 	maxRedirectedImages_ = 100;
 
-	// Misc 
-	nFiltersFailed_ = 0;
-
 	// Clipboards
 	userClipboard = new Clipboard;
 	gridClipboard_ = NULL;
