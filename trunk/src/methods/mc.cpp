@@ -481,7 +481,7 @@ bool MonteCarlo::minimise(Model* srcmodel, double econ, double fcon)
 	srcmodel->energy.print();
 
 	// Finalise
-	srcmodel->changeLog.add(Log::Coordinates);
+	srcmodel->logChange(Log::Coordinates);
 
 	Messenger::exit("MonteCarlo::minimise");
 	return TRUE;

@@ -67,8 +67,8 @@ bool Commands::function_FinaliseFrame(CommandNode* c, Bundle& obj, ReturnValue& 
 	if (!prefs.keepView()) obj.rs()->resetView(aten_.atenWindow()->ui.MainView->contextWidth(), aten_.atenWindow()->ui.MainView->contextHeight());
 	obj.rs()->calculateMass();
 	obj.rs()->selectNone();
-	obj.rs()->changeLog.reset();
-	obj.rs()->changeLog.updateSavePoint();
+	obj.rs()->resetLogs();
+	obj.rs()->updateSavePoint();
 	obj.rs()->setFilter(NULL);
 	obj.rs()->setFilename("frame");
 	obj.rs()->enableUndoRedo();

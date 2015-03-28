@@ -74,9 +74,9 @@ void Model::beginUndoState(const char* fmt, ...)
 	vsprintf(msgs,fmt,arguments);
 	va_end(arguments);
 	recordingState_->setDescription(msgs);
-	recordingState_->setStartLogs(changeLog);
+	recordingState_->setStartLogs(changeLog_);
 	Messenger::print(Messenger::Verbose, "Undo list prepped for new state.");
-	Messenger::print(Messenger::Verbose, "   --- Logs at start of state are: structure = %i, coords = %i, selection = %i", changeLog.log(Log::Structure), changeLog.log(Log::Coordinates), changeLog.log(Log::Selection));
+	Messenger::print(Messenger::Verbose, "   --- Logs at start of state are: structure = %i, coords = %i, selection = %i", log(Log::Structure), log(Log::Coordinates), log(Log::Selection));
 	Messenger::exit("Model::beginUndoState");
 }
 
@@ -99,7 +99,7 @@ void Model::endUndoState()
 		Messenger::exit("Model::endUndoState");
 		return;
 	}
-	recordingState_->setEndLogs(changeLog);
+	recordingState_->setEndLogs(changeLog_);
 
 	// Delete all redo (i.e. future) states from the undo list
 	if (currentUndoState_ == NULL) undoStates_.clear();
@@ -111,7 +111,7 @@ void Model::endUndoState()
 	// Set the current undo level to the new state and nullify the pointer
 	currentUndoState_ = recordingState_;
 	Messenger::print(Messenger::Verbose, "Undo list now has %i states (%i events caught in last state).",undoStates_.nItems(),currentUndoState_->nChanges());
-	Messenger::print(Messenger::Verbose, "   --- Logs at end of state are: structure = %i, coords = %i, selection = %i", changeLog.log(Log::Structure), changeLog.log(Log::Coordinates), changeLog.log(Log::Selection));
+	Messenger::print(Messenger::Verbose, "   --- Logs at end of state are: structure = %i, coords = %i, selection = %i", log(Log::Structure), log(Log::Coordinates), log(Log::Selection));
 
 	// Nullify the redostate pointer, since we must now be at the top of the undo stack
 	currentRedoState_ = NULL;
@@ -139,14 +139,14 @@ void Model::undo()
 	{
 		// Undo the changes
 		currentUndoState_->undo(this);
-		changeLog.setLog(Log::Structure, currentUndoState_->startLog(Log::Structure));
-		changeLog.setLog(Log::Coordinates, currentUndoState_->startLog(Log::Coordinates));
-		changeLog.setLog(Log::Selection, currentUndoState_->startLog(Log::Selection));
-		changeLog.setLog(Log::Style, currentUndoState_->startLog(Log::Style));
-		changeLog.setLog(Log::Cell, currentUndoState_->startLog(Log::Cell));
-		changeLog.setLog(Log::Misc, currentUndoState_->startLog(Log::Misc));
-		changeLog.setLog(Log::Glyphs, currentUndoState_->startLog(Log::Glyphs));
-		changeLog.setLog(Log::Grids, currentUndoState_->startLog(Log::Grids));
+		changeLog_.setLog(Log::Structure, currentUndoState_->startLog(Log::Structure));
+		changeLog_.setLog(Log::Coordinates, currentUndoState_->startLog(Log::Coordinates));
+		changeLog_.setLog(Log::Selection, currentUndoState_->startLog(Log::Selection));
+		changeLog_.setLog(Log::Style, currentUndoState_->startLog(Log::Style));
+		changeLog_.setLog(Log::Cell, currentUndoState_->startLog(Log::Cell));
+		changeLog_.setLog(Log::Misc, currentUndoState_->startLog(Log::Misc));
+		changeLog_.setLog(Log::Glyphs, currentUndoState_->startLog(Log::Glyphs));
+		changeLog_.setLog(Log::Grids, currentUndoState_->startLog(Log::Grids));
 
 		// Set new undo/redo pointers
 		currentRedoState_ = currentUndoState_;
@@ -164,14 +164,14 @@ void Model::redo()
 	{
 		// Undo the changes
 		currentRedoState_->redo(this);
-		changeLog.setLog(Log::Structure, currentRedoState_->endLog(Log::Structure));
-		changeLog.setLog(Log::Coordinates, currentRedoState_->endLog(Log::Coordinates));
-		changeLog.setLog(Log::Selection, currentRedoState_->endLog(Log::Selection));
-		changeLog.setLog(Log::Style, currentRedoState_->endLog(Log::Style));
-		changeLog.setLog(Log::Cell, currentRedoState_->endLog(Log::Cell));
-		changeLog.setLog(Log::Misc, currentRedoState_->endLog(Log::Misc));
-		changeLog.setLog(Log::Glyphs, currentRedoState_->endLog(Log::Glyphs));
-		changeLog.setLog(Log::Grids, currentRedoState_->endLog(Log::Grids));
+		changeLog_.setLog(Log::Structure, currentRedoState_->endLog(Log::Structure));
+		changeLog_.setLog(Log::Coordinates, currentRedoState_->endLog(Log::Coordinates));
+		changeLog_.setLog(Log::Selection, currentRedoState_->endLog(Log::Selection));
+		changeLog_.setLog(Log::Style, currentRedoState_->endLog(Log::Style));
+		changeLog_.setLog(Log::Cell, currentRedoState_->endLog(Log::Cell));
+		changeLog_.setLog(Log::Misc, currentRedoState_->endLog(Log::Misc));
+		changeLog_.setLog(Log::Glyphs, currentRedoState_->endLog(Log::Glyphs));
+		changeLog_.setLog(Log::Grids, currentRedoState_->endLog(Log::Grids));
 
 		// Set new undo/redo pointers
 		currentUndoState_ = currentRedoState_;

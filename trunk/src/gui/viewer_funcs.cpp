@@ -189,7 +189,7 @@ void Viewer::resizeGL(int newwidth, int newheight)
 	contextHeight_ = (GLsizei) newheight;
 }
 
-void Viewer::focusOutEvent(QFocusEvent *event)
+void Viewer::focusOutEvent(QFocusEvent* event)
 {
 	atenWindow_->updateWidgets(AtenWindow::StatusBarTarget);
 }

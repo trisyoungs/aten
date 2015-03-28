@@ -882,7 +882,7 @@ void GridsWidget::on_OrbitalPointsSpin_valueChanged(int i)
 {
 }
 
-void GridsWidget::closeEvent(QCloseEvent *event)
+void GridsWidget::closeEvent(QCloseEvent* event)
 {
 	event->accept();
 }

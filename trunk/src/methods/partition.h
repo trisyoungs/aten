@@ -218,7 +218,7 @@ class PartitioningScheme : public ListItem<PartitioningScheme>
 	// Return the grid structure
 	Grid& grid();
 	// Return icon containing illustrative partitions
-	QIcon &icon();
+	QIcon& icon();
 	// Set gridsize to use for calculation
 	void setGridSize(Vec3<int> newSize);
 	// Return last grid size used to calculated data

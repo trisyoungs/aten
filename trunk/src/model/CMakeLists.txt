@@ -19,6 +19,9 @@ add_library(model
   fragmentgroup.cpp
   glyph.cpp
   grid.cpp
+  icon.cpp
+  labels.cpp
+  log.cpp
   measure.cpp 
   model.cpp 
   modelextras.cpp 

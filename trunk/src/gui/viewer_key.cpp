@@ -33,7 +33,7 @@ bool Viewer::keyModifier(Prefs::ModifierKey mk)
 }
 
 // Qt Slot (key press event)
-void Viewer::keyPressEvent(QKeyEvent *event)
+void Viewer::keyPressEvent(QKeyEvent* event)
 {
 	// Check datamodel...
 	bool refresh = FALSE, ignore = TRUE;
@@ -156,7 +156,7 @@ void Viewer::keyPressEvent(QKeyEvent *event)
 }
 
 // Qt Slot (key release event)
-void Viewer::keyReleaseEvent(QKeyEvent *event)
+void Viewer::keyReleaseEvent(QKeyEvent* event)
 {
 	// Set keystates
 	bool oldshift = keyModifier_[Prefs::ShiftKey];

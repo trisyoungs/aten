@@ -640,14 +640,14 @@ bool ModelVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newVa
 			else if (newValue.arraySize() != -1) for (n=0; n<newValue.arraySize(); ++n) ptr->setRepeatCellsNegative(n, newValue.asInteger(n, result));
 			else if (hasArrayIndex) ptr->setRepeatCellsNegative(arrayIndex-1, newValue.asInteger(result));
 			else for (n=0; n<3; ++n) ptr->setRepeatCellsNegative(n, newValue.asInteger(result));
-			ptr->changeLog.add(Log::Style);
+			ptr->logChange(Log::Style);
 			break;
 		case (ModelVariable::RepeatCellPositive):
 			if (newValue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->setRepeatCellsPositive(n, newValue.asVector(result)[n]);
 			else if (newValue.arraySize() != -1) for (n=0; n<newValue.arraySize(); ++n) ptr->setRepeatCellsPositive(n, newValue.asInteger(n, result));
 			else if (hasArrayIndex) ptr->setRepeatCellsPositive(arrayIndex-1, newValue.asInteger(result));
 			else for (n=0; n<3; ++n) ptr->setRepeatCellsPositive(n, newValue.asInteger(result));
-			ptr->changeLog.add(Log::Style);
+			ptr->logChange(Log::Style);
 			break;
 		default:
 			printf("ModelVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);

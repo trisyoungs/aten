@@ -27,8 +27,8 @@ ATEN_USING_NAMESPACE
 ZMatrix* Model::zMatrix()
 {
 	// Update if necessary
-	if (zMatrixPoint_ != (changeLog.log(Log::Coordinates) + changeLog.log(Log::Structure))) zMatrix_.create(this, FALSE);
-	zMatrixPoint_ = changeLog.log(Log::Coordinates) + changeLog.log(Log::Structure);
+	if (zMatrixPoint_ != (log(Log::Coordinates) + log(Log::Structure))) zMatrix_.create(this, FALSE);
+	zMatrixPoint_ = log(Log::Coordinates) + log(Log::Structure);
 	return &zMatrix_;
 }
 
@@ -55,6 +55,6 @@ void Model::recalculateFromZMatrix()
 	// Update model measurements
 	updateMeasurements();
 	// Update logpoint for ZMatrix
-	zMatrixPoint_ = changeLog.log(Log::Coordinates) + changeLog.log(Log::Structure);
+	zMatrixPoint_ = log(Log::Coordinates) + log(Log::Structure);
 	Messenger::exit("Model::recalculateFromZMatrix");
 }

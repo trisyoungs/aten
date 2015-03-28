@@ -64,11 +64,11 @@ void Model::bondAtoms(Atom* i, Atom* j, Bond::BondType bt)
 			{
 				Bond::BondType oldtype = b->type();
 				b->setType(bt);
-				changeLog.add(Log::Structure);
+				logChange(Log::Structure);
 				// Add the change to the undo state (if there is one)
 				if (recordingState_ != NULL)
 				{
-					BondTypeEvent *newchange = new BondTypeEvent;
+					BondTypeEvent* newchange = new BondTypeEvent;
 					newchange->set(i->id(), j->id(), oldtype, bt);
 					recordingState_->addEvent(newchange);
 				}
@@ -81,11 +81,11 @@ void Model::bondAtoms(Atom* i, Atom* j, Bond::BondType bt)
 			b->setAtoms(i,j);
 			i->acceptBond(b);
 			j->acceptBond(b);
-			changeLog.add(Log::Structure);
+			logChange(Log::Structure);
 			// Add the change to the undo state (if there is one)
 			if (recordingState_ != NULL)
 			{
-				BondEvent *newchange = new BondEvent;
+				BondEvent* newchange = new BondEvent;
 				newchange->set(TRUE, i->id(), j->id(), bt);
 				recordingState_->addEvent(newchange);
 			}
@@ -141,11 +141,11 @@ void Model::unbondAtoms(Atom* i, Atom* j, Bond* bij)
 	i->detachBond(b);
 	j->detachBond(b);
 	bonds_.remove(b);
-	changeLog.add(Log::Structure);
+	logChange(Log::Structure);
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
-		BondEvent *newchange = new BondEvent;
+		BondEvent* newchange = new BondEvent;
 		newchange->set(FALSE, i->id(), j->id(), bt);
 		recordingState_->addEvent(newchange);
 	}
@@ -169,7 +169,7 @@ void Model::clearBonding()
 			bref = i->bonds();
 		}
 	}
-	changeLog.add(Log::Structure);
+	logChange(Log::Structure);
 	Messenger::exit("Model::clearBonding");
 }
 
@@ -568,11 +568,11 @@ void Model::changeBond(Bond* b, Bond::BondType bt)
 {
 	Bond::BondType oldorder = b->type();
 	b->setType(bt);
-	changeLog.add(Log::Structure);
+	logChange(Log::Structure);
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
-		BondTypeEvent *newchange = new BondTypeEvent;
+		BondTypeEvent* newchange = new BondTypeEvent;
 		newchange->set(b->atomI()->id(), b->atomJ()->id(), oldorder, bt);
 		recordingState_->addEvent(newchange);
 	}

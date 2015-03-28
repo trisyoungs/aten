@@ -251,7 +251,7 @@ void AtenPrefs::on_ElementColourButton_clicked(bool checked)
 	ui.ElementColourFrame->setColour(newcol);
 	ui.ElementColourFrame->update();
 	// Re-set atom colours in model(s)
-	parent_.aten().currentModel()->changeLog.add(Log::Style);
+	parent_.aten().currentModel()->logChange(Log::Style);
 	parent_.postRedisplay();
 }
 
@@ -262,7 +262,7 @@ void AtenPrefs::on_ElementRadiusSpin_valueChanged(double value)
 	if (el == -1) return;
 	Elements().setAtomicRadius(el, value);
 	// Re-draw models
-	parent_.aten().currentModel()->changeLog.add(Log::Style);
+	parent_.aten().currentModel()->logChange(Log::Style);
 	parent_.postRedisplay();
 }
 
@@ -415,7 +415,7 @@ void AtenPrefs::on_ColoursTable_cellDoubleClicked(int row, int column)
 	// Store new colour
 	prefs.setColour(pencol, newcol.redF(), newcol.greenF(), newcol.blueF(), newcol.alphaF());
 	ui.ColoursTable->item(row, 1)->setBackgroundColor(newcol);
-	parent_.aten().currentModel()->changeLog.add(Log::Style);
+	parent_.aten().currentModel()->logChange(Log::Style);
 	// Update display
 	parent_.postRedisplay();
 }
@@ -688,7 +688,7 @@ void AtenPrefs::on_PointValueSpin_valueChanged(double d)
 	prefs.colourScale[scale].setPointValue(id, d);
 	ui.ScalePointsTable->item(id, 0)->setText(QString::number(d));
 	// Update display
-	parent_.aten().currentModel()->changeLog.add(Log::Style);
+	parent_.aten().currentModel()->logChange(Log::Style);
 	parent_.postRedisplay();
 }
 
@@ -714,7 +714,7 @@ void AtenPrefs::on_PointColourButton_clicked(bool checked)
 	ui.PointColourFrame->update();
 	ui.ScalePointsTable->item(id, 1)->setBackgroundColor(newcol);
 	// Update display
-	parent_.aten().currentModel()->changeLog.add(Log::Style);
+	parent_.aten().currentModel()->logChange(Log::Style);
 	parent_.postRedisplay();
 }
 

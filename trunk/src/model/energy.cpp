@@ -501,3 +501,70 @@ bool Model::calculateForces(Model* srcmodel)
 	return TRUE;
 }
 
+// Print Forces
+void Model::printForces() const
+{
+	for (Atom* i = atoms_.first(); i != NULL; i = i->next)
+	{
+		printf("%4i %3s  %14.6e  %14.6e  %14.6e\n", i->id(), Elements().symbol(i), i->f().x, i->f().y, i->f().z);
+	}
+}
+
+// Return RMS of last calculated atomic forces
+double Model::rmsForce() const
+{
+	return rmsForce_;
+}
+
+// Reset forces on all atoms
+void Model::zeroForces()
+{
+	Messenger::enter("Model::zeroForces");
+	for (Atom* i = atoms_.first(); i != NULL; i = i->next) i->f().zero();
+	Messenger::exit("Model::zeroForces");
+}
+
+// Reset forces on all fixed atoms
+void Model::zeroForcesFixed()
+{
+	Messenger::enter("Model::zeroForcesFixed");
+
+	// First, apply pattern-designated fixes
+	for (Pattern* p = patterns_.first(); p != NULL; p = p->next) if (p->areAtomsFixed())
+	{
+		Atom* i = p->firstAtom();
+		for (int n=0; n<p->totalAtoms(); ++n) { i->f().zero(); i = i->next; }
+	}
+
+	// Next, apply specific atom fixes
+	for (Atom* i = atoms_.first(); i != NULL; i = i->next) if (i->isPositionFixed()) i->f().zero();
+
+	Messenger::exit("Model::zeroForcesFixed");
+}
+
+// Normalise forces
+void Model::normaliseForces(double norm, bool tolargest)
+{
+	// 'Normalise' the forces such that the largest force is equal to the value provided
+	Messenger::enter("Model::normaliseForces");
+	if (tolargest)
+	{
+		double largestsq = 0.0, f;
+		for (Atom* i = atoms_.first(); i != NULL; i = i->next)
+		{
+			f = i->f().magnitudeSq();
+			if (f > largestsq) largestsq = f;
+		}
+		largestsq = sqrt(largestsq);
+		for (Atom* i = atoms_.first(); i != NULL; i = i->next) i->f() /= largestsq;
+	}
+	else
+	{
+		for (Atom* i = atoms_.first(); i != NULL; i = i->next)
+		{
+			i->f().normalise();
+			i->f() *= norm;
+		}
+	}
+	Messenger::exit("Model::normaliseForces");
+}

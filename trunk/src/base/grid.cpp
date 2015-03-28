@@ -693,7 +693,7 @@ void Grid::copySecondaryColour(Vec4<GLfloat>& col)
 void Grid::logChange()
 {
 	++log_;
-	if (parent_ != NULL) parent_->changeLog.add(Log::Grids);
+	if (parent_ != NULL) parent_->logChange(Log::Grids);
 }
 
 // Set the colourscale associated with the data

@@ -641,7 +641,7 @@ Grid& PartitioningScheme::grid()
 }
 
 // Return icon containing illustrative partitions
-QIcon &PartitioningScheme::icon()
+QIcon& PartitioningScheme::icon()
 {
 	return icon_;
 }

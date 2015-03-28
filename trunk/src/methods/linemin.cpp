@@ -243,7 +243,7 @@ double LineMinimiser::lineMinimise(Model* srcmodel)
 // 	printf("Final bounding values are %f %f %f\n",bounds[0],bounds[1],bounds[2]);
 	gradientMove(srcmodel, bounds[1]);
 	srcmodel->copyAtomData(&tempModel_, Atom::PositionData);
-	srcmodel->changeLog.add(Log::Coordinates);
+	srcmodel->logChange(Log::Coordinates);
 	srcmodel->updateMeasurements();
 	Messenger::exit("LineMinimiser::lineMinimise");
 	return energies[1];

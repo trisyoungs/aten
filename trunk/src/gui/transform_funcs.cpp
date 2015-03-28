@@ -694,7 +694,7 @@ void TransformWidget::on_ConvertTargetGenerateCButton_clicked(bool on)
 	ui.ConvertTargetMatrixCZSpin->setValue(v.z);
 }
 
-void TransformWidget::closeEvent(QCloseEvent *event)
+void TransformWidget::closeEvent(QCloseEvent* event)
 {
 	// Return to select mode if one of the modes in this window is still selected
 	if (UserAction::isTransformWidgetAction(parent_.ui.MainView->selectedMode())) parent_.ui.MainView->cancelCurrentMode();

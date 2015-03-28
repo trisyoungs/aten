@@ -149,7 +149,7 @@ void TrajectoryWidget::on_TrajectoryFrameSpin_valueChanged(int value)
 	parent_.postRedisplay();
 }
 
-void TrajectoryWidget::timerEvent(QTimerEvent *event)
+void TrajectoryWidget::timerEvent(QTimerEvent* event)
 {
 	// Move on to the next frame in the trajectory
 	// Check that we're not still drawing the last frame from the last timerEvent
@@ -179,7 +179,7 @@ void TrajectoryWidget::widgetLocationChanged(Qt::DockWidgetArea area)
 }
 
 // Window closed
-void TrajectoryWidget::closeEvent(QCloseEvent *event)
+void TrajectoryWidget::closeEvent(QCloseEvent* event)
 {
 	event->accept();
 }

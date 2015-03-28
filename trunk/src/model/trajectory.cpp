@@ -434,7 +434,7 @@ void Model::seekTrajectoryFrame(int frameno, bool quiet)
 				trajectoryOffsets_[trajectoryHighestFrameOffset_] = trajectoryParser_.tellg();
 			}
 		}
-		trajectoryCurrentFrame_->changeLog.add(Log::Structure);
+		trajectoryCurrentFrame_->logChange(Log::Structure);
 	}
 	trajectoryFrameIndex_ = frameno;
 	if (!quiet) Messenger::print("Seek to frame %i", trajectoryFrameIndex_+1);

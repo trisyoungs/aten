@@ -103,7 +103,7 @@ void Viewer::mousePressEvent(QMouseEvent* event)
 }
 
 // Qt Signal (mouse release event)
-void Viewer::mouseReleaseEvent(QMouseEvent *event)
+void Viewer::mouseReleaseEvent(QMouseEvent* event)
 {
 	Messenger::enter("Viewer::mouseReleaseEvent");
 
@@ -132,7 +132,7 @@ void Viewer::mouseReleaseEvent(QMouseEvent *event)
 }
 
 // Qt Signal (mouse move event)
-void Viewer::mouseMoveEvent(QMouseEvent *event)
+void Viewer::mouseMoveEvent(QMouseEvent* event)
 {
 	static Vec3<double> delta;
 
@@ -209,7 +209,7 @@ void Viewer::mouseMoveEvent(QMouseEvent *event)
 }
 
 // Qt Signal (mouse wheel event)
-void Viewer::wheelEvent(QWheelEvent *event)
+void Viewer::wheelEvent(QWheelEvent* event)
 {
 	Messenger::enter("Viewer::wheelEvent");
 	

@@ -139,21 +139,21 @@ Model* Aten::addModel()
 			m = models_.add();
 			m->setType(Model::ParentModelType);
 			m->setName(QString("Unnamed%1").arg(++modelId_, 3, 10, QChar('0')));
-			m->changeLog.reset();
+			m->resetLogs();
 			setCurrentModel(m, TRUE);
 			break;
 		case (Aten::FragmentLibraryList):
 			m = fragmentModels_.add();
 			m->setType(Model::ParentModelType);
 			m->setName(QString("Fragment%1").arg(++fragmentModelId_, 3, 10, QChar('0')));
-			m->changeLog.reset();
+			m->resetLogs();
 			m->disableUndoRedo();
 			break;
 		case (Aten::WorkingModelList):
 			m = workingModels_.add();
 			m->setType(Model::ParentModelType);
 			m->setName(QString("TempModel%1").arg(workingModels_.nItems(), 3, 10, QChar('0')));
-			m->changeLog.reset();
+			m->resetLogs();
 			m->disableUndoRedo();
 			break;
 		default:
@@ -233,5 +233,5 @@ Model* Aten::visibleModel(int id)
 void Aten::globalLogChange(Log::LogType log)
 {
 	// Loop over all loaded models and log change in their current rendersource
-	for (Model* m = models_.first(); m != NULL; m = m->next) m->renderSourceModel()->changeLog.add(log);
+	for (Model* m = models_.first(); m != NULL; m = m->next) m->renderSourceModel()->logChange(log);
 }

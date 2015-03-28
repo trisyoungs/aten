@@ -208,7 +208,7 @@ void ScriptMovieWidget::on_SaveScriptedMovieButton_clicked(bool on)
 	progress.terminate(pid);
 }
 
-void ScriptMovieWidget::closeEvent(QCloseEvent *event)
+void ScriptMovieWidget::closeEvent(QCloseEvent* event)
 {
 	event->accept();
 }

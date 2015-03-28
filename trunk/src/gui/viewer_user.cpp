@@ -108,7 +108,7 @@ void Viewer::useSelectedMode()
 void Viewer::cancelCurrentMode()
 {
 	// If the previous mode was DrawFragment, flag a complete redraw of the current model
-	if (selectedMode_ == UserAction::DrawFragmentAction) aten_->currentModel()->changeLog.add(Log::Style);
+	if (selectedMode_ == UserAction::DrawFragmentAction) aten_->currentModel()->logChange(Log::Style);
 	atenWindow_->ui.actionSelectAtoms->trigger();
 }
 

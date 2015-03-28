@@ -86,7 +86,7 @@ void UndoState::undo(Model* m)
 	// Undo the changes stored in the change list
 	for (UndoEvent* u = events_.last(); u != NULL; u = u->prev) u->undo(m);
 	// Set model logs to the old values
-	m->changeLog = startLogs_;
+	m->setChangeLog(startLogs_);
 	Messenger::exit("UndoState::Undo");
 }
 
@@ -96,7 +96,7 @@ void UndoState::redo(Model* m)
 	Messenger::enter("UndoState::redo");
 	for (UndoEvent* u = events_.first(); u != NULL; u = u->next) u->redo(m);
 	// Set model logs to the new values
-	m->changeLog = endLogs_;
+	m->setChangeLog(endLogs_);
 	Messenger::exit("UndoState::redo");
 }
 

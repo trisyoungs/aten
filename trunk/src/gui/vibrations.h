@@ -93,7 +93,7 @@ class VibrationsWidget : public QDockWidget
 	void resetTimer(int delay);
 	protected:
 	void timerEvent(QTimerEvent*);
-	void closeEvent(QCloseEvent *event);
+	void closeEvent(QCloseEvent* event);
 };
 
 #endif

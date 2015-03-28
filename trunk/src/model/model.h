@@ -87,8 +87,6 @@ class Model : public ListItem<Model>
 	Model* parent_;
 	// Type of model
 	ModelType type_;
-	// QIcon containing miniature picture of model
-	QIcon icon_;
 	// Whether model is visible
 	bool visible_;
 
@@ -109,8 +107,6 @@ class Model : public ListItem<Model>
 	void clear();
 	// Print information about the model (inc atoms)
 	void print() const;
-	// Print log information for the current model
-	void printLogs() const;
 	// Copy all information from another model
 	void copy(Model* source);
 	// Copy all atom data from specified model
@@ -125,10 +121,6 @@ class Model : public ListItem<Model>
 	void setType(Model::ModelType mt);
 	// Return model type
 	Model::ModelType type();
-	// Regenerate icon
-	void regenerateIcon();
-	// Return icon
-	QIcon &icon();
 	// Set whether model is visible
 	void setVisible(bool b);
 	// Return whether model is visible
@@ -138,8 +130,26 @@ class Model : public ListItem<Model>
 	/*
 	 * Log
 	 */
+	private:
+	Log changeLog_;
+
 	public:
-	Log changeLog;
+	// Set complete log structure
+	void setChangeLog(Log& source);
+	// Return complete log structure
+	Log& changeLog();
+	// Reset changelog
+	void resetLogs();
+	// Log change in specified quantity
+	void logChange(Log::LogType logType);
+	// Return log quantity specified
+	int log(Log::LogType logType) const;
+	// Return whether model has been modified
+	bool isModified() const;
+	// Update save point for model
+	void updateSavePoint();
+	// Print log information for the current model
+	void printLogs() const;
 
 
 	/*
@@ -435,8 +445,8 @@ class Model : public ListItem<Model>
 
 
 	/*
-	// View
-	*/
+	 * View
+	 */
 	private:
 	// Modelview matrix for this model's current view
 	Matrix modelViewMatrix_;
@@ -496,6 +506,7 @@ class Model : public ListItem<Model>
 	void setRepeatCellsNegative(int i, int r);
 	// Get negative repeat cell value
 	int repeatCellsNegative(int i) const;
+
 
 	/*
 	// Atom Labels
@@ -793,6 +804,10 @@ class Model : public ListItem<Model>
 	void mirrorSelectionLocal(int axis, bool markOnly = FALSE);
 	// Matrix transform current selection
 	void matrixTransformSelection(Vec3<double> origin, Matrix transform, bool markOnly = FALSE);
+	// Convert from Bohr to Angstrom
+	void bohrToAngstrom();
+	// Cnvert fractional coordinates to real coordinates
+	void fracToReal();
 
 
 	/*
@@ -893,18 +908,6 @@ class Model : public ListItem<Model>
 	void setRenderFromVibration(bool b);
 	// Return whether to render from vibration frames
 	bool renderFromVibration();
-
-
-	/*
-	// Coordinate Transformations
-	*/
-	public:
-	// Convert from Bohr to Angstrom
-	void bohrToAngstrom();
-	// Convert from Angstrom to Bohr
-	void angstromToBohr();
-	// Cnvert fractional coordinates to real coordinates
-	void fracToReal();
 
 
 	/*
@@ -1233,6 +1236,24 @@ class Model : public ListItem<Model>
 	public:
 	// Return renderGroup, regenerating if necessary
 	RenderGroup& renderGroup(PrimitiveSet& primitiveSet);
+
+
+	/*
+	 * Icon
+	 */
+	private:
+	// Icon for model
+	QIcon icon_;
+	// Logpoint at which icon was last generated
+	int iconPoint_;
+
+	public:
+	// Return whether icon is currently valid
+	bool iconIsValid();
+	// Set icon
+	void setIcon(QIcon icon);
+	// Return icon
+	QIcon& icon();
 };
 
 ATEN_END_NAMESPACE

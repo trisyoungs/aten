@@ -42,7 +42,6 @@ void AtenWindow::on_actionFileNew_triggered(bool checked)
 {
 	Model* m = aten_.addModel();
 	m->enableUndoRedo();
-	m->regenerateIcon();
 
 	// Update GUI
 	aten_.setCurrentModel(m, TRUE);
@@ -63,7 +62,6 @@ void AtenWindow::on_actionFileOpen_triggered(bool checked)
 		{
 			if (!filter->executeRead(loadModelDialog.selectedFilename())) return;
 			addRecent(loadModelDialog.selectedFilename());
-			aten_.currentModelOrFrame()->regenerateIcon();
 			updateWidgets(AtenWindow::AllTarget);
 		}
 	}
@@ -159,7 +157,7 @@ void AtenWindow::on_actionFileSaveAs_triggered(bool checked)
 		
 		if (saveModelFilter_->executeWrite(saveModelFilename_))
 		{
-			m->changeLog.updateSavePoint();
+			m->updateSavePoint();
 			Messenger::print("Model '%s' saved to file '%s' (%s)", qPrintable(m->name()), qPrintable(saveModelFilename_), qPrintable(saveModelFilter_->filter.name()));
 		}
 		else Messenger::print("Failed to save model '%s'.", qPrintable(m->name()));
@@ -189,7 +187,7 @@ void AtenWindow::on_actionFileSave_triggered(bool checked)
 			m->disableUndoRedo();
 			if (saveModelFilter_->executeWrite(saveModelFilename_))
 			{
-				m->changeLog.updateSavePoint();
+				m->updateSavePoint();
 				Messenger::print("Model '%s' saved to file '%s' (%s)", qPrintable(m->name()), qPrintable(saveModelFilename_), qPrintable(saveModelFilter_->filter.name()));
 			}
 			else Messenger::print("Failed to save model '%s'.", qPrintable(m->name()));
@@ -201,7 +199,7 @@ void AtenWindow::on_actionFileSave_triggered(bool checked)
 		// Temporarily disable undo/redo for the model, save, and re-enable
 		m->disableUndoRedo();
 		t->executeWrite(filename);
-		m->changeLog.updateSavePoint();
+		m->updateSavePoint();
 		m->enableUndoRedo();
 	}
 	updateWidgets();

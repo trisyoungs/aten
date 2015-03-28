@@ -277,7 +277,7 @@ class TreeGuiWidget : public ListItem<TreeGuiWidget>
 	// Return widget value as character string
 	QString asCharacter();
 	// Add widget event
-	TreeGuiWidgetEvent *addEvent(TreeGuiWidgetEvent::EventType type, TreeGuiWidget* targetWidget, TreeGuiWidgetEvent::EventProperty property);
+	TreeGuiWidgetEvent* addEvent(TreeGuiWidgetEvent::EventType type, TreeGuiWidget* targetWidget, TreeGuiWidgetEvent::EventProperty property);
 	// Check widget's events and act on them if necessary
 	void checkWidgetEvents();
 };

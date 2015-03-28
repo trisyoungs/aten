@@ -65,7 +65,7 @@ class CommandWidget : public QDockWidget
 	private slots:
 	void on_CommandPrompt_returnPressed();
 	protected:
-	void closeEvent(QCloseEvent *event);
+	void closeEvent(QCloseEvent* event);
 	
 	public:
 	// Set list of commands in command tab

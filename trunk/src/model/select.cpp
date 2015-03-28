@@ -85,11 +85,11 @@ void Model::selectAtom(Atom* i, bool markonly)
 		{
 			i->setSelected(TRUE);
 			selection_.add(i);
-			changeLog.add(Log::Selection);
+			logChange(Log::Selection);
 			// Add the change to the undo state (if there is one)
 			if (recordingState_ != NULL)
 			{
-				SelectEvent *newchange = new SelectEvent;
+				SelectEvent* newchange = new SelectEvent;
 				newchange->set(TRUE, i->id());
 				recordingState_->addEvent(newchange);
 			}
@@ -122,11 +122,11 @@ void Model::deselectAtom(Atom* i, bool markonly)
 		{
 			i->setSelected(FALSE);
 			selection_.remove(i);
-			changeLog.add(Log::Selection);
+			logChange(Log::Selection);
 			// Add the change to the undo state (if there is one)
 			if (recordingState_ != NULL)
 			{
-				SelectEvent *newchange = new SelectEvent;
+				SelectEvent* newchange = new SelectEvent;
 				newchange->set(FALSE, i->id());
 				recordingState_->addEvent(newchange);
 			}
@@ -241,13 +241,13 @@ void Model::selectAll(bool markonly)
 			// Add the change to the undo state (if there is one)
 			if (recordingState_ != NULL)
 			{
-				SelectEvent *newchange = new SelectEvent;
+				SelectEvent* newchange = new SelectEvent;
 				newchange->set(TRUE, i->id());
 				recordingState_->addEvent(newchange);
 			}
 			selection_.add(i);
 		}
-		changeLog.add(Log::Selection);
+		logChange(Log::Selection);
 	}
 	Messenger::exit("Model::selectAll");
 }
@@ -270,12 +270,12 @@ void Model::selectNone(bool markonly)
 			// Add the change to the undo state (if there is one)
 			if (recordingState_ != NULL)
 			{
-				SelectEvent *newchange = new SelectEvent;
+				SelectEvent* newchange = new SelectEvent;
 				newchange->set(FALSE, i->id());
 				recordingState_->addEvent(newchange);
 			}
 		}
-		changeLog.add(Log::Selection);
+		logChange(Log::Selection);
 		selection_.clear();
 	}
 	Messenger::exit("Model::selectNone");
@@ -428,7 +428,7 @@ int Model::selectType(int element, QString typeDesc, bool markonly, bool deselec
 		}
 	}
 	// Update model
-	changeLog.add(Log::Selection);
+	logChange(Log::Selection);
 	// Write results
 	Messenger::print("Type description score = %i. Matched %i atoms.", matchscore, count);
 	Messenger::exit("Model::selectType");
@@ -496,7 +496,7 @@ void Model::shiftSelectionUp(bool markOnly)
 
 	if (markOnly) for (Refitem<Atom,int>* ri = marked_.last(); ri != NULL; ri = ri->prev) shiftAtomUp(ri->item);
 	else for (Refitem<Atom,int>* ri = selection_.last(); ri != NULL; ri = ri->prev) shiftAtomUp(ri->item);
-	changeLog.add(Log::Structure);
+	logChange(Log::Structure);
 	Messenger::exit("Model::shiftSelectionUp");
 }
 
@@ -506,7 +506,7 @@ void Model::shiftSelectionDown(bool markOnly)
 	Messenger::enter("Model::shiftSelectionDown");
 	if (markOnly) for (Refitem<Atom,int>* ri = marked_.first(); ri != NULL; ri = ri->next) shiftAtomDown(ri->item);
 	else for (Refitem<Atom,int>* ri = selection_.first(); ri != NULL; ri = ri->next) shiftAtomDown(ri->item);
-	changeLog.add(Log::Structure);
+	logChange(Log::Structure);
 	Messenger::exit("Model::shiftSelectionDown");
 }
 
@@ -516,7 +516,7 @@ void Model::moveSelectionToStart(bool markOnly)
 	Messenger::enter("Model::moveSelectionToStart");
 	if (markOnly) for (Refitem<Atom,int>* ri = marked_.last(); ri != NULL; ri = ri->prev) moveAtomAfter(ri->item, NULL);
 	else for (Refitem<Atom,int>* ri = selection_.last(); ri != NULL; ri = ri->prev) moveAtomAfter(ri->item, NULL);
-	changeLog.add(Log::Structure);
+	logChange(Log::Structure);
 	Messenger::exit("Model::moveSelectionToStart");
 }
 
@@ -526,7 +526,7 @@ void Model::moveSelectionToEnd(bool markOnly)
 	Messenger::enter("Model::moveSelectionToEnd");
 	if (markOnly) for (Refitem<Atom,int>* ri = marked_.first(); ri != NULL; ri = ri->next) moveAtomAfter(ri->item, atoms_.last());
 	else for (Refitem<Atom,int>* ri = selection_.first(); ri != NULL; ri = ri->next) moveAtomAfter(ri->item, atoms_.last());
-	changeLog.add(Log::Structure);
+	logChange(Log::Structure);
 	Messenger::exit("Model::moveSelectionToEnd");
 }
 

@@ -171,7 +171,7 @@ void PoresWidget::on_CopySchemeButton_clicked(bool checked)
 	parent_.postRedisplay();
 }
 
-void PoresWidget::closeEvent(QCloseEvent *event)
+void PoresWidget::closeEvent(QCloseEvent* event)
 {
 	event->accept();
 }

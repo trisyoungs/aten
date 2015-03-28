@@ -101,7 +101,6 @@ int main(int argc, char* argv[])
 			{
 				Model* m = MrAten.addModel();
 				m->enableUndoRedo();
-				m->regenerateIcon();
 			}
 
 			/* Show the main window */

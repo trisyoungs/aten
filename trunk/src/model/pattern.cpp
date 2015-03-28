@@ -48,7 +48,7 @@ Pattern* Model::lastPattern() const
 // Return whether the patterns are valid
 bool Model::arePatternsValid() const
 {
-	return (patternsPoint_ == changeLog.log(Log::Structure) ? TRUE : FALSE);
+	return (patternsPoint_ == log(Log::Structure) ? TRUE : FALSE);
 }
 
 // Return n'th pattern node
@@ -75,7 +75,7 @@ Pattern* Model::addPattern(QString patternName, int nMols, int nAtomsPerMol)
 		energy.resize(patterns_.nItems());
 		Messenger::print("Done.");
 		// Patterns depend only on the properties / relation of the atoms, and not the positions..
-		patternsPoint_ = changeLog.log(Log::Structure);
+		patternsPoint_ = log(Log::Structure);
 	}
 	else if ((start + nMols*nAtomsPerMol) > atoms_.nItems())
 	{
@@ -214,7 +214,7 @@ bool Model::createPatterns()
 	if (atoms_.nItems() == 0)
 	{
 		Messenger::print("No patterns defined for model '%s' - no atoms present.", qPrintable(name_));
-		patternsPoint_ = changeLog.log(Log::Structure);
+		patternsPoint_ = log(Log::Structure);
 		Messenger::exit("Model::createPatterns");
 		return TRUE;
 	}
@@ -357,7 +357,7 @@ bool Model::createPatterns()
 	describeAtoms();
 
 	// Patterns depend only on the properties / relation of the atoms, and not the positions..
-	patternsPoint_ = changeLog.log(Log::Structure);
+	patternsPoint_ = log(Log::Structure);
 
 	Messenger::exit("Model::createPatterns");
 	return TRUE;

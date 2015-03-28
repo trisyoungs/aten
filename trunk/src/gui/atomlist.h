@@ -121,15 +121,15 @@ class AtomListWidget : public QDockWidget
 	void on_ViewChargeCheck_clicked(bool checked);
 
 	protected:
-	void closeEvent(QCloseEvent *event);
-	void resizeEvent(QResizeEvent *event);
-	void wheelEvent(QWheelEvent *event);
+	void closeEvent(QCloseEvent* event);
+	void resizeEvent(QResizeEvent* event);
+	void wheelEvent(QWheelEvent* event);
 
 	public slots:
-	void tableMousePressEvent(QMouseEvent *event);
-	void tableMouseReleaseEvent(QMouseEvent *event);
-	void tableMouseMoveEvent(QMouseEvent *event);
-	void tableMouseDoubleClickEvent(QMouseEvent *event);
+	void tableMousePressEvent(QMouseEvent* event);
+	void tableMouseReleaseEvent(QMouseEvent* event);
+	void tableMouseMoveEvent(QMouseEvent* event);
+	void tableMouseDoubleClickEvent(QMouseEvent* event);
 	void tableItemChanged(QTableWidgetItem *item);
 };
 

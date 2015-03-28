@@ -96,7 +96,7 @@ class ForcefieldsWidget : public QDockWidget
 	void on_ManualTypeEdit_returnPressed();
 
 	protected:
-	void closeEvent(QCloseEvent *event);
+	void closeEvent(QCloseEvent* event);
 };
 
 #endif

@@ -83,21 +83,21 @@ void FragmentsWidget::refresh()
 	ui.FragmentTable->setRowCount(1);
 
 	// Generate icon if necessary (first run only) and allowed (through prefs)
-	if ((!iconsGenerated_) && prefs.generateFragmentIcons())
-	{
-		int nFragments = 0;
-		for (FragmentGroup* fg = parent_.aten().fragmentGroups(); fg != NULL; fg = fg->next) nFragments += fg->nFragments();
-		int pid = progress.initialise("Initialising fragment icons", nFragments);
-		for (FragmentGroup* fg = parent_.aten().fragmentGroups(); fg != NULL; fg = fg->next)
-		{
-			for (Fragment* fragment = fg->fragments(); fragment != NULL; fragment = fragment->next)
-			{
-				fragment->masterModel()->regenerateIcon();
-				progress.update(pid, -1, fragment->masterModel()->name());
-			}
-		}
-		progress.terminate(pid);
-	}
+// 	if ((!iconsGenerated_) && prefs.generateFragmentIcons())   // ATEN2 TODO
+// 	{
+// 		int nFragments = 0;
+// 		for (FragmentGroup* fg = parent_.aten().fragmentGroups(); fg != NULL; fg = fg->next) nFragments += fg->nFragments();
+// 		int pid = progress.initialise("Initialising fragment icons", nFragments);
+// 		for (FragmentGroup* fg = parent_.aten().fragmentGroups(); fg != NULL; fg = fg->next)
+// 		{
+// 			for (Fragment* fragment = fg->fragments(); fragment != NULL; fragment = fragment->next)
+// 			{
+// 				fragment->masterModel()->regenerateIcon();
+// 				progress.update(pid, -1, fragment->masterModel()->name());
+// 			}
+// 		}
+// 		progress.terminate(pid);
+// 	}
 
 	// Go through all available fragment groups
 	for (FragmentGroup* fg = parent_.aten().fragmentGroups(); fg != NULL; fg = fg->next)
@@ -255,7 +255,7 @@ void FragmentsWidget::on_ViewAsGridCheck_clicked(bool checked)
 	}
 }
 
-void FragmentsWidget::closeEvent(QCloseEvent *event)
+void FragmentsWidget::closeEvent(QCloseEvent* event)
 {
 	event->accept();
 }

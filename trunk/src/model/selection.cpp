@@ -61,11 +61,11 @@ void Model::shiftAtomUp(Atom* i)
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
-		IdShiftEvent *newchange = new IdShiftEvent;
+		IdShiftEvent* newchange = new IdShiftEvent;
 		newchange->set(oldid, -1);
 		recordingState_->addEvent(newchange);
 	}
-	changeLog.add(Log::Structure);
+	logChange(Log::Structure);
 	Messenger::exit("Model::shiftAtomUp");
 }
 
@@ -98,11 +98,11 @@ void Model::shiftAtomDown(Atom* i)
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
-		IdShiftEvent *newchange = new IdShiftEvent;
+		IdShiftEvent* newchange = new IdShiftEvent;
 		newchange->set(oldid, 1);
 		recordingState_->addEvent(newchange);
 	}
-	changeLog.add(Log::Structure);
+	logChange(Log::Structure);
 	Messenger::exit("Model::shiftAtomDown");
 }
 
@@ -126,11 +126,11 @@ void Model::moveAtomAfter(Atom* i, Atom* reference)
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
-		IdShiftEvent *newchange = new IdShiftEvent;
+		IdShiftEvent* newchange = new IdShiftEvent;
 		newchange->set(oldid, shift);
 		recordingState_->addEvent(newchange);
 	}
-	changeLog.add(Log::Structure);
+	logChange(Log::Structure);
 	Messenger::exit("Model::shiftAtomDown");
 }
 
@@ -182,7 +182,7 @@ Vec3<double> Model::selectionCentreOfMass() const
 void Model::selectionSetHidden(bool hidden)
 {
 	for (Refitem<Atom,int>* ri = selection(); ri != NULL; ri = ri->next) atomSetHidden(ri->item, hidden);
-	changeLog.add(Log::Selection);
+	logChange(Log::Selection);
 }
 
 // Fix selected atom positions
@@ -196,14 +196,14 @@ void Model::selectionSetFixed(bool fixed)
 void Model::selectionSetColour(double r, double g, double b, double a)
 {
 	for (Refitem<Atom,int>* ri = selection(); ri != NULL; ri = ri->next) atomSetColour(ri->item, r, g, b, a);
-	changeLog.add(Log::Style);
+	logChange(Log::Style);
 }
 
 // Reset custom colour of atoms in selection back to element defaults
 void Model::selectionResetColour()
 {
 	for (Refitem<Atom,int>* ri = selection(); ri != NULL; ri = ri->next) atomResetColour(ri->item);
-	changeLog.add(Log::Style);
+	logChange(Log::Style);
 }
 
 // Set selection style

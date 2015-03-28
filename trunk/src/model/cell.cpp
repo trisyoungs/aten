@@ -90,11 +90,11 @@ void Model::setCell(Vec3<double> lengths, Vec3<double> angles)
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
-		CellEvent *newchange = new CellEvent;
+		CellEvent* newchange = new CellEvent;
 		newchange->set(oldaxes, cell_.axes(), oldhs, TRUE);
 		recordingState_->addEvent(newchange);
 	}
-	changeLog.add(Log::Cell);
+	logChange(Log::Cell);
 	Messenger::exit("Model::setCell[vectors]");
 }
 
@@ -109,11 +109,11 @@ void Model::setCell(Matrix axes)
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
-		CellEvent *newchange = new CellEvent;
+		CellEvent* newchange = new CellEvent;
 		newchange->set(oldaxes, cell_.axes(), oldhs, TRUE);
 		recordingState_->addEvent(newchange);
 	}
-	changeLog.add(Log::Cell);
+	logChange(Log::Cell);
 	Messenger::exit("Model::setCell[axes]");
 }
 
@@ -128,11 +128,11 @@ void Model::setCell(UnitCell::CellParameter cp, double value)
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
-		CellEvent *newchange = new CellEvent;
+		CellEvent* newchange = new CellEvent;
 		newchange->set(oldaxes, cell_.axes(), oldhs, TRUE);
 		recordingState_->addEvent(newchange);
 	}
-	changeLog.add(Log::Cell);
+	logChange(Log::Cell);
 	Messenger::exit("Model::setCell[parameter]");
 }
 
@@ -152,12 +152,12 @@ bool Model::setCell(UnitCell* newcell)
 		// Add the change to the undo state (if there is one)
 		if (recordingState_ != NULL)
 		{
-			CellEvent *newchange = new CellEvent;
+			CellEvent* newchange = new CellEvent;
 			newchange->set(oldaxes, cell_.axes(), oldhs, TRUE);
 			recordingState_->addEvent(newchange);
 		}
 	}
-	changeLog.add(Log::Cell);
+	logChange(Log::Cell);
 	return TRUE;
 }
 
@@ -167,12 +167,12 @@ void Model::removeCell()
 	Messenger::enter("Model::removeCell");
 	if (recordingState_ != NULL)
 	{
-		CellEvent *newchange = new CellEvent;
+		CellEvent* newchange = new CellEvent;
 		newchange->set(cell_.axes(), cell_.axes(), cell_.type() != UnitCell::NoCell, FALSE);
 		recordingState_->addEvent(newchange);
 	}
 	cell_.reset();
-	changeLog.add(Log::Cell);
+	logChange(Log::Cell);
 	Messenger::exit("Model::removeCell");
 }
 
@@ -182,7 +182,7 @@ void Model::foldAllAtoms()
 	Messenger::enter("Model::foldAllAtoms");
 	// Standard fold - individual atoms
 	for (Atom* i = atoms_.first(); i != NULL; i = i->next) positionAtom(i, cell_.fold(i));
-	changeLog.add(Log::Coordinates);
+	logChange(Log::Coordinates);
 	Messenger::exit("Model::foldAllAtoms");
 }
 
@@ -377,7 +377,7 @@ bool Model::scaleCell(const Vec3<double>& scale, bool useCog)
 
 	// Set new cell and update model
 	setCell(newaxes);
-	changeLog.add(Log::Coordinates);
+	logChange(Log::Coordinates);
 	Messenger::exit("Model::scaleCell");
 	return TRUE;
 }
@@ -489,7 +489,7 @@ void Model::replicateCell(const Vec3<double> &neg, const Vec3<double> &pos)
 		progress.terminate(pid);
 	}
 
-	changeLog.add(Log::Structure);
+	logChange(Log::Structure);
 	Messenger::exit("Model::replicateCell");
 }
 
@@ -530,14 +530,6 @@ void Model::rotateCell(int axis, double angle)
 	matrixTransformSelection(origin,rotmat,TRUE);
 	
 	Messenger::exit("Model::rotateCell");
-}
-
-// Frac to Real
-void Model::fracToReal()
-{
-	Messenger::enter("Model::fracToReal");
-	for (Atom* i = atoms_.first(); i != NULL; i = i->next) i->r() = cell_.fracToReal(i->r());
-	Messenger::exit("Model::fracToReal");
 }
 
 // Calculate and return the density of the system (if periodic)

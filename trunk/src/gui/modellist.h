@@ -52,17 +52,17 @@ class ModelListWidget : public QDockWidget
 	private slots:
 	void on_RefreshIconsButton_clicked(bool checked);
 	void on_ModelsPerRowSpin_valueChanged(int value);
-	void treeMousePressEvent(QMouseEvent *event);
-	void treeMouseReleaseEvent(QMouseEvent *event);
-	void treeMouseMoveEvent(QMouseEvent *event);
-	void treeMouseDoubleClickEvent(QMouseEvent *event);
+	void treeMousePressEvent(QMouseEvent* event);
+	void treeMouseReleaseEvent(QMouseEvent* event);
+	void treeMouseMoveEvent(QMouseEvent* event);
+	void treeMouseDoubleClickEvent(QMouseEvent* event);
 	void renameModel(bool checked);
 	void closeSelectedModels(bool checked);
 	void closeUnselectedModels(bool checked);
 	void closeThisModel(bool checked);
 
 	protected:
-	void closeEvent(QCloseEvent *event);
+	void closeEvent(QCloseEvent* event);
 
 	/*
 	// Local variables

@@ -30,7 +30,7 @@ TColourFrame::TColourFrame(QWidget *parent)
 }
 
 // Paintevent to colour entire widget with the current colour
-void TColourFrame::paintEvent(QPaintEvent *event)
+void TColourFrame::paintEvent(QPaintEvent* event)
 {
 	QPainter painter(this);
 	painter.setBackgroundMode(Qt::OpaqueMode);

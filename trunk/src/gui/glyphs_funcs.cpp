@@ -351,7 +351,7 @@ void GlyphsWidget::on_GlyphTypeCombo_currentIndexChanged(int row)
 		s += Glyph::glyphType(gt);
 		item->setText(s);
 	}
-	parent_.aten().currentModelOrFrame()->changeLog.add(Log::Glyphs);
+	parent_.aten().currentModelOrFrame()->logChange(Log::Glyphs);
 	parent_.postRedisplay();
 }
 
@@ -366,7 +366,7 @@ void GlyphsWidget::on_GlyphLineEdit_returnPressed()
 		g = (Glyph*) ((TListWidgetItem*) items.at(i))->data.asPointer(VTypes::GlyphData);
 		g->setText(ui.GlyphLineEdit->text());
 	}
-	parent_.aten().currentModelOrFrame()->changeLog.add(Log::Glyphs);
+	parent_.aten().currentModelOrFrame()->logChange(Log::Glyphs);
 	parent_.postRedisplay();
 }
 
@@ -381,7 +381,7 @@ void GlyphsWidget::on_GlyphVisibleCheck_clicked(bool checked)
 		g = (Glyph*) ((TListWidgetItem*) items.at(i))->data.asPointer(VTypes::GlyphData);
 		g->setVisible(checked);
 	}
-	parent_.aten().currentModelOrFrame()->changeLog.add(Log::Glyphs);
+	parent_.aten().currentModelOrFrame()->logChange(Log::Glyphs);
 	parent_.postRedisplay();
 }
 
@@ -569,7 +569,7 @@ void GlyphsWidget::dataAtomIdChanged(int id, int value)
 		if (id >= g->nData()) Messenger::print("Can't set atom id in data %i for a '%s' glyph (out of range)...", id+1, Glyph::glyphType(g->type()));
 		else g->data(id)->setAtom( g->parent()->atom(value) );
 	}
-	parent_.aten().currentModelOrFrame()->changeLog.add(Log::Glyphs);
+	parent_.aten().currentModelOrFrame()->logChange(Log::Glyphs);
 	parent_.postRedisplay();
 }
 
@@ -585,7 +585,7 @@ void GlyphsWidget::dataValueChanged(int id, int component, double value)
 		if (id >= g->nData()) Messenger::print("Can't set literal value data %i for a '%s' glyph (out of range)...", id+1, Glyph::glyphType(g->type()));
 		else g->data(id)->setVector(component, value);
 	}
-	parent_.aten().currentModelOrFrame()->changeLog.add(Log::Glyphs);
+	parent_.aten().currentModelOrFrame()->logChange(Log::Glyphs);
 	parent_.postRedisplay();
 }
 
@@ -601,7 +601,7 @@ void GlyphsWidget::dataValueChanged(int id, double x, double y, double z)
 		if (id >= g->nData()) Messenger::print("Can't set literal value data %i for a '%s' glyph (out of range)...", id+1, Glyph::glyphType(g->type()));
 		else g->data(id)->setVector(x, y, z);
 	}
-	parent_.aten().currentModelOrFrame()->changeLog.add(Log::Glyphs);
+	parent_.aten().currentModelOrFrame()->logChange(Log::Glyphs);
 	parent_.postRedisplay();
 }
 
@@ -627,11 +627,11 @@ void GlyphsWidget::dataColourChanged(int id)
 		if (id >= gl->nData()) Messenger::print("Can't set colour for data %i for a '%s' glyph (out of range)...", id+1, Glyph::glyphType(gl->type()));
 		else gl->data(id)->setColour(newcol.redF(), newcol.greenF(), newcol.blueF(), newcol.alphaF());
 	}
-	parent_.aten().currentModelOrFrame()->changeLog.add(Log::Glyphs);
+	parent_.aten().currentModelOrFrame()->logChange(Log::Glyphs);
 	parent_.postRedisplay();
 }
 
-void GlyphsWidget::closeEvent(QCloseEvent *event)
+void GlyphsWidget::closeEvent(QCloseEvent* event)
 {
 	event->accept();
 }
