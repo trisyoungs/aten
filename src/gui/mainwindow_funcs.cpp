@@ -344,7 +344,7 @@ void AtenWindow::updateWidgets(int targets)
 	if (targets&AtenWindow::CanvasTarget) postRedisplay();
 }
 
-// Refresh widget / scene
+// Refresh Viewer widget, and any associated widgets
 void AtenWindow::postRedisplay()
 {
 // 	if ((!valid_) || drawing_) return;
@@ -666,4 +666,29 @@ void AtenWindow::setActiveUserAction(UserAction::Action ua)
 void AtenWindow::setMessageLabel(QString message)
 {
 	messageLabel_->setText(message);
+}
+
+
+/*
+ * Messages Scrollbar
+ */
+
+void AtenWindow::on_MessagesScroll_sliderMoved(int position)
+{
+	postRedisplay();
+}
+
+// Update messages widgets
+void AtenWindow::updateMessagesWidgets()
+{
+	// Calculate current display height
+	int maxDisplayLines = ui.MainView->contextHeight() / ui.MainView->fontPixelHeight();
+	int currentPosition = ui.MessagesScroll->sliderPosition();
+	ui.MessagesScroll->setMaximum( std::max(0, Messenger::nMessagesBuffered()-maxDisplayLines));
+}
+
+// Return current position of messages scrollbar
+int AtenWindow::messagesScrollPosition()
+{
+	return ui.MessagesScroll->sliderPosition();
 }

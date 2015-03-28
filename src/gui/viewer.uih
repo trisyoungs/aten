@@ -78,6 +78,8 @@ class Viewer : public QGLWidget
 	bool renderingOffScreen_;
 	// Line width scaling factor to use (to adjust line width when saving images)
 	double lineWidthScaling_;
+	// Height, in pixels, of single line of text
+	int fontPixelHeight_;
 
 	protected:
 	// Initialise context widget (when created by Qt)
@@ -117,6 +119,8 @@ class Viewer : public QGLWidget
 	Model* modelAt(int x, int y);
 	// Request a high-quality rendering pass on next redraw (for image saving, etc.)
 	void requestHighQuality();
+	// Return height, in pixels, of single line of text
+	int fontPixelHeight();
 
 
 	/*

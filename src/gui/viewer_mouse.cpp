@@ -27,8 +27,8 @@
 // Qt Signal (mouse press event)
 void Viewer::mousePressEvent(QMouseEvent* event)
 {
-	// Handle button presses (button down) from the mouse
 	Messenger::enter("Viewer::mousePressEvent");
+
 	static Prefs::MouseButton button = Prefs::nMouseButtons;
 
 	// End old mode if one is active (i.e. prevent mode overlap on different mouse buttons)

@@ -3,7 +3,7 @@ project(Aten)
 set(DESCRIPTION "Aten - Atomic configuration builder and editor")
 set(AUTHOR "Tristan Youngs")
 set(VERSION_MAJOR "1")
-set(VERSION_MINOR "926")
+set(VERSION_MINOR "927")
 set(VERSION_PATCH "1")
 
 set(CMAKE_BUILD_TYPE "Release")

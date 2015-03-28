@@ -81,9 +81,15 @@ class Messenger
 	// List of recent messages
 	static QStringList messageBuffer_;
 
+	private:
+	// Add message to buffer
+	static void addToBuffer(QString message);
+
 	public:
 	// Return list of messages in buffer
 	static QStringList& messageBuffer();
+	// Return number of lines currently in buffer
+	static int nMessagesBuffered();
 	// Print formatted normal message
 	static void print(const char* fmtString, ...);
 	// Print formatted warning message
@@ -91,11 +97,11 @@ class Messenger
 	// Print formatted warning message
 	static void error(const char* fmtString, ...);
 	// Print normal message
-	static void print(QString string);
+	static void print(QString message);
 	// Print normal message
-	static void warn(QString string);
+	static void warn(QString message);
 	// Print normal message
-	static void error(QString string);
+	static void error(QString message);
 	// Print message in specific output level
 	static void print(Messenger::OutputType outputType, const char* fmtString, ...);
 	// Entrance to subroutine

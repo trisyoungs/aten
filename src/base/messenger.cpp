@@ -101,10 +101,24 @@ void Messenger::setPrintToConsole(bool printToConsole)
  * Messaging Functions
  */
 
+// Add message to buffer
+void Messenger::addToBuffer(QString message)
+{
+	// Add to buffer (at start), and reduce buffer to max allowable size
+	messageBuffer_.prepend(message);
+	while (messageBuffer_.count() > bufferSize_) messageBuffer_.removeLast();
+}
+
 // Return list of messages in buffer
 QStringList& Messenger::messageBuffer()
 {
 	return messageBuffer_;
+}
+
+// Return number of lines currently in buffer
+int Messenger::nMessagesBuffered()
+{
+	return messageBuffer_.count();
 }
 
 // Print formatted normal message
@@ -120,10 +134,9 @@ void Messenger::print(const char* fmtString, ...)
 	message.vsprintf(fmtString, arguments);
 	va_end(arguments);
 
-	// Add to buffer (at start), and reduce buffer to max allowable size
-	messageBuffer_.prepend(message);
-	while (messageBuffer_.count() > bufferSize_) messageBuffer_.removeLast();
-	
+	// Add to message buffer
+	addToBuffer(message);
+
 	if (printToConsole_) QTextStream(stdout) << message << endl;
 }
 
@@ -140,10 +153,9 @@ void Messenger::warn(const char* fmtString, ...)
 	message.vsprintf(fmtString, arguments);
 	va_end(arguments);
 
-	// Add to buffer (at start), and reduce buffer to max allowable size
-	messageBuffer_.prepend(message);
-	while (messageBuffer_.count() > bufferSize_) messageBuffer_.removeLast();
-	
+	// Add to message buffer
+	addToBuffer(message);
+
 	if (printToConsole_) QTextStream(stdout) << message << endl;
 }
 
@@ -160,50 +172,46 @@ void Messenger::error(const char* fmtString, ...)
 	message.vsprintf(fmtString, arguments);
 	va_end(arguments);
 
-	// Add to buffer (at start), and reduce buffer to max allowable size
-	messageBuffer_.prepend(message);
-	while (messageBuffer_.count() > bufferSize_) messageBuffer_.removeLast();
-	
+	// Add to message buffer
+	addToBuffer(message);
+
 	if (printToConsole_) QTextStream(stdout) << message << endl;
 }
 
 // Print normal message (QString)
-void Messenger::print(QString string)
+void Messenger::print(QString message)
 {
 	// If program is in quiet mode, don't print anything
 	if (quiet_) return;
 
-	// Add to buffer (at start), and reduce buffer to max allowable size
-	messageBuffer_.prepend(string);
-	while (messageBuffer_.count() > bufferSize_) messageBuffer_.removeLast();
-	
-	if (printToConsole_) QTextStream(stdout) << string << endl;
+	// Add to message buffer
+	addToBuffer(message);
+
+	if (printToConsole_) QTextStream(stdout) << message << endl;
 }
 
 // Print warning message (QString)
-void Messenger::warn(QString string)
+void Messenger::warn(QString message)
 {
 	// If program is in quiet mode, don't print anything
 	if (quiet_) return;
 
-	// Add to buffer (at start), and reduce buffer to max allowable size
-	messageBuffer_.prepend(string);
-	while (messageBuffer_.count() > bufferSize_) messageBuffer_.removeLast();
-	
-	if (printToConsole_) QTextStream(stdout) << string << endl;
+	// Add to message buffer
+	addToBuffer(message);
+
+	if (printToConsole_) QTextStream(stdout) << message << endl;
 }
 
 // Print error message (QString)
-void Messenger::error(QString string)
+void Messenger::error(QString message)
 {
 	// If program is in quiet mode, don't print anything
 	if (quiet_) return;
 
-	// Add to buffer (at start), and reduce buffer to max allowable size
-	messageBuffer_.prepend(string);
-	while (messageBuffer_.count() > bufferSize_) messageBuffer_.removeLast();
-	
-	if (printToConsole_) QTextStream(stdout) << string << endl;
+	// Add to message buffer
+	addToBuffer(message);
+
+	if (printToConsole_) QTextStream(stdout) << message << endl;
 }
 
 // Standard message in specific output level
@@ -219,10 +227,9 @@ void Messenger::print(Messenger::OutputType outputType, const char* fmtString, .
 	message.vsprintf(fmtString, arguments);
 	va_end(arguments);
 
-	// Add to buffer (at start), and reduce buffer to max allowable size
-	messageBuffer_.prepend(message);
-	while (messageBuffer_.count() > bufferSize_) messageBuffer_.removeLast();
-	
+	// Add to message buffer
+	addToBuffer(message);
+
 	if (printToConsole_) QTextStream(stdout) << message << endl;
 }
 
@@ -232,7 +239,7 @@ void Messenger::enter(const char* callname)
 	if (!isOutputActive(Messenger::Calls)) return;
 
 	printf("%2i ",callLevel_);
-	for (int n=0; n<callLevel_; n++) printf("--");
+	for (int n=0; n<callLevel_; ++n) printf("--");
 	printf("Begin : %s...\n", callname);
 	++callLevel_;
 }
@@ -244,6 +251,6 @@ void Messenger::exit(const char* callName)
 
 	--callLevel_;
 	printf("%2i ", callLevel_);
-	for (int n=0; n<callLevel_; n++) printf("--");
+	for (int n=0; n<callLevel_; ++n) printf("--");
 	printf("End   : %s.\n", callName);
 }
