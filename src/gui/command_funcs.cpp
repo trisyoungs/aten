@@ -356,7 +356,7 @@ void CommandWidget::on_CommandList_currentTextChanged(const QString &text)
 	ui.CommandEdit->insertHtml(cmdText);
 }
 
-void CommandWidget::closeEvent(QCloseEvent *event)
+void CommandWidget::closeEvent(QCloseEvent* event)
 {
 	event->accept();
 }

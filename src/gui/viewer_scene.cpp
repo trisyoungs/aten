@@ -107,7 +107,7 @@ void Viewer::setupGL()
 // Render models
 void Viewer::renderModels(const GLExtensions* extensions)
 {
-	Messenger::enter("Viewer::renderScene");
+	Messenger::enter("Viewer::renderModels");
 	QColor color;
 	QRect currentBox;
 	Refitem<Model,int>* first, localri;
@@ -194,7 +194,7 @@ void Viewer::renderModels(const GLExtensions* extensions)
 	// Done
 // 	painter.end();
 
-	Messenger::exit("Viewer::renderScene");
+	Messenger::exit("Viewer::renderModels");
 }
 
 // Update all primitives (following prefs change, etc.)

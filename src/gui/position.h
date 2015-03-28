@@ -81,7 +81,7 @@ class PositionWidget : public QDockWidget
 	void on_RepositionDefineTargetButton_clicked(bool on);
 
 	protected:
-	void closeEvent(QCloseEvent *event);
+	void closeEvent(QCloseEvent* event);
 };
 
 #endif

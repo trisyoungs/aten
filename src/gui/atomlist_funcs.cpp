@@ -277,8 +277,8 @@ void AtomListWidget::refresh()
 	}
 	else
 	{
-		if (listStructurePoint_ != (m->changeLog.log(Log::Structure) + m->changeLog.log(Log::Coordinates))) updateAtoms = TRUE;
-		if (listSelectionPoint_ != m->changeLog.log(Log::Selection)) updateSel = TRUE;
+		if (listStructurePoint_ != (m->log(Log::Structure) + m->log(Log::Coordinates))) updateAtoms = TRUE;
+		if (listSelectionPoint_ != m->log(Log::Selection)) updateSel = TRUE;
 	}
 	
 	if ((!updateAtoms) && (!updateSel))
@@ -331,8 +331,8 @@ void AtomListWidget::refresh()
 	if (updateSel) updateSelection();
 	
 	// Set new log points
-	listStructurePoint_ = m->changeLog.log(Log::Structure) + m->changeLog.log(Log::Coordinates);
-	listSelectionPoint_ = m->changeLog.log(Log::Selection);
+	listStructurePoint_ = m->log(Log::Structure) + m->log(Log::Coordinates);
+	listSelectionPoint_ = m->log(Log::Selection);
 
 	// Resize columns to contents
 	for (int column = 0; column<displayItems_.count(); ++column) ui.AtomTable->resizeColumnToContents(column);
@@ -465,7 +465,7 @@ void AtomListWidget::toggleItem(Atom* i)
 	updateSelection();
 }
 
-void AtomListWidget::tableMousePressEvent(QMouseEvent *event)
+void AtomListWidget::tableMousePressEvent(QMouseEvent* event)
 {
 	if (!(event->buttons()&Qt::LeftButton))
 	{
@@ -490,7 +490,7 @@ void AtomListWidget::tableMousePressEvent(QMouseEvent *event)
 	toggleItem(lastClicked_);
 }
 
-void AtomListWidget::tableMouseReleaseEvent(QMouseEvent *event)
+void AtomListWidget::tableMouseReleaseEvent(QMouseEvent* event)
 {
 	bool shift = event->modifiers()&Qt::ShiftModifier;
 	int row = ui.AtomTable->rowAt(event->pos().y());
@@ -527,7 +527,7 @@ void AtomListWidget::tableMouseReleaseEvent(QMouseEvent *event)
 	parent_.updateWidgets(AtenWindow::CanvasTarget);
 }
 
-void AtomListWidget::tableMouseMoveEvent(QMouseEvent *event)
+void AtomListWidget::tableMouseMoveEvent(QMouseEvent* event)
 {
 	if (!(event->buttons()&Qt::LeftButton))
 	{
@@ -603,7 +603,7 @@ void AtomListWidget::tableMouseMoveEvent(QMouseEvent *event)
 	}
 }
 
-void AtomListWidget::tableMouseDoubleClickEvent(QMouseEvent *event)
+void AtomListWidget::tableMouseDoubleClickEvent(QMouseEvent* event)
 {
 	if (!(event->buttons()&Qt::LeftButton))
 	{
@@ -674,7 +674,7 @@ void AtomListWidget::tableItemChanged(QTableWidgetItem *item)
 	parent_.updateWidgets(AtenWindow::CanvasTarget);
 }
 
-void AtomListWidget::closeEvent(QCloseEvent *event)
+void AtomListWidget::closeEvent(QCloseEvent* event)
 {
 // 	// Ensure that the relevant button in the ToolBox dock widget is unchecked now
 // 	gui.toolBoxWidget->ui.AtomListButton->setChecked(FALSE);
@@ -682,12 +682,12 @@ void AtomListWidget::closeEvent(QCloseEvent *event)
 	event->accept();
 }
 
-void AtomListWidget::resizeEvent(QResizeEvent *event)
+void AtomListWidget::resizeEvent(QResizeEvent* event)
 {
 	recalculateRowSize();
 }
 
-void AtomListWidget::wheelEvent(QWheelEvent *event)
+void AtomListWidget::wheelEvent(QWheelEvent* event)
 {
 	// Grab current slider position
 	int pos = ui.AtomTableScrollBar->value();

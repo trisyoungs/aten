@@ -204,7 +204,7 @@ void CellTransformWidget::on_MillerOutRadio_clicked(bool checked)
 	parent_.postRedisplay();
 }
 
-void CellTransformWidget::closeEvent(QCloseEvent *event)
+void CellTransformWidget::closeEvent(QCloseEvent* event)
 {
 	// Ensure that the relevant button in the ToolBox dock widget is unchecked now
 	if (this->isFloating()) parent_.postRedisplay();

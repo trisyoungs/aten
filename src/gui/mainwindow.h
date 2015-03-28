@@ -113,7 +113,7 @@ class AtenWindow : public QMainWindow
 	 * Window Functions
 	 */
 	protected:
-	void closeEvent(QCloseEvent *event);
+	void closeEvent(QCloseEvent* event);
 
 	public:
 	// Finalise GUI

@@ -28,7 +28,7 @@ ATEN_USING_NAMESPACE
 // Create new glyph in this model
 Glyph* Model::addGlyph(Glyph::GlyphType gt)
 {
-	changeLog.add(Log::Glyphs);
+	logChange(Log::Glyphs);
 	Glyph* newglyph = glyphs_.add();
 	newglyph->setParent(this);
 	newglyph->setType(gt);
@@ -36,7 +36,7 @@ Glyph* Model::addGlyph(Glyph::GlyphType gt)
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
-// 		GlyphEvent *newchange = new GlyphEvent;	// TODO
+// 		GlyphEvent* newchange = new GlyphEvent;	// TODO
 // 		newchange->set(TRUE, newglyph);
 // 		recordingState_->addEvent(newchange);
 	}
@@ -48,7 +48,7 @@ void Model::removeGlyph(Glyph* g)
 {
 	if ((g->type() == Glyph::TextGlyph) || (g->type() == Glyph::Text3DGlyph)) textGlyphs_.remove(g);
 	glyphs_.remove(g);
-	changeLog.add(Log::Glyphs);
+	logChange(Log::Glyphs);
 }
 
 // Return number of defined glyphs

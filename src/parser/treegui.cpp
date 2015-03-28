@@ -1211,9 +1211,9 @@ QString TreeGuiWidget::asCharacter()
 }
 
 // Add widget event
-TreeGuiWidgetEvent *TreeGuiWidget::addEvent(TreeGuiWidgetEvent::EventType type, TreeGuiWidget* targetWidget, TreeGuiWidgetEvent::EventProperty property)
+TreeGuiWidgetEvent* TreeGuiWidget::addEvent(TreeGuiWidgetEvent::EventType type, TreeGuiWidget* targetWidget, TreeGuiWidgetEvent::EventProperty property)
 {
-	TreeGuiWidgetEvent *event = events_.add();
+	TreeGuiWidgetEvent* event = events_.add();
 	event->setEventData(type, targetWidget, property);
 	return event;
 }
@@ -1221,7 +1221,7 @@ TreeGuiWidgetEvent *TreeGuiWidget::addEvent(TreeGuiWidgetEvent::EventType type, 
 // Check widget's events and act on them if necessary
 void TreeGuiWidget::checkWidgetEvents()
 {
-	for (TreeGuiWidgetEvent *event = events_.first(); event != NULL; event = event->next)
+	for (TreeGuiWidgetEvent* event = events_.first(); event != NULL; event = event->next)
 	{
 		// Check the type of event, and then check the widget's current value
 		bool qualifies;

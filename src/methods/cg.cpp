@@ -180,7 +180,7 @@ void MethodCg::minimise(Model* srcmodel, double econ, double fcon)
 	// Calculate fresh new forces for the model, log changes / update, and exit.
 	srcmodel->calculateForces(srcmodel);
 	srcmodel->updateMeasurements();
-	srcmodel->changeLog.add(Log::Coordinates);
+	srcmodel->logChange(Log::Coordinates);
 	Messenger::exit("MethodCg::minimise");
 }
 

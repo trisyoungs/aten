@@ -269,7 +269,7 @@ void BuildWidget::on_BondToleranceSpin_valueChanged(double value)
 	prefs.setBondTolerance(value);
 }
 
-void BuildWidget::closeEvent(QCloseEvent *event)
+void BuildWidget::closeEvent(QCloseEvent* event)
 {
 	// Ensure that the relevant button in the ToolBox dock widget is unchecked now
 // 	gui.toolBoxWidget->ui.BuildButton->setChecked(FALSE);

@@ -54,7 +54,7 @@ class ScriptMovieWidget : public QDockWidget
 	void on_SaveScriptButton_clicked(bool on);
 	void on_SaveScriptedMovieButton_clicked(bool on);
 	protected:
-	void closeEvent(QCloseEvent *event);
+	void closeEvent(QCloseEvent* event);
 };
 
 #endif

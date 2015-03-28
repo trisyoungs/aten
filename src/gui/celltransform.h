@@ -92,7 +92,7 @@ class CellTransformWidget : public QDockWidget
 	void on_MillerOutRadio_clicked(bool checked);
 
 	protected:
-	void closeEvent(QCloseEvent *event);
+	void closeEvent(QCloseEvent* event);
 };
 
 #endif

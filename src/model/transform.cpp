@@ -71,7 +71,7 @@ void Model::finalizeTransform(Reflist< Atom,Vec3<double> > &originalr, const cha
 	// Go through list of atoms in 'originalr', work out delta, and store
 	if (recordingState_ != NULL)
 	{
-		TranslateEvent *newchange;
+		TranslateEvent* newchange;
 		Vec3<double> delta;
 		for (Refitem< Atom,Vec3<double> >* ri = originalr.first(); ri != NULL; ri = ri->next)
 		{
@@ -81,7 +81,7 @@ void Model::finalizeTransform(Reflist< Atom,Vec3<double> > &originalr, const cha
 			recordingState_->addEvent(newchange);
 		}
 	}
-	changeLog.add(Log::Coordinates);
+	logChange(Log::Coordinates);
 	endUndoState();
 }
 
@@ -112,7 +112,7 @@ void Model::rotateSelectionWorld(double dx, double dy)
 	// Update model measurements
 	updateMeasurements();
 
-	changeLog.add(Log::Coordinates);
+	logChange(Log::Coordinates);
 
 	Messenger::exit("Model::rotateSelectionWorld");
 }
@@ -143,7 +143,7 @@ void Model::rotateSelectionVector(Vec3<double> origin, Vec3<double> vector, doub
 	// Update model measurements
 	updateMeasurements();
 
-	changeLog.add(Log::Coordinates);
+	logChange(Log::Coordinates);
 
 	Messenger::exit("Model::rotateSelectionVector");
 }
@@ -168,7 +168,7 @@ void Model::rotateSelectionZaxis(double dz)
 	// Update model measurements
 	updateMeasurements();
 	
-	changeLog.add(Log::Coordinates);
+	logChange(Log::Coordinates);
 	Messenger::exit("Model::rotateSelectionZaxis");
 }
 
@@ -192,7 +192,7 @@ void Model::translateSelectionWorld(const Vec3<double> &v, bool markonly)
 	// Update model measurements
 	updateMeasurements();
 
-	changeLog.add(Log::Coordinates);
+	logChange(Log::Coordinates);
 	Messenger::exit("Model::translateSelectionWorld");
 }
 
@@ -207,7 +207,7 @@ void Model::translateSelectionLocal(const Vec3<double> &tvec, bool markonly)
 	// Update model measurements
 	updateMeasurements();
 
-	changeLog.add(Log::Coordinates);
+	logChange(Log::Coordinates);
 
 	Messenger::exit("Model::translateSelectionLocal");
 }
@@ -231,7 +231,7 @@ void Model::mirrorSelectionLocal(int axis, bool markonly)
 	// Update model measurements
 	updateMeasurements();
 
-	changeLog.add(Log::Coordinates);
+	logChange(Log::Coordinates);
 
 	Messenger::exit("Model::mirrorSelectionLocal");
 }
@@ -269,7 +269,33 @@ void Model::matrixTransformSelection(Vec3<double> origin, Matrix matrix, bool ma
 	// Update model measurements
 	updateMeasurements();
 
-	changeLog.add(Log::Coordinates);
+	logChange(Log::Coordinates);
 
 	Messenger::exit("Model::matrixTransformSelection");
+}
+
+// Convert all atom coordinates from Bohr to Angstrom
+void Model::bohrToAngstrom()
+{
+	Messenger::enter("Model::bohrToAngstrom");
+	// Coordinates
+	for (Atom* i = atoms_.first(); i != NULL; i = i->next) i->r() *= ANGBOHR;
+	// Cell
+	UnitCell::CellType ct = cell_.type();
+	if (ct != UnitCell::NoCell)
+	{
+		Vec3<double> lengths = cell_.lengths();
+		lengths *= ANGBOHR;
+		cell_.set(lengths,cell_.angles());
+	}
+	logChange(Log::Coordinates);
+	Messenger::exit("Model::bohrToAngstrom");
+}
+
+// Convert all atom coordinates from fractional to real coordinates
+void Model::fracToReal()
+{
+	Messenger::enter("Model::fracToReal");
+	for (Atom* i = atoms_.first(); i != NULL; i = i->next) i->r() = cell_.fracToReal(i->r());
+	Messenger::exit("Model::fracToReal");
 }

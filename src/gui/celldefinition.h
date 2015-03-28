@@ -82,7 +82,7 @@ class CellDefinitionWidget : public QDockWidget
 	void on_CellSpacegroupPackButton_clicked(bool checked);
 
 	protected:
-	void closeEvent(QCloseEvent *event);
+	void closeEvent(QCloseEvent* event);
 };
 
 #endif

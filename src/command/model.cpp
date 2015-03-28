@@ -130,7 +130,6 @@ bool Commands::function_FinaliseModel(CommandNode* c, Bundle& obj, ReturnValue& 
 	if (!prefs.keepView()) obj.m->resetView(aten_.atenWindow()->ui.MainView->width(), aten_.atenWindow()->ui.MainView->height());
 	obj.m->calculateMass();
 	obj.m->selectNone();
-	obj.m->regenerateIcon();
 
 	// Print out some useful info on the model that we've just read in
 	Messenger::print(Messenger::Verbose, "Model  : %s", qPrintable(obj.m->name()));
@@ -143,8 +142,8 @@ bool Commands::function_FinaliseModel(CommandNode* c, Bundle& obj, ReturnValue& 
 
 	// Lastly, reset all the log points and start afresh
 	obj.m->enableUndoRedo();
-	obj.m->changeLog.reset();
-	obj.m->changeLog.updateSavePoint();
+	obj.m->resetLogs();
+	obj.m->updateSavePoint();
 	rv.reset();
 
 	return TRUE;
@@ -387,7 +386,7 @@ bool Commands::function_SaveModel(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	bool result = filter->executeWrite(obj.rs()->filename());
 	if (result)
 	{
-		obj.rs()->changeLog.updateSavePoint();
+		obj.rs()->updateSavePoint();
 		Messenger::print("Model '%s' saved to file '%s' (%s)", qPrintable(obj.rs()->name()), qPrintable(obj.rs()->filename()), qPrintable(filter->filter.name()));
 	}
 	else Messenger::print("Failed to save model '%s'.", qPrintable(obj.rs()->name()));

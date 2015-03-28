@@ -295,7 +295,7 @@ bool WidgetVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 	}
 	// Get current data from ReturnValue
 	int xw, xh, l, t;
-	TreeGuiWidgetEvent *event;
+	TreeGuiWidgetEvent* event;
 	TreeGuiWidgetEvent::EventProperty eventProperty;
 	TreeGuiWidgetEvent::EventType eventType;
 	TreeGuiWidget* targetWidget;

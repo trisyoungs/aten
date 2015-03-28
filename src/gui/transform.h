@@ -102,7 +102,7 @@ class TransformWidget : public QDockWidget
 	void on_ConvertTargetGenerateBButton_clicked(bool on);
 	void on_ConvertTargetGenerateCButton_clicked(bool on);
 	protected:
-	void closeEvent(QCloseEvent *event);
+	void closeEvent(QCloseEvent* event);
 };
 
 #endif

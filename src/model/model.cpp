@@ -96,6 +96,9 @@ Model::Model() : ListItem<Model>()
 	vibrationCurrentFrame_ = NULL;
 	vibrationForward_ = TRUE;
 	vibrationFrameIndex_ = -1;
+
+	// Icon
+	iconPoint_ = -1;
 }
 
 // Destructor
@@ -138,11 +141,11 @@ Tree* Model::filter() const
 // Sets the name of the model
 void Model::setName(QString name)
 {
-	changeLog.add(Log::Misc);
+	logChange(Log::Misc);
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
-		ModelRenameEvent *newchange = new ModelRenameEvent;
+		ModelRenameEvent* newchange = new ModelRenameEvent;
 		newchange->set(name_, name);
 		recordingState_->addEvent(newchange);
 	}
@@ -163,192 +166,13 @@ void Model::clear()
 	patterns_.clear();
 	trajectoryFrames_.clear();
 	vibrationFrames_.clear();
+
 	// Reset logs and log points
-	changeLog.reset();
+	changeLog_.reset();
 	patternsPoint_ = -1;
 	expressionPoint_ = -1;
 	zMatrixPoint_ = -1;
-}
-
-// Set parent model of model (for frames)
-void Model::setParent(Model* m)
-{
-	parent_ = m;
-}
-
-// Return parent model of model (for frames)
-Model* Model::parent() const
-{
-	return parent_;
-}
-
-// Set model type
-void Model::setType(Model::ModelType mt)
-{
-	type_ = mt;
-}
-
-// Return model type
-Model::ModelType Model::type()
-{
-	return type_;
-}
-
-// Regenerate icon
-void Model::regenerateIcon()
-{
-	Messenger::enter("Model::regenerateIcon");
-	bool framemodel = prefs.frameCurrentModel(), frameview = prefs.frameWholeView(), viewglobe = prefs.viewRotationGlobe();
-	
-	prefs.setFrameCurrentModel(FALSE);
-	prefs.setFrameWholeView(FALSE);
-	prefs.setViewRotationGlobe(FALSE);
-
-	changeLog.add(Log::Style);
-// 	icon_ = engine().renderModelIcon(this);	ATEN2 TODO
-
-	prefs.setFrameCurrentModel(framemodel);
-	prefs.setFrameWholeView(frameview);
-	prefs.setViewRotationGlobe(viewglobe);
-	
-	Messenger::exit("Model::regenerateIcon");
-}
-
-// Return icon
-QIcon &Model::icon()
-{
-	return icon_;
-}
-
-// Set whether model is visible
-void Model::setVisible(bool b)
-{
-	visible_ = b;
-}
-
-// Return whether model is visible
-bool Model::isVisible()
-{
-	return visible_;
-}
-
-/*
-// Labelling
-*/
-
-// Add label to atom
-void Model::addLabel(Atom* i, Atom::AtomLabel al)
-{
-	int oldlabels = i->labels();
-	i->addLabel(al);
-	// Add the change to the undo state (if there is one)
-	if (recordingState_ != NULL)
-	{
-		LabelEvent *newchange = new LabelEvent;
-		newchange->set(i->id(), oldlabels, i->labels());
-		recordingState_->addEvent(newchange);
-	}
-	changeLog.add(Log::Labels);
-}
-
-// Remove atom label
-void Model::removeLabel(Atom* i, Atom::AtomLabel al)
-{
-	int oldlabels = i->labels();
-	i->removeLabel(al);
-	// Add the change to the undo state (if there is one)
-	if (recordingState_ != NULL)
-	{
-		LabelEvent *newchange = new LabelEvent;
-		newchange->set(i->id(), oldlabels, i->labels());
-		recordingState_->addEvent(newchange);
-	}
-	changeLog.add(Log::Labels);
-}
-
-// Clear labelling from atom
-void Model::clearLabels(Atom* i)
-{
-	int oldlabels = i->labels();
-	i->clearLabels();
-	// Add the change to the undo state (if there is one)
-	if (recordingState_ != NULL)
-	{
-		LabelEvent *newchange = new LabelEvent;
-		newchange->set(i->id(), oldlabels, 0);
-		recordingState_->addEvent(newchange);
-	}
-	changeLog.add(Log::Labels);
-}
-
-// Clear atom labelling
-void Model::clearAllLabels()
-{
-	for (Atom* i = atoms_.first(); i != NULL; i = i->next) clearLabels(i);
-	changeLog.add(Log::Labels);
-}
-
-// Clear all labels in selection
-void Model::selectionClearLabels()
-{
-	for (Atom* i = atoms_.first(); i != NULL; i = i->next) if (i->isSelected()) clearLabels(i);
-	changeLog.add(Log::Labels);
-}
-
-// Remove specific labels in selection
-void Model::selectionRemoveLabels(Atom::AtomLabel al)
-{
-	for (Atom* i = atoms_.first(); i != NULL; i = i->next) if (i->isSelected()) removeLabel(i, al);
-	changeLog.add(Log::Labels);
-}
-
-// Add atom labels
-void Model::selectionAddLabels(Atom::AtomLabel al)
-{
-	for (Atom* i = atoms_.first(); i != NULL; i = i->next) if (i->isSelected()) addLabel(i, al);
-	changeLog.add(Log::Labels);
-}
-
-/*
-// OTHER STUFF
-*/
-
-void Model::printCoords() const
-{
-	Messenger::enter("Model::printCoords");
-	for (Atom* i = atoms_.first(); i != NULL; i = i->next)
-	{
-		printf("Atom  %3i  %s  %11.6f  %11.6f  %11.6f  %9.6f\n", i->id(), Elements().symbol(i), i->r().x, i->r().y, i->r().z, i->charge());
-	//	printf("Atom  %3i  %s  %11.6f  %11.6f  %11.6f  %9.6f  %s\n",i->id(),Elements().symbol(i),r.x,r.y,r.z,
-	//		i->get_charge(),(ff == NULL ? " " : ff->name(i)));
-	}
-	Messenger::exit("Model::printCoords");
-}
-
-// Bohr to Angstrom
-void Model::bohrToAngstrom()
-{
-	Messenger::enter("Model::bohrToAngstrom");
-	// Coordinates
-	for (Atom* i = atoms_.first(); i != NULL; i = i->next) i->r() *= ANGBOHR;
-	// Cell
-	UnitCell::CellType ct = cell_.type();
-	if (ct != UnitCell::NoCell)
-	{
-		Vec3<double> lengths = cell_.lengths();
-		lengths *= ANGBOHR;
-		cell_.set(lengths,cell_.angles());
-	}
-	changeLog.add(Log::Coordinates);
-	Messenger::exit("Model::bohrToAngstrom");
-}
-
-// Clear charges
-void Model::clearCharges()
-{
-	Messenger::enter("Model::clearCharges");
-	for (Atom* i = atoms_.first(); i != NULL; i = i->next) atomSetCharge(i, 0.0);
-	Messenger::exit("Model::clearCharges");
+	iconPoint_ = -1;
 }
 
 // Print
@@ -376,24 +200,6 @@ void Model::print() const
 		}
 	else for (i = atoms_.first(); i != NULL; i = i->next) i->printSummary();
 	Messenger::exit("Model::print");
-}
-
-// Print points information
-void Model::printLogs() const
-{
-	Messenger::print("Logs for model '%s':", qPrintable(name_));
-	changeLog.print();
-	Messenger::print("Expression point : %i", expressionPoint_);
-	Messenger::print("  Patterns point : %i", patternsPoint_);
-}
-
-// Print Forces
-void Model::printForces() const
-{
-	for (Atom* i = atoms_.first(); i != NULL; i = i->next)
-	{
-		printf("%4i %3s  %14.6e  %14.6e  %14.6e\n", i->id(), Elements().symbol(i), i->f().x, i->f().y, i->f().z);
-	}
 }
 
 // Copy model
@@ -487,8 +293,38 @@ void Model::copyAtomData(Model* srcmodel, int dat, int startatom, int ncopy)
 	Messenger::exit("Model::copyAtomData[range]");
 }
 
-// Return RMS of last calculated atomic forces
-double Model::rmsForce() const
+// Set parent model of model (for frames)
+void Model::setParent(Model* m)
 {
-	return rmsForce_;
+	parent_ = m;
+}
+
+// Return parent model of model (for frames)
+Model* Model::parent() const
+{
+	return parent_;
+}
+
+// Set model type
+void Model::setType(Model::ModelType mt)
+{
+	type_ = mt;
+}
+
+// Return model type
+Model::ModelType Model::type()
+{
+	return type_;
+}
+
+// Set whether model is visible
+void Model::setVisible(bool b)
+{
+	visible_ = b;
+}
+
+// Return whether model is visible
+bool Model::isVisible()
+{
+	return visible_;
 }

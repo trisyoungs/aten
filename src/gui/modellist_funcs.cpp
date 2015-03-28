@@ -155,16 +155,16 @@ void ModelListWidget::updateItem(TExtraTreeWidgetItem *item)
 	// Check logpoint against that of model
 	rv = item->dataForKey("log");
 	int logpoint = rv.asInteger();
-	if (logpoint != m->changeLog.log(Log::Structure))
+	if (logpoint != m->log(Log::Structure))
 	{
-		m->regenerateIcon();
+// 		m->regenerateIcon(); ATEN2 TODO
 		item->setIcon(0,m->icon());
 		QString text;
 		text.sprintf("%s\nFF: %s\n", qPrintable(m->name()), m->forcefield() == NULL ? "<default>" : qPrintable(m->forcefield()->name()));
 		item->setText(1, text);
 		item->setTextAlignment(1, Qt::AlignLeft | Qt::AlignTop);
 		// Update log value
-		item->dataForKey("log").set(m->changeLog.log(Log::Structure));
+		item->dataForKey("log").set(m->log(Log::Structure));
 	}
 	
 	// Set selection status of row
@@ -258,7 +258,7 @@ void ModelListWidget::deselectAll(TExtraTreeWidgetItem *selectitem)
 
 void ModelListWidget::on_RefreshIconsButton_clicked(bool checked)
 {
-	for (Model* m = parent_.aten().models(); m != NULL; m = m->next) m->regenerateIcon();
+// 	for (Model* m = parent_.aten().models(); m != NULL; m = m->next) m->regenerateIcon(); ATEN2 TODO
 	refresh();
 }
 
@@ -269,7 +269,7 @@ void ModelListWidget::on_ModelsPerRowSpin_valueChanged(int value)
 }
 
 // Mouse pressed on ModelList
-void ModelListWidget::treeMousePressEvent(QMouseEvent *event)
+void ModelListWidget::treeMousePressEvent(QMouseEvent* event)
 {
 	ReturnValue rv;
 	Model* m;
@@ -304,14 +304,14 @@ void ModelListWidget::treeMousePressEvent(QMouseEvent *event)
 }
 
 // Mouse releaseed on ModelList
-void ModelListWidget::treeMouseReleaseEvent(QMouseEvent *event)
+void ModelListWidget::treeMouseReleaseEvent(QMouseEvent* event)
 {
 	lastHovered_ = NULL;
 	parent_.updateWidgets(AtenWindow::AllTarget-AtenWindow::ModelsTarget);
 }
 
 // Mouse moved over ModelList
-void ModelListWidget::treeMouseMoveEvent(QMouseEvent *event)
+void ModelListWidget::treeMouseMoveEvent(QMouseEvent* event)
 {
 	if (!(event->buttons()&Qt::LeftButton)) return;
 	TExtraTreeWidgetItem *twi = itemUnderMouse(event->pos());
@@ -324,7 +324,7 @@ void ModelListWidget::treeMouseMoveEvent(QMouseEvent *event)
 }
 
 // Mouse double-clicked over ModelList
-void ModelListWidget::treeMouseDoubleClickEvent(QMouseEvent *event)
+void ModelListWidget::treeMouseDoubleClickEvent(QMouseEvent* event)
 {
 	// Left Button double-click is rename function
 	if ((event->buttons()&Qt::LeftButton))
@@ -430,7 +430,7 @@ void ModelListWidget::closeThisModel(bool checked)
 }
 
 // Window closed
-void ModelListWidget::closeEvent(QCloseEvent *event)
+void ModelListWidget::closeEvent(QCloseEvent* event)
 {
 	event->accept();
 }

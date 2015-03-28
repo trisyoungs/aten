@@ -179,7 +179,7 @@ Aten& AtenWindow::aten()
  */
 
 // Catch window close event
-void AtenWindow::closeEvent(QCloseEvent *event)
+void AtenWindow::closeEvent(QCloseEvent* event)
 {
 	if (saveBeforeClose())
 	{
@@ -199,7 +199,7 @@ bool AtenWindow::closeModel(Model* m)
 {
 	QString text;
 	Tree* filter;
-	if (m->changeLog.isModified())
+	if (m->isModified())
 	{
 		// Create a modal message dialog
 		text.sprintf("Model '%s' has been modified.", qPrintable(m->name()));
@@ -424,7 +424,7 @@ void AtenWindow::updateMainWindow()
 	infoLabel2_->setText(s);
 
 	// Update save button status
-	ui.actionFileSave->setEnabled( m->changeLog.isModified() );
+	ui.actionFileSave->setEnabled( m->isModified() );
 
 	// Enable the Atom menu if one or more atoms are selected
 	ui.AtomContextMenu->setEnabled( m->renderSourceModel()->nSelected() == 0 ? FALSE : TRUE);
@@ -481,8 +481,8 @@ void AtenWindow::updateTrajectoryMenu()
 void AtenWindow::updateWindowTitle()
 {
 	Model* m = aten_.currentModel();
-	QString title;
-	title.sprintf("Aten (v%s) - %s (%s)%s", ATENVERSION, qPrintable(m->name()), m->filename().isEmpty() ? "<<no filename>>" : qPrintable(m->filename()), m->changeLog.isModified() ? " [Modified]" : "");
+	QString title;	
+	title.sprintf("Aten v2 PRERELEASE (v%s) - %s (%s)%s", ATENVERSION, qPrintable(m->name()), m->filename().isEmpty() ? "<<no filename>>" : qPrintable(m->filename()), m->isModified() ? " [Modified]" : "");
 	setWindowTitle(title);
 }
 
@@ -524,7 +524,7 @@ void AtenWindow::loadRecent()
 	{
 		ReturnValue rv;
 		filter->executeRead(filename, rv);
-		aten_.currentModel()->regenerateIcon();
+
 		// Update GUI
 		updateWidgets(AtenWindow::AllTarget);
 	}
@@ -533,12 +533,14 @@ void AtenWindow::loadRecent()
 		// Remove file from recent files list
 		int last, n;
 		for (last=0; last<MAXRECENTFILES; last++) if (!actionRecentFile[last]->isVisible()) break;
-		for (n=last+1; n<MAXRECENTFILES; n++)
+		for (n=last+1; n<MAXRECENTFILES; ++n)
+		{
 			if (actionRecentFile[last]->isVisible())
 			{
 				actionRecentFile[n-1]->setText(actionRecentFile[n]->text());
 				actionRecentFile[n-1]->setData(actionRecentFile[n]->data());
 			}
+		}
 	}
 }
 

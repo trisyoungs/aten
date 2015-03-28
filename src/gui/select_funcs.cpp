@@ -151,7 +151,7 @@ void SelectWidget::refresh()
 	ui.SelectionLabel2->setText(m->selectionEmpirical(FALSE, TRUE));
 }
 
-void SelectWidget::closeEvent(QCloseEvent *event)
+void SelectWidget::closeEvent(QCloseEvent* event)
 {
 	event->accept();
 }

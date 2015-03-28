@@ -86,7 +86,7 @@ void Model::clearMeasurements()
 	angleMeasurements_.clear();
 	distanceMeasurements_.clear();
 	torsionMeasurements_.clear();
-	changeLog.add(Log::Labels);
+	logChange(Log::Labels);
 }
 
 // Add distance measurement
@@ -172,7 +172,7 @@ void Model::removeMeasurement(Measurement* me)
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
-		MeasurementEvent *newchange = new MeasurementEvent;
+		MeasurementEvent* newchange = new MeasurementEvent;
 		Atom** atoms = me->atoms();
 		switch (type)
 		{
@@ -279,7 +279,7 @@ Measurement* Model::addMeasurement(Measurement::MeasurementType gt, ...)
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
-		MeasurementEvent *newchange = new MeasurementEvent;
+		MeasurementEvent* newchange = new MeasurementEvent;
 		switch (gt)
 		{
 			case (Measurement::DistanceMeasurement):
@@ -377,7 +377,7 @@ void Model::addMeasurementsInSelection(Measurement::MeasurementType gt)
 		default:
 			break;
 	}
-	changeLog.add(Log::Labels);
+	logChange(Log::Labels);
 	Messenger::exit("Model::addMeasurementsInSelection");
 }
 

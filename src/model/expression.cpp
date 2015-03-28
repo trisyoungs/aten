@@ -72,7 +72,7 @@ void Model::removeNamesForcefield()
 // Return whether the expression is valid
 bool Model::isExpressionValid() const
 {
-	return (expressionPoint_ == changeLog.log(Log::Structure) ? TRUE : FALSE);
+	return (expressionPoint_ == log(Log::Structure) ? TRUE : FALSE);
 }
 
 // Clear the current expression
@@ -119,6 +119,14 @@ bool Model::assignForcefieldCharges()
 	else Messenger::print("Failed to assign charges to %i atoms.", nfailed);
 	Messenger::exit("Model::assignForcefieldCharges");
 	return (nfailed == 0);
+}
+
+// Clear charges
+void Model::clearCharges()
+{
+	Messenger::enter("Model::clearCharges");
+	for (Atom* i = atoms_.first(); i != NULL; i = i->next) atomSetCharge(i, 0.0);
+	Messenger::exit("Model::clearCharges");
 }
 
 // Set model's forcefield
@@ -293,7 +301,7 @@ bool Model::createExpression(Choice vdwOnly, Choice allowDummy, Choice assignCha
 		}
 	}
 	
-	expressionPoint_ = changeLog.log(Log::Structure);
+	expressionPoint_ = log(Log::Structure);
 	Messenger::exit("Model::createExpression");
 
 	return TRUE;

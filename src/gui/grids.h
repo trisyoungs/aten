@@ -143,7 +143,7 @@ class GridsWidget : public QDockWidget
 	void on_OrbitalPointsSpin_valueChanged(int i);
 
 	protected:
-	void closeEvent(QCloseEvent *event);
+	void closeEvent(QCloseEvent* event);
 };
 
 #endif

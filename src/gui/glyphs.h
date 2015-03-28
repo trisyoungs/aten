@@ -138,7 +138,7 @@ class GlyphsWidget : public QDockWidget
 	void dataColourChanged(int id);
 
 	protected:
-	void closeEvent(QCloseEvent *event);
+	void closeEvent(QCloseEvent* event);
 };
 
 #endif

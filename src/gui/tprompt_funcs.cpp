@@ -85,7 +85,7 @@ QString TPrompt::getText()
 	return text;
 }
 
-void TPrompt::keyPressEvent(QKeyEvent *event)
+void TPrompt::keyPressEvent(QKeyEvent* event)
 {
 	int index;
 	// In the case of moving the list selection, if no list item is currently selected store what we currently have in the LineEdit so we may return to it if necessary...

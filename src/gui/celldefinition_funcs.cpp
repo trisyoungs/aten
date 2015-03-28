@@ -269,7 +269,7 @@ void CellDefinitionWidget::on_CellSpacegroupPackButton_clicked(bool checked)
 	parent_.updateWidgets(AtenWindow::CanvasTarget);
 }
 
-void CellDefinitionWidget::closeEvent(QCloseEvent *event)
+void CellDefinitionWidget::closeEvent(QCloseEvent* event)
 {
 	// Ensure that the relevant button in the ToolBox dock widget is unchecked now
 	if (this->isFloating()) parent_.postRedisplay();

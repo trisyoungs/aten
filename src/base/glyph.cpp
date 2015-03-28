@@ -390,7 +390,7 @@ bool Glyph::isSelected() const
 void Glyph::setVisible(bool isvisible)
 {
 	visible_ = isvisible;
-	parent_->changeLog.add(Log::Glyphs);
+	parent_->logChange(Log::Glyphs);
 }
 
 // Return whether the Glyph is visible

@@ -1,6 +1,6 @@
 /*
-	*** Model rendering
-	*** src/model/render.cpp
+	*** Model icon functions
+	*** src/model/icon.cpp
 	Copyright T. Youngs 2007-2015
 
 	This file is part of Aten.
@@ -23,18 +23,20 @@
 
 ATEN_USING_NAMESPACE
 
-// Return renderGroup, regenerating if necessary
-RenderGroup& Model::renderGroup(PrimitiveSet& primitiveSet)
+// Return whether icon is currently valid
+bool Model::iconIsValid()
 {
-	// Check the logs, and decide if we need to regenerate the primitive list for the model
-	if (renderGroupPoint_ == log(Log::Total)) return renderGroup_;
-
-	renderGroup_.clear();
-
-	renderGroup_.createAtomsAndBonds(primitiveSet, this, Matrix());
-
-	renderGroupPoint_ = log(Log::Total);
-
-	return renderGroup_;
+	return (iconPoint_ == changeLog_.log(Log::Structure));  // ATEN2 TODO Make a general class to allow more than one log quantity to be compared?
 }
 
+// Set icon
+void Model::setIcon(QIcon icon)
+{
+	icon_ = icon;
+}
+
+// Return icon
+QIcon& Model::icon()
+{
+	return icon_;
+}

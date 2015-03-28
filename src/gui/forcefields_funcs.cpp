@@ -404,7 +404,7 @@ void ForcefieldsWidget::on_ManualTypeEdit_returnPressed()
 	refreshTypes();
 }
 
-void ForcefieldsWidget::closeEvent(QCloseEvent *event)
+void ForcefieldsWidget::closeEvent(QCloseEvent* event)
 {
 	event->accept();
 }

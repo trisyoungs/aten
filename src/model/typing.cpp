@@ -168,7 +168,7 @@ bool Model::typeAll(Forcefield* defaultForcefield)
 	}
 
 	// Log change in the model
-	changeLog.add(Log::Coordinates);
+	logChange(Log::Coordinates);
 	Messenger::exit("Model::typeAll");
 	return TRUE;
 }
@@ -178,7 +178,7 @@ void Model::selectionSetType(ForcefieldAtom* ffa, bool fixed)
 {
 	Messenger::enter("Pattern::selectionSetType");
 	for (Refitem<Atom,int>* ri = selection_.first(); ri != NULL; ri = ri->next) setAtomType(ri->item, ffa, fixed);
-	changeLog.add(Log::Coordinates);
+	logChange(Log::Coordinates);
 	Messenger::exit("Pattern::selectionSetType");
 }
 
