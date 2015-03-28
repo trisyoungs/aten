@@ -29,14 +29,6 @@ void Viewer::setupGL()
 {
 	Messenger::enter("Viewer::setupGL");
 
-	// Clear colour
-	GLfloat col[4];
-	prefs.copyColour(Prefs::BackgroundColour, col);
-	glClearColor(col[0],col[1],col[2],col[3]);
-// 	glClearDepth(1.0);
-// 	glColorMask(GL_TRUE,GL_TRUE,GL_TRUE,GL_TRUE);
-// 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
 	// Perspective hint
 	glHint(GL_PERSPECTIVE_CORRECTION_HINT,GL_FASTEST);
 
@@ -54,6 +46,7 @@ void Viewer::setupGL()
 	//glBlendFunc(GL_SRC_ALPHA_SATURATE, GL_ONE);
 
 	// Set up the light model
+	GLfloat col[4];
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	glEnable(GL_LIGHTING);

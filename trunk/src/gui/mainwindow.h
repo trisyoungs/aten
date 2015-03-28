@@ -369,6 +369,19 @@ class AtenWindow : public QMainWindow
 
 
 	/*
+	 * Messages Scrollbar
+	 */
+	private slots:
+	void on_MessagesScroll_sliderMoved(int position);
+
+	public:
+	// Update messages widgets
+	void updateMessagesWidgets();
+	// Return current position of messages scrollbar
+	int messagesScrollPosition();
+
+
+	/*
 	 * Local Widgets and Routines
 	 */
 	private:

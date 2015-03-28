@@ -39,6 +39,7 @@ Viewer::Viewer(QWidget* parent)
 	drawing_ = false;
 	renderingOffScreen_ = false;
 	primitiveSet_ = Viewer::LowQuality;
+	fontPixelHeight_ = 1;
 
 	// Atom Selection
 	atomClicked_ = NULL;
@@ -107,9 +108,7 @@ void Viewer::paintEvent(QPaintEvent* event)
 	// Set the drawing flag so we don't have any rendering clashes
 	drawing_ = true;
 
-	// Clear view
-	glViewport(0, 0, contextWidth_, contextHeight_);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	atenWindow_->updateMessagesWidgets();
 	
 	// Grab topmost GLExtensions pointer
 	GLExtensions* extensions = extensionsStack_.last();
@@ -121,37 +120,53 @@ void Viewer::paintEvent(QPaintEvent* event)
 		return;
 	}
 
-	// Setup basic GL stuff
+	// Setup GL and clear view
+	GLfloat col[4];
+	prefs.copyColour(Prefs::BackgroundColour, col);
+	glClearColor(col[0],col[1],col[2],col[3]);
+
+	glViewport(0, 0, contextWidth_, contextHeight_);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	// Create a QPainter
+	QPainter painter(this);
+
+	// Store all GL state variables, since they will be modified by QPainter
+	glPushAttrib(GL_ALL_ATTRIB_BITS);
+
+	// Store height of current font (so the scrollbar can be set correctly)
+	fontPixelHeight_ = painter.fontMetrics().height();
+
+	// Grab message buffer
+	QStringList& messages = Messenger::messageBuffer();
+	int margin = 4;
+	QRectF textRect(margin, margin, contextWidth_-2*margin, contextHeight_-2*margin), actualRect;
+	for (int n=atenWindow_->messagesScrollPosition(); n<messages.count(); ++n)
+	{
+		textRect.setWidth(contextWidth_-2*margin);
+		textRect.setHeight(contextHeight_-2*margin);
+		actualRect = QRectF();
+		painter.drawText(textRect, Qt::AlignBottom | Qt::TextWordWrap, messages.at(n), &actualRect);
+
+		// Translate bounding rectangle upwarsd and check to make sure we are still on-screen
+		textRect.translate(0.0, -actualRect.height());
+		if (textRect.bottom() < margin) break;
+	}
+
+	// Restore all GL state variables, and setup GL
+	glPopAttrib();
 	setupGL();
 
 	// Set colour mode
 	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
 	glEnable(GL_COLOR_MATERIAL);
 	glEnable(GL_TEXTURE_2D);
-
-	// Clear view
-	glClear(GL_COLOR_BUFFER_BIT);
 	glClear(GL_DEPTH_BUFFER_BIT);
 
+	// Render all models
 	renderModels(extensions);
 
-	// Create a QPainter
-	QPainter painter(this);
-
-	// Grab message buffer
-	QStringList& messages = Messenger::messageBuffer();
-	int margin = 4;
-	QRectF textRect(margin, margin, contextWidth_-2*margin, contextHeight_-2*margin);
-	for (int n=0; n<messages.count(); ++n)
-	{
-		textRect.setWidth(contextWidth_-2*margin);
-		painter.drawText(textRect, Qt::AlignBottom | Qt::TextWordWrap, messages.at(n), &textRect);
-
-		// Translate bounding rectangle upwards and check to make sure we are still on-screen
-		textRect.translate(0.0, -textRect.height());
-		if (textRect.bottom() < margin) break;
-	}
-
+	// Done!
 	painter.end();
 
 	// Set the rendering flag to false
@@ -306,4 +321,10 @@ Model* Viewer::modelAt(int x, int y)
 void Viewer::requestHighQuality()
 {
 	primitiveSet_ = Viewer::HighQuality;
+}
+
+// Return height, in pixels, of single line of text
+int Viewer::fontPixelHeight()
+{
+	return fontPixelHeight_;
 }
