@@ -56,7 +56,7 @@ void PrimitiveInstance::setGlobalInstanceType(PrimitiveInstance::InstanceType in
 }
 
 // Return context to which primitive instance is associated
-const QGLContext *PrimitiveInstance::context()
+const QOpenGLContext* PrimitiveInstance::context()
 {
 	return context_;
 }
@@ -80,7 +80,7 @@ PrimitiveInstance::InstanceType PrimitiveInstance::type()
 }
 
 // Set display list data
-void PrimitiveInstance::setDisplayList(const QGLContext *context, GLuint listObject)
+void PrimitiveInstance::setDisplayList(const QOpenGLContext *context, GLuint listObject)
 {
 	context_ = context;
 	type_ = PrimitiveInstance::ListInstance;
@@ -88,7 +88,7 @@ void PrimitiveInstance::setDisplayList(const QGLContext *context, GLuint listObj
 }
 
 // Set vbo object data
-void PrimitiveInstance::setVBO(const QGLContext *context, GLuint vertexObject, GLuint indexObject)
+void PrimitiveInstance::setVBO(const QOpenGLContext *context, GLuint vertexObject, GLuint indexObject)
 {
 	context_ = context;
 	type_ = PrimitiveInstance::VBOInstance;

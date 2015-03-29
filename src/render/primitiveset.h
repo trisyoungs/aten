@@ -33,7 +33,7 @@
 #include "base/namespace.h"
 
 // Forward Declarations (Qt)
-class QGLContext;
+class QOpenGLContext;
 
 ATEN_BEGIN_NAMESPACE
 
@@ -140,9 +140,9 @@ class PrimitiveSet
 	// (Re)Generate primitive vertex arrays (if necessary)
 	void recreatePrimitives();
 	// Push instance layer for all primitives
-	void pushInstance(const QGLContext* context, GLExtensions* extensions);
+	void pushInstance(const QOpenGLContext* context, GLExtensions* extensions);
 	// Pop last instance layer
-	void popInstance(const QGLContext* context, GLExtensions* extensions);
+	void popInstance(const QOpenGLContext* context, GLExtensions* extensions);
 	// Return number of instances currently pushed
 	int nInstances();
 };

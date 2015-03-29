@@ -23,6 +23,7 @@
 #include "gui/mainwindow.h"
 #include "base/sysfunc.h"
 #include <QtWidgets/QProgressDialog>
+#include <QPainter>
 
 ATEN_USING_NAMESPACE
 

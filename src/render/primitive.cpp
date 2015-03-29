@@ -106,7 +106,7 @@ void Primitive::setNoInstances()
 }
 
 // Push instance of primitive
-void Primitive::pushInstance(const QGLContext* context, GLExtensions* extensions)
+void Primitive::pushInstance(const QOpenGLContext* context, GLExtensions* extensions)
 {
 	// Does this primitive use instances?
 	if (!useInstances_) return;
@@ -206,7 +206,7 @@ void Primitive::pushInstance(const QGLContext* context, GLExtensions* extensions
 }
 
 // Pop topmost instance on primitive's stack
-void Primitive::popInstance(const QGLContext *context, GLExtensions* extensions)
+void Primitive::popInstance(const QOpenGLContext *context, GLExtensions* extensions)
 {
 	// Does this primitive use instances?
 	if (!useInstances_) return;

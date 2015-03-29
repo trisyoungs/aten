@@ -379,7 +379,7 @@ void PrimitiveSet::recreatePrimitives()
 }
 
 // Create instance for primitives
-void PrimitiveSet::pushInstance(const QGLContext* context, GLExtensions* extensions)
+void PrimitiveSet::pushInstance(const QOpenGLContext* context, GLExtensions* extensions)
 {
 	Messenger::enter("PrimitiveSet::pushInstance");
 
@@ -414,7 +414,7 @@ void PrimitiveSet::pushInstance(const QGLContext* context, GLExtensions* extensi
 }
 
 // Pop topmost instance for primitives
-void PrimitiveSet::popInstance(const QGLContext *context, GLExtensions* extensions)
+void PrimitiveSet::popInstance(const QOpenGLContext* context, GLExtensions* extensions)
 {
 	Messenger::enter("PrimitiveSet::popInstance");
 

@@ -40,7 +40,7 @@ int main(int argc, char* argv[])
 	#endif
 
 	/* Tweak the default QGLFormat */
-	QGLFormat::defaultFormat().setSampleBuffers(true);
+// 	QOpenGLFormat::defaultFormat().setSampleBuffers(true); // ATEN2 TODO
 
 	/* Create main Aten object before anything else, since this sets pointers in other dependent static objects */
 	Aten MrAten;

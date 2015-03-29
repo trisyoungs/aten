@@ -35,7 +35,7 @@
 #include "base/namespace.h"
 
 // Forward Declarations (Qt)
-class QGLContext;
+class QOpenGLContext;
 
 ATEN_BEGIN_NAMESPACE
 
@@ -55,7 +55,7 @@ class PrimitiveInstance : public ListItem<PrimitiveInstance>
 	// Global instance type to use
 	static PrimitiveInstance::InstanceType globalInstanceType_;
 	// Context to which primitive instance is associated
-	const QGLContext *context_;
+	const QOpenGLContext *context_;
 	// GL extension function pointers for this context
 	GLExtensions* extensions_;
 	// Type of instance
@@ -73,15 +73,15 @@ class PrimitiveInstance : public ListItem<PrimitiveInstance>
 	// Set global instance type to use
 	static void setGlobalInstanceType(PrimitiveInstance::InstanceType instanceType);
 	// Return context to which primitive instance is associated
-	const QGLContext *context();
+	const QOpenGLContext *context();
 	// Set exensions object
 	void setExtensions(GLExtensions* extensions);
 	// Return GL extensions
 	const GLExtensions* extensions() const;
 	// Set display list data
-	void setDisplayList(const QGLContext *context, GLuint listObject);
+	void setDisplayList(const QOpenGLContext *context, GLuint listObject);
 	// Set vbo object data
-	void setVBO(const QGLContext *context, GLuint vertexObject, GLuint indexObject);
+	void setVBO(const QOpenGLContext *context, GLuint vertexObject, GLuint indexObject);
 	// Return type of instance
 	InstanceType type();
 	// Return display list object for instance

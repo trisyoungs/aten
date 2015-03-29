@@ -89,7 +89,7 @@ void CommandParser::reset()
 // Print error information and location
 void CommandParser::printErrorInfo()
 {
-	if (source_ != CommandParser::StringSource) Messenger::print("Error occurred here (line %i in file '%s'):", qPrintable(parser_.lastLineNo()), qPrintable(parser_.inputFilename()));
+	if (source_ != CommandParser::StringSource) Messenger::print("Error occurred here (line %i in file '%s'):", parser_.lastLineNo(), qPrintable(parser_.inputFilename()));
 	// QUICK'n'DIRTY!
 	int i;
 	char *temp = new char[stringLength_+32];

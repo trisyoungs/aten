@@ -19,7 +19,7 @@ SUFFIXES: .ui .uih .qrc
 	rm $*.cpp
 
 clean-local:
-	-rm -f ui_* *.o tprompt.cpp ttreewidget.cpp tcolourframe.cpp tradiogroup.cpp tprocess.cpp tmenubutton.cpp tcombobox.cpp icons.cpp viewer.cpp moc_*.cpp
+	-rm -f ui_* *.o tprompt.cpp ttreewidget.cpp tcolourframe.cpp tradiogroup.cpp tprocess.cpp tmenubutton.cpp tcombobox.cpp tintegerspindelegate.cpp tdoublespindelegate.cpp ttablewidget.cpp icons.cpp viewer.cpp moc_*.cpp
 
 libtreegui_a_SOURCES = treegui.ui treegui_funcs.cpp
 

@@ -32,6 +32,9 @@
 #include "templates/array.h"
 #include "base/namespace.h"
 
+// Forward Declarations (Qt)
+class QOpenGLContext;
+
 ATEN_BEGIN_NAMESPACE
 
 // Forward Declarations (Aten)
@@ -93,9 +96,9 @@ class Primitive : public ListItem<Primitive>
 	// Flag that this primitive should not use instances (rendering will use vertex arrays)
 	void setNoInstances();
 	// Push instance layer from current vertex chunk list
-	void pushInstance(const QGLContext* context, GLExtensions* extensions);
+	void pushInstance(const QOpenGLContext* context, GLExtensions* extensions);
 	// Pop topmost instance layer
-	void popInstance(const QGLContext *context, GLExtensions* extensions);
+	void popInstance(const QOpenGLContext *context, GLExtensions* extensions);
 	// Return number of instances available
 	int nInstances();
 
