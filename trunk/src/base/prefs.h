@@ -97,10 +97,6 @@ class Prefs
 	// Rendering - View Objects
 	*/
 	private:
-	// Whether to frame current model in view
-	bool frameCurrentModel_;
-	// Whether to frame whole view
-	bool frameWholeView_;
 	// Rotation globe style
 	bool viewRotationGlobe_;
 	// Size in pixels of the viewport to draw the rotation globe in.
@@ -115,14 +111,6 @@ class Prefs
 	int imagePrimitiveQuality_;
 
 	public:
-	// Return whether to frame current model in view
-	bool frameCurrentModel();
-	// Set whether to frame current model in view
-	void setFrameCurrentModel(bool b);
-	// Return whether to frame whole view
-	bool frameWholeView();
-	// Set whether to frame whole view
-	void setFrameWholeView(bool b);
 	// Return whether to draw rotation globe
 	bool viewRotationGlobe();
 	// Set whether to draw rotation globe

@@ -210,6 +210,7 @@ void PrimitiveSet::recreatePrimitives()
 	int n, m, nStacks, nSlices;
 	
 	// If current quality is the same as the requested quality, do nothing
+	printf("Current, requested = %i %i\n", currentQuality_, requestedQuality_);
 	if (requestedQuality_ == currentQuality_)
 	{
 		Messenger::exit("PrimitiveSet::recreatePrimitives");
@@ -379,34 +380,34 @@ void PrimitiveSet::recreatePrimitives()
 }
 
 // Create instance for primitives
-void PrimitiveSet::pushInstance(const QOpenGLContext* context, GLExtensions* extensions)
+void PrimitiveSet::pushInstance(const QOpenGLContext* context)
 {
 	Messenger::enter("PrimitiveSet::pushInstance");
 
 	// Push instances
-	atom_.pushInstance(context, extensions);
-	selectedAtom_.pushInstance(context, extensions);
+	atom_.pushInstance(context);
+	selectedAtom_.pushInstance(context);
 	for (int n=0; n<Prefs::nDrawStyles; ++n)
 	{
 		for (int m=0; m<Bond::nBondTypes; ++m)
 		{
-			bonds_[n][m].pushInstance(context, extensions);
-			selectedBonds_[n][m].pushInstance(context, extensions);
+			bonds_[n][m].pushInstance(context);
+			selectedBonds_[n][m].pushInstance(context);
 		}
 	}
-	tubeRing_.pushInstance(context, extensions);
-	segmentedTubeRing_.pushInstance(context, extensions);
-	lineRing_.pushInstance(context, extensions);
-	segmentedLineRing_.pushInstance(context, extensions);
-	sphere_.pushInstance(context, extensions);
-	cube_.pushInstance(context, extensions);
-	originCube_.pushInstance(context, extensions);
-	cylinder_.pushInstance(context, extensions);
-	cone_.pushInstance(context, extensions);
-	wireCube_.pushInstance(context, extensions);
-	crossedCube_.pushInstance(context, extensions);
-	cellAxes_.pushInstance(context, extensions);
-	rotationGlobe_.pushInstance(context, extensions);
+	tubeRing_.pushInstance(context);
+	segmentedTubeRing_.pushInstance(context);
+	lineRing_.pushInstance(context);
+	segmentedLineRing_.pushInstance(context);
+	sphere_.pushInstance(context);
+	cube_.pushInstance(context);
+	originCube_.pushInstance(context);
+	cylinder_.pushInstance(context);
+	cone_.pushInstance(context);
+	wireCube_.pushInstance(context);
+	crossedCube_.pushInstance(context);
+	cellAxes_.pushInstance(context);
+	rotationGlobe_.pushInstance(context);
 
 	++nInstances_;
 
@@ -414,33 +415,33 @@ void PrimitiveSet::pushInstance(const QOpenGLContext* context, GLExtensions* ext
 }
 
 // Pop topmost instance for primitives
-void PrimitiveSet::popInstance(const QOpenGLContext* context, GLExtensions* extensions)
+void PrimitiveSet::popInstance(const QOpenGLContext* context)
 {
 	Messenger::enter("PrimitiveSet::popInstance");
 
-	atom_.popInstance(context, extensions);
-	selectedAtom_.popInstance(context, extensions);
+	atom_.popInstance(context);
+	selectedAtom_.popInstance(context);
 	for (int n=0; n<Prefs::nDrawStyles; ++n)
 	{
 		for (int m=0; m<Bond::nBondTypes; ++m)
 		{
-			bonds_[n][m].popInstance(context, extensions);
-			selectedBonds_[n][m].popInstance(context, extensions);
+			bonds_[n][m].popInstance(context);
+			selectedBonds_[n][m].popInstance(context);
 		}
 	}
-	tubeRing_.popInstance(context, extensions);
-	segmentedTubeRing_.popInstance(context, extensions);
-	lineRing_.popInstance(context, extensions);
-	segmentedLineRing_.popInstance(context, extensions);
-	sphere_.popInstance(context, extensions);
-	cube_.popInstance(context, extensions);
-	originCube_.popInstance(context, extensions);
-	cylinder_.popInstance(context, extensions);
-	cone_.popInstance(context, extensions);
-	wireCube_.popInstance(context, extensions);
-	crossedCube_.popInstance(context, extensions);
-	cellAxes_.popInstance(context, extensions);
-	rotationGlobe_.popInstance(context, extensions);
+	tubeRing_.popInstance(context);
+	segmentedTubeRing_.popInstance(context);
+	lineRing_.popInstance(context);
+	segmentedLineRing_.popInstance(context);
+	sphere_.popInstance(context);
+	cube_.popInstance(context);
+	originCube_.popInstance(context);
+	cylinder_.popInstance(context);
+	cone_.popInstance(context);
+	wireCube_.popInstance(context);
+	crossedCube_.popInstance(context);
+	cellAxes_.popInstance(context);
+	rotationGlobe_.popInstance(context);
 	
 	--nInstances_;
 

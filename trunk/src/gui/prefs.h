@@ -168,8 +168,6 @@ class AtenPrefs : public QDialog
 	void on_SpotlightPositionYSpin_valueChanged(double value);
 	void on_SpotlightPositionZSpin_valueChanged(double value);
 	void on_ShininessSpin_valueChanged(int value);
-	void on_FrameCurrentModelCheck_clicked(bool checked);
-	void on_FrameWholeViewCheck_clicked(bool checked);
 
 
 	/*

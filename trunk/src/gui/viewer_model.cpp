@@ -67,7 +67,7 @@ void Viewer::renderModel(Model* source, int viewPortX, int viewPortY, int viewPo
 		glMultMatrixd(A.matrix());
 		prefs.copyColour(Prefs::GlobeColour, colour);
 		glColor4fv(colour);
-		primitives_[primitiveSet_].rotationGlobe().sendToGL();
+		primitives_[primitiveSet_].rotationGlobe().sendToGL(QOpenGLContext::currentContext());
 	}
 
 	// Prepare for model rendering
@@ -91,7 +91,7 @@ void Viewer::renderModel(Model* source, int viewPortX, int viewPortY, int viewPo
 		glMultMatrixd(A.matrix());
 		
 		// Draw a wire cube for the cell
-		primitives_[primitiveSet_].wireCube().sendToGL();
+		primitives_[primitiveSet_].wireCube().sendToGL(QOpenGLContext::currentContext());
 
 		// Copy colour for axes, move to llh corner, and draw them
 		prefs.copyColour(Prefs::UnitCellAxesColour, colour);
@@ -99,7 +99,7 @@ void Viewer::renderModel(Model* source, int viewPortX, int viewPortY, int viewPo
 		glTranslated(-0.5, -0.5, -0.5);
 		Vec3<double> v = source->cell()->lengths();
 		glScaled(1.0 / v.x, 1.0 / v.y, 1.0 / v.z);
-		primitives_[primitiveSet_].cellAxes().sendToGL();
+		primitives_[primitiveSet_].cellAxes().sendToGL(QOpenGLContext::currentContext());
 	}
 
 	// Get RenderGroup for model (it will be updated if necessary by the called function)

@@ -24,7 +24,6 @@
 #ifdef __unix__
 #include <GL/glx.h>
 #endif
-#include "render/glextensions.h"
 #include "render/primitiveinstance.h"
 
 ATEN_USING_NAMESPACE
@@ -61,18 +60,6 @@ const QOpenGLContext* PrimitiveInstance::context()
 	return context_;
 }
 
-// Set exensions object
-void PrimitiveInstance::setExtensions(GLExtensions* extensions)
-{
-	extensions_ = extensions;
-}
-
-// Return GL extensions
-const GLExtensions* PrimitiveInstance::extensions() const
-{
-	return extensions_;
-}
-
 // Return type of instance
 PrimitiveInstance::InstanceType PrimitiveInstance::type()
 {
@@ -80,7 +67,7 @@ PrimitiveInstance::InstanceType PrimitiveInstance::type()
 }
 
 // Set display list data
-void PrimitiveInstance::setDisplayList(const QOpenGLContext *context, GLuint listObject)
+void PrimitiveInstance::setDisplayList(const QOpenGLContext* context, GLuint listObject)
 {
 	context_ = context;
 	type_ = PrimitiveInstance::ListInstance;
@@ -88,7 +75,7 @@ void PrimitiveInstance::setDisplayList(const QOpenGLContext *context, GLuint lis
 }
 
 // Set vbo object data
-void PrimitiveInstance::setVBO(const QOpenGLContext *context, GLuint vertexObject, GLuint indexObject)
+void PrimitiveInstance::setVBO(const QOpenGLContext* context, GLuint vertexObject, GLuint indexObject)
 {
 	context_ = context;
 	type_ = PrimitiveInstance::VBOInstance;

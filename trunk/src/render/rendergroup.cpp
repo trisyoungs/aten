@@ -20,8 +20,8 @@
 */
 
 #include "render/rendergroup.h"
-#include "render/glextensions.h"
 #include "base/messenger.h"
+#include <QOpenGLContext>
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
 #endif
@@ -168,12 +168,12 @@ void RenderGroup::sendToGL(Matrix& modelTransformationMatrix)
 		if (!primitive.colouredVertexData()) glColor4fv(pi->colour());
 		A = modelTransformationMatrix * pi->localTransform();
 		glLoadMatrixd(A.matrix());
-		primitive.sendToGL();
+		primitive.sendToGL(QOpenGLContext::currentContext());
 	}
 
 	// Extra solid triangles
 	glLoadMatrixd(modelTransformationMatrix.matrix());
-	extraSolidTriangles_.sendToGL();
+	extraSolidTriangles_.sendToGL(QOpenGLContext::currentContext());
 
 	// Wire triangles
 	glDisable(GL_LIGHTING);
@@ -185,12 +185,12 @@ void RenderGroup::sendToGL(Matrix& modelTransformationMatrix)
 		glLineWidth(pi->lineWidth());
 		A = modelTransformationMatrix * pi->localTransform();
 		glLoadMatrixd(A.matrix());
-		primitive.sendToGL();
+		primitive.sendToGL(QOpenGLContext::currentContext());
 	}
 
 	// Extra wire triangles
 	glLoadMatrixd(modelTransformationMatrix.matrix());
-	extraWireTriangles_.sendToGL();
+	extraWireTriangles_.sendToGL(QOpenGLContext::currentContext());
 
 	// Normal lines
 	glDisable(GL_LIGHTING);
@@ -202,12 +202,12 @@ void RenderGroup::sendToGL(Matrix& modelTransformationMatrix)
 		if (!primitive.colouredVertexData()) glColor4fv(pi->colour());
 		A = modelTransformationMatrix * pi->localTransform();
 		glLoadMatrixd(A.matrix());
-		primitive.sendToGL();
+		primitive.sendToGL(QOpenGLContext::currentContext());
 	}
 
 	// Extra normal lines
 	glLoadMatrixd(modelTransformationMatrix.matrix());
-	extraNormalLines_.sendToGL();
+	extraNormalLines_.sendToGL(QOpenGLContext::currentContext());
 
 	// Bold lines
 	glDisable(GL_LIGHTING);
@@ -219,12 +219,12 @@ void RenderGroup::sendToGL(Matrix& modelTransformationMatrix)
 		if (!primitive.colouredVertexData()) glColor4fv(pi->colour());
 		A = modelTransformationMatrix * pi->localTransform();
 		glLoadMatrixd(A.matrix());
-		primitive.sendToGL();
+		primitive.sendToGL(QOpenGLContext::currentContext());
 	}
 
 	// Extra bold lines
 	glLoadMatrixd(modelTransformationMatrix.matrix());
-	extraBoldLines_.sendToGL();
+	extraBoldLines_.sendToGL(QOpenGLContext::currentContext());
 	
 	// Transparent triangles
 	glEnable(GL_LIGHTING);
@@ -235,7 +235,7 @@ void RenderGroup::sendToGL(Matrix& modelTransformationMatrix)
 		if (!primitive.colouredVertexData()) glColor4fv(pi->colour());
 		A = modelTransformationMatrix * pi->localTransform();
 		glLoadMatrixd(A.matrix());
-		primitive.sendToGL();
+		primitive.sendToGL(QOpenGLContext::currentContext());
 	}
 }
 

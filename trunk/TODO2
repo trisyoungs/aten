@@ -6,13 +6,6 @@ Sort out comment style, and layout of headers (double-line gap etc.).
 Sort out pointer 'style' ( Object *T  to Object* T ).
 Move sg code to separate dir.
 Move math funcs/classes (e.g. Matrix) to separate dir.
-
-============================================
-Use Qt5.
-Remove GLExtensions class, and simply use QOpenGLFunctions instead!
-Call glClear() in main scene rendering as early as possible? (QOpenGLWidget docs...)
-============================================
-
 Rename TRUE and FALSE to true and false, and remove definitions in constants.h.
 Remove unused (or simplistic T* classes in src/gui).
 Remove dialog pointers (use instances instead).
@@ -63,3 +56,4 @@ More examples (e.g. slab generation)
 Remove 'gui' keyword.
 Remove 'calcEnergy' optional args from scaleMolecules and scaleCell.
 Remove replaceChars (after command is removed).
+Remove frameCurrent* from Prefs accessors.

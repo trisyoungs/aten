@@ -112,8 +112,6 @@ void AtenPrefs::setControls()
 	ui.FarClipSpin->setValue(prefs.clipFar());
 	ui.NearDepthSpin->setValue(prefs.depthNear());
 	ui.FarDepthSpin->setValue(prefs.depthFar());
-	ui.FrameCurrentModelCheck->setChecked(prefs.frameCurrentModel());
-	ui.FrameWholeViewCheck->setChecked(prefs.frameWholeView());
 
 	// Set controls in interaction page
 	ui.LeftMouseCombo->setCurrentIndex(prefs.mouseAction(Prefs::LeftButton));
@@ -560,18 +558,6 @@ void AtenPrefs::on_SpotlightSpecularColourButton_clicked(bool checked)
 void AtenPrefs::on_ShininessSpin_valueChanged(int value)
 {
 	prefs.setShininess(value);
-	parent_.postRedisplay();
-}
-
-void AtenPrefs::on_FrameCurrentModelCheck_clicked(bool checked)
-{
-	prefs.setFrameCurrentModel(checked);
-	parent_.postRedisplay();
-}
-
-void AtenPrefs::on_FrameWholeViewCheck_clicked(bool checked)
-{
-	prefs.setFrameWholeView(checked);
 	parent_.postRedisplay();
 }
 

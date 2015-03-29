@@ -122,9 +122,7 @@ void ScriptMovieWidget::on_SaveScriptedMovieButton_clicked(bool on)
 	}
 	
 	// Set offscreen rendering and save some current view preferences
-	bool framemodel = prefs.frameCurrentModel(), frameview = prefs.frameWholeView(), viewglobe = prefs.viewRotationGlobe();
-	prefs.setFrameCurrentModel(FALSE);
-	prefs.setFrameWholeView(FALSE);
+	bool viewglobe = prefs.viewRotationGlobe();
 	prefs.setViewRotationGlobe(FALSE);
 	
 	// Generate unique file basename and initialise image redirection
@@ -145,8 +143,6 @@ void ScriptMovieWidget::on_SaveScriptedMovieButton_clicked(bool on)
 	script.execute(rv);
 
 	progress.terminate(progid);
-	prefs.setFrameCurrentModel(framemodel);
-	prefs.setFrameWholeView(frameview);
 	prefs.setViewRotationGlobe(viewglobe);
 
 	// Now run external program to create movie

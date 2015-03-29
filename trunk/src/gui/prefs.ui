@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>525</width>
+    <width>534</width>
     <height>677</height>
    </rect>
   </property>
@@ -54,7 +54,7 @@
       </sizepolicy>
      </property>
      <property name="currentIndex">
-      <number>0</number>
+      <number>2</number>
      </property>
      <property name="usesScrollButtons">
       <bool>true</bool>
@@ -579,7 +579,7 @@
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>2</number>
          </property>
          <widget class="QWidget" name="StyleSubTab">
           <attribute name="title">
@@ -1709,29 +1709,6 @@
               </layout>
              </item>
             </layout>
-           </item>
-           <item>
-            <widget class="QGroupBox" name="FramesGroup">
-             <property name="title">
-              <string>Frames</string>
-             </property>
-             <layout class="QHBoxLayout" name="horizontalLayout_10">
-              <item>
-               <widget class="QCheckBox" name="FrameCurrentModelCheck">
-                <property name="text">
-                 <string>Current Model</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QCheckBox" name="FrameWholeViewCheck">
-                <property name="text">
-                 <string>Whole View</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </widget>
            </item>
            <item>
             <spacer name="verticalSpacer_4">

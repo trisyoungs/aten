@@ -36,7 +36,7 @@ ATEN_USING_NAMESPACE
 // Pre-setup
 int movieSetup(bool pre, int height)
 {
-	static bool framemodel = prefs.frameCurrentModel(), frameview = prefs.frameWholeView(), viewglobe = prefs.viewRotationGlobe();
+	static bool viewglobe;
 	if (pre)
 	{
 		// Check that defined encoder exe exists
@@ -49,11 +49,7 @@ int movieSetup(bool pre, int height)
 		else Messenger::print(Messenger::Verbose, "Found encoder executable ('%s').", qPrintable(prefs.encoderExe()));
 
 		// Save some current view preferences
-		framemodel = prefs.frameCurrentModel();
-		frameview = prefs.frameWholeView();
 		viewglobe = prefs.viewRotationGlobe();
-		prefs.setFrameCurrentModel(FALSE);
-		prefs.setFrameWholeView(FALSE);
 		prefs.setViewRotationGlobe(FALSE);
 		
 		// Generate unique file basename
@@ -71,8 +67,6 @@ int movieSetup(bool pre, int height)
 	}
 	else
 	{
-		prefs.setFrameCurrentModel(framemodel);
-		prefs.setFrameWholeView(frameview);
 		prefs.setViewRotationGlobe(viewglobe);
 	}
 }

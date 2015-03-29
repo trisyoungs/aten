@@ -224,7 +224,6 @@ Prefs::Prefs()
 	primitiveQuality_ = 10;
 	imagePrimitiveQuality_ = 50;
 	reusePrimitiveQuality_ = FALSE;
-	frameCurrentModel_ = TRUE;
 	transparentSelectionStyle_ = TRUE;
 
 	// Build
@@ -372,30 +371,6 @@ Prefs::Prefs()
 /*
 // Rendering
 */
-
-// Return whether to frame current model in view
-bool Prefs::frameCurrentModel()
-{
-	return frameCurrentModel_;
-}
-
-// Set whether to frame current model in view
-void Prefs::setFrameCurrentModel(bool b)
-{
-	frameCurrentModel_ = b;
-}
-
-// Return whether to frame whole view
-bool Prefs::frameWholeView()
-{
-	return frameWholeView_;
-}
-
-// Set whether to frame whole view
-void Prefs::setFrameWholeView(bool b)
-{
-	frameWholeView_ = b;
-}
 
 // Return whether to draw rotation globe
 bool Prefs::viewRotationGlobe()
