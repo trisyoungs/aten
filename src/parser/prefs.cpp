@@ -84,8 +84,6 @@ Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
 	{ "ewaldKMax",			VTypes::IntegerData,		3, FALSE },
 	{ "ewaldPrecision",		VTypes::DoubleData,		0, FALSE },
 	{ "forceRhombohedral",		VTypes::IntegerData,		0, FALSE },
-	{ "frameCurrentModel",		VTypes::IntegerData,		0, FALSE },
-	{ "frameWholeModel",		VTypes::IntegerData,		0, FALSE },
 	{ "globeAxesColour",		VTypes::DoubleData,		4, FALSE },
 	{ "globeColour",		VTypes::DoubleData,		4, FALSE },
 	{ "globeSize",			VTypes::IntegerData,		0, FALSE },
@@ -362,12 +360,6 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArray
 		case (PreferencesVariable::ForceRhombohedral):
 			rv.set( ptr->forceRhombohedral() );
 			break;
-		case (PreferencesVariable::FrameCurrentModel):
-			rv.set (ptr->frameCurrentModel() );
-			break;
-		case (PreferencesVariable::FrameWholeView):
-			rv.set (ptr->frameWholeView() );
-			break;
 		case (PreferencesVariable::GlobeAxesColour):
 			if (hasArrayIndex) rv.set( ptr->colour(Prefs::GlobeAxesColour)[arrayIndex-1] );
 			else rv.setArray( VTypes::DoubleData, ptr->colour(Prefs::GlobeAxesColour), 4);
@@ -620,6 +612,7 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue&
 		result = FALSE;
 	}
 	int n;
+	bool updatePrimitives = false;
 	Prefs::ColouringScheme cs;
 	Prefs::DensityUnit du;
 	Prefs::EnergyUnit eu;
@@ -770,12 +763,6 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue&
 		case (PreferencesVariable::ForceRhombohedral):
 			ptr->setForceRhombohedral( newValue.asBool() );
 			break;
-		case (PreferencesVariable::FrameCurrentModel):
-			ptr->setFrameCurrentModel( newValue.asBool() );
-			break;
-		case (PreferencesVariable::FrameWholeView):
-			ptr->setFrameWholeView( newValue.asBool() );
-			break;
 		case (PreferencesVariable::GlobeAxesColour):
 			if (newValue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->setColour(Prefs::GlobeAxesColour, n, newValue.asVector(result)[n]);
 			else if (newValue.arraySize() != -1) for (n=0; n<newValue.arraySize(); ++n) ptr->setColour(Prefs::GlobeAxesColour, n, newValue.asDouble(n, result));
@@ -808,6 +795,7 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue&
 			break;
 		case (PreferencesVariable::ImageQuality):
 			ptr->setImagePrimitiveQuality( newValue.asInteger(result) );
+			updatePrimitives = true;
 			break;
 		case (PreferencesVariable::KeyAction):
 			if (newValue.arraySize() == Prefs::nModifierKeys) for (n=0; n<Prefs::nModifierKeys; ++n)
@@ -903,6 +891,7 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue&
 			break;
 		case (PreferencesVariable::Quality):
 			ptr->setPrimitiveQuality( newValue.asInteger(result) );
+			updatePrimitives = true;
 			break;
 		case (PreferencesVariable::RenderStyle):
 			ds = Prefs::drawStyle( newValue.asString(result), TRUE );
@@ -920,7 +909,7 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue&
 			break;
 		case (PreferencesVariable::SelectionScale):
 			ptr->setSelectionScale( newValue.asDouble(result) );
-// 			engine().updatePrimitives();   ATEN2 TODO
+			updatePrimitives = true;
 			break;
 		case (PreferencesVariable::Shininess):
 			ptr->setShininess( newValue.asInteger(result) );
@@ -1021,6 +1010,13 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue&
 			printf("PreferencesVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);
 			result = FALSE;
 			break;
+	}
+
+	// Update rendering primitives?
+	if (updatePrimitives)
+	{
+		aten_->atenWindow()->ui.MainView->updatePrimitives(Viewer::LowQuality);
+		aten_->atenWindow()->ui.MainView->updatePrimitives(Viewer::HighQuality);
 	}
 
 	Messenger::exit("PreferencesVariable::setAccessor");

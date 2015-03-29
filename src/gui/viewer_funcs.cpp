@@ -28,7 +28,7 @@
 ATEN_USING_NAMESPACE
 
 // Constructor
-Viewer::Viewer(QWidget* parent)
+Viewer::Viewer(QWidget* parent) : QOpenGLWidget(parent)
 {
 	Messenger::enter("Viewer::Viewer()");
 
@@ -86,12 +86,15 @@ void Viewer::initializeGL()
 	
         valid_ = true;
 
-        // Create a GLExtensions object to probe features and give when pushing instances etc.
-        GLExtensions* extensions = extensionsStack_.add();
-	Messenger::print(Messenger::Verbose, "New GLExtensions %p pushed onto stack (now %i on stack)", extensions, extensionsStack_.nItems());
+	// Setup function pointers to OpenGL extension functions
+	initializeOpenGLFunctions();
+
+	// Make sure primitives are up-to-date
+	updatePrimitives(Viewer::LowQuality);
+	updatePrimitives(Viewer::HighQuality);
 
         // Check for vertex buffer extensions
-        if ((!extensions->hasVBO()) && (PrimitiveInstance::globalInstanceType() == PrimitiveInstance::VBOInstance))
+        if ((!hasOpenGLFeature(QOpenGLFunctions::Buffers)) && (PrimitiveInstance::globalInstanceType() == PrimitiveInstance::VBOInstance))
         {
 		// ATEN2 TODO If this is called for an offscreen render, and VBOs are not available (but *are* in the GUI), won't this break rendering?
                 printf("VBO extension is requested but not available, so reverting to display lists instead.\n");
@@ -113,16 +116,6 @@ void Viewer::paintGL()
 	drawing_ = true;
 
 	atenWindow_->updateMessagesWidgets();
-	
-	// Grab topmost GLExtensions pointer
-	GLExtensions* extensions = extensionsStack_.last();
-	if (extensions == NULL)
-	{
-		printf("Internal Error: No GLExtensions object on stack.\n");
-		drawing_ = false;
-		Messenger::exit("Viewer::paintGL");
-		return;
-	}
 
 	// Create a QPainter
 	QPainter painter(this);
@@ -130,7 +123,7 @@ void Viewer::paintGL()
 	// Setup GL and clear view
 	GLfloat col[4];
 	prefs.copyColour(Prefs::BackgroundColour, col);
-	glClearColor(col[0],col[1],col[2],col[3]);
+	glClearColor(col[0], col[1], col[2], col[3]);
 
 	glViewport(0, 0, contextWidth_, contextHeight_);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -170,7 +163,7 @@ void Viewer::paintGL()
 	glClear(GL_DEPTH_BUFFER_BIT);
 
 	// Render all models
-	renderModels(extensions);
+	renderModels();
 
 	painter.endNativePainting();
 	
@@ -179,9 +172,6 @@ void Viewer::paintGL()
 
 	// Set the rendering flag to false
 	drawing_ = false;
-
-	// If we were rendering offscreen, delete the topmost GLExtensions object here (primitives will have already been popped)
-	if (renderingOffScreen_) extensionsStack_.removeLast();
 
 	// Always revert to lower quality for next pass
 	primitiveSet_ = Viewer::LowQuality;

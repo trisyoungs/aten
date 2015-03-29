@@ -96,9 +96,9 @@ class Primitive : public ListItem<Primitive>
 	// Flag that this primitive should not use instances (rendering will use vertex arrays)
 	void setNoInstances();
 	// Push instance layer from current vertex chunk list
-	void pushInstance(const QOpenGLContext* context, GLExtensions* extensions);
+	void pushInstance(const QOpenGLContext* context);
 	// Pop topmost instance layer
-	void popInstance(const QOpenGLContext *context, GLExtensions* extensions);
+	void popInstance(const QOpenGLContext* context);
 	// Return number of instances available
 	int nInstances();
 
@@ -154,7 +154,7 @@ class Primitive : public ListItem<Primitive>
 	 */
 	public:
 	// Send to OpenGL (i.e. render)
-	void sendToGL();
+	void sendToGL(const QOpenGLContext* context);
 };
 
 ATEN_END_NAMESPACE

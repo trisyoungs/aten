@@ -20,7 +20,6 @@
 */
 
 #include "gui/viewer.uih"
-#include "render/glextensions.h"
 #include "main/aten.h"
 #include "base/sysfunc.h"
 #include <QPen>
@@ -106,7 +105,7 @@ void Viewer::setupGL()
 }
 
 // Render models
-void Viewer::renderModels(const GLExtensions* extensions)
+void Viewer::renderModels()
 {
 	Messenger::enter("Viewer::renderModels");
 	QColor color;
@@ -115,11 +114,6 @@ void Viewer::renderModels(const GLExtensions* extensions)
 	int px, py, nperrow = prefs.nModelsPerRow(), nRows, col, row, nModels;
 	bool modelIsCurrentModel;
 	Model* m;
-
-	// Before we do anything else, make sure primitives are up-to-date
-	updatePrimitives(primitiveSet_);
-
-	// Make sure all models are up-to-date (after making list...) ATEN2 TODO
 
 	// Set the first item to consider - set localri to the passed iconSource (if there was one)
 // 	localri.item = NULL;	// ATEN2 TODO
@@ -201,6 +195,8 @@ void Viewer::renderModels(const GLExtensions* extensions)
 // Update all primitives (following prefs change, etc.)
 void Viewer::updatePrimitives(Viewer::PrimitiveQuality targetQuality)
 {
+	Messenger::enter("Viewer::updatePrimitives");
+
 	// Set (possibly new) quality
 	int quality = (targetQuality == Viewer::LowQuality ? prefs.primitiveQuality() : prefs.imagePrimitiveQuality());
 	primitives_[targetQuality].setQuality(quality);
@@ -208,17 +204,11 @@ void Viewer::updatePrimitives(Viewer::PrimitiveQuality targetQuality)
 	// Recalculate adjustments in PrimitiveSets
 	primitives_[targetQuality].calculateAdjustments();
 
-	// Grab topmost GLExtensions object
-	GLExtensions* extensions = extensionsStack_.last();
-	if (extensions == NULL)
-	{
-		Messenger::print("Internal Error: No GLEXtensions object on stack in Viewer::updatePrimitives().");
-		return;
-	}
-
 	// Pop and push a context
 	primitives_[targetQuality].recreatePrimitives();
 
-	if (primitives_[targetQuality].nInstances() != 0) primitives_[targetQuality].popInstance(context(), extensions);
-	primitives_[targetQuality].pushInstance(context(), extensions);
+	if (primitives_[targetQuality].nInstances() != 0) primitives_[targetQuality].popInstance(context());
+	primitives_[targetQuality].pushInstance(context());
+
+	Messenger::exit("Viewer::updatePrimitives");
 }
