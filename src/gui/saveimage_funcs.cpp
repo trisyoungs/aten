@@ -21,7 +21,7 @@
 
 #include "gui/saveimage.h"
 #include "main/aten.h"
-#include <QtGui/QFileDialog>
+#include <QtWidgets/QFileDialog>
 
 ATEN_USING_NAMESPACE
 

@@ -41,11 +41,11 @@ void AtenProgress::setSubTitle()
 	if (!progress.subTitle().isEmpty())
 	{
 		ui.SubTitleLabel->setText(progress.subTitle());
-		ui.SubTitleLabel->setEnabled(TRUE);
+		ui.SubTitleLabel->setEnabled(true);
 	}
 	else
 	{
-		ui.SubTitleLabel->setEnabled(FALSE);
+		ui.SubTitleLabel->setEnabled(true);
 		ui.SubTitleLabel->setText("---");
 	}
 }

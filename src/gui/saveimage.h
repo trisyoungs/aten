@@ -24,8 +24,8 @@
 
 #include "gui/ui_saveimage.h"
 #include "base/namespace.h"
-#include <QtGui/QDialog>
-#include <QtCore/QDir>
+#include <QtWidgets/QDialog>
+#include <QDir>
 
 class SaveImageDialog : public QDialog
 {

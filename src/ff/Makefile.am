@@ -6,4 +6,4 @@ libfourier_a_SOURCES = fourier.cpp
 
 noinst_HEADERS = combine.h energystore.h forcefield.h forms.h fourier.h
 
-INCLUDES = -I$(top_srcdir)/src -I../ -I$(top_srcdir)/src/gui @GUI_CFLAGS@
+INCLUDES = -I$(top_srcdir)/src -I../ -I$(top_srcdir)/src/gui @ATEN_CFLAGS@

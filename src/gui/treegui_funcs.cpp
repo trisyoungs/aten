@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <QtGui/QRadioButton>
-#include <QtGui/QStackedWidget>
+#include <QtWidgets/QRadioButton>
+#include <QtWidgets/QStackedWidget>
 #include "gui/treegui.h"
 #include "gui/mainwindow.h"
 #include "main/aten.h"

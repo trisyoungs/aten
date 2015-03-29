@@ -30,8 +30,8 @@
 #else
 #include <GL/gl.h>
 #endif
-#include <QtCore/QVector>
-#include <QtCore/QString>
+#include <QVector>
+#include <QString>
 
 // Forward Declarations (Aten)
 class QComboBox;

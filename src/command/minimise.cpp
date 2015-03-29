@@ -28,7 +28,7 @@
 #include "base/sysfunc.h"
 #include "gui/tprocess.uih"
 #include <QtGui/QApplication>
-#include <QtCore/QFileInfo>
+#include <QFileInfo>
 
 ATEN_USING_NAMESPACE
 

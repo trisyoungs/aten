@@ -22,7 +22,7 @@
 #ifndef ATEN_TCOMBOBOX_H
 #define ATEN_TCOMBOBOX_H
 
-#include <QtGui/QComboBox>
+#include <QtWidgets/QComboBox>
 #include "parser/returnvalue.h"
 #include "base/namespace.h"
 

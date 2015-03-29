@@ -5,17 +5,17 @@ SUFFIXES: .ui .uih .qrc
 .ui.o:
 	$(QTUIC) -o ui_$*.h $<
 	$(QTMOC) -o moc_$*.cpp $(top_srcdir)/src/gui/$*.h
-	${CXX} -I$(top_srcdir)/src -I../ -I./ $(CXXFLAGS) $(QTGUI_CFLAGS) -c moc_$*.cpp -o $@
+	${CXX} -I$(top_srcdir)/src -I../ -I./ $(CXXFLAGS) $(ATEN_CFLAGS) -c moc_$*.cpp -o $@
 	rm moc_$*.cpp
 
 .uih.o:
 	$(QTMOC) -o $*.cpp -f$< $<
-	$(CXX) 	-I$(top_srcdir)/src -I../ -I./ $(CXXFLAGS) $(QTGUI_CFLAGS) -c $*.cpp -o $@
+	$(CXX) 	-I$(top_srcdir)/src -I../ -I./ $(CXXFLAGS) $(ATEN_CFLAGS) -c $*.cpp -o $@
 	rm $*.cpp
 
 .qrc.o:
 	$(QTRCC) -o $*.cpp -name $* $<
-	$(CXX) -I$(top_srcdir)/src -I../ -I./ $(CXXFLAGS) $(QTGUI_CFLAGS) -c -o $@ $*.cpp
+	$(CXX) -I$(top_srcdir)/src -I../ -I./ $(CXXFLAGS) $(ATEN_CFLAGS) -c -o $@ $*.cpp
 	rm $*.cpp
 
 clean-local:
@@ -39,4 +39,4 @@ libgui_a_SOURCES += useractions.cpp
 
 noinst_HEADERS = about.h atomlist.h build.h celldefinition.h celltransform.h command.h disorderoptions.h disorderwizard.h ffeditor.h forcefields.h fragments.h geometry.h glyphs.h grids.h layoutlist.h loadmodel.h mainwindow.h modellist.h pores.h position.h prefs.h progress.h saveimage.h scriptmovie.h select.h selectelement.h selectfilter.h selectpattern.h selectvariable.h tcombobox.h textratreewidgetitem.h tlistwidgetitem.h trajectory.h transform.h treegui.h ttablewidgetitem.h ttreewidgetitem.h useractions.h vibrations.h viewbasis.h vieweigenvector.h zmatrix.h
 
-INCLUDES = -I$(top_srcdir)/src -I../ -I./ @GUI_CFLAGS@
+INCLUDES = -I$(top_srcdir)/src -I../ -I./ @ATEN_CFLAGS@

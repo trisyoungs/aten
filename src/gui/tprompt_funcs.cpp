@@ -20,11 +20,11 @@
 */
 
 #include "gui/tprompt.uih"
-#include <QtGui/QPainter>
-#include <QtGui/QLayout>
-#include <QtGui/QLineEdit>
-#include <QtGui/QListWidget>
-#include <QtGui/QKeyEvent>
+#include <QPainter>
+#include <QtWidgets/QLayout>
+#include <QtWidgets/QLineEdit>
+#include <QtWidgets/QListWidget>
+#include <QKeyEvent>
 
 // Constructor
 TPrompt::TPrompt( QWidget *parent ) : QWidget( parent )

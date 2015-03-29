@@ -23,6 +23,7 @@
 #include "render/glextensions.h"
 #include "main/aten.h"
 #include "base/sysfunc.h"
+#include <QPen>
 
 // Setup OpenGL ready for drawing
 void Viewer::setupGL()

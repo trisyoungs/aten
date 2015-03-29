@@ -72,7 +72,7 @@ class AtenZMatrix : public QDialog
 	*/
 	public:
 	void showWidget();
-	void refresh(bool forceupdate = FALSE);
+	void refresh(bool forceupdate = false);
 	private slots:
 	void dialogFinished(int result);
 	void on_ZMatrixTable_cellDoubleClicked(int row, int column);

@@ -23,7 +23,7 @@
 #define ATEN_LINESTYLE_H
 
 #include "render/linestipple.h"
-#include <QtGui/QColor>
+#include <QColor>
 
 // Forward Declarations (Aten)
 /* none */

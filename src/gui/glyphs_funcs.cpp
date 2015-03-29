@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <QtGui/QCloseEvent>
-#include <QtGui/QColorDialog>
+#include <QCloseEvent>
+#include <QtWidgets/QColorDialog>
 #include "gui/mainwindow.h"
 #include "gui/glyphs.h"
 #include "gui/tlistwidgetitem.h"

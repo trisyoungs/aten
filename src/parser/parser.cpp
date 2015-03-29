@@ -166,7 +166,7 @@ char CommandParser::getChar()
 	}
 
 	// Return current char
-	char c = stringSource_.at(stringPos_).toAscii();
+	char c = stringSource_.at(stringPos_).toLatin1();
 	++stringPos_;
 	return c;
 }
@@ -178,7 +178,7 @@ char CommandParser::peekChar()
 	switch (source_)
 	{
 		case (CommandParser::FileSource):
-			c = (stringPos_ == stringLength_ ? parser_.peek() : stringSource_.at(stringPos_).toAscii());
+			c = (stringPos_ == stringLength_ ? parser_.peek() : stringSource_.at(stringPos_).toLatin1());
 			break;
 		case (CommandParser::StringListSource):
 			if (stringPos_ == stringLength_)
@@ -186,10 +186,10 @@ char CommandParser::peekChar()
 				if (stringListSourceIndex_ == -1) c = 0;
 				else c = '\n';
 			}
-			else c = stringSource_.at(stringPos_).toAscii();
+			else c = stringSource_.at(stringPos_).toLatin1();
 			break;
 		case (CommandParser::StringSource):
-			c = (stringPos_ == stringLength_ ? 0 : stringSource_.at(stringPos_).toAscii());
+			c = (stringPos_ == stringLength_ ? 0 : stringSource_.at(stringPos_).toLatin1());
 			break;
 		default:
 			break;

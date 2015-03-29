@@ -74,7 +74,7 @@ VTypes::DataType VTypes::determineType(QString s)
 	int ch, nn = 0, nch = 0, ndp = 0, npm = 0, ne = 0;
 	for (int i = 0; i < s.length(); ++i)
 	{
-		ch = s.at(i).toAscii();
+		ch = s.at(i).toLatin1();
 		if ((ch > 47) && (ch < 58)) nn ++;
 		else if (ch == '.') ndp ++;
 		else if ((ch == '-') || (ch == '+')) npm ++;

@@ -26,7 +26,7 @@
 #include "gui/position.h"
 #include "gui/transform.h"
 #include "main/aten.h"
-#include <QtGui/QMessageBox>
+#include <QtWidgets/QMessageBox>
 
 // Finalise GUI
 void AtenWindow::finaliseUi()

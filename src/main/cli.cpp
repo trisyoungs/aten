@@ -267,7 +267,7 @@ bool Aten::parseCliEarly(int argc, char *argv[])
 			}
 
 			// Search for option...
-			opt = (isShort ? Cli::cliSwitch(arg.at(0).toAscii()) : Cli::cliSwitch(arg));
+			opt = (isShort ? Cli::cliSwitch(arg.at(0).toLatin1()) : Cli::cliSwitch(arg));
 
 			// Check to see if we matched any of the known CLI switches
 			if (opt == Cli::nSwitchItems)
@@ -436,7 +436,7 @@ int Aten::parseCli(int argc, char *argv[])
 			}
 
 			// Search for option...
-			opt = (isShort ? Cli::cliSwitch(arg.at(0).toAscii()) : Cli::cliSwitch(arg));
+			opt = (isShort ? Cli::cliSwitch(arg.at(0).toLatin1()) : Cli::cliSwitch(arg));
 
 			// Check to see if we matched any of the known CLI switches
 			if (opt == Cli::nSwitchItems)

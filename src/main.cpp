@@ -27,17 +27,16 @@
 
 ATEN_USING_NAMESPACE
 
-// External Object Declarationsi
 int main(int argc, char* argv[])
 {
 	/* Create the main QApplication */
-	QApplication app(argc, argv, QApplication::GuiClient);
+	QApplication app(argc, argv);
 	QCoreApplication::setOrganizationName("ProjectAten");
 	QCoreApplication::setOrganizationDomain("www.projectaten.net");
 	QCoreApplication::setApplicationName("Aten");
 
 	#if QT_VERSION >= 0x040600
-	QGL::setPreferredPaintEngine(QPaintEngine::OpenGL);
+// 	QGL::setPreferredPaintEngine(QPaintEngine::OpenGL); // ATEN2 TODO
 	#endif
 
 	/* Tweak the default QGLFormat */

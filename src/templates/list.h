@@ -24,7 +24,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include <QtCore/QString>
+#include <QString>
 
 // Forward Declarations (Aten)
 template <class T> class List;

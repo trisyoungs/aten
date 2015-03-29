@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-// Need to include <QtCore/QString>, <GL/glx.h>, and then "render/glextensions.h" in that order, to prevent hideous errors.
-#include <QtCore/QString>
+// Need to include <QString>, <GL/glx.h>, and then "render/glextensions.h" in that order, to prevent hideous errors.
+#include <QString>
 #ifdef __unix__
 #include <GL/glx.h>
 #endif

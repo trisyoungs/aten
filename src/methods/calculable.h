@@ -22,7 +22,7 @@
 #ifndef ATEN_CALCULABLE_H
 #define ATEN_CALCULABLE_H
 
-#include <QtCore/QString>
+#include <QString>
 #include "templates/list.h"
 #include "base/namespace.h"
 

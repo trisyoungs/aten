@@ -20,9 +20,9 @@
 */
 
 #include "render/linestipple.h"
-#include <QtCore/QVector>
-#include <QtGui/QComboBox>
-#include <QtGui/QPainter>
+#include <QVector>
+#include <QtWidgets/QComboBox>
+#include <QPainter>
 #include <string.h>
 #include <bitset>
 #include <stdio.h>

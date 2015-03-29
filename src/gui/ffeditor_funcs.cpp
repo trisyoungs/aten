@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <QtGui/QMessageBox>
+#include <QtWidgets/QMessageBox>
 #include "base/sysfunc.h"
 #include "gui/ffeditor.h"
 #include "gui/tcombobox.h"

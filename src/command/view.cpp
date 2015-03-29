@@ -24,7 +24,7 @@
 #include "model/model.h"
 #include "main/aten.h"
 #include "gui/mainwindow.h"
-#include <QtCore/QTime>
+#include <QTime>
 
 ATEN_USING_NAMESPACE
 

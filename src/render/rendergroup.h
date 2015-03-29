@@ -27,7 +27,7 @@
 #include "render/primitiveinfo.h"
 #include "base/prefs.h"
 #include "base/bond.h"
-#include <QtGui/QColor>
+#include <QColor>
 
 ATEN_BEGIN_NAMESPACE
 

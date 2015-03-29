@@ -22,7 +22,7 @@
 #ifndef ATEN_CLI_H
 #define ATEN_CLI_H
 
-#include <QtCore/QString>
+#include <QString>
 #include "base/namespace.h"
 
 ATEN_BEGIN_NAMESPACE

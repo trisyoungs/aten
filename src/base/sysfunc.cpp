@@ -24,7 +24,7 @@
 #include <fstream>
 #include <iostream>
 #include <string.h>
-#include <QtCore/QFileInfo>
+#include <QFileInfo>
 
 ATEN_USING_NAMESPACE
 

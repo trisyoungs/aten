@@ -22,8 +22,8 @@
 #ifndef ATEN_MAINWINDOW_H
 #define ATEN_MAINWINDOW_H
 
-#include <QtGui/QButtonGroup>
-#include <QtCore/QSettings>
+#include <QtWidgets/QButtonGroup>
+#include <QSettings>
 #include "base/atom.h"
 #include "base/prefs.h"
 #include "gui/ui_mainwindow.h"

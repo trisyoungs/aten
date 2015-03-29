@@ -181,7 +181,7 @@ bool Commands::function_RotateCell(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
 	// Determine supplied axis and get angle
 	int axis = -1;
-	char ch = c->argc(0).at(0).toAscii();
+	char ch = c->argc(0).at(0).toLatin1();
 	switch (ch)
 	{
 		case ('X'):

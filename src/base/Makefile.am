@@ -15,4 +15,4 @@ noinst_HEADERS = atomaddress.h atom.h basisshell.h bond.h cell.h choice.h colour
 
 CLEANFILES = neta_grammar.h neta_grammar.cc neta_grammar.hh
 
-INCLUDES = -I$(top_srcdir)/src -I../ -I$(top_srcdir)/src/gui @GUI_CFLAGS@
+INCLUDES = -I$(top_srcdir)/src -I../ -I$(top_srcdir)/src/gui @ATEN_CFLAGS@

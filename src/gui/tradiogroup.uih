@@ -22,9 +22,9 @@
 #ifndef ATEN_TRADIOGROUP_H
 #define ATEN_TRADIOGROUP_H
 
-#include <QtGui/QGroupBox>
-#include <QtGui/QRadioButton>
-#include <QtGui/QVBoxLayout>
+#include <QtWidgets/QGroupBox>
+#include <QtWidgets/QRadioButton>
+#include <QtWidgets/QVBoxLayout>
 #include <QtCore/QObject>
 #include "base/lineparser.h"
 #include "templates/reflist.h"

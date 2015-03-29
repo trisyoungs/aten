@@ -8,4 +8,4 @@ noinst_HEADERS = accessor.h aten.h atom.h basisprimitive.h basisshell.h bond.h c
 
 CLEANFILES = grammar.hh grammar.cc
 
-INCLUDES = -I$(top_srcdir)/src -I../ -I$(top_srcdir)/src/gui @GUI_CFLAGS@
+INCLUDES = -I$(top_srcdir)/src -I../ -I$(top_srcdir)/src/gui @ATEN_CFLAGS@

@@ -22,7 +22,7 @@
 #ifndef ATEN_MODEL_H
 #define ATEN_MODEL_H
 
-#include <QtGui/QIcon>
+#include <QIcon>
 #include "templates/pointerpair.h"
 #include "ff/energystore.h"
 #include "base/cell.h"

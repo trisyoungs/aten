@@ -19,10 +19,10 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <QtGui/QMessageBox>
-#include <QtGui/QColorDialog>
-#include <QtGui/QInputDialog>
-#include <QtGui/QFileDialog>
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QColorDialog>
+#include <QtWidgets/QInputDialog>
+#include <QtWidgets/QFileDialog>
 #include "main/aten.h"
 #include "gui/prefs.h"
 #include "gui/mainwindow.h"

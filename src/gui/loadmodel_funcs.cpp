@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <QtGui/QFileDialog>
+#include <QtWidgets/QFileDialog>
 #include "gui/loadmodel.h"
 #include "gui/mainwindow.h"
 #include "base/sysfunc.h"

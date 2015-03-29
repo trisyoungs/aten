@@ -174,7 +174,7 @@ Format::Format(QString cFormat, Refitem<TreeNode,int>* firstarg)
 				type = arg == NULL ? VTypes::NoData : arg->item->returnType();
 				prevPrevChar = plainText.at(plainText.length()-2);
 				if (!prevPrevChar.isLetter()) prevPrevChar = '\0';
-				switch (prevChar.toAscii())
+				switch (prevChar.toLatin1())
 				{
 					// Integer types
 					case ('i'):
@@ -196,7 +196,7 @@ Format::Format(QString cFormat, Refitem<TreeNode,int>* firstarg)
 						}
 						else
 						{
-							Messenger::print("Integer format '%c' cannot be preceeded by the identifier '%c'.", prevChar.toAscii(), prevPrevChar.toAscii());
+							Messenger::print("Integer format '%c' cannot be preceeded by the identifier '%c'.", prevChar.toLatin1(), prevPrevChar.toLatin1());
 							isValid_ = FALSE;
 						}
 						break;
@@ -218,7 +218,7 @@ Format::Format(QString cFormat, Refitem<TreeNode,int>* firstarg)
 						}
 						else
 						{
-							Messenger::print("Floating-point format '%c' cannot be preceeded by the identifier '%c'.", prevChar.toAscii(), prevPrevChar.toAscii());
+							Messenger::print("Floating-point format '%c' cannot be preceeded by the identifier '%c'.", prevChar.toLatin1(), prevPrevChar.toLatin1());
 							isValid_ = FALSE;
 						}
 						break;
@@ -228,7 +228,7 @@ Format::Format(QString cFormat, Refitem<TreeNode,int>* firstarg)
 					case ('s'):
 						if (prevPrevChar != '\0')
 						{
-							Messenger::print("String format '%c' cannot be preceeded by the identifier '%c'.", prevChar.toAscii(), prevPrevChar.toAscii());
+							Messenger::print("String format '%c' cannot be preceeded by the identifier '%c'.", prevChar.toLatin1(), prevPrevChar.toLatin1());
 							isValid_ = FALSE;
 						}
 						if (type == VTypes::StringData) break;

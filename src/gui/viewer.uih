@@ -22,8 +22,8 @@
 #ifndef ATEN_VIEWER_H
 #define ATEN_VIEWER_H
 
-#include <QtOpenGL/QGLWidget>
-#include <QtCore/QObject>
+#include <QtWidgets/QOpenGLWidget>
+#include <QObject>
 #include "base/messenger.h"
 #include "render/glextensions.h"
 #include "gui/useractions.h"
@@ -48,7 +48,7 @@ class Aten;
 class Model;
 
 // Base rendering widget
-class Viewer : public QGLWidget
+class Viewer : public QOpenGLWidget
 {
 	Q_OBJECT
 

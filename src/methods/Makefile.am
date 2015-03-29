@@ -4,4 +4,4 @@ libmethods_a_SOURCES = calculable.cpp cg.cpp delaunay.cpp disorder.cpp disorderd
 
 noinst_HEADERS = calculable.h cg.h delaunay.h disorderdata.h geometry.h linemin.h mc.h partition.h pdens.h rdf.h sd.h
 
-INCLUDES = -I$(top_srcdir)/src -I../ -I$(top_srcdir)/src/gui @GUI_CFLAGS@
+INCLUDES = -I$(top_srcdir)/src -I../ -I$(top_srcdir)/src/gui @ATEN_CFLAGS@

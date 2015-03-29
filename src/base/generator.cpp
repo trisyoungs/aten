@@ -49,8 +49,8 @@ void Generator::setMatrixPart(int row, QString part)
 
 	//printf("MULTIPLIER = %i, original=[%s], now=[%s]\n", multiplier, s, c);
 	// Now, check if this character is x, y, or z.
-	if (part.at(pos).isUpper()) matrix_[(part.at(pos).toAscii()-88)*4+row] = multiplier;
-	else if (part.at(pos).isLower()) matrix_[(part.at(pos).toAscii()-120)*4+row] = multiplier;
+	if (part.at(pos).isUpper()) matrix_[(part.at(pos).toLatin1()-88)*4+row] = multiplier;
+	else if (part.at(pos).isLower()) matrix_[(part.at(pos).toLatin1()-120)*4+row] = multiplier;
 	else
 	{
 		// Must be a number, and hence part of the translation vector
