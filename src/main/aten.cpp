@@ -55,8 +55,8 @@ Aten::Aten() : commands_(*this)
 	programMode_ = Aten::GuiMode;
 
 	// Program control / settings (not prefs)
-	typeExportMapping_ = FALSE;
-	redirectedImagesActive_ = FALSE;
+	typeExportMapping_ = false;
+	redirectedImagesActive_ = false;
 	redirectedImageFormat_ = "";
 	redirectedImageCount_ = 0;
 	maxRedirectedImages_ = 100;
@@ -135,7 +135,7 @@ void Aten::initialiseImageRedirect(QString filenameFormat, int maxImages)
 	redirectedImageCount_ = 0;
 	maxRedirectedImages_ = maxImages;
 	redirectedImageFormat_ = filenameFormat;
-	redirectedImagesActive_ = TRUE;
+	redirectedImagesActive_ = true;
 	Messenger::print(Messenger::Verbose, "Image redirect active - name format = [%s], maxImages = %i", qPrintable(redirectedImageFormat_), maxRedirectedImages_);
 }
 
@@ -151,7 +151,7 @@ QString Aten::nextRedirectedFilename()
 // Cancel image redirection
 int Aten::cancelImageRedirect()
 {
-	redirectedImagesActive_ = FALSE;
+	redirectedImagesActive_ = false;
 	return redirectedImageCount_;
 }
 

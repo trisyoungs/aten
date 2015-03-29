@@ -42,15 +42,15 @@ int Model::nMarked() const
 // Mark all atoms in model
 void Model::markAll()
 {
-	selectAll(TRUE);
+	selectAll(true);
 	Messenger::print(Messenger::Verbose, "All atoms marked.");
 }
 
 // Match marked atoms to current selection
 void Model::markSelectedAtoms()
 {
-	selectNone(TRUE);
-	for (Refitem<Atom,int>* ri = selection_.first(); ri != NULL; ri = ri->next) selectAtom(ri->item, TRUE);
+	selectNone(true);
+	for (Refitem<Atom,int>* ri = selection_.first(); ri != NULL; ri = ri->next) selectAtom(ri->item, true);
 	Messenger::print(Messenger::Verbose, "There are now %i atoms marked.", marked_.nItems());
 }
 
@@ -65,9 +65,9 @@ void Model::selectAtom(Atom* i, bool markonly)
 {
 	if (markonly)
 	{
-		if (!i->isSelected(TRUE))
+		if (!i->isSelected(true))
 		{
-			i->setSelected(TRUE, TRUE);
+			i->setSelected(true, true);
 			// Add at correct position in list
 			Refitem<Atom,int>* ri = marked_.first();
 			if (ri == NULL) marked_.add(i);
@@ -83,14 +83,14 @@ void Model::selectAtom(Atom* i, bool markonly)
 	{
 		if (!i->isSelected())
 		{
-			i->setSelected(TRUE);
+			i->setSelected(true);
 			selection_.add(i);
 			logChange(Log::Selection);
 			// Add the change to the undo state (if there is one)
 			if (recordingState_ != NULL)
 			{
 				SelectEvent* newchange = new SelectEvent;
-				newchange->set(TRUE, i->id());
+				newchange->set(true, i->id());
 				recordingState_->addEvent(newchange);
 			}
 		}
@@ -110,9 +110,9 @@ void Model::deselectAtom(Atom* i, bool markonly)
 {
 	if (markonly)
 	{
-		if (i->isSelected(TRUE))
+		if (i->isSelected(true))
 		{
-			i->setSelected(FALSE, TRUE);
+			i->setSelected(false, true);
 			marked_.remove(i);
 		}
 	}
@@ -120,14 +120,14 @@ void Model::deselectAtom(Atom* i, bool markonly)
 	{
 		if (i->isSelected())
 		{
-			i->setSelected(FALSE);
+			i->setSelected(false);
 			selection_.remove(i);
 			logChange(Log::Selection);
 			// Add the change to the undo state (if there is one)
 			if (recordingState_ != NULL)
 			{
 				SelectEvent* newchange = new SelectEvent;
-				newchange->set(FALSE, i->id());
+				newchange->set(false, i->id());
 				recordingState_->addEvent(newchange);
 			}
 		}
@@ -163,7 +163,7 @@ void Model::selectionDelete(bool markonly)
 	Messenger::enter("Model::selectionDelete");
 	Atom* i, *tempi;
 	int count = 0;
-	bool cancelled = FALSE;
+	bool cancelled = false;
 	// Attempt to be clever here for the sake of undo/redo, while avoiding renumbering at every step.
 	// 1) First, delete all measurements and bonds to the selected atoms
 	Refitem<Bond,int>* bref;
@@ -193,7 +193,7 @@ void Model::selectionDelete(bool markonly)
 			if (i->isSelected(markonly))
 			{
 				tempi = i->prev;
-				removeAtom(i, TRUE);
+				removeAtom(i, true);
 				i = tempi;
 			}
 			else i = i->prev;
@@ -228,7 +228,7 @@ void Model::selectAll(bool markonly)
 		marked_.clear();
 		for (Atom* i = atoms_.first(); i != NULL; i = i->next)
 		{
-			i->setSelected(TRUE, TRUE);
+			i->setSelected(true, true);
 			marked_.add(i);
 		}
 	}
@@ -237,12 +237,12 @@ void Model::selectAll(bool markonly)
 		// Here, just add atoms which are not currently selected (i.e. we assume the atom selection flags and selection_ list reflect each other)
 		for (Atom* i = atoms_.first(); i != NULL; i = i->next) if (!i->isSelected())
 		{
-			i->setSelected(TRUE);
+			i->setSelected(true);
 			// Add the change to the undo state (if there is one)
 			if (recordingState_ != NULL)
 			{
 				SelectEvent* newchange = new SelectEvent;
-				newchange->set(TRUE, i->id());
+				newchange->set(true, i->id());
 				recordingState_->addEvent(newchange);
 			}
 			selection_.add(i);
@@ -258,20 +258,20 @@ void Model::selectNone(bool markonly)
 	Messenger::enter("Model::selectNone");
 	if (markonly)
 	{
-		for (Refitem<Atom,int>* ri = marked_.first(); ri != NULL; ri = ri->next) ri->item->setSelected(FALSE, TRUE);
+		for (Refitem<Atom,int>* ri = marked_.first(); ri != NULL; ri = ri->next) ri->item->setSelected(false, true);
 		marked_.clear();
 	}
 	else
 	{
 		for (Atom* i = atoms_.first(); i != NULL; i = i->next) if (i->isSelected())
 		{
-			i->setSelected(FALSE);
+			i->setSelected(false);
 
 			// Add the change to the undo state (if there is one)
 			if (recordingState_ != NULL)
 			{
 				SelectEvent* newchange = new SelectEvent;
-				newchange->set(FALSE, i->id());
+				newchange->set(false, i->id());
 				recordingState_->addEvent(newchange);
 			}
 		}
@@ -457,8 +457,8 @@ void Model::selectPattern(Pattern* p, bool markonly, bool deselect)
 	// Select all atoms covered by the specified pattern.
 	Messenger::enter("Model::selectPattern");
 	// Check that this pattern is valid and belongs to this model...
-	bool found = FALSE;
-	for (Pattern* modelp = patterns_.first(); modelp != NULL; modelp = modelp->next) if (p == modelp) found = TRUE;
+	bool found = false;
+	for (Pattern* modelp = patterns_.first(); modelp != NULL; modelp = modelp->next) if (p == modelp) found = true;
 	if (!found)
 	{
 		Messenger::print("Pattern does not belong to this model, or is out of date.");

@@ -177,13 +177,13 @@ void Model::removeMeasurement(Measurement* me)
 		switch (type)
 		{
 			case (Measurement::DistanceMeasurement):
-				newchange->set(FALSE, type, atoms[0]->id(), atoms[1]->id());
+				newchange->set(false, type, atoms[0]->id(), atoms[1]->id());
 				break;
 			case (Measurement::AngleMeasurement):
-				newchange->set(FALSE, type, atoms[0]->id(), atoms[1]->id(), atoms[2]->id());
+				newchange->set(false, type, atoms[0]->id(), atoms[1]->id(), atoms[2]->id());
 				break;
 			case (Measurement::TorsionMeasurement):
-				newchange->set(FALSE, type, atoms[0]->id(), atoms[1]->id(), atoms[2]->id(), atoms[3]->id());
+				newchange->set(false, type, atoms[0]->id(), atoms[1]->id(), atoms[2]->id(), atoms[3]->id());
 				break;
 			default:
 				break;
@@ -283,13 +283,13 @@ Measurement* Model::addMeasurement(Measurement::MeasurementType gt, ...)
 		switch (gt)
 		{
 			case (Measurement::DistanceMeasurement):
-				newchange->set(TRUE, gt, atoms[0]->id(), atoms[1]->id());
+				newchange->set(true, gt, atoms[0]->id(), atoms[1]->id());
 				break;
 			case (Measurement::AngleMeasurement):
-				newchange->set(TRUE, gt, atoms[0]->id(), atoms[1]->id(), atoms[2]->id());
+				newchange->set(true, gt, atoms[0]->id(), atoms[1]->id(), atoms[2]->id());
 				break;
 			case (Measurement::TorsionMeasurement):
-				newchange->set(TRUE, gt, atoms[0]->id(), atoms[1]->id(), atoms[2]->id(), atoms[3]->id());
+				newchange->set(true, gt, atoms[0]->id(), atoms[1]->id(), atoms[2]->id(), atoms[3]->id());
 				break;
 			default:
 				break;

@@ -52,38 +52,38 @@ AtomVariable::~AtomVariable()
 
 // Accessor data
 Accessor AtomVariable::accessorData[AtomVariable::nAccessors] = {
-	{ "bit",	VTypes::IntegerData,		0, FALSE },
-	{ "bonds", 	VTypes::BondData,		-1, TRUE },
-	{ "colour",	VTypes::DoubleData,		4, FALSE },
-	{ "data",	VTypes::StringData,		0, FALSE },
-	{ "element",	VTypes::ElementData,		0, FALSE },
-	{ "f",		VTypes::VectorData,		0, FALSE },
-	{ "fixed", 	VTypes::IntegerData,		0, FALSE },
-	{ "fracX",	VTypes::DoubleData,		0, FALSE },
-	{ "fracY",	VTypes::DoubleData,		0, FALSE },
-	{ "fracZ",	VTypes::DoubleData,		0, FALSE },
-	{ "fx",		VTypes::DoubleData,		0, FALSE },
-	{ "fy",		VTypes::DoubleData,		0, FALSE },
-	{ "fz",		VTypes::DoubleData,		0, FALSE },
-	{ "hidden",	VTypes::IntegerData,		0, FALSE },
-	{ "id",		VTypes::IntegerData,		0, TRUE },
-	{ "mass",	VTypes::DoubleData,		0, TRUE },
-	{ "name",	VTypes::StringData,		0, TRUE },
-	{ "nBonds",	VTypes::IntegerData,		0, TRUE },
-	{ "q",		VTypes::DoubleData,		0, FALSE },
-	{ "r",		VTypes::VectorData,		0, FALSE },
-	{ "rx",		VTypes::DoubleData,		0, FALSE },
-	{ "ry",		VTypes::DoubleData,		0, FALSE },
-	{ "rz",		VTypes::DoubleData,		0, FALSE },
-	{ "selected",	VTypes::IntegerData,		0, FALSE },
-	{ "style",	VTypes::StringData,		0, FALSE },
-	{ "symbol",	VTypes::StringData,		0, TRUE },
-	{ "type",	VTypes::ForcefieldAtomData,	0, FALSE },
-	{ "v",		VTypes::VectorData,		0, FALSE },
-	{ "vx",		VTypes::DoubleData,		0, FALSE },
-	{ "vy",		VTypes::DoubleData,		0, FALSE },
-	{ "vz",		VTypes::DoubleData,		0, FALSE },
-	{ "z",		VTypes::IntegerData, 		0, FALSE }
+	{ "bit",	VTypes::IntegerData,		0, false },
+	{ "bonds", 	VTypes::BondData,		-1, true },
+	{ "colour",	VTypes::DoubleData,		4, false },
+	{ "data",	VTypes::StringData,		0, false },
+	{ "element",	VTypes::ElementData,		0, false },
+	{ "f",		VTypes::VectorData,		0, false },
+	{ "fixed", 	VTypes::IntegerData,		0, false },
+	{ "fracX",	VTypes::DoubleData,		0, false },
+	{ "fracY",	VTypes::DoubleData,		0, false },
+	{ "fracZ",	VTypes::DoubleData,		0, false },
+	{ "fx",		VTypes::DoubleData,		0, false },
+	{ "fy",		VTypes::DoubleData,		0, false },
+	{ "fz",		VTypes::DoubleData,		0, false },
+	{ "hidden",	VTypes::IntegerData,		0, false },
+	{ "id",		VTypes::IntegerData,		0, true },
+	{ "mass",	VTypes::DoubleData,		0, true },
+	{ "name",	VTypes::StringData,		0, true },
+	{ "nBonds",	VTypes::IntegerData,		0, true },
+	{ "q",		VTypes::DoubleData,		0, false },
+	{ "r",		VTypes::VectorData,		0, false },
+	{ "rx",		VTypes::DoubleData,		0, false },
+	{ "ry",		VTypes::DoubleData,		0, false },
+	{ "rz",		VTypes::DoubleData,		0, false },
+	{ "selected",	VTypes::IntegerData,		0, false },
+	{ "style",	VTypes::StringData,		0, false },
+	{ "symbol",	VTypes::StringData,		0, true },
+	{ "type",	VTypes::ForcefieldAtomData,	0, false },
+	{ "v",		VTypes::VectorData,		0, false },
+	{ "vx",		VTypes::DoubleData,		0, false },
+	{ "vy",		VTypes::DoubleData,		0, false },
+	{ "vz",		VTypes::DoubleData,		0, false },
+	{ "z",		VTypes::IntegerData, 		0, false }
 };
 
 // Function data
@@ -168,7 +168,7 @@ bool AtomVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex, 
 	{
 		printf("Internal Error: Accessor id %i is out of range for Atom type.\n", i);
 		Messenger::exit("AtomVariable::retrieveAccessor");
-		return FALSE;
+		return false;
 	}
 	Accessors acc = (Accessors) i;
 	// Check for correct lack/presence of array index given
@@ -176,7 +176,7 @@ bool AtomVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex, 
 	{
 		Messenger::print("Error: Unnecessary array index provided for member '%s'.", accessorData[i].name);
 		Messenger::exit("AtomVariable::retrieveAccessor");
-		return FALSE;
+		return false;
 	}
 	else if ((accessorData[i].arraySize > 0) && (hasArrayIndex))
 	{
@@ -184,16 +184,16 @@ bool AtomVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex, 
 		{
 			Messenger::print("Error: Array index out of bounds for member '%s' (%i, range is 1-%i).", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
 			Messenger::exit("AtomVariable::retrieveAccessor");
-			return FALSE;
+			return false;
 		}
 	}
 	// Get current data from ReturnValue
-	bool result = TRUE;
+	bool result = true;
 	Atom* ptr = (Atom*) rv.asPointer(VTypes::AtomData, result);
 	if ((!result) || (ptr == NULL))
 	{
 		Messenger::print("Invalid (NULL) %s reference encountered.", VTypes::dataType(VTypes::AtomData));
-		result = FALSE;
+		result = false;
 	}
 	if (result) switch (acc)
 	{
@@ -205,7 +205,7 @@ bool AtomVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex, 
 			else if (arrayIndex > ptr->nBonds())
 			{
 				Messenger::print("Bond array index (%i) is out of bounds for atom '%i'", arrayIndex, ptr->id()+1);
-				result = FALSE;
+				result = false;
 			}
 			else rv.set( VTypes::BondData, ptr->bond(arrayIndex-1) == NULL ? NULL : ptr->bond(arrayIndex-1)->item, ptr->bond(arrayIndex-1));
 			break;
@@ -232,7 +232,7 @@ bool AtomVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex, 
 			else
 			{
 				Messenger::print("Can't retrieve the fractional coordinate of an unparented Atom (since it has no associated UnitCell).");
-				result = FALSE;
+				result = false;
 			}
 			break;
 		case (AtomVariable::FX):
@@ -291,7 +291,7 @@ bool AtomVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex, 
 			break;
 		default:
 			printf("Internal Error: Access to member '%s' has not been defined in AtomVariable.\n", accessorData[i].name);
-			result = FALSE;
+			result = false;
 			break;
 	}
 	Messenger::exit("AtomVariable::retrieveAccessor");
@@ -307,11 +307,11 @@ bool AtomVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newVal
 	{
 		printf("Internal Error: Accessor id %i is out of range for Atom type.\n", i);
 		Messenger::exit("AtomVariable::setAccessor");
-		return FALSE;
+		return false;
 	}
 	Accessors acc = (Accessors) i;
 	// Check for correct lack/presence of array index given to original accessor, and nature of new value
-	bool result = TRUE;
+	bool result = true;
 	if (accessorData[i].arraySize != 0)
 	{
 		if (hasArrayIndex)
@@ -319,12 +319,12 @@ bool AtomVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newVal
 			if ((accessorData[i].arraySize > 0) && ( (arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize) ))
 			{
 				Messenger::print("Error: Array index provided for member '%s' is out of range (%i, range is 1-%i).", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
-				result = FALSE;
+				result = false;
 			}
 			if (newValue.arraySize() > 0)
 			{
 				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.", accessorData[i].name);
-				result = FALSE;
+				result = false;
 			}
 		}
 		else
@@ -332,7 +332,7 @@ bool AtomVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newVal
 			if (newValue.arraySize() > accessorData[i].arraySize)
 			{
 				Messenger::print("Error: The array being assigned to member '%s' is larger than the size of the desination array (%i cf. %i).", accessorData[i].name, newValue.arraySize(), accessorData[i].arraySize);
-				result = FALSE;
+				result = false;
 			}
 		}
 	}
@@ -344,19 +344,19 @@ bool AtomVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newVal
 			if (accessorData[i].returnType != VTypes::VectorData)
 			{
 				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.", accessorData[i].name);
-				result = FALSE;
+				result = false;
 			}
 			else if ((newValue.type() != VTypes::VectorData) && (newValue.arraySize() != 3))
 			{
 				Messenger::print("Error: Only an array of size 3 can be assigned to a vector (member '%s').", accessorData[i].name);
-				result = FALSE;
+				result = false;
 			}
 		}
 	}
 	if (!result)
 	{
 		Messenger::exit("AtomVariable::setAccessor");
-		return FALSE;
+		return false;
 	}
 	// Get current data from ReturnValue
 	Vec3<double> v;
@@ -367,7 +367,7 @@ bool AtomVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newVal
 	if ((!result) || (ptr == NULL))
 	{
 		Messenger::print("Invalid (NULL) %s reference encountered.", VTypes::dataType(VTypes::AtomData));
-		result = FALSE;
+		result = false;
 	}
 	Model* ptrParent = ptr->parent();
 	
@@ -391,7 +391,7 @@ bool AtomVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newVal
 			if (el == NULL)
 			{
 				Messenger::print("Invalid (NULL) element reference encountered while setting atom's element.");
-				result = FALSE;
+				result = false;
 			}
 			else if (&Elements().el[ptr->element()] != el)
 			{
@@ -426,7 +426,7 @@ bool AtomVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newVal
 			else
 			{
 				Messenger::print("Can't set the fractional coordinate of an unparented Atom (since it has no associated UnitCell).");
-				result = FALSE;
+				result = false;
 			}
 			break;
 		case (AtomVariable::FX):
@@ -481,7 +481,7 @@ bool AtomVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newVal
 		case (AtomVariable::Style):
 			ds = Prefs::drawStyle( newValue.asString() );
 			if (ds != Prefs::nDrawStyles) ptr->setStyle(ds);
-			else result = FALSE;
+			else result = false;
 			break;
 		case (AtomVariable::Type):
 			ptr->setType( (ForcefieldAtom*) newValue.asPointer(VTypes::ForcefieldAtomData));
@@ -505,7 +505,7 @@ bool AtomVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newVal
 			break;
 		default:
 			printf("AtomVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);
-			result = FALSE;
+			result = false;
 			break;
 	}
 	Messenger::exit("AtomVariable::setAccessor");
@@ -521,10 +521,10 @@ bool AtomVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 	{
 		printf("Internal Error: FunctionAccessor id %i is out of range for Atom type.\n", i);
 		Messenger::exit("AtomVariable::performFunction");
-		return FALSE;
+		return false;
 	}
 	// Get current data from ReturnValue
-	bool result = TRUE;
+	bool result = true;
 	Atom* ptr = (Atom*) rv.asPointer(VTypes::AtomData, result);
 	Model* ptrParent = ptr->parent();
 	if (result) switch (i)
@@ -536,7 +536,7 @@ bool AtomVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 			if (!((Atom*) node->argp(0, VTypes::AtomData)))
 			{
 				Messenger::print("Error: NULL pointer given to Atom's 'copy' function.");
-				result = FALSE;
+				result = false;
 			}
 			else if (ptrParent)
 			{
@@ -561,7 +561,7 @@ bool AtomVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 			break;
 		default:
 			printf("Internal Error: Access to function '%s' has not been defined in AtomVariable.\n", functionData[i].name);
-			result = FALSE;
+			result = false;
 			break;
 	}
 	Messenger::exit("AtomVariable::performFunction");

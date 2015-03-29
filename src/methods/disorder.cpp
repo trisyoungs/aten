@@ -49,7 +49,7 @@ bool MonteCarlo::disorder(Model* allModels, Model* destmodel, PartitioningScheme
 	{
 		Messenger::print("Error: NULL scheme pointer given to disorder builder.");
 		Messenger::exit("MonteCarlo::disorder");
-		return FALSE;
+		return false;
 	}
 	// If we are using the default 'cell' scheme, then no need to generate a fine mesh
 	if (!scheme->staticData())
@@ -76,7 +76,7 @@ bool MonteCarlo::disorder(Model* allModels, Model* destmodel, PartitioningScheme
 		{
 			Messenger::print("Error: Model '%s' targets partition id %i, but it does not exist in the scheme '%s'.", qPrintable(m->name()), id+1, qPrintable(scheme->name()));
 			Messenger::exit("MonteCarlo::disorder");
-			return FALSE;
+			return false;
 		}
 		// Do some quick checks on the component to see if its valid
 		switch (m->componentInsertionPolicy())
@@ -94,7 +94,7 @@ bool MonteCarlo::disorder(Model* allModels, Model* destmodel, PartitioningScheme
 				{
 					Messenger::print("Error: Density for component '%s' is too low (or zero) (%f).", qPrintable(m->name()), m->componentDensity());
 					Messenger::exit("MonteCarlo::disorder");
-					return FALSE;
+					return false;
 				}
 				totalToAdd += m->componentPopulation();
 				break;
@@ -103,13 +103,13 @@ bool MonteCarlo::disorder(Model* allModels, Model* destmodel, PartitioningScheme
 				{
 					Messenger::print("Error: Population must be specified for component '%s' since it's policy is 'relative'.", qPrintable(m->name()));
 					Messenger::exit("MonteCarlo::disorder");
-					return FALSE;
+					return false;
 				}
 				if (m->componentDensity() < 0.01)
 				{
 					Messenger::print("Error: Density for component '%s' is too low (or zero) (%f).", qPrintable(m->name()), m->componentDensity());
 					Messenger::exit("MonteCarlo::disorder");
-					return FALSE;
+					return false;
 				}
 				break;
 		}
@@ -118,7 +118,7 @@ bool MonteCarlo::disorder(Model* allModels, Model* destmodel, PartitioningScheme
 		if (!component->initialise(m, scheme->partition(id)))
 		{
 			Messenger::exit("MonteCarlo::disorder");
-			return FALSE;
+			return false;
 		}
 		componentsOrder_.add(component);
 		// Add component to partition's own list
@@ -128,7 +128,7 @@ bool MonteCarlo::disorder(Model* allModels, Model* destmodel, PartitioningScheme
 	{
 		Messenger::print("Error: No component models selected for disorder builder.");
 		Messenger::exit("MonteCarlo::disorder");
-		return FALSE;
+		return false;
 	}
 	
 	// Step 3 - Determine cell size (if applicable) and perform some sanity checks
@@ -140,7 +140,7 @@ bool MonteCarlo::disorder(Model* allModels, Model* destmodel, PartitioningScheme
 		{
 			Messenger::print("Error: For disorder building with an unspecified cell size the cell cannot contain any existing atoms.");
 			Messenger::exit("MonteCarlo::disorder");
-			return FALSE;
+			return false;
 		}
 		
 		// Make double sure that we actually have a unit cell specified at this point
@@ -148,7 +148,7 @@ bool MonteCarlo::disorder(Model* allModels, Model* destmodel, PartitioningScheme
 		{
 			Messenger::print("Error: No unit cell defined. Create a simple unit cell - the lengths will be adjusted automatically by the builder.");
 			Messenger::exit("MonteCarlo::disorder");
-			return FALSE;
+			return false;
 		}
 		
 		// So, we must decide on the final volume of the cell - this means that both a population and a density for each 
@@ -162,7 +162,7 @@ bool MonteCarlo::disorder(Model* allModels, Model* destmodel, PartitioningScheme
 			{
 				Messenger::print("Error: For disorder building with an unspecified cell size every component must have a population and density specified with policy 'both' (component '%s' does not).", qPrintable(component->modelName()));
 				Messenger::exit("MonteCarlo::disorder");
-				return FALSE;
+				return false;
 			}
 			// All ok, so add component to volume
 			totalVolume += (component->requestedPopulation() * component->sourceModel().mass() / AVOGADRO) / (component->requestedDensity() * 1.0E-24);
@@ -254,7 +254,7 @@ bool MonteCarlo::disorder(Model* allModels, Model* destmodel, PartitioningScheme
 					firstRelative = components_.first()->requestedPopulation();
 					firstActual = components_.first()->nAdded();
 					expectedPop = (component->requestedPopulation() / firstRelative) * firstActual;
-					if (component->nAdded() == 0) isRelative = TRUE;
+					if (component->nAdded() == 0) isRelative = true;
 					else isRelative = fabs(1.0 - expectedPop / component->nAdded()) < disorderAccuracy_;
 // 					printf("Population relative expected = %f, actual = %i, delta = %f\n", expectedPop, component->nAdded(), fabs(1.0 - expectedPop / component->nAdded()));
 					if ((delta < disorderAccuracy_) && isRelative)
@@ -509,6 +509,6 @@ bool MonteCarlo::disorder(Model* allModels, Model* destmodel, PartitioningScheme
 	targetModel_->describeAtoms();
 
 	Messenger::enter("MonteCarlo::disorder");
-	return TRUE;
+	return true;
 }
 

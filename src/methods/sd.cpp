@@ -80,8 +80,8 @@ void MethodSd::minimise(Model* srcmodel, double econ, double fcon, bool simple)
 	lastPrintedEnergy = currentEnergy;
 	srcmodel->energy.print();
 
-	converged = FALSE;
-	lineDone = FALSE;
+	converged = false;
+	lineDone = false;
 
 	// Initialise the line minimiser
 	initialise(srcmodel);
@@ -98,7 +98,7 @@ void MethodSd::minimise(Model* srcmodel, double econ, double fcon, bool simple)
 	for (cycle=0; cycle<nCycles_; cycle++)
 	{
 		// Perform linesearch along the gradient vector
- 		if (!progress.update(pid, cycle)) lineDone = TRUE;
+ 		if (!progress.update(pid, cycle)) lineDone = true;
 		else
 		{
 			// Simple method begins here
@@ -106,7 +106,7 @@ void MethodSd::minimise(Model* srcmodel, double econ, double fcon, bool simple)
 			oldForce = newForce;
 
 			// Minimise along gradient vector
-			srcmodel->normaliseForces(1.0, TRUE);
+			srcmodel->normaliseForces(1.0, true);
 			if (simple)
 			{
 				// Step along gradient (with reducing step size until energy decreases)
@@ -133,7 +133,7 @@ void MethodSd::minimise(Model* srcmodel, double econ, double fcon, bool simple)
 			// Check convergence criteria
 			if ((fabs(deltaEnergy) < econ) && (fabs(newForce) < fcon))
 			{
-				converged = TRUE;
+				converged = true;
 				break;
 			}
 

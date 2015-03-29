@@ -122,8 +122,8 @@ void CommandWidget::updateVariableList()
 void CommandWidget::on_InteractivePrompt_returnPressed()
 {
 	// Grab the current text of the line edit (and clear it at the same time)
-	interactiveProgram_.mainProgram()->reset(FALSE);
-	if (interactiveProgram_.generateFromString(ui.InteractivePrompt->getText(), "InteractivePromptCommand", "", FALSE, FALSE))
+	interactiveProgram_.mainProgram()->reset(false);
+	if (interactiveProgram_.generateFromString(ui.InteractivePrompt->getText(), "InteractivePromptCommand", "", false, false))
 	{
 		ReturnValue result;
 		interactiveProgram_.execute(result);
@@ -161,7 +161,7 @@ void CommandWidget::refreshScripts(bool refreshactions, bool refreshlist)
 			// Create new QAction and add to Reflist
 			QAction *qa = new QAction(this);
 			// Set action data
-			qa->setVisible(TRUE);
+			qa->setVisible(true);
 			qa->setText(prog->name());
 			QObject::connect(qa, SIGNAL(triggered()), this, SLOT(runScript()));
 			scriptActions_.add(qa, prog);
@@ -185,7 +185,7 @@ void CommandWidget::on_OpenScriptButton_clicked(bool v)
 		{
 			Messenger::print("Script file '%s' loaded succesfully.", qPrintable(filename));
 			ui.ScriptsList->addItem(ca->filename());
-			refreshScripts(TRUE, FALSE);
+			refreshScripts(true, false);
 		}
 		else
 		{

@@ -47,18 +47,18 @@ bool DisorderData::initialise(Model* sourceModel, PartitionData* partitionData)
 	if (sourceModel == NULL)
 	{
 		Messenger::print("Error: DisorderData::initialise() - NULL source model pointer passed.");
-		return FALSE;
+		return false;
 	}
 	if (sourceModel->nAtoms() == 0)
 	{
 		Messenger::print("Error: DisorderData::initialise() - source model contains no atoms!");
-		return FALSE;
+		return false;
 	}
 	partitionData_ = partitionData;
 	if (partitionData_ == NULL)
 	{
 		Messenger::print("Error: DisorderData::initialise() - NULL partition data pointer passed.");
-		return FALSE;
+		return false;
 	}
 	
 	// Make copy of source model and centre it at zero, remove any labels, measurements etc., and leave selected
@@ -69,7 +69,7 @@ bool DisorderData::initialise(Model* sourceModel, PartitionData* partitionData)
 	nAdded_ = 0;
 	nFailed_ = 0;
 	nDeleted_ = 0;
-	return TRUE;
+	return true;
 }
 
 
@@ -124,8 +124,8 @@ PartitionData* DisorderData::partition()
 // Copy contents of component across to specified model
 void DisorderData::copyTo(Model* target)
 {
-	clipboard_.copyAll(&targetModel_, TRUE);
-	clipboard_.pasteToModel(target, FALSE);
+	clipboard_.copyAll(&targetModel_, true);
+	clipboard_.pasteToModel(target, false);
 }
 
 /*
@@ -162,8 +162,8 @@ void DisorderData::acceptCandidate()
 	if (moleculeId_ == -1)
 	{
 		// Copy sourcemodel to targetModel_
-		clipboard_.copyAll(&sourceModel_, TRUE);
-		clipboard_.pasteToModel(&targetModel_, FALSE);
+		clipboard_.copyAll(&sourceModel_, true);
+		clipboard_.pasteToModel(&targetModel_, false);
 		// Update density of target partition
 		partitionData_->adjustReducedMass(&sourceModel_);
 		++nAdded_;
@@ -189,7 +189,7 @@ bool DisorderData::selectCandidate(int id)
 	if (nAdded_ == 0)
 	{
 		moleculeId_ = -1;
-		return FALSE;
+		return false;
 	}
 	// If an id was supplied, select it. Otherwise choose random molecule
 	if (id != -1)
@@ -198,7 +198,7 @@ bool DisorderData::selectCandidate(int id)
 		{
 			printf("Internal Error: Molecule id %i is out of range in DisorderData::selectCandidate().\n", id);
 			moleculeId_ = -1;
-			return FALSE;
+			return false;
 		}
 		moleculeId_ = id;
 	}
@@ -207,10 +207,10 @@ bool DisorderData::selectCandidate(int id)
 	// Select all atoms in target molecule and copy/paste them
 	targetModel_.selectNone();
 	for (int i=moleculeId_*sourceModel_.nAtoms(); i < (moleculeId_+1)*sourceModel_.nAtoms(); ++i) targetModel_.selectAtom(i);
-	clipboard_.copySelection(&targetModel_, TRUE);
+	clipboard_.copySelection(&targetModel_, true);
 	sourceModel_.clear();
 	clipboard_.pasteToModel(&sourceModel_);
-	return TRUE;
+	return true;
 }
 
 // Delete selected candidate
@@ -222,7 +222,7 @@ void DisorderData::deleteCandidate()
 		targetModel_.selectNone();
 		for (int i=moleculeId_*sourceModel_.nAtoms(); i < (moleculeId_+1)*sourceModel_.nAtoms(); ++i) targetModel_.selectAtom(i);
 		targetModel_.selectionDelete();
-		partitionData_->adjustReducedMass(&sourceModel_, TRUE);
+		partitionData_->adjustReducedMass(&sourceModel_, true);
 		--nAdded_;
 		moleculeId_ = -1;
 	}
@@ -271,13 +271,13 @@ bool DisorderData::modelOverlaps(Model* other, UnitCell* globalCell)
 		for (j = 0; j < sourceModel_.nAtoms(); ++j)
 		{
 			// Determine distance using supplied cell conditions
-			rij = globalCell->distance(ii[i], jj[j], TRUE);
+			rij = globalCell->distance(ii[i], jj[j], true);
 			// Simple penalty function - subtract off some multiple of the atomic radius of each atom...
 			rij -= ri + scaleFactor_*Elements().atomicRadius(jj[j]);
-			if (rij < 0.0) return TRUE;
+			if (rij < 0.0) return true;
 		}
 	}
-	return FALSE;
+	return false;
 }
 
 // Determine whether candidate molecule overlaps rest of population
@@ -293,9 +293,9 @@ bool DisorderData::otherOverlaps(DisorderData *first, UnitCell* globalCell)
 	for (DisorderData *dd = first; dd != NULL; dd = dd->next)
 	{
 		if (dd == this) continue;
-		if (modelOverlaps(&dd->targetModel_, globalCell)) return TRUE;
+		if (modelOverlaps(&dd->targetModel_, globalCell)) return true;
 	}
-	return FALSE;
+	return false;
 }
 
 // Return number of copies added

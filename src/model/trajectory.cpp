@@ -88,12 +88,12 @@ void Model::clearTrajectory()
 	trajectoryFilename_ = "Unnamed";
 	nTrajectoryFileFrames_ = 0;
 	trajectoryFrameIndex_ = -1;
-	trajectoryFramesAreCached_ = FALSE;
+	trajectoryFramesAreCached_ = false;
 	trajectoryFilter_ = NULL;
 	trajectoryCurrentFrame_ = NULL;
 	trajectoryHeaderFunction_ = NULL;
 	trajectoryFrameFunction_ = NULL;
-	trajectoryPlaying_ = FALSE;
+	trajectoryPlaying_ = false;
 	Messenger::exit("Model::clearTrajectory");
 }
 
@@ -113,7 +113,7 @@ bool Model::initialiseTrajectory(QString filename, Tree* filter)
 		Messenger::print("Trajectory file '%s' couldn't be opened.", qPrintable(filename));
 		clearTrajectory();
 		Messenger::exit("Model::initialiseTrajectory");
-		return FALSE;
+		return false;
 	}
 	
 	// Associate the file with the trajectory, and grab header and frame read functions
@@ -126,14 +126,14 @@ bool Model::initialiseTrajectory(QString filename, Tree* filter)
 		Messenger::print("Error initialising trajectory: Filter '%s' contains no 'int readHeader()' function.", qPrintable(trajectoryFilter_->filter.name()));
 		clearTrajectory();
 		Messenger::exit("Model::initialiseTrajectory");
-		return FALSE;
+		return false;
 	}
 	if (trajectoryFrameFunction_ == NULL)
 	{
 		Messenger::print("Error initialising trajectory: Filter '%s' contains no 'int readFrame()' function.", qPrintable(trajectoryFilter_->filter.name()));
 		clearTrajectory();
 		Messenger::exit("Model::initialiseTrajectory");
-		return FALSE;
+		return false;
 	}
 	ReturnValue rv;
 	
@@ -141,7 +141,7 @@ bool Model::initialiseTrajectory(QString filename, Tree* filter)
 	if (!filter->execute(rv))
 	{
 		Messenger::exit("Model::initialiseTrajectory");
-		return FALSE;
+		return false;
 	}
 
 	// Read header
@@ -150,7 +150,7 @@ bool Model::initialiseTrajectory(QString filename, Tree* filter)
 		Messenger::print("Error reading header of trajectory file.");
 		clearTrajectory();
 		Messenger::exit("Model::initialiseTrajectory");
-		return FALSE;
+		return false;
 	}
 	
 	// Store this file position, since it should represent the start of the frame data
@@ -169,7 +169,7 @@ bool Model::initialiseTrajectory(QString filename, Tree* filter)
 		clearTrajectory();
 		setRenderSource(Model::ModelSource);
 		Messenger::exit("Model::initialiseTrajectory");
-		return FALSE;
+		return false;
 	}
 	newFrame->enableUndoRedo();
 	std::streampos secondFramePos = trajectoryParser_.tellg();
@@ -210,7 +210,7 @@ bool Model::initialiseTrajectory(QString filename, Tree* filter)
 		}
  		progress.terminate(pid);
 		nTrajectoryFileFrames_ = 0;
-		trajectoryFramesAreCached_ = TRUE;
+		trajectoryFramesAreCached_ = true;
 		trajectoryParser_.closeFiles();
 		Messenger::print("Cached %i frames from file.", nTrajectoryFrames());
 	}
@@ -223,7 +223,7 @@ bool Model::initialiseTrajectory(QString filename, Tree* filter)
 		trajectoryHighestFrameOffset_ = 1;
 	}
 	Messenger::exit("Model::initialiseTrajectory");
-	return TRUE;
+	return true;
 }
 
 // Add frame to trajectory
@@ -235,7 +235,7 @@ Model* Model::addTrajectoryFrame()
 	// Set trajectoryCurrentFrame_ here (always points to the last added frame)
 	trajectoryCurrentFrame_ = newFrame;
 	newFrame->setParent(this);
-	if (trajectoryFrames_.nItems() > 1) trajectoryFramesAreCached_ = TRUE;
+	if (trajectoryFrames_.nItems() > 1) trajectoryFramesAreCached_ = true;
 	trajectoryFrameIndex_ = trajectoryFrames_.nItems()-1;
 	Messenger::exit("Model::addFrame");	
 	return newFrame;

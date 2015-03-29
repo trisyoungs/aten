@@ -34,7 +34,7 @@ PreferencesVariable::PreferencesVariable()
 {
 	// Private variables
 	returnType_ = VTypes::PreferencesData;
-	readOnly_ = TRUE;
+	readOnly_ = true;
 }
 
 // Destructor
@@ -48,95 +48,95 @@ PreferencesVariable::~PreferencesVariable()
 
 // Accessor data - name, type, arraysize, ro?
 Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
-	{ "allowDialogs",		VTypes::IntegerData,		0, FALSE },
-	{ "angleLabelFormat",		VTypes::StringData,		0, FALSE },
-	{ "aromaticRingColour",		VTypes::DoubleData,		4, FALSE },
-	{ "atomStyleRadius",		VTypes::DoubleData,		Prefs::nDrawStyles, FALSE },
-	{ "backCull",			VTypes::IntegerData,		0, FALSE },
-	{ "backgroundColour",		VTypes::DoubleData,		4, FALSE },
-	{ "bondStyleRadius",		VTypes::DoubleData,		Prefs::nDrawStyles, FALSE },
-	{ "bondTolerance",		VTypes::DoubleData,		0, FALSE },
-	{ "cacheLimit",			VTypes::IntegerData,		0, FALSE },
-	{ "calculateIntra",		VTypes::IntegerData,		0, FALSE },
-	{ "calculateVdw",		VTypes::IntegerData,		0, FALSE },
-	{ "chargelabelFormat",		VTypes::StringData,		0, FALSE },
-	{ "clipFar",			VTypes::DoubleData,		0, FALSE },
-	{ "clipNear",			VTypes::DoubleData,		0, FALSE },
-	{ "colourScales",		VTypes::ColourScaleData,	10, TRUE },
-	{ "colourScheme",		VTypes::StringData,		0, FALSE },
-	{ "combinationRule",		VTypes::StringData,		CombinationRules::nCombinationRules, FALSE },
-	{ "commonElements",		VTypes::StringData,		0, FALSE },
-	{ "dashedAromatics",		VTypes::IntegerData,		0, FALSE },
-	{ "densityUnit",		VTypes::StringData,		0, FALSE },
-	{ "depthCue",			VTypes::IntegerData,		0, FALSE },
-	{ "depthFar",			VTypes::IntegerData,		0, FALSE },
-	{ "depthNear",			VTypes::IntegerData,		0, FALSE },
-	{ "distanceLabelFormat",	VTypes::StringData,		0, FALSE },
-	{ "elecCutoff",			VTypes::DoubleData,		0, FALSE },
-	{ "elecMethod",			VTypes::StringData,		0, FALSE },
-	{ "encoderArgs",		VTypes::StringData,		0, FALSE },
-	{ "encoderExe",			VTypes::StringData,		0, FALSE },
-	{ "encoderPostArgs",		VTypes::StringData,		0, FALSE },
-	{ "encoderPostExe",		VTypes::StringData,		0, FALSE },
-	{ "energyUnit",			VTypes::StringData,		0, FALSE },
-	{ "energyUpdate",		VTypes::IntegerData,		0, FALSE },
-	{ "ewaldAlpha",			VTypes::DoubleData,		0, FALSE },
-	{ "ewaldKMax",			VTypes::IntegerData,		3, FALSE },
-	{ "ewaldPrecision",		VTypes::DoubleData,		0, FALSE },
-	{ "forceRhombohedral",		VTypes::IntegerData,		0, FALSE },
-	{ "globeAxesColour",		VTypes::DoubleData,		4, FALSE },
-	{ "globeColour",		VTypes::DoubleData,		4, FALSE },
-	{ "globeSize",			VTypes::IntegerData,		0, FALSE },
-	{ "glyphColour",		VTypes::DoubleData,		4, FALSE },
-	{ "hBonds",			VTypes::IntegerData,		0, FALSE },
-	{ "hBondDotRadius",		VTypes::DoubleData,		0, FALSE },
-	{ "hDistance",			VTypes::DoubleData,		0, FALSE },
-	{ "imageQuality",		VTypes::IntegerData,		0, FALSE },
-	{ "keyAction",			VTypes::StringData,		Prefs::nModifierKeys, FALSE },
-	{ "labelSize",			VTypes::DoubleData,		0, FALSE },
-	{ "lineAliasing",		VTypes::IntegerData,		0, FALSE },
-	{ "manualSwapBuffers",		VTypes::IntegerData,		0, FALSE },
-	{ "maxCuboids",			VTypes::IntegerData,		0, FALSE },
-	{ "maxRings",			VTypes::IntegerData,		0, FALSE },
-	{ "maxRingsize",		VTypes::IntegerData,		0, FALSE },
-	{ "maxUndo",			VTypes::IntegerData,		0, FALSE },
-	{ "modelUpdate",		VTypes::IntegerData,		0, FALSE },
-	{ "mopacExe",			VTypes::StringData,		0, FALSE },
-	{ "mouseAction",		VTypes::StringData,		Prefs::nMouseButtons, FALSE },
-	{ "mouseMoveFilter",		VTypes::IntegerData,		0, FALSE },
-	{ "multiSampling",		VTypes::IntegerData,		0, FALSE },
-	{ "noQtSettings",		VTypes::IntegerData,		0, FALSE },
-	{ "partitionGrid",		VTypes::IntegerData,		3, FALSE },
-	{ "perspective"	,		VTypes::IntegerData,		0, FALSE },
-	{ "perspectiveFOV",		VTypes::DoubleData,		0, FALSE },
-	{ "polygonAliasing",		VTypes::IntegerData,		0, FALSE },
-	{ "quality"	,		VTypes::IntegerData,		0, FALSE },
-	{ "renderStyle",		VTypes::StringData,		0, FALSE },
-	{ "replicateFold",		VTypes::IntegerData,		0, FALSE },
-	{ "replicateTrim",		VTypes::IntegerData,		0, FALSE },
-	{ "reuseQuality",		VTypes::IntegerData,		0, FALSE },
-	{ "selectionScale",		VTypes::DoubleData,		0, FALSE },
-	{ "shininess",			VTypes::IntegerData,		0, FALSE },
-	{ "specularColour",		VTypes::DoubleData,		4, FALSE },
-	{ "spotlight",			VTypes::IntegerData,		0, FALSE },
-	{ "spotlightAmbient",		VTypes::DoubleData,		4, FALSE },
-	{ "spotlightDiffuse",		VTypes::DoubleData,		4, FALSE },
-	{ "spotlightPosition",		VTypes::DoubleData,		4, FALSE },
-	{ "spotlightSpecular",		VTypes::DoubleData,		4, FALSE },
-	{ "stickNormalWidth",		VTypes::DoubleData,		4, FALSE },
-	{ "stickSelectedWidth",		VTypes::DoubleData,		4, FALSE },
-	{ "tempDir",			VTypes::StringData,		0, FALSE },
-	{ "textColour",			VTypes::DoubleData,		4, FALSE },
-	{ "transparentSelection",	VTypes::IntegerData,		0, FALSE },
-	{ "unitCellAxesColour",		VTypes::DoubleData,		4, FALSE },
-	{ "unitCellColour",		VTypes::DoubleData,		4, FALSE },
-	{ "usePixelBuffers",		VTypes::IntegerData,		0, FALSE },
-	{ "vdwCutoff",			VTypes::DoubleData,		0, FALSE },
-	{ "vibrationArrowColour",	VTypes::DoubleData,		4, FALSE },
-	{ "viewRotationGlobe",		VTypes::IntegerData,		0, FALSE },
-	{ "wireSelectionColour",	VTypes::DoubleData,		4, FALSE },
-	{ "zMap",			VTypes::StringData,		0, FALSE },
-	{ "zoomThrottle",		VTypes::DoubleData,		0, FALSE }
+	{ "allowDialogs",		VTypes::IntegerData,		0, false },
+	{ "angleLabelFormat",		VTypes::StringData,		0, false },
+	{ "aromaticRingColour",		VTypes::DoubleData,		4, false },
+	{ "atomStyleRadius",		VTypes::DoubleData,		Prefs::nDrawStyles, false },
+	{ "backCull",			VTypes::IntegerData,		0, false },
+	{ "backgroundColour",		VTypes::DoubleData,		4, false },
+	{ "bondStyleRadius",		VTypes::DoubleData,		Prefs::nDrawStyles, false },
+	{ "bondTolerance",		VTypes::DoubleData,		0, false },
+	{ "cacheLimit",			VTypes::IntegerData,		0, false },
+	{ "calculateIntra",		VTypes::IntegerData,		0, false },
+	{ "calculateVdw",		VTypes::IntegerData,		0, false },
+	{ "chargelabelFormat",		VTypes::StringData,		0, false },
+	{ "clipFar",			VTypes::DoubleData,		0, false },
+	{ "clipNear",			VTypes::DoubleData,		0, false },
+	{ "colourScales",		VTypes::ColourScaleData,	10, true },
+	{ "colourScheme",		VTypes::StringData,		0, false },
+	{ "combinationRule",		VTypes::StringData,		CombinationRules::nCombinationRules, false },
+	{ "commonElements",		VTypes::StringData,		0, false },
+	{ "dashedAromatics",		VTypes::IntegerData,		0, false },
+	{ "densityUnit",		VTypes::StringData,		0, false },
+	{ "depthCue",			VTypes::IntegerData,		0, false },
+	{ "depthFar",			VTypes::IntegerData,		0, false },
+	{ "depthNear",			VTypes::IntegerData,		0, false },
+	{ "distanceLabelFormat",	VTypes::StringData,		0, false },
+	{ "elecCutoff",			VTypes::DoubleData,		0, false },
+	{ "elecMethod",			VTypes::StringData,		0, false },
+	{ "encoderArgs",		VTypes::StringData,		0, false },
+	{ "encoderExe",			VTypes::StringData,		0, false },
+	{ "encoderPostArgs",		VTypes::StringData,		0, false },
+	{ "encoderPostExe",		VTypes::StringData,		0, false },
+	{ "energyUnit",			VTypes::StringData,		0, false },
+	{ "energyUpdate",		VTypes::IntegerData,		0, false },
+	{ "ewaldAlpha",			VTypes::DoubleData,		0, false },
+	{ "ewaldKMax",			VTypes::IntegerData,		3, false },
+	{ "ewaldPrecision",		VTypes::DoubleData,		0, false },
+	{ "forceRhombohedral",		VTypes::IntegerData,		0, false },
+	{ "globeAxesColour",		VTypes::DoubleData,		4, false },
+	{ "globeColour",		VTypes::DoubleData,		4, false },
+	{ "globeSize",			VTypes::IntegerData,		0, false },
+	{ "glyphColour",		VTypes::DoubleData,		4, false },
+	{ "hBonds",			VTypes::IntegerData,		0, false },
+	{ "hBondDotRadius",		VTypes::DoubleData,		0, false },
+	{ "hDistance",			VTypes::DoubleData,		0, false },
+	{ "imageQuality",		VTypes::IntegerData,		0, false },
+	{ "keyAction",			VTypes::StringData,		Prefs::nModifierKeys, false },
+	{ "labelSize",			VTypes::DoubleData,		0, false },
+	{ "lineAliasing",		VTypes::IntegerData,		0, false },
+	{ "manualSwapBuffers",		VTypes::IntegerData,		0, false },
+	{ "maxCuboids",			VTypes::IntegerData,		0, false },
+	{ "maxRings",			VTypes::IntegerData,		0, false },
+	{ "maxRingsize",		VTypes::IntegerData,		0, false },
+	{ "maxUndo",			VTypes::IntegerData,		0, false },
+	{ "modelUpdate",		VTypes::IntegerData,		0, false },
+	{ "mopacExe",			VTypes::StringData,		0, false },
+	{ "mouseAction",		VTypes::StringData,		Prefs::nMouseButtons, false },
+	{ "mouseMoveFilter",		VTypes::IntegerData,		0, false },
+	{ "multiSampling",		VTypes::IntegerData,		0, false },
+	{ "noQtSettings",		VTypes::IntegerData,		0, false },
+	{ "partitionGrid",		VTypes::IntegerData,		3, false },
+	{ "perspective"	,		VTypes::IntegerData,		0, false },
+	{ "perspectiveFOV",		VTypes::DoubleData,		0, false },
+	{ "polygonAliasing",		VTypes::IntegerData,		0, false },
+	{ "quality"	,		VTypes::IntegerData,		0, false },
+	{ "renderStyle",		VTypes::StringData,		0, false },
+	{ "replicateFold",		VTypes::IntegerData,		0, false },
+	{ "replicateTrim",		VTypes::IntegerData,		0, false },
+	{ "reuseQuality",		VTypes::IntegerData,		0, false },
+	{ "selectionScale",		VTypes::DoubleData,		0, false },
+	{ "shininess",			VTypes::IntegerData,		0, false },
+	{ "specularColour",		VTypes::DoubleData,		4, false },
+	{ "spotlight",			VTypes::IntegerData,		0, false },
+	{ "spotlightAmbient",		VTypes::DoubleData,		4, false },
+	{ "spotlightDiffuse",		VTypes::DoubleData,		4, false },
+	{ "spotlightPosition",		VTypes::DoubleData,		4, false },
+	{ "spotlightSpecular",		VTypes::DoubleData,		4, false },
+	{ "stickNormalWidth",		VTypes::DoubleData,		4, false },
+	{ "stickSelectedWidth",		VTypes::DoubleData,		4, false },
+	{ "tempDir",			VTypes::StringData,		0, false },
+	{ "textColour",			VTypes::DoubleData,		4, false },
+	{ "transparentSelection",	VTypes::IntegerData,		0, false },
+	{ "unitCellAxesColour",		VTypes::DoubleData,		4, false },
+	{ "unitCellColour",		VTypes::DoubleData,		4, false },
+	{ "usePixelBuffers",		VTypes::IntegerData,		0, false },
+	{ "vdwCutoff",			VTypes::DoubleData,		0, false },
+	{ "vibrationArrowColour",	VTypes::DoubleData,		4, false },
+	{ "viewRotationGlobe",		VTypes::IntegerData,		0, false },
+	{ "wireSelectionColour",	VTypes::DoubleData,		4, false },
+	{ "zMap",			VTypes::StringData,		0, false },
+	{ "zoomThrottle",		VTypes::DoubleData,		0, false }
 };
 
 // Function data
@@ -217,7 +217,7 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArray
 	{
 		printf("Internal Error: Accessor id %i is out of range for Prefs type.\n", i);
 		Messenger::exit("PreferencesVariable::retrieveAccessor");
-		return FALSE;
+		return false;
 	}
 	Accessors acc = (Accessors) i;
 	// Check for correct lack/presence of array index given
@@ -225,7 +225,7 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArray
 	{
 		Messenger::print("Error: Unnecessary array index provided for member '%s'.", accessorData[i].name);
 		Messenger::exit("PreferencesVariable::retrieveAccessor");
-		return FALSE;
+		return false;
 	}
 	else if ((accessorData[i].arraySize > 0) && (hasArrayIndex))
 	{
@@ -233,7 +233,7 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArray
 		{
 			Messenger::print("Error: Array index out of bounds for member '%s' (%i, range is 1-%i).", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
 			Messenger::exit("PreferencesVariable::retrieveAccessor");
-			return FALSE;
+			return false;
 		}
 	}
 	// Variables used in retrieval
@@ -242,7 +242,7 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArray
 	if ((!result) || (ptr == NULL))
 	{
 		Messenger::print("Invalid (NULL) %s reference encountered.", VTypes::dataType(VTypes::PreferencesData));
-		result = FALSE;
+		result = false;
 	}
 	if (result) switch (acc)
 	{
@@ -537,7 +537,7 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArray
 			break;
 		default:
 			printf("Internal Error: Access to member '%s' has not been defined in PreferencesVariable.\n", accessorData[i].name);
-			result = FALSE;
+			result = false;
 			break;
 	}
 	Messenger::exit("PreferencesVariable::retrieveAccessor");
@@ -553,11 +553,11 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue&
 	{
 		printf("Internal Error: Accessor id %i is out of range for Prefs type.\n", i);
 		Messenger::exit("PreferencesVariable::setAccessor");
-		return FALSE;
+		return false;
 	}
 	Accessors acc = (Accessors) i;
 	// Check for correct lack/presence of array index given to original accessor, and nature of new value
-	bool result = TRUE;
+	bool result = true;
 	if (accessorData[i].arraySize != 0)
 	{
 		if (hasArrayIndex)
@@ -565,12 +565,12 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue&
 			if ((accessorData[i].arraySize > 0) && ( (arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize) ))
 			{
 				Messenger::print("Error: Array index provided for member '%s' is out of range (%i, range is 1-%i).", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
-				result = FALSE;
+				result = false;
 			}
 			if (newValue.arraySize() > 0)
 			{
 				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.", accessorData[i].name);
-				result = FALSE;
+				result = false;
 			}
 		}
 		else
@@ -578,7 +578,7 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue&
 			if (newValue.arraySize() > accessorData[i].arraySize)
 			{
 				Messenger::print("Error: The array being assigned to member '%s' is larger than the size of the desination array (%i cf. %i).", accessorData[i].name, newValue.arraySize(), accessorData[i].arraySize);
-				result = FALSE;
+				result = false;
 			}
 		}
 	}
@@ -590,26 +590,26 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue&
 			if (accessorData[i].returnType != VTypes::VectorData)
 			{
 				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.", accessorData[i].name);
-				result = FALSE;
+				result = false;
 			}
 			else if ((newValue.type() != VTypes::VectorData) && (newValue.arraySize() != 3))
 			{
 				Messenger::print("Error: Only an array of size 3 can be assigned to a vector (member '%s').", accessorData[i].name);
-				result = FALSE;
+				result = false;
 			}
 		}
 	}
 	if (!result)
 	{
 		Messenger::exit("PreferencesVariable::setAccessor");
-		return FALSE;
+		return false;
 	}
 	// Get current data from ReturnValue
 	Prefs* ptr = (Prefs*) sourcerv.asPointer(VTypes::PreferencesData, result);
 	if ((!result) || (ptr == NULL))
 	{
 		Messenger::print("Invalid (NULL) %s reference encountered.", VTypes::dataType(VTypes::PreferencesData));
-		result = FALSE;
+		result = false;
 	}
 	int n;
 	bool updatePrimitives = false;
@@ -676,9 +676,9 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue&
 			ptr->setClipNear( newValue.asDouble(result) );
 			break;
 		case (PreferencesVariable::ColourScheme):
-			cs = Prefs::colouringScheme( newValue.asString(result), TRUE );
+			cs = Prefs::colouringScheme( newValue.asString(result), true );
 			if (cs != Prefs::nColouringSchemes) ptr->setColourScheme(cs);
-			else result = FALSE;
+			else result = false;
 			break;
 		case (PreferencesVariable::CombinationRule):
 			if (newValue.arraySize() == CombinationRules::nCombinationRules) for (n=0; n<CombinationRules::nCombinationRules; ++n)
@@ -691,7 +691,7 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue&
 			}
 			else for (n=0; n<CombinationRules::nCombinationRules; ++n) ptr->setCombinationRule((CombinationRules::CombinationRule) n, newValue.asString(result));
 			// Regenerate equations to check
-			if (!aten_->combinationRules().regenerateEquations()) result = FALSE;
+			if (!aten_->combinationRules().regenerateEquations()) result = false;
 			break;
 		case (PreferencesVariable::CommonElements):
 			ptr->setCommonElements( newValue.asString(result) );
@@ -700,9 +700,9 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue&
 			ptr->setRenderDashedAromatics(newValue.asBool());
 			break;
 		case (PreferencesVariable::DensityUnit):
-			du = Prefs::densityUnit( newValue.asString(result), TRUE );
+			du = Prefs::densityUnit( newValue.asString(result), true );
 			if (du != Prefs::nDensityUnits) ptr->setDensityUnit(du);
-			else result = FALSE;
+			else result = false;
 			break;
 		case (PreferencesVariable::DepthCue):
 			ptr->setDepthCue( newValue.asBool() );
@@ -720,9 +720,9 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue&
 			ptr->setElecCutoff( newValue.asDouble(result) );
 			break;
 		case (PreferencesVariable::ElecMethod):
-			em = Electrostatics::elecMethod( newValue.asString(result), TRUE );
+			em = Electrostatics::elecMethod( newValue.asString(result), true );
 			if (em != Electrostatics::nElectrostatics) ptr->setElectrostaticsMethod(em);
-			else result = FALSE;
+			else result = false;
 			break;
 		case (PreferencesVariable::EncoderArgs):
 			ptr->setEncoderArguments( newValue.asString(result) );
@@ -737,14 +737,14 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue&
 			ptr->setEncoderPostExe( newValue.asString(result) );
 			break;
 		case (PreferencesVariable::EnergyUnit):
-			eu = Prefs::energyUnit( newValue.asString(result), TRUE );
+			eu = Prefs::energyUnit( newValue.asString(result), true );
 			if (eu != Prefs::nEnergyUnits)
 			{
 				ptr->setEnergyUnit(eu);
 				// Loop over stored forcefields and convert energetic parameters
 				for (Forcefield* ff = aten_->forcefields(); ff != NULL; ff = ff->next) ff->convertParameters();
 			}
-			else result = FALSE;
+			else result = false;
 			break;
 		case (PreferencesVariable::EnergyUpdate):
 			ptr->setEnergyUpdate( newValue.asInteger(result) );
@@ -802,19 +802,19 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue&
 			{
 				ka = Prefs::keyAction( newValue.asString(n, result) );
 				if ((ka != Prefs::nKeyActions) && result) ptr->setKeyAction( (Prefs::ModifierKey) n, ka);
-				else { result = FALSE; break; }
+				else { result = false; break; }
 			}
 			else if (hasArrayIndex)
 			{
 				ka = Prefs::keyAction( newValue.asString(result) );
 				if ((ka != Prefs::nKeyActions) && result) ptr->setKeyAction( (Prefs::ModifierKey) (arrayIndex-1), ka);
-				else result = FALSE;
+				else result = false;
 			}
 			else
 			{
 				ka = Prefs::keyAction( newValue.asString(result) );
 				if ((ka != Prefs::nKeyActions) && result) for (n=0; n<Prefs::nKeyActions; ++n) ptr->setKeyAction( (Prefs::ModifierKey) n, ka);
-				else { result = FALSE; break; }
+				else { result = false; break; }
 			}
 			break;
 		case (PreferencesVariable::LabelSize):
@@ -849,19 +849,19 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue&
 			{
 				ma = Prefs::mouseAction( newValue.asString(n, result) );
 				if ((ma != Prefs::nMouseActions) && result) ptr->setMouseAction( (Prefs::MouseButton) n, ma);
-				else { result = FALSE; break; }
+				else { result = false; break; }
 			}
 			else if (hasArrayIndex)
 			{
 				ma = Prefs::mouseAction( newValue.asString(result) );
 				if ((ma != Prefs::nMouseActions) && result) ptr->setMouseAction( (Prefs::MouseButton) (arrayIndex-1), ma);
-				else result = FALSE;
+				else result = false;
 			}
 			else
 			{
 				ma = Prefs::mouseAction( newValue.asString(result) );
 				if ((ma != Prefs::nMouseActions) && result) for (n=0; n<Prefs::nMouseActions; ++n) ptr->setMouseAction( (Prefs::MouseButton) n, ma);
-				else { result = FALSE; break; }
+				else { result = false; break; }
 			}
 			break;
 		case (PreferencesVariable::MouseMoveFilter):
@@ -894,9 +894,9 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue&
 			updatePrimitives = true;
 			break;
 		case (PreferencesVariable::RenderStyle):
-			ds = Prefs::drawStyle( newValue.asString(result), TRUE );
+			ds = Prefs::drawStyle( newValue.asString(result), true );
 			if ((ds != Prefs::nDrawStyles) && result) ptr->setRenderStyle(ds);
-			else result = FALSE;
+			else result = false;
 			break;
 		case (PreferencesVariable::ReplicateFold):
 			ptr->setReplicateFold( newValue.asBool() );
@@ -999,16 +999,16 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue&
 			else for (n=0; n<4; ++n) ptr->setColour(Prefs::WireSelectionColour, n, newValue.asDouble(result));
 			break;
 		case (PreferencesVariable::ZMapping):
-			zm = ElementMap::zMapType( newValue.asString(result), TRUE );
+			zm = ElementMap::zMapType( newValue.asString(result), true );
 			if (zm != ElementMap::nZMapTypes) ptr->setZMapType(zm);
-			else result = FALSE;
+			else result = false;
 			break;
 		case (PreferencesVariable::ZoomThrottle):
 			ptr->setZoomThrottle( newValue.asDouble(result) );
 			break;
 		default:
 			printf("PreferencesVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);
-			result = FALSE;
+			result = false;
 			break;
 	}
 
@@ -1032,16 +1032,16 @@ bool PreferencesVariable::performFunction(int i, ReturnValue& rv, TreeNode* node
 	{
 		printf("Internal Error: FunctionAccessor id %i is out of range for Preferences type.\n", i);
 		Messenger::exit("PreferencesVariable::performFunction");
-		return FALSE;
+		return false;
 	}
 	// Get current data from ReturnValue
-	bool result = TRUE;
+	bool result = true;
 	Prefs* ptr = (Prefs*) rv.asPointer(VTypes::PreferencesData, result);
 	if (result) switch (i)
 	{
 		default:
 			printf("Internal Error: Access to function '%s' has not been defined in PreferencesVariable.\n", functionData[i].name);
-			result = FALSE;
+			result = false;
 			break;
 	}
 	Messenger::exit("PreferencesVariable::performFunction");

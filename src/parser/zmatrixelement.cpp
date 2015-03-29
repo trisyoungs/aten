@@ -50,20 +50,20 @@ ZMatrixElementVariable::~ZMatrixElementVariable()
 
 // Accessor data
 Accessor ZMatrixElementVariable::accessorData[ZMatrixElementVariable::nAccessors] = {
-	{ "angle",		VTypes::DoubleData,	0, FALSE },
-	{ "angleAtom",		VTypes::AtomData,	0, TRUE },
-	{ "angleName",		VTypes::StringData,	0, FALSE },
-	{ "atom",		VTypes::AtomData,	4, TRUE },
-	{ "distance",		VTypes::DoubleData,	0, FALSE },
-	{ "distanceAtom",	VTypes::AtomData,	0, TRUE },
-	{ "distanceName",	VTypes::StringData,	0, FALSE },
-	{ "negateAngle", 	VTypes::IntegerData,	0, FALSE },
-	{ "negateDistance", 	VTypes::IntegerData,	0, FALSE },
-	{ "negateTorsion", 	VTypes::IntegerData,	0, FALSE },
-	{ "targetAtom",		VTypes::AtomData,	0, TRUE },
-	{ "torsion",		VTypes::DoubleData,	0, FALSE },
-	{ "torsionAtom",	VTypes::AtomData,	0, TRUE },
-	{ "torsionName",	VTypes::StringData,	0, FALSE }
+	{ "angle",		VTypes::DoubleData,	0, false },
+	{ "angleAtom",		VTypes::AtomData,	0, true },
+	{ "angleName",		VTypes::StringData,	0, false },
+	{ "atom",		VTypes::AtomData,	4, true },
+	{ "distance",		VTypes::DoubleData,	0, false },
+	{ "distanceAtom",	VTypes::AtomData,	0, true },
+	{ "distanceName",	VTypes::StringData,	0, false },
+	{ "negateAngle", 	VTypes::IntegerData,	0, false },
+	{ "negateDistance", 	VTypes::IntegerData,	0, false },
+	{ "negateTorsion", 	VTypes::IntegerData,	0, false },
+	{ "targetAtom",		VTypes::AtomData,	0, true },
+	{ "torsion",		VTypes::DoubleData,	0, false },
+	{ "torsionAtom",	VTypes::AtomData,	0, true },
+	{ "torsionName",	VTypes::StringData,	0, false }
 };
 
 // Function data
@@ -144,7 +144,7 @@ bool ZMatrixElementVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasAr
 	{
 		printf("Internal Error: Accessor id %i is out of range for ZMatrixElement type.\n", i);
 		Messenger::exit("ZMatrixElementVariable::retrieveAccessor");
-		return FALSE;
+		return false;
 	}
 	Accessors acc = (Accessors) i;
 	// Check for correct lack/presence of array index given
@@ -152,7 +152,7 @@ bool ZMatrixElementVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasAr
 	{
 		Messenger::print("Error: Unnecessary array index provided for member '%s'.", accessorData[i].name);
 		Messenger::exit("ZMatrixElementVariable::retrieveAccessor");
-		return FALSE;
+		return false;
 	}
 	else if ((accessorData[i].arraySize > 0) && (hasArrayIndex))
 	{
@@ -160,16 +160,16 @@ bool ZMatrixElementVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasAr
 		{
 			Messenger::print("Error: Array index out of bounds for member '%s' (%i, range is 1-%i).", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
 			Messenger::exit("ZMatrixElementVariable::retrieveAccessor");
-			return FALSE;
+			return false;
 		}
 	}
 	// Get current data from ReturnValue
-	bool result = TRUE;
+	bool result = true;
 	ZMatrixElement* ptr = (ZMatrixElement*) rv.asPointer(VTypes::ZMatrixElementData, result);
 	if ((!result) || (ptr == NULL))
 	{
 		Messenger::print("Invalid (NULL) %s reference encountered.", VTypes::dataType(VTypes::ZMatrixElementData));
-		result = FALSE;
+		result = false;
 	}
 	if (result) switch (acc)
 	{
@@ -217,7 +217,7 @@ bool ZMatrixElementVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasAr
 			break;
 		default:
 			printf("Internal Error: Access to member '%s' has not been defined in ZMatrixElementVariable.\n", accessorData[i].name);
-			result = FALSE;
+			result = false;
 			break;
 	}
 	Messenger::exit("ZMatrixElementVariable::retrieveAccessor");
@@ -233,11 +233,11 @@ bool ZMatrixElementVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnVal
 	{
 		printf("Internal Error: Accessor id %i is out of range for ZMatrixElement type.\n", i);
 		Messenger::exit("ZMatrixElementVariable::setAccessor");
-		return FALSE;
+		return false;
 	}
 	Accessors acc = (Accessors) i;
 	// Check for correct lack/presence of array index given to original accessor, and nature of new value
-	bool result = TRUE;
+	bool result = true;
 	if (accessorData[i].arraySize != 0)
 	{
 		if (hasArrayIndex)
@@ -245,12 +245,12 @@ bool ZMatrixElementVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnVal
 			if ((accessorData[i].arraySize > 0) && ( (arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize) ))
 			{
 				Messenger::print("Error: Array index provided for member '%s' is out of range (%i, range is 1-%i).", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
-				result = FALSE;
+				result = false;
 			}
 			if ((newValue.arraySize() > 0) && (accessorData[i].returnType != VTypes::VectorData))
 			{
 				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.", accessorData[i].name);
-				result = FALSE;
+				result = false;
 			}
 		}
 		else
@@ -258,7 +258,7 @@ bool ZMatrixElementVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnVal
 			if (newValue.arraySize() > accessorData[i].arraySize)
 			{
 				Messenger::print("Error: The array being assigned to member '%s' is larger than the size of the desination array (%i cf. %i).", accessorData[i].name, newValue.arraySize(), accessorData[i].arraySize);
-				result = FALSE;
+				result = false;
 			}
 		}
 	}
@@ -270,26 +270,26 @@ bool ZMatrixElementVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnVal
 			if (accessorData[i].returnType != VTypes::VectorData)
 			{
 				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.", accessorData[i].name);
-				result = FALSE;
+				result = false;
 			}
 			else if ((newValue.type() != VTypes::VectorData) && (newValue.arraySize() != 3))
 			{
 				Messenger::print("Error: Only an array of size 3 can be assigned to a vector (member '%s').", accessorData[i].name);
-				result = FALSE;
+				result = false;
 			}
 		}
 	}
 	if (!result)
 	{
 		Messenger::exit("ZMatrixElementVariable::setAccessor");
-		return FALSE;
+		return false;
 	}
 	// Get current data from ReturnValue
 	ZMatrixElement* ptr = (ZMatrixElement*) sourcerv.asPointer(VTypes::ZMatrixElementData, result);
 	if ((!result) || (ptr == NULL))
 	{
 		Messenger::print("Invalid (NULL) %s reference encountered.", VTypes::dataType(VTypes::ZMatrixElementData));
-		result = FALSE;
+		result = false;
 	}
 	if (result) switch (acc)
 	{
@@ -322,7 +322,7 @@ bool ZMatrixElementVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnVal
 			break;
 		default:
 			printf("ZMatrixElementVariable::setAccessor doesn't know how to use member '%s'.", accessorData[acc].name);
-			result = FALSE;
+			result = false;
 			break;
 	}
 	Messenger::exit("ZMatrixElementVariable::setAccessor");
@@ -338,16 +338,16 @@ bool ZMatrixElementVariable::performFunction(int i, ReturnValue& rv, TreeNode* n
 	{
 		printf("Internal Error: FunctionAccessor id %i is out of range for ZMatrixElement type.\n", i);
 		Messenger::exit("ZMatrixElementVariable::performFunction");
-		return FALSE;
+		return false;
 	}
 	// Get current data from ReturnValue
-	bool result = TRUE;
+	bool result = true;
 	ZMatrixElement* ptr = (ZMatrixElement*) rv.asPointer(VTypes::ZMatrixElementData, result);
 	if (result) switch (i)
 	{
 		default:
 			printf("Internal Error: Access to function '%s' has not been defined in ZMatrixElementVariable.\n", functionData[i].name);
-			result = FALSE;
+			result = false;
 			break;
 	}
 	Messenger::exit("ZMatrixElementVariable::performFunction");

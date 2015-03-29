@@ -126,9 +126,9 @@ bool PartitionData::contains(int ix, int iy, int iz)
 		if (cells_[div]->data[mod*3] != ix) continue;
 		if (cells_[div]->data[mod*3+1] != iy) continue;
 		if (cells_[div]->data[mod*3+2] != iz) continue;
-		return TRUE;
+		return true;
 	}
-	return FALSE;
+	return false;
 }
 
 // Return random cell from list
@@ -218,7 +218,7 @@ PartitioningScheme::PartitioningScheme() : ListItem<PartitioningScheme>()
 	partitionFunction_ = NULL;
 	partitionNameFunction_ = NULL;
 	partitionOptionsFunction_ = NULL;
-	staticData_ = FALSE;
+	staticData_ = false;
 	partitionLogPoint_ = -1;
 	changeLog_ = 0;
 
@@ -287,7 +287,7 @@ bool PartitioningScheme::initialiseFromProgram()
 	{
 		Messenger::print("Error: No 'nPartitions' variable defined in partitioning scheme '%s'", qPrintable(name_));
 		Messenger::exit("PartitioningScheme::initialiseFromProgram");
-		return FALSE;
+		return false;
 	}
 	Messenger::print(Messenger::Verbose, "  --> Found 'nPartitions' variable in partitioning scheme '%s'.", qPrintable(name_));
 	v->initialise();
@@ -297,7 +297,7 @@ bool PartitioningScheme::initialiseFromProgram()
 	{
 		Messenger::print("Error: Invalid 'nPartitions' (%i) found in partitioning scheme '%s'", nparts, qPrintable(name_));
 		Messenger::exit("PartitioningScheme::initialiseFromProgram");
-		return FALSE;
+		return false;
 	}
 	
 	// Set initial grid size (from prefs)
@@ -310,7 +310,7 @@ bool PartitioningScheme::initialiseFromProgram()
 	{
 		Messenger::print("Error: No 'partition' function defined in partitioning scheme '%s'", qPrintable(name_));
 		Messenger::exit("PartitioningScheme::initialiseFromProgram");
-		return FALSE;
+		return false;
 	}
 	partitionFunctionNode_.setFunction(partitionFunction_);
 
@@ -321,7 +321,7 @@ bool PartitioningScheme::initialiseFromProgram()
 	{
 		Messenger::print("Error: No 'partitionName' function defined in partitioning scheme '%s'", qPrintable(name_));
 		Messenger::exit("PartitioningScheme::initialiseFromProgram");
-		return FALSE;
+		return false;
 	}
 	partitionNameNode_.setFunction(partitionNameFunction_);
 
@@ -331,16 +331,16 @@ bool PartitioningScheme::initialiseFromProgram()
 	{
 		Messenger::print(Messenger::Verbose, "  --> Found 'partitionOptions' function in partitioning scheme '%s'.", qPrintable(name_));
 		partitionOptionsNode_.setFunction(partitionOptionsFunction_);
-		hasOptions_ = TRUE;
+		hasOptions_ = true;
 	}
-	else hasOptions_ = FALSE;
+	else hasOptions_ = false;
 
 	// Run main partition tree so all variables / globals are set
 	if (!schemeDefinition_.mainProgram()->execute(rv))
 	{
 		Messenger::print("Error: Failed to run through partitioning scheme code.");
 		Messenger::exit("PartitioningScheme::initialiseFromProgram");
-		return FALSE;
+		return false;
 	}
 
 	// Now can set up basic partition list
@@ -353,7 +353,7 @@ bool PartitioningScheme::initialiseFromProgram()
 	}
 	
 	Messenger::exit("PartitioningScheme::initialiseFromProgram");
-	return TRUE;
+	return true;
 }
 
 // Setup scheme information manually (for absolute grid data)
@@ -361,7 +361,7 @@ void PartitioningScheme::initialiseAbsolute(QString name, QString description)
 {
 	name_ = name;
 	description_ = description;
-	staticData_ = TRUE;
+	staticData_ = true;
 }
 
 // Set name and description of scheme manually
@@ -391,7 +391,7 @@ bool PartitioningScheme::setVariable(QString varName, QString value)
 	{
 		Messenger::print("Internal Error: No partitionFunction_ defined for variable search.");
 		Messenger::exit("PartitioningScheme::setVariable");
-		return FALSE;
+		return false;
 	}
 	// Search for global variable by that name...
 	bool result;
@@ -401,7 +401,7 @@ bool PartitioningScheme::setVariable(QString varName, QString value)
 		Messenger::print(Messenger::Verbose, "Found global variable '%s' in partitioning scheme '%s' - setting value to '%s'", qPrintable(varName), qPrintable(name_), qPrintable(value));
 		ReturnValue rv(value);
 		var->set(rv);
-		result = TRUE;
+		result = true;
 	}
 	else
 	{
@@ -596,7 +596,7 @@ bool PartitioningScheme::hasOptions()
 // Show (execute) options dialog
 bool PartitioningScheme::showOptions()
 {
-	if (!hasOptions_) return TRUE;
+	if (!hasOptions_) return true;
 	ReturnValue rv;
 	partitionOptionsNode_.execute(rv);
 	bool result = rv.asBool();
@@ -675,8 +675,8 @@ void PartitioningScheme::copy(PartitioningScheme &source)
 	partitionOptionsFunction_ = NULL;
 	
 	// Copied data will now be absolute...
-	staticData_ = TRUE;
-	hasOptions_ = FALSE;
+	staticData_ = true;
+	hasOptions_ = false;
 
 	// Copy basic data
 	name_ = source.name_;

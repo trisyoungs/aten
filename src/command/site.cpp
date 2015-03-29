@@ -31,10 +31,10 @@ ATEN_USING_NAMESPACE
 // Add site definition to model ('newsite <name> <pattern> <"atomids...">')
 bool Commands::function_NewSite(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	// First, check that the pattern name provided refers to a pattern of the current model
 	Pattern* p = obj.m->findPattern(c->argc(1));
-	if (p == NULL) return FALSE;
+	if (p == NULL) return false;
 	obj.s = obj.m->sites.add();
 	obj.s->setName(c->argc(0));
 	obj.s->setPattern(p);
@@ -51,13 +51,13 @@ bool Commands::function_NewSite(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	}
 	Messenger::print("New site added for model: '%s', for pattern '%s', %i atoms defined%s", qPrintable(obj.s->name()), qPrintable(p->name()), obj.s->atoms.count(), (obj.s->atoms.count() == 0 ? " (will use centre of geometry)\n" : "\n"));
 	rv.reset();
-	return TRUE;
+	return true;
 }
 
 // Print site definitions for model ('listsites')
 bool Commands::function_ListSites(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	Site* s = obj.m->sites.first();
 	if (s == NULL) Messenger::print("No sites defined for model '%s'.", qPrintable(obj.m->name()));
 	else
@@ -72,25 +72,25 @@ bool Commands::function_ListSites(CommandNode* c, Bundle& obj, ReturnValue& rv)
 		}
 	}
 	rv.reset();
-	return TRUE;
+	return true;
 }
 
 // Select named site from currently defined model sites ('getsite <name>')
 bool Commands::function_GetSite(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	Site* s;
 	for (s = obj.m->sites.first(); s != NULL; s = s->next) if (s->name() == c->argc(0)) break;
 	if (s == NULL) Messenger::print("No site '%s' defined in model '%s'.", qPrintable(c->argc(0)), qPrintable(obj.m->name()));
 	else obj.s = s;
 	rv.reset();
-	return FALSE;
+	return false;
 }
 
 // Set x and y-axis definitions for current site ('siteaxes <"X-atomids..."> <"Y-atomids">')
 bool Commands::function_SiteAxes(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::SitePointer)) return FALSE;
+	if (obj.notifyNull(Bundle::SitePointer)) return false;
 	int n;
 	LineParser parser;
 	// Parse atom list for x-axis
@@ -108,6 +108,6 @@ bool Commands::function_SiteAxes(CommandNode* c, Bundle& obj, ReturnValue& rv)
 		obj.s->yAxisAtoms << parser.argi(n) - 1;
 	}
 	rv.reset();
-	return TRUE;
+	return true;
 }
 

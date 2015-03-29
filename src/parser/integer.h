@@ -33,7 +33,7 @@ class IntegerVariable : public Variable
 {
 	public:
 	// Constructor / Destructor
-	IntegerVariable(int i = 0, bool constant = FALSE);
+	IntegerVariable(int i = 0, bool constant = false);
 	~IntegerVariable();
 
 	/*
@@ -62,7 +62,7 @@ class IntegerArrayVariable : public ArrayVariable
 {
 	public:
 	// Constructor / Destructor
-	IntegerArrayVariable(TreeNode* sizeexpr, bool constant = FALSE);
+	IntegerArrayVariable(TreeNode* sizeexpr, bool constant = false);
 	~IntegerArrayVariable();
 
 	/*

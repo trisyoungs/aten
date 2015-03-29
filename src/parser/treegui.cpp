@@ -164,10 +164,10 @@ bool TreeGuiWidgetEvent::qualifies(int i)
 	if (qualifier_ != TreeGuiWidgetEvent::IntegerQualifier)
 	{
 		printf("Internal Error: Tried to qualify a value that isn't an integer.\n");
-		return FALSE;
+		return false;
 	}
-	if ((i < minimumI_) || (i > maximumI_)) return FALSE;
-	return TRUE;
+	if ((i < minimumI_) || (i > maximumI_)) return false;
+	return true;
 }
 
 // Return whether supplied double value qualifies
@@ -176,10 +176,10 @@ bool TreeGuiWidgetEvent::qualifies(double d)
 	if (qualifier_ != TreeGuiWidgetEvent::DoubleQualifier)
 	{
 		printf("Internal Error: Tried to qualify a value that isn't a double.\n");
-		return FALSE;
+		return false;
 	}
-	if ((d < minimumD_) || (d > maximumD_)) return FALSE;
-	return TRUE;
+	if ((d < minimumD_) || (d > maximumD_)) return false;
+	return true;
 }
 
 // Return whether supplied character value qualifies
@@ -188,11 +188,11 @@ bool TreeGuiWidgetEvent::qualifies(QString s)
 	if (qualifier_ != TreeGuiWidgetEvent::StringQualifier)
 	{
 		printf("Internal Error: Tried to qualify a value that isn't a string.\n");
-		return FALSE;
+		return false;
 	}
 	// Go through list of matches
 	for (int n=0; n<matchS_.count(); ++n) if (matchS_.at(n) == s) return true;
-	return FALSE;
+	return false;
 }
 
 /*
@@ -225,9 +225,9 @@ TreeGuiWidget::TreeGuiWidget() : ListItem<TreeGuiWidget>()
 	minimumD_ = 0.0;
 	maximumD_ = 0.0;
 	valueD_ = 0.0;
-	for (int n = 0; n < TreeGuiWidgetEvent::nEventProperties; ++n) propertyChanged_[n] = FALSE;
-	enabled_ = TRUE;
-	visible_ = TRUE;
+	for (int n = 0; n < TreeGuiWidgetEvent::nEventProperties; ++n) propertyChanged_[n] = false;
+	enabled_ = true;
+	visible_ = true;
 }
 
 // Destructor
@@ -280,7 +280,7 @@ bool TreeGuiWidget::setInitialProperties(int minval, int maxval, int value)
 	if (maxval < minval)
 	{
 		Messenger::print("Error setting widget integer properties: max > min.");
-		return FALSE;
+		return false;
 	}
 	minimumI_ = minval;
 	maximumI_ = maxval;
@@ -291,7 +291,7 @@ bool TreeGuiWidget::setInitialProperties(int minval, int maxval, int value)
 		valueI_ = minimumI_;
 	}
 	else valueI_ = value;
-	return TRUE;
+	return true;
 }
 
 // Set double properties
@@ -301,7 +301,7 @@ bool TreeGuiWidget::setInitialProperties(double minval, double maxval, double va
 	if (maxval < minval)
 	{
 		Messenger::print("Error setting widget double properties: max > min.");
-		return FALSE;
+		return false;
 	}
 	minimumD_ = minval;
 	maximumD_ = maxval;
@@ -312,21 +312,21 @@ bool TreeGuiWidget::setInitialProperties(double minval, double maxval, double va
 		valueD_ = minimumD_;
 	}
 	else valueD_ = value;
-	return TRUE;
+	return true;
 }
 
 // Set string properties
 bool TreeGuiWidget::setInitialProperties(QString s)
 {
 	text_ = s;
-	return TRUE;
+	return true;
 }
 
 // Add text item
 void TreeGuiWidget::addComboItem(QString item)
 {
 	comboItems_ << item;
-	propertyChanged_[TreeGuiWidgetEvent::ItemsProperty] = TRUE;
+	propertyChanged_[TreeGuiWidgetEvent::ItemsProperty] = true;
 }
 
 // Return number of defined items
@@ -351,7 +351,7 @@ bool TreeGuiWidget::isGoodValue(double d, bool printError)
 	return result;
 }
 
-// Return whether string is in list (returning index or 0 for FALSE)
+// Return whether string is in list (returning index or 0 for false)
 int TreeGuiWidget::isInList(QString s, bool printError)
 {
 	// Search through items list
@@ -436,38 +436,38 @@ bool TreeGuiWidget::setProperty(TreeGuiWidgetEvent::EventProperty property, Retu
 {
 	Messenger::enter("TreeGuiWidget::setProperty");
 	// Do generic properties which are applicable to any widget type first
-	bool done = TRUE;
+	bool done = true;
 	if (property == TreeGuiWidgetEvent::DisabledProperty)
 	{
 		enabled_ = !rv.asBool();
-		propertyChanged_[TreeGuiWidgetEvent::EnabledProperty] = TRUE;
+		propertyChanged_[TreeGuiWidgetEvent::EnabledProperty] = true;
 	}
 	else if (property == TreeGuiWidgetEvent::EnabledProperty)
 	{
 		enabled_ = rv.asBool();
-		propertyChanged_[TreeGuiWidgetEvent::EnabledProperty] = TRUE;
+		propertyChanged_[TreeGuiWidgetEvent::EnabledProperty] = true;
 	}
 	else if (property == TreeGuiWidgetEvent::InvisibleProperty)
 	{
 		visible_ = !rv.asBool();
-		propertyChanged_[TreeGuiWidgetEvent::VisibleProperty] = TRUE;
+		propertyChanged_[TreeGuiWidgetEvent::VisibleProperty] = true;
 	}
 	else if (property == TreeGuiWidgetEvent::VisibleProperty)
 	{
 		visible_ = rv.asBool();
-		propertyChanged_[TreeGuiWidgetEvent::VisibleProperty] = TRUE;
+		propertyChanged_[TreeGuiWidgetEvent::VisibleProperty] = true;
 	}
-	else done = FALSE;
+	else done = false;
 	if (done)
 	{
 		if (qtWidgetObject_ != NULL) qtWidgetObject_->updateQt();
 		checkWidgetEvents();
 		Messenger::exit("TreeGuiWidget::setProperty");
-		return TRUE;
+		return true;
 	}
 
 	// All other properties must be checked against widget type
-	done = TRUE;
+	done = true;
 	switch (type_)
 	{
 		// Widgets for which only 'text' value is valid
@@ -476,27 +476,27 @@ bool TreeGuiWidget::setProperty(TreeGuiWidgetEvent::EventProperty property, Retu
 			{
 				text_ = rv.asString();
 				Messenger::exit("TreeGuiWidget::setProperty");
-				return TRUE;
+				return true;
 			}
-			else done = FALSE;
+			else done = false;
 			break;
 		case (TreeGuiWidget::LabelWidget):
 		case (TreeGuiWidget::GroupWidget):
 			if (property == TreeGuiWidgetEvent::TextProperty)
 			{
 				text_ = rv.asString();
-				propertyChanged_[TreeGuiWidgetEvent::TextProperty] = TRUE;
+				propertyChanged_[TreeGuiWidgetEvent::TextProperty] = true;
 			}
-			else done = FALSE;
+			else done = false;
 			break;
 		// Edit widget - 'text' and 'value' do the same thing
 		case (TreeGuiWidget::EditWidget):
 			if ((property == TreeGuiWidgetEvent::TextProperty) || (property == TreeGuiWidgetEvent::ValueProperty))
 			{
 				text_ = rv.asString();
-				propertyChanged_[TreeGuiWidgetEvent::TextProperty] = TRUE;
+				propertyChanged_[TreeGuiWidgetEvent::TextProperty] = true;
 			}
-			else done = FALSE;
+			else done = false;
 			break;
 		// Widgets for which only 'value' property is valid
 		case (TreeGuiWidget::ButtonWidget):
@@ -515,9 +515,9 @@ bool TreeGuiWidget::setProperty(TreeGuiWidgetEvent::EventProperty property, Retu
 					i = i < minimumI_ ? minimumI_ : maximumI_;
 				}
 				valueI_ = i;
-				propertyChanged_[TreeGuiWidgetEvent::ValueProperty] = TRUE;
+				propertyChanged_[TreeGuiWidgetEvent::ValueProperty] = true;
 			}
-			else done = FALSE;
+			else done = false;
 			break;
 		// Spin widgets
 		case (TreeGuiWidget::IntegerSpinWidget):
@@ -537,7 +537,7 @@ bool TreeGuiWidget::setProperty(TreeGuiWidgetEvent::EventProperty property, Retu
 				}
 				if (type_ == TreeGuiWidget::IntegerSpinWidget) valueI_ = rv.asInteger();
 				else valueD_ = rv.asDouble();
-				propertyChanged_[TreeGuiWidgetEvent::ValueProperty] = TRUE;
+				propertyChanged_[TreeGuiWidgetEvent::ValueProperty] = true;
 			}
 			else if (property == TreeGuiWidgetEvent::MinimumProperty)
 			{
@@ -553,19 +553,19 @@ bool TreeGuiWidget::setProperty(TreeGuiWidgetEvent::EventProperty property, Retu
 				}
 				if (type_ == TreeGuiWidget::IntegerSpinWidget) minimumI_ = rv.asInteger();
 				else minimumD_ = rv.asDouble();
-				propertyChanged_[TreeGuiWidgetEvent::MinimumProperty] = TRUE;
+				propertyChanged_[TreeGuiWidgetEvent::MinimumProperty] = true;
 				// Check value is still in range
 				if ((type_ == TreeGuiWidget::IntegerSpinWidget) && (valueI_ < minimumI_))
 				{
 					valueI_ = minimumI_;
 					Messenger::print("Value of widget %s altered to conform to new min/max value.", qPrintable(name_));
-					propertyChanged_[TreeGuiWidgetEvent::ValueProperty] = TRUE;
+					propertyChanged_[TreeGuiWidgetEvent::ValueProperty] = true;
 				}
 				else if ((type_ == TreeGuiWidget::DoubleSpinWidget) && (valueD_ < minimumD_))
 				{
 					valueD_ = minimumD_;
 					Messenger::print("Value of widget %s altered to conform to new min/max value.", qPrintable(name_));
-					propertyChanged_[TreeGuiWidgetEvent::ValueProperty] = TRUE;
+					propertyChanged_[TreeGuiWidgetEvent::ValueProperty] = true;
 				}
 			}
 			else if (property == TreeGuiWidgetEvent::MaximumProperty)
@@ -582,22 +582,22 @@ bool TreeGuiWidget::setProperty(TreeGuiWidgetEvent::EventProperty property, Retu
 				}
 				if (type_ == TreeGuiWidget::IntegerSpinWidget) maximumI_ = rv.asInteger();
 				else maximumD_ = rv.asDouble();
-				propertyChanged_[TreeGuiWidgetEvent::MaximumProperty] = TRUE;
+				propertyChanged_[TreeGuiWidgetEvent::MaximumProperty] = true;
 				// Check value is still in range
 				if ((type_ == TreeGuiWidget::IntegerSpinWidget) && (valueI_ > maximumI_))
 				{
 					valueI_ = maximumI_;
 					Messenger::print("Value of widget %s altered to conform to new min/max value.", qPrintable(name_));
-					propertyChanged_[TreeGuiWidgetEvent::ValueProperty] = TRUE;
+					propertyChanged_[TreeGuiWidgetEvent::ValueProperty] = true;
 				}
 				else if ((type_ == TreeGuiWidget::DoubleSpinWidget) && (valueD_ > maximumD_))
 				{
 					valueD_ = maximumD_;
 					Messenger::print("Value of widget %s altered to conform to new min/max value.", qPrintable(name_));
-					propertyChanged_[TreeGuiWidgetEvent::ValueProperty] = TRUE;
+					propertyChanged_[TreeGuiWidgetEvent::ValueProperty] = true;
 				}
 			}
-			else done = FALSE;
+			else done = false;
 			break;
 		// Combo box widget
 		case (TreeGuiWidget::ComboWidget):
@@ -620,7 +620,7 @@ bool TreeGuiWidget::setProperty(TreeGuiWidgetEvent::EventProperty property, Retu
 						}
 						Messenger::print("%s", qPrintable(allowedValues));
 						Messenger::exit("TreeGuiWidget::setProperty");
-						return FALSE;
+						return false;
 					}
 					// Increase 'i' to conform to 1-N range
 					++i;
@@ -634,7 +634,7 @@ bool TreeGuiWidget::setProperty(TreeGuiWidgetEvent::EventProperty property, Retu
 					i = i < minimumI_ ? minimumI_ : maximumI_;
 				}
 				valueI_ = i;
-				propertyChanged_[TreeGuiWidgetEvent::ValueProperty] = TRUE;
+				propertyChanged_[TreeGuiWidgetEvent::ValueProperty] = true;
 			}
 			else if (property == TreeGuiWidgetEvent::ItemsProperty)
 			{
@@ -647,22 +647,22 @@ bool TreeGuiWidget::setProperty(TreeGuiWidgetEvent::EventProperty property, Retu
 				else
 				{
 					for (int n=0; n<parser.nArgs(); ++n) addComboItem(parser.argc(n));
-					propertyChanged_[TreeGuiWidgetEvent::ItemsProperty] = TRUE;
+					propertyChanged_[TreeGuiWidgetEvent::ItemsProperty] = true;
 					maximumI_ = parser.nArgs();
-					propertyChanged_[TreeGuiWidgetEvent::MaximumProperty] = TRUE;
+					propertyChanged_[TreeGuiWidgetEvent::MaximumProperty] = true;
 					if (valueI_ > maximumI_)
 					{
 						valueI_ = 1;
-						propertyChanged_[TreeGuiWidgetEvent::ValueProperty] = TRUE;
+						propertyChanged_[TreeGuiWidgetEvent::ValueProperty] = true;
 					}
 				}
 			}
-			else done = FALSE;
+			else done = false;
 			break;
 		// Widgets which have no other settable properties
 		case (TreeGuiWidget::FrameWidget):
 		case (TreeGuiWidget::PageWidget):
-			done = FALSE;
+			done = false;
 			break;
 		default:
 			printf("Internal Error: Widget type '%s' has not been accounted for in TreeGuiWidget::setProperty.\n", TreeGuiWidget::widgetType(type_));
@@ -674,20 +674,20 @@ bool TreeGuiWidget::setProperty(TreeGuiWidgetEvent::EventProperty property, Retu
 	{
 		Messenger::print("Cannot set '%s' property for a widget of type '%s' (%s)).", TreeGuiWidgetEvent::eventProperty(property), TreeGuiWidget::widgetType(type_), qPrintable(name_));
 		Messenger::exit("TreeGuiWidget::setProperty");
-		return FALSE;
+		return false;
 	}
 	else if (qtWidgetObject_ != NULL) qtWidgetObject_->updateQt();
 	checkWidgetEvents();
 
 	Messenger::exit("TreeGuiWidget::setProperty");
-	return TRUE;
+	return true;
 }
 
 // 'Activate' property, setting flag and executing events, but leaving value unchanged
 bool TreeGuiWidget::activateProperty(TreeGuiWidgetEvent::EventProperty property)
 {
 	Messenger::enter("TreeGuiWidget::activateProperty");
-	propertyChanged_[property] = TRUE;
+	propertyChanged_[property] = true;
 	if (qtWidgetObject_ != NULL) qtWidgetObject_->updateQt();
 	checkWidgetEvents();
 	
@@ -698,12 +698,12 @@ bool TreeGuiWidget::activateProperty(TreeGuiWidgetEvent::EventProperty property)
 		if (button == NULL)
 		{
 			Messenger::exit("TreeGuiWidget::activateProperty");
-			return FALSE;
+			return false;
 		}
 		button->item->activateProperty(TreeGuiWidgetEvent::ValueProperty);
 	}
 	Messenger::exit("TreeGuiWidget::activateProperty");
-	return TRUE;
+	return true;
 }
 
 // Return whether specified property has changed
@@ -715,7 +715,7 @@ bool TreeGuiWidget::propertyChanged(TreeGuiWidgetEvent::EventProperty property)
 // Reset changed flag for specified property
 void TreeGuiWidget::resetChanged(TreeGuiWidgetEvent::EventProperty property)
 {
-	propertyChanged_[property] = FALSE;
+	propertyChanged_[property] = false;
 }
 
 // Add widget to the layout in this widget (if it has one) at specified geometry, returning added widget for convenience
@@ -1033,11 +1033,11 @@ bool TreeGuiWidget::addSpacer(bool expandHorizontal, bool expandVertical, int l,
 	if (qtWidgetObject_ == NULL)
 	{
 		Messenger::exit("TreeGuiWidget::addSpacer");
-		return FALSE;
+		return false;
 	}
 	
 	// Check widget type - does it have a layout?
-	bool result = FALSE;
+	bool result = false;
 	switch (type_)
 	{
 		case (TreeGuiWidget::DialogWidget):
@@ -1048,7 +1048,7 @@ bool TreeGuiWidget::addSpacer(bool expandHorizontal, bool expandVertical, int l,
 			break;
 		default:
 			Messenger::print("Error: Widget '%s' does not have a layout, and so addSpacer() cannot be used.", qPrintable(name_));
-			result = FALSE;
+			result = false;
 			break;
 	}
 	Messenger::exit("TreeGuiWidget::addSpacer");
@@ -1247,7 +1247,7 @@ void TreeGuiWidget::checkWidgetEvents()
 					targetWidget->activateProperty(event->targetProperty());
 					break;
 				case (TreeGuiWidgetEvent::SendBoolType):
-					targetWidget->setProperty(event->targetProperty(), TRUE);
+					targetWidget->setProperty(event->targetProperty(), true);
 					break;
 				case (TreeGuiWidgetEvent::SendDoubleType):
 					if (event->nSendValues() == 0) targetWidget->setProperty(event->targetProperty(), asDouble());
@@ -1273,7 +1273,7 @@ void TreeGuiWidget::checkWidgetEvents()
 		}
 		else if (event->type() == TreeGuiWidgetEvent::SendBoolType)
 		{
-			targetWidget->setProperty(event->targetProperty(), FALSE);
+			targetWidget->setProperty(event->targetProperty(), false);
 		}
 	}
 }
@@ -1392,7 +1392,7 @@ bool TreeGui::setWidgetValue(QString name, int i)
 		Messenger::print("Error: No widget named '%s' exists in this dialog (calling setWidgetValue).", qPrintable(name));
 		Messenger::print("Valid widgets are:");
 		listWidgets();
-		return FALSE;
+		return false;
 	}
 	return widget->setProperty(TreeGuiWidgetEvent::ValueProperty, i);
 }
@@ -1407,7 +1407,7 @@ bool TreeGui::setWidgetValue(QString name, double d)
 		Messenger::print("Error: No widget named '%s' exists in this dialog (calling setWidgetValue).", qPrintable(name));
 		Messenger::print("Valid widgets are:");
 		listWidgets();
-		return FALSE;
+		return false;
 	}
 	return widget->setProperty(TreeGuiWidgetEvent::ValueProperty, d);
 }
@@ -1422,7 +1422,7 @@ bool TreeGui::setWidgetValue(QString name, QString s)
 		Messenger::print("Error: No widget named '%s' exists in this dialog (calling setWidgetValue).", qPrintable(name));
 		Messenger::print("Valid widgets are:");
 		listWidgets();
-		return FALSE;
+		return false;
 	}
 	return widget->setProperty(TreeGuiWidgetEvent::ValueProperty, qPrintable(s));
 }
@@ -1437,7 +1437,7 @@ int TreeGui::asInteger(QString name)
 		Messenger::print("Error: No widget named '%s' exists in this dialog (calling asInteger).", qPrintable(name));
 		Messenger::print("Valid widgets are:");
 		listWidgets();
-		return FALSE;
+		return false;
 	}
 	return widget->asInteger();
 }
@@ -1484,7 +1484,7 @@ Vec3<double> TreeGui::asVec3(QString name1, QString name2, QString name3)
 		Messenger::print("Error: No widget named '%s' exists in this dialog (calling asVector).", qPrintable(name1));
 		Messenger::print("Valid widgets are:");
 		listWidgets();
-		return FALSE;
+		return false;
 	}
 	v.x = widget->asDouble();
 
@@ -1495,7 +1495,7 @@ Vec3<double> TreeGui::asVec3(QString name1, QString name2, QString name3)
 		Messenger::print("Error: No widget named '%s' exists in this dialog (calling asVector).", qPrintable(name2));
 		Messenger::print("Valid widgets are:");
 		listWidgets();
-		return FALSE;
+		return false;
 	}
 	v.y = widget->asDouble();
 
@@ -1506,7 +1506,7 @@ Vec3<double> TreeGui::asVec3(QString name1, QString name2, QString name3)
 		Messenger::print("Error: No widget named '%s' exists in this dialog (calling asVector).", qPrintable(name3));
 		Messenger::print("Valid widgets are:");
 		listWidgets();
-		return FALSE;
+		return false;
 	}
 	v.z = widget->asDouble();
 	return v;
@@ -1517,5 +1517,5 @@ bool TreeGui::execute()
 {
 // 	printf("EXECUTING TREE DIALOG %p nWidgets = %i, qtTreeGui_ = %p\n", this, widgets_.nItems(), qtTreeGui_);
 	if ((widgets_.nItems() > 0) && (qtTreeGui_ != NULL)) return qtTreeGui_->execute(text());
-	else return TRUE;
+	else return true;
 }

@@ -30,18 +30,18 @@ ATEN_USING_NAMESPACE
 // Add new frame to the current model's trajectory
 bool Commands::function_AddFrame(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	obj.m->addTrajectoryFrame();
 	obj.m->setRenderSource(Model::TrajectorySource);
 	if (c->hasArg(0)) obj.rs()->setName(c->argc(0));
 	rv.set(VTypes::ModelData, obj.rs());
-	return TRUE;
+	return true;
 }
 
 // Clear any trajectory data in the current model
 bool Commands::function_ClearTrajectory(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	if (obj.rs() != obj.m)
 	{
 		Messenger::print("Current model is a trajectory frame - resetting to the parent model...");
@@ -49,17 +49,17 @@ bool Commands::function_ClearTrajectory(CommandNode* c, Bundle& obj, ReturnValue
 	}
 	obj.m->clearTrajectory();
 	rv.reset();
-	return TRUE;
+	return true;
 }
 
 // Finalise current trajectory frame
 bool Commands::function_FinaliseFrame(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	if (obj.rs() == obj.m)
 	{
 		Messenger::print("Current model does not appear to be a trajectory frame.");
-		return FALSE;
+		return false;
 	}
 	// Do various necessary calculations
 	if (prefs.coordsInBohr()) obj.rs()->bohrToAngstrom();
@@ -74,86 +74,86 @@ bool Commands::function_FinaliseFrame(CommandNode* c, Bundle& obj, ReturnValue& 
 	obj.rs()->enableUndoRedo();
 	//if (frame->cell()->type() != Cell::NoCell) frame->cell()->print();
 	rv.reset();
-	return TRUE;
+	return true;
 }
 
 // Skip to first frame ('firstframe')
 bool Commands::function_FirstFrame(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	if (obj.m->nTrajectoryFrames() == 0)
 	{
 		Messenger::print("No trajectory associated to model '%s'.", qPrintable(obj.m->name()));
-		return FALSE;
+		return false;
 	}
 	obj.m->seekFirstTrajectoryFrame();
 	rv.reset();
-	return TRUE;
+	return true;
 }
 
 // Skip to last frame ('lastframe')
 bool Commands::function_LastFrame(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	if (obj.m->nTrajectoryFrames() == 0)
 	{
 		Messenger::print("No trajectory associated to model '%s'.", qPrintable(obj.m->name()));
-		return FALSE;
+		return false;
 	}
 	obj.m->seekLastTrajectoryFrame();
 	rv.reset();
-	return TRUE;
+	return true;
 }
 
 // Open and associate trajectory ('loadtrajectory <file>')
 bool Commands::function_LoadTrajectory(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	Tree* filter = aten_.probeFile(c->argc(0), FilterData::TrajectoryImport);
-	if (filter == NULL) return FALSE;
+	if (filter == NULL) return false;
 	bool result = obj.m->initialiseTrajectory(c->argc(0), filter);
 	rv.set(result);
-	return TRUE;
+	return true;
 }
 
 // Go to next frame ('nextframe')
 bool Commands::function_NextFrame(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	if (obj.m->nTrajectoryFrames() == 0)
 	{
 		Messenger::print("No trajectory associated to model '%s'.", qPrintable(obj.m->name()));
-		return FALSE;
+		return false;
 	}
 	obj.m->seekNextTrajectoryFrame();
 	rv.reset();
-	return TRUE;
+	return true;
 }
 
 // Go to previous frame ('prevframe')
 bool Commands::function_PrevFrame(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	if (obj.m->nTrajectoryFrames() == 0)
 	{
 		Messenger::print("No trajectory associated to model '%s'.", qPrintable(obj.m->name()));
-		return FALSE;
+		return false;
 	}
 	obj.m->seekPreviousTrajectoryFrame();
 	rv.reset();
-	return TRUE;
+	return true;
 }
 
 // Seek to specified frame ('seekframe <n>')
 bool Commands::function_SeekFrame(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	if (obj.m->nTrajectoryFrames() == 0)
 	{
 		Messenger::print("No trajectory associated to model '%s'.", qPrintable(obj.m->name()));
-		return FALSE;
+		return false;
 	}
 	obj.m->seekTrajectoryFrame(c->argi(0)-1);
 	rv.reset();
-	return TRUE;
+	return true;
 }

@@ -50,7 +50,7 @@ bool IntegerVariable::set(ReturnValue& rv)
 	if (readOnly_)
 	{
 		Messenger::print("A constant value (in this case an integer) cannot be assigned to.");
-		return FALSE;
+		return false;
 	}
 	bool success;
 	integerData_ = rv.asInteger(success);
@@ -68,7 +68,7 @@ void IntegerVariable::reset()
 bool IntegerVariable::execute(ReturnValue& rv)
 {
 	rv.set(integerData_);
-	return TRUE;
+	return true;
 }
 
 // Print node contents
@@ -117,14 +117,14 @@ bool IntegerArrayVariable::set(ReturnValue& rv)
 	if (readOnly_)
 	{
 		Messenger::print("A constant value (in this case an int array) cannot be assigned to.");
-		return FALSE;
+		return false;
 	}
 	if (integerArrayData_ == NULL)
 	{
 		printf("Internal Error: Array '%s' has not been initialised.\n", qPrintable(name_));
-		return FALSE;
+		return false;
 	}
-	bool success = FALSE;
+	bool success = false;
 	// Is the supplied ReturnValue an array or a vector?
 	if (rv.type() == VTypes::VectorData)
 	{
@@ -152,22 +152,22 @@ bool IntegerArrayVariable::setAsArray(ReturnValue& rv, int arrayIndex)
 	if (readOnly_)
 	{
 		Messenger::print("A constant value (in this case an integer array?) cannot be assigned to.");
-		return FALSE;
+		return false;
 	}
 	if (integerArrayData_ == NULL)
 	{
 		printf("Internal Error: Array '%s' has not been initialised.\n", qPrintable(name_));
-		return FALSE;
+		return false;
 	}
 	// Check index
 	if ((arrayIndex < 0) || (arrayIndex >= arraySize_))
 	{
 		Messenger::print("Index %i out of bounds for array '%s'.", arrayIndex+1, qPrintable(name_));
-		return FALSE;
+		return false;
 	}
 	// Set individual element
 	integerArrayData_[arrayIndex] = rv.asInteger();
-	return TRUE;
+	return true;
 }
 
 // Reset variable
@@ -200,17 +200,17 @@ bool IntegerArrayVariable::execute(ReturnValue& rv)
 		if (!readOnly_)
 		{
 			printf("Internal Error: Array '%s' has not been initialised and can't be executed.\n", qPrintable(name_));
-			return FALSE;
+			return false;
 		}
 		if (!initialise())
 		{
 			printf("Internal Error: Array '%s' failed to initialise and so can't be executed.\n", qPrintable(name_));
-			return FALSE;
+			return false;
 		}
 	}
 	else if (readOnly_) reset();
 	rv.setArray(VTypes::IntegerData, integerArrayData_, arraySize_);
-	return TRUE;
+	return true;
 }
 
 // Return value of node as array
@@ -220,10 +220,10 @@ bool IntegerArrayVariable::executeAsArray(ReturnValue& rv, int arrayIndex)
 	if ((arrayIndex < 0) || (arrayIndex >= arraySize_))
 	{
 		Messenger::print("Error: Array index %i is out of bounds for array '%s'.", arrayIndex+1, qPrintable(name_));
-		return FALSE;
+		return false;
 	}
 	rv.set( integerArrayData_[arrayIndex] );
-	return TRUE;
+	return true;
 }
 
 // Print node contents
@@ -254,7 +254,7 @@ bool IntegerArrayVariable::initialise()
 	if (!arraySizeExpression_->execute(newsize))
 	{
 		Messenger::print("Failed to find size for int array '%s'.", qPrintable(name_));
-		return FALSE;
+		return false;
 	}
 	// If the array is already allocated, free it only if the size is different
 	if ((arraySize_ != newsize.asInteger()) && (integerArrayData_ != NULL)) { delete[] integerArrayData_; integerArrayData_ = NULL; }
@@ -268,7 +268,7 @@ bool IntegerArrayVariable::initialise()
 		ReturnValue value;
 		for (Refitem<TreeNode,int>* ri = args_.first(); ri != NULL; ri = ri->next)
 		{
-			if (!ri->item->execute(value)) return FALSE;
+			if (!ri->item->execute(value)) return false;
 			integerArrayData_[count++] = value.asInteger();
 		}
 	}
@@ -278,9 +278,9 @@ bool IntegerArrayVariable::initialise()
 		ReturnValue rv;
 		if (initialValue_->execute(rv))
 		{
-			if (!set(rv)) return FALSE;
+			if (!set(rv)) return false;
 		}
-		else return FALSE;
+		else return false;
 	}
-	return TRUE;
+	return true;
 }

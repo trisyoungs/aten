@@ -56,7 +56,7 @@ DisorderWizard::DisorderWizard(AtenWindow& parent) : QWizard(&parent), parent_(p
 	newModel_ = NULL;
 	partitioningScheme_ = NULL;
 	componentTarget_ = NULL;
-	refreshing_ = FALSE;
+	refreshing_ = false;
 }
 
 // Run dialog, initialising any values first
@@ -73,7 +73,7 @@ int DisorderWizard::run()
 	newModel_ = NULL;
 	partitioningScheme_ = NULL;
 	componentTarget_ = NULL;
-	refreshing_ = FALSE;
+	refreshing_ = false;
 	
 	// Make sure page 1 is the starting page
 	restart();
@@ -109,22 +109,22 @@ void DisorderWizard::setComponentData(Model* m)
 void DisorderWizard::updateComponentControls()
 {
 	if ((componentTarget_ == NULL) || refreshing_) return;
-	refreshing_ = TRUE;
+	refreshing_ = true;
 	switch (componentTarget_->componentInsertionPolicy())
 	{
 		case (Model::NoPolicy):
 			componentTarget_->setComponentInsertionPolicy(Model::NumberPolicy);
 		case (Model::NumberPolicy):
-			ui.NumberPolicyRadio->setChecked(TRUE);
+			ui.NumberPolicyRadio->setChecked(true);
 			break;
 		case (Model::DensityPolicy):
-			ui.DensityPolicyRadio->setChecked(TRUE);
+			ui.DensityPolicyRadio->setChecked(true);
 			break;
 		case (Model::NumberAndDensityPolicy):
-			ui.NumberAndDensityPolicyRadio->setChecked(TRUE);
+			ui.NumberAndDensityPolicyRadio->setChecked(true);
 			break;
 		case (Model::RelativePolicy):
-			ui.RelativePolicyRadio->setChecked(TRUE);
+			ui.RelativePolicyRadio->setChecked(true);
 			break;
 	}
 	ui.ComponentPopulationSpin->setValue(componentTarget_->componentPopulation());
@@ -134,7 +134,7 @@ void DisorderWizard::updateComponentControls()
 	ui.ComponentAllowRotationsCheck->setChecked(componentTarget_->componentRotatable());
 	if (componentTarget_->componentPartition() >= partitioningScheme_->nPartitions()) componentTarget_->setComponentPartition(0);
 	ui.ComponentTargetPartitionCombo->setCurrentIndex(componentTarget_->componentPartition());
-	refreshing_ = FALSE;
+	refreshing_ = false;
 }
 
 // Update data in specified TTreeWidgetItem (from supplied data)
@@ -173,7 +173,7 @@ void DisorderWizard::pageChanged(int id)
 			if (targetType_ != DisorderWizard::ExistingTarget)
 			{
 				newModel_ = parent_.aten().addModel();
-				parent_.aten().setCurrentModel(newModel_, TRUE);
+				parent_.aten().setCurrentModel(newModel_, true);
 				newModel_->setName("Disorder Model");
 				if (targetType_ == DisorderWizard::NewTarget) setCellAbsolute(0.0);
 				else setCellRelative(0.0);
@@ -228,7 +228,7 @@ void DisorderWizard::pageChanged(int id)
 		// Step 4 / 5 - Select component models
 		case (4):
 			// Enable/disable relative populations checkbox
-			refreshing_ = TRUE;
+			refreshing_ = true;
 			ui.NumberPolicyRadio->setDisabled(targetType_ == DisorderWizard::GenerateTarget);
 			ui.DensityPolicyRadio->setDisabled(targetType_ == DisorderWizard::GenerateTarget);
 			ui.RelativePolicyRadio->setDisabled(targetType_ == DisorderWizard::GenerateTarget);
@@ -244,16 +244,16 @@ void DisorderWizard::pageChanged(int id)
 				item->setText(1,m->name());
 				item->setTextAlignment(1, Qt::AlignLeft | Qt::AlignTop);
 			}
-			refreshing_ = FALSE;
+			refreshing_ = false;
 			ui.ChooseComponentsTree->resizeColumnToContents(0);
 			ui.ChooseComponentsTree->resizeColumnToContents(1);
 			updateComponentControls();
 			// No selection by default, so disable Next button
-			button(QWizard::NextButton)->setEnabled(FALSE);
+			button(QWizard::NextButton)->setEnabled(false);
 			break;
 		// Step 5 / 5 - Select component populations and partition assignments
 		case (5):
-			refreshing_ = TRUE;
+			refreshing_ = true;
 			ui.EditComponentsTree->clear();
 			ui.EditComponentsTree->setColumnCount(2);
 			componentModelItems_.clear();
@@ -289,7 +289,7 @@ void DisorderWizard::pageChanged(int id)
 				QString text = QString::number(n+1) + " " + partitioningScheme_->partitionName(n);
 				ui.ComponentTargetPartitionCombo->addItem(text);
 			}
-			refreshing_ = FALSE;
+			refreshing_ = false;
 			updateComponentControls();
 			break;
 	}
@@ -311,9 +311,9 @@ void DisorderWizard::accepted()
 {
 	// Ready to run disordered builder!
 	bool success;
-	if (targetType_ == DisorderWizard::ExistingTarget) success = mc.disorder(parent_.aten().models(), existingModel_, partitioningScheme_, TRUE);
-	else if (targetType_ == DisorderWizard::NewTarget) success = mc.disorder(parent_.aten().models(), newModel_, partitioningScheme_, TRUE);
-	else success = mc.disorder(parent_.aten().models(), newModel_, partitioningScheme_, FALSE);
+	if (targetType_ == DisorderWizard::ExistingTarget) success = mc.disorder(parent_.aten().models(), existingModel_, partitioningScheme_, true);
+	else if (targetType_ == DisorderWizard::NewTarget) success = mc.disorder(parent_.aten().models(), newModel_, partitioningScheme_, true);
+	else success = mc.disorder(parent_.aten().models(), newModel_, partitioningScheme_, false);
 
 	// Clean up
 	newModel_ = NULL;
@@ -351,7 +351,7 @@ void DisorderWizard::on_ExistingModelTree_currentItemChanged(QTreeWidgetItem* cu
 	existingModel_ = (Model*) twi->data.asPointer(VTypes::ModelData);
 	if (existingModel_ == NULL) return;
 	existingModel_ = existingModel_->renderSourceModel();
-	parent_.aten().setCurrentModel(existingModel_, TRUE);
+	parent_.aten().setCurrentModel(existingModel_, true);
 	parent_.updateWidgets(AtenWindow::AllTarget);
 }
 

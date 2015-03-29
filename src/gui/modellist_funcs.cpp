@@ -36,7 +36,7 @@ ATEN_USING_NAMESPACE
 ModelListWidget::ModelListWidget(AtenWindow& parent, Qt::WindowFlags flags) : QDockWidget(&parent, flags), parent_(parent)
 {
 	ui.setupUi(this);
-	refreshing_ = FALSE;
+	refreshing_ = false;
 	QObject::connect(ui.ModelTree, SIGNAL(mousePressEvent(QMouseEvent*)), this, SLOT(treeMousePressEvent(QMouseEvent*)));
 	QObject::connect(ui.ModelTree, SIGNAL(mouseReleaseEvent(QMouseEvent*)), this, SLOT(treeMouseReleaseEvent(QMouseEvent*)));
 	QObject::connect(ui.ModelTree, SIGNAL(mouseMoveEvent(QMouseEvent*)), this, SLOT(treeMouseMoveEvent(QMouseEvent*)));
@@ -67,7 +67,7 @@ void ModelListWidget::refresh()
 {
 	Messenger::enter("ModelListWidget::refresh");
 	
-	refreshing_ = TRUE;
+	refreshing_ = true;
 	
 	// Set number of visible models and model total
 	ui.ModelsPerRowSpin->setValue(prefs.nModelsPerRow());
@@ -87,7 +87,7 @@ void ModelListWidget::refresh()
 // 		item->setIcon(0,m->icon());
 // 		item->setText(1,m->name());
 // 		item->setTextAlignment(1, Qt::AlignLeft | Qt::AlignTop);
-// 		if (m->isVisible() || (m == parent_.aten().currentModel())) item->setSelected(TRUE);
+// 		if (m->isVisible() || (m == parent_.aten().currentModel())) item->setSelected(true);
 // 	}
 
 	// Go through items currently in QTreeWidget
@@ -136,7 +136,7 @@ void ModelListWidget::refresh()
 	ui.ModelTree->resizeColumnToContents(0);
 	ui.ModelTree->resizeColumnToContents(1);
 	
-	refreshing_ = FALSE;
+	refreshing_ = false;
 	
 	Messenger::exit("ModelListWidget::refresh");
 }
@@ -168,8 +168,8 @@ void ModelListWidget::updateItem(TExtraTreeWidgetItem *item)
 	}
 	
 	// Set selection status of row
-	if (m->isVisible() || (m == parent_.aten().currentModel())) item->setSelected(TRUE);
-	else item->setSelected(FALSE);
+	if (m->isVisible() || (m == parent_.aten().currentModel())) item->setSelected(true);
+	else item->setSelected(false);
 }
 
 // Return item under mouse (if any)
@@ -189,7 +189,7 @@ void ModelListWidget::toggleItem(TExtraTreeWidgetItem *twi)
 	Model* m = (Model*) rv.asPointer(VTypes::ModelData);
 	if (m == NULL) return;
 
-	refreshing_ = TRUE;
+	refreshing_ = true;
 	
 	// Here we must consider the rules of Aten - that a model must *always* be current.
 	// So, if this toggle would result in there being no visible models, ignore the request.
@@ -203,14 +203,14 @@ void ModelListWidget::toggleItem(TExtraTreeWidgetItem *twi)
 	// Now, if the item is *not* selected we can safely select it and make it current
 	if (!selected)
 	{
-		twi->setSelected(TRUE);
-		parent_.aten().setModelVisible(m,TRUE);
+		twi->setSelected(true);
+		parent_.aten().setModelVisible(m,true);
 	}
 	else
 	{
 		// We are deselecting, so need to check if its currently the active model
-		twi->setSelected(FALSE);
-		parent_.aten().setModelVisible(m,FALSE);
+		twi->setSelected(false);
+		parent_.aten().setModelVisible(m,false);
 		if (m == parent_.aten().currentModel())
 		{
 			// Grab the last visible model added to the list
@@ -221,14 +221,14 @@ void ModelListWidget::toggleItem(TExtraTreeWidgetItem *twi)
 			else parent_.aten().setCurrentModel(m);
 		}
 	}
-	refreshing_ = FALSE;
+	refreshing_ = false;
 	parent_.postRedisplay();
 }
 
 // Deselect all items in list (except the supplied item)
 void ModelListWidget::deselectAll(TExtraTreeWidgetItem *selectitem)
 {
-	refreshing_ = TRUE;
+	refreshing_ = true;
 	
 	// Check supplied except item
 	if (selectitem == NULL)
@@ -246,14 +246,14 @@ void ModelListWidget::deselectAll(TExtraTreeWidgetItem *selectitem)
 		twi = (TExtraTreeWidgetItem*) item;
 		rv = twi->dataForKey("model");
 		m = (Model*) rv.asPointer(VTypes::ModelData);
-		parent_.aten().setModelVisible(m, FALSE);
-		twi->setSelected(FALSE);
+		parent_.aten().setModelVisible(m, false);
+		twi->setSelected(false);
 	}
 	
 	// Make sure the excepted item is selected
 	toggleItem(selectitem);
 	
-	refreshing_ = FALSE;
+	refreshing_ = false;
 }
 
 void ModelListWidget::on_RefreshIconsButton_clicked(bool checked)

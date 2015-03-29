@@ -37,7 +37,7 @@ Glyph* Model::addGlyph(Glyph::GlyphType gt)
 	if (recordingState_ != NULL)
 	{
 // 		GlyphEvent* newchange = new GlyphEvent;	// TODO
-// 		newchange->set(TRUE, newglyph);
+// 		newchange->set(true, newglyph);
 // 		recordingState_->addEvent(newchange);
 	}
 	return newglyph;

@@ -54,8 +54,8 @@ FilterData::FilterData()
 {
 	// Private variables
 	type_ = FilterData::nFilterTypes;
-	hasExtension_ = FALSE;
-	hasZmapping_ = FALSE;
+	hasExtension_ = false;
+	hasZmapping_ = false;
 	zMapType_ = ElementMap::AlphaZMap;
 	name_ = "unnamed filter";
 	glob_ = "*";
@@ -193,14 +193,14 @@ bool FilterData::setOption(QString name, TreeNode* value)
 	{
 		Messenger::print("Error: '%s' is not a valid filter option.", qPrintable(name));
 		Messenger::exit("FilterData::setOption");
-		return FALSE;
+		return false;
 	}
 	// Check argument type
 	if (FilterOptionTypes[fo] != value->returnType())
 	{
 		Messenger::print("Error: Filter option '%s' takes %s value.", qPrintable(name), VTypes::dataType(FilterOptionTypes[fo]));
 		Messenger::exit("FilterData::setOption");
-		return FALSE;
+		return false;
 	}
 	ReturnValue rv;
 	ElementMap::ZMapType zm;
@@ -245,7 +245,7 @@ bool FilterData::setOption(QString name, TreeNode* value)
 			if (ft == FilterData::nFilterTypes)
 			{
 				Messenger::exit("FilterData::setOption");
-				return FALSE;
+				return false;
 			}
 			type_ = ft;
 			break;
@@ -259,7 +259,7 @@ bool FilterData::setOption(QString name, TreeNode* value)
 			if (zm == ElementMap::nZMapTypes)
 			{
 				Messenger::exit("FilterData::setOption");
-				return FALSE;
+				return false;
 			}
 			zMapType_ = zm;
 			break;
@@ -267,7 +267,7 @@ bool FilterData::setOption(QString name, TreeNode* value)
 			printf("Internal Error: Unrecognised filter option.\n");
 	}
 	Messenger::exit("FilterData::setOption");
-	return TRUE;
+	return true;
 }
 
 // Return the long description of the filter (including glob)

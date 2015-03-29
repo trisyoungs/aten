@@ -66,11 +66,11 @@ void AtenWindow::on_actionStyleIndividual_triggered(bool checked)
 // Set corresponding action to supplied Prefs::DrawStyle
 void AtenWindow::setActiveStyleAction(Prefs::DrawStyle ds)
 {
-	if (ds == Prefs::StickStyle) ui.actionStyleStick->setChecked(TRUE);
-	else if (ds == Prefs::TubeStyle) ui.actionStyleTube->setChecked(TRUE);
-	else if (ds == Prefs::SphereStyle) ui.actionStyleSphere->setChecked(TRUE);
-	else if (ds == Prefs::ScaledStyle) ui.actionStyleScaled->setChecked(TRUE);
-	else if (ds == Prefs::IndividualStyle) ui.actionStyleIndividual->setChecked(TRUE);
+	if (ds == Prefs::StickStyle) ui.actionStyleStick->setChecked(true);
+	else if (ds == Prefs::TubeStyle) ui.actionStyleTube->setChecked(true);
+	else if (ds == Prefs::SphereStyle) ui.actionStyleSphere->setChecked(true);
+	else if (ds == Prefs::ScaledStyle) ui.actionStyleScaled->setChecked(true);
+	else if (ds == Prefs::IndividualStyle) ui.actionStyleIndividual->setChecked(true);
 	prefs.setRenderStyle(ds);
 	postRedisplay();
 }

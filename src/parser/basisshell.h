@@ -35,7 +35,7 @@ class BasisShellVariable : public PointerVariable
 {
 	public:
 	// Constructor / Destructor
-	BasisShellVariable(BasisShell *func = NULL, bool constant = FALSE);
+	BasisShellVariable(BasisShell *func = NULL, bool constant = false);
 	~BasisShellVariable();
 
 	/*
@@ -69,7 +69,7 @@ class BasisShellArrayVariable : public PointerArrayVariable
 {
 	public:
 	// Constructor / Destructor
-	BasisShellArrayVariable(TreeNode* sizeexpr, bool constant = FALSE);
+	BasisShellArrayVariable(TreeNode* sizeexpr, bool constant = false);
 
 	/*
 	// Inherited Virtuals

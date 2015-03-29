@@ -33,10 +33,10 @@
 VibrationsWidget::VibrationsWidget(AtenWindow& parent, Qt::WindowFlags flags) : QDockWidget(&parent, flags), parent_(parent)
 {
 	// Private variables
-	refreshing_ = FALSE;
+	refreshing_ = false;
 	vibrationTimerId_ = -1;
-	vibrationPlaying_ = FALSE;
-	DONTDRAW = FALSE;
+	vibrationPlaying_ = false;
+	DONTDRAW = false;
 
 	ui.setupUi(this);
 }
@@ -52,7 +52,7 @@ void VibrationsWidget::showWidget()
 void VibrationsWidget::refresh()
 {
 	Messenger::enter("VibrationsWidget::refresh");
-	refreshing_ = TRUE;
+	refreshing_ = true;
 	Model* m = parent_.aten().currentModelOrFrame();
 	QString text;
 	ui.VibrationsList->clear();
@@ -67,26 +67,26 @@ void VibrationsWidget::refresh()
 	// Disable widgets if there are no vibrations loaded
 	if (count == 0)
 	{
-		m->setRenderFromVibration(FALSE);
-		ui.PlayPauseVibration->setEnabled(FALSE);
-		ui.FrameSlider->setEnabled(FALSE);
-		ui.SaveImageButton->setEnabled(FALSE);
-		ui.SaveMovieButton->setEnabled(FALSE);
+		m->setRenderFromVibration(false);
+		ui.PlayPauseVibration->setEnabled(false);
+		ui.FrameSlider->setEnabled(false);
+		ui.SaveImageButton->setEnabled(false);
+		ui.SaveMovieButton->setEnabled(false);
 	}
 	else
 	{
-		m->setRenderFromVibration(TRUE);
-		ui.PlayPauseVibration->setEnabled(TRUE);
-		ui.FrameSlider->setEnabled(TRUE);
-		ui.SaveImageButton->setEnabled(TRUE);
-		ui.SaveMovieButton->setEnabled(TRUE);
+		m->setRenderFromVibration(true);
+		ui.PlayPauseVibration->setEnabled(true);
+		ui.FrameSlider->setEnabled(true);
+		ui.SaveImageButton->setEnabled(true);
+		ui.SaveMovieButton->setEnabled(true);
 	
 		Model* m = parent_.aten().currentModelOrFrame();
 		m->generateVibration(ui.VibrationsList->currentRow(), 20);
 		m->setVibrationFrameIndex(ui.FrameSlider->value()-1);
 	}
 	ui.VibrationsTabWidget->setDisabled(count == 0);
-	refreshing_ = FALSE;
+	refreshing_ = false;
 	refreshDisplacements();
 	Messenger::exit("VibrationsWidget::refresh");
 }
@@ -155,23 +155,23 @@ void VibrationsWidget::on_PlayPauseVibration_clicked(bool checked)
 {
 	if (checked)
 	{
-		vibrationPlaying_ = TRUE;
-		this->setEnabled(TRUE);
+		vibrationPlaying_ = true;
+		this->setEnabled(true);
 		Model* m = parent_.aten().currentModelOrFrame();
-		ui.FrameSlider->setEnabled(FALSE);
-		ui.SaveImageButton->setEnabled(FALSE);
-		ui.SaveMovieButton->setEnabled(FALSE);
+		ui.FrameSlider->setEnabled(false);
+		ui.SaveImageButton->setEnabled(false);
+		ui.SaveMovieButton->setEnabled(false);
 		resetTimer(ui.DelaySpin->value());
 	}
 	else
 	{
-		vibrationPlaying_ = FALSE;
+		vibrationPlaying_ = false;
 		this->killTimer(vibrationTimerId_);
 		vibrationTimerId_ = -1;
 		Model* m = parent_.aten().currentModelOrFrame();
-		ui.FrameSlider->setEnabled(TRUE);
-		ui.SaveImageButton->setEnabled(TRUE);
-		ui.SaveMovieButton->setEnabled(TRUE);
+		ui.FrameSlider->setEnabled(true);
+		ui.SaveImageButton->setEnabled(true);
+		ui.SaveMovieButton->setEnabled(true);
 		parent_.postRedisplay();
 	}
 }
@@ -255,12 +255,12 @@ void VibrationsWidget::timerEvent(QTimerEvent*)
 	if (DONTDRAW) Messenger::print(Messenger::Verbose, "VibrationsWidget - Still drawing previous frame...");
 	else
 	{
-		DONTDRAW = TRUE;
+		DONTDRAW = true;
 		Model* m = parent_.aten().currentModelOrFrame();
 		m->vibrationNextFrame();
 		ui.FrameSlider->setValue(m->vibrationFrameIndex()+1);
 		parent_.postRedisplay();
-		DONTDRAW = FALSE;
+		DONTDRAW = false;
 	}
 }
 
@@ -268,8 +268,8 @@ void VibrationsWidget::closeEvent(QCloseEvent* event)
 {
 	// Ensure that the relevant button in the ToolBox dock widget is unchecked now
 	Model* m = parent_.aten().currentModelOrFrame();
-	m->setRenderFromVibration(FALSE);
-	parent_.setInteractive(TRUE);
+	m->setRenderFromVibration(false);
+	parent_.setInteractive(true);
 	parent_.postRedisplay();
 	event->accept();
 }

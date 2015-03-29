@@ -76,8 +76,8 @@ void Measurement::setAtom(int n, Atom* i)
 // Return whether the specified atom is used in this measurement
 bool Measurement::involvesAtom(Atom* i) const
 {
-	for (int n=0; n<4; ++n) if (atoms_[n] == i) return TRUE;
-	return FALSE;
+	for (int n=0; n<4; ++n) if (atoms_[n] == i) return true;
+	return false;
 }
 
 // Return specific atom
@@ -100,15 +100,15 @@ void Measurement::calculate(UnitCell* cell)
 	switch (type_)
 	{
 		case (Measurement::DistanceMeasurement):
-			literalValue_ = cell->distance(atoms_[0],atoms_[1],FALSE);
+			literalValue_ = cell->distance(atoms_[0],atoms_[1],false);
 			value_ = cell->distance(atoms_[0],atoms_[1]);
 			break;
 		case (Measurement::AngleMeasurement):
-			literalValue_ = cell->angle(atoms_[0],atoms_[1],atoms_[2],FALSE);
+			literalValue_ = cell->angle(atoms_[0],atoms_[1],atoms_[2],false);
 			value_ = cell->angle(atoms_[0],atoms_[1],atoms_[2]);
 			break;
 		case (Measurement::TorsionMeasurement):
-			literalValue_ = cell->torsion(atoms_[0],atoms_[1],atoms_[2],atoms_[3],FALSE);
+			literalValue_ = cell->torsion(atoms_[0],atoms_[1],atoms_[2],atoms_[3],false);
 			value_ = cell->torsion(atoms_[0],atoms_[1],atoms_[2],atoms_[3]);
 			break;
 		default:

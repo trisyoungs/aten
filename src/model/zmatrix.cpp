@@ -27,7 +27,7 @@ ATEN_USING_NAMESPACE
 ZMatrix* Model::zMatrix()
 {
 	// Update if necessary
-	if (zMatrixPoint_ != (log(Log::Coordinates) + log(Log::Structure))) zMatrix_.create(this, FALSE);
+	if (zMatrixPoint_ != (log(Log::Coordinates) + log(Log::Structure))) zMatrix_.create(this, false);
 	zMatrixPoint_ = log(Log::Coordinates) + log(Log::Structure);
 	return &zMatrix_;
 }

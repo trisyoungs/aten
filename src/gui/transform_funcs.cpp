@@ -78,7 +78,7 @@ void TransformWidget::on_RotateDefineAxisButton_clicked(bool on)
 
 void rotatePickAxisButton_callback(Reflist<Atom,int>* picked)
 {
-// 	ui.RotatePickAxisButton->setChecked(FALSE); ATEN2 TODO
+// 	ui.RotatePickAxisButton->setChecked(false); ATEN2 TODO
 // 	// If there are not two atoms in the list then the mode must have been canceled
 // 	if (picked->nItems() != 2) return;
 // 	Vec3<double> v = picked->last()->item->r();
@@ -131,7 +131,7 @@ void TransformWidget::on_TransformApplyButton_clicked(bool on)
 
 void transformPickAButton_callback(Reflist<Atom,int>* picked)
 {
-// 	ui.TransformPickAButton->setChecked(FALSE); ATEN2 TODO
+// 	ui.TransformPickAButton->setChecked(false); ATEN2 TODO
 // 	// If there are not two atoms in the list then the mode must have been canceled
 // 	if (picked->nItems() != 2) return;
 // 	Vec3<double> v = picked->last()->item->r();
@@ -144,7 +144,7 @@ void transformPickAButton_callback(Reflist<Atom,int>* picked)
 
 void transformPickBButton_callback(Reflist<Atom,int>* picked)
 {
-// 	ui.TransformPickBButton->setChecked(FALSE); ATEN2 TODO
+// 	ui.TransformPickBButton->setChecked(false); ATEN2 TODO
 // 	// If there are not two atoms in the list then the mode must have been canceled
 // 	if (picked->nItems() != 2) return;
 // 	Vec3<double> v = picked->last()->item->r();
@@ -157,7 +157,7 @@ void transformPickBButton_callback(Reflist<Atom,int>* picked)
 
 void transformPickCButton_callback(Reflist<Atom,int>* picked)
 {
-// 	ui.TransformPickCButton->setChecked(FALSE); ATEN2 TODO
+// 	ui.TransformPickCButton->setChecked(false); ATEN2 TODO
 // 	// If there are not two atoms in the list then the mode must have been canceled
 // 	if (picked->nItems() != 2) return;
 // 	Vec3<double> v = picked->last()->item->r();
@@ -342,7 +342,7 @@ void TransformWidget::on_ConvertRotateIntoButton_clicked(bool on)
 
 void convertSourcePickAButton_callback(Reflist<Atom,int>* picked)
 {
-// 	ui.ConvertSourcePickAButton->setChecked(FALSE); ATEN2 TODO
+// 	ui.ConvertSourcePickAButton->setChecked(false); ATEN2 TODO
 // 	// If there are not two atoms in the list then the mode must have been canceled
 // 	if (picked->nItems() != 2) return;
 // 	Vec3<double> v = picked->last()->item->r();
@@ -355,7 +355,7 @@ void convertSourcePickAButton_callback(Reflist<Atom,int>* picked)
 
 void convertSourcePickBButton_callback(Reflist<Atom,int>* picked)
 {
-// 	ui.ConvertSourcePickBButton->setChecked(FALSE); ATEN2 TODO
+// 	ui.ConvertSourcePickBButton->setChecked(false); ATEN2 TODO
 // 	// If there are not two atoms in the list then the mode must have been canceled
 // 	if (picked->nItems() != 2) return;
 // 	Vec3<double> v = picked->last()->item->r();
@@ -368,7 +368,7 @@ void convertSourcePickBButton_callback(Reflist<Atom,int>* picked)
 
 void convertSourcePickCButton_callback(Reflist<Atom,int>* picked)
 {
-// 	ui.ConvertSourcePickCButton->setChecked(FALSE); ATEN2 TODO
+// 	ui.ConvertSourcePickCButton->setChecked(false); ATEN2 TODO
 // 	// If there are not two atoms in the list then the mode must have been canceled
 // 	if (picked->nItems() != 2) return;
 // 	Vec3<double> v = picked->last()->item->r();
@@ -529,7 +529,7 @@ void TransformWidget::on_ConvertDefineOriginButton_clicked(bool on)
 
 void convertTargetDefineAButton_callback(Reflist<Atom,int>* picked)
 {
-// 	ui.ConvertTargetPickAButton->setChecked(FALSE); ATEN2 TODO
+// 	ui.ConvertTargetPickAButton->setChecked(false); ATEN2 TODO
 // 	// If there are not two atoms in the list then the mode must have been canceled
 // 	if (picked->nItems() != 2) return;
 // 	Vec3<double> v = picked->last()->item->r();
@@ -542,7 +542,7 @@ void convertTargetDefineAButton_callback(Reflist<Atom,int>* picked)
 
 void convertTargetDefineBButton_callback(Reflist<Atom,int>* picked)
 {
-// 	ui.ConvertTargetPickBButton->setChecked(FALSE); ATEN2 TODO
+// 	ui.ConvertTargetPickBButton->setChecked(false); ATEN2 TODO
 // 	// If there are not two atoms in the list then the mode must have been canceled
 // 	if (picked->nItems() != 2) return;
 // 	Vec3<double> v = picked->last()->item->r();
@@ -555,7 +555,7 @@ void convertTargetDefineBButton_callback(Reflist<Atom,int>* picked)
 
 void convertTargetDefineCButton_callback(Reflist<Atom,int>* picked)
 {
-// 	ui.ConvertTargetPickCButton->setChecked(FALSE);  ATEN2 TODO
+// 	ui.ConvertTargetPickCButton->setChecked(false);  ATEN2 TODO
 // 	// If there are not two atoms in the list then the mode must have been canceled
 // 	if (picked->nItems() != 2) return;
 // 	Vec3<double> v = picked->last()->item->r();

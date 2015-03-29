@@ -71,9 +71,9 @@ class RenderGroup
 	// Clear lists
 	void clear();
 	// Add text primitive (2D)
-	void addText2D(int x, int y, QString text, bool rightalign = FALSE);
+	void addText2D(int x, int y, QString text, bool rightalign = false);
 	// Add text primitive (3D)
-	void addText3D(Vec3<double> pos, QString text, bool rightalign = FALSE);
+	void addText3D(Vec3<double> pos, QString text, bool rightalign = false);
 	// Add triangle primitive in specified colour
 	void addTriangles(Primitive& targetPrimitive, Matrix& transform, Vec4<GLfloat>& colour, GLenum fillMode = GL_FILL, GLfloat lineWidth = -1.0);
 	// Add triangle primitive (which has it's own colour info)
@@ -89,7 +89,7 @@ class RenderGroup
 	 */
 	public:
 	// Render bond
-	void createBond(PrimitiveSet& primitiveSet, Matrix A, Vec3<double> vij, Atom* i, Prefs::DrawStyle style_i, Vec4<GLfloat>& colour_i, double radius_i, Atom* j, Prefs::DrawStyle style_j, Vec4<GLfloat>& colour_j, double radius_j, Bond::BondType bt, double selscale, Bond* b = 0, bool transparentSel = FALSE);
+	void createBond(PrimitiveSet& primitiveSet, Matrix A, Vec3<double> vij, Atom* i, Prefs::DrawStyle style_i, Vec4<GLfloat>& colour_i, double radius_i, Atom* j, Prefs::DrawStyle style_j, Vec4<GLfloat>& colour_j, double radius_j, Bond::BondType bt, double selscale, Bond* b = 0, bool transparentSel = false);
 	// Generate primitive info for atoms and bonds of specified model
 	void createAtomsAndBonds(PrimitiveSet& primitiveSet, Model* source, Matrix baseTransform);
 	// Generate primitive data for model glyphs

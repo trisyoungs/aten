@@ -78,11 +78,11 @@ void Viewer::setSelectedMode(UserAction::Action ua, int atomsToPick, void (*call
 		case (UserAction::DrawBondDoubleAction):
 		case (UserAction::DrawBondTripleAction):
 		case (UserAction::DrawDeleteBondAction):
-			pickEnabled_ = TRUE;
+			pickEnabled_ = true;
 			pickedAtoms_.clear();
 			break;
 		default:
-			pickEnabled_ = FALSE;
+			pickEnabled_ = false;
 			break;
 	}
 
@@ -175,11 +175,11 @@ void Viewer::beginMode(Prefs::MouseButton button)
 	}
 	
 	// Note the mouse button pressed
-	mouseButton_[button] = TRUE;
+	mouseButton_[button] = true;
 	// Check for modifier keys
-	zrotate = FALSE;
-	manipulate = FALSE;
-	hasMoved_ = FALSE;
+	zrotate = false;
+	manipulate = false;
+	hasMoved_ = false;
 
 	for (n=0; n<3; n++)
 	{
@@ -188,10 +188,10 @@ void Viewer::beginMode(Prefs::MouseButton button)
 			switch (prefs.keyAction(Prefs::ModifierKey(n)))
 			{
 				case (Prefs::ManipulateKeyAction):
-					manipulate = TRUE;
+					manipulate = true;
 					break;
 				case (Prefs::ZrotateKeyAction):
-					zrotate = TRUE;
+					zrotate = true;
 					break;
 				default:
 					break;
@@ -290,7 +290,7 @@ void Viewer::endMode(Prefs::MouseButton button)
 	bool nofold = atenWindow_->buildWidget->ui.PreventFoldCheck->isChecked();
 	
 	// Reset mouse button flag
-	mouseButton_[button] = FALSE;
+	mouseButton_[button] = false;
 
 	// Copy the current mode and reset it so we redraw properly
 	UserAction::Action endingMode = activeMode_;
@@ -323,14 +323,14 @@ void Viewer::endMode(Prefs::MouseButton button)
 		case (UserAction::SelectMoleculeAction):
 			source->beginUndoState("Select Molecule");
 			if (!modded) source->selectNone();
-			if (atomClicked_ != NULL)	source->selectTree(atomClicked_, FALSE, ctrled);
+			if (atomClicked_ != NULL)	source->selectTree(atomClicked_, false, ctrled);
 			source->endUndoState();
 			atenWindow_->updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget+AtenWindow::GeometryTarget);
 			break;
 		case (UserAction::SelectElementAction):
 			source->beginUndoState("Select Element");
 			if (!modded) source->selectNone();
-			if (atomClicked_ != NULL) source->selectElement(atomClicked_, FALSE, ctrled);
+			if (atomClicked_ != NULL) source->selectElement(atomClicked_, false, ctrled);
 			source->endUndoState();
 			atenWindow_->updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget+AtenWindow::GeometryTarget);
 			break;
@@ -530,12 +530,12 @@ void Viewer::endMode(Prefs::MouseButton button)
 				if (shifted)
 				{
 					source->beginUndoState("Grow Atom (unbound)");
-					source->growAtom(atomClicked_, sketchElement_, -1.0, ag, FALSE);
+					source->growAtom(atomClicked_, sketchElement_, -1.0, ag, false);
 				}
 				else
 				{
 					source->beginUndoState("Grow Atom");
-					source->growAtom(atomClicked_, sketchElement_, -1.0, ag, TRUE);
+					source->growAtom(atomClicked_, sketchElement_, -1.0, ag, true);
 				}
 				source->endUndoState();
 				atenWindow_->updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);

@@ -35,7 +35,7 @@ class BasisPrimitiveVariable : public PointerVariable
 {
 	public:
 	// Constructor / Destructor
-	BasisPrimitiveVariable(BasisPrimitive* func = NULL, bool constant = FALSE);
+	BasisPrimitiveVariable(BasisPrimitive* func = NULL, bool constant = false);
 	~BasisPrimitiveVariable();
 
 	/*
@@ -69,7 +69,7 @@ class BasisPrimitiveArrayVariable : public PointerArrayVariable
 {
 	public:
 	// Constructor / Destructor
-	BasisPrimitiveArrayVariable(TreeNode* sizeexpr, bool constant = FALSE);
+	BasisPrimitiveArrayVariable(TreeNode* sizeexpr, bool constant = false);
 
 	/*
 	// Inherited Virtuals

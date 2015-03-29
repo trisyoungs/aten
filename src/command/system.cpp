@@ -31,14 +31,14 @@ ATEN_USING_NAMESPACE
 // Toggle debug modes
 bool Commands::function_Debug(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	Messenger::OutputType ot = Messenger::outputType(c->argc(0), TRUE);
+	Messenger::OutputType ot = Messenger::outputType(c->argc(0), true);
 	if (ot != Messenger::nOutputTypes)
 	{
 		// Check to see if level is already active
 		Messenger::isOutputActive(ot) ? Messenger::removeOutputType(ot) : Messenger::addOutputType(ot);
 	}
-	else return FALSE;
-	return TRUE;
+	else return false;
+	return true;
 }
 
 // Retrieve environment variable
@@ -46,7 +46,7 @@ bool Commands::function_Getenv(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (getenv(qPrintable(c->argc(0))) != '\0') rv.set(getenv(qPrintable(c->argc(0))));
 	else rv.set("");
-	return TRUE;
+	return true;
 }
 
 // Retrieve environment variable as a floating point value
@@ -58,7 +58,7 @@ bool Commands::function_Getenvf(CommandNode* c, Bundle& obj, ReturnValue& rv)
 		rv.set(s.toDouble());
 	}
 	else rv.set(0.0);
-	return TRUE;
+	return true;
 }
 
 // Retrieve environment variable as an integer value
@@ -70,7 +70,7 @@ bool Commands::function_Getenvi(CommandNode* c, Bundle& obj, ReturnValue& rv)
 		rv.set(s.toInt());
 	}
 	else rv.set(0);
-	return TRUE;
+	return true;
 }
 
 // Help function
@@ -88,13 +88,13 @@ bool Commands::function_Help(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	Commands::Function cf = (Commands::Function) i;
 	if (Commands::data(cf).hasArguments()) Messenger::print("%s(%s)\n       %s", Commands::data(cf).keyword, Commands::data(cf).argText, Commands::data(cf).syntax);
 	else Messenger::print("%s\n       %s", Commands::data(cf).keyword, Commands::data(cf).syntax);
-	return TRUE;
+	return true;
 }
 
 // Nullify specified pointers
 bool Commands::function_Null(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	bool result = TRUE;
+	bool result = true;
 	ReturnValue temprv;
 	for (int n=0; n<c->nArgs(); ++n)
 	{
@@ -111,7 +111,7 @@ bool Commands::function_Quit(CommandNode* c, Bundle& obj, ReturnValue& rv)
 
 	c->parent()->setAcceptedFail(Commands::Quit);
 
-	return FALSE;
+	return false;
 }
 
 // Search available commands
@@ -123,20 +123,20 @@ bool Commands::function_SearchCommands(CommandNode* c, Bundle& obj, ReturnValue&
 		Commands::Function cf = (Commands::Function) i;
 		if (QString(Commands::data(cf).keyword).contains(lcase)) Messenger::print("  %-15s : %s", Commands::data(cf).keyword, Commands::data(cf).syntax);
 	}
-	return TRUE;
+	return true;
 }
 
 // Set random seed
 bool Commands::function_Seed(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	srand( (unsigned) c->argi(0) );
-	return TRUE;
+	return true;
 }
 
 // Print version information
 bool Commands::function_Version(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	printf("Aten version %s, built from %s@%s.\n", ATENVERSION, ATENURL, ATENREVISION);
-	return TRUE;
+	return true;
 }
 

@@ -195,7 +195,7 @@ class Model : public ListItem<Model>
 	// Return the list index of the specified atom
 	int atomIndex(Atom* i) const;
 	// Delete specified atom
-	void deleteAtom(Atom* target, bool noupdate = FALSE);
+	void deleteAtom(Atom* target, bool noupdate = false);
 	// Translate specified atom
 	void translateAtom(Atom* target, Vec3<double> delta);
 	// Position specified atom
@@ -253,9 +253,9 @@ class Model : public ListItem<Model>
 	// Cell definition (also contains reciprocal cell definition)
 	UnitCell cell_;
 	// Reassemble molecule/fragment, beginning at supplied atom, returning COG (or COM) of atoms
-	Vec3<double> reassembleFragment(Atom* i, int referenceBit, int &count, bool centreOfMass = FALSE);
+	Vec3<double> reassembleFragment(Atom* i, int referenceBit, int &count, bool centreOfMass = false);
 	// Determine COG or COM of reassembled fragment without actually reassembling it
-	Vec3<double> reassembleFragment(Atom* i, Vec3<double> referencePos, int referenceBit, int &count, bool centreOfMass = FALSE);
+	Vec3<double> reassembleFragment(Atom* i, Vec3<double> referencePos, int referenceBit, int &count, bool centreOfMass = false);
 
 	public:
 	// Return pointer to unit cell structure
@@ -353,19 +353,19 @@ class Model : public ListItem<Model>
 
 	public:
 	// Select the specified atom
-	void selectAtom(Atom* i, bool markOnly = FALSE);
+	void selectAtom(Atom* i, bool markOnly = false);
 	// Select the specified atom ID
-	void selectAtom(int id, bool markOnly = FALSE);
+	void selectAtom(int id, bool markOnly = false);
 	// Deselect the specified atom
-	void deselectAtom(Atom* i, bool markOnly = FALSE);
+	void deselectAtom(Atom* i, bool markOnly = false);
 	// Deselect the specified atom
-	void deselectAtom(int id, bool markOnly = FALSE);
+	void deselectAtom(int id, bool markOnly = false);
 	// Toggle the selection state of the atom
-	void selectionToggle(Atom* i, bool markOnly = FALSE);
+	void selectionToggle(Atom* i, bool markOnly = false);
 	// Select all atoms
-	void selectAll(bool markOnly = FALSE);
+	void selectAll(bool markOnly = false);
 	// Select no atoms
-	void selectNone(bool markOnly = FALSE);
+	void selectNone(bool markOnly = false);
 	// Return the number of selected atoms
 	int nSelected() const;
 	// Return the number of marked atoms
@@ -377,51 +377,51 @@ class Model : public ListItem<Model>
 	// Select marked atoms
 	void selectMarkedAtoms();
 	// Invert current atom selection
-	void selectionInvert(bool markOnly = FALSE);
+	void selectionInvert(bool markOnly = false);
 	// Delete current atom selection
-	void selectionDelete(bool markOnly = FALSE);
+	void selectionDelete(bool markOnly = false);
 	// Expand current atom selection by one bond
-	void selectionExpand(bool markOnly = FALSE);
+	void selectionExpand(bool markOnly = false);
 	// Return the atom at the clicked screen coordinates (if any)
 	Atom* atomOnScreen(double x1, double y1);
 	// Select all atoms in specified pattern
-	void selectPattern(Pattern* p, bool markOnly = FALSE, bool deselect = FALSE);
+	void selectPattern(Pattern* p, bool markOnly = false, bool deselect = false);
 	// Select all atoms within the rectangular boundary specified
-	void selectBox(double, double, double, double, bool deselect = FALSE);
+	void selectBox(double, double, double, double, bool deselect = false);
 	// Select all atoms connected by a path from the specified atom
-	void selectTree(Atom* i, bool markOnly = FALSE, bool deselect = FALSE, Bond *omitbond = NULL);
+	void selectTree(Atom* i, bool markOnly = false, bool deselect = false, Bond *omitbond = NULL);
 	// Select all atoms of the same element as the specified atom
-	void selectElement(Atom* i, bool markOnly = FALSE, bool deselect = FALSE);
+	void selectElement(Atom* i, bool markOnly = false, bool deselect = false);
 	// Select all atoms of the same element as the atom with the specified id
-	void selectElement(int el, bool markOnly = FALSE, bool deselect = FALSE);
+	void selectElement(int el, bool markOnly = false, bool deselect = false);
 	// DeSelect all atoms of the same element as the atom with the specified id
-	void deselectElement(int el, bool markOnly = FALSE);
+	void deselectElement(int el, bool markOnly = false);
 	// Select all atoms which match the provided type
-	int selectType(int element, QString typeDesc, bool markOnly = FALSE, bool deselect = FALSE);
+	int selectType(int element, QString typeDesc, bool markOnly = false, bool deselect = false);
 	// Select all atoms within cutoff of specified atom
 	void selectRadial(Atom* i, double d);
 	// Return the first selected atom in the model (if any)
-	Refitem<Atom,int>* selection(bool markOnly = FALSE) const;
+	Refitem<Atom,int>* selection(bool markOnly = false) const;
 	// Return the nth selected atom in the model
 	Refitem<Atom,int>* selected(int n);
 	// Move selected atoms one place 'up' in the list
-	void shiftSelectionUp(bool markOnly = FALSE);
+	void shiftSelectionUp(bool markOnly = false);
 	// Move selected atoms one place 'down' in the list
-	void shiftSelectionDown(bool markOnly = FALSE);
+	void shiftSelectionDown(bool markOnly = false);
 	// Move selected atoms to start of the list
-	void moveSelectionToStart(bool markOnly = FALSE);
+	void moveSelectionToStart(bool markOnly = false);
 	// Move selection to end of the list
-	void moveSelectionToEnd(bool markOnly = FALSE);
+	void moveSelectionToEnd(bool markOnly = false);
 	// Detect and select overlapping atoms
-	void selectOverlaps(double tolerance, bool markOnly = FALSE);
+	void selectOverlaps(double tolerance, bool markOnly = false);
 	// Select atoms (or molecule COGs) inside of the current unit cell
-	void selectInsideCell(bool moleculecogs, bool markOnly = FALSE);
+	void selectInsideCell(bool moleculecogs, bool markOnly = false);
 	// Select atoms (or molecule COGs) outside of the current unit cell
-	void selectOutsideCell(bool moleculecogs, bool markOnly = FALSE);
+	void selectOutsideCell(bool moleculecogs, bool markOnly = false);
 	// Perform a Miller 'selection' on the model contents
-	void selectMiller(int h, int k, int l, bool inside, bool markOnly = FALSE);
+	void selectMiller(int h, int k, int l, bool inside, bool markOnly = false);
 	// Select atoms within distance from a line (i.e. cylinder select)
-	void selectLine(Vec3<double> line, Vec3<double> point, double dr, bool markOnly = FALSE);
+	void selectLine(Vec3<double> line, Vec3<double> point, double dr, bool markOnly = false);
 	// Get atoms of a bound fragment with the current selection
 	void fragmentFromSelection(Atom* start, Reflist<Atom,int>& list);
 	// Recursive selector for fragmentFromSelection()
@@ -733,7 +733,7 @@ class Model : public ListItem<Model>
 
 	public:
 	// Add a single atom of the type specified to the atom specified
-	Atom* growAtom(Atom* target, short int element, double distance, Atom::AtomGeometry geometry, bool bound = TRUE);
+	Atom* growAtom(Atom* target, short int element, double distance, Atom::AtomGeometry geometry, bool bound = true);
 	// Adds hydrogens to satisfy the bond order requirements of atoms in the model
 	void hydrogenSatisfy(Atom* target = NULL);
 	// Return the pen orientation matrix
@@ -792,18 +792,18 @@ class Model : public ListItem<Model>
 	// Spin the atom selection
 	void rotateSelectionZaxis(double);
 	// Puts the selections centre of geometry at 0,0,0
-	void centre(const Vec3<double> &v, bool lockx = FALSE, bool locky = FALSE, bool lockz = FALSE);
-	void centre(double x, double y, double z, bool lockx = FALSE, bool locky = FALSE, bool lockz = FALSE);
+	void centre(const Vec3<double> &v, bool lockx = false, bool locky = false, bool lockz = false);
+	void centre(double x, double y, double z, bool lockx = false, bool locky = false, bool lockz = false);
 	// Translate selection by the vector specified
-	void translateSelectionLocal(const Vec3<double>&, bool markOnly = FALSE);
+	void translateSelectionLocal(const Vec3<double>&, bool markOnly = false);
 	// Translate selection by the vector specified (in world coordinates)
-	void translateSelectionWorld(const Vec3<double>&, bool markOnly = FALSE);
+	void translateSelectionWorld(const Vec3<double>&, bool markOnly = false);
 	// Rotate selection about specified vector
-	void rotateSelectionVector(Vec3<double> origin, Vec3<double> vector, double angle, bool markOnly = FALSE);
+	void rotateSelectionVector(Vec3<double> origin, Vec3<double> vector, double angle, bool markOnly = false);
 	// Mirror selection about specified axis
-	void mirrorSelectionLocal(int axis, bool markOnly = FALSE);
+	void mirrorSelectionLocal(int axis, bool markOnly = false);
 	// Matrix transform current selection
-	void matrixTransformSelection(Vec3<double> origin, Matrix transform, bool markOnly = FALSE);
+	void matrixTransformSelection(Vec3<double> origin, Matrix transform, bool markOnly = false);
 	// Convert from Bohr to Angstrom
 	void bohrToAngstrom();
 	// Cnvert fractional coordinates to real coordinates
@@ -836,7 +836,7 @@ class Model : public ListItem<Model>
 	void removeTrajectoryFrame(Model*);
 	// Total number of frames available in file (if an uncached trajectory)
 	int nTrajectoryFileFrames_;
-	// Whether this is a cached trajectory (TRUE) or just one frame (FALSE)
+	// Whether this is a cached trajectory (true) or just one frame (false)
 	bool trajectoryFramesAreCached_;
 	// Current frame position counter
 	int trajectoryFrameIndex_;
@@ -879,7 +879,7 @@ class Model : public ListItem<Model>
 	// Seek to previous frame
 	void seekPreviousTrajectoryFrame();
 	// Seek to specified frame
-	void seekTrajectoryFrame(int frameno, bool quiet = FALSE);
+	void seekTrajectoryFrame(int frameno, bool quiet = false);
 	// Return whether to propagate atom styles and colours from parent model to trajectory frames
 	bool trajectoryPropagateParentStyle();
 	// Set whether to propagate atom styles and colours from parent model to trajectory frames
@@ -959,17 +959,17 @@ class Model : public ListItem<Model>
 	// Add measurements of specific type in current selection
 	void addMeasurementsInSelection(Measurement::MeasurementType);
 	// Add distance measurement between atoms
-	double addDistanceMeasurement(Atom* i, Atom* j, bool quiet = FALSE);
+	double addDistanceMeasurement(Atom* i, Atom* j, bool quiet = false);
 	// Add distance measurement between atom ids
-	double addDistanceMeasurement(int i, int j, bool quiet = FALSE);
+	double addDistanceMeasurement(int i, int j, bool quiet = false);
 	// Add angle measurement between atoms
-	double addAngleMeasurement(Atom* i, Atom* j, Atom* k, bool quiet = FALSE);
+	double addAngleMeasurement(Atom* i, Atom* j, Atom* k, bool quiet = false);
 	// Add angle measurement between atom ids
-	double addAngleMeasurement(int i, int j, int k, bool quiet = FALSE);
+	double addAngleMeasurement(int i, int j, int k, bool quiet = false);
 	// Add torsion measurement between atoms
-	double addTorsionMeasurement(Atom* i, Atom* j, Atom* k, Atom* l, bool quiet = FALSE);
+	double addTorsionMeasurement(Atom* i, Atom* j, Atom* k, Atom* l, bool quiet = false);
 	// Add torsion measurement between atom ids
-	double addTorsionMeasurement(int i, int j, int k, int l, bool quiet = FALSE);
+	double addTorsionMeasurement(int i, int j, int k, int l, bool quiet = false);
 	// Update stored measurements
 	void updateMeasurements();
 	// List stored measurements

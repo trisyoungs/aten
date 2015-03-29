@@ -35,12 +35,12 @@ ATEN_USING_NAMESPACE
 FragmentsWidget::FragmentsWidget(AtenWindow& parent, Qt::WindowFlags flags) : QDockWidget(&parent, flags), parent_(parent)
 {
 	ui.setupUi(this);
-	ui.FragmentTable->setVisible(FALSE);
+	ui.FragmentTable->setVisible(false);
 
 	// Private variables
 	currentFragment_ = NULL;
 	bondId_ = 0;
-	iconsGenerated_ = FALSE;
+	iconsGenerated_ = false;
 }
 
 void FragmentsWidget::showWidget()
@@ -115,10 +115,10 @@ void FragmentsWidget::refresh()
 		// Create main tree branch
 		group = new TTreeWidgetItem(ui.FragmentTree);
 		group->setFlags(Qt::ItemIsEnabled);
-		ui.FragmentTree->setItemExpanded(group, TRUE);
+		ui.FragmentTree->setItemExpanded(group, true);
 		group->setText(0, fg->name());
 #if QT_VERSION >= 0x040300
-		group->setFirstColumnSpanned(TRUE);
+		group->setFirstColumnSpanned(true);
 #endif
 
 		column = 0;
@@ -158,14 +158,14 @@ void FragmentsWidget::refresh()
 			
 			// If the currentFragment_ is NULL, set it as soon as possible
 			if (currentFragment_ == NULL) currentFragment_ = f;
-			if (currentFragment_ == f) item->setSelected(TRUE);
+			if (currentFragment_ == f) item->setSelected(true);
 		}
 	}
 	
 	// Resize columns and rows
 	for (int n=0; n<3; n++) ui.FragmentTree->resizeColumnToContents(n);
 	ui.FragmentTable->resizeRowsToContents();
-	iconsGenerated_ = TRUE;
+	iconsGenerated_ = true;
 	Messenger::exit("FragmentsWidget::refresh");
 }
 
@@ -231,13 +231,13 @@ void FragmentsWidget::on_ViewAsListCheck_clicked(bool checked)
 {
 	if (checked)
 	{
-		ui.FragmentTree->setVisible(TRUE);
-		ui.FragmentTable->setVisible(FALSE);
+		ui.FragmentTree->setVisible(true);
+		ui.FragmentTable->setVisible(false);
 	}
 	else
 	{
-		ui.FragmentTree->setVisible(FALSE);
-		ui.FragmentTable->setVisible(TRUE);
+		ui.FragmentTree->setVisible(false);
+		ui.FragmentTable->setVisible(true);
 	}
 }
 
@@ -245,13 +245,13 @@ void FragmentsWidget::on_ViewAsGridCheck_clicked(bool checked)
 {
 	if (checked)
 	{
-		ui.FragmentTree->setVisible(FALSE);
-		ui.FragmentTable->setVisible(TRUE);
+		ui.FragmentTree->setVisible(false);
+		ui.FragmentTable->setVisible(true);
 	}
 	else
 	{
-		ui.FragmentTree->setVisible(TRUE);
-		ui.FragmentTable->setVisible(FALSE);
+		ui.FragmentTree->setVisible(true);
+		ui.FragmentTable->setVisible(false);
 	}
 }
 

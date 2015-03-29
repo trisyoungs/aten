@@ -67,7 +67,7 @@ int CommandParser::lex()
 	if ((c == '.') && isalpha(peekChar()))
 	{
 		Messenger::print(Messenger::Parse, "LEXER (%p): found a '.' before an alpha character - expecting a path step next...",tree_);
-		expectPathStep_ = TRUE;
+		expectPathStep_ = true;
 		return '.';
 	}
 
@@ -77,17 +77,17 @@ int CommandParser::lex()
 	if (c == '.' || isdigit(c))
 	{
 		// Default to integer, unless first char is '.'
-		integer = (c == '.' ? FALSE : TRUE);
-		hasExp = FALSE;
+		integer = (c == '.' ? false : true);
+		hasExp = false;
 		token += c;
-		done = FALSE;
+		done = false;
 		do
 		{
 			c = getChar();
 			if (isdigit(c)) token += c;
 			else if (c == '.')
 			{
-				integer = FALSE;
+				integer = false;
 				token += '.';
 			}
 			else if ((c == 'e') || (c == 'E'))
@@ -99,7 +99,7 @@ int CommandParser::lex()
 					return 0;
 				}
 				token += 'E';
-				hasExp = TRUE;
+				hasExp = true;
 			}
 			else if ((c == '-') || (c == '+'))
 			{
@@ -107,14 +107,14 @@ int CommandParser::lex()
 				if ((!token.isEmpty()) && (!token.endsWith('E')))
 				{
 					unGetChar();
-					done = TRUE;
+					done = true;
 				}
 				else token += c;
 			}
 			else
 			{
 				unGetChar();
-				done = TRUE;
+				done = true;
 			}
 		} while (!done);
 		// We now have the number as a text token...
@@ -126,7 +126,7 @@ int CommandParser::lex()
 		else
 		{
 			// Exponentiations are always returned as a double
-			integer = FALSE;
+			integer = false;
 			CommandParser_lval.doubleConst = token.toDouble();
 		}
 		if (integer) Messenger::print(Messenger::Parse, "LEXER (%p): found an integer constant [%s] [%i]", tree_, qPrintable(token), CommandParser_lval.intConst);
@@ -141,7 +141,7 @@ int CommandParser::lex()
 	{
 		quoteChar = c;
 		// Just read everything until we find a matching quote
-		done = FALSE;
+		done = false;
 		do
 		{
 			c = getChar();
@@ -162,7 +162,7 @@ int CommandParser::lex()
 						token += c2; break;
 				}
 			}
-			else if (c == quoteChar) done = TRUE;
+			else if (c == quoteChar) done = true;
 			else if (c == '\0')
 			{
 				Messenger::print("Runaway character constant in input.");
@@ -202,12 +202,12 @@ int CommandParser::lex()
 			}
 
 			// Built-in constants
-			if (token == "TRUE")
+			if ((token == "true") || (token == "TRUE"))
 			{
 				CommandParser_lval.intConst = 1;
 				return INTCONST;
 			}
-			else if ((token == "FALSE") || (token == "NULL"))
+			else if ((token == "false") || (token == "FALSE") || (token == "NULL"))
 			{
 				CommandParser_lval.intConst = 0;
 				return INTCONST;
@@ -365,7 +365,7 @@ int CommandParser::lex()
 		// The token isn't a high- or low-level function. It's either a path step or a normal variable
 		if (expectPathStep_)
 		{
-			expectPathStep_ = FALSE;
+			expectPathStep_ = false;
 			Messenger::print(Messenger::Parse, "LEXER (%p): ...which we assume is a path step (->STEPTOKEN)", tree_);
 			lexedName_ = token;
 			return STEPTOKEN;

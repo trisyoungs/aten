@@ -71,7 +71,7 @@ const char* Neta::netaValueComparison(Neta::NetaValueComparison nvc)
 }
 bool Neta::netaValueCompare(int lhsvalue, NetaValueComparison nvc, int rhsvalue)
 {
-	bool result = FALSE;
+	bool result = false;
 	switch (nvc)
 	{
 		case (EqualTo):
@@ -370,7 +370,7 @@ NetaNode::NetaNode() : ListItem<NetaNode>()
 	// Private variables
 	nodeType_ = NetaNode::nNetaNodeTypes;
 	parent_ = NULL;
-	reverseLogic_ = FALSE;
+	reverseLogic_ = false;
 
 	// Public variables
 	prevNode = NULL;
@@ -391,7 +391,7 @@ NetaNode::NetaNodeType NetaNode::nodeType()
 // Set node to use reverse logic
 void NetaNode::setReverseLogic()
 {
-	reverseLogic_ = TRUE;
+	reverseLogic_ = true;
 }
 
 // Return whether to use reverse logic when returning the final value
@@ -1707,7 +1707,7 @@ int NetaMeasurementNode::score(Atom* target, Reflist<Atom,int>* nbrs, Reflist<Ri
 	currentChain_.clear();
 	currentChain_.add(target);
 
-	// Depending on whether we are modifying the neighbour list (if removeNeighbours_ == TRUE) or not, we either use the nbrs list here, or the list of bound atoms
+	// Depending on whether we are modifying the neighbour list (if removeNeighbours_ == true) or not, we either use the nbrs list here, or the list of bound atoms
 	if (removeNeighbours_) for (Refitem<Atom,int>* ri = nbrs->first(); ri != NULL; ri = ri->next)
 	{
 		boundList.clear();
@@ -1722,7 +1722,7 @@ int NetaMeasurementNode::score(Atom* target, Reflist<Atom,int>* nbrs, Reflist<Ri
 		scores.add(j, score(linearNeta_, 1, target, &boundList, rings, path, level));
 	}
 
-	// How many matches? Note that we do not modify the nbrs list here if removeNeighbours_ == FALSE
+	// How many matches? Note that we do not modify the nbrs list here if removeNeighbours_ == false
 	n = 0;
 	for (si = scores.first(); si != NULL; si = si->next) if (si->data > 0) ++n;
 	if (n == 0) totalscore = -1;

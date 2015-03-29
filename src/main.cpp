@@ -35,10 +35,6 @@ int main(int argc, char* argv[])
 	QCoreApplication::setOrganizationDomain("www.projectaten.net");
 	QCoreApplication::setApplicationName("Aten");
 
-	#if QT_VERSION >= 0x040600
-// 	QGL::setPreferredPaintEngine(QPaintEngine::OpenGL); // ATEN2 TODO
-	#endif
-
 	/* Tweak the default QGLFormat */
 // 	QOpenGLFormat::defaultFormat().setSampleBuffers(true); // ATEN2 TODO
 

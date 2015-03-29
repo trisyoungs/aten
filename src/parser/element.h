@@ -35,7 +35,7 @@ class ElementVariable : public PointerVariable
 {
 	public:
 	// Constructor / Destructor
-	ElementVariable(Element* el = NULL, bool constant = FALSE);
+	ElementVariable(Element* el = NULL, bool constant = false);
 	~ElementVariable();
 
 

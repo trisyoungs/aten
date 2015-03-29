@@ -76,11 +76,11 @@ Atom::Atom() : ListItem<Atom>()
 	os_ = 0;
 	environment_ = Atom::NoEnvironment;
 	type_ = NULL;
-	fixedType_ = FALSE;
-	fixedPosition_ = FALSE;
-	selected_ = FALSE;
-	hidden_ = FALSE;
-	marked_ = FALSE;
+	fixedType_ = false;
+	fixedPosition_ = false;
+	selected_ = false;
+	hidden_ = false;
+	marked_ = false;
 	style_ = Prefs::StickStyle;
 	labels_ = 0;
 	parent_ = NULL;
@@ -167,13 +167,13 @@ short int Atom::element() const
 // Check element against the supplied value
 bool Atom::isElement(short int n) const
 {
-	return (n == element_ ? TRUE : FALSE);
+	return (n == element_);
 }
 
 // Check oxidation state against supplied value
 bool Atom::isOs(short int n) const
 {
-	return (n == os_ ? TRUE : FALSE);
+	return (n == os_);
 }
 
 // Return the oxidation state of the atom
@@ -247,7 +247,7 @@ Atom::AtomEnvironment Atom::environment() const
 // Check the environment of the atom against the supplied value
 bool Atom::isEnvironment(Atom::AtomEnvironment ae) const
 {
-	return (environment_ == ae ? TRUE : FALSE);
+	return (environment_ == ae);
 }
 
 // Reset data in structure
@@ -263,7 +263,7 @@ void Atom::reset()
 // Copy atom data
 bool Atom::copy(Atom* source)
 {
-	if (source == NULL) return FALSE;
+	if (source == NULL) return false;
 	r_ = source->r_;
 	f_ = source->f_;
 	v_ = source->v_;
@@ -278,10 +278,10 @@ bool Atom::copy(Atom* source)
 	fixedPosition_ = source->fixedPosition_;
 	for (int n=0; n<4; ++n) colour_[n] = source->colour_[n];
 	hidden_ = source->hidden_;
-	// Do NOT copy selection or marked state (set to FALSE)
-	selected_ = FALSE;
-	marked_ = FALSE;
-	return TRUE;
+	// Do NOT copy selection or marked state (set to false)
+	selected_ = false;
+	marked_ = false;
+	return true;
 }
 
 // Copy atom style
@@ -346,7 +346,7 @@ Refitem<Bond,int>* Atom::bond(int index)
 // Check the number of bonds against the supplied value
 bool Atom::isNBonds(int n) const
 {
-	return (bonds_.nItems() == n ? TRUE : FALSE);
+	return (bonds_.nItems() == n);
 }
 
 // Accept the specified bond to the atom's local reference list
@@ -496,15 +496,15 @@ bool Atom::isPlanar(double tolerance)
 	if (bonds_.nItems() == 1)
 	{
 		Messenger::exit("Atom::isPlanar");
-		return FALSE;
+		return false;
 	}
 	if (bonds_.nItems() == 2)
 	{
 		Messenger::exit("Atom::isPlanar");
-		return TRUE;
+		return true;
 	}
 	// Any other case is more complex.
-	bool result = TRUE;
+	bool result = true;
 	Refitem<Bond,int>* ri = bonds_.first();
 	// Take the first two bound atom vectors and get the cross product to define the plane's normal
 	Vec3<double> v1 = parent_->cell()->mimVector(this, ri->item->partner(this));
@@ -524,7 +524,7 @@ bool Atom::isPlanar(double tolerance)
 // 		printf("Out-of-plane bond angle is %f degrees\n", angle);
 		if (angle > tolerance)
 		{
-			result = FALSE;
+			result = false;
 			break;
 		}
 	}
@@ -561,7 +561,7 @@ Vec3<double> Atom::findBondPlane(Atom* other, Bond *excludedBond, const Vec3<dou
 	else
 	{
 		// Must define from a bond on 'other'
-		if (other == NULL) return vijnorm.orthogonal(TRUE);
+		if (other == NULL) return vijnorm.orthogonal(true);
 		bref = other->bonds_.first();
 		origin = other;
 		vijnorm = -vijnorm;
@@ -582,7 +582,7 @@ Vec3<double> Atom::findBondPlane(Atom* other, Bond *excludedBond, const Vec3<dou
 	}
 
 	// Default, just in case
-	if (bref == NULL) return vijnorm.orthogonal(TRUE);
+	if (bref == NULL) return vijnorm.orthogonal(true);
 
 	return xp;
 }
@@ -707,10 +707,10 @@ Prefs::DrawStyle Atom::style() const
 	return style_;
 }
 
-// Returns TRUE id the atom has at least one label specified
+// Returns true id the atom has at least one label specified
 bool Atom::hasLabels() const
 {
-	return (labels_ == 0 ? FALSE : TRUE);
+	return (labels_ == 0 ? false : true);
 }
 
 // Set label bitvector to specified value

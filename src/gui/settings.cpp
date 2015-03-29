@@ -85,7 +85,7 @@ void AtenWindow::loadSettings()
 			if (!parser.getRestDelim(data)) break;
 
 			// Determine history type
-			Prefs::HistoryType ht = Prefs::historyType(arg, TRUE);
+			Prefs::HistoryType ht = Prefs::historyType(arg, true);
 			if (ht == Prefs::nHistoryTypes) continue;
 			switch (ht)
 			{
@@ -146,7 +146,7 @@ void AtenWindow::saveSettings()
 	QString filename = aten_.atenDirectoryFile("history.txt");
 	Messenger::print("Saving program history file '%s'...", qPrintable(filename));
 	LineParser historyFile;
-	historyFile.openOutput(filename, TRUE);
+	historyFile.openOutput(filename, true);
 	
 	if (historyFile.isFileGoodForWriting())
 	{

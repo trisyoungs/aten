@@ -42,7 +42,7 @@ BuildWidget::BuildWidget(AtenWindow& parent, Qt::WindowFlags flags) : QDockWidge
 	elementGroup->addButton(ui.ElementNButton);
 	elementGroup->addButton(ui.ElementOButton);
 	elementGroup->addButton(ui.ElementCustomButton);
-	ui.ElementCButton->setChecked(TRUE);
+	ui.ElementCButton->setChecked(true);
 	
 	// Add items to submenus for buttons that need it
 	// -- Grow Atom
@@ -74,7 +74,7 @@ void BuildWidget::showWidget()
 {
 	show();
 	// Make sure toolbutton is in correct state
-// 	gui.toolBoxWidget->ui.BuildButton->setChecked(TRUE);
+// 	gui.toolBoxWidget->ui.BuildButton->setChecked(true);
 }
 
 /*
@@ -117,7 +117,7 @@ void BuildWidget::on_ElementPickButton_clicked(bool checked)
 		ui.ElementCustomButton->setText( Elements().symbol(newel) );
 		customElement_ = newel;
 		// Activate custom element button
-		ui.ElementCustomButton->setChecked(TRUE);
+		ui.ElementCustomButton->setChecked(true);
 		parent_.ui.MainView->setSketchElement(customElement_);
 	}
 }
@@ -272,7 +272,7 @@ void BuildWidget::on_BondToleranceSpin_valueChanged(double value)
 void BuildWidget::closeEvent(QCloseEvent* event)
 {
 	// Ensure that the relevant button in the ToolBox dock widget is unchecked now
-// 	gui.toolBoxWidget->ui.BuildButton->setChecked(FALSE);
+// 	gui.toolBoxWidget->ui.BuildButton->setChecked(false);
 	if (this->isFloating()) parent_.postRedisplay();
 
 	// Return to select mode if one of the modes in this window is still selected

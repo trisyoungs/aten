@@ -443,12 +443,12 @@ void FixFreeEvent::undo(Model* m)
 	if (direction_ == UndoEvent::Undo)
 	{
 		Messenger::print(Messenger::Verbose, "Reversing atom fix - atom id = %i", targetId_);
-		m->atomSetFixed(i, FALSE);
+		m->atomSetFixed(i, false);
 	}
 	else
 	{
 		Messenger::print(Messenger::Verbose, "Replaying atom fix - atom id = %i", targetId_);
-		m->atomSetFixed(i, TRUE);
+		m->atomSetFixed(i, true);
 	}
 	Messenger::exit("FixFreeEvent::undo");
 }
@@ -493,12 +493,12 @@ void HideEvent::undo(Model* m)
 	if (direction_ == UndoEvent::Undo)
 	{
 		Messenger::print(Messenger::Verbose, "Reversing atom hide - atom id = %i", targetId_);
-		m->atomSetHidden(i, FALSE);
+		m->atomSetHidden(i, false);
 	}
 	else
 	{
 		Messenger::print(Messenger::Verbose, "Replaying atom hide - atom id = %i", targetId_);
-		m->atomSetHidden(i, TRUE);
+		m->atomSetHidden(i, true);
 	}
 	Messenger::exit("HideEvent::undo");
 }

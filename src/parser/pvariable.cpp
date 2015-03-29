@@ -37,7 +37,7 @@ bool PointerVariable::set(ReturnValue& rv)
 	if (readOnly_)
 	{
 		Messenger::print("A constant value (in this case %s) cannot be assigned to.", VTypes::aDataType(returnType_));
-		return FALSE;
+		return false;
 	}
 	bool success;
 	pointerData_ = rv.asPointer(returnType_, success);
@@ -56,7 +56,7 @@ void PointerVariable::reset()
 bool PointerVariable::execute(ReturnValue& rv)
 {
 	rv.set(returnType_, pointerData_, refitemData_);
-	return TRUE;
+	return true;
 }
 
 // Print node contents
@@ -93,12 +93,12 @@ bool PointerArrayVariable::set(ReturnValue& rv)
 	if (readOnly_)
 	{
 		Messenger::print("A constant value (in this case %s array) cannot be assigned to.", VTypes::aDataType(returnType_));
-		return FALSE;
+		return false;
 	}
 	if (pointerArrayData_ == NULL)
 	{
 		printf("Internal Error: Array '%s' has not been initialised.\n", qPrintable(name_));
-		return FALSE;
+		return false;
 	}
 	// Is the supplied ReturnValue an array?
 	if (rv.arraySize() == -1) for (int i=0; i<arraySize_; i++) pointerArrayData_[i] = rv.asPointer(returnType_);
@@ -107,13 +107,13 @@ bool PointerArrayVariable::set(ReturnValue& rv)
 		if (rv.arraySize() != arraySize_)
 		{
 			Messenger::print("Error setting variable '%s': Array sizes do not conform.", qPrintable(name_));
-			return FALSE;
+			return false;
 		}
 		bool success;
 		for (int i=0; i<arraySize_; i++) pointerArrayData_[i] = rv.asPointer(i, returnType_, success);
-		if (!success) return FALSE;
+		if (!success) return false;
 	}
-	return TRUE;
+	return true;
 }
 
 // Set array element from returnvalue node
@@ -122,24 +122,24 @@ bool PointerArrayVariable::setAsArray(ReturnValue& rv, int arrayIndex)
 	if (readOnly_)
 	{
 		Messenger::print("A constant value (in this case %s array?) cannot be assigned to.", VTypes::aDataType(returnType_));
-		return FALSE;
+		return false;
 	}
 	if (pointerArrayData_ == NULL)
 	{
 		printf("Internal Error: Array '%s' has not been initialised.\n", qPrintable(name_));
-		return FALSE;
+		return false;
 	}
 
 	// Check index
 	if ((arrayIndex < 0) || (arrayIndex >= arraySize_))
 	{
 		Messenger::print("Index %i out of bounds for array '%s'.", arrayIndex+1, qPrintable(name_));
-		return FALSE;
+		return false;
 	}
 
 	// Set individual element
 	pointerArrayData_[arrayIndex] = rv.asPointer(returnType_);
-	return TRUE;
+	return true;
 }
 
 // Reset variable
@@ -172,17 +172,17 @@ bool PointerArrayVariable::execute(ReturnValue& rv)
 		if (!readOnly_)
 		{
 			printf("Internal Error: Array '%s' has not been initialised and can't be executed.\n", qPrintable(name_));
-			return FALSE;
+			return false;
 		}
 		if (!initialise())
 		{
 			printf("Internal Error: Array '%s' failed to initialise and so can't be executed.\n", qPrintable(name_));
-			return FALSE;
+			return false;
 		}
 	}
 	else if (readOnly_) reset();
 	rv.setArray(returnType_, pointerArrayData_, arraySize_);
-	return TRUE;
+	return true;
 }
 
 // Return value of node as array
@@ -192,11 +192,11 @@ bool PointerArrayVariable::executeAsArray(ReturnValue& rv, int arrayIndex)
 	if ((arrayIndex < 0) || (arrayIndex >= arraySize_))
 	{
 		Messenger::print("Error: Array index %i is out of bounds for array '%s'.", arrayIndex+1, qPrintable(name_));
-		return FALSE;
+		return false;
 	}
 	rv.set( returnType_, pointerArrayData_[arrayIndex] );
 // 	printf("Executed :: '%s'\n", rv.info());
-	return TRUE;
+	return true;
 }
 
 // Print node contents
@@ -221,7 +221,7 @@ bool PointerArrayVariable::initialise()
 	if (!arraySizeExpression_->execute(newsize))
 	{
 		Messenger::print("Failed to find size for %s array '%s'.", VTypes::aDataType(returnType_), qPrintable(name_));
-		return FALSE;
+		return false;
 	}
 
 	// If the array is already allocated, free it only if the size is different
@@ -241,7 +241,7 @@ bool PointerArrayVariable::initialise()
 		ReturnValue value;
 		for (Refitem<TreeNode,int>* ri = args_.first(); ri != NULL; ri = ri->next)
 		{
-			if (!ri->item->execute(value)) return FALSE;
+			if (!ri->item->execute(value)) return false;
 			pointerArrayData_[count++] = value.asPointer(returnType_);
 		}
 	}
@@ -251,10 +251,10 @@ bool PointerArrayVariable::initialise()
 		ReturnValue rv;
 		if (initialValue_->execute(rv))
 		{
-			if (!set(rv)) return FALSE;
+			if (!set(rv)) return false;
 		}
-		else return FALSE;
+		else return false;
 	}
-	return TRUE;
+	return true;
 }
 

@@ -220,9 +220,9 @@ class Atom : public ListItem<Atom>
 
 	public:
 	// Sets the selected (or marked) flag of the atom
-	void setSelected(bool b, bool markonly = FALSE);
+	void setSelected(bool b, bool markonly = false);
 	// Returns the current selection state of the atom
-	bool isSelected(bool markonly = FALSE) const;
+	bool isSelected(bool markonly = false) const;
 	// Sets the hidden flag of the atom
 	void setHidden(bool b);
 	// Return whether the atom is hidden
@@ -281,7 +281,7 @@ class Atom : public ListItem<Atom>
 	void setStyle(Prefs::DrawStyle style);
 	// Returns the drawing style of the atom
 	Prefs::DrawStyle style() const;
-	// Returns TRUE id the atom has at least one label specified
+	// Returns true id the atom has at least one label specified
 	bool hasLabels() const;
 	// Set label bitvector to specified value
 	void setLabels(short int l);

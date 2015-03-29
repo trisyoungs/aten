@@ -71,14 +71,14 @@ bool Forcefield::generateVdw(Atom* i)
 	{
 		Messenger::print("Error - Tried to call VDW generator function in forcefield '%s', but it is not defined.", qPrintable(name_));
 		Messenger::exit("Forcefield::generateVdw");
-		return FALSE;
+		return false;
 	}
 	// Check atom pointers
 	if (i == NULL)
 	{
 		Messenger::print("Internal Error - NULL atom passed to VDW generator function in forcefield '%s' (pointers: %p).", qPrintable(name_), i);
 		Messenger::exit("Forcefield::generateVdw");
-		return FALSE;
+		return false;
 	}
 	// Grab forcefieldatom pointer
 	ForcefieldAtom* ffi = i->type();
@@ -89,10 +89,10 @@ bool Forcefield::generateVdw(Atom* i)
 		Messenger::print("Error - Failed to generate Vdw function data for atom type.");
 		ffi->setVdwForm(VdwFunctions::None);
 		Messenger::exit("Forcefield::generateVdw");
-		return FALSE;
+		return false;
 	}
 	Messenger::exit("Forcefield::generateVdw");
-	return TRUE;
+	return true;
 }
 
 // Generate bond params

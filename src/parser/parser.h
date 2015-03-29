@@ -129,11 +129,11 @@ class CommandParser
 	// Perform tree generation (base function, called by generateFrom*)
 	bool generate();
 	// Populate target Program from specified character string
-	bool generateFromString(Program* prog, QString string, QString sourceInfo, bool dontPushTree = FALSE, bool clearExisting = TRUE);
+	bool generateFromString(Program* prog, QString string, QString sourceInfo, bool dontPushTree = false, bool clearExisting = true);
 	// Populate target Program from specified string list
-	bool generateFromStringList(Program* prog, QStringList stringList, QString sourceInfo, bool dontPushTree = FALSE, bool clearExisting = TRUE);
+	bool generateFromStringList(Program* prog, QStringList stringList, QString sourceInfo, bool dontPushTree = false, bool clearExisting = true);
 	// Populate target Program from specified file(name)
-	bool generateFromFile(Program* prog, QString filename, bool dontPushTree = FALSE, bool clearExisting = TRUE);
+	bool generateFromFile(Program* prog, QString filename, bool dontPushTree = false, bool clearExisting = true);
 
 	public:
 	// Return current Tree target, raising warning and setting fail flag if no tree is defined...
@@ -191,9 +191,9 @@ class CommandParser
 	// Wrap named variable (and array index)
 	TreeNode* wrapVariable(Variable* var, TreeNode* arrayIndex = NULL);
 	// Add variable to topmost ScopeNode
-	TreeNode* addVariable(VTypes::DataType type, QString name, TreeNode* initialValue = NULL, bool global = FALSE);
+	TreeNode* addVariable(VTypes::DataType type, QString name, TreeNode* initialValue = NULL, bool global = false);
 	// Add array variable to topmost ScopeNode
-	TreeNode* addArrayVariable(VTypes::DataType type, QString name, TreeNode* sizeexpr, TreeNode* initialvalue = NULL, bool global = FALSE);
+	TreeNode* addArrayVariable(VTypes::DataType type, QString name, TreeNode* sizeexpr, TreeNode* initialvalue = NULL, bool global = false);
 	// Add array 'constant'
 	TreeNode* addArrayConstant(TreeNode* values);
 

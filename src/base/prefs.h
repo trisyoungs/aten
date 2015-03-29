@@ -151,7 +151,7 @@ class Prefs
 	GLdouble bondStyleRadius_[Prefs::nDrawStyles];
 	// Size scaling for atom selection transparency
 	GLdouble selectionScale_;
-	// Whether to use a perspective (TRUE) or orthographic (FALSE) projection
+	// Whether to use a perspective (true) or orthographic (false) projection
 	bool perspective_;
 	// Viewing angle for perspective projection
 	GLdouble perspectiveFov_;

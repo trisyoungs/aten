@@ -28,8 +28,8 @@ ATEN_USING_NAMESPACE
 ColourScale::ColourScale() : ListItem<ColourScale>()
 {
 	// Private variables
-	visible_ = FALSE;
-	interpolated_ = TRUE;
+	visible_ = false;
+	interpolated_ = true;
 }
 
 // Set the name of the colourscale
@@ -135,13 +135,13 @@ void ColourScale::setPoint(int position, double value, double r, double g, doubl
 // Set only value for point
 void ColourScale::setPointValue(int position, double value)
 {
-	setPoint(position, value, 0.0f, 0.0f, 0.0f, 0.0f, TRUE, FALSE);
+	setPoint(position, value, 0.0f, 0.0f, 0.0f, 0.0f, true, false);
 }
 
 // Set only colour for point
 void ColourScale::setPointColour(int position, double r, double g, double b, double a)
 {
-	setPoint(position, 0.0f, r, g, b, a, FALSE, TRUE);
+	setPoint(position, 0.0f, r, g, b, a, false, true);
 }
 
 // Remove old point from colourscale

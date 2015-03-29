@@ -111,7 +111,7 @@ Grid::Grid() : ListItem<Grid>()
 	data3d_ = NULL;
 	data2d_ = NULL;
 	type_ = Grid::NoData;
-	dataFull_ = FALSE;
+	dataFull_ = false;
 	minimum_ = 10000.0;
 	maximum_ = -10000.0;
 	lowerPrimaryCutoff_ = 0.0;
@@ -122,7 +122,7 @@ Grid::Grid() : ListItem<Grid>()
 	boundsLog_ = -1;
 	style_ = Grid::SolidSurface;
 	renderPoint_ = -1;
-	visible_ = TRUE;
+	visible_ = true;
 	primaryColour_[0] = 0.0;
 	primaryColour_[1] = 0.0;
 	primaryColour_[2] = 1.0;
@@ -131,23 +131,23 @@ Grid::Grid() : ListItem<Grid>()
 	secondaryColour_[1] = 1.0;
 	secondaryColour_[2] = 1.0;
 	secondaryColour_[3] = 0.5;
-	useSecondary_ = FALSE;
-	outlineVolume_ = FALSE;
-	fillEnclosedVolume_ = FALSE;
-	periodic_ = FALSE;
+	useSecondary_ = false;
+	outlineVolume_ = false;
+	fillEnclosedVolume_ = false;
+	periodic_ = false;
 	loopOrder_.set(0,1,2);
 	colourScale_ = 0;
 	parent_ = NULL;
-	useColourScale_ = FALSE;
-	useDataForZ_ = TRUE;
+	useColourScale_ = false;
+	useDataForZ_ = true;
 	totalPositiveSum_ = 0.0;
 	totalNegativeSum_ = 0.0;
 	partialPrimarySum_ = 0.0;
 	partialSecondarySum_ = 0.0;
 	sumPoint_ = -1;
-	axisVisible_[0] = FALSE;
-	axisVisible_[1] = FALSE;
-	axisVisible_[2] = FALSE;
+	axisVisible_[0] = false;
+	axisVisible_[1] = false;
+	axisVisible_[2] = false;
 	axisPosition_[0].set(0.0,0.0,0.0);
 	axisPosition_[1].set(0.0,0.0,0.0);
 	axisPosition_[2].set(0.0,0.0,0.0);
@@ -243,7 +243,7 @@ bool Grid::initialise(Grid::GridType type, Vec3<int> nXYZ)
 {
 	Messenger::enter("Grid::initialise");
 	type_ = type;
-	bool result = TRUE;
+	bool result = true;
 	clear();
 	switch (type_)
 	{
@@ -522,10 +522,10 @@ bool Grid::withinPrimaryCutoff(double d) const
 {
 	if (upperPrimaryCutoff_ > lowerPrimaryCutoff_)
 	{
-		if ((d >= lowerPrimaryCutoff_) && (d <= upperPrimaryCutoff_)) return TRUE;
+		if ((d >= lowerPrimaryCutoff_) && (d <= upperPrimaryCutoff_)) return true;
 	}
-	else if ((d >= upperPrimaryCutoff_) && (d <= lowerPrimaryCutoff_)) return TRUE;
-	return FALSE;
+	else if ((d >= upperPrimaryCutoff_) && (d <= lowerPrimaryCutoff_)) return true;
+	return false;
 }
 
 // Set lower isovalue cutoff for secondary surface
@@ -559,10 +559,10 @@ bool Grid::withinSecondaryCutoff(double d) const
 {
 	if (upperSecondaryCutoff_ > lowerSecondaryCutoff_)
 	{
-		if ((d >= lowerSecondaryCutoff_) && (d <= upperSecondaryCutoff_)) return TRUE;
+		if ((d >= lowerSecondaryCutoff_) && (d <= upperSecondaryCutoff_)) return true;
 	}
-	else if ((d >= upperSecondaryCutoff_) && (d <= lowerSecondaryCutoff_)) return TRUE;
-	return FALSE;
+	else if ((d >= upperSecondaryCutoff_) && (d <= lowerSecondaryCutoff_)) return true;
+	return false;
 }
 
 // Return 3D data array
@@ -598,7 +598,7 @@ Vec3<int> Grid::loopOrder()
 // Return whether re-rendering is necessary
 bool Grid::shouldRerender() const
 {
-	return (renderPoint_ == log_ ? FALSE : TRUE);
+	return (renderPoint_ != log_);
 }
 
 // Update the log point of the surface
@@ -704,7 +704,7 @@ void Grid::setColourScale(int id)
 	{
 		// Remove link in old colourscale if necessary
 		if (useColourScale_) prefs.colourScale[colourScale_].breakLink(this);
-		useColourScale_ = FALSE;
+		useColourScale_ = false;
 		logChange();
 		return;
 	}
@@ -713,7 +713,7 @@ void Grid::setColourScale(int id)
 	colourScale_ = id;
 	logChange();
 	prefs.colourScale[colourScale_].addLink(this);
-	useColourScale_ = TRUE;
+	useColourScale_ = true;
 	int i, j, k;
 	double** data2, *data1;
 	// Adjust the colour scale to encompass all grid values...
@@ -875,7 +875,7 @@ bool Grid::allocateArrays()
 			{
 				Messenger::print("Can't allocate 3D grid array - One or more grid limits are secondary (%i,%i,%i).", nXYZ_.x, nXYZ_.y, nXYZ_.z);
 				Messenger::exit("Grid::allocateArrays");
-				return FALSE;
+				return false;
 			}
 			data3d_ = new double**[nXYZ_.x];
 			for (i = 0; i<nXYZ_.x; i++)
@@ -891,7 +891,7 @@ bool Grid::allocateArrays()
 			{
 				Messenger::print("Can't allocate 2D grid array - One or more grid limits are secondary (%i,%i).", nXYZ_.x, nXYZ_.y);
 				Messenger::exit("Grid::allocateArrays");
-				return FALSE;
+				return false;
 			}
 			data2d_ = new double*[nXYZ_.x];
 			for (i = 0; i<nXYZ_.x; i++) data2d_[i] = new double[nXYZ_.y];
@@ -902,7 +902,7 @@ bool Grid::allocateArrays()
 			break;
 	}
 	Messenger::exit("Grid::allocateArrays");
-	return TRUE;
+	return true;
 }
 
 // Clear array data only
@@ -937,7 +937,7 @@ void Grid::deleteArrays()
 void Grid::clear()
 {
 	Messenger::enter("Grid::clear");
-	dataFull_ = FALSE;
+	dataFull_ = false;
 	minimum_ = 10000.0;
 	maximum_ = -10000.0;
 	lowerPrimaryCutoff_ = 0.0;
@@ -945,7 +945,7 @@ void Grid::clear()
 	lowerSecondaryCutoff_ = 0.0;
 	upperSecondaryCutoff_ = 0.0;
 	currentPoint_.zero();
-	visible_ = TRUE;
+	visible_ = true;
 	deleteArrays();
 	Messenger::exit("Grid::clear");
 }
@@ -1018,7 +1018,7 @@ void Grid::setData(int x, int y, int z, double d)
 void Grid::setNextData(double d)
 {
 	// Check limit
-	if (dataFull_ == TRUE)
+	if (dataFull_ == true)
 	{
 		Messenger::print("Grid::setNextData - Array already full.");
 		return;
@@ -1036,7 +1036,7 @@ void Grid::setNextData(double d)
 			{
 				currentPoint_.set(loopOrder_.y, 0);
 				currentPoint_.set(loopOrder_.z, currentPoint_.get(loopOrder_.z) + 1);
-				if (currentPoint_.get(loopOrder_.z) == nXYZ_.get(loopOrder_.z)) dataFull_ = TRUE;
+				if (currentPoint_.get(loopOrder_.z) == nXYZ_.get(loopOrder_.z)) dataFull_ = true;
 			}
 		}
 	}
@@ -1048,7 +1048,7 @@ void Grid::setNextData(double d)
 		{
 			currentPoint_.set(loopOrder_.x, 0);
 			currentPoint_.set(loopOrder_.y, currentPoint_.get(loopOrder_.y) + 1);
-			if (currentPoint_.get(loopOrder_.y) == nXYZ_.get(loopOrder_.y)) dataFull_ = TRUE;
+			if (currentPoint_.get(loopOrder_.y) == nXYZ_.get(loopOrder_.y)) dataFull_ = true;
 		}
 	}
 	// Set new minimum / maximum

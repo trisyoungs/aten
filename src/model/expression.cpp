@@ -72,7 +72,7 @@ void Model::removeNamesForcefield()
 // Return whether the expression is valid
 bool Model::isExpressionValid() const
 {
-	return (expressionPoint_ == log(Log::Structure) ? TRUE : FALSE);
+	return (expressionPoint_ == log(Log::Structure));
 }
 
 // Clear the current expression
@@ -149,16 +149,16 @@ bool Model::createExpression(Choice vdwOnly, Choice allowDummy, Choice assignCha
 	Messenger::enter("Model::createExpression");
 	
 	// Resolve supplied choices
-	vdwOnly.resolve(FALSE);
-	allowDummy.resolve(FALSE);
-	assignCharges.resolve(TRUE);
+	vdwOnly.resolve(false);
+	allowDummy.resolve(false);
+	assignCharges.resolve(true);
 	
 	// 0) If the expression is already valid, just update scaling terms in pattern matrices and return
 	if (isExpressionValid() && (vdwOnly == expressionVdwOnly_))
 	{
 		for (Pattern* p = patterns_.first(); p != NULL; p = p->next) p->updateScaleMatrices();
 		Messenger::exit("Model::createExpression");
-		return TRUE;
+		return true;
 	}
 
 	// Reset some variables
@@ -178,14 +178,14 @@ bool Model::createExpression(Choice vdwOnly, Choice allowDummy, Choice assignCha
 	{
 		Messenger::print("Couldn't type atoms.");
 		Messenger::exit("Model::createExpression");
-		return FALSE;
+		return false;
 	}
 	
 	// 2) Remove old expression data and create new
 	bool done;
 	for (Pattern* p = patterns_.first(); p != NULL; p = p->next)
 	{
-		done = FALSE;
+		done = false;
 		while (!done)
 		{
 			p->deleteExpression();
@@ -211,28 +211,28 @@ bool Model::createExpression(Choice vdwOnly, Choice allowDummy, Choice assignCha
 					if (choice == 1)
 					{
 						Messenger::exit("Model::createExpression");
-						return FALSE;
+						return false;
 					}
 					else if (choice == 2)
 					{
 						// Flag generation of dummy terms in expression, and let the loop cycle
-						p->setAddDummyTerms(TRUE);
-						done = FALSE;
+						p->setAddDummyTerms(true);
+						done = false;
 					}
 					else if (choice == 3)
 					{
 						// Flag generation of dummy terms in expression for all patterns, and let the loop cycle
 						allowDummy = Choice::Yes;
-						done = FALSE;
+						done = false;
 					}
 				}
 				else
 				{
 					Messenger::exit("Model::createExpression");
-					return FALSE;
+					return false;
 				}
 			}
-			else done = TRUE;
+			else done = true;
 		}
 		p->createMatrices();
 	}
@@ -246,12 +246,12 @@ bool Model::createExpression(Choice vdwOnly, Choice allowDummy, Choice assignCha
 		case (Electrostatics::Coulomb):
 			if (cell_.type() != UnitCell::NoCell) Messenger::print("!!! Coulomb sum requested for periodic model.");
 			break;
-		default: // Ewald - issue warnings, but don't return FALSE
+		default: // Ewald - issue warnings, but don't return false
 			if (cell_.type() == UnitCell::NoCell)
 			{
 				Messenger::print("!!! Ewald sum cannot be used for a non-periodic model.");
 				//Messenger::exit("Model::createExpression");
-				//return FALSE;
+				//return false;
 			}
 			break;
 	}
@@ -263,7 +263,7 @@ bool Model::createExpression(Choice vdwOnly, Choice allowDummy, Choice assignCha
 	if (assignCharges && (!assignForcefieldCharges()))
 	{
 		Messenger::exit("Model::createExpression");
-		return FALSE;
+		return false;
 	}
 	
 	// 6) Create VDW lookup table of combined parameters
@@ -284,7 +284,7 @@ bool Model::createExpression(Choice vdwOnly, Choice allowDummy, Choice assignCha
 				Messenger::print("Conflicting van der Waals functional forms for atom types '%s' and '%s'.", VdwFunctions::VdwFunctions[ffa->vdwForm()].name, VdwFunctions::VdwFunctions[ffb->vdwForm()].name);
 				Messenger::print("Expression for model cannot be completed.");
 				Messenger::exit("Model::createExpression");
-				return FALSE;
+				return false;
 			}
 
 			// Create item in table
@@ -304,7 +304,7 @@ bool Model::createExpression(Choice vdwOnly, Choice allowDummy, Choice assignCha
 	expressionPoint_ = log(Log::Structure);
 	Messenger::exit("Model::createExpression");
 
-	return TRUE;
+	return true;
 }
 
 // Create lists of forcefield terms in the model

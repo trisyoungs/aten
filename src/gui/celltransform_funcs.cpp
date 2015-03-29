@@ -32,7 +32,7 @@ CellTransformWidget::CellTransformWidget(AtenWindow& parent, Qt::WindowFlags fla
 	ui.setupUi(this);
 
 	// Private variables
-	refreshing_ = FALSE;
+	refreshing_ = false;
 }
 
 // Show window
@@ -49,7 +49,7 @@ void CellTransformWidget::refresh()
 	if (m == NULL) return;
 	UnitCell::CellType ct = m->cell()->type();
 	if (refreshing_) return;
-	else refreshing_ = TRUE;
+	else refreshing_ = true;
 	// Update checkboxes in replicate group
 	ui.CellReplicateFoldCheck->setChecked( prefs.replicateFold() );
 	ui.CellReplicateTrimCheck->setChecked( prefs.replicateTrim() );
@@ -57,16 +57,16 @@ void CellTransformWidget::refresh()
 	if (ct == UnitCell::NoCell)
 	{
 		// No cell, so disable group boxes and quit
-		ui.CellTransformTabs->setEnabled(FALSE);
-		refreshing_ = FALSE;
+		ui.CellTransformTabs->setEnabled(false);
+		refreshing_ = false;
 		return;
 	}
 	else
 	{
 		// Activate widgets
-		ui.CellTransformTabs->setEnabled(TRUE);
+		ui.CellTransformTabs->setEnabled(true);
 	}
-	refreshing_ = FALSE;
+	refreshing_ = false;
 }
 
 /*

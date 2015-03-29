@@ -206,7 +206,7 @@ bool Pattern::vdwIntraPatternEnergy(Model* srcmodel, EnergyStore* estore, int lo
 	estore->add(EnergyStore::VdwIntraEnergy,energy_intra,id_);
 	estore->add(EnergyStore::VdwInterEnergy,energy_inter,id_,id_);
 	Messenger::exit("Pattern::vdwIntraPatternEnergy");
-	return TRUE;
+	return true;
 }
 
 // Interpattern VDW energy
@@ -294,7 +294,7 @@ bool Pattern::vdwInterPatternEnergy(Model* srcmodel, Pattern* otherPattern, Ener
 	}
 	estore->add(EnergyStore::VdwInterEnergy,energy_inter,id_,otherPattern->id_);
 	Messenger::exit("Pattern::vdwInterPatternEnergy");
-	return TRUE;
+	return true;
 }
 
 // Intrapattern VDW forces
@@ -353,7 +353,7 @@ bool Pattern::vdwIntraPatternForces(Model* srcmodel)
 		aoff += nAtoms_;
 	}
 	Messenger::exit("Pattern::vdwIntraPatternForces");
-	return TRUE;
+	return true;
 }
 
 // Interpattern VDW forces
@@ -413,7 +413,7 @@ bool Pattern::vdwInterPatternForces(Model* srcmodel, Pattern* otherPattern)
 		aoff1 += nAtoms_;
 	}
 	Messenger::exit("Pattern::vdwInterPatternForces");
-	return TRUE;
+	return true;
 }
 
 /*
@@ -492,6 +492,6 @@ bool Pattern::vdwCorrectEnergy(UnitCell* cell, EnergyStore* estore)
 	}
 	estore->add(EnergyStore::VdwTailEnergy,energy,-1);
 	Messenger::exit("Pattern::vdwCorrectEnergy");
-	return TRUE;
+	return true;
 }
 

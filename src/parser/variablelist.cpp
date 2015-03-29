@@ -88,97 +88,97 @@ Variable* VariableList::makeVariable(VTypes::DataType type, QString name, TreeNo
 			printf("No data type passed to VariableList::makeVariable().\n");
 			break;
 		case (VTypes::IntegerData):
-			v = (Variable*) new IntegerVariable(0, FALSE);
+			v = (Variable*) new IntegerVariable(0, false);
 			break;
 		case (VTypes::DoubleData):
-			v = (Variable*) new DoubleVariable(0.0, FALSE);
+			v = (Variable*) new DoubleVariable(0.0, false);
 			break;
 		case (VTypes::StringData):
-			v = (Variable*) new StringVariable("", FALSE);
+			v = (Variable*) new StringVariable("", false);
 			break;
 		case (VTypes::VectorData):
-			v = (Variable*) new VectorVariable(FALSE);
+			v = (Variable*) new VectorVariable(false);
 			break;
 		case (VTypes::MatrixData):
-			v = (Variable*) new MatrixVariable(FALSE);
+			v = (Variable*) new MatrixVariable(false);
 			break;
 		case (VTypes::AtenData):
 			v = (Variable*) new AtenVariable();
 			break;
 		case (VTypes::AtomData):
-			v = (Variable*) new AtomVariable(NULL, FALSE);
+			v = (Variable*) new AtomVariable(NULL, false);
 			break;
 		case (VTypes::BasisPrimitiveData):
-			v = (Variable*) new BasisPrimitiveVariable(NULL, FALSE);
+			v = (Variable*) new BasisPrimitiveVariable(NULL, false);
 			break;
 		case (VTypes::BasisShellData):
-			v = (Variable*) new BasisShellVariable(NULL, FALSE);
+			v = (Variable*) new BasisShellVariable(NULL, false);
 			break;
 		case (VTypes::BondData):
-			v = (Variable*) new BondVariable(NULL, FALSE);
+			v = (Variable*) new BondVariable(NULL, false);
 			break;
 		case (VTypes::CellData):
-			v = (Variable*) new CellVariable(NULL, FALSE);
+			v = (Variable*) new CellVariable(NULL, false);
 			break;
 		case (VTypes::ColourScaleData):
-			v = (Variable*) new ColourScaleVariable(NULL, FALSE);
+			v = (Variable*) new ColourScaleVariable(NULL, false);
 			break;
 		case (VTypes::ColourScalePointData):
-			v = (Variable*) new ColourScalePointVariable(NULL, FALSE);
+			v = (Variable*) new ColourScalePointVariable(NULL, false);
 			break;
 		case (VTypes::DialogData):
-			v = (Variable*) new DialogVariable(NULL, FALSE);
+			v = (Variable*) new DialogVariable(NULL, false);
 			break;
 		case (VTypes::EigenvectorData):
-			v = (Variable*) new EigenvectorVariable(NULL, FALSE);
+			v = (Variable*) new EigenvectorVariable(NULL, false);
 			break;
 		case (VTypes::ElementData):
 			v = (Variable*) new ElementVariable();
 			break;
 		case (VTypes::ForcefieldData):
-			v = (Variable*) new ForcefieldVariable(NULL, FALSE);
+			v = (Variable*) new ForcefieldVariable(NULL, false);
 			break;
 		case (VTypes::ForcefieldAtomData):
-			v = (Variable*) new ForcefieldAtomVariable(NULL, FALSE);
+			v = (Variable*) new ForcefieldAtomVariable(NULL, false);
 			break;
 		case (VTypes::ForcefieldBoundData):
-			v = (Variable*) new ForcefieldBoundVariable(NULL, FALSE);
+			v = (Variable*) new ForcefieldBoundVariable(NULL, false);
 			break;
 		case (VTypes::GlyphData):
-			v = (Variable*) new GlyphVariable(NULL, FALSE);
+			v = (Variable*) new GlyphVariable(NULL, false);
 			break;
 		case (VTypes::GlyphDataData):
-			v = (Variable*) new GlyphDataVariable(NULL, FALSE);
+			v = (Variable*) new GlyphDataVariable(NULL, false);
 			break;
 		case (VTypes::GridData):
-			v = (Variable*) new GridVariable(NULL, FALSE);
+			v = (Variable*) new GridVariable(NULL, false);
 			break;
 		case (VTypes::MeasurementData):
-			v = (Variable*) new MeasurementVariable(NULL, FALSE);
+			v = (Variable*) new MeasurementVariable(NULL, false);
 			break;
 		case (VTypes::ModelData):
-			v = (Variable*) new ModelVariable(NULL, FALSE);
+			v = (Variable*) new ModelVariable(NULL, false);
 			break;
 		case (VTypes::MonteCarloData):
 			v = (Variable*) new AtenVariable();
 			break;
 		case (VTypes::PatternData):
-			v = (Variable*) new PatternVariable(NULL, FALSE);
+			v = (Variable*) new PatternVariable(NULL, false);
 			break;
 		case (VTypes::PatternBoundData):
-			v = (Variable*) new PatternBoundVariable(NULL, FALSE);
+			v = (Variable*) new PatternBoundVariable(NULL, false);
 			break;
 		case (VTypes::VibrationData):
-			v = (Variable*) new VibrationVariable(NULL, FALSE);
+			v = (Variable*) new VibrationVariable(NULL, false);
 			break;
 		case (VTypes::WidgetData):
-			v = (Variable*) new WidgetVariable(NULL, FALSE);
+			v = (Variable*) new WidgetVariable(NULL, false);
 			break;
 		case (VTypes::ZMatrixData):
-			v = (Variable*) new ZMatrixVariable(NULL, FALSE);
+			v = (Variable*) new ZMatrixVariable(NULL, false);
 			break;
 		case (VTypes::ZMatrixElementData):
-			v = (Variable*) new ZMatrixElementVariable(NULL, FALSE);
+			v = (Variable*) new ZMatrixElementVariable(NULL, false);
 			break;
 		default:
 			printf("Don't know how to create a variable of type %s.\n", VTypes::dataType(type));
@@ -330,7 +330,7 @@ Variable* VariableList::createArray(VTypes::DataType type, QString name, TreeNod
 Variable* VariableList::createArrayConstant(VTypes::DataType type, int size)
 {
 	// Create a new constant integer to store the size of the array
-	Variable* sizeconst = new IntegerVariable(size, TRUE);
+	Variable* sizeconst = new IntegerVariable(size, true);
 	constants_.own(sizeconst);
 	Variable* var = makeArray(type, "constarray", sizeconst);
 	if (var == NULL) return NULL;
@@ -370,9 +370,9 @@ bool VariableList::initialise()
 	for (TreeNode* node = variables_.first(); node != NULL; node = node->next)
 	{
 		var = (Variable*) node;
-		if (!var->initialise()) return FALSE;
+		if (!var->initialise()) return false;
 	}
-	return TRUE;
+	return true;
 }
 
 // Clear all variables and constants

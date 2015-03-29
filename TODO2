@@ -6,7 +6,6 @@ Sort out comment style, and layout of headers (double-line gap etc.).
 Sort out pointer 'style' ( Object *T  to Object* T ).
 Move sg code to separate dir.
 Move math funcs/classes (e.g. Matrix) to separate dir.
-Rename TRUE and FALSE to true and false, and remove definitions in constants.h.
 Remove unused (or simplistic T* classes in src/gui).
 Remove dialog pointers (use instances instead).
 Remove Scripts menu, and automatic loading of scripts on startup.
@@ -48,6 +47,7 @@ Optimise primitive drawing / generation by allowing use of GL_TRIANGLE_STRIP?
 Allow message printing in different colours, dependent on type of message (e.g. Error = RED, warning = orange, success = Green).
 Note not related to Aten2 - pdens visualising areas of low probability (less than bulk) to see excluded areas?
 Sort out recent files list - not working?
+Implement QOffscreenSurface in order to create model icons etc. (need to call ShareContext before its creation...)
 
 
 Manual TODO:

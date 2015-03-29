@@ -54,31 +54,31 @@ CellVariable::~CellVariable()
 
 // Accessor data
 Accessor CellVariable::accessorData[CellVariable::nAccessors] = {
-	{ "a",		VTypes::DoubleData,	0, FALSE },
-	{ "b",		VTypes::DoubleData,	0, FALSE },
-	{ "c",		VTypes::DoubleData,	0, FALSE },
-	{ "alpha",	VTypes::DoubleData,	0, FALSE },
-	{ "beta",	VTypes::DoubleData,	0, FALSE },
-	{ "gamma",	VTypes::DoubleData,	0, FALSE },
-	{ "ax",		VTypes::DoubleData,	0, FALSE },
-	{ "ay",		VTypes::DoubleData,	0, FALSE },
-	{ "az",		VTypes::DoubleData,	0, FALSE },
-	{ "bx",		VTypes::DoubleData,	0, FALSE },
-	{ "by",		VTypes::DoubleData,	0, FALSE },
-	{ "bz",		VTypes::DoubleData,	0, FALSE },
-	{ "cx",		VTypes::DoubleData,	0, FALSE },
-	{ "cy",		VTypes::DoubleData,	0, FALSE },
-	{ "cz",		VTypes::DoubleData,	0, FALSE },
-	{ "centre",	VTypes::VectorData,	0, TRUE },
-	{ "centreX",	VTypes::DoubleData,	0, TRUE },
-	{ "centreY",	VTypes::DoubleData,	0, TRUE },
-	{ "centreZ",	VTypes::DoubleData,	0, TRUE },
-	{ "density",	VTypes::DoubleData,	0, TRUE },
-	{ "matrix", 	VTypes::DoubleData,	9, FALSE },
-	{ "sgId",	VTypes::IntegerData,	0, FALSE },
-	{ "sgName",	VTypes::StringData,	0, TRUE },
-	{ "type",	VTypes::StringData,	0, TRUE },
-	{ "volume",	VTypes::DoubleData,	0, TRUE },
+	{ "a",		VTypes::DoubleData,	0, false },
+	{ "b",		VTypes::DoubleData,	0, false },
+	{ "c",		VTypes::DoubleData,	0, false },
+	{ "alpha",	VTypes::DoubleData,	0, false },
+	{ "beta",	VTypes::DoubleData,	0, false },
+	{ "gamma",	VTypes::DoubleData,	0, false },
+	{ "ax",		VTypes::DoubleData,	0, false },
+	{ "ay",		VTypes::DoubleData,	0, false },
+	{ "az",		VTypes::DoubleData,	0, false },
+	{ "bx",		VTypes::DoubleData,	0, false },
+	{ "by",		VTypes::DoubleData,	0, false },
+	{ "bz",		VTypes::DoubleData,	0, false },
+	{ "cx",		VTypes::DoubleData,	0, false },
+	{ "cy",		VTypes::DoubleData,	0, false },
+	{ "cz",		VTypes::DoubleData,	0, false },
+	{ "centre",	VTypes::VectorData,	0, true },
+	{ "centreX",	VTypes::DoubleData,	0, true },
+	{ "centreY",	VTypes::DoubleData,	0, true },
+	{ "centreZ",	VTypes::DoubleData,	0, true },
+	{ "density",	VTypes::DoubleData,	0, true },
+	{ "matrix", 	VTypes::DoubleData,	9, false },
+	{ "sgId",	VTypes::IntegerData,	0, false },
+	{ "sgName",	VTypes::StringData,	0, true },
+	{ "type",	VTypes::StringData,	0, true },
+	{ "volume",	VTypes::DoubleData,	0, true },
 };
 
 // Function data
@@ -164,7 +164,7 @@ bool CellVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex, 
 	{
 		printf("Internal Error: Accessor id %i is out of range for Cell type.\n", i);
 		Messenger::exit("CellVariable::retrieveAccessor");
-		return FALSE;
+		return false;
 	}
 	Accessors acc = (Accessors) i;
 	// Check for correct lack/presence of array index given
@@ -172,7 +172,7 @@ bool CellVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex, 
 	{
 		Messenger::print("Error: Unnecessary array index provided for member '%s'.", accessorData[i].name);
 		Messenger::exit("CellVariable::retrieveAccessor");
-		return FALSE;
+		return false;
 	}
 	else if ((accessorData[i].arraySize > 0) && (hasArrayIndex))
 	{
@@ -180,16 +180,16 @@ bool CellVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex, 
 		{
 			Messenger::print("Error: Array index out of bounds for member '%s' (%i, range is 1-%i).", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
 			Messenger::exit("CellVariable::retrieveAccessor");
-			return FALSE;
+			return false;
 		}
 	}
 	// Get current data from ReturnValue
-	bool result = TRUE;
+	bool result = true;
 	UnitCell* ptr = (UnitCell*) rv.asPointer(VTypes::CellData, result);
 	if ((!result) || (ptr == NULL))
 	{
 		Messenger::print("Invalid (NULL) %s reference encountered.", VTypes::dataType(VTypes::CellData));
-		result = FALSE;
+		result = false;
 	}
 	if (result) switch (acc)
 	{
@@ -229,7 +229,7 @@ bool CellVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex, 
 			if ((arrayIndex < 1) || (arrayIndex > 9))
 			{
 				Messenger::print("Array index [%i] is out of range for 'matrix' member.", arrayIndex);
-				result = FALSE;
+				result = false;
 			}
 			else rv.set(ptr->axes()[((arrayIndex-1)/3)*4+(arrayIndex-1)%3]);
 			break;
@@ -247,7 +247,7 @@ bool CellVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex, 
 			break;
 		default:
 			printf("Internal Error: Access to member '%s' has not been defined in CellVariable.\n", accessorData[i].name);
-			result = FALSE;
+			result = false;
 			break;
 	}
 	Messenger::exit("CellVariable::retrieveAccessor");
@@ -263,11 +263,11 @@ bool CellVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newVal
 	{
 		printf("Internal Error: Accessor id %i is out of range for Cell type.\n", i);
 		Messenger::exit("CellVariable::setAccessor");
-		return FALSE;
+		return false;
 	}
 	Accessors acc = (Accessors) i;
 	// Check for correct lack/presence of array index given to original accessor, and nature of new value
-	bool result = TRUE;
+	bool result = true;
 	if (accessorData[i].arraySize != 0)
 	{
 		if (hasArrayIndex)
@@ -275,12 +275,12 @@ bool CellVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newVal
 			if ((accessorData[i].arraySize > 0) && ( (arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize) ))
 			{
 				Messenger::print("Error: Array index provided for member '%s' is out of range (%i, range is 1-%i).", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
-				result = FALSE;
+				result = false;
 			}
 			if (newValue.arraySize() > 0)
 			{
 				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.", accessorData[i].name);
-				result = FALSE;
+				result = false;
 			}
 		}
 		else
@@ -288,7 +288,7 @@ bool CellVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newVal
 			if (newValue.arraySize() > accessorData[i].arraySize)
 			{
 				Messenger::print("Error: The array being assigned to member '%s' is larger than the size of the desination array (%i cf. %i).", accessorData[i].name, newValue.arraySize(), accessorData[i].arraySize);
-				result = FALSE;
+				result = false;
 			}
 		}
 	}
@@ -300,19 +300,19 @@ bool CellVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newVal
 			if (accessorData[i].returnType != VTypes::VectorData)
 			{
 				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.", accessorData[i].name);
-				result = FALSE;
+				result = false;
 			}
 			else if ((newValue.type() != VTypes::VectorData) && (newValue.arraySize() != 3))
 			{
 				Messenger::print("Error: Only an array of size 3 can be assigned to a vector (member '%s').", accessorData[i].name);
-				result = FALSE;
+				result = false;
 			}
 		}
 	}
 	if (!result)
 	{
 		Messenger::exit("CellVariable::setAccessor");
-		return FALSE;
+		return false;
 	}
 	
 	// Get current data from ReturnValue
@@ -320,7 +320,7 @@ bool CellVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newVal
 	if ((!result) || (ptr == NULL))
 	{
 		Messenger::print("Invalid (NULL) %s reference encountered.", VTypes::dataType(VTypes::CellData));
-		result = FALSE;
+		result = false;
 	}
 	
 	Model* ptrParent = ptr->parent();
@@ -355,7 +355,7 @@ bool CellVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newVal
 			break;
 		default:
 			printf("CellVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);
-			result = FALSE;
+			result = false;
 			break;
 	}
 	Messenger::exit("CellVariable::setAccessor");
@@ -371,10 +371,10 @@ bool CellVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 	{
 		printf("Internal Error: FunctionAccessor id %i is out of range for Cell type.\n", i);
 		Messenger::exit("CellVariable::performFunction");
-		return FALSE;
+		return false;
 	}
 	// Get current data from ReturnValue
-	bool result = TRUE;
+	bool result = true;
 	Atom* ii, *jj;
 	Vec3<double> v1, v2;
 	UnitCell* ptr = (UnitCell*) rv.asPointer(VTypes::CellData, result);
@@ -397,7 +397,7 @@ bool CellVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 				if (ii == NULL)
 				{
 					Messenger::print("Error: Source atom given to cell 'mim' function is NULL.");
-					result = FALSE;
+					result = false;
 					break;
 				}
 				v1 = ii->r();
@@ -409,7 +409,7 @@ bool CellVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 				if (jj == NULL)
 				{
 					Messenger::print("Error: Reference atom given to cell 'mim' function is NULL.");
-					result = FALSE;
+					result = false;
 					break;
 				}
 				v2 = jj->r();
@@ -424,7 +424,7 @@ bool CellVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 				if (ii == NULL)
 				{
 					Messenger::print("Error: Source atom given to cell 'mimVector' function is NULL.");
-					result = FALSE;
+					result = false;
 					break;
 				}
 				v1 = ii->r();
@@ -436,7 +436,7 @@ bool CellVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 				if (jj == NULL)
 				{
 					Messenger::print("Error: Reference atom given to cell 'mimVector' function is NULL.");
-					result = FALSE;
+					result = false;
 					break;
 				}
 				v2 = jj->r();
@@ -453,14 +453,14 @@ bool CellVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 			if (ii == NULL)
 			{
 				Messenger::print("Error: Target atom given to cell 'translateAtom' function is NULL.");
-				result = FALSE;
+				result = false;
 				break;
 			}
 			rv.set(ii->r() + ptr->fracToReal( node->arg3d(1) ));
 			break;
 		default:
 			printf("Internal Error: Access to function '%s' has not been defined in CellVariable.\n", functionData[i].name);
-			result = FALSE;
+			result = false;
 			break;
 	}
 	Messenger::exit("CellVariable::performFunction");

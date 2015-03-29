@@ -32,7 +32,7 @@ const char* DataTypeNames[VTypes::nDataTypes] = { "no data", "int", "double", "s
 const char* DataTypePhrases[VTypes::nDataTypes] = { "no data", "an integer", "a double", "a string", "a vector", "a matrix", "Aten&", "an Atom&", "a BasisPrimitive&", "a BasisShell&", "a Bond&", "a UnitCell&", "a Colourscale&", "a ColourScalePoint&", "a Dialog&", "an Eigenvector&", "an Element&", "an EnergyStore&", "a Forcefield&", "a FFAtom&", "a FFBound&", "a Glyph&", "a GlyphData&", "a Grid&", "MC&", "a Measurement&", "a Model&", "a Pattern&", "a Bound&", "some Prefs&", "a Site", "a Vibration&", "a Widget&", "a ZMatrix&", "a ZMatrix element&" };
 const char* DataTypeArrayPhrases[VTypes::nDataTypes] = { "no data", "an integer array", "a double array", "a string array", "a vector array", "a matrix array", "an Aten& array", "an Atom& array", "a BasisPrimitive& array", "a BasisShell& array", "a Bond& array", "a UnitCell& array", "a Colourscale& array", "a ColourScalePoint& array", "a Dialog& array", "an Eigenvector& array", "an Element& array", "an EnergyStore& array", "a Forcefield& array", "a FFAtom& array", "a FFBound& array", "a Glyph& array", "a GlyphData& array", "a Grid& array", "a MC& array", "a Measurement& array", "a Model& array", "a Pattern& array", "a Bound& array", "a Prefs& array", "a Site& array", "a Vibration& array","a Widget& array", "a ZMatrix& array", "a ZMatrixElement& array" };
 const char* DataTypeKeywords[VTypes::nDataTypes] = { "_NODATA", "int", "double", "string", "vector", "matrix", "_ATEN", "Atom", "BasisPrimitive", "BasisShell", "Bond", "UnitCell", "ColourScale", "ColourScalePoint", "Dialog", "EigenVector", "Element", "EnergyStore", "Forcefield", "FFAtom", "FFBound", "Glyph", "_GLYPHDATA", "Grid", "_MC", "Measurement", "Model", "Pattern", "Bound", "_PREFS", "Site", "Vibration", "Widget", "ZMatrix", "ZMatrixElement" };
-bool DataTypeUserCreatable[VTypes::nDataTypes] = { FALSE, FALSE, FALSE, FALSE, FALSE, FALSE, /*Aten*/ FALSE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, /*Dialog*/ FALSE, TRUE, /*Element*/ FALSE, /*EnergyStore*/ FALSE, TRUE, TRUE, TRUE, TRUE, /*GlyphData*/ FALSE, TRUE, /*MC*/ FALSE, /*Measurement*/ FALSE, /*Model*/ FALSE, /*Pattern*/ FALSE, /*PatternBound*/ FALSE, /*Prefs*/ FALSE, /*Site*/ FALSE, TRUE, /*Widget*/ FALSE, TRUE, /*ZMatrixElement*/ FALSE };
+bool DataTypeUserCreatable[VTypes::nDataTypes] = { false, false, false, false, false, false, /*Aten*/ false, true, true, true, true, true, true, true, /*Dialog*/ false, true, /*Element*/ false, /*EnergyStore*/ false, true, true, true, true, /*GlyphData*/ false, true, /*MC*/ false, /*Measurement*/ false, /*Model*/ false, /*Pattern*/ false, /*PatternBound*/ false, /*Prefs*/ false, /*Site*/ false, true, /*Widget*/ false, true, /*ZMatrixElement*/ false };
 
 // Return datatype based on supplied name
 VTypes::DataType VTypes::dataType(QString s, bool reportError)
@@ -57,8 +57,8 @@ const char* VTypes::aDataType(VTypes::DataType dt, int arraysize)
 // Return whether specified datatype is inherently a class (pointer) datatype
 bool VTypes::isPointer(VTypes::DataType dt)
 {
-	if (dt > VTypes::VectorData) return TRUE;
-	return FALSE;
+	if (dt > VTypes::VectorData) return true;
+	return false;
 }
 
 // Return whether the datatype can be user-created

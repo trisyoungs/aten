@@ -46,14 +46,14 @@ PatternBoundVariable::~PatternBoundVariable()
 
 // Accessor data
 Accessor PatternBoundVariable::accessorData[PatternBoundVariable::nAccessors] = {
-	{ "data", 	VTypes::DoubleData,		MAXFFPARAMDATA, TRUE },
-	{ "eScale", 	VTypes::DoubleData,		0, TRUE },
-	{ "form", 	VTypes::StringData,		0, TRUE },
-	{ "id", 	VTypes::IntegerData,		MAXFFBOUNDTYPES, TRUE },
-	{ "termId",	VTypes::IntegerData,		0, TRUE },
-	{ "type", 	VTypes::StringData,		0, TRUE },
-	{ "typeNames", 	VTypes::StringData,		MAXFFBOUNDTYPES, TRUE },
-	{ "vScale",	VTypes::DoubleData,		0, TRUE }
+	{ "data", 	VTypes::DoubleData,		MAXFFPARAMDATA, true },
+	{ "eScale", 	VTypes::DoubleData,		0, true },
+	{ "form", 	VTypes::StringData,		0, true },
+	{ "id", 	VTypes::IntegerData,		MAXFFBOUNDTYPES, true },
+	{ "termId",	VTypes::IntegerData,		0, true },
+	{ "type", 	VTypes::StringData,		0, true },
+	{ "typeNames", 	VTypes::StringData,		MAXFFBOUNDTYPES, true },
+	{ "vScale",	VTypes::DoubleData,		0, true }
 };
 
 // Function data
@@ -134,7 +134,7 @@ bool PatternBoundVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArra
 	{
 		printf("Internal Error: Accessor id %i is out of range for PatternBound type.\n", i);
 		Messenger::exit("PatternBoundVariable::retrieveAccessor");
-		return FALSE;
+		return false;
 	}
 	Accessors acc = (Accessors) i;
 	// Check for correct lack/presence of array index given
@@ -142,7 +142,7 @@ bool PatternBoundVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArra
 	{
 		Messenger::print("Error: Unnecessary array index provided for member '%s'.", accessorData[i].name);
 		Messenger::exit("PatternBoundVariable::retrieveAccessor");
-		return FALSE;
+		return false;
 	}
 	else if ((accessorData[i].arraySize > 0) && (hasArrayIndex))
 	{
@@ -150,16 +150,16 @@ bool PatternBoundVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArra
 		{
 			Messenger::print("Error: Array index out of bounds for member '%s' (%i, range is 1-%i).", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
 			Messenger::exit("PatternBoundVariable::retrieveAccessor");
-			return FALSE;
+			return false;
 		}
 	}
 	// Get current data from ReturnValue
-	bool result = TRUE;
+	bool result = true;
 	PatternBound* ptr = (PatternBound*) rv.asPointer(VTypes::PatternBoundData, result);
 	if ((!result) || (ptr == NULL))
 	{
 		Messenger::print("Invalid (NULL) %s reference encountered.", VTypes::dataType(VTypes::PatternBoundData));
-		result = FALSE;
+		result = false;
 	}
 	if (result) switch (acc)
 	{
@@ -167,7 +167,7 @@ bool PatternBoundVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArra
 			if (ptr->data() == NULL)
 			{
 				Messenger::print("NULL ForcefieldBound pointer found in PatternBound class.");
-				result = FALSE;
+				result = false;
 			}
 			else if (hasArrayIndex) rv.set(ptr->data()->parameter(arrayIndex-1));
 			else rv.setArray(VTypes::DoubleData, ptr->data()->parameters(), MAXFFPARAMDATA);
@@ -176,14 +176,14 @@ bool PatternBoundVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArra
 			if (ptr->data() == NULL)
 			{
 				Messenger::print("NULL ForcefieldBound pointer found in PatternBound class.");
-				result = FALSE;
+				result = false;
 			}
 			else
 			{
 				if (ptr->data()->type() != ForcefieldBound::TorsionInteraction)
 				{
 					Messenger::print("Tried to retrieve the 1-4 coulombic scale factor for a non-torsion bound interaction.");
-					result = FALSE;
+					result = false;
 				}
 				else rv.set(ptr->data()->elecScale());
 			}
@@ -192,7 +192,7 @@ bool PatternBoundVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArra
 			if (ptr->data() == NULL)
 			{
 				Messenger::print("NULL ForcefieldBound pointer found in PatternBound class.");
-				result = FALSE;
+				result = false;
 			}
 			else rv.set(ptr->data()->formText());
 			break;
@@ -200,7 +200,7 @@ bool PatternBoundVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArra
 			if (ptr->data() == NULL)
 			{
 				Messenger::print("NULL ForcefieldBound pointer found in PatternBound class.");
-				result = FALSE;
+				result = false;
 			}
 			else if (hasArrayIndex) rv.set(ptr->atomId(arrayIndex-1)+1);
 			else
@@ -218,7 +218,7 @@ bool PatternBoundVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArra
 			if (ptr->data() == NULL)
 			{
 				Messenger::print("NULL ForcefieldBound pointer found in PatternBound class.");
-				result = FALSE;
+				result = false;
 			}
 			else if (hasArrayIndex) rv.set(ptr->data()->typeName(arrayIndex-1));
 			else rv.setArray(VTypes::StringData, ptr->data()->typeNames(), MAXFFPARAMDATA);
@@ -227,7 +227,7 @@ bool PatternBoundVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArra
 			if (ptr->data() == NULL)
 			{
 				Messenger::print("NULL ForcefieldBound pointer found in PatternBound class.");
-				result = FALSE;
+				result = false;
 			}
 			else rv.set(ForcefieldBound::boundType(ptr->data()->type()));
 			break;
@@ -235,21 +235,21 @@ bool PatternBoundVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArra
 			if (ptr->data() == NULL)
 			{
 				Messenger::print("NULL ForcefieldBound pointer found in PatternBound class.");
-				result = FALSE;
+				result = false;
 			}
 			else
 			{
 				if (ptr->data()->type() != ForcefieldBound::TorsionInteraction)
 				{
 					Messenger::print("Tried to retrieve the 1-4 VDW scale factor for a non-torsion bound interaction.");
-					result = FALSE;
+					result = false;
 				}
 				else rv.set(ptr->data()->vdwScale());
 			}
 			break;
 		default:
 			printf("Internal Error: Access to member '%s' has not been defined in PatternBoundVariable.\n", accessorData[i].name);
-			result = FALSE;
+			result = false;
 			break;
 	}
 	Messenger::exit("PatternBoundVariable::retrieveAccessor");
@@ -265,11 +265,11 @@ bool PatternBoundVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue
 	{
 		printf("Internal Error: Accessor id %i is out of range for Pattern type.\n", i);
 		Messenger::exit("PatternBoundVariable::setAccessor");
-		return FALSE;
+		return false;
 	}
 	Accessors acc = (Accessors) i;
 	// Check for correct lack/presence of array index given to original accessor, and nature of new value
-	bool result = TRUE;
+	bool result = true;
 	if (accessorData[i].arraySize != 0)
 	{
 		if (hasArrayIndex)
@@ -277,12 +277,12 @@ bool PatternBoundVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue
 			if ((accessorData[i].arraySize > 0) && ( (arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize) ))
 			{
 				Messenger::print("Error: Array index provided for member '%s' is out of range (%i, range is 1-%i).", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
-				result = FALSE;
+				result = false;
 			}
 			if (newValue.arraySize() > 0)
 			{
 				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.", accessorData[i].name);
-				result = FALSE;
+				result = false;
 			}
 		}
 		else
@@ -290,7 +290,7 @@ bool PatternBoundVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue
 			if (newValue.arraySize() > accessorData[i].arraySize)
 			{
 				Messenger::print("Error: The array being assigned to member '%s' is larger than the size of the desination array (%i cf. %i).", accessorData[i].name, newValue.arraySize(), accessorData[i].arraySize);
-				result = FALSE;
+				result = false;
 			}
 		}
 	}
@@ -302,33 +302,33 @@ bool PatternBoundVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue
 			if (accessorData[i].returnType != VTypes::VectorData)
 			{
 				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.", accessorData[i].name);
-				result = FALSE;
+				result = false;
 			}
 			else if ((newValue.type() != VTypes::VectorData) && (newValue.arraySize() != 3))
 			{
 				Messenger::print("Error: Only an array of size 3 can be assigned to a vector (member '%s').", accessorData[i].name);
-				result = FALSE;
+				result = false;
 			}
 		}
 	}
 	if (!result)
 	{
 		Messenger::exit("PatternBoundVariable::setAccessor");
-		return FALSE;
+		return false;
 	}
 	// Get current data from ReturnValue
 	PatternBound* ptr = (PatternBound*) sourcerv.asPointer(VTypes::PatternBoundData, result);
 	if ((!result) || (ptr == NULL))
 	{
 		Messenger::print("Invalid (NULL) %s reference encountered.", VTypes::dataType(VTypes::PatternBoundData));
-		result = FALSE;
+		result = false;
 	}
 	// Set value based on enumerated id
 	if (result) switch (acc)
 	{
 		default:
 			printf("PatternBoundVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);
-			result = FALSE;
+			result = false;
 			break;
 	}
 	Messenger::exit("PatternBoundVariable::setAccessor");
@@ -344,10 +344,10 @@ bool PatternBoundVariable::performFunction(int i, ReturnValue& rv, TreeNode* nod
 	{
 		printf("Internal Error: FunctionAccessor id %i is out of range for PatternBound type.\n", i);
 		Messenger::exit("PatternBoundVariable::performFunction");
-		return FALSE;
+		return false;
 	}
 	// Get current data from ReturnValue
-	bool result = TRUE;
+	bool result = true;
 	PatternBound* ptr = (PatternBound*) rv.asPointer(VTypes::PatternBoundData, result);
 	int id;
 	if (result) switch (i)
@@ -357,19 +357,19 @@ bool PatternBoundVariable::performFunction(int i, ReturnValue& rv, TreeNode* nod
 			{
 				case (ForcefieldBound::BondInteraction):
 				case (ForcefieldBound::UreyBradleyInteraction):
-					id = BondFunctions::bondParameter(ptr->data()->bondForm(), node->argc(0), TRUE);
-					if (id == BondFunctions::BondFunctions[ptr->data()->bondForm()].nParameters) result = FALSE;
+					id = BondFunctions::bondParameter(ptr->data()->bondForm(), node->argc(0), true);
+					if (id == BondFunctions::BondFunctions[ptr->data()->bondForm()].nParameters) result = false;
 					else rv.set(ptr->data()->parameter(id));
 					break;
 				case (ForcefieldBound::AngleInteraction):
-					id = AngleFunctions::angleParameter(ptr->data()->angleForm(), node->argc(0), TRUE);
-					if (id == AngleFunctions::AngleFunctions[ptr->data()->angleForm()].nParameters) result = FALSE;
+					id = AngleFunctions::angleParameter(ptr->data()->angleForm(), node->argc(0), true);
+					if (id == AngleFunctions::AngleFunctions[ptr->data()->angleForm()].nParameters) result = false;
 					else rv.set(ptr->data()->parameter(id));
 					break;
 				case (ForcefieldBound::TorsionInteraction):
 				case (ForcefieldBound::ImproperInteraction):
-					id = TorsionFunctions::torsionParameter(ptr->data()->torsionForm(), node->argc(0), TRUE);
-					if (id == TorsionFunctions::TorsionFunctions[ptr->data()->torsionForm()].nParameters) result = FALSE;
+					id = TorsionFunctions::torsionParameter(ptr->data()->torsionForm(), node->argc(0), true);
+					if (id == TorsionFunctions::TorsionFunctions[ptr->data()->torsionForm()].nParameters) result = false;
 					else rv.set(ptr->data()->parameter(id));
 					break;
 			}
@@ -377,7 +377,7 @@ bool PatternBoundVariable::performFunction(int i, ReturnValue& rv, TreeNode* nod
 
 		default:
 			printf("Internal Error: Access to function '%s' has not been defined in PatternBoundVariable.\n", functionData[i].name);
-			result = FALSE;
+			result = false;
 			break;
 	}
 	Messenger::exit("PatternBoundVariable::performFunction");

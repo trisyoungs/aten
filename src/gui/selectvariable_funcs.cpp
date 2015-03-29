@@ -30,7 +30,7 @@ AtenSelectVariable::AtenSelectVariable(AtenWindow& parent) : QDialog(&parent), p
 	selectedVariable_ = NULL;
 	zMatrix_ = NULL;
 	variableType_ = -1;
-	refreshing_ = FALSE;
+	refreshing_ = false;
 
 	ui.setupUi(this);
 }
@@ -107,7 +107,7 @@ Variable* AtenSelectVariable::selectVariable(ZMatrix* zmat, int vartype, Variabl
 	}
 
 	// Clear and update list
-	refreshing_ = TRUE;
+	refreshing_ = true;
 	ui.VariableTable->clear();
 	ui.VariableTable->setHorizontalHeaderLabels(QStringList() << "Variable" << "Current Value");
 	ui.VariableTable->setRowCount(nvars);
@@ -129,7 +129,7 @@ Variable* AtenSelectVariable::selectVariable(ZMatrix* zmat, int vartype, Variabl
 	}
 	for (count=0; count<2; count++) ui.VariableTable->resizeColumnToContents(count);
 	ui.NegateCheck->setChecked(currentNegate);
-	refreshing_ = FALSE;
+	refreshing_ = false;
 
 	// Execute the dialog and check on the result
 	return (exec() == 1 ? selectedVariable_ : NULL);

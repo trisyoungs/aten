@@ -65,7 +65,7 @@ StepNode::StepNode(int id, VTypes::DataType prevtype, TreeNode* arrayIndex, VTyp
 	readOnly_ = readonly;
 	returnType_ = rtntype;
 	nodeType_ = TreeNode::SteppedNode;
-	functionAccessor_ = FALSE;
+	functionAccessor_ = false;
 // 	printf("Return type of StepNode is %s\n", VTypes::dataType(returnType_));
 }
 StepNode::StepNode(int id, VTypes::DataType prevtype, VTypes::DataType rtntype) : TreeNode()
@@ -75,10 +75,10 @@ StepNode::StepNode(int id, VTypes::DataType prevtype, VTypes::DataType rtntype) 
 	accessor_ = id;
 	arraySize_ = 0;
 	arrayIndex_ = NULL;
-	readOnly_ = FALSE;
+	readOnly_ = false;
 	returnType_ = rtntype;
 	nodeType_ = TreeNode::SteppedNode;
-	functionAccessor_ = TRUE;
+	functionAccessor_ = true;
 }
 
 // Destructor
@@ -113,10 +113,10 @@ bool StepNode::execute(ReturnValue& rv)
 	{
 		printf("Internal Error: StepNode was expecting a type of '%s' but was given type '%s'\n", VTypes::dataType(previousType_), VTypes::dataType(rv.type()));
 		Messenger::exit("StepNode::execute");
-		return FALSE;
+		return false;
 	}
 	// Retrieve a value from the relevant class
-	bool result = FALSE;
+	bool result = false;
 	// Get array index if present
 	int i = -1;
 	if (arrayIndex_ != NULL)
@@ -125,12 +125,12 @@ bool StepNode::execute(ReturnValue& rv)
 		if (!arrayIndex_->execute(arrayrv))
 		{
 			printf("Failed to retrieve array index.\n");
-			return FALSE;
+			return false;
 		}
 		if ((arrayrv.type() != VTypes::IntegerData) && (arrayrv.type() != VTypes::DoubleData) && (arrayrv.type() != VTypes::ElementData))
 		{
 			printf("Invalid datatype used as an array index (%s).\n", qPrintable(arrayrv.info()));
-			return FALSE;
+			return false;
 		}
 		i = arrayrv.asInteger();
 	}
@@ -388,7 +388,7 @@ bool StepNode::set(ReturnValue& executerv, ReturnValue& setrv)
 	{
 		printf("Internal Error: StepNode was expecting a type of '%s' but was given type '%s' (in set)\n", VTypes::dataType(previousType_), VTypes::dataType(executerv.type()));
 		Messenger::exit("StepNode::set");
-		return FALSE;
+		return false;
 	}
 	// Retrieve a value from the relevant class
 	int i = -1;
@@ -398,16 +398,16 @@ bool StepNode::set(ReturnValue& executerv, ReturnValue& setrv)
 		if (!arrayIndex_->execute(arrayrv))
 		{
 			printf("Failed to retrieve array index.\n");
-			return FALSE;
+			return false;
 		}
 		if ((arrayrv.type() != VTypes::IntegerData) && (arrayrv.type() != VTypes::DoubleData) && (arrayrv.type() != VTypes::ElementData))
 		{
 			printf("Invalid datatype used as an array index (%s).\n", qPrintable(arrayrv.info()));
-			return FALSE;
+			return false;
 		}
 		i = arrayrv.asInteger();
 	}
-	bool result = FALSE;
+	bool result = false;
 	switch (previousType_)
 	{
 		case (VTypes::NoData):
@@ -518,14 +518,14 @@ bool StepNode::set(ReturnValue& executerv, ReturnValue& setrv)
 bool StepNode::set(ReturnValue& rv)
 {
 	printf("Internal Error: Use StepNode::set(ReturnValue) for StepNodes.\n");
-	return FALSE;
+	return false;
 }
 
 // Initialise node
 bool StepNode::initialise()
 {
 	printf("Internal Error: A StepNode cannot be initialised.\n");
-	return FALSE;
+	return false;
 }
 
 // Static function to search accessors of type represented by this path step

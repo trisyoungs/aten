@@ -66,7 +66,7 @@ Forcefield* Aten::loadForcefield(QString ffFile)
 			else
 			{
 				Messenger::print("Can't find forcefield file '%s' in any location.", qPrintable(ffFile));
-				result = FALSE;
+				result = false;
 			}
 		}
 	}

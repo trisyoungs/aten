@@ -32,8 +32,8 @@ TreeNode::TreeNode() : ListItem<TreeNode>()
 {
 	// Private variables
 	returnType_ = VTypes::NoData;
-	returnsArray_ = FALSE;
-	readOnly_ = TRUE;
+	returnsArray_ = false;
+	readOnly_ = true;
 	parent_ = NULL;
 	nodeType_ = TreeNode::BasicNode;
 
@@ -94,10 +94,10 @@ bool TreeNode::readOnly() const
 	return readOnly_;
 }
 
-// Set the readonly status of the variable to TRUE
+// Set the readonly status of the variable to true
 void TreeNode::setReadOnly()
 {
-	readOnly_ = TRUE;
+	readOnly_ = true;
 }
 
 // Set whether an array of values is returned
@@ -136,14 +136,14 @@ bool TreeNode::setArg(int i, ReturnValue& rv)
 	if ((i < 0) || (i >= args_.nItems()))
 	{
 		printf("TreeNode::setArg : Argument index %i is out of range (node = %p).\n", i, this);
-		return FALSE;
+		return false;
 	}
 	// Check readonly attribute of argument
 	if (args_[i]->item->readOnly())
 	{
 		args_[i]->item->nodePrint(0);
 		Messenger::print("Argument %i is read-only and can't be set.", i);
-		return FALSE;
+		return false;
 	}
 	return args_[i]->item->set(rv);
 }
@@ -199,16 +199,16 @@ bool TreeNode::checkArguments(const char* argList, const char* funcname)
 	Messenger::print(Messenger::Parse, "...argument list is [%s]", altargs);
 	char upc;
 	int count = 0, ngroup = -1, repeat = 0;
-	bool optional = FALSE, requirevar = FALSE, result, cluster = FALSE, array = FALSE, reset = TRUE;
+	bool optional = false, requirevar = false, result, cluster = false, array = false, reset = true;
 	VTypes::DataType rtype;
 	// If the argument list begins with '_', arguments will have already been checked and added elsewhere...
 	if (*altargs == '_')
 	{
 		Messenger::exit("TreeNode::checkArguments");
-		return TRUE;
+		return true;
 	}
 	// Search for an alternative set of arguments
-	result = TRUE;
+	result = true;
 	do
 	{
 		if (reset)
@@ -217,10 +217,10 @@ bool TreeNode::checkArguments(const char* argList, const char* funcname)
 			if (*c == '|') ++c;
 			altargs = strchr(c, '|');
 			repeat = 0;
-			cluster = FALSE;
-			array = FALSE;
+			cluster = false;
+			array = false;
 			count = 0;
-			reset = FALSE;
+			reset = false;
 		}
 		if (*c == '\0') break;
 		upc = *c;
@@ -230,19 +230,19 @@ bool TreeNode::checkArguments(const char* argList, const char* funcname)
 			if (args_.nItems() != count)
 			{
 // 				printf("Number of arguments (%i) doesn't match number in this set (%i) - next!\n", args_.nItems(), count);
-				reset = TRUE;
+				reset = true;
 				continue;
 			}
 			Messenger::exit("TreeNode::checkArguments");
-			return TRUE;
+			return true;
 		}
 		// Retain previous information if this is a repeat, but make it an optional argument
-		if (*c == '*') optional = TRUE;
+		if (*c == '*') optional = true;
 		else if (repeat == 0)
 		{
 			// Reset modifier values
-			requirevar = FALSE;
-			array = FALSE;
+			requirevar = false;
+			array = false;
 			repeat = 1;
 			// Find next alpha character (and accompanying modifiers)
 			while (!isalpha(*c) && (*c != '|') && (*c != '\0') )
@@ -250,12 +250,12 @@ bool TreeNode::checkArguments(const char* argList, const char* funcname)
 				switch (*c)
 				{
 					// Require variable
-					case ('^'):	requirevar = TRUE; break;
+					case ('^'):	requirevar = true; break;
 					// Clustering
-					case ('['):	cluster = TRUE; ngroup = 0; break;
-					case (']'):	cluster = FALSE; ngroup = -1; break;
+					case ('['):	cluster = true; ngroup = 0; break;
+					case (']'):	cluster = false; ngroup = -1; break;
 					// Require array
-					case ('&'):	array = TRUE; break;
+					case ('&'):	array = true; break;
 					case ('2'):
 					case ('3'):
 					case ('4'):
@@ -276,252 +276,252 @@ bool TreeNode::checkArguments(const char* argList, const char* funcname)
 				if (args_.nItems() != count)
 				{
 					printf("Number of arguments (%i) doesn't match number in this set (%i) - next!\n", args_.nItems(), count);
-					reset = TRUE;
+					reset = true;
 					continue;
 				}
 				Messenger::exit("TreeNode::checkArguments");
-				return TRUE;
+				return true;
 			}
 			// Convert character to upper case if necessary
 			if ((*c > 96) && (*c < 123))
 			{
 				upc = *c - 32;
-				optional = TRUE;
+				optional = true;
 			}
 			else
 			{
 				upc = *c;
-				optional = FALSE;
+				optional = false;
 			}
 		}
 		if (*c == '\0') break;
-		Messenger::print(Messenger::Parse,"...next/current argument token is '%c', opt=%s, reqvar=%s, repeat=%i, ngroup=%i", *c, optional ? "true" : "false", requirevar ? "TRUE" : "FALSE", repeat, ngroup);
+		Messenger::print(Messenger::Parse,"...next/current argument token is '%c', opt=%s, reqvar=%s, repeat=%i, ngroup=%i", *c, optional ? "true" : "false", requirevar ? "true" : "false", repeat, ngroup);
 		// If we have gone over the number of arguments provided, is this an optional argument?
 		if (count >= args_.nItems())
 		{
 			if (!optional)
 			{
 				// If an alternative argument list is present, check this before we fail...
-				if (altargs != NULL) { reset = TRUE; continue; }
+				if (altargs != NULL) { reset = true; continue; }
 				Messenger::print("Error: The function '%s' requires argument %i.", funcname, count+1);
 // 				Messenger::print("       Command syntax is '%s(%s)'.", funcname, Commands::data[function_].argText);
 				Messenger::exit("TreeNode::checkArguments");
-				return FALSE;
+				return false;
 			}
 			else if (cluster && (ngroup != 0))
 			{
 				Messenger::print("Error: The optional argument %i to function '%s' is part of a group and must be specified.", count+1, funcname);
 // 				Messenger::print("       Command syntax is '%s(%s)'.", funcname, argList);
 				Messenger::exit("TreeNode::checkArguments");
-				return FALSE;
+				return false;
 			}
 			else
 			{
 				Messenger::exit("TreeNode::checkArguments");
-				return TRUE;
+				return true;
 			}
 		}
 		// Check argument type
 		rtype = argType(count);
-		result = TRUE;
+		result = true;
 		switch (upc)
 		{
 			// Atom/Id		(IntegerData, AtomData)
 			case ('A'):
 				if ((rtype != VTypes::IntegerData) && (rtype != VTypes::AtomData))
 				{
-					if (altargs != NULL) { reset = TRUE; continue; }
+					if (altargs != NULL) { reset = true; continue; }
 					Messenger::print("Argument %i to function '%s' must be an int or an Atom.", count+1, funcname);
-					result = FALSE;
+					result = false;
 				}
 				break;
 			// Boolean		(Any Except NoData)
 			case ('B'):
 				if (rtype == VTypes::NoData)
 				{
-					if (altargs != NULL) { reset = TRUE; continue; }
+					if (altargs != NULL) { reset = true; continue; }
 					Messenger::print("Argument %i to function '%s' must return something!", count+1, funcname);
-					result = FALSE;
+					result = false;
 				}
 				break;
 			// Character		(StringData)
 			case ('C'):
 				if (rtype != VTypes::StringData)
 				{
-					if (altargs != NULL) { reset = TRUE; continue; }
+					if (altargs != NULL) { reset = true; continue; }
 					Messenger::print("Argument %i to function '%s' must be a character string.", count+1, funcname);
-					result = FALSE;
+					result = false;
 				}
 				break;	
 			// Double		(DoubleData)
 			case ('D'):
 				if (rtype != VTypes::DoubleData)
 				{
-					if (altargs != NULL) { reset = TRUE; continue; }
+					if (altargs != NULL) { reset = true; continue; }
 					Messenger::print("Argument %i to function '%s' must be a double.", count+1, funcname);
-					result = FALSE;
+					result = false;
 				}
 				break;
 			// Element		(StringData, DoubleData, IntegerData, AtomData, ElementData)
 			case ('E'):
 				if ((rtype != VTypes::IntegerData) && (rtype != VTypes::AtomData) && (rtype != VTypes::DoubleData) && (rtype != VTypes::StringData) && (rtype != VTypes::ElementData))
 				{
-					if (altargs != NULL) { reset = TRUE; continue; }
+					if (altargs != NULL) { reset = true; continue; }
 					Messenger::print("Argument %i to function '%s' must be an int, double, string or an Atom.", count+1, funcname);
-					result = FALSE;
+					result = false;
 				}
 				break;
 			// Forcefield/ID/Name	(ForcefieldData, StringData, IntegerData)
 			case ('F'):
 				if ((rtype != VTypes::IntegerData) && (rtype != VTypes::ForcefieldData) && (rtype != VTypes::StringData))
 				{
-					if (altargs != NULL) { reset = TRUE; continue; }
+					if (altargs != NULL) { reset = true; continue; }
 					Messenger::print("Argument %i to function '%s' must be an int, a Forcefield or a string.", count+1, funcname);
-					result = FALSE;
+					result = false;
 				}
 				break;
 			// Grid/ID/Name	(GridData, StringData, IntegerData)
 			case ('G'):
 				if ((rtype != VTypes::IntegerData) && (rtype != VTypes::GridData) ) //&& (rtype != VTypes::StringData))
 				{
-					if (altargs != NULL) { reset = TRUE; continue; }
+					if (altargs != NULL) { reset = true; continue; }
 					Messenger::print("Argument %i to function '%s' must be an int or a Grid.", count+1, funcname);
-					result = FALSE;
+					result = false;
 				}
 				break;
 			// Bond		(BondData)
 			case ('H'):
 				if (rtype != VTypes::BondData)
 				{
-					if (altargs != NULL) { reset = TRUE; continue; }
+					if (altargs != NULL) { reset = true; continue; }
 					Messenger::print("Argument %i to function '%s' must be a Bond.", count+1, funcname);
-					result = FALSE;
+					result = false;
 				}
 				break;
 			// Integer		(IntegerData)
 			case ('I'):
 				if (rtype != VTypes::IntegerData)
 				{
-					if (altargs != NULL) { reset = TRUE; continue; }
+					if (altargs != NULL) { reset = true; continue; }
 					Messenger::print("Argument %i to function '%s' must be an int.", count+1, funcname);
-					result = FALSE;
+					result = false;
 				}
 				break;
 			// Atom			(AtomData)
 			case ('J'):
 				if (rtype != VTypes::AtomData)
 				{
-					if (altargs != NULL) { reset = TRUE; continue; }
+					if (altargs != NULL) { reset = true; continue; }
 					Messenger::print("Argument %i to function '%s' must be an Atom.", count+1, funcname);
-					result = FALSE;
+					result = false;
 				}
 				break;
 			// UnitCell		(CellData)
 			case ('K'):
 				if (rtype != VTypes::CellData)
 				{
-					if (altargs != NULL) { reset = TRUE; continue; }
+					if (altargs != NULL) { reset = true; continue; }
 					Messenger::print("Argument %i to function '%s' must be a UnitCell.", count+1, funcname);
-					result = FALSE;
+					result = false;
 				}
 				break;
 			// Model/ID/Name	(ModelData, StringData, IntegerData)
 			case ('M'):
 				if ((rtype != VTypes::IntegerData) && (rtype != VTypes::ModelData) && (rtype != VTypes::StringData))
 				{
-					if (altargs != NULL) { reset = TRUE; continue; }
+					if (altargs != NULL) { reset = true; continue; }
 					Messenger::print("Argument %i to function '%s' must be an int, a Model or a string.", count+1, funcname);
-					result = FALSE;
+					result = false;
 				}
 				break;
 			// Number		(IntegerData, DoubleData)
 			case ('N'):
 				if ((rtype != VTypes::IntegerData) && (rtype != VTypes::DoubleData))
 				{
-					if (altargs != NULL) { reset = TRUE; continue; }
+					if (altargs != NULL) { reset = true; continue; }
 					Messenger::print("Argument %i to function '%s' must be a number.", count+1, funcname);
-					result = FALSE;
+					result = false;
 				}
 				break;
 			// FFAtom (ForcefieldAtomData)
 			case ('O'):
 				if (rtype != VTypes::ForcefieldAtomData)
 				{
-					if (altargs != NULL) { reset = TRUE; continue; }
+					if (altargs != NULL) { reset = true; continue; }
 					Messenger::print("Argument %i to function '%s' must be an FFAtom.", count+1, funcname);
-					result = FALSE;
+					result = false;
 				}
 				break;
 			// Pattern/ID/Name	(PatternData, StringData, IntegerData)
 			case ('P'):
 				if ((rtype != VTypes::IntegerData) && (rtype != VTypes::PatternData) && (rtype != VTypes::StringData))
 				{
-					if (altargs != NULL) { reset = TRUE; continue; }
+					if (altargs != NULL) { reset = true; continue; }
 					Messenger::print("Argument %i to function '%s' must be an int, a Patternor a string.", count+1, funcname);
-					result = FALSE;
+					result = false;
 				}
 				break;
 			// Any Simple		(IntegerData, RealData, StringData)
 			case ('S'):
 				if ((rtype != VTypes::IntegerData) && (rtype != VTypes::DoubleData) && (rtype != VTypes::StringData))
 				{
-					if (altargs != NULL) { reset = TRUE; continue; }
+					if (altargs != NULL) { reset = true; continue; }
 					Messenger::print("Argument %i to function '%s' must be a number or a string.", count+1, funcname);
-					result = FALSE;
+					result = false;
 				}
 				break;
 			// Exact Simple		(IntegerData, StringData)
 			case ('T'):
 				if ((rtype != VTypes::IntegerData) && (rtype != VTypes::StringData))
 				{
-					if (altargs != NULL) { reset = TRUE; continue; }
+					if (altargs != NULL) { reset = true; continue; }
 					Messenger::print("Argument %i to function '%s' must be a number or a string.", count+1, funcname);
-					result = FALSE;
+					result = false;
 				}
 				break;
 			// Vector		(VectorData)
 			case ('U'):
 				if (rtype != VTypes::VectorData)
 				{
-					if (altargs != NULL) { reset = TRUE; continue; }
+					if (altargs != NULL) { reset = true; continue; }
 					Messenger::print("Argument %i to function '%s' must be a vector.", count+1, funcname);
-					result = FALSE;
+					result = false;
 				}
 				break;	
 			// Variable of any type (but not a path)
 			case ('V'):
 				if (argNode(count)->nodeType() != TreeNode::VarWrapperNode)
 				{
-					if (altargs != NULL) { reset = TRUE; continue; }
+					if (altargs != NULL) { reset = true; continue; }
 					Messenger::print("Argument %i to function '%s' must be a variable of some kind.", count+1, funcname);
-					result = FALSE;
+					result = false;
 				}
 				break;
 			// Atom/Vector		(AtomData, VectorData)
 			case ('W'):
 				if ((rtype != VTypes::AtomData) && (rtype != VTypes::VectorData))
 				{
-					if (altargs != NULL) { reset = TRUE; continue; }
+					if (altargs != NULL) { reset = true; continue; }
 					Messenger::print("Argument %i to function '%s' must be a vector or an Atom.", count+1, funcname);
-					result = FALSE;
+					result = false;
 				}
 				break;
 			// Pointer		(Any pointer (void*) object)
 			case ('X'):
 				if (rtype < VTypes::AtomData)
 				{
-					if (altargs != NULL) { reset = TRUE; continue; }
+					if (altargs != NULL) { reset = true; continue; }
 					Messenger::print("Argument %i to function '%s' must be a reference of some kind.", count+1, funcname);
-					result = FALSE;
+					result = false;
 				}
 				break;
 			// Widget		(WidgetData)
 			case ('Y'):
 				if (rtype != VTypes::WidgetData)
 				{
-					if (altargs != NULL) { reset = TRUE; continue; }
+					if (altargs != NULL) { reset = true; continue; }
 					Messenger::print("Argument %i to function '%s' must be a widget.", count+1, funcname);
-					result = FALSE;
+					result = false;
 				}
 				break;
 			// Any
@@ -546,13 +546,13 @@ bool TreeNode::checkArguments(const char* argList, const char* funcname)
 			// Default (error)
 			default:
 				printf("Unrecognised argument specifier '%c'.\n", upc);
-				return FALSE;
+				return false;
 		}
 		// Was this argument requested to be a modifiable variable value?
 		if (requirevar && argNode(count)->readOnly())
 		{
 			Messenger::print("Argument %i to function '%s' must be a variable and not a constant.", count+1, funcname);
-			result = FALSE;
+			result = false;
 		}
 		// Was this argument requested to be an array (*not* an array element)?
 		if (array)
@@ -560,18 +560,18 @@ bool TreeNode::checkArguments(const char* argList, const char* funcname)
 			if (argNode(count)->nodeType() != TreeNode::VarWrapperNode)
 			{
 				Messenger::print("Argument %i to function '%s' must be an array.", count+1, funcname);
-				result = FALSE;
+				result = false;
 			}
 			Variable* v = ((VariableNode*) argNode(count))->variable();
 			if (v->nodeType() != TreeNode::ArrayVarNode)
 			{
 				Messenger::print("Argument %i to function '%s' must be an array.", count+1, funcname);
-				result = FALSE;
+				result = false;
 			}
 			else if (((VariableNode*) argNode(count))->arrayIndex() != NULL)
 			{
 				Messenger::print("Argument %i to function '%s' must be an array and not an array element.", count+1, funcname);
-				result = FALSE;
+				result = false;
 			}
 		}
 		// Check for failure
@@ -586,7 +586,7 @@ bool TreeNode::checkArguments(const char* argList, const char* funcname)
 	{
 		Messenger::print("Error: %i extra arguments given to function '%s'.", args_.nItems()-count, funcname);
 		Messenger::exit("TreeNode::checkArguments");
-		return FALSE;
+		return false;
 	}
 	Messenger::exit("TreeNode::checkArguments");
 	return result;
@@ -598,7 +598,7 @@ bool TreeNode::arg(int i, ReturnValue& rv)
 	if ((i < 0) || (i >= args_.nItems()))
 	{
 		printf("TreeNode::arg : Argument index %i is out of range (node = %p).\n", i, this);
-		return FALSE;
+		return false;
 	}
 	return args_[i]->item->execute(rv);
 }
@@ -609,7 +609,7 @@ bool TreeNode::argb(int i)
 	if ((i < 0) || (i >= args_.nItems()))
 	{
 		printf("TreeNode::argb : Argument index %i is out of range (node = %p).\n", i, this);
-		return FALSE;
+		return false;
 	}
 	static ReturnValue rv;
 	bool success;
@@ -626,7 +626,7 @@ int TreeNode::argi(int i)
 	if ((i < 0) || (i >= args_.nItems()))
 	{
 		printf("TreeNode::argi : Argument index %i is out of range (node = %p).\n", i, this);
-		return FALSE;
+		return false;
 	}
 	static ReturnValue rv;
 	bool success;
@@ -643,7 +643,7 @@ short int TreeNode::argz(int i)
 	if ((i < 0) || (i >= args_.nItems()))
 	{
 		printf("TreeNode::argz : Argument index %i is out of range (node = %p).\n", i, this);
-		return FALSE;
+		return false;
 	}
 	static ReturnValue rv;
 	Atom* atm;
@@ -683,7 +683,7 @@ double TreeNode::argd(int i)
 	if ((i < 0) || (i >= args_.nItems()))
 	{
 		printf("TreeNode::argd : Argument index %i is out of range (node = %p).\n", i, this);
-		return FALSE;
+		return false;
 	}
 	static ReturnValue rv;
 	bool success;
@@ -706,7 +706,7 @@ QString TreeNode::argc(int i)
 	if ((i < 0) || (i >= args_.nItems()))
 	{
 		printf("TreeNode::argc : Argument index %i is out of range (node = %p).\n", i, this);
-		return FALSE;
+		return false;
 	}
 	static ReturnValue rv[MAXNODEARGS];
 	bool success;
@@ -723,7 +723,7 @@ Vec3<double> TreeNode::argv(int i)
 	if ((i < 0) || (i >= args_.nItems()))
 	{
 		printf("TreeNode::argv : Argument index %i is out of range (node = %p).\n", i, this);
-		return FALSE;
+		return false;
 	}
 	// For safety, check that the argument requested is actually a vector
 	if (argType(i) != VTypes::VectorData)
@@ -743,7 +743,7 @@ void *TreeNode::argp(int i, VTypes::DataType type)
 	if ((i < 0) || (i >= args_.nItems()))
 	{
 		printf("TreeNode::argp : Argument index %i is out of range (node = %p).", i, this);
-		return FALSE;
+		return false;
 	}
 	static ReturnValue rv;
 	bool success;
@@ -760,7 +760,7 @@ Vec3<double> TreeNode::arg3d(int i)
 	if ((i < 0) || (i > (args_.nItems()-3)))
 	{
 		printf("TreeNode::arg3d : Argument index %i is out of range for a triplet (node = %p).\n", i, this);
-		return FALSE;
+		return false;
 	}
 	Vec3<double> result;
 	result.set(argd(i), argd(i+1), argd(i+2));
@@ -773,7 +773,7 @@ Vec3<int> TreeNode::arg3i(int i)
 	if ((i < 0) || (i > (args_.nItems()-3)))
 	{
 		printf("TreeNode::arg3i : Argument index %i is out of range for a triplet (node = %p).\n", i, this);
-		return FALSE;
+		return false;
 	}
 	Vec3<int> result;
 	result.set(argi(i), argi(i+1), argi(i+2));
@@ -786,7 +786,7 @@ Vec3<GLfloat> TreeNode::arg3GLf(int i)
 	if ((i < 0) || (i > (args_.nItems()-3)))
 	{
 		printf("TreeNode::arg3GLf : Argument index %i is out of range for a triplet (node = %p).\n", i, this);
-		return FALSE;
+		return false;
 	}
 	Vec3<GLfloat> result;
 	result.set(argGLf(i), argGLf(i+1), argGLf(i+2));
@@ -799,7 +799,7 @@ TreeNode* TreeNode::argNode(int i)
 	if ((i < 0) || (i > args_.nItems()))
 	{
 		printf("TreeNode::argNode : Argument index %i is out of range for returning the argument node (node = %p).\n", i, this);
-		return FALSE;
+		return false;
 	}
 	return args_[i]->item;
 }

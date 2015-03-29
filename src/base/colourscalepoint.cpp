@@ -96,9 +96,9 @@ ColourScaleDelta::ColourScaleDelta() : ListItem<ColourScaleDelta>()
 // Check whether the delta 'contains' the supplied value
 bool ColourScaleDelta::containsValue(double d) const
 {
-	if (d < start_) return FALSE;
-	if (d > (start_ + delta_)) return FALSE;
-	return TRUE;
+	if (d < start_) return false;
+	if (d > (start_ + delta_)) return false;
+	return true;
 }
 
 // Create delta from two existing colours

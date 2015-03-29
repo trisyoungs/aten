@@ -67,11 +67,11 @@ class Program : public ListItem<Program>
 	// Return associated filename (if any)
 	QString filename();
 	// Generate program from string 
-	bool generateFromString(QString string, QString name, QString sourceInfo, bool dontPushTree = FALSE, bool clearExisting = TRUE);
+	bool generateFromString(QString string, QString name, QString sourceInfo, bool dontPushTree = false, bool clearExisting = true);
 	// Generate program from string list
-	bool generateFromStringList(QStringList stringList, QString name, QString sourceInfo, bool dontPushTree = FALSE, bool clearExisting = TRUE);
+	bool generateFromStringList(QStringList stringList, QString name, QString sourceInfo, bool dontPushTree = false, bool clearExisting = true);
 	// Generate program from input file
-	bool generateFromFile(QString filename, QString name, bool dontPushTree = FALSE, bool clearExisting = TRUE, bool isFilterFile = FALSE);
+	bool generateFromFile(QString filename, QString name, bool dontPushTree = false, bool clearExisting = true, bool isFilterFile = false);
 	// Reload program (provided it was from a file...)
 	bool reload();
 	// Finalise program

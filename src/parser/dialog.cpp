@@ -51,8 +51,8 @@ DialogVariable::~DialogVariable()
 
 // Accessor data
 Accessor DialogVariable::accessorData[DialogVariable::nAccessors] = {
-	{ "title",		VTypes::StringData,	0, FALSE },
-	{ "verticalFill",	VTypes::IntegerData,	0, FALSE }
+	{ "title",		VTypes::StringData,	0, false },
+	{ "verticalFill",	VTypes::IntegerData,	0, false }
 };
 
 // Function data
@@ -156,7 +156,7 @@ bool DialogVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex
 	{
 		printf("Internal Error: Accessor id %i is out of range for Aten type.\n", i);
 		Messenger::exit("DialogVariable::retrieveAccessor");
-		return FALSE;
+		return false;
 	}
 	Accessors acc = (Accessors) i;
 	// Check for correct lack/presence of array index given
@@ -164,7 +164,7 @@ bool DialogVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex
 	{
 		Messenger::print("Error: Unnecessary array index provided for member '%s'.", accessorData[i].name);
 		Messenger::exit("DialogVariable::retrieveAccessor");
-		return FALSE;
+		return false;
 	}
 	else if ((accessorData[i].arraySize > 0) && (hasArrayIndex))
 	{
@@ -172,16 +172,16 @@ bool DialogVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex
 		{
 			Messenger::print("Error: Array index out of bounds for member '%s' (%i, range is 1-%i).", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
 			Messenger::exit("DialogVariable::retrieveAccessor");
-			return FALSE;
+			return false;
 		}
 	}
 	// Variables used in retrieval
-	bool result = TRUE;
+	bool result = true;
 	TreeGui* ptr = (TreeGui*) rv.asPointer(VTypes::DialogData, result);
 	if ((!result) || (ptr == NULL))
 	{
 	        Messenger::print("Invalid (NULL) %s reference encountered.", VTypes::dataType(VTypes::DialogData));
-	        result = FALSE;
+	        result = false;
 	}
 	if (result) switch (acc)
 	{
@@ -189,11 +189,11 @@ bool DialogVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex
 			rv.set(ptr->text());
 			break;
 		case (DialogVariable::VerticalFill):
-			rv.set(ptr->qtWidgetObject() == NULL ? FALSE : ptr->qtWidgetObject()->autoFillVertical());
+			rv.set(ptr->qtWidgetObject() == NULL ? false : ptr->qtWidgetObject()->autoFillVertical());
 			break;
 		default:
 			printf("Internal Error: Access to member '%s' has not been defined in DialogVariable.\n", accessorData[i].name);
-			result = FALSE;
+			result = false;
 			break;
 	}
 	Messenger::exit("DialogVariable::retrieveAccessor");
@@ -209,11 +209,11 @@ bool DialogVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newV
 	{
 		printf("Internal Error: Accessor id %i is out of range for Aten type.\n", i);
 		Messenger::exit("DialogVariable::setAccessor");
-		return FALSE;
+		return false;
 	}
 	Accessors acc = (Accessors) i;
 	// Check for correct lack/presence of array index given to original accessor, and nature of new value
-	bool result = TRUE;
+	bool result = true;
 	if (accessorData[i].arraySize != 0)
 	{
 		if (hasArrayIndex)
@@ -221,12 +221,12 @@ bool DialogVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newV
 			if ((accessorData[i].arraySize > 0) && ( (arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize) ))
 			{
 				Messenger::print("Error: Array index provided for member '%s' is out of range (%i, range is 1-%i).", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
-				result = FALSE;
+				result = false;
 			}
 			if (newValue.arraySize() > 0)
 			{
 				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.", accessorData[i].name);
-				result = FALSE;
+				result = false;
 			}
 		}
 		else
@@ -234,7 +234,7 @@ bool DialogVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newV
 			if (newValue.arraySize() > accessorData[i].arraySize)
 			{
 				Messenger::print("Error: The array being assigned to member '%s' is larger than the size of the desination array (%i cf. %i).", accessorData[i].name, newValue.arraySize(), accessorData[i].arraySize);
-				result = FALSE;
+				result = false;
 			}
 		}
 	}
@@ -246,26 +246,26 @@ bool DialogVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newV
 			if (accessorData[i].returnType != VTypes::VectorData)
 			{
 				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.", accessorData[i].name);
-				result = FALSE;
+				result = false;
 			}
 			else if ((newValue.type() != VTypes::VectorData) && (newValue.arraySize() != 3))
 			{
 				Messenger::print("Error: Only an array of size 3 can be assigned to a vector (member '%s').", accessorData[i].name);
-				result = FALSE;
+				result = false;
 			}
 		}
 	}
 	if (!result)
 	{
 		Messenger::exit("DialogVariable::setAccessor");
-		return FALSE;
+		return false;
 	}
 	// Get current data from ReturnValue
 	TreeGui* ptr = (TreeGui*) sourcerv.asPointer(VTypes::DialogData, result);
 	if ((!result) || (ptr == NULL))
 	{
 	        Messenger::print("Invalid (NULL) %s reference encountered.", VTypes::dataType(VTypes::DialogData));
-	        result = FALSE;
+	        result = false;
 	}
 	switch (acc)
 	{
@@ -277,7 +277,7 @@ bool DialogVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newV
 			break;
 		default:
 			printf("DialogVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);
-			result = FALSE;
+			result = false;
 			break;
 	}
 	Messenger::exit("DialogVariable::setAccessor");
@@ -293,18 +293,18 @@ bool DialogVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 	{
 		printf("Internal Error: FunctionAccessor id %i is out of range for Aten type.\n", i);
 		Messenger::exit("DialogVariable::performFunction");
-		return FALSE;
+		return false;
 	}
 	// Get current data from ReturnValue
 	int xw, xh, l, t;
 	Vec3<double> v;
 	TreeGuiWidget* w;
-	bool result = TRUE;
+	bool result = true;
 	TreeGui* ptr = (TreeGui*) rv.asPointer(VTypes::DialogData, result);
 	if ((!result) || (ptr == NULL))
 	{
 	        Messenger::print("Invalid (NULL) %s reference encountered.", VTypes::dataType(VTypes::DialogData));
-	        result = FALSE;
+	        result = false;
 	}
 	if (result) switch (i)
 	{
@@ -314,7 +314,7 @@ bool DialogVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 			xw = node->hasArg(4) ? node->argi(4) : 0;
 			xh = node->hasArg(5) ? node->argi(5) : 0;
 			rv.set(VTypes::WidgetData, ptr->addCheck(node->argc(0), node->argc(1), l, t, xw, xh));
-			if (rv.asPointer(VTypes::WidgetData) == NULL) result = FALSE;
+			if (rv.asPointer(VTypes::WidgetData) == NULL) result = false;
 			break;
 		case (DialogVariable::AddCheck):
 			l = node->hasArg(3) ? node->argi(3) : -1;
@@ -322,7 +322,7 @@ bool DialogVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 			xw = node->hasArg(5) ? node->argi(5) : 0;
 			xh = node->hasArg(6) ? node->argi(6) : 0;
 			rv.set(VTypes::WidgetData, ptr->addCheck(node->argc(0), node->argc(1), node->argi(2), l, t, xw, xh));
-			if (rv.asPointer(VTypes::WidgetData) == NULL) result = FALSE;
+			if (rv.asPointer(VTypes::WidgetData) == NULL) result = false;
 			break;
 		case (DialogVariable::AddCombo):
 			l = node->hasArg(4) ? node->argi(4) : -1;
@@ -330,7 +330,7 @@ bool DialogVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 			xw = node->hasArg(6) ? node->argi(6) : 0;
 			xh = node->hasArg(7) ? node->argi(7) : 0;
 			rv.set(VTypes::WidgetData, ptr->addCombo(node->argc(0), node->argc(1), node->argc(2), node->argi(3), l, t, xw, xh));
-			if (rv.asPointer(VTypes::WidgetData) == NULL) result = FALSE;
+			if (rv.asPointer(VTypes::WidgetData) == NULL) result = false;
 			break;
 		case (DialogVariable::AddDoubleSpin):
 			l = node->hasArg(6) ? node->argi(6) : -1;
@@ -338,7 +338,7 @@ bool DialogVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 			xw = node->hasArg(8) ? node->argi(8) : 0;
 			xh = node->hasArg(9) ? node->argi(9) : 0;
 			rv.set(VTypes::WidgetData, ptr->addDoubleSpin(node->argc(0), node->argc(1), node->argd(2), node->argd(3), node->argd(4), node->argd(5), l, t, xw, xh));
-			if (rv.asPointer(VTypes::WidgetData) == NULL) result = FALSE;
+			if (rv.asPointer(VTypes::WidgetData) == NULL) result = false;
 			break;
 		case (DialogVariable::AddEdit):
 			l = node->hasArg(3) ? node->argi(3) : -1;
@@ -346,7 +346,7 @@ bool DialogVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 			xw = node->hasArg(5) ? node->argi(5) : 0;
 			xh = node->hasArg(6) ? node->argi(6) : 0;
 			rv.set(VTypes::WidgetData, ptr->addEdit(node->argc(0), node->argc(1), node->argc(2), l, t, xw, xh));
-			if (rv.asPointer(VTypes::WidgetData) == NULL) result = FALSE;
+			if (rv.asPointer(VTypes::WidgetData) == NULL) result = false;
 			break;
 		case (DialogVariable::AddFrame):
 			l = node->hasArg(1) ? node->argi(1) : -1;
@@ -354,7 +354,7 @@ bool DialogVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 			xw = node->hasArg(3) ? node->argi(3) : 0;
 			xh = node->hasArg(4) ? node->argi(4) : 0;
 			rv.set(VTypes::WidgetData, ptr->addFrame(node->argc(0), l, t, xw, xh));
-			if (rv.asPointer(VTypes::WidgetData) == NULL) result = FALSE;
+			if (rv.asPointer(VTypes::WidgetData) == NULL) result = false;
 			break;
 		case (DialogVariable::AddGroup):
 			l = node->hasArg(2) ? node->argi(2) : -1;
@@ -362,7 +362,7 @@ bool DialogVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 			xw = node->hasArg(4) ? node->argi(4) : 0;
 			xh = node->hasArg(5) ? node->argi(5) : 0;
 			rv.set(VTypes::WidgetData, ptr->addGroup(node->argc(0), node->argc(1), l, t, xw, xh));
-			if (rv.asPointer(VTypes::WidgetData) == NULL) result = FALSE;
+			if (rv.asPointer(VTypes::WidgetData) == NULL) result = false;
 			break;
 		case (DialogVariable::AddIntegerSpin):
 			l = node->hasArg(6) ? node->argi(6) : -1;
@@ -370,7 +370,7 @@ bool DialogVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 			xw = node->hasArg(8) ? node->argi(8) : 0;
 			xh = node->hasArg(9) ? node->argi(9) : 0;
 			rv.set(VTypes::WidgetData, ptr->addIntegerSpin(node->argc(0), node->argc(1), node->argi(2), node->argi(3), node->argi(4), node->argi(5), l, t, xw, xh));
-			if (rv.asPointer(VTypes::WidgetData) == NULL) result = FALSE;
+			if (rv.asPointer(VTypes::WidgetData) == NULL) result = false;
 			break;
 		case (DialogVariable::AddLabel):
 			l = node->hasArg(2) ? node->argi(2) : -1;
@@ -378,11 +378,11 @@ bool DialogVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 			xw = node->hasArg(4) ? node->argi(4) : 0;
 			xh = node->hasArg(5) ? node->argi(5) : 0;
 			rv.set(VTypes::WidgetData, ptr->addLabel(node->argc(0), node->argc(1), l, t, xw, xh));
-			if (rv.asPointer(VTypes::WidgetData) == NULL) result = FALSE;
+			if (rv.asPointer(VTypes::WidgetData) == NULL) result = false;
 			break;
 		case (DialogVariable::AddPage):
 			rv.set(VTypes::WidgetData, ptr->addPage(node->argc(0), node->argc(1)));
-			if (rv.asPointer(VTypes::WidgetData) == NULL) result = FALSE;
+			if (rv.asPointer(VTypes::WidgetData) == NULL) result = false;
 			break;
 		case (DialogVariable::AddRadioButton):
 			l = node->hasArg(4) ? node->argi(4) : -1;
@@ -390,11 +390,11 @@ bool DialogVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 			xw = node->hasArg(6) ? node->argi(6) : 0;
 			xh = node->hasArg(7) ? node->argi(7) : 0;
 			rv.set(VTypes::WidgetData, ptr->addRadioButton(node->argc(0), node->argc(1), node->argc(2), node->argi(3), l, t, xw, xh));
-			if (rv.asPointer(VTypes::WidgetData) == NULL) result = FALSE;
+			if (rv.asPointer(VTypes::WidgetData) == NULL) result = false;
 			break;
 		case (DialogVariable::AddRadioGroup):
 			rv.set(VTypes::WidgetData, ptr->addRadioGroup(node->argc(0)));
-			if (rv.asPointer(VTypes::WidgetData) == NULL) result = FALSE;
+			if (rv.asPointer(VTypes::WidgetData) == NULL) result = false;
 			break;
 		case (DialogVariable::AddStack):
 			l = node->hasArg(1) ? node->argi(1) : -1;
@@ -402,7 +402,7 @@ bool DialogVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 			xw = node->hasArg(3) ? node->argi(3) : 0;
 			xh = node->hasArg(4) ? node->argi(4) : 0;
 			rv.set(VTypes::WidgetData, ptr->addStack(node->argc(0), l, t, xw, xh));
-			if (rv.asPointer(VTypes::WidgetData) == NULL) result = FALSE;
+			if (rv.asPointer(VTypes::WidgetData) == NULL) result = false;
 			break;
 		case (DialogVariable::AddTabs):
 			l = node->hasArg(1) ? node->argi(1) : -1;
@@ -410,7 +410,7 @@ bool DialogVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 			xw = node->hasArg(3) ? node->argi(3) : 0;
 			xh = node->hasArg(4) ? node->argi(4) : 0;
 			rv.set(VTypes::WidgetData, ptr->addTabs(node->argc(0), l, t, xw, xh));
-			if (rv.asPointer(VTypes::WidgetData) == NULL) result = FALSE;
+			if (rv.asPointer(VTypes::WidgetData) == NULL) result = false;
 			break;
 		case (DialogVariable::AsDouble):
 			w = ptr->findWidget(node->argc(0));
@@ -418,7 +418,7 @@ bool DialogVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 			else
 			{
 				Messenger::print("Error: No Widget named '%s' exists in the dialog '%s'.", qPrintable(node->argc(0)), qPrintable(ptr->name()));
-				result = FALSE;
+				result = false;
 			}
 			break;
 		case (DialogVariable::AsInteger):
@@ -427,7 +427,7 @@ bool DialogVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 			else
 			{
 				Messenger::print("Error: No Widget named '%s' exists in the dialog '%s'.", qPrintable(node->argc(0)), qPrintable(ptr->name()));
-				result = FALSE;
+				result = false;
 			}
 			break;
 		case (DialogVariable::AsString):
@@ -436,7 +436,7 @@ bool DialogVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 			else
 			{
 				Messenger::print("Error: No Widget named '%s' exists in the dialog '%s'.", qPrintable(node->argc(0)), qPrintable(ptr->name()));
-				result = FALSE;
+				result = false;
 			}
 			break;
 		case (DialogVariable::AsVector):
@@ -445,21 +445,21 @@ bool DialogVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 			else
 			{
 				Messenger::print("Error: No Widget named '%s' exists in the dialog '%s'.", qPrintable(node->argc(0)), qPrintable(ptr->name()));
-				result = FALSE;
+				result = false;
 			}
 			w = ptr->findWidget(node->argc(1));
 			if (w != NULL) v.y = w->asDouble();
 			else
 			{
 				Messenger::print("Error: No Widget named '%s' exists in the dialog '%s'.", qPrintable(node->argc(1)), qPrintable(ptr->name()));
-				result = FALSE;
+				result = false;
 			}
 			w = ptr->findWidget(node->argc(2));
 			if (w != NULL) v.z = w->asDouble();
 			else
 			{
 				Messenger::print("Error: No Widget named '%s' exists in the dialog '%s'.", qPrintable(node->argc(2)), qPrintable(ptr->name()));
-				result = FALSE;
+				result = false;
 			}
 			rv.set(v);
 			break;
@@ -468,7 +468,7 @@ bool DialogVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 			if (w == NULL)
 			{
 				Messenger::print("Error: No Widget named '%s' exists in the dialog '%s'.", qPrintable(node->argc(0)), qPrintable(ptr->name()));
-				result = FALSE;
+				result = false;
 			}
 			rv.set(w->asInteger() == node->argi(1));
 			break;
@@ -477,7 +477,7 @@ bool DialogVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 			if (w == NULL)
 			{
 				Messenger::print("Error: No Widget named '%s' exists in the dialog '%s'.", qPrintable(node->argc(0)), qPrintable(ptr->name()));
-				result = FALSE;
+				result = false;
 			}
 			rv.set((w->asInteger() >= node->argi(1)) && (w->asInteger() <= node->argi(2)));
 			break;
@@ -486,22 +486,22 @@ bool DialogVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 			if (w == NULL)
 			{
 				Messenger::print("Error: No Widget named '%s' exists in the dialog '%s'.", qPrintable(node->argc(0)), qPrintable(ptr->name()));
-				result = FALSE;
+				result = false;
 			}
 			rv.set(node->argc(1) == w->asCharacter());
 			break;
 		case (DialogVariable::Show):
 			// If the GUI exists, or it doesn't but we allow dialogs to be raised, show it
 			if (prefs.allowDialogs()) rv.set(ptr->execute());
-			else rv.set(TRUE);
+			else rv.set(true);
 			break;
 		case (DialogVariable::Widget):
 			rv.set(VTypes::WidgetData, ptr->findWidget(node->argc(0)));
-			if (rv.asPointer(VTypes::WidgetData) == NULL) result = FALSE;
+			if (rv.asPointer(VTypes::WidgetData) == NULL) result = false;
 			break;
 		default:
 			printf("Internal Error: Access to function '%s' has not been defined in DialogVariable.\n", functionData[i].name);
-			result = FALSE;
+			result = false;
 			break;
 	}
 	Messenger::exit("DialogVariable::performFunction");

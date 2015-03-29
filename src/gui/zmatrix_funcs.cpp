@@ -30,7 +30,7 @@
 // Constructor
 AtenZMatrix::AtenZMatrix(AtenWindow& parent, Qt::WindowFlags flags) : QDialog(&parent, flags), parent_(parent)
 {
-	refreshing_ = FALSE;
+	refreshing_ = false;
 	zMatrix_ = NULL;
 	ui.setupUi(this);
 }
@@ -51,7 +51,7 @@ void AtenZMatrix::refresh(bool forceupdate)
 	zMatrix_ = m->zMatrix();
 	if (zMatrix_ == NULL) return;
 	
-	refreshing_ = TRUE;
+	refreshing_ = true;
 	// ZMatrix 'Connectivity' Table
 	int count = 0;
 	QTableWidgetItem *item;
@@ -135,7 +135,7 @@ void AtenZMatrix::refresh(bool forceupdate)
 		++count;
 	}
 	for (count=0; count<2; count++) ui.VariablesTable->resizeColumnToContents(count);
-	refreshing_ = FALSE;
+	refreshing_ = false;
 	Messenger::exit("AtenZMatrix::refresh");
 }
 
@@ -144,7 +144,7 @@ void AtenZMatrix::on_ZMatrixTable_cellDoubleClicked(int row, int column)
 	if (refreshing_) return;
 	Variable* newvar, *oldvar;
 	ZMatrixElement* el;
-	bool changed = FALSE;
+	bool changed = false;
 
 	// Create a variable selection dialog ready...
 	AtenSelectVariable variableSelect(parent_);
@@ -167,7 +167,7 @@ void AtenZMatrix::on_ZMatrixTable_cellDoubleClicked(int row, int column)
 					el->setDistanceVariable(newvar);
 					el->setNegated(0, variableSelect.isNegated());
 				}
-				changed = TRUE;
+				changed = true;
 			}
 			break;
 		case (AtenZMatrix::AngleColumn):
@@ -185,7 +185,7 @@ void AtenZMatrix::on_ZMatrixTable_cellDoubleClicked(int row, int column)
 					el->setAngleVariable(newvar);
 					el->setNegated(1, variableSelect.isNegated());
 				}
-				changed = TRUE;
+				changed = true;
 			}
 			break;
 		case (AtenZMatrix::TorsionColumn):
@@ -203,7 +203,7 @@ void AtenZMatrix::on_ZMatrixTable_cellDoubleClicked(int row, int column)
 					el->setTorsionVariable(newvar);
 					el->setNegated(2, variableSelect.isNegated());
 				}
-				changed = TRUE;
+				changed = true;
 			}
 			break;
 	}

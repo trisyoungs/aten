@@ -33,7 +33,7 @@ class DoubleVariable : public Variable
 {
 	public:
 	// Constructor / Destructor
-	DoubleVariable(double d = 0.0, bool constant = FALSE);
+	DoubleVariable(double d = 0.0, bool constant = false);
 	~DoubleVariable();
 
 	/*
@@ -64,7 +64,7 @@ class DoubleArrayVariable : public ArrayVariable
 {
 	public:
 	// Constructor / Destructor
-	DoubleArrayVariable(TreeNode* sizeexpr, bool constant = FALSE);
+	DoubleArrayVariable(TreeNode* sizeexpr, bool constant = false);
 	~DoubleArrayVariable();
 
 	/*

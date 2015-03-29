@@ -253,7 +253,7 @@ bool Aten::parseCliEarly(int argc, char *argv[])
 				argText.clear();
 				if ((argv[argn][1] != '\0') && (argv[argn][2] != '\0'))
 				{
-					isShort = FALSE;
+					isShort = false;
 					QStringList items = QString(&argv[argn][1]).split('=');
 					arg = items.at(0);
 					if (items.count() == 2) argText = items.at(1);
@@ -273,17 +273,17 @@ bool Aten::parseCliEarly(int argc, char *argv[])
 			if (opt == Cli::nSwitchItems)
 			{
 				printf("Unrecognised command-line option '%s%s'.\n", isShort ? "-" : "--", qPrintable(arg));
-				return FALSE;
+				return false;
 			}
 
 			// Check if an argument to the switch has been supplied...
-			if (!argText.isEmpty()) hasArg = TRUE;
+			if (!argText.isEmpty()) hasArg = true;
 			else if ((argn < (argc-1)) && (argv[argn+1][0] != '-') && (cliSwitches[opt].argument != 0))
 			{
-				hasArg = TRUE;
+				hasArg = true;
 				argText = argv[++argn];
 			}
-			else hasArg = FALSE;
+			else hasArg = false;
 
 			// ...and whether it expects one
 			switch (cliSwitches[opt].argument)
@@ -297,7 +297,7 @@ bool Aten::parseCliEarly(int argc, char *argv[])
 					{
 						if (isShort) Messenger::print("Usage Error: '-%c' requires an argument.", cliSwitches[opt].shortOpt);
 						else Messenger::print("Usage Error: '--%s' requires an argument.", cliSwitches[opt].longOpt);
-						return FALSE;
+						return false;
 					}
 					break;
 				// Optional argument
@@ -319,35 +319,35 @@ bool Aten::parseCliEarly(int argc, char *argv[])
 					if (!hasArg) Messenger::addOutputType(Messenger::Calls);
 					else
 					{
-						ot = Messenger::outputType(argText, TRUE);
+						ot = Messenger::outputType(argText, true);
 						if (ot != Messenger::nOutputTypes) Messenger::addOutputType(ot);
-						else return FALSE;
+						else return false;
 					}
 					break;
 				// Display help
 				case (Cli::HelpSwitch):
 					printUsage();
-					return FALSE;
+					return false;
 					break;
 				// Restrict filter loading on startup
 				case (Cli::NoFiltersSwitch):
-					prefs.setLoadFilters(FALSE);
+					prefs.setLoadFilters(false);
 					break;
 				// Restrict fragment loading on startup
 				case (Cli::NoFragmentsSwitch):
-					prefs.setLoadFragments(FALSE);
+					prefs.setLoadFragments(false);
 					break;
 				// Restrict fragment icon generation
 				case (Cli::NoFragmentIconsSwitch):
-					prefs.setGenerateFragmentIcons(FALSE);
+					prefs.setGenerateFragmentIcons(false);
 					break;
 				// Restrict include loading on startup
 				case (Cli::NoIncludesSwitch):
-					prefs.setLoadIncludes(FALSE);
+					prefs.setLoadIncludes(false);
 					break;
 				// Restrict partition loading on startup
 				case (Cli::NoPartitionsSwitch):
-					prefs.setLoadPartitions(FALSE);
+					prefs.setLoadPartitions(false);
 					break;
 				// Turn off display list usage
 				case (Cli::NoListsSwitch):
@@ -356,7 +356,7 @@ bool Aten::parseCliEarly(int argc, char *argv[])
 					break;
 				// Run in silent mode (no CLI output)
 				case (Cli::QuietSwitch):
-					Messenger::setQuiet(TRUE);
+					Messenger::setQuiet(true);
 					break;
 				// Turn on VBO usage
 				case (Cli::VBOSwitch):
@@ -371,12 +371,12 @@ bool Aten::parseCliEarly(int argc, char *argv[])
 				// Print version and exit
 				case (Cli::VersionSwitch):
 					printf("Aten version %s, built from %s@%s.\n", ATENVERSION, ATENURL, ATENREVISION);
-					return FALSE;
+					return false;
 					break;
 			}
 		}
 	}
-	return TRUE;
+	return true;
 }
 
 // Parse CLI options, after filters / prefs have been loaded
@@ -422,7 +422,7 @@ int Aten::parseCli(int argc, char *argv[])
 				argText.clear();
 				if ((argv[argn][1] != '\0') && (argv[argn][2] != '\0'))
 				{
-					isShort = FALSE;
+					isShort = false;
 					QStringList items = QString(&argv[argn][1]).split('=');
 					arg = items.at(0);
 					if (items.count() == 2) argText = items.at(1);
@@ -446,13 +446,13 @@ int Aten::parseCli(int argc, char *argv[])
 			}
 
 			// Check if an argument to the switch has been supplied...
-			if (argText != "") hasArg = TRUE;
+			if (argText != "") hasArg = true;
 			else if ((argn < (argc-1)) && (argv[argn+1][0] != '-') && (cliSwitches[opt].argument != 0))
 			{
-				hasArg = TRUE;
+				hasArg = true;
 				argText = argv[++argn];
 			}
-			else hasArg = FALSE;
+			else hasArg = false;
 
 			// ...and whether it expects one
 			switch (cliSwitches[opt].argument)
@@ -504,7 +504,7 @@ int Aten::parseCli(int argc, char *argv[])
 					break;
 				// Convert coordinates from Bohr to Angstrom
 				case (Cli::BohrSwitch):
-					prefs.setCoordsInBohr(TRUE);
+					prefs.setCoordsInBohr(true);
 					break;
 				// Force bonding calculation of atoms on load
 				case (Cli::BondSwitch):
@@ -538,7 +538,7 @@ int Aten::parseCli(int argc, char *argv[])
 					break;
 				// Allow script/filter dialogs to be raised
 				case (Cli::DialogsSwitch):
-					prefs.setAllowDialogs(TRUE);
+					prefs.setAllowDialogs(true);
 					break;
 				// Export all models in nicknamed format (single-shot mode)
 				case (Cli::ExportSwitch):
@@ -646,8 +646,8 @@ int Aten::parseCli(int argc, char *argv[])
 					{
 						// Get string from user
 						line = readline(qPrintable(prompt));
-						interactiveScript.mainProgram()->reset(FALSE);
-						if (interactiveScript.generateFromString(line, "InteractiveCommand", "InteractiveMode", FALSE, FALSE)) interactiveScript.execute(rv);
+						interactiveScript.mainProgram()->reset(false);
+						if (interactiveScript.generateFromString(line, "InteractiveCommand", "InteractiveMode", false, false)) interactiveScript.execute(rv);
 						// Add the command to the history and delete it 
 						add_history(line);
 						free(line);
@@ -661,7 +661,7 @@ int Aten::parseCli(int argc, char *argv[])
 						printf("Error: --keepnames and --keeptypes are mutually exclusive.\n");
 						return -1;
 					}
-					prefs.setKeepNames(TRUE);
+					prefs.setKeepNames(true);
 					break;
 				// Keep atom type names in file
 				case (Cli::KeepTypesSwitch):
@@ -671,11 +671,11 @@ int Aten::parseCli(int argc, char *argv[])
 						printf("Error: --keepnames and --keeptypes are mutually exclusive.\n");
 						return -1;
 					}
-					prefs.setKeepTypes(TRUE);
+					prefs.setKeepTypes(true);
 					break;
 				// Keep (don't reset) view when GUI starts
 				case (Cli::KeepViewSwitch):
-					prefs.setKeepView(TRUE);
+					prefs.setKeepView(true);
 					break;
 				// Load models from list in file
 				case (Cli::LoadFromListSwitch):
@@ -747,7 +747,7 @@ int Aten::parseCli(int argc, char *argv[])
 					break;
 				// Don't load Qt window/toolbar settings on startup
 				case (Cli::NoQtSettingsSwitch):
-					prefs.setLoadQtSettings(FALSE);
+					prefs.setLoadQtSettings(false);
 					break;
 				// Prohibit packing (application of symmetry operators) on load
 				case (Cli::PackSwitch):
@@ -755,7 +755,7 @@ int Aten::parseCli(int argc, char *argv[])
 					break;
 				// Read and execute commads from pipe
 				case (Cli::PipeSwitch):
-					prefs.setReadPipe(TRUE);
+					prefs.setReadPipe(true);
 					break;
 				// Enable processing mode
 				case (Cli::ProcessSwitch):
@@ -808,8 +808,8 @@ int Aten::parseCli(int argc, char *argv[])
 					break;
 				// Set the type of element (Z) mapping to use in name conversion
 				case (Cli::ZmapSwitch):
-					zm = ElementMap::zMapType(argText, TRUE);
-					if (zm != ElementMap::nZMapTypes) prefs.setZMapType(zm, TRUE);
+					zm = ElementMap::zMapType(argText, true);
+					if (zm != ElementMap::nZMapTypes) prefs.setZMapType(zm, true);
 					else return -1;
 					break;
 				// Undefined option
@@ -830,13 +830,13 @@ int Aten::parseCli(int argc, char *argv[])
 	}
 
 	// Anything redirected to stdin (or forcibly piped)?
-	bool readcin = FALSE;
-	if (prefs.readPipe()) readcin = TRUE;
+	bool readcin = false;
+	if (prefs.readPipe()) readcin = true;
 	else
 	{
 		std::cin.seekg(0, std::ios::end);
 		std::streampos endpos = std::cin.tellg();
-		if ((endpos != std::streampos(-1)) && (endpos != std::streampos(0))) readcin = TRUE;
+		if ((endpos != std::streampos(-1)) && (endpos != std::streampos(0))) readcin = true;
 		std::cin.seekg(0, std::ios::beg);
 		
 	}
@@ -900,15 +900,15 @@ void Aten::printUsage() const
 bool Aten::addPassedValue(VTypes::DataType type, QString name, QString value)
 {
 	// Search for existing passed value of this name...
-	if (passedValues_.find(name)) return FALSE;
+	if (passedValues_.find(name)) return false;
 	Variable* var = NULL;
-	if (type == VTypes::IntegerData) var = new IntegerVariable(value.toInt(), TRUE);
-	else if (type == VTypes::DoubleData) var = new DoubleVariable(value.toDouble(), TRUE);
-	else if (type == VTypes::StringData) var = new StringVariable(value, TRUE);
+	if (type == VTypes::IntegerData) var = new IntegerVariable(value.toInt(), true);
+	else if (type == VTypes::DoubleData) var = new DoubleVariable(value.toDouble(), true);
+	else if (type == VTypes::StringData) var = new StringVariable(value, true);
 	else printf("Internal Error: Don't know how to create a passed value of type '%s'.\n", VTypes::dataType(type));
 	var->setName(name);
-	passedValues_.take(var, TRUE);
-	return TRUE;
+	passedValues_.take(var, true);
+	return true;
 }
 
 // Find passed value

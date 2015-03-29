@@ -46,13 +46,13 @@ ElementVariable::~ElementVariable()
 
 // Accessor data
 Accessor ElementVariable::accessorData[ElementVariable::nAccessors] = {
-	{ "colour",	VTypes::DoubleData,	4, FALSE },
-	{ "group",	VTypes::IntegerData,	0, TRUE },
-	{ "mass",	VTypes::DoubleData,	0, TRUE },
-	{ "name",	VTypes::StringData,	0, TRUE },
-	{ "radius",	VTypes::DoubleData,	0, FALSE },
-	{ "symbol",	VTypes::StringData,	0, TRUE },
-	{ "z",		VTypes::IntegerData,	0, TRUE }
+	{ "colour",	VTypes::DoubleData,	4, false },
+	{ "group",	VTypes::IntegerData,	0, true },
+	{ "mass",	VTypes::DoubleData,	0, true },
+	{ "name",	VTypes::StringData,	0, true },
+	{ "radius",	VTypes::DoubleData,	0, false },
+	{ "symbol",	VTypes::StringData,	0, true },
+	{ "z",		VTypes::IntegerData,	0, true }
 };
 
 // Function data
@@ -133,7 +133,7 @@ bool ElementVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayInde
 	{
 		printf("Internal Error: Accessor id %i is out of range for Elements type.\n", i);
 		Messenger::exit("ElementVariable::retrieveAccessor");
-		return FALSE;
+		return false;
 	}
 	Accessors acc = (Accessors) i;
 	// Check for correct lack/presence of array index given
@@ -141,7 +141,7 @@ bool ElementVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayInde
 	{
 		Messenger::print("Error: Unnecessary array index provided for member '%s'.", accessorData[i].name);
 		Messenger::exit("ElementVariable::retrieveAccessor");
-		return FALSE;
+		return false;
 	}
 	else if ((accessorData[i].arraySize > 0) && (hasArrayIndex))
 	{
@@ -149,7 +149,7 @@ bool ElementVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayInde
 		{
 			Messenger::print("Error: Array index out of bounds for member '%s' (%i, range is 1-%i).", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
 			Messenger::exit("ElementVariable::retrieveAccessor");
-			return FALSE;
+			return false;
 		}
 	}
 	// Get current data from ReturnValue
@@ -158,7 +158,7 @@ bool ElementVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayInde
 	if ((!result) || (ptr == NULL))
 	{
 		Messenger::print("Invalid (NULL) %s reference encountered.", VTypes::dataType(VTypes::ElementData));
-		result = FALSE;
+		result = false;
 	}
 	if (result) switch (acc)
 	{
@@ -186,7 +186,7 @@ bool ElementVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayInde
 			break;
 		default:
 			printf("Internal Error: Access to member '%s' has not been defined in ElementVariable.\n", accessorData[i].name);
-			result = FALSE;
+			result = false;
 			break;
 	}
 	Messenger::exit("ElementVariable::retrieveAccessor");
@@ -202,11 +202,11 @@ bool ElementVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& new
 	{
 		printf("Internal Error: Accessor id %i is out of range for Elements type.\n", i);
 		Messenger::exit("ElementVariable::setAccessor");
-		return FALSE;
+		return false;
 	}
 	Accessors acc = (Accessors) i;
 	// Check for correct lack/presence of array index given to original accessor, and nature of new value
-	bool result = TRUE;
+	bool result = true;
 	if (accessorData[i].arraySize != 0)
 	{
 		if (hasArrayIndex)
@@ -214,12 +214,12 @@ bool ElementVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& new
 			if ((accessorData[i].arraySize > 0) && ( (arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize) ))
 			{
 				Messenger::print("Error: Array index provided for member '%s' is out of range (%i, range is 1-%i).", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
-				result = FALSE;
+				result = false;
 			}
 			if (newValue.arraySize() > 0)
 			{
 				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.", accessorData[i].name);
-				result = FALSE;
+				result = false;
 			}
 		}
 		else
@@ -227,7 +227,7 @@ bool ElementVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& new
 			if (newValue.arraySize() > accessorData[i].arraySize)
 			{
 				Messenger::print("Error: The array being assigned to member '%s' is larger than the size of the desination array (%i cf. %i).", accessorData[i].name, newValue.arraySize(), accessorData[i].arraySize);
-				result = FALSE;
+				result = false;
 			}
 		}
 	}
@@ -239,19 +239,19 @@ bool ElementVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& new
 			if (accessorData[i].returnType != VTypes::VectorData)
 			{
 				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.", accessorData[i].name);
-				result = FALSE;
+				result = false;
 			}
 			else if ((newValue.type() != VTypes::VectorData) && (newValue.arraySize() != 3))
 			{
 				Messenger::print("Error: Only an array of size 3 can be assigned to a vector (member '%s').", accessorData[i].name);
-				result = FALSE;
+				result = false;
 			}
 		}
 	}
 	if (!result)
 	{
 		Messenger::exit("ElementVariable::setAccessor");
-		return FALSE;
+		return false;
 	}
 	// Get current data from ReturnValue
 	Element* ptr = (Element*) sourcerv.asPointer(VTypes::ElementData, result);
@@ -259,7 +259,7 @@ bool ElementVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& new
 	if ((!result) || (ptr == NULL))
 	{
 		Messenger::print("Invalid (NULL) %s reference encountered.", VTypes::dataType(VTypes::ElementData));
-		result = FALSE;
+		result = false;
 	}
 	if (result) switch (acc)
 	{
@@ -274,7 +274,7 @@ bool ElementVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& new
 			break;
 		default:
 			printf("ElementVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);
-			result = FALSE;
+			result = false;
 			break;
 	}
 	Messenger::exit("ElementVariable::setAccessor");
@@ -290,16 +290,16 @@ bool ElementVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 	{
 		printf("Internal Error: FunctionAccessor id %i is out of range for Element type.\n", i);
 		Messenger::exit("ElementVariable::performFunction");
-		return FALSE;
+		return false;
 	}
 	// Get current data from ReturnValue
-	bool result = TRUE;
+	bool result = true;
 	Element* ptr = (Element*) rv.asPointer(VTypes::ElementData, result);
 	if (result) switch (i)
 	{
 		default:
 			printf("Internal Error: Access to function '%s' has not been defined in ElementVariable.\n", functionData[i].name);
-			result = FALSE;
+			result = false;
 			break;
 	}
 	Messenger::exit("ElementVariable::performFunction");

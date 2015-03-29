@@ -31,17 +31,17 @@ ATEN_USING_NAMESPACE
 bool Forcefield::save()
 {
 	Messenger::enter("Forcefield::save");
-	bool done, okay, result = TRUE;
+	bool done, okay, result = true;
 	int success, n, m;
 	Prefs::EnergyUnit ffunit;
 	LineParser parser;
 	
 	// Open file for writing
-	if (!parser.openOutput(filename_, TRUE))
+	if (!parser.openOutput(filename_, true))
 	{
 		Messenger::print("Couldn't open file '%s' for writing..", qPrintable(filename_));
 		Messenger::exit("Forcefield::save");
-		return FALSE;
+		return false;
 	}
 
 	// Write forcefield name and energy units
@@ -130,7 +130,7 @@ bool Forcefield::save()
 					break;
 				default:
 					Messenger::print("Error: Unsuitable datatype '%s' for data item '%s'.", VTypes::dataType(nm->data()), qPrintable(nm->name()));
-					result = FALSE;
+					result = false;
 					continue;
 			}
 			if (nm->next != NULL) parser.writeLine(", ");
@@ -178,7 +178,7 @@ bool Forcefield::save()
 						break;
 					default:
 						Messenger::print("Error: Unsuitable datatype '%s' for data item '%s'.", VTypes::dataType(nm->data()), qPrintable(nm->name()));
-						result = FALSE;
+						result = false;
 						continue;
 				}
 				if (nm->next != NULL) parser.writeLine("\t");
@@ -338,6 +338,6 @@ bool Forcefield::save()
 	Messenger::print("Done.");
 
 	Messenger::exit("Forcefield::save");
-	return TRUE;
+	return true;
 }
 

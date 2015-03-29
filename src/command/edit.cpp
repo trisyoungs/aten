@@ -29,40 +29,40 @@ ATEN_USING_NAMESPACE
 // Copy current selection ('copy')
 bool Commands::function_Copy(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	aten_.userClipboard->copySelection(obj.rs());
 	Messenger::print("%i atoms copied to clipboard.", aten_.userClipboard->nAtoms());
 	Messenger::print(Messenger::Verbose, "Copied selection (%i atoms) from model %s", aten_.userClipboard->nAtoms(), qPrintable(obj.m->name()));
-	return TRUE;
+	return true;
 }
 
 // Cut current selection ('cut')
 bool Commands::function_Cut(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	obj.rs()->beginUndoState("Cut %i atom%s",obj.rs()->nSelected(),(obj.rs()->nSelected() == 1 ? "" : "s"));
 	aten_.userClipboard->cutSelection(obj.rs());
 	obj.rs()->endUndoState();
 	Messenger::print("%i atoms cut to clipboard.", aten_.userClipboard->nAtoms());
-	return TRUE;
+	return true;
 }
 
 // Delete current selection ('delete')
 bool Commands::function_Delete(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	int n = obj.rs()->nSelected();
 	obj.rs()->beginUndoState("Delete %i atom%s", n, (n == 1 ? "" : "s"));
 	obj.rs()->selectionDelete();
 	obj.rs()->endUndoState();
 	Messenger::print("%i atom%s deleted from model.", n, (n == 1 ? "" : "s"));
-	return TRUE;
+	return true;
 }
 
 // Paste copied selection ('paste')
 bool Commands::function_Paste(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	int n = aten_.userClipboard->nAtoms();
 	obj.rs()->beginUndoState("Paste %i atom%s", n, (n == 1 ? "" : "s"));
 	if (!c->hasArg(2)) aten_.userClipboard->pasteToModel(obj.rs());
@@ -73,22 +73,22 @@ bool Commands::function_Paste(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	}
 	obj.rs()->endUndoState();
 	Messenger::print("%i atom%s pasted to model.", n, (n == 1 ? "" : "s"));
-	return TRUE;
+	return true;
 }
 
 // Redo most recent change
 bool Commands::function_Redo(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	obj.rs()->redo();
-	return TRUE;
+	return true;
 }
 
 // Undo most recent change
 bool Commands::function_Undo(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	obj.rs()->undo();
-	return TRUE;
+	return true;
 }
 

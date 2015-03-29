@@ -49,10 +49,10 @@ GlyphDataVariable::~GlyphDataVariable()
 
 // Accessor data
 Accessor GlyphDataVariable::accessorData[GlyphDataVariable::nAccessors] = {
-	{ "atom",	VTypes::AtomData,	0, FALSE },
-	{ "atomdata",	VTypes::IntegerData,	0, FALSE },
-	{ "colour",	VTypes::DoubleData,	4, FALSE },
-	{ "vector",	VTypes::VectorData,	0, FALSE }
+	{ "atom",	VTypes::AtomData,	0, false },
+	{ "atomdata",	VTypes::IntegerData,	0, false },
+	{ "colour",	VTypes::DoubleData,	4, false },
+	{ "vector",	VTypes::VectorData,	0, false }
 };
 
 // Function data
@@ -133,7 +133,7 @@ bool GlyphDataVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIn
 	{
 		printf("Internal Error: Accessor id %i is out of range for Glyph type.\n", i);
 		Messenger::exit("GlyphDataVariable::retrieveAccessor");
-		return FALSE;
+		return false;
 	}
 	Accessors acc = (Accessors) i;
 	// Check for correct lack/presence of array index given
@@ -141,7 +141,7 @@ bool GlyphDataVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIn
 	{
 		Messenger::print("Error: Unnecessary array index provided for member '%s'.", accessorData[i].name);
 		Messenger::exit("GlyphDataVariable::retrieveAccessor");
-		return FALSE;
+		return false;
 	}
 	else if ((accessorData[i].arraySize > 0) && (hasArrayIndex))
 	{
@@ -149,16 +149,16 @@ bool GlyphDataVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIn
 		{
 			Messenger::print("Error: Array index out of bounds for member '%s' (%i, range is 1-%i).", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
 			Messenger::exit("GlyphDataVariable::retrieveAccessor");
-			return FALSE;
+			return false;
 		}
 	}
 	// Get current data from ReturnValue
-	bool result = TRUE;
+	bool result = true;
 	GlyphData* ptr = (GlyphData*) rv.asPointer(VTypes::GlyphDataData, result);
 	if ((!result) || (ptr == NULL))
 	{
 		Messenger::print("Invalid (NULL) %s reference encountered.", VTypes::dataType(VTypes::GlyphDataData));
-		result = FALSE;
+		result = false;
 	}
 	if (result) switch (acc)
 	{
@@ -177,7 +177,7 @@ bool GlyphDataVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIn
 			break;
 		default:
 			printf("Internal Error: Access to member '%s' has not been defined in GlyphDataVariable.\n", accessorData[i].name);
-			result = FALSE;
+			result = false;
 			break;
 	}
 	Messenger::exit("GlyphDataVariable::retrieveAccessor");
@@ -193,11 +193,11 @@ bool GlyphDataVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& n
 	{
 		printf("Internal Error: Accessor id %i is out of range for Glyph type.\n", i);
 		Messenger::exit("GlyphDataVariable::setAccessor");
-		return FALSE;
+		return false;
 	}
 	Accessors acc = (Accessors) i;
 	// Check for correct lack/presence of array index given to original accessor, and nature of new value
-	bool result = TRUE;
+	bool result = true;
 	if (accessorData[i].arraySize != 0)
 	{
 		if (hasArrayIndex)
@@ -205,12 +205,12 @@ bool GlyphDataVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& n
 			if ((accessorData[i].arraySize > 0) && ( (arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize) ))
 			{
 				Messenger::print("Error: Array index provided for member '%s' is out of range (%i, range is 1-%i).", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
-				result = FALSE;
+				result = false;
 			}
 			if ((newValue.arraySize() > 0) && (accessorData[i].returnType != VTypes::VectorData))
 			{
 				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.", accessorData[i].name);
-				result = FALSE;
+				result = false;
 			}
 		}
 		else
@@ -218,7 +218,7 @@ bool GlyphDataVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& n
 			if (newValue.arraySize() > accessorData[i].arraySize)
 			{
 				Messenger::print("Error: The array being assigned to member '%s' is larger than the size of the desination array (%i cf. %i).", accessorData[i].name, newValue.arraySize(), accessorData[i].arraySize);
-				result = FALSE;
+				result = false;
 			}
 		}
 	}
@@ -230,26 +230,26 @@ bool GlyphDataVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& n
 			if (accessorData[i].returnType != VTypes::VectorData)
 			{
 				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.", accessorData[i].name);
-				result = FALSE;
+				result = false;
 			}
 			else if ((newValue.type() != VTypes::VectorData) && (newValue.arraySize() != 3))
 			{
 				Messenger::print("Error: Only an array of size 3 can be assigned to a vector (member '%s').", accessorData[i].name);
-				result = FALSE;
+				result = false;
 			}
 		}
 	}
 	if (!result)
 	{
 		Messenger::exit("GlyphDataVariable::setAccessor");
-		return FALSE;
+		return false;
 	}
 	// Get current data from ReturnValue
 	GlyphData* ptr = (GlyphData*) sourcerv.asPointer(VTypes::GlyphDataData, result);
 	if ((!result) || (ptr == NULL))
 	{
 		Messenger::print("Invalid (NULL) %s reference encountered.", VTypes::dataType(VTypes::GlyphDataData));
-		result = FALSE;
+		result = false;
 	}
 	int n;
 	if (result) switch (acc)
@@ -271,7 +271,7 @@ bool GlyphDataVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& n
 			break;
 		default:
 			printf("GlyphDataVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);
-			result = FALSE;
+			result = false;
 			break;
 	}
 	Messenger::exit("GlyphDataVariable::setAccessor");
@@ -287,16 +287,16 @@ bool GlyphDataVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 	{
 		printf("Internal Error: FunctionAccessor id %i is out of range for Glyph type.\n", i);
 		Messenger::exit("GlyphDataVariable::performFunction");
-		return FALSE;
+		return false;
 	}
 	// Get current data from ReturnValue
-	bool result = TRUE;
+	bool result = true;
 	GlyphData* ptr = (GlyphData*) rv.asPointer(VTypes::GlyphDataData, result);
 	if (result) switch (i)
 	{
 		default:
 			printf("Internal Error: Access to function '%s' has not been defined in GlyphDataVariable.\n", functionData[i].name);
-			result = FALSE;
+			result = false;
 			break;
 	}
 	Messenger::exit("GlyphDataVariable::performFunction");

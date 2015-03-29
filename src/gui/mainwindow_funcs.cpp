@@ -153,8 +153,8 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 	postRedisplay();
 
 	// Set some preferences back to their default values
-	prefs.setZMapType(ElementMap::AutoZMap, FALSE);
-	prefs.setKeepView(FALSE);
+	prefs.setZMapType(ElementMap::AutoZMap, false);
+	prefs.setKeepView(false);
 
 	Messenger::exit("AtenWindow::AtenWindow()");
 }
@@ -211,7 +211,7 @@ bool AtenWindow::closeModel(Model* m)
 				break;
 				// Cancel close
 			case (QMessageBox::Cancel):
-				return FALSE;
+				return false;
 				// Save model before quit
 			case (QMessageBox::Save):
 				// Temporarily disable undo/redo for the model, save, and re-enable
@@ -227,13 +227,13 @@ bool AtenWindow::closeModel(Model* m)
 					{
 						Messenger::print("Not saved.");
 						m->enableUndoRedo();
-						return FALSE;
+						return false;
 					}
 				}
 				else
 				{
 					m->enableUndoRedo();
-					return FALSE;
+					return false;
 				}
 				break;
 		}
@@ -245,7 +245,7 @@ bool AtenWindow::closeModel(Model* m)
 	// Update GUI
 	updateWidgets(AtenWindow::AllTarget);
 	
-	return TRUE;
+	return true;
 }
 
 // Check the status of all models, asking to save before close if necessary
@@ -427,7 +427,7 @@ void AtenWindow::updateMainWindow()
 	ui.actionFileSave->setEnabled( m->isModified() );
 
 	// Enable the Atom menu if one or more atoms are selected
-	ui.AtomContextMenu->setEnabled( m->renderSourceModel()->nSelected() == 0 ? FALSE : TRUE);
+	ui.AtomContextMenu->setEnabled( m->renderSourceModel()->nSelected() == 0 ? false : true);
 
 	// Update Undo Redo lists
 	updateUndoRedo();
@@ -571,7 +571,7 @@ void AtenWindow::addRecent(QString filename)
 	temp.sprintf("&%i %s", last, qPrintable(filename));
 	actionRecentFile[last]->setText(temp);
 	actionRecentFile[last]->setData(filename);
-	actionRecentFile[last]->setVisible(TRUE);
+	actionRecentFile[last]->setVisible(true);
 }
 
 void AtenWindow::on_actionAboutAten_triggered(bool checked)
@@ -602,22 +602,22 @@ void AtenWindow::updateUndoRedo()
 	if (m->currentUndoState() == NULL)
 	{
 		ui.actionEditUndo->setText("Undo");
-		ui.actionEditUndo->setEnabled(FALSE);
+		ui.actionEditUndo->setEnabled(false);
 	}
 	else
 	{
 		ui.actionEditUndo->setText("Undo (" + m->currentUndoState()->description() + ")");
-		ui.actionEditUndo->setEnabled(TRUE);
+		ui.actionEditUndo->setEnabled(true);
 	}
 	if (m->currentRedoState() == NULL)
 	{
 		ui.actionEditRedo->setText("Redo");
-		ui.actionEditRedo->setEnabled(FALSE);
+		ui.actionEditRedo->setEnabled(false);
 	}
 	else
 	{
 		ui.actionEditRedo->setText("Redo (" + m->currentUndoState()->description() + ")");
-		ui.actionEditRedo->setEnabled(TRUE);
+		ui.actionEditRedo->setEnabled(true);
 	}
 }
 
@@ -645,21 +645,21 @@ void AtenWindow::setActiveUserAction(UserAction::Action ua)
 	{
 		// No active mode
 		case (UserAction::NoAction):
-			uaDummyButton_->setChecked(TRUE);
-			ui.actionNoAction->setChecked(TRUE);
+			uaDummyButton_->setChecked(true);
+			ui.actionNoAction->setChecked(true);
 			break;
 		// Three select QActions on main ToolBar
 		case (UserAction::SelectAction):
 		case (UserAction::SelectMoleculeAction):
 		case (UserAction::SelectElementAction):
-			uaDummyButton_->setChecked(TRUE);
+			uaDummyButton_->setChecked(true);
 			break;
 		// All other actions are related to buttons elsewhere in the GUI
 		default:
-			ui.actionNoAction->setChecked(TRUE);
+			ui.actionNoAction->setChecked(true);
 			button = uaButtons_.button(ua);
 			if (button == NULL) printf("No button associated to user action %i.\n", ua);
-			else button->setChecked(TRUE);
+			else button->setChecked(true);
 			break;
 	}
 }

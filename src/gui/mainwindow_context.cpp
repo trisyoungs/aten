@@ -35,12 +35,12 @@ void AtenWindow::updateContextMenu()
 
 	// Enable bond, angle, and torsion editing
 	int nselected = (viewTarget == NULL ? 0 : viewTarget->nSelected());
-	ui.actionSetBondLength->setEnabled(FALSE);
-	ui.actionSetBondAngle->setEnabled(FALSE);
-	ui.actionSetTorsionAngle->setEnabled(FALSE);
-	if (nselected == 2) ui.actionSetBondLength->setEnabled(TRUE);
-	else if (nselected == 3) ui.actionSetBondAngle->setEnabled(TRUE);
-	else if (nselected == 4) ui.actionSetTorsionAngle->setEnabled(TRUE);
+	ui.actionSetBondLength->setEnabled(false);
+	ui.actionSetBondAngle->setEnabled(false);
+	ui.actionSetTorsionAngle->setEnabled(false);
+	if (nselected == 2) ui.actionSetBondLength->setEnabled(true);
+	else if (nselected == 3) ui.actionSetBondAngle->setEnabled(true);
+	else if (nselected == 4) ui.actionSetTorsionAngle->setEnabled(true);
 	
 	// (De)Activate glyph menu items based on number of atoms selected
 	activateGlyphActions(nselected);
@@ -72,7 +72,7 @@ void AtenWindow::callContextMenu(Atom* undermouse, int x, int y)
 		viewTarget->endUndoState();
 		postRedisplay();
 		// Make sure context menu items are enabled, since nothing may have been selected beforehand
-		ui.AtomContextMenu->setEnabled(TRUE);
+		ui.AtomContextMenu->setEnabled(true);
 	}
 	
 	// Atom selection may have just changed, so update context menu
@@ -159,12 +159,12 @@ void AtenWindow::on_actionAtomLabelFFEquiv_triggered(bool checked)
 
 void AtenWindow::on_actionAtomLabelClear_triggered(bool checked)
 {
-	removeAtomLabels(FALSE);
+	removeAtomLabels(false);
 }
 
 void AtenWindow::on_actionAtomLabelClearAll_triggered(bool checked)
 {
-	removeAtomLabels(TRUE);
+	removeAtomLabels(true);
 }
 
 // Reset atom custom colour to element colour
@@ -184,7 +184,7 @@ void AtenWindow::on_actionAtomColourSet_triggered(bool checked)
 	else oldcol.setRgbF(1.0, 1.0, 1.0, 1.0);
 		
 	// Request a colour dialog
-	bool ok = FALSE;
+	bool ok = false;
 	newcol.setRgba(QColorDialog::getRgba(oldcol.rgba(), &ok, this));
 	if (!ok) return;
 	// Store new colour
@@ -249,7 +249,7 @@ void AtenWindow::setAtomHidden(bool hidden)
 
 void AtenWindow::on_actionAtomHide_triggered(bool checked)
 {
-	setAtomHidden(TRUE);
+	setAtomHidden(true);
 }
 
 void AtenWindow::on_actionAtomProbe_triggered(bool checked)

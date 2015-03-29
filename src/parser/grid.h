@@ -35,7 +35,7 @@ class GridVariable : public PointerVariable
 {
 	public:
 	// Constructor / Destructor
-	GridVariable(Grid* g = NULL, bool constant = FALSE);
+	GridVariable(Grid* g = NULL, bool constant = false);
 	~GridVariable();
 
 
@@ -70,7 +70,7 @@ class GridArrayVariable : public PointerArrayVariable
 {
 	public:
 	// Constructor / Destructor
-	GridArrayVariable(TreeNode* sizeexpr, bool constant = FALSE);
+	GridArrayVariable(TreeNode* sizeexpr, bool constant = false);
 
 
 	/*

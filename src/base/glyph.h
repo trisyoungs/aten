@@ -55,7 +55,7 @@ class GlyphData : public ListItem<GlyphData>
 	Atom* atom_;
 	// Type of vector data to take from atom (if defined)
 	GlyphDataType atomData_;
-	// Whether last data set was the atom (TRUE) or the vec3 (FALSE)
+	// Whether last data set was the atom (true) or the vec3 (false)
 	bool atomSetLast_;
 	// Status of data item (whether it has been set or not)
 	bool set_;
@@ -155,7 +155,7 @@ class Glyph : public ListItem<Glyph>
 	void setRotationElement(int el, double d);
 	// Get element of rotation matrix
 	double getRotationElement(int el);
-	// Reset rotation matrix (and set rotated_ = FALSE)
+	// Reset rotation matrix (and set rotated_ = false)
 	void resetRotation();
 	// Rotate about arbitrary axis
 	void rotate(double x, double y, double z, double angle);

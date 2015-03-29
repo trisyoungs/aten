@@ -96,23 +96,23 @@ Format::Format(Refitem<TreeNode,int>* firstarg)
 {
 	// Construct a delimited list of chunks with no specific format
 	for (Refitem<TreeNode,int>* ri = firstarg; ri != NULL; ri = ri->next) addDelimitedChunk(ri->item);
-	delimited_ = TRUE;
-	isValid_ = TRUE;
+	delimited_ = true;
+	isValid_ = true;
 }
 
 // Constructor
 Format::Format(QString cFormat, Refitem<TreeNode,int>* firstarg)
 {
 	// Private variables
-	isValid_ = TRUE;
-	delimited_ = FALSE;
+	isValid_ = true;
+	delimited_ = false;
 
 	// Step through formatting string, looking for '%' symbols (terminated by a non-alpha)
 	int pos = 0;
 	QChar prevChar, prevPrevChar;
 	QString plainText;
 	VTypes::DataType type;
-	bool isFormatter = FALSE, isDiscarder, restOfLine;
+	bool isFormatter = false, isDiscarder, restOfLine;
 	Refitem<TreeNode,int>* arg = firstarg;
 	Messenger::print(Messenger::Parse, "Creating Format object from string '%s' (and any supplied arguments)...", qPrintable(cFormat));
 	do
@@ -132,7 +132,7 @@ Format::Format(QString cFormat, Refitem<TreeNode,int>* firstarg)
 			if (isFormatter)
 			{
 				Messenger::print("Found an unterminated format specifier (%) in format string '%s'.", qPrintable(cFormat));
-				isValid_ = FALSE;
+				isValid_ = false;
 				return;
 			}
 			
@@ -142,7 +142,7 @@ Format::Format(QString cFormat, Refitem<TreeNode,int>* firstarg)
 				addPlainTextChunk(plainText);
 				plainText.clear();
 			}
-			isFormatter = TRUE;
+			isFormatter = true;
 			plainText = '%';
 			++pos;
 		}
@@ -164,13 +164,13 @@ Format::Format(QString cFormat, Refitem<TreeNode,int>* firstarg)
 			if ((arg == NULL) && (prevChar != '*'))
 			{
 				Messenger::print("Formatter '%s' in string has no corresponding argument.", qPrintable(plainText));
-				isValid_ = FALSE;
+				isValid_ = false;
 				break;
 			}
 			else
 			{
-				isDiscarder = FALSE;
-				restOfLine = FALSE;
+				isDiscarder = false;
+				restOfLine = false;
 				type = arg == NULL ? VTypes::NoData : arg->item->returnType();
 				prevPrevChar = plainText.at(plainText.length()-2);
 				if (!prevPrevChar.isLetter()) prevPrevChar = '\0';
@@ -186,18 +186,18 @@ Format::Format(QString cFormat, Refitem<TreeNode,int>* firstarg)
 						{
 							if (type >= VTypes::AtenData) break;
 							Messenger::print("Format '%s' expects a pointer, but has been given %s.", qPrintable(plainText), VTypes::aDataType(type));
-							isValid_ = FALSE;
+							isValid_ = false;
 						}
 						else if ((prevPrevChar == '\0') || (prevPrevChar == 'h'))
 						{
 							if (type == VTypes::IntegerData) break;
 							Messenger::print("Format '%s' expects an integer, but has been given %s.", qPrintable(plainText), VTypes::aDataType(type));
-							isValid_ = FALSE;
+							isValid_ = false;
 						}
 						else
 						{
 							Messenger::print("Integer format '%c' cannot be preceeded by the identifier '%c'.", prevChar.toLatin1(), prevPrevChar.toLatin1());
-							isValid_ = FALSE;
+							isValid_ = false;
 						}
 						break;
 					// Floating-point types
@@ -208,45 +208,45 @@ Format::Format(QString cFormat, Refitem<TreeNode,int>* firstarg)
 						if (prevPrevChar == 'L')
 						{
 							Messenger::print("Output of long doubles (prefixing a floating-point formatter with 'L') is not supported.");
-							isValid_ = FALSE;
+							isValid_ = false;
 						}
 						else if (prevPrevChar == '\0')
 						{
 							if (type == VTypes::DoubleData) break;
 							Messenger::print("Format '%s' expects a real, but has been given %s.", qPrintable(plainText), VTypes::aDataType(type));
-							isValid_ = FALSE;
+							isValid_ = false;
 						}
 						else
 						{
 							Messenger::print("Floating-point format '%c' cannot be preceeded by the identifier '%c'.", prevChar.toLatin1(), prevPrevChar.toLatin1());
-							isValid_ = FALSE;
+							isValid_ = false;
 						}
 						break;
 					// Character types
 					case ('r'):
-						restOfLine = TRUE;
+						restOfLine = true;
 					case ('s'):
 						if (prevPrevChar != '\0')
 						{
 							Messenger::print("String format '%c' cannot be preceeded by the identifier '%c'.", prevChar.toLatin1(), prevPrevChar.toLatin1());
-							isValid_ = FALSE;
+							isValid_ = false;
 						}
 						if (type == VTypes::StringData) break;
 						Messenger::print("Format '%s' expects a string, but has been given %s.", qPrintable(plainText), VTypes::aDataType(type));
-						isValid_ = FALSE;
+						isValid_ = false;
 						break;
 					case ('c'):
 						Messenger::print("Character format 'c'is not supported.");
-						isValid_ = FALSE;
+						isValid_ = false;
 						break;
 					// Discard identifier
 					case ('*'):
-						isDiscarder = TRUE;
+						isDiscarder = true;
 						type = VTypes::NoData;
 						break;
 					default:
 						Messenger::print("Unsupported format '%s'.", qPrintable(plainText));
-						isValid_ = FALSE;
+						isValid_ = false;
 						break;
 				}
 			}
@@ -256,7 +256,7 @@ Format::Format(QString cFormat, Refitem<TreeNode,int>* firstarg)
 			else addFormattedChunk(plainText, node, type);
 			if (!isDiscarder) arg = arg->next;
 			plainText.clear();
-			isFormatter = FALSE;
+			isFormatter = false;
 		}
 // 	} while (cFormat.at(pos) != '\0');
 	} while (pos < cFormat.count());
@@ -400,7 +400,7 @@ bool Format::writeToString()
 	QString bit;
 	createdString_.clear();
 	ReturnValue rv;
-	bool result = TRUE;
+	bool result = true;
 
 	// Cycle through the list of FormatChunks
 	for (FormatChunk* chunk = chunks_.first(); chunk != NULL; chunk = chunk->next)
@@ -415,7 +415,7 @@ bool Format::writeToString()
 				if (rv.arraySize() != -1)
 				{
 					Messenger::print("Error: Array passed to format.");
-					result = FALSE;
+					result = false;
 					break;
 				}
 				bit[0] = '\0';
@@ -439,7 +439,7 @@ bool Format::writeToString()
 				break;
 			case (FormatChunk::PlainTextChunk):
 				createdString_ += chunk->cFormat();
-				result = TRUE;
+				result = true;
 				break;
 			case (FormatChunk::DelimitedChunk):
 				result = chunk->arg()->execute(rv);
@@ -448,7 +448,7 @@ bool Format::writeToString()
 				if (rv.arraySize() != -1)
 				{
 					Messenger::print("Error: Array passed to format.");
-					result = FALSE;
+					result = false;
 					break;
 				}
 				createdString_ += rv.asString();
@@ -457,7 +457,7 @@ bool Format::writeToString()
 			default:
 				printf("Internal Error: Action for this type of format chunk has not been defined.\n");
 				Messenger::exit("Format::writeToString");
-				return FALSE;
+				return false;
 		}
 		if (!result) break;
 	}

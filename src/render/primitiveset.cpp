@@ -210,7 +210,6 @@ void PrimitiveSet::recreatePrimitives()
 	int n, m, nStacks, nSlices;
 	
 	// If current quality is the same as the requested quality, do nothing
-	printf("Current, requested = %i %i\n", currentQuality_, requestedQuality_);
 	if (requestedQuality_ == currentQuality_)
 	{
 		Messenger::exit("PrimitiveSet::recreatePrimitives");
@@ -354,22 +353,22 @@ void PrimitiveSet::recreatePrimitives()
 	tubeRing_.initialise(GL_TRIANGLES, false);
 	tubeRing_.plotRing(1.0, 0.1, 10, nSlices, 5);
 	segmentedTubeRing_.initialise(GL_TRIANGLES, false);
-	segmentedTubeRing_.plotRing(1.0, 0.1, 20, nSlices, 5, TRUE);
+	segmentedTubeRing_.plotRing(1.0, 0.1, 20, nSlices, 5, true);
 	lineRing_.initialise(GL_LINES, false);
 	lineRing_.plotCircle(1.0, 10, 5);
 	segmentedLineRing_.initialise(GL_LINES, false);
-	segmentedLineRing_.plotCircle(1.0, 20, 5, TRUE);
+	segmentedLineRing_.plotCircle(1.0, 20, 5, true);
 	wireCube_.initialise(GL_LINES, false);
 	wireCube_.plotCube(1.0, 2, 0.0, 0.0, 0.0);
 	crossedCube_.initialise(GL_LINES, false);
 	crossedCube_.plotCrossedCube(1.0, 2, 0.0, 0.0, 0.0);
 	cellAxes_.initialise(GL_TRIANGLES, false);
-	cellAxes_.plotCylinder(0.0f, 0.0f, 0.0f, 0.65f, 0.0f, 0.0f, 0.1f, 0.1f, nStacks, nSlices, TRUE, FALSE);
-	cellAxes_.plotCylinder(0.65f, 0.0f, 0.0f, 0.35f, 0.0f, 0.0f, 0.2f, 0.0f, nStacks, nSlices, TRUE, FALSE);
-	cellAxes_.plotCylinder(0.0f, 0.0f, 0.0f, 0.0f, 0.65f, 0.0f, 0.1f, 0.1f, nStacks, nSlices, TRUE, FALSE);
-	cellAxes_.plotCylinder(0.0f, 0.65f, 0.0f, 0.0f, 0.35f, 0.0f, 0.2f, 0.0f, nStacks, nSlices, TRUE, FALSE);
-	cellAxes_.plotCylinder(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.65f, 0.1f, 0.1f, nStacks, nSlices, TRUE, FALSE);
-	cellAxes_.plotCylinder(0.0f, 0.0f, 0.65f, 0.0f, 0.0f, 0.35f, 0.2f, 0.0f, nStacks, nSlices, TRUE, FALSE);
+	cellAxes_.plotCylinder(0.0f, 0.0f, 0.0f, 0.65f, 0.0f, 0.0f, 0.1f, 0.1f, nStacks, nSlices, true, false);
+	cellAxes_.plotCylinder(0.65f, 0.0f, 0.0f, 0.35f, 0.0f, 0.0f, 0.2f, 0.0f, nStacks, nSlices, true, false);
+	cellAxes_.plotCylinder(0.0f, 0.0f, 0.0f, 0.0f, 0.65f, 0.0f, 0.1f, 0.1f, nStacks, nSlices, true, false);
+	cellAxes_.plotCylinder(0.0f, 0.65f, 0.0f, 0.0f, 0.35f, 0.0f, 0.2f, 0.0f, nStacks, nSlices, true, false);
+	cellAxes_.plotCylinder(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.65f, 0.1f, 0.1f, nStacks, nSlices, true, false);
+	cellAxes_.plotCylinder(0.0f, 0.0f, 0.65f, 0.0f, 0.0f, 0.35f, 0.2f, 0.0f, nStacks, nSlices, true, false);
 	rotationGlobe_.initialise(GL_TRIANGLES, false);
 	rotationGlobe_.plotSphere(0.75,10,13);
 	rotationGlobe_.plotCylinder(0.7f, 0.0f, 0.0f, 0.3f, 0.0f, 0.0f, 0.2f, 0.0f, 8, 10);

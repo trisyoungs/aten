@@ -41,7 +41,7 @@ class Eigenvector : public ListItem<Eigenvector>
 	private:
 	// Name (typically symmetry type) of eigenvector
 	QString name_;
-	// Whether the coefficients correspond to spherical (TRUE) or cartesian (FALSE) basis functions
+	// Whether the coefficients correspond to spherical (true) or cartesian (false) basis functions
 	bool isSpherical_;
 	// Size of eigenvector when created
 	int size_;

@@ -85,7 +85,7 @@ Tree* Aten::probeFile(QString filename, FilterData::FilterType filterType)
 		// Try to match text within files
 		if (filter->filter.searchStrings().count() > 0)
 		{
-			bool found = FALSE;
+			bool found = false;
 			parser.openInput(filename);
 			for (n=0; n<filter->filter.searchStrings().count(); ++n)
 			{
@@ -102,7 +102,7 @@ Tree* Aten::probeFile(QString filename, FilterData::FilterType filterType)
 					}
 					else if (parser.line().contains(filter->filter.searchStrings().at(n)))
 					{
-						found = TRUE;
+						found = true;
 						break;
 					}
 				}

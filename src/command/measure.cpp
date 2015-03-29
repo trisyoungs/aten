@@ -29,18 +29,18 @@ ATEN_USING_NAMESPACE
 // Clear all measurements in current model
 bool Commands::function_ClearMeasurements(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	obj.rs()->beginUndoState("Remove all measurements");
 	obj.rs()->clearMeasurements();
 	obj.rs()->endUndoState();
 	rv.reset();
-	return TRUE;
+	return true;
 }
 
 // Calculate a measurement within the current model, but don't display it
 bool Commands::function_GeometryCalc(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	Atom* atoms[4];
 	if (c->hasArg(3))
 	{
@@ -57,22 +57,22 @@ bool Commands::function_GeometryCalc(CommandNode* c, Bundle& obj, ReturnValue& r
 		for (int n=0; n<2; ++n) atoms[n] = c->argType(n) == VTypes::IntegerData ? obj.rs()->atom(c->argi(n)-1) : (Atom*) c->argp(n, VTypes::AtomData);
 		rv.set(obj.rs()->distance(atoms[0], atoms[1]));
 	}
-	return TRUE;
+	return true;
 }
 
 // List all measurements in current model
 bool Commands::function_ListMeasurements(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	obj.rs()->listMeasurements();
 	rv.reset();
-	return TRUE;
+	return true;
 }
 
 // Make a measurement within the current model
 bool Commands::function_Measure(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	Atom* atoms[4];
 	if (c->hasArg(3))
 	{
@@ -93,13 +93,13 @@ bool Commands::function_Measure(CommandNode* c, Bundle& obj, ReturnValue& rv)
 		rv.set(obj.rs()->addDistanceMeasurement(atoms[0], atoms[1]));
 	}
 	obj.rs()->endUndoState();
-	return TRUE;
+	return true;
 }
 
 // Make a series measurements of one type within the current atom selection
 bool Commands::function_MeasureSelected(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	switch (c->argi(0))
 	{
 		case (2):
@@ -119,8 +119,8 @@ bool Commands::function_MeasureSelected(CommandNode* c, Bundle& obj, ReturnValue
 			break;
 		default:
 			Messenger::print("%i does not represent a geometry type (number of atoms involved).", c->argi(0));
-			return FALSE;
+			return false;
 			break;
 	}
-	return TRUE;
+	return true;
 }

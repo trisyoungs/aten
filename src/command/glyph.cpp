@@ -30,26 +30,26 @@ ATEN_USING_NAMESPACE
 // Auto-add ellipsoids to current atom selection
 bool Commands::function_AutoEllipsoids(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	obj.m->addEllipsoidGlyphs();
 	rv.reset();
-	return TRUE;
+	return true;
 }
 
 // Auto-add polyhedra to current atom selection
 bool Commands::function_AutoPolyhedra(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 
-	bool centresonly = TRUE, linkatoms = TRUE;
+	bool centresonly = true, linkatoms = true;
 	double rcut = 4.0;
 	for (int i=0; i < c->nArgs(); i++)
 	{
 		// Split argument into keyword and value
 		QStringList items = c->argc(i).split('=');
-		if (items.at(0) == "fragments") centresonly = FALSE;
-		else if (items.at(0) == "centres") centresonly = TRUE;
-		else if (items.at(0) == "nolink") linkatoms = FALSE;
+		if (items.at(0) == "fragments") centresonly = false;
+		else if (items.at(0) == "centres") centresonly = true;
+		else if (items.at(0) == "nolink") linkatoms = false;
 		else if (items.at(0) == "rcut") rcut = items.at(1).toDouble();
 		else Messenger::print("Unknown option '%s' given to 'autopolyhedra'.", qPrintable(items.at(0)));
 	}
@@ -57,20 +57,20 @@ bool Commands::function_AutoPolyhedra(CommandNode* c, Bundle& obj, ReturnValue& 
 	// Add the polyhedra
 	obj.m->addPolyhedraGlyphs(centresonly, linkatoms, rcut);
 	rv.reset();
-	return TRUE;
+	return true;
 }
 
 // Associate atom with current glyph
 bool Commands::function_GlyphAtomF(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer+Bundle::GlyphPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer+Bundle::GlyphPointer)) return false;
 
 	// Check range of supplied data item
 	int d = c->argi(0) - 1;
 	if ((d < 0) || (d >= Glyph::nGlyphData(obj.gl->type())))
 	{
 		Messenger::print("Data index given to 'glyphatomf' (%i) is out of range.", d);
-		return FALSE;
+		return false;
 	}
 
 	// If second argument was given, it refers to either an atom by pointer or by id
@@ -86,20 +86,20 @@ bool Commands::function_GlyphAtomF(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	if (target == NULL) Messenger::print("Warning - NULL atom stored in glyph data %i.",d);
 
 	rv.reset();
-	return TRUE;
+	return true;
 }
 
 // Associate atom with current glyph
 bool Commands::function_GlyphAtomR(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer+Bundle::GlyphPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer+Bundle::GlyphPointer)) return false;
 
 	// Check range of supplied data item
 	int d = c->argi(0) - 1;
 	if ((d < 0) || (d >= Glyph::nGlyphData(obj.gl->type())))
 	{
 		Messenger::print("Data index given to 'glyphatomr' (%i) is out of range.", d);
-		return FALSE;
+		return false;
 	}
 
 	// If second argument was given, it refers to either an atom by pointer or by id
@@ -115,20 +115,20 @@ bool Commands::function_GlyphAtomR(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	if (target == NULL) Messenger::print("Warning - NULL atom stored in glyph data %i.",d);
 
 	rv.reset();
-	return TRUE;
+	return true;
 }
 
 // Associate atom with current glyph
 bool Commands::function_GlyphAtomV(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer+Bundle::GlyphPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer+Bundle::GlyphPointer)) return false;
 
 	// Check range of supplied data item
 	int d = c->argi(0) - 1;
 	if ((d < 0) || (d >= Glyph::nGlyphData(obj.gl->type())))
 	{
 		Messenger::print("Data index given to 'glyphatomv' (%i) is out of range.", d);
-		return FALSE;
+		return false;
 	}
 
 	// If second argument was given, it refers to either an atom by pointer or by id
@@ -142,13 +142,13 @@ bool Commands::function_GlyphAtomV(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	if (target == NULL) Messenger::print("Warning - NULL atom stored in glyph data %i.",d);
 
 	rv.reset();
-	return TRUE;
+	return true;
 }
 
 // Associate atoms with current glyph
 bool Commands::function_GlyphAtomsF(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer+Bundle::GlyphPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer+Bundle::GlyphPointer)) return false;
 
 	// If second argument was given, it refers to either an atom by pointer or by id
 	for (int d=0; d<Glyph::nGlyphData(obj.gl->type()); d++)
@@ -162,13 +162,13 @@ bool Commands::function_GlyphAtomsF(CommandNode* c, Bundle& obj, ReturnValue& rv
 	}
 
 	rv.reset();
-	return TRUE;
+	return true;
 }
 
 // Associate atoms with current glyph
 bool Commands::function_GlyphAtomsR(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer+Bundle::GlyphPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer+Bundle::GlyphPointer)) return false;
 
 	// If second argument was given, it refers to either an atom by pointer or by id
 	for (int d=0; d<Glyph::nGlyphData(obj.gl->type()); d++)
@@ -182,13 +182,13 @@ bool Commands::function_GlyphAtomsR(CommandNode* c, Bundle& obj, ReturnValue& rv
 	}
 
 	rv.reset();
-	return TRUE;
+	return true;
 }
 
 // Associate atoms with current glyph
 bool Commands::function_GlyphAtomsV(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer+Bundle::GlyphPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer+Bundle::GlyphPointer)) return false;
 
 	// If second argument was given, it refers to either an atom by pointer or by id
 	for (int d=0; d<Glyph::nGlyphData(obj.gl->type()); d++)
@@ -202,21 +202,21 @@ bool Commands::function_GlyphAtomsV(CommandNode* c, Bundle& obj, ReturnValue& rv
 	}
 
 	rv.reset();
-	return TRUE;
+	return true;
 }
 
 // Set n'th colour data in current glyph
 bool Commands::function_GlyphColour(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer+Bundle::GlyphPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer+Bundle::GlyphPointer)) return false;
 
 	// Check range of supplied data item
 	int d = c->argi(0) - 1;
-	bool result = TRUE;
+	bool result = true;
 	if ((d < 0) || (d >= obj.gl->nData()))
 	{
 		Messenger::print("Data index %i is out of range for current glyph.", c->argi(0));
-		result = FALSE;
+		result = false;
 	}
 	else obj.gl->data(d)->setColour(c->argGLf(1), c->argGLf(2), c->argGLf(3), c->hasArg(4) ? c->argGLf(4) : 1.0f);
 
@@ -227,24 +227,24 @@ bool Commands::function_GlyphColour(CommandNode* c, Bundle& obj, ReturnValue& rv
 // Set all colour data in current glyph
 bool Commands::function_GlyphColours(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer+Bundle::GlyphPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer+Bundle::GlyphPointer)) return false;
 	for (int d = 0; d<obj.gl->nData(); ++d) obj.gl->data(d)->setColour(c->argGLf(0), c->argGLf(1), c->argGLf(2), c->hasArg(3) ? c->argGLf(3) : 1.0f);
 	rv.reset();
-	return TRUE;
+	return true;
 }
 
 // Store vector data in current glyph
 bool Commands::function_GlyphData(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer+Bundle::GlyphPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer+Bundle::GlyphPointer)) return false;
 
 	// Check range of supplied data item
 	int d = c->argi(0) - 1;
-	bool result = TRUE;
+	bool result = true;
 	if ((d < 0) || (d >= obj.gl->nData()))
 	{
 		Messenger::print("Data index %i is out of range for current glyph.", c->argi(0));
-		result = FALSE;
+		result = false;
 	}
 	obj.gl->data(d)->setVector(c->argd(1), c->hasArg(2) ? c->argd(2) : 0.0, c->hasArg(3) ? c->argd(3) : 0.0);
 
@@ -255,31 +255,31 @@ bool Commands::function_GlyphData(CommandNode* c, Bundle& obj, ReturnValue& rv)
 // Set 'solid' property of current glyph
 bool Commands::function_GlyphSolid(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer+Bundle::GlyphPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer+Bundle::GlyphPointer)) return false;
 	obj.gl->setSolid(c->argb(0));
 	rv.reset();
-	return TRUE;
+	return true;
 }
 
 // Set text property of current glyph
 bool Commands::function_GlyphText(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer+Bundle::GlyphPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer+Bundle::GlyphPointer)) return false;
 	obj.gl->setText(c->argc(0));
-	return TRUE;
+	return true;
 }
 
 // Add glyph to current model
 bool Commands::function_NewGlyph(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 
 	// Get glyph style
-	Glyph::GlyphType gt = Glyph::glyphType(c->argc(0), TRUE);
+	Glyph::GlyphType gt = Glyph::glyphType(c->argc(0), true);
 	if (gt == Glyph::nGlyphTypes)
 	{
 		Messenger::print("Unrecognised glyph style '%s'.", qPrintable(c->argc(0)));
-		return FALSE;
+		return false;
 	}
 	obj.gl = obj.rs()->addGlyph(gt);
 	rv.set(VTypes::GlyphData, obj.gl);
@@ -308,24 +308,24 @@ bool Commands::function_NewGlyph(CommandNode* c, Bundle& obj, ReturnValue& rv)
 				else
 				{
 					Messenger::print("Mangled RGB(A) specification for glyph 'colour' option ['%s']", qPrintable(items.at(1)));
-					return FALSE;
+					return false;
 				}
 				for (int d = 0; d<obj.gl->nData(); ++d) obj.gl->data(d)->setColour(rgba.x, rgba.y, rgba.z, rgba.w);
 				break;
 			case (Glyph::GlyphSolidOption):
-				obj.gl->setSolid(TRUE);
+				obj.gl->setSolid(true);
 				break;
 			case (Glyph::GlyphTextOption):
 				obj.gl->setText(items.at(1));
 				break;
 			case (Glyph::GlyphWireOption):
-				obj.gl->setSolid(FALSE);
+				obj.gl->setSolid(false);
 				break;
 			default:
 				Messenger::print("Unknown option '%s' given to 'newglyph'.", qPrintable(items.at(0)));
-				return FALSE;
+				return false;
 		}
 	}
-	return TRUE;
+	return true;
 }
 

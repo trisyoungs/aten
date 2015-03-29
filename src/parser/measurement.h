@@ -35,7 +35,7 @@ class MeasurementVariable : public PointerVariable
 {
 	public:
 	// Constructor / Destructor
-	MeasurementVariable(Measurement* ptr = NULL, bool constant = FALSE);
+	MeasurementVariable(Measurement* ptr = NULL, bool constant = false);
 	~MeasurementVariable();
 
 
@@ -70,7 +70,7 @@ class MeasurementArrayVariable : public PointerArrayVariable
 {
 	public:
 	// Constructor / Destructor
-	MeasurementArrayVariable(TreeNode* sizeexpr, bool constant = FALSE);
+	MeasurementArrayVariable(TreeNode* sizeexpr, bool constant = false);
 
 
 	/*

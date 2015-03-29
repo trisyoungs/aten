@@ -35,7 +35,7 @@ class EnergyStoreVariable : public PointerVariable
 {
 	public:
 	// Constructor / Destructor
-	EnergyStoreVariable(EnergyStore* e = NULL, bool constant = FALSE);
+	EnergyStoreVariable(EnergyStore* e = NULL, bool constant = false);
 	~EnergyStoreVariable();
 
 
@@ -70,7 +70,7 @@ class EnergyStoreArrayVariable : public PointerArrayVariable
 {
 	public:
 	// Constructor / Destructor
-	EnergyStoreArrayVariable(TreeNode* sizeexpr, bool constant = FALSE);
+	EnergyStoreArrayVariable(TreeNode* sizeexpr, bool constant = false);
 
 
 	/*

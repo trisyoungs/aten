@@ -153,7 +153,7 @@ bool NetaParser::createNeta(Neta* target, QString neta, Forcefield* parentff)
 	{
 		Messenger::print("Internal Error: NetaParser was already busy creating a NETA description when another was started.");
 		Messenger::exit("NetaParser::createNeta");
-		return FALSE;
+		return false;
 	}
 
 	// Was a valid pointer passed?
@@ -161,7 +161,7 @@ bool NetaParser::createNeta(Neta* target, QString neta, Forcefield* parentff)
 	{
 		Messenger::print("Error: NULL pointer passed to NetaParser::createNeta.");
 		Messenger::exit("NetaParser::createNeta");
-		return FALSE;
+		return false;
 	}
 
 	// Store new pointer targets
@@ -174,7 +174,7 @@ bool NetaParser::createNeta(Neta* target, QString neta, Forcefield* parentff)
 	stringPos_ = 0;
 	stringLength_ = stringSource_.length();
 	Messenger::print(Messenger::Typing, "Parser source string is '%s', length is %i", qPrintable(stringSource_), stringLength_);
-	isFileSource_ = FALSE;
+	isFileSource_ = false;
 
 	// Perform the parsing
 	contextStack_.clear();
@@ -188,7 +188,7 @@ bool NetaParser::createNeta(Neta* target, QString neta, Forcefield* parentff)
 	neta_ = NULL;
 
 	Messenger::exit("NetaParser::createNeta");
-	return (result != 0 ? FALSE : TRUE);
+	return (result == 0);
 }
 
 // Set description (called by lexer)

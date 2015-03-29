@@ -112,7 +112,7 @@ bool NewNode::execute(ReturnValue& rv)
 		case (VTypes::NoData):
 			Messenger::print("Internal Error: No data type set in NewNode::execute().");
 			rv.reset();
-			return FALSE;
+			return false;
 			break;
 		case (VTypes::AtomData):
 			object_ = new Atom;
@@ -162,28 +162,28 @@ bool NewNode::execute(ReturnValue& rv)
 		default:
 			Messenger::print("Internal Error: NewNode doesn't know how to create a variable of type %s.", VTypes::dataType(type_));
 			rv.reset();
-			return FALSE;
+			return false;
 			break;
 	}
 	
 	// Set the value...
 	rv.set(type_, object_);
 	
-	return TRUE;
+	return true;
 }
 
 // Set from returnvalue node
 bool NewNode::set(ReturnValue& rv)
 {
 	printf("Internal Error: Trying to 'set' a NewNode.\n");
-	return FALSE;
+	return false;
 }
 
 // Initialise node
 bool NewNode::initialise()
 {
 	printf("Internal Error: A NewNode cannot be initialised.\n");
-	return FALSE;
+	return false;
 }
 
 // Print node contents

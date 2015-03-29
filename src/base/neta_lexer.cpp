@@ -74,17 +74,17 @@ int NetaParser::lex()
 	if ((c == '.') || isdigit(c) || ((c == '-') && nextCharIsPossibleDigit))
 	{
 		// Default to integer, unless first char is '.'
-		bool integer = (c == '.' ? FALSE : TRUE);
-		bool hasexp = FALSE;
+		bool integer = (c != '.');
+		bool hasexp = false;
 		token += c;
-		done = FALSE;
+		done = false;
 		do
 		{
 			c = getChar();
 			if (isdigit(c)) token += c;
 			else if (c == '.')
 			{
-				integer = FALSE;
+				integer = false;
 				token += '.';
 			}
 			else if ((c == 'e') || (c == 'E'))
@@ -96,7 +96,7 @@ int NetaParser::lex()
 					return 0;
 				}
 				token += 'E';
-				hasexp = TRUE;
+				hasexp = true;
 			}
 			else if ((c == '-') || (c == '+'))
 			{
@@ -104,14 +104,14 @@ int NetaParser::lex()
 				if ((!token.isEmpty()) && (!token.endsWith("E")))
 				{
 					unGetChar();
-					done = TRUE;
+					done = true;
 				}
 				else token += c;
 			}
 			else
 			{
 				unGetChar();
-				done = TRUE;
+				done = true;
 			}
 		} while (!done);
 
@@ -124,7 +124,7 @@ int NetaParser::lex()
 		else
 		{
 			// Exponentiations are always returned as a double
-			integer = FALSE;
+			integer = false;
 			NetaParser_lval.doubleConst = token.toDouble();
 		}
 		if (integer) Messenger::print(Messenger::Parse, "NETA : found an integer constant [%s] [%i]", qPrintable(token), NetaParser_lval.intConst);
@@ -162,7 +162,7 @@ int NetaParser::lex()
 		}
 
 		// Is this a NETA keyword?
-		Neta::NetaKeyword nk = Neta::netaKeyword(token, FALSE);
+		Neta::NetaKeyword nk = Neta::netaKeyword(token, false);
 		if (nk != Neta::nNetaKeywords)
 		{
 			Messenger::print(Messenger::Typing, "NETA : ...which is a keyword (->NETAKEY)");
@@ -171,7 +171,7 @@ int NetaParser::lex()
 		}
 
 		// Is this a NETA geometry?
-		Atom::AtomGeometry ag = Atom::atomGeometry(token, FALSE);
+		Atom::AtomGeometry ag = Atom::atomGeometry(token, false);
 		if (ag != Atom::nAtomGeometries)
 		{
 			Messenger::print(Messenger::Typing, "NETA : ...which is a geometry (->NETAGEOMETRYTYPE)");
@@ -180,7 +180,7 @@ int NetaParser::lex()
 		}
 
 		// Is this a NETA value?
-		Neta::NetaValue nv = Neta::netaValue(token, FALSE);
+		Neta::NetaValue nv = Neta::netaValue(token, false);
 		if (nv == Neta::RepeatValue)
 		{
 			Messenger::print(Messenger::Typing, "NETA : ...which is a repeat value (->NETAREPEAT)");
@@ -195,7 +195,7 @@ int NetaParser::lex()
 		}
 
 		// Is this a NETA expander?
-		Neta::NetaExpander ne = Neta::netaExpander(token, FALSE);
+		Neta::NetaExpander ne = Neta::netaExpander(token, false);
 		if (ne != Neta::nNetaExpanders)
 		{
 			Messenger::print(Messenger::Typing, "NETA : ...which is an expander (->NETAEXP)");
@@ -207,7 +207,7 @@ int NetaParser::lex()
 		}
 
 		// Is it a bond type?
-		Bond::BondType bt = Bond::bondType(token, FALSE);
+		Bond::BondType bt = Bond::bondType(token, false);
 		if (bt != Bond::nBondTypes)
 		{
 			Messenger::print(Messenger::Typing, "NETA : ...which is a bond type (->INTCONST, %i)", bt);

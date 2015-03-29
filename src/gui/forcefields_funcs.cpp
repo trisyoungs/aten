@@ -45,7 +45,7 @@ ForcefieldsWidget::ForcefieldsWidget(AtenWindow& parent, Qt::WindowFlags flags) 
 
 	// Private variables
 	typelistElement_ = -1;
-	refreshing_ = FALSE;
+	refreshing_ = false;
 	
 	// Create open forcefield dialog
 	QStringList filters;
@@ -81,7 +81,7 @@ void ForcefieldsWidget::refresh()
 	Messenger::enter("ForcefieldsWidget::refresh");
 	
 	// Update list of forcefields in the combo box
-	refreshing_ = TRUE;
+	refreshing_ = true;
 	QStringList slist;
 	int def = -1, n = 0;
 	slist << "<No Forcefield>";
@@ -93,7 +93,7 @@ void ForcefieldsWidget::refresh()
 	}
 	ui.ForcefieldCombo->clear();
 	ui.ForcefieldCombo->addItems(slist);
-	ui.ForcefieldCombo->setEnabled( n == 0 ? FALSE : TRUE );
+	ui.ForcefieldCombo->setEnabled( n == 0 ? false : true );
 	
 	// Select whichever forcefield is marked as the default
 	if (def != -1) ui.ForcefieldCombo->setCurrentIndex(def);
@@ -107,7 +107,7 @@ void ForcefieldsWidget::refresh()
 	ui.AutomaticTypingGroup->setEnabled(ffselected);
 	ui.ManualTypingGroup->setEnabled(ffselected);
 	if (ffselected) refreshTypes();
-	refreshing_ = FALSE;
+	refreshing_ = false;
 	Messenger::exit("ForcefieldsWidget::refresh");
 }
 
@@ -342,7 +342,7 @@ void ForcefieldsWidget::on_ManualTypeSetButton_clicked(bool checked)
 	ForcefieldAtom* ffa = ff->findType(atoi(qPrintable(item->text())));
 	if (ffa != NULL)
 	{
-		m->selectionSetType(ffa, TRUE);
+		m->selectionSetType(ffa, true);
 		Messenger::print("Manually set types of %i atoms.", parent_.aten().currentModel()->nSelected());
 	}
 	parent_.updateWidgets(AtenWindow::CanvasTarget);
@@ -351,7 +351,7 @@ void ForcefieldsWidget::on_ManualTypeSetButton_clicked(bool checked)
 // Clear type definitions from the selected atoms
 void ForcefieldsWidget::on_ManualTypeClearButton_clicked(bool checked)
 {
-	parent_.aten().currentModel()->selectionSetType(NULL, FALSE);
+	parent_.aten().currentModel()->selectionSetType(NULL, false);
 	Messenger::print("Cleared types of %i atoms.", parent_.aten().currentModel()->nSelected());
 	parent_.updateWidgets(AtenWindow::CanvasTarget);
 }

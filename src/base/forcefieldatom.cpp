@@ -216,7 +216,7 @@ void ForcefieldAtom::addData(QString name, double d)
 	// Does this data already exist?
 	Variable* v = data_.find(name);
 	if (v != NULL) Messenger::print("Warning: Data '%s' for forcefield atom already exists and will be overwritten.", qPrintable(name));
-	v = new DoubleVariable(d, FALSE);
+	v = new DoubleVariable(d, false);
 	v->setName(name);
 	data_.take(v);
 }
@@ -226,7 +226,7 @@ void ForcefieldAtom::addData(QString name, int i)
 	// Does this data already exist?
 	Variable* v = data_.find(name);
 	if (v != NULL) Messenger::print("Warning: Data '%s' for forcefield atom already exists and will be overwritten.", qPrintable(name));
-	v = new IntegerVariable(i, FALSE);
+	v = new IntegerVariable(i, false);
 	v->setName(name);
 	data_.take(v);
 }
@@ -236,7 +236,7 @@ void ForcefieldAtom::addData(QString name, QString s)
 	// Does this data already exist?
 	Variable* v = data_.find(name);
 	if (v != NULL) Messenger::print("Warning: Data '%s' for forcefield atom already exists and will be overwritten.", qPrintable(name));
-	v = new StringVariable(s, FALSE);
+	v = new StringVariable(s, false);
 	v->setName(name);
 	data_.take(v);
 }

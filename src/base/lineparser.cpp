@@ -55,14 +55,14 @@ void LineParser::reset()
 {
 	inputFilename_.clear();
 	outputFilename_.clear();
-	endOfLine_ = FALSE;
+	endOfLine_ = false;
 	lineLength_ = 0;
 	linePos_ = 0;
 	lastLineNo_ = 0;
 	inputFile_ = NULL;
 	outputFile_ = NULL;
 	cachedFile_ = NULL;
-	directOutput_ = FALSE;
+	directOutput_ = false;
 }
 
 /*
@@ -122,7 +122,7 @@ bool LineParser::openInput(QString filename)
 		closeFiles();
 		Messenger::print("Error: Failed to open file '%s' for reading.", qPrintable(filename));
 		Messenger::exit("LineParser::openInput");
-		return FALSE;
+		return false;
 	}
 
 	// Reset variables
@@ -130,7 +130,7 @@ bool LineParser::openInput(QString filename)
 	inputFilename_ = filename;
 
 	Messenger::exit("LineParser::openInput");
-	return TRUE;
+	return true;
 }
 
 // Open new stream for writing
@@ -165,14 +165,14 @@ bool LineParser::openOutput(QString filename, bool directOutput)
 			closeFiles();
 			Messenger::print("Error: Failed to open file '%s' for writing.", qPrintable(filename));
 			Messenger::exit("LineParser::openOutput");
-			return FALSE;
+			return false;
 		}
 	}
 	else cachedFile_ = new std::stringstream;
 	outputFilename_ = filename;
 
 	Messenger::exit("LineParser::openOutput");
-	return TRUE;
+	return true;
 }
 
 // Close file 
@@ -194,9 +194,9 @@ void LineParser::closeFiles()
 // Return whether current file source is good for reading
 bool LineParser::isFileGoodForReading() const
 {
-	if (inputFile_ == NULL) return FALSE;
-	else if (!inputFile_->is_open()) return FALSE;
-	return TRUE;
+	if (inputFile_ == NULL) return false;
+	else if (!inputFile_->is_open()) return false;
+	return true;
 }
 
 // Return whether current file source is good for writing
@@ -204,11 +204,11 @@ bool LineParser::isFileGoodForWriting() const
 {
 	if (directOutput_)
 	{
-		if (outputFile_ == NULL) return FALSE;
-		else if (!outputFile_->is_open()) return FALSE;
-		return TRUE;
+		if (outputFile_ == NULL) return false;
+		else if (!outputFile_->is_open()) return false;
+		return true;
 	}
-	else return TRUE;
+	else return true;
 }
 
 // Peek next character in input stream
@@ -255,15 +255,15 @@ void LineParser::rewind()
 // Return whether the end of the input stream has been reached (or only whitespace remains)
 bool LineParser::eofOrBlank() const
 {
-	if (inputFile_ == NULL) return TRUE;
+	if (inputFile_ == NULL) return true;
 	// Simple check first - is this the end of the file?
-	if (inputFile_->eof()) return TRUE;
+	if (inputFile_->eof()) return true;
 	// Otherwise, store the current file position and search for a non-whitespace character (or end of file)
 	std::streampos pos = inputFile_->tellg();
 	
 	// Skip through whitespace, searching for 'hard' character
 	char c;
-	bool result = TRUE;
+	bool result = true;
 	do
 	{
 		inputFile_->get(c);
@@ -274,7 +274,7 @@ bool LineParser::eofOrBlank() const
 			if (inputFile_->eof()) break;
 			else continue;
 		}
-		result = FALSE;
+		result = false;
 		break;
 	} while (1);
 	inputFile_->seekg(pos);
@@ -376,7 +376,7 @@ bool LineParser::getNextArg(int optionMask, QString& destArg)
 	Messenger::enter("LineParser::getNextArg");
 	bool done = false, hadQuotes = false, failed = false;
 	char c, quoteChar = '\0';
-	endOfLine_ = FALSE;
+	endOfLine_ = false;
 
 	// Clear destination argument
 	destArg.clear();
@@ -384,7 +384,7 @@ bool LineParser::getNextArg(int optionMask, QString& destArg)
 	if (endOfLine_)
 	{
 // 		printf("Lineparser is at end of line - returning...\n");
-		return TRUE;
+		return true;
 	}
 
 	while (linePos_ < lineLength_)
@@ -395,8 +395,8 @@ bool LineParser::getNextArg(int optionMask, QString& destArg)
 			// End of line markers
 			case (10):	// Line feed (\n)
 			case (13):	// Carriage Return
-				done = TRUE;
-				endOfLine_ = TRUE;
+				done = true;
+				endOfLine_ = true;
 				break;
 			// Delimiters
 			// If we encounter one and arg length != 0 this signals the end of the argument.
@@ -409,7 +409,7 @@ bool LineParser::getNextArg(int optionMask, QString& destArg)
 			case (9):	// Horizontal Tab
 			case (' '):	// Space
 				if (quoteChar != '\0') destArg += c;
-				else if (!destArg.isEmpty()) done = TRUE;
+				else if (!destArg.isEmpty()) done = true;
 				break;
 			// Quote marks
 			// If LineParser::UseQuotes, keep delimiters and other quote marks inside the quoted text.
@@ -420,8 +420,8 @@ bool LineParser::getNextArg(int optionMask, QString& destArg)
 				else if (quoteChar == c)
 				{
 					quoteChar = '\0';
-					hadQuotes = TRUE;
-					done = TRUE;
+					hadQuotes = true;
+					done = true;
 				}
 				else destArg += c;
 				break;
@@ -452,8 +452,8 @@ bool LineParser::getNextArg(int optionMask, QString& destArg)
 				break;
 			// Comment markers
 			case ('#'):	// "#" Rest/all of line is a comment
-				endOfLine_ = TRUE;
-				done = TRUE;
+				endOfLine_ = true;
+				done = true;
 				break;
 			// Normal character
 			default: 
@@ -466,11 +466,11 @@ bool LineParser::getNextArg(int optionMask, QString& destArg)
 	}
 
 	// Check for end of the input line
-	if (linePos_ == lineLength_) endOfLine_ = TRUE;
+	if (linePos_ == lineLength_) endOfLine_ = true;
 
 	Messenger::exit("LineParser::getNextArg");
-	if (failed) return FALSE;
-	return (destArg.isEmpty() ? (hadQuotes ? TRUE : FALSE) : TRUE);
+	if (failed) return false;
+	return (destArg.isEmpty() ? hadQuotes : true);
 }
 
 // Rip next n characters
@@ -486,7 +486,7 @@ bool LineParser::getNextN(int optionMask, int length, QString& destArg)
 	if (lineLength_ == 0)
 	{
 		Messenger::exit("LineParser::getNextN");
-		return FALSE;
+		return false;
 	}
 
 	int n, charsLeft = lineLength_ - linePos_;
@@ -515,7 +515,7 @@ bool LineParser::getNextN(int optionMask, int length, QString& destArg)
 	if (stripTrailing) for (n = destArg.length()-1; (destArg.at(n) == ' ') || (destArg.at(n) == '\t'); --n) destArg.chop(1); 
 
 	Messenger::exit("LineParser::getNextN");
-	return TRUE;
+	return true;
 }
 
 // Get all arguments (delimited) from LineParser::line_
@@ -524,7 +524,7 @@ void LineParser::getAllArgsDelim(int optionMask)
 	// Parse the string in 'line_' into arguments in 'args'
 	Messenger::enter("LineParser::getAllArgsDelim");
 	arguments_.clear();
-	endOfLine_ = FALSE;
+	endOfLine_ = false;
 	QString arg;
 	while (!endOfLine_)
 	{
@@ -549,7 +549,7 @@ void LineParser::getAllArgsDelim(int optionMask)
 int LineParser::getArgsDelim(int optionMask)
 {
 	Messenger::enter("LineParser::getArgsDelim[ifstream]");
-	bool done = FALSE;
+	bool done = false;
 	int result;
 
 	// Returns : 0=ok, 1=error, -1=eof
@@ -563,10 +563,10 @@ int LineParser::getArgsDelim(int optionMask)
 			return result;
 		}
 		// Assume that we will finish after parsing the line we just read in
-		done = TRUE;
+		done = true;
 		// To check for blank lines, do the parsing and then check nargs()
 		getAllArgsDelim(optionMask);
-		if ((optionMask&LineParser::SkipBlanks) && (nArgs() == 0)) done = FALSE;
+		if ((optionMask&LineParser::SkipBlanks) && (nArgs() == 0)) done = false;
 	} while (!done);
 
 	Messenger::exit("LineParser::getArgsDelim[ifstream]");
@@ -584,7 +584,7 @@ bool LineParser::getRestDelim(QString& destArg)
 	if (lineLength_ == 0)
 	{
 		Messenger::exit("LineParser::getRestDelim");
-		return FALSE;
+		return false;
 	}
 
 	int n, length = lineLength_ - linePos_;
@@ -610,7 +610,7 @@ bool LineParser::getRestDelim(QString& destArg)
 	destArg = destArg.trimmed();
 
 	Messenger::exit("LineParser::getRestDelim");
-	return TRUE;
+	return true;
 }
 
 // Get next argument (delimited) from file stream
@@ -619,7 +619,7 @@ bool LineParser::getArgDelim(int optionMask, QString& destArg)
 	Messenger::enter("LineParser::getArgDelim");
 
 	bool result = getNextArg(optionMask, destArg);
-	Messenger::print(Messenger::Parse,"getArgDelim = %s [%s]", result ? "TRUE" : "FALSE", qPrintable(destArg));
+	Messenger::print(Messenger::Parse,"getArgDelim = %s [%s]", result ? "true" : "false", qPrintable(destArg));
 
 	Messenger::exit("LineParser::getArgDelim");
 	return result;
@@ -637,7 +637,7 @@ void LineParser::getArgsDelim(int optionMask, QString line)
 // Get next delimited chunk from input stream (not line)
 bool LineParser::getCharsDelim(QString& destArg)
 {
-	bool result = TRUE;
+	bool result = true;
 	char c;
 	destArg.clear();
 	while (!inputFile_->eof())
@@ -652,7 +652,7 @@ bool LineParser::getCharsDelim(QString& destArg)
 		}
 		if (c == '\0')
 		{
-			if (destArg.isEmpty()) result = FALSE;
+			if (destArg.isEmpty()) result = false;
 			break;
 		}
 		destArg += c;
@@ -678,7 +678,7 @@ bool LineParser::getCharsDelim(int optionMask, QString& line, QString& destArg)
 			// End of line markers
 			case (10):	// Line feed (\n)
 			case (13):	// Carriage Return
-				done = TRUE;
+				done = true;
 				break;
 			// Delimiters
 			// If we encounter one and arg length != 0 this signals the end of the argument.
@@ -686,7 +686,7 @@ bool LineParser::getCharsDelim(int optionMask, QString& line, QString& destArg)
 			case (' '):	// Space
 			case (','):	// Comma
 				if (quoteChar != '\0') destArg += c;
-				else if (!destArg.isEmpty()) done = TRUE;
+				else if (!destArg.isEmpty()) done = true;
 				break;
 			// Quote marks
 			// If LineParser::UseQuotes, keep delimiters and other quote marks inside the quoted text.
@@ -697,8 +697,8 @@ bool LineParser::getCharsDelim(int optionMask, QString& line, QString& destArg)
 				else if (quoteChar == c)
 				{
 					quoteChar = '\0';
-					hadQuotes = TRUE;
-					done = TRUE;
+					hadQuotes = true;
+					done = true;
 				}
 				else destArg += c;
 				break;
@@ -731,8 +731,8 @@ bool LineParser::getCharsDelim(int optionMask, QString& line, QString& destArg)
 				break;
 			// Comment markers
 			case ('#'):	// "#" Rest/all of line is a comment
-				endOfLine_ = TRUE;
-				done = TRUE;
+				endOfLine_ = true;
+				done = true;
 				break;
 			// Normal character
 			default: 
@@ -748,8 +748,8 @@ bool LineParser::getCharsDelim(int optionMask, QString& line, QString& destArg)
 	line.remove(0, pos);
 
 	Messenger::exit("LineParser::getCharsDelim(int,QString,QString)");
-	if (failed) return FALSE;
-	return (destArg.isEmpty() ? (hadQuotes ? TRUE : FALSE) : TRUE);
+	if (failed) return false;
+	return (destArg.isEmpty() ? hadQuotes : true);
 }
 
 // Return a number of characters from the input stream
@@ -907,7 +907,7 @@ bool LineParser::writeLine(QString s)
 		{
 			Messenger::print("Unable to delayed-writeLine - destination cache is not open.");
 			Messenger::exit("LineParser::writeLine");
-			return FALSE;
+			return false;
 		}
 		else *cachedFile_ << qPrintable(s);
 	}
@@ -915,11 +915,11 @@ bool LineParser::writeLine(QString s)
 	{
 		Messenger::print("Unable to direct-writeLine - destination file is not open.");
 		Messenger::exit("LineParser::writeLine");
-		return FALSE;
+		return false;
 	}
 	else *outputFile_ << qPrintable(s);
 	Messenger::exit("LineParser::writeLine");
-	return TRUE;
+	return true;
 }
 
 // Write formatted line to file
@@ -932,14 +932,14 @@ bool LineParser::writeLineF(const char* fmt, ...)
 		{
 			Messenger::print("Unable to delayed-writeLineF - destination cache is not open.");
 			Messenger::exit("LineParser::writeLineF");
-			return FALSE;
+			return false;
 		}
 	}
 	else if (outputFile_ == NULL)
 	{
 		Messenger::print("Unable to direct-writeLineF - destination file is not open.");
 		Messenger::exit("LineParser::writeLineF");
-		return FALSE;
+		return false;
 	}
 	
 	// Construct line
@@ -953,7 +953,7 @@ bool LineParser::writeLineF(const char* fmt, ...)
 	if (directOutput_) *outputFile_ << s;
 	else *cachedFile_ << s;
 	Messenger::exit("LineParser::writeLineF");
-	return TRUE;
+	return true;
 }
 
 // Commit cached output stream to actual output file
@@ -963,7 +963,7 @@ bool LineParser::commitCache()
 	if (directOutput_)
 	{
 		printf("Internal Error: Tried to commit cached writes when direct output was enabled.\n");
-		return FALSE;
+		return false;
 	}
 	std::ofstream outputFile(qPrintable(outputFilename_));
 	if (outputFile.is_open())
@@ -974,9 +974,9 @@ bool LineParser::commitCache()
 	else
 	{
 		Messenger::print("Error: Couldn't open output file '%s' for writing.", qPrintable(outputFilename_));
-		return FALSE;
+		return false;
 	}
-	return TRUE;
+	return true;
 }
 
 // Skip lines from file
@@ -1045,8 +1045,8 @@ bool LineParser::argb(int i)
 {
 	if ((i < 0) || (i >= nArgs()))
 	{
-		printf("Warning: Argument %i is out of range - returning FALSE...\n", i);
-		return FALSE;
+		printf("Warning: Argument %i is out of range - returning false...\n", i);
+		return false;
 	}
 	QString lower = arguments_.at(i).toLower();
 	if (lower == "off") return false;
@@ -1072,6 +1072,6 @@ float LineParser::argf(int i)
 // Returns whether the specified argument exists (has been provided)
 bool LineParser::hasArg(int i) const
 {
-	if ((i < 0) || (i >= nArgs())) return FALSE;
-	return TRUE;
+	if ((i < 0) || (i >= nArgs())) return false;
+	return true;
 }

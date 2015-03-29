@@ -34,7 +34,7 @@ bool Commands::function_ListScripts(CommandNode* c, Bundle& obj, ReturnValue& rv
 	else Messenger::print("Currently loaded scripts:");
 	for (Program* prog = aten_.scripts(); prog != NULL; prog = prog->next) Messenger::print("  %s (%s)", qPrintable(prog->filename()), qPrintable(prog->name()));
 	rv.reset();
-	return TRUE;
+	return true;
 }
 
 // Load script from disk
@@ -44,14 +44,14 @@ bool Commands::function_LoadScript(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	if (!prog->generateFromFile(c->argc(0), "ScriptFile"))
 	{
 		aten_.removeScript(prog);
-		return FALSE;
+		return false;
 	}
 	if (c->hasArg(1)) prog->setName(c->argc(1));
 	else prog->setName(c->argc(0));
 	rv.reset();
 	// Update GUI
 	aten_.atenWindow()->commandWidget->refreshScripts();
-	return TRUE;
+	return true;
 }
 
 // Run specified script
@@ -68,5 +68,5 @@ bool Commands::function_RunScript(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	}
 	else Messenger::print("Couldn't find script '%s'.", qPrintable(c->argc(0)));
 	rv.reset();
-	return TRUE;
+	return true;
 }

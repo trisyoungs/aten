@@ -44,13 +44,13 @@ int movieSetup(bool pre, int height)
 		if (!fileInfo.exists())
 		{
 			Messenger::print("Error: Encoder excutable doesn't appear to exist ('%s').", qPrintable(prefs.encoderExe()));
-			return FALSE;
+			return false;
 		}
 		else Messenger::print(Messenger::Verbose, "Found encoder executable ('%s').", qPrintable(prefs.encoderExe()));
 
 		// Save some current view preferences
 		viewglobe = prefs.viewRotationGlobe();
-		prefs.setViewRotationGlobe(FALSE);
+		prefs.setViewRotationGlobe(false);
 		
 		// Generate unique file basename
 		int runid;
@@ -77,7 +77,7 @@ bool moviePostProcess(QStringList files, int runid, QString movieFilename, int f
 	// Create filelist on disk
 	QString framesFile = prefs.tempDir().filePath("aten-movie-%1-%2-files.txt").arg(QApplication::applicationPid(), runid);
 	LineParser parser;
-	parser.openOutput(framesFile, TRUE);
+	parser.openOutput(framesFile, true);
 	if (parser.isFileGoodForWriting())
 	{
 		foreach (QString str, files) parser.writeLineF("%s", qPrintable(str));
@@ -86,7 +86,7 @@ bool moviePostProcess(QStringList files, int runid, QString movieFilename, int f
 	else
 	{
 		Messenger::print("Error: Couldn't create framelist file '%s'.", qPrintable(framesFile));
-		return FALSE;
+		return false;
 	}
 
 	// Now run external program to create movie
@@ -103,7 +103,7 @@ bool moviePostProcess(QStringList files, int runid, QString movieFilename, int f
 	if (!encoderProcess.execute(prefs.encoderExe(),qPrintable(encoderArgs),NULL))
 	{
 		Messenger::print("Error: Failed to run encoder command.");
-		return FALSE;
+		return false;
 	}
 
 	// Follow output here...
@@ -128,7 +128,7 @@ bool moviePostProcess(QStringList files, int runid, QString movieFilename, int f
 		if (!postProcess.execute(prefs.encoderPostExe(),qPrintable(encoderArgs),NULL))
 		{
 			Messenger::print("Error: Failed to run encoder post-processing command.");
-			return FALSE;
+			return false;
 		}
 		
 		// Follow output here...
@@ -151,20 +151,20 @@ bool moviePostProcess(QStringList files, int runid, QString movieFilename, int f
 	}
 	progress.terminate(pid);	
 
-	return TRUE;
+	return true;
 }
 
 // Save current view as bitmap image
 bool Commands::function_SaveBitmap(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 
 	// Convert format to bitmap_format
 	Aten::BitmapFormat bf = Aten::bitmapFormat(c->argc(0));
 	if (bf == Aten::nBitmapFormats)
 	{
 		Messenger::print("Unrecognised bitmap format.");
-		return FALSE;
+		return false;
 	}
 
 	int width = 0, height = 0, quality = -1;
@@ -177,7 +177,7 @@ bool Commands::function_SaveBitmap(CommandNode* c, Bundle& obj, ReturnValue& rv)
 
 	// Set some options, remembering current values
 	bool viewGlobe = prefs.viewRotationGlobe();
-	prefs.setViewRotationGlobe(FALSE);
+	prefs.setViewRotationGlobe(false);
 
 	rv.reset();
 	bool result;
@@ -189,7 +189,7 @@ bool Commands::function_SaveBitmap(CommandNode* c, Bundle& obj, ReturnValue& rv)
 		if (fileName.isEmpty())
 		{
 			Messenger::print("Maximum number of frames for image redirect reached. Raising error...");
-			result = FALSE;
+			result = false;
 		}
 		else
 		{
@@ -210,13 +210,13 @@ bool Commands::function_SaveBitmap(CommandNode* c, Bundle& obj, ReturnValue& rv)
 // Save movie of current trajectory
 bool Commands::function_SaveMovie(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 
 	// Check that a trajectory exists for the current model
 	if (!obj.m->hasTrajectory())
 	{
 		Messenger::print("No trajectory associated to current model.");
-		return FALSE;
+		return false;
 	}
 
 	// Get arguments...
@@ -231,20 +231,20 @@ bool Commands::function_SaveMovie(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	int fps = c->hasArg(7) ? c->argi(7) : 25;
 
 	// Check initial movie 'setup'
-	int runid = movieSetup(TRUE, height);
-	if (runid == -1) return FALSE;
+	int runid = movieSetup(true, height);
+	if (runid == -1) return false;
 
 	// Save all trajectory frame images
 	QPixmap pixmap;
 	QImage image;
 	obj.m->setRenderSource(Model::TrajectorySource);
 	int progid = progress.initialise("Saving trajectory movie frames...", lastFrame-firstFrame);
-	bool canceled = FALSE;
+	bool canceled = false;
 	QString basename;
 	QStringList files;
 	for (int n = firstFrame; n <= lastFrame; n += (1+frameSkip))
 	{
-		obj.m->seekTrajectoryFrame(n, TRUE);
+		obj.m->seekTrajectoryFrame(n, true);
 		basename = prefs.tempDir().filePath("aten-movie-%1-%2-%3.png").arg(QApplication::applicationPid(), runid).arg(n, 9, 10, QChar('0'));
 
 		pixmap = aten_.currentViewAsPixmap(width, height);
@@ -253,7 +253,7 @@ bool Commands::function_SaveMovie(CommandNode* c, Bundle& obj, ReturnValue& rv)
 
 		if (!progress.update(progid,n))
 		{
-			canceled = TRUE;
+			canceled = true;
 			Messenger::print("Canceled.");
 			break;
 		}
@@ -261,21 +261,21 @@ bool Commands::function_SaveMovie(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	progress.terminate(progid);
 
 	// Reset after movie frame creation
-	movieSetup(FALSE, -1);
+	movieSetup(false, -1);
 
 	// Perform post-processing of movie frames
-	if (!moviePostProcess(files, runid, c->argc(0), fps)) return FALSE;
+	if (!moviePostProcess(files, runid, c->argc(0), fps)) return false;
 
-	if (canceled) return FALSE;
+	if (canceled) return false;
 	
-	return TRUE;
+	return true;
 }
 
 // Save movie of specified vibration frame
 bool Commands::function_SaveVibrationMovie(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	// CommandNode::run(Commands::SaveVibrationMovie, "ciiiiiii", qPrintable(filename), width, height, -1, ui.VibrationsList->currentRow(), nsteps, ncycles, fps);
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 
 	// Get arguments...
 	int width = c->hasArg(1) ? c->argi(1) : aten_.atenWindow()->ui.MainView->width();
@@ -294,23 +294,23 @@ bool Commands::function_SaveVibrationMovie(CommandNode* c, Bundle& obj, ReturnVa
 	if (!vib)
 	{
 		Messenger::print("Specified vibration (id %i) does not exist in current model.", vibrationId);
-		return FALSE;
+		return false;
 	}
 	
 	// Check initial movie 'setup'
-	int runid = movieSetup(TRUE, height);
-	if (runid == -1) return FALSE;
+	int runid = movieSetup(true, height);
+	if (runid == -1) return false;
 
 	// Generate vibration frams info
 	obj.rs()->generateVibration(vibrationId, framesPerVibration);
 	obj.rs()->setVibrationFrameIndex(0);
-	obj.rs()->setRenderFromVibration(TRUE);
+	obj.rs()->setRenderFromVibration(true);
 
 	QPixmap pixmap;
 	QImage image;
 
 	int progid = progress.initialise("Saving vibration movie frames...", framesPerVibration);
-	bool canceled = FALSE;
+	bool canceled = false;
 	QString basename;
 	for (int n = 0; n < framesPerVibration; ++n)
 	{
@@ -324,7 +324,7 @@ bool Commands::function_SaveVibrationMovie(CommandNode* c, Bundle& obj, ReturnVa
 		
 		if (!progress.update(progid,n))
 		{
-			canceled = TRUE;
+			canceled = true;
 			Messenger::print("Canceled.");
 			break;
 		}
@@ -352,12 +352,12 @@ bool Commands::function_SaveVibrationMovie(CommandNode* c, Bundle& obj, ReturnVa
 	}
 
 	// Reset after movie frame creation
-	movieSetup(FALSE, -1);
+	movieSetup(false, -1);
 
 	// Perform post-processing of movie frames
-	if (!moviePostProcess(files, runid, c->argc(0), fps)) return FALSE;
+	if (!moviePostProcess(files, runid, c->argc(0), fps)) return false;
 
-	if (canceled) return FALSE;
+	if (canceled) return false;
 	
-	return TRUE;
+	return true;
 }

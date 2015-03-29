@@ -30,7 +30,7 @@ void Aten::openPartitions()
 {
 	Messenger::enter("Aten::openPartitions");
 
-	bool found = FALSE;
+	bool found = false;
 	int nFailed = 0;
 
 	nPartitioningSchemesFailed_ = 0;
@@ -38,7 +38,7 @@ void Aten::openPartitions()
 
 	// Generate default partition ('none')
 	PartitioningScheme* ps = partitioningSchemes_.add();
-	bool success = ps->schemeDefinition().generateFromString("string name = 'None', description = 'No partitioning'; int partition(double x, double y, double z) { return 0; } string partitionName(int id) { if (id == 0) return 'Whole Cell'; else return 'UNKNOWN'; } int nPartitions = 1, roughgrid[3] = { 2,2,2 }, finegrid[3] = {2,2,2};", "Default Partitioning", "", FALSE);
+	bool success = ps->schemeDefinition().generateFromString("string name = 'None', description = 'No partitioning'; int partition(double x, double y, double z) { return 0; } string partitionName(int id) { if (id == 0) return 'Whole Cell'; else return 'UNKNOWN'; } int nPartitions = 1, roughgrid[3] = { 2,2,2 }, finegrid[3] = {2,2,2};", "Default Partitioning", "", false);
 	if (success) success = ps->initialiseFromProgram();
 	if (!success)
 	{
@@ -84,7 +84,7 @@ int Aten::parsePartitionsDir(QDir path)
 		// Construct Program...
 		QString filename = path.filePath(partitionList.at(i));
 		PartitioningScheme* ps = partitioningSchemes_.add();
-		bool success = ps->schemeDefinition().generateFromFile(qPrintable(QDir::toNativeSeparators(filename)), qPrintable(partitionList.at(i)), FALSE);
+		bool success = ps->schemeDefinition().generateFromFile(qPrintable(QDir::toNativeSeparators(filename)), qPrintable(partitionList.at(i)), false);
 		if (success) success = ps->initialiseFromProgram();
 		
 		if (!success)
@@ -109,7 +109,7 @@ bool Aten::openPartition(QString filename)
 
 	// Construct partitions Program...
 	PartitioningScheme* ps = partitioningSchemes_.add();
-	bool success = ps->schemeDefinition().generateFromFile(filename, filename, FALSE);
+	bool success = ps->schemeDefinition().generateFromFile(filename, filename, false);
 // 	if (success) success = 
 	
 	if ((!success) || (!ps->initialiseFromProgram()))
@@ -118,11 +118,11 @@ bool Aten::openPartition(QString filename)
 		failedPartitioningSchemes_ << filename;
 		partitioningSchemes_.remove(ps);
 		Messenger::exit("Aten::openPartition");
-		return FALSE;
+		return false;
 	}
 	
 	Messenger::exit("Aten::openPartition");
-	return TRUE;
+	return true;
 }
 
 // Return status of partition load on startup

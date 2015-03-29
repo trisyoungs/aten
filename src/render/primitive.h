@@ -136,11 +136,11 @@ class Primitive : public ListItem<Primitive>
 	// Plot vertices of sphere with specified radius and quality
 	void plotSphere(double radius, int nStacks, int nSlices);
 	// Plot cylinder vertices from origin {ox,oy,oz}, following vector {vx,vy,vz}, for 'length', with radii and quality specified
-	void plotCylinder(GLfloat ox, GLfloat oy, GLfloat oz, GLfloat vx, GLfloat vy, GLfloat vz, double startradius, double endradius, int nStacks, int nSlices, bool capStart = FALSE, bool capEnd = FALSE);
+	void plotCylinder(GLfloat ox, GLfloat oy, GLfloat oz, GLfloat vx, GLfloat vy, GLfloat vz, double startradius, double endradius, int nStacks, int nSlices, bool capStart = false, bool capEnd = false);
 	// Plot tube ring of specified radius and tube width
-	void plotRing(double radius, double width, int nStacks, int nSlices, int nSegments, bool segmented = FALSE);
+	void plotRing(double radius, double width, int nStacks, int nSlices, int nSegments, bool segmented = false);
 	// Plot circle of specified radius
-	void plotCircle(double radius, int nStacks, int nSegments, bool segmented = FALSE);
+	void plotCircle(double radius, int nStacks, int nSegments, bool segmented = false);
 	// Create vertices of cross with specified width
 	void plotCross(double halfWidth, Matrix& transform, Vec4<GLfloat>& colour);
 	// Plot solid cube of specified size at specified origin, and with sides subdivided into triangles ( ntriangles = 2*nsubs )

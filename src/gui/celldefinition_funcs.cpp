@@ -34,7 +34,7 @@ CellDefinitionWidget::CellDefinitionWidget(AtenWindow& parent, Qt::WindowFlags f
 	ui.setupUi(this);
 
 	// Private variables
-	refreshing_ = FALSE;
+	refreshing_ = false;
 }
 
 // Show window
@@ -89,22 +89,22 @@ void CellDefinitionWidget::refresh()
 	label.sprintf(" Volume : %10.3f &#8491;<sup>3</sup>", cell->volume());
 	ui.CellVolumeLabel->setText(label);
 	if (refreshing_) return;
-	else refreshing_ = TRUE;
+	else refreshing_ = true;
 
 	// Update the widgets on the page to reflect the current model's unit cell
 	if (ct == UnitCell::NoCell)
 	{
 		// No cell, so disable group boxes and quit
-		ui.CellDefinitionGroup->setChecked(FALSE);
-		ui.CellSpacegroupGroup->setEnabled(FALSE);
-		refreshing_ = FALSE;
+		ui.CellDefinitionGroup->setChecked(false);
+		ui.CellSpacegroupGroup->setEnabled(false);
+		refreshing_ = false;
 		return;
 	}
 	else
 	{
 		// Activate widgets
-		ui.CellDefinitionGroup->setChecked(TRUE);
-		ui.CellSpacegroupGroup->setEnabled(TRUE);
+		ui.CellDefinitionGroup->setChecked(true);
+		ui.CellSpacegroupGroup->setEnabled(true);
 	}
 
 	// Set values in spin boxes
@@ -114,7 +114,7 @@ void CellDefinitionWidget::refresh()
 	// Set spacegroup label
 	label.sprintf("%s (%i)\n", Spacegroups[m->cell()->spacegroupId()].name,  m->cell()->spacegroupId());
 	ui.SpacegroupLabel->setText(label);
-	refreshing_ = FALSE;
+	refreshing_ = false;
 }
 
 
@@ -220,7 +220,7 @@ void CellDefinitionWidget::on_CellMatrixZZSpin_editingFinished()
 
 void CellDefinitionWidget::on_CellSpacegroupEdit_returnPressed()
 {
-	on_CellSpacegroupSetButton_clicked(FALSE);
+	on_CellSpacegroupSetButton_clicked(false);
 }
 
 void CellDefinitionWidget::on_CellDefinitionGroup_clicked(bool checked)
@@ -229,12 +229,12 @@ void CellDefinitionWidget::on_CellDefinitionGroup_clicked(bool checked)
 	if (checked)
 	{
 		cellChanged(-1,0.0);
-		ui.CellSpacegroupGroup->setEnabled(TRUE);
+		ui.CellSpacegroupGroup->setEnabled(true);
 	}
 	else
 	{
 		CommandNode::run(Commands::NoCell, "");
-		ui.CellSpacegroupGroup->setEnabled(FALSE);
+		ui.CellSpacegroupGroup->setEnabled(false);
 	}
 	// Must also update the disordered builder and cell transform tool windows here, since a cell has been added/removed
 	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::CellTarget);

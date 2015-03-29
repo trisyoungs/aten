@@ -37,7 +37,7 @@ AtenPrefs::AtenPrefs(AtenWindow& parent) : QDialog(&parent), parent_(parent)
 {
 	ui.setupUi(this);
 
-	refreshing_ = FALSE;
+	refreshing_ = false;
 
 	// Add elements to element list and select first item
 	QListWidgetItem* item;
@@ -53,7 +53,7 @@ AtenPrefs::AtenPrefs(AtenWindow& parent) : QDialog(&parent), parent_(parent)
 void AtenPrefs::setControls()
 {
 	Messenger::enter("AtenPrefs::setControls");
-	refreshing_ = TRUE;
+	refreshing_ = true;
 
 	// Select the first element in the elements list
 	ui.ElementList->setCurrentRow(0);
@@ -178,7 +178,7 @@ void AtenPrefs::setControls()
 	prefsBackup_ = prefs;
 	Elements().backupData();
 
-	refreshing_ = FALSE;
+	refreshing_ = false;
 	Messenger::exit("AtenPrefs::setControls");
 }
 
@@ -241,7 +241,7 @@ void AtenPrefs::on_ElementColourButton_clicked(bool checked)
 	QColor oldcol, newcol;
 	oldcol.setRgbF( col[0], col[1], col[2], col[3] );
 	// Request a colour dialog
-	bool ok = FALSE;
+	bool ok = false;
 	newcol.setRgba(QColorDialog::getRgba(oldcol.rgba(), &ok, this));
 	if (!ok) return;
 	// Store new colour
@@ -289,42 +289,42 @@ void AtenPrefs::setRadiusChanged(Prefs::DrawStyle ds, double value, bool foratom
 
 void AtenPrefs::on_StickRadiusSpin_valueChanged(double value)
 {
-	setRadiusChanged(Prefs::StickStyle, value, TRUE);
+	setRadiusChanged(Prefs::StickStyle, value, true);
 }
 
 void AtenPrefs::on_TubeRadiusSpin_valueChanged(double value)
 {
-	setRadiusChanged(Prefs::TubeStyle, value, TRUE);
+	setRadiusChanged(Prefs::TubeStyle, value, true);
 }
 
 void AtenPrefs::on_SphereRadiusSpin_valueChanged(double value)
 {
-	setRadiusChanged(Prefs::SphereStyle, value, TRUE);
+	setRadiusChanged(Prefs::SphereStyle, value, true);
 }
 
 void AtenPrefs::on_ScaledRadiusSpin_valueChanged(double value)
 {
-	setRadiusChanged(Prefs::ScaledStyle, value, TRUE);
+	setRadiusChanged(Prefs::ScaledStyle, value, true);
 }
 
 void AtenPrefs::on_StickBondRadiusSpin_valueChanged(double value)
 {
-	setRadiusChanged(Prefs::StickStyle, value, FALSE);
+	setRadiusChanged(Prefs::StickStyle, value, false);
 }
 
 void AtenPrefs::on_TubeBondRadiusSpin_valueChanged(double value)
 {
-	setRadiusChanged(Prefs::TubeStyle, value, FALSE);
+	setRadiusChanged(Prefs::TubeStyle, value, false);
 }
 
 void AtenPrefs::on_SphereBondRadiusSpin_valueChanged(double value)
 {
-	setRadiusChanged(Prefs::SphereStyle, value, FALSE);
+	setRadiusChanged(Prefs::SphereStyle, value, false);
 }
 
 void AtenPrefs::on_ScaledBondRadiusSpin_valueChanged(double value)
 {
-	setRadiusChanged(Prefs::ScaledStyle, value, FALSE);
+	setRadiusChanged(Prefs::ScaledStyle, value, false);
 }
 
 void AtenPrefs::on_SelectionScaleSpin_valueChanged(double value)
@@ -407,7 +407,7 @@ void AtenPrefs::on_ColoursTable_cellDoubleClicked(int row, int column)
 	QColor oldcol, newcol;
 	oldcol.setRgbF( col[0], col[1], col[2], col[3] );
 	// Request a colour dialog
-	bool ok = FALSE;
+	bool ok = false;
 	newcol.setRgba(QColorDialog::getRgba(oldcol.rgba(), &ok, this));
 	if (!ok) return;
 	// Store new colour
@@ -525,7 +525,7 @@ void AtenPrefs::spotlightColourChanged(Prefs::ColourComponent sc)
 	QColor oldcol, newcol;
 	oldcol.setRgbF( col[0], col[1], col[2], col[3] );
 	// Request a colour dialog
-	bool ok = FALSE;
+	bool ok = false;
 	newcol.setRgba(QColorDialog::getRgba(oldcol.rgba(), &ok, this));
 	if (!ok) return;
 	// Store new colour
@@ -691,7 +691,7 @@ void AtenPrefs::on_PointColourButton_clicked(bool checked)
 	QColor oldcol, newcol;
 	oldcol.setRgbF( col[0], col[1], col[2], col[3] );
 	// Request a colour dialog
-	bool ok = FALSE;
+	bool ok = false;
 	newcol.setRgba(QColorDialog::getRgba(oldcol.rgba(), &ok, this));
 	if (!ok) return;
 	// Store new colour, and set colours in frame and pointlist
@@ -733,7 +733,7 @@ void AtenPrefs::on_ScaleList_itemClicked(QListWidgetItem* item)
 	int row = ui.ScaleList->row(item);
 	if (row == -1) return;
 	// Look at checked state
-	prefs.colourScale[row].setVisible( (item->checkState() == Qt::Checked ? TRUE : FALSE) );
+	prefs.colourScale[row].setVisible( (item->checkState() == Qt::Checked) );
 	parent_.postRedisplay();
 }
 

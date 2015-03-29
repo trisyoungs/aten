@@ -48,7 +48,7 @@ class DelaunayEdge : public ListItem<DelaunayEdge>
 	bool usesPoint(GridPoint* gp);
 	// Add reference to edge
 	void addReference();
-	// Remove reference from edge (returning TRUE if no more references remain)
+	// Remove reference from edge (returning true if no more references remain)
 	bool removeReference();
 	// Return current reference count
 	int refCount();
@@ -92,7 +92,7 @@ class DelaunayTriangle : public ListItem<DelaunayTriangle>
 	GridPoint* vertex(int n);
 	// Add reference to triangle
 	void addReference();
-	// Remove reference from triangle (returning TRUE if no more references remain)
+	// Remove reference from triangle (returning true if no more references remain)
 	bool removeReference();
 	// Return current reference count
 	int refCount();

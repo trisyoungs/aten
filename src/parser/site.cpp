@@ -48,7 +48,7 @@ SiteVariable::~SiteVariable()
 
 // Accessor data
 Accessor SiteVariable::accessorData[SiteVariable::nAccessors] = {
-	{ ".dummy",	VTypes::IntegerData,	0, TRUE }
+	{ ".dummy",	VTypes::IntegerData,	0, true }
 };
 
 // Function data
@@ -129,7 +129,7 @@ bool SiteVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex, 
 	{
 		printf("Internal Error: Accessor id %i is out of range for Site type.\n", i);
 		Messenger::exit("SiteVariable::retrieveAccessor");
-		return FALSE;
+		return false;
 	}
 	Accessors acc = (Accessors) i;
 	// Check for correct lack/presence of array index given
@@ -137,7 +137,7 @@ bool SiteVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex, 
 	{
 		Messenger::print("Error: Unnecessary array index provided for member '%s'.", accessorData[i].name);
 		Messenger::exit("SiteVariable::retrieveAccessor");
-		return FALSE;
+		return false;
 	}
 	else if ((accessorData[i].arraySize > 0) && (hasArrayIndex))
 	{
@@ -145,22 +145,22 @@ bool SiteVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex, 
 		{
 			Messenger::print("Error: Array index out of bounds for member '%s' (%i, range is 1-%i).", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
 			Messenger::exit("SiteVariable::retrieveAccessor");
-			return FALSE;
+			return false;
 		}
 	}
 	// Get current data from ReturnValue
-	bool result = TRUE;
+	bool result = true;
 	Site* ptr = (Site*) rv.asPointer(VTypes::SiteData, result);
 	if ((!result) || (ptr == NULL))
 	{
 		Messenger::print("Invalid (NULL) %s reference encountered.", VTypes::dataType(VTypes::SiteData));
-		result = FALSE;
+		result = false;
 	}
 	if (result) switch (acc)
 	{
 		default:
 			printf("Internal Error: Access to member '%s' has not been defined in SiteVariable.\n", accessorData[i].name);
-			result = FALSE;
+			result = false;
 			break;
 	}
 	Messenger::exit("SiteVariable::retrieveAccessor");
@@ -176,11 +176,11 @@ bool SiteVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newVal
 	{
 		printf("Internal Error: Accessor id %i is out of range for Site type.\n", i);
 		Messenger::exit("SiteVariable::setAccessor");
-		return FALSE;
+		return false;
 	}
 	Accessors acc = (Accessors) i;
 	// Check for correct lack/presence of array index given to original accessor, and nature of new value
-	bool result = TRUE;
+	bool result = true;
 	if (accessorData[i].arraySize != 0)
 	{
 		if (hasArrayIndex)
@@ -188,12 +188,12 @@ bool SiteVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newVal
 			if ((accessorData[i].arraySize > 0) && ( (arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize) ))
 			{
 				Messenger::print("Error: Array index provided for member '%s' is out of range (%i, range is 1-%i).", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
-				result = FALSE;
+				result = false;
 			}
 			if (newValue.arraySize() > 0)
 			{
 				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.", accessorData[i].name);
-				result = FALSE;
+				result = false;
 			}
 		}
 		else
@@ -201,7 +201,7 @@ bool SiteVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newVal
 			if (newValue.arraySize() > accessorData[i].arraySize)
 			{
 				Messenger::print("Error: The array being assigned to member '%s' is larger than the size of the desination array (%i cf. %i).", accessorData[i].name, newValue.arraySize(), accessorData[i].arraySize);
-				result = FALSE;
+				result = false;
 			}
 		}
 	}
@@ -213,32 +213,32 @@ bool SiteVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newVal
 			if (accessorData[i].returnType != VTypes::VectorData)
 			{
 				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.", accessorData[i].name);
-				result = FALSE;
+				result = false;
 			}
 			else if ((newValue.type() != VTypes::VectorData) && (newValue.arraySize() != 3))
 			{
 				Messenger::print("Error: Only an array of size 3 can be assigned to a vector (member '%s').", accessorData[i].name);
-				result = FALSE;
+				result = false;
 			}
 		}
 	}
 	if (!result)
 	{
 		Messenger::exit("SiteVariable::setAccessor");
-		return FALSE;
+		return false;
 	}
 	// Get current data from ReturnValue
 	Site* ptr = (Site*) sourcerv.asPointer(VTypes::SiteData, result);
 	if ((!result) || (ptr == NULL))
 	{
 		Messenger::print("Invalid (NULL) %s reference encountered.", VTypes::dataType(VTypes::SiteData));
-		result = FALSE;
+		result = false;
 	}
 	if (result) switch (acc)
 	{
 		default:
 			printf("SiteVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);
-			result = FALSE;
+			result = false;
 			break;
 	}
 	Messenger::exit("SiteVariable::setAccessor");
@@ -254,16 +254,16 @@ bool SiteVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 	{
 		printf("Internal Error: FunctionAccessor id %i is out of range for Site type.\n", i);
 		Messenger::exit("SiteVariable::performFunction");
-		return FALSE;
+		return false;
 	}
 	// Get current data from ReturnValue
-	bool result = TRUE;
+	bool result = true;
 	Site* ptr = (Site*) rv.asPointer(VTypes::SiteData, result);
 	if (result) switch (i)
 	{
 		default:
 			printf("Internal Error: Access to function '%s' has not been defined in SiteVariable.\n", functionData[i].name);
-			result = FALSE;
+			result = false;
 			break;
 	}
 	Messenger::exit("SiteVariable::performFunction");

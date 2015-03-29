@@ -55,7 +55,7 @@ class VariableList
 
 	public:
 	// Pass a newly-created variable / constant to the list for it to take ownership of
-	void take(Variable* v, bool forcevariable = FALSE);
+	void take(Variable* v, bool forcevariable = false);
 	// Retrieve a named variable from the list
 	Variable* find(QString name) const;
 	// Create a new variable in the list

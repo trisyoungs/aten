@@ -78,10 +78,10 @@ void CommandParser::reset()
 	functionStart_ = -1;
 	stringSource_.clear();
 	stringLength_ = 0;
-	expectPathStep_ = FALSE;
+	expectPathStep_ = false;
 	program_ = NULL;
 	tree_ = NULL;
-	failed_ = FALSE;
+	failed_ = false;
 	parser_.reset();
 	stack_.clear();
 }
@@ -226,7 +226,7 @@ void CommandParser::unGetChar()
 bool CommandParser::generate()
 {
 	Messenger::enter("CommandParser::generate");
-	expectPathStep_ = FALSE;
+	expectPathStep_ = false;
 
 	// Perform the parsing
 	int result = CommandParser_parse();
@@ -238,7 +238,7 @@ bool CommandParser::generate()
 	if (failed_) result = -1;
 	program_ = NULL;
 	Messenger::exit("CommandParser::generate");
-	return (result != 0 ? FALSE : TRUE);
+	return (result != 0 ? false : true);
 }
 
 // Fill target Program from specified character string
@@ -251,7 +251,7 @@ bool CommandParser::generateFromString(Program* prog, QString string, QString so
 	{
 		printf("Internal Error: No Program passed to CommandParser::generateFromString.\n");
 		Messenger::exit("CommandParser::generateFromString");
-		return FALSE;
+		return false;
 	}
 	program_ = prog;
 	if (clearExisting) program_->clear();
@@ -260,7 +260,7 @@ bool CommandParser::generateFromString(Program* prog, QString string, QString so
 	if (!dontPushTree)
 	{
 		tree_ = program_->mainProgram();
-		stack_.add(tree_, FALSE);
+		stack_.add(tree_, false);
 		Messenger::print(Messenger::Parse, "Main program stacked - %p", tree_);
 	}
 	
@@ -288,7 +288,7 @@ bool CommandParser::generateFromStringList(Program* prog, QStringList stringList
 	{
 		printf("Internal Error: No Program passed to CommandParser::generateFromStringList.\n");
 		Messenger::exit("CommandParser::generateFromStringList");
-		return FALSE;
+		return false;
 	}
 	program_ = prog;
 	if (clearExisting) program_->clear();
@@ -297,7 +297,7 @@ bool CommandParser::generateFromStringList(Program* prog, QStringList stringList
 	if (!dontPushTree)
 	{
 		tree_ = program_->mainProgram();
-		stack_.add(tree_, FALSE);
+		stack_.add(tree_, false);
 		Messenger::print(Messenger::Parse, "Main program stacked - %p", tree_);
 	}
 	
@@ -333,7 +333,7 @@ bool CommandParser::generateFromFile(Program* prog, QString filename, bool dontP
 	{
 		printf("Internal Error: No Program passed to CommandParser::generateFromFile.\n");
 		Messenger::exit("CommandParser::generateFromFile");
-		return FALSE;
+		return false;
 	}
 	program_ = prog;
 	if (clearExisting) program_->clear();
@@ -342,7 +342,7 @@ bool CommandParser::generateFromFile(Program* prog, QString filename, bool dontP
 	if (!dontPushTree)
 	{
 		tree_ = program_->mainProgram();
-		stack_.add(tree_, FALSE);
+		stack_.add(tree_, false);
 		Messenger::print(Messenger::Parse, "Main program stacked - %p", tree_);
 	}
 	
@@ -351,7 +351,7 @@ bool CommandParser::generateFromFile(Program* prog, QString filename, bool dontP
 	if (!parser_.isFileGoodForReading())
 	{
 		Messenger::exit("CommandParser::generateFromFile");
-		return FALSE;
+		return false;
 	}
 	// Set initial string pos and string length so we read in a line on the first getChar.
 	stringPos_ = 0;
@@ -370,7 +370,7 @@ Tree* CommandParser::tree()
 // 	static Tree dummyTree;
 	if (tree_ == NULL)
 	{
-		failed_ = TRUE;
+		failed_ = true;
 		Messenger::print("Internal Error: Parser tried to do something to a non-existent tree.");
 		return NULL;
 	}
@@ -381,7 +381,7 @@ Tree* CommandParser::tree()
 void CommandParser::pushFilter()
 {
 	tree_ = program_->addFilter();
-	stack_.add(tree_, TRUE);
+	stack_.add(tree_, true);
 	Messenger::print(Messenger::Parse, "New filter stacked - %p", tree_);
 }
 
@@ -393,7 +393,7 @@ Tree* CommandParser::pushFunction(QString name, VTypes::DataType returntype)
 	if (tree_ == NULL) tree_ = program_->addFunction(name);
 	else tree_ = tree_->addLocalFunction(name);
 	tree_->setReturnType(returntype);
-	stack_.add(tree_, FALSE);
+	stack_.add(tree_, false);
 	Messenger::print(Messenger::Parse, "New function stacked (return type is %s) - %p", VTypes::dataType(tree_->returnType()), tree_);
 	return tree_;
 }

@@ -36,7 +36,7 @@ ATEN_USING_NAMESPACE
 void removeComments(QString& line)
 {
 	QChar c, quoteChar = '\0';
-	bool escaped = FALSE;
+	bool escaped = false;
 // 	for (c = s; *c != '\0'; ++c)
 	for (int n=0; n<line.length(); ++n)
 	{

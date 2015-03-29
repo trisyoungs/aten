@@ -82,7 +82,7 @@ class Ring : public ListItem<Ring>
 	void setRequestedSize(int size);
 	// Return requested size
 	int requestedSize() const;
-	// Append the atom 'i' to the end of the list. Returns FALSE is this exceeds MAXRINGSIZE
+	// Append the atom 'i' to the end of the list. Returns false is this exceeds MAXRINGSIZE
 	bool addAtom(Atom*);
 	// Remove the specified refitem from the find
 	void removeAtom(Refitem<Atom,int>*);

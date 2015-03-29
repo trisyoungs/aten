@@ -87,8 +87,8 @@ void MethodCg::minimise(Model* srcmodel, double econ, double fcon)
 	lastPrintedEnergy = currentEnergy;
 	srcmodel->energy.print();
 
-	converged = FALSE;
-	linedone = FALSE;
+	converged = false;
+	linedone = false;
 
 	// Initialise the line minimiser
 	initialise(srcmodel);
@@ -98,12 +98,12 @@ void MethodCg::minimise(Model* srcmodel, double econ, double fcon)
 
 	int pid = progress.initialise("Minimising (CG)", nCycles_);
 
-	srcmodel->normaliseForces(1.0, TRUE);
+	srcmodel->normaliseForces(1.0, true);
 
 	for (cycle=0; cycle<nCycles_; cycle++)
 	{
 		// Perform linesearch along the gradient vector
-		if (!progress.update(pid, cycle)) linedone = TRUE;
+		if (!progress.update(pid, cycle)) linedone = true;
 		else
 		{
 			oldEnergy = currentEnergy;
@@ -113,7 +113,7 @@ void MethodCg::minimise(Model* srcmodel, double econ, double fcon)
 			deltaEnergy = currentEnergy - oldEnergy;
 			deltaForce = newForce - oldForce;
 			// Check convergence criteria
-			if ((fabs(deltaEnergy) < econ) && (fabs(deltaForce) < fcon)) converged = TRUE;
+			if ((fabs(deltaEnergy) < econ) && (fabs(deltaForce) < fcon)) converged = true;
 		}
 
 		// Print out the step data
@@ -135,7 +135,7 @@ void MethodCg::minimise(Model* srcmodel, double econ, double fcon)
 			g_old[i+2] = f.z;
 		}
 		srcmodel->calculateForces(srcmodel);
-		srcmodel->normaliseForces(1.0, TRUE);
+		srcmodel->normaliseForces(1.0, true);
 
 		// Calculate new conjugate gradient vector, if this isn't the first cycle
 		if (cycle != 0)

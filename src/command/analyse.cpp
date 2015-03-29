@@ -33,27 +33,27 @@ ATEN_USING_NAMESPACE
 // Finalise calculated quantites ('finalise')
 bool Commands::function_Finalise(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	for (Calculable* calc = obj.m->pendingQuantities.first(); calc != NULL; calc = calc->next) calc->finalise(obj.m);
 	rv.reset();
-	return TRUE;
+	return true;
 }
 
 // Accumulate data for current frame ('frameanalyse')
 bool Commands::function_FrameAnalyse(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	// Grab trajectory config for analysis
 	Model* frame = obj.m->trajectoryCurrentFrame();
 	for (Calculable* calc = obj.m->pendingQuantities.first(); calc != NULL; calc = calc->next) calc->accumulate(frame);
 	rv.reset();
-	return TRUE;
+	return true;
 }
 
 // Calculate geometry ('geometry <name> <min> <binwidth> <nbins> <filename> <site1> <site2> [site3 [site4]]')
 bool Commands::function_Geometric(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	Geometry* newGeom = new Geometry;
 	obj.m->pendingQuantities.own(newGeom);
 
@@ -69,22 +69,22 @@ bool Commands::function_Geometric(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	newGeom->setRange(c->argd(1), c->argd(2), c->argi(3));
 
 	rv.reset();
-	return (newGeom->initialise() ? TRUE : FALSE);
+	return (newGeom->initialise());
 }
 
 // Accumulate data for current model ('modelanalyse')
 bool Commands::function_ModelAnalyse(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	for (Calculable* calc = obj.m->pendingQuantities.first(); calc != NULL; calc = calc->next) calc->accumulate(obj.m);
 	rv.reset();
-	return TRUE;
+	return true;
 }
 
 // Request calculation of a 3Ddens ('analyse pdens <name> <grid> <nsteps> <filename> <site1> <site2>')
 bool Commands::function_PDens(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	Pdens* newPDens = new Pdens;
 	obj.m->pendingQuantities.own(newPDens);
 
@@ -98,19 +98,19 @@ bool Commands::function_PDens(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	newPDens->setRange(c->argd(1), c->argi(2));
 
 	rv.reset();
-	return (newPDens->initialise() ? TRUE : FALSE);
+	return (newPDens->initialise());
 }
 
 // Print current job list ('printjobs')
 bool Commands::function_PrintJobs(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	return FALSE;
+	return false;
 }
 
 // Request calculation of an RDF ('rdf <name> <rmin> <binwidth> <nbins> <filename> <site1> <site2>')
 bool Commands::function_RDF(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	Rdf* newRdf = new Rdf;
 	obj.m->pendingQuantities.own(newRdf);
 
@@ -124,22 +124,22 @@ bool Commands::function_RDF(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	newRdf->setRange(c->argd(1), c->argd(2), c->argi(3));
 
 	rv.reset();
-	return (newRdf->initialise() ? TRUE : FALSE);
+	return (newRdf->initialise());
 }
 
 // Save calculated quantities to filenames provided ('savequantities')
 bool Commands::function_SaveQuantities(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	for (Calculable* calc = obj.m->pendingQuantities.first(); calc != NULL; calc = calc->next) calc->save();
 	rv.reset();
-	return TRUE;
+	return true;
 }
 
 // Calculate quantities over entire trajectory
 bool Commands::function_TrajAnalyse(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	int n, startframe, totalframes, frameskip, framestodo, framesdone;
 	bool calculate;
 	Model* frame;
@@ -150,7 +150,7 @@ bool Commands::function_TrajAnalyse(CommandNode* c, Bundle& obj, ReturnValue& rv
 	{
 		Messenger::print("No trajectory associated to model.");
 		rv.reset();
-		return FALSE;
+		return false;
 	}
 
 	// Get start frame, frame skip, and frames to do (if supplied)
@@ -164,9 +164,9 @@ bool Commands::function_TrajAnalyse(CommandNode* c, Bundle& obj, ReturnValue& rv
 	for (n=1; n <= totalframes; n++)
 	{
 		// Work out whether to calculate quantities from this frame
-		calculate = TRUE;
-		if (n < startframe) calculate = FALSE;
-		else if ((n-startframe)%frameskip != 0) calculate = FALSE;
+		calculate = true;
+		if (n < startframe) calculate = false;
+		else if ((n-startframe)%frameskip != 0) calculate = false;
 		// Calculate quantities
 		if (calculate)
 		{
@@ -184,6 +184,6 @@ bool Commands::function_TrajAnalyse(CommandNode* c, Bundle& obj, ReturnValue& rv
 	Messenger::print("Finished calculating properties - used %i frames from trajectory.", framesdone);
 
 	rv.reset();
-	return TRUE;
+	return true;
 }
 

@@ -179,9 +179,9 @@ template <class K, class V> V KVTable<K,V>::value(K key)
 template <class K, class V> V KVTable<K,V>::value(K key, bool& success)
 {
 	// Search for existing value...
-	success = TRUE;
+	success = true;
 	for (KVData<K,V> *kvp = pairs_.first(); kvp != NULL; kvp = kvp->next) if (key == kvp->key()) return kvp->value();
-	success = FALSE;
+	success = false;
 	return V();
 }
 

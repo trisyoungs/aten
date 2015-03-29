@@ -36,7 +36,7 @@ GridsWidget::GridsWidget(AtenWindow& parent, Qt::WindowFlags flags) : QDockWidge
 	ui.setupUi(this);
 
 	// Private variables
-	refreshing_ = FALSE;
+	refreshing_ = false;
 
 	// Create menubar
 	menuBar_ = new QMenuBar(this);
@@ -63,7 +63,7 @@ void GridsWidget::refresh()
 {
 	Messenger::enter("GridsWidget::refresh");
 
-	refreshing_ = TRUE;
+	refreshing_ = true;
 
 	// Clear and refresh the grids list
 	ui.GridList->clear();
@@ -126,7 +126,7 @@ void GridsWidget::refresh()
 	ui.OrbitalTable->resizeColumnToContents(0);
 	ui.OrbitalTable->resizeColumnToContents(1);
 	ui.OrbitalTable->resizeColumnToContents(2);
-	refreshing_ = FALSE;
+	refreshing_ = false;
 	Messenger::exit("GridsWidget::refresh");
 }
 
@@ -159,7 +159,7 @@ void GridsWidget::refreshGridInfo()
 		return;
 	}
 
-	refreshing_ = TRUE;
+	refreshing_ = true;
 	// Set minimum, maximum, and cutoff, and stepsizes for spins
 	ui.GridMinimumLabel->setText(QString::number(g->minimum()));
 	ui.GridMaximumLabel->setText(QString::number(g->maximum()));
@@ -219,12 +219,12 @@ void GridsWidget::refreshGridInfo()
 	scalename += prefs.colourScale[g->colourScale()].name();
 	scalename += ")";
 	ui.GridColourscaleName->setText(scalename);
-	g->useColourScale() ? ui.GridUseColourScaleRadio->setChecked(TRUE) : ui.GridUseInternalColoursRadio->setChecked(TRUE);
+	g->useColourScale() ? ui.GridUseColourScaleRadio->setChecked(true) : ui.GridUseInternalColoursRadio->setChecked(true);
 	// Shift data
 	ui.GridShiftXSpin->setValue(g->shift().x);
 	ui.GridShiftYSpin->setValue(g->shift().y);
 	ui.GridShiftZSpin->setValue(g->shift().z);
-	refreshing_ = FALSE;
+	refreshing_ = false;
 	Messenger::exit("GridsWidget::refreshGridInfo");
 }
 
@@ -400,30 +400,30 @@ void GridsWidget::on_GridAxesCZSpin_valueChanged(double d)
 
 void GridsWidget::on_GridUseInternalColoursRadio_clicked(bool checked)
 {
-	ui.GridSecondaryColourButton->setEnabled(TRUE);
-	ui.GridPrimaryColourButton->setEnabled(TRUE);
-	ui.GridColourscaleSpin->setEnabled(FALSE);
+	ui.GridSecondaryColourButton->setEnabled(true);
+	ui.GridPrimaryColourButton->setEnabled(true);
+	ui.GridColourscaleSpin->setEnabled(false);
 	if (refreshing_) return;
 
 	// Get current grid and set data
 	Grid* g = getCurrentGrid();
 	if (g == NULL) return;
 	ui.GridSecondaryColourButton->setEnabled(g->useSecondary());
-	g->setUseColourScale(FALSE);
+	g->setUseColourScale(false);
 	parent_.postRedisplay();
 }
 
 void GridsWidget::on_GridUseColourScaleRadio_clicked(bool checked)
 {
-	ui.GridSecondaryColourButton->setEnabled(FALSE);
-	ui.GridPrimaryColourButton->setEnabled(FALSE);
-	ui.GridColourscaleSpin->setEnabled(TRUE);
+	ui.GridSecondaryColourButton->setEnabled(false);
+	ui.GridPrimaryColourButton->setEnabled(false);
+	ui.GridColourscaleSpin->setEnabled(true);
 	if (refreshing_) return;
 
 	// Get current grid and set data
 	Grid* g = getCurrentGrid();
 	if (g == NULL) return;
-	g->setUseColourScale(TRUE);
+	g->setUseColourScale(true);
 	parent_.postRedisplay();
 }
 
@@ -480,7 +480,7 @@ void GridsWidget::on_GridList_itemClicked(QListWidgetItem* item)
 	// Get grid associated to item
 	Grid* g = (Grid*) titem->data.asPointer(VTypes::GridData);
 	// Look at checked state
-	g->setVisible( (titem->checkState() == Qt::Checked ? TRUE : FALSE) );
+	g->setVisible( (titem->checkState() == Qt::Checked) );
 	parent_.postRedisplay();
 }
 
@@ -629,7 +629,7 @@ void GridsWidget::on_GridPrimaryColourButton_clicked(bool checked)
 	QColor oldcol, newcol;
 	oldcol.setRgbF( col[0], col[1], col[2], col[3] );
 	// Request a colour dialog
-	bool ok = FALSE;
+	bool ok = false;
 	newcol.setRgba(QColorDialog::getRgba(oldcol.rgba(), &ok, this));
 	if (!ok) return;
 	// Store new colour
@@ -657,7 +657,7 @@ void GridsWidget::on_GridSecondaryColourButton_clicked(bool checked)
 	QColor oldcol, newcol;
 	oldcol.setRgbF( col[0], col[1], col[2], col[3] );
 	// Request a colour dialog
-	bool ok = FALSE;
+	bool ok = false;
 	newcol.setRgba(QColorDialog::getRgba(oldcol.rgba(), &ok, this));
 	if (!ok) return;
 	// Store new colour
@@ -728,7 +728,7 @@ void GridsWidget::gridShiftChanged()
 		// Grab old shift values
 		Vec3<int> oldshift = g->shift();
 		g->setShift(ui.GridShiftXSpin->value(), ui.GridShiftYSpin->value(), ui.GridShiftZSpin->value());
-		if (ui.ShiftAtomNoneRadio->isChecked() == FALSE)
+		if (ui.ShiftAtomNoneRadio->isChecked() == false)
 		{
 			Model* m = g->parent();
 			// Determine shift amount...
@@ -742,9 +742,9 @@ void GridsWidget::gridShiftChanged()
 			if (ui.ShiftAtomAllRadio->isChecked())
 			{
 				m->markAll();
-				m->translateSelectionLocal(vec, TRUE);
+				m->translateSelectionLocal(vec, true);
 			}
-			else m->translateSelectionLocal(vec, FALSE);
+			else m->translateSelectionLocal(vec, false);
 			m->endUndoState();
 		}
 	}

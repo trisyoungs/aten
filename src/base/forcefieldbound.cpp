@@ -229,19 +229,19 @@ double ForcefieldBound::vdwScale() const
 bool ForcefieldBound::namesMatch(QString namei, QString namej)
 {
 	// Bond interaction
-	if ((typeNames_[0] == namei) && (typeNames_[1] == namej)) return TRUE;
-	else if ((typeNames_[0] == namej) && (typeNames_[1] == namei)) return TRUE;
-	return FALSE;
+	if ((typeNames_[0] == namei) && (typeNames_[1] == namej)) return true;
+	else if ((typeNames_[0] == namej) && (typeNames_[1] == namei)) return true;
+	return false;
 }
 
 // Return if supplied names match those stored (in either 'direction')
 bool ForcefieldBound::namesMatch(QString namei, QString namej, QString namek)
 {
 	// Angle interaction
-	if (typeNames_[1] != namej) return FALSE;
-	if ((typeNames_[0] == namei) && (typeNames_[2] == namek)) return TRUE;
-	else if ((typeNames_[0] == namek) && (typeNames_[2] == namei)) return TRUE;
-	return FALSE;
+	if (typeNames_[1] != namej) return false;
+	if ((typeNames_[0] == namei) && (typeNames_[2] == namek)) return true;
+	else if ((typeNames_[0] == namek) && (typeNames_[2] == namei)) return true;
+	return false;
 }
 
 // Return if supplied names match those stored (in either 'direction')
@@ -250,13 +250,13 @@ bool ForcefieldBound::namesMatch(QString namei, QString namej, QString namek, QS
 	// Torsion interaction
 	if ((typeNames_[1] == namej) && (typeNames_[2] == namek))
 	{
-		if ((typeNames_[0] == namei) && (typeNames_[3] == namel)) return TRUE;
-		else return FALSE;
+		if ((typeNames_[0] == namei) && (typeNames_[3] == namel)) return true;
+		else return false;
 	}
 	else if ((typeNames_[2] == namej) && (typeNames_[1] == namek))
 	{
-		if ((typeNames_[3] == namei) && (typeNames_[0] == namel)) return TRUE;
-		else return FALSE;
+		if ((typeNames_[3] == namei) && (typeNames_[0] == namel)) return true;
+		else return false;
 	}
-	return FALSE;
+	return false;
 }

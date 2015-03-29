@@ -36,8 +36,8 @@ class MatrixVariable : public Variable
 {
 	public:
 	// Constructor / Destructor
-	MatrixVariable(bool constant = FALSE);
-	MatrixVariable(Matrix m, bool constant = FALSE);
+	MatrixVariable(bool constant = false);
+	MatrixVariable(Matrix m, bool constant = false);
 	MatrixVariable(TreeNode* xx, TreeNode* xy, TreeNode* xz, TreeNode* yx, TreeNode* yy, TreeNode* yz, TreeNode* zx, TreeNode* zy, TreeNode* zz);
 	~MatrixVariable();
 	friend class MatrixArrayVariable;
@@ -98,7 +98,7 @@ class MatrixArrayVariable : public Variable
 {
 	public:
 	// Constructor / Destructor
-	MatrixArrayVariable(TreeNode* sizeexpr, bool constant = FALSE);
+	MatrixArrayVariable(TreeNode* sizeexpr, bool constant = false);
 	~MatrixArrayVariable();
 
 

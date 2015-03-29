@@ -34,7 +34,7 @@ bool Aten::loadPrefs()
 	bool result, found;
 
 	// Aten's preferences
-	found = FALSE;
+	found = false;
 	QString filename = atenDirectoryFile("prefs.dat");
 	fileInfo.setFile(filename);
 	Messenger::print("Looking for user preferences file '%s'...", qPrintable(filename));
@@ -48,18 +48,18 @@ bool Aten::loadPrefs()
 	else Messenger::print("User preferences file not found.");
 
 	// Program preferences
-	found = FALSE;
+	found = false;
 	filename = atenDirectoryFile("user.dat");
 	fileInfo.setFile(filename);
 	Messenger::print("Looking for user preferences file '%s'...", qPrintable(filename));
-	if (fileInfo.exists()) found = TRUE;
+	if (fileInfo.exists()) found = true;
 	else
 	{
 		// Try .txt extension instead
 		filename = atenDirectoryFile("user.txt");
 		fileInfo.setFile(filename);
 		Messenger::print("Looking for user preferences file '%s'...", qPrintable(filename));
-		if (fileInfo.exists()) found = TRUE;
+		if (fileInfo.exists()) found = true;
 	}
 	if (found)
 	{
@@ -71,7 +71,7 @@ bool Aten::loadPrefs()
 	else Messenger::print("User preferences file not found.");
 
 	Messenger::exit("Aten::loadPrefs");
-	return TRUE;
+	return true;
 }
 
 // Save user preferences file
@@ -79,11 +79,11 @@ bool Aten::savePrefs(QString fileName)
 {
 	Messenger::enter("Aten::savePrefs");
 
-	bool result = TRUE;
+	bool result = true;
 	QString line;
 	int n, i;
 	LineParser prefsfile;
-	prefsfile.openOutput(fileName, TRUE);
+	prefsfile.openOutput(fileName, true);
 	if (prefsfile.isFileGoodForWriting())
 	{
 		// First - loop over all element data, comparing it to the stored default values
@@ -114,13 +114,13 @@ bool Aten::savePrefs(QString fileName)
 			rv.set(VTypes::PreferencesData, this);
 
 			// Convert original new value to string representation
-			if (!PreferencesVariable::retrieveAccessor(i, rv, FALSE)) continue;
+			if (!PreferencesVariable::retrieveAccessor(i, rv, false)) continue;
 			if (rv.type() == VTypes::DoubleData) newValue.sprintf("%10.5e", rv.asDouble());
 			else newValue = rv.asString();
 			
 			// Convert default value to string representation
 			rv.set(VTypes::PreferencesData, &defaults);
-			if (!PreferencesVariable::retrieveAccessor(i, rv, FALSE)) continue;
+			if (!PreferencesVariable::retrieveAccessor(i, rv, false)) continue;
 			if (rv.type() == VTypes::DoubleData) defaultValue.sprintf("%10.5e", rv.asDouble());
 			else defaultValue = rv.asString();
 
@@ -132,7 +132,7 @@ bool Aten::savePrefs(QString fileName)
 			prefsfile.writeLine(line);
 		}
 	}
-	else result = FALSE;
+	else result = false;
 	prefsfile.closeFiles();
 
 	Messenger::exit("Aten::savePrefs");

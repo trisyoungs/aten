@@ -35,7 +35,7 @@ class CellVariable : public PointerVariable
 {
 	public:
 	// Constructor / Destructor
-	CellVariable(UnitCell* i = NULL, bool constant = FALSE);
+	CellVariable(UnitCell* i = NULL, bool constant = false);
 	~CellVariable();
 
 
@@ -70,7 +70,7 @@ class CellArrayVariable : public PointerArrayVariable
 {
 	public:
 	// Constructor / Destructor
-	CellArrayVariable(TreeNode* sizeexpr, bool constant = FALSE);
+	CellArrayVariable(TreeNode* sizeexpr, bool constant = false);
 
 
 	/*

@@ -73,8 +73,8 @@ GlyphData::GlyphData() : ListItem<GlyphData>()
 	// Private variables
 	atom_ = NULL;
 	atomData_ = GlyphData::PositionData;
-	atomSetLast_ = FALSE;
-	set_ = FALSE;
+	atomSetLast_ = false;
+	set_ = false;
 	colour_[0] = prefs.colour(Prefs::GlyphDefaultColour)[0];
 	colour_[1] = prefs.colour(Prefs::GlyphDefaultColour)[1];
 	colour_[2] = prefs.colour(Prefs::GlyphDefaultColour)[2];
@@ -85,8 +85,8 @@ GlyphData::GlyphData() : ListItem<GlyphData>()
 void GlyphData::setVector(double x, double y, double z)
 {
 	vector_.set(x,y,z);
-	set_ = TRUE;
-	atomSetLast_ = FALSE;
+	set_ = true;
+	atomSetLast_ = false;
 }
 
 // Set vector data
@@ -99,21 +99,21 @@ void GlyphData::setVector(Vec3<double> vec)
 void GlyphData::setVector(int i, double d)
 {
 	vector_.set(i, d);
-	set_ = TRUE;
-	atomSetLast_ = FALSE;
+	set_ = true;
+	atomSetLast_ = false;
 }
 
 // Set atom data
 void GlyphData::setAtom(Atom* atom)
 {
 	atom_ = atom;
-	set_ = TRUE;
+	set_ = true;
 	if (atom_ == NULL)
 	{
 		Messenger::print("Info - NULL atom pointer stored in glyph data, so vector data will be used instead.");
-		atomSetLast_ = FALSE;
+		atomSetLast_ = false;
 	}
-	else atomSetLast_ = TRUE;
+	else atomSetLast_ = true;
 }
 
 // Set atom data type for datapoint
@@ -195,9 +195,9 @@ void GlyphData::copyColour(Vec4<GLfloat>& col) const
 Glyph::Glyph() : ListItem<Glyph>()
 {
 	// Private variables
-	selected_ = FALSE;
-	visible_ = TRUE;
-	solid_ = TRUE;
+	selected_ = false;
+	visible_ = true;
+	solid_ = true;
 	rotated_ = false;
 	type_ = Glyph::nGlyphTypes;
 	parent_ = NULL;
@@ -339,28 +339,28 @@ void Glyph::resetRotation()
 // Rotate about X axis
 void Glyph::rotateX(double angle)
 {
-	rotation_.applyRotationAxis(1.0, 0.0, 0.0, angle, FALSE);
+	rotation_.applyRotationAxis(1.0, 0.0, 0.0, angle, false);
 	rotated_ = true;
 }
 
 // Rotate about Y axis
 void Glyph::rotateY(double angle)
 {
-	rotation_.applyRotationAxis(0.0, 1.0, 0.0, angle, FALSE);
+	rotation_.applyRotationAxis(0.0, 1.0, 0.0, angle, false);
 	rotated_ = true;
 }
 
 // Rotate about Z axis
 void Glyph::rotateZ(double angle)
 {
-	rotation_.applyRotationAxis(0.0, 0.0, 1.0, angle, FALSE);
+	rotation_.applyRotationAxis(0.0, 0.0, 1.0, angle, false);
 	rotated_ = true;
 }
 
 // Rotate about arbitrary axis
 void Glyph::rotate(double x, double y, double z, double angle)
 {
-	rotation_.applyRotationAxis(x, y, z, angle, TRUE);
+	rotation_.applyRotationAxis(x, y, z, angle, true);
 	rotated_ = true;
 }
 

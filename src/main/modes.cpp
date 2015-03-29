@@ -45,7 +45,7 @@ void Aten::exportModels()
 	for (Model* m = models_.first(); m != NULL; m = m->next)
 	{
 		// Set current model
-		setCurrentModel(m, TRUE);
+		setCurrentModel(m, true);
 
 		// Generate new filename for model, with new suffix
 		fileInfo.setFile(m->filename());
@@ -88,7 +88,7 @@ void Aten::processModels()
 		for (Program* cmd = batchCommands_.first(); cmd != NULL; cmd = cmd->next)
 		{
 			// Set the current model
-			setCurrentModel(m, TRUE);
+			setCurrentModel(m, true);
 
 			// Run the command list
 			if (!cmd->execute(rv)) return;
@@ -101,7 +101,7 @@ void Aten::saveModels()
 {
 	for (Model* m = models_.first(); m != NULL; m = m->next)
 	{
-		setCurrentModel(m, TRUE);
+		setCurrentModel(m, true);
 		// Check model's filter - it will be the import filter, so try to get the partner
 		Tree* filter = m->filter();
 		if (filter == NULL)

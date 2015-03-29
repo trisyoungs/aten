@@ -173,7 +173,7 @@ void Model::setAtomicAngle(Atom* i, Atom* j, Atom* k, double newangle)
 	double delta = newangle - ang;
 	
 	u.setColumn(0, v, 0.0);
-	u.setColumn(1, v.orthogonal(TRUE), 0.0);
+	u.setColumn(1, v.orthogonal(true), 0.0);
 	u.setColumn(2, v * u.columnAsVec3(1), 0.0);
 	u.columnNormalise(2);
 	
@@ -202,7 +202,7 @@ void Model::setAtomicTorsion(Atom* i, Atom* j, Atom* k, Atom* l, double newtorsi
 	double delta = newtorsion - ang;
 	
 	u.setColumn(0, v, 0.0);
-	u.setColumn(1, v.orthogonal(TRUE), 0.0);
+	u.setColumn(1, v.orthogonal(true), 0.0);
 	u.setColumn(2, v * u.columnAsVec3(1), 0.0);
 	u.columnNormalise(2);
 	

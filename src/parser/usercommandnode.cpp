@@ -55,7 +55,7 @@ bool UserCommandNode::checkArguments()
 		{
 			Messenger::print("Error: Argument %i to user function '%s' is required.", count+1, qPrintable(function_->name()));
 			Messenger::exit("UserCommandNode::checkArguments");
-			return FALSE;
+			return false;
 		}
 		else if ((!required) && ((args_.nItems() <= count))) break;
 		// Check type of argument against type provided.
@@ -71,7 +71,7 @@ bool UserCommandNode::checkArguments()
 			{
 				Messenger::print("Error: Argument %i to user function '%s' expected %s but was given %s.", count+1, qPrintable(function_->name()), VTypes::aDataType(v->returnType()), VTypes::aDataType(args_[count]->item->returnType()));
 				Messenger::exit("UserCommandNode::checkArguments");
-				return FALSE;
+				return false;
 			}
 		}
 		else if (v->returnType() == args_[count]->item->returnType())
@@ -83,7 +83,7 @@ bool UserCommandNode::checkArguments()
 		{
 			Messenger::print("Error: Argument %i to user function '%s' expected %s but was given %s.", count+1, qPrintable(function_->name()), VTypes::aDataType(v->returnType()), VTypes::aDataType(args_[count]->item->returnType()));
 			Messenger::exit("UserCommandNode::checkArguments");
-			return FALSE;
+			return false;
 		}
 	}
 	// Extra arguments provided?
@@ -91,17 +91,17 @@ bool UserCommandNode::checkArguments()
 	{
 		Messenger::print("Error: %i extra arguments given to user function '%s'.", args_.nItems()-count, qPrintable(function_->name()));
 		Messenger::exit("UserCommandNode::checkArguments");
-		return FALSE;
+		return false;
 	}
 	Messenger::exit("UserCommandNode::checkArguments");
-	return TRUE;
+	return true;
 }
 
 // Execute command
 bool UserCommandNode::execute(ReturnValue& rv)
 {
 	// Check for valid function
-	if (function_ == NULL) return FALSE;
+	if (function_ == NULL) return false;
 
 	// Poke arguments into the functions argument variables
 	Refitem<TreeNode,int>* value = args_.first();
@@ -112,8 +112,8 @@ bool UserCommandNode::execute(ReturnValue& rv)
 		// If 'value' is not NULL, execute it and get the value to pass to the argument
 		if (value != NULL)
 		{
-			if (!value->item->execute(varval)) return FALSE;
-			if (!arg->set(varval)) return FALSE;
+			if (!value->item->execute(varval)) return false;
+			if (!arg->set(varval)) return false;
 			value = value->next;
 		}
 		else
@@ -121,7 +121,7 @@ bool UserCommandNode::execute(ReturnValue& rv)
 			// Presumably a required argument?
 			v = ((VariableNode*) arg)->variable();
 			if (v->initialValue() == NULL) printf("Required argument not fulfilled?\n");
-			else if (!v->initialise()) return FALSE;
+			else if (!v->initialise()) return false;
 		}
 	}
 	// We must pass the current input 'state' of this node's parent tree - give it the LineParser pointer...
@@ -151,14 +151,14 @@ void UserCommandNode::nodePrint(int offset, const char* prefix)
 bool UserCommandNode::set(ReturnValue& rv)
 {
 	printf("Internal Error: Trying to 'set' a UserCommandNode.\n");
-	return FALSE;
+	return false;
 }
 
 // Initialise node
 bool UserCommandNode::initialise()
 {
 	printf("Internal Error: A UserCommandNode cannot be initialised.\n");
-	return FALSE;
+	return false;
 }
 
 // Set function pointer

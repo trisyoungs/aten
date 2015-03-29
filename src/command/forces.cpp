@@ -30,8 +30,8 @@ ATEN_USING_NAMESPACE
 // Calculate forces at trajectory configuration ('frameforces')
 bool Commands::function_FrameForces(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	if (!obj.m->createExpression(Choice(), Choice(), Choice(), aten_.currentForcefield(), aten_.combinationRules())) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
+	if (!obj.m->createExpression(Choice(), Choice(), Choice(), aten_.currentForcefield(), aten_.combinationRules())) return false;
 	bool success = obj.m->calculateForces(obj.rs());
 	rv.reset();
 	return success;
@@ -40,8 +40,8 @@ bool Commands::function_FrameForces(CommandNode* c, Bundle& obj, ReturnValue& rv
 // Calculate atomic forces of model ('modelforces')
 bool Commands::function_ModelForces(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	if (!obj.m->createExpression(Choice(), Choice(), Choice(), aten_.currentForcefield(), aten_.combinationRules())) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
+	if (!obj.m->createExpression(Choice(), Choice(), Choice(), aten_.currentForcefield(), aten_.combinationRules())) return false;
 	bool success = obj.m->calculateForces(obj.m);
 	rv.reset();
 	return success;
@@ -50,9 +50,9 @@ bool Commands::function_ModelForces(CommandNode* c, Bundle& obj, ReturnValue& rv
 // Print forces of model ('printforces')
 bool Commands::function_PrintForces(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	obj.m->printForces();
 	rv.reset();
-	return TRUE;
+	return true;
 }
 

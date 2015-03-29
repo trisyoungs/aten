@@ -46,31 +46,31 @@ PatternVariable::~PatternVariable()
 
 // Accessor data
 Accessor PatternVariable::accessorData[PatternVariable::nAccessors] = {
-	{ "angles", 	VTypes::PatternBoundData,	-1, TRUE },
-	{ "atoms", 	VTypes::AtomData,		-1, TRUE },
-	{ "bonds", 	VTypes::PatternBoundData,	-1, TRUE },
-	{ "ffAngles",	VTypes::ForcefieldBoundData,	0, TRUE },
-	{ "ffBonds",	VTypes::ForcefieldBoundData,	0, TRUE },
-	{ "ffTorsions",	VTypes::ForcefieldBoundData,	0, TRUE },
-	{ "ffTypes",	VTypes::ForcefieldAtomData,	0, TRUE },
-	{ "ff",		VTypes::ForcefieldData,		0, FALSE },
-	{ "firstAtom",	VTypes::AtomData,		0, TRUE },
-	{ "firstAtomId",VTypes::IntegerData,		0, TRUE },
-	{ "fixed",	VTypes::IntegerData,		0, FALSE },
-	{ "lastAtom",	VTypes::AtomData,		0, TRUE },
-	{ "lastAtomId",	VTypes::IntegerData,		0, TRUE },
-	{ "name",	VTypes::StringData,		0, FALSE },
-	{ "nAngles",	VTypes::IntegerData,		0, TRUE },
-	{ "nAtoms",	VTypes::IntegerData,		0, TRUE },
-	{ "nBonds",	VTypes::IntegerData,		0, TRUE },
-	{ "nFFAngles",	VTypes::IntegerData,		0, TRUE },
-	{ "nFFBonds",	VTypes::IntegerData,		0, TRUE },
-	{ "nFFTorsions",VTypes::IntegerData,		0, TRUE },
-	{ "nFFTypes",	VTypes::IntegerData,		0, TRUE },
-	{ "nMolAtoms",	VTypes::IntegerData,		0, TRUE },
-	{ "nMols",	VTypes::IntegerData,		0, TRUE },
-	{ "nTorsions",	VTypes::IntegerData,		0, TRUE },
-	{ "torsions",	VTypes::PatternBoundData,	-1, TRUE }
+	{ "angles", 	VTypes::PatternBoundData,	-1, true },
+	{ "atoms", 	VTypes::AtomData,		-1, true },
+	{ "bonds", 	VTypes::PatternBoundData,	-1, true },
+	{ "ffAngles",	VTypes::ForcefieldBoundData,	0, true },
+	{ "ffBonds",	VTypes::ForcefieldBoundData,	0, true },
+	{ "ffTorsions",	VTypes::ForcefieldBoundData,	0, true },
+	{ "ffTypes",	VTypes::ForcefieldAtomData,	0, true },
+	{ "ff",		VTypes::ForcefieldData,		0, false },
+	{ "firstAtom",	VTypes::AtomData,		0, true },
+	{ "firstAtomId",VTypes::IntegerData,		0, true },
+	{ "fixed",	VTypes::IntegerData,		0, false },
+	{ "lastAtom",	VTypes::AtomData,		0, true },
+	{ "lastAtomId",	VTypes::IntegerData,		0, true },
+	{ "name",	VTypes::StringData,		0, false },
+	{ "nAngles",	VTypes::IntegerData,		0, true },
+	{ "nAtoms",	VTypes::IntegerData,		0, true },
+	{ "nBonds",	VTypes::IntegerData,		0, true },
+	{ "nFFAngles",	VTypes::IntegerData,		0, true },
+	{ "nFFBonds",	VTypes::IntegerData,		0, true },
+	{ "nFFTorsions",VTypes::IntegerData,		0, true },
+	{ "nFFTypes",	VTypes::IntegerData,		0, true },
+	{ "nMolAtoms",	VTypes::IntegerData,		0, true },
+	{ "nMols",	VTypes::IntegerData,		0, true },
+	{ "nTorsions",	VTypes::IntegerData,		0, true },
+	{ "torsions",	VTypes::PatternBoundData,	-1, true }
 };
 
 // Function data
@@ -153,7 +153,7 @@ bool PatternVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayInde
 	{
 		printf("Internal Error: Accessor id %i is out of range for Pattern type.\n", i);
 		Messenger::exit("PatternVariable::retrieveAccessor");
-		return FALSE;
+		return false;
 	}
 	Accessors acc = (Accessors) i;
 	// Check for correct lack/presence of array index given
@@ -161,7 +161,7 @@ bool PatternVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayInde
 	{
 		Messenger::print("Error: Unnecessary array index provided for member '%s'.", accessorData[i].name);
 		Messenger::exit("PatternVariable::retrieveAccessor");
-		return FALSE;
+		return false;
 	}
 	else if ((accessorData[i].arraySize > 0) && (hasArrayIndex))
 	{
@@ -169,16 +169,16 @@ bool PatternVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayInde
 		{
 			Messenger::print("Error: Array index out of bounds for member '%s' (%i, range is 1-%i).", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
 			Messenger::exit("PatternVariable::retrieveAccessor");
-			return FALSE;
+			return false;
 		}
 	}
 	// Get current data from ReturnValue
-	bool result = TRUE;
+	bool result = true;
 	Pattern* ptr = (Pattern*) rv.asPointer(VTypes::PatternData, result);
 	if ((!result) || (ptr == NULL))
 	{
 		Messenger::print("Invalid (NULL) %s reference encountered.", VTypes::dataType(VTypes::PatternData));
-		result = FALSE;
+		result = false;
 	}
 	if (result) switch (acc)
 	{
@@ -187,7 +187,7 @@ bool PatternVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayInde
 			else if (arrayIndex > ptr->nAngles())
 			{
 				Messenger::print("Angle array index (%i) is out of bounds for pattern '%s'", arrayIndex, qPrintable(ptr->name()));
-				result = FALSE;
+				result = false;
 			}
 			else rv.set(VTypes::PatternBoundData, ptr->angle(arrayIndex-1));
 			break;
@@ -196,7 +196,7 @@ bool PatternVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayInde
 			else if (arrayIndex > ptr->totalAtoms())
 			{
 				Messenger::print("Atom array index (%i) is out of bounds for pattern '%s'", arrayIndex, qPrintable(ptr->name()));
-				result = FALSE;
+				result = false;
 			}
 			else rv.set(VTypes::AtomData, ptr->parent()->atom(arrayIndex-1+ptr->startAtom()));
 			break;
@@ -205,7 +205,7 @@ bool PatternVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayInde
 			else if (arrayIndex > ptr->nBonds())
 			{
 				Messenger::print("Bond array index (%i) is out of bounds for pattern '%s'", arrayIndex, qPrintable(ptr->name()));
-				result = FALSE;
+				result = false;
 			}
 			else rv.set(VTypes::PatternBoundData, ptr->bond(arrayIndex-1));
 			break;
@@ -218,7 +218,7 @@ bool PatternVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayInde
 			else if (arrayIndex > ptr->nForcefieldAngles())
 			{
 				Messenger::print("Forcefield angle array index (%i) is out of bounds for pattern '%s'", arrayIndex, qPrintable(ptr->name()));
-				result = FALSE;
+				result = false;
 			}
 			else rv.set(VTypes::ForcefieldBoundData, ptr->forcefieldAngle(arrayIndex-1)->item, ptr->forcefieldAngle(arrayIndex-1));
 			break;
@@ -231,7 +231,7 @@ bool PatternVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayInde
 			else if (arrayIndex > ptr->nForcefieldBonds())
 			{
 				Messenger::print("Forcefield bond array index (%i) is out of bounds for pattern '%s'", arrayIndex, qPrintable(ptr->name()));
-				result = FALSE;
+				result = false;
 			}
 			else rv.set(VTypes::ForcefieldBoundData, ptr->forcefieldBond(arrayIndex-1)->item, ptr->forcefieldBond(arrayIndex-1));
 			break;
@@ -244,7 +244,7 @@ bool PatternVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayInde
 			else if (arrayIndex > ptr->nForcefieldTorsions())
 			{
 				Messenger::print("Forcefield torsion array index (%i) is out of bounds for pattern '%s'", arrayIndex, qPrintable(ptr->name()));
-				result = FALSE;
+				result = false;
 			}
 			else rv.set(VTypes::ForcefieldBoundData, ptr->forcefieldTorsion(arrayIndex-1)->item, ptr->forcefieldTorsion(arrayIndex-1));
 			break;
@@ -257,7 +257,7 @@ bool PatternVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayInde
 			else if (arrayIndex > ptr->nUniqueForcefieldTypes())
 			{
 				Messenger::print("Forcefield types array index (%i) is out of bounds for pattern '%s'", arrayIndex, qPrintable(ptr->name()));
-				result = FALSE;
+				result = false;
 			}
 			else rv.set(VTypes::ForcefieldAtomData, ptr->uniqueForcefieldType(arrayIndex-1)->item, ptr->uniqueForcefieldType(arrayIndex-1));
 			break;
@@ -317,13 +317,13 @@ bool PatternVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayInde
 			else if (arrayIndex > ptr->nTorsions())
 			{
 				Messenger::print("Torsion array index (%i) is out of bounds for pattern '%s'", arrayIndex, qPrintable(ptr->name()));
-				result = FALSE;
+				result = false;
 			}
 			else rv.set(VTypes::PatternBoundData, ptr->torsion(arrayIndex-1));
 			break;
 		default:
 			printf("Internal Error: Access to member '%s' has not been defined in PatternVariable.\n", accessorData[i].name);
-			result = FALSE;
+			result = false;
 			break;
 	}
 	Messenger::exit("PatternVariable::retrieveAccessor");
@@ -339,11 +339,11 @@ bool PatternVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& new
 	{
 		printf("Internal Error: Accessor id %i is out of range for Pattern type.\n", i);
 		Messenger::exit("PatternVariable::setAccessor");
-		return FALSE;
+		return false;
 	}
 	Accessors acc = (Accessors) i;
 	// Check for correct lack/presence of array index given to original accessor, and nature of new value
-	bool result = TRUE;
+	bool result = true;
 	if (accessorData[i].arraySize != 0)
 	{
 		if (hasArrayIndex)
@@ -351,12 +351,12 @@ bool PatternVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& new
 			if ((accessorData[i].arraySize > 0) && ( (arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize) ))
 			{
 				Messenger::print("Error: Array index provided for member '%s' is out of range (%i, range is 1-%i).", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
-				result = FALSE;
+				result = false;
 			}
 			if (newValue.arraySize() > 0)
 			{
 				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.", accessorData[i].name);
-				result = FALSE;
+				result = false;
 			}
 		}
 		else
@@ -364,7 +364,7 @@ bool PatternVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& new
 			if (newValue.arraySize() > accessorData[i].arraySize)
 			{
 				Messenger::print("Error: The array being assigned to member '%s' is larger than the size of the desination array (%i cf. %i).", accessorData[i].name, newValue.arraySize(), accessorData[i].arraySize);
-				result = FALSE;
+				result = false;
 			}
 		}
 	}
@@ -376,26 +376,26 @@ bool PatternVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& new
 			if (accessorData[i].returnType != VTypes::VectorData)
 			{
 				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.", accessorData[i].name);
-				result = FALSE;
+				result = false;
 			}
 			else if ((newValue.type() != VTypes::VectorData) && (newValue.arraySize() != 3))
 			{
 				Messenger::print("Error: Only an array of size 3 can be assigned to a vector (member '%s').", accessorData[i].name);
-				result = FALSE;
+				result = false;
 			}
 		}
 	}
 	if (!result)
 	{
 		Messenger::exit("PatternVariable::setAccessor");
-		return FALSE;
+		return false;
 	}
 	// Get current data from ReturnValue
 	Pattern* ptr = (Pattern*) sourcerv.asPointer(VTypes::PatternData, result);
 	if ((!result) || (ptr == NULL))
 	{
 		Messenger::print("Invalid (NULL) %s reference encountered.", VTypes::dataType(VTypes::PatternData));
-		result = FALSE;
+		result = false;
 	}
 	// Set value based on enumerated id
 	if (result) switch (acc)
@@ -411,7 +411,7 @@ bool PatternVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& new
 			break;
 		default:
 			printf("PatternVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);
-			result = FALSE;
+			result = false;
 			break;
 	}
 	Messenger::exit("PatternVariable::setAccessor");
@@ -427,10 +427,10 @@ bool PatternVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 	{
 		printf("Internal Error: FunctionAccessor id %i is out of range for Pattern type.\n", i);
 		Messenger::exit("PatternVariable::performFunction");
-		return FALSE;
+		return false;
 	}
 	// Get current data from ReturnValue
-	bool result = TRUE;
+	bool result = true;
 	Pattern* ptr = (Pattern*) rv.asPointer(VTypes::PatternData, result);
 	int index, id_i, id_j;
 	if (result) switch (i)
@@ -440,13 +440,13 @@ bool PatternVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 			if ((id_i < 0) || (id_i >= ptr->nAtoms()))
 			{
 				Messenger::print("First atom id %i is out of range for 'atomsinring' function in pattern '%s'.", id_i, qPrintable(ptr->name()));
-				result = FALSE;
+				result = false;
 			}
 			id_j = node->hasArg(1) ? node->argi(1)-1 : -1;
 			if ((id_j != -1) && ((id_j < 0) || (id_j >= ptr->nAtoms())))
 			{
 				Messenger::print("Second atom id %i is out of range for 'atomsinring' function in pattern '%s'.", id_j, qPrintable(ptr->name()));
-				result = FALSE;
+				result = false;
 			}
 			if (result) rv.set(ptr->atomsInRing(id_i, id_j));
 			break;
@@ -455,7 +455,7 @@ bool PatternVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 			if ((index < 1) || (index > ptr->nMolecules()))
 			{
 				Messenger::print("Molecule id %i is out of range for 'cog' function in pattern '%s'.", index, qPrintable(ptr->name()));
-				result = FALSE;
+				result = false;
 			}
 			else rv.set(ptr->calculateCog(index-1));
 			break;
@@ -464,13 +464,13 @@ bool PatternVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 			if ((index < 1) || (index > ptr->nMolecules()))
 			{
 				Messenger::print("Molecule id %i is out of range for 'com' function in pattern '%s'.", index, qPrintable(ptr->name()));
-				result = FALSE;
+				result = false;
 			}
 			else rv.set(ptr->calculateCom(index-1));
 			break;
 		default:
 			printf("Internal Error: Access to function '%s' has not been defined in PatternVariable.\n", functionData[i].name);
-			result = FALSE;
+			result = false;
 			break;
 	}
 	Messenger::exit("PatternVariable::performFunction");

@@ -35,7 +35,7 @@ class ModelVariable : public PointerVariable
 {
 	public:
 	// Constructor / Destructor
-	ModelVariable(Model* ptr = NULL, bool constant = FALSE);
+	ModelVariable(Model* ptr = NULL, bool constant = false);
 	~ModelVariable();
 
 
@@ -71,7 +71,7 @@ class ModelArrayVariable : public PointerArrayVariable
 {
 	public:
 	// Constructor / Destructor
-	ModelArrayVariable(TreeNode* sizeexpr, bool constant = FALSE);
+	ModelArrayVariable(TreeNode* sizeexpr, bool constant = false);
 
 
 	/*

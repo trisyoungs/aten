@@ -54,7 +54,7 @@ bool DoubleVariable::set(ReturnValue& rv)
 	if (readOnly_)
 	{
 		Messenger::print("A constant value (in this case a double) cannot be assigned to.");
-		return FALSE;
+		return false;
 	}
 	bool success;
 	doubleData_ = rv.asDouble(success);
@@ -67,10 +67,10 @@ bool DoubleVariable::setFromDouble(double d)
 	if (readOnly_)
 	{
 		Messenger::print("A constant value (in this case a double) cannot be assigned to.");
-		return FALSE;
+		return false;
 	}
 	doubleData_ = d;
-	return TRUE;
+	return true;
 }
 
 // Reset variable
@@ -83,7 +83,7 @@ void DoubleVariable::reset()
 bool DoubleVariable::execute(ReturnValue& rv)
 {
 	rv.set(doubleData_);
-	return TRUE;
+	return true;
 }
 
 /*
@@ -136,14 +136,14 @@ bool DoubleArrayVariable::set(ReturnValue& rv)
 	if (readOnly_)
 	{
 		Messenger::print("A constant value (in this case a double array) cannot be assigned to.");
-		return FALSE;
+		return false;
 	}
 	if (doubleArrayData_ == NULL)
 	{
 		printf("Internal Error: Array '%s' has not been initialised.\n", qPrintable(name_));
-		return FALSE;
+		return false;
 	}
-	bool success = FALSE;
+	bool success = false;
 	// Is the supplied ReturnValue an array?
 	if (rv.type() == VTypes::VectorData)
 	{
@@ -171,22 +171,22 @@ bool DoubleArrayVariable::setAsArray(ReturnValue& rv, int arrayIndex)
 	if (readOnly_)
 	{
 		Messenger::print("A constant value (in this case an integer array?) cannot be assigned to.");
-		return FALSE;
+		return false;
 	}
 	if (doubleArrayData_ == NULL)
 	{
 		printf("Internal Error: Array '%s' has not been initialised.\n", qPrintable(name_));
-		return FALSE;
+		return false;
 	}
 	// Check index
 	if ((arrayIndex < 0) || (arrayIndex >= arraySize_))
 	{
 		Messenger::print("Index %i out of bounds for array '%s'.", arrayIndex+1, qPrintable(name_));
-		return FALSE;
+		return false;
 	}
 	// Set individual element
 	doubleArrayData_[arrayIndex] = rv.asDouble();
-	return TRUE;
+	return true;
 }
 
 // Reset variable
@@ -219,17 +219,17 @@ bool DoubleArrayVariable::execute(ReturnValue& rv)
 		if (!readOnly_)
 		{
 			printf("Internal Error: Array '%s' has not been initialised and can't be executed.\n", qPrintable(name_));
-			return FALSE;
+			return false;
 		}
 		if (!initialise())
 		{
 			printf("Internal Error: Array '%s' failed to initialise and so can't be executed.\n", qPrintable(name_));
-			return FALSE;
+			return false;
 		}
 	}
 	else if (readOnly_) reset();
 	rv.setArray(VTypes::DoubleData, doubleArrayData_, arraySize_);
-	return TRUE;
+	return true;
 }
 
 // Return value of node as array
@@ -239,10 +239,10 @@ bool DoubleArrayVariable::executeAsArray(ReturnValue& rv, int arrayIndex)
 	if ((arrayIndex < 0) || (arrayIndex >= arraySize_))
 	{
 		Messenger::print("Error: Array index %i is out of bounds for array '%s'.", arrayIndex+1, qPrintable(name_));
-		return FALSE;
+		return false;
 	}
 	rv.set( doubleArrayData_[arrayIndex] );
-	return TRUE;
+	return true;
 }
 
 /*
@@ -277,7 +277,7 @@ bool DoubleArrayVariable::initialise()
 	if (!arraySizeExpression_->execute(newsize))
 	{
 		Messenger::print("Failed to find size for double array '%s'.", qPrintable(name_));
-		return FALSE;
+		return false;
 	}
 	// If the array is already allocated, free it only if the size is different
 	if ((arraySize_ != newsize.asInteger()) && (doubleArrayData_ != NULL)) { delete[] doubleArrayData_; doubleArrayData_ = NULL; }
@@ -291,7 +291,7 @@ bool DoubleArrayVariable::initialise()
 		ReturnValue value;
 		for (Refitem<TreeNode,int>* ri = args_.first(); ri != NULL; ri = ri->next)
 		{
-			if (!ri->item->execute(value)) return FALSE;
+			if (!ri->item->execute(value)) return false;
 			doubleArrayData_[count++] = value.asDouble();
 		}
 	}
@@ -301,9 +301,9 @@ bool DoubleArrayVariable::initialise()
 		ReturnValue rv;
 		if (initialValue_->execute(rv))
 		{
-			if (!set(rv)) return FALSE;
+			if (!set(rv)) return false;
 		}
-		else return FALSE;
+		else return false;
 	}
-	return TRUE;
+	return true;
 }

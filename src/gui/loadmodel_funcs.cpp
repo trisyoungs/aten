@@ -28,7 +28,7 @@
 // Constructor
 AtenLoadModel::AtenLoadModel(AtenWindow& parent) : QDialog(&parent), parent_(parent)
 {
-	refreshing_ = FALSE;
+	refreshing_ = false;
 	ui.setupUi(this);
 }
 
@@ -115,7 +115,7 @@ void AtenLoadModel::on_KeepTypesCheck_clicked(bool checked)
 // Update controls and show dialog
 void AtenLoadModel::updateAndShow()
 {
-	refreshing_ = TRUE;
+	refreshing_ = true;
 
 	if (prefs.bondOnLoad() == Choice::Default) ui.RebondCombo->setCurrentIndex(0);
 	else if (prefs.bondOnLoad() == Choice::No) ui.RebondCombo->setCurrentIndex(1);
@@ -146,7 +146,7 @@ void AtenLoadModel::updateAndShow()
 	ui.KeepNamesCheck->setChecked(prefs.keepNames());
 	ui.KeepTypesCheck->setChecked(prefs.keepTypes());
 
-	refreshing_ = FALSE;
+	refreshing_ = false;
 }
 
 /*

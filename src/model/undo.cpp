@@ -29,14 +29,14 @@ ATEN_USING_NAMESPACE
 void Model::enableUndoRedo()
 {
 	Messenger::print(Messenger::Verbose, "Undo/redo has been enabled for model '%s'.", qPrintable(name_));
-	undoRedoEnabled_ = TRUE;
+	undoRedoEnabled_ = true;
 }
 
 // Flag that undo/redo should be disabled
 void Model::disableUndoRedo()
 {
 	Messenger::print(Messenger::Verbose, "Undo/redo has been disabled for model '%s'.", qPrintable(name_));
-	undoRedoEnabled_ = FALSE;
+	undoRedoEnabled_ = false;
 }
 
 // Return the current undo level pointer

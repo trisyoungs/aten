@@ -36,7 +36,7 @@ StringVariable::StringVariable()
 {
 	// Private variables
 	returnType_ = VTypes::StringData;
-	readOnly_ = FALSE;
+	readOnly_ = false;
 }
 
 
@@ -62,7 +62,7 @@ bool StringVariable::set(ReturnValue& rv)
 	if (readOnly_)
 	{
 		Messenger::print("A constant value (in this case a character) cannot be assigned to.");
-		return FALSE;
+		return false;
 	}
 	bool success;
 	stringData_ = rv.asString(success);
@@ -79,7 +79,7 @@ void StringVariable::reset()
 bool StringVariable::execute(ReturnValue& rv)
 {
 	rv.set(stringData_);
-	return TRUE;
+	return true;
 }
 
 /*
@@ -132,12 +132,12 @@ bool StringArrayVariable::set(ReturnValue& rv)
 	if (readOnly_)
 	{
 		Messenger::print("A constant value (in this case an integer array) cannot be assigned to.");
-		return FALSE;
+		return false;
 	}
 	if (stringArrayData_ == NULL)
 	{
 		printf("Internal Error: Array '%s' has not been initialised.\n", qPrintable(name_));
-		return FALSE;
+		return false;
 	}
 	// Is the supplied ReturnValue an array?
 	if (rv.arraySize() == -1) for (int i=0; i<arraySize_; i++) stringArrayData_[i] = rv.asString();
@@ -146,13 +146,13 @@ bool StringArrayVariable::set(ReturnValue& rv)
 		if (rv.arraySize() != arraySize_)
 		{
 			Messenger::print("Error setting variable '%s': Array sizes do not conform.", qPrintable(name_));
-			return FALSE;
+			return false;
 		}
 		bool success;
 		for (int i=0; i<arraySize_; i++) stringArrayData_[i] = rv.asString(i, success);
-		if (!success) return FALSE;
+		if (!success) return false;
 	}
-	return TRUE;
+	return true;
 }
 
 // Set array element from returnvalue node
@@ -161,22 +161,22 @@ bool StringArrayVariable::setAsArray(ReturnValue& rv, int arrayIndex)
 	if (readOnly_)
 	{
 		Messenger::print("A constant value (in this case an integer array?) cannot be assigned to.");
-		return FALSE;
+		return false;
 	}
 	if (stringArrayData_ == NULL)
 	{
 		printf("Internal Error: Array '%s' has not been initialised.\n", qPrintable(name_));
-		return FALSE;
+		return false;
 	}
 	// Check index
 	if ((arrayIndex < 0) || (arrayIndex >= arraySize_))
 	{
 		Messenger::print("Index %i out of bounds for array '%s'.", arrayIndex+1, qPrintable(name_));
-		return FALSE;
+		return false;
 	}
 	// Set individual element
 	stringArrayData_[arrayIndex] = rv.asString();
-	return TRUE;
+	return true;
 }
 
 // Reset variable
@@ -209,17 +209,17 @@ bool StringArrayVariable::execute(ReturnValue& rv)
 		if (!readOnly_)
 		{
 			printf("Internal Error: Array '%s' has not been initialised and can't be executed.\n", qPrintable(name_));
-			return FALSE;
+			return false;
 		}
 		if (!initialise())
 		{
 			printf("Internal Error: Array '%s' failed to initialise and so can't be executed.\n", qPrintable(name_));
-			return FALSE;
+			return false;
 		}
 	}
 	else if (readOnly_) reset();
 	rv.setArray(VTypes::StringData, stringArrayData_, arraySize_);
-	return TRUE;
+	return true;
 }
 
 // Return value of node as array
@@ -229,10 +229,10 @@ bool StringArrayVariable::executeAsArray(ReturnValue& rv, int arrayIndex)
 	if ((arrayIndex < 0) || (arrayIndex >= arraySize_))
 	{
 		Messenger::print("Error: Array index %i is out of bounds for array '%s'.", arrayIndex+1, qPrintable(name_));
-		return FALSE;
+		return false;
 	}
 	rv.set( stringArrayData_[arrayIndex] );
-	return TRUE;
+	return true;
 }
 
 // Print node contents
@@ -257,7 +257,7 @@ bool StringArrayVariable::initialise()
 	if (!arraySizeExpression_->execute(newsize))
 	{
 		Messenger::print("Failed to find size for string array '%s'.", qPrintable(name_));
-		return FALSE;
+		return false;
 	}
 
 	// If the array is already allocated, free it only if the size is different
@@ -278,7 +278,7 @@ bool StringArrayVariable::initialise()
 		ReturnValue value;
 		for (Refitem<TreeNode,int>* ri = args_.first(); ri != NULL; ri = ri->next)
 		{
-			if (!ri->item->execute(value)) return FALSE;
+			if (!ri->item->execute(value)) return false;
 			stringArrayData_[count++] = value.asString();
 		}
 	}
@@ -288,9 +288,9 @@ bool StringArrayVariable::initialise()
 		ReturnValue rv;
 		if (initialValue_->execute(rv))
 		{
-			if (!set(rv)) return FALSE;
+			if (!set(rv)) return false;
 		}
-		else return FALSE;
+		else return false;
 	}
-	return TRUE;
+	return true;
 }

@@ -50,15 +50,15 @@ ForcefieldVariable::~ForcefieldVariable()
 
 // Accessor data
 Accessor ForcefieldVariable::accessorData[ForcefieldVariable::nAccessors] = {
-	{ "atomTypes",		VTypes::ForcefieldAtomData,	-1, TRUE },
-	{ "filename",		VTypes::StringData,		0, TRUE },
-	{ "name",		VTypes::StringData,		0, FALSE },
-	{ "nAngles",		VTypes::IntegerData,		0, TRUE },
-	{ "nAtomTypes",		VTypes::IntegerData,		0, TRUE },
-	{ "nBonds",		VTypes::IntegerData,		0, TRUE },
-	{ "nImpropers",		VTypes::IntegerData,		0, TRUE },
-	{ "nTorsions",		VTypes::IntegerData,		0, TRUE },
-	{ "units",		VTypes::StringData,		0, FALSE }
+	{ "atomTypes",		VTypes::ForcefieldAtomData,	-1, true },
+	{ "filename",		VTypes::StringData,		0, true },
+	{ "name",		VTypes::StringData,		0, false },
+	{ "nAngles",		VTypes::IntegerData,		0, true },
+	{ "nAtomTypes",		VTypes::IntegerData,		0, true },
+	{ "nBonds",		VTypes::IntegerData,		0, true },
+	{ "nImpropers",		VTypes::IntegerData,		0, true },
+	{ "nTorsions",		VTypes::IntegerData,		0, true },
+	{ "units",		VTypes::StringData,		0, false }
 };
 
 // Function data
@@ -150,7 +150,7 @@ bool ForcefieldVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayI
 	{
 		printf("Internal Error: Accessor id %i is out of range for Forcefield type.\n", i);
 		Messenger::exit("ForcefieldVariable::retrieveAccessor");
-		return FALSE;
+		return false;
 	}
 	Accessors acc = (Accessors) i;
 	// Check for correct lack/presence of array index given
@@ -158,7 +158,7 @@ bool ForcefieldVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayI
 	{
 		Messenger::print("Error: Unnecessary array index provided for member '%s'.", accessorData[i].name);
 		Messenger::exit("ForcefieldVariable::retrieveAccessor");
-		return FALSE;
+		return false;
 	}
 	else if ((accessorData[i].arraySize > 0) && (hasArrayIndex))
 	{
@@ -166,16 +166,16 @@ bool ForcefieldVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayI
 		{
 			Messenger::print("Error: Array index out of bounds for member '%s' (%i, range is 1-%i).", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
 			Messenger::exit("ForcefieldVariable::retrieveAccessor");
-			return FALSE;
+			return false;
 		}
 	}
 	// Get current data from ReturnValue
-	bool result = TRUE;
+	bool result = true;
 	Forcefield* ptr = (Forcefield*) rv.asPointer(VTypes::ForcefieldData, result);
 	if ((!result) || (ptr == NULL))
 	{
 		Messenger::print("Invalid (NULL) %s reference encountered.", VTypes::dataType(VTypes::ForcefieldData));
-		result = FALSE;
+		result = false;
 	}
 	if (result) switch (acc)
 	{
@@ -185,7 +185,7 @@ bool ForcefieldVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayI
 				if (arrayIndex > ptr->nTypes())
 				{
 					Messenger::print("Error: Array index is out of bounds for 'atomTypes' accessor (n = %i, nTypes = %i)", arrayIndex, ptr->nTypes());
-					return FALSE;
+					return false;
 				}
 				else rv.set(VTypes::ForcefieldAtomData, ptr->type(arrayIndex-1));
 			}
@@ -217,7 +217,7 @@ bool ForcefieldVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayI
 			break;
 		default:
 			printf("Internal Error: Access to member '%s' has not been defined in ForcefieldVariable.\n", accessorData[i].name);
-			result = FALSE;
+			result = false;
 			break;
 	}
 	Messenger::exit("ForcefieldVariable::retrieveAccessor");
@@ -233,11 +233,11 @@ bool ForcefieldVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& 
 	{
 		printf("Internal Error: Accessor id %i is out of range for Forcefield type.\n", i);
 		Messenger::exit("ForcefieldVariable::setAccessor");
-		return FALSE;
+		return false;
 	}
 	Accessors acc = (Accessors) i;
 	// Check for correct lack/presence of array index given to original accessor, and nature of new value
-	bool result = TRUE;
+	bool result = true;
 	if (accessorData[i].arraySize != 0)
 	{
 		if (hasArrayIndex)
@@ -245,12 +245,12 @@ bool ForcefieldVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& 
 			if ((accessorData[i].arraySize > 0) && ( (arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize) ))
 			{
 				Messenger::print("Error: Array index provided for member '%s' is out of range (%i, range is 1-%i).", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
-				result = FALSE;
+				result = false;
 			}
 			if (newValue.arraySize() > 0)
 			{
 				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.", accessorData[i].name);
-				result = FALSE;
+				result = false;
 			}
 		}
 		else
@@ -258,7 +258,7 @@ bool ForcefieldVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& 
 			if (newValue.arraySize() > accessorData[i].arraySize)
 			{
 				Messenger::print("Error: The array being assigned to member '%s' is larger than the size of the desination array (%i cf. %i).", accessorData[i].name, newValue.arraySize(), accessorData[i].arraySize);
-				result = FALSE;
+				result = false;
 			}
 		}
 	}
@@ -270,26 +270,26 @@ bool ForcefieldVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& 
 			if (accessorData[i].returnType != VTypes::VectorData)
 			{
 				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.", accessorData[i].name);
-				result = FALSE;
+				result = false;
 			}
 			else if ((newValue.type() != VTypes::VectorData) && (newValue.arraySize() != 3))
 			{
 				Messenger::print("Error: Only an array of size 3 can be assigned to a vector (member '%s').", accessorData[i].name);
-				result = FALSE;
+				result = false;
 			}
 		}
 	}
 	if (!result)
 	{
 		Messenger::exit("ForcefieldVariable::setAccessor");
-		return FALSE;
+		return false;
 	}
 	// Get current data from ReturnValue
 	Forcefield* ptr = (Forcefield*) sourcerv.asPointer(VTypes::ForcefieldData, result);
 	if ((!result) || (ptr == NULL))
 	{
 		Messenger::print("Invalid (NULL) %s reference encountered.", VTypes::dataType(VTypes::ForcefieldData));
-		result = FALSE;
+		result = false;
 	}
 	Prefs::EnergyUnit eu;
 	if (result) switch (acc)
@@ -298,13 +298,13 @@ bool ForcefieldVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& 
 			ptr->setName( newValue.asString() );
 			break;
 		case (Units):
-			eu = Prefs::energyUnit(newValue.asString(), TRUE);
-			if (eu == Prefs::nEnergyUnits) result = FALSE;
+			eu = Prefs::energyUnit(newValue.asString(), true);
+			if (eu == Prefs::nEnergyUnits) result = false;
 			else ptr->setEnergyUnit(eu);
 			break;
 		default:
 			printf("ForcefieldVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);
-			result = FALSE;
+			result = false;
 			break;
 	}
 	Messenger::exit("ForcefieldVariable::setAccessor");
@@ -320,10 +320,10 @@ bool ForcefieldVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 	{
 		printf("Internal Error: FunctionAccessor id %i is out of range for Forcefield type.\n", i);
 		Messenger::exit("ForcefieldVariable::performFunction");
-		return FALSE;
+		return false;
 	}
 	// Get current data from ReturnValue
-	bool result = TRUE;
+	bool result = true;
 	Forcefield* ptr = (Forcefield*) rv.asPointer(VTypes::ForcefieldData, result);
 	// Construct temporary bundle object containing our Forcefield pointer
 	Bundle bundle(ptr);
@@ -367,7 +367,7 @@ bool ForcefieldVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 			break;
 		default:
 			printf("Internal Error: Access to function '%s' has not been defined in ForcefieldVariable.\n", functionData[i].name);
-			result = FALSE;
+			result = false;
 			break;
 	}
 	Messenger::exit("ForcefieldVariable::performFunction");

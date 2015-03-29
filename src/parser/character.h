@@ -34,7 +34,7 @@ class StringVariable : public Variable
 	public:
 	// Constructor / Destructor
 	StringVariable();
-	StringVariable(QString s, bool constant = FALSE);
+	StringVariable(QString s, bool constant = false);
 	~StringVariable();
 
 
@@ -67,7 +67,7 @@ class StringArrayVariable : public Variable
 {
 	public:
 	// Constructor / Destructor
-	StringArrayVariable(TreeNode* sizeexpr, bool constant = FALSE);
+	StringArrayVariable(TreeNode* sizeexpr, bool constant = false);
 	~StringArrayVariable();
 
 

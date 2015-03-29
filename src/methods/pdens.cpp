@@ -91,7 +91,7 @@ bool Pdens::initialise()
 	{
 		Messenger::print("Pdens::initialise - At least one site has NULL value.");
 		Messenger::exit("calculable::initialise");
-		return FALSE;
+		return false;
 	}
 
 	// Create the data_ array
@@ -110,7 +110,7 @@ bool Pdens::initialise()
 	nAdded_ = 0;
 
 	Messenger::exit("Pdens::initialise");
-	return TRUE;
+	return true;
 }
 
 // Accumulate quantity data_ from supplied model
@@ -187,5 +187,5 @@ bool Pdens::save()
 		for (m=0; m<totalSteps_; m++)
 			for (o=0; o<totalSteps_; o++) output << data_[n][m][o] << "\n";
 	output.close();
-	return TRUE;
+	return true;
 }

@@ -171,7 +171,7 @@ void Model::generateVibration(int index, int nsteps)
 		Model* m = vibrationFrames_.add();
 		m->setParent(this);
 		m->setType(Model::VibrationFrameType);
-		clip.pasteToModel(m, FALSE);
+		clip.pasteToModel(m, false);
 		
 		// To loop over original atom coordinates
 		int count = 0;
@@ -183,7 +183,7 @@ void Model::generateVibration(int index, int nsteps)
 	}
 	
 	// Reset variables
-	vibrationForward_ = TRUE;
+	vibrationForward_ = true;
 	vibrationFrameIndex_ = 0;
 	vibrationCurrentFrame_ = vibrationFrames_.first();
 	Messenger::exit("Model::generateVibration");
@@ -223,7 +223,7 @@ void Model::vibrationNextFrame()
 	{
 		if (vibrationCurrentFrame_->next == NULL)
 		{
-			vibrationForward_ = FALSE;
+			vibrationForward_ = false;
 			vibrationCurrentFrame_ = vibrationCurrentFrame_->prev;
 		}
 		else vibrationCurrentFrame_ = vibrationCurrentFrame_->next;
@@ -232,7 +232,7 @@ void Model::vibrationNextFrame()
 	{
 		if (vibrationCurrentFrame_->prev == NULL)
 		{
-			vibrationForward_ = TRUE;
+			vibrationForward_ = true;
 			vibrationCurrentFrame_ = vibrationCurrentFrame_->next;
 		}
 		else vibrationCurrentFrame_ = vibrationCurrentFrame_->prev;

@@ -291,7 +291,7 @@ class Pattern : public ListItem<Pattern>
 	// Empty the arrays of the energy expression
 	void deleteExpression();
 	// Create the shell of the energy expression
-	bool createExpression(bool vdwOnly = FALSE, bool allowDummy = FALSE, Forcefield* defaultForcefield = NULL);
+	bool createExpression(bool vdwOnly = false, bool allowDummy = false, Forcefield* defaultForcefield = NULL);
 	// Create the connectivity and scaling matrices
 	void createMatrices();
 	// Update scaling matrices
@@ -447,7 +447,7 @@ class Pattern : public ListItem<Pattern>
 	// Copy bondtypes for first molecule to all other molecules
 	void propagateBondTypes();
 	// Select atom 'i' in all molecules
-	void selectAtom(int id, bool markonly = FALSE, bool deselect = FALSE);
+	void selectAtom(int id, bool markonly = false, bool deselect = false);
 
 
 	/*

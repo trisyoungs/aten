@@ -431,13 +431,13 @@ Matrix& ReturnValue::matrix()
 // Return as integer value
 int ReturnValue::asInteger(bool& success)
 {
-	success = TRUE;
+	success = true;
 	if (arraySize_ != -1) Messenger::print("Cannot return a whole array as a single integer.");
 	else switch (type_)
 	{
 		case (VTypes::NoData):
 			Messenger::print("Internal error: No data in ReturnValue to return as an integer!");
-			success = FALSE;
+			success = false;
 			return 0;
 			break;
 		case (VTypes::IntegerData):
@@ -456,20 +456,20 @@ int ReturnValue::asInteger(bool& success)
 			Messenger::print("ReturnValue::asInteger() doesn't recognise this type (%s).", VTypes::dataType(type_));
 			break;
 	}
-	success = FALSE;
+	success = false;
 	return 0;
 }
 
 // Return as real value
 double ReturnValue::asDouble(bool& success)
 {
-	success = TRUE;
+	success = true;
 	if (arraySize_ != -1) Messenger::print("Cannot return a whole array as a single double.");
 	else switch (type_)
 	{
 		case (VTypes::NoData):
 			Messenger::print("Internal error: No data in ReturnValue to return as a real!");
-			success = FALSE;
+			success = false;
 			return 0.0;
 			break;
 		case (VTypes::IntegerData):
@@ -485,7 +485,7 @@ double ReturnValue::asDouble(bool& success)
 			Messenger::print("ReturnValue::asDouble() doesn't recognise this type (%s).", VTypes::dataType(type_));
 			break;
 	}
-	success = FALSE;
+	success = false;
 	return 0;
 }
 
@@ -493,7 +493,7 @@ double ReturnValue::asDouble(bool& success)
 QString ReturnValue::asString(bool& success)
 {
 	QString tempString;
-	success = TRUE;
+	success = true;
 	if (arraySize_ != -1)
 	{
 		// Create a new string with all the array elements in it
@@ -505,7 +505,7 @@ QString ReturnValue::asString(bool& success)
 			{
 				case (VTypes::NoData):
 					Messenger::print("Internal error: No data in ReturnValue to return as a string!");
-					success = FALSE;
+					success = false;
 					return QString("_NULL_");
 					break;
 				case (VTypes::IntegerData):
@@ -530,7 +530,7 @@ QString ReturnValue::asString(bool& success)
 	{
 		case (VTypes::NoData):
 			Messenger::print("Internal error: No data in ReturnValue to return as a string!");
-			success = FALSE;
+			success = false;
 			return QString("_NULL_");
 			break;
 		case (VTypes::IntegerData):
@@ -551,19 +551,19 @@ QString ReturnValue::asString(bool& success)
 			Messenger::print("Cannot return a pointer as a string.");
 			break;
 	}
-	success = FALSE;
+	success = false;
 	return "";
 }
 
 // Return as vector value
 Vec3<double> ReturnValue::asVector(bool& success)
 {
-	success = TRUE;
+	success = true;
 	switch (type_)
 	{
 		case (VTypes::NoData):
 			Messenger::print("Internal error: No data in ReturnValue to return as a vector!");
-			success = FALSE;
+			success = false;
 			return Vec3<double>();
 			break;
 		case (VTypes::IntegerData):
@@ -583,14 +583,14 @@ Vec3<double> ReturnValue::asVector(bool& success)
 			Messenger::print("Cannot convert return value of type '%s' into a vector.", VTypes::dataType(type_));
 			break;
 	}
-	success = FALSE;
+	success = false;
 	return Vec3<double>();
 }
 
 // Return as Matrix
 Matrix ReturnValue::asMatrix(bool& success)
 {
-	success = TRUE;
+	success = true;
 	switch (type_)
 	{
 		case (VTypes::NoData):
@@ -623,20 +623,20 @@ Matrix ReturnValue::asMatrix(bool& success)
 			Messenger::print("Cannot convert return value of type '%s' into a matrix.", VTypes::dataType(type_));
 			break;
 	}
-	success = FALSE;
+	success = false;
 	return Matrix();
 }
 
 // Return as pointer
 void *ReturnValue::asPointer(VTypes::DataType ptrtype, bool& success)
 {
-	success = TRUE;
+	success = true;
 	if (arraySize_ != -1) Messenger::print("Cannot return a whole array as a single pointer.");
 	else switch (type_)
 	{
 		case (VTypes::NoData):
 			Messenger::print("Error: No data in ReturnValue to return as a pointer!");
-			success = FALSE;
+			success = false;
 			return NULL;
 			break;
 		case (VTypes::IntegerData):
@@ -656,13 +656,13 @@ void *ReturnValue::asPointer(VTypes::DataType ptrtype, bool& success)
 			else if (arraySize_ == -1)
 			{
 				Messenger::print("Error: A value of type '%s' cannot be cast into a pointer of type '%s'.", VTypes::dataType(type_), VTypes::dataType(ptrtype));
-				success = FALSE;
+				success = false;
 				return NULL;
 			}
 			else if (ptrtype != type_)
 			{
 				Messenger::print("Error: An array pointer of type '%s' cannot be cast into an array pointer of type '%s'.", VTypes::dataType(type_), VTypes::dataType(ptrtype));
-				success = FALSE;
+				success = false;
 				return NULL;
 			}
 			else return valueP_;
@@ -672,13 +672,13 @@ void *ReturnValue::asPointer(VTypes::DataType ptrtype, bool& success)
 			if (ptrtype != type_)
 			{
 				Messenger::print("Error: A pointer of type '%s' cannot be cast into a pointer of type '%s'.", VTypes::dataType(type_), VTypes::dataType(ptrtype));
-				success = FALSE;
+				success = false;
 				return NULL;
 			}
 			else return valueP_;
 			break;
 	}
-	success = FALSE;
+	success = false;
 	return NULL;
 }
 
@@ -691,22 +691,22 @@ void *ReturnValue::refPointer()
 // Return integer element value
 int ReturnValue::asInteger(int index, bool& success)
 {
-	success = TRUE;
+	success = true;
 	if (arraySize_ == -1)
 	{
 		Messenger::print("Internal Error: ReturnValue doesn't contain an array of values.");
-		success = FALSE;
+		success = false;
 	}
 	else if ((index < 0) || (index >= arraySize_))
 	{
 		Messenger::print("Internal Error: Index %i out of bounds for ReturnValue array.", index);
-		success = FALSE;
+		success = false;
 	}
 	else switch (type_)
 	{
 		case (VTypes::NoData):
 			Messenger::print("Internal error: No data in ReturnValue to return as an integer!");
-			success = FALSE;
+			success = false;
 			return 0;
 			break;
 		case (VTypes::IntegerData):
@@ -722,29 +722,29 @@ int ReturnValue::asInteger(int index, bool& success)
 			Messenger::print("ReturnValue::asInteger(id) doesn't recognise this type (%s).", VTypes::dataType(type_));
 			break;
 	}
-	success = FALSE;
+	success = false;
 	return 0;
 }
 
 // Return double element value
 double ReturnValue::asDouble(int index, bool& success)
 {
-	success = TRUE;
+	success = true;
 	if (arraySize_ == -1)
 	{
 		Messenger::print("Internal Error: ReturnValue doesn't contain an array of values.");
-		success = FALSE;
+		success = false;
 	}
 	else if ((index < 0) || (index >= arraySize_))
 	{
 		Messenger::print("Internal Error: Index %i out of bounds for ReturnValue array.", index);
-		success = FALSE;
+		success = false;
 	}
 	else switch (type_)
 	{
 		case (VTypes::NoData):
 			Messenger::print("Internal error: No data in ReturnValue to return as a double!");
-			success = FALSE;
+			success = false;
 			return 0;
 			break;
 		case (VTypes::IntegerData):
@@ -760,7 +760,7 @@ double ReturnValue::asDouble(int index, bool& success)
 			Messenger::print("ReturnValue::asDouble(id) doesn't recognise this type (%s).", VTypes::dataType(type_));
 			break;
 	}
-	success = FALSE;
+	success = false;
 	return 0;
 }
 
@@ -768,22 +768,22 @@ double ReturnValue::asDouble(int index, bool& success)
 QString ReturnValue::asString(int index, bool& success)
 {
 	QString converted;
-	success = TRUE;
+	success = true;
 	if (arraySize_ == -1)
 	{
 		Messenger::print("Internal Error: ReturnValue doesn't contain an array of values.");
-		success = FALSE;
+		success = false;
 	}
 	else if ((index < 0) || (index >= arraySize_))
 	{
 		Messenger::print("Internal Error: Index %i out of bounds for ReturnValue array.", index);
-		success = FALSE;
+		success = false;
 	}
 	else switch (type_)
 	{
 		case (VTypes::NoData):
 			Messenger::print("Internal error: No data in ReturnValue to return as a character!");
-			success = FALSE;
+			success = false;
 			return "_NULL_";
 			break;
 		case (VTypes::IntegerData):
@@ -804,31 +804,31 @@ QString ReturnValue::asString(int index, bool& success)
 			return converted;
 			break;
 	}
-	success = FALSE;
+	success = false;
 	return "NULL";
 }
 
 // Return as vector value
 Vec3<double> ReturnValue::asVector(int index, bool& success)
 {
-	success = TRUE;
+	success = true;
 	double d;
 	int i;
 	if (arraySize_ == -1)
 	{
 		Messenger::print("Internal Error: ReturnValue doesn't contain an array of values.");
-		success = FALSE;
+		success = false;
 	}
 	else if ((index < 0) || (index >= arraySize_))
 	{
 		Messenger::print("Internal Error: Index %i out of bounds for ReturnValue array.", index);
-		success = FALSE;
+		success = false;
 	}
 	else switch (type_)
 	{
 		case (VTypes::NoData):
 			Messenger::print("Internal error: No data in ReturnValue to return as a character!");
-			success = FALSE;
+			success = false;
 			return Vec3<double>();
 			break;
 		case (VTypes::IntegerData):
@@ -846,28 +846,28 @@ Vec3<double> ReturnValue::asVector(int index, bool& success)
 			Messenger::print("Cannot convert return value of type '%s' into a vector.", VTypes::dataType(type_));
 			break;
 	}
-	success = FALSE;
+	success = false;
 	return Vec3<double>();
 }
 
 void *ReturnValue::asPointer(int index, VTypes::DataType type, bool& success)
 {
-	success = TRUE;
+	success = true;
 	if (arraySize_ == -1)
 	{
 		Messenger::print("Internal Error: ReturnValue doesn't contain an array of values.");
-		success = FALSE;
+		success = false;
 	}
 	else if ((index < 0) || (index >= arraySize_))
 	{
 		Messenger::print("Internal Error: Index %i out of bounds for ReturnValue array.", index);
-		success =FALSE;
+		success =false;
 	}
 	else switch (type_)
 	{
 		case (VTypes::NoData):
 			Messenger::print("Error: No data in ReturnValue to return as a pointer!");
-			success = FALSE;
+			success = false;
 			return NULL;
 			break;
 		case (VTypes::IntegerData):
@@ -875,7 +875,7 @@ void *ReturnValue::asPointer(int index, VTypes::DataType type, bool& success)
 		case (VTypes::StringData):
 		case (VTypes::VectorData):
 			Messenger::print("Error: An array element of type '%s' cannot be cast into an array element of type '%s'.", VTypes::dataType(type_), VTypes::dataType(type));
-			success = FALSE;
+			success = false;
 			return NULL;
 			break;
 		default:
@@ -883,13 +883,13 @@ void *ReturnValue::asPointer(int index, VTypes::DataType type, bool& success)
 			if (type != type_)
 			{
 				Messenger::print("Error: A pointer of type '%s' cannot be cast into a pointer of type '%s'.", VTypes::dataType(type_), VTypes::dataType(type));
-				success = FALSE;
+				success = false;
 				return NULL;
 			}
 			else return arrayP_[index];
 			break;
 	}
-	success = FALSE;
+	success = false;
 	return NULL;
 }
 
@@ -948,11 +948,11 @@ Matrix ReturnValue::asMatrix()
 bool ReturnValue::asBool()
 {
 	QString lcase;
-	if (arraySize_ > 0) return TRUE;
+	if (arraySize_ > 0) return true;
 	switch (type_)
 	{
 		case (VTypes::NoData):
-			return FALSE;
+			return false;
 			break;
 		case (VTypes::IntegerData):
 			return (valueI_ > 0);
@@ -962,28 +962,28 @@ bool ReturnValue::asBool()
 			break;
 		case (VTypes::StringData):
 			lcase = valueS_.toLower();
-			if (lcase == "off") return FALSE;
-			else if (lcase == "on") return TRUE;
-			else if (lcase == "no") return FALSE;
-			else if (lcase == "yes") return TRUE;
-			else if (lcase == "false") return FALSE;
-			else if (lcase == "true") return TRUE;
+			if (lcase == "off") return false;
+			else if (lcase == "on") return true;
+			else if (lcase == "no") return false;
+			else if (lcase == "yes") return true;
+			else if (lcase == "false") return false;
+			else if (lcase == "true") return true;
 			else
 			{
-				Messenger::print("Character constant '%s' doesn't translate directly to a boolean value - FALSE assumed.\n", qPrintable(lcase));
-				return FALSE;
+				Messenger::print("Character constant '%s' doesn't translate directly to a boolean value - false assumed.\n", qPrintable(lcase));
+				return false;
 			}
 			break;
 		case (VTypes::VectorData):
 			Messenger::print("Can't convert an object of type 'vector' into a bool.");
-			return FALSE;
+			return false;
 			break;
 		default:
 			// All pointer types here...
 			return (valueP_ != NULL);
 			break;
 	}
-	return FALSE;
+	return false;
 }
 
 /*
@@ -993,9 +993,9 @@ bool ReturnValue::asBool()
 // Increase the contained variable
 bool ReturnValue::increase()
 {
-	bool result = TRUE;
+	bool result = true;
 	// No arrays....
-	if (arraySize_ != -1) return FALSE;
+	if (arraySize_ != -1) return false;
 	switch (type_)
 	{
 		case (VTypes::NoData):
@@ -1004,7 +1004,7 @@ bool ReturnValue::increase()
 		case (VTypes::AtenData):
 		case (VTypes::CellData):
 		case (VTypes::ElementData):
-			result = FALSE;
+			result = false;
 			break;
 		case (VTypes::IntegerData):
 			++valueI_;
@@ -1013,7 +1013,7 @@ bool ReturnValue::increase()
 			++valueD_;
 			break;
 		case (VTypes::AtomData):
-			if (valueP_ == NULL) result = FALSE;
+			if (valueP_ == NULL) result = false;
 			else if (valueRefitem_ != NULL)
 			{
 				valueRefitem_ = ((Refitem<Atom,int>*) valueRefitem_)->next;
@@ -1023,7 +1023,7 @@ bool ReturnValue::increase()
 			else valueP_ = ((Atom*) valueP_)->next;
 			break;
 		case (VTypes::BondData):
-			if (valueP_ == NULL) result = FALSE;
+			if (valueP_ == NULL) result = false;
 			else if (valueRefitem_ != NULL)
 			{
 				valueRefitem_ = ((Refitem<Bond,int>*) valueRefitem_)->next;
@@ -1033,7 +1033,7 @@ bool ReturnValue::increase()
 			else valueP_ = ((Bond*) valueP_)->next;
 			break;
 		case (VTypes::ForcefieldData):
-			if (valueP_ == NULL) result = FALSE;
+			if (valueP_ == NULL) result = false;
 			else if (valueRefitem_ != NULL)
 			{
 				valueRefitem_ = ((Refitem<Forcefield,int>*) valueRefitem_)->next;
@@ -1043,7 +1043,7 @@ bool ReturnValue::increase()
 			else valueP_ = ((Forcefield*) valueP_)->next;
 			break;
 		case (VTypes::ForcefieldAtomData):
-			if (valueP_ == NULL) result = FALSE;
+			if (valueP_ == NULL) result = false;
 			else if (valueRefitem_ != NULL)
 			{
 				valueRefitem_ = ((Refitem<ForcefieldAtom,int>*) valueRefitem_)->next;
@@ -1053,7 +1053,7 @@ bool ReturnValue::increase()
 			else valueP_ = ((ForcefieldAtom*) valueP_)->next;
 			break;
 		case (VTypes::ForcefieldBoundData):
-			if (valueP_ == NULL) result = FALSE;
+			if (valueP_ == NULL) result = false;
 			else if (valueRefitem_ != NULL)
 			{
 				valueRefitem_ = ((Refitem<ForcefieldBound,int>*) valueRefitem_)->next;
@@ -1063,7 +1063,7 @@ bool ReturnValue::increase()
 			else valueP_ = ((ForcefieldBound*) valueP_)->next;
 			break;
 		case (VTypes::GlyphData):
-			if (valueP_ == NULL) result = FALSE;
+			if (valueP_ == NULL) result = false;
 			else if (valueRefitem_ != NULL)
 			{
 				valueRefitem_ = ((Refitem<Glyph,int>*) valueRefitem_)->next;
@@ -1073,7 +1073,7 @@ bool ReturnValue::increase()
 			else valueP_ = ((Glyph*) valueP_)->next;
 			break;
 		case (VTypes::GridData):
-			if (valueP_ == NULL) result = FALSE;
+			if (valueP_ == NULL) result = false;
 			else if (valueRefitem_ != NULL)
 			{
 				valueRefitem_ = ((Refitem<Grid,int>*) valueRefitem_)->next;
@@ -1083,7 +1083,7 @@ bool ReturnValue::increase()
 			else valueP_ = ((Grid*) valueP_)->next;
 			break;
 		case (VTypes::MeasurementData):
-			if (valueP_ == NULL) result = FALSE;
+			if (valueP_ == NULL) result = false;
 			else if (valueRefitem_ != NULL)
 			{
 				valueRefitem_ = ((Refitem<Measurement,int>*) valueRefitem_)->next;
@@ -1093,7 +1093,7 @@ bool ReturnValue::increase()
 			else valueP_ = ((Measurement*) valueP_)->next;
 			break;
 		case (VTypes::ModelData):
-			if (valueP_ == NULL) result = FALSE;
+			if (valueP_ == NULL) result = false;
 			else if (valueRefitem_ != NULL)
 			{
 				valueRefitem_ = ((Refitem<Model,int>*) valueRefitem_)->next;
@@ -1103,7 +1103,7 @@ bool ReturnValue::increase()
 			else valueP_ = ((Model*) valueP_)->next;
 			break;
 		case (VTypes::PatternData):
-			if (valueP_ == NULL) result = FALSE;
+			if (valueP_ == NULL) result = false;
 			else if (valueRefitem_ != NULL)
 			{
 				valueRefitem_ = ((Refitem<Pattern,int>*) valueRefitem_)->next;
@@ -1113,7 +1113,7 @@ bool ReturnValue::increase()
 			else valueP_ = ((Pattern*) valueP_)->next;
 			break;
 		case (VTypes::PatternBoundData):
-			if (valueP_ == NULL) result = FALSE;
+			if (valueP_ == NULL) result = false;
 			else if (valueRefitem_ != NULL)
 			{
 				valueRefitem_ = ((Refitem<PatternBound,int>*) valueRefitem_)->next;
@@ -1123,7 +1123,7 @@ bool ReturnValue::increase()
 			else valueP_ = ((PatternBound*) valueP_)->next;
 			break;
 		case (VTypes::ZMatrixElementData):
-			if (valueP_ == NULL) result = FALSE;
+			if (valueP_ == NULL) result = false;
 			else if (valueRefitem_ != NULL)
 			{
 				valueRefitem_ = ((Refitem<ZMatrixElement,int>*) valueRefitem_)->next;
@@ -1142,8 +1142,8 @@ bool ReturnValue::increase()
 // Decrease the contained variable
 bool ReturnValue::decrease()
 {
-	bool result = TRUE;
-	if (arraySize_ != -1) return FALSE;
+	bool result = true;
+	if (arraySize_ != -1) return false;
 	switch (type_)
 	{
 		case (VTypes::NoData):
@@ -1152,7 +1152,7 @@ bool ReturnValue::decrease()
 		case (VTypes::AtenData):
 		case (VTypes::CellData):
 		case (VTypes::ElementData):
-			result = FALSE;
+			result = false;
 			break;
 		case (VTypes::IntegerData):
 			--valueI_;
@@ -1161,7 +1161,7 @@ bool ReturnValue::decrease()
 			--valueD_;
 			break;
 		case (VTypes::AtomData):
-			if (valueP_ == NULL) result = FALSE;
+			if (valueP_ == NULL) result = false;
 			else if (valueRefitem_ != NULL)
 			{
 				valueRefitem_ = ((Refitem<Atom,int>*) valueRefitem_)->prev;
@@ -1171,7 +1171,7 @@ bool ReturnValue::decrease()
 			else valueP_ = ((Atom*) valueP_)->prev;
 			break;
 		case (VTypes::BondData):
-			if (valueP_ == NULL) result = FALSE;
+			if (valueP_ == NULL) result = false;
 			else if (valueRefitem_ != NULL)
 			{
 				valueRefitem_ = ((Refitem<Bond,int>*) valueRefitem_)->prev;
@@ -1181,7 +1181,7 @@ bool ReturnValue::decrease()
 			else valueP_ = ((Bond*) valueP_)->prev;
 			break;
 		case (VTypes::ForcefieldData):
-			if (valueP_ == NULL) result = FALSE;
+			if (valueP_ == NULL) result = false;
 			else if (valueRefitem_ != NULL)
 			{
 				valueRefitem_ = ((Refitem<Forcefield,int>*) valueRefitem_)->prev;
@@ -1191,7 +1191,7 @@ bool ReturnValue::decrease()
 			else valueP_ = ((Forcefield*) valueP_)->prev;
 			break;
 		case (VTypes::ForcefieldAtomData):
-			if (valueP_ == NULL) result = FALSE;
+			if (valueP_ == NULL) result = false;
 			else if (valueRefitem_ != NULL)
 			{
 				valueRefitem_ = ((Refitem<ForcefieldAtom,int>*) valueRefitem_)->prev;
@@ -1201,7 +1201,7 @@ bool ReturnValue::decrease()
 			else valueP_ = ((ForcefieldAtom*) valueP_)->prev;
 			break;
 		case (VTypes::ForcefieldBoundData):
-			if (valueP_ == NULL) result = FALSE;
+			if (valueP_ == NULL) result = false;
 			else if (valueRefitem_ != NULL)
 			{
 				valueRefitem_ = ((Refitem<ForcefieldBound,int>*) valueRefitem_)->prev;
@@ -1211,7 +1211,7 @@ bool ReturnValue::decrease()
 			else valueP_ = ((ForcefieldBound*) valueP_)->prev;
 			break;
 		case (VTypes::GridData):
-			if (valueP_ == NULL) result = FALSE;
+			if (valueP_ == NULL) result = false;
 			else if (valueRefitem_ != NULL)
 			{
 				valueRefitem_ = ((Refitem<Grid,int>*) valueRefitem_)->prev;
@@ -1221,7 +1221,7 @@ bool ReturnValue::decrease()
 			else valueP_ = ((Grid*) valueP_)->prev;
 			break;
 		case (VTypes::GlyphData):
-			if (valueP_ == NULL) result = FALSE;
+			if (valueP_ == NULL) result = false;
 			else if (valueRefitem_ != NULL)
 			{
 				valueRefitem_ = ((Refitem<Glyph,int>*) valueRefitem_)->prev;
@@ -1231,7 +1231,7 @@ bool ReturnValue::decrease()
 			else valueP_ = ((Glyph*) valueP_)->prev;
 			break;
 		case (VTypes::MeasurementData):
-			if (valueP_ == NULL) result = FALSE;
+			if (valueP_ == NULL) result = false;
 			else if (valueRefitem_ != NULL)
 			{
 				valueRefitem_ = ((Refitem<Measurement,int>*) valueRefitem_)->prev;
@@ -1241,7 +1241,7 @@ bool ReturnValue::decrease()
 			else valueP_ = ((Measurement*) valueP_)->prev;
 			break;
 		case (VTypes::ModelData):
-			if (valueP_ == NULL) result = FALSE;
+			if (valueP_ == NULL) result = false;
 			else if (valueRefitem_ != NULL)
 			{
 				valueRefitem_ = ((Refitem<Model,int>*) valueRefitem_)->prev;
@@ -1251,7 +1251,7 @@ bool ReturnValue::decrease()
 			else valueP_ = ((Model*) valueP_)->prev;
 			break;
 		case (VTypes::PatternData):
-			if (valueP_ == NULL) result = FALSE;
+			if (valueP_ == NULL) result = false;
 			else if (valueRefitem_ != NULL)
 			{
 				valueRefitem_ = ((Refitem<Pattern,int>*) valueRefitem_)->prev;
@@ -1261,7 +1261,7 @@ bool ReturnValue::decrease()
 			else valueP_ = ((Pattern*) valueP_)->prev;
 			break;
 		case (VTypes::PatternBoundData):
-			if (valueP_ == NULL) result = FALSE;
+			if (valueP_ == NULL) result = false;
 			else if (valueRefitem_ != NULL)
 			{
 				valueRefitem_ = ((Refitem<PatternBound,int>*) valueRefitem_)->prev;
@@ -1271,7 +1271,7 @@ bool ReturnValue::decrease()
 			else valueP_ = ((PatternBound*) valueP_)->prev;
 			break;
 		case (VTypes::ZMatrixElementData):
-			if (valueP_ == NULL) result = FALSE;
+			if (valueP_ == NULL) result = false;
 			else if (valueRefitem_ != NULL)
 			{
 				valueRefitem_ = ((Refitem<ZMatrixElement,int>*) valueRefitem_)->prev;

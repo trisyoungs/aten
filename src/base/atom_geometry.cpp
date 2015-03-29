@@ -38,7 +38,7 @@ bool Atom::nextBondVector(Vec3<double> &vector, Atom::AtomGeometry geometry)
 		case (Atom::UnboundGeometry):
 			Messenger::print("Unsuitable atom geometry (%s) given to Model::growAtom", Atom::atomGeometry(geometry));
 			Messenger::exit("Atom::nextBondVector");
-			return FALSE;
+			return false;
 			break;
 	}
 	
@@ -47,7 +47,7 @@ bool Atom::nextBondVector(Vec3<double> &vector, Atom::AtomGeometry geometry)
 	{
 		Messenger::print("Attempted to grow an atom on an existing atom which already has the correct (or greater) number of bonds (%i) for the requested geometry (%s)", this->nBonds(), Atom::atomGeometry(geometry));
 		Messenger::exit("Atom::nextBondVector");
-		return FALSE;
+		return false;
 	}
 
 	// Now, find the next position for the required geometry
@@ -108,7 +108,7 @@ bool Atom::nextBondVector(Vec3<double> &vector, Atom::AtomGeometry geometry)
 			atoms[0] = this->bonds()->item->partner(this);
 			v = cell->mimVector(this, atoms[0]);
 			v.normalise();
-			u = v.orthogonal(TRUE);
+			u = v.orthogonal(true);
 			vector = (v * cos(theta) + u * sin(theta));
 			break;
 		// Two bonds already present
@@ -122,15 +122,15 @@ bool Atom::nextBondVector(Vec3<double> &vector, Atom::AtomGeometry geometry)
 			v = cell->mimVector(this, atoms[1]);
 			v.normalise();
 			// Check for pathological case where bonds are opposite each other (just select 90degree vector)
-			if (fabs(u.dp(v)) > 0.99) vector = u.orthogonal(TRUE);
+			if (fabs(u.dp(v)) > 0.99) vector = u.orthogonal(true);
 			else
 			{
-				if (geometry == Atom::TetrahedralGeometry) rotMat.createRotationAxis(u.x, u.y, u.z, 120.0, FALSE);
+				if (geometry == Atom::TetrahedralGeometry) rotMat.createRotationAxis(u.x, u.y, u.z, 120.0, false);
 				else
 				{
 					u = v * u;
 					u.normalise();
-					rotMat.createRotationAxis(u.x, u.y, u.z, theta*DEGRAD, FALSE);
+					rotMat.createRotationAxis(u.x, u.y, u.z, theta*DEGRAD, false);
 				}
 				vector = rotMat * v;
 			}
@@ -151,7 +151,7 @@ bool Atom::nextBondVector(Vec3<double> &vector, Atom::AtomGeometry geometry)
 					u.normalise();
 					v = cell->mimVector(this, atoms[1]);
 					v.normalise();
-					rotMat.createRotationAxis(u.x, u.y, u.z, 120.0, FALSE);
+					rotMat.createRotationAxis(u.x, u.y, u.z, 120.0, false);
 					vector = rotMat * v;
 					// Check we have not overlapped with the other atom
 					u = cell->mimVector(this, atoms[2]);
@@ -160,16 +160,16 @@ bool Atom::nextBondVector(Vec3<double> &vector, Atom::AtomGeometry geometry)
 					break;
 				case (Atom::TrigBipyramidGeometry):
 					// If we have an angle of 180deg between any two atoms, then add next atom in central plane
-					foundAngle = FALSE;
+					foundAngle = false;
 					for (n=0; n<2; ++n)
 					{
-						for (m=n+1; m<3; ++m) if (vec[n].dp(vec[m]) < -0.75) { foundAngle = TRUE; break; }
+						for (m=n+1; m<3; ++m) if (vec[n].dp(vec[m]) < -0.75) { foundAngle = true; break; }
 						if (foundAngle) break;
 					}
 					if (foundAngle)
 					{
 						// Next vector will be the sole 'in-plane' atom rotated around one of the other bonds
-						rotMat.createRotationAxis(vec[n].x, vec[n].y, vec[n].z, 120.0, FALSE);
+						rotMat.createRotationAxis(vec[n].x, vec[n].y, vec[n].z, 120.0, false);
 						o = (m+1)%3;
 						vector = rotMat * vec[o != n ? 0 : (o+1)%3];
 					}
@@ -212,20 +212,20 @@ bool Atom::nextBondVector(Vec3<double> &vector, Atom::AtomGeometry geometry)
 				// Same as before: if we have an angle of 180deg between any two atoms, then add final atom in central plane
 				// Calculate all angles first
 				for (n=0; n<4; ++n) for (m=0; m<4; ++m) if (n != m) angleArray[n][m] = vec[n].dp(vec[m]);
-				foundAngle = FALSE;
+				foundAngle = false;
 				for (n=0; n<3; ++n)
 				{
 					for (m=n+1; m<4; ++m)
 					{
 						if (angleArray[n][m] < -0.75)
 						{
-							foundAngle = TRUE;
+							foundAngle = true;
 							// Find the other two atoms which aren't in the 180degree bond
 							o = n;
 							do { o = (o+1)%4; } while (o == m);
 							p = o;
 							do { p = (p+1)%4; } while (p == m);
-							rotMat.createRotationAxis(vec[n].x, vec[n].y, vec[n].z, 120.0, FALSE);
+							rotMat.createRotationAxis(vec[n].x, vec[n].y, vec[n].z, 120.0, false);
 							vector = rotMat * vec[o];
 							// Check we have not overlapped with the other atom
 							if (vector.dp(vec[p]) > 0.75) vector = rotMat * vector;
@@ -260,5 +260,5 @@ bool Atom::nextBondVector(Vec3<double> &vector, Atom::AtomGeometry geometry)
 // 	printf("Final vector is "); vector.print();
 
 	Messenger::exit("Atom::nextBondVector");
-	return TRUE;
+	return true;
 }

@@ -36,8 +36,8 @@ Program::Program() : ListItem<Program>()
 {
 	// Private variables
 	name_ = "NewProgram";
-	fromFilterFile_ = FALSE;
-	initialPushTree_ = FALSE;
+	fromFilterFile_ = false;
+	initialPushTree_ = false;
 	mainProgram_.setParent(this);
 }
 
@@ -96,7 +96,7 @@ bool Program::finalise(Aten* aten)
 					{
 						Messenger::print("Error: 'readHeader' function returns %s when it should return an int (importtrajectory filter '%s').", VTypes::aDataType(func->returnType()), qPrintable(filter->filter.name()));
 						Messenger::exit("Program::finalise");
-						return FALSE;
+						return false;
 					}
 				}
 				else Messenger::print("Warning: 'readHeader' function has not been defined in the importtrajectory filter '%s'.", qPrintable(filter->filter.name()));
@@ -111,7 +111,7 @@ bool Program::finalise(Aten* aten)
 					{
 						Messenger::print("Error: 'readFrame' function returns %s when it should return an int (importtrajectory filter '%s').", VTypes::aDataType(func->returnType()), qPrintable(filter->filter.name()));
 						Messenger::exit("Program::finalise");
-						return FALSE;
+						return false;
 					}
 				}
 				else Messenger::print("Warning: 'readFrame' function has not been defined in the importtrajectory filter '%s'.", qPrintable(filter->filter.name()));
@@ -123,7 +123,7 @@ bool Program::finalise(Aten* aten)
 			{
 				Messenger::print("Error finalising filter '%s'.", qPrintable(filter->filter.name()));
 				Messenger::exit("Program::finalise");
-				return FALSE;
+				return false;
 			}
 		}
 	}
@@ -135,12 +135,12 @@ bool Program::finalise(Aten* aten)
 		{
 			Messenger::print("Error finalising global function '%s'.", qPrintable(func->name()));
 			Messenger::exit("Program::finalise");
-			return FALSE;
+			return false;
 		}
 	}
 	
 	Messenger::exit("Program::finalise");
-	return TRUE;
+	return true;
 }
 
 // Return main program
@@ -163,7 +163,7 @@ bool Program::generateFromString(QString line, QString name, QString sourceInfo,
 {
 	Messenger::enter("Program::generateFromString");
 	name_ = name;
-	fromFilterFile_ = FALSE;
+	fromFilterFile_ = false;
 	initialPushTree_ = dontPushTree;
 	bool result = cmdparser.generateFromString(this, line, sourceInfo, initialPushTree_, clearExisting);
 	if (result) result = finalise(cmdparser.aten());
@@ -176,7 +176,7 @@ bool Program::generateFromStringList(QStringList stringList, QString name, QStri
 {
 	Messenger::enter("Program::generateFromStringList");
 	name_ = name;
-	fromFilterFile_ = FALSE;
+	fromFilterFile_ = false;
 	initialPushTree_ = dontPushTree;
 	bool result = cmdparser.generateFromStringList(this, stringList, sourceInfo, initialPushTree_, clearExisting);
 	if (result) result = finalise(cmdparser.aten());
@@ -209,7 +209,7 @@ bool Program::reload()
 	{
 		Messenger::print("No filename present in '%s' - can't reload commands.", qPrintable(name_));
 		Messenger::exit("Program::reload");
-		return FALSE;
+		return false;
 	}
 	// Clear old data...
 	clear();
@@ -292,7 +292,7 @@ bool Program::executeFunction(QString functionName, ReturnValue& rv, const char*
 	{
 		printf("Error: No global function named '%s' exists in '%s'.\n", qPrintable(functionName), qPrintable(name_));
 		Messenger::exit("Program::executeGlobalFunction");
-		return FALSE;
+		return false;
 	}
 
 	// Construct list of arguments to pass to function
@@ -305,14 +305,14 @@ bool Program::executeFunction(QString functionName, ReturnValue& rv, const char*
 		switch (*c)
 		{
 			case ('i'):
-				var = new IntegerVariable(va_arg(vars, int), TRUE);
+				var = new IntegerVariable(va_arg(vars, int), true);
 				break;
 			case ('d'):
-				var = new DoubleVariable(va_arg(vars, double), TRUE);
+				var = new DoubleVariable(va_arg(vars, double), true);
 				break;
 			case ('c'):
 			case ('s'):
-				var = new StringVariable(va_arg(vars, const char*), TRUE);
+				var = new StringVariable(va_arg(vars, const char*), true);
 				break;
 			case ('a'):
 				var = new AtomVariable(va_arg(vars, Atom*));
