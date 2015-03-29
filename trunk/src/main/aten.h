@@ -498,24 +498,6 @@ class Aten
 
 
 	/*
-	 * Image Generation
-	 */
-	public:
-	// Bitmap formats
-	enum BitmapFormat { BitmapBMP, BitmapPG, BitmapPNG, BitmapPPM, BitmapXBM, BitmapX11, nBitmapFormats };
-	static Aten::BitmapFormat bitmapFormat(QString s, bool reportError = false);
-	static Aten::BitmapFormat bitmapFormatFromFilter(const char* s);
-	static const char* bitmapFormatFilter(Aten::BitmapFormat bf);
-	static const char* bitmapFormatExtension(Aten::BitmapFormat bf);
-
-	public:
-	// Save image of current view
-	QPixmap currentViewAsPixmap( int width, int height );
-	// Return pixmap of specified model
-	QPixmap modelPixmap(Model* model, int width, int height);
-
-
-	/*
 	 * Prefs
 	 */
 	public:

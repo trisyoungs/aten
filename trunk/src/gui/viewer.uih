@@ -24,6 +24,7 @@
 
 #include <QtWidgets/QOpenGLWidget>
 #include <QOpenGLFunctions>
+#include <QOffscreenSurface>
 #include <QObject>
 #include "base/messenger.h"
 #include "gui/useractions.h"
@@ -106,10 +107,6 @@ class Viewer : public QOpenGLWidget, protected QOpenGLFunctions
 	void setRenderingOffScreen(bool b);
 	// Set line width and text scaling to use
 	void setObjectScaling(double scaling);
-	// Grab current contents of framebuffer
-	QPixmap frameBuffer();
-	// Render or grab image
-	QPixmap generateImage(int w, int h);
 	
 	public:
 	// Determine target model based on clicked position on TCanvas
@@ -283,13 +280,19 @@ class Viewer : public QOpenGLWidget, protected QOpenGLFunctions
 
 
 	/*
-	 * Rendering
+	 * Offscreen Rendering
 	 */
+	private:
+	// Offscreen context
+        QOpenGLContext offscreenContext_;
+	// Offscreen surface
+	QOffscreenSurface offscreenSurface_;
+
 	public:
-	// Create pixmap of whole scene
-// 	QPixmap renderSceneImage(RenderEngine::PrimitiveSet set, int w, int h); ATEN2 TODO
-	// Create icon pixmap for specific model
-// 	QPixmap renderModelIcon(Model* source); ATEN2 TODO
+	// Generate image of specified model
+	QPixmap generateModelImage(Model* m, int width, int height);
+	// Render current scene at supplied size
+	QPixmap generateImage(int width, int height);
 };
 
 ATEN_END_NAMESPACE

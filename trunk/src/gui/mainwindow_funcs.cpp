@@ -71,6 +71,9 @@ void AtenWindow::on_TestToolButton_customContextMenuRequested(const QPoint& poin
 void AtenWindow::on_TestToolButton_clicked(bool checked)
 {
 	static TrajectoryWidget twid(*this, Qt::FramelessWindowHint | Qt::Popup);
+	
+	// ATEN2 TODO Need to reimplement hideEvent - subclass QWidget to make a custom popup.
+
 	twid.show();
 	printf("Cursor = %i %i\n", QCursor::pos().x(), QCursor::pos().y());
 	QPoint toolPos = ui.TestToolButton->parentWidget()->mapToGlobal(ui.TestToolButton->pos()+QPoint(0,ui.TestToolButton->height()));
@@ -693,4 +696,42 @@ void AtenWindow::updateMessagesWidgets()
 int AtenWindow::messagesScrollPosition()
 {
 	return ui.MessagesScroll->sliderPosition();
+}
+
+/*
+ * Image Generation
+ */
+
+// Bitmap Image Formats (conform to allowable pixmap formats in Qt)
+const char* bitmapFormatFilters[AtenWindow::nBitmapFormats] = { "Windows Bitmap (*.bmp)", "Joint Photographic Experts Group (*.jpg)", "Portable Network Graphics (*.png)", "Portable Pixmap (*.ppm)", "X11 Bitmap (*.xbm)", "X11 Pixmap (*.xpm)" };
+const char* bitmapFormatExtensions[AtenWindow::nBitmapFormats] = { "bmp", "jpg", "png", "ppm", "xbm", "xpm" };
+AtenWindow::BitmapFormat AtenWindow::bitmapFormat(QString s, bool reportError)
+{
+	AtenWindow::BitmapFormat bf = (AtenWindow::BitmapFormat) enumSearch("bitmap format", AtenWindow::nBitmapFormats, bitmapFormatExtensions, s);
+	if ((bf == AtenWindow::nBitmapFormats) && reportError) enumPrintValid(AtenWindow::nBitmapFormats, bitmapFormatExtensions);
+	return bf;
+}
+AtenWindow::BitmapFormat AtenWindow::bitmapFormatFromFilter(const char* s)
+{
+	return (AtenWindow::BitmapFormat) enumSearch("bitmap format", AtenWindow::nBitmapFormats, bitmapFormatFilters,s);
+}
+const char* AtenWindow::bitmapFormatFilter(AtenWindow::BitmapFormat bf)
+{
+	return bitmapFormatFilters[bf];
+}
+const char* AtenWindow::bitmapFormatExtension(AtenWindow::BitmapFormat bf)
+{
+	return bitmapFormatExtensions[bf];
+}
+
+// Save image of current view
+QPixmap AtenWindow::scenePixmap(int width, int height)
+{
+	return ui.MainView->generateImage(width, height);
+}
+
+// Return pixmap of specified model
+QPixmap AtenWindow::modelPixmap(Model* model, int width, int height)
+{
+	return ui.MainView->generateModelImage(model, width, height);
 }

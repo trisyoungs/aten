@@ -4,7 +4,7 @@
 # Name, brief description, and version 
 Summary: Aten - Atomic configuration builder and editor
 Name: %{shortname}
-Version: 1.932
+Version: 1.933
 Release: 1
 License: GPL
 %define fullname %{name}-%{version}

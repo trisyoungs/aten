@@ -160,8 +160,8 @@ bool Commands::function_SaveBitmap(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 
 	// Convert format to bitmap_format
-	Aten::BitmapFormat bf = Aten::bitmapFormat(c->argc(0));
-	if (bf == Aten::nBitmapFormats)
+	AtenWindow::BitmapFormat bf = AtenWindow::bitmapFormat(c->argc(0));
+	if (bf == AtenWindow::nBitmapFormats)
 	{
 		Messenger::print("Unrecognised bitmap format.");
 		return false;
@@ -193,14 +193,14 @@ bool Commands::function_SaveBitmap(CommandNode* c, Bundle& obj, ReturnValue& rv)
 		}
 		else
 		{
-			QPixmap pixmap = aten_.currentViewAsPixmap(width, height);
-			result = pixmap.save(fileName, Aten::bitmapFormatExtension(bf), quality);
+			QPixmap pixmap = aten_.atenWindow()->scenePixmap(width, height);
+			result = pixmap.save(fileName, AtenWindow::bitmapFormatExtension(bf), quality);
 		}
 	}
  	else
 	{
-		QPixmap pixmap = aten_.currentViewAsPixmap(width, height);
-		result = pixmap.save(c->argc(1), Aten::bitmapFormatExtension(bf), quality);
+		QPixmap pixmap = aten_.atenWindow()->scenePixmap(width, height);
+		result = pixmap.save(c->argc(1), AtenWindow::bitmapFormatExtension(bf), quality);
 	}
 
 	prefs.setViewRotationGlobe(viewGlobe);
@@ -247,14 +247,14 @@ bool Commands::function_SaveMovie(CommandNode* c, Bundle& obj, ReturnValue& rv)
 		obj.m->seekTrajectoryFrame(n, true);
 		basename = prefs.tempDir().filePath("aten-movie-%1-%2-%3.png").arg(QApplication::applicationPid(), runid).arg(n, 9, 10, QChar('0'));
 
-		pixmap = aten_.currentViewAsPixmap(width, height);
+		pixmap = aten_.atenWindow()->scenePixmap(width, height);
 		pixmap.save(basename, "png", -1);
 		files << basename;
 
 		if (!progress.update(progid,n))
 		{
 			canceled = true;
-			Messenger::print("Canceled.");
+			Messenger::print("Cancelled.");
 			break;
 		}
 	}
@@ -319,7 +319,7 @@ bool Commands::function_SaveVibrationMovie(CommandNode* c, Bundle& obj, ReturnVa
 		basename = prefs.tempDir().filePath("aten-movie-%1-%2-%3.png").arg(QApplication::applicationPid(), runid).arg(n, 9, 10, QChar('0'));
 // 		parent_.postRedisplay();
 
-		pixmap = aten_.currentViewAsPixmap(width, height);
+		pixmap = aten_.atenWindow()->scenePixmap(width, height);
 		pixmap.save(basename, "png", -1);
 		
 		if (!progress.update(progid,n))
