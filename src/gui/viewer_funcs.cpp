@@ -89,6 +89,15 @@ void Viewer::initializeGL()
 	// Setup function pointers to OpenGL extension functions
 	initializeOpenGLFunctions();
 
+	// Setup offscreen context
+	Messenger::print(Messenger::Verbose, "Setting up offscreen context and surface...");
+        offscreenContext_.setShareContext(context());
+        offscreenContext_.setFormat(context()->format());
+        offscreenContext_.create();
+        offscreenSurface_.setFormat(context()->format());
+	offscreenSurface_.create();
+	Messenger::print(Messenger::Verbose, "Done.");
+
 	// Make sure primitives are up-to-date
 	updatePrimitives(Viewer::LowQuality);
 	updatePrimitives(Viewer::HighQuality);
@@ -270,30 +279,6 @@ void Viewer::setObjectScaling(double scaling)
 	// Pass this value on to those that depend on it
 // 	LineStyle::setLineWidthScale(scaling);
 	TextPrimitive::setTextSizeScale(scaling);
-}
-
-// Grab current contents of framebuffer
-QPixmap Viewer::frameBuffer()
-{
-	QImage image = grabFramebuffer();
-	return QPixmap::fromImage(image);
-}
-
-// Render or grab image
-QPixmap Viewer::generateImage(int w, int h)
-{
-	renderingOffScreen_ = true;
-
-	// Generate offscreen bitmap (a temporary context will be created)
-// 	QPixmap pixmap = renderPixmap(w, h, false); // ATEN2 TODO Use framebuffer objects instead?
-
-	// Ensure correct widget context size is stored
-	contextWidth_ = (GLsizei) width();
-	contextHeight_ = (GLsizei) height();
-
-	renderingOffScreen_ = false;
-
-// 	return pixmap;
 }
 
 // Determine target model based on clicked position on Viewer

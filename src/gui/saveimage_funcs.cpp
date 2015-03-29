@@ -20,7 +20,7 @@
 */
 
 #include "gui/saveimage.h"
-#include "main/aten.h"
+#include "gui/mainwindow.h"
 #include <QtWidgets/QFileDialog>
 
 ATEN_USING_NAMESPACE
@@ -34,7 +34,7 @@ SaveImageDialog::SaveImageDialog(QWidget* parent) : QDialog(parent)
 	ui.setupUi(this);
 	
 	// Populate format combo
-	for (int n=0; n<Aten::nBitmapFormats; ++n) ui.ImageFormatCombo->addItem( QString(Aten::bitmapFormatExtension((Aten::BitmapFormat) n)).toUpper());
+	for (int n=0; n<AtenWindow::nBitmapFormats; ++n) ui.ImageFormatCombo->addItem( QString(AtenWindow::bitmapFormatExtension((AtenWindow::BitmapFormat) n)).toUpper());
 }
 
 // Destructor
@@ -62,7 +62,7 @@ bool SaveImageDialog::getImageDetails(int startWidth, int startHeight)
 
 void SaveImageDialog::on_SelectFileNameButton_clicked(bool checked)
 {
-	QString newFile = QFileDialog::getSaveFileName(this, "Choose image save file name", currentDirectory_.absolutePath(), QString(Aten::bitmapFormatFilter((Aten::BitmapFormat) ui.ImageFormatCombo->currentIndex())) + ";;All files (*.*)");
+	QString newFile = QFileDialog::getSaveFileName(this, "Choose image save file name", currentDirectory_.absolutePath(), QString(AtenWindow::bitmapFormatFilter((AtenWindow::BitmapFormat) ui.ImageFormatCombo->currentIndex())) + ";;All files (*.*)");
 	if (!newFile.isEmpty()) ui.FileNameEdit->setText(newFile);
 }
 

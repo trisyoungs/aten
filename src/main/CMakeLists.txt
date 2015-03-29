@@ -8,7 +8,6 @@ add_library(main
   ff.cpp
   filters.cpp
   fragments.cpp
-  image.cpp
   includes.cpp
   models.cpp
   modes.cpp

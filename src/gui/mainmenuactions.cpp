@@ -229,12 +229,12 @@ void AtenWindow::on_actionFileSaveImage_triggered(bool checked)
 	// Get values from dialog
 	int imageWidth = saveImageDialog.ui.ImageWidthSpin->value();
 	int imageHeight = saveImageDialog.ui.ImageHeightSpin->value();
-	Aten::BitmapFormat bf = Aten::bitmapFormatFromFilter(qPrintable(saveImageDialog.ui.ImageFormatCombo->currentText()));
+	AtenWindow::BitmapFormat bf = AtenWindow::bitmapFormatFromFilter(qPrintable(saveImageDialog.ui.ImageFormatCombo->currentText()));
 	QString fileName = saveImageDialog.ui.FileNameEdit->text();
 	if (fileName.isEmpty()) return;
 
-	QPixmap pixmap = aten_.currentViewAsPixmap(imageWidth, imageHeight);
-	pixmap.save(fileName, Aten::bitmapFormatExtension(bf), -1);
+	QPixmap pixmap = ui.MainView->generateImage(imageWidth, imageHeight);
+	pixmap.save(fileName, AtenWindow::bitmapFormatExtension(bf), -1);
 }
 
 // Open grid file

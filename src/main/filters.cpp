@@ -94,10 +94,10 @@ void Aten::createFileDialogFilters()
 
 	// Bitmap formats
 	bitmapFileDialogFilters_.clear();
-	for (int n=0; n < Aten::nBitmapFormats; ++n)
+	for (int n=0; n < AtenWindow::nBitmapFormats; ++n)
 	{
 		if (!bitmapFileDialogFilters_.isEmpty()) bitmapFileDialogFilters_ += ";;";
-		bitmapFileDialogFilters_ += Aten::bitmapFormatFilter( (Aten::BitmapFormat) n);
+		bitmapFileDialogFilters_ += AtenWindow::bitmapFormatFilter( (AtenWindow::BitmapFormat) n);
 	}
 
 	Messenger::exit("Aten::createFileDialogFilters");

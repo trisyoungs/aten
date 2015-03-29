@@ -1,6 +1,6 @@
 /*
-	*** Aten image creation
-	*** src/main/image.cpp
+	*** Viewer - Offscreen rendering
+	*** src/gui/viewer_offscreen.cpp
 	Copyright T. Youngs 2007-2015
 
 	This file is part of Aten.
@@ -19,54 +19,86 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "main/aten.h"
+#include "gui/viewer.uih"
 #include "gui/mainwindow.h"
-#include "base/sysfunc.h"
-#include <QtWidgets/QProgressDialog>
+#include <QOpenGLFramebufferObject>
 #include <QPainter>
+#include <QtWidgets/QProgressDialog>
 
-ATEN_USING_NAMESPACE
+// Generate image for specified model
+QPixmap Viewer::generateModelImage(Model* m, int width, int height)
+{
+	Messenger::enter("Viewer::generateModelImage");
 
-// Bitmap Image Formats (conform to allowable pixmap formats in Qt)
-const char* bitmapFormatFilters[Aten::nBitmapFormats] = { "Windows Bitmap (*.bmp)", "Joint Photographic Experts Group (*.jpg)", "Portable Network Graphics (*.png)", "Portable Pixmap (*.ppm)", "X11 Bitmap (*.xbm)", "X11 Pixmap (*.xpm)" };
-const char* bitmapFormatExtensions[Aten::nBitmapFormats] = { "bmp", "jpg", "png", "ppm", "xbm", "xpm" };
-Aten::BitmapFormat Aten::bitmapFormat(QString s, bool reportError)
-{
-	Aten::BitmapFormat bf = (Aten::BitmapFormat) enumSearch("bitmap format", Aten::nBitmapFormats, bitmapFormatExtensions, s);
-	if ((bf == Aten::nBitmapFormats) && reportError) enumPrintValid(Aten::nBitmapFormats, bitmapFormatExtensions);
-	return bf;
-}
-Aten::BitmapFormat Aten::bitmapFormatFromFilter(const char* s)
-{
-	return (Aten::BitmapFormat) enumSearch("bitmap format", Aten::nBitmapFormats, bitmapFormatFilters,s);
-}
-const char* Aten::bitmapFormatFilter(Aten::BitmapFormat bf)
-{
-	return bitmapFormatFilters[bf];
-}
-const char* Aten::bitmapFormatExtension(Aten::BitmapFormat bf)
-{
-	return bitmapFormatExtensions[bf];
+	// Check validity of model
+	if (m == NULL)
+	{
+		Messenger::exit("Viewer::generateModelImage");
+		return QPixmap();
+	}
+
+	// Make the offscreen surface the current context
+	offscreenContext_.makeCurrent(&offscreenSurface_);
+
+	// Set icon size
+	QSize iconSize(width, height);
+
+	// Initialise framebiffer format and object
+	QOpenGLFramebufferObject frameBufferObject(iconSize);
+
+	if (!frameBufferObject.bind())
+	{
+		Messenger::print("Failed to bind framebuffer object when generating image for single model.");
+		Messenger::exit("Viewer::generateModelImage");
+		return QPixmap();
+	}
+
+	// Set viewport
+	glViewport(0, 0, iconSize.width(), iconSize.height());
+
+	// Grab clear colour and clear view / depth buffer
+	GLfloat col[4];
+	prefs.copyColour(Prefs::BackgroundColour, col);
+	glClearColor(col[0], col[1], col[2], col[3]);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	
+	// Set viewport, setupGL, and clear background / depth buffer
+	setupGL();
+
+	// Draw model
+	renderModel(m, 0, 0, iconSize.width(), iconSize.height());
+
+        // Flush contents
+        glFlush();
+
+	// Grab image ready for return
+	QImage image = frameBufferObject.toImage();
+
+	// Reset context back to main view
+	makeCurrent();
+
+	Messenger::exit("Viewer::generateModelImage");
+	return QPixmap::fromImage(image);
 }
 
-// Save image of current view
-QPixmap Aten::currentViewAsPixmap(int width, int height)
+// Render current scene at supplied size
+QPixmap Viewer::generateImage(int width, int height)
 {
+// 	renderingOffScreen_ = true;
+
 	const int maxSize = 2000;
 	bool useFrameBuffer = true;
-	int contextWidth = atenWindow_->ui.MainView->contextWidth();
-	int contextHeight = atenWindow_->ui.MainView->contextHeight();	
 
 	// Scale current line width and text scaling to reflect size of exported image
-	atenWindow_->ui.MainView->setObjectScaling( double(height) / double(contextHeight) );
+	setObjectScaling( double(height) / double(contextHeight()) );
 
 	// If both image dimensions are less than some limiting size, get image in a single shot. If not, tile it...
 	QPixmap pixmap;
 	if ((width > maxSize) || (height > maxSize))
 	{
 		// If we are using the framebuffer, use the current Viewer size as our tile size
-		int tileWidth = (useFrameBuffer ? contextWidth : maxSize);
-		int tileHeight = (useFrameBuffer ? contextHeight : maxSize);
+		int tileWidth = (useFrameBuffer ? contextWidth() : maxSize);
+		int tileHeight = (useFrameBuffer ? contextHeight() : maxSize);
 
 		// Create a QPixmap of the desired full size
 		pixmap = QPixmap(width, height);
@@ -96,10 +128,10 @@ QPixmap Aten::currentViewAsPixmap(int width, int height)
 
 				// Generate this tile
 				if (useFrameBuffer) atenWindow_->ui.MainView->repaint();
-				QPixmap tile = atenWindow_->ui.MainView->frameBuffer();
+// 				QPixmap tile = atenWindow_->ui.MainView->frameBuffer();	 // ATEN2 TODO
 
 				// Paste this tile into the main image
-				painter.drawPixmap(x*tileWidth, height-(y+1)*tileHeight, tile);
+// 				painter.drawPixmap(x*tileWidth, height-(y+1)*tileHeight, tile);
 			}
 			if (progress.wasCanceled()) break;
 		}
@@ -113,20 +145,14 @@ QPixmap Aten::currentViewAsPixmap(int width, int height)
 	}
 
 	// Reset line width and text size
-	atenWindow_->ui.MainView->setObjectScaling(1.0);
+	setObjectScaling(1.0);
 
 	// Make sure the Viewer knows we no longer want offscreen rendering
-	atenWindow_->ui.MainView->setRenderingOffScreen(false); 
+// 	renderingOffScreen_ = false;
 
 	// The sizes of panes may now be incorrect, so reset everything
 // 	UChromaSession::viewLayout().setOffsetAndScale(0, 0, 1.0, 1.0);  // ATEN2 TODO
 // 	UChromaSession::viewLayout().recalculate(ui.MainView->contextWidth(), ui.MainView->contextHeight());  // ATEN2 TODO
 
 	return pixmap;
-}
-
-// Return pixmap of specified model
-QPixmap Aten::modelPixmap(Model* model, int width, int height)
-{
-	// ATEN2 TODO
 }

@@ -513,6 +513,24 @@ class AtenWindow : public QMainWindow
 	void updateWidgets(int targets = 0);
 	// Refresh main viewer
 	void postRedisplay();
+
+
+	/*
+	 * Image Generation
+	 */
+	public:
+	// Bitmap formats
+	enum BitmapFormat { BitmapBMP, BitmapPG, BitmapPNG, BitmapPPM, BitmapXBM, BitmapX11, nBitmapFormats };
+	static BitmapFormat bitmapFormat(QString s, bool reportError = false);
+	static BitmapFormat bitmapFormatFromFilter(const char* s);
+	static const char* bitmapFormatFilter(BitmapFormat bf);
+	static const char* bitmapFormatExtension(BitmapFormat bf);
+
+	public:
+	// Save image of current view
+	QPixmap scenePixmap(int width, int height);
+	// Return pixmap of specified model
+	QPixmap modelPixmap(Model* model, int width, int height);
 };
 
 #endif

@@ -56,6 +56,7 @@ set(qtproject_SRCS
   viewer_key.cpp
   viewer_model.cpp
   viewer_mouse.cpp
+  viewer_offscreen.cpp
   viewer_scene.cpp
   viewer_user.cpp
   viewer_useractions.cpp
