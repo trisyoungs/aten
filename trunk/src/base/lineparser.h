@@ -27,7 +27,7 @@
 #include <fstream>
 #include <iostream>
 #include <sstream>
-#include <QtCore/QStringList>
+#include <QStringList>
 #include "base/namespace.h"
 
 ATEN_BEGIN_NAMESPACE

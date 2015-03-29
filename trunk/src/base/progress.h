@@ -22,7 +22,7 @@
 #ifndef ATEN_PROGRESSINDICATOR_H
 #define ATEN_PROGRESSINDICATOR_H
 
-#include <QtCore/QTime>
+#include <QTime>
 #include "base/namespace.h"
 
 ATEN_BEGIN_NAMESPACE

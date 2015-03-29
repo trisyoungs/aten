@@ -22,7 +22,7 @@
 #ifndef ATEN_ATEN_H
 #define ATEN_ATEN_H
 
-#include <QtCore/QDir>
+#include <QDir>
 #include "base/kvmap.h"
 #include "base/prefs.h"
 #include "model/bundle.h"

@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <QtGui/QMessageBox>
+#include <QtWidgets/QMessageBox>
 #include "main/aten.h"
 #include "gui/mainwindow.h"
 #include "gui/prefs.h"
@@ -33,9 +33,9 @@
 #include "model/clipboard.h"
 #include "model/undostate.h"
 #include "parser/commandnode.h"
-#include <QtGui/QFileDialog>
-#include <QtGui/QKeyEvent>
-#include <QtGui/QProgressBar>
+#include <QtWidgets/QFileDialog>
+#include <QKeyEvent>
+#include <QtWidgets/QProgressBar>
 #include "base/sysfunc.h"
 #include "main/version.h"
 #include <iostream>

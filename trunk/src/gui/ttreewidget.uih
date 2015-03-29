@@ -24,8 +24,8 @@
 
 #include "templates/reflist.h"
 #include "gui/ttreewidgetitem.h"
-#include <QtGui/QTreeWidget>
-#include <QtCore/QObject>
+#include <QtWidgets/QTreeWidget>
+#include <QObject>
 #include "base/namespace.h"
 
 ATEN_USING_NAMESPACE

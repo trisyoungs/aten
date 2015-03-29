@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <QtGui/QKeyEvent>
+#include <QKeyEvent>
 #include "gui/mainwindow.h"
 #include "gui/fragments.h"
 #include "gui/build.h"

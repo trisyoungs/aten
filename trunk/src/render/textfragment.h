@@ -24,7 +24,7 @@
 
 #include "templates/vector3.h"
 #include "templates/list.h"
-#include <QtCore/QString>
+#include <QString>
 #include "base/namespace.h"
 
 ATEN_BEGIN_NAMESPACE

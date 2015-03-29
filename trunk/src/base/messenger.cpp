@@ -21,7 +21,7 @@
 
 #include "base/messenger.h"
 #include "base/sysfunc.h"
-#include <QtCore/QTextStream>
+#include <QTextStream>
 #include <stdarg.h>
 #include <stdio.h>
 

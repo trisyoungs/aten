@@ -22,7 +22,7 @@
 #ifndef ATEN_TLISTWIDGETITEM_H
 #define ATEN_TLISTWIDGETITEM_H
 
-#include <QtGui/QListWidgetItem>
+#include <QtWidgets/QListWidgetItem>
 #include "parser/returnvalue.h"
 
 ATEN_USING_NAMESPACE

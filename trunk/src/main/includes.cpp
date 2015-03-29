@@ -21,7 +21,7 @@
 
 #include "main/aten.h"
 #include <QtGui/QApplication>
-#include <QtCore/QDir>
+#include <QDir>
 
 ATEN_USING_NAMESPACE
 

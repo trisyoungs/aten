@@ -22,8 +22,8 @@
 #ifndef ATEN_TMENUBUTTON_H
 #define ATEN_TMENUBUTTON_H
 
-#include <QtGui/QPushButton>
-#include <QtGui/QMenu>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QMenu>
 #include "parser/returnvalue.h"
 #include "templates/reflist.h"
 

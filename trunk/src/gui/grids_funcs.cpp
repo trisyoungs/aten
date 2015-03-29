@@ -19,9 +19,9 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <QtGui/QCloseEvent>
-#include <QtGui/QFileDialog>
-#include <QtGui/QColorDialog>
+#include <QCloseEvent>
+#include <QtWidgets/QFileDialog>
+#include <QtWidgets/QColorDialog>
 #include "main/aten.h"
 #include "gui/mainwindow.h"
 #include "gui/grids.h"

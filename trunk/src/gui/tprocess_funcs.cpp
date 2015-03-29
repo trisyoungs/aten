@@ -29,14 +29,14 @@ ATEN_USING_NAMESPACE
 // Constructor
 TProcess::TProcess(QObject *parent) : QProcess(parent)
 {
-	finished_ = FALSE;
-	outputFileSpecified_ = FALSE;
+	finished_ = false;
+	outputFileSpecified_ = false;
 	QObject::connect(this, SIGNAL(finished(int,QProcess::ExitStatus)), this, SLOT(processFinished(int,QProcess::ExitStatus)));
 }
 
 void TProcess::processFinished(int exitCode, QProcess::ExitStatus exitStatus)
 {
-	finished_ = TRUE;
+	finished_ = true;
 }
 
 // Execute specified command
@@ -49,17 +49,17 @@ bool TProcess::execute(QString command, QString args, QString outputfile)
 		kill();
 	}
 
-	finished_ = FALSE;
+	finished_ = false;
 
 	// Set up outputfile (if specified)
 	outputFile_.close();
 	stream_.flush();
 	stream_.setDevice(NULL);
-	if (outputfile.isEmpty()) outputFileSpecified_ = FALSE;
+	if (outputfile.isEmpty()) outputFileSpecified_ = false;
 	else
 	{
 		outputFile_.setFileName(outputfile);
-		outputFileSpecified_ = TRUE;
+		outputFileSpecified_ = true;
 	}
 	
 	// Attempt to start process
@@ -72,10 +72,10 @@ bool TProcess::execute(QString command, QString args, QString outputfile)
 	if (!waitForStarted(1000))
 	{
 		printf("Error: Failed to run command '%s'\n", qPrintable(command));
-		return FALSE;
+		return false;
 	}
 
-	return TRUE;
+	return true;
 }
 
 // Return whether process has finished
@@ -92,26 +92,26 @@ bool TProcess::outputAvailable()
 	if (!outputFileSpecified_)
 	{
 		// Is some old output already available?
-		if (!stdOutput_.isEmpty()) return TRUE;
+		if (!stdOutput_.isEmpty()) return true;
 		stdOutput_ = readAllStandardOutput();
-		if (!stdOutput_.isEmpty()) return TRUE;
-		return FALSE;
+		if (!stdOutput_.isEmpty()) return true;
+		return false;
 	}
 	
 	// Second check - if output file doesn't exist, no output to be had
-	if (!outputFile_.exists()) return FALSE;
+	if (!outputFile_.exists()) return false;
 	
 	// Third check - able to open output file
-	if ((!outputFile_.isOpen()) && (!outputFile_.open(QIODevice::ReadOnly | QIODevice::Text))) return FALSE;
+	if ((!outputFile_.isOpen()) && (!outputFile_.open(QIODevice::ReadOnly | QIODevice::Text))) return false;
 	
 	// So, has the device already been assigned to the QTextStream?
 	if (stream_.device() != &outputFile_) stream_.setDevice(&outputFile_);
 	
 	// Is there any data to read?
-	if (stream_.atEnd()) return FALSE;
+	if (stream_.atEnd()) return false;
 	
 	// There is!
-	return TRUE;
+	return true;
 }
 
 // Return next line from output file

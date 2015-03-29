@@ -89,7 +89,7 @@ char NetaParser::getChar()
 
 	// Return current character
 	if (stringPos_ == stringLength_) return '\0';
-	c = stringSource_.at(stringPos_).toAscii();
+	c = stringSource_.at(stringPos_).toLatin1();
 
 	// Increment string position
 	stringPos_++;
@@ -103,13 +103,13 @@ char NetaParser::peekChar()
 	if (isFileSource_)
 	{
 		if (stringPos_ == stringLength_) return parser_.peek();
-		c = stringSource_.at(stringPos_).toAscii();
+		c = stringSource_.at(stringPos_).toLatin1();
 	}
 	else
 	{
 		// Return current character
 		if (stringPos_ == stringLength_) return '\0';
-		c = stringSource_.at(stringPos_).toAscii();
+		c = stringSource_.at(stringPos_).toLatin1();
 	}
 	return c;
 }

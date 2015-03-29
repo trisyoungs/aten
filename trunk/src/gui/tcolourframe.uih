@@ -22,8 +22,8 @@
 #ifndef ATEN_TCOLOURFRAME_H
 #define ATEN_TCOLOURFRAME_H
 
-#include <QtGui/QFrame>
-#include <QtCore/QObject>
+#include <QtWidgets/QFrame>
+#include <QObject>
 
 class TColourFrame : public QFrame
 {

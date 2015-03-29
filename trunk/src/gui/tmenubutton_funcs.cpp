@@ -20,9 +20,9 @@
 */
 
 #include "gui/tmenubutton.uih"
-#include <QtGui/QMouseEvent>
-#include <QtGui/QMenu>
-#include <QtGui/QHBoxLayout>
+#include <QMouseEvent>
+#include <QtWidgets/QMenu>
+#include <QtWidgets/QHBoxLayout>
 
 // Constructor
 TMenuButton::TMenuButton(QWidget *parent) : QPushButton(parent)

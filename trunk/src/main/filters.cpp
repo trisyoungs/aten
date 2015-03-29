@@ -21,7 +21,7 @@
 
 #include "main/aten.h"
 #include "gui/mainwindow.h"
-#include <QtCore/QDir>
+#include <QDir>
 
 // Load filters
 void Aten::openFilters()

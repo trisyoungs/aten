@@ -25,7 +25,7 @@
 #include "math/matrix.h"
 #include "templates/vector3.h"
 #include "templates/list.h"
-#include <QtCore/QList>
+#include <QList>
 #include "base/namespace.h"
 
 ATEN_BEGIN_NAMESPACE

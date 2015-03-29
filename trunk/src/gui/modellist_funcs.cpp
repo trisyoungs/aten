@@ -19,9 +19,9 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <QtGui/QCloseEvent>
-#include <QtGui/QMouseEvent>
-#include <QtGui/QInputDialog>
+#include <QCloseEvent>
+#include <QMouseEvent>
+#include <QtWidgets/QInputDialog>
 #include "main/aten.h"
 #include "gui/modellist.h"
 #include "gui/mainwindow.h"

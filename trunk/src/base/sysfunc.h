@@ -22,7 +22,7 @@
 #ifndef ATEN_SYSFUNC_H
 #define ATEN_SYSFUNC_H
 
-#include <QtCore/QString>
+#include <QString>
 
 // String functions
 void removeComments(QString& line);

@@ -22,7 +22,7 @@
 #ifndef ATEN_VTYPES_H
 #define ATEN_VTYPES_H
 
-#include <QtCore/QString>
+#include <QString>
 #include "base/namespace.h"
 
 ATEN_BEGIN_NAMESPACE

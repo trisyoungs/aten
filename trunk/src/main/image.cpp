@@ -22,7 +22,7 @@
 #include "main/aten.h"
 #include "gui/mainwindow.h"
 #include "base/sysfunc.h"
-#include <QtGui/QProgressDialog>
+#include <QtWidgets/QProgressDialog>
 
 ATEN_USING_NAMESPACE
 

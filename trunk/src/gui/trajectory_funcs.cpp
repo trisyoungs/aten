@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <QtGui/QCloseEvent>
+#include <QCloseEvent>
 #include "gui/mainwindow.h"
 #include "gui/trajectory.h"
 #include "main/aten.h"

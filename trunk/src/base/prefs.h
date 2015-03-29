@@ -28,7 +28,7 @@
 #include "base/colourscale.h"
 #include "base/choice.h"
 #include "base/namespace.h"
-#include <QtCore/QDir>
+#include <QDir>
 
 ATEN_BEGIN_NAMESPACE
 

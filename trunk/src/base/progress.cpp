@@ -36,14 +36,14 @@ ATEN_USING_NAMESPACE
 ProgressIndicator::ProgressIndicator()
 {
 	// Private variables
-	hasJob_ = FALSE;
-	canceled_ = FALSE;
+	hasJob_ = false;
+	canceled_ = false;
 }
 
 // Notify that the progress indicator should be canceled
 void ProgressIndicator::notifyCanceled()
 {
-	canceled_ = TRUE;
+	canceled_ = true;
 }
 
 // Instantiate a new progress dialog (or a sub-job of the current one
@@ -59,14 +59,14 @@ int ProgressIndicator::initialise(QString jobtitle, int stepstodo)
 		currentStep_ = 0;
 		stepsToDo_ = stepstodo;
 		percent_ = 0;
-		canceled_ = FALSE;
+		canceled_ = false;
 		jobTitle_ = jobtitle;
 
 		// If the GUI doesn't exist, call the text-based progress indicator
 // 		if (gui.exists()) gui.initialiseProgressDialog();   ATEN2 TODO
 		if (!Messenger::isQuiet()) printf("%s", qPrintable(jobtitle));
 
-		hasJob_ = TRUE;
+		hasJob_ = true;
 		return 1;
 	}
 	else
@@ -147,7 +147,7 @@ void ProgressIndicator::terminate(int id)
 	if (percent_ == -1) return;
 // 	if (gui.exists()) gui.terminateProgressDialog(); ATEN2 TODO
 	if (time_.elapsed() >= 250) printf("\n");
-	hasJob_ = FALSE;
+	hasJob_ = false;
 	jobTitle_ = "";
 	percent_ = -1;
 }

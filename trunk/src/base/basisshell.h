@@ -22,7 +22,7 @@
 #ifndef ATEN_BASISSHELL_H
 #define ATEN_BASISSHELL_H
 
-#include <QtCore/QList>
+#include <QList>
 #include "base/atom.h"
 #include "templates/list.h"
 #include "base/namespace.h"

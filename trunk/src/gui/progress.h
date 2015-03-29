@@ -23,7 +23,7 @@
 #define ATEN_PROGRESSDIALOG_H
 
 #include "gui/ui_progress.h"
-#include <QtCore/QTime>
+#include <QTime>
 #include "base/namespace.h"
 
 // Progress Dialog

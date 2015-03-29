@@ -20,7 +20,7 @@
 */
 
 #include "gui/tcolourframe.uih"
-#include <QtGui/QPainter>
+#include <QPainter>
 
 // Constructor
 TColourFrame::TColourFrame(QWidget *parent)

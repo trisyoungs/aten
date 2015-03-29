@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <QtGui/QCloseEvent>
-#include <QtGui/QFileDialog>
+#include <QCloseEvent>
+#include <QtWidgets/QFileDialog>
 #include "main/aten.h"
 #include "methods/mc.h"
 #include "methods/sd.h"
@@ -56,7 +56,7 @@ ForcefieldsWidget::ForcefieldsWidget(AtenWindow& parent, Qt::WindowFlags flags) 
 	filters.clear();
 	filters << "All files (*)";
 	filters << "Forcefield Files (*.ff)";
-	openForcefieldDialog->setFilters(filters);
+	openForcefieldDialog->setNameFilters(filters);
 	
 	// Create save forcefield dialog
 	saveForcefieldDialog = new QFileDialog(this);
@@ -67,7 +67,7 @@ ForcefieldsWidget::ForcefieldsWidget(AtenWindow& parent, Qt::WindowFlags flags) 
 	filters.clear();
 	filters << "All files (*)";
 	filters << "Forcefield Files (*.ff)";
-	saveForcefieldDialog->setFilters(filters);
+	saveForcefieldDialog->setNameFilters(filters);
 }
 
 void ForcefieldsWidget::showWidget()

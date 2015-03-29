@@ -21,6 +21,9 @@
 
 #include "gui/mainwindow.h"
 #include "main/aten.h"
+#include <QPainter>
+#include <QOpenGLContext>
+#include <QPixmap>
 
 ATEN_USING_NAMESPACE
 
@@ -223,16 +226,17 @@ GLsizei Viewer::contextWidth() const
 void Viewer::probeFeatures()
 {
 	// Probe this format!
-	QGLFormat fmt = context()->format();
-	Messenger::print(Messenger::Verbose, "QGLFormat: Alpha buffer is %s.", fmt.alpha() ? "enabled" : "disabled");
-	Messenger::print(Messenger::Verbose, "QGLFormat: Accumulation buffer is %s.", fmt.accum() ? "enabled" : "disabled");
-	Messenger::print(Messenger::Verbose, "QGLFormat: Depth buffer is %s.", fmt.depth() ? "enabled" : "disabled");
-	Messenger::print(Messenger::Verbose, "QGLFormat: Double-buffering is %s.", fmt.doubleBuffer() ? "enabled" : "disabled");
-	Messenger::print(Messenger::Verbose, "QGLFormat: Direct rendering is %s.", fmt.directRendering() ? "enabled" : "disabled");
-	Messenger::print(Messenger::Verbose, "QGLFormat: RGBA colour mode is %s.", fmt.rgba() ? "enabled" : "disabled");
-	Messenger::print(Messenger::Verbose, "QGLFormat: Multisample buffer is %s.", fmt.sampleBuffers() ? "enabled" : "disabled");
-	Messenger::print(Messenger::Verbose, "QGLFormat: Stencil buffer is %s.", fmt.stencil() ? "enabled" : "disabled");
-	Messenger::print(Messenger::Verbose, "QGLWidget: Autoswap buffers is %s.", autoBufferSwap() ? "enabled" : "disabled");
+	QSurfaceFormat format = context()->format();
+	Messenger::print(Messenger::Verbose, "QGLFormat: Alpha buffer is %s.", format.hasAlpha() ? "enabled" : "disabled");
+	// ATEN2 TODO
+// 	Messenger::print(Messenger::Verbose, "QGLFormat: Accumulation buffer is %s.", format.a() ? "enabled" : "disabled");
+// 	Messenger::print(Messenger::Verbose, "QGLFormat: Depth buffer is %s.", format.depth() ? "enabled" : "disabled");
+// 	Messenger::print(Messenger::Verbose, "QGLFormat: Double-buffering is %s.", format.doubleBuffer() ? "enabled" : "disabled");
+// 	Messenger::print(Messenger::Verbose, "QGLFormat: Direct rendering is %s.", format.directRendering() ? "enabled" : "disabled");
+// 	Messenger::print(Messenger::Verbose, "QGLFormat: RGBA colour mode is %s.", format.rgba() ? "enabled" : "disabled");
+// 	Messenger::print(Messenger::Verbose, "QGLFormat: Multisample buffer is %s.", format.sampleBuffers() ? "enabled" : "disabled");
+// 	Messenger::print(Messenger::Verbose, "QGLFormat: Stencil buffer is %s.", format.stencil() ? "enabled" : "disabled");
+// 	Messenger::print(Messenger::Verbose, "QGLWidget: Autoswap buffers is %s.", autoBufferSwap() ? "enabled" : "disabled");
 }
 
 // Check for GL error
@@ -276,7 +280,7 @@ void Viewer::setObjectScaling(double scaling)
 // Grab current contents of framebuffer
 QPixmap Viewer::frameBuffer()
 {
-	QImage image = grabFrameBuffer();
+	QImage image = grabFramebuffer();
 	return QPixmap::fromImage(image);
 }
 

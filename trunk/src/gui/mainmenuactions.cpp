@@ -19,9 +19,9 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <QtGui/QFileDialog>
-#include <QtGui/QMessageBox>
-#include <QtGui/QInputDialog>
+#include <QtWidgets/QFileDialog>
+#include <QtWidgets/QMessageBox>
+#include <QtWidgets/QInputDialog>
 #include "gui/mainwindow.h"
 #include "main/aten.h"
 #include "gui/loadmodel.h"

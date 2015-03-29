@@ -22,7 +22,7 @@
 #ifndef ATEN_TEXTRATREEWIDGETITEM_H
 #define ATEN_TEXTRATREEWIDGETITEM_H
 
-#include <QtGui/QTreeWidget>
+#include <QtWidgets/QTreeWidget>
 #include "templates/list.h"
 #include "base/datastore.h"
 #include "base/namespace.h"

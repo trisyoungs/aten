@@ -22,7 +22,7 @@
 #ifndef ATEN_TTREEWIDGETITEM_H
 #define ATEN_TTREEWIDGETITEM_H
 
-#include <QtGui/QTreeWidget>
+#include <QtWidgets/QTreeWidget>
 #include "parser/returnvalue.h"
 #include "base/namespace.h"
 

@@ -19,9 +19,9 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <QtGui/QCloseEvent>
-#include <QtGui/QFileDialog>
-#include <QtGui/QMessageBox>
+#include <QCloseEvent>
+#include <QtWidgets/QFileDialog>
+#include <QtWidgets/QMessageBox>
 #include "gui/tprocess.uih"
 #include "main/aten.h"
 #include "gui/scriptmovie.h"

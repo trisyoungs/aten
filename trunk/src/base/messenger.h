@@ -23,7 +23,7 @@
 #define ATEN_MESSENGER_H
 
 #include "base/namespace.h"
-#include <QtCore/QStringList>
+#include <QStringList>
 
 ATEN_BEGIN_NAMESPACE
 

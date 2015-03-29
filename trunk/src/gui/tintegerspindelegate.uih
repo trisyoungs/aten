@@ -22,10 +22,10 @@
 #ifndef ATEN_TINTEGERSPINDELEGATE_H
 #define ATEN_TINTEGERSPINDELEGATE_H
 
-#include <QtGui/QItemDelegate>
-#include <QtCore/QModelIndex>
-#include <QtCore/QObject>
-#include <QtGui/QSpinBox>
+#include <QtWidgets/QItemDelegate>
+#include <QModelIndex>
+#include <QObject>
+#include <QtWidgets/QSpinBox>
 
 class TIntegerSpinDelegate : public QItemDelegate
 {

@@ -22,7 +22,7 @@
 #ifndef ATEN_TTABLEWIDGETATOM_H
 #define ATEN_TTABLEWIDGETATOM_H
 
-#include <QtGui/QTableWidgetItem>
+#include <QtWidgets/QTableWidgetItem>
 #include "parser/returnvalue.h"
 #include "base/namespace.h"
 

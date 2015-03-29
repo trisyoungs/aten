@@ -208,7 +208,7 @@ bool Commands::function_GridLoopOrder(CommandNode* c, Bundle& obj, ReturnValue& 
 	char ch;
 	for (int n=0; n<3; n++)
 	{
-		ch = c->argc(0).at(n).toAscii();
+		ch = c->argc(0).at(n).toLatin1();
 		switch (ch)
 		{
 			case ('X'):

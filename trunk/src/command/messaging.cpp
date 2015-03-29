@@ -23,7 +23,7 @@
 #include "parser/commandnode.h"
 #include "parser/tree.h"
 #include "base/prefs.h"
-#include <QtGui/QMessageBox>
+#include <QtWidgets/QMessageBox>
 
 ATEN_USING_NAMESPACE
 

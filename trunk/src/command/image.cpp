@@ -26,8 +26,8 @@
 #include "model/model.h"
 #include "base/prefs.h"
 #include "base/sysfunc.h"
-#include <QtGui/QApplication>
-#include <QtCore/QFileInfo>
+#include <QtGui>
+#include <QFileInfo>
 #include "base/progress.h"
 #include "main/aten.h"
 

@@ -389,7 +389,7 @@ bool LineParser::getNextArg(int optionMask, QString& destArg)
 
 	while (linePos_ < lineLength_)
 	{
-		c = line_.at(linePos_).toAscii();
+		c = line_.at(linePos_).toLatin1();
 		switch (c)
 		{
 			// End of line markers
@@ -496,7 +496,7 @@ bool LineParser::getNextN(int optionMask, int length, QString& destArg)
 	//if (length > lineLength_) length = lineLength_;
 	for (n=0; n<length; ++n)
 	{
-		switch (line_.at(n).toAscii())
+		switch (line_.at(n).toLatin1())
 		{
 			// Brackets
 			case ('('):	// Left parenthesis
@@ -591,7 +591,7 @@ bool LineParser::getRestDelim(QString& destArg)
 	char c;
 	for (n=0; n<length; ++n)
 	{
-		c = line_.at(linePos_).toAscii();
+		c = line_.at(linePos_).toLatin1();
 		switch (c)
 		{
 			// Ignore whitespace occuring before first proper character
@@ -672,7 +672,7 @@ bool LineParser::getCharsDelim(int optionMask, QString& line, QString& destArg)
 
 	while (pos < length)
 	{
-		c = line.at(pos).toAscii();
+		c = line.at(pos).toLatin1();
 		switch (c)
 		{
 			// End of line markers
