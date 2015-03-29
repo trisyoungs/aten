@@ -101,7 +101,8 @@ void Viewer::initializeGL()
 	Messenger::exit("Viewer::initializeGL");
 }
 
-void Viewer::paintEvent(QPaintEvent* event)
+// void Viewer::paintEvent(QPaintEvent* event)
+void Viewer::paintGL()
 {
 	// Do nothing if the canvas is not valid, or we are still drawing from last time, or the Aten pointer has not been set
 	if ((!valid_) || drawing_ || (!atenWindow_)) return;
@@ -123,6 +124,9 @@ void Viewer::paintEvent(QPaintEvent* event)
 		return;
 	}
 
+	// Create a QPainter
+	QPainter painter(this);
+	
 	// Setup GL and clear view
 	GLfloat col[4];
 	prefs.copyColour(Prefs::BackgroundColour, col);
@@ -130,9 +134,6 @@ void Viewer::paintEvent(QPaintEvent* event)
 
 	glViewport(0, 0, contextWidth_, contextHeight_);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	// Create a QPainter
-	QPainter painter(this);
 
 	// Store all GL state variables, since they will be modified by QPainter
 	glPushAttrib(GL_ALL_ATTRIB_BITS);
@@ -156,6 +157,8 @@ void Viewer::paintEvent(QPaintEvent* event)
 		if (textRect.bottom() < margin) break;
 	}
 
+	painter.beginNativePainting();
+
 	// Restore all GL state variables, and setup GL
 	glPopAttrib();
 	setupGL();
@@ -169,6 +172,8 @@ void Viewer::paintEvent(QPaintEvent* event)
 	// Render all models
 	renderModels(extensions);
 
+	painter.endNativePainting();
+	
 	// Done!
 	painter.end();
 
@@ -290,7 +295,7 @@ QPixmap Viewer::generateImage(int w, int h)
 	renderingOffScreen_ = true;
 
 	// Generate offscreen bitmap (a temporary context will be created)
-	QPixmap pixmap = renderPixmap(w, h, false);
+// 	QPixmap pixmap = renderPixmap(w, h, false); // ATEN2 TODO Use framebuffer objects instead?
 
 	// Ensure correct widget context size is stored
 	contextWidth_ = (GLsizei) width();
@@ -298,7 +303,7 @@ QPixmap Viewer::generateImage(int w, int h)
 
 	renderingOffScreen_ = false;
 
-	return pixmap;
+// 	return pixmap;
 }
 
 // Determine target model based on clicked position on Viewer

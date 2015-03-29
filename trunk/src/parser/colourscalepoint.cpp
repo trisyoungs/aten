@@ -289,14 +289,16 @@ void ColourScalePointVariable::printAccessors()
 	if (ColourScalePointVariable::nAccessors > 0)
 	{
 		Messenger::print("Valid accessors are:");
-		for (int n=0; n<ColourScalePointVariable::nAccessors; ++n) Messenger::print("%s%s%s", n == 0 ? " " : ", ", accessorData[n].name, accessorData[n].arraySize > 0 ? "[]" : "");
-		Messenger::print("");
+		QString accessors;
+		for (int n=0; n<ColourScalePointVariable::nAccessors; ++n) accessors += QString("%1%2%3").arg(n == 0 ? " " : ", ", accessorData[n].name, accessorData[n].arraySize > 0 ? "[]" : "");
+		Messenger::print(accessors);
 	}
 	if ((ColourScalePointVariable::nFunctions > 0) && (strcmp(functionData[0].name,".dummy") != 0))
 	{
 		Messenger::print("Valid functions are:");
-		for (int n=0; n<ColourScalePointVariable::nFunctions; ++n) Messenger::print("%s%s(%s)", n == 0 ? " " : ", ", functionData[n].name, functionData[n].argText);
-		Messenger::print("");
+		QString functions;
+		for (int n=0; n<ColourScalePointVariable::nFunctions; ++n) functions += QString("%1%2(%3)").arg(n == 0 ? " " : ", ", functionData[n].name, functionData[n].argText);
+		Messenger::print(functions);
 	}
 }
 

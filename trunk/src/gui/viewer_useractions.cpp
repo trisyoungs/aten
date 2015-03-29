@@ -26,6 +26,7 @@
 #include "gui/fragments.h"
 #include "base/sysfunc.h"
 #include "gui/mainwindow.h"
+#include <QPainter>
 
 // Render active mode embellishments
 void Viewer::renderActiveModes(Model* currentModel)

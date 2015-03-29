@@ -85,8 +85,8 @@ class Viewer : public QOpenGLWidget
 	// Initialise context widget (when created by Qt)
 	void initializeGL();
 	// Repaint
-// 	void paintGL();
-	void paintEvent(QPaintEvent* event);
+	void paintGL();
+// 	void paintEvent(QPaintEvent* event);
 	// Resize function
 	void resizeGL(int, int);
 	// Mouse focus lost
