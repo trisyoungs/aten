@@ -1493,8 +1493,8 @@ int main(int argc, char *argv[])
   console_options.title = "\psgInfo   version 1.0.1";
 #endif
 #ifdef __MWERKS__
-  SIOUXSettings.autocloseonquit = FALSE;
-  SIOUXSettings.asktosaveonclose = TRUE;
+  SIOUXSettings.autocloseonquit = false;
+  SIOUXSettings.asktosaveonclose = true;
   SIOUXSettings.columns = CONSOLE_COLUMNS;
   SIOUXSettings.rows = CONSOLE_LINES;
 #endif

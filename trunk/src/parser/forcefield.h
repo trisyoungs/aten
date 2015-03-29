@@ -35,7 +35,7 @@ class ForcefieldVariable : public PointerVariable
 {
 	public:
 	// Constructor / Destructor
-	ForcefieldVariable(Forcefield* ptr = NULL, bool constant = FALSE);
+	ForcefieldVariable(Forcefield* ptr = NULL, bool constant = false);
 	~ForcefieldVariable();
 
 
@@ -70,7 +70,7 @@ class ForcefieldArrayVariable : public PointerArrayVariable
 {
 	public:
 	// Constructor / Destructor
-	ForcefieldArrayVariable(TreeNode* sizeexpr, bool constant = FALSE);
+	ForcefieldArrayVariable(TreeNode* sizeexpr, bool constant = false);
 
 
 	/*

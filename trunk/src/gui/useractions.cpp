@@ -197,9 +197,9 @@ bool UserAction::isBuildWidgetAction(UserAction::Action ua)
 		case (DrawDeleteBondAction):
 		case (DrawAddHydrogenAction):
 		case (DrawGrowAtomAction):
-			return TRUE;
+			return true;
 		default:
-			return FALSE;
+			return false;
 	}
 }
 
@@ -210,9 +210,9 @@ bool UserAction::isGeometryWidgetAction(UserAction::Action ua)
 		case (MeasureDistanceAction):
 		case (MeasureAngleAction):
 		case (MeasureTorsionAction):
-			return TRUE;
+			return true;
 		default:
-			return FALSE;
+			return false;
 	}
 }
 
@@ -221,9 +221,9 @@ bool UserAction::isPositionWidgetAction(UserAction::Action ua)
 	switch (ua)
 	{
 		case (ShiftPickVectorAction):
-			return TRUE;
+			return true;
 		default:
-			return FALSE;
+			return false;
 	}
 }
 
@@ -241,9 +241,9 @@ bool UserAction::isTransformWidgetAction(UserAction::Action ua)
 		case (ConvertTargetPickAAction):
 		case (ConvertTargetPickBAction):
 		case (ConvertTargetPickCAction):
-			return TRUE;
+			return true;
 		default:
-			return FALSE;
+			return false;
 	}
 }
 

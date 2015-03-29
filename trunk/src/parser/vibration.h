@@ -35,7 +35,7 @@ class VibrationVariable : public PointerVariable
 {
 	public:
 	// Constructor / Destructor
-	VibrationVariable(Vibration* vib = NULL, bool constant = FALSE);
+	VibrationVariable(Vibration* vib = NULL, bool constant = false);
 	~VibrationVariable();
 
 
@@ -70,7 +70,7 @@ class VibrationArrayVariable : public PointerArrayVariable
 {
 	public:
 	// Constructor / Destructor
-	VibrationArrayVariable(TreeNode* sizeexpr, bool constant = FALSE);
+	VibrationArrayVariable(TreeNode* sizeexpr, bool constant = false);
 
 
 	/*

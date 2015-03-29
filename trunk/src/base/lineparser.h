@@ -142,7 +142,7 @@ class LineParser
 	// Get next delimited argument from internal line
 	bool getArgDelim(int optionMask, QString& destArg);
 	// Return a number of characters from the input stream
-	QString getChars(int nchars, bool skipeol = TRUE);
+	QString getChars(int nchars, bool skipeol = true);
 	// Skip a number of characters from the input stream
 	void skipChars(int nchars);
 	// Return an integer value from reading 'n' chars of an (unformatted) input file

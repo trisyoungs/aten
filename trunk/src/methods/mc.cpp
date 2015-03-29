@@ -62,11 +62,11 @@ MonteCarlo::MonteCarlo()
 	nTrials_[MonteCarlo::ZMatrix] = 0;
 	nTrials_[MonteCarlo::Insert] = 20;
 	nTrials_[MonteCarlo::Delete] = 0; 
-	moveAllowed_[MonteCarlo::Translate] = TRUE;
-	moveAllowed_[MonteCarlo::Rotate] = TRUE;
-	moveAllowed_[MonteCarlo::ZMatrix] = FALSE;
-	moveAllowed_[MonteCarlo::Insert] = TRUE;
-	moveAllowed_[MonteCarlo::Delete] = TRUE; 
+	moveAllowed_[MonteCarlo::Translate] = true;
+	moveAllowed_[MonteCarlo::Rotate] = true;
+	moveAllowed_[MonteCarlo::ZMatrix] = false;
+	moveAllowed_[MonteCarlo::Insert] = true;
+	moveAllowed_[MonteCarlo::Delete] = true; 
 	acceptanceEnergy_[MonteCarlo::Translate] = 0.0;
 	acceptanceEnergy_[MonteCarlo::Rotate] = 0.0;
 	acceptanceEnergy_[MonteCarlo::ZMatrix] = 0.0;
@@ -351,7 +351,7 @@ bool MonteCarlo::minimise(Model* srcmodel, double econ, double fcon)
         if ((!srcmodel->isExpressionValid()) || (srcmodel->nAtoms() == 0))
 	{
 		Messenger::exit("MonteCarlo::minimise");
-		return FALSE;
+		return false;
 	}
 
 	// Create coordinate backup model for minimisation
@@ -369,7 +369,7 @@ bool MonteCarlo::minimise(Model* srcmodel, double econ, double fcon)
 	if (!success)
 	{
 		Messenger::exit("MonteCarlo::minimise");
-		return FALSE;
+		return false;
 	}
 	currentVdwEnergy = srcmodel->energy.vdw();
 	currentElecEnergy = srcmodel->energy.electrostatic();
@@ -484,5 +484,5 @@ bool MonteCarlo::minimise(Model* srcmodel, double econ, double fcon)
 	srcmodel->logChange(Log::Coordinates);
 
 	Messenger::exit("MonteCarlo::minimise");
-	return TRUE;
+	return true;
 }

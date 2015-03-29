@@ -104,7 +104,7 @@ class UnitCell
 	// Set all angles simultaneously
 	void setAngles(const Vec3<double> &angles);
 	// Set / adjust individual parameter
-	void setParameter(UnitCell::CellParameter cp, double value, bool adjust = FALSE);
+	void setParameter(UnitCell::CellParameter cp, double value, bool adjust = false);
 	// Return the type of cell
 	UnitCell::CellType type() const;
 	// Return the cell vector matrix
@@ -220,17 +220,17 @@ class UnitCell
 	*/
 	public:
 	// Calculate distance between supplied coordinates
-	double distance(const Vec3<double> &ri, const Vec3<double> &rj, bool useMim = TRUE) const;
+	double distance(const Vec3<double> &ri, const Vec3<double> &rj, bool useMim = true) const;
 	// Calculate distance between supplied atoms
-	double distance(Atom* i, Atom* j, bool useMim = TRUE) const;
+	double distance(Atom* i, Atom* j, bool useMim = true) const;
 	// Calculate angle between supplied coordinates
-	double angle(const Vec3<double> &ri, const Vec3<double> &rj, const Vec3<double> &rk, bool useMim = TRUE) const;
+	double angle(const Vec3<double> &ri, const Vec3<double> &rj, const Vec3<double> &rk, bool useMim = true) const;
 	// Calculate angle between supplied atoms
-	double angle(Atom* i, Atom* j, Atom* k, bool useMim = TRUE) const;
+	double angle(Atom* i, Atom* j, Atom* k, bool useMim = true) const;
 	// Calculate torsion angle between supplied coordinates
-	double torsion(const Vec3<double> &ri, const Vec3<double> &rj, const Vec3<double> &rk, const Vec3<double> &rl, bool useMim = TRUE) const;
+	double torsion(const Vec3<double> &ri, const Vec3<double> &rj, const Vec3<double> &rk, const Vec3<double> &rl, bool useMim = true) const;
 	// Calculate torsion angle between supplied atoms
-	double torsion(Atom* i, Atom* j, Atom* k, Atom* l, bool useMim = TRUE) const;
+	double torsion(Atom* i, Atom* j, Atom* k, Atom* l, bool useMim = true) const;
 };
 
 ATEN_END_NAMESPACE

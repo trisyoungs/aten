@@ -54,11 +54,11 @@ EigenvectorVariable::~EigenvectorVariable()
 
 // Accessor data
 Accessor EigenvectorVariable::accessorData[EigenvectorVariable::nAccessors] = {
-	{ "eigenvalue",	VTypes::DoubleData,	0, FALSE },
-	{ "name",	VTypes::StringData,	0, FALSE },
-	{ "occupancy",	VTypes::DoubleData,	0, FALSE },
-	{ "size",	VTypes::IntegerData,	0, TRUE },
-	{ "vector",	VTypes::IntegerData,	-1, FALSE }
+	{ "eigenvalue",	VTypes::DoubleData,	0, false },
+	{ "name",	VTypes::StringData,	0, false },
+	{ "occupancy",	VTypes::DoubleData,	0, false },
+	{ "size",	VTypes::IntegerData,	0, true },
+	{ "vector",	VTypes::IntegerData,	-1, false }
 };
 
 // Function data
@@ -139,7 +139,7 @@ bool EigenvectorVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArray
 	{
 		printf("Internal Error: Accessor id %i is out of range for Eigenvector type.\n", i);
 		Messenger::exit("EigenvectorVariable::retrieveAccessor");
-		return FALSE;
+		return false;
 	}
 	Accessors acc = (Accessors) i;
 	// Check for correct lack/presence of array index given
@@ -147,7 +147,7 @@ bool EigenvectorVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArray
 	{
 		Messenger::print("Error: Unnecessary array index provided for member '%s'.", accessorData[i].name);
 		Messenger::exit("EigenvectorVariable::retrieveAccessor");
-		return FALSE;
+		return false;
 	}
 	else if ((accessorData[i].arraySize > 0) && (hasArrayIndex))
 	{
@@ -155,16 +155,16 @@ bool EigenvectorVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArray
 		{
 			Messenger::print("Error: Array index out of bounds for member '%s' (%i, range is 1-%i).", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
 			Messenger::exit("EigenvectorVariable::retrieveAccessor");
-			return FALSE;
+			return false;
 		}
 	}
 	// Get current data from ReturnValue
-	bool result = TRUE;
+	bool result = true;
 	Eigenvector* ptr = (Eigenvector*) rv.asPointer(VTypes::EigenvectorData, result);
 	if ((!result) || (ptr == NULL))
 	{
 		Messenger::print("Invalid (NULL) %s reference encountered.", VTypes::dataType(VTypes::EigenvectorData));
-		result = FALSE;
+		result = false;
 	}
 	if (result) switch (acc)
 	{
@@ -186,7 +186,7 @@ bool EigenvectorVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArray
 			break;
 		default:
 			printf("Internal Error: Access to member '%s' has not been defined in EigenVectorVariable.\n", accessorData[i].name);
-			result = FALSE;
+			result = false;
 			break;
 	}
 	Messenger::exit("EigenVectorVariable::retrieveAccessor");
@@ -202,11 +202,11 @@ bool EigenvectorVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue&
 	{
 		printf("Internal Error: Accessor id %i is out of range for Eigenvector type.\n", i);
 		Messenger::exit("EigenvectorVariable::setAccessor");
-		return FALSE;
+		return false;
 	}
 	Accessors acc = (Accessors) i;
 	// Check for correct lack/presence of array index given to original accessor, and nature of new value
-	bool result = TRUE;
+	bool result = true;
 	if (accessorData[i].arraySize != 0)
 	{
 		if (hasArrayIndex)
@@ -214,12 +214,12 @@ bool EigenvectorVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue&
 			if ((accessorData[i].arraySize > 0) && ( (arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize) ))
 			{
 				Messenger::print("Error: Array index provided for member '%s' is out of range (%i, range is 1-%i).", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
-				result = FALSE;
+				result = false;
 			}
 			if (newValue.arraySize() > 0)
 			{
 				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.", accessorData[i].name);
-				result = FALSE;
+				result = false;
 			}
 		}
 		else
@@ -227,7 +227,7 @@ bool EigenvectorVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue&
 			if (newValue.arraySize() > accessorData[i].arraySize)
 			{
 				Messenger::print("Error: The array being assigned to member '%s' is larger than the size of the desination array (%i cf. %i).", accessorData[i].name, newValue.arraySize(), accessorData[i].arraySize);
-				result = FALSE;
+				result = false;
 			}
 		}
 	}
@@ -239,19 +239,19 @@ bool EigenvectorVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue&
 			if (accessorData[i].returnType != VTypes::VectorData)
 			{
 				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.", accessorData[i].name);
-				result = FALSE;
+				result = false;
 			}
 			else if ((newValue.type() != VTypes::VectorData) && (newValue.arraySize() != 3))
 			{
 				Messenger::print("Error: Only an array of size 3 can be assigned to a vector (member '%s').", accessorData[i].name);
-				result = FALSE;
+				result = false;
 			}
 		}
 	}
 	if (!result)
 	{
 		Messenger::exit("EigenvectorVariable::setAccessor");
-		return FALSE;
+		return false;
 	}
 	// Get current data from ReturnValue
 	Eigenvector* ptr = (Eigenvector*) sourcerv.asPointer(VTypes::EigenvectorData, result);
@@ -259,7 +259,7 @@ bool EigenvectorVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue&
 	if ((!result) || (ptr == NULL))
 	{
 		Messenger::print("Invalid (NULL) %s reference encountered.", VTypes::dataType(VTypes::EigenvectorData));
-		result = FALSE;
+		result = false;
 	}
 	if (result) switch (acc)
 	{
@@ -282,7 +282,7 @@ bool EigenvectorVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue&
 			break;
 		default:
 			printf("EigenvectorVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);
-			result = FALSE;
+			result = false;
 			break;
 	}
 	Messenger::exit("EigenvectorVariable::setAccessor");
@@ -298,16 +298,16 @@ bool EigenvectorVariable::performFunction(int i, ReturnValue& rv, TreeNode* node
 	{
 		printf("Internal Error: FunctionAccessor id %i is out of range for Eigenvector type.\n", i);
 		Messenger::exit("EigenvectorVariable::performFunction");
-		return FALSE;
+		return false;
 	}
 	// Get current data from ReturnValue
-	bool result = TRUE;
+	bool result = true;
 	Eigenvector* ptr = (Eigenvector*) rv.asPointer(VTypes::EigenvectorData, result);
 	if (result) switch (i)
 	{
 		default:
 			printf("Internal Error: Access to function '%s' has not been defined in EigenvectorVariable.\n", functionData[i].name);
-			result = FALSE;
+			result = false;
 			break;
 	}
 	Messenger::exit("EigenvectorVariable::performFunction");

@@ -35,30 +35,30 @@ Log::Log()
 // Operator == (test equivalence of all log values we care about)
 bool Log::operator==(Log &l) const
 {
-	if (logs_[Log::Structure] != l.logs_[Log::Structure]) return FALSE;
-	if (logs_[Log::Coordinates] != l.logs_[Log::Coordinates]) return FALSE;
-	if (logs_[Log::Cell] != l.logs_[Log::Cell]) return FALSE;
-	if (logs_[Log::Style] != l.logs_[Log::Style]) return FALSE;
-	if (logs_[Log::Selection] != l.logs_[Log::Selection]) return FALSE;
-	if (logs_[Log::Glyphs] != l.logs_[Log::Glyphs]) return FALSE;
-	if (logs_[Log::Grids] != l.logs_[Log::Grids]) return FALSE;
-	if (logs_[Log::Labels] != l.logs_[Log::Labels]) return FALSE;
-	if (logs_[Log::Misc] != l.logs_[Log::Misc]) return FALSE;
-	return TRUE;
+	if (logs_[Log::Structure] != l.logs_[Log::Structure]) return false;
+	if (logs_[Log::Coordinates] != l.logs_[Log::Coordinates]) return false;
+	if (logs_[Log::Cell] != l.logs_[Log::Cell]) return false;
+	if (logs_[Log::Style] != l.logs_[Log::Style]) return false;
+	if (logs_[Log::Selection] != l.logs_[Log::Selection]) return false;
+	if (logs_[Log::Glyphs] != l.logs_[Log::Glyphs]) return false;
+	if (logs_[Log::Grids] != l.logs_[Log::Grids]) return false;
+	if (logs_[Log::Labels] != l.logs_[Log::Labels]) return false;
+	if (logs_[Log::Misc] != l.logs_[Log::Misc]) return false;
+	return true;
 }
 
 bool Log::operator!=(Log &l) const
 {
-	if (logs_[Log::Structure] != l.logs_[Log::Structure]) return TRUE;
-	if (logs_[Log::Coordinates] != l.logs_[Log::Coordinates]) return TRUE;
-	if (logs_[Log::Cell] != l.logs_[Log::Cell]) return TRUE;
-	if (logs_[Log::Style] != l.logs_[Log::Style]) return TRUE;
-	if (logs_[Log::Selection] != l.logs_[Log::Selection]) return TRUE;
-	if (logs_[Log::Glyphs] != l.logs_[Log::Glyphs]) return TRUE;
-	if (logs_[Log::Grids] != l.logs_[Log::Grids]) return TRUE;
-	if (logs_[Log::Labels] != l.logs_[Log::Labels]) return TRUE;
-	if (logs_[Log::Misc] != l.logs_[Log::Misc]) return TRUE;
-	return FALSE;
+	if (logs_[Log::Structure] != l.logs_[Log::Structure]) return true;
+	if (logs_[Log::Coordinates] != l.logs_[Log::Coordinates]) return true;
+	if (logs_[Log::Cell] != l.logs_[Log::Cell]) return true;
+	if (logs_[Log::Style] != l.logs_[Log::Style]) return true;
+	if (logs_[Log::Selection] != l.logs_[Log::Selection]) return true;
+	if (logs_[Log::Glyphs] != l.logs_[Log::Glyphs]) return true;
+	if (logs_[Log::Grids] != l.logs_[Log::Grids]) return true;
+	if (logs_[Log::Labels] != l.logs_[Log::Labels]) return true;
+	if (logs_[Log::Misc] != l.logs_[Log::Misc]) return true;
+	return false;
 }
 
 // Reset all logs to zero
@@ -105,7 +105,7 @@ void Log::updateSavePoint()
 // Return if the log has been modified since last being saved
 bool Log::isModified() const
 {
-	return (savePoint_ == currentLogPoint() ? FALSE : TRUE);
+	return (savePoint_ != currentLogPoint());
 }
 
 // Return is specified log quantity is same between this and supplied Log

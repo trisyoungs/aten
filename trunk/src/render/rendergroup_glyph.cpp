@@ -65,7 +65,7 @@ void RenderGroup::createGlyphs(PrimitiveSet& primitiveSet, Model* source)
 				phi = DEGRAD * acos(r[2].z/rij);
 				// Special case where the bond is exactly in the XY plane.
 				if ((fabs(phi) < 0.01) || (phi > 179.99)) A.applyRotationX(phi);
-				else A.applyRotationAxis(-r[2].y, r[2].x, 0.0, phi, TRUE);
+				else A.applyRotationAxis(-r[2].y, r[2].x, 0.0, phi, true);
 				// Move to endpoint
 				A.applyTranslationZ(rij*arrowBodyLength);
 				A.applyScaling(0.2,0.2,rij*arrowHeadLength/arrowBodyLength);
@@ -264,7 +264,7 @@ void RenderGroup::createGlyphs(PrimitiveSet& primitiveSet, Model* source)
 				phi = DEGRAD * acos(r[2].z/rij);
 				// Special case where the bond is exactly in the XY plane.
 				if ((fabs(phi) < 0.01) || (phi > 179.99)) A.applyRotationX(phi);
-				else A.applyRotationAxis(-r[2].y, r[2].x, 0.0, phi, TRUE);
+				else A.applyRotationAxis(-r[2].y, r[2].x, 0.0, phi, true);
 				// Draw cylinder
 				A.applyScaling(0.1,0.1,rij*arrowBodyLength);
 				addTriangles(primitiveSet.cylinder(), A, colour[0], g->isSolid() ? GL_FILL : GL_LINE);
@@ -285,7 +285,7 @@ void RenderGroup::createGlyphs(PrimitiveSet& primitiveSet, Model* source)
 				phi = DEGRAD * acos(r[1].z/rij);
 				// Special case where the bond is exactly in the XY plane.
 				if ((fabs(phi) < 0.01) || (phi > 179.99)) A.applyRotationX(phi);
-				else A.applyRotationAxis(-r[1].y, r[1].x, 0.0, phi, TRUE);
+				else A.applyRotationAxis(-r[1].y, r[1].x, 0.0, phi, true);
 				// Draw cylinder
 				A.applyScaling(0.1,0.1,rij*arrowBodyLength);
 				addTriangles(primitiveSet.cylinder(), A, colour[0], g->isSolid() ? GL_FILL : GL_LINE);
@@ -309,7 +309,7 @@ void RenderGroup::createGlyphs(PrimitiveSet& primitiveSet, Model* source)
 				phi = DEGRAD * acos(r[1].z/rij);
 				// Special case where the bond is exactly in the XY plane.
 				if ((fabs(phi) < 0.01) || (phi > 179.99)) A.applyRotationX(phi);
-				else A.applyRotationAxis(-r[1].y, r[1].x, 0.0, phi, TRUE);
+				else A.applyRotationAxis(-r[1].y, r[1].x, 0.0, phi, true);
 				// Move to endpoint
 				A.applyTranslationZ(rij*arrowBodyLength);
 				A.applyScaling(0.2, 0.2, rij*arrowHeadLength/arrowBodyLength);

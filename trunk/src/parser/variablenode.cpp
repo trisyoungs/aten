@@ -32,7 +32,7 @@ VariableNode::VariableNode(Variable* var) : TreeNode()
 {
 	// Private variables
 	variable_ = var;
-	readOnly_ = FALSE;
+	readOnly_ = false;
 	nodeType_ = TreeNode::VarWrapperNode;
 	arrayIndex_ = NULL;
 	if (variable_ != NULL) returnType_ = var->returnType();
@@ -108,7 +108,7 @@ bool VariableNode::execute(ReturnValue& rv)
 	{
 		printf("Internal Error: VariableNode contains a NULL Variable pointer and can't be executed.\n");
 		Messenger::exit("VariableNode::execute");
-		return FALSE;
+		return false;
 	}
 	// Call the local variable's execute() function to get the base value
 	bool result;
@@ -116,7 +116,7 @@ bool VariableNode::execute(ReturnValue& rv)
 	else
 	{
 		ReturnValue index;
-		if (!arrayIndex_->execute(index)) return FALSE;
+		if (!arrayIndex_->execute(index)) return false;
 		result = variable_->executeAsArray(rv, index.asInteger()-1);
 	}
 	// If a path is present (i.e. there are arguments to the VariableNode, then execute it. Otherwise, just return the variable contents
@@ -175,9 +175,9 @@ bool VariableNode::set(ReturnValue& setrv)
 	{
 		printf("Internal Error: VariableNode contains a NULL Variable pointer and can't be set.\n");
 		Messenger::exit("VariableNode::set");
-		return FALSE;
+		return false;
 	}
-	bool result = TRUE;
+	bool result = true;
 	ReturnValue executerv, lastresult;
 	// If there are no path nodes then just set the local variable
 	// Also, if the base variable is of vector type, set it in a special way...
@@ -188,7 +188,7 @@ bool VariableNode::set(ReturnValue& setrv)
 		else
 		{
 			ReturnValue index;
-			if (!arrayIndex_->execute(index)) result = FALSE;
+			if (!arrayIndex_->execute(index)) result = false;
 			else result = variable_->setAsArray(setrv, index.asInteger() - 1);
 		}
 	}
@@ -200,17 +200,17 @@ bool VariableNode::set(ReturnValue& setrv)
 		else 
 		{
 			ReturnValue index;
-			if (!arrayIndex_->execute(index)) result = FALSE;
+			if (!arrayIndex_->execute(index)) result = false;
 			else result = variable_->executeAsArray(executerv, index.asInteger() - 1);
 		}
 		if (result)
 		{
-			VectorVariable::setAccessor(component, executerv, setrv, FALSE);
+			VectorVariable::setAccessor(component, executerv, setrv, false);
 			if (arrayIndex_ == NULL) result = variable_->set(executerv);
 			else
 			{
 				ReturnValue index;
-				if (!arrayIndex_->execute(index)) result = FALSE;
+				if (!arrayIndex_->execute(index)) result = false;
 				else result = variable_->setAsArray(executerv, index.asInteger() - 1);
 			}
 		}
@@ -223,17 +223,17 @@ bool VariableNode::set(ReturnValue& setrv)
 		else
 		{
 			ReturnValue index;
-			if (!arrayIndex_->execute(index)) result = FALSE;
+			if (!arrayIndex_->execute(index)) result = false;
 			else result = variable_->executeAsArray(executerv, index.asInteger() - 1);
 		}
 		if (result)
 		{
-			MatrixVariable::setAccessor(component, executerv, setrv, FALSE);
+			MatrixVariable::setAccessor(component, executerv, setrv, false);
 			if (arrayIndex_ == NULL) result = variable_->set(executerv);
 			else
 			{
 				ReturnValue index;
-				if (!arrayIndex_->execute(index)) result = FALSE;
+				if (!arrayIndex_->execute(index)) result = false;
 				else result = variable_->setAsArray(executerv, index.asInteger() - 1);
 			}
 		}
@@ -246,7 +246,7 @@ bool VariableNode::set(ReturnValue& setrv)
 		else
 		{
 			ReturnValue index;
-			if (!arrayIndex_->execute(index)) result2 = FALSE;
+			if (!arrayIndex_->execute(index)) result2 = false;
 			else result2 = variable_->executeAsArray(executerv, index.asInteger()-1);
 		}
 		// Next, step through accessnodes up until the last one, passing the returnvalue to each in turn.
@@ -261,7 +261,7 @@ bool VariableNode::set(ReturnValue& setrv)
 			// For the last accessnode in the list, cast into a StepNode and use the set function
 // 			printf("Node type of args_>last() is %i\n", args_.last()->item->nodeType());
 // 			printf("Penultimate result is %s\n", lastresult.info());
-			if (!((StepNode*) args_.last()->item)->set(executerv, setrv)) result = FALSE;
+			if (!((StepNode*) args_.last()->item)->set(executerv, setrv)) result = false;
 			else
 			{
 // 				printf("Path set result execute = %s\n", executerv.info());
@@ -276,7 +276,7 @@ bool VariableNode::set(ReturnValue& setrv)
 				}
 			}
 		}
-		else result = FALSE;
+		else result = false;
 	}
 	if (!result) Messenger::print(Messenger::Verbose, "Variable set failed.");
 	Messenger::exit("VariableNode::set");
@@ -289,7 +289,7 @@ bool VariableNode::initialise()
 	if (variable_ == NULL)
 	{
 		printf("Internal Error: VariableNode contains a NULL Variable pointer and can't be initialised.\n");
-		return FALSE;
+		return false;
 	}
 	return variable_->initialise();
 }

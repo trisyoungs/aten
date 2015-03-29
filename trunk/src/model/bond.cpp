@@ -86,7 +86,7 @@ void Model::bondAtoms(Atom* i, Atom* j, Bond::BondType bt)
 			if (recordingState_ != NULL)
 			{
 				BondEvent* newchange = new BondEvent;
-				newchange->set(TRUE, i->id(), j->id(), bt);
+				newchange->set(true, i->id(), j->id(), bt);
 				recordingState_->addEvent(newchange);
 			}
 		}
@@ -146,7 +146,7 @@ void Model::unbondAtoms(Atom* i, Atom* j, Bond* bij)
 	if (recordingState_ != NULL)
 	{
 		BondEvent* newchange = new BondEvent;
-		newchange->set(FALSE, i->id(), j->id(), bt);
+		newchange->set(false, i->id(), j->id(), bt);
 		recordingState_->addEvent(newchange);
 	}
 	Messenger::exit("Model::unbondAtoms");

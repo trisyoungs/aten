@@ -89,14 +89,14 @@ void Bundle::clear()
 // Check for non-null pointers
 bool Bundle::isNull(int ptrs) const
 {
-	if ((ptrs&Bundle::AtomPointer) && (i == 0)) return TRUE;
-	if ((ptrs&Bundle::PatternPointer) && (p == 0)) return TRUE;
-	if ((ptrs&Bundle::ModelPointer) && (m == 0)) return TRUE;
-	if ((ptrs&Bundle::GridPointer) && (g == 0)) return TRUE;
-	if ((ptrs&Bundle::SitePointer) && (s == 0)) return TRUE;
-	if ((ptrs&Bundle::ForcefieldPointer) && (ff == 0)) return TRUE;
-	if ((ptrs&Bundle::GlyphPointer) && (gl == 0)) return TRUE;
-	return FALSE;
+	if ((ptrs&Bundle::AtomPointer) && (i == 0)) return true;
+	if ((ptrs&Bundle::PatternPointer) && (p == 0)) return true;
+	if ((ptrs&Bundle::ModelPointer) && (m == 0)) return true;
+	if ((ptrs&Bundle::GridPointer) && (g == 0)) return true;
+	if ((ptrs&Bundle::SitePointer) && (s == 0)) return true;
+	if ((ptrs&Bundle::ForcefieldPointer) && (ff == 0)) return true;
+	if ((ptrs&Bundle::GlyphPointer) && (gl == 0)) return true;
+	return false;
 }
 
 // Notify of non-null pointers
@@ -105,37 +105,37 @@ bool Bundle::notifyNull(int ptrs) const
 	if ((ptrs&Bundle::AtomPointer) && (i == 0))
 	{
 		printf("--> No active atom.\n");
-		return TRUE;
+		return true;
 	}
 	if ((ptrs&Bundle::PatternPointer) && (p == 0))
 	{
 		printf("--> No active pattern.\n");
-		return TRUE;
+		return true;
 	}
 	if ((ptrs&Bundle::ModelPointer) && (m == 0))
 	{
 		printf("--> No active model.\n");
-		return TRUE;
+		return true;
 	}
 	if ((ptrs&Bundle::GridPointer) && (g == 0))
 	{
 		printf("--> No active grid.\n");
-		return TRUE;
+		return true;
 	}
 	if ((ptrs&Bundle::SitePointer) && (s == 0))
 	{
 		printf("--> No active site.\n");
-		return TRUE;
+		return true;
 	}
 	if ((ptrs&Bundle::ForcefieldPointer) && (ff == 0))
 	{
 		printf("--> No active forcefield.\n");
-		return TRUE;
+		return true;
 	}
 	if ((ptrs&Bundle::GlyphPointer) && (gl == 0))
 	{
 		printf("--> No active glyph.\n");
-		return TRUE;
+		return true;
 	}
-	return FALSE;
+	return false;
 }

@@ -35,7 +35,7 @@ class ZMatrixVariable : public PointerVariable
 {
 	public:
 	// Constructor / Destructor
-	ZMatrixVariable(ZMatrix* ptr = NULL, bool constant = FALSE);
+	ZMatrixVariable(ZMatrix* ptr = NULL, bool constant = false);
 	~ZMatrixVariable();
 
 
@@ -70,7 +70,7 @@ class ZMatrixArrayVariable : public PointerArrayVariable
 {
 	public:
 	// Constructor / Destructor
-	ZMatrixArrayVariable(TreeNode* sizeexpr, bool constant = FALSE);
+	ZMatrixArrayVariable(TreeNode* sizeexpr, bool constant = false);
 
 
 	/*

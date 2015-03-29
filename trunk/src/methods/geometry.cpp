@@ -88,7 +88,7 @@ bool Geometry::initialise()
 	{
 		Messenger::print("Geometry::initialise - At least two sites_ must be defined.");
 		Messenger::exit("Geometry::initialise");
-		return FALSE;
+		return false;
 	}
 
 	// Create the data arrays
@@ -97,7 +97,7 @@ bool Geometry::initialise()
 	Messenger::print("There are %i bins in geometry '%s', beginning at r = %f.", nBins_, qPrintable(name_), lower_);
 	nAdded_ = 0;
 	Messenger::exit("Geometry::initialise");
-	return TRUE;
+	return true;
 }
 
 // Accumulate quantity data from supplied model
@@ -203,5 +203,5 @@ bool Geometry::save()
 {
 	int n;
 	for (n=0; n<nBins_; n++) printf(" %f  %f\n",binWidth_ * (n + 0.5), data_[n]);
-	return TRUE;
+	return true;
 }

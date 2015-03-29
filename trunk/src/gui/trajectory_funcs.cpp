@@ -30,9 +30,9 @@ TrajectoryWidget::TrajectoryWidget(AtenWindow& parent, Qt::WindowFlags flags) : 
 	ui.setupUi(this);
 	
 	// Private variables
-	refreshing_ = FALSE;
-	DONTDRAW = FALSE;
-	trajectoryPlaying_ = FALSE;
+	refreshing_ = false;
+	DONTDRAW = false;
+	trajectoryPlaying_ = false;
 	trajectoryTimerId_ = -1;
 }
 
@@ -46,7 +46,7 @@ void TrajectoryWidget::showWidget()
 void TrajectoryWidget::refresh()
 {
 	if (refreshing_) return;
-	refreshing_ = TRUE;
+	refreshing_ = true;
 	Model* m = parent_.aten().currentModel();
 	bool hastrj = m->nTrajectoryFrames() > 0;
 	ui.ControlsWidget->setEnabled(hastrj);
@@ -65,7 +65,7 @@ void TrajectoryWidget::refresh()
 		ui.TrajectoryFrameSpin->setRange(1, 1);
 		ui.TrajectoryFrameSpin->setValue(1);
 	}
-	refreshing_ = FALSE;
+	refreshing_ = false;
 }
 
 // Switch render focus from the model to the trajectory (or vice versa)
@@ -111,14 +111,14 @@ void TrajectoryWidget::on_TrajectoryPlayPauseButton_clicked(bool checked)
 	if (checked)
 	{
 		trajectoryTimerId_ = startTimer(ui.TrajectoryDelaySpin->value());
-		trajectoryPlaying_ = TRUE;
-		parent_.ui.MainView->setEditable(FALSE);
+		trajectoryPlaying_ = true;
+		parent_.ui.MainView->setEditable(false);
 	}
 	else
 	{
 		killTimer(trajectoryTimerId_);
-		trajectoryPlaying_ = FALSE;
-		parent_.ui.MainView->setEditable(TRUE);
+		trajectoryPlaying_ = false;
+		parent_.ui.MainView->setEditable(true);
 	}
 	parent_.updateTrajectoryMenu();
 }
@@ -127,12 +127,12 @@ void TrajectoryWidget::on_TrajectoryPlayPauseButton_clicked(bool checked)
 void TrajectoryWidget::on_TrajectoryFrameSlider_valueChanged(int value)
 {
 	if (refreshing_) return;
-	refreshing_ = TRUE;
+	refreshing_ = true;
 	// Slider range is from 1-NFrames, so pass (N-1) to the seekFrame function
 	parent_.aten().currentModel()->seekTrajectoryFrame(value-1);
 	// Set corresponding value in Spin control
 // 	trajectorySpin_->setValue(value);
-	refreshing_ = FALSE;
+	refreshing_ = false;
 	parent_.postRedisplay();
 }
 
@@ -140,12 +140,12 @@ void TrajectoryWidget::on_TrajectoryFrameSlider_valueChanged(int value)
 void TrajectoryWidget::on_TrajectoryFrameSpin_valueChanged(int value)
 {
 	if (refreshing_) return;
-	refreshing_ = TRUE;
+	refreshing_ = true;
 	// Slider range is from 1-NFrames, so pass (N-1) to the seekTrajectoryFrame function
 	parent_.aten().currentModel()->seekTrajectoryFrame(value-1);
 	// Set corresponding value in Spin control
 // 	trajectorySlider_->setValue(value);
-	refreshing_ = FALSE;
+	refreshing_ = false;
 	parent_.postRedisplay();
 }
 
@@ -156,12 +156,12 @@ void TrajectoryWidget::timerEvent(QTimerEvent* event)
 	if (DONTDRAW) printf("Still drawing previous frame.\n");
 	else
 	{
-		DONTDRAW = TRUE;
+		DONTDRAW = true;
 		Model* m = parent_.aten().currentModel();
 		m->seekNextTrajectoryFrame();
 		if (m->trajectoryFrameIndex() == m->nTrajectoryFrames()-1) ui.TrajectoryPlayPauseButton->click();
 		parent_.updateWidgets(AtenWindow::CanvasTarget);
-		DONTDRAW = FALSE;
+		DONTDRAW = false;
 	}
 }
 

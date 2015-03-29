@@ -50,12 +50,12 @@ VibrationVariable::~VibrationVariable()
 
 // Accessor data
 Accessor VibrationVariable::accessorData[VibrationVariable::nAccessors] = {
-	{ "displacements",	VTypes::VectorData,		-1, TRUE },
-	{ "frequency",		VTypes::DoubleData,		0, FALSE },
-	{ "intensity",		VTypes::DoubleData,		0, FALSE },
-	{ "name",		VTypes::StringData,		0, FALSE },
-	{ "ndisplacements",	VTypes::IntegerData,		0, TRUE },
-	{ "rmass",		VTypes::DoubleData,		0, FALSE }
+	{ "displacements",	VTypes::VectorData,		-1, true },
+	{ "frequency",		VTypes::DoubleData,		0, false },
+	{ "intensity",		VTypes::DoubleData,		0, false },
+	{ "name",		VTypes::StringData,		0, false },
+	{ "ndisplacements",	VTypes::IntegerData,		0, true },
+	{ "rmass",		VTypes::DoubleData,		0, false }
 };
 
 // Function data
@@ -136,7 +136,7 @@ bool VibrationVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIn
 	{
 		printf("Internal Error: Accessor id %i is out of range for Vibration type.\n", i);
 		Messenger::exit("VibrationVariable::retrieveAccessor");
-		return FALSE;
+		return false;
 	}
 	Accessors acc = (Accessors) i;
 	// Check for correct lack/presence of array index given
@@ -144,7 +144,7 @@ bool VibrationVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIn
 	{
 		Messenger::print("Error: Unnecessary array index provided for member '%s'.", accessorData[i].name);
 		Messenger::exit("VibrationVariable::retrieveAccessor");
-		return FALSE;
+		return false;
 	}
 	else if ((accessorData[i].arraySize > 0) && (hasArrayIndex))
 	{
@@ -152,16 +152,16 @@ bool VibrationVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIn
 		{
 			Messenger::print("Error: Array index out of bounds for member '%s' (%i, range is 1-%i).", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
 			Messenger::exit("VibrationVariable::retrieveAccessor");
-			return FALSE;
+			return false;
 		}
 	}
 	// Get current data from ReturnValue
-	bool result = TRUE;
+	bool result = true;
 	Vibration* ptr = (Vibration*) rv.asPointer(VTypes::VibrationData, result);
 	if ((!result) || (ptr == NULL))
 	{
 		Messenger::print("Invalid (NULL) %s reference encountered.", VTypes::dataType(VTypes::VibrationData));
-		result = FALSE;
+		result = false;
 	}
 	if (result) switch (acc)
 	{
@@ -170,7 +170,7 @@ bool VibrationVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIn
 			else if (arrayIndex > ptr->nDisplacements())
 			{
 				Messenger::print("Displacement array index (%i) is out of bounds for vibration.", arrayIndex);
-				result = FALSE;
+				result = false;
 			}
 			else rv.set( ptr->displacement(arrayIndex-1) );
 			break;
@@ -191,7 +191,7 @@ bool VibrationVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIn
 			break;
 		default:
 			printf("Internal Error: Access to member '%s' has not been defined in VibrationVariable.\n", accessorData[i].name);
-			result = FALSE;
+			result = false;
 			break;
 	}
 	Messenger::exit("VibrationVariable::retrieveAccessor");
@@ -207,11 +207,11 @@ bool VibrationVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& n
 	{
 		printf("Internal Error: Accessor id %i is out of range for Vibration type.\n", i);
 		Messenger::exit("VibrationVariable::setAccessor");
-		return FALSE;
+		return false;
 	}
 	Accessors acc = (Accessors) i;
 	// Check for correct lack/presence of array index given to original accessor, and nature of new value
-	bool result = TRUE;
+	bool result = true;
 	if (accessorData[i].arraySize != 0)
 	{
 		if (hasArrayIndex)
@@ -219,12 +219,12 @@ bool VibrationVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& n
 			if ((accessorData[i].arraySize > 0) && ( (arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize) ))
 			{
 				Messenger::print("Error: Array index provided for member '%s' is out of range (%i, range is 1-%i).", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
-				result = FALSE;
+				result = false;
 			}
 			if (newValue.arraySize() > 0)
 			{
 				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.", accessorData[i].name);
-				result = FALSE;
+				result = false;
 			}
 		}
 		else
@@ -232,7 +232,7 @@ bool VibrationVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& n
 			if ((newValue.arraySize() > 0) && (newValue.arraySize() != accessorData[i].arraySize))
 			{
 				Messenger::print("Error: The array being assigned to member '%s' is not of the same size (%i cf. %i).", accessorData[i].name, newValue.arraySize(), accessorData[i].arraySize);
-				result = FALSE;
+				result = false;
 			}
 		}
 	}
@@ -244,19 +244,19 @@ bool VibrationVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& n
 			if (accessorData[i].returnType != VTypes::VectorData)
 			{
 				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.", accessorData[i].name);
-				result = FALSE;
+				result = false;
 			}
 			else if ((newValue.type() != VTypes::VectorData) && (newValue.arraySize() != 3))
 			{
 				Messenger::print("Error: Only an array of size 3 can be assigned to a vector (member '%s').", accessorData[i].name);
-				result = FALSE;
+				result = false;
 			}
 		}
 	}
 	if (!result)
 	{
 		Messenger::exit("VibrationVariable::setAccessor");
-		return FALSE;
+		return false;
 	}
 	// Get current data from ReturnValue
 	Vec3<double> v;
@@ -265,7 +265,7 @@ bool VibrationVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& n
 	if ((!result) || (ptr == NULL))
 	{
 		Messenger::print("Invalid (NULL) %s reference encountered.", VTypes::dataType(VTypes::VibrationData));
-		result = FALSE;
+		result = false;
 	}
 	// Set value based on enumerated id
 	if (result) switch (acc)
@@ -275,7 +275,7 @@ bool VibrationVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& n
 			else if (arrayIndex > ptr->nDisplacements())
 			{
 				Messenger::print("Displacement array index (%i) is out of bounds for vibration.", arrayIndex);
-				result = FALSE;
+				result = false;
 			}
 			else ptr->setDisplacement(arrayIndex-1, newValue.asVector() );
 			break;
@@ -293,7 +293,7 @@ bool VibrationVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& n
 			break;
 		default:
 			printf("VibrationVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);
-			result = FALSE;
+			result = false;
 			break;
 	}
 	Messenger::exit("VibrationVariable::setAccessor");
@@ -309,16 +309,16 @@ bool VibrationVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 	{
 		printf("Internal Error: FunctionAccessor id %i is out of range for Vibration type.\n", i);
 		Messenger::exit("VibrationVariable::performFunction");
-		return FALSE;
+		return false;
 	}
 	// Get current data from ReturnValue
-	bool result = TRUE;
+	bool result = true;
 	Vibration* ptr = (Vibration*) rv.asPointer(VTypes::VibrationData, result);
 	if (result) switch (i)
 	{
 		default:
 			printf("Internal Error: Access to function '%s' has not been defined in VibrationVariable.\n", functionData[i].name);
-			result = FALSE;
+			result = false;
 			break;
 	}
 	Messenger::exit("VibrationVariable::performFunction");

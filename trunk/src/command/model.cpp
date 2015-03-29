@@ -32,11 +32,11 @@ ATEN_USING_NAMESPACE
 // Create 'n' new atoms at once in model
 bool Commands::function_CreateAtoms(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	Vec3<double> v;
 	for (int n = 0; n < c->argi(0); n++) obj.i = obj.rs()->addAtom(0, v);
 	rv.reset();
-	return TRUE;
+	return true;
 }
 
 // Return (or set) the current model
@@ -64,17 +64,17 @@ bool Commands::function_CurrentModel(CommandNode* c, Bundle& obj, ReturnValue& r
 		if (m == NULL)
 		{
 			Messenger::print("Invalid model specified - current model unchanged.");
-			return FALSE;
+			return false;
 		}
 		else
 		{
-			aten_.setCurrentModel(m,TRUE);
+			aten_.setCurrentModel(m,true);
 			Messenger::print("Current model is now '%s'.", qPrintable(aten_.currentModel()->name()));
 		}
 	}
 	else Messenger::print("Current model is '%s'.", qPrintable(aten_.currentModel()->name()));
 	rv.set(VTypes::ModelData, aten_.currentModel());
-	return TRUE;
+	return true;
 }
 
 // Delete current or specified model
@@ -101,19 +101,19 @@ bool Commands::function_DeleteModel(CommandNode* c, Bundle& obj, ReturnValue& rv
 		aten_.removeModel(m);
 		if (aten_.nModels() == 0) aten_.addModel();
 
-		return TRUE;
+		return true;
 	}
 	else
 	{
 		Messenger::print("No model named '%s' is available, or integer id %i is out of range.", qPrintable(c->argc(0)), c->argi(0));
-		return FALSE;
+		return false;
 	}
 }
 
 // Finalise current model
 bool Commands::function_FinaliseModel(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 
 	// If this command is being run from a filter, set the output filter in the model.
 	if (c->parent()->isFilter())
@@ -146,7 +146,7 @@ bool Commands::function_FinaliseModel(CommandNode* c, Bundle& obj, ReturnValue& 
 	obj.m->updateSavePoint();
 	rv.reset();
 
-	return TRUE;
+	return true;
 }
 
 // Set current model to be first loaded/created model
@@ -156,10 +156,10 @@ bool Commands::function_FirstModel(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	rv.set(VTypes::ModelData, m);
 	if (m != NULL) 
 	{
-		aten_.setCurrentModel(m,TRUE);
+		aten_.setCurrentModel(m,true);
 	}
-	else return FALSE;
-	return TRUE;
+	else return false;
+	return true;
 }
 
 // Select working model ('getmodel <name>')
@@ -179,24 +179,24 @@ bool Commands::function_GetModel(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	rv.set(VTypes::ModelData, m);
 	if (m != NULL) 
 	{
-		aten_.setCurrentModel(m,TRUE);
+		aten_.setCurrentModel(m,true);
 		m->setRenderSource(Model::ModelSource);
-		return TRUE;
+		return true;
 	}
 	else
 	{
 		Messenger::print("No model named '%s' is available, or integer id %i is out of range.", qPrintable(c->argc(0)), c->argi(0));
-		return FALSE;
+		return false;
 	}
 }
 
 // Print all information for model ('info')
 bool Commands::function_Info(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	obj.rs()->print();
 	rv.reset();
-	return TRUE;
+	return true;
 }
 
 // Set current model to be last loaded/created model
@@ -206,10 +206,10 @@ bool Commands::function_LastModel(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	rv.set(VTypes::ModelData, m);
 	if (m != NULL) 
 	{
-		aten_.setCurrentModel(m,TRUE);
+		aten_.setCurrentModel(m,true);
 	}
-	else return FALSE;
-	return TRUE;
+	else return false;
+	return true;
 }
 
 // Print loaded models ('listmodels')
@@ -219,7 +219,7 @@ bool Commands::function_ListModels(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	for (Model* m = aten_.models(); m != NULL; m = m->next)
 		Messenger::print("%-15s %5i  %-15s", qPrintable(m->name()), m->nAtoms(), (m->forcefield() != NULL ? qPrintable(m->forcefield()->name()) : "None"));
 	rv.reset();
-	return TRUE;
+	return true;
 }
 
 // Load model from file
@@ -240,7 +240,7 @@ bool Commands::function_LoadModel(CommandNode* c, Bundle& obj, ReturnValue& rv)
 			// Print list of valid filter nicknames
 			aten_.printValidNicknames(FilterData::ModelImport);
 			Messenger::print("Not loaded.");
-			return FALSE;
+			return false;
 		}
 		
 		// Loop over remaining arguments which are widget/global variable assignments
@@ -248,12 +248,12 @@ bool Commands::function_LoadModel(CommandNode* c, Bundle& obj, ReturnValue& rv)
 		for (int n = 1; n < parser.nArgs(); ++n)
 		{
 			items = parser.argc(n).split('=');
-			if (!filter->setAccessibleVariable(items.at(0), items.at(1))) return FALSE;
+			if (!filter->setAccessibleVariable(items.at(0), items.at(1))) return false;
 		}
 	}
 	else filter = aten_.probeFile(c->argc(0), FilterData::ModelImport);
 	rv.set(0);
-	if (filter == NULL) return FALSE;
+	if (filter == NULL) return false;
 	int oldnmodels = aten_.nModels();
 	if (filter->executeRead(c->argc(0)))
 	{
@@ -261,27 +261,27 @@ bool Commands::function_LoadModel(CommandNode* c, Bundle& obj, ReturnValue& rv)
 		obj.i = m->atoms();
 		rv.set(VTypes::ModelData, m);
 	}
-	else return FALSE;
-	return TRUE;
+	else return false;
+	return true;
 }
 
 // Print log information for model ('loginfo')
 bool Commands::function_LogInfo(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	obj.rs()->renderSourceModel()->printLogs();
 	rv.reset();
-	return TRUE;
+	return true;
 }
 
 // Use parent model as atom template
 bool Commands::function_ModelTemplate(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	if (obj.m == obj.rs())
 	{
 		printf("Cannot perform model templating in the parent model.\n");
-		return FALSE;
+		return false;
 	}
 	// Create the atoms template
 	Vec3<double> v;
@@ -292,7 +292,7 @@ bool Commands::function_ModelTemplate(CommandNode* c, Bundle& obj, ReturnValue& 
 		j->copyStyle(obj.i);
 	}
 	rv.reset();
-	return TRUE;
+	return true;
 }
 
 // Create new model ('newmodel <name>')
@@ -304,56 +304,56 @@ bool Commands::function_NewModel(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	// Check to see whether we are using a filter, enabling undo/redo if not
 	if (!c->parent()->isFilter()) obj.m->enableUndoRedo();
 	rv.set(VTypes::ModelData, obj.m);
-	return TRUE;
+	return true;
 }
 
 // Skip to next loaded model ('nextmodel')
 bool Commands::function_NextModel(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	if (obj.m->next == NULL) Messenger::print("Already at last loaded model.");
 	else
 	{
-		aten_.setCurrentModel(obj.m->next, TRUE);
+		aten_.setCurrentModel(obj.m->next, true);
 		Messenger::print("Current model is now '%s'.", qPrintable(obj.m->name()));
 	}
 	rv.set(VTypes::ModelData, obj.m);
-	return TRUE;
+	return true;
 }
 
 // Select trajectory parent model as current model
 bool Commands::function_ParentModel(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	// Check for parent frame
 	if (obj.rs()->parent() == NULL)
 	{
 		Messenger::print("This model doesn't have a parent.");
-		return FALSE;
+		return false;
 	}
 	obj.m->setRenderSource(Model::ModelSource);
-	aten_.setCurrentModel(obj.m, TRUE);
-	return TRUE;
+	aten_.setCurrentModel(obj.m, true);
+	return true;
 }
 
 // Skip to previous loaded model ('prevmodel')
 bool Commands::function_PrevModel(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	if (obj.m->prev == NULL) Messenger::print("Already at first loaded model.");
 	else
 	{
-		aten_.setCurrentModel(obj.m->prev, TRUE);
+		aten_.setCurrentModel(obj.m->prev, true);
 		Messenger::print("Current model is now '%s'.", qPrintable(obj.m->name()));
 	}
 	rv.set(VTypes::ModelData, obj.m);
-	return TRUE;
+	return true;
 }
 
 // Save current model ('savemodel <format> <filename>')
 bool Commands::function_SaveModel(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 
 	// Parse the first option so we can get the filter nickname and any filter options
 	LineParser parser;
@@ -367,7 +367,7 @@ bool Commands::function_SaveModel(CommandNode* c, Bundle& obj, ReturnValue& rv)
 		// Print list of valid filter nicknames
 		aten_.printValidNicknames(FilterData::ModelExport);
 		Messenger::print("Not saved.");
-		return FALSE;
+		return false;
 	}
 
 	// Loop over remaining arguments which are widget/global variable assignments
@@ -375,7 +375,7 @@ bool Commands::function_SaveModel(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	for (int n = 1; n < parser.nArgs(); ++n)
 	{
 		items = parser.argc(n).split('=');
-		if (!filter->setAccessibleVariable(items.at(0), items.at(1))) return FALSE;
+		if (!filter->setAccessibleVariable(items.at(0), items.at(1))) return false;
 	}
 	
 	obj.rs()->setFilter(filter);
@@ -392,13 +392,13 @@ bool Commands::function_SaveModel(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	else Messenger::print("Failed to save model '%s'.", qPrintable(obj.rs()->name()));
 	obj.rs()->enableUndoRedo();
 	rv.set(result);
-	return TRUE;
+	return true;
 }
 
 // Save selection of current model ('saveselection <format> <filename>')
 bool Commands::function_SaveSelection(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 
 	// Find filter with a nickname matching that given in argc(0)
 	Tree* filter = aten_.findFilter(FilterData::ModelExport, c->argc(0));
@@ -410,15 +410,15 @@ bool Commands::function_SaveSelection(CommandNode* c, Bundle& obj, ReturnValue& 
 		for (Refitem<Tree,int>* ri = aten_.filters(FilterData::ModelExport); ri != NULL; ri = ri->next)
 			Messenger::print("  %-15s %s", qPrintable(ri->item->filter.nickname()), qPrintable(ri->item->filter.name()));
 		Messenger::print("Not saved.");
-		return FALSE;
+		return false;
 	}
 
 	// Is anything selected in the source model?
 	if (obj.rs()->nSelected() == 0)
 	{
 		Messenger::print("Nothing selected in current model - nothing to save.");
-		rv.set(FALSE);
-		return FALSE;
+		rv.set(false);
+		return false;
 	}
 
 	// Create a copy of the current basic model info, and then copy the selection of atoms
@@ -428,7 +428,7 @@ bool Commands::function_SaveSelection(CommandNode* c, Bundle& obj, ReturnValue& 
 	m.setFilter(filter);
 	m.setFilename(c->argc(1));
 	clip.copySelection(obj.rs());
-	clip.pasteToModel(&m, FALSE);
+	clip.pasteToModel(&m, false);
 	Bundle oldbundle = obj;
 	obj.m = &m;
 
@@ -441,27 +441,27 @@ bool Commands::function_SaveSelection(CommandNode* c, Bundle& obj, ReturnValue& 
 	else Messenger::print("Failed to save selection from model '%s'.", qPrintable(m.name()));
 
 	rv.set(result);
-	return TRUE;
+	return true;
 }
 
 // Set name of current model ('setname <name>')
 bool Commands::function_SetName(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	obj.rs()->beginUndoState("Rename Model");
 	obj.rs()->setName(c->argc(0));
 	obj.rs()->endUndoState();
 	Messenger::print(Messenger::Verbose, "Renamed model to '%s'", qPrintable(obj.rs()->name()));
-	return TRUE;
+	return true;
 }
 
 // Show all atoms
 bool Commands::function_ShowAll(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	obj.rs()->beginUndoState("Show all atoms", obj.rs()->nSelected());
-	for (Atom* i = obj.rs()->atoms(); i != NULL; i = i->next) obj.rs()->atomSetHidden(i,FALSE);
+	for (Atom* i = obj.rs()->atoms(); i != NULL; i = i->next) obj.rs()->atomSetHidden(i,false);
 	obj.rs()->endUndoState();
 	rv.reset();
-	return TRUE;
+	return true;
 }

@@ -139,7 +139,7 @@ void Model::resetView(int contextWidth, int contextHeight)
 	Messenger::enter("Model::resetView");
 	Vec3<double> extremes, rabs, target;
 	Vec4<double> screenr;
-	bool done = FALSE;
+	bool done = false;
 	double rad;
 	Matrix& mview = modelViewMatrix();
 	mview.setIdentity();
@@ -170,10 +170,10 @@ void Model::resetView(int contextWidth, int contextHeight)
 
 			// Project our local atom and grab the z screen coordinate
 			modelToWorld(target, &screenr);
-			done = TRUE;
-			if ((screenr.x < 0.0) || (screenr.x > contextWidth)) done = FALSE;
-			if ((screenr.y < 0.0) || (screenr.y > contextHeight)) done = FALSE;
-			if (screenr.z < 0.0) done = FALSE;
+			done = true;
+			if ((screenr.x < 0.0) || (screenr.x > contextWidth)) done = false;
+			if ((screenr.y < 0.0) || (screenr.y > contextHeight)) done = false;
+			if (screenr.z < 0.0) done = false;
 		} while (!done);
 	}
 	else mview.setColumn(3, 0.0, 0.0, -10.0, 1.0);
@@ -189,7 +189,7 @@ void Model::axisRotateView(Vec3<double> vec, double angle)
 	if (parent_ == NULL)
 	{
 		// Generate quaternion
-		newrotmat.createRotationAxis(vec.x, vec.y, vec.z, angle, TRUE);
+		newrotmat.createRotationAxis(vec.x, vec.y, vec.z, angle, true);
 		oldrotmat = modelViewMatrix_;
 		// Now, multiply our matrices together...
 		modelViewMatrix_ = newrotmat * oldrotmat;

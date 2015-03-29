@@ -188,13 +188,13 @@ Prefs::Prefs()
 	stickLineNormalWidth_ = 2.0;
 	stickLineSelectedWidth_ = 4.0;
 	selectionScale_ = 1.5;
-	perspective_ = TRUE;
+	perspective_ = true;
 	perspectiveFov_ = 20.0;
 
 	// Rendering / Quality Options
 	globeSize_ = 75;
-	viewRotationGlobe_ = TRUE;
-	spotlightActive_ = TRUE;
+	viewRotationGlobe_ = true;
+	spotlightActive_ = true;
 	spotlightColour_[Prefs::AmbientComponent][0] = 0.0;
 	spotlightColour_[Prefs::AmbientComponent][1] = 0.0;
 	spotlightColour_[Prefs::AmbientComponent][2] = 0.0;
@@ -211,11 +211,11 @@ Prefs::Prefs()
 	spotlightPosition_[1] = 100.0;
 	spotlightPosition_[2] = 100.0;
 	spotlightPosition_[3] = 0.0;
-	depthCue_ = FALSE;
-	lineAliasing_ = TRUE;
-	polygonAliasing_ = FALSE;
-	multiSampling_ = TRUE;
-	backfaceCulling_ = FALSE;
+	depthCue_ = false;
+	lineAliasing_ = true;
+	polygonAliasing_ = false;
+	multiSampling_ = true;
+	backfaceCulling_ = false;
 	shininess_ = 100;
 	clipNear_ = 0.5;
 	clipFar_ = 2000.0;
@@ -223,11 +223,11 @@ Prefs::Prefs()
 	depthFar_ = 200;
 	primitiveQuality_ = 10;
 	imagePrimitiveQuality_ = 50;
-	reusePrimitiveQuality_ = FALSE;
-	transparentSelectionStyle_ = TRUE;
+	reusePrimitiveQuality_ = false;
+	transparentSelectionStyle_ = true;
 
 	// Build
-	showGuide_ = FALSE;
+	showGuide_ = false;
 	bondTolerance_ = 1.15;
 	drawDepth_ = -15.0;
 	guideSpacing_ = 1.0;
@@ -283,21 +283,21 @@ Prefs::Prefs()
 	maxRingSize_ = 6;
 	maxRings_ = 100;
 	maxCuboids_ = 100;
-	replicateFold_ = TRUE;
-	replicateTrim_ = TRUE;
-	forceRhombohedral_ = FALSE;
-	augmentAfterRebond_ = TRUE;
-	loadIncludes_ = TRUE;
-	loadPartitions_ = TRUE;
-	loadFragments_ = TRUE;
-	generateFragmentIcons_ = TRUE;
+	replicateFold_ = true;
+	replicateTrim_ = true;
+	forceRhombohedral_ = false;
+	augmentAfterRebond_ = true;
+	loadIncludes_ = true;
+	loadPartitions_ = true;
+	loadFragments_ = true;
+	generateFragmentIcons_ = true;
 	commonElements_ = "H,C,N,O,Cl";
 	maxUndoLevels_ = -1;
-	loadQtSettings_ = TRUE;
+	loadQtSettings_ = true;
 	maxImproperDist_ = 5.0;
-	loadFilters_ = TRUE;
-	readPipe_ = FALSE;
-	allowDialogs_ = FALSE;
+	loadFilters_ = true;
+	readPipe_ = false;
+	allowDialogs_ = false;
 	
 	// File
 	bondOnLoad_ = Choice::Default;
@@ -306,11 +306,11 @@ Prefs::Prefs()
 	packOnLoad_ = Choice::Default;
 	cacheLimit_ = 512000;
 	zMapType_ = ElementMap::AutoZMap;
-	fixedZMapType_ = FALSE;
-	coordsInBohr_ = FALSE;
-	keepNames_ = FALSE;
-	keepTypes_ = FALSE;
-	keepView_ = FALSE;
+	fixedZMapType_ = false;
+	coordsInBohr_ = false;
+	keepNames_ = false;
+	keepTypes_ = false;
+	keepView_ = false;
 
 	// Energy unit conversion factors to J
 	energyConversions_[Prefs::Joules] = 1.0;
@@ -327,14 +327,14 @@ Prefs::Prefs()
 
 	// Energy
 	electrostaticsMethod_ = Electrostatics::Coulomb;
-	calculateIntra_ = TRUE;
-	calculateVdw_ = TRUE;
+	calculateIntra_ = true;
+	calculateVdw_ = true;
 	ewaldKMax_.set(5,5,5);
 	ewaldAlpha_ = 0.5;
 	ewaldPrecision_.set(5.0, -6);
 	vdwCutoff_ = 50.0;
 	elecCutoff_ = 50.0;
-	validEwaldAuto_ = FALSE;
+	validEwaldAuto_ = false;
 	combinationRules_[CombinationRules::ArithmeticRule] = "c = (a+b)*0.5";
 	combinationRules_[CombinationRules::GeometricRule] = "c = sqrt(a*b)";
 	combinationRules_[CombinationRules::CustomRule1] = "c = a+b";
@@ -347,12 +347,12 @@ Prefs::Prefs()
 	angleLabelFormat_ = "%0.2f";
 	chargeLabelFormat_ = "(%0.3f e)";
 	labelSize_ = 1.5;
-	manualSwapBuffers_ = FALSE;
+	manualSwapBuffers_ = false;
 	mouseMoveFilter_ = 10;
-	usePixelBuffers_ = TRUE;
-	renderDashedAromatics_ = TRUE;
+	usePixelBuffers_ = true;
+	renderDashedAromatics_ = true;
 	nModelsPerRow_ = 2;
-	drawHydrogenBonds_ = FALSE;
+	drawHydrogenBonds_ = false;
 	hydrogenBondDotRadius_ = 0.075;
 
 	// External programs
@@ -1192,8 +1192,8 @@ int Prefs::modelUpdate() const
 // Return whether to update the energy, given the cycle number
 bool Prefs::shouldUpdateModel(int n)
 {
-	if (n == 1) return FALSE;
-	else return (n%modelUpdate_ == 0 ? TRUE : FALSE);
+	if (n == 1) return false;
+	else return (n%modelUpdate_ == 0);
 }
 
 // Set the energy update frequency
@@ -1211,8 +1211,8 @@ int Prefs::energyUpdate() const
 // Return whether to update the energy, given the cycle number
 bool Prefs::shouldUpdateEnergy(int n)
 {
-	if (n == 1) return FALSE;
-	else return (n%energyUpdate_ == 0 ? TRUE : FALSE);
+	if (n == 1) return false;
+	else return (n%energyUpdate_ == 0);
 }
 
 // Return the maximum ring size allowed
@@ -1519,7 +1519,7 @@ bool Prefs::hasValidEwaldAuto() const
 // Flag the Ewald auto params as invalid
 void Prefs::invalidateEwaldAuto()
 {
-	validEwaldAuto_ = FALSE;
+	validEwaldAuto_ = false;
 }
 
 // Sets the VDW cutoff radius to use

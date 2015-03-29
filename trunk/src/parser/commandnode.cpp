@@ -73,7 +73,7 @@ void CommandNode::setAten(Aten* aten)
 // Prepare function (if possible)
 bool CommandNode::prepFunction()
 {
-	bool result = TRUE;
+	bool result = true;
 	switch (function_)
 	{
 		// For functions that use formats, attempt to create the Format* if* the format string is a character constant
@@ -106,19 +106,19 @@ bool CommandNode::prepFunction()
 			{
 				if (!hasArg(0)) break;
 				Messenger::print("Error: Return value provided when none is required.");
-				result = FALSE;
+				result = false;
 			}
 			else
 			{
 				if ((!hasArg(0)) && (parent_->returnType() != VTypes::NoData))
 				{
 					Messenger::print("Error: No return value provided.");
-					result = FALSE;
+					result = false;
 				}
 				else if (argType(0) != parent_->returnType())
 				{
 					Messenger::print("Error: Return value of type '%s' provided for function that returns %s.", VTypes::dataType(argType(0)), VTypes::aDataType(parent_->returnType()));
-					result = FALSE;
+					result = false;
 				}
 			}
 			break;
@@ -142,15 +142,15 @@ Format* CommandNode::createFormat(int fmtArgId, int firstArgId)
 	// fmtargid = id of argument which contains the formatting string, or -1 for no formatting string (free-form format)
 	// firstargid = id of first data argument
 	// If we do not currently have a format associated to the node, create it regardless
-	bool result = FALSE;
+	bool result = false;
 	Refitem<TreeNode,int>* firstarg = firstArgId >= args_.nItems() ? NULL : args_[firstArgId];
 	if (format_ == NULL)
 	{
-		result = TRUE;
+		result = true;
 		format_ = fmtArgId == -1 ? new Format(firstarg) : new Format(argc(fmtArgId), firstarg);
 		if (!format_->isValid())
 		{
-			result = FALSE;
+			result = false;
 			delete format_;
 			format_ = NULL;
 		}
@@ -158,7 +158,7 @@ Format* CommandNode::createFormat(int fmtArgId, int firstArgId)
 	else
 	{
 		// So a format already exists. If the source argument is a constant (or there is no source argument) don't recreate it
-		if ((fmtArgId == -1) || (argNode(fmtArgId)->readOnly())) result = TRUE;
+		if ((fmtArgId == -1) || (argNode(fmtArgId)->readOnly())) result = true;
 		else
 		{
 			// Delete old format
@@ -167,7 +167,7 @@ Format* CommandNode::createFormat(int fmtArgId, int firstArgId)
 			format_ = fmtArgId == -1 ? new Format(firstarg) : new Format(argc(fmtArgId), firstarg);
 			if (!format_->isValid())
 			{
-				result = FALSE;
+				result = false;
 				delete format_;
 				format_ = NULL;
 			}
@@ -175,7 +175,7 @@ Format* CommandNode::createFormat(int fmtArgId, int firstArgId)
 	}
 
 	Messenger::exit("CommandNode::createFormat");
-	return (result == FALSE ? NULL : format_);
+	return (result == false ? NULL : format_);
 }
 
 // Execute command
@@ -205,14 +205,14 @@ void CommandNode::nodePrint(int offset, const char* prefix)
 bool CommandNode::set(ReturnValue& rv)
 {
 	printf("Internal Error: Trying to 'set' a CommandNode.\n");
-	return FALSE;
+	return false;
 }
 
 // Initialise node
 bool CommandNode::initialise()
 {
 	printf("Internal Error: A CommandNode cannot be initialised.\n");
-	return FALSE;
+	return false;
 }
 
 // Create, run, and free a single command with simple arguments

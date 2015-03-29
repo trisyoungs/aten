@@ -50,16 +50,16 @@ ForcefieldBoundVariable::~ForcefieldBoundVariable()
 
 // Accessor data
 Accessor ForcefieldBoundVariable::accessorData[ForcefieldBoundVariable::nAccessors] = {
-	{ "data",		VTypes::DoubleData,	MAXFFPARAMDATA, FALSE },
-	{ "dataKeyword",	VTypes::StringData,	MAXFFPARAMDATA, TRUE },
-	{ "dataName",		VTypes::StringData,	MAXFFPARAMDATA, TRUE },
-	{ "eScale",		VTypes::DoubleData,	0, FALSE },
-	{ "form",		VTypes::StringData,	0, FALSE },
-	{ "nAtoms",		VTypes::IntegerData,	0, TRUE },
-	{ "nParams",		VTypes::IntegerData,	0, TRUE },
-	{ "type",		VTypes::StringData,	0, TRUE },
-	{ "typeNames",		VTypes::StringData,	MAXFFPARAMDATA, FALSE },
-	{ "vScale",		VTypes::DoubleData,	0, FALSE }
+	{ "data",		VTypes::DoubleData,	MAXFFPARAMDATA, false },
+	{ "dataKeyword",	VTypes::StringData,	MAXFFPARAMDATA, true },
+	{ "dataName",		VTypes::StringData,	MAXFFPARAMDATA, true },
+	{ "eScale",		VTypes::DoubleData,	0, false },
+	{ "form",		VTypes::StringData,	0, false },
+	{ "nAtoms",		VTypes::IntegerData,	0, true },
+	{ "nParams",		VTypes::IntegerData,	0, true },
+	{ "type",		VTypes::StringData,	0, true },
+	{ "typeNames",		VTypes::StringData,	MAXFFPARAMDATA, false },
+	{ "vScale",		VTypes::DoubleData,	0, false }
 };
 
 // Function data
@@ -140,7 +140,7 @@ bool ForcefieldBoundVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasA
 	{
 		printf("Internal Error: Accessor id %i is out of range for ForcefieldBound type.\n", i);
 		Messenger::exit("ForcefieldBoundVariable::retrieveAccessor");
-		return FALSE;
+		return false;
 	}
 	Accessors acc = (Accessors) i;
 	// Check for correct lack/presence of array index given
@@ -148,7 +148,7 @@ bool ForcefieldBoundVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasA
 	{
 		Messenger::print("Error: Unnecessary array index provided for member '%s'.", accessorData[i].name);
 		Messenger::exit("ForcefieldBoundVariable::retrieveAccessor");
-		return FALSE;
+		return false;
 	}
 	else if ((accessorData[i].arraySize > 0) && (hasArrayIndex))
 	{
@@ -156,17 +156,17 @@ bool ForcefieldBoundVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasA
 		{
 			Messenger::print("Error: Array index out of bounds for member '%s' (%i, range is 1-%i).", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
 			Messenger::exit("ForcefieldBoundVariable::retrieveAccessor");
-			return FALSE;
+			return false;
 		}
 	}
 	// Get current data from ReturnValue
-	bool result = TRUE;
+	bool result = true;
 	int n;
 	ForcefieldBound* ptr = (ForcefieldBound*) rv.asPointer(VTypes::ForcefieldBoundData, result);
 	if ((!result) || (ptr == NULL))
 	{
 		Messenger::print("Invalid (NULL) %s reference encountered.", VTypes::dataType(VTypes::ForcefieldBoundData));
-		result = FALSE;
+		result = false;
 	}
 	if (result) switch (acc)
 	{
@@ -193,7 +193,7 @@ bool ForcefieldBoundVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasA
 			if (!hasArrayIndex)
 			{
 				Messenger::print("Accessor 'datakeyword' must have an array index.");
-				result = FALSE;
+				result = false;
 			}
 			else switch (ptr->type())
 			{
@@ -217,7 +217,7 @@ bool ForcefieldBoundVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasA
 			if (!hasArrayIndex)
 			{
 				Messenger::print("Accessor 'dataname' must have an array index.");
-				result = FALSE;
+				result = false;
 			}
 			else switch (ptr->type())
 			{
@@ -240,7 +240,7 @@ bool ForcefieldBoundVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasA
 			if (ptr->type() != ForcefieldBound::TorsionInteraction)
 			{
 				Messenger::print("Tried to retrieve the 1-4 coulombic scale factor for a non-torsion bound interaction.");
-				result = FALSE;
+				result = false;
 			}
 			else rv.set(ptr->elecScale());
 			break;
@@ -277,13 +277,13 @@ bool ForcefieldBoundVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasA
 			if (ptr->type() != ForcefieldBound::TorsionInteraction)
 			{
 				Messenger::print("Tried to retrieve the 1-4 VDW scale factor for a non-torsion bound interaction.");
-				result = FALSE;
+				result = false;
 			}
 			else rv.set(ptr->vdwScale());
 			break;
 		default:
 			printf("Internal Error: Access to member '%s' has not been defined in ForcefieldBoundVariable.\n", accessorData[i].name);
-			result = FALSE;
+			result = false;
 			break;
 	}
 	Messenger::exit("ForcefieldBoundVariable::retrieveAccessor");
@@ -299,11 +299,11 @@ bool ForcefieldBoundVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnVa
 	{
 		printf("Internal Error: Accessor id %i is out of range for ForcefieldBound type.\n", i);
 		Messenger::exit("ForcefieldBoundVariable::setAccessor");
-		return FALSE;
+		return false;
 	}
 	Accessors acc = (Accessors) i;
 	// Check for correct lack/presence of array index given to original accessor, and nature of new value
-	bool result = TRUE;
+	bool result = true;
 	if (accessorData[i].arraySize != 0)
 	{
 		if (hasArrayIndex)
@@ -311,12 +311,12 @@ bool ForcefieldBoundVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnVa
 			if ((accessorData[i].arraySize > 0) && ( (arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize) ))
 			{
 				Messenger::print("Error: Array index provided for member '%s' is out of range (%i, range is 1-%i).", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
-				result = FALSE;
+				result = false;
 			}
 			if (newValue.arraySize() > 0)
 			{
 				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.", accessorData[i].name);
-				result = FALSE;
+				result = false;
 			}
 		}
 		else
@@ -324,7 +324,7 @@ bool ForcefieldBoundVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnVa
 			if (newValue.arraySize() > accessorData[i].arraySize)
 			{
 				Messenger::print("Error: The array being assigned to member '%s' is larger than the size of the desination array (%i cf. %i).", accessorData[i].name, newValue.arraySize(), accessorData[i].arraySize);
-				result = FALSE;
+				result = false;
 			}
 		}
 	}
@@ -336,26 +336,26 @@ bool ForcefieldBoundVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnVa
 			if (accessorData[i].returnType != VTypes::VectorData)
 			{
 				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.", accessorData[i].name);
-				result = FALSE;
+				result = false;
 			}
 			else if ((newValue.type() != VTypes::VectorData) && (newValue.arraySize() != 3))
 			{
 				Messenger::print("Error: Only an array of size 3 can be assigned to a vector (member '%s').", accessorData[i].name);
-				result = FALSE;
+				result = false;
 			}
 		}
 	}
 	if (!result)
 	{
 		Messenger::exit("ForcefieldBoundVariable::setAccessor");
-		return FALSE;
+		return false;
 	}
 	// Get current data from ReturnValue
 	ForcefieldBound* ptr = (ForcefieldBound*) sourcerv.asPointer(VTypes::ForcefieldBoundData, result);
 	if ((!result) || (ptr == NULL))
 	{
 		Messenger::print("Invalid (NULL) %s reference encountered.", VTypes::dataType(VTypes::ForcefieldBoundData));
-		result = FALSE;
+		result = false;
 	}
 	int n;
 	if (result) switch (acc)
@@ -369,7 +369,7 @@ bool ForcefieldBoundVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnVa
 			if (ptr->type() != ForcefieldBound::TorsionInteraction)
 			{
 				Messenger::print("Tried to set the 1-4 coulombic scale factor for a non-torsion bound interaction.");
-				result = FALSE;
+				result = false;
 			}
 			else ptr->setElecScale( newValue.asDouble() );
 			break;
@@ -385,13 +385,13 @@ bool ForcefieldBoundVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnVa
 			if (ptr->type() != ForcefieldBound::TorsionInteraction)
 			{
 				Messenger::print("Tried to set the 1-4 coulombic scale factor for a non-torsion bound interaction.");
-				result = FALSE;
+				result = false;
 			}
 			else ptr->setVdwScale( newValue.asDouble() );
 			break;
 		default:
 			printf("ForcefieldBoundVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);
-			result = FALSE;
+			result = false;
 			break;
 	}
 	Messenger::exit("ForcefieldBoundVariable::setAccessor");
@@ -407,10 +407,10 @@ bool ForcefieldBoundVariable::performFunction(int i, ReturnValue& rv, TreeNode* 
 	{
 		printf("Internal Error: FunctionAccessor id %i is out of range for ForcefieldBound type.\n", i);
 		Messenger::exit("ForcefieldBoundVariable::performFunction");
-		return FALSE;
+		return false;
 	}
 	// Get current data from ReturnValue
-	bool result = TRUE;
+	bool result = true;
 	ForcefieldBound* ptr = (ForcefieldBound*) rv.asPointer(VTypes::ForcefieldBoundData, result);
 	int id;
 	if (result) switch (i)
@@ -420,8 +420,8 @@ bool ForcefieldBoundVariable::performFunction(int i, ReturnValue& rv, TreeNode* 
 			{
 				case (ForcefieldBound::BondInteraction):
 				case (ForcefieldBound::UreyBradleyInteraction):
-					id = BondFunctions::bondParameter(ptr->bondForm(), node->argc(0), TRUE);
-					if (id == BondFunctions::BondFunctions[ptr->bondForm()].nParameters) result = FALSE;
+					id = BondFunctions::bondParameter(ptr->bondForm(), node->argc(0), true);
+					if (id == BondFunctions::BondFunctions[ptr->bondForm()].nParameters) result = false;
 					else
 					{
 						// Autoconversion of energy parameters?
@@ -430,8 +430,8 @@ bool ForcefieldBoundVariable::performFunction(int i, ReturnValue& rv, TreeNode* 
 					}
 					break;
 				case (ForcefieldBound::AngleInteraction):
-					id = AngleFunctions::angleParameter(ptr->angleForm(), node->argc(0), TRUE);
-					if (id == AngleFunctions::AngleFunctions[ptr->angleForm()].nParameters) result = FALSE;
+					id = AngleFunctions::angleParameter(ptr->angleForm(), node->argc(0), true);
+					if (id == AngleFunctions::AngleFunctions[ptr->angleForm()].nParameters) result = false;
 					else
 					{
 						// Autoconversion of energy parameters?
@@ -441,8 +441,8 @@ bool ForcefieldBoundVariable::performFunction(int i, ReturnValue& rv, TreeNode* 
 					break;
 				case (ForcefieldBound::TorsionInteraction):
 				case (ForcefieldBound::ImproperInteraction):
-					id = TorsionFunctions::torsionParameter(ptr->torsionForm(), node->argc(0), TRUE);
-					if (id == TorsionFunctions::TorsionFunctions[ptr->torsionForm()].nParameters) result = FALSE;
+					id = TorsionFunctions::torsionParameter(ptr->torsionForm(), node->argc(0), true);
+					if (id == TorsionFunctions::TorsionFunctions[ptr->torsionForm()].nParameters) result = false;
 					else
 					{
 						// Autoconversion of energy parameters?
@@ -454,7 +454,7 @@ bool ForcefieldBoundVariable::performFunction(int i, ReturnValue& rv, TreeNode* 
 			break;
 		default:
 			printf("Internal Error: Access to function '%s' has not been defined in ForcefieldBoundVariable.\n", functionData[i].name);
-			result = FALSE;
+			result = false;
 			break;
 	}
 	Messenger::exit("ForcefieldBoundVariable::performFunction");

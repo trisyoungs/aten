@@ -101,7 +101,7 @@ class ColourScale : public ListItem<ColourScale>
 	// Add new point to end of colourscale
 	ColourScalePoint* addPointAtEnd(double value, double r, double g, double b, double a = 1.0f);
 	// Set colour and value data for point
-	void setPoint(int position, double value, double r, double g, double b, double a = 1.0f, bool setval = TRUE, bool setcol = TRUE);
+	void setPoint(int position, double value, double r, double g, double b, double a = 1.0f, bool setval = true, bool setcol = true);
 	// Set only value for point
 	void setPointValue(int position, double value);
 	// Set only colour for point

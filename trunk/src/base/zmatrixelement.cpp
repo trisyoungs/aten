@@ -36,7 +36,7 @@ ZMatrixElement::ZMatrixElement() : ListItem<ZMatrixElement>()
 		if (i<3)
 		{
 			values_[i] = NULL;
-			negated_[i] = FALSE;
+			negated_[i] = false;
 		}
 	}
 }
@@ -84,7 +84,7 @@ bool ZMatrixElement::negated(int id)
 {
 	if ((id < 0) || (id > 2)) printf("Internal Error: Id for ZMatrixElement::negate is out of range (%i)\n", id);
 	else return negated_[id];
-	return FALSE;
+	return false;
 }
 // Set distance (geometry variable 0)
 void ZMatrixElement::setDistanceVariable(Variable* v)

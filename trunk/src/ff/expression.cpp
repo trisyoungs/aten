@@ -45,7 +45,7 @@ bool Pattern::createExpression(bool vdwOnly, bool allowDummy, Forcefield* defaul
 	PatternBound* pb;
 	// Counters for incomplete aspects of the expression
 	int iatoms = 0, ibonds = 0, iangles = 0, itorsions = 0;
-	incomplete_ = FALSE;
+	incomplete_ = false;
 	// Temp vars for type storage
 	ForcefieldAtom* ti, *tj, *tk, *tl;
 	int ii, jj, kk, ll, n, m;
@@ -69,16 +69,16 @@ bool Pattern::createExpression(bool vdwOnly, bool allowDummy, Forcefield* defaul
 	{
 		Messenger::print("Can't complete expression for pattern '%s' - no forcefield associated to pattern or model, and no default set.", qPrintable(name_));
 		Messenger::exit("Pattern::createExpression");
-		return FALSE;
+		return false;
 	}
 	if (vdwOnly)
 	{
-		noIntramolecular_ = TRUE;
+		noIntramolecular_ = true;
 		Messenger::print("Expression for pattern '%s' contains Atomtype terms only.", qPrintable(name_));
 	}
 	else
 	{
-		noIntramolecular_ = FALSE;
+		noIntramolecular_ = false;
 		// Determine the number of bonds, angles, and torsions to expect in the pattern
 		for (i = parent_->atoms(); i != NULL; i = i->next)
 		{
@@ -113,12 +113,12 @@ bool Pattern::createExpression(bool vdwOnly, bool allowDummy, Forcefield* defaul
 		{
 			Messenger::print("Fatal Error: Fell off end of atom list while assigning types - can't complete expression for pattern '%s'.", qPrintable(name_));
 			Messenger::exit("Pattern::fillExpression");
-			return FALSE;
+			return false;
 		}
 		if (ai->type() == NULL)
 		{
 			Messenger::print("!!! No FF type definition for atom %i (%s).", n+1, Elements().symbol(ai));
-			incomplete_ = TRUE;
+			incomplete_ = true;
 			iatoms ++;
 		}
 		// Set data
@@ -129,7 +129,7 @@ bool Pattern::createExpression(bool vdwOnly, bool allowDummy, Forcefield* defaul
 		if (ai->type()->vdwForm() ==  VdwFunctions::None)
 		{
 			Messenger::print("!!! No FF type definition for atom %i (%s).", n+1, Elements().symbol(ai));
-			incomplete_ = TRUE;
+			incomplete_ = true;
 			iatoms ++;
 		}
 		ai = ai->next;
@@ -159,7 +159,7 @@ bool Pattern::createExpression(bool vdwOnly, bool allowDummy, Forcefield* defaul
 				{
 					Messenger::print("!!! Found bond between molecules. Check pattern.");
 					Messenger::exit("Pattern::createExpression");
-					return FALSE;
+					return false;
 				}
 				if (jj > ii)
 				{
@@ -181,7 +181,7 @@ bool Pattern::createExpression(bool vdwOnly, bool allowDummy, Forcefield* defaul
 					if (ffb == NULL)
 					{
 						Messenger::print("!!! No FF definition for bond %s-%s.", qPrintable(ti->equivalent()), qPrintable(tj->equivalent()));
-						incomplete_ = TRUE;
+						incomplete_ = true;
 						ibonds ++;
 					}
 					else
@@ -251,7 +251,7 @@ bool Pattern::createExpression(bool vdwOnly, bool allowDummy, Forcefield* defaul
 					if (ffb == NULL)
 					{
 						Messenger::print("!!! No FF definition for torsion %s-%s-%s-%s.", qPrintable(ti->equivalent()), qPrintable(tj->equivalent()), qPrintable(tk->equivalent()), qPrintable(tl->equivalent()));
-						incomplete_ = TRUE;
+						incomplete_ = true;
 						itorsions ++;
 					}
 					else
@@ -295,7 +295,7 @@ bool Pattern::createExpression(bool vdwOnly, bool allowDummy, Forcefield* defaul
 					if (ffb == NULL)
 					{
 						Messenger::print("!!! No FF definition for angle %s-%s-%s.", qPrintable(ti->equivalent()), qPrintable(tj->equivalent()), qPrintable(tk->equivalent()));
-						incomplete_ = TRUE;
+						incomplete_ = true;
 						iangles ++;
 					}
 					else
@@ -360,7 +360,7 @@ bool Pattern::createExpression(bool vdwOnly, bool allowDummy, Forcefield* defaul
 		if ((bonds_.nItems()-nUreyBradleys) != nBonds)
 		{
 			Messenger::print("...INTERNAL ERROR: expected %i bonds, found %i", nBonds, bonds_.nItems());
-			incomplete_ = TRUE;
+			incomplete_ = true;
 		}
 		else if (bonds_.nItems() == 0) Messenger::print("... No bonds in model.");
 		else if (ibonds == 0)
@@ -381,7 +381,7 @@ bool Pattern::createExpression(bool vdwOnly, bool allowDummy, Forcefield* defaul
 		if (angles_.nItems() != nAngles)
 		{
 			Messenger::print("...INTERNAL ERROR: expected %i angles, found %i", nAngles, angles_.nItems());
-			incomplete_ = TRUE;
+			incomplete_ = true;
 		}
 		else if (angles_.nItems() == 0) Messenger::print("... No angles in model.");
 		else if (iangles == 0)
@@ -400,7 +400,7 @@ bool Pattern::createExpression(bool vdwOnly, bool allowDummy, Forcefield* defaul
 		{
 			Messenger::print("NIMPROPERS = %i", nImpropers);
 			Messenger::print("...INTERNAL ERROR: expected %i torsions, found %i", nTorsions, torsions_.nItems());
-			incomplete_ = TRUE;
+			incomplete_ = true;
 		}
 		else if (torsions_.nItems() == 0) Messenger::print("... No torsions in model.");
 		else if (itorsions == 0)
@@ -416,6 +416,6 @@ bool Pattern::createExpression(bool vdwOnly, bool allowDummy, Forcefield* defaul
 	// Print out a warning if the expression is incomplete.
 	if (incomplete_) Messenger::print("!!! Expression is incomplete.");
 	Messenger::exit("Pattern::createExpression");
-	return (incomplete_ ? FALSE : TRUE);
+	return (incomplete_ ? false : true);
 }
 

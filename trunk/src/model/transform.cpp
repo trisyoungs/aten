@@ -131,7 +131,7 @@ void Model::rotateSelectionVector(Vec3<double> origin, Vec3<double> vector, doub
 	}
 	
 	// Create rotation matrix
-	A.createRotationAxis(vector.x, vector.y, vector.z, angle, TRUE);
+	A.createRotationAxis(vector.x, vector.y, vector.z, angle, true);
 
 	// Loop over selected atoms
 	for (Refitem<Atom,int>* ri = selection(markonly); ri != NULL; ri = ri->next)

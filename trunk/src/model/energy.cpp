@@ -34,7 +34,7 @@ double Model::totalEnergy(Model* srcmodel, bool& success)
 	if (!isExpressionValid())
 	{
 		Messenger::print("Model::totalEnergy - No valid energy expression defined for model.");
-		success = FALSE;
+		success = false;
 		Messenger::exit("Model::totalEnergy");
 		return 0.0;
 	}
@@ -51,7 +51,7 @@ double Model::totalEnergy(Model* srcmodel, bool& success)
 	{
 		if (!p->vdwCorrectEnergy(&cell_, &energy))
 		{
-			success = FALSE;
+			success = false;
 			Messenger::exit("Model::totalEnergy");
 			return 0.0;
 		}
@@ -65,7 +65,7 @@ double Model::totalEnergy(Model* srcmodel, bool& success)
 		if (srcmodel->cell_.type() == UnitCell::NoCell)
 		{
 			Messenger::print("Error: Ewald sum is not applicable to non-periodic models.");
-			success = FALSE;
+			success = false;
 			Messenger::exit("Model::moleculeEnergy");
 			return 0.0;
 		}
@@ -89,7 +89,7 @@ double Model::totalEnergy(Model* srcmodel, bool& success)
 		{
 			if (!p->vdwIntraPatternEnergy(srcmodel, &energy))
 			{
-				success = FALSE;
+				success = false;
 				Messenger::exit("Model::totalEnergy");
 				return 0.0;
 			}
@@ -97,7 +97,7 @@ double Model::totalEnergy(Model* srcmodel, bool& success)
 			{
 				if (!p->vdwInterPatternEnergy(srcmodel, p2, &energy))
 				{
-					success = FALSE;
+					success = false;
 					Messenger::exit("Model::totalEnergy");
 					return 0.0;
 				}
@@ -124,7 +124,7 @@ double Model::totalEnergy(Model* srcmodel, bool& success)
 		p = p->next;
 	}
 	energy.totalise();
-	success = TRUE;
+	success = true;
 	Messenger::exit("Model::totalEnergy");
 	return energy.total();
 }
@@ -138,7 +138,7 @@ double Model::moleculeEnergy(Model* srcmodel, Pattern* molpattern, int molecule,
 	if (!isExpressionValid())
 	{
 		Messenger::print("Model::moleculeEnergy - No valid energy expression defined for model.");
-		success = FALSE;
+		success = false;
 		Messenger::exit("Model::moleculeEnergy");
 		return 0.0;
 	}
@@ -159,7 +159,7 @@ double Model::moleculeEnergy(Model* srcmodel, Pattern* molpattern, int molecule,
 			if (srcmodel->cell_.type() == UnitCell::NoCell)
 			{
 				Messenger::print("Error: Ewald sum is not applicable to non-periodic models.");
-				success = FALSE;
+				success = false;
 				Messenger::exit("Model::moleculeEnergy");
 				return 0.0;
 			}
@@ -174,7 +174,7 @@ double Model::moleculeEnergy(Model* srcmodel, Pattern* molpattern, int molecule,
 	{
 		if (!molpattern->vdwInterPatternEnergy(srcmodel, p, &energy, molecule))
 		{
-			success = FALSE;
+			success = false;
 			Messenger::exit("Model::moleculeEnergy");
 			return 0.0;
 		}
@@ -197,7 +197,7 @@ double Model::moleculeEnergy(Model* srcmodel, Pattern* molpattern, int molecule,
 	}
 
 	energy.totalise();
-	success = TRUE;
+	success = true;
 	Messenger::exit("Model::moleculeEnergy");
 	return energy.total();
 }
@@ -211,7 +211,7 @@ double Model::angleEnergy(Model* config, bool& success)
 	if (!isExpressionValid())
 	{
 		Messenger::print("Model::angleEnergy - No valid energy expression defined for model.");
-		success = FALSE;
+		success = false;
 		Messenger::exit("Model::angleEnergy");
 		return 0.0;
 	}
@@ -220,7 +220,7 @@ double Model::angleEnergy(Model* config, bool& success)
 	EnergyStore tempenergy(patterns_.nItems());
 	for (Pattern* p = patterns_.first(); p != NULL; p = p->next) p->angleEnergy(config, &tempenergy);
 	
-	success = TRUE;
+	success = true;
 	tempenergy.totalise();
 	Messenger::exit("Model::angleEnergy");
 	return tempenergy.angle();
@@ -235,7 +235,7 @@ double Model::bondEnergy(Model* config, bool& success)
 	if (!isExpressionValid())
 	{
 		Messenger::print("Model::bondEnergy - No valid energy expression defined for model.");
-		success = FALSE;
+		success = false;
 		Messenger::exit("Model::bondEnergy");
 		return 0.0;
 	}
@@ -244,7 +244,7 @@ double Model::bondEnergy(Model* config, bool& success)
 	EnergyStore tempenergy(patterns_.nItems());
 	for (Pattern* p = patterns_.first(); p != NULL; p = p->next) p->bondEnergy(config, &tempenergy);
 	
-	success = TRUE;
+	success = true;
 	tempenergy.totalise();
 	Messenger::exit("Model::bondEnergy");
 	return tempenergy.bond();
@@ -259,7 +259,7 @@ double Model::electrostaticEnergy(Model* config, bool& success)
 	if (!isExpressionValid())
 	{
 		Messenger::print("Model::coulombEnergy - No valid energy expression defined for model.");
-		success = FALSE;
+		success = false;
 		Messenger::exit("Model::coulombEnergy");
 		return 0.0;
 	}
@@ -277,7 +277,7 @@ double Model::electrostaticEnergy(Model* config, bool& success)
 			if (config->cell_.type() == UnitCell::NoCell)
 			{
 				Messenger::print("Error: Ewald sum is not applicable to non-periodic models.");
-				success = FALSE;
+				success = false;
 				Messenger::exit("Model::coulombEnergy");
 				return 0.0;
 			}
@@ -309,7 +309,7 @@ double Model::electrostaticEnergy(Model* config, bool& success)
 				break;
 		}
 	}
-	success = TRUE;
+	success = true;
 	tempenergy.totalise();
 	Messenger::exit("Model::coulombEnergy");
 	return tempenergy.electrostatic();
@@ -346,7 +346,7 @@ double Model::torsionEnergy(Model* config, bool& success)
 	if (!isExpressionValid())
 	{
 		Messenger::print("Model::torsionEnergy - No valid energy expression defined for model.");
-		success = FALSE;
+		success = false;
 		Messenger::exit("Model::torsionEnergy");
 		return 0.0;
 	}
@@ -355,7 +355,7 @@ double Model::torsionEnergy(Model* config, bool& success)
 	EnergyStore tempenergy(patterns_.nItems());
 	for (Pattern* p = patterns_.first(); p != NULL; p = p->next) p->torsionEnergy(config, &tempenergy);
 	
-	success = TRUE;
+	success = true;
 	tempenergy.totalise();
 	Messenger::exit("Model::torsionEnergy");
 	return tempenergy.torsion();
@@ -370,7 +370,7 @@ double Model::vdwEnergy(Model* config, bool& success)
 	if (!isExpressionValid())
 	{
 		Messenger::print("Model::vdwEnergy - No valid energy expression defined for model.");
-		success = FALSE;
+		success = false;
 		Messenger::exit("Model::vdwEnergy");
 		return 0.0;
 	}
@@ -382,7 +382,7 @@ double Model::vdwEnergy(Model* config, bool& success)
 	{
 		if (!p->vdwIntraPatternEnergy(config, &tempenergy))
 		{
-			success = FALSE;
+			success = false;
 			Messenger::exit("Model::totalEnergy");
 			return 0.0;
 		}
@@ -390,14 +390,14 @@ double Model::vdwEnergy(Model* config, bool& success)
 		{
 			if (!p->vdwInterPatternEnergy(config, p2, &tempenergy))
 			{
-				success = FALSE;
+				success = false;
 				Messenger::exit("Model::totalEnergy");
 				return 0.0;
 			}
 		}
 	}
 	
-	success = TRUE;
+	success = true;
 	tempenergy.totalise();
 	Messenger::exit("Model::vdwEnergy");
 	return tempenergy.vdw();
@@ -414,7 +414,7 @@ bool Model::calculateForces(Model* srcmodel)
 	{
 		Messenger::print("calculateForces : No valid energy expression defined for model.");
 		Messenger::exit("Model::calculateForces");
-		return FALSE;
+		return false;
 	}
 	srcmodel->zeroForces();
 
@@ -436,7 +436,7 @@ bool Model::calculateForces(Model* srcmodel)
 			{
 				Messenger::print("Error: Ewald sum is not applicable to non-periodic models.");
 				Messenger::exit("Model::calculateForces");
-				return FALSE;
+				return false;
 			}
 			// Estimate parameters if automatic mode selected
 			if (emodel == Electrostatics::EwaldAuto) prefs.estimateEwaldParameters(&srcmodel->cell_);
@@ -461,14 +461,14 @@ bool Model::calculateForces(Model* srcmodel)
 			if (!p->vdwIntraPatternForces(srcmodel))
 			{
 				Messenger::exit("Model::calculateForces");
-				return FALSE;
+				return false;
 			}
 			for (p2 = p; p2 != NULL; p2 = p2->next)
 			{
 				if (!p->vdwInterPatternForces(srcmodel,p2))
 				{
 				Messenger::exit("Model::calculateForces");
-				return FALSE;
+				return false;
 				}
 			}
 		}
@@ -498,7 +498,7 @@ bool Model::calculateForces(Model* srcmodel)
 	rmsForce_ /= atoms_.nItems();
 	rmsForce_ = sqrt(rmsForce_);
 	Messenger::exit("Model::calculateForces");
-	return TRUE;
+	return true;
 }
 
 // Print Forces

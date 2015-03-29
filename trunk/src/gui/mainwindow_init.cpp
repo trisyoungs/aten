@@ -38,7 +38,7 @@ void AtenWindow::finaliseUi()
 	for (n=0; n<MAXRECENTFILES; n++)
 	{
 		actionRecentFile[n] = new QAction(this);
-		actionRecentFile[n]->setVisible(FALSE);
+		actionRecentFile[n]->setVisible(false);
 		QObject::connect(actionRecentFile[n], SIGNAL(triggered()), this, SLOT(loadRecent()));
 		ui.RecentMenu->addAction(actionRecentFile[n]);
 	}
@@ -91,19 +91,19 @@ void AtenWindow::finaliseUi()
 	switch (prefs.renderStyle())
 	{
 		case (Prefs::StickStyle):
-			ui.actionStyleStick->setChecked(TRUE);
+			ui.actionStyleStick->setChecked(true);
 			break;
 		case (Prefs::TubeStyle):
-			ui.actionStyleTube->setChecked(TRUE);
+			ui.actionStyleTube->setChecked(true);
 			break;
 		case (Prefs::SphereStyle):
-			ui.actionStyleSphere->setChecked(TRUE);
+			ui.actionStyleSphere->setChecked(true);
 			break;
 		case (Prefs::ScaledStyle):
-			ui.actionStyleScaled->setChecked(TRUE);
+			ui.actionStyleScaled->setChecked(true);
 			break;
 		case (Prefs::IndividualStyle):
-			ui.actionStyleIndividual->setChecked(TRUE);
+			ui.actionStyleIndividual->setChecked(true);
 			break;
 		default:
 			break;
@@ -111,8 +111,8 @@ void AtenWindow::finaliseUi()
 
 	// Create master group for buttons that change user action modes
 	uaDummyButton_ = new QToolButton(this);
-	uaDummyButton_->setCheckable(TRUE);
-	uaDummyButton_->setVisible(FALSE);
+	uaDummyButton_->setCheckable(true);
+	uaDummyButton_->setVisible(false);
 	uaButtons_.addButton(uaDummyButton_);
 	// -- From Build Dock Widget
 	uaButtons_.addButton(buildWidget->ui.DrawAtomButton, UserAction::DrawAtomAction);
@@ -150,14 +150,14 @@ void AtenWindow::finaliseUi()
 	// Statusbar
 	*/
 	// Fix up the statusbar with a single big frame and no size grip
-	ui.MainWindowStatusBar->setSizeGripEnabled(FALSE);
+	ui.MainWindowStatusBar->setSizeGripEnabled(false);
 	QFrame *frame = new QFrame(this);
 	ui.MainWindowStatusBar->addPermanentWidget(frame,1);
 	// Message label
 	QHBoxLayout *lablayout = new QHBoxLayout(frame);
 	messageLabel_ = new QLabel(this);
 	messageLabel_->setTextFormat(Qt::RichText);
-	messageLabel_->setWordWrap(TRUE);
+	messageLabel_->setWordWrap(true);
 	QFont font = messageLabel_->font();
 	font.setPointSize(8);
 	messageLabel_->setFont(font);
@@ -200,7 +200,7 @@ void AtenWindow::setControls()
 	setActiveStyleAction(prefs.renderStyle());
 
 	// Set view perspective/orthographic
-	prefs.hasPerspective() ? ui.actionViewPerspective->setChecked(TRUE) : ui.actionViewOrthographic->setChecked(TRUE);
+	prefs.hasPerspective() ? ui.actionViewPerspective->setChecked(true) : ui.actionViewOrthographic->setChecked(true);
 
 	// Set correct colour scheme menuitem
 	setActiveSchemeAction(prefs.colourScheme());

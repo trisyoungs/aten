@@ -105,9 +105,9 @@ class PartitionData : public ListItem<PartitionData>
 	// Reset reduced mass of partition
 	void resetReducedMass();
 	// Adjust partition reduced mass contents
-	void adjustReducedMass(Atom* i, bool subtract = FALSE);
+	void adjustReducedMass(Atom* i, bool subtract = false);
 	// Adjust partition reduced mass contents (from Model)
-	void adjustReducedMass(Model* m, bool subtract = FALSE);
+	void adjustReducedMass(Model* m, bool subtract = false);
 	// Return current density of partition
 	double density();
 	// Clear component list

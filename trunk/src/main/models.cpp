@@ -68,12 +68,12 @@ void Aten::setCurrentModel(Model* m, bool deselectOthers)
 	if (deselectOthers)
 	{
 		// Unset visible flags on all currently-visible models
-		for (Refitem<Model,int>* ri = visibleModels_.first(); ri != NULL; ri = ri->next) ri->item->setVisible(FALSE);
+		for (Refitem<Model,int>* ri = visibleModels_.first(); ri != NULL; ri = ri->next) ri->item->setVisible(false);
 		visibleModels_.clear();
 	}
 
 	// Its the current model, so it must be visible also... add to visible list
-	setModelVisible(m, TRUE);
+	setModelVisible(m, true);
 
 	Messenger::exit("Aten::setCurrentModel");
 }
@@ -140,7 +140,7 @@ Model* Aten::addModel()
 			m->setType(Model::ParentModelType);
 			m->setName(QString("Unnamed%1").arg(++modelId_, 3, 10, QChar('0')));
 			m->resetLogs();
-			setCurrentModel(m, TRUE);
+			setCurrentModel(m, true);
 			break;
 		case (Aten::FragmentLibraryList):
 			m = fragmentModels_.add();

@@ -101,7 +101,7 @@ bool Rdf::initialise()
 	{
 		Messenger::print("Rdf::initialise - At least one site has NULL value.");
 		Messenger::exit("Rdf::initialise");
-		return FALSE;
+		return false;
 	}
 
 	// Create the data_ arrays
@@ -111,7 +111,7 @@ bool Rdf::initialise()
 	nAdded_ = 0;
 
 	Messenger::exit("Rdf::initialise");
-	return TRUE;
+	return true;
 }
 
 // Accumulate quantity data_ from supplied model
@@ -175,5 +175,5 @@ bool Rdf::save()
 {
 	int n;
 	for (n=0; n<nBins_; n++) printf(" %f  %f\n",binWidth_ * (n + 0.5), data_[n]);
-	return TRUE;
+	return true;
 }

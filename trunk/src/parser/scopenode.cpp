@@ -54,14 +54,14 @@ bool ScopeNode::execute(ReturnValue& rv)
 bool ScopeNode::set(ReturnValue& rv)
 {
 	printf("Internal Error: Trying to 'set' a ScopeNode.\n");
-	return FALSE;
+	return false;
 }
 
 // Initialise node
 bool ScopeNode::initialise()
 {
 	printf("Internal Error: A ScopeNode cannot be initialised.\n");
-	return FALSE;
+	return false;
 }
 
 // Print node contents

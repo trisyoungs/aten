@@ -140,7 +140,7 @@ double LineMinimiser::lineMinimise(Model* srcmodel)
 		return 0.0;
 	}
 
-	failed = FALSE;
+	failed = false;
 
 	// Set initial bounding values
 	bounds[0] = 0.0;

@@ -33,7 +33,7 @@ Eigenvector::Eigenvector() : ListItem<Eigenvector>()
 	size_ = -1;
 	eigenvector_ = NULL;
 	occupancy_ = 0.0;
-	isSpherical_ = FALSE;
+	isSpherical_ = false;
 }
 
 Eigenvector::~Eigenvector()

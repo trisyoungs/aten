@@ -35,7 +35,7 @@ class SiteVariable : public PointerVariable
 {
 	public:
 	// Constructor / Destructor
-	SiteVariable(Site* s = NULL, bool constant = FALSE);
+	SiteVariable(Site* s = NULL, bool constant = false);
 	~SiteVariable();
 
 	/*
@@ -69,7 +69,7 @@ class SiteArrayVariable : public PointerArrayVariable
 {
 	public:
 	// Constructor / Destructor
-	SiteArrayVariable(TreeNode* sizeexpr, bool constant = FALSE);
+	SiteArrayVariable(TreeNode* sizeexpr, bool constant = false);
 
 	/*
 	// Inherited Virtuals

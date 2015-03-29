@@ -47,12 +47,12 @@ AtomListWidget::AtomListWidget(AtenWindow& parent, Qt::WindowFlags flags) : QDoc
 	listStructurePoint_ = -1;
 	listSelectionPoint_ = -1;
 	listLastModel_ = NULL;
-	shouldRefresh_ = TRUE;
-	refreshing_ = FALSE;
+	shouldRefresh_ = true;
+	refreshing_ = false;
 	prevClicked_ = NULL;
 	lastClicked_ = NULL;
 	lastHovered_ = NULL;
-	viewingByAtom_ = TRUE;
+	viewingByAtom_ = true;
 	maxTableRows_ = 0;
 	currentRootId_ = 0;
 
@@ -89,7 +89,7 @@ void AtomListWidget::showWidget()
 	recalculateRowSize();
 	if (shouldRefresh_) refresh();
 	// Make sure toolbutton is in correct state
-// 	gui.toolBoxWidget->ui.AtomListButton->setChecked(TRUE);
+// 	gui.toolBoxWidget->ui.AtomListButton->setChecked(true);
 }
 
 // Redetermine max number of visible rows
@@ -255,7 +255,7 @@ void AtomListWidget::refresh()
 
 	Messenger::enter("AtomListWidget::refresh");
 
-	refreshing_ = TRUE;
+	refreshing_ = true;
 
 	if (!parent_.aten().currentModelOrFrame())
 	{
@@ -265,25 +265,25 @@ void AtomListWidget::refresh()
 	}
 
 	// Check the current active model against the last one we represented in the list
-	bool updateSel = FALSE, updateAtoms = FALSE;
+	bool updateSel = false, updateAtoms = false;
 	Model* m = parent_.aten().currentModelOrFrame();
 	if (m != listLastModel_)
 	{
 		listStructurePoint_ = -1;
 		listSelectionPoint_ = -1;
 		listLastModel_ = m;
-		updateSel = TRUE;
-		updateAtoms = TRUE;
+		updateSel = true;
+		updateAtoms = true;
 	}
 	else
 	{
-		if (listStructurePoint_ != (m->log(Log::Structure) + m->log(Log::Coordinates))) updateAtoms = TRUE;
-		if (listSelectionPoint_ != m->log(Log::Selection)) updateSel = TRUE;
+		if (listStructurePoint_ != (m->log(Log::Structure) + m->log(Log::Coordinates))) updateAtoms = true;
+		if (listSelectionPoint_ != m->log(Log::Selection)) updateSel = true;
 	}
 	
 	if ((!updateAtoms) && (!updateSel))
 	{
-		refreshing_ = FALSE;
+		refreshing_ = false;
 		Messenger::exit("AtomListWidget::refresh");
 		return;
 	}
@@ -313,7 +313,7 @@ void AtomListWidget::refresh()
 		if (refAtom == NULL)
 		{
 			printf("Internal Error: Reference atom is NULL in AtomListWidget::refresh()\n");
-			refreshing_ = FALSE;
+			refreshing_ = false;
 			return;
 		}
 		
@@ -337,7 +337,7 @@ void AtomListWidget::refresh()
 	// Resize columns to contents
 	for (int column = 0; column<displayItems_.count(); ++column) ui.AtomTable->resizeColumnToContents(column);
 
-	refreshing_ = FALSE;
+	refreshing_ = false;
 	Messenger::exit("AtomListWidget::refresh");
 }
 
@@ -354,7 +354,7 @@ void AtomListWidget::on_ViewStyleCombo_currentIndexChanged(int index)
 	if (index == viewingByAtom_)
 	{
 		viewingByAtom_ = !index;
-		refreshing_ = FALSE;
+		refreshing_ = false;
 		listSelectionPoint_ = -1;
 		listStructurePoint_ = -1;
 		refresh();
@@ -677,7 +677,7 @@ void AtomListWidget::tableItemChanged(QTableWidgetItem *item)
 void AtomListWidget::closeEvent(QCloseEvent* event)
 {
 // 	// Ensure that the relevant button in the ToolBox dock widget is unchecked now
-// 	gui.toolBoxWidget->ui.AtomListButton->setChecked(FALSE);
+// 	gui.toolBoxWidget->ui.AtomListButton->setChecked(false);
 // 	if (this->isFloating()) parent_.postRedisplay();
 	event->accept();
 }

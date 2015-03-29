@@ -181,19 +181,19 @@ void Viewer::mouseMoveEvent(QMouseEvent* event)
 			case (UserAction::TransformRotateXYAction):
 				source->rotateSelectionWorld(delta.x/2.0,delta.y/2.0);
 				source->updateMeasurements();
-				hasMoved_ = TRUE;
+				hasMoved_ = true;
 				break;
 			case (UserAction::TransformRotateZAction):
 				source->rotateSelectionZaxis(delta.x/2.0);
 				source->updateMeasurements();
-				hasMoved_ = TRUE;
+				hasMoved_ = true;
 				break;
 			case (UserAction::TransformTranslateAction):
 				delta.y = -delta.y;
 				delta /= source->translateScale() * 2.0;
 				source->translateSelectionWorld(delta);
 				source->updateMeasurements();
-				hasMoved_ = TRUE;
+				hasMoved_ = true;
 				break;
 			default:
 				break;

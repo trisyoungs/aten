@@ -35,7 +35,7 @@ class PatternBoundVariable : public PointerVariable
 {
 	public:
 	// Constructor / Destructor
-	PatternBoundVariable(PatternBound* ptr = NULL, bool constant = FALSE);
+	PatternBoundVariable(PatternBound* ptr = NULL, bool constant = false);
 	~PatternBoundVariable();
 
 	/*
@@ -69,7 +69,7 @@ class PatternBoundArrayVariable : public PointerArrayVariable
 {
 	public:
 	// Constructor / Destructor
-	PatternBoundArrayVariable(TreeNode* sizeexpr, bool constant = FALSE);
+	PatternBoundArrayVariable(TreeNode* sizeexpr, bool constant = false);
 
 	/*
 	// Inherited Virtuals

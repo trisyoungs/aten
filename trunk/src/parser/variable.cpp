@@ -81,23 +81,23 @@ bool Variable::initialise()
 		ReturnValue rv;
 		if (initialValue_->execute(rv))
 		{
-			if (set(rv)) return TRUE;
+			if (set(rv)) return true;
 			else
 			{
 				Messenger::print("Error: Failed to initialise variable '%s'.", qPrintable(name_));
-				return FALSE;
+				return false;
 			}
 		}
-		return FALSE;
+		return false;
 	}
-	return TRUE;
+	return true;
 }
 
 // Set initial value expression
 bool Variable::setInitialValue(TreeNode* node)
 {
 	initialValue_ = node;
-	if (initialValue_ == NULL) return TRUE;
+	if (initialValue_ == NULL) return true;
 	// Check return types (again, int and double are interchangeable)
 	VTypes::DataType dt = node->returnType();
 	switch (returnType_)
@@ -107,7 +107,7 @@ bool Variable::setInitialValue(TreeNode* node)
 			if ((dt != VTypes::IntegerData) && (dt != VTypes::DoubleData))
 			{
 				Messenger::print("Error: Initial value for '%s' is of an incompatible type (%s).", qPrintable(name_), VTypes::dataType(dt));
-				return FALSE;
+				return false;
 			}
 			if ((returnType_ == VTypes::IntegerData) && (dt == VTypes::DoubleData)) Messenger::print("Warning: Initial value for integer variable '%s' is a double and will lose precision.", qPrintable(name_));
 			break;
@@ -115,7 +115,7 @@ bool Variable::setInitialValue(TreeNode* node)
 			if ((dt != VTypes::IntegerData) && (dt != VTypes::DoubleData) && (dt != returnType_))
 			{
 				Messenger::print("Error: Initial value for '%s' is of an incompatible type (%s).", qPrintable(name_), VTypes::dataType(dt));
-				return FALSE;
+				return false;
 			}
 			break;
 		// Exact match required for everything else (or pointer and integer is ok)
@@ -123,10 +123,10 @@ bool Variable::setInitialValue(TreeNode* node)
 			if (returnType_ == dt) break;
 			if ((dt == VTypes::IntegerData) && (returnType_ > VTypes::VectorData)) break;
 			Messenger::print("Error: Initial value for variable '%s' is of an incompatible type (%s).", qPrintable(name_), VTypes::dataType(dt));
-			return FALSE;
+			return false;
 			break;
 	}
-	return TRUE;
+	return true;
 }
 
 // Return TreeNode corresponding to initial value
@@ -140,7 +140,7 @@ bool Variable::executeAsArray(ReturnValue& rv, int arrayIndex)
 {
 	// Secondary array 'retrieval' executor
 	Messenger::print("Error: Variable '%s' is not an array.", qPrintable(name_));
-	return FALSE;
+	return false;
 }
 
 // Set as an array
@@ -148,7 +148,7 @@ bool Variable::setAsArray(ReturnValue& rv, int arrayIndex)
 {
 	// Secondary array 'set' executor
 	Messenger::print("Error: Variable '%s' is not an array.", qPrintable(name_));
-	return FALSE;
+	return false;
 }
 
 // Search accessors (if any) available for node

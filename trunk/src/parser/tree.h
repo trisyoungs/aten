@@ -92,7 +92,7 @@ class Tree : public ListItem<Tree>
 	// Return return-type of tree
 	VTypes::DataType returnType() const;
 	// Reset Tree, ready for new statement(s) to be added
-	void reset(bool clearVariables = TRUE);
+	void reset(bool clearVariables = true);
 	// Finalise the tree contents, searching for specific functions etc.
 	bool finalise();
 
@@ -190,9 +190,9 @@ class Tree : public ListItem<Tree>
 	// Add Element constant
 	TreeNode* addElementConstant(int el);
 	// Add variable to topmost ScopeNode
-	TreeNode* addVariable(VTypes::DataType type, QString name, TreeNode* initialValue = NULL, bool global = FALSE);
+	TreeNode* addVariable(VTypes::DataType type, QString name, TreeNode* initialValue = NULL, bool global = false);
 	// Add array variable to topmost ScopeNode
-	TreeNode* addArrayVariable(VTypes::DataType type, QString name, TreeNode* sizeexpr, TreeNode* initialvalue = NULL, bool global = FALSE);
+	TreeNode* addArrayVariable(VTypes::DataType type, QString name, TreeNode* sizeexpr, TreeNode* initialvalue = NULL, bool global = false);
 	// Add array 'constant'
 	TreeNode* addArrayConstant(TreeNode* values);
 	// Search for variable in current local scope

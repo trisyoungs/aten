@@ -50,7 +50,7 @@ void Prefs::estimateEwaldParameters(UnitCell* cell)
 	ewaldKMax_.y = (int) floor(0.25 + cell->lengths().y*ewaldAlpha_*tolerance/PI + 0.5);
 	ewaldKMax_.z = (int) floor(0.25 + cell->lengths().z*ewaldAlpha_*tolerance/PI + 0.5);
 	Messenger::print("Ewald parameters estimated at alpha = %8.6f and kmax = %i %i %i for a precision of %6.4e.", ewaldAlpha_, ewaldKMax_.x, ewaldKMax_.y, ewaldKMax_.z, ewaldPrecision_.value());
-	validEwaldAuto_ = TRUE;
+	validEwaldAuto_ = true;
 	Messenger::exit("Prefs::estimateEwaldParameters");
 }
 

@@ -31,7 +31,7 @@ ATEN_USING_NAMESPACE
 // Create a partitioning scheme from the current model
 bool Commands::function_CreateScheme(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 
 	// Set command variables
 	Vec3<int> gridSize(50,50,50);
@@ -40,7 +40,7 @@ bool Commands::function_CreateScheme(CommandNode* c, Bundle& obj, ReturnValue& r
 	if (c->hasArg(4)) minSizePcnt = c->argd(4) / 100.0;
 	int atomExtent = 2;
 	if (c->hasArg(5)) atomExtent = c->argi(5);
-	bool copyToBuilder = FALSE;
+	bool copyToBuilder = false;
 	if (c->hasArg(6)) copyToBuilder = c->argb(6);
 
 	// Create temporary partitioning scheme structure
@@ -117,13 +117,13 @@ bool Commands::function_CreateScheme(CommandNode* c, Bundle& obj, ReturnValue& r
 				if (data[x][y][z] > -0.5) continue;
 				
 				// Found a cell containing -1.0 - select its encompassing region
-				partitionSize = schemeGrid.modifyRegion(x, y, z, -1.5, -0.5, nPartitions+1.0, TRUE);
+				partitionSize = schemeGrid.modifyRegion(x, y, z, -1.5, -0.5, nPartitions+1.0, true);
 				
 				// How big is this new region? Bigger than the minimum size requested?
 				if (partitionSize < minimumSize)
 				{
 					// Not big enough, so run modifyRegion again and zero it
-					schemeGrid.modifyRegion(x, y, z, nPartitions+0.5, nPartitions+1.5, 0.0, TRUE);
+					schemeGrid.modifyRegion(x, y, z, nPartitions+0.5, nPartitions+1.5, 0.0, true);
 					Messenger::print("Found a partition of %i cells, which is below the threshold size of %i and will be ignored...", partitionSize, minimumSize);
 				}
 				else
@@ -147,13 +147,13 @@ bool Commands::function_CreateScheme(CommandNode* c, Bundle& obj, ReturnValue& r
 		Messenger::print("Copied scheme to disorder builder.");
 	}
 	
-	return TRUE;
+	return true;
 }
 
 // Drill pores in current model
 bool Commands::function_DrillPores(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	
 	// Grab some parameters as variables to make readability easier
 	double sizeParam = c->argd(1);
@@ -166,7 +166,7 @@ bool Commands::function_DrillPores(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	if ((face < 0) || (face > 2))
 	{
 		Messenger::print("Error: Origin face must be specified as 1 (YZ plane), 2 (XZ plane) or 3 (XY plane).");
-		return FALSE;
+		return false;
 	}
 	Vec3<double> faceA = obj.rs()->cell()->axes().columnAsVec3((face+1)%3);
 	Vec3<double> faceB = obj.rs()->cell()->axes().columnAsVec3((face+2)%3);
@@ -184,13 +184,13 @@ bool Commands::function_DrillPores(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	obj.rs()->selectionDelete();
 	obj.rs()->endUndoState();
 
-	return TRUE;
+	return true;
 }
 
 // Select pores atoms
 bool Commands::function_SelectPores(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 
 	// Grab some parameters as variables to make readability easier
 	double sizeParam = c->argd(1);
@@ -203,7 +203,7 @@ bool Commands::function_SelectPores(CommandNode* c, Bundle& obj, ReturnValue& rv
 	if ((face < 0) || (face > 2))
 	{
 		Messenger::print("Error: Origin face must be specified as 1 (YZ plane), 2 (XZ plane) or 3 (XY plane).");
-		return FALSE;
+		return false;
 	}
 	Vec3<double> faceA = obj.rs()->cell()->axes().columnAsVec3((face+1)%3);
 	Vec3<double> faceB = obj.rs()->cell()->axes().columnAsVec3((face+2)%3);
@@ -222,16 +222,16 @@ bool Commands::function_SelectPores(CommandNode* c, Bundle& obj, ReturnValue& rv
 	obj.rs()->endUndoState();
 	rv.set(obj.rs()->nSelected());
 
-	return TRUE;
+	return true;
 }
 
 // Terminate atoms with 'H' or 'OH'
 bool Commands::function_Terminate(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	
 	// Loop over atoms in current selection
-	obj.rs()->selectNone(TRUE);
+	obj.rs()->selectNone(true);
 	Atom* i, *j;
 	obj.rs()->beginUndoState("Terminate atoms");
 	for (Refitem<Atom,int>* ri = obj.rs()->selection(); ri != NULL; ri = ri->next)
@@ -244,7 +244,7 @@ bool Commands::function_Terminate(CommandNode* c, Bundle& obj, ReturnValue& rv)
 				if (i->nBonds() == 0)
 				{
 					Messenger::print(" ... Warning: Found unbound oxygen in selection ...");
-					obj.rs()->selectAtom(i, TRUE);
+					obj.rs()->selectAtom(i, true);
 				}
 				else if (i->nBonds() == 1) obj.rs()->growAtom(i, 1, 1.0, Atom::TetrahedralGeometry);
 				break;
@@ -253,7 +253,7 @@ bool Commands::function_Terminate(CommandNode* c, Bundle& obj, ReturnValue& rv)
 				if (i->nBonds() == 0)
 				{
 					Messenger::print(" ... Warning: Found unbound silicon in selection ...");
-					obj.rs()->selectAtom(i, TRUE);
+					obj.rs()->selectAtom(i, true);
 				}
 				else for (int n=i->nBonds(); n<4; ++n)
 				{
@@ -277,5 +277,5 @@ bool Commands::function_Terminate(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	}
 	obj.rs()->endUndoState();
 	
-	return TRUE;
+	return true;
 }

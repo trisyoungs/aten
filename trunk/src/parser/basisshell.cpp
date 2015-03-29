@@ -53,10 +53,10 @@ BasisShellVariable::~BasisShellVariable()
 
 // Accessor data
 Accessor BasisShellVariable::accessorData[BasisShellVariable::nAccessors] = {
-	{ "atomId",		VTypes::IntegerData,		0, FALSE },
-	{ "nPrimitives",	VTypes::IntegerData,		0, TRUE },
-	{ "primitives",		VTypes::BasisPrimitiveData,	-1, TRUE },
-	{ "type",		VTypes::StringData,		0, FALSE }
+	{ "atomId",		VTypes::IntegerData,		0, false },
+	{ "nPrimitives",	VTypes::IntegerData,		0, true },
+	{ "primitives",		VTypes::BasisPrimitiveData,	-1, true },
+	{ "type",		VTypes::StringData,		0, false }
 };
 
 // Function data
@@ -137,7 +137,7 @@ bool BasisShellVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayI
 	{
 		printf("Internal Error: Accessor id %i is out of range for BasisShell type.\n", i);
 		Messenger::exit("BasisShellVariable::retrieveAccessor");
-		return FALSE;
+		return false;
 	}
 	Accessors acc = (Accessors) i;
 	// Check for correct lack/presence of array index given
@@ -145,7 +145,7 @@ bool BasisShellVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayI
 	{
 		Messenger::print("Error: Unnecessary array index provided for member '%s'.", accessorData[i].name);
 		Messenger::exit("BasisShellVariable::retrieveAccessor");
-		return FALSE;
+		return false;
 	}
 	else if ((accessorData[i].arraySize > 0) && (hasArrayIndex))
 	{
@@ -153,16 +153,16 @@ bool BasisShellVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayI
 		{
 			Messenger::print("Error: Array index out of bounds for member '%s' (%i, range is 1-%i).", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
 			Messenger::exit("BasisShellVariable::retrieveAccessor");
-			return FALSE;
+			return false;
 		}
 	}
 	// Get current data from ReturnValue
-	bool result = TRUE;
+	bool result = true;
 	BasisShell* ptr = (BasisShell*) rv.asPointer(VTypes::BasisShellData, result);
 	if ((!result) || (ptr == NULL))
 	{
 		Messenger::print("Invalid (NULL) %s reference encountered.", VTypes::dataType(VTypes::BasisShellData));
-		result = FALSE;
+		result = false;
 	}
 	if (result) switch (acc)
 	{
@@ -173,7 +173,7 @@ bool BasisShellVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayI
 			if ((arrayIndex < 1) || (arrayIndex > ptr->nPrimitives()))
 			{
 				Messenger::print("Array index [%i] is out of range for 'primitives' member.", arrayIndex);
-				result = FALSE;
+				result = false;
 			}
 			else rv.set(VTypes::BasisPrimitiveData, ptr->primitive(arrayIndex-1));
 			break;
@@ -182,7 +182,7 @@ bool BasisShellVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayI
 			break;
 		default:
 			printf("Internal Error: Access to member '%s' has not been defined in BasisShellVariable.\n", accessorData[i].name);
-			result = FALSE;
+			result = false;
 			break;
 	}
 	Messenger::exit("BasisShellVariable::retrieveAccessor");
@@ -198,11 +198,11 @@ bool BasisShellVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& 
 	{
 		printf("Internal Error: Accessor id %i is out of range for BasisShell type.\n", i);
 		Messenger::exit("BasisShellVariable::setAccessor");
-		return FALSE;
+		return false;
 	}
 	Accessors acc = (Accessors) i;
 	// Check for correct lack/presence of array index given to original accessor, and nature of new value
-	bool result = TRUE;
+	bool result = true;
 	if (accessorData[i].arraySize != 0)
 	{
 		if (hasArrayIndex)
@@ -210,12 +210,12 @@ bool BasisShellVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& 
 			if ((accessorData[i].arraySize > 0) && ( (arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize) ))
 			{
 				Messenger::print("Error: Array index provided for member '%s' is out of range (%i, range is 1-%i).", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
-				result = FALSE;
+				result = false;
 			}
 			if (newValue.arraySize() > 0)
 			{
 				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.", accessorData[i].name);
-				result = FALSE;
+				result = false;
 			}
 		}
 		else
@@ -223,7 +223,7 @@ bool BasisShellVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& 
 			if (newValue.arraySize() > accessorData[i].arraySize)
 			{
 				Messenger::print("Error: The array being assigned to member '%s' is larger than the size of the desination array (%i cf. %i).", accessorData[i].name, newValue.arraySize(), accessorData[i].arraySize);
-				result = FALSE;
+				result = false;
 			}
 		}
 	}
@@ -235,26 +235,26 @@ bool BasisShellVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& 
 			if (accessorData[i].returnType != VTypes::VectorData)
 			{
 				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.", accessorData[i].name);
-				result = FALSE;
+				result = false;
 			}
 			else if ((newValue.type() != VTypes::VectorData) && (newValue.arraySize() != 3))
 			{
 				Messenger::print("Error: Only an array of size 3 can be assigned to a vector (member '%s').", accessorData[i].name);
-				result = FALSE;
+				result = false;
 			}
 		}
 	}
 	if (!result)
 	{
 		Messenger::exit("BasisShellVariable::setAccessor");
-		return FALSE;
+		return false;
 	}
 	// Get current data from ReturnValue
 	BasisShell* ptr = (BasisShell*) sourcerv.asPointer(VTypes::BasisShellData, result);
 	if ((!result) || (ptr == NULL))
 	{
 		Messenger::print("Invalid (NULL) %s reference encountered.", VTypes::dataType(VTypes::BasisShellData));
-		result = FALSE;
+		result = false;
 	}
 	BasisShell::BasisShellType bft;
 	if (result) switch (acc)
@@ -264,12 +264,12 @@ bool BasisShellVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& 
 			break;
 		case (BasisShellVariable::Type):
 			bft = BasisShell::basisShellType( newValue.asString() );
-			if (bft == BasisShell::nBasisShellTypes) result = FALSE;
+			if (bft == BasisShell::nBasisShellTypes) result = false;
 			else ptr->setType(bft);
 			break;
 		default:
 			printf("BasisShellVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);
-			result = FALSE;
+			result = false;
 			break;
 	}
 	Messenger::exit("BasisShellVariable::setAccessor");
@@ -285,10 +285,10 @@ bool BasisShellVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 	{
 		printf("Internal Error: FunctionAccessor id %i is out of range for BasisShell type.\n", i);
 		Messenger::exit("BasisShellVariable::performFunction");
-		return FALSE;
+		return false;
 	}
 	// Get current data from ReturnValue
-	bool result = TRUE;
+	bool result = true;
 	BasisShell* ptr = (BasisShell*) rv.asPointer(VTypes::BasisShellData, result);
 	BasisPrimitive* prim;
 	int n;
@@ -302,7 +302,7 @@ bool BasisShellVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 			break;
 		default:
 			printf("Internal Error: Access to function '%s' has not been defined in BasisShellVariable.\n", functionData[i].name);
-			result = FALSE;
+			result = false;
 			break;
 	}
 	Messenger::exit("BasisShellVariable::performFunction");

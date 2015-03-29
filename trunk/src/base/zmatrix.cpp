@@ -81,7 +81,7 @@ ZMatrixElement* ZMatrix::addElement(Reflist<Atom,int>& atoms)
 	// Set geometric values
 	if (i > 1)
 	{
-		v = new DoubleVariable(parent_->distance(zel->atom(0), zel->atom(1)), FALSE);
+		v = new DoubleVariable(parent_->distance(zel->atom(0), zel->atom(1)), false);
 		distances_.take(v);
 		name.sprintf("d%i", distances_.nVariables());
 		v->setName(name);
@@ -89,7 +89,7 @@ ZMatrixElement* ZMatrix::addElement(Reflist<Atom,int>& atoms)
 	}
 	if (i > 2)
 	{
-		v = new DoubleVariable(parent_->angle(zel->atom(0), zel->atom(1), zel->atom(2)), FALSE);
+		v = new DoubleVariable(parent_->angle(zel->atom(0), zel->atom(1), zel->atom(2)), false);
 		angles_.take(v);
 		name.sprintf("a%i", angles_.nVariables());
 		v->setName(name);
@@ -97,7 +97,7 @@ ZMatrixElement* ZMatrix::addElement(Reflist<Atom,int>& atoms)
 	}
 	if (i > 3)
 	{
-		v = new DoubleVariable(parent_->torsion(zel->atom(0), zel->atom(1), zel->atom(2), zel->atom(3)), FALSE);
+		v = new DoubleVariable(parent_->torsion(zel->atom(0), zel->atom(1), zel->atom(2), zel->atom(3)), false);
 		torsions_.take(v);
 		name.sprintf("t%i", torsions_.nVariables());
 		v->setName(name);
@@ -115,13 +115,13 @@ void ZMatrix::createAlongBonds(Atom* target, Reflist<Atom,int>& atomlist)
 	atomlist.addStart(target);
 	addElement(atomlist);
 	// Mark this atom so it won't be added again
-	parent_->selectAtom(target, TRUE);
+	parent_->selectAtom(target, true);
 	// Cycle over bonds, progressing along each connected atom
 	Atom* i;
 	for (Refitem<Bond,int>* ri = target->bonds(); ri != NULL; ri = ri->next)
 	{
 		i = ri->item->partner(target);
-		if (i->isSelected(TRUE)) continue;
+		if (i->isSelected(true)) continue;
 		createAlongBonds(i, atomlist);
 	}
 	Messenger::exit("ZMatrix::createAlongBonds");
@@ -134,7 +134,7 @@ bool ZMatrix::createBoundPath(Reflist<Atom,int>& atomlist, int size, Reflist<Ato
 	if (atomlist.nItems() == size)
 	{
 		bestlist = atomlist;
-		return TRUE;
+		return true;
 	}
 	// From last atom in path, add bound neighbours to path list (if their ID is lower) and recurse if necessary
 	Atom* i = atomlist.last()->item, *j;
@@ -148,13 +148,13 @@ bool ZMatrix::createBoundPath(Reflist<Atom,int>& atomlist, int size, Reflist<Ato
 		// OK, so add to list and check for correct size
 		atomlist.add(j);
 		if (atomlist.nItems() > bestlist.nItems()) bestlist = atomlist;
-		if (atomlist.nItems() == size) return TRUE;
+		if (atomlist.nItems() == size) return true;
 		// Not enough atoms yet, so recurse...
-		if (createBoundPath(atomlist, size, bestlist)) return TRUE;
+		if (createBoundPath(atomlist, size, bestlist)) return true;
 		// Still not big enough, so remove this atom from the list tail and try another bound neighbour
 		atomlist.removeLast();
 	}
-	return FALSE;
+	return false;
 }
 
 // Create from specified model

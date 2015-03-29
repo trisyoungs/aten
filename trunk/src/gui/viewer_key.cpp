@@ -36,7 +36,7 @@ bool Viewer::keyModifier(Prefs::ModifierKey mk)
 void Viewer::keyPressEvent(QKeyEvent* event)
 {
 	// Check datamodel...
-	bool refresh = FALSE, ignore = TRUE;
+	bool refresh = false, ignore = true;
 	Qt::KeyboardModifiers km = event->modifiers();
 	keyModifier_[Prefs::ShiftKey] = km&Qt::ShiftModifier;
 	keyModifier_[Prefs::CtrlKey] = km&Qt::ControlModifier;
@@ -52,7 +52,7 @@ void Viewer::keyPressEvent(QKeyEvent* event)
 	}
 
 	// Set some useful flags...
-	bool manipulate = FALSE;
+	bool manipulate = false;
 	bool nofold = atenWindow_->buildWidget->ui.PreventFoldCheck->isChecked();	// ATEN2 TODO
 	for (int n=0; n<3; n++)
 	{
@@ -61,7 +61,7 @@ void Viewer::keyPressEvent(QKeyEvent* event)
 			switch (prefs.keyAction(Prefs::ModifierKey(n)))
 			{
 				case (Prefs::ManipulateKeyAction):
-					manipulate = TRUE;
+					manipulate = true;
 					break;
 				default:
 					break;
@@ -86,42 +86,42 @@ void Viewer::keyPressEvent(QKeyEvent* event)
 				atenWindow_->updateWidgets(AtenWindow::CanvasTarget);
 			}
 			else source->rotateView( keyModifier_[Prefs::ShiftKey] ? -1.0 : -10.0, 0.0);
-			refresh = TRUE;
-			ignore = FALSE;
+			refresh = true;
+			ignore = false;
 			break;
 		case (Qt::Key_Right):
 			source->rotateView( keyModifier_[Prefs::ShiftKey] ? 1.0 : 10.0, 0.0);
-			refresh = TRUE;
-			ignore = FALSE;
+			refresh = true;
+			ignore = false;
 			break;
 		case (Qt::Key_Up):
 			source->rotateView(0.0, keyModifier_[Prefs::ShiftKey] ? -1.0 : -10.0);
-			refresh = TRUE;
-			ignore = FALSE;
+			refresh = true;
+			ignore = false;
 			break;
 		case (Qt::Key_Down):
 			source->rotateView(0.0, keyModifier_[Prefs::ShiftKey] ? 1.0 : 10.0);
-			refresh = TRUE;
-			ignore = FALSE;
+			refresh = true;
+			ignore = false;
 			break;
 		case (Qt::Key_Escape):
 			cancelCurrentMode();
-			refresh = TRUE;
-			ignore = FALSE;
+			refresh = true;
+			ignore = false;
 			break;
 		// Cycle render styles
 		case (Qt::Key_F8):
 			n = prefs.renderStyle() + 1;
 			if (n == Prefs::nDrawStyles) n = 0;
 			atenWindow_->setActiveStyleAction( (Prefs::DrawStyle) n);
-			ignore = FALSE;
+			ignore = false;
 			break;
 		// Cycle colouring styles
 		case (Qt::Key_F9):
 			n = prefs.colourScheme() + 1;
 			if (n == Prefs::nColouringSchemes) n = 0;
 			atenWindow_->setActiveSchemeAction( (Prefs::ColouringScheme) n);
-			ignore = FALSE;
+			ignore = false;
 			break;
 		default:
 			break;
@@ -137,13 +137,13 @@ void Viewer::keyPressEvent(QKeyEvent* event)
 				Fragment* frag = atenWindow_->fragmentsWidget->currentFragment();	// ATEN2 TODO
 				if (frag == NULL) break;
 				frag->cycleLinkAtom();
-				refresh = TRUE;
+				refresh = true;
 			}
 			// Refresh if Shift status has changed
-			if (keyModifier_[Prefs::ShiftKey]) refresh = TRUE;
+			if (keyModifier_[Prefs::ShiftKey]) refresh = true;
 			if (keyModifier_[Prefs::CtrlKey])
 			{
-				refresh = TRUE;
+				refresh = true;
 				atenWindow_->fragmentsWidget->increaseBondId();
 			}
 			break;
@@ -177,7 +177,7 @@ void Viewer::keyReleaseEvent(QKeyEvent* event)
 	}
 
 	// Set some useful flags...
-	bool manipulate = FALSE;
+	bool manipulate = false;
 	for (int n=0; n<3; n++)
 	{
 		if (keyModifier_[n])
@@ -185,7 +185,7 @@ void Viewer::keyReleaseEvent(QKeyEvent* event)
 			switch (prefs.keyAction(Prefs::ModifierKey(n)))
 			{
 				case (Prefs::ManipulateKeyAction):
-					manipulate = TRUE;
+					manipulate = true;
 					break;
 				default:
 					break;

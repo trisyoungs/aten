@@ -108,7 +108,7 @@ class CommandWidget : public QDockWidget
 	void runScript();
 	
 	public:
-	void refreshScripts(bool refreshactions = TRUE, bool refreshlist = TRUE);
+	void refreshScripts(bool refreshactions = true, bool refreshlist = true);
 
 	
 	/*

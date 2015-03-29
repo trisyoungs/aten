@@ -188,7 +188,7 @@ void Model::selectionSetHidden(bool hidden)
 // Fix selected atom positions
 void Model::selectionSetFixed(bool fixed)
 {
-	// Sets 'fixed' values to TRUE
+	// Sets 'fixed' values to true
 	for (Refitem<Atom,int>* ri = selection(); ri != NULL; ri = ri->next) atomSetFixed(ri->item, fixed);
 }
 
@@ -275,9 +275,9 @@ void Model::reorderSelectedAtoms()
 	while (selectedAtoms.first())
 	{
 		// Deselect everything, and then treeselect from the first atom remaining in our list
-		selectNone(TRUE);
-		selectTree(selectedAtoms.first()->item, TRUE);
-		for (ri = selection(TRUE); ri != NULL; ri = ri->next)
+		selectNone(true);
+		selectTree(selectedAtoms.first()->item, true);
+		for (ri = selection(true); ri != NULL; ri = ri->next)
 		{
 			// Check - is this atom in our target list? If not, we've treeSelected an extra one, so must exit...
 			if (selectedAtoms.contains(ri->item)) selectedAtoms.remove(ri->item);
@@ -289,23 +289,23 @@ void Model::reorderSelectedAtoms()
 		}
 
 		// Move these atoms to the end of the atom list, and remove them from our list
-		moveSelectionToEnd(TRUE);
+		moveSelectionToEnd(true);
 	}
 
 	// Select first fragment, add it to a separate list, and remove its atoms from selectedAtoms
 	selectedAtoms = targetAtoms;
 	Reflist<Atom, List<Neta> > referenceFragment;
-	selectNone(TRUE);
-	selectTree(targetAtoms.first()->item,TRUE);
+	selectNone(true);
+	selectTree(targetAtoms.first()->item,true);
 	Neta* neta;
-	for (ri = selection(TRUE); ri != NULL; ri = ri->next)
+	for (ri = selection(true); ri != NULL; ri = ri->next)
 	{
 		rj = referenceFragment.add(ri->item);
 		selectedAtoms.remove(ri->item);
 
 		// Create a basic NETA description for this atom, with a 10 degree tolerance on the torsions
 		neta = rj->data.add();
-		neta->createBasic(rj->item, FALSE, 10.0);
+		neta->createBasic(rj->item, false, 10.0);
 	}
 
 	// Test the atom types...
@@ -339,8 +339,8 @@ void Model::reorderSelectedAtoms()
 	while (selectedAtoms.first())
 	{
 		// Tree select this fragment, and do some basic checking...
-		selectNone(TRUE);
-		selectTree(selectedAtoms.first()->item, TRUE);
+		selectNone(true);
+		selectTree(selectedAtoms.first()->item, true);
 		if (marked_.nItems() != referenceFragment.nItems())
 		{
 			Messenger::print("Warning: Skipping fragment with atom ids %i to %i since it has a different number of atoms to the reference (first) fragment.", marked_.first()->item->id()+1, marked_.last()->item->id()+1);
@@ -379,7 +379,7 @@ void Model::reorderSelectedAtoms()
 						else
 						{
 							neta = rj->data.add();
-							neta->createBasic(rj->item, FALSE, rj->data.nItems() * 10.0);
+							neta->createBasic(rj->item, false, rj->data.nItems() * 10.0);
 							Messenger::print("Created neta for reference atom %i with torsion tolerance of %f", referenceId, rj->data.nItems()*10.0);
 						}
 					}
@@ -400,7 +400,7 @@ void Model::reorderSelectedAtoms()
 			if (((ri->item->id() - rootId) - referenceId) != 0) swapAtoms(atoms_[rootId+referenceId], ri->item);
 
 			// Finally, remove this atom from the selectedAtoms and marked_ lists - we are done with it
-			deselectAtom(ri->item, TRUE);
+			deselectAtom(ri->item, true);
 			selectedAtoms.remove(ri->item);
 		}
 	}

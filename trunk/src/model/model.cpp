@@ -34,14 +34,14 @@ Model::Model() : ListItem<Model>()
 {
 	// Private variables
 	parent_ = NULL;
-	visible_ = FALSE;
+	visible_ = false;
 
 	// Camera / View / render
 	modelViewMatrix_.setIdentity();
 	modelViewMatrix_[14] = -10.0;
 	renderSource_ = Model::ModelSource;
 	renderGroupPoint_ = -1;
-	renderFromVibration_ = FALSE;
+	renderFromVibration_ = false;
 	repeatCellsNegative_.set(0,0,0);
 	repeatCellsPositive_.set(0,0,0);
 
@@ -54,7 +54,7 @@ Model::Model() : ListItem<Model>()
 	namesForcefield_ = NULL;
 	patternsPoint_ = -1;
 	expressionPoint_ = -1;
-	expressionVdwOnly_ = FALSE;
+	expressionVdwOnly_ = false;
 	cell_.setParent(this);
 	rmsForce_ = 0.0;
 	zMatrixPoint_ = -1;
@@ -64,7 +64,7 @@ Model::Model() : ListItem<Model>()
 	currentUndoState_ = NULL;
 	currentRedoState_ = NULL;
 	recordingState_ = NULL;
-	undoRedoEnabled_ = FALSE;
+	undoRedoEnabled_ = false;
 
 	// Trajectory
 	trajectoryFilter_ = NULL;
@@ -74,18 +74,18 @@ Model::Model() : ListItem<Model>()
 	trajectoryHighestFrameOffset_ = 0;
 	trajectoryFrameSize_ = 0;
 	nTrajectoryFileFrames_ = 0;
-	trajectoryFramesAreCached_ = FALSE;
+	trajectoryFramesAreCached_ = false;
 	trajectoryFrameIndex_ = -1;
-	trajectoryPlaying_ = FALSE;
+	trajectoryPlaying_ = false;
 	trajectoryCurrentFrame_ = NULL;
-	trajectoryPropagateParentStyle_ = FALSE;
+	trajectoryPropagateParentStyle_ = false;
 	
 	// Component
 	componentInsertionPolicy_ = Model::NoPolicy;
 	componentPartition_ = 0;
 	componentPopulation_ = 0;
 	componentDensity_ = 1.0;
-	componentRotatable_ = TRUE;
+	componentRotatable_ = true;
 
 	// Misc Function Data
 	bondingCuboids_ = NULL;
@@ -94,7 +94,7 @@ Model::Model() : ListItem<Model>()
 
 	// Vibration info
 	vibrationCurrentFrame_ = NULL;
-	vibrationForward_ = TRUE;
+	vibrationForward_ = true;
 	vibrationFrameIndex_ = -1;
 
 	// Icon

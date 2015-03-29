@@ -35,7 +35,7 @@ class BondVariable : public PointerVariable
 {
 	public:
 	// Constructor / Destructor
-	BondVariable(Bond *i = NULL, bool constant = FALSE);
+	BondVariable(Bond *i = NULL, bool constant = false);
 	~BondVariable();
 
 
@@ -70,7 +70,7 @@ class BondArrayVariable : public PointerArrayVariable
 {
 	public:
 	// Constructor / Destructor
-	BondArrayVariable(TreeNode* sizeexpr, bool constant = FALSE);
+	BondArrayVariable(TreeNode* sizeexpr, bool constant = false);
 
 
 	/*

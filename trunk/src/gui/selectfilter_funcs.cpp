@@ -32,7 +32,7 @@ AtenSelectFilter::AtenSelectFilter(AtenWindow& parent) : QDialog(&parent), paren
 	partialList_ = NULL;
 	fullList_ = NULL;
 	selectedFilter_ = NULL;
-	appendExtension_ = TRUE;
+	appendExtension_ = true;
 }
 
 // Select item in list and finish dialog
@@ -52,7 +52,7 @@ void AtenSelectFilter::on_FilterTable_itemSelectionChanged()
 	if (row == -1) selectedFilter_ = NULL;
 	else if (ui.ShowAllCheck->isChecked()) selectedFilter_ = (*fullList_)[row]->item;
 	else selectedFilter_ = (*partialList_)[row]->item;
-	if (row != -1) ui.OkButton->setDisabled(FALSE);
+	if (row != -1) ui.OkButton->setDisabled(false);
 }
 
 void AtenSelectFilter::on_ShowAllCheck_clicked(bool checked)
@@ -98,7 +98,7 @@ Tree* AtenSelectFilter::selectFilter(const char* text, Reflist<Tree,int>* partia
 	ui.ShowAllCheck->setEnabled(partial != NULL);
 
 	// Disable 'OK' button until a filter is selected from the list
-	ui.OkButton->setDisabled(TRUE);
+	ui.OkButton->setDisabled(true);
 
 	// Show/hide 'Append Extension' checkbox
 	ui.AppendExtensionCheck->setVisible(showExtCheck);

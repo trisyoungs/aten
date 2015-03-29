@@ -116,7 +116,7 @@ namespace Electrostatics
 	// Electrostatic model
 	enum ElecMethod { None, Coulomb, Ewald, EwaldAuto, nElectrostatics };
 	const char* elecMethod(ElecMethod em);
-	ElecMethod elecMethod(QString s, bool reportError = FALSE);
+	ElecMethod elecMethod(QString s, bool reportError = false);
 }
 
 ATEN_END_NAMESPACE

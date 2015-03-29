@@ -43,7 +43,7 @@ QtWidgetObject::QtWidgetObject() : ListItem<QtWidgetObject>()
 	labelWidget_ = NULL;
 	nextLeft_ = 0;
 	nextTop_ = 0;
-	autoFillVertical_ = FALSE;
+	autoFillVertical_ = false;
 }
 
 // Set TreeGuiWidget/QWidget pair
@@ -209,7 +209,7 @@ void QtWidgetObject::updateQt()
 		{
 			QAbstractButton *button = butgroup->button(treeGuiWidget_->valueI());
 			if (!button) printf("Critical Error: Couldn't find button with id %i in button group.\n", treeGuiWidget_->valueI());
-			else button->setChecked(TRUE);
+			else button->setChecked(true);
 		}
 	}
 	else if (treeGuiWidget_->type() == TreeGuiWidget::TabWidget)
@@ -312,14 +312,14 @@ bool QtWidgetObject::addWidget(QtWidgetObject* qtwo, int l, int t, int addToWidt
 	if (layout_ == NULL)
 	{
 		printf("Internal Error: No layout to add widget to.\n");
-		return FALSE;
+		return false;
 	}
 	
 	// Check that the TreeGuiWidget contains an actual Qt Widget
 	if (qtwo->qWidget_ == NULL)
 	{
 		printf("Internal Error: TreeGuiWidget contains no QWidget to add to layout (or contains a QObject instead).\n");
-		return FALSE;
+		return false;
 	}
 	
 	// Are we adding in a specific position, or an automatic one?
@@ -346,7 +346,7 @@ bool QtWidgetObject::addWidget(QtWidgetObject* qtwo, int l, int t, int addToWidt
 		if (autoFillVertical_) nextTop_ += addToHeight+1;
 		else nextLeft_ += addToWidth+2;
 	}
-	return TRUE;
+	return true;
 }
 
 // Add widget to the stored layout (provided it has one) at specified geometry
@@ -356,7 +356,7 @@ bool QtWidgetObject::addSpacer(bool expandHorizontal, bool expandVertical, int l
 	if (layout_ == NULL)
 	{
 		printf("Internal Error: No layout to add spacer to.\n");
-		return FALSE;
+		return false;
 	}
 
 	// Are we adding in a specific position, or an automatic one?
@@ -371,7 +371,7 @@ bool QtWidgetObject::addSpacer(bool expandHorizontal, bool expandVertical, int l
 	layout_->addItem(spacer, nextTop_, nextLeft_, addToHeight+1, addToWidth+1);
 	if (autoFillVertical_) nextTop_ += addToHeight+1;
 	else nextLeft_ += addToWidth+1;
-	return TRUE;
+	return true;
 }
 
 /*
@@ -381,8 +381,8 @@ bool QtWidgetObject::addSpacer(bool expandHorizontal, bool expandVertical, int l
 // Constructor
 AtenTreeGuiDialog::AtenTreeGuiDialog(TreeGui *parent) : QDialog()
 {
-	updating_ = FALSE;
-// 	setVisible(FALSE);
+	updating_ = false;
+// 	setVisible(false);
 	ui.setupUi(this);
 
 	// Add grid layout to MainFrame
@@ -402,7 +402,7 @@ void AtenTreeGuiDialog::buttonWidget_clicked(bool checked)
 {
 	if (updating_ || (!isVisible())) return;
 	// Cast sender into button
-	updating_ = TRUE;
+	updating_ = true;
 	QPushButton *button = (QPushButton*) sender();
 	if (!button)
 	{
@@ -419,7 +419,7 @@ void AtenTreeGuiDialog::buttonWidget_clicked(bool checked)
 		return;
 	}
 	qtwo->updateCLI();
-	updating_ = FALSE;
+	updating_ = false;
 }
 
 // Generic function for checkbox activation
@@ -427,7 +427,7 @@ void AtenTreeGuiDialog::checkBoxWidget_clicked(bool checked)
 {
 	if (updating_ || (!isVisible())) return;
 	// Cast sender into checkbox
-	updating_ = TRUE;
+	updating_ = true;
 	QCheckBox *check = (QCheckBox*) sender();
 	if (!check)
 	{
@@ -444,7 +444,7 @@ void AtenTreeGuiDialog::checkBoxWidget_clicked(bool checked)
 		return;
 	}
 	qtwo->updateCLI();
-	updating_ = FALSE;
+	updating_ = false;
 }
 
 // Generic function for combobox activation
@@ -452,7 +452,7 @@ void AtenTreeGuiDialog::comboWidget_currentIndexChanged(int row)
 {
 	if (updating_ || (!isVisible())) return;
 	// Cast sender into combobox
-	updating_ = TRUE;
+	updating_ = true;
 	QComboBox* combo = (QComboBox*) sender();
 	if (!combo)
 	{
@@ -469,7 +469,7 @@ void AtenTreeGuiDialog::comboWidget_currentIndexChanged(int row)
 		return;
 	}
 	qtwo->updateCLI();
-	updating_ = FALSE;
+	updating_ = false;
 }
 
 // Generic function for double spin activation
@@ -477,7 +477,7 @@ void AtenTreeGuiDialog::doubleSpinWidget_valueChanged(double d)
 {
 	if (updating_ || (!isVisible())) return;
 	// Cast sender into double spin widget
-	updating_ = TRUE;
+	updating_ = true;
 	QDoubleSpinBox* spin = static_cast<QDoubleSpinBox*>(sender());
 	if (!spin)
 	{
@@ -494,7 +494,7 @@ void AtenTreeGuiDialog::doubleSpinWidget_valueChanged(double d)
 		return;
 	}
 	qtwo->updateCLI();
-	updating_ = FALSE;
+	updating_ = false;
 }
 
 // Generic function for integer spin activation
@@ -502,7 +502,7 @@ void AtenTreeGuiDialog::integerSpinWidget_valueChanged(int i)
 {
 	if (updating_ || (!isVisible())) return;
 	// Cast sender into integer spin widget
-	updating_ = TRUE;
+	updating_ = true;
 	QSpinBox *spin = static_cast<QSpinBox*>(sender());
 	if (!spin)
 	{
@@ -519,7 +519,7 @@ void AtenTreeGuiDialog::integerSpinWidget_valueChanged(int i)
 		return;
 	}
 	qtwo->updateCLI();
-	updating_ = FALSE;
+	updating_ = false;
 }
 
 // Generic function for radio group button activation
@@ -528,7 +528,7 @@ void AtenTreeGuiDialog::radioGroupWidget_buttonClicked(QAbstractButton *button)
 	if (updating_ || (!isVisible())) return;
 
 	// Cast sender into button group
-	updating_ = TRUE;
+	updating_ = true;
 	QButtonGroup *group = static_cast<QButtonGroup*>(sender());
 	if (!group)
 	{
@@ -546,7 +546,7 @@ void AtenTreeGuiDialog::radioGroupWidget_buttonClicked(QAbstractButton *button)
 	qtwo->updateCLI();
 
 	// Now cast supplied abstract button into radio button
-	updating_ = TRUE;
+	updating_ = true;
 	QRadioButton *radio = static_cast<QRadioButton*>(button);
 	if (!radio)
 	{
@@ -562,7 +562,7 @@ void AtenTreeGuiDialog::radioGroupWidget_buttonClicked(QAbstractButton *button)
 	}
 	qtwo->updateCLI();
 
-	updating_ = FALSE;
+	updating_ = false;
 }
 
 // Generic function for radio button activation
@@ -570,7 +570,7 @@ void AtenTreeGuiDialog::radioButtonWidget_clicked(bool checked)
 {
 	if (updating_ || (!isVisible())) return;
 	// Cast sender into radiobutton
-	updating_ = TRUE;
+	updating_ = true;
 	QRadioButton *radio = static_cast<QRadioButton*>(sender());
 	if (!radio)
 	{
@@ -587,7 +587,7 @@ void AtenTreeGuiDialog::radioButtonWidget_clicked(bool checked)
 		return;
 	}
 	qtwo->updateCLI();
-	updating_ = FALSE;
+	updating_ = false;
 }
 
 // Generic function for radio button activation
@@ -595,7 +595,7 @@ void AtenTreeGuiDialog::editWidget_editingFinished()
 {
 	if (updating_ || (!isVisible())) return;
 	// Cast sender into lineedit
-	updating_ = TRUE;
+	updating_ = true;
 	QLineEdit *edit = static_cast<QLineEdit*>(sender());
 	if (!edit)
 	{
@@ -612,7 +612,7 @@ void AtenTreeGuiDialog::editWidget_editingFinished()
 		return;
 	}
 	qtwo->updateCLI();
-	updating_ = FALSE;
+	updating_ = false;
 }
 
 // Generic function for radio button activation
@@ -620,7 +620,7 @@ void AtenTreeGuiDialog::tabsWidget_currentChanged(int id)
 {
 	if (updating_ || (!isVisible())) return;
 	// Cast sender into lineedit
-	updating_ = TRUE;
+	updating_ = true;
 	QTabWidget *tabs = static_cast<QTabWidget*>(sender());
 	if (!tabs)
 	{
@@ -637,7 +637,7 @@ void AtenTreeGuiDialog::tabsWidget_currentChanged(int id)
 		return;
 	}
 	qtwo->updateCLI();
-	updating_ = FALSE;
+	updating_ = false;
 }
 
 // Create new general layout for specified widget
@@ -933,16 +933,16 @@ bool AtenTreeGuiDialog::execute(QString title)
 	{
 		printf("Error - NULL Tree pointer found when in AtenTreeGuiDialog::execute\n");
 		Messenger::exit("AtenTreeGuiDialog::execute");
-		return FALSE;
+		return false;
 	}
 
 	// Set the title of the dialog...
 	setWindowTitle(title);
 	
 	// Run it...
-	updating_ = FALSE;
-	bool result = (exec() == 1 ? TRUE : FALSE);
-	updating_ = TRUE;
+	updating_ = false;
+	bool result = (exec() == 1);
+	updating_ = true;
 	Messenger::exit("AtenTreeGuiDialog::execute");
 	return result;
 }

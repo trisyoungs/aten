@@ -36,7 +36,7 @@ Vec3<double> Model::reassembleFragment(Atom* i, int referenceBit, int &count, bo
 	Vec3<double> mim, total = i->r();
 	if (centreOfMass) total *= Elements().atomicMass(i);
 	++count;
-	selectAtom(i, TRUE);
+	selectAtom(i, true);
 	for (Refitem<Bond,int>* bref = i->bonds(); bref != NULL; bref = bref->next)
 	{
 		j = bref->item->partner(i);
@@ -59,7 +59,7 @@ Vec3<double> Model::reassembleFragment(Atom* i, Vec3<double> referencePos, int r
 	Vec3<double> mim, total = i->r();
 	if (centreOfMass) total *= Elements().atomicMass(i);
 	++count;
-	selectAtom(i, TRUE);
+	selectAtom(i, true);
 	for (Refitem<Bond,int>* bref = i->bonds(); bref != NULL; bref = bref->next)
 	{
 		j = bref->item->partner(i);
@@ -84,14 +84,14 @@ void Model::setCell(Vec3<double> lengths, Vec3<double> angles)
 {
 	Messenger::enter("Model::setCell[vectors]");
 	Matrix oldaxes = cell_.axes();
-	bool oldhs = (cell_.type() == UnitCell::NoCell ? FALSE : TRUE);
+	bool oldhs = (cell_.type() == UnitCell::NoCell ? false : true);
 	// Set new axes 
 	cell_.set(lengths, angles);
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
 		CellEvent* newchange = new CellEvent;
-		newchange->set(oldaxes, cell_.axes(), oldhs, TRUE);
+		newchange->set(oldaxes, cell_.axes(), oldhs, true);
 		recordingState_->addEvent(newchange);
 	}
 	logChange(Log::Cell);
@@ -103,14 +103,14 @@ void Model::setCell(Matrix axes)
 {
 	Messenger::enter("Model::setCell[axes]");
 	Matrix oldaxes = cell_.axes();
-	bool oldhs = (cell_.type() == UnitCell::NoCell ? FALSE : TRUE);
+	bool oldhs = (cell_.type() == UnitCell::NoCell ? false : true);
 	// Set new axes 
 	cell_.set(axes);
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
 		CellEvent* newchange = new CellEvent;
-		newchange->set(oldaxes, cell_.axes(), oldhs, TRUE);
+		newchange->set(oldaxes, cell_.axes(), oldhs, true);
 		recordingState_->addEvent(newchange);
 	}
 	logChange(Log::Cell);
@@ -122,14 +122,14 @@ void Model::setCell(UnitCell::CellParameter cp, double value)
 {
 	Messenger::enter("Model::setCell[parameter]");
 	Matrix oldaxes = cell_.axes();
-	bool oldhs = (cell_.type() == UnitCell::NoCell ? FALSE : TRUE);
+	bool oldhs = (cell_.type() == UnitCell::NoCell ? false : true);
 	// Set new parameter value
 	cell_.setParameter(cp, value);
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
 		CellEvent* newchange = new CellEvent;
-		newchange->set(oldaxes, cell_.axes(), oldhs, TRUE);
+		newchange->set(oldaxes, cell_.axes(), oldhs, true);
 		recordingState_->addEvent(newchange);
 	}
 	logChange(Log::Cell);
@@ -142,23 +142,23 @@ bool Model::setCell(UnitCell* newcell)
 	if (newcell == NULL)
 	{
 		Messenger::print("Error: NULL UnitCell pointer passed to Model::setCell().");
-		return FALSE;
+		return false;
 	}
 	else
 	{
 		Matrix oldaxes = cell_.axes();
-		bool oldhs = (cell_.type() == UnitCell::NoCell ? FALSE : TRUE);
+		bool oldhs = (cell_.type() == UnitCell::NoCell ? false : true);
 		cell_ = *newcell;
 		// Add the change to the undo state (if there is one)
 		if (recordingState_ != NULL)
 		{
 			CellEvent* newchange = new CellEvent;
-			newchange->set(oldaxes, cell_.axes(), oldhs, TRUE);
+			newchange->set(oldaxes, cell_.axes(), oldhs, true);
 			recordingState_->addEvent(newchange);
 		}
 	}
 	logChange(Log::Cell);
-	return TRUE;
+	return true;
 }
 
 // Remove cell
@@ -168,7 +168,7 @@ void Model::removeCell()
 	if (recordingState_ != NULL)
 	{
 		CellEvent* newchange = new CellEvent;
-		newchange->set(cell_.axes(), cell_.axes(), cell_.type() != UnitCell::NoCell, FALSE);
+		newchange->set(cell_.axes(), cell_.axes(), cell_.type() != UnitCell::NoCell, false);
 		recordingState_->addEvent(newchange);
 	}
 	cell_.reset();
@@ -199,12 +199,12 @@ void Model::foldAllMolecules()
 	{
 		if (i->hasBit(1)) continue;
 		count = 0;
-		selectNone(TRUE);
-		cog = reassembleFragment(i, 1, count, FALSE);
+		selectNone(true);
+		cog = reassembleFragment(i, 1, count, false);
 		cog /= count;
 		// Is the centre of geometry inside the unit cell?
 		// If it isn't, translate all atoms so that it is.
-		if (!cell_.isInsideCell(cog)) translateSelectionLocal(cell_.fold(cog) - cog, TRUE);
+		if (!cell_.isInsideCell(cog)) translateSelectionLocal(cell_.fold(cog) - cog, true);
 	}
 	Messenger::exit("Model::foldAllMolecules");
 }
@@ -229,7 +229,7 @@ void Model::pack(Generator* gen)
 	oldnatoms = atoms_.nItems();
 	// Copy selection to clipboard
 	clip.copyMarked(this);
-	clip.pasteToModel(this, FALSE);
+	clip.pasteToModel(this, false);
 	for (Atom* i = atoms_[oldnatoms]; i != NULL; i = i->next)
 	{
 		// Get the position of the newly-pasted atom
@@ -257,7 +257,7 @@ void Model::pack()
 	}
 	
 	// Generators work on the current selection, so mark all atoms currently in the cell
-	selectAll(TRUE);
+	selectAll(true);
 	if (cell_.spacegroupId() != 0)
 	{
 		Messenger::print("Packing cell from previous spacegroup definition.");
@@ -302,8 +302,8 @@ void Model::pack()
 	}
 	
 	// Select overlapping atoms and delete
-	selectOverlaps(0.1, TRUE);
-	selectionDelete(TRUE);
+	selectOverlaps(0.1, true);
+	selectionDelete(true);
 
 	Messenger::exit("Model::pack");
 }
@@ -324,7 +324,7 @@ bool Model::scaleCell(const Vec3<double>& scale, bool useCog)
 	{
 		Messenger::print("No cell to scale.");
 		Messenger::exit("Model::scaleCell");
-		return FALSE;
+		return false;
 	}
 	if (useCog)
 	{
@@ -332,7 +332,7 @@ bool Model::scaleCell(const Vec3<double>& scale, bool useCog)
 		{
 			Messenger::print("Cell contents cannot be scaled by their centres of geometry if a proper pattern definition does not exist.");
 			Messenger::exit("Model::scaleCell");
-			return FALSE;
+			return false;
 		}
 	}
 
@@ -379,7 +379,7 @@ bool Model::scaleCell(const Vec3<double>& scale, bool useCog)
 	setCell(newaxes);
 	logChange(Log::Coordinates);
 	Messenger::exit("Model::scaleCell");
-	return TRUE;
+	return true;
 }
 
 // Replicate Cell
@@ -428,7 +428,7 @@ void Model::replicateCell(const Vec3<double> &neg, const Vec3<double> &pos)
 
 	// Create cell copies
 	count = 0;
-	stop = FALSE;
+	stop = false;
 	for (ii = ineg.x; ii <= ipos.x; ii++)
 	{
 		for (jj = ineg.y; jj <= ipos.y; jj++)
@@ -442,7 +442,7 @@ void Model::replicateCell(const Vec3<double> &neg, const Vec3<double> &pos)
 				//tvec.print();
 				clip.pasteToModel(this,tvec);
 				Messenger::print(Messenger::Verbose, "Created copy for vector %8.4f %8.4f %8.4f",tvec.x,tvec.y,tvec.z);
-				if (!progress.update(pid)) stop = TRUE;
+				if (!progress.update(pid)) stop = true;
 			}
 			if (stop) break;
 		}
@@ -471,12 +471,12 @@ void Model::replicateCell(const Vec3<double> &neg, const Vec3<double> &pos)
 		count = 0;
 		while (i != NULL)
 		{
-			delatom = FALSE;
+			delatom = false;
 			// Convert coordinates to fractional coords and test them
 			fracr = cellinverse.transform(i->r());
-			if ((fracr.x < -0.001) || (fracr.x >= 1.001)) delatom = TRUE;
-			else if ((fracr.y < -0.001) || (fracr.y >= 1.001)) delatom = TRUE;
-			else if ((fracr.z < -0.001) || (fracr.z >= 1.001)) delatom = TRUE;
+			if ((fracr.x < -0.001) || (fracr.x >= 1.001)) delatom = true;
+			else if ((fracr.y < -0.001) || (fracr.y >= 1.001)) delatom = true;
+			else if ((fracr.z < -0.001) || (fracr.z >= 1.001)) delatom = true;
 			if (delatom)
 			{
 				j = i->next;
@@ -527,7 +527,7 @@ void Model::rotateCell(int axis, double angle)
 	// Transform atoms
 	markAll();
 	Vec3<double> origin;
-	matrixTransformSelection(origin,rotmat,TRUE);
+	matrixTransformSelection(origin,rotmat,true);
 	
 	Messenger::exit("Model::rotateCell");
 }

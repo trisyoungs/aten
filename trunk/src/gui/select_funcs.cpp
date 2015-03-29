@@ -31,7 +31,7 @@
 SelectWidget::SelectWidget(AtenWindow& parent, Qt::WindowFlags flags) : QDockWidget(&parent, flags), parent_(parent)
 {
 	// Private variables
-	refreshing_ = FALSE;
+	refreshing_ = false;
 
 	ui.setupUi(this);
 }
@@ -45,14 +45,14 @@ void SelectWidget::showWidget()
 
 void SelectWidget::setHistories(QStringList select, QStringList forlist, QStringList netalist)
 {
-	refreshing_ = TRUE;
+	refreshing_ = true;
 	ui.SelectCombo->addItems(select);
 	ui.SelectForCombo->addItems(forlist);
 	ui.SelectNetaCombo->addItems(netalist);
 	ui.SelectCombo->setCurrentIndex(-1);
 	ui.SelectForCombo->setCurrentIndex(-1);
 	ui.SelectNetaCombo->setCurrentIndex(-1);
-	refreshing_ = FALSE;
+	refreshing_ = false;
 }
 
 void SelectWidget::on_SelectAllButton_clicked(bool on)
@@ -148,7 +148,7 @@ void SelectWidget::refresh()
 	ui.SelectionLabel1->setText("Total selected : " + QString::number(m->nSelected()));
 	
 	// Second label contains empirical formula of selection
-	ui.SelectionLabel2->setText(m->selectionEmpirical(FALSE, TRUE));
+	ui.SelectionLabel2->setText(m->selectionEmpirical(false, true));
 }
 
 void SelectWidget::closeEvent(QCloseEvent* event)

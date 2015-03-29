@@ -179,11 +179,11 @@ class TreeGuiWidget : public ListItem<TreeGuiWidget>
 	// Return number of defined items
 	int nComboItems();
 	// Return whether integer value is within range
-	bool isGoodValue(int i, bool printError = FALSE);
+	bool isGoodValue(int i, bool printError = false);
 	// Return whether double value is within range
-	bool isGoodValue(double d, bool printError = FALSE);
-	// Return whether string is in list (returning index or 0 for FALSE)
-	int isInList(QString s, bool printError = FALSE);
+	bool isGoodValue(double d, bool printError = false);
+	// Return whether string is in list (returning index or 0 for false)
+	int isInList(QString s, bool printError = false);
 	// Return current integer minimum
 	int minimumI();
 	// Return current integer maximum

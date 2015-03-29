@@ -134,7 +134,7 @@ class ForcefieldAtom : public ListItem<ForcefieldAtom>
 	void addData(QString name, int i);
 	void addData(QString name, QString s);
 	// Retrieve named variable
-	Variable* data(QString s, bool reportError = TRUE);
+	Variable* data(QString s, bool reportError = true);
 	// Return variable list
 	VariableList* data();
 };

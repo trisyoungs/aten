@@ -3114,13 +3114,13 @@ yyreduce:
   case 147:
 /* Line 1792 of yacc.c  */
 #line 692 "grammar.yy"
-    { globalDeclarations = TRUE; }
+    { globalDeclarations = true; }
     break;
 
   case 148:
 /* Line 1792 of yacc.c  */
 #line 696 "grammar.yy"
-    { globalDeclarations = FALSE; }
+    { globalDeclarations = false; }
     break;
 
 

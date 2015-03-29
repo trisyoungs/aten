@@ -58,7 +58,7 @@ Atom* Model::addAtom(short int newel, Vec3<double> pos, Vec3<double> vel, Vec3<d
 	if (recordingState_ != NULL)
 	{
 		AtomEvent* newchange = new AtomEvent;
-		newchange->set(TRUE, newatom);
+		newchange->set(true, newatom);
 		recordingState_->addEvent(newchange);
 	}
 	Messenger::exit("Model::addAtom");
@@ -82,7 +82,7 @@ Atom* Model::addAtomWithId(short int newel, Vec3<double> pos, int targetid)
 	if (recordingState_ != NULL)
 	{
 		AtomEvent* newchange = new AtomEvent;
-		newchange->set(TRUE, newatom);
+		newchange->set(true, newatom);
 		recordingState_->addEvent(newchange);
 	}
 	Messenger::exit("Model::addAtom");
@@ -109,7 +109,7 @@ Atom* Model::addCopy(Atom* source)
 	if (recordingState_ != NULL)
 	{
 		AtomEvent* newchange = new AtomEvent;
-		newchange->set(TRUE, newatom);
+		newchange->set(true, newatom);
 		recordingState_->addEvent(newchange);
 	}
 	Messenger::exit("Model::addCopy");
@@ -130,7 +130,7 @@ Atom* Model::addCopy(Atom* afterthis, Atom* source)
 	if (recordingState_ != NULL)
 	{
 		AtomEvent* newchange = new AtomEvent;
-		newchange->set(TRUE,newatom);
+		newchange->set(true,newatom);
 		recordingState_->addEvent(newchange);
 	}
 	Messenger::exit("Model::addCopy");
@@ -148,13 +148,13 @@ void Model::removeAtom(Atom* xatom, bool noupdate)
 	if (!noupdate) for (Atom* i = xatom->next; i != NULL; i = i->next) i->decreaseId();
 	// Deselect and unmark if necessary
 	if (xatom->isSelected()) deselectAtom(xatom);
-	if (xatom->isSelected(TRUE)) deselectAtom(xatom, TRUE);
+	if (xatom->isSelected(true)) deselectAtom(xatom, true);
 	logChange(Log::Structure);
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
 		AtomEvent* newchange = new AtomEvent;
-		newchange->set(FALSE,xatom);
+		newchange->set(false,xatom);
 		recordingState_->addEvent(newchange);
 	}
 	atoms_.remove(xatom);

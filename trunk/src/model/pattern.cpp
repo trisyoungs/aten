@@ -48,7 +48,7 @@ Pattern* Model::lastPattern() const
 // Return whether the patterns are valid
 bool Model::arePatternsValid() const
 {
-	return (patternsPoint_ == log(Log::Structure) ? TRUE : FALSE);
+	return (patternsPoint_ == log(Log::Structure));
 }
 
 // Return n'th pattern node
@@ -122,7 +122,7 @@ void Model::setPatternsFixed(int upto)
 	while (p != NULL)
 	{
 		if (count == upto) break;
-		p->setFixed(TRUE);
+		p->setFixed(true);
 		p = p->next;
 		count ++;
 	}
@@ -204,7 +204,7 @@ bool Model::createPatterns()
 	if (arePatternsValid())
 	{
 		Messenger::exit("Model::createPatterns");
-		return TRUE;
+		return true;
 	}
 	
 	// Delete all old nodes first.
@@ -216,7 +216,7 @@ bool Model::createPatterns()
 		Messenger::print("No patterns defined for model '%s' - no atoms present.", qPrintable(name_));
 		patternsPoint_ = log(Log::Structure);
 		Messenger::exit("Model::createPatterns");
-		return TRUE;
+		return true;
 	}
 	
 	// To autodetect, we start off at the first atom in the model, tree-select this atom and copy the selection to the clipboard. Use the clipboard to check subsequent selections, and if its the same just increase the nmols counter by one. If it's different, assume its the start of a new type of molecule and reset the counters.
@@ -225,10 +225,10 @@ bool Model::createPatterns()
 	i = atoms_.first();
 	while (atomid != atoms_.nItems())
 	{
-		selectNone(TRUE);
+		selectNone(true);
 		
 		// Select molecule starting at atom 'i' and calculate fingerprint
-		selectTree(i, TRUE);
+		selectTree(i, true);
 		selectSource = i;
 		
 		// We insist that the molecule consists of consecutively ordered atoms, otherwise we can't proceed, so count the number of selected
@@ -238,7 +238,7 @@ bool Model::createPatterns()
 		//selectionGetEmpirical(emp);
 		for (n=0; n<marked_.nItems(); n++)
 		{
-			if (i->isSelected(TRUE)) nsel2 ++;
+			if (i->isSelected(true)) nsel2 ++;
 			i = i->next;
 		}
 		if (nsel2 != marked_.nItems())
@@ -251,21 +251,21 @@ bool Model::createPatterns()
 			nmols = 0;
 
 			Messenger::exit("Model::createPatterns");
-			return FALSE;
+			return false;
 		}
 		// If this is the first pass (molecule), copy the selection. If not, compare it
 		if (nmols == 0)
 		{
 			patclip.copyMarked(this);
-			empirical = selectionEmpirical(TRUE);
+			empirical = selectionEmpirical(true);
 			nmols = 1;
 		}
 		else
 		{
 			// Compare clipboard contents with current selection
-			same = TRUE;
+			same = true;
 			// Check number of atoms first....
-			if (marked_.nItems() != patclip.nAtoms()) same = FALSE;
+			if (marked_.nItems() != patclip.nAtoms()) same = false;
 			else
 			{
 				// Atoms
@@ -277,21 +277,21 @@ bool Model::createPatterns()
 					// Element check
 					if (clipi->atom().element() != isel->item->element())
 					{
-						same = FALSE;
+						same = false;
 						break;
 					}
 					
 					// Fixed position
 					if (clipi->atom().isPositionFixed() != isel->item->isPositionFixed())
 					{
-						same = FALSE;
+						same = false;
 						break;
 					}
 
 					// Fixed forcefield type check
 					if (clipi->atom().hasFixedType() != isel->item->hasFixedType())
 					{
-						same = FALSE;
+						same = false;
 						break;
 					}
 					else if (clipi->atom().hasFixedType())
@@ -299,7 +299,7 @@ bool Model::createPatterns()
 						// Both have fixed type - make sure types are the same
 						if (clipi->atom().type() != isel->item->type())
 						{
-							same = FALSE;
+							same = false;
 							break;
 						}
 					}
@@ -309,7 +309,7 @@ bool Model::createPatterns()
 				// Bonding between atoms (but only if atoms themselves check out)...
 				if (same)
 				{
-					idoff = selection(TRUE)->item->id();
+					idoff = selection(true)->item->id();
 					count = 0;
 					for (isel = marked_.first(); isel != NULL; isel = isel->next)
 					{
@@ -322,18 +322,18 @@ bool Model::createPatterns()
 							++count;
 							if (!patclip.hasBond(idi,idj))
 							{
-								same = FALSE;
+								same = false;
 								break;
 							}
 						}
 						if (!same) break;
 					}
 					// Check for difference between number of bonds between marked atoms and clipboard atoms
-					if (count != patclip.nBonds()) same = FALSE;
+					if (count != patclip.nBonds()) same = false;
 				}
 			}
 
-			// If we get to here with same == TRUE then we increase nmols. Otherwise, we create a new pattern.
+			// If we get to here with same == true then we increase nmols. Otherwise, we create a new pattern.
 			if (same) ++nmols;
 			else
 			{
@@ -341,7 +341,7 @@ bool Model::createPatterns()
 				Messenger::print(Messenger::Verbose, "New pattern found: %s", qPrintable(empirical));
 				p = addPattern(qPrintable(empirical), nmols, patclip.nAtoms());
 				patclip.copyMarked(this);
-				empirical = selectionEmpirical(TRUE);
+				empirical = selectionEmpirical(true);
 				nmols = 1;
 			}
 		}
@@ -360,7 +360,7 @@ bool Model::createPatterns()
 	patternsPoint_ = log(Log::Structure);
 
 	Messenger::exit("Model::createPatterns");
-	return TRUE;
+	return true;
 }
 
 // Create default pattern
@@ -439,5 +439,5 @@ bool Model::validatePatterns()
 	// Cycle over patterns, checking atom and bond fingerprints of molecules against the first in each
 	// TODO
 	Messenger::exit("Model::validatePatterns");
-	return TRUE;
+	return true;
 }

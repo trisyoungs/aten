@@ -61,7 +61,7 @@ AtenForcefieldEditor::AtenForcefieldEditor(QWidget *parent) : QDialog(parent)
 	ui.setupUi(this);
 
 	// Private Variables
-	updating_ = FALSE;
+	updating_ = false;
 	targetForcefield_ = NULL;
 	
 	// Set item delegates for columns
@@ -83,7 +83,7 @@ AtenForcefieldEditor::AtenForcefieldEditor(QWidget *parent) : QDialog(parent)
 // Populate widget with specified forcefield
 void AtenForcefieldEditor::populate(Forcefield* ff)
 {
-	updating_ = TRUE;
+	updating_ = true;
 	// Clear tables
 	ui.FFEditorTypesTable->clear();
 	ui.FFEditorAtomsTable->clear();
@@ -93,7 +93,7 @@ void AtenForcefieldEditor::populate(Forcefield* ff)
 	targetForcefield_ = ff;
 	if (ff == NULL)
 	{
-		updating_ = FALSE;
+		updating_ = false;
 		return;
 	}
 	QTableWidgetItem *item;
@@ -339,7 +339,7 @@ void AtenForcefieldEditor::populate(Forcefield* ff)
 	ui.FFEditorUreyBradleysTable->setSelectionMode(QAbstractItemView::SingleSelection);
 	
 	// Done
-	updating_ = FALSE;
+	updating_ = false;
 }
 
 void AtenForcefieldEditor::boundFunctionChanged(TComboBox *sender, int i, ForcefieldBound::BoundType bt)
@@ -386,8 +386,8 @@ void AtenForcefieldEditor::on_FFEditorTestTypeButton_clicked(bool on)
 // 	if (row == -1) return;
 // 	// Get pointer to forcefield type from edited row (skipping _NDEF_)
 // 	ForcefieldAtom* ffa = targetForcefield_->type(row+1);
-// 	m->selectNone(TRUE);
-// 	m->selectType(ffa->element(), ffa->netaString(), TRUE, FALSE);
+// 	m->selectNone(true);
+// 	m->selectType(ffa->element(), ffa->netaString(), true, false);
 // 	Messenger::print("Type description matched %i atoms in current model.", m->nMarked());
 }
 
@@ -395,7 +395,7 @@ void AtenForcefieldEditor::on_FFEditorTestTypeButton_clicked(bool on)
 void AtenForcefieldEditor::on_FFEditorTypesTable_itemChanged(QTableWidgetItem *w)
 {
 	if ((targetForcefield_ == NULL) || updating_) return;
-	updating_ = TRUE;
+	updating_ = true;
 
 	// Get position of changed item (skipping _NDEF_)
 	int row = ui.FFEditorTypesTable->row(w) + 1;
@@ -446,7 +446,7 @@ void AtenForcefieldEditor::on_FFEditorTypesTable_itemChanged(QTableWidgetItem *w
 			ffa->setDescription(qPrintable(w->text()));
 			break;
 	}
-	updating_ = FALSE;
+	updating_ = false;
 }
 
 /*
@@ -497,7 +497,7 @@ void AtenForcefieldEditor::VdwFunctionChanged(int index)
 void AtenForcefieldEditor::on_FFEditorAtomsTable_itemChanged(QTableWidgetItem *w)
 {
 	if ((targetForcefield_ == NULL) || updating_) return;
-	updating_ = TRUE;
+	updating_ = true;
 	// Get position of changed item (skipping _NDEF_)
 	int row = ui.FFEditorAtomsTable->row(w) + 1;
 	int column = ui.FFEditorAtomsTable->column(w);
@@ -537,7 +537,7 @@ void AtenForcefieldEditor::on_FFEditorAtomsTable_itemChanged(QTableWidgetItem *w
 			ffa->setParameter(n, atof(qPrintable(w->text())));
 			break;
 	}
-	updating_ = FALSE;
+	updating_ = false;
 }
 
 void AtenForcefieldEditor::on_FFEditorAtomsTable_itemSelectionChanged()
@@ -589,7 +589,7 @@ void AtenForcefieldEditor::BondFunctionChanged(int index)
 void AtenForcefieldEditor::on_FFEditorBondsTable_itemChanged(QTableWidgetItem *w)
 {
 	if ((targetForcefield_ == NULL) || updating_) return;
-	updating_ = TRUE;
+	updating_ = true;
 	// Get position of changed item
 	int row = ui.FFEditorBondsTable->row(w);
 	int column = ui.FFEditorBondsTable->column(w);
@@ -620,7 +620,7 @@ void AtenForcefieldEditor::on_FFEditorBondsTable_itemChanged(QTableWidgetItem *w
 			ffb->setParameter(n, atof(qPrintable(w->text())));
 			break;
 	}
-	updating_ = FALSE;
+	updating_ = false;
 }
 
 void AtenForcefieldEditor::on_FFEditorBondsTable_itemSelectionChanged()
@@ -672,7 +672,7 @@ void AtenForcefieldEditor::AngleFunctionChanged(int index)
 void AtenForcefieldEditor::on_FFEditorAnglesTable_itemChanged(QTableWidgetItem *w)
 {
 	if ((targetForcefield_ == NULL) || updating_) return;
-	updating_ = TRUE;
+	updating_ = true;
 	// Get position of changed item
 	int row = ui.FFEditorAnglesTable->row(w);
 	int column = ui.FFEditorAnglesTable->column(w);
@@ -704,7 +704,7 @@ void AtenForcefieldEditor::on_FFEditorAnglesTable_itemChanged(QTableWidgetItem *
 			ffb->setParameter(n, atof(qPrintable(w->text())));
 			break;
 	}
-	updating_ = FALSE;
+	updating_ = false;
 }
 
 void AtenForcefieldEditor::on_FFEditorAnglesTable_itemSelectionChanged()
@@ -756,7 +756,7 @@ void AtenForcefieldEditor::TorsionFunctionChanged(int index)
 void AtenForcefieldEditor::on_FFEditorTorsionsTable_itemChanged(QTableWidgetItem *w)
 {
 	if ((targetForcefield_ == NULL) || updating_) return;
-	updating_ = TRUE;
+	updating_ = true;
 	// Get position of changed item
 	int row = ui.FFEditorTorsionsTable->row(w);
 	int column = ui.FFEditorTorsionsTable->column(w);
@@ -797,7 +797,7 @@ void AtenForcefieldEditor::on_FFEditorTorsionsTable_itemChanged(QTableWidgetItem
 			ffb->setParameter(n, atof(qPrintable(w->text())));
 			break;
 	}
-	updating_ = FALSE;
+	updating_ = false;
 }
 
 void AtenForcefieldEditor::on_FFEditorTorsionsTable_itemSelectionChanged()
@@ -843,7 +843,7 @@ void AtenForcefieldEditor::updateImpropersLabels(ForcefieldBound* ffb)
 void AtenForcefieldEditor::on_FFEditorImpropersTable_itemChanged(QTableWidgetItem *w)
 {
 	if ((targetForcefield_ == NULL) || updating_) return;
-	updating_ = TRUE;
+	updating_ = true;
 	// Get position of changed item
 	int row = ui.FFEditorImpropersTable->row(w);
 	int column = ui.FFEditorImpropersTable->column(w);
@@ -876,7 +876,7 @@ void AtenForcefieldEditor::on_FFEditorImpropersTable_itemChanged(QTableWidgetIte
 			ffb->setParameter(n, atof(qPrintable(w->text())));
 			break;
 	}
-	updating_ = FALSE;
+	updating_ = false;
 }
 
 void AtenForcefieldEditor::on_FFEditorImpropersTable_itemSelectionChanged()
@@ -922,7 +922,7 @@ void AtenForcefieldEditor::updateUreyBradleysLabels(ForcefieldBound* ffb)
 void AtenForcefieldEditor::on_FFEditorUreyBradleysTable_itemChanged(QTableWidgetItem *w)
 {
 	if ((targetForcefield_ == NULL) || updating_) return;
-	updating_ = TRUE;
+	updating_ = true;
 	// Get position of changed item
 	int row = ui.FFEditorUreyBradleysTable->row(w);
 	int column = ui.FFEditorUreyBradleysTable->column(w);
@@ -954,7 +954,7 @@ void AtenForcefieldEditor::on_FFEditorUreyBradleysTable_itemChanged(QTableWidget
 			ffb->setParameter(n, atof(qPrintable(w->text())));
 			break;
 	}
-	updating_ = FALSE;
+	updating_ = false;
 }
 
 void AtenForcefieldEditor::on_FFEditorUreyBradleysTable_itemSelectionChanged()

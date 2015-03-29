@@ -31,37 +31,37 @@ ATEN_USING_NAMESPACE
 // Rotate view about an arbitrary axis
 bool Commands::function_AxisRotateView(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	obj.rs()->axisRotateView(c->arg3d(0), c->argd(3));
 	rv.reset();
-	return TRUE;
+	return true;
 }
 
 // Get current view
 bool Commands::function_GetView(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	Matrix rmat = obj.rs()->modelViewMatrix();
 	Messenger::print("View [R c] = { %8.4f, %8.4f, %8.4f, %8.4f, %8.4f, %8.4f, %8.4f, %8.4f, %8.4f, %8.4f, %8.4f, %8.4f }", rmat[0], rmat[1], rmat[2], rmat[4], rmat[5], rmat[6], rmat[8], rmat[9], rmat[10], rmat[12], rmat[13], rmat[14]);
 	rv.reset();
-	return TRUE;
+	return true;
 }
 
 // Set orthographic view
 bool Commands::function_Orthographic(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	prefs.setPerspective(FALSE);
+	prefs.setPerspective(false);
 	rv.reset();
-	return TRUE;
+	return true;
 }
 
 // Set perspective view
 bool Commands::function_Perspective(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	prefs.setPerspective(TRUE);
+	prefs.setPerspective(true);
 	if (c->hasArg(0)) prefs.setPerspectiveFov(c->argd(0));
 	rv.reset();
-	return TRUE;
+	return true;
 }
 
 // Reset view
@@ -69,22 +69,22 @@ bool Commands::function_ResetView(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	obj.rs()->resetView(aten_.atenWindow()->ui.MainView->contextWidth(), aten_.atenWindow()->ui.MainView->contextHeight());
 	rv.reset();
-	return TRUE;
+	return true;
 }
 
 // Rotate view
 bool Commands::function_RotateView(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	obj.rs()->rotateView(c->argd(1), c->argd(0));
 	rv.reset();
-	return TRUE;
+	return true;
 }
 
 // Set current view
 bool Commands::function_SetView(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	Matrix rmat;
 	// Get rotation matrix
 	rmat.setColumn(0,c->arg3d(0),0.0);
@@ -93,13 +93,13 @@ bool Commands::function_SetView(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	rmat.setColumn(3,c->arg3d(9),1.0);
 	obj.rs()->setModelViewMatrix(rmat);
 	rv.reset();
-	return TRUE;
+	return true;
 }
 
 // Render speed test
 bool Commands::function_SpeedTest(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 
 	QTime total, split;
 	int msec;
@@ -120,52 +120,52 @@ bool Commands::function_SpeedTest(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	msec = total.elapsed();
 	Messenger::print("Performed %i renders over %8.2f seconds (%8.2f/sec).", nrenders, msec/1000.0, nrenders/(msec/1000.0));
 	rv.reset();
-	return TRUE;
+	return true;
 }
 
 // Translate view
 bool Commands::function_TranslateView(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	obj.rs()->adjustCamera(c->argd(0), c->argd(1), c->argd(2));
 	rv.reset();
-	return TRUE;
+	return true;
 }
 
 // View along specified axis
 bool Commands::function_ViewAlong(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	// Set model rotation matrix to be along the specified axis
 	obj.rs()->viewAlong(c->argd(0), c->argd(1), c->argd(2));
 	rv.reset();
-	return TRUE;
+	return true;
 }
 
 // View along specified cell axis
 bool Commands::function_ViewAlongCell(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	// Set model rotation matrix to be along the specified axis
 	obj.rs()->viewAlongCell(c->argd(0), c->argd(1), c->argd(2));
 	rv.reset();
-	return TRUE;
+	return true;
 }
 
 // Zoom view
 bool Commands::function_ZoomView(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	obj.rs()->adjustCamera(0.0,0.0,c->argd(0));
 	rv.reset();
-	return TRUE;
+	return true;
 }
 
 // ZRotate view
 bool Commands::function_ZRotateView(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	obj.rs()->zRotateView(-c->argd(0));
 	rv.reset();
-	return TRUE;
+	return true;
 }

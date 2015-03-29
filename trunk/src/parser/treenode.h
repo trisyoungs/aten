@@ -143,7 +143,7 @@ class TreeNode : public ListItem<TreeNode>
 	void setReturnType(VTypes::DataType dt);
 	// Returns content type of the variable
 	VTypes::DataType returnType() const;
-	// Set the readonly status of the node to TRUE
+	// Set the readonly status of the node to true
 	void setReadOnly();
 	// Return the readonly status of the node
 	bool readOnly() const;

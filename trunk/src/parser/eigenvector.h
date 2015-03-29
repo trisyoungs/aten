@@ -35,7 +35,7 @@ class EigenvectorVariable : public PointerVariable
 {
 	public:
 	// Constructor / Destructor
-	EigenvectorVariable(Eigenvector *vec = NULL, bool constant = FALSE);
+	EigenvectorVariable(Eigenvector *vec = NULL, bool constant = false);
 	~EigenvectorVariable();
 
 
@@ -70,7 +70,7 @@ class EigenvectorArrayVariable : public PointerArrayVariable
 {
 	public:
 	// Constructor / Destructor
-	EigenvectorArrayVariable(TreeNode* sizeexpr, bool constant = FALSE);
+	EigenvectorArrayVariable(TreeNode* sizeexpr, bool constant = false);
 
 
 	/*

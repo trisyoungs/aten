@@ -163,7 +163,7 @@ void PositionWidget::translateSelection(int axis, int dir)
 
 void shiftPickAxisButton_callback(Reflist<Atom,int>* picked)
 {
-// 	gui.positionWidget->ui.ShiftPickVectorButton->setChecked(FALSE); ATEN2 TODO
+// 	gui.positionWidget->ui.ShiftPickVectorButton->setChecked(false); ATEN2 TODO
 // 	// If there are not two atoms in the list then the mode must have been canceled
 // 	if (picked->nItems() != 2) return;
 // 	Vec3<double> v = picked->last()->item->r() - picked->first()->item->r();

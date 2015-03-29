@@ -48,7 +48,7 @@ Tree::Tree() : ListItem<Tree>()
 	localScope_ = NULL;
 	runCount_ = 0;
 	createDefaultDialogFunction_ = NULL;
-	defaultDialogCreated_ = FALSE;
+	defaultDialogCreated_ = false;
 
 	// Initialise
 	initialise();
@@ -170,14 +170,14 @@ bool Tree::finalise()
 		{
 			Messenger::print("Error: a 'createDefaultDialog' function exists, but has the wrong argument definition (it should take a single argument of type Dialog).");
 			Messenger::exit("Tree::finalise");
-			return FALSE;
+			return false;
 		}
 		// Does the function have the correct return type?
 		if (createDefaultDialogFunction_->returnType() != VTypes::NoData)
 		{
 			Messenger::print("Error: a 'createDefaultDialog' function exists, but has the wrong return type (which should be 'void').");
 			Messenger::exit("Tree::finalise");
-			return FALSE;
+			return false;
 		}
 		Messenger::print(Messenger::Verbose, " --> Found 'createDefaultDialog' function in tree '%s'", qPrintable(name_));
 	}
@@ -188,12 +188,12 @@ bool Tree::finalise()
 		if (!func->finalise())
 		{
 			Messenger::exit("Tree::finalise");
-			return FALSE;
+			return false;
 		}
 	}
 
 	Messenger::exit("Tree::finalise");
-	return TRUE;
+	return true;
 }
 
 /*
@@ -204,7 +204,7 @@ bool Tree::finalise()
 bool Tree::setAccessibleVariable(QString name, QString value)
 {
 	ReturnValue rv;
-	bool result = FALSE;
+	bool result = false;
 
 	// Check for a widget first, then for a global variable
 	TreeGuiWidget* w = defaultDialog().findWidget(name);
@@ -256,13 +256,13 @@ LineParser* Tree::parser()
 // Return whether the LineParser is ready for file reading
 bool Tree::isFileGoodForReading() const
 {
-	return (parser_ == NULL ? FALSE : parser_->isFileGoodForReading());
+	return (parser_ == NULL ? false : parser_->isFileGoodForReading());
 }
 
 // Return whether the LineParser is ready for file writing
 bool Tree::isFileGoodForWriting() const
 {
-	return (parser_ == NULL ? FALSE : parser_->isFileGoodForWriting());
+	return (parser_ == NULL ? false : parser_->isFileGoodForWriting());
 }
 
 // Clear contents of tree
@@ -306,7 +306,7 @@ Commands::Function Tree::acceptedFail() const
 bool Tree::execute(ReturnValue& rv)
 {
 	Messenger::enter("Tree::execute");
-	bool result = FALSE;
+	bool result = false;
 	rv.reset();
 	ElementMap::ZMapType zm = ElementMap::nZMapTypes;
 	acceptedFail_ = Commands::NoFunction;
@@ -322,18 +322,18 @@ bool Tree::execute(ReturnValue& rv)
 		{
 			case (FilterData::ExpressionExport):
 				// Turn on export type mapping
-				if (aten_->typeExportMap.nPairs() != 0) aten_->setTypeExportMapping(TRUE);
+				if (aten_->typeExportMap.nPairs() != 0) aten_->setTypeExportMapping(true);
 
 				// Create expression for model
 				if (!aten_->currentModel()->createExpression(Choice(), Choice(), Choice(), aten_->currentForcefield(), aten_->combinationRules()))
 				{
 					Messenger::exit("Tree::execute");
-					return FALSE;
+					return false;
 				}
 				break;
 			case (FilterData::ModelExport):
 				// Turn on export type mapping
-				if (aten_->typeExportMap.nPairs() != 0) aten_->setTypeExportMapping(TRUE);
+				if (aten_->typeExportMap.nPairs() != 0) aten_->setTypeExportMapping(true);
 				break;
 			default:
 				break;
@@ -349,18 +349,18 @@ bool Tree::execute(ReturnValue& rv)
 		if (acceptedFail_ == Commands::Return)
 		{
 			Messenger::print(Messenger::Parse, "Execution of tree ended early because we returned.");
-			result = TRUE;
+			result = true;
 			break;
 		}
 		else if (acceptedFail_ == Commands::Quit)
 		{
 			Messenger::print(Messenger::Parse, "Execution of tree ended early because we quit.");
-			result = TRUE;
+			result = true;
 			break;
 		}
 		else if (acceptedFail_ == Commands::Error)
 		{
-			result = FALSE;
+			result = false;
 			break;
 		}
 		if (!result) break;
@@ -379,7 +379,7 @@ bool Tree::execute(ReturnValue& rv)
 			case (FilterData::ExpressionExport):
 			case (FilterData::ModelExport):
 				// Turn off export type mapping
-				aten_->setTypeExportMapping(FALSE);
+				aten_->setTypeExportMapping(false);
 				break;
 			default:
 				break;
@@ -409,7 +409,7 @@ bool Tree::execute(LineParser* parser, ReturnValue& rv)
 	{
 		Messenger::print("Error: NULL parsing source passed.");
 		Messenger::exit("Tree::execute[LineParser]");
-		return FALSE;
+		return false;
 	}
 
 	// Execute the commands
@@ -431,7 +431,7 @@ bool Tree::executeRead(QString filename, ReturnValue& rv)
 	if (!parser_->isFileGoodForReading())
 	{
 		Messenger::exit("Tree::executeRead[filename]");
-		return FALSE;
+		return false;
 	}
 	// Execute the commands
 	bool result = execute(rv);
@@ -450,11 +450,11 @@ bool Tree::executeWrite(QString filename, ReturnValue& rv)
 	if (parser_ != NULL) printf("Warning: LineParser already defined in executeWrite.\n");
 	// If we are using directOutput_ open the target file here...
 	parser_ = new LineParser;
-	parser_->openOutput(filename, FALSE);
+	parser_->openOutput(filename, false);
 	if (!parser_->isFileGoodForWriting())
 	{
 		Messenger::exit("Tree::executeWrite[filename]");
-		return FALSE;
+		return false;
 	}
 	
 	// Execute the commands
@@ -519,12 +519,12 @@ bool Tree::addStatement(TreeNode* leaf)
 	if (leaf == NULL)
 	{
 		printf("Internal Error: NULL TreeNode passed to Tree::addStatement().\n");
-		return FALSE;
+		return false;
 	}
 	Messenger::print(Messenger::Parse, "Added statement node %p", leaf);
 	leaf->setParent(this);
 	statements_.add(leaf);
-	return TRUE;
+	return true;
 }
 
 // Add an operator to the Tree
@@ -714,12 +714,12 @@ bool Tree::popScope()
 	if (ri == NULL)
 	{
 		printf("Internal Error: No scoped node to pop from stack.\n");
-		return FALSE;
+		return false;
 	}
 	ScopeNode* temp = ri->item;
 	scopeStack_.remove(ri);
 	Messenger::print(Messenger::Parse, "ScopeNode %p is popped.", temp);
-	return TRUE;
+	return true;
 }
 
 /*
@@ -731,19 +731,19 @@ TreeNode* Tree::addConstant(VTypes::DataType type, QString token)
 {
 	if (type == VTypes::IntegerData)
 	{
-		IntegerVariable* var = new IntegerVariable(token.toInt(), TRUE);
+		IntegerVariable* var = new IntegerVariable(token.toInt(), true);
 		nodes_.own(var);
 		return var;
 	}
 	else if (type == VTypes::DoubleData)
 	{
-		DoubleVariable* var = new DoubleVariable(token.toDouble(), TRUE);
+		DoubleVariable* var = new DoubleVariable(token.toDouble(), true);
 		nodes_.own(var);
 		return var;
 	}
 	else if (type == VTypes::StringData)
 	{
-		StringVariable* var = new StringVariable(token, TRUE);
+		StringVariable* var = new StringVariable(token, true);
 		nodes_.own(var);
 		return var;
 	}
@@ -754,7 +754,7 @@ TreeNode* Tree::addConstant(VTypes::DataType type, QString token)
 // Add integer constant
 TreeNode* Tree::addConstant(int i)
 {
-	IntegerVariable* var = new IntegerVariable(i, TRUE);
+	IntegerVariable* var = new IntegerVariable(i, true);
 	nodes_.own(var);
 	return var;
 }
@@ -762,7 +762,7 @@ TreeNode* Tree::addConstant(int i)
 // Add double constant
 TreeNode* Tree::addConstant(double d)
 {
-	DoubleVariable* var = new DoubleVariable(d, TRUE);
+	DoubleVariable* var = new DoubleVariable(d, true);
 	nodes_.own(var);
 	return var;
 }
@@ -770,7 +770,7 @@ TreeNode* Tree::addConstant(double d)
 // Add string constant
 TreeNode* Tree::addConstant(QString s)
 {
-	StringVariable* var = new StringVariable(s, TRUE);
+	StringVariable* var = new StringVariable(s, true);
 	nodes_.own(var);
 	return var;
 }
@@ -779,8 +779,8 @@ TreeNode* Tree::addConstant(QString s)
 TreeNode* Tree::addElementConstant(int el)
 {
 	ElementVariable* var;
-	if ((el < 1) || (el > Elements().nElements())) var = new ElementVariable(NULL,TRUE);
-	else var = new ElementVariable(&Elements().el[el], TRUE);
+	if ((el < 1) || (el > Elements().nElements())) var = new ElementVariable(NULL,true);
+	else var = new ElementVariable(&Elements().el[el], true);
 	nodes_.own(var);
 	return var;
 }
@@ -861,7 +861,7 @@ TreeNode* Tree::addArrayConstant(TreeNode* values)
 	Refitem<ScopeNode,int>* ri = scopeStack_.last();
 	// Determine numbers of each type in array
 	TreeNode* first;
-	bool badData = FALSE;
+	bool badData = false;
 	int nints = 0, ndoubles = 0, nstrings = 0, npointers = 0, nvalues = 0;
 	VTypes::DataType dt = VTypes::NoData;
 	for (first = values; first != NULL; first = first->prevArgument)
@@ -871,20 +871,20 @@ TreeNode* Tree::addArrayConstant(TreeNode* values)
 		{
 			case (VTypes::IntegerData):
 				++nints;
-				if (nstrings+npointers > 0) badData = TRUE;
+				if (nstrings+npointers > 0) badData = true;
 				break;
 			case (VTypes::DoubleData):
 				++ndoubles;
-				if (nstrings+npointers > 0) badData = TRUE;
+				if (nstrings+npointers > 0) badData = true;
 				break;
 			case (VTypes::StringData):
 				++nstrings;
-				if (nints+ndoubles+npointers > 0) badData = TRUE;
+				if (nints+ndoubles+npointers > 0) badData = true;
 				break;
 			default:
 				++npointers;
-				if (nints+ndoubles+nstrings > 0) badData = TRUE;
-				if ((dt != VTypes::NoData) && (dt != first->returnType())) badData = TRUE;
+				if (nints+ndoubles+nstrings > 0) badData = true;
+				if ((dt != VTypes::NoData) && (dt != first->returnType())) badData = true;
 				dt = first->returnType();
 				break;
 		}
@@ -964,7 +964,7 @@ TreeNode* Tree::wrapVariable(Variable* var, TreeNode* arrayIndex)
 	VariableNode* vnode = new VariableNode(var);
 	nodes_.own(vnode);
 	vnode->setArrayIndex(arrayIndex);
-	if ((arrayIndex == NULL) && (var->nodeType() == TreeNode::ArrayVarNode)) vnode->setReturnsArray(TRUE);
+	if ((arrayIndex == NULL) && (var->nodeType() == TreeNode::ArrayVarNode)) vnode->setReturnsArray(true);
 	vnode->setParent(this);
 	return vnode;
 }
@@ -1023,14 +1023,14 @@ bool Tree::expandPath(QString name, TreeNode* arrayIndex, TreeNode* argList)
 	if ((arrayIndex != NULL) && (argList != NULL))
 	{
 		printf("Internal Error: Both an array index and an argument list were provided for a path step.\n");
-		return FALSE;
+		return false;
 	}
 	// Get last item on path stack
 	Refitem<VariableNode,TreeNode*>* ri = pathStack_.last();
 	if (ri == NULL)
 	{
 		printf("Internal Error: No path on stack to expand with accessor '%s'.\n", qPrintable(name));
-		return FALSE;
+		return false;
 	}
 	Messenger::print(Messenger::Parse,"Tree is evaluating accessor '%s' as step %i from the basenode '%s'...", qPrintable(name), ri->item->nArgs()+1, qPrintable(ri->item->name()));
 	
@@ -1042,7 +1042,7 @@ bool Tree::expandPath(QString name, TreeNode* arrayIndex, TreeNode* argList)
 		{
 			Messenger::print("Previous step in path requires an array index to be specified.");
 			Messenger::exit("Tree::expandPath");
-			return FALSE;
+			return false;
 		}
 	}
 	
@@ -1060,7 +1060,7 @@ bool Tree::expandPath(QString name, TreeNode* arrayIndex, TreeNode* argList)
 		{
 			Messenger::print("Internal Error: No path on stack to expand!");
 			Messenger::exit("Tree::expandPath");
-			return FALSE;
+			return false;
 		}
 		ri->item->addArgument(result);
 	}
@@ -1115,7 +1115,7 @@ bool Tree::addLocalFunctionArguments(TreeNode* argList)
 	if (type_ != Tree::FunctionTree)
 	{
 		printf("Internal Error: Target tree is not a function.\n");
-		return FALSE;
+		return false;
 	}
 	TreeNode* first, *node;
 	VariableNode* vnode;
@@ -1129,7 +1129,7 @@ bool Tree::addLocalFunctionArguments(TreeNode* argList)
 		arguments_.own(vnode);
 		vnode->setParent(this);
 	}
-	return TRUE;
+	return true;
 }
 
 /*
@@ -1152,7 +1152,7 @@ TreeGui &Tree::defaultDialog()
 	// Run the stored 'createDefaultDialog' function if it hasn't already been done
 	if (!defaultDialogCreated_)
 	{
-		if (createDefaultDialogFunction_ == NULL) defaultDialogCreated_ = TRUE;
+		if (createDefaultDialogFunction_ == NULL) defaultDialogCreated_ = true;
 		else
 		{
 			UserCommandNode createFunc;

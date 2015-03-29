@@ -37,16 +37,16 @@ DelaunayEdge::DelaunayEdge(GridPoint* p1, GridPoint* p2) : ListItem<DelaunayEdge
 // Return whether edge contains the supplied points (in either order)
 bool DelaunayEdge::connectsVertices(GridPoint* p1, GridPoint* p2)
 {
-	if ((p1 == vertexA_) && (p2 == vertexB_)) return TRUE;
-	if ((p2 == vertexA_) && (p1 == vertexB_)) return TRUE;
-	return FALSE;
+	if ((p1 == vertexA_) && (p2 == vertexB_)) return true;
+	if ((p2 == vertexA_) && (p1 == vertexB_)) return true;
+	return false;
 }
 
 // Return whether the edge uses the specified point
 bool DelaunayEdge::usesPoint(GridPoint* gp)
 {
-	if ((gp == vertexA_) || (gp == vertexB_)) return TRUE;
-	return FALSE;
+	if ((gp == vertexA_) || (gp == vertexB_)) return true;
+	return false;
 }
 
 // Add reference to edge
@@ -55,7 +55,7 @@ void DelaunayEdge::addReference()
 	refCount_ ++;
 }
 
-// Remove reference from edge, returning TRUE if no more references exist
+// Remove reference from edge, returning true if no more references exist
 bool DelaunayEdge::removeReference()
 {
 	refCount_ --;
@@ -142,8 +142,8 @@ bool DelaunayTriangle::containsPoint(Vec3<double> r)
 // Return whether triangle uses specified point
 bool DelaunayTriangle::usesPoint(GridPoint* gp)
 {
-	for (int n=0; n<3; ++n) if (edges_[n]->usesPoint(gp)) return TRUE;
-	return FALSE;
+	for (int n=0; n<3; ++n) if (edges_[n]->usesPoint(gp)) return true;
+	return false;
 }
 
 // Return specified edge
@@ -171,7 +171,7 @@ void DelaunayTriangle::addReference()
 	refCount_ ++;
 }
 
-// Remove reference from triangle, returning TRUE if no more references exist
+// Remove reference from triangle, returning true if no more references exist
 bool DelaunayTriangle::removeReference()
 {
 	refCount_ --;
@@ -242,7 +242,7 @@ bool DelaunayTetrahedron::containsPoint(Vec3<double> r)
 	return (delta.magnitude() <= radius_);
 	Matrix reference, m;
 	int n;
-	bool result = TRUE;
+	bool result = true;
 	for (n=0; n<4; ++n) reference.setColumn(n,vertex(n)->r(),1.0);	// TODO BROKEN Should the fourth element 'w' be 1.0?
 	double det, refdet = reference.determinant();
 	for (n=0; n<4; ++n)
@@ -252,7 +252,7 @@ bool DelaunayTetrahedron::containsPoint(Vec3<double> r)
 		det = m.determinant();
 		if ((det < 0) != (refdet < 0))
 		{
-			result = FALSE;
+			result = false;
 			break;
 		}
 	}
@@ -262,8 +262,8 @@ bool DelaunayTetrahedron::containsPoint(Vec3<double> r)
 // Return whether tetrahedron uses specified point
 bool DelaunayTetrahedron::usesPoint(GridPoint* gp)
 {
-	for (int n=0; n<4; ++n) if (triangles_[n]->usesPoint(gp)) return TRUE;
-	return FALSE;
+	for (int n=0; n<4; ++n) if (triangles_[n]->usesPoint(gp)) return true;
+	return false;
 }
 
 // Return whether tetrahedron has the supplied faces (in any order)

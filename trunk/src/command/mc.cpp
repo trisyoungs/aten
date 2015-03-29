@@ -37,6 +37,6 @@ bool Commands::function_PrintMC(CommandNode* c, Bundle& obj, ReturnValue& rv)
 		Messenger::print("%11s   %3s   %4i   %8.3f   %8.2e", MonteCarlo::moveTypeKeyword(mt), (mc.isMoveAllowed(mt) ? "Yes" : "No"), mc.nTrials(mt), mc.maxStep(mt), mc.acceptanceEnergy(mt));
 	}
 	rv.reset();
-	return TRUE;
+	return true;
 }
 

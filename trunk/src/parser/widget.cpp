@@ -46,9 +46,9 @@ WidgetVariable::~WidgetVariable()
 
 // Accessor data
 Accessor WidgetVariable::accessorData[WidgetVariable::nAccessors] = {
-	{ "enabled",		VTypes::IntegerData,	0, FALSE },
-	{ "verticalFill",	VTypes::IntegerData,	0, FALSE },
-	{ "visible",		VTypes::IntegerData,	0, FALSE }
+	{ "enabled",		VTypes::IntegerData,	0, false },
+	{ "verticalFill",	VTypes::IntegerData,	0, false },
+	{ "visible",		VTypes::IntegerData,	0, false }
 };
 
 // Function data
@@ -146,7 +146,7 @@ bool WidgetVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex
 	{
 		printf("Internal Error: Accessor id %i is out of range for Aten type.\n", i);
 		Messenger::exit("WidgetVariable::retrieveAccessor");
-		return FALSE;
+		return false;
 	}
 	Accessors acc = (Accessors) i;
 	// Check for correct lack/presence of array index given
@@ -154,7 +154,7 @@ bool WidgetVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex
 	{
 		Messenger::print("Error: Unnecessary array index provided for member '%s'.", accessorData[i].name);
 		Messenger::exit("WidgetVariable::retrieveAccessor");
-		return FALSE;
+		return false;
 	}
 	else if ((accessorData[i].arraySize > 0) && (hasArrayIndex))
 	{
@@ -162,16 +162,16 @@ bool WidgetVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex
 		{
 			Messenger::print("Error: Array index out of bounds for member '%s' (%i, range is 1-%i).", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
 			Messenger::exit("WidgetVariable::retrieveAccessor");
-			return FALSE;
+			return false;
 		}
 	}
 	// Variables used in retrieval
-	bool result = TRUE;
+	bool result = true;
 	TreeGuiWidget* ptr = (TreeGuiWidget*) rv.asPointer(VTypes::WidgetData, result);
 	if ((!result) || (ptr == NULL))
 	{
 	        Messenger::print("Invalid (NULL) %s reference encountered.", VTypes::dataType(VTypes::WidgetData));
-	        result = FALSE;
+	        result = false;
 	}
 	if (result) switch (acc)
 	{
@@ -179,14 +179,14 @@ bool WidgetVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex
 			rv.set(ptr->enabled());
 			break;
 		case (WidgetVariable::VerticalFill):
-			rv.set(ptr->qtWidgetObject() == NULL ? FALSE : ptr->qtWidgetObject()->autoFillVertical());
+			rv.set(ptr->qtWidgetObject() == NULL ? false : ptr->qtWidgetObject()->autoFillVertical());
 			break;
 		case (WidgetVariable::Visible):
 			rv.set(ptr->visible());
 			break;
 		default:
 			printf("Internal Error: Access to member '%s' has not been defined in WidgetVariable.\n", accessorData[i].name);
-			result = FALSE;
+			result = false;
 			break;
 	}
 	Messenger::exit("WidgetVariable::retrieveAccessor");
@@ -202,11 +202,11 @@ bool WidgetVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newV
 	{
 		printf("Internal Error: Accessor id %i is out of range for Aten type.\n", i);
 		Messenger::exit("WidgetVariable::setAccessor");
-		return FALSE;
+		return false;
 	}
 	Accessors acc = (Accessors) i;
 	// Check for correct lack/presence of array index given to original accessor, and nature of new value
-	bool result = TRUE;
+	bool result = true;
 	if (accessorData[i].arraySize != 0)
 	{
 		if (hasArrayIndex)
@@ -214,12 +214,12 @@ bool WidgetVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newV
 			if ((accessorData[i].arraySize > 0) && ( (arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize) ))
 			{
 				Messenger::print("Error: Array index provided for member '%s' is out of range (%i, range is 1-%i).", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
-				result = FALSE;
+				result = false;
 			}
 			if (newValue.arraySize() > 0)
 			{
 				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.", accessorData[i].name);
-				result = FALSE;
+				result = false;
 			}
 		}
 		else
@@ -227,7 +227,7 @@ bool WidgetVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newV
 			if (newValue.arraySize() > accessorData[i].arraySize)
 			{
 				Messenger::print("Error: The array being assigned to member '%s' is larger than the size of the desination array (%i cf. %i).", accessorData[i].name, newValue.arraySize(), accessorData[i].arraySize);
-				result = FALSE;
+				result = false;
 			}
 		}
 	}
@@ -239,26 +239,26 @@ bool WidgetVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newV
 			if (accessorData[i].returnType != VTypes::VectorData)
 			{
 				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.", accessorData[i].name);
-				result = FALSE;
+				result = false;
 			}
 			else if ((newValue.type() != VTypes::VectorData) && (newValue.arraySize() != 3))
 			{
 				Messenger::print("Error: Only an array of size 3 can be assigned to a vector (member '%s').", accessorData[i].name);
-				result = FALSE;
+				result = false;
 			}
 		}
 	}
 	if (!result)
 	{
 		Messenger::exit("WidgetVariable::setAccessor");
-		return FALSE;
+		return false;
 	}
 	// Get current data from ReturnValue
 	TreeGuiWidget* ptr = (TreeGuiWidget*) sourcerv.asPointer(VTypes::WidgetData, result);
 	if ((!result) || (ptr == NULL))
 	{
 	        Messenger::print("Invalid (NULL) %s reference encountered.", VTypes::dataType(VTypes::WidgetData));
-	        result = FALSE;
+	        result = false;
 	}
 	switch (acc)
 	{
@@ -275,7 +275,7 @@ bool WidgetVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newV
 			break;
 		default:
 			printf("WidgetVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);
-			result = FALSE;
+			result = false;
 			break;
 	}
 	Messenger::exit("WidgetVariable::setAccessor");
@@ -291,7 +291,7 @@ bool WidgetVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 	{
 		printf("Internal Error: FunctionAccessor id %i is out of range for Aten type.\n", i);
 		Messenger::exit("WidgetVariable::performFunction");
-		return FALSE;
+		return false;
 	}
 	// Get current data from ReturnValue
 	int xw, xh, l, t;
@@ -300,12 +300,12 @@ bool WidgetVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 	TreeGuiWidgetEvent::EventType eventType;
 	TreeGuiWidget* targetWidget;
 	ReturnValue value;
-	bool result = TRUE;
+	bool result = true;
 	TreeGuiWidget* ptr = (TreeGuiWidget*) rv.asPointer(VTypes::WidgetData, result);
 	if ((!result) || (ptr == NULL))
 	{
 	        Messenger::print("Invalid (NULL) %s reference encountered.", VTypes::dataType(VTypes::WidgetData));
-	        result = FALSE;
+	        result = false;
 	}
 	if (result) switch (i)
 	{
@@ -315,7 +315,7 @@ bool WidgetVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 			xw = node->hasArg(4) ? node->argi(4) : 0;
 			xh = node->hasArg(5) ? node->argi(5) : 0;
 			rv.set(VTypes::WidgetData, ptr->addCheck(node->argc(0), node->argc(1), l, t, xw, xh));
-			if (rv.asPointer(VTypes::WidgetData) == NULL) result = FALSE;
+			if (rv.asPointer(VTypes::WidgetData) == NULL) result = false;
 			break;
 		case (WidgetVariable::AddCheck):
 			l = node->hasArg(3) ? node->argi(3) : -1;
@@ -323,7 +323,7 @@ bool WidgetVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 			xw = node->hasArg(5) ? node->argi(5) : 0;
 			xh = node->hasArg(6) ? node->argi(6) : 0;
 			rv.set(VTypes::WidgetData, ptr->addCheck(node->argc(0), node->argc(1), node->argi(2), l, t, xw, xh));
-			if (rv.asPointer(VTypes::WidgetData) == NULL) result = FALSE;
+			if (rv.asPointer(VTypes::WidgetData) == NULL) result = false;
 			break;
 		case (WidgetVariable::AddCombo):
 			l = node->hasArg(4) ? node->argi(4) : -1;
@@ -331,7 +331,7 @@ bool WidgetVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 			xw = node->hasArg(6) ? node->argi(6) : 0;
 			xh = node->hasArg(7) ? node->argi(7) : 0;
 			rv.set(VTypes::WidgetData, ptr->addCombo(node->argc(0), node->argc(1), node->argc(2), node->argi(3), l, t, xw, xh));
-			if (rv.asPointer(VTypes::WidgetData) == NULL) result = FALSE;
+			if (rv.asPointer(VTypes::WidgetData) == NULL) result = false;
 			break;
 		case (WidgetVariable::AddDoubleSpin):
 			l = node->hasArg(6) ? node->argi(6) : -1;
@@ -339,7 +339,7 @@ bool WidgetVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 			xw = node->hasArg(8) ? node->argi(8) : 0;
 			xh = node->hasArg(9) ? node->argi(9) : 0;
 			rv.set(VTypes::WidgetData, ptr->addDoubleSpin(node->argc(0), node->argc(1), node->argd(2), node->argd(3), node->argd(4), node->argd(5), l, t, xw, xh));
-			if (rv.asPointer(VTypes::WidgetData) == NULL) result = FALSE;
+			if (rv.asPointer(VTypes::WidgetData) == NULL) result = false;
 			break;
 		case (WidgetVariable::AddEdit):
 			l = node->hasArg(3) ? node->argi(3) : -1;
@@ -347,7 +347,7 @@ bool WidgetVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 			xw = node->hasArg(5) ? node->argi(5) : 0;
 			xh = node->hasArg(6) ? node->argi(6) : 0;
 			rv.set(VTypes::WidgetData, ptr->addEdit(node->argc(0), node->argc(1), node->argc(2), l, t, xw, xh));
-			if (rv.asPointer(VTypes::WidgetData) == NULL) result = FALSE;
+			if (rv.asPointer(VTypes::WidgetData) == NULL) result = false;
 			break;
 		case (WidgetVariable::AddFrame):
 			l = node->hasArg(1) ? node->argi(1) : -1;
@@ -355,7 +355,7 @@ bool WidgetVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 			xw = node->hasArg(3) ? node->argi(3) : 0;
 			xh = node->hasArg(4) ? node->argi(4) : 0;
 			rv.set(VTypes::WidgetData, ptr->addFrame(node->argc(0), l, t, xw, xh));
-			if (rv.asPointer(VTypes::WidgetData) == NULL) result = FALSE;
+			if (rv.asPointer(VTypes::WidgetData) == NULL) result = false;
 			break;
 		case (WidgetVariable::AddGroup):
 			l = node->hasArg(2) ? node->argi(2) : -1;
@@ -363,7 +363,7 @@ bool WidgetVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 			xw = node->hasArg(4) ? node->argi(4) : 0;
 			xh = node->hasArg(5) ? node->argi(5) : 0;
 			rv.set(VTypes::WidgetData, ptr->addGroup(node->argc(0), node->argc(1), l, t, xw, xh));
-			if (rv.asPointer(VTypes::WidgetData) == NULL) result = FALSE;
+			if (rv.asPointer(VTypes::WidgetData) == NULL) result = false;
 			break;
 		case (WidgetVariable::AddIntegerSpin):
 			l = node->hasArg(6) ? node->argi(6) : -1;
@@ -371,7 +371,7 @@ bool WidgetVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 			xw = node->hasArg(8) ? node->argi(8) : 0;
 			xh = node->hasArg(9) ? node->argi(9) : 0;
 			rv.set(VTypes::WidgetData, ptr->addIntegerSpin(node->argc(0), node->argc(1), node->argi(2), node->argi(3), node->argi(4), node->argi(5), l, t, xw, xh));
-			if (rv.asPointer(VTypes::WidgetData) == NULL) result = FALSE;
+			if (rv.asPointer(VTypes::WidgetData) == NULL) result = false;
 			break;
 		case (WidgetVariable::AddLabel):
 			l = node->hasArg(2) ? node->argi(2) : -1;
@@ -379,11 +379,11 @@ bool WidgetVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 			xw = node->hasArg(4) ? node->argi(4) : 0;
 			xh = node->hasArg(5) ? node->argi(5) : 0;
 			rv.set(VTypes::WidgetData, ptr->addLabel(node->argc(0), node->argc(1), l, t, xw, xh));
-			if (rv.asPointer(VTypes::WidgetData) == NULL) result = FALSE;
+			if (rv.asPointer(VTypes::WidgetData) == NULL) result = false;
 			break;
 		case (WidgetVariable::AddPage):
 			rv.set(VTypes::WidgetData, ptr->addPage(node->argc(0), node->argc(1)));
-			if (rv.asPointer(VTypes::WidgetData) == NULL) result = FALSE;
+			if (rv.asPointer(VTypes::WidgetData) == NULL) result = false;
 			break;
 		case (WidgetVariable::AddRadioButton):
 			l = node->hasArg(4) ? node->argi(4) : -1;
@@ -391,18 +391,18 @@ bool WidgetVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 			xw = node->hasArg(6) ? node->argi(6) : 0;
 			xh = node->hasArg(7) ? node->argi(7) : 0;
 			rv.set(VTypes::WidgetData, ptr->addRadioButton(node->argc(0), node->argc(1), node->argc(2), node->argi(3), l, t, xw, xh));
-			if (rv.asPointer(VTypes::WidgetData) == NULL) result = FALSE;
+			if (rv.asPointer(VTypes::WidgetData) == NULL) result = false;
 			break;
 		case (WidgetVariable::AddRadioGroup):
 			rv.set(VTypes::WidgetData, ptr->addRadioGroup(node->argc(0)));
-			if (rv.asPointer(VTypes::WidgetData) == NULL) result = FALSE;
+			if (rv.asPointer(VTypes::WidgetData) == NULL) result = false;
 			break;
 		case (WidgetVariable::AddSpacer):
 			l = node->hasArg(2) ? node->argi(2) : -1;
 			t = node->hasArg(3) ? node->argi(3) : -1;
 			xw = node->hasArg(4) ? node->argi(4) : 0;
 			xh = node->hasArg(5) ? node->argi(5) : 0;
-			if (!ptr->addSpacer(node->argb(0), node->argb(1), l, t, xw, xh))  result = FALSE;
+			if (!ptr->addSpacer(node->argb(0), node->argb(1), l, t, xw, xh))  result = false;
 			rv.reset();
 			break;
 		case (WidgetVariable::AddStack):
@@ -411,7 +411,7 @@ bool WidgetVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 			xw = node->hasArg(3) ? node->argi(3) : 0;
 			xh = node->hasArg(4) ? node->argi(4) : 0;
 			rv.set(VTypes::WidgetData, ptr->addStack(node->argc(0), l, t, xw, xh));
-			if (rv.asPointer(VTypes::WidgetData) == NULL) result = FALSE;
+			if (rv.asPointer(VTypes::WidgetData) == NULL) result = false;
 			break;
 		case (WidgetVariable::AddTabs):
 			l = node->hasArg(1) ? node->argi(1) : -1;
@@ -419,14 +419,14 @@ bool WidgetVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 			xw = node->hasArg(3) ? node->argi(3) : 0;
 			xh = node->hasArg(4) ? node->argi(4) : 0;
 			rv.set(VTypes::WidgetData, ptr->addTabs(node->argc(0), l, t, xw, xh));
-			if (rv.asPointer(VTypes::WidgetData) == NULL) result = FALSE;
+			if (rv.asPointer(VTypes::WidgetData) == NULL) result = false;
 			break;
 		case (WidgetVariable::OnDouble):
 		case (WidgetVariable::OnInteger):
 			rv.reset();
 			// Check supplied parameters
-			result = FALSE;
-			eventType = TreeGuiWidgetEvent::eventType(node->argc(2), TRUE);
+			result = false;
+			eventType = TreeGuiWidgetEvent::eventType(node->argc(2), true);
 			if (eventType == TreeGuiWidgetEvent::nEventTypes) break;
 			targetWidget = ptr->parent()->findWidget(node->argc(3));
 			if (targetWidget == NULL)
@@ -434,7 +434,7 @@ bool WidgetVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 				Messenger::print("Error: No widget named '%s' is defined in the current dialog.", qPrintable(node->argc(3)));
 				break;
 			}
-			eventProperty = TreeGuiWidgetEvent::eventProperty(node->argc(4), TRUE);
+			eventProperty = TreeGuiWidgetEvent::eventProperty(node->argc(4), true);
 			if (eventProperty == TreeGuiWidgetEvent::nEventProperties) break;
 			event = ptr->addEvent(eventType, targetWidget, eventProperty);
 			// Set qualifying value or range
@@ -449,7 +449,7 @@ bool WidgetVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 					if (node->hasArg(6))
 					{
 						Messenger::print("Error: Can't set more than one send value for an 'onDouble' event.");
-						result = FALSE;
+						result = false;
 					}
 					else
 					{
@@ -471,19 +471,19 @@ bool WidgetVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 					if ((event->nSendValues() != 1) && (event->nSendValues() != range))
 					{
 						Messenger::print("Error: %s values (%i) supplied to 'onRange' function, based on integer range provided (expected (%i).", (event->nSendValues() < range ? "Not enough" : "Too many"), event->nSendValues(), range);
-						result = FALSE;
+						result = false;
 						break;
 					}
 				}
 			
 			}
-			result = TRUE;
+			result = true;
 			break;
 		case (WidgetVariable::OnString):
 			rv.reset();
 			// Check supplied parameters
-			result = FALSE;
-			eventType = TreeGuiWidgetEvent::eventType(node->argc(1), TRUE);
+			result = false;
+			eventType = TreeGuiWidgetEvent::eventType(node->argc(1), true);
 			if (eventType == TreeGuiWidgetEvent::nEventTypes) break;
 			targetWidget = ptr->parent()->findWidget(node->argc(2));
 			if (targetWidget == NULL)
@@ -491,7 +491,7 @@ bool WidgetVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 				Messenger::print("Error: No widget named '%s' is defined in the current dialog.", qPrintable(node->argc(2)));
 				break;
 			}
-			eventProperty = TreeGuiWidgetEvent::eventProperty(node->argc(3), TRUE);
+			eventProperty = TreeGuiWidgetEvent::eventProperty(node->argc(3), true);
 			if (eventProperty == TreeGuiWidgetEvent::nEventProperties) break;
 			event = ptr->addEvent(eventType, targetWidget, eventProperty);
 			// Set qualifying value
@@ -502,10 +502,10 @@ bool WidgetVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 				ReturnValue *sendValue = event->addSendValue();
 				node->arg(4, *sendValue);
 			}
-			result = TRUE;
+			result = true;
 			break;
 		case (WidgetVariable::SetProperty):
-			eventProperty = TreeGuiWidgetEvent::eventProperty(node->argc(0), TRUE);
+			eventProperty = TreeGuiWidgetEvent::eventProperty(node->argc(0), true);
 			if (eventProperty == TreeGuiWidgetEvent::nEventProperties) break;
 			if (node->argType(1) == VTypes::IntegerData) value.set(node->argi(1));
 			else if (node->argType(1) == VTypes::DoubleData) value.set(node->argd(1));
@@ -514,7 +514,7 @@ bool WidgetVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 			break;
 		default:
 			printf("Internal Error: Access to function '%s' has not been defined in WidgetVariable.\n", functionData[i].name);
-			result = FALSE;
+			result = false;
 			break;
 	}
 	Messenger::exit("WidgetVariable::performFunction");

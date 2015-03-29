@@ -72,8 +72,8 @@ Choice::operator bool()
 {
 	if (choice_ == Choice::Default)
 	{
-		printf("Warning - Choice value has not been resolved from 'Default'. Converting to FALSE.\n");
-		return FALSE;
+		printf("Warning - Choice value has not been resolved from 'Default'. Converting to false.\n");
+		return false;
 	}
-	return (choice_ == Choice::Yes ? TRUE : FALSE);
+	return (choice_ == Choice::Yes);
 }

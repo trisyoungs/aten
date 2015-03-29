@@ -55,10 +55,10 @@ BondVariable::~BondVariable()
 
 // Accessor data
 Accessor BondVariable::accessorData[BondVariable::nAccessors] = {
-	{ "i",		VTypes::AtomData,	0, TRUE },
-	{ "j",		VTypes::AtomData,	0, TRUE },
-	{ "order",	VTypes::DoubleData,	0, TRUE },
-	{ "type",	VTypes::StringData,	0, FALSE }
+	{ "i",		VTypes::AtomData,	0, true },
+	{ "j",		VTypes::AtomData,	0, true },
+	{ "order",	VTypes::DoubleData,	0, true },
+	{ "type",	VTypes::StringData,	0, false }
 };
 
 // Function data
@@ -139,7 +139,7 @@ bool BondVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex, 
 	{
 		printf("Internal Error: Accessor id %i is out of range for Bond type.\n", i);
 		Messenger::exit("BondVariable::retrieveAccessor");
-		return FALSE;
+		return false;
 	}
 	Accessors acc = (Accessors) i;
 	// Check for correct lack/presence of array index given
@@ -147,7 +147,7 @@ bool BondVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex, 
 	{
 		Messenger::print("Error: Unnecessary array index provided for member '%s'.", accessorData[i].name);
 		Messenger::exit("BondVariable::retrieveAccessor");
-		return FALSE;
+		return false;
 	}
 	else if ((accessorData[i].arraySize > 0) && (hasArrayIndex))
 	{
@@ -155,16 +155,16 @@ bool BondVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex, 
 		{
 			Messenger::print("Error: Array index out of bounds for member '%s' (%i, range is 1-%i).", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
 			Messenger::exit("BondVariable::retrieveAccessor");
-			return FALSE;
+			return false;
 		}
 	}
 	// Get current data from ReturnValue
-	bool result = TRUE;
+	bool result = true;
 	Bond* ptr = (Bond*) rv.asPointer(VTypes::BondData, result);
 	if ((!result) || (ptr == NULL))
 	{
 		Messenger::print("Invalid (NULL) %s reference encountered.", VTypes::dataType(VTypes::BondData));
-		result = FALSE;
+		result = false;
 	}
 	if (result) switch (acc)
 	{
@@ -182,7 +182,7 @@ bool BondVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex, 
 			break;
 		default:
 			printf("Internal Error: Access to member '%s' has not been defined in BondVariable.\n", accessorData[i].name);
-			result = FALSE;
+			result = false;
 			break;
 	}
 	Messenger::exit("BondVariable::retrieveAccessor");
@@ -198,11 +198,11 @@ bool BondVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newVal
 	{
 		printf("Internal Error: Accessor id %i is out of range for Bond type.\n", i);
 		Messenger::exit("BondVariable::setAccessor");
-		return FALSE;
+		return false;
 	}
 	Accessors acc = (Accessors) i;
 	// Check for correct lack/presence of array index given to original accessor, and nature of new value
-	bool result = TRUE;
+	bool result = true;
 	if (accessorData[i].arraySize != 0)
 	{
 		if (hasArrayIndex)
@@ -210,12 +210,12 @@ bool BondVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newVal
 			if ((accessorData[i].arraySize > 0) && ( (arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize) ))
 			{
 				Messenger::print("Error: Array index provided for member '%s' is out of range (%i, range is 1-%i).", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
-				result = FALSE;
+				result = false;
 			}
 			if (newValue.arraySize() > 0)
 			{
 				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.", accessorData[i].name);
-				result = FALSE;
+				result = false;
 			}
 		}
 		else
@@ -223,7 +223,7 @@ bool BondVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newVal
 			if (newValue.arraySize() > accessorData[i].arraySize)
 			{
 				Messenger::print("Error: The array being assigned to member '%s' is larger than the size of the desination array (%i cf. %i).", accessorData[i].name, newValue.arraySize(), accessorData[i].arraySize);
-				result = FALSE;
+				result = false;
 			}
 		}
 	}
@@ -235,19 +235,19 @@ bool BondVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newVal
 			if (accessorData[i].returnType != VTypes::VectorData)
 			{
 				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.", accessorData[i].name);
-				result = FALSE;
+				result = false;
 			}
 			else if ((newValue.type() != VTypes::VectorData) && (newValue.arraySize() != 3))
 			{
 				Messenger::print("Error: Only an array of size 3 can be assigned to a vector (member '%s').", accessorData[i].name);
-				result = FALSE;
+				result = false;
 			}
 		}
 	}
 	if (!result)
 	{
 		Messenger::exit("BondVariable::setAccessor");
-		return FALSE;
+		return false;
 	}
 	// Get current data from ReturnValue
 	Bond* ptr = (Bond*) sourcerv.asPointer(VTypes::BondData, result);
@@ -255,19 +255,19 @@ bool BondVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newVal
 	if ((!result) || (ptr == NULL))
 	{
 		Messenger::print("Invalid (NULL) %s reference encountered.", VTypes::dataType(VTypes::BondData));
-		result = FALSE;
+		result = false;
 	}
 	Model* ptrParent = ptr->atomI()->parent();
 	if (result) switch (acc)
 	{
 		case (BondVariable::Type):
-			bt = Bond::bondType(newValue.asString(), TRUE);
+			bt = Bond::bondType(newValue.asString(), true);
 			if (bt == Bond::nBondTypes) break;
 			ptrParent->changeBond(ptr, bt);
 			break;
 		default:
 			printf("BondVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);
-			result = FALSE;
+			result = false;
 			break;
 	}
 	Messenger::exit("BondVariable::setAccessor");
@@ -283,10 +283,10 @@ bool BondVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 	{
 		printf("Internal Error: FunctionAccessor id %i is out of range for Bond type.\n", i);
 		Messenger::exit("BondVariable::performFunction");
-		return FALSE;
+		return false;
 	}
 	// Get current data from ReturnValue
-	bool result = TRUE;
+	bool result = true;
 	Bond* ptr = (Bond*) rv.asPointer(VTypes::BondData, result);
 	if (result) switch (i)
 	{
@@ -295,7 +295,7 @@ bool BondVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 			break;
 		default:
 			printf("Internal Error: Access to function '%s' has not been defined in BondVariable.\n", functionData[i].name);
-			result = FALSE;
+			result = false;
 			break;
 	}
 	Messenger::exit("BondVariable::performFunction");

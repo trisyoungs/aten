@@ -28,11 +28,11 @@ ATEN_USING_NAMESPACE
 bool Commands::function_OperatorAdd(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	ReturnValue lhs, rhs;
-	bool b = TRUE;
-	if (!c->arg(0,lhs)) return FALSE;
-	if (!c->arg(1,rhs)) return FALSE;
+	bool b = true;
+	if (!c->arg(0,lhs)) return false;
+	if (!c->arg(1,rhs)) return false;
 	int id = lhs.dataPair(rhs);
-	if (id < 0) b = FALSE;
+	if (id < 0) b = false;
 	else switch (id)
 	{
 		case (VTypes::IntAIntA):
@@ -74,12 +74,12 @@ bool Commands::function_OperatorAdd(CommandNode* c, Bundle& obj, ReturnValue& rv
 		case (VTypes::DblVec): rv.set(rhs.asVector(b) + lhs.asDouble(b)); break;
 		case (VTypes::IntAVec):
 		case (VTypes::DblAVec):
-			if (lhs.arraySize() != 3) b = FALSE;
+			if (lhs.arraySize() != 3) b = false;
 			else rv.set(Vec3<double>(lhs.asDouble(0,b), lhs.asDouble(1,b), lhs.asDouble(2,b)) + rhs.asVector());
 			break;
 		case (VTypes::VecIntA):
 		case (VTypes::VecDblA):
-			if (rhs.arraySize() != 3) b = FALSE;
+			if (rhs.arraySize() != 3) b = false;
 			else rv.set(Vec3<double>(rhs.asDouble(0,b), rhs.asDouble(1,b), rhs.asDouble(2,b)) + lhs.asVector());
 			break;
 		case (VTypes::StrStr):
@@ -96,55 +96,55 @@ bool Commands::function_OperatorAdd(CommandNode* c, Bundle& obj, ReturnValue& rv
 bool Commands::function_OperatorAnd(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	ReturnValue v1, v2;
-	if (!c->arg(0,v1)) return FALSE;
-	if (!c->arg(1,v2)) return FALSE;
+	if (!c->arg(0,v1)) return false;
+	if (!c->arg(1,v2)) return false;
 	rv.set(v1.asBool() && v2.asBool());
-	return TRUE;
+	return true;
 }
 
 // Assignment
 bool Commands::function_OperatorAssignment(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	// Grab the second argument result and assign it to the first
-	if (!c->arg(1, rv)) return FALSE;
-	if (!c->setArg(0, rv)) return FALSE;
-	return TRUE;
+	if (!c->arg(1, rv)) return false;
+	if (!c->setArg(0, rv)) return false;
+	return true;
 }
 
 // Assignment Divide
 bool Commands::function_OperatorAssignmentDivide(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (!function_OperatorDivide(c,obj,rv)) return FALSE;
+	if (!function_OperatorDivide(c,obj,rv)) return false;
 	// Now, set the first argument to our return value
-	if (!c->setArg(0, rv)) return FALSE;
-	return TRUE;
+	if (!c->setArg(0, rv)) return false;
+	return true;
 }
 
 // Assignment Multiply
 bool Commands::function_OperatorAssignmentMultiply(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (!function_OperatorMultiply(c,obj,rv)) return FALSE;
+	if (!function_OperatorMultiply(c,obj,rv)) return false;
 	// Now, set the first argument to our return value
-	if (!c->setArg(0, rv)) return FALSE;
-	return TRUE;
+	if (!c->setArg(0, rv)) return false;
+	return true;
 }
 
 // Assignment Plus
 bool Commands::function_OperatorAssignmentPlus(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (!function_OperatorAdd(c,obj,rv)) return FALSE;
+	if (!function_OperatorAdd(c,obj,rv)) return false;
 	// Now, set the first argument to our return value
-	if (!c->setArg(0, rv)) return FALSE;
-	return TRUE;
+	if (!c->setArg(0, rv)) return false;
+	return true;
 }
 
 // Assignment Subtract
 bool Commands::function_OperatorAssignmentSubtract(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (!function_OperatorSubtract(c,obj,rv)) return FALSE;
+	if (!function_OperatorSubtract(c,obj,rv)) return false;
 	// Now, set the first argument to our return value
-	if (!c->setArg(0, rv)) return FALSE;
-	return TRUE;
+	if (!c->setArg(0, rv)) return false;
+	return true;
 }
 
 // Divide one quantity by another
@@ -152,11 +152,11 @@ bool Commands::function_OperatorDivide(CommandNode* c, Bundle& obj, ReturnValue&
 {
 	// Grab both argument (return) values and send them to be operated on
 	ReturnValue lhs, rhs;
-	bool b = TRUE;
-	if (!c->arg(0,lhs)) return FALSE;
-	if (!c->arg(1,rhs)) return FALSE;
+	bool b = true;
+	if (!c->arg(0,lhs)) return false;
+	if (!c->arg(1,rhs)) return false;
 	int id = lhs.dataPair(rhs);
-	if (id < 0) b = FALSE;
+	if (id < 0) b = false;
 	else switch (id)
 	{
 		case (VTypes::IntAIntA): for (int i=0; i<lhs.arraySize(); ++i) lhs.setElement(i, lhs.asInteger(i,b) / rhs.asInteger(i,b)); rv = lhs; break;
@@ -175,10 +175,10 @@ bool Commands::function_OperatorDivide(CommandNode* c, Bundle& obj, ReturnValue&
 		case (VTypes::VecDbl): rv.set(lhs.asVector(b) / rhs.asDouble(b)); break;
 		case (VTypes::VecVec): rv.set(lhs.asVector(b) / rhs.asVector(b)); break;
 		case (VTypes::IntAVec):
-		case (VTypes::DblAVec): if (lhs.arraySize() != 3) b = FALSE;
+		case (VTypes::DblAVec): if (lhs.arraySize() != 3) b = false;
 			else { Vec3<double> v(lhs.asDouble(0,b), lhs.asDouble(1,b), lhs.asDouble(2,b)); rv.set(v / rhs.asVector()); } break;
 		case (VTypes::VecIntA):
-		case (VTypes::VecDblA): if (rhs.arraySize() != 3) b = FALSE;
+		case (VTypes::VecDblA): if (rhs.arraySize() != 3) b = false;
 			else { Vec3<double> v(rhs.asDouble(0,b), rhs.asDouble(1,b), rhs.asDouble(2,b)); rv.set(v / lhs.asVector()); } break;
 		default:
 			Messenger::print("The operator '/' cannot act between %s and %s.", VTypes::aDataType(rv.type(),rv.arraySize()), VTypes::aDataType(rhs.type(),rhs.arraySize()));
@@ -191,12 +191,12 @@ bool Commands::function_OperatorEqualTo(CommandNode* c, Bundle& obj, ReturnValue
 {
 	// Grab both argument (return) values and send them to be operated on
 	ReturnValue lhs, rhs;
-	bool b = TRUE;
+	bool b = true;
 	int result = 1;
-	if (!c->arg(0,lhs)) return FALSE;
-	if (!c->arg(1,rhs)) return FALSE;
+	if (!c->arg(0,lhs)) return false;
+	if (!c->arg(1,rhs)) return false;
 	int id = lhs.dataPair(rhs);
-	if (id < 0) b = FALSE;
+	if (id < 0) b = false;
 	else switch (id)
 	{
 		case (VTypes::IntAIntA):
@@ -261,12 +261,12 @@ bool Commands::function_OperatorGreaterThan(CommandNode* c, Bundle& obj, ReturnV
 {
 	// Grab both argument (return) values and send them to be operated on
 	ReturnValue lhs, rhs;
-	bool b = TRUE;
+	bool b = true;
 	int result = 1;
-	if (!c->arg(0,lhs)) return FALSE;
-	if (!c->arg(1,rhs)) return FALSE;
+	if (!c->arg(0,lhs)) return false;
+	if (!c->arg(1,rhs)) return false;
 	int id = lhs.dataPair(rhs);
-	if (id < 0) b = FALSE;
+	if (id < 0) b = false;
 	else switch (id)
 	{
 		case (VTypes::IntAIntA):
@@ -331,12 +331,12 @@ bool Commands::function_OperatorGreaterThanEqualTo(CommandNode* c, Bundle& obj, 
 {
 	// Grab both argument (return) values and send them to be operated on
 	ReturnValue lhs, rhs;
-	bool b = TRUE;
+	bool b = true;
 	int result = 1;
-	if (!c->arg(0,lhs)) return FALSE;
-	if (!c->arg(1,rhs)) return FALSE;
+	if (!c->arg(0,lhs)) return false;
+	if (!c->arg(1,rhs)) return false;
 	int id = lhs.dataPair(rhs);
-	if (id < 0) b = FALSE;
+	if (id < 0) b = false;
 	else switch (id)
 	{
 		case (VTypes::IntAIntA):
@@ -400,15 +400,15 @@ bool Commands::function_OperatorInlineIf(CommandNode* c, Bundle& obj, ReturnValu
 {
 	// Evaluate first argument (the IF part)
 	ReturnValue condition;
-	bool b = TRUE;
-	if (!c->arg(0,condition)) return FALSE;
+	bool b = true;
+	if (!c->arg(0,condition)) return false;
 	if (condition.asBool())
 	{
-		if (!c->arg(1, rv)) b = FALSE;
+		if (!c->arg(1, rv)) b = false;
 	}
 	else
 	{
-		if (!c->arg(2, rv)) b = FALSE;
+		if (!c->arg(2, rv)) b = false;
 	}
 	return b;
 }
@@ -418,12 +418,12 @@ bool Commands::function_OperatorLessThan(CommandNode* c, Bundle& obj, ReturnValu
 {
 	// Grab both argument (return) values and send them to be operated on
 	ReturnValue lhs, rhs;
-	bool b = TRUE;
+	bool b = true;
 	int result = 1;
-	if (!c->arg(0,lhs)) return FALSE;
-	if (!c->arg(1,rhs)) return FALSE;
+	if (!c->arg(0,lhs)) return false;
+	if (!c->arg(1,rhs)) return false;
 	int id = lhs.dataPair(rhs);
-	if (id < 0) b = FALSE;
+	if (id < 0) b = false;
 	else switch (id)
 	{
 		case (VTypes::IntAIntA):
@@ -488,12 +488,12 @@ bool Commands::function_OperatorLessThanEqualTo(CommandNode* c, Bundle& obj, Ret
 {
 	// Grab both argument (return) values and send them to be operated on
 	ReturnValue lhs, rhs;
-	bool b = TRUE;
+	bool b = true;
 	int result = 1;
-	if (!c->arg(0,lhs)) return FALSE;
-	if (!c->arg(1,rhs)) return FALSE;
+	if (!c->arg(0,lhs)) return false;
+	if (!c->arg(1,rhs)) return false;
 	int id = lhs.dataPair(rhs);
-	if (id < 0) b = FALSE;
+	if (id < 0) b = false;
 	else switch (id)
 	{
 		case (VTypes::IntAIntA):
@@ -558,11 +558,11 @@ bool Commands::function_OperatorModulus(CommandNode* c, Bundle& obj, ReturnValue
 {
 	// Grab both argument (return) values and send them to be operated on
 	ReturnValue lhs, rhs;
-	bool b = TRUE;
-	if (!c->arg(0,lhs)) return FALSE;
-	if (!c->arg(1,rhs)) return FALSE;
+	bool b = true;
+	if (!c->arg(0,lhs)) return false;
+	if (!c->arg(1,rhs)) return false;
 	int id = lhs.dataPair(rhs);
-	if (id < 0) b = FALSE;
+	if (id < 0) b = false;
 	else switch (id)
 	{
 		case (VTypes::IntInt): rv.set(lhs.asInteger(b) % rhs.asInteger(b)); break;
@@ -577,11 +577,11 @@ bool Commands::function_OperatorMultiply(CommandNode* c, Bundle& obj, ReturnValu
 {
 	// Grab both argument (return) values and send them to be operated on
 	ReturnValue lhs, rhs;
-	bool b = TRUE;
-	if (!c->arg(0,lhs)) return FALSE;
-	if (!c->arg(1,rhs)) return FALSE;
+	bool b = true;
+	if (!c->arg(0,lhs)) return false;
+	if (!c->arg(1,rhs)) return false;
 	int id = lhs.dataPair(rhs);
-	if (id < 0) b = FALSE;
+	if (id < 0) b = false;
 	else switch (id)
 	{
 		case (VTypes::IntAIntA): for (int i=0; i<lhs.arraySize(); ++i) lhs.setElement(i, lhs.asInteger(i,b) * rhs.asInteger(i,b)); rv = lhs; break;
@@ -608,10 +608,10 @@ bool Commands::function_OperatorMultiply(CommandNode* c, Bundle& obj, ReturnValu
 		case (VTypes::IntVec):
 		case (VTypes::DblVec): rv.set(rhs.asVector(b) * lhs.asDouble(b)); break;
 		case (VTypes::IntAVec):
-		case (VTypes::DblAVec): if (lhs.arraySize() != 3) b = FALSE;
+		case (VTypes::DblAVec): if (lhs.arraySize() != 3) b = false;
 			else { Vec3<double> v(lhs.asDouble(0,b), lhs.asDouble(1,b), lhs.asDouble(2,b)); rv.set(v * rhs.asVector()); } break;
 		case (VTypes::VecIntA):
-		case (VTypes::VecDblA): if (rhs.arraySize() != 3) b = FALSE;
+		case (VTypes::VecDblA): if (rhs.arraySize() != 3) b = false;
 			else { Vec3<double> v(rhs.asDouble(0,b), rhs.asDouble(1,b), rhs.asDouble(2,b)); rv.set(v * lhs.asVector()); } break;
 		default:
 			Messenger::print("The operator '*' cannot act between %s and %s.", VTypes::aDataType(rv.type(),rv.arraySize()), VTypes::aDataType(rhs.type(),rhs.arraySize()));
@@ -622,7 +622,7 @@ bool Commands::function_OperatorMultiply(CommandNode* c, Bundle& obj, ReturnValu
 // Negate value
 bool Commands::function_OperatorNegate(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (!c->arg(0, rv)) return FALSE;
+	if (!c->arg(0, rv)) return false;
 	int i;
 	switch (c->argType(0))
 	{
@@ -647,9 +647,9 @@ bool Commands::function_OperatorNegate(CommandNode* c, Bundle& obj, ReturnValue&
 			break;
 		default:
 			Messenger::print("Can't negate %s.", VTypes::aDataType(c->argType(0)));
-			return FALSE;
+			return false;
 	}
-	return TRUE;
+	return true;
 }
 
 // Not (Reverse Logic)
@@ -657,21 +657,21 @@ bool Commands::function_OperatorNot(CommandNode* c, Bundle& obj, ReturnValue& rv
 {
 	// Grab argument and 'negate' it
 	ReturnValue v1;
-	if (!c->arg(0, v1)) return FALSE;
+	if (!c->arg(0, v1)) return false;
 	rv.set( !v1.asBool() );
-	return TRUE;
+	return true;
 }
 
 // Not Equal To
 bool Commands::function_OperatorNotEqualTo(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	ReturnValue lhs, rhs;
-	bool b = TRUE;
+	bool b = true;
 	int result = 1;
-	if (!c->arg(0,lhs)) return FALSE;
-	if (!c->arg(1,rhs)) return FALSE;
+	if (!c->arg(0,lhs)) return false;
+	if (!c->arg(1,rhs)) return false;
 	int id = lhs.dataPair(rhs);
-	if (id < 0) b = FALSE;
+	if (id < 0) b = false;
 	else switch (id)
 	{
 		case (VTypes::IntAIntA):
@@ -736,17 +736,17 @@ bool Commands::function_OperatorOr(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	// Grab both argument (return) values and send them to be operated on
 	ReturnValue v1, v2;
-	if (!c->arg(0,v1)) return FALSE;
-	if (!c->arg(1,v2)) return FALSE;
+	if (!c->arg(0,v1)) return false;
+	if (!c->arg(1,v2)) return false;
 	rv.set(v1.asBool() || v2.asBool());
-	return TRUE;
+	return true;
 }
 
 // Postfix Decrease
 bool Commands::function_OperatorPostfixDecrease(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	// Get current value of argument
-	if (!c->arg(0, rv)) return FALSE;
+	if (!c->arg(0, rv)) return false;
 	ReturnValue newvalue;
 	newvalue = rv;
 	newvalue.decrease();
@@ -757,7 +757,7 @@ bool Commands::function_OperatorPostfixDecrease(CommandNode* c, Bundle& obj, Ret
 bool Commands::function_OperatorPostfixIncrease(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	// Get current value of argument
-	if (!c->arg(0, rv)) return FALSE;
+	if (!c->arg(0, rv)) return false;
 	ReturnValue newvalue;
 	newvalue = rv;
 	newvalue.increase();
@@ -768,7 +768,7 @@ bool Commands::function_OperatorPostfixIncrease(CommandNode* c, Bundle& obj, Ret
 bool Commands::function_OperatorPrefixDecrease(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	// Get current value of argument
-	if (!c->arg(0, rv)) return FALSE;
+	if (!c->arg(0, rv)) return false;
 	rv.decrease();
 	return c->setArg(0, rv);
 }
@@ -777,7 +777,7 @@ bool Commands::function_OperatorPrefixDecrease(CommandNode* c, Bundle& obj, Retu
 bool Commands::function_OperatorPrefixIncrease(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	// Get current value of argument
-	if (!c->arg(0, rv)) return FALSE;
+	if (!c->arg(0, rv)) return false;
 	rv.increase();
 	return c->setArg(0, rv);
 }
@@ -786,11 +786,11 @@ bool Commands::function_OperatorPrefixIncrease(CommandNode* c, Bundle& obj, Retu
 bool Commands::function_OperatorPower(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	ReturnValue lhs, rhs;
-	bool b = TRUE;
-	if (!c->arg(0,lhs)) return FALSE;
-	if (!c->arg(1,rhs)) return FALSE;
+	bool b = true;
+	if (!c->arg(0,lhs)) return false;
+	if (!c->arg(1,rhs)) return false;
 	int id = lhs.dataPair(rhs);
-	if (id < 0) b = FALSE;
+	if (id < 0) b = false;
 	else switch (id)
 	{
 		case (VTypes::IntInt): rv.set(AtenMath::power(lhs.asInteger(b),rhs.asInteger(b))); break;
@@ -809,11 +809,11 @@ bool Commands::function_OperatorSubtract(CommandNode* c, Bundle& obj, ReturnValu
 {
 	// Grab both argument (return) values and send them to be operated on
 	ReturnValue lhs, rhs;
-	bool b = TRUE;
-	if (!c->arg(0,lhs)) return FALSE;
-	if (!c->arg(1,rhs)) return FALSE;
+	bool b = true;
+	if (!c->arg(0,lhs)) return false;
+	if (!c->arg(1,rhs)) return false;
 	int id = lhs.dataPair(rhs);
-	if (id < 0) b = FALSE;
+	if (id < 0) b = false;
 	else switch (id)
 	{
 		case (VTypes::IntAIntA): for (int i=0; i<lhs.arraySize(); ++i) lhs.setElement(i, lhs.asInteger(i,b) - rhs.asInteger(i,b)); rv = lhs; break;
@@ -838,10 +838,10 @@ bool Commands::function_OperatorSubtract(CommandNode* c, Bundle& obj, ReturnValu
 		case (VTypes::IntVec):
 		case (VTypes::DblVec): rv.set(rhs.asVector(b) - lhs.asDouble(b)); break;
 		case (VTypes::IntAVec):
-		case (VTypes::DblAVec): if (lhs.arraySize() != 3) b = FALSE;
+		case (VTypes::DblAVec): if (lhs.arraySize() != 3) b = false;
 			else { Vec3<double> v(lhs.asDouble(0,b), lhs.asDouble(1,b), lhs.asDouble(2,b)); rv.set(v - rhs.asVector()); } break;
 		case (VTypes::VecIntA):
-		case (VTypes::VecDblA): if (rhs.arraySize() != 3) b = FALSE;
+		case (VTypes::VecDblA): if (rhs.arraySize() != 3) b = false;
 			else { Vec3<double> v(rhs.asDouble(0,b), rhs.asDouble(1,b), rhs.asDouble(2,b)); rv.set(v - lhs.asVector()); } break;
 		default:
 			Messenger::print("The operator '-' cannot act between %s and %s.", VTypes::aDataType(rv.type(),rv.arraySize()), VTypes::aDataType(rhs.type(),rhs.arraySize()));

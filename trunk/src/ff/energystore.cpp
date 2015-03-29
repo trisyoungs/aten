@@ -65,7 +65,7 @@ void EnergyStore::initialise()
 	ewaldMolCorrect_ = NULL;
 	resetTotals();
 	size_ = 0;
-	calculated_ = FALSE;
+	calculated_ = false;
 }
 
 /*
@@ -147,7 +147,7 @@ void EnergyStore::clear()
 	}
 	vdwTail_ = 0.0;
 	resetTotals();
-	calculated_ = FALSE;
+	calculated_ = false;
 	Messenger::exit("EnergyStore::clear");
 }
 
@@ -231,7 +231,7 @@ void EnergyStore::totalise()
 	totalIntra_ = totalBond_ + totalAngle_ + totalTorsion_ + totalUreyBradley_;
 	totalInter_ = totalVdw_ + totalElectrostatic_;
 	total_ = totalIntra_ + totalInter_;
-	calculated_ = TRUE;
+	calculated_ = true;
 	Messenger::exit("EnergyStore::totalise");
 }
 

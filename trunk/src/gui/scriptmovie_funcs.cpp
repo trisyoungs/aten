@@ -123,7 +123,7 @@ void ScriptMovieWidget::on_SaveScriptedMovieButton_clicked(bool on)
 	
 	// Set offscreen rendering and save some current view preferences
 	bool viewglobe = prefs.viewRotationGlobe();
-	prefs.setViewRotationGlobe(FALSE);
+	prefs.setViewRotationGlobe(false);
 	
 	// Generate unique file basename and initialise image redirection
 	int runid;
@@ -138,7 +138,7 @@ void ScriptMovieWidget::on_SaveScriptedMovieButton_clicked(bool on)
 	parent_.aten().initialiseImageRedirect(basename, maxframes);
 	
 	int progid = progress.initialise("Saving scripted movie frames...", -1);
-	bool canceled = FALSE;
+	bool canceled = false;
 	ReturnValue rv;
 	script.execute(rv);
 

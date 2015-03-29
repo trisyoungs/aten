@@ -296,7 +296,7 @@ class Grid : public ListItem<Grid>
 	double primaryColour_[4], secondaryColour_[4];
 	// Colour scale to take colouring from (zero for internal colours)
 	int colourScale_;
-	// Whether to use the associated colour scale (TRUE) or the internal colour (FALSE)
+	// Whether to use the associated colour scale (true) or the internal colour (false)
 	bool useColourScale_;
 	// Whether to draw complementary surface with second set of cutoffs
 	bool useSecondary_;

@@ -49,7 +49,7 @@ MatrixVariable::MatrixVariable(TreeNode* xx, TreeNode* xy, TreeNode* xz, TreeNod
 	constZX_ = zx;
 	constZY_ = zy;
 	constZZ_ = zz;
-	readOnly_ = TRUE;
+	readOnly_ = true;
 	returnType_ = VTypes::MatrixData;
 }
 
@@ -68,9 +68,9 @@ bool MatrixVariable::set(ReturnValue& rv)
 	if (readOnly_)
 	{
 		Messenger::print("A constant value (in this case a matrix) cannot be assigned to.");
-		return FALSE;
+		return false;
 	}
-	bool success = FALSE;
+	bool success = false;
 	if (rv.arraySize() == -1) matrixData_ = rv.asMatrix(success);
 	else if (rv.arraySize() == 9)
 	{
@@ -83,7 +83,7 @@ bool MatrixVariable::set(ReturnValue& rv)
 	else
 	{
 		Messenger::print("Error: Array assigned to matrix variable must contain nine elements.");
-		success = FALSE;
+		success = false;
 	}
 	return success;
 }
@@ -92,22 +92,22 @@ bool MatrixVariable::set(ReturnValue& rv)
 bool MatrixVariable::reCreate()
 {
 	ReturnValue rv[9];
-	if (!constXX_->execute(rv[0])) return FALSE;
-	if (!constXY_->execute(rv[1])) return FALSE;
-	if (!constXZ_->execute(rv[2])) return FALSE;
-	if (!constYX_->execute(rv[3])) return FALSE;
-	if (!constYY_->execute(rv[4])) return FALSE;
-	if (!constYZ_->execute(rv[5])) return FALSE;
-	if (!constZX_->execute(rv[6])) return FALSE;
-	if (!constZY_->execute(rv[7])) return FALSE;
-	if (!constZZ_->execute(rv[8])) return FALSE;
+	if (!constXX_->execute(rv[0])) return false;
+	if (!constXY_->execute(rv[1])) return false;
+	if (!constXZ_->execute(rv[2])) return false;
+	if (!constYX_->execute(rv[3])) return false;
+	if (!constYY_->execute(rv[4])) return false;
+	if (!constYZ_->execute(rv[5])) return false;
+	if (!constZX_->execute(rv[6])) return false;
+	if (!constZY_->execute(rv[7])) return false;
+	if (!constZZ_->execute(rv[8])) return false;
 	bool success;
 	for (int n=0; n<9; ++n)
 	{
 		matrixData_[n/3*4+n%3] = rv[n].asDouble(success);
-		if (!success) return FALSE;
+		if (!success) return false;
 	}
-	return TRUE;
+	return true;
 }
 
 // Reset variable
@@ -122,7 +122,7 @@ bool MatrixVariable::execute(ReturnValue& rv)
 	// If this matrix is a constant, read the nine stored expressions to recreate it
 	if (readOnly_) reCreate();
 	rv.set(matrixData_);
-	return TRUE;
+	return true;
 }
 
 // Print node contents
@@ -149,16 +149,16 @@ void MatrixVariable::nodePrint(int offset, const char* prefix)
 
 // Accessor data
 Accessor MatrixVariable::accessorData[MatrixVariable::nAccessors] = {
-	{ "determinant", VTypes::DoubleData, FALSE, TRUE },
-	{ "xx", VTypes::DoubleData, FALSE, FALSE },
-	{ "xy", VTypes::DoubleData, FALSE, FALSE },
-	{ "xz", VTypes::DoubleData, FALSE, FALSE },
-	{ "yx", VTypes::DoubleData, FALSE, FALSE },
-	{ "yy", VTypes::DoubleData, FALSE, FALSE },
-	{ "yz", VTypes::DoubleData, FALSE, FALSE },
-	{ "zx", VTypes::DoubleData, FALSE, FALSE },
-	{ "zy", VTypes::DoubleData, FALSE, FALSE },
-	{ "zz", VTypes::DoubleData, FALSE, FALSE }
+	{ "determinant", VTypes::DoubleData, false, true },
+	{ "xx", VTypes::DoubleData, false, false },
+	{ "xy", VTypes::DoubleData, false, false },
+	{ "xz", VTypes::DoubleData, false, false },
+	{ "yx", VTypes::DoubleData, false, false },
+	{ "yy", VTypes::DoubleData, false, false },
+	{ "yz", VTypes::DoubleData, false, false },
+	{ "zx", VTypes::DoubleData, false, false },
+	{ "zy", VTypes::DoubleData, false, false },
+	{ "zz", VTypes::DoubleData, false, false }
 };
 
 // Function data
@@ -238,7 +238,7 @@ bool MatrixVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex
 	{
 		printf("Internal Error: Accessor id %i is out of range for Matrix type.\n", i);
 		Messenger::exit("MatrixVariable::retrieveAccessor");
-		return FALSE;
+		return false;
 	}
 	Accessors acc = (Accessors) i;
 	// Check for correct lack/presence of array index given
@@ -246,10 +246,10 @@ bool MatrixVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex
 	{
 		Messenger::print("Error: Unnecessary array index provided for member '%s'.", accessorData[i].name);
 		Messenger::exit("MatrixVariable::retrieveAccessor");
-		return FALSE;
+		return false;
 	}
 	// Get current data from ReturnValue
-	bool result = TRUE;
+	bool result = true;
 	Matrix m = rv.asMatrix(result);
 	if (result) switch (acc)
 	{
@@ -269,7 +269,7 @@ bool MatrixVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex
 			break;
 		default:
 			printf("Internal Error: Access to member '%s' has not been defined in MatrixVariable.\n", accessorData[i].name);
-			result = FALSE;
+			result = false;
 			break;
 	}
 	Messenger::exit("MatrixVariable::retrieveAccessor");
@@ -285,11 +285,11 @@ bool MatrixVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newV
 	{
 		printf("Internal Error: Accessor id %i is out of range for Matrix type.\n", i);
 		Messenger::exit("MatrixVariable::setAccessor");
-		return FALSE;
+		return false;
 	}
 	Accessors acc = (Accessors) i;
 	// Check for correct lack/presence of array index given to original accessor, and nature of new value
-	bool result = TRUE;
+	bool result = true;
 	if (accessorData[i].arraySize != 0)
 	{
 		if (hasArrayIndex)
@@ -297,12 +297,12 @@ bool MatrixVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newV
 			if ((accessorData[i].arraySize > 0) && ( (arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize) ))
 			{
 				Messenger::print("Error: Array index provided for member '%s' is out of range (%i, range is 1-%i).", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
-				result = FALSE;
+				result = false;
 			}
 			if (newValue.arraySize() > 0)
 			{
 				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.", accessorData[i].name);
-				result = FALSE;
+				result = false;
 			}
 		}
 		else
@@ -310,7 +310,7 @@ bool MatrixVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newV
 			if (newValue.arraySize() > accessorData[i].arraySize)
 			{
 				Messenger::print("Error: The array being assigned to member '%s' is larger than the size of the desination array (%i cf. %i).", accessorData[i].name, newValue.arraySize(), accessorData[i].arraySize);
-				result = FALSE;
+				result = false;
 			}
 		}
 	}
@@ -322,19 +322,19 @@ bool MatrixVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newV
 			if (accessorData[i].returnType != VTypes::MatrixData)
 			{
 				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.", accessorData[i].name);
-				result = FALSE;
+				result = false;
 			}
 			else if ((newValue.type() != VTypes::MatrixData) && (newValue.arraySize() != 9))
 			{
 				Messenger::print("Error: Only an array of size 9 can be assigned to a matrix (member '%s').", accessorData[i].name);
-				result = FALSE;
+				result = false;
 			}
 		}
 	}
 	if (!result)
 	{
 		Messenger::exit("MatrixVariable::setAccessor");
-		return FALSE;
+		return false;
 	}
 	// Get current data from ReturnValue
 	Matrix& m = sourcerv.matrix();
@@ -353,7 +353,7 @@ bool MatrixVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newV
 			break;
 		default:
 			printf("MatrixVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);
-			result = FALSE;
+			result = false;
 			break;
 	}
 	Messenger::exit("MatrixVariable::setAccessor");
@@ -369,16 +369,16 @@ bool MatrixVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 	{
 		printf("Internal Error: FunctionAccessor id %i is out of range for Matrix type.\n", i);
 		Messenger::exit("MatrixVariable::performFunction");
-		return FALSE;
+		return false;
 	}
 	// Get current data from ReturnValue
-	bool result = TRUE;
+	bool result = true;
 	Matrix m = rv.asMatrix();
 	if (result) switch (i)
 	{
 		default:
 			printf("Internal Error: Access to function '%s' has not been defined in MatrixVariable.\n", functionData[i].name);
-			result = FALSE;
+			result = false;
 			break;
 	}
 	Messenger::exit("MatrixVariable::performFunction");
@@ -416,16 +416,16 @@ bool MatrixArrayVariable::set(ReturnValue& rv)
 	if (readOnly_)
 	{
 		Messenger::print("A constant value (in this case a matrix array) cannot be assigned to.");
-		return FALSE;
+		return false;
 	}
 	if (matrixArrayData_ == NULL)
 	{
 		printf("Internal Error: Array '%s' has not been initialised.\n", qPrintable(name_));
-		return FALSE;
+		return false;
 	}
 	// Loop over array elements and set them
 	for (int i=0; i<arraySize_; i++) matrixArrayData_[i] = rv.asMatrix();
-	return TRUE;
+	return true;
 }
 
 // Set array element from returnvalue node
@@ -434,22 +434,22 @@ bool MatrixArrayVariable::setAsArray(ReturnValue& rv, int arrayIndex)
 	if (readOnly_)
 	{
 		Messenger::print("A constant value (in this case a matrix array?) cannot be assigned to.");
-		return FALSE;
+		return false;
 	}
 	if (matrixArrayData_ == NULL)
 	{
 		printf("Internal Error: Array '%s' has not been initialised.\n", qPrintable(name_));
-		return FALSE;
+		return false;
 	}
 	// Check index
 	if ((arrayIndex < 0) || (arrayIndex >= arraySize_))
 	{
 		Messenger::print("Index %i out of bounds for array '%s'.", arrayIndex+1, qPrintable(name_));
-		return FALSE;
+		return false;
 	}
 	// Set individual element
 	matrixArrayData_[arrayIndex] = rv.asMatrix();
-	return TRUE;
+	return true;
 }
 
 // Reset variable
@@ -468,7 +468,7 @@ void MatrixArrayVariable::reset()
 bool MatrixArrayVariable::execute(ReturnValue& rv)
 {
 	Messenger::print("A whole matrix array ('%s') cannot be passed as a value.", qPrintable(name_));
-	return FALSE;
+	return false;
 }
 
 // Return value of node as array
@@ -478,10 +478,10 @@ bool MatrixArrayVariable::executeAsArray(ReturnValue& rv, int arrayIndex)
 	if ((arrayIndex < 0) || (arrayIndex >= arraySize_))
 	{
 		Messenger::print("Error: Array index %i is out of bounds for array '%s'.", arrayIndex+1, qPrintable(name_));
-		return FALSE;
+		return false;
 	}
 	rv.set( matrixArrayData_[arrayIndex] );
-	return TRUE;
+	return true;
 }
 
 // Print node contents
@@ -506,7 +506,7 @@ bool MatrixArrayVariable::initialise()
 	if (!arraySizeExpression_->execute(newsize))
 	{
 		Messenger::print("Failed to find size for matrix array '%s'.", qPrintable(name_));
-		return FALSE;
+		return false;
 	}
 	// If the array is already allocated, free it only if the size is different
 	if ((arraySize_ != newsize.asInteger()) && (matrixArrayData_ != NULL)) { delete[] matrixArrayData_; matrixArrayData_ = NULL; }
@@ -519,11 +519,11 @@ bool MatrixArrayVariable::initialise()
 		ReturnValue rv;
 		if (initialValue_->execute(rv))
 		{
-			if (!set(rv)) return FALSE;
+			if (!set(rv)) return false;
 		}
-		else return FALSE;
+		else return false;
 	}
-	return TRUE;
+	return true;
 }
 
 // Search variable access list for provided accessor

@@ -41,18 +41,18 @@ Pattern::Pattern() : ListItem<Pattern>()
 	endAtom_ = 0;
 	firstAtom_ = NULL;
 	lastAtom_ = NULL;
-	fixed_ = FALSE;
+	fixed_ = false;
 	forcefield_ = NULL;
 	conMatrix_ = NULL;
 	elecScaleMatrix_ = NULL;
 	vdwScaleMatrix_ = NULL;
-	incomplete_ = FALSE;
-	testAtomLimit_ = FALSE;
-	testElement_ = FALSE;
-	testBonding_ = FALSE;
-	noIntramolecular_ = FALSE;
-	atomsFixed_ = FALSE;
-	addDummyTerms_ = FALSE;
+	incomplete_ = false;
+	testAtomLimit_ = false;
+	testElement_ = false;
+	testBonding_ = false;
+	noIntramolecular_ = false;
+	atomsFixed_ = false;
+	addDummyTerms_ = false;
 }
 
 PatternAtom::PatternAtom() : ListItem<PatternAtom>()
@@ -580,15 +580,15 @@ bool Pattern::atomsInRing(int id_i, int id_j)
 	if (id_j == -1)
 	{
 		Atom* i = atoms_[id_i]->atom();
-		for (Ring *r = rings_.first(); r != NULL; r = r->next) if (r->containsAtom(i)) return TRUE;
+		for (Ring *r = rings_.first(); r != NULL; r = r->next) if (r->containsAtom(i)) return true;
 	}
 	else
 	{
 		Atom* i = atoms_[id_i]->atom();
 		Atom* j = atoms_[id_j]->atom();
-		for (Ring *r = rings_.first(); r != NULL; r = r->next) if ((r->containsAtom(i)) && (r->containsAtom(j))) return TRUE;
+		for (Ring *r = rings_.first(); r != NULL; r = r->next) if ((r->containsAtom(i)) && (r->containsAtom(j))) return true;
 	}
-	return FALSE;
+	return false;
 }
 
 // Initialise
@@ -769,27 +769,27 @@ void Pattern::createMatrices()
 		// There may be more than one consecutive bound fragment in the pattern, so we must perform treeSelects in order to populate the initial matrix
 		Atom* i = firstAtom_;
 		int count = 100, ii, jj, diagii;
-		parent_->selectNone(TRUE);
+		parent_->selectNone(true);
 		while (i != NULL)
 		{
 			// Check that we are still in the current pattern
 			if (i->id() > endAtom_) break;
 
 			// Treeselect from current atom
-			parent_->selectTree(i, TRUE);
+			parent_->selectTree(i, true);
 
 			// For the current marked selection, set the diagonal matrix elements to the current 'count' value
-			for (Refitem<Atom,int>* ri = parent_->selection(TRUE); ri != NULL; ri = ri->next)
+			for (Refitem<Atom,int>* ri = parent_->selection(true); ri != NULL; ri = ri->next)
 			{
 				ii = ri->item->id() - startAtom_;
 				conMatrix_[ii][ii] = count;
 			}
 
 			// Find next unmarked atom
-			while (i && i->isSelected(TRUE)) i = i->next;
+			while (i && i->isSelected(true)) i = i->next;
 
 			// Deselect all atoms, and increase count
-			parent_->selectNone(TRUE);
+			parent_->selectNone(true);
 			++count;
 		}
 
@@ -921,13 +921,13 @@ bool Pattern::validate()
 	// Test the pattern for validity and internal consistency
 	Messenger::enter("Pattern::validate");
 	bool result, ok;
-	result = TRUE;
+	result = true;
 	int mnAtoms_ = parent_->nAtoms();
 	int *elcomp1, *elcomp2, a, m;
-	// Set all test flags to FALSE
-	testAtomLimit_ = FALSE;
-	testElement_ = FALSE;
-	testBonding_ = FALSE;
+	// Set all test flags to false
+	testAtomLimit_ = false;
+	testElement_ = false;
+	testBonding_ = false;
 	// 1) Check number of atoms does not exceed number in model
 	if (startAtom_+totalAtoms_ > mnAtoms_)
 	{
@@ -935,20 +935,20 @@ bool Pattern::validate()
 		Messenger::print("No pattern defined for model.");
 		// Can't do much else if this is the case, so break early.
 		Messenger::exit("Pattern::validate");
-		return FALSE;
+		return false;
 	}
-	else testAtomLimit_ = TRUE;
+	else testAtomLimit_ = true;
 	// 2) Elemental composition of individual molecules within pattern
 	elcomp1 = new int[Elements().nElements()+1];
 	elcomp2 = new int[Elements().nElements()+1];
 	for (m=0; m<Elements().nElements()+1; m++) elcomp1[m] = 0;
-	if (nMolecules_ == 1) testElement_ = TRUE;
+	if (nMolecules_ == 1) testElement_ = true;
 	else
 	{
 		Atom* i = firstAtom_;
 		for (m=0; m<nMolecules_; m++)
 		{
-			ok = TRUE;
+			ok = true;
 			if (m == 0)
 			{
 				// Calculate the reference atomic composition from molecule 1
@@ -968,12 +968,12 @@ bool Pattern::validate()
 				}
 				// ... and test against reference
 				for (a=0; a<Elements().nElements()+1; a++)
-					if (elcomp1[a] != elcomp2[a]) ok = FALSE;
+					if (elcomp1[a] != elcomp2[a]) ok = false;
 			}
 			if (!ok)
 			{
 				Messenger::print("Pattern failed element composition test at molecule %i.",m+1);
-				result = FALSE;
+				result = false;
 				break;
 			}
 		}
@@ -1236,7 +1236,7 @@ void Pattern::findRings()
 	Messenger::enter("Pattern::findRings");
 
 	int n, rsize;
-	bool okay = TRUE;
+	bool okay = true;
 	Atom* i;
 	Ring path;
 
@@ -1273,7 +1273,7 @@ bool Pattern::ringSearch(Atom* i, Ring *currentpath)
 	Refitem<Bond,int>* bref;
 	Ring *r;
 	Refitem<Atom,int>* lastra;
-	bool done, maxreached = FALSE;
+	bool done, maxreached = false;
 	// Otherwise, add it to the current path
 	lastra = currentpath->lastAtom();
 	if (currentpath->addAtom(i))
@@ -1284,7 +1284,7 @@ bool Pattern::ringSearch(Atom* i, Ring *currentpath)
 		// Go through the list of atoms bound to 'i' and then:
 		//  -- If nAtoms_<=requestedsize && 'i' is bound to the first atom in the path, store the ring.
 		//  Otherwise, if nAtoms_<requestedsize then extend the ring by each of the bound atoms in turn.
-		done = FALSE;
+		done = false;
 		bref = i->bonds();
 		while (bref != NULL)
 		{
@@ -1301,7 +1301,7 @@ bool Pattern::ringSearch(Atom* i, Ring *currentpath)
 					if (!isRingInList(currentpath))
 					{
 						Messenger::print(Messenger::Verbose, " --- Storing current ring.");
-						if (rings_.nItems() == prefs.maxRings()) maxreached = TRUE;
+						if (rings_.nItems() == prefs.maxRings()) maxreached = true;
 						else
 						{
 							r = rings_.add();
@@ -1309,7 +1309,7 @@ bool Pattern::ringSearch(Atom* i, Ring *currentpath)
 							r->copy(currentpath);
 							r->finalise();
 							r->print();
-							done = TRUE;
+							done = true;
 						}
 					}
 				}
@@ -1317,7 +1317,7 @@ bool Pattern::ringSearch(Atom* i, Ring *currentpath)
 			else
 			{
 				// Current path is not long enough, so extend it
-				if (!ringSearch(bref->item->partner(i),currentpath)) maxreached = TRUE;
+				if (!ringSearch(bref->item->partner(i),currentpath)) maxreached = true;
 			}
 			bref = bref->next;
 			if (done || maxreached) break;
@@ -1334,8 +1334,8 @@ bool Pattern::ringSearch(Atom* i, Ring *currentpath)
 // Search existing ring list for existence of supplied ring
 bool Pattern::isRingInList(Ring *source)
 {
-	for (Ring *r = rings_.first(); r != NULL; r = r->next) if (*r == *source) return TRUE;
-	return FALSE;
+	for (Ring *r = rings_.first(); r != NULL; r = r->next) if (*r == *source) return true;
+	return false;
 }
 
 // Return total bond order penalty of atoms in one molecule of the pattern
@@ -1674,14 +1674,14 @@ bool Pattern::typeAtoms()
 	// UFF) we find the best of the types available. If any one criterion doesn't match in the atom 
 	// type description, we reject it. Otherwise, store the number of criteria that matched and only
 	// accept a different atom type if we manage to match a complete set containing more rules.
-	// Return FALSE if one or more atoms could not be typed
+	// Return false if one or more atoms could not be typed
 	Messenger::enter("Pattern::typeAtoms");
 	int a, newMatch, bestMatch, nFailed;
 	Neta* at;
 	Atom* i;
 	Forcefield* ff;
 	ForcefieldAtom* ffa;
-	bool result = TRUE;
+	bool result = true;
 
 	// Select the forcefield we're typing with. First, if this pattern doesn't have a specific ff, take the model's ff
 	ff = forcefield_;
@@ -1703,7 +1703,7 @@ bool Pattern::typeAtoms()
 	{
 		Messenger::print("Can't type pattern '%s' - no forcefield associated to pattern or model, and no default set.", qPrintable(name_));
 		Messenger::exit("Pattern::typeAtoms");
-		return FALSE;
+		return false;
 	}
 	// Loop over atoms in the pattern's molecule
 	i = firstAtom_;
@@ -1718,14 +1718,14 @@ bool Pattern::typeAtoms()
 		}
 		Messenger::print(Messenger::Typing,"Pattern::typeAtoms : FFTyping atom number %i, element %s", a, Elements().symbol(i->element()));
 		bestMatch = 0;
-		parent_->setAtomType(i, NULL, FALSE);
+		parent_->setAtomType(i, NULL, false);
 
 		// Check for element 'XX' first
 		if (i->element() == 0)
 		{
 			Messenger::print("Failed to type atom %i since it has no element type.", i->id()+1);
 			nFailed ++;
-			result = FALSE;
+			result = false;
 		}
 
 		// Loop over forcefield atom types
@@ -1752,7 +1752,7 @@ bool Pattern::typeAtoms()
 		{
 			Messenger::print("Failed to type atom - %s, id = %i, nbonds = %i.", Elements().name(i), i->id()+1, i->nBonds());
 			nFailed ++;
-			result = FALSE;
+			result = false;
 		}
 		else Messenger::print(Messenger::Typing,"Assigned forcefield type for atom is : %i (%s)", i->type()->typeId(), qPrintable(i->type()->name()));
 		i = i->next;

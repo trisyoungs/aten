@@ -38,7 +38,7 @@ double econverge = 0.001, fconverge = 0.01, linetolerance = 0.0001;
 // Minimise with conjugate gradient
 bool Commands::function_CGMinimise(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 
 	// Ensure we have a valid expression
 	if (!obj.rs()->createExpression(Choice(), Choice(), Choice(), aten_.currentForcefield(), aten_.combinationRules()))
@@ -56,9 +56,9 @@ bool Commands::function_CGMinimise(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	cg.minimise(obj.rs(), econverge, fconverge);
 
 	// Finalise the 'transformation' (creates an undo state)
-	obj.rs()->finalizeTransform(oldpos, "Minimise (Conjugate Gradient)", TRUE);
+	obj.rs()->finalizeTransform(oldpos, "Minimise (Conjugate Gradient)", true);
 	rv.reset();
-	return TRUE;
+	return true;
 }
 
 // Set convergence criteria
@@ -67,7 +67,7 @@ bool Commands::function_Converge(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	econverge = c->argd(0);
 	fconverge = c->argd(1);
 	rv.reset();
-	return TRUE;
+	return true;
 }
 
 // Set line minimiser tolerance
@@ -75,13 +75,13 @@ bool Commands::function_LineTolerance(CommandNode* c, Bundle& obj, ReturnValue& 
 {
 	linetolerance = c->argd(0);
 	rv.reset();
-	return TRUE;
+	return true;
 }
 
 // Minimise current model with Monte-Carlo method ('mcminimise <maxsteps>')
 bool Commands::function_MCMinimise(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	mc.setNCycles( c->hasArg(0) ? c->argi(0) : 100);
 
 	// Store current positions of atoms so we can undo the minimisation
@@ -90,15 +90,15 @@ bool Commands::function_MCMinimise(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	mc.minimise(obj.rs(), econverge, fconverge);
 
 	// Finalise the 'transformation' (creates an undo state)
-	obj.rs()->finalizeTransform(oldpos, "Minimise (Monte Carlo)", TRUE);
+	obj.rs()->finalizeTransform(oldpos, "Minimise (Monte Carlo)", true);
 	rv.reset();
-	return TRUE;
+	return true;
 }
 
 // Use MOPAC to minimise the current model
 bool Commands::function_MopacMinimise(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	rv.reset();
 
 	// Grab pointers to MOPAC import and export filters
@@ -106,13 +106,13 @@ bool Commands::function_MopacMinimise(CommandNode* c, Bundle& obj, ReturnValue& 
 	if (mopacexport == NULL)
 	{
 		Messenger::print("Error: Couldn't find MOPAC export filter.");
-		return FALSE;
+		return false;
 	}
 	Tree* mopacimport = aten_.findFilter(FilterData::ModelImport, "mopacarc");
 	if (mopacimport == NULL)
 	{
 		Messenger::print("Error: Couldn't find MOPAC arc import filter.");
-		return FALSE;
+		return false;
 	}
 
 	// Check that defined MOPAC exe exists
@@ -120,7 +120,7 @@ bool Commands::function_MopacMinimise(CommandNode* c, Bundle& obj, ReturnValue& 
 	if (!fileInfo.exists())
 	{
 		Messenger::print("Error: MOPAC excutable '%s' doesn't exists.", qPrintable(prefs.mopacExe()));
-		return FALSE;
+		return false;
 	}
 
 	// Grab/create various filenames and paths
@@ -142,7 +142,7 @@ bool Commands::function_MopacMinimise(CommandNode* c, Bundle& obj, ReturnValue& 
 	
 	// Save input file
 	LineParser parser;
-	parser.openOutput(mopacInput, TRUE);
+	parser.openOutput(mopacInput, true);
 	int opt;
 	if (c->hasArg(0)) parser.writeLineF("MOZYME BFGS %s\n", qPrintable(c->argc(0)));
 	else parser.writeLine("MOZYME BFGS PM6 RHF SINGLET\n");
@@ -166,7 +166,7 @@ bool Commands::function_MopacMinimise(CommandNode* c, Bundle& obj, ReturnValue& 
 	if (!mopacProcess.execute(mopacCmd, NULL, mopacOut))
 	{
 		Messenger::print("Error: Failed to run MOPAC. Is it installed correctly?");
-		return FALSE;
+		return false;
 	}
 
 	// Follow output here...
@@ -182,11 +182,11 @@ bool Commands::function_MopacMinimise(CommandNode* c, Bundle& obj, ReturnValue& 
 	if (!fileInfo.exists())
 	{
 		Messenger::print("Error: Can't locate MOPAC output '%s'.", qPrintable(mopacArc));
-		return FALSE;
+		return false;
 	}
 
 	// Time to load in the results
-	aten_.setUseWorkingList(TRUE);
+	aten_.setUseWorkingList(true);
 	int result = CommandNode::run(Commands::LoadModel, "c", qPrintable(mopacArc));
 
 	// There should now be a model in the working model list (our results)
@@ -194,7 +194,7 @@ bool Commands::function_MopacMinimise(CommandNode* c, Bundle& obj, ReturnValue& 
 	if (m == NULL)
 	{
 		Messenger::print("Error: No results model found.");
-		return FALSE;
+		return false;
 	}
 
 	// Cleanup
@@ -205,7 +205,7 @@ bool Commands::function_MopacMinimise(CommandNode* c, Bundle& obj, ReturnValue& 
 	// Copy the atoms into a temporary model
 	Model tempmodel;
 	tempmodel.copy(m);
-	aten_.setUseWorkingList(FALSE);
+	aten_.setUseWorkingList(false);
 
 	// Start a new undostate in the original model
 	//printf("Target for new coords = %p\n", obj.rs);
@@ -218,13 +218,13 @@ bool Commands::function_MopacMinimise(CommandNode* c, Bundle& obj, ReturnValue& 
 	}
 	obj.rs()->endUndoState();
 	
-	return TRUE;
+	return true;
 }
 
 // Minimise current model with Steepest Descent method ('sdminimise <maxsteps>')
 bool Commands::function_SDMinimise(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 
 	// Ensure we have a valid expression
 	if (!obj.rs()->createExpression(Choice(), Choice(), Choice(), aten_.currentForcefield(), aten_.combinationRules()))
@@ -239,9 +239,9 @@ bool Commands::function_SDMinimise(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	// Store current positions of atoms so we can undo the minimisation
 	Reflist< Atom, Vec3<double> > oldpos;
 	for (Atom* i = obj.rs()->atoms(); i != NULL; i = i->next) oldpos.add(i, i->r());
-	sd.minimise(obj.rs(), econverge, fconverge, c->hasArg(1) ? c->argb(1) : FALSE);
+	sd.minimise(obj.rs(), econverge, fconverge, c->hasArg(1) ? c->argb(1) : false);
 	// Finalise the 'transformation' (creates an undo state)
-	obj.rs()->finalizeTransform(oldpos, "Minimise (Steepest Descent)", TRUE);
+	obj.rs()->finalizeTransform(oldpos, "Minimise (Steepest Descent)", true);
 	rv.reset();
-	return TRUE;
+	return true;
 }

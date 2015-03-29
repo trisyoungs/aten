@@ -103,16 +103,16 @@ void UndoState::redo(Model* m)
 // Check differences between logs for start/end points
 bool UndoState::doLogsDiffer() const
 {
-	if (startLogs_.log(Log::Structure) != endLogs_.log(Log::Structure)) return TRUE;
-	if (startLogs_.log(Log::Coordinates) != endLogs_.log(Log::Coordinates)) return TRUE;
-	if (startLogs_.log(Log::Selection) != endLogs_.log(Log::Selection)) return TRUE;
-	if (startLogs_.log(Log::Style) != endLogs_.log(Log::Style)) return TRUE;
-	if (startLogs_.log(Log::Cell) != endLogs_.log(Log::Cell)) return TRUE;
-	if (startLogs_.log(Log::Labels) != endLogs_.log(Log::Labels)) return TRUE;
-	if (startLogs_.log(Log::Glyphs) != endLogs_.log(Log::Glyphs)) return TRUE;
-	if (startLogs_.log(Log::Grids) != endLogs_.log(Log::Grids)) return TRUE;
-	if (startLogs_.log(Log::Misc) != endLogs_.log(Log::Misc)) return TRUE;
-	return FALSE;
+	if (startLogs_.log(Log::Structure) != endLogs_.log(Log::Structure)) return true;
+	if (startLogs_.log(Log::Coordinates) != endLogs_.log(Log::Coordinates)) return true;
+	if (startLogs_.log(Log::Selection) != endLogs_.log(Log::Selection)) return true;
+	if (startLogs_.log(Log::Style) != endLogs_.log(Log::Style)) return true;
+	if (startLogs_.log(Log::Cell) != endLogs_.log(Log::Cell)) return true;
+	if (startLogs_.log(Log::Labels) != endLogs_.log(Log::Labels)) return true;
+	if (startLogs_.log(Log::Glyphs) != endLogs_.log(Log::Glyphs)) return true;
+	if (startLogs_.log(Log::Grids) != endLogs_.log(Log::Grids)) return true;
+	if (startLogs_.log(Log::Misc) != endLogs_.log(Log::Misc)) return true;
+	return false;
 }
 
 // Print changes in state

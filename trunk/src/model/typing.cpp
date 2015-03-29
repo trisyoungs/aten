@@ -137,7 +137,7 @@ bool Model::typeAll(Forcefield* defaultForcefield)
 	{
 		Messenger::print("Atom typing cannot be performed without valid patterns.\nCheck pattern definition, atom ordering, and bond consistency between atoms, or add the default (1*N) pattern for a quick fix.");
 		Messenger::exit("Model::typeAll");
-		return FALSE;
+		return false;
 	}
 
 	// If no forcefield is set in this model, grab it from the current default forcefield
@@ -148,7 +148,7 @@ bool Model::typeAll(Forcefield* defaultForcefield)
 		{
 			Messenger::print("Error: No forcefield set in model, and no default forcefield is available.");
 			Messenger::exit("Model::typeAll");
-			return FALSE;
+			return false;
 		}
 	}
 	Messenger::print("Typing all patterns in model '%s' (associated forcefield is '%s')...", qPrintable(name_), qPrintable(forcefield_->name()));
@@ -159,7 +159,7 @@ bool Model::typeAll(Forcefield* defaultForcefield)
 		if (!p->typeAtoms())
 		{
 			Messenger::exit("Model::typeAll");
-			return FALSE;
+			return false;
 		}
 		// Finally, propagate the data now contained in the initial molecule in each pattern to all other molecules
 		p->propagateAtomtypes();
@@ -170,7 +170,7 @@ bool Model::typeAll(Forcefield* defaultForcefield)
 	// Log change in the model
 	logChange(Log::Coordinates);
 	Messenger::exit("Model::typeAll");
-	return TRUE;
+	return true;
 }
 
 // Set atomtypes of selected atoms
@@ -187,6 +187,6 @@ void Model::removeTyping()
 {
 	// Remove all atom typing from the current model
 	Messenger::enter("Model::removeTyping");
-	for (Atom* i = atoms_.first(); i != NULL; i = i->next) setAtomType(i, NULL, FALSE);
+	for (Atom* i = atoms_.first(); i != NULL; i = i->next) setAtomType(i, NULL, false);
 	Messenger::exit("Model::removeTyping");
 }

@@ -35,8 +35,8 @@ class VectorVariable : public Variable
 {
 	public:
 	// Constructor / Destructor
-	VectorVariable(bool constant = FALSE);
-	VectorVariable(Vec3<double> v, bool constant = FALSE);
+	VectorVariable(bool constant = false);
+	VectorVariable(Vec3<double> v, bool constant = false);
 	VectorVariable(TreeNode* x, TreeNode* y, TreeNode* z);
 	~VectorVariable();
 	friend class VectorArrayVariable;
@@ -97,7 +97,7 @@ class VectorArrayVariable : public Variable
 {
 	public:
 	// Constructor / Destructor
-	VectorArrayVariable(TreeNode* sizeexpr, bool constant = FALSE);
+	VectorArrayVariable(TreeNode* sizeexpr, bool constant = false);
 	~VectorArrayVariable();
 
 

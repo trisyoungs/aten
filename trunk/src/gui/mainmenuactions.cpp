@@ -44,7 +44,7 @@ void AtenWindow::on_actionFileNew_triggered(bool checked)
 	m->enableUndoRedo();
 
 	// Update GUI
-	aten_.setCurrentModel(m, TRUE);
+	aten_.setCurrentModel(m, true);
 	updateWidgets(AtenWindow::AllTarget);
 }
 
@@ -123,7 +123,7 @@ bool AtenWindow::runSaveModelDialog()
 			else
 			{
 				AtenSelectFilter selectFilter(*this);
-				filter = selectFilter.selectFilter("Extension doesn't match any in known model export filters.", NULL, aten_.filterList(FilterData::ModelExport), TRUE);
+				filter = selectFilter.selectFilter("Extension doesn't match any in known model export filters.", NULL, aten_.filterList(FilterData::ModelExport), true);
 				if ((filter != NULL) && selectFilter.appendExtension())
 				{
 					if (filter->filter.extensions().count() != 0) filename += QString(".") + filter->filter.extensions().at(0);
@@ -133,9 +133,9 @@ bool AtenWindow::runSaveModelDialog()
 		saveModelFilter_ = filter;
 		saveModelFilename_ = qPrintable(filename);
 		if (filter == NULL) Messenger::print("No filter selected to save file '%s'. Not saved.", qPrintable(saveModelFilename_));
-		return (saveModelFilter_ == NULL ? FALSE : TRUE);
+		return (saveModelFilter_ == NULL ? false : true);
 	}
-	else return FALSE;
+	else return false;
 }
 
 // Save current model under a different name
@@ -363,7 +363,7 @@ void AtenWindow::on_actionEditQuickCommand_triggered(bool on)
 			else
 			{
 				QMessageBox::StandardButton but = QMessageBox::warning(this, "Quick Command", "Command could not be executed (error in syntax?). Re-edit command?", QMessageBox::Cancel | QMessageBox::Retry, QMessageBox::Cancel);
-				if (but == QMessageBox::Retry) ok = FALSE;
+				if (but == QMessageBox::Retry) ok = false;
 				else break;
 			}
 		}
@@ -400,14 +400,14 @@ void AtenWindow::on_actionViewReset_triggered(bool checked)
 void AtenWindow::on_actionViewPerspective_triggered(bool checked)
 {
 	if (!checked) return;
-	prefs.setPerspective(TRUE);
+	prefs.setPerspective(true);
 	postRedisplay();
 }
 
 // Set orthographic view
 void AtenWindow::on_actionViewOrthographic_triggered(bool checked)
 {
-	prefs.setPerspective(FALSE);
+	prefs.setPerspective(false);
 	postRedisplay();
 }
 
@@ -535,11 +535,11 @@ void AtenWindow::on_actionSchemeCustom_triggered(bool checked)
 // Set scheme actions to reflect supplied Prefs::ColouringScheme
 void AtenWindow::setActiveSchemeAction(Prefs::ColouringScheme cs)
 {
-	if (cs == Prefs::ChargeScheme) ui.actionSchemeCharge->setChecked(TRUE);
-	else if (cs == Prefs::ElementScheme) ui.actionSchemeElement->setChecked(TRUE);
-	else if (cs == Prefs::ForceScheme) ui.actionSchemeForce->setChecked(TRUE);
-	else if (cs == Prefs::VelocityScheme) ui.actionSchemeVelocity->setChecked(TRUE);
-	else if (cs == Prefs::CustomScheme) ui.actionSchemeCustom->setChecked(TRUE);
+	if (cs == Prefs::ChargeScheme) ui.actionSchemeCharge->setChecked(true);
+	else if (cs == Prefs::ElementScheme) ui.actionSchemeElement->setChecked(true);
+	else if (cs == Prefs::ForceScheme) ui.actionSchemeForce->setChecked(true);
+	else if (cs == Prefs::VelocityScheme) ui.actionSchemeVelocity->setChecked(true);
+	else if (cs == Prefs::CustomScheme) ui.actionSchemeCustom->setChecked(true);
 	prefs.setColourScheme(cs);
 	aten_.globalLogChange(Log::Style);
 	postRedisplay();
@@ -603,7 +603,7 @@ void AtenWindow::on_actionModelNext_triggered(bool checked)
 	else
 	{
 		Model* m = aten_.currentModel();
-		aten_.setCurrentModel(m->next == NULL ? aten_.models() : m->next, TRUE);
+		aten_.setCurrentModel(m->next == NULL ? aten_.models() : m->next, true);
 	}
 	updateWidgets(AtenWindow::AllTarget);
 }
@@ -629,7 +629,7 @@ void AtenWindow::on_actionModelPrevious_triggered(bool checked)
 	else
 	{
 		Model* m = aten_.currentModel();
-		aten_.setCurrentModel(m->prev == NULL ? aten_.model(aten_.nModels()-1) : m->prev, TRUE);
+		aten_.setCurrentModel(m->prev == NULL ? aten_.model(aten_.nModels()-1) : m->prev, true);
 	}
 	updateWidgets(AtenWindow::AllTarget);
 }
@@ -867,7 +867,7 @@ void AtenWindow::on_actionSaveExpression_triggered(bool checked)
 			if (filters.nItems() != 0) filter = selectFilter.selectFilter("Exact name matches one or more known expression export filters.", &filters, aten_.filterList(FilterData::ExpressionExport));
 			else
 			{
-				filter = selectFilter.selectFilter("Couldn't determine format to save expression in.", NULL, aten_.filterList(FilterData::ExpressionExport), TRUE);
+				filter = selectFilter.selectFilter("Couldn't determine format to save expression in.", NULL, aten_.filterList(FilterData::ExpressionExport), true);
 				if ((filter != NULL) && selectFilter.appendExtension())
 				{
 					if (filter->filter.extensions().count() != 0) filename += QString(".") + filter->filter.extensions().at(0);
@@ -892,7 +892,7 @@ void AtenWindow::on_actionSaveExpression_triggered(bool checked)
 			else
 			{
 				AtenSelectFilter selectFilter(*this);
-				filter = selectFilter.selectFilter("Extension doesn't match any in known expression export filters.", NULL, aten_.filterList(FilterData::ExpressionExport), TRUE);
+				filter = selectFilter.selectFilter("Extension doesn't match any in known expression export filters.", NULL, aten_.filterList(FilterData::ExpressionExport), true);
 				if ((filter != NULL) && selectFilter.appendExtension())
 				{
 					if (filter->filter.extensions().count() != 0) filename += QString(".") + filter->filter.extensions().at(0);

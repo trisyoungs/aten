@@ -35,7 +35,8 @@ void RenderGroup::createBond(PrimitiveSet& primitiveSet, Matrix A, Vec3<double> 
 	double dvisible, selvisible, factor, rij, phi;
 	Vec3<double> ri, rj, localx, localy, localz, stickpos, dx, normz;
 	GLfloat alpha_i, alpha_j;
-	Primitive& linePrimitives = (i->isSelected() ? extraNormalLines_ : extraBoldLines_);
+	Primitive& iLinePrimitives = (i->isSelected() ? extraBoldLines_ : extraNormalLines_);
+	Primitive& jLinePrimitives = (j->isSelected() ? extraBoldLines_ : extraNormalLines_);
 	Matrix B;
 
 	// Store copies of alpha values
@@ -57,7 +58,7 @@ void RenderGroup::createBond(PrimitiveSet& primitiveSet, Matrix A, Vec3<double> 
 		normz = localz / rij;
 		
 		// X axis is bond plane vector...
-		localx = i->findBondPlane(j,b,normz,TRUE);
+		localx = i->findBondPlane(j,b,normz,true);
 
 		// Generate Y-axis from cross-product of z and x axes
 		localy = localx * normz;
@@ -79,7 +80,7 @@ void RenderGroup::createBond(PrimitiveSet& primitiveSet, Matrix A, Vec3<double> 
 		
 		// Special case where the bond is exactly along Z already
 		if (phi > 179.99) A.applyRotationX(phi);
-		else if (phi >= 0.01) A.applyRotationAxis(-vij.y, vij.x, 0.0, phi, TRUE);
+		else if (phi >= 0.01) A.applyRotationAxis(-vij.y, vij.x, 0.0, phi, true);
 	}
 	
 	// We can perform an initial translation to the 'edge' of atom i, and scale to visible bond length
@@ -102,23 +103,23 @@ void RenderGroup::createBond(PrimitiveSet& primitiveSet, Matrix A, Vec3<double> 
 			{
 				case (Bond::Double):
 					dx = A.rotateVector(prefs.atomStyleRadius(Prefs::StickStyle)*0.5,0.0,0.0);
-					linePrimitives.defineVertex(A[12]+dx.x, A[13]+dx.y, A[14]+dx.z, 0.0,0.0,1.0, colour_i);
-					linePrimitives.defineVertex(stickpos.x+dx.x, stickpos.y+dx.y, stickpos.z+dx.z, 0.0,0.0,1.0, colour_i);
-					linePrimitives.defineVertex(A[12]-dx.x, A[13]-dx.y, A[14]-dx.z, 0.0,0.0,1.0, colour_i);
-					linePrimitives.defineVertex(stickpos.x-dx.x, stickpos.y-dx.y, stickpos.z-dx.z, 0.0,0.0,1.0, colour_i);
+					iLinePrimitives.defineVertex(A[12]+dx.x, A[13]+dx.y, A[14]+dx.z, 0.0,0.0,1.0, colour_i);
+					iLinePrimitives.defineVertex(stickpos.x+dx.x, stickpos.y+dx.y, stickpos.z+dx.z, 0.0,0.0,1.0, colour_i);
+					iLinePrimitives.defineVertex(A[12]-dx.x, A[13]-dx.y, A[14]-dx.z, 0.0,0.0,1.0, colour_i);
+					iLinePrimitives.defineVertex(stickpos.x-dx.x, stickpos.y-dx.y, stickpos.z-dx.z, 0.0,0.0,1.0, colour_i);
 					break;
 				case (Bond::Triple):
 					dx = A.rotateVector(prefs.atomStyleRadius(Prefs::StickStyle),0.0,0.0);
-					linePrimitives.defineVertex(A[12], A[13], A[14], 0.0,0.0,1.0, colour_i);
-					linePrimitives.defineVertex(stickpos.x, stickpos.y, stickpos.z, 0.0,0.0,1.0, colour_i);
-					linePrimitives.defineVertex(A[12]+dx.x, A[13]+dx.y, A[14]+dx.z, 0.0,0.0,1.0, colour_i);
-					linePrimitives.defineVertex(stickpos.x+dx.x, stickpos.y+dx.y, stickpos.z+dx.z, 0.0,0.0,1.0, colour_i);
-					linePrimitives.defineVertex(A[12]-dx.x, A[13]-dx.y, A[14]-dx.z, 0.0,0.0,1.0, colour_i);
-					linePrimitives.defineVertex(stickpos.x-dx.x, stickpos.y-dx.y, stickpos.z-dx.z, 0.0,0.0,1.0, colour_i);
+					iLinePrimitives.defineVertex(A[12], A[13], A[14], 0.0,0.0,1.0, colour_i);
+					iLinePrimitives.defineVertex(stickpos.x, stickpos.y, stickpos.z, 0.0,0.0,1.0, colour_i);
+					iLinePrimitives.defineVertex(A[12]+dx.x, A[13]+dx.y, A[14]+dx.z, 0.0,0.0,1.0, colour_i);
+					iLinePrimitives.defineVertex(stickpos.x+dx.x, stickpos.y+dx.y, stickpos.z+dx.z, 0.0,0.0,1.0, colour_i);
+					iLinePrimitives.defineVertex(A[12]-dx.x, A[13]-dx.y, A[14]-dx.z, 0.0,0.0,1.0, colour_i);
+					iLinePrimitives.defineVertex(stickpos.x-dx.x, stickpos.y-dx.y, stickpos.z-dx.z, 0.0,0.0,1.0, colour_i);
 					break;
 				default:
-					linePrimitives.defineVertex(A[12], A[13], A[14], 0.0,0.0,1.0, colour_i);
-					linePrimitives.defineVertex(stickpos.x, stickpos.y, stickpos.z, 0.0,0.0,1.0, colour_i);
+					iLinePrimitives.defineVertex(A[12], A[13], A[14], 0.0,0.0,1.0, colour_i);
+					iLinePrimitives.defineVertex(stickpos.x, stickpos.y, stickpos.z, 0.0,0.0,1.0, colour_i);
 					break;
 			}
 			break;
@@ -164,23 +165,23 @@ void RenderGroup::createBond(PrimitiveSet& primitiveSet, Matrix A, Vec3<double> 
 			{
 				case (Bond::Double):
 					dx = B.rotateVector(prefs.atomStyleRadius(Prefs::StickStyle)*0.5,0.0,0.0);
-					linePrimitives.defineVertex(B[12]+dx.x, B[13]+dx.y, B[14]+dx.z, 0.0,0.0,1.0, colour_j);
-					linePrimitives.defineVertex(stickpos.x+dx.x, stickpos.y+dx.y, stickpos.z+dx.z, 0.0,0.0,1.0, colour_j);
-					linePrimitives.defineVertex(B[12]-dx.x, B[13]-dx.y, B[14]-dx.z, 0.0,0.0,1.0, colour_j);
-					linePrimitives.defineVertex(stickpos.x-dx.x, stickpos.y-dx.y, stickpos.z-dx.z, 0.0,0.0,1.0, colour_j);
+					jLinePrimitives.defineVertex(B[12]+dx.x, B[13]+dx.y, B[14]+dx.z, 0.0,0.0,1.0, colour_j);
+					jLinePrimitives.defineVertex(stickpos.x+dx.x, stickpos.y+dx.y, stickpos.z+dx.z, 0.0,0.0,1.0, colour_j);
+					jLinePrimitives.defineVertex(B[12]-dx.x, B[13]-dx.y, B[14]-dx.z, 0.0,0.0,1.0, colour_j);
+					jLinePrimitives.defineVertex(stickpos.x-dx.x, stickpos.y-dx.y, stickpos.z-dx.z, 0.0,0.0,1.0, colour_j);
 					break;
 				case (Bond::Triple):
 					dx = B.rotateVector(prefs.atomStyleRadius(Prefs::StickStyle),0.0,0.0);
-					linePrimitives.defineVertex(B[12], B[13], B[14], 0.0,0.0,1.0, colour_j);
-					linePrimitives.defineVertex(stickpos.x, stickpos.y, stickpos.z, 0.0,0.0,1.0, colour_j);
-					linePrimitives.defineVertex(B[12]+dx.x, B[13]+dx.y, B[14]+dx.z, 0.0,0.0,1.0, colour_j);
-					linePrimitives.defineVertex(stickpos.x+dx.x, stickpos.y+dx.y, stickpos.z+dx.z, 0.0,0.0,1.0, colour_j);
-					linePrimitives.defineVertex(B[12]-dx.x, B[13]-dx.y, B[14]-dx.z, 0.0,0.0,1.0, colour_j);
-					linePrimitives.defineVertex(stickpos.x-dx.x, stickpos.y-dx.y, stickpos.z-dx.z, 0.0,0.0,1.0, colour_j);
+					jLinePrimitives.defineVertex(B[12], B[13], B[14], 0.0,0.0,1.0, colour_j);
+					jLinePrimitives.defineVertex(stickpos.x, stickpos.y, stickpos.z, 0.0,0.0,1.0, colour_j);
+					jLinePrimitives.defineVertex(B[12]+dx.x, B[13]+dx.y, B[14]+dx.z, 0.0,0.0,1.0, colour_j);
+					jLinePrimitives.defineVertex(stickpos.x+dx.x, stickpos.y+dx.y, stickpos.z+dx.z, 0.0,0.0,1.0, colour_j);
+					jLinePrimitives.defineVertex(B[12]-dx.x, B[13]-dx.y, B[14]-dx.z, 0.0,0.0,1.0, colour_j);
+					jLinePrimitives.defineVertex(stickpos.x-dx.x, stickpos.y-dx.y, stickpos.z-dx.z, 0.0,0.0,1.0, colour_j);
 					break;
 				default:
-					linePrimitives.defineVertex(B[12], B[13], B[14], 0.0,0.0,1.0, colour_j);
-					linePrimitives.defineVertex(stickpos.x, stickpos.y, stickpos.z, 0.0,0.0,1.0, colour_j);
+					jLinePrimitives.defineVertex(B[12], B[13], B[14], 0.0,0.0,1.0, colour_j);
+					jLinePrimitives.defineVertex(stickpos.x, stickpos.y, stickpos.z, 0.0,0.0,1.0, colour_j);
 					break;
 			}
 			break;

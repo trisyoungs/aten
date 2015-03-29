@@ -82,7 +82,7 @@ class Aten
 	// Return list of working models
 	Model* workingModels() const;
 	// Sets the current active model for editing
-	void setCurrentModel(Model* m, bool deselectOthers = FALSE);
+	void setCurrentModel(Model* m, bool deselectOthers = false);
 	// Return current active model for editing
 	Model* currentModel() const;
 	// Return current active model for editing, accounting for trajectory frames

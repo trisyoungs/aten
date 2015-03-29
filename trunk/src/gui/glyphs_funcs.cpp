@@ -34,9 +34,9 @@ GlyphsWidget::GlyphsWidget(AtenWindow& parent, Qt::WindowFlags flags) : QDockWid
 	ui.setupUi(this);
 
 	// Set allowable glyph types in combo box
-	refreshing_ = TRUE;
+	refreshing_ = true;
 	for (int n=0; n<Glyph::nGlyphTypes; ++n) ui.GlyphTypeCombo->addItem( Glyph::glyphTypeName( (Glyph::GlyphType) n) );
-	refreshing_ = FALSE;
+	refreshing_ = false;
 	// Grab pointers to controls for ease of use later on
 	dataAtomRadio[0] = ui.Data1AtomRadio;
 	dataAtomRadio[1] = ui.Data2AtomRadio;
@@ -101,13 +101,13 @@ void GlyphsWidget::addItemToList(Glyph* g)
 	TListWidgetItem *item = new TListWidgetItem(ui.GlyphList);
 	item->setText(s);
 	item->data.set(VTypes::GlyphData, g);
-	if (g->isSelected()) item->setSelected(TRUE);
+	if (g->isSelected()) item->setSelected(true);
 }
 
 // Update glyph list
 void GlyphsWidget::refresh()
 {
-	refreshing_ = TRUE;
+	refreshing_ = true;
 	// Clear any existing items
 	ui.GlyphList->clear();
 	Model* m = parent_.aten().currentModelOrFrame();
@@ -119,8 +119,8 @@ void GlyphsWidget::refresh()
 	// Update controls
 	updateControls(m->glyphs());
 	// Set flags
-	shouldRefresh_ = FALSE;
-	refreshing_ = FALSE;
+	shouldRefresh_ = false;
+	refreshing_ = false;
 }
 
 // Update current glyph data
@@ -156,35 +156,35 @@ void GlyphsWidget::updateControls(Glyph* g)
 {
 	if (g == NULL)
 	{
-		ui.PropertiesBox->setEnabled(FALSE);
-		for (int n=0; n<MAXGLYPHDATA; ++n) dataTabWidget[n]->setEnabled(FALSE);
+		ui.PropertiesBox->setEnabled(false);
+		for (int n=0; n<MAXGLYPHDATA; ++n) dataTabWidget[n]->setEnabled(false);
 	}
 	else
 	{
-		ui.PropertiesBox->setEnabled(TRUE);
+		ui.PropertiesBox->setEnabled(true);
 		// Set individual data groups
 		for (int n=0; n<g->nData(); ++n)
 		{
 			GlyphData* gd = g->data(n);
-			dataTabWidget[n]->setEnabled(TRUE);
+			dataTabWidget[n]->setEnabled(true);
 			if (gd->atomSetLast())
 			{
-				dataAtomWidget[n]->setEnabled(TRUE);
-				dataValueWidget[n]->setEnabled(FALSE);
-				dataAtomRadio[n]->setChecked(TRUE);
-				dataValueRadio[n]->setChecked(FALSE);
+				dataAtomWidget[n]->setEnabled(true);
+				dataValueWidget[n]->setEnabled(false);
+				dataAtomRadio[n]->setChecked(true);
+				dataValueRadio[n]->setChecked(false);
 			}
 			else
 			{
-				dataAtomWidget[n]->setEnabled(FALSE);
-				dataValueWidget[n]->setEnabled(TRUE);
-				dataValueRadio[n]->setChecked(TRUE);
-				dataAtomRadio[n]->setChecked(FALSE);
+				dataAtomWidget[n]->setEnabled(false);
+				dataValueWidget[n]->setEnabled(true);
+				dataValueRadio[n]->setChecked(true);
+				dataAtomRadio[n]->setChecked(false);
 			}
 // 			dataColourFrame[n]->setColour(gd->colour());
 // 			dataColourFrame[n]->update();
 		}
-		for (int n=g->nData(); n<MAXGLYPHDATA; ++n) dataTabWidget[n]->setEnabled(FALSE);
+		for (int n=g->nData(); n<MAXGLYPHDATA; ++n) dataTabWidget[n]->setEnabled(false);
 	}
 }
 
@@ -192,10 +192,10 @@ void GlyphsWidget::on_GlyphList_currentRowChanged(int row)
 {
 	if (refreshing_) return;
 	Glyph* g = (row == -1 ? NULL : parent_.aten().currentModelOrFrame()->glyph(row));
-	refreshing_ = TRUE;
+	refreshing_ = true;
 	updateData(g);
 	updateControls(g);
-	refreshing_ = FALSE;
+	refreshing_ = false;
 	for (int i = 0; i<ui.GlyphList->count(); ++i)
 	{
 		g = (Glyph*) ((TListWidgetItem*) ui.GlyphList->item(i))->data.asPointer(VTypes::GlyphData);
@@ -210,10 +210,10 @@ void GlyphsWidget::on_GlyphList_itemSelectionChanged()
 	if (refreshing_) return;
 	if (ui.GlyphList->currentRow() == -1)
 	{
-		refreshing_ = TRUE;
+		refreshing_ = true;
 		updateData(NULL);
 		updateControls(NULL);
-		refreshing_ = FALSE;
+		refreshing_ = false;
 	}
 	Glyph* g;
 	for (int i = 0; i<ui.GlyphList->count(); ++i)
@@ -228,18 +228,18 @@ void GlyphsWidget::on_GlyphAddButton_clicked(bool checked)
 {
 	Model* m = parent_.aten().currentModelOrFrame();
 	if (m == NULL) return;
-	for (Glyph* g = m->glyphs(); g != NULL; g = g->next) g->setSelected(FALSE);
+	for (Glyph* g = m->glyphs(); g != NULL; g = g->next) g->setSelected(false);
 	Glyph* g = m->addGlyph(Glyph::ArrowGlyph);
 	addItemToList(g);
 	// Deselect any previously-selected items - easiest way is to temporarily change selection mode
 	ui.GlyphList->setSelectionMode(QAbstractItemView::SingleSelection);
 	ui.GlyphList->setCurrentRow(ui.GlyphList->count()-1);
 	ui.GlyphList->setSelectionMode(QAbstractItemView::ExtendedSelection);
-	g->setSelected(TRUE);
-	refreshing_ = TRUE;
+	g->setSelected(true);
+	refreshing_ = true;
 	updateData(g);
 	updateControls(g);
-	refreshing_ = FALSE;
+	refreshing_ = false;
 	parent_.postRedisplay();
 }
 
@@ -266,14 +266,14 @@ void GlyphsWidget::on_GlyphSelectAllButton_clicked(bool checked)
 {
 	Model* m = parent_.aten().currentModelOrFrame();
 	Glyph* g;
-	refreshing_ = TRUE;
+	refreshing_ = true;
 	for (int i = 0; i<ui.GlyphList->count(); ++i)
 	{
-		ui.GlyphList->item(i)->setSelected(TRUE);
+		ui.GlyphList->item(i)->setSelected(true);
 		g = (Glyph*) ((TListWidgetItem*) ui.GlyphList->item(i))->data.asPointer(VTypes::GlyphData);
-		g->setSelected(TRUE);
+		g->setSelected(true);
 	}
-	refreshing_ = FALSE;
+	refreshing_ = false;
 	parent_.postRedisplay();
 }
 
@@ -281,43 +281,43 @@ void GlyphsWidget::on_GlyphSelectNoneButton_clicked(bool checked)
 {
 	Model* m = parent_.aten().currentModelOrFrame();
 	Glyph* g = m->glyphs();
-	refreshing_ = TRUE;
+	refreshing_ = true;
 	QList<QListWidgetItem*> items = ui.GlyphList->selectedItems();
 	for (int i = items.size()-1; i>=0; --i)
 	{
-		items.at(i)->setSelected(FALSE);
-		g->setSelected(FALSE);
+		items.at(i)->setSelected(false);
+		g->setSelected(false);
 		g = g->next;
 	}
-	refreshing_ = FALSE;
+	refreshing_ = false;
 	parent_.postRedisplay();
 }
 
 void GlyphsWidget::on_GlyphInvertSelectionButton_clicked(bool checked)
 {
 	Glyph* g;
-	refreshing_ = TRUE;
+	refreshing_ = true;
 	for (int i = 0; i<ui.GlyphList->count(); ++i)
 	{
-		ui.GlyphList->item(i)->setSelected( ui.GlyphList->item(i)->isSelected() ? FALSE : TRUE );
+		ui.GlyphList->item(i)->setSelected( ui.GlyphList->item(i)->isSelected() ? false : true );
 		g = (Glyph*) ((TListWidgetItem*) ui.GlyphList->item(i))->data.asPointer(VTypes::GlyphData);
 		g->setSelected( ui.GlyphList->item(i)->isSelected());
 	}
-	refreshing_ = FALSE;
+	refreshing_ = false;
 	parent_.postRedisplay();
 }
 
 void GlyphsWidget::on_GlyphHideAllButton_clicked(bool checked)
 {
 	Model* m = parent_.aten().currentModelOrFrame();
-	for (Glyph* g = m->glyphs(); g != NULL; g = g->next) g->setVisible(FALSE);
+	for (Glyph* g = m->glyphs(); g != NULL; g = g->next) g->setVisible(false);
 	parent_.postRedisplay();
 }
 
 void GlyphsWidget::on_GlyphHideNoneButton_clicked(bool checked)
 {
 	Model* m = parent_.aten().currentModelOrFrame();
-	for (Glyph* g = m->glyphs(); g != NULL; g = g->next) g->setVisible(TRUE);
+	for (Glyph* g = m->glyphs(); g != NULL; g = g->next) g->setVisible(true);
 	parent_.postRedisplay();
 }
 
@@ -327,7 +327,7 @@ void GlyphsWidget::on_GlyphHideSelectedButton_clicked(bool checked)
 	for (int i = 0; i<ui.GlyphList->count(); ++i)
 	{
 		g = (Glyph*) ((TListWidgetItem*) ui.GlyphList->item(i))->data.asPointer(VTypes::GlyphData);
-		g->setVisible(FALSE);
+		g->setVisible(false);
 	}
 	parent_.postRedisplay();
 }
@@ -408,72 +408,72 @@ void GlyphsWidget::on_Data4AtomIdSpin_valueChanged(int i)
 void GlyphsWidget::on_Data1AtomRadio_clicked(bool checked)
 {
 	if (refreshing_) return;
-	dataAtomWidget[0]->setEnabled(TRUE);
-	dataValueWidget[0]->setEnabled(FALSE);
-	dataValueRadio[0]->setChecked(FALSE);
+	dataAtomWidget[0]->setEnabled(true);
+	dataValueWidget[0]->setEnabled(false);
+	dataValueRadio[0]->setChecked(false);
 	dataAtomIdChanged(0, dataAtomIdSpin[0]->value()-1);
 }
 
 void GlyphsWidget::on_Data2AtomRadio_clicked(bool checked)
 {
 	if (refreshing_) return;
-	dataAtomWidget[1]->setEnabled(TRUE);
-	dataValueWidget[1]->setEnabled(FALSE);
-	dataValueRadio[1]->setChecked(FALSE);
+	dataAtomWidget[1]->setEnabled(true);
+	dataValueWidget[1]->setEnabled(false);
+	dataValueRadio[1]->setChecked(false);
 	dataAtomIdChanged(1, dataAtomIdSpin[1]->value()-1);
 }
 
 void GlyphsWidget::on_Data3AtomRadio_clicked(bool checked)
 {
 	if (refreshing_) return;
-	dataAtomWidget[2]->setEnabled(TRUE);
-	dataValueWidget[2]->setEnabled(FALSE);
-	dataValueRadio[2]->setChecked(FALSE);
+	dataAtomWidget[2]->setEnabled(true);
+	dataValueWidget[2]->setEnabled(false);
+	dataValueRadio[2]->setChecked(false);
 	dataAtomIdChanged(2, dataAtomIdSpin[2]->value()-1);
 }
 
 void GlyphsWidget::on_Data4AtomRadio_clicked(bool checked)
 {
 	if (refreshing_) return;
-	dataAtomWidget[3]->setEnabled(TRUE);
-	dataValueWidget[3]->setEnabled(FALSE);
-	dataValueRadio[3]->setChecked(FALSE);
+	dataAtomWidget[3]->setEnabled(true);
+	dataValueWidget[3]->setEnabled(false);
+	dataValueRadio[3]->setChecked(false);
 	dataAtomIdChanged(3, dataAtomIdSpin[3]->value()-1);
 }
 
 void GlyphsWidget::on_Data1ValueRadio_clicked(bool checked)
 {
 	if (refreshing_) return;
-	dataAtomWidget[0]->setEnabled(FALSE);
-	dataValueWidget[0]->setEnabled(TRUE);
-	dataValueRadio[0]->setChecked(FALSE);
+	dataAtomWidget[0]->setEnabled(false);
+	dataValueWidget[0]->setEnabled(true);
+	dataValueRadio[0]->setChecked(false);
 	dataValueChanged(0, dataValueXSpin[0]->value(), dataValueYSpin[0]->value(), dataValueZSpin[0]->value());
 }
 
 void GlyphsWidget::on_Data2ValueRadio_clicked(bool checked)
 {
 	if (refreshing_) return;
-	dataAtomWidget[1]->setEnabled(FALSE);
-	dataValueWidget[1]->setEnabled(TRUE);
-	dataValueRadio[1]->setChecked(FALSE);
+	dataAtomWidget[1]->setEnabled(false);
+	dataValueWidget[1]->setEnabled(true);
+	dataValueRadio[1]->setChecked(false);
 	dataValueChanged(1, dataValueXSpin[1]->value(), dataValueYSpin[1]->value(), dataValueZSpin[1]->value());
 }
 
 void GlyphsWidget::on_Data3ValueRadio_clicked(bool checked)
 {
 	if (refreshing_) return;
-	dataAtomWidget[2]->setEnabled(FALSE);
-	dataValueWidget[2]->setEnabled(TRUE);
-	dataValueRadio[2]->setChecked(FALSE);
+	dataAtomWidget[2]->setEnabled(false);
+	dataValueWidget[2]->setEnabled(true);
+	dataValueRadio[2]->setChecked(false);
 	dataValueChanged(2, dataValueXSpin[2]->value(), dataValueYSpin[2]->value(), dataValueZSpin[2]->value());
 }
 
 void GlyphsWidget::on_Data4ValueRadio_clicked(bool checked)
 {
 	if (refreshing_) return;
-	dataAtomWidget[3]->setEnabled(FALSE);
-	dataValueWidget[3]->setEnabled(TRUE);
-	dataValueRadio[3]->setChecked(FALSE);
+	dataAtomWidget[3]->setEnabled(false);
+	dataValueWidget[3]->setEnabled(true);
+	dataValueRadio[3]->setChecked(false);
 	dataValueChanged(3, dataValueXSpin[3]->value(), dataValueYSpin[3]->value(), dataValueZSpin[3]->value());
 }
 
@@ -611,7 +611,7 @@ void GlyphsWidget::dataColourChanged(int id)
 	// Get current colour from frame and convert into a QColor
 	QColor oldcol = dataColourFrame[id]->colour(), newcol;
 	// Request a colour dialog
-	bool ok = FALSE;
+	bool ok = false;
 	newcol.setRgba(QColorDialog::getRgba(oldcol.rgba(), &ok, this));
 	if (!ok) return;
 	// Store new colour in frame

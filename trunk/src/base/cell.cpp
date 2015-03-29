@@ -109,10 +109,10 @@ Model* UnitCell::parent()
 // Copy data from specified cell
 bool UnitCell::copy(UnitCell* source)
 {
-	if (source == NULL) return FALSE;
+	if (source == NULL) return false;
 	source->print();
 	(*this) = (*source);
-	return TRUE;
+	return true;
 }
 
 /*
@@ -322,7 +322,7 @@ bool UnitCell::setSpacegroup(QString name, bool forceRhombohedral)
 	{
 		Messenger::print("Unable to find spacegroup '%s'.", qPrintable(name));
 		Messenger::exit("UnitCell::setSpacegroup");
-		return FALSE;
+		return false;
 	}
 	// Check for hexagonal basis, and whether to force rhombohedral basis
 	if (strcmp(tsgn->Extension, "H") == 0)
@@ -337,7 +337,7 @@ bool UnitCell::setSpacegroup(QString name, bool forceRhombohedral)
 			{
 				Messenger::print("Unable to find spacegroup '%s'.", qPrintable(name));
 				Messenger::exit("UnitCell::setSpacegroup");
-				return FALSE;
+				return false;
 			}
 			Messenger::print("Spacegroup %s forced into rhombohedral basis.", tsgn->SgLabels);
 		}
@@ -350,13 +350,13 @@ bool UnitCell::setSpacegroup(QString name, bool forceRhombohedral)
 	
 	// Translate the Hall symbol and generate the whole group
 	ParseHallSymbol(tsgn->HallSymbol, &spacegroup_);
-	if (SgError != NULL) return FALSE;
+	if (SgError != NULL) return false;
 	
 	// Do some book-keeping and derive crystal system, point group, and - if not already set - find the entry in the internal table of space group symbols
 	CompleteSgInfo(&spacegroup_);
 
 	Messenger::print(Messenger::Verbose, "Space group belongs to the %s crystal system.", XS_Name[spacegroup_.XtalSystem]);
-	return TRUE;
+	return true;
 }
 
 // Return SgInfo spacegroup structure (if it exists)
@@ -676,25 +676,25 @@ bool UnitCell::isInsideCell(Vec3<double> &v) const
 	{
 		// No cell, so no image to fold into
 		case (UnitCell::NoCell):
-			return FALSE;
+			return false;
 			break;
 		// Cubic / Orthorhombic
 		case (UnitCell::CubicCell):
 		case (UnitCell::OrthorhombicCell):
-			if ((v.x < 0.0) || (v.x > lengths_.x)) return FALSE;
-			if ((v.y < 0.0) || (v.y > lengths_.y)) return FALSE;
-			if ((v.z < 0.0) || (v.z > lengths_.z)) return FALSE;
+			if ((v.x < 0.0) || (v.x > lengths_.x)) return false;
+			if ((v.y < 0.0) || (v.y > lengths_.y)) return false;
+			if ((v.z < 0.0) || (v.z > lengths_.z)) return false;
 			break;
 		// Parallelepiped
 		default:
 			// Convert these coordinates into fractional cell coordinates...
 			Vec3<double> frac = inverse_.transform(v);
-			if ((frac.x < 0.0) || (frac.x > 1.0)) return FALSE;
-			if ((frac.y < 0.0) || (frac.y > 1.0)) return FALSE;
-			if ((frac.z < 0.0) || (frac.z > 1.0)) return FALSE;
+			if ((frac.x < 0.0) || (frac.x > 1.0)) return false;
+			if ((frac.y < 0.0) || (frac.y > 1.0)) return false;
+			if ((frac.z < 0.0) || (frac.z > 1.0)) return false;
 			break;
 	}
-	return TRUE;
+	return true;
 }
 
 /*

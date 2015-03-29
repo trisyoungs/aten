@@ -76,7 +76,7 @@ bool Generator::set(QString xyzName)
 	{
 		Messenger::print("Tried to set a symmetry Generator from text ('%s') that didn't split into three arguments.", qPrintable(xyzName));
 		Messenger::exit("Generator::set");
-		return FALSE;
+		return false;
 	}
 	
 	// Clear any existing data
@@ -107,7 +107,7 @@ bool Generator::set(QString xyzName)
 	}
 
 	Messenger::exit("Generator::set");
-	return TRUE;
+	return true;
 }
 
 // Set rotation matrix row (not including translation vector)

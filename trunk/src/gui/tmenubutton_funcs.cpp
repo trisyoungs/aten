@@ -39,12 +39,12 @@ bool TMenuButton::addMenuItem(const char* text, int id)
 	if (actions_.containsData(id))
 	{
 		printf("TMenuButton::addMenuItem - id '%i' is already in use.\n", id);
-		return FALSE;
+		return false;
 	}
 	QAction *action = menu_.addAction(text);
 	actions_.add(action, id);
 	QObject::connect(action, SIGNAL(triggered(bool)), this, SLOT(menuActionTriggered(bool)));
-	return TRUE;
+	return true;
 }
 
 void TMenuButton::menuActionTriggered(bool checked)

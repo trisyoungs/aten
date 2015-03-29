@@ -35,7 +35,7 @@ class AtomVariable : public PointerVariable
 {
 	public:
 	// Constructor / Destructor
-	AtomVariable(Atom* i = NULL, bool constant = FALSE);
+	AtomVariable(Atom* i = NULL, bool constant = false);
 	~AtomVariable();
 
 
@@ -70,7 +70,7 @@ class AtomArrayVariable : public PointerArrayVariable
 {
 	public:
 	// Constructor / Destructor
-	AtomArrayVariable(TreeNode* sizeexpr, bool constant = FALSE);
+	AtomArrayVariable(TreeNode* sizeexpr, bool constant = false);
 
 
 	/*

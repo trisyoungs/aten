@@ -52,8 +52,8 @@ ColourScaleVariable::~ColourScaleVariable()
 
 // Accessor data
 Accessor ColourScaleVariable::accessorData[ColourScaleVariable::nAccessors] = {
-	{ "nPoints",	VTypes::IntegerData,		0, TRUE },
-	{ "points",	VTypes::ColourScalePointData,	-1, TRUE }
+	{ "nPoints",	VTypes::IntegerData,		0, true },
+	{ "points",	VTypes::ColourScalePointData,	-1, true }
 };
 
 // Function data
@@ -136,7 +136,7 @@ bool ColourScaleVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArray
 	{
 		printf("Internal Error: Accessor id %i is out of range for ColourScale type.\n", i);
 		Messenger::exit("ColourScaleVariable::retrieveAccessor");
-		return FALSE;
+		return false;
 	}
 	Accessors acc = (Accessors) i;
 	// Check for correct lack/presence of array index given
@@ -144,7 +144,7 @@ bool ColourScaleVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArray
 	{
 		Messenger::print("Error: Unnecessary array index provided for member '%s'.", accessorData[i].name);
 		Messenger::exit("ColourScaleVariable::retrieveAccessor");
-		return FALSE;
+		return false;
 	}
 	else if ((accessorData[i].arraySize > 0) && (hasArrayIndex))
 	{
@@ -152,16 +152,16 @@ bool ColourScaleVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArray
 		{
 			Messenger::print("Error: Array index out of bounds for member '%s' (%i, range is 1-%i).", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
 			Messenger::exit("ColourScaleVariable::retrieveAccessor");
-			return FALSE;
+			return false;
 		}
 	}
 	// Get current data from ReturnValue
-	bool result = TRUE;
+	bool result = true;
 	ColourScale* ptr = (ColourScale*) rv.asPointer(VTypes::ColourScaleData, result);
 	if ((!result) || (ptr == NULL))
 	{
 		Messenger::print("Invalid (NULL) %s reference encountered.", VTypes::dataType(VTypes::ColourScaleData));
-		result = FALSE;
+		result = false;
 	}
 	if (result) switch (acc)
 	{
@@ -172,13 +172,13 @@ bool ColourScaleVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArray
 			if ((arrayIndex < 1) || (arrayIndex > ptr->nPoints()))
 			{
 				Messenger::print("Array index %i is out of range for 'points' member in ColourScale.");
-				result = FALSE;
+				result = false;
 			}
 			else rv.set(VTypes::ColourScalePointData, ptr->point(arrayIndex-1));
 			break;
 		default:
 			printf("Internal Error: Access to member '%s' has not been defined in ColourScaleVariable.\n", accessorData[i].name);
-			result = FALSE;
+			result = false;
 			break;
 	}
 	Messenger::exit("ColourScaleVariable::retrieveAccessor");
@@ -194,11 +194,11 @@ bool ColourScaleVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue&
 	{
 		printf("Internal Error: Accessor id %i is out of range for ColourScale type.\n", i);
 		Messenger::exit("ColourScaleVariable::setAccessor");
-		return FALSE;
+		return false;
 	}
 	Accessors acc = (Accessors) i;
 	// Check for correct lack/presence of array index given to original accessor, and nature of new value
-	bool result = TRUE;
+	bool result = true;
 	if (accessorData[i].arraySize != 0)
 	{
 		if (hasArrayIndex)
@@ -206,12 +206,12 @@ bool ColourScaleVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue&
 			if ((accessorData[i].arraySize > 0) && ( (arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize) ))
 			{
 				Messenger::print("Error: Array index provided for member '%s' is out of range (%i, range is 1-%i).", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
-				result = FALSE;
+				result = false;
 			}
 			if (newValue.arraySize() > 0)
 			{
 				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.", accessorData[i].name);
-				result = FALSE;
+				result = false;
 			}
 		}
 		else
@@ -219,7 +219,7 @@ bool ColourScaleVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue&
 			if (newValue.arraySize() > accessorData[i].arraySize)
 			{
 				Messenger::print("Error: The array being assigned to member '%s' is larger than the size of the desination array (%i cf. %i).", accessorData[i].name, newValue.arraySize(), accessorData[i].arraySize);
-				result = FALSE;
+				result = false;
 			}
 		}
 	}
@@ -231,32 +231,32 @@ bool ColourScaleVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue&
 			if (accessorData[i].returnType != VTypes::VectorData)
 			{
 				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.", accessorData[i].name);
-				result = FALSE;
+				result = false;
 			}
 			else if ((newValue.type() != VTypes::VectorData) && (newValue.arraySize() != 3))
 			{
 				Messenger::print("Error: Only an array of size 3 can be assigned to a vector (member '%s').", accessorData[i].name);
-				result = FALSE;
+				result = false;
 			}
 		}
 	}
 	if (!result)
 	{
 		Messenger::exit("ColourScaleVariable::setAccessor");
-		return FALSE;
+		return false;
 	}
 	// Get current data from ReturnValue
 	ColourScale* ptr = (ColourScale*) sourcerv.asPointer(VTypes::ColourScaleData, result);
 	if ((!result) || (ptr == NULL))
 	{
 		Messenger::print("Invalid (NULL) %s reference encountered.", VTypes::dataType(VTypes::ColourScaleData));
-		result = FALSE;
+		result = false;
 	}
 	if (result) switch (acc)
 	{
 		default:
 			printf("ColourScaleVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);
-			result = FALSE;
+			result = false;
 			break;
 	}
 	Messenger::exit("ColourScaleVariable::setAccessor");
@@ -272,10 +272,10 @@ bool ColourScaleVariable::performFunction(int i, ReturnValue& rv, TreeNode* node
 	{
 		printf("Internal Error: FunctionAccessor id %i is out of range for ColourScale type.\n", i);
 		Messenger::exit("ColourScaleVariable::performFunction");
-		return FALSE;
+		return false;
 	}
 	// Get current data from ReturnValue
-	bool result = TRUE;
+	bool result = true;
 	ColourScale* ptr = (ColourScale*) rv.asPointer(VTypes::ColourScaleData, result);
 	GLfloat colour[4];
 	if (result) switch (i)
@@ -298,7 +298,7 @@ bool ColourScaleVariable::performFunction(int i, ReturnValue& rv, TreeNode* node
 			break;
 		default:
 			printf("Internal Error: Access to function '%s' has not been defined in ColourScaleVariable.\n", functionData[i].name);
-			result = FALSE;
+			result = false;
 			break;
 	}
 	Messenger::exit("ColourScaleVariable::performFunction");

@@ -29,7 +29,7 @@ ATEN_USING_NAMESPACE
 // Assign charge to selected atoms in model ('charge <q>'), or get charge of current selection
 bool Commands::function_Charge(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	double q = 0.0;
 	if (c->hasArg(0))
 	{
@@ -43,56 +43,56 @@ bool Commands::function_Charge(CommandNode* c, Bundle& obj, ReturnValue& rv)
 		for (Refitem<Atom,int>* ri = obj.rs()->selection(); ri != NULL; ri = ri->next) q += ri->item->charge();
 	}
 	rv.set(q);
-	return TRUE;
+	return true;
 }
 
 // Assign charges from forcefield atom types ('chargeff')
 bool Commands::function_ChargeFF(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	obj.rs()->beginUndoState("Assign forcefield charges");
 	bool result = obj.rs()->assignForcefieldCharges();
 	obj.rs()->endUndoState();
-	return (result ? TRUE : FALSE);
+	return (result);
 }
 
 // Copy atomic charges from model to model's current trajectory frame
 bool Commands::function_ChargeFromModel(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	if (obj.rs() == obj.m) 
 	{
 		Messenger::print("Error - 'chargefrommodel' requires an active trajectory frame in the current model.");
-		return FALSE;
+		return false;
 	}
 	else obj.rs()->copyAtomData(obj.m, Atom::ChargeData);
-	return TRUE;
+	return true;
 }
 
 // Assign charge to a pattern atom, propagated over the model ('chargepatom <id> <q>')
 bool Commands::function_ChargePAtom(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	obj.rs()->beginUndoState("Charge single pattern atom");
 	obj.rs()->chargePatternAtom(obj.p,c->argi(0),c->argd(1));
 	obj.rs()->endUndoState();
-	return TRUE;
+	return true;
 }
 
 // Assign charges to a specified forcefield type ('chargetype <atomtype> <q>')
 bool Commands::function_ChargeType(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	printf("Not implemented yet!\n");
-	return FALSE;
+	return false;
 }
 
 // Clears charge in current model ('clearcharges')
 bool Commands::function_ClearCharges(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	obj.rs()->beginUndoState("Remove charges");
 	obj.rs()->clearCharges();
 	obj.rs()->endUndoState();
-	return TRUE;
+	return true;
 }
 

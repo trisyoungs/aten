@@ -46,26 +46,26 @@ Viewer::Viewer(QWidget* parent) : QOpenGLWidget(parent)
 
 	// Atom Selection
 	atomClicked_ = NULL;
-	pickEnabled_ = FALSE;
+	pickEnabled_ = false;
 	actionBeforePick_ = UserAction::NoAction;
 	pickAtomsCallback_ = NULL;
 	nAtomsToPick_ = -1;
 
 	// Mouse Input
-	for (int i=0; i<3; i++) mouseButton_[i] = FALSE;
+	for (int i=0; i<3; i++) mouseButton_[i] = false;
 
 	// Key Input
-	for (int i=0; i<3; i++) keyModifier_[i] = FALSE;
+	for (int i=0; i<3; i++) keyModifier_[i] = false;
 
 	// User Actions
 	activeMode_ = UserAction::NoAction;
 	selectedMode_ = UserAction::SelectAction;
 	currentDrawDepth_ = -5.0;
 	sketchElement_ = 6;
-	editable_ = TRUE;
+	editable_ = true;
 
 	// Prevent QPainter from autofilling widget background
-	setAutoFillBackground(FALSE);
+	setAutoFillBackground(false);
 
 	Messenger::exit("Viewer::Viewer()");
 }

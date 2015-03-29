@@ -54,13 +54,13 @@ EnergyStoreVariable::~EnergyStoreVariable()
 
 // Accessor data
 Accessor EnergyStoreVariable::accessorData[EnergyStoreVariable::nAccessors] = {
-	{ "angle",		VTypes::DoubleData,	0, TRUE },
-	{ "bond",		VTypes::DoubleData,	0, TRUE },
-	{ "electrostatic",	VTypes::DoubleData,	0, TRUE },
-	{ "torsion",		VTypes::DoubleData,	0, TRUE },
-	{ "total",		VTypes::DoubleData,	0, TRUE },
-	{ "ureyBradley",	VTypes::DoubleData,	0, TRUE },
-	{ "vdw",		VTypes::DoubleData,	0, TRUE }
+	{ "angle",		VTypes::DoubleData,	0, true },
+	{ "bond",		VTypes::DoubleData,	0, true },
+	{ "electrostatic",	VTypes::DoubleData,	0, true },
+	{ "torsion",		VTypes::DoubleData,	0, true },
+	{ "total",		VTypes::DoubleData,	0, true },
+	{ "ureyBradley",	VTypes::DoubleData,	0, true },
+	{ "vdw",		VTypes::DoubleData,	0, true }
 };
 
 // Function data
@@ -141,7 +141,7 @@ bool EnergyStoreVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArray
 	{
 		printf("Internal Error: Accessor id %i is out of range for EnergyStore type.\n", i);
 		Messenger::exit("EnergyStoreVariable::retrieveAccessor");
-		return FALSE;
+		return false;
 	}
 	Accessors acc = (Accessors) i;
 	// Check for correct lack/presence of array index given
@@ -149,7 +149,7 @@ bool EnergyStoreVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArray
 	{
 		Messenger::print("Error: Unnecessary array index provided for member '%s'.", accessorData[i].name);
 		Messenger::exit("EnergyStoreVariable::retrieveAccessor");
-		return FALSE;
+		return false;
 	}
 	else if ((accessorData[i].arraySize > 0) && (hasArrayIndex))
 	{
@@ -157,16 +157,16 @@ bool EnergyStoreVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArray
 		{
 			Messenger::print("Error: Array index out of bounds for member '%s' (%i, range is 1-%i).", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
 			Messenger::exit("EnergyStoreVariable::retrieveAccessor");
-			return FALSE;
+			return false;
 		}
 	}
 	// Get current data from ReturnValue
-	bool result = TRUE;
+	bool result = true;
 	EnergyStore* ptr = (EnergyStore*) rv.asPointer(VTypes::EnergyStoreData, result);
 	if ((!result) || (ptr == NULL))
 	{
 		Messenger::print("Invalid (NULL) %s reference encountered.", VTypes::dataType(VTypes::EnergyStoreData));
-		result = FALSE;
+		result = false;
 	}
 	if (result) switch (acc)
 	{
@@ -193,7 +193,7 @@ bool EnergyStoreVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArray
 			break;
 		default:
 			printf("Internal Error: Access to member '%s' has not been defined in EnergyStoreVariable.\n", accessorData[i].name);
-			result = FALSE;
+			result = false;
 			break;
 	}
 	Messenger::exit("EnergyStoreVariable::retrieveAccessor");
@@ -209,11 +209,11 @@ bool EnergyStoreVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue&
 	{
 		printf("Internal Error: Accessor id %i is out of range for EnergyStore type.\n", i);
 		Messenger::exit("EnergyStoreVariable::setAccessor");
-		return FALSE;
+		return false;
 	}
 	Accessors acc = (Accessors) i;
 	// Check for correct lack/presence of array index given to original accessor, and nature of new value
-	bool result = TRUE;
+	bool result = true;
 	if (accessorData[i].arraySize != 0)
 	{
 		if (hasArrayIndex)
@@ -221,12 +221,12 @@ bool EnergyStoreVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue&
 			if ((accessorData[i].arraySize > 0) && ( (arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize) ))
 			{
 				Messenger::print("Error: Array index provided for member '%s' is out of range (%i, range is 1-%i).", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
-				result = FALSE;
+				result = false;
 			}
 			if (newValue.arraySize() > 0)
 			{
 				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.", accessorData[i].name);
-				result = FALSE;
+				result = false;
 			}
 		}
 		else
@@ -234,7 +234,7 @@ bool EnergyStoreVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue&
 			if (newValue.arraySize() > accessorData[i].arraySize)
 			{
 				Messenger::print("Error: The array being assigned to member '%s' is larger than the size of the desination array (%i cf. %i).", accessorData[i].name, newValue.arraySize(), accessorData[i].arraySize);
-				result = FALSE;
+				result = false;
 			}
 		}
 	}
@@ -246,32 +246,32 @@ bool EnergyStoreVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue&
 			if (accessorData[i].returnType != VTypes::VectorData)
 			{
 				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.", accessorData[i].name);
-				result = FALSE;
+				result = false;
 			}
 			else if ((newValue.type() != VTypes::VectorData) && (newValue.arraySize() != 3))
 			{
 				Messenger::print("Error: Only an array of size 3 can be assigned to a vector (member '%s').", accessorData[i].name);
-				result = FALSE;
+				result = false;
 			}
 		}
 	}
 	if (!result)
 	{
 		Messenger::exit("EnergyStoreVariable::setAccessor");
-		return FALSE;
+		return false;
 	}
 	// Get current data from ReturnValue
 	EnergyStore* ptr = (EnergyStore*) sourcerv.asPointer(VTypes::EnergyStoreData, result);
 	if ((!result) || (ptr == NULL))
 	{
 		Messenger::print("Invalid (NULL) %s reference encountered.", VTypes::dataType(VTypes::EnergyStoreData));
-		result = FALSE;
+		result = false;
 	}
 	if (result) switch (acc)
 	{
 		default:
 			printf("EnergyStoreVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);
-			result = FALSE;
+			result = false;
 			break;
 	}
 	Messenger::exit("EnergyStoreVariable::setAccessor");
@@ -287,16 +287,16 @@ bool EnergyStoreVariable::performFunction(int i, ReturnValue& rv, TreeNode* node
 	{
 		printf("Internal Error: FunctionAccessor id %i is out of range for EnergyStore type.\n", i);
 		Messenger::exit("EnergyStoreVariable::performFunction");
-		return FALSE;
+		return false;
 	}
 	// Get current data from ReturnValue
-	bool result = TRUE;
+	bool result = true;
 	EnergyStore* ptr = (EnergyStore*) rv.asPointer(VTypes::EnergyStoreData, result);
 	if (result) switch (i)
 	{
 		default:
 			printf("Internal Error: Access to function '%s' has not been defined in EnergyStoreVariable.\n", functionData[i].name);
-			result = FALSE;
+			result = false;
 			break;
 	}
 	Messenger::exit("EnergyStoreVariable::performFunction");

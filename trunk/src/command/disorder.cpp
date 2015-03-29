@@ -30,7 +30,7 @@ ATEN_USING_NAMESPACE
 // Performs MC insertion ('disorder <scheme>')
 bool Commands::function_Disorder(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	
 	// Parse the first option so we can get at any options
 	LineParser parser;
@@ -38,7 +38,7 @@ bool Commands::function_Disorder(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	
 	// First argument should always be the scheme name
 	PartitioningScheme* scheme = aten_.findPartitioningScheme(parser.argc(0));
-	if (scheme == NULL) return FALSE;
+	if (scheme == NULL) return false;
 	
 	// Loop over remaining arguments (widget/global variable assignments)
 	for (int n = 1; n < parser.nArgs(); ++n)
@@ -58,7 +58,7 @@ bool Commands::function_Disorder(CommandNode* c, Bundle& obj, ReturnValue& rv)
 
 	Messenger::print("Performing disordered build for model '%s'", qPrintable(obj.m->name()));
 	rv.reset();
-	bool result = mc.disorder(aten_.models(), obj.m, scheme, c->hasArg(1) ? c->argb(1) : TRUE);
+	bool result = mc.disorder(aten_.models(), obj.m, scheme, c->hasArg(1) ? c->argb(1) : true);
 	return result;
 }
 
@@ -74,20 +74,20 @@ bool Commands::function_ListComponents(CommandNode* c, Bundle& obj, ReturnValue&
 		Messenger::print("%-15s %-10s     %i        %5i    %8.4f", qPrintable(m->name()), Model::insertionPolicy(m->componentInsertionPolicy()), m->componentPartition()+1, m->componentPopulation(), m->componentDensity());
 	}
 	rv.reset();
-	return TRUE;
+	return true;
 }
 
 // Setup current model as component for disorder builder
 bool Commands::function_SetupComponent(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
-	Model::InsertionPolicy policy = Model::insertionPolicy(c->argc(0), TRUE);
-	if (policy == Model::nInsertionPolicies) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
+	Model::InsertionPolicy policy = Model::insertionPolicy(c->argc(0), true);
+	if (policy == Model::nInsertionPolicies) return false;
 	obj.m->setComponentInsertionPolicy(policy);
 	if (c->hasArg(1)) obj.m->setComponentPartition(c->argi(1)-1);
 	if (c->hasArg(2)) obj.m->setComponentPopulation(c->argi(2));
 	if (c->hasArg(3)) obj.m->setComponentDensity(c->argd(3));
 	if (c->hasArg(4)) obj.m->setComponentRotatable(c->argb(4));
-	return TRUE;
+	return true;
 }
 

@@ -54,21 +54,21 @@ void GeometryWidget::updateTabs()
 	switch (m->nSelected())
 	{
 		case (2):
-			ui.DistanceTab->setEnabled(TRUE);
-			ui.AngleTab->setEnabled(FALSE);
-			ui.TorsionTab->setEnabled(FALSE);
+			ui.DistanceTab->setEnabled(true);
+			ui.AngleTab->setEnabled(false);
+			ui.TorsionTab->setEnabled(false);
 			ui.Tabs->setCurrentIndex(1);
 			break;
 		case (3):
-			ui.DistanceTab->setEnabled(FALSE);
-			ui.AngleTab->setEnabled(TRUE);
-			ui.TorsionTab->setEnabled(FALSE);
+			ui.DistanceTab->setEnabled(false);
+			ui.AngleTab->setEnabled(true);
+			ui.TorsionTab->setEnabled(false);
 			ui.Tabs->setCurrentIndex(2);
 			break;
 		case (4):
-			ui.DistanceTab->setEnabled(FALSE);
-			ui.AngleTab->setEnabled(FALSE);
-			ui.TorsionTab->setEnabled(TRUE);
+			ui.DistanceTab->setEnabled(false);
+			ui.AngleTab->setEnabled(false);
+			ui.TorsionTab->setEnabled(true);
 			ui.Tabs->setCurrentIndex(3);
 			break;
 		default:

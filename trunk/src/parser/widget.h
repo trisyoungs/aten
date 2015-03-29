@@ -36,7 +36,7 @@ class WidgetVariable : public PointerVariable
 {
 	public:
 	// Constructor / Destructor
-	WidgetVariable(TreeGuiWidget* widget = NULL, bool constant = FALSE);
+	WidgetVariable(TreeGuiWidget* widget = NULL, bool constant = false);
 	~WidgetVariable();
 
 
@@ -71,7 +71,7 @@ class WidgetArrayVariable : public PointerArrayVariable
 {
 	public:
 	// Constructor / Destructor
-	WidgetArrayVariable(TreeNode* sizeexpr, bool constant = FALSE);
+	WidgetArrayVariable(TreeNode* sizeexpr, bool constant = false);
 
 
 	/*

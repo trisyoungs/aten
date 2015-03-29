@@ -50,7 +50,7 @@ void Aten::addFragmentFromSelection(Model* source, QString parentGroup)
 	Clipboard clip;
 	clip.copySelection(source);
 	Model* m = addModel();
-	clip.pasteToModel(m, FALSE);
+	clip.pasteToModel(m, false);
 
 	// Does the named fragment group already exist? If not, create new one
 	FragmentGroup* fg = findFragmentGroup( parentGroup == NULL ? "New Fragments" : parentGroup );
@@ -114,7 +114,7 @@ bool Aten::parseFragmentDir(QDir path, QString groupName)
 	{
 		Messenger::warn("Fragment directory '%s' does not exist.", qPrintable(path.path()));
 		Messenger::exit("Aten::parseFragmentDir");
-		return FALSE;
+		return false;
 	}
 
 	int i;
@@ -157,7 +157,7 @@ bool Aten::parseFragmentDir(QDir path, QString groupName)
 	}
 
 	Messenger::exit("Aten::parseFragmentDir");
-	return TRUE;
+	return true;
 }
 
 // Search for name fragment group

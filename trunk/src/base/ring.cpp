@@ -50,11 +50,11 @@ Ring::~Ring()
 bool Ring::operator==(Ring &r) const
 {
 	// Check ring sizes first
-	if (atoms_.nItems() != r.atoms_.nItems()) return FALSE;
+	if (atoms_.nItems() != r.atoms_.nItems()) return false;
 	// Search for first atom of ring 'r' in this ring's atom list
 	Refitem<Atom,int>* commonatom, *ri, *rj;
 	for (commonatom = atoms_.first(); commonatom != NULL; commonatom = commonatom->next) if (commonatom->item == r.atoms_.first()->item) break;
-	if (commonatom == NULL) return FALSE;
+	if (commonatom == NULL) return false;
 	// The atom exists in both rings, so check all atoms....
 	ri = r.atoms_.first();
 	rj = ri;
@@ -75,8 +75,8 @@ bool Ring::operator==(Ring &r) const
 		// Step our local ring pointer on one...
 		commonatom = getNext(commonatom);
 	}
-	if ((ri == NULL) && (rj == NULL)) return FALSE;
-	return TRUE;
+	if ((ri == NULL) && (rj == NULL)) return false;
+	return true;
 }
 
 // Set pattern parent
@@ -157,18 +157,18 @@ bool Ring::addAtom(Atom* i)
 	if (atoms_.nItems() == requestedSize_)
 	{
 		Messenger::exit("Ring::addAtom");
-		return FALSE;
+		return false;
 	}
 	// Duplicate check
 	if (atoms_.contains(i) != NULL)
 	{
 		Messenger::exit("Ring::addAtom");
-		return FALSE;
+		return false;
 	}
 	// Append a ringatom to the list, pointing to atom i, storing the atom ID in the Refitem's data variable
 	atoms_.add(i,i->id());
 	Messenger::exit("Ring::addAtom");
-	return TRUE;
+	return true;
 }
 
 // Remove the specified refitem from the find
@@ -203,7 +203,7 @@ void Ring::detectType()
 	Messenger::enter("Ring::detectType");
 	int nsingle = 0, ndouble = 0, nother = 0, naromatic = 0;
 	Bond::BondType lasttype, thistype;
-	bool alternating = TRUE;
+	bool alternating = true;
 	// Get numbers of single/double bonds, and whether they alternate around the ring
 	for (Refitem<Bond,Bond::BondType> *rb = bonds_.first(); rb != NULL; rb = rb->next)
 	{
@@ -214,13 +214,13 @@ void Ring::detectType()
 		else
 		{
 			nother ++;
-			alternating = FALSE;
+			alternating = false;
 			continue;
 		}
 		// Check previous bond for 'alternateness'
 		lasttype = (rb == bonds_.first() ? bonds_.last()->item->type() : rb->prev->item->type());
-		if ((lasttype == Bond::Single) && (thistype != Bond::Double)) alternating = FALSE;
-		else if ((lasttype == Bond::Double) && (thistype != Bond::Single)) alternating = FALSE;
+		if ((lasttype == Bond::Single) && (thistype != Bond::Double)) alternating = false;
+		else if ((lasttype == Bond::Double) && (thistype != Bond::Single)) alternating = false;
 	}
 
 	// Set type
@@ -243,7 +243,7 @@ void Ring::detectType()
 	else
 	{
 		int nhetero = 0, group;
-		bool failed = FALSE;
+		bool failed = false;
 		Bond::BondType bt1, bt2;
 		// For rings with an odd number of atoms, adjacent single bonds may use a medial heteroatom to grant aromaticity
 		for (Refitem<Atom,int>* ra = atoms_.first(); ra != NULL; ra = ra->next)
@@ -258,9 +258,9 @@ void Ring::detectType()
 				// TODO Need to check against the bondorder penalty
 			//bondOrderPenalty(Atom* i, int bo);
 				if ((bt1 == Bond::Single) && (bt2 == Bond::Single)) nhetero ++;
-				else failed = TRUE;
+				else failed = true;
 			}
-			else failed = TRUE;
+			else failed = true;
 			if (failed) break;
 		}
 		if (failed) type_ = Ring::NonAromaticRing;

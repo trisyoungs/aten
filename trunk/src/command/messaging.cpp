@@ -31,7 +31,7 @@ ATEN_USING_NAMESPACE
 bool Commands::function_CreateDialog(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	rv.set(VTypes::DialogData, c->parent()->createDialog(c->hasArg(0) ? c->argc(0) : "New Dialog"));
-	return TRUE;
+	return true;
 }
 
 // Return this Tree's default TreeGui dialog
@@ -39,7 +39,7 @@ bool Commands::function_DefaultDialog(CommandNode* c, Bundle& obj, ReturnValue& 
 {
 	if (c->hasArg(0)) c->parent()->defaultDialog().setInitialProperties(c->argc(0));
 	rv.set(VTypes::DialogData, &c->parent()->defaultDialog());
-	return TRUE;
+	return true;
 }
 
 // Write line to msg output and stop
@@ -49,7 +49,7 @@ bool Commands::function_Error(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	if (fmt == NULL)
 	{
 		printf("Error - No format defined in 'error' command.\n");
-		return FALSE;
+		return false;
 	}
 	if (fmt->writeToString())
 	{
@@ -57,7 +57,7 @@ bool Commands::function_Error(CommandNode* c, Bundle& obj, ReturnValue& rv)
 		QMessageBox::critical(NULL, "Aten", fmt->string(), QMessageBox::Ok, QMessageBox::Ok);
 	}
 	c->parent()->setAcceptedFail(Commands::Error);
-	return FALSE;
+	return false;
 }
 
 // Display message dialog and continue
@@ -67,15 +67,15 @@ bool Commands::function_Message(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	if (fmt == NULL)
 	{
 		printf("Error - No format defined in 'message' command.\n");
-		return FALSE;
+		return false;
 	}
 	if (fmt->writeToString())
 	{
 		Messenger::print("[%s] %s", qPrintable(c->argc(0)), qPrintable(fmt->string()));
 		QMessageBox::information(NULL, c->argc(0), fmt->string(), QMessageBox::Ok, QMessageBox::Ok);
 	}
-	else return FALSE;
-	return TRUE;
+	else return false;
+	return true;
 }
 
 // Print formatted string
@@ -85,11 +85,11 @@ bool Commands::function_Printf(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	if (fmt == NULL)
 	{
 		printf("Error - No format defined in 'printf' command.\n");
-		return FALSE;
+		return false;
 	}
 	if (fmt->writeToString()) Messenger::print(fmt->string());
-	else return FALSE;
-	return TRUE;
+	else return false;
+	return true;
 }
 
 // Show this Tree's default TreeGui dialog
@@ -97,8 +97,8 @@ bool Commands::function_ShowDefaultDialog(CommandNode* c, Bundle& obj, ReturnVal
 {
 	if (c->hasArg(0)) c->parent()->defaultDialog().setInitialProperties(c->argc(0));
 	if (prefs.allowDialogs()) rv.set(c->parent()->defaultDialog().execute());
-	else rv.set(TRUE);
-	return TRUE;
+	else rv.set(true);
+	return true;
 }
 
 // Print formatted string (in verbose output only)
@@ -108,11 +108,11 @@ bool Commands::function_Verbose(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	if (fmt == NULL)
 	{
 		printf("Error - No format defined in 'verbose' command.\n");
-		return FALSE;
+		return false;
 	}
-	if (!Messenger::isOutputActive(Messenger::Verbose)) return TRUE;
+	if (!Messenger::isOutputActive(Messenger::Verbose)) return true;
 	if (fmt->writeToString()) Messenger::print(Messenger::Verbose, "%s", qPrintable(fmt->string()));
-	else return FALSE;
-	return TRUE;
+	else return false;
+	return true;
 }
 

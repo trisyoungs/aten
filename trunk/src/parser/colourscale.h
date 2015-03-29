@@ -35,7 +35,7 @@ class ColourScaleVariable : public PointerVariable
 {
 	public:
 	// Constructor / Destructor
-	ColourScaleVariable(ColourScale *cs = NULL, bool constant = FALSE);
+	ColourScaleVariable(ColourScale *cs = NULL, bool constant = false);
 	~ColourScaleVariable();
 
 
@@ -70,7 +70,7 @@ class ColourScaleArrayVariable : public PointerArrayVariable
 {
 	public:
 	// Constructor / Destructor
-	ColourScaleArrayVariable(TreeNode* sizeexpr, bool constant = FALSE);
+	ColourScaleArrayVariable(TreeNode* sizeexpr, bool constant = false);
 
 
 	/*

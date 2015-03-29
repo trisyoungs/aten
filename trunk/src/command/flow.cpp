@@ -28,14 +28,14 @@ ATEN_USING_NAMESPACE
 // Dummy Node
 bool Commands::function_NoFunction(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	return TRUE;
+	return true;
 }
 
 // Joiner
 bool Commands::function_Joiner(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	// Execute both commands
-	bool result = TRUE;
+	bool result = true;
 	if (c->hasArg(0)) result = c->arg(0, rv);
 	if (result && c->hasArg(1)) result = c->arg(1, rv);
 	return result;
@@ -45,35 +45,35 @@ bool Commands::function_Joiner(CommandNode* c, Bundle& obj, ReturnValue& rv)
 bool Commands::function_Declarations(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	// Reset each variable argument
-	for (int n=0; n<c->nArgs(); ++n) if (!c->argNode(n)->initialise()) return FALSE;
-	return TRUE;
+	for (int n=0; n<c->nArgs(); ++n) if (!c->argNode(n)->initialise()) return false;
+	return true;
 }
 
 // Break out of current 'for' loop or 'switch' structure
 bool Commands::function_Break(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	c->parent()->setAcceptedFail(Commands::Break);
-	return FALSE;
+	return false;
 }
 
 // Case statement within 'switch' structure
 bool Commands::function_Case(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (!c->arg(0, rv)) return FALSE;
-	return TRUE;
+	if (!c->arg(0, rv)) return false;
+	return true;
 }
 
 // Continue for loop at next iteration
 bool Commands::function_Continue(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	c->parent()->setAcceptedFail(Commands::Continue);
-	return FALSE;
+	return false;
 }
 
 // Default case statement within 'switch' structure
 bool Commands::function_Default(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	return TRUE;
+	return true;
 }
 
 // Do-While loop
@@ -86,7 +86,7 @@ bool Commands::function_DoWhile(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	Commands::Function af;
 	do
 	{
-		// Run blockment- catch break and continue calls which return FALSE
+		// Run blockment- catch break and continue calls which return false
 		result = c->arg(0, rv);
 		if (!result)
 		{
@@ -95,15 +95,15 @@ bool Commands::function_DoWhile(CommandNode* c, Bundle& obj, ReturnValue& rv)
 			if (af == Commands::Break)
 			{
 				c->parent()->setAcceptedFail(Commands::NoFunction);
-				return TRUE;
+				return true;
 			}
 			else if (af == Commands::Continue) c->parent()->setAcceptedFail(Commands::NoFunction);
-			else if (af != Commands::NoFunction) return FALSE;
+			else if (af != Commands::NoFunction) return false;
 		}
 		// Perform test of condition
-		if (!c->arg(1, test)) return FALSE;
+		if (!c->arg(1, test)) return false;
 	} while (test.asBool());
-	return TRUE;
+	return true;
 }
 
 // For loop
@@ -114,16 +114,16 @@ bool Commands::function_For(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	// Argument 2 - Action on loop cycle
 	// Argument 3 - Statementlist
 	 // Get initial variable value
-	if (!c->arg(0, rv)) return FALSE;
+	if (!c->arg(0, rv)) return false;
 	ReturnValue ifval;
 	bool result;
 	Commands::Function af;
-	while (TRUE)
+	while (true)
 	{
 		// Termination condition
-		if (!c->arg(1, ifval)) return FALSE;
+		if (!c->arg(1, ifval)) return false;
 		if (!ifval.asBool()) break;
-		// Loop body - catch break and continue calls which return FALSE
+		// Loop body - catch break and continue calls which return false
 		result = c->arg(3, rv);
 		if (!result)
 		{
@@ -132,15 +132,15 @@ bool Commands::function_For(CommandNode* c, Bundle& obj, ReturnValue& rv)
 			if (af == Commands::Break)
 			{
 				c->parent()->setAcceptedFail(Commands::NoFunction);
-				return TRUE;
+				return true;
 			}
 			else if (af == Commands::Continue) c->parent()->setAcceptedFail(Commands::NoFunction);
-			else return FALSE;
+			else return false;
 		}
 		// Loop 'increment' statement
-		if (!c->arg(2, rv)) return FALSE;
+		if (!c->arg(2, rv)) return false;
 	}
-	return TRUE;
+	return true;
 }
 
 // For x in y loop
@@ -151,13 +151,13 @@ bool Commands::function_ForIn(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	// Argument 2 - Statementlist
 	// Set initial value
 	ReturnValue varval;
-	if (!c->arg(1, varval)) return FALSE;
+	if (!c->arg(1, varval)) return false;
 	c->setArg(0, varval);
 	Commands::Function af;
 	bool result;
 	while (c->argp(0,c->argType(0)) != NULL)
 	{
-		// Loop body - catch break and continue calls which return FALSE
+		// Loop body - catch break and continue calls which return false
 		result = c->arg(2, rv);
 		if (!result)
 		{
@@ -166,26 +166,26 @@ bool Commands::function_ForIn(CommandNode* c, Bundle& obj, ReturnValue& rv)
 			if (af == Commands::Break)
 			{
 				c->parent()->setAcceptedFail(Commands::NoFunction);
-				return TRUE;
+				return true;
 			}
 			else if (af == Commands::Continue) c->parent()->setAcceptedFail(Commands::NoFunction);
-			else return FALSE;
+			else return false;
 		}
 		// Skip to next linked item...
-		if (!varval.increase()) return FALSE;
+		if (!varval.increase()) return false;
 		c->setArg(0, varval);
 	}
-	return TRUE;
+	return true;
 }
 
 // If test
 bool Commands::function_If(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	ReturnValue ifval;
-	if (!c->arg(0, ifval)) return FALSE;
+	if (!c->arg(0, ifval)) return false;
 	if (ifval.asBool()) return (c->arg(1, rv));
 	else if (c->hasArg(2)) return (c->arg(2, rv));
-	return TRUE;
+	return true;
 }
 
 // Return from function/filter/program
@@ -193,17 +193,17 @@ bool Commands::function_Return(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	c->parent()->setAcceptedFail(Commands::Return);
 	if (c->hasArg(0)) c->arg(0, rv);
-	return FALSE;
+	return false;
 }
 
 // Switch statement
 bool Commands::function_Switch(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	ReturnValue switchVal, caseVal;
-	if (!c->arg(0, switchVal)) return FALSE;
+	if (!c->arg(0, switchVal)) return false;
 	int index = 1;
 	CommandNode* node;
-	bool result, execute = FALSE;
+	bool result, execute = false;
 	Commands::Function af;
 	while (c->hasArg(index))
 	{
@@ -225,9 +225,9 @@ bool Commands::function_Switch(CommandNode* c, Bundle& obj, ReturnValue& rv)
 						{
 // 							printf("Broken.\n");
 							c->parent()->setAcceptedFail(Commands::NoFunction);
-							return TRUE;
+							return true;
 						}
-						else return FALSE;
+						else return false;
 					}
 				}
 			}
@@ -239,25 +239,25 @@ bool Commands::function_Switch(CommandNode* c, Bundle& obj, ReturnValue& rv)
 					++index;
 					if (c->hasArg(index))
 					{
-						if (!c->arg(index, rv)) return FALSE;
+						if (!c->arg(index, rv)) return false;
 						break;
 					}
 				}
 				else if ((node->function() == Commands::Case) && (!execute))
 				{
-					if (!c->arg(index, caseVal)) return FALSE;
+					if (!c->arg(index, caseVal)) return false;
 // 					printf("Index %i is a case node whose value is %s..\n", index, caseval.info());
 					// Do comparison...
 					if ((switchVal.type() == VTypes::IntegerData) && (caseVal.type() == VTypes::IntegerData)) result = (switchVal.asInteger() == caseVal.asInteger());
 					else result = switchVal.asString() == caseVal.asString();
 					// Flag to enter into execution state if values matched
-					if (result) execute = TRUE;
+					if (result) execute = true;
 				}
 			}
 		}
 		++index;
 	}
-	return TRUE;
+	return true;
 }
 
 // While loop
@@ -269,10 +269,10 @@ bool Commands::function_While(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	bool result;
 	Commands::Function af;
 	// Perform initial test of condition
-	if (!c->arg(0, test)) return FALSE;
+	if (!c->arg(0, test)) return false;
 	while (test.asBool())
 	{
-		// Run blockment- catch break and continue calls which return FALSE
+		// Run blockment- catch break and continue calls which return false
 		result = c->arg(1, rv);
 		if (!result)
 		{
@@ -281,14 +281,14 @@ bool Commands::function_While(CommandNode* c, Bundle& obj, ReturnValue& rv)
 			if (af == Commands::Break)
 			{
 				c->parent()->setAcceptedFail(Commands::NoFunction);
-				return TRUE;
+				return true;
 			}
 			else if (af == Commands::Continue) c->parent()->setAcceptedFail(Commands::NoFunction);
-			else if (af != Commands::NoFunction) return FALSE;
+			else if (af != Commands::NoFunction) return false;
 		}
 		// Perform test of condition
-		if (!c->arg(0, test)) return FALSE;
+		if (!c->arg(0, test)) return false;
 	}
-	return TRUE;
+	return true;
 }
 

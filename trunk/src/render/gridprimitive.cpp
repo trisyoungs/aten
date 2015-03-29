@@ -28,8 +28,8 @@ GridPrimitive::GridPrimitive(Grid* source) : ListItem<GridPrimitive>()
 {
 	// Private variables
 	source_ = source;
-	primaryIsTransparent_ = FALSE;
-	secondaryIsTransparent_ = FALSE;
+	primaryIsTransparent_ = false;
+	secondaryIsTransparent_ = false;
 	
 	// Set both primitives to use no instances	// ATEN2 TODO
 	primaryPrimitive_.setNoInstances();

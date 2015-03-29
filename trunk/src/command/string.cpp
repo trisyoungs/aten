@@ -30,21 +30,21 @@ bool Commands::function_AfterStr(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	rv.set(c->argc(0).section(c->argc(1), 1));	// ATEN2 TODO Test this
 	if (c->hasArg(2) && c->argb(2) && (rv.asString()[0] == '\0')) rv.set(c->argc(0));
-	return TRUE;
+	return true;
 }
 
 // Convert string to floating point number
 bool Commands::function_AToF(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	rv.set( c->argc(0).toDouble() );
-	return TRUE;
+	return true;
 }
 
 // Convert string to integer number
 bool Commands::function_AToI(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	rv.set( c->argc(0).toInt() );
-	return TRUE;
+	return true;
 }
 
 // Get part of string before specified character
@@ -52,56 +52,56 @@ bool Commands::function_BeforeStr(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	rv.set( c->argc(0).section(c->argc(1), 0, 0) ); // ATEN2 TODO Test this
 	if (c->hasArg(2) && c->argb(2) && (rv.asString()[0] == '\0')) rv.set(c->argc(0));
-	return TRUE;
+	return true;
 }
 
 // Return number of occurrences of string in another string
 bool Commands::function_Contains(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	rv.set(c->argc(0).count(c->argc(1))); // ATEN2 TODO Test this
-	return TRUE;
+	return true;
 }
 
 // Convert string to integer number
 bool Commands::function_FToA(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	rv.set( QString::number(c->argd(0)) );
-	return TRUE;
+	return true;
 }
 
 // Convert string to integer number
 bool Commands::function_IToA(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	rv.set( QString::number(c->argi(0)) );
-	return TRUE;
+	return true;
 }
 
 // Return lowercase converted string
 bool Commands::function_Lowercase(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	rv.set( c->argc(0).toLower() );
-	return TRUE;
+	return true;
 }
 
 // Replace characters in supplied string
 bool Commands::function_ReplaceChars(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	rv.set(c->argc(0).replace(c->argc(1), c->argc(2)));
-	return TRUE;
+	return true;
 }
 
 // Replace substring in supplied string
 bool Commands::function_ReplaceStr(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	rv.set(c->argc(0).replace(c->argc(1), c->argc(2)));
-	return TRUE;
+	return true;
 }
 
 // Remove substring from supplied string
 bool Commands::function_RemoveStr(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	rv.set( c->argc(0).remove(c->argc(1)) );
-	return TRUE;
+	return true;
 }
 
 // Print to string
@@ -115,14 +115,14 @@ bool Commands::function_StripChars(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	QString result = c->argc(0);
 	for (int n=0; n<c->argc(1).length(); ++n) result.remove(c->argc(1).at(n));
-	return TRUE;
+	return true;
 }
 
 // Return substring of supplied string
 bool Commands::function_SubStr(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	rv.set(c->argc(0).mid(c->argi(1)-1, c->argi(2)));
-	return TRUE;
+	return true;
 }
 
 // Return string based on supplied format and arguments
@@ -132,7 +132,7 @@ bool Commands::function_ToA(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	if (fmt == NULL)
 	{
 		printf("Error - No format defined in 'toa' command.\n");
-		return FALSE;
+		return false;
 	}
 	bool result = fmt->writeToString();
 	if (result) rv.set(fmt->string());
@@ -144,5 +144,5 @@ bool Commands::function_ToA(CommandNode* c, Bundle& obj, ReturnValue& rv)
 bool Commands::function_Uppercase(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	rv.set( c->argc(0).toUpper() );
-	return TRUE;
+	return true;
 }

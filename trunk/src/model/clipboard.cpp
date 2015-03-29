@@ -220,7 +220,7 @@ void Clipboard::copyMarked(Model* m)
 	clear();
 	
 	// Copy atoms
-	for (Refitem<Atom,int>* ri = m->selection(TRUE); ri != NULL; ri = ri->next) copyAtom(ri->item);
+	for (Refitem<Atom,int>* ri = m->selection(true); ri != NULL; ri = ri->next) copyAtom(ri->item);
 	renumberAtoms();
 	
 	// Copy bonds
@@ -403,9 +403,9 @@ bool Clipboard::hasBond(int ii, int jj)
 	{
 		idi = b->atomI()->atom().id();
 		idj = b->atomJ()->atom().id();
-		if (((ii == idi) && (jj == idj)) || ((ii == idj) && (jj == idi))) return TRUE;
+		if (((ii == idi) && (jj == idj)) || ((ii == idj) && (jj == idi))) return true;
 	}
-	return FALSE;
+	return false;
 }
 
 // Return number of bonds stored in clipboard

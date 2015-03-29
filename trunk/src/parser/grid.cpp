@@ -50,45 +50,45 @@ GridVariable::~GridVariable()
 
 // Accessor data
 Accessor GridVariable::accessorData[GridVariable::nAccessors] = {
-	{ "axes",			VTypes::CellData,	0, TRUE },
-	{ "axisMajorSpacing", 		VTypes::VectorData,	0, FALSE },
-	{ "axisMinorTicks", 		VTypes::IntegerData,	3, FALSE },
-	{ "axisPositionX", 		VTypes::VectorData,	0, FALSE },
-	{ "axisPositionY", 		VTypes::VectorData,	0, FALSE },
-	{ "axisPositionZ", 		VTypes::VectorData,	0, FALSE },
-	{ "axisVisible", 		VTypes::IntegerData,	3, FALSE },
-	{ "colour",			VTypes::DoubleData,	4, FALSE },
-	{ "colourScale",		VTypes::IntegerData,	0, FALSE },
-	{ "cutoff",			VTypes::DoubleData,	0, FALSE },
-	{ "dataMaximum", 		VTypes::VectorData,	0, FALSE },
-	{ "dataMinimum", 		VTypes::VectorData,	0, FALSE },
-	{ "loopOrder", 			VTypes::IntegerData,	3, FALSE },
-	{ "name",			VTypes::StringData,	0, FALSE },
-	{ "nx",				VTypes::IntegerData,	0, TRUE },
-	{ "ny",				VTypes::IntegerData,	0, TRUE },
-	{ "nz",				VTypes::IntegerData,	0, TRUE },
-	{ "nPoints",			VTypes::IntegerData,	0, TRUE },
-	{ "origin", 			VTypes::VectorData,	0, FALSE },
-	{ "outlineVolume",		VTypes::IntegerData,	0, FALSE },
-	{ "periodic",			VTypes::IntegerData,	0, FALSE },
-	{ "secondaryColour",		VTypes::DoubleData,	4, FALSE },
-	{ "secondaryCutoff",		VTypes::DoubleData,	0, FALSE },
-	{ "secondaryUpperCutoff",	VTypes::DoubleData,	0, FALSE },
-	{ "shiftX",			VTypes::IntegerData,	0, FALSE },
-	{ "shiftY",			VTypes::IntegerData,	0, FALSE },
-	{ "shiftZ",			VTypes::IntegerData,	0, FALSE },
-	{ "type",			VTypes::StringData,	0, TRUE },
-	{ "upperCutoff",		VTypes::DoubleData,	0, FALSE },
-	{ "useColourScale",		VTypes::IntegerData,	0, FALSE },
-	{ "useDataForZ",		VTypes::IntegerData,	0, FALSE },
-	{ "visible",			VTypes::IntegerData,	0, FALSE }
+	{ "axes",			VTypes::CellData,	0, true },
+	{ "axisMajorSpacing", 		VTypes::VectorData,	0, false },
+	{ "axisMinorTicks", 		VTypes::IntegerData,	3, false },
+	{ "axisPositionX", 		VTypes::VectorData,	0, false },
+	{ "axisPositionY", 		VTypes::VectorData,	0, false },
+	{ "axisPositionZ", 		VTypes::VectorData,	0, false },
+	{ "axisVisible", 		VTypes::IntegerData,	3, false },
+	{ "colour",			VTypes::DoubleData,	4, false },
+	{ "colourScale",		VTypes::IntegerData,	0, false },
+	{ "cutoff",			VTypes::DoubleData,	0, false },
+	{ "dataMaximum", 		VTypes::VectorData,	0, false },
+	{ "dataMinimum", 		VTypes::VectorData,	0, false },
+	{ "loopOrder", 			VTypes::IntegerData,	3, false },
+	{ "name",			VTypes::StringData,	0, false },
+	{ "nx",				VTypes::IntegerData,	0, true },
+	{ "ny",				VTypes::IntegerData,	0, true },
+	{ "nz",				VTypes::IntegerData,	0, true },
+	{ "nPoints",			VTypes::IntegerData,	0, true },
+	{ "origin", 			VTypes::VectorData,	0, false },
+	{ "outlineVolume",		VTypes::IntegerData,	0, false },
+	{ "periodic",			VTypes::IntegerData,	0, false },
+	{ "secondaryColour",		VTypes::DoubleData,	4, false },
+	{ "secondaryCutoff",		VTypes::DoubleData,	0, false },
+	{ "secondaryUpperCutoff",	VTypes::DoubleData,	0, false },
+	{ "shiftX",			VTypes::IntegerData,	0, false },
+	{ "shiftY",			VTypes::IntegerData,	0, false },
+	{ "shiftZ",			VTypes::IntegerData,	0, false },
+	{ "type",			VTypes::StringData,	0, true },
+	{ "upperCutoff",		VTypes::DoubleData,	0, false },
+	{ "useColourScale",		VTypes::IntegerData,	0, false },
+	{ "useDataForZ",		VTypes::IntegerData,	0, false },
+	{ "visible",			VTypes::IntegerData,	0, false }
 };
 
 // Function data
 FunctionAccessor GridVariable::functionData[GridVariable::nFunctions] = {
 	{ "data",		VTypes::DoubleData,	"IIi",	"int i, int j, int k = -1" },
 	{ "initialise",		VTypes::IntegerData,	"SIIi",	"string type, int nx, int ny, int nz = -1" },
-	{ "shift",		VTypes::NoData,		"IIIi",	"int dx, int dy, int dz, bool shiftAtoms = FALSE" }
+	{ "shift",		VTypes::NoData,		"IIIi",	"int dx, int dy, int dz, bool shiftAtoms = false" }
 };
 
 // Search variable access list for provided accessor (call private static function)
@@ -164,7 +164,7 @@ bool GridVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex, 
 	{
 		printf("Internal Error: Accessor id %i is out of range for Grid type.\n", i);
 		Messenger::exit("GridVariable::retrieveAccessor");
-		return FALSE;
+		return false;
 	}
 	Accessors acc = (Accessors) i;
 	// Check for correct lack/presence of array index given
@@ -172,7 +172,7 @@ bool GridVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex, 
 	{
 		Messenger::print("Error: Unnecessary array index provided for member '%s'.", accessorData[i].name);
 		Messenger::exit("GridVariable::retrieveAccessor");
-		return FALSE;
+		return false;
 	}
 	else if ((accessorData[i].arraySize > 0) && (hasArrayIndex))
 	{
@@ -180,16 +180,16 @@ bool GridVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex, 
 		{
 			Messenger::print("Error: Array index out of bounds for member '%s' (%i, range is 1-%i).", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
 			Messenger::exit("GridVariable::retrieveAccessor");
-			return FALSE;
+			return false;
 		}
 	}
 	// Get current data from ReturnValue
-	bool result = TRUE;
+	bool result = true;
 	Grid* ptr = (Grid*) rv.asPointer(VTypes::GridData, result);
 	if ((!result) || (ptr == NULL))
 	{
 		Messenger::print("Invalid (NULL) %s reference encountered.", VTypes::dataType(VTypes::GridData));
-		result = FALSE;
+		result = false;
 	}
 	if (result) switch (acc)
 	{
@@ -297,7 +297,7 @@ bool GridVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex, 
 			break;
 		default:
 			printf("Internal Error: Access to member '%s' has not been defined in GridVariable.\n", accessorData[i].name);
-			result = FALSE;
+			result = false;
 			break;
 	}
 	Messenger::exit("GridVariable::retrieveAccessor");
@@ -313,11 +313,11 @@ bool GridVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newVal
 	{
 		printf("Internal Error: Accessor id %i is out of range for Grid type.\n", i);
 		Messenger::exit("GridVariable::setAccessor");
-		return FALSE;
+		return false;
 	}
 	Accessors acc = (Accessors) i;
 	// Check for correct lack/presence of array index given to original accessor, and nature of new value
-	bool result = TRUE;
+	bool result = true;
 	if (accessorData[i].arraySize != 0)
 	{
 		if (hasArrayIndex)
@@ -325,12 +325,12 @@ bool GridVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newVal
 			if ((accessorData[i].arraySize > 0) && ( (arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize) ))
 			{
 				Messenger::print("Error: Array index provided for member '%s' is out of range (%i, range is 1-%i).", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
-				result = FALSE;
+				result = false;
 			}
 			if (newValue.arraySize() > 0)
 			{
 				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.", accessorData[i].name);
-				result = FALSE;
+				result = false;
 			}
 		}
 		else
@@ -338,7 +338,7 @@ bool GridVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newVal
 			if (newValue.arraySize() > accessorData[i].arraySize)
 			{
 				Messenger::print("Error: The array being assigned to member '%s' is larger than the size of the desination array (%i cf. %i).", accessorData[i].name, newValue.arraySize(), accessorData[i].arraySize);
-				result = FALSE;
+				result = false;
 			}
 		}
 	}
@@ -350,19 +350,19 @@ bool GridVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newVal
 			if (accessorData[i].returnType != VTypes::VectorData)
 			{
 				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.", accessorData[i].name);
-				result = FALSE;
+				result = false;
 			}
 			else if ((newValue.type() != VTypes::VectorData) && (newValue.arraySize() != 3))
 			{
 				Messenger::print("Error: Only an array of size 3 can be assigned to a vector (member '%s').", accessorData[i].name);
-				result = FALSE;
+				result = false;
 			}
 		}
 	}
 	if (!result)
 	{
 		Messenger::exit("GridVariable::setAccessor");
-		return FALSE;
+		return false;
 	}
 	// Get current data from ReturnValue
 	Grid* ptr = (Grid*) sourcerv.asPointer(VTypes::GridData, result);
@@ -370,7 +370,7 @@ bool GridVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newVal
 	if ((!result) || (ptr == NULL))
 	{
 		Messenger::print("Invalid (NULL) %s reference encountered.", VTypes::dataType(VTypes::GridData));
-		result = FALSE;
+		result = false;
 	}
 	if (result) switch (acc)
 	{
@@ -466,7 +466,7 @@ bool GridVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newVal
 			break;
 		default:
 			printf("GridVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);
-			result = FALSE;
+			result = false;
 			break;
 	}
 	Messenger::exit("GridVariable::setAccessor");
@@ -482,10 +482,10 @@ bool GridVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 	{
 		printf("Internal Error: FunctionAccessor id %i is out of range for Grid type.\n", i);
 		Messenger::exit("GridVariable::performFunction");
-		return FALSE;
+		return false;
 	}
 	// Get current data from ReturnValue
-	bool result = TRUE;
+	bool result = true;
 	Grid* ptr = (Grid*) rv.asPointer(VTypes::GridData, result);
 	Grid::GridType gt;
 	int nx, ny, nz;
@@ -502,12 +502,12 @@ bool GridVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 					if ((nx < 0) || (nx >= ptr->nXYZ().x))
 					{
 						Messenger::print("Error: X value for grid (%i) is out of range (nx = %i)", nx+1, ptr->nXYZ().x);
-						result = FALSE;
+						result = false;
 					}
 					else if ((ny < 0) || (ny >= ptr->nXYZ().y))
 					{
 						Messenger::print("Error: Y value for grid (%i) is out of range (ny = %i)", ny+1, ptr->nXYZ().y);
-						result = FALSE;
+						result = false;
 					}
 					else rv.set( ptr->data2d()[nx][ny] );
 					break;
@@ -515,7 +515,7 @@ bool GridVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 					if (node->nArgs() != 3)
 					{
 						Messenger::print("Error: Third dimension for 3D grid not provided in 'data' function.");
-						result = FALSE;
+						result = false;
 						break;
 					}
 					nx = node->argi(0) - 1;
@@ -524,29 +524,29 @@ bool GridVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 					if ((nx < 0) || (nx >= ptr->nXYZ().x))
 					{
 						Messenger::print("Error: X value for grid (%i) is out of range (nx = %i)", nx+1, ptr->nXYZ().x);
-						result = FALSE;
+						result = false;
 					}
 					else if ((ny < 0) || (ny >= ptr->nXYZ().y))
 					{
 						Messenger::print("Error: Y value for grid (%i) is out of range (ny = %i)", ny+1, ptr->nXYZ().y);
-						result = FALSE;
+						result = false;
 					}
 					else if ((nz < 0) || (nz >= ptr->nXYZ().z))
 					{
 						Messenger::print("Error: Z value for grid (%i) is out of range (nz = %i)", nz+1, ptr->nXYZ().z);
-						result = FALSE;
+						result = false;
 					}
 					else rv.set( ptr->data3d()[nx][ny][nz] );
 					break;
 				case (Grid::FreeXYZData):
 					Messenger::print("Free (irregular) grid data cannot be accessed with the 'data' function.");
-					result = FALSE;
+					result = false;
 					break;
 			}
 			break;
 		case (GridVariable::Initialise):
-			gt = Grid::gridType(node->argc(0), TRUE);
-			if (gt == Grid::nGridTypes) return FALSE;
+			gt = Grid::gridType(node->argc(0), true);
+			if (gt == Grid::nGridTypes) return false;
 			result = ptr->initialise(gt, Vec3<int>(node->argi(1), node->argi(2), node->nArgs() == 3 ? -1 : node->argi(3)));
 			break;
 		case (GridVariable::Shift):
@@ -562,13 +562,13 @@ bool GridVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 				// Move atoms....
 				m->beginUndoState("Shift atoms with grid");
 				m->markAll();
-				m->translateSelectionLocal(vec, TRUE);
+				m->translateSelectionLocal(vec, true);
 				m->endUndoState();
 			}
 			break;
 		default:
 			printf("Internal Error: Access to function '%s' has not been defined in GridVariable.\n", functionData[i].name);
-			result = FALSE;
+			result = false;
 			break;
 	}
 	Messenger::exit("GridVariable::performFunction");

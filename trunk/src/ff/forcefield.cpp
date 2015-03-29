@@ -708,18 +708,18 @@ int Forcefield::matchType(QString test, QString target)
 	// Wildcard '*' in the atomname matches rest of string.
 	// Return 1 for a wildcard, '0' for an exact match, and an arbitrary '10' for no match
 	if (test == target) return 0;
-	bool wild = FALSE, failed = FALSE;
+	bool wild = false, failed = false;
 	int length = std::max(test.length(), target.length());
 	for (int n=0; n <length; ++n)
 	{
 		if ((target.at(n) == '*') || (test.at(n) == '*'))
 		{
-			wild = TRUE;
+			wild = true;
 			break;
 		}
 		else if (test.at(n) != target.at(n))
 		{
-			failed = TRUE;
+			failed = true;
 			break;
 		}
 	}

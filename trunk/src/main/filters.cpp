@@ -28,7 +28,7 @@ void Aten::openFilters()
 {
 	Messenger::enter("Aten::openFilters");
 
-	bool found = FALSE;
+	bool found = false;
 
 	failedFilters_.clear();
 
@@ -61,17 +61,17 @@ bool Aten::openFilter(QString filename)
 
 	// Construct filter Program...
 	Program* filter = filterPrograms_.add();
-	if (!filter->generateFromFile(filename, filename, TRUE, TRUE, TRUE))
+	if (!filter->generateFromFile(filename, filename, true, true, true))
 	{
 		Messenger::print("Failed to load filters from '%s'...", qPrintable(filename));
 		failedFilters_ << filename;
 		filterPrograms_.remove(filter);
 		Messenger::exit("Aten::openFilter");
-		return FALSE;
+		return false;
 	}
 
 	Messenger::exit("Aten::openFilter");
-	return TRUE;
+	return true;
 }
 
 // Create filter strings for file dialogs
@@ -176,7 +176,7 @@ int Aten::parseFilterDir(QDir path)
 		// Construct filter Program...
 		Program* filter = filterPrograms_.add();
 		QString filename = path.filePath(filterList.at(i));
-		if (!filter->generateFromFile(qPrintable(QDir::toNativeSeparators(filename)), qPrintable(filterList.at(i)), TRUE, TRUE, TRUE))
+		if (!filter->generateFromFile(qPrintable(QDir::toNativeSeparators(filename)), qPrintable(filterList.at(i)), true, true, true))
 		{
 			Messenger::error("Failed to load filters from '%s'...", qPrintable(filterList.at(i)));
 			failedFilters_ << QDir::toNativeSeparators(filename);

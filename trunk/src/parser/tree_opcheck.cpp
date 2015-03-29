@@ -35,7 +35,7 @@ VTypes::DataType Tree::checkUnaryOperatorTypes(Commands::Function func, VTypes::
 		return VTypes::NoData;
 	}
 	VTypes::DataType result = VTypes::NoData;
-	returnsarray = FALSE;
+	returnsarray = false;
 	switch (func)
 	{
 		// Postfix and prefix operators (must have integer or real types, or pointer class with list pointers)
@@ -76,7 +76,7 @@ VTypes::DataType Tree::checkUnaryOperatorTypes(Commands::Function func, VTypes::
 				case (VTypes::DblA):
 				case (VTypes::VecA):
 					result = type;
-					returnsarray = TRUE;
+					returnsarray = true;
 					break;
 			}
 			break;
@@ -108,7 +108,7 @@ VTypes::DataType Tree::checkBinaryOperatorTypes(Commands::Function func, VTypes:
 		return VTypes::NoData;
 	}
 	VTypes::DataType result = VTypes::NoData;
-	returnsarray = FALSE;
+	returnsarray = false;
 	switch (func)
 	{
 		case (Commands::OperatorAdd):
@@ -147,14 +147,14 @@ VTypes::DataType Tree::checkBinaryOperatorTypes(Commands::Function func, VTypes:
 				case (VTypes::DblAVec):
 				case (VTypes::IntADbl):
 					result = type1;
-					returnsarray = TRUE;
+					returnsarray = true;
 					break;
 			}
 			break;
 		case (Commands::OperatorAnd):
 		case (Commands::OperatorOr):
 			result = VTypes::IntegerData;
-			returnsarray = FALSE;
+			returnsarray = false;
 			break;
 		case (Commands::OperatorDivide):
 		case (Commands::OperatorAssignmentDivide):
@@ -182,7 +182,7 @@ VTypes::DataType Tree::checkBinaryOperatorTypes(Commands::Function func, VTypes:
 					result = type1;
 					break;
 				case (VTypes::IntADbl):
-					returnsarray = TRUE;
+					returnsarray = true;
 				case (VTypes::IntDbl):
 					result = type2;
 					break;
@@ -202,7 +202,7 @@ VTypes::DataType Tree::checkBinaryOperatorTypes(Commands::Function func, VTypes:
 				case (VTypes::DblIntA):
 				case (VTypes::IntAVec):
 				case (VTypes::DblAVec):
-					returnsarray = TRUE;
+					returnsarray = true;
 				case (VTypes::DblInt):
 				case (VTypes::DblDbl):
 				case (VTypes::IntInt):
@@ -221,7 +221,7 @@ VTypes::DataType Tree::checkBinaryOperatorTypes(Commands::Function func, VTypes:
 				case (VTypes::IntADbl):
 				case (VTypes::IntIntA):
 				case (VTypes::IntDblA):
-					returnsarray = TRUE;
+					returnsarray = true;
 				case (VTypes::IntDbl):
 				case (VTypes::IntVec):
 				case (VTypes::DblVec):
@@ -313,7 +313,7 @@ VTypes::DataType Tree::checkBinaryOperatorTypes(Commands::Function func, VTypes:
 				case (VTypes::IntADbl):
 				case (VTypes::PtrAPtr):
 					result = type1;
-					returnsarray = TRUE;
+					returnsarray = true;
 					break;
 			}
 			break;
@@ -341,7 +341,7 @@ VTypes::DataType Tree::checkTernaryOperatorTypes(Commands::Function func, VTypes
 		return VTypes::NoData;
 	}
 	VTypes::DataType result = VTypes::NoData;
-	returnsarray = FALSE;
+	returnsarray = false;
 	switch (func)
 	{
 		case (Commands::OperatorInlineIf):

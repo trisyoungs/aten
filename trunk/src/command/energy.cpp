@@ -32,7 +32,7 @@ bool Commands::function_Electrostatics(CommandNode* c, Bundle& obj, ReturnValue&
 {
 	rv.reset();
 	Electrostatics::ElecMethod em = Electrostatics::elecMethod(c->argc(0));
-	if (em == Electrostatics::nElectrostatics) return FALSE;
+	if (em == Electrostatics::nElectrostatics) return false;
 	switch (em)
 	{
 		// Set ewald sum params ('elec ewald <alpha> <kx ky kz>')
@@ -40,7 +40,7 @@ bool Commands::function_Electrostatics(CommandNode* c, Bundle& obj, ReturnValue&
 			if (!c->hasArg(4))
 			{
 				Messenger::print("Must supply the alpha parameter and kmax vectors to used this electrostatics option.");
-				return FALSE;
+				return false;
 			}
 			prefs.setEwaldAlpha(c->argd(1));
 			prefs.setEwaldKMax(c->arg3i(2));
@@ -50,7 +50,7 @@ bool Commands::function_Electrostatics(CommandNode* c, Bundle& obj, ReturnValue&
 			if (!c->hasArg(1))
 			{
 				Messenger::print("Must supply the Ewald precision parameter to used this electrostatics option.");
-				return FALSE;
+				return false;
 			}
 			prefs.ewaldPrecision().set(c->argd(1));
 			break;
@@ -59,18 +59,18 @@ bool Commands::function_Electrostatics(CommandNode* c, Bundle& obj, ReturnValue&
 	}
 	// Set method
 	prefs.setElectrostaticsMethod(em);
-	return TRUE;
+	return true;
 }
 
 // Calculate energy of current trajectory frame ('frameenergy')
 bool Commands::function_FrameEnergy(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 
 	double energy;
 	bool success;
 
-	if (!obj.m->createExpression(Choice(), Choice(), Choice(), aten_.currentForcefield(), aten_.combinationRules())) return FALSE;
+	if (!obj.m->createExpression(Choice(), Choice(), Choice(), aten_.currentForcefield(), aten_.combinationRules())) return false;
 	energy = obj.m->totalEnergy(obj.rs(), success);
 	rv.set(energy);
 
@@ -80,11 +80,11 @@ bool Commands::function_FrameEnergy(CommandNode* c, Bundle& obj, ReturnValue& rv
 // Calculate energy of current model contents ('modelenergy')
 bool Commands::function_ModelEnergy(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	double energy;
 	bool success;
 	
-	if (!obj.m->createExpression(Choice(), Choice(), Choice(), aten_.currentForcefield(), aten_.combinationRules())) return FALSE;
+	if (!obj.m->createExpression(Choice(), Choice(), Choice(), aten_.currentForcefield(), aten_.combinationRules())) return false;
 	energy = obj.m->totalEnergy(obj.m, success);
 	rv.set(energy);
 
@@ -94,62 +94,62 @@ bool Commands::function_ModelEnergy(CommandNode* c, Bundle& obj, ReturnValue& rv
 // Print out electrostatic decomposition matrix ('printelec')
 bool Commands::function_PrintElec(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	obj.m->energy.printElecMatrix(obj.rs());
 	rv.reset();
-	return TRUE;
+	return true;
 }
 
 // Print long energy decomposition of model ('printenergy')
 bool Commands::function_PrintEnergy(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	obj.m->energy.print();
 	rv.reset();
-	return TRUE;
+	return true;
 }
 
 // Print out Ewald energy decomposition of model ('printewald')
 bool Commands::function_PrintEwald(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	obj.m->energy.printEwald();
 	rv.reset();
-	return TRUE;
+	return true;
 }
 
 // Print out interpattern decomposition matrix ('printinter')
 bool Commands::function_PrintInter(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	obj.m->energy.printInterMatrix(obj.rs());
 	rv.reset();
-	return TRUE;
+	return true;
 }
 
 // Print out intramolecular decomposition matrix ('printintra')
 bool Commands::function_PrintIntra(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	obj.m->energy.printIntraMatrix(obj.rs());
 	rv.reset();
-	return TRUE;
+	return true;
 }
 
 // Print short energy decomposition of model ('printsummary')
 bool Commands::function_PrintSummary(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	obj.m->energy.printSummary();
 	rv.reset();
-	return TRUE;
+	return true;
 }
 
 // Print out VDW decomposition matrix ('printvdw')
 bool Commands::function_PrintVdw(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (obj.notifyNull(Bundle::ModelPointer)) return FALSE;
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	obj.m->energy.printVdwMatrix(obj.rs());
 	rv.reset();
-	return TRUE;
+	return true;
 }

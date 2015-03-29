@@ -516,12 +516,12 @@ void ElementMap::copyColour(int i, Vec4<GLfloat>& v) const
 int ElementMap::numberToZ(QString number) const
 {
 	// Check that the string is entirely numerical
-	bool isNumber = TRUE;
+	bool isNumber = true;
 	for (int n=0; n<number.length(); ++n)
 	{
 		if (number.at(n).isDigit()) continue;
 
-		isNumber = FALSE;
+		isNumber = false;
 		break;
 	}
 
