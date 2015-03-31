@@ -26,12 +26,14 @@
 #include "base/forcefieldbound.h"
 #include "base/namespace.h"
 
+// Forward Declarations (Qt)
+class QComboBox;
+
 ATEN_BEGIN_NAMESPACE
 
 // Forward Declarations (Aten)
 class Forcefield;
 class ForcefieldAtom;
-class TComboBox;
 
 ATEN_END_NAMESPACE
 
@@ -56,7 +58,7 @@ class AtenForcefieldEditor : public QDialog
 	// General Functions
 	*/
 	private:
-	void boundFunctionChanged(TComboBox *sender, int i, ForcefieldBound::BoundType bt);
+	void boundFunctionChanged(QComboBox *sender, int i, ForcefieldBound::BoundType bt);
 
 	public:
 	void populate(Forcefield* target);

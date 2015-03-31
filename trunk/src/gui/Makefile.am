@@ -19,7 +19,7 @@ SUFFIXES: .ui .uih .qrc
 	rm $*.cpp
 
 clean-local:
-	-rm -f ui_* *.o tprompt.cpp ttreewidget.cpp tcolourframe.cpp tradiogroup.cpp tprocess.cpp tmenubutton.cpp tcombobox.cpp tintegerspindelegate.cpp tdoublespindelegate.cpp ttablewidget.cpp icons.cpp viewer.cpp moc_*.cpp
+	-rm -f ui_* *.o tprompt.cpp ttreewidget.cpp tcolourframe.cpp tprocess.cpp tmenubutton.cpp tintegerspindelegate.cpp tdoublespindelegate.cpp ttablewidget.cpp icons.cpp viewer.cpp moc_*.cpp
 
 libtreegui_a_SOURCES = treegui.ui treegui_funcs.cpp
 
@@ -32,11 +32,11 @@ libgui_a_SOURCES += about_funcs.cpp atomlist_funcs.cpp build_funcs.cpp celldefin
 libgui_a_SOURCES += ffeditor_funcs.cpp layoutlist.cpp loadmodel_funcs.cpp mainwindow_context.cpp mainwindow_funcs.cpp mainwindow_init.cpp prefs_funcs.cpp progress_funcs.cpp selectelement_funcs.cpp selectfilter_funcs.cpp selectpattern_funcs.cpp selectvariable_funcs.cpp settings.cpp
 libgui_a_SOURCES += mainmenuactions.cpp mouseactions.cpp toolbaractions.cpp
 
-libgui_a_SOURCES += tcolourframe.uih ttablewidget.uih tdoublespindelegate.uih tintegerspindelegate.uih ttreewidget.uih tmenubutton.uih tprocess.uih tprompt.uih tradiogroup.uih viewer.uih
-libgui_a_SOURCES += viewer_funcs.cpp viewer_key.cpp viewer_model.cpp viewer_mouse.cpp viewer_offscreen.cpp viewer_scene.cpp viewer_user.cpp viewer_useractions.cpp tdoublespindelegate_funcs.cpp tcolourframe_funcs.cpp tcombobox_funcs.cpp textratreewidgetitem_funcs.cpp tintegerspindelegate_funcs.cpp tlistwidgetitem_funcs.cpp tmenubutton_funcs.cpp ttablewidgetitem_funcs.cpp ttreewidgetitem_funcs.cpp tprocess_funcs.cpp tprompt_funcs.cpp
+libgui_a_SOURCES += tcolourframe.uih ttablewidget.uih tdoublespindelegate.uih tintegerspindelegate.uih ttreewidget.uih tmenubutton.uih tprocess.uih tprompt.uih viewer.uih
+libgui_a_SOURCES += viewer_funcs.cpp viewer_key.cpp viewer_model.cpp viewer_mouse.cpp viewer_offscreen.cpp viewer_scene.cpp viewer_user.cpp viewer_useractions.cpp tdoublespindelegate_funcs.cpp tcolourframe_funcs.cpp textratreewidgetitem_funcs.cpp tintegerspindelegate_funcs.cpp tmenubutton_funcs.cpp ttablewidgetitem_funcs.cpp ttreewidgetitem_funcs.cpp tprocess_funcs.cpp tprompt_funcs.cpp
 
 libgui_a_SOURCES += useractions.cpp
 
-noinst_HEADERS = about.h atomlist.h build.h celldefinition.h celltransform.h command.h disorderoptions.h disorderwizard.h ffeditor.h forcefields.h fragments.h geometry.h glyphs.h grids.h layoutlist.h loadmodel.h mainwindow.h modellist.h pores.h position.h prefs.h progress.h saveimage.h scriptmovie.h select.h selectelement.h selectfilter.h selectpattern.h selectvariable.h tcombobox.h textratreewidgetitem.h tlistwidgetitem.h trajectory.h transform.h treegui.h ttablewidgetitem.h ttreewidgetitem.h useractions.h vibrations.h viewbasis.h vieweigenvector.h zmatrix.h
+noinst_HEADERS = about.h atomlist.h build.h celldefinition.h celltransform.h command.h disorderoptions.h disorderwizard.h ffeditor.h forcefields.h fragments.h geometry.h glyphs.h grids.h layoutlist.h loadmodel.h mainwindow.h modellist.h pores.h position.h prefs.h progress.h saveimage.h scriptmovie.h select.h selectelement.h selectfilter.h selectpattern.h selectvariable.h textratreewidgetitem.h trajectory.h transform.h treegui.h ttablewidgetitem.h ttreewidgetitem.h useractions.h vibrations.h viewbasis.h vieweigenvector.h zmatrix.h
 
 INCLUDES = -I$(top_srcdir)/src -I../ -I./ @ATEN_CFLAGS@

@@ -13,11 +13,9 @@ ${CMAKE_BINARY_DIR}
 set(qtproject_SRCS
   useractions.h
   useractions.cpp
-  tcombobox.h
   textratreewidgetitem.h
   ttreewidgetitem.h
   ttablewidgetitem.h
-  tlistwidgetitem.h 
   about_funcs.cpp
   atomlist_funcs.cpp
   build_funcs.cpp
@@ -61,9 +59,7 @@ set(qtproject_SRCS
   viewer_user.cpp
   viewer_useractions.cpp
   tcolourframe_funcs.cpp
-  tcombobox_funcs.cpp
   tmenubutton_funcs.cpp
-  tlistwidgetitem_funcs.cpp
   tdoublespindelegate_funcs.cpp
   tintegerspindelegate_funcs.cpp
   toolbaractions.cpp
@@ -124,7 +120,6 @@ SET(pro_MOC_HDRS
   tmenubutton.uih
   tprocess.uih
   tprompt.uih
-  tradiogroup.uih
   ttablewidget.uih
   ttreewidget.uih
   viewer.uih

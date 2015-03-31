@@ -27,7 +27,6 @@
 #include "gui/prefs.h"
 #include "gui/mainwindow.h"
 #include "gui/selectelement.h"
-#include "gui/tcombobox.h"
 #include "model/model.h"
 #include "ff/forcefield.h"
 #include "base/sysfunc.h"
@@ -822,7 +821,7 @@ void AtenPrefs::updateParameterTable()
 	}
 	int n;
 	QStringList combrules;
-	TComboBox *combo;
+	QComboBox* combo;
 	QTableWidgetItem *item;
 	for (n=0; n<CombinationRules::nCombinationRules; ++n) combrules << CombinationRules::combinationRuleName( (CombinationRules::CombinationRule) n);
 	ui.ParameterTable->setColumnCount(2);
@@ -831,10 +830,10 @@ void AtenPrefs::updateParameterTable()
 	{
 		item = new QTableWidgetItem(VdwFunctions::VdwFunctions[row].parameters[n]);
 		ui.ParameterTable->setItem(n, 0, item);
-		combo = new TComboBox(this);
+		combo = new QComboBox(this);
 		combo->setMinimumSize(78,24);
 		combo->addItems(combrules);
-		combo->data.set(n);
+		combo->setItemData(0, n);
 		combo->setCurrentIndex(VdwFunctions::VdwFunctions[row].combinationRules[n]);
 		ui.ParameterTable->setCellWidget(n, 1, combo);
 		QObject::connect(combo, SIGNAL(activated(int)), this, SLOT(ParameterRuleChanged(int)));
@@ -913,14 +912,14 @@ void AtenPrefs::ParameterRuleChanged(int id)
 		return;
 	}
 	// Determine ID of sender
-	TComboBox *combo = (TComboBox*) sender();
+	QComboBox* combo = (QComboBox*) sender();
 	if (!combo)
 	{
-		printf("AtenPrefs::ParameterRuleChanged - Sender could not be cast to a TComboBox.\n");
+		printf("AtenPrefs::ParameterRuleChanged - Sender could not be cast to a QComboBox.\n");
 		Messenger::exit("AtenPrefs::ParameterRuleChanged");
 		return;
 	}
-	VdwFunctions::VdwFunctions[row].combinationRules[combo->data.asInteger()] = (CombinationRules::CombinationRule) id;
+	VdwFunctions::VdwFunctions[row].combinationRules[combo->itemData(0).toInt()] = (CombinationRules::CombinationRule) id;
 // 	printf("SET %i %i %i\n", row, combo->integer(), id);
 	Messenger::exit("AtenPrefs::ParameterRuleChanged");
 }
