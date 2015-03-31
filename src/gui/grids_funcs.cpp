@@ -27,8 +27,7 @@
 #include "gui/grids.h"
 #include "gui/viewbasis.h"
 #include "gui/vieweigenvector.h"
-#include "gui/tlistwidgetitem.h"
-#include "base/sysfunc.h"
+#include "templates/variantpointer.h"
 
 // Constructor
 GridsWidget::GridsWidget(AtenWindow& parent, Qt::WindowFlags flags) : QDockWidget(&parent, flags), parent_(parent)
@@ -135,17 +134,17 @@ Grid* GridsWidget::getCurrentGrid()
 	// Return first selected grid in widget
 	QList<QListWidgetItem*> selection = ui.GridList->selectedItems();
 	if (selection.size() == 0) return NULL;
-	TListWidgetItem *item = (TListWidgetItem*) ui.GridList->currentItem();
-	Grid* g = (Grid*) item->data.asPointer(VTypes::GridData);
+	QListWidgetItem *item = (QListWidgetItem*) ui.GridList->currentItem();
+	Grid* g = (Grid*) VariantPointer<Grid>(item->data(Qt::UserRole));
 	return g;
 }
 
 void GridsWidget::addGridToList(Grid* g)
 {
-	TListWidgetItem *item = new TListWidgetItem(ui.GridList);
+	QListWidgetItem *item = new QListWidgetItem(ui.GridList);
 	item->setText(g->name());
 	item->setCheckState(g->isVisible() ? Qt::Checked : Qt::Unchecked);
-	item->data.set(VTypes::GridData, g);
+	item->setData(Qt::UserRole, VariantPointer<Grid>(g));
 }
 
 void GridsWidget::refreshGridInfo()
@@ -297,9 +296,9 @@ void GridsWidget::on_actionGridDelete_triggered(bool checked)
 	Grid* g;
 	foreach (QListWidgetItem* qlwi, ui.GridList->selectedItems())
 	{
-		TListWidgetItem *item = (TListWidgetItem*) qlwi;
+		QListWidgetItem *item = (QListWidgetItem*) qlwi;
 		// Get grid pointer
-		g = (Grid*) item->data.asPointer(VTypes::GridData);
+		g = (Grid*) VariantPointer<Grid>(item->data(Qt::UserRole));
 		Model* m = g->parent();
 		m->removeGrid(g);
 	}
@@ -434,9 +433,9 @@ void GridsWidget::gridOriginChanged(int component, double value)
 	Grid* g;
 	foreach (QListWidgetItem* qlwi, ui.GridList->selectedItems())
 	{
-		TListWidgetItem *item = (TListWidgetItem*) qlwi;
+		QListWidgetItem *item = (QListWidgetItem*) qlwi;
 		// Get grid pointer
-		g = (Grid*) item->data.asPointer(VTypes::GridData);
+		g = (Grid*) VariantPointer<Grid>(item->data(Qt::UserRole));
 		// Get and re-set origin
 		static Vec3<double> o;
 		o = g->origin();
@@ -453,9 +452,9 @@ void GridsWidget::gridAxisChanged(int axis, int component, double value)
 	Grid* g;
 	foreach (QListWidgetItem* qlwi, ui.GridList->selectedItems())
 	{
-		TListWidgetItem *item = (TListWidgetItem*) qlwi;
+		QListWidgetItem *item = (QListWidgetItem*) qlwi;
 		// Get grid pointer
-		g = (Grid*) item->data.asPointer(VTypes::GridData);
+		g = (Grid*) VariantPointer<Grid>(item->data(Qt::UserRole));
 		// Get and re-set axes
 		Matrix axes;
 		axes = g->axes();
@@ -475,10 +474,10 @@ void GridsWidget::on_GridList_currentRowChanged(int row)
 // Item in grid list has changed?
 void GridsWidget::on_GridList_itemClicked(QListWidgetItem* item)
 {
-	// Cast item to our own TListWidgetItem
-	TListWidgetItem *titem = (TListWidgetItem*) item;
+	// Cast item to our own QListWidgetItem
+	QListWidgetItem *titem = (QListWidgetItem*) item;
 	// Get grid associated to item
-	Grid* g = (Grid*) titem->data.asPointer(VTypes::GridData);
+	Grid* g = (Grid*) VariantPointer<Grid>(item->data(Qt::UserRole));
 	// Look at checked state
 	g->setVisible( (titem->checkState() == Qt::Checked) );
 	parent_.postRedisplay();
@@ -501,9 +500,9 @@ void GridsWidget::on_GridLowerCutoffSpin_editingFinished()
 	Grid* g;
 	foreach (QListWidgetItem* qlwi, ui.GridList->selectedItems())
 	{
-		TListWidgetItem *item = (TListWidgetItem*) qlwi;
+		QListWidgetItem *item = (QListWidgetItem*) qlwi;
 		// Get grid pointer
-		g = (Grid*) item->data.asPointer(VTypes::GridData);
+		g = (Grid*) VariantPointer<Grid>(item->data(Qt::UserRole));
 		g->setLowerPrimaryCutoff(ui.GridLowerCutoffSpin->value());
 	}
 	refreshGridInfo();
@@ -517,9 +516,9 @@ void GridsWidget::on_GridUpperCutoffSpin_editingFinished()
 	Grid* g;
 	foreach (QListWidgetItem* qlwi, ui.GridList->selectedItems())
 	{
-		TListWidgetItem *item = (TListWidgetItem*) qlwi;
+		QListWidgetItem *item = (QListWidgetItem*) qlwi;
 		// Get grid pointer
-		g = (Grid*) item->data.asPointer(VTypes::GridData);
+		g = (Grid*) VariantPointer<Grid>(item->data(Qt::UserRole));
 		g->setUpperPrimaryCutoff(ui.GridUpperCutoffSpin->value());
 	}
 	refreshGridInfo();
@@ -533,9 +532,9 @@ void GridsWidget::on_GridLowerCutoff2Spin_editingFinished()
 	Grid* g;
 	foreach (QListWidgetItem* qlwi, ui.GridList->selectedItems())
 	{
-		TListWidgetItem *item = (TListWidgetItem*) qlwi;
+		QListWidgetItem *item = (QListWidgetItem*) qlwi;
 		// Get grid pointer
-		g = (Grid*) item->data.asPointer(VTypes::GridData);
+		g = (Grid*) VariantPointer<Grid>(item->data(Qt::UserRole));
 		g->setLowerSecondaryCutoff(ui.GridLowerCutoff2Spin->value());
 	}
 	refreshGridInfo();
@@ -549,9 +548,9 @@ void GridsWidget::on_GridUpperCutoff2Spin_editingFinished()
 	Grid* g;
 	foreach (QListWidgetItem* qlwi, ui.GridList->selectedItems())
 	{
-		TListWidgetItem *item = (TListWidgetItem*) qlwi;
+		QListWidgetItem *item = (QListWidgetItem*) qlwi;
 		// Get grid pointer
-		g = (Grid*) item->data.asPointer(VTypes::GridData);
+		g = (Grid*) VariantPointer<Grid>(item->data(Qt::UserRole));
 		g->setUpperSecondaryCutoff(ui.GridUpperCutoff2Spin->value());
 	}
 	refreshGridInfo();
@@ -565,9 +564,9 @@ void GridsWidget::on_GridStyleCombo_currentIndexChanged(int index)
 	Grid* g;
 	foreach (QListWidgetItem* qlwi, ui.GridList->selectedItems())
 	{
-		TListWidgetItem *item = (TListWidgetItem*) qlwi;
+		QListWidgetItem *item = (QListWidgetItem*) qlwi;
 		// Get grid pointer
-		g = (Grid*) item->data.asPointer(VTypes::GridData);
+		g = (Grid*) VariantPointer<Grid>(item->data(Qt::UserRole));
 		g->setStyle(Grid::SurfaceStyle (index));
 	}
 	parent_.postRedisplay();
@@ -580,9 +579,9 @@ void GridsWidget::on_GridOutlineVolumeCheck_clicked(bool checked)
 	Grid* g;
 	foreach (QListWidgetItem* qlwi, ui.GridList->selectedItems())
 	{
-		TListWidgetItem *item = (TListWidgetItem*) qlwi;
+		QListWidgetItem *item = (QListWidgetItem*) qlwi;
 		// Get grid pointer
-		g = (Grid*) item->data.asPointer(VTypes::GridData);
+		g = (Grid*) VariantPointer<Grid>(item->data(Qt::UserRole));
 		g->setOutlineVolume(checked);
 	}
 	parent_.postRedisplay();
@@ -595,9 +594,9 @@ void GridsWidget::on_GridFillEnclosedVolumeCheck_clicked(bool checked)
 	Grid* g;
 	foreach (QListWidgetItem* qlwi, ui.GridList->selectedItems())
 	{
-		TListWidgetItem *item = (TListWidgetItem*) qlwi;
+		QListWidgetItem *item = (QListWidgetItem*) qlwi;
 		// Get grid pointer
-		g = (Grid*) item->data.asPointer(VTypes::GridData);
+		g = (Grid*) VariantPointer<Grid>(item->data(Qt::UserRole));
 		g->setFillEnclosedVolume(checked);
 	}
 	parent_.postRedisplay();
@@ -610,9 +609,9 @@ void GridsWidget::on_GridPeriodicCheck_clicked(bool checked)
 	Grid* g;
 	foreach (QListWidgetItem* qlwi, ui.GridList->selectedItems())
 	{
-		TListWidgetItem *item = (TListWidgetItem*) qlwi;
+		QListWidgetItem *item = (QListWidgetItem*) qlwi;
 		// Get grid pointer
-		g = (Grid*) item->data.asPointer(VTypes::GridData);
+		g = (Grid*) VariantPointer<Grid>(item->data(Qt::UserRole));
 		g->setPeriodic(checked);
 	}
 	parent_.postRedisplay();
@@ -636,9 +635,9 @@ void GridsWidget::on_GridPrimaryColourButton_clicked(bool checked)
 	// Get currently selected grid(s) and set data
 	foreach (QListWidgetItem* qlwi, ui.GridList->selectedItems())
 	{
-		TListWidgetItem *item = (TListWidgetItem*) qlwi;
+		QListWidgetItem *item = (QListWidgetItem*) qlwi;
 		// Get grid pointer
-		g = (Grid*) item->data.asPointer(VTypes::GridData);
+		g = (Grid*) VariantPointer<Grid>(item->data(Qt::UserRole));
 		g->setPrimaryColour(newcol.redF(), newcol.greenF(), newcol.blueF(), newcol.alphaF());
 	}
 	ui.GridPrimaryColourFrame->setColour(newcol);
@@ -664,9 +663,9 @@ void GridsWidget::on_GridSecondaryColourButton_clicked(bool checked)
 	// Get currently selected grid(s) and set data
 	foreach (QListWidgetItem* qlwi, ui.GridList->selectedItems())
 	{
-		TListWidgetItem *item = (TListWidgetItem*) qlwi;
+		QListWidgetItem *item = (QListWidgetItem*) qlwi;
 		// Get grid pointer
-		g = (Grid*) item->data.asPointer(VTypes::GridData);
+		g = (Grid*) VariantPointer<Grid>(item->data(Qt::UserRole));
 		g->setSecondaryColour(newcol.redF(), newcol.greenF(), newcol.blueF(), newcol.alphaF());
 	}
 	ui.GridSecondaryColourFrame->setColour(newcol);
@@ -681,9 +680,9 @@ void GridsWidget::on_GridColourscaleSpin_valueChanged(int n)
 	Grid* g;
 	foreach (QListWidgetItem* qlwi, ui.GridList->selectedItems())
 	{
-		TListWidgetItem *item = (TListWidgetItem*) qlwi;
+		QListWidgetItem *item = (QListWidgetItem*) qlwi;
 		// Get grid pointer
-		g = (Grid*) item->data.asPointer(VTypes::GridData);
+		g = (Grid*) VariantPointer<Grid>(item->data(Qt::UserRole));
 		g->setColourScale(n-1);
 	}
 	QString scalename = "(";
@@ -700,9 +699,9 @@ void GridsWidget::on_GridSecondaryCutoffCheck_clicked(bool checked)
 	Grid* g;
 	foreach (QListWidgetItem* qlwi, ui.GridList->selectedItems())
 	{
-		TListWidgetItem *item = (TListWidgetItem*) qlwi;
+		QListWidgetItem *item = (QListWidgetItem*) qlwi;
 		// Get grid pointer
-		g = (Grid*) item->data.asPointer(VTypes::GridData);
+		g = (Grid*) VariantPointer<Grid>(item->data(Qt::UserRole));
 		g->setUseSecondary(checked);
 		ui.GridLowerCutoff2Spin->setEnabled( g->useSecondary() );
 		ui.GridUpperCutoff2Spin->setEnabled( g->useSecondary() );
@@ -722,9 +721,9 @@ void GridsWidget::gridShiftChanged()
 	Grid* g;
 	foreach (QListWidgetItem* qlwi, ui.GridList->selectedItems())
 	{
-		TListWidgetItem *item = (TListWidgetItem*) qlwi;
+		QListWidgetItem *item = (QListWidgetItem*) qlwi;
 		// Get grid pointer
-		g = (Grid*) item->data.asPointer(VTypes::GridData);
+		g = (Grid*) VariantPointer<Grid>(item->data(Qt::UserRole));
 		// Grab old shift values
 		Vec3<int> oldshift = g->shift();
 		g->setShift(ui.GridShiftXSpin->value(), ui.GridShiftYSpin->value(), ui.GridShiftZSpin->value());

@@ -23,10 +23,10 @@
 #include <QtWidgets/QColorDialog>
 #include "gui/mainwindow.h"
 #include "gui/glyphs.h"
-#include "gui/tlistwidgetitem.h"
 #include "model/model.h"
 #include "main/aten.h"
-#include "base/sysfunc.h"
+//#include "base/sysfunc.h"
+#include "templates/variantpointer.h"
 
 // Constructor
 GlyphsWidget::GlyphsWidget(AtenWindow& parent, Qt::WindowFlags flags) : QDockWidget(&parent, flags), parent_(parent)
@@ -98,9 +98,9 @@ void GlyphsWidget::addItemToList(Glyph* g)
 	s = QString::number(ui.GlyphList->count()+1);
 	s += ". ";
 	s += Glyph::glyphType(g->type());
-	TListWidgetItem *item = new TListWidgetItem(ui.GlyphList);
+	QListWidgetItem *item = new QListWidgetItem(ui.GlyphList);
 	item->setText(s);
-	item->data.set(VTypes::GlyphData, g);
+	item->setData(Qt::UserRole, VariantPointer<Glyph>(g));
 	if (g->isSelected()) item->setSelected(true);
 }
 
@@ -198,7 +198,7 @@ void GlyphsWidget::on_GlyphList_currentRowChanged(int row)
 	refreshing_ = false;
 	for (int i = 0; i<ui.GlyphList->count(); ++i)
 	{
-		g = (Glyph*) ((TListWidgetItem*) ui.GlyphList->item(i))->data.asPointer(VTypes::GlyphData);
+		g = (Glyph*) VariantPointer<Glyph>(((QListWidgetItem*) ui.GlyphList->item(i))->data(Qt::UserRole));
 		g->setSelected(ui.GlyphList->item(i)->isSelected());
 	}
 	parent_.postRedisplay();
@@ -218,7 +218,7 @@ void GlyphsWidget::on_GlyphList_itemSelectionChanged()
 	Glyph* g;
 	for (int i = 0; i<ui.GlyphList->count(); ++i)
 	{
-		g = (Glyph*) ((TListWidgetItem*) ui.GlyphList->item(i))->data.asPointer(VTypes::GlyphData);
+		g = (Glyph*) VariantPointer<Glyph>(((QListWidgetItem*) ui.GlyphList->item(i))->data(Qt::UserRole));
 		g->setSelected(ui.GlyphList->item(i)->isSelected());
 	}
 	parent_.postRedisplay();
@@ -252,7 +252,7 @@ void GlyphsWidget::on_GlyphDeleteSelectedButton_clicked(bool checked)
 	Glyph* g;
 	for (int i = items.size()-1; i>=0; --i)
 	{
-		g = (Glyph*) ((TListWidgetItem*) items.at(i))->data.asPointer(VTypes::GlyphData);
+		g = (Glyph*) VariantPointer<Glyph>(((QListWidgetItem*) items.at(i))->data(Qt::UserRole));
 		m->removeGlyph(g);
 	}
 	// Refresh list
@@ -270,7 +270,7 @@ void GlyphsWidget::on_GlyphSelectAllButton_clicked(bool checked)
 	for (int i = 0; i<ui.GlyphList->count(); ++i)
 	{
 		ui.GlyphList->item(i)->setSelected(true);
-		g = (Glyph*) ((TListWidgetItem*) ui.GlyphList->item(i))->data.asPointer(VTypes::GlyphData);
+		g = (Glyph*) VariantPointer<Glyph>(((QListWidgetItem*) ui.GlyphList->item(i))->data(Qt::UserRole));
 		g->setSelected(true);
 	}
 	refreshing_ = false;
@@ -300,7 +300,7 @@ void GlyphsWidget::on_GlyphInvertSelectionButton_clicked(bool checked)
 	for (int i = 0; i<ui.GlyphList->count(); ++i)
 	{
 		ui.GlyphList->item(i)->setSelected( ui.GlyphList->item(i)->isSelected() ? false : true );
-		g = (Glyph*) ((TListWidgetItem*) ui.GlyphList->item(i))->data.asPointer(VTypes::GlyphData);
+		g = (Glyph*) VariantPointer<Glyph>(((QListWidgetItem*) ui.GlyphList->item(i))->data(Qt::UserRole));
 		g->setSelected( ui.GlyphList->item(i)->isSelected());
 	}
 	refreshing_ = false;
@@ -326,7 +326,7 @@ void GlyphsWidget::on_GlyphHideSelectedButton_clicked(bool checked)
 	Glyph* g;
 	for (int i = 0; i<ui.GlyphList->count(); ++i)
 	{
-		g = (Glyph*) ((TListWidgetItem*) ui.GlyphList->item(i))->data.asPointer(VTypes::GlyphData);
+		g = (Glyph*) VariantPointer<Glyph>(((QListWidgetItem*) ui.GlyphList->item(i))->data(Qt::UserRole));
 		g->setVisible(false);
 	}
 	parent_.postRedisplay();
@@ -339,12 +339,12 @@ void GlyphsWidget::on_GlyphTypeCombo_currentIndexChanged(int row)
 	QList<QListWidgetItem*> items = ui.GlyphList->selectedItems();
 	Glyph* g;
 	QString s;
-	TListWidgetItem *item;
+	QListWidgetItem *item;
 	Glyph::GlyphType gt = (Glyph::GlyphType) row;
 	for (int i = 0; i < items.size(); ++i)
 	{
-		item = (TListWidgetItem*) items.at(i);
-		g = (Glyph*) item->data.asPointer(VTypes::GlyphData);
+		item = (QListWidgetItem*) items.at(i);
+		g = (Glyph*) VariantPointer<Glyph>(item->data(Qt::UserRole));
 		g->setType(gt);
 		s = QString::number(ui.GlyphList->row(item)+1);
 		s += ". ";
@@ -363,7 +363,7 @@ void GlyphsWidget::on_GlyphLineEdit_returnPressed()
 	Glyph* g;
 	for (int i = 0; i < items.size(); ++i)
 	{
-		g = (Glyph*) ((TListWidgetItem*) items.at(i))->data.asPointer(VTypes::GlyphData);
+		g = (Glyph*) VariantPointer<Glyph>(((QListWidgetItem*) items.at(i))->data(Qt::UserRole));
 		g->setText(ui.GlyphLineEdit->text());
 	}
 	parent_.aten().currentModelOrFrame()->logChange(Log::Glyphs);
@@ -378,7 +378,7 @@ void GlyphsWidget::on_GlyphVisibleCheck_clicked(bool checked)
 	Glyph* g;
 	for (int i = 0; i < items.size(); ++i)
 	{
-		g = (Glyph*) ((TListWidgetItem*) items.at(i))->data.asPointer(VTypes::GlyphData);
+		g = (Glyph*) VariantPointer<Glyph>(((QListWidgetItem*) items.at(i))->data(Qt::UserRole));
 		g->setVisible(checked);
 	}
 	parent_.aten().currentModelOrFrame()->logChange(Log::Glyphs);
@@ -565,7 +565,7 @@ void GlyphsWidget::dataAtomIdChanged(int id, int value)
 	Glyph* g;
 	for (int i = 0; i < items.size(); ++i)
 	{
-		g = (Glyph*) ((TListWidgetItem*) items.at(i))->data.asPointer(VTypes::GlyphData);
+		g = (Glyph*) VariantPointer<Glyph>(((QListWidgetItem*) items.at(i))->data(Qt::UserRole));
 		if (id >= g->nData()) Messenger::print("Can't set atom id in data %i for a '%s' glyph (out of range)...", id+1, Glyph::glyphType(g->type()));
 		else g->data(id)->setAtom( g->parent()->atom(value) );
 	}
@@ -581,7 +581,7 @@ void GlyphsWidget::dataValueChanged(int id, int component, double value)
 	Glyph* g;
 	for (int i = 0; i < items.size(); ++i)
 	{
-		g = (Glyph*) ((TListWidgetItem*) items.at(i))->data.asPointer(VTypes::GlyphData);
+		g = (Glyph*) VariantPointer<Glyph>(((QListWidgetItem*) items.at(i))->data(Qt::UserRole));
 		if (id >= g->nData()) Messenger::print("Can't set literal value data %i for a '%s' glyph (out of range)...", id+1, Glyph::glyphType(g->type()));
 		else g->data(id)->setVector(component, value);
 	}
@@ -597,7 +597,7 @@ void GlyphsWidget::dataValueChanged(int id, double x, double y, double z)
 	Glyph* g;
 	for (int i = 0; i < items.size(); ++i)
 	{
-		g = (Glyph*) ((TListWidgetItem*) items.at(i))->data.asPointer(VTypes::GlyphData);
+		g = (Glyph*) VariantPointer<Glyph>(((QListWidgetItem*) items.at(i))->data(Qt::UserRole));
 		if (id >= g->nData()) Messenger::print("Can't set literal value data %i for a '%s' glyph (out of range)...", id+1, Glyph::glyphType(g->type()));
 		else g->data(id)->setVector(x, y, z);
 	}
@@ -623,7 +623,7 @@ void GlyphsWidget::dataColourChanged(int id)
 	Glyph* gl;
 	for (int i = 0; i < items.size(); ++i)
 	{
-		gl = (Glyph*) ((TListWidgetItem*) items.at(i))->data.asPointer(VTypes::GlyphData);
+		gl = (Glyph*) VariantPointer<Glyph>(((QListWidgetItem*) items.at(i))->data(Qt::UserRole));
 		if (id >= gl->nData()) Messenger::print("Can't set colour for data %i for a '%s' glyph (out of range)...", id+1, Glyph::glyphType(gl->type()));
 		else gl->data(id)->setColour(newcol.redF(), newcol.greenF(), newcol.blueF(), newcol.alphaF());
 	}

@@ -1,12 +1,10 @@
 Remove empty destructors.
 Add ObjectLists (when using CHECK). 
 Move msg.enter/msg.exit code to conditional compilation with CHECK.
-Remove defunct src/classes/restraint.cpp.
 Sort out comment style, and layout of headers (double-line gap etc.).
 Sort out pointer 'style' ( Object *T  to Object* T ).
 Move sg code to separate dir.
 Move math funcs/classes (e.g. Matrix) to separate dir.
-Remove unused (or simplistic T* classes in src/gui).
 Remove dialog pointers (use instances instead).
 Remove Scripts menu, and automatic loading of scripts on startup.
 Fix callbacks for atom picking etc.

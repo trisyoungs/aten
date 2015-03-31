@@ -689,11 +689,11 @@ pushfilter:
 	;
 
 setglobal:
-	/* empty */					{ globalDeclarations = TRUE; }
+	/* empty */					{ globalDeclarations = true; }
 	;
 
 unsetglobal:
-	/* empty */					{ globalDeclarations = FALSE; }
+	/* empty */					{ globalDeclarations = false; }
 	;
 
 %%
