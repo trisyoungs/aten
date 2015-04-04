@@ -26,6 +26,7 @@
 #include <QOpenGLFunctions>
 #include <QOffscreenSurface>
 #include <QObject>
+#include "base/atom.h"
 #include "base/messenger.h"
 #include "gui/useractions.h"
 #include "base/log.h"
@@ -177,8 +178,10 @@ class Viewer : public QOpenGLWidget, protected QOpenGLFunctions
 	bool hasMoved_;
 	// Current drawing depth for certain tools
 	double currentDrawDepth_;
-	// Selected drawing element
-	short int sketchElement_;
+	// Current build element
+	short int buildElement_;
+	// Current build geometry
+	Atom::AtomGeometry buildGeometry_;
 	// Whether to accept editing actions (i.e. anything other than view manipulation)
 	bool editable_;
 	// Number of atoms to pick in PickAtomsAction
@@ -213,10 +216,14 @@ class Viewer : public QOpenGLWidget, protected QOpenGLFunctions
 	UserAction::Action selectedMode() const;
 	// Return the currently active mode
 	UserAction::Action activeMode() const;
-	// Set current drawing element
-	void setSketchElement(short int el);
-	// Return current drawing element
-	short int sketchElement() const;
+	// Set current build element
+	void setBuildElement(short int el);
+	// Return current build element
+	short int buildElement() const;
+	// Set current build geometry
+	void setBuildGeometry(Atom::AtomGeometry ag);
+	// Return current build geometry
+	Atom::AtomGeometry buildGeometry() const;
 	// Current drawing depth for certain tools
 	double currentDrawDepth();
 	// Set whether to accept editing actions (i.e. anything other than view manipulation)

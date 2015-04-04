@@ -22,7 +22,6 @@
 #include <QMouseEvent>
 #include "gui/mainwindow.h"
 #include "gui/fragments.h"
-#include "gui/build.h"
 #include "main/aten.h"
 
 // Set selected mode
@@ -108,7 +107,7 @@ void Viewer::useSelectedMode()
 void Viewer::cancelCurrentMode()
 {
 	// If the previous mode was DrawFragment, flag a complete redraw of the current model
-	if (selectedMode_ == UserAction::DrawFragmentAction) aten_->currentModel()->logChange(Log::Style);
+	if (selectedMode_ == UserAction::DrawFragmentsAction) aten_->currentModel()->logChange(Log::Style);
 	atenWindow_->ui.actionSelectAtoms->trigger();
 }
 
@@ -125,15 +124,27 @@ UserAction::Action Viewer::activeMode() const
 }
 
 // Set current drawing element
-void Viewer::setSketchElement(short int el)
+void Viewer::setBuildElement(short int el)
 {
-	sketchElement_ = el;
+	buildElement_ = el;
 }
 
 // Return current drawing element
-short int Viewer::sketchElement() const
+short int Viewer::buildElement() const
 {
-	return sketchElement_;
+	return buildElement_;
+}
+
+// Set current build geometry
+void Viewer::setBuildGeometry(Atom::AtomGeometry ag)
+{
+	buildGeometry_ = ag;
+}
+
+// Return current build geometry
+Atom::AtomGeometry Viewer::buildGeometry() const
+{
+	return buildGeometry_;
 }
 
 // Current drawing depth for certain tools
@@ -217,7 +228,7 @@ void Viewer::beginMode(Prefs::MouseButton button)
 						{
 							source->beginUndoState("Draw Chain");
 							currentDrawDepth_ = prefs.drawDepth();
-							i = source->addAtom(sketchElement_, source->screenToModel(rMouseDown_.x, rMouseDown_.y, currentDrawDepth_));
+							i = source->addAtom(buildElement_, source->screenToModel(rMouseDown_.x, rMouseDown_.y, currentDrawDepth_));
 							source->endUndoState();
 							atomClicked_ = i;
 						}
@@ -287,7 +298,7 @@ void Viewer::endMode(Prefs::MouseButton button)
 	bool shifted = keyModifier_[Prefs::ShiftKey];
 	bool ctrled = keyModifier_[Prefs::CtrlKey];
 	bool modded = (shifted || ctrled);
-	bool nofold = atenWindow_->buildWidget->ui.PreventFoldCheck->isChecked();
+	bool noFold = atenWindow_->ui.BuildOptionsPreventFoldCheck->isChecked();
 	
 	// Reset mouse button flag
 	mouseButton_[button] = false;
@@ -320,8 +331,8 @@ void Viewer::endMode(Prefs::MouseButton button)
 			atenWindow_->updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget+AtenWindow::GeometryTarget);
 			break;
 		// Other selection operations
-		case (UserAction::SelectMoleculeAction):
-			source->beginUndoState("Select Molecule");
+		case (UserAction::SelectBoundAction):
+			source->beginUndoState("Select Bound");
 			if (!modded) source->selectNone();
 			if (atomClicked_ != NULL)	source->selectTree(atomClicked_, false, ctrled);
 			source->endUndoState();
@@ -379,13 +390,13 @@ void Viewer::endMode(Prefs::MouseButton button)
 			atenWindow_->updateWidgets(AtenWindow::CanvasTarget);
 			break;
 		// Draw single atom
-		case (UserAction::DrawAtomAction):
+		case (UserAction::DrawAtomsAction):
 			// Make sure we don't draw on top of an existing atom
 			if (atomClicked_ == NULL)
 			{
 				source->beginUndoState("Draw Atom");
 				currentDrawDepth_ = prefs.drawDepth();
-				source->addAtom(sketchElement_, source->screenToModel(rMouseDown_.x, rMouseDown_.y, currentDrawDepth_));
+				source->addAtom(buildElement_, source->screenToModel(rMouseDown_.x, rMouseDown_.y, currentDrawDepth_));
 				source->endUndoState();
 			}
 			atenWindow_->updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
@@ -399,7 +410,7 @@ void Viewer::endMode(Prefs::MouseButton button)
 			if (i == NULL)
 			{
 				// No atom under the mouse, so draw an atom at previous draw depth
-				i = source->addAtom(sketchElement_, source->screenToModel(rMouseUp_.x, rMouseUp_.y, currentDrawDepth_));
+				i = source->addAtom(buildElement_, source->screenToModel(rMouseUp_.x, rMouseUp_.y, currentDrawDepth_));
 			}
 			// Now bond the atoms, unless atomClicked_ and i are the same (i.e. the button was clicked and not moved)
 			if (atomClicked_ != i)
@@ -418,7 +429,7 @@ void Viewer::endMode(Prefs::MouseButton button)
 			atenWindow_->updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
 			break;
 		// Draw fragments
-		case (UserAction::DrawFragmentAction):
+		case (UserAction::DrawFragmentsAction):
 			frag = atenWindow_->fragmentsWidget->currentFragment();
 			if (frag == NULL) break;
 			if (atomClicked_ != NULL)
@@ -442,9 +453,9 @@ void Viewer::endMode(Prefs::MouseButton button)
 			if (shifted)
 			{
 				int element = atomClicked_->element();
-				for (Atom* i = source->atoms(); i != NULL; i = i->next) if (i->element() == element) source->transmuteAtom(i,sketchElement_);
+				for (Atom* i = source->atoms(); i != NULL; i = i->next) if (i->element() == element) source->transmuteAtom(i,buildElement_);
 			}
-			else source->transmuteAtom(atomClicked_, sketchElement_);
+			else source->transmuteAtom(atomClicked_, buildElement_);
 			source->endUndoState();
 			atenWindow_->updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
 			break;
@@ -523,19 +534,18 @@ void Viewer::endMode(Prefs::MouseButton button)
 				atenWindow_->updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
 			}
 			break;
-		case (UserAction::DrawGrowAtomAction):
+		case (UserAction::DrawGrowAtomsAction):
 			if (atomClicked_ != NULL)
 			{
-				Atom::AtomGeometry ag = (Atom::AtomGeometry) atenWindow_->buildWidget->ui.DrawGrowGeometryCombo->currentIndex();
 				if (shifted)
 				{
 					source->beginUndoState("Grow Atom (unbound)");
-					source->growAtom(atomClicked_, sketchElement_, -1.0, ag, false);
+					source->growAtom(atomClicked_, buildElement_, -1.0, buildGeometry_, false);
 				}
 				else
 				{
 					source->beginUndoState("Grow Atom");
-					source->growAtom(atomClicked_, sketchElement_, -1.0, ag, true);
+					source->growAtom(atomClicked_, buildElement_, -1.0, buildGeometry_, true);
 				}
 				source->endUndoState();
 				atenWindow_->updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
@@ -547,7 +557,7 @@ void Viewer::endMode(Prefs::MouseButton button)
 		case (UserAction::TransformTranslateAction):
 			// Clear list of oldPositions_ if nothing was moved
 			if (!hasMoved_) oldPositions_.clear();
-			source->finalizeTransform(oldPositions_, "Transform Selection", nofold);
+			source->finalizeTransform(oldPositions_, "Transform Selection", noFold);
 			atenWindow_->updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
 			break;
 		// View changes (no action)

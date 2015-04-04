@@ -1,3 +1,6 @@
+Remove DrawAtom, and all Bonding modes, since Chain does pretty much everything.
+
+Only generate low-quality primitives on startup, leaving high-quality until they are needed.
 Remove empty destructors.
 Add ObjectLists (when using CHECK). 
 Move msg.enter/msg.exit code to conditional compilation with CHECK.
@@ -13,9 +16,7 @@ Move Prefs from being a static global to a member of Aten.
 Split gui/mainmenu_actions.cpp into menu_* files.
 In AtenWindow::on_actionFileSaveImage_triggered convert options to proper QDialog.
 Add large image creation functions.
-Replace uses of TTreeWidgetItem, TTableWidgetItem, and TComboBox with normal Qt widgets combined with VariantPointer.
 Remove Messages window, and convert to show behind main view (and allow toggle between transparent, model, and messages)
-Remove mouse toolbar
 Redo ProgressIndicator, making into a class much like QProgress (can't just use QProgress, since we want to have progress indicator functionality in the CLI....). Make it clever enough to realise that the gui is visible or not. Perhaps integrate it into Messenger, so that messages printed out while the indicator is running don't disrupt the indicator?
 Remove global Fourier declaration, and make it local to each Model.
 Remove global MC, CG, SD declartions, and put them in Aten?
@@ -33,7 +34,6 @@ Implement optional startup 'guide' or 'wizard' that will disable all controls on
 Scale molecule COM inverts coordinates??
 Reformulate Pattern::bondEnergy() and others into a separate class, since the Pattern class shouldn't really own them.
 Use indices in rendering Primitives.
-Check colours of buttons on all platforms (e.g. in selectelement?)
 Change SaveImageDialog to check for empty image filename, and disable OK button accordingly.
 Check - is using redirected filenames really necessary when saveing movie frame images?
 Fix image saving - in particular scaling & offset when saving large image (what role will/did ViewLayout play?)
@@ -47,6 +47,8 @@ Note not related to Aten2 - pdens visualising areas of low probability (less tha
 Sort out recent files list - not working?
 Implement QOffscreenSurface in order to create model icons etc. (need to call ShareContext before its creation...)
 
+GUI TODO:
+AddAtom functionality (from old Build menu).
 
 Manual TODO:
 Remove level of detail and transparency options from Prefs.

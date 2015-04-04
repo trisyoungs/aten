@@ -20,55 +20,123 @@
 */
 
 #include "gui/tmenubutton.uih"
-#include <QMouseEvent>
-#include <QtWidgets/QMenu>
 #include <QtWidgets/QHBoxLayout>
+#include <QtWidgets/QApplication>
+#include <QtWidgets/QStyle>
+#include <QtWidgets/QStylePainter>
+#include <QtWidgets/QStyleOptionToolButton>
+
+/*
+ * TMenuButtonPopupWidget
+ */
 
 // Constructor
-TMenuButton::TMenuButton(QWidget *parent) : QPushButton(parent)
+TMenuButtonPopupWidget::TMenuButtonPopupWidget(TMenuButton* parent) : QWidget(parent, Qt::FramelessWindowHint | Qt::Popup)
 {
-	menu_.setFont(font());
-	menu_.setPalette(palette());
-	QObject::connect(this, SIGNAL(clicked(bool)), this, SLOT(menuButtonPressed(bool)));
+	parentMenuButton_ = parent;
 }
 
-// Add item to menu
-bool TMenuButton::addMenuItem(const char* text, int id)
+void TMenuButtonPopupWidget::hideEvent(QHideEvent* event)
 {
-	// Search for existing item with same ID
-	if (actions_.containsData(id))
-	{
-		printf("TMenuButton::addMenuItem - id '%i' is already in use.\n", id);
-		return false;
-	}
-	QAction *action = menu_.addAction(text);
-	actions_.add(action, id);
-	QObject::connect(action, SIGNAL(triggered(bool)), this, SLOT(menuActionTriggered(bool)));
-	return true;
+// 	printf("HIDEEVENT\n");
+	parentMenuButton_->popupDone();
+
+	event->accept();
 }
 
-void TMenuButton::menuActionTriggered(bool checked)
+/*
+ * TMenuButton
+ */
+
+// Constructor
+TMenuButton::TMenuButton(QWidget* parent) : QToolButton(parent)
 {
-	// Cast sender and determine which action sent the signal
-	QAction *action = qobject_cast<QAction*> (sender());
-	if (!action)
+	// Nullify popup widget to start with
+	popupWidget_ = NULL;
+
+	// Set popup timer delay, style, and connect slot
+	popupTimer_.setSingleShot(true);
+	popupTimer_.setInterval(QApplication::style()->styleHint(QStyle::SH_ToolButton_PopupDelay));
+	connect(&popupTimer_, SIGNAL(timeout()), this, SLOT(popup()));
+
+	// Connect signals for pressed / released
+	connect(this, SIGNAL(pressed()), this, SLOT(buttonPressed()));
+	connect(this, SIGNAL(released()), this, SLOT(buttonReleased()));
+
+}
+
+// Set popup widget for button
+void TMenuButton::setPopupWidget(TMenuButtonPopupWidget* widget)
+{
+	popupWidget_ = widget;
+}
+
+void TMenuButton::popupDone()
+{
+	// Emit the 'released()' signal
+	if (!checkedBeforePressed_) setDown(false);
+	else emit(released());
+}
+
+// Notify button that popup is done
+void TMenuButton::paintEvent(QPaintEvent* event)
+{
+	QStylePainter painter(this);
+
+// 	QPainterPath path;
+// 	// Set pen to start point, which is lower right-hand corner of widget area
+// 	path.moveTo(width(), height());
+// 	// Create triangle...
+// 	path.lineTo(width()/2, height()-1);
+// 	path.lineTo(width()-1, height()/2);
+// 	path.lineTo(width()-1, height()-1);
+// 
+// 	// Don't draw any lines
+// 	painter.setPen(Qt::NoPen);
+
+// 	// Setup QGradient for fill
+// 	QRadialGradient gradient(width()/2, height()/2, width()/2, width(), height());
+// 	painter.fillPath(path, QBrush(gradient));
+
+	QStyleOptionToolButton opt;
+	initStyleOption(&opt);
+	painter.drawComplexControl(QStyle::CC_ToolButton, opt);
+}
+
+void TMenuButton::popup()
+{
+	if (!popupWidget_) return;
+
+// 	printf("POPUP signalled (wasChecked = %i).\n", checkedBeforePressed_);
+
+	// Show the popup widget
+	popupWidget_->show();
+
+	// 	printf("Cursor = %i %i\n", QCursor::pos().x(), QCursor::pos().y());
+	if (!parentWidget())
 	{
-		printf("TMenuButton::menuActionTriggered - Couldn't cast sender into QAction.\n");
+		printf("No parent widget in TMenuButton - can't position popupWidget_.\n");
 		return;
 	}
-	// Search stored list of QActions
-	for (Refitem<QAction,int>* ri = actions_.first(); ri != NULL; ri = ri->next)
-	{
-		if (action == ri->item)
-		{
-			emit(menuItemClicked(ri->data));
-			return;
-		}
-	}
-	printf("TMenuButton::menuActionTriggered - Couldn't find QAction in list.\n");
+
+	// Reposition popup widget to sit flush left with the tool button, and immediately underneath it
+	QPoint toolPos = parentWidget()->mapToGlobal(pos()+QPoint(0,height()));
+	popupWidget_->move(toolPos);
 }
 
-void TMenuButton::menuButtonPressed(bool checked)
+void TMenuButton::buttonPressed()
 {
-	menu_.exec(mapToGlobal(QPoint(0,height())));
+// 	printf("PRESSED [%s] (isDown=%i, isChecked=%i)\n", qPrintable(text()), isDown(), isChecked());
+	// Store current checked state of button
+	checkedBeforePressed_ = isChecked();
+
+	// Start popup timer
+	if (popupWidget_) popupTimer_.start();
+}
+
+void TMenuButton::buttonReleased()
+{
+// 	printf("RELEASED [%s]\n", qPrintable(text()));
+	// Make sure timer is stopped - it will have either already popped, or this was a single-click and we don't want the popup
+	popupTimer_.stop();
 }

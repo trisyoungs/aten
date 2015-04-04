@@ -18,7 +18,6 @@ set(qtproject_SRCS
   ttablewidgetitem.h
   about_funcs.cpp
   atomlist_funcs.cpp
-  build_funcs.cpp
   celldefinition_funcs.cpp
   celltransform_funcs.cpp
   command_funcs.cpp
@@ -33,11 +32,16 @@ set(qtproject_SRCS
   layoutlist.cpp
   loadmodel_funcs.cpp
   mainmenuactions.cpp
+  mainwindow_build.cpp
   mainwindow_context.cpp
   mainwindow_funcs.cpp
   mainwindow_init.cpp
   modellist_funcs.cpp
   mouseactions.cpp
+  popupaddh_funcs.cpp
+  popupgrow_funcs.cpp
+  popuprebond_funcs.cpp
+  popuptransmute_funcs.cpp
   pores_funcs.cpp
   position_funcs.cpp
   prefs_funcs.cpp
@@ -80,7 +84,6 @@ set(qtproject_SRCS
 SET(pro_MOC_HDRS
   about.h
   atomlist.h
-  build.h
   celldefinition.h
   celltransform.h
   command.h
@@ -96,6 +99,10 @@ SET(pro_MOC_HDRS
   loadmodel.h
   mainwindow.h
   modellist.h
+  popupaddh.h
+  popupgrow.h
+  popuprebond.h
+  popuptransmute.h
   pores.h
   position.h
   prefs.h
@@ -129,7 +136,6 @@ QT4_WRAP_CPP(pro_MOC_SRCS ${pro_MOC_HDRS} OPTIONS -f)
 SET(pro_UIS
   about.ui
   atomlist.ui
-  build.ui
   celldefinition.ui
   celltransform.ui
   command.ui
@@ -144,6 +150,10 @@ SET(pro_UIS
   loadmodel.ui
   mainwindow.ui
   modellist.ui
+  popupaddh.ui
+  popupgrow.ui
+  popuprebond.ui
+  popuptransmute.ui
   pores.ui
   position.ui
   prefs.ui

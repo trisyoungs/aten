@@ -61,7 +61,8 @@ Viewer::Viewer(QWidget* parent) : QOpenGLWidget(parent)
 	activeMode_ = UserAction::NoAction;
 	selectedMode_ = UserAction::SelectAction;
 	currentDrawDepth_ = -5.0;
-	sketchElement_ = 6;
+	buildElement_ = 6;
+	buildGeometry_ = Atom::TetrahedralGeometry;
 	editable_ = true;
 
 	// Prevent QPainter from autofilling widget background

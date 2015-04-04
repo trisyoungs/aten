@@ -75,21 +75,3 @@ void AtenWindow::setActiveStyleAction(Prefs::DrawStyle ds)
 	postRedisplay();
 }
 
-// Enter basic atom selection mode
-void AtenWindow::on_actionSelectAtoms_triggered(bool on)
-{
-	if (on) ui.MainView->setSelectedMode(UserAction::SelectAction);
-}
-
-// Enter molecule selection mode
-void AtenWindow::on_actionSelectMolecules_triggered(bool on)
-{
-	if (on) ui.MainView->setSelectedMode(UserAction::SelectMoleculeAction);
-}
-
-// Enter element selection mode
-void AtenWindow::on_actionSelectElement_triggered(bool on)
-{
-	if (on) ui.MainView->setSelectedMode(UserAction::SelectElementAction);
-}
-

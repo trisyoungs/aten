@@ -1,5 +1,5 @@
 /*
-	*** TMenuButton - QPushButton with custom handling of mousepress/release events
+	*** TMenuButton - QToolButton with custom handling of mousepress/release events
 	*** src/gui/tmenubutton.uih
 	Copyright T. Youngs 2007-2012
 
@@ -22,39 +22,70 @@
 #ifndef ATEN_TMENUBUTTON_H
 #define ATEN_TMENUBUTTON_H
 
-#include <QtWidgets/QPushButton>
-#include <QtWidgets/QMenu>
-#include "parser/returnvalue.h"
-#include "templates/reflist.h"
+#include <QtWidgets/QToolButton>
+#include <QMouseEvent>
+#include <QTimer>
 
-class TMenuButton : public QPushButton
+// Forward Declarations
+class TMenuButton;
+
+// Popup Widget for TMenuButton
+class TMenuButtonPopupWidget : public QWidget
+{
+	Q_OBJECT
+
+	private:
+	// Parent TMenuButton
+	TMenuButton* parentMenuButton_;
+
+	public:
+	// Constructor
+	TMenuButtonPopupWidget(TMenuButton* parent);
+	// Show popup, updating any controls as necessary beforehand
+	virtual void popup() = 0;
+
+
+	/*
+	 * Virtual Reimplementations
+	 */
+	protected:
+	void hideEvent(QHideEvent* event);
+};
+
+// Menu button with optional drop-down (popup) menu
+class TMenuButton : public QToolButton
 {
 	Q_OBJECT
 	
 	public:
 	// Constructor
-	TMenuButton(QWidget *parent = 0);
+	TMenuButton(QWidget* parent = 0);
+
 
 	/*
-	// Data
-	*/
+	 * Widget for popup
+	 */
 	private:
-	// Menu associated to list button
-	QMenu menu_;
-	// List of QActions in menu
-	Reflist<QAction, int> actions_;
-	
+	// Popup widget
+	TMenuButtonPopupWidget* popupWidget_;
+	// Timer for popup window
+	QTimer popupTimer_;
+	// Whether button was already checked before being pressed
+	bool checkedBeforePressed_;
+
 	public:
-	// Add item to menu
-	bool addMenuItem(const char *text, int id);
-	
+	// Set popup widget for button
+	void setPopupWidget(TMenuButtonPopupWidget* widget);
+	// Notify button that popup is done
+	void popupDone();
+
+	protected:
+	void paintEvent(QPaintEvent* event);
+
 	private slots:
-	void menuActionTriggered(bool checked);
-	void menuButtonPressed(bool checked);
-	
-	signals:
-	// Menu item has been clicked
-	void menuItemClicked(int menuItemId);
+	void popup();
+	void buttonPressed();
+	void buttonReleased();
 };
 
 #endif

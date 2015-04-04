@@ -62,8 +62,8 @@ void Viewer::renderActiveModes(Model* currentModel)
 	// Passive mode embellishments
 	if (currentModel != NULL) switch (selectedMode_)
 	{
-		// Draw on distance ruler for drawing modes
-		case (UserAction::DrawAtomAction):
+		// Draw on distance ruler for drawing modes //ATEN2 TODO
+		case (UserAction::DrawAtomsAction):
 		case (UserAction::DrawChainAction):
 			// Get pixel 'length' in Angstrom terms at current draw depth
 			r = currentModel->screenToModel(contextWidth_/2+10, contextHeight_/2, currentDrawDepth_);
@@ -169,7 +169,7 @@ void Viewer::renderUserActions(Model* source)
 				style_j = (prefs.renderStyle() == Prefs::IndividualStyle ? j->style() : prefs.renderStyle());
 			}
 			if (style_j == Prefs::TubeStyle) radius_j = 0.0;
-			else if (style_j == Prefs::ScaledStyle) radius_j = prefs.styleRadius(Prefs::ScaledStyle, j->element()) - primitives_[primitiveSet_].scaledAtomAdjustment(sketchElement_);
+			else if (style_j == Prefs::ScaledStyle) radius_j = prefs.styleRadius(Prefs::ScaledStyle, j->element()) - primitives_[primitiveSet_].scaledAtomAdjustment(buildElement_);
 			else radius_j = prefs.styleRadius(style_j, j->element()) - primitives_[primitiveSet_].sphereAtomAdjustment();
 			v -= pos;
 
@@ -195,7 +195,7 @@ void Viewer::renderUserActions(Model* source)
 				default:
 					break;
 			}
-			Elements().copyColour(sketchElement_, colour_j);
+			Elements().copyColour(buildElement_, colour_j);
 			
 			// Construct transformation matrix to centre on original (first) atom
 			A.setIdentity();
@@ -215,7 +215,7 @@ void Viewer::renderUserActions(Model* source)
 	switch (selectedMode_)
 	{
 		// Draw on fragment (as long as mode is selected)
-		case (UserAction::DrawFragmentAction):
+		case (UserAction::DrawFragmentsAction):
 			if (atenWindow_->fragmentsWidget->currentFragment() == NULL) break;
 			frag = atenWindow_->fragmentsWidget->currentFragment();
 			j = source->atomOnScreen(rMouseLast_.x, rMouseLast_.y);
@@ -240,7 +240,7 @@ void Viewer::renderUserActions(Model* source)
 			{
 				// No atom under the mouse pointer, so draw on at the prefs drawing depth in its current orientation
 				// Get drawing point origin, translate to it, and render the stored model
-				if (activeMode_ == UserAction::DrawFragmentAction) pos = source->screenToModel(rMouseDown_.x, rMouseDown_.y, prefs.drawDepth());
+				if (activeMode_ == UserAction::DrawFragmentsAction) pos = source->screenToModel(rMouseDown_.x, rMouseDown_.y, prefs.drawDepth());
 				else pos = source->screenToModel(rMouseLast_.x, rMouseLast_.y, prefs.drawDepth());
 				A.setIdentity();
 				A.applyTranslation(pos);

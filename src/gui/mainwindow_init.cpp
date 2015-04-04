@@ -21,7 +21,10 @@
 
 #include "main/version.h"
 #include "gui/mainwindow.h"
-#include "gui/build.h"
+#include "gui/popupaddh.h"
+#include "gui/popupgrow.h"
+#include "gui/popuprebond.h"
+#include "gui/popuptransmute.h"
 #include "gui/geometry.h"
 #include "gui/position.h"
 #include "gui/transform.h"
@@ -42,13 +45,6 @@ void AtenWindow::finaliseUi()
 		QObject::connect(actionRecentFile[n], SIGNAL(triggered()), this, SLOT(loadRecent()));
 		ui.RecentMenu->addAction(actionRecentFile[n]);
 	}
-
-	// Populate QActionGroup for main toolbar selection actions
-	uaSelectActions_ = new QActionGroup(this);
-	uaSelectActions_->addAction(ui.actionSelectAtoms);
-	uaSelectActions_->addAction(ui.actionSelectMolecules);
-	uaSelectActions_->addAction(ui.actionSelectElement);
-	uaSelectActions_->addAction(ui.actionNoAction);
 	
 	// Create QActionGroup for draw styles
 	QActionGroup *group = new QActionGroup(this);
@@ -109,23 +105,39 @@ void AtenWindow::finaliseUi()
 			break;
 	}
 
-	// Create master group for buttons that change user action modes
+	// Add buttons related to user actions to our button group, and add popup widgets to those buttons that have them
 	uaDummyButton_ = new QToolButton(this);
 	uaDummyButton_->setCheckable(true);
 	uaDummyButton_->setVisible(false);
 	uaButtons_.addButton(uaDummyButton_);
-	// -- From Build Dock Widget
-	uaButtons_.addButton(buildWidget->ui.DrawAtomButton, UserAction::DrawAtomAction);
-	uaButtons_.addButton(buildWidget->ui.DrawChainButton, UserAction::DrawChainAction);
-	uaButtons_.addButton(buildWidget->ui.DrawFragmentButton, UserAction::DrawFragmentAction);
-	uaButtons_.addButton(buildWidget->ui.DrawDeleteAtomButton, UserAction::DrawDeleteAction);
-	uaButtons_.addButton(buildWidget->ui.DrawTransmuteButton, UserAction::DrawTransmuteAction);
-	uaButtons_.addButton(buildWidget->ui.DrawAddHButton, UserAction::DrawAddHydrogenAction);
-	uaButtons_.addButton(buildWidget->ui.DrawGrowButton, UserAction::DrawGrowAtomAction);
-	uaButtons_.addButton(buildWidget->ui.DrawSingleBondButton, UserAction::DrawBondSingleAction);
-	uaButtons_.addButton(buildWidget->ui.DrawDoubleBondButton, UserAction::DrawBondDoubleAction);
-	uaButtons_.addButton(buildWidget->ui.DrawTripleBondButton, UserAction::DrawBondTripleAction);
-	uaButtons_.addButton(buildWidget->ui.DrawDeleteBondButton, UserAction::DrawDeleteBondAction);
+
+	// -- Build Panel (Select)
+	uaButtons_.addButton(ui.BuildSelectAtomButton, UserAction::SelectAction);
+	uaButtons_.addButton(ui.BuildSelectBoundButton, UserAction::SelectBoundAction);
+	uaButtons_.addButton(ui.BuildSelectElementButton, UserAction::SelectElementAction);
+	// -- Build Panel (Build)
+	uaButtons_.addButton(ui.BuildDrawDrawButton, UserAction::DrawAtomsAction);
+	uaButtons_.addButton(ui.BuildDrawFragmentButton, UserAction::DrawFragmentsAction);
+	uaButtons_.addButton(ui.BuildDrawDeleteButton, UserAction::DrawDeleteAction);
+	uaButtons_.addButton(ui.BuildDrawTransmuteButton, UserAction::DrawTransmuteAction);
+	ui.BuildDrawTransmuteButton->setPopupWidget(new TransmutePopup(*this, ui.BuildDrawTransmuteButton));
+	uaButtons_.addButton(ui.BuildDrawAddHButton, UserAction::DrawAddHydrogenAction);
+	ui.BuildDrawAddHButton->setPopupWidget(new AddHPopup(*this, ui.BuildDrawAddHButton));
+	uaButtons_.addButton(ui.BuildDrawGrowButton, UserAction::DrawGrowAtomsAction);
+	ui.BuildDrawGrowButton->setPopupWidget(new GrowPopup(*this, ui.BuildDrawGrowButton));
+	// Build Panel (Element)
+	// Build Panel (Bonding)
+	ui.BuildBondingRebondButton->setPopupWidget(new RebondPopup(*this, ui.BuildBondingRebondButton));
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	// -- From Geometry Dock Widget
 	uaButtons_.addButton(geometryWidget->ui.MeasureDistanceButton, UserAction::MeasureDistanceAction);
 	uaButtons_.addButton(geometryWidget->ui.MeasureAngleButton, UserAction::MeasureAngleAction);

@@ -23,7 +23,6 @@
 #include "main/aten.h"
 #include "gui/mainwindow.h"
 #include "gui/prefs.h"
-#include "gui/build.h"
 #include "gui/loadmodel.h"
 #include "gui/trajectory.h"
 #include "gui/ffeditor.h"
@@ -42,7 +41,6 @@
 #include <fstream>
 
 #include "gui/atomlist.h"
-#include "gui/build.h"
 #include "gui/celldefinition.h"
 #include "gui/celltransform.h"
 #include "gui/command.h"
@@ -60,30 +58,6 @@
 #include "gui/trajectory.h"
 #include "gui/transform.h"
 #include "gui/vibrations.h"
-
-void AtenWindow::on_TestToolButton_customContextMenuRequested(const QPoint& point)
-{
-	static TrajectoryWidget twid(*this, Qt::FramelessWindowHint | Qt::Popup);
-	twid.show();
-	printf("lksjdlkjkl\n");
-}
-
-void AtenWindow::on_TestToolButton_clicked(bool checked)
-{
-	static TrajectoryWidget twid(*this, Qt::FramelessWindowHint | Qt::Popup);
-	
-	// ATEN2 TODO Need to reimplement hideEvent - subclass QWidget to make a custom popup.
-
-	twid.show();
-	printf("Cursor = %i %i\n", QCursor::pos().x(), QCursor::pos().y());
-	QPoint toolPos = ui.TestToolButton->parentWidget()->mapToGlobal(ui.TestToolButton->pos()+QPoint(0,ui.TestToolButton->height()));
-	printf("Tool = %i %i\n", toolPos.x(), toolPos.y());
-	QPoint newPos = mapToGlobal(ui.TestToolButton->pos());
-	printf("New = %i %i\n", toolPos.x(), toolPos.y());
-	twid.move(toolPos);
-	printf("clicked.\n");
-}
-
 
 // Constructor
 AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
@@ -111,7 +85,6 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 
 	// Create dock widgets
 	atomListWidget = new AtomListWidget(*this, Qt::Tool);
-	buildWidget = new BuildWidget(*this, Qt::Tool);
 	cellDefinitionWidget = new CellDefinitionWidget(*this, Qt::Tool);
 	cellTransformWidget = new CellTransformWidget(*this, Qt::Tool);
 	commandWidget = new CommandWidget(*this, Qt::Tool);
@@ -129,7 +102,7 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 	trajectoryWidget = new TrajectoryWidget(*this, Qt::Tool);
 	transformWidget = new TransformWidget(*this, Qt::Tool);
 	vibrationsWidget = new VibrationsWidget(*this, Qt::Tool);
-	dockWidgets_ << atomListWidget << buildWidget << cellDefinitionWidget << cellTransformWidget << commandWidget << fragmentsWidget << geometryWidget << glyphsWidget << gridsWidget << modelListWidget << poresWidget << positionWidget << scriptMovieWidget << selectWidget << transformWidget << vibrationsWidget;
+	dockWidgets_ << atomListWidget << cellDefinitionWidget << cellTransformWidget << commandWidget << fragmentsWidget << geometryWidget << glyphsWidget << gridsWidget << modelListWidget << poresWidget << positionWidget << scriptMovieWidget << selectWidget << transformWidget << vibrationsWidget;
 
 	// Set up misc things for Qt (QActionGroups etc.) that we couldn't do in Designer
 	finaliseUi();
@@ -591,10 +564,9 @@ void AtenWindow::on_actionAboutQt_triggered(bool checked)
 // Update any controls related to Prefs values etc.
 void AtenWindow::updateControls()
 {
+	// ATEN2 TODO Remove this?
 	ui.actionManualSwapBuffers->setChecked(prefs.manualSwapBuffers());
 	ui.actionDetectDisplayHBonds->setChecked(prefs.drawHydrogenBonds());
-	buildWidget->ui.BondToleranceSpin->setValue(prefs.bondTolerance());
-	buildWidget->ui.BondToleranceSlider->setValue(int(prefs.bondTolerance()*1000.0));
 }
 
 // Update undo/redo actions in Edit menu
@@ -643,28 +615,9 @@ void AtenWindow::uaButtonClicked(int id)
 void AtenWindow::setActiveUserAction(UserAction::Action ua)
 {
 	// Set (check) relevant action or button based on supplied UserAction
-	QAbstractButton *button;
-	switch (ua)
-	{
-		// No active mode
-		case (UserAction::NoAction):
-			uaDummyButton_->setChecked(true);
-			ui.actionNoAction->setChecked(true);
-			break;
-		// Three select QActions on main ToolBar
-		case (UserAction::SelectAction):
-		case (UserAction::SelectMoleculeAction):
-		case (UserAction::SelectElementAction):
-			uaDummyButton_->setChecked(true);
-			break;
-		// All other actions are related to buttons elsewhere in the GUI
-		default:
-			ui.actionNoAction->setChecked(true);
-			button = uaButtons_.button(ua);
-			if (button == NULL) printf("No button associated to user action %i.\n", ua);
-			else button->setChecked(true);
-			break;
-	}
+	QAbstractButton* button = uaButtons_.button(ua);
+	if (button == NULL) printf("AtenWindow::setActiveUserAction() - No button associated to user action %i.\n", ua);
+	else button->setChecked(true);
 }
 
 // Set message label text
@@ -672,7 +625,6 @@ void AtenWindow::setMessageLabel(QString message)
 {
 	messageLabel_->setText(message);
 }
-
 
 /*
  * Messages Scrollbar
