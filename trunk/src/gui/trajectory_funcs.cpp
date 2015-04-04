@@ -167,7 +167,7 @@ void TrajectoryWidget::timerEvent(QTimerEvent* event)
 
 void TrajectoryWidget::hideEvent(QHideEvent* event)
 {
-	parent_.ui.TestToolButton->setChecked(false);
+// 	parent_.ui.TestToolButton->setChecked(false);
 }
 
 // Location of dock widget changed - change layout to reflect

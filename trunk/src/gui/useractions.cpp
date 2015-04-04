@@ -31,7 +31,7 @@ UserAction UserActions[] = {
 		"toggle (left click) or add area to selection (left click-drag) or translate (middle click-drag) or rotate in local frame (right click-drag)",
 		"remove from selection",
 		"" },
-	{ "Select Molecule", "Click atom to select bound fragment",
+	{ "Select Bound", "Click atom to select bound fragment",
 		"add to current selection",
 		"remove from selection",
 		"" },
@@ -186,9 +186,9 @@ bool UserAction::isBuildWidgetAction(UserAction::Action ua)
 {
 	switch (ua)
 	{
-		case (DrawAtomAction):
+		case (DrawAtomsAction):
 		case (DrawChainAction):
-		case (DrawFragmentAction):
+		case (DrawFragmentsAction):
 		case (DrawTransmuteAction):
 		case (DrawDeleteAction):
 		case (DrawBondSingleAction):
@@ -196,7 +196,7 @@ bool UserAction::isBuildWidgetAction(UserAction::Action ua)
 		case (DrawBondTripleAction):
 		case (DrawDeleteBondAction):
 		case (DrawAddHydrogenAction):
-		case (DrawGrowAtomAction):
+		case (DrawGrowAtomsAction):
 			return true;
 		default:
 			return false;

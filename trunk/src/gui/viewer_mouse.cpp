@@ -148,7 +148,7 @@ void Viewer::mouseMoveEvent(QMouseEvent* event)
 	}
 
 	// Perform action associated with mode (if any)
-	if ((activeMode_ != UserAction::NoAction) || (selectedMode_ == UserAction::DrawFragmentAction))
+	if ((activeMode_ != UserAction::NoAction) || (selectedMode_ == UserAction::DrawFragmentsAction))
 	{
 		// Calculate new delta.
 		delta.set(event->x(), event->y(), 0.0);
@@ -170,7 +170,7 @@ void Viewer::mouseMoveEvent(QMouseEvent* event)
 			case (UserAction::ZoomAction):
 				source->adjustZoom(delta.y < 0.0);
 				break;
-			case (UserAction::DrawFragmentAction):
+			case (UserAction::DrawFragmentsAction):
 				if (atenWindow_->fragmentsWidget->currentFragment() != NULL)
 				{
 					if (atomClicked_ == NULL) atenWindow_->fragmentsWidget->currentFragment()->rotateOrientedModel(delta.x/2.0,delta.y/2.0);

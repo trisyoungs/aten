@@ -53,7 +53,6 @@ class AtenZMatrix;
 
 // Forward Declarations (Aten) 3 - Dock Widgets and Wizards
 class AtomListWidget;
-class BuildWidget;
 class CellDefinitionWidget;
 class CellTransformWidget;
 class CommandWidget;
@@ -333,7 +332,31 @@ class AtenWindow : public QMainWindow
 	void on_actionAboutAten_triggered(bool checked);
 	void on_actionAboutQt_triggered(bool checked);
 
-	
+
+	/*
+	 * Build Panel
+	 */
+	private slots:
+	// Select
+	void on_BuildSelectAtomsButton_triggered(bool checked);
+	void on_BuildSelectBoundButton_triggered(bool checked);
+	void on_BuildSelectElementButton_triggered(bool checked);
+	void on_BuildSelectExpandButton_clicked(bool checked);
+	void on_BuildSelectInvertButton_clicked(bool checked);
+	// Draw
+	void on_BuildDrawDrawButton_clicked(bool checked);
+	void on_BuildDrawFragmentButton_clicked(bool checked);
+	void on_BuildDrawDeleteButton_clicked(bool checked);
+	void on_BuildDrawTransmuteButton_clicked(bool checked);
+	void on_BuildDrawAddHButton_clicked(bool checked);
+	void on_BuildDrawGrowButton_clicked(bool checked);
+	// Elements
+	// Bonding
+	void on_BuildBondingRebondButton_clicked(bool checked);
+	void on_BuildBondingAugmentButton_clicked(bool checked);
+	void on_BuildBondingClearButton_clicked(bool checked);
+
+
 	/*
 	 * Main Toolbar (other actions not already account for by menus)
 	 */
@@ -343,9 +366,6 @@ class AtenWindow : public QMainWindow
 	void on_actionStyleSphere_triggered(bool checked);
 	void on_actionStyleScaled_triggered(bool checked);
 	void on_actionStyleIndividual_triggered(bool checked);
-	void on_actionSelectAtoms_triggered(bool checked);
-	void on_actionSelectMolecules_triggered(bool checked);
-	void on_actionSelectElement_triggered(bool checked);
 
 	public:
 	void setActiveStyleAction(Prefs::DrawStyle ds);
@@ -358,14 +378,6 @@ class AtenWindow : public QMainWindow
 	void on_actionMouseInteract_triggered(bool checked);
 	void on_actionMouseRotate_triggered(bool checked);
 	void on_actionMouseTranslate_triggered(bool checked);
-
-
-	/*
-	 * NEW TOOLBAR TEST
-	 */
-	private slots:
-	void on_TestToolButton_customContextMenuRequested(const QPoint& point);
-	void on_TestToolButton_clicked(bool checked);
 
 
 	/*
@@ -387,8 +399,6 @@ class AtenWindow : public QMainWindow
 	private:
 	// List of manually-created QActionGroups
 	Reflist<QActionGroup,int> actionGroups_;
-	// Action group for main toolbar select actions
-	QActionGroup *uaSelectActions_;
 	// Dummy button for user-action group
 	QToolButton *uaDummyButton_;
 	// User-Action button group
@@ -467,8 +477,6 @@ class AtenWindow : public QMainWindow
 	public:
 	// Atom list dock widget
 	AtomListWidget *atomListWidget;
-	// Build dock widget
-	BuildWidget *buildWidget;
 	// Cell definition dock widget
 	CellDefinitionWidget *cellDefinitionWidget;
 	// Cell transform dock widget

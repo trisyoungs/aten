@@ -22,7 +22,6 @@
 #include <QKeyEvent>
 #include "gui/mainwindow.h"
 #include "gui/fragments.h"
-#include "gui/build.h"
 #include "model/model.h"
 #include "main/aten.h"
 
@@ -53,7 +52,7 @@ void Viewer::keyPressEvent(QKeyEvent* event)
 
 	// Set some useful flags...
 	bool manipulate = false;
-	bool nofold = atenWindow_->buildWidget->ui.PreventFoldCheck->isChecked();	// ATEN2 TODO
+	bool noFold = atenWindow_->ui.BuildOptionsPreventFoldCheck->isChecked();
 	for (int n=0; n<3; n++)
 	{
 		if (keyModifier_[n])
@@ -76,13 +75,13 @@ void Viewer::keyPressEvent(QKeyEvent* event)
 		case (Qt::Key_Left):
 			if (keyModifier_[Prefs::CtrlKey])
 			{
-				printf("Why doesn't this ever get printed?\n");
+				printf("Why doesn't this ever get printed?\n");	// ATEN2 TODO
 				source->prepareTransform();
 				source->beginUndoState("Rotate selection about world Y axis");
 				source->rotateSelectionWorld(2.0,0.0);
 				source->endUndoState();
 				source->updateMeasurements();
-				source->finalizeTransform(oldPositions_, "Transform Selection", nofold);
+				source->finalizeTransform(oldPositions_, "Transform Selection", noFold);
 				atenWindow_->updateWidgets(AtenWindow::CanvasTarget);
 			}
 			else source->rotateView( keyModifier_[Prefs::ShiftKey] ? -1.0 : -10.0, 0.0);
@@ -130,7 +129,7 @@ void Viewer::keyPressEvent(QKeyEvent* event)
 	// Mode-specific
 	switch (selectedMode_)
 	{
-		case (UserAction::DrawFragmentAction):
+		case (UserAction::DrawFragmentsAction):
 			// Cycle link atom....
 			if (keyModifier_[Prefs::AltKey])
 			{
@@ -196,7 +195,7 @@ void Viewer::keyReleaseEvent(QKeyEvent* event)
 	// Mode-specific
 	switch (selectedMode_)
 	{
-		case (UserAction::DrawFragmentAction):
+		case (UserAction::DrawFragmentsAction):
 			// Refresh if Shift status has changed
 			if (keyModifier_[Prefs::ShiftKey] != oldshift) update();
 			break;
