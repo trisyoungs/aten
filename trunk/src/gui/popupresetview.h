@@ -1,6 +1,6 @@
 /*
-	*** Popup Widget - Grow
-	*** src/gui/popupgrow.h
+	*** Popup Widget - Reset View
+	*** src/gui/popupresetview.h
 	Copyright T. Youngs 2007-2015
 
 	This file is part of Aten.
@@ -19,17 +19,17 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_GROWPOPUP_H
-#define ATEN_GROWPOPUP_H
+#ifndef ATEN_RESETVIEWPOPUP_H
+#define ATEN_RESETVIEWPOPUP_H
 
-#include "gui/ui_popupgrow.h"
+#include "gui/ui_popupresetview.h"
 #include "gui/tmenubutton.uih"
 
 // Forward Declarations (Qt)
 class AtenWindow;
 
-// Popup Widget - Grow
-class GrowPopup : public TMenuButtonPopupWidget
+// Popup Widget - ResetView
+class ResetViewPopup : public TMenuButtonPopupWidget
 {
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
@@ -40,9 +40,9 @@ class GrowPopup : public TMenuButtonPopupWidget
 
 	public:
 	// Constructor / Destructor
-	GrowPopup(AtenWindow& parent, TMenuButton* buttonParent);
+	ResetViewPopup(AtenWindow& parent, TMenuButton* buttonParent);
 	// Main form declaration
-	Ui::GrowPopup ui;
+	Ui::ResetViewPopup ui;
 	// Show popup, updating any controls as necessary beforehand
 	void popup();
 
@@ -57,15 +57,23 @@ class GrowPopup : public TMenuButtonPopupWidget
 	/*
 	 * Widget Functions
 	 */
+	private:
+	void setCartesianView(double x, double y, double z);
+	void setCellView(double x, double y, double z);
+
 	private slots:
-	void on_GeometryLinearButton_clicked(bool checked);
-	void on_GeometryTShapeButton_clicked(bool checked);
-	void on_GeometryTrigonalButton_clicked(bool checked);
-	void on_GeometryTetrahedralButton_clicked(bool checked);
-	void on_GeometrySqPlanarButton_clicked(bool checked);
-	void on_GeometryTrigBipyramidButton_clicked(bool checked);
-	void on_GeometryOctahedralButton_clicked(bool checked);
-	void on_GrowSelectionButton_clicked(bool checked);
+	void on_CartesianNegativeXButton_clicked(bool checked);
+	void on_CartesianPositiveXButton_clicked(bool checked);
+	void on_CartesianNegativeYButton_clicked(bool checked);
+	void on_CartesianPositiveYButton_clicked(bool checked);
+	void on_CartesianNegativeZButton_clicked(bool checked);
+	void on_CartesianPositiveZButton_clicked(bool checked);
+	void on_CellNegativeXButton_clicked(bool checked);
+	void on_CellPositiveXButton_clicked(bool checked);
+	void on_CellNegativeYButton_clicked(bool checked);
+	void on_CellPositiveYButton_clicked(bool checked);
+	void on_CellNegativeZButton_clicked(bool checked);
+	void on_CellPositiveZButton_clicked(bool checked);
 };
 
 #endif

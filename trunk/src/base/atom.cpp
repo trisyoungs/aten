@@ -81,7 +81,7 @@ Atom::Atom() : ListItem<Atom>()
 	selected_ = false;
 	hidden_ = false;
 	marked_ = false;
-	style_ = Prefs::StickStyle;
+	style_ = Prefs::LineStyle;
 	labels_ = 0;
 	parent_ = NULL;
 	id_ = -1;

@@ -328,8 +328,5 @@ void GeometryWidget::on_NudgeTorsionMinusButton_clicked(bool checked)
 
 void GeometryWidget::closeEvent(QCloseEvent* event)
 {
-	// Return to select mode if one of the modes in this window is still selected
-	if (UserAction::isGeometryWidgetAction(parent_.ui.MainView->selectedMode())) parent_.ui.MainView->cancelCurrentMode();
-
 	event->accept();
 }

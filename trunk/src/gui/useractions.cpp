@@ -59,10 +59,6 @@ UserAction UserActions[] = {
 		"",
 		"",
 		"" },
-	{ "Draw Chains", "Click-drag to draw bound atoms",
-		"",
-		"",
-		"" },
 	{ "Draw Fragments", "Click or click-drag to draw free fragments, or attach to existing atoms (click-drag to rotate)",
 		"to replace attached atom instead of creating new bond",
 		"cycle over bonds on attachment point (existing atom)",
@@ -76,22 +72,6 @@ UserAction UserActions[] = {
 		"",
 		"" },
 	{ "Probe Atom", "Click individual atoms to view atom information",
-		"",
-		"",
-		"" },
-	{ "Create Single Bond", "Click two atoms i-j to join them with a single bond",
-		"",
-		"",
-		"" },
-	{ "Create Double Bond", "Click two atoms i-j to join them with a double bond",
-		"",
-		"",
-		"" },
-	{ "Create Triple Bond", "Click two atoms i-j to join them with a triple bond",
-		"",
-		"",
-		"" },
-	{ "Delete Bond", "Click two atoms to remove any bond between them",
 		"",
 		"",
 		"" },
@@ -178,72 +158,3 @@ UserAction UserActions[] = {
 };
 
 ATEN_END_NAMESPACE
-
-ATEN_USING_NAMESPACE
-
-// Action group checks
-bool UserAction::isBuildWidgetAction(UserAction::Action ua)
-{
-	switch (ua)
-	{
-		case (DrawAtomsAction):
-		case (DrawChainAction):
-		case (DrawFragmentsAction):
-		case (DrawTransmuteAction):
-		case (DrawDeleteAction):
-		case (DrawBondSingleAction):
-		case (DrawBondDoubleAction):
-		case (DrawBondTripleAction):
-		case (DrawDeleteBondAction):
-		case (DrawAddHydrogenAction):
-		case (DrawGrowAtomsAction):
-			return true;
-		default:
-			return false;
-	}
-}
-
-bool UserAction::isGeometryWidgetAction(UserAction::Action ua)
-{
-	switch (ua)
-	{
-		case (MeasureDistanceAction):
-		case (MeasureAngleAction):
-		case (MeasureTorsionAction):
-			return true;
-		default:
-			return false;
-	}
-}
-
-bool UserAction::isPositionWidgetAction(UserAction::Action ua)
-{
-	switch (ua)
-	{
-		case (ShiftPickVectorAction):
-			return true;
-		default:
-			return false;
-	}
-}
-
-bool UserAction::isTransformWidgetAction(UserAction::Action ua)
-{
-	switch (ua)
-	{
-		case (RotatePickAxisAction):
-		case (TransformPickAAction):
-		case (TransformPickBAction):
-		case (TransformPickCAction):
-		case (ConvertSourcePickAAction):
-		case (ConvertSourcePickBAction):
-		case (ConvertSourcePickCAction):
-		case (ConvertTargetPickAAction):
-		case (ConvertTargetPickBAction):
-		case (ConvertTargetPickCAction):
-			return true;
-		default:
-			return false;
-	}
-}
-

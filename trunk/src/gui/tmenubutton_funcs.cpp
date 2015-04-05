@@ -109,8 +109,8 @@ void TMenuButton::popup()
 
 // 	printf("POPUP signalled (wasChecked = %i).\n", checkedBeforePressed_);
 
-	// Show the popup widget
-	popupWidget_->show();
+	// Show the popup widget - call the widget's popup() method, so controls are set correctly
+	popupWidget_->popup();
 
 	// 	printf("Cursor = %i %i\n", QCursor::pos().x(), QCursor::pos().y());
 	if (!parentWidget())

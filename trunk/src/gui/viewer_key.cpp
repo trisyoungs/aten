@@ -104,7 +104,7 @@ void Viewer::keyPressEvent(QKeyEvent* event)
 			ignore = false;
 			break;
 		case (Qt::Key_Escape):
-			cancelCurrentMode();
+			setSelectedMode(UserAction::SelectAction);
 			refresh = true;
 			ignore = false;
 			break;
@@ -112,14 +112,16 @@ void Viewer::keyPressEvent(QKeyEvent* event)
 		case (Qt::Key_F8):
 			n = prefs.renderStyle() + 1;
 			if (n == Prefs::nDrawStyles) n = 0;
-			atenWindow_->setActiveStyleAction( (Prefs::DrawStyle) n);
+			prefs.setRenderStyle((Prefs::DrawStyle) n);
+			atenWindow_->updateControls();
 			ignore = false;
 			break;
 		// Cycle colouring styles
 		case (Qt::Key_F9):
 			n = prefs.colourScheme() + 1;
 			if (n == Prefs::nColouringSchemes) n = 0;
-			atenWindow_->setActiveSchemeAction( (Prefs::ColouringScheme) n);
+			prefs.setColourScheme((Prefs::ColouringScheme) n);
+			atenWindow_->updateControls();
 			ignore = false;
 			break;
 		default:
@@ -149,6 +151,7 @@ void Viewer::keyPressEvent(QKeyEvent* event)
 		default:
 			break;
 	}
+
 	// Update display if necessary
 	if (refresh) update();
 	if (ignore) event->ignore();

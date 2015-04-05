@@ -24,6 +24,7 @@
 #include "gui/popupaddh.h"
 #include "gui/popupgrow.h"
 #include "gui/popuprebond.h"
+#include "gui/popupresetview.h"
 #include "gui/popuptransmute.h"
 #include "gui/geometry.h"
 #include "gui/position.h"
@@ -46,17 +47,8 @@ void AtenWindow::finaliseUi()
 		ui.RecentMenu->addAction(actionRecentFile[n]);
 	}
 	
-	// Create QActionGroup for draw styles
-	QActionGroup *group = new QActionGroup(this);
-	actionGroups_.add(group);
-	group->addAction(ui.actionStyleStick);
-	group->addAction(ui.actionStyleTube);
-	group->addAction(ui.actionStyleSphere);
-	group->addAction(ui.actionStyleScaled);
-	group->addAction(ui.actionStyleIndividual);
-
 	// Create QActionGroup for colour schemes
-	group = new QActionGroup(this);
+	QActionGroup* group = new QActionGroup(this);
 	actionGroups_.add(group);
 	group->addAction(ui.actionSchemeElement);
 	group->addAction(ui.actionSchemeCharge);
@@ -83,33 +75,27 @@ void AtenWindow::finaliseUi()
 	group->addAction(ui.actionTrajectoryModel);
 	group->addAction(ui.actionTrajectoryFrames);
 
-	// Set correct Atom::DrawStyle on toolbar
-	switch (prefs.renderStyle())
-	{
-		case (Prefs::StickStyle):
-			ui.actionStyleStick->setChecked(true);
-			break;
-		case (Prefs::TubeStyle):
-			ui.actionStyleTube->setChecked(true);
-			break;
-		case (Prefs::SphereStyle):
-			ui.actionStyleSphere->setChecked(true);
-			break;
-		case (Prefs::ScaledStyle):
-			ui.actionStyleScaled->setChecked(true);
-			break;
-		case (Prefs::IndividualStyle):
-			ui.actionStyleIndividual->setChecked(true);
-			break;
-		default:
-			break;
-	}
+
+
+	// Add style tool buttons to their button group
+	styleButtons_.addButton(ui.ViewStyleLineButton, Prefs::LineStyle);
+	styleButtons_.addButton(ui.ViewStyleTubeButton, Prefs::TubeStyle);
+	styleButtons_.addButton(ui.ViewStyleSphereButton, Prefs::SphereStyle);
+	styleButtons_.addButton(ui.ViewStyleScaledButton, Prefs::ScaledStyle);
+	styleButtons_.addButton(ui.ViewStyleOwnButton, Prefs::OwnStyle);
+
+	// Add colour scheme tool buttons to their button group
+	schemeButtons_.addButton(ui.ViewSchemeElementButton, Prefs::ElementScheme);
+	schemeButtons_.addButton(ui.ViewSchemeChargebutton, Prefs::ChargeScheme);
+	schemeButtons_.addButton(ui.ViewSchemeForceButton, Prefs::ForceScheme);
+	schemeButtons_.addButton(ui.ViewSchemeVelocityButton, Prefs::VelocityScheme);
+	schemeButtons_.addButton(ui.ViewSchemeOwnButton, Prefs::OwnScheme);
+
+	// Add view tool buttons to their button group
+	viewButtons_.addButton(ui.ViewControlPerspectiveButton, true);
+	viewButtons_.addButton(ui.ViewControlOrthographicButton, false);
 
 	// Add buttons related to user actions to our button group, and add popup widgets to those buttons that have them
-	uaDummyButton_ = new QToolButton(this);
-	uaDummyButton_->setCheckable(true);
-	uaDummyButton_->setVisible(false);
-	uaButtons_.addButton(uaDummyButton_);
 
 	// -- Build Panel (Select)
 	uaButtons_.addButton(ui.BuildSelectAtomButton, UserAction::SelectAction);
@@ -125,10 +111,12 @@ void AtenWindow::finaliseUi()
 	ui.BuildDrawAddHButton->setPopupWidget(new AddHPopup(*this, ui.BuildDrawAddHButton));
 	uaButtons_.addButton(ui.BuildDrawGrowButton, UserAction::DrawGrowAtomsAction);
 	ui.BuildDrawGrowButton->setPopupWidget(new GrowPopup(*this, ui.BuildDrawGrowButton));
-	// Build Panel (Element)
-	// Build Panel (Bonding)
+	// -- Build Panel (Element)
+	// -- Build Panel (Bonding)
 	ui.BuildBondingRebondButton->setPopupWidget(new RebondPopup(*this, ui.BuildBondingRebondButton));
 
+	// -- View Panel (Control)
+	ui.ViewControlResetButton->setPopupWidget(new ResetViewPopup(*this, ui.ViewControlResetButton));
 	
 	
 	
@@ -201,23 +189,6 @@ void AtenWindow::finaliseUi()
 	loadSettings();
 
 	Messenger::exit("AtenWindow::finaliseUi");
-}
-
-// Set controls
-void AtenWindow::setControls()
-{
-	Messenger::enter("AtenWindow::setControls");
-	
-	// Set correct Atom::DrawStyle on toolbar
-	setActiveStyleAction(prefs.renderStyle());
-
-	// Set view perspective/orthographic
-	prefs.hasPerspective() ? ui.actionViewPerspective->setChecked(true) : ui.actionViewOrthographic->setChecked(true);
-
-	// Set correct colour scheme menuitem
-	setActiveSchemeAction(prefs.colourScheme());
-
-	Messenger::exit("AtenWindow::setControls");
 }
 
 // Update and show

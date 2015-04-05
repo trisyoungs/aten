@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>GrowPopup</class>
- <widget class="QWidget" name="GrowPopup">
+ <class>ResetViewPopup</class>
+ <widget class="QWidget" name="ResetViewPopup">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>234</width>
-    <height>177</height>
+    <width>168</width>
+    <height>235</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -22,17 +22,20 @@
    </font>
   </property>
   <property name="windowTitle">
-   <string>Grow Popup</string>
+   <string>ResetView Popup</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
+   <property name="horizontalSpacing">
+    <number>0</number>
+   </property>
+   <property name="verticalSpacing">
+    <number>2</number>
+   </property>
    <property name="margin">
     <number>0</number>
    </property>
-   <property name="spacing">
-    <number>2</number>
-   </property>
-   <item row="3" column="0">
-    <widget class="QToolButton" name="GrowSelectionButton">
+   <item row="0" column="0">
+    <widget class="QToolButton" name="CartesianNegativeXButton">
      <property name="minimumSize">
       <size>
        <width>56</width>
@@ -45,15 +48,53 @@
        <height>56</height>
       </size>
      </property>
-     <property name="toolTip">
-      <string>Grow atom onto all atoms in current selection</string>
-     </property>
      <property name="text">
-      <string>Selection</string>
+      <string>-X</string>
      </property>
      <property name="icon">
       <iconset resource="icons.qrc">
-       <normaloff>:/build/icons/build_growsel.svg</normaloff>:/build/icons/build_growsel.svg</iconset>
+       <normaloff>:/stackicons/icons/stack_celldefine.svg</normaloff>:/stackicons/icons/stack_celldefine.svg</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>30</width>
+       <height>30</height>
+      </size>
+     </property>
+     <property name="checkable">
+      <bool>false</bool>
+     </property>
+     <property name="autoExclusive">
+      <bool>false</bool>
+     </property>
+     <property name="toolButtonStyle">
+      <enum>Qt::ToolButtonTextUnderIcon</enum>
+     </property>
+     <property name="autoRaise">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="QToolButton" name="CartesianNegativeYButton">
+     <property name="minimumSize">
+      <size>
+       <width>56</width>
+       <height>56</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>56</width>
+       <height>56</height>
+      </size>
+     </property>
+     <property name="text">
+      <string>-Y</string>
+     </property>
+     <property name="icon">
+      <iconset resource="icons.qrc">
+       <normaloff>:/stackicons/icons/stack_celldefine.svg</normaloff>:/stackicons/icons/stack_celldefine.svg</iconset>
      </property>
      <property name="iconSize">
       <size>
@@ -76,7 +117,7 @@
     </widget>
    </item>
    <item row="0" column="2">
-    <widget class="QToolButton" name="GeometryTShapeButton">
+    <widget class="QToolButton" name="CartesianNegativeZButton">
      <property name="minimumSize">
       <size>
        <width>56</width>
@@ -89,15 +130,12 @@
        <height>56</height>
       </size>
      </property>
-     <property name="toolTip">
-      <string>Grow atom onto all atoms in current selection</string>
-     </property>
      <property name="text">
-      <string>T-Shape</string>
+      <string>-Z</string>
      </property>
      <property name="icon">
       <iconset resource="icons.qrc">
-       <normaloff>:/atomgeometry/icons/atomgeometry_tshape.png</normaloff>:/atomgeometry/icons/atomgeometry_tshape.png</iconset>
+       <normaloff>:/stackicons/icons/stack_celldefine.svg</normaloff>:/stackicons/icons/stack_celldefine.svg</iconset>
      </property>
      <property name="iconSize">
       <size>
@@ -106,109 +144,21 @@
       </size>
      </property>
      <property name="checkable">
-      <bool>true</bool>
+      <bool>false</bool>
      </property>
      <property name="autoExclusive">
-      <bool>true</bool>
+      <bool>false</bool>
      </property>
      <property name="toolButtonStyle">
       <enum>Qt::ToolButtonTextUnderIcon</enum>
      </property>
      <property name="autoRaise">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="0">
-    <widget class="QToolButton" name="GeometryLinearButton">
-     <property name="minimumSize">
-      <size>
-       <width>56</width>
-       <height>56</height>
-      </size>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>56</width>
-       <height>56</height>
-      </size>
-     </property>
-     <property name="toolTip">
-      <string>Grow atom onto all atoms in current selection</string>
-     </property>
-     <property name="text">
-      <string>Linear</string>
-     </property>
-     <property name="icon">
-      <iconset resource="icons.qrc">
-       <normaloff>:/atomgeometry/icons/atomgeometry_linear.png</normaloff>:/atomgeometry/icons/atomgeometry_linear.png</iconset>
-     </property>
-     <property name="iconSize">
-      <size>
-       <width>30</width>
-       <height>30</height>
-      </size>
-     </property>
-     <property name="checkable">
-      <bool>true</bool>
-     </property>
-     <property name="autoExclusive">
-      <bool>true</bool>
-     </property>
-     <property name="toolButtonStyle">
-      <enum>Qt::ToolButtonTextUnderIcon</enum>
-     </property>
-     <property name="autoRaise">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="4">
-    <widget class="QToolButton" name="GeometryTrigonalButton">
-     <property name="minimumSize">
-      <size>
-       <width>56</width>
-       <height>56</height>
-      </size>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>56</width>
-       <height>56</height>
-      </size>
-     </property>
-     <property name="toolTip">
-      <string>Grow atom onto all atoms in current selection</string>
-     </property>
-     <property name="text">
-      <string>Trigonal</string>
-     </property>
-     <property name="icon">
-      <iconset resource="icons.qrc">
-       <normaloff>:/atomgeometry/icons/atomgeometry_trigonal.png</normaloff>:/atomgeometry/icons/atomgeometry_trigonal.png</iconset>
-     </property>
-     <property name="iconSize">
-      <size>
-       <width>30</width>
-       <height>30</height>
-      </size>
-     </property>
-     <property name="checkable">
-      <bool>true</bool>
-     </property>
-     <property name="autoExclusive">
-      <bool>true</bool>
-     </property>
-     <property name="toolButtonStyle">
-      <enum>Qt::ToolButtonTextUnderIcon</enum>
-     </property>
-     <property name="autoRaise">
-      <bool>true</bool>
+      <bool>false</bool>
      </property>
     </widget>
    </item>
    <item row="1" column="0">
-    <widget class="QToolButton" name="GeometryTetrahedralButton">
+    <widget class="QToolButton" name="CartesianPositiveXButton">
      <property name="minimumSize">
       <size>
        <width>56</width>
@@ -221,15 +171,12 @@
        <height>56</height>
       </size>
      </property>
-     <property name="toolTip">
-      <string>Grow atom onto all atoms in current selection</string>
-     </property>
      <property name="text">
-      <string>Tetrahedral</string>
+      <string>+X</string>
      </property>
      <property name="icon">
       <iconset resource="icons.qrc">
-       <normaloff>:/atomgeometry/icons/atomgeometry_tetrahedral.png</normaloff>:/atomgeometry/icons/atomgeometry_tetrahedral.png</iconset>
+       <normaloff>:/stackicons/icons/stack_celldefine.svg</normaloff>:/stackicons/icons/stack_celldefine.svg</iconset>
      </property>
      <property name="iconSize">
       <size>
@@ -238,21 +185,62 @@
       </size>
      </property>
      <property name="checkable">
-      <bool>true</bool>
+      <bool>false</bool>
      </property>
      <property name="autoExclusive">
-      <bool>true</bool>
+      <bool>false</bool>
      </property>
      <property name="toolButtonStyle">
       <enum>Qt::ToolButtonTextUnderIcon</enum>
      </property>
      <property name="autoRaise">
-      <bool>true</bool>
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QToolButton" name="CartesianPositiveYButton">
+     <property name="minimumSize">
+      <size>
+       <width>56</width>
+       <height>56</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>56</width>
+       <height>56</height>
+      </size>
+     </property>
+     <property name="text">
+      <string>+Y</string>
+     </property>
+     <property name="icon">
+      <iconset resource="icons.qrc">
+       <normaloff>:/stackicons/icons/stack_celldefine.svg</normaloff>:/stackicons/icons/stack_celldefine.svg</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>30</width>
+       <height>30</height>
+      </size>
+     </property>
+     <property name="checkable">
+      <bool>false</bool>
+     </property>
+     <property name="autoExclusive">
+      <bool>false</bool>
+     </property>
+     <property name="toolButtonStyle">
+      <enum>Qt::ToolButtonTextUnderIcon</enum>
+     </property>
+     <property name="autoRaise">
+      <bool>false</bool>
      </property>
     </widget>
    </item>
    <item row="1" column="2">
-    <widget class="QToolButton" name="GeometrySqPlanarButton">
+    <widget class="QToolButton" name="CartesianPositiveZButton">
      <property name="minimumSize">
       <size>
        <width>56</width>
@@ -265,15 +253,12 @@
        <height>56</height>
       </size>
      </property>
-     <property name="toolTip">
-      <string>Grow atom onto all atoms in current selection</string>
-     </property>
      <property name="text">
-      <string>Sq. Planar</string>
+      <string>+Z</string>
      </property>
      <property name="icon">
       <iconset resource="icons.qrc">
-       <normaloff>:/atomgeometry/icons/atomgeometry_sqplanar.png</normaloff>:/atomgeometry/icons/atomgeometry_sqplanar.png</iconset>
+       <normaloff>:/stackicons/icons/stack_celldefine.svg</normaloff>:/stackicons/icons/stack_celldefine.svg</iconset>
      </property>
      <property name="iconSize">
       <size>
@@ -282,111 +267,269 @@
       </size>
      </property>
      <property name="checkable">
-      <bool>true</bool>
+      <bool>false</bool>
      </property>
      <property name="autoExclusive">
-      <bool>true</bool>
+      <bool>false</bool>
      </property>
      <property name="toolButtonStyle">
       <enum>Qt::ToolButtonTextUnderIcon</enum>
      </property>
      <property name="autoRaise">
-      <bool>true</bool>
+      <bool>false</bool>
      </property>
     </widget>
    </item>
-   <item row="1" column="4">
-    <widget class="QToolButton" name="GeometryTrigBipyramidButton">
-     <property name="minimumSize">
-      <size>
-       <width>56</width>
-       <height>56</height>
-      </size>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>56</width>
-       <height>56</height>
-      </size>
-     </property>
-     <property name="toolTip">
-      <string>Grow atom onto all atoms in current selection</string>
-     </property>
-     <property name="text">
-      <string>Trig. Bip.</string>
-     </property>
-     <property name="icon">
-      <iconset resource="icons.qrc">
-       <normaloff>:/atomgeometry/icons/atomgeometry_trigbipy.png</normaloff>:/atomgeometry/icons/atomgeometry_trigbipy.png</iconset>
-     </property>
-     <property name="iconSize">
-      <size>
-       <width>30</width>
-       <height>30</height>
-      </size>
-     </property>
-     <property name="checkable">
-      <bool>true</bool>
-     </property>
-     <property name="autoExclusive">
-      <bool>true</bool>
-     </property>
-     <property name="toolButtonStyle">
-      <enum>Qt::ToolButtonTextUnderIcon</enum>
-     </property>
-     <property name="autoRaise">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="5">
-    <widget class="QToolButton" name="GeometryOctahedralButton">
-     <property name="minimumSize">
-      <size>
-       <width>56</width>
-       <height>56</height>
-      </size>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>56</width>
-       <height>56</height>
-      </size>
-     </property>
-     <property name="toolTip">
-      <string>Grow atom onto all atoms in current selection</string>
-     </property>
-     <property name="text">
-      <string>Octahedral</string>
-     </property>
-     <property name="icon">
-      <iconset resource="icons.qrc">
-       <normaloff>:/atomgeometry/icons/atomgeometry_octahedral.png</normaloff>:/atomgeometry/icons/atomgeometry_octahedral.png</iconset>
-     </property>
-     <property name="iconSize">
-      <size>
-       <width>30</width>
-       <height>30</height>
-      </size>
-     </property>
-     <property name="checkable">
-      <bool>true</bool>
-     </property>
-     <property name="autoExclusive">
-      <bool>true</bool>
-     </property>
-     <property name="toolButtonStyle">
-      <enum>Qt::ToolButtonTextUnderIcon</enum>
-     </property>
-     <property name="autoRaise">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0" colspan="6">
+   <item row="2" column="0" colspan="3">
     <widget class="Line" name="line">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QToolButton" name="CellNegativeXButton">
+     <property name="minimumSize">
+      <size>
+       <width>56</width>
+       <height>56</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>56</width>
+       <height>56</height>
+      </size>
+     </property>
+     <property name="text">
+      <string>-X</string>
+     </property>
+     <property name="icon">
+      <iconset resource="icons.qrc">
+       <normaloff>:/stackicons/icons/stack_celldefine.svg</normaloff>:/stackicons/icons/stack_celldefine.svg</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>30</width>
+       <height>30</height>
+      </size>
+     </property>
+     <property name="checkable">
+      <bool>false</bool>
+     </property>
+     <property name="autoExclusive">
+      <bool>false</bool>
+     </property>
+     <property name="toolButtonStyle">
+      <enum>Qt::ToolButtonTextUnderIcon</enum>
+     </property>
+     <property name="autoRaise">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1">
+    <widget class="QToolButton" name="CellNegativeYButton">
+     <property name="minimumSize">
+      <size>
+       <width>56</width>
+       <height>56</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>56</width>
+       <height>56</height>
+      </size>
+     </property>
+     <property name="text">
+      <string>-Y</string>
+     </property>
+     <property name="icon">
+      <iconset resource="icons.qrc">
+       <normaloff>:/stackicons/icons/stack_celldefine.svg</normaloff>:/stackicons/icons/stack_celldefine.svg</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>30</width>
+       <height>30</height>
+      </size>
+     </property>
+     <property name="checkable">
+      <bool>false</bool>
+     </property>
+     <property name="autoExclusive">
+      <bool>false</bool>
+     </property>
+     <property name="toolButtonStyle">
+      <enum>Qt::ToolButtonTextUnderIcon</enum>
+     </property>
+     <property name="autoRaise">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="2">
+    <widget class="QToolButton" name="CellNegativeZButton">
+     <property name="minimumSize">
+      <size>
+       <width>56</width>
+       <height>56</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>56</width>
+       <height>56</height>
+      </size>
+     </property>
+     <property name="text">
+      <string>-Z</string>
+     </property>
+     <property name="icon">
+      <iconset resource="icons.qrc">
+       <normaloff>:/stackicons/icons/stack_celldefine.svg</normaloff>:/stackicons/icons/stack_celldefine.svg</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>30</width>
+       <height>30</height>
+      </size>
+     </property>
+     <property name="checkable">
+      <bool>false</bool>
+     </property>
+     <property name="autoExclusive">
+      <bool>false</bool>
+     </property>
+     <property name="toolButtonStyle">
+      <enum>Qt::ToolButtonTextUnderIcon</enum>
+     </property>
+     <property name="autoRaise">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0">
+    <widget class="QToolButton" name="CellPositiveXButton">
+     <property name="minimumSize">
+      <size>
+       <width>56</width>
+       <height>56</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>56</width>
+       <height>56</height>
+      </size>
+     </property>
+     <property name="text">
+      <string>+X</string>
+     </property>
+     <property name="icon">
+      <iconset resource="icons.qrc">
+       <normaloff>:/stackicons/icons/stack_celldefine.svg</normaloff>:/stackicons/icons/stack_celldefine.svg</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>30</width>
+       <height>30</height>
+      </size>
+     </property>
+     <property name="checkable">
+      <bool>false</bool>
+     </property>
+     <property name="autoExclusive">
+      <bool>false</bool>
+     </property>
+     <property name="toolButtonStyle">
+      <enum>Qt::ToolButtonTextUnderIcon</enum>
+     </property>
+     <property name="autoRaise">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="1">
+    <widget class="QToolButton" name="CellPositiveYButton">
+     <property name="minimumSize">
+      <size>
+       <width>56</width>
+       <height>56</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>56</width>
+       <height>56</height>
+      </size>
+     </property>
+     <property name="text">
+      <string>+Y</string>
+     </property>
+     <property name="icon">
+      <iconset resource="icons.qrc">
+       <normaloff>:/stackicons/icons/stack_celldefine.svg</normaloff>:/stackicons/icons/stack_celldefine.svg</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>30</width>
+       <height>30</height>
+      </size>
+     </property>
+     <property name="checkable">
+      <bool>false</bool>
+     </property>
+     <property name="autoExclusive">
+      <bool>false</bool>
+     </property>
+     <property name="toolButtonStyle">
+      <enum>Qt::ToolButtonTextUnderIcon</enum>
+     </property>
+     <property name="autoRaise">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="2">
+    <widget class="QToolButton" name="CellPositiveZButton">
+     <property name="minimumSize">
+      <size>
+       <width>56</width>
+       <height>56</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>56</width>
+       <height>56</height>
+      </size>
+     </property>
+     <property name="text">
+      <string>+Z</string>
+     </property>
+     <property name="icon">
+      <iconset resource="icons.qrc">
+       <normaloff>:/stackicons/icons/stack_celldefine.svg</normaloff>:/stackicons/icons/stack_celldefine.svg</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>30</width>
+       <height>30</height>
+      </size>
+     </property>
+     <property name="checkable">
+      <bool>false</bool>
+     </property>
+     <property name="autoExclusive">
+      <bool>false</bool>
+     </property>
+     <property name="toolButtonStyle">
+      <enum>Qt::ToolButtonTextUnderIcon</enum>
+     </property>
+     <property name="autoRaise">
+      <bool>false</bool>
      </property>
     </widget>
    </item>

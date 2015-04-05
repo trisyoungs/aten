@@ -135,6 +135,9 @@
               <height>56</height>
              </size>
             </property>
+            <property name="toolTip">
+             <string>Draw atoms, chains, and individual bonds</string>
+            </property>
             <property name="text">
              <string>Draw</string>
             </property>
@@ -175,6 +178,9 @@
               <width>56</width>
               <height>56</height>
              </size>
+            </property>
+            <property name="toolTip">
+             <string>Select atoms by element</string>
             </property>
             <property name="text">
              <string>Element</string>
@@ -256,6 +262,9 @@
               <width>56</width>
               <height>56</height>
              </size>
+            </property>
+            <property name="toolTip">
+             <string>Draw fragments</string>
             </property>
             <property name="text">
              <string>Fragment</string>
@@ -348,6 +357,9 @@
               <height>56</height>
              </size>
             </property>
+            <property name="toolTip">
+             <string>Delete atoms and bonds</string>
+            </property>
             <property name="text">
              <string>Delete</string>
             </property>
@@ -392,6 +404,9 @@
               <height>56</height>
              </size>
             </property>
+            <property name="toolTip">
+             <string>Select atoms in bound fragments</string>
+            </property>
             <property name="text">
              <string>Bound</string>
             </property>
@@ -432,6 +447,9 @@
               <width>56</width>
               <height>56</height>
              </size>
+            </property>
+            <property name="toolTip">
+             <string>Recalculate bonding between all atoms</string>
             </property>
             <property name="text">
              <string>Rebond</string>
@@ -477,12 +495,15 @@
               <height>56</height>
              </size>
             </property>
+            <property name="toolTip">
+             <string>Grow atoms on other atoms (icon reflects current geometry)</string>
+            </property>
             <property name="text">
              <string>Grow</string>
             </property>
             <property name="icon">
              <iconset resource="icons.qrc">
-              <normaloff>:/build/icons/build_grow.svg</normaloff>:/build/icons/build_grow.svg</iconset>
+              <normaloff>:/atomgeometry/icons/atomgeometry_tetrahedral.png</normaloff>:/atomgeometry/icons/atomgeometry_tetrahedral.png</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -528,6 +549,9 @@
               <height>56</height>
              </size>
             </property>
+            <property name="toolTip">
+             <string>Remove all bonds</string>
+            </property>
             <property name="text">
              <string>Clear</string>
             </property>
@@ -568,6 +592,9 @@
               <width>56</width>
               <height>56</height>
              </size>
+            </property>
+            <property name="toolTip">
+             <string>Add hydrogens to individual atoms</string>
             </property>
             <property name="text">
              <string>Add H</string>
@@ -610,6 +637,9 @@
               <height>56</height>
              </size>
             </property>
+            <property name="toolTip">
+             <string>Transmute atoms to other elements</string>
+            </property>
             <property name="text">
              <string>Transmute</string>
             </property>
@@ -650,6 +680,9 @@
                 <height>26</height>
                </size>
               </property>
+              <property name="toolTip">
+               <string>Expand current selection to include bound neighbours</string>
+              </property>
               <property name="text">
                <string>Expand</string>
               </property>
@@ -672,6 +705,9 @@
                 <width>16777215</width>
                 <height>26</height>
                </size>
+              </property>
+              <property name="toolTip">
+               <string>Invert current selection</string>
               </property>
               <property name="text">
                <string>Invert</string>
@@ -782,6 +818,9 @@
               <height>56</height>
              </size>
             </property>
+            <property name="toolTip">
+             <string>Augment bonding between all atoms</string>
+            </property>
             <property name="text">
              <string>Augment</string>
             </property>
@@ -827,6 +866,9 @@
              <font>
               <pointsize>8</pointsize>
              </font>
+            </property>
+            <property name="toolTip">
+             <string>Select atoms individually or by box-select</string>
             </property>
             <property name="text">
              <string>Atom</string>
@@ -980,7 +1022,58 @@
           <property name="verticalSpacing">
            <number>2</number>
           </property>
-          <item row="0" column="0">
+          <item row="0" column="22">
+           <widget class="QToolButton" name="ViewSchemeOwnButton">
+            <property name="minimumSize">
+             <size>
+              <width>56</width>
+              <height>56</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>56</width>
+              <height>56</height>
+             </size>
+            </property>
+            <property name="toolTip">
+             <string>Colour atoms according to their individually-assigned colours</string>
+            </property>
+            <property name="text">
+             <string>Own</string>
+            </property>
+            <property name="icon">
+             <iconset resource="icons.qrc">
+              <normaloff>:/draw_styles/icons/style_individual.svg</normaloff>:/draw_styles/icons/style_individual.svg</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>30</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <property name="autoExclusive">
+             <bool>false</bool>
+            </property>
+            <property name="toolButtonStyle">
+             <enum>Qt::ToolButtonTextUnderIcon</enum>
+            </property>
+            <property name="autoRaise">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="10" rowspan="2">
+           <widget class="Line" name="line_2">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="11">
            <widget class="QToolButton" name="ViewStyleLineButton">
             <property name="minimumSize">
              <size>
@@ -998,6 +1091,9 @@
              <font>
               <pointsize>8</pointsize>
              </font>
+            </property>
+            <property name="toolTip">
+             <string>Draw atoms and bonds as lines</string>
             </property>
             <property name="text">
              <string>Line</string>
@@ -1029,7 +1125,7 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="1">
+          <item row="0" column="12">
            <widget class="QToolButton" name="ViewStyleTubeButton">
             <property name="minimumSize">
              <size>
@@ -1042,6 +1138,9 @@
               <width>56</width>
               <height>56</height>
              </size>
+            </property>
+            <property name="toolTip">
+             <string>Draw atoms and bonds as tubes</string>
             </property>
             <property name="text">
              <string>Tube</string>
@@ -1073,7 +1172,7 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="3">
+          <item row="0" column="14">
            <widget class="QToolButton" name="ViewStyleScaledButton">
             <property name="minimumSize">
              <size>
@@ -1086,6 +1185,9 @@
               <width>56</width>
               <height>56</height>
              </size>
+            </property>
+            <property name="toolTip">
+             <string>Draw atoms and bonds as scaled spheres and tubes</string>
             </property>
             <property name="text">
              <string>Scaled</string>
@@ -1114,7 +1216,7 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="2">
+          <item row="0" column="13">
            <widget class="QToolButton" name="ViewStyleSphereButton">
             <property name="minimumSize">
              <size>
@@ -1127,6 +1229,9 @@
               <width>56</width>
               <height>56</height>
              </size>
+            </property>
+            <property name="toolTip">
+             <string>Draw atoms and bonds as spheres and tubes</string>
             </property>
             <property name="text">
              <string>Sphere</string>
@@ -1155,8 +1260,8 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="4">
-           <widget class="QToolButton" name="ViewStyleIndividualButton">
+          <item row="0" column="15">
+           <widget class="QToolButton" name="ViewStyleOwnButton">
             <property name="minimumSize">
              <size>
               <width>56</width>
@@ -1168,6 +1273,9 @@
               <width>56</width>
               <height>56</height>
              </size>
+            </property>
+            <property name="toolTip">
+             <string>Draw atoms and bonds according to individual atom style settings</string>
             </property>
             <property name="text">
              <string>Own</string>
@@ -1196,7 +1304,7 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="0" colspan="5">
+          <item row="1" column="11" colspan="5">
            <widget class="QLabel" name="label">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
@@ -1212,6 +1320,512 @@
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="17" rowspan="2">
+           <widget class="Line" name="line">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="18" colspan="5">
+           <widget class="QLabel" name="label_2">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="frameShape">
+             <enum>QFrame::NoFrame</enum>
+            </property>
+            <property name="text">
+             <string>Colour Scheme</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="2">
+           <widget class="Line" name="line_3">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="TMenuButton" name="ViewControlResetButton">
+            <property name="minimumSize">
+             <size>
+              <width>56</width>
+              <height>56</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>56</width>
+              <height>56</height>
+             </size>
+            </property>
+            <property name="toolTip">
+             <string>Reset view</string>
+            </property>
+            <property name="text">
+             <string>Reset</string>
+            </property>
+            <property name="icon">
+             <iconset resource="icons.qrc">
+              <normaloff>:/draw_styles/icons/style_tube.svg</normaloff>:/draw_styles/icons/style_tube.svg</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>30</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="checkable">
+             <bool>false</bool>
+            </property>
+            <property name="checked">
+             <bool>false</bool>
+            </property>
+            <property name="autoExclusive">
+             <bool>false</bool>
+            </property>
+            <property name="toolButtonStyle">
+             <enum>Qt::ToolButtonTextUnderIcon</enum>
+            </property>
+            <property name="autoRaise">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="20">
+           <widget class="QToolButton" name="ViewSchemeForceButton">
+            <property name="minimumSize">
+             <size>
+              <width>56</width>
+              <height>56</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>56</width>
+              <height>56</height>
+             </size>
+            </property>
+            <property name="toolTip">
+             <string>Colour atoms by the magnitude of their force</string>
+            </property>
+            <property name="text">
+             <string>Forces</string>
+            </property>
+            <property name="icon">
+             <iconset resource="icons.qrc">
+              <normaloff>:/draw_styles/icons/style_individual.svg</normaloff>:/draw_styles/icons/style_individual.svg</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>30</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <property name="autoExclusive">
+             <bool>false</bool>
+            </property>
+            <property name="toolButtonStyle">
+             <enum>Qt::ToolButtonTextUnderIcon</enum>
+            </property>
+            <property name="autoRaise">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="19">
+           <widget class="QToolButton" name="ViewSchemeChargebutton">
+            <property name="minimumSize">
+             <size>
+              <width>56</width>
+              <height>56</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>56</width>
+              <height>56</height>
+             </size>
+            </property>
+            <property name="toolTip">
+             <string>Colour atoms by atomic charge</string>
+            </property>
+            <property name="text">
+             <string>Charge</string>
+            </property>
+            <property name="icon">
+             <iconset resource="icons.qrc">
+              <normaloff>:/draw_styles/icons/style_individual.svg</normaloff>:/draw_styles/icons/style_individual.svg</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>30</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <property name="autoExclusive">
+             <bool>false</bool>
+            </property>
+            <property name="toolButtonStyle">
+             <enum>Qt::ToolButtonTextUnderIcon</enum>
+            </property>
+            <property name="autoRaise">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="6">
+           <widget class="QToolButton" name="ViewControlPerspectiveButton">
+            <property name="minimumSize">
+             <size>
+              <width>56</width>
+              <height>56</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>56</width>
+              <height>56</height>
+             </size>
+            </property>
+            <property name="toolTip">
+             <string>Use perspective view</string>
+            </property>
+            <property name="text">
+             <string>Persp</string>
+            </property>
+            <property name="icon">
+             <iconset resource="icons.qrc">
+              <normaloff>:/view/icons/view_zoomout.svg</normaloff>:/view/icons/view_zoomout.svg</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>30</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+            <property name="autoExclusive">
+             <bool>false</bool>
+            </property>
+            <property name="toolButtonStyle">
+             <enum>Qt::ToolButtonTextUnderIcon</enum>
+            </property>
+            <property name="autoRaise">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="4">
+           <widget class="QToolButton" name="ViewControlZoomOutButton">
+            <property name="minimumSize">
+             <size>
+              <width>56</width>
+              <height>56</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>56</width>
+              <height>56</height>
+             </size>
+            </property>
+            <property name="toolTip">
+             <string>Zoom view outwards</string>
+            </property>
+            <property name="text">
+             <string>Zoom Out</string>
+            </property>
+            <property name="icon">
+             <iconset resource="icons.qrc">
+              <normaloff>:/view/icons/view_zoomout.svg</normaloff>:/view/icons/view_zoomout.svg</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>30</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="checkable">
+             <bool>false</bool>
+            </property>
+            <property name="checked">
+             <bool>false</bool>
+            </property>
+            <property name="autoExclusive">
+             <bool>false</bool>
+            </property>
+            <property name="toolButtonStyle">
+             <enum>Qt::ToolButtonTextUnderIcon</enum>
+            </property>
+            <property name="autoRaise">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="5">
+           <widget class="Line" name="line_4">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="21">
+           <widget class="QToolButton" name="ViewSchemeVelocityButton">
+            <property name="minimumSize">
+             <size>
+              <width>56</width>
+              <height>56</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>56</width>
+              <height>56</height>
+             </size>
+            </property>
+            <property name="toolTip">
+             <string>Colour atoms by the magnitude of their velocity</string>
+            </property>
+            <property name="text">
+             <string>Velocity</string>
+            </property>
+            <property name="icon">
+             <iconset resource="icons.qrc">
+              <normaloff>:/draw_styles/icons/style_individual.svg</normaloff>:/draw_styles/icons/style_individual.svg</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>30</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <property name="autoExclusive">
+             <bool>false</bool>
+            </property>
+            <property name="toolButtonStyle">
+             <enum>Qt::ToolButtonTextUnderIcon</enum>
+            </property>
+            <property name="autoRaise">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="18">
+           <widget class="QToolButton" name="ViewSchemeElementButton">
+            <property name="minimumSize">
+             <size>
+              <width>56</width>
+              <height>56</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>56</width>
+              <height>56</height>
+             </size>
+            </property>
+            <property name="toolTip">
+             <string>Colour atoms by element</string>
+            </property>
+            <property name="text">
+             <string>Element</string>
+            </property>
+            <property name="icon">
+             <iconset resource="icons.qrc">
+              <normaloff>:/draw_styles/icons/style_individual.svg</normaloff>:/draw_styles/icons/style_individual.svg</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>30</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <property name="autoExclusive">
+             <bool>false</bool>
+            </property>
+            <property name="toolButtonStyle">
+             <enum>Qt::ToolButtonTextUnderIcon</enum>
+            </property>
+            <property name="autoRaise">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="3">
+           <widget class="QToolButton" name="ViewControlZoomInButton">
+            <property name="minimumSize">
+             <size>
+              <width>56</width>
+              <height>56</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>56</width>
+              <height>56</height>
+             </size>
+            </property>
+            <property name="toolTip">
+             <string>Zoom view inwards</string>
+            </property>
+            <property name="text">
+             <string>Zoom In</string>
+            </property>
+            <property name="icon">
+             <iconset resource="icons.qrc">
+              <normaloff>:/view/icons/view_zoomin.svg</normaloff>:/view/icons/view_zoomin.svg</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>30</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="checkable">
+             <bool>false</bool>
+            </property>
+            <property name="checked">
+             <bool>false</bool>
+            </property>
+            <property name="autoExclusive">
+             <bool>false</bool>
+            </property>
+            <property name="toolButtonStyle">
+             <enum>Qt::ToolButtonTextUnderIcon</enum>
+            </property>
+            <property name="autoRaise">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="7">
+           <widget class="QToolButton" name="ViewControlOrthographicButton">
+            <property name="minimumSize">
+             <size>
+              <width>56</width>
+              <height>56</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>56</width>
+              <height>56</height>
+             </size>
+            </property>
+            <property name="toolTip">
+             <string>Use orthogonal view</string>
+            </property>
+            <property name="text">
+             <string>Ortho</string>
+            </property>
+            <property name="icon">
+             <iconset resource="icons.qrc">
+              <normaloff>:/view/icons/view_zoomout.svg</normaloff>:/view/icons/view_zoomout.svg</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>30</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <property name="checked">
+             <bool>false</bool>
+            </property>
+            <property name="autoExclusive">
+             <bool>false</bool>
+            </property>
+            <property name="toolButtonStyle">
+             <enum>Qt::ToolButtonTextUnderIcon</enum>
+            </property>
+            <property name="autoRaise">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1" colspan="7">
+           <widget class="QLabel" name="label_3">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="frameShape">
+             <enum>QFrame::NoFrame</enum>
+            </property>
+            <property name="text">
+             <string>Control</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="24">
+           <widget class="QLabel" name="label_10">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="frameShape">
+             <enum>QFrame::NoFrame</enum>
+            </property>
+            <property name="text">
+             <string>Options</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="24">
+           <widget class="QCheckBox" name="ViewOptionsHBondsCheck">
+            <property name="toolTip">
+             <string>Detect and draw H-bonds</string>
+            </property>
+            <property name="text">
+             <string>View H-Bonds</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="23" rowspan="2">
+           <widget class="Line" name="line_5">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
             </property>
            </widget>
           </item>
@@ -1425,61 +2039,6 @@
     <addaction name="separator"/>
     <addaction name="actionEditQuickCommand"/>
    </widget>
-   <widget class="QMenu" name="ViewMenu">
-    <property name="title">
-     <string>&amp;View</string>
-    </property>
-    <widget class="QMenu" name="menuSetView">
-     <property name="title">
-      <string>Set View Along</string>
-     </property>
-     <addaction name="actionViewSetCartesianPosX"/>
-     <addaction name="actionViewSetCartesianPosY"/>
-     <addaction name="actionViewSetCartesianPosZ"/>
-     <addaction name="actionViewSetCartesianNegX"/>
-     <addaction name="actionViewSetCartesianNegY"/>
-     <addaction name="actionViewSetCartesianNegZ"/>
-     <addaction name="separator"/>
-     <addaction name="actionViewSetCellPosX"/>
-     <addaction name="actionViewSetCellPosY"/>
-     <addaction name="actionViewSetCellPosZ"/>
-     <addaction name="actionViewSetCellNegX"/>
-     <addaction name="actionViewSetCellNegY"/>
-     <addaction name="actionViewSetCellNegZ"/>
-    </widget>
-    <widget class="QMenu" name="SchemeMenu">
-     <property name="title">
-      <string>Atom Colours</string>
-     </property>
-     <addaction name="actionSchemeElement"/>
-     <addaction name="actionSchemeCharge"/>
-     <addaction name="actionSchemeForce"/>
-     <addaction name="actionSchemeVelocity"/>
-     <addaction name="actionSchemeCustom"/>
-    </widget>
-    <widget class="QMenu" name="StyleMenu">
-     <property name="title">
-      <string>Render Style</string>
-     </property>
-     <addaction name="actionStyleStick"/>
-     <addaction name="actionStyleTube"/>
-     <addaction name="actionStyleSphere"/>
-     <addaction name="actionStyleScaled"/>
-     <addaction name="actionStyleIndividual"/>
-    </widget>
-    <addaction name="actionViewReset"/>
-    <addaction name="actionViewZoomIn"/>
-    <addaction name="actionViewZoomOut"/>
-    <addaction name="menuSetView"/>
-    <addaction name="separator"/>
-    <addaction name="actionViewPerspective"/>
-    <addaction name="actionViewOrthographic"/>
-    <addaction name="separator"/>
-    <addaction name="StyleMenu"/>
-    <addaction name="SchemeMenu"/>
-    <addaction name="separator"/>
-    <addaction name="actionDetectDisplayHBonds"/>
-   </widget>
    <widget class="QMenu" name="ModelMenu">
     <property name="title">
      <string>&amp;Model</string>
@@ -1619,7 +2178,6 @@
    </widget>
    <addaction name="FileMenu"/>
    <addaction name="EditMenu"/>
-   <addaction name="ViewMenu"/>
    <addaction name="AtomContextMenu"/>
    <addaction name="ModelMenu"/>
    <addaction name="TrajectoryMenu"/>

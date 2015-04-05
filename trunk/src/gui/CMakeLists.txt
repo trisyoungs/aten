@@ -36,11 +36,12 @@ set(qtproject_SRCS
   mainwindow_context.cpp
   mainwindow_funcs.cpp
   mainwindow_init.cpp
+  mainwindow_view.cpp
   modellist_funcs.cpp
-  mouseactions.cpp
   popupaddh_funcs.cpp
   popupgrow_funcs.cpp
   popuprebond_funcs.cpp
+  popupresetview_funcs.cpp
   popuptransmute_funcs.cpp
   pores_funcs.cpp
   position_funcs.cpp
@@ -66,7 +67,6 @@ set(qtproject_SRCS
   tmenubutton_funcs.cpp
   tdoublespindelegate_funcs.cpp
   tintegerspindelegate_funcs.cpp
-  toolbaractions.cpp
   trajectory_funcs.cpp
   transform_funcs.cpp
   treegui_funcs.cpp
@@ -102,6 +102,7 @@ SET(pro_MOC_HDRS
   popupaddh.h
   popupgrow.h
   popuprebond.h
+  popupresetview.h
   popuptransmute.h
   pores.h
   position.h
@@ -153,6 +154,7 @@ SET(pro_UIS
   popupaddh.ui
   popupgrow.ui
   popuprebond.ui
+  popupresetview.ui
   popuptransmute.ui
   pores.ui
   position.ui

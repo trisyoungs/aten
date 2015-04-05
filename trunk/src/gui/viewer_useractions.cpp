@@ -64,7 +64,6 @@ void Viewer::renderActiveModes(Model* currentModel)
 	{
 		// Draw on distance ruler for drawing modes //ATEN2 TODO
 		case (UserAction::DrawAtomsAction):
-		case (UserAction::DrawChainAction):
 			// Get pixel 'length' in Angstrom terms at current draw depth
 			r = currentModel->screenToModel(contextWidth_/2+10, contextHeight_/2, currentDrawDepth_);
 			r -= currentModel->screenToModel(contextWidth_/2, contextHeight_/2, currentDrawDepth_);
@@ -127,7 +126,7 @@ void Viewer::renderUserActions(Model* source)
 		A.applyTranslation(i->r());
 
 		// Draw a wireframe sphere at the atoms position
-		style_i = (prefs.renderStyle() == Prefs::IndividualStyle ? i->style() : prefs.renderStyle());
+		style_i = (prefs.renderStyle() == Prefs::OwnStyle ? i->style() : prefs.renderStyle());
 		radius_i = prefs.atomStyleRadius(style_i);
 		if (style_i == Prefs::ScaledStyle) radius_i *= Elements().el[i->element()].atomicRadius;
 		A.applyScaling(radius_i, radius_i, radius_i);
@@ -140,15 +139,10 @@ void Viewer::renderUserActions(Model* source)
 	switch (activeMode_)
 	{
 		// Draw on bond and new atom for chain drawing (if mode is active)
-		case (UserAction::DrawBondSingleAction):
-		case (UserAction::DrawBondDoubleAction):
-		case (UserAction::DrawBondTripleAction):
-			if (atomClicked_ == NULL) atomClicked_ = (pickedAtoms_.first() != NULL ? pickedAtoms_.first()->item : NULL);
-			bt = (Bond::BondType) (1+activeMode_-UserAction::DrawBondSingleAction);
-		case (UserAction::DrawChainAction):
+		case (UserAction::DrawAtomsAction):
 			if (atomClicked_ == NULL) break;
 			pos = atomClicked_->r();
-			style_i = (prefs.renderStyle() == Prefs::IndividualStyle ? atomClicked_->style() : prefs.renderStyle());
+			style_i = (prefs.renderStyle() == Prefs::OwnStyle ? atomClicked_->style() : prefs.renderStyle());
 			if (style_i == Prefs::TubeStyle) radius_i = 0.0;
 			else if (style_i == Prefs::ScaledStyle) radius_i = prefs.styleRadius(Prefs::ScaledStyle, atomClicked_->element()) - primitives_[primitiveSet_].scaledAtomAdjustment(atomClicked_->element());
 			else radius_i = prefs.styleRadius(style_i, atomClicked_->element()) - primitives_[primitiveSet_].sphereAtomAdjustment();
@@ -160,13 +154,13 @@ void Viewer::renderUserActions(Model* source)
 				j = &tempj;
 				v = source->screenToModel(rMouseLast_.x, rMouseLast_.y, currentDrawDepth_);
 				j->r() = v;
-				style_j = (prefs.renderStyle() == Prefs::IndividualStyle ? Prefs::StickStyle : prefs.renderStyle());
+				style_j = (prefs.renderStyle() == Prefs::OwnStyle ? Prefs::LineStyle : prefs.renderStyle());
 				j->setStyle(style_j);
 			}
 			else
 			{
 				v = j->r();
-				style_j = (prefs.renderStyle() == Prefs::IndividualStyle ? j->style() : prefs.renderStyle());
+				style_j = (prefs.renderStyle() == Prefs::OwnStyle ? j->style() : prefs.renderStyle());
 			}
 			if (style_j == Prefs::TubeStyle) radius_j = 0.0;
 			else if (style_j == Prefs::ScaledStyle) radius_j = prefs.styleRadius(Prefs::ScaledStyle, j->element()) - primitives_[primitiveSet_].scaledAtomAdjustment(buildElement_);
@@ -189,7 +183,7 @@ void Viewer::renderUserActions(Model* source)
 				case (Prefs::ForceScheme):
 					prefs.colourScale[2].colour(atomClicked_->f().magnitude(), colour_i);
 					break;
-				case (Prefs::CustomScheme):
+				case (Prefs::OwnScheme):
 						atomClicked_->copyColour(colour_i);
 					break;
 				default:

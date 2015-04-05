@@ -91,7 +91,7 @@ void AtenWindow::setAtomStyle(Prefs::DrawStyle ds)
 
 void AtenWindow::on_actionAtomStyleStick_triggered(bool checked)
 {
-	setAtomStyle(Prefs::StickStyle);
+	setAtomStyle(Prefs::LineStyle);
 	postRedisplay();
 }
 
@@ -191,7 +191,7 @@ void AtenWindow::on_actionAtomColourSet_triggered(bool checked)
 	CommandNode::run(Commands::ColourAtoms, "dddd", newcol.redF(), newcol.greenF(), newcol.blueF(), newcol.alphaF());
 	contextAtom_ = NULL;
 	// Set colour scheme menu option automatically if necessary
-	if (prefs.colourScheme() != Prefs::CustomScheme) ui.actionSchemeCustom->trigger();
+	if (prefs.colourScheme() != Prefs::OwnScheme) ui.actionSchemeCustom->trigger();
 	Messenger::print("Colouring scheme changed to 'custom'.");
 	postRedisplay();
 }

@@ -117,8 +117,6 @@ class AtenWindow : public QMainWindow
 	public:
 	// Finalise GUI
 	void finaliseUi();
-	// Set controls to reflect program variables
-	void setControls();
 	// Update and show
 	void updateAndShow();
 
@@ -127,14 +125,10 @@ class AtenWindow : public QMainWindow
 	 * Methods
 	 */
 	public:
-	// Initialise GUI file filters array
-	void initFilters();
 	// Close specified model, saving first if requested
 	bool closeModel(Model* m);
 	// Save before close
 	bool saveBeforeClose();
-	// Return the PID of Aten
-	int pid();
 	// Set interactivity (to full or zero), except for main view camera changes
 	void setInteractive(bool interactive);
 
@@ -187,40 +181,6 @@ class AtenWindow : public QMainWindow
 	void on_actionSelectionExpand_triggered(bool checked);
 	void on_actionSelectionInvert_triggered(bool checked);
 	void on_actionEditQuickCommand_triggered(bool checked);
-
-
-	/*
-	 * View Menu / Actions
-	 */
-	public:
-	void setCartesianView(double x, double y, double z);
-	void setCellView(double x, double y, double z);
-	void setActiveSchemeAction(Prefs::ColouringScheme cs);
-
-	private slots:
-	void on_actionViewReset_triggered(bool checked);
-	void on_actionViewZoomIn_triggered(bool checked);
-	void on_actionViewZoomOut_triggered(bool checked);
-	void on_actionViewPerspective_triggered(bool checked);
-	void on_actionViewOrthographic_triggered(bool checked);
-	void on_actionViewSetCartesianPosX_triggered(bool checked);
-	void on_actionViewSetCartesianPosY_triggered(bool checked);
-	void on_actionViewSetCartesianPosZ_triggered(bool checked);
-	void on_actionViewSetCartesianNegX_triggered(bool checked);
-	void on_actionViewSetCartesianNegY_triggered(bool checked);
-	void on_actionViewSetCartesianNegZ_triggered(bool checked);
-	void on_actionViewSetCellNegX_triggered(bool checked);
-	void on_actionViewSetCellNegY_triggered(bool checked);
-	void on_actionViewSetCellNegZ_triggered(bool checked);
-	void on_actionViewSetCellPosX_triggered(bool checked);
-	void on_actionViewSetCellPosY_triggered(bool checked);
-	void on_actionViewSetCellPosZ_triggered(bool checked);
-	void on_actionSchemeElement_triggered(bool checked);
-	void on_actionSchemeCharge_triggered(bool checked);
-	void on_actionSchemeForce_triggered(bool checked);
-	void on_actionSchemeVelocity_triggered(bool checked);
-	void on_actionSchemeCustom_triggered(bool checked);
-	void on_actionDetectDisplayHBonds_triggered(bool checked);
 
 
 	/*
@@ -358,26 +318,29 @@ class AtenWindow : public QMainWindow
 
 
 	/*
-	 * Main Toolbar (other actions not already account for by menus)
+	 * View Panel
 	 */
 	private slots:
-	void on_actionStyleStick_triggered(bool checked);
-	void on_actionStyleTube_triggered(bool checked);
-	void on_actionStyleSphere_triggered(bool checked);
-	void on_actionStyleScaled_triggered(bool checked);
-	void on_actionStyleIndividual_triggered(bool checked);
-
-	public:
-	void setActiveStyleAction(Prefs::DrawStyle ds);
-
-
-	/*
-	 * Mouse Toolbar Actions
-	 */
-	private slots:
-	void on_actionMouseInteract_triggered(bool checked);
-	void on_actionMouseRotate_triggered(bool checked);
-	void on_actionMouseTranslate_triggered(bool checked);
+	// Control
+	void on_ViewControlResetButton_clicked(bool checked);
+	void on_ViewControlZoomInButton_clicked(bool checked);
+	void on_ViewControlZoomOutButton_clicked(bool checked);
+	void on_ViewControlPerspectiveButton_clicked(bool checked);
+	void on_ViewControlOrthographicButton_clicked(bool checked);
+	// Style
+	void on_ViewStyleLineButton_clicked(bool checked);
+	void on_ViewStyleTubeButton_clicked(bool checked);
+	void on_ViewStyleSphereButton_clicked(bool checked);
+	void on_ViewStyleScaledButton_clicked(bool checked);
+	void on_ViewStyleOwnButton_clicked(bool checked);
+	// Colour
+	void on_ViewSchemeElementButton_clicked(bool checked);
+	void on_ViewSchemeChargeButton_clicked(bool checked);
+	void on_ViewSchemeForceButton_clicked(bool checked);
+	void on_ViewSchemeVelocityButton_clicked(bool checked);
+	void on_ViewSchemeOwnButton_clicked(bool checked);
+	// Options
+	void on_ViewOptionsHBondsCheck_clicked(bool checked);
 
 
 	/*
@@ -399,10 +362,14 @@ class AtenWindow : public QMainWindow
 	private:
 	// List of manually-created QActionGroups
 	Reflist<QActionGroup,int> actionGroups_;
-	// Dummy button for user-action group
-	QToolButton *uaDummyButton_;
-	// User-Action button group
+	// Button group for tool buttons associated to user actions
 	QButtonGroup uaButtons_;
+	// Button group for tool buttons associated to view styles
+	QButtonGroup styleButtons_;
+	// Button group for tool buttons associated to colour schemes
+	QButtonGroup schemeButtons_;
+	// Button group for tool buttons associated to view styles
+	QButtonGroup viewButtons_;
 	// Text labels for model information and UI messages in status bar
 	QLabel *infoLabel1_, *infoLabel2_, *messageLabel_;
 	// Filter set from save model dialog

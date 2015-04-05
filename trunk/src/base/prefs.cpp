@@ -33,7 +33,7 @@ ATEN_END_NAMESPACE
 ATEN_USING_NAMESPACE
 
 // Drawing styles
-const char* DrawStyleKeywords[Prefs::nDrawStyles] = { "Stick", "Tube", "Sphere", "Scaled", "Individual" };
+const char* DrawStyleKeywords[Prefs::nDrawStyles] = { "Line", "Tube", "Sphere", "Scaled", "Own" };
 Prefs::DrawStyle Prefs::drawStyle(QString s, bool reportError)
 {
 	Prefs::DrawStyle ds = (Prefs::DrawStyle) enumSearch("draw style", Prefs::nDrawStyles, DrawStyleKeywords, s, reportError);
@@ -175,13 +175,13 @@ Prefs::HistoryType Prefs::historyType(QString s, bool reportError)
 Prefs::Prefs()
 {
 	// Rendering - Style
-	renderStyle_ = Prefs::StickStyle;
+	renderStyle_ = Prefs::LineStyle;
 	colourScheme_ = Prefs::ElementScheme;
-	atomStyleRadius_[Prefs::StickStyle] = 0.1;	// Only used as a selection radius
+	atomStyleRadius_[Prefs::LineStyle] = 0.1;	// Only used as a selection radius
 	atomStyleRadius_[Prefs::TubeStyle] = 0.15;
 	atomStyleRadius_[Prefs::SphereStyle] = 0.35;
 	atomStyleRadius_[Prefs::ScaledStyle] = 1.0;	// Used as a general scaling factor for all atoms
-	bondStyleRadius_[Prefs::StickStyle] = 0.1;	// Unused
+	bondStyleRadius_[Prefs::LineStyle] = 0.1;	// Unused
 	bondStyleRadius_[Prefs::TubeStyle] = 0.15;
 	bondStyleRadius_[Prefs::SphereStyle] = 0.15;
 	bondStyleRadius_[Prefs::ScaledStyle] = 0.15;
@@ -448,7 +448,7 @@ int Prefs::imagePrimitiveQuality() const
 double Prefs::styleRadius(Prefs::DrawStyle ds, int el) const
 {
 	Prefs::DrawStyle dstyle;
-	renderStyle_ == Prefs::IndividualStyle ? dstyle = ds : dstyle = renderStyle_;
+	renderStyle_ == Prefs::OwnStyle ? dstyle = ds : dstyle = renderStyle_;
 	return (dstyle == Prefs::ScaledStyle) ? (Elements().atomicRadius(el) * atomStyleRadius_[Prefs::ScaledStyle]) : atomStyleRadius_[dstyle];
 }
 
