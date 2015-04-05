@@ -32,7 +32,7 @@ class UserAction
 	public:
 
 	// Actions
-	enum Action { NoAction, SelectAction, SelectBoundAction, SelectElementAction, SelectRadialAction, MeasureDistanceAction, MeasureAngleAction, MeasureTorsionAction, DrawAtomsAction, DrawChainAction, DrawFragmentsAction, DrawTransmuteAction, DrawDeleteAction, DrawProbeAction, DrawBondSingleAction, DrawBondDoubleAction, DrawBondTripleAction, DrawDeleteBondAction, DrawAddHydrogenAction, DrawGrowAtomsAction, RotateXYAction, RotateZAction, TranslateAction, ZoomAction, TransformRotateXYAction, TransformRotateZAction, TransformTranslateAction, ShiftPickVectorAction, RotatePickAxisAction, TransformPickAAction, TransformPickBAction, TransformPickCAction, ConvertSourcePickAAction, ConvertSourcePickBAction, ConvertSourcePickCAction, ConvertTargetPickAAction, ConvertTargetPickBAction, ConvertTargetPickCAction, nUserActions };
+	enum Action { NoAction, SelectAction, SelectBoundAction, SelectElementAction, SelectRadialAction, MeasureDistanceAction, MeasureAngleAction, MeasureTorsionAction, DrawAtomsAction, DrawFragmentsAction, DrawTransmuteAction, DrawDeleteAction, DrawProbeAction, DrawAddHydrogenAction, DrawGrowAtomsAction, RotateXYAction, RotateZAction, TranslateAction, ZoomAction, TransformRotateXYAction, TransformRotateZAction, TransformTranslateAction, ShiftPickVectorAction, RotatePickAxisAction, TransformPickAAction, TransformPickBAction, TransformPickCAction, ConvertSourcePickAAction, ConvertSourcePickBAction, ConvertSourcePickCAction, ConvertTargetPickAAction, ConvertTargetPickBAction, ConvertTargetPickCAction, nUserActions };
 
 	// Action texts
 	const char* name;
@@ -40,12 +40,6 @@ class UserAction
 	const char* shiftModified;
 	const char* ctrlModified;
 	const char* altModified;
-
-	// Action group checks
-	static bool isBuildWidgetAction(UserAction::Action ua);
-	static bool isGeometryWidgetAction(UserAction::Action ua);
-	static bool isPositionWidgetAction(UserAction::Action ua);
-	static bool isTransformWidgetAction(UserAction::Action ua);
 };
 
 extern UserAction UserActions[];

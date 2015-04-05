@@ -46,6 +46,7 @@ Allow message printing in different colours, dependent on type of message (e.g. 
 Note not related to Aten2 - pdens visualising areas of low probability (less than bulk) to see excluded areas?
 Sort out recent files list - not working?
 Implement QOffscreenSurface in order to create model icons etc. (need to call ShareContext before its creation...)
+Octahedral Growing doesn't work.
 
 GUI TODO:
 AddAtom functionality (from old Build menu).

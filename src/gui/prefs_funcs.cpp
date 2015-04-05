@@ -59,11 +59,11 @@ void AtenPrefs::setControls()
 
 	// Set Controls
 	// View Page - Style Tab
-	ui.StickRadiusSpin->setValue(prefs.atomStyleRadius(Prefs::StickStyle));
+	ui.StickRadiusSpin->setValue(prefs.atomStyleRadius(Prefs::LineStyle));
 	ui.TubeRadiusSpin->setValue(prefs.atomStyleRadius(Prefs::TubeStyle));
 	ui.SphereRadiusSpin->setValue(prefs.atomStyleRadius(Prefs::SphereStyle));
 	ui.ScaledRadiusSpin->setValue(prefs.atomStyleRadius(Prefs::ScaledStyle));
-	ui.StickBondRadiusSpin->setValue(prefs.bondStyleRadius(Prefs::StickStyle));
+	ui.StickBondRadiusSpin->setValue(prefs.bondStyleRadius(Prefs::LineStyle));
 	ui.TubeBondRadiusSpin->setValue(prefs.bondStyleRadius(Prefs::TubeStyle));
 	ui.SphereBondRadiusSpin->setValue(prefs.bondStyleRadius(Prefs::SphereStyle));
 	ui.ScaledBondRadiusSpin->setValue(prefs.bondStyleRadius(Prefs::ScaledStyle));
@@ -288,7 +288,7 @@ void AtenPrefs::setRadiusChanged(Prefs::DrawStyle ds, double value, bool foratom
 
 void AtenPrefs::on_StickRadiusSpin_valueChanged(double value)
 {
-	setRadiusChanged(Prefs::StickStyle, value, true);
+	setRadiusChanged(Prefs::LineStyle, value, true);
 }
 
 void AtenPrefs::on_TubeRadiusSpin_valueChanged(double value)
@@ -308,7 +308,7 @@ void AtenPrefs::on_ScaledRadiusSpin_valueChanged(double value)
 
 void AtenPrefs::on_StickBondRadiusSpin_valueChanged(double value)
 {
-	setRadiusChanged(Prefs::StickStyle, value, false);
+	setRadiusChanged(Prefs::LineStyle, value, false);
 }
 
 void AtenPrefs::on_TubeBondRadiusSpin_valueChanged(double value)

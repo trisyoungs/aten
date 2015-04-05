@@ -108,7 +108,6 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 	finaliseUi();
 
 	// Set controls in some windows
-	setControls();
 	fragmentsWidget->refresh();
 	commandWidget->refresh();
 
@@ -232,17 +231,6 @@ bool AtenWindow::saveBeforeClose()
 		if (!closeModel(aten_.models())) return false;
 	}
 	return true;
-}
-
-// Return the PID of Aten
-int AtenWindow::pid()
-{
-#if QT_VERSION >= 0x040400
-	return QApplication::applicationPid();
-#else
-	static int pid = AtenMath::random(50000)+1000;
-	return pid;
-#endif
 }
 
 // Set interactivity (to full or zero), except for main view camera changes
@@ -564,9 +552,20 @@ void AtenWindow::on_actionAboutQt_triggered(bool checked)
 // Update any controls related to Prefs values etc.
 void AtenWindow::updateControls()
 {
-	// ATEN2 TODO Remove this?
+	// Menu items
 	ui.actionManualSwapBuffers->setChecked(prefs.manualSwapBuffers());
 	ui.actionDetectDisplayHBonds->setChecked(prefs.drawHydrogenBonds());
+
+	// Style
+	QAbstractButton* button = styleButtons_.button(prefs.renderStyle());
+	if (button) button->setChecked(true);
+
+	// Colour scheme
+	button = schemeButtons_.button(prefs.colourScheme());
+	if (button) button->setChecked(true);
+
+	// View type
+	prefs.hasPerspective() ? ui.ViewControlPerspectiveButton->setChecked(true) : ui.ViewControlOrthographicButton->setChecked(true);
 }
 
 // Update undo/redo actions in Edit menu

@@ -254,7 +254,7 @@ void PrimitiveSet::recreatePrimitives()
 	nStacks = std::max(3, (int) (currentQuality_*0.75));
 	nSlices = std::max(3, (int) (currentQuality_*1.5));
 	
-	// Atom Styles (Prefs::StickStyle, Prefs::TubeStyle, and Prefs::SphereStyle)
+	// Atom Styles (Prefs::LineStyle, Prefs::TubeStyle, and Prefs::SphereStyle)
 	atom_.initialise(GL_TRIANGLES, false);
 	atom_.plotSphere(1.0, nStacks, nSlices);
 	selectedAtom_.initialise(GL_TRIANGLES, false);

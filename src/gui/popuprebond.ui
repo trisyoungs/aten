@@ -275,6 +275,9 @@
        <height>56</height>
       </size>
      </property>
+     <property name="toolTip">
+      <string>Tolerance for automatic rebonding (larger number means more bonds will be formed)</string>
+     </property>
      <property name="minimum">
       <number>500</number>
      </property>

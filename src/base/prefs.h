@@ -72,11 +72,11 @@ class Prefs
 	static const char* densityUnit(DensityUnit du);
 	static DensityUnit densityUnit(QString s, bool reportError = false);
 	// Drawing style enum
-	enum DrawStyle { StickStyle, TubeStyle, SphereStyle, ScaledStyle, IndividualStyle, nDrawStyles };
+	enum DrawStyle { LineStyle, TubeStyle, SphereStyle, ScaledStyle, OwnStyle, nDrawStyles };
 	static DrawStyle drawStyle(QString s, bool reportError = false);
 	static const char* drawStyle(DrawStyle);	
 	// Atom colouring scheme
-	enum ColouringScheme { ChargeScheme, ElementScheme, ForceScheme, VelocityScheme, CustomScheme, nColouringSchemes };
+	enum ColouringScheme { ChargeScheme, ElementScheme, ForceScheme, VelocityScheme, OwnScheme, nColouringSchemes };
 	static ColouringScheme colouringScheme(QString s, bool reportError = false);
 	static const char* colouringScheme(ColouringScheme cs);
 	// Drawing guide geometry

@@ -54,6 +54,9 @@
        <height>56</height>
       </size>
      </property>
+     <property name="toolTip">
+      <string>Transmute all atoms in the current selection</string>
+     </property>
      <property name="text">
       <string>Selection</string>
      </property>

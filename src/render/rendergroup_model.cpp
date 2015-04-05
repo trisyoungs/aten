@@ -95,21 +95,21 @@ void RenderGroup::createBond(PrimitiveSet& primitiveSet, Matrix A, Vec3<double> 
 	// Draw first bond half
 	switch (style_i)
 	{
-		case (Prefs::StickStyle):
+		case (Prefs::LineStyle):
 			// First vertex is at 0,0,0 (i.e. translation elements of A). Second is vij * (0,0,1)
 			stickpos = A * Vec3<double>(0.0,0.0,1.0);
 			// Determine how many sticks to draw (bond multiplicity : aromatic still counts as one bond)
 			switch (bt)
 			{
 				case (Bond::Double):
-					dx = A.rotateVector(prefs.atomStyleRadius(Prefs::StickStyle)*0.5,0.0,0.0);
+					dx = A.rotateVector(prefs.atomStyleRadius(Prefs::LineStyle)*0.5,0.0,0.0);
 					iLinePrimitives.defineVertex(A[12]+dx.x, A[13]+dx.y, A[14]+dx.z, 0.0,0.0,1.0, colour_i);
 					iLinePrimitives.defineVertex(stickpos.x+dx.x, stickpos.y+dx.y, stickpos.z+dx.z, 0.0,0.0,1.0, colour_i);
 					iLinePrimitives.defineVertex(A[12]-dx.x, A[13]-dx.y, A[14]-dx.z, 0.0,0.0,1.0, colour_i);
 					iLinePrimitives.defineVertex(stickpos.x-dx.x, stickpos.y-dx.y, stickpos.z-dx.z, 0.0,0.0,1.0, colour_i);
 					break;
 				case (Bond::Triple):
-					dx = A.rotateVector(prefs.atomStyleRadius(Prefs::StickStyle),0.0,0.0);
+					dx = A.rotateVector(prefs.atomStyleRadius(Prefs::LineStyle),0.0,0.0);
 					iLinePrimitives.defineVertex(A[12], A[13], A[14], 0.0,0.0,1.0, colour_i);
 					iLinePrimitives.defineVertex(stickpos.x, stickpos.y, stickpos.z, 0.0,0.0,1.0, colour_i);
 					iLinePrimitives.defineVertex(A[12]+dx.x, A[13]+dx.y, A[14]+dx.z, 0.0,0.0,1.0, colour_i);
@@ -158,20 +158,20 @@ void RenderGroup::createBond(PrimitiveSet& primitiveSet, Matrix A, Vec3<double> 
 	// Draw second bond half
 	switch (style_j)
 	{
-		case (Prefs::StickStyle):
+		case (Prefs::LineStyle):
 			// First vertex is *still* at 0,0,0 (i.e. translation elements of A). Second is vij * (0,0,1)
 			stickpos = B * Vec3<double>(0.0,0.0,1.0);
 			switch (bt)
 			{
 				case (Bond::Double):
-					dx = B.rotateVector(prefs.atomStyleRadius(Prefs::StickStyle)*0.5,0.0,0.0);
+					dx = B.rotateVector(prefs.atomStyleRadius(Prefs::LineStyle)*0.5,0.0,0.0);
 					jLinePrimitives.defineVertex(B[12]+dx.x, B[13]+dx.y, B[14]+dx.z, 0.0,0.0,1.0, colour_j);
 					jLinePrimitives.defineVertex(stickpos.x+dx.x, stickpos.y+dx.y, stickpos.z+dx.z, 0.0,0.0,1.0, colour_j);
 					jLinePrimitives.defineVertex(B[12]-dx.x, B[13]-dx.y, B[14]-dx.z, 0.0,0.0,1.0, colour_j);
 					jLinePrimitives.defineVertex(stickpos.x-dx.x, stickpos.y-dx.y, stickpos.z-dx.z, 0.0,0.0,1.0, colour_j);
 					break;
 				case (Bond::Triple):
-					dx = B.rotateVector(prefs.atomStyleRadius(Prefs::StickStyle),0.0,0.0);
+					dx = B.rotateVector(prefs.atomStyleRadius(Prefs::LineStyle),0.0,0.0);
 					jLinePrimitives.defineVertex(B[12], B[13], B[14], 0.0,0.0,1.0, colour_j);
 					jLinePrimitives.defineVertex(stickpos.x, stickpos.y, stickpos.z, 0.0,0.0,1.0, colour_j);
 					jLinePrimitives.defineVertex(B[12]+dx.x, B[13]+dx.y, B[14]+dx.z, 0.0,0.0,1.0, colour_j);
@@ -278,7 +278,7 @@ void RenderGroup::createAtomsAndBonds(PrimitiveSet& primitiveSet, Model* source,
 			case (Prefs::ForceScheme):
 				prefs.colourScale[2].colour(i->f().magnitude(), colour_i);
 				break;
-			case (Prefs::CustomScheme):
+			case (Prefs::OwnScheme):
 				i->copyColour(colour_i);
 				break;
 			default:
@@ -289,9 +289,9 @@ void RenderGroup::createAtomsAndBonds(PrimitiveSet& primitiveSet, Model* source,
 		alpha_i = colour_i[3];
 		
 		// Get atom style and render associated object
-		style_i = (globalstyle == Prefs::IndividualStyle ? i->style() : globalstyle);
+		style_i = (globalstyle == Prefs::OwnStyle ? i->style() : globalstyle);
 		
-		if (style_i == Prefs::StickStyle)
+		if (style_i == Prefs::LineStyle)
 		{
 			// Only need to draw something if the atom has no bonds
 			if (i->nBonds() == 0)
@@ -347,7 +347,7 @@ void RenderGroup::createAtomsAndBonds(PrimitiveSet& primitiveSet, Model* source,
 				case (Prefs::ForceScheme):
 					prefs.colourScale[2].colour(j->f().magnitude(), colour_j);
 					break;
-				case (Prefs::CustomScheme):
+				case (Prefs::OwnScheme):
 					j->copyColour(colour_j);
 					break;
 				default:
@@ -355,7 +355,7 @@ void RenderGroup::createAtomsAndBonds(PrimitiveSet& primitiveSet, Model* source,
 			}
 			
 			// Get atom style and radius
-			style_j = (globalstyle == Prefs::IndividualStyle ? j->style() : globalstyle);
+			style_j = (globalstyle == Prefs::OwnStyle ? j->style() : globalstyle);
 			if (style_j <= Prefs::TubeStyle) radius_j = 0.0;
 			else if (style_j == Prefs::ScaledStyle) radius_j = prefs.styleRadius(Prefs::ScaledStyle, j->element()) - primitiveSet.scaledAtomAdjustment(j->element());
 			else radius_j = prefs.styleRadius(style_j, j->element()) - primitiveSet.sphereAtomAdjustment();
@@ -446,12 +446,12 @@ void RenderGroup::createAtomsAndBonds(PrimitiveSet& primitiveSet, Model* source,
 					// Render ring
 					if (prefs.renderDashedAromatics())
 					{
-						if (globalstyle == Prefs::StickStyle) addTriangles(primitiveSet.segmentedLineRing(), atomTransform, colour_i);
+						if (globalstyle == Prefs::LineStyle) addTriangles(primitiveSet.segmentedLineRing(), atomTransform, colour_i);
 						else addTriangles(primitiveSet.segmentedTubeRing(), atomTransform, colour_i);
 					}
 					else
 					{
-						if (globalstyle == Prefs::StickStyle) addTriangles(primitiveSet.lineRing(), atomTransform, colour_i);
+						if (globalstyle == Prefs::LineStyle) addTriangles(primitiveSet.lineRing(), atomTransform, colour_i);
 						else addTriangles(primitiveSet.tubeRing(), atomTransform, colour_i);
 					}
 
@@ -484,7 +484,7 @@ void RenderGroup::createAtomsAndBonds(PrimitiveSet& primitiveSet, Model* source,
 
 			// Grab atom coordinate and style
 			pos = i->r();
-			style_i = (globalstyle == Prefs::IndividualStyle ? i->style() : globalstyle);
+			style_i = (globalstyle == Prefs::OwnStyle ? i->style() : globalstyle);
 			if (style_i <= Prefs::TubeStyle) radius_i = 0.0;
 			else if (style_i == Prefs::ScaledStyle) radius_i = prefs.styleRadius(Prefs::ScaledStyle, i->element()) - primitiveSet.scaledAtomAdjustment(i->element());
 			else radius_i = prefs.styleRadius(style_i, i->element()) - primitiveSet.sphereAtomAdjustment();
@@ -531,7 +531,7 @@ void RenderGroup::createAtomsAndBonds(PrimitiveSet& primitiveSet, Model* source,
 				// If we get here then its a hydrogen bond.
 				// First, determine the 'drawable' region between the two atoms i,j
 				// Adjust for atom radii in current style
-				style_j = (globalstyle == Prefs::IndividualStyle ? j->style() : globalstyle);
+				style_j = (globalstyle == Prefs::OwnStyle ? j->style() : globalstyle);
 				if (style_j <= Prefs::TubeStyle) radius_j = 0.0;
 				else if (style_j == Prefs::ScaledStyle) radius_j = prefs.styleRadius(Prefs::ScaledStyle, j->element()) - primitiveSet.scaledAtomAdjustment(j->element());
 				else radius_j = prefs.styleRadius(style_j, j->element()) - primitiveSet.sphereAtomAdjustment();

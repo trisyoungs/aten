@@ -48,6 +48,9 @@
        <height>56</height>
       </size>
      </property>
+     <property name="toolTip">
+      <string>Add hydrogens to all atoms in current selection</string>
+     </property>
      <property name="text">
       <string>Selection</string>
      </property>
@@ -88,6 +91,9 @@
        <width>56</width>
        <height>56</height>
       </size>
+     </property>
+     <property name="toolTip">
+      <string>Add hydrogens to all atoms in model</string>
      </property>
      <property name="text">
       <string>Model</string>

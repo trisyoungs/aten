@@ -287,8 +287,5 @@ void PositionWidget::on_RepositionDefineTargetButton_clicked(bool on)
 
 void PositionWidget::closeEvent(QCloseEvent* event)
 {
-	// Return to select mode if one of the modes in this window is still selected
-	if (UserAction::isPositionWidgetAction(parent_.ui.MainView->selectedMode())) parent_.ui.MainView->cancelCurrentMode();
-
 	event->accept();
 }

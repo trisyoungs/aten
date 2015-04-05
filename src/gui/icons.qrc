@@ -11,6 +11,16 @@
     <file>icons/arrow_up.svg</file>
     <file>icons/arrow_upline.svg</file>
   </qresource>
+  <qresource prefix="atomgeometry">
+    <file>icons/atomgeometry_tetrahedral.png</file>
+    <file>icons/atomgeometry_linear.png</file>
+    <file>icons/atomgeometry_octahedral.png</file>
+    <file>icons/atomgeometry_sqplanar.png</file>
+    <file>icons/atomgeometry_tetrahedral.png</file>
+    <file>icons/atomgeometry_trigbipy.png</file>
+    <file>icons/atomgeometry_trigonal.png</file>
+    <file>icons/atomgeometry_tshape.png</file>
+  </qresource>
   <qresource prefix="/basic">
     <file>icons/basic_pointer.svg</file>
     <file>icons/basic_menuarrow.svg</file>

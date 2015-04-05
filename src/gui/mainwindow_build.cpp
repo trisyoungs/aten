@@ -1,5 +1,5 @@
 /*
-	*** MainWindow - Build Panel Functions
+	*** Main Window - Build Panel Functions
 	*** src/gui/mainwindow_build.cpp
 	Copyright T. Youngs 2007-2015
 

@@ -73,10 +73,6 @@ void Viewer::setSelectedMode(UserAction::Action ua, int atomsToPick, void (*call
 		case (UserAction::MeasureDistanceAction):
 		case (UserAction::MeasureAngleAction):
 		case (UserAction::MeasureTorsionAction):
-		case (UserAction::DrawBondSingleAction):
-		case (UserAction::DrawBondDoubleAction):
-		case (UserAction::DrawBondTripleAction):
-		case (UserAction::DrawDeleteBondAction):
 			pickEnabled_ = true;
 			pickedAtoms_.clear();
 			break;
@@ -101,14 +97,6 @@ void Viewer::setSelectedMode(UserAction::Action ua, int atomsToPick, void (*call
 void Viewer::useSelectedMode()
 {
 	activeMode_ = selectedMode_;
-}
-
-// Cancel any current mode and return to select
-void Viewer::cancelCurrentMode()
-{
-	// If the previous mode was DrawFragment, flag a complete redraw of the current model
-	if (selectedMode_ == UserAction::DrawFragmentsAction) aten_->currentModel()->logChange(Log::Style);
-	atenWindow_->ui.actionSelectAtoms->trigger();
 }
 
 // Return the currently selected mode
@@ -209,6 +197,7 @@ void Viewer::beginMode(Prefs::MouseButton button)
 			}
 		}
 	}
+
 	// Now prepare for the action
 	if (activeMode_ == UserAction::NoAction)
 	{
@@ -222,11 +211,11 @@ void Viewer::beginMode(Prefs::MouseButton button)
 				// Some modes require actions to be done when the button is first depressed
 				switch (activeMode_)
 				{
-					case (UserAction::DrawChainAction):
+					case (UserAction::DrawAtomsAction):
 						// If there is currently no atom under the mouse, draw one...
 						if (atomClicked_ == NULL)
 						{
-							source->beginUndoState("Draw Chain");
+							source->beginUndoState("Draw Atoms");
 							currentDrawDepth_ = prefs.drawDepth();
 							i = source->addAtom(buildElement_, source->screenToModel(rMouseDown_.x, rMouseDown_.y, currentDrawDepth_));
 							source->endUndoState();
@@ -389,20 +378,8 @@ void Viewer::endMode(Prefs::MouseButton button)
 			pickedAtoms_.clear();
 			atenWindow_->updateWidgets(AtenWindow::CanvasTarget);
 			break;
-		// Draw single atom
+		// Draw atoms
 		case (UserAction::DrawAtomsAction):
-			// Make sure we don't draw on top of an existing atom
-			if (atomClicked_ == NULL)
-			{
-				source->beginUndoState("Draw Atom");
-				currentDrawDepth_ = prefs.drawDepth();
-				source->addAtom(buildElement_, source->screenToModel(rMouseDown_.x, rMouseDown_.y, currentDrawDepth_));
-				source->endUndoState();
-			}
-			atenWindow_->updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
-			break;
-		// Draw chains of atoms
-		case (UserAction::DrawChainAction):
 			// If there is no atom under the mouse we draw one
 			i = source->atomOnScreen(rMouseUp_.x, contextHeight_-rMouseUp_.y);
 			if ((atomClicked_ == i) && (i != NULL)) break;
@@ -481,49 +458,49 @@ void Viewer::endMode(Prefs::MouseButton button)
 			if (atomClicked_ != NULL) atomClicked_->print();
 			break;
 		// Bonding
-		case (UserAction::DrawBondSingleAction):
-		case (UserAction::DrawBondDoubleAction):
-		case (UserAction::DrawBondTripleAction):
-			if (pickedAtoms_.nItems() == 0) break;
-			// Must be two atoms in subselection to continue, or we must be hovering over a different atom (which we'll add to the list)
-			if (pickedAtoms_.nItems() == 1)
-			{
-				i = source->atomOnScreen(rMouseUp_.x, contextHeight_-rMouseUp_.y);
-				if (i == NULL) break;
-				if (pickedAtoms_.last()->item != i) pickedAtoms_.add(i);
-			}
-			if (pickedAtoms_.nItems() != 2) break;
-			pickedAtoms_.fillArray(2,atoms);
-			b = atoms[0]->findBond(atoms[1]);
-			if (b == NULL)
-			{
-				source->beginUndoState("Bond Atoms");
-				source->bondAtoms(atoms[0],atoms[1],Bond::BondType(endingMode-UserAction::DrawBondSingleAction+1));
-				source->endUndoState();
-			}
-			else
-			{
-				source->beginUndoState("Change Bond");
-				source->changeBond(b,Bond::BondType(endingMode-UserAction::DrawBondSingleAction+1));
-				source->endUndoState();
-			}
-			pickedAtoms_.clear();
-			atenWindow_->updateWidgets(AtenWindow::CanvasTarget);
-			break;
+// 		case (UserAction::DrawBondSingleAction):
+// 		case (UserAction::DrawBondDoubleAction):
+// 		case (UserAction::DrawBondTripleAction):
+// 			if (pickedAtoms_.nItems() == 0) break;
+// 			// Must be two atoms in subselection to continue, or we must be hovering over a different atom (which we'll add to the list)
+// 			if (pickedAtoms_.nItems() == 1)
+// 			{
+// 				i = source->atomOnScreen(rMouseUp_.x, contextHeight_-rMouseUp_.y);
+// 				if (i == NULL) break;
+// 				if (pickedAtoms_.last()->item != i) pickedAtoms_.add(i);
+// 			}
+// 			if (pickedAtoms_.nItems() != 2) break;
+// 			pickedAtoms_.fillArray(2,atoms);
+// 			b = atoms[0]->findBond(atoms[1]);
+// 			if (b == NULL)
+// 			{
+// 				source->beginUndoState("Bond Atoms");
+// 				source->bondAtoms(atoms[0],atoms[1],Bond::BondType(endingMode-UserAction::DrawBondSingleAction+1));
+// 				source->endUndoState();
+// 			}
+// 			else
+// 			{
+// 				source->beginUndoState("Change Bond");
+// 				source->changeBond(b,Bond::BondType(endingMode-UserAction::DrawBondSingleAction+1));
+// 				source->endUndoState();
+// 			}
+// 			pickedAtoms_.clear();
+// 			atenWindow_->updateWidgets(AtenWindow::CanvasTarget);
+// 			break;
 		// Delete bond
-		case (UserAction::DrawDeleteBondAction):
-			// Must be two atoms in subselection to continue
-			if (pickedAtoms_.nItems() != 2) break;
-			pickedAtoms_.fillArray(2,atoms);
-			if (atoms[0]->findBond(atoms[1]) != NULL)
-			{
-				source->beginUndoState("Delete Bond");
-				source->unbondAtoms(atoms[0],atoms[1]);
-				source->endUndoState();
-			}
-			pickedAtoms_.clear();
-			atenWindow_->updateWidgets(AtenWindow::CanvasTarget);
-			break;
+// 		case (UserAction::DrawDeleteBondAction):
+// 			// Must be two atoms in subselection to continue
+// 			if (pickedAtoms_.nItems() != 2) break;
+// 			pickedAtoms_.fillArray(2,atoms);
+// 			if (atoms[0]->findBond(atoms[1]) != NULL)
+// 			{
+// 				source->beginUndoState("Delete Bond");
+// 				source->unbondAtoms(atoms[0],atoms[1]);
+// 				source->endUndoState();
+// 			}
+// 			pickedAtoms_.clear();
+// 			atenWindow_->updateWidgets(AtenWindow::CanvasTarget);
+// 			break;
 		// Misc Building
 		case (UserAction::DrawAddHydrogenAction):
 			if (atomClicked_ != NULL)
