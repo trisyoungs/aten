@@ -34,8 +34,8 @@ class WrapInt
 	WrapInt(int minvalue = 0, int maxvalue = 0);
 
 	/*
-	// Data
-	*/
+	 * Data
+	 */
 	private:
 	// Minimum integer value
 	int minimum_;
@@ -54,8 +54,8 @@ class WrapInt
 
 
 	/*
-	// Operators
-	*/
+	 * Operators
+	 */
 	public:
 	// Assignment
 	void operator=(int i);

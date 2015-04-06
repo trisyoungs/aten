@@ -43,8 +43,8 @@ class VectorVariable : public Variable
 
 
 	/*
-	// Set / Get
-	*/
+	 * Set / Get
+	 */
 	public:
 	// Return value of node
 	bool execute(ReturnValue& rv);
@@ -55,8 +55,8 @@ class VectorVariable : public Variable
 
 
 	/*
-	// Variable Data
-	*/
+	 * Variable Data
+	 */
 	private:
 	// Recreate data (for constant vectors) from TreeNode parts
 	bool reCreate();
@@ -69,8 +69,8 @@ class VectorVariable : public Variable
 
 
 	/*
-	// Access Data
-	*/
+	 * Access Data
+	 */
 	public:
 	// Accessor list
 	enum Accessors { Magnitude, X, Y, Z, nAccessors };
@@ -102,8 +102,8 @@ class VectorArrayVariable : public Variable
 
 
 	/*
-	// Set / Get
-	*/
+	 * Set / Get
+	 */
 	public:
 	// Return value of node
 	bool execute(ReturnValue& rv);
@@ -118,8 +118,8 @@ class VectorArrayVariable : public Variable
 
 
 	/*
-	// Variable Data
-	*/
+	 * Variable Data
+	 */
 	private:
 	// TreeNode determining array size on initialisation
 	TreeNode* arraySizeExpression_;
@@ -132,8 +132,8 @@ class VectorArrayVariable : public Variable
 
 
 	/*
-	// Inherited Virtuals
-	*/
+	 * Inherited Virtuals
+	 */
 	public:
 	// Initialise node (take over from Variable::initialise())
 	bool initialise();

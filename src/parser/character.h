@@ -39,8 +39,8 @@ class StringVariable : public Variable
 
 
 	/*
-	// Set / Get
-	*/
+	 * Set / Get
+	 */
 	public:
 	// Return value of node
 	bool execute(ReturnValue& rv);
@@ -51,8 +51,8 @@ class StringVariable : public Variable
 
 
 	/*
-	// Variable Data
-	*/
+	 * Variable Data
+	 */
 	private:
 	// Character data
 	QString stringData_;
@@ -72,8 +72,8 @@ class StringArrayVariable : public Variable
 
 
 	/*
-	// Set / Get
-	*/
+	 * Set / Get
+	 */
 	public:
 	// Return value of node
 	bool execute(ReturnValue& rv);
@@ -88,8 +88,8 @@ class StringArrayVariable : public Variable
 
 
 	/*
-	// Variable Data
-	*/
+	 * Variable Data
+	 */
 	private:
 	// TreeNode determining array size on initialisation
 	TreeNode* arraySizeExpression_;
@@ -104,8 +104,8 @@ class StringArrayVariable : public Variable
 
 
 	/*
-	// Inherited Virtuals
-	*/
+	 * Inherited Virtuals
+	 */
 	public:
 	// Initialise node (take over from Variable::initialise())
 	bool initialise();

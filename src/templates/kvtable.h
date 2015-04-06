@@ -37,8 +37,8 @@ template <class K, class V> class KVData
 	KVData<K,V> *prev, *next;
 
 	/*
-	// Data
-	*/
+	 * Data
+	 */
 	private:
 	// Key
 	K key_;
@@ -102,8 +102,8 @@ template <class K, class V> class KVTable
 	KVTable<K,V>();
 
 	/*
-	// Data
-	*/
+	 * Data
+	 */
 	private:
 	// Pair data
 	List< KVData<K,V> > pairs_;

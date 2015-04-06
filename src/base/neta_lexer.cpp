@@ -65,11 +65,11 @@ int NetaParser::lex()
 	tokenStart_ = stringPos_-1;
 
 	/*
-	// Integer number
-	*/
+	 * Integer number
+	 */
 	/*
-	// Number Detection - Either '-', '.' or a digit begins a number
-	*/
+	 * Number Detection - Either '-', '.' or a digit begins a number
+	 */
 	bool nextCharIsPossibleDigit = (isdigit(peekChar()) || (peekChar() == '.'));
 	if ((c == '.') || isdigit(c) || ((c == '-') && nextCharIsPossibleDigit))
 	{
@@ -133,8 +133,8 @@ int NetaParser::lex()
 	}
 
 	/*
-	// Alphanumeric-token : Element symbol, NETA keyword, value, expander, or geometry
-	*/
+	 * Alphanumeric-token : Element symbol, NETA keyword, value, expander, or geometry
+	 */
 	if (isalpha (c))
 	{
 		do

@@ -38,8 +38,8 @@ class Rdf : public Calculable
 	~Rdf();
 
 	/*
-	// Sites
-	*/
+	 * Sites
+	 */
 	private:
 	// Centres involved in RDF
 	Site* sites_[2];
@@ -51,8 +51,8 @@ class Rdf : public Calculable
 	Site* site(int);
 
 	/*
-	// Methods
-	*/
+	 * Methods
+	 */
 	public:
 	// Initialise structure
 	bool initialise();
@@ -64,8 +64,8 @@ class Rdf : public Calculable
 	bool save();
 
 	/*
-	// Data Description
-	*/
+	 * Data Description
+	 */
 	private:
 	// Number of bins in each dimension
 	int nBins_;
@@ -85,8 +85,8 @@ class Rdf : public Calculable
 	int nBins();
 
 	/*
-	// Data
-	*/
+	 * Data
+	 */
 	private:
 	// Distribution function
 	double* data_;

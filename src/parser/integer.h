@@ -37,8 +37,8 @@ class IntegerVariable : public Variable
 	~IntegerVariable();
 
 	/*
-	// Set / Get
-	*/
+	 * Set / Get
+	 */
 	public:
 	// Return value of node
 	bool execute(ReturnValue& rv);
@@ -48,8 +48,8 @@ class IntegerVariable : public Variable
 	void reset();
 
 	/*
-	// Variable Data
-	*/
+	 * Variable Data
+	 */
 	private:
 	// Integer data
 	int integerData_;
@@ -66,8 +66,8 @@ class IntegerArrayVariable : public ArrayVariable
 	~IntegerArrayVariable();
 
 	/*
-	// Set / Get
-	*/
+	 * Set / Get
+	 */
 	public:
 	// Return value of node
 	bool execute(ReturnValue& rv);
@@ -81,8 +81,8 @@ class IntegerArrayVariable : public ArrayVariable
 	void reset();
 
 	/*
-	// Variable Data
-	*/
+	 * Variable Data
+	 */
 	private:
 	// Integer data
 	int *integerArrayData_;
@@ -94,8 +94,8 @@ class IntegerArrayVariable : public ArrayVariable
 	int *arrayData();
 
 	/*
-	// Inherited Virtuals
-	*/
+	 * Inherited Virtuals
+	 */
 	public:
 	// Initialise node (take over from Variable::initialise())
 	bool initialise();

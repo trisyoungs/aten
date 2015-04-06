@@ -61,8 +61,8 @@ class AtomListWidget : public QDockWidget
 
 
 	/*
-	// Local variables
-	*/
+	 * Local variables
+	 */
 	private:
 	// Custom item delegates for each column
 	QItemDelegate* AtomListItemDelegates[AtomListWidget::nAtomItems];
@@ -91,8 +91,8 @@ class AtomListWidget : public QDockWidget
 
 
 	/*
-	// Window Functions
-	*/
+	 * Window Functions
+	 */
 	public:
 	void showWidget();
 	void refresh();

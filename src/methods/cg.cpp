@@ -63,8 +63,8 @@ void MethodCg::minimise(Model* srcmodel, double econ, double fcon)
 	bool linedone, converged, success;
 
 	/*
-	// Prepare the calculation
-	*/
+	 * Prepare the calculation
+	 */
 	// First, create expression for the current model and assign charges
 	if ((!srcmodel->isExpressionValid()) || (srcmodel->nAtoms() == 0))
 	{

@@ -39,8 +39,8 @@ class BasisShellVariable : public PointerVariable
 	~BasisShellVariable();
 
 	/*
-	// Access Data
-	*/
+	 * Access Data
+	 */
 	public:
 	// Accessor list
         enum Accessors { AtomId, NPrimitives, Primitives, Type, nAccessors };
@@ -72,8 +72,8 @@ class BasisShellArrayVariable : public PointerArrayVariable
 	BasisShellArrayVariable(TreeNode* sizeexpr, bool constant = false);
 
 	/*
-	// Inherited Virtuals
-	*/
+	 * Inherited Virtuals
+	 */
 	public:
 	// Search variable access list for provided accessor
 	StepNode* findAccessor(QString name, TreeNode* arrayIndex, TreeNode* argList = NULL);

@@ -50,8 +50,8 @@ class LineParser
 
 
 	/*
-	// Source line/file and read options
-	*/
+	 * Source line/file and read options
+	 */
 	private:
 	// Current input filename (if any)
 	QString inputFilename_;
@@ -112,8 +112,8 @@ class LineParser
 
 
 	/*
-	// Read/Write Routines
-	*/
+	 * Read/Write Routines
+	 */
 	private:
 	// Whether output is cached or direct
 	bool directOutput_;
@@ -162,8 +162,8 @@ class LineParser
 
 
 	/*
-	// Argument Data
-	*/
+	 * Argument Data
+	 */
 	private:
 	// Parsed arguments
 	QStringList arguments_;

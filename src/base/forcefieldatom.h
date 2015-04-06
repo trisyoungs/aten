@@ -44,8 +44,8 @@ class ForcefieldAtom : public ListItem<ForcefieldAtom>
 
 
 	/*
-	// Properties
-	*/
+	 * Properties
+	 */
 	private:
 	// Type of Van der Waals interactions in Forcefield
 	VdwFunctions::VdwFunction vdwForm_;
@@ -76,8 +76,8 @@ class ForcefieldAtom : public ListItem<ForcefieldAtom>
 
 
 	/*
-	// Set / Get
-	*/
+	 * Set / Get
+	 */
 	public:
 	// Set parent forcefield
 	void setParent(Forcefield* ff);

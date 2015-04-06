@@ -41,8 +41,8 @@ class Calculable : public ListItem<Calculable>
 
 
 	/*
-	// Identity
-	*/
+	 * Identity
+	 */
 	protected:
 	// Identifiable name of the quantity
 	QString name_;
@@ -60,8 +60,8 @@ class Calculable : public ListItem<Calculable>
 	QString filename() const;
 
 	/*
-	// Methods
-	*/
+	 * Methods
+	 */
 	public:
 	// Accumulate quantity data from supplied config
 	virtual void accumulate(Model* sourceModel)=0;

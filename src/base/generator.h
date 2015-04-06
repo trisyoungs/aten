@@ -36,8 +36,8 @@ class Generator : public ListItem<Generator>
 	Generator();
 
 	/*
-	// Rotation Matrix and Translation Vector
-	*/
+	 * Rotation Matrix and Translation Vector
+	 */
 	private:
 	// Generator text (if any)
 	QString name_;

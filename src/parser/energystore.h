@@ -40,8 +40,8 @@ class EnergyStoreVariable : public PointerVariable
 
 
 	/*
-	// Access Data
-	*/
+	 * Access Data
+	 */
 	public:
 	// Accessor list
         enum Accessors { Angle, Bond, Electrostatic, Torsion, Total, UreyBradley, Vdw, nAccessors };
@@ -74,8 +74,8 @@ class EnergyStoreArrayVariable : public PointerArrayVariable
 
 
 	/*
-	// Inherited Virtuals
-	*/
+	 * Inherited Virtuals
+	 */
 	public:
 	// Search variable access list for provided accessor
 	StepNode* findAccessor(QString name, TreeNode* arrayIndex, TreeNode* argList = NULL);

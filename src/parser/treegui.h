@@ -121,8 +121,8 @@ class TreeGuiWidget : public ListItem<TreeGuiWidget>
 
 
 	/*
-	// Data
-	*/
+	 * Data
+	 */
 	private:
 	// Type of widget
 	WidgetType type_;
@@ -149,8 +149,8 @@ class TreeGuiWidget : public ListItem<TreeGuiWidget>
 	
 	
 	/*
-	// Properties / Limits
-	*/
+	 * Properties / Limits
+	 */
 	private:
 	// Integer minimum, maximum, and value (ComboWidget, IntegerSpinWidget, CheckWidget)
 	int minimumI_, maximumI_, valueI_;
@@ -219,8 +219,8 @@ class TreeGuiWidget : public ListItem<TreeGuiWidget>
 
 
 	/*
-	// Layout / Grouping
-	*/
+	 * Layout / Grouping
+	 */
 	private:
 	// List of buttons contained within this widget (if ButtonGroupWidget)
 	Reflist<TreeGuiWidget,int> buttonList_;
@@ -263,8 +263,8 @@ class TreeGuiWidget : public ListItem<TreeGuiWidget>
 
 
 	/*
-	// Value Access and Events
-	*/
+	 * Value Access and Events
+	 */
 	private:
 	// List of events associated to this widget
 	List<TreeGuiWidgetEvent> events_;
@@ -294,8 +294,8 @@ class TreeGui : public TreeGuiWidget, public ListItem<TreeGui>
 	
 
 	/*
-	// Widgets
-	*/
+	 * Widgets
+	 */
 	private:
 	// List of user-defined widgets for custom dialog / filter options
 	List<TreeGuiWidget> widgets_;
@@ -318,8 +318,8 @@ class TreeGui : public TreeGuiWidget, public ListItem<TreeGui>
 
 
 	/*
-	// Widget Value Set / Get
-	*/
+	 * Widget Value Set / Get
+	 */
 	private:
 	// List available widget names, types, and values
 	void listWidgets();
@@ -342,8 +342,8 @@ class TreeGui : public TreeGuiWidget, public ListItem<TreeGui>
 
 
 	/*
-	// Dialog Execution
-	*/
+	 * Dialog Execution
+	 */
 	public:
 	// Show Qt dialog (if it exists)
 	bool execute();

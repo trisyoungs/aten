@@ -46,16 +46,16 @@ class UndoEvent : public ListItem<UndoEvent>
 
 
 	/*
-	// Data
-	*/
+	 * Data
+	 */
 	protected:
 	// Direction of change
 	EventDirection direction_;
 
 
 	/*
-	// Actions
-	*/
+	 * Actions
+	 */
 	public:
 	// Undo stored change
 	virtual void undo(Model* m)=0;

@@ -33,8 +33,8 @@ template <class T, class D> class PointerPair : public ListItem< PointerPair<T,D
 	~PointerPair();
 	
 	/*
-	// Data
-	*/
+	 * Data
+	 */
 	private:
 	// Pointer data
 	T *p1_, *p2_;
@@ -65,8 +65,8 @@ template <class T, class D> class PairTable
 	~PairTable();
 
 	/*
-	// Data list
-	*/
+	 * Data list
+	 */
 	private:
 	// List of pair/data members
 	List< PointerPair<T,D> > data_;

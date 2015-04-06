@@ -45,8 +45,8 @@ class ScriptMovieWidget : public QDockWidget
 
 
 	/*
-	// Window Functions
-	*/
+	 * Window Functions
+	 */
 	public:
 	void showWidget();
 	private slots:

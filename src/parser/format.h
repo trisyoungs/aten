@@ -44,8 +44,8 @@ class FormatChunk : public ListItem<FormatChunk>
 
 
 	/*
-	// Chunk Data
-	*/
+	 * Chunk Data
+	 */
 	private:
 	// Type of chunk
 	ChunkType type_;
@@ -84,8 +84,8 @@ class Format
 
 
 	/*
-	// Data
-	*/
+	 * Data
+	 */
 	private:
 	// Whether the format was created succesfully
 	bool isValid_;
@@ -110,8 +110,8 @@ class Format
 
 	
 	/*
-	// Read/Write
-	*/
+	 * Read/Write
+	 */
 	private:
 	// Use specified parser to perform formatted read
 	int executeRead(LineParser* parser, int optionMask);

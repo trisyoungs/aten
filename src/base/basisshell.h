@@ -37,8 +37,8 @@ class BasisPrimitive : public ListItem<BasisPrimitive>
 	BasisPrimitive();
 
 	/*
-	// Data
-	*/
+	 * Data
+	 */
 	private:
 	// Basis function exponent
 	double exponent_;
@@ -77,8 +77,8 @@ class BasisShell : public ListItem<BasisShell>
 
 
 	/*
-	// Data
-	*/
+	 * Data
+	 */
 	private:
 	// Index of associated atom
 	int atomId_;

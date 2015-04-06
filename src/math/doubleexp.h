@@ -34,8 +34,8 @@ class DoubleExp
 	DoubleExp(double mantissa = 0.0, int exponent = 0);
 
 	/*
-	// Data
-	*/
+	 * Data
+	 */
 	private:
 	// Mantissa
 	double mantissa_;
@@ -45,8 +45,8 @@ class DoubleExp
 	double value_;
 
 	/*
-	// Functions
-	*/
+	 * Functions
+	 */
 	private:
 	// Recalculate value from stored mantissa and exponent
 	void recalculate();

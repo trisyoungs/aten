@@ -62,8 +62,8 @@ class Tree : public ListItem<Tree>
 
 
 	/*
-	// Tree Character
-	*/
+	 * Tree Character
+	 */
 	private:
 	// Program parent
 	Program* parent_;
@@ -98,8 +98,8 @@ class Tree : public ListItem<Tree>
 
 
 	/*
-	// Node Data
-	*/
+	 * Node Data
+	 */
 	private:
 	// Clear all data contained in the Tree
 	void clear();
@@ -140,8 +140,8 @@ class Tree : public ListItem<Tree>
 	
 
 	/*
-	// Statement / Command Addition
-	*/
+	 * Statement / Command Addition
+	 */
 	public:
 	// Add a node representing a whole statement to the execution list
 	bool addStatement(TreeNode* leaf);
@@ -170,8 +170,8 @@ class Tree : public ListItem<Tree>
 
 
 	/*
-	// Variables / Constants
-	*/
+	 * Variables / Constants
+	 */
 	private:
 	// Pointer to local ScopeNode (for functions)
 	ScopeNode* localScope_;
@@ -206,8 +206,8 @@ class Tree : public ListItem<Tree>
 
 
 	/*
-	// Local Functions
-	*/
+	 * Local Functions
+	 */
 	private:
 	// User-defined local functions
 	List<Tree> functions_;
@@ -222,8 +222,8 @@ class Tree : public ListItem<Tree>
 
 
 	/*
-	// Filter Properties
-	*/
+	 * Filter Properties
+	 */
 	public:
 	// Filter data
 	FilterData filter;
@@ -232,8 +232,8 @@ class Tree : public ListItem<Tree>
 
 
 	/*
-	// Qt/CLI GUI Definition
-	*/
+	 * Qt/CLI GUI Definition
+	 */
 	private:
 	// Default GUI dialog, run at start of Program execution
 	TreeGui defaultDialog_;
@@ -254,8 +254,8 @@ class Tree : public ListItem<Tree>
 
 
 	/*
-	// Execution
-	*/
+	 * Execution
+	 */
 	private:
 	// Read options for parser
 	int readOptions_;

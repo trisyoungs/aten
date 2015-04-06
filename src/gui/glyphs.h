@@ -56,8 +56,8 @@ class GlyphsWidget : public QDockWidget
 
 
 	/*
-	// Local variables and functions
-	*/
+	 * Local variables and functions
+	 */
 	private:
 	// Local widget pointers
 	QRadioButton *dataAtomRadio[MAXGLYPHDATA], *dataValueRadio[MAXGLYPHDATA];
@@ -78,8 +78,8 @@ class GlyphsWidget : public QDockWidget
 
 
 	/*
-	// Window Functions
-	*/
+	 * Window Functions
+	 */
 	public:
 	// Show the widget
 	void showWidget();

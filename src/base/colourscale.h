@@ -47,8 +47,8 @@ class ColourScale : public ListItem<ColourScale>
 
 
 	/*
-	// Rendering
-	*/
+	 * Rendering
+	 */
 	private:
 	// Name of the colourscale
 	QString name_;
@@ -73,8 +73,8 @@ class ColourScale : public ListItem<ColourScale>
 
 
 	/*
-	// Data and data range
-	*/
+	 * Data and data range
+	 */
 	private:
 	// List of points in the colourscale
 	List<ColourScalePoint> points_;
@@ -117,8 +117,8 @@ class ColourScale : public ListItem<ColourScale>
 
 
 	/*
-	// Linked objects
-	*/
+	 * Linked objects
+	 */
 	private:
 	// Grids that use the colour scale
 	Reflist<Grid,int> grids_;

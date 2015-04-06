@@ -39,8 +39,8 @@ class PatternBoundVariable : public PointerVariable
 	~PatternBoundVariable();
 
 	/*
-	// Access Data
-	*/
+	 * Access Data
+	 */
 	public:
 	// Accessor list
 	enum Accessors { Data, EScale, Form, Id, TermId, Type, TypeNames, VScale, nAccessors };
@@ -72,8 +72,8 @@ class PatternBoundArrayVariable : public PointerArrayVariable
 	PatternBoundArrayVariable(TreeNode* sizeexpr, bool constant = false);
 
 	/*
-	// Inherited Virtuals
-	*/
+	 * Inherited Virtuals
+	 */
 	public:
 	// Search variable access list for provided accessor
 	StepNode* findAccessor(QString name, TreeNode* arrayIndex, TreeNode* argList = NULL);

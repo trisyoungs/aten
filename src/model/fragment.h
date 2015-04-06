@@ -39,8 +39,8 @@ class Fragment : public ListItem<Fragment>
 	Fragment();
 
 	/*
-	// Fragment Model Data
-	*/
+	 * Fragment Model Data
+	 */
 	private:
 	// Pointer to master model, containing fragment in original rotation
 	Model* masterModel_;
@@ -63,8 +63,8 @@ class Fragment : public ListItem<Fragment>
 
 
 	/*
-	// Manipulated Fragments
-	*/
+	 * Manipulated Fragments
+	 */
 	private:
 	// Fragment oriented by user
 	Model orientedModel_;

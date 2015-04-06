@@ -39,8 +39,8 @@ class SiteVariable : public PointerVariable
 	~SiteVariable();
 
 	/*
-	// Access Data
-	*/
+	 * Access Data
+	 */
 	public:
 	// Accessor list
         enum Accessors { DummyVariable, nAccessors };
@@ -72,8 +72,8 @@ class SiteArrayVariable : public PointerArrayVariable
 	SiteArrayVariable(TreeNode* sizeexpr, bool constant = false);
 
 	/*
-	// Inherited Virtuals
-	*/
+	 * Inherited Virtuals
+	 */
 	public:
 	// Search variable access list for provided accessor
 	StepNode* findAccessor(QString name, TreeNode* arrayIndex, TreeNode* argList = NULL);

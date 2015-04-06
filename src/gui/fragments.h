@@ -57,8 +57,8 @@ class FragmentsWidget : public QDockWidget
 
 
 	/*
-	// Window Functions
-	*/
+	 * Window Functions
+	 */
 	public:
 	void showWidget();
 	void refresh();
@@ -76,8 +76,8 @@ class FragmentsWidget : public QDockWidget
 
 
 	/*
-	// Local variables
-	*/
+	 * Local variables
+	 */
 	private:
 	// Whether fragment icons have been generated yet
 	bool iconsGenerated_;

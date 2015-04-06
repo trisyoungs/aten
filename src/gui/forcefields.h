@@ -46,8 +46,8 @@ class ForcefieldsWidget : public QDockWidget
 
 
 	/*
-	// Local variables
-	*/
+	 * Local variables
+	 */
 	private:
 	// Whether the widget is currently refreshing
 	bool refreshing_;
@@ -60,8 +60,8 @@ class ForcefieldsWidget : public QDockWidget
 
 
 	/*
-	// Window Functions
-	*/
+	 * Window Functions
+	 */
 	public:
 	// Minimisation algorithms
 	enum MinimiserMethod { SimpleSteepestMethod, SteepestMethod, ConjugateMethod, MonteCarloMethod, nMinimiserMethods };

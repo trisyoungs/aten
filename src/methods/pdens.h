@@ -39,8 +39,8 @@ class Pdens : public Calculable
 	~Pdens();
 
 	/*
-	// Sites
-	*/
+	 * Sites
+	 */
 	private:
 	// Centres involved in distribution
 	Site* sites_[2];
@@ -53,8 +53,8 @@ class Pdens : public Calculable
 
 
 	/*
-	// Methods
-	*/
+	 * Methods
+	 */
 	public:
 	// Initialise structure
 	bool initialise();
@@ -67,8 +67,8 @@ class Pdens : public Calculable
 
 
 	/*
-	// Data Description
-	*/
+	 * Data Description
+	 */
 	private:
 	// Number of gridpoints in each +ve OR -ve direction
 	int nSteps_;
@@ -86,8 +86,8 @@ class Pdens : public Calculable
 	int nSteps() const;
 
 	/*
-	// Data
-	*/
+	 * Data
+	 */
 	private:
 	// Distribution
 	double*** data_;

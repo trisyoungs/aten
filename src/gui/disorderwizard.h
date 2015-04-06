@@ -59,8 +59,8 @@ class DisorderWizard : public QWizard
 
 
 	/*
-	// Local variables
-	*/
+	 * Local variables
+	 */
 	private:
 	// Whether the window is currently refreshing controls
 	bool refreshing_;
@@ -87,8 +87,8 @@ class DisorderWizard : public QWizard
 
 
 	/*
-	// Window Functions
-	*/
+	 * Window Functions
+	 */
 	public:
 	int run();
 	private:

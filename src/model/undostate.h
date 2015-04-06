@@ -41,8 +41,8 @@ class UndoState : public ListItem<UndoState>
 	UndoState();
 
 	/*
-	// Changelist
-	*/
+	 * Changelist
+	 */
 	private:
 	// List of atomic changes for this level
 	List<UndoEvent> events_;

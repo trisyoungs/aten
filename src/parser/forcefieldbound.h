@@ -40,8 +40,8 @@ class ForcefieldBoundVariable : public PointerVariable
 
 
 	/*
-	// Access Data
-	*/
+	 * Access Data
+	 */
 	public:
 	// Accessor list
 	enum Accessors { Data, DataKeyword, DataName, EScale, Form, NAtoms, NParams, Type, TypeNames, VScale, nAccessors };
@@ -74,8 +74,8 @@ class ForcefieldBoundArrayVariable : public PointerArrayVariable
 
 
 	/*
-	// Inherited Virtuals
-	*/
+	 * Inherited Virtuals
+	 */
 	public:
 	// Search variable access list for provided accessor
 	StepNode* findAccessor(QString name, TreeNode* arrayIndex, TreeNode* argList = NULL);

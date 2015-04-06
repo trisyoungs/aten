@@ -45,8 +45,8 @@ class UserCommandNode : public TreeNode
 	~UserCommandNode();
 
 	/*
-	// Command Data
-	*/
+	 * Command Data
+	 */
 	protected:
 	// Pointer to Tree containing the user-defined function
 	Tree* function_;

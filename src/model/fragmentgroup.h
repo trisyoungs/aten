@@ -39,8 +39,8 @@ class FragmentGroup : public ListItem<FragmentGroup>
 	FragmentGroup();
 
 	/*
-	// Data
-	*/
+	 * Data
+	 */
 	private:
 	// Name of the group
 	QString name_;

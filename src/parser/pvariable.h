@@ -37,8 +37,8 @@ class PointerVariable : public Variable
 
 
 	/*
-	// Set / Get
-	*/
+	 * Set / Get
+	 */
 	public:
 	// Return value of node
 	bool execute(ReturnValue& rv);
@@ -59,8 +59,8 @@ class PointerArrayVariable : public Variable
 
 
 	/*
-	// Set / Get
-	*/
+	 * Set / Get
+	 */
 	public:
 	// Return value of node
 	bool execute(ReturnValue& rv);
@@ -75,8 +75,8 @@ class PointerArrayVariable : public Variable
 
 
 	/*
-	// Variable Data
-	*/
+	 * Variable Data
+	 */
 	protected:
 	// TreeNode determining array size on initialisation
 	TreeNode* arraySizeExpression_;
@@ -89,8 +89,8 @@ class PointerArrayVariable : public Variable
 
 
 	/*
-	// Inherited Virtuals
-	*/
+	 * Inherited Virtuals
+	 */
 	public:
 	// Initialise node (take over from Variable::initialise())
 	bool initialise();

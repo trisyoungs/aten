@@ -45,8 +45,8 @@ class EnergyStore
 	void initialise();
 
 	/*
-	// Energy components
-	*/
+	 * Energy components
+	 */
 	private:
 	// Dimension of arrays in created structure.
 	int size_;
@@ -125,8 +125,8 @@ class EnergyStore
 
 
 	/*
-	// Printing
-	*/
+	 * Printing
+	 */
 	public:
 	// Print out the full energy
 	void print();

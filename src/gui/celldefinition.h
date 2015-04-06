@@ -45,16 +45,16 @@ class CellDefinitionWidget : public QDockWidget
 
 
 	/*
-	// Local variables
-	*/
+	 * Local variables
+	 */
 	private:
 	// Whether the window is refreshing
 	bool refreshing_;
 
 
 	/*
-	// Window Functions
-	*/
+	 * Window Functions
+	 */
 	private:
 	void refreshMatrix();
 	void refreshABC();

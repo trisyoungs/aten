@@ -37,8 +37,8 @@ class DataStoreItem : public ListItem<DataStoreItem>
 
 
 	/*
-	// Data
-	*/
+	 * Data
+	 */
 	private:
 	// Key
 	QString key_;
@@ -61,8 +61,8 @@ class DataStore
 
 
 	/*
-	// Data
-	*/
+	 * Data
+	 */
 	private:
 	// Pair data
 	List<DataStoreItem> data_;

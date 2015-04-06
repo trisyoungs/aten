@@ -58,8 +58,8 @@ class AtenZMatrix : public QDialog
 
 
 	/*
-	// Local variables
-	*/
+	 * Local variables
+	 */
 	private:
 	// Whether the widget is currently refreshing
 	bool refreshing_;
@@ -68,8 +68,8 @@ class AtenZMatrix : public QDialog
 
 
 	/*
-	// Window Functions
-	*/
+	 * Window Functions
+	 */
 	public:
 	void showWidget();
 	void refresh(bool forceupdate = false);

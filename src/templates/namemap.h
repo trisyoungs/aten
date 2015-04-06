@@ -36,8 +36,8 @@ template <class T> class NameMap : public ListItem< NameMap<T> >
 
 
 	/*
-	// Data
-	*/
+	 * Data
+	 */
 	private:
 	// Character data
 	QString name_;
@@ -102,8 +102,8 @@ template <class T> class NameMapList
 	NameMapList<T>();
 
 	/*
-	// Data
-	*/
+	 * Data
+	 */
 	private:
 	// Data to return in the event of no match in data() members
 	T defaultValue_;

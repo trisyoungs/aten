@@ -37,8 +37,8 @@ class TTreeWidgetItem : public QTreeWidgetItem
 	TTreeWidgetItem(QTreeWidget *parent);
 
 	/*
-	// Associated Data
-	*/
+	 * Associated Data
+	 */
 	public:
 	// Associated data item
 	ReturnValue data;

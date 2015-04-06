@@ -91,8 +91,8 @@ class QtWidgetObject : public ListItem<QtWidgetObject>
 
 
 	/*
-	// Methods
-	*/
+	 * Methods
+	 */
 	public:
 	// Update associated QWidget / QObject based on treeGuiWidget_ data
 	void updateQt();
@@ -129,8 +129,8 @@ class AtenTreeGuiDialog : public QDialog
 
 
 	/*
-	// Generic Widget Functions
-	*/
+	 * Generic Widget Functions
+	 */
 	private slots:
 	void buttonWidget_clicked(bool checked);
 	void checkBoxWidget_clicked(bool checked);
@@ -144,8 +144,8 @@ class AtenTreeGuiDialog : public QDialog
 
 
 	/*
-	// Widgets
-	*/
+	 * Widgets
+	 */
 	private:
 	// Flag to prevent sending of update events
 	bool updating_;

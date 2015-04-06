@@ -45,16 +45,16 @@ class SelectWidget : public QDockWidget
 
 
 	/*
-	// Local variables
-	*/
+	 * Local variables
+	 */
 	private:
 	// Whether window is refreshing
 	bool refreshing_;
 
 
 	/*
-	// Window Functions
-	*/
+	 * Window Functions
+	 */
 	public:
 	void refresh();
 	void showWidget();

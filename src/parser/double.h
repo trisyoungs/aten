@@ -37,8 +37,8 @@ class DoubleVariable : public Variable
 	~DoubleVariable();
 
 	/*
-	// Set / Get
-	*/
+	 * Set / Get
+	 */
 	public:
 	// Return value of node
 	bool execute(ReturnValue& rv);
@@ -50,8 +50,8 @@ class DoubleVariable : public Variable
 	void reset();
 
 	/*
-	// Variable Data
-	*/
+	 * Variable Data
+	 */
 	private:
 	// Real data
 	double doubleData_;
@@ -68,8 +68,8 @@ class DoubleArrayVariable : public ArrayVariable
 	~DoubleArrayVariable();
 
 	/*
-	// Set / Get
-	*/
+	 * Set / Get
+	 */
 	public:
 	// Return value of node
 	bool execute(ReturnValue& rv);
@@ -83,8 +83,8 @@ class DoubleArrayVariable : public ArrayVariable
 	void reset();
 
 	/*
-	// Variable Data
-	*/
+	 * Variable Data
+	 */
 	private:
 	// Real data
 	double* doubleArrayData_;
@@ -96,8 +96,8 @@ class DoubleArrayVariable : public ArrayVariable
 	double* arrayData();
 
 	/*
-	// Inherited Virtuals
-	*/
+	 * Inherited Virtuals
+	 */
 	public:
 	// Initialise node (take over from Variable::initialise())
 	bool initialise();

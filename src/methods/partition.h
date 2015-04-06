@@ -57,8 +57,8 @@ class PartitionData : public ListItem<PartitionData>
 	PartitionData();
 
 	/*
-	// Data
-	*/
+	 * Data
+	 */
 	private:
 	// Integer id of partition
 	int id_;
@@ -131,8 +131,8 @@ class PartitioningScheme : public ListItem<PartitioningScheme>
 	~PartitioningScheme();
 
 	/*
-	// Function Data
-	*/
+	 * Function Data
+	 */
 	private:
 	// Program defining scheme, variables and functions
 	Program schemeDefinition_;
@@ -165,8 +165,8 @@ class PartitioningScheme : public ListItem<PartitioningScheme>
 
 
 	/*
-	// Partition Data
-	*/
+	 * Partition Data
+	 */
 	private:
 	// Log counter for gridsize / variable changes
 	int changeLog_;

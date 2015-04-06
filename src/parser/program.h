@@ -41,8 +41,8 @@ class Program : public ListItem<Program>
 
 
 	/*
-	// Program data
-	*/
+	 * Program data
+	 */
 	private:
 	// Name, if any
 	QString name_;
@@ -91,8 +91,8 @@ class Program : public ListItem<Program>
 
 
 	/*
-	// Program-Wide Functions
-	*/
+	 * Program-Wide Functions
+	 */
 	private:
 	// User-defined functions (local to this program)
 	List<Tree> functions_;

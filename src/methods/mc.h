@@ -46,16 +46,16 @@ class MonteCarlo
 
 
 	/*
-	// Subroutines
-	*/
+	 * Subroutines
+	 */
 	public:
 	// Create acceptance ratio array
 	void createRatioArray(int);
 
 
 	/*
-	// MC Move Probabilities, step sizes, trial numbers
-	*/
+	 * MC Move Probabilities, step sizes, trial numbers
+	 */
 	private:
 	// Maximum size of allowed move (units depend on move type)
 	double maxStep_[nMoveTypes];
@@ -102,8 +102,8 @@ class MonteCarlo
 
 
 	/*
-	// Disorder Builder Variables
-	*/
+	 * Disorder Builder Variables
+	 */
 	private:
 	// Maximum number of disorder cycles to perform
 	int disorderMaxCycles_;
@@ -182,8 +182,8 @@ class MonteCarlo
 	
 	
 	/*
-	// Main Routines
-	*/
+	 * Main Routines
+	 */
 	public:
 	// Minimise the specified model
 	bool minimise(Model* target, double, double);

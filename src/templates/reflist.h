@@ -53,8 +53,8 @@ template <class T, class D> class Reflist
 	Reflist<T,D>(const Reflist<T,D>& source);
 
 	/*
-	// Reference List of Items
-	*/
+	 * Reference List of Items
+	 */
 	private:
 	// Head and tail of reference items
 	Refitem<T,D> *listHead_, *listTail_;

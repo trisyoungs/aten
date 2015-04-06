@@ -37,8 +37,8 @@ class DoubleVariable;
 class VariableList
 {
 	/*
-	// Variable List
-	*/
+	 * Variable List
+	 */
 	public:
 	// Constructor / Destructor
 	VariableList();

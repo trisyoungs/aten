@@ -40,8 +40,8 @@ class MonteCarloVariable : public Variable
 
 
 	/*
-	// Access Data
-	*/
+	 * Access Data
+	 */
 	public:
 	// Accessor list
 	enum Accessors { DisorderAccuracy, DisorderDeltaAngle, DisorderDeltaDistance, DisorderMaxCycles, DisorderMaxFailures, DisorderMaximumScaleFactor, DisorderMinimumScaleFactor, DisorderNTweaks, DisorderRecoveryMaxCycles, DisorderRecoveryMaxTweaks, DisorderRecoveryThreshold, DisorderReductionFactor, NCycles, Temperature, nAccessors };

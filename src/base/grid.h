@@ -78,8 +78,8 @@ class Grid : public ListItem<Grid>
 
 
 	/*
-	// Identity
-	*/
+	 * Identity
+	 */
 	private:
 	// Parent model
 	Model* parent_;
@@ -104,8 +104,8 @@ class Grid : public ListItem<Grid>
 
 
 	/*
-	// Gridded Data
-	*/
+	 * Gridded Data
+	 */
 	private:
 	// Cell that determines origin, spacing between Gridpoints, and their axis system
 	UnitCell cell_;
@@ -263,8 +263,8 @@ class Grid : public ListItem<Grid>
 
 
 	/*
-	// Data Interface
-	*/
+	 * Data Interface
+	 */
 	private:
 	// Count variable used by set_next_point()
 	Vec3<int> currentPoint_;
@@ -281,8 +281,8 @@ class Grid : public ListItem<Grid>
 
 
 	/*
-	// Visuals
-	*/
+	 * Visuals
+	 */
 	private:
 	// Log for changes to Grid, display style etc.
 	int log_;
@@ -378,8 +378,8 @@ class Grid : public ListItem<Grid>
 
 
 	/*
-	// Transformations
-	*/
+	 * Transformations
+	 */
 	public:
 	// Convert data from Bohr to Angstroms
 	void bohrToAngstrom();

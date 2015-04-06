@@ -48,8 +48,8 @@ class Site : public ListItem<Site>
 	Site();
 
 	/*
-	// Site pattern, molecule and atoms
-	*/
+	 * Site pattern, molecule and atoms
+	 */
 	private:
 	// Pattern the site is related to
 	Pattern* pattern_;
@@ -70,8 +70,8 @@ class Site : public ListItem<Site>
 
 
 	/*
-	// Site Centre
-	*/
+	 * Site Centre
+	 */
 	private:
 	// Type of centre site
 	SiteType type_;
@@ -87,8 +87,8 @@ class Site : public ListItem<Site>
 	QList<int> atoms;
 
 	/*
-	// Site Axes
-	*/
+	 * Site Axes
+	 */
 	private:
 	// Matrix defining local coordinate system
 	Matrix axes_;

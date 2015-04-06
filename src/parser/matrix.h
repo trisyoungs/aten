@@ -44,8 +44,8 @@ class MatrixVariable : public Variable
 
 
 	/*
-	// Set / Get
-	*/
+	 * Set / Get
+	 */
 	public:
 	// Return value of node
 	bool execute(ReturnValue& rv);
@@ -56,8 +56,8 @@ class MatrixVariable : public Variable
 
 
 	/*
-	// Variable Data
-	*/
+	 * Variable Data
+	 */
 	private:
 	// Recreate data (for constant Matrices) from TreeNode parts
 	bool reCreate();
@@ -70,8 +70,8 @@ class MatrixVariable : public Variable
 
 
 	/*
-	// Access Data
-	*/
+	 * Access Data
+	 */
 	public:
 	// Accessor list
 	enum Accessors { Determinant, XX, XY, XZ, YX, YY, YZ, ZX, ZY, ZZ, nAccessors };
@@ -103,8 +103,8 @@ class MatrixArrayVariable : public Variable
 
 
 	/*
-	// Set / Get
-	*/
+	 * Set / Get
+	 */
 	public:
 	// Return value of node
 	bool execute(ReturnValue& rv);
@@ -119,8 +119,8 @@ class MatrixArrayVariable : public Variable
 
 
 	/*
-	// Variable Data
-	*/
+	 * Variable Data
+	 */
 	private:
 	// TreeNode determining array size on initialisation
 	TreeNode* arraySizeExpression_;
@@ -133,8 +133,8 @@ class MatrixArrayVariable : public Variable
 
 
 	/*
-	// Inherited Virtuals
-	*/
+	 * Inherited Virtuals
+	 */
 	public:
 	// Initialise node (take over from Variable::initialise())
 	bool initialise();

@@ -38,8 +38,8 @@ class VariableNode : public TreeNode
 	~VariableNode();
 
 	/*
-	// Variable Data
-	*/
+	 * Variable Data
+	 */
 	private:
 	// Variable that this node links to
 	Variable* variable_;
@@ -61,8 +61,8 @@ class VariableNode : public TreeNode
 	void finalisePath();
 
 	/*
-	// Inherited Virtuals
-	*/
+	 * Inherited Virtuals
+	 */
 	public:
 	// Execute node
 	bool execute(ReturnValue& rv);

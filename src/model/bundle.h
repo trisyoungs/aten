@@ -70,8 +70,8 @@ class Bundle
 	Model* rs();
 
 	/*
-	// Member Functions
-	*/
+	 * Member Functions
+	 */
 	public:
 	// Clear pointers
 	void clear();

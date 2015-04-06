@@ -52,8 +52,8 @@ class ReturnValue : public ListItem<ReturnValue>
 
 
 	/*
-	// Data
-	*/
+	 * Data
+	 */
 	private:
 	// Data type contained in class
 	VTypes::DataType type_;
@@ -90,8 +90,8 @@ class ReturnValue : public ListItem<ReturnValue>
 
 
 	/*
-	// Set
-	*/
+	 * Set
+	 */
 	public:
 	// Set from integer value
 	void set(int i);
@@ -130,8 +130,8 @@ class ReturnValue : public ListItem<ReturnValue>
 
 
 	/*
-	// Get (with type checking)
-	*/
+	 * Get (with type checking)
+	 */
 	public:
 	// Return integer value
 	int asInteger(bool& success);
@@ -164,8 +164,8 @@ class ReturnValue : public ListItem<ReturnValue>
 
 
 	/*
-	// Get (no type checking)
-	*/
+	 * Get (no type checking)
+	 */
 	public:
 	// Return integer value
 	int asInteger();
@@ -184,8 +184,8 @@ class ReturnValue : public ListItem<ReturnValue>
 
 
 	/*
-	// In-place modify
-	*/
+	 * In-place modify
+	 */
 	public:
 	// Increase the contained variable
 	bool increase();
