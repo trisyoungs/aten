@@ -42,8 +42,8 @@ class Measurement : public ListItem<Measurement>
 	static int nMeasurementAtoms(MeasurementType);
 
 	/*
-	// Measurement Data
-	*/
+	 * Measurement Data
+	 */
 	private:
 	// Type of Measurement
 	MeasurementType type_;

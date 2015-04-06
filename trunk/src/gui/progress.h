@@ -40,8 +40,8 @@ class AtenProgress : public QDialog
 
 
 	/*
-	// Local Variables
-	*/
+	 * Local Variables
+	 */
 	private:
 	// Set subtitle (if one exists)
 	void setSubTitle();
@@ -56,8 +56,8 @@ class AtenProgress : public QDialog
 
 	
 	/*
-	// Window Functions
-	*/
+	 * Window Functions
+	 */
 	public:
 	void showWindow();
 

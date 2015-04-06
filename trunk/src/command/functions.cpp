@@ -27,8 +27,8 @@ ATEN_USING_NAMESPACE
 void Commands::initPointers()
 {
 	/*
-	// Store pointers to all command functions
-	*/
+	 * Store pointers to all command functions
+	 */
 	// Operators
 	pointers_[OperatorAdd] = &AtenSpace::Commands::function_OperatorAdd;
 	pointers_[OperatorAnd] = &AtenSpace::Commands::function_OperatorAnd;

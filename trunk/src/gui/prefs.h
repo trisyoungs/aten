@@ -58,8 +58,8 @@ class AtenPrefs : public QDialog
 
 
 	/*
-	// Local variables
-	*/
+	 * Local variables
+	 */
 	private:
 	// Whether the window is currently refreshing
 	bool refreshing_;
@@ -68,8 +68,8 @@ class AtenPrefs : public QDialog
 
 
 	/*
-	// Window Functions
-	*/
+	 * Window Functions
+	 */
 	private slots:
 	void on_PrefsOkButton_clicked(bool checked);
 	void on_PrefsCancelButton_clicked(bool checked);
@@ -77,8 +77,8 @@ class AtenPrefs : public QDialog
 
 
 	/*
-	// General Page
-	*/
+	 * General Page
+	 */
 	private slots:
 	void on_CommonElementsEdit_textEdited(const QString &text);
 	void on_DensityUnitCombo_currentIndexChanged(int index);
@@ -93,8 +93,8 @@ class AtenPrefs : public QDialog
 
 
 	/*
-	// Element Page
-	*/
+	 * Element Page
+	 */
 	private slots:
 	void on_ElementList_currentRowChanged(int row);
 	void on_ElementColourButton_clicked(bool checked);
@@ -102,8 +102,8 @@ class AtenPrefs : public QDialog
 
 
 	/*
-	// Interaction page
-	*/
+	 * Interaction page
+	 */
 	private slots:
 	void on_LeftMouseCombo_currentIndexChanged(int ma);
 	void on_MiddleMouseCombo_currentIndexChanged(int ma);
@@ -117,8 +117,8 @@ class AtenPrefs : public QDialog
 
 
 	/*
-	// View Page
-	*/
+	 * View Page
+	 */
 	private:
 	void updateAfterViewPrefs();
 	void setRadiusChanged(Prefs::DrawStyle ds, double value, bool foratom);
@@ -171,8 +171,8 @@ class AtenPrefs : public QDialog
 
 
 	/*
-	// Colourscales page
-	*/
+	 * Colourscales page
+	 */
 	private:
 	void updateScalePointsList();
 
@@ -188,8 +188,8 @@ class AtenPrefs : public QDialog
 
 
 	/*
-	// Energy / FF Page
-	*/
+	 * Energy / FF Page
+	 */
 	private:
 	void updateParameterTable();
 
@@ -211,8 +211,8 @@ class AtenPrefs : public QDialog
 
 
 	/*
-	// External Programs
-	*/
+	 * External Programs
+	 */
 	private slots:
 	void on_TemporaryDirButton_clicked(bool checked);
 	void on_TemporaryDirEdit_textEdited(const QString &text);

@@ -52,16 +52,16 @@ class CommandWidget : public QDockWidget
 
 
 	/*
-	// Window Functions
-	*/
+	 * Window Functions
+	 */
 	public:
 	void showWidget();
 	void refresh();
 
 
 	/*
-	// Prompt Page
-	*/
+	 * Prompt Page
+	 */
 	private slots:
 	void on_CommandPrompt_returnPressed();
 	protected:
@@ -75,8 +75,8 @@ class CommandWidget : public QDockWidget
 
 	
 	/*
-	// Interactive Page
-	*/
+	 * Interactive Page
+	 */
 	private:
 	Program interactiveProgram_;
 	// Update variable list
@@ -93,8 +93,8 @@ class CommandWidget : public QDockWidget
 	
 
 	/*
-	// Scripts Page
-	*/
+	 * Scripts Page
+	 */
 	private:
 	// List of scripts and their associated Menu item actions
 	Reflist<QAction, Program*> scriptActions_;
@@ -112,8 +112,8 @@ class CommandWidget : public QDockWidget
 
 	
 	/*
-	// Command Index Page
-	*/
+	 * Command Index Page
+	 */
 	private:
 	void repopulateCommandList(const char* search);
 	

@@ -160,8 +160,8 @@ template <class T> class List
 
 
 	/*
-	// Operators
-	*/
+	 * Operators
+	 */
 	public:
 	// Assignment operator
 	void operator=(const List<T>& source);
@@ -170,8 +170,8 @@ template <class T> class List
 
 
 	/*
-	// Item Moves
-	*/
+	 * Item Moves
+	 */
 	private:
 	// Swap two items in list (by pointer)
 	void swap(T* item1, T* item2);

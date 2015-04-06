@@ -53,8 +53,8 @@ class FilterData
 
 
 	/*
-	// Properties
-	*/
+	 * Properties
+	 */
 	private:
 	// Filter ID
 	int id_;
@@ -107,8 +107,8 @@ class FilterData
 
 
 	/*
-	// Get
-	*/
+	 * Get
+	 */
 	public:
 	// Return the ID of the filter
 	int id() const;

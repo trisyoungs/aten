@@ -53,16 +53,16 @@ class AtenViewBasis : public QDialog
 
 
 	/*
-	// Local Variables
-	*/
+	 * Local Variables
+	 */
 	private:
 	// Current model target
 	Model* target_;
 
 
 	/*
-	// Window Functions
-	*/
+	 * Window Functions
+	 */
 	public:
 	void showWindow(Model* m);
 	private slots:

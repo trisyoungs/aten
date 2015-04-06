@@ -56,8 +56,8 @@ class VibrationsWidget : public QDockWidget
 
 
 	/*
-	// Local variables
-	*/
+	 * Local variables
+	 */
 	private:
 	// Whether the window is currently refreshing
 	bool refreshing_;
@@ -70,8 +70,8 @@ class VibrationsWidget : public QDockWidget
 
 
 	/*
-	// Window Functions
-	*/
+	 * Window Functions
+	 */
 	public:
 	void showWidget();
 	void refresh();

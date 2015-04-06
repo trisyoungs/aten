@@ -39,8 +39,8 @@ class ModelListWidget : public QDockWidget
 	Q_OBJECT
 
 	/*
-	// Window Functions
-	*/
+	 * Window Functions
+	 */
 	public:
 	void showWidget();
 	void refresh();
@@ -65,8 +65,8 @@ class ModelListWidget : public QDockWidget
 	void closeEvent(QCloseEvent* event);
 
 	/*
-	// Local variables
-	*/
+	 * Local variables
+	 */
 	private:
 	// Context Menu
 	QMenu *contextMenu_;
@@ -76,8 +76,8 @@ class ModelListWidget : public QDockWidget
 	TExtraTreeWidgetItem *lastClicked_, *lastHovered_;
 	
 	/*
-	// Dialog
-	*/
+	 * Dialog
+	 */
 	private:
 	// Reference to main window
 	AtenWindow& parent_;

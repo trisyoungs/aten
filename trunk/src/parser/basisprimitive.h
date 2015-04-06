@@ -39,8 +39,8 @@ class BasisPrimitiveVariable : public PointerVariable
 	~BasisPrimitiveVariable();
 
 	/*
-	// Access Data
-	*/
+	 * Access Data
+	 */
 	public:
 	// Accessor list
         enum Accessors { Coefficients, Exponent, nAccessors };
@@ -72,8 +72,8 @@ class BasisPrimitiveArrayVariable : public PointerArrayVariable
 	BasisPrimitiveArrayVariable(TreeNode* sizeexpr, bool constant = false);
 
 	/*
-	// Inherited Virtuals
-	*/
+	 * Inherited Virtuals
+	 */
 	public:
 	// Search variable access list for provided accessor
 	StepNode* findAccessor(QString name, TreeNode* arrayIndex, TreeNode* argList = NULL);

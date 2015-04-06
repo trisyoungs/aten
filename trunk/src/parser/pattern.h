@@ -39,8 +39,8 @@ class PatternVariable : public PointerVariable
 	~PatternVariable();
 
 	/*
-	// Access Data
-	*/
+	 * Access Data
+	 */
 	public:
 	// Accessor list
 	enum Accessors { Angles, Atoms, Bonds, FFAngles, FFBonds, FFTorsions, FFTypes, FField, FirstAtom, FirstAtomId, Fixed, LastAtom, LastAtomId, Name, NAngles, NAtoms, NBonds, NFFAngles, NFFBonds, NFFTorsions, NFFTypes, NMolAtoms, NMols, NTorsions, Torsions, nAccessors };
@@ -72,8 +72,8 @@ class PatternArrayVariable : public PointerArrayVariable
 	PatternArrayVariable(TreeNode* sizeexpr, bool constant = false);
 
 	/*
-	// Inherited Virtuals
-	*/
+	 * Inherited Virtuals
+	 */
 	public:
 	// Search variable access list for provided accessor
 	StepNode* findAccessor(QString name, TreeNode* arrayIndex, TreeNode* argList = NULL);

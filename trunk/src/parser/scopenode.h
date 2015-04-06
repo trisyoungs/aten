@@ -37,8 +37,8 @@ class ScopeNode : public CommandNode
 	~ScopeNode();
 
 	/*
-	// Variables
-	*/
+	 * Variables
+	 */
 	public:
 	// List of variables (and constants) owned by this scope
 	VariableList variables;
@@ -46,8 +46,8 @@ class ScopeNode : public CommandNode
 	void createGlobalVariables();
 
 	/*
-	// Set / Get / Execute
-	*/
+	 * Set / Get / Execute
+	 */
 	public:
 	// Execute command
 	bool execute(ReturnValue& rv);

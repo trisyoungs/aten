@@ -147,8 +147,8 @@ void AtenWindow::finaliseUi()
 	QObject::connect(&uaButtons_, SIGNAL(buttonClicked(int)), this, SLOT(uaButtonClicked(int)));
 
 	/*
-	// Statusbar
-	*/
+	 * Statusbar
+	 */
 	// Fix up the statusbar with a single big frame and no size grip
 	ui.MainWindowStatusBar->setSizeGripEnabled(false);
 	QFrame *frame = new QFrame(this);

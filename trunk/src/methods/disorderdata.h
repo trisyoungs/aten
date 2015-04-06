@@ -41,8 +41,8 @@ class DisorderData : public ListItem<DisorderData>
 	
 	
 	/*
-	// Model / Partition Data
-	*/
+	 * Model / Partition Data
+	 */
 	private:
 	// Source component model (copied from supplied target in initialise())
 	Model sourceModel_;
@@ -75,8 +75,8 @@ class DisorderData : public ListItem<DisorderData>
 
 
 	/*
-	// Component Addition
-	*/
+	 * Component Addition
+	 */
 	private:
 	// Number of copies added
 	int nAdded_;

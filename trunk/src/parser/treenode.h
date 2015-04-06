@@ -56,8 +56,8 @@ class TreeNode : public ListItem<TreeNode>
 
 
 	/*
-	// Node Type
-	*/
+	 * Node Type
+	 */
 	protected:
 	// Type of node
 	NodeType nodeType_;
@@ -74,8 +74,8 @@ class TreeNode : public ListItem<TreeNode>
 
 
 	/*
-	// Argument Data
-	*/
+	 * Argument Data
+	 */
 	protected:
 	// Arguments (if any) to leaf node operation
 	Reflist<TreeNode,int> args_;
@@ -128,8 +128,8 @@ class TreeNode : public ListItem<TreeNode>
 
 
 	/*
-	// Node Character
-	*/
+	 * Node Character
+	 */
 	protected:
 	// Node return value datatype
 	VTypes::DataType returnType_;
@@ -154,8 +154,8 @@ class TreeNode : public ListItem<TreeNode>
 
 
 	/*
-	// Node Data Set / Get / Execute
-	*/
+	 * Node Data Set / Get / Execute
+	 */
 	public:
 	// Set from returnvalue node
 	virtual bool set(ReturnValue& rv) = 0;

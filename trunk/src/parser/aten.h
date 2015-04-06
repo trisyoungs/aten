@@ -41,8 +41,8 @@ class AtenVariable : public Variable
 
 
 	/*
-	// Set / Get
-	*/
+	 * Set / Get
+	 */
 	public:
 	// Return value of node
 	bool execute(ReturnValue& rv);
@@ -53,16 +53,16 @@ class AtenVariable : public Variable
 
 
 	/*
-	// Variable Data
-	*/
+	 * Variable Data
+	 */
 	private:
 	// Print node contents
 	void nodePrint(int offset, const char* prefix = "");
 
 
 	/*
-	// Access Data
-	*/
+	 * Access Data
+	 */
 	public:
 	// Accessor list
 	enum Accessors { ElementsMap, Frame, MC, Modeldata, Models, NElements, NModels, Preferences, nAccessors };

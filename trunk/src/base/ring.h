@@ -49,8 +49,8 @@ class Ring : public ListItem<Ring>
 	bool operator==(Ring &r) const;
 
 	/*
-	// Constituent Atoms / Bonds
-	*/
+	 * Constituent Atoms / Bonds
+	 */
 	private:
 	// Parent pattern
 	Pattern* parent_;
@@ -99,8 +99,8 @@ class Ring : public ListItem<Ring>
 
 
 	/*
-	// Methods
-	*/
+	 * Methods
+	 */
 	public:
 	// Duplicate the data (and list) in the specified ring
 	void copy(Ring*);

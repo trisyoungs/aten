@@ -52,8 +52,8 @@ class Forcefield : public ListItem<Forcefield>
 
 
 	/*
-	// Specification
-	*/
+	 * Specification
+	 */
 	private:
 	// Title of Forcefield
 	QString name_;
@@ -78,8 +78,8 @@ class Forcefield : public ListItem<Forcefield>
 
 
 	/*
-	// Types
-	*/
+	 * Types
+	 */
 	private:
 	// List of type defines
 	List<Neta> typeDefines_;
@@ -114,8 +114,8 @@ class Forcefield : public ListItem<Forcefield>
 
 
 	/*
-	// Bonding Interactions
-	*/
+	 * Bonding Interactions
+	 */
 	private:
 	// List of bond data
 	List<ForcefieldBound> bonds_;
@@ -136,8 +136,8 @@ class Forcefield : public ListItem<Forcefield>
 
 
 	/*
-	// Angle Interactions
-	*/
+	 * Angle Interactions
+	 */
 	private:
 	// List of angle data
 	List<ForcefieldBound> angles_;
@@ -158,8 +158,8 @@ class Forcefield : public ListItem<Forcefield>
 	
 
 	/*
-	// Torsion Interactions
-	*/
+	 * Torsion Interactions
+	 */
 	private:
 	// List of torsion data
 	List<ForcefieldBound> torsions_;
@@ -180,8 +180,8 @@ class Forcefield : public ListItem<Forcefield>
 
 
 	/*
-	// Improper Torsion Interactions
-	*/
+	 * Improper Torsion Interactions
+	 */
 	private:
 	// List of improper torsions data
 	List<ForcefieldBound> impropers_;
@@ -202,8 +202,8 @@ class Forcefield : public ListItem<Forcefield>
 
 
 	/*
-	// Urey-Bradley Interactions
-	*/
+	 * Urey-Bradley Interactions
+	 */
 	private:
 	// List of Urey-Bradley data
 	List<ForcefieldBound> ureyBradleys_;
@@ -224,8 +224,8 @@ class Forcefield : public ListItem<Forcefield>
 	
 
 	/*
-	// Parameter Generation
-	*/
+	 * Parameter Generation
+	 */
 	private:
 	// List of data values that have units of energy (and thus should be converted)
 	QStringList energyData_;
@@ -266,8 +266,8 @@ class Forcefield : public ListItem<Forcefield>
 
 
 	/*
-	// Parameter Matching
-	*/
+	 * Parameter Matching
+	 */
 	public:
 	// Character-match the atomtype names supplied
 	int matchType(QString source, QString target);
@@ -278,8 +278,8 @@ class Forcefield : public ListItem<Forcefield>
 
 
 	/*
-	// File
-	*/
+	 * File
+	 */
 	private:
 	// Reads in any type defines
 	bool readDefines();
@@ -314,8 +314,8 @@ class Forcefield : public ListItem<Forcefield>
 
 
 	/*
-	// Misc
-	*/
+	 * Misc
+	 */
 	public:
 	// Convert the parameters in the FF to the internal working energy unit
 	void convertParameters();

@@ -144,8 +144,8 @@ class DelaunaySurface
 	DelaunaySurface(Grid* g);
 
 	/*
-	// Primitives
-	*/
+	 * Primitives
+	 */
 	private:
 	// For bounding points defining enclosing tetrahedron
 	GridPoint boundPoints_[4];
@@ -178,8 +178,8 @@ class DelaunaySurface
 
 
 	/*
-	// Create
-	*/
+	 * Create
+	 */
 	private:
 	// Create mesh from 2D data
 	void create2DMesh(Grid* g);

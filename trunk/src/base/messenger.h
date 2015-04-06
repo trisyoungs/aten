@@ -45,8 +45,8 @@ class Messenger
 
 
 	/*
-	// Output Control
-	*/
+	 * Output Control
+	 */
 	private:
 	// Bitvector of active output levels
 	static int outputTypes_;
@@ -73,8 +73,8 @@ class Messenger
 
 
 	/*
-	// Messaging functions
-	*/
+	 * Messaging functions
+	 */
 	private:
 	// Maximum size of string list buffer
 	static int bufferSize_;

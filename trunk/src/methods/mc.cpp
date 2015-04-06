@@ -344,8 +344,8 @@ bool MonteCarlo::minimise(Model* srcmodel, double econ, double fcon)
 	bool success;
 
 	/*
-	// Prepare the calculation
-	*/
+	 * Prepare the calculation
+	 */
         // First, create expression for the current model and assign charges
 	Messenger::print("Creating expression for target model...");
         if ((!srcmodel->isExpressionValid()) || (srcmodel->nAtoms() == 0))

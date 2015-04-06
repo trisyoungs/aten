@@ -36,8 +36,8 @@ class KVPair : public ListItem<KVPair>
 	KVPair(QString key = QString(), QString value = QString());
 
 	/*
-	// Data
-	*/
+	 * Data
+	 */
 	private:
 	// Key
 	QString key_;
@@ -61,8 +61,8 @@ class KVMap
 	KVMap();
 
 	/*
-	// Data
-	*/
+	 * Data
+	 */
 	private:
 	// Pair data
 	List<KVPair> pairs_;

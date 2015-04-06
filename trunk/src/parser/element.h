@@ -40,8 +40,8 @@ class ElementVariable : public PointerVariable
 
 
 	/*
-	// Access Data
-	*/
+	 * Access Data
+	 */
 	public:
 	// Accessor list
         enum Accessors { Colour, Group, Mass, Name, Radius, Symbol, Z, nAccessors };

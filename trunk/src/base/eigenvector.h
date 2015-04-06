@@ -36,8 +36,8 @@ class Eigenvector : public ListItem<Eigenvector>
 	~Eigenvector();
 
 	/*
-	// Data
-	*/
+	 * Data
+	 */
 	private:
 	// Name (typically symmetry type) of eigenvector
 	QString name_;

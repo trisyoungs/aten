@@ -51,8 +51,8 @@ class PoresWidget : public QDockWidget
 
 
 	/*
-	// Local variables
-	*/
+	 * Local variables
+	 */
 	private:
 	// Partitioning scheme
 	PartitioningScheme partitioningScheme_;
@@ -63,8 +63,8 @@ class PoresWidget : public QDockWidget
 
 
 	/*
-	// Window Functions
-	*/
+	 * Window Functions
+	 */
 	public:
 	void showWidget();
 

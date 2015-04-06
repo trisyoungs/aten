@@ -46,8 +46,8 @@ class AtenForcefieldEditor : public QDialog
 	Q_OBJECT
 
 	/*
-	// Window Functions / Variables
-	*/
+	 * Window Functions / Variables
+	 */
 	private:
 	// Forcefield currently being edited
 	Forcefield* targetForcefield_;
@@ -55,8 +55,8 @@ class AtenForcefieldEditor : public QDialog
 	bool updating_;
 
 	/*
-	// General Functions
-	*/
+	 * General Functions
+	 */
 	private:
 	void boundFunctionChanged(QComboBox *sender, int i, ForcefieldBound::BoundType bt);
 
@@ -64,16 +64,16 @@ class AtenForcefieldEditor : public QDialog
 	void populate(Forcefield* target);
 
 	/*
-	// Types Tab
-	*/
+	 * Types Tab
+	 */
 	private slots:
 	void on_FFEditorGenerateTypeButton_clicked(bool on);
 	void on_FFEditorTestTypeButton_clicked(bool on);
 	void on_FFEditorTypesTable_itemChanged(QTableWidgetItem *w);
 
 	/*
-	// Atoms Tab
-	*/
+	 * Atoms Tab
+	 */
 	private slots:
 	void updateVdwLabels(ForcefieldAtom* ffa);
 	void VdwFunctionChanged(int index);
@@ -81,8 +81,8 @@ class AtenForcefieldEditor : public QDialog
 	void on_FFEditorAtomsTable_itemSelectionChanged();
 	
 	/*
-	// Bonds Tab
-	*/
+	 * Bonds Tab
+	 */
 	private slots:
 	void updateBondsLabels(ForcefieldBound* ffb);
 	void BondFunctionChanged(int index);
@@ -90,8 +90,8 @@ class AtenForcefieldEditor : public QDialog
 	void on_FFEditorBondsTable_itemSelectionChanged();
 	
 	/*
-	// Angles Tab
-	*/
+	 * Angles Tab
+	 */
 	private slots:
 	void updateAnglesLabels(ForcefieldBound* ffb);
 	void AngleFunctionChanged(int index);
@@ -99,8 +99,8 @@ class AtenForcefieldEditor : public QDialog
 	void on_FFEditorAnglesTable_itemSelectionChanged();
 
 	/*
-	// Torsions Tab
-	*/
+	 * Torsions Tab
+	 */
 	private slots:
 	void updateTorsionsLabels(ForcefieldBound* ffb);
 	void TorsionFunctionChanged(int index);
@@ -108,16 +108,16 @@ class AtenForcefieldEditor : public QDialog
 	void on_FFEditorTorsionsTable_itemSelectionChanged();
 
 	/*
-	// Impropers Tab
-	*/
+	 * Impropers Tab
+	 */
 	private slots:
 	void updateImpropersLabels(ForcefieldBound* ffb);
 	void on_FFEditorImpropersTable_itemChanged(QTableWidgetItem *w);
 	void on_FFEditorImpropersTable_itemSelectionChanged();
 		
 	/*
-	// UreyBradleys Tab
-	*/
+	 * UreyBradleys Tab
+	 */
 	private slots:
 	void updateUreyBradleysLabels(ForcefieldBound* ffb);
 	void on_FFEditorUreyBradleysTable_itemChanged(QTableWidgetItem *w);
@@ -125,8 +125,8 @@ class AtenForcefieldEditor : public QDialog
 	
 	
 	/*
-	// Widgets
-	*/
+	 * Widgets
+	 */
 	public:
 	// Constructor
 	AtenForcefieldEditor(QWidget* parent);

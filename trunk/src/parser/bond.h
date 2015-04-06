@@ -40,8 +40,8 @@ class BondVariable : public PointerVariable
 
 
 	/*
-	// Access Data
-	*/
+	 * Access Data
+	 */
 	public:
 	// Accessor list
 	enum Accessors { I, J, Order, Type, nAccessors };
@@ -74,8 +74,8 @@ class BondArrayVariable : public PointerArrayVariable
 
 
 	/*
-	// Inherited Virtuals
-	*/
+	 * Inherited Virtuals
+	 */
 	public:
 	// Search variable access list for provided accessor
 	StepNode* findAccessor(QString name, TreeNode* arrayIndex, TreeNode* argList = NULL);

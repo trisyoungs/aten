@@ -343,8 +343,8 @@ class Model : public ListItem<Model>
 
 
 	/*
-	// Selection / Marked Atoms
-	*/
+	 * Selection / Marked Atoms
+	 */
 	private:
 	// Reflist of selected atoms
 	Reflist<Atom,int> selection_;
@@ -509,8 +509,8 @@ class Model : public ListItem<Model>
 
 
 	/*
-	// Atom Labels
-	*/
+	 * Atom Labels
+	 */
 	public:
 	// Add label to atom
 	void addLabel(Atom* i, Atom::AtomLabel al);
@@ -523,8 +523,8 @@ class Model : public ListItem<Model>
 
 
 	/*
-	// Forcefield
-	*/
+	 * Forcefield
+	 */
 	private:
 	// Forcefield associated with this model
 	Forcefield* forcefield_;
@@ -551,8 +551,8 @@ class Model : public ListItem<Model>
 
 
 	/*
-	// Expression / Typing
-	*/
+	 * Expression / Typing
+	 */
 	private:
 	// Log value at which the expression was valid
 	int expressionPoint_;
@@ -623,8 +623,8 @@ class Model : public ListItem<Model>
 
 
 	/*
-	// Energy / Forces
-	*/
+	 * Energy / Forces
+	 */
 	private:
 	// RMS force for last calculated forces
 	double rmsForce_;
@@ -665,8 +665,8 @@ class Model : public ListItem<Model>
 
 
 	/*
-	// Patterns
-	*/
+	 * Patterns
+	 */
 	private:
 	// Pattern nodes for the model
 	List<Pattern> patterns_;
@@ -723,8 +723,8 @@ class Model : public ListItem<Model>
 
 
 	/*
-	// Model Building
-	*/
+	 * Model Building
+	 */
 	private:
 	// Pen orientation matrix
 	Matrix penOrientation_;
@@ -757,8 +757,8 @@ class Model : public ListItem<Model>
 
 
 	/*
-	// Geometry
-	*/
+	 * Geometry
+	 */
 	public:
 	// Calculate distance
 	double distance(int i, int j);
@@ -772,8 +772,8 @@ class Model : public ListItem<Model>
 
 
 	/*
-	// Transformations
-	*/
+	 * Transformations
+	 */
 	private:
 	// Coordinates of transformation centre
 	Vec3<double> transformationCentre_;
@@ -811,8 +811,8 @@ class Model : public ListItem<Model>
 
 
 	/*
-	// Trajectory Frames
-	*/
+	 * Trajectory Frames
+	 */
 	private:
 	// Name associated with trajectory file
 	QString trajectoryName_;
@@ -889,8 +889,8 @@ class Model : public ListItem<Model>
 
 
 	/*
-	// Rendering Source
-	*/
+	 * Rendering Source
+	 */
 	private:
 	// Where to get render source data
 	RenderSource renderSource_;
@@ -911,8 +911,8 @@ class Model : public ListItem<Model>
 
 
 	/*
-	// Measurements
-	*/
+	 * Measurements
+	 */
 	private:
 	// List of distance measurements
 	List<Measurement> distanceMeasurements_;
@@ -977,8 +977,8 @@ class Model : public ListItem<Model>
 
 
 	/*
-	// Sites
-	*/
+	 * Sites
+	 */
 	public:
 	// List of site definitions
 	List<Site> sites;
@@ -991,8 +991,8 @@ class Model : public ListItem<Model>
 
 
 	/*
-	// Calculated quantities
-	*/
+	 * Calculated quantities
+	 */
 	public:
 	// List of calculate quantities
 	List<Calculable> quantities;
@@ -1001,8 +1001,8 @@ class Model : public ListItem<Model>
 
 
 	/*
-	// Selection Actions
-	*/
+	 * Selection Actions
+	 */
 	public:
 	// Return the empirical formula of the selected atoms
 	QString selectionEmpirical(bool markOnly, bool addSpaces = false ) const;
@@ -1019,8 +1019,8 @@ class Model : public ListItem<Model>
 
 
 	/*
-	// Glyphs
-	*/
+	 * Glyphs
+	 */
 	private:
 	// List of glyphs within model
 	List<Glyph> glyphs_;
@@ -1049,8 +1049,8 @@ class Model : public ListItem<Model>
 
 
 	/*
-	// Undo / Redo
-	*/
+	 * Undo / Redo
+	 */
 	private:
 	// Whether undo/redo is enabled (default is false)
 	bool undoRedoEnabled_;
@@ -1085,8 +1085,8 @@ class Model : public ListItem<Model>
 
 
 	/*
-	// Component Definition (for disordered builder only)
-	*/
+	 * Component Definition (for disordered builder only)
+	 */
 	private:
 	// Insertion policy for the component
 	Model::InsertionPolicy componentInsertionPolicy_;
@@ -1123,8 +1123,8 @@ class Model : public ListItem<Model>
 
 
 	/*
-	// Grid Data
-	*/
+	 * Grid Data
+	 */
 	private:
 	// Grids currently associated to the model
 	List<Grid> grids_;
@@ -1143,8 +1143,8 @@ class Model : public ListItem<Model>
 
 
 	/*
-	// ZMatrix
-	*/
+	 * ZMatrix
+	 */
 	private:
 	// Zmatrix definition of model
 	ZMatrix zMatrix_;
@@ -1159,8 +1159,8 @@ class Model : public ListItem<Model>
 
 
 	/*
-	// Molecular Orbital Data
-	*/
+	 * Molecular Orbital Data
+	 */
 	private:
 	// List of basis shells
 	List<BasisShell> basisShells_;
@@ -1189,8 +1189,8 @@ class Model : public ListItem<Model>
 
 
 	/*
-	// Vibration Data
-	*/
+	 * Vibration Data
+	 */
 	private:
 	// List of defined vibrations
 	List<Vibration> vibrations_;

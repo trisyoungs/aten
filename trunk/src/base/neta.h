@@ -75,8 +75,8 @@ class Neta : public ListItem<Neta>
 
 
 	/*
-	// Definition
-	*/
+	 * Definition
+	 */
 	private:
 	// Parent forcefield
 	Forcefield* parentForcefield_;
@@ -119,8 +119,8 @@ class Neta : public ListItem<Neta>
 
 
 	/*
-	// Methods
-	*/
+	 * Methods
+	 */
 	private:
 	// Current atom being checked...
 	Atom* targetAtom_;

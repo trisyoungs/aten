@@ -41,8 +41,8 @@ class Vibration : public ListItem<Vibration>
 	
 
 	/*
-	// Data
-	*/
+	 * Data
+	 */
 	private:
 	// Parent model
 	Model* parent_;

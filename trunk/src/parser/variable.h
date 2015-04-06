@@ -54,8 +54,8 @@ class Variable : public TreeNode
 
 
 	/*
-	// Variable Character
-	*/
+	 * Variable Character
+	 */
 	protected:
 	// Name of the variable
 	QString name_;
@@ -82,16 +82,16 @@ class Variable : public TreeNode
 
 
 	/*
-	// Inherited Virtuals
-	*/
+	 * Inherited Virtuals
+	 */
 	public:
 	// Initialise node
 	bool initialise();
 
 
 	/*
-	// Accessor Search
-	*/
+	 * Accessor Search
+	 */
 	public:
 	// Search accessor list provided
 	static int searchAccessor(QString name, int nAccessors, Accessor *accessors);

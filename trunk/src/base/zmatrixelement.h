@@ -42,8 +42,8 @@ class ZMatrixElement : public ListItem<ZMatrixElement>
 
 
 	/*
-	// Data
-	*/
+	 * Data
+	 */
 	private:
 	// Parent ZMatrix
 	ZMatrix* parent_;

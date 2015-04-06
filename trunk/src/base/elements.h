@@ -65,8 +65,8 @@ class Element
 
 
 	/*
-	// Data by Z
-	*/
+	 * Data by Z
+	 */
 	public:
 	// Set ambient colour component of element
 	void setColour(int rgb, double value);
@@ -124,8 +124,8 @@ class ElementMap
 
 
 	/*
-	// Data by Z
-	*/
+	 * Data by Z
+	 */
 	public:
 	// Return periodic table group number
 	int group(int i) const;
@@ -154,8 +154,8 @@ class ElementMap
 
 
 	/*
-	// Data by Atom*
-	*/
+	 * Data by Atom*
+	 */
 	public:
 	// Return periodic table group number
 	int group(Atom* i);

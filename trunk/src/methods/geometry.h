@@ -38,8 +38,8 @@ class Geometry : public Calculable
 	~Geometry();
 
 	/*
-	// Sites
-	*/
+	 * Sites
+	 */
 	private:
 	// Centres involved in geometry measurement
 	Site* sites_[4];
@@ -53,8 +53,8 @@ class Geometry : public Calculable
 	Site* site(int);
 
 	/*
-	// Methods
-	*/
+	 * Methods
+	 */
 	public:
 	// Initialise structure
 	bool initialise();
@@ -66,8 +66,8 @@ class Geometry : public Calculable
 	bool save();
 
 	/*
-	// Data Description
-	*/
+	 * Data Description
+	 */
 	private:
 	// Number of bins in histogram
 	int nBins_;
@@ -87,8 +87,8 @@ class Geometry : public Calculable
 	int nBins() { return nBins_; }
 
 	/*
-	// Data
-	*/
+	 * Data
+	 */
 	private:
 	// Histogram function
 	double* data_;

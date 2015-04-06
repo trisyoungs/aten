@@ -61,8 +61,8 @@ int CommandParser::lex()
 	tokenStart_ = stringPos_-1;
 
 	/*
-	// A '.' followed by a character indicates a variable path - generate a step
-	*/
+	 * A '.' followed by a character indicates a variable path - generate a step
+	 */
 	Messenger::print(Messenger::Parse, "LEXER (%p): begins at [%c], peek = [%c]", tree_, c, peekChar());
 	if ((c == '.') && isalpha(peekChar()))
 	{
@@ -72,8 +72,8 @@ int CommandParser::lex()
 	}
 
 	/*
-	// Number Detection - Either '.' or  a digit begins a number
-	*/
+	 * Number Detection - Either '.' or  a digit begins a number
+	 */
 	if (c == '.' || isdigit(c))
 	{
 		// Default to integer, unless first char is '.'
@@ -135,8 +135,8 @@ int CommandParser::lex()
 	}
 
 	/*
-	// Literal Character String - surrounded by ""
-	*/
+	 * Literal Character String - surrounded by ""
+	 */
 	if ((c == '"') || ( c == '\''))
 	{
 		quoteChar = c;
@@ -176,8 +176,8 @@ int CommandParser::lex()
 	}
 
 	/*
-	// Alphanumeric-token - function or variable
-	*/
+	 * Alphanumeric-token - function or variable
+	 */
 	if (isalpha (c))
 	{
 		do

@@ -44,8 +44,8 @@ class NetaParser
 
 
 	/*
-	// Character Stream
-	*/
+	 * Character Stream
+	 */
 	private:
 	// Character string source
 	QString stringSource_;
@@ -78,8 +78,8 @@ class NetaParser
 
 
 	/*
-	// Node Functions
-	*/
+	 * Node Functions
+	 */
 	private:
 	// Node context stack
 	Reflist<NetaContextNode,int> contextStack_;

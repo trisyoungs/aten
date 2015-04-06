@@ -39,8 +39,8 @@ class UnitCell;
 class Prefs
 {
 	/*
-	// Enumerations
-	*/
+	 * Enumerations
+	 */
 	public:
 	// Mouse buttons
 	enum MouseButton { LeftButton, MiddleButton, RightButton, WheelButton, nMouseButtons };
@@ -94,8 +94,8 @@ class Prefs
 
 
 	/*
-	// Rendering - View Objects
-	*/
+	 * Rendering - View Objects
+	 */
 	private:
 	// Rotation globe style
 	bool viewRotationGlobe_;
@@ -140,8 +140,8 @@ class Prefs
 
 
 	/*
-	// Rendering - Style
-	*/
+	 * Rendering - Style
+	 */
 	private:
 	// Atom colouring style
 	Prefs::ColouringScheme colourScheme_;
@@ -234,8 +234,8 @@ class Prefs
 
 
 	/*
-	// Rendering - Options
-	*/
+	 * Rendering - Options
+	 */
 	private:
 	// C-style format for distance label values
 	QString distanceLabelFormat_;
@@ -308,8 +308,8 @@ class Prefs
 
 
 	/*
-	// GL Options
-	*/
+	 * GL Options
+	 */
 	private:
 	// Depth cue flag
 	bool depthCue_;
@@ -372,8 +372,8 @@ class Prefs
 
 
 	/*
-	// Colours
-	*/
+	 * Colours
+	 */
 	private:
 	// RGB colour values
 	double colours_[Prefs::nObjectColours][4];
@@ -394,8 +394,8 @@ class Prefs
 
 
 	/*
-	// File Preferences
-	*/
+	 * File Preferences
+	 */
 	private:
 	// Recalculate bonding when model has loaded
 	Choice bondOnLoad_;
@@ -467,8 +467,8 @@ class Prefs
 
 
 	/*
-	// Editing Preferences
-	*/
+	 * Editing Preferences
+	 */
 	private:
 	// Bonding tolerance for automatic calculation
 	double bondTolerance_;
@@ -523,8 +523,8 @@ class Prefs
 
 
 	/*
-	// Interaction Preferences
-	*/
+	 * Interaction Preferences
+	 */
 	private:
 	// User-definable mouse button actions
 	MouseAction mouseAction_[Prefs::nMouseButtons];
@@ -555,8 +555,8 @@ class Prefs
 
 
 	/*
-	// General Program / Method Preferences
-	*/
+	 * General Program / Method Preferences
+	 */
 	private:
 	// Main modelview update and energy output frequencies
 	int modelUpdate_, energyUpdate_;
@@ -685,8 +685,8 @@ class Prefs
 
 
 	/*
-	// Units and Conversion
-	*/
+	 * Units and Conversion
+	 */
 	private:
 	// Internal density units to use
 	DensityUnit densityUnit_;
@@ -721,8 +721,8 @@ class Prefs
 
 
 	/*
-	// Forcefield / Expression
-	*/
+	 * Forcefield / Expression
+	 */
 	private:
 	// Method of electrostatic calculation
 	Electrostatics::ElecMethod electrostaticsMethod_;
@@ -803,8 +803,8 @@ class Prefs
 
 
 	/*
-	// External Programs
-	*/
+	 * External Programs
+	 */
 	private:
 	// Location of temporary directory
 	QDir tempDir_;

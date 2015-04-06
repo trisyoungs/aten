@@ -53,8 +53,8 @@ class UnitCell
 	void operator=(UnitCell &source);
 
 	/*
-	// Cell Definition
-	*/
+	 * Cell Definition
+	 */
 	private:
 	// Parent model
 	Model* parent_;
@@ -130,8 +130,8 @@ class UnitCell
 
 
 	/*
-	// Spacegroup
-	*/
+	 * Spacegroup
+	 */
 	private:
 	// SGInfo structure
 	T_SgInfo spacegroup_;
@@ -158,8 +158,8 @@ class UnitCell
 
 
 	/*
-	// Internal Methods
-	*/
+	 * Internal Methods
+	 */
 	private:
 	// Calculate cell lengths/angles from current matrix
 	void calculateVectors();
@@ -180,8 +180,8 @@ class UnitCell
 
 
 	/*
-	// Atom Positioning
-	*/
+	 * Atom Positioning
+	 */
 	public:
 	// Calculate and return the fractional coordinates of the specified real position
 	Vec3<double> realToFrac(const Vec3<double>&) const;
@@ -190,8 +190,8 @@ class UnitCell
 
 
 	/*
-	// Minimum image calculation
-	*/
+	 * Minimum image calculation
+	 */
 	public:
 	// Minimum image vector from r1 to r2
 	Vec3<double> mimVector(const Vec3<double> &r1, const Vec3<double> &r2) const;
@@ -216,8 +216,8 @@ class UnitCell
 
 
 	/*
-	// Geometry calculation
-	*/
+	 * Geometry calculation
+	 */
 	public:
 	// Calculate distance between supplied coordinates
 	double distance(const Vec3<double> &ri, const Vec3<double> &rj, bool useMim = true) const;

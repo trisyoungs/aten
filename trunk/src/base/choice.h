@@ -38,8 +38,8 @@ class Choice
 
 
 	/*
-	// Data
-	*/
+	 * Data
+	 */
 	private:
 	// Choice value
 	int choice_;
@@ -50,8 +50,8 @@ class Choice
 
 
 	/*
-	// Operators
-	*/
+	 * Operators
+	 */
 	public:
 	// Assignment
 	void operator=(Choice::ChoiceType ct);

@@ -40,8 +40,8 @@ class GlyphDataVariable : public PointerVariable
 
 
 	/*
-	// Access Data
-	*/
+	 * Access Data
+	 */
 	public:
 	// Accessor list
         enum Accessors { Atom_Ptr, AtomData, Colour, Vector, nAccessors };
@@ -74,8 +74,8 @@ class GlyphDataArrayVariable : public PointerArrayVariable
 
 
 	/*
-	// Inherited Virtuals
-	*/
+	 * Inherited Virtuals
+	 */
 	public:
 	// Search variable access list for provided accessor
 	StepNode* findAccessor(QString name, TreeNode* arrayIndex, TreeNode* argList = NULL);

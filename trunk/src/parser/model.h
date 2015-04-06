@@ -40,8 +40,8 @@ class ModelVariable : public PointerVariable
 
 
 	/*
-	// Access Data
-	*/
+	 * Access Data
+	 */
 	public:
 	// Accessor list
 	enum Accessors { Angles, Atoms, Bonds, Celldata, ComponentDensity, ComponentPartition, ComponentPolicy, ComponentPopulation, Distances, Eigenvectors, Energy, FFAngles, FFBonds, FFMass, FFTorsions, FFTypes, FField, Filename, Frame, Frames, Glyphs, Grids, Id, Mass, Name, NAngles, NAtoms, NBasisCartesians, NBasisShells, NBonds, NDistances, NEigenvectors, NFFAngles, NFFBonds, NFFTorsions, NFFTypes, NFrames, NGlyphs, NGrids, NPatterns, NSelected, NTorsions, NUnknown, NVibrations, Patterns, PropagateStyle, RepeatCellNegative, RepeatCellPositive, Selection, Torsions, Vibrations, ZMatrix, nAccessors };
@@ -75,8 +75,8 @@ class ModelArrayVariable : public PointerArrayVariable
 
 
 	/*
-	// Inherited Virtuals
-	*/
+	 * Inherited Virtuals
+	 */
 	public:
 	// Search variable access list for provided accessor
 	StepNode* findAccessor(QString name, TreeNode* arrayIndex, TreeNode* argList = NULL);

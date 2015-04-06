@@ -36,8 +36,8 @@ class Cli
 
 
 	/*
-	// Description of command line option
-	*/
+	 * Description of command line option
+	 */
 	public:
 	// Identifier
 	CliSwitch option;
@@ -54,8 +54,8 @@ class Cli
 
 
 	/*
-	// Member functions
-	*/
+	 * Member functions
+	 */
 	public:
 	// Search for short option
 	static Cli::CliSwitch cliSwitch(char c);

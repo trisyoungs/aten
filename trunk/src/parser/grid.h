@@ -40,8 +40,8 @@ class GridVariable : public PointerVariable
 
 
 	/*
-	// Access Data
-	*/
+	 * Access Data
+	 */
 	public:
 	// Accessor list
         enum Accessors { Axes, AxisMajorSpacing, AxisMinorTicks, AxisPositionX, AxisPositionY, AxisPositionZ, AxisVisible, Colour, ColourScale, Cutoff, DataMaximum, DataMinimum, LoopOrder, Name, NX, NY, NZ, NPoints, Origin, OutlineVolume, Periodic, SecondaryColour, SecondaryCutoff, SecondaryUpperCutoff, ShiftX, ShiftY, ShiftZ, Type, Visible, UpperCutoff, UseColourScale, UseDataForZ, nAccessors };
@@ -74,8 +74,8 @@ class GridArrayVariable : public PointerArrayVariable
 
 
 	/*
-	// Inherited Virtuals
-	*/
+	 * Inherited Virtuals
+	 */
 	public:
 	// Search variable access list for provided accessor
 	StepNode* findAccessor(QString name, TreeNode* arrayIndex, TreeNode* argList = NULL);

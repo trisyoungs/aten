@@ -37,8 +37,8 @@ class NewNode : public TreeNode
 
 
 	/*
-	// Variables
-	*/
+	 * Variables
+	 */
 	private:
 	// Type of object to create when executed
 	VTypes::DataType type_;
@@ -47,8 +47,8 @@ class NewNode : public TreeNode
 
 
 	/*
-	// Set / Get / Execute
-	*/
+	 * Set / Get / Execute
+	 */
 	public:
 	// Execute command
 	bool execute(ReturnValue& rv);

@@ -44,8 +44,8 @@ class TrajectoryWidget : public QWidget
 
 
 	/*
-	// Local Variables
-	*/
+	 * Local Variables
+	 */
 	private:
 	// Whether widget is currently refreshing
 	bool refreshing_;
@@ -62,8 +62,8 @@ class TrajectoryWidget : public QWidget
 
 
 	/*
-	// Window Functions
-	*/
+	 * Window Functions
+	 */
 	public:
 	void showWidget();
 	void refresh();

@@ -65,8 +65,8 @@ class CommandParser
 
 
 	/*
-	// Create / Execute
-	*/
+	 * Create / Execute
+	 */
 	private:
 	// Character string source
 	QString stringSource_;
@@ -115,8 +115,8 @@ class CommandParser
 
 
 	/*
-	// Tree Data
-	*/
+	 * Tree Data
+	 */
 	private:
 	// Current program target
 	Program* program_;
@@ -149,8 +149,8 @@ class CommandParser
 
 
 	/*
-	// Pass-Throughs to Tree Functions
-	*/
+	 * Pass-Throughs to Tree Functions
+	 */
 	public:	
 	// Add integer constant
 	TreeNode* addConstant(int i);
@@ -199,8 +199,8 @@ class CommandParser
 
 
 	/*
-	// Filters / GUI
-	*/
+	 * Filters / GUI
+	 */
 	public:
 	// Set filter option
 	bool setFilterOption(QString name, TreeNode* value);

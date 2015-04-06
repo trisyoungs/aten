@@ -4,8 +4,7 @@ Only generate low-quality primitives on startup, leaving high-quality until they
 Remove empty destructors.
 Add ObjectLists (when using CHECK). 
 Move msg.enter/msg.exit code to conditional compilation with CHECK.
-Sort out comment style, and layout of headers (double-line gap etc.).
-Sort out pointer 'style' ( Object *T  to Object* T ).
+Sort out layout of headers (double-line gap etc.).
 Move sg code to separate dir.
 Move math funcs/classes (e.g. Matrix) to separate dir.
 Remove dialog pointers (use instances instead).

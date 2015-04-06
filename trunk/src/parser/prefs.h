@@ -39,8 +39,8 @@ class PreferencesVariable : public Variable
 	~PreferencesVariable();
 
 	/*
-	// Access Data
-	*/
+	 * Access Data
+	 */
 	public:
 	// Accessor list
 	enum Accessors { AllowDialogs, AngleLabelFormat, AromaticRingColour, AtomStyleRadius, BackCull, BackgroundColour, BondStyleRadius, BondTolerance, CacheLimit, CalculateIntra, CalculateVdw, ChargeLabelFormat, ClipFar, ClipNear, ColourScales, ColourScheme, CombinationRule, CommonElements, DashedAromatics, DensityUnit, DepthCue, DepthFar, DepthNear, DistanceLabelFormat, ElecCutoff, ElecMethod, EncoderArgs, EncoderExe, EncoderPostArgs, EncoderPostExe, EnergyUnit, EnergyUpdate, EwaldAlpha, EwaldKMax, EwaldPrecision, ForceRhombohedral, GlobeAxesColour, GlobeColour, GlobeSize, GlyphDefaultColour, HBonds, HBondDotRadius, HDistance, ImageQuality, KeyAction, LabelSize, LineAliasing, ManualSwapBuffers, MaxCuboids, MaxRings, MaxRingSize, MaxUndo, ModelUpdate, MopacExe, MouseAction, MouseMoveFilter, MultiSampling, NoQtSettings, PartitionGrid, Perspective, PerspectiveFov, PolygonAliasing, Quality, RenderStyle, ReplicateFold, ReplicateTrim, ReuseQuality, SelectionScale, Shininess, SpecularColour, Spotlight, SpotlightAmbient, SpotlightDiffuse, SpotlightPosition, SpotlightSpecular, StickNormalWidth, StickSelectedWidth, TempDir, TextColour, TransparentSelection, UnitCellAxesColour, UnitCellColour, UsePixelBuffers, VdwCutoff, VibrationArrowColour, ViewRotationGlobe, WireSelectionColour, ZMapping, ZoomThrottle, nAccessors };

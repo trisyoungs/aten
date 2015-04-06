@@ -68,8 +68,8 @@ class PrimitiveSet
 
 
 	/*
-	// Primitives
-	*/
+	 * Primitives
+	 */
 	private:
 	// Atom
 	Primitive atom_;

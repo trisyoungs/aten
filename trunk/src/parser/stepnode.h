@@ -37,8 +37,8 @@ class StepNode : public TreeNode
 	~StepNode();
 
 	/*
-	// Accessor Data
-	*/
+	 * Accessor Data
+	 */
 	private:
 	// Expected type of preceding return value
 	VTypes::DataType previousType_;
@@ -62,8 +62,8 @@ class StepNode : public TreeNode
 	bool set(ReturnValue& executerv, ReturnValue& setrv);
 
 	/*
-	// Inherited Virtuals
-	*/
+	 * Inherited Virtuals
+	 */
 	public:
 	// Execute node
 	bool execute(ReturnValue& rv);

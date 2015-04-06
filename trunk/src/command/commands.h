@@ -42,8 +42,8 @@ ATEN_USING_NAMESPACE
 class CommandData
 {
 	/*
-	// Command description
-	*/
+	 * Command description
+	 */
 	public:
 	// Command keyword
 	const char* keyword;
@@ -592,8 +592,8 @@ class Commands
 
 
 	/*
-	// Function declarations
-	*/
+	 * Function declarations
+	 */
 	private:
 	// Internals / Joiners
 	bool function_NoFunction(CommandNode* c, Bundle& obj, ReturnValue& rv);
@@ -1068,8 +1068,8 @@ class Commands
 
 
 	/*
-	// Function descriptions / syntax etc.
-	*/
+	 * Function descriptions / syntax etc.
+	 */
 	public:
 	// Pointer to function typedef
 	typedef bool (Commands::*CommandFunction)(CommandNode* c, Bundle& obj, ReturnValue& rv);

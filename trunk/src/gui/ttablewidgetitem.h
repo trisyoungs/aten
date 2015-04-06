@@ -35,8 +35,8 @@ class TTableWidgetItem : public QTableWidgetItem
 	TTableWidgetItem();
 
 	/*
-	// Associated Data
-	*/
+	 * Associated Data
+	 */
 	public:
 	// Associated data item
 	ReturnValue data;

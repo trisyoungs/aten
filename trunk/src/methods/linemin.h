@@ -35,8 +35,8 @@ class LineMinimiser
 	LineMinimiser();
 
 	/*
-	// Variables
-	*/
+	 * Variables
+	 */
 	protected:
 	// Tolerance for root finding
 	double tolerance_;
@@ -52,8 +52,8 @@ class LineMinimiser
 	void initialise(Model* srcmodel);
 
 	/*
-	// Minimisation Methods
-	*/
+	 * Minimisation Methods
+	 */
 	protected:
 	// Generate a new config in tempModel_ following the supplied gradient vector
 	void gradientMove(Model* source, double delta);

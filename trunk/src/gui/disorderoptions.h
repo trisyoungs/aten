@@ -32,22 +32,22 @@ class DisorderOptions : public QDialog
 	Q_OBJECT
 
 	/*
-	// Enumerations
-	*/
+	 * Enumerations
+	 */
 	public:
 	enum TargetModelType { ExistingTarget, NewTarget, GenerateTarget };
 
 	/*
-	// Window Functions
-	*/
+	 * Window Functions
+	 */
 	private slots:
 	void on_OkButton_clicked(bool checked);
 	void on_CancelButton_clicked(bool checked);
 
 
 	/*
-	// Dialog
-	*/
+	 * Dialog
+	 */
 	public:
 	// Constructor
 	DisorderOptions(QWidget *parent = 0);

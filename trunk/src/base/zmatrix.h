@@ -43,8 +43,8 @@ class ZMatrix
 
 
 	/*
-	// Data
-	*/
+	 * Data
+	 */
 	private:
 	// Parent model for which the zmatrix has been created
 	Model* parent_;
@@ -89,8 +89,8 @@ class ZMatrix
 
 
 	/*
-	// Construction and Retrieval
-	*/
+	 * Construction and Retrieval
+	 */
 	private:
 	// Add single definition to list
 	ZMatrixElement* addElement(Reflist<Atom,int>& atomlist);
