@@ -743,7 +743,7 @@ void *TreeNode::argp(int i, VTypes::DataType type)
 	if ((i < 0) || (i >= args_.nItems()))
 	{
 		printf("TreeNode::argp : Argument index %i is out of range (node = %p).", i, this);
-		return false;
+		return NULL;
 	}
 	static ReturnValue rv;
 	bool success;
@@ -760,7 +760,7 @@ Vec3<double> TreeNode::arg3d(int i)
 	if ((i < 0) || (i > (args_.nItems()-3)))
 	{
 		printf("TreeNode::arg3d : Argument index %i is out of range for a triplet (node = %p).\n", i, this);
-		return false;
+		return Vec3<double>();
 	}
 	Vec3<double> result;
 	result.set(argd(i), argd(i+1), argd(i+2));
@@ -773,7 +773,7 @@ Vec3<int> TreeNode::arg3i(int i)
 	if ((i < 0) || (i > (args_.nItems()-3)))
 	{
 		printf("TreeNode::arg3i : Argument index %i is out of range for a triplet (node = %p).\n", i, this);
-		return false;
+		return Vec3<int>();
 	}
 	Vec3<int> result;
 	result.set(argi(i), argi(i+1), argi(i+2));
@@ -786,7 +786,7 @@ Vec3<GLfloat> TreeNode::arg3GLf(int i)
 	if ((i < 0) || (i > (args_.nItems()-3)))
 	{
 		printf("TreeNode::arg3GLf : Argument index %i is out of range for a triplet (node = %p).\n", i, this);
-		return false;
+		return Vec3<GLfloat>();
 	}
 	Vec3<GLfloat> result;
 	result.set(argGLf(i), argGLf(i+1), argGLf(i+2));
@@ -799,7 +799,7 @@ TreeNode* TreeNode::argNode(int i)
 	if ((i < 0) || (i > args_.nItems()))
 	{
 		printf("TreeNode::argNode : Argument index %i is out of range for returning the argument node (node = %p).\n", i, this);
-		return false;
+		return NULL;
 	}
 	return args_[i]->item;
 }
