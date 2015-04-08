@@ -1,16 +1,17 @@
 # Don't forget to include output directory, otherwise
 # the UI file won't be wrapped!
 INCLUDE_DIRECTORIES(
-${CMAKE_CURRENT_BINARY_DIR} 
-${CMAKE_CURRENT_BINARY_DIR}/../
-${QT_INCLUDE_DIR}
-./
-../
-${CMAKE_SOURCE_DIR}
-${CMAKE_BINARY_DIR}
+  ${CMAKE_CURRENT_BINARY_DIR} 
+  ${CMAKE_CURRENT_BINARY_DIR}/../
+  ${Qt5Widgets_INCLUDE_DIRS}
+  ./
+  ../
+  ${CMAKE_SOURCE_DIR}
+  ${CMAKE_BINARY_DIR}
 )
 
-set(qtproject_SRCS
+# Source files
+set(gui_SRCS
   useractions.h
   useractions.cpp
   textratreewidgetitem.h
@@ -69,7 +70,6 @@ set(qtproject_SRCS
   tintegerspindelegate_funcs.cpp
   trajectory_funcs.cpp
   transform_funcs.cpp
-  treegui_funcs.cpp
   tprocess_funcs.cpp
   tprompt_funcs.cpp
   ttablewidgetitem_funcs.cpp
@@ -81,7 +81,8 @@ set(qtproject_SRCS
   zmatrix_funcs.cpp
 )
 
-SET(pro_MOC_HDRS
+# Meta-Objects
+SET(gui_MOC_HDRS
   about.h
   atomlist.h
   celldefinition.h
@@ -117,24 +118,24 @@ SET(pro_MOC_HDRS
   selectvariable.h
   trajectory.h
   transform.h
-  treegui.h
   vibrations.h
   viewbasis.h
   vieweigenvector.h
   zmatrix.h
-  tdoublespindelegate.uih
-  tcolourframe.uih
-  tintegerspindelegate.uih
-  tmenubutton.uih
-  tprocess.uih
-  tprompt.uih
-  ttablewidget.uih
-  ttreewidget.uih
-  viewer.uih
+  tdoublespindelegate.hui
+  tcolourframe.hui
+  tintegerspindelegate.hui
+  tmenubutton.hui
+  tprocess.hui
+  tprompt.hui
+  ttablewidget.hui
+  ttreewidget.hui
+  viewer.hui
 )
-QT4_WRAP_CPP(pro_MOC_SRCS ${pro_MOC_HDRS} OPTIONS -f)
-
-SET(pro_UIS
+QT5_WRAP_CPP(gui_MOC_SRCS ${gui_MOC_HDRS})
+  
+# User Interface Files
+SET(gui_UIS
   about.ui
   atomlist.ui
   celldefinition.ui
@@ -169,17 +170,42 @@ SET(pro_UIS
   selectvariable.ui
   trajectory.ui
   transform.ui
-  treegui.ui
   vibrations.ui
   viewbasis.ui
   vieweigenvector.ui
   zmatrix.ui
 )
-QT4_WRAP_UI(pro_UIS_H ${pro_UIS})
+QT5_WRAP_UI(gui_UIS_H ${gui_UIS})
 
-set(pro_RES_QRC
+# Resources
+set(gui_RES_QRC
   icons.qrc 
 )
-QT4_ADD_RESOURCES(pro_RES ${pro_RES_QRC})
+QT5_ADD_RESOURCES(gui_RES ${gui_RES_QRC})
 
-add_library(gui ${pro_RES} ${pro_UIS_H} ${qtproject_SRCS} ${pro_MOC_SRCS})
+add_library(gui
+  ${gui_RES}
+  ${gui_UIS_H}
+  ${gui_SRCS}
+  ${gui_MOC_SRCS}
+)
+
+# Target 'treegui'
+
+# User Interface Files
+SET(treegui_UIS
+  treegui.ui
+)
+QT5_WRAP_UI(treegui_UIS_H ${treegui_UIS})
+
+# Meta-Objects
+set(treegui_MOC_HDRS
+  treegui.h
+)
+QT5_WRAP_CPP(treegui_MOC_SRCS ${treegui_MOC_HDRS})
+
+add_library(treegui
+  ${treegui_UIS_H}
+  ${treegui_MOC_SRCS}
+  treegui_funcs.cpp
+)

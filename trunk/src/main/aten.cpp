@@ -197,7 +197,7 @@ void Aten::setDirectories()
 
 	// User's home directory
 #ifdef _WIN32
-	if (getenv("USERPROFILE") != '\0') homeDIr_ = getenv("USERPROFILE");
+	if (getenv("USERPROFILE") != '\0') homeDir_ = getenv("USERPROFILE");
 	else homeDir_ = "C:\\";
 #else
 	if (getenv("HOME") != '\0') homeDir_ = getenv("HOME");	

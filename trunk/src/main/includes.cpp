@@ -20,7 +20,6 @@
 */
 
 #include "main/aten.h"
-#include <QtGui/QApplication>
 #include <QDir>
 
 ATEN_USING_NAMESPACE
