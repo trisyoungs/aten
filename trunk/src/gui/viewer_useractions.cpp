@@ -20,7 +20,7 @@
 */
 
 #include "main/aten.h"
-#include "gui/viewer.uih"
+#include "gui/viewer.hui"
 #include "model/model.h"
 #include "model/fragment.h"
 #include "gui/fragments.h"

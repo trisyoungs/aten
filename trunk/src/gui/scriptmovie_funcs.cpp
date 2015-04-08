@@ -22,7 +22,7 @@
 #include <QCloseEvent>
 #include <QtWidgets/QFileDialog>
 #include <QtWidgets/QMessageBox>
-#include "gui/tprocess.uih"
+#include "gui/tprocess.hui"
 #include "main/aten.h"
 #include "gui/scriptmovie.h"
 #include "gui/mainwindow.h"

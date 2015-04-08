@@ -25,7 +25,7 @@
 #include "gui/mainwindow.h"
 #include "model/model.h"
 #include "main/aten.h"
-#include "gui/tdoublespindelegate.uih"
+#include "gui/tdoublespindelegate.hui"
 #include "base/forcefieldatom.h"
 #include "base/namespace.h"
 

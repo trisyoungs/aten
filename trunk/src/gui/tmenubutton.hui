@@ -1,6 +1,6 @@
 /*
 	*** TMenuButton - QToolButton with custom handling of mousepress/release events
-	*** src/gui/tmenubutton.uih
+	*** src/gui/tmenubutton.hui
 	Copyright T. Youngs 2007-2012
 
 	This file is part of Aten.

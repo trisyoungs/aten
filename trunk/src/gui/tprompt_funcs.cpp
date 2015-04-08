@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "gui/tprompt.uih"
+#include "gui/tprompt.hui"
 #include <QPainter>
 #include <QtWidgets/QLayout>
 #include <QtWidgets/QLineEdit>

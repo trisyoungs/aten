@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "gui/viewer.uih"
+#include "gui/viewer.hui"
 #include "model/model.h"
 
 ATEN_USING_NAMESPACE

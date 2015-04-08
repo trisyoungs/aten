@@ -23,8 +23,8 @@
 #include <QtWidgets/QComboBox>
 #include "base/sysfunc.h"
 #include "gui/ffeditor.h"
-#include "gui/tdoublespindelegate.uih"
-#include "gui/tintegerspindelegate.uih"
+#include "gui/tdoublespindelegate.hui"
+#include "gui/tintegerspindelegate.hui"
 #include "ff/forcefield.h"
 #include "model/model.h"
 #include "main/aten.h"

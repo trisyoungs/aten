@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "gui/viewer.uih"
+#include "gui/viewer.hui"
 #include "gui/mainwindow.h"
 #include <QOpenGLFramebufferObject>
 #include <QPainter>

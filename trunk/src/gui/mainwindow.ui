@@ -3402,13 +3402,13 @@
   <customwidget>
    <class>Viewer</class>
    <extends>QWidget</extends>
-   <header>gui/viewer.uih</header>
+   <header>gui/viewer.hui</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>TMenuButton</class>
    <extends>QToolButton</extends>
-   <header>tmenubutton.uih</header>
+   <header>tmenubutton.hui</header>
   </customwidget>
  </customwidgets>
  <resources>

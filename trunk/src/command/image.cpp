@@ -22,7 +22,7 @@
 #include "command/commands.h"
 #include "parser/commandnode.h"
 #include "gui/mainwindow.h"
-#include "gui/tprocess.uih"
+#include "gui/tprocess.hui"
 #include "model/model.h"
 #include "base/prefs.h"
 #include "base/sysfunc.h"

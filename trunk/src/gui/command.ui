@@ -446,7 +446,7 @@
   <customwidget>
    <class>TPrompt</class>
    <extends>QWidget</extends>
-   <header>gui/tprompt.uih</header>
+   <header>gui/tprompt.hui</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

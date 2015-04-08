@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "gui/tmenubutton.uih"
+#include "gui/tmenubutton.hui"
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QStyle>

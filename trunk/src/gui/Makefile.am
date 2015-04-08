@@ -1,6 +1,6 @@
 noinst_LIBRARIES = libgui.a libtreegui.a
 
-SUFFIXES: .ui .uih .qrc
+SUFFIXES: .ui .hui .qrc
 
 .ui.o:
 	$(QTUIC) -o ui_$*.h $<
@@ -8,7 +8,7 @@ SUFFIXES: .ui .uih .qrc
 	${CXX} -I$(top_srcdir)/src -I../ -I./ $(CXXFLAGS) $(ATEN_CFLAGS) -c moc_$*.cpp -o $@
 	rm moc_$*.cpp
 
-.uih.o:
+.hui.o:
 	$(QTMOC) -o $*.cpp -f$< $<
 	$(CXX) 	-I$(top_srcdir)/src -I../ -I./ $(CXXFLAGS) $(ATEN_CFLAGS) -c $*.cpp -o $@
 	rm $*.cpp
@@ -36,7 +36,7 @@ libgui_a_SOURCES += about_funcs.cpp atomlist_funcs.cpp celldefinition_funcs.cpp 
 libgui_a_SOURCES += ffeditor_funcs.cpp layoutlist.cpp loadmodel_funcs.cpp mainwindow_build.cpp mainwindow_context.cpp mainwindow_funcs.cpp mainwindow_init.cpp mainwindow_view.cpp prefs_funcs.cpp progress_funcs.cpp selectelement_funcs.cpp selectfilter_funcs.cpp selectpattern_funcs.cpp selectvariable_funcs.cpp settings.cpp
 libgui_a_SOURCES += mainmenuactions.cpp
 
-libgui_a_SOURCES += tcolourframe.uih ttablewidget.uih tdoublespindelegate.uih tintegerspindelegate.uih ttreewidget.uih tmenubutton.uih tprocess.uih tprompt.uih viewer.uih
+libgui_a_SOURCES += tcolourframe.hui ttablewidget.hui tdoublespindelegate.hui tintegerspindelegate.hui ttreewidget.hui tmenubutton.hui tprocess.hui tprompt.hui viewer.hui
 libgui_a_SOURCES += viewer_funcs.cpp viewer_key.cpp viewer_model.cpp viewer_mouse.cpp viewer_offscreen.cpp viewer_scene.cpp viewer_user.cpp viewer_useractions.cpp tdoublespindelegate_funcs.cpp tcolourframe_funcs.cpp textratreewidgetitem_funcs.cpp tintegerspindelegate_funcs.cpp tmenubutton_funcs.cpp ttablewidgetitem_funcs.cpp ttreewidgetitem_funcs.cpp tprocess_funcs.cpp tprompt_funcs.cpp
 
 libgui_a_SOURCES += useractions.cpp
