@@ -57,7 +57,7 @@ namespace TorsionColumn
 }
 
 // Constructor
-AtenForcefieldEditor::AtenForcefieldEditor(QWidget *parent) : QDialog(parent)
+AtenForcefieldEditor::AtenForcefieldEditor(QWidget* parent) : QDialog(parent)
 {
 	ui.setupUi(this);
 

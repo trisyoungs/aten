@@ -65,8 +65,8 @@ class GlyphsWidget : public QDockWidget
 	QComboBox* dataAtomDataCombo[MAXGLYPHDATA];
 	QDoubleSpinBox* dataValueXSpin[MAXGLYPHDATA], *dataValueYSpin[MAXGLYPHDATA], *dataValueZSpin[MAXGLYPHDATA];
 	TColourFrame *dataColourFrame[MAXGLYPHDATA];
-	QWidget *dataTabWidget[MAXGLYPHDATA];
-	QWidget *dataAtomWidget[MAXGLYPHDATA], *dataValueWidget[MAXGLYPHDATA];
+	QWidget* dataTabWidget[MAXGLYPHDATA];
+	QWidget* dataAtomWidget[MAXGLYPHDATA], *dataValueWidget[MAXGLYPHDATA];
 	// Whether the widget should refresh when it is next shown
 	bool shouldRefresh_;
 	// Whether widget is refreshing

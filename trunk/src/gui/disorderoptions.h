@@ -50,7 +50,7 @@ class DisorderOptions : public QDialog
 	 */
 	public:
 	// Constructor
-	DisorderOptions(QWidget *parent = 0);
+	DisorderOptions(QWidget* parent = 0);
 	// Main form declaration
 	Ui::DisorderOptions ui;
 };

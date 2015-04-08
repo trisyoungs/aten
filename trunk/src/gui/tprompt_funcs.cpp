@@ -27,7 +27,7 @@
 #include <QKeyEvent>
 
 // Constructor
-TPrompt::TPrompt( QWidget *parent ) : QWidget( parent )
+TPrompt::TPrompt( QWidget* parent ) : QWidget( parent )
 {
         QVBoxLayout *layout = new QVBoxLayout( this );
         layout->setMargin(2);

@@ -55,7 +55,7 @@ class QtWidgetObject : public ListItem<QtWidgetObject>
 	// TreeGuiWidget to which Qt widget/object is associated
 	TreeGuiWidget* treeGuiWidget_;
 	// Associated QWidget (if not QObject)
-	QWidget *qWidget_;
+	QWidget* qWidget_;
 	// Associated QObject (if not QWidget)
 	QObject *qObject_;
 	// Associated label widget, if any
@@ -71,7 +71,7 @@ class QtWidgetObject : public ListItem<QtWidgetObject>
 
 	public:
 	// Set TreeGuiWidget/QWidget pair
-	void set(TreeGuiWidget* widget, QWidget *wid, QString label = NULL, QGridLayout *layout = NULL);
+	void set(TreeGuiWidget* widget, QWidget* wid, QString label = NULL, QGridLayout *layout = NULL);
 	// Set TreeGuiWidget/QObject pair
 	void set(TreeGuiWidget* widget, QObject *obj);
 	// Return whether currently refreshing
@@ -79,7 +79,7 @@ class QtWidgetObject : public ListItem<QtWidgetObject>
 	// Return TreeGuiWidget to which Qt widget/object is associated
 	TreeGuiWidget* treeGuiWidget();
 	// Return associated QWidget (if not QObject)
-	QWidget *qWidget();
+	QWidget* qWidget();
 	// Return associated QObject (if not QWidget)
 	QObject *qObject();
 	// Return widget's layout, if it has one
@@ -158,7 +158,7 @@ class AtenTreeGuiDialog : public QDialog
 
 	private:
 	// Create new general layout for specified widget
-	QGridLayout *addLayout(QWidget *widget);
+	QGridLayout *addLayout(QWidget* widget);
 
 	public:
 	// Create new button widget

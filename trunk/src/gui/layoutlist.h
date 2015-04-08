@@ -62,7 +62,7 @@ class LayoutData : public ListItem<LayoutData>
 	// Return current row number (moving to next line if flagged)
 	int row(bool newline = false);
 	// Add a widget to the contained layout
-	void addWidget(QWidget *w, int colspan, bool newline);
+	void addWidget(QWidget* w, int colspan, bool newline);
 };
 
 // Layout list

@@ -25,7 +25,7 @@
 ATEN_USING_NAMESPACE
 
 // Constructor
-DisorderOptions::DisorderOptions(QWidget *parent)
+DisorderOptions::DisorderOptions(QWidget* parent)
 {
 	ui.setupUi(this);
 	// Poke current values into widgets

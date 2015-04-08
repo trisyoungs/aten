@@ -23,7 +23,6 @@
 #define ATEN_TTREEWIDGET_H
 
 #include "templates/reflist.h"
-#include "gui/ttreewidgetitem.h"
 #include <QtWidgets/QTreeWidget>
 #include <QObject>
 #include "base/namespace.h"
@@ -40,8 +39,8 @@ class TTreeWidget : public QTreeWidget
 	TTreeWidget(QWidget *parent) : QTreeWidget(parent) {};
 
 	private:
-	// List of TTreeViewWidgets that this TTreeWidget contains
-	Reflist<TTreeWidgetItem,int> atomItems_;
+	// List of QTreeWidgetItems that this TTreeWidget contains
+	Reflist<QTreeWidgetItem,int> atomItems_;
 
 	signals:
 	void mouseDoubleClickEvent(QMouseEvent *event);
@@ -55,18 +54,18 @@ class TTreeWidget : public QTreeWidget
 
 	public:
 	// Add a TTreeViewAtoms to the list (which we will remember in a reflist<>)
-	TTreeWidgetItem *addTreeItem(QTreeWidgetItem *parent)
+	QTreeWidgetItem* addTreeItem(QTreeWidgetItem *parent)
 	{
-		atomItems_.add(new TTreeWidgetItem(parent));
+		atomItems_.add(new QTreeWidgetItem(parent));
 		return atomItems_.last()->item;
 	}
-	TTreeWidgetItem *addTreeItem(TTreeWidget *parent)
+	QTreeWidgetItem* addTreeItem(TTreeWidget *parent)
 	{
-		atomItems_.add(new TTreeWidgetItem(parent));
+		atomItems_.add(new QTreeWidgetItem(parent));
 		return atomItems_.last()->item;
 	}
 	// Return the reflist of TTreeViewAtoms
-	Refitem<TTreeWidgetItem,int> *atomItems() { return atomItems_.first(); }
+	Refitem<QTreeWidgetItem,int>* atomItems() { return atomItems_.first(); }
 };
 
 ATEN_END_NAMESPACE

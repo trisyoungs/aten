@@ -23,7 +23,7 @@
 #include <QPainter>
 
 // Constructor
-TColourFrame::TColourFrame(QWidget *parent)
+TColourFrame::TColourFrame(QWidget* parent)
 {
 	setParent(parent);
 	brush_.setStyle(Qt::SolidPattern);

@@ -32,7 +32,7 @@ class AtenAbout : public QDialog
 
 	public:
 	// Constructor / Destructor
-	AtenAbout(QWidget *parent = 0);
+	AtenAbout(QWidget* parent = 0);
 	// Main form declaration
 	Ui::AboutDialog ui;
 

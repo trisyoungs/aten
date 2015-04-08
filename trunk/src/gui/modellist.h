@@ -24,7 +24,6 @@
 
 #include "gui/ui_modellist.h"
 #include "gui/textratreewidgetitem.h"
-#include "gui/ttreewidgetitem.h"
 #include "base/namespace.h"
 
 // Forward Declarations (Qt)

@@ -37,10 +37,10 @@ libgui_a_SOURCES += ffeditor_funcs.cpp layoutlist.cpp loadmodel_funcs.cpp mainwi
 libgui_a_SOURCES += mainmenuactions.cpp
 
 libgui_a_SOURCES += tcolourframe.hui ttablewidget.hui tdoublespindelegate.hui tintegerspindelegate.hui ttreewidget.hui tmenubutton.hui tprocess.hui tprompt.hui viewer.hui
-libgui_a_SOURCES += viewer_funcs.cpp viewer_key.cpp viewer_model.cpp viewer_mouse.cpp viewer_offscreen.cpp viewer_scene.cpp viewer_user.cpp viewer_useractions.cpp tdoublespindelegate_funcs.cpp tcolourframe_funcs.cpp textratreewidgetitem_funcs.cpp tintegerspindelegate_funcs.cpp tmenubutton_funcs.cpp ttablewidgetitem_funcs.cpp ttreewidgetitem_funcs.cpp tprocess_funcs.cpp tprompt_funcs.cpp
+libgui_a_SOURCES += viewer_funcs.cpp viewer_key.cpp viewer_model.cpp viewer_mouse.cpp viewer_offscreen.cpp viewer_scene.cpp viewer_user.cpp viewer_useractions.cpp tdoublespindelegate_funcs.cpp tcolourframe_funcs.cpp textratreewidgetitem_funcs.cpp tintegerspindelegate_funcs.cpp tmenubutton_funcs.cpp tprocess_funcs.cpp tprompt_funcs.cpp
 
 libgui_a_SOURCES += useractions.cpp
 
-noinst_HEADERS = about.h atomlist.h celldefinition.h celltransform.h command.h disorderoptions.h disorderwizard.h ffeditor.h forcefields.h fragments.h geometry.h glyphs.h grids.h layoutlist.h loadmodel.h mainwindow.h modellist.h popupaddh.h popupgrow.h popuprebond.h popupresetview.h popuptransmute.h pores.h position.h prefs.h progress.h saveimage.h scriptmovie.h select.h selectelement.h selectfilter.h selectpattern.h selectvariable.h textratreewidgetitem.h trajectory.h transform.h treegui.h ttablewidgetitem.h ttreewidgetitem.h useractions.h vibrations.h viewbasis.h vieweigenvector.h zmatrix.h
+noinst_HEADERS = about.h atomlist.h celldefinition.h celltransform.h command.h disorderoptions.h disorderwizard.h ffeditor.h forcefields.h fragments.h geometry.h glyphs.h grids.h layoutlist.h loadmodel.h mainwindow.h modellist.h popupaddh.h popupgrow.h popuprebond.h popupresetview.h popuptransmute.h pores.h position.h prefs.h progress.h saveimage.h scriptmovie.h select.h selectelement.h selectfilter.h selectpattern.h selectvariable.h textratreewidgetitem.h trajectory.h transform.h treegui.h useractions.h vibrations.h viewbasis.h vieweigenvector.h zmatrix.h
 
 INCLUDES = -I$(top_srcdir)/src -I../ -I./ @ATEN_CFLAGS@
