@@ -84,7 +84,7 @@ int LayoutData::row(bool newline)
 }
 
 // Add a widget to the contained layout
-void LayoutData::addWidget(QWidget *w, int colspan, bool newline)
+void LayoutData::addWidget(QWidget* w, int colspan, bool newline)
 {
 	if (layout_ == NULL)
 	{

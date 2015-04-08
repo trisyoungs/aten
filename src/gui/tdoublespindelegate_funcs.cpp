@@ -31,7 +31,7 @@ TDoubleSpinDelegate::TDoubleSpinDelegate(QObject *parent, double vmin, double vm
 }
 
 // Create editor
-QWidget *TDoubleSpinDelegate::createEditor(QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index) const
+QWidget* TDoubleSpinDelegate::createEditor(QWidget* parent, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
 	// Create editor widget (in this case a double spin box) and set some properties
 	QDoubleSpinBox* editor = new QDoubleSpinBox(parent);
@@ -44,7 +44,7 @@ QWidget *TDoubleSpinDelegate::createEditor(QWidget *parent, const QStyleOptionVi
 }
 
 // Set initial value in editor
-void TDoubleSpinDelegate::setEditorData(QWidget *editor, const QModelIndex &index) const
+void TDoubleSpinDelegate::setEditorData(QWidget* editor, const QModelIndex &index) const
 {
 	double value = index.model()->data(index, Qt::EditRole).toDouble();
 
@@ -53,7 +53,7 @@ void TDoubleSpinDelegate::setEditorData(QWidget *editor, const QModelIndex &inde
 }
 
 // Get value from editing widget, and set back in model
-void TDoubleSpinDelegate::setModelData(QWidget *editor, QAbstractItemModel* model, const QModelIndex &index) const
+void TDoubleSpinDelegate::setModelData(QWidget* editor, QAbstractItemModel* model, const QModelIndex &index) const
 {
 	QDoubleSpinBox* spinBox = static_cast<QDoubleSpinBox*>(editor);
 	spinBox->interpretText();
@@ -63,7 +63,7 @@ void TDoubleSpinDelegate::setModelData(QWidget *editor, QAbstractItemModel* mode
 }
 
 // Update widget geometry
-void TDoubleSpinDelegate::updateEditorGeometry(QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index) const
+void TDoubleSpinDelegate::updateEditorGeometry(QWidget* editor, const QStyleOptionViewItem &option, const QModelIndex &index) const
 {
 	editor->setGeometry(option.rect);
 }

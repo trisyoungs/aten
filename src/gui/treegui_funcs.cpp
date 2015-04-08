@@ -47,7 +47,7 @@ QtWidgetObject::QtWidgetObject() : ListItem<QtWidgetObject>()
 }
 
 // Set TreeGuiWidget/QWidget pair
-void QtWidgetObject::set(TreeGuiWidget* widget, QWidget *wid, QString label, QGridLayout *layout)
+void QtWidgetObject::set(TreeGuiWidget* widget, QWidget* wid, QString label, QGridLayout *layout)
 {
 	treeGuiWidget_ = widget;
 	qWidget_ = wid;
@@ -70,7 +70,7 @@ TreeGuiWidget* QtWidgetObject::treeGuiWidget()
 }
 
 // Return associated QWidget (if not QObject)
-QWidget *QtWidgetObject::qWidget()
+QWidget* QtWidgetObject::qWidget()
 {
 	return qWidget_;
 }
@@ -819,7 +819,7 @@ QtWidgetObject* AtenTreeGuiDialog::addPage(TreeGuiWidget* widget, TreeGuiWidget*
 	}
 
 	// Create new page widget and layout
-	QWidget *pageWidget = new QWidget(this);
+	QWidget* pageWidget = new QWidget(this);
 	QGridLayout *layout = addLayout(pageWidget);
 
 	// Create widget object to return

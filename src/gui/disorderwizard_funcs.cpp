@@ -23,12 +23,12 @@
 #include "gui/mainwindow.h"
 #include "gui/disorderwizard.h"
 #include "gui/disorderoptions.h"
-#include "gui/ttreewidgetitem.h"
 #include "model/model.h"
 #include "methods/mc.h"
 #include "base/sysfunc.h"
 #include "base/progress.h"
 #include "parser/commandnode.h"
+#include "templates/variantpointer.h"
 
 // Constructor
 DisorderWizard::DisorderWizard(AtenWindow& parent) : QWizard(&parent), parent_(parent)
@@ -150,8 +150,8 @@ void DisorderWizard::setPartitionData(QTreeWidgetItem* target, PartitioningSchem
 // Different page selected in the wizard...
 void DisorderWizard::pageChanged(int id)
 {
-	TTreeWidgetItem *item;
-	QTreeWidgetItem* qitem, *selectitem;
+	QTreeWidgetItem* item;
+	QTreeWidgetItem* qitem, *selectItem;
 	Model* m;
 	int count;
 	switch (id)
@@ -188,20 +188,20 @@ void DisorderWizard::pageChanged(int id)
 			{
 				ui.ExistingModelTree->clear();
 				ui.ExistingModelTree->setColumnCount(2);
-				selectitem = NULL;
+				selectItem = NULL;
 				for (m = parent_.aten().models(); m != NULL; m = m->next)
 				{
 					if (m->renderSourceModel()->cell()->type() == UnitCell::NoCell) continue;
-					item = new TTreeWidgetItem(ui.ExistingModelTree);
-					item->data.set(VTypes::ModelData, m);
+					item = new QTreeWidgetItem(ui.ExistingModelTree);
+					item->setData(0, Qt::UserRole, VariantPointer<Model>(m));
 					item->setIcon(0,m->icon());
 					item->setText(1,m->name());
 					item->setTextAlignment(1, Qt::AlignLeft | Qt::AlignTop);
-					if (selectitem == NULL) selectitem = item;
+					if (selectItem == NULL) selectItem = item;
 				}
 				ui.ExistingModelTree->resizeColumnToContents(0);
 				ui.ExistingModelTree->resizeColumnToContents(1);
-				ui.ExistingModelTree->setCurrentItem(selectitem);
+				ui.ExistingModelTree->setCurrentItem(selectItem);
 			}
 			break;
 		// Step 3 / 5 - Select partitioning scheme for cell
@@ -209,21 +209,21 @@ void DisorderWizard::pageChanged(int id)
 			ui.PartitionTree->clear();
 			ui.PartitionTree->setColumnCount(2);
 			partitioningSchemeItems_.clear();
-			selectitem = NULL;
+			selectItem = NULL;
 			
 			for (PartitioningScheme* ps = parent_.aten().partitioningSchemes(); ps != NULL; ps = ps->next)
 			{
 				qitem = new QTreeWidgetItem(ui.PartitionTree);
 				partitioningSchemeItems_.add(qitem, ps);
 				setPartitionData(qitem,ps);
-				if (selectitem == NULL) selectitem = qitem;
+				if (selectItem == NULL) selectItem = qitem;
 				// If the selected mode is DisorderWizard::GenerateTarget then we only allow the simple unit cell partitioning
 				// Since it is always the first in the list, we cna just exit early.
 				if (targetType_ == DisorderWizard::GenerateTarget) break;
 			}
 			ui.PartitionTree->resizeColumnToContents(0);
 			ui.PartitionTree->resizeColumnToContents(1);
-			ui.PartitionTree->setCurrentItem(selectitem);
+			ui.PartitionTree->setCurrentItem(selectItem);
 			break;
 		// Step 4 / 5 - Select component models
 		case (4):
@@ -238,8 +238,8 @@ void DisorderWizard::pageChanged(int id)
 			for (m = parent_.aten().models(); m != NULL; m = m->next)
 			{
 				if (m->renderSourceModel()->cell()->type() != UnitCell::NoCell) continue;
-				item = new TTreeWidgetItem(ui.ChooseComponentsTree);
-				item->data.set(VTypes::ModelData, m);
+				item = new QTreeWidgetItem(ui.ChooseComponentsTree);
+				item->setData(0, Qt::UserRole, VariantPointer<Model>(m));
 				item->setIcon(0,m->icon());
 				item->setText(1,m->name());
 				item->setTextAlignment(1, Qt::AlignLeft | Qt::AlignTop);
@@ -257,11 +257,10 @@ void DisorderWizard::pageChanged(int id)
 			ui.EditComponentsTree->clear();
 			ui.EditComponentsTree->setColumnCount(2);
 			componentModelItems_.clear();
-			selectitem = NULL;
-			foreach (QTreeWidgetItem* qtwi, ui.ChooseComponentsTree->selectedItems())
+			selectItem = NULL;
+			foreach (QTreeWidgetItem* twi, ui.ChooseComponentsTree->selectedItems())
 			{
-				TTreeWidgetItem *twi = (TTreeWidgetItem*) qtwi;
-				m = (Model*) twi->data.asPointer(VTypes::ModelData);
+				m = VariantPointer<Model>(twi->data(0, Qt::UserRole));
 				if (m == NULL)
 				{
 					printf("Error: Found a NULL model reference when populating EditComponentsTree.\n");
@@ -269,16 +268,16 @@ void DisorderWizard::pageChanged(int id)
 				}
 				// Force policy if necessary
 				if (targetType_ == DisorderWizard::GenerateTarget) m->setComponentInsertionPolicy(Model::NumberAndDensityPolicy);
-				item = new TTreeWidgetItem(ui.EditComponentsTree);
-				item->data.set(VTypes::ModelData, m);
+				item = new QTreeWidgetItem(ui.EditComponentsTree);
+				item->setData(0, Qt::UserRole, VariantPointer<Model>(m));
 				componentModelItems_.add(item, m);
 				setComponentData(m);
-				if (selectitem == NULL) selectitem = item;
+				if (selectItem == NULL) selectItem = item;
 			}
 
 			// Flag all components not required as having no insertion policy
 			for (m = parent_.aten().models(); m != NULL; m = m->next) if (!componentModelItems_.containsData(m)) m->setComponentInsertionPolicy(Model::NoPolicy);
-			ui.EditComponentsTree->setCurrentItem(selectitem);
+			ui.EditComponentsTree->setCurrentItem(selectItem);
 			ui.EditComponentsTree->resizeColumnToContents(0);
 			ui.EditComponentsTree->resizeColumnToContents(1);
 
@@ -347,8 +346,7 @@ void DisorderWizard::on_TargetGenerateRadio_clicked(bool checked)
 void DisorderWizard::on_ExistingModelTree_currentItemChanged(QTreeWidgetItem* current, QTreeWidgetItem* previous)
 {
 	if (current == NULL) return;
-	TTreeWidgetItem *twi = (TTreeWidgetItem*) current;
-	existingModel_ = (Model*) twi->data.asPointer(VTypes::ModelData);
+	existingModel_ = VariantPointer<Model>(current->data(0, Qt::UserRole));
 	if (existingModel_ == NULL) return;
 	existingModel_ = existingModel_->renderSourceModel();
 	parent_.aten().setCurrentModel(existingModel_, true);
@@ -360,7 +358,7 @@ void DisorderWizard::on_ExistingModelTree_itemSelectionChanged()
 	// Get number of selected items in tree
 	int nselected = ui.ExistingModelTree->selectedItems().size();
 	// Get button pointer
-	QAbstractButton *nextButton = button(QWizard::NextButton);
+	QAbstractButton* nextButton = button(QWizard::NextButton);
 	nextButton->setEnabled(nselected != 0);
 }
 
@@ -397,7 +395,7 @@ void DisorderWizard::on_PartitionTree_itemSelectionChanged()
 	// Get number of selected items in tree
 	int nselected = ui.PartitionTree->selectedItems().size();
 	// Get button pointer
-	QAbstractButton *nextButton = button(QWizard::NextButton);
+	QAbstractButton* nextButton = button(QWizard::NextButton);
 	nextButton->setEnabled(nselected != 0);
 }
 
@@ -433,7 +431,7 @@ void DisorderWizard::on_ChooseComponentsTree_itemSelectionChanged()
 	// Get number of selected items in tree
 	int nselected = ui.ChooseComponentsTree->selectedItems().size();
 	// Get button pointer
-	QAbstractButton *nextButton = button(QWizard::NextButton);
+	QAbstractButton* nextButton = button(QWizard::NextButton);
 	nextButton->setEnabled(nselected != 0);
 }
 

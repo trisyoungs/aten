@@ -24,7 +24,7 @@
 #include <cstdio>
 
 // Constructor
-AtenAbout::AtenAbout(QWidget *parent) : QDialog(parent)
+AtenAbout::AtenAbout(QWidget* parent) : QDialog(parent)
 {
 	ui.setupUi(this);
 

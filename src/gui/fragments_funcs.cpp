@@ -24,10 +24,9 @@
 #include "base/progress.h"
 #include "gui/mainwindow.h"
 #include "gui/fragments.h"
-#include "gui/ttreewidgetitem.h"
-#include "gui/ttablewidgetitem.h"
 #include "model/fragment.h"
 #include "main/aten.h"
+#include "templates/variantpointer.h"
 
 ATEN_USING_NAMESPACE
 
@@ -72,8 +71,8 @@ void FragmentsWidget::refresh()
 {
 	Messenger::enter("FragmentsWidget::refresh");
 	
-	TTreeWidgetItem *item, *group;
-	TTableWidgetItem *tabitem;
+	QTreeWidgetItem* item, *group;
+	QTableWidgetItem* tableItem;
 	ui.FragmentTree->clear();
 	ui.FragmentTable->clear();
 	
@@ -100,10 +99,10 @@ void FragmentsWidget::refresh()
 // 	}
 
 	// Go through all available fragment groups
-	for (FragmentGroup* fg = parent_.aten().fragmentGroups(); fg != NULL; fg = fg->next)
+	for (FragmentGroup* fragGroup = parent_.aten().fragmentGroups(); fragGroup != NULL; fragGroup = fragGroup->next)
 	{
 		// Are there any fragments in this group?
-		if (fg->nFragments() == 0) continue;
+		if (fragGroup->nFragments() == 0) continue;
 
 		// New row, if column counter is not zero
 		if (column != 0)
@@ -113,41 +112,41 @@ void FragmentsWidget::refresh()
 		}
 
 		// Create main tree branch
-		group = new TTreeWidgetItem(ui.FragmentTree);
+		group = new QTreeWidgetItem(ui.FragmentTree);
 		group->setFlags(Qt::ItemIsEnabled);
 		ui.FragmentTree->setItemExpanded(group, true);
-		group->setText(0, fg->name());
+		group->setText(0, fragGroup->name());
 #if QT_VERSION >= 0x040300
 		group->setFirstColumnSpanned(true);
 #endif
 
 		column = 0;
 		// Go through fragments in group
-		for (Fragment* f = fg->fragments(); f != NULL; f = f->next)
+		for (Fragment* fragment = fragGroup->fragments(); fragment != NULL; fragment = fragment->next)
 		{
 			// Filter this fragment?
-			if ((!filterText_.isEmpty()) && (!f->masterModel()->name().contains(filterText_, Qt::CaseInsensitive))) continue;
+			if ((!filterText_.isEmpty()) && (!fragment->masterModel()->name().contains(filterText_, Qt::CaseInsensitive))) continue;
 
 			// Add item to TTreeWidget
-			item = new TTreeWidgetItem(group);
-			item->data.set(VTypes::ModelData, f);		// No VTypes::FragmentData, so set as a Model instead
-			item->setIcon(1,f->icon());
-			item->setText(2, QString::number(f->masterModel()->nAtoms()));
-			item->setText(3,f->masterModel()->name());
+			item = new QTreeWidgetItem(group);
+			item->setData(0, Qt::UserRole, VariantPointer<Fragment>(fragment));
+			item->setIcon(1, fragment->icon());
+			item->setText(2, QString::number(fragment->masterModel()->nAtoms()));
+			item->setText(3, fragment->masterModel()->name());
 
 			// Add item to TTableWidget
 			if (column == 0)
 			{
-				tabitem = new TTableWidgetItem();
-				tabitem->setText(fg->name());
-				ui.FragmentTable->setVerticalHeaderItem(row, tabitem);
+				tableItem = new QTableWidgetItem();
+				tableItem->setText(fragGroup->name());
+				ui.FragmentTable->setVerticalHeaderItem(row, tableItem);
 			}
-			tabitem = new TTableWidgetItem();
-			tabitem->data.set(VTypes::ModelData, f);		// No VTypes::FragmentData, so set as a Model instead
+			tableItem = new QTableWidgetItem();
+			tableItem->setData(Qt::UserRole, VariantPointer<Fragment>(fragment));
 
-			tabitem->setIcon(f->icon());
-			tabitem->setToolTip(f->masterModel()->name());
-			ui.FragmentTable->setItem(row, column, tabitem);
+			tableItem->setIcon(fragment->icon());
+			tableItem->setToolTip(fragment->masterModel()->name());
+			ui.FragmentTable->setItem(row, column, tableItem);
 			column++;
 			if (column == nperrow)
 			{
@@ -157,8 +156,8 @@ void FragmentsWidget::refresh()
 			}
 			
 			// If the currentFragment_ is NULL, set it as soon as possible
-			if (currentFragment_ == NULL) currentFragment_ = f;
-			if (currentFragment_ == f) item->setSelected(true);
+			if (currentFragment_ == NULL) currentFragment_ = fragment;
+			if (currentFragment_ == fragment) item->setSelected(true);
 		}
 	}
 	
@@ -175,13 +174,12 @@ void FragmentsWidget::on_FragmentTree_currentItemChanged(QTreeWidgetItem* curren
 	else
 	{
 		// Cast into TTreeWidgetItem
-		TTreeWidgetItem *twi = (TTreeWidgetItem*) current;
-		if ((twi == NULL) || (twi->data.type() != VTypes::ModelData)) currentFragment_ = NULL;
+		if (current == NULL) currentFragment_ = NULL;
 		else
 		{
 			// If this is a header item in the Tree, the fragment pointer will be NULL
 			// No VTypes::FragmentData exists, so it was stored as a model
-			currentFragment_ = (Fragment*) twi->data.asPointer(VTypes::ModelData);
+			currentFragment_ = VariantPointer<Fragment>(current->data(0, Qt::UserRole));
 		}
 	}
 }
@@ -197,13 +195,12 @@ void FragmentsWidget::on_FragmentTable_currentItemChanged(QTableWidgetItem *curr
 	else
 	{
 		// Cast into TTreeWidgetItem
-		TTableWidgetItem *twi = (TTableWidgetItem*) current;
-		if ((twi == NULL) || (twi->data.type() != VTypes::ModelData)) currentFragment_ = NULL;
+		if (current == NULL) currentFragment_ = NULL;
 		else
 		{
 			// If this is a header item in the Tree, the fragment pointer will be NULL
 			// No VTypes::FragmentData exists, so it was stored as a model
-			currentFragment_ = (Fragment*) twi->data.asPointer(VTypes::ModelData);
+			currentFragment_ = VariantPointer<Fragment>(current->data(Qt::UserRole));
 		}
 	}
 }

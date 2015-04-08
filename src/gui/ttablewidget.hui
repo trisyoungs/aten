@@ -23,7 +23,6 @@
 #define ATEN_TTABLEWIDGET_H
 
 #include "templates/reflist.h"
-#include "gui/ttreewidgetitem.h"
 #include <QtWidgets/QTableWidget>
 #include <QObject>
 #include "base/namespace.h"

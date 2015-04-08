@@ -25,7 +25,7 @@
 ATEN_USING_NAMESPACE
 
 // Constructor
-AtenProgress::AtenProgress(QWidget *parent, Qt::WindowFlags flags ) : QDialog(parent, flags)
+AtenProgress::AtenProgress(QWidget* parent, Qt::WindowFlags flags ) : QDialog(parent, flags)
 {
 	ui.setupUi(this);
 }
