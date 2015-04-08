@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "gui/tcolourframe.uih"
+#include "gui/tcolourframe.hui"
 #include <QPainter>
 
 // Constructor

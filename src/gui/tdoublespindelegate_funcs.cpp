@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "gui/tdoublespindelegate.uih"
+#include "gui/tdoublespindelegate.hui"
 
 TDoubleSpinDelegate::TDoubleSpinDelegate(QObject *parent, double vmin, double vmax, double vstep, double nDecimals) : QItemDelegate(parent)
 {

@@ -26,7 +26,7 @@
 #include "methods/cg.h"
 #include "main/aten.h"
 #include "base/sysfunc.h"
-#include "gui/tprocess.uih"
+#include "gui/tprocess.hui"
 #include <QtGui/QApplication>
 #include <QFileInfo>
 

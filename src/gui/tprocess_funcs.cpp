@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "gui/tprocess.uih"
+#include "gui/tprocess.hui"
 #include "base/messenger.h"
 #include "base/sysfunc.h"
 #include <stdio.h>

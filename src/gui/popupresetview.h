@@ -23,7 +23,7 @@
 #define ATEN_RESETVIEWPOPUP_H
 
 #include "gui/ui_popupresetview.h"
-#include "gui/tmenubutton.uih"
+#include "gui/tmenubutton.hui"
 
 // Forward Declarations (Qt)
 class AtenWindow;

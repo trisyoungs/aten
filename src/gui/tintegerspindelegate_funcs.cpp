@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "gui/tintegerspindelegate.uih"
+#include "gui/tintegerspindelegate.hui"
 
 TIntegerSpinDelegate::TIntegerSpinDelegate(QObject *parent, int vmin, int vmax, int vstep) : QItemDelegate(parent)
 {

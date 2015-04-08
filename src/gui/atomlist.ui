@@ -362,7 +362,7 @@
   <customwidget>
    <class>TTableWidget</class>
    <extends>QTableWidget</extends>
-   <header>gui/ttablewidget.uih</header>
+   <header>gui/ttablewidget.hui</header>
   </customwidget>
  </customwidgets>
  <resources>

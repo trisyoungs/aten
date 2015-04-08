@@ -23,7 +23,7 @@
 #define ATEN_ADDHPOPUP_H
 
 #include "gui/ui_popupaddh.h"
-#include "gui/tmenubutton.uih"
+#include "gui/tmenubutton.hui"
 
 // Forward Declarations (Qt)
 class AtenWindow;

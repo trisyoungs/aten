@@ -3186,7 +3186,7 @@
   <customwidget>
    <class>TColourFrame</class>
    <extends>QFrame</extends>
-   <header>gui/tcolourframe.uih</header>
+   <header>gui/tcolourframe.hui</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

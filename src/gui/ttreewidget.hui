@@ -1,6 +1,6 @@
 /*
-	*** TTableWidget - QTableWidget with mouse virtuals
-	*** src/gui/ttablewidget.uih
+	*** TTreeWidget - QTreeWidget with custom data storage
+	*** src/gui/ttreewidget.hui
 	Copyright T. Youngs 2007-2012
 
 	This file is part of Aten.
@@ -19,12 +19,12 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_TTABLEWIDGET_H
-#define ATEN_TTABLEWIDGET_H
+#ifndef ATEN_TTREEWIDGET_H
+#define ATEN_TTREEWIDGET_H
 
 #include "templates/reflist.h"
 #include "gui/ttreewidgetitem.h"
-#include <QtWidgets/QTableWidget>
+#include <QtWidgets/QTreeWidget>
 #include <QObject>
 #include "base/namespace.h"
 
@@ -32,18 +32,41 @@ ATEN_USING_NAMESPACE
 
 ATEN_BEGIN_NAMESPACE
 
-class TTableWidget : public QTableWidget
+class TTreeWidget : public QTreeWidget
 {
 	Q_OBJECT
 
 	public:
-	TTableWidget(QWidget *parent) : QTableWidget(parent) {};
+	TTreeWidget(QWidget *parent) : QTreeWidget(parent) {};
+
+	private:
+	// List of TTreeViewWidgets that this TTreeWidget contains
+	Reflist<TTreeWidgetItem,int> atomItems_;
 
 	signals:
 	void mouseDoubleClickEvent(QMouseEvent *event);
 	void mousePressEvent(QMouseEvent *event);
 	void mouseReleaseEvent(QMouseEvent *event);
 	void mouseMoveEvent(QMouseEvent *event);
+
+	public:
+	// Clear list of TTreeViewWidgets 
+	void clearAtomItems() { atomItems_.clear(); }
+
+	public:
+	// Add a TTreeViewAtoms to the list (which we will remember in a reflist<>)
+	TTreeWidgetItem *addTreeItem(QTreeWidgetItem *parent)
+	{
+		atomItems_.add(new TTreeWidgetItem(parent));
+		return atomItems_.last()->item;
+	}
+	TTreeWidgetItem *addTreeItem(TTreeWidget *parent)
+	{
+		atomItems_.add(new TTreeWidgetItem(parent));
+		return atomItems_.last()->item;
+	}
+	// Return the reflist of TTreeViewAtoms
+	Refitem<TTreeWidgetItem,int> *atomItems() { return atomItems_.first(); }
 };
 
 ATEN_END_NAMESPACE

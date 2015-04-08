@@ -23,7 +23,7 @@
 #define ATEN_GROWPOPUP_H
 
 #include "gui/ui_popupgrow.h"
-#include "gui/tmenubutton.uih"
+#include "gui/tmenubutton.hui"
 
 // Forward Declarations (Qt)
 class AtenWindow;

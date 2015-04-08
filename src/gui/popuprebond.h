@@ -23,7 +23,7 @@
 #define ATEN_REBONDPOPUP_H
 
 #include "gui/ui_popuprebond.h"
-#include "gui/tmenubutton.uih"
+#include "gui/tmenubutton.hui"
 
 // Forward Declarations (Qt)
 class AtenWindow;

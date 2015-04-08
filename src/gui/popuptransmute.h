@@ -23,7 +23,7 @@
 #define ATEN_TRANSMUTEPOPUP_H
 
 #include "gui/ui_popuptransmute.h"
-#include "gui/tmenubutton.uih"
+#include "gui/tmenubutton.hui"
 
 // Forward Declarations (Qt)
 class AtenWindow;
