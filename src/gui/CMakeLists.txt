@@ -28,7 +28,6 @@ SET(gui_MOC_HDRS
   layoutlist.h
   loadmodel.h
   mainwindow.h
-  modellist.h
   popupaddh.h
   popupgrow.h
   popuprebond.h
@@ -86,7 +85,6 @@ SET(gui_UIS
   grids.ui
   loadmodel.ui
   mainwindow.ui
-  modellist.ui
   popupaddh.ui
   popupgrow.ui
   popuprebond.ui
@@ -140,9 +138,11 @@ set(gui_SRCS
   mainwindow_build.cpp
   mainwindow_context.cpp
   mainwindow_funcs.cpp
+  mainwindow_image.cpp
   mainwindow_init.cpp
+  mainwindow_messages.cpp
+  mainwindow_models.cpp
   mainwindow_view.cpp
-  modellist_funcs.cpp
   popupaddh_funcs.cpp
   popupgrow_funcs.cpp
   popuprebond_funcs.cpp
