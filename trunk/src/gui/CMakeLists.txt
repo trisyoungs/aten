@@ -10,11 +10,117 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_BINARY_DIR}
 )
 
+# Meta-Objects
+SET(gui_MOC_HDRS
+  about.h
+  atomlist.h
+  celldefinition.h
+  celltransform.h
+  command.h
+  disorderoptions.h
+  disorderwizard.h
+  ffeditor.h
+  forcefields.h
+  fragments.h
+  geometry.h
+  glyphs.h
+  grids.h
+  layoutlist.h
+  loadmodel.h
+  mainwindow.h
+  modellist.h
+  popupaddh.h
+  popupgrow.h
+  popuprebond.h
+  popupresetview.h
+  popuptransmute.h
+  pores.h
+  position.h
+  prefs.h
+  progress.h
+  saveimage.h
+  scriptmovie.h
+  select.h
+  selectelement.h
+  selectfilter.h
+  selectpattern.h
+  selectvariable.h
+  trajectory.h
+  transform.h
+  vibrations.h
+  viewbasis.h
+  vieweigenvector.h
+  zmatrix.h
+  tcolourframe.hui
+  tdoublespindelegate.hui
+  textratreewidgetitem.h
+  tintegerspindelegate.hui
+  tmenubutton.hui
+  tprocess.hui
+  tprompt.hui
+  ttablewidget.hui
+  ttreewidget.hui
+  viewer.hui
+)
+QT5_WRAP_CPP(gui_MOC_SRCS ${gui_MOC_HDRS})
+
+set(treegui_MOC_HDRS
+  treegui.h
+)
+QT5_WRAP_CPP(treegui_MOC_SRCS ${treegui_MOC_HDRS})
+
+# User Interface Files
+SET(gui_UIS
+  about.ui
+  atomlist.ui
+  celldefinition.ui
+  celltransform.ui
+  command.ui
+  disorderoptions.ui
+  disorderwizard.ui
+  ffeditor.ui
+  forcefields.ui
+  fragments.ui
+  geometry.ui
+  glyphs.ui
+  grids.ui
+  loadmodel.ui
+  mainwindow.ui
+  modellist.ui
+  popupaddh.ui
+  popupgrow.ui
+  popuprebond.ui
+  popupresetview.ui
+  popuptransmute.ui
+  pores.ui
+  position.ui
+  prefs.ui
+  progress.ui
+  saveimage.ui
+  scriptmovie.ui
+  select.ui
+  selectelement.ui
+  selectfilter.ui
+  selectpattern.ui
+  selectvariable.ui
+  trajectory.ui
+  transform.ui
+  vibrations.ui
+  viewbasis.ui
+  vieweigenvector.ui
+  zmatrix.ui
+)
+QT5_WRAP_UI(gui_UIS_H ${gui_UIS})
+
+SET(treegui_UIS
+  treegui.ui
+)
+QT5_WRAP_UI(treegui_UIS_H ${treegui_UIS})
+
 # Source files
 set(gui_SRCS
   useractions.h
   useractions.cpp
-  textratreewidgetitem.h
   about_funcs.cpp
   atomlist_funcs.cpp
   celldefinition_funcs.cpp
@@ -77,108 +183,13 @@ set(gui_SRCS
   zmatrix_funcs.cpp
 )
 
-# Meta-Objects
-SET(gui_MOC_HDRS
-  about.h
-  atomlist.h
-  celldefinition.h
-  celltransform.h
-  command.h
-  disorderoptions.h
-  disorderwizard.h
-  ffeditor.h
-  forcefields.h
-  fragments.h
-  geometry.h
-  glyphs.h
-  grids.h
-  layoutlist.h
-  loadmodel.h
-  mainwindow.h
-  modellist.h
-  popupaddh.h
-  popupgrow.h
-  popuprebond.h
-  popupresetview.h
-  popuptransmute.h
-  pores.h
-  position.h
-  prefs.h
-  progress.h
-  saveimage.h
-  scriptmovie.h
-  select.h
-  selectelement.h
-  selectfilter.h
-  selectpattern.h
-  selectvariable.h
-  trajectory.h
-  transform.h
-  vibrations.h
-  viewbasis.h
-  vieweigenvector.h
-  zmatrix.h
-  tdoublespindelegate.hui
-  tcolourframe.hui
-  tintegerspindelegate.hui
-  tmenubutton.hui
-  tprocess.hui
-  tprompt.hui
-  ttablewidget.hui
-  ttreewidget.hui
-  viewer.hui
-)
-QT5_WRAP_CPP(gui_MOC_SRCS ${gui_MOC_HDRS})
-  
-# User Interface Files
-SET(gui_UIS
-  about.ui
-  atomlist.ui
-  celldefinition.ui
-  celltransform.ui
-  command.ui
-  disorderoptions.ui
-  disorderwizard.ui
-  ffeditor.ui
-  forcefields.ui
-  fragments.ui
-  geometry.ui
-  glyphs.ui
-  grids.ui
-  loadmodel.ui
-  mainwindow.ui
-  modellist.ui
-  popupaddh.ui
-  popupgrow.ui
-  popuprebond.ui
-  popupresetview.ui
-  popuptransmute.ui
-  pores.ui
-  position.ui
-  prefs.ui
-  progress.ui
-  saveimage.ui
-  scriptmovie.ui
-  select.ui
-  selectelement.ui
-  selectfilter.ui
-  selectpattern.ui
-  selectvariable.ui
-  trajectory.ui
-  transform.ui
-  vibrations.ui
-  viewbasis.ui
-  vieweigenvector.ui
-  zmatrix.ui
-)
-QT5_WRAP_UI(gui_UIS_H ${gui_UIS})
-
 # Resources
 set(gui_RES_QRC
   icons.qrc 
 )
 QT5_ADD_RESOURCES(gui_RES ${gui_RES_QRC})
 
+# Target 'gui'
 add_library(gui
   ${gui_RES}
   ${gui_UIS_H}
@@ -187,21 +198,9 @@ add_library(gui
 )
 
 # Target 'treegui'
-
-# User Interface Files
-SET(treegui_UIS
-  treegui.ui
-)
-QT5_WRAP_UI(treegui_UIS_H ${treegui_UIS})
-
-# Meta-Objects
-set(treegui_MOC_HDRS
-  treegui.h
-)
-QT5_WRAP_CPP(treegui_MOC_SRCS ${treegui_MOC_HDRS})
-
 add_library(treegui
   ${treegui_UIS_H}
   ${treegui_MOC_SRCS}
   treegui_funcs.cpp
 )
+
