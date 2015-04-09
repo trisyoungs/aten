@@ -9,10 +9,6 @@ set(VERSION_PATCH "1")
 set(CMAKE_BUILD_TYPE "Release")
 
 cmake_minimum_required(VERSION 2.8.11)
-if(APPLE)
-  set(CMAKE_OSX_ARCHITECTURES "i386;x86_64")
-  ADD_DEFINITIONS(-D_MAC)
-endif(APPLE)
 
 if(COMMAND cmake_policy)
   cmake_policy(VERSION 2.6)
@@ -55,7 +51,6 @@ if(WIN32)
   if(MINGW)
     SET(CMAKE_EXE_LINKER_FLAGS "-mwindows")
   endif(MINGW)
-
 endif(WIN32)
 
 # -- Unix
@@ -68,6 +63,8 @@ endif(UNIX)
 # -- OSX
 if(APPLE)
   set (target_name aten)
+  #set(CMAKE_OSX_ARCHITECTURES "x86_64")
+  ADD_DEFINITIONS(-D_MAC)
   # Set include location for FreeType2
   set(FT2_INCLUDES "/usr/local/include/freetype2")
   # Find OpenGL and GLUT
@@ -76,7 +73,6 @@ if(APPLE)
   # Set libraries for link time
   set(FTGL_LIBRARIES "-L/usr/local/lib -lftgl")
   # Add define to suppress gl.h/gl3.h include warnings
-  ADD_DEFINITIONS("-DGL_DO_NOT_WARN_IF_MULTI_GL_VERSION_HEADERS_INCLUDED")
 endif(APPLE)
 
 set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
@@ -116,30 +112,16 @@ add_executable(${target_name}  MACOSX_BUNDLE
 
 # Perform final link
 link_directories (${LIBRARY_OUTPUT_PATH})
-IF(WIN32 OR APPLE)
+IF(WIN32)
   set(ATEN_LINK_LIBS Qt5::Widgets Qt5::Core ${FTGL_LIBRARIES} ${OPENGL_LIBRARIES} ${FT2_LIBRARIES} C:/GnuWin32/lib/libreadline.dll.a)
-ELSE(WIN32 OR APPLE)
+ELSEIF(APPLE)
+  set(ATEN_LINK_LIBS Qt5::Widgets Qt5::Core ${FTGL_LIBRARIES} ${OPENGL_LIBRARIES} ${FT2_LIBRARIES} ${READLINE_LIBRARY})
+ELSE(APPLE)
   set(ATEN_LINK_LIBS Qt5::Widgets Qt5::Core -lGL -lftgl)
-ENDIF(WIN32 OR APPLE)
+ENDIF(WIN32)
 
 target_link_libraries( ${target_name}
     gui parser treegui command methods render model math sg main fourier ff base
     ${ATEN_LINK_LIBS}
     )
-
-#IF(WIN32 OR APPLE)
-#target_link_libraries(${target_name} 
-#main command parser gui render methods model ff fourier base math sg
-#${QT_QTOPENGL_LIBRARY} ${OPENGL_LIBRARIES} ${QT_QTGUI_LIBRARY} ${QT_QTCORE_LIBRARY}
-#${READLINE_LIBRARY}
-#)
-#ELSE(WIN32 OR APPLE)
-#target_link_libraries(${target_name} 
-#main command parser gui render methods model ff fourier base math sg
-#${QT_QTOPENGL_LIBRARY} ${QT_QTGUI_LIBRARY} ${QT_QTCORE_LIBRARY}
-#${READLINE_LIBRARY}
-#)
-#ENDIF(WIN32 OR APPLE)
-
-
 
