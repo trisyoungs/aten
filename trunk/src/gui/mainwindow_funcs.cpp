@@ -50,7 +50,6 @@
 #include "gui/geometry.h"
 #include "gui/glyphs.h"
 #include "gui/grids.h"
-#include "gui/modellist.h"
 #include "gui/pores.h"
 #include "gui/position.h"
 #include "gui/scriptmovie.h"
@@ -77,6 +76,7 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 	// Private variables
 	saveModelFilter_ = NULL;
 	contextAtom_ = NULL;
+	modelListRefreshing_ = false;
 
 	// Public variables
 	infoLabel1_ = NULL;
@@ -94,7 +94,6 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 	geometryWidget = new GeometryWidget(*this, Qt::Tool);
 	glyphsWidget = new GlyphsWidget(*this, Qt::Tool);
 	gridsWidget = new GridsWidget(*this, Qt::Tool);
-	modelListWidget = new ModelListWidget(*this, Qt::Tool);
 	positionWidget = new PositionWidget(*this, Qt::Tool);
 	poresWidget = new PoresWidget(*this, Qt::Tool);
 	scriptMovieWidget = new ScriptMovieWidget(*this, Qt::Tool);
@@ -102,7 +101,7 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 	trajectoryWidget = new TrajectoryWidget(*this, Qt::Tool);
 	transformWidget = new TransformWidget(*this, Qt::Tool);
 	vibrationsWidget = new VibrationsWidget(*this, Qt::Tool);
-	dockWidgets_ << atomListWidget << cellDefinitionWidget << cellTransformWidget << commandWidget << fragmentsWidget << geometryWidget << glyphsWidget << gridsWidget << modelListWidget << poresWidget << positionWidget << scriptMovieWidget << selectWidget << transformWidget << vibrationsWidget;
+	dockWidgets_ << atomListWidget << cellDefinitionWidget << cellTransformWidget << commandWidget << fragmentsWidget << geometryWidget << glyphsWidget << gridsWidget << poresWidget << positionWidget << scriptMovieWidget << selectWidget << transformWidget << vibrationsWidget;
 
 	// Set up misc things for Qt (QActionGroups etc.) that we couldn't do in Designer
 	finaliseUi();
@@ -117,7 +116,6 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 	cellDefinitionWidget->refresh();
 	cellTransformWidget->refresh();
 	commandWidget->refreshScripts();
-	modelListWidget->refresh();
 	atomListWidget->refresh();
 	updateControls();
 	updateWidgets();
@@ -257,7 +255,6 @@ void AtenWindow::updateWidgets(int targets)
 	updateMainWindow();
 	updateContextMenu();
 	
-	if (targets&AtenWindow::ModelsTarget) modelListWidget->refresh();
 	if (targets&AtenWindow::GeometryTarget) geometryWidget->refresh();
 	if (targets&AtenWindow::SelectTarget) selectWidget->refresh();
 	if (targets&AtenWindow::VibrationsTarget) vibrationsWidget->refresh();
@@ -623,66 +620,4 @@ void AtenWindow::setActiveUserAction(UserAction::Action ua)
 void AtenWindow::setMessageLabel(QString message)
 {
 	messageLabel_->setText(message);
-}
-
-/*
- * Messages Scrollbar
- */
-
-void AtenWindow::on_MessagesScroll_sliderMoved(int position)
-{
-	postRedisplay();
-}
-
-// Update messages widgets
-void AtenWindow::updateMessagesWidgets()
-{
-	// Calculate current display height
-	int maxDisplayLines = ui.MainView->contextHeight() / ui.MainView->fontPixelHeight();
-	int currentPosition = ui.MessagesScroll->sliderPosition();
-	ui.MessagesScroll->setMaximum( std::max(0, Messenger::nMessagesBuffered()-maxDisplayLines));
-}
-
-// Return current position of messages scrollbar
-int AtenWindow::messagesScrollPosition()
-{
-	return ui.MessagesScroll->sliderPosition();
-}
-
-/*
- * Image Generation
- */
-
-// Bitmap Image Formats (conform to allowable pixmap formats in Qt)
-const char* bitmapFormatFilters[AtenWindow::nBitmapFormats] = { "Windows Bitmap (*.bmp)", "Joint Photographic Experts Group (*.jpg)", "Portable Network Graphics (*.png)", "Portable Pixmap (*.ppm)", "X11 Bitmap (*.xbm)", "X11 Pixmap (*.xpm)" };
-const char* bitmapFormatExtensions[AtenWindow::nBitmapFormats] = { "bmp", "jpg", "png", "ppm", "xbm", "xpm" };
-AtenWindow::BitmapFormat AtenWindow::bitmapFormat(QString s, bool reportError)
-{
-	AtenWindow::BitmapFormat bf = (AtenWindow::BitmapFormat) enumSearch("bitmap format", AtenWindow::nBitmapFormats, bitmapFormatExtensions, s);
-	if ((bf == AtenWindow::nBitmapFormats) && reportError) enumPrintValid(AtenWindow::nBitmapFormats, bitmapFormatExtensions);
-	return bf;
-}
-AtenWindow::BitmapFormat AtenWindow::bitmapFormatFromFilter(const char* s)
-{
-	return (AtenWindow::BitmapFormat) enumSearch("bitmap format", AtenWindow::nBitmapFormats, bitmapFormatFilters,s);
-}
-const char* AtenWindow::bitmapFormatFilter(AtenWindow::BitmapFormat bf)
-{
-	return bitmapFormatFilters[bf];
-}
-const char* AtenWindow::bitmapFormatExtension(AtenWindow::BitmapFormat bf)
-{
-	return bitmapFormatExtensions[bf];
-}
-
-// Save image of current view
-QPixmap AtenWindow::scenePixmap(int width, int height)
-{
-	return ui.MainView->generateImage(width, height);
-}
-
-// Return pixmap of specified model
-QPixmap AtenWindow::modelPixmap(Model* model, int width, int height)
-{
-	return ui.MainView->generateModelImage(model, width, height);
 }

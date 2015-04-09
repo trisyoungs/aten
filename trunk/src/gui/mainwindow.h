@@ -63,7 +63,6 @@ class GeometryWidget;
 class GlyphsWidget;
 class GridsWidget;
 class MDWidget;
-class ModelListWidget;
 class PoresWidget;
 class PositionWidget;
 class ScriptMovieWidget;
@@ -344,6 +343,21 @@ class AtenWindow : public QMainWindow
 
 
 	/*
+	 * Model List
+	 */
+	private:
+	// Whether model list is currently refreshing
+	bool modelListRefreshing_;
+
+	private:
+	// Refresh model list
+	void refreshModelList();
+
+	private slots:
+	void on_ModelTree_itemSelectionChanged();
+
+
+	/*
 	 * Messages Scrollbar
 	 */
 	private slots:
@@ -435,7 +449,7 @@ class AtenWindow : public QMainWindow
 	 */
 	public:
 	// Update Targets
-	enum UpdateTarget { AtomsTarget = 1, CellTarget = 2, ForcefieldsTarget = 4, GlyphsTarget = 8, GridsTarget = 16, ModelsTarget = 32, CanvasTarget = 64, StatusBarTarget = 128, GeometryTarget = 256, VibrationsTarget = 512, SelectTarget = 1024, TrajectoryTarget = 2048, AllTarget = 4095 };
+	enum UpdateTarget { AtomsTarget = 1, CellTarget = 2, ForcefieldsTarget = 4, GlyphsTarget = 8, GridsTarget = 16, CanvasTarget = 64, StatusBarTarget = 128, GeometryTarget = 256, VibrationsTarget = 512, SelectTarget = 1024, TrajectoryTarget = 2048, AllTarget = 4095 };
 
 	private:
 	// List of dock widgets
@@ -462,8 +476,6 @@ class AtenWindow : public QMainWindow
 	GlyphsWidget *glyphsWidget;
 	// Grids dock widget
 	GridsWidget *gridsWidget;
-	// Model List dock widget
-	ModelListWidget *modelListWidget;
 	// Pore builder dock widget
 	PoresWidget *poresWidget;
 	// Atom positioning dock widget
