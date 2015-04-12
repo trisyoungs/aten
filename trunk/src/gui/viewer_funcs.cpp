@@ -80,137 +80,11 @@ Viewer::~Viewer()
  * Character / Setup
  */
 
-// Initialise context widget (when created by Qt)
-void Viewer::initializeGL()
-{
-	Messenger::enter("Viewer::initializeGL");
-	
-        valid_ = true;
-
-	// Setup function pointers to OpenGL extension functions
-	initializeOpenGLFunctions();
-
-	// Setup offscreen context
-	Messenger::print(Messenger::Verbose, "Setting up offscreen context and surface...");
-        offscreenContext_.setShareContext(context());
-        offscreenContext_.setFormat(context()->format());
-        offscreenContext_.create();
-        offscreenSurface_.setFormat(context()->format());
-	offscreenSurface_.create();
-	Messenger::print(Messenger::Verbose, "Done.");
-
-	// Make sure primitives are up-to-date
-	updatePrimitives(Viewer::LowQuality);
-	updatePrimitives(Viewer::HighQuality);
-
-        // Check for vertex buffer extensions
-        if ((!hasOpenGLFeature(QOpenGLFunctions::Buffers)) && (PrimitiveInstance::globalInstanceType() == PrimitiveInstance::VBOInstance))
-        {
-                Messenger::warn("VBO extension is requested but not available, so reverting to display lists instead.\n");
-                PrimitiveInstance::setGlobalInstanceType(PrimitiveInstance::ListInstance);
-        }
-
-	Messenger::exit("Viewer::initializeGL");
-}
-
-// void Viewer::paintEvent(QPaintEvent* event)
-void Viewer::paintGL()
-{
-	// Do nothing if the canvas is not valid, or we are still drawing from last time, or the Aten pointer has not been set
-	if ((!valid_) || drawing_ || (!atenWindow_)) return;
-
-	Messenger::enter("Viewer::paintGL");
-
-	// Set the drawing flag so we don't have any rendering clashes
-	drawing_ = true;
-
-	atenWindow_->updateMessagesWidgets();
-
-	// Create a QPainter
-	QPainter painter(this);
-	
-	// Setup GL and clear view
-	GLfloat col[4];
-	prefs.copyColour(Prefs::BackgroundColour, col);
-	glClearColor(col[0], col[1], col[2], col[3]);
-
-	glViewport(0, 0, contextWidth_, contextHeight_);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	// Store all GL state variables, since they will be modified by QPainter
-	glPushAttrib(GL_ALL_ATTRIB_BITS);
-
-	// Store height of current font (so the scrollbar can be set correctly)
-	fontPixelHeight_ = painter.fontMetrics().height();
-
-	// Grab message buffer
-	QList<Message>& messages = Messenger::messageBuffer();
-	int margin = 4;
-	QRectF textRect(margin, margin, contextWidth_-2*margin, contextHeight_-2*margin), actualRect;
-	for (int n=atenWindow_->messagesScrollPosition(); n<messages.count(); ++n)
-	{
-		// Set brush colour to correspond to message type
-		painter.setPen(messages.at(n).colour());
-
-		// Set initial textRect
-		textRect.setWidth(contextWidth_-2*margin);
-		textRect.setHeight(contextHeight_-2*margin);
-		actualRect = QRectF();
-		painter.drawText(textRect, Qt::AlignBottom | Qt::TextWordWrap, messages.at(n).text(), &actualRect);
-
-		// Translate bounding rectangle upwarsd and check to make sure we are still on-screen
-		textRect.translate(0.0, -actualRect.height());
-		if (textRect.bottom() < margin) break;
-	}
-
-	painter.beginNativePainting();
-
-	// Restore all GL state variables, and setup GL
-	glPopAttrib();
-	setupGL();
-
-	// Set colour mode
-	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
-	glEnable(GL_COLOR_MATERIAL);
-	glEnable(GL_TEXTURE_2D);
-	glClear(GL_DEPTH_BUFFER_BIT);
-
-	// Render all models
-	renderModels();
-
-	painter.endNativePainting();
-	
-	// Done!
-	painter.end();
-
-	// Set the rendering flag to false
-	drawing_ = false;
-
-	// Always revert to lower quality for next pass
-	primitiveSet_ = Viewer::LowQuality;
-
-	Messenger::exit("Viewer::paintGL");
-}
-
-// Resize function
-void Viewer::resizeGL(int newwidth, int newheight)
-{
-	// Store the new width and height of the widget
-	contextWidth_ = (GLsizei) newwidth;
-	contextHeight_ = (GLsizei) newheight;
-}
-
-void Viewer::focusOutEvent(QFocusEvent* event)
-{
-	atenWindow_->updateWidgets(AtenWindow::StatusBarTarget);
-}
-
 // Set pointer to Aten's main structure
 void Viewer::setAten(Aten* aten)
 {
 	aten_ = aten;
 }
-
 
 // Set pointer to AtenWindow
 void Viewer::setAtenWindow(AtenWindow* atenWindow)
@@ -309,6 +183,8 @@ Model* Viewer::modelAt(int x, int y)
 void Viewer::requestHighQuality()
 {
 	primitiveSet_ = Viewer::HighQuality;
+
+	updatePrimitives(Viewer::HighQuality);
 }
 
 // Return height, in pixels, of single line of text

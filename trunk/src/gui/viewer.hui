@@ -81,16 +81,6 @@ class Viewer : public QOpenGLWidget, protected QOpenGLFunctions
 	// Height, in pixels, of single line of text
 	int fontPixelHeight_;
 
-	protected:
-	// Initialise context widget (when created by Qt)
-	void initializeGL();
-	// Repaint
-	void paintGL();
-	// Resize function
-	void resizeGL(int, int);
-	// Mouse focus lost
-	void focusOutEvent(QFocusEvent* event);
-
 	public:
 	// Set pointer to Aten
 	void setAten(Aten* aten);
@@ -259,11 +249,23 @@ class Viewer : public QOpenGLWidget, protected QOpenGLFunctions
 	// Current source primitive set
 	Viewer::PrimitiveQuality primitiveSet_;
 
-	public:
+	private:
 	// Setup basic GL properties
 	void setupGL();
-	// Render models
-	void renderModels();
+	// Render messages
+	void renderMessages(QPainter& painter);
+	// Render full scene
+	void renderFullScene();
+
+	protected:
+	// Initialise context widget (when created by Qt)
+	void initializeGL();
+	// Repaint
+	void paintGL();
+	// Resize function
+	void resizeGL(int width, int height);
+
+	public:
 	// Update all primitives (following prefs change, etc.)
 	void updatePrimitives(PrimitiveQuality targetSet);
 
@@ -276,7 +278,7 @@ class Viewer : public QOpenGLWidget, protected QOpenGLFunctions
 	RenderGroup renderGroup_;
 
 	private:
-	// Setup and render full Model
+	// Render full model in specified viewport
 	void renderModel(Model* source, int viewPortX, int viewPortY, int viewPortWidth, int viewPortHeight, bool drawRotationGlobe);
 	// Render active mode embellishments
 	void renderActiveModes(Model* currentModel);

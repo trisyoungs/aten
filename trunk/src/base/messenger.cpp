@@ -101,6 +101,12 @@ void Messenger::setPrintToConsole(bool printToConsole)
  * Messaging Functions
  */
 
+// Clear message buffer
+void Messenger::clearMessageBuffer()
+{
+	messageBuffer_.clear();
+}
+
 // Add message to buffer
 void Messenger::addToBuffer(QString message, Message::MessageType type)
 {

@@ -84,7 +84,7 @@ class PrimitiveSet
 	// Geometric objects
 	Primitive cube_, wireCube_, originCube_, sphere_, cylinder_, cone_;
 	// Specialist objects
-	Primitive crossedCube_, cellAxes_, rotationGlobe_;
+	Primitive crossedCube_, cellAxes_, rotationGlobe_, rotationGlobeAxes_, halo_;
 
 	public:
 	// Return atom primitive
@@ -121,7 +121,10 @@ class PrimitiveSet
 	Primitive& cellAxes();
 	// Return rotation globe primitive
 	Primitive& rotationGlobe();
-
+	// Return rotation globe axes primitive
+	Primitive& rotationGlobeAxes();
+	// Return halo primitive
+	Primitive& halo();
 
 	/*
 	 * Creation / Instantiation

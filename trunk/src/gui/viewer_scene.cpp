@@ -20,9 +20,11 @@
 */
 
 #include "gui/viewer.hui"
+#include "gui/mainwindow.h"
 #include "main/aten.h"
 #include "base/sysfunc.h"
 #include <QPen>
+#include <QPainter>
 
 // Setup OpenGL ready for drawing
 void Viewer::setupGL()
@@ -104,16 +106,50 @@ void Viewer::setupGL()
 	Messenger::exit("Viewer::setupGL");
 }
 
-// Render models
-void Viewer::renderModels()
+// Render messages
+void Viewer::renderMessages(QPainter& painter)
 {
-	Messenger::enter("Viewer::renderModels");
+	// Grab message buffer
+	QList<Message>& messages = Messenger::messageBuffer();
+	int margin = 4;
+	QRectF textRect(margin, margin, contextWidth_-2*margin, contextHeight_-2*margin), actualRect;
+	for (int n=atenWindow_->messagesScrollPosition(); n<messages.count(); ++n)
+	{
+		// Set brush colour to correspond to message type
+		painter.setPen(messages.at(n).colour());
+
+		// Set initial textRect
+		textRect.setWidth(contextWidth_-2*margin);
+		textRect.setHeight(contextHeight_-2*margin);
+		actualRect = QRectF();
+		painter.drawText(textRect, Qt::AlignBottom | Qt::TextWordWrap, messages.at(n).text(), &actualRect);
+
+		// Translate bounding rectangle upwarsd and check to make sure we are still on-screen
+		textRect.translate(0.0, -actualRect.height());
+		if (textRect.bottom() < margin) break;
+	}
+}
+
+// Render full scene
+void Viewer::renderFullScene()
+{
+	Messenger::enter("Viewer::renderFullScene");
 	QColor color;
 	QRect currentBox;
 	Refitem<Model,int>* first, localri;
 	int px, py, nperrow = prefs.nModelsPerRow(), nRows, col, row, nModels;
 	bool modelIsCurrentModel;
 	Model* m;
+
+	// Restore all GL state variables, and setup GL
+	glPopAttrib();
+	setupGL();
+
+	// Set colour mode
+	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+	glEnable(GL_COLOR_MATERIAL);
+	glEnable(GL_TEXTURE_2D);
+	glClear(GL_DEPTH_BUFFER_BIT);
 
 	// Set the first item to consider - set localri to the passed iconSource (if there was one)
 // 	localri.item = NULL;	// ATEN2 TODO
@@ -189,7 +225,125 @@ void Viewer::renderModels()
 	// Done
 // 	painter.end();
 
-	Messenger::exit("Viewer::renderModels");
+	Messenger::exit("Viewer::renderFullScene");
+}
+
+// Initialise context widget (when created by Qt)
+void Viewer::initializeGL()
+{
+	Messenger::enter("Viewer::initializeGL");
+	
+        valid_ = true;
+
+	// Setup function pointers to OpenGL extension functions
+	initializeOpenGLFunctions();
+
+	// Setup offscreen context
+	Messenger::print(Messenger::Verbose, "Setting up offscreen context and surface...");
+        offscreenContext_.setShareContext(context());
+        offscreenContext_.setFormat(context()->format());
+        offscreenContext_.create();
+        offscreenSurface_.setFormat(context()->format());
+	offscreenSurface_.create();
+	Messenger::print(Messenger::Verbose, "Done.");
+
+	// Make sure low-quality primitives are up-to-date
+	updatePrimitives(Viewer::LowQuality);
+
+        // Check for vertex buffer extensions
+        if ((!hasOpenGLFeature(QOpenGLFunctions::Buffers)) && (PrimitiveInstance::globalInstanceType() == PrimitiveInstance::VBOInstance))
+        {
+                Messenger::warn("VBO extension is requested but not available, so reverting to display lists instead.\n");
+                PrimitiveInstance::setGlobalInstanceType(PrimitiveInstance::ListInstance);
+        }
+
+	Messenger::exit("Viewer::initializeGL");
+}
+
+// void Viewer::paintEvent(QPaintEvent* event)
+void Viewer::paintGL()
+{
+	// Do nothing if the canvas is not valid, or we are still drawing from last time, or the Aten pointer has not been set
+	if ((!valid_) || drawing_ || (!atenWindow_)) return;
+
+	Messenger::enter("Viewer::paintGL");
+
+	// Set the drawing flag so we don't have any rendering clashes
+	drawing_ = true;
+
+	atenWindow_->updateMessagesWidgets();
+
+	// Create a QPainter
+	QPainter painter(this);
+
+	// Store all GL state variables, since they will be modified by QPainter
+	glPushAttrib(GL_ALL_ATTRIB_BITS);
+
+	// Setup GL and clear view
+	GLfloat col[4];
+	prefs.copyColour(Prefs::BackgroundColour, col);
+	glClearColor(col[0], col[1], col[2], col[3]);
+
+	glViewport(0, 0, contextWidth_, contextHeight_);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	// Store height of current font (so the scrollbar can be set correctly)
+	fontPixelHeight_ = painter.fontMetrics().height();
+
+	switch (atenWindow_->messageDisplay())
+	{
+		case (AtenWindow::FullMessages):
+			// Messages
+			renderMessages(painter);
+			break;
+		case (AtenWindow::MessagesOverScene):
+			// Scene
+			painter.beginNativePainting();
+			renderFullScene();
+			painter.endNativePainting();
+			painter.end();
+			// Messages - Need a fresh QPainter here...
+			painter.begin(this);
+			painter.setBrush(QColor(255,255,255,128));
+			painter.drawRect(0, 0, contextWidth_, contextHeight_);
+			renderMessages(painter);
+			break;
+		case (AtenWindow::MessagesUnderScene):
+			// Messages
+			renderMessages(painter);
+			painter.setBrush(QColor(255,255,255,128));
+			painter.drawRect(0, 0, contextWidth_, contextHeight_);
+			// Scene
+			painter.beginNativePainting();
+			renderFullScene();
+			painter.endNativePainting();
+			break;
+		case (AtenWindow::NoMessages):
+			// Scene
+			painter.beginNativePainting();
+			renderFullScene();
+			painter.endNativePainting();
+			break;
+	}
+
+	// Done!
+	painter.end();
+
+	// Set the rendering flag to false
+	drawing_ = false;
+
+	// Always revert to lower quality for next pass
+	primitiveSet_ = Viewer::LowQuality;
+
+	Messenger::exit("Viewer::paintGL");
+}
+
+// Resize function
+void Viewer::resizeGL(int newwidth, int newheight)
+{
+	// Store the new width and height of the widget
+	contextWidth_ = (GLsizei) newwidth;
+	contextHeight_ = (GLsizei) newheight;
 }
 
 // Update all primitives (following prefs change, etc.)
