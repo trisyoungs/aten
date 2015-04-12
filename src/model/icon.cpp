@@ -20,6 +20,7 @@
 */
 
 #include "model/model.h"
+#include <QPainter>
 
 ATEN_USING_NAMESPACE
 
@@ -29,14 +30,40 @@ bool Model::iconIsValid()
 	return (iconPoint_ == changeLog_.log(Log::Structure));  // ATEN2 TODO Make a general class to allow more than one log quantity to be compared?
 }
 
-// Set icon
-void Model::setIcon(QIcon icon)
+// Set icon from supplied pixmap
+void Model::setIcon(QPixmap pixmap)
 {
-	icon_ = icon;
+	icon_ = QIcon();
+
+	// Check to see if pixmap is valid
+	if (pixmap.isNull())
+	{
+		iconPoint_ = -1;
+		return;
+	}
+
+	// Take supplied pixmap and draw on black selection box
+	QPixmap selectedPixmap = pixmap;
+	QPainter painter(&selectedPixmap);
+	QPen pen(Qt::black);
+	pen.setWidth(3);
+	painter.setPen(pen);
+	painter.drawRect(0, 0, pixmap.width()-1, pixmap.height()-1);
+	painter.end();
+
+	// Set icons
+	icon_.addPixmap(pixmap, QIcon::Normal, QIcon::On);
+	icon_.addPixmap(selectedPixmap, QIcon::Selected, QIcon::On);
+
+	// Store new logpoint
+	iconPoint_ = changeLog_.log(Log::Structure);
 }
 
 // Return icon
 QIcon& Model::icon()
 {
+	// Regenerate icon if necessary
+	if (!iconIsValid()) Messenger::warn(Messenger::Verbose, "Model icon is out of date.");
+
 	return icon_;
 }

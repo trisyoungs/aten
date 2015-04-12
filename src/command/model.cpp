@@ -45,30 +45,30 @@ bool Commands::function_CurrentModel(CommandNode* c, Bundle& obj, ReturnValue& r
 	// Check the presence of arg(0)
 	if (c->hasArg(0))
 	{
-		Model* m = NULL;
+		Model* model = NULL;
 		switch (c->argType(0))
 		{
 			case (VTypes::IntegerData):
-				m = aten_.model(c->argi(0)-1);
+				model = aten_.model(c->argi(0)-1);
 				break;
 			case (VTypes::StringData):
-				m = aten_.findModel(c->argc(0));
+				model = aten_.findModel(c->argc(0));
 				break;
 			case (VTypes::ModelData):
-				m = (Model*) c->argp(0, VTypes::ModelData);
+				model = (Model*) c->argp(0, VTypes::ModelData);
 				break;
 			default:
 				Messenger::print("Can't convert a variable of type '%s' to a Model.", VTypes::dataType(c->argType(0)));
 				break;
 		}
-		if (m == NULL)
+		if (model == NULL)
 		{
 			Messenger::print("Invalid model specified - current model unchanged.");
 			return false;
 		}
 		else
 		{
-			aten_.setCurrentModel(m,true);
+			aten_.setCurrentModel(model);
 			Messenger::print("Current model is now '%s'.", qPrintable(aten_.currentModel()->name()));
 		}
 	}
@@ -81,24 +81,30 @@ bool Commands::function_CurrentModel(CommandNode* c, Bundle& obj, ReturnValue& r
 bool Commands::function_DeleteModel(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	// If the argument is an integer, get by id. Otherwise, get by name
-	Model* m = NULL;
+	Model* model = NULL;
 	if (c->hasArg(0))
 	{
 		switch (c->argType(0))
 		{
-			case (VTypes::ModelData): m = (Model*) c->argp(0, VTypes::ModelData); break;
-			case (VTypes::IntegerData): m = aten_.model(c->argi(0) - 1); break;
-			case (VTypes::StringData): m = aten_.findModel(c->argc(0)); break;
+			case (VTypes::ModelData): 
+				model = (Model*) c->argp(0, VTypes::ModelData);
+				break;
+			case (VTypes::IntegerData): 
+				model = aten_.model(c->argi(0) - 1);
+				break;
+			case (VTypes::StringData): 
+				model = aten_.findModel(c->argc(0));
+				break;
 			default:
 				printf("Can't convert %s in to a Model.\n", VTypes::aDataType(c->argType(0)));
 				break;
 		}
 	}
-	else m = aten_.currentModel();
+	else model = aten_.currentModel();
 
-	if (m != NULL) 
+	if (model != NULL) 
 	{
-		aten_.removeModel(m);
+		aten_.removeModel(model);
 		if (aten_.nModels() == 0) aten_.addModel();
 
 		return true;
@@ -152,35 +158,39 @@ bool Commands::function_FinaliseModel(CommandNode* c, Bundle& obj, ReturnValue& 
 // Set current model to be first loaded/created model
 bool Commands::function_FirstModel(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	Model* m = aten_.model(0);
-	rv.set(VTypes::ModelData, m);
-	if (m != NULL) 
-	{
-		aten_.setCurrentModel(m,true);
-	}
-	else return false;
-	return true;
+	Model* model = aten_.model(0);
+
+	rv.set(VTypes::ModelData, model);
+	aten_.setCurrentModel(model);
+	
+	return model;
 }
 
 // Select working model ('getmodel <name>')
 bool Commands::function_GetModel(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	// If the argument is an integer, get by id. Otherwise, get by name
-	Model* m = NULL;
+	Model* model = NULL;
 	switch (c->argType(0))
 	{
-		case (VTypes::ModelData): m = (Model*) c->argp(0, VTypes::ModelData); break;
-		case (VTypes::IntegerData): m = aten_.model(c->argi(0) - 1); break;
-		case (VTypes::StringData): m = aten_.findModel(c->argc(0)); break;
+		case (VTypes::ModelData): 
+			model = (Model*) c->argp(0, VTypes::ModelData);
+			break;
+		case (VTypes::IntegerData): 
+			model = aten_.model(c->argi(0) - 1);
+			break;
+		case (VTypes::StringData): 
+			model = aten_.findModel(c->argc(0));
+			break;
 		default:
 			printf("Can't convert %s in to a Model.\n", VTypes::aDataType(c->argType(0)));
 			break;
 	}
-	rv.set(VTypes::ModelData, m);
-	if (m != NULL) 
+	rv.set(VTypes::ModelData, model);
+	if (model != NULL) 
 	{
-		aten_.setCurrentModel(m,true);
-		m->setRenderSource(Model::ModelSource);
+		aten_.setCurrentModel(model);
+		model->setRenderSource(Model::ModelSource);
 		return true;
 	}
 	else
@@ -202,14 +212,11 @@ bool Commands::function_Info(CommandNode* c, Bundle& obj, ReturnValue& rv)
 // Set current model to be last loaded/created model
 bool Commands::function_LastModel(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	Model* m = aten_.model(aten_.nModels()-1);
-	rv.set(VTypes::ModelData, m);
-	if (m != NULL) 
-	{
-		aten_.setCurrentModel(m,true);
-	}
-	else return false;
-	return true;
+	Model* model = aten_.model(aten_.nModels()-1);
+	rv.set(VTypes::ModelData, model);
+	aten_.setCurrentModel(model);
+	
+	return model;
 }
 
 // Print loaded models ('listmodels')
@@ -314,7 +321,7 @@ bool Commands::function_NextModel(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	if (obj.m->next == NULL) Messenger::print("Already at last loaded model.");
 	else
 	{
-		aten_.setCurrentModel(obj.m->next, true);
+		aten_.setCurrentModel(obj.m->next);
 		Messenger::print("Current model is now '%s'.", qPrintable(obj.m->name()));
 	}
 	rv.set(VTypes::ModelData, obj.m);
@@ -332,7 +339,7 @@ bool Commands::function_ParentModel(CommandNode* c, Bundle& obj, ReturnValue& rv
 		return false;
 	}
 	obj.m->setRenderSource(Model::ModelSource);
-	aten_.setCurrentModel(obj.m, true);
+	aten_.setCurrentModel(obj.m);
 	return true;
 }
 
@@ -343,7 +350,7 @@ bool Commands::function_PrevModel(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	if (obj.m->prev == NULL) Messenger::print("Already at first loaded model.");
 	else
 	{
-		aten_.setCurrentModel(obj.m->prev, true);
+		aten_.setCurrentModel(obj.m->prev);
 		Messenger::print("Current model is now '%s'.", qPrintable(obj.m->name()));
 	}
 	rv.set(VTypes::ModelData, obj.m);

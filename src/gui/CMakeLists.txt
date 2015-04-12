@@ -135,14 +135,14 @@ set(gui_SRCS
   layoutlist.cpp
   loadmodel_funcs.cpp
   mainmenuactions.cpp
-  mainwindow_build.cpp
   mainwindow_context.cpp
   mainwindow_funcs.cpp
   mainwindow_image.cpp
-  mainwindow_init.cpp
   mainwindow_messages.cpp
-  mainwindow_models.cpp
-  mainwindow_view.cpp
+  mainwindow_modellist.cpp
+  mainwindow_panel_build.cpp
+  mainwindow_panel_view.cpp
+  mainwindow_update.cpp
   popupaddh_funcs.cpp
   popupgrow_funcs.cpp
   popuprebond_funcs.cpp

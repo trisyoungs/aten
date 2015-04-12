@@ -33,7 +33,7 @@ int Messenger::callLevel_ = 0;
 bool Messenger::quiet_ = false;
 bool Messenger::printToConsole_ = true;
 int Messenger::bufferSize_ = 100;
-QStringList Messenger::messageBuffer_;
+QList<Message> Messenger::messageBuffer_;
 
 // Message output types
 const char* OutputTypeKeywords[] = { "all", "calls", "commands", "parse", "typing", "verbose" };
@@ -102,15 +102,15 @@ void Messenger::setPrintToConsole(bool printToConsole)
  */
 
 // Add message to buffer
-void Messenger::addToBuffer(QString message)
+void Messenger::addToBuffer(QString message, Message::MessageType type)
 {
 	// Add to buffer (at start), and reduce buffer to max allowable size
-	messageBuffer_.prepend(message);
+	messageBuffer_.prepend(Message(message, type));
 	while (messageBuffer_.count() > bufferSize_) messageBuffer_.removeLast();
 }
 
 // Return list of messages in buffer
-QStringList& Messenger::messageBuffer()
+QList<Message>& Messenger::messageBuffer()
 {
 	return messageBuffer_;
 }
@@ -154,7 +154,7 @@ void Messenger::warn(const char* fmtString, ...)
 	va_end(arguments);
 
 	// Add to message buffer
-	addToBuffer(message);
+	addToBuffer(message, Message::WarningMessage);
 
 	if (printToConsole_) QTextStream(stdout) << message << endl;
 }
@@ -173,7 +173,7 @@ void Messenger::error(const char* fmtString, ...)
 	va_end(arguments);
 
 	// Add to message buffer
-	addToBuffer(message);
+	addToBuffer(message, Message::ErrorMessage);
 
 	if (printToConsole_) QTextStream(stdout) << message << endl;
 }
@@ -197,7 +197,7 @@ void Messenger::warn(QString message)
 	if (quiet_) return;
 
 	// Add to message buffer
-	addToBuffer(message);
+	addToBuffer(message, Message::WarningMessage);
 
 	if (printToConsole_) QTextStream(stdout) << message << endl;
 }
@@ -209,12 +209,12 @@ void Messenger::error(QString message)
 	if (quiet_) return;
 
 	// Add to message buffer
-	addToBuffer(message);
+	addToBuffer(message, Message::ErrorMessage);
 
 	if (printToConsole_) QTextStream(stdout) << message << endl;
 }
 
-// Standard message in specific output level
+// Print normal message in specific output level
 void Messenger::print(Messenger::OutputType outputType, const char* fmtString, ...)
 {
 	// If program is in quiet mode, or the output type isn't active, return now
@@ -229,6 +229,44 @@ void Messenger::print(Messenger::OutputType outputType, const char* fmtString, .
 
 	// Add to message buffer
 	addToBuffer(message);
+
+	if (printToConsole_) QTextStream(stdout) << message << endl;
+}
+
+// Print warning message in specific output level
+void Messenger::warn(Messenger::OutputType outputType, const char* fmtString, ...)
+{
+	// If program is in quiet mode, or the output type isn't active, return now
+	if (quiet_ || (! isOutputActive(outputType))) return;
+
+	// Create message
+	va_list arguments;
+	va_start(arguments, fmtString);
+	QString message;
+	message.vsprintf(fmtString, arguments);
+	va_end(arguments);
+
+	// Add to message buffer
+	addToBuffer(message, Message::WarningMessage);
+
+	if (printToConsole_) QTextStream(stdout) << message << endl;
+}
+
+// Print error message in specific output level
+void Messenger::error(Messenger::OutputType outputType, const char* fmtString, ...)
+{
+	// If program is in quiet mode, or the output type isn't active, return now
+	if (quiet_ || (! isOutputActive(outputType))) return;
+
+	// Create message
+	va_list arguments;
+	va_start(arguments, fmtString);
+	QString message;
+	message.vsprintf(fmtString, arguments);
+	va_end(arguments);
+
+	// Add to message buffer
+	addToBuffer(message, Message::ErrorMessage);
 
 	if (printToConsole_) QTextStream(stdout) << message << endl;
 }

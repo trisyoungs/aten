@@ -1,6 +1,6 @@
 /*
 	*** Main Window - View Panel Functions
-	*** src/gui/mainwindow_view.cpp
+	*** src/gui/mainwindow_panel_view.cpp
 	Copyright T. Youngs 2007-2015
 
 	This file is part of Aten.

@@ -63,7 +63,7 @@ bool Aten::openFilter(QString filename)
 	Program* filter = filterPrograms_.add();
 	if (!filter->generateFromFile(filename, filename, true, true, true))
 	{
-		Messenger::print("Failed to load filters from '%s'...", qPrintable(filename));
+		Messenger::error("Failed to load filters from '%s'...", qPrintable(filename));
 		failedFilters_ << filename;
 		filterPrograms_.remove(filter);
 		Messenger::exit("Aten::openFilter");

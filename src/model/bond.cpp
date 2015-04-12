@@ -584,7 +584,7 @@ void Model::augmentBonding()
 	Messenger::enter("Model::augmentBonding");
 	if (!createPatterns())
 	{
-		Messenger::print("Can't augment bonding without a valid pattern.");
+		Messenger::error("Can't augment bonding without a valid pattern.");
 		Messenger::exit("Model::augmentBonding");
 		return;
 	}

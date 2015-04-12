@@ -23,7 +23,7 @@
 #define ATEN_MESSENGER_H
 
 #include "base/namespace.h"
-#include <QStringList>
+#include "base/message.h"
 
 ATEN_BEGIN_NAMESPACE
 
@@ -79,15 +79,15 @@ class Messenger
 	// Maximum size of string list buffer
 	static int bufferSize_;
 	// List of recent messages
-	static QStringList messageBuffer_;
+	static QList<Message> messageBuffer_;
 
 	private:
 	// Add message to buffer
-	static void addToBuffer(QString message);
+	static void addToBuffer(QString message, Message::MessageType type = Message::NormalMessage);
 
 	public:
 	// Return list of messages in buffer
-	static QStringList& messageBuffer();
+	static QList<Message>& messageBuffer();
 	// Return number of lines currently in buffer
 	static int nMessagesBuffered();
 	// Print formatted normal message
@@ -98,12 +98,16 @@ class Messenger
 	static void error(const char* fmtString, ...);
 	// Print normal message
 	static void print(QString message);
-	// Print normal message
+	// Print warning message
 	static void warn(QString message);
-	// Print normal message
+	// Print error message
 	static void error(QString message);
-	// Print message in specific output level
+	// Print normal message in specific output level
 	static void print(Messenger::OutputType outputType, const char* fmtString, ...);
+	// Print warning message in specific output level
+	static void warn(Messenger::OutputType outputType, const char* fmtString, ...);
+	// Print error message in specific output level
+	static void error(Messenger::OutputType outputType, const char* fmtString, ...);
 	// Entrance to subroutine
 	static void enter(const char* callName);
 	// Exit from subroutine

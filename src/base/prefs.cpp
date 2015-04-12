@@ -175,7 +175,7 @@ Prefs::HistoryType Prefs::historyType(QString s, bool reportError)
 Prefs::Prefs()
 {
 	// Rendering - Style
-	renderStyle_ = Prefs::LineStyle;
+	renderStyle_ = Prefs::SphereStyle;
 	colourScheme_ = Prefs::ElementScheme;
 	atomStyleRadius_[Prefs::LineStyle] = 0.1;	// Only used as a selection radius
 	atomStyleRadius_[Prefs::TubeStyle] = 0.15;

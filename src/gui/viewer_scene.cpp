@@ -138,7 +138,7 @@ void Viewer::renderModels()
 		if (m == NULL) continue;
 
 		// Render the whole model
-		renderModel(m, col*px, contextHeight_-(row+1)*py, px, py);
+		renderModel(m, col*px, contextHeight_-(row+1)*py, px, py, true);
 
 		// Render additional data for active model
 		if (m == aten_->currentModel())

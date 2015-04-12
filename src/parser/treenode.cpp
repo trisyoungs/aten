@@ -706,7 +706,7 @@ QString TreeNode::argc(int i)
 	if ((i < 0) || (i >= args_.nItems()))
 	{
 		printf("TreeNode::argc : Argument index %i is out of range (node = %p).\n", i, this);
-		return false;
+		return QString();
 	}
 	static ReturnValue rv[MAXNODEARGS];
 	bool success;

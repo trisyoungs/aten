@@ -38,7 +38,7 @@ void Aten::addFragmentFromSelection(Model* source, QString parentGroup)
 	}
 	if (source->nSelected() == 0)
 	{
-		Messenger::print("Source model '%s' has no selected atoms from which to make a fragment.", qPrintable(source->name()));
+		Messenger::error("Source model '%s' has no selected atoms from which to make a fragment.", qPrintable(source->name()));
 		Messenger::exit("Aten::addFragmentFromSelection");
 		return;
 	}
@@ -64,7 +64,6 @@ void Aten::addFragmentFromSelection(Model* source, QString parentGroup)
 	// Store the last model on the list.
 	Fragment* f = fg->addFragment();
 	if (!f->setMasterModel(m)) fg->removeFragment(f);
-// 	else m->regenerateIcon();	ATEN2 TODO
 
 	// Return model creation to main list
 	targetModelList_ = Aten::MainModelList;

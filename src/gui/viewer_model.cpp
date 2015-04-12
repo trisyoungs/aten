@@ -25,7 +25,7 @@
 ATEN_USING_NAMESPACE
 
 // Render full Model
-void Viewer::renderModel(Model* source, int viewPortX, int viewPortY, int viewPortWidth, int viewPortHeight)
+void Viewer::renderModel(Model* source, int viewPortX, int viewPortY, int viewPortWidth, int viewPortHeight, bool drawRotationGlobe)
 {
 	Messenger::enter("Viewer::renderModel");
 	GLfloat colour[4];
@@ -51,7 +51,7 @@ void Viewer::renderModel(Model* source, int viewPortX, int viewPortY, int viewPo
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 	// Render rotation globe in small viewport in lower right-hand corner
-	if (prefs.viewRotationGlobe())
+	if (drawRotationGlobe)
 	{
 		int n = prefs.globeSize();
 // 		if (aten_->nVisibleModels() > 2) n /= 2;

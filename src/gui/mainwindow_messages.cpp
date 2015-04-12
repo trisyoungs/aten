@@ -1,5 +1,5 @@
 /*
-	*** MainWindow - Messages Functions
+	*** Main Window - Messages Functions
 	*** src/gui/mainwindow_messages.cpp
 	Copyright T. Youngs 2007-2015
 

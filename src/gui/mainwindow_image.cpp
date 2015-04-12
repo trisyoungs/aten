@@ -1,5 +1,5 @@
 /*
-	*** MainWindow - Image Functions
+	*** Main Window - Image Functions
 	*** src/gui/mainwindow_image.cpp
 	Copyright T. Youngs 2007-2015
 
@@ -69,7 +69,7 @@ QPixmap AtenWindow::scenePixmap(int width, int height)
 }
 
 // Return pixmap of specified model
-QPixmap AtenWindow::modelPixmap(Model* model, int width, int height)
+QPixmap AtenWindow::modelPixmap(Model* model, QSize pixmapSize)
 {
-	return ui.MainView->generateModelImage(model, width, height);
+	return ui.MainView->generateModelImage(model, pixmapSize.width(), pixmapSize.height());
 }

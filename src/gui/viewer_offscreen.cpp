@@ -26,12 +26,12 @@
 #include <QtWidgets/QProgressDialog>
 
 // Generate image for specified model
-QPixmap Viewer::generateModelImage(Model* m, int width, int height)
+QPixmap Viewer::generateModelImage(Model* model, int width, int height)
 {
 	Messenger::enter("Viewer::generateModelImage");
 
-	// Check validity of model
-	if (m == NULL)
+	// Check validity of model and context
+	if ((model == NULL) || (!valid_))
 	{
 		Messenger::exit("Viewer::generateModelImage");
 		return QPixmap();
@@ -66,7 +66,7 @@ QPixmap Viewer::generateModelImage(Model* m, int width, int height)
 	setupGL();
 
 	// Draw model
-	renderModel(m, 0, 0, iconSize.width(), iconSize.height());
+	renderModel(model, 0, 0, iconSize.width(), iconSize.height(), false);
 
         // Flush contents
         glFlush();
