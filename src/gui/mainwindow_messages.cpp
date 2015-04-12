@@ -19,30 +19,48 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-// #include <QtWidgets/QMessageBox>
-// #include "main/aten.h"
 #include "gui/mainwindow.h"
-// #include "gui/prefs.h"
-// #include "gui/loadmodel.h"
-// #include "gui/trajectory.h"
-// #include "gui/ffeditor.h"
-// #include "gui/selectpattern.h"
-// #include "gui/about.h"
-// #include "model/model.h"
-// #include "model/clipboard.h"
-// #include "model/undostate.h"
-// #include "parser/commandnode.h"
-// #include <QtWidgets/QFileDialog>
-// #include <QKeyEvent>
-// #include <QtWidgets/QProgressBar>
-// #include "base/sysfunc.h"
-// #include "main/version.h"
-// #include <iostream>
-// #include <fstream>
+#include <QClipboard>
+#include <QTextStream>
+
+void AtenWindow::on_MessagesCycleButton_clicked(bool checked)
+{
+	if (messageDisplay_ == AtenWindow::FullMessages) messageDisplay_ = AtenWindow::MessagesOverScene;
+	else if (messageDisplay_ == AtenWindow::MessagesOverScene) messageDisplay_ = AtenWindow::MessagesUnderScene;
+	else if (messageDisplay_ == AtenWindow::MessagesUnderScene) messageDisplay_ = AtenWindow::NoMessages;
+	else messageDisplay_ = AtenWindow::FullMessages;
+
+	postRedisplay();
+}
+
+void AtenWindow::on_MessagesCopyButton_clicked(bool checked)
+{
+	// Construct new text
+	QString text;
+	QList<Message>& messages = Messenger::messageBuffer();
+	QTextStream stream(&text);
+	for (int n=messages.count()-1; n>=0; --n) stream << messages.at(n).text() << endl;
+
+	QClipboard* clipboard = QApplication::clipboard();
+	clipboard->setText(text);
+}
+
+void AtenWindow::on_MessagesClearButton_clicked(bool checked)
+{
+	Messenger::clearMessageBuffer();
+
+	postRedisplay();
+}
 
 void AtenWindow::on_MessagesScroll_sliderMoved(int position)
 {
 	postRedisplay();
+}
+
+// Return current message display style
+AtenWindow::MessageDisplay AtenWindow::messageDisplay()
+{
+	return messageDisplay_;
 }
 
 // Update messages widgets

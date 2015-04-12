@@ -32,7 +32,6 @@ void AtenWindow::updateModelList()
 	QListWidgetItem* item;
 	Model* model, *itemModel;
 
-	printf("Arse.\n");
 	// First, iterate over existing rows in model list and remove any that aren't in our models
 	row = 0;
 	while (row < ui.ModelList->count())
@@ -40,7 +39,7 @@ void AtenWindow::updateModelList()
 		// Get model pointer from item, and see if its in the model list
 		item = ui.ModelList->item(row);
 		model = VariantPointer<Model>(item->data(Qt::UserRole));
-		if (aten_.modelIndex(model) == -1)
+		if (!aten_.isModel(model))
 		{
 			// Not in the list anymore, so remove it from the widget
 			item = ui.ModelList->takeItem(row);
@@ -49,7 +48,6 @@ void AtenWindow::updateModelList()
 		else ++row;
 	}
 
-	printf("klklklkl\n");
 	// Now, iterate over the rows again, adding missing items...
 	row = 0;
 	for (model = aten_.models(); model != NULL; model = model->next)

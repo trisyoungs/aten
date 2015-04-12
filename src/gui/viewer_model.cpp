@@ -24,7 +24,7 @@
 
 ATEN_USING_NAMESPACE
 
-// Render full Model
+// Render full Model in specified viewport
 void Viewer::renderModel(Model* source, int viewPortX, int viewPortY, int viewPortWidth, int viewPortHeight, bool drawRotationGlobe)
 {
 	Messenger::enter("Viewer::renderModel");
@@ -61,12 +61,18 @@ void Viewer::renderModel(Model* source, int viewPortX, int viewPortY, int viewPo
 		glOrtho(-1.0, 1.0, -1.0, 1.0, -10.0, 10.0);
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
+
+		// Draw globe axes, rotated by current view
 		Matrix A = modelTransformationMatrix_;
 		A.removeTranslationAndScaling();
 		A[14] = -1.2;
-		glMultMatrixd(A.matrix());
-		prefs.copyColour(Prefs::GlobeColour, colour);
-		glColor4fv(colour);
+		glLoadMatrixd(A.matrix());
+		primitives_[primitiveSet_].rotationGlobeAxes().sendToGL(QOpenGLContext::currentContext());
+
+		// Draw globe - no view rotation, just translate it back a bit
+		A.setIdentity();
+		A[14] = -1.2;
+		glLoadMatrixd(A.matrix());
 		primitives_[primitiveSet_].rotationGlobe().sendToGL(QOpenGLContext::currentContext());
 	}
 
@@ -82,19 +88,20 @@ void Viewer::renderModel(Model* source, int viewPortX, int viewPortY, int viewPo
 	{
 		// Copy colour for cell
 		GLfloat colour[4];
-		prefs.copyColour(Prefs::UnitCellColour, colour);
-		
-		
+		colour[0] = 0.0f;
+		colour[1] = 0.0f;
+		colour[2] = 0.0f;
+		colour[3] = 1.0f;
+
 		// Reset current view matrix and apply the cell's axes matrix
 		glLoadIdentity();
 		Matrix A = source->modelViewMatrix() * source->cell()->axes();
 		glMultMatrixd(A.matrix());
-		
+
 		// Draw a wire cube for the cell
 		primitives_[primitiveSet_].wireCube().sendToGL(QOpenGLContext::currentContext());
 
-		// Copy colour for axes, move to llh corner, and draw them
-		prefs.copyColour(Prefs::UnitCellAxesColour, colour);
+		// Draw cell axes
 		glColor4fv(colour);
 		glTranslated(-0.5, -0.5, -0.5);
 		Vec3<double> v = source->cell()->lengths();

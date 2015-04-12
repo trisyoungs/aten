@@ -86,6 +86,8 @@ class Messenger
 	static void addToBuffer(QString message, Message::MessageType type = Message::NormalMessage);
 
 	public:
+	// Clear message buffer
+	static void clearMessageBuffer();
 	// Return list of messages in buffer
 	static QList<Message>& messageBuffer();
 	// Return number of lines currently in buffer

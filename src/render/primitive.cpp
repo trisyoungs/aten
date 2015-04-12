@@ -367,7 +367,7 @@ void Primitive::line(Vec3<double> v1, Vec3<double> v2)
 }
 
 // Create vertices of sphere with specified radius and quality
-void Primitive::plotSphere(double radius, int nStacks, int nSlices)
+void Primitive::plotSphere(double radius, int nStacks, int nSlices, bool colourData, Vec4<GLfloat> colour)
 {
 	int i, j, count;
 	double stack0, stack1, z0, zr0, z1, zr1, slice0, slice1, x0, y0, x1, y1;
@@ -397,25 +397,43 @@ void Primitive::plotSphere(double radius, int nStacks, int nSlices)
 			// N.B Don't plot if i == 1, to avoid overlapping with subsequent vertices in this pass
 			if (i > 1)
 			{
-				defineVertex(x0 * zr0 * radius, y0 * zr0 * radius, z0 * radius, x0 * zr0, y0 * zr0, z0);
-				defineVertex(x0 * zr1 * radius, y0 * zr1 * radius, z1 * radius, x0 * zr1, y0 * zr1, z1);
-				defineVertex(x1 * zr0 * radius, y1 * zr0 * radius, z0 * radius, x1 * zr0, y1 * zr0, z0);
+				if (colourData)
+				{
+					defineVertex(x0 * zr0 * radius, y0 * zr0 * radius, z0 * radius, x0 * zr0, y0 * zr0, z0, colour);
+					defineVertex(x0 * zr1 * radius, y0 * zr1 * radius, z1 * radius, x0 * zr1, y0 * zr1, z1, colour);
+					defineVertex(x1 * zr0 * radius, y1 * zr0 * radius, z0 * radius, x1 * zr0, y1 * zr0, z0, colour);
+				}
+				else
+				{
+					defineVertex(x0 * zr0 * radius, y0 * zr0 * radius, z0 * radius, x0 * zr0, y0 * zr0, z0);
+					defineVertex(x0 * zr1 * radius, y0 * zr1 * radius, z1 * radius, x0 * zr1, y0 * zr1, z1);
+					defineVertex(x1 * zr0 * radius, y1 * zr0 * radius, z0 * radius, x1 * zr0, y1 * zr0, z0);
+				}
 			}
 			
 			// Second triangle - {x0,y0,z0},{x0,y0,z1},{x1,y1,z0}
 			// N.B. Don't plot if i == nstacks, to avoid overlapping with previous vertices in this pass
 			if (i < nStacks )
 			{
-				defineVertex(x0 * zr1 * radius, y0 * zr1 * radius, z1 * radius, x0 * zr1, y0 * zr1, z1);
-				defineVertex(x1 * zr0 * radius, y1 * zr0 * radius, z0 * radius, x1 * zr0, y1 * zr0, z0);
-				defineVertex(x1 * zr1 * radius, y1 * zr1 * radius, z1 * radius, x1 * zr1, y1 * zr1, z1);
+				if (colourData)
+				{
+					defineVertex(x0 * zr1 * radius, y0 * zr1 * radius, z1 * radius, x0 * zr1, y0 * zr1, z1, colour);
+					defineVertex(x1 * zr0 * radius, y1 * zr0 * radius, z0 * radius, x1 * zr0, y1 * zr0, z0, colour);
+					defineVertex(x1 * zr1 * radius, y1 * zr1 * radius, z1 * radius, x1 * zr1, y1 * zr1, z1, colour);
+				}
+				else
+				{
+					defineVertex(x0 * zr1 * radius, y0 * zr1 * radius, z1 * radius, x0 * zr1, y0 * zr1, z1);
+					defineVertex(x1 * zr0 * radius, y1 * zr0 * radius, z0 * radius, x1 * zr0, y1 * zr0, z0);
+					defineVertex(x1 * zr1 * radius, y1 * zr1 * radius, z1 * radius, x1 * zr1, y1 * zr1, z1);
+				}
 			}
 		}
 	}
 }
 
 // Plot cylinder vertices from origin {ox,oy,oz}, following vector {vx,vy,vz}, with radii and quality specified
-void Primitive::plotCylinder(GLfloat ox, GLfloat oy, GLfloat oz, GLfloat vx, GLfloat vy, GLfloat vz, double startRadius, double endRadius, int nStacks, int nSlices, bool capStart, bool capEnd)
+void Primitive::plotCylinder(GLfloat ox, GLfloat oy, GLfloat oz, GLfloat vx, GLfloat vy, GLfloat vz, double startRadius, double endRadius, int nStacks, int nSlices, bool capStart, bool capEnd, bool colourData, Vec4<GLfloat> colour)
 {
 	int i, j;
 	Vec3<GLfloat> u, v, w, vert[4], normal[2], deltarj, rj;
@@ -452,33 +470,69 @@ void Primitive::plotCylinder(GLfloat ox, GLfloat oy, GLfloat oz, GLfloat vx, GLf
 			// Triangle 1
 			if ((i > 1) || ( startRadius > 1.0e-5))
 			{
-				defineVertex(ox+vert[0].x, oy+vert[0].y, oz+vert[0].z, normal[0].x, normal[0].y, normal[0].z);
-				defineVertex(ox+vert[1].x, oy+vert[1].y, oz+vert[1].z, normal[0].x, normal[0].y, normal[0].z);
-				defineVertex(ox+vert[2].x, oy+vert[2].y, oz+vert[2].z, normal[1].x, normal[1].y, normal[1].z);
+				if (colourData)
+				{
+					defineVertex(ox+vert[0].x, oy+vert[0].y, oz+vert[0].z, normal[0].x, normal[0].y, normal[0].z, colour);
+					defineVertex(ox+vert[1].x, oy+vert[1].y, oz+vert[1].z, normal[0].x, normal[0].y, normal[0].z, colour);
+					defineVertex(ox+vert[2].x, oy+vert[2].y, oz+vert[2].z, normal[1].x, normal[1].y, normal[1].z, colour);
+				}
+				else
+				{
+					defineVertex(ox+vert[0].x, oy+vert[0].y, oz+vert[0].z, normal[0].x, normal[0].y, normal[0].z);
+					defineVertex(ox+vert[1].x, oy+vert[1].y, oz+vert[1].z, normal[0].x, normal[0].y, normal[0].z);
+					defineVertex(ox+vert[2].x, oy+vert[2].y, oz+vert[2].z, normal[1].x, normal[1].y, normal[1].z);
+				}
 			}
  
 			// Triangle 2
 			if ((i < nStacks ) || ( endRadius > 1.0e-5))
 			{
-				defineVertex(ox+vert[1].x, oy+vert[1].y, oz+vert[1].z, normal[0].x, normal[0].y, normal[0].z);
-				defineVertex(ox+vert[2].x, oy+vert[2].y, oz+vert[2].z, normal[1].x, normal[1].y, normal[1].z);
-				defineVertex(ox+vert[3].x, oy+vert[3].y, oz+vert[3].z, normal[1].x, normal[1].y, normal[1].z);
+				if (colourData)
+				{
+					defineVertex(ox+vert[1].x, oy+vert[1].y, oz+vert[1].z, normal[0].x, normal[0].y, normal[0].z, colour);
+					defineVertex(ox+vert[2].x, oy+vert[2].y, oz+vert[2].z, normal[1].x, normal[1].y, normal[1].z, colour);
+					defineVertex(ox+vert[3].x, oy+vert[3].y, oz+vert[3].z, normal[1].x, normal[1].y, normal[1].z, colour);
+				}
+				else
+				{
+					defineVertex(ox+vert[1].x, oy+vert[1].y, oz+vert[1].z, normal[0].x, normal[0].y, normal[0].z);
+					defineVertex(ox+vert[2].x, oy+vert[2].y, oz+vert[2].z, normal[1].x, normal[1].y, normal[1].z);
+					defineVertex(ox+vert[3].x, oy+vert[3].y, oz+vert[3].z, normal[1].x, normal[1].y, normal[1].z);
+				}
 			}
 			
 			// Start cap
 			if ((i == 1) && ( startRadius > 1.0e-5) && capStart)
 			{
-				defineVertex(ox, oy, oz, -w.x, -w.y, -w.z);
-				defineVertex(ox+vert[0].x, oy+vert[0].y, oz+vert[0].z, -w.x, -w.y, -w.z);
-				defineVertex(ox+vert[2].x, oy+vert[2].y, oz+vert[2].z, -w.x, -w.y, -w.z);
+				if (colourData)
+				{
+					defineVertex(ox, oy, oz, -w.x, -w.y, -w.z, colour);
+					defineVertex(ox+vert[0].x, oy+vert[0].y, oz+vert[0].z, -w.x, -w.y, -w.z, colour);
+					defineVertex(ox+vert[2].x, oy+vert[2].y, oz+vert[2].z, -w.x, -w.y, -w.z, colour);
+				}
+				else
+				{
+					defineVertex(ox, oy, oz, -w.x, -w.y, -w.z);
+					defineVertex(ox+vert[0].x, oy+vert[0].y, oz+vert[0].z, -w.x, -w.y, -w.z);
+					defineVertex(ox+vert[2].x, oy+vert[2].y, oz+vert[2].z, -w.x, -w.y, -w.z);
+				}
 			}
 
 			// End cap
 			if ((i == nStacks ) && ( endRadius > 1.0e-5) && capEnd)
 			{
-				defineVertex(ox+rj.x, oy+rj.y, oz+rj.z, w.x, w.y, w.z);
-				defineVertex(ox+vert[1].x, oy+vert[1].y, oz+vert[1].z, w.x, w.y, w.z);
-				defineVertex(ox+vert[3].x, oy+vert[3].y, oz+vert[3].z, w.x, w.y, w.z);
+				if (colourData)
+				{
+					defineVertex(ox+rj.x, oy+rj.y, oz+rj.z, w.x, w.y, w.z, colour);
+					defineVertex(ox+vert[1].x, oy+vert[1].y, oz+vert[1].z, w.x, w.y, w.z, colour);
+					defineVertex(ox+vert[3].x, oy+vert[3].y, oz+vert[3].z, w.x, w.y, w.z, colour);
+				}
+				else
+				{
+					defineVertex(ox+rj.x, oy+rj.y, oz+rj.z, w.x, w.y, w.z);
+					defineVertex(ox+vert[1].x, oy+vert[1].y, oz+vert[1].z, w.x, w.y, w.z);
+					defineVertex(ox+vert[3].x, oy+vert[3].y, oz+vert[3].z, w.x, w.y, w.z);
+				}
 			}
 		}
 	}
@@ -663,6 +717,38 @@ void Primitive::plotCrossedCube(double size, int nSubs, double ox, double oy, do
 			r[(i+2)%3] = -r[(i+2)%3];
 			defineVertex(r[0], r[1], r[2], 1.0, 0.0, 0.0);
 		}
+	}
+}
+
+// Plot halo with specified radii
+void Primitive::plotHalo(double radius1, double radius2, int nSegments)
+{
+	int n, o;
+	Vec3<GLfloat> r1, r2;
+	double dphi, cosphi1 = 1.0, sinphi1 = 0.0, cosphi2, sinphi2;
+
+	type_ = GL_LINES;
+
+	// Setup some variables
+	dphi = TWOPI / nSegments;
+	
+	for (n=1; n<=nSegments; ++n)
+	{
+		// Draw quad from previous phi values to current phi values
+		cosphi2 = cos(n*dphi);
+		sinphi2 = sin(n*dphi);
+
+		defineVertex(radius1*cosphi1, radius1*sinphi1, 0.0, 0.0, 0.0, 1.0);
+		defineVertex(radius2*cosphi1, radius2*sinphi1, 0.0, 0.0, 0.0, 1.0);
+		defineVertex(radius1*cosphi2, radius1*sinphi2, 0.0, 0.0, 0.0, 1.0);
+
+		defineVertex(radius2*cosphi1, radius2*sinphi1, 0.0, 0.0, 0.0, 1.0);
+		defineVertex(radius1*cosphi2, radius1*sinphi2, 0.0, 0.0, 0.0, 1.0);
+		defineVertex(radius2*cosphi2, radius2*sinphi2, 0.0, 0.0, 0.0, 1.0);
+
+		// Store values for next iteration
+		cosphi1 = cosphi2;
+		sinphi1 = sinphi2;
 	}
 }
 

@@ -82,6 +82,7 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 	saveModelFilter_ = NULL;
 	contextAtom_ = NULL;
 	modelListRefreshing_ = false;
+	messageDisplay_ = MessagesUnderScene;
 
 	// Public variables
 	infoLabel1_ = NULL;

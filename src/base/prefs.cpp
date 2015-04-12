@@ -111,8 +111,8 @@ const char* Prefs::keyAction(Prefs::KeyAction i)
 }
 
 // Colours
-const char* ObjectColourKeywords[Prefs::nObjectColours] = { "ring", "bg", "fixedatom", "globeaxes", "globe", "glyph", "hbond", "specular", "text", "unitcellaxes", "unitcell", "vibrationarrow", "wireselection" };
-const char* ObjectColourNames[Prefs::nObjectColours] = { "Aromatic Ring", "Background", "Fixed Atom", "Globe Axes", "Globe", "Glyph Default", "Hydrogen Bond", "Specular", "Text", "Unit Cell Axes", "Unit Cell", "Vibration Arrow", "Wire Selection" };
+const char* ObjectColourKeywords[Prefs::nObjectColours] = { "ring", "bg", "fixedatom", "glyph", "hbond", "specular", "text", "vibrationarrow", "wireselection" };
+const char* ObjectColourNames[Prefs::nObjectColours] = { "Aromatic Ring", "Background", "Fixed Atom", "Glyph Default", "Hydrogen Bond", "Specular", "Text", "Vibration Arrow", "Wire Selection" };
 Prefs::ObjectColour Prefs::objectColour(QString s, bool reportError)
 {
 	Prefs::ObjectColour pc = (Prefs::ObjectColour) enumSearch("colour", Prefs::nObjectColours, ObjectColourKeywords, s);
@@ -253,13 +253,9 @@ Prefs::Prefs()
 	setColour(Prefs::BackgroundColour, 1.0, 1.0, 1.0, 1.0);
 	setColour(Prefs::FixedAtomColour, 0.0, 0.0, 0.0, 1.0);
 	setColour(Prefs::GlyphDefaultColour, 0.0, 0.0, 1.0, 0.7);
-	setColour(Prefs::GlobeColour, 0.9, 0.9, 0.9, 1.0);
-	setColour(Prefs::GlobeAxesColour, 0.5, 0.5, 0.5, 1.0);
 	setColour(Prefs::HydrogenBondColour, 0.7, 0.7, 0.7, 1.0);
 	setColour(Prefs::SpecularColour, 0.9, 0.9, 0.9, 1.0);
 	setColour(Prefs::TextColour, 0.0, 0.0, 0.0, 1.0);
-	setColour(Prefs::UnitCellColour, 0.0, 0.0, 0.0, 1.0);
-	setColour(Prefs::UnitCellAxesColour, 0.8, 0.8, 0.8, 1.0);
 	setColour(Prefs::VibrationArrowColour, 0.8, 0.4, 0.4, 1.0);
 	setColour(Prefs::WireSelectionColour, 0.0, 0.0, 0.0, 1.0);
 

@@ -84,8 +84,6 @@ Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
 	{ "ewaldKMax",			VTypes::IntegerData,		3, false },
 	{ "ewaldPrecision",		VTypes::DoubleData,		0, false },
 	{ "forceRhombohedral",		VTypes::IntegerData,		0, false },
-	{ "globeAxesColour",		VTypes::DoubleData,		4, false },
-	{ "globeColour",		VTypes::DoubleData,		4, false },
 	{ "globeSize",			VTypes::IntegerData,		0, false },
 	{ "glyphColour",		VTypes::DoubleData,		4, false },
 	{ "hBonds",			VTypes::IntegerData,		0, false },
@@ -128,8 +126,6 @@ Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
 	{ "tempDir",			VTypes::StringData,		0, false },
 	{ "textColour",			VTypes::DoubleData,		4, false },
 	{ "transparentSelection",	VTypes::IntegerData,		0, false },
-	{ "unitCellAxesColour",		VTypes::DoubleData,		4, false },
-	{ "unitCellColour",		VTypes::DoubleData,		4, false },
 	{ "usePixelBuffers",		VTypes::IntegerData,		0, false },
 	{ "vdwCutoff",			VTypes::DoubleData,		0, false },
 	{ "vibrationArrowColour",	VTypes::DoubleData,		4, false },
@@ -360,14 +356,6 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArray
 		case (PreferencesVariable::ForceRhombohedral):
 			rv.set( ptr->forceRhombohedral() );
 			break;
-		case (PreferencesVariable::GlobeAxesColour):
-			if (hasArrayIndex) rv.set( ptr->colour(Prefs::GlobeAxesColour)[arrayIndex-1] );
-			else rv.setArray( VTypes::DoubleData, ptr->colour(Prefs::GlobeAxesColour), 4);
-			break;
-		case (PreferencesVariable::GlobeColour):
-			if (hasArrayIndex) rv.set( ptr->colour(Prefs::GlobeColour)[arrayIndex-1] );
-			else rv.setArray( VTypes::DoubleData, ptr->colour(Prefs::GlobeColour), 4);
-			break;
 		case (PreferencesVariable::GlobeSize):
 			rv.set(ptr->globeSize() );
 			break;
@@ -503,14 +491,6 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArray
 			break;
 		case (PreferencesVariable::TransparentSelection):
 			rv.set( ptr->transparentSelectionStyle() );
-			break;
-		case (PreferencesVariable::UnitCellAxesColour):
-			if (hasArrayIndex) rv.set( ptr->colour(Prefs::UnitCellAxesColour)[arrayIndex-1] );
-			else rv.setArray( VTypes::DoubleData, ptr->colour(Prefs::UnitCellAxesColour), 4);
-			break;
-		case (PreferencesVariable::UnitCellColour):
-			if (hasArrayIndex) rv.set( ptr->colour(Prefs::UnitCellColour)[arrayIndex-1] );
-			else rv.setArray( VTypes::DoubleData, ptr->colour(Prefs::UnitCellColour), 4);
 			break;
 		case (PreferencesVariable::UsePixelBuffers):
 			rv.set( ptr->usePixelBuffers() );
@@ -763,18 +743,6 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue&
 		case (PreferencesVariable::ForceRhombohedral):
 			ptr->setForceRhombohedral( newValue.asBool() );
 			break;
-		case (PreferencesVariable::GlobeAxesColour):
-			if (newValue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->setColour(Prefs::GlobeAxesColour, n, newValue.asVector(result)[n]);
-			else if (newValue.arraySize() != -1) for (n=0; n<newValue.arraySize(); ++n) ptr->setColour(Prefs::GlobeAxesColour, n, newValue.asDouble(n, result));
-			else if (hasArrayIndex) ptr->setColour(Prefs::GlobeAxesColour, arrayIndex-1, newValue.asDouble(result));
-			else for (n=0; n<4; ++n) ptr->setColour(Prefs::GlobeAxesColour, n, newValue.asDouble(result));
-			break;
-		case (PreferencesVariable::GlobeColour):
-			if (newValue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->setColour(Prefs::GlobeColour, n, newValue.asVector(result)[n]);
-			else if (newValue.arraySize() != -1) for (n=0; n<newValue.arraySize(); ++n) ptr->setColour(Prefs::GlobeColour, n, newValue.asDouble(n, result));
-			else if (hasArrayIndex) ptr->setColour(Prefs::GlobeColour, arrayIndex-1, newValue.asDouble(result));
-			else for (n=0; n<4; ++n) ptr->setColour(Prefs::GlobeColour, n, newValue.asDouble(result));
-			break;
 		case (PreferencesVariable::GlobeSize):
 			ptr->setGlobeSize( newValue.asInteger(result) );
 			break;
@@ -965,18 +933,6 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue&
 		case (PreferencesVariable::TransparentSelection):
 			ptr->setTransparentSelectionStyle( newValue.asInteger() );
 			break;
-		case (PreferencesVariable::UnitCellAxesColour):
-			if (newValue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->setColour(Prefs::UnitCellAxesColour, n, newValue.asVector(result)[n]);
-			else if (newValue.arraySize() != -1) for (n=0; n<newValue.arraySize(); ++n) ptr->setColour(Prefs::UnitCellAxesColour, n, newValue.asDouble(n, result));
-			else if (hasArrayIndex) ptr->setColour(Prefs::UnitCellAxesColour, arrayIndex-1, newValue.asDouble(result));
-			else for (n=0; n<4; ++n) ptr->setColour(Prefs::UnitCellAxesColour, n, newValue.asDouble(result));
-			break;
-		case (PreferencesVariable::UnitCellColour):
-			if (newValue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->setColour(Prefs::UnitCellColour, n, newValue.asVector(result)[n]);
-			else if (newValue.arraySize() != -1) for (n=0; n<newValue.arraySize(); ++n) ptr->setColour(Prefs::UnitCellColour, n, newValue.asDouble(n, result));
-			else if (hasArrayIndex) ptr->setColour(Prefs::UnitCellColour, arrayIndex-1, newValue.asDouble(result));
-			else for (n=0; n<4; ++n) ptr->setColour(Prefs::UnitCellColour, n, newValue.asDouble(result));
-			break;
 		case (PreferencesVariable::UsePixelBuffers):
 			ptr->setUsePixelBuffers( newValue.asBool() );
 			break;
@@ -1012,12 +968,8 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue&
 			break;
 	}
 
-	// Update rendering primitives?
-	if (updatePrimitives)
-	{
-		aten_->atenWindow()->ui.MainView->updatePrimitives(Viewer::LowQuality);
-		aten_->atenWindow()->ui.MainView->updatePrimitives(Viewer::HighQuality);
-	}
+	// Update (low quality) rendering primitives?
+	if (updatePrimitives) aten_->atenWindow()->ui.MainView->updatePrimitives(Viewer::LowQuality);
 
 	Messenger::exit("PreferencesVariable::setAccessor");
 	return result;

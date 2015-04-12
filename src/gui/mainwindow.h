@@ -350,12 +350,23 @@ class AtenWindow : public QMainWindow
 
 
 	/*
-	 * Messages Scrollbar
+	 * Messages Control
 	 */
+	public:
+	// Types of message display
+	enum MessageDisplay { FullMessages, MessagesOverScene, MessagesUnderScene, NoMessages };
+	// Current message display type
+	MessageDisplay messageDisplay_;
+
 	private slots:
+	void on_MessagesCycleButton_clicked(bool checked);
+	void on_MessagesCopyButton_clicked(bool checked);
+	void on_MessagesClearButton_clicked(bool checked);
 	void on_MessagesScroll_sliderMoved(int position);
 
 	public:
+	// Return current message display style
+	MessageDisplay messageDisplay();
 	// Update messages widgets
 	void updateMessagesWidgets();
 	// Return current position of messages scrollbar

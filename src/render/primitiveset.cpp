@@ -191,6 +191,18 @@ Primitive& PrimitiveSet::rotationGlobe()
 	return rotationGlobe_;
 }
 
+// Return rotation globe axes primitive
+Primitive& PrimitiveSet::rotationGlobeAxes()
+{
+	return rotationGlobeAxes_;
+}
+
+// Return halo primitive
+Primitive& PrimitiveSet::halo()
+{
+	return halo_;
+}
+
 /*
  * Creation / Instantiation
  */
@@ -242,6 +254,7 @@ void PrimitiveSet::recreatePrimitives()
 	crossedCube_.forgetAll();
 	cellAxes_.forgetAll();
 	rotationGlobe_.forgetAll();
+	halo_.forgetAll();
 
 	// To clean up following code, grab radii here
 	for (n=0; n<Prefs::nDrawStyles; ++n)
@@ -362,18 +375,21 @@ void PrimitiveSet::recreatePrimitives()
 	wireCube_.plotCube(1.0, 2, 0.0, 0.0, 0.0);
 	crossedCube_.initialise(GL_LINES, false);
 	crossedCube_.plotCrossedCube(1.0, 2, 0.0, 0.0, 0.0);
-	cellAxes_.initialise(GL_TRIANGLES, false);
-	cellAxes_.plotCylinder(0.0f, 0.0f, 0.0f, 0.65f, 0.0f, 0.0f, 0.1f, 0.1f, nStacks, nSlices, true, false);
-	cellAxes_.plotCylinder(0.65f, 0.0f, 0.0f, 0.35f, 0.0f, 0.0f, 0.2f, 0.0f, nStacks, nSlices, true, false);
-	cellAxes_.plotCylinder(0.0f, 0.0f, 0.0f, 0.0f, 0.65f, 0.0f, 0.1f, 0.1f, nStacks, nSlices, true, false);
-	cellAxes_.plotCylinder(0.0f, 0.65f, 0.0f, 0.0f, 0.35f, 0.0f, 0.2f, 0.0f, nStacks, nSlices, true, false);
-	cellAxes_.plotCylinder(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.65f, 0.1f, 0.1f, nStacks, nSlices, true, false);
-	cellAxes_.plotCylinder(0.0f, 0.0f, 0.65f, 0.0f, 0.0f, 0.35f, 0.2f, 0.0f, nStacks, nSlices, true, false);
-	rotationGlobe_.initialise(GL_TRIANGLES, false);
-	rotationGlobe_.plotSphere(0.75,10,13);
-	rotationGlobe_.plotCylinder(0.7f, 0.0f, 0.0f, 0.3f, 0.0f, 0.0f, 0.2f, 0.0f, 8, 10);
-	rotationGlobe_.plotCylinder(0.0f, 0.7f, 0.0f, 0.0f, 0.3f, 0.0f, 0.2f, 0.0f, 8, 10);
-	rotationGlobe_.plotCylinder(0.0f, 0.0f, 0.7f, 0.0f, 0.0f, 0.3f, 0.2f, 0.0f, 8, 10);
+	cellAxes_.initialise(GL_TRIANGLES, true);
+	cellAxes_.plotCylinder(0.0f, 0.0f, 0.0f, 0.65f, 0.0f, 0.0f, 0.1f, 0.1f, nStacks, nSlices, true, false, true, Vec4<GLfloat>(1.0f, 0.0f, 0.0f, 1.0f));
+	cellAxes_.plotCylinder(0.65f, 0.0f, 0.0f, 0.35f, 0.0f, 0.0f, 0.2f, 0.0f, nStacks, nSlices, true, false, true, Vec4<GLfloat>(1.0f, 0.0f, 0.0f, 1.0f));
+	cellAxes_.plotCylinder(0.0f, 0.0f, 0.0f, 0.0f, 0.65f, 0.0f, 0.1f, 0.1f, nStacks, nSlices, true, false, true, Vec4<GLfloat>(0.0f, 1.0f, 0.0f, 1.0f));
+	cellAxes_.plotCylinder(0.0f, 0.65f, 0.0f, 0.0f, 0.35f, 0.0f, 0.2f, 0.0f, nStacks, nSlices, true, false, true, Vec4<GLfloat>(0.0f, 1.0f, 0.0f, 1.0f));
+	cellAxes_.plotCylinder(0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 0.65f, 0.1f, 0.1f, nStacks, nSlices, true, false, true, Vec4<GLfloat>(0.0f, 0.0f, 1.0f, 1.0f));
+	cellAxes_.plotCylinder(0.0f, 0.0f, 0.65f, 0.0f, 0.0f, 0.35f, 0.2f, 0.0f, nStacks, nSlices, true, false, true, Vec4<GLfloat>(0.0f, 0.0f, 1.0f, 1.0f));
+	rotationGlobe_.initialise(GL_TRIANGLES, true);
+	rotationGlobe_.plotSphere(0.75, 8, 24, true, Vec4<GLfloat>(1.0f, 1.0f, 1.0f, 0.6f));
+	rotationGlobeAxes_.initialise(GL_TRIANGLES, true);
+	rotationGlobeAxes_.plotCylinder(0.7f, 0.0f, 0.0f, 0.3f, 0.0f, 0.0f, 0.2f, 0.0f, 8, 10, false, false, true, Vec4<GLfloat>(1.0f, 0.0f, 0.0f, 1.0f));
+	rotationGlobeAxes_.plotCylinder(0.0f, 0.7f, 0.0f, 0.0f, 0.3f, 0.0f, 0.2f, 0.0f, 8, 10, false, false, true, Vec4<GLfloat>(0.0f, 1.0f, 0.0f, 1.0f));
+	rotationGlobeAxes_.plotCylinder(0.0f, 0.0f, 0.7f, 0.0f, 0.0f, 0.3f, 0.2f, 0.0f, 8, 10, false, false, true, Vec4<GLfloat>(0.0f, 0.0f, 1.0f, 1.0f));
+	halo_.initialise(GL_TRIANGLES, false);
+	halo_.plotHalo(0.8f, 1.0f, 24);
 	
 	Messenger::exit("PrimitiveSet::recreatePrimitives");
 }
@@ -407,6 +423,8 @@ void PrimitiveSet::pushInstance(const QOpenGLContext* context)
 	crossedCube_.pushInstance(context);
 	cellAxes_.pushInstance(context);
 	rotationGlobe_.pushInstance(context);
+	rotationGlobeAxes_.pushInstance(context);
+	halo_.pushInstance(context);
 
 	++nInstances_;
 
@@ -441,7 +459,9 @@ void PrimitiveSet::popInstance(const QOpenGLContext* context)
 	crossedCube_.popInstance(context);
 	cellAxes_.popInstance(context);
 	rotationGlobe_.popInstance(context);
-	
+	rotationGlobeAxes_.popInstance(context);
+	halo_.popInstance(context);
+
 	--nInstances_;
 
 	Messenger::exit("PrimitiveSet::popInstance");

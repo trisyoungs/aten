@@ -1130,6 +1130,9 @@
               <height>30</height>
              </size>
             </property>
+            <property name="shortcut">
+             <string>Ctrl+0, Ctrl+S</string>
+            </property>
             <property name="checkable">
              <bool>true</bool>
             </property>
@@ -1186,6 +1189,9 @@
               <height>30</height>
              </size>
             </property>
+            <property name="shortcut">
+             <string>Ctrl+1</string>
+            </property>
             <property name="checkable">
              <bool>true</bool>
             </property>
@@ -1232,6 +1238,9 @@
               <width>30</width>
               <height>30</height>
              </size>
+            </property>
+            <property name="shortcut">
+             <string>Ctrl+2</string>
             </property>
             <property name="checkable">
              <bool>true</bool>
@@ -1280,6 +1289,9 @@
               <height>30</height>
              </size>
             </property>
+            <property name="shortcut">
+             <string>Ctrl+4</string>
+            </property>
             <property name="checkable">
              <bool>true</bool>
             </property>
@@ -1324,6 +1336,9 @@
               <height>30</height>
              </size>
             </property>
+            <property name="shortcut">
+             <string>Ctrl+3</string>
+            </property>
             <property name="checkable">
              <bool>true</bool>
             </property>
@@ -1367,6 +1382,9 @@
               <width>30</width>
               <height>30</height>
              </size>
+            </property>
+            <property name="shortcut">
+             <string>Ctrl+5</string>
             </property>
             <property name="checkable">
              <bool>true</bool>
@@ -1511,6 +1529,9 @@
               <height>30</height>
              </size>
             </property>
+            <property name="shortcut">
+             <string>Ctrl+8</string>
+            </property>
             <property name="checkable">
              <bool>true</bool>
             </property>
@@ -1554,6 +1575,9 @@
               <width>30</width>
               <height>30</height>
              </size>
+            </property>
+            <property name="shortcut">
+             <string>Ctrl+7</string>
             </property>
             <property name="checkable">
              <bool>true</bool>
@@ -1700,6 +1724,9 @@
               <height>30</height>
              </size>
             </property>
+            <property name="shortcut">
+             <string>Ctrl+9</string>
+            </property>
             <property name="checkable">
              <bool>true</bool>
             </property>
@@ -1743,6 +1770,9 @@
               <width>30</width>
               <height>30</height>
              </size>
+            </property>
+            <property name="shortcut">
+             <string>Ctrl+6</string>
             </property>
             <property name="checkable">
              <bool>true</bool>
@@ -2047,16 +2077,61 @@
        </item>
        <item>
         <layout class="QVBoxLayout" name="verticalLayout">
+         <property name="spacing">
+          <number>2</number>
+         </property>
+         <item>
+          <widget class="QPushButton" name="MessagesCycleButton">
+           <property name="maximumSize">
+            <size>
+             <width>16</width>
+             <height>24</height>
+            </size>
+           </property>
+           <property name="toolTip">
+            <string>Cycle visibility of messages and model view</string>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="icon">
+            <iconset resource="icons.qrc">
+             <normaloff>:/arrows/icons/arrow_clockwise.svg</normaloff>:/arrows/icons/arrow_clockwise.svg</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>10</width>
+             <height>10</height>
+            </size>
+           </property>
+           <property name="shortcut">
+            <string>Space</string>
+           </property>
+          </widget>
+         </item>
          <item>
           <widget class="QPushButton" name="MessagesCopyButton">
            <property name="maximumSize">
             <size>
              <width>16</width>
-             <height>16777215</height>
+             <height>24</height>
             </size>
            </property>
+           <property name="toolTip">
+            <string>Copy current contents of message buffer to clipboard</string>
+           </property>
            <property name="text">
-            <string>C</string>
+            <string/>
+           </property>
+           <property name="icon">
+            <iconset resource="icons.qrc">
+             <normaloff>:/edit/icons/edit_copy.svg</normaloff>:/edit/icons/edit_copy.svg</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>10</width>
+             <height>10</height>
+            </size>
            </property>
           </widget>
          </item>
@@ -2068,8 +2143,21 @@
              <height>24</height>
             </size>
            </property>
+           <property name="toolTip">
+            <string>Clear message buffer</string>
+           </property>
            <property name="text">
-            <string>C</string>
+            <string/>
+           </property>
+           <property name="icon">
+            <iconset resource="icons.qrc">
+             <normaloff>:/basic/icons/basic_cross.svg</normaloff>:/basic/icons/basic_cross.svg</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>10</width>
+             <height>10</height>
+            </size>
            </property>
           </widget>
          </item>
