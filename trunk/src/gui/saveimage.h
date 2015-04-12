@@ -46,7 +46,7 @@ class SaveImageDialog : public QDialog
 	double aspectRatio_;
 
 	public:
-	// Call dialog to get/update image save information in UChromaSession
+	// Call dialog to get/update image save information
 	bool getImageDetails(int startWidth, int startHeight);
 
 

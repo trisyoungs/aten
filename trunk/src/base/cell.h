@@ -92,17 +92,19 @@ class UnitCell
 	// Remove the cell definition (i.e. set 'type' to NoCell)
 	void reset();
 	// Set lengths and angles and calculates matrix
-	void set(const Vec3<double> &lengths, const Vec3<double> &angles);
+	void set(const Vec3<double>& lengths, const Vec3<double>& angles);
 	// Set matrix and calculates lengths and angles
 	void set(const Matrix& axes);
 	// Set lengths and calculates matrix
-	void setLengths(const Vec3<double> &lengths);
+	void setLengths(const Vec3<double>& lengths);
 	// Set individual length
 	void setLength(int i, double d);
 	// Set individual angle
 	void setAngle(int i, double d);
 	// Set all angles simultaneously
-	void setAngles(const Vec3<double> &angles);
+	void setAngles(const Vec3<double>& angles);
+	// Return individual parameter
+	double parameter(UnitCell::CellParameter cp);
 	// Set / adjust individual parameter
 	void setParameter(UnitCell::CellParameter cp, double value, bool adjust = false);
 	// Return the type of cell
@@ -194,25 +196,25 @@ class UnitCell
 	 */
 	public:
 	// Minimum image vector from r1 to r2
-	Vec3<double> mimVector(const Vec3<double> &r1, const Vec3<double> &r2) const;
+	Vec3<double> mimVector(const Vec3<double>& r1, const Vec3<double>& r2) const;
 	// Minimum image vector from i to r2
-	Vec3<double> mimVector(Atom* i, const Vec3<double> &r2) const;
+	Vec3<double> mimVector(Atom* i, const Vec3<double>& r2) const;
 	// Minimum image vector from i to j
 	Vec3<double> mimVector(Atom* i, Atom* j) const;
 	// Minimum image position of r1 with respect to r2
-	Vec3<double> mim(const Vec3<double> &r1, const Vec3<double> &r2) const;
+	Vec3<double> mim(const Vec3<double>& r1, const Vec3<double>& r2) const;
 	// Minimum image position of i with respect to r2
-	Vec3<double> mim(Atom* i, const Vec3<double> &r2) const;
+	Vec3<double> mim(Atom* i, const Vec3<double>& r2) const;
 	// Minimum image position of i with respect to j
 	Vec3<double> mim(Atom* i, Atom* j) const;
 	// Fold specified atom coordinates into unit cell
 	Vec3<double> fold(Atom* i) const;
 	// Fold provided coordinates into unit cell
-	Vec3<double> fold(Vec3<double> &r) const;
+	Vec3<double> fold(Vec3<double>& r) const;
 	// Fold fractional coordinates into cell
-	static void foldFrac(Vec3<double> &r);
+	static void foldFrac(Vec3<double>& r);
 	// Return whether specified coordinates are inside the current unit cell
-	bool isInsideCell(Vec3<double> &v) const;
+	bool isInsideCell(Vec3<double>& v) const;
 
 
 	/*
@@ -220,15 +222,15 @@ class UnitCell
 	 */
 	public:
 	// Calculate distance between supplied coordinates
-	double distance(const Vec3<double> &ri, const Vec3<double> &rj, bool useMim = true) const;
+	double distance(const Vec3<double>& ri, const Vec3<double>& rj, bool useMim = true) const;
 	// Calculate distance between supplied atoms
 	double distance(Atom* i, Atom* j, bool useMim = true) const;
 	// Calculate angle between supplied coordinates
-	double angle(const Vec3<double> &ri, const Vec3<double> &rj, const Vec3<double> &rk, bool useMim = true) const;
+	double angle(const Vec3<double>& ri, const Vec3<double>& rj, const Vec3<double>& rk, bool useMim = true) const;
 	// Calculate angle between supplied atoms
 	double angle(Atom* i, Atom* j, Atom* k, bool useMim = true) const;
 	// Calculate torsion angle between supplied coordinates
-	double torsion(const Vec3<double> &ri, const Vec3<double> &rj, const Vec3<double> &rk, const Vec3<double> &rl, bool useMim = true) const;
+	double torsion(const Vec3<double>& ri, const Vec3<double>& rj, const Vec3<double>& rk, const Vec3<double>& rl, bool useMim = true) const;
 	// Calculate torsion angle between supplied atoms
 	double torsion(Atom* i, Atom* j, Atom* k, Atom* l, bool useMim = true) const;
 };

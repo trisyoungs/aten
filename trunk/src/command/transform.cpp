@@ -344,7 +344,7 @@ bool Commands::function_SetAngle(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	// Clear any current marked selection
 	obj.rs()->selectNone(true);
 	// Find bond (if any) between i and j
-	Bond *b = i->findBond(j);
+	Bond* b = i->findBond(j);
 	// Perform mark-only tree select on atom j, excluding any bond to atom i
 	obj.rs()->selectTree(k, true, false, b);
 	// If atom 'i' is now marked, there is a cyclic route connecting the two atoms and we can't proceed
@@ -385,7 +385,7 @@ bool Commands::function_SetDistance(CommandNode* c, Bundle& obj, ReturnValue& rv
 	// Clear any current marked selection
 	obj.rs()->selectNone(true);
 	// Find bond (if any) between i and j
-	Bond *b = i->findBond(j);
+	Bond* b = i->findBond(j);
 	// Perform mark-only tree select on atom j, excluding any bond to atom i
 	obj.rs()->selectTree(j, true, false, b);
 	// If atom 'i' is now marked, there is a cyclic route connecting the two atoms and we can't proceed
@@ -437,7 +437,7 @@ bool Commands::function_SetTorsion(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	// Clear any current marked selection
 	obj.rs()->selectNone(true);
 	// Find bond (if any) between j and k
-	Bond *b = j->findBond(k);
+	Bond* b = j->findBond(k);
 	// Perform mark-only tree select on atom l, excluding any bond to atom i
 	obj.rs()->selectTree(l, true, false, b);
 	// If atom 'i' is now marked, there is a cyclic route connecting the two atoms and we can't proceed

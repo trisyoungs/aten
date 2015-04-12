@@ -81,7 +81,7 @@ Matrix Matrix::operator-(const Matrix& B) const
 	return A;
 }
 
-Vec3<double> Matrix::operator*(const Vec3<double> &v) const
+Vec3<double> Matrix::operator*(const Vec3<double>& v) const
 {
 	Vec3<double> result;
 	result.x = v.x*matrix_[0] + v.y*matrix_[4] + v.z*matrix_[8] + matrix_[12];
@@ -896,7 +896,7 @@ void Matrix::multiplyRotation(Matrix B)
 }
 
 // Apply rotational part of matrix to supplied vector
-Vec3<double> Matrix::rotateVector(Vec3<double> &v) const
+Vec3<double> Matrix::rotateVector(Vec3<double>& v) const
 {
 	Vec3<double> result;
 	result.x = v.x*matrix_[0] + v.y*matrix_[4] + v.z*matrix_[8];

@@ -68,6 +68,8 @@ void AtenWindow::initialUpdateAndShow()
 // Update GUI after model change (or different model selected)
 void AtenWindow::updateMainWindow()
 {
+	refreshing_ = true;
+
 	// Get current model
 	Model* currentModel = aten_.currentModel();
 
@@ -146,6 +148,18 @@ void AtenWindow::updateMainWindow()
 	if (currentModel) title += QString(" - %1 (%2)%3").arg(currentModel->name(), currentModel->filename().isEmpty() ? "<<no filename>>" : currentModel->filename(), currentModel->isModified() ? " [Modified]" : "");
 	else title += " [[[ No Current Model ]]]";
 	setWindowTitle(title);
+
+	// Build panel
+	/* nothing */
+
+	// Cell panel
+	ui.CellDefinePeriodicButton->setEnabled(currentModel);
+	if (currentModel) ui.CellDefinePeriodicButton->setChecked(currentModel->cell()->type() != UnitCell::NoCell);
+	ui.CellDefineAnglesButton->setEnabled(currentModel ? currentModel->cell()->type() != UnitCell::NoCell : false);
+	ui.CellDefineLengthsButton->setEnabled(currentModel ? currentModel->cell()->type() != UnitCell::NoCell : false);
+	ui.CellDefineMatrixButton->setEnabled(currentModel ? currentModel->cell()->type() != UnitCell::NoCell : false);
+
+	refreshing_ = false;
 }
 
 // Update trajectory menu

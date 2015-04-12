@@ -48,7 +48,7 @@ class GridPoint : public ListItem<GridPoint>
 
 	public:
 	// Return coordinates of point
-	Vec3<double> &r();
+	Vec3<double>& r();
 	// Return value at point
 	double value() const;
 	// Set value at point

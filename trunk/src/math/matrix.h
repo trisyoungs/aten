@@ -56,7 +56,7 @@ class Matrix
 	Matrix operator*(const double a) const;
 	Matrix operator+(const Matrix& B) const;
 	Matrix operator-(const Matrix& B) const;
-	Vec3<double> operator*(const Vec3<double> &v) const;
+	Vec3<double> operator*(const Vec3<double>& v) const;
 	Vec4<double> operator*(const Vec4<double> &v) const;
 	Matrix& operator*=(const Matrix& B);
 	double &operator[](int);
@@ -199,7 +199,7 @@ class Matrix
 	// Transform coordinates supplied and return as Vec3<double>
 	Vec3<double> transform(Vec3<double> vec) const;
 	// Apply rotational part of matrix to supplied Vec3
-	Vec3<double> rotateVector(Vec3<double> &v) const;
+	Vec3<double> rotateVector(Vec3<double>& v) const;
 	// Apply rotational part of matrix to supplied vector coordinates
 	Vec3<double> rotateVector(double x, double y, double z) const;
 	// Multiply against coordinates provided (in GLfloats)

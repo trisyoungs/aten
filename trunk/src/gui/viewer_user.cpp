@@ -270,7 +270,7 @@ void Viewer::endMode(Prefs::MouseButton button)
 	double area, radius;
 	Vec4<double> screenr;
 	Atom* atoms[4], *i;
-	Bond *b;
+	Bond* b;
 	Bond::BondType bt;
 	Fragment* frag;
 	

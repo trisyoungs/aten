@@ -561,7 +561,7 @@ bool Commands::function_SelectTree(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	Atom* i = c->argType(0) == VTypes::IntegerData ? obj.rs()->atom(c->argi(0)-1) : (Atom*) c->argp(0, VTypes::AtomData);
 	if (i == NULL) return false;
-	Bond *b = c->hasArg(1) ? (Bond*) c->argp(1, VTypes::BondData) : NULL;
+	Bond* b = c->hasArg(1) ? (Bond*) c->argp(1, VTypes::BondData) : NULL;
 	int nselected = obj.rs()->nSelected();
 	obj.rs()->beginUndoState("Tree selection from atom %i", i->id()+1);
 	obj.rs()->selectTree(i, false, false, b);

@@ -115,7 +115,7 @@ Model* Atom::parent()
 /*
 // Coordinates
 */
-Vec3<double> &Atom::r()
+Vec3<double>& Atom::r()
 {
 	return r_;
 }
@@ -123,7 +123,7 @@ Vec3<double> &Atom::r()
 /*
 // Forces
 */
-Vec3<double> &Atom::f()
+Vec3<double>& Atom::f()
 {
 	return f_;
 }
@@ -131,7 +131,7 @@ Vec3<double> &Atom::f()
 /*
 // Velocities
 */
-Vec3<double> &Atom::v()
+Vec3<double>& Atom::v()
 {
 	return v_;
 }
@@ -350,13 +350,13 @@ bool Atom::isNBonds(int n) const
 }
 
 // Accept the specified bond to the atom's local reference list
-void Atom::acceptBond(Bond *b)
+void Atom::acceptBond(Bond* b)
 {
 	bonds_.add(b);
 }
 
 // Detach bond
-void Atom::detachBond(Bond *xbond)
+void Atom::detachBond(Bond* xbond)
 {
 	Messenger::enter("Atom::detachBond");
 	// Remove the reference to the bond from the Reflist on the atom.
@@ -380,10 +380,10 @@ int Atom::totalBondOrder()
 }
 
 // Find bond to atom 'j'
-Bond *Atom::findBond(Atom* j)
+Bond* Atom::findBond(Atom* j)
 {
 	Messenger::enter("Atom::findBond");
-	Bond *result = NULL;
+	Bond* result = NULL;
 	for (Refitem<Bond,int>* bref = bonds_.first(); bref != NULL; bref = bref->next)
 	{
 		if (bref->item->partner(this) == j)
@@ -401,7 +401,7 @@ double Atom::bondOrder(Atom* j)
 {
 	Messenger::enter("Atom::bondOrder");
 	// First, find the bond
-	Bond *b = findBond(j);
+	Bond* b = findBond(j);
 	// Criticality check
 	if (b == NULL)
 	{
@@ -419,7 +419,7 @@ Atom::AtomGeometry Atom::geometry()
 	Messenger::enter("Atom::geometry");
 	Atom::AtomGeometry result = Atom::UnboundGeometry;
 	double angle, largest;
-	Bond *b1, *b2;
+	Bond* b1, *b2;
 	Refitem<Bond,int>* bref1, *bref2;
 	result = Atom::NoGeometry;
 	// Separate the tests by number of bound atoms...
@@ -541,7 +541,7 @@ void Atom::addBoundToReflist(Reflist<Atom,int>* rlist)
 }
 
 // Calculate bond plane (unit) vector
-Vec3<double> Atom::findBondPlane(Atom* other, Bond *excludedBond, const Vec3<double> &vij, bool vijIsNormalised)
+Vec3<double> Atom::findBondPlane(Atom* other, Bond* excludedBond, const Vec3<double>& vij, bool vijIsNormalised)
 {
 	// Given this atom, another (j), and a bond node on 'this' between them, determine the plane of the bond if possible.
 	Vec3<double> rk, xp, vijnorm;

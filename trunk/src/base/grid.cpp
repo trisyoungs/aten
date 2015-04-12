@@ -71,7 +71,7 @@ GridPoint::~GridPoint()
 }
 
 // Return coordinates of point
-Vec3<double> &GridPoint::r()
+Vec3<double>& GridPoint::r()
 {
 	return r_;
 }

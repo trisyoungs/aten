@@ -35,7 +35,7 @@ class BondVariable : public PointerVariable
 {
 	public:
 	// Constructor / Destructor
-	BondVariable(Bond *i = NULL, bool constant = false);
+	BondVariable(Bond* i = NULL, bool constant = false);
 	~BondVariable();
 
 

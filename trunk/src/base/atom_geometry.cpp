@@ -27,7 +27,7 @@
 ATEN_USING_NAMESPACE
 
 // Return next best vector for addition of new atom
-bool Atom::nextBondVector(Vec3<double> &vector, Atom::AtomGeometry geometry)
+bool Atom::nextBondVector(Vec3<double>& vector, Atom::AtomGeometry geometry)
 {
 	Messenger::enter("Atom::nextBondVector");
 

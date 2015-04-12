@@ -383,7 +383,7 @@ bool Model::scaleCell(const Vec3<double>& scale, bool useCog)
 }
 
 // Replicate Cell
-void Model::replicateCell(const Vec3<double> &neg, const Vec3<double> &pos)
+void Model::replicateCell(const Vec3<double>& neg, const Vec3<double>& pos)
 {
 	Messenger::enter("Model::replicateCell");
 	int count;

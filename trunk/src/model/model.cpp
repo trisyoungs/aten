@@ -212,7 +212,7 @@ void Model::copy(Model* srcmodel)
 	// Copy atoms
 	for (Atom* i = srcmodel->atoms(); i != NULL; i = i->next) addCopy(i);
 	// Copy bonds
-	for (Bond *b = srcmodel->bonds(); b != NULL; b = b->next) bondAtoms(b->atomI()->id(), b->atomJ()->id(), b->type());
+	for (Bond* b = srcmodel->bonds(); b != NULL; b = b->next) bondAtoms(b->atomI()->id(), b->atomJ()->id(), b->type());
 	// Copy unit cell
 	cell_ = srcmodel->cell_;
 	// Copy component information

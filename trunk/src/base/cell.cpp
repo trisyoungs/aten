@@ -127,7 +127,7 @@ void UnitCell::reset()
 }
 
 // Set (by parameters)
-void UnitCell::set(const Vec3<double> &newlengths, const Vec3<double> &newangles)
+void UnitCell::set(const Vec3<double>& newlengths, const Vec3<double>& newangles)
 {
 	Messenger::enter("UnitCell::set[vectors]");
 	// Store cell lengths and angles (in degrees) in structure
@@ -155,7 +155,7 @@ void UnitCell::set(const Matrix& newaxes)
 }
 
 // Set lengths and calculates matrix
-void UnitCell::setLengths(const Vec3<double> &newlengths)
+void UnitCell::setLengths(const Vec3<double>& newlengths)
 {
 	// Store new cell lengths
 	lengths_ = newlengths;
@@ -188,7 +188,7 @@ void UnitCell::setAngle(int i, double d)
 }
 
 // Set angles and calculates matrix
-void UnitCell::setAngles(const Vec3<double> &newangles)
+void UnitCell::setAngles(const Vec3<double>& newangles)
 {
 	// Store new cell lengths
 	angles_ = newangles;
@@ -198,15 +198,51 @@ void UnitCell::setAngles(const Vec3<double> &newangles)
 	update();
 }
 
+// Return individual parameter
+double UnitCell::parameter(UnitCell::CellParameter cp)
+{
+	int i;
+	switch (cp)
+	{
+		// Cell matrix elements
+		case (UnitCell::CellAX):
+		case (UnitCell::CellAY):
+		case (UnitCell::CellAZ):
+		case (UnitCell::CellBX):
+		case (UnitCell::CellBY):
+		case (UnitCell::CellBZ):			
+		case (UnitCell::CellCX):
+		case (UnitCell::CellCY):
+		case (UnitCell::CellCZ):
+			i = cp - UnitCell::CellAX;
+			return axes_[(i/3)*4+i%3];
+			break;
+		// Cell lengths
+		case (UnitCell::CellA):
+		case (UnitCell::CellB):
+		case (UnitCell::CellC):
+			return lengths_.get(cp - UnitCell::CellA);
+			break;
+		// Cell angles
+		case (UnitCell::CellAlpha):
+		case (UnitCell::CellBeta):
+		case (UnitCell::CellGamma):
+			return angles_.get(cp - UnitCell::CellAlpha);
+			break;
+		// Default
+		default:
+			printf("Invalid cell parameter supplied to UnitCell::parameter.\n");
+			break;
+	}
+	return 0.0;
+}
+
 // Set / adjust individual parameter
 void UnitCell::setParameter(UnitCell::CellParameter cp, double value, bool adjust)
 {
 	int i;
 	switch (cp)
 	{
-		case (UnitCell::nCellParameters):
-			printf("No cell parameter supplied to UnitCell::adjustParameter.\n");
-			break;
 		// Cell matrix elements
 		case (UnitCell::CellAX):
 		case (UnitCell::CellAY):
@@ -238,10 +274,12 @@ void UnitCell::setParameter(UnitCell::CellParameter cp, double value, bool adjus
 			// Calculate new matrix
 			calculateMatrix();
 			break;
-		// Cell matrix elements
+		// Default
 		default:
+			printf("Invalid cell parameter supplied to UnitCell::setParameter.\n");
 			break;
 	}
+
 	// Update dependent quantities
 	update();
 }
@@ -549,7 +587,7 @@ void UnitCell::calculateInverse()
 */
 
 // Minimum image vector from r1 to r2
-Vec3<double> UnitCell::mimVector(const Vec3<double> &r1, const Vec3<double> &r2) const
+Vec3<double> UnitCell::mimVector(const Vec3<double>& r1, const Vec3<double>& r2) const
 {
 	static Vec3<double> R;
 	static double half;
@@ -592,7 +630,7 @@ Vec3<double> UnitCell::mimVector(const Vec3<double> &r1, const Vec3<double> &r2)
 }
 
 // Minimum image vector from i to r2
-Vec3<double> UnitCell::mimVector(Atom* i, const Vec3<double> &r2) const
+Vec3<double> UnitCell::mimVector(Atom* i, const Vec3<double>& r2) const
 {
 	return mimVector(i->r(), r2);
 }
@@ -604,13 +642,13 @@ Vec3<double> UnitCell::mimVector(Atom* i, Atom* j) const
 }
 
 // Minimum image position of r1 with respect to r2
-Vec3<double> UnitCell::mim(const Vec3<double> &r1, const Vec3<double> &r2) const
+Vec3<double> UnitCell::mim(const Vec3<double>& r1, const Vec3<double>& r2) const
 {
 	return mimVector(r2,r1) + r2;
 }
 
 // Minimum image position of i with respect to r2
-Vec3<double> UnitCell::mim(Atom* i, const Vec3<double> &r2) const
+Vec3<double> UnitCell::mim(Atom* i, const Vec3<double>& r2) const
 {
 	return mimVector(r2,i->r()) + r2;
 }
@@ -622,7 +660,7 @@ Vec3<double> UnitCell::mim(Atom* i, Atom* j) const
 }
 
 // Fold atom
-Vec3<double> UnitCell::fold(Vec3<double> &r) const
+Vec3<double> UnitCell::fold(Vec3<double>& r) const
 {
 	// Folds the coordinates in 'r' into the defined unit cell
 	Messenger::enter("UnitCell::fold");
@@ -662,7 +700,7 @@ Vec3<double> UnitCell::fold(Atom* i) const
 }
 
 // Fold fractional coordinates into cell
-void UnitCell::foldFrac(Vec3<double> &r)
+void UnitCell::foldFrac(Vec3<double>& r)
 {
 	r.x -= floor(r.x);
 	r.y -= floor(r.y);
@@ -670,7 +708,7 @@ void UnitCell::foldFrac(Vec3<double> &r)
 }
 
 // Return whether specified coordinates are inside the current unit cell
-bool UnitCell::isInsideCell(Vec3<double> &v) const
+bool UnitCell::isInsideCell(Vec3<double>& v) const
 {
 	switch (type_)
 	{
@@ -702,7 +740,7 @@ bool UnitCell::isInsideCell(Vec3<double> &v) const
 */
 
 // Calculate distance between supplied coordinates
-double UnitCell::distance(const Vec3<double> &r1, const Vec3<double> &r2, bool useMim) const
+double UnitCell::distance(const Vec3<double>& r1, const Vec3<double>& r2, bool useMim) const
 {
 	// Calculate the distance between atoms i and j
 	static Vec3<double> mimi;
@@ -717,7 +755,7 @@ double UnitCell::distance(Atom* i, Atom* j, bool useMim) const
 }
 
 // Calculate angle between supplied coordinates
-double UnitCell::angle(const Vec3<double> &r1, const Vec3<double> &r2, const Vec3<double> &r3, bool useMim) const
+double UnitCell::angle(const Vec3<double>& r1, const Vec3<double>& r2, const Vec3<double>& r3, bool useMim) const
 {
 	// Calculate the angle formed between atoms i, j, and k
 	static Vec3<double> vecji, vecjk;
@@ -739,7 +777,7 @@ double UnitCell::angle(Atom* i, Atom* j, Atom* k, bool useMim) const
 }
 
 // Calculate torsion angle between supplied coordinates
-double UnitCell::torsion(const Vec3<double> &i, const Vec3<double> &j, const Vec3<double> &k, const Vec3<double> &l, bool useMim) const
+double UnitCell::torsion(const Vec3<double>& i, const Vec3<double>& j, const Vec3<double>& k, const Vec3<double>& l, bool useMim) const
 {
 	// Calculate the torsion angle formed between the atoms i, j, k, and l.
 	static Vec3<double> vecji, veckl, vecjk, veckj, mim_k, xpj, xpk;
@@ -779,14 +817,14 @@ double UnitCell::torsion(Atom* i, Atom* j, Atom* k, Atom* l, bool useMim) const
 */
 
 // Return the fractional coordinates of the specified position
-Vec3<double> UnitCell::realToFrac(const Vec3<double> &v) const
+Vec3<double> UnitCell::realToFrac(const Vec3<double>& v) const
 {
 	// Convert the real coordinates supplied into fractional cell coordinates
 	return inverse_.transform(v);
 }
 
 // Return the real coordinates of the specified fractional cell coordinate
-Vec3<double> UnitCell::fracToReal(const Vec3<double> &v) const
+Vec3<double> UnitCell::fracToReal(const Vec3<double>& v) const
 {
 	// Convert the fractional cell coordinates supplied into real cell coordinates
 	return axes_.transform(v);

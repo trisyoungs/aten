@@ -817,7 +817,7 @@ int NetaBoundNode::score(Atom* target, Reflist<Atom,int>* nbrs, Reflist<Ring,int
 			// Connection type?
 			if ((context->nodeType() != NetaNode::RingNode) && (bondType_ != Bond::Any))
 			{
-				Bond *b = target->findBond(ri->item);
+				Bond* b = target->findBond(ri->item);
 				if (b == NULL)
 				{
 					Messenger::print("NETA Internal Error: Couldn't find bond between atom ids %i and %i to check type.", target->id(), ri->item->id());
@@ -1082,7 +1082,7 @@ int NetaValueNode::score(Atom* target, Reflist<Atom,int>* nbrs, Reflist<Ring,int
 {
 	Messenger::enter("NetaValueNode::score");
 	int totalscore = -1, n;
-	Bond *b;
+	Bond* b;
 	Refitem<Bond,int>* rb;
 	switch (netaValue_)
 	{

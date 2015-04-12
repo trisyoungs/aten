@@ -1134,7 +1134,7 @@ void Pattern::propagateBondTypes()
 	int n,m,o,offset;
 	Atom* i, *j, *k;
 	Refitem<Bond,int>* bref;
-	Bond *b1, *b2;
+	Bond* b1, *b2;
 	// Set the pointer 'j' to be the first atom of the second molecule
 	j = firstAtom_;
 	for (n=0; n<nAtoms_; n++) j = j->next;
@@ -1361,7 +1361,7 @@ void Pattern::augment()
 	Refitem<Bond,int>* bref, *heavybond = NULL, *bestref, *bref2;
 	Refitem<Atom,int>* aref;
 	Reflist<Bond,int> bondlist;
-	Bond *b1, *b2, *b3;
+	Bond* b1, *b2, *b3;
 	Bond::BondType bt;
 	int n, nHeavy, totalpenalty, ringpenalty, newpenalty, m, o, p;
 

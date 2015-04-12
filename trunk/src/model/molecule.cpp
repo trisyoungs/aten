@@ -25,7 +25,7 @@
 ATEN_USING_NAMESPACE
 
 // Position molecule at specified coordinates
-void Model::positionMolecule(Pattern* p, int mol, const Vec3<double> &v)
+void Model::positionMolecule(Pattern* p, int mol, const Vec3<double>& v)
 {
 	Messenger::enter("Model::positionMolecule");
 	static Vec3<double> newpos, cog;
@@ -54,7 +54,7 @@ void Model::positionMolecule(Pattern* p, int mol, const Vec3<double> &v)
 }
 
 // Translate molecule along vector
-void Model::translateMolecule(Pattern* p, int mol, const Vec3<double> &v)
+void Model::translateMolecule(Pattern* p, int mol, const Vec3<double>& v)
 {
 	// Vector 'v' should be normalised before passing
 	Messenger::enter("Model::translateMolecule");

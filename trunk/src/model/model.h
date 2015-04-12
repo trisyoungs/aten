@@ -314,19 +314,19 @@ class Model : public ListItem<Model>
 
 	public:
 	// Return first bond in the model
-	Bond *bonds();
+	Bond* bonds();
 	// Return number of bonds in the model
 	int nBonds() const;
 	// Return the nth bond in the model
-	Bond *bond(int n);
+	Bond* bond(int n);
 	// Add bond of specified type between atoms
 	void bondAtoms(Atom* i, Atom* j, Bond::BondType bt);
 	// Add bond of specified type between atoms (by id)
 	void bondAtoms(int ii, int jj, Bond::BondType bt);
 	// Delete bond between specified atoms
-	void unbondAtoms(Atom* i, Atom* j, Bond *b = NULL);
+	void unbondAtoms(Atom* i, Atom* j, Bond* b = NULL);
 	// Change type of specified bond
-	void changeBond(Bond *b, Bond::BondType bt);
+	void changeBond(Bond* b, Bond::BondType bt);
 	// Clear all bonding in model
 	void clearBonding();
 	// Calculate bonding in the model
@@ -388,7 +388,7 @@ class Model : public ListItem<Model>
 	// Select all atoms within the rectangular boundary specified
 	void selectBox(double, double, double, double, bool deselect = false);
 	// Select all atoms connected by a path from the specified atom
-	void selectTree(Atom* i, bool markOnly = false, bool deselect = false, Bond *omitbond = NULL);
+	void selectTree(Atom* i, bool markOnly = false, bool deselect = false, Bond* omitbond = NULL);
 	// Select all atoms of the same element as the specified atom
 	void selectElement(Atom* i, bool markOnly = false, bool deselect = false);
 	// Select all atoms of the same element as the atom with the specified id
@@ -494,9 +494,9 @@ class Model : public ListItem<Model>
 	// Set-up viewport and projection matrices
 	void setupView(GLint x, GLint y, GLint w, GLint h);
 	// Project given model coordinates into world coordinates (and screen coordinates if Vec3 is supplied)
-	Vec3<double> &modelToWorld(Vec3<double> &pos, Vec4<double>* screenr = NULL, double screenradius = 0.0);
+	Vec3<double>& modelToWorld(Vec3<double>& pos, Vec4<double>* screenr = NULL, double screenradius = 0.0);
 	// Convert screen coordinates into modelspace coordinates
-	Vec3<double> &screenToModel(int x, int y, double z);
+	Vec3<double>& screenToModel(int x, int y, double z);
 	// Set positive repeat cell value
 	void setRepeatCellsPositive(int i, int r);
 	// Get positive repeat cell value
@@ -791,7 +791,7 @@ class Model : public ListItem<Model>
 	// Spin the atom selection
 	void rotateSelectionZaxis(double);
 	// Puts the selections centre of geometry at 0,0,0
-	void centre(const Vec3<double> &v, bool lockx = false, bool locky = false, bool lockz = false);
+	void centre(const Vec3<double>& v, bool lockx = false, bool locky = false, bool lockz = false);
 	void centre(double x, double y, double z, bool lockx = false, bool locky = false, bool lockz = false);
 	// Translate selection by the vector specified
 	void translateSelectionLocal(const Vec3<double>&, bool markOnly = false);

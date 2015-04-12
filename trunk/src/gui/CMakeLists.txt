@@ -29,6 +29,9 @@ SET(gui_MOC_HDRS
   loadmodel.h
   mainwindow.h
   popupaddh.h
+  popupcellangles.h
+  popupcelllengths.h
+  popupcellmatrix.h
   popupgrow.h
   popuprebond.h
   popupresetview.h
@@ -52,6 +55,7 @@ SET(gui_MOC_HDRS
   zmatrix.h
   tcolourframe.hui
   tdoublespindelegate.hui
+  texponentialspin.hui
   textratreewidgetitem.h
   tintegerspindelegate.hui
   tmenubutton.hui
@@ -86,6 +90,9 @@ SET(gui_UIS
   loadmodel.ui
   mainwindow.ui
   popupaddh.ui
+  popupcellangles.ui
+  popupcelllengths.ui
+  popupcellmatrix.ui
   popupgrow.ui
   popuprebond.ui
   popupresetview.ui
@@ -141,9 +148,13 @@ set(gui_SRCS
   mainwindow_messages.cpp
   mainwindow_modellist.cpp
   mainwindow_panel_build.cpp
+  mainwindow_panel_cell.cpp
   mainwindow_panel_view.cpp
   mainwindow_update.cpp
   popupaddh_funcs.cpp
+  popupcellangles_funcs.cpp
+  popupcelllengths_funcs.cpp
+  popupcellmatrix_funcs.cpp
   popupgrow_funcs.cpp
   popuprebond_funcs.cpp
   popupresetview_funcs.cpp
@@ -171,6 +182,7 @@ set(gui_SRCS
   tcolourframe_funcs.cpp
   tmenubutton_funcs.cpp
   tdoublespindelegate_funcs.cpp
+  texponentialspin_funcs.cpp
   tintegerspindelegate_funcs.cpp
   trajectory_funcs.cpp
   transform_funcs.cpp

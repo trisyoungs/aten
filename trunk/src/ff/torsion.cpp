@@ -143,7 +143,7 @@ int cp(int n)
 }
 
 // Construct 'cross-product' vector of the supplied vector using cyclic permutations
-Matrix make_cp_mat(Vec3<double> &v)
+Matrix make_cp_mat(Vec3<double>& v)
 {
 	Matrix result;
 	Vec3<double> temp;

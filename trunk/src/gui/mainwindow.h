@@ -125,6 +125,10 @@ class AtenWindow : public QMainWindow
 	/*
 	 * Update Functions
 	 */
+	private:
+	// Whether window is currently refreshing
+	bool refreshing_;
+
 	public:
 	// Initial update and show
 	void initialUpdateAndShow();
@@ -306,6 +310,13 @@ class AtenWindow : public QMainWindow
 	void on_BuildBondingRebondButton_clicked(bool checked);
 	void on_BuildBondingAugmentButton_clicked(bool checked);
 	void on_BuildBondingClearButton_clicked(bool checked);
+
+
+	/*
+	 * Cell Panel
+	 */
+	private slots:
+	void on_CellDefinePeriodicButton_clicked(bool checked);
 
 
 	/*
