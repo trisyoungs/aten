@@ -20,6 +20,7 @@
 */
 
 #include "main/aten.h"
+#include "gui/mainwindow.h"
 
 ATEN_USING_NAMESPACE
 
@@ -47,11 +48,11 @@ Model* Aten::workingModels() const
 }
 
 // Set the active model
-void Aten::setCurrentModel(Model* m, bool deselectOthers)
+void Aten::setCurrentModel(Model* model)
 {
 	Messenger::enter("Aten::setCurrentModel");
 
-	if (m == NULL)
+	if (model == NULL)
 	{
 		current_.clear();
 		Messenger::exit("Aten::setCurrentModel");
@@ -59,21 +60,16 @@ void Aten::setCurrentModel(Model* m, bool deselectOthers)
 	}
 
 	// Set Bundle pointers
-	current_.m = m;
-	current_.p = m->patterns();
-	current_.g = m->grids();
+	current_.m = model;
+	current_.p = model->patterns();
+	current_.g = model->grids();
 	current_.i = NULL;
 
-	// Deselect all other models if specified
-	if (deselectOthers)
-	{
-		// Unset visible flags on all currently-visible models
-		for (Refitem<Model,int>* ri = visibleModels_.first(); ri != NULL; ri = ri->next) ri->item->setVisible(false);
-		visibleModels_.clear();
-	}
-
 	// Its the current model, so it must be visible also... add to visible list
-	setModelVisible(m, true);
+	setModelVisible(model, true);
+
+	// Update the model list
+	atenWindow_->updateModelList();
 
 	Messenger::exit("Aten::setCurrentModel");
 }
@@ -102,10 +98,10 @@ Model* Aten::model(int n)
 	return models_[n];
 }
 
-// Return pointer to the actual model list
-const List<Model> *Aten::modelList() const
+// Return whether model exists
+bool Aten::isModel(Model* model) const
 {
-	return &models_;
+	return models_.contains(model);
 }
 
 // Return the current model's index in the model list
@@ -115,9 +111,9 @@ int Aten::currentModelId() const
 }
 
 // Return index of specified model
-int Aten::modelIndex(Model* m) const
+int Aten::modelIndex(Model* model) const
 {
-	return models_.indexOf(m);
+	return models_.indexOf(model);
 }
 
 // Return the number of models in the model list
@@ -140,7 +136,7 @@ Model* Aten::addModel()
 			m->setType(Model::ParentModelType);
 			m->setName(QString("Unnamed%1").arg(++modelId_, 3, 10, QChar('0')));
 			m->resetLogs();
-			setCurrentModel(m, true);
+			setCurrentModel(m);
 			break;
 		case (Aten::FragmentLibraryList):
 			m = fragmentModels_.add();

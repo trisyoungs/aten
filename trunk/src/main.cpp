@@ -99,7 +99,7 @@ int main(int argc, char* argv[])
 			}
 
 			/* Show the main window */
-			mainWindow.updateAndShow();
+			mainWindow.initialUpdateAndShow();
 
 			/* Enter Qt's main events loop */
 			result =  app.exec();
@@ -118,7 +118,7 @@ int main(int argc, char* argv[])
 			MrAten.processModels();
 
 			/* Show the main window */
-			mainWindow.updateAndShow();
+			mainWindow.initialUpdateAndShow();
 
 			/* Enter Qt's main events loop */
 			result =  app.exec();

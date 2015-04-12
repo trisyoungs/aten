@@ -94,6 +94,9 @@ class AtenWindow : public QMainWindow
 	// Main form declaration
 	Ui::AtenWindow ui;
 
+	protected:
+	void closeEvent(QCloseEvent* event);
+
 
 	/*
 	 * Aten Reference
@@ -105,19 +108,6 @@ class AtenWindow : public QMainWindow
 	public:
 	// Return reference to Aten
 	Aten& aten();
-
-
-	/*
-	 * Window Functions
-	 */
-	protected:
-	void closeEvent(QCloseEvent* event);
-
-	public:
-	// Finalise GUI
-	void finaliseUi();
-	// Update and show
-	void updateAndShow();
 
 
 	/*
@@ -133,19 +123,21 @@ class AtenWindow : public QMainWindow
 
 
 	/*
-	 * Refresh Functions
+	 * Update Functions
 	 */
-	private:
-	// Refresh window title
-	void updateWindowTitle();
-
 	public:
+	// Initial update and show
+	void initialUpdateAndShow();
 	// Refresh main window
 	void updateMainWindow();
 	// Update trajectory control widgets
 	void updateTrajectoryMenu();
+	// Refreshes specified (or all) dock widgets
+	void updateWidgets(int targets = 0);
+	// Refresh main viewer
+	void postRedisplay();
 
-	
+
 	/*
 	 * File Menu / Actions
 	 */
@@ -297,9 +289,9 @@ class AtenWindow : public QMainWindow
 	 */
 	private slots:
 	// Select
-	void on_BuildSelectAtomsButton_triggered(bool checked);
-	void on_BuildSelectBoundButton_triggered(bool checked);
-	void on_BuildSelectElementButton_triggered(bool checked);
+	void on_BuildSelectAtomsButton_clicked(bool checked);
+	void on_BuildSelectBoundButton_clicked(bool checked);
+	void on_BuildSelectElementButton_clicked(bool checked);
 	void on_BuildSelectExpandButton_clicked(bool checked);
 	void on_BuildSelectInvertButton_clicked(bool checked);
 	// Draw
@@ -349,12 +341,12 @@ class AtenWindow : public QMainWindow
 	// Whether model list is currently refreshing
 	bool modelListRefreshing_;
 
-	private:
-	// Refresh model list
-	void refreshModelList();
-
 	private slots:
-	void on_ModelTree_itemSelectionChanged();
+	void on_ModelList_itemSelectionChanged();
+
+	public:
+	// Refresh model list
+	void updateModelList();
 
 
 	/*
@@ -493,16 +485,6 @@ class AtenWindow : public QMainWindow
 
 
 	/*
-	 * GUI / Interaction
-	 */
-	public:
-	// Refreshes specified (or all) dock widgets
-	void updateWidgets(int targets = 0);
-	// Refresh main viewer
-	void postRedisplay();
-
-
-	/*
 	 * Image Generation
 	 */
 	public:
@@ -517,7 +499,7 @@ class AtenWindow : public QMainWindow
 	// Save image of current view
 	QPixmap scenePixmap(int width, int height);
 	// Return pixmap of specified model
-	QPixmap modelPixmap(Model* model, int width, int height);
+	QPixmap modelPixmap(Model* model, QSize pixmapSize);
 };
 
 #endif

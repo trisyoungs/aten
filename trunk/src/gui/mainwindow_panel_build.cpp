@@ -1,6 +1,6 @@
 /*
 	*** Main Window - Build Panel Functions
-	*** src/gui/mainwindow_build.cpp
+	*** src/gui/mainwindow_panel_build.cpp
 	Copyright T. Youngs 2007-2015
 
 	This file is part of Aten.
@@ -25,17 +25,17 @@
  * Select
  */
 
-void AtenWindow::on_BuildSelectAtomsButton_triggered(bool checked)
+void AtenWindow::on_BuildSelectAtomsButton_clicked(bool checked)
 {
 	if (checked) ui.MainView->setSelectedMode(UserAction::SelectAction);
 }
 
-void AtenWindow::on_BuildSelectBoundButton_triggered(bool checked)
+void AtenWindow::on_BuildSelectBoundButton_clicked(bool checked)
 {
 	if (checked) ui.MainView->setSelectedMode(UserAction::SelectBoundAction);
 }
 
-void AtenWindow::on_BuildSelectElementButton_triggered(bool checked)
+void AtenWindow::on_BuildSelectElementButton_clicked(bool checked)
 {
 	if (checked) ui.MainView->setSelectedMode(UserAction::SelectElementAction);
 }

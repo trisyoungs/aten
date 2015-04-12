@@ -119,16 +119,6 @@ class AtenTreeGuiDialog : public QDialog
 
 
 	/*
-	 * Window Functions
-	 */
-	public:
-	// Finalise widgets (things that we couldn't do in Qt Designer)
-	void finaliseUi();
-	// Set controls to reflect program variables
-	void setControls();
-
-
-	/*
 	 * Generic Widget Functions
 	 */
 	private slots:

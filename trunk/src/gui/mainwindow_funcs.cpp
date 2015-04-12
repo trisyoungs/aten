@@ -1,5 +1,5 @@
 /*
-	*** Qt main window functions
+	*** Main Window - Functions
 	*** src/gui/mainwindow_funcs.cpp
 	Copyright T. Youngs 2007-2015
 
@@ -39,6 +39,11 @@
 #include "main/version.h"
 #include <iostream>
 #include <fstream>
+#include "gui/popupaddh.h"
+#include "gui/popupgrow.h"
+#include "gui/popuprebond.h"
+#include "gui/popupresetview.h"
+#include "gui/popuptransmute.h"
 
 #include "gui/atomlist.h"
 #include "gui/celldefinition.h"
@@ -103,8 +108,133 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 	vibrationsWidget = new VibrationsWidget(*this, Qt::Tool);
 	dockWidgets_ << atomListWidget << cellDefinitionWidget << cellTransformWidget << commandWidget << fragmentsWidget << geometryWidget << glyphsWidget << gridsWidget << poresWidget << positionWidget << scriptMovieWidget << selectWidget << transformWidget << vibrationsWidget;
 
-	// Set up misc things for Qt (QActionGroups etc.) that we couldn't do in Designer
-	finaliseUi();
+	int n;
+
+	// Set up recent files list (create all actions first)
+	for (n=0; n<MAXRECENTFILES; n++)
+	{
+		actionRecentFile[n] = new QAction(this);
+		actionRecentFile[n]->setVisible(false);
+		QObject::connect(actionRecentFile[n], SIGNAL(triggered()), this, SLOT(loadRecent()));
+		ui.RecentMenu->addAction(actionRecentFile[n]);
+	}
+
+	// Create QActionGroup for model / trajectory render source
+	QActionGroup* group = new QActionGroup(this);
+	actionGroups_.add(group);
+	group->addAction(ui.actionTrajectoryModel);
+	group->addAction(ui.actionTrajectoryFrames);
+
+	// Add style tool buttons to their button group
+	styleButtons_.addButton(ui.ViewStyleLineButton, Prefs::LineStyle);
+	styleButtons_.addButton(ui.ViewStyleTubeButton, Prefs::TubeStyle);
+	styleButtons_.addButton(ui.ViewStyleSphereButton, Prefs::SphereStyle);
+	styleButtons_.addButton(ui.ViewStyleScaledButton, Prefs::ScaledStyle);
+	styleButtons_.addButton(ui.ViewStyleOwnButton, Prefs::OwnStyle);
+
+	// Add colour scheme tool buttons to their button group
+	schemeButtons_.addButton(ui.ViewSchemeElementButton, Prefs::ElementScheme);
+	schemeButtons_.addButton(ui.ViewSchemeChargebutton, Prefs::ChargeScheme);
+	schemeButtons_.addButton(ui.ViewSchemeForceButton, Prefs::ForceScheme);
+	schemeButtons_.addButton(ui.ViewSchemeVelocityButton, Prefs::VelocityScheme);
+	schemeButtons_.addButton(ui.ViewSchemeOwnButton, Prefs::OwnScheme);
+
+	// Add view tool buttons to their button group
+	viewButtons_.addButton(ui.ViewControlPerspectiveButton, true);
+	viewButtons_.addButton(ui.ViewControlOrthographicButton, false);
+
+	// Add buttons related to user actions to our button group, and add popup widgets to those buttons that have them
+
+	// -- Build Panel (Select)
+	uaButtons_.addButton(ui.BuildSelectAtomButton, UserAction::SelectAction);
+	uaButtons_.addButton(ui.BuildSelectBoundButton, UserAction::SelectBoundAction);
+	uaButtons_.addButton(ui.BuildSelectElementButton, UserAction::SelectElementAction);
+	// -- Build Panel (Build)
+	uaButtons_.addButton(ui.BuildDrawDrawButton, UserAction::DrawAtomsAction);
+	uaButtons_.addButton(ui.BuildDrawFragmentButton, UserAction::DrawFragmentsAction);
+	uaButtons_.addButton(ui.BuildDrawDeleteButton, UserAction::DrawDeleteAction);
+	uaButtons_.addButton(ui.BuildDrawTransmuteButton, UserAction::DrawTransmuteAction);
+	ui.BuildDrawTransmuteButton->setPopupWidget(new TransmutePopup(*this, ui.BuildDrawTransmuteButton));
+	uaButtons_.addButton(ui.BuildDrawAddHButton, UserAction::DrawAddHydrogenAction);
+	ui.BuildDrawAddHButton->setPopupWidget(new AddHPopup(*this, ui.BuildDrawAddHButton));
+	uaButtons_.addButton(ui.BuildDrawGrowButton, UserAction::DrawGrowAtomsAction);
+	ui.BuildDrawGrowButton->setPopupWidget(new GrowPopup(*this, ui.BuildDrawGrowButton));
+	// -- Build Panel (Element)
+	// -- Build Panel (Bonding)
+	ui.BuildBondingRebondButton->setPopupWidget(new RebondPopup(*this, ui.BuildBondingRebondButton));
+
+	// -- View Panel (Control)
+	ui.ViewControlResetButton->setPopupWidget(new ResetViewPopup(*this, ui.ViewControlResetButton));
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	// -- From Geometry Dock Widget
+	uaButtons_.addButton(geometryWidget->ui.MeasureDistanceButton, UserAction::MeasureDistanceAction);
+	uaButtons_.addButton(geometryWidget->ui.MeasureAngleButton, UserAction::MeasureAngleAction);
+	uaButtons_.addButton(geometryWidget->ui.MeasureTorsionButton, UserAction::MeasureTorsionAction);
+	// -- From Position Dock Widget
+	uaButtons_.addButton(positionWidget->ui.ShiftPickVectorButton, UserAction::ShiftPickVectorAction);
+	// -- From Transform Dock Widget
+	uaButtons_.addButton(transformWidget->ui.TransformPickAButton, UserAction::TransformPickAAction);
+	uaButtons_.addButton(transformWidget->ui.TransformPickBButton, UserAction::TransformPickBAction);
+	uaButtons_.addButton(transformWidget->ui.TransformPickCButton, UserAction::TransformPickCAction);
+	uaButtons_.addButton(transformWidget->ui.ConvertSourcePickAButton, UserAction::ConvertSourcePickAAction);
+	uaButtons_.addButton(transformWidget->ui.ConvertSourcePickBButton, UserAction::ConvertSourcePickBAction);
+	uaButtons_.addButton(transformWidget->ui.ConvertSourcePickCButton, UserAction::ConvertSourcePickCAction);
+	uaButtons_.addButton(transformWidget->ui.ConvertTargetPickAButton, UserAction::ConvertTargetPickAAction);
+	uaButtons_.addButton(transformWidget->ui.ConvertTargetPickBButton, UserAction::ConvertTargetPickBAction);
+	uaButtons_.addButton(transformWidget->ui.ConvertTargetPickCButton, UserAction::ConvertTargetPickCAction);
+	
+	// Connect buttonPressed signal of button group to our handler
+	QObject::connect(&uaButtons_, SIGNAL(buttonClicked(int)), this, SLOT(uaButtonClicked(int)));
+
+	/*
+	 * Statusbar
+	 */
+	// Fix up the statusbar with a single big frame and no size grip
+	ui.MainWindowStatusBar->setSizeGripEnabled(false);
+	QFrame *frame = new QFrame(this);
+	ui.MainWindowStatusBar->addPermanentWidget(frame,1);
+	// Message label
+	QHBoxLayout *lablayout = new QHBoxLayout(frame);
+	messageLabel_ = new QLabel(this);
+	messageLabel_->setTextFormat(Qt::RichText);
+	messageLabel_->setWordWrap(true);
+	QFont font = messageLabel_->font();
+	font.setPointSize(8);
+	messageLabel_->setFont(font);
+	lablayout->addWidget(messageLabel_, 100);
+	QFrame *sep = new QFrame;
+	sep->setFrameStyle(QFrame::VLine);
+	lablayout->addWidget(sep,0);
+	// Info labels
+	QVBoxLayout *infolayout = new QVBoxLayout;
+	infolayout->setSizeConstraint(QLayout::SetMaximumSize);
+	infoLabel1_ = new QLabel(this);
+	infoLabel1_->setFont(font);
+	infolayout->addWidget(infoLabel1_);
+	infoLabel2_ = new QLabel(this);
+	infoLabel2_->setFont(font);
+	infolayout->addWidget(infoLabel2_);
+	lablayout->addLayout(infolayout,0);
+
+	// Create glyph actions for Selection (atom context) menu
+	QMenu *menu = new QMenu(this);
+	for (int n=0; n<Glyph::nGlyphTypes; ++n)
+	{
+		createGlyphActions[n] = menu->addAction(Glyph::glyphTypeName( (Glyph::GlyphType) n));
+		QObject::connect(createGlyphActions[n], SIGNAL(triggered()), this, SLOT(createGlyph()));
+	}
+	ui.actionCreateGlyph->setMenu(menu);
+
+	// Load Qt Settings
+	loadSettings();
 
 	// Set controls in some windows
 	fragmentsWidget->refresh();
@@ -244,209 +374,6 @@ void AtenWindow::setInteractive(bool interactive)
 	ui.MainView->setEditable(interactive);
 }
 
-/*
-// Refresh Functions
-*/
-
-// Update GUI after model change (or different model selected) (accessible wrapper to call AtenWindow's function)
-void AtenWindow::updateWidgets(int targets)
-{
-	// Refresh aspects of main window and dock widgets
-	updateMainWindow();
-	updateContextMenu();
-	
-	if (targets&AtenWindow::GeometryTarget) geometryWidget->refresh();
-	if (targets&AtenWindow::SelectTarget) selectWidget->refresh();
-	if (targets&AtenWindow::VibrationsTarget) vibrationsWidget->refresh();
-	if (targets&AtenWindow::TrajectoryTarget) trajectoryWidget->refresh();
-
-	// Update contents of the atom list
-	if (targets&AtenWindow::AtomsTarget) atomListWidget->refresh();
-
-	// Update contents of the glyph list
-	if (targets&AtenWindow::GlyphsTarget) glyphsWidget->refresh();
-
-	// Update contents of the grid window
-	if (targets&AtenWindow::GridsTarget) gridsWidget->refresh();
-
-	// Update the contents of the cell page
-	if (targets&AtenWindow::CellTarget)
-	{
-		cellDefinitionWidget->refresh();
-		cellTransformWidget->refresh();
-	}
-
-	// Update forcefields in the forcefield widget
-	if (targets&AtenWindow::ForcefieldsTarget) forcefieldsWidget->refresh();
-
-	if (targets&AtenWindow::StatusBarTarget)
-	{
-		QString text;
-		static UserAction::Action lastAction = UserAction::NoAction;
-		
-		// Initialise string if NoAction
-		if (lastAction == UserAction::NoAction) text.clear();
-		
-		// If current action is not the same as the last action, recreate string
-		if (lastAction != ui.MainView->selectedMode())
-		{
-			lastAction = ui.MainView->selectedMode();
-			text.sprintf("<b>%s:</b> %s", UserActions[lastAction].name, UserActions[lastAction].unModified);
-			if (UserActions[lastAction].shiftModified[0] != '\0') text += ", <b>+shift</b> %s" + QString(UserActions[lastAction].shiftModified);
-			if (UserActions[lastAction].ctrlModified[0] != '\0') text += ", <b>+ctrl</b> %s" + QString(UserActions[lastAction].ctrlModified);
-			if (UserActions[lastAction].altModified[0] != '\0') text += ", <b>+alt</b> %s" + QString(UserActions[lastAction].altModified);
-		}
-
-		// Set text in statusbar widget
-		this->setMessageLabel(text);
-	}
-	
-	// Request redraw of the main canvas
-	if (targets&AtenWindow::CanvasTarget) postRedisplay();
-}
-
-// Refresh Viewer widget, and any associated widgets
-void AtenWindow::postRedisplay()
-{
-// 	if ((!valid_) || drawing_) return;
-	ui.MainView->update();
-}
-
-// Update GUI after model change (or different model selected)
-void AtenWindow::updateMainWindow()
-{
-	// Update status bar
-	QString s;
-	Model* m = aten_.currentModel();
-	if (m == NULL) return;
-
-	// First label - atom and trajectory frame information
-	if (m->hasTrajectory())
-	{
-		if (m->renderSourceModel() == m)
-		{
-			s = "(Parent of ";
-			s += QString::number(m->nTrajectoryFrames());
-			s += " frames) ";
-		}
-		else
-		{
-			s = "(Frame ";
-			s += QString::number(m->trajectoryFrameIndex()+1);
-			s += " of ";
-			s += QString::number(m->nTrajectoryFrames());
-			s += ") ";
-		}
-		trajectoryWidget->refresh();
-	}
-	updateTrajectoryMenu();
-
-	m = m->renderSourceModel();
-	s += QString::number(m->nAtoms());
-	s += " Atoms ";
-
-	// Add on unknown atom information
-	if (m->nUnknownAtoms() != 0)
-	{
-		s += " (<b>";
-		s += QString::number(m->nUnknownAtoms());
-		s += " unknown</b>) ";
-	}
-	if (m->nSelected() != 0)
-	{
-		s += "(<b>";
-		s += QString::number(m->nSelected());
-		s += " selected</b>) ";
-	}
-	s += QString::number(m->mass());
-	s += " g mol<sup>-1</sup> ";
-	infoLabel1_->setText(s);
-
-	// Second label - cell information
-	UnitCell::CellType ct = m->cell()->type();
-	if (ct != UnitCell::NoCell)
-	{
-		s = UnitCell::cellType(ct);
-		s += ", ";
-		s += QString::number(m->density());
-		switch (prefs.densityUnit())
-		{
-			case (Prefs::GramsPerCm):
-				s += " g cm<sup>-3</sup>";
-				break;
-			case (Prefs::AtomsPerAngstrom):
-				s += " atoms &#8491;<sup>-3</sup>";
-				break;
-			default:
-				break;
-		}
-	}
-	else s = "Non-periodic";
-	infoLabel2_->setText(s);
-
-	// Update save button status
-	ui.actionFileSave->setEnabled( m->isModified() );
-
-	// Enable the Atom menu if one or more atoms are selected
-	ui.AtomContextMenu->setEnabled( m->renderSourceModel()->nSelected() == 0 ? false : true);
-
-	// Update Undo Redo lists
-	updateUndoRedo();
-
-	// Enable/Disable cut/copy/paste/delete based on selection status and clipboard contents
-	ui.actionEditPaste->setEnabled( aten_.userClipboard->nAtoms() != 0);
-	ui.actionEditPasteTranslated->setEnabled( aten_.userClipboard->nAtoms() != 0);
-	ui.actionEditCopy->setEnabled( m->nSelected() != 0 );
-	ui.actionEditCut->setEnabled( m->nSelected() != 0 );
-	ui.actionEditDelete->setEnabled( m->nSelected() != 0 );
-
-	// Check for empty filters list and enable/disable menu actions accordingly
-	ui.actionFileOpen->setEnabled(!aten_.fileDialogFilters(FilterData::ModelImport).isEmpty());
-	ui.RecentMenu->setEnabled(!aten_.fileDialogFilters(FilterData::ModelImport).isEmpty());
-	ui.actionTrajectoryOpen->setEnabled(!aten_.fileDialogFilters(FilterData::TrajectoryImport).isEmpty());
-	ui.actionFileSave->setEnabled(!aten_.fileDialogFilters(FilterData::ModelExport).isEmpty());
-	ui.actionFileSaveAs->setEnabled(!aten_.fileDialogFilters(FilterData::ModelExport).isEmpty());
-	ui.actionSaveExpression->setEnabled(!aten_.fileDialogFilters(FilterData::ExpressionExport).isEmpty());
-	gridsWidget->ui.actionGridLoad->setEnabled(!aten_.fileDialogFilters(FilterData::GridImport).isEmpty());
-
-	// Update main window title
-	updateWindowTitle();
-}
-
-// Update trajectory menu
-void AtenWindow::updateTrajectoryMenu()
-{
-	// First see if the model has a trajectory associated to it
-	Model* m = aten_.currentModel();
-	Model::RenderSource rs = m->renderSource();
-	bool hasTrj = (m->nTrajectoryFrames() != 0);
-	int frameNAtoms = hasTrj ? m->trajectoryCurrentFrame()->nAtoms() : -1;
-	ui.actionTrajectoryRemove->setEnabled(hasTrj);
-	ui.actionTrajectoryInheritParentStyle->setChecked(m->trajectoryPropagateParentStyle());
-	ui.actionTrajectoryInheritParentStyle->setEnabled(m->nAtoms() == frameNAtoms);
-	ui.actionTrajectoryCopyStyleToParent->setEnabled((rs == Model::TrajectorySource) && (m->nAtoms() == frameNAtoms));
-	ui.actionTrajectoryPropagateStyleFromHere->setEnabled((rs == Model::TrajectorySource) && m->trajectoryIsCached());
-	ui.actionTrajectoryFirstFrame->setEnabled(hasTrj);
-	ui.actionTrajectoryLastFrame->setEnabled(hasTrj);
-	ui.actionTrajectoryPlayPause->setEnabled(hasTrj);
-	ui.actionTrajectoryPlayPause->setChecked(trajectoryWidget->ui.TrajectoryPlayPauseButton->isChecked());
-	ui.actionTrajectoryFrames->setEnabled(hasTrj);
-	ui.actionTrajectorySaveMovie->setEnabled(hasTrj);
-
-	// Select the correct view action
-	ui.actionTrajectoryModel->setChecked(rs == Model::ModelSource);
-	ui.actionTrajectoryFrames->setChecked(rs == Model::TrajectorySource);
-}
-
-// Refresh window title
-void AtenWindow::updateWindowTitle()
-{
-	Model* m = aten_.currentModel();
-	QString title;	
-	title.sprintf("Aten v2 PRERELEASE (v%s) - %s (%s)%s", ATENVERSION, qPrintable(m->name()), m->filename().isEmpty() ? "<<no filename>>" : qPrintable(m->filename()), m->isModified() ? " [Modified]" : "");
-	setWindowTitle(title);
-}
-
 // Load recent file
 void AtenWindow::loadRecent()
 {
@@ -568,27 +495,28 @@ void AtenWindow::updateControls()
 // Update undo/redo actions in Edit menu
 void AtenWindow::updateUndoRedo()
 {
-	Model* m = aten_.currentModelOrFrame();
+	Model* currentModel = aten_.currentModelOrFrame();
+
 	// Check the model's state pointers
-	if (m->currentUndoState() == NULL)
+	if (currentModel && currentModel->currentUndoState())
+	{
+		ui.actionEditUndo->setText("Undo (" + currentModel->currentUndoState()->description() + ")");
+		ui.actionEditUndo->setEnabled(true);
+	}
+	else
 	{
 		ui.actionEditUndo->setText("Undo");
 		ui.actionEditUndo->setEnabled(false);
 	}
-	else
+	if (currentModel && currentModel->currentRedoState())
 	{
-		ui.actionEditUndo->setText("Undo (" + m->currentUndoState()->description() + ")");
-		ui.actionEditUndo->setEnabled(true);
+		ui.actionEditRedo->setText("Redo (" + currentModel->currentRedoState()->description() + ")");
+		ui.actionEditRedo->setEnabled(true);
 	}
-	if (m->currentRedoState() == NULL)
+	else
 	{
 		ui.actionEditRedo->setText("Redo");
 		ui.actionEditRedo->setEnabled(false);
-	}
-	else
-	{
-		ui.actionEditRedo->setText("Redo (" + m->currentUndoState()->description() + ")");
-		ui.actionEditRedo->setEnabled(true);
 	}
 }
 

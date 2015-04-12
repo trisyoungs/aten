@@ -43,8 +43,6 @@ class CommandWidget : public QDockWidget
 	CommandWidget(AtenWindow& parent, Qt::WindowFlags flags = 0);
 	// Main form declaration
 	Ui::CommandWidget ui;
-	// Finalise widgets (things that couldn't be done in Qt Designer)
-	void finaliseUi();
 
 	private:
 	// Reference to main window

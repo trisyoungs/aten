@@ -173,7 +173,7 @@ void DisorderWizard::pageChanged(int id)
 			if (targetType_ != DisorderWizard::ExistingTarget)
 			{
 				newModel_ = parent_.aten().addModel();
-				parent_.aten().setCurrentModel(newModel_, true);
+				parent_.aten().setCurrentModel(newModel_);
 				newModel_->setName("Disorder Model");
 				if (targetType_ == DisorderWizard::NewTarget) setCellAbsolute(0.0);
 				else setCellRelative(0.0);
@@ -349,7 +349,7 @@ void DisorderWizard::on_ExistingModelTree_currentItemChanged(QTreeWidgetItem* cu
 	existingModel_ = VariantPointer<Model>(current->data(0, Qt::UserRole));
 	if (existingModel_ == NULL) return;
 	existingModel_ = existingModel_->renderSourceModel();
-	parent_.aten().setCurrentModel(existingModel_, true);
+	parent_.aten().setCurrentModel(existingModel_);
 	parent_.updateWidgets(AtenWindow::AllTarget);
 }
 

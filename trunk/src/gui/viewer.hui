@@ -277,7 +277,7 @@ class Viewer : public QOpenGLWidget, protected QOpenGLFunctions
 
 	private:
 	// Setup and render full Model
-	void renderModel(Model* source, int viewPortX, int viewPortY, int viewPortWidth, int viewPortHeight);
+	void renderModel(Model* source, int viewPortX, int viewPortY, int viewPortWidth, int viewPortHeight, bool drawRotationGlobe);
 	// Render active mode embellishments
 	void renderActiveModes(Model* currentModel);
 	// Render addition elements related to selected/active UserActions
@@ -297,7 +297,7 @@ class Viewer : public QOpenGLWidget, protected QOpenGLFunctions
 
 	public:
 	// Generate image of specified model
-	QPixmap generateModelImage(Model* m, int width, int height);
+	QPixmap generateModelImage(Model* model, int width, int height);
 	// Render current scene at supplied size
 	QPixmap generateImage(int width, int height);
 };

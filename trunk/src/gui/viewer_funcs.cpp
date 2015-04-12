@@ -106,8 +106,7 @@ void Viewer::initializeGL()
         // Check for vertex buffer extensions
         if ((!hasOpenGLFeature(QOpenGLFunctions::Buffers)) && (PrimitiveInstance::globalInstanceType() == PrimitiveInstance::VBOInstance))
         {
-		// ATEN2 TODO If this is called for an offscreen render, and VBOs are not available (but *are* in the GUI), won't this break rendering?
-                printf("VBO extension is requested but not available, so reverting to display lists instead.\n");
+                Messenger::warn("VBO extension is requested but not available, so reverting to display lists instead.\n");
                 PrimitiveInstance::setGlobalInstanceType(PrimitiveInstance::ListInstance);
         }
 
@@ -145,15 +144,19 @@ void Viewer::paintGL()
 	fontPixelHeight_ = painter.fontMetrics().height();
 
 	// Grab message buffer
-	QStringList& messages = Messenger::messageBuffer();
+	QList<Message>& messages = Messenger::messageBuffer();
 	int margin = 4;
 	QRectF textRect(margin, margin, contextWidth_-2*margin, contextHeight_-2*margin), actualRect;
 	for (int n=atenWindow_->messagesScrollPosition(); n<messages.count(); ++n)
 	{
+		// Set brush colour to correspond to message type
+		painter.setPen(messages.at(n).colour());
+
+		// Set initial textRect
 		textRect.setWidth(contextWidth_-2*margin);
 		textRect.setHeight(contextHeight_-2*margin);
 		actualRect = QRectF();
-		painter.drawText(textRect, Qt::AlignBottom | Qt::TextWordWrap, messages.at(n), &actualRect);
+		painter.drawText(textRect, Qt::AlignBottom | Qt::TextWordWrap, messages.at(n).text(), &actualRect);
 
 		// Translate bounding rectangle upwarsd and check to make sure we are still on-screen
 		textRect.translate(0.0, -actualRect.height());

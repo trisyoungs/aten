@@ -33,7 +33,7 @@ libgui_a_SOURCES += about.ui atomlist.ui celldefinition.ui celltransform.ui comm
 
 libgui_a_SOURCES += about_funcs.cpp atomlist_funcs.cpp celldefinition_funcs.cpp celltransform_funcs.cpp command_funcs.cpp disorderoptions_funcs.cpp disorderwizard_funcs.cpp forcefields_funcs.cpp fragments_funcs.cpp geometry_funcs.cpp glyphs_funcs.cpp grids_funcs.cpp pores_funcs.cpp position_funcs.cpp saveimage_funcs.cpp scriptmovie_funcs.cpp select_funcs.cpp trajectory_funcs.cpp transform_funcs.cpp vibrations_funcs.cpp viewbasis_funcs.cpp vieweigenvector_funcs.cpp zmatrix_funcs.cpp
 
-libgui_a_SOURCES += ffeditor_funcs.cpp layoutlist.cpp loadmodel_funcs.cpp mainwindow_build.cpp mainwindow_context.cpp mainwindow_funcs.cpp mainwindow_image.cpp mainwindow_init.cpp mainwindow_messages.cpp mainwindow_models.cpp mainwindow_view.cpp prefs_funcs.cpp progress_funcs.cpp selectelement_funcs.cpp selectfilter_funcs.cpp selectpattern_funcs.cpp selectvariable_funcs.cpp settings.cpp
+libgui_a_SOURCES += ffeditor_funcs.cpp layoutlist.cpp loadmodel_funcs.cpp mainwindow_context.cpp mainwindow_funcs.cpp mainwindow_image.cpp mainwindow_messages.cpp mainwindow_modellist.cpp mainwindow_panel_build.cpp mainwindow_panel_view.cpp mainwindow_update.cpp prefs_funcs.cpp progress_funcs.cpp selectelement_funcs.cpp selectfilter_funcs.cpp selectpattern_funcs.cpp selectvariable_funcs.cpp settings.cpp
 libgui_a_SOURCES += mainmenuactions.cpp
 
 libgui_a_SOURCES += tcolourframe.hui ttablewidget.hui tdoublespindelegate.hui tintegerspindelegate.hui ttreewidget.hui tmenubutton.hui tprocess.hui tprompt.hui viewer.hui

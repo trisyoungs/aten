@@ -82,7 +82,7 @@ class Aten
 	// Return list of working models
 	Model* workingModels() const;
 	// Sets the current active model for editing
-	void setCurrentModel(Model* m, bool deselectOthers = false);
+	void setCurrentModel(Model* model);
 	// Return current active model for editing
 	Model* currentModel() const;
 	// Return current active model for editing, accounting for trajectory frames
@@ -91,12 +91,12 @@ class Aten
 	Model* models() const;
 	// Return nth item in the model list
 	Model* model(int n);
-	// Return pointer to model list
-	const List<Model>* modelList() const;
+	// Return whether model exists
+	bool isModel(Model* model) const;
 	// Return the current model's index in the model list
 	int currentModelId() const;
 	// Return index of specified model
-	int modelIndex(Model* m) const;
+	int modelIndex(Model* model) const;
 	// Return the number of models in the model list
 	int nModels() const;
 	// Add a new model to the workspace

@@ -54,7 +54,6 @@ class AtomAddress;
 class Calculable;
 class Measurement;
 class Grid;
-class PrimiiveSet;
 
 // Model
 class Model : public ListItem<Model>
@@ -1250,8 +1249,8 @@ class Model : public ListItem<Model>
 	public:
 	// Return whether icon is currently valid
 	bool iconIsValid();
-	// Set icon
-	void setIcon(QIcon icon);
+	// Set icon from supplied pixmap
+	void setIcon(QPixmap pixmap);
 	// Return icon
 	QIcon& icon();
 };

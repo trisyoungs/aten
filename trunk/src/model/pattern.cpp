@@ -243,8 +243,8 @@ bool Model::createPatterns()
 		}
 		if (nsel2 != marked_.nItems())
 		{
-			Messenger::print("Pattern creation failed because of bad atom ordering or the presence of additional bonds.");
-			Messenger::print("Problem occurred in pattern %i whilst selecting from atom %i.", patterns_.nItems()+1, selectSource->id()+1);
+			Messenger::error("Pattern creation failed because of bad atom ordering or the presence of additional bonds.");
+			Messenger::error("Problem occurred in pattern %i whilst selecting from atom %i.", patterns_.nItems()+1, selectSource->id()+1);
 
 			// Remove any patterns added so far
 			patterns_.clear();

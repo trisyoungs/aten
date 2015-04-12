@@ -44,7 +44,8 @@ void AtenWindow::on_actionFileNew_triggered(bool checked)
 	m->enableUndoRedo();
 
 	// Update GUI
-	aten_.setCurrentModel(m, true);
+	aten_.setCurrentModel(m);
+
 	updateWidgets(AtenWindow::AllTarget);
 }
 
@@ -384,7 +385,7 @@ void AtenWindow::on_actionModelRename_triggered(bool checked)
 	if (ok && !text.isEmpty())
 	{
 		CommandNode::run(Commands::SetName, "c", qPrintable(text));
-		updateWindowTitle();
+		updateModelList();
 	}
 }
 
@@ -421,7 +422,7 @@ void AtenWindow::on_actionModelNext_triggered(bool checked)
 	else
 	{
 		Model* m = aten_.currentModel();
-		aten_.setCurrentModel(m->next == NULL ? aten_.models() : m->next, true);
+		aten_.setCurrentModel(m->next == NULL ? aten_.models() : m->next);
 	}
 	updateWidgets(AtenWindow::AllTarget);
 }
@@ -447,7 +448,7 @@ void AtenWindow::on_actionModelPrevious_triggered(bool checked)
 	else
 	{
 		Model* m = aten_.currentModel();
-		aten_.setCurrentModel(m->prev == NULL ? aten_.model(aten_.nModels()-1) : m->prev, true);
+		aten_.setCurrentModel(m->prev == NULL ? aten_.model(aten_.nModels()-1) : m->prev);
 	}
 	updateWidgets(AtenWindow::AllTarget);
 }

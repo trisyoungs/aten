@@ -701,7 +701,7 @@
              <string>Transmute atoms to other elements</string>
             </property>
             <property name="text">
-             <string>Transmutesssssss</string>
+             <string>Transmute</string>
             </property>
             <property name="icon">
              <iconset resource="icons.qrc">
@@ -1959,8 +1959,11 @@
           <string>Models</string>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_2">
+          <property name="margin">
+           <number>0</number>
+          </property>
           <item>
-           <widget class="TTreeWidget" name="ModelTree">
+           <widget class="QListWidget" name="ModelList">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
               <horstretch>0</horstretch>
@@ -1986,37 +1989,20 @@
              <bool>false</bool>
             </property>
             <property name="alternatingRowColors">
-             <bool>true</bool>
+             <bool>false</bool>
             </property>
             <property name="selectionMode">
              <enum>QAbstractItemView::ExtendedSelection</enum>
             </property>
             <property name="iconSize">
              <size>
-              <width>75</width>
-              <height>75</height>
+              <width>96</width>
+              <height>96</height>
              </size>
             </property>
-            <property name="indentation">
-             <number>0</number>
-            </property>
-            <property name="uniformRowHeights">
+            <property name="uniformItemSizes">
              <bool>true</bool>
             </property>
-            <property name="wordWrap">
-             <bool>true</bool>
-            </property>
-            <property name="expandsOnDoubleClick">
-             <bool>false</bool>
-            </property>
-            <attribute name="headerVisible">
-             <bool>false</bool>
-            </attribute>
-            <column>
-             <property name="text">
-              <string notr="true">1</string>
-             </property>
-            </column>
            </widget>
           </item>
          </layout>
@@ -3562,11 +3548,6 @@
    <class>TMenuButton</class>
    <extends>QToolButton</extends>
    <header>tmenubutton.hui</header>
-  </customwidget>
-  <customwidget>
-   <class>TTreeWidget</class>
-   <extends>QTreeWidget</extends>
-   <header>gui/ttreewidget.hui</header>
   </customwidget>
  </customwidgets>
  <resources>

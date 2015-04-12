@@ -1,9 +1,6 @@
-Remove DrawAtom, and all Bonding modes, since Chain does pretty much everything.
-
 Only generate low-quality primitives on startup, leaving high-quality until they are needed.
 Remove empty destructors.
 Add ObjectLists (when using CHECK). 
-Move msg.enter/msg.exit code to conditional compilation with CHECK.
 Sort out layout of headers (double-line gap etc.).
 Move sg code to separate dir.
 Move math funcs/classes (e.g. Matrix) to separate dir.
@@ -44,8 +41,8 @@ Optimise primitive drawing / generation by allowing use of GL_TRIANGLE_STRIP?
 Allow message printing in different colours, dependent on type of message (e.g. Error = RED, warning = orange, success = Green).
 Note not related to Aten2 - pdens visualising areas of low probability (less than bulk) to see excluded areas?
 Sort out recent files list - not working?
-Implement QOffscreenSurface in order to create model icons etc. (need to call ShareContext before its creation...)
 Octahedral Growing doesn't work.
+Colour arrowheads on rotation globe as RGB (XYZ).
 
 GUI TODO:
 AddAtom functionality (from old Build menu).

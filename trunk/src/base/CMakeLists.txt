@@ -22,6 +22,7 @@ add_library(base
   lineparser.cpp
   log.cpp
   measurement.cpp
+  message.cpp
   messenger.cpp
   neta.cpp
   neta_lexer.cpp
@@ -57,6 +58,7 @@ add_library(base
   neta.h
   neta_parser.h
   measurement.h
+  message.h
   messenger.h
   pattern.h
   prefs.h
