@@ -177,7 +177,7 @@ void Model::selectionDelete(bool markonly)
 		while (bref != NULL)
 		{
 			// Need to detach the bond from both atoms involved
-			Bond *b = bref->item;
+			Bond* b = bref->item;
 			Atom* j = b->partner(i);
 			unbondAtoms(i,j,b);
 			bref = i->bonds();
@@ -342,7 +342,7 @@ void Model::selectBox(double x1, double y1, double x2, double y2, bool deselect)
 }
 
 // Tree Select
-void Model::selectTree(Atom* i, bool markonly, bool deselect, Bond *omitbond)
+void Model::selectTree(Atom* i, bool markonly, bool deselect, Bond* omitbond)
 {
 	// The passed atom node is the starting point for the algorithm.
 	// From here, select all atoms that are bound - if they are already

@@ -1,7 +1,7 @@
 /*
 	*** Double/Exponent value
 	*** src/math/doubleexp.cpp
-	Copyright T. Youngs 2007-2015
+	Copyright T. Youngs 2013-2015
 
 	This file is part of Aten.
 
@@ -20,16 +20,27 @@
 */
 
 #include "math/doubleexp.h"
+#include <QStringList>
 #include <math.h>
 #include <stdio.h>
 #include <limits>
 
 ATEN_USING_NAMESPACE
 
-// Constructor
+// Constructors
+DoubleExp::DoubleExp()
+{
+	mantissa_ = 0.0;
+	exponent_ = 0.0;
+	recalculate();
+}
+DoubleExp::DoubleExp(double value)
+{
+	set(value);
+	recalculate();
+}
 DoubleExp::DoubleExp(double mantissa, int exponent)
 {
-	// Private variables
 	mantissa_ = mantissa;
 	exponent_ = exponent;
 	recalculate();
@@ -47,6 +58,20 @@ double DoubleExp::value() const
 	return value_;
 }
 
+// Retrieve text representation of value
+QString DoubleExp::text(int precision)
+{
+	QString text;
+
+	// First, create mantissa part based on number of decimals supplied
+	text = QString::number(mantissa_, 'f', precision);
+
+	// Second, add on exponential part (if non-zero)
+	if (exponent_ != 0) text += "e" + QString::number(exponent_);
+
+	return text;
+}
+
 // Set mantissa and exponent
 void DoubleExp::set(double mantissa, int exponent)
 {
@@ -58,8 +83,29 @@ void DoubleExp::set(double mantissa, int exponent)
 // Set from normal value
 void DoubleExp::set(double value)
 {
-	exponent_ = floor(log10(fabs(value)+std::numeric_limits<double>::min()));
+	if (fabs(value) > std::numeric_limits<double>::min()) exponent_ = floor(log10(fabs(value)));
+	else exponent_ = 0;
 	mantissa_ = value / pow(10.0,exponent_);
+	recalculate();
+// 	printf("Input value %f gives mantissa of %f and exponent of %i\n", value, mantissa_, exponent_);
+}
+
+// Set from supplied text
+void DoubleExp::set(QString text)
+{
+	// Does the text contain an exponent part?
+	if (text.contains('e', Qt::CaseInsensitive))
+	{
+		// Get mantissa / exponential parts of string
+		QStringList parts = text.split('e', QString::SkipEmptyParts, Qt::CaseInsensitive);
+		mantissa_ = parts.at(0).toDouble();
+		exponent_ = parts.at(1).toInt();
+	}
+	else
+	{
+		exponent_ = 0;
+		mantissa_ = text.toDouble();
+	}
 	recalculate();
 }
 
@@ -95,3 +141,13 @@ void DoubleExp::operator=(double d)
 	set(d);
 }
 
+/*
+ * Static Member Functions
+ */
+
+// Return text representation of supplied value
+QString DoubleExp::text(double value, int precision)
+{
+	DoubleExp tempValue = value;
+	return tempValue.text(precision);
+}

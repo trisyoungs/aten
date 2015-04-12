@@ -42,6 +42,7 @@ Octahedral Growing doesn't work.
 Add option to specify grow distance (instead of calculating from VDW radii).
 Draw halo underneath current model when more than one model is displayed.
 Automatically adjust grid size for number of visible models, based on current aspect ratio and context size etc.
+Make UnitCell a full member of Model, rather than a pointer?
 
 GUI TODO:
 AddAtom functionality (from old Build menu).

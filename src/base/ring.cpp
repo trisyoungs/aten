@@ -322,7 +322,7 @@ void Ring::finalise()
 	bonds_.clear();
 	for (ra = atoms_.first(); ra != NULL; ra = ra->next)
 	{
-		Bond *b = ra->item->findBond(getNext(ra)->item);
+		Bond* b = ra->item->findBond(getNext(ra)->item);
 		if (b == NULL) printf("Odd internal error - couldn't find bond between atoms in ring.\n");
 		else bonds_.add(b);
 		// Search the bond list of this atom for the next atom in the list

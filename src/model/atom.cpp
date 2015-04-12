@@ -177,7 +177,7 @@ void Model::deleteAtom(Atom* xatom, bool noupdate)
 		while (bref != NULL)
 		{
 			// Need to detach the bond from both atoms involved
-			Bond *b = bref->item;
+			Bond* b = bref->item;
 			Atom* j = b->partner(xatom);
 			unbondAtoms(xatom,j,b);
 			bref = xatom->bonds();

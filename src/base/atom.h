@@ -92,7 +92,7 @@ class Atom : public ListItem<Atom>
 	protected:
 	Vec3<double> r_;
 	public:
-	Vec3<double> &r();
+	Vec3<double>& r();
 
 
 	/*
@@ -101,7 +101,7 @@ class Atom : public ListItem<Atom>
 	protected:
 	Vec3<double> f_;
 	public:
-	Vec3<double> &f();
+	Vec3<double>& f();
 
 
 	/*
@@ -110,7 +110,7 @@ class Atom : public ListItem<Atom>
 	protected:
 	Vec3<double> v_;
 	public:
-	Vec3<double> &v();
+	Vec3<double>& v();
 
 
 	/*
@@ -188,9 +188,9 @@ class Atom : public ListItem<Atom>
 	// Check the number of bonds against the supplied value
 	bool isNBonds(int n) const;
 	// Accept the specified bond to the atom's local reference list
-	void acceptBond(Bond *b);
+	void acceptBond(Bond* b);
 	// Delete the specified bond from the atom's local reference list
-	void detachBond(Bond *b);
+	void detachBond(Bond* b);
 	// Return the total bond order of the atom
 	int totalBondOrder();
 	// Calculate the bond order between this atom and the specified atom
@@ -200,11 +200,11 @@ class Atom : public ListItem<Atom>
 	// Return if the local bound geometry of the atom is planar (within a certain tolerance)
 	bool isPlanar(double tolerance);
 	// Returns bond pointer between this and atom 'j' (if it exists)
-	Bond *findBond(Atom* j);
+	Bond* findBond(Atom* j);
 	// Calculate bond plane (unit) vector
-	Vec3<double> findBondPlane(Atom* other, Bond *excludedBond, const Vec3<double> &vij, bool vijIsNormalised);
+	Vec3<double> findBondPlane(Atom* other, Bond* excludedBond, const Vec3<double>& vij, bool vijIsNormalised);
 	// Return next best vector for addition of new atom
-	bool nextBondVector(Vec3<double> &vector, Atom::AtomGeometry geometry);
+	bool nextBondVector(Vec3<double>& vector, Atom::AtomGeometry geometry);
 
 
 	/*

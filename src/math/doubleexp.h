@@ -1,7 +1,7 @@
 /*
 	*** Double/Exponent class
 	*** src/math/doubleexp.h
-	Copyright T. Youngs 2007-2015
+	Copyright T. Youngs 2013-2015
 
 	This file is part of Aten.
 
@@ -23,6 +23,7 @@
 #define ATEN_DOUBLEEXP_H
 
 #include "base/namespace.h"
+#include <QString>
 
 ATEN_BEGIN_NAMESPACE
 
@@ -30,9 +31,12 @@ ATEN_BEGIN_NAMESPACE
 class DoubleExp
 {
 	public:
-	// Constructor / Destructor
-	DoubleExp(double mantissa = 0.0, int exponent = 0);
+	// Constructors
+	DoubleExp();
+	DoubleExp(double value);
+	DoubleExp(double mantissa, int exponent);
 
+	
 	/*
 	 * Data
 	 */
@@ -44,6 +48,7 @@ class DoubleExp
 	// Value
 	double value_;
 
+	
 	/*
 	 * Functions
 	 */
@@ -54,10 +59,14 @@ class DoubleExp
 	public:
 	// Retrieve full, real value
 	double value() const;
+	// Retrieve text representation of value
+	QString text(int precision = 4);
 	// Set mantissa and exponent
 	void set(double mantissa, int exponent);
 	// Set from normal value
 	void set(double value);
+	// Set from supplied text
+	void set(QString text);
 	// Set mantissa
 	void setMantissa(double mantissa);
 	// Return mantissa
@@ -68,6 +77,14 @@ class DoubleExp
 	int exponent() const;
 	// Operator =
 	void operator=(double d);
+
+
+	/*
+	 * Static Member Functions
+	 */
+	public:
+	// Return text representation of supplied value
+	QString text(double value, int precision = 4);
 };
 
 ATEN_END_NAMESPACE

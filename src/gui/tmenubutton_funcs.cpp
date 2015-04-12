@@ -53,6 +53,7 @@ TMenuButton::TMenuButton(QWidget* parent) : QToolButton(parent)
 {
 	// Nullify popup widget to start with
 	popupWidget_ = NULL;
+	instantPopup_ = false;
 
 	// Set popup timer delay, style, and connect slot
 	popupTimer_.setSingleShot(true);
@@ -66,9 +67,16 @@ TMenuButton::TMenuButton(QWidget* parent) : QToolButton(parent)
 }
 
 // Set popup widget for button
-void TMenuButton::setPopupWidget(TMenuButtonPopupWidget* widget)
+void TMenuButton::setPopupWidget(TMenuButtonPopupWidget* widget, bool instantPopup)
 {
 	popupWidget_ = widget;
+	instantPopup_ = instantPopup;
+}
+
+// Return popup widget set for button
+TMenuButtonPopupWidget* TMenuButton::popupWidget()
+{
+	return popupWidget_;
 }
 
 void TMenuButton::popupDone()
@@ -130,8 +138,12 @@ void TMenuButton::buttonPressed()
 	// Store current checked state of button
 	checkedBeforePressed_ = isChecked();
 
-	// Start popup timer
-	if (popupWidget_) popupTimer_.start();
+	// Start popup timer (if not an instantPopup_)
+	if (popupWidget_)
+	{
+		if (instantPopup_) emit(popup());
+		else popupTimer_.start();
+	}
 }
 
 void TMenuButton::buttonReleased()

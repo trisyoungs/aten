@@ -173,7 +173,7 @@ void Model::rotateSelectionZaxis(double dz)
 }
 
 // Translate Selection in world coordinates
-void Model::translateSelectionWorld(const Vec3<double> &v, bool markonly)
+void Model::translateSelectionWorld(const Vec3<double>& v, bool markonly)
 {
 	// Translate the selected atoms in the local XY plane
 	Messenger::enter("Model::translateSelectionWorld");
@@ -197,7 +197,7 @@ void Model::translateSelectionWorld(const Vec3<double> &v, bool markonly)
 }
 
 // Move selected atoms in local space
-void Model::translateSelectionLocal(const Vec3<double> &tvec, bool markonly)
+void Model::translateSelectionLocal(const Vec3<double>& tvec, bool markonly)
 {
 	// Translate the model's current selection by the vector supplied.
 	Messenger::enter("Model::translateSelectionLocal");
@@ -237,7 +237,7 @@ void Model::mirrorSelectionLocal(int axis, bool markonly)
 }
 
 // Puts the selections centre of geometry at 0,0,0
-void Model::centre(const Vec3<double> &v, bool lockx, bool locky, bool lockz)
+void Model::centre(const Vec3<double>& v, bool lockx, bool locky, bool lockz)
 {
 	centre(v.x, v.y, v.z, lockx, locky, lockz);
 }

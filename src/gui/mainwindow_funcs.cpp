@@ -40,6 +40,9 @@
 #include <iostream>
 #include <fstream>
 #include "gui/popupaddh.h"
+#include "gui/popupcellangles.h"
+#include "gui/popupcelllengths.h"
+#include "gui/popupcellmatrix.h"
 #include "gui/popupgrow.h"
 #include "gui/popuprebond.h"
 #include "gui/popupresetview.h"
@@ -83,6 +86,7 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 	contextAtom_ = NULL;
 	modelListRefreshing_ = false;
 	messageDisplay_ = MessagesUnderScene;
+	refreshing_ = false;
 
 	// Public variables
 	infoLabel1_ = NULL;
@@ -135,7 +139,7 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 
 	// Add colour scheme tool buttons to their button group
 	schemeButtons_.addButton(ui.ViewSchemeElementButton, Prefs::ElementScheme);
-	schemeButtons_.addButton(ui.ViewSchemeChargebutton, Prefs::ChargeScheme);
+	schemeButtons_.addButton(ui.ViewSchemeChargeButton, Prefs::ChargeScheme);
 	schemeButtons_.addButton(ui.ViewSchemeForceButton, Prefs::ForceScheme);
 	schemeButtons_.addButton(ui.ViewSchemeVelocityButton, Prefs::VelocityScheme);
 	schemeButtons_.addButton(ui.ViewSchemeOwnButton, Prefs::OwnScheme);
@@ -147,7 +151,7 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 	// Add buttons related to user actions to our button group, and add popup widgets to those buttons that have them
 
 	// -- Build Panel (Select)
-	uaButtons_.addButton(ui.BuildSelectAtomButton, UserAction::SelectAction);
+	uaButtons_.addButton(ui.BuildSelectAtomsButton, UserAction::SelectAction);
 	uaButtons_.addButton(ui.BuildSelectBoundButton, UserAction::SelectBoundAction);
 	uaButtons_.addButton(ui.BuildSelectElementButton, UserAction::SelectElementAction);
 	// -- Build Panel (Build)
@@ -164,6 +168,10 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 	// -- Build Panel (Bonding)
 	ui.BuildBondingRebondButton->setPopupWidget(new RebondPopup(*this, ui.BuildBondingRebondButton));
 
+	// -- Cell Panel (Define)
+	ui.CellDefineAnglesButton->setPopupWidget(new CellAnglesPopup(*this, ui.CellDefineAnglesButton), true);
+	ui.CellDefineLengthsButton->setPopupWidget(new CellLengthsPopup(*this, ui.CellDefineLengthsButton), true);
+	ui.CellDefineMatrixButton->setPopupWidget(new CellMatrixPopup(*this, ui.CellDefineMatrixButton), true);
 	// -- View Panel (Control)
 	ui.ViewControlResetButton->setPopupWidget(new ResetViewPopup(*this, ui.ViewControlResetButton));
 	

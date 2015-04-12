@@ -187,7 +187,7 @@ void BondTypeEvent::undo(Model* m)
 	// Bond order change - from newBondType_ to oldBondType_ (UndoEvent::Undo) or vice versa (UndoEvent::Redo)
 	i = modelatoms[targetId1_];
 	j = modelatoms[targetId2_];
-	Bond *b = i->findBond(j);
+	Bond* b = i->findBond(j);
 	if (direction_ == UndoEvent::Undo)
 	{
 		Messenger::print(Messenger::Verbose, "Reversing bond order change - atoms %i-%i, old = %i, new = %i", targetId1_, targetId2_, newBondType_, oldBondType_);

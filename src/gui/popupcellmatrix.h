@@ -1,6 +1,6 @@
 /*
-	*** Popup Widget - Rebond
-	*** src/gui/popuprebond.h
+	*** Popup Widget - Cell Matrix
+	*** src/gui/popupcellmatrix.h
 	Copyright T. Youngs 2007-2015
 
 	This file is part of Aten.
@@ -19,17 +19,17 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_REBONDPOPUP_H
-#define ATEN_REBONDPOPUP_H
+#ifndef ATEN_CELLMATRIXPOPUP_H
+#define ATEN_CELLMATRIXPOPUP_H
 
-#include "gui/ui_popuprebond.h"
+#include "gui/ui_popupcellmatrix.h"
 #include "gui/tmenubutton.hui"
 
 // Forward Declarations (Qt)
 class AtenWindow;
 
-// Popup Widget - Rebond
-class RebondPopup : public TMenuButtonPopupWidget
+// Popup Widget - Cell Matrix
+class CellMatrixPopup : public TMenuButtonPopupWidget
 {
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
@@ -40,9 +40,9 @@ class RebondPopup : public TMenuButtonPopupWidget
 
 	public:
 	// Constructor / Destructor
-	RebondPopup(AtenWindow& parent, TMenuButton* buttonParent);
+	CellMatrixPopup(AtenWindow& parent, TMenuButton* buttonParent);
 	// Main form declaration
-	Ui::RebondPopup ui;
+	Ui::CellMatrixPopup ui;
 	// Show popup, updating any controls as necessary beforehand
 	void popup();
 
@@ -57,14 +57,20 @@ class RebondPopup : public TMenuButtonPopupWidget
 	/*
 	 * Widget Functions
 	 */
+	private:
+	// Apply current matrix to current model
+	void setCurrentMatrix();
+
 	private slots:
-	void on_RebondModelNoAugmentButton_clicked(bool checked);
-	void on_RebondSelectionButton_clicked(bool checked);
-	void on_RebondSelectionNoAugmentButton_clicked(bool checked);
-	void on_RebondPatternsButton_clicked(bool checked);
-	void on_RebondPatternsNoAugmentButton_clicked(bool checked);
-	void on_ToleranceDial_valueChanged(int value);
-	void on_ToleranceSpin_valueChanged(double value);
+	void on_AxisAXSpin_valueChanged(double value);
+	void on_AxisAYSpin_valueChanged(double value);
+	void on_AxisAZSpin_valueChanged(double value);
+	void on_AxisBXSpin_valueChanged(double value);
+	void on_AxisBYSpin_valueChanged(double value);
+	void on_AxisBZSpin_valueChanged(double value);
+	void on_AxisCXSpin_valueChanged(double value);
+	void on_AxisCYSpin_valueChanged(double value);
+	void on_AxisCZSpin_valueChanged(double value);
 };
 
 #endif

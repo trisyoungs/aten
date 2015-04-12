@@ -1,6 +1,6 @@
 /*
-	*** Popup Widget - Rebond
-	*** src/gui/popuprebond.h
+	*** Popup Widget - Cell Lengths
+	*** src/gui/popupcelllengths.h
 	Copyright T. Youngs 2007-2015
 
 	This file is part of Aten.
@@ -19,17 +19,17 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_REBONDPOPUP_H
-#define ATEN_REBONDPOPUP_H
+#ifndef ATEN_CELLLENGTHSPOPUP_H
+#define ATEN_CELLLENGTHSPOPUP_H
 
-#include "gui/ui_popuprebond.h"
+#include "gui/ui_popupcelllengths.h"
 #include "gui/tmenubutton.hui"
 
 // Forward Declarations (Qt)
 class AtenWindow;
 
-// Popup Widget - Rebond
-class RebondPopup : public TMenuButtonPopupWidget
+// Popup Widget - Cell Lengths
+class CellLengthsPopup : public TMenuButtonPopupWidget
 {
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
@@ -40,9 +40,9 @@ class RebondPopup : public TMenuButtonPopupWidget
 
 	public:
 	// Constructor / Destructor
-	RebondPopup(AtenWindow& parent, TMenuButton* buttonParent);
+	CellLengthsPopup(AtenWindow& parent, TMenuButton* buttonParent);
 	// Main form declaration
-	Ui::RebondPopup ui;
+	Ui::CellLengthsPopup ui;
 	// Show popup, updating any controls as necessary beforehand
 	void popup();
 
@@ -57,14 +57,14 @@ class RebondPopup : public TMenuButtonPopupWidget
 	/*
 	 * Widget Functions
 	 */
+	private:
+	// Adjust matrix of current model
+	void adjustCurrentMatrix(int lengthIndex, double value);
+
 	private slots:
-	void on_RebondModelNoAugmentButton_clicked(bool checked);
-	void on_RebondSelectionButton_clicked(bool checked);
-	void on_RebondSelectionNoAugmentButton_clicked(bool checked);
-	void on_RebondPatternsButton_clicked(bool checked);
-	void on_RebondPatternsNoAugmentButton_clicked(bool checked);
-	void on_ToleranceDial_valueChanged(int value);
-	void on_ToleranceSpin_valueChanged(double value);
+	void on_ASpin_valueChanged(double value);
+	void on_BSpin_valueChanged(double value);
+	void on_CSpin_valueChanged(double value);
 };
 
 #endif

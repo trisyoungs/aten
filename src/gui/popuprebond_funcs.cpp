@@ -83,7 +83,7 @@ void RebondPopup::on_RebondSelectionNoAugmentButton_clicked(bool checked)
 	hide();
 }
 
-void RebondPopup::on_RebondPatternButton_clicked(bool checked)
+void RebondPopup::on_RebondPatternsButton_clicked(bool checked)
 {
 	// Run command
 	CommandNode::run(Commands::ReBondPatterns, "i", 0);
@@ -95,7 +95,7 @@ void RebondPopup::on_RebondPatternButton_clicked(bool checked)
 	hide();
 }
 
-void RebondPopup::on_RebondPatternNoAugmentButton_clicked(bool checked)
+void RebondPopup::on_RebondPatternsNoAugmentButton_clicked(bool checked)
 {
 	// Run command
 	CommandNode::run(Commands::ReBondPatterns, "i", 1);

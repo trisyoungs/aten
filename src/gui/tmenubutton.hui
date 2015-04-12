@@ -38,6 +38,10 @@ class TMenuButtonPopupWidget : public QWidget
 	// Parent TMenuButton
 	TMenuButton* parentMenuButton_;
 
+	protected:
+	// Whether widget is refreshing
+	bool refreshing_;
+
 	public:
 	// Constructor
 	TMenuButtonPopupWidget(TMenuButton* parent);
@@ -68,6 +72,8 @@ class TMenuButton : public QToolButton
 	private:
 	// Popup widget
 	TMenuButtonPopupWidget* popupWidget_;
+	// Whether popup is instant when button is pressed
+	bool instantPopup_;
 	// Timer for popup window
 	QTimer popupTimer_;
 	// Whether button was already checked before being pressed
@@ -75,7 +81,9 @@ class TMenuButton : public QToolButton
 
 	public:
 	// Set popup widget for button
-	void setPopupWidget(TMenuButtonPopupWidget* widget);
+	void setPopupWidget(TMenuButtonPopupWidget* widget, bool instantPopup = false);
+	// Return popup widget set for button
+	TMenuButtonPopupWidget* popupWidget();
 	// Notify button that popup is done
 	void popupDone();
 

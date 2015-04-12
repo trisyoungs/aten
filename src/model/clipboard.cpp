@@ -160,7 +160,7 @@ void Clipboard::copyBonds()
 	Messenger::enter("Clipboard::copyBonds");
 	// Go through pairs of oldptrs in the atoms list and check for bonds, adding to our list as we go.
 	// The bonds we generate will point to pairs of ClipAtoms.
-	Bond *oldbond;
+	Bond* oldbond;
 	for (ClipAtom* ii = atoms_.first(); ii != NULL; ii = ii->next)
 	{
 		for (ClipAtom* jj = ii->next; jj != NULL; jj = jj->next)
@@ -169,7 +169,7 @@ void Clipboard::copyBonds()
 			oldbond = ii->atomPointer()->findBond(jj->atomPointer());
 			if (oldbond != NULL)
 			{
-				ClipBond *b = bonds_.add();
+				ClipBond* b = bonds_.add();
 				b->setAtoms(ii, jj);
 				b->setType(oldbond->type());
 			}
@@ -384,7 +384,7 @@ void Clipboard::pasteBonds(Model* target)
 {
 	Messenger::enter("Clipboard::pasteBonds");
 	// By this point, bondi and bondj pointers in the bondlist will refer to ClipAtom* pointers
-	for (ClipBond *b = bonds_.first(); b != NULL; b = b->next) target->bondAtoms(b->atomI()->atomPointer(), b->atomJ()->atomPointer(), b->type());
+	for (ClipBond* b = bonds_.first(); b != NULL; b = b->next) target->bondAtoms(b->atomI()->atomPointer(), b->atomJ()->atomPointer(), b->type());
 	Messenger::exit("Clipboard::pasteBonds");
 }
 
@@ -399,7 +399,7 @@ bool Clipboard::hasBond(int ii, int jj)
 {
 	// Given the two atom ids (which should correspond to those of the clipboard's atoms list) see if we copied a bond between them
 	static int idi, idj;
-	for (ClipBond *b = bonds_.first(); b != NULL; b = b->next)
+	for (ClipBond* b = bonds_.first(); b != NULL; b = b->next)
 	{
 		idi = b->atomI()->atom().id();
 		idj = b->atomJ()->atom().id();
