@@ -798,7 +798,6 @@ void AtenWindow::on_actionReloadFilters_triggered(bool checked)
 	{
 		QMessageBox::warning(this, "Aten", "Errors encountered while reloading filters - see message box for details.", QMessageBox::Ok);
 	}
-	aten_.createFileDialogFilters();
 }
 
 // Toggle manualswapbuffers option

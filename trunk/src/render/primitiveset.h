@@ -105,7 +105,7 @@ class PrimitiveSet
 	Primitive& segmentedTubeRing();
 	// Return cube primitive
 	Primitive& cube();
-	// Return wiret cube primitive
+	// Return wire cube primitive
 	Primitive& wireCube();
 	// Return origin cube primitive
 	Primitive& originCube();

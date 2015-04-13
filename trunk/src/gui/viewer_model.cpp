@@ -43,7 +43,7 @@ void Viewer::renderModel(Model* source, int viewPortX, int viewPortY, int viewPo
 
 	// Set initial transformation matrix, including any translation occurring from cell...
 	modelTransformationMatrix_ = source->modelViewMatrix();
-	modelTransformationMatrix_.applyTranslation(source->cell()->centre());
+	modelTransformationMatrix_.applyTranslation(-source->cell()->centre());
 	
 	// Set target matrix mode and reset it, and set colour mode
 	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
@@ -93,17 +93,16 @@ void Viewer::renderModel(Model* source, int viewPortX, int viewPortY, int viewPo
 		colour[2] = 0.0f;
 		colour[3] = 1.0f;
 
-		// Reset current view matrix and apply the cell's axes matrix
-		glLoadIdentity();
+		// Set current view matrix to account for model rotation, cell axes size, and translation to cell LLC
 		Matrix A = source->modelViewMatrix() * source->cell()->axes();
-		glMultMatrixd(A.matrix());
+		glLoadMatrixd(A.matrix());
+		glTranslated(-0.5, -0.5, -0.5);
 
 		// Draw a wire cube for the cell
 		primitives_[primitiveSet_].wireCube().sendToGL(QOpenGLContext::currentContext());
 
 		// Draw cell axes
 		glColor4fv(colour);
-		glTranslated(-0.5, -0.5, -0.5);
 		Vec3<double> v = source->cell()->lengths();
 		glScaled(1.0 / v.x, 1.0 / v.y, 1.0 / v.z);
 		primitives_[primitiveSet_].cellAxes().sendToGL(QOpenGLContext::currentContext());

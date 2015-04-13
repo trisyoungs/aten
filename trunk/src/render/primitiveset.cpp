@@ -372,9 +372,9 @@ void PrimitiveSet::recreatePrimitives()
 	segmentedLineRing_.initialise(GL_LINES, false);
 	segmentedLineRing_.plotCircle(1.0, 20, 5, true);
 	wireCube_.initialise(GL_LINES, false);
-	wireCube_.plotCube(1.0, 2, 0.0, 0.0, 0.0);
+	wireCube_.plotCube(1.0, 1, 0.0, 0.0, 0.0);
 	crossedCube_.initialise(GL_LINES, false);
-	crossedCube_.plotCrossedCube(1.0, 2, 0.0, 0.0, 0.0);
+	crossedCube_.plotCrossedCube(1.0, 1, 0.0, 0.0, 0.0);
 	cellAxes_.initialise(GL_TRIANGLES, true);
 	cellAxes_.plotCylinder(0.0f, 0.0f, 0.0f, 0.65f, 0.0f, 0.0f, 0.1f, 0.1f, nStacks, nSlices, true, false, true, Vec4<GLfloat>(1.0f, 0.0f, 0.0f, 1.0f));
 	cellAxes_.plotCylinder(0.65f, 0.0f, 0.0f, 0.35f, 0.0f, 0.0f, 0.2f, 0.0f, nStacks, nSlices, true, false, true, Vec4<GLfloat>(1.0f, 0.0f, 0.0f, 1.0f));

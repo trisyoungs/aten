@@ -51,6 +51,9 @@ void Aten::openFilters()
 		Messenger::print("Grid (%i/%i)", filters_[FilterData::GridImport].nItems(), filters_[FilterData::GridExport].nItems());
 	}
 
+	// Create filter lists
+	createFileDialogFilters();
+
 	Messenger::exit("Aten::openFilters");
 }
 
@@ -137,6 +140,9 @@ int Aten::reloadFilters()
 	Messenger::print("Trajectory (%i/%i) ", filters_[FilterData::TrajectoryImport].nItems(), filters_[FilterData::TrajectoryExport].nItems());
 	Messenger::print("Expression (%i/%i) ", filters_[FilterData::ExpressionImport].nItems(), filters_[FilterData::ExpressionExport].nItems());
 	Messenger::print("Grid (%i/%i)", filters_[FilterData::GridImport].nItems(), filters_[FilterData::GridExport].nItems());
+
+	// Create filter lists
+	createFileDialogFilters();
 
 	Messenger::exit("Aten::reloadFilters");
 	return nLoaded;
