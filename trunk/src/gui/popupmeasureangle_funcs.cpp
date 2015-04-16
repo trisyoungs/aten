@@ -1,6 +1,6 @@
 /*
-	*** Popup Widget - AddH Functions
-	*** src/gui/popupaddh_funcs.cpp
+	*** Popup Widget - Measure Angle Functions
+	*** src/gui/popupmeasureangle_funcs.cpp
 	Copyright T. Youngs 2007-2015
 
 	This file is part of Aten.
@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "gui/popupaddh.h"
+#include "gui/popupmeasureangle.h"
 #include "main/aten.h"
 #include "gui/mainwindow.h"
 #include "parser/commandnode.h"
@@ -28,14 +28,14 @@
 ATEN_USING_NAMESPACE
 
 // Constructor
-AddHPopup::AddHPopup(AtenWindow& parent, TMenuButton* buttonParent) : TMenuButtonPopupWidget(buttonParent), parent_(parent)
+MeasureAnglePopup::MeasureAnglePopup(AtenWindow& parent, TMenuButton* buttonParent) : TMenuButtonPopupWidget(buttonParent), parent_(parent)
 {
 	// Set up interface
 	ui.setupUi(this);
 }
 
 // Show popup, updating any controls as necessary beforehand
-void AddHPopup::popup()
+void MeasureAnglePopup::popup()
 {
 	show();
 }
@@ -44,25 +44,13 @@ void AddHPopup::popup()
  * Widget Functions
  */
 
-void AddHPopup::on_AddHSelectionButton_clicked(bool checked)
+void MeasureAnglePopup::on_SelectionButton_clicked(bool checked)
 {
 	// Run command
-	CommandNode::run(Commands::SelectionAddHydrogen, "");
+	CommandNode::run(Commands::MeasureSelected, "i", 3);
 
 	// Update display
-	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
-
-	// Hide popup
-	hide();
-}
-
-void AddHPopup::on_AddHModelButton_clicked(bool checked)
-{
-	// Run command
-	CommandNode::run(Commands::AddHydrogen, "");
-
-	// Update display
-	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
+	parent_.updateWidgets(AtenWindow::CanvasTarget);
 
 	// Hide popup
 	hide();

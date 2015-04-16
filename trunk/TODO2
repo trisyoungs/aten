@@ -32,7 +32,7 @@ Change SaveImageDialog to check for empty image filename, and disable OK button 
 Check - is using redirected filenames really necessary when saveing movie frame images?
 Fix image saving - in particular scaling & offset when saving large image (what role will/did ViewLayout play?)
 Make UserActions a member of something (Viewer?).
-Fix Grid rimitive generation (need to know nVertices ahead of time...).
+Fix Grid rimitive generation (need to know nVertices ahead of time...).   NOT TRUE ANYMORE?
 Optimise basic primitives to use vertex/index arrays instead of just vertices (also check end caps of spheres).
 Check picked atom rendering (probably broken).
 Optimise primitive drawing / generation by allowing use of GL_TRIANGLE_STRIP?
@@ -45,6 +45,10 @@ Automatically adjust grid size for number of visible models, based on current as
 Make UnitCell a full member of Model, rather than a pointer?
 Cif/mol2/pdb import broken?
 PrimitiveSet::wireCube_ is not a wireframe cube!
+Recognise bonds in both selection and right-click:
+o Context menu for bond then can replicate bond, angle, and torsion adjustment
+For Transform panel set distance, angle, and torsion functions, have a combo to choose between Order (move last selected atom in selection order of bond, angle, or torsion atoms), Mass (move lightest atom), or Both (move all atoms equally)?
+Clear selected measurements on panel popup clears all measurements.
 
 GUI TODO:
 AddAtom functionality (from old Build menu).

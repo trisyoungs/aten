@@ -1,6 +1,6 @@
 /*
-	*** Aten version information
-	*** src/main/version.h
+	*** Main Window - Transform Panel Functions
+	*** src/gui/mainwindow_panel_transform.cpp
 	Copyright T. Youngs 2007-2015
 
 	This file is part of Aten.
@@ -19,12 +19,23 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_VERSION_H
-#define ATEN_VERSION_H
+#include "gui/mainwindow.h"
 
-#define ATENVERSION "1.951"
-#define ATENREVISION "1951"
-#define ATENDATE "Thu 28 Jun - 13:36"
-#define ATENURL "http://aten.googlecode.com/svn/trunk"
+/*
+ * Set
+ */
 
-#endif
+void AtenWindow::on_TransformSetDistanceButton_clicked(bool checked)
+{
+	if (checked) ui.MainView->setSelectedMode(UserAction::MeasureDistanceAction);
+}
+
+void AtenWindow::on_TransformSetAngleButton_clicked(bool checked)
+{
+	if (checked) ui.MainView->setSelectedMode(UserAction::MeasureAngleAction);
+}
+
+void AtenWindow::on_TransformSetTorsionButton_clicked(bool checked)
+{
+	if (checked) ui.MainView->setSelectedMode(UserAction::MeasureTorsionAction);
+}

@@ -1,6 +1,6 @@
 /*
-	*** Popup Widget - Transmute Functions
-	*** src/gui/popuptransmute_funcs.cpp
+	*** Popup Widget - AddH Functions
+	*** src/gui/popupbuildaddh_funcs.cpp
 	Copyright T. Youngs 2007-2015
 
 	This file is part of Aten.
@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "gui/popuptransmute.h"
+#include "gui/popupbuildaddh.h"
 #include "main/aten.h"
 #include "gui/mainwindow.h"
 #include "parser/commandnode.h"
@@ -28,14 +28,14 @@
 ATEN_USING_NAMESPACE
 
 // Constructor
-TransmutePopup::TransmutePopup(AtenWindow& parent, TMenuButton* buttonParent) : TMenuButtonPopupWidget(buttonParent), parent_(parent)
+AddHPopup::AddHPopup(AtenWindow& parent, TMenuButton* buttonParent) : TMenuButtonPopupWidget(buttonParent), parent_(parent)
 {
 	// Set up interface
 	ui.setupUi(this);
 }
 
 // Show popup, updating any controls as necessary beforehand
-void TransmutePopup::popup()
+void AddHPopup::popup()
 {
 	show();
 }
@@ -44,10 +44,10 @@ void TransmutePopup::popup()
  * Widget Functions
  */
 
-void TransmutePopup::on_TransmuteSelectionButton_clicked(bool checked)
+void AddHPopup::on_AddHSelectionButton_clicked(bool checked)
 {
 	// Run command
-	CommandNode::run(Commands::Transmute, "i", parent_.ui.MainView->buildElement());
+	CommandNode::run(Commands::SelectionAddHydrogen, "");
 
 	// Update display
 	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
@@ -55,3 +55,16 @@ void TransmutePopup::on_TransmuteSelectionButton_clicked(bool checked)
 	// Hide popup
 	hide();
 }
+
+void AddHPopup::on_AddHModelButton_clicked(bool checked)
+{
+	// Run command
+	CommandNode::run(Commands::AddHydrogen, "");
+
+	// Update display
+	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
+
+	// Hide popup
+	hide();
+}
+

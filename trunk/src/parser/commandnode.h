@@ -88,9 +88,9 @@ class CommandNode : public TreeNode
 	// Initialise node
 	bool initialise();
 	// Create, run, and free a single command with simple arguments
-	static bool run(Commands::Function func, const char* argList, ...);
+	static bool run(Commands::Function func, const char* argList = NULL, ...);
 	// Create, run, and free a single command with simple arguments and specified bundle
-	static bool run(Commands::Function func, Bundle& bundle, const char* argList, ...);
+	static bool run(Commands::Function func, Bundle& bundle, const char* argList = NULL, ...);
 	// Execute command with specified bundle
 	bool execute(Bundle& bundle, ReturnValue& rv);
 };
