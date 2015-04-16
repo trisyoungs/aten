@@ -39,14 +39,18 @@
 #include "main/version.h"
 #include <iostream>
 #include <fstream>
-#include "gui/popupaddh.h"
+#include "gui/popupbuildaddh.h"
+#include "gui/popupbuildgrow.h"
+#include "gui/popupbuildrebond.h"
+#include "gui/popupbuildtransmute.h"
 #include "gui/popupcellangles.h"
 #include "gui/popupcelllengths.h"
 #include "gui/popupcellmatrix.h"
-#include "gui/popupgrow.h"
-#include "gui/popuprebond.h"
-#include "gui/popupresetview.h"
-#include "gui/popuptransmute.h"
+#include "gui/popupmeasureangle.h"
+#include "gui/popupmeasuredistance.h"
+#include "gui/popupmeasuretorsion.h"
+#include "gui/popuptransformdistance.h"
+#include "gui/popupviewreset.h"
 
 #include "gui/atomlist.h"
 #include "gui/celldefinition.h"
@@ -172,10 +176,22 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 	ui.CellDefineAnglesButton->setPopupWidget(new CellAnglesPopup(*this, ui.CellDefineAnglesButton), true);
 	ui.CellDefineLengthsButton->setPopupWidget(new CellLengthsPopup(*this, ui.CellDefineLengthsButton), true);
 	ui.CellDefineMatrixButton->setPopupWidget(new CellMatrixPopup(*this, ui.CellDefineMatrixButton), true);
+
 	// -- View Panel (Control)
 	ui.ViewControlResetButton->setPopupWidget(new ResetViewPopup(*this, ui.ViewControlResetButton));
-	
-	
+
+	// -- Calculate Panel (Measure)
+	uaButtons_.addButton(ui.CalculateMeasureDistanceButton, UserAction::MeasureDistanceAction);
+	ui.CalculateMeasureDistanceButton->setPopupWidget(new MeasureDistancePopup(*this, ui.CalculateMeasureDistanceButton));
+	uaButtons_.addButton(ui.CalculateMeasureAngleButton, UserAction::MeasureAngleAction);
+	ui.CalculateMeasureAngleButton->setPopupWidget(new MeasureAnglePopup(*this, ui.CalculateMeasureAngleButton));
+	uaButtons_.addButton(ui.CalculateMeasureTorsionButton, UserAction::MeasureTorsionAction);
+	ui.CalculateMeasureTorsionButton->setPopupWidget(new MeasureTorsionPopup(*this, ui.CalculateMeasureTorsionButton));
+
+	// -- Transform Panel (Set)
+	ui.TransformSetDistanceButton->setPopupWidget(new TransformDistancePopup(*this, ui.TransformSetDistanceButton));
+// 	ui.TransformSetAngleButton->setPopupWidget(new TransformAnglePopup(*this, ui.TransformSetAngleButton));
+// 	ui.TransformSetTorsionButton->setPopupWidget(new TransformTorsionPopup(*this, ui.TransformSetTorsionButton));	
 	
 	
 	

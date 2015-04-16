@@ -346,6 +346,25 @@ class AtenWindow : public QMainWindow
 
 
 	/*
+	 * Calculate Panel
+	 */
+	private slots:
+	void on_CalculateMeasureDistanceButton_clicked(bool checked);
+	void on_CalculateMeasureAngleButton_clicked(bool checked);
+	void on_CalculateMeasureTorsionButton_clicked(bool checked);
+	void on_CalculateMeasureClearButton_clicked(bool checked);
+
+
+	/*
+	 * Transform Panel
+	 */
+	private slots:
+	void on_TransformSetDistanceButton_clicked(bool checked);
+	void on_TransformSetAngleButton_clicked(bool checked);
+	void on_TransformSetTorsionButton_clicked(bool checked);
+
+
+	/*
 	 * Model List
 	 */
 	private:

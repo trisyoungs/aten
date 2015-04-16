@@ -1,6 +1,6 @@
 /*
-	*** Popup Widget - Reset View
-	*** src/gui/popupresetview.h
+	*** Popup Widget - Transmute
+	*** src/gui/popupbuildtransmute.h
 	Copyright T. Youngs 2007-2015
 
 	This file is part of Aten.
@@ -19,17 +19,17 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_RESETVIEWPOPUP_H
-#define ATEN_RESETVIEWPOPUP_H
+#ifndef ATEN_BUILDTRANSMUTEPOPUP_H
+#define ATEN_BUILDTRANSMUTEPOPUP_H
 
-#include "gui/ui_popupresetview.h"
+#include "gui/ui_popupbuildtransmute.h"
 #include "gui/tmenubutton.hui"
 
 // Forward Declarations (Qt)
 class AtenWindow;
 
-// Popup Widget - ResetView
-class ResetViewPopup : public TMenuButtonPopupWidget
+// Popup Widget - Build/Draw/Transmute
+class TransmutePopup : public TMenuButtonPopupWidget
 {
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
@@ -40,9 +40,9 @@ class ResetViewPopup : public TMenuButtonPopupWidget
 
 	public:
 	// Constructor / Destructor
-	ResetViewPopup(AtenWindow& parent, TMenuButton* buttonParent);
+	TransmutePopup(AtenWindow& parent, TMenuButton* buttonParent);
 	// Main form declaration
-	Ui::ResetViewPopup ui;
+	Ui::TransmutePopup ui;
 	// Show popup, updating any controls as necessary beforehand
 	void popup();
 
@@ -57,23 +57,8 @@ class ResetViewPopup : public TMenuButtonPopupWidget
 	/*
 	 * Widget Functions
 	 */
-	private:
-	void setCartesianView(double x, double y, double z);
-	void setCellView(double x, double y, double z);
-
 	private slots:
-	void on_CartesianNegativeXButton_clicked(bool checked);
-	void on_CartesianPositiveXButton_clicked(bool checked);
-	void on_CartesianNegativeYButton_clicked(bool checked);
-	void on_CartesianPositiveYButton_clicked(bool checked);
-	void on_CartesianNegativeZButton_clicked(bool checked);
-	void on_CartesianPositiveZButton_clicked(bool checked);
-	void on_CellNegativeXButton_clicked(bool checked);
-	void on_CellPositiveXButton_clicked(bool checked);
-	void on_CellNegativeYButton_clicked(bool checked);
-	void on_CellPositiveYButton_clicked(bool checked);
-	void on_CellNegativeZButton_clicked(bool checked);
-	void on_CellPositiveZButton_clicked(bool checked);
+	void on_TransmuteSelectionButton_clicked(bool checked);
 };
 
 #endif

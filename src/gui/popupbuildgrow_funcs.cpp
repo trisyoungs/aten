@@ -1,6 +1,6 @@
 /*
 	*** Popup Widget - Grow Functions
-	*** src/gui/popupgrow_funcs.cpp
+	*** src/gui/popupbuildgrow_funcs.cpp
 	Copyright T. Youngs 2007-2015
 
 	This file is part of Aten.
@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "gui/popupgrow.h"
+#include "gui/popupbuildgrow.h"
 #include "main/aten.h"
 #include "gui/mainwindow.h"
 #include "parser/commandnode.h"

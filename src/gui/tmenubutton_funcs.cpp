@@ -64,6 +64,11 @@ TMenuButton::TMenuButton(QWidget* parent) : QToolButton(parent)
 	connect(this, SIGNAL(pressed()), this, SLOT(buttonPressed()));
 	connect(this, SIGNAL(released()), this, SLOT(buttonReleased()));
 
+	// Set size constraints for button
+	const int minSize = 56, maxWidth = 128;
+	setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
+	setMinimumSize(minSize, minSize);
+	setMaximumSize(maxWidth, minSize);
 }
 
 // Set popup widget for button

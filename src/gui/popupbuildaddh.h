@@ -1,6 +1,6 @@
 /*
-	*** Popup Widget - Grow
-	*** src/gui/popupgrow.h
+	*** Popup Widget - AddH
+	*** src/gui/popupbuildaddh.h
 	Copyright T. Youngs 2007-2015
 
 	This file is part of Aten.
@@ -19,17 +19,17 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_GROWPOPUP_H
-#define ATEN_GROWPOPUP_H
+#ifndef ATEN_BUILDADDHPOPUP_H
+#define ATEN_BUILDADDHPOPUP_H
 
-#include "gui/ui_popupgrow.h"
+#include "gui/ui_popupbuildaddh.h"
 #include "gui/tmenubutton.hui"
 
 // Forward Declarations (Qt)
 class AtenWindow;
 
-// Popup Widget - Grow
-class GrowPopup : public TMenuButtonPopupWidget
+// Popup Widget - AddH
+class AddHPopup : public TMenuButtonPopupWidget
 {
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
@@ -40,9 +40,9 @@ class GrowPopup : public TMenuButtonPopupWidget
 
 	public:
 	// Constructor / Destructor
-	GrowPopup(AtenWindow& parent, TMenuButton* buttonParent);
+	AddHPopup(AtenWindow& parent, TMenuButton* buttonParent);
 	// Main form declaration
-	Ui::GrowPopup ui;
+	Ui::AddHPopup ui;
 	// Show popup, updating any controls as necessary beforehand
 	void popup();
 
@@ -58,14 +58,8 @@ class GrowPopup : public TMenuButtonPopupWidget
 	 * Widget Functions
 	 */
 	private slots:
-	void on_GeometryLinearButton_clicked(bool checked);
-	void on_GeometryTShapeButton_clicked(bool checked);
-	void on_GeometryTrigonalButton_clicked(bool checked);
-	void on_GeometryTetrahedralButton_clicked(bool checked);
-	void on_GeometrySqPlanarButton_clicked(bool checked);
-	void on_GeometryTrigBipyramidButton_clicked(bool checked);
-	void on_GeometryOctahedralButton_clicked(bool checked);
-	void on_GrowSelectionButton_clicked(bool checked);
+	void on_AddHSelectionButton_clicked(bool checked);
+	void on_AddHModelButton_clicked(bool checked);
 };
 
 #endif

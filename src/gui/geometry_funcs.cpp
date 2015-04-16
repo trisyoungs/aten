@@ -142,7 +142,7 @@ void GeometryWidget::on_MeasureTorsionSelectionButton_clicked(bool checked)
 // Clear all selections from model
 void GeometryWidget::on_MeasureClearAllButton_clicked(bool checked)
 {
-	CommandNode::run(Commands::ClearMeasurements, "");
+	CommandNode::run(Commands::ClearMeasurements);
 	parent_.updateWidgets(AtenWindow::CanvasTarget);
 }
 

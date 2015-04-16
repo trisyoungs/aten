@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>GeometryWidget</class>
  <widget class="QDockWidget" name="GeometryWidget">
@@ -6,13 +7,13 @@
     <x>0</x>
     <y>0</y>
     <width>270</width>
-    <height>162</height>
+    <height>178</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
     <width>270</width>
-    <height>162</height>
+    <height>178</height>
    </size>
   </property>
   <property name="floating">

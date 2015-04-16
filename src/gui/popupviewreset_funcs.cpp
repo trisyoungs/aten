@@ -1,6 +1,6 @@
 /*
-	*** Popup Widget - ResetView Functions
-	*** src/gui/popupresetview_funcs.cpp
+	*** Popup Widget - View Reset Functions
+	*** src/gui/popupviewreset_funcs.cpp
 	Copyright T. Youngs 2007-2015
 
 	This file is part of Aten.
@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "gui/popupresetview.h"
+#include "gui/popupviewreset.h"
 #include "main/aten.h"
 #include "gui/mainwindow.h"
 #include "parser/commandnode.h"

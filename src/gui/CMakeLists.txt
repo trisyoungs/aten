@@ -28,14 +28,19 @@ SET(gui_MOC_HDRS
   layoutlist.h
   loadmodel.h
   mainwindow.h
-  popupaddh.h
+  popupbuildaddh.h
+  popupbuildgrow.h
+  popupbuildrebond.h
+  popupbuildtransmute.h
+  popupmeasureangle.h
+  popupmeasureclear.h
+  popupmeasuredistance.h
+  popupmeasuretorsion.h
   popupcellangles.h
   popupcelllengths.h
   popupcellmatrix.h
-  popupgrow.h
-  popuprebond.h
-  popupresetview.h
-  popuptransmute.h
+  popuptransformdistance.h
+  popupviewreset.h
   pores.h
   position.h
   prefs.h
@@ -89,14 +94,19 @@ SET(gui_UIS
   grids.ui
   loadmodel.ui
   mainwindow.ui
-  popupaddh.ui
+  popupbuildaddh.ui
+  popupbuildgrow.ui
+  popupbuildrebond.ui
+  popupbuildtransmute.ui
   popupcellangles.ui
   popupcelllengths.ui
   popupcellmatrix.ui
-  popupgrow.ui
-  popuprebond.ui
-  popupresetview.ui
-  popuptransmute.ui
+  popupmeasureangle.ui
+  popupmeasureclear.ui
+  popupmeasuredistance.ui
+  popupmeasuretorsion.ui
+  popuptransformdistance.ui
+  popupviewreset.ui
   pores.ui
   position.ui
   prefs.ui
@@ -148,17 +158,24 @@ set(gui_SRCS
   mainwindow_messages.cpp
   mainwindow_modellist.cpp
   mainwindow_panel_build.cpp
+  mainwindow_panel_calculate.cpp
   mainwindow_panel_cell.cpp
+  mainwindow_panel_transform.cpp
   mainwindow_panel_view.cpp
   mainwindow_update.cpp
-  popupaddh_funcs.cpp
+  popupbuildaddh_funcs.cpp
+  popupbuildgrow_funcs.cpp
+  popupbuildrebond_funcs.cpp
+  popupbuildtransmute_funcs.cpp
   popupcellangles_funcs.cpp
   popupcelllengths_funcs.cpp
   popupcellmatrix_funcs.cpp
-  popupgrow_funcs.cpp
-  popuprebond_funcs.cpp
-  popupresetview_funcs.cpp
-  popuptransmute_funcs.cpp
+  popupmeasureangle_funcs.cpp
+  popupmeasureclear_funcs.cpp
+  popupmeasuredistance_funcs.cpp
+  popupmeasuretorsion_funcs.cpp
+  popuptransformdistance_funcs.cpp
+  popupviewreset_funcs.cpp
   pores_funcs.cpp
   position_funcs.cpp
   prefs_funcs.cpp
