@@ -84,7 +84,7 @@ int main(int argc, char* argv[])
 	MrAten.combinationRules().regenerateEquations();
 	
 	/* Parse program arguments - returns -1 for failure, 0 for quit, or 1 for success */
-	if (!MrAten.parseCli(argc,argv)) return -1;
+	if (MrAten.parseCli(argc,argv) != 1) return -1;
 
 	/* Enter the correct program mode */
 	int result = 0;
@@ -100,6 +100,9 @@ int main(int argc, char* argv[])
 
 			/* Show the main window */
 			mainWindow.initialUpdateAndShow();
+
+			// Tell Messenger to stop printing to stdout
+			Messenger::setPrintToConsole(false);
 
 			/* Enter Qt's main events loop */
 			result =  app.exec();
@@ -119,6 +122,9 @@ int main(int argc, char* argv[])
 
 			/* Show the main window */
 			mainWindow.initialUpdateAndShow();
+
+			// Tell Messenger to stop printing to stdout
+			Messenger::setPrintToConsole(false);
 
 			/* Enter Qt's main events loop */
 			result =  app.exec();

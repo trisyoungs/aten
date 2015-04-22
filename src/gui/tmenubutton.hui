@@ -47,6 +47,8 @@ class TMenuButtonPopupWidget : public QWidget
 	TMenuButtonPopupWidget(TMenuButton* parent);
 	// Show popup, updating any controls as necessary beforehand
 	virtual void popup() = 0;
+	// Call named method associated to popup
+	virtual bool callMethod(QString methodName) = 0;
 
 
 	/*
@@ -84,6 +86,14 @@ class TMenuButton : public QToolButton
 	void setPopupWidget(TMenuButtonPopupWidget* widget, bool instantPopup = false);
 	// Return popup widget set for button
 	TMenuButtonPopupWidget* popupWidget();
+	// Call named method in associated popup widget
+	bool callPopupMethod(QString methodName)
+	{
+		if (popupWidget_) return popupWidget_->callMethod(methodName);
+		else printf("No popup set on button with text '%s', so method '%s' cannot be called.\n", qPrintable(text()), qPrintable(methodName));
+
+		return false;
+	}
 	// Notify button that popup is done
 	void popupDone();
 

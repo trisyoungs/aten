@@ -445,7 +445,7 @@ class AtenWindow : public QMainWindow
 	public:
 	// Update context menu
 	void updateContextMenu();
-	// Call the atompopup menu
+	// Call the atom context menu
 	void callContextMenu(Atom*, int, int);
 
 

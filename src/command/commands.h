@@ -561,8 +561,11 @@ class Commands
 		Mirror,
 		Reorient,
 		SetAngle,
+		SetAngles,
 		SetDistance,
+		SetDistances,
 		SetTorsion,
+		SetTorsions,
 		Translate,
 		TranslateAtom,
 		TranslateCell,
@@ -1018,8 +1021,11 @@ class Commands
 	bool function_Mirror(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_Reorient(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_SetAngle(CommandNode* c, Bundle& obj, ReturnValue& rv);
+	bool function_SetAngles(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_SetDistance(CommandNode* c, Bundle& obj, ReturnValue& rv);
+	bool function_SetDistances(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_SetTorsion(CommandNode* c, Bundle& obj, ReturnValue& rv);
+	bool function_SetTorsions(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_Translate(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_TranslateAtom(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_TranslateCell(CommandNode* c, Bundle& obj, ReturnValue& rv);

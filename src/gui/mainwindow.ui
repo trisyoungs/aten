@@ -69,7 +69,7 @@
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>3</number>
+       <number>2</number>
       </property>
       <property name="usesScrollButtons">
        <bool>true</bool>
@@ -2258,7 +2258,7 @@
              </size>
             </property>
             <property name="toolTip">
-             <string>Draw atoms and bonds as tubes</string>
+             <string>Measure bond distances of clicked atoms</string>
             </property>
             <property name="text">
              <string>Distance</string>
@@ -2312,7 +2312,7 @@
              </size>
             </property>
             <property name="toolTip">
-             <string>Draw atoms and bonds as tubes</string>
+             <string>Measure torsion angles of clicked atoms</string>
             </property>
             <property name="text">
              <string>Torsion</string>
@@ -2359,7 +2359,7 @@
              </size>
             </property>
             <property name="toolTip">
-             <string>Draw atoms and bonds as tubes</string>
+             <string>Measure bond angles of clicked atoms</string>
             </property>
             <property name="text">
              <string>Angle</string>
@@ -2493,7 +2493,7 @@
              </size>
             </property>
             <property name="toolTip">
-             <string>Draw atoms and bonds as tubes</string>
+             <string>Set torsions in the current selection</string>
             </property>
             <property name="text">
              <string>Torsion</string>
@@ -2550,7 +2550,7 @@
              </size>
             </property>
             <property name="toolTip">
-             <string>Draw atoms and bonds as tubes</string>
+             <string>Set bond distances in the current selection</string>
             </property>
             <property name="text">
              <string>Distance</string>
@@ -2597,7 +2597,7 @@
              </size>
             </property>
             <property name="toolTip">
-             <string>Draw atoms and bonds as tubes</string>
+             <string>Set bond angles in the current selection</string>
             </property>
             <property name="text">
              <string>Angle</string>
