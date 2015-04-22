@@ -53,6 +53,14 @@ void CellLengthsPopup::popup()
 	refreshing_ = false;
 }
 
+// Call named method associated to popup
+bool CellLengthsPopup::callMethod(QString methodName)
+{
+	if (methodName == "TEST") return true;
+	else printf("No method called '%s' is available in this popup.\n", qPrintable(methodName));
+	return false;
+}
+
 /*
  * Widget Functions
  */

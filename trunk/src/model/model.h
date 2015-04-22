@@ -375,6 +375,8 @@ class Model : public ListItem<Model>
 	void markSelectedAtoms();
 	// Select marked atoms
 	void selectMarkedAtoms();
+	// Put selected atom in specified array
+	bool selectedAtoms(int nAtoms, Atom** array);
 	// Invert current atom selection
 	void selectionInvert(bool markOnly = false);
 	// Delete current atom selection

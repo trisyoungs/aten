@@ -37,7 +37,19 @@ MeasureClearPopup::MeasureClearPopup(AtenWindow& parent, TMenuButton* buttonPare
 // Show popup, updating any controls as necessary beforehand
 void MeasureClearPopup::popup()
 {
+	refreshing_ = true;
+
 	show();
+
+	refreshing_ = false;
+}
+
+// Call named method associated to popup
+bool MeasureClearPopup::callMethod(QString methodName)
+{
+	if (methodName == "TEST") return true;
+	else printf("No method called '%s' is available in this popup.\n", qPrintable(methodName));
+	return false;
 }
 
 /*

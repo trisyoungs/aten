@@ -37,6 +37,8 @@ GrowPopup::GrowPopup(AtenWindow& parent, TMenuButton* buttonParent) : TMenuButto
 // Show popup, updating any controls as necessary beforehand
 void GrowPopup::popup()
 {
+	refreshing_ = true;
+
 	switch (parent_.ui.MainView->buildGeometry())
 	{
 		case (Atom::LinearGeometry):
@@ -64,7 +66,18 @@ void GrowPopup::popup()
 			printf("Warning: Viewer has odd atom geometry set for build (%i)\n", parent_.ui.MainView->buildGeometry());
 			break;
 	}
+
 	show();
+
+	refreshing_ = false;
+}
+
+// Call named method associated to popup
+bool GrowPopup::callMethod(QString methodName)
+{
+	if (methodName == "TEST") return true;
+	else printf("No method called '%s' is available in this popup.\n", qPrintable(methodName));
+	return false;
 }
 
 /*

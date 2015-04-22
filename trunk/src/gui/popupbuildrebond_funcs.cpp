@@ -37,10 +37,22 @@ RebondPopup::RebondPopup(AtenWindow& parent, TMenuButton* buttonParent) : TMenuB
 // Show popup, updating any controls as necessary beforehand
 void RebondPopup::popup()
 {
+	refreshing_ = true;
+
 	ui.ToleranceSpin->setValue(prefs.bondTolerance());
 	ui.ToleranceDial->setValue(int(prefs.bondTolerance()*1000.0));
 
 	show();
+
+	refreshing_ = false;
+}
+
+// Call named method associated to popup
+bool RebondPopup::callMethod(QString methodName)
+{
+	if (methodName == "TEST") return true;
+	else printf("No method called '%s' is available in this popup.\n", qPrintable(methodName));
+	return false;
 }
 
 /*

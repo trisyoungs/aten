@@ -37,7 +37,19 @@ ResetViewPopup::ResetViewPopup(AtenWindow& parent, TMenuButton* buttonParent) : 
 // Show popup, updating any controls as necessary beforehand
 void ResetViewPopup::popup()
 {
+	refreshing_ = true;
+
 	show();
+
+	refreshing_ = false;
+}
+
+// Call named method associated to popup
+bool ResetViewPopup::callMethod(QString methodName)
+{
+	if (methodName == "TEST") return true;
+	else printf("No method called '%s' is available in this popup.\n", qPrintable(methodName));
+	return false;
 }
 
 /*

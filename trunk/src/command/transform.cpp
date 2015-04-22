@@ -307,9 +307,11 @@ bool Commands::function_Reorient(CommandNode* c, Bundle& obj, ReturnValue& rv)
 		Messenger::print("Target matrix:");
 		target.print();
 	}
+
 	// Generate necessary rotation matrix
 	target = target.transpose();
 	Matrix rotmat = target * source;
+
 	// Perform transformation
 	obj.rs()->beginUndoState("Reorient %i atom(s)", obj.rs()->nSelected());
 	obj.rs()->matrixTransformSelection(o, rotmat);
@@ -341,27 +343,118 @@ bool Commands::function_SetAngle(CommandNode* c, Bundle& obj, ReturnValue& rv)
 		Messenger::print("Atom 'k' given to 'setangle' is NULL.");
 		return false;
 	}
+
 	// Clear any current marked selection
 	obj.rs()->selectNone(true);
+
 	// Find bond (if any) between i and j
 	Bond* b = i->findBond(j);
+
 	// Perform mark-only tree select on atom j, excluding any bond to atom i
 	obj.rs()->selectTree(k, true, false, b);
+
 	// If atom 'i' is now marked, there is a cyclic route connecting the two atoms and we can't proceed
 	if (i->isSelected(true))
 	{
 		Messenger::print("Can't alter the angle of three atoms i-j-k where 'i' and 'k' exist in the same cyclic moiety, or are unbound and within the same fragment.");
 		return false;
 	}
+
 	// Get current angle between the three atoms
 	double angle = obj.rs()->angle(i,j,k);
+
 	// Get cross product of bond vectors to define rotation axis
 	Vec3<double> v = obj.rs()->cell()->mimVector(j,k) * obj.rs()->cell()->mimVector(j,i);
 	v.normalise();
 	double delta = c->argd(3) - angle;
+
 	obj.rs()->beginUndoState("Set angle between atoms");
 	obj.rs()->rotateSelectionVector(j->r(), v, delta, true);
 	obj.rs()->endUndoState();
+	return true;
+}
+
+// Set angles for all selected atoms
+bool Commands::function_SetAngles(CommandNode* c, Bundle& obj, ReturnValue& rv)
+{
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
+	rv.reset();
+
+	// Determine move type (0 = lowId, 1 = highId, 2 = i & k) and determine whether we are just nudging
+	double target = c->argd(0);
+	int moveType = 0;
+	if (c->hasArg(1))
+	{
+		if (c->argc(1) == "low") moveType = 0;
+		else if (c->argc(1) == "high") moveType = 1;
+		else if (c->argc(1) == "both") moveType = 2;
+		else Messenger::warn(QString("Move type for 'setAngles' unrecognised (%1) - defaulting to 'low'").arg(c->argc(1)));
+	}
+	bool nudge = c->hasArg(2) ? c->argb(2) : false;
+	if (nudge && (moveType == 2)) target *= 0.5;
+
+	// Start undo state
+	obj.rs()->beginUndoState("Set angles between atoms");
+
+	// Loop over selected atoms
+	Atom* i, *j, *k;
+	Refitem<Bond,int>* bi, *bk;
+	Bond* bji, *bjk;
+	Vec3<double> rotationVector;
+	double delta;
+	for (Refitem<Atom,int>* rj = obj.rs()->selection(); rj != NULL; rj = rj->next)
+	{
+		j = rj->item;
+
+		// Double loop over bonds on this atom
+		for (bi = j->bonds(); bi != NULL; bi = bi->next)
+		{
+			bji = bi->item;
+			i = bji->partner(j);
+			if (!i->isSelected()) continue;
+
+			// Inner loop
+			for (bk = bi->next; bk != NULL; bk = bk->next)
+			{
+				bjk = bk->item;
+				k = bji->partner(j);
+				if (!k->isSelected()) continue;
+
+				// Have found an angle... check for a cyclic route between i and k
+				// Clear any current marked selection
+				obj.rs()->selectNone(true);
+
+				// Perform mark-only tree select on atom k (or i), excluding the bond ji (or jk)
+				if (moveType == 0) obj.rs()->selectTree(k, true, false, bji);
+				else obj.rs()->selectTree(i, true, false, bjk);
+
+				// If atom 'i' is now marked, there is a cyclic route connecting the two atoms and we can't proceed
+				if (i->isSelected(true))
+				{
+					Messenger::print("Can't alter the angle of three atoms i-j-k (%i-%i-%i) where atoms 'i' and 'k' exist in the same cyclic moiety.", i->id()+1, j->id()+1, k->id()+1);
+					continue;
+				}
+
+				// Get angle delta, and define rotation axis
+				delta = nudge ? target : target - obj.rs()->angle(i,j,k);
+				rotationVector = obj.rs()->cell()->mimVector(j,k) * obj.rs()->cell()->mimVector(j,i);
+				rotationVector.normalise();
+
+				// Move current marked atoms (exactly which are marked depends on the moveType, but we can move the current selection regardless)
+				obj.rs()->rotateSelectionVector(j->r(), rotationVector, delta, true);
+				if (moveType == 2)
+				{
+					obj.rs()->selectNone(true);
+					obj.rs()->selectTree(k, true, false, bji);
+					obj.rs()->rotateSelectionVector(j->r(), rotationVector, -delta, true);
+				}
+			}
+		}
+	}
+
+	// End undostate
+	obj.rs()->endUndoState();
+
 	return true;
 }
 
@@ -382,18 +475,23 @@ bool Commands::function_SetDistance(CommandNode* c, Bundle& obj, ReturnValue& rv
 		Messenger::print("Atom 'j' given to 'setdistance' is NULL.");
 		return false;
 	}
+
 	// Clear any current marked selection
 	obj.rs()->selectNone(true);
+
 	// Find bond (if any) between i and j
 	Bond* b = i->findBond(j);
+
 	// Perform mark-only tree select on atom j, excluding any bond to atom i
 	obj.rs()->selectTree(j, true, false, b);
+
 	// If atom 'i' is now marked, there is a cyclic route connecting the two atoms and we can't proceed
 	if (i->isSelected(true))
 	{
 		Messenger::print("Can't alter the distance of two atoms i-j that exist in the same cyclic moiety, or are unbound and within the same fragment.");
 		return false;
 	}
+
 	// Grab the minimum image vector between the two atoms, and shift all those currently marked
 	Vec3<double> v = obj.rs()->cell()->mimVector(i,j);
 	double delta = c->argd(2) - v.magnitude();
@@ -402,6 +500,95 @@ bool Commands::function_SetDistance(CommandNode* c, Bundle& obj, ReturnValue& rv
 	obj.rs()->beginUndoState("Set distance between atoms");
 	obj.rs()->translateSelectionLocal(v, true);
 	obj.rs()->endUndoState();
+
+	return true;
+}
+
+// Set distances for all selected atoms
+bool Commands::function_SetDistances(CommandNode* c, Bundle& obj, ReturnValue& rv)
+{
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
+	rv.reset();
+
+	// Determine move type (0 = lowId, 1 = highId, 2 = i & k) and determine whether we are just nudging
+	double target = c->argd(0);
+	int moveType = 0;
+	if (c->hasArg(1))
+	{
+		if (c->argc(1) == "low") moveType = 0;
+		else if (c->argc(1) == "high") moveType = 1;
+		else if (c->argc(1) == "both") moveType = 2;
+		else Messenger::warn(QString("Move type for 'setDistances' unrecognised (%1) - defaulting to 'low'").arg(c->argc(1)));
+	}
+	bool nudge = c->hasArg(2) ? c->argb(2) : false;
+	if (nudge && (moveType == 2)) target *= 0.5;
+
+	printf("Nudge = %i\n", nudge);
+	// Start undo state
+	obj.rs()->beginUndoState("Set distances between atoms");
+
+	// Loop over selected atoms
+	Atom* i, *j, *order[2];
+	Refitem<Bond,int>* bi;
+	Bond* bij;
+	Vec3<double> translationVector;
+	double delta;
+	for (Refitem<Atom,int>* ri = obj.rs()->selection(); ri != NULL; ri = ri->next)
+	{
+		i = ri->item;
+
+		// Double loop over bonds on this atom
+		for (bi = i->bonds(); bi != NULL; bi = bi->next)
+		{
+			bij = bi->item;
+			j = bij->partner(i);
+			if (!j->isSelected()) continue;
+			if (i->id() < j->id()) continue;
+
+			// Put atoms into the 'order' array, reflecting the atom indices and moveType specified
+			if (((i->id() > j->id()) && (moveType == 1)) || ((i->id() < j->id()) && (moveType == 0))) order[0] = i;
+			else order[0] = j;
+			order[1] = order[0] == i ? j : i;
+			printf("0 = %i %s (to be moved)\n", order[0]->id(), Elements().name(order[0]->element()));
+			printf("1 = %i %s (to remain stationary)\n", order[1]->id(), Elements().name(order[1]->element()));
+
+			// Have found a bond... check for a cyclic route between i and j
+			// Clear any current marked selection
+			obj.rs()->selectNone(true);
+
+			// Perform mark-only tree select on atom in order[0], excluding the bond ji
+			obj.rs()->selectTree(order[0], true, false, bij);
+
+			// If atom in order[1] is now marked, there is a cyclic route connecting the two atoms and we can't proceed
+			if (order[1]->isSelected(true))
+			{
+				Messenger::print("Can't alter the distance of two atoms i-j (%i-%i) where atoms 'i' and 'j' exist in the same cyclic moiety.", i->id()+1, j->id()+1);
+				continue;
+			}
+
+			// Get distance delta, and define translation vector
+			translationVector = obj.rs()->cell()->mimVector(order[1], order[0]);
+			translationVector.print();
+			delta = nudge ? target : target - translationVector.magnitude();
+			if (moveType == 2) delta *= 0.5;
+			printf("Target = %f, Delta = %f\n", target, delta);
+			translationVector.normalise();
+			translationVector *= delta;
+
+			// Move current marked atoms (exactly which are marked depends on the moveType, but we can move the current selection regardless)
+			obj.rs()->translateSelectionLocal(translationVector, true);
+			if (moveType == 2)
+			{
+				obj.rs()->selectNone(true);
+				obj.rs()->selectTree(order[1], true, false, bij);
+				obj.rs()->translateSelectionLocal(-translationVector, true);
+			}
+		}
+	}
+
+	// End undostate
+	obj.rs()->endUndoState();
+
 	return true;
 }
 
@@ -434,28 +621,42 @@ bool Commands::function_SetTorsion(CommandNode* c, Bundle& obj, ReturnValue& rv)
 		Messenger::print("Atom 'l' given to 'settorsion' is NULL.");
 		return false;
 	}
+
 	// Clear any current marked selection
 	obj.rs()->selectNone(true);
+
 	// Find bond (if any) between j and k
 	Bond* b = j->findBond(k);
+
 	// Perform mark-only tree select on atom l, excluding any bond to atom i
 	obj.rs()->selectTree(l, true, false, b);
+
 	// If atom 'i' is now marked, there is a cyclic route connecting the two atoms and we can't proceed
 	if (i->isSelected(true))
 	{
 		Messenger::print("Can't alter the angle of four atoms i-j-k-l where 'i' or 'j' exists in the same cyclic moiety as 'k' or 'l', or are unbound and within the same fragment.");
 		return false;
 	}
+
 	// Get current torsion between the four atoms
 	double angle = obj.rs()->torsion(i,j,k,l);
+
 	// Rotation vector will be vector k->j
 	Vec3<double> v = obj.rs()->cell()->mimVector(k,j);
 	v.normalise();
 	double delta = c->argd(4) - angle;
+
 	obj.rs()->beginUndoState("Set torsion between atoms");
 	obj.rs()->rotateSelectionVector(j->r(), v, delta, true);
 	obj.rs()->endUndoState();
+
 	return true;
+}
+
+// Set torsions for all selected atoms
+bool Commands::function_SetTorsions(CommandNode* c, Bundle& obj, ReturnValue& rv)
+{
+	// ATEN2 TODO
 }
 
 // Translate current selection in local coordinates ('translate dx dy dz')

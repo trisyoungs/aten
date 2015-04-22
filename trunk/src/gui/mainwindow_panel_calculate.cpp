@@ -47,7 +47,4 @@ void AtenWindow::on_CalculateMeasureClearButton_clicked(bool checked)
 
 	// Update display
 	updateWidgets(AtenWindow::CanvasTarget);
-
-	// Hide popup
-	hide();
 }

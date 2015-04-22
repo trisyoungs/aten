@@ -219,6 +219,7 @@ bool CommandNode::initialise()
 bool CommandNode::run(Commands::Function func, const char* argList, ...)
 {
 	Messenger::enter("CommandNode::run");
+
 	// Local tree to contain commandnode and its arguments
 	Tree tree;
 
@@ -227,35 +228,40 @@ bool CommandNode::run(Commands::Function func, const char* argList, ...)
 	node.parent_ = &tree;
 
 	// Set arguments from supplied list
-	const char* c;
-	va_list vars;
-	va_start(vars, argList);
-	TreeNode* var = NULL;
-	for (c = &argList[0]; *c != '\0'; c++)
+	if (argList != NULL)
 	{
-		switch (*c)
+		const char* c;
+		va_list vars;
+		va_start(vars, argList);
+		TreeNode* var = NULL;
+		for (c = &argList[0]; *c != '\0'; c++)
 		{
-			case ('i'):
-				var = tree.addConstant(va_arg(vars, int));
-				break;
-			case ('d'):
-				var = tree.addConstant(va_arg(vars, double));
-				break;
-			case ('c'):
-			case ('s'):
-				var = tree.addConstant(va_arg(vars, const char* ));
-				break;
-			default:
-				printf("Invalid argument specifier '%c' in CommandNode::run.\n", *c);
-				var = NULL;
-				break;
+			switch (*c)
+			{
+				case ('i'):
+					var = tree.addConstant(va_arg(vars, int));
+					break;
+				case ('d'):
+					var = tree.addConstant(va_arg(vars, double));
+					break;
+				case ('c'):
+				case ('s'):
+					var = tree.addConstant(va_arg(vars, const char* ));
+					break;
+				default:
+					printf("Invalid argument specifier '%c' in CommandNode::run.\n", *c);
+					var = NULL;
+					break;
+			}
+			node.addArgument(var);
 		}
-		node.addArgument(var);
+		va_end(vars);
 	}
-	va_end(vars);
+
 	// Now, run the command...
 	ReturnValue rv;
 	bool result = node.execute(rv);
+
 	Messenger::exit("CommandNode::run");
 	return result;
 }

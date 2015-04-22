@@ -27,15 +27,18 @@
 
 void AtenWindow::on_TransformSetDistanceButton_clicked(bool checked)
 {
-	if (checked) ui.MainView->setSelectedMode(UserAction::MeasureDistanceAction);
+	// Call the set method in the popup
+	ui.TransformSetDistanceButton->callPopupMethod("set");
 }
 
 void AtenWindow::on_TransformSetAngleButton_clicked(bool checked)
 {
-	if (checked) ui.MainView->setSelectedMode(UserAction::MeasureAngleAction);
+	// Call the set method in the popup
+	ui.TransformSetAngleButton->callPopupMethod("set");
 }
 
 void AtenWindow::on_TransformSetTorsionButton_clicked(bool checked)
 {
-	if (checked) ui.MainView->setSelectedMode(UserAction::MeasureTorsionAction);
+	// Call the set method in the popup
+	ui.TransformSetTorsionButton->callPopupMethod("set");
 }

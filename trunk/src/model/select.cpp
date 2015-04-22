@@ -60,6 +60,27 @@ void Model::selectMarkedAtoms()
 	for (Refitem<Atom,int>* ri = marked_.first(); ri != NULL; ri = ri->next) selectAtom(ri->item);
 }
 
+// Put selected atom in specified array
+bool Model::selectedAtoms(int nAtoms, Atom** array)
+{
+	int n = 0;
+	for (Refitem<Atom,int>* ri = selection_.first(); ri != NULL; ri = ri->next)
+	{
+		array[n] = ri->item;
+		++n;
+		if (n == nAtoms) break;
+	}
+
+	// Did we get the requested number of Atom pointers?
+	if (n != nAtoms)
+	{
+		printf("Model::selectedAtoms() : Failed to get requested number of atoms (%i)\n", nAtoms);
+		return false;
+	}
+
+	return true;
+}
+
 // Select Atom
 void Model::selectAtom(Atom* i, bool markonly)
 {

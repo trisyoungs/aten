@@ -401,9 +401,11 @@ int Aten::parseCli(int argc, char *argv[])
 	argn = 0;
 	while (argn < (argc-1))
 	{
-		argn++;
+		++argn;
+
 		// Check for null argument
 		if (argv[argn][0] == '\0') continue;
+
 		// Check for a CLI argument (presence of '-')
 		if (argv[argn][0] == '-')
 		{
@@ -416,24 +418,36 @@ int Aten::parseCli(int argc, char *argv[])
 
 			// Is this a long or short option?
 			isShort = (argv[argn][1] != '-');
+			argText.clear();
 			if (isShort)
 			{
 				arg = &argv[argn][1];
-				argText.clear();
 				if ((argv[argn][1] != '\0') && (argv[argn][2] != '\0'))
 				{
 					isShort = false;
-					QStringList items = QString(&argv[argn][1]).split('=');
-					arg = items.at(0);
-					if (items.count() == 2) argText = items.at(1);
+					int equalsPos = QString(&argv[argn][2]).indexOf("=");
+					if (equalsPos != -1)
+					{
+						arg = QString(&argv[argn][2]).left(equalsPos);
+						argText = QString(&argv[argn][2]).remove(0, equalsPos+1);
+					}
+					else arg = &argv[argn][2];
 				}
 			}
 			else
 			{
-				QStringList items = QString(&argv[argn][2]).split('=');
-				arg = items.at(0);
-				if (items.count() == 2) argText = items.at(1);
+				printf("Long opt.\n");
+				int equalsPos = QString(&argv[argn][2]).indexOf("=");
+				if (equalsPos != -1)
+				{
+					arg = QString(&argv[argn][2]).left(equalsPos);
+					argText = QString(&argv[argn][2]).remove(0, equalsPos+1);
+				}
+				else arg = &argv[argn][2];
 			}
+			
+			printf("CLI ARG=[%s] TEXT=[%s]\n", qPrintable(arg), qPrintable(argText));
+			printf("IsEmpty = %i\n", argText.isEmpty());
 
 			// Search for option...
 			opt = (isShort ? Cli::cliSwitch(arg.at(0).toLatin1()) : Cli::cliSwitch(arg));
@@ -446,13 +460,17 @@ int Aten::parseCli(int argc, char *argv[])
 			}
 
 			// Check if an argument to the switch has been supplied...
-			if (argText != "") hasArg = true;
+			if (!argText.isEmpty()) hasArg = true;
 			else if ((argn < (argc-1)) && (argv[argn+1][0] != '-') && (cliSwitches[opt].argument != 0))
 			{
+				printf("jlkj\n");
 				hasArg = true;
 				argText = argv[++argn];
 			}
 			else hasArg = false;
+			printf("HasArg = %i [%s]\n", hasArg, qPrintable(argText));
+
+			printf("Switch = %i (%s) %i\n", opt, cliSwitches[opt].longOpt, cliSwitches[opt].argument);
 
 			// ...and whether it expects one
 			switch (cliSwitches[opt].argument)
@@ -694,6 +712,7 @@ int Aten::parseCli(int argc, char *argv[])
 				case (Cli::MapSwitch):
 					// Get the argument and parse it internally
 					parser.getArgsDelim(0, argText);
+					printf("ARGTEXT=[%s]\n", qPrintable(argText));
 					for (n=0; n<parser.nArgs(); n++)
 					{
 						items = parser.argc(n).split('=');

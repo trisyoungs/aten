@@ -60,3 +60,4 @@ Remove 'gui' keyword.
 Remove 'calcEnergy' optional args from scaleMolecules and scaleCell.
 Remove replaceChars (after command is removed).
 Remove frameCurrent* from Prefs accessors.
+Added SetAngles, SetDistances, and SetTorsions.

@@ -198,11 +198,7 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 	
 	
 	
-	
-	// -- From Geometry Dock Widget
-	uaButtons_.addButton(geometryWidget->ui.MeasureDistanceButton, UserAction::MeasureDistanceAction);
-	uaButtons_.addButton(geometryWidget->ui.MeasureAngleButton, UserAction::MeasureAngleAction);
-	uaButtons_.addButton(geometryWidget->ui.MeasureTorsionButton, UserAction::MeasureTorsionAction);
+
 	// -- From Position Dock Widget
 	uaButtons_.addButton(positionWidget->ui.ShiftPickVectorButton, UserAction::ShiftPickVectorAction);
 	// -- From Transform Dock Widget

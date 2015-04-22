@@ -45,6 +45,8 @@ class TransformDistancePopup : public TMenuButtonPopupWidget
 	Ui::TransformDistancePopup ui;
 	// Show popup, updating any controls as necessary beforehand
 	void popup();
+	// Call named method associated to popup
+	bool callMethod(QString methodName);
 
 
 	/*
@@ -55,10 +57,21 @@ class TransformDistancePopup : public TMenuButtonPopupWidget
 
 
 	/*
+	 * Local Variables
+	 */
+	private:
+	// Current distance (if two atoms are selected)
+	double currentDistance_;
+
+
+	/*
 	 * Widget Functions
 	 */
 	private slots:
-	//void on_SelectionButton_clicked(bool checked);
+	void on_CopyCurrentDistanceButton_clicked(bool checked);
+	void on_SetDistanceButton_clicked(bool checked);
+	void on_IncreaseDistanceButton_clicked(bool checked);
+	void on_DecreaseDistanceButton_clicked(bool checked);
 };
 
 #endif

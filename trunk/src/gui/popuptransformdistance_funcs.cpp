@@ -37,22 +37,74 @@ TransformDistancePopup::TransformDistancePopup(AtenWindow& parent, TMenuButton* 
 // Show popup, updating any controls as necessary beforehand
 void TransformDistancePopup::popup()
 {
+	refreshing_ = true;
+
+	// If there are exactly two atoms selected, set the label text and and Copy button status accordingly
+	Model* model = parent_.aten().currentModelOrFrame();
+	if (model)
+	{
+		setEnabled(true);
+
+		ui.CopyCurrentDistanceButton->setEnabled(model->nSelected() == 2);
+		if (model->nSelected() == 2)
+		{
+			Atom* atoms[2];
+			if (!model->selectedAtoms(2, atoms)) return;
+			currentDistance_ = model->distance(atoms[0], atoms[1]);
+			ui.DistanceLabel->setText(QString("%1 &#8491; (atoms %2-%3)").arg(currentDistance_).arg(atoms[0]->id()+1).arg(atoms[1]->id()+1));
+		}
+		else ui.DistanceLabel->setText("N/A");
+	}
+	else setEnabled(false);
+
 	show();
+
+	refreshing_ = false;
+}
+
+// Call named method associated to popup
+bool TransformDistancePopup::callMethod(QString methodName)
+{
+	if (methodName == "TEST") return true;
+	else if (methodName == "set") on_SetDistanceButton_clicked(false);
+	else printf("No method called '%s' is available in this popup.\n", qPrintable(methodName));
+	return false;
 }
 
 /*
  * Widget Functions
  */
 
-// void TransformDistancePopup::on_SelectionButton_clicked(bool checked)
-// {
-// 	// Run command
-// 	CommandNode::run(Commands::MeasureSelected, "i", 3);
-// 
-// 	// Update display
-// 	parent_.updateWidgets(AtenWindow::CanvasTarget);
-// 
-// 	// Hide popup
-// 	hide();
-// }
+void TransformDistancePopup::on_CopyCurrentDistanceButton_clicked(bool checked)
+{
+	ui.NewDistanceSpin->setValue(currentDistance_);
+}
 
+void TransformDistancePopup::on_SetDistanceButton_clicked(bool checked)
+{
+	if (ui.MoveTypeCombo->currentIndex() == 0) CommandNode::run(Commands::SetDistances, "dc", ui.NewDistanceSpin->value(), "low");
+	else if (ui.MoveTypeCombo->currentIndex() == 1) CommandNode::run(Commands::SetDistances, "dc", ui.NewDistanceSpin->value(), "high");
+	else CommandNode::run(Commands::SetDistances, "dc", ui.NewDistanceSpin->value(), "both");
+
+	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
+
+	hide();
+}
+
+void TransformDistancePopup::on_IncreaseDistanceButton_clicked(bool checked)
+{
+	if (ui.MoveTypeCombo->currentIndex() == 0) CommandNode::run(Commands::SetDistances, "dcb", ui.DeltaSpin->value(), "low", true);
+	else if (ui.MoveTypeCombo->currentIndex() == 1) CommandNode::run(Commands::SetDistances, "dcb", ui.DeltaSpin->value(), "high", true);
+	else CommandNode::run(Commands::SetDistances, "dcb", ui.DeltaSpin->value(), "both", true);
+
+	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
+}
+
+void TransformDistancePopup::on_DecreaseDistanceButton_clicked(bool checked)
+{
+	if (ui.MoveTypeCombo->currentIndex() == 0) CommandNode::run(Commands::SetDistances, "dcb", -ui.DeltaSpin->value(), "low", true);
+	else if (ui.MoveTypeCombo->currentIndex() == 1) CommandNode::run(Commands::SetDistances, "dcb", -ui.DeltaSpin->value(), "high", true);
+	else CommandNode::run(Commands::SetDistances, "dcb", -ui.DeltaSpin->value(), "both", true);
+
+	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
+}

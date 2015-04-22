@@ -45,6 +45,8 @@ class CellLengthsPopup : public TMenuButtonPopupWidget
 	Ui::CellLengthsPopup ui;
 	// Show popup, updating any controls as necessary beforehand
 	void popup();
+	// Call named method associated to popup
+	bool callMethod(QString methodName);
 
 
 	/*
