@@ -22,7 +22,7 @@
 #include "parser/atom.h"
 #include "parser/stepnode.h"
 #include "base/atom.h"
-#include "base/elements.h"
+#include "base/elementmap.h"
 #include "model/model.h"
 #include <string.h>
 
@@ -217,7 +217,7 @@ bool AtomVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex, 
 			rv.set(ptr->data());
 			break;
 		case (AtomVariable::ElementInfo):
-			rv.set(VTypes::ElementData, &Elements().el[ptr->element()]);
+			rv.set(VTypes::ElementData, Elements().element(ptr->element()));
 			break;
 		case (AtomVariable::F):
 			rv.set(ptr->f());
@@ -393,7 +393,7 @@ bool AtomVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newVal
 				Messenger::print("Invalid (NULL) element reference encountered while setting atom's element.");
 				result = false;
 			}
-			else if (&Elements().el[ptr->element()] != el)
+			else if (Elements().element(ptr->element()) != el)
 			{
 				if (ptrParent)
 				{

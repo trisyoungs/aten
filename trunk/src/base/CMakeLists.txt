@@ -13,7 +13,8 @@ add_library(base
   colourscalepoint.cpp
   datastore.cpp
   eigenvector.cpp
-  elements.cpp
+  element.cpp
+  elementmap.cpp
   forcefieldatom.cpp
   forcefieldbound.cpp
   grid.cpp
@@ -47,7 +48,8 @@ add_library(base
   colourscalepoint.h
   datastore.h
   eigenvector.h
-  elements.h
+  element.h
+  elementmap.h
   forcefieldatom.h
   forcefieldbound.h
   glyph.h

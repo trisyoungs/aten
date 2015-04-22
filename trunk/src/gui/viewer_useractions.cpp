@@ -128,7 +128,7 @@ void Viewer::renderUserActions(Model* source)
 		// Draw a wireframe sphere at the atoms position
 		style_i = (prefs.renderStyle() == Prefs::OwnStyle ? i->style() : prefs.renderStyle());
 		radius_i = prefs.atomStyleRadius(style_i);
-		if (style_i == Prefs::ScaledStyle) radius_i *= Elements().el[i->element()].atomicRadius;
+		if (style_i == Prefs::ScaledStyle) radius_i *= Elements().atomicRadius(i->element());
 		A.applyScaling(radius_i, radius_i, radius_i);
 		A *= modelTransformationMatrix_;
 		glLoadMatrixd(A.matrix());

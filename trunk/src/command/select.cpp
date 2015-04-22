@@ -255,7 +255,7 @@ bool Commands::function_DeSelectType(CommandNode* c, Bundle& obj, ReturnValue& r
 	{
 		// Store current number of selected atoms
 		int nselected = obj.rs()->nSelected();
-		obj.rs()->beginUndoState("Deselect %s by type (%s)", Elements().el[c->argz(0)].symbol, qPrintable(c->argc(1)));
+		obj.rs()->beginUndoState("Deselect %s by type (%s)", Elements().symbol(c->argz(0)), qPrintable(c->argc(1)));
 		int result = obj.rs()->selectType(c->argz(0), c->argc(1), false, true);
 		obj.rs()->endUndoState();
 		if (result != -1)
@@ -578,7 +578,7 @@ bool Commands::function_SelectType(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	{
 		// Store current number of selected atoms
 		int nselected = obj.rs()->nSelected();
-		obj.rs()->beginUndoState("Select %s by type (%s)", Elements().el[c->argz(0)].symbol, qPrintable(c->argc(1)));
+		obj.rs()->beginUndoState("Select %s by type (%s)", Elements().symbol(c->argz(0)), qPrintable(c->argc(1)));
 		int result = obj.rs()->selectType(c->argz(0), c->argc(1));
 		obj.rs()->endUndoState();
 		if (result != -1)

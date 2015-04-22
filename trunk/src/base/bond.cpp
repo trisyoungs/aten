@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "base/elements.h"
+#include "base/elementmap.h"
 #include "base/bond.h"
 #include "base/atom.h"
 #include "base/sysfunc.h"

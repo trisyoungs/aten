@@ -23,7 +23,7 @@
 #include "parser/stepnode.h"
 #include "base/bond.h"
 #include "math/constants.h"
-#include "base/elements.h"
+#include "base/elementmap.h"
 #include "model/model.h"
 #include <stdio.h>
 #include <stdlib.h>

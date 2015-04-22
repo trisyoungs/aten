@@ -213,10 +213,10 @@ bool AtenVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex, 
 					Messenger::print("Array index [%i] is out of range for 'elements' member.", arrayIndex);
 					result = false;
 				}
-				else rv.set(VTypes::ElementData, &Elements().el[arrayIndex]);
+				else rv.set(VTypes::ElementData, Elements().element(arrayIndex));
 				// Note: array index is not decreased by 1, since element 0 is 'XX'
 			}
-			else rv.set(VTypes::ElementData, &Elements().el[0]);
+			else rv.set(VTypes::ElementData, Elements().element(1));
 			break;
 		case (AtenVariable::Frame):
 			if (aten_->currentModel() == NULL) rv.set(VTypes::ModelData, NULL);
@@ -358,7 +358,7 @@ bool AtenVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 			break;
 		case (AtenVariable::FindElement):
 			el = Elements().find(node->argc(0));
-			if (el != 0) rv.set(VTypes::ElementData, &Elements().el[el]);
+			if (el != 0) rv.set(VTypes::ElementData, Elements().element(el));
 			else rv.set(VTypes::ElementData, NULL);
 			break;
 		default:

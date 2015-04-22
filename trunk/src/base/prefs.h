@@ -24,7 +24,7 @@
 
 #include "ff/forms.h"
 #include "math/doubleexp.h"
-#include "base/elements.h"
+#include "base/elementmap.h"
 #include "base/colourscale.h"
 #include "base/choice.h"
 #include "base/namespace.h"

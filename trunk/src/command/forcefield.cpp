@@ -116,7 +116,7 @@ bool Commands::function_ClearExpression(CommandNode* c, Bundle& obj, ReturnValue
 // Clear manual type mapping list ('clearmap')
 bool Commands::function_ClearMap(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	aten_.typeImportMap.clear();
+	Elements().clearMappings();
 	rv.reset();
 	return true;
 }
@@ -570,13 +570,9 @@ bool Commands::function_Map(CommandNode* c, Bundle& obj, ReturnValue& rv)
 
 			// Split into value/argument
 			QStringList items = parser.argc(n).split('=');
-			el = Elements().find(items.at(1), ElementMap::AlphaZMap);
+			el = Elements().z(items.at(1));
 			if (el == 0) Messenger::print("Unrecognised element '%s' in type map.", qPrintable(items.at(1)));
-			else
-			{
-				nm = aten_.typeImportMap.add();
-				nm->set(items.at(0), el);
-			}
+			else Elements().addMapping(el, items.at(0));
 		}
 	}
 	rv.reset();

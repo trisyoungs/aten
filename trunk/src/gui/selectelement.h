@@ -24,7 +24,7 @@
 
 #include "gui/ui_selectelement.h"
 #include "templates/reflist.h"
-#include "base/elements.h"
+#include "base/elementmap.h"
 #include "base/namespace.h"
 
 // Forward Declarations (Qt)

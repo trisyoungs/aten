@@ -39,6 +39,7 @@ SET(gui_MOC_HDRS
   popupcellangles.h
   popupcelllengths.h
   popupcellmatrix.h
+  popuptransformangle.h
   popuptransformdistance.h
   popupviewreset.h
   pores.h
@@ -105,6 +106,7 @@ SET(gui_UIS
   popupmeasureclear.ui
   popupmeasuredistance.ui
   popupmeasuretorsion.ui
+  popuptransformangle.ui
   popuptransformdistance.ui
   popupviewreset.ui
   pores.ui
@@ -174,6 +176,7 @@ set(gui_SRCS
   popupmeasureclear_funcs.cpp
   popupmeasuredistance_funcs.cpp
   popupmeasuretorsion_funcs.cpp
+  popuptransformangle_funcs.cpp
   popuptransformdistance_funcs.cpp
   popupviewreset_funcs.cpp
   pores_funcs.cpp

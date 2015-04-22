@@ -67,7 +67,7 @@ void PrimitiveSet::calculateAdjustments()
 	sphereAtomAdjustment_ = atomradius - atomradius*cos(theta);
 	for (i = 0; i<Elements().nElements(); ++i)
 	{
-		atomradius = prefs.atomStyleRadius(Prefs::ScaledStyle) * Elements().el[i].atomicRadius;
+		atomradius = prefs.atomStyleRadius(Prefs::ScaledStyle) * Elements().atomicRadius(i);
 		theta = asin(bondradius / atomradius);
 		scaledAtomAdjustments_[i] = (atomradius - atomradius*cos(theta));
 	}

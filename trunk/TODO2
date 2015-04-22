@@ -23,7 +23,7 @@ Crash if model is saved, then filters reloaded, then model is saved again (since
 In top-left corner of main window, have a black icon illustrating which mode is active (except for Interact).
 Instead of a separate AtenVariable, make Aten subclass Variable?
 Rename source files for parser/parser (grammar etc.) a la uChroma.
-Make ElementMap store reference to Aten, preventing passing of FFs, typeMapping data etc (and fix name-mapping).
+Make ElementMap store reference to Aten, preventing passing of FFs.
 Implement optional startup 'guide' or 'wizard' that will disable all controls on the GUI and explain what means what, highlighting them as appropriate.
 Scale molecule COM inverts coordinates??
 Reformulate Pattern::bondEnergy() and others into a separate class, since the Pattern class shouldn't really own them.

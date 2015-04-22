@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "base/elements.h"
+#include "base/elementmap.h"
 #include "base/forcefieldatom.h"
 #include "base/neta_parser.h"
 #include "parser/double.h"

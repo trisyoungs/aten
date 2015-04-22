@@ -303,7 +303,7 @@ void RenderGroup::createAtomsAndBonds(PrimitiveSet& primitiveSet, Model* source,
 		else
 		{
 			radius_i = aradius[style_i];
-			if (style_i == Prefs::ScaledStyle) radius_i *= Elements().el[i->element()].atomicRadius;
+			if (style_i == Prefs::ScaledStyle) radius_i *= Elements().atomicRadius(i->element());
 			A = atomTransform;
 			A.applyScaling(radius_i, radius_i, radius_i);
 			addTriangles(primitiveSet.atom(), A, colour_i);
