@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "base/elements.h"
+#include "base/element.h"
 #include "base/sysfunc.h"
 #include "ff/forcefield.h"
 #include "base/forcefieldatom.h"
@@ -67,7 +67,7 @@ const char* ElementMap::zMapType(ElementMap::ZMapType zm)
 */
 
 //	  Z	Mass  		Name         		Symbol			Group	Radius  RGBA		
-Element ElementMap::el[] = {
+const Element ElementMap::defaultElements_[] = {
 	{ 0,	0.000,		"Dummy","DUMMY",	"XX","XX",		0,	0.00,	{ 0.5,0.5,0.5,1.0 },
 		{ 0,0,0,0,0,0,0,0,0 },	{ 0,0,0,0,0,0,0,0,0 } },
 	{ 1,	1.008,		"Hydrogen","HYDROGEN",	"H","H",		1,	0.31,	{ 0.87,0.87,0.87,1.0 },
@@ -308,131 +308,47 @@ Element ElementMap::el[] = {
 		{ 32,32,32,32,32,32,32,32,32 },	{ 0,0,0,0,0,0,0,0,0 } }
 };
 
-// Set colour component of element
-void Element::setColour(int rgb, double value)
-{
-	colour[rgb] = value;
-}
-
-// Set colour component
-void Element::setColour(double r, double g, double b, double a)
-{
-	colour[0] = r;
-	colour[1] = g;
-	colour[2] = b;
-	colour[3] = a;
-}
-
-// Return colour in supplied vector
-void Element::copyColour(GLfloat* v) const
-{
-	v[0] = (GLfloat) colour[0];
-	v[1] = (GLfloat) colour[1];
-	v[2] = (GLfloat) colour[2];
-	v[3] = (GLfloat) colour[3];
-}
-
-// Copy the ambient colour of the element into the Vec4 provided
-void Element::copyColour(Vec4<GLfloat>& v) const
-{
-	v.x = (GLfloat) colour[0];
-	v.y = (GLfloat) colour[1];
-	v.z = (GLfloat) colour[2];
-	v.w = (GLfloat) colour[3];
-}
-
-/*
-// Element Map
-*/
-
 // Constructor
 ElementMap::ElementMap()
 {
 	// Determine number of defined elements, and double-check against MAXELEMENTS constant
-	nElements_ = sizeof(el) / sizeof(el[0]);
+	nElements_ = sizeof(defaultElements_) / sizeof(defaultElements_[0]);
 	if (nElements_ > MAXELEMENTS) printf("Warning - Number of internally-defined elements exceeds MAXELEMENTS constant.\n");
-	// Copy default element data to backup storage
-	defaultEl = new Element[nElements_];
-	int n,i;
-	for (i=0; i<nElements_; i++)
-	{
-		defaultEl[i].atomicRadius = el[i].atomicRadius;
-		for (n=0; n<4; ++n) defaultEl[i].colour[n] = el[i].colour[n];
-	}
+
+	// Copy default element data to current element array
+	elements_ = new Element[nElements_];
+	for (int n=0; n <nElements_; ++n) elements_[n] = defaultElements_[n];
+
 	// Create backup array while we're here as well
-	backupEl_ = new Element[nElements_];
+	backupElements_ = new Element[nElements_];
+
+	// Set default value for namemapping
+	mappings_.setDefaultValue(-1);
 }
 
 // Destructor
 ElementMap::~ElementMap()
 {
-	delete[] backupEl_;
-	delete[] defaultEl;
+	delete[] backupElements_;
+	delete[] elements_;
 }
+
+/*
+ * Element Data
+ */
 
 // Copy current element data to backup structure
 void ElementMap::backupData()
 {
-	int i,n;
-	for (i=0; i<nElements_; i++)
-	{
-		backupEl_[i].atomicRadius = el[i].atomicRadius;
-		for (n=0; n<4; ++n) backupEl_[i].colour[n] = el[i].colour[n];
-	}
+	for (int n=0; n <nElements_; ++n) backupElements_[n] = elements_[n];
 }
 
 // Copy backed up element data to actual element data
 void ElementMap::restoreData()
 {
-	int i,n;
-	for (i=0; i<nElements_; i++)
-	{
-		el[i].atomicRadius = backupEl_[i].atomicRadius;
-		for (n=0; n<4; ++n) el[i].colour[n] = backupEl_[i].colour[n];
-	}
+	for (int n=0; n <nElements_; ++n) elements_[n] = backupElements_[n];
 }
 
-// Return group number of atomic number 'i'
-int ElementMap::group(Atom* i)
-{
-	return group(i->element());
-}
-
-// Return atomic mass of atomic number 'i'
-double ElementMap::atomicMass(Atom* i)
-{
-	return atomicMass(i->element());
-}
-
-// Return name of atomic number 'i'
-const char* ElementMap::name(Atom* i)
-{
-	return name(i->element());
-}
-
-// Return symbol of atomic number 'i'
-const char* ElementMap::symbol(Atom* i)
-{
-	return symbol(i->element());
-}
-
-// Return effective radius of atomic number 'i'
-double ElementMap::atomicRadius(Atom* i)
-{
-	return atomicRadius(i->element());
-}
-
-// Return bond order penalty for TBO 'bo' of atomic number 'i'
-int ElementMap::bondOrderPenalty(Atom* i, int bo)
-{
-	return bondOrderPenalty(i->element(), bo);
-}
-
-// Return the colour of the element
-double* ElementMap::colour(Atom* i)
-{
-	return colour(i->element());
-}
 
 // Return number of defined elements
 int ElementMap::nElements() const
@@ -440,76 +356,35 @@ int ElementMap::nElements() const
 	return nElements_;
 }
 
-// Return group number of atomic number 'i'
-int ElementMap::group(int i) const
+// Return pointer to specified element
+Element* ElementMap::element(int z)
 {
-	return el[i].group;
+	if ((z < 0) || (z > nElements_))
+	{
+		Messenger::error("ElementMap::element() : Atomic number %i is out of range.\n", z);
+		return &elements_[0];
+	}
+	return &elements_[z];
 }
 
-// Return atomic mass of atomic number 'i'
-double ElementMap::atomicMass(int i) const
+// Clear all name mappings
+void ElementMap::clearMappings()
 {
-	return el[i].atomicMass;
+	mappings_.clear();
 }
 
-// Return name of atomic number 'i'
-const char* ElementMap::name(int i) const
+// Add name to import map
+void ElementMap::addMapping(int element, QString name)
 {
-	return el[i].name;
+	mappings_.add(name, element);
 }
 
-// Return symbol of atomic number 'i'
-const char* ElementMap::symbol(int i) const
+// Return Z of specified element symbol
+int ElementMap::z(QString symbol) const
 {
-	return el[i].symbol;
-}
-
-// Set radius of atomic number 'i'
-void ElementMap::setAtomicRadius(int i, double r)
-{
-	el[i].atomicRadius = r;
-}
-
-// Return effective radius of atomic number 'i'
-double ElementMap::atomicRadius(int i) const
-{
-	return el[i].atomicRadius;
-}
-
-// Return bond order penalty for TBO 'bo' of atomic number 'i'
-int ElementMap::bondOrderPenalty(int i, int bo) const
-{
-	return el[i].bondOrderPenalty[bo];
-}
-
-// Return the ambient colour of the element
-double* ElementMap::colour(int i)
-{
-	return el[i].colour;
-}
-
-// Set ambient colour component of element
-void ElementMap::setColour(int i, int rgb, double value)
-{
-	el[i].colour[rgb] = (GLfloat) value;
-}
-
-// Set ambient colour component
-void ElementMap::setColour(int i, double r, double g, double b, double a)
-{
-	el[i].setColour(r, g, b, a);
-}
-
-// Return ambient colour in supplied vector
-void ElementMap::copyColour(int i, GLfloat* v) const
-{
-	el[i].copyColour(v);
-}
-
-// Copy the colour of the element into the Vec4 provided
-void ElementMap::copyColour(int i, Vec4<GLfloat>& v) const
-{
-	el[i].copyColour(v);
+	QString ucase = symbol.toUpper();
+	for (int n=0; n<nElements_; ++n) if (ucase == elements_[n].ucSymbol) return n;
+	return 0;
 }
 
 // Convert string from Z to element number
@@ -528,13 +403,13 @@ int ElementMap::numberToZ(QString number) const
 	if (isNumber)
 	{
 		// Check range of number before returning
-		int i = number.toInt();
-		if ((i < 0) || (i > nElements_))
+		int z = number.toInt();
+		if ((z < 0) || (z > nElements_))
 		{
-			Messenger::print("Warning: Converted element number is out of range (%i)", i);
-			i = 0;
+			Messenger::print("Warning: Converted element number is out of range (%i)", z);
+			z = 0;
 		}
-		return i;
+		return z;
 	}
 	else return -1;
 }
@@ -552,7 +427,7 @@ int ElementMap::alphaToZ(QString alpha) const
 		else if (alpha.at(n).isLower()) stripped += alpha.at(n).toUpper();
 		else if (alpha[n] == '_') break;
 	}
-	for (n=0; n<nElements_; ++n) if (stripped == el[n].ucSymbol) return n;
+	for (n=0; n<nElements_; ++n) if (stripped == elements_[n].ucSymbol) return n;
 	return -1;
 }
 
@@ -569,7 +444,7 @@ int ElementMap::firstAlphaToZ(QString alpha) const
 		else if (alpha.at(n).isLower()) stripped += alpha.at(n).toUpper();
 		else break;
 	}
-	for (n=0; n<nElements_; ++n) if (stripped == el[n].ucSymbol) return n;
+	for (n=0; n<nElements_; ++n) if (stripped == elements_[n].ucSymbol) return n;
 	return -1;
 }
 
@@ -586,7 +461,7 @@ int ElementMap::singleAlphaToZ(QString alpha) const
 		else if (alpha.at(n).isLower()) { stripped += alpha.at(n).toUpper(); break; }
 		else break;
 	}
-	for (n=0; n<nElements_; ++n) if (stripped == el[n].ucSymbol) return n;
+	for (n=0; n<nElements_; ++n) if (stripped == elements_[n].ucSymbol) return n;
 	return -1;
 }
 
@@ -602,7 +477,7 @@ int ElementMap::nameToZ(QString alpha) const
 		else if (alpha.at(n).isLower()) stripped += alpha.at(n).toUpper();
 		else if (alpha.at(n) == '_') break;
 	}
-	for (n=0; n<nElements_; ++n) if (stripped == el[n].ucName) return n;
+	for (n=0; n<nElements_; ++n) if (stripped == elements_[n].ucName) return n;
 	return -1;
 }
 
@@ -634,10 +509,9 @@ int ElementMap::find(QString query, ElementMap::ZMapType zmt, Forcefield* firstF
 		return 0;
 	}
 
-	// Attempt conversion of the string first from the users type list
-	NameMap<int>* nm;
-// 	for (nm = aten.typeImportMap.first(); nm != NULL; nm = nm->next)  ATEN2 TODO
-// 		if (strcmp(nm->name(),rv.asString()) == 0) break;
+	// Attempt conversion of the string first from any defined mappings
+	result = mappings_.data(query);
+	if (result != -1) return result;
 	
 	// Convert the query string according to the specified rule
 	switch (zmt == ElementMap::nZMapTypes ? prefs.zMapType() : zmt)
@@ -687,4 +561,221 @@ int ElementMap::find(QString query, ElementMap::ZMapType zmt, Forcefield* firstF
 	}
 	Messenger::exit("ElementMap::find");
 	return ((result == -1) ? 0 : result);
+}
+
+/*
+ * Data by Z
+ */
+
+// Return group number of atomic number 'z'
+int ElementMap::group(int z) const
+{
+	if ((z < 0) || (z > nElements_))
+	{
+		Messenger::error("ElementMap::group() : Atomic number %i is out of range.\n", z);
+		return -1;
+	}
+	return elements_[z].group;
+}
+
+// Return atomic mass of atomic number 'z'
+double ElementMap::atomicMass(int z) const
+{
+	if ((z < 0) || (z > nElements_))
+	{
+		Messenger::error("ElementMap::atomicMass() : Atomic number %i is out of range.\n", z);
+		return 0.0;
+	}
+	return elements_[z].atomicMass;
+}
+
+// Return name of atomic number 'z'
+const char* ElementMap::name(int z) const
+{
+	if ((z < 0) || (z > nElements_))
+	{
+		Messenger::error("ElementMap::name() : Atomic number %i is out of range.\n", z);
+		return "NULL";
+	}
+	return elements_[z].name;
+}
+
+// Return symbol of atomic number 'z'
+const char* ElementMap::symbol(int z) const
+{
+	if ((z < 0) || (z > nElements_))
+	{
+		Messenger::error("ElementMap::symbol() : Atomic number %i is out of range.\n", z);
+		return "NULL";
+	}
+	return elements_[z].symbol;
+}
+
+// Set radius of atomic number 'z'
+void ElementMap::setAtomicRadius(int z, double r)
+{
+	if ((z < 0) || (z > nElements_))
+	{
+		Messenger::error("ElementMap::setAtomicRadius() : Atomic number %i is out of range.\n", z);
+		return;
+	}
+	elements_[z].atomicRadius = r;
+}
+
+// Return effective radius of atomic number 'z'
+double ElementMap::atomicRadius(int z) const
+{
+	if ((z < 0) || (z > nElements_))
+	{
+		Messenger::error("ElementMap::atomicRadius() : Atomic number %i is out of range.\n", z);
+		return 0.0;
+	}
+	return elements_[z].atomicRadius;
+}
+
+// Return whether radius has changed for ztomic number 'z'
+bool ElementMap::radiusHasChanged(int z) const
+{
+	if ((z < 0) || (z > nElements_))
+	{
+		Messenger::error("ElementMap::radiusHasChanged() : Atomic number %i is out of range.\n", z);
+		return false;
+	}
+	return (fabs(elements_[z].atomicRadius-defaultElements_[z].atomicRadius) > 1.0e-5);
+}
+
+// Return bond order penalty for TBO 'bo' of atomic number 'z'
+int ElementMap::bondOrderPenalty(int z, int bo) const
+{
+	if ((z < 0) || (z > nElements_))
+	{
+		Messenger::error("ElementMap::bondOrderPenalty() : Atomic number %i is out of range.\n", z);
+		return 0;
+	}
+	return elements_[z].bondOrderPenalty[bo];
+}
+
+// Return the ambient colour of the element
+double* ElementMap::colour(int z)
+{
+	if ((z < 0) || (z > nElements_))
+	{
+		Messenger::error("ElementMap::colour() : Atomic number %i is out of range.\n", z);
+		static double dummyColour[4] = { 0.0, 0.0, 0.0, 1.0 };
+		return dummyColour;
+	}
+	return elements_[z].colour;
+}
+
+// Set ambient colour component of element
+void ElementMap::setColour(int z, int rgb, double value)
+{
+	if ((z < 0) || (z > nElements_))
+	{
+		Messenger::error("ElementMap::setColour() : Atomic number %i is out of range.\n", z);
+		return;
+	}
+	elements_[z].colour[rgb] = (GLfloat) value;
+}
+
+// Set ambient colour component
+void ElementMap::setColour(int z, double r, double g, double b, double a)
+{
+	if ((z < 0) || (z > nElements_))
+	{
+		Messenger::error("ElementMap::setColour() : Atomic number %i is out of range.\n", z);
+		return;
+	}
+	elements_[z].setColour(r, g, b, a);
+}
+
+// Copy the colour of the element into the GLfloat array provided
+void ElementMap::copyColour(int z, GLfloat* v) const
+{
+	if ((z < 0) || (z > nElements_))
+	{
+		Messenger::error("ElementMap::copyColour() : Atomic number %i is out of range.\n", z);
+		return;
+	}
+	elements_[z].copyColour(v);
+}
+
+// Copy the colour of the element into the double array provided
+void ElementMap::copyColour(int z, double* v) const
+{
+	if ((z < 0) || (z > nElements_))
+	{
+		Messenger::error("ElementMap::copyColour() : Atomic number %i is out of range.\n", z);
+		return;
+	}
+	elements_[z].copyColour(v);
+}
+
+// Copy the colour of the element into the Vec4 provided
+void ElementMap::copyColour(int z, Vec4<GLfloat>& v) const
+{
+	if ((z < 0) || (z > nElements_))
+	{
+		Messenger::error("ElementMap::copyColour() : Atomic number %i is out of range.\n", z);
+		return;
+	}
+	elements_[z].copyColour(v);
+}
+
+// Return whether colour of specified element has changed from the default
+bool ElementMap::colourHasChanged(int z) const
+{
+	if ((z < 0) || (z > nElements_))
+	{
+		Messenger::error("ElementMap::colourHasChanged() : Atomic number %i is out of range.\n", z);
+		return false;
+	}
+	for (int n=0; n<4; ++n) if (fabs(elements_[z].colour[n]-defaultElements_[z].colour[n]) > 1.0e-5) return true;
+	return false;
+}
+
+/*
+ * Data by Atom*
+ */
+
+// Return group number of atomic number 'z'
+int ElementMap::group(Atom* i)
+{
+	return group(i->element());
+}
+
+// Return atomic mass of atomic number 'z'
+double ElementMap::atomicMass(Atom* i)
+{
+	return atomicMass(i->element());
+}
+
+// Return name of atomic number 'z'
+const char* ElementMap::name(Atom* i)
+{
+	return name(i->element());
+}
+
+// Return symbol of atomic number 'z'
+const char* ElementMap::symbol(Atom* i)
+{
+	return symbol(i->element());
+}
+
+// Return effective radius of atomic number 'z'
+double ElementMap::atomicRadius(Atom* i)
+{
+	return atomicRadius(i->element());
+}
+
+// Return bond order penalty for TBO 'bo' of atomic number 'z'
+int ElementMap::bondOrderPenalty(Atom* i, int bo)
+{
+	return bondOrderPenalty(i->element(), bo);
+}
+
+// Return the colour of the element
+double* ElementMap::colour(Atom* i)
+{
+	return colour(i->element());
 }

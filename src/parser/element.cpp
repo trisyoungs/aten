@@ -21,7 +21,7 @@
 
 #include "parser/element.h"
 #include "parser/stepnode.h"
-#include "base/elements.h"
+#include "base/elementmap.h"
 #include <string.h>
 
 ATEN_USING_NAMESPACE

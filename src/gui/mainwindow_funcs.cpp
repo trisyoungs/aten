@@ -49,6 +49,7 @@
 #include "gui/popupmeasureangle.h"
 #include "gui/popupmeasuredistance.h"
 #include "gui/popupmeasuretorsion.h"
+#include "gui/popuptransformangle.h"
 #include "gui/popuptransformdistance.h"
 #include "gui/popupviewreset.h"
 
@@ -190,7 +191,7 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 
 	// -- Transform Panel (Set)
 	ui.TransformSetDistanceButton->setPopupWidget(new TransformDistancePopup(*this, ui.TransformSetDistanceButton));
-// 	ui.TransformSetAngleButton->setPopupWidget(new TransformAnglePopup(*this, ui.TransformSetAngleButton));
+	ui.TransformSetAngleButton->setPopupWidget(new TransformAnglePopup(*this, ui.TransformSetAngleButton));
 // 	ui.TransformSetTorsionButton->setPopupWidget(new TransformTorsionPopup(*this, ui.TransformSetTorsionButton));	
 	
 	

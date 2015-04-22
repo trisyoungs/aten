@@ -387,17 +387,19 @@ bool Commands::function_SetAngles(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	{
 		if (c->argc(1) == "low") moveType = 0;
 		else if (c->argc(1) == "high") moveType = 1;
-		else if (c->argc(1) == "both") moveType = 2;
+		else if (c->argc(1) == "light") moveType = 2;
+		else if (c->argc(1) == "heavy") moveType = 3;
+		else if (c->argc(1) == "both") moveType = 4;
 		else Messenger::warn(QString("Move type for 'setAngles' unrecognised (%1) - defaulting to 'low'").arg(c->argc(1)));
 	}
 	bool nudge = c->hasArg(2) ? c->argb(2) : false;
-	if (nudge && (moveType == 2)) target *= 0.5;
+	if (nudge && (moveType == 4)) target *= 0.5;
 
 	// Start undo state
 	obj.rs()->beginUndoState("Set angles between atoms");
 
 	// Loop over selected atoms
-	Atom* i, *j, *k;
+	Atom* i, *j, *k, *order[2];
 	Refitem<Bond,int>* bi, *bk;
 	Bond* bji, *bjk;
 	Vec3<double> rotationVector;
@@ -417,19 +419,42 @@ bool Commands::function_SetAngles(CommandNode* c, Bundle& obj, ReturnValue& rv)
 			for (bk = bi->next; bk != NULL; bk = bk->next)
 			{
 				bjk = bk->item;
-				k = bji->partner(j);
+				k = bjk->partner(j);
 				if (!k->isSelected()) continue;
+
+				// Put atoms into the 'order' array, reflecting the atom indices and moveType specified
+				switch (moveType)
+				{
+					// Lowest ID
+					case (0):
+						order[0] = (i->id() < k->id() ? i : k);
+						break;
+					// Highest ID
+					case (1):
+						order[0] = (i->id() > k->id() ? i : k);
+						break;
+					// Lightest element
+					case (2):
+						order[0] = (Elements().atomicMass(i) < Elements().atomicMass(k) ? i : k);
+						break;
+					// Heaviest element
+					case (3):
+						order[0] = (Elements().atomicMass(i) > Elements().atomicMass(k) ? i : k);
+						break;
+					default:
+						order[0] = i;
+				}
+				order[1] = order[0] == i ? k : i;
 
 				// Have found an angle... check for a cyclic route between i and k
 				// Clear any current marked selection
 				obj.rs()->selectNone(true);
 
-				// Perform mark-only tree select on atom k (or i), excluding the bond ji (or jk)
-				if (moveType == 0) obj.rs()->selectTree(k, true, false, bji);
-				else obj.rs()->selectTree(i, true, false, bjk);
+				// Perform mark-only tree select on the first atom, excluding the bond ji (or jk)
+				obj.rs()->selectTree(order[0], true, false, order[0] == k ? bji : bjk);
 
 				// If atom 'i' is now marked, there is a cyclic route connecting the two atoms and we can't proceed
-				if (i->isSelected(true))
+				if (order[1]->isSelected(true))
 				{
 					Messenger::print("Can't alter the angle of three atoms i-j-k (%i-%i-%i) where atoms 'i' and 'k' exist in the same cyclic moiety.", i->id()+1, j->id()+1, k->id()+1);
 					continue;
@@ -437,16 +462,17 @@ bool Commands::function_SetAngles(CommandNode* c, Bundle& obj, ReturnValue& rv)
 
 				// Get angle delta, and define rotation axis
 				delta = nudge ? target : target - obj.rs()->angle(i,j,k);
+				if (moveType == 4) delta *= 0.5;
 				rotationVector = obj.rs()->cell()->mimVector(j,k) * obj.rs()->cell()->mimVector(j,i);
 				rotationVector.normalise();
 
 				// Move current marked atoms (exactly which are marked depends on the moveType, but we can move the current selection regardless)
-				obj.rs()->rotateSelectionVector(j->r(), rotationVector, delta, true);
-				if (moveType == 2)
+				obj.rs()->rotateSelectionVector(j->r(), rotationVector, -delta, true);
+				if (moveType == 4)
 				{
 					obj.rs()->selectNone(true);
-					obj.rs()->selectTree(k, true, false, bji);
-					obj.rs()->rotateSelectionVector(j->r(), rotationVector, -delta, true);
+					obj.rs()->selectTree(order[1], true, false, order[1] == k ? bji : bjk);
+					obj.rs()->rotateSelectionVector(j->r(), rotationVector, delta, true);
 				}
 			}
 		}
@@ -517,13 +543,14 @@ bool Commands::function_SetDistances(CommandNode* c, Bundle& obj, ReturnValue& r
 	{
 		if (c->argc(1) == "low") moveType = 0;
 		else if (c->argc(1) == "high") moveType = 1;
-		else if (c->argc(1) == "both") moveType = 2;
+		else if (c->argc(1) == "light") moveType = 2;
+		else if (c->argc(1) == "heavy") moveType = 3;
+		else if (c->argc(1) == "both") moveType = 4;
 		else Messenger::warn(QString("Move type for 'setDistances' unrecognised (%1) - defaulting to 'low'").arg(c->argc(1)));
 	}
 	bool nudge = c->hasArg(2) ? c->argb(2) : false;
-	if (nudge && (moveType == 2)) target *= 0.5;
+	if (nudge && (moveType == 4)) target *= 0.5;
 
-	printf("Nudge = %i\n", nudge);
 	// Start undo state
 	obj.rs()->beginUndoState("Set distances between atoms");
 
@@ -546,11 +573,28 @@ bool Commands::function_SetDistances(CommandNode* c, Bundle& obj, ReturnValue& r
 			if (i->id() < j->id()) continue;
 
 			// Put atoms into the 'order' array, reflecting the atom indices and moveType specified
-			if (((i->id() > j->id()) && (moveType == 1)) || ((i->id() < j->id()) && (moveType == 0))) order[0] = i;
-			else order[0] = j;
+			switch (moveType)
+			{
+				// Lowest ID
+				case (0):
+					order[0] = (i->id() < j->id() ? i : j);
+					break;
+				// Highest ID
+				case (1):
+					order[0] = (i->id() > j->id() ? i : j);
+					break;
+				// Lightest element
+				case (2):
+					order[0] = (Elements().atomicMass(i) < Elements().atomicMass(j) ? i : j);
+					break;
+				// Heaviest element
+				case (3):
+					order[0] = (Elements().atomicMass(i) > Elements().atomicMass(j) ? i : j);
+					break;
+				default:
+					order[0] = i;
+			}
 			order[1] = order[0] == i ? j : i;
-			printf("0 = %i %s (to be moved)\n", order[0]->id(), Elements().name(order[0]->element()));
-			printf("1 = %i %s (to remain stationary)\n", order[1]->id(), Elements().name(order[1]->element()));
 
 			// Have found a bond... check for a cyclic route between i and j
 			// Clear any current marked selection
@@ -562,22 +606,20 @@ bool Commands::function_SetDistances(CommandNode* c, Bundle& obj, ReturnValue& r
 			// If atom in order[1] is now marked, there is a cyclic route connecting the two atoms and we can't proceed
 			if (order[1]->isSelected(true))
 			{
-				Messenger::print("Can't alter the distance of two atoms i-j (%i-%i) where atoms 'i' and 'j' exist in the same cyclic moiety.", i->id()+1, j->id()+1);
+				Messenger::print("Can't alter the distance of two atoms i-j (%i-%i) where atoms 'i' and 'j' exist in the same cyclic moiety.", order[0]->id()+1, order[1]->id()+1);
 				continue;
 			}
 
 			// Get distance delta, and define translation vector
 			translationVector = obj.rs()->cell()->mimVector(order[1], order[0]);
-			translationVector.print();
 			delta = nudge ? target : target - translationVector.magnitude();
-			if (moveType == 2) delta *= 0.5;
-			printf("Target = %f, Delta = %f\n", target, delta);
+			if (moveType == 4) delta *= 0.5;
 			translationVector.normalise();
 			translationVector *= delta;
 
 			// Move current marked atoms (exactly which are marked depends on the moveType, but we can move the current selection regardless)
 			obj.rs()->translateSelectionLocal(translationVector, true);
-			if (moveType == 2)
+			if (moveType == 4)
 			{
 				obj.rs()->selectNone(true);
 				obj.rs()->selectTree(order[1], true, false, bij);

@@ -24,7 +24,7 @@
 #include "base/sysfunc.h"
 #include "base/forcefieldatom.h"
 #include "model/model.h"
-#include "base/elements.h"
+#include "base/elementmap.h"
 #include "base/namespace.h"
 
 ATEN_USING_NAMESPACE
@@ -762,7 +762,7 @@ void Atom::setColour(int n, double d)
 // Set custom colour from current atom element
 void Atom::setColourFromElement()
 {
-	for (int n=0; n<4; ++n) colour_[n] = Elements().el[element_].colour[n];
+	Elements().copyColour(element_, colour_);
 }
 
 // Return custom colour

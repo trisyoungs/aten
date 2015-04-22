@@ -350,18 +350,20 @@ void Model::atomSetColour(Atom* i, double r, double g, double b, double a)
 void Model::atomResetColour(Atom* i)
 {
 	// Grab new colour...
-	double newcol[4];
-	for (int n=0; n<4; ++n) newcol[n] = Elements().el[i->element()].colour[n];
+	double newColour[4];
+	Elements().copyColour(i->element(), newColour);
+
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
 		ColourEvent* newchange = new ColourEvent;
-		double* oldcol = i->colour();
-		newchange->set(i->id(), oldcol[0], oldcol[1], oldcol[2], oldcol[3], newcol[0], newcol[1], newcol[2], newcol[3]);
+		double* oldColour = i->colour();
+		newchange->set(i->id(), oldColour[0], oldColour[1], oldColour[2], oldColour[3], newColour[0], newColour[1], newColour[2], newColour[3]);
 		recordingState_->addEvent(newchange);
 	}
+
 	// Now set the colour....
-	i->setColour(newcol[0], newcol[1], newcol[2], newcol[3]);
+	i->setColour(newColour[0], newColour[1], newColour[2], newColour[3]);
 	logChange(Log::Style);
 }
 
@@ -369,14 +371,15 @@ void Model::atomResetColour(Atom* i)
 void Model::atomSetStyle(Atom* i, Prefs::DrawStyle ds)
 {
 	// Sets all atoms currently selected to have the drawing style specified
-	Prefs::DrawStyle oldstyle = i->style();
+	Prefs::DrawStyle oldStyle = i->style();
 	i->setStyle(ds);
 	logChange(Log::Style);
+
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
 		StyleEvent* newchange = new StyleEvent;
-		newchange->set(i->id(), oldstyle, ds);
+		newchange->set(i->id(), oldStyle, ds);
 		recordingState_->addEvent(newchange);
 	}
 }
@@ -399,6 +402,7 @@ void Model::translateAtom(Atom* target, Vec3<double> delta)
 {
 	target->r() += delta;
 	logChange(Log::Coordinates);
+
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
@@ -415,6 +419,7 @@ void Model::positionAtom(Atom* target, Vec3<double> newr)
 	delta = newr - target->r();
 	target->r() = newr;
 	logChange(Log::Coordinates);
+
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{

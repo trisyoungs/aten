@@ -152,6 +152,13 @@ void Model::unbondAtoms(Atom* i, Atom* j, Bond* bij)
 	Messenger::exit("Model::unbondAtoms");
 }
 
+// Return whether bond exists between specified atoms
+bool Model::bondExists(Atom* i, Atom* j)
+{
+	if ((i == NULL) || (j == NULL)) return false;
+	return i->findBond(j);
+}
+
 // Delete All Bonding
 void Model::clearBonding()
 {

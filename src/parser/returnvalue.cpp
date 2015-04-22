@@ -20,7 +20,7 @@
 */
 
 #include "parser/returnvalue.h"
-#include "base/elements.h"
+#include "base/elementmap.h"
 #include "base/sysfunc.h"
 #include "model/model.h"
 #include "ff/forcefield.h"
@@ -651,7 +651,7 @@ void *ReturnValue::asPointer(VTypes::DataType ptrtype, bool& success)
 					Messenger::print("Warning: Conversion of integer value %i does not correspond to a defined element. Returning '0' (undefined element 'XX').", el);
 					el = 0;
 				}
-				return &Elements().el[el];
+				return Elements().element(el);
 			}
 			else if (arraySize_ == -1)
 			{

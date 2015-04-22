@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>TransformDistancePopup</class>
- <widget class="QWidget" name="TransformDistancePopup">
+ <class>TransformAnglePopup</class>
+ <widget class="QWidget" name="TransformAnglePopup">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -22,7 +22,7 @@
    </font>
   </property>
   <property name="windowTitle">
-   <string>Transform Distance Popup</string>
+   <string>Transform Angle Popup</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <property name="margin">
@@ -37,7 +37,7 @@
       <number>2</number>
      </property>
      <item>
-      <widget class="QDoubleSpinBox" name="NewDistanceSpin">
+      <widget class="QDoubleSpinBox" name="NewAngleSpin">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
          <horstretch>0</horstretch>
@@ -51,17 +51,17 @@
         <double>1000.000000000000000</double>
        </property>
        <property name="singleStep">
-        <double>0.100000000000000</double>
+        <double>1.000000000000000</double>
        </property>
        <property name="value">
-        <double>1.080000000000000</double>
+        <double>109.500000000000000</double>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QLabel" name="label">
        <property name="text">
-        <string>New Distance</string>
+        <string>New Angle</string>
        </property>
        <property name="alignment">
         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
@@ -71,7 +71,7 @@
     </layout>
    </item>
    <item row="0" column="0">
-    <widget class="QToolButton" name="SetDistanceButton">
+    <widget class="QToolButton" name="SetAngleButton">
      <property name="minimumSize">
       <size>
        <width>56</width>
@@ -122,7 +122,7 @@
     </widget>
    </item>
    <item row="7" column="0">
-    <widget class="QToolButton" name="CopyCurrentDistanceButton">
+    <widget class="QToolButton" name="CopyCurrentAngleButton">
      <property name="minimumSize">
       <size>
        <width>56</width>
@@ -188,10 +188,10 @@
         <double>1000.000000000000000</double>
        </property>
        <property name="singleStep">
-        <double>0.100000000000000</double>
+        <double>1.000000000000000</double>
        </property>
        <property name="value">
-        <double>0.100000000000000</double>
+        <double>5.000000000000000</double>
        </property>
       </widget>
      </item>
@@ -208,7 +208,7 @@
     </layout>
    </item>
    <item row="3" column="0">
-    <widget class="QToolButton" name="DecreaseDistanceButton">
+    <widget class="QToolButton" name="DecreaseAngleButton">
      <property name="minimumSize">
       <size>
        <width>56</width>
@@ -252,7 +252,7 @@
     </widget>
    </item>
    <item row="2" column="0">
-    <widget class="QToolButton" name="IncreaseDistanceButton">
+    <widget class="QToolButton" name="IncreaseAngleButton">
      <property name="minimumSize">
       <size>
        <width>56</width>
@@ -296,7 +296,7 @@
     </widget>
    </item>
    <item row="7" column="1">
-    <widget class="QLabel" name="DistanceLabel">
+    <widget class="QLabel" name="AngleLabel">
      <property name="text">
       <string>N/A</string>
      </property>

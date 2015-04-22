@@ -1,6 +1,6 @@
 /*
-	*** Element definitions
-	*** src/base/elements.h
+	*** Element Map
+	*** src/base/elementmap.h
 	Copyright T. Youngs 2007-2015
 
 	This file is part of Aten.
@@ -27,7 +27,10 @@
 #else
 #include <GL/gl.h>
 #endif
+#include "base/element.h"
 #include "templates/vector4.h"
+#include "templates/list.h"
+#include "templates/namemap.h"
 #include "base/namespace.h"
 
 ATEN_BEGIN_NAMESPACE
@@ -35,48 +38,6 @@ ATEN_BEGIN_NAMESPACE
 // Forward Declarations (Aten)
 class Atom;
 class Forcefield;
-
-// Element
-class Element
-{
-	public:
-	// Z
-	int z;
-	// Mass of element
-	double atomicMass;
-	// Element name
-	const char* name;
-	// Uppercase element name
-	const char* ucName;
-	// Element symbol
-	const char* symbol;
-	// Uppercase Element symbol
-	const char* ucSymbol;
-	// Group position in periodic table
-	int group;
-	// Rough elemental radius (for bond calculation etc.)
-	double atomicRadius;
-	// Element colour
-	double colour[4];
-	// Numeric measure of 'penalties' for total bond orders 0 - 8
-	int bondOrderPenalty[9];
-	// Formal charges for bond orders 0 - 8
-	int formalCharges[9];
-
-
-	/*
-	 * Data by Z
-	 */
-	public:
-	// Set ambient colour component of element
-	void setColour(int rgb, double value);
-	// Set ambient colour of element
-	void setColour(double r, double g, double b, double a);
-	// Copy the ambient colour of the element into the array provided
-	void copyColour(GLfloat* v) const;
-	// Copy the ambient colour of the element into the Vec4 provided
-	void copyColour(Vec4<GLfloat>& v) const;
-};
 
 // Element map
 class ElementMap
@@ -90,7 +51,36 @@ class ElementMap
 	static ElementMap::ZMapType zMapType(QString s, bool reportError = false);
 	static const char* zMapType(ElementMap::ZMapType zm);
 
+	/*
+	 * Element Data
+	 */
 	private:
+	// Default element data
+	static const Element defaultElements_[];
+	// Current element data array
+	Element* elements_;
+	// Number of defined elements
+	int nElements_;
+	// Storage for copy of element data
+	Element* backupElements_;
+	// Element map name conversions to apply
+	NameMapList<int> mappings_;
+
+	public:
+	// Backup current data
+	void backupData();
+	// Restore default element values
+	void restoreData();
+	// Return number of defined elements
+	int nElements() const;
+	// Return pointer to specified element
+	Element* element(int z);
+	// Clear all name mappings
+	void clearMappings();
+	// Add name mapping
+	void addMapping(int element, QString names);
+	// Return Z of specified element symbol
+	int z(QString symbol) const;
 	// Convert string from Z to element number
 	int numberToZ(QString number) const;
 	// Convert string from alpha to element number
@@ -103,24 +93,8 @@ class ElementMap
 	int nameToZ(QString name) const;
 	// Convert string from fftype to element number
 	int ffToZ(QString s, Forcefield* firstFF) const;
-	// Number of defined elements
-	int nElements_;
-	// Storage for copy of element data
-	Element* backupEl_;
-	
-	public:
-	// Element data array
-	static Element el[];
-	// Default element data
-	Element* defaultEl;
-	// Backup current data
-	void backupData();
-	// Restore default element values
-	void restoreData();
 	// Return atomic number of element in string using supplied method (if specified)
 	int find(QString query, ElementMap::ZMapType zmt = ElementMap::AutoZMap, Forcefield* firstFF = NULL) const;
-	// Return number of defined elements
-	int nElements() const;
 
 
 	/*
@@ -128,29 +102,35 @@ class ElementMap
 	 */
 	public:
 	// Return periodic table group number
-	int group(int i) const;
-	// Return atomic mass of atomic number 'i'
-	double atomicMass(int i) const;
-	// Return name of atomic number 'i'
-	const char* name(int i) const;
-	// Return symbol of atomic number 'i'
-	const char* symbol(int i) const;
-	// Set radius of atomic number 'i'
-	void setAtomicRadius(int i, double r);
-	// Return effective radius of atomic number 'i'
-	double atomicRadius(int i) const;
-	// Return bond order penalty for TBO 'bo' of atomic number 'i'
-	int bondOrderPenalty(int i, int bo) const;
+	int group(int z) const;
+	// Return atomic mass of atomic number 'z'
+	double atomicMass(int z) const;
+	// Return name of atomic number 'z'
+	const char* name(int z) const;
+	// Return symbol of atomic number 'z'
+	const char* symbol(int z) const;
+	// Set radius of atomic number 'z'
+	void setAtomicRadius(int z, double r);
+	// Return effective radius of atomic number 'z'
+	double atomicRadius(int z) const;
+	// Return whether radius has changed for ztomic number 'z'
+	bool radiusHasChanged(int z) const;
+	// Return bond order penalty for TBO 'bo' of atomic number 'z'
+	int bondOrderPenalty(int z, int bo) const;
 	// Return the colour of the element
-	double* colour(int i);
-	// Copy the colour of the element into the array provided
-	void copyColour(int i, GLfloat* v) const;
-	// Copy the colour of the element into the Vec4 provided
-	void copyColour(int i, Vec4<GLfloat>& v) const;
+	double* colour(int z);
 	// Set colour component of element
-	void setColour(int i, int rgba, double value);
+	void setColour(int z, int rgba, double value);
 	// Set colour of element
-	void setColour(int i, double r, double g, double b, double a);
+	void setColour(int z, double r, double g, double b, double a);
+	// Copy the colour of the element into the GLfloat array provided
+	void copyColour(int z, GLfloat* v) const;
+	// Copy the colour of the element into the double array provided
+	void copyColour(int z, double* v) const;
+	// Copy the colour of the element into the Vec4 provided
+	void copyColour(int z, Vec4<GLfloat>& v) const;
+	// Return whether colour of specified element has changed from the default
+	bool colourHasChanged(int z) const;
 
 
 	/*

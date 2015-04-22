@@ -84,6 +84,8 @@ void TransformDistancePopup::on_SetDistanceButton_clicked(bool checked)
 {
 	if (ui.MoveTypeCombo->currentIndex() == 0) CommandNode::run(Commands::SetDistances, "dc", ui.NewDistanceSpin->value(), "low");
 	else if (ui.MoveTypeCombo->currentIndex() == 1) CommandNode::run(Commands::SetDistances, "dc", ui.NewDistanceSpin->value(), "high");
+	else if (ui.MoveTypeCombo->currentIndex() == 2) CommandNode::run(Commands::SetDistances, "dc", ui.NewDistanceSpin->value(), "light");
+	else if (ui.MoveTypeCombo->currentIndex() == 3) CommandNode::run(Commands::SetDistances, "dc", ui.NewDistanceSpin->value(), "heavy");
 	else CommandNode::run(Commands::SetDistances, "dc", ui.NewDistanceSpin->value(), "both");
 
 	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
@@ -93,18 +95,22 @@ void TransformDistancePopup::on_SetDistanceButton_clicked(bool checked)
 
 void TransformDistancePopup::on_IncreaseDistanceButton_clicked(bool checked)
 {
-	if (ui.MoveTypeCombo->currentIndex() == 0) CommandNode::run(Commands::SetDistances, "dcb", ui.DeltaSpin->value(), "low", true);
-	else if (ui.MoveTypeCombo->currentIndex() == 1) CommandNode::run(Commands::SetDistances, "dcb", ui.DeltaSpin->value(), "high", true);
-	else CommandNode::run(Commands::SetDistances, "dcb", ui.DeltaSpin->value(), "both", true);
+	if (ui.MoveTypeCombo->currentIndex() == 0) CommandNode::run(Commands::SetDistances, "dci", ui.DeltaSpin->value(), "low", 1);
+	else if (ui.MoveTypeCombo->currentIndex() == 1) CommandNode::run(Commands::SetDistances, "dci", ui.DeltaSpin->value(), "high", 1);
+	else if (ui.MoveTypeCombo->currentIndex() == 2) CommandNode::run(Commands::SetDistances, "dci", ui.DeltaSpin->value(), "light", 1);
+	else if (ui.MoveTypeCombo->currentIndex() == 3) CommandNode::run(Commands::SetDistances, "dci", ui.DeltaSpin->value(), "heavy", 1);
+	else CommandNode::run(Commands::SetDistances, "dci", ui.DeltaSpin->value(), "both", 1);
 
 	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
 }
 
 void TransformDistancePopup::on_DecreaseDistanceButton_clicked(bool checked)
 {
-	if (ui.MoveTypeCombo->currentIndex() == 0) CommandNode::run(Commands::SetDistances, "dcb", -ui.DeltaSpin->value(), "low", true);
-	else if (ui.MoveTypeCombo->currentIndex() == 1) CommandNode::run(Commands::SetDistances, "dcb", -ui.DeltaSpin->value(), "high", true);
-	else CommandNode::run(Commands::SetDistances, "dcb", -ui.DeltaSpin->value(), "both", true);
+	if (ui.MoveTypeCombo->currentIndex() == 0) CommandNode::run(Commands::SetDistances, "dci", -ui.DeltaSpin->value(), "low", 1);
+	else if (ui.MoveTypeCombo->currentIndex() == 1) CommandNode::run(Commands::SetDistances, "dci", -ui.DeltaSpin->value(), "high", 1);
+	else if (ui.MoveTypeCombo->currentIndex() == 2) CommandNode::run(Commands::SetDistances, "dci", -ui.DeltaSpin->value(), "light", 1);
+	else if (ui.MoveTypeCombo->currentIndex() == 3) CommandNode::run(Commands::SetDistances, "dci", -ui.DeltaSpin->value(), "heavy", 1);
+	else CommandNode::run(Commands::SetDistances, "dci", -ui.DeltaSpin->value(), "both", 1);
 
 	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
 }

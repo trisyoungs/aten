@@ -436,7 +436,6 @@ int Aten::parseCli(int argc, char *argv[])
 			}
 			else
 			{
-				printf("Long opt.\n");
 				int equalsPos = QString(&argv[argn][2]).indexOf("=");
 				if (equalsPos != -1)
 				{
@@ -445,9 +444,6 @@ int Aten::parseCli(int argc, char *argv[])
 				}
 				else arg = &argv[argn][2];
 			}
-			
-			printf("CLI ARG=[%s] TEXT=[%s]\n", qPrintable(arg), qPrintable(argText));
-			printf("IsEmpty = %i\n", argText.isEmpty());
 
 			// Search for option...
 			opt = (isShort ? Cli::cliSwitch(arg.at(0).toLatin1()) : Cli::cliSwitch(arg));
@@ -455,7 +451,7 @@ int Aten::parseCli(int argc, char *argv[])
 			// Check to see if we matched any of the known CLI switches
 			if (opt == Cli::nSwitchItems)
 			{
-				printf("Unrecognised command-line option '%s%s'.\n", isShort ? "-" : "--", qPrintable(arg));
+				Messenger::print("Unrecognised command-line option '%s%s'.", isShort ? "-" : "--", qPrintable(arg));
 				return -1;
 			}
 
@@ -463,14 +459,10 @@ int Aten::parseCli(int argc, char *argv[])
 			if (!argText.isEmpty()) hasArg = true;
 			else if ((argn < (argc-1)) && (argv[argn+1][0] != '-') && (cliSwitches[opt].argument != 0))
 			{
-				printf("jlkj\n");
 				hasArg = true;
 				argText = argv[++argn];
 			}
 			else hasArg = false;
-			printf("HasArg = %i [%s]\n", hasArg, qPrintable(argText));
-
-			printf("Switch = %i (%s) %i\n", opt, cliSwitches[opt].longOpt, cliSwitches[opt].argument);
 
 			// ...and whether it expects one
 			switch (cliSwitches[opt].argument)
@@ -514,7 +506,7 @@ int Aten::parseCli(int argc, char *argv[])
 				case (Cli::BatchSwitch):
 					if (programMode_ == Aten::ProcessMode)
 					{
-						printf("Error: --batch and --process options are mutually exclusive.\n");
+						Messenger::print("Error: --batch and --process options are mutually exclusive.");
 						return -1;
 					}
 					else if (programMode_ == Aten::ExportMode) programMode_ = Aten::BatchExportMode;
@@ -562,7 +554,7 @@ int Aten::parseCli(int argc, char *argv[])
 				case (Cli::ExportSwitch):
 					if (programMode_ == Aten::ProcessMode)
 					{
-						printf("Error: --export and --process options are mutually exclusive.\n");
+						Messenger::print("Error: --export and --process options are mutually exclusive.");
 						return -1;
 					}
 
@@ -599,7 +591,7 @@ int Aten::parseCli(int argc, char *argv[])
 						QStringList items = parser.argc(n).split('=');
 						if (items.count() != 2)
 						{
-							printf("Mangled exportmap value found: '%s'.\n", qPrintable(parser.argc(n)));
+							Messenger::print("Mangled exportmap value found: '%s'.", qPrintable(parser.argc(n)));
 							return -1;
 						}
 						typeExportMap.add(items.at(0), items.at(1));
@@ -648,7 +640,7 @@ int Aten::parseCli(int argc, char *argv[])
 					items = argText.split('=');
 					if (passedValues_.find(items.at(0)) != NULL)
 					{
-						printf("Error: Passed variable named '%s' has already been declared.\n", qPrintable(items.at(0)));
+						Messenger::print("Error: Passed variable named '%s' has already been declared.", qPrintable(items.at(0)));
 						return -1;
 					}
 					else if (opt == Cli::IntSwitch) addPassedValue(VTypes::IntegerData, qPrintable(items.at(0)), qPrintable(items.at(1)));
@@ -658,7 +650,7 @@ int Aten::parseCli(int argc, char *argv[])
 				// Enter interactive mode
 				case (Cli::InteractiveSwitch):
 					prompt.sprintf("Aten %s > ", ATENVERSION);
-					printf("Entering interactive mode...\n");
+					Messenger::print("Entering interactive mode...");
 					programMode_ = Aten::InteractiveMode;
 					do
 					{
@@ -676,7 +668,7 @@ int Aten::parseCli(int argc, char *argv[])
 					// Mutually exclusive with keeptypes
 					if  (prefs.keepTypes())
 					{
-						printf("Error: --keepnames and --keeptypes are mutually exclusive.\n");
+						Messenger::print("Error: --keepnames and --keeptypes are mutually exclusive.");
 						return -1;
 					}
 					prefs.setKeepNames(true);
@@ -686,7 +678,7 @@ int Aten::parseCli(int argc, char *argv[])
 					// Mutually exclusive with keepnames
 					if  (prefs.keepNames())
 					{
-						printf("Error: --keepnames and --keeptypes are mutually exclusive.\n");
+						Messenger::print("Error: --keepnames and --keeptypes are mutually exclusive.");
 						return -1;
 					}
 					prefs.setKeepTypes(true);
@@ -712,26 +704,21 @@ int Aten::parseCli(int argc, char *argv[])
 				case (Cli::MapSwitch):
 					// Get the argument and parse it internally
 					parser.getArgsDelim(0, argText);
-					printf("ARGTEXT=[%s]\n", qPrintable(argText));
 					for (n=0; n<parser.nArgs(); n++)
 					{
 						items = parser.argc(n).split('=');
 						if (items.count() != 2)
 						{
-							printf("Mangled map value found: '%s'.\n", qPrintable(parser.argc(n)));
+							Messenger::print("Mangled map value found: '%s'.", qPrintable(parser.argc(n)));
 							return -1;
 						}
-						el = Elements().find(items.at(1), ElementMap::AlphaZMap);
+						el = Elements().z(items.at(1));
 						if (el == 0)
 						{
-							printf("Unrecognised element '%s' in type map.\n", qPrintable(items.at(1)));
+							Messenger::print("Unrecognised element '%s' in type map.", qPrintable(items.at(1)));
 							return -1;
 						}
-						else
-						{
-							nmi = typeImportMap.add();
-							nmi->set(items.at(0), el);
-						}
+						else Elements().addMapping(el, items.at(0));
 					}
 					break;
 				// Create a new model
@@ -743,7 +730,6 @@ int Aten::parseCli(int argc, char *argv[])
 				case (Cli::NicknamesSwitch):
 					for (int ftype=0; ftype<FilterData::nFilterTypes; ++ftype)
 					{
-						printf("\n");
 						printValidNicknames( (FilterData::FilterType) ftype );
 					}
 					return -1;
@@ -780,7 +766,7 @@ int Aten::parseCli(int argc, char *argv[])
 				case (Cli::ProcessSwitch):
 					if ((programMode_ == Aten::ExportMode) || (programMode_ == Aten::BatchExportMode) || (programMode_ == Aten::BatchMode))
 					{
-						printf("Error: --process and --batch / --export options are mutually exclusive.\n");
+						printf("Error: --process and --batch / --export options are mutually exclusive.");
 						return -1;
 					}
 					else programMode_ = Aten::ProcessMode;
@@ -811,7 +797,7 @@ int Aten::parseCli(int argc, char *argv[])
 					// Check for a current model
 					if (current_.m == NULL)
 					{
-						printf("There is no current model to associate a trajectory to.\n");
+						Messenger::print("There is no current model to associate a trajectory to.");
 						return -1;
 					}
 					else
@@ -833,7 +819,7 @@ int Aten::parseCli(int argc, char *argv[])
 					break;
 				// Undefined option
 				default:
-					printf("Shoddy programming alert - CLI option has not been implemented.\n");
+					Messenger::print("Shoddy programming alert - CLI option has not been implemented.");
 					return -1;
 			}
 		}
@@ -897,21 +883,21 @@ int Aten::parseCli(int argc, char *argv[])
 // Usage help
 void Aten::printUsage() const
 {
-	printf("Usage: aten [options] [<model> ...]\n");
-	printf("\nProgram Options:\n");
+	Messenger::print("Usage: aten [options] [<model> ...]");
+	Messenger::print("Program Options:");
 	for (int n=0; n<Cli::nSwitchItems; n++)
 	{
 		if (cliSwitches[n].argument == 0)
 		{
-			if (cliSwitches[n].shortOpt != '\0') printf("\t-%c, --%s\n", cliSwitches[n].shortOpt, cliSwitches[n].longOpt);
-			else printf("\t--%s\n", cliSwitches[n].longOpt);
+			if (cliSwitches[n].shortOpt != '\0') Messenger::print("\t-%c, --%s", cliSwitches[n].shortOpt, cliSwitches[n].longOpt);
+			else Messenger::print("\t--%s", cliSwitches[n].longOpt);
 		}
 		else
 		{
-			if (cliSwitches[n].shortOpt != '\0') printf("\t-%c %s, --%s %s\n", cliSwitches[n].shortOpt, cliSwitches[n].argText, cliSwitches[n].longOpt, cliSwitches[n].argText);
-			else printf("\t--%s %s\n", cliSwitches[n].longOpt, cliSwitches[n].argText);
+			if (cliSwitches[n].shortOpt != '\0') Messenger::print("\t-%c %s, --%s %s", cliSwitches[n].shortOpt, cliSwitches[n].argText, cliSwitches[n].longOpt, cliSwitches[n].argText);
+			else Messenger::print("\t--%s %s", cliSwitches[n].longOpt, cliSwitches[n].argText);
 		}
-		printf("\t\t%s\n",cliSwitches[n].description);
+		Messenger::print("\t\t%s",cliSwitches[n].description);
 	}
 }
 
@@ -924,7 +910,7 @@ bool Aten::addPassedValue(VTypes::DataType type, QString name, QString value)
 	if (type == VTypes::IntegerData) var = new IntegerVariable(value.toInt(), true);
 	else if (type == VTypes::DoubleData) var = new DoubleVariable(value.toDouble(), true);
 	else if (type == VTypes::StringData) var = new StringVariable(value, true);
-	else printf("Internal Error: Don't know how to create a passed value of type '%s'.\n", VTypes::dataType(type));
+	else Messenger::error("Internal Error: Don't know how to create a passed value of type '%s'.", VTypes::dataType(type));
 	var->setName(name);
 	passedValues_.take(var, true);
 	return true;

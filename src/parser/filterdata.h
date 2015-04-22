@@ -29,7 +29,7 @@
 #include "templates/namemap.h"
 #include "templates/list.h"
 #include "templates/reflist.h"
-#include "base/elements.h"
+#include "base/elementmap.h"
 #include "base/lineparser.h"
 #include "base/namespace.h"
 

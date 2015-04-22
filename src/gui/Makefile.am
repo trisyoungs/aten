@@ -25,9 +25,9 @@ libtreegui_a_SOURCES = treegui.ui treegui_funcs.cpp
 
 libgui_a_SOURCES = icons.qrc ffeditor.ui loadmodel.ui prefs.ui progress.ui selectelement.ui selectfilter.ui selectpattern.ui selectvariable.ui mainwindow.ui
 
-libgui_a_SOURCES += popupbuildaddh.ui popupbuildgrow.ui popupbuildrebond.ui popupbuildtransmute.ui popupcellangles.ui popupcelllengths.ui popupcellmatrix.ui popupmeasureangle.ui popupmeasureclear.ui popupmeasuredistance.ui popupmeasuretorsion.ui popuptransformdistance.ui popupviewreset.ui
+libgui_a_SOURCES += popupbuildaddh.ui popupbuildgrow.ui popupbuildrebond.ui popupbuildtransmute.ui popupcellangles.ui popupcelllengths.ui popupcellmatrix.ui popupmeasureangle.ui popupmeasureclear.ui popupmeasuredistance.ui popupmeasuretorsion.ui popuptransformangle.ui popuptransformdistance.ui popupviewreset.ui
 
-libgui_a_SOURCES += popupbuildaddh_funcs.cpp popupbuildgrow_funcs.cpp popupbuildrebond_funcs.cpp popupbuildtransmute_funcs.cpp popupcellangles_funcs.cpp popupcelllengths_funcs.cpp popupcellmatrix_funcs.cpp popupmeasureangle_funcs.cpp popupmeasureclear_funcs.cpp popupmeasuredistance_funcs.cpp popupmeasuretorsion_funcs.cpp popuptransformdistance_funcs.cpp popupviewreset_funcs.cpp
+libgui_a_SOURCES += popupbuildaddh_funcs.cpp popupbuildgrow_funcs.cpp popupbuildrebond_funcs.cpp popupbuildtransmute_funcs.cpp popupcellangles_funcs.cpp popupcelllengths_funcs.cpp popupcellmatrix_funcs.cpp popupmeasureangle_funcs.cpp popupmeasureclear_funcs.cpp popupmeasuredistance_funcs.cpp popupmeasuretorsion_funcs.cpp popuptransformangle_funcs.cpp popuptransformdistance_funcs.cpp popupviewreset_funcs.cpp
 
 libgui_a_SOURCES += about.ui atomlist.ui celldefinition.ui celltransform.ui command.ui disorderoptions.ui disorderwizard.ui forcefields.ui fragments.ui geometry.ui glyphs.ui grids.ui pores.ui position.ui saveimage.ui scriptmovie.ui select.ui trajectory.ui transform.ui vibrations.ui viewbasis.ui vieweigenvector.ui zmatrix.ui
 
@@ -41,6 +41,6 @@ libgui_a_SOURCES += viewer_funcs.cpp viewer_key.cpp viewer_model.cpp viewer_mous
 
 libgui_a_SOURCES += useractions.cpp
 
-noinst_HEADERS = about.h atomlist.h celldefinition.h celltransform.h command.h disorderoptions.h disorderwizard.h ffeditor.h forcefields.h fragments.h geometry.h glyphs.h grids.h layoutlist.h loadmodel.h mainwindow.h popupbuildaddh.h popupbuildgrow.h popupbuildrebond.h popupbuildtransmute.h popupcellangles.h popupcelllengths.h popupcellmatrix.h popupmeasureangle.h popupmeasureclear.h popupmeasuredistance.h popupmeasuretorsion.h popuptransformdistance.h popupviewreset.h pores.h position.h prefs.h progress.h saveimage.h scriptmovie.h select.h selectelement.h selectfilter.h selectpattern.h selectvariable.h textratreewidgetitem.h trajectory.h transform.h treegui.h useractions.h vibrations.h viewbasis.h vieweigenvector.h zmatrix.h
+noinst_HEADERS = about.h atomlist.h celldefinition.h celltransform.h command.h disorderoptions.h disorderwizard.h ffeditor.h forcefields.h fragments.h geometry.h glyphs.h grids.h layoutlist.h loadmodel.h mainwindow.h popupbuildaddh.h popupbuildgrow.h popupbuildrebond.h popupbuildtransmute.h popupcellangles.h popupcelllengths.h popupcellmatrix.h popupmeasureangle.h popupmeasureclear.h popupmeasuredistance.h popupmeasuretorsion.h popuptransformangle.h popuptransformdistance.h popupviewreset.h pores.h position.h prefs.h progress.h saveimage.h scriptmovie.h select.h selectelement.h selectfilter.h selectpattern.h selectvariable.h textratreewidgetitem.h trajectory.h transform.h treegui.h useractions.h vibrations.h viewbasis.h vieweigenvector.h zmatrix.h
 
 INCLUDES = -I$(top_srcdir)/src -I../ -I./ @ATEN_CFLAGS@

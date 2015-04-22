@@ -113,10 +113,12 @@ template <class T> class NameMapList
 	public:
 	// Set default value
 	void setDefaultValue(T defaultvalue);
+	// Clear all items
+	void clear();
 	// Create new entry
 	int add(QString name, T data);
 	// Return number of items defined
-	int nItems();
+	int nItems() const;
 	// Return first data item in list
 	NameMap<T>* first();
 	// Return data item associated to name
@@ -151,7 +153,7 @@ template <class T> int NameMapList<T>::add(QString name, T data)
 {
 	// Does the named value already exist
 	int n=0;
-	NameMap<T> *nm;
+	NameMap<T>* nm;
 	for (nm = data_.first(); nm != NULL; nm = nm->next)
 	{
 		if (nm->name() == name) break;
@@ -166,8 +168,14 @@ template <class T> int NameMapList<T>::add(QString name, T data)
 	return n;
 }
 
+// Clear all items
+template <class T> void NameMapList<T>::clear()
+{
+	data_.clear();
+}
+
 // Return number of items defined
-template <class T> int NameMapList<T>::nItems()
+template <class T> int NameMapList<T>::nItems() const
 {
 	return data_.nItems();
 }
@@ -204,7 +212,7 @@ template <class T> QString NameMapList<T>::name(int n)
 template <class T> int NameMapList<T>::index(QString name)
 {
 	int n=0;
-	for (NameMap<T> *nm = data_.first(); nm != NULL; nm = nm->next)
+	for (NameMap<T>* nm = data_.first(); nm != NULL; nm = nm->next)
 	{
 		if (nm->name() == name) return n;
 		++n;

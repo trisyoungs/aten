@@ -325,6 +325,8 @@ class Model : public ListItem<Model>
 	void bondAtoms(int ii, int jj, Bond::BondType bt);
 	// Delete bond between specified atoms
 	void unbondAtoms(Atom* i, Atom* j, Bond* b = NULL);
+	// Return whether bond exists between specified atoms
+	bool bondExists(Atom* i, Atom* j);
 	// Change type of specified bond
 	void changeBond(Bond* b, Bond::BondType bt);
 	// Clear all bonding in model

@@ -357,8 +357,6 @@ class Aten
 	int maxRedirectedImages_;
 
 	public:
-	// Element map name conversions to apply on load
-	List< NameMap<int> > typeImportMap;
 	// Type map name conversions to apply on save
 	KVMap typeExportMap;
 	// Set whether type export conversion is enabled

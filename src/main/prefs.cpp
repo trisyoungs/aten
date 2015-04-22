@@ -91,19 +91,22 @@ bool Aten::savePrefs(QString fileName)
 		for (n=0; n<Elements().nElements(); ++n)
 		{
 			// Ambient Colour
-			for (i = 0; i<4; ++i) if (Elements().defaultEl[n].colour[i] != Elements().el[n].colour[i]) break;
-			if (i != 4)
+			if (Elements().colourHasChanged(n))
 			{
-				line.sprintf("aten.elements[%s].colour = { %f, %f, %f, %f };\n", Elements().el[n].symbol, Elements().el[n].colour[0], Elements().el[n].colour[1], Elements().el[n].colour[2], Elements().el[n].colour[3]);
+				double colour[4];
+				Elements().copyColour(n, colour);
+				line.sprintf("aten.elements[%s].colour = { %f, %f, %f, %f };\n", Elements().symbol(n), colour[0], colour[1], colour[2], colour[3]);
 				prefsfile.writeLine(line);
 			}
+
 			// Atomic radius
-			if (Elements().defaultEl[n].atomicRadius != Elements().el[n].atomicRadius)
+			if (Elements().radiusHasChanged(n))
 			{
-				line.sprintf("aten.elements[%s].radius = %f;\n", Elements().el[n].symbol, Elements().el[n].atomicRadius);
+				line.sprintf("aten.elements[%s].radius = %f;\n", Elements().symbol(n), Elements().atomicRadius(n));
 				prefsfile.writeLine(line);
 			}
 		}
+
 		// Next - for each accessor in PreferencesVariable compare the results to our local Prefs copy
 		prefsfile.writeLine("// Program Preferences\n");
 		Prefs defaults;
