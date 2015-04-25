@@ -51,6 +51,7 @@
 #include "gui/popupmeasuretorsion.h"
 #include "gui/popuptransformangle.h"
 #include "gui/popuptransformdistance.h"
+#include "gui/popuptransformtorsion.h"
 #include "gui/popupviewreset.h"
 
 #include "gui/atomlist.h"
@@ -60,7 +61,6 @@
 #include "gui/disorderwizard.h"
 #include "gui/forcefields.h"
 #include "gui/fragments.h"
-#include "gui/geometry.h"
 #include "gui/glyphs.h"
 #include "gui/grids.h"
 #include "gui/pores.h"
@@ -106,7 +106,6 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 	disorderWizard = new DisorderWizard(*this);
 	forcefieldsWidget = new ForcefieldsWidget(*this, Qt::Tool);
 	fragmentsWidget = new FragmentsWidget(*this, Qt::Tool);
-	geometryWidget = new GeometryWidget(*this, Qt::Tool);
 	glyphsWidget = new GlyphsWidget(*this, Qt::Tool);
 	gridsWidget = new GridsWidget(*this, Qt::Tool);
 	positionWidget = new PositionWidget(*this, Qt::Tool);
@@ -116,7 +115,7 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 	trajectoryWidget = new TrajectoryWidget(*this, Qt::Tool);
 	transformWidget = new TransformWidget(*this, Qt::Tool);
 	vibrationsWidget = new VibrationsWidget(*this, Qt::Tool);
-	dockWidgets_ << atomListWidget << cellDefinitionWidget << cellTransformWidget << commandWidget << fragmentsWidget << geometryWidget << glyphsWidget << gridsWidget << poresWidget << positionWidget << scriptMovieWidget << selectWidget << transformWidget << vibrationsWidget;
+	dockWidgets_ << atomListWidget << cellDefinitionWidget << cellTransformWidget << commandWidget << fragmentsWidget << glyphsWidget << gridsWidget << poresWidget << positionWidget << scriptMovieWidget << selectWidget << transformWidget << vibrationsWidget;
 
 	int n;
 
@@ -192,7 +191,7 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 	// -- Transform Panel (Set)
 	ui.TransformSetDistanceButton->setPopupWidget(new TransformDistancePopup(*this, ui.TransformSetDistanceButton));
 	ui.TransformSetAngleButton->setPopupWidget(new TransformAnglePopup(*this, ui.TransformSetAngleButton));
-// 	ui.TransformSetTorsionButton->setPopupWidget(new TransformTorsionPopup(*this, ui.TransformSetTorsionButton));	
+	ui.TransformSetTorsionButton->setPopupWidget(new TransformTorsionPopup(*this, ui.TransformSetTorsionButton));
 	
 	
 	

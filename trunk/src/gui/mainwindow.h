@@ -59,7 +59,6 @@ class CommandWidget;
 class DisorderWizard;
 class ForcefieldsWidget;
 class FragmentsWidget;
-class GeometryWidget;
 class GlyphsWidget;
 class GridsWidget;
 class MDWidget;
@@ -503,8 +502,6 @@ class AtenWindow : public QMainWindow
 	ForcefieldsWidget *forcefieldsWidget;
 	// Fragment Library dock widget
 	FragmentsWidget *fragmentsWidget;
-	// Geometry dock widget
-	GeometryWidget *geometryWidget;
 	// Glyphs dock widget
 	GlyphsWidget *glyphsWidget;
 	// Grids dock widget

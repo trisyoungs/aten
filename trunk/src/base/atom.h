@@ -195,16 +195,26 @@ class Atom : public ListItem<Atom>
 	int totalBondOrder();
 	// Calculate the bond order between this atom and the specified atom
 	double bondOrder(Atom* j);
+	// Returns bond pointer between this and atom 'j' (if it exists)
+	Bond* findBond(Atom* j);
+
+
+	/*
+	 * Geometry
+	 */
+	public:
 	// Calculates the geometry of the atom's bound environment
 	Atom::AtomGeometry geometry();
 	// Return if the local bound geometry of the atom is planar (within a certain tolerance)
 	bool isPlanar(double tolerance);
-	// Returns bond pointer between this and atom 'j' (if it exists)
-	Bond* findBond(Atom* j);
 	// Calculate bond plane (unit) vector
 	Vec3<double> findBondPlane(Atom* other, Bond* excludedBond, const Vec3<double>& vij, bool vijIsNormalised);
 	// Return next best vector for addition of new atom
 	bool nextBondVector(Vec3<double>& vector, Atom::AtomGeometry geometry);
+	// Return whether specified atoms form a (bound) angle
+	static bool formAngle(Atom* atoms[3], Atom* orderedAtoms[3]);
+	// Return whether specified atoms form a (bound) torsion
+	static bool formTorsion(Atom* atoms[4], Atom* orderedAtoms[4]);
 
 
 	/*

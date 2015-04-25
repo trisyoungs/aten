@@ -1,8 +1,6 @@
 Remove empty destructors.
 Add ObjectLists (when using CHECK)?
-Sort out layout of headers (double-line gap etc.).
 Move sg code to separate dir.
-Move math funcs/classes (e.g. Matrix) to separate dir.
 Remove dialog pointers (use instances instead).
 Remove Scripts menu, and automatic loading of scripts on startup.
 Fix callbacks for atom picking etc.
@@ -47,8 +45,8 @@ Cif/mol2/pdb import broken?
 PrimitiveSet::wireCube_ is not a wireframe cube!
 Recognise bonds in both selection and right-click:
 o Context menu for bond then can replicate bond, angle, and torsion adjustment
-For Transform panel set distance, angle, and torsion functions, have a combo to choose between Order (move last selected atom in selection order of bond, angle, or torsion atoms), Mass (move lightest atom), or Both (move all atoms equally)?
 Clear selected measurements on panel popup clears all measurements.
+Finish element select popups.
 
 GUI TODO:
 AddAtom functionality (from old Build menu).
@@ -60,4 +58,4 @@ Remove 'gui' keyword.
 Remove 'calcEnergy' optional args from scaleMolecules and scaleCell.
 Remove replaceChars (after command is removed).
 Remove frameCurrent* from Prefs accessors.
-Added SetAngles, SetDistances, and SetTorsions.
+Added SetAngles, SetDistances, and SetTorsions commands.

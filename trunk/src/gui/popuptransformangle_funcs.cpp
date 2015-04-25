@@ -48,26 +48,16 @@ void TransformAnglePopup::popup()
 		ui.CopyCurrentAngleButton->setEnabled(model->nSelected() == 2);
 		if (model->nSelected() == 3)
 		{
-			Atom* atoms[3];
+			Atom* atoms[3], *orderedAtoms[3];
 			if (!model->selectedAtoms(3, atoms)) return;
 
 			// Do these atoms form a bound angle?
-			int j = -1;
-			if (model->bondExists(atoms[0], atoms[1]))
+			if (Atom::formAngle(atoms, orderedAtoms))
 			{
-				if (model->bondExists(atoms[1], atoms[2])) j = 1;
-				else if (model->bondExists(atoms[0], atoms[2])) j = 0;
+				currentAngle_ = model->angle(orderedAtoms[0], orderedAtoms[1], orderedAtoms[2]);
+				ui.AngleLabel->setText(QString("%1 &#176; (atoms %2-%3-%4)").arg(currentAngle_).arg(orderedAtoms[0]->id()+1).arg(orderedAtoms[1]->id()+1).arg(orderedAtoms[2]->id()+1));
 			}
-			else if (model->bondExists(atoms[1], atoms[2]) && model->bondExists(atoms[2], atoms[0])) j = 2;
-
-			if (j == -1) ui.AngleLabel->setText("N/A");
-			else
-			{
-				if (j == 0) currentAngle_ = model->angle(atoms[2], atoms[0], atoms[1]);
-				else if (j == 1) currentAngle_ = model->angle(atoms[0], atoms[1], atoms[2]);
-				else currentAngle_ = model->angle(atoms[1], atoms[2], atoms[0]);
-				ui.AngleLabel->setText(QString("%1 &#8491; (atoms %2-%3-%4)").arg(currentAngle_).arg(atoms[0]->id()+1).arg(atoms[1]->id()+1).arg(atoms[2]->id()+1));
-			}
+			else ui.AngleLabel->setText("N/A");
 		}
 		else ui.AngleLabel->setText("N/A");
 	}
