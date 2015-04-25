@@ -24,7 +24,6 @@
 #include "main/aten.h"
 #include "gui/grids.h"
 #include "gui/trajectory.h"
-#include "gui/geometry.h"
 #include "gui/select.h"
 #include "gui/forcefields.h"
 #include "gui/celldefinition.h"
@@ -195,7 +194,6 @@ void AtenWindow::updateWidgets(int targets)
 	updateMainWindow();
 	updateContextMenu();
 	
-	if (targets&AtenWindow::GeometryTarget) geometryWidget->refresh();
 	if (targets&AtenWindow::SelectTarget) selectWidget->refresh();
 	if (targets&AtenWindow::VibrationsTarget) vibrationsWidget->refresh();
 	if (targets&AtenWindow::TrajectoryTarget) trajectoryWidget->refresh();

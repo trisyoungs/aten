@@ -26,6 +26,172 @@
 
 ATEN_USING_NAMESPACE
 
+// Determine bonding geometry
+Atom::AtomGeometry Atom::geometry()
+{
+	Messenger::enter("Atom::geometry");
+	Atom::AtomGeometry result = Atom::UnboundGeometry;
+	double angle, largest;
+	Bond* b1, *b2;
+	Refitem<Bond,int>* bref1, *bref2;
+	result = Atom::NoGeometry;
+	// Separate the tests by number of bound atoms...
+	switch (nBonds())
+	{
+		// 'Simple' cases first
+		case (0):
+			result = Atom::UnboundGeometry;
+			break;
+		case (1):
+			result = Atom::OneBondGeometry;
+			break;
+		case (5):
+			result = Atom::TrigBipyramidGeometry;
+			break;
+		case (6):
+			result = Atom::OctahedralGeometry;
+			break;
+		// For the remaining types, take averages of bond angles about the atom
+		case (2):
+			b1 = bonds()->item;
+			b2 = bonds()->next->item;
+			angle = parent_->angle(b1->partner(this),this,b2->partner(this));
+			if (angle> 170.0) result = Atom::LinearGeometry;
+			else if ((angle > 100.0) && (angle < 115.0)) result = Atom::TetrahedralGeometry;
+			break;
+		case (3):
+			bref1 = bonds();
+			bref2 = bonds()->next;
+			b1 = bref1->item;
+			b2 = bref2->item;
+			angle = parent_->angle(b1->partner(this),this,b2->partner(this));
+			largest = angle;
+			b2 = bref2->next->item;
+			angle = parent_->angle(b1->partner(this),this,b2->partner(this));
+			if (angle > largest) largest = angle;
+			b1 = bref1->next->item;
+			angle = parent_->angle(b1->partner(this),this,b2->partner(this));
+			if (angle > largest) largest = angle;
+			if (largest > 170.0) result = Atom::TShapeGeometry;
+			else if ((largest > 115.0) && (largest < 125.0)) result = Atom::TrigPlanarGeometry;
+			else if ((largest < 115.0) && (largest > 100.0)) result = Atom::TetrahedralGeometry;
+			break;
+		case (4):
+			// Two possibilities - tetrahedral or square planar. Tetrahedral will have an
+			// average of all angles of ~ 109.5, for square planar (1/6) * (4*90 + 2*180) = 120
+			angle = 0.0;
+			bref1 = bonds();
+			while (bref1->next != NULL)
+			{
+				bref2 = bref1->next;
+				while (bref2 != NULL)
+				{
+					angle += parent_->angle(bref1->item->partner(this),this,bref2->item->partner(this));
+					//printf("Case 4: added an angle.\n");
+					bref2 = bref2->next;
+				}
+				bref1 = bref1->next;
+			}
+			angle /= 6.0;
+			if ((angle > 100.0) && (angle < 115.0)) result = Atom::TetrahedralGeometry;
+			else if ((angle >= 115.0) && (angle < 125.0)) result = Atom::SquarePlanarGeometry;
+			break;
+	}
+	Messenger::exit("Atom::geometry");
+	return result;
+}
+
+// Return if the local bound geometry of the atom is planar (within a certain tolerance)
+bool Atom::isPlanar(double tolerance)
+{
+	Messenger::enter("Atom::isPlanar");
+	// Simple cases first
+	if (bonds_.nItems() == 1)
+	{
+		Messenger::exit("Atom::isPlanar");
+		return false;
+	}
+	if (bonds_.nItems() == 2)
+	{
+		Messenger::exit("Atom::isPlanar");
+		return true;
+	}
+	// Any other case is more complex.
+	bool result = true;
+	Refitem<Bond,int>* ri = bonds_.first();
+	// Take the first two bound atom vectors and get the cross product to define the plane's normal
+	Vec3<double> v1 = parent_->cell()->mimVector(this, ri->item->partner(this));
+	v1.normalise();
+	ri = ri->next;
+	Vec3<double> v2 = parent_->cell()->mimVector(this, ri->item->partner(this));
+	v2.normalise();
+	Vec3<double> normal = v1*v2;
+	double angle;
+	// Cycle over remaining bound neighbours and determine angle with plane normal
+	for (ri = ri->next; ri != NULL; ri = ri->next)
+	{
+		// Calculate angle
+		v1 = parent_->cell()->mimVector(this, ri->item->partner(this));
+		v1.normalise();
+		angle = fabs(acos(normal.dp(v1)) * DEGRAD - 90.0);
+// 		printf("Out-of-plane bond angle is %f degrees\n", angle);
+		if (angle > tolerance)
+		{
+			result = false;
+			break;
+		}
+	}
+	Messenger::exit("Atom::isPlanar");
+	return result;
+}
+
+// Calculate bond plane (unit) vector
+Vec3<double> Atom::findBondPlane(Atom* other, Bond* excludedBond, const Vec3<double>& vij, bool vijIsNormalised)
+{
+	// Given this atom, another (j), and a bond node on 'this' between them, determine the plane of the bond if possible.
+	Vec3<double> rk, xp, vijnorm;
+	Refitem<Bond,int>* bref;
+	Atom* origin;
+
+	vijnorm = vij;
+	if (!vijIsNormalised) vijnorm.normalise();
+
+	// Determine which bond list and atom partner to use
+	if (bonds_.nItems() > 1)
+	{
+		// Can define from another bond on 'this'
+		bref = bonds_.first();
+		origin = this;
+	}
+	else
+	{
+		// Must define from a bond on 'other'
+		if (other == NULL) return vijnorm.orthogonal(true);
+		bref = other->bonds_.first();
+		origin = other;
+		vijnorm = -vijnorm;
+	}
+	
+	// Find suitable second bond
+	for (bref = bref; bref != NULL; bref = bref->next)
+	{
+		if (excludedBond == bref->item) continue;
+		// Found a suitable bond - is it linear?
+		rk = bref->item->partner(origin)->r_ - origin->r_;
+		rk.normalise();
+		if (fabs(rk.dp(vijnorm)) > 0.999) continue;
+		// Get cross-products to determine vector in bond *plane*
+ 		xp = (vijnorm * rk) * vijnorm;
+		xp.normalise();
+		break;
+	}
+
+	// Default, just in case
+	if (bref == NULL) return vijnorm.orthogonal(true);
+
+	return xp;
+}
+
 // Return next best vector for addition of new atom
 bool Atom::nextBondVector(Vec3<double>& vector, Atom::AtomGeometry geometry)
 {
@@ -261,4 +427,71 @@ bool Atom::nextBondVector(Vec3<double>& vector, Atom::AtomGeometry geometry)
 
 	Messenger::exit("Atom::nextBondVector");
 	return true;
+}
+
+// Return whether specified atoms form a (bound) angle
+bool Atom::formAngle(Atom* atoms[3], Atom* orderedAtoms[3])
+{
+	// Reset ordered atoms array
+	orderedAtoms[0] = NULL;
+	orderedAtoms[1] = NULL;
+	orderedAtoms[2] = NULL;
+
+	int j = -1;
+	if (atoms[0]->findBond(atoms[1]))
+	{
+		if (atoms[1]->findBond(atoms[2])) j = 1;
+		else if (atoms[0]->findBond(atoms[2])) j = 0;
+	}
+	else if (atoms[1]->findBond(atoms[2]) && atoms[2]->findBond(atoms[0])) j = 2;
+
+	if (j == -1) return false;
+
+	// Set atoms in order
+	orderedAtoms[1] = atoms[j];
+	orderedAtoms[0] = atoms[(j+1)%3];
+	orderedAtoms[2] = atoms[(j+2)%3];
+
+	return true;
+}
+
+// Return whether specified atoms form a (bound) torsion
+bool Atom::formTorsion(Atom* atoms[4], Atom* orderedAtoms[4])
+{
+	// Reset ordered atoms array
+	orderedAtoms[0] = NULL;
+	orderedAtoms[1] = NULL;
+	orderedAtoms[2] = NULL;
+	orderedAtoms[3] = NULL;
+
+	// Loop over all pairs of atoms to see if we can find a bond
+	int i, j, k, l;
+	for (j=0; j<3; ++j)
+	{
+		orderedAtoms[1] = atoms[j];
+		for (k = j+1; k<4; ++k)
+		{
+			orderedAtoms[2] = atoms[k];
+
+			// Is there a bond between atoms j and k?
+			if (!orderedAtoms[1]->findBond(orderedAtoms[2])) continue;
+
+			// We have a bond between j and k, so see if we have the necessary other bonds
+			for (int n=0; n<4; ++n) if ((n != j) && (n != k)) { i = n; break; }
+			for (int n=0; n<4; ++n) if ((n != j) && (n != k) && (n != i) ) { l = n; break; }
+			if (orderedAtoms[1]->findBond(atoms[i]) && orderedAtoms[2]->findBond(atoms[l]))
+			{
+				orderedAtoms[0] = atoms[i];
+				orderedAtoms[3] = atoms[l];
+				return true;
+			}
+			else if (orderedAtoms[1]->findBond(atoms[l]) && orderedAtoms[2]->findBond(atoms[i]))
+			{
+				orderedAtoms[0] = atoms[l];
+				orderedAtoms[3] = atoms[i];
+				return true;
+			}
+		}
+	}
+	return false;
 }

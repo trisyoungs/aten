@@ -22,7 +22,6 @@ SET(gui_MOC_HDRS
   ffeditor.h
   forcefields.h
   fragments.h
-  geometry.h
   glyphs.h
   grids.h
   layoutlist.h
@@ -41,6 +40,7 @@ SET(gui_MOC_HDRS
   popupcellmatrix.h
   popuptransformangle.h
   popuptransformdistance.h
+  popuptransformtorsion.h
   popupviewreset.h
   pores.h
   position.h
@@ -90,7 +90,6 @@ SET(gui_UIS
   ffeditor.ui
   forcefields.ui
   fragments.ui
-  geometry.ui
   glyphs.ui
   grids.ui
   loadmodel.ui
@@ -108,6 +107,7 @@ SET(gui_UIS
   popupmeasuretorsion.ui
   popuptransformangle.ui
   popuptransformdistance.ui
+  popuptransformtorsion.ui
   popupviewreset.ui
   pores.ui
   position.ui
@@ -148,7 +148,6 @@ set(gui_SRCS
   ffeditor_funcs.cpp
   forcefields_funcs.cpp
   fragments_funcs.cpp
-  geometry_funcs.cpp
   glyphs_funcs.cpp
   grids_funcs.cpp
   layoutlist.cpp
@@ -178,6 +177,7 @@ set(gui_SRCS
   popupmeasuretorsion_funcs.cpp
   popuptransformangle_funcs.cpp
   popuptransformdistance_funcs.cpp
+  popuptransformtorsion_funcs.cpp
   popupviewreset_funcs.cpp
   pores_funcs.cpp
   position_funcs.cpp

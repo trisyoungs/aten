@@ -44,6 +44,9 @@
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
+       <property name="toolTip">
+        <string>New angle to apply</string>
+       </property>
        <property name="decimals">
         <number>5</number>
        </property>
@@ -85,7 +88,7 @@
       </size>
      </property>
      <property name="toolTip">
-      <string>Set distances of all bonds in the current selection to the value provided</string>
+      <string>Set angles of all bonds in the current selection to the value provided</string>
      </property>
      <property name="text">
       <string>Set</string>
@@ -136,7 +139,7 @@
       </size>
      </property>
      <property name="toolTip">
-      <string>Rebond atoms in current patterns, without augmentation</string>
+      <string>Copy angle from current selection (set as new angle)</string>
      </property>
      <property name="text">
       <string>Copy</string>
@@ -177,6 +180,9 @@
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
+       </property>
+       <property name="toolTip">
+        <string>Angle delta to apply</string>
        </property>
        <property name="suffix">
         <string/>
@@ -222,7 +228,7 @@
       </size>
      </property>
      <property name="toolTip">
-      <string>Decrease all bond distances in the current selection by the delta specified</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Decrease all bond angles in the current selection by the delta specified&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
      <property name="text">
       <string>Decrease</string>
@@ -266,7 +272,7 @@
       </size>
      </property>
      <property name="toolTip">
-      <string>Increase all bond distances in the current selection by the delta specified</string>
+      <string>Increase all bond angles in the current selection by the delta specified</string>
      </property>
      <property name="text">
       <string>Increase</string>

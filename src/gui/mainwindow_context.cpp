@@ -22,7 +22,6 @@
 #include <QtWidgets/QColorDialog>
 #include "main/aten.h"
 #include "gui/mainwindow.h"
-#include "gui/geometry.h"
 #include "gui/fragments.h"
 #include "model/model.h"
 #include "parser/commandnode.h"

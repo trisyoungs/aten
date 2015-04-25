@@ -69,7 +69,7 @@
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>2</number>
+       <number>0</number>
       </property>
       <property name="usesScrollButtons">
        <bool>true</bool>
@@ -1740,7 +1740,7 @@
              </size>
             </property>
             <property name="toolTip">
-             <string>Reset view</string>
+             <string>Reset view (Ctrl-R)</string>
             </property>
             <property name="text">
              <string>Reset</string>
@@ -1754,6 +1754,9 @@
               <width>30</width>
               <height>30</height>
              </size>
+            </property>
+            <property name="shortcut">
+             <string>Ctrl+R</string>
             </property>
             <property name="checkable">
              <bool>false</bool>

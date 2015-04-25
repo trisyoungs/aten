@@ -698,7 +698,124 @@ bool Commands::function_SetTorsion(CommandNode* c, Bundle& obj, ReturnValue& rv)
 // Set torsions for all selected atoms
 bool Commands::function_SetTorsions(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	// ATEN2 TODO
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
+	rv.reset();
+
+	// Determine move type (0 = lowId, 1 = highId, 2 = i & k) and determine whether we are just nudging
+	double target = c->argd(0);
+	int moveType = 0;
+	if (c->hasArg(1))
+	{
+		if (c->argc(1) == "low") moveType = 0;
+		else if (c->argc(1) == "high") moveType = 1;
+		else if (c->argc(1) == "light") moveType = 2;
+		else if (c->argc(1) == "heavy") moveType = 3;
+		else if (c->argc(1) == "both") moveType = 4;
+		else Messenger::warn(QString("Move type for 'setTorsions' unrecognised (%1) - defaulting to 'low'").arg(c->argc(1)));
+	}
+	bool nudge = c->hasArg(2) ? c->argb(2) : false;
+	if (nudge && (moveType == 4)) target *= 0.5;
+
+	// Start undo state
+	obj.rs()->beginUndoState("Set torsions between atoms");
+
+	// Loop over selected atoms
+	Atom* i, *j, *k, *l, *order[2];
+	Refitem<Bond,int>* bi, *bj, *bl;
+	Bond* bji, *bjk, *bkl;
+	Vec3<double> rotationVector;
+	double delta;
+	for (Refitem<Atom,int>* rj = obj.rs()->selection(); rj != NULL; rj = rj->next)
+	{
+		j = rj->item;
+
+		// Loop over bonds on this atom 
+		for (bj = j->bonds(); bj != NULL; bj = bj->next)
+		{
+			bjk = bj->item;
+			k = bjk->partner(j);
+			if (!k->isSelected()) continue;
+
+			// Skip 'k' if the id is lower than that of 'j', to avoid setting the same torsion twice
+			if (j->id() > k->id()) continue;
+
+			// Double loop now over atoms bound to j, and atoms bound to k
+			for (bi = j->bonds(); bi != NULL; bi = bi->next)
+			{
+				bji = bi->item;
+				if (bji == bjk) continue;
+				i = bji->partner(j);
+				if (!i->isSelected()) continue;
+
+				// Double loop now over atoms bound to j, and atoms bound to k
+				for (bl = k->bonds(); bl != NULL; bl = bl->next)
+				{
+					bkl = bl->item;
+					if (bkl == bjk) continue;
+					l = bkl->partner(k);
+					if (!l->isSelected()) continue;
+					
+					// Put atoms into the 'order' array, reflecting the atom indices and moveType specified
+					switch (moveType)
+					{
+						// Lowest ID
+						case (0):
+							order[0] = (i->id() < l->id() ? i : l);
+							break;
+						// Highest ID
+						case (1):
+							order[0] = (i->id() > l->id() ? i : l);
+							break;
+						// Lightest element
+						case (2):
+							order[0] = (Elements().atomicMass(i) < Elements().atomicMass(l) ? i : l);
+							break;
+						// Heaviest element
+						case (3):
+							order[0] = (Elements().atomicMass(i) > Elements().atomicMass(l) ? i : l);
+							break;
+						default:
+							order[0] = i;
+					}
+					order[1] = order[0] == i ? l : i;
+
+					// Have found an angle... check for a cyclic route between i and k
+					// Clear any current marked selection
+					obj.rs()->selectNone(true);
+
+					// Perform mark-only tree select on the first atom, excluding the bond bji (or bkl)
+					obj.rs()->selectTree(order[0], true, false, bjk);
+
+					// If atom 'i' is now marked, there is a cyclic route connecting the two atoms and we can't proceed
+					if (order[1]->isSelected(true))
+					{
+						Messenger::print("Can't alter the torsion of four atoms i-j-k-l (%i-%i-%i-%i) where atoms 'i' and 'l' exist in the same cyclic moiety.", i->id()+1, j->id()+1, k->id()+1, l->id()+1);
+						continue;
+					}
+
+					// Get angle delta, and define rotation axis
+					delta = nudge ? target : target - obj.rs()->torsion(i,j,k,l);
+					if (moveType == 4) delta *= 0.5;
+					rotationVector = obj.rs()->cell()->mimVector(j,k);
+					rotationVector.normalise();
+
+					// Move current marked atoms (exactly which are marked depends on the moveType, but we can move the current selection regardless)
+					obj.rs()->rotateSelectionVector(j->r(), rotationVector, -delta, true);
+					if (moveType == 4)
+					{
+						obj.rs()->selectNone(true);
+						obj.rs()->selectTree(order[1], true, false, bjk);
+						obj.rs()->rotateSelectionVector(j->r(), rotationVector, delta, true);
+					}
+				}
+			}
+		}
+	}
+
+	// End undostate
+	obj.rs()->endUndoState();
+
+	return true;
 }
 
 // Translate current selection in local coordinates ('translate dx dy dz')
