@@ -111,18 +111,6 @@ UserAction::Action Viewer::activeMode() const
 	return activeMode_;
 }
 
-// Set current drawing element
-void Viewer::setBuildElement(short int el)
-{
-	buildElement_ = el;
-}
-
-// Return current drawing element
-short int Viewer::buildElement() const
-{
-	return buildElement_;
-}
-
 // Set current build geometry
 void Viewer::setBuildGeometry(Atom::AtomGeometry ag)
 {
@@ -217,7 +205,7 @@ void Viewer::beginMode(Prefs::MouseButton button)
 						{
 							source->beginUndoState("Draw Atoms");
 							currentDrawDepth_ = prefs.drawDepth();
-							i = source->addAtom(buildElement_, source->screenToModel(rMouseDown_.x, rMouseDown_.y, currentDrawDepth_));
+							i = source->addAtom(atenWindow_->currentBuildElement(), source->screenToModel(rMouseDown_.x, rMouseDown_.y, currentDrawDepth_));
 							source->endUndoState();
 							atomClicked_ = i;
 						}
@@ -387,7 +375,7 @@ void Viewer::endMode(Prefs::MouseButton button)
 			if (i == NULL)
 			{
 				// No atom under the mouse, so draw an atom at previous draw depth
-				i = source->addAtom(buildElement_, source->screenToModel(rMouseUp_.x, rMouseUp_.y, currentDrawDepth_));
+				i = source->addAtom(atenWindow_->currentBuildElement(), source->screenToModel(rMouseUp_.x, rMouseUp_.y, currentDrawDepth_));
 			}
 			// Now bond the atoms, unless atomClicked_ and i are the same (i.e. the button was clicked and not moved)
 			if (atomClicked_ != i)
@@ -430,9 +418,9 @@ void Viewer::endMode(Prefs::MouseButton button)
 			if (shifted)
 			{
 				int element = atomClicked_->element();
-				for (Atom* i = source->atoms(); i != NULL; i = i->next) if (i->element() == element) source->transmuteAtom(i,buildElement_);
+				for (Atom* i = source->atoms(); i != NULL; i = i->next) if (i->element() == element) source->transmuteAtom(i, atenWindow_->currentBuildElement());
 			}
-			else source->transmuteAtom(atomClicked_, buildElement_);
+			else source->transmuteAtom(atomClicked_, atenWindow_->currentBuildElement());
 			source->endUndoState();
 			atenWindow_->updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
 			break;
@@ -457,50 +445,6 @@ void Viewer::endMode(Prefs::MouseButton button)
 		case (UserAction::DrawProbeAction):
 			if (atomClicked_ != NULL) atomClicked_->print();
 			break;
-		// Bonding
-// 		case (UserAction::DrawBondSingleAction):
-// 		case (UserAction::DrawBondDoubleAction):
-// 		case (UserAction::DrawBondTripleAction):
-// 			if (pickedAtoms_.nItems() == 0) break;
-// 			// Must be two atoms in subselection to continue, or we must be hovering over a different atom (which we'll add to the list)
-// 			if (pickedAtoms_.nItems() == 1)
-// 			{
-// 				i = source->atomOnScreen(rMouseUp_.x, contextHeight_-rMouseUp_.y);
-// 				if (i == NULL) break;
-// 				if (pickedAtoms_.last()->item != i) pickedAtoms_.add(i);
-// 			}
-// 			if (pickedAtoms_.nItems() != 2) break;
-// 			pickedAtoms_.fillArray(2,atoms);
-// 			b = atoms[0]->findBond(atoms[1]);
-// 			if (b == NULL)
-// 			{
-// 				source->beginUndoState("Bond Atoms");
-// 				source->bondAtoms(atoms[0],atoms[1],Bond::BondType(endingMode-UserAction::DrawBondSingleAction+1));
-// 				source->endUndoState();
-// 			}
-// 			else
-// 			{
-// 				source->beginUndoState("Change Bond");
-// 				source->changeBond(b,Bond::BondType(endingMode-UserAction::DrawBondSingleAction+1));
-// 				source->endUndoState();
-// 			}
-// 			pickedAtoms_.clear();
-// 			atenWindow_->updateWidgets(AtenWindow::CanvasTarget);
-// 			break;
-		// Delete bond
-// 		case (UserAction::DrawDeleteBondAction):
-// 			// Must be two atoms in subselection to continue
-// 			if (pickedAtoms_.nItems() != 2) break;
-// 			pickedAtoms_.fillArray(2,atoms);
-// 			if (atoms[0]->findBond(atoms[1]) != NULL)
-// 			{
-// 				source->beginUndoState("Delete Bond");
-// 				source->unbondAtoms(atoms[0],atoms[1]);
-// 				source->endUndoState();
-// 			}
-// 			pickedAtoms_.clear();
-// 			atenWindow_->updateWidgets(AtenWindow::CanvasTarget);
-// 			break;
 		// Misc Building
 		case (UserAction::DrawAddHydrogenAction):
 			if (atomClicked_ != NULL)
@@ -517,12 +461,12 @@ void Viewer::endMode(Prefs::MouseButton button)
 				if (shifted)
 				{
 					source->beginUndoState("Grow Atom (unbound)");
-					source->growAtom(atomClicked_, buildElement_, -1.0, buildGeometry_, false);
+					source->growAtom(atomClicked_, atenWindow_->currentBuildElement(), -1.0, buildGeometry_, false);
 				}
 				else
 				{
 					source->beginUndoState("Grow Atom");
-					source->growAtom(atomClicked_, buildElement_, -1.0, buildGeometry_, true);
+					source->growAtom(atomClicked_, atenWindow_->currentBuildElement(), -1.0, buildGeometry_, true);
 				}
 				source->endUndoState();
 				atenWindow_->updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);

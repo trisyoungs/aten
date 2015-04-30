@@ -31,6 +31,8 @@ SET(gui_MOC_HDRS
   popupbuildgrow.h
   popupbuildrebond.h
   popupbuildtransmute.h
+  popupelementcommon.h
+  popupelementtable.h
   popupmeasureangle.h
   popupmeasureclear.h
   popupmeasuredistance.h
@@ -38,6 +40,7 @@ SET(gui_MOC_HDRS
   popupcellangles.h
   popupcelllengths.h
   popupcellmatrix.h
+  popupcellspacegroup.h
   popuptransformangle.h
   popuptransformdistance.h
   popuptransformtorsion.h
@@ -49,7 +52,6 @@ SET(gui_MOC_HDRS
   saveimage.h
   scriptmovie.h
   select.h
-  selectelement.h
   selectfilter.h
   selectpattern.h
   selectvariable.h
@@ -101,6 +103,9 @@ SET(gui_UIS
   popupcellangles.ui
   popupcelllengths.ui
   popupcellmatrix.ui
+  popupcellspacegroup.ui
+  popupelementcommon.ui
+  popupelementtable.ui
   popupmeasureangle.ui
   popupmeasureclear.ui
   popupmeasuredistance.ui
@@ -116,7 +121,6 @@ SET(gui_UIS
   saveimage.ui
   scriptmovie.ui
   select.ui
-  selectelement.ui
   selectfilter.ui
   selectpattern.ui
   selectvariable.ui
@@ -171,6 +175,9 @@ set(gui_SRCS
   popupcellangles_funcs.cpp
   popupcelllengths_funcs.cpp
   popupcellmatrix_funcs.cpp
+  popupcellspacegroup_funcs.cpp
+  popupelementcommon_funcs.cpp
+  popupelementtable_funcs.cpp
   popupmeasureangle_funcs.cpp
   popupmeasureclear_funcs.cpp
   popupmeasuredistance_funcs.cpp
@@ -186,7 +193,6 @@ set(gui_SRCS
   saveimage_funcs.cpp
   scriptmovie_funcs.cpp
   select_funcs.cpp
-  selectelement_funcs.cpp
   selectfilter_funcs.cpp
   selectpattern_funcs.cpp
   selectvariable_funcs.cpp

@@ -46,9 +46,12 @@
 #include "gui/popupcellangles.h"
 #include "gui/popupcelllengths.h"
 #include "gui/popupcellmatrix.h"
+#include "gui/popupelementcommon.h"
+#include "gui/popupelementtable.h"
 #include "gui/popupmeasureangle.h"
 #include "gui/popupmeasuredistance.h"
 #include "gui/popupmeasuretorsion.h"
+#include "gui/popupcellspacegroup.h"
 #include "gui/popuptransformangle.h"
 #include "gui/popuptransformdistance.h"
 #include "gui/popuptransformtorsion.h"
@@ -118,6 +121,7 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 	dockWidgets_ << atomListWidget << cellDefinitionWidget << cellTransformWidget << commandWidget << fragmentsWidget << glyphsWidget << gridsWidget << poresWidget << positionWidget << scriptMovieWidget << selectWidget << transformWidget << vibrationsWidget;
 
 	int n;
+	ReturnValue rv;
 
 	// Set up recent files list (create all actions first)
 	for (n=0; n<MAXRECENTFILES; n++)
@@ -135,40 +139,46 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 	group->addAction(ui.actionTrajectoryFrames);
 
 	// Add style tool buttons to their button group
-	styleButtons_.addButton(ui.ViewStyleLineButton, Prefs::LineStyle);
-	styleButtons_.addButton(ui.ViewStyleTubeButton, Prefs::TubeStyle);
-	styleButtons_.addButton(ui.ViewStyleSphereButton, Prefs::SphereStyle);
-	styleButtons_.addButton(ui.ViewStyleScaledButton, Prefs::ScaledStyle);
-	styleButtons_.addButton(ui.ViewStyleOwnButton, Prefs::OwnStyle);
+	ui.ViewStyleLineButton->setGroup("Styles");
+	ui.ViewStyleTubeButton->setGroup("Styles");
+	ui.ViewStyleSphereButton->setGroup("Styles");
+	ui.ViewStyleScaledButton->setGroup("Styles");
+	ui.ViewStyleOwnButton->setGroup("Styles");
 
 	// Add colour scheme tool buttons to their button group
-	schemeButtons_.addButton(ui.ViewSchemeElementButton, Prefs::ElementScheme);
-	schemeButtons_.addButton(ui.ViewSchemeChargeButton, Prefs::ChargeScheme);
-	schemeButtons_.addButton(ui.ViewSchemeForceButton, Prefs::ForceScheme);
-	schemeButtons_.addButton(ui.ViewSchemeVelocityButton, Prefs::VelocityScheme);
-	schemeButtons_.addButton(ui.ViewSchemeOwnButton, Prefs::OwnScheme);
+	ui.ViewSchemeElementButton->setGroup("Schemes");
+	ui.ViewSchemeChargeButton->setGroup("Schemes");
+	ui.ViewSchemeForceButton->setGroup("Schemes");
+	ui.ViewSchemeVelocityButton->setGroup("Schemes");
+	ui.ViewSchemeOwnButton->setGroup("Schemes");
 
 	// Add view tool buttons to their button group
-	viewButtons_.addButton(ui.ViewControlPerspectiveButton, true);
-	viewButtons_.addButton(ui.ViewControlOrthographicButton, false);
+	ui.ViewControlPerspectiveButton->setGroup("View");
+	ui.ViewControlOrthographicButton->setGroup("View");
 
 	// Add buttons related to user actions to our button group, and add popup widgets to those buttons that have them
 
 	// -- Build Panel (Select)
-	uaButtons_.addButton(ui.BuildSelectAtomsButton, UserAction::SelectAction);
-	uaButtons_.addButton(ui.BuildSelectBoundButton, UserAction::SelectBoundAction);
-	uaButtons_.addButton(ui.BuildSelectElementButton, UserAction::SelectElementAction);
+	ui.BuildSelectAtomsButton->setGroup("UserActions", UserAction::SelectAction);
+	ui.BuildSelectBoundButton->setGroup("UserActions", UserAction::SelectBoundAction);
+	ui.BuildSelectElementButton->setGroup("UserActions", UserAction::SelectElementAction);
 	// -- Build Panel (Build)
-	uaButtons_.addButton(ui.BuildDrawDrawButton, UserAction::DrawAtomsAction);
-	uaButtons_.addButton(ui.BuildDrawFragmentButton, UserAction::DrawFragmentsAction);
-	uaButtons_.addButton(ui.BuildDrawDeleteButton, UserAction::DrawDeleteAction);
-	uaButtons_.addButton(ui.BuildDrawTransmuteButton, UserAction::DrawTransmuteAction);
+	ui.BuildDrawDrawButton->setGroup("UserActions", UserAction::DrawAtomsAction);
+	ui.BuildDrawFragmentButton->setGroup("UserActions", UserAction::DrawFragmentsAction);
+	ui.BuildDrawDeleteButton->setGroup("UserActions", UserAction::DrawDeleteAction);
+	ui.BuildDrawTransmuteButton->setGroup("UserActions", UserAction::DrawTransmuteAction);
 	ui.BuildDrawTransmuteButton->setPopupWidget(new TransmutePopup(*this, ui.BuildDrawTransmuteButton));
-	uaButtons_.addButton(ui.BuildDrawAddHButton, UserAction::DrawAddHydrogenAction);
+	ui.BuildDrawAddHButton->setGroup("UserActions", UserAction::DrawAddHydrogenAction);
 	ui.BuildDrawAddHButton->setPopupWidget(new AddHPopup(*this, ui.BuildDrawAddHButton));
-	uaButtons_.addButton(ui.BuildDrawGrowButton, UserAction::DrawGrowAtomsAction);
+	ui.BuildDrawGrowButton->setGroup("UserActions", UserAction::DrawGrowAtomsAction);
 	ui.BuildDrawGrowButton->setPopupWidget(new GrowPopup(*this, ui.BuildDrawGrowButton));
 	// -- Build Panel (Element)
+	ui.BuildElementTableButton->setPopupWidget(new ElementTablePopup(*this, ui.BuildElementTableButton));
+	ui.BuildElementTableButton->setGroup("CurrentElement");
+	ui.BuildElementTableButton->callPopupMethod("setSelectedElement", rv = 6);
+	ui.BuildElementCommonButton->setPopupWidget(new ElementCommonPopup(*this, ui.BuildElementCommonButton));
+	ui.BuildElementCommonButton->setGroup("CurrentElement");
+	ui.BuildElementCommonButton->callPopupMethod("setSelectedElement", rv = 8);
 	// -- Build Panel (Bonding)
 	ui.BuildBondingRebondButton->setPopupWidget(new RebondPopup(*this, ui.BuildBondingRebondButton));
 
@@ -176,16 +186,17 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 	ui.CellDefineAnglesButton->setPopupWidget(new CellAnglesPopup(*this, ui.CellDefineAnglesButton), true);
 	ui.CellDefineLengthsButton->setPopupWidget(new CellLengthsPopup(*this, ui.CellDefineLengthsButton), true);
 	ui.CellDefineMatrixButton->setPopupWidget(new CellMatrixPopup(*this, ui.CellDefineMatrixButton), true);
+	ui.CellSpacegroupSetButton->setPopupWidget(new CellMatrixPopup(*this, ui.CellSpacegroupSetButton), true);
 
 	// -- View Panel (Control)
 	ui.ViewControlResetButton->setPopupWidget(new ResetViewPopup(*this, ui.ViewControlResetButton));
 
 	// -- Calculate Panel (Measure)
-	uaButtons_.addButton(ui.CalculateMeasureDistanceButton, UserAction::MeasureDistanceAction);
+	ui.CalculateMeasureDistanceButton->setGroup("UserActions", UserAction::MeasureDistanceAction);
 	ui.CalculateMeasureDistanceButton->setPopupWidget(new MeasureDistancePopup(*this, ui.CalculateMeasureDistanceButton));
-	uaButtons_.addButton(ui.CalculateMeasureAngleButton, UserAction::MeasureAngleAction);
+	ui.CalculateMeasureAngleButton->setGroup("UserActions", UserAction::MeasureAngleAction);
 	ui.CalculateMeasureAngleButton->setPopupWidget(new MeasureAnglePopup(*this, ui.CalculateMeasureAngleButton));
-	uaButtons_.addButton(ui.CalculateMeasureTorsionButton, UserAction::MeasureTorsionAction);
+	ui.CalculateMeasureTorsionButton->setGroup("UserActions", UserAction::MeasureTorsionAction);
 	ui.CalculateMeasureTorsionButton->setPopupWidget(new MeasureTorsionPopup(*this, ui.CalculateMeasureTorsionButton));
 
 	// -- Transform Panel (Set)
@@ -200,20 +211,17 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 	
 
 	// -- From Position Dock Widget
-	uaButtons_.addButton(positionWidget->ui.ShiftPickVectorButton, UserAction::ShiftPickVectorAction);
-	// -- From Transform Dock Widget
-	uaButtons_.addButton(transformWidget->ui.TransformPickAButton, UserAction::TransformPickAAction);
-	uaButtons_.addButton(transformWidget->ui.TransformPickBButton, UserAction::TransformPickBAction);
-	uaButtons_.addButton(transformWidget->ui.TransformPickCButton, UserAction::TransformPickCAction);
-	uaButtons_.addButton(transformWidget->ui.ConvertSourcePickAButton, UserAction::ConvertSourcePickAAction);
-	uaButtons_.addButton(transformWidget->ui.ConvertSourcePickBButton, UserAction::ConvertSourcePickBAction);
-	uaButtons_.addButton(transformWidget->ui.ConvertSourcePickCButton, UserAction::ConvertSourcePickCAction);
-	uaButtons_.addButton(transformWidget->ui.ConvertTargetPickAButton, UserAction::ConvertTargetPickAAction);
-	uaButtons_.addButton(transformWidget->ui.ConvertTargetPickBButton, UserAction::ConvertTargetPickBAction);
-	uaButtons_.addButton(transformWidget->ui.ConvertTargetPickCButton, UserAction::ConvertTargetPickCAction);
-	
-	// Connect buttonPressed signal of button group to our handler
-	QObject::connect(&uaButtons_, SIGNAL(buttonClicked(int)), this, SLOT(uaButtonClicked(int)));
+// 	uaButtons_.addButton(positionWidget->ui.ShiftPickVectorButton, UserAction::ShiftPickVectorAction);
+// 	// -- From Transform Dock Widget
+// 	uaButtons_.addButton(transformWidget->ui.TransformPickAButton, UserAction::TransformPickAAction);
+// 	uaButtons_.addButton(transformWidget->ui.TransformPickBButton, UserAction::TransformPickBAction);
+// 	uaButtons_.addButton(transformWidget->ui.TransformPickCButton, UserAction::TransformPickCAction);
+// 	uaButtons_.addButton(transformWidget->ui.ConvertSourcePickAButton, UserAction::ConvertSourcePickAAction);
+// 	uaButtons_.addButton(transformWidget->ui.ConvertSourcePickBButton, UserAction::ConvertSourcePickBAction);
+// 	uaButtons_.addButton(transformWidget->ui.ConvertSourcePickCButton, UserAction::ConvertSourcePickCAction);
+// 	uaButtons_.addButton(transformWidget->ui.ConvertTargetPickAButton, UserAction::ConvertTargetPickAAction);
+// 	uaButtons_.addButton(transformWidget->ui.ConvertTargetPickBButton, UserAction::ConvertTargetPickBAction);
+// 	uaButtons_.addButton(transformWidget->ui.ConvertTargetPickCButton, UserAction::ConvertTargetPickCAction);
 
 	/*
 	 * Statusbar
@@ -502,12 +510,10 @@ void AtenWindow::updateControls()
 	ui.actionDetectDisplayHBonds->setChecked(prefs.drawHydrogenBonds());
 
 	// Style
-	QAbstractButton* button = styleButtons_.button(prefs.renderStyle());
-	if (button) button->setChecked(true);
+	TMenuButton::setGroupButtonChecked("Styles", Prefs::drawStyle(prefs.renderStyle()));
 
 	// Colour scheme
-	button = schemeButtons_.button(prefs.colourScheme());
-	if (button) button->setChecked(true);
+	TMenuButton::setGroupButtonChecked("Schemes", Prefs::colouringScheme(prefs.colourScheme()));
 
 	// View type
 	prefs.hasPerspective() ? ui.ViewControlPerspectiveButton->setChecked(true) : ui.ViewControlOrthographicButton->setChecked(true);
@@ -541,28 +547,11 @@ void AtenWindow::updateUndoRedo()
 	}
 }
 
-// Change current user action
-void AtenWindow::uaButtonClicked(int id)
-{
-	QAbstractButton *button;
-	// Check button correspondiong to supplied index
-	button = uaButtons_.button(id);
-	if (button == NULL) printf("Internal Error: AtenWindow::uaButtonClicked - No button associated to id %i\n", id);
-	else if (button->isChecked())
-	{
-		// Activate the relevant mode, bu tonly if it isn't already active
-		if (ui.MainView->selectedMode() == (UserAction::Action) id) return;
-		ui.MainView->setSelectedMode((UserAction::Action) id);
-	}
-}
-
 // Set action/button to reflect supplied user action
 void AtenWindow::setActiveUserAction(UserAction::Action ua)
 {
 	// Set (check) relevant action or button based on supplied UserAction
-	QAbstractButton* button = uaButtons_.button(ua);
-	if (button == NULL) printf("AtenWindow::setActiveUserAction() - No button associated to user action %i.\n", ua);
-	else button->setChecked(true);
+	if (!TMenuButton::setGroupButtonChecked("UserActions", ua)) printf("AtenWindow::setActiveUserAction() - No button associated to user action %i.\n", ua);
 }
 
 // Set message label text

@@ -32,6 +32,7 @@
 #include "templates/list.h"
 #include "templates/namemap.h"
 #include "base/namespace.h"
+#include <QIcon>
 
 ATEN_BEGIN_NAMESPACE
 
@@ -131,6 +132,8 @@ class ElementMap
 	void copyColour(int z, Vec4<GLfloat>& v) const;
 	// Return whether colour of specified element has changed from the default
 	bool colourHasChanged(int z) const;
+	// Return QIcon for the given element
+	QIcon icon(int z) const;
 
 
 	/*

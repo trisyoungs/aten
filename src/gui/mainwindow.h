@@ -310,6 +310,10 @@ class AtenWindow : public QMainWindow
 	void on_BuildBondingAugmentButton_clicked(bool checked);
 	void on_BuildBondingClearButton_clicked(bool checked);
 
+	public:
+	// Return currently-selected build element
+	int currentBuildElement();
+
 
 	/*
 	 * Cell Panel
@@ -408,24 +412,12 @@ class AtenWindow : public QMainWindow
 	private:
 	// List of manually-created QActionGroups
 	Reflist<QActionGroup,int> actionGroups_;
-	// Button group for tool buttons associated to user actions
-	QButtonGroup uaButtons_;
-	// Button group for tool buttons associated to view styles
-	QButtonGroup styleButtons_;
-	// Button group for tool buttons associated to colour schemes
-	QButtonGroup schemeButtons_;
-	// Button group for tool buttons associated to view styles
-	QButtonGroup viewButtons_;
 	// Text labels for model information and UI messages in status bar
 	QLabel *infoLabel1_, *infoLabel2_, *messageLabel_;
 	// Filter set from save model dialog
 	Tree* saveModelFilter_;
 	// Filename set from save model dialog
 	QString saveModelFilename_;
-
-	private slots:
-	// Change current user action
-	void uaButtonClicked(int id);
 
 	public:
 	// Update any controls related to Prefs values etc.

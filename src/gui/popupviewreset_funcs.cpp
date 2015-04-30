@@ -45,7 +45,7 @@ void ResetViewPopup::popup()
 }
 
 // Call named method associated to popup
-bool ResetViewPopup::callMethod(QString methodName)
+bool ResetViewPopup::callMethod(QString methodName, ReturnValue& rv)
 {
 	if (methodName == "TEST") return true;
 	else printf("No method called '%s' is available in this popup.\n", qPrintable(methodName));

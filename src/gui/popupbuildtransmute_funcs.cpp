@@ -45,7 +45,7 @@ void TransmutePopup::popup()
 }
 
 // Call named method associated to popup
-bool TransmutePopup::callMethod(QString methodName)
+bool TransmutePopup::callMethod(QString methodName, ReturnValue& rv)
 {
 	if (methodName == "TEST") return true;
 	else printf("No method called '%s' is available in this popup.\n", qPrintable(methodName));
@@ -59,11 +59,11 @@ bool TransmutePopup::callMethod(QString methodName)
 void TransmutePopup::on_TransmuteSelectionButton_clicked(bool checked)
 {
 	// Run command
-	CommandNode::run(Commands::Transmute, "i", parent_.ui.MainView->buildElement());
+	CommandNode::run(Commands::Transmute, "i", parent_.currentBuildElement());
 
 	// Update display
 	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
 
 	// Hide popup
-	hide();
+	done();
 }

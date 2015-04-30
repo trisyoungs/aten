@@ -1,6 +1,6 @@
 /*
-	*** Qt GUI: Select element functions
-	*** src/gui/selectelement_funcs.cpp
+	*** Popup Widget - Element Table
+	*** src/gui/popupelementtable_funcs.cpp
 	Copyright T. Youngs 2007-2015
 
 	This file is part of Aten.
@@ -20,35 +20,43 @@
 */
 
 #include "gui/mainwindow.h"
-#include "gui/selectelement.h"
-#include "base/prefs.h"
-#include "base/lineparser.h"
-#include "base/sysfunc.h"
+#include "gui/popupelementtable.h"
 
 // Constructor
-AtenSelectElement::AtenSelectElement(AtenWindow& parent) : QDialog(&parent), parent_(parent)
+ElementTablePopup::ElementTablePopup(AtenWindow& parent, TMenuButton* buttonParent) : TMenuButtonPopupWidget(buttonParent), parent_(parent)
 {
 	ui.setupUi(this);
 
-	// Create periodic table buttons
+	selectedElement_ = -1;
+
+	// Create grid layout for widget
 	QGridLayout* gl = new QGridLayout;
+	gl->setMargin(0);
+
+	// Create periodic table buttons
 	QLabel* label;
 	int n, m, z;
 	double* colour;
 
 	// Create element button array (and buttons)
 	QPushButton* button;
-	for (n=1; n<Elements().nElements(); n++)
+	QPalette palette = this->palette();
+	for (n=0; n<Elements().nElements(); ++n)
 	{
 		button = new QPushButton(this);
 		elementButtons_ << button;
 		button->setText(Elements().symbol(n));
 		button->setMinimumSize(24,24);
 		button->setMaximumSize(24,24);
+		button->setToolTip(QString("%1 (%2)").arg(Elements().name(n), Elements().symbol(n)));
 		colour = Elements().colour(n);
-		button->setPalette(QPalette(qRgb(int(colour[0]*255),int(colour[1]*255),int(colour[2]*255))));
+		button->setStyleSheet(QString("background-color:%1;").arg(QColor(int(colour[0]*255),int(colour[1]*255),int(colour[2]*255)).name(QColor::HexRgb)));
+		
 		QObject::connect(button, SIGNAL(clicked(bool)), this, SLOT(ElementButton_clicked(bool)));
 	}
+
+	// Hide 'XX' button
+	elementButtons_[0]->hide();
 
 	// Now add buttons to gridlayout
 	// First row - Group Number
@@ -117,85 +125,61 @@ AtenSelectElement::AtenSelectElement(AtenWindow& parent) : QDialog(&parent), par
 		gl->addWidget(elementButtons_[z+n+32],10,3+n);
 	}
 
-	ui.PeriodicTableGroup->setLayout(gl);
+	setLayout(gl);
+}
 
-	// Create common element buttons....
-	commonGroupLayout_ = new QHBoxLayout(ui.CommonGroup);
+// Show popup, updating any controls as necessary beforehand
+void ElementTablePopup::popup()
+{
+	refreshing_ = true;
 
-	// Parse element list
-	LineParser parser;
-	parser.getArgsDelim(0, prefs.commonElements());
-	for (n=0; n<parser.nArgs(); n++)
+	show();
+
+	refreshing_ = false;
+}
+
+// Call named method associated to popup
+bool ElementTablePopup::callMethod(QString methodName, ReturnValue& rv)
+{
+	if (methodName == "TEST") return true;
+	else if (methodName == "selectedElement")
 	{
-		z = Elements().find(parser.argc(n));
-		if (z > 0)
-		{
-			// Create button
-			button = new QPushButton(this);
-			button->setText(Elements().symbol(z));
-			button->setMinimumSize(24,24);
-			button->setMaximumSize(24,24);
-			colour = Elements().colour(z);
-			button->setPalette(QPalette(qRgb(int(colour[0]*255),int(colour[1]*255),int(colour[2]*255))));
-			QObject::connect(button, SIGNAL(clicked(bool)), this, SLOT(CommonElementButton_clicked(bool)));
-		
-			// Add it to the layout
-			commonButtons_.add(button, z);
-			commonGroupLayout_->addWidget(button);
-		}
-		else Messenger::print("Unrecognised element '%s' not added to common elements list.", qPrintable(parser.argc(n)));
+		rv = selectedElement_;
+		return true;
 	}
+	else if (methodName == "setSelectedElement")
+	{
+		selectedElement_ = rv.asInteger();
+
+		// Set icon on parent button
+		parentMenuButton()->setIcon(Elements().icon(selectedElement_));
+
+		return true;
+	}
+	else printf("No method called '%s' is available in this popup.\n", qPrintable(methodName));
+	return false;
 }
 
-AtenSelectElement::~AtenSelectElement()
-{
-}
-
-// Cancel dialog
-void AtenSelectElement::on_CancelButton_clicked(bool checked)
-{
-	reject();
-}
+/*
+ * Widget Functions
+ */
 
 // Return clicked element value
-void AtenSelectElement::ElementButton_clicked(bool checked)
+void ElementTablePopup::ElementButton_clicked(bool checked)
 {
         // Cast sender
         QPushButton* button = qobject_cast<QPushButton*> (sender());
         if (!button)
         {
-                printf("AtenSelectElement::ElementButton_clicked - Sender was not a QPushButton.\n");
-                reject();
-		return;
+                printf("ElementTablePopup::ElementButton_clicked - Sender was not a QPushButton.\n");
+		selectedElement_ = -1;
+		done();
         }
 
-	int result;
-	for (result=1; result<Elements().nElements(); result++) if (elementButtons_[result] == button) break;
-	selectedElement_ = (result != Elements().nElements() ? result : -1);
-	accept();
-}
+	selectedElement_ = Elements().find(button->text());
 
-// Return clicked common element value
-void AtenSelectElement::CommonElementButton_clicked(bool checked)
-{
-	// Cast sender
-	QPushButton *button = qobject_cast<QPushButton*> (sender());
-	if (!button)
-	{
-		printf("AtenSelectElement::CommonElementButton_clicked - Sender was not a QPushButton.\n");
-		reject();
-		return;
-	}
+	// Set icon on parent button
+	parentMenuButton()->setIcon(Elements().icon(selectedElement_));
 
-	Refitem<QPushButton, int>* ri;
-	for (ri = commonButtons_.first(); ri != NULL; ri = ri->next) if (ri->item == button) break;
-	selectedElement_ = (ri != NULL ? ri->data : -1);
-	accept();
-}
-
-// Select an element
-int AtenSelectElement::selectElement()
-{
-	// Execute the dialog and check on the result
-	return (exec() == 1 ? selectedElement_ : -1);
+	done(true);
 }

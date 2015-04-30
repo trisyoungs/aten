@@ -25,9 +25,12 @@
 #include <QtWidgets/QToolButton>
 #include <QMouseEvent>
 #include <QTimer>
+#include "parser/returnvalue.h"
 
-// Forward Declarations
+// Forward Declarations (Qt)
 class TMenuButton;
+
+ATEN_USING_NAMESPACE
 
 // Popup Widget for TMenuButton
 class TMenuButtonPopupWidget : public QWidget
@@ -37,10 +40,16 @@ class TMenuButtonPopupWidget : public QWidget
 	private:
 	// Parent TMenuButton
 	TMenuButton* parentMenuButton_;
+	// Flag indicating that done() was called
+	bool widgetDone_;
 
 	protected:
 	// Whether widget is refreshing
 	bool refreshing_;
+
+	protected:
+	// Local function called when the widget should be closed after a button has been selceted
+	void done(bool setParentButtonDown = false);
 
 	public:
 	// Constructor
@@ -48,7 +57,9 @@ class TMenuButtonPopupWidget : public QWidget
 	// Show popup, updating any controls as necessary beforehand
 	virtual void popup() = 0;
 	// Call named method associated to popup
-	virtual bool callMethod(QString methodName) = 0;
+	virtual bool callMethod(QString methodName, ReturnValue& rv) = 0;
+	// Return parent TMenuButton
+	TMenuButton* parentMenuButton();
 
 
 	/*
@@ -56,6 +67,34 @@ class TMenuButtonPopupWidget : public QWidget
 	 */
 	protected:
 	void hideEvent(QHideEvent* event);
+};
+
+// Exclusive menu button group
+class TMenuButtonGroup : public ListItem<TMenuButtonGroup>
+{
+	public:
+	// Constructor
+	TMenuButtonGroup();
+
+	private:
+	// Name of group
+	QString name_;
+	// List of TMenuUButtons in this group
+	QList<TMenuButton*> buttons_;
+
+	public:
+	// Set name of group
+	void setName(QString name);
+	// Return name of group
+	QString name();
+	// Add button to group
+	void addButton(TMenuButton* button);
+	// Set specified button as checked button
+	void setCurrentButton(TMenuButton* button);
+	// Set button with specified text as checked button
+	bool setCurrentButton(QString buttonText);
+	// Set button with specified index as checked button
+	bool setCurrentButton(int buttonIndex);
 };
 
 // Menu button with optional drop-down (popup) menu
@@ -66,6 +105,18 @@ class TMenuButton : public QToolButton
 	public:
 	// Constructor
 	TMenuButton(QWidget* parent = 0);
+
+
+	/*
+	 * Button
+	 */
+	private:
+	// User-assigned index of button
+	int index_;
+
+	public:
+	// Return user-assigned index of button
+	int index();
 
 
 	/*
@@ -87,15 +138,15 @@ class TMenuButton : public QToolButton
 	// Return popup widget set for button
 	TMenuButtonPopupWidget* popupWidget();
 	// Call named method in associated popup widget
-	bool callPopupMethod(QString methodName)
+	bool callPopupMethod(QString methodName, ReturnValue& rv)
 	{
-		if (popupWidget_) return popupWidget_->callMethod(methodName);
+		if (popupWidget_) return popupWidget_->callMethod(methodName, rv);
 		else printf("No popup set on button with text '%s', so method '%s' cannot be called.\n", qPrintable(text()), qPrintable(methodName));
 
 		return false;
 	}
 	// Notify button that popup is done
-	void popupDone();
+	void popupDone(bool setButtonDown);
 
 	protected:
 	void paintEvent(QPaintEvent* event);
@@ -104,6 +155,24 @@ class TMenuButton : public QToolButton
 	void popup();
 	void buttonPressed();
 	void buttonReleased();
+
+
+	/*
+	 * Group
+	 */
+	private:
+	// List of available groups
+	static List<TMenuButtonGroup> groups_;
+	// Group to which this button belongs (if any)
+	TMenuButtonGroup* group_;
+
+	public:
+	// Add this button to the named group
+	void setGroup(QString groupName, int index = -1);
+	// Check specified button in specified group
+	static bool setGroupButtonChecked(QString groupName, QString buttonText);
+	// Check specified button in specified group
+	static bool setGroupButtonChecked(QString groupName, int buttonIndex);
 };
 
 #endif

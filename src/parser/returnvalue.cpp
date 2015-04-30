@@ -93,7 +93,7 @@ ReturnValue::ReturnValue(VTypes::DataType type, void* ptr) : ListItem<ReturnValu
 }
 
 // Operator =
-void ReturnValue::operator=(const ReturnValue& source)
+ReturnValue& ReturnValue::operator=(const ReturnValue& source)
 {
 	clearArrayData();
 	// Copy datatype of source
@@ -146,33 +146,41 @@ void ReturnValue::operator=(const ReturnValue& source)
 			}
 			break;
 	}
+
+	return (*this);
 }
 
 // Operator =(double)
-void ReturnValue::operator=(double d)
+ReturnValue& ReturnValue::operator=(double d)
 {
 	clearArrayData();
 	type_ = VTypes::DoubleData;
 	arraySize_ = -1;
 	valueD_ = d;
+
+	return (*this);
 }
 
 // Operator =(int)
-void ReturnValue::operator=(int i)
+ReturnValue& ReturnValue::operator=(int i)
 {
 	clearArrayData();
 	type_ = VTypes::IntegerData;
 	arraySize_ = -1;
 	valueI_ = i;
+
+	return (*this);
 }
 
 // Operator =
-void ReturnValue::operator=(QString s)
+ReturnValue& ReturnValue::operator=(QString s)
 {
 	clearArrayData();
 	type_ = VTypes::StringData;
 	arraySize_ = -1;
 	valueS_ = s;
+
+	return (*this);
 }
 
 ReturnValue::~ReturnValue()

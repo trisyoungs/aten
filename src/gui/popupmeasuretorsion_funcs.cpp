@@ -45,7 +45,7 @@ void MeasureTorsionPopup::popup()
 }
 
 // Call named method associated to popup
-bool MeasureTorsionPopup::callMethod(QString methodName)
+bool MeasureTorsionPopup::callMethod(QString methodName, ReturnValue& rv)
 {
 	if (methodName == "TEST") return true;
 	else printf("No method called '%s' is available in this popup.\n", qPrintable(methodName));
@@ -65,6 +65,6 @@ void MeasureTorsionPopup::on_SelectionButton_clicked(bool checked)
 	parent_.updateWidgets(AtenWindow::CanvasTarget);
 
 	// Hide popup
-	hide();
+	done();
 }
 

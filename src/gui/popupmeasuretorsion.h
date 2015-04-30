@@ -24,9 +24,19 @@
 
 #include "gui/ui_popupmeasuretorsion.h"
 #include "gui/tmenubutton.hui"
+#include "parser/returnvalue.h"
 
 // Forward Declarations (Qt)
 class AtenWindow;
+
+ATEN_BEGIN_NAMESPACE
+
+// Forward Declarations (Aten)
+class ReturnValue;
+
+ATEN_END_NAMESPACE
+
+ATEN_USING_NAMESPACE
 
 // Popup Widget - Calculate/Measure/Torsion
 class MeasureTorsionPopup : public TMenuButtonPopupWidget
@@ -46,7 +56,7 @@ class MeasureTorsionPopup : public TMenuButtonPopupWidget
 	// Show popup, updating any controls as necessary beforehand
 	void popup();
 	// Call named method associated to popup
-	bool callMethod(QString methodName);
+	bool callMethod(QString methodName, ReturnValue& rv);
 
 
 	/*

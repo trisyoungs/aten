@@ -164,12 +164,10 @@ class Viewer : public QOpenGLWidget, protected QOpenGLFunctions
 	UserAction::Action activeMode_;
 	// Selected interaction mode (from GUI)
 	UserAction::Action selectedMode_;
-	// Whether the mouse has moved between begin_mode() and end_mode() calls
+	// Whether the mouse has moved between beginMode() and endMode() calls 
 	bool hasMoved_;
 	// Current drawing depth for certain tools
 	double currentDrawDepth_;
-	// Current build element
-	short int buildElement_;
 	// Current build geometry
 	Atom::AtomGeometry buildGeometry_;
 	// Whether to accept editing actions (i.e. anything other than view manipulation)
@@ -206,10 +204,6 @@ class Viewer : public QOpenGLWidget, protected QOpenGLFunctions
 	UserAction::Action selectedMode() const;
 	// Return the currently active mode
 	UserAction::Action activeMode() const;
-	// Set current build element
-	void setBuildElement(short int el);
-	// Return current build element
-	short int buildElement() const;
 	// Set current build geometry
 	void setBuildGeometry(Atom::AtomGeometry ag);
 	// Return current build geometry

@@ -60,7 +60,7 @@ void CellMatrixPopup::popup()
 }
 
 // Call named method associated to popup
-bool CellMatrixPopup::callMethod(QString methodName)
+bool CellMatrixPopup::callMethod(QString methodName, ReturnValue& rv)
 {
 	if (methodName == "TEST") return true;
 	else printf("No method called '%s' is available in this popup.\n", qPrintable(methodName));

@@ -45,7 +45,7 @@ void AddHPopup::popup()
 }
 
 // Call named method associated to popup
-bool AddHPopup::callMethod(QString methodName)
+bool AddHPopup::callMethod(QString methodName, ReturnValue& rv)
 {
 	if (methodName == "TEST") return true;
 	else printf("No method called '%s' is available in this popup.\n", qPrintable(methodName));
@@ -65,7 +65,7 @@ void AddHPopup::on_AddHSelectionButton_clicked(bool checked)
 	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
 
 	// Hide popup
-	hide();
+	done();
 }
 
 void AddHPopup::on_AddHModelButton_clicked(bool checked)
@@ -77,6 +77,6 @@ void AddHPopup::on_AddHModelButton_clicked(bool checked)
 	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
 
 	// Hide popup
-	hide();
+	done();
 }
 

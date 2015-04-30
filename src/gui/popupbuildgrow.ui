@@ -90,7 +90,7 @@
       </size>
      </property>
      <property name="toolTip">
-      <string>Grow atom onto all atoms in current selection</string>
+      <string>Set grow geometry to T-shape</string>
      </property>
      <property name="text">
       <string>T-Shape</string>
@@ -134,7 +134,7 @@
       </size>
      </property>
      <property name="toolTip">
-      <string>Grow atom onto all atoms in current selection</string>
+      <string>Set grow geometry to linear</string>
      </property>
      <property name="text">
       <string>Linear</string>
@@ -142,50 +142,6 @@
      <property name="icon">
       <iconset resource="icons.qrc">
        <normaloff>:/atomgeometry/icons/atomgeometry_linear.png</normaloff>:/atomgeometry/icons/atomgeometry_linear.png</iconset>
-     </property>
-     <property name="iconSize">
-      <size>
-       <width>30</width>
-       <height>30</height>
-      </size>
-     </property>
-     <property name="checkable">
-      <bool>true</bool>
-     </property>
-     <property name="autoExclusive">
-      <bool>true</bool>
-     </property>
-     <property name="toolButtonStyle">
-      <enum>Qt::ToolButtonTextUnderIcon</enum>
-     </property>
-     <property name="autoRaise">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="4">
-    <widget class="QToolButton" name="GeometryTrigonalButton">
-     <property name="minimumSize">
-      <size>
-       <width>56</width>
-       <height>56</height>
-      </size>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>56</width>
-       <height>56</height>
-      </size>
-     </property>
-     <property name="toolTip">
-      <string>Grow atom onto all atoms in current selection</string>
-     </property>
-     <property name="text">
-      <string>Trigonal</string>
-     </property>
-     <property name="icon">
-      <iconset resource="icons.qrc">
-       <normaloff>:/atomgeometry/icons/atomgeometry_trigonal.png</normaloff>:/atomgeometry/icons/atomgeometry_trigonal.png</iconset>
      </property>
      <property name="iconSize">
       <size>
@@ -222,7 +178,7 @@
       </size>
      </property>
      <property name="toolTip">
-      <string>Grow atom onto all atoms in current selection</string>
+      <string>Set grow geometry to tetrahedral</string>
      </property>
      <property name="text">
       <string>Tetrahedral</string>
@@ -266,7 +222,7 @@
       </size>
      </property>
      <property name="toolTip">
-      <string>Grow atom onto all atoms in current selection</string>
+      <string>Set grow geometry to square planar</string>
      </property>
      <property name="text">
       <string>Sq. Planar</string>
@@ -310,7 +266,7 @@
       </size>
      </property>
      <property name="toolTip">
-      <string>Grow atom onto all atoms in current selection</string>
+      <string>Set grow geometry to trigonal bipyramidal</string>
      </property>
      <property name="text">
       <string>Trig. Bip.</string>
@@ -354,7 +310,7 @@
       </size>
      </property>
      <property name="toolTip">
-      <string>Grow atom onto all atoms in current selection</string>
+      <string>Set grow geometry to octahedral</string>
      </property>
      <property name="text">
       <string>Octahedral</string>
@@ -387,6 +343,50 @@
     <widget class="Line" name="line">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="4">
+    <widget class="QToolButton" name="GeometryTrigonalButton">
+     <property name="minimumSize">
+      <size>
+       <width>56</width>
+       <height>56</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>56</width>
+       <height>56</height>
+      </size>
+     </property>
+     <property name="toolTip">
+      <string>Set grow geometry to trigonal planar</string>
+     </property>
+     <property name="text">
+      <string>Trigonal</string>
+     </property>
+     <property name="icon">
+      <iconset resource="icons.qrc">
+       <normaloff>:/atomgeometry/icons/atomgeometry_trigonal.png</normaloff>:/atomgeometry/icons/atomgeometry_trigonal.png</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>30</width>
+       <height>30</height>
+      </size>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+     <property name="autoExclusive">
+      <bool>true</bool>
+     </property>
+     <property name="toolButtonStyle">
+      <enum>Qt::ToolButtonTextUnderIcon</enum>
+     </property>
+     <property name="autoRaise">
+      <bool>true</bool>
      </property>
     </widget>
    </item>

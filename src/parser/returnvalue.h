@@ -45,10 +45,10 @@ class ReturnValue : public ListItem<ReturnValue>
 	ReturnValue(VTypes::DataType type, void* ptr);
 	~ReturnValue();
 	// Operator=
-	void operator=(const ReturnValue& rv);
-	void operator=(double d);
-	void operator=(int i);
-	void operator=(QString s);
+	ReturnValue& operator=( const AtenSpace::ReturnValue& source );
+	ReturnValue& operator=(double d);
+	ReturnValue& operator=(int i);
+	ReturnValue& operator=(QString s);
 
 
 	/*

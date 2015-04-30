@@ -63,7 +63,7 @@ void TransformDistancePopup::popup()
 }
 
 // Call named method associated to popup
-bool TransformDistancePopup::callMethod(QString methodName)
+bool TransformDistancePopup::callMethod(QString methodName, ReturnValue& rv)
 {
 	if (methodName == "TEST") return true;
 	else if (methodName == "set") on_SetDistanceButton_clicked(false);
@@ -90,7 +90,7 @@ void TransformDistancePopup::on_SetDistanceButton_clicked(bool checked)
 
 	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
 
-	hide();
+	done();
 }
 
 void TransformDistancePopup::on_IncreaseDistanceButton_clicked(bool checked)

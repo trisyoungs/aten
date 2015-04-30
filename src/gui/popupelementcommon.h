@@ -1,6 +1,6 @@
 /*
-	*** Popup Widget - Transform Angle
-	*** src/gui/popuptransformangle.h
+	*** Popup Widget - Element Table
+	*** src/gui/popupelementtable.h
 	Copyright T. Youngs 2007-2015
 
 	This file is part of Aten.
@@ -19,11 +19,13 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_TRANSFORMANGLEPOPUP_H
-#define ATEN_TRANSFORMANGLEPOPUP_H
+#ifndef ATEN_ELEMENTCOMMONPOPUP_H
+#define ATEN_ELEMENTCOMMONPOPUP_H
 
-#include "gui/ui_popuptransformangle.h"
+#include "gui/ui_popupelementcommon.h"
 #include "gui/tmenubutton.hui"
+#include "base/namespace.h"
+#include <QPushButton>
 #include "parser/returnvalue.h"
 
 // Forward Declarations (Qt)
@@ -38,8 +40,8 @@ ATEN_END_NAMESPACE
 
 ATEN_USING_NAMESPACE
 
-// Popup Widget - Transform/Set/Angle
-class TransformAnglePopup : public TMenuButtonPopupWidget
+// Popup Widget - Build/Element/Common
+class ElementCommonPopup : public TMenuButtonPopupWidget
 {
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
@@ -50,9 +52,9 @@ class TransformAnglePopup : public TMenuButtonPopupWidget
 
 	public:
 	// Constructor / Destructor
-	TransformAnglePopup(AtenWindow& parent, TMenuButton* buttonParent);
+	ElementCommonPopup(AtenWindow& parent, TMenuButton* buttonParent);
 	// Main form declaration
-	Ui::TransformAnglePopup ui;
+	Ui::ElementCommonPopup ui;
 	// Show popup, updating any controls as necessary beforehand
 	void popup();
 	// Call named method associated to popup
@@ -60,28 +62,18 @@ class TransformAnglePopup : public TMenuButtonPopupWidget
 
 
 	/*
-	 * Reimplementations
-	 */
-	protected:
-	void hideEvent(QHideEvent* event) { TMenuButtonPopupWidget::hideEvent(event); }
-
-
-	/*
-	 * Local Variables
-	 */
-	private:
-	// Current angle (if three bound atoms are selected)
-	double currentAngle_;
-
-
-	/*
-	 * Widget Functions
+	 * Window Functions
 	 */
 	private slots:
-	void on_CopyCurrentAngleButton_clicked(bool checked);
-	void on_SetAngleButton_clicked(bool checked);
-	void on_IncreaseAngleButton_clicked(bool checked);
-	void on_DecreaseAngleButton_clicked(bool checked);
+	void ElementButton_clicked(bool checked);
+
+	
+	/*
+	 * Local variables
+	 */
+	private:
+	// Selected element
+	int selectedElement_;
 };
 
 #endif

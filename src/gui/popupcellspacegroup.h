@@ -1,6 +1,6 @@
 /*
-	*** Popup Widget - Transform Angle
-	*** src/gui/popuptransformangle.h
+	*** Popup Widget - Cell Spacegroup
+	*** src/gui/popupcellspacegroup.h
 	Copyright T. Youngs 2007-2015
 
 	This file is part of Aten.
@@ -19,10 +19,10 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_TRANSFORMANGLEPOPUP_H
-#define ATEN_TRANSFORMANGLEPOPUP_H
+#ifndef ATEN_CELLSPACEGROUPPOPUP_H
+#define ATEN_CELLSPACEGROUPPOPUP_H
 
-#include "gui/ui_popuptransformangle.h"
+#include "gui/ui_popupcellspacegroup.h"
 #include "gui/tmenubutton.hui"
 #include "parser/returnvalue.h"
 
@@ -38,8 +38,8 @@ ATEN_END_NAMESPACE
 
 ATEN_USING_NAMESPACE
 
-// Popup Widget - Transform/Set/Angle
-class TransformAnglePopup : public TMenuButtonPopupWidget
+// Popup Widget - Cell Spacegroup
+class CellSpacegroupPopup : public TMenuButtonPopupWidget
 {
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
@@ -50,9 +50,9 @@ class TransformAnglePopup : public TMenuButtonPopupWidget
 
 	public:
 	// Constructor / Destructor
-	TransformAnglePopup(AtenWindow& parent, TMenuButton* buttonParent);
+	CellSpacegroupPopup(AtenWindow& parent, TMenuButton* buttonParent);
 	// Main form declaration
-	Ui::TransformAnglePopup ui;
+	Ui::CellSpacegroupPopup ui;
 	// Show popup, updating any controls as necessary beforehand
 	void popup();
 	// Call named method associated to popup
@@ -67,21 +67,14 @@ class TransformAnglePopup : public TMenuButtonPopupWidget
 
 
 	/*
-	 * Local Variables
-	 */
-	private:
-	// Current angle (if three bound atoms are selected)
-	double currentAngle_;
-
-
-	/*
 	 * Widget Functions
 	 */
+	private:
+	// Adjust matrix of current model
+	void adjustCurrentMatrix(int lengthIndex, double value);
+
 	private slots:
-	void on_CopyCurrentAngleButton_clicked(bool checked);
-	void on_SetAngleButton_clicked(bool checked);
-	void on_IncreaseAngleButton_clicked(bool checked);
-	void on_DecreaseAngleButton_clicked(bool checked);
+	void on_SpacegroupEdit_XXX(double value);
 };
 
 #endif

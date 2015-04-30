@@ -24,9 +24,19 @@
 
 #include "gui/ui_popupviewreset.h"
 #include "gui/tmenubutton.hui"
+#include "parser/returnvalue.h"
 
 // Forward Declarations (Qt)
 class AtenWindow;
+
+ATEN_BEGIN_NAMESPACE
+
+// Forward Declarations (Aten)
+class ReturnValue;
+
+ATEN_END_NAMESPACE
+
+ATEN_USING_NAMESPACE
 
 // Popup Widget - ResetView
 class ResetViewPopup : public TMenuButtonPopupWidget
@@ -46,7 +56,7 @@ class ResetViewPopup : public TMenuButtonPopupWidget
 	// Show popup, updating any controls as necessary beforehand
 	void popup();
 	// Call named method associated to popup
-	bool callMethod(QString methodName);
+	bool callMethod(QString methodName, ReturnValue& rv);
 	
 
 	/*

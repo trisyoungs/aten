@@ -1,6 +1,6 @@
 /*
-	*** Popup Widget - Cell Lengths Functions
-	*** src/gui/popupcelllengths_funcs.cpp
+	*** Popup Widget - Cell Spacegroup Functions
+	*** src/gui/popupcellspacegroup_funcs.cpp
 	Copyright T. Youngs 2007-2015
 
 	This file is part of Aten.
@@ -19,22 +19,23 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "gui/popupcelllengths.h"
+#include "gui/popupcellspacegroup.h"
 #include "main/aten.h"
 #include "gui/mainwindow.h"
 #include "base/namespace.h"
+#include "base/spacegroup.h"
 
 ATEN_USING_NAMESPACE
 
 // Constructor
-CellLengthsPopup::CellLengthsPopup(AtenWindow& parent, TMenuButton* buttonParent) : TMenuButtonPopupWidget(buttonParent), parent_(parent)
+CellSpacegroupPopup::CellSpacegroupPopup(AtenWindow& parent, TMenuButton* buttonParent) : TMenuButtonPopupWidget(buttonParent), parent_(parent)
 {
 	// Set up interface
 	ui.setupUi(this);
 }
 
 // Show popup, updating any controls as necessary beforehand
-void CellLengthsPopup::popup()
+void CellSpacegroupPopup::popup()
 {
 	// Update lengths in spin boxes
 	refreshing_ = true;
@@ -43,10 +44,12 @@ void CellLengthsPopup::popup()
 	Model* model = parent_.aten().currentModelOrFrame();
 	if (model)
 	{
-		ui.ASpin->setValue(model->cell()->lengths().x);
-		ui.BSpin->setValue(model->cell()->lengths().y);
-		ui.CSpin->setValue(model->cell()->lengths().z);
+// 		Spacegroups[]; ATEN2 TODO
+// 		ui.SpacegroupCombo->setCurrentIndex(model->cell()->spacegroupId());
 	}
+
+	// Enable / disable controls as necessary
+	ui.SpacegroupCombo->setEnabled(model);
 
 	show();
 
@@ -54,7 +57,7 @@ void CellLengthsPopup::popup()
 }
 
 // Call named method associated to popup
-bool CellLengthsPopup::callMethod(QString methodName, ReturnValue& rv)
+bool CellSpacegroupPopup::callMethod(QString methodName, ReturnValue& rv)
 {
 	if (methodName == "TEST") return true;
 	else printf("No method called '%s' is available in this popup.\n", qPrintable(methodName));
@@ -66,7 +69,7 @@ bool CellLengthsPopup::callMethod(QString methodName, ReturnValue& rv)
  */
 
 // Adjust matrix of current model
-void CellLengthsPopup::adjustCurrentMatrix(int lengthIndex, double value)
+void CellSpacegroupPopup::adjustCurrentMatrix(int lengthIndex, double value)
 {
 	// Get current model and set new angle in cell
 	Model* model = parent_.aten().currentModelOrFrame();
@@ -78,32 +81,3 @@ void CellLengthsPopup::adjustCurrentMatrix(int lengthIndex, double value)
 	}
 }
 
-void CellLengthsPopup::on_ASpin_valueChanged(double value)
-{
-	if (refreshing_) return;
-
-	adjustCurrentMatrix(0, value);
-
-	// Update display
-	parent_.updateWidgets(AtenWindow::CanvasTarget);
-}
-
-void CellLengthsPopup::on_BSpin_valueChanged(double value)
-{
-	if (refreshing_) return;
-
-	adjustCurrentMatrix(1, value);
-
-	// Update display
-	parent_.updateWidgets(AtenWindow::CanvasTarget);
-}
-
-void CellLengthsPopup::on_CSpin_valueChanged(double value)
-{
-	if (refreshing_) return;
-
-	adjustCurrentMatrix(2, value);
-
-	// Update display
-	parent_.updateWidgets(AtenWindow::CanvasTarget);
-}

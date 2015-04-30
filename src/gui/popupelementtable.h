@@ -1,6 +1,6 @@
 /*
-	*** Element Select Dialog
-	*** src/gui/selectelement.h
+	*** Popup Widget - Element Table
+	*** src/gui/popupelementtable.h
 	Copyright T. Youngs 2007-2015
 
 	This file is part of Aten.
@@ -19,21 +19,29 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_SELECTELEMENTDIALOG_H
-#define ATEN_SELECTELEMENTDIALOG_H
+#ifndef ATEN_ELEMENTTABLEPOPUP_H
+#define ATEN_ELEMENTTABLEPOPUP_H
 
-#include "gui/ui_selectelement.h"
-#include "templates/reflist.h"
-#include "base/elementmap.h"
+#include "gui/ui_popupelementtable.h"
+#include "gui/tmenubutton.hui"
 #include "base/namespace.h"
+#include <QPushButton>
+#include "parser/returnvalue.h"
 
 // Forward Declarations (Qt)
 class AtenWindow;
 
+ATEN_BEGIN_NAMESPACE
+
+// Forward Declarations (Aten)
+class ReturnValue;
+
+ATEN_END_NAMESPACE
+
 ATEN_USING_NAMESPACE
 
-// Select Element Dialog
-class AtenSelectElement : public QDialog
+// Popup Widget - Build/Element/Table
+class ElementTablePopup : public TMenuButtonPopupWidget
 {
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
@@ -44,41 +52,30 @@ class AtenSelectElement : public QDialog
 
 	public:
 	// Constructor / Destructor
-	AtenSelectElement(AtenWindow& parent);
-	~AtenSelectElement();
+	ElementTablePopup(AtenWindow& parent, TMenuButton* buttonParent);
 	// Main form declaration
-	Ui::AtenSelectElement ui;
+	Ui::ElementTablePopup ui;
+	// Show popup, updating any controls as necessary beforehand
+	void popup();
+	// Call named method associated to popup
+	bool callMethod(QString methodName, ReturnValue& rv);
 
 
 	/*
 	 * Window Functions
 	 */
 	private slots:
-	void on_CancelButton_clicked(bool checked);
 	void ElementButton_clicked(bool checked);
-	void CommonElementButton_clicked(bool checked);
 
-	
+
 	/*
 	 * Local variables
 	 */
 	private:
 	// Selected element
 	int selectedElement_;
-	// Reflist of common element buttons
-	Reflist<QPushButton,int> commonButtons_;	
 	// Array of element buttons
 	QList<QPushButton*> elementButtons_;
-	// Layout for common elements group
-	QHBoxLayout* commonGroupLayout_;
-
-
-	/*
-	 * Methods
-	 */
-	public:
-	// Select an element
-	int selectElement();
 };
 
 #endif

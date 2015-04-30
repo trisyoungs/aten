@@ -48,7 +48,7 @@ void RebondPopup::popup()
 }
 
 // Call named method associated to popup
-bool RebondPopup::callMethod(QString methodName)
+bool RebondPopup::callMethod(QString methodName, ReturnValue& rv)
 {
 	if (methodName == "TEST") return true;
 	else printf("No method called '%s' is available in this popup.\n", qPrintable(methodName));
@@ -68,7 +68,7 @@ void RebondPopup::on_RebondModelNoAugmentButton_clicked(bool checked)
 	parent_.updateWidgets(AtenWindow::CanvasTarget);
 
 	// Hide popup
-	hide();
+	done();
 }
 
 void RebondPopup::on_RebondSelectionButton_clicked(bool checked)
@@ -80,7 +80,7 @@ void RebondPopup::on_RebondSelectionButton_clicked(bool checked)
 	parent_.updateWidgets(AtenWindow::CanvasTarget);
 
 	// Hide popup
-	hide();
+	done();
 }
 
 void RebondPopup::on_RebondSelectionNoAugmentButton_clicked(bool checked)
@@ -92,7 +92,7 @@ void RebondPopup::on_RebondSelectionNoAugmentButton_clicked(bool checked)
 	parent_.updateWidgets(AtenWindow::CanvasTarget);
 
 	// Hide popup
-	hide();
+	done();
 }
 
 void RebondPopup::on_RebondPatternsButton_clicked(bool checked)
@@ -104,7 +104,7 @@ void RebondPopup::on_RebondPatternsButton_clicked(bool checked)
 	parent_.updateWidgets(AtenWindow::CanvasTarget);
 
 	// Hide popup
-	hide();
+	done();
 }
 
 void RebondPopup::on_RebondPatternsNoAugmentButton_clicked(bool checked)
@@ -116,7 +116,7 @@ void RebondPopup::on_RebondPatternsNoAugmentButton_clicked(bool checked)
 	parent_.updateWidgets(AtenWindow::CanvasTarget);
 
 	// Hide popup
-	hide();
+	done();
 }
 
 void RebondPopup::on_ToleranceDial_valueChanged(int value)
