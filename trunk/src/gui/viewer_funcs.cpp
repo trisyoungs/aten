@@ -61,7 +61,6 @@ Viewer::Viewer(QWidget* parent) : QOpenGLWidget(parent)
 	activeMode_ = UserAction::NoAction;
 	selectedMode_ = UserAction::SelectAction;
 	currentDrawDepth_ = -5.0;
-	buildElement_ = 6;
 	buildGeometry_ = Atom::TetrahedralGeometry;
 	editable_ = true;
 

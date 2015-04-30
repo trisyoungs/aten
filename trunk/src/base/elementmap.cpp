@@ -24,6 +24,7 @@
 #include "ff/forcefield.h"
 #include "base/forcefieldatom.h"
 #include "base/atom.h"
+#include <QPainter>
 
 ATEN_BEGIN_NAMESPACE
 
@@ -732,6 +733,43 @@ bool ElementMap::colourHasChanged(int z) const
 	}
 	for (int n=0; n<4; ++n) if (fabs(elements_[z].colour[n]-defaultElements_[z].colour[n]) > 1.0e-5) return true;
 	return false;
+}
+
+// Return QIcon for the given element
+QIcon ElementMap::icon(int z) const
+{
+	if ((z < 0) || (z > nElements_))
+	{
+		Messenger::error("ElementMap::colourHasChanged() : Atomic number %i is out of range.\n", z);
+		return QIcon();
+	}
+
+	QPixmap pixmap(32,32);
+
+	QPainter painter(&pixmap);
+
+	// Grab colour and set brush
+	QColor colour;
+	colour.setRgbF(elements_[z].colour[0], elements_[z].colour[1], elements_[z].colour[2]);
+	painter.setBrush(colour);
+
+	// Set up pen
+	QPen pen;
+	pen.setWidth(2);
+	pen.setColor(Qt::black);
+
+	// Set up font
+	QFont font;
+	font.setPointSize(10);
+	
+	// Draw rectangle and text
+	painter.drawRect(0, 0, 30, 30);
+	painter.setFont(font);
+	painter.drawText(0, 0, 31, 31, Qt::AlignCenter, elements_[z].symbol);
+
+	painter.end();
+
+	return QIcon(pixmap);
 }
 
 /*

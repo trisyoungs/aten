@@ -5,7 +5,7 @@ Remove dialog pointers (use instances instead).
 Remove Scripts menu, and automatic loading of scripts on startup.
 Fix callbacks for atom picking etc.
 Add new RefList definition.
-Move Prefs from being a static global to a member of Aten.
+Move Prefs from being a static global to a member of Aten?
 Split gui/mainmenu_actions.cpp into menu_* files.
 In AtenWindow::on_actionFileSaveImage_triggered convert options to proper QDialog.
 Add large image creation functions.
@@ -46,7 +46,9 @@ PrimitiveSet::wireCube_ is not a wireframe cube!
 Recognise bonds in both selection and right-click:
 o Context menu for bond then can replicate bond, angle, and torsion adjustment
 Clear selected measurements on panel popup clears all measurements.
-Finish element select popups.
+CRASH - Click in empty space in model list causes fp exception.
+Allow right-click on elements in PTable to set as member of common elements popup.
+Finish Spacegroup popup.
 
 GUI TODO:
 AddAtom functionality (from old Build menu).

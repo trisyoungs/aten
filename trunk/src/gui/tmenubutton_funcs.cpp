@@ -25,6 +25,7 @@
 #include <QtWidgets/QStyle>
 #include <QtWidgets/QStylePainter>
 #include <QtWidgets/QStyleOptionToolButton>
+#include <QButtonGroup>
 
 /*
  * TMenuButtonPopupWidget
@@ -34,19 +35,123 @@
 TMenuButtonPopupWidget::TMenuButtonPopupWidget(TMenuButton* parent) : QWidget(parent, Qt::FramelessWindowHint | Qt::Popup)
 {
 	parentMenuButton_ = parent;
+	widgetDone_ = false;
+}
+
+// Return parent TMenuButton
+TMenuButton* TMenuButtonPopupWidget::parentMenuButton()
+{
+	return parentMenuButton_;
+}
+
+// Local function called when the widget should be closed after a button has been selceted
+void TMenuButtonPopupWidget::done(bool setParentButtonDown)
+{
+	if (parentMenuButton_) parentMenuButton_->popupDone(setParentButtonDown);
+	else Messenger::print("Internal Error: No parent button set in TMenuButtonPopupWidget::done().\n");
+
+	widgetDone_ = true;
+
+	hide();
 }
 
 void TMenuButtonPopupWidget::hideEvent(QHideEvent* event)
 {
 // 	printf("HIDEEVENT\n");
-	parentMenuButton_->popupDone();
+	// Call the parent's popupDone() function, unless the widgetDone_ flag is set
+	if (parentMenuButton_ && (!widgetDone_)) parentMenuButton_->popupDone(false);
+
+	// Reset the widgetDone_ flag
+	widgetDone_ = false;
 
 	event->accept();
 }
 
 /*
+ * TMenuButtonGroup
+ */
+
+// Constructor
+TMenuButtonGroup::TMenuButtonGroup() : ListItem<TMenuButtonGroup>()
+{
+	name_ = "UnnamedGroup";
+}
+
+// Set name of group
+void TMenuButtonGroup::setName(QString name)
+{
+	name_ = name;
+}
+
+// Return name of group
+QString TMenuButtonGroup::name()
+{
+	return name_;
+}
+
+// Add button to group
+void TMenuButtonGroup::addButton(TMenuButton* button)
+{
+	buttons_.append(button);
+}
+
+// Set specified button as checked button
+void TMenuButtonGroup::setCurrentButton(TMenuButton* button)
+{
+	// Loop over buttons in group, unchecking all others except the one provided (which we will check)
+	TMenuButton* groupButton;
+	for (int n=0; n<buttons_.count(); ++n)
+	{
+		groupButton = buttons_.at(n);
+		if (groupButton == button) groupButton->setChecked(true);
+		else
+		{
+			groupButton->setChecked(false);
+			groupButton->setDown(false);
+		}
+	}
+}
+
+// Set button with specified text as checked button
+bool TMenuButtonGroup::setCurrentButton(QString buttonText)
+{
+	// Loop over buttons in group, unchecking all others except the one provided (which we will check)
+	TMenuButton* groupButton;
+	for (int n=0; n<buttons_.count(); ++n)
+	{
+		groupButton = buttons_.at(n);
+		if (groupButton->text() == buttonText)
+		{
+			setCurrentButton(groupButton);
+			return true;
+		}
+	}
+	return false;
+}
+
+// Set button with specified index as checked button
+bool TMenuButtonGroup::setCurrentButton(int buttonIndex)
+{
+	// Loop over buttons in group, unchecking all others except the one provided (which we will check)
+	TMenuButton* groupButton;
+	for (int n=0; n<buttons_.count(); ++n)
+	{
+		groupButton = buttons_.at(n);
+		if (groupButton->index() == buttonIndex)
+		{
+			setCurrentButton(groupButton);
+			return true;
+		}
+	}
+	return false;
+}
+
+/*
  * TMenuButton
  */
+
+// Static singleton
+List<TMenuButtonGroup> TMenuButton::groups_;
 
 // Constructor
 TMenuButton::TMenuButton(QWidget* parent) : QToolButton(parent)
@@ -54,6 +159,7 @@ TMenuButton::TMenuButton(QWidget* parent) : QToolButton(parent)
 	// Nullify popup widget to start with
 	popupWidget_ = NULL;
 	instantPopup_ = false;
+	group_ = NULL;
 
 	// Set popup timer delay, style, and connect slot
 	popupTimer_.setSingleShot(true);
@@ -71,6 +177,12 @@ TMenuButton::TMenuButton(QWidget* parent) : QToolButton(parent)
 	setMaximumSize(maxWidth, minSize);
 }
 
+// Return user-assigned index of button
+int TMenuButton::index()
+{
+	return index_;
+}
+
 // Set popup widget for button
 void TMenuButton::setPopupWidget(TMenuButtonPopupWidget* widget, bool instantPopup)
 {
@@ -84,11 +196,10 @@ TMenuButtonPopupWidget* TMenuButton::popupWidget()
 	return popupWidget_;
 }
 
-void TMenuButton::popupDone()
+void TMenuButton::popupDone(bool setButtonDown)
 {
-	// Emit the 'released()' signal
-	if (!checkedBeforePressed_) setDown(false);
-	else emit(released());
+	if (!setButtonDown) setDown(false);
+	else if (group_) group_->setCurrentButton(this);
 }
 
 // Notify button that popup is done
@@ -98,18 +209,20 @@ void TMenuButton::paintEvent(QPaintEvent* event)
 
 // 	QPainterPath path;
 // 	// Set pen to start point, which is lower right-hand corner of widget area
-// 	path.moveTo(width(), height());
+// 	path.moveTo(width()/2, height());
+// 
 // 	// Create triangle...
-// 	path.lineTo(width()/2, height()-1);
-// 	path.lineTo(width()-1, height()/2);
-// 	path.lineTo(width()-1, height()-1);
+// 	path.lineTo(width(), height()-5);
+// 	path.lineTo(1, height()-5);
+// 	path.closeSubpath();
+// // 	path.lineTo(width()/2, height());
 // 
 // 	// Don't draw any lines
 // 	painter.setPen(Qt::NoPen);
-
+// 
 // 	// Setup QGradient for fill
-// 	QRadialGradient gradient(width()/2, height()/2, width()/2, width(), height());
-// 	painter.fillPath(path, QBrush(gradient));
+// // 	QRadialGradient gradient(width()/2, height()/2, width()/2, width(), height());
+// 	painter.fillPath(path, QBrush(Qt::blue));
 
 	QStyleOptionToolButton opt;
 	initStyleOption(&opt);
@@ -156,4 +269,67 @@ void TMenuButton::buttonReleased()
 // 	printf("RELEASED [%s]\n", qPrintable(text()));
 	// Make sure timer is stopped - it will have either already popped, or this was a single-click and we don't want the popup
 	popupTimer_.stop();
+
+	// Check the mouse coordinates at the point of release
+	QPoint point = mapFromGlobal(QCursor::pos());
+	if ((point.x() >= width()) || (point.y() >= height()) || (point.x() < 0) || (point.y() < 0))
+	{
+		return;
+	}
+	else
+	{
+		// Signal the group of this button (if there is one) that the button has been properly clicked
+		if (group_) group_->setCurrentButton(this);
+	}
+}
+
+/*
+ * Group
+ */
+
+// Add this button to the named group
+void TMenuButton::setGroup(QString groupName, int index)
+{
+	// Search for this group...
+	TMenuButtonGroup* group;
+	for (group = groups_.first(); group != NULL; group = group->next) if (group->name() == groupName) break;
+	if (group == NULL)
+	{
+		group = groups_.add();
+		group->setName(groupName);
+	}
+
+	group_ = group;
+	group_->addButton(this);
+	index_ = index;
+}
+
+// Check specified button in specified group
+bool TMenuButton::setGroupButtonChecked(QString groupName, QString buttonText)
+{
+	// First, find named group
+	TMenuButtonGroup* group;
+	for (group = groups_.first(); group != NULL; group = group->next) if (group->name() == groupName) break;
+	if (!group)
+	{
+		Messenger::print("Internal error: No TMenuButton group named '%s'\n", qPrintable(groupName));
+		return false;
+	}
+
+	return group->setCurrentButton(buttonText);
+}
+
+// Check specified button in specified group
+bool TMenuButton::setGroupButtonChecked(QString groupName, int buttonIndex)
+{
+	// First, find named group
+	TMenuButtonGroup* group;
+	for (group = groups_.first(); group != NULL; group = group->next) if (group->name() == groupName) break;
+	if (!group)
+	{
+		Messenger::print("Internal error: No TMenuButton group named '%s'\n", qPrintable(groupName));
+		return false;
+	}
+
+	return group->setCurrentButton(buttonIndex);
 }

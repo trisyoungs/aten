@@ -23,7 +23,6 @@
 #include "main/aten.h"
 #include "gui/mainwindow.h"
 #include "gui/select.h"
-#include "gui/selectelement.h"
 #include "model/model.h"
 #include "parser/commandnode.h"
 
@@ -93,9 +92,10 @@ void SelectWidget::on_DeselectButton_clicked(bool on)
 
 void SelectWidget::on_TypeSelectElementButton_clicked(bool on)
 {
-	AtenSelectElement elementSelect(parent_);
-	int newel = elementSelect.selectElement();
-	if (newel != -1) ui.TypeElementEdit->setText( Elements().symbol(newel) );
+// 	AtenSelectElement elementSelect(parent_);
+// 	int newel = elementSelect.selectElement();
+// 	if (newel != -1) ui.TypeElementEdit->setText( Elements().symbol(newel) );
+	// ATEN2 TODO
 }
 
 void SelectWidget::on_SelectCombo_currentIndexChanged(int n)

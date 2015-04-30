@@ -72,7 +72,7 @@ void TransformTorsionPopup::popup()
 }
 
 // Call named method associated to popup
-bool TransformTorsionPopup::callMethod(QString methodName)
+bool TransformTorsionPopup::callMethod(QString methodName, ReturnValue& rv)
 {
 	if (methodName == "TEST") return true;
 	else if (methodName == "set") on_SetTorsionButton_clicked(false);
@@ -99,7 +99,7 @@ void TransformTorsionPopup::on_SetTorsionButton_clicked(bool checked)
 
 	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
 
-	hide();
+	done();
 }
 
 void TransformTorsionPopup::on_IncreaseTorsionButton_clicked(bool checked)

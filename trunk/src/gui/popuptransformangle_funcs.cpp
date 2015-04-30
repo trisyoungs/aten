@@ -69,7 +69,7 @@ void TransformAnglePopup::popup()
 }
 
 // Call named method associated to popup
-bool TransformAnglePopup::callMethod(QString methodName)
+bool TransformAnglePopup::callMethod(QString methodName, ReturnValue& rv)
 {
 	if (methodName == "TEST") return true;
 	else if (methodName == "set") on_SetAngleButton_clicked(false);
@@ -96,7 +96,7 @@ void TransformAnglePopup::on_SetAngleButton_clicked(bool checked)
 
 	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
 
-	hide();
+	done();
 }
 
 void TransformAnglePopup::on_IncreaseAngleButton_clicked(bool checked)

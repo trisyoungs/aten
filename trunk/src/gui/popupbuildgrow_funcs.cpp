@@ -73,7 +73,7 @@ void GrowPopup::popup()
 }
 
 // Call named method associated to popup
-bool GrowPopup::callMethod(QString methodName)
+bool GrowPopup::callMethod(QString methodName, ReturnValue& rv)
 {
 	if (methodName == "TEST") return true;
 	else printf("No method called '%s' is available in this popup.\n", qPrintable(methodName));
@@ -94,7 +94,7 @@ void GrowPopup::on_GeometryLinearButton_clicked(bool checked)
 	ui.GrowSelectionButton->setIcon(QIcon(":/atomgeometry/icons/atomgeometry_linear.png"));
 
 	// Hide popup
-	hide();
+	done();
 }
 
 void GrowPopup::on_GeometryTShapeButton_clicked(bool checked)
@@ -107,7 +107,7 @@ void GrowPopup::on_GeometryTShapeButton_clicked(bool checked)
 	ui.GrowSelectionButton->setIcon(QIcon(":/atomgeometry/icons/atomgeometry_tshape.png"));
 
 	// Hide popup
-	hide();
+	done();
 }
 
 void GrowPopup::on_GeometryTrigonalButton_clicked(bool checked)
@@ -120,7 +120,7 @@ void GrowPopup::on_GeometryTrigonalButton_clicked(bool checked)
 	ui.GrowSelectionButton->setIcon(QIcon(":/atomgeometry/icons/atomgeometry_trigonal.png"));
 
 	// Hide popup
-	hide();
+	done();
 }
 
 void GrowPopup::on_GeometryTetrahedralButton_clicked(bool checked)
@@ -133,7 +133,7 @@ void GrowPopup::on_GeometryTetrahedralButton_clicked(bool checked)
 	ui.GrowSelectionButton->setIcon(QIcon(":/atomgeometry/icons/atomgeometry_tetrahedral.png"));
 
 	// Hide popup
-	hide();
+	done();
 }
 void GrowPopup::on_GeometrySqPlanarButton_clicked(bool checked)
 {
@@ -145,7 +145,7 @@ void GrowPopup::on_GeometrySqPlanarButton_clicked(bool checked)
 	ui.GrowSelectionButton->setIcon(QIcon(":/atomgeometry/icons/atomgeometry_sqplanar.png"));
 
 	// Hide popup
-	hide();
+	done();
 }
 
 void GrowPopup::on_GeometryTrigBipyramidButton_clicked(bool checked)
@@ -158,7 +158,7 @@ void GrowPopup::on_GeometryTrigBipyramidButton_clicked(bool checked)
 	ui.GrowSelectionButton->setIcon(QIcon(":/atomgeometry/icons/atomgeometry_trigbipy.png"));
 
 	// Hide popup
-	hide();
+	done();
 }
 
 void GrowPopup::on_GeometryOctahedralButton_clicked(bool checked)
@@ -171,18 +171,18 @@ void GrowPopup::on_GeometryOctahedralButton_clicked(bool checked)
 	ui.GrowSelectionButton->setIcon(QIcon(":/atomgeometry/icons/atomgeometry_octahedral.png"));
 
 	// Hide popup
-	hide();
+	done();
 }
 
 void GrowPopup::on_GrowSelectionButton_clicked(bool checked)
 {
 	// Run command
-	CommandNode::run(Commands::SelectionGrowAtom, "ic", parent_.ui.MainView->buildElement(), Atom::AtomGeometry(parent_.ui.MainView->buildGeometry()));
+	CommandNode::run(Commands::SelectionGrowAtom, "ic", parent_.currentBuildElement(), Atom::AtomGeometry(parent_.ui.MainView->buildGeometry()));
 
 	// Update display
 	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
 
 	// Hide popup
-	hide();
+	done();
 }
 

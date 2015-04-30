@@ -163,7 +163,7 @@ void Viewer::renderUserActions(Model* source)
 				style_j = (prefs.renderStyle() == Prefs::OwnStyle ? j->style() : prefs.renderStyle());
 			}
 			if (style_j == Prefs::TubeStyle) radius_j = 0.0;
-			else if (style_j == Prefs::ScaledStyle) radius_j = prefs.styleRadius(Prefs::ScaledStyle, j->element()) - primitives_[primitiveSet_].scaledAtomAdjustment(buildElement_);
+			else if (style_j == Prefs::ScaledStyle) radius_j = prefs.styleRadius(Prefs::ScaledStyle, j->element()) - primitives_[primitiveSet_].scaledAtomAdjustment(atenWindow_->currentBuildElement());
 			else radius_j = prefs.styleRadius(style_j, j->element()) - primitives_[primitiveSet_].sphereAtomAdjustment();
 			v -= pos;
 
@@ -189,7 +189,7 @@ void Viewer::renderUserActions(Model* source)
 				default:
 					break;
 			}
-			Elements().copyColour(buildElement_, colour_j);
+			Elements().copyColour(atenWindow_->currentBuildElement(), colour_j);
 			
 			// Construct transformation matrix to centre on original (first) atom
 			A.setIdentity();

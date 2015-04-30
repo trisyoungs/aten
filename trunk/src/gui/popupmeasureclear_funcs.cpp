@@ -45,7 +45,7 @@ void MeasureClearPopup::popup()
 }
 
 // Call named method associated to popup
-bool MeasureClearPopup::callMethod(QString methodName)
+bool MeasureClearPopup::callMethod(QString methodName, ReturnValue& rv)
 {
 	if (methodName == "TEST") return true;
 	else printf("No method called '%s' is available in this popup.\n", qPrintable(methodName));
@@ -65,6 +65,6 @@ void MeasureClearPopup::on_SelectionButton_clicked(bool checked)
 	parent_.updateWidgets(AtenWindow::CanvasTarget);
 
 	// Hide popup
-	hide();
+	done();
 }
 

@@ -21,6 +21,8 @@
 
 #include "gui/mainwindow.h"
 
+ATEN_USING_NAMESPACE
+
 /*
  * Set
  */
@@ -28,17 +30,20 @@
 void AtenWindow::on_TransformSetDistanceButton_clicked(bool checked)
 {
 	// Call the set method in the popup
-	ui.TransformSetDistanceButton->callPopupMethod("set");
+	ReturnValue rv;
+	ui.TransformSetDistanceButton->callPopupMethod("set", rv);
 }
 
 void AtenWindow::on_TransformSetAngleButton_clicked(bool checked)
 {
 	// Call the set method in the popup
-	ui.TransformSetAngleButton->callPopupMethod("set");
+	ReturnValue rv;
+	ui.TransformSetAngleButton->callPopupMethod("set", rv);
 }
 
 void AtenWindow::on_TransformSetTorsionButton_clicked(bool checked)
 {
 	// Call the set method in the popup
-	ui.TransformSetTorsionButton->callPopupMethod("set");
+	ReturnValue rv;
+	ui.TransformSetTorsionButton->callPopupMethod("set", rv);
 }

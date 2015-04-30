@@ -26,7 +26,6 @@
 #include "main/aten.h"
 #include "gui/prefs.h"
 #include "gui/mainwindow.h"
-#include "gui/selectelement.h"
 #include "model/model.h"
 #include "ff/forcefield.h"
 #include "base/sysfunc.h"

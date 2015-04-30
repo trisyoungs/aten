@@ -122,3 +122,18 @@ void AtenWindow::on_BuildBondingClearButton_clicked(bool checked)
 	// Update
 	updateWidgets(AtenWindow::CanvasTarget);
 }
+
+/*
+ * Public Functions
+ */
+
+// Return currently-selected build element
+int AtenWindow::currentBuildElement()
+{
+	ReturnValue rv(0);
+	if (ui.BuildElementTableButton->isChecked()) ui.BuildElementTableButton->callPopupMethod("selectedElement", rv);
+	else if (ui.BuildElementCommonButton->isChecked()) ui.BuildElementCommonButton->callPopupMethod("selectedElement", rv);
+	else Messenger::print("Internal Error: No element button is checked?");
+
+	return rv.asInteger();
+}
