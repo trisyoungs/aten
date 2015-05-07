@@ -14,8 +14,6 @@ INCLUDE_DIRECTORIES(
 SET(gui_MOC_HDRS
   about.h
   atomlist.h
-  celldefinition.h
-  celltransform.h
   command.h
   disorderoptions.h
   disorderwizard.h
@@ -40,10 +38,18 @@ SET(gui_MOC_HDRS
   popupcellangles.h
   popupcelllengths.h
   popupcellmatrix.h
+  popupcellmiller.h
+  popupcellreplicate.h
+  popupcellscale.h
   popupcellspacegroup.h
   popuptransformangle.h
+  popuptransformcentre.h
   popuptransformdistance.h
+  popuptransformflip.h
+  popuptransformreposition.h
+  popuptransformshift.h
   popuptransformtorsion.h
+  popuptransformtranslate.h
   popupviewreset.h
   pores.h
   position.h
@@ -84,8 +90,6 @@ QT5_WRAP_CPP(treegui_MOC_SRCS ${treegui_MOC_HDRS})
 SET(gui_UIS
   about.ui
   atomlist.ui
-  celldefinition.ui
-  celltransform.ui
   command.ui
   disorderoptions.ui
   disorderwizard.ui
@@ -103,6 +107,9 @@ SET(gui_UIS
   popupcellangles.ui
   popupcelllengths.ui
   popupcellmatrix.ui
+  popupcellmiller.ui
+  popupcellreplicate.ui
+  popupcellscale.ui
   popupcellspacegroup.ui
   popupelementcommon.ui
   popupelementtable.ui
@@ -111,8 +118,13 @@ SET(gui_UIS
   popupmeasuredistance.ui
   popupmeasuretorsion.ui
   popuptransformangle.ui
+  popuptransformcentre.ui
   popuptransformdistance.ui
+  popuptransformflip.ui
+  popuptransformreposition.ui
+  popuptransformshift.ui
   popuptransformtorsion.ui
+  popuptransformtranslate.ui
   popupviewreset.ui
   pores.ui
   position.ui
@@ -144,8 +156,6 @@ set(gui_SRCS
   useractions.cpp
   about_funcs.cpp
   atomlist_funcs.cpp
-  celldefinition_funcs.cpp
-  celltransform_funcs.cpp
   command_funcs.cpp
   disorderoptions_funcs.cpp
   disorderwizard_funcs.cpp
@@ -175,6 +185,9 @@ set(gui_SRCS
   popupcellangles_funcs.cpp
   popupcelllengths_funcs.cpp
   popupcellmatrix_funcs.cpp
+  popupcellmiller_funcs.cpp
+  popupcellreplicate_funcs.cpp
+  popupcellscale_funcs.cpp
   popupcellspacegroup_funcs.cpp
   popupelementcommon_funcs.cpp
   popupelementtable_funcs.cpp
@@ -183,8 +196,13 @@ set(gui_SRCS
   popupmeasuredistance_funcs.cpp
   popupmeasuretorsion_funcs.cpp
   popuptransformangle_funcs.cpp
+  popuptransformcentre_funcs.cpp
   popuptransformdistance_funcs.cpp
+  popuptransformflip_funcs.cpp
+  popuptransformreposition_funcs.cpp
+  popuptransformshift_funcs.cpp
   popuptransformtorsion_funcs.cpp
+  popuptransformtranslate_funcs.cpp
   popupviewreset_funcs.cpp
   pores_funcs.cpp
   position_funcs.cpp

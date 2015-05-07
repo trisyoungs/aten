@@ -42,3 +42,30 @@ void AtenWindow::on_CellDefinePeriodicButton_clicked(bool checked)
 	updateWidgets(AtenWindow::CanvasTarget);
 }
 
+/*
+ * Transform
+ */
+
+void AtenWindow::on_CellTransformReplicateButton_clicked(bool checked)
+{
+	ReturnValue rv;
+	ui.CellTransformReplicateButton->callPopupMethod("replicate", rv);
+
+	updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
+}
+
+void AtenWindow::on_CellTransformScaleButton_clicked(bool checked)
+{
+	ReturnValue rv;
+	ui.CellTransformScaleButton->callPopupMethod("scale", rv);
+
+	updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
+}
+
+/*
+ * Miller
+ */
+
+void AtenWindow::on_CellMillerSelectButton_clicked(bool checked)
+{
+}

@@ -67,17 +67,38 @@ bool CellSpacegroupPopup::callMethod(QString methodName, ReturnValue& rv)
 /*
  * Widget Functions
  */
-
-// Adjust matrix of current model
-void CellSpacegroupPopup::adjustCurrentMatrix(int lengthIndex, double value)
+/*
+void CellSpacegroupPopup::on_CellSpacegroupSetButton_clicked(bool checked)
 {
-	// Get current model and set new angle in cell
-	Model* model = parent_.aten().currentModelOrFrame();
-	if (model)
-	{
-		UnitCell cell = (*model->cell());
-		cell.setLength(lengthIndex, value);
-		CommandNode::run(Commands::CellAxes, "ddddddddd", cell.parameter(UnitCell::CellAX), cell.parameter(UnitCell::CellAY), cell.parameter(UnitCell::CellAZ), cell.parameter(UnitCell::CellBX), cell.parameter(UnitCell::CellBY), cell.parameter(UnitCell::CellBZ),  cell.parameter(UnitCell::CellCX), cell.parameter(UnitCell::CellCY), cell.parameter(UnitCell::CellCZ)); 
-	}
+	// Grab the current text of the line edit and determine spacegroup
+	CommandNode::run(Commands::Spacegroup, "c", qPrintable(ui.CellSpacegroupEdit->text()));
+	ui.CellSpacegroupEdit->setText("");
+	// Set spacegroup label
+	Model* m = parent_.aten().currentModelOrFrame();
+	QString label;
+	label.sprintf("%s (%i)\n", Spacegroups[m->cell()->spacegroupId()].name, m->cell()->spacegroupId());
+	ui.SpacegroupLabel->setText(label);
 }
 
+void CellSpacegroupPopup::on_CellSpacegroupRemoveButton_clicked(bool checked)
+{
+	CommandNode::run(Commands::Spacegroup, "i", 0);
+
+	// Set spacegroup label
+	// ui.SpacegroupLabel->setText("None (0)"); ATEN2 TODO
+}*/
+
+void CellSpacegroupPopup::on_PackButton_clicked(bool checked)
+{
+	CommandNode::run(Commands::Pack, "");
+
+	// Update display
+	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
+
+	done();
+}
+
+void CellSpacegroupPopup::on_SpacegroupEdit_XXX(double value)
+{
+	// ATEN2 TODO
+}

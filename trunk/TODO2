@@ -49,6 +49,8 @@ Clear selected measurements on panel popup clears all measurements.
 CRASH - Click in empty space in model list causes fp exception.
 Allow right-click on elements in PTable to set as member of common elements popup.
 Finish Spacegroup popup.
+Modifying anything on Grid tool widget is slow, forcing update of grid primitive?
+Add Calculate tool to work out centre of geometry/mass.
 
 GUI TODO:
 AddAtom functionality (from old Build menu).

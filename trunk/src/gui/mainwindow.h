@@ -53,8 +53,6 @@ class AtenZMatrix;
 
 // Forward Declarations (Aten) 3 - Dock Widgets and Wizards
 class AtomListWidget;
-class CellDefinitionWidget;
-class CellTransformWidget;
 class CommandWidget;
 class DisorderWizard;
 class ForcefieldsWidget;
@@ -319,7 +317,13 @@ class AtenWindow : public QMainWindow
 	 * Cell Panel
 	 */
 	private slots:
+	// Define
 	void on_CellDefinePeriodicButton_clicked(bool checked);
+	// Transform
+	void on_CellTransformReplicateButton_clicked(bool checked);
+	void on_CellTransformScaleButton_clicked(bool checked);
+	// Miller
+	void on_CellMillerSelectButton_clicked(bool checked);
 
 
 	/*
@@ -473,7 +477,7 @@ class AtenWindow : public QMainWindow
 	 */
 	public:
 	// Update Targets
-	enum UpdateTarget { AtomsTarget = 1, CellTarget = 2, ForcefieldsTarget = 4, GlyphsTarget = 8, GridsTarget = 16, CanvasTarget = 64, StatusBarTarget = 128, GeometryTarget = 256, VibrationsTarget = 512, SelectTarget = 1024, TrajectoryTarget = 2048, AllTarget = 4095 };
+	enum UpdateTarget { AtomsTarget = 1, ForcefieldsTarget = 4, GlyphsTarget = 8, GridsTarget = 16, CanvasTarget = 64, StatusBarTarget = 128, GeometryTarget = 256, VibrationsTarget = 512, SelectTarget = 1024, TrajectoryTarget = 2048, AllTarget = 4095 };
 
 	private:
 	// List of dock widgets
@@ -482,10 +486,6 @@ class AtenWindow : public QMainWindow
 	public:
 	// Atom list dock widget
 	AtomListWidget *atomListWidget;
-	// Cell definition dock widget
-	CellDefinitionWidget *cellDefinitionWidget;
-	// Cell transform dock widget
-	CellTransformWidget *cellTransformWidget;
 	// Command dock widget
 	CommandWidget *commandWidget;
 	// Disorder wizard

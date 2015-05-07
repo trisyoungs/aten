@@ -46,6 +46,9 @@
 #include "gui/popupcellangles.h"
 #include "gui/popupcelllengths.h"
 #include "gui/popupcellmatrix.h"
+#include "gui/popupcellmiller.h"
+#include "gui/popupcellreplicate.h"
+#include "gui/popupcellscale.h"
 #include "gui/popupelementcommon.h"
 #include "gui/popupelementtable.h"
 #include "gui/popupmeasureangle.h"
@@ -53,13 +56,16 @@
 #include "gui/popupmeasuretorsion.h"
 #include "gui/popupcellspacegroup.h"
 #include "gui/popuptransformangle.h"
+#include "gui/popuptransformcentre.h"
 #include "gui/popuptransformdistance.h"
+#include "gui/popuptransformflip.h"
+#include "gui/popuptransformreposition.h"
+#include "gui/popuptransformshift.h"
 #include "gui/popuptransformtorsion.h"
+#include "gui/popuptransformtranslate.h"
 #include "gui/popupviewreset.h"
 
 #include "gui/atomlist.h"
-#include "gui/celldefinition.h"
-#include "gui/celltransform.h"
 #include "gui/command.h"
 #include "gui/disorderwizard.h"
 #include "gui/forcefields.h"
@@ -103,8 +109,6 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 
 	// Create dock widgets
 	atomListWidget = new AtomListWidget(*this, Qt::Tool);
-	cellDefinitionWidget = new CellDefinitionWidget(*this, Qt::Tool);
-	cellTransformWidget = new CellTransformWidget(*this, Qt::Tool);
 	commandWidget = new CommandWidget(*this, Qt::Tool);
 	disorderWizard = new DisorderWizard(*this);
 	forcefieldsWidget = new ForcefieldsWidget(*this, Qt::Tool);
@@ -118,7 +122,7 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 	trajectoryWidget = new TrajectoryWidget(*this, Qt::Tool);
 	transformWidget = new TransformWidget(*this, Qt::Tool);
 	vibrationsWidget = new VibrationsWidget(*this, Qt::Tool);
-	dockWidgets_ << atomListWidget << cellDefinitionWidget << cellTransformWidget << commandWidget << fragmentsWidget << glyphsWidget << gridsWidget << poresWidget << positionWidget << scriptMovieWidget << selectWidget << transformWidget << vibrationsWidget;
+	dockWidgets_ << atomListWidget << commandWidget << fragmentsWidget << glyphsWidget << gridsWidget << poresWidget << positionWidget << scriptMovieWidget << selectWidget << transformWidget << vibrationsWidget;
 
 	int n;
 	ReturnValue rv;
@@ -186,7 +190,13 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 	ui.CellDefineAnglesButton->setPopupWidget(new CellAnglesPopup(*this, ui.CellDefineAnglesButton), true);
 	ui.CellDefineLengthsButton->setPopupWidget(new CellLengthsPopup(*this, ui.CellDefineLengthsButton), true);
 	ui.CellDefineMatrixButton->setPopupWidget(new CellMatrixPopup(*this, ui.CellDefineMatrixButton), true);
-	ui.CellSpacegroupSetButton->setPopupWidget(new CellMatrixPopup(*this, ui.CellSpacegroupSetButton), true);
+	// -- Cell Panel (Spacegroup)
+	ui.CellSpacegroupSetButton->setPopupWidget(new CellSpacegroupPopup(*this, ui.CellSpacegroupSetButton));
+	// -- Cell Panel (Transform)
+	ui.CellTransformReplicateButton->setPopupWidget(new CellReplicatePopup(*this, ui.CellTransformReplicateButton));
+	ui.CellTransformScaleButton->setPopupWidget(new CellScalePopup(*this, ui.CellTransformScaleButton));
+	// -- Cell Panel (Miller)
+	ui.CellMillerDefineButton->setPopupWidget(new CellMillerPopup(*this, ui.CellMillerDefineButton), true);
 
 	// -- View Panel (Control)
 	ui.ViewControlResetButton->setPopupWidget(new ResetViewPopup(*this, ui.ViewControlResetButton));
@@ -203,6 +213,12 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 	ui.TransformSetDistanceButton->setPopupWidget(new TransformDistancePopup(*this, ui.TransformSetDistanceButton));
 	ui.TransformSetAngleButton->setPopupWidget(new TransformAnglePopup(*this, ui.TransformSetAngleButton));
 	ui.TransformSetTorsionButton->setPopupWidget(new TransformTorsionPopup(*this, ui.TransformSetTorsionButton));
+	// -- Transform Panel (Position)
+	ui.TransformPositionCentreButton->setPopupWidget(new TransformCentrePopup(*this, ui.TransformPositionCentreButton));
+	ui.TransformPositionFlipButton->setPopupWidget(new TransformFlipPopup(*this, ui.TransformPositionFlipButton), true);
+	ui.TransformPositionTranslateButton->setPopupWidget(new TransformTranslatePopup(*this, ui.TransformPositionTranslateButton));
+	ui.TransformPositionShiftButton->setPopupWidget(new TransformShiftPopup(*this, ui.TransformPositionShiftButton));
+	ui.TransformPositionRepositionButton->setPopupWidget(new TransformRepositionPopup(*this, ui.TransformPositionRepositionButton));
 	
 	
 	
@@ -272,8 +288,6 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 	// Refresh the necessary windows, including the mainwindow
 	gridsWidget->refresh();
 	forcefieldsWidget->refresh();
-	cellDefinitionWidget->refresh();
-	cellTransformWidget->refresh();
 	commandWidget->refreshScripts();
 	atomListWidget->refresh();
 	updateControls();

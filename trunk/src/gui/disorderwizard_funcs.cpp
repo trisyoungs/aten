@@ -369,7 +369,7 @@ void DisorderWizard::setCellAbsolute(double value)
 	{
 		newModel_->cell()->setLengths(Vec3<double>(ui.CellLengthASpin->value(), ui.CellLengthBSpin->value(), ui.CellLengthCSpin->value()));
 		newModel_->cell()->setAngles(Vec3<double>(ui.CellAngleASpin->value(), ui.CellAngleBSpin->value(), ui.CellAngleCSpin->value()));
-		parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::CellTarget);
+		parent_.updateWidgets(AtenWindow::CanvasTarget);
 	}
 	else printf("Internal Error: No newModel_ pointer defined to set UnitCell in.\n");
 }
@@ -381,7 +381,7 @@ void DisorderWizard::setCellRelative(double value)
 	{
 		newModel_->cell()->setLengths(Vec3<double>(ui.CellRelativeASpin->value(), ui.CellRelativeBSpin->value(), ui.CellRelativeCSpin->value()));
 		newModel_->cell()->setAngles(Vec3<double>(ui.CellRelativeAngleASpin->value(), ui.CellRelativeAngleBSpin->value(), ui.CellRelativeAngleCSpin->value()));
-		parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::CellTarget);
+		parent_.updateWidgets(AtenWindow::CanvasTarget);
 	}
 	else printf("Internal Error: No newModel_ pointer defined to set UnitCell in.\n");
 }
