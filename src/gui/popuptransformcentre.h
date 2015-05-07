@@ -1,6 +1,6 @@
 /*
-	*** Popup Widget - Cell Spacegroup
-	*** src/gui/popupcellspacegroup.h
+	*** Popup Widget - Transform Centre
+	*** src/gui/popuptransformcentre.h
 	Copyright T. Youngs 2007-2015
 
 	This file is part of Aten.
@@ -19,10 +19,10 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_CELLSPACEGROUPPOPUP_H
-#define ATEN_CELLSPACEGROUPPOPUP_H
+#ifndef ATEN_TRANSFORMCENTREPOPUP_H
+#define ATEN_TRANSFORMCENTREPOPUP_H
 
-#include "gui/ui_popupcellspacegroup.h"
+#include "gui/ui_popuptransformcentre.h"
 #include "gui/tmenubutton.hui"
 #include "parser/returnvalue.h"
 
@@ -38,8 +38,8 @@ ATEN_END_NAMESPACE
 
 ATEN_USING_NAMESPACE
 
-// Popup Widget - Cell Spacegroup
-class CellSpacegroupPopup : public TMenuButtonPopupWidget
+// Popup Widget - Transform Centre
+class TransformCentrePopup : public TMenuButtonPopupWidget
 {
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
@@ -50,9 +50,9 @@ class CellSpacegroupPopup : public TMenuButtonPopupWidget
 
 	public:
 	// Constructor / Destructor
-	CellSpacegroupPopup(AtenWindow& parent, TMenuButton* buttonParent);
+	TransformCentrePopup(AtenWindow& parent, TMenuButton* buttonParent);
 	// Main form declaration
-	Ui::CellSpacegroupPopup ui;
+	Ui::TransformCentrePopup ui;
 	// Show popup, updating any controls as necessary beforehand
 	void popup();
 	// Call named method associated to popup
@@ -70,8 +70,6 @@ class CellSpacegroupPopup : public TMenuButtonPopupWidget
 	 * Widget Functions
 	 */
 	private slots:
-	void on_PackButton_clicked(bool checked);
-	void on_SpacegroupEdit_XXX(double value);
 };
 
 #endif

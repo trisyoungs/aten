@@ -260,15 +260,13 @@ void AtenWindow::on_actionFileQuit_triggered(bool checked)
 void AtenWindow::on_actionEditUndo_triggered(bool checked)
 {
 	CommandNode::run(Commands::Undo, "");
-	postRedisplay();
-	updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget+AtenWindow::CellTarget+AtenWindow::GlyphsTarget);
+	updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget+AtenWindow::GlyphsTarget);
 }
 
 void AtenWindow::on_actionEditRedo_triggered(bool checked)
 {
 	CommandNode::run(Commands::Redo, "");
-	postRedisplay();
-	updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget+AtenWindow::CellTarget+AtenWindow::GlyphsTarget);
+	updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget+AtenWindow::GlyphsTarget);
 }
 
 void AtenWindow::on_actionEditCut_triggered(bool checked)

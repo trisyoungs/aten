@@ -26,8 +26,6 @@
 #include "gui/trajectory.h"
 #include "gui/select.h"
 #include "gui/forcefields.h"
-#include "gui/celldefinition.h"
-#include "gui/celltransform.h"
 #include "gui/vibrations.h"
 #include "gui/atomlist.h"
 #include "gui/glyphs.h"
@@ -157,6 +155,9 @@ void AtenWindow::updateMainWindow()
 	ui.CellDefineAnglesButton->setEnabled(currentModel ? currentModel->cell()->type() != UnitCell::NoCell : false);
 	ui.CellDefineLengthsButton->setEnabled(currentModel ? currentModel->cell()->type() != UnitCell::NoCell : false);
 	ui.CellDefineMatrixButton->setEnabled(currentModel ? currentModel->cell()->type() != UnitCell::NoCell : false);
+	ui.CellSpacegroupSetButton->setEnabled(currentModel ? currentModel->cell()->type() != UnitCell::NoCell : false);
+	ui.CellTransformReplicateButton->setEnabled(currentModel ? currentModel->cell()->type() != UnitCell::NoCell : false);
+	ui.CellTransformScaleButton->setEnabled(currentModel ? currentModel->cell()->type() != UnitCell::NoCell : false);
 
 	refreshing_ = false;
 }
@@ -206,13 +207,6 @@ void AtenWindow::updateWidgets(int targets)
 
 	// Update contents of the grid window
 	if (targets&AtenWindow::GridsTarget) gridsWidget->refresh();
-
-	// Update the contents of the cell page
-	if (targets&AtenWindow::CellTarget)
-	{
-		cellDefinitionWidget->refresh();
-		cellTransformWidget->refresh();
-	}
 
 	// Update forcefields in the forcefield widget
 	if (targets&AtenWindow::ForcefieldsTarget) forcefieldsWidget->refresh();

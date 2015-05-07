@@ -1,0 +1,273 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>CellReplicatePopup</class>
+ <widget class="QWidget" name="CellReplicatePopup">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>278</width>
+    <height>90</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="font">
+   <font>
+    <pointsize>8</pointsize>
+   </font>
+  </property>
+  <property name="windowTitle">
+   <string>Cell Replicate Popup</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <property name="margin">
+    <number>0</number>
+   </property>
+   <property name="spacing">
+    <number>2</number>
+   </property>
+   <item row="0" column="0">
+    <widget class="TExponentialSpin" name="NegativeXSpin">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="decimals">
+      <number>5</number>
+     </property>
+     <property name="minimum">
+      <double>-100.000000000000000</double>
+     </property>
+     <property name="maximum">
+      <double>0.000000000000000</double>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1" colspan="2">
+    <widget class="QLabel" name="label_28">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="font">
+      <font>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>Y</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="6" rowspan="4">
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <property name="spacing">
+      <number>2</number>
+     </property>
+     <item>
+      <widget class="QCheckBox" name="FoldBeforeCheck">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>Fold Before</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="TrimAfterCheck">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="text">
+        <string>Trim After</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="verticalSpacer">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>40</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+   <item row="2" column="1" colspan="2">
+    <widget class="QLabel" name="label_29">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="font">
+      <font>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>Z</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="3">
+    <widget class="TExponentialSpin" name="PositiveXSpin">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="decimals">
+      <number>5</number>
+     </property>
+     <property name="minimum">
+      <double>1.000000000000000</double>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1" colspan="2">
+    <widget class="QLabel" name="label_11">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="font">
+      <font>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>X</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="3">
+    <widget class="TExponentialSpin" name="PositiveZSpin">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="decimals">
+      <number>5</number>
+     </property>
+     <property name="minimum">
+      <double>1.000000000000000</double>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="TExponentialSpin" name="NegativeYSpin">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="decimals">
+      <number>5</number>
+     </property>
+     <property name="minimum">
+      <double>-100.000000000000000</double>
+     </property>
+     <property name="maximum">
+      <double>0.000000000000000</double>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="3">
+    <widget class="TExponentialSpin" name="PositiveYSpin">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="decimals">
+      <number>5</number>
+     </property>
+     <property name="minimum">
+      <double>1.000000000000000</double>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0">
+    <widget class="TExponentialSpin" name="NegativeZSpin">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="decimals">
+      <number>5</number>
+     </property>
+     <property name="minimum">
+      <double>-100.000000000000000</double>
+     </property>
+     <property name="maximum">
+      <double>0.000000000000000</double>
+     </property>
+    </widget>
+   </item>
+  </layout>
+  <zorder>NegativeXSpin</zorder>
+  <zorder>NegativeYSpin</zorder>
+  <zorder>label_11</zorder>
+  <zorder>label_28</zorder>
+  <zorder>PositiveYSpin</zorder>
+  <zorder>PositiveXSpin</zorder>
+  <zorder>PositiveZSpin</zorder>
+  <zorder>label_29</zorder>
+  <zorder>NegativeZSpin</zorder>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>TExponentialSpin</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>gui/texponentialspin.hui</header>
+  </customwidget>
+ </customwidgets>
+ <resources>
+  <include location="icons.qrc"/>
+ </resources>
+ <connections/>
+</ui>

@@ -32,7 +32,7 @@
     <number>2</number>
    </property>
    <item row="0" column="0" rowspan="2">
-    <widget class="QToolButton" name="PackButon">
+    <widget class="QToolButton" name="PackButton">
      <property name="minimumSize">
       <size>
        <width>56</width>
