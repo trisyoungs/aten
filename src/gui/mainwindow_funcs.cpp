@@ -49,8 +49,11 @@
 #include "gui/popupcellmiller.h"
 #include "gui/popupcellreplicate.h"
 #include "gui/popupcellscale.h"
+#include "gui/popupcolour.h"
 #include "gui/popupelementcommon.h"
 #include "gui/popupelementtable.h"
+#include "gui/popupgridsmatrix.h"
+#include "gui/popupgridsorigin.h"
 #include "gui/popupmeasureangle.h"
 #include "gui/popupmeasuredistance.h"
 #include "gui/popupmeasuretorsion.h"
@@ -219,9 +222,13 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 	ui.TransformPositionTranslateButton->setPopupWidget(new TransformTranslatePopup(*this, ui.TransformPositionTranslateButton));
 	ui.TransformPositionShiftButton->setPopupWidget(new TransformShiftPopup(*this, ui.TransformPositionShiftButton));
 	ui.TransformPositionRepositionButton->setPopupWidget(new TransformRepositionPopup(*this, ui.TransformPositionRepositionButton));
-	
-	
-	
+
+	// -- Grids Panel (Define)
+	ui.GridsDefineAxesButton->setPopupWidget(new GridsMatrixPopup(*this, ui.GridsDefineAxesButton), true);
+	ui.GridsDefineOriginButton->setPopupWidget(new GridsOriginPopup(*this, ui.GridsDefineOriginButton), true);
+	// -- Grids Panel (Primary Cutoff)
+	ui.GridsPrimaryColourButton->setPopupWidget(new ColourPopup(*this, ui.GridsPrimaryColourButton), true);
+	ui.GridsSecondaryColourButton->setPopupWidget(new ColourPopup(*this, ui.GridsSecondaryColourButton), true);
 	
 	
 	

@@ -51,6 +51,7 @@ Allow right-click on elements in PTable to set as member of common elements popu
 Finish Spacegroup popup.
 Modifying anything on Grid tool widget is slow, forcing update of grid primitive?
 Add Calculate tool to work out centre of geometry/mass.
+Tidy up/rework TColourWheel code.
 
 GUI TODO:
 AddAtom functionality (from old Build menu).

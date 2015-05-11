@@ -1,0 +1,84 @@
+/*
+	*** TColourWheel - Colour picker wheel / square
+	*** src/gui/tcolourwheel.hui
+	Copyright T. Youngs 2007-2015
+
+	This file is part of Aten.
+
+	Aten is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	Aten is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#ifndef ATEN_TCOLOURWHEEL_H
+#define ATEN_TCOLOURWHEEL_H
+
+#include <QWidget>
+#include "parser/returnvalue.h"
+
+// Forward Declarations (Qt)
+/* none */
+
+ATEN_USING_NAMESPACE
+
+// Colour picker wheel
+class TColourWheel : public QWidget
+{
+	Q_OBJECT
+	
+	public:
+	// Constructor
+	TColourWheel(QWidget* parent = 0);
+
+	virtual QSize sizeHint () const;
+	virtual QSize minimumSizeHint () const;
+	QColor colour();
+	
+	signals:
+	void colourChanged(const QColor &colour);
+	
+	public slots:
+	void setColour(const QColor &colour);
+
+	protected:
+	void mousePressEvent(QMouseEvent *event);
+	void mouseMoveEvent(QMouseEvent *event);
+	void mouseReleaseEvent(QMouseEvent *);
+	void resizeEvent(QResizeEvent *event);
+	void paintEvent(QPaintEvent *);
+	private:
+	QSize initSize;
+	QImage wheelImage;
+	QImage squareImage;
+	QPixmap wheel;
+	bool mouseDown;
+	QPoint lastPos;
+	int margin;
+	int wheelWidth;
+	QRegion wheelRegion;
+	QRegion squareRegion;
+	QColor current;
+	bool inWheel;
+	bool inSquare;
+	QColor posColour(const QPoint &point);
+	void drawWheelImage(const QSize &newSize);
+	void drawIndicator(const int &hue);
+	void drawPicker(const QColor &colour);
+	void drawSquareImage(const int &hue);
+	void composeWheel();
+	private slots:
+	void hueChanged(const int &hue);
+	void svChanged(const QColor &newcolour);
+};
+
+#endif
+

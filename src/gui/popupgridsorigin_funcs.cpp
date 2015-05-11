@@ -1,6 +1,6 @@
 /*
-	*** Popup Widget - Cell Lengths Functions
-	*** src/gui/popupcelllengths_funcs.cpp
+	*** Popup Widget - Grids Origin Functions
+	*** src/gui/popupgridsorigin_funcs.cpp
 	Copyright T. Youngs 2007-2015
 
 	This file is part of Aten.
@@ -19,33 +19,34 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "gui/popupcelllengths.h"
+#include "gui/popupgridsorigin.h"
 #include "main/aten.h"
 #include "gui/mainwindow.h"
+#include "../base/grid.h"
 #include "base/namespace.h"
 
 ATEN_USING_NAMESPACE
 
 // Constructor
-CellLengthsPopup::CellLengthsPopup(AtenWindow& parent, TMenuButton* buttonParent) : TMenuButtonPopupWidget(buttonParent), parent_(parent)
+GridsOriginPopup::GridsOriginPopup(AtenWindow& parent, TMenuButton* buttonParent) : TMenuButtonPopupWidget(buttonParent), parent_(parent)
 {
 	// Set up interface
 	ui.setupUi(this);
 }
 
 // Show popup, updating any controls as necessary beforehand
-void CellLengthsPopup::popup()
+void GridsOriginPopup::popup()
 {
-	// Update lengths in spin boxes
+	// Update angles in spin boxes
 	refreshing_ = true;
 
 	// Get current model
-	Model* model = parent_.aten().currentModelOrFrame();
-	if (model)
+	Grid* grid = parent_.aten().current().g;
+	if (grid)
 	{
-		ui.ASpin->setValue(model->cell()->lengths().x);
-		ui.BSpin->setValue(model->cell()->lengths().y);
-		ui.CSpin->setValue(model->cell()->lengths().z);
+		ui.XSpin->setValue(grid->origin().x);
+		ui.YSpin->setValue(grid->origin().y);
+		ui.ZSpin->setValue(grid->origin().z);
 	}
 
 	show();
@@ -54,7 +55,7 @@ void CellLengthsPopup::popup()
 }
 
 // Call named method associated to popup
-bool CellLengthsPopup::callMethod(QString methodName, ReturnValue& rv)
+bool GridsOriginPopup::callMethod(QString methodName, ReturnValue& rv)
 {
 	if (methodName == "TEST") return true;
 	else if (methodName == "hideEvent")
@@ -69,44 +70,44 @@ bool CellLengthsPopup::callMethod(QString methodName, ReturnValue& rv)
  * Widget Functions
  */
 
-// Adjust matrix of current model
-void CellLengthsPopup::adjustCurrentMatrix(int lengthIndex, double value)
+void GridsOriginPopup::setCurrentOrigin()
 {
 	// Get current model and set new angle in cell
 	Model* model = parent_.aten().currentModelOrFrame();
-	if (model)
-	{
-		UnitCell cell = (*model->cell());
-		cell.setLength(lengthIndex, value);
-		CommandNode::run(Commands::CellAxes, "ddddddddd", cell.parameter(UnitCell::CellAX), cell.parameter(UnitCell::CellAY), cell.parameter(UnitCell::CellAZ), cell.parameter(UnitCell::CellBX), cell.parameter(UnitCell::CellBY), cell.parameter(UnitCell::CellBZ),  cell.parameter(UnitCell::CellCX), cell.parameter(UnitCell::CellCY), cell.parameter(UnitCell::CellCZ)); 
-	}
+	if (!model) return;
+
+	// Get the cell vectors from the GridsOriginPopup widget
+	CommandNode::run(Commands::GridOrigin, "ddd", ui.XSpin->value(), ui.YSpin->value(), ui.ZSpin->value());
 }
 
-void CellLengthsPopup::on_ASpin_valueChanged(double value)
+void GridsOriginPopup::on_XSpin_valueChanged(double value)
 {
 	if (refreshing_) return;
 
-	adjustCurrentMatrix(0, value);
+	// Set current matrix
+	setCurrentOrigin();
 
 	// Update display
 	parent_.updateWidgets(AtenWindow::CanvasTarget);
 }
 
-void CellLengthsPopup::on_BSpin_valueChanged(double value)
+void GridsOriginPopup::on_YSpin_valueChanged(double value)
 {
 	if (refreshing_) return;
 
-	adjustCurrentMatrix(1, value);
+	// Set current matrix
+	setCurrentOrigin();
 
 	// Update display
 	parent_.updateWidgets(AtenWindow::CanvasTarget);
 }
 
-void CellLengthsPopup::on_CSpin_valueChanged(double value)
+void GridsOriginPopup::on_ZSpin_valueChanged(double value)
 {
 	if (refreshing_) return;
 
-	adjustCurrentMatrix(2, value);
+	// Set current matrix
+	setCurrentOrigin();
 
 	// Update display
 	parent_.updateWidgets(AtenWindow::CanvasTarget);
