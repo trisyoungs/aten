@@ -57,6 +57,10 @@ bool CellReplicatePopup::callMethod(QString methodName, ReturnValue& rv)
 	{
 		CommandNode::run(Commands::Replicate, "dddddd", ui.NegativeXSpin->value(), ui.NegativeYSpin->value(), ui.NegativeZSpin->value(), ui.PositiveXSpin->value(), ui.PositiveYSpin->value(),  ui.PositiveZSpin->value());
 	}
+	else if (methodName == "hideEvent")
+	{
+		return true;
+	}
 	else printf("No method called '%s' is available in this popup.\n", qPrintable(methodName));
 	return false;
 }

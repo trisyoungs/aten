@@ -61,6 +61,10 @@ void TMenuButtonPopupWidget::hideEvent(QHideEvent* event)
 	// Call the parent's popupDone() function, unless the widgetDone_ flag is set
 	if (parentMenuButton_ && (!widgetDone_)) parentMenuButton_->popupDone(false);
 
+	// Call the 'hide' method of the widget, to perform any post-hide functions
+	ReturnValue rv;
+	callMethod("hideEvent", rv);
+
 	// Reset the widgetDone_ flag
 	widgetDone_ = false;
 

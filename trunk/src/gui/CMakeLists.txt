@@ -29,12 +29,6 @@ SET(gui_MOC_HDRS
   popupbuildgrow.h
   popupbuildrebond.h
   popupbuildtransmute.h
-  popupelementcommon.h
-  popupelementtable.h
-  popupmeasureangle.h
-  popupmeasureclear.h
-  popupmeasuredistance.h
-  popupmeasuretorsion.h
   popupcellangles.h
   popupcelllengths.h
   popupcellmatrix.h
@@ -42,6 +36,15 @@ SET(gui_MOC_HDRS
   popupcellreplicate.h
   popupcellscale.h
   popupcellspacegroup.h
+  popupcolour.h
+  popupelementcommon.h
+  popupelementtable.h
+  popupgridsmatrix.h
+  popupgridsorigin.h
+  popupmeasureangle.h
+  popupmeasureclear.h
+  popupmeasuredistance.h
+  popupmeasuretorsion.h
   popuptransformangle.h
   popuptransformcentre.h
   popuptransformdistance.h
@@ -68,6 +71,7 @@ SET(gui_MOC_HDRS
   vieweigenvector.h
   zmatrix.h
   tcolourframe.hui
+  tcolourwheel.hui
   tdoublespindelegate.hui
   texponentialspin.hui
   textratreewidgetitem.h
@@ -111,8 +115,11 @@ SET(gui_UIS
   popupcellreplicate.ui
   popupcellscale.ui
   popupcellspacegroup.ui
+  popupcolour.ui
   popupelementcommon.ui
   popupelementtable.ui
+  popupgridsmatrix.ui
+  popupgridsorigin.ui
   popupmeasureangle.ui
   popupmeasureclear.ui
   popupmeasuredistance.ui
@@ -189,8 +196,11 @@ set(gui_SRCS
   popupcellreplicate_funcs.cpp
   popupcellscale_funcs.cpp
   popupcellspacegroup_funcs.cpp
+  popupcolour_funcs.cpp
   popupelementcommon_funcs.cpp
   popupelementtable_funcs.cpp
+  popupgridsmatrix_funcs.cpp
+  popupgridsorigin_funcs.cpp
   popupmeasureangle_funcs.cpp
   popupmeasureclear_funcs.cpp
   popupmeasuredistance_funcs.cpp
@@ -224,6 +234,7 @@ set(gui_SRCS
   viewer_user.cpp
   viewer_useractions.cpp
   tcolourframe_funcs.cpp
+  tcolourwheel_funcs.cpp
   tmenubutton_funcs.cpp
   tdoublespindelegate_funcs.cpp
   texponentialspin_funcs.cpp

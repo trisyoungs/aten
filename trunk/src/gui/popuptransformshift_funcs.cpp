@@ -49,6 +49,10 @@ void TransformShiftPopup::popup()
 bool TransformShiftPopup::callMethod(QString methodName, ReturnValue& rv)
 {
 	if (methodName == "TEST") return true;
+	else if (methodName == "hideEvent")
+	{
+		return true;
+	}
 	else printf("No method called '%s' is available in this popup.\n", qPrintable(methodName));
 	return false;
 }

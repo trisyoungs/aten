@@ -156,6 +156,10 @@ bool ElementTablePopup::callMethod(QString methodName, ReturnValue& rv)
 
 		return true;
 	}
+	else if (methodName == "hideEvent")
+	{
+		return true;
+	}
 	else printf("No method called '%s' is available in this popup.\n", qPrintable(methodName));
 	return false;
 }

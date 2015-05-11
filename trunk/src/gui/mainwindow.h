@@ -372,6 +372,12 @@ class AtenWindow : public QMainWindow
 
 
 	/*
+	 * Grids Panel
+	 */
+	private slots:
+
+
+	/*
 	 * Model List
 	 */
 	private:

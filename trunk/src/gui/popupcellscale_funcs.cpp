@@ -54,6 +54,10 @@ bool CellScalePopup::callMethod(QString methodName, ReturnValue& rv)
 		else CommandNode::run(Commands::Scale, "ddd", ui.ScaleXSpin->value(), ui.ScaleYSpin->value(), ui.ScaleZSpin->value());
 
 	}
+	else if (methodName == "hideEvent")
+	{
+		return true;
+	}
 	else printf("No method called '%s' is available in this popup.\n", qPrintable(methodName));
 	return false;
 }
