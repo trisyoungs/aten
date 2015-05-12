@@ -21,6 +21,11 @@
 
 #include "gui/mainwindow.h"
 
+// Update build panel
+void AtenWindow::updateBuildPanel(Model* sourceModel)
+{
+}
+
 /*
  * Select
  */

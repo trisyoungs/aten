@@ -21,6 +21,22 @@
 
 #include "gui/mainwindow.h"
 #include "gui/popupcellmatrix.h"
+#include "model/model.h"
+
+// Update cell panel
+void AtenWindow::updateCellPanel(Model* sourceModel)
+{
+	if (!sourceModel) return;
+
+	ui.CellDefinePeriodicButton->setEnabled(sourceModel);
+	if (sourceModel) ui.CellDefinePeriodicButton->setChecked(sourceModel->cell()->type() != UnitCell::NoCell);
+	ui.CellDefineAnglesButton->setEnabled(sourceModel ? sourceModel->cell()->type() != UnitCell::NoCell : false);
+	ui.CellDefineLengthsButton->setEnabled(sourceModel ? sourceModel->cell()->type() != UnitCell::NoCell : false);
+	ui.CellDefineMatrixButton->setEnabled(sourceModel ? sourceModel->cell()->type() != UnitCell::NoCell : false);
+	ui.CellSpacegroupSetButton->setEnabled(sourceModel ? sourceModel->cell()->type() != UnitCell::NoCell : false);
+	ui.CellTransformReplicateButton->setEnabled(sourceModel ? sourceModel->cell()->type() != UnitCell::NoCell : false);
+	ui.CellTransformScaleButton->setEnabled(sourceModel ? sourceModel->cell()->type() != UnitCell::NoCell : false);
+}
 
 /*
  * Define

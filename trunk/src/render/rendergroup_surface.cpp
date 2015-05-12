@@ -1,6 +1,6 @@
 /*
 	*** Primitive - Surface Generation
-	*** src/render/primitive_surface.cpp
+	*** src/render/rendergroup_surface.cpp
 	Copyright T. Youngs 2007-2015
 
 	This file is part of Aten.
@@ -19,8 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "render/gridprimitive.h"
-#include "base/grid.h"
+#include "render/rendergroup.h"
 #include "base/prefs.h"
 #include "base/grid.h"
 #include "base/wrapint.h"
@@ -321,69 +320,55 @@ int facetriples[256][15] = {
 ATEN_USING_NAMESPACE
 
 // Render volumetric isosurface with Marching Cubes
-void GridPrimitive::createSurfaceMarchingCubes()
+void RenderGroup::marchingCubes(Grid* source, double lowerCutoff, double upperCutoff, Vec4<GLfloat> colour, int colourScale)
 {
-	int ii, jj, kk, n, cubetype, *faces, cscale;
+	int ii, jj, kk, n, cubeType, *faces;
 	Vec3<GLfloat> normal, gradient[8];
 	Vec3<double> r;
-	Vec3<int> npoints = source_->nXYZ(), shift = source_->shift();
+	Vec3<int> nPoints = source->nXYZ(), shift = source->shift();
 	WrapInt i, j, k;
-	Vec4<GLfloat> col1, col2;
-	GLfloat minalpha1, minalpha2;
-	double ***data, vertex[8], ipol, a, b, *v1, *v2, twodx, twody, twodz, mult;
-	data = source_->data3d();
-	bool secondary = source_->useSecondary(), periodic = source_->periodic();
-	cscale = source_->useColourScale() ? source_->colourScale() : -1;
-	bool fillVolume = source_->fillEnclosedVolume();
+	GLfloat minAlpha;
+	double*** data, vertex[8], ipol, a, b, *v1, *v2, twodx, twody, twodz, mult = 1.0;
+	data = source->data3d();
+	bool periodic = source->periodic();
+	bool fillVolume = source->fillEnclosedVolume();
+	
+	
 
-	mult = 1.0;
+
 	// Get distances between grid points
-	r = source_->lengths();
-	twodx = r.x / npoints.x * 2.0;
-	twody = r.y / npoints.y * 2.0;
-	twodz = r.z / npoints.z * 2.0;
+	r = source->lengths();
+	twodx = r.x / nPoints.x * 2.0;
+	twody = r.y / nPoints.y * 2.0;
+	twodz = r.z / nPoints.z * 2.0;
+
+	// Initialise
+	clear();
+	extraSolidTriangles_.initialise(GL_TRIANGLES, colourScale != -1);
 
 	// Grab colours (if not using a colourscale) and determine colour mode to use
-	if (cscale == -1)
-	{
-		source_->copyPrimaryColour(col1);
-		source_->copySecondaryColour(col2);
-// 		primaryPrimitive_.initialise(0, 0, ); ATEN2 TODO
-// 		secondaryPrimitive_.initialise(0, 0, ); ATEN2 TODO
-		minalpha1 = col1[3];
-		minalpha2 = col2[3];
-	}
-	else
-	{
-// 		primaryPrimitive_.initialise(0, 0, ); ATEN2 TODO
-// 		secondaryPrimitive_.initialise(0, 0, ); ATEN2 TODO
-		minalpha1 = 1.0f;
-		minalpha2 = 1.0f;
-	}
+	minAlpha = colourScale == -1 ? colour[3] : 1.0f;
 
-	// Clear primitive data
-	primaryPrimitive_.forgetAll();
-	secondaryPrimitive_.forgetAll();
-	
 	// Loops here will go over 0 to npoints-1, but actual array indices will be based on this plus shift amounts, folded into limits
 	// Set up the wrapped integers for this purpose
-	i.setLimits(0, npoints.x-1);
-	j.setLimits(0, npoints.y-1);
-	k.setLimits(0, npoints.z-1);
+	i.setLimits(0, nPoints.x-1);
+	j.setLimits(0, nPoints.y-1);
+	k.setLimits(0, nPoints.z-1);
 	
 	// Generate isosurface
-	for (ii=0; ii<npoints.x; ++ii)
+	for (ii=0; ii< nPoints.x; ++ii)
 	{
-		if (!periodic && ((ii < 2) || (ii > (npoints.x-3)))) continue;
+		if (!periodic && ((ii < 2) || (ii > (nPoints.x-3)))) continue;
 		i = ii-shift.x;
-		for (jj=0; jj<npoints.y; ++jj)
+		for (jj=0; jj< nPoints.y; ++jj)
 		{
-			if (!periodic && ((jj < 2) || (jj > (npoints.y-3)))) continue;
+			if (!periodic && ((jj < 2) || (jj > (nPoints.y-3)))) continue;
 			j = jj-shift.y;
-			for (kk=0; kk<npoints.z; ++kk)
+			for (kk=0; kk< nPoints.z; ++kk)
 			{
-				if (!periodic && ((kk < 2) || (kk > (npoints.z-3)))) continue;
+				if (!periodic && ((kk < 2) || (kk > (nPoints.z-3)))) continue;
 				k = kk-shift.z;
+
 				// Grab values that form vertices of cube.
 				vertex[0] = data[i][j][k];
 				vertex[1] = data[i+1][j][k];
@@ -393,6 +378,7 @@ void GridPrimitive::createSurfaceMarchingCubes()
 				vertex[5] = data[i+1][j][k+1];
 				vertex[6] = data[i+1][j+1][k+1];
 				vertex[7] = data[i][j+1][k+1];
+
 				// Calculate gradients at the cube vertices
 				gradient[0].x = (vertex[1] - data[i-1][j][k]) / twodx;
 				gradient[0].y = (vertex[3] - data[i][j-1][k]) / twody;
@@ -418,31 +404,33 @@ void GridPrimitive::createSurfaceMarchingCubes()
 				gradient[7].x = (vertex[6] - data[i-1][j+1][k+1]) / twodx;
 				gradient[7].y = (data[i][j+2][k+1] - vertex[4]) / twody;
 				gradient[7].z = (data[i][j+1][k+2] - vertex[3]) / twodz;
+
 				// Determine cube type (primary cutoff)
-				cubetype = 0;
-				if (source_->withinPrimaryCutoff(vertex[0])) cubetype += 1;
-				if (source_->withinPrimaryCutoff(vertex[1])) cubetype += 2;
-				if (source_->withinPrimaryCutoff(vertex[2])) cubetype += 4;
-				if (source_->withinPrimaryCutoff(vertex[3])) cubetype += 8;
-				if (source_->withinPrimaryCutoff(vertex[4])) cubetype += 16;
-				if (source_->withinPrimaryCutoff(vertex[5])) cubetype += 32;
-				if (source_->withinPrimaryCutoff(vertex[6])) cubetype += 64;
-				if (source_->withinPrimaryCutoff(vertex[7])) cubetype += 128;
-				if (cubetype == 255)
+				cubeType = 0;
+				if ((vertex[0] >= lowerCutoff) && (vertex[0] <= upperCutoff)) cubeType += 1;
+				if ((vertex[1] >= lowerCutoff) && (vertex[1] <= upperCutoff)) cubeType += 2;
+				if ((vertex[2] >= lowerCutoff) && (vertex[2] <= upperCutoff)) cubeType += 4;
+				if ((vertex[3] >= lowerCutoff) && (vertex[3] <= upperCutoff)) cubeType += 8;
+				if ((vertex[4] >= lowerCutoff) && (vertex[4] <= upperCutoff)) cubeType += 16;
+				if ((vertex[5] >= lowerCutoff) && (vertex[5] <= upperCutoff)) cubeType += 32;
+				if ((vertex[6] >= lowerCutoff) && (vertex[6] <= upperCutoff)) cubeType += 64;
+				if ((vertex[7] >= lowerCutoff) && (vertex[7] <= upperCutoff)) cubeType += 128;
+				if (cubeType == 255)
 				{
-					if (fillVolume) primaryPrimitive_.plotCube(1.0, 1, ii, jj, kk);
+					if (fillVolume) extraSolidTriangles_.plotCube(1.0, 1, ii, jj, kk);
 				}
-				else if (cubetype != 0)
+				else if (cubeType != 0)
 				{
 					// Get edges from list and draw triangles or points
-					faces = facetriples[cubetype];
+					faces = facetriples[cubeType];
 					for (n = 0; n<15; n++)
 					{
 						if (faces[n] == -1) break;
+
 						// Get edge vectors, interpolate, and set tri-points
 						a = vertex[edgevertices[faces[n]][0]];
 						b = vertex[edgevertices[faces[n]][1]];
-						ipol = ((mult*source_->lowerPrimaryCutoff()) - a) / (b-a);
+						ipol = ((mult*lowerCutoff) - a) / (b-a);
 						if (ipol> 1.0) ipol = 1.0;
 						if (ipol < 0.0) ipol = 0.0;
 						v1 = vertexpos[edgevertices[faces[n]][0]];
@@ -452,115 +440,51 @@ void GridPrimitive::createSurfaceMarchingCubes()
 						normal = (gradient[edgevertices[faces[n]][0]] + (gradient[edgevertices[faces[n]][1]] - gradient[edgevertices[faces[n]][0]]) * ipol) * -mult;
 						normal.normalise();
 						r.add(ii+v1[0], jj+v1[1], kk+v1[2]);
+
 						// Set triangle coordinates and add cube position
-						if (cscale != -1)
+						if (colourScale != -1)
 						{
-							prefs.colourScale[cscale].colour((a+b)/2.0, col1);
-							primaryPrimitive_.defineVertex(r.x, r.y, r.z, normal.x, normal.y, normal.z, col1);
+							prefs.colourScale[colourScale].colour((a+b)/2.0, colour);
+							extraSolidTriangles_.defineVertex(r.x, r.y, r.z, normal.x, normal.y, normal.z, colour);
 						}
-						else primaryPrimitive_.defineVertex(r.x, r.y, r.z, normal.x, normal.y, normal.z);
+						else extraSolidTriangles_.defineVertex(r.x, r.y, r.z, normal.x, normal.y, normal.z);
+
 						// Store minimal alpha value in order to determine transparency
-						if (col1[3] < minalpha1) minalpha1 = col1[3];
-					}
-				}
-				if (!secondary) continue;
-				// Determine cube type (secondary cutoff)
-				cubetype = 0;
-				if (source_->withinSecondaryCutoff(vertex[0])) cubetype += 1;
-				if (source_->withinSecondaryCutoff(vertex[1])) cubetype += 2;
-				if (source_->withinSecondaryCutoff(vertex[2])) cubetype += 4;
-				if (source_->withinSecondaryCutoff(vertex[3])) cubetype += 8;
-				if (source_->withinSecondaryCutoff(vertex[4])) cubetype += 16;
-				if (source_->withinSecondaryCutoff(vertex[5])) cubetype += 32;
-				if (source_->withinSecondaryCutoff(vertex[6])) cubetype += 64;
-				if (source_->withinSecondaryCutoff(vertex[7])) cubetype += 128;
-				if (cubetype != 0)
-				{
-					// Get edges from list and draw triangles or points
-					faces = facetriples[cubetype];
-					for (n = 0; n<15; n++)
-					{
-						if (faces[n] == -1) break;
-						// Get edge vectors, interpolate, and set tri-points
-						a = vertex[edgevertices[faces[n]][0]];
-						b = vertex[edgevertices[faces[n]][1]];
-						ipol = ((mult*source_->lowerSecondaryCutoff()) - a) / (b-a);
-						if (ipol> 1.0) ipol = 1.0;
-						if (ipol < 0.0) ipol = 0.0;
-						v1 = vertexpos[edgevertices[faces[n]][0]];
-						v2 = vertexpos[edgevertices[faces[n]][1]];
-						r.set(v2[0]-v1[0], v2[1]-v1[1], v2[2]-v1[2]);
-						r *= ipol;
-						normal = (gradient[edgevertices[faces[n]][0]] + (gradient[edgevertices[faces[n]][1]] - gradient[edgevertices[faces[n]][0]]) * ipol) * -mult;
-						normal.normalise();
-						r.add(ii+v1[0], jj+v1[1], kk+v1[2]);
-						// Set triangle coordinates and add cube position
-						if (cscale != -1)
-						{
-							prefs.colourScale[cscale].colour((a+b)/2.0, col2);
-							secondaryPrimitive_.defineVertex(r.x, r.y, r.z, normal.x, normal.y, normal.z, col2);
-						}
-						else secondaryPrimitive_.defineVertex(r.x, r.y, r.z, normal.x, normal.y, normal.z);
-						
-						// Store minimal alpha value in order to determine transparency
-						if (col2[3] < minalpha2) minalpha2 = col2[3];
+						if (colour[3] < minAlpha) minAlpha = colour[3];
 					}
 				}
 			}
 		}
 	}
-
-	// Set transparency flags
-	primaryIsTransparent_ = (minalpha1 <= 0.99f);
-	secondaryIsTransparent_ = (minalpha2 <= 0.99f);	
 }
 
 // Render normal '2D' surface 
-void GridPrimitive::createSurface2D()
+void RenderGroup::createSurface(Grid* source, Vec4<GLfloat> colour, int colourScale)
 {
 	int i, j, n;
 	Vec3<double> normal[4];
-	int cscale = source_->useColourScale() ? source_->colourScale() : -1;
-	Vec3<int> npoints = source_->nXYZ();
-	Vec4<GLfloat> col1, col2;
-	GLfloat minalpha1, minalpha2;
-	double **data;
-	bool usez = source_->useDataForZ();
+	Vec3<int> nPoints = source->nXYZ();
+	GLfloat minAlpha;
+	double** data;
+	bool usez = source->useDataForZ();
 
 	// Grab the data pointer and surface cutoff
-	data = source_->data2d();
+	data = source->data2d();
 
 	// Grab colours (if not using a colourscale) and determine colour mode to use
-	if (cscale == -1)
-	{
-		source_->copyPrimaryColour(col1);
-		source_->copySecondaryColour(col2);
-// 		primaryPrimitive_.initialise(0, 0, ); ATEN2 TODO
-// 		secondaryPrimitive_.initialise(0, 0, ); ATEN2 TODO
-		minalpha1 = col1[3];
-		minalpha2 = col2[3];
-	}
-	else
-	{
-// 		primaryPrimitive_.initialise(0, 0, ); ATEN2 TODO
-// 		secondaryPrimitive_.initialise(0, 0, ); ATEN2 TODO
-		minalpha1 = 1.0f;
-		minalpha2 = 1.0f;
-	}
+	clear();
+	extraSolidTriangles_.initialise(GL_TRIANGLES, colourScale != -1);
+	minAlpha = 1.0f;
 
-	// Clear primitive data
-	primaryPrimitive_.forgetAll();
-	secondaryPrimitive_.forgetAll();
-	
 	int di = 0, di2 = 2, dj, dj2;
-	for (i = 0; i<npoints.x-1; ++i)
+	for (i = 0; i< nPoints.x-1; ++i)
 	{
-		if (i == npoints.x-2) di2 = 1;
+		if (i == nPoints.x-2) di2 = 1;
 		dj = 0;
 		dj2 = 2;
-		for (j = 0; j<npoints.y-1; ++j)
+		for (j = 0; j< nPoints.y-1; ++j)
 		{
-			if (j == npoints.y-2) dj2 = 1;
+			if (j == nPoints.y-2) dj2 = 1;
 			// Calculate normals...
 			normal[0] = Vec3<double>(1.0,0.0,(data[i+1][j] - data[i-di][j])*0.5) * Vec3<double>(0.0,1.0,(data[i][j+1] - data[i][j-dj])*0.5);	// N(i,j)
 			normal[1] = Vec3<double>(1.0,0.0,(data[i+di2][j] - data[i][j])*0.5) * Vec3<double>(0.0,1.0,(data[i+1][j+1] - data[i+1][j-dj])*0.5);	// N(i+1,j)
@@ -569,57 +493,53 @@ void GridPrimitive::createSurface2D()
 			for (n=0; n<4; ++n) normal[n].normalise();
 			
 			// Set triangle coordinates and add cube position
-			if (cscale != -1)
+			if (colourScale != -1)
 			{
 				// First triangle
-				prefs.colourScale[cscale].colour(data[i][j], col1);
-				primaryPrimitive_.defineVertex(i, j, usez ? data[i][j] : 0.0, normal[0].x, normal[0].y, normal[0].z, col1);
-				if (col1[3] < minalpha1) minalpha1 = col1[3];
+				prefs.colourScale[colourScale].colour(data[i][j], colour);
+				extraSolidTriangles_.defineVertex(i, j, usez ? data[i][j] : 0.0, normal[0].x, normal[0].y, normal[0].z, colour);
+				if (colour[3] < minAlpha) minAlpha = colour[3];
 				
-				prefs.colourScale[cscale].colour(data[i+1][j], col1);
-				primaryPrimitive_.defineVertex(i+1, j, usez ? data[i+1][j] : 0.0, normal[1].x, normal[1].y, normal[1].z, col1);
-				if (col1[3] < minalpha1) minalpha1 = col1[3];
+				prefs.colourScale[colourScale].colour(data[i+1][j], colour);
+				extraSolidTriangles_.defineVertex(i+1, j, usez ? data[i+1][j] : 0.0, normal[1].x, normal[1].y, normal[1].z, colour);
+				if (colour[3] < minAlpha) minAlpha = colour[3];
 				
-				prefs.colourScale[cscale].colour(data[i][j+1], col1);
-				primaryPrimitive_.defineVertex(i, j+1, usez ? data[i][j+1] : 0.0, normal[2].x, normal[2].y, normal[2].z, col1);
-				if (col1[3] < minalpha1) minalpha1 = col1[3];
+				prefs.colourScale[colourScale].colour(data[i][j+1], colour);
+				extraSolidTriangles_.defineVertex(i, j+1, usez ? data[i][j+1] : 0.0, normal[2].x, normal[2].y, normal[2].z, colour);
+				if (colour[3] < minAlpha) minAlpha = colour[3];
 				
 				// Second triangle
-				primaryPrimitive_.defineVertex(i, j+1, usez ? data[i][j+1] : 0.0, normal[2].x, normal[2].y, normal[2].z, col1);
+				extraSolidTriangles_.defineVertex(i, j+1, usez ? data[i][j+1] : 0.0, normal[2].x, normal[2].y, normal[2].z, colour);
 				
-				prefs.colourScale[cscale].colour(data[i+1][j], col1);
-				primaryPrimitive_.defineVertex(i+1, j, usez ? data[i+1][j] : 0.0, normal[1].x, normal[1].y, normal[1].z, col1);
-				if (col1[3] < minalpha1) minalpha1 = col1[3];
+				prefs.colourScale[colourScale].colour(data[i+1][j], colour);
+				extraSolidTriangles_.defineVertex(i+1, j, usez ? data[i+1][j] : 0.0, normal[1].x, normal[1].y, normal[1].z, colour);
+				if (colour[3] < minAlpha) minAlpha = colour[3];
 
-				prefs.colourScale[cscale].colour(data[i+1][j+1], col1);
-				primaryPrimitive_.defineVertex(i+1, j+1, usez ? data[i+1][j+1] : 0.0, normal[3].x, normal[3].y, normal[3].z, col1);
-				if (col1[3] < minalpha1) minalpha1 = col1[3];
+				prefs.colourScale[colourScale].colour(data[i+1][j+1], colour);
+				extraSolidTriangles_.defineVertex(i+1, j+1, usez ? data[i+1][j+1] : 0.0, normal[3].x, normal[3].y, normal[3].z, colour);
+				if (colour[3] < minAlpha) minAlpha = colour[3];
 			}
 			else
 			{
 				// First triangle
-				primaryPrimitive_.defineVertex(i, j, usez ? data[i][j] : 0.0, normal[0].x, normal[0].y, normal[0].z);
-				primaryPrimitive_.defineVertex(i+1, j, usez ? data[i+1][j] : 0.0, normal[1].x, normal[1].y, normal[1].z);
-				primaryPrimitive_.defineVertex(i, j+1, usez ? data[i][j+1] : 0.0, normal[2].x, normal[2].y, normal[2].z);
+				extraSolidTriangles_.defineVertex(i, j, usez ? data[i][j] : 0.0, normal[0].x, normal[0].y, normal[0].z);
+				extraSolidTriangles_.defineVertex(i+1, j, usez ? data[i+1][j] : 0.0, normal[1].x, normal[1].y, normal[1].z);
+				extraSolidTriangles_.defineVertex(i, j+1, usez ? data[i][j+1] : 0.0, normal[2].x, normal[2].y, normal[2].z);
 				
 				// Second triangle
-				primaryPrimitive_.defineVertex(i, j+1, usez ? data[i][j+1] : 0.0, normal[2].x, normal[2].y, normal[2].z);
-				primaryPrimitive_.defineVertex(i+1, j, usez ? data[i+1][j] : 0.0, normal[1].x, normal[1].y, normal[1].z);
-				primaryPrimitive_.defineVertex(i+1, j+1, usez ? data[i+1][j+1] : 0.0, normal[3].x, normal[3].y, normal[3].z);	
+				extraSolidTriangles_.defineVertex(i, j+1, usez ? data[i][j+1] : 0.0, normal[2].x, normal[2].y, normal[2].z);
+				extraSolidTriangles_.defineVertex(i+1, j, usez ? data[i+1][j] : 0.0, normal[1].x, normal[1].y, normal[1].z);
+				extraSolidTriangles_.defineVertex(i+1, j+1, usez ? data[i+1][j+1] : 0.0, normal[3].x, normal[3].y, normal[3].z);	
 			}
 			dj = 1;
 
 		}
 		di = 1;
 	}
-
-	// Set transparency flags
-	primaryIsTransparent_ = (minalpha1 <= 0.99f);
-	secondaryIsTransparent_ = (minalpha2 <= 0.99f);	
 }
-
-// Create axes
-void GridPrimitive::createAxes()
+/*
+// Create volume axes
+void RenderGroup::createVolumeAxes(Grid* source)
 {
 	// Get some useful values before we start...
 	Vec3<double> origin, axisRealMajorSpacing, axisRealMinorSpacing, gridDelta, axisRealMin, axisRealMax, axisRealRange, realToGrid;
@@ -725,4 +645,4 @@ void GridPrimitive::createAxes()
 			++tickCount;
 		}
 	}
-}
+}*/

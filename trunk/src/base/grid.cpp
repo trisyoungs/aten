@@ -121,7 +121,6 @@ Grid::Grid() : ListItem<Grid>()
 	log_ = -1;
 	boundsLog_ = -1;
 	style_ = Grid::SolidSurface;
-	renderPoint_ = -1;
 	visible_ = true;
 	primaryColour_[0] = 0.0;
 	primaryColour_[1] = 0.0;
@@ -176,7 +175,6 @@ void Grid::operator=(Grid& source)
 	upperSecondaryCutoff_ = source.upperSecondaryCutoff_;
 	log_ = 0;
 	style_ = source.style_;
-	renderPoint_ = -1;
 	visible_ = source.visible_;
 	totalPositiveSum_ = source.totalPositiveSum_;
 	partialPrimarySum_ = source.partialPrimarySum_;
@@ -593,18 +591,6 @@ void Grid::setLoopOrder(int n, int xyz)
 Vec3<int> Grid::loopOrder()
 {
 	return loopOrder_;
-}
-
-// Return whether re-rendering is necessary
-bool Grid::shouldRerender() const
-{
-	return (renderPoint_ != log_);
-}
-
-// Update the log point of the surface
-void Grid::updateRenderPoint()
-{
-	renderPoint_ = log_;
 }
 
 // Set whether the surface is visible
@@ -1153,6 +1139,36 @@ void Grid::setFillEnclosedVolume(bool b)
 bool Grid::fillEnclosedVolume()
 {
 	return fillEnclosedVolume_;
+}
+
+/*
+ * Rendering
+ */
+
+// Return primary renderGroup, regenerating if necessary
+RenderGroup& Grid::primaryRenderGroup()
+{
+	if (primaryRenderGroupPoint_ != log_)
+	{
+		Vec4<GLfloat> colour(primaryColour_[0], primaryColour_[1], primaryColour_[2], primaryColour_[3]);
+		primaryRenderGroup_.marchingCubes(this, lowerPrimaryCutoff_, upperPrimaryCutoff_, colour, colourScale_);
+		primaryRenderGroupPoint_ = log_;
+	}
+
+	return primaryRenderGroup_;
+}
+
+// Return secondary renderGroup, regenerating if necessary
+RenderGroup& Grid::secondaryRenderGroup()
+{
+	if (secondaryRenderGroupPoint_ != log_)
+	{
+		Vec4<GLfloat> colour(secondaryColour_[0], secondaryColour_[1], secondaryColour_[2], secondaryColour_[3]);
+		secondaryRenderGroup_.marchingCubes(this, lowerSecondaryCutoff_, upperSecondaryCutoff_, colour, colourScale_);
+		secondaryRenderGroupPoint_ = log_;
+	}
+
+	return secondaryRenderGroup_;
 }
 
 /*

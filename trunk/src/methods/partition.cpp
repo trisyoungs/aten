@@ -201,15 +201,15 @@ DisorderData *PartitionData::component(int id)
 	return components_[id]->item;
 }
 
-// Return grid primitive instance for this partition
-GridPrimitive& PartitionData::gridPrimitive()
+// Return rendergroup for this partition
+RenderGroup& PartitionData::renderGroup()
 {
-	return gridPrimitive_;
+	return renderGroup_;
 }
 
 /*
-// Partitioning Scheme
-*/
+ * Partitioning Scheme
+ */
 
 // Constructor
 PartitioningScheme::PartitioningScheme() : ListItem<PartitioningScheme>()
@@ -462,14 +462,12 @@ void PartitioningScheme::createPartitionsFromGrid()
 		}
 	}
 	
-	// Generate GridPrimitives for each partition
+	// Generate rendergroup data for each partition
 	for (PartitionData* pd = partitions_.first(); pd != NULL; pd = pd->next)
 	{
-		GridPrimitive& prim = pd->gridPrimitive();
-		prim.setSource(&grid_);
 		grid_.setLowerPrimaryCutoff(pd->id()-0.5);
 		grid_.setUpperPrimaryCutoff(pd->id()+0.5);
-		prim.createSurfaceMarchingCubes();
+		pd->renderGroup().marchingCubes(&grid_, pd->id()-0.5, pd->id()+0.5, Vec4<GLfloat>(0.0,0.0,0.0,0.7), -1);
 	}
 	Messenger::exit("PartitioningScheme::createPartitionsFromGrid");
 }
@@ -477,13 +475,13 @@ void PartitioningScheme::createPartitionsFromGrid()
 // Recalculate partition information (after load or change in options)
 void PartitioningScheme::recalculatePartitions()
 {
-	Messenger::enter("PartitioningScheme::updatePartitions");
+	Messenger::enter("PartitioningScheme::recalculatePartitions");
 	
 	// If this scheme contains static data then there's nothingn to be done
 	if (staticData_)
 	{
 		Messenger::print(Messenger::Verbose, "Scheme '%s' contains static data, so nothing to recalculate.", qPrintable(name_));
-		Messenger::exit("PartitioningScheme::updatePartitions");
+		Messenger::exit("PartitioningScheme::recalculatePartitions");
 		return;
 	}
 	
@@ -491,7 +489,7 @@ void PartitioningScheme::recalculatePartitions()
 	if (changeLog_ == partitionLogPoint_)
 	{
 		Messenger::print(Messenger::Verbose, "Log point for partitions in scheme '%s' is up to date.", qPrintable(name_));
-		Messenger::exit("PartitioningScheme::updatePartitions");
+		Messenger::exit("PartitioningScheme::recalculatePartitions");
 		return;
 	}
 
@@ -538,19 +536,17 @@ void PartitioningScheme::recalculatePartitions()
 	}
 	progress.terminate(progid);
 	
-	// Generate GridPrimitives for each partition
+	// Generate rendergroup data for each partition
 	for (PartitionData* pd = partitions_.first(); pd != NULL; pd = pd->next)
 	{
-		GridPrimitive& prim = pd->gridPrimitive();
-		prim.setSource(&grid_);
 		grid_.setLowerPrimaryCutoff(pd->id()-0.5);
 		grid_.setUpperPrimaryCutoff(pd->id()+0.5);
-		prim.createSurfaceMarchingCubes();
+		pd->renderGroup().marchingCubes(&grid_, pd->id()-0.5, pd->id()+0.5, Vec4<GLfloat>(0.0,0.0,0.0,0.7), -1);
 	}
 	
 	partitionLogPoint_ = changeLog_;
 
-	Messenger::exit("PartitioningScheme::updatePartitions");
+	Messenger::exit("PartitioningScheme::recalculatePartitions");
 }
 
 // Return number of partitions now recognised in grid

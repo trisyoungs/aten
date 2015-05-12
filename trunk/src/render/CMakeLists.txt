@@ -22,7 +22,7 @@ add_library(render
   rendergroup.cpp
   rendergroup_glyph.cpp
   rendergroup_model.cpp
-  surface.cpp
+  rendergroup_surface.cpp
   textformat.cpp
   textfragment.cpp
   textprimitive.cpp

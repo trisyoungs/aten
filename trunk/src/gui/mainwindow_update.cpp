@@ -146,18 +146,13 @@ void AtenWindow::updateMainWindow()
 	else title += " [[[ No Current Model ]]]";
 	setWindowTitle(title);
 
-	// Build panel
-	/* nothing */
-
-	// Cell panel
-	ui.CellDefinePeriodicButton->setEnabled(currentModel);
-	if (currentModel) ui.CellDefinePeriodicButton->setChecked(currentModel->cell()->type() != UnitCell::NoCell);
-	ui.CellDefineAnglesButton->setEnabled(currentModel ? currentModel->cell()->type() != UnitCell::NoCell : false);
-	ui.CellDefineLengthsButton->setEnabled(currentModel ? currentModel->cell()->type() != UnitCell::NoCell : false);
-	ui.CellDefineMatrixButton->setEnabled(currentModel ? currentModel->cell()->type() != UnitCell::NoCell : false);
-	ui.CellSpacegroupSetButton->setEnabled(currentModel ? currentModel->cell()->type() != UnitCell::NoCell : false);
-	ui.CellTransformReplicateButton->setEnabled(currentModel ? currentModel->cell()->type() != UnitCell::NoCell : false);
-	ui.CellTransformScaleButton->setEnabled(currentModel ? currentModel->cell()->type() != UnitCell::NoCell : false);
+	// Update panels
+	updateBuildPanel(currentModel);
+	updateCellPanel(currentModel);
+	updateViewPanel(currentModel);
+	updateCalculatePanel(currentModel);
+	updateTransformPanel(currentModel);
+	updateGridsPanel(currentModel);
 
 	refreshing_ = false;
 }

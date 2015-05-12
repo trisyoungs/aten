@@ -182,6 +182,7 @@ set(gui_SRCS
   mainwindow_panel_build.cpp
   mainwindow_panel_calculate.cpp
   mainwindow_panel_cell.cpp
+  mainwindow_panel_grids.cpp
   mainwindow_panel_transform.cpp
   mainwindow_panel_view.cpp
   mainwindow_update.cpp

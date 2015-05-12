@@ -138,7 +138,7 @@ Commands::Function CommandNode::function()
 Format* CommandNode::createFormat(int fmtArgId, int firstArgId)
 {
 	Messenger::enter("CommandNode::createFormat");
-
+	
 	// fmtargid = id of argument which contains the formatting string, or -1 for no formatting string (free-form format)
 	// firstargid = id of first data argument
 	// If we do not currently have a format associated to the node, create it regardless

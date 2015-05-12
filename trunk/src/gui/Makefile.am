@@ -33,7 +33,7 @@ libgui_a_SOURCES += about.ui atomlist.ui command.ui disorderoptions.ui disorderw
 
 libgui_a_SOURCES += about_funcs.cpp atomlist_funcs.cpp command_funcs.cpp disorderoptions_funcs.cpp disorderwizard_funcs.cpp forcefields_funcs.cpp fragments_funcs.cpp glyphs_funcs.cpp grids_funcs.cpp pores_funcs.cpp position_funcs.cpp saveimage_funcs.cpp scriptmovie_funcs.cpp select_funcs.cpp trajectory_funcs.cpp transform_funcs.cpp vibrations_funcs.cpp viewbasis_funcs.cpp vieweigenvector_funcs.cpp zmatrix_funcs.cpp
 
-libgui_a_SOURCES += ffeditor_funcs.cpp layoutlist.cpp loadmodel_funcs.cpp mainwindow_context.cpp mainwindow_funcs.cpp mainwindow_image.cpp mainwindow_messages.cpp mainwindow_modellist.cpp mainwindow_panel_build.cpp mainwindow_panel_calculate.cpp mainwindow_panel_cell.cpp mainwindow_panel_transform.cpp mainwindow_panel_view.cpp mainwindow_update.cpp prefs_funcs.cpp progress_funcs.cpp selectfilter_funcs.cpp selectpattern_funcs.cpp selectvariable_funcs.cpp settings.cpp
+libgui_a_SOURCES += ffeditor_funcs.cpp layoutlist.cpp loadmodel_funcs.cpp mainwindow_context.cpp mainwindow_funcs.cpp mainwindow_image.cpp mainwindow_messages.cpp mainwindow_modellist.cpp mainwindow_panel_build.cpp mainwindow_panel_calculate.cpp mainwindow_panel_cell.cpp mainwindow_panel_grids.cpp mainwindow_panel_transform.cpp mainwindow_panel_view.cpp mainwindow_update.cpp prefs_funcs.cpp progress_funcs.cpp selectfilter_funcs.cpp selectpattern_funcs.cpp selectvariable_funcs.cpp settings.cpp
 libgui_a_SOURCES += mainmenuactions.cpp
 
 libgui_a_SOURCES += tcolourframe.hui tcolourwheel.hui tdoublespindelegate.hui texponentialspin.hui tintegerspindelegate.hui tmenubutton.hui tprocess.hui tprompt.hui ttablewidget.hui ttreewidget.hui viewer.hui

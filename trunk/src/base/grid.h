@@ -26,6 +26,7 @@
 #include "base/cell.h"
 #include "math/constants.h"
 #include "base/namespace.h"
+#include "render/rendergroup.h"
 
 ATEN_BEGIN_NAMESPACE
 
@@ -286,8 +287,6 @@ class Grid : public ListItem<Grid>
 	private:
 	// Log for changes to Grid, display style etc.
 	int log_;
-	// Primitive containing surface triangles
-	int renderPoint_;
 	// Whether the surface is currently visible
 	bool visible_;
 	// How to render this surface
@@ -375,6 +374,23 @@ class Grid : public ListItem<Grid>
 	// Return whether to fill enclosed volume
 	bool fillEnclosedVolume();
 
+
+	/*
+	 * Rendering
+	 */
+	private:
+	// Primitives representing primary surface
+	RenderGroup primaryRenderGroup_;
+	// Primitives representing secondary surface
+	RenderGroup secondaryRenderGroup_;
+	// Logpoints at which rendergroups were last created
+	int primaryRenderGroupPoint_, secondaryRenderGroupPoint_;
+
+	public:
+	// Return primary renderGroup, regenerating if necessary
+	RenderGroup& primaryRenderGroup();
+	// Return secondary renderGroup, regenerating if necessary
+	RenderGroup& secondaryRenderGroup();
 
 
 	/*
