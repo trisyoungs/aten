@@ -23,7 +23,6 @@
 #define ATEN_PARTITION_H
 
 #include "base/grid.h"
-#include "render/gridprimitive.h"
 #include "parser/program.h"
 #include "parser/usercommandnode.h"
 #include "parser/double.h"
@@ -69,15 +68,15 @@ class PartitionData : public ListItem<PartitionData>
 	// List of basic coordinates of cells
 	List<PartitionCellData> cells_;
 	// Pointer to current PartitionCellData
-	PartitionCellData *currentCellChunk_;
+	PartitionCellData* currentCellChunk_;
 	// Volume of partition
 	double volume_;
 	// Current reduced atomic mass present in partition
 	double reducedMass_;
 	// Reflist of components targeting this partition
 	Reflist<DisorderData,int> components_;
-	// Grid primitive instance for this partition
-	GridPrimitive gridPrimitive_;
+	// Render group for this partition
+	RenderGroup renderGroup_;
 	
 	public:
 	// Copy data from specified PartitionData
@@ -117,9 +116,9 @@ class PartitionData : public ListItem<PartitionData>
 	// Return number of components in list
 	int nComponents();
 	// Return nth component in list
-	DisorderData *component(int id);
-	// Return grid primitive instance for this partition
-	GridPrimitive& gridPrimitive();
+	DisorderData* component(int id);
+	// Return rendergroup for this partition
+	RenderGroup& renderGroup();
 };
 
 // Partitioning Scheme for Disordered Builder

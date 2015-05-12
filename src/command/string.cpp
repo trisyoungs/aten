@@ -21,7 +21,7 @@
 
 #include "command/commands.h"
 #include "parser/commandnode.h"
-#include "base/sysfunc.h"
+#include <QRegularExpression>
 
 ATEN_USING_NAMESPACE
 
@@ -36,14 +36,28 @@ bool Commands::function_AfterStr(CommandNode* c, Bundle& obj, ReturnValue& rv)
 // Convert string to floating point number
 bool Commands::function_AToF(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	rv.set( c->argc(0).toDouble() );
+	static QRegularExpression re("[\\d.\\-e]+");
+	QRegularExpressionMatch match = re.match(c->argc(0));
+	if (match.hasMatch()) rv.set( match.captured(0).toDouble() );
+	else
+	{
+		Messenger::warn("Couldn't convert '%s' to a floating point number.\n", qPrintable(c->argc(0)));
+		rv.reset();
+	}
 	return true;
 }
 
 // Convert string to integer number
 bool Commands::function_AToI(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	rv.set( c->argc(0).toInt() );
+	static QRegularExpression re("[\\d.\\-e]+");
+	QRegularExpressionMatch match = re.match(c->argc(0));
+	if (match.hasMatch()) rv.set( match.captured(0).toInt() );
+	else
+	{
+		Messenger::warn("Couldn't convert '%s' to an integer number.\n", qPrintable(c->argc(0)));
+		rv.reset();
+	}
 	return true;
 }
 
@@ -86,7 +100,9 @@ bool Commands::function_Lowercase(CommandNode* c, Bundle& obj, ReturnValue& rv)
 // Replace characters in supplied string
 bool Commands::function_ReplaceChars(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	rv.set(c->argc(0).replace(c->argc(1), c->argc(2)));
+	QString result = c->argc(0);
+	for (int n=0; n<c->argc(1).length(); ++n) result = result.replace(c->argc(1).at(n), c->argc(2));
+	rv.set(result);
 	return true;
 }
 

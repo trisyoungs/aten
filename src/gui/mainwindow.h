@@ -288,6 +288,10 @@ class AtenWindow : public QMainWindow
 	/*
 	 * Build Panel
 	 */
+	private:
+	// Update build panel
+	void updateBuildPanel(Model* sourceModel);
+
 	private slots:
 	// Select
 	void on_BuildSelectAtomsButton_clicked(bool checked);
@@ -316,6 +320,10 @@ class AtenWindow : public QMainWindow
 	/*
 	 * Cell Panel
 	 */
+	private:
+	// Update cell panel
+	void updateCellPanel(Model* sourceModel);
+
 	private slots:
 	// Define
 	void on_CellDefinePeriodicButton_clicked(bool checked);
@@ -329,6 +337,10 @@ class AtenWindow : public QMainWindow
 	/*
 	 * View Panel
 	 */
+	private:
+	// Update view panel
+	void updateViewPanel(Model* sourceModel);
+
 	private slots:
 	// Control
 	void on_ViewControlResetButton_clicked(bool checked);
@@ -355,6 +367,10 @@ class AtenWindow : public QMainWindow
 	/*
 	 * Calculate Panel
 	 */
+	private:
+	// Update calculate panel
+	void updateCalculatePanel(Model* sourceModel);
+
 	private slots:
 	void on_CalculateMeasureDistanceButton_clicked(bool checked);
 	void on_CalculateMeasureAngleButton_clicked(bool checked);
@@ -365,6 +381,10 @@ class AtenWindow : public QMainWindow
 	/*
 	 * Transform Panel
 	 */
+	private:
+	// Update transform panel
+	void updateTransformPanel(Model* sourceModel);
+
 	private slots:
 	void on_TransformSetDistanceButton_clicked(bool checked);
 	void on_TransformSetAngleButton_clicked(bool checked);
@@ -374,7 +394,21 @@ class AtenWindow : public QMainWindow
 	/*
 	 * Grids Panel
 	 */
+	private:
+	// Update grid panel
+	void updateGridsPanel(Model* sourceModel);
+	// Update current grid information
+	void updateGridInformation(Grid* sourceGrid);
+
 	private slots:
+	void on_GridsList_currentItemChanged(QListWidgetItem* current, QListWidgetItem* previous);
+	void on_GridsPrimaryLowerCutoffSpin_valueChanged(double value);
+	void on_GridsPrimaryUpperCutoffSpin_valueChanged(double value);
+	void on_GridsPrimaryColourButton_clicked(bool checked);
+	void on_GridsSecondarySurfaceCheck_clicked(bool checked);
+	void on_GridsSecondaryLowerCutoffSpin_valueChanged(double value);
+	void on_GridsSecondaryUpperCutoffSpin_valueChanged(double value);
+	void on_GridsSecondaryColourButton_clicked(bool checked);
 
 
 	/*

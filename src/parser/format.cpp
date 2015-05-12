@@ -23,6 +23,7 @@
 #include "parser/vtypes.h"
 #include "parser/treenode.h"
 #include <ctype.h>
+#include <QRegularExpression>
 
 ATEN_USING_NAMESPACE
 
@@ -44,10 +45,9 @@ FormatChunk::FormatChunk(ChunkType type, QString cFormat, TreeNode* arg, VTypes:
 	// Find length specifier in format (if there is one)
 	if (cFormat_.length() > 1)
 	{
-		// First, get position of first non-digit or '-' character, excepting the starting '%'
-		int n = 0;
-		for (n = 1; n < cFormat_.length(); ++n) if (cFormat_[n].isDigit() || (cFormat_[n] == '-')) continue; else break;
-		formatLength_ = cFormat_.mid(1,n).toInt();
+		QRegularExpression re("[-\\d]+");
+		QRegularExpressionMatch match = re.match(cFormat);
+		if (match.hasMatch()) formatLength_ = match.captured(0).toInt();
 	}
 }
 
@@ -258,7 +258,6 @@ Format::Format(QString cFormat, Refitem<TreeNode,int>* firstarg)
 			plainText.clear();
 			isFormatter = false;
 		}
-// 	} while (cFormat.at(pos) != '\0');
 	} while (pos < cFormat.count());
 
 	// Do we have some text left over?

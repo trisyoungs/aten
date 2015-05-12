@@ -1,5 +1,6 @@
 Remove empty destructors.
 Add ObjectLists (when using CHECK)?
+Sort out comment style (still /* // */ in places.
 Move sg code to separate dir.
 Remove dialog pointers (use instances instead).
 Remove Scripts menu, and automatic loading of scripts on startup.
@@ -52,6 +53,7 @@ Finish Spacegroup popup.
 Modifying anything on Grid tool widget is slow, forcing update of grid primitive?
 Add Calculate tool to work out centre of geometry/mass.
 Tidy up/rework TColourWheel code.
+Reimplement drawing of grid (volume) axes.
 
 GUI TODO:
 AddAtom functionality (from old Build menu).

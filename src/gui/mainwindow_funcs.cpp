@@ -160,8 +160,8 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 	ui.ViewSchemeOwnButton->setGroup("Schemes");
 
 	// Add view tool buttons to their button group
-	ui.ViewControlPerspectiveButton->setGroup("View");
-	ui.ViewControlOrthographicButton->setGroup("View");
+	ui.ViewControlPerspectiveButton->setGroup("ViewStyle");
+	ui.ViewControlOrthographicButton->setGroup("ViewStyle");
 
 	// Add buttons related to user actions to our button group, and add popup widgets to those buttons that have them
 
@@ -228,6 +228,7 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 	ui.GridsDefineOriginButton->setPopupWidget(new GridsOriginPopup(*this, ui.GridsDefineOriginButton), true);
 	// -- Grids Panel (Primary Cutoff)
 	ui.GridsPrimaryColourButton->setPopupWidget(new ColourPopup(*this, ui.GridsPrimaryColourButton), true);
+	// -- Grids Panel (Secondary Cutoff)
 	ui.GridsSecondaryColourButton->setPopupWidget(new ColourPopup(*this, ui.GridsSecondaryColourButton), true);
 	
 	

@@ -60,7 +60,11 @@ bool ColourPopup::callMethod(QString methodName, ReturnValue& rv)
 	else if (methodName == "setColour")
 	{
 		bool success;
-		double* colour = (double*) rv.asPointer(VTypes::DoubleData, success);
+		double colour[4];
+		colour[0] = rv.asDouble(0, success);
+		if (success) colour[1] = rv.asDouble(1, success);
+		if (success) colour[2] = rv.asDouble(2, success);
+		if (success) colour[3] = rv.asDouble(3, success);
 		if (!success)
 		{
 			printf("Failed to get colour information from supplied ReturnValue.\n");

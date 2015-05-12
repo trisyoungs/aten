@@ -21,6 +21,11 @@
 
 #include "gui/mainwindow.h"
 
+// Update calculate panel
+void AtenWindow::updateCalculatePanel(Model* sourceModel)
+{
+}
+
 /*
  * Measure
  */

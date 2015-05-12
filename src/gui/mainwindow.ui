@@ -3284,7 +3284,7 @@
              <number>2</number>
             </property>
             <item row="1" column="1">
-             <widget class="TExponentialSpin" name="GridSecondaryUpperCutoffSpin">
+             <widget class="TExponentialSpin" name="GridsSecondaryUpperCutoffSpin">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                 <horstretch>0</horstretch>
@@ -3306,7 +3306,7 @@
              </widget>
             </item>
             <item row="0" column="1">
-             <widget class="TExponentialSpin" name="GridSecondaryLowerCutoffSpin">
+             <widget class="TExponentialSpin" name="GridsSecondaryLowerCutoffSpin">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                 <horstretch>0</horstretch>
@@ -3350,7 +3350,7 @@
            </layout>
           </item>
           <item row="0" column="0" rowspan="2">
-           <widget class="QListWidget" name="GridList">
+           <widget class="QListWidget" name="GridsList">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -3576,7 +3576,7 @@
              <number>2</number>
             </property>
             <item row="1" column="1">
-             <widget class="TExponentialSpin" name="GridPrimaryUpperCutoffSpin">
+             <widget class="TExponentialSpin" name="GridsPrimaryUpperCutoffSpin">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                 <horstretch>0</horstretch>
@@ -3598,7 +3598,7 @@
              </widget>
             </item>
             <item row="0" column="1">
-             <widget class="TExponentialSpin" name="GridPrimaryLowerCutoffSpin">
+             <widget class="TExponentialSpin" name="GridsPrimaryLowerCutoffSpin">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                 <horstretch>0</horstretch>

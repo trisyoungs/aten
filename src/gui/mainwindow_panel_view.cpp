@@ -22,6 +22,15 @@
 #include "gui/mainwindow.h"
 #include "main/aten.h"
 
+// Update view panel
+void AtenWindow::updateViewPanel(Model* sourceModel)
+{
+	TMenuButton::setGroupButtonChecked("Styles", Prefs::drawStyle(prefs.renderStyle()));
+	TMenuButton::setGroupButtonChecked("Schemes", Prefs::colouringScheme(prefs.colourScheme()));
+	if (prefs.hasPerspective()) ui.ViewControlPerspectiveButton->setChecked(true);
+	else ui.ViewControlOrthographicButton->setChecked(true);
+}
+
 /*
  * Control
  */

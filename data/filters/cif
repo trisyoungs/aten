@@ -33,12 +33,12 @@ filter(type="importmodel", name="Crystallographic Information File", nickname="c
 	{
 		# Read an entire line
 		if (getLine(line) == -1) break;
+
 		# Check the first item as a keyword
 		readVar(line, keywd, data1);
 		if (keywd == "") continue;
 		readVarF(keywd, "%1s", char);
 		keywd = lowerCase(keywd);
-
 		if ((keywd == "_chemical_name_common") || (keywd == "_chem_comp.name")) { setName(data1); inloop = 0; continue; }
 		else if (keywd == "_cell_length_a") { length[1] = atof(data1); cellspec++; inloop = 0; continue; }
 		else if (keywd == "_cell_length_b") { length[2] = atof(data1); cellspec++; inloop = 0; continue; }
@@ -141,7 +141,7 @@ filter(type="importmodel", name="Crystallographic Information File", nickname="c
 					el = "XX";
 				}
 				newAtom(el, atof(args[id_r[1]]), atof(args[id_r[2]]), atof(args[id_r[3]]));
-				#printf("Created atom %s with coords %f %f %f\n", args[id_e], atof(args[id_r[1]]), atof(args[id_r[2]]), atof(args[id_r[3]]));
+				# printf("Created atom %s with coords %f %f %f\n", el, atof(args[id_r[1]]), atof(args[id_r[2]]), atof(args[id_r[3]]));
 			}
 			else if (looptype == "gen") addGenerator(args[id_gen]);
 		}

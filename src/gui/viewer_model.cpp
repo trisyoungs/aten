@@ -21,6 +21,7 @@
 
 #include "gui/viewer.hui"
 #include "model/model.h"
+#include <base/grid.h>
 
 ATEN_USING_NAMESPACE
 
@@ -109,7 +110,7 @@ void Viewer::renderModel(Model* source, int viewPortX, int viewPortY, int viewPo
 	}
 
 	// Get RenderGroup for model (it will be updated if necessary by the called function)
-	RenderGroup& renderGroup = source->renderGroup(primitives_[primitiveSet_]);
+	RenderGroup& modelGroup = source->renderGroup(primitives_[primitiveSet_]);
 
 	// Draw main model (atoms, bonds, etc.)
 	Matrix offset;
@@ -121,12 +122,20 @@ void Viewer::renderModel(Model* source, int viewPortX, int viewPortY, int viewPo
 			{
 				offset.setIdentity();
 				offset.addTranslation(source->cell()->axes() * Vec3<double>(x,y,z));
-				
-				renderGroup.sendToGL(modelTransformationMatrix_);
+
+				// Render model
+				modelGroup.sendToGL(modelTransformationMatrix_);
+
+				// Render grids
+				for (Grid* g = source->grids(); g != NULL; g = g->next)
+				{
+					if (!g->isVisible()) continue;
+					RenderGroup& gridGroup = g->primaryRenderGroup();
+					gridGroup.sendToGL(modelTransformationMatrix_);
+				}
 			}
 		}
 	}
 
 	Messenger::exit("Viewer::renderModel");
 }
-

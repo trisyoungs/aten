@@ -21,7 +21,10 @@
 
 #include "gui/mainwindow.h"
 
-ATEN_USING_NAMESPACE
+// Update transform panel
+void AtenWindow::updateTransformPanel(Model* sourceModel)
+{
+}
 
 /*
  * Set
