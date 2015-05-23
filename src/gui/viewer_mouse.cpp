@@ -57,7 +57,7 @@ void Viewer::mousePressEvent(QMouseEvent* event)
 	if (m != aten_->currentModel())
 	{
 		aten_->setCurrentModel(m);
-		atenWindow_->updateWidgets(AtenWindow::AllTarget-AtenWindow::CanvasTarget);
+		atenWindow_->updateWidgets(AtenWindow::AllTarget-AtenWindow::MainViewTarget);
 	}
 	
 	// Get current active model

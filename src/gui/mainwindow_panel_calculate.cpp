@@ -51,5 +51,5 @@ void AtenWindow::on_CalculateMeasureClearButton_clicked(bool checked)
 	CommandNode::run(Commands::ClearMeasurements);
 
 	// Update display
-	updateWidgets(AtenWindow::CanvasTarget);
+	updateWidgets(AtenWindow::MainViewTarget);
 }

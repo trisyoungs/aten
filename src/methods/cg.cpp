@@ -124,7 +124,7 @@ void MethodCg::minimise(Model* srcmodel, double econ, double fcon)
 		}
 		if (converged) break;
 
-// 		if (prefs.shouldUpdateModel(cycle+1)) parent_.updateWidgets(AtenWindow::CanvasTarget); ATEN2 TODO
+// 		if (prefs.shouldUpdateModel(cycle+1)) parent_.updateWidgets(AtenWindow::MainViewTarget); ATEN2 TODO
 
 		// Store old forces and calculate new forces at the new line-minimised position
 		for (i=0; i<srcmodel->nAtoms()*3; i += 3)

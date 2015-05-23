@@ -1,6 +1,6 @@
 /*
-	*** Aten version information
-	*** src/main/version.h
+	*** Grid Point
+	*** src/base/gridpoint.cpp
 	Copyright T. Youngs 2007-2015
 
 	This file is part of Aten.
@@ -19,12 +19,49 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_VERSION_H
-#define ATEN_VERSION_H
+#include "base/gridpoint.h"
 
-#define ATENVERSION "1.959"
-#define ATENREVISION "1959"
-#define ATENDATE "Thu 28 Jun - 13:36"
-#define ATENURL "http://aten.googlecode.com/svn/trunk"
+ATEN_USING_NAMESPACE
 
-#endif
+// Constructor
+GridPoint::GridPoint() : ListItem<GridPoint>()
+{
+	// Private variables
+	flag_ = 0;
+	value_ = 0.0;
+}
+
+// Destructor
+GridPoint::~GridPoint()
+{
+}
+
+// Return coordinates of point
+Vec3<double>& GridPoint::r()
+{
+	return r_;
+}
+
+// Return value at point
+double GridPoint::value() const
+{
+	return value_;
+}
+
+// Set value at point
+void GridPoint::setValue(double v)
+{
+	value_ = v;
+}
+
+// Retrieve flag status
+int GridPoint::flag() const
+{
+	return flag_;
+}
+
+// Set flag status
+void GridPoint::setFlag(int i)
+{
+	flag_ = i;
+}

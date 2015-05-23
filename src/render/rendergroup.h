@@ -94,10 +94,6 @@ class RenderGroup
 	void createAtomsAndBonds(PrimitiveSet& primitiveSet, Model* source, Matrix baseTransform);
 	// Generate primitive data for model glyphs
 	void createGlyphs(PrimitiveSet& primitiveSet, Model* source);
-	// Generate surface via marching cubes algorithm
-	void marchingCubes(Grid* source, double lowerCutoff, double upperCutoff, Vec4<GLfloat> colour, int colourScale);
-	// Generate surface via marching cubes algorithm
-	void createSurface(Grid* source, Vec4<GLfloat> colour, int colourScale);
 
 
 	/*

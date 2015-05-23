@@ -96,6 +96,14 @@ bool Primitive::colouredVertexData() const
 	return colouredVertexData_;
 }
 
+// Update mesh (VBO / display list) of dyamic primitive
+void Primitive::updateMesh()
+{
+	// Check instances - if there is no current instance, create one
+	if (instances_.nItems() == 0) popInstance(QOpenGLContext::currentContext());
+	pushInstance(QOpenGLContext::currentContext());
+}
+
 /*
  * Instances
  */
@@ -806,4 +814,22 @@ void Primitive::sendToGL(const QOpenGLContext* context)
 		if (indexData_.nItems()) glDrawElements(type_, indexData_.nItems(), GL_UNSIGNED_INT, indexData_.array());
 		else glDrawArrays(type_, 0, nDefinedVertices_);
 	}
+}
+
+// Send to GL in specified style
+void Primitive::sendToGL(const QOpenGLContext* context, GLenum style, bool lighting, bool hasColour, double* colour)
+{
+	// Set primitive style
+	glPolygonMode(GL_FRONT_AND_BACK, style);
+	if (lighting) glEnable(GL_LIGHTING);
+	else glDisable(GL_LIGHTING);
+
+	// Set colour
+	if (hasColour)
+	{
+		glColor4dv(colour);
+	}
+
+	// Send data
+	sendToGL(context);
 }

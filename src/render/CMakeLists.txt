@@ -16,13 +16,13 @@ add_library(render
   fontinstance.cpp
   gridprimitive.cpp
   primitive.cpp
+  primitive_surface.cpp
   primitiveinfo.cpp
   primitiveinstance.cpp
   primitiveset.cpp
   rendergroup.cpp
   rendergroup_glyph.cpp
   rendergroup_model.cpp
-  rendergroup_surface.cpp
   textformat.cpp
   textfragment.cpp
   textprimitive.cpp

@@ -358,9 +358,10 @@ void Viewer::updatePrimitives(Viewer::PrimitiveQuality targetQuality)
 	// Recalculate adjustments in PrimitiveSets
 	primitives_[targetQuality].calculateAdjustments();
 
-	// Pop and push a context
+	// Recreate basic rendering objects
 	primitives_[targetQuality].recreatePrimitives();
 
+	// Pop and push a context
 	if (primitives_[targetQuality].nInstances() != 0) primitives_[targetQuality].popInstance(context());
 	primitives_[targetQuality].pushInstance(context());
 

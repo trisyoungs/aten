@@ -28,6 +28,8 @@ void AtenWindow::updateCellPanel(Model* sourceModel)
 {
 	if (!sourceModel) return;
 
+	Messenger::enter("AtenWindow::updateCellPanel");
+
 	ui.CellDefinePeriodicButton->setEnabled(sourceModel);
 	if (sourceModel) ui.CellDefinePeriodicButton->setChecked(sourceModel->cell()->type() != UnitCell::NoCell);
 	ui.CellDefineAnglesButton->setEnabled(sourceModel ? sourceModel->cell()->type() != UnitCell::NoCell : false);
@@ -36,6 +38,8 @@ void AtenWindow::updateCellPanel(Model* sourceModel)
 	ui.CellSpacegroupSetButton->setEnabled(sourceModel ? sourceModel->cell()->type() != UnitCell::NoCell : false);
 	ui.CellTransformReplicateButton->setEnabled(sourceModel ? sourceModel->cell()->type() != UnitCell::NoCell : false);
 	ui.CellTransformScaleButton->setEnabled(sourceModel ? sourceModel->cell()->type() != UnitCell::NoCell : false);
+
+	Messenger::exit("AtenWindow::updateCellPanel");
 }
 
 /*
@@ -46,16 +50,15 @@ void AtenWindow::on_CellDefinePeriodicButton_clicked(bool checked)
 {
 	if (refreshing_) return;
 
-	if (checked) 
+	if (checked)
 	{
-		// Get the cell vectors from the CellMatrixPopup widget
-		CellMatrixPopup* popup = (CellMatrixPopup*) ui.CellDefineMatrixButton->popupWidget();
-		CommandNode::run(Commands::CellAxes, "ddddddddd", popup->ui.AxisAXSpin->value(), popup->ui.AxisAYSpin->value(), popup->ui.AxisAZSpin->value(), popup->ui.AxisBXSpin->value(), popup->ui.AxisBYSpin->value(), popup->ui.AxisBZSpin->value(), popup->ui.AxisCXSpin->value(), popup->ui.AxisCYSpin->value(), popup->ui.AxisCZSpin->value());
+		ReturnValue rv;
+		ui.CellDefinePeriodicButton->callPopupMethod("setMatrix", rv);
 	}
 	else CommandNode::run(Commands::NoCell, "");
 
 	// Update display
-	updateWidgets(AtenWindow::CanvasTarget);
+	updateWidgets(AtenWindow::MainViewTarget);
 }
 
 /*
@@ -67,7 +70,7 @@ void AtenWindow::on_CellTransformReplicateButton_clicked(bool checked)
 	ReturnValue rv;
 	ui.CellTransformReplicateButton->callPopupMethod("replicate", rv);
 
-	updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
+	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget);
 }
 
 void AtenWindow::on_CellTransformScaleButton_clicked(bool checked)
@@ -75,7 +78,7 @@ void AtenWindow::on_CellTransformScaleButton_clicked(bool checked)
 	ReturnValue rv;
 	ui.CellTransformScaleButton->callPopupMethod("scale", rv);
 
-	updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
+	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget);
 }
 
 /*

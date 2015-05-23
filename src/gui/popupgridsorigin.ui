@@ -62,7 +62,7 @@
       <string> Å</string>
      </property>
      <property name="decimals">
-      <number>8</number>
+      <number>4</number>
      </property>
      <property name="maximum">
       <double>10000.000000000000000</double>
@@ -103,7 +103,7 @@
       <string> Å</string>
      </property>
      <property name="decimals">
-      <number>8</number>
+      <number>4</number>
      </property>
      <property name="maximum">
       <double>10000.000000000000000</double>
@@ -144,7 +144,7 @@
       <string> Å</string>
      </property>
      <property name="decimals">
-      <number>8</number>
+      <number>4</number>
      </property>
      <property name="maximum">
       <double>10000.000000000000000</double>

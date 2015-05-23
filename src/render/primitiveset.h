@@ -85,6 +85,8 @@ class PrimitiveSet
 	Primitive cube_, wireCube_, originCube_, sphere_, cylinder_, cone_;
 	// Specialist objects
 	Primitive crossedCube_, cellAxes_, rotationGlobe_, rotationGlobeAxes_, halo_;
+	// Dyanmic primitives, created and updated as and when required
+	static List<Primitive> dynamicPrimitives_;
 
 	public:
 	// Return atom primitive
@@ -125,6 +127,11 @@ class PrimitiveSet
 	Primitive& rotationGlobeAxes();
 	// Return halo primitive
 	Primitive& halo();
+	// Create and return new dynamic Primitive
+	static Primitive* createDynamicPrimitive();
+	// Release and destroy specified dynamic primitive
+	static void releaseDynamicPrimitive(Primitive* primitive);
+
 
 	/*
 	 * Creation / Instantiation

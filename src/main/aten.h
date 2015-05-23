@@ -81,12 +81,6 @@ class Aten
 	void setUseWorkingList(bool b);
 	// Return list of working models
 	Model* workingModels() const;
-	// Sets the current active model for editing
-	void setCurrentModel(Model* model);
-	// Return current active model for editing
-	Model* currentModel() const;
-	// Return current active model for editing, accounting for trajectory frames
-	Model* currentModelOrFrame() const;
 	// Return first item in the model list
 	Model* models() const;
 	// Return nth item in the model list
@@ -493,6 +487,16 @@ class Aten
 	public:
 	// Return current object Bundle
 	Bundle& current();
+	// Sets the current active model for editing
+	void setCurrentModel(Model* model);
+	// Return current active model for editing
+	Model* currentModel() const;
+	// Return current active model for editing, accounting for trajectory frames
+	Model* currentModelOrFrame() const;
+	// Set current grid for editing
+	void setCurrentGrid(Grid* grid);
+	// Return current grid for editing
+	bool currentGrid(Grid*& grid) const;
 
 
 	/*

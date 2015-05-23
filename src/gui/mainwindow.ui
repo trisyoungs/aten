@@ -69,7 +69,7 @@
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>5</number>
+       <number>0</number>
       </property>
       <property name="usesScrollButtons">
        <bool>true</bool>
@@ -2098,9 +2098,6 @@
               <width>30</width>
               <height>30</height>
              </size>
-            </property>
-            <property name="shortcut">
-             <string>Ctrl+R</string>
             </property>
             <property name="checkable">
              <bool>false</bool>
@@ -4307,84 +4304,6 @@
     <string>Ctrl+N</string>
    </property>
   </action>
-  <action name="actionStyleStick">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="checked">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="icons.qrc">
-     <normaloff>:/draw_styles/icons/style_stick.svg</normaloff>:/draw_styles/icons/style_stick.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Stick</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+1</string>
-   </property>
-  </action>
-  <action name="actionStyleTube">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="icons.qrc">
-     <normaloff>:/draw_styles/icons/style_tube.svg</normaloff>:/draw_styles/icons/style_tube.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Tube</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+2</string>
-   </property>
-  </action>
-  <action name="actionStyleSphere">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="icons.qrc">
-     <normaloff>:/draw_styles/icons/style_sphere.svg</normaloff>:/draw_styles/icons/style_sphere.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Sphere</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+3</string>
-   </property>
-  </action>
-  <action name="actionStyleScaled">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="icons.qrc">
-     <normaloff>:/draw_styles/icons/style_scaled.svg</normaloff>:/draw_styles/icons/style_scaled.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Scaled</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+4</string>
-   </property>
-  </action>
-  <action name="actionStyleIndividual">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="icons.qrc">
-     <normaloff>:/draw_styles/icons/style_individual.svg</normaloff>:/draw_styles/icons/style_individual.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Individual</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+5</string>
-   </property>
-  </action>
   <action name="actionFileSaveAs">
    <property name="icon">
     <iconset resource="icons.qrc">
@@ -4541,51 +4460,6 @@
     <string>Ctrl+Shift+&gt;</string>
    </property>
   </action>
-  <action name="actionSelectAtoms">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="checked">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="icons.qrc">
-     <normaloff>:/select/icons/select_atoms.svg</normaloff>:/select/icons/select_atoms.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Select Atoms</string>
-   </property>
-  </action>
-  <action name="actionSelectMolecules">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="icons.qrc">
-     <normaloff>:/select/icons/select_molecules.svg</normaloff>:/select/icons/select_molecules.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Select Molecules</string>
-   </property>
-   <property name="toolTip">
-    <string>Select bound fragments / molecules</string>
-   </property>
-  </action>
-  <action name="actionSelectElement">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="icons.qrc">
-     <normaloff>:/select/icons/select_element.svg</normaloff>:/select/icons/select_element.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Select by Element</string>
-   </property>
-   <property name="toolTip">
-    <string>Select all atoms of selected element</string>
-   </property>
-  </action>
   <action name="actionSelectionExpand">
    <property name="icon">
     <iconset resource="icons.qrc">
@@ -4596,84 +4470,6 @@
    </property>
    <property name="toolTip">
     <string>Expand current selection by one step along bonds</string>
-   </property>
-  </action>
-  <action name="actionViewReset">
-   <property name="text">
-    <string>Reset View</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+R</string>
-   </property>
-  </action>
-  <action name="actionViewZoomIn">
-   <property name="icon">
-    <iconset resource="icons.qrc">
-     <normaloff>:/view/icons/view_zoomin.svg</normaloff>:/view/icons/view_zoomin.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Zoom In</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+Shift+=</string>
-   </property>
-  </action>
-  <action name="actionViewZoomOut">
-   <property name="icon">
-    <iconset resource="icons.qrc">
-     <normaloff>:/view/icons/view_zoomout.svg</normaloff>:/view/icons/view_zoomout.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Zoom Out</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+-</string>
-   </property>
-  </action>
-  <action name="actionViewPerspective">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="checked">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Perspective</string>
-   </property>
-  </action>
-  <action name="actionViewOrthographic">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Orthographic</string>
-   </property>
-  </action>
-  <action name="actionSchemeElement">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="checked">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Element</string>
-   </property>
-  </action>
-  <action name="actionSchemeCharge">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Charge</string>
-   </property>
-  </action>
-  <action name="actionSchemeForce">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Forces</string>
    </property>
   </action>
   <action name="actionModelFFType">
@@ -4877,68 +4673,6 @@
     <string>Ctrl+H</string>
    </property>
   </action>
-  <action name="actionMouseInteract">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="checked">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="icons.qrc">
-     <normaloff>:/mouse/icons/mouse_interact.svg</normaloff>:/mouse/icons/mouse_interact.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Interact</string>
-   </property>
-   <property name="shortcut">
-    <string>F1</string>
-   </property>
-   <property name="shortcutContext">
-    <enum>Qt::ApplicationShortcut</enum>
-   </property>
-  </action>
-  <action name="actionMouseRotate">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="icons.qrc">
-     <normaloff>:/mouse/icons/mouse_rotate.svg</normaloff>:/mouse/icons/mouse_rotate.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Rotate</string>
-   </property>
-   <property name="shortcut">
-    <string>F2</string>
-   </property>
-   <property name="shortcutContext">
-    <enum>Qt::ApplicationShortcut</enum>
-   </property>
-  </action>
-  <action name="actionMouseTranslate">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="icon">
-    <iconset resource="icons.qrc">
-     <normaloff>:/mouse/icons/mouse_translate.svg</normaloff>:/mouse/icons/mouse_translate.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Translate</string>
-   </property>
-   <property name="shortcut">
-    <string>F3</string>
-   </property>
-   <property name="shortcutContext">
-    <enum>Qt::ApplicationShortcut</enum>
-   </property>
-  </action>
-  <action name="actionMouseZRotate">
-   <property name="text">
-    <string>ZRotate</string>
-   </property>
-  </action>
   <action name="actionFileOpenGrid">
    <property name="text">
     <string>Open &amp;Grid Data</string>
@@ -4987,138 +4721,6 @@
    </property>
    <property name="text">
     <string>Clear all</string>
-   </property>
-  </action>
-  <action name="actionViewSetCartesianPosX">
-   <property name="text">
-    <string>Cartesian +X</string>
-   </property>
-   <property name="iconText">
-    <string>Cartesian +X</string>
-   </property>
-   <property name="toolTip">
-    <string>Cartesian +X</string>
-   </property>
-  </action>
-  <action name="actionViewSetCartesianPosY">
-   <property name="text">
-    <string>Cartesian +Y</string>
-   </property>
-   <property name="iconText">
-    <string>Cartesian +Y</string>
-   </property>
-   <property name="toolTip">
-    <string>Cartesian +Y</string>
-   </property>
-  </action>
-  <action name="actionViewSetCartesianPosZ">
-   <property name="text">
-    <string>Cartesian +Z</string>
-   </property>
-   <property name="iconText">
-    <string>Cartesian +Z</string>
-   </property>
-   <property name="toolTip">
-    <string>Cartesian +Z</string>
-   </property>
-  </action>
-  <action name="actionViewSetCellPosX">
-   <property name="text">
-    <string>Cell +X</string>
-   </property>
-   <property name="iconText">
-    <string>Cell +X</string>
-   </property>
-   <property name="toolTip">
-    <string>Cell +X</string>
-   </property>
-  </action>
-  <action name="actionViewSetCellPosY">
-   <property name="text">
-    <string>Cell +Y</string>
-   </property>
-   <property name="iconText">
-    <string>Cell +Y</string>
-   </property>
-   <property name="toolTip">
-    <string>Cell +Y</string>
-   </property>
-  </action>
-  <action name="actionViewSetCellPosZ">
-   <property name="text">
-    <string>Cell +Z</string>
-   </property>
-   <property name="iconText">
-    <string>Cell +Z</string>
-   </property>
-   <property name="toolTip">
-    <string>Cell +Z</string>
-   </property>
-  </action>
-  <action name="actionViewSetCartesianNegX">
-   <property name="text">
-    <string>Cartesian -X</string>
-   </property>
-   <property name="iconText">
-    <string>Cartesian -X</string>
-   </property>
-   <property name="toolTip">
-    <string>Cartesian -X</string>
-   </property>
-  </action>
-  <action name="actionViewSetCartesianNegY">
-   <property name="text">
-    <string>Cartesian -Y</string>
-   </property>
-   <property name="iconText">
-    <string>Cartesian -Y</string>
-   </property>
-   <property name="toolTip">
-    <string>Cartesian -Y</string>
-   </property>
-  </action>
-  <action name="actionViewSetCartesianNegZ">
-   <property name="text">
-    <string>Cartesian -Z</string>
-   </property>
-   <property name="iconText">
-    <string>Cartesian -Z</string>
-   </property>
-   <property name="toolTip">
-    <string>Cartesian -Z</string>
-   </property>
-  </action>
-  <action name="actionViewSetCellNegX">
-   <property name="text">
-    <string>Cell -X</string>
-   </property>
-   <property name="iconText">
-    <string>Cell -X</string>
-   </property>
-   <property name="toolTip">
-    <string>Cell -X</string>
-   </property>
-  </action>
-  <action name="actionViewSetCellNegY">
-   <property name="text">
-    <string>Cell -Y</string>
-   </property>
-   <property name="iconText">
-    <string>Cell -Y</string>
-   </property>
-   <property name="toolTip">
-    <string>Cell -Y</string>
-   </property>
-  </action>
-  <action name="actionViewSetCellNegZ">
-   <property name="text">
-    <string>Cell -Z</string>
-   </property>
-   <property name="iconText">
-    <string>Cell -Z</string>
-   </property>
-   <property name="toolTip">
-    <string>Cell -Z</string>
    </property>
   </action>
   <action name="actionSaveExpression">
@@ -5263,22 +4865,6 @@
   <action name="actionExportOptions">
    <property name="text">
     <string>E&amp;xport Options</string>
-   </property>
-  </action>
-  <action name="actionSchemeVelocity">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Velocity</string>
-   </property>
-  </action>
-  <action name="actionSchemeCustom">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Custom</string>
    </property>
   </action>
   <action name="actionEditPasteTranslated">

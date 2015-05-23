@@ -66,7 +66,7 @@ void MeasureTorsionPopup::on_SelectionButton_clicked(bool checked)
 	CommandNode::run(Commands::MeasureSelected, "i", 4);
 
 	// Update display
-	parent_.updateWidgets(AtenWindow::CanvasTarget);
+	parent_.updateWidgets(AtenWindow::MainViewTarget);
 
 	// Hide popup
 	done();

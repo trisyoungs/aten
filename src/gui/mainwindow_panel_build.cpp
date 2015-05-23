@@ -51,7 +51,7 @@ void AtenWindow::on_BuildSelectExpandButton_clicked(bool checked)
 	CommandNode::run(Commands::Expand, "");
 
 	// Update
-	updateWidgets(AtenWindow::CanvasTarget);
+	updateWidgets(AtenWindow::MainViewTarget);
 }
 
 void AtenWindow::on_BuildSelectInvertButton_clicked(bool checked)
@@ -60,7 +60,7 @@ void AtenWindow::on_BuildSelectInvertButton_clicked(bool checked)
 	CommandNode::run(Commands::Invert, "");
 
 	// Update
-	updateWidgets(AtenWindow::CanvasTarget);
+	updateWidgets(AtenWindow::MainViewTarget);
 }
 
 /*
@@ -107,7 +107,7 @@ void AtenWindow::on_BuildBondingRebondButton_clicked(bool checked)
 	CommandNode::run(Commands::ReBond, "");
 
 	// Update
-	updateWidgets(AtenWindow::CanvasTarget);
+	updateWidgets(AtenWindow::MainViewTarget);
 }
 
 void AtenWindow::on_BuildBondingAugmentButton_clicked(bool checked)
@@ -116,7 +116,7 @@ void AtenWindow::on_BuildBondingAugmentButton_clicked(bool checked)
 	CommandNode::run(Commands::Augment, "");
 
 	// Update
-	updateWidgets(AtenWindow::CanvasTarget);
+	updateWidgets(AtenWindow::MainViewTarget);
 }
 
 void AtenWindow::on_BuildBondingClearButton_clicked(bool checked)
@@ -125,7 +125,7 @@ void AtenWindow::on_BuildBondingClearButton_clicked(bool checked)
 	CommandNode::run(Commands::ClearBonds, "");
 
 	// Update
-	updateWidgets(AtenWindow::CanvasTarget);
+	updateWidgets(AtenWindow::MainViewTarget);
 }
 
 /*

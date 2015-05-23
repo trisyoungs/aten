@@ -82,7 +82,7 @@ void Viewer::keyPressEvent(QKeyEvent* event)
 				source->endUndoState();
 				source->updateMeasurements();
 				source->finalizeTransform(oldPositions_, "Transform Selection", noFold);
-				atenWindow_->updateWidgets(AtenWindow::CanvasTarget);
+				atenWindow_->updateWidgets(AtenWindow::MainViewTarget);
 			}
 			else source->rotateView( keyModifier_[Prefs::ShiftKey] ? -1.0 : -10.0, 0.0);
 			refresh = true;

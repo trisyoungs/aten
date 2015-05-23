@@ -189,7 +189,7 @@ void AtenPrefs::on_PrefsOkButton_clicked(bool checked)
 	// Copy old preferences values back into main structure, update view and close window
 	parent_.updateControls();
 	parent_.aten().globalLogChange(Log::Style);
-	parent_.postRedisplay();
+	parent_.updateWidgets(AtenWindow::MainViewTarget);
 	accept();
 }
 
@@ -202,7 +202,7 @@ void AtenPrefs::on_PrefsCancelButton_clicked(bool checked)
 
 	parent_.updateControls();
 	parent_.aten().globalLogChange(Log::Style);
-	parent_.postRedisplay();
+	parent_.updateWidgets(AtenWindow::MainViewTarget);
 	reject();
 }
 
@@ -248,7 +248,7 @@ void AtenPrefs::on_ElementColourButton_clicked(bool checked)
 	ui.ElementColourFrame->update();
 	// Re-set atom colours in model(s)
 	parent_.aten().currentModel()->logChange(Log::Style);
-	parent_.postRedisplay();
+	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
 void AtenPrefs::on_ElementRadiusSpin_valueChanged(double value)
@@ -259,7 +259,7 @@ void AtenPrefs::on_ElementRadiusSpin_valueChanged(double value)
 	Elements().setAtomicRadius(el, value);
 	// Re-draw models
 	parent_.aten().currentModel()->logChange(Log::Style);
-	parent_.postRedisplay();
+	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
 /*
@@ -270,7 +270,7 @@ void AtenPrefs::updateAfterViewPrefs()
 {
 	if (refreshing_) return;
 	parent_.aten().globalLogChange(Log::Style);
-	parent_.postRedisplay();
+	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
 /*
@@ -334,39 +334,39 @@ void AtenPrefs::on_SelectionScaleSpin_valueChanged(double value)
 void AtenPrefs::on_AngleLabelFormatEdit_textEdited(const QString &text)
 {
 	prefs.setAngleLabelFormat( qPrintable(text) );
-	parent_.postRedisplay();
+	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
 void AtenPrefs::on_DistanceLabelFormatEdit_textEdited(const QString &text)
 {
 	prefs.setDistanceLabelFormat( qPrintable(text) );
-	parent_.postRedisplay();
+	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
 void AtenPrefs::on_ChargeLabelFormatEdit_textEdited(const QString &text)
 {
 	prefs.setChargeLabelFormat( qPrintable(text) );
-	parent_.postRedisplay();
+	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
 void AtenPrefs::on_LabelSizeSpin_valueChanged(double value)
 {
 	prefs.setLabelSize(value);
-	parent_.postRedisplay();
+	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
 void AtenPrefs::on_RenderDashedAromaticsCheck_clicked(bool checked)
 {
 	prefs.setRenderDashedAromatics(checked);
 	parent_.aten().globalLogChange(Log::Style);
-	parent_.postRedisplay();
+	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
 void AtenPrefs::on_DrawHydrogenBondsCheck_clicked(bool checked)
 {
 	prefs.setDrawHydrogenBonds(checked);
 	parent_.aten().globalLogChange(Log::Style);
-	parent_.postRedisplay();
+	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
 void AtenPrefs::on_HydrogenBondDotRadiusSpin_valueChanged(double value)
@@ -375,20 +375,20 @@ void AtenPrefs::on_HydrogenBondDotRadiusSpin_valueChanged(double value)
 	if (prefs.drawHydrogenBonds())
 	{
 		parent_.aten().globalLogChange(Log::Style);
-		parent_.postRedisplay();
+		parent_.updateWidgets(AtenWindow::MainViewTarget);
 	}
 }
 
 void AtenPrefs::on_StickLineNormalWidthSpin_valueChanged(double value)
 {
 	prefs.setStickLineNormalWidth(value);
-	parent_.postRedisplay();
+	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
 void AtenPrefs::on_StickLineSelectedWidthSpin_valueChanged(double value)
 {
 	prefs.setStickLineSelectedWidth(value);
-	parent_.postRedisplay();
+	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
 /*
@@ -413,7 +413,7 @@ void AtenPrefs::on_ColoursTable_cellDoubleClicked(int row, int column)
 	ui.ColoursTable->item(row, 1)->setBackgroundColor(newcol);
 	parent_.aten().currentModel()->logChange(Log::Style);
 	// Update display
-	parent_.postRedisplay();
+	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
 /*
@@ -450,19 +450,19 @@ void AtenPrefs::on_ImagePrimitiveQualitySpin_valueChanged(int value)
 void AtenPrefs::on_FarClipSpin_valueChanged(double value)
 {
 	prefs.setClipFar(value);
-	parent_.postRedisplay();
+	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
 void AtenPrefs::on_FarDepthSpin_valueChanged(int value)
 {
 	prefs.setDepthFar(value);
-	parent_.postRedisplay();
+	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
 void AtenPrefs::on_NearClipSpin_valueChanged(double value)
 {
 	prefs.setClipNear(value);
-	parent_.postRedisplay();
+	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
 void AtenPrefs::on_NearDepthSpin_valueChanged(int value)
@@ -480,25 +480,25 @@ void AtenPrefs::on_LineAliasingCheck_stateChanged(int state)
 void AtenPrefs::on_PolygonAliasingCheck_stateChanged(int state)
 {
 	prefs.setPolygonAliasing(state == Qt::Checked);
-	parent_.postRedisplay();
+	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
 void AtenPrefs::on_MultiSamplingCheck_stateChanged(int state)
 {
 	prefs.setMultiSampling(state == Qt::Checked);
-	parent_.postRedisplay();
+	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
 void AtenPrefs::on_SpotlightGroup_clicked(bool checked)
 {
 	prefs.setSpotlightActive(checked);
-	parent_.postRedisplay();
+	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
 void AtenPrefs::spotlightPosChanged(int i, double value)
 {
 	prefs.setSpotlightPosition(i, (GLfloat) value);
-	parent_.postRedisplay();
+	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
 void AtenPrefs::on_SpotlightPositionXSpin_valueChanged(double value)
@@ -535,7 +535,7 @@ void AtenPrefs::spotlightColourChanged(Prefs::ColourComponent sc)
 	colframe->setColour(newcol);
 	colframe->update();
 	// Update display
-	parent_.postRedisplay();
+	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
 void AtenPrefs::on_SpotlightAmbientColourButton_clicked(bool checked)
@@ -556,7 +556,7 @@ void AtenPrefs::on_SpotlightSpecularColourButton_clicked(bool checked)
 void AtenPrefs::on_ShininessSpin_valueChanged(int value)
 {
 	prefs.setShininess(value);
-	parent_.postRedisplay();
+	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
 /*
@@ -673,7 +673,7 @@ void AtenPrefs::on_PointValueSpin_valueChanged(double d)
 	ui.ScalePointsTable->item(id, 0)->setText(QString::number(d));
 	// Update display
 	parent_.aten().currentModel()->logChange(Log::Style);
-	parent_.postRedisplay();
+	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
 void AtenPrefs::on_PointColourButton_clicked(bool checked)
@@ -699,7 +699,7 @@ void AtenPrefs::on_PointColourButton_clicked(bool checked)
 	ui.ScalePointsTable->item(id, 1)->setBackgroundColor(newcol);
 	// Update display
 	parent_.aten().currentModel()->logChange(Log::Style);
-	parent_.postRedisplay();
+	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
 void AtenPrefs::on_AddPointButton_clicked(bool checked)
@@ -732,7 +732,7 @@ void AtenPrefs::on_ScaleList_itemClicked(QListWidgetItem* item)
 	if (row == -1) return;
 	// Look at checked state
 	prefs.colourScale[row].setVisible( (item->checkState() == Qt::Checked) );
-	parent_.postRedisplay();
+	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
 void AtenPrefs::on_ScaleList_itemDoubleClicked(QListWidgetItem* item)
@@ -745,7 +745,7 @@ void AtenPrefs::on_ScaleList_itemDoubleClicked(QListWidgetItem* item)
 	if (ok && !text.isEmpty())
 	{
 		prefs.colourScale[row].setName( qPrintable(text) );
-		parent_.postRedisplay();
+		parent_.updateWidgets(AtenWindow::MainViewTarget);
 	}
 }
 

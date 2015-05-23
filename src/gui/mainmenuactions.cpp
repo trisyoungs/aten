@@ -260,32 +260,32 @@ void AtenWindow::on_actionFileQuit_triggered(bool checked)
 void AtenWindow::on_actionEditUndo_triggered(bool checked)
 {
 	CommandNode::run(Commands::Undo, "");
-	updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget+AtenWindow::GlyphsTarget);
+	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget+AtenWindow::GlyphsTarget);
 }
 
 void AtenWindow::on_actionEditRedo_triggered(bool checked)
 {
 	CommandNode::run(Commands::Redo, "");
-	updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget+AtenWindow::GlyphsTarget);
+	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget+AtenWindow::GlyphsTarget);
 }
 
 void AtenWindow::on_actionEditCut_triggered(bool checked)
 {
 	CommandNode::run(Commands::Cut, "");
-	updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
+	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
 }
 
 void AtenWindow::on_actionEditCopy_triggered(bool checked)
 {
 	CommandNode::run(Commands::Copy, "");
-	updateWidgets(AtenWindow::CanvasTarget);
+	updateWidgets(AtenWindow::MainViewTarget);
 }
 
 void AtenWindow::on_actionEditPaste_triggered(bool checked)
 {
 	CommandNode::run(Commands::Paste, "");
-	postRedisplay();
-	updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
+
+	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
 }
 
 void AtenWindow::on_actionEditPasteTranslated_triggered(bool checked)
@@ -304,39 +304,39 @@ void AtenWindow::on_actionEditPasteTranslated_triggered(bool checked)
 	{
 		Vec3<double> r = ui.asVec3("newx", "newy", "newz");
 		CommandNode::run(Commands::Paste, "ddd", r.x, r.y, r.z);
-		postRedisplay();
-		updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
+
+		updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
 	}
 }
 
 void AtenWindow::on_actionEditDelete_triggered(bool checked)
 {
 	CommandNode::run(Commands::Delete, "");
-	updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
+	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
 }
 
 void AtenWindow::on_actionSelectionAll_triggered(bool checked)
 {
 	CommandNode::run(Commands::SelectAll, "");
-	updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
+	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
 }
 
 void AtenWindow::on_actionSelectionNone_triggered(bool checked)
 {
 	CommandNode::run(Commands::SelectNone, "");
-	updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
+	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
 }
 
 void AtenWindow::on_actionSelectionInvert_triggered(bool checked)
 {
 	CommandNode::run(Commands::Invert, "");
-	updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
+	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
 }
 
 void AtenWindow::on_actionSelectionExpand_triggered(bool on)
 {
 	CommandNode::run(Commands::Expand, "");
-	updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
+	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
 }
 
 void AtenWindow::on_actionEditQuickCommand_triggered(bool on)
@@ -383,7 +383,7 @@ void AtenWindow::on_actionModelRename_triggered(bool checked)
 	if (ok && !text.isEmpty())
 	{
 		CommandNode::run(Commands::SetName, "c", qPrintable(text));
-		updateModelList();
+		updateWidgets(AtenWindow::ModelListTarget);
 	}
 }
 
@@ -391,14 +391,14 @@ void AtenWindow::on_actionModelRename_triggered(bool checked)
 void AtenWindow::on_actionModelFoldAtoms_triggered(bool checked)
 {
 	CommandNode::run(Commands::Fold, "");
-	updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
+	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget);
 }
 
 // Fold molecules in model
 void AtenWindow::on_actionModelFoldMolecules_triggered(bool checked)
 {
 	CommandNode::run(Commands::FoldMolecules, "");
-	updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
+	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget);
 }
 
 // Move to next model in list
@@ -455,7 +455,7 @@ void AtenWindow::on_actionModelPrevious_triggered(bool checked)
 void AtenWindow::on_actionModelShowAll_triggered(bool checked)
 {
 	CommandNode::run(Commands::ShowAll, "");
-	updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
+	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget);
 }
 
 // List all measurements in model
@@ -650,7 +650,8 @@ void AtenWindow::on_actionOpenExpression_triggered(bool checked)
 			if (!filter->executeRead(qPrintable(filename))) return;
 		}
 	}
-	postRedisplay();
+
+	updateWidgets(AtenWindow::MainViewTarget);
 }
 
 // Save expression
@@ -733,14 +734,14 @@ void AtenWindow::on_actionSaveExpression_triggered(bool checked)
 void AtenWindow::on_actionModelCreatePatterns_triggered(bool checked)
 {
 	aten_.currentModelOrFrame()->createPatterns();
-	updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
+	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget);
 }
 
 // Remove patterns from model
 void AtenWindow::on_actionModelRemovePatterns_triggered(bool checked)
 {
 	aten_.currentModelOrFrame()->clearPatterns();
-	updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
+	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget);
 }
 
 // List patterns in model
@@ -753,28 +754,28 @@ void AtenWindow::on_actionModelListPatterns_triggered(bool checked)
 void AtenWindow::on_actionModelFFType_triggered(bool checked)
 {
 	aten_.currentModelOrFrame()->typeAll(aten_.currentForcefield());
-	updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
+	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget);
 }
 
 // Remove typing from model
 void AtenWindow::on_actionModelFFUntype_triggered(bool checked)
 {
 	aten_.currentModelOrFrame()->removeTyping();
-	updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
+	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget);
 }
 
 // Create energy expression for model
 void AtenWindow::on_actionModelCreateExpression_triggered(bool checked)
 {
 	aten_.currentModelOrFrame()->createExpression(Choice(), Choice(), Choice(), aten_.currentForcefield(), aten_.combinationRules());
-	updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
+	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget);
 }
 
 // Add default pattern
 void AtenWindow::on_actionModelAddDefaultPattern_triggered(bool checked)
 {
 	aten_.currentModelOrFrame()->createDefaultPattern();
-	updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
+	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget);
 }
 
 /*
@@ -802,6 +803,6 @@ void AtenWindow::on_actionReloadFilters_triggered(bool checked)
 void AtenWindow::on_actionManualSwapBuffers_triggered(bool checked)
 {
 	prefs.setManualSwapBuffers(checked);
-	postRedisplay();
+	updateWidgets(AtenWindow::MainViewTarget);
 }
 

@@ -18,6 +18,7 @@ add_library(base
   forcefieldatom.cpp
   forcefieldbound.cpp
   grid.cpp
+  gridpoint.cpp
   glyph.cpp
   kvmap.cpp
   lineparser.cpp
@@ -54,6 +55,7 @@ add_library(base
   forcefieldbound.h
   glyph.h
   grid.h
+  gridpoint.h
   kvmap.h
   lineparser.h
   log.h

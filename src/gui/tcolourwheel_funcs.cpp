@@ -45,7 +45,7 @@ TColourWheel::TColourWheel(QWidget* parent) :
 
 QColor TColourWheel::colour()
 {
-    return current;
+	return current;
 }
 
 void TColourWheel::setColour(const QColor& colour)

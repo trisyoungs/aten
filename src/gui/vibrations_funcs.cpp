@@ -53,7 +53,10 @@ void VibrationsWidget::refresh()
 {
 	Messenger::enter("VibrationsWidget::refresh");
 	refreshing_ = true;
+
 	Model* m = parent_.aten().currentModelOrFrame();
+	if (!m) return;
+	
 	QString text;
 	ui.VibrationsList->clear();
 	ui.DisplacementsTable->clear();
@@ -130,7 +133,7 @@ void VibrationsWidget::on_VibrationsList_currentRowChanged(int row)
 {
 	if (refreshing_) return;
 	refreshDisplacements();
-	if (ui.ShowVectorsCheck->isChecked()) parent_.postRedisplay();
+	if (ui.ShowVectorsCheck->isChecked()) parent_.updateWidgets(AtenWindow::MainViewTarget);
 	// Regenerate vibration trajectory
 	// Stop current timer (if playing) - we'll restart it afterwards
 	bool wasplaying = ui.PlayPauseVibration->isChecked();
@@ -143,12 +146,12 @@ void VibrationsWidget::on_VibrationsList_currentRowChanged(int row)
 
 void VibrationsWidget::on_ShowVectorsCheck_clicked(bool checked)
 {
-	parent_.postRedisplay();
+	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
 void VibrationsWidget::on_VectorScaleSpin_valueChanged(double value)
 {
-	parent_.postRedisplay();
+	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
 void VibrationsWidget::on_PlayPauseVibration_clicked(bool checked)
@@ -172,7 +175,7 @@ void VibrationsWidget::on_PlayPauseVibration_clicked(bool checked)
 		ui.FrameSlider->setEnabled(true);
 		ui.SaveImageButton->setEnabled(true);
 		ui.SaveMovieButton->setEnabled(true);
-		parent_.postRedisplay();
+		parent_.updateWidgets(AtenWindow::MainViewTarget);
 	}
 }
 
@@ -181,7 +184,7 @@ void VibrationsWidget::on_FrameSlider_valueChanged(int value)
 	if (vibrationPlaying_) return;
 	Model* m = parent_.aten().currentModelOrFrame();
 	m->setVibrationFrameIndex(ui.FrameSlider->value()-1);
-	parent_.postRedisplay();
+	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
 void VibrationsWidget::on_DelaySpin_valueChanged(int value)
@@ -259,7 +262,7 @@ void VibrationsWidget::timerEvent(QTimerEvent*)
 		Model* m = parent_.aten().currentModelOrFrame();
 		m->vibrationNextFrame();
 		ui.FrameSlider->setValue(m->vibrationFrameIndex()+1);
-		parent_.postRedisplay();
+		parent_.updateWidgets(AtenWindow::MainViewTarget);
 		DONTDRAW = false;
 	}
 }
@@ -270,6 +273,6 @@ void VibrationsWidget::closeEvent(QCloseEvent* event)
 	Model* m = parent_.aten().currentModelOrFrame();
 	m->setRenderFromVibration(false);
 	parent_.setInteractive(true);
-	parent_.postRedisplay();
+	parent_.updateWidgets(AtenWindow::MainViewTarget);
 	event->accept();
 }

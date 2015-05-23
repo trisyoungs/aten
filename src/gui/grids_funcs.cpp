@@ -250,7 +250,7 @@ void GridsWidget::loadGrid()
 		}
 	}
 	refresh();
-	parent_.postRedisplay();
+	parent_.updateWidgets(AtenWindow::MainViewTarget);
 	Messenger::exit("GridsWidget::loadGrid");
 }
 
@@ -286,7 +286,7 @@ void GridsWidget::on_actionGridCut_triggered(bool checked)
 	parent_.aten().copyGrid(g);
 	m->removeGrid(g);
 	refresh();
-	parent_.postRedisplay();
+	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
 void GridsWidget::on_actionGridDelete_triggered(bool checked)
@@ -303,7 +303,7 @@ void GridsWidget::on_actionGridDelete_triggered(bool checked)
 		m->removeGrid(g);
 	}
 	refresh();
-	parent_.postRedisplay();
+	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
 void GridsWidget::on_actionGridPaste_triggered(bool checked)
@@ -318,7 +318,7 @@ void GridsWidget::on_actionGridPaste_triggered(bool checked)
 	Grid* newgrid = m->addGrid();
 	*newgrid = *g;
 	refresh();
-	parent_.postRedisplay();
+	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
 /*
@@ -409,7 +409,7 @@ void GridsWidget::on_GridUseInternalColoursRadio_clicked(bool checked)
 	if (g == NULL) return;
 	ui.GridSecondaryColourButton->setEnabled(g->useSecondary());
 	g->setUseColourScale(false);
-	parent_.postRedisplay();
+	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
 void GridsWidget::on_GridUseColourScaleRadio_clicked(bool checked)
@@ -423,7 +423,7 @@ void GridsWidget::on_GridUseColourScaleRadio_clicked(bool checked)
 	Grid* g = getCurrentGrid();
 	if (g == NULL) return;
 	g->setUseColourScale(true);
-	parent_.postRedisplay();
+	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
 void GridsWidget::gridOriginChanged(int component, double value)
@@ -442,7 +442,7 @@ void GridsWidget::gridOriginChanged(int component, double value)
 		o.set(component, value);
 		g->setOrigin(o);
 	}
-	parent_.postRedisplay();
+	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
 void GridsWidget::gridAxisChanged(int axis, int component, double value)
@@ -461,7 +461,7 @@ void GridsWidget::gridAxisChanged(int axis, int component, double value)
 		axes[axis*4+component] = value;
 		g->setAxes(axes);
 	}
-	parent_.postRedisplay();
+	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
 void GridsWidget::on_GridList_currentRowChanged(int row)
@@ -480,7 +480,7 @@ void GridsWidget::on_GridList_itemClicked(QListWidgetItem* item)
 	Grid* g = (Grid*) VariantPointer<Grid>(item->data(Qt::UserRole));
 	// Look at checked state
 	g->setVisible( (titem->checkState() == Qt::Checked) );
-	parent_.postRedisplay();
+	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
 void GridsWidget::on_GridList_itemSelectionChanged()
@@ -506,7 +506,7 @@ void GridsWidget::on_GridLowerCutoffSpin_editingFinished()
 		g->setLowerPrimaryCutoff(ui.GridLowerCutoffSpin->value());
 	}
 	refreshGridInfo();
-	parent_.postRedisplay();
+	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
 void GridsWidget::on_GridUpperCutoffSpin_editingFinished()
@@ -522,7 +522,7 @@ void GridsWidget::on_GridUpperCutoffSpin_editingFinished()
 		g->setUpperPrimaryCutoff(ui.GridUpperCutoffSpin->value());
 	}
 	refreshGridInfo();
-	parent_.postRedisplay();
+	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
 void GridsWidget::on_GridLowerCutoff2Spin_editingFinished()
@@ -538,7 +538,7 @@ void GridsWidget::on_GridLowerCutoff2Spin_editingFinished()
 		g->setLowerSecondaryCutoff(ui.GridLowerCutoff2Spin->value());
 	}
 	refreshGridInfo();
-	parent_.postRedisplay();
+	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
 void GridsWidget::on_GridUpperCutoff2Spin_editingFinished()
@@ -554,7 +554,7 @@ void GridsWidget::on_GridUpperCutoff2Spin_editingFinished()
 		g->setUpperSecondaryCutoff(ui.GridUpperCutoff2Spin->value());
 	}
 	refreshGridInfo();
-	parent_.postRedisplay();
+	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
 void GridsWidget::on_GridStyleCombo_currentIndexChanged(int index)
@@ -569,7 +569,7 @@ void GridsWidget::on_GridStyleCombo_currentIndexChanged(int index)
 		g = (Grid*) VariantPointer<Grid>(item->data(Qt::UserRole));
 		g->setStyle(Grid::SurfaceStyle (index));
 	}
-	parent_.postRedisplay();
+	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
 void GridsWidget::on_GridOutlineVolumeCheck_clicked(bool checked)
@@ -584,7 +584,7 @@ void GridsWidget::on_GridOutlineVolumeCheck_clicked(bool checked)
 		g = (Grid*) VariantPointer<Grid>(item->data(Qt::UserRole));
 		g->setOutlineVolume(checked);
 	}
-	parent_.postRedisplay();
+	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
 void GridsWidget::on_GridFillEnclosedVolumeCheck_clicked(bool checked)
@@ -599,7 +599,7 @@ void GridsWidget::on_GridFillEnclosedVolumeCheck_clicked(bool checked)
 		g = (Grid*) VariantPointer<Grid>(item->data(Qt::UserRole));
 		g->setFillEnclosedVolume(checked);
 	}
-	parent_.postRedisplay();
+	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
 void GridsWidget::on_GridPeriodicCheck_clicked(bool checked)
@@ -614,7 +614,7 @@ void GridsWidget::on_GridPeriodicCheck_clicked(bool checked)
 		g = (Grid*) VariantPointer<Grid>(item->data(Qt::UserRole));
 		g->setPeriodic(checked);
 	}
-	parent_.postRedisplay();
+	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
 void GridsWidget::on_GridPrimaryColourButton_clicked(bool checked)
@@ -642,7 +642,7 @@ void GridsWidget::on_GridPrimaryColourButton_clicked(bool checked)
 	}
 	ui.GridPrimaryColourFrame->setColour(newcol);
 	ui.GridPrimaryColourFrame->update();
-	parent_.postRedisplay();
+	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
 void GridsWidget::on_GridSecondaryColourButton_clicked(bool checked)
@@ -670,7 +670,7 @@ void GridsWidget::on_GridSecondaryColourButton_clicked(bool checked)
 	}
 	ui.GridSecondaryColourFrame->setColour(newcol);
 	ui.GridSecondaryColourFrame->update();
-	parent_.postRedisplay();
+	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
 void GridsWidget::on_GridColourscaleSpin_valueChanged(int n)
@@ -689,7 +689,7 @@ void GridsWidget::on_GridColourscaleSpin_valueChanged(int n)
 	scalename += prefs.colourScale[g->colourScale()].name();
 	scalename += ")";
 	ui.GridColourscaleName->setText(scalename);
-	parent_.postRedisplay();
+	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
 void GridsWidget::on_GridSecondaryCutoffCheck_clicked(bool checked)
@@ -706,7 +706,7 @@ void GridsWidget::on_GridSecondaryCutoffCheck_clicked(bool checked)
 		ui.GridLowerCutoff2Spin->setEnabled( g->useSecondary() );
 		ui.GridUpperCutoff2Spin->setEnabled( g->useSecondary() );
 	}
-	parent_.postRedisplay();
+	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
 
@@ -747,7 +747,7 @@ void GridsWidget::gridShiftChanged()
 			m->endUndoState();
 		}
 	}
-	parent_.postRedisplay();
+	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
 void GridsWidget::on_ShiftGridPosXButton_clicked(bool checked)

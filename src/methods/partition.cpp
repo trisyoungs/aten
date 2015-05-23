@@ -201,10 +201,10 @@ DisorderData *PartitionData::component(int id)
 	return components_[id]->item;
 }
 
-// Return rendergroup for this partition
-RenderGroup& PartitionData::renderGroup()
+// Return primitive for this partition
+Primitive& PartitionData::primitive()
 {
-	return renderGroup_;
+	return primitive_;
 }
 
 /*
@@ -467,7 +467,7 @@ void PartitioningScheme::createPartitionsFromGrid()
 	{
 		grid_.setLowerPrimaryCutoff(pd->id()-0.5);
 		grid_.setUpperPrimaryCutoff(pd->id()+0.5);
-		pd->renderGroup().marchingCubes(&grid_, pd->id()-0.5, pd->id()+0.5, Vec4<GLfloat>(0.0,0.0,0.0,0.7), -1);
+		pd->primitive().marchingCubes(&grid_, pd->id()-0.5, pd->id()+0.5, Vec4<GLfloat>(0.0,0.0,0.0,0.7), -1);
 	}
 	Messenger::exit("PartitioningScheme::createPartitionsFromGrid");
 }
@@ -541,7 +541,7 @@ void PartitioningScheme::recalculatePartitions()
 	{
 		grid_.setLowerPrimaryCutoff(pd->id()-0.5);
 		grid_.setUpperPrimaryCutoff(pd->id()+0.5);
-		pd->renderGroup().marchingCubes(&grid_, pd->id()-0.5, pd->id()+0.5, Vec4<GLfloat>(0.0,0.0,0.0,0.7), -1);
+		pd->primitive().marchingCubes(&grid_, pd->id()-0.5, pd->id()+0.5, Vec4<GLfloat>(0.0,0.0,0.0,0.7), -1);
 	}
 	
 	partitionLogPoint_ = changeLog_;

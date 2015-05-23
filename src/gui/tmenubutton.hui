@@ -50,6 +50,8 @@ class TMenuButtonPopupWidget : public QWidget
 	protected:
 	// Local function called when the widget should be closed after a button has been selceted
 	void done(bool setParentButtonDown = false);
+	// Notify parent button that one of our widgets has changed
+	void changed(int data = 0);
 
 	public:
 	// Constructor
@@ -147,14 +149,25 @@ class TMenuButton : public QToolButton
 	}
 	// Notify button that popup is done
 	void popupDone(bool setButtonDown);
+	// Notify button that the popup has been hidden
+	void popupWidgetHidden();
+	// Notify button that a widget on the popup has been changed
+	void popupWidgetChanged(int data);
 
 	protected:
 	void paintEvent(QPaintEvent* event);
 
 	private slots:
+	// Call popoup widget
 	void popup();
+	// Mouse button was pressed on the button
 	void buttonPressed();
+	// Mouse button was released
 	void buttonReleased();
+
+	signals:
+	void popupHidden();
+	void popupChanged(int data);
 
 
 	/*

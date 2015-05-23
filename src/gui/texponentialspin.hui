@@ -68,7 +68,7 @@ class TExponentialSpin : public QDoubleSpinBox
 	// Set minimum limit
 	void setMaximumValue(double value);
 	// Set allowable range of value
-	void setRange(bool limitMin, double minValue, bool limitMax, double maxvalue);
+	void setRange( bool limitMin, double minValue, bool limitMax, double maxValue, int nSteps = -1 );
 	// Remove range limits
 	void setUnlimitedRange();
 	// Set single step value

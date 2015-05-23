@@ -105,12 +105,15 @@ void TExponentialSpin::setMaximumValue(double value)
 }
 
 // Set allowable range of value
-void TExponentialSpin::setRange(bool limitMin, double minValue, bool limitMax, double maxValue)
+void TExponentialSpin::setRange(bool limitMin, double minValue, bool limitMax, double maxValue, int nSteps)
 {
 	valueMin_ = minValue;
 	limitMinValue_ = limitMin;
 	valueMax_ = maxValue;
 	limitMaxValue_ = limitMax;
+
+	// Set singlestep values, if nSteps > 0
+	if (nSteps > 0) setSingleStep((maxValue - minValue) / nSteps);
 
 	// Clamp current value if necessary
 	if (clamp()) updateText();

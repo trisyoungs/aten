@@ -26,7 +26,7 @@
 // Refresh model list
 void AtenWindow::updateModelList()
 {
-	modelListRefreshing_= true;
+	Messenger::enter("AtenWindow::updateModelList");
 
 	int row;
 	QListWidgetItem* item;
@@ -74,12 +74,12 @@ void AtenWindow::updateModelList()
 		++row;
 	}
 
-	modelListRefreshing_ = false;
+	Messenger::exit("AtenWindow::updateModelList");
 }
 
 void AtenWindow::on_ModelList_itemSelectionChanged()
 {
-	if (modelListRefreshing_) return;
+	if (refreshing_) return;
 
 	// Loop over rows of list, setting 'visible' flags in model list accordingly
 	QListWidgetItem* item;
@@ -98,5 +98,5 @@ void AtenWindow::on_ModelList_itemSelectionChanged()
 	// Need to set the (a) current model
 	aten_.setCurrentModel(currentModel);
 
-	postRedisplay();
+	updateWidgets();
 }

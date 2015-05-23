@@ -60,7 +60,7 @@ void PositionWidget::on_FlipZButton_clicked(bool checked)
 void PositionWidget::flipSelection(int axis)
 {
 	CommandNode::run(Commands::Mirror, "i", axis);
-	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
+	parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget);
 }
 
 /*
@@ -81,7 +81,7 @@ void PositionWidget::on_CentreSelectionButton_clicked(bool checked)
 	Vec3<double> centre(ui.CentreXSpin->value(), ui.CentreYSpin->value(), ui.CentreZSpin->value());
 	Vec3<int> lock(ui.CentreLockXCheck->isChecked(), ui.CentreLockYCheck->isChecked(), ui.CentreLockZCheck->isChecked());
 	CommandNode::run(Commands::Centre, "dddiii", centre.x, centre.y, centre.z, lock.x, lock.y, lock.z);
-	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
+	parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget);
 }
 
 /*
@@ -154,7 +154,7 @@ void PositionWidget::translateSelection(int axis, int dir)
 	}
 	m->endUndoState();
 	m->updateMeasurements();
-	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
+	parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget);
 }
 
 /*
@@ -231,7 +231,7 @@ void PositionWidget::on_ShiftVectorPositiveButton_clicked(bool checked)
 	m->translateSelectionLocal(v);
 	m->endUndoState();
 	m->updateMeasurements();
-	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
+	parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget);
 }
 
 void PositionWidget::on_ShiftVectorNegativeButton_clicked(bool checked)
@@ -246,7 +246,7 @@ void PositionWidget::on_ShiftVectorNegativeButton_clicked(bool checked)
 	m->translateSelectionLocal(v);
 	m->endUndoState();
 	m->updateMeasurements();
-	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
+	parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget);
 }
 
 /*
@@ -264,7 +264,7 @@ void PositionWidget::on_RepositionSelectionButton_clicked(bool on)
 	m->translateSelectionLocal(v);
 	m->endUndoState();
 	m->updateMeasurements();
-	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
+	parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget);
 }
 
 void PositionWidget::on_RepositionDefineReferenceButton_clicked(bool on)

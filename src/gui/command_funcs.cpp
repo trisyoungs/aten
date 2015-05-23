@@ -72,7 +72,7 @@ void CommandWidget::on_CommandPrompt_returnPressed()
 		tempScript.execute(result);
 	}
 	// Force update of the GUI?
-	if (ui.PromptForceUpdateCheck->isChecked()) parent_.updateWidgets(AtenWindow::CanvasTarget);
+	if (ui.PromptForceUpdateCheck->isChecked()) parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
 /*
@@ -130,7 +130,7 @@ void CommandWidget::on_InteractivePrompt_returnPressed()
 		updateVariableList();
 	}
 	// Force update of the GUI?
-	if (ui.InteractiveForceUpdateCheck->isChecked()) parent_.updateWidgets(AtenWindow::CanvasTarget);
+	if (ui.InteractiveForceUpdateCheck->isChecked()) parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
 /*

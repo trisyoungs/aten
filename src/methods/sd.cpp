@@ -146,7 +146,7 @@ void MethodSd::minimise(Model* srcmodel, double econ, double fcon, bool simple)
 			lastPrintedEnergy = currentEnergy;
 		}
 
-// 		if (prefs.shouldUpdateModel(cycle+1)) parent_.updateWidgets(AtenWindow::CanvasTarget); ATEN2 TODO
+// 		if (prefs.shouldUpdateModel(cycle+1)) parent_.updateWidgets(AtenWindow::MainViewTarget); ATEN2 TODO
 
 		if (lineDone || converged) break;
 	}

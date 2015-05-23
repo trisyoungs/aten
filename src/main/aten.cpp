@@ -277,13 +277,3 @@ AtenWindow* Aten::atenWindow()
 {
 	return atenWindow_;
 }
-
-/*
- * Current Objects
- */
-
-// Return current object Bundle
-Bundle& Aten::current()
-{
-	return current_;
-}

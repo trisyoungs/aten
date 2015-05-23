@@ -53,7 +53,10 @@ Finish Spacegroup popup.
 Modifying anything on Grid tool widget is slow, forcing update of grid primitive?
 Add Calculate tool to work out centre of geometry/mass.
 Tidy up/rework TColourWheel code.
+--- Colour wheel seems to forget alpha value when selecting a new colour.
 Reimplement drawing of grid (volume) axes.
+Shortcuts for panel buttons (use QActions again?).
+Added get/set view buttons to View.
 
 GUI TODO:
 AddAtom functionality (from old Build menu).

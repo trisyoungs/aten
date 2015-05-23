@@ -122,21 +122,27 @@ class AtenWindow : public QMainWindow
 	/*
 	 * Update Functions
 	 */
+	public:
+	// Update Targets
+	enum UpdateTarget { AtomsTarget = 1, CalculatePanelTarget = 2, ForcefieldsTarget = 4, GlyphsTarget = 8, GridsPanelTarget = 16, MainWindowTarget = 32, MainViewTarget = 64, StatusBarTarget = 128, GeometryTarget = 256, VibrationsTarget = 512, SelectTarget = 1024, TrajectoryTarget = 2048, BuildPanelTarget = 4096, CellPanelTarget = 8192, ViewPanelTarget = 16384, TransformPanelTarget = 32768, ContextMenuTarget = 65536, ModelListTarget = 131072, AllTarget = 262143};
+
 	private:
 	// Whether window is currently refreshing
 	bool refreshing_;
 
-	public:
-	// Initial update and show
-	void initialUpdateAndShow();
+	private:
 	// Refresh main window
 	void updateMainWindow();
 	// Update trajectory control widgets
 	void updateTrajectoryMenu();
+	// Update context menu
+	void updateContextMenu(Model* currentModel);
+
+	public:
+	// Initial update and show
+	void initialUpdateAndShow();
 	// Refreshes specified (or all) dock widgets
-	void updateWidgets(int targets = 0);
-	// Refresh main viewer
-	void postRedisplay();
+	void updateWidgets(int targets = AtenWindow::AllTarget);
 
 
 	/*
@@ -178,9 +184,6 @@ class AtenWindow : public QMainWindow
 	/*
 	 * Selection Menu / Actions (doubles as Atom Context Menu)
 	 */
-	public:
-	void activateGlyphActions(int n);
-
 	private:
 	// Atom under mouse when context menu was called
 	Atom* contextAtom_;
@@ -404,20 +407,16 @@ class AtenWindow : public QMainWindow
 	void on_GridsList_currentItemChanged(QListWidgetItem* current, QListWidgetItem* previous);
 	void on_GridsPrimaryLowerCutoffSpin_valueChanged(double value);
 	void on_GridsPrimaryUpperCutoffSpin_valueChanged(double value);
-	void on_GridsPrimaryColourButton_clicked(bool checked);
+	void on_GridsPrimaryColourButton_popupChanged();
 	void on_GridsSecondarySurfaceCheck_clicked(bool checked);
 	void on_GridsSecondaryLowerCutoffSpin_valueChanged(double value);
 	void on_GridsSecondaryUpperCutoffSpin_valueChanged(double value);
-	void on_GridsSecondaryColourButton_clicked(bool checked);
+	void on_GridsSecondaryColourButton_popupChanged();
 
 
 	/*
 	 * Model List
 	 */
-	private:
-	// Whether model list is currently refreshing
-	bool modelListRefreshing_;
-
 	private slots:
 	void on_ModelList_itemSelectionChanged();
 
@@ -478,8 +477,6 @@ class AtenWindow : public QMainWindow
 	 * Context Menu
 	 */
 	public:
-	// Update context menu
-	void updateContextMenu();
 	// Call the atom context menu
 	void callContextMenu(Atom*, int, int);
 
@@ -515,10 +512,6 @@ class AtenWindow : public QMainWindow
 	/*
 	 * Dock Widgets
 	 */
-	public:
-	// Update Targets
-	enum UpdateTarget { AtomsTarget = 1, ForcefieldsTarget = 4, GlyphsTarget = 8, GridsTarget = 16, CanvasTarget = 64, StatusBarTarget = 128, GeometryTarget = 256, VibrationsTarget = 512, SelectTarget = 1024, TrajectoryTarget = 2048, AllTarget = 4095 };
-
 	private:
 	// List of dock widgets
 	QList<QDockWidget*> dockWidgets_;

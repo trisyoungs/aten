@@ -46,8 +46,12 @@ void TrajectoryWidget::showWidget()
 void TrajectoryWidget::refresh()
 {
 	if (refreshing_) return;
-	refreshing_ = true;
+
 	Model* m = parent_.aten().currentModel();
+	if (!m) return;
+
+	refreshing_ = true;
+
 	bool hastrj = m->nTrajectoryFrames() > 0;
 	ui.ControlsWidget->setEnabled(hastrj);
 	ui.FrameSelectWidget->setEnabled(hastrj);
@@ -120,7 +124,7 @@ void TrajectoryWidget::on_TrajectoryPlayPauseButton_clicked(bool checked)
 		trajectoryPlaying_ = false;
 		parent_.ui.MainView->setEditable(true);
 	}
-	parent_.updateTrajectoryMenu();
+// 	parent_.updateWidgets(AtenWindow::TrajectoryTarget); // ATEN2 TODO Was updateTrajectoryMenu().
 }
 
 // Frame position slider adjusted
@@ -133,7 +137,7 @@ void TrajectoryWidget::on_TrajectoryFrameSlider_valueChanged(int value)
 	// Set corresponding value in Spin control
 // 	trajectorySpin_->setValue(value);
 	refreshing_ = false;
-	parent_.postRedisplay();
+	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
 // Frame spinbox value adjusted
@@ -146,7 +150,7 @@ void TrajectoryWidget::on_TrajectoryFrameSpin_valueChanged(int value)
 	// Set corresponding value in Spin control
 // 	trajectorySlider_->setValue(value);
 	refreshing_ = false;
-	parent_.postRedisplay();
+	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
 void TrajectoryWidget::timerEvent(QTimerEvent* event)
@@ -160,7 +164,7 @@ void TrajectoryWidget::timerEvent(QTimerEvent* event)
 		Model* m = parent_.aten().currentModel();
 		m->seekNextTrajectoryFrame();
 		if (m->trajectoryFrameIndex() == m->nTrajectoryFrames()-1) ui.TrajectoryPlayPauseButton->click();
-		parent_.updateWidgets(AtenWindow::CanvasTarget);
+		parent_.updateWidgets(AtenWindow::MainViewTarget);
 		DONTDRAW = false;
 	}
 }

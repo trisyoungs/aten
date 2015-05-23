@@ -71,7 +71,7 @@ void PoresWidget::on_PoreSelectButton_clicked(bool checked)
 	QString geometry = ui.PoreGeometryCombo->currentText();
 	double sizeParam = ui.PoreSizeSpin->value();
 	CommandNode::run(Commands::SelectPores, "cdiiiddd", qPrintable(geometry), sizeParam, nx, ny, face, v.x, v.y, v.z);
-	parent_.postRedisplay();
+	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
 void PoresWidget::on_PoreSelectAndCutButton_clicked(bool checked)
@@ -91,7 +91,7 @@ void PoresWidget::on_PoreSelectAndCutButton_clicked(bool checked)
 	QString geometry = ui.PoreGeometryCombo->currentText();
 	double sizeParam = ui.PoreSizeSpin->value();
 	CommandNode::run(Commands::DrillPores, "cdiiiddd", qPrintable(geometry), sizeParam, nx, ny, face, v.x, v.y, v.z);
-	parent_.postRedisplay();
+	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
 /*
@@ -110,7 +110,7 @@ void PoresWidget::on_TerminateButton_clicked(bool checked)
 
 	// Run the command
 	CommandNode::run(Commands::Terminate, "");
-	parent_.postRedisplay();
+	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
 /*
@@ -148,7 +148,7 @@ void PoresWidget::on_GenerateSchemeButton_clicked(bool checked)
 	ui.PartitionNumberLabel->setText( QString::number(partitioningScheme_.nPartitions()-1) );
 	ui.PartitionVolumeLabel->setText( QString::number(volume, 'f', 2) );
 	ui.PartitionVolumePercentLabel->setText( QString::number(100.0*volume/m->cell()->volume(), 'f', 2) + "%" );
-	parent_.postRedisplay();
+	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
 void PoresWidget::on_CopySchemeButton_clicked(bool checked)
@@ -168,7 +168,7 @@ void PoresWidget::on_CopySchemeButton_clicked(bool checked)
 	double minSizePcnt = ui.MinimumPartitionSizeSpin->value();
 	int atomExtent = ui.AtomExtentSpin->value();
 	CommandNode::run(Commands::CreateScheme, "ciiidii", qPrintable(name), npoints.x, npoints.y, npoints.z, minSizePcnt, atomExtent, 1);
-	parent_.postRedisplay();
+	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
 void PoresWidget::closeEvent(QCloseEvent* event)

@@ -21,11 +21,14 @@
 
 #include "gui/mainwindow.h"
 #include "main/aten.h"
+#include "command/commands.h"
 #include "templates/variantpointer.h"
 
 // Update grids panel
 void AtenWindow::updateGridsPanel(Model* sourceModel)
 {
+	Messenger::enter("AtenWindow::updateGridPanel");
+
 	Grid* currentGrid = aten_.current().g;
 
 	ui.GridsList->clear();
@@ -47,6 +50,8 @@ void AtenWindow::updateGridsPanel(Model* sourceModel)
 	}
 
 	updateGridInformation(currentGrid);
+
+	Messenger::exit("AtenWindow::updateGridPanel");
 }
 
 // Update grid information
@@ -65,24 +70,134 @@ void AtenWindow::updateGridInformation(Grid* sourceGrid)
 	ReturnValue rv;
 
 	// Primary surface
-	ui.GridsPrimaryLowerCutoffSpin->setRange(true, sourceGrid->minimum(), true, sourceGrid->maximum());
+	ui.GridsPrimaryLowerCutoffSpin->setRange(true, sourceGrid->minimum(), true, sourceGrid->maximum(), 100);
 	ui.GridsPrimaryLowerCutoffSpin->setValue(sourceGrid->lowerPrimaryCutoff());
-	ui.GridsPrimaryUpperCutoffSpin->setRange(true, sourceGrid->minimum(), true, sourceGrid->maximum());
+	ui.GridsPrimaryUpperCutoffSpin->setRange(true, sourceGrid->minimum(), true, sourceGrid->maximum(), 100);
 	ui.GridsPrimaryUpperCutoffSpin->setValue(sourceGrid->upperPrimaryCutoff());
 	rv.setArray(VTypes::DoubleData, sourceGrid->primaryColour(), 4);
-	ui.GridsPrimaryColourButton->callPopupMethod("setColour", rv);
+	ui.GridsPrimaryColourButton->callPopupMethod("setCurrentColour", rv);
 
 	// Secondary surface
-	ui.GridsSecondaryLowerCutoffSpin->setRange(true, sourceGrid->minimum(), true, sourceGrid->maximum());
+	ui.GridsSecondaryLowerCutoffSpin->setRange(true, sourceGrid->minimum(), true, sourceGrid->maximum(), 100);
 	ui.GridsSecondaryLowerCutoffSpin->setValue(sourceGrid->lowerSecondaryCutoff());
-	ui.GridsSecondaryUpperCutoffSpin->setRange(true, sourceGrid->minimum(), true, sourceGrid->maximum());
+	ui.GridsSecondaryUpperCutoffSpin->setRange(true, sourceGrid->minimum(), true, sourceGrid->maximum(), 100);
 	ui.GridsSecondaryUpperCutoffSpin->setValue(sourceGrid->upperSecondaryCutoff());
 	rv.setArray(VTypes::DoubleData, sourceGrid->primaryColour(), 4);
-	ui.GridsSecondaryColourButton->callPopupMethod("setColour", rv);
+	ui.GridsSecondaryColourButton->callPopupMethod("setCurrentColour", rv);
 
 	// Enable / disable secondary surface controls
 	ui.GridsSecondarySurfaceCheck->setChecked(sourceGrid->useSecondary());
 	ui.GridsSecondaryLowerCutoffSpin->setEnabled(sourceGrid->useSecondary());
 	ui.GridsSecondaryUpperCutoffSpin->setEnabled(sourceGrid->useSecondary());
 	ui.GridsSecondaryColourButton->setEnabled(sourceGrid->useSecondary());
+}
+
+void AtenWindow::on_GridsList_currentItemChanged(QListWidgetItem* current, QListWidgetItem* previous)
+{
+	if (refreshing_ || (!current)) return;
+
+	// Get grid from current item
+	Grid* grid = (Grid*) VariantPointer<Grid>(current->data(Qt::UserRole));
+	if (!grid) return;
+
+	aten_.setCurrentGrid(grid);
+
+	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::GridsPanelTarget);
+}
+
+void AtenWindow::on_GridsPrimaryLowerCutoffSpin_valueChanged(double value)
+{
+	if (refreshing_) return;
+
+	// Get current grid
+	Grid* currentGrid;
+	if (!aten().currentGrid(currentGrid)) return;
+
+	CommandNode::run(Commands::GridCutoff, "d", value);
+
+	updateWidgets(AtenWindow::MainViewTarget);
+}
+
+void AtenWindow::on_GridsPrimaryUpperCutoffSpin_valueChanged(double value)
+{
+	if (refreshing_) return;
+
+	// Get current grid
+	Grid* currentGrid;
+	if (!aten().currentGrid(currentGrid)) return;
+
+	CommandNode::run(Commands::GridCutoff, "dd", ui.GridsPrimaryLowerCutoffSpin->value(), value);
+
+	updateWidgets(AtenWindow::MainViewTarget);
+}
+
+void AtenWindow::on_GridsPrimaryColourButton_popupChanged()
+{
+	if (refreshing_) return;
+
+	// Get current grid
+	Grid* currentGrid;
+	if (!aten().currentGrid(currentGrid)) return;
+
+	ReturnValue rv;
+	bool success;
+	if (!ui.GridsPrimaryColourButton->callPopupMethod("currentColour", rv)) return;
+	CommandNode::run(Commands::GridColour, "dddd", rv.asDouble(0, success), rv.asDouble(1, success), rv.asDouble(2, success), rv.asDouble(3, success));
+
+	updateWidgets(AtenWindow::MainViewTarget);
+}
+
+void AtenWindow::on_GridsSecondarySurfaceCheck_clicked(bool checked)
+{
+	if (refreshing_) return;
+
+	// Get current grid
+	Grid* currentGrid;
+	if (!aten().currentGrid(currentGrid)) return;
+
+	CommandNode::run(Commands::GridSecondary, "i", checked);
+
+	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::GridsPanelTarget);
+}
+
+void AtenWindow::on_GridsSecondaryLowerCutoffSpin_valueChanged(double value)
+{
+	if (refreshing_) return;
+
+	// Get current grid
+	Grid* currentGrid;
+	if (!aten().currentGrid(currentGrid)) return;
+
+	CommandNode::run(Commands::GridCutoffSecondary, "d", value);
+
+	updateWidgets(AtenWindow::MainViewTarget);
+}
+
+void AtenWindow::on_GridsSecondaryUpperCutoffSpin_valueChanged(double value)
+{
+	if (refreshing_) return;
+
+	// Get current grid
+	Grid* currentGrid;
+	if (!aten().currentGrid(currentGrid)) return;
+
+	CommandNode::run(Commands::GridCutoffSecondary, "dd", ui.GridsSecondaryLowerCutoffSpin->value(), value);
+
+	updateWidgets(AtenWindow::MainViewTarget);
+}
+
+void AtenWindow::on_GridsSecondaryColourButton_popupChanged()
+{
+	if (refreshing_) return;
+
+	// Get current grid
+	Grid* currentGrid;
+	if (!aten().currentGrid(currentGrid)) return;
+
+	ReturnValue rv;
+	bool success;
+	if (!ui.GridsSecondaryColourButton->callPopupMethod("currentColour", rv)) return;
+	CommandNode::run(Commands::GridColourSecondary, "dddd", rv.asDouble(0, success), rv.asDouble(1, success), rv.asDouble(2, success), rv.asDouble(3, success));
+
+	updateWidgets(AtenWindow::MainViewTarget);
 }
