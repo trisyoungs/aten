@@ -114,25 +114,28 @@ void Viewer::renderModel(Model* source, int viewPortX, int viewPortY, int viewPo
 
 	// Draw main model (atoms, bonds, etc.)
 	Matrix offset;
-	for (int x = -source->repeatCellsNegative(0); x <= source->repeatCellsPositive(0); ++x)
+	Vec3<int> repeatMin = -source->repeatCellsNegative();
+	Vec3<int> repeatMax = source->repeatCellsPositive();
+	if (source->cell()->type() == UnitCell::NoCell)
 	{
-		for (int y = -source->repeatCellsNegative(1); y <= source->repeatCellsPositive(1); ++y)
+		repeatMin = 0;
+		repeatMax = 0;
+	}
+	int x, y, z;
+	for (x = repeatMin.x; x <= repeatMax.x; ++x)
+	{
+		for (y = repeatMin.y; y <= repeatMax.y; ++y)
 		{
-			for (int z = -source->repeatCellsNegative(2); z <= source->repeatCellsPositive(2); ++z)
+			for (z = repeatMin.z; z <= repeatMax.z; ++z)
 			{
-				offset.setIdentity();
+				offset = modelTransformationMatrix_;
 				offset.addTranslation(source->cell()->axes() * Vec3<double>(x,y,z));
 
 				// Render model
-				modelGroup.sendToGL(modelTransformationMatrix_);
+				modelGroup.sendToGL(offset);
 
 				// Render grids
-				for (Grid* g = source->grids(); g != NULL; g = g->next)
-				{
-					if (!g->isVisible()) continue;
-					RenderGroup& gridGroup = g->primaryRenderGroup();
-					gridGroup.sendToGL(modelTransformationMatrix_);
-				}
+				for (Grid* g = source->grids(); g != NULL; g = g->next) g->sendPrimaryPrimitive(offset);
 			}
 		}
 	}

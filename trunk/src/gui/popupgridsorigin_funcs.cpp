@@ -32,6 +32,11 @@ GridsOriginPopup::GridsOriginPopup(AtenWindow& parent, TMenuButton* buttonParent
 {
 	// Set up interface
 	ui.setupUi(this);
+
+	// Set range limits on spin boxes
+	ui.XSpin->setRange(false, 0.0, false, 0.0);
+	ui.YSpin->setRange(false, 0.0, false, 0.0);
+	ui.ZSpin->setRange(false, 0.0, false, 0.0);
 }
 
 // Show popup, updating any controls as necessary beforehand
@@ -88,7 +93,7 @@ void GridsOriginPopup::on_XSpin_valueChanged(double value)
 	setCurrentOrigin();
 
 	// Update display
-	parent_.updateWidgets(AtenWindow::CanvasTarget);
+	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
 void GridsOriginPopup::on_YSpin_valueChanged(double value)
@@ -99,7 +104,7 @@ void GridsOriginPopup::on_YSpin_valueChanged(double value)
 	setCurrentOrigin();
 
 	// Update display
-	parent_.updateWidgets(AtenWindow::CanvasTarget);
+	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
 void GridsOriginPopup::on_ZSpin_valueChanged(double value)
@@ -110,5 +115,5 @@ void GridsOriginPopup::on_ZSpin_valueChanged(double value)
 	setCurrentOrigin();
 
 	// Update display
-	parent_.updateWidgets(AtenWindow::CanvasTarget);
+	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }

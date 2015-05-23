@@ -35,6 +35,7 @@
 #include <QtWidgets/QFileDialog>
 #include <QKeyEvent>
 #include <QtWidgets/QProgressBar>
+#include <QShortcut>
 #include "base/sysfunc.h"
 #include "main/version.h"
 #include <iostream>
@@ -101,7 +102,6 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 	// Private variables
 	saveModelFilter_ = NULL;
 	contextAtom_ = NULL;
-	modelListRefreshing_ = false;
 	messageDisplay_ = MessagesUnderScene;
 	refreshing_ = false;
 
@@ -153,11 +153,11 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 	ui.ViewStyleOwnButton->setGroup("Styles");
 
 	// Add colour scheme tool buttons to their button group
-	ui.ViewSchemeElementButton->setGroup("Schemes");
-	ui.ViewSchemeChargeButton->setGroup("Schemes");
-	ui.ViewSchemeForceButton->setGroup("Schemes");
-	ui.ViewSchemeVelocityButton->setGroup("Schemes");
-	ui.ViewSchemeOwnButton->setGroup("Schemes");
+	ui.ViewSchemeElementButton->setGroup("Colourschemes");
+	ui.ViewSchemeChargeButton->setGroup("Colourschemes");
+	ui.ViewSchemeForceButton->setGroup("Colourschemes");
+	ui.ViewSchemeVelocityButton->setGroup("Colourschemes");
+	ui.ViewSchemeOwnButton->setGroup("Colourschemes");
 
 	// Add view tool buttons to their button group
 	ui.ViewControlPerspectiveButton->setGroup("ViewStyle");
@@ -202,6 +202,10 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 	ui.CellMillerDefineButton->setPopupWidget(new CellMillerPopup(*this, ui.CellMillerDefineButton), true);
 
 	// -- View Panel (Control)
+	// Shortcuts
+	QShortcut* shortcut;
+	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_R), ui.ViewControlResetButton, 0, 0, Qt::ApplicationShortcut);
+	connect(shortcut, SIGNAL(activated()), ui.ViewControlResetButton, SLOT(click()));
 	ui.ViewControlResetButton->setPopupWidget(new ResetViewPopup(*this, ui.ViewControlResetButton));
 
 	// -- Calculate Panel (Measure)
@@ -293,6 +297,9 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 	fragmentsWidget->refresh();
 	commandWidget->refresh();
 
+	// Reset view of all loaded models
+	for (Model* m = aten.models(); m != NULL; m = m->next) if (!prefs.keepView()) m->resetView(ui.MainView->contextWidth(), ui.MainView->contextHeight());
+
 	// Refresh the necessary windows, including the mainwindow
 	gridsWidget->refresh();
 	forcefieldsWidget->refresh();
@@ -300,11 +307,6 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 	atomListWidget->refresh();
 	updateControls();
 	updateWidgets();
-
-	// Reset view of all loaded models
-	for (Model* m = aten.models(); m != NULL; m = m->next) if (!prefs.keepView()) m->resetView(ui.MainView->contextWidth(), ui.MainView->contextHeight());
-
-	postRedisplay();
 
 	// Set some preferences back to their default values
 	prefs.setZMapType(ElementMap::AutoZMap, false);
@@ -535,7 +537,7 @@ void AtenWindow::updateControls()
 	TMenuButton::setGroupButtonChecked("Styles", Prefs::drawStyle(prefs.renderStyle()));
 
 	// Colour scheme
-	TMenuButton::setGroupButtonChecked("Schemes", Prefs::colouringScheme(prefs.colourScheme()));
+	TMenuButton::setGroupButtonChecked("Colourschemes", Prefs::colouringScheme(prefs.colourScheme()));
 
 	// View type
 	prefs.hasPerspective() ? ui.ViewControlPerspectiveButton->setChecked(true) : ui.ViewControlOrthographicButton->setChecked(true);

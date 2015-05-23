@@ -499,10 +499,10 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex,
 			rv.set(ptr->trajectoryPropagateParentStyle());
 			break;
 		case (ModelVariable::RepeatCellNegative):
-			rv.set(ptr->repeatCellsNegative(0), ptr->repeatCellsNegative(1), ptr->repeatCellsNegative(2));
+			rv.set(ptr->repeatCellsNegative().x, ptr->repeatCellsNegative().y, ptr->repeatCellsNegative().z);
 			break;
 		case (ModelVariable::RepeatCellPositive):
-			rv.set(ptr->repeatCellsPositive(0), ptr->repeatCellsPositive(1), ptr->repeatCellsPositive(2));
+			rv.set(ptr->repeatCellsPositive().x, ptr->repeatCellsPositive().y, ptr->repeatCellsPositive().z);
 			break;
 		case (ModelVariable::Selection):
 			if (!hasArrayIndex)

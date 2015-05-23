@@ -429,7 +429,7 @@ void AtomListWidget::on_ShiftUpButton_clicked(bool checked)
 	CommandNode::run(Commands::ShiftUp, "i", 1);
 	updateSelection();
 	refresh();
-	parent_.updateWidgets(AtenWindow::CanvasTarget);
+	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
 void AtomListWidget::on_ShiftDownButton_clicked(bool checked)
@@ -437,7 +437,7 @@ void AtomListWidget::on_ShiftDownButton_clicked(bool checked)
 	CommandNode::run(Commands::ShiftDown, "i", 1);
 	updateSelection();
 	refresh();
-	parent_.updateWidgets(AtenWindow::CanvasTarget);
+	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
 void AtomListWidget::on_MoveToStartButton_clicked(bool checked)
@@ -445,7 +445,7 @@ void AtomListWidget::on_MoveToStartButton_clicked(bool checked)
 	CommandNode::run(Commands::MoveToStart, "");
 	updateSelection();
 	refresh();
-	parent_.updateWidgets(AtenWindow::CanvasTarget);
+	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
 void AtomListWidget::on_MoveToEndButton_clicked(bool checked)
@@ -453,7 +453,7 @@ void AtomListWidget::on_MoveToEndButton_clicked(bool checked)
 	CommandNode::run(Commands::MoveToEnd, "");
 	updateSelection();
 	refresh();
-	parent_.updateWidgets(AtenWindow::CanvasTarget);
+	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
 //  the selection state in the model
@@ -524,7 +524,7 @@ void AtomListWidget::tableMouseReleaseEvent(QMouseEvent* event)
 	if (listLastModel_->recordingUndoState()) listLastModel_->endUndoState();
 	
 	refresh();
-	parent_.updateWidgets(AtenWindow::CanvasTarget);
+	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
 void AtomListWidget::tableMouseMoveEvent(QMouseEvent* event)
@@ -599,7 +599,7 @@ void AtomListWidget::tableMouseMoveEvent(QMouseEvent* event)
 		// If not NULL, and the current hovered item is not the same as the previous one, toggle the item
 		toggleItem(i);
 		lastHovered_ = i;
-		parent_.updateWidgets(AtenWindow::CanvasTarget);
+		parent_.updateWidgets(AtenWindow::MainViewTarget);
 	}
 }
 
@@ -671,14 +671,14 @@ void AtomListWidget::tableItemChanged(QTableWidgetItem *item)
 			break;
 	}
 
-	parent_.updateWidgets(AtenWindow::CanvasTarget);
+	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
 void AtomListWidget::closeEvent(QCloseEvent* event)
 {
 // 	// Ensure that the relevant button in the ToolBox dock widget is unchecked now
 // 	gui.toolBoxWidget->ui.AtomListButton->setChecked(false);
-// 	if (this->isFloating()) parent_.postRedisplay();
+// 	if (this->isFloating()) parent_.updateWidgets(AtenWindow::MainViewTarget);
 	event->accept();
 }
 

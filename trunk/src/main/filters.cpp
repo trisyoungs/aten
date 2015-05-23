@@ -69,6 +69,7 @@ bool Aten::openFilter(QString filename)
 		Messenger::error("Failed to load filters from '%s'...", qPrintable(filename));
 		failedFilters_ << filename;
 		filterPrograms_.remove(filter);
+
 		Messenger::exit("Aten::openFilter");
 		return false;
 	}
@@ -151,7 +152,7 @@ int Aten::reloadFilters()
 // Return current number of filter programs
 int Aten::nFilterPrograms() const
 {
-	filterPrograms_.nItems();
+	return filterPrograms_.nItems();
 }
 
 // Return status of filter load on startup
@@ -180,15 +181,8 @@ int Aten::parseFilterDir(QDir path)
 	for (i=0; i<filterList.size(); i++)
 	{
 		// Construct filter Program...
-		Program* filter = filterPrograms_.add();
 		QString filename = path.filePath(filterList.at(i));
-		if (!filter->generateFromFile(qPrintable(QDir::toNativeSeparators(filename)), qPrintable(filterList.at(i)), true, true, true))
-		{
-			Messenger::error("Failed to load filters from '%s'...", qPrintable(filterList.at(i)));
-			failedFilters_ << QDir::toNativeSeparators(filename);
-			filterPrograms_.remove(filter);
-		}
-		else
+		if (openFilter(QDir::toNativeSeparators(filename)))
 		{
 			s += filterList.at(i) + "  ";
 			++nLoaded;

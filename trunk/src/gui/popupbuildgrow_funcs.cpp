@@ -184,7 +184,7 @@ void GrowPopup::on_GrowSelectionButton_clicked(bool checked)
 	CommandNode::run(Commands::SelectionGrowAtom, "ic", parent_.currentBuildElement(), Atom::AtomGeometry(parent_.ui.MainView->buildGeometry()));
 
 	// Update display
-	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
+	parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget);
 
 	// Hide popup
 	done();

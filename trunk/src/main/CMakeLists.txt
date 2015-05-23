@@ -5,6 +5,7 @@ add_library(main
   aten.cpp
   cli.cpp
   commands.cpp
+  current.cpp
   ff.cpp
   filters.cpp
   fragments.cpp

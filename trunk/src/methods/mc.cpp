@@ -471,7 +471,7 @@ bool MonteCarlo::minimise(Model* srcmodel, double econ, double fcon)
 			lastPrintedEnergy = currentEnergy;
 		}
 		
-// 		if (prefs.shouldUpdateModel(cycle+1)) updateWidgets(AtenWindow::CanvasTarget);  ATEN2 TODO
+// 		if (prefs.shouldUpdateModel(cycle+1)) updateWidgets(AtenWindow::MainViewTarget);  ATEN2 TODO
 
 	} // Loop over MC cycles
 	progress.terminate(pid);

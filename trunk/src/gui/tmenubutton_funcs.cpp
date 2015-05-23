@@ -55,6 +55,12 @@ void TMenuButtonPopupWidget::done(bool setParentButtonDown)
 	hide();
 }
 
+// Notify parent button that one of our widgets has changed
+void TMenuButtonPopupWidget::changed(int data)
+{
+	if (parentMenuButton_) parentMenuButton_->popupWidgetChanged(data);
+}
+
 void TMenuButtonPopupWidget::hideEvent(QHideEvent* event)
 {
 // 	printf("HIDEEVENT\n");
@@ -69,6 +75,9 @@ void TMenuButtonPopupWidget::hideEvent(QHideEvent* event)
 	widgetDone_ = false;
 
 	event->accept();
+
+	// Notify the parent button that we have been hidden
+	if (parentMenuButton_) parentMenuButton_->popupHidden();
 }
 
 /*
@@ -206,6 +215,18 @@ void TMenuButton::popupDone(bool setButtonDown)
 	else if (group_) group_->setCurrentButton(this);
 }
 
+// Notify button that the popup has been hidden
+void TMenuButton::popupWidgetHidden()
+{
+	emit(popupHidden());
+}
+
+// Notify button that a widget on the popup has been changed
+void TMenuButton::popupWidgetChanged(int data)
+{
+	emit(popupChanged(data));
+}
+
 // Notify button that popup is done
 void TMenuButton::paintEvent(QPaintEvent* event)
 {
@@ -233,6 +254,7 @@ void TMenuButton::paintEvent(QPaintEvent* event)
 	painter.drawComplexControl(QStyle::CC_ToolButton, opt);
 }
 
+// Call the popup widget
 void TMenuButton::popup()
 {
 	if (!popupWidget_) return;
@@ -254,6 +276,7 @@ void TMenuButton::popup()
 	popupWidget_->move(toolPos);
 }
 
+// Mouse button was pressed on the button
 void TMenuButton::buttonPressed()
 {
 // 	printf("PRESSED [%s] (isDown=%i, isChecked=%i)\n", qPrintable(text()), isDown(), isChecked());
@@ -268,6 +291,7 @@ void TMenuButton::buttonPressed()
 	}
 }
 
+// Mouse button was released
 void TMenuButton::buttonReleased()
 {
 // 	printf("RELEASED [%s]\n", qPrintable(text()));

@@ -30,7 +30,8 @@ void AtenWindow::on_MessagesCycleButton_clicked(bool checked)
 	else if (messageDisplay_ == AtenWindow::MessagesUnderScene) messageDisplay_ = AtenWindow::NoMessages;
 	else messageDisplay_ = AtenWindow::FullMessages;
 
-	postRedisplay();
+	updateWidgets(AtenWindow::MainViewTarget);
+
 }
 
 void AtenWindow::on_MessagesCopyButton_clicked(bool checked)
@@ -49,12 +50,14 @@ void AtenWindow::on_MessagesClearButton_clicked(bool checked)
 {
 	Messenger::clearMessageBuffer();
 
-	postRedisplay();
+	updateWidgets(AtenWindow::MainViewTarget);
+
 }
 
 void AtenWindow::on_MessagesScroll_sliderMoved(int position)
 {
-	postRedisplay();
+	updateWidgets(AtenWindow::MainViewTarget);
+
 }
 
 // Return current message display style

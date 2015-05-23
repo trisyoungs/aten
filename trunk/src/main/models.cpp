@@ -47,45 +47,6 @@ Model* Aten::workingModels() const
 	return workingModels_.first();
 }
 
-// Set the active model
-void Aten::setCurrentModel(Model* model)
-{
-	Messenger::enter("Aten::setCurrentModel");
-
-	if (model == NULL)
-	{
-		current_.clear();
-		Messenger::exit("Aten::setCurrentModel");
-		return;
-	}
-
-	// Set Bundle pointers
-	current_.m = model;
-	current_.p = model->patterns();
-	current_.g = model->grids();
-	current_.i = NULL;
-
-	// Its the current model, so it must be visible also... add to visible list
-	setModelVisible(model, true);
-
-	// Update the model list
-	atenWindow_->updateModelList();
-
-	Messenger::exit("Aten::setCurrentModel");
-}
-
-// Return current active model for editing
-Model* Aten::currentModel() const
-{
-	return current_.m;
-}
-
-// Return current active model for editing, accounting for trajectory frames
-Model* Aten::currentModelOrFrame() const
-{
-	return (current_.m == NULL ? NULL : current_.m->renderSourceModel());
-}
-
 // Return first item in the model list
 Model* Aten::models() const
 {

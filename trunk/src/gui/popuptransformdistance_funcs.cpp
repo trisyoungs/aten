@@ -92,7 +92,7 @@ void TransformDistancePopup::on_SetDistanceButton_clicked(bool checked)
 	else if (ui.MoveTypeCombo->currentIndex() == 3) CommandNode::run(Commands::SetDistances, "dc", ui.NewDistanceSpin->value(), "heavy");
 	else CommandNode::run(Commands::SetDistances, "dc", ui.NewDistanceSpin->value(), "both");
 
-	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
+	parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget);
 
 	done();
 }
@@ -105,7 +105,7 @@ void TransformDistancePopup::on_IncreaseDistanceButton_clicked(bool checked)
 	else if (ui.MoveTypeCombo->currentIndex() == 3) CommandNode::run(Commands::SetDistances, "dci", ui.DeltaSpin->value(), "heavy", 1);
 	else CommandNode::run(Commands::SetDistances, "dci", ui.DeltaSpin->value(), "both", 1);
 
-	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
+	parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget);
 }
 
 void TransformDistancePopup::on_DecreaseDistanceButton_clicked(bool checked)
@@ -116,5 +116,5 @@ void TransformDistancePopup::on_DecreaseDistanceButton_clicked(bool checked)
 	else if (ui.MoveTypeCombo->currentIndex() == 3) CommandNode::run(Commands::SetDistances, "dci", -ui.DeltaSpin->value(), "heavy", 1);
 	else CommandNode::run(Commands::SetDistances, "dci", -ui.DeltaSpin->value(), "both", 1);
 
-	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
+	parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget);
 }

@@ -89,7 +89,7 @@ void CellLengthsPopup::on_ASpin_valueChanged(double value)
 	adjustCurrentMatrix(0, value);
 
 	// Update display
-	parent_.updateWidgets(AtenWindow::CanvasTarget);
+	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
 void CellLengthsPopup::on_BSpin_valueChanged(double value)
@@ -99,7 +99,7 @@ void CellLengthsPopup::on_BSpin_valueChanged(double value)
 	adjustCurrentMatrix(1, value);
 
 	// Update display
-	parent_.updateWidgets(AtenWindow::CanvasTarget);
+	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
 void CellLengthsPopup::on_CSpin_valueChanged(double value)
@@ -109,5 +109,5 @@ void CellLengthsPopup::on_CSpin_valueChanged(double value)
 	adjustCurrentMatrix(2, value);
 
 	// Update display
-	parent_.updateWidgets(AtenWindow::CanvasTarget);
+	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }

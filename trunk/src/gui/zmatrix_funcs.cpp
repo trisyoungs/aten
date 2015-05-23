@@ -211,7 +211,7 @@ void AtenZMatrix::on_ZMatrixTable_cellDoubleClicked(int row, int column)
 	if (changed)
 	{
 		// New value has already been put into zmatrix structure, so update model and refresh window
-		parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
+		parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget);
 		refresh();
 	}
 }
@@ -238,7 +238,7 @@ void AtenZMatrix::on_VariablesTable_itemChanged(QTableWidgetItem *w)
 	if (column == 1)
 	{
 		if (var != NULL) zMatrix_->setVariable(var, atof(qPrintable(w->text())));
-		parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
+		parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget);
 		refresh();
 	}
 }
@@ -251,7 +251,7 @@ void AtenZMatrix::on_ShiftUpButton_clicked(bool checked)
 	zMatrix_->parent()->selectAtom(row);
 	CommandNode::run(Commands::ShiftUp, "i", 1);
 	refresh();
-	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
+	parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget);
 }
 
 void AtenZMatrix::on_ShiftDownButton_clicked(bool checked)
@@ -262,7 +262,7 @@ void AtenZMatrix::on_ShiftDownButton_clicked(bool checked)
 	zMatrix_->parent()->selectAtom(row);
 	CommandNode::run(Commands::ShiftDown, "i", 1);
 	refresh();
-	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
+	parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget);
 }
 
 void AtenZMatrix::on_MoveToStartButton_clicked(bool checked)
@@ -273,7 +273,7 @@ void AtenZMatrix::on_MoveToStartButton_clicked(bool checked)
 	zMatrix_->parent()->selectAtom(row);
 	CommandNode::run(Commands::MoveToStart, "");
 	refresh();
-	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
+	parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget);
 }
 
 void AtenZMatrix::on_MoveToEndButton_clicked(bool checked)
@@ -284,7 +284,7 @@ void AtenZMatrix::on_MoveToEndButton_clicked(bool checked)
 	zMatrix_->parent()->selectAtom(row);
 	CommandNode::run(Commands::MoveToEnd, "");
 	refresh();
-	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
+	parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget);
 }
 
 void AtenZMatrix::dialogFinished(int result)

@@ -412,7 +412,6 @@ Vec3<double>& Model::screenToModel(int x, int y, double z)
 	return modelr;
 }
 
-
 // Set positive repeat cell value
 void Model::setRepeatCellsPositive(int i, int r)
 {
@@ -420,9 +419,9 @@ void Model::setRepeatCellsPositive(int i, int r)
 }
 
 // Get positive repeat cell value
-int Model::repeatCellsPositive(int i) const
+Vec3<int> Model::repeatCellsPositive() const
 {
-	return repeatCellsPositive_.get(i);
+	return repeatCellsPositive_;
 }
 
 // Set negative repeat cell value
@@ -432,7 +431,7 @@ void Model::setRepeatCellsNegative(int i, int r)
 }
 
 // Get negative repeat cell value
-int Model::repeatCellsNegative(int i) const
+Vec3<int> Model::repeatCellsNegative() const
 {
-	return repeatCellsNegative_.get(i);
+	return repeatCellsNegative_;
 }

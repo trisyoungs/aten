@@ -1,5 +1,5 @@
 /*
-	*** Grid data structure
+	*** Grid Data
 	*** src/base/grid.cpp
 	Copyright T. Youngs 2007-2015
 
@@ -25,13 +25,19 @@
 #include "base/sysfunc.h"
 #include "math/constants.h"
 #include "model/model.h"
+#include "render/primitiveset.h"
 #ifdef _MAC
 #include <OpenGL/gl.h>
 #else
 #include <GL/gl.h>
 #endif
+#include <QOpenGLContext>
 
 ATEN_USING_NAMESPACE
+
+// Static Members
+template<class Grid> Reflist<Grid,int> ObjectStore<Grid>::objects_;
+template<class Grid> int ObjectStore<Grid>::objectCount_ = 0;
 
 // Grid data types
 const char* GridTypeKeywords[Grid::nGridTypes] = { "none", "regularxy", "regularxyz", "freexyz" };
@@ -53,59 +59,8 @@ Grid::SurfaceStyle Grid::surfaceStyle(QString s)
 	return (Grid::SurfaceStyle) enumSearch("surface style", Grid::nSurfaceStyles, SurfaceStyleKeywords, s);
 }
 
-/*
-// GridPoint class
-*/
-
 // Constructor
-GridPoint::GridPoint() : ListItem<GridPoint>()
-{
-	// Private variables
-	flag_ = 0;
-	value_ = 0.0;
-}
-
-// Destructor
-GridPoint::~GridPoint()
-{
-}
-
-// Return coordinates of point
-Vec3<double>& GridPoint::r()
-{
-	return r_;
-}
-
-// Return value at point
-double GridPoint::value() const
-{
-	return value_;
-}
-
-// Set value at point
-void GridPoint::setValue(double v)
-{
-	value_ = v;
-}
-
-// Retrieve flag status
-int GridPoint::flag() const
-{
-	return flag_;
-}
-
-// Set flag status
-void GridPoint::setFlag(int i)
-{
-	flag_ = i;
-}
-
-/*
-// Grid Class
-*/
-
-// Constructor
-Grid::Grid() : ListItem<Grid>()
+Grid::Grid() : ListItem<Grid>(), ObjectStore<Grid>(this, ObjectTypes::GridObject)
 {
 	// Private variables
 	data3d_ = NULL;
@@ -120,6 +75,8 @@ Grid::Grid() : ListItem<Grid>()
 	upperSecondaryCutoff_ = 0.0;
 	log_ = -1;
 	boundsLog_ = -1;
+	primaryPrimitive_ = NULL;
+	secondaryPrimitive_ = NULL;
 	style_ = Grid::SolidSurface;
 	visible_ = true;
 	primaryColour_[0] = 0.0;
@@ -159,6 +116,9 @@ Grid::~Grid()
 {
 	clear();
 	if (useColourScale_ && (colourScale_ != -1)) prefs.colourScale[colourScale_].breakLink(this);
+
+	if (primaryPrimitive_) PrimitiveSet::releaseDynamicPrimitive(primaryPrimitive_);
+	if (secondaryPrimitive_) PrimitiveSet::releaseDynamicPrimitive(secondaryPrimitive_);
 }
 
 // Assignment operator
@@ -1145,30 +1105,88 @@ bool Grid::fillEnclosedVolume()
  * Rendering
  */
 
-// Return primary renderGroup, regenerating if necessary
-RenderGroup& Grid::primaryRenderGroup()
+// Return primiary primitive
+Primitive* Grid::primaryPrimitive()
 {
-	if (primaryRenderGroupPoint_ != log_)
-	{
-		Vec4<GLfloat> colour(primaryColour_[0], primaryColour_[1], primaryColour_[2], primaryColour_[3]);
-		primaryRenderGroup_.marchingCubes(this, lowerPrimaryCutoff_, upperPrimaryCutoff_, colour, colourScale_);
-		primaryRenderGroupPoint_ = log_;
-	}
-
-	return primaryRenderGroup_;
+	return primaryPrimitive_;
 }
 
-// Return secondary renderGroup, regenerating if necessary
-RenderGroup& Grid::secondaryRenderGroup()
+// Send primary primitive to GL, regenerating if necessary
+void Grid::sendPrimaryPrimitive(Matrix baseTransform)
 {
-	if (secondaryRenderGroupPoint_ != log_)
+	if (primaryPrimitivePoint_ != log_)
 	{
-		Vec4<GLfloat> colour(secondaryColour_[0], secondaryColour_[1], secondaryColour_[2], secondaryColour_[3]);
-		secondaryRenderGroup_.marchingCubes(this, lowerSecondaryCutoff_, upperSecondaryCutoff_, colour, colourScale_);
-		secondaryRenderGroupPoint_ = log_;
+		// Create primitive if we don't already have one
+		if (!primaryPrimitive_) primaryPrimitive_ = PrimitiveSet::createDynamicPrimitive();
+
+		Vec4<GLfloat> colour(primaryColour_[0], primaryColour_[1], primaryColour_[2], primaryColour_[3]);
+		primaryPrimitive_->marchingCubes(this, lowerPrimaryCutoff_, upperPrimaryCutoff_, colour, useColourScale_ ? colourScale_ : -1);
+		primaryPrimitivePoint_ = log_;
 	}
 
-	return secondaryRenderGroup_;
+	// Set transformation matrix for primitive
+	Matrix A;
+	A.applyTranslation(origin_);
+	A.multiplyRotation(cell_.axes());
+	A = baseTransform * A;
+
+	// Set colour
+	if (!useColourScale_)
+	{
+		glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+		glEnable(GL_COLOR_MATERIAL);
+		glColor4f(primaryColour_[0], primaryColour_[1], primaryColour_[2], primaryColour_[3]);
+	}
+
+	// Render it
+	glPushMatrix();
+	glLoadMatrixd(A.matrix());
+	if (style_ == Grid::SolidSurface) primaryPrimitive_->sendToGL(QOpenGLContext::currentContext(), GL_FILL, true, !useColourScale_, primaryColour_);
+	else if (style_ == Grid::TriangleSurface) primaryPrimitive_->sendToGL(QOpenGLContext::currentContext(), GL_LINES, false, !useColourScale_, primaryColour_);
+	else if (style_ == Grid::PointSurface) primaryPrimitive_->sendToGL(QOpenGLContext::currentContext(), GL_POINTS, false, !useColourScale_, primaryColour_);
+	glPopMatrix();
+}
+
+// Return primiary primitive
+Primitive* Grid::secondaryPrimitive()
+{
+	return secondaryPrimitive_;
+}
+
+// Send primary primitive to GL, regenerating if necessary
+void Grid::sendSecondaryPrimitive(Matrix baseTransform)
+{
+	if (secondaryPrimitivePoint_ != log_)
+	{
+		// Create primitive if we don't already have one
+		if (!secondaryPrimitive_) secondaryPrimitive_ = PrimitiveSet::createDynamicPrimitive();
+
+		Vec4<GLfloat> colour(secondaryColour_[0], secondaryColour_[1], secondaryColour_[2], secondaryColour_[3]);
+		secondaryPrimitive_->marchingCubes(this, lowerSecondaryCutoff_, upperSecondaryCutoff_, colour, useColourScale_ ? colourScale_ : -1);
+		secondaryPrimitivePoint_ = log_;
+	}
+
+	// Set transformation matrix for primitive
+	Matrix A;
+	A.applyTranslation(origin_);
+	A.multiplyRotation(cell_.axes());
+	A = baseTransform * A;
+
+	// Set colour
+	if (!useColourScale_)
+	{
+		glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
+		glEnable(GL_COLOR_MATERIAL);
+		glColor4f(secondaryColour_[0], secondaryColour_[1], secondaryColour_[2], secondaryColour_[3]);
+	}
+
+	// Render it
+	glPushMatrix();
+	glLoadMatrixd(A.matrix());
+	if (style_ == Grid::SolidSurface) secondaryPrimitive_->sendToGL(QOpenGLContext::currentContext(), GL_FILL, true, !useColourScale_, secondaryColour_);
+	else if (style_ == Grid::TriangleSurface) secondaryPrimitive_->sendToGL(QOpenGLContext::currentContext(), GL_LINES, false, !useColourScale_, secondaryColour_);
+	else if (style_ == Grid::PointSurface) secondaryPrimitive_->sendToGL(QOpenGLContext::currentContext(), GL_POINTS, false, !useColourScale_, secondaryColour_);
+	glPopMatrix();
 }
 
 /*

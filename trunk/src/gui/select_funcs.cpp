@@ -57,37 +57,37 @@ void SelectWidget::setHistories(QStringList select, QStringList forlist, QString
 void SelectWidget::on_SelectAllButton_clicked(bool on)
 {
 	CommandNode::run(Commands::SelectAll, "");
-	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
+	parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
 }
 
 void SelectWidget::on_SelectNoneButton_clicked(bool on)
 {
 	CommandNode::run(Commands::SelectNone, "");
-	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
+	parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
 }
 
 void SelectWidget::on_SelectionExpandButton_clicked(bool on)
 {
 	CommandNode::run(Commands::Expand, "");
-	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
+	parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
 }
 
 void SelectWidget::on_SelectionInvertButton_clicked(bool on)
 {
 	CommandNode::run(Commands::Invert, "");
-	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
+	parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
 }
 
 void SelectWidget::on_SelectButton_clicked(bool on)
 {
 	CommandNode::run(Commands::Select, "c", qPrintable(ui.SelectCombo->currentText()));
-	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
+	parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
 }
 
 void SelectWidget::on_DeselectButton_clicked(bool on)
 {
 	CommandNode::run(Commands::DeSelect, "c", qPrintable(ui.SelectCombo->currentText()));
-	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
+	parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
 }
 
 void SelectWidget::on_TypeSelectElementButton_clicked(bool on)
@@ -111,7 +111,7 @@ void SelectWidget::on_SelectTypeButton_clicked(bool on)
 	else
 	{
 		CommandNode::run(Commands::SelectType, "ic", el, qPrintable(ui.SelectNetaCombo->currentText()));
-		parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
+		parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
 	}
 }
 
@@ -123,20 +123,20 @@ void SelectWidget::on_DeselectTypeButton_clicked(bool on)
 	else
 	{
 		CommandNode::run(Commands::DeSelectType, "ic", el, qPrintable(ui.SelectNetaCombo->currentText()));
-		parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
+		parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
 	}
 }
 
 void SelectWidget::on_SelectForButton_clicked(bool on)
 {
 	CommandNode::run(Commands::SelectType, "c", qPrintable(ui.SelectForCombo->currentText()));
-	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
+	parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
 }
 
 void SelectWidget::on_DeselectForButton_clicked(bool on)
 {
 	CommandNode::run(Commands::DeSelectType, "c", qPrintable(ui.SelectForCombo->currentText()));
-	parent_.updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
+	parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
 }
 
 void SelectWidget::refresh()
@@ -145,10 +145,10 @@ void SelectWidget::refresh()
 
 	// Update selection text details
 	// First label, total number of selected atoms.
-	ui.SelectionLabel1->setText("Total selected : " + QString::number(m->nSelected()));
+	ui.SelectionLabel1->setText("Total selected : " + (m ? QString::number(m->nSelected()) : "0"));
 	
 	// Second label contains empirical formula of selection
-	ui.SelectionLabel2->setText(m->selectionEmpirical(false, true));
+	if (m) ui.SelectionLabel2->setText(m ? m->selectionEmpirical(false, true) : "--");
 }
 
 void SelectWidget::closeEvent(QCloseEvent* event)

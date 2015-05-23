@@ -1,5 +1,5 @@
 /*
-	*** Grid data structure
+	*** Grid Data
 	*** src/base/grid.h
 	Copyright T. Youngs 2007-2015
 
@@ -24,44 +24,18 @@
 
 #include "templates/vector3.h"
 #include "base/cell.h"
+#include "base/gridpoint.h"
 #include "math/constants.h"
 #include "base/namespace.h"
-#include "render/rendergroup.h"
+#include "templates/objectstore.h"
 
 ATEN_BEGIN_NAMESPACE
 
-// GridPoint class
-class GridPoint : public ListItem<GridPoint>
-{
-	public:
-	// Constructor / Destructor
-	GridPoint();
-	~GridPoint();
+// Forward Declarations
+class Primitive;
 
-	// Data
-	private:
-	// Coordinates of point
-	Vec3<double> r_;
-	// Value at point
-	double value_;
-	// Associated flag
-	int flag_;
-
-	public:
-	// Return coordinates of point
-	Vec3<double>& r();
-	// Return value at point
-	double value() const;
-	// Set value at point
-	void setValue(double v);
-	// Retrieve flag status
-	int flag() const;
-	// Set flag status
-	void setFlag(int i);
-};
-
-// Grid Data Class
-class Grid : public ListItem<Grid>
+// Grid Data
+class Grid : public ListItem<Grid>, ObjectStore<Grid>
 {
 	public:
 	// Constructor / Destructor
@@ -380,17 +354,21 @@ class Grid : public ListItem<Grid>
 	 */
 	private:
 	// Primitives representing primary surface
-	RenderGroup primaryRenderGroup_;
+	Primitive* primaryPrimitive_;
 	// Primitives representing secondary surface
-	RenderGroup secondaryRenderGroup_;
+	Primitive* secondaryPrimitive_;
 	// Logpoints at which rendergroups were last created
-	int primaryRenderGroupPoint_, secondaryRenderGroupPoint_;
+	int primaryPrimitivePoint_, secondaryPrimitivePoint_;
 
 	public:
-	// Return primary renderGroup, regenerating if necessary
-	RenderGroup& primaryRenderGroup();
-	// Return secondary renderGroup, regenerating if necessary
-	RenderGroup& secondaryRenderGroup();
+	// Return primiary primitive
+	Primitive* primaryPrimitive();
+	// Send primary primitive to GL, regenerating if necessary
+	void sendPrimaryPrimitive(Matrix baseTransform);
+	// Return secondary primitive
+	Primitive* secondaryPrimitive();
+	// Return secondary primitive to GL, regenerating if necessary
+	void sendSecondaryPrimitive(Matrix baseTransform);
 
 
 	/*

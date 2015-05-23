@@ -31,37 +31,6 @@
 #include "gui/glyphs.h"
 #include <QtWidgets/QMessageBox>
 
-// Update and show
-void AtenWindow::initialUpdateAndShow()
-{
-	// Display message box warning if there was a filter load error
-	if (aten_.nFilterPrograms() == 0)
-	{
-		QMessageBox::warning(NULL, "Aten", "Filters could not be found.\nNo import/export will be possible.\nSet the environment variable ATENDATA to point to Aten's data directory (e.g. 'export ATENDATA=/usr/local/aten/data'), or run with --atendata <dir>.\n", QMessageBox::Ok, QMessageBox::Ok);
-	}
-	else if (aten_.failedFilters().count() > 0)
-	{
-		// Construct the messagebox text
-		QString text("One or more filters could not be loaded properly on startup.\nCheck shell output or run Settings->Reload Filters to diagnose the problem.\nFilters with errors were:\n");
-		for (int n=0; n<aten_.failedFilters().count(); ++n)
-		{
-			text += "\t";
-			text += aten_.failedFilters().at(n) + "\n";
-		}
-		QMessageBox::warning(NULL, "Aten", text, QMessageBox::Ok, QMessageBox::Ok);
-	}
-
-	// Show the window
-	show();
-
-	// Update model list
-	updateModelList();
-
-	// Update everything else
-	updateMainWindow();
-}
-
-
 // Update GUI after model change (or different model selected)
 void AtenWindow::updateMainWindow()
 {
@@ -146,14 +115,6 @@ void AtenWindow::updateMainWindow()
 	else title += " [[[ No Current Model ]]]";
 	setWindowTitle(title);
 
-	// Update panels
-	updateBuildPanel(currentModel);
-	updateCellPanel(currentModel);
-	updateViewPanel(currentModel);
-	updateCalculatePanel(currentModel);
-	updateTransformPanel(currentModel);
-	updateGridsPanel(currentModel);
-
 	refreshing_ = false;
 }
 
@@ -182,13 +143,88 @@ void AtenWindow::updateTrajectoryMenu()
 	ui.actionTrajectoryFrames->setChecked(rs == Model::TrajectorySource);
 }
 
+// Update context menu
+void AtenWindow::updateContextMenu(Model* currentModel)
+{
+	Messenger::enter("AtenWindow::updateContextMenu");
+
+	// Enable bond, angle, and torsion editing
+	int nSelected = (currentModel ? currentModel->nSelected() : 0);
+	ui.actionSetBondLength->setEnabled(false);
+	ui.actionSetBondAngle->setEnabled(false);
+	ui.actionSetTorsionAngle->setEnabled(false);
+	if (nSelected == 2) ui.actionSetBondLength->setEnabled(true);
+	else if (nSelected == 3) ui.actionSetBondAngle->setEnabled(true);
+	else if (nSelected == 4) ui.actionSetTorsionAngle->setEnabled(true);
+
+	// (De)Activate glyph menu items based on number of atoms selected
+	for (int gt=0; gt<Glyph::nGlyphTypes; ++gt) createGlyphActions[gt]->setEnabled( Glyph::nGlyphData( (Glyph::GlyphType) gt) == nSelected);
+
+	Messenger::exit("AtenWindow::updateContextMenu");
+}
+
+// Update and show
+void AtenWindow::initialUpdateAndShow()
+{
+	Messenger::enter("AtenWindow::initialUpdateAndShow");
+
+	// Display message box warning if there was a filter load error
+	printf("NFilterprogras = %i\n", aten_.nFilterPrograms());
+	if (aten_.nFilterPrograms() == 0)
+	{
+		QMessageBox::warning(NULL, "Aten", "Filters could not be found.\nNo import/export will be possible.\nSet the environment variable ATENDATA to point to Aten's data directory (e.g. 'export ATENDATA=/usr/local/aten/data'), or run with --atendata <dir>.\n", QMessageBox::Ok, QMessageBox::Ok);
+	}
+	else if (aten_.failedFilters().count() > 0)
+	{
+		// Construct the messagebox text
+		QString text("One or more filters could not be loaded properly on startup.\nCheck shell output or run Settings->Reload Filters to diagnose the problem.\nFilters with errors were:\n");
+		for (int n=0; n<aten_.failedFilters().count(); ++n)
+		{
+			text += "\t";
+			text += aten_.failedFilters().at(n) + "\n";
+		}
+		QMessageBox::warning(NULL, "Aten", text, QMessageBox::Ok, QMessageBox::Ok);
+	}
+
+	// Show the window
+	show();
+
+	// Update everything else
+	updateWidgets();
+
+	Messenger::exit("AtenWindow::initialUpdateAndShow");
+}
 
 // Update GUI after model change (or different model selected) (accessible wrapper to call AtenWindow's function)
 void AtenWindow::updateWidgets(int targets)
 {
-	// Refresh aspects of main window and dock widgets
-	updateMainWindow();
-	updateContextMenu();
+	Messenger::enter("AtenWindow::updateWidgets");
+
+	refreshing_ = true;
+
+	// Main window bottom-left status info, menu items, and titlebar
+	if (targets&AtenWindow::MainWindowTarget) updateMainWindow();
+
+	// Update main view
+	if (targets&AtenWindow::MainViewTarget) ui.MainView->update();
+
+	// Update model list
+	if (targets&AtenWindow::ModelListTarget) updateModelList();
+
+	// Get current model
+	Model* currentModel = aten_.currentModelOrFrame();
+
+	// Update context menu
+	if (targets&AtenWindow::ContextMenuTarget) updateContextMenu(currentModel);
+
+	// Panels
+	if (targets&AtenWindow::BuildPanelTarget) updateBuildPanel(currentModel);
+	if (targets&AtenWindow::CellPanelTarget) updateCellPanel(currentModel);
+	if (targets&AtenWindow::ViewPanelTarget) updateViewPanel(currentModel);
+	if (targets&AtenWindow::CalculatePanelTarget) updateCalculatePanel(currentModel);
+	if (targets&AtenWindow::TransformPanelTarget) updateTransformPanel(currentModel);
+	if (targets&AtenWindow::GridsPanelTarget) updateGridsPanel(currentModel);
+
 	
 	if (targets&AtenWindow::SelectTarget) selectWidget->refresh();
 	if (targets&AtenWindow::VibrationsTarget) vibrationsWidget->refresh();
@@ -199,9 +235,6 @@ void AtenWindow::updateWidgets(int targets)
 
 	// Update contents of the glyph list
 	if (targets&AtenWindow::GlyphsTarget) glyphsWidget->refresh();
-
-	// Update contents of the grid window
-	if (targets&AtenWindow::GridsTarget) gridsWidget->refresh();
 
 	// Update forcefields in the forcefield widget
 	if (targets&AtenWindow::ForcefieldsTarget) forcefieldsWidget->refresh();
@@ -227,13 +260,8 @@ void AtenWindow::updateWidgets(int targets)
 		// Set text in statusbar widget
 		this->setMessageLabel(text);
 	}
-	
-	// Request redraw of the main canvas
-	if (targets&AtenWindow::CanvasTarget) postRedisplay();
-}
 
-// Refresh Viewer widget, and any associated widgets
-void AtenWindow::postRedisplay()
-{
-	ui.MainView->update();
+	refreshing_ = false;
+
+	Messenger::exit("AtenWindow::updateWidgets");
 }

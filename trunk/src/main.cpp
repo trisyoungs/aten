@@ -70,7 +70,7 @@ int main(int argc, char* argv[])
 
 	/* Read in file filters (if unsuccessful, a messagebox will be raised in the GUI) */
 	if (prefs.loadFilters()) MrAten.openFilters();
-	
+
 	/* Load in fragments */
 	if (prefs.loadFragments()) MrAten.openFragments();
 	

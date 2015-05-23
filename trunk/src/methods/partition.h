@@ -75,8 +75,8 @@ class PartitionData : public ListItem<PartitionData>
 	double reducedMass_;
 	// Reflist of components targeting this partition
 	Reflist<DisorderData,int> components_;
-	// Render group for this partition
-	RenderGroup renderGroup_;
+	// Primitive containing surface data
+	Primitive primitive_;
 	
 	public:
 	// Copy data from specified PartitionData
@@ -117,8 +117,8 @@ class PartitionData : public ListItem<PartitionData>
 	int nComponents();
 	// Return nth component in list
 	DisorderData* component(int id);
-	// Return rendergroup for this partition
-	RenderGroup& renderGroup();
+	// Return primitive for surface data
+	Primitive& primitive();
 };
 
 // Partitioning Scheme for Disordered Builder

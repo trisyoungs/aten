@@ -38,7 +38,7 @@ class QOpenGLContext;
 ATEN_BEGIN_NAMESPACE
 
 // Forward Declarations (Aten)
-/* none */
+class Grid;
 
 // Rendering Primitive
 class Primitive : public ListItem<Primitive>
@@ -81,6 +81,8 @@ class Primitive : public ListItem<Primitive>
 	GLenum type();
 	// Return whether vertex data contains colour information
 	bool colouredVertexData() const;
+	// Update mesh (recreate instance / VBO / display list) of primitive
+	void updateMesh();
 
 
 	/*
@@ -149,14 +151,20 @@ class Primitive : public ListItem<Primitive>
 	void plotCrossedCube(double size, int nSubs, double ox, double oy, double oz);
 	// Create halo
 	void plotHalo(double radius1, double radius2, int nSegments);
+	// Generate surface via marching cubes algorithm
+	void marchingCubes(Grid* source, double lowerCutoff, double upperCutoff, Vec4<GLfloat> colour, int colourScale);
+	// Generate surface via marching cubes algorithm
+	void createSurface(Grid* source, Vec4<GLfloat> colour, int colourScale);
 
 
 	/*
 	 * OpenGL
 	 */
 	public:
-	// Send to OpenGL (i.e. render)
+	// Send to GL (i.e. render)
 	void sendToGL(const QOpenGLContext* context);
+	// Send to GL(i.e. render) in specified style
+	void sendToGL(const QOpenGLContext* context, GLenum style, bool lighting, bool hasColour, double* colour);
 };
 
 ATEN_END_NAMESPACE

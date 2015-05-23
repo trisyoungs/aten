@@ -26,32 +26,6 @@
 #include "model/model.h"
 #include "parser/commandnode.h"
 
-// Update context menu
-void AtenWindow::updateContextMenu()
-{
-	Messenger::enter("AtenWindow::updateContextMenu");
-	Model* viewTarget = aten_.currentModel();
-
-	// Enable bond, angle, and torsion editing
-	int nselected = (viewTarget == NULL ? 0 : viewTarget->nSelected());
-	ui.actionSetBondLength->setEnabled(false);
-	ui.actionSetBondAngle->setEnabled(false);
-	ui.actionSetTorsionAngle->setEnabled(false);
-	if (nselected == 2) ui.actionSetBondLength->setEnabled(true);
-	else if (nselected == 3) ui.actionSetBondAngle->setEnabled(true);
-	else if (nselected == 4) ui.actionSetTorsionAngle->setEnabled(true);
-	
-	// (De)Activate glyph menu items based on number of atoms selected
-	activateGlyphActions(nselected);
-	Messenger::exit("AtenWindow::updateContextMenu");
-}
-
-// Activate glyph actions 
-void AtenWindow::activateGlyphActions(int n)
-{
-	for (int gt=0; gt<Glyph::nGlyphTypes; ++gt) createGlyphActions[gt]->setEnabled( Glyph::nGlyphData( (Glyph::GlyphType) gt) == n);
-}
-
 // Show the modelview context menu
 void AtenWindow::callContextMenu(Atom* undermouse, int x, int y)
 {
@@ -69,13 +43,15 @@ void AtenWindow::callContextMenu(Atom* undermouse, int x, int y)
 		viewTarget->selectNone();
 		viewTarget->selectAtom(contextAtom_);
 		viewTarget->endUndoState();
-		postRedisplay();
+		updateWidgets(AtenWindow::MainViewTarget);
+
 		// Make sure context menu items are enabled, since nothing may have been selected beforehand
 		ui.AtomContextMenu->setEnabled(true);
+
+		// Atom selection may have just changed, so update context menu
+		updateContextMenu(viewTarget);
 	}
-	
-	// Atom selection may have just changed, so update context menu
-	updateContextMenu();
+
 	// Run the popup
 	ui.AtomContextMenu->exec(pos);
 }
@@ -91,25 +67,25 @@ void AtenWindow::setAtomStyle(Prefs::DrawStyle ds)
 void AtenWindow::on_actionAtomStyleStick_triggered(bool checked)
 {
 	setAtomStyle(Prefs::LineStyle);
-	postRedisplay();
+	updateWidgets(AtenWindow::MainViewTarget);
 }
 
 void AtenWindow::on_actionAtomStyleTube_triggered(bool checked)
 {
 	setAtomStyle(Prefs::TubeStyle);
-	postRedisplay();
+	updateWidgets(AtenWindow::MainViewTarget);
 }
 
 void AtenWindow::on_actionAtomStyleSphere_triggered(bool checked)
 {
 	setAtomStyle(Prefs::SphereStyle);
-	postRedisplay();
+	updateWidgets(AtenWindow::MainViewTarget);
 }
 
 void AtenWindow::on_actionAtomStyleScaled_triggered(bool checked)
 {
 	setAtomStyle(Prefs::ScaledStyle);
-	postRedisplay();
+	updateWidgets(AtenWindow::MainViewTarget);
 }
 
 // Set atom labels
@@ -118,7 +94,7 @@ void AtenWindow::setAtomLabel(Atom::AtomLabel al)
 	if ((contextAtom_ == NULL) || (aten_.currentModelOrFrame()->nSelected() > 1)) CommandNode::run(Commands::Label, "c", Atom::atomLabel(al));
 	else CommandNode::run(Commands::Label, "ci", Atom::atomLabel(al), contextAtom_->id()+1);
 	contextAtom_ = NULL;
-	postRedisplay();
+	updateWidgets(AtenWindow::MainViewTarget);
 }
 
 // Clear atom labels
@@ -128,7 +104,7 @@ void AtenWindow::removeAtomLabels(bool all)
 	else if ((contextAtom_ == NULL) || (aten_.currentModelOrFrame()->nSelected() > 1)) CommandNode::run(Commands::RemoveLabels, "");
 	else CommandNode::run(Commands::RemoveLabels, "i", contextAtom_->id()+1);
 	contextAtom_ = NULL;
-	postRedisplay();
+	updateWidgets(AtenWindow::MainViewTarget);
 }
 
 void AtenWindow::on_actionAtomLabelID_triggered(bool checked)
@@ -171,7 +147,7 @@ void AtenWindow::on_actionAtomColourReset_triggered(bool checked)
 {
 	CommandNode::run(Commands::RecolourAtoms, "");
 	contextAtom_ = NULL;
-	postRedisplay();
+	updateWidgets(AtenWindow::MainViewTarget);
 }
 
 // Reset atom custom colour to element colour
@@ -186,48 +162,51 @@ void AtenWindow::on_actionAtomColourSet_triggered(bool checked)
 	bool ok = false;
 	newcol.setRgba(QColorDialog::getRgba(oldcol.rgba(), &ok, this));
 	if (!ok) return;
+
 	// Store new colour
 	CommandNode::run(Commands::ColourAtoms, "dddd", newcol.redF(), newcol.greenF(), newcol.blueF(), newcol.alphaF());
 	contextAtom_ = NULL;
+
 	// Set colour scheme menu option automatically if necessary
-	if (prefs.colourScheme() != Prefs::OwnScheme) ui.actionSchemeCustom->trigger();
-	Messenger::print("Colouring scheme changed to 'custom'.");
-	postRedisplay();
+	if (prefs.colourScheme() != Prefs::OwnScheme) TMenuButton::setGroupButtonChecked("Colourschemes", "Own");
+	Messenger::print("Colouring scheme changed to 'own'.");
+
+	updateWidgets(AtenWindow::MainViewTarget);
 }
 
 // Shift atom order up
 void AtenWindow::on_actionOrderShiftUp_triggered(bool checked)
 {
 	CommandNode::run(Commands::ShiftUp, "i", 1);
-	updateWidgets(AtenWindow::CanvasTarget);
+	updateWidgets(AtenWindow::MainViewTarget);
 }
 
 // Shift atom order down
 void AtenWindow::on_actionOrderShiftDown_triggered(bool checked)
 {
 	CommandNode::run(Commands::ShiftDown, "i", 1);
-	updateWidgets(AtenWindow::CanvasTarget);
+	updateWidgets(AtenWindow::MainViewTarget);
 }
 
 // Shift atoms to beginning of list
 void AtenWindow::on_actionOrderMoveToStart_triggered(bool checked)
 {
 	CommandNode::run(Commands::MoveToStart, "");
-	updateWidgets(AtenWindow::CanvasTarget);
+	updateWidgets(AtenWindow::MainViewTarget);
 }
 
 // Shift atoms to end of list
 void AtenWindow::on_actionOrderMoveToEnd_triggered(bool checked)
 {
 	CommandNode::run(Commands::MoveToEnd, "");
-	updateWidgets(AtenWindow::CanvasTarget);
+	updateWidgets(AtenWindow::MainViewTarget);
 }
 
 // Reorder atoms in current selection
 void AtenWindow::on_actionOrderReorder_triggered(bool checked)
 {
 	CommandNode::run(Commands::ReOrder, "");
-	updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
+	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget);
 }
 
 // Set atom hidden
@@ -243,7 +222,7 @@ void AtenWindow::setAtomHidden(bool hidden)
 		if (hidden) CommandNode::run(Commands::Hide, "i", contextAtom_->id()+1);
 		else CommandNode::run(Commands::Show, "i", contextAtom_->id()+1);
 	}
-	updateWidgets(AtenWindow::CanvasTarget+AtenWindow::AtomsTarget);
+	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget);
 }
 
 void AtenWindow::on_actionAtomHide_triggered(bool checked)
@@ -260,14 +239,14 @@ void AtenWindow::on_actionAtomFixPosition_triggered(bool checked)
 {
 	if ((contextAtom_ == NULL) || (aten_.currentModelOrFrame()->nSelected() > 1)) CommandNode::run(Commands::Fix, "");
 	else CommandNode::run(Commands::Fix, "i", contextAtom_->id()+1);
-	postRedisplay();
+	updateWidgets(AtenWindow::MainViewTarget);
 }
 
 void AtenWindow::on_actionAtomFreePosition_triggered(bool checked)
 {
 	if ((contextAtom_ == NULL) || (aten_.currentModelOrFrame()->nSelected() > 1)) CommandNode::run(Commands::Free, "");
 	else CommandNode::run(Commands::Free, "i", contextAtom_->id()+1);
-	postRedisplay();
+	updateWidgets(AtenWindow::MainViewTarget);
 }
 
 void AtenWindow::on_actionSetBondLength_triggered(bool checked)
@@ -288,7 +267,7 @@ void AtenWindow::on_actionSetTorsionAngle_triggered(bool checked)
 void AtenWindow::on_actionCentreAtOrigin_triggered(bool checked)
 {
 	CommandNode::run(Commands::Centre, "ddd", 0.0, 0.0, 0.0);
-	postRedisplay();
+	updateWidgets(AtenWindow::MainViewTarget);
 }
 
 void AtenWindow::on_actionCreateFragment_triggered(bool checked)
@@ -326,6 +305,6 @@ void AtenWindow::createGlyph()
 		CommandNode::run(Commands::GlyphAtomR, "ii", n, ri->item->id()+1);
 		n++;
 	}
-	updateWidgets(AtenWindow::CanvasTarget+AtenWindow::GlyphsTarget);
+	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::GlyphsTarget);
 }
 

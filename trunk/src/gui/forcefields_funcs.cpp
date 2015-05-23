@@ -199,7 +199,7 @@ void ForcefieldsWidget::on_ForcefieldMinimiseButton_clicked(bool checked)
 			break;
 	}
 	// Update the view
-	parent_.updateWidgets(AtenWindow::AtomsTarget+AtenWindow::CanvasTarget);
+	parent_.updateWidgets(AtenWindow::AtomsTarget+AtenWindow::MainViewTarget);
 }
 
 void ForcefieldsWidget::on_MopacMinimiseButton_clicked(bool checked)
@@ -209,7 +209,7 @@ void ForcefieldsWidget::on_MopacMinimiseButton_clicked(bool checked)
 	options.sprintf("BFGS %s %s %s CHARGE=%i", qPrintable(ui.MopacHFCombo->currentText()), qPrintable(ui.MopacHamiltonianCombo->currentText()), 	qPrintable(ui.MopacSpinCombo->currentText()), ui.MopacChargeSpin->value());
 	if (ui.MopacMozymeCheck->isChecked()) options += " MOZYME";
 	CommandNode::run(Commands::MopacMinimise, "c", qPrintable(options));
-	parent_.updateWidgets(AtenWindow::AtomsTarget+AtenWindow::CanvasTarget);
+	parent_.updateWidgets(AtenWindow::AtomsTarget+AtenWindow::MainViewTarget);
 }
 			
 /*
@@ -304,14 +304,14 @@ void ForcefieldsWidget::on_AssignFFToPatternButton_clicked(bool checked)
 // Perform automatic atom typing
 void ForcefieldsWidget::on_TypeModelButton_clicked(bool checked)
 {
-	if (parent_.aten().currentModelOrFrame()->typeAll(parent_.aten().currentForcefield())) parent_.updateWidgets(AtenWindow::CanvasTarget);
+	if (parent_.aten().currentModelOrFrame()->typeAll(parent_.aten().currentForcefield())) parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
 // Remove typing from model
 void ForcefieldsWidget::on_UntypeModelButton_clicked(bool checked)
 {
 	parent_.aten().currentModelOrFrame()->removeTyping();
-	parent_.updateWidgets(AtenWindow::CanvasTarget);
+	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
 void ForcefieldsWidget::on_CreateExpressionButton_clicked(bool clicked)
@@ -345,7 +345,7 @@ void ForcefieldsWidget::on_ManualTypeSetButton_clicked(bool checked)
 		m->selectionSetType(ffa, true);
 		Messenger::print("Manually set types of %i atoms.", parent_.aten().currentModel()->nSelected());
 	}
-	parent_.updateWidgets(AtenWindow::CanvasTarget);
+	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
 // Clear type definitions from the selected atoms
@@ -353,7 +353,7 @@ void ForcefieldsWidget::on_ManualTypeClearButton_clicked(bool checked)
 {
 	parent_.aten().currentModel()->selectionSetType(NULL, false);
 	Messenger::print("Cleared types of %i atoms.", parent_.aten().currentModel()->nSelected());
-	parent_.updateWidgets(AtenWindow::CanvasTarget);
+	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
 // Test selected atom type on current atom selection

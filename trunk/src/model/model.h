@@ -504,11 +504,11 @@ class Model : public ListItem<Model>
 	// Set positive repeat cell value
 	void setRepeatCellsPositive(int i, int r);
 	// Get positive repeat cell value
-	int repeatCellsPositive(int i) const;
+	Vec3<int> repeatCellsPositive() const;
 	// Set negative repeat cell value
 	void setRepeatCellsNegative(int i, int r);
 	// Get negative repeat cell value
-	int repeatCellsNegative(int i) const;
+	Vec3<int> repeatCellsNegative() const;
 
 
 	/*

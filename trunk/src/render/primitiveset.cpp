@@ -21,8 +21,12 @@
 
 #include "render/primitiveset.h"
 #include "base/prefs.h"
+#include <QOpenGLContext>
 
 ATEN_USING_NAMESPACE
+
+// Static Objects
+List<Primitive> PrimitiveSet::dynamicPrimitives_;
 
 // Constructor
 PrimitiveSet::PrimitiveSet()
@@ -201,6 +205,20 @@ Primitive& PrimitiveSet::rotationGlobeAxes()
 Primitive& PrimitiveSet::halo()
 {
 	return halo_;
+}
+
+// Create and return new dynamic Primitive
+Primitive* PrimitiveSet::createDynamicPrimitive()
+{
+	Primitive* primitive = dynamicPrimitives_.add();
+	
+	return primitive;
+}
+
+// Release and destroy specified dynamic primitive
+void PrimitiveSet::releaseDynamicPrimitive(Primitive* primitive)
+{
+	dynamicPrimitives_.remove(primitive);
 }
 
 /*
@@ -426,6 +444,9 @@ void PrimitiveSet::pushInstance(const QOpenGLContext* context)
 	rotationGlobeAxes_.pushInstance(context);
 	halo_.pushInstance(context);
 
+	// Factory objects
+	for (Primitive* p = dynamicPrimitives_.first(); p != NULL; p = p->next) p->pushInstance(context);
+	
 	++nInstances_;
 
 	Messenger::exit("PrimitiveSet::pushInstance");
@@ -461,6 +482,9 @@ void PrimitiveSet::popInstance(const QOpenGLContext* context)
 	rotationGlobe_.popInstance(context);
 	rotationGlobeAxes_.popInstance(context);
 	halo_.popInstance(context);
+
+	// Factory objects
+	for (Primitive* p = dynamicPrimitives_.first(); p != NULL; p = p->next) p->popInstance(context);
 
 	--nInstances_;
 

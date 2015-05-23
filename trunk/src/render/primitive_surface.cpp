@@ -1,6 +1,6 @@
 /*
 	*** Primitive - Surface Generation
-	*** src/render/rendergroup_surface.cpp
+	*** src/render/primitive_surface.cpp
 	Copyright T. Youngs 2007-2015
 
 	This file is part of Aten.
@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "render/rendergroup.h"
+#include "render/primitive.h"
 #include "base/prefs.h"
 #include "base/grid.h"
 #include "base/wrapint.h"
@@ -320,7 +320,7 @@ int facetriples[256][15] = {
 ATEN_USING_NAMESPACE
 
 // Render volumetric isosurface with Marching Cubes
-void RenderGroup::marchingCubes(Grid* source, double lowerCutoff, double upperCutoff, Vec4<GLfloat> colour, int colourScale)
+void Primitive::marchingCubes(Grid* source, double lowerCutoff, double upperCutoff, Vec4<GLfloat> colour, int colourScale)
 {
 	int ii, jj, kk, n, cubeType, *faces;
 	Vec3<GLfloat> normal, gradient[8];
@@ -332,9 +332,6 @@ void RenderGroup::marchingCubes(Grid* source, double lowerCutoff, double upperCu
 	data = source->data3d();
 	bool periodic = source->periodic();
 	bool fillVolume = source->fillEnclosedVolume();
-	
-	
-
 
 	// Get distances between grid points
 	r = source->lengths();
@@ -343,8 +340,7 @@ void RenderGroup::marchingCubes(Grid* source, double lowerCutoff, double upperCu
 	twodz = r.z / nPoints.z * 2.0;
 
 	// Initialise
-	clear();
-	extraSolidTriangles_.initialise(GL_TRIANGLES, colourScale != -1);
+	initialise(GL_TRIANGLES, colourScale != -1);
 
 	// Grab colours (if not using a colourscale) and determine colour mode to use
 	minAlpha = colourScale == -1 ? colour[3] : 1.0f;
@@ -405,7 +401,7 @@ void RenderGroup::marchingCubes(Grid* source, double lowerCutoff, double upperCu
 				gradient[7].y = (data[i][j+2][k+1] - vertex[4]) / twody;
 				gradient[7].z = (data[i][j+1][k+2] - vertex[3]) / twodz;
 
-				// Determine cube type (primary cutoff)
+				// Determine cube type
 				cubeType = 0;
 				if ((vertex[0] >= lowerCutoff) && (vertex[0] <= upperCutoff)) cubeType += 1;
 				if ((vertex[1] >= lowerCutoff) && (vertex[1] <= upperCutoff)) cubeType += 2;
@@ -417,7 +413,7 @@ void RenderGroup::marchingCubes(Grid* source, double lowerCutoff, double upperCu
 				if ((vertex[7] >= lowerCutoff) && (vertex[7] <= upperCutoff)) cubeType += 128;
 				if (cubeType == 255)
 				{
-					if (fillVolume) extraSolidTriangles_.plotCube(1.0, 1, ii, jj, kk);
+					if (fillVolume) plotCube(1.0, 1, ii, jj, kk);
 				}
 				else if (cubeType != 0)
 				{
@@ -445,9 +441,9 @@ void RenderGroup::marchingCubes(Grid* source, double lowerCutoff, double upperCu
 						if (colourScale != -1)
 						{
 							prefs.colourScale[colourScale].colour((a+b)/2.0, colour);
-							extraSolidTriangles_.defineVertex(r.x, r.y, r.z, normal.x, normal.y, normal.z, colour);
+							defineVertex(r.x, r.y, r.z, normal.x, normal.y, normal.z, colour);
 						}
-						else extraSolidTriangles_.defineVertex(r.x, r.y, r.z, normal.x, normal.y, normal.z);
+						else defineVertex(r.x, r.y, r.z, normal.x, normal.y, normal.z);
 
 						// Store minimal alpha value in order to determine transparency
 						if (colour[3] < minAlpha) minAlpha = colour[3];
@@ -456,10 +452,12 @@ void RenderGroup::marchingCubes(Grid* source, double lowerCutoff, double upperCu
 			}
 		}
 	}
+
+	updateMesh();
 }
 
 // Render normal '2D' surface 
-void RenderGroup::createSurface(Grid* source, Vec4<GLfloat> colour, int colourScale)
+void Primitive::createSurface(Grid* source, Vec4<GLfloat> colour, int colourScale)
 {
 	int i, j, n;
 	Vec3<double> normal[4];
@@ -472,8 +470,7 @@ void RenderGroup::createSurface(Grid* source, Vec4<GLfloat> colour, int colourSc
 	data = source->data2d();
 
 	// Grab colours (if not using a colourscale) and determine colour mode to use
-	clear();
-	extraSolidTriangles_.initialise(GL_TRIANGLES, colourScale != -1);
+	initialise(GL_TRIANGLES, colourScale != -1);
 	minAlpha = 1.0f;
 
 	int di = 0, di2 = 2, dj, dj2;
@@ -497,46 +494,49 @@ void RenderGroup::createSurface(Grid* source, Vec4<GLfloat> colour, int colourSc
 			{
 				// First triangle
 				prefs.colourScale[colourScale].colour(data[i][j], colour);
-				extraSolidTriangles_.defineVertex(i, j, usez ? data[i][j] : 0.0, normal[0].x, normal[0].y, normal[0].z, colour);
+				defineVertex(i, j, usez ? data[i][j] : 0.0, normal[0].x, normal[0].y, normal[0].z, colour);
 				if (colour[3] < minAlpha) minAlpha = colour[3];
 				
 				prefs.colourScale[colourScale].colour(data[i+1][j], colour);
-				extraSolidTriangles_.defineVertex(i+1, j, usez ? data[i+1][j] : 0.0, normal[1].x, normal[1].y, normal[1].z, colour);
+				defineVertex(i+1, j, usez ? data[i+1][j] : 0.0, normal[1].x, normal[1].y, normal[1].z, colour);
 				if (colour[3] < minAlpha) minAlpha = colour[3];
 				
 				prefs.colourScale[colourScale].colour(data[i][j+1], colour);
-				extraSolidTriangles_.defineVertex(i, j+1, usez ? data[i][j+1] : 0.0, normal[2].x, normal[2].y, normal[2].z, colour);
+				defineVertex(i, j+1, usez ? data[i][j+1] : 0.0, normal[2].x, normal[2].y, normal[2].z, colour);
 				if (colour[3] < minAlpha) minAlpha = colour[3];
 				
 				// Second triangle
-				extraSolidTriangles_.defineVertex(i, j+1, usez ? data[i][j+1] : 0.0, normal[2].x, normal[2].y, normal[2].z, colour);
+				defineVertex(i, j+1, usez ? data[i][j+1] : 0.0, normal[2].x, normal[2].y, normal[2].z, colour);
 				
 				prefs.colourScale[colourScale].colour(data[i+1][j], colour);
-				extraSolidTriangles_.defineVertex(i+1, j, usez ? data[i+1][j] : 0.0, normal[1].x, normal[1].y, normal[1].z, colour);
+				defineVertex(i+1, j, usez ? data[i+1][j] : 0.0, normal[1].x, normal[1].y, normal[1].z, colour);
 				if (colour[3] < minAlpha) minAlpha = colour[3];
 
 				prefs.colourScale[colourScale].colour(data[i+1][j+1], colour);
-				extraSolidTriangles_.defineVertex(i+1, j+1, usez ? data[i+1][j+1] : 0.0, normal[3].x, normal[3].y, normal[3].z, colour);
+				defineVertex(i+1, j+1, usez ? data[i+1][j+1] : 0.0, normal[3].x, normal[3].y, normal[3].z, colour);
 				if (colour[3] < minAlpha) minAlpha = colour[3];
 			}
 			else
 			{
 				// First triangle
-				extraSolidTriangles_.defineVertex(i, j, usez ? data[i][j] : 0.0, normal[0].x, normal[0].y, normal[0].z);
-				extraSolidTriangles_.defineVertex(i+1, j, usez ? data[i+1][j] : 0.0, normal[1].x, normal[1].y, normal[1].z);
-				extraSolidTriangles_.defineVertex(i, j+1, usez ? data[i][j+1] : 0.0, normal[2].x, normal[2].y, normal[2].z);
+				defineVertex(i, j, usez ? data[i][j] : 0.0, normal[0].x, normal[0].y, normal[0].z);
+				defineVertex(i+1, j, usez ? data[i+1][j] : 0.0, normal[1].x, normal[1].y, normal[1].z);
+				defineVertex(i, j+1, usez ? data[i][j+1] : 0.0, normal[2].x, normal[2].y, normal[2].z);
 				
 				// Second triangle
-				extraSolidTriangles_.defineVertex(i, j+1, usez ? data[i][j+1] : 0.0, normal[2].x, normal[2].y, normal[2].z);
-				extraSolidTriangles_.defineVertex(i+1, j, usez ? data[i+1][j] : 0.0, normal[1].x, normal[1].y, normal[1].z);
-				extraSolidTriangles_.defineVertex(i+1, j+1, usez ? data[i+1][j+1] : 0.0, normal[3].x, normal[3].y, normal[3].z);	
+				defineVertex(i, j+1, usez ? data[i][j+1] : 0.0, normal[2].x, normal[2].y, normal[2].z);
+				defineVertex(i+1, j, usez ? data[i+1][j] : 0.0, normal[1].x, normal[1].y, normal[1].z);
+				defineVertex(i+1, j+1, usez ? data[i+1][j+1] : 0.0, normal[3].x, normal[3].y, normal[3].z);	
 			}
 			dj = 1;
 
 		}
 		di = 1;
 	}
+
+	updateMesh();
 }
+
 /*
 // Create volume axes
 void RenderGroup::createVolumeAxes(Grid* source)

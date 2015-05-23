@@ -47,7 +47,7 @@ void ColourPopup::popup()
 bool ColourPopup::callMethod(QString methodName, ReturnValue& rv)
 {
 	if (methodName == "TEST") return true;
-	else if (methodName == "colour")
+	else if (methodName == "currentColour")
 	{
 		double colour[4];
 		colour[0] = currentColour_.redF();
@@ -57,7 +57,7 @@ bool ColourPopup::callMethod(QString methodName, ReturnValue& rv)
 		rv.setArray(VTypes::DoubleData, colour, 4);
 		return true;
 	}
-	else if (methodName == "setColour")
+	else if (methodName == "setCurrentColour")
 	{
 		bool success;
 		double colour[4];
@@ -94,122 +94,152 @@ void ColourPopup::on_RedSlider_valueChanged(int value)
 {
 	if (refreshing_) return;
 
-	QColor newColor;
-	newColor.setRgb(value, ui.GreenSlider->value(), ui.BlueSlider->value(), ui.AlphaSlider->value());
-	setCurrentColour(newColor);
+	QColor newColour;
+	newColour.setRgb(value, ui.GreenSlider->value(), ui.BlueSlider->value(), ui.AlphaSlider->value());
+	setCurrentColour(newColour);
 }
 
 void ColourPopup::on_RedSpin_valueChanged(int value)
 {
 	if (refreshing_) return;
 
-	QColor newColor;
-	newColor.setRgb(value, ui.GreenSlider->value(), ui.BlueSlider->value(), ui.AlphaSlider->value());
-	setCurrentColour(newColor);
+	QColor newColour;
+	newColour.setRgb(value, ui.GreenSlider->value(), ui.BlueSlider->value(), ui.AlphaSlider->value());
+	setCurrentColour(newColour);
+
+	changed();
 }
 
 void ColourPopup::on_GreenSlider_valueChanged(int value)
 {
 	if (refreshing_) return;
 
-	QColor newColor;
-	newColor.setRgb(ui.RedSlider->value(), value, ui.BlueSlider->value(), ui.AlphaSlider->value());
-	setCurrentColour(newColor);
+	QColor newColour;
+	newColour.setRgb(ui.RedSlider->value(), value, ui.BlueSlider->value(), ui.AlphaSlider->value());
+	setCurrentColour(newColour);
+
+	changed();
 }
 
 void ColourPopup::on_GreenSpin_valueChanged(int value)
 {
 	if (refreshing_) return;
 
-	QColor newColor;
-	newColor.setRgb(ui.RedSlider->value(), value, ui.BlueSlider->value(), ui.AlphaSlider->value());
-	setCurrentColour(newColor);
+	QColor newColour;
+	newColour.setRgb(ui.RedSlider->value(), value, ui.BlueSlider->value(), ui.AlphaSlider->value());
+	setCurrentColour(newColour);
+
+	changed();
 }
 
 void ColourPopup::on_BlueSlider_valueChanged(int value)
 {
 	if (refreshing_) return;
 
-	QColor newColor;
-	newColor.setRgb(ui.RedSlider->value(), ui.GreenSlider->value(), value, ui.AlphaSlider->value());
-	setCurrentColour(newColor);
+	QColor newColour;
+	newColour.setRgb(ui.RedSlider->value(), ui.GreenSlider->value(), value, ui.AlphaSlider->value());
+	setCurrentColour(newColour);
+
+	changed();
 }
 
 void ColourPopup::on_BlueSpin_valueChanged(int value)
 {
 	if (refreshing_) return;
 
-	QColor newColor;
-	newColor.setRgb(ui.RedSlider->value(), ui.GreenSlider->value(), value, ui.AlphaSlider->value());
-	setCurrentColour(newColor);
+	QColor newColour;
+	newColour.setRgb(ui.RedSlider->value(), ui.GreenSlider->value(), value, ui.AlphaSlider->value());
+	setCurrentColour(newColour);
+
+	changed();
 }
 
 void ColourPopup::on_HueSlider_valueChanged(int value)
 {
 	if (refreshing_) return;
 
-	QColor newColor;
-	newColor.setHsv(value, ui.SaturationSlider->value(), ui.ValueSlider->value(), ui.AlphaSlider->value());
-	setCurrentColour(newColor);
+	QColor newColour;
+	newColour.setHsv(value, ui.SaturationSlider->value(), ui.ValueSlider->value(), ui.AlphaSlider->value());
+	setCurrentColour(newColour);
+
+	changed();
 }
 
 void ColourPopup::on_HueSpin_valueChanged(int value)
 {
 	if (refreshing_) return;
 
-	QColor newColor;
-	newColor.setHsv(value, ui.SaturationSlider->value(), ui.ValueSlider->value(), ui.AlphaSlider->value());
-	setCurrentColour(newColor);
+	QColor newColour;
+	newColour.setHsv(value, ui.SaturationSlider->value(), ui.ValueSlider->value(), ui.AlphaSlider->value());
+	setCurrentColour(newColour);
+
+	changed();
 }
 
 void ColourPopup::on_SaturationSlider_valueChanged(int value)
 {
 	if (refreshing_) return;
 
-	QColor newColor;
-	newColor.setHsv(ui.HueSlider->value(), value, ui.ValueSlider->value(), ui.AlphaSlider->value());
-	setCurrentColour(newColor);
+	QColor newColour;
+	newColour.setHsv(ui.HueSlider->value(), value, ui.ValueSlider->value(), ui.AlphaSlider->value());
+	setCurrentColour(newColour);
+
+	changed();
 }
 
 void ColourPopup::on_SaturationSpin_valueChanged(int value)
 {
 	if (refreshing_) return;
 
-	QColor newColor;
-	newColor.setHsv(ui.HueSlider->value(), value, ui.ValueSlider->value(), ui.AlphaSlider->value());
-	setCurrentColour(newColor);
+	QColor newColour;
+	newColour.setHsv(ui.HueSlider->value(), value, ui.ValueSlider->value(), ui.AlphaSlider->value());
+	setCurrentColour(newColour);
+
+	changed();
 }
 
 void ColourPopup::on_ValueSlider_valueChanged(int value)
 {
 	if (refreshing_) return;
 
-	QColor newColor;
-	newColor.setHsv(ui.HueSlider->value(), ui.SaturationSlider->value(), value, ui.AlphaSlider->value());
-	setCurrentColour(newColor);
+	QColor newColour;
+	newColour.setHsv(ui.HueSlider->value(), ui.SaturationSlider->value(), value, ui.AlphaSlider->value());
+	setCurrentColour(newColour);
+
+	changed();
 }
 
 void ColourPopup::on_ValueSpin_valueChanged(int value)
 {
 	if (refreshing_) return;
 
-	QColor newColor;
-	newColor.setHsv(ui.HueSlider->value(), ui.SaturationSlider->value(), value, ui.AlphaSlider->value());
-	setCurrentColour(newColor);
+	QColor newColour;
+	newColour.setHsv(ui.HueSlider->value(), ui.SaturationSlider->value(), value, ui.AlphaSlider->value());
+	setCurrentColour(newColour);
+
+	changed();
 }
 
 void ColourPopup::on_AlphaSlider_valueChanged(int value)
 {
 	if (refreshing_) return;
 
-	currentColour_.setRgb(ui.RedSlider->value(), ui.GreenSlider->value(), ui.BlueSlider->value(), value);
+	QColor newColour;
+	newColour.setRgb(ui.RedSlider->value(), ui.GreenSlider->value(), ui.BlueSlider->value(), value);
+	setCurrentColour(newColour);
+
+	changed();
 }
 
 void ColourPopup::on_AlphaSpin_valueChanged(int value)
 {
 	if (refreshing_) return;
 
-	currentColour_.setRgb(ui.RedSlider->value(), ui.GreenSlider->value(), ui.BlueSlider->value(), value);
+	QColor newColour;
+	newColour.setRgb(ui.RedSlider->value(), ui.GreenSlider->value(), ui.BlueSlider->value(), value);
+	setCurrentColour(newColour);
+
+	changed();
 }
 
 void ColourPopup::on_Wheel_colourChanged(const QColor& colour)
@@ -217,6 +247,8 @@ void ColourPopup::on_Wheel_colourChanged(const QColor& colour)
 	if (refreshing_) return;
 
 	setCurrentColour(colour);
+
+	changed();
 }
 
 /*
@@ -226,20 +258,33 @@ void ColourPopup::on_Wheel_colourChanged(const QColor& colour)
 // Update parent button's icon
 void ColourPopup::updateParentButtonIcon()
 {
+	if (!parentMenuButton())
+	{
+		printf("ColourPopup: No parent button set, so no icon to update.");
+		return;
+	}
+
 	QPixmap pixmap(32,32);
 
 	QPainter painter(&pixmap);
-
-	// Grab colour and set brush
-	painter.setBrush(currentColour_);
-
-	// Set up pen
 	QPen pen;
-	pen.setWidth(2);
-	pen.setColor(Qt::black);
-	
+
+	// Clear pixmap with current button background colour
+	painter.setBrush(parentMenuButton()->palette().background());
+	painter.setPen(Qt::NoPen);
+	painter.drawRect(-1, -1, 32, 32);
+
+	// Setup gradient - the top-left corner will be the actual opaque colour, and the bottom-right the alpha valued colour
+	QLinearGradient linearGrad(QPointF(0, 0), QPointF(16, 16));
+	linearGrad.setColorAt(0, QColor(currentColour_.red(), currentColour_.green(), currentColour_.blue(), 255));
+	linearGrad.setColorAt(1, currentColour_);
+	painter.setBrush(linearGrad);
+
 	// Draw circle
-	painter.drawRoundRect(0, 0, 30, 30, 10, 10);
+	pen.setWidth(1);
+	pen.setColor(Qt::black);
+	painter.setPen(pen);
+	painter.drawRoundRect(0, 0, 31, 31, 10, 10);
 
 	painter.end();
 
@@ -266,6 +311,8 @@ void ColourPopup::setCurrentColour(QColor color)
 	ui.SaturationSpin->setValue(color.hsvSaturation());
 	ui.ValueSlider->setValue(color.value());
 	ui.ValueSpin->setValue(color.value());
+	ui.AlphaSlider->setValue(color.alpha());
+	ui.AlphaSpin->setValue(color.alpha());
 
 	// Update wheel
 	ui.Wheel->setColour(color);

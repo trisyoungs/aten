@@ -89,7 +89,7 @@ void CellAnglesPopup::on_AlphaSpin_valueChanged(double value)
 	adjustCurrentMatrix(0, value);
 
 	// Update display
-	parent_.updateWidgets(AtenWindow::CanvasTarget);
+	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
 void CellAnglesPopup::on_BetaSpin_valueChanged(double value)
@@ -99,7 +99,7 @@ void CellAnglesPopup::on_BetaSpin_valueChanged(double value)
 	adjustCurrentMatrix(1, value);
 
 	// Update display
-	parent_.updateWidgets(AtenWindow::CanvasTarget);
+	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
 void CellAnglesPopup::on_GammaSpin_valueChanged(double value)
@@ -109,5 +109,5 @@ void CellAnglesPopup::on_GammaSpin_valueChanged(double value)
 	adjustCurrentMatrix(2, value);
 
 	// Update display
-	parent_.updateWidgets(AtenWindow::CanvasTarget);
+	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
