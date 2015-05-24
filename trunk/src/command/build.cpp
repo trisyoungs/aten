@@ -331,8 +331,8 @@ bool Commands::function_NewAtomFrac(CommandNode* c, Bundle& obj, ReturnValue& rv
 	else if (r.y > 1.0) r.y -= 1.0;
 	if (r.z < 0.0) r.z += 1.0;
 	else if (r.z > 1.0) r.z -= 1.0;	
-	if (obj.rs()->cell()->type() == UnitCell::NoCell) Messenger::print("Warning: No unit cell present - atom added with supplied coordinates.");
-	else r = obj.rs()->cell()->fracToReal(r);
+	if (obj.rs()->cell().type() == UnitCell::NoCell) Messenger::print("Warning: No unit cell present - atom added with supplied coordinates.");
+	else r = obj.rs()->cell().fracToReal(r);
 	obj.rs()->beginUndoState("Draw atom (fractional)");
 	if (c->hasArg(9)) aten_.current().i = obj.rs()->addAtom(el, r, c->arg3d(4), c->arg3d(7));
 	else if (c->hasArg(6)) aten_.current().i = obj.rs()->addAtom(el, r, c->arg3d(4));

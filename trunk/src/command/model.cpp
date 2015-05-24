@@ -140,8 +140,8 @@ bool Commands::function_FinaliseModel(CommandNode* c, Bundle& obj, ReturnValue& 
 	// Print out some useful info on the model that we've just read in
 	Messenger::print(Messenger::Verbose, "Model  : %s", qPrintable(obj.m->name()));
 	Messenger::print(Messenger::Verbose, "Atoms  : %i", obj.m->nAtoms());
-	Messenger::print(Messenger::Verbose, "Cell   : %s", UnitCell::cellType(obj.m->cell()->type()));
-	if (obj.m->cell()->type() != UnitCell::NoCell) obj.m->cell()->print();
+	Messenger::print(Messenger::Verbose, "Cell   : %s", UnitCell::cellType(obj.m->cell().type()));
+	if (obj.m->cell().type() != UnitCell::NoCell) obj.m->cell().print();
 
 	// If a trajectory exists for this model, by default we view from trajectory in the GUI
 	if (obj.m->nTrajectoryFrames() > 0) obj.m->setRenderSource(Model::TrajectorySource);

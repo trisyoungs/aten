@@ -40,7 +40,6 @@ bool MonteCarlo::disorder(Model* allModels, Model* destmodel, PartitioningScheme
 	Atom* i;
 	int n, m, id, cycle, nSatisfied, nInsertions, nRelative = 0, totalToAdd = 0;
 	Vec3<double> r;
-	UnitCell* cell;
 	double delta, firstRelative, firstActual, expectedPop;
 	bool isRelative;
 	
@@ -63,7 +62,7 @@ bool MonteCarlo::disorder(Model* allModels, Model* destmodel, PartitioningScheme
 	// List all models with RelativePolicy at the start of the list, and store a reflist of the components in the original model order
 	// Also, build up reverse list of components associated to partitions
 	Model* targetModel_ = destmodel;
-	cell = targetModel_->cell();
+	UnitCell& cell = targetModel_->cell();
 	List<DisorderData> components_;
 	Reflist<DisorderData, int> componentsOrder_;
 	for (Model* m = allModels; m != NULL; m = m->next)
@@ -144,7 +143,7 @@ bool MonteCarlo::disorder(Model* allModels, Model* destmodel, PartitioningScheme
 		}
 		
 		// Make double sure that we actually have a unit cell specified at this point
-		if (targetModel_->cell()->type() == UnitCell::NoCell)
+		if (targetModel_->cell().type() == UnitCell::NoCell)
 		{
 			Messenger::print("Error: No unit cell defined. Create a simple unit cell - the lengths will be adjusted automatically by the builder.");
 			Messenger::exit("MonteCarlo::disorder");
@@ -168,17 +167,17 @@ bool MonteCarlo::disorder(Model* allModels, Model* destmodel, PartitioningScheme
 			totalVolume += (component->requestedPopulation() * component->sourceModel().mass() / AVOGADRO) / (component->requestedDensity() * 1.0E-24);
 		}
 		Messenger::print("From the components specified, the new cell will have a volume of %f cubic Angstroms.", totalVolume);
-		double factor = pow(totalVolume,1.0/3.0) / pow(targetModel_->cell()->volume(),1.0/3.0);
-		Matrix axes = targetModel_->cell()->axes();
+		double factor = pow(totalVolume,1.0/3.0) / pow(targetModel_->cell().volume(),1.0/3.0);
+		Matrix axes = targetModel_->cell().axes();
 		axes.applyScaling(factor,factor,factor);
-		targetModel_->cell()->set(axes);
+		targetModel_->cell().set(axes);
 		Messenger::print("Based on original cell, scaling factor is %f, giving new a cell specification of:", factor);
-		targetModel_->cell()->print();
+		targetModel_->cell().print();
 	}
 	
 	// Step 4 - Determine partition volumes and current partition densities (arising from existing model contents)
 	Messenger::print("Determining partition volumes and starting densities...");
-	Matrix volumeElement = targetModel_->cell()->axes();
+	Matrix volumeElement = targetModel_->cell().axes();
 	Vec3<int> gridSize = scheme->gridSize();
 	volumeElement.applyScaling(1.0/gridSize.x, 1.0/gridSize.y, 1.0/gridSize.z);
 	double elementVolume = volumeElement.determinant();
@@ -194,8 +193,8 @@ bool MonteCarlo::disorder(Model* allModels, Model* destmodel, PartitioningScheme
 	Messenger::print("Determining current partition densities...");
 	for (i = targetModel_->atoms(); i != NULL; i = i->next)
 	{
-		r = targetModel_->cell()->fold(i->r());
-		r = targetModel_->cell()->realToFrac(r);
+		r = targetModel_->cell().fold(i->r());
+		r = targetModel_->cell().realToFrac(r);
 		id = scheme->partitionId(r.x, r.y, r.z);
 		scheme->partition(id)->adjustReducedMass(i);
 	}

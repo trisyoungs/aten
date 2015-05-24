@@ -44,7 +44,7 @@ void Viewer::renderModel(Model* source, int viewPortX, int viewPortY, int viewPo
 
 	// Set initial transformation matrix, including any translation occurring from cell...
 	modelTransformationMatrix_ = source->modelViewMatrix();
-	modelTransformationMatrix_.applyTranslation(-source->cell()->centre());
+	modelTransformationMatrix_.applyTranslation(-source->cell().centre());
 	
 	// Set target matrix mode and reset it, and set colour mode
 	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
@@ -85,7 +85,7 @@ void Viewer::renderModel(Model* source, int viewPortX, int viewPortY, int viewPo
 	glLoadIdentity();
 
 	// Draw unit cell (if one exists)
-	if (source->cell()->type() != UnitCell::NoCell)
+	if (source->cell().type() != UnitCell::NoCell)
 	{
 		// Copy colour for cell
 		GLfloat colour[4];
@@ -95,7 +95,7 @@ void Viewer::renderModel(Model* source, int viewPortX, int viewPortY, int viewPo
 		colour[3] = 1.0f;
 
 		// Set current view matrix to account for model rotation, cell axes size, and translation to cell LLC
-		Matrix A = source->modelViewMatrix() * source->cell()->axes();
+		Matrix A = source->modelViewMatrix() * source->cell().axes();
 		glLoadMatrixd(A.matrix());
 		glTranslated(-0.5, -0.5, -0.5);
 
@@ -104,7 +104,7 @@ void Viewer::renderModel(Model* source, int viewPortX, int viewPortY, int viewPo
 
 		// Draw cell axes
 		glColor4fv(colour);
-		Vec3<double> v = source->cell()->lengths();
+		Vec3<double> v = source->cell().lengths();
 		glScaled(1.0 / v.x, 1.0 / v.y, 1.0 / v.z);
 		primitives_[primitiveSet_].cellAxes().sendToGL(QOpenGLContext::currentContext());
 	}
@@ -116,7 +116,7 @@ void Viewer::renderModel(Model* source, int viewPortX, int viewPortY, int viewPo
 	Matrix offset;
 	Vec3<int> repeatMin = -source->repeatCellsNegative();
 	Vec3<int> repeatMax = source->repeatCellsPositive();
-	if (source->cell()->type() == UnitCell::NoCell)
+	if (source->cell().type() == UnitCell::NoCell)
 	{
 		repeatMin = 0;
 		repeatMax = 0;
@@ -129,7 +129,7 @@ void Viewer::renderModel(Model* source, int viewPortX, int viewPortY, int viewPo
 			for (z = repeatMin.z; z <= repeatMax.z; ++z)
 			{
 				offset = modelTransformationMatrix_;
-				offset.addTranslation(source->cell()->axes() * Vec3<double>(x,y,z));
+				offset.addTranslation(source->cell().axes() * Vec3<double>(x,y,z));
 
 				// Render model
 				modelGroup.sendToGL(offset);

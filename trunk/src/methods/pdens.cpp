@@ -122,7 +122,7 @@ void Pdens::accumulate(Model* sourcemodel)
 	static Vec3<double> centre1, centre2, mimd;
 	static Vec3<int> gridPoint;
 	Matrix axes;
-	UnitCell* cell = sourcemodel->cell();
+	UnitCell& cell = sourcemodel->cell();
 
 	// Loop over molecules for site1
 	for (m1=0; m1 < sites_[0]->pattern()->nMolecules(); m1++)
@@ -135,7 +135,7 @@ void Pdens::accumulate(Model* sourcemodel)
 		{
 			centre2 = sourcemodel->siteCentre(sites_[1],m2);
 			// Calculate minimum image vector and translate into local coordinate system...
-			mimd = axes.transform(cell->mimVector(centre1,centre2));
+			mimd = axes.transform(cell.mimVector(centre1,centre2));
 			// ...and work out the gridpoint (convert to 0..totalSteps_ from -nsteps..0..+nsteps)
 			gridPoint.x = int(mimd.x / stepSize_);
 			gridPoint.y = int(mimd.y / stepSize_);
@@ -170,7 +170,7 @@ void Pdens::finalise(Model* sourcemodel)
 	int n, m, o;
 	double factor, numberDensity;
 	// Normalise the pdens w.r.t. number of frames, number of central molecules, and number density of system
-	numberDensity = sites_[1]->pattern()->nMolecules() / sourcemodel->cell()->volume() * (stepSize_ * stepSize_ * stepSize_);
+	numberDensity = sites_[1]->pattern()->nMolecules() / sourcemodel->cell().volume() * (stepSize_ * stepSize_ * stepSize_);
 	factor = double(nAdded_) * sites_[0]->pattern()->nMolecules() * numberDensity;
 	for (n=0; n<totalSteps_; n++)
 		for (m=0; m<totalSteps_; m++)

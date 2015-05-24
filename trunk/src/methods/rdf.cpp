@@ -121,7 +121,7 @@ void Rdf::accumulate(Model* sourcemodel)
 
 	int m1, m2, bin;
 	static Vec3<double> centre1, centre2, mimd;
-	UnitCell* cell = sourcemodel->cell();
+	UnitCell& cell = sourcemodel->cell();
 
 	// Loop over molecules for site1
 	for (m1=0; m1 < sites_[0]->pattern()->nMolecules(); m1++)
@@ -133,7 +133,7 @@ void Rdf::accumulate(Model* sourcemodel)
 		{
 			centre2 = sourcemodel->siteCentre(sites_[1],m2);
 			// Calculate minimum image distance and bin
-			mimd = cell->mimVector(centre1,centre2);
+			mimd = cell.mimVector(centre1,centre2);
 			// Add distance to data_ array
 			bin = int(mimd.magnitude() / binWidth_);
 	//printf("Adding distance %f to bin %i\n",mimd.magnitude(),bin);
@@ -158,7 +158,7 @@ void Rdf::finalise(Model* sourcemodel)
 	for (n=0; n<nBins_; n++) data_[n] /= double(nAdded_) * sites_[0]->pattern()->nMolecules();
 	
 	// Normalise nAdded_ording to number density of sites_ in RDF shells
-	numDensity = sites_[1]->pattern()->nMolecules() / sourcemodel->cell()->volume();
+	numDensity = sites_[1]->pattern()->nMolecules() / sourcemodel->cell().volume();
 	for (n=0; n<nBins_; n++)
 	{
 		r1 = lower_ + double(n) * binWidth_;

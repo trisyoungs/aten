@@ -51,7 +51,7 @@ bool Commands::function_CreateScheme(CommandNode* c, Bundle& obj, ReturnValue& r
 	Vec3<double> cellDelta(1.0/gridSize.x, 1.0/gridSize.y, 1.0/gridSize.z);
 	scheme.setGridSize(gridSize);
 	Grid& schemeGrid = scheme.grid();
-	double volumeElement = obj.rs()->cell()->volume() / gridSize.dp(gridSize);
+	double volumeElement = obj.rs()->cell().volume() / gridSize.dp(gridSize);
 	schemeGrid.setAxes(cellDelta);
 	double** *data = schemeGrid.data3d();
 	int minimumSize = gridSize.x*gridSize.y*gridSize.z*minSizePcnt;
@@ -67,14 +67,14 @@ bool Commands::function_CreateScheme(CommandNode* c, Bundle& obj, ReturnValue& r
 	}
 	
 	// Now, zero individual cells which model atoms sit in
-	UnitCell* cell = obj.rs()->cell();
+	UnitCell& cell = obj.rs()->cell();
 	Vec3<double> r;
 	// Determine rough atom size (in grid cells....
 	for (Atom* i = obj.rs()->atoms(); i != NULL; i = i->next)
 	{
 		// Work in fractional coordinates
 		// Atom centre...
-		r = cell->realToFrac(i->r());
+		r = cell.realToFrac(i->r());
 		UnitCell::foldFrac(r);
 		x = int(r.x/cellDelta.x);
 		y = int(r.y/cellDelta.y);
@@ -168,8 +168,8 @@ bool Commands::function_DrillPores(CommandNode* c, Bundle& obj, ReturnValue& rv)
 		Messenger::print("Error: Origin face must be specified as 1 (YZ plane), 2 (XZ plane) or 3 (XY plane).");
 		return false;
 	}
-	Vec3<double> faceA = obj.rs()->cell()->axes().columnAsVec3((face+1)%3);
-	Vec3<double> faceB = obj.rs()->cell()->axes().columnAsVec3((face+2)%3);
+	Vec3<double> faceA = obj.rs()->cell().axes().columnAsVec3((face+1)%3);
+	Vec3<double> faceB = obj.rs()->cell().axes().columnAsVec3((face+2)%3);
 	Vec3<double> deltaA = faceA / nA, deltaB = faceB / nB;
 	Vec3<double> origin = (deltaA + deltaB) * 0.5;
 	
@@ -205,8 +205,8 @@ bool Commands::function_SelectPores(CommandNode* c, Bundle& obj, ReturnValue& rv
 		Messenger::print("Error: Origin face must be specified as 1 (YZ plane), 2 (XZ plane) or 3 (XY plane).");
 		return false;
 	}
-	Vec3<double> faceA = obj.rs()->cell()->axes().columnAsVec3((face+1)%3);
-	Vec3<double> faceB = obj.rs()->cell()->axes().columnAsVec3((face+2)%3);
+	Vec3<double> faceA = obj.rs()->cell().axes().columnAsVec3((face+1)%3);
+	Vec3<double> faceB = obj.rs()->cell().axes().columnAsVec3((face+2)%3);
 	Vec3<double> deltaA = faceA / nA, deltaB = faceB / nB;
 	Vec3<double> origin = (deltaA + deltaB) * 0.5;
 	

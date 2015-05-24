@@ -89,6 +89,11 @@ add_library(sg
   spacegroup.cpp
 )
 
+add_library(fourierdata
+  fourierdata.cpp
+  fourierdata.h
+}
+
 include_directories(
   ../
   ${QT_INCLUDE_DIR}

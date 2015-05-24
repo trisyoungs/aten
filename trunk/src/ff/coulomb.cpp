@@ -37,7 +37,7 @@ void Pattern::coulombIntraPatternEnergy(Model* srcmodel, EnergyStore* estore, in
 	PatternAtom* pai, *paj;
 	cutoff = prefs.elecCutoff();
 	Atom** modelatoms = srcmodel->atomArray();
-	UnitCell* cell = srcmodel->cell();
+	UnitCell& cell = srcmodel->cell();
 	energy_inter = 0.0;
 	energy_intra = 0.0;
 
@@ -59,7 +59,7 @@ void Pattern::coulombIntraPatternEnergy(Model* srcmodel, EnergyStore* estore, in
 				con = conMatrix_[i][j];
 				if ((con > 2) || (con == 0))
 				{
-					vec_ij = cell->mimVector(modelatoms[i+aoff]->r(), modelatoms[j+aoff]->r());
+					vec_ij = cell.mimVector(modelatoms[i+aoff]->r(), modelatoms[j+aoff]->r());
 					rij = vec_ij.magnitude();
 					if (rij > cutoff) continue;
 					energy  = (modelatoms[i+aoff]->charge() * modelatoms[j+aoff]->charge()) / rij;
@@ -87,7 +87,7 @@ void Pattern::coulombInterPatternEnergy(Model* srcmodel, Pattern* otherPattern, 
 	PatternAtom* pai, *paj;
 	cutoff = prefs.elecCutoff();
 	Atom** modelatoms = srcmodel->atomArray();
-	UnitCell* cell = srcmodel->cell();
+	UnitCell& cell = srcmodel->cell();
 	energy_inter = 0.0;
 
 	// Outer loop over molecules in *this* pattern
@@ -143,7 +143,7 @@ void Pattern::coulombInterPatternEnergy(Model* srcmodel, Pattern* otherPattern, 
 				for (paj = otherPattern->atoms_.first(); paj != NULL; paj = paj->next)
 				{
 					j++;
-					vec_ij = cell->mimVector(modelatoms[i+aoff1]->r(), modelatoms[j+aoff2]->r());
+					vec_ij = cell.mimVector(modelatoms[i+aoff1]->r(), modelatoms[j+aoff2]->r());
 					rij = vec_ij.magnitude();
 					if (rij > cutoff) continue;
 					energy  = (modelatoms[i+aoff1]->charge() * modelatoms[j+aoff2]->charge()) / rij;
@@ -171,7 +171,7 @@ void Pattern::coulombIntraPatternForces(Model* srcmodel)
 	PatternAtom* pai, *paj;
 	cutoff = prefs.elecCutoff();
 	Atom** modelatoms = srcmodel->atomArray();
-	UnitCell* cell = srcmodel->cell();
+	UnitCell& cell = srcmodel->cell();
 	aoff = startAtom_;
 	for (m1=0; m1<nMolecules_; m1++)
 	{
@@ -189,7 +189,7 @@ void Pattern::coulombIntraPatternForces(Model* srcmodel)
 				con = conMatrix_[i][j];
 				if ((con > 2) || (con == 0))
 				{
-					vec_ij = cell->mimVector(modelatoms[i+aoff]->r(), modelatoms[j+aoff]->r());
+					vec_ij = cell.mimVector(modelatoms[i+aoff]->r(), modelatoms[j+aoff]->r());
 					rij = vec_ij.magnitude();
 					if (rij > cutoff) continue;
 					// Calculate force contribution
@@ -247,7 +247,7 @@ void Pattern::coulombInterPatternForces(Model* srcmodel, Pattern* otherPattern)
 	PatternAtom* pai, *paj;
 	cutoff = prefs.elecCutoff();
 	Atom** modelatoms = srcmodel->atomArray();
-	UnitCell* cell = srcmodel->cell();
+	UnitCell& cell = srcmodel->cell();
 	energy_inter = 0.0;
 
 	// Outer loop over molecules in *this* pattern
@@ -285,7 +285,7 @@ void Pattern::coulombInterPatternForces(Model* srcmodel, Pattern* otherPattern)
 				for (paj = otherPattern->atoms_.first(); paj != NULL; paj = paj->next)
 				{
 					++j;
-					vec_ij = cell->mimVector(modelatoms[i+aoff1]->r(), modelatoms[j+aoff2]->r());
+					vec_ij = cell.mimVector(modelatoms[i+aoff1]->r(), modelatoms[j+aoff2]->r());
 					rij = vec_ij.magnitude();
 					if (rij > cutoff) continue;
 					// Calculate force contribution

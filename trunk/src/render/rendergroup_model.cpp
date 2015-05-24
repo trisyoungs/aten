@@ -361,7 +361,7 @@ void RenderGroup::createAtomsAndBonds(PrimitiveSet& primitiveSet, Model* source,
 			else radius_j = prefs.styleRadius(style_j, j->element()) - primitiveSet.sphereAtomAdjustment();
 			
 			// Calculate vector i->j
-			v = source->cell()->mimVector(i, j);
+			v = source->cell().mimVector(i, j);
 			
 			// Render bond
 			createBond(primitiveSet, atomTransform, v, i, style_i, colour_i, radius_i, j, style_j, colour_j, radius_j, rb->item->type(), selscale, rb->item, transparentSel);
@@ -397,7 +397,7 @@ void RenderGroup::createAtomsAndBonds(PrimitiveSet& primitiveSet, Model* source,
 					for (ra = ra->next; ra != NULL; ra = ra->next)
 					{
 						j = atoms[id_i+ra->item->id()];
-						pos += source->cell()->mim(j->r(), r1);
+						pos += source->cell().mim(j->r(), r1);
 					}
 					pos /= r->nAtoms();
 
@@ -414,7 +414,7 @@ void RenderGroup::createAtomsAndBonds(PrimitiveSet& primitiveSet, Model* source,
 						// Grab atom pointer and get minimum image vector with centroid 'v'
 						i = atoms[id_i+ra->item->id()];
 						if (prefs.styleRadius(i->style(), i->element()) > radius_i) radius_i = prefs.styleRadius(i->style(), i->element());
-						v = source->cell()->mimVector(pos, i->r());
+						v = source->cell().mimVector(pos, i->r());
 						// Accumulate magnitude
 						mag += v.magnitude();
 						v.normalise();
@@ -512,21 +512,21 @@ void RenderGroup::createAtomsAndBonds(PrimitiveSet& primitiveSet, Model* source,
 				// I. K. McDonald and J. M. Thornton, J. Mol. Biol. 238, 777793 (1994)
 
 				// Rule 1 - Distance D-A is less than 3.9 Angstroms
-				if (source->cell()->distance(k,j) > 3.9) continue;
+				if (source->cell().distance(k,j) > 3.9) continue;
 				
 				// Rule 2 - Distance H-A is less than 2.5 Angstroms
-				v = source->cell()->mimVector(i,j);
+				v = source->cell().mimVector(i,j);
 				mag = v.magnitude();
 				if (mag > 2.5) continue;
 				
 				// Rule 3 - Angle D-H-A is greater than 90 degrees
-				if (source->cell()->angle(k,i,j) <= 90.0) continue;
+				if (source->cell().angle(k,i,j) <= 90.0) continue;
 				
 				// Rule 4 - Angle A'-A-D is greater than 90 degrees (only if atom j has a bond partner)
-				if ((l != NULL) && (source->cell()->angle(k,j,l) <= 90.0)) continue;
+				if ((l != NULL) && (source->cell().angle(k,j,l) <= 90.0)) continue;
 				
 				// Rule 5 - Angle A'-A-H is greater than 90 degrees (only if atom j has a bond partner)
-				if ((l != NULL) && (source->cell()->angle(i,j,l) <= 90.0)) continue;
+				if ((l != NULL) && (source->cell().angle(i,j,l) <= 90.0)) continue;
 				
 				// If we get here then its a hydrogen bond.
 				// First, determine the 'drawable' region between the two atoms i,j

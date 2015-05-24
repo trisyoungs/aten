@@ -40,7 +40,7 @@ class LineMinimiser
 	protected:
 	// Tolerance for root finding
 	double tolerance_;
-	// Local, temporary model foor storing coordinates after gradient moves
+	// Local, temporary model for storing coordinates after gradient moves
 	Model tempModel_;
 
 	public:

@@ -25,7 +25,7 @@
 
 #include <math.h>
 #include "templates/vector3.h"
-#include "ff/fourier.h"
+#include "base/fourierdata.h"
 #include "base/pattern.h"
 #include "base/prefs.h"
 #include "model/model.h"
@@ -33,7 +33,7 @@
 ATEN_USING_NAMESPACE
 
 // Estimate alpha and kmax parameters based on a given precision value
-void Prefs::estimateEwaldParameters(UnitCell* cell)
+void Prefs::estimateEwaldParameters(UnitCell& cell)
 {
 	Messenger::enter("Prefs::estimateEwaldParameterss");
 	if (prefs.hasValidEwaldAuto())
@@ -46,9 +46,9 @@ void Prefs::estimateEwaldParameters(UnitCell* cell)
         ewaldAlpha_ = sqrt( fabs( log(ewaldPrecision_.value()*elecCutoff_*tolerance) ) )/elecCutoff_;
         // Estimate kmax
         tolerance = sqrt( -log( ewaldPrecision_.value()*elecCutoff_*( (2.0*tolerance*ewaldAlpha_)*(2.0*tolerance*ewaldAlpha_) ) ) );
-	ewaldKMax_.x = (int) floor(0.25 + cell->lengths().x*ewaldAlpha_*tolerance/PI + 0.5);
-	ewaldKMax_.y = (int) floor(0.25 + cell->lengths().y*ewaldAlpha_*tolerance/PI + 0.5);
-	ewaldKMax_.z = (int) floor(0.25 + cell->lengths().z*ewaldAlpha_*tolerance/PI + 0.5);
+	ewaldKMax_.x = (int) floor(0.25 + cell.lengths().x*ewaldAlpha_*tolerance/PI + 0.5);
+	ewaldKMax_.y = (int) floor(0.25 + cell.lengths().y*ewaldAlpha_*tolerance/PI + 0.5);
+	ewaldKMax_.z = (int) floor(0.25 + cell.lengths().z*ewaldAlpha_*tolerance/PI + 0.5);
 	Messenger::print("Ewald parameters estimated at alpha = %8.6f and kmax = %i %i %i for a precision of %6.4e.", ewaldAlpha_, ewaldKMax_.x, ewaldKMax_.y, ewaldKMax_.z, ewaldPrecision_.value());
 	validEwaldAuto_ = true;
 	Messenger::exit("Prefs::estimateEwaldParameters");
@@ -61,7 +61,7 @@ void Prefs::estimateEwaldParameters(UnitCell* cell)
 // 'n' is box vector - here we only consider the minimimum image coordinates of the atoms in the central box (n=0)
 // Factor of 1/2 is not required in the summation since the sums go from i=0,N-1 and j=i,N
 
-void Pattern::ewaldRealIntraPatternEnergy(Model* srcmodel, EnergyStore* estore, int molecule)
+void Pattern::ewaldRealIntraPatternEnergy(Model* srcModel, EnergyStore* estore, int molecule)
 {
 	// Calculate a real-space contribution to the Ewald sum.
 	// Internal interaction of atoms in individual molecules within the pattern is considered.
@@ -73,8 +73,8 @@ void Pattern::ewaldRealIntraPatternEnergy(Model* srcmodel, EnergyStore* estore, 
 	alpha = prefs.ewaldAlpha();
 	energy_inter = 0.0;
 	energy_intra = 0.0;
-	Atom** modelatoms = srcmodel->atomArray();
-	UnitCell* cell = srcmodel->cell();
+	Atom** modelatoms = srcModel->atomArray();
+	UnitCell& cell = srcModel->cell();
 	aoff = startAtom_;
 	for (m1=(molecule == -1 ? 0 : molecule); m1<(molecule == -1 ? nMolecules_ : molecule+1); m1++)
 	{
@@ -86,7 +86,7 @@ void Pattern::ewaldRealIntraPatternEnergy(Model* srcmodel, EnergyStore* estore, 
 				con = conMatrix_[i][j];
 				if ((con > 2) || (con == 0))
 				{
-					vec_ij = cell->mimVector(modelatoms[i+aoff]->r(), modelatoms[j+aoff]->r());
+					vec_ij = cell.mimVector(modelatoms[i+aoff]->r(), modelatoms[j+aoff]->r());
 					rij = vec_ij.magnitude();
 					if (rij > cutoff) continue;
 					energy  = (modelatoms[i+aoff]->charge() * modelatoms[j+aoff]->charge()) * AtenMath::erfc(alpha*rij) / rij;
@@ -103,7 +103,7 @@ void Pattern::ewaldRealIntraPatternEnergy(Model* srcmodel, EnergyStore* estore, 
 	Messenger::exit("Pattern::ewaldRealIntraPatternEnergy");
 }
 
-void Pattern::ewaldRealInterPatternEnergy(Model* srcmodel, Pattern* xpnode, EnergyStore* estore, int molecule)
+void Pattern::ewaldRealInterPatternEnergy(Model* srcModel, Pattern* xpnode, EnergyStore* estore, int molecule)
 {
 	// Calculate the real-space Ewald contribution to the energy from interactions between different molecules
 	// of this pnode and the one supplied. Contributions to the sum from the inner loop of atoms (a2) is summed into
@@ -114,8 +114,8 @@ void Pattern::ewaldRealInterPatternEnergy(Model* srcmodel, Pattern* xpnode, Ener
 	static double rij, energy_inter, energy, cutoff, alpha;
 	cutoff = prefs.elecCutoff();
 	alpha = prefs.ewaldAlpha();
-	Atom** modelatoms = srcmodel->atomArray();
-	UnitCell* cell = srcmodel->cell();
+	Atom** modelatoms = srcModel->atomArray();
+	UnitCell& cell = srcModel->cell();
 	energy_inter = 0.0;
 	aoff1 = startAtom_;
 	// When we are considering the same node with itself, calculate for "m1=1,T-1 m2=2,T"
@@ -145,7 +145,7 @@ void Pattern::ewaldRealInterPatternEnergy(Model* srcmodel, Pattern* xpnode, Ener
 				for (j=0; j<xpnode->nAtoms_; j++)
 				{
 					atomj = j + aoff2;
-					vec_ij = cell->mimVector(modelatoms[atomi]->r(), modelatoms[atomj]->r());
+					vec_ij = cell.mimVector(modelatoms[atomi]->r(), modelatoms[atomj]->r());
 					rij = vec_ij.magnitude();
 					if (rij < cutoff) energy  += (modelatoms[atomj]->charge() * AtenMath::erfc(alpha*rij) / rij);
 				}
@@ -166,20 +166,26 @@ void Pattern::ewaldRealInterPatternEnergy(Model* srcmodel, Pattern* xpnode, Ener
 //		E(recip) =  ---- E' E   E  q(i) * q(j) * exp(ik.(rj - ri)) * exp( --------- ) * ---
 //			    L**3 k i=1 j=1					  4*alphasq	ksq
 
-void Pattern::ewaldReciprocalEnergy(Model* srcmodel, Pattern* firstp, int npats, EnergyStore* estore, int molecule)
+void Pattern::ewaldReciprocalEnergy(Model* srcModel, Pattern* firstp, int npats, EnergyStore* estore, int molecule)
 {
 	// Calculate the reciprocal contribution of all atoms to the Ewald sum.
 	// Only needs to be called once from an arbitrary pattern.
 	Messenger::enter("Pattern::ewaldReciprocalEnergy");
-	static int kx, ky, kz, i, n, kmax, finalatom;
-	static Vec3<double> kvec, cross_ab, cross_bc, cross_ca, perpl;
+	int kx, ky, kz, i, n, finalatom;
+	Vec3<double> k, cross_ab, cross_bc, cross_ca, perpl;
 	Matrix rcell;
-	static double cutoffsq, magsq, exp1, alphasq, xycos, xysin, xyzcos, xyzsin, rvolume;
-	static double factor, alpha, energy_inter;
+	double cutoffsq, magsq, exp1, alphasq, xycos, xysin, xyzcos, xyzsin, rvolume;
+	double factor, alpha, energy_inter;
 	double* sumcos, *sumsin;
 
+	// Grab fourier data
+	int kmax = srcModel->fourierData().kMax();
+	Vec3<int> kVec = srcModel->fourierData().kVec();
+	const Array2D< Vec3<double> >& rCos = srcModel->fourierData().rCos();
+	const Array2D< Vec3<double> >& rSin = srcModel->fourierData().rSin();
+
 	alpha = prefs.ewaldAlpha();
-	Atom** modelatoms = srcmodel->atomArray();
+	Atom** modelatoms = srcModel->atomArray();
 	sumcos = new double[npats];
 	sumsin = new double[npats];
 
@@ -187,40 +193,39 @@ void Pattern::ewaldReciprocalEnergy(Model* srcmodel, Pattern* firstp, int npats,
 	if (molecule != -1) printf("Ewald reciprocal energy is not yet complete for indvidual molecule|system calculations.\n");
 
 	// Get reciprocal volume and cell vectors
-	rvolume = fourier.cell->reciprocalVolume();
+	rvolume = srcModel->cell().reciprocalVolume();
 	factor = rvolume * TWOPI * prefs.elecConvert();
 
 	// Cutoff is the shortest component of kVec * perpendicular reciprocal cell lengths
-	rcell = fourier.cell->reciprocal();
+	rcell = srcModel->cell().reciprocal();
 	cross_ab = rcell.columnAsVec3(0) * rcell.columnAsVec3(1);
 	cross_bc = rcell.columnAsVec3(1) * rcell.columnAsVec3(2);
 	cross_ca = rcell.columnAsVec3(2) * rcell.columnAsVec3(0);
-	printf("CVolume = %f\n", fourier.cell->volume());
-	printf("CrossAB "); cross_ab.print();
-	printf("CrossBC "); cross_bc.print();
-	printf("CrossCA "); cross_ca.print();
-	printf("RVolume = %f, mags = %f %f %f\n", rvolume, cross_ab.magnitude(), cross_bc.magnitude(), cross_ca.magnitude());
+// 	printf("CVolume = %f\n", srcModel->cell().volume());
+// 	printf("CrossAB "); cross_ab.print();
+// 	printf("CrossBC "); cross_bc.print();
+// 	printf("CrossCA "); cross_ca.print();
+// 	printf("RVolume = %f, mags = %f %f %f\n", rvolume, cross_ab.magnitude(), cross_bc.magnitude(), cross_ca.magnitude());
 	perpl.set(rvolume / cross_ab.magnitude(), rvolume / cross_bc.magnitude(), rvolume / cross_ca.magnitude());
-	perpl.x *= fourier.kVec.x;
-	perpl.y *= fourier.kVec.y;
-	perpl.z *= fourier.kVec.z;
+	perpl.x *= kVec.x;
+	perpl.y *= kVec.y;
+	perpl.z *= kVec.z;
 
 	cutoffsq = perpl.min() * 1.05 * TWOPI;
 	cutoffsq *= cutoffsq;
 	alphasq = alpha * alpha;
-	kmax = fourier.kMax;
 
-	for (kx=-fourier.kVec.x; kx<=fourier.kVec.x; kx++)
-	for (ky=-fourier.kVec.y; ky<=fourier.kVec.y; ky++)
-	for (kz=-fourier.kVec.z; kz<=fourier.kVec.z; kz++)
+	for (kx=-kVec.x; kx<=kVec.x; ++kx)
+	for (ky=-kVec.y; ky<=kVec.y; ++ky)
+	for (kz=-kVec.z; kz<=kVec.z; ++kz)
 	{
 		if ((kx == 0) && (ky == 0) && (kz == 0)) continue;
 	/*	kvec.x = kx * rcell.rows[0].x;	    Old code assuming cubic / orthorhombic cell
 		kvec.y = ky * rcell.rows[1].y;
 		kvec.z = kz * rcell.rows[2].z;*/
-		kvec.set(kx,ky,kz);
-		kvec = (rcell * TWOPI)* kvec;
-		magsq = kvec.x*kvec.x + kvec.y*kvec.y + kvec.z*kvec.z;
+		k.set(kx,ky,kz);
+		k = (rcell * TWOPI) * k;
+		magsq = k.x*k.x + k.y*k.y + k.z*k.z;
 		//printf("Mag = %f, cutoff = %f\n",mag,cutoff);
 		if (magsq > cutoffsq) continue;
 		// Now sum contributions over atoms, broken up into patterns
@@ -233,13 +238,13 @@ void Pattern::ewaldReciprocalEnergy(Model* srcmodel, Pattern* firstp, int npats,
 			for (i=p->startAtom_; i<finalatom; i++)
 			{
 				// Calculate k-vector (x*y)
-				xycos = fourier.rCos[abs(kx)][i].x * fourier.rCos[abs(ky)][i].y -
-					fourier.rSin[kmax+kx][i].x * fourier.rSin[kmax+ky][i].y;
-				xysin = fourier.rCos[abs(kx)][i].x * fourier.rSin[kmax+ky][i].y +
-					fourier.rSin[kmax+kx][i].x * fourier.rCos[abs(ky)][i].y;
+				xycos = rCos.constRef(abs(kx),i).x * rCos.constRef(abs(ky),i).y -
+					rSin.constRef(kmax+kx,i).x * rSin.constRef(kmax+ky,i).y;
+				xysin = rCos.constRef(abs(kx),i).x * rSin.constRef(kmax+ky,i).y +
+					rSin.constRef(kmax+kx,i).x * rCos.constRef(abs(ky),i).y;
 				// Calculate k-vector (xy*z);
-				xyzcos = xycos * fourier.rCos[abs(kz)][i].z - xysin * fourier.rSin[kmax+kz][i].z;
-				xyzsin = xycos * fourier.rSin[kmax+kz][i].z + xysin * fourier.rCos[abs(kz)][i].z;
+				xyzcos = xycos * rCos.constRef(abs(kz),i).z - xysin * rSin.constRef(kmax+kz,i).z;
+				xyzsin = xycos * rSin.constRef(kmax+kz,i).z + xysin * rCos.constRef(abs(kz),i).z;
 				sumcos[p->id_] += modelatoms[i]->charge() * xyzcos;
 				sumsin[p->id_] += modelatoms[i]->charge() * xyzsin;
 			}
@@ -269,7 +274,7 @@ void Pattern::ewaldReciprocalEnergy(Model* srcmodel, Pattern* firstp, int npats,
 //				 m  i j			    rij
 // Sums over i=* and j=* indicate excluded interactions, i.e. bond i-j, angle i-x-j and torsion i-x-x-j.
 
-void Pattern::ewaldCorrectEnergy(Model* srcmodel, EnergyStore* estore, int molecule)
+void Pattern::ewaldCorrectEnergy(Model* srcModel, EnergyStore* estore, int molecule)
 {
 	// Calculate corrections to the Ewald sum energy
 	Messenger::enter("Pattern::ewaldCorrectEnergy");
@@ -277,8 +282,8 @@ void Pattern::ewaldCorrectEnergy(Model* srcmodel, EnergyStore* estore, int molec
 	static double molcorrect, energy, qprod, rij, chargesum, alpha;
 	alpha = prefs.ewaldAlpha();
 	static Vec3<double> vec_ij;
-	Atom** modelatoms = srcmodel->atomArray();
-	UnitCell* cell = srcmodel->cell();
+	Atom** modelatoms = srcModel->atomArray();
+	UnitCell& cell = srcModel->cell();
 
 	// TODO
 	if (molecule != -1) printf("Ewald energy correction is not yet complete for indvidual molecule|system calculations.\n");
@@ -309,7 +314,7 @@ void Pattern::ewaldCorrectEnergy(Model* srcmodel, EnergyStore* estore, int molec
 					// Take values from scaling matrix to determine degree of subtraction...
 					qprod = modelatoms[i+aoff]->charge() * modelatoms[j+aoff]->charge();
 					qprod *= (1.0 - elecScaleMatrix_[i][j]);
-					vec_ij = cell->mimVector(modelatoms[i+aoff]->r(), modelatoms[j+aoff]->r());
+					vec_ij = cell.mimVector(modelatoms[i+aoff]->r(), modelatoms[j+aoff]->r());
 					rij = vec_ij.magnitude();
 					molcorrect += qprod *( AtenMath::erf(alpha*rij)/rij );
 				}
@@ -326,7 +331,7 @@ void Pattern::ewaldCorrectEnergy(Model* srcmodel, EnergyStore* estore, int molec
 //		F(real) = E' E   E  ----------- * ( erfc(alpha * rij) + ----------- * exp(-(alpha*rij)**2) ) * rij
 //			  n i=1 j>i   rij**3				   sqrtpi
  
-void Pattern::ewaldRealIntraPatternForces(Model* srcmodel)
+void Pattern::ewaldRealIntraPatternForces(Model* srcModel)
 {
 	// Calculate real-space forces in the Ewald sum.
 	// Internal interaction of atoms in individual molecules within the pattern is considered.
@@ -336,8 +341,8 @@ void Pattern::ewaldRealIntraPatternForces(Model* srcmodel)
 	double rij, factor, qqrij3, alpharij, cutoff, alpha;
 	cutoff = prefs.elecCutoff();
 	alpha = prefs.ewaldAlpha();
-	Atom** modelatoms = srcmodel->atomArray();
-	UnitCell* cell = srcmodel->cell();
+	Atom** modelatoms = srcModel->atomArray();
+	UnitCell& cell = srcModel->cell();
 
 	aoff = startAtom_;
 	for (m1=0; m1<nMolecules_; m1++)
@@ -354,7 +359,7 @@ void Pattern::ewaldRealIntraPatternForces(Model* srcmodel)
 				con = conMatrix_[i][j];
 				if ((con > 2) || (con == 0))
 				{
-					vec_ij = cell->mimVector(modelatoms[atomi]->r(), modelatoms[atomj]->r());
+					vec_ij = cell.mimVector(modelatoms[atomi]->r(), modelatoms[atomj]->r());
 					rij = vec_ij.magnitude();
 					if (rij > cutoff) continue;
 					alpharij = alpha * rij;
@@ -376,7 +381,7 @@ void Pattern::ewaldRealIntraPatternForces(Model* srcmodel)
 	Messenger::exit("Pattern::ewaldRealIntraPatternForces");
 }
 
-void Pattern::ewaldRealInterPatternForces(Model* srcmodel, Pattern* xpnode)
+void Pattern::ewaldRealInterPatternForces(Model* srcModel, Pattern* xpnode)
 {
 	// Calculate the real-space Ewald forces from interactions between different molecules
 	// of this pattern and the one supplied. 
@@ -386,8 +391,8 @@ void Pattern::ewaldRealInterPatternForces(Model* srcmodel, Pattern* xpnode)
 	double rij, factor, alpharij, qqrij3, cutoff, alpha;
 	cutoff = prefs.elecCutoff();
 	alpha = prefs.ewaldAlpha();
-	Atom** modelatoms = srcmodel->atomArray();
-	UnitCell* cell = srcmodel->cell();
+	Atom** modelatoms = srcModel->atomArray();
+	UnitCell& cell = srcModel->cell();
 
 	aoff1 = startAtom_;
 	 // When we are considering the same node with itself, calculate for "m1=1,T-1 m2=2,T"
@@ -406,7 +411,7 @@ void Pattern::ewaldRealInterPatternForces(Model* srcmodel, Pattern* xpnode)
 				for (j=0; j<xpnode->nAtoms_; j++)
 				{
 					atomj = j + aoff2;
-					vec_ij = cell->mimVector(modelatoms[atomi]->r() ,modelatoms[atomj]->r());
+					vec_ij = cell.mimVector(modelatoms[atomi]->r() ,modelatoms[atomj]->r());
 					rij = vec_ij.magnitude();
 					if (rij < cutoff)
 					{
@@ -436,75 +441,81 @@ void Pattern::ewaldRealInterPatternForces(Model* srcmodel, Pattern* xpnode)
 //		  F(recip) = E   E q(j) 
 //			    k/=0 j
 
-void Pattern::ewaldReciprocalForces(Model* srcmodel)
+void Pattern::ewaldReciprocalForces(Model* srcModel)
 {
 	// Calculate the reciprocal-space force contribution to the Ewald sum.
 	// Must be called for the first pattern in the list only!
 	Messenger::enter("Pattern::ewaldReciprocalForces");
-	int kx, ky, kz, i, kmax;
-	Vec3<double> kvec, cross_ab, cross_bc, cross_ca, perpl;
+	int kx, ky, kz, i;
+	Vec3<double> k, cross_ab, cross_bc, cross_ca, perpl;
 	Matrix rcell;
 	double cutoffsq, magsq, exp1, alphasq, factor, force, sumcos, sumsin, xycos, xysin, alpha, rvolume;
 	double* xyzcos, *xyzsin;
 
+	// Grab fourier data
+	int kmax = srcModel->fourierData().kMax();
+	int nFourierAtoms = srcModel->fourierData().nAtoms();
+	Vec3<int> kVec = srcModel->fourierData().kVec();
+	const Array2D< Vec3<double> >& rCos = srcModel->fourierData().rCos();
+	const Array2D< Vec3<double> >& rSin = srcModel->fourierData().rSin();
+
 	alpha = prefs.ewaldAlpha();
-	Atom** modelatoms = srcmodel->atomArray();
-	xyzcos = new double[srcmodel->nAtoms()];
-	xyzsin = new double[srcmodel->nAtoms()];
+	Atom** modelatoms = srcModel->atomArray();
+	xyzcos = new double[srcModel->nAtoms()];
+	xyzsin = new double[srcModel->nAtoms()];
 
 	// Get reciprocal volume and cell vectors
-	rvolume = fourier.cell->reciprocalVolume();
+	rvolume = srcModel->cell().reciprocalVolume();
 	factor = 2.0 * rvolume * TWOPI * prefs.elecConvert();
 
 	// Cutoff is the shortest component of kVec * perpendicular reciprocal cell lengths
-	rcell = fourier.cell->reciprocal();
+	rcell = srcModel->cell().reciprocal();
 	cross_ab = rcell.columnAsVec3(0) * rcell.columnAsVec3(1);
 	cross_bc = rcell.columnAsVec3(1) * rcell.columnAsVec3(2);
 	cross_ca = rcell.columnAsVec3(2) * rcell.columnAsVec3(0);
 	perpl.set(rvolume / cross_ab.magnitude(), rvolume / cross_bc.magnitude(), rvolume / cross_ca.magnitude());
-	perpl.x *= fourier.kVec.x;
-	perpl.y *= fourier.kVec.y;
-	perpl.z *= fourier.kVec.z;
+	perpl.x *= kVec.x;
+	perpl.y *= kVec.y;
+	perpl.z *= kVec.z;
 
 	cutoffsq = perpl.min() * 1.05 * TWOPI;
 	cutoffsq *= cutoffsq;
 	alphasq = alpha * alpha;
-	kmax = fourier.kMax;
 	//printf("Cutoffsq = %f  (%f)\n",cutoffsq,sqrt(cutoffsq));
 
-	for (kx=-fourier.kVec.x; kx<=fourier.kVec.x; kx++)
-	for (ky=-fourier.kVec.y; ky<=fourier.kVec.y; ky++)
-	for (kz=-fourier.kVec.z; kz<=fourier.kVec.z; kz++)
+	for (kx=-kVec.x; kx<=kVec.x; ++kx)
+	for (ky=-kVec.y; ky<=kVec.y; ++ky)
+	for (kz=-kVec.z; kz<=kVec.z; ++kz)
 	{
 		if ((kx == 0) && (ky == 0) && (kz == 0)) continue;
 		// Calculate magnitude of this vector
-		kvec.set(kx,ky,kz);
-		kvec = (rcell * TWOPI) * kvec;
-		magsq = kvec.x*kvec.x + kvec.y*kvec.y + kvec.z*kvec.z;
+		k.set(kx,ky,kz);
+		k = (rcell * TWOPI) * k;
+		magsq = k.x*k.x + k.y*k.y + k.z*k.z;
 		if (magsq > cutoffsq) continue;
 		sumcos = 0.0;
 		sumsin = 0.0;
-		for (i=0; i<fourier.nAtoms; i++)
+		for (i=0; i<nFourierAtoms; ++i)
 		{
 			// Calculate k-vector (x*y)
-			xycos = fourier.rCos[abs(kx)][i].x * fourier.rCos[abs(ky)][i].y -
-				fourier.rSin[kmax+kx][i].x * fourier.rSin[kmax+ky][i].y;
-			xysin = fourier.rCos[abs(kx)][i].x * fourier.rSin[kmax+ky][i].y +
-				fourier.rSin[kmax+kx][i].x * fourier.rCos[abs(ky)][i].y;
+			xycos = rCos.constRef(abs(kx),i).x * rCos.constRef(abs(ky),i).y -
+				rSin.constRef(kmax+kx,i).x * rSin.constRef(kmax+ky,i).y;
+			xysin = rCos.constRef(abs(kx),i).x * rSin.constRef(kmax+ky,i).y +
+				rSin.constRef(kmax+kx,i).x * rCos.constRef(abs(ky),i).y;
 			// Calculate k-vector (xy*z);
-			xyzcos[i] = (xycos * fourier.rCos[abs(kz)][i].z - xysin * fourier.rSin[kmax+kz][i].z) * modelatoms[i]->charge();
-			xyzsin[i] = (xycos * fourier.rSin[kmax+kz][i].z + xysin * fourier.rCos[abs(kz)][i].z) * modelatoms[i]->charge();
+			xyzcos[i] = (xycos * rCos.constRef(abs(kz),i).z - xysin * rSin.constRef(kmax+kz,i).z) * modelatoms[i]->charge();
+			xyzsin[i] = (xycos * rSin.constRef(kmax+kz,i).z + xysin * rCos.constRef(abs(kz),i).z) * modelatoms[i]->charge();
 			sumcos += xyzcos[i];
 			sumsin += xyzsin[i];
 		}
 // 	printf("%i %i %i %i %12.8f %12.8f\n",kx,ky,kz,i,sumcos,sumsin);
 		// Calculate forces
 		exp1= exp(-magsq/(4.0*alphasq))/magsq;
-		for (i=0; i<fourier.nAtoms; i++)
+		for (i=0; i<nFourierAtoms; ++i)
 		{
 			force = exp1 * (xyzsin[i]*sumcos - xyzcos[i]*sumsin) * factor;
 	//printf("force = %20.14e\n",force);
-			modelatoms[i]->f() += kvec * force;
+			modelatoms[i]->f() += k * force;
 	//if (i == 0) printf("%i %i %i  %8.4f %8.4f %8.4f %8.4f\n",kx,ky,kz,force,kvec.x,kvec.y,kvec.z);
 		}
 	}
@@ -512,7 +523,7 @@ void Pattern::ewaldReciprocalForces(Model* srcmodel)
 	Messenger::exit("Pattern::ewaldReciprocalForces");
 }
 
-void Pattern::ewaldCorrectForces(Model* srcmodel)
+void Pattern::ewaldCorrectForces(Model* srcModel)
 {
 	// Correct the Ewald forces due to bond / angle / torsion exclusions
 	Messenger::enter("Pattern::ewaldCorrectForces");
@@ -521,8 +532,8 @@ void Pattern::ewaldCorrectForces(Model* srcmodel)
 	static double rij, factor, qqrij3, alpharij, cutoff, alpha;
 	cutoff = prefs.elecCutoff();
 	alpha = prefs.ewaldAlpha();
-	Atom** modelatoms = srcmodel->atomArray();
-	UnitCell* cell = srcmodel->cell();
+	Atom** modelatoms = srcModel->atomArray();
+	UnitCell& cell = srcModel->cell();
 
 	aoff = startAtom_;
 	for (m1=0; m1<nMolecules_; m1++)
@@ -539,7 +550,7 @@ void Pattern::ewaldCorrectForces(Model* srcmodel)
 				con = conMatrix_[i][j];
 				if ((con < 4) && (con > 0))
 				{
-					vec_ij = cell->mimVector(modelatoms[atomi]->r(), modelatoms[atomj]->r());
+					vec_ij = cell.mimVector(modelatoms[atomi]->r(), modelatoms[atomj]->r());
 					rij = vec_ij.magnitude();
 					if (rij > cutoff) continue;
 					// Calculate force to subtract

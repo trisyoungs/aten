@@ -289,7 +289,7 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex,
 			else rv.set(VTypes::BondData, ptr->bond(arrayIndex-1));
 			break;
 		case (ModelVariable::Celldata):
-			rv.set(VTypes::CellData, ptr->cell());
+			rv.set(VTypes::CellData, &ptr->cell());
 			break;
 		case (ModelVariable::ComponentDensity):
 			rv.set(ptr->componentDensity());

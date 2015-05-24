@@ -1,6 +1,6 @@
 /*
-	*** Fourier storage (reciprocal space vectors)
-	*** src/ff/fourier.h
+	*** Fourier Data
+	*** src/base/fourierdata.h
 	Copyright T. Youngs 2007-2015
 
 	This file is part of Aten.
@@ -19,11 +19,12 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_FOURIER_H
-#define ATEN_FOURIER_H
+#ifndef ATEN_FOURIERDATA_H
+#define ATEN_FOURIERDATA_H
 
 #include "templates/vector3.h"
 #include "base/namespace.h"
+#include "templates/array.h"
 
 ATEN_BEGIN_NAMESPACE
 
@@ -38,26 +39,35 @@ class FourierData
 	// Constructor / Destructor
 	FourierData();
 	~FourierData();
-	Vec3<double>* *rCos, **rSin;
-	int nAtoms, kMax;
-	Vec3<int> kVec;
-	UnitCell* cell;
-	// Parameters used in Ewald sum.
-	double alpha, alphaSq;
-	// Class Functions
-	// Delete the vector arrays in the class
-	void clear();
-	// Create the vector arrays in the class
-	void create(int, Vec3<int>, int);
-	// Calculate all atomic kvectors from the supplied config
-	void calculate(Model*);
-	// Calculate selected range of atomic vectors from supplied config
-	void calculate(Model*, int, int);
-	// Prepares the class with the specifications provided (and 'calculates')
-	void prepare(Model*, Vec3<int>);
-};
 
-extern FourierData fourier;
+	private:
+	// Cos and sin term arrays
+	Array2D< Vec3<double> > rCos_, rSin_;
+	// Number of terms (atoms) in arrays
+	int nAtoms_;
+	// Number of kvectors along each cell axis
+	Vec3<int> kVec_;
+	// Maximum kVector
+	int kMax_;
+	// Parameters used in Ewald sum.
+	double alpha_, alphaSq_;
+
+	public:
+	// Return cosine array
+	Array2D< Vec3<double> > rCos() const;
+	// Return sine array
+	Array2D< Vec3<double> > rSin() const;
+	// Return number of kvectors along each cell axis
+	Vec3<int> kVec() const;
+	// Return maximum number of kvectors
+	int kMax() const;
+	// Return number of terms (atoms) in arrays
+	int nAtoms() const;
+	// Calculate selected range of atomic vectors from supplied config
+	void calculate(Model* sourceModel, int startAtom = 0, int nAtoms = -1);
+	// Prepares Fourier arrays for the model and kVec specified
+	void prepare(Model* sourceModel, Vec3<int> kVec);
+};
 
 ATEN_END_NAMESPACE
 

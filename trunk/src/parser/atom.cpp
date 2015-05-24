@@ -228,7 +228,7 @@ bool AtomVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex, 
 		case (AtomVariable::FracX):
 		case (AtomVariable::FracY):
 		case (AtomVariable::FracZ):
-			if (ptr->parent()) rv.set((ptr->parent()->cell()->inverse() * ptr->r()).get(acc - AtomVariable::FracX));
+			if (ptr->parent()) rv.set((ptr->parent()->cell().inverse() * ptr->r()).get(acc - AtomVariable::FracX));
 			else
 			{
 				Messenger::print("Can't retrieve the fractional coordinate of an unparented Atom (since it has no associated UnitCell).");
@@ -416,9 +416,9 @@ bool AtomVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newVal
 		case (AtomVariable::FracZ):
 			if (ptrParent)
 			{
-				v = ptrParent->cell()->inverse() * ptr->r();
+				v = ptrParent->cell().inverse() * ptr->r();
 				v.set(acc - AtomVariable::FracX, newValue.asDouble());
-				v = ptrParent->cell()->fracToReal(v);
+				v = ptrParent->cell().fracToReal(v);
 				ptrParent->beginUndoState("Position atom (fractional coordinates)");
 				ptrParent->positionAtom(ptr, v);
 				ptrParent->endUndoState();

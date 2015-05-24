@@ -775,7 +775,7 @@ class Prefs
 	// Set the short-range and electrostatic cutoffs
 	void setCutoffs(double vcut, double ecut);
 	// Estimate Ewald sum parameters from the supplied unit cell
-	void estimateEwaldParameters(UnitCell* cell);
+	void estimateEwaldParameters( AtenSpace::UnitCell& cell );
 	// Return the validity of automatic Ewald params (invalidated on cell change)
 	bool hasValidEwaldAuto() const;
 	// Flag the Ewald auto params as invalid

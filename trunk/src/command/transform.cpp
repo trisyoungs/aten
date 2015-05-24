@@ -41,7 +41,7 @@ bool Commands::function_AxisRotate(CommandNode* c, Bundle& obj, ReturnValue& rv)
 			i = obj.rs()->atom(c->argi(0)-1);
 			j = obj.rs()->atom(c->argi(1)-1);
 			if ((i == NULL) || (j == NULL)) return false;
-			v = obj.rs()->cell()->mimVector(i,j);
+			v = obj.rs()->cell().mimVector(i,j);
 			angle = c->argd(2);
 			break;
 		// Axis and theta
@@ -54,7 +54,7 @@ bool Commands::function_AxisRotate(CommandNode* c, Bundle& obj, ReturnValue& rv)
 			i = obj.rs()->atom(c->argi(0)-1);
 			j = obj.rs()->atom(c->argi(1)-1);
 			if ((i == NULL) || (j == NULL)) return false;
-			v = obj.rs()->cell()->mimVector(i,j);
+			v = obj.rs()->cell().mimVector(i,j);
 			angle = c->argd(2);
 			o.set(c->argd(3), c->argd(4), c->argd(5));
 			break;
@@ -152,7 +152,7 @@ bool Commands::function_MatrixConvert(CommandNode* c, Bundle& obj, ReturnValue& 
 					i = obj.rs()->atom(c->argi(n*2)-1);
 					j = obj.rs()->atom(c->argi(n*2+1)-1);
 					if ((i == NULL) || (j == NULL)) return false;
-					v = obj.rs()->cell()->mimVector(i,j);
+					v = obj.rs()->cell().mimVector(i,j);
 					v.normalise();
 					source.setColumn(n, v, 0.0);
 				}
@@ -163,7 +163,7 @@ bool Commands::function_MatrixConvert(CommandNode* c, Bundle& obj, ReturnValue& 
 					i = obj.rs()->atom(c->argi(n*2+6)-1);
 					j = obj.rs()->atom(c->argi(n*2+7)-1);
 					if ((i == NULL) || (j == NULL)) return false;
-					v = obj.rs()->cell()->mimVector(i,j);
+					v = obj.rs()->cell().mimVector(i,j);
 					v.normalise();
 					target.setColumn(n, v, 0.0);
 				}
@@ -285,7 +285,7 @@ bool Commands::function_Reorient(CommandNode* c, Bundle& obj, ReturnValue& rv)
 		}
 		else j = (Atom*) c->argp(n+1, VTypes::AtomData);
 		if ((i == NULL) || (j == NULL)) return false;
-		v = obj.rs()->cell()->mimVector(i,j);
+		v = obj.rs()->cell().mimVector(i,j);
 		v.normalise();
 		source.setColumn(n/2, v, 0.0);
 	}
@@ -364,7 +364,7 @@ bool Commands::function_SetAngle(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	double angle = obj.rs()->angle(i,j,k);
 
 	// Get cross product of bond vectors to define rotation axis
-	Vec3<double> v = obj.rs()->cell()->mimVector(j,k) * obj.rs()->cell()->mimVector(j,i);
+	Vec3<double> v = obj.rs()->cell().mimVector(j,k) * obj.rs()->cell().mimVector(j,i);
 	v.normalise();
 	double delta = c->argd(3) - angle;
 
@@ -463,7 +463,7 @@ bool Commands::function_SetAngles(CommandNode* c, Bundle& obj, ReturnValue& rv)
 				// Get angle delta, and define rotation axis
 				delta = nudge ? target : target - obj.rs()->angle(i,j,k);
 				if (moveType == 4) delta *= 0.5;
-				rotationVector = obj.rs()->cell()->mimVector(j,k) * obj.rs()->cell()->mimVector(j,i);
+				rotationVector = obj.rs()->cell().mimVector(j,k) * obj.rs()->cell().mimVector(j,i);
 				rotationVector.normalise();
 
 				// Move current marked atoms (exactly which are marked depends on the moveType, but we can move the current selection regardless)
@@ -519,7 +519,7 @@ bool Commands::function_SetDistance(CommandNode* c, Bundle& obj, ReturnValue& rv
 	}
 
 	// Grab the minimum image vector between the two atoms, and shift all those currently marked
-	Vec3<double> v = obj.rs()->cell()->mimVector(i,j);
+	Vec3<double> v = obj.rs()->cell().mimVector(i,j);
 	double delta = c->argd(2) - v.magnitude();
 	v.normalise();
 	v *= delta;
@@ -611,7 +611,7 @@ bool Commands::function_SetDistances(CommandNode* c, Bundle& obj, ReturnValue& r
 			}
 
 			// Get distance delta, and define translation vector
-			translationVector = obj.rs()->cell()->mimVector(order[1], order[0]);
+			translationVector = obj.rs()->cell().mimVector(order[1], order[0]);
 			delta = nudge ? target : target - translationVector.magnitude();
 			if (moveType == 4) delta *= 0.5;
 			translationVector.normalise();
@@ -684,7 +684,7 @@ bool Commands::function_SetTorsion(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	double angle = obj.rs()->torsion(i,j,k,l);
 
 	// Rotation vector will be vector k->j
-	Vec3<double> v = obj.rs()->cell()->mimVector(k,j);
+	Vec3<double> v = obj.rs()->cell().mimVector(k,j);
 	v.normalise();
 	double delta = c->argd(4) - angle;
 
@@ -796,7 +796,7 @@ bool Commands::function_SetTorsions(CommandNode* c, Bundle& obj, ReturnValue& rv
 					// Get angle delta, and define rotation axis
 					delta = nudge ? target : target - obj.rs()->torsion(i,j,k,l);
 					if (moveType == 4) delta *= 0.5;
-					rotationVector = obj.rs()->cell()->mimVector(j,k);
+					rotationVector = obj.rs()->cell().mimVector(j,k);
 					rotationVector.normalise();
 
 					// Move current marked atoms (exactly which are marked depends on the moveType, but we can move the current selection regardless)
@@ -847,7 +847,7 @@ bool Commands::function_TranslateCell(CommandNode* c, Bundle& obj, ReturnValue& 
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	Vec3<double> tvec;
-	tvec = obj.rs()->cell()->axes() * c->arg3d(0);
+	tvec = obj.rs()->cell().axes() * c->arg3d(0);
 	obj.rs()->beginUndoState("Translate Cell (%i atom(s), %f %f %f)", obj.rs()->nSelected(), tvec.x, tvec.y, tvec.z);
 	obj.rs()->translateSelectionLocal(tvec);
 	obj.rs()->endUndoState();

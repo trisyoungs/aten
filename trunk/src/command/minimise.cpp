@@ -153,9 +153,9 @@ bool Commands::function_MopacMinimise(CommandNode* c, Bundle& obj, ReturnValue& 
 		opt = 1 - i->isPositionFixed();
 		parser.writeLineF("%3s %12.6f %1i %12.6f %1i %12.6f %1i\n", Elements().symbol(i), i->r().x, opt, i->r().y, opt, i->r().z, opt);
 	}
-	if (aten_.currentModelOrFrame()->cell()->type() != UnitCell::NoCell)
+	if (aten_.currentModelOrFrame()->cell().type() != UnitCell::NoCell)
 	{
-		Matrix mat = aten_.currentModelOrFrame()->cell()->axes();
+		Matrix mat = aten_.currentModelOrFrame()->cell().axes();
 		parser.writeLineF("Tv  %12.6f 0 %12.6f 0 %12.6f 0\n",mat[0], mat[1], mat[2]);
 		parser.writeLineF("Tv  %12.6f 0 %12.6f 0 %12.6f 0\n",mat[4], mat[5], mat[6]);
 		parser.writeLineF("Tv  %12.6f 0 %12.6f 0 %12.6f 0\n",mat[8], mat[9], mat[10]);

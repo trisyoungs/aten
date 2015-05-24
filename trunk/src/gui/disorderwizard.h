@@ -83,7 +83,7 @@ class DisorderWizard : public QWizard
 	// Return currently-selected partitioning scheme
 	PartitioningScheme* partitioningScheme();
 	// Return relevant unit cell
-	UnitCell* cell();
+	UnitCell& cell();
 
 
 	/*

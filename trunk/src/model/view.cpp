@@ -267,7 +267,7 @@ void Model::viewAlongCell(double x, double y, double z)
 	// Set model rotation matrix to be along the specified cell axis
 	Vec3<double> v;
 	v.set(x,y,z);
-	v = cell()->axes() * v;
+	v = cell().axes() * v;
 	v.toSpherical();
 	// setRotation() expects the degrees of rotation about the x and y axes respectively
 	setRotation(-v.y,fabs(v.z-180.0));

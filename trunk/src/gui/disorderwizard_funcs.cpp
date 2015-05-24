@@ -64,7 +64,7 @@ int DisorderWizard::run()
 {
 	// If there are no loaded models with periodicity, disable this option on page 1
 	int nperiodic = 0;
-	for (Model* m = parent_.aten().models(); m != NULL; m = m->next) if (m->renderSourceModel()->cell()->type() != UnitCell::NoCell) ++nperiodic;
+	for (Model* m = parent_.aten().models(); m != NULL; m = m->next) if (m->renderSourceModel()->cell().type() != UnitCell::NoCell) ++nperiodic;
 	ui.TargetExistingRadio->setEnabled(nperiodic != 0);
 	ui.TargetNewRadio->setChecked(nperiodic == 0);
 	ui.TargetExistingRadio->setChecked(nperiodic != 0);
@@ -191,7 +191,7 @@ void DisorderWizard::pageChanged(int id)
 				selectItem = NULL;
 				for (m = parent_.aten().models(); m != NULL; m = m->next)
 				{
-					if (m->renderSourceModel()->cell()->type() == UnitCell::NoCell) continue;
+					if (m->renderSourceModel()->cell().type() == UnitCell::NoCell) continue;
 					item = new QTreeWidgetItem(ui.ExistingModelTree);
 					item->setData(0, Qt::UserRole, VariantPointer<Model>(m));
 					item->setIcon(0,m->icon());
@@ -237,7 +237,7 @@ void DisorderWizard::pageChanged(int id)
 			ui.ChooseComponentsTree->setColumnCount(2);
 			for (m = parent_.aten().models(); m != NULL; m = m->next)
 			{
-				if (m->renderSourceModel()->cell()->type() != UnitCell::NoCell) continue;
+				if (m->renderSourceModel()->cell().type() != UnitCell::NoCell) continue;
 				item = new QTreeWidgetItem(ui.ChooseComponentsTree);
 				item->setData(0, Qt::UserRole, VariantPointer<Model>(m));
 				item->setIcon(0,m->icon());
@@ -367,8 +367,8 @@ void DisorderWizard::setCellAbsolute(double value)
 {
 	if (newModel_ != NULL)
 	{
-		newModel_->cell()->setLengths(Vec3<double>(ui.CellLengthASpin->value(), ui.CellLengthBSpin->value(), ui.CellLengthCSpin->value()));
-		newModel_->cell()->setAngles(Vec3<double>(ui.CellAngleASpin->value(), ui.CellAngleBSpin->value(), ui.CellAngleCSpin->value()));
+		newModel_->cell().setLengths(Vec3<double>(ui.CellLengthASpin->value(), ui.CellLengthBSpin->value(), ui.CellLengthCSpin->value()));
+		newModel_->cell().setAngles(Vec3<double>(ui.CellAngleASpin->value(), ui.CellAngleBSpin->value(), ui.CellAngleCSpin->value()));
 		parent_.updateWidgets(AtenWindow::MainViewTarget);
 	}
 	else printf("Internal Error: No newModel_ pointer defined to set UnitCell in.\n");
@@ -379,8 +379,8 @@ void DisorderWizard::setCellRelative(double value)
 {
 	if (newModel_ != NULL)
 	{
-		newModel_->cell()->setLengths(Vec3<double>(ui.CellRelativeASpin->value(), ui.CellRelativeBSpin->value(), ui.CellRelativeCSpin->value()));
-		newModel_->cell()->setAngles(Vec3<double>(ui.CellRelativeAngleASpin->value(), ui.CellRelativeAngleBSpin->value(), ui.CellRelativeAngleCSpin->value()));
+		newModel_->cell().setLengths(Vec3<double>(ui.CellRelativeASpin->value(), ui.CellRelativeBSpin->value(), ui.CellRelativeCSpin->value()));
+		newModel_->cell().setAngles(Vec3<double>(ui.CellRelativeAngleASpin->value(), ui.CellRelativeAngleBSpin->value(), ui.CellRelativeAngleCSpin->value()));
 		parent_.updateWidgets(AtenWindow::MainViewTarget);
 	}
 	else printf("Internal Error: No newModel_ pointer defined to set UnitCell in.\n");
@@ -522,14 +522,15 @@ PartitioningScheme* DisorderWizard::partitioningScheme()
 }
 
 // Return relevant unit cell
-UnitCell* DisorderWizard::cell()
+UnitCell& DisorderWizard::cell()
 {
+	static UnitCell dummyCell;
 	if (targetType_ == DisorderWizard::ExistingTarget)
 	{
 		if (existingModel_ == NULL)
 		{
 			printf("Internal Error: DisorderWizard was asked for a cell when no existing model had been set.\n");
-			return NULL;
+			return dummyCell;
 		}
 		else return existingModel_->cell();
 	}
@@ -538,7 +539,7 @@ UnitCell* DisorderWizard::cell()
 		if (newModel_ == NULL)
 		{
 			printf("Internal Error: DisorderWizard was asked for a cell when no new model had been set.\n");
-			return NULL;
+			return dummyCell;
 		}
 		else return newModel_->cell();
 	}

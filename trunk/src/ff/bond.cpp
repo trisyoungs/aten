@@ -34,7 +34,7 @@ void Pattern::bondEnergy(Model* srcmodel, EnergyStore* estore, int molecule)
 	ForcefieldBound* ffb;
 	PatternBound* pb;
 	Atom** modelatoms = srcmodel->atomArray();
-	UnitCell* cell = srcmodel->cell();
+	UnitCell& cell = srcmodel->cell();
 	energy = 0.0;
 	aoff = (molecule == -1 ? startAtom_ : startAtom_ + molecule*nAtoms_);
 	//printf("BOND NRG: NAME=%s, START %i, NMOLS %i, NATOMS %i, NBONDS %3i\n",name,startAtom_,nMolecules_,nAtoms_,nbonds);
@@ -47,7 +47,7 @@ void Pattern::bondEnergy(Model* srcmodel, EnergyStore* estore, int molecule)
 			i = pb->atomId(0) + aoff;
 			j = pb->atomId(1) + aoff;
 			ffb = pb->data();
-			rij = cell->distance(modelatoms[i]->r(), modelatoms[j]->r());
+			rij = cell.distance(modelatoms[i]->r(), modelatoms[j]->r());
 			switch (pb->data()->bondForm())
 			{
 				case (BondFunctions::None):
@@ -105,7 +105,7 @@ void Pattern::bondForces(Model* srcmodel)
 	static ForcefieldBound* ffb;;
 	PatternBound* pb;
 	Atom** modelatoms = srcmodel->atomArray();
-	UnitCell* cell = srcmodel->cell();
+	UnitCell& cell = srcmodel->cell();
 	aoff = startAtom_;
 	for (m1=0; m1<nMolecules_; m1++)
 	{
@@ -114,7 +114,7 @@ void Pattern::bondForces(Model* srcmodel)
 			// Calculate bond vector
 			i = pb->atomId(0) + aoff;
 			j = pb->atomId(1) + aoff;
-			vec_ij = cell->mimVector(modelatoms[i]->r(), modelatoms[j]->r());
+			vec_ij = cell.mimVector(modelatoms[i]->r(), modelatoms[j]->r());
 			rij = vec_ij.magnitude();
 			// Select energy function
 			ffb = pb->data();
