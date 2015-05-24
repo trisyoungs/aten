@@ -72,7 +72,7 @@ bool Commands::function_FinaliseFrame(CommandNode* c, Bundle& obj, ReturnValue& 
 	obj.rs()->setFilter(NULL);
 	obj.rs()->setFilename("frame");
 	obj.rs()->enableUndoRedo();
-	//if (frame->cell()->type() != Cell::NoCell) frame->cell()->print();
+	//if (frame->cell().type() != Cell::NoCell) frame->cell()->print();
 	rv.reset();
 	return true;
 }

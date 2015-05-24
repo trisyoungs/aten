@@ -249,14 +249,14 @@ void DisorderData::tweakCandidate(double maxDistance, double maxAngle, Partition
 		shift.randomUnit();
 		shift *= maxDistance;
 		sourceModel_.translateSelectionLocal(shift);
-		cog = sourceModel_.cell()->realToFrac(sourceModel_.selectionCentreOfGeometry());
+		cog = sourceModel_.cell().realToFrac(sourceModel_.selectionCentreOfGeometry());
 		if (scheme->partitionId(cog.x, cog.y, cog.z) == partitionData_->id()) return;
 		sourceModel_.translateSelectionLocal(-shift);
 	}
 }
 
 // Determine whether candidate molecule overlaps with supplied model
-bool DisorderData::modelOverlaps(Model* other, UnitCell* globalCell)
+bool DisorderData::modelOverlaps(Model* other, UnitCell& globalCell)
 {
 	double rij, ri;
 	Atom** ii = other->atomArray(), **jj = sourceModel_.atomArray();
@@ -271,7 +271,7 @@ bool DisorderData::modelOverlaps(Model* other, UnitCell* globalCell)
 		for (j = 0; j < sourceModel_.nAtoms(); ++j)
 		{
 			// Determine distance using supplied cell conditions
-			rij = globalCell->distance(ii[i], jj[j], true);
+			rij = globalCell.distance(ii[i], jj[j], true);
 			// Simple penalty function - subtract off some multiple of the atomic radius of each atom...
 			rij -= ri + scaleFactor_*Elements().atomicRadius(jj[j]);
 			if (rij < 0.0) return true;
@@ -281,13 +281,13 @@ bool DisorderData::modelOverlaps(Model* other, UnitCell* globalCell)
 }
 
 // Determine whether candidate molecule overlaps rest of population
-bool DisorderData::selfOverlaps(UnitCell* globalCell)
+bool DisorderData::selfOverlaps(UnitCell& globalCell)
 {
 	return modelOverlaps(&targetModel_, globalCell);
 }
 
 // Determine whether candidate molecule overlaps with all other insertion models
-bool DisorderData::otherOverlaps(DisorderData *first, UnitCell* globalCell)
+bool DisorderData::otherOverlaps(DisorderData* first, UnitCell& globalCell)
 {
 	// Go through list of DisorderedData
 	for (DisorderData *dd = first; dd != NULL; dd = dd->next)

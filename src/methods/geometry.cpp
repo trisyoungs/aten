@@ -106,7 +106,7 @@ void Geometry::accumulate(Model* sourcemodel)
 	Messenger::enter("Geometry::accumulate");
 	int m1, m2, m3, m4, bin;
 	static Vec3<double> centre1, centre2, centre3, centre4;
-	UnitCell* cell = sourcemodel->cell();
+	UnitCell& cell = sourcemodel->cell();
 	double geom;
 	if (nSites_ == 2)
 	{
@@ -120,7 +120,7 @@ void Geometry::accumulate(Model* sourcemodel)
 			{
 				centre2 = sourcemodel->siteCentre(sites_[1],m2);
 				// Calculate minimum image distance and bin
-				geom = cell->distance(centre1,centre2);
+				geom = cell.distance(centre1,centre2);
 				// Add distance to data array
 				bin = int(geom / binWidth_);
 				//printf("Adding distance %f to bin %i\n",mimd.magnitude(),bin);
@@ -145,7 +145,7 @@ void Geometry::accumulate(Model* sourcemodel)
 					centre3 = sourcemodel->siteCentre(sites_[2],m3);
 
 					// Calculate minimum image distance and bin
-					geom = cell->angle(centre1, centre2, centre3);
+					geom = cell.angle(centre1, centre2, centre3);
 					// Add distance to data array
 					bin = int(geom / binWidth_);
 					//printf("Adding distance %f to bin %i\n",mimd.magnitude(),bin);
@@ -175,7 +175,7 @@ void Geometry::accumulate(Model* sourcemodel)
 						centre4 = sourcemodel->siteCentre(sites_[3],m4);
 
 						// Calculate minimum image distance and bin
-						geom = cell->torsion(centre1, centre2, centre3, centre4);
+						geom = cell.torsion(centre1, centre2, centre3, centre4);
 						// Add distance to data array
 						bin = int(geom / binWidth_);
 						//printf("Adding distance %f to bin %i\n",mimd.magnitude(),bin);

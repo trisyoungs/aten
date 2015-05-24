@@ -107,11 +107,11 @@ class DisorderData : public ListItem<DisorderData>
 	// Tweak molecule position / rotation, and place in sourceModel_
 	void tweakCandidate(double maxDistance, double maxAngle, PartitioningScheme* scheme);
 	// Determine whether candidate molecule overlaps with supplied model
-	bool modelOverlaps(Model* other, UnitCell* globalCell);
+	bool modelOverlaps(Model* other, UnitCell& globalCell);
 	// Determine whether candidate molecule overlaps rest of population
-	bool selfOverlaps(UnitCell* globalCell);
+	bool selfOverlaps(UnitCell& globalCell);
 	// Determine whether candidate molecule overlaps with all other insertion models
-	bool otherOverlaps(DisorderData *first, UnitCell* globalCell);
+	bool otherOverlaps(DisorderData *first, UnitCell& globalCell);
 	// Return number of copies added
 	int nAdded();
 	// Return number of successive failures since last successful insertion

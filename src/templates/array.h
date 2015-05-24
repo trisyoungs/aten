@@ -424,6 +424,29 @@ template <class A> class Array2D
 		}
 		else return array_[rowOffsets_[row] + column];
 	}
+	// Return specified element (const)
+	A& constRef(int row, int column) const
+	{
+#ifdef CHECKS
+		static A dummy;
+		if ((row < 0) || (row >= nRows_))
+		{
+			printf("OUT_OF_RANGE - Row number is out of range in Array2D::ref().\n", row);
+			return dummy;
+		}
+		if ((column < 0) || (column >= nColumns_))
+		{
+			printf("OUT_OF_RANGE - Row number is out of range in Array2D::ref().\n", column);
+			return dummy;
+		}
+#endif
+		if (half_) 
+		{
+			if (row > column) return array_[rowOffsets_[column] + row - column];
+			else return array_[rowOffsets_[row] + column - row];
+		}
+		else return array_[rowOffsets_[row] + column];
+	}
 	// Return address of specified element
 	A* ptr(int row, int column)
 	{

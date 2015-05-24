@@ -63,7 +63,7 @@ void AtenWindow::updateMainWindow()
 		infoLabel1_->setText(s);
 
 		// Second label - cell information
-		UnitCell::CellType ct = currentModel->cell()->type();
+		UnitCell::CellType ct = currentModel->cell().type();
 		if (ct != UnitCell::NoCell)
 		{
 			s = QString("%1, %2").arg(UnitCell::cellType(ct)).arg(currentModel->density());
@@ -169,7 +169,6 @@ void AtenWindow::initialUpdateAndShow()
 	Messenger::enter("AtenWindow::initialUpdateAndShow");
 
 	// Display message box warning if there was a filter load error
-	printf("NFilterprogras = %i\n", aten_.nFilterPrograms());
 	if (aten_.nFilterPrograms() == 0)
 	{
 		QMessageBox::warning(NULL, "Aten", "Filters could not be found.\nNo import/export will be possible.\nSet the environment variable ATENDATA to point to Aten's data directory (e.g. 'export ATENDATA=/usr/local/aten/data'), or run with --atendata <dir>.\n", QMessageBox::Ok, QMessageBox::Ok);

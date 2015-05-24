@@ -299,8 +299,8 @@ void TransformWidget::on_TransformGenerateCButton_clicked(bool on)
 void TransformWidget::on_TransformOriginCellCentreButton_clicked(bool on)
 {
 	Vec3<double> o;
-	if (parent_.aten().currentModelOrFrame()->cell()->type() == UnitCell::NoCell) o.set(0.0,0.0,0.0);
-	else o = parent_.aten().currentModelOrFrame()->cell()->centre();
+	if (parent_.aten().currentModelOrFrame()->cell().type() == UnitCell::NoCell) o.set(0.0,0.0,0.0);
+	else o = parent_.aten().currentModelOrFrame()->cell().centre();
 	ui.TransformOriginXSpin->setValue(o.x);
 	ui.TransformOriginYSpin->setValue(o.y);
 	ui.TransformOriginZSpin->setValue(o.z);
@@ -510,8 +510,8 @@ void TransformWidget::on_ConvertSourceGenerateCButton_clicked(bool on)
 void TransformWidget::on_ConvertOriginCellCentreButton_clicked(bool on)
 {
 	Vec3<double> o;
-	if (parent_.aten().currentModelOrFrame()->cell()->type() == UnitCell::NoCell) o.set(0.0,0.0,0.0);
-	else o = parent_.aten().currentModelOrFrame()->cell()->centre();
+	if (parent_.aten().currentModelOrFrame()->cell().type() == UnitCell::NoCell) o.set(0.0,0.0,0.0);
+	else o = parent_.aten().currentModelOrFrame()->cell().centre();
 	ui.ConvertOriginXSpin->setValue(o.x);
 	ui.ConvertOriginYSpin->setValue(o.y);
 	ui.ConvertOriginZSpin->setValue(o.z);

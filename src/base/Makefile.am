@@ -1,4 +1,4 @@
-noinst_LIBRARIES = libbase.a libsg.a
+noinst_LIBRARIES = libbase.a libsg.a libfourierdata.a
 
 SUFFIXES: .h
 
@@ -11,7 +11,9 @@ libbase_a_SOURCES = atomaddress.cpp atom.cpp atom_geometry.cpp basisshell.cpp bo
 
 libsg_a_SOURCES = generator.cpp sgclib.c sgfind.c sghkl.c sgio.c sgsi.c spacegroup.cpp
 
-noinst_HEADERS = atomaddress.h atom.h basisshell.h bond.h cell.h choice.h colourscale.h colourscalepoint.h datastore.h eigenvector.h element.h elementmap.h forcefieldatom.h forcefieldbound.h generator.h glyph.h grid.h gridpoint.h kvmap.h lineparser.h log.h measurement.h message.h messenger.h namespace.h neta.h neta_parser.h pattern.h prefs.h progress.h ring.h sginfo.h site.h spacegroup.h sysfunc.h vibration.h wrapint.h zmatrix.h zmatrixelement.h
+libfourierdata_a_SOURCES = fourierdata.cpp
+
+noinst_HEADERS = atomaddress.h atom.h basisshell.h bond.h cell.h choice.h colourscale.h colourscalepoint.h datastore.h eigenvector.h element.h elementmap.h forcefieldatom.h forcefieldbound.h fourierdata.h generator.h glyph.h grid.h gridpoint.h kvmap.h lineparser.h log.h measurement.h message.h messenger.h namespace.h neta.h neta_parser.h pattern.h prefs.h progress.h ring.h sginfo.h site.h spacegroup.h sysfunc.h vibration.h wrapint.h zmatrix.h zmatrixelement.h
 
 CLEANFILES = neta_grammar.h neta_grammar.cc neta_grammar.hh
 

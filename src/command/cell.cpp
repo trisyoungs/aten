@@ -32,7 +32,7 @@ bool Commands::function_AddGenerator(CommandNode* c, Bundle& obj, ReturnValue& r
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	// Convert argument to generator
-	Generator* gen = obj.rs()->cell()->addGenerator();
+	Generator* gen = obj.rs()->cell().addGenerator();
 	if (!gen->set(c->argc(0)))
 	{
 		Messenger::print("Failed to create new generator definition.");
@@ -47,7 +47,7 @@ bool Commands::function_AdjustCell(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	UnitCell::CellParameter cp = UnitCell::cellParameter(c->argc(0));
-	if (cp != UnitCell::nCellParameters) obj.rs()->cell()->setParameter(cp, c->argd(1), true);
+	if (cp != UnitCell::nCellParameters) obj.rs()->cell().setParameter(cp, c->argd(1), true);
 	rv.reset();
 	return true;
 }
@@ -56,7 +56,7 @@ bool Commands::function_AdjustCell(CommandNode* c, Bundle& obj, ReturnValue& rv)
 bool Commands::function_Cell(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return false;
-	if (obj.rs()->cell()->type() == UnitCell::NoCell) obj.rs()->beginUndoState("Add Cell");
+	if (obj.rs()->cell().type() == UnitCell::NoCell) obj.rs()->beginUndoState("Add Cell");
 	else obj.rs()->beginUndoState("Edit Cell");
 	obj.rs()->setCell(c->arg3d(0), c->arg3d(3));
 	obj.rs()->endUndoState();
@@ -158,8 +158,8 @@ bool Commands::function_Pack(CommandNode* c, Bundle& obj, ReturnValue& rv)
 bool Commands::function_PrintCell(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return false;
-	Messenger::print("Unit cell type for model '%s' is %s", qPrintable(obj.rs()->name()), UnitCell::cellType(obj.rs()->cell()->type()));
-	if (obj.rs()->cell()->type() != UnitCell::NoCell) obj.rs()->cell()->print();
+	Messenger::print("Unit cell type for model '%s' is %s", qPrintable(obj.rs()->name()), UnitCell::cellType(obj.rs()->cell().type()));
+	if (obj.rs()->cell().type() != UnitCell::NoCell) obj.rs()->cell().print();
 	rv.reset();
 	return true;
 }
@@ -239,7 +239,7 @@ bool Commands::function_SetCell(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	UnitCell::CellParameter cp = UnitCell::cellParameter(c->argc(0));
-	if (cp != UnitCell::nCellParameters) obj.rs()->cell()->setParameter(cp, c->argd(1));
+	if (cp != UnitCell::nCellParameters) obj.rs()->cell().setParameter(cp, c->argd(1));
 	rv.reset();
 	return true;
 }
@@ -288,7 +288,7 @@ bool Commands::function_Spacegroup(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	// If argument passed is an integer, set by integer. If a character, search by spacegroup name
-	obj.rs()->cell()->setSpacegroup(c->argc(0), prefs.forceRhombohedral());
+	obj.rs()->cell().setSpacegroup(c->argc(0), prefs.forceRhombohedral());
 	rv.reset();
 	return true;
 }

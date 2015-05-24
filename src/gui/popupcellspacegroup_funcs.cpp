@@ -45,7 +45,7 @@ void CellSpacegroupPopup::popup()
 	if (model)
 	{
 // 		Spacegroups[]; ATEN2 TODO
-// 		ui.SpacegroupCombo->setCurrentIndex(model->cell()->spacegroupId());
+// 		ui.SpacegroupCombo->setCurrentIndex(model->cell().spacegroupId());
 	}
 
 	// Enable / disable controls as necessary

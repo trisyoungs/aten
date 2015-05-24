@@ -142,12 +142,12 @@ void PositionWidget::translateSelection(int axis, int dir)
 	else if (ui.TranslateCellFrameRadio->isChecked())
 	{
 		// Translate selection in the cell axes of the model
-		if (m->cell()->type() == UnitCell::NoCell)
+		if (m->cell().type() == UnitCell::NoCell)
 		{
 			Messenger::print("No unit cell defined for model.");
 			return;
 		}
-		tvec = parent_.aten().currentModelOrFrame()->cell()->axes().columnAsVec3(axis);
+		tvec = parent_.aten().currentModelOrFrame()->cell().axes().columnAsVec3(axis);
 		tvec *= double(dir) * step;
 		m->beginUndoState("Translate Cell (%i atom(s), %f %f %f)", m->nSelected(), tvec.x, tvec.y, tvec.z);
 		m->translateSelectionLocal(tvec);

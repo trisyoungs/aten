@@ -43,9 +43,9 @@ void CellAnglesPopup::popup()
 	Model* model = parent_.aten().currentModelOrFrame();
 	if (model)
 	{
-		ui.AlphaSpin->setValue(model->cell()->angles().x);
-		ui.BetaSpin->setValue(model->cell()->angles().y);
-		ui.GammaSpin->setValue(model->cell()->angles().z);
+		ui.AlphaSpin->setValue(model->cell().angles().x);
+		ui.BetaSpin->setValue(model->cell().angles().y);
+		ui.GammaSpin->setValue(model->cell().angles().z);
 	}
 
 	show();
@@ -76,7 +76,7 @@ void CellAnglesPopup::adjustCurrentMatrix(int angleIndex, double value)
 	Model* model = parent_.aten().currentModelOrFrame();
 	if (model)
 	{
-		UnitCell cell = (*model->cell());
+		UnitCell cell = model->cell();
 		cell.setAngle(angleIndex, value);
 		CommandNode::run(Commands::CellAxes, "ddddddddd", cell.parameter(UnitCell::CellAX), cell.parameter(UnitCell::CellAY), cell.parameter(UnitCell::CellAZ), cell.parameter(UnitCell::CellBX), cell.parameter(UnitCell::CellBY), cell.parameter(UnitCell::CellBZ),  cell.parameter(UnitCell::CellCX), cell.parameter(UnitCell::CellCY), cell.parameter(UnitCell::CellCZ)); 
 	}

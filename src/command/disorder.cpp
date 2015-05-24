@@ -70,7 +70,7 @@ bool Commands::function_ListComponents(CommandNode* c, Bundle& obj, ReturnValue&
 	Messenger::print("Model           Policy     Partition  Population   Density");
 	for (Model* m = aten_.models(); m != NULL; m = m->next)
 	{
-		if (m->cell()->type() != UnitCell::NoCell) continue;
+		if (m->cell().type() != UnitCell::NoCell) continue;
 		Messenger::print("%-15s %-10s     %i        %5i    %8.4f", qPrintable(m->name()), Model::insertionPolicy(m->componentInsertionPolicy()), m->componentPartition()+1, m->componentPopulation(), m->componentDensity());
 	}
 	rv.reset();

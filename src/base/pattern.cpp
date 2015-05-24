@@ -1050,7 +1050,7 @@ Vec3<double> Pattern::calculateCog(int mol, Model* srcmodel)
 	if (srcmodel == NULL) srcmodel = parent_;
 	Messenger::print(Messenger::Verbose, "Calculating COG for pattern '%s', molecule %i (starting at %i, nMols=%i)", qPrintable(name_), mol, offset, nMolecules_);
 	static Vec3<double> cog, mim_i;
-	UnitCell* cell = srcmodel->cell();
+	UnitCell& cell = srcmodel->cell();
 	Atom** modelatoms = srcmodel->atomArray();
 	cog = modelatoms[offset]->r();
 
@@ -1058,7 +1058,7 @@ Vec3<double> Pattern::calculateCog(int mol, Model* srcmodel)
 	{
 		// Do minimum image w.r.t. first atom in molecule
 // 		mim_i = cell->mim(modelatoms[a1]->r(), modelatoms[offset]->r());
-		mim_i = cell->mim(modelatoms[offset]->r(), cog / a1);
+		mim_i = cell.mim(modelatoms[offset]->r(), cog / a1);
 		cog += mim_i;
 		++offset;
 	}
@@ -1081,13 +1081,13 @@ Vec3<double> Pattern::calculateCom(int mol, Model* srcmodel)
 	int offset = startAtom_ + mol*nAtoms_;
 	com.zero();
 	Messenger::print(Messenger::Verbose, "molecule_com : Offset = %i", offset);
-	UnitCell* cell = srcmodel->cell();
+	UnitCell& cell = srcmodel->cell();
 	Atom** modelatoms = srcmodel->atomArray();
 
 	for (int a1=offset; a1<offset+nAtoms_; a1++)
 	{
 		// Do minimum image w.r.t. first atom in molecule
-		mim_i = cell->mim(modelatoms[a1]->r(), modelatoms[offset]->r());
+		mim_i = cell.mim(modelatoms[a1]->r(), modelatoms[offset]->r());
 		com += mim_i * Elements().atomicMass(modelatoms[a1]->element());
 		massnorm += Elements().atomicMass(modelatoms[a1]->element());
 	}

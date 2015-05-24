@@ -1,6 +1,6 @@
 Remove empty destructors.
 Add ObjectLists (when using CHECK)?
-Sort out comment style (still /* // */ in places.
+Sort out comment style (still /* // */ in places).
 Move sg code to separate dir.
 Remove dialog pointers (use instances instead).
 Remove Scripts menu, and automatic loading of scripts on startup.
@@ -11,9 +11,7 @@ Split gui/mainmenu_actions.cpp into menu_* files.
 In AtenWindow::on_actionFileSaveImage_triggered convert options to proper QDialog.
 Add large image creation functions.
 Redo ProgressIndicator, making into a class much like QProgress (can't just use QProgress, since we want to have progress indicator functionality in the CLI....). Make it clever enough to realise that the gui is visible or not. Perhaps integrate it into Messenger, so that messages printed out while the indicator is running don't disrupt the indicator?
-Remove global Fourier declaration, and make it local to each Model.
 Remove global MC, CG, SD declarations, and put them in Aten?
-Remove 'current_' Bundle containing current Model, ForceField, Atom etc. and move all commands depending on them to be functions of other variable types.
 Reimplement KeepNames functionality.
 Split methods/partitiondata* into partitiondata and partitionscheme.
 Add in calculation of quantities and graphing.
@@ -41,7 +39,6 @@ Octahedral Growing doesn't work.
 Add option to specify grow distance (instead of calculating from VDW radii).
 Draw halo underneath current model when more than one model is displayed.
 Automatically adjust grid size for number of visible models, based on current aspect ratio and context size etc.
-Make UnitCell a full member of Model, rather than a pointer?
 Cif/mol2/pdb import broken?
 PrimitiveSet::wireCube_ is not a wireframe cube!
 Recognise bonds in both selection and right-click:
@@ -55,8 +52,9 @@ Add Calculate tool to work out centre of geometry/mass.
 Tidy up/rework TColourWheel code.
 --- Colour wheel seems to forget alpha value when selecting a new colour.
 Reimplement drawing of grid (volume) axes.
-Shortcuts for panel buttons (use QActions again?).
+Shortcuts for panel buttons do not work (use QActions again?).
 Added get/set view buttons to View.
+Make Model::EnergyStore a private member with accessor?
 
 GUI TODO:
 AddAtom functionality (from old Build menu).

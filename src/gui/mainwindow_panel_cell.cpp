@@ -31,13 +31,13 @@ void AtenWindow::updateCellPanel(Model* sourceModel)
 	Messenger::enter("AtenWindow::updateCellPanel");
 
 	ui.CellDefinePeriodicButton->setEnabled(sourceModel);
-	if (sourceModel) ui.CellDefinePeriodicButton->setChecked(sourceModel->cell()->type() != UnitCell::NoCell);
-	ui.CellDefineAnglesButton->setEnabled(sourceModel ? sourceModel->cell()->type() != UnitCell::NoCell : false);
-	ui.CellDefineLengthsButton->setEnabled(sourceModel ? sourceModel->cell()->type() != UnitCell::NoCell : false);
-	ui.CellDefineMatrixButton->setEnabled(sourceModel ? sourceModel->cell()->type() != UnitCell::NoCell : false);
-	ui.CellSpacegroupSetButton->setEnabled(sourceModel ? sourceModel->cell()->type() != UnitCell::NoCell : false);
-	ui.CellTransformReplicateButton->setEnabled(sourceModel ? sourceModel->cell()->type() != UnitCell::NoCell : false);
-	ui.CellTransformScaleButton->setEnabled(sourceModel ? sourceModel->cell()->type() != UnitCell::NoCell : false);
+	if (sourceModel) ui.CellDefinePeriodicButton->setChecked(sourceModel->cell().type() != UnitCell::NoCell);
+	ui.CellDefineAnglesButton->setEnabled(sourceModel ? sourceModel->cell().type() != UnitCell::NoCell : false);
+	ui.CellDefineLengthsButton->setEnabled(sourceModel ? sourceModel->cell().type() != UnitCell::NoCell : false);
+	ui.CellDefineMatrixButton->setEnabled(sourceModel ? sourceModel->cell().type() != UnitCell::NoCell : false);
+	ui.CellSpacegroupSetButton->setEnabled(sourceModel ? sourceModel->cell().type() != UnitCell::NoCell : false);
+	ui.CellTransformReplicateButton->setEnabled(sourceModel ? sourceModel->cell().type() != UnitCell::NoCell : false);
+	ui.CellTransformScaleButton->setEnabled(sourceModel ? sourceModel->cell().type() != UnitCell::NoCell : false);
 
 	Messenger::exit("AtenWindow::updateCellPanel");
 }

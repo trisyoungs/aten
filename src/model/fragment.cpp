@@ -174,7 +174,7 @@ void Fragment::rotateAnchoredModel(double dx, double dy)
 	{
 		Atom* linkPartner = anchoredModel_.atom(masterLinkPartner_->id());
 		Atom* linkAtom = anchoredModel_.atom(masterLinkAtom_->id());
-		Vec3<double> ref = anchoredModel_.cell()->mimVector(linkAtom, linkPartner);
+		Vec3<double> ref = anchoredModel_.cell().mimVector(linkAtom, linkPartner);
 		ref.normalise();
 		anchoredModel_.rotateSelectionVector(Vec3<double>(), ref, -dy, true);
 	}
@@ -206,7 +206,7 @@ Model* Fragment::anchoredModel(Atom* anchorpoint, bool replace, int &replacebond
 		if (replacebond >= anchorpoint->nBonds()) replacebond = 0;
 		// Grab atom along n'th bond
 		Refitem<Bond,int>* ri = anchorpoint->bond(replacebond);
-		orientation = anchorpoint->parent()->cell()->mimVector(anchorpoint, ri->item->partner(anchorpoint));
+		orientation = anchorpoint->parent()->cell().mimVector(anchorpoint, ri->item->partner(anchorpoint));
 		orientation.normalise();
 	}
 
@@ -223,7 +223,7 @@ Model* Fragment::anchoredModel(Atom* anchorpoint, bool replace, int &replacebond
 	{
 		Atom* linkPartner = anchoredModel_.atom(masterLinkPartner_->id());
 		Atom* linkAtom = anchoredModel_.atom(masterLinkAtom_->id());
-		ref = anchoredModel_.cell()->mimVector(linkAtom, linkPartner);
+		ref = anchoredModel_.cell().mimVector(linkAtom, linkPartner);
 		ref.normalise();
 	}
 	else ref.zero();

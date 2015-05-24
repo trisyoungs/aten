@@ -58,7 +58,7 @@ void PoresWidget::on_PoreSelectButton_clicked(bool checked)
 {
 	// First check - does the current model have a unit cell?
 	Model* m = parent_.aten().currentModelOrFrame();
-	if (m->cell()->type() == UnitCell::NoCell)
+	if (m->cell().type() == UnitCell::NoCell)
 	{
 		Messenger::print("Can't drill pores in a non-periodic model.");
 		return;
@@ -78,7 +78,7 @@ void PoresWidget::on_PoreSelectAndCutButton_clicked(bool checked)
 {
 	// First check - does the current model have a unit cell?
 	Model* m =parent_.aten().currentModelOrFrame();
-	if (m->cell()->type() == UnitCell::NoCell)
+	if (m->cell().type() == UnitCell::NoCell)
 	{
 		Messenger::print("Can't drill pores in a non-periodic model.");
 		return;
@@ -121,7 +121,7 @@ void PoresWidget::on_GenerateSchemeButton_clicked(bool checked)
 {
 	// First check - does the current model have a unit cell?
 	Model* m =parent_.aten().currentModelOrFrame();
-	if (m->cell()->type() == UnitCell::NoCell)
+	if (m->cell().type() == UnitCell::NoCell)
 	{
 		Messenger::print("Can't generate a partitioning scheme for a non-periodic model.");
 		return;
@@ -137,7 +137,7 @@ void PoresWidget::on_GenerateSchemeButton_clicked(bool checked)
 	
 	// Update info in window
 	double volume = 0.0;
-	Matrix volumeElement = m->cell()->axes();
+	Matrix volumeElement = m->cell().axes();
 	volumeElement.applyScaling(1.0/npoints.x, 1.0/npoints.y, 1.0/npoints.z);
 	double elementVolume = volumeElement.determinant();
 	for (PartitionData* pd = partitioningScheme_.partitions()->next; pd != NULL; pd = pd->next)
@@ -147,7 +147,7 @@ void PoresWidget::on_GenerateSchemeButton_clicked(bool checked)
 	}
 	ui.PartitionNumberLabel->setText( QString::number(partitioningScheme_.nPartitions()-1) );
 	ui.PartitionVolumeLabel->setText( QString::number(volume, 'f', 2) );
-	ui.PartitionVolumePercentLabel->setText( QString::number(100.0*volume/m->cell()->volume(), 'f', 2) + "%" );
+	ui.PartitionVolumePercentLabel->setText( QString::number(100.0*volume/m->cell().volume(), 'f', 2) + "%" );
 	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
@@ -155,7 +155,7 @@ void PoresWidget::on_CopySchemeButton_clicked(bool checked)
 {
 	// First check - does the current model have a unit cell?
 	Model* m =parent_.aten().currentModelOrFrame();
-	if (m->cell()->type() == UnitCell::NoCell)
+	if (m->cell().type() == UnitCell::NoCell)
 	{
 		Messenger::print("Can't generate a partitioning scheme for a non-periodic model.");
 		return;

@@ -166,7 +166,7 @@ bool Pattern::vdwIntraPatternEnergy(Model* srcmodel, EnergyStore* estore, int lo
 	PointerPair<ForcefieldAtom,double>* pp;
 	cutoff = prefs.vdwCutoff();
 	Atom** modelatoms = srcmodel->atomArray();
-	UnitCell* cell = srcmodel->cell();
+	UnitCell& cell = srcmodel->cell();
 	energy_inter = 0.0;
 	energy_intra = 0.0;
 	start1 = (lonemolecule == -1 ? 0 : lonemolecule);
@@ -188,7 +188,7 @@ bool Pattern::vdwIntraPatternEnergy(Model* srcmodel, EnergyStore* estore, int lo
 				if ((con > 2) || (con == 0))
 				{
 					// Check distance
-					vec_ij = cell->mimVector(modelatoms[i+aoff]->r(), modelatoms[j+aoff]->r());
+					vec_ij = cell.mimVector(modelatoms[i+aoff]->r(), modelatoms[j+aoff]->r());
 					rij = vec_ij.magnitude();
 					if (rij > cutoff) continue;
 					// Find relevant (pre-combined) parameters
@@ -221,7 +221,7 @@ bool Pattern::vdwInterPatternEnergy(Model* srcmodel, Pattern* otherPattern, Ener
 	PointerPair<ForcefieldAtom,double>* pp;
 	cutoff = prefs.vdwCutoff();
 	Atom** modelatoms = srcmodel->atomArray();
-	UnitCell* cell = srcmodel->cell();
+	UnitCell& cell = srcmodel->cell();
 	energy_inter = 0.0;
 	// Outer loop over molecules in *this* pattern
 	// When we are considering the same node with itself, calculate for "m1=1,T-1 m2=2,T"
@@ -277,7 +277,7 @@ bool Pattern::vdwInterPatternEnergy(Model* srcmodel, Pattern* otherPattern, Ener
 				{
 					++j;
 
-					vec_ij = cell->mimVector(modelatoms[i+aoff1]->r(), modelatoms[j+aoff2]->r());
+					vec_ij = cell.mimVector(modelatoms[i+aoff1]->r(), modelatoms[j+aoff2]->r());
 					rij = vec_ij.magnitude();
 					if (rij > cutoff) continue;
 					// Find relevant (pre-combined) parameters
@@ -313,7 +313,7 @@ bool Pattern::vdwIntraPatternForces(Model* srcmodel)
 	PointerPair<ForcefieldAtom,double>* pp;
 	cutoff = prefs.vdwCutoff();
 	Atom** modelatoms = srcmodel->atomArray();
-	UnitCell* cell = srcmodel->cell();
+	UnitCell& cell = srcmodel->cell();
 	aoff = startAtom_;
 	for (m1=0; m1<nMolecules_; m1++)
 	{
@@ -332,7 +332,7 @@ bool Pattern::vdwIntraPatternForces(Model* srcmodel)
 				if ((con > 2) || (con == 0))
 				{
 					// Check distance
-					vec_ij = cell->mimVector(modelatoms[i+aoff]->r(), modelatoms[j+aoff]->r());
+					vec_ij = cell.mimVector(modelatoms[i+aoff]->r(), modelatoms[j+aoff]->r());
 					rij = vec_ij.magnitude();
 					if (rij > cutoff) continue;
 
@@ -369,7 +369,7 @@ bool Pattern::vdwInterPatternForces(Model* srcmodel, Pattern* otherPattern)
 	PointerPair<ForcefieldAtom,double>* pp;
 	cutoff = prefs.vdwCutoff();
 	Atom** modelatoms = srcmodel->atomArray();
-	UnitCell* cell = srcmodel->cell();
+	UnitCell& cell = srcmodel->cell();
 	aoff1 = startAtom_;
 	//printf("Pattern IDs are %i (this) and %i\n",id_, otherPattern->id_);
 
@@ -392,7 +392,7 @@ bool Pattern::vdwInterPatternForces(Model* srcmodel, Pattern* otherPattern)
 				{
 					++j;
 					// Check distance and get vector j->i
-					vec_ij = cell->mimVector(modelatoms[i+aoff1]->r(), modelatoms[j+aoff2]->r());
+					vec_ij = cell.mimVector(modelatoms[i+aoff1]->r(), modelatoms[j+aoff2]->r());
 					rij = vec_ij.magnitude();
 					if (rij > cutoff) continue;
 
@@ -426,7 +426,7 @@ bool Pattern::vdwInterPatternForces(Model* srcmodel, Pattern* otherPattern)
 //
 // Assume p(r) is equal to the (bulk) number density at r > rcut.
 */
-bool Pattern::vdwCorrectEnergy(UnitCell* cell, EnergyStore* estore)
+bool Pattern::vdwCorrectEnergy(UnitCell& cell, EnergyStore* estore)
 {
 	// Calculate the long-range correction to the VDW energy
 	Messenger::enter("Pattern::vdwCorrectEnergy");
@@ -441,7 +441,7 @@ bool Pattern::vdwCorrectEnergy(UnitCell* cell, EnergyStore* estore)
 	// The way the patterns are stored does not give direct access to the number of different
 	// atom types used *or* the number densities of each. So, assume each atom in the pattern 
 	// molecule is a unique VDW type and that the number density is nMolecules_/cellvolume
-	volume = cell->volume();
+	volume = cell.volume();
 	energy = 0.0;
 	for (p1 = this; p1 != NULL; p1 = p1->next)
 	{

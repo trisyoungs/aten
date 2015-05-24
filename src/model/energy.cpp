@@ -21,9 +21,15 @@
 
 #include "model/model.h"
 #include "base/pattern.h"
-#include "ff/fourier.h"
+#include "base/fourierdata.h"
 
 ATEN_USING_NAMESPACE
+
+// Return reference to FourierData structure
+FourierData& Model::fourierData()
+{
+	return fourierData_;
+}
 
 // Calculate total energy of model (from supplied coordinates)
 double Model::totalEnergy(Model* srcmodel, bool& success)
@@ -49,7 +55,7 @@ double Model::totalEnergy(Model* srcmodel, bool& success)
 	// Calculate VDW correction
 	if (prefs.calculateVdw() && (cell_.type() != UnitCell::NoCell))
 	{
-		if (!p->vdwCorrectEnergy(&cell_, &energy))
+		if (!p->vdwCorrectEnergy(cell_, &energy))
 		{
 			success = false;
 			Messenger::exit("Model::totalEnergy");
@@ -70,8 +76,8 @@ double Model::totalEnergy(Model* srcmodel, bool& success)
 			return 0.0;
 		}
 		// Estimate parameters if automatic mode selected
-		if (emodel == Electrostatics::EwaldAuto) prefs.estimateEwaldParameters(&srcmodel->cell_);
-		fourier.prepare(srcmodel,prefs.ewaldKMax());
+		if (emodel == Electrostatics::EwaldAuto) prefs.estimateEwaldParameters(srcmodel->cell_);
+		fourierData_.prepare(srcmodel, prefs.ewaldKMax());
 	}
 	
 	// Loop over patterns
@@ -164,8 +170,8 @@ double Model::moleculeEnergy(Model* srcmodel, Pattern* molpattern, int molecule,
 				return 0.0;
 			}
 			// Estimate parameters if automatic mode selected
-			if (emodel == Electrostatics::EwaldAuto) prefs.estimateEwaldParameters(&srcmodel->cell_);
-			 fourier.prepare(srcmodel,prefs.ewaldKMax());
+			if (emodel == Electrostatics::EwaldAuto) prefs.estimateEwaldParameters(srcmodel->cell_);
+			fourierData_.prepare(srcmodel,prefs.ewaldKMax());
 			break;
 	}
 	
@@ -282,8 +288,8 @@ double Model::electrostaticEnergy(Model* config, bool& success)
 				return 0.0;
 			}
 			// Estimate parameters if automatic mode selected
-			if (emodel == Electrostatics::EwaldAuto) prefs.estimateEwaldParameters(&config->cell_);
-			fourier.prepare(config,prefs.ewaldKMax());
+			if (emodel == Electrostatics::EwaldAuto) prefs.estimateEwaldParameters(config->cell_);
+			fourierData_.prepare(config,prefs.ewaldKMax());
 			break;
 	}
 	
@@ -439,9 +445,9 @@ bool Model::calculateForces(Model* srcmodel)
 				return false;
 			}
 			// Estimate parameters if automatic mode selected
-			if (emodel == Electrostatics::EwaldAuto) prefs.estimateEwaldParameters(&srcmodel->cell_);
+			if (emodel == Electrostatics::EwaldAuto) prefs.estimateEwaldParameters(srcmodel->cell_);
 			// Create the fourier space for use in the Ewald sum
-			if (emodel != Electrostatics::Coulomb) fourier.prepare(srcmodel,prefs.ewaldKMax());
+			if (emodel != Electrostatics::Coulomb) fourierData_.prepare(srcmodel,prefs.ewaldKMax());
 			break;
 	}
 	

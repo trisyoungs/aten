@@ -39,6 +39,7 @@
 #include "base/zmatrix.h"
 #include "base/namespace.h"
 #include "render/rendergroup.h"
+#include "base/fourierdata.h"
 
 ATEN_BEGIN_NAMESPACE
 
@@ -258,7 +259,7 @@ class Model : public ListItem<Model>
 
 	public:
 	// Return pointer to unit cell structure
-	UnitCell* cell();
+	UnitCell& cell();
 	// Set cell (vectors)
 	void setCell(Vec3<double> lengths, Vec3<double> angles);
 	// Set cell (axes)
@@ -267,6 +268,8 @@ class Model : public ListItem<Model>
 	void setCell(UnitCell::CellParameter cp, double value);
 	// Set cell (other Cell pointer)
 	bool setCell(UnitCell* newcell);
+	// Set cell (other Cell reference)
+	bool setCell(UnitCell& newcell);
 	// Remove cell definition
 	void removeCell();
 	// Fold all atoms into the cell
@@ -629,10 +632,14 @@ class Model : public ListItem<Model>
 	 * Energy / Forces
 	 */
 	private:
+	// Fourier data
+	FourierData fourierData_;
 	// RMS force for last calculated forces
 	double rmsForce_;
 
 	public:
+	// Return reference to FourierData structure
+	FourierData& fourierData();
 	// Storage for energy
 	EnergyStore energy;
 	// Calculate (and return) the total energy of the specified model configuration

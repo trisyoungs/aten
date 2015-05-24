@@ -73,10 +73,10 @@ Vec3<double> Model::reassembleFragment(Atom* i, Vec3<double> referencePos, int r
 	return total;
 }
 
-// Return pointer to unit cell structure
-UnitCell* Model::cell()
+// Return reference to unit cell structure
+UnitCell& Model::cell()
 {
-	return &cell_;
+	return cell_;
 }
 
 // Set cell (vectors)
@@ -157,6 +157,24 @@ bool Model::setCell(UnitCell* newcell)
 			recordingState_->addEvent(newchange);
 		}
 	}
+	logChange(Log::Cell);
+	return true;
+}
+
+// Set cell (other Cell reference)
+bool Model::setCell(UnitCell& newcell)
+{
+	Matrix oldaxes = cell_.axes();
+	bool oldhs = (cell_.type() == UnitCell::NoCell ? false : true);
+	cell_ = newcell;
+	// Add the change to the undo state (if there is one)
+	if (recordingState_ != NULL)
+	{
+		CellEvent* newchange = new CellEvent;
+		newchange->set(oldaxes, cell_.axes(), oldhs, true);
+		recordingState_->addEvent(newchange);
+	}
+
 	logChange(Log::Cell);
 	return true;
 }

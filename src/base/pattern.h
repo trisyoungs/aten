@@ -365,7 +365,7 @@ class Pattern : public ListItem<Pattern>
 	// Calculate interpattern Vdw energy (or for specific molecule)
 	bool vdwInterPatternEnergy(Model* source, Pattern* other, EnergyStore* estore, int molecule = -1);
 	// Calculate Vdw correction energy for pattern
-	bool vdwCorrectEnergy(UnitCell* cell, EnergyStore* estore);
+	bool vdwCorrectEnergy( AtenSpace::UnitCell& cell, AtenSpace::EnergyStore* estore );
 	// Calculate intrapattern coulomb energy (or for specific molecule)
 	void coulombIntraPatternEnergy(Model* source, EnergyStore* estore, int molecule = -1);
 	// Calculate interpattern coulomb energy (or for specific molecule)

@@ -120,10 +120,10 @@ bool Atom::isPlanar(double tolerance)
 	bool result = true;
 	Refitem<Bond,int>* ri = bonds_.first();
 	// Take the first two bound atom vectors and get the cross product to define the plane's normal
-	Vec3<double> v1 = parent_->cell()->mimVector(this, ri->item->partner(this));
+	Vec3<double> v1 = parent_->cell().mimVector(this, ri->item->partner(this));
 	v1.normalise();
 	ri = ri->next;
-	Vec3<double> v2 = parent_->cell()->mimVector(this, ri->item->partner(this));
+	Vec3<double> v2 = parent_->cell().mimVector(this, ri->item->partner(this));
 	v2.normalise();
 	Vec3<double> normal = v1*v2;
 	double angle;
@@ -131,7 +131,7 @@ bool Atom::isPlanar(double tolerance)
 	for (ri = ri->next; ri != NULL; ri = ri->next)
 	{
 		// Calculate angle
-		v1 = parent_->cell()->mimVector(this, ri->item->partner(this));
+		v1 = parent_->cell().mimVector(this, ri->item->partner(this));
 		v1.normalise();
 		angle = fabs(acos(normal.dp(v1)) * DEGRAD - 90.0);
 // 		printf("Out-of-plane bond angle is %f degrees\n", angle);
@@ -222,7 +222,7 @@ bool Atom::nextBondVector(Vec3<double>& vector, Atom::AtomGeometry geometry)
 	Matrix rotMat;
 	static double** angleArray = NULL;
 	int n, m, o, p;
-	UnitCell* cell = parent_->cell();
+	UnitCell& cell = parent_->cell();
 	bool foundAngle;
 	
 	// Create angle array if it doesn't already exist
@@ -272,7 +272,7 @@ bool Atom::nextBondVector(Vec3<double>& vector, Atom::AtomGeometry geometry)
 		case (1):
 			// Get only bond vector present and create perpendicular vector
 			atoms[0] = this->bonds()->item->partner(this);
-			v = cell->mimVector(this, atoms[0]);
+			v = cell.mimVector(this, atoms[0]);
 			v.normalise();
 			u = v.orthogonal(true);
 			vector = (v * cos(theta) + u * sin(theta));
@@ -283,9 +283,9 @@ bool Atom::nextBondVector(Vec3<double>& vector, Atom::AtomGeometry geometry)
 			// For all other geometries, rotate one vector around the perpendicular vector
 			atoms[0] = this->bonds()->item->partner(this);
 			atoms[1] = this->bonds()->next->item->partner(this);
-			u = cell->mimVector(this, atoms[0]);
+			u = cell.mimVector(this, atoms[0]);
 			u.normalise();
-			v = cell->mimVector(this, atoms[1]);
+			v = cell.mimVector(this, atoms[1]);
 			v.normalise();
 			// Check for pathological case where bonds are opposite each other (just select 90degree vector)
 			if (fabs(u.dp(v)) > 0.99) vector = u.orthogonal(true);
@@ -306,21 +306,21 @@ bool Atom::nextBondVector(Vec3<double>& vector, Atom::AtomGeometry geometry)
 			for (n=0; n<3; ++n)
 			{
 				atoms[n] = bonds_[n]->item->partner(this);
-				vec[n] = cell->mimVector(this, atoms[n]);
+				vec[n] = cell.mimVector(this, atoms[n]);
 				vec[n].normalise();
 			}
 			switch (geometry)
 			{
 				case (Atom::TetrahedralGeometry):
 					// Pick a vector and rotate it 120 around the other
-					u = cell->mimVector(this, atoms[0]);
+					u = cell.mimVector(this, atoms[0]);
 					u.normalise();
-					v = cell->mimVector(this, atoms[1]);
+					v = cell.mimVector(this, atoms[1]);
 					v.normalise();
 					rotMat.createRotationAxis(u.x, u.y, u.z, 120.0, false);
 					vector = rotMat * v;
 					// Check we have not overlapped with the other atom
-					u = cell->mimVector(this, atoms[2]);
+					u = cell.mimVector(this, atoms[2]);
 					u.normalise();
 					if (vector.dp(u) > 0.75) vector = rotMat * vector;
 					break;
@@ -370,7 +370,7 @@ bool Atom::nextBondVector(Vec3<double>& vector, Atom::AtomGeometry geometry)
 			for (n=0; n<4; ++n)
 			{
 				atoms[n] = bonds_[n]->item->partner(this);
-				vec[n] = cell->mimVector(this, atoms[n]);
+				vec[n] = cell.mimVector(this, atoms[n]);
 				vec[n].normalise();
 			}
 			if (geometry == Atom::TrigBipyramidGeometry)

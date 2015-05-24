@@ -19,11 +19,6 @@ add_library(ff
   vdw.cpp
 )
 
-add_library(fourier
-fourier.h
-fourier.cpp 
-)
-
 include_directories(
 ../
 ${QT_INCLUDE_DIR}

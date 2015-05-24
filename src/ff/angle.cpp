@@ -116,7 +116,7 @@ void Pattern::angleForces(Model* srcmodel)
 	ForcefieldBound* ffb;
 	PatternBound* pb;
 	Atom** modelatoms = srcmodel->atomArray();
-	UnitCell* cell = srcmodel->cell();
+	UnitCell& cell = srcmodel->cell();
 	aoff = startAtom_;
 	for (m1=0; m1<nMolecules_; m1++)
 	{
@@ -127,8 +127,8 @@ void Pattern::angleForces(Model* srcmodel)
 			j = pb->atomId(1) + aoff;
 			k = pb->atomId(2) + aoff;
 			// Minimum image w.r.t. atom j
-			vec_ji = cell->mimVector(modelatoms[j]->r(),modelatoms[i]->r());
-			vec_jk = cell->mimVector(modelatoms[j]->r(),modelatoms[k]->r());
+			vec_ji = cell.mimVector(modelatoms[j]->r(),modelatoms[i]->r());
+			vec_jk = cell.mimVector(modelatoms[j]->r(),modelatoms[k]->r());
 			// Normalise vectors, calculate dot product and angle.
 			mag_ij = vec_ji.magAndNormalise();
 			mag_kj = vec_jk.magAndNormalise();
@@ -175,7 +175,7 @@ void Pattern::angleForces(Model* srcmodel)
 					// dU/dr = forcek * (r - eq)
 					forcek = ffb->parameter(AngleFunctions::BondConstraintK);
 					eq = ffb->parameter(AngleFunctions::BondConstraintEq);
-					vec_ik = cell->mimVector(modelatoms[i]->r(), modelatoms[k]->r());
+					vec_ik = cell.mimVector(modelatoms[i]->r(), modelatoms[k]->r());
 					rij = vec_ik.magnitude();
 					du_dtheta = -forcek * (rij - eq);
 					break;

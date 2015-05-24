@@ -43,15 +43,15 @@ void CellMatrixPopup::popup()
 	Model* model = parent_.aten().currentModelOrFrame();
 	if (model)
 	{
-		ui.AxisAXSpin->setValue(model->cell()->parameter(UnitCell::CellAX));
-		ui.AxisAYSpin->setValue(model->cell()->parameter(UnitCell::CellAY));
-		ui.AxisAZSpin->setValue(model->cell()->parameter(UnitCell::CellAZ));
-		ui.AxisBXSpin->setValue(model->cell()->parameter(UnitCell::CellBX));
-		ui.AxisBYSpin->setValue(model->cell()->parameter(UnitCell::CellBY));
-		ui.AxisBZSpin->setValue(model->cell()->parameter(UnitCell::CellBZ));
-		ui.AxisCXSpin->setValue(model->cell()->parameter(UnitCell::CellCX));
-		ui.AxisCYSpin->setValue(model->cell()->parameter(UnitCell::CellCY));
-		ui.AxisCZSpin->setValue(model->cell()->parameter(UnitCell::CellCZ));
+		ui.AxisAXSpin->setValue(model->cell().parameter(UnitCell::CellAX));
+		ui.AxisAYSpin->setValue(model->cell().parameter(UnitCell::CellAY));
+		ui.AxisAZSpin->setValue(model->cell().parameter(UnitCell::CellAZ));
+		ui.AxisBXSpin->setValue(model->cell().parameter(UnitCell::CellBX));
+		ui.AxisBYSpin->setValue(model->cell().parameter(UnitCell::CellBY));
+		ui.AxisBZSpin->setValue(model->cell().parameter(UnitCell::CellBZ));
+		ui.AxisCXSpin->setValue(model->cell().parameter(UnitCell::CellCX));
+		ui.AxisCYSpin->setValue(model->cell().parameter(UnitCell::CellCY));
+		ui.AxisCZSpin->setValue(model->cell().parameter(UnitCell::CellCZ));
 	}
 
 	show();

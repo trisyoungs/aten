@@ -43,9 +43,9 @@ void CellLengthsPopup::popup()
 	Model* model = parent_.aten().currentModelOrFrame();
 	if (model)
 	{
-		ui.ASpin->setValue(model->cell()->lengths().x);
-		ui.BSpin->setValue(model->cell()->lengths().y);
-		ui.CSpin->setValue(model->cell()->lengths().z);
+		ui.ASpin->setValue(model->cell().lengths().x);
+		ui.BSpin->setValue(model->cell().lengths().y);
+		ui.CSpin->setValue(model->cell().lengths().z);
 	}
 
 	show();
@@ -76,7 +76,7 @@ void CellLengthsPopup::adjustCurrentMatrix(int lengthIndex, double value)
 	Model* model = parent_.aten().currentModelOrFrame();
 	if (model)
 	{
-		UnitCell cell = (*model->cell());
+		UnitCell cell = model->cell();
 		cell.setLength(lengthIndex, value);
 		CommandNode::run(Commands::CellAxes, "ddddddddd", cell.parameter(UnitCell::CellAX), cell.parameter(UnitCell::CellAY), cell.parameter(UnitCell::CellAZ), cell.parameter(UnitCell::CellBX), cell.parameter(UnitCell::CellBY), cell.parameter(UnitCell::CellBZ),  cell.parameter(UnitCell::CellCX), cell.parameter(UnitCell::CellCY), cell.parameter(UnitCell::CellCZ)); 
 	}

@@ -169,7 +169,7 @@ void Pattern::torsionForces(Model* srcmodel)
 	static double k1, k2, k3, k4, s;
 	PatternBound* pb;
 	Atom** modelatoms = srcmodel->atomArray();
-	UnitCell* cell = srcmodel->cell();
+	UnitCell& cell = srcmodel->cell();
 	aoff = startAtom_;
 	for (m1=0; m1<nMolecules_; m1++)
 	{
@@ -182,14 +182,16 @@ void Pattern::torsionForces(Model* srcmodel)
 			k = pb->atomId(2) + aoff;
 			l = pb->atomId(3) + aoff;
 			ffb = pb->data();
+
 			// Calculate vectors between atoms
-			vec_ji = cell->mimVector(modelatoms[j]->r(), modelatoms[i]->r());
-			vec_jk = cell->mimVector(modelatoms[j]->r(), modelatoms[k]->r());
-			vec_kl = cell->mimVector(modelatoms[k]->r(), modelatoms[l]->r());
+			vec_ji = cell.mimVector(modelatoms[j]->r(), modelatoms[i]->r());
+			vec_jk = cell.mimVector(modelatoms[j]->r(), modelatoms[k]->r());
+			vec_kl = cell.mimVector(modelatoms[k]->r(), modelatoms[l]->r());
 			mag_ji = vec_ji.magnitude();
 			mag_jk = vec_jk.magnitude();
 			mag_kl = vec_kl.magnitude();
 // 			printf("i-j-k-l %i-%i-%i-%i MAGs %f %f %f\n",i,j,k,l, mag_ij,mag_kj, mag_lk);
+
 			// Calculate cross products and torsion angle formed (in radians)
 			xpj = vec_ji * vec_jk;
 			xpk = vec_kl * vec_jk;
@@ -202,6 +204,7 @@ void Pattern::torsionForces(Model* srcmodel)
 // 			printf("i-j-k-l %i-%i-%i-%i DP %16.13f %16.13f %16.13f %16.13f\n",i,j,k,l, mag_xpj, mag_xpk, dp, phi);
 			if (phi < 0.0) { if (phi > -1e-8) phi = -1e-8; }
 			else if (phi < 1e-8) phi = 1e-8;
+
 			// Derivative w.r.t. change in torsion angle
 			dphi_dcosphi = -1.0 / sin(phi);
 			// Pathological case where phi = 0...
