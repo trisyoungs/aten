@@ -255,8 +255,8 @@ void Program::print()
 }
 
 /*
-// Global Functions
-*/
+ * Global Functions
+ */
 
 // Add a Program-global function
 Tree* Program::addFunction(QString name)

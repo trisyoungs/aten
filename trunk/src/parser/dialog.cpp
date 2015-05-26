@@ -46,8 +46,8 @@ DialogVariable::~DialogVariable()
 }
 
 /*
-// Accessors
-*/
+ * Accessors
+ */
 
 // Accessor data
 Accessor DialogVariable::accessorData[DialogVariable::nAccessors] = {
@@ -528,8 +528,8 @@ void DialogVariable::printAccessors()
 }
 
 /*
-// Variable Array
-*/
+ * Variable Array
+ */
 
 // Constructor
 DialogArrayVariable::DialogArrayVariable(TreeNode* sizeexpr, bool constant)

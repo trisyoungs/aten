@@ -34,8 +34,8 @@ AtomAddress::~AtomAddress()
 }
 
 /*
-// Variable Access
-*/
+ * Variable Access
+ */
 
 // Set the local molecule offset of the atom
 void AtomAddress::setOffset(int i)

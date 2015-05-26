@@ -27,8 +27,8 @@
 ATEN_USING_NAMESPACE
 
 /*
-// Variable
-*/
+ * Variable
+ */
 
 // Constructor
 VibrationVariable::VibrationVariable(Vibration* ptr, bool constant)
@@ -45,8 +45,8 @@ VibrationVariable::~VibrationVariable()
 }
 
 /*
-// Accessors
-*/
+ * Accessors
+ */
 
 // Accessor data
 Accessor VibrationVariable::accessorData[VibrationVariable::nAccessors] = {
@@ -345,8 +345,8 @@ void VibrationVariable::printAccessors()
 }
 
 /*
-// Variable Array
-*/
+ * Variable Array
+ */
 
 // Constructor
 VibrationArrayVariable::VibrationArrayVariable(TreeNode* sizeexpr, bool constant)

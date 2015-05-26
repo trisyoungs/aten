@@ -258,8 +258,8 @@ int ReturnValue::dataPair(ReturnValue& source)
 }
 
 /*
-// Set
-*/
+ * Set
+ */
 
 // Set from integer value
 void ReturnValue::set(int i)

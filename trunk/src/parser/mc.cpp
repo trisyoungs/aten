@@ -39,8 +39,8 @@ MonteCarloVariable::~MonteCarloVariable()
 }
 
 /*
-// Accessors
-*/
+ * Accessors
+ */
 
 // Accessor data - name, type, arraysize, ro?
 Accessor MonteCarloVariable::accessorData[MonteCarloVariable::nAccessors] = {

@@ -30,8 +30,8 @@
 ATEN_USING_NAMESPACE
 
 /*
-// Variable
-*/
+ * Variable
+ */
 
 // Constructor
 BasisPrimitiveVariable::BasisPrimitiveVariable(BasisPrimitive* ptr, bool constant)
@@ -48,8 +48,8 @@ BasisPrimitiveVariable::~BasisPrimitiveVariable()
 }
 
 /*
-// Accessors
-*/
+ * Accessors
+ */
 
 // Accessor data
 Accessor BasisPrimitiveVariable::accessorData[BasisPrimitiveVariable::nAccessors] = {
@@ -313,8 +313,8 @@ void BasisPrimitiveVariable::printAccessors()
 }
 
 /*
-// Variable Array
-*/
+ * Variable Array
+ */
 
 // Constructor
 BasisPrimitiveArrayVariable::BasisPrimitiveArrayVariable(TreeNode* sizeexpr, bool constant)

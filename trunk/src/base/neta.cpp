@@ -107,8 +107,8 @@ const char* Neta::netaLogic(NetaLogicType lt)
 }
 
 /*
-// Neta Parent Structure
-*/
+ * Neta Parent Structure
+ */
 
 Neta::Neta() : ListItem<Neta>()
 {
@@ -362,8 +362,8 @@ bool Neta::createBasic(Atom* i, bool explicitBondType, double torsionTolerance)
 }
 
 /*
-// NetaNode
-*/
+ * NetaNode
+ */
 
 NetaNode::NetaNode() : ListItem<NetaNode>()
 {
@@ -433,8 +433,8 @@ void NetaNode::printScore(int level, const char* fmt, ...)
 }
 
 /*
-// NetaContextNode
-*/
+ * NetaContextNode
+ */
 
 // Constructor
 NetaContextNode::NetaContextNode()
@@ -489,8 +489,8 @@ NetaNode* NetaContextNode::clone(Neta* newparent)
 }
 
 /*
-// NetaLogicNode
-*/
+ * NetaLogicNode
+ */
 
 // Constructor
 NetaLogicNode::NetaLogicNode(Neta::NetaLogicType nt, NetaNode* arg1, NetaNode* arg2)
@@ -606,8 +606,8 @@ NetaNode* NetaLogicNode::clone(Neta* newparent)
 }
 
 /*
-// NetaBoundNode
-*/
+ * NetaBoundNode
+ */
 
 // Constructor
 NetaBoundNode::NetaBoundNode()
@@ -875,8 +875,8 @@ int NetaBoundNode::score(Atom* target, Reflist<Atom,int>* nbrs, Reflist<Ring,int
 }
 
 /*
-// NetaKeywordNode
-*/
+ * NetaKeywordNode
+ */
 
 // Constructor
 NetaKeywordNode::NetaKeywordNode(Neta::NetaKeyword nk)
@@ -994,8 +994,8 @@ NetaNode* NetaKeywordNode::clone(Neta* newparent)
 }
 
 /*
-// NetaGeometryNode
-*/
+ * NetaGeometryNode
+ */
 
 // Constructor
 NetaGeometryNode::NetaGeometryNode(Atom::AtomGeometry ag)
@@ -1059,8 +1059,8 @@ NetaNode* NetaGeometryNode::clone(Neta* newparent)
 }
 
 /*
-// NetaValueNode
-*/
+ * NetaValueNode
+ */
 
 // Constructor
 NetaValueNode::NetaValueNode(Neta::NetaValue nv, Neta::NetaValueComparison nvc, int value)
@@ -1170,8 +1170,8 @@ NetaNode* NetaValueNode::clone(Neta* newparent)
 }
 
 /*
-// NetaRootNode
-*/
+ * NetaRootNode
+ */
 
 // Constructor
 NetaRootNode::NetaRootNode()
@@ -1228,8 +1228,8 @@ NetaNode* NetaRootNode::clone(Neta* newparent)
 }
 
 /*
-// NetaRingNode
-*/
+ * NetaRingNode
+ */
 
 // Constructor
 NetaRingNode::NetaRingNode()
@@ -1374,8 +1374,8 @@ NetaNode* NetaRingNode::clone(Neta* newparent)
 }
 
 /*
-// NetaChainNode
-*/
+ * NetaChainNode
+ */
 
 // Constructor
 NetaChainNode::NetaChainNode()
@@ -1551,8 +1551,8 @@ NetaNode* NetaChainNode::clone(Neta* newparent)
 }
 
 /*
-// NetaMeasurementNode
-*/
+ * NetaMeasurementNode
+ */
 
 // Constructor
 NetaMeasurementNode::NetaMeasurementNode()

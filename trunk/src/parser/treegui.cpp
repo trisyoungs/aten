@@ -27,8 +27,8 @@
 ATEN_USING_NAMESPACE
 
 /*
-// Widget Event
-*/
+ * Widget Event
+ */
 
 // Event types
 const char* EventTypeKeywords[TreeGuiWidgetEvent::nEventTypes] = { "activate", "function", "sendbool", "senddouble", "sendinteger", "sendstring", "set" };
@@ -196,8 +196,8 @@ bool TreeGuiWidgetEvent::qualifies(QString s)
 }
 
 /*
-// TreeGuiWidget
-*/
+ * TreeGuiWidget
+ */
 
 // Event properties
 const char* WidgetTypeKeywords[TreeGuiWidget::nWidgetTypes] = { "button", "check", "combo", "dialog", "doublespin", "edit", "frame", "group", "integerspin", "label", "page", "radiobutton", "radiogroup", "stack", "tab" };
@@ -1279,8 +1279,8 @@ void TreeGuiWidget::checkWidgetEvents()
 }
 
 /*
-// TreeGui
-*/
+ * TreeGui
+ */
 
 // Constructor
 TreeGui::TreeGui() : TreeGuiWidget(), ListItem<TreeGui>()

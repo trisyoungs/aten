@@ -41,8 +41,8 @@ PatternVariable::~PatternVariable()
 }
 
 /*
-// Accessors
-*/
+ * Accessors
+ */
 
 // Accessor data
 Accessor PatternVariable::accessorData[PatternVariable::nAccessors] = {
@@ -497,8 +497,8 @@ void PatternVariable::printAccessors()
 }
 
 /*
-// Variable Array
-*/
+ * Variable Array
+ */
 
 // Constructor
 PatternArrayVariable::PatternArrayVariable(TreeNode* sizeexpr, bool constant)

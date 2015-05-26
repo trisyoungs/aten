@@ -31,8 +31,8 @@
 ATEN_USING_NAMESPACE
 
 /*
-// Variable
-*/
+ * Variable
+ */
 
 // Constructor
 EnergyStoreVariable::EnergyStoreVariable(EnergyStore* ptr, bool constant)
@@ -49,8 +49,8 @@ EnergyStoreVariable::~EnergyStoreVariable()
 }
 
 /*
-// Accessors
-*/
+ * Accessors
+ */
 
 // Accessor data
 Accessor EnergyStoreVariable::accessorData[EnergyStoreVariable::nAccessors] = {
@@ -323,8 +323,8 @@ void EnergyStoreVariable::printAccessors()
 }
 
 /*
-// Variable Array
-*/
+ * Variable Array
+ */
 
 // Constructor
 EnergyStoreArrayVariable::EnergyStoreArrayVariable(TreeNode* sizeexpr, bool constant)

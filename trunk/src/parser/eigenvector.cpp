@@ -31,8 +31,8 @@
 ATEN_USING_NAMESPACE
 
 /*
-// Variable
-*/
+ * Variable
+ */
 
 // Constructor
 EigenvectorVariable::EigenvectorVariable(Eigenvector* ptr, bool constant)
@@ -49,8 +49,8 @@ EigenvectorVariable::~EigenvectorVariable()
 }
 
 /*
-// Accessors
-*/
+ * Accessors
+ */
 
 // Accessor data
 Accessor EigenvectorVariable::accessorData[EigenvectorVariable::nAccessors] = {
@@ -334,8 +334,8 @@ void EigenvectorVariable::printAccessors()
 }
 
 /*
-// Variable Array
-*/
+ * Variable Array
+ */
 
 // Constructor
 EigenvectorArrayVariable::EigenvectorArrayVariable(TreeNode* sizeexpr, bool constant)

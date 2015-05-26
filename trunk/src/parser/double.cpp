@@ -28,8 +28,8 @@
 ATEN_USING_NAMESPACE
 
 /*
-// Variable
-*/
+ * Variable
+ */
 
 // Constructor
 DoubleVariable::DoubleVariable(double d, bool constant) : doubleData_(d)
@@ -105,8 +105,8 @@ void DoubleVariable::nodePrint(int offset, const char* prefix)
 }
 
 /*
-// Variable Array
-*/
+ * Variable Array
+ */
 
 // Constructor
 DoubleArrayVariable::DoubleArrayVariable(TreeNode* sizeexpr, bool constant)

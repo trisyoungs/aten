@@ -144,8 +144,8 @@ void MatrixVariable::nodePrint(int offset, const char* prefix)
 }
 
 /*
-// Accessors
-*/
+ * Accessors
+ */
 
 // Accessor data
 Accessor MatrixVariable::accessorData[MatrixVariable::nAccessors] = {
@@ -386,8 +386,8 @@ bool MatrixVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 }
 
 /*
-// Variable Array
-*/
+ * Variable Array
+ */
 
 // Constructor
 MatrixArrayVariable::MatrixArrayVariable(TreeNode* sizeexpr, bool constant) : arraySizeExpression_(sizeexpr)

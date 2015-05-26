@@ -155,8 +155,8 @@ int Aten::cancelImageRedirect()
 }
 
 /*
-// Locations
-*/
+ * Locations
+ */
 
 // Return the home directory path
 QDir Aten::homeDir() const
@@ -244,8 +244,8 @@ void Aten::setDirectories()
 }
 
 /*
-// Grid clipboard functions
-*/
+ * Grid clipboard functions
+ */
 
 // Copy specified grid
 void Aten::copyGrid(Grid* g)

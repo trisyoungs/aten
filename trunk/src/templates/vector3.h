@@ -214,8 +214,8 @@ template <class T> T Vec3<T>::get(int index) const
 }
 
 /*
-// Operators
-*/
+ * Operators
+ */
 
 // Assignment from single value
 template <class T> void Vec3<T>::operator=(T a)
@@ -379,8 +379,8 @@ template <class T> T &Vec3<T>::operator[](int index)
 }
 
 /*
-// Methods
-*/
+ * Methods
+ */
 
 // Return vector of absolute elements
 template <class T> Vec3<T> Vec3<T>::abs() const

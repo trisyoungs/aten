@@ -542,8 +542,8 @@ void LineParser::getAllArgsDelim(int optionMask)
 }
 
 /*
-// Delimited Parsing Routines
-*/
+ * Delimited Parsing Routines
+ */
 
 // Parse delimited (from file)
 int LineParser::getArgsDelim(int optionMask)
@@ -998,8 +998,8 @@ int LineParser::skipLines(int nlines)
 }
 
 /*
-// Argument Data
-*/
+ * Argument Data
+ */
 
 // Returns number of arguments grabbed from last parse
 int LineParser::nArgs() const

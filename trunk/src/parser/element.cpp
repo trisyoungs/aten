@@ -41,8 +41,8 @@ ElementVariable::~ElementVariable()
 }
 
 /*
-// Accessors
-*/
+ * Accessors
+ */
 
 // Accessor data
 Accessor ElementVariable::accessorData[ElementVariable::nAccessors] = {

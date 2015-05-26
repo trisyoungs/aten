@@ -192,8 +192,8 @@ Cli cliSwitches[] = {
 };
 
 /*
-// Member functions
-*/
+ * Member functions
+ */
 // Search for short option
 Cli::CliSwitch Cli::cliSwitch(char c)
 {

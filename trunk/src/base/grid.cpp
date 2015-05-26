@@ -187,8 +187,8 @@ void Grid::operator=(Grid& source)
 }
 
 /*
-// Identity
-*/
+ * Identity
+ */
 
 // Set name of Grid data
 void Grid::setName(QString s)
@@ -251,8 +251,8 @@ void Grid::setParent(Model* parent)
 }
 
 /*
-// Data
-*/
+ * Data
+ */
 
 
 // Clear all data

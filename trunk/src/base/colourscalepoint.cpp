@@ -82,8 +82,8 @@ double* ColourScalePoint::colour()
 }
 
 /*
-// Colour scale delta
-*/
+ * Colour scale delta
+ */
 
 // Constructor
 ColourScaleDelta::ColourScaleDelta() : ListItem<ColourScaleDelta>()

@@ -28,8 +28,8 @@
 ATEN_USING_NAMESPACE
 
 /*
-// Format Chunks
-*/
+ * Format Chunks
+ */
 
 // Constructor
 FormatChunk::FormatChunk(ChunkType type, QString cFormat, TreeNode* arg, VTypes::DataType retrieveType) : ListItem<FormatChunk>()
@@ -88,8 +88,8 @@ VTypes::DataType FormatChunk::retrieveType()
 }
 
 /*
-// Format
-*/
+ * Format
+ */
 
 // Constructor
 Format::Format(Refitem<TreeNode,int>* firstarg)

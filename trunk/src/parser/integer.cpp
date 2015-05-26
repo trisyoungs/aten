@@ -24,8 +24,8 @@
 ATEN_USING_NAMESPACE
 
 /*
-// Variable
-*/
+ * Variable
+ */
 
 // Constructor
 IntegerVariable::IntegerVariable(int i, bool constant) : integerData_(i)
@@ -86,8 +86,8 @@ void IntegerVariable::nodePrint(int offset, const char* prefix)
 }
 
 /*
-// Variable Array
-*/
+ * Variable Array
+ */
 
 // Constructor
 IntegerArrayVariable::IntegerArrayVariable(TreeNode* sizeexpr, bool constant)

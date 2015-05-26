@@ -125,8 +125,8 @@ void VectorVariable::nodePrint(int offset, const char* prefix)
 }
 
 /*
-// Accessors
-*/
+ * Accessors
+ */
 
 // Accessor data
 Accessor VectorVariable::accessorData[VectorVariable::nAccessors] = {
@@ -358,8 +358,8 @@ bool VectorVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 }
 
 /*
-// Variable Array
-*/
+ * Variable Array
+ */
 
 // Constructor
 VectorArrayVariable::VectorArrayVariable(TreeNode* sizeexpr, bool constant) : arraySizeExpression_(sizeexpr)

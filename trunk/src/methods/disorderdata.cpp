@@ -130,8 +130,8 @@ void DisorderData::copyTo(Model* target)
 }
 
 /*
-// Component Addition
-*/
+ * Component Addition
+ */
 
 // Prepare copy of sourcemodel in random position (and orientation) in assigned partition
 void DisorderData::prepareCandidate(const Matrix& volumeElement)

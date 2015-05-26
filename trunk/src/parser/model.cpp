@@ -27,8 +27,8 @@
 ATEN_USING_NAMESPACE
 
 /*
-// Variable
-*/
+ * Variable
+ */
 
 // Constructor
 ModelVariable::ModelVariable(Model* ptr, bool constant)
@@ -45,8 +45,8 @@ ModelVariable::~ModelVariable()
 }
 
 /*
-// Accessors
-*/
+ * Accessors
+ */
 
 // Accessor data
 Accessor ModelVariable::accessorData[ModelVariable::nAccessors] = {
@@ -866,8 +866,8 @@ void ModelVariable::printAccessors()
 }
 
 /*
-// Variable Array
-*/
+ * Variable Array
+ */
 
 // Constructor
 ModelArrayVariable::ModelArrayVariable(TreeNode* sizeexpr, bool constant)

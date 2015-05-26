@@ -24,8 +24,8 @@
 ATEN_USING_NAMESPACE
 
 /*
-// Variable
-*/
+ * Variable
+ */
 
 /*
 // Set / Get
@@ -74,8 +74,8 @@ void PointerVariable::nodePrint(int offset, const char* prefix)
 }
 
 /*
-// Variable Array
-*/
+ * Variable Array
+ */
 
 // Destructor
 PointerArrayVariable::~PointerArrayVariable()

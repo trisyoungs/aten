@@ -27,8 +27,8 @@
 ATEN_USING_NAMESPACE
 
 /*
-// Variable
-*/
+ * Variable
+ */
 
 // Constructor
 GridVariable::GridVariable(Grid* ptr, bool constant)
@@ -45,8 +45,8 @@ GridVariable::~GridVariable()
 }
 
 /*
-// Accessors
-*/
+ * Accessors
+ */
 
 // Accessor data
 Accessor GridVariable::accessorData[GridVariable::nAccessors] = {
@@ -595,8 +595,8 @@ void GridVariable::printAccessors()
 }
 
 /*
-// Variable Array
-*/
+ * Variable Array
+ */
 
 // Constructor
 GridArrayVariable::GridArrayVariable(TreeNode* sizeexpr, bool constant)

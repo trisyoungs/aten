@@ -25,8 +25,8 @@
 ATEN_USING_NAMESPACE
 
 /*
-// Variable
-*/
+ * Variable
+ */
 
 // Constructor
 SiteVariable::SiteVariable(Site* ptr, bool constant)
@@ -43,8 +43,8 @@ SiteVariable::~SiteVariable()
 }
 
 /*
-// Accessors
-*/
+ * Accessors
+ */
 
 // Accessor data
 Accessor SiteVariable::accessorData[SiteVariable::nAccessors] = {
@@ -290,8 +290,8 @@ void SiteVariable::printAccessors()
 }
 
 /*
-// Variable Array
-*/
+ * Variable Array
+ */
 
 // Constructor
 SiteArrayVariable::SiteArrayVariable(TreeNode* sizeexpr, bool constant)

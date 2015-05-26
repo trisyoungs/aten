@@ -113,8 +113,8 @@ Model* Atom::parent()
 }
 
 /*
-// Coordinates
-*/
+ * Coordinates
+ */
 
 Vec3<double>& Atom::r()
 {
@@ -122,8 +122,8 @@ Vec3<double>& Atom::r()
 }
 
 /*
-// Forces
-*/
+ * Forces
+ */
 
 Vec3<double>& Atom::f()
 {
@@ -131,8 +131,8 @@ Vec3<double>& Atom::f()
 }
 
 /*
-// Velocities
-*/
+ * Velocities
+ */
 
 Vec3<double>& Atom::v()
 {
@@ -140,8 +140,8 @@ Vec3<double>& Atom::v()
 }
 
 /*
-// Character
-*/
+ * Character
+ */
 
 // Sets the atom charge
 void Atom::setCharge(double d)
@@ -453,8 +453,8 @@ bool Atom::isHidden() const
 }
 
 /*
-// Identity
-*/
+ * Identity
+ */
 
 // Sets the atom id
 void Atom::setId(int newid)
@@ -529,8 +529,8 @@ int Atom::bit()
 }
 
 /*
-// Rendering
-*/
+ * Rendering
+ */
 
 // Sets the drawing style of the atom
 void Atom::setStyle(Prefs::DrawStyle style)

@@ -25,8 +25,8 @@
 ATEN_USING_NAMESPACE
 
 /*
-// KVPair
-*/
+ * KVPair
+ */
 
 // Constructor
 KVPair::KVPair(QString key, QString value) : ListItem<KVPair>()
@@ -55,8 +55,8 @@ QString KVPair::value() const
 }
 
 /*
-// KVMap
-*/
+ * KVMap
+ */
 
 // Constructor
 KVMap::KVMap()

@@ -805,8 +805,8 @@ TreeNode* TreeNode::argNode(int i)
 }
 
 /*
-// Virtuals
-*/
+ * Virtuals
+ */
 
 // Search accessors (if any) available for node
 StepNode* TreeNode::findAccessor(QString name, TreeNode* arrayIndex, TreeNode* argList)

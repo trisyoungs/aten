@@ -26,8 +26,8 @@
 ATEN_USING_NAMESPACE
 
 /*
-// ClipAtom functions
-*/
+ * ClipAtom functions
+ */
 
 // Constructors
 ClipAtom::ClipAtom() : ListItem<ClipAtom>()
@@ -62,8 +62,8 @@ Atom &ClipAtom::atom()
 }
 
 /*
-// ClipBond functions
-*/
+ * ClipBond functions
+ */
 
 ClipBond::ClipBond() : ListItem<ClipBond>()
 {
@@ -104,8 +104,8 @@ ClipAtom* ClipBond::atomJ()
 }
 
 /*
-// Clipboard functions
-*/
+ * Clipboard functions
+ */
 
 // Return number of atoms in Clipboard
 int Clipboard::nAtoms()
