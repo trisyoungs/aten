@@ -29,8 +29,8 @@
 ATEN_USING_NAMESPACE
 
 /*
-// Variable
-*/
+ * Variable
+ */
 
 // Constructor
 AtomVariable::AtomVariable(Atom* ptr, bool constant)
@@ -47,8 +47,8 @@ AtomVariable::~AtomVariable()
 }
 
 /*
-// Accessors
-*/
+ * Accessors
+ */
 
 // Accessor data
 Accessor AtomVariable::accessorData[AtomVariable::nAccessors] = {
@@ -588,8 +588,8 @@ void AtomVariable::printAccessors()
 }
 
 /*
-// Variable Array
-*/
+ * Variable Array
+ */
 
 // Constructor
 AtomArrayVariable::AtomArrayVariable(TreeNode* sizeexpr, bool constant)

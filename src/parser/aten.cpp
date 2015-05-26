@@ -87,8 +87,8 @@ void AtenVariable::nodePrint(int offset, const char* prefix)
 }
 
 /*
-// Accessors
-*/
+ * Accessors
+ */
 
 // Accessor data
 Accessor AtenVariable::accessorData[AtenVariable::nAccessors] = {

@@ -29,8 +29,8 @@
 ATEN_USING_NAMESPACE
 
 /*
-// Variable
-*/
+ * Variable
+ */
 
 // Constructor
 ForcefieldAtomVariable::ForcefieldAtomVariable(ForcefieldAtom* ptr, bool constant)
@@ -47,8 +47,8 @@ ForcefieldAtomVariable::~ForcefieldAtomVariable()
 }
 
 /*
-// Accessors
-*/
+ * Accessors
+ */
 
 // Accessor data
 Accessor ForcefieldAtomVariable::accessorData[ForcefieldAtomVariable::nAccessors] = {
@@ -473,8 +473,8 @@ void ForcefieldAtomVariable::printAccessors()
 }
 
 /*
-// Variable Array
-*/
+ * Variable Array
+ */
 
 // Constructor
 ForcefieldAtomArrayVariable::ForcefieldAtomArrayVariable(TreeNode* sizeexpr, bool constant)

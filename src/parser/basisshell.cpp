@@ -30,8 +30,8 @@
 ATEN_USING_NAMESPACE
 
 /*
-// Variable
-*/
+ * Variable
+ */
 
 // Constructor
 BasisShellVariable::BasisShellVariable(BasisShell* ptr, bool constant)
@@ -48,8 +48,8 @@ BasisShellVariable::~BasisShellVariable()
 }
 
 /*
-// Accessors
-*/
+ * Accessors
+ */
 
 // Accessor data
 Accessor BasisShellVariable::accessorData[BasisShellVariable::nAccessors] = {
@@ -329,8 +329,8 @@ void BasisShellVariable::printAccessors()
 }
 
 /*
-// Variable Array
-*/
+ * Variable Array
+ */
 
 // Constructor
 BasisShellArrayVariable::BasisShellArrayVariable(TreeNode* sizeexpr, bool constant)

@@ -25,8 +25,8 @@
 ATEN_USING_NAMESPACE
 
 /*
-// BatchExport
-*/
+ * BatchExport
+ */
 
 // Set format to use in export
 void Aten::setExportFilter(Tree* filter)
@@ -70,8 +70,8 @@ void Aten::exportModels()
 }
 
 /*
-// Batch Process
-*/
+ * Batch Process
+ */
 
 // Add set of batch commands
 Program  *Aten::addBatchCommand()

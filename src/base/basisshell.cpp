@@ -82,8 +82,8 @@ const char* BasisShell::sphericalFunction(BasisShellType bft, int index)
 }
 
 /*
-// BasisPrimitive
-*/
+ * BasisPrimitive
+ */
 
 // Constructor
 BasisPrimitive::BasisPrimitive() : ListItem<BasisPrimitive>()
@@ -125,8 +125,8 @@ double BasisPrimitive::coefficient(int index)
 }
 
 /*
-// BasisShell
-*/
+ * BasisShell
+ */
 
 // Constructor
 BasisShell::BasisShell() : ListItem<BasisShell>()

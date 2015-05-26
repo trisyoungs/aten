@@ -38,8 +38,8 @@ UndoEvent::~UndoEvent()
 }
 
 /*
-// AtomEvent
-*/
+ * AtomEvent
+ */
 
 // Constructor
 AtomEvent::AtomEvent() : UndoEvent()
@@ -100,8 +100,8 @@ void AtomEvent::print()
 }
 
 /*
-// Bond Event
-*/
+ * Bond Event
+ */
 
 // Constructor
 BondEvent::BondEvent() : UndoEvent()
@@ -155,8 +155,8 @@ void BondEvent::print()
 }
 
 /*
-// BondType Event
-*/
+ * BondType Event
+ */
 
 // Constructor
 BondTypeEvent::BondTypeEvent() : UndoEvent()
@@ -209,8 +209,8 @@ void BondTypeEvent::print()
 }
 
 /*
-// Cell Event
-*/
+ * Cell Event
+ */
 
 // Constructor
 CellEvent::CellEvent() : UndoEvent()
@@ -261,8 +261,8 @@ void CellEvent::print()
 }
 
 /*
-// Charge Event
-*/
+ * Charge Event
+ */
 
 // Constructor
 ChargeEvent::ChargeEvent() : UndoEvent()
@@ -312,8 +312,8 @@ void ChargeEvent::print()
 }
 
 /*
-// Glyph Event
-*/
+ * Glyph Event
+ */
 
 // Constructor
 GlyphEvent::GlyphEvent() : UndoEvent()
@@ -354,8 +354,8 @@ void GlyphEvent::print()
 }
 
 /*
-// Colour Atom Event
-*/
+ * Colour Atom Event
+ */
 
 // Constructor
 ColourEvent::ColourEvent() : UndoEvent()
@@ -461,8 +461,8 @@ void FixFreeEvent::print()
 }
 
 /*
-// Hide Event
-*/
+ * Hide Event
+ */
 
 // Constructor
 HideEvent::HideEvent() : UndoEvent()
@@ -511,8 +511,8 @@ void HideEvent::print()
 }
 
 /*
-// IdShift Event
-*/
+ * IdShift Event
+ */
 
 // Constructor
 IdShiftEvent::IdShiftEvent() : UndoEvent()
@@ -559,8 +559,8 @@ void IdShiftEvent::print()
 }
 
 /*
-// IdSwap Event
-*/
+ * IdSwap Event
+ */
 
 // Constructor
 IdSwapEvent::IdSwapEvent() : UndoEvent()
@@ -600,8 +600,8 @@ void IdSwapEvent::print()
 }
 
 /*
-// Label Event
-*/
+ * Label Event
+ */
 
 // Constructor
 LabelEvent::LabelEvent() : UndoEvent()
@@ -651,8 +651,8 @@ void LabelEvent::print()
 }
 
 /*
-// Measurement Event
-*/
+ * Measurement Event
+ */
 
 // Constructor
 MeasurementEvent::MeasurementEvent() : UndoEvent()
@@ -713,8 +713,8 @@ void MeasurementEvent::print()
 }
 
 /*
-// Model Rename Event
-*/
+ * Model Rename Event
+ */
 
 // Constructor
 ModelRenameEvent::ModelRenameEvent() : UndoEvent()
@@ -759,8 +759,8 @@ void ModelRenameEvent::print()
 }
 
 /*
-// Selection Event
-*/
+ * Selection Event
+ */
 
 // Constructor
 SelectEvent::SelectEvent() : UndoEvent()
@@ -809,8 +809,8 @@ void SelectEvent::print()
 }
 
 /*
-// Translate Event
-*/
+ * Translate Event
+ */
 
 // Constructor
 TranslateEvent::TranslateEvent() : UndoEvent()
@@ -859,8 +859,8 @@ void TranslateEvent::print()
 }
 
 /*
-// Style Event
-*/
+ * Style Event
+ */
 
 // Constructor
 StyleEvent::StyleEvent() : UndoEvent()
@@ -910,8 +910,8 @@ void StyleEvent::print()
 }
 
 /*
-// Transmute Event
-*/
+ * Transmute Event
+ */
 
 // Constructor
 TransmuteEvent::TransmuteEvent() : UndoEvent()
@@ -961,8 +961,8 @@ void TransmuteEvent::print()
 }
 
 /*
-// Base UndoEvent
-*/
+ * Base UndoEvent
+ */
 
 // Redo stored change
 void UndoEvent::redo(Model* m)

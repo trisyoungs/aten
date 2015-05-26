@@ -31,8 +31,8 @@
 ATEN_USING_NAMESPACE
 
 /*
-// Variable
-*/
+ * Variable
+ */
 
 // Constructor
 CellVariable::CellVariable(UnitCell* ptr, bool constant)
@@ -49,8 +49,8 @@ CellVariable::~CellVariable()
 }
 
 /*
-// Accessors
-*/
+ * Accessors
+ */
 
 // Accessor data
 Accessor CellVariable::accessorData[CellVariable::nAccessors] = {
@@ -487,8 +487,8 @@ void CellVariable::printAccessors()
 }
 
 /*
-// Variable Array
-*/
+ * Variable Array
+ */
 
 // Constructor
 CellArrayVariable::CellArrayVariable(TreeNode* sizeexpr, bool constant)

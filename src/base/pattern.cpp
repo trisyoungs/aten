@@ -78,8 +78,8 @@ Pattern::~Pattern()
 }
 
 /*
-// PatternAtom
-*/
+ * PatternAtom
+ */
 
 // Set ff type of pattern atom
 void PatternAtom::setData(ForcefieldAtom* ffa)
@@ -118,8 +118,8 @@ void PatternAtom::setForcefieldDataId(int id)
 }
 
 /*
-// Pattern Bound
-*/
+ * Pattern Bound
+ */
 
 // Set atom id
 void PatternBound::setAtomId(int n, int i)
@@ -158,8 +158,8 @@ void PatternBound::setForcefieldDataId(int id)
 }
 
 /*
-// Pattern
-*/
+ * Pattern
+ */
 
 // Add the atom data specified
 void Pattern::addAtomData(Atom* i, ForcefieldAtom* ffa)
@@ -656,8 +656,8 @@ void Pattern::setContents(int newstartAtom_, int newnMolecules_, int newnAtoms_)
 }
 
 /*
-// Expression
-*/
+ * Expression
+ */
 
 // Remove energy expression
 void Pattern::deleteExpression()
@@ -1187,8 +1187,8 @@ void Pattern::selectAtom(int id, bool markonly, bool deselect)
 }
 
 /*
-// Atomic Routines
-*/
+ * Atomic Routines
+ */
 
 // Append atom
 Atom* Pattern::appendCopy(Atom* source)
@@ -1227,8 +1227,8 @@ void Pattern::deleteAtomsFromEnd(int count)
 }
 
 /*
-// Ring Routines
-*/
+ * Ring Routines
+ */
 
 // Find rings
 void Pattern::findRings()
@@ -1590,8 +1590,8 @@ void printstuff(Pattern* p)
 }
 
 /*
-// Atom typing
-*/
+ * Atom typing
+ */
 
 // Describe atom / ring types
 void Pattern::describeAtoms()

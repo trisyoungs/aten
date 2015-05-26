@@ -982,8 +982,8 @@ const VariableList& Tree::globalVariables() const
 }
 
 /*
-// Paths
-*/
+ * Paths
+ */
 
 // Create a new path on the stack
 TreeNode* Tree::createPath(TreeNode* node)
@@ -1088,8 +1088,8 @@ Refitem<ScopeNode,int>* Tree::scopeNodes()
 }
 
 /*
-// Local Functions
-*/
+ * Local Functions
+ */
 
 // Search for existing local function
 Tree* Tree::findLocalFunction(QString functionName) const
@@ -1133,8 +1133,8 @@ bool Tree::addLocalFunctionArguments(TreeNode* argList)
 }
 
 /*
-// Filter Properties
-*/
+ * Filter Properties
+ */
 
 // Return whether this tree is a filter
 bool Tree::isFilter() const

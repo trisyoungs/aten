@@ -27,8 +27,8 @@
 ATEN_USING_NAMESPACE
 
 /*
-// Variable
-*/
+ * Variable
+ */
 
 // Constructor
 ZMatrixVariable::ZMatrixVariable(ZMatrix* ptr, bool constant)
@@ -45,8 +45,8 @@ ZMatrixVariable::~ZMatrixVariable()
 }
 
 /*
-// Accessors
-*/
+ * Accessors
+ */
 
 // Accessor data
 Accessor ZMatrixVariable::accessorData[ZMatrixVariable::nAccessors] = {
@@ -528,8 +528,8 @@ void ZMatrixVariable::printAccessors()
 }
 
 /*
-// Variable Array
-*/
+ * Variable Array
+ */
 
 // Constructor
 ZMatrixArrayVariable::ZMatrixArrayVariable(TreeNode* sizeexpr, bool constant)

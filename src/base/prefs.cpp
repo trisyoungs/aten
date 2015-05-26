@@ -365,8 +365,8 @@ Prefs::Prefs()
 }
 
 /*
-// Rendering
-*/
+ * Rendering
+ */
 
 // Return whether to draw rotation globe
 bool Prefs::viewRotationGlobe()
@@ -643,8 +643,8 @@ bool Prefs::transparentSelectionStyle()
 }
 
 /*
-// GL Options
-*/
+ * GL Options
+ */
 
 // Set status of fog (depth cueing)
 void Prefs::setDepthCue(bool status)
@@ -768,8 +768,8 @@ GLint Prefs::shininess() const
 }
 
 /*
-// Colours
-*/
+ * Colours
+ */
 
 // Return the specified colour
 double* Prefs::colour(ObjectColour c)
@@ -812,8 +812,8 @@ void Prefs::setColour(ObjectColour c, int i, double value)
 }
 
 /*
-// Edit Preferences
-*/
+ * Edit Preferences
+ */
 
 // Return the bonding tolerance for automatic calculation
 double Prefs::bondTolerance() const
@@ -906,8 +906,8 @@ double Prefs::hydrogenDistance() const
 }
 
 /*
-// Interaction Preferences
-*/
+ * Interaction Preferences
+ */
 
 // Sets the action for the specified mouse button
 void Prefs::setMouseAction(Prefs::MouseButton mb, Prefs::MouseAction ma)
@@ -960,8 +960,8 @@ double Prefs::zoomThrottle() const
 }
 
 /*
-// File Preferences
-*/
+ * File Preferences
+ */
 
 // Sets whether to calculate bonding on model load
 void Prefs::setBondOnLoad(Choice s)
@@ -1094,8 +1094,8 @@ bool Prefs::keepView() const
 }
 
 /*
-// Units and Conversion
-*/
+ * Units and Conversion
+ */
 
 // Set the density unit to use
 void Prefs::setDensityUnit(Prefs::DensityUnit du)
@@ -1170,8 +1170,8 @@ double Prefs::convertEnergy(double energy, EnergyUnit fromUnit, EnergyUnit toUni
 }
 
 /*
-// Method Preferences
-*/
+ * Method Preferences
+ */
 
 // Set the model update frequency
 void Prefs::setModelUpdate(int n)
@@ -1715,8 +1715,8 @@ void Prefs::setHydrogenBondDotRadius(double r)
 }
 
 /*
-// External Programs
-*/
+ * External Programs
+ */
 
 // Set temp directory
 void Prefs::setTempDir(QDir path)

@@ -32,8 +32,8 @@
 ATEN_USING_NAMESPACE
 
 /*
-// Variable
-*/
+ * Variable
+ */
 
 // Constructor
 BondVariable::BondVariable(Bond* ptr, bool constant)
@@ -50,8 +50,8 @@ BondVariable::~BondVariable()
 }
 
 /*
-// Accessors
-*/
+ * Accessors
+ */
 
 // Accessor data
 Accessor BondVariable::accessorData[BondVariable::nAccessors] = {
@@ -323,8 +323,8 @@ void BondVariable::printAccessors()
 }
 
 /*
-// Variable Array
-*/
+ * Variable Array
+ */
 
 // Constructor
 BondArrayVariable::BondArrayVariable(TreeNode* sizeexpr, bool constant)

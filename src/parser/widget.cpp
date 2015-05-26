@@ -41,8 +41,8 @@ WidgetVariable::~WidgetVariable()
 }
 
 /*
-// Accessors
-*/
+ * Accessors
+ */
 
 // Accessor data
 Accessor WidgetVariable::accessorData[WidgetVariable::nAccessors] = {
@@ -541,8 +541,8 @@ void WidgetVariable::printAccessors()
 }
 
 /*
-// Variable Array
-*/
+ * Variable Array
+ */
 
 // Constructor
 WidgetArrayVariable::WidgetArrayVariable(TreeNode* sizeexpr, bool constant)

@@ -47,8 +47,8 @@ int WrapInt::value()
 }
 
 /*
-// Operators
-*/
+ * Operators
+ */
 
 // Assignment
 void WrapInt::operator=(int i)

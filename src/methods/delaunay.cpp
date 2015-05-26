@@ -22,8 +22,8 @@
 #include "methods/delaunay.h"
 
 /*
-// Delaunay Edge
-*/
+ * Delaunay Edge
+ */
 
 // Constructor
 DelaunayEdge::DelaunayEdge(GridPoint* p1, GridPoint* p2) : ListItem<DelaunayEdge>()
@@ -78,8 +78,8 @@ void DelaunayEdge::print()
 }
 
 /*
-// Delaunay Triangle
-*/
+ * Delaunay Triangle
+ */
 
 // Constructor
 DelaunayTriangle::DelaunayTriangle(DelaunayEdge *edgea, DelaunayEdge *edgeb, DelaunayEdge *edgec) : ListItem<DelaunayTriangle>()
@@ -191,8 +191,8 @@ void DelaunayTriangle::print()
 }
 
 /*
-// Delaunay Tetrahedron
-*/
+ * Delaunay Tetrahedron
+ */
 
 // Constructor
 DelaunayTetrahedron::DelaunayTetrahedron(DelaunayTriangle *t1, DelaunayTriangle *t2, DelaunayTriangle *t3, DelaunayTriangle *t4) : ListItem<DelaunayTetrahedron>()
@@ -310,8 +310,8 @@ void DelaunayTetrahedron::print()
 }
 
 /*
-// Delaunay Surface
-*/
+ * Delaunay Surface
+ */
 
 // Constructor
 DelaunaySurface::DelaunaySurface(Grid* g)
@@ -424,8 +424,8 @@ DelaunayTetrahedron *DelaunaySurface::tetrahedra()
 }
 
 /*
-// Create
-*/
+ * Create
+ */
 
 // Create mesh from 2D data
 void DelaunaySurface::create2DMesh(Grid* g)

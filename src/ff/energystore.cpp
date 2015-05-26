@@ -69,8 +69,8 @@ void EnergyStore::initialise()
 }
 
 /*
-// Energy components
-*/
+ * Energy components
+ */
 
 // Deallocate arrays
 void EnergyStore::deallocate()
@@ -342,8 +342,8 @@ double EnergyStore::electrostatic()
 }
 
 /*
-// Printing
-*/
+ * Printing
+ */
 
 // Print out all energy terms
 void EnergyStore::print()

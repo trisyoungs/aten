@@ -43,8 +43,8 @@ PreferencesVariable::~PreferencesVariable()
 }
 
 /*
-// Accessors
-*/
+ * Accessors
+ */
 
 // Accessor data - name, type, arraysize, ro?
 Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {

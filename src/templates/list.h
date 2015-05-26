@@ -614,8 +614,8 @@ template <class T> T** List<T>::array()
 }
 
 /*
-// Item Moves
-*/
+ * Item Moves
+ */
 
 /*!
  * \brief Swap items by pointer
@@ -837,8 +837,8 @@ template <class T> void List<T>::swapByIndex(int id1, int id2)
 }
 
 /*
-// Operators
-*/
+ * Operators
+ */
 
 /*!
  * \brief Assignment operator =

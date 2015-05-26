@@ -81,8 +81,8 @@ template <class T, class D> class PairTable
 };
 
 /*
-// PointerPair
-*/
+ * PointerPair
+ */
 
 // Constructor
 template <class T, class D> PointerPair<T,D>::PointerPair(T *p1, T *p2, int size) : ListItem< PointerPair<T,D> >()
@@ -139,8 +139,8 @@ template <class T, class D> D PointerPair<T,D>::data(int id) const
 }
 
 /*
-// PairTable
-*/
+ * PairTable
+ */
 
 // Constructor
 template <class T, class D> PairTable<T,D>::PairTable()

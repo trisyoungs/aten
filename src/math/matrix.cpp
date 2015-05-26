@@ -30,8 +30,8 @@ Matrix::Matrix()
 }
 
 /*
-// Operators
-*/
+ * Operators
+ */
 
 // Matrix multiply (operator *) (return new matrix)
 Matrix Matrix::operator*(const Matrix& B) const
@@ -314,8 +314,8 @@ void Matrix::invert()
 }
 
 /*
-// Column Operations
-*/
+ * Column Operations
+ */
 
 // Copy column contents to supplied Vec3
 Vec3<double> Matrix::columnAsVec3(int col)
@@ -467,8 +467,8 @@ void Matrix::orthogonaliseColumn(int targetcol, int orthocol1, int orthocol2)
 }
 
 /*
-// Rotations
-*/
+ * Rotations
+ */
 
 // Create rotation matrix about X
 void Matrix::createRotationX(double angle)
@@ -672,8 +672,8 @@ void Matrix::applyRotationAxis(double ax, double ay, double az, double angle, bo
 }
 
 /*
-// Translations
-*/
+ * Translations
+ */
 
 // Apply a translation to the matrix (as glTranslated would do)
 void Matrix::createTranslation(double dx, double dy, double dz)
@@ -759,8 +759,8 @@ void Matrix::addTranslation(Vec3<double> v)
 }
 
 /*
-// Scaling
-*/
+ * Scaling
+ */
 
 // Apply a general scaling to the matrix (as glScaled would do)
 void Matrix::applyScaling(double scalex, double scaley, double scalez)
@@ -826,8 +826,8 @@ void Matrix::applyShearX(double shearx)
 }
 
 /*
-// Misc
-*/
+ * Misc
+ */
 
 // Transform coordinates supplied and return as Vec3<double>
 Vec3<double> Matrix::transform(double x, double y, double z) const

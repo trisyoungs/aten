@@ -55,8 +55,8 @@ Forcefield::~Forcefield()
 }
 
 /*
-// Specifications
-*/
+ * Specifications
+ */
 
 // Sets the name of the Forcefield
 void Forcefield::setName(QString name)
@@ -95,8 +95,8 @@ void Forcefield::setEnergyUnit(Prefs::EnergyUnit eu)
 }
 
 /*
-// Types
-*/
+ * Types
+ */
 
 // Returns the number of atom types specified in the Forcefield
 int Forcefield::nTypes()
@@ -193,8 +193,8 @@ bool Forcefield::containsType(ForcefieldAtom* type)
 }
 
 /*
-// Bonding Interactions
-*/
+ * Bonding Interactions
+ */
 
 // Add bond term to the forcefield
 ForcefieldBound* Forcefield::addBond(BondFunctions::BondFunction form)
@@ -291,8 +291,8 @@ ForcefieldBound* Forcefield::findBond(QString typei, QString typej)
 }
 
 /*
-// Angle Interactions
-*/
+ * Angle Interactions
+ */
 
 // Add angle term to the forcefield
 ForcefieldBound* Forcefield::addAngle(AngleFunctions::AngleFunction form)
@@ -407,8 +407,8 @@ ForcefieldBound* Forcefield::findAngle(QString typei, QString typej, QString typ
 }
 
 /*
-// Torsion Interactions
-*/
+ * Torsion Interactions
+ */
 
 // Add torsions term to the forcefield
 ForcefieldBound* Forcefield::addTorsion(TorsionFunctions::TorsionFunction form)
@@ -513,8 +513,8 @@ ForcefieldBound* Forcefield::findTorsion(QString typei, QString typej, QString t
 }
 
 /*
-// Improper Torsion Interactions
-*/
+ * Improper Torsion Interactions
+ */
 
 // Add torsions term to the forcefield
 ForcefieldBound* Forcefield::addImproper(TorsionFunctions::TorsionFunction form)
@@ -698,8 +698,8 @@ ForcefieldBound* Forcefield::findUreyBradley(QString typei, QString typej, QStri
 }
 
 /*
-// Parameter Matching
-*/
+ * Parameter Matching
+ */
 
 // Match two forcefield type strings
 int Forcefield::matchType(QString test, QString target)
@@ -780,8 +780,8 @@ int Forcefield::matchTypes(QString testi, QString testj, QString typei, QString 
 //	10+: One or more parameters did not match
 
 /*
-// Misc
-*/
+ * Misc
+ */
 
 void Forcefield::convertParameters()
 {

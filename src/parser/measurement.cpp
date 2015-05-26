@@ -26,8 +26,8 @@
 ATEN_USING_NAMESPACE
 
 /*
-// Variable
-*/
+ * Variable
+ */
 
 // Constructor
 MeasurementVariable::MeasurementVariable(Measurement* ptr, bool constant)
@@ -44,8 +44,8 @@ MeasurementVariable::~MeasurementVariable()
 }
 
 /*
-// Accessors
-*/
+ * Accessors
+ */
 
 // Accessor data
 Accessor MeasurementVariable::accessorData[MeasurementVariable::nAccessors] = {
@@ -323,8 +323,8 @@ void MeasurementVariable::printAccessors()
 }
 
 /*
-// Variable Array
-*/
+ * Variable Array
+ */
 
 // Constructor
 MeasurementArrayVariable::MeasurementArrayVariable(TreeNode* sizeexpr, bool constant)

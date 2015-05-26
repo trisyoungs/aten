@@ -291,8 +291,8 @@ Ring::RingType Ring::type() const
 }
 
 /*
-// Methods
-*/
+ * Methods
+ */
 
 // Finalise ring
 void Ring::finalise()

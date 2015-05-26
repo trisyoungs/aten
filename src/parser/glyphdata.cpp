@@ -26,8 +26,8 @@
 ATEN_USING_NAMESPACE
 
 /*
-// Variable
-*/
+ * Variable
+ */
 
 // Constructor
 GlyphDataVariable::GlyphDataVariable(GlyphData* ptr, bool constant)
@@ -44,8 +44,8 @@ GlyphDataVariable::~GlyphDataVariable()
 }
 
 /*
-// Accessors
-*/
+ * Accessors
+ */
 
 // Accessor data
 Accessor GlyphDataVariable::accessorData[GlyphDataVariable::nAccessors] = {
@@ -323,8 +323,8 @@ void GlyphDataVariable::printAccessors()
 }
 
 /*
-// Variable Array
-*/
+ * Variable Array
+ */
 
 // Constructor
 GlyphDataArrayVariable::GlyphDataArrayVariable(TreeNode* sizeexpr, bool constant)

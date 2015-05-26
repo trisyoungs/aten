@@ -1,6 +1,5 @@
 Remove empty destructors.
 Add ObjectLists (when using CHECK)?
-Sort out comment style (still /* // */ in places).
 Move sg code to separate dir.
 Remove dialog pointers (use instances instead).
 Remove Scripts menu, and automatic loading of scripts on startup.

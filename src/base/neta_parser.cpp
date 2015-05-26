@@ -62,8 +62,8 @@ void NetaParser::printErrorInfo()
 }
 
 /*
-// Character Stream Retrieval
-*/
+ * Character Stream Retrieval
+ */
 
 // Return whether the current input stream is a file
 bool NetaParser::isFileSource()
@@ -127,8 +127,8 @@ void NetaParser::unGetChar()
 }
 
 /*
-// Node Functions
-*/
+ * Node Functions
+ */
 
 // Pop topmost node of contextStack_
 void NetaParser::popContext()

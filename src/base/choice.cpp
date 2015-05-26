@@ -36,8 +36,8 @@ Choice::Choice(Choice::ChoiceType ct)
 }
 
 /*
-// Data
-*/
+ * Data
+ */
 
 // Resolve data to supplied value (if current choice_ == Default)
 void Choice::resolve(bool defaultvalue)
@@ -46,8 +46,8 @@ void Choice::resolve(bool defaultvalue)
 }
 
 /*
-// Operators
-*/
+ * Operators
+ */
 
 // Assignment (enum)
 void Choice::operator=(Choice::ChoiceType ct)

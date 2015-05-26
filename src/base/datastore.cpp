@@ -25,8 +25,8 @@
 ATEN_USING_NAMESPACE
 
 /*
-// DataStoreItem
-*/
+ * DataStoreItem
+ */
 
 // Constructor
 DataStoreItem::DataStoreItem(QString key) : ListItem<DataStoreItem>()
@@ -48,8 +48,8 @@ ReturnValue& DataStoreItem::data()
 }
 
 /*
-// DataStore
-*/
+ * DataStore
+ */
 
 // Constructor
 DataStore::DataStore()

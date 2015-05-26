@@ -29,8 +29,8 @@
 ATEN_USING_NAMESPACE
 
 /*
-// Private Functions
-*/
+ * Private Functions
+ */
 
 // Move specified atom up in the list (to lower ID)
 void Model::shiftAtomUp(Atom* i)
@@ -135,8 +135,8 @@ void Model::moveAtomAfter(Atom* i, Atom* reference)
 }
 
 /*
-// Public Functions
-*/
+ * Public Functions
+ */
 
 // Get selection cog
 Vec3<double> Model::selectionCentreOfGeometry() const

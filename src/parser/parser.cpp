@@ -124,8 +124,8 @@ QString CommandParser::lexedName()
 }
 
 /*
-// Character Stream Retrieval
-*/
+ * Character Stream Retrieval
+ */
 
 // Return whether the current input stream is a file
 CommandParser::ParserSource CommandParser::source()
@@ -219,8 +219,8 @@ void CommandParser::unGetChar()
 }
 
 /*
-// Tree Generation
-*/
+ * Tree Generation
+ */
 
 // Perform tree generation (base function, called by generateFrom*)
 bool CommandParser::generate()

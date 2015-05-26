@@ -116,8 +116,8 @@ bool UnitCell::copy(UnitCell* source)
 }
 
 /*
-// Set
-*/
+ * Set
+ */
 
 // Remove the cell definition (i.e. set 'type' to UnitCell::NoCell)
 void UnitCell::reset()
@@ -345,8 +345,8 @@ double UnitCell::density() const
 }
 
 /*
-// Spacegroup
-*/
+ * Spacegroup
+ */
 
 // Set spacegroup from supplied spacegroup name
 bool UnitCell::setSpacegroup(QString name, bool forceRhombohedral)
@@ -434,8 +434,8 @@ Generator* UnitCell::generators()
 }
 
 /*
-// Internal Methods
-*/
+ * Internal Methods
+ */
 
 // Update dependent quantities
 void UnitCell::update()
@@ -583,8 +583,8 @@ void UnitCell::calculateInverse()
 }
 
 /*
-// Minimum Image Routines
-*/
+ * Minimum Image Routines
+ */
 
 // Minimum image vector from r1 to r2
 Vec3<double> UnitCell::mimVector(const Vec3<double>& r1, const Vec3<double>& r2) const
@@ -736,8 +736,8 @@ bool UnitCell::isInsideCell(Vec3<double>& v) const
 }
 
 /*
-// Geometry Calculation
-*/
+ * Geometry Calculation
+ */
 
 // Calculate distance between supplied coordinates
 double UnitCell::distance(const Vec3<double>& r1, const Vec3<double>& r2, bool useMim) const
@@ -813,8 +813,8 @@ double UnitCell::torsion(Atom* i, Atom* j, Atom* k, Atom* l, bool useMim) const
 }
 
 /*
-// Coordinate Transforms
-*/
+ * Coordinate Transforms
+ */
 
 // Return the fractional coordinates of the specified position
 Vec3<double> UnitCell::realToFrac(const Vec3<double>& v) const
@@ -831,8 +831,8 @@ Vec3<double> UnitCell::fracToReal(const Vec3<double>& v) const
 }
 
 /*
-// Misc
-*/
+ * Misc
+ */
 
 // Generate a random position inside the unit cell
 Vec3<double> UnitCell::randomPos() const

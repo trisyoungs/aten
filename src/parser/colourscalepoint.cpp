@@ -29,8 +29,8 @@
 ATEN_USING_NAMESPACE
 
 /*
-// Variable
-*/
+ * Variable
+ */
 
 // Constructor
 ColourScalePointVariable::ColourScalePointVariable(ColourScalePoint* ptr, bool constant)
@@ -47,8 +47,8 @@ ColourScalePointVariable::~ColourScalePointVariable()
 }
 
 /*
-// Accessors
-*/
+ * Accessors
+ */
 
 // Accessor data
 Accessor ColourScalePointVariable::accessorData[ColourScalePointVariable::nAccessors] = {
@@ -303,8 +303,8 @@ void ColourScalePointVariable::printAccessors()
 }
 
 /*
-// Variable Array
-*/
+ * Variable Array
+ */
 
 // Constructor
 ColourScalePointArrayVariable::ColourScalePointArrayVariable(TreeNode* sizeexpr, bool constant)

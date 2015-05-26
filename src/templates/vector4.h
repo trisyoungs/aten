@@ -151,8 +151,8 @@ template <class T> T Vec4<T>::get(int index) const
 }
 
 /*
-// Operators
-*/
+ * Operators
+ */
 
 // Operator += (Vec4)
 template <class T> Vec4<T>& Vec4<T>::operator+=(Vec4<T> v)
@@ -257,8 +257,8 @@ template <class T> T Vec4<T>::operator[](int index)
 }
 
 /*
-// Methods
-*/
+ * Methods
+ */
 
 // Normalise
 template <class T> void Vec4<T>::normalise()

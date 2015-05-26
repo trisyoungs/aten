@@ -28,8 +28,8 @@
 ATEN_USING_NAMESPACE
 
 /*
-// Variable
-*/
+ * Variable
+ */
 
 // Constructor
 StringVariable::StringVariable()
@@ -102,8 +102,8 @@ void StringVariable::nodePrint(int offset, const char* prefix)
 
 
 /*
-// Variable Array
-*/
+ * Variable Array
+ */
 
 // Constructor
 StringArrayVariable::StringArrayVariable(TreeNode* sizeexpr, bool constant) : arraySizeExpression_(sizeexpr)

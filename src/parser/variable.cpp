@@ -29,8 +29,8 @@ ATEN_USING_NAMESPACE
 Aten* Variable::aten_ = NULL;
 
 /*
-// Variable
-*/
+ * Variable
+ */
 
 // Constructor
 Variable::Variable() : TreeNode()
@@ -176,8 +176,8 @@ int Variable::searchAccessor(QString name, int nAccessors, FunctionAccessor *acc
 }
 
 /*
-// Array Variable
-*/
+ * Array Variable
+ */
 
 // Constructor
 ArrayVariable::ArrayVariable()
