@@ -216,7 +216,7 @@ bool CommandNode::initialise()
 }
 
 // Create, run, and free a single command with simple arguments
-bool CommandNode::run(Commands::Function func, const char* argList, ...)
+ReturnValue CommandNode::run(Commands::Function func, const char* argList, ...)
 {
 	Messenger::enter("CommandNode::run");
 
@@ -260,14 +260,14 @@ bool CommandNode::run(Commands::Function func, const char* argList, ...)
 
 	// Now, run the command...
 	ReturnValue rv;
-	bool result = node.execute(rv);
+	if (!node.execute(rv)) printf("CommandNode::run - Failed to run command '%s'.\n", Commands::data(func).keyword);
 
 	Messenger::exit("CommandNode::run");
-	return result;
+	return rv;
 }
 
 // Create, run, and free a single command with simple arguments and specified bundle
-bool CommandNode::run(Commands::Function func, Bundle& bundle, const char* argList, ...)
+ReturnValue CommandNode::run(Commands::Function func, Bundle& bundle, const char* argList, ...)
 {
 	Messenger::enter("CommandNode::run[bundle]");
 	// Local tree to contain commandnode and its arguments
@@ -304,11 +304,13 @@ bool CommandNode::run(Commands::Function func, Bundle& bundle, const char* argLi
 		node.addArgument(var);
 	}
 	va_end(vars);
+
 	// Now, run the command...
 	ReturnValue rv;
-	bool result = node.execute(bundle, rv);
+	if (!node.execute(bundle, rv)) printf("CommandNode::run - Failed to run command '%s'.\n", Commands::data(func).keyword);
+
 	Messenger::exit("CommandNode::run[bundle]");
-	return result;
+	return rv;
 }
 
 // Execute command with specified bundle

@@ -23,6 +23,45 @@
 
 ATEN_USING_NAMESPACE
 
+// Set rendering source
+void Model::setRenderSource(Model::RenderSource rs)
+{
+	renderSource_ = rs;
+	// Log a visual change here so we make sure that the GUI is updated properly
+// 	logChange(Log::Visual);
+}
+
+// Return rendering source
+Model::RenderSource Model::renderSource() const
+{
+	return renderSource_;
+}
+
+// Return the current rendering source for the model
+Model* Model::renderSourceModel()
+{
+	switch (renderSource_)
+	{
+		case (Model::ModelSource):
+			return this;
+		case (Model::TrajectorySource):
+			return trajectoryCurrentFrame_;
+	}
+	return NULL;
+}
+
+// Set whether to render from vibration frames
+void Model::setRenderFromVibration(bool b)
+{
+	renderFromVibration_ = b;
+}
+
+// Return whether to render from vibration frames
+bool Model::renderFromVibration()
+{
+	return renderFromVibration_;
+}
+
 // Return renderGroup, regenerating if necessary
 RenderGroup& Model::renderGroup(PrimitiveSet& primitiveSet)
 {
@@ -37,4 +76,3 @@ RenderGroup& Model::renderGroup(PrimitiveSet& primitiveSet)
 
 	return renderGroup_;
 }
-

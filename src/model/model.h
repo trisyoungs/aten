@@ -466,13 +466,17 @@ class Model : public ListItem<Model>
 	Vec3<int> repeatCellsPositive_;
 	// Repeat cells to draw in negative xyz directions
 	Vec3<int> repeatCellsNegative_;
+	// Whether to use same model view across all models
+	static bool useCommonModelViewMatrix_;
+	// Common modelview matrix for all models
+	static Matrix commonModelViewMatrix_;
 
 	private:
 	// Calculate and return inverse of current view matrix
 	Matrix& modelViewMatrixInverse();
 
 	public:
-	// Return current view matrix
+	// Return current view matrix (local, parent, or common)
 	Matrix& modelViewMatrix();
 	// Set the current modelview matrix
 	void setModelViewMatrix(Matrix& mvmat);
@@ -512,6 +516,12 @@ class Model : public ListItem<Model>
 	void setRepeatCellsNegative(int i, int r);
 	// Get negative repeat cell value
 	Vec3<int> repeatCellsNegative() const;
+	// Set common view matrix to that of this model
+	void setCommonViewMatrixFromLocal();
+	// Set whether to use same model view across all models
+	static void setUseCommonModelViewMatrix(bool b);
+	// Return whether to use same model view across all models
+	static bool useCommonModelViewMatrix();
 
 
 	/*
@@ -899,28 +909,6 @@ class Model : public ListItem<Model>
 
 
 	/*
-	 * Rendering Source
-	 */
-	private:
-	// Where to get render source data
-	RenderSource renderSource_;
-	// Flags whether to draw from associated vibration instead of model
-	bool renderFromVibration_;
-
-	public:
-	// Set rendering source
-	void setRenderSource(RenderSource rs);
-	// Return whether rendering from self
-	RenderSource renderSource() const;
-	// Return the current rendering source for the model
-	Model* renderSourceModel();
-	// Set whether to render from vibration frames
-	void setRenderFromVibration(bool b);
-	// Return whether to render from vibration frames
-	bool renderFromVibration();
-
-
-	/*
 	 * Measurements
 	 */
 	private:
@@ -1238,12 +1226,26 @@ class Model : public ListItem<Model>
 	 * Rendering
 	 */
 	private:
+	// Where to get render source data
+	RenderSource renderSource_;
+	// Flags whether to draw from associated vibration instead of model
+	bool renderFromVibration_;
 	// Primitives representing model, or current vibration / trajectory frame
 	RenderGroup renderGroup_;
 	// Logpoint at which renderGroup_ was last created
 	int renderGroupPoint_;
 
 	public:
+	// Set rendering source
+	void setRenderSource(RenderSource rs);
+	// Return whether rendering from self
+	RenderSource renderSource() const;
+	// Return the current rendering source for the model
+	Model* renderSourceModel();
+	// Set whether to render from vibration frames
+	void setRenderFromVibration(bool b);
+	// Return whether to render from vibration frames
+	bool renderFromVibration();
 	// Return renderGroup, regenerating if necessary
 	RenderGroup& renderGroup(PrimitiveSet& primitiveSet);
 

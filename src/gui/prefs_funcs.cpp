@@ -187,9 +187,8 @@ void AtenPrefs::on_PrefsOkButton_clicked(bool checked)
 	if (prefsBackup_.energyUnit() != prefs.energyUnit()) for (Forcefield* ff = parent_.aten().forcefields(); ff != NULL; ff = ff->next) ff->convertParameters();
 
 	// Copy old preferences values back into main structure, update view and close window
-	parent_.updateControls();
 	parent_.aten().globalLogChange(Log::Style);
-	parent_.updateWidgets(AtenWindow::MainViewTarget);
+	parent_.updateWidgets(AtenWindow::MainViewTarget); //ATEN2 TODO Any other targets here?
 	accept();
 }
 
@@ -200,9 +199,8 @@ void AtenPrefs::on_PrefsCancelButton_clicked(bool checked)
 	prefs = prefsBackup_;
 	Elements().restoreData();
 
-	parent_.updateControls();
 	parent_.aten().globalLogChange(Log::Style);
-	parent_.updateWidgets(AtenWindow::MainViewTarget);
+	parent_.updateWidgets(AtenWindow::MainViewTarget); //ATEN2 TODO Any other targets here?
 	reject();
 }
 

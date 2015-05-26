@@ -668,6 +668,7 @@ void Primitive::plotCube(double size, int nSubs, double ox, double oy, double oz
 		}
 		veca[(plane+1)%3] = delta;
 		vecb[(plane+2)%3] = delta;
+
 		// Loop over subdivisions in plane
 		for (i=0; i< nSubs; ++i)
 		{
@@ -697,11 +698,57 @@ void Primitive::plotCube(double size, int nSubs, double ox, double oy, double oz
 	}
 }
 
+// Plot wire cube of specified size at specified origin
+void Primitive::plotWireCube(double size, double ox, double oy, double oz)
+{
+	// Create each face individually
+	GLfloat veca[3], vecb[3], vertex[3];
+	int i, plane;
+
+	// Set general origin coordinate
+	// Loop over planes
+	for (plane=0; plane<3; ++plane)
+	{
+		// Define deltas for this plane
+		for (i=0; i<3; ++i)
+		{	
+			veca[i] = 0.0;
+			vecb[i] = 0.0;
+		}
+		veca[(plane+1)%3] = size;
+		vecb[(plane+2)%3] = size;
+
+		// Define vertices for 'lower' plane
+		defineVertex(ox, oy, oz, plane == 0, -1*(plane == 1), -1*(plane == 2));
+		defineVertex(ox+veca[0], oy+veca[1], oz+veca[2], plane == 0, -1*(plane == 1), -1*(plane == 2));
+		defineVertex(ox+veca[0], oy+veca[1], oz+veca[2], plane == 0, -1*(plane == 1), -1*(plane == 2));
+		defineVertex(ox+veca[0]+vecb[0], oy+veca[1]+vecb[1], oz+veca[2]+vecb[2], plane == 0, -1*(plane == 1), -1*(plane == 2));
+		defineVertex(ox+veca[0]+vecb[0], oy+veca[1]+vecb[1], oz+veca[2]+vecb[2], plane == 0, -1*(plane == 1), -1*(plane == 2));
+		defineVertex(ox+vecb[0], oy+vecb[1], oz+vecb[2], plane == 0, -1*(plane == 1), -1*(plane == 2));
+		defineVertex(ox+vecb[0], oy+vecb[1], oz+vecb[2], plane == 0, -1*(plane == 1), -1*(plane == 2));
+		defineVertex(ox, oy, oz, plane == 0, -1*(plane == 1), -1*(plane == 2));
+
+		// Define vertices for 'upper' plane
+		vertex[0] = ox;
+		vertex[1] = oy;
+		vertex[2] = oz;
+		vertex[plane] += size;
+		defineVertex(vertex[0], vertex[1], vertex[2], plane == 0, plane == 1, plane == 2);
+		defineVertex(vertex[0]+veca[0], vertex[1]+veca[1], vertex[2]+veca[2], plane == 0, plane == 1, plane == 2);
+		defineVertex(vertex[0]+veca[0], vertex[1]+veca[1], vertex[2]+veca[2], plane == 0, plane == 1, plane == 2);
+		defineVertex(vertex[0]+veca[0]+vecb[0], vertex[1]+veca[1]+vecb[1], vertex[2]+veca[2]+vecb[2], plane == 0, plane == 1, plane == 2);
+		defineVertex(vertex[0]+veca[0]+vecb[0], vertex[1]+veca[1]+vecb[1], vertex[2]+veca[2]+vecb[2], plane == 0, plane == 1, plane == 2);
+		defineVertex(vertex[0]+vecb[0], vertex[1]+vecb[1], vertex[2]+vecb[2], plane == 0, plane == 1, plane == 2);
+		defineVertex(vertex[0]+vecb[0], vertex[1]+vecb[1], vertex[2]+vecb[2], plane == 0, plane == 1, plane == 2);
+		defineVertex(vertex[0], vertex[1], vertex[2], plane == 0, plane == 1, plane == 2);
+	}
+}
+
 // Create wireframe, crossed cube centred at zero
 void Primitive::plotCrossedCube(double size, int nSubs, double ox, double oy, double oz)
 {
 	// Create wire cube to start with
-	plotCube(size, nSubs, ox, oy, oz);
+	plotWireCube(size, ox, oy, oz);
 
 	// Add crosses to faces
 	int i, j, sign;
@@ -735,7 +782,7 @@ void Primitive::plotHalo(double radius1, double radius2, int nSegments)
 	Vec3<GLfloat> r1, r2;
 	double dphi, cosphi1 = 1.0, sinphi1 = 0.0, cosphi2, sinphi2;
 
-	type_ = GL_LINES;
+	type_ = GL_TRIANGLES;
 
 	// Setup some variables
 	dphi = TWOPI / nSegments;

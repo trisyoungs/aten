@@ -23,6 +23,7 @@
 #include "main/aten.h"
 #include "gui/mainwindow.h"
 #include "gui/pores.h"
+#include "methods/partitiondata.h"
 #include "base/sysfunc.h"
 
 // Static members

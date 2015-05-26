@@ -20,7 +20,8 @@
 */
 
 #include "methods/disorderdata.h"
-#include "methods/partition.h"
+#include "methods/partitiondata.h"
+#include "methods/partitioningscheme.h"
 #include "methods/mc.h"
 
 ATEN_USING_NAMESPACE

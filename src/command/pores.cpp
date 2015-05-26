@@ -21,7 +21,6 @@
 
 #include "command/commands.h"
 #include "parser/commandnode.h"
-#include "methods/partition.h"
 #include "main/aten.h"
 #include "parser/tree.h"
 #include "gui/pores.h"

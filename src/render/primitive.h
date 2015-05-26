@@ -147,6 +147,8 @@ class Primitive : public ListItem<Primitive>
 	void plotCross(double halfWidth, Matrix& transform, Vec4<GLfloat>& colour);
 	// Plot solid cube of specified size at specified origin, and with sides subdivided into triangles ( ntriangles = 2*nsubs )
 	void plotCube(double size, int nSubs, double ox, double oy, double oz);
+	// Plot wire cube of specified size at specified origin
+	void plotWireCube(double size, double ox, double oy, double oz);
 	// Create wireframe, crossed cube centred at zero
 	void plotCrossedCube(double size, int nSubs, double ox, double oy, double oz);
 	// Create halo
