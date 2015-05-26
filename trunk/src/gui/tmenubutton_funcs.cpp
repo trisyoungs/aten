@@ -38,6 +38,13 @@ TMenuButtonPopupWidget::TMenuButtonPopupWidget(TMenuButton* parent) : QWidget(pa
 	widgetDone_ = false;
 }
 
+// Call named method associated to popup (without ReturnValue)
+bool TMenuButtonPopupWidget::callMethodSimple(QString methodName, QString value)
+{
+	ReturnValue rv(value);
+	return callMethod(methodName, rv);
+}
+
 // Return parent TMenuButton
 TMenuButton* TMenuButtonPopupWidget::parentMenuButton()
 {

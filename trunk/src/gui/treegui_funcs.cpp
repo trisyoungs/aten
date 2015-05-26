@@ -375,8 +375,8 @@ bool QtWidgetObject::addSpacer(bool expandHorizontal, bool expandVertical, int l
 }
 
 /*
-// AtenTreeGuiDialog
-*/
+ * AtenTreeGuiDialog
+ */
 
 // Constructor
 AtenTreeGuiDialog::AtenTreeGuiDialog(TreeGui *parent) : QDialog()

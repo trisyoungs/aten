@@ -214,8 +214,8 @@ void AtenPrefs::on_PrefsSaveAsDefaultButton_clicked(bool checked)
 }
 
 /*
-// Element Page
-*/
+ * Element Page
+ */
 
 void AtenPrefs::on_ElementList_currentRowChanged(int row)
 {
@@ -261,8 +261,8 @@ void AtenPrefs::on_ElementRadiusSpin_valueChanged(double value)
 }
 
 /*
-// View Page
-*/
+ * View Page
+ */
 
 void AtenPrefs::updateAfterViewPrefs()
 {
@@ -558,8 +558,8 @@ void AtenPrefs::on_ShininessSpin_valueChanged(int value)
 }
 
 /*
-// Interaction Page
-*/
+ * Interaction Page
+ */
 
 void AtenPrefs::on_LeftMouseCombo_currentIndexChanged(int ma)
 {
@@ -607,8 +607,8 @@ void AtenPrefs::on_MouseMoveFilterSpin_valueChanged(int value)
 }
 
 /*
-// Colours Page
-*/
+ * Colours Page
+ */
 
 void AtenPrefs::updateScalePointsList()
 {
@@ -748,8 +748,8 @@ void AtenPrefs::on_ScaleList_itemDoubleClicked(QListWidgetItem* item)
 }
 
 /*
-// Program Page
-*/
+ * Program Page
+ */
 
 void AtenPrefs::on_CommonElementsEdit_textEdited(const QString &text)
 {
@@ -927,8 +927,8 @@ void AtenPrefs::on_ParameterTable_itemChanged(QTableWidgetItem *w)
 }
 
 /*
-// External Programs
-*/
+ * External Programs
+ */
 
 void AtenPrefs::on_TemporaryDirButton_clicked(bool checked)
 {

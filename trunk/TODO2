@@ -26,7 +26,6 @@ Change SaveImageDialog to check for empty image filename, and disable OK button 
 Check - is using redirected filenames really necessary when saveing movie frame images?
 Fix image saving - in particular scaling & offset when saving large image (what role will/did ViewLayout play?)
 Make UserActions a member of something (Viewer?).
-Fix Grid rimitive generation (need to know nVertices ahead of time...).   NOT TRUE ANYMORE?
 Optimise basic primitives to use vertex/index arrays instead of just vertices (also check end caps of spheres).
 Check picked atom rendering (probably broken).
 Optimise primitive drawing / generation by allowing use of GL_TRIANGLE_STRIP?
@@ -48,9 +47,10 @@ Tidy up/rework TColourWheel code.
 --- Colour wheel seems to forget alpha value when selecting a new colour.
 Reimplement drawing of grid (volume) axes.
 Shortcuts for panel buttons do not work (use QActions again?).
-Added get/set view buttons to View.
 Make Model::EnergyStore a private member with accessor?
 Click to select grid.
+Add panel option to show grid outline.
+Fix grid rendering - triangle grid not rendered in unfilled polygon mode, and points surface is completely broken.
 
 GUI TODO:
 AddAtom functionality (from old Build menu).
@@ -63,3 +63,5 @@ Remove 'calcEnergy' optional args from scaleMolecules and scaleCell.
 Remove replaceChars (after command is removed).
 Remove frameCurrent* from Prefs accessors.
 Added SetAngles, SetDistances, and SetTorsions commands.
+Add GridStyleSecondary command (GridStyle now explicitly for primary surface).
+Change enum entries for Grid::SurfaceStyle.

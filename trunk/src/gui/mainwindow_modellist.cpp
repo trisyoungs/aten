@@ -98,6 +98,5 @@ void AtenWindow::on_ModelList_itemSelectionChanged()
 	// Need to set the (a) current model
 	aten_.setCurrentModel(currentModel);
 
-	printf("SELECTIONCHANGED : cureent = %p, nVisible = %i\n", currentModel, aten_.nVisibleModels());
 	updateWidgets();
 }

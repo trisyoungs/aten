@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>ViewColourSchemePopup</class>
+ <widget class="QWidget" name="ViewColourSchemePopup">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>288</width>
+    <height>56</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="font">
+   <font>
+    <pointsize>8</pointsize>
+   </font>
+  </property>
+  <property name="windowTitle">
+   <string>View ColourScheme Popup</string>
+  </property>
+  <layout class="QHBoxLayout" name="horizontalLayout">
+   <property name="spacing">
+    <number>2</number>
+   </property>
+   <property name="margin">
+    <number>0</number>
+   </property>
+   <item>
+    <widget class="TMenuButton" name="ElementButton">
+     <property name="minimumSize">
+      <size>
+       <width>56</width>
+       <height>56</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>56</width>
+       <height>56</height>
+      </size>
+     </property>
+     <property name="toolTip">
+      <string>Colour atoms by atomic charge</string>
+     </property>
+     <property name="text">
+      <string>Element</string>
+     </property>
+     <property name="icon">
+      <iconset resource="icons.qrc">
+       <normaloff>:/colourscheme/icons/colourscheme_element.png</normaloff>:/colourscheme/icons/colourscheme_element.png</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>30</width>
+       <height>30</height>
+      </size>
+     </property>
+     <property name="shortcut">
+      <string>Ctrl+7</string>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+     <property name="autoExclusive">
+      <bool>false</bool>
+     </property>
+     <property name="toolButtonStyle">
+      <enum>Qt::ToolButtonTextUnderIcon</enum>
+     </property>
+     <property name="autoRaise">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="TMenuButton" name="ChargeButton">
+     <property name="minimumSize">
+      <size>
+       <width>56</width>
+       <height>56</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>56</width>
+       <height>56</height>
+      </size>
+     </property>
+     <property name="toolTip">
+      <string>Colour atoms by atomic charge</string>
+     </property>
+     <property name="text">
+      <string>Charge</string>
+     </property>
+     <property name="icon">
+      <iconset resource="icons.qrc">
+       <normaloff>:/colourscheme/icons/colourscheme_charge.png</normaloff>:/colourscheme/icons/colourscheme_charge.png</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>30</width>
+       <height>30</height>
+      </size>
+     </property>
+     <property name="shortcut">
+      <string>Ctrl+7</string>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+     <property name="autoExclusive">
+      <bool>false</bool>
+     </property>
+     <property name="toolButtonStyle">
+      <enum>Qt::ToolButtonTextUnderIcon</enum>
+     </property>
+     <property name="autoRaise">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="TMenuButton" name="ForceButton">
+     <property name="minimumSize">
+      <size>
+       <width>56</width>
+       <height>56</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>56</width>
+       <height>56</height>
+      </size>
+     </property>
+     <property name="toolTip">
+      <string>Colour atoms by the magnitude of their force</string>
+     </property>
+     <property name="text">
+      <string>Forces</string>
+     </property>
+     <property name="icon">
+      <iconset resource="icons.qrc">
+       <normaloff>:/colourscheme/icons/colourscheme_force.png</normaloff>:/colourscheme/icons/colourscheme_force.png</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>30</width>
+       <height>30</height>
+      </size>
+     </property>
+     <property name="shortcut">
+      <string>Ctrl+8</string>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+     <property name="autoExclusive">
+      <bool>false</bool>
+     </property>
+     <property name="toolButtonStyle">
+      <enum>Qt::ToolButtonTextUnderIcon</enum>
+     </property>
+     <property name="autoRaise">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="TMenuButton" name="VelocityButton">
+     <property name="minimumSize">
+      <size>
+       <width>56</width>
+       <height>56</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>56</width>
+       <height>56</height>
+      </size>
+     </property>
+     <property name="toolTip">
+      <string>Colour atoms by the magnitude of their velocity</string>
+     </property>
+     <property name="text">
+      <string>Velocity</string>
+     </property>
+     <property name="icon">
+      <iconset resource="icons.qrc">
+       <normaloff>:/colourscheme/icons/colourscheme_velocity.png</normaloff>:/colourscheme/icons/colourscheme_velocity.png</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>30</width>
+       <height>30</height>
+      </size>
+     </property>
+     <property name="shortcut">
+      <string>Ctrl+9</string>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+     <property name="autoExclusive">
+      <bool>false</bool>
+     </property>
+     <property name="toolButtonStyle">
+      <enum>Qt::ToolButtonTextUnderIcon</enum>
+     </property>
+     <property name="autoRaise">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="TMenuButton" name="OwnButton">
+     <property name="minimumSize">
+      <size>
+       <width>56</width>
+       <height>56</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>56</width>
+       <height>56</height>
+      </size>
+     </property>
+     <property name="toolTip">
+      <string>Colour atoms according to their individually-assigned colours</string>
+     </property>
+     <property name="text">
+      <string>Own</string>
+     </property>
+     <property name="icon">
+      <iconset resource="icons.qrc">
+       <normaloff>:/colourscheme/icons/colourscheme_own.png</normaloff>:/colourscheme/icons/colourscheme_own.png</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>30</width>
+       <height>30</height>
+      </size>
+     </property>
+     <property name="shortcut">
+      <string>Ctrl+0, Ctrl+S</string>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+     <property name="autoExclusive">
+      <bool>false</bool>
+     </property>
+     <property name="toolButtonStyle">
+      <enum>Qt::ToolButtonTextUnderIcon</enum>
+     </property>
+     <property name="autoRaise">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>TMenuButton</class>
+   <extends>QToolButton</extends>
+   <header>tmenubutton.hui</header>
+  </customwidget>
+ </customwidgets>
+ <resources>
+  <include location="icons.qrc"/>
+ </resources>
+ <connections/>
+</ui>

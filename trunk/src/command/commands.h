@@ -338,6 +338,7 @@ class Commands
 		GridOrtho,
 		GridSecondary,
 		GridStyle,
+		GridStyleSecondary,
 		GridUseZ,
 		GridVisible,
 		InitialiseGrid,
@@ -817,6 +818,7 @@ class Commands
 	bool function_GridOrigin(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_GridSecondary(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_GridStyle(CommandNode* c, Bundle& obj, ReturnValue& rv);
+	bool function_GridStyleSecondary(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_GridUseZ(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_GridVisible(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_InitialiseGrid(CommandNode* c, Bundle& obj, ReturnValue& rv);

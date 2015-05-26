@@ -1,6 +1,6 @@
 /*
-	*** Popup Widget - Grids Origin
-	*** src/gui/popupgridsorigin.h
+	*** Popup Widget - View ColourScheme
+	*** src/gui/popupviewcolourscheme.h
 	Copyright T. Youngs 2007-2015
 
 	This file is part of Aten.
@@ -19,10 +19,10 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_GRIDSORIGINPOPUP_H
-#define ATEN_GRIDSORIGINPOPUP_H
+#ifndef ATEN_VIEWCOLOURSCHEMEPOPUP_H
+#define ATEN_VIEWCOLOURSCHEMEPOPUP_H
 
-#include "gui/ui_popupgridsorigin.h"
+#include "gui/ui_popupviewcolourscheme.h"
 #include "gui/tmenubutton.hui"
 #include "parser/returnvalue.h"
 
@@ -38,8 +38,8 @@ ATEN_END_NAMESPACE
 
 ATEN_USING_NAMESPACE
 
-// Popup Widget - Grids Origin
-class GridsOriginPopup : public TMenuButtonPopupWidget
+// Popup Widget - Grow
+class ViewColourSchemePopup : public TMenuButtonPopupWidget
 {
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
@@ -50,9 +50,9 @@ class GridsOriginPopup : public TMenuButtonPopupWidget
 
 	public:
 	// Constructor / Destructor
-	GridsOriginPopup(AtenWindow& parent, TMenuButton* buttonParent);
+	ViewColourSchemePopup(AtenWindow& parent, TMenuButton* buttonParent);
 	// Main form declaration
-	Ui::GridsOriginPopup ui;
+	Ui::ViewColourSchemePopup ui;
 	// Show popup, updating any controls as necessary beforehand
 	void popup();
 	// Call named method associated to popup
@@ -69,14 +69,12 @@ class GridsOriginPopup : public TMenuButtonPopupWidget
 	/*
 	 * Widget Functions
 	 */
-	private:
-	// Set current origin
-	void setCurrentOrigin();
-
 	private slots:
-	void on_XSpin_valueChanged(double value);
-	void on_YSpin_valueChanged(double value);
-	void on_ZSpin_valueChanged(double value);
+	void on_ElementButton_clicked(bool checked);
+	void on_ChargeButton_clicked(bool checked);
+	void on_ForceButton_clicked(bool checked);
+	void on_VelocityButton_clicked(bool checked);
+	void on_OwnButton_clicked(bool checked);
 };
 
 #endif

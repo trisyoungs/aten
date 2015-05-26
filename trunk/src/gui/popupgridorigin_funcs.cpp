@@ -1,6 +1,6 @@
 /*
-	*** Popup Widget - Grids Origin Functions
-	*** src/gui/popupgridsorigin_funcs.cpp
+	*** Popup Widget - Grid Origin Functions
+	*** src/gui/popupgridorigin_funcs.cpp
 	Copyright T. Youngs 2007-2015
 
 	This file is part of Aten.
@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "gui/popupgridsorigin.h"
+#include "gui/popupgridorigin.h"
 #include "main/aten.h"
 #include "gui/mainwindow.h"
 #include "../base/grid.h"
@@ -28,7 +28,7 @@
 ATEN_USING_NAMESPACE
 
 // Constructor
-GridsOriginPopup::GridsOriginPopup(AtenWindow& parent, TMenuButton* buttonParent) : TMenuButtonPopupWidget(buttonParent), parent_(parent)
+GridOriginPopup::GridOriginPopup(AtenWindow& parent, TMenuButton* buttonParent) : TMenuButtonPopupWidget(buttonParent), parent_(parent)
 {
 	// Set up interface
 	ui.setupUi(this);
@@ -40,7 +40,7 @@ GridsOriginPopup::GridsOriginPopup(AtenWindow& parent, TMenuButton* buttonParent
 }
 
 // Show popup, updating any controls as necessary beforehand
-void GridsOriginPopup::popup()
+void GridOriginPopup::popup()
 {
 	// Update angles in spin boxes
 	refreshing_ = true;
@@ -60,7 +60,7 @@ void GridsOriginPopup::popup()
 }
 
 // Call named method associated to popup
-bool GridsOriginPopup::callMethod(QString methodName, ReturnValue& rv)
+bool GridOriginPopup::callMethod(QString methodName, ReturnValue& rv)
 {
 	if (methodName == "TEST") return true;
 	else if (methodName == "hideEvent")
@@ -75,17 +75,17 @@ bool GridsOriginPopup::callMethod(QString methodName, ReturnValue& rv)
  * Widget Functions
  */
 
-void GridsOriginPopup::setCurrentOrigin()
+void GridOriginPopup::setCurrentOrigin()
 {
 	// Get current model and set new angle in cell
 	Model* model = parent_.aten().currentModelOrFrame();
 	if (!model) return;
 
-	// Get the cell vectors from the GridsOriginPopup widget
+	// Get the cell vectors from the GridOriginPopup widget
 	CommandNode::run(Commands::GridOrigin, "ddd", ui.XSpin->value(), ui.YSpin->value(), ui.ZSpin->value());
 }
 
-void GridsOriginPopup::on_XSpin_valueChanged(double value)
+void GridOriginPopup::on_XSpin_valueChanged(double value)
 {
 	if (refreshing_) return;
 
@@ -96,7 +96,7 @@ void GridsOriginPopup::on_XSpin_valueChanged(double value)
 	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
-void GridsOriginPopup::on_YSpin_valueChanged(double value)
+void GridOriginPopup::on_YSpin_valueChanged(double value)
 {
 	if (refreshing_) return;
 
@@ -107,7 +107,7 @@ void GridsOriginPopup::on_YSpin_valueChanged(double value)
 	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
-void GridsOriginPopup::on_ZSpin_valueChanged(double value)
+void GridOriginPopup::on_ZSpin_valueChanged(double value)
 {
 	if (refreshing_) return;
 

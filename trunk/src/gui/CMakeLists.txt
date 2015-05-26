@@ -39,8 +39,9 @@ SET(gui_MOC_HDRS
   popupcolour.h
   popupelementcommon.h
   popupelementtable.h
-  popupgridsmatrix.h
-  popupgridsorigin.h
+  popupgridmatrix.h
+  popupgridorigin.h
+  popupgridstyle.h
   popupmeasureangle.h
   popupmeasureclear.h
   popupmeasuredistance.h
@@ -53,7 +54,9 @@ SET(gui_MOC_HDRS
   popuptransformshift.h
   popuptransformtorsion.h
   popuptransformtranslate.h
+  popupviewcolourscheme.h
   popupviewreset.h
+  popupviewstyle.h
   pores.h
   position.h
   prefs.h
@@ -118,8 +121,9 @@ SET(gui_UIS
   popupcolour.ui
   popupelementcommon.ui
   popupelementtable.ui
-  popupgridsmatrix.ui
-  popupgridsorigin.ui
+  popupgridmatrix.ui
+  popupgridorigin.ui
+  popupgridstyle.ui
   popupmeasureangle.ui
   popupmeasureclear.ui
   popupmeasuredistance.ui
@@ -132,7 +136,9 @@ SET(gui_UIS
   popuptransformshift.ui
   popuptransformtorsion.ui
   popuptransformtranslate.ui
+  popupviewcolourscheme.ui
   popupviewreset.ui
+  popupviewstyle.ui
   pores.ui
   position.ui
   prefs.ui
@@ -200,8 +206,9 @@ set(gui_SRCS
   popupcolour_funcs.cpp
   popupelementcommon_funcs.cpp
   popupelementtable_funcs.cpp
-  popupgridsmatrix_funcs.cpp
-  popupgridsorigin_funcs.cpp
+  popupgridmatrix_funcs.cpp
+  popupgridorigin_funcs.cpp
+  popupgridstyle_funcs.cpp
   popupmeasureangle_funcs.cpp
   popupmeasureclear_funcs.cpp
   popupmeasuredistance_funcs.cpp
@@ -214,7 +221,9 @@ set(gui_SRCS
   popuptransformshift_funcs.cpp
   popuptransformtorsion_funcs.cpp
   popuptransformtranslate_funcs.cpp
+  popupviewcolourscheme_funcs.cpp
   popupviewreset_funcs.cpp
+  popupviewstyle_funcs.cpp
   pores_funcs.cpp
   position_funcs.cpp
   prefs_funcs.cpp

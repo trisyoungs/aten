@@ -263,13 +263,24 @@ bool Commands::function_GridSecondary(CommandNode* c, Bundle& obj, ReturnValue& 
 	return true;
 }
 
-// Set drawing style of grid
+// Set drawing style of primary surface
 bool Commands::function_GridStyle(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::GridPointer)) return false;
 	Grid::SurfaceStyle ss = Grid::surfaceStyle(c->argc(0));
 	if (ss == Grid::nSurfaceStyles) return false;
-	obj.g->setStyle(ss);
+	obj.g->setPrimaryStyle(ss);
+	rv.reset();
+	return true;
+}
+
+// Set drawing style of secondary surface
+bool Commands::function_GridStyleSecondary(CommandNode* c, Bundle& obj, ReturnValue& rv)
+{
+	if (obj.notifyNull(Bundle::GridPointer)) return false;
+	Grid::SurfaceStyle ss = Grid::surfaceStyle(c->argc(0));
+	if (ss == Grid::nSurfaceStyles) return false;
+	obj.g->setSecondaryStyle(ss);
 	rv.reset();
 	return true;
 }

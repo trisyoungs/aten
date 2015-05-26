@@ -29,7 +29,12 @@ void AtenWindow::updateGridsPanel(Model* sourceModel)
 {
 	Messenger::enter("AtenWindow::updateGridPanel");
 
-	Grid* currentGrid = aten_.current().g;
+	Grid* currentGrid;
+	if (!aten_.currentGrid(currentGrid))
+	{
+		Messenger::exit("AtenWindow::updateGridPanel");
+		return;
+	}
 
 	ui.GridsList->clear();
 	if (sourceModel)
@@ -61,9 +66,11 @@ void AtenWindow::updateGridInformation(Grid* sourceGrid)
 	ui.GridsPrimaryLowerCutoffSpin->setEnabled(sourceGrid);
 	ui.GridsPrimaryUpperCutoffSpin->setEnabled(sourceGrid);
 	ui.GridsPrimaryColourButton->setEnabled(sourceGrid);
+	ui.GridsPrimaryStyleButton->setEnabled(sourceGrid);
 	ui.GridsSecondaryLowerCutoffSpin->setEnabled(sourceGrid);
 	ui.GridsSecondaryUpperCutoffSpin->setEnabled(sourceGrid);
 	ui.GridsSecondaryColourButton->setEnabled(sourceGrid);
+	ui.GridsSecondaryStyleButton->setEnabled(sourceGrid);
 	ui.GridsSecondarySurfaceCheck->setEnabled(sourceGrid);
 	if (!sourceGrid) return;
 
@@ -76,6 +83,7 @@ void AtenWindow::updateGridInformation(Grid* sourceGrid)
 	ui.GridsPrimaryUpperCutoffSpin->setValue(sourceGrid->upperPrimaryCutoff());
 	rv.setArray(VTypes::DoubleData, sourceGrid->primaryColour(), 4);
 	ui.GridsPrimaryColourButton->callPopupMethod("setCurrentColour", rv);
+	ui.GridsPrimaryStyleButton->callPopupMethod("updateButtonIcon", rv = QString(Grid::surfaceStyle(sourceGrid->primaryStyle())));
 
 	// Secondary surface
 	ui.GridsSecondaryLowerCutoffSpin->setRange(true, sourceGrid->minimum(), true, sourceGrid->maximum(), 100);
@@ -84,12 +92,14 @@ void AtenWindow::updateGridInformation(Grid* sourceGrid)
 	ui.GridsSecondaryUpperCutoffSpin->setValue(sourceGrid->upperSecondaryCutoff());
 	rv.setArray(VTypes::DoubleData, sourceGrid->primaryColour(), 4);
 	ui.GridsSecondaryColourButton->callPopupMethod("setCurrentColour", rv);
+	ui.GridsSecondaryStyleButton->callPopupMethod("updateButtonIcon", rv = QString(Grid::surfaceStyle(sourceGrid->secondaryStyle())));
 
 	// Enable / disable secondary surface controls
 	ui.GridsSecondarySurfaceCheck->setChecked(sourceGrid->useSecondary());
 	ui.GridsSecondaryLowerCutoffSpin->setEnabled(sourceGrid->useSecondary());
 	ui.GridsSecondaryUpperCutoffSpin->setEnabled(sourceGrid->useSecondary());
 	ui.GridsSecondaryColourButton->setEnabled(sourceGrid->useSecondary());
+	ui.GridsSecondaryStyleButton->setEnabled(sourceGrid->useSecondary());
 }
 
 void AtenWindow::on_GridsList_currentItemChanged(QListWidgetItem* current, QListWidgetItem* previous)

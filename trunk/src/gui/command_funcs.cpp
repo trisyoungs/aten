@@ -59,8 +59,8 @@ QStringList CommandWidget::commandList()
 }
 
 /*
-// Prompt Tab
-*/
+ * Prompt Tab
+ */
 
 void CommandWidget::on_CommandPrompt_returnPressed()
 {
@@ -76,8 +76,8 @@ void CommandWidget::on_CommandPrompt_returnPressed()
 }
 
 /*
-// Interactive Tab
-*/
+ * Interactive Tab
+ */
 
 // Update variable list
 void CommandWidget::updateVariableList()
@@ -134,8 +134,8 @@ void CommandWidget::on_InteractivePrompt_returnPressed()
 }
 
 /*
-// Scripts Tab
-*/
+ * Scripts Tab
+ */
 
 void CommandWidget::refreshScripts(bool refreshactions, bool refreshlist)
 {
@@ -317,8 +317,8 @@ void CommandWidget::runScript()
 }
 
 /*
-// Command Index Page
-*/
+ * Command Index Page
+ */
 
 void CommandWidget::repopulateCommandList(const char* search)
 {
