@@ -38,8 +38,8 @@ void TransformWidget::showWidget()
 }
 
 /*
-// Rotations
-*/
+ * Rotations
+ */
 
 void TransformWidget::on_RotateClockwiseButton_clicked(bool on)
 {
@@ -110,8 +110,8 @@ void TransformWidget::rotateSelection(double direction)
 }
 
 /*
-// Matrix Transform
-*/
+ * Matrix Transform
+ */
 
 void TransformWidget::on_TransformApplyButton_clicked(bool on)
 {
@@ -317,8 +317,8 @@ void TransformWidget::on_TransformDefineOriginButton_clicked(bool on)
 }
 
 /*
-// Matrix Transformation 
-*/
+ * Matrix Transformation 
+ */
 
 void TransformWidget::on_ConvertRotateIntoButton_clicked(bool on)
 {

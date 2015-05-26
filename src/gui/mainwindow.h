@@ -349,23 +349,12 @@ class AtenWindow : public QMainWindow
 	void on_ViewControlResetButton_clicked(bool checked);
 	void on_ViewControlZoomInButton_clicked(bool checked);
 	void on_ViewControlZoomOutButton_clicked(bool checked);
-	void on_ViewControlPerspectiveButton_clicked(bool checked);
 	void on_ViewControlGetButton_clicked(bool checked);
 	void on_ViewControlSetButton_clicked(bool checked);
 	void on_ViewControlDetectHBondsButton_clicked(bool checked);
 	void on_ViewControlLockViewButton_clicked(bool checked);
-	// Style
-	void on_ViewStyleLineButton_clicked(bool checked);
-	void on_ViewStyleTubeButton_clicked(bool checked);
-	void on_ViewStyleSphereButton_clicked(bool checked);
-	void on_ViewStyleScaledButton_clicked(bool checked);
-	void on_ViewStyleOwnButton_clicked(bool checked);
-	// Colour
-	void on_ViewSchemeElementButton_clicked(bool checked);
-	void on_ViewSchemeChargeButton_clicked(bool checked);
-	void on_ViewSchemeForceButton_clicked(bool checked);
-	void on_ViewSchemeVelocityButton_clicked(bool checked);
-	void on_ViewSchemeOwnButton_clicked(bool checked);
+	// Appearance
+	void on_ViewAppearancePerspectiveButton_clicked(bool checked);
 
 
 	/*

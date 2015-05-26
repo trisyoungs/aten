@@ -35,8 +35,8 @@ const char* AtomListItemHeader[AtomListWidget::nAtomItems] = { "ID", "El", "Type
 bool AtomListItemDelegateType[AtomListWidget::nAtomItems] = { 0, 0, 0, 1, 1, 1, 1 };
 
 /*
-// Atom list window
-*/
+ * Atom list window
+ */
 
 // Constructor
 AtomListWidget::AtomListWidget(AtenWindow& parent, Qt::WindowFlags flags) : QDockWidget(&parent,flags), parent_(parent)

@@ -579,75 +579,7 @@ void RenderGroup::createAtomsAndBonds(PrimitiveSet& primitiveSet, Model* source,
 }
 
 // ATEN2 TODO
-// // Render grids
-// void Viewer::renderGrids(Model* source)
-// {
-// 	Messenger::enter("Viewer::renderGrids");
-// 	Matrix A;
-// 	GLenum style;
-// 	Vec4<GLfloat> colour, textColour;
-// 	
-// 	// Copy text colour
-// 	prefs.copyColour(Prefs::TextColour, textColour);
-// 	
-// 	// Cycle over grids stored in current model
-// 	for (Grid *g = source->grids(); g != NULL; g = g->next)
-// 	{
-// 		// Check visibility
-// 		if (!g->isVisible()) continue;
-// 
-// 		// Does a GridPrimitive already exist?
-// 		GridPrimitive* gp = findGridPrimitive(g);
-// 
-// 		// If the GridPrimitive exists and is 'in date', no need to regenerate it...
-// 		if ((gp == NULL) || g->shouldRerender())
-// 		{
-// 			// Generate new GridPrimitive if required
-// 			if (gp == NULL)
-// 			{
-// 				gp = gridPrimitives_.add();
-// 				gp->setSource(g);
-// 			}
-// 			if (g->type() == Grid::RegularXYZData) gp->createSurfaceMarchingCubes();
-// 			else if (g->type() == Grid::FreeXYZData)
-// 			{
-// 				// Construct the Delaunay triangulization of the surface
-// 				// 				DelaunaySurface D(g);
-// 			}
-// 			else gp->createSurface2D();
-// 			g->updateRenderPoint();
-// 			
-// 			// Construct axes?
-// 			gp->createAxes();
-// 		}
-// 		
-// 		// Grid primitive now exists (or has been updated) so create transformation and render it
-// 		A.setIdentity();
-// 		A.applyTranslation(g->origin());
-// 		A.multiplyRotation(g->axes());
-// 		if (g->style() == Grid::TriangleSurface) style = GL_LINE;
-// 		else if (g->style() == Grid::SolidSurface) style = GL_FILL;
-// 		else style = GL_POINT;
-// 		if (g->useColourScale()) renderPrimitive(Viewer::GridObject, gp->primaryPrimitive(), colour, A, style);
-// 		else
-// 		{
-// 			g->copyPrimaryColour(colour);
-// 			renderPrimitive(Viewer::GridObject, gp->primaryPrimitive(), colour, A, style);
-// 		}
-// 		if (g->useSecondary())
-// 		{
-// 			if (g->useColourScale()) renderPrimitive(Viewer::GridObject, gp->secondaryPrimitive(), colour, A, style);
-// 			else
-// 			{
-// 				g->copySecondaryColour(colour);
-// 				renderPrimitive(Viewer::GridObject, gp->secondaryPrimitive(), colour, A, style);
-// 			}
-// 		}
-// 
-// 		// Render axes?
-// 		colour.set(0.0, 0.0, 0.0, 1.0);
-// 		for (int n=0; n<3; ++n) if (g->isAxisVisible(n)) renderPrimitive(Viewer::GridObject, gp->axisLinePrimitive(n), colour, A, GL_LINE);
-// 
+
 // 		// Render volume outline
 // 		if (g->outlineVolume())
 // 		{

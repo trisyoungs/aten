@@ -31,11 +31,14 @@ void AtenWindow::updateViewPanel(Model* sourceModel)
 	Messenger::enter("AtenWindow::updateViewPanel");
 
 	// Set button status
-	TMenuButton::setGroupButtonChecked("Styles", Prefs::drawStyle(prefs.renderStyle()));
-	TMenuButton::setGroupButtonChecked("Colourschemes", Prefs::colouringScheme(prefs.colourScheme()));
-	ui.ViewControlPerspectiveButton->setChecked(prefs.hasPerspective());
+	ui.ViewAppearancePerspectiveButton->setChecked(prefs.hasPerspective());
 	ui.ViewControlDetectHBondsButton->setChecked(prefs.drawHydrogenBonds());  //ATEN2 TODO Move this from Prefs?
 	ui.ViewControlLockViewButton->setChecked(Model::useCommonModelViewMatrix());
+
+	// Update button icons
+	ReturnValue rv;
+	ui.ViewAppearanceStyleButton->callPopupMethod("updateButtonIcon", rv = QString(Prefs::drawStyle(prefs.renderStyle())));
+	ui.ViewAppearanceColourButton->callPopupMethod("updateButtonIcon", rv = QString(Prefs::colouringScheme(prefs.colourScheme())));
 
 	Messenger::exit("AtenWindow::updateViewPanel");
 }
@@ -59,15 +62,6 @@ void AtenWindow::on_ViewControlZoomInButton_clicked(bool checked)
 void AtenWindow::on_ViewControlZoomOutButton_clicked(bool checked)
 {
 	aten_.currentModelOrFrame()->adjustCamera(0.0,0.0,-5.0);
-	updateWidgets(AtenWindow::MainViewTarget);
-}
-
-// Set perspective view
-void AtenWindow::on_ViewControlPerspectiveButton_clicked(bool checked)
-{
-	if (refreshing_) return;
-
-	prefs.setPerspective(checked);
 	updateWidgets(AtenWindow::MainViewTarget);
 }
 
@@ -115,89 +109,14 @@ void AtenWindow::on_ViewControlLockViewButton_clicked(bool checked)
 }
 
 /*
- * Style
+ * Appearance
  */
 
-void AtenWindow::on_ViewStyleLineButton_clicked(bool checked)
+// Set perspective view
+void AtenWindow::on_ViewAppearancePerspectiveButton_clicked(bool checked)
 {
-	if (!checked) return;
-	prefs.setRenderStyle(Prefs::LineStyle);
-	aten_.globalLogChange(Log::Style);
-	updateWidgets(AtenWindow::MainViewTarget);
-}
+	if (refreshing_) return;
 
-void AtenWindow::on_ViewStyleTubeButton_clicked(bool checked)
-{
-	if (!checked) return;
-	prefs.setRenderStyle(Prefs::TubeStyle);
-	aten_.globalLogChange(Log::Style);
-	updateWidgets(AtenWindow::MainViewTarget);
-}
-
-void AtenWindow::on_ViewStyleSphereButton_clicked(bool checked)
-{
-	if (!checked) return;
-	prefs.setRenderStyle(Prefs::SphereStyle);
-	aten_.globalLogChange(Log::Style);
-	updateWidgets(AtenWindow::MainViewTarget);
-}
-
-void AtenWindow::on_ViewStyleScaledButton_clicked(bool checked)
-{
-	if (!checked) return;
-	prefs.setRenderStyle(Prefs::ScaledStyle);
-	aten_.globalLogChange(Log::Style);
-	updateWidgets(AtenWindow::MainViewTarget);
-}
-
-void AtenWindow::on_ViewStyleOwnButton_clicked(bool checked)
-{
-	if (!checked) return;
-	prefs.setRenderStyle(Prefs::OwnStyle);
-	aten_.globalLogChange(Log::Style);
-	updateWidgets(AtenWindow::MainViewTarget);
-}
-
-/*
- * Colour Scheme
- */
-
-void AtenWindow::on_ViewSchemeElementButton_clicked(bool checked)
-{
-	if (!checked) return;
-	prefs.setColourScheme(Prefs::ElementScheme);
-	aten_.globalLogChange(Log::Style);
-	updateWidgets(AtenWindow::MainViewTarget);
-}
-
-void AtenWindow::on_ViewSchemeChargeButton_clicked(bool checked)
-{
-	if (!checked) return;
-	prefs.setColourScheme(Prefs::ChargeScheme);
-	aten_.globalLogChange(Log::Style);
-	updateWidgets(AtenWindow::MainViewTarget);
-}
-
-void AtenWindow::on_ViewSchemeForceButton_clicked(bool checked)
-{
-	if (!checked) return;
-	prefs.setColourScheme(Prefs::ForceScheme);
-	aten_.globalLogChange(Log::Style);
-	updateWidgets(AtenWindow::MainViewTarget);
-}
-
-void AtenWindow::on_ViewSchemeVelocityButton_clicked(bool checked)
-{
-	if (!checked) return;
-	prefs.setColourScheme(Prefs::VelocityScheme);
-	aten_.globalLogChange(Log::Style);
-	updateWidgets(AtenWindow::MainViewTarget);
-}
-
-void AtenWindow::on_ViewSchemeOwnButton_clicked(bool checked)
-{
-	if (!checked) return;
-	prefs.setColourScheme(Prefs::OwnScheme);
-	aten_.globalLogChange(Log::Style);
+	prefs.setPerspective(checked);
 	updateWidgets(AtenWindow::MainViewTarget);
 }

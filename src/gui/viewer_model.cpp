@@ -62,6 +62,7 @@ void Viewer::renderModel(Model* source, int viewPortX, int viewPortY, int viewPo
 		glOrtho(-1.0, 1.0, -1.0, 1.0, -10.0, 10.0);
 		glMatrixMode(GL_MODELVIEW);
 		glLoadIdentity();
+		glEnable(GL_LIGHTING);
 
 		// Draw globe axes, rotated by current view
 		Matrix A = modelTransformationMatrix_;
@@ -135,7 +136,11 @@ void Viewer::renderModel(Model* source, int viewPortX, int viewPortY, int viewPo
 				modelGroup.sendToGL(offset);
 
 				// Render grids
-				for (Grid* g = source->grids(); g != NULL; g = g->next) g->sendPrimaryPrimitive(offset);
+				for (Grid* g = source->grids(); g != NULL; g = g->next)
+				{
+					g->sendPrimaryPrimitive(offset);
+					if (g->useSecondary()) g->sendSecondaryPrimitive(offset);
+				}
 			}
 		}
 	}

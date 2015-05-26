@@ -155,8 +155,8 @@ void ForcefieldsWidget::loadForcefield()
 }
 
 /*
-// Energy Tab
-*/
+ * Energy Tab
+ */
 
 void ForcefieldsWidget::on_CurrentEnergyButton_clicked(bool checked)
 {
@@ -214,8 +214,8 @@ void ForcefieldsWidget::on_MopacMinimiseButton_clicked(bool checked)
 }
 			
 /*
-// Forcefields Tab
-*/
+ * Forcefields Tab
+ */
 
 void ForcefieldsWidget::on_ForcefieldCombo_currentIndexChanged(int index)
 {
@@ -321,8 +321,8 @@ void ForcefieldsWidget::on_CreateExpressionButton_clicked(bool clicked)
 }
 
 /*
-// Manual Typing Tab
-*/
+ * Manual Typing Tab
+ */
 
 // Set the selected atoms to have the specified forcefield type
 void ForcefieldsWidget::on_ManualTypeSetButton_clicked(bool checked)

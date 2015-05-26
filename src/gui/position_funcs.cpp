@@ -39,8 +39,8 @@ void PositionWidget::showWidget()
 }
 
 /*
-// Flip
-*/
+ * Flip
+ */
 
 void PositionWidget::on_FlipXButton_clicked(bool checked)
 {
@@ -64,8 +64,8 @@ void PositionWidget::flipSelection(int axis)
 }
 
 /*
-// Centre
-*/
+ * Centre
+ */
 
 void PositionWidget::on_DefineCentreButton_clicked(bool checked)
 {
@@ -85,8 +85,8 @@ void PositionWidget::on_CentreSelectionButton_clicked(bool checked)
 }
 
 /*
-// Translate Functions
-*/
+ * Translate Functions
+ */
 
 void PositionWidget::on_TranslatePosXButton_clicked(bool on)
 {
@@ -158,8 +158,8 @@ void PositionWidget::translateSelection(int axis, int dir)
 }
 
 /*
-// Vector Shift Functions
-*/
+ * Vector Shift Functions
+ */
 
 void shiftPickAxisButton_callback(Reflist<Atom,int>* picked)
 {
@@ -250,8 +250,8 @@ void PositionWidget::on_ShiftVectorNegativeButton_clicked(bool checked)
 }
 
 /*
-// Move
-*/
+ * Move
+ */
 
 void PositionWidget::on_RepositionSelectionButton_clicked(bool on)
 {

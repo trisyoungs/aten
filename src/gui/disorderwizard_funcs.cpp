@@ -512,8 +512,8 @@ void DisorderWizard::on_MethodOptionsButton_clicked(bool checked)
 }
 
 /*
-// Local Variable Functions
-*/
+ * Local Variable Functions
+ */
 
 // Return currently-selected partitioning scheme
 PartitioningScheme* DisorderWizard::partitioningScheme()

@@ -205,7 +205,7 @@ void GridsWidget::refreshGridInfo()
 	ui.GridAxesCYSpin->setValue(axes[9]);
 	ui.GridAxesCZSpin->setValue(axes[10]);
 	// Set surface style data
-	ui.GridStyleCombo->setCurrentIndex(g->style());
+	ui.GridStyleCombo->setCurrentIndex(g->primaryStyle());
 	ui.GridOutlineVolumeCheck->setChecked(g->outlineVolume());
 	ui.GridFillEnclosedVolumeCheck->setChecked(g->fillEnclosedVolume());
 	ui.GridPeriodicCheck->setChecked(g->periodic());
@@ -255,8 +255,8 @@ void GridsWidget::loadGrid()
 }
 
 /*
-// Menu
-*/
+ * Menu
+ */
 
 void GridsWidget::on_actionGridLoad_triggered(bool checked)
 {
@@ -567,7 +567,7 @@ void GridsWidget::on_GridStyleCombo_currentIndexChanged(int index)
 		QListWidgetItem *item = (QListWidgetItem*) qlwi;
 		// Get grid pointer
 		g = (Grid*) VariantPointer<Grid>(item->data(Qt::UserRole));
-		g->setStyle(Grid::SurfaceStyle (index));
+		g->setPrimaryStyle(Grid::SurfaceStyle (index));
 	}
 	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
@@ -711,8 +711,8 @@ void GridsWidget::on_GridSecondaryCutoffCheck_clicked(bool checked)
 
 
 /*
-// Shift Page
-*/
+ * Shift Page
+ */
 
 void GridsWidget::gridShiftChanged()
 {
@@ -802,8 +802,8 @@ void GridsWidget::on_GridShiftZSpin_valueChanged(int i)
 }
 
 /*
-// Orbital Page
-*/
+ * Orbital Page
+ */
 
 void GridsWidget::on_ViewBasisButton_clicked(bool checked)
 {

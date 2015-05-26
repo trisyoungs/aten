@@ -27,8 +27,8 @@
 ATEN_USING_NAMESPACE
 
 /*
-// LayoutData class
-*/
+ * LayoutData class
+ */
 
 // Constructor
 LayoutData::LayoutData() : ListItem<LayoutData>()
@@ -97,8 +97,8 @@ void LayoutData::addWidget(QWidget* w, int colspan, bool newline)
 }
 
 /*
-// Layout list
-*/
+ * Layout list
+ */
 
 // Constructor
 LayoutList::LayoutList()

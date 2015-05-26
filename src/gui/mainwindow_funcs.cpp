@@ -53,8 +53,9 @@
 #include "gui/popupcolour.h"
 #include "gui/popupelementcommon.h"
 #include "gui/popupelementtable.h"
-#include "gui/popupgridsmatrix.h"
-#include "gui/popupgridsorigin.h"
+#include "gui/popupgridmatrix.h"
+#include "gui/popupgridorigin.h"
+#include "gui/popupgridstyle.h"
 #include "gui/popupmeasureangle.h"
 #include "gui/popupmeasuredistance.h"
 #include "gui/popupmeasuretorsion.h"
@@ -67,7 +68,9 @@
 #include "gui/popuptransformshift.h"
 #include "gui/popuptransformtorsion.h"
 #include "gui/popuptransformtranslate.h"
+#include "gui/popupviewcolourscheme.h"
 #include "gui/popupviewreset.h"
+#include "gui/popupviewstyle.h"
 
 #include "gui/atomlist.h"
 #include "gui/command.h"
@@ -145,20 +148,6 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 	group->addAction(ui.actionTrajectoryModel);
 	group->addAction(ui.actionTrajectoryFrames);
 
-	// Add style tool buttons to their button group
-	ui.ViewStyleLineButton->setGroup("Styles");
-	ui.ViewStyleTubeButton->setGroup("Styles");
-	ui.ViewStyleSphereButton->setGroup("Styles");
-	ui.ViewStyleScaledButton->setGroup("Styles");
-	ui.ViewStyleOwnButton->setGroup("Styles");
-
-	// Add colour scheme tool buttons to their button group
-	ui.ViewSchemeElementButton->setGroup("Colourschemes");
-	ui.ViewSchemeChargeButton->setGroup("Colourschemes");
-	ui.ViewSchemeForceButton->setGroup("Colourschemes");
-	ui.ViewSchemeVelocityButton->setGroup("Colourschemes");
-	ui.ViewSchemeOwnButton->setGroup("Colourschemes");
-
 	// Add buttons related to user actions to our button group, and add popup widgets to those buttons that have them
 
 	// -- Build Panel (Select)
@@ -203,6 +192,9 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_R), ui.ViewControlResetButton, 0, 0, Qt::ApplicationShortcut);
 	connect(shortcut, SIGNAL(activated()), ui.ViewControlResetButton, SLOT(click()));
 	ui.ViewControlResetButton->setPopupWidget(new ResetViewPopup(*this, ui.ViewControlResetButton));
+	// -- View Panel (Appearance)
+	ui.ViewAppearanceStyleButton->setPopupWidget(new ViewStylePopup(*this, ui.ViewAppearanceStyleButton), true);
+	ui.ViewAppearanceColourButton->setPopupWidget(new ViewColourSchemePopup(*this, ui.ViewAppearanceColourButton), true);
 
 	// -- Calculate Panel (Measure)
 	ui.CalculateMeasureDistanceButton->setGroup("UserActions", UserAction::MeasureDistanceAction);
@@ -224,12 +216,14 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 	ui.TransformPositionRepositionButton->setPopupWidget(new TransformRepositionPopup(*this, ui.TransformPositionRepositionButton));
 
 	// -- Grids Panel (Define)
-	ui.GridsDefineAxesButton->setPopupWidget(new GridsMatrixPopup(*this, ui.GridsDefineAxesButton), true);
-	ui.GridsDefineOriginButton->setPopupWidget(new GridsOriginPopup(*this, ui.GridsDefineOriginButton), true);
+	ui.GridsDefineAxesButton->setPopupWidget(new GridMatrixPopup(*this, ui.GridsDefineAxesButton), true);
+	ui.GridsDefineOriginButton->setPopupWidget(new GridOriginPopup(*this, ui.GridsDefineOriginButton), true);
 	// -- Grids Panel (Primary Cutoff)
 	ui.GridsPrimaryColourButton->setPopupWidget(new ColourPopup(*this, ui.GridsPrimaryColourButton), true);
+	ui.GridsPrimaryStyleButton->setPopupWidget(new GridStylePopup(*this, ui.GridsPrimaryStyleButton, true), true);
 	// -- Grids Panel (Secondary Cutoff)
 	ui.GridsSecondaryColourButton->setPopupWidget(new ColourPopup(*this, ui.GridsSecondaryColourButton), true);
+	ui.GridsSecondaryStyleButton->setPopupWidget(new GridStylePopup(*this, ui.GridsPrimaryStyleButton, false), true);
 	
 	
 	
@@ -342,8 +336,8 @@ void AtenWindow::closeEvent(QCloseEvent* event)
 
 
 /*
-// Methods
-*/
+ * Methods
+ */
 
 // Close specified model, saving first if requested
 bool AtenWindow::closeModel(Model* m)

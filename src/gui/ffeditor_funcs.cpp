@@ -374,8 +374,8 @@ void AtenForcefieldEditor::boundFunctionChanged(QComboBox* sender, int i, Forcef
 }
 
 /*
-// Types Page
-*/
+ * Types Page
+ */
 
 // Test entered atom type
 void AtenForcefieldEditor::on_FFEditorTestTypeButton_clicked(bool on)
@@ -451,8 +451,8 @@ void AtenForcefieldEditor::on_FFEditorTypesTable_itemChanged(QTableWidgetItem *w
 }
 
 /*
-// Atom Page
-*/
+ * Atom Page
+ */
 
 void AtenForcefieldEditor::updateVdwLabels(ForcefieldAtom* ffa)
 {
@@ -554,8 +554,8 @@ void AtenForcefieldEditor::on_FFEditorAtomsTable_itemSelectionChanged()
 }
 
 /*
-// Bonds Page
-*/
+ * Bonds Page
+ */
 
 void AtenForcefieldEditor::updateBondsLabels(ForcefieldBound* ffb)
 {
@@ -637,8 +637,8 @@ void AtenForcefieldEditor::on_FFEditorBondsTable_itemSelectionChanged()
 }
 
 /*
-// Angles Page
-*/
+ * Angles Page
+ */
 
 void AtenForcefieldEditor::updateAnglesLabels(ForcefieldBound* ffb)
 {
@@ -721,8 +721,8 @@ void AtenForcefieldEditor::on_FFEditorAnglesTable_itemSelectionChanged()
 }
 
 /*
-// Torsions Page
-*/
+ * Torsions Page
+ */
 
 void AtenForcefieldEditor::updateTorsionsLabels(ForcefieldBound* ffb)
 {
@@ -814,8 +814,8 @@ void AtenForcefieldEditor::on_FFEditorTorsionsTable_itemSelectionChanged()
 }
 
 /*
-// Impropers Page
-*/
+ * Impropers Page
+ */
 
 void AtenForcefieldEditor::updateImpropersLabels(ForcefieldBound* ffb)
 {
@@ -971,8 +971,8 @@ void AtenForcefieldEditor::on_FFEditorUreyBradleysTable_itemSelectionChanged()
 }
 
 /*
-// Generate Page
-*/
+ * Generate Page
+ */
 
 // Generate type
 void AtenForcefieldEditor::on_FFEditorGenerateTypeButton_clicked(bool on)

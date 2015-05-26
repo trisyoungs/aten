@@ -11,12 +11,19 @@
     <file>icons/arrow_up.svg</file>
     <file>icons/arrow_upline.svg</file>
   </qresource>
-  <qresource prefix="atomgeometry">
+  <qresource prefix="/viewstyle"/>
+  <qresource prefix="/colourscheme">
+    <file>icons/colourscheme_charge.png</file>
+    <file>icons/colourscheme_element.png</file>
+    <file>icons/colourscheme_force.png</file>
+    <file>icons/colourscheme_own.png</file>
+    <file>icons/colourscheme_velocity.png</file>
+  </qresource>
+  <qresource prefix="/atomgeometry">
     <file>icons/atomgeometry_tetrahedral.png</file>
     <file>icons/atomgeometry_linear.png</file>
     <file>icons/atomgeometry_octahedral.png</file>
     <file>icons/atomgeometry_sqplanar.png</file>
-    <file>icons/atomgeometry_tetrahedral.png</file>
     <file>icons/atomgeometry_trigbipy.png</file>
     <file>icons/atomgeometry_trigonal.png</file>
     <file>icons/atomgeometry_tshape.png</file>
@@ -57,15 +64,7 @@
     <file>icons/build_chain.svg</file>
     <file>icons/build_delete.svg</file>
     <file>icons/build_probe.svg</file>
-    <file>icons/build_ptable.svg</file>
     <file>icons/build_transmute.svg</file>
-  </qresource>
-  <qresource prefix="/draw_styles">
-    <file>icons/style_individual.svg</file>
-    <file>icons/style_scaled.svg</file>
-    <file>icons/style_sphere.svg</file>
-    <file>icons/style_stick.svg</file>
-    <file>icons/style_tube.svg</file>
   </qresource>
   <qresource prefix="/edit">
     <file>icons/edit_copy.svg</file>
@@ -74,6 +73,13 @@
     <file>icons/edit_paste.svg</file>
     <file>icons/edit_redo.svg</file>
     <file>icons/edit_undo.svg</file>
+  </qresource>
+  <qresource prefix="/viewstyle">
+    <file>icons/viewstyle_line.png</file>
+    <file>icons/viewstyle_own.png</file>
+    <file>icons/viewstyle_scaled.png</file>
+    <file>icons/viewstyle_sphere.png</file>
+    <file>icons/viewstyle_tube.png</file>
   </qresource>
   <qresource prefix="/file">
     <file>icons/file_close.svg</file>
@@ -109,7 +115,7 @@
     <file>icons/mouse_rotate.svg</file>
     <file>icons/mouse_translate.svg</file>
   </qresource>
-  <qresource prefix="/playback">
+  <qresource prefix="/trajectory">
     <file>icons/traj_first.svg</file>
     <file>icons/traj_last.svg</file>
     <file>icons/traj_next.svg</file>
@@ -117,7 +123,12 @@
     <file>icons/traj_prev.svg</file>
     <file>icons/traj_view.svg</file>
   </qresource>
-  <qresource prefix="position">
+  <qresource prefix="/gridstyle">
+    <file>icons/gridstyle_mesh.png</file>
+    <file>icons/gridstyle_points.png</file>
+    <file>icons/gridstyle_solid.png</file>
+  </qresource>
+  <qresource prefix="/position">
     <file>icons/position_flipx.svg</file>
     <file>icons/position_flipy.svg</file>
     <file>icons/position_flipz.svg</file>

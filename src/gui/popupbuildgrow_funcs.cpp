@@ -76,6 +76,45 @@ void GrowPopup::popup()
 bool GrowPopup::callMethod(QString methodName, ReturnValue& rv)
 {
 	if (methodName == "TEST") return true;
+	else if (methodName == "updateButtonIcon")
+	{
+		if (!parentMenuButton()) return false;
+		Atom::AtomGeometry ag = Atom::atomGeometry(rv.asString());
+		switch (ag)
+		{
+			case (Atom::LinearGeometry):
+				parentMenuButton()->setIcon(QIcon(":/atomgeometry/icons/atomgeometry_linear.png"));
+				ui.GrowSelectionButton->setIcon(QIcon(":/atomgeometry/icons/atomgeometry_linear.png"));
+				break;
+			case (Atom::TShapeGeometry):
+				parentMenuButton()->setIcon(QIcon(":/atomgeometry/icons/atomgeometry_tshape.png"));
+				ui.GrowSelectionButton->setIcon(QIcon(":/atomgeometry/icons/atomgeometry_tshape.png"));
+				break;
+			case (Atom::TrigPlanarGeometry):
+				parentMenuButton()->setIcon(QIcon(":/atomgeometry/icons/atomgeometry_trigonal.png"));
+				ui.GrowSelectionButton->setIcon(QIcon(":/atomgeometry/icons/atomgeometry_trigonal.png"));
+				break;
+			case (Atom::TetrahedralGeometry):
+				parentMenuButton()->setIcon(QIcon(":/atomgeometry/icons/atomgeometry_tetrahedral.png"));
+				ui.GrowSelectionButton->setIcon(QIcon(":/atomgeometry/icons/atomgeometry_tetrahedral.png"));
+				break;
+			case (Atom::SquarePlanarGeometry):
+				parentMenuButton()->setIcon(QIcon(":/atomgeometry/icons/atomgeometry_sqplanar.png"));
+				ui.GrowSelectionButton->setIcon(QIcon(":/atomgeometry/icons/atomgeometry_sqplanar.png"));
+				break;
+			case (Atom::TrigBipyramidGeometry):
+				parentMenuButton()->setIcon(QIcon(":/atomgeometry/icons/atomgeometry_trigbipy.png"));
+				ui.GrowSelectionButton->setIcon(QIcon(":/atomgeometry/icons/atomgeometry_trigbipy.png"));
+				break;
+			case (Atom::OctahedralGeometry):
+				parentMenuButton()->setIcon(QIcon(":/atomgeometry/icons/atomgeometry_octahedral.png"));
+				ui.GrowSelectionButton->setIcon(QIcon(":/atomgeometry/icons/atomgeometry_octahedral.png"));
+				break;
+			default:
+				printf("Warning: Odd atom geometry passed (%s) so can't set parent button's icon.\n", qPrintable(rv.asString()));
+				break;
+		}
+	}
 	else if (methodName == "hideEvent")
 	{
 		return true;
@@ -93,9 +132,8 @@ void GrowPopup::on_GeometryLinearButton_clicked(bool checked)
 	// Set geometry in viewer
 	parent_.ui.MainView->setBuildGeometry(Atom::LinearGeometry);
 
-	// Set icon in Grow buttons
-	parent_.ui.BuildDrawGrowButton->setIcon(QIcon(":/atomgeometry/icons/atomgeometry_linear.png"));
-	ui.GrowSelectionButton->setIcon(QIcon(":/atomgeometry/icons/atomgeometry_linear.png"));
+	// Update icon
+	callMethodSimple("updateButtonIcon", Atom::atomGeometry(Atom::LinearGeometry));
 
 	// Hide popup
 	done();
@@ -106,9 +144,8 @@ void GrowPopup::on_GeometryTShapeButton_clicked(bool checked)
 	// Set geometry in viewer
 	parent_.ui.MainView->setBuildGeometry(Atom::TShapeGeometry);
 
-	// Set icon in Grow buttons
-	parent_.ui.BuildDrawGrowButton->setIcon(QIcon(":/atomgeometry/icons/atomgeometry_tshape.png"));
-	ui.GrowSelectionButton->setIcon(QIcon(":/atomgeometry/icons/atomgeometry_tshape.png"));
+	// Update icon
+	callMethodSimple("updateButtonIcon", Atom::atomGeometry(Atom::TShapeGeometry));
 
 	// Hide popup
 	done();
@@ -119,9 +156,8 @@ void GrowPopup::on_GeometryTrigonalButton_clicked(bool checked)
 	// Set geometry in viewer
 	parent_.ui.MainView->setBuildGeometry(Atom::TrigPlanarGeometry);
 
-	// Set icon in Grow buttons
-	parent_.ui.BuildDrawGrowButton->setIcon(QIcon(":/atomgeometry/icons/atomgeometry_trigonal.png"));
-	ui.GrowSelectionButton->setIcon(QIcon(":/atomgeometry/icons/atomgeometry_trigonal.png"));
+	// Update icon
+	callMethodSimple("updateButtonIcon", Atom::atomGeometry(Atom::TrigPlanarGeometry));
 
 	// Hide popup
 	done();
@@ -132,9 +168,8 @@ void GrowPopup::on_GeometryTetrahedralButton_clicked(bool checked)
 	// Set geometry in viewer
 	parent_.ui.MainView->setBuildGeometry(Atom::TetrahedralGeometry);
 
-	// Set icon in Grow buttons
-	parent_.ui.BuildDrawGrowButton->setIcon(QIcon(":/atomgeometry/icons/atomgeometry_tetrahedral.png"));
-	ui.GrowSelectionButton->setIcon(QIcon(":/atomgeometry/icons/atomgeometry_tetrahedral.png"));
+	// Update icon
+	callMethodSimple("updateButtonIcon", Atom::atomGeometry(Atom::TetrahedralGeometry));
 
 	// Hide popup
 	done();
@@ -144,9 +179,8 @@ void GrowPopup::on_GeometrySqPlanarButton_clicked(bool checked)
 	// Set geometry in viewer
 	parent_.ui.MainView->setBuildGeometry(Atom::SquarePlanarGeometry);
 
-	// Set icon in Grow buttons
-	parent_.ui.BuildDrawGrowButton->setIcon(QIcon(":/atomgeometry/icons/atomgeometry_sqplanar.png"));
-	ui.GrowSelectionButton->setIcon(QIcon(":/atomgeometry/icons/atomgeometry_sqplanar.png"));
+	// Update icon
+	callMethodSimple("updateButtonIcon", Atom::atomGeometry(Atom::SquarePlanarGeometry));
 
 	// Hide popup
 	done();
@@ -157,9 +191,8 @@ void GrowPopup::on_GeometryTrigBipyramidButton_clicked(bool checked)
 	// Set geometry in viewer
 	parent_.ui.MainView->setBuildGeometry(Atom::TrigBipyramidGeometry);
 
-	// Set icon in Grow buttons
-	parent_.ui.BuildDrawGrowButton->setIcon(QIcon(":/atomgeometry/icons/atomgeometry_trigbipy.png"));
-	ui.GrowSelectionButton->setIcon(QIcon(":/atomgeometry/icons/atomgeometry_trigbipy.png"));
+	// Update icon
+	callMethodSimple("updateButtonIcon", Atom::atomGeometry(Atom::TrigBipyramidGeometry));
 
 	// Hide popup
 	done();
@@ -170,9 +203,8 @@ void GrowPopup::on_GeometryOctahedralButton_clicked(bool checked)
 	// Set geometry in viewer
 	parent_.ui.MainView->setBuildGeometry(Atom::OctahedralGeometry);
 
-	// Set icon in Grow buttons
-	parent_.ui.BuildDrawGrowButton->setIcon(QIcon(":/atomgeometry/icons/atomgeometry_octahedral.png"));
-	ui.GrowSelectionButton->setIcon(QIcon(":/atomgeometry/icons/atomgeometry_octahedral.png"));
+	// Update icon
+	callMethodSimple("updateButtonIcon", Atom::atomGeometry(Atom::OctahedralGeometry));
 
 	// Hide popup
 	done();
@@ -181,12 +213,11 @@ void GrowPopup::on_GeometryOctahedralButton_clicked(bool checked)
 void GrowPopup::on_GrowSelectionButton_clicked(bool checked)
 {
 	// Run command
-	CommandNode::run(Commands::SelectionGrowAtom, "ic", parent_.currentBuildElement(), Atom::AtomGeometry(parent_.ui.MainView->buildGeometry()));
+	CommandNode::run(Commands::SelectionGrowAtom, "ic", parent_.currentBuildElement(), Atom::atomGeometry(parent_.ui.MainView->buildGeometry()));
 
-	// Update display
-	parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget);
+	// Set icon
+	callMethodSimple("updateButtonIcon", Atom::atomGeometry(parent_.ui.MainView->buildGeometry()));
 
 	// Hide popup
 	done();
 }
-

@@ -1,6 +1,6 @@
 /*
-	*** Popup Widget - Grids Matrix
-	*** src/gui/popupgridsmatrix.h
+	*** Popup Widget - Grid Matrix
+	*** src/gui/popupgridmatrix.h
 	Copyright T. Youngs 2007-2015
 
 	This file is part of Aten.
@@ -19,10 +19,10 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_GRIDSMATRIXPOPUP_H
-#define ATEN_GRIDSMATRIXPOPUP_H
+#ifndef ATEN_GRIDMATRIXPOPUP_H
+#define ATEN_GRIDMATRIXPOPUP_H
 
-#include "gui/ui_popupgridsmatrix.h"
+#include "gui/ui_popupgridmatrix.h"
 #include "gui/tmenubutton.hui"
 #include "parser/returnvalue.h"
 
@@ -39,7 +39,7 @@ ATEN_END_NAMESPACE
 ATEN_USING_NAMESPACE
 
 // Popup Widget - Grids Matrix
-class GridsMatrixPopup : public TMenuButtonPopupWidget
+class GridMatrixPopup : public TMenuButtonPopupWidget
 {
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
@@ -50,9 +50,9 @@ class GridsMatrixPopup : public TMenuButtonPopupWidget
 
 	public:
 	// Constructor / Destructor
-	GridsMatrixPopup(AtenWindow& parent, TMenuButton* buttonParent);
+	GridMatrixPopup(AtenWindow& parent, TMenuButton* buttonParent);
 	// Main form declaration
-	Ui::GridsMatrixPopup ui;
+	Ui::GridMatrixPopup ui;
 	// Show popup, updating any controls as necessary beforehand
 	void popup();
 	// Call named method associated to popup

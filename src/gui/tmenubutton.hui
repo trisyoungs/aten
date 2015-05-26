@@ -60,6 +60,8 @@ class TMenuButtonPopupWidget : public QWidget
 	virtual void popup() = 0;
 	// Call named method associated to popup
 	virtual bool callMethod(QString methodName, ReturnValue& rv) = 0;
+	// Call named method associated to popup (without ReturnValue)
+	bool callMethodSimple(QString methodName, QString value);
 	// Return parent TMenuButton
 	TMenuButton* parentMenuButton();
 

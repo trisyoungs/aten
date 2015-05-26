@@ -46,8 +46,9 @@ class Grid : public ListItem<Grid>, ObjectStore<Grid>
 	static GridType gridType(QString s, bool reportError);
 	static const char* gridType(Grid::GridType gt);
 	// Surface rendering styles
-	enum SurfaceStyle { PointSurface, TriangleSurface, SolidSurface, nSurfaceStyles };
+	enum SurfaceStyle { PointSurface, MeshSurface, SolidSurface, nSurfaceStyles };
 	static SurfaceStyle surfaceStyle(QString s);
+	static const char* surfaceStyle(Grid::SurfaceStyle ss);
 	// Assignment operator
 	void operator=(Grid& source);
 
@@ -79,7 +80,7 @@ class Grid : public ListItem<Grid>, ObjectStore<Grid>
 
 
 	/*
-	 * Gridded Data
+	 * Data
 	 */
 	private:
 	// Cell that determines origin, spacing between Gridpoints, and their axis system
@@ -106,12 +107,6 @@ class Grid : public ListItem<Grid>, ObjectStore<Grid>
 	double** data2d_;
 	// Free grid data
 	List<GridPoint> gridPoints_;
-	// Clear array data only
-	void deleteArrays();
-	// Clear all data
-	void clear();
-	// Allocate grid arrays
-	bool allocateArrays();
 	// Cutoffs for isosurface generation
 	double lowerPrimaryCutoff_, upperPrimaryCutoff_;
 	double lowerSecondaryCutoff_, upperSecondaryCutoff_;
@@ -121,22 +116,30 @@ class Grid : public ListItem<Grid>, ObjectStore<Grid>
 	int boundsLog_;
 	// Minimum and maximum values stored in data[]
 	double minimum_, maximum_;
-	// Update minimum and maximum values
-	void setLimits(double d);
 	// Order of loops when reading data point-by-point
 	Vec3<int> loopOrder_;
 	// Use data value for z-component of 2D surface
 	bool useDataForZ_;
-	// Calculate bounding lower-left and upper-right corners
-	void calculateBounds();
 	// Sum calculation log point
 	int sumPoint_;
 	// Total sums of the positive and negative gridpoints
 	double totalPositiveSum_, totalNegativeSum_;
 	// Partial sums of the grid surfaces, determined by cutoffs
 	double partialPrimarySum_, partialSecondarySum_;
+
+	private:
+	// Clear all data
+	void clear();
+	// Clear array data only
+	void deleteArrays();
+	// Allocate grid arrays
+	bool allocateArrays();
+	// Update minimum and maximum values
+	void setLimits(double d);
 	// Calculate sums
 	void calculateSums();
+	// Calculate bounding lower-left and upper-right corners
+	void calculateBounds();
 
 	public:
 	// Return pointer to the underlying cell structure
@@ -263,8 +266,8 @@ class Grid : public ListItem<Grid>, ObjectStore<Grid>
 	int log_;
 	// Whether the surface is currently visible
 	bool visible_;
-	// How to render this surface
-	SurfaceStyle style_;
+	// How to render the primary and secondary surfaces
+	SurfaceStyle primaryStyle_, secondaryStyle_;
 	// Local colours (including alpha component)
 	double primaryColour_[4], secondaryColour_[4];
 	// Colour scale to take colouring from (zero for internal colours)
@@ -281,7 +284,7 @@ class Grid : public ListItem<Grid>, ObjectStore<Grid>
 	Vec3<int> shift_;
 	// Whether to fill enclosed volume
 	bool fillEnclosedVolume_;
-	
+
 	public:
 	// Increase the internal log
 	void logChange();
@@ -293,14 +296,26 @@ class Grid : public ListItem<Grid>, ObjectStore<Grid>
 	void setVisible(bool v);
 	// Return whether the surface is visible
 	bool isVisible() const;
-	// Set the rendering style of the surface
-	void setStyle(SurfaceStyle ss);
-	// Return the rendering style of the surface
-	SurfaceStyle style() const;
-	// Set the primary colour of the surface
+	// Set the rendering style of the primary surface
+	void setPrimaryStyle(SurfaceStyle ss);
+	// Return the rendering style of the primary surface
+	SurfaceStyle primaryStyle() const;
+	// Set the rendering style of the secondarysurface
+	void setSecondaryStyle(SurfaceStyle ss);
+	// Return the rendering style of the secondary surface
+	SurfaceStyle secondaryStyle() const;
+	// Set colour of primary surface
 	void setPrimaryColour(double r, double g, double b, double a = -1);
-	// Set the secondary colour of the surface
+	// Return the colour of the primary surface
+	double* primaryColour();
+	// Copy the colour of the primary surface
+	void copyPrimaryColour(Vec4<GLfloat>& col);
+	// Set the colour of the secondary surface
 	void setSecondaryColour(double r, double g, double b, double a = -1);
+	// Return the colour of the secondary surface
+	double* secondaryColour();
+	// Copy the colour of the secondary surface
+	void copySecondaryColour(Vec4<GLfloat>& col);
 	// Set alpha value of the primary colour
 	void setPrimaryAlpha(double a);
 	// Return the alpha value of the primary colour
@@ -309,22 +324,14 @@ class Grid : public ListItem<Grid>, ObjectStore<Grid>
 	void setSecondaryAlpha(double a);
 	// Return the alpha value of the secondary colour
 	double secondaryAlpha() const;
-	// Return the primary colour of the surface
-	double* primaryColour();
-	// Copy the primary colour of the surface
-	void copyPrimaryColour(Vec4<GLfloat>& col);
-	// Return the secondary colour of the surface
-	double* secondaryColour();
-	// Copy the secondary colour of the surface
-	void copySecondaryColour(Vec4<GLfloat>& col);
 	// Set the colourscale associated with the data
 	void setColourScale(int id);
 	// Return the colourscale associated with the data
 	int colourScale() const;
-	// Whether the surface uses the defined colour scale or not
-	bool useColourScale() const;
 	// Set whether the surface should be rendered with an associated colourscale
 	void setUseColourScale(bool b);
+	// Whether the surface uses the defined colour scale or not
+	bool useColourScale() const;
 	// Set whether to render additional data using secondary cutoff
 	void setUseSecondary(bool b);
 	// Returns whether to render additional data using secondary cutoff

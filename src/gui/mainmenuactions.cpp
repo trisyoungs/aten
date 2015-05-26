@@ -34,8 +34,8 @@
 #include "base/sysfunc.h"
 
 /*
-// File Menu
-*/
+ * File Menu
+ */
 
 // Add new model to workspace
 void AtenWindow::on_actionFileNew_triggered(bool checked)
@@ -254,8 +254,8 @@ void AtenWindow::on_actionFileQuit_triggered(bool checked)
 }
 
 /*
-// Edit Actions
-*/
+ * Edit Actions
+ */
 
 void AtenWindow::on_actionEditUndo_triggered(bool checked)
 {
@@ -371,8 +371,8 @@ void AtenWindow::on_actionEditQuickCommand_triggered(bool on)
 }
 
 /*
-// Model Actions
-*/
+ * Model Actions
+ */
 
 // Rename model
 void AtenWindow::on_actionModelRename_triggered(bool checked)
@@ -465,8 +465,8 @@ void AtenWindow::on_actionListMeasurements_triggered(bool on)
 }
 
 /*
-// Trajectory Actions
-*/
+ * Trajectory Actions
+ */
 
 // Add trajectory to model
 void AtenWindow::on_actionTrajectoryOpen_triggered(bool checked)

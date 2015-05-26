@@ -52,8 +52,8 @@ PartitioningScheme &PoresWidget::partitioningScheme()
 }
 
 /*
-// Drill Tab
-*/
+ * Drill Tab
+ */
 
 void PoresWidget::on_PoreSelectButton_clicked(bool checked)
 {
@@ -96,8 +96,8 @@ void PoresWidget::on_PoreSelectAndCutButton_clicked(bool checked)
 }
 
 /*
-// Terminate Tab
-*/
+ * Terminate Tab
+ */
 
 void PoresWidget::on_TerminateButton_clicked(bool checked)
 {
@@ -115,8 +115,8 @@ void PoresWidget::on_TerminateButton_clicked(bool checked)
 }
 
 /*
-// Scheme Tab
-*/
+ * Scheme Tab
+ */
 
 void PoresWidget::on_GenerateSchemeButton_clicked(bool checked)
 {
