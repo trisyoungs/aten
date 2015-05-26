@@ -1,4 +1,4 @@
-BISON_TARGET(CommandParser grammar.yy ${CMAKE_CURRENT_BINARY_DIR}/grammar.cc)
+BISON_TARGET(CommandParser parser_grammar.yy ${CMAKE_CURRENT_BINARY_DIR}/parser_grammar.cc)
 
 add_library(parser
 ${BISON_CommandParser_OUTPUTS}

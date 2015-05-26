@@ -23,6 +23,7 @@
 #include "methods/mc.h"
 #include "model/model.h"
 #include "methods/disorderdata.h"
+#include "methods/partitiondata.h"
 #include "model/clipboard.h"
 #include "base/sysfunc.h"
 #include "base/progress.h"

@@ -23,8 +23,8 @@
 #define ATEN_PORESWIDGET_H
 
 #include "gui/ui_pores.h"
-#include "methods/partition.h"
 #include "base/namespace.h"
+#include "methods/partitioningscheme.h"
 
 // Forward Declarations (Qt)
 class AtenWindow;

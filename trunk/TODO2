@@ -13,13 +13,10 @@ Add large image creation functions.
 Redo ProgressIndicator, making into a class much like QProgress (can't just use QProgress, since we want to have progress indicator functionality in the CLI....). Make it clever enough to realise that the gui is visible or not. Perhaps integrate it into Messenger, so that messages printed out while the indicator is running don't disrupt the indicator?
 Remove global MC, CG, SD declarations, and put them in Aten?
 Reimplement KeepNames functionality.
-Split methods/partitiondata* into partitiondata and partitionscheme.
 Add in calculation of quantities and graphing.
-Make ZMatrix a full member of Model, rather than a pointer that needs to be created.
 Crash if model is saved, then filters reloaded, then model is saved again (since filter pointer will be wrong)?
 In top-left corner of main window, have a black icon illustrating which mode is active (except for Interact).
 Instead of a separate AtenVariable, make Aten subclass Variable?
-Rename source files for parser/parser (grammar etc.) a la uChroma.
 Make ElementMap store reference to Aten, preventing passing of FFs.
 Implement optional startup 'guide' or 'wizard' that will disable all controls on the GUI and explain what means what, highlighting them as appropriate.
 Scale molecule COM inverts coordinates??
@@ -37,14 +34,12 @@ Note not related to Aten2 - pdens visualising areas of low probability (less tha
 Sort out recent files list - not working?
 Octahedral Growing doesn't work.
 Add option to specify grow distance (instead of calculating from VDW radii).
-Draw halo underneath current model when more than one model is displayed.
 Automatically adjust grid size for number of visible models, based on current aspect ratio and context size etc.
 Cif/mol2/pdb import broken?
-PrimitiveSet::wireCube_ is not a wireframe cube!
 Recognise bonds in both selection and right-click:
 o Context menu for bond then can replicate bond, angle, and torsion adjustment
 Clear selected measurements on panel popup clears all measurements.
-CRASH - Click in empty space in model list causes fp exception.
+CRASH - Click in empty space in model list causes fp exception. Related to no current model selected.  Force ListWidget to always have one selected?
 Allow right-click on elements in PTable to set as member of common elements popup.
 Finish Spacegroup popup.
 Modifying anything on Grid tool widget is slow, forcing update of grid primitive?
@@ -55,6 +50,7 @@ Reimplement drawing of grid (volume) axes.
 Shortcuts for panel buttons do not work (use QActions again?).
 Added get/set view buttons to View.
 Make Model::EnergyStore a private member with accessor?
+Click to select grid.
 
 GUI TODO:
 AddAtom functionality (from old Build menu).

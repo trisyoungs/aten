@@ -7,7 +7,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1130</width>
+    <width>1223</width>
     <height>672</height>
    </rect>
   </property>
@@ -2212,6 +2212,12 @@
           </item>
           <item row="0" column="6">
            <widget class="TMenuButton" name="ViewControlPerspectiveButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
             <property name="minimumSize">
              <size>
               <width>56</width>
@@ -2228,7 +2234,7 @@
              <string>Use perspective view</string>
             </property>
             <property name="text">
-             <string>Persp</string>
+             <string>Perspective</string>
             </property>
             <property name="icon">
              <iconset resource="icons.qrc">
@@ -2244,7 +2250,7 @@
              <bool>true</bool>
             </property>
             <property name="checked">
-             <bool>true</bool>
+             <bool>false</bool>
             </property>
             <property name="autoExclusive">
              <bool>false</bool>
@@ -2452,53 +2458,6 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="7">
-           <widget class="TMenuButton" name="ViewControlOrthographicButton">
-            <property name="minimumSize">
-             <size>
-              <width>56</width>
-              <height>56</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>56</width>
-              <height>56</height>
-             </size>
-            </property>
-            <property name="toolTip">
-             <string>Use orthogonal view</string>
-            </property>
-            <property name="text">
-             <string>Ortho</string>
-            </property>
-            <property name="icon">
-             <iconset resource="icons.qrc">
-              <normaloff>:/view/icons/view_zoomout.svg</normaloff>:/view/icons/view_zoomout.svg</iconset>
-            </property>
-            <property name="iconSize">
-             <size>
-              <width>30</width>
-              <height>30</height>
-             </size>
-            </property>
-            <property name="checkable">
-             <bool>true</bool>
-            </property>
-            <property name="checked">
-             <bool>false</bool>
-            </property>
-            <property name="autoExclusive">
-             <bool>false</bool>
-            </property>
-            <property name="toolButtonStyle">
-             <enum>Qt::ToolButtonTextUnderIcon</enum>
-            </property>
-            <property name="autoRaise">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
           <item row="1" column="1" colspan="7">
            <widget class="QLabel" name="label_3">
             <property name="sizePolicy">
@@ -2518,41 +2477,129 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="24">
-           <widget class="QLabel" name="label_10">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
+          <item row="0" column="7">
+           <layout class="QVBoxLayout" name="verticalLayout_9">
+            <property name="spacing">
+             <number>2</number>
             </property>
-            <property name="frameShape">
-             <enum>QFrame::NoFrame</enum>
-            </property>
-            <property name="text">
-             <string>Options</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
-            </property>
-           </widget>
+            <item>
+             <widget class="QPushButton" name="ViewControlGetButton">
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>26</height>
+               </size>
+              </property>
+              <property name="toolTip">
+               <string>Expand current selection to include bound neighbours</string>
+              </property>
+              <property name="text">
+               <string>Get</string>
+              </property>
+              <property name="icon">
+               <iconset resource="icons.qrc">
+                <normaloff>:/select/icons/select_expand.svg</normaloff>:/select/icons/select_expand.svg</iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="ViewControlSetButton">
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>26</height>
+               </size>
+              </property>
+              <property name="toolTip">
+               <string>Invert current selection</string>
+              </property>
+              <property name="text">
+               <string>Set</string>
+              </property>
+              <property name="icon">
+               <iconset resource="icons.qrc">
+                <normaloff>:/select/icons/select_invert.svg</normaloff>:/select/icons/select_invert.svg</iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </item>
-          <item row="0" column="24">
-           <widget class="QCheckBox" name="ViewOptionsHBondsCheck">
-            <property name="toolTip">
-             <string>Detect and draw H-bonds</string>
+          <item row="0" column="8">
+           <layout class="QVBoxLayout" name="verticalLayout_10">
+            <property name="spacing">
+             <number>2</number>
             </property>
-            <property name="text">
-             <string>View H-Bonds</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="23" rowspan="2">
-           <widget class="Line" name="line_5">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-           </widget>
+            <item>
+             <widget class="QPushButton" name="ViewControlDetectHBondsButton">
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>26</height>
+               </size>
+              </property>
+              <property name="toolTip">
+               <string>Expand current selection to include bound neighbours</string>
+              </property>
+              <property name="text">
+               <string>H-Bonds</string>
+              </property>
+              <property name="icon">
+               <iconset resource="icons.qrc">
+                <normaloff>:/select/icons/select_expand.svg</normaloff>:/select/icons/select_expand.svg</iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+              <property name="checkable">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="ViewControlLockViewButton">
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>26</height>
+               </size>
+              </property>
+              <property name="toolTip">
+               <string>Invert current selection</string>
+              </property>
+              <property name="text">
+               <string>Lock</string>
+              </property>
+              <property name="icon">
+               <iconset resource="icons.qrc">
+                <normaloff>:/select/icons/select_invert.svg</normaloff>:/select/icons/select_invert.svg</iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+              <property name="checkable">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </item>
          </layout>
         </item>
@@ -4010,7 +4057,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1130</width>
+     <width>1223</width>
      <height>22</height>
     </rect>
    </property>

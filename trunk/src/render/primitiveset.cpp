@@ -390,7 +390,7 @@ void PrimitiveSet::recreatePrimitives()
 	segmentedLineRing_.initialise(GL_LINES, false);
 	segmentedLineRing_.plotCircle(1.0, 20, 5, true);
 	wireCube_.initialise(GL_LINES, false);
-	wireCube_.plotCube(1.0, 1, 0.0, 0.0, 0.0);
+	wireCube_.plotWireCube(1.0, 0.0, 0.0, 0.0);
 	crossedCube_.initialise(GL_LINES, false);
 	crossedCube_.plotCrossedCube(1.0, 1, 0.0, 0.0, 0.0);
 	cellAxes_.initialise(GL_TRIANGLES, true);
@@ -407,7 +407,7 @@ void PrimitiveSet::recreatePrimitives()
 	rotationGlobeAxes_.plotCylinder(0.0f, 0.7f, 0.0f, 0.0f, 0.3f, 0.0f, 0.2f, 0.0f, 8, 10, false, false, true, Vec4<GLfloat>(0.0f, 1.0f, 0.0f, 1.0f));
 	rotationGlobeAxes_.plotCylinder(0.0f, 0.0f, 0.7f, 0.0f, 0.0f, 0.3f, 0.2f, 0.0f, 8, 10, false, false, true, Vec4<GLfloat>(0.0f, 0.0f, 1.0f, 1.0f));
 	halo_.initialise(GL_TRIANGLES, false);
-	halo_.plotHalo(0.8f, 1.0f, 24);
+	halo_.plotHalo(0.6f, 1.0f, 32);
 	
 	Messenger::exit("PrimitiveSet::recreatePrimitives");
 }

@@ -1,27 +1,31 @@
 add_library(methods
-calculable.h 
-cg.h 
-delaunay.h
-disorderdata.h
-geometry.h 
-linemin.h 
-mc.h 
-partition.h
-pdens.h 
-rdf.h 
-sd.h
-calculable.cpp 
-cg.cpp 
-delaunay.cpp
-disorder.cpp
-disorderdata.cpp
-geometry.cpp 
-linemin.cpp 
-mc.cpp 
-partition.cpp
-pdens.cpp 
-rdf.cpp 
-sd.cpp
+  calculable.h 
+  cg.h 
+  delaunay.h
+  disorderdata.h
+  geometry.h 
+  linemin.h 
+  mc.h 
+  partitioncelldata.h
+  partitiondata.h
+  partitioningscheme.h
+  pdens.h 
+  rdf.h 
+  sd.h
+  calculable.cpp 
+  cg.cpp 
+  delaunay.cpp
+  disorder.cpp
+  disorderdata.cpp
+  geometry.cpp 
+  linemin.cpp 
+  mc.cpp 
+  partitioncelldata.cpp
+  partitiondata.cpp
+  partitioningscheme.cpp
+  pdens.cpp 
+  rdf.cpp 
+  sd.cpp
 )
 
 include_directories(

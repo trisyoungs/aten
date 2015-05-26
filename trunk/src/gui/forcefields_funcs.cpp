@@ -160,11 +160,12 @@ void ForcefieldsWidget::loadForcefield()
 
 void ForcefieldsWidget::on_CurrentEnergyButton_clicked(bool checked)
 {
-	bool result;
+	ReturnValue result;
 	if (parent_.aten().current().rs() == parent_.aten().currentModel()) result = CommandNode::run(Commands::ModelEnergy, "");
 	else result = CommandNode::run(Commands::FrameEnergy, "");
+
 	// Print energy
-	if (result) parent_.aten().currentModel()->renderSourceModel()->energy.print();
+	parent_.aten().currentModel()->renderSourceModel()->energy.print();
 }
 
 void ForcefieldsWidget::on_CurrentForcesButton_clicked(bool checked)

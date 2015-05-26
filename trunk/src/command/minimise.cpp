@@ -187,7 +187,7 @@ bool Commands::function_MopacMinimise(CommandNode* c, Bundle& obj, ReturnValue& 
 
 	// Time to load in the results
 	aten_.setUseWorkingList(true);
-	int result = CommandNode::run(Commands::LoadModel, "c", qPrintable(mopacArc));
+	ReturnValue result = CommandNode::run(Commands::LoadModel, "c", qPrintable(mopacArc));
 
 	// There should now be a model in the working model list (our results)
 	Model* m = aten_.workingModels();

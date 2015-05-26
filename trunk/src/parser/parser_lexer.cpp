@@ -26,7 +26,7 @@
 ATEN_USING_NAMESPACE
 
 // Must include grammar.hh *after* ATEN_USING_NAMESPACE so that class declarations are found correctly
-#include "parser/grammar.hh"
+#include "parser/parser_grammar.hh"
 
 // Symbols
 const char* SymbolTokenKeywords[CommandParser::nSymbolTokens] = { "==", ">=", "<=", "!=", "<>", "+=", "-=", "*=", "/=", "++", "--", "&&", "||" };

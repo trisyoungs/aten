@@ -1,6 +1,6 @@
 /*
-	*** Aten version information
-	*** src/main/version.h
+	*** Partition Cell Data
+	*** src/methods/partitioncelldata.cpp
 	Copyright T. Youngs 2007-2015
 
 	This file is part of Aten.
@@ -19,12 +19,12 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_VERSION_H
-#define ATEN_VERSION_H
+#include "methods/partitioncelldata.h"
 
-#define ATENVERSION "1.961"
-#define ATENREVISION "1961"
-#define ATENDATE "Thu 28 Jun - 13:36"
-#define ATENURL "http://aten.googlecode.com/svn/trunk"
+ATEN_USING_NAMESPACE
 
-#endif
+// Constructor
+PartitionCellData::PartitionCellData() : ListItem<PartitionCellData>()
+{
+	dataPos = 0;
+}

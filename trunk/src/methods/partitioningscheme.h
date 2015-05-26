@@ -1,6 +1,6 @@
 /*
 	*** Partitioning Scheme
-	*** src/methods/partition.h
+	*** src/methods/partitioningscheme.h
 	Copyright T. Youngs 2007-2015
 
 	This file is part of Aten.
@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_PARTITION_H
-#define ATEN_PARTITION_H
+#ifndef ATEN_PARTITIONINGSCHEME_H
+#define ATEN_PARTITIONINGSCHEME_H
 
 #include "base/grid.h"
 #include "parser/program.h"
@@ -32,95 +32,6 @@
 
 ATEN_BEGIN_NAMESPACE
 
-#define CELLCHUNKSIZE 1000
-
-// Partition Cell Data
-class PartitionCellData : public ListItem<PartitionCellData>
-{
-	public:
-	// Constructor
-	PartitionCellData();
-
-	public:
-	// Data
-	int data[CELLCHUNKSIZE*3];
-	// Position of next data to be added
-	int dataPos;
-};
-
-// Partition Data
-class PartitionData : public ListItem<PartitionData>
-{
-	public:
-	// Constructor
-	PartitionData();
-
-	/*
-	 * Data
-	 */
-	private:
-	// Integer id of partition
-	int id_;
-	// Name of the partition
-	QString name_;
-	// Number of cells in partition
-	int nCells_;
-	// List of basic coordinates of cells
-	List<PartitionCellData> cells_;
-	// Pointer to current PartitionCellData
-	PartitionCellData* currentCellChunk_;
-	// Volume of partition
-	double volume_;
-	// Current reduced atomic mass present in partition
-	double reducedMass_;
-	// Reflist of components targeting this partition
-	Reflist<DisorderData,int> components_;
-	// Primitive containing surface data
-	Primitive primitive_;
-	
-	public:
-	// Copy data from specified PartitionData
-	void copy(PartitionData* source);
-	// Set id of partition
-	void setId(int id);
-	// Return id of partition
-	int id();
-	// Set name of partition
-	void setName(QString s);
-	// Return name of partition
-	QString name();
-	// Clear cells list
-	void clear();
-	// Add cell to list
-	void addCell(int ix, int iy, int iz);
-	// Return whether specified cell is contained in the list
-	bool contains(int ix, int iy, int iz);
-	// Return random cell from list
-	int *randomCell();
-	// Calculate volume based on supplied volume element
-	void calculateVolume(double velement);
-	// Return volume of partition
-	double volume();
-	// Reset reduced mass of partition
-	void resetReducedMass();
-	// Adjust partition reduced mass contents
-	void adjustReducedMass(Atom* i, bool subtract = false);
-	// Adjust partition reduced mass contents (from Model)
-	void adjustReducedMass(Model* m, bool subtract = false);
-	// Return current density of partition
-	double density();
-	// Clear component list
-	void clearComponents();
-	// Add specified component to list
-	void addComponent(DisorderData *component);
-	// Return number of components in list
-	int nComponents();
-	// Return nth component in list
-	DisorderData* component(int id);
-	// Return primitive for surface data
-	Primitive& primitive();
-};
-
 // Partitioning Scheme for Disordered Builder
 class PartitioningScheme : public ListItem<PartitioningScheme>
 {
@@ -128,6 +39,7 @@ class PartitioningScheme : public ListItem<PartitioningScheme>
 	// Constructor / Destructor
 	PartitioningScheme();
 	~PartitioningScheme();
+
 
 	/*
 	 * Function Data

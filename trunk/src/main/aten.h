@@ -31,7 +31,7 @@
 #include "templates/list.h"
 #include "parser/program.h"
 #include "parser/variablelist.h"
-#include "methods/partition.h"
+#include "methods/partitioningscheme.h"
 #include "gui/useractions.h"
 #include "base/namespace.h"
 

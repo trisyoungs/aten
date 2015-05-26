@@ -136,9 +136,9 @@ void Viewer::renderFullScene()
 	Messenger::enter("Viewer::renderFullScene");
 	QColor color;
 	QRect currentBox;
-	Refitem<Model,int>* first, localri;
-	int px, py, nperrow = prefs.nModelsPerRow(), nRows, col, row, nModels;
-	bool modelIsCurrentModel;
+	int nPerRow = prefs.nModelsPerRow(), nRows, col, row, nModels;
+	int viewPortX, viewPortY, viewPortWidth, viewPortHeight;
+	double viewPortAspect;
 	Model* m;
 
 	// Restore all GL state variables, and setup GL
@@ -151,30 +151,49 @@ void Viewer::renderFullScene()
 	glEnable(GL_TEXTURE_2D);
 	glClear(GL_DEPTH_BUFFER_BIT);
 
-	// Set the first item to consider - set localri to the passed iconSource (if there was one)
-// 	localri.item = NULL;	// ATEN2 TODO
-	nModels = aten_->nVisibleModels();
-	first = aten_->visibleModels();
 
 	// Reset local renderGroup_
 	renderGroup_.clear();
 
 	// Set up some useful values
-	nRows = nModels / nperrow + ( nModels %nperrow == 0 ? 0 : 1);
-	py = contextHeight_ / nRows;
-	px = ( nModels == 1 ? contextWidth_ : contextWidth_ / nperrow);
+	nModels = aten_->nVisibleModels();
+	nRows = nModels / nPerRow + ( nModels %nPerRow == 0 ? 0 : 1);
+	viewPortWidth = ( nModels == 1 ? contextWidth_ : contextWidth_ / nPerRow);
+	viewPortHeight = contextHeight_ / nRows;
+	viewPortAspect = double(viewPortWidth) / double(viewPortHeight);
 
 	// Loop over model refitems in list (or single refitem)
 	col = 0;
 	row = 0;
-	for (Refitem<Model,int>* ri = first; ri != NULL; ri = ri->next)
+	for (Refitem<Model,int>* ri = aten_->visibleModels(); ri != NULL; ri = ri->next)
 	{
 		// Grab model pointer
 		m = ri->item;
 		if (m == NULL) continue;
 
+		// Set viewport for this modsl
+		viewPortX = col*viewPortWidth;
+		viewPortY = contextHeight_-(row+1)*viewPortHeight;
+
+		// Draw on halo for current model
+		if ((m == aten_->currentModel()) && (nModels > 1))
+		{
+			glViewport(viewPortX, viewPortY, viewPortWidth, viewPortHeight);
+			glMatrixMode(GL_PROJECTION);
+			glLoadIdentity();
+			glOrtho(-2.0*viewPortAspect, 2.0*viewPortAspect, -2.0, 2.0, -1.0, 1.0);
+			glMatrixMode(GL_MODELVIEW);
+			glLoadIdentity();
+			glDisable(GL_DEPTH_TEST);
+			glDisable(GL_LIGHTING);
+			glColor4f(0.0f, 0.0f, 0.0f, 0.1f);
+			primitives_[primitiveSet_].halo().sendToGL(QOpenGLContext::currentContext());
+			glEnable(GL_LIGHTING);
+			glEnable(GL_DEPTH_TEST);
+		}
+
 		// Render the whole model
-		renderModel(m, col*px, contextHeight_-(row+1)*py, px, py, true);
+		renderModel(m, viewPortX, viewPortY, viewPortWidth, viewPortHeight, true);
 
 		// Render additional data for active model
 		if (m == aten_->currentModel())
@@ -192,7 +211,7 @@ void Viewer::renderFullScene()
 
 		// Increase counters
 		++col;
-		if (col%nperrow == 0)
+		if (col%nPerRow == 0)
 		{
 			col = 0;
 			++row;

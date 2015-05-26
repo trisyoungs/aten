@@ -159,10 +159,6 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 	ui.ViewSchemeVelocityButton->setGroup("Colourschemes");
 	ui.ViewSchemeOwnButton->setGroup("Colourschemes");
 
-	// Add view tool buttons to their button group
-	ui.ViewControlPerspectiveButton->setGroup("ViewStyle");
-	ui.ViewControlOrthographicButton->setGroup("ViewStyle");
-
 	// Add buttons related to user actions to our button group, and add popup widgets to those buttons that have them
 
 	// -- Build Panel (Select)
@@ -305,7 +301,6 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 	forcefieldsWidget->refresh();
 	commandWidget->refreshScripts();
 	atomListWidget->refresh();
-	updateControls();
 	updateWidgets();
 
 	// Set some preferences back to their default values
@@ -524,23 +519,6 @@ void AtenWindow::on_actionAboutAten_triggered(bool checked)
 void AtenWindow::on_actionAboutQt_triggered(bool checked)
 {
 	QMessageBox::aboutQt(this, "About Qt");
-}
-
-// Update any controls related to Prefs values etc.
-void AtenWindow::updateControls()
-{
-	// Menu items
-	ui.actionManualSwapBuffers->setChecked(prefs.manualSwapBuffers());
-	ui.actionDetectDisplayHBonds->setChecked(prefs.drawHydrogenBonds());
-
-	// Style
-	TMenuButton::setGroupButtonChecked("Styles", Prefs::drawStyle(prefs.renderStyle()));
-
-	// Colour scheme
-	TMenuButton::setGroupButtonChecked("Colourschemes", Prefs::colouringScheme(prefs.colourScheme()));
-
-	// View type
-	prefs.hasPerspective() ? ui.ViewControlPerspectiveButton->setChecked(true) : ui.ViewControlOrthographicButton->setChecked(true);
 }
 
 // Update undo/redo actions in Edit menu

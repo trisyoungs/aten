@@ -100,10 +100,10 @@ void Viewer::renderModel(Model* source, int viewPortX, int viewPortY, int viewPo
 		glTranslated(-0.5, -0.5, -0.5);
 
 		// Draw a wire cube for the cell
+		glColor4fv(colour);
 		primitives_[primitiveSet_].wireCube().sendToGL(QOpenGLContext::currentContext());
 
 		// Draw cell axes
-		glColor4fv(colour);
 		Vec3<double> v = source->cell().lengths();
 		glScaled(1.0 / v.x, 1.0 / v.y, 1.0 / v.z);
 		primitives_[primitiveSet_].cellAxes().sendToGL(QOpenGLContext::currentContext());

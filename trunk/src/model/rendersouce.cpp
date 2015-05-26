@@ -27,21 +27,43 @@ ATEN_USING_NAMESPACE
 bool Model::useCommonModelViewMatrix_ = false;
 Matrix Model::commonModelViewMatrix_;
 
-// Calculate and return inverse of current view matrix
-Matrix& Model::modelViewMatrixInverse()
+// Set rendering source
+void Model::setRenderSource(Model::RenderSource rs)
 {
-	// Grab current modelview matrix
-	modelViewMatrixInverse_ = (parent_ == NULL ? modelViewMatrix_ : parent_->modelViewMatrix());
-	// Calculate inverse
-	modelViewMatrixInverse_.invert();
-	return modelViewMatrixInverse_;
+	renderSource_ = rs;
+	// Log a visual change here so we make sure that the GUI is updated properly
+// 	logChange(Log::Visual);
 }
 
-// Return the current modelview matrix (local, parent, or common)
-Matrix& Model::modelViewMatrix()
+// Return rendering source
+Model::RenderSource Model::renderSource() const
 {
-	if (useCommonModelViewMatrix_) return commonModelViewMatrix_;
-	else return (parent_ == NULL ? modelViewMatrix_ : parent_->modelViewMatrix());
+	return renderSource_;
+}
+
+// Return the current rendering source for the model
+Model* Model::renderSourceModel()
+{
+	switch (renderSource_)
+	{
+		case (Model::ModelSource):
+			return this;
+		case (Model::TrajectorySource):
+			return trajectoryCurrentFrame_;
+	}
+	return NULL;
+}
+
+// Set whether to render from vibration frames
+void Model::setRenderFromVibration(bool b)
+{
+	renderFromVibration_ = b;
+}
+
+// Return whether to render from vibration frames
+bool Model::renderFromVibration()
+{
+	return renderFromVibration_;
 }
 
 // Set the current modelview matrix
@@ -50,6 +72,13 @@ void Model::setModelViewMatrix(Matrix& rmat)
 	if (useCommonModelViewMatrix_) commonModelViewMatrix_ = rmat;
 	else if (parent_ == NULL) modelViewMatrix_ = rmat;
 	else parent_->setModelViewMatrix(rmat);
+}
+
+// Return the current modelview matrix
+Matrix& Model::modelViewMatrix()
+{
+	if (useCommonModelViewMatrix_) return commonModelViewMatrix_;
+	else return (parent_ == NULL ? modelViewMatrix_ : parent_->modelViewMatrix());
 }
 
 // Return the viewportMatrix
@@ -64,90 +93,6 @@ Matrix& Model::modelProjectionMatrix()
 	return (parent_ == NULL ? modelProjectionMatrix_ : parent_->modelProjectionMatrix());
 }
 
-// Set view to be along the specified cartesian axis
-void Model::viewAlong(double x, double y, double z)
-{
-	Messenger::enter("Model::viewAlong");
-	// Set model rotation matrix to be along the specified axis
-	Vec3<double> v;
-	v.set(x,y,z);
-	v.toSpherical();
-	// setRotation() expects the degrees of rotation about the x and y axes respectively
-	setRotation(-v.y,fabs(v.z-180.0));
-	Messenger::exit("Model::viewAlong");
-}
-
-// Set view to be along the specified cell axis
-void Model::viewAlongCell(double x, double y, double z)
-{
-	Messenger::enter("Model::viewAlongCell");
-	// Set model rotation matrix to be along the specified cell axis
-	Vec3<double> v;
-	v.set(x,y,z);
-	v = cell().axes() * v;
-	v.toSpherical();
-	// setRotation() expects the degrees of rotation about the x and y axes respectively
-	setRotation(-v.y,fabs(v.z-180.0));
-	Messenger::exit("Model::viewAlongCell");
-}
-
-// Rotate free
-void Model::axisRotateView(Vec3<double> vec, double angle)
-{
-	// Rotate the whole system by the amounts specified.
-	Messenger::enter("Model::axisRotateView");
-	Matrix newrotmat, oldrotmat;
-	if (parent_ == NULL)
-	{
-		// Generate quaternion
-		newrotmat.createRotationAxis(vec.x, vec.y, vec.z, angle, true);
-
-		// Now, multiply our matrices together...
-		modelViewMatrix() = newrotmat * modelViewMatrix();
-	}
-	else parent_->axisRotateView(vec, angle);
-	Messenger::exit("Model::axisRotateView");
-}
-
-// Set exact rotation of model (angles passed in degrees)
-void Model::setRotation(double rotx, double roty)
-{
-	Messenger::enter("Model::setRotation");
-	Matrix temp;
-	if (parent_ == NULL)
-	{
-		// Store old translation and scaling values
-		temp.copyTranslationAndScaling(modelViewMatrix());
-		modelViewMatrix().createRotationXY(rotx, roty);
-		modelViewMatrix().copyTranslationAndScaling(temp);
-	}
-	else parent_->setRotation(rotx, roty);
-	Messenger::exit("Model::setRotation");
-}
-
-// Rotate free
-void Model::rotateView(double dx, double dy)
-{
-	// Rotate the whole system by the amounts specified.
-	Messenger::enter("Model::rotateView");
-	double rotx, roty;
-	Matrix newrotmat, oldrotmat;
-	if (parent_ == NULL)
-	{
-		// Create rotation matrix
-		rotx = dy;
-		roty = dx;
-		newrotmat.createRotationXY(rotx, roty);
-		newrotmat.copyTranslationAndScaling(modelViewMatrix());
-
-		// Reset translation and scaling on original matrix, and multiply
-		modelViewMatrix().removeTranslationAndScaling();
-		modelViewMatrix() = newrotmat * modelViewMatrix();   // TEST Create preMultiply(Matrix&) method.
-	}
-	else parent_->rotateView(dx, dy);
-	Messenger::exit("Model::rotateView");
-}
-
 // Spin the model about the z axis
 void Model::zRotateView(double dz)
 {
@@ -157,11 +102,11 @@ void Model::zRotateView(double dz)
 	if (parent_ == NULL)
 	{
 		newrotmat.createRotationZ(dz);
-		newrotmat.copyTranslationAndScaling(modelViewMatrix());
+		newrotmat.copyTranslationAndScaling(modelViewMatrix_);
 
 		// Reset translation and scaling on original matrix, and multiply
-		modelViewMatrix().removeTranslationAndScaling();
-		modelViewMatrix() = newrotmat * modelViewMatrix();
+		modelViewMatrix_.removeTranslationAndScaling();
+		modelViewMatrix_ = newrotmat * modelViewMatrix_;
 	}
 	else parent_->zRotateView(dz);
 	Messenger::exit("Model::zRotateView");
@@ -174,9 +119,9 @@ void Model::adjustCamera(double dx, double dy, double dz)
 	Messenger::enter("Model::adjustCamera");
 	if (parent_ == NULL)
 	{
-		modelViewMatrix().adjustColumn(3, dx, -dy, dz, 0.0);
+		modelViewMatrix_.adjustColumn(3, dx, -dy, dz, 0.0);
 		// Never let camera z go below -1.0...
-		if (modelViewMatrix()[14] > -1.0) modelViewMatrix()[14] = -1.0;
+		if (modelViewMatrix_[14] > -1.0) modelViewMatrix_[14] = -1.0;
 	}
 	else parent_->adjustCamera(dx, dy, dz);
 	Messenger::exit("Model::adjustCamera");
@@ -241,6 +186,101 @@ void Model::resetView(int contextWidth, int contextHeight)
 	Messenger::exit("Model::resetView");
 }
 
+// Rotate free
+void Model::axisRotateView(Vec3<double> vec, double angle)
+{
+	// Rotate the whole system by the amounts specified.
+	Messenger::enter("Model::axisRotateView");
+	Matrix newrotmat, oldrotmat;
+	if (parent_ == NULL)
+	{
+		// Generate quaternion
+		newrotmat.createRotationAxis(vec.x, vec.y, vec.z, angle, true);
+		oldrotmat = modelViewMatrix_;
+		// Now, multiply our matrices together...
+		modelViewMatrix_ = newrotmat * oldrotmat;
+	}
+	else parent_->axisRotateView(vec, angle);
+	Messenger::exit("Model::axisRotateView");
+}
+
+// Set exact rotation of model (angles passed in degrees)
+void Model::setRotation(double rotx, double roty)
+{
+	Messenger::enter("Model::setRotation");
+	Matrix temp;
+	if (parent_ == NULL)
+	{
+		// Store old translation and scaling values
+		temp.copyTranslationAndScaling(modelViewMatrix_);
+		modelViewMatrix_.createRotationXY(rotx, roty);
+		modelViewMatrix_.copyTranslationAndScaling(temp);
+	}
+	else parent_->setRotation(rotx, roty);
+	Messenger::exit("Model::setRotation");
+}
+
+// Rotate free
+void Model::rotateView(double dx, double dy)
+{
+	// Rotate the whole system by the amounts specified.
+	Messenger::enter("Model::rotateView");
+	double rotx, roty;
+	Matrix newrotmat, oldrotmat;
+	if (parent_ == NULL)
+	{
+		// Create rotation matrix
+		rotx = dy;
+		roty = dx;
+		newrotmat.createRotationXY(rotx, roty);
+		newrotmat.copyTranslationAndScaling(modelViewMatrix_);
+
+		// Reset translation and scaling on original matrix, and multiply
+		modelViewMatrix_.removeTranslationAndScaling();
+		modelViewMatrix_ = newrotmat * modelViewMatrix_;
+	}
+	else parent_->rotateView(dx, dy);
+	Messenger::exit("Model::rotateView");
+}
+
+// Calculate and return inverse of current view matrix
+Matrix& Model::modelViewMatrixInverse()
+{
+	// Grab current modelview matrix
+	modelViewMatrixInverse_ = (parent_ == NULL ? modelViewMatrix_ : parent_->modelViewMatrix());
+	// Calculate inverse
+	modelViewMatrixInverse_.invert();
+	return modelViewMatrixInverse_;
+}
+
+// Set view to be along the specified cartesian axis
+void Model::viewAlong(double x, double y, double z)
+{
+	Messenger::enter("Model::viewAlong");
+	// Set model rotation matrix to be along the specified axis
+	Vec3<double> v;
+	v.set(x,y,z);
+	v.toSpherical();
+	// setRotation() expects the degrees of rotation about the x and y axes respectively
+	setRotation(-v.y,fabs(v.z-180.0));
+	Messenger::exit("Model::viewAlong");
+}
+
+// Set view to be along the specified cell axis
+void Model::viewAlongCell(double x, double y, double z)
+{
+	Messenger::enter("Model::viewAlongCell");
+	// Set model rotation matrix to be along the specified cell axis
+	Vec3<double> v;
+	v.set(x,y,z);
+	v = cell().axes() * v;
+	v.toSpherical();
+	// setRotation() expects the degrees of rotation about the x and y axes respectively
+	setRotation(-v.y,fabs(v.z-180.0));
+	Messenger::exit("Model::viewAlongCell");
+}
+
+
 // Set-up viewport and projection matrices
 void Model::setupView(GLint x, GLint y, GLint w, GLint h)
 {
@@ -303,16 +343,13 @@ Vec3<double>& Model::modelToWorld(Vec3<double>& modelr, Vec4<double>* screenr, d
 	static Vec3<double> worldr;
 	static Matrix vmat;
 	Vec4<double> pos, temp, tempscreen;
-
 	// Projection formula is : worldr = P x M x modelr
 	pos.set(modelr, 1.0);
-
 	// Get the world coordinates of the atom - Multiply by modelview matrix 'view'
 	vmat = modelViewMatrix();
 	vmat.applyTranslation(-cell_.centre().x, -cell_.centre().y, -cell_.centre().z);
 	temp = vmat * pos;
 	worldr.set(temp.x, temp.y, temp.z);
-
 	// Calculate 2D screen coordinates - Multiply world coordinates by P
 	if (screenr != NULL)
 	{
@@ -331,7 +368,6 @@ Vec3<double>& Model::modelToWorld(Vec3<double>& modelr, Vec4<double>* screenr, d
 			screenr->w = fabs( (viewportMatrix()[0] + viewportMatrix()[2]*(tempscreen.x+1)*0.5) - screenr->x);
 		}
 	}
-
 	Messenger::exit("Model::modelToWorld");
 	return worldr;
 }

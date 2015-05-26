@@ -350,7 +350,10 @@ class AtenWindow : public QMainWindow
 	void on_ViewControlZoomInButton_clicked(bool checked);
 	void on_ViewControlZoomOutButton_clicked(bool checked);
 	void on_ViewControlPerspectiveButton_clicked(bool checked);
-	void on_ViewControlOrthographicButton_clicked(bool checked);
+	void on_ViewControlGetButton_clicked(bool checked);
+	void on_ViewControlSetButton_clicked(bool checked);
+	void on_ViewControlDetectHBondsButton_clicked(bool checked);
+	void on_ViewControlLockViewButton_clicked(bool checked);
 	// Style
 	void on_ViewStyleLineButton_clicked(bool checked);
 	void on_ViewStyleTubeButton_clicked(bool checked);
@@ -363,8 +366,6 @@ class AtenWindow : public QMainWindow
 	void on_ViewSchemeForceButton_clicked(bool checked);
 	void on_ViewSchemeVelocityButton_clicked(bool checked);
 	void on_ViewSchemeOwnButton_clicked(bool checked);
-	// Options
-	void on_ViewOptionsHBondsCheck_clicked(bool checked);
 
 
 	/*
@@ -463,8 +464,6 @@ class AtenWindow : public QMainWindow
 	QString saveModelFilename_;
 
 	public:
-	// Update any controls related to Prefs values etc.
-	void updateControls();
 	// Update undo/redo labels
 	void updateUndoRedo();
 	// Set action/button to reflect supplied user action

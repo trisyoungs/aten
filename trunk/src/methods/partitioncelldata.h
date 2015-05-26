@@ -1,6 +1,6 @@
 /*
-	*** Aten version information
-	*** src/main/version.h
+	*** Partition Cell DataScheme
+	*** src/methods/partitioncelldata.h
 	Copyright T. Youngs 2007-2015
 
 	This file is part of Aten.
@@ -19,12 +19,30 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_VERSION_H
-#define ATEN_VERSION_H
+#ifndef ATEN_PARTITIONCELLDATA_H
+#define ATEN_PARTITIONCELLDATA_H
 
-#define ATENVERSION "1.961"
-#define ATENREVISION "1961"
-#define ATENDATE "Thu 28 Jun - 13:36"
-#define ATENURL "http://aten.googlecode.com/svn/trunk"
+#include "base/namespace.h"
+#include "templates/list.h"
+
+ATEN_BEGIN_NAMESPACE
+
+#define CELLCHUNKSIZE 1000
+
+// Partition Cell Data
+class PartitionCellData : public ListItem<PartitionCellData>
+{
+	public:
+	// Constructor
+	PartitionCellData();
+
+	public:
+	// Data
+	int data[CELLCHUNKSIZE*3];
+	// Position of next data to be added
+	int dataPos;
+};
+
+ATEN_END_NAMESPACE
 
 #endif
