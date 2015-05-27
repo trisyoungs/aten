@@ -36,7 +36,6 @@ CellLengthsPopup::CellLengthsPopup(AtenWindow& parent, TMenuButton* buttonParent
 // Show popup, updating any controls as necessary beforehand
 void CellLengthsPopup::popup()
 {
-	// Update lengths in spin boxes
 	refreshing_ = true;
 
 	// Get current model

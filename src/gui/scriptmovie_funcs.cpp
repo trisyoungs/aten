@@ -44,7 +44,7 @@ void ScriptMovieWidget::showWidget()
 	show();
 }
 
-void ScriptMovieWidget::on_LoadScriptButton_clicked(bool on)
+void ScriptMovieWidget::on_LoadScriptButton_clicked(bool checked)
 {
 	static QDir currentDirectory_(parent_.aten().workDir());
 	QString selFilter;
@@ -64,12 +64,12 @@ void ScriptMovieWidget::on_LoadScriptButton_clicked(bool on)
 	}
 }
 
-void ScriptMovieWidget::on_SaveScriptButton_clicked(bool on)
+void ScriptMovieWidget::on_SaveScriptButton_clicked(bool checked)
 {
 	// TODO
 }
 
-void ScriptMovieWidget::on_SaveScriptedMovieButton_clicked(bool on)
+void ScriptMovieWidget::on_SaveScriptedMovieButton_clicked(bool checked)
 {
 	// First, attempt to generate script from supplied code
 	Program script;

@@ -70,6 +70,9 @@ class TransformFlipPopup : public TMenuButtonPopupWidget
 	 * Widget Functions
 	 */
 	private slots:
+	void on_FlipXButton_clicked(bool checked);
+	void on_FlipYButton_clicked(bool checked);
+	void on_FlipZButton_clicked(bool checked);
 };
 
 #endif

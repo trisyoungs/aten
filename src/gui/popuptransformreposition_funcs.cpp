@@ -37,7 +37,6 @@ TransformRepositionPopup::TransformRepositionPopup(AtenWindow& parent, TMenuButt
 // Show popup, updating any controls as necessary beforehand
 void TransformRepositionPopup::popup()
 {
-	// Update lengths in spin boxes
 	refreshing_ = true;
 
 	show();
@@ -49,6 +48,22 @@ void TransformRepositionPopup::popup()
 bool TransformRepositionPopup::callMethod(QString methodName, ReturnValue& rv)
 {
 	if (methodName == "TEST") return true;
+	else if (methodName == "reposition")
+	{
+		Model* currentModel = parent_.aten().currentModelOrFrame();
+		if (!currentModel) return false;
+
+		Vec3<double> v;
+		v.x = ui.TargetXSpin->value() - ui.ReferenceXSpin->value();
+		v.y = ui.TargetYSpin->value() - ui.ReferenceYSpin->value();
+		v.z = ui.TargetZSpin->value() - ui.ReferenceZSpin->value();
+
+		currentModel->beginUndoState("Reposition %i atom(s) {%f,%f,%f}", currentModel->nSelected(), v.x, v.y, v.z);
+		currentModel->translateSelectionLocal(v);
+		currentModel->endUndoState();
+
+		parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget);
+	}
 	else if (methodName == "hideEvent")
 	{
 		return true;
@@ -60,3 +75,29 @@ bool TransformRepositionPopup::callMethod(QString methodName, ReturnValue& rv)
 /*
  * Widget Functions
  */
+
+void TransformRepositionPopup::on_DefineReferenceButton_clicked(bool checked)
+{
+	// Get current model
+	Model* currentModel = parent_.aten().currentModelOrFrame();
+	if (!currentModel) return;
+
+	Vec3<double> centre = currentModel->selectionCentreOfGeometry();
+
+	ui.ReferenceXSpin->setValue(centre.x);
+	ui.ReferenceYSpin->setValue(centre.y);
+	ui.ReferenceZSpin->setValue(centre.z);
+}
+
+void TransformRepositionPopup::on_DefineTargetButton_clicked(bool checked)
+{
+	// Get current model
+	Model* currentModel = parent_.aten().currentModelOrFrame();
+	if (!currentModel) return;
+
+	Vec3<double> centre = currentModel->selectionCentreOfGeometry();
+
+	ui.TargetXSpin->setValue(centre.x);
+	ui.TargetYSpin->setValue(centre.y);
+	ui.TargetZSpin->setValue(centre.z);
+}

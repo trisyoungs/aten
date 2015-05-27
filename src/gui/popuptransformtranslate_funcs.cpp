@@ -37,7 +37,6 @@ TransformTranslatePopup::TransformTranslatePopup(AtenWindow& parent, TMenuButton
 // Show popup, updating any controls as necessary beforehand
 void TransformTranslatePopup::popup()
 {
-	// Update lengths in spin boxes
 	refreshing_ = true;
 
 	show();
@@ -60,3 +59,78 @@ bool TransformTranslatePopup::callMethod(QString methodName, ReturnValue& rv)
 /*
  * Widget Functions
  */
+
+// Translate current selection
+void TransformTranslatePopup::translateSelection(int axis, int dir)
+{
+	// Get current model
+	Model* currentModel = parent_.aten().currentModelOrFrame();
+
+	if (!currentModel) return;
+	double step = ui.ShiftSpin->value();	
+	Vec3<double> tvec;
+	tvec.set(axis, double(dir));
+
+	// Translation vector depends on selected frame of reference
+	if (ui.ModelFrameRadio->isChecked())
+	{
+		// Translate selection in the cartesian axes of the model
+		tvec *= step;
+		currentModel->beginUndoState("Translate Cartesian (%i atom(s), %f %f %f)", currentModel->nSelected(), tvec.x, tvec.y, tvec.z);
+		currentModel->translateSelectionLocal(tvec);
+	}
+	else if (ui.WorldFrameRadio->isChecked())
+	{
+		// Translate selection in the world (view) axes
+		tvec *= step;
+		currentModel->beginUndoState("Translate Screen (%i atom(s), %f %f %f)", currentModel->nSelected(), tvec.x, tvec.y, tvec.z);
+		currentModel->translateSelectionWorld(tvec);
+	}
+	else if (ui.CellFrameRadio->isChecked())
+	{
+		// Translate selection in the cell axes of the model
+		if (currentModel->cell().type() == UnitCell::NoCell)
+		{
+			Messenger::print("No unit cell defined for model.");
+			return;
+		}
+		tvec = parent_.aten().currentModelOrFrame()->cell().axes().columnAsVec3(axis);
+		tvec *= double(dir) * step;
+		currentModel->beginUndoState("Translate Cell (%i atom(s), %f %f %f)", currentModel->nSelected(), tvec.x, tvec.y, tvec.z);
+		currentModel->translateSelectionLocal(tvec);
+	}
+	currentModel->endUndoState();
+
+	// Update
+	parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget);
+}
+
+void TransformTranslatePopup::on_PositiveXButton_clicked(bool checked)
+{
+	translateSelection(0, 1);
+}
+
+void TransformTranslatePopup::on_PositiveYButton_clicked(bool checked)
+{
+	translateSelection(1, 1);
+}
+
+void TransformTranslatePopup::on_PositiveZButton_clicked(bool checked)
+{
+	translateSelection(2, 1);
+}
+
+void TransformTranslatePopup::on_NegativeXButton_clicked(bool checked)
+{
+	translateSelection(0, -1);
+}
+
+void TransformTranslatePopup::on_NegativeYButton_clicked(bool checked)
+{
+	translateSelection(1, -1);
+}
+
+void TransformTranslatePopup::on_NegativeZButton_clicked(bool checked)
+{
+	translateSelection(2, -1);
+}

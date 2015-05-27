@@ -22,7 +22,6 @@
 #include "main/version.h"
 #include "gui/mainwindow.h"
 #include "main/aten.h"
-#include "gui/grids.h"
 #include "gui/trajectory.h"
 #include "gui/select.h"
 #include "gui/forcefields.h"
@@ -107,7 +106,6 @@ void AtenWindow::updateMainWindow()
 	ui.actionFileSave->setEnabled(!aten_.fileDialogFilters(FilterData::ModelExport).isEmpty());
 	ui.actionFileSaveAs->setEnabled(!aten_.fileDialogFilters(FilterData::ModelExport).isEmpty());
 	ui.actionSaveExpression->setEnabled(!aten_.fileDialogFilters(FilterData::ExpressionExport).isEmpty());
-	gridsWidget->ui.actionGridLoad->setEnabled(!aten_.fileDialogFilters(FilterData::GridImport).isEmpty());
 
 	// Update main window title
 	QString title = QString("Aten v2 PRERELEASE (v%1)").arg(ATENVERSION);

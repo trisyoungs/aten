@@ -36,7 +36,6 @@ CellMillerPopup::CellMillerPopup(AtenWindow& parent, TMenuButton* buttonParent) 
 // Show popup, updating any controls as necessary beforehand
 void CellMillerPopup::popup()
 {
-	// Update lengths in spin boxes
 	refreshing_ = true;
 
 	show();

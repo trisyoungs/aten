@@ -378,7 +378,7 @@ void AtenForcefieldEditor::boundFunctionChanged(QComboBox* sender, int i, Forcef
  */
 
 // Test entered atom type
-void AtenForcefieldEditor::on_FFEditorTestTypeButton_clicked(bool on)
+void AtenForcefieldEditor::on_FFEditorTestTypeButton_clicked(bool checked)
 {
 // 	Model* m = parent_.aten().currentModelOrFrame();   ATEN2 TODO
 // 	if (m == NULL) return;
@@ -975,6 +975,6 @@ void AtenForcefieldEditor::on_FFEditorUreyBradleysTable_itemSelectionChanged()
  */
 
 // Generate type
-void AtenForcefieldEditor::on_FFEditorGenerateTypeButton_clicked(bool on)
+void AtenForcefieldEditor::on_FFEditorGenerateTypeButton_clicked(bool checked)
 {
 }

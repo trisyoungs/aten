@@ -54,43 +54,43 @@ void SelectWidget::setHistories(QStringList select, QStringList forlist, QString
 	refreshing_ = false;
 }
 
-void SelectWidget::on_SelectAllButton_clicked(bool on)
+void SelectWidget::on_SelectAllButton_clicked(bool checked)
 {
 	CommandNode::run(Commands::SelectAll, "");
 	parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
 }
 
-void SelectWidget::on_SelectNoneButton_clicked(bool on)
+void SelectWidget::on_SelectNoneButton_clicked(bool checked)
 {
 	CommandNode::run(Commands::SelectNone, "");
 	parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
 }
 
-void SelectWidget::on_SelectionExpandButton_clicked(bool on)
+void SelectWidget::on_SelectionExpandButton_clicked(bool checked)
 {
 	CommandNode::run(Commands::Expand, "");
 	parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
 }
 
-void SelectWidget::on_SelectionInvertButton_clicked(bool on)
+void SelectWidget::on_SelectionInvertButton_clicked(bool checked)
 {
 	CommandNode::run(Commands::Invert, "");
 	parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
 }
 
-void SelectWidget::on_SelectButton_clicked(bool on)
+void SelectWidget::on_SelectButton_clicked(bool checked)
 {
 	CommandNode::run(Commands::Select, "c", qPrintable(ui.SelectCombo->currentText()));
 	parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
 }
 
-void SelectWidget::on_DeselectButton_clicked(bool on)
+void SelectWidget::on_DeselectButton_clicked(bool checked)
 {
 	CommandNode::run(Commands::DeSelect, "c", qPrintable(ui.SelectCombo->currentText()));
 	parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
 }
 
-void SelectWidget::on_TypeSelectElementButton_clicked(bool on)
+void SelectWidget::on_TypeSelectElementButton_clicked(bool checked)
 {
 // 	AtenSelectElement elementSelect(parent_);
 // 	int newel = elementSelect.selectElement();
@@ -103,7 +103,7 @@ void SelectWidget::on_SelectCombo_currentIndexChanged(int n)
 	if (refreshing_) return;
 }
 
-void SelectWidget::on_SelectTypeButton_clicked(bool on)
+void SelectWidget::on_SelectTypeButton_clicked(bool checked)
 {
 	// Make sure we have a valid element
 	int el = Elements().find(qPrintable(ui.TypeElementEdit->text()));
@@ -115,7 +115,7 @@ void SelectWidget::on_SelectTypeButton_clicked(bool on)
 	}
 }
 
-void SelectWidget::on_DeselectTypeButton_clicked(bool on)
+void SelectWidget::on_DeselectTypeButton_clicked(bool checked)
 {
 	// Make sure we have a valid element
 	int el = Elements().find(qPrintable(ui.TypeElementEdit->text()));
@@ -127,13 +127,13 @@ void SelectWidget::on_DeselectTypeButton_clicked(bool on)
 	}
 }
 
-void SelectWidget::on_SelectForButton_clicked(bool on)
+void SelectWidget::on_SelectForButton_clicked(bool checked)
 {
 	CommandNode::run(Commands::SelectType, "c", qPrintable(ui.SelectForCombo->currentText()));
 	parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
 }
 
-void SelectWidget::on_DeselectForButton_clicked(bool on)
+void SelectWidget::on_DeselectForButton_clicked(bool checked)
 {
 	CommandNode::run(Commands::DeSelectType, "c", qPrintable(ui.SelectForCombo->currentText()));
 	parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);

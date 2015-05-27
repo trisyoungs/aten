@@ -60,18 +60,18 @@ class SelectWidget : public QDockWidget
 	void showWidget();
 	void setHistories(QStringList select, QStringList forlist, QStringList netalist);
 	private slots:
-	void on_SelectAllButton_clicked(bool on);
-	void on_SelectNoneButton_clicked(bool on);
-	void on_SelectionExpandButton_clicked(bool on);
-	void on_SelectionInvertButton_clicked(bool on);
+	void on_SelectAllButton_clicked(bool checked);
+	void on_SelectNoneButton_clicked(bool checked);
+	void on_SelectionExpandButton_clicked(bool checked);
+	void on_SelectionInvertButton_clicked(bool checked);
 	void on_SelectCombo_currentIndexChanged(int n);
-	void on_SelectButton_clicked(bool on);
-	void on_DeselectButton_clicked(bool on);
-	void on_TypeSelectElementButton_clicked(bool on);
-	void on_SelectTypeButton_clicked(bool on);
-	void on_DeselectTypeButton_clicked(bool on);
-	void on_SelectForButton_clicked(bool on);
-	void on_DeselectForButton_clicked(bool on);
+	void on_SelectButton_clicked(bool checked);
+	void on_DeselectButton_clicked(bool checked);
+	void on_TypeSelectElementButton_clicked(bool checked);
+	void on_SelectTypeButton_clicked(bool checked);
+	void on_DeselectTypeButton_clicked(bool checked);
+	void on_SelectForButton_clicked(bool checked);
+	void on_DeselectForButton_clicked(bool checked);
 	protected:
 	void closeEvent(QCloseEvent* event);
 };

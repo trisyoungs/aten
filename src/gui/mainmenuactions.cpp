@@ -30,7 +30,6 @@
 #include "gui/trajectory.h"
 #include "gui/prefs.h"
 #include "gui/forcefields.h"
-#include "gui/grids.h"
 #include "base/sysfunc.h"
 
 /*
@@ -238,13 +237,6 @@ void AtenWindow::on_actionFileSaveImage_triggered(bool checked)
 	pixmap.save(fileName, AtenWindow::bitmapFormatExtension(bf), -1);
 }
 
-// Open grid file
-void AtenWindow::on_actionFileOpenGrid_triggered(bool checked)
-{
-	// Call routine in grids window...
-	gridsWidget->loadGrid();
-}
-
 // Quit program
 void AtenWindow::on_actionFileQuit_triggered(bool checked)
 {
@@ -333,13 +325,13 @@ void AtenWindow::on_actionSelectionInvert_triggered(bool checked)
 	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
 }
 
-void AtenWindow::on_actionSelectionExpand_triggered(bool on)
+void AtenWindow::on_actionSelectionExpand_triggered(bool checked)
 {
 	CommandNode::run(Commands::Expand, "");
 	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
 }
 
-void AtenWindow::on_actionEditQuickCommand_triggered(bool on)
+void AtenWindow::on_actionEditQuickCommand_triggered(bool checked)
 {
 	// Raise an edit box to get the user command
 	bool ok;
@@ -459,7 +451,7 @@ void AtenWindow::on_actionModelShowAll_triggered(bool checked)
 }
 
 // List all measurements in model
-void AtenWindow::on_actionListMeasurements_triggered(bool on)
+void AtenWindow::on_actionListMeasurements_triggered(bool checked)
 {
 	aten_.currentModelOrFrame()->listMeasurements();
 }

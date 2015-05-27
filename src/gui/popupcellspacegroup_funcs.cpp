@@ -37,7 +37,6 @@ CellSpacegroupPopup::CellSpacegroupPopup(AtenWindow& parent, TMenuButton* button
 // Show popup, updating any controls as necessary beforehand
 void CellSpacegroupPopup::popup()
 {
-	// Update lengths in spin boxes
 	refreshing_ = true;
 
 	// Get current model

@@ -70,6 +70,14 @@ class TransformShiftPopup : public TMenuButtonPopupWidget
 	 * Widget Functions
 	 */
 	private slots:
+	// Shift
+	void on_PickButton_clicked(bool checked);
+	void on_NormaliseButton_clicked(bool checked);
+	void on_XSpin_valueChanged(double value);
+	void on_YSpin_valueChanged(double value);
+	void on_ZSpin_valueChanged(double value);
+	void on_ForwardButton_clicked(bool checked);
+	void on_BackwardButton_clicked(bool checked);
 };
 
 #endif

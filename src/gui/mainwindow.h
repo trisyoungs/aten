@@ -61,7 +61,6 @@ class GlyphsWidget;
 class GridsWidget;
 class MDWidget;
 class PoresWidget;
-class PositionWidget;
 class ScriptMovieWidget;
 class SelectWidget;
 class ToolBoxWidget;
@@ -365,6 +364,7 @@ class AtenWindow : public QMainWindow
 	void updateCalculatePanel(Model* sourceModel);
 
 	private slots:
+	// Measure
 	void on_CalculateMeasureDistanceButton_clicked(bool checked);
 	void on_CalculateMeasureAngleButton_clicked(bool checked);
 	void on_CalculateMeasureTorsionButton_clicked(bool checked);
@@ -379,9 +379,13 @@ class AtenWindow : public QMainWindow
 	void updateTransformPanel(Model* sourceModel);
 
 	private slots:
+	// Set
 	void on_TransformSetDistanceButton_clicked(bool checked);
 	void on_TransformSetAngleButton_clicked(bool checked);
 	void on_TransformSetTorsionButton_clicked(bool checked);
+	// Position
+	void on_TransformPositionCentreButton_clicked(bool checked);
+	void on_TransformPositionRepositionButton_clicked(bool checked);
 
 
 	/*
@@ -394,14 +398,20 @@ class AtenWindow : public QMainWindow
 	void updateGridInformation(Grid* sourceGrid);
 
 	private slots:
+	// Define
 	void on_GridsList_currentItemChanged(QListWidgetItem* current, QListWidgetItem* previous);
+	// Priary Surface
 	void on_GridsPrimaryLowerCutoffSpin_valueChanged(double value);
 	void on_GridsPrimaryUpperCutoffSpin_valueChanged(double value);
 	void on_GridsPrimaryColourButton_popupChanged();
+	// Secondary Surface
 	void on_GridsSecondarySurfaceCheck_clicked(bool checked);
 	void on_GridsSecondaryLowerCutoffSpin_valueChanged(double value);
 	void on_GridsSecondaryUpperCutoffSpin_valueChanged(double value);
 	void on_GridsSecondaryColourButton_popupChanged();
+	// Options
+	void on_GridsOptionsOutlineButton_clicked(bool checked);
+	void on_GridsOptionsPeriodicButton_clicked(bool checked);
 
 
 	/*
@@ -517,12 +527,8 @@ class AtenWindow : public QMainWindow
 	FragmentsWidget *fragmentsWidget;
 	// Glyphs dock widget
 	GlyphsWidget *glyphsWidget;
-	// Grids dock widget
-	GridsWidget *gridsWidget;
 	// Pore builder dock widget
 	PoresWidget *poresWidget;
-	// Atom positioning dock widget
-	PositionWidget *positionWidget;
 	// Scripted movie dock widget
 	ScriptMovieWidget *scriptMovieWidget;
 	// Atom selection dock widget

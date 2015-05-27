@@ -50,3 +50,21 @@ void AtenWindow::on_TransformSetTorsionButton_clicked(bool checked)
 	ReturnValue rv;
 	ui.TransformSetTorsionButton->callPopupMethod("set", rv);
 }
+
+/*
+ * Position
+ */
+
+void AtenWindow::on_TransformPositionCentreButton_clicked(bool checked)
+{
+	// Call the centre method in the popup
+	ReturnValue rv;
+	ui.TransformPositionCentreButton->callPopupMethod("centre", rv);
+}
+
+void AtenWindow::on_TransformPositionRepositionButton_clicked(bool checked)
+{
+	// Call the centre method in the popup
+	ReturnValue rv;
+	ui.TransformPositionRepositionButton->callPopupMethod("reposition", rv);
+}

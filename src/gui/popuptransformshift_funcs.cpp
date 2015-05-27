@@ -37,7 +37,6 @@ TransformShiftPopup::TransformShiftPopup(AtenWindow& parent, TMenuButton* button
 // Show popup, updating any controls as necessary beforehand
 void TransformShiftPopup::popup()
 {
-	// Update lengths in spin boxes
 	refreshing_ = true;
 
 	show();
@@ -60,3 +59,85 @@ bool TransformShiftPopup::callMethod(QString methodName, ReturnValue& rv)
 /*
  * Widget Functions
  */
+
+// void shiftPickAxisButton_callback(Reflist<Atom,int>* picked)
+// {
+// 	gui.positionWidget->ui.ShiftPickVectorButton->setChecked(false); ATEN2 TODO
+// 	// If there are not two atoms in the list then the mode must have been canceled
+// 	if (picked->nItems() != 2) return;
+// 	Vec3<double> v = picked->last()->item->r() - picked->first()->item->r();
+// 	gui.positionWidget->ui.ShiftVectorXSpin->setValue(v.x);
+// 	gui.positionWidget->ui.ShiftVectorYSpin->setValue(v.y);
+// 	gui.positionWidget->ui.ShiftVectorZSpin->setValue(v.z);
+// 	gui.positionWidget->ui.ShiftVectorMagnitudeLabel->setText(QString::number(v.magnitude()));
+// }
+
+void TransformShiftPopup::on_PickButton_clicked(bool checked)
+{
+	// Enter manual picking mode // ATEN2 TODO
+// 	parent_.ui.MainView->setSelectedMode(UserAction::ShiftPickVectorAction,2, &shiftPickAxisButton_callback);
+}
+
+void TransformShiftPopup::on_NormaliseButton_clicked(bool checked)
+{
+	Vec3<double> v(ui.XSpin->value(), ui.YSpin->value(), ui.ZSpin->value());
+	v.normalise();
+	ui.XSpin->setValue(v.x);
+	ui.YSpin->setValue(v.y);
+	ui.ZSpin->setValue(v.z);
+}
+
+void TransformShiftPopup::on_XSpin_valueChanged(double value)
+{
+	Vec3<double> v(ui.XSpin->value(), ui.YSpin->value(), ui.ZSpin->value());
+	ui.MagnitudeLabel->setText(QString::number(v.magnitude()));
+}
+
+void TransformShiftPopup::on_YSpin_valueChanged(double value)
+{
+	Vec3<double> v(ui.XSpin->value(), ui.YSpin->value(), ui.ZSpin->value());
+	ui.MagnitudeLabel->setText(QString::number(v.magnitude()));
+}
+
+void TransformShiftPopup::on_ZSpin_valueChanged(double value)
+{
+	Vec3<double> v(ui.XSpin->value(), ui.YSpin->value(), ui.ZSpin->value());
+	ui.MagnitudeLabel->setText(QString::number(v.magnitude()));
+}
+
+void TransformShiftPopup::on_ForwardButton_clicked(bool checked)
+{
+	Model* currentModel = parent_.aten().currentModelOrFrame();
+	if (!currentModel) return;
+
+	// Get current vector, and multiply by shift amount
+	Vec3<double> v(ui.XSpin->value(), ui.YSpin->value(), ui.ZSpin->value());
+	v *= ui.ShiftSpin->value();
+
+	// Make the adjustment
+	currentModel->beginUndoState("Vector shift %i atom(s) {%f,%f,%f}", currentModel->nSelected(),v.x,v.y,v.z);
+	currentModel->translateSelectionLocal(v);
+	currentModel->endUndoState();
+
+	// Update
+	parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget);
+}
+
+void TransformShiftPopup::on_BackwardButton_clicked(bool checked)
+{
+	Model* currentModel = parent_.aten().currentModelOrFrame();
+	if (!currentModel) return;
+
+	// Get current vector, and multiply by shift amount
+	Vec3<double> v(ui.XSpin->value(), ui.YSpin->value(), ui.ZSpin->value());
+	v *= -ui.ShiftSpin->value();
+
+	// Make the adjustment
+	currentModel->beginUndoState("Vector shift %i atom(s) {%f,%f,%f}", currentModel->nSelected(),v.x,v.y,v.z);
+	currentModel->translateSelectionLocal(v);
+	currentModel->endUndoState();
+
+	// Update
+	parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget);
+}
+

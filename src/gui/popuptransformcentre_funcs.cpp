@@ -37,7 +37,6 @@ TransformCentrePopup::TransformCentrePopup(AtenWindow& parent, TMenuButton* butt
 // Show popup, updating any controls as necessary beforehand
 void TransformCentrePopup::popup()
 {
-	// Update lengths in spin boxes
 	refreshing_ = true;
 
 	show();
@@ -49,6 +48,17 @@ void TransformCentrePopup::popup()
 bool TransformCentrePopup::callMethod(QString methodName, ReturnValue& rv)
 {
 	if (methodName == "TEST") return true;
+	else if (methodName == "centre")
+	{
+		// Get new coordinates and lock flags
+		Vec3<double> centre(ui.XSpin->value(), ui.YSpin->value(), ui.ZSpin->value());
+		Vec3<int> lock(ui.LockXCheck->isChecked(), ui.LockYCheck->isChecked(), ui.LockZCheck->isChecked());
+
+		// Run command
+		CommandNode::run(Commands::Centre, "dddiii", centre.x, centre.y, centre.z, lock.x, lock.y, lock.z);
+
+		parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget);
+	}
 	else if (methodName == "hideEvent")
 	{
 		return true;
@@ -60,3 +70,20 @@ bool TransformCentrePopup::callMethod(QString methodName, ReturnValue& rv)
 /*
  * Widget Functions
  */
+
+void TransformCentrePopup::on_DefineFromSelectionButton_clicked(bool checked)
+{
+	// Get centre of current selection
+	Model* currentModel = parent_.aten().currentModelOrFrame();
+	if (!currentModel) return;
+// 	if (!parent_.aten().currentModelOrFrame(currentModel);
+
+	// Get selection centre and set controls
+	Vec3<double> centre = currentModel->selectionCentreOfGeometry();
+	ui.XSpin->setValue(centre.x);
+	ui.YSpin->setValue(centre.y);
+	ui.ZSpin->setValue(centre.z);
+
+	// Hide popup
+	hide();
+}

@@ -336,6 +336,8 @@ class Commands
 		GridLoopOrder,
 		GridOrigin,
 		GridOrtho,
+		GridOutline,
+		GridPeriodic,
 		GridSecondary,
 		GridStyle,
 		GridStyleSecondary,
@@ -816,6 +818,8 @@ class Commands
 	bool function_GridOrtho(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_GridLoopOrder(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_GridOrigin(CommandNode* c, Bundle& obj, ReturnValue& rv);
+	bool function_GridOutline(CommandNode* c, Bundle& obj, ReturnValue& rv);
+	bool function_GridPeriodic(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_GridSecondary(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_GridStyle(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_GridStyleSecondary(CommandNode* c, Bundle& obj, ReturnValue& rv);

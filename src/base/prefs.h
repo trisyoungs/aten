@@ -278,11 +278,11 @@ class Prefs
 	// Return the current label pointsize
 	double labelSize() const;
 	// Set manual swapbuffers
-	void setManualSwapBuffers(bool on);
+	void setManualSwapBuffers(bool checked);
 	// Return whether manual buffer swapping is enabled
 	bool manualSwapBuffers() const;
 	// Set usage of pixelbuffers in image saving
-	void setUsePixelBuffers(bool on);
+	void setUsePixelBuffers(bool checked);
 	// Return whether to use pixelbuffers for image saving
 	bool usePixelBuffers() const;
 	// Return whether to use solid or dashed circles for aromatic ring rendering

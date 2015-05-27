@@ -254,6 +254,24 @@ bool Commands::function_GridOrtho(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	return true;
 }
 
+// Set whether to draw volume outline
+bool Commands::function_GridOutline(CommandNode* c, Bundle& obj, ReturnValue& rv)
+{
+	if (obj.notifyNull(Bundle::GridPointer)) return false;
+	obj.g->setOutlineVolume(c->argb(0));
+	rv.reset();
+	return true;
+}
+
+// Set whether grid is periodic
+bool Commands::function_GridPeriodic(CommandNode* c, Bundle& obj, ReturnValue& rv)
+{
+	if (obj.notifyNull(Bundle::GridPointer)) return false;
+	obj.g->setPeriodic(c->argb(0));
+	rv.reset();
+	return true;
+}
+
 // Set whether to draw the secondary grid surfce
 bool Commands::function_GridSecondary(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {

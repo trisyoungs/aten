@@ -56,6 +56,8 @@ void AtenWindow::updateGridsPanel(Model* sourceModel)
 
 	updateGridInformation(currentGrid);
 
+	ui.GridsLoadButton->setEnabled(!aten_.fileDialogFilters(FilterData::GridImport).isEmpty());
+
 	Messenger::exit("AtenWindow::updateGridPanel");
 }
 
@@ -72,6 +74,8 @@ void AtenWindow::updateGridInformation(Grid* sourceGrid)
 	ui.GridsSecondaryColourButton->setEnabled(sourceGrid);
 	ui.GridsSecondaryStyleButton->setEnabled(sourceGrid);
 	ui.GridsSecondarySurfaceCheck->setEnabled(sourceGrid);
+	ui.GridsOptionsOutlineButton->setEnabled(sourceGrid);
+	ui.GridsOptionsPeriodicButton->setEnabled(sourceGrid);
 	if (!sourceGrid) return;
 
 	ReturnValue rv;
@@ -100,6 +104,10 @@ void AtenWindow::updateGridInformation(Grid* sourceGrid)
 	ui.GridsSecondaryUpperCutoffSpin->setEnabled(sourceGrid->useSecondary());
 	ui.GridsSecondaryColourButton->setEnabled(sourceGrid->useSecondary());
 	ui.GridsSecondaryStyleButton->setEnabled(sourceGrid->useSecondary());
+
+	// Options
+	ui.GridsOptionsOutlineButton->setChecked(sourceGrid->outlineVolume());
+	ui.GridsOptionsPeriodicButton->setChecked(sourceGrid->periodic());
 }
 
 void AtenWindow::on_GridsList_currentItemChanged(QListWidgetItem* current, QListWidgetItem* previous)
@@ -209,5 +217,39 @@ void AtenWindow::on_GridsSecondaryColourButton_popupChanged()
 	if (!ui.GridsSecondaryColourButton->callPopupMethod("currentColour", rv)) return;
 	CommandNode::run(Commands::GridColourSecondary, "dddd", rv.asDouble(0, success), rv.asDouble(1, success), rv.asDouble(2, success), rv.asDouble(3, success));
 
+	updateWidgets(AtenWindow::MainViewTarget);
+}
+
+/*
+ * Options
+ */
+
+void AtenWindow::on_GridsOptionsOutlineButton_clicked(bool checked)
+{
+	if (refreshing_) return;
+
+	// Get current grid
+	Grid* currentGrid;
+	if (!aten().currentGrid(currentGrid)) return;
+
+	// Run command
+	CommandNode::run(Commands::GridOutline, "i", checked);
+
+	// Update
+	updateWidgets(AtenWindow::MainViewTarget);
+}
+
+void AtenWindow::on_GridsOptionsPeriodicButton_clicked(bool checked)
+{
+	if (refreshing_) return;
+
+	// Get current grid
+	Grid* currentGrid;
+	if (!aten().currentGrid(currentGrid)) return;
+
+	// Run command
+	CommandNode::run(Commands::GridPeriodic, "i", checked);
+
+	// Update
 	updateWidgets(AtenWindow::MainViewTarget);
 }

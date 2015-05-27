@@ -78,9 +78,7 @@
 #include "gui/forcefields.h"
 #include "gui/fragments.h"
 #include "gui/glyphs.h"
-#include "gui/grids.h"
 #include "gui/pores.h"
-#include "gui/position.h"
 #include "gui/scriptmovie.h"
 #include "gui/select.h"
 #include "gui/trajectory.h"
@@ -120,15 +118,13 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 	forcefieldsWidget = new ForcefieldsWidget(*this, Qt::Tool);
 	fragmentsWidget = new FragmentsWidget(*this, Qt::Tool);
 	glyphsWidget = new GlyphsWidget(*this, Qt::Tool);
-	gridsWidget = new GridsWidget(*this, Qt::Tool);
-	positionWidget = new PositionWidget(*this, Qt::Tool);
 	poresWidget = new PoresWidget(*this, Qt::Tool);
 	scriptMovieWidget = new ScriptMovieWidget(*this, Qt::Tool);
 	selectWidget = new SelectWidget(*this, Qt::Tool);
 	trajectoryWidget = new TrajectoryWidget(*this, Qt::Tool);
 	transformWidget = new TransformWidget(*this, Qt::Tool);
 	vibrationsWidget = new VibrationsWidget(*this, Qt::Tool);
-	dockWidgets_ << atomListWidget << commandWidget << fragmentsWidget << glyphsWidget << gridsWidget << poresWidget << positionWidget << scriptMovieWidget << selectWidget << transformWidget << vibrationsWidget;
+	dockWidgets_ << atomListWidget << commandWidget << fragmentsWidget << glyphsWidget << poresWidget << scriptMovieWidget << selectWidget << transformWidget << vibrationsWidget;
 
 	int n;
 	ReturnValue rv;
@@ -211,8 +207,8 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 	// -- Transform Panel (Position)
 	ui.TransformPositionCentreButton->setPopupWidget(new TransformCentrePopup(*this, ui.TransformPositionCentreButton));
 	ui.TransformPositionFlipButton->setPopupWidget(new TransformFlipPopup(*this, ui.TransformPositionFlipButton), true);
-	ui.TransformPositionTranslateButton->setPopupWidget(new TransformTranslatePopup(*this, ui.TransformPositionTranslateButton));
-	ui.TransformPositionShiftButton->setPopupWidget(new TransformShiftPopup(*this, ui.TransformPositionShiftButton));
+	ui.TransformPositionTranslateButton->setPopupWidget(new TransformTranslatePopup(*this, ui.TransformPositionTranslateButton), true);
+	ui.TransformPositionShiftButton->setPopupWidget(new TransformShiftPopup(*this, ui.TransformPositionShiftButton), true);
 	ui.TransformPositionRepositionButton->setPopupWidget(new TransformRepositionPopup(*this, ui.TransformPositionRepositionButton));
 
 	// -- Grids Panel (Define)
@@ -228,8 +224,6 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 	
 	
 
-	// -- From Position Dock Widget
-// 	uaButtons_.addButton(positionWidget->ui.ShiftPickVectorButton, UserAction::ShiftPickVectorAction);
 // 	// -- From Transform Dock Widget
 // 	uaButtons_.addButton(transformWidget->ui.TransformPickAButton, UserAction::TransformPickAAction);
 // 	uaButtons_.addButton(transformWidget->ui.TransformPickBButton, UserAction::TransformPickBAction);
@@ -291,7 +285,6 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 	for (Model* m = aten.models(); m != NULL; m = m->next) if (!prefs.keepView()) m->resetView(ui.MainView->contextWidth(), ui.MainView->contextHeight());
 
 	// Refresh the necessary windows, including the mainwindow
-	gridsWidget->refresh();
 	forcefieldsWidget->refresh();
 	commandWidget->refreshScripts();
 	atomListWidget->refresh();
