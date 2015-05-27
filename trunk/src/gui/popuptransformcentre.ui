@@ -52,6 +52,9 @@
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
+     <property name="toolTip">
+      <string>Target x coordinate for geometric centre</string>
+     </property>
      <property name="decimals">
       <number>6</number>
      </property>
@@ -65,6 +68,9 @@
    </item>
    <item row="0" column="2">
     <widget class="QCheckBox" name="LockXCheck">
+     <property name="toolTip">
+      <string>Lock (do not change) x coordinates when centering</string>
+     </property>
      <property name="text">
       <string>Lock</string>
      </property>
@@ -152,6 +158,9 @@
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
+     <property name="toolTip">
+      <string>Target y coordinate for geometric centre</string>
+     </property>
      <property name="decimals">
       <number>6</number>
      </property>
@@ -165,6 +174,9 @@
    </item>
    <item row="1" column="2">
     <widget class="QCheckBox" name="LockYCheck">
+     <property name="toolTip">
+      <string>Lock (do not change) y coordinates when centering</string>
+     </property>
      <property name="text">
       <string>Lock</string>
      </property>
@@ -191,6 +203,9 @@
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
+     <property name="toolTip">
+      <string>Target z coordinate for geometric centre</string>
+     </property>
      <property name="decimals">
       <number>6</number>
      </property>
@@ -204,6 +219,9 @@
    </item>
    <item row="2" column="2">
     <widget class="QCheckBox" name="LockZCheck">
+     <property name="toolTip">
+      <string>Lock (do not change) z coordinates when centering</string>
+     </property>
      <property name="text">
       <string>Lock</string>
      </property>
@@ -221,5 +239,54 @@
  <resources>
   <include location="icons.qrc"/>
  </resources>
- <connections/>
+ <connections>
+  <connection>
+   <sender>LockXCheck</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>XSpin</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>174</x>
+     <y>17</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>62</x>
+     <y>17</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>LockYCheck</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>YSpin</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>164</x>
+     <y>41</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>109</x>
+     <y>43</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>LockZCheck</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>ZSpin</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>174</x>
+     <y>82</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>92</x>
+     <y>77</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

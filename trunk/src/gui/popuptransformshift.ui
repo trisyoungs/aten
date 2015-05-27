@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>213</width>
-    <height>180</height>
+    <height>198</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -31,7 +31,7 @@
    <property name="spacing">
     <number>2</number>
    </property>
-   <item row="0" column="2" rowspan="5">
+   <item row="0" column="2" rowspan="6">
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
       <widget class="QToolButton" name="PickButton">
@@ -48,7 +48,7 @@
         </size>
        </property>
        <property name="toolTip">
-        <string>Define from current selection</string>
+        <string>Pick shift vector from two atoms</string>
        </property>
        <property name="text">
         <string>Pick</string>
@@ -92,7 +92,7 @@
         </size>
        </property>
        <property name="toolTip">
-        <string>Define from current selection</string>
+        <string>Normalise the current shift vector</string>
        </property>
        <property name="text">
         <string>Normalise</string>
@@ -121,7 +121,55 @@
        </property>
       </widget>
      </item>
+     <item>
+      <spacer name="verticalSpacer">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>20</width>
+         <height>1</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
     </layout>
+   </item>
+   <item row="1" column="1">
+    <widget class="TExponentialSpin" name="YSpin">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="decimals">
+      <number>6</number>
+     </property>
+     <property name="minimum">
+      <double>-1000000.000000000000000</double>
+     </property>
+     <property name="maximum">
+      <double>1000000.000000000000000</double>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="label_40">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string>Y</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
    </item>
    <item row="0" column="1">
     <widget class="TExponentialSpin" name="XSpin">
@@ -142,25 +190,6 @@
      </property>
     </widget>
    </item>
-   <item row="3" column="1">
-    <widget class="TExponentialSpin" name="ShiftSpin">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="decimals">
-      <number>6</number>
-     </property>
-     <property name="minimum">
-      <double>-1000000.000000000000000</double>
-     </property>
-     <property name="maximum">
-      <double>1000000.000000000000000</double>
-     </property>
-    </widget>
-   </item>
    <item row="0" column="0">
     <widget class="QLabel" name="label_42">
      <property name="sizePolicy">
@@ -174,54 +203,6 @@
      </property>
      <property name="alignment">
       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="0">
-    <widget class="QLabel" name="label_43">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>Shift</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="0">
-    <widget class="QLabel" name="label_40">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>Y</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="1">
-    <widget class="TExponentialSpin" name="YSpin">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="decimals">
-      <number>6</number>
-     </property>
-     <property name="minimum">
-      <double>-1000000.000000000000000</double>
-     </property>
-     <property name="maximum">
-      <double>1000000.000000000000000</double>
      </property>
     </widget>
    </item>
@@ -260,7 +241,7 @@
      </property>
     </widget>
    </item>
-   <item row="5" column="0" colspan="3">
+   <item row="6" column="0" colspan="3">
     <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
       <widget class="QToolButton" name="ForwardButton">
@@ -277,14 +258,14 @@
         </size>
        </property>
        <property name="toolTip">
-        <string>Define from current selection</string>
+        <string>Move the current atom selection along the defined vector</string>
        </property>
        <property name="text">
         <string>Forward</string>
        </property>
        <property name="icon">
         <iconset resource="icons.qrc">
-         <normaloff>:/basic/icons/basic_plus.svg</normaloff>:/basic/icons/basic_plus.svg</iconset>
+         <normaloff>:/arrows/icons/arrow_in.svg</normaloff>:/arrows/icons/arrow_in.svg</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -321,14 +302,14 @@
         </size>
        </property>
        <property name="toolTip">
-        <string>Define from current selection</string>
+        <string>Move the current atom selection backwards along the defined vector</string>
        </property>
        <property name="text">
         <string>Back</string>
        </property>
        <property name="icon">
         <iconset resource="icons.qrc">
-         <normaloff>:/basic/icons/basic_minus.svg</normaloff>:/basic/icons/basic_minus.svg</iconset>
+         <normaloff>:/arrows/icons/arrow_out.svg</normaloff>:/arrows/icons/arrow_out.svg</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -364,6 +345,67 @@
       </spacer>
      </item>
     </layout>
+   </item>
+   <item row="4" column="0">
+    <widget class="QLabel" name="label_43">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string>Shift</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="1">
+    <widget class="TExponentialSpin" name="ShiftSpin">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="toolTip">
+      <string>Units to step along shift vector in a single move</string>
+     </property>
+     <property name="decimals">
+      <number>6</number>
+     </property>
+     <property name="minimum">
+      <double>-1000000.000000000000000</double>
+     </property>
+     <property name="maximum">
+      <double>1000000.000000000000000</double>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QLabel" name="label_44">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string>Mag</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1">
+    <widget class="QLabel" name="MagnitudeLabel">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string>0.0</string>
+     </property>
+    </widget>
    </item>
   </layout>
  </widget>

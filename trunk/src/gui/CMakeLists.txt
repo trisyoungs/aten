@@ -21,7 +21,6 @@ SET(gui_MOC_HDRS
   forcefields.h
   fragments.h
   glyphs.h
-  grids.h
   layoutlist.h
   loadmodel.h
   mainwindow.h
@@ -41,6 +40,7 @@ SET(gui_MOC_HDRS
   popupelementtable.h
   popupgridmatrix.h
   popupgridorigin.h
+  popupgridshift.h
   popupgridstyle.h
   popupmeasureangle.h
   popupmeasureclear.h
@@ -58,7 +58,6 @@ SET(gui_MOC_HDRS
   popupviewreset.h
   popupviewstyle.h
   pores.h
-  position.h
   prefs.h
   progress.h
   saveimage.h
@@ -104,7 +103,6 @@ SET(gui_UIS
   forcefields.ui
   fragments.ui
   glyphs.ui
-  grids.ui
   loadmodel.ui
   mainwindow.ui
   popupbuildaddh.ui
@@ -123,6 +121,7 @@ SET(gui_UIS
   popupelementtable.ui
   popupgridmatrix.ui
   popupgridorigin.ui
+  popupgridshift.ui
   popupgridstyle.ui
   popupmeasureangle.ui
   popupmeasureclear.ui
@@ -140,7 +139,6 @@ SET(gui_UIS
   popupviewreset.ui
   popupviewstyle.ui
   pores.ui
-  position.ui
   prefs.ui
   progress.ui
   saveimage.ui
@@ -176,7 +174,6 @@ set(gui_SRCS
   forcefields_funcs.cpp
   fragments_funcs.cpp
   glyphs_funcs.cpp
-  grids_funcs.cpp
   layoutlist.cpp
   loadmodel_funcs.cpp
   mainmenuactions.cpp
@@ -208,6 +205,7 @@ set(gui_SRCS
   popupelementtable_funcs.cpp
   popupgridmatrix_funcs.cpp
   popupgridorigin_funcs.cpp
+  popupgridshift_funcs.cpp
   popupgridstyle_funcs.cpp
   popupmeasureangle_funcs.cpp
   popupmeasureclear_funcs.cpp
@@ -225,7 +223,6 @@ set(gui_SRCS
   popupviewreset_funcs.cpp
   popupviewstyle_funcs.cpp
   pores_funcs.cpp
-  position_funcs.cpp
   prefs_funcs.cpp
   progress_funcs.cpp
   saveimage_funcs.cpp

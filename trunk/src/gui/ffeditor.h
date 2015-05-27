@@ -67,8 +67,8 @@ class AtenForcefieldEditor : public QDialog
 	 * Types Tab
 	 */
 	private slots:
-	void on_FFEditorGenerateTypeButton_clicked(bool on);
-	void on_FFEditorTestTypeButton_clicked(bool on);
+	void on_FFEditorGenerateTypeButton_clicked(bool checked);
+	void on_FFEditorTestTypeButton_clicked(bool checked);
 	void on_FFEditorTypesTable_itemChanged(QTableWidgetItem *w);
 
 	/*

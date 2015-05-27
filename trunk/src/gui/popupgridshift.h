@@ -1,6 +1,6 @@
 /*
-	*** Popup Widget - Transform Translate
-	*** src/gui/popuptransformtranslate.h
+	*** Popup Widget - Grid Shift
+	*** src/gui/popupgridshift.h
 	Copyright T. Youngs 2007-2015
 
 	This file is part of Aten.
@@ -19,10 +19,10 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_TRANSFORMTRANSLATEPOPUP_H
-#define ATEN_TRANSFORMTRANSLATEPOPUP_H
+#ifndef ATEN_GRIDSHIFTPOPUP_H
+#define ATEN_GRIDSHIFTPOPUP_H
 
-#include "gui/ui_popuptransformtranslate.h"
+#include "gui/ui_popupgridshift.h"
 #include "gui/tmenubutton.hui"
 #include "parser/returnvalue.h"
 
@@ -38,8 +38,8 @@ ATEN_END_NAMESPACE
 
 ATEN_USING_NAMESPACE
 
-// Popup Widget - Transform Translate
-class TransformTranslatePopup : public TMenuButtonPopupWidget
+// Popup Widget - Grid Shift
+class GridShiftPopup : public TMenuButtonPopupWidget
 {
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
@@ -50,9 +50,9 @@ class TransformTranslatePopup : public TMenuButtonPopupWidget
 
 	public:
 	// Constructor / Destructor
-	TransformTranslatePopup(AtenWindow& parent, TMenuButton* buttonParent);
+	GridShiftPopup(AtenWindow& parent, TMenuButton* buttonParent);
 	// Main form declaration
-	Ui::TransformTranslatePopup ui;
+	Ui::GridShiftPopup ui;
 	// Show popup, updating any controls as necessary beforehand
 	void popup();
 	// Call named method associated to popup
@@ -70,8 +70,8 @@ class TransformTranslatePopup : public TMenuButtonPopupWidget
 	 * Widget Functions
 	 */
 	private:
-	// Translate current selection
-	void translateSelection(int axis, int dir);
+	// Alter grid shift amount
+	void gridShiftChanged();
 
 	private slots:
 	void on_PositiveXButton_clicked(bool checked);
@@ -80,6 +80,9 @@ class TransformTranslatePopup : public TMenuButtonPopupWidget
 	void on_NegativeXButton_clicked(bool checked);
 	void on_NegativeYButton_clicked(bool checked);
 	void on_NegativeZButton_clicked(bool checked);
+	void on_XSpin_valueChanged(int i);
+	void on_YSpin_valueChanged(int i);
+	void on_ZSpin_valueChanged(int i);
 };
 
 #endif

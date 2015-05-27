@@ -69,7 +69,7 @@
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>5</number>
+       <number>4</number>
       </property>
       <property name="usesScrollButtons">
        <bool>true</bool>
@@ -1900,7 +1900,7 @@
                </size>
               </property>
               <property name="toolTip">
-               <string>Expand current selection to include bound neighbours</string>
+               <string>Copy current model's view matrix</string>
               </property>
               <property name="text">
                <string>Get</string>
@@ -1926,7 +1926,7 @@
                </size>
               </property>
               <property name="toolTip">
-               <string>Invert current selection</string>
+               <string>Set view of the current model to the stored matrix</string>
               </property>
               <property name="text">
                <string>Set</string>
@@ -1959,7 +1959,7 @@
                </size>
               </property>
               <property name="toolTip">
-               <string>Expand current selection to include bound neighbours</string>
+               <string>Toggle detection and display of hydrogen bonds</string>
               </property>
               <property name="text">
                <string>H-Bonds</string>
@@ -1988,7 +1988,7 @@
                </size>
               </property>
               <property name="toolTip">
-               <string>Invert current selection</string>
+               <string>Lock view between models</string>
               </property>
               <property name="text">
                <string>Lock</string>
@@ -2492,7 +2492,7 @@
              </size>
             </property>
             <property name="toolTip">
-             <string>Set torsions in the current selection</string>
+             <string>Flip atoms in the current selection about their geometric centre</string>
             </property>
             <property name="text">
              <string>Flip</string>
@@ -2703,7 +2703,7 @@
              </size>
             </property>
             <property name="toolTip">
-             <string>Set torsions in the current selection</string>
+             <string>Translate atoms along Cartesian or cell directions (hold for options)</string>
             </property>
             <property name="text">
              <string>Translate</string>
@@ -2797,7 +2797,7 @@
              </size>
             </property>
             <property name="toolTip">
-             <string>Set torsions in the current selection</string>
+             <string>Centre the current selection at a specified point (hold for options)</string>
             </property>
             <property name="text">
              <string>Centre</string>
@@ -2906,7 +2906,7 @@
           <property name="spacing">
            <number>6</number>
           </property>
-          <item row="1" column="8" colspan="3">
+          <item row="1" column="9" colspan="3">
            <layout class="QHBoxLayout" name="horizontalLayout_8">
             <property name="spacing">
              <number>0</number>
@@ -2916,10 +2916,13 @@
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
               </property>
+              <property name="sizeType">
+               <enum>QSizePolicy::Minimum</enum>
+              </property>
               <property name="sizeHint" stdset="0">
                <size>
                 <width>40</width>
-                <height>20</height>
+                <height>16</height>
                </size>
               </property>
              </spacer>
@@ -2936,24 +2939,27 @@
               <property name="orientation">
                <enum>Qt::Horizontal</enum>
               </property>
+              <property name="sizeType">
+               <enum>QSizePolicy::Minimum</enum>
+              </property>
               <property name="sizeHint" stdset="0">
                <size>
                 <width>40</width>
-                <height>20</height>
+                <height>16</height>
                </size>
               </property>
              </spacer>
             </item>
            </layout>
           </item>
-          <item row="0" column="3" rowspan="2">
+          <item row="0" column="4" rowspan="2">
            <widget class="Line" name="line_11">
             <property name="orientation">
              <enum>Qt::Vertical</enum>
             </property>
            </widget>
           </item>
-          <item row="0" column="8">
+          <item row="0" column="9">
            <layout class="QGridLayout" name="gridLayout_6">
             <property name="spacing">
              <number>2</number>
@@ -3030,7 +3036,7 @@
             </item>
            </layout>
           </item>
-          <item row="0" column="0" rowspan="2">
+          <item row="0" column="1" rowspan="2">
            <widget class="QListWidget" name="GridsList">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
@@ -3058,14 +3064,14 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="7" rowspan="2">
+          <item row="0" column="8" rowspan="2">
            <widget class="Line" name="line_15">
             <property name="orientation">
              <enum>Qt::Vertical</enum>
             </property>
            </widget>
           </item>
-          <item row="0" column="5">
+          <item row="0" column="6">
            <widget class="TMenuButton" name="GridsPrimaryColourButton">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
@@ -3119,7 +3125,7 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="1" colspan="2">
+          <item row="1" column="2" colspan="2">
            <widget class="QLabel" name="label_16">
             <property name="text">
              <string>Define</string>
@@ -3129,7 +3135,7 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="1">
+          <item row="0" column="2">
            <widget class="TMenuButton" name="GridsDefineAxesButton">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
@@ -3187,7 +3193,7 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="9">
+          <item row="0" column="10">
            <widget class="TMenuButton" name="GridsSecondaryColourButton">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
@@ -3241,7 +3247,7 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="4">
+          <item row="0" column="5">
            <layout class="QGridLayout" name="gridLayout_4">
             <property name="spacing">
              <number>2</number>
@@ -3318,7 +3324,7 @@
             </item>
            </layout>
           </item>
-          <item row="0" column="2">
+          <item row="0" column="3">
            <widget class="TMenuButton" name="GridsDefineOriginButton">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
@@ -3376,14 +3382,14 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="11" rowspan="2">
+          <item row="0" column="12" rowspan="2">
            <widget class="Line" name="line_16">
             <property name="orientation">
              <enum>Qt::Vertical</enum>
             </property>
            </widget>
           </item>
-          <item row="1" column="4" colspan="3">
+          <item row="1" column="5" colspan="3">
            <widget class="QLabel" name="label_20">
             <property name="text">
              <string>Primary Surface</string>
@@ -3393,7 +3399,7 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="6">
+          <item row="0" column="7">
            <widget class="TMenuButton" name="GridsPrimaryStyleButton">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
@@ -3447,7 +3453,7 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="10">
+          <item row="0" column="11">
            <widget class="TMenuButton" name="GridsSecondaryStyleButton">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
@@ -3477,6 +3483,233 @@
             </property>
             <property name="text">
              <string>Style</string>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>30</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="checkable">
+             <bool>false</bool>
+            </property>
+            <property name="checked">
+             <bool>false</bool>
+            </property>
+            <property name="autoExclusive">
+             <bool>false</bool>
+            </property>
+            <property name="toolButtonStyle">
+             <enum>Qt::ToolButtonTextUnderIcon</enum>
+            </property>
+            <property name="autoRaise">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0" rowspan="2">
+           <layout class="QVBoxLayout" name="verticalLayout_4">
+            <property name="spacing">
+             <number>2</number>
+            </property>
+            <item>
+             <widget class="QPushButton" name="GridsLoadButton">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>28</width>
+                <height>28</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+              <property name="icon">
+               <iconset resource="icons.qrc">
+                <normaloff>:/file/icons/file_open.svg</normaloff>:/file/icons/file_open.svg</iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="GridsRemoveButton">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="maximumSize">
+               <size>
+                <width>28</width>
+                <height>28</height>
+               </size>
+              </property>
+              <property name="text">
+               <string/>
+              </property>
+              <property name="icon">
+               <iconset resource="icons.qrc">
+                <normaloff>:/basic/icons/basic_cross.svg</normaloff>:/basic/icons/basic_cross.svg</iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <spacer name="verticalSpacer">
+              <property name="orientation">
+               <enum>Qt::Vertical</enum>
+              </property>
+              <property name="sizeType">
+               <enum>QSizePolicy::Minimum</enum>
+              </property>
+              <property name="sizeHint" stdset="0">
+               <size>
+                <width>20</width>
+                <height>10</height>
+               </size>
+              </property>
+             </spacer>
+            </item>
+           </layout>
+          </item>
+          <item row="1" column="15">
+           <widget class="QLabel" name="label_21">
+            <property name="text">
+             <string>Transform</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="13">
+           <widget class="QLabel" name="label_22">
+            <property name="text">
+             <string>Options</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="14" rowspan="2">
+           <widget class="Line" name="line_17">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="13">
+           <layout class="QVBoxLayout" name="verticalLayout_11">
+            <property name="spacing">
+             <number>2</number>
+            </property>
+            <item>
+             <widget class="QPushButton" name="GridsOptionsOutlineButton">
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>26</height>
+               </size>
+              </property>
+              <property name="toolTip">
+               <string>Toggle drawing of total grid volume box</string>
+              </property>
+              <property name="text">
+               <string>Outline</string>
+              </property>
+              <property name="icon">
+               <iconset resource="icons.qrc">
+                <normaloff>:/select/icons/select_expand.svg</normaloff>:/select/icons/select_expand.svg</iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+              <property name="checkable">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+            <item>
+             <widget class="QPushButton" name="GridsOptionsPeriodicButton">
+              <property name="maximumSize">
+               <size>
+                <width>16777215</width>
+                <height>26</height>
+               </size>
+              </property>
+              <property name="toolTip">
+               <string>Toggle whether the current grid is periodic</string>
+              </property>
+              <property name="text">
+               <string>Periodic</string>
+              </property>
+              <property name="icon">
+               <iconset resource="icons.qrc">
+                <normaloff>:/select/icons/select_invert.svg</normaloff>:/select/icons/select_invert.svg</iconset>
+              </property>
+              <property name="iconSize">
+               <size>
+                <width>20</width>
+                <height>20</height>
+               </size>
+              </property>
+              <property name="checkable">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="0" column="15">
+           <widget class="TMenuButton" name="GridsTransformTranslateButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>56</width>
+              <height>56</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>128</width>
+              <height>56</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>8</pointsize>
+             </font>
+            </property>
+            <property name="toolTip">
+             <string>Style of secondary surface</string>
+            </property>
+            <property name="text">
+             <string>Translate</string>
             </property>
             <property name="iconSize">
              <size>

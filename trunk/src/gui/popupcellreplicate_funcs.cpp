@@ -37,7 +37,6 @@ CellReplicatePopup::CellReplicatePopup(AtenWindow& parent, TMenuButton* buttonPa
 // Show popup, updating any controls as necessary beforehand
 void CellReplicatePopup::popup()
 {
-	// Update lengths in spin boxes
 	refreshing_ = true;
 
 	// Update checkboxes in replicate group

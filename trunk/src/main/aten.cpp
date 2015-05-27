@@ -22,7 +22,6 @@
 #include "main/aten.h"
 #include "main/version.h"
 #include "gui/mainwindow.h"
-#include "gui/grids.h"
 #include "model/model.h"
 #include "model/clipboard.h"
 #include "ff/forcefield.h"

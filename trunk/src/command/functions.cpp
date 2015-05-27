@@ -295,6 +295,8 @@ void Commands::initPointers()
 	pointers_[GridLoopOrder] = &AtenSpace::Commands::function_GridLoopOrder;
 	pointers_[GridOrigin] = &AtenSpace::Commands::function_GridOrigin;
 	pointers_[GridOrtho] = &AtenSpace::Commands::function_GridOrtho;
+	pointers_[GridOutline] = &AtenSpace::Commands::function_GridOutline;
+	pointers_[GridPeriodic] = &AtenSpace::Commands::function_GridPeriodic;
 	pointers_[InitialiseGrid] = &AtenSpace::Commands::function_InitialiseGrid;
 	pointers_[GridSecondary] = &AtenSpace::Commands::function_GridSecondary;
 	pointers_[GridStyle] = &AtenSpace::Commands::function_GridStyle;

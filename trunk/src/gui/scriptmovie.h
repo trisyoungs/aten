@@ -50,9 +50,9 @@ class ScriptMovieWidget : public QDockWidget
 	public:
 	void showWidget();
 	private slots:
-	void on_LoadScriptButton_clicked(bool on);
-	void on_SaveScriptButton_clicked(bool on);
-	void on_SaveScriptedMovieButton_clicked(bool on);
+	void on_LoadScriptButton_clicked(bool checked);
+	void on_SaveScriptButton_clicked(bool checked);
+	void on_SaveScriptedMovieButton_clicked(bool checked);
 	protected:
 	void closeEvent(QCloseEvent* event);
 };

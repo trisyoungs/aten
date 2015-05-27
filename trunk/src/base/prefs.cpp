@@ -1631,9 +1631,9 @@ double Prefs::labelSize() const
 }
 
 // Set manual swapbuffers
-void Prefs::setManualSwapBuffers(bool on)
+void Prefs::setManualSwapBuffers(bool checked)
 {
-	manualSwapBuffers_ = on;
+	manualSwapBuffers_ = checked;
 }
 
 // Return whether manual buffer swapping is enabled
@@ -1649,9 +1649,9 @@ bool Prefs::usePixelBuffers() const
 }
 
 // Set manual swapbuffers
-void Prefs::setUsePixelBuffers(bool on)
+void Prefs::setUsePixelBuffers(bool checked)
 {
-	usePixelBuffers_ = on;
+	usePixelBuffers_ = checked;
 }
 
 // Return whether to use solid or dashed circles for aromatic ring rendering

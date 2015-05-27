@@ -70,6 +70,7 @@ class TransformCentrePopup : public TMenuButtonPopupWidget
 	 * Widget Functions
 	 */
 	private slots:
+	void on_DefineFromSelectionButton_clicked(bool checked);
 };
 
 #endif

@@ -36,7 +36,6 @@ CellScalePopup::CellScalePopup(AtenWindow& parent, TMenuButton* buttonParent) : 
 // Show popup, updating any controls as necessary beforehand
 void CellScalePopup::popup()
 {
-	// Update lengths in spin boxes
 	refreshing_ = true;
 
 	show();

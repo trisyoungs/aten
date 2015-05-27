@@ -37,7 +37,6 @@ TransformFlipPopup::TransformFlipPopup(AtenWindow& parent, TMenuButton* buttonPa
 // Show popup, updating any controls as necessary beforehand
 void TransformFlipPopup::popup()
 {
-	// Update lengths in spin boxes
 	refreshing_ = true;
 
 	show();
@@ -60,3 +59,39 @@ bool TransformFlipPopup::callMethod(QString methodName, ReturnValue& rv)
 /*
  * Widget Functions
  */
+
+void TransformFlipPopup::on_FlipXButton_clicked(bool checked)
+{
+	// Run command
+	CommandNode::run(Commands::Mirror, "i", 0);
+
+	// Update window
+	parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget);
+
+	// Hide popup
+	hide();
+}
+
+void TransformFlipPopup::on_FlipYButton_clicked(bool checked)
+{
+	// Run command
+	CommandNode::run(Commands::Mirror, "i", 0);
+
+	// Update window
+	parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget);
+
+	// Hide popup
+	hide();
+}
+
+void TransformFlipPopup::on_FlipZButton_clicked(bool checked)
+{
+	// Run command
+	CommandNode::run(Commands::Mirror, "i", 0);
+
+	// Update window
+	parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget);
+
+	// Hide popup
+	hide();
+}

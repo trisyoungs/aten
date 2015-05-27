@@ -41,17 +41,17 @@ void TransformWidget::showWidget()
  * Rotations
  */
 
-void TransformWidget::on_RotateClockwiseButton_clicked(bool on)
+void TransformWidget::on_RotateClockwiseButton_clicked(bool checked)
 {
 	rotateSelection(1);
 }
 
-void TransformWidget::on_RotateAnticlockwiseButton_clicked(bool on)
+void TransformWidget::on_RotateAnticlockwiseButton_clicked(bool checked)
 {
 	rotateSelection(-1);
 }
 
-void TransformWidget::on_RotateDefineOriginButton_clicked(bool on)
+void TransformWidget::on_RotateDefineOriginButton_clicked(bool checked)
 {
 	// Get geometric centre of selection
 	Vec3<double> v = parent_.aten().currentModelOrFrame()->selectionCentreOfGeometry();
@@ -61,7 +61,7 @@ void TransformWidget::on_RotateDefineOriginButton_clicked(bool on)
 	ui.RotateOriginZSpin->setValue(v.z);
 }
 
-void TransformWidget::on_RotateDefineAxisButton_clicked(bool on)
+void TransformWidget::on_RotateDefineAxisButton_clicked(bool checked)
 {
 	// Get geometric centre of selection and current origin
 	Vec3<double> v, o;
@@ -88,7 +88,7 @@ void rotatePickAxisButton_callback(Reflist<Atom,int>* picked)
 // 	ui.RotateAxisZSpin->setValue(v.z);
 }
 
-void TransformWidget::on_RotatePickAxisButton_clicked(bool on)
+void TransformWidget::on_RotatePickAxisButton_clicked(bool checked)
 {
 	// Enter manual picking mode
 	(UserAction::RotatePickAxisAction,2,&rotatePickAxisButton_callback);
@@ -113,7 +113,7 @@ void TransformWidget::rotateSelection(double direction)
  * Matrix Transform
  */
 
-void TransformWidget::on_TransformApplyButton_clicked(bool on)
+void TransformWidget::on_TransformApplyButton_clicked(bool checked)
 {
 	// Put values into our matrix...
 	Matrix mat;
@@ -168,25 +168,25 @@ void transformPickCButton_callback(Reflist<Atom,int>* picked)
 // 	ui.TransformMatrixCZSpin->setValue(v.z);
 }
 
-void TransformWidget::on_TransformPickAButton_clicked(bool on)
+void TransformWidget::on_TransformPickAButton_clicked(bool checked)
 {
 	// Enter manual picking mode
 	parent_.ui.MainView->setSelectedMode(UserAction::TransformPickAAction,2,&transformPickAButton_callback);
 }
 
-void TransformWidget::on_TransformPickBButton_clicked(bool on)
+void TransformWidget::on_TransformPickBButton_clicked(bool checked)
 {
 	// Enter manual picking mode
 	parent_.ui.MainView->setSelectedMode(UserAction::TransformPickBAction,2,&transformPickBButton_callback);
 }
 
-void TransformWidget::on_TransformPickCButton_clicked(bool on)
+void TransformWidget::on_TransformPickCButton_clicked(bool checked)
 {
 	// Enter manual picking mode
 	parent_.ui.MainView->setSelectedMode(UserAction::TransformPickCAction,2,&transformPickCButton_callback);
 }
 
-void TransformWidget::on_TransformNormaliseAButton_clicked(bool on)
+void TransformWidget::on_TransformNormaliseAButton_clicked(bool checked)
 {
 	// Normalise vector in widgets
  	Vec3<double> v;
@@ -197,7 +197,7 @@ void TransformWidget::on_TransformNormaliseAButton_clicked(bool on)
 	ui.TransformMatrixAZSpin->setValue(v.z);
 }
 
-void TransformWidget::on_TransformNormaliseBButton_clicked(bool on)
+void TransformWidget::on_TransformNormaliseBButton_clicked(bool checked)
 {
 	// Normalise vector in widgets
  	Vec3<double> v;
@@ -208,7 +208,7 @@ void TransformWidget::on_TransformNormaliseBButton_clicked(bool on)
 	ui.TransformMatrixBZSpin->setValue(v.z);
 }
 
-void TransformWidget::on_TransformNormaliseCButton_clicked(bool on)
+void TransformWidget::on_TransformNormaliseCButton_clicked(bool checked)
 {
 	// Normalise vector in widgets
  	Vec3<double> v;
@@ -219,7 +219,7 @@ void TransformWidget::on_TransformNormaliseCButton_clicked(bool on)
 	ui.TransformMatrixCZSpin->setValue(v.z);
 }
 
-void TransformWidget::on_TransformOrthogonaliseAButton_clicked(bool on)
+void TransformWidget::on_TransformOrthogonaliseAButton_clicked(bool checked)
 {
 	// Orthogonalise vector from x vector (or y vector)
  	Vec3<double> v, ref;
@@ -232,7 +232,7 @@ void TransformWidget::on_TransformOrthogonaliseAButton_clicked(bool on)
 	ui.TransformMatrixAZSpin->setValue(v.z);
 }
 
-void TransformWidget::on_TransformOrthogonaliseBButton_clicked(bool on)
+void TransformWidget::on_TransformOrthogonaliseBButton_clicked(bool checked)
 {
 	// Orthogonalise orthogonal vector from other vectors
  	Vec3<double> v, ref;
@@ -245,7 +245,7 @@ void TransformWidget::on_TransformOrthogonaliseBButton_clicked(bool on)
 	ui.TransformMatrixBZSpin->setValue(v.z);
 }
 
-void TransformWidget::on_TransformOrthogonaliseCButton_clicked(bool on)
+void TransformWidget::on_TransformOrthogonaliseCButton_clicked(bool checked)
 {
 	// Orthogonalise orthogonal vector from other vectors
  	Vec3<double> v, ref;
@@ -258,7 +258,7 @@ void TransformWidget::on_TransformOrthogonaliseCButton_clicked(bool on)
 	ui.TransformMatrixCZSpin->setValue(v.z);
 }
 
-void TransformWidget::on_TransformGenerateAButton_clicked(bool on)
+void TransformWidget::on_TransformGenerateAButton_clicked(bool checked)
 {
 	// Generate orthogonal vector from other vectors
  	Vec3<double> v1, v2, v;
@@ -271,7 +271,7 @@ void TransformWidget::on_TransformGenerateAButton_clicked(bool on)
 	ui.TransformMatrixAZSpin->setValue(v.z);
 }
 
-void TransformWidget::on_TransformGenerateBButton_clicked(bool on)
+void TransformWidget::on_TransformGenerateBButton_clicked(bool checked)
 {
 	// Generate orthogonal vector from other vectors
  	Vec3<double> v1, v2, v;
@@ -283,7 +283,7 @@ void TransformWidget::on_TransformGenerateBButton_clicked(bool on)
 	ui.TransformMatrixBZSpin->setValue(v.z);
 }
 
-void TransformWidget::on_TransformGenerateCButton_clicked(bool on)
+void TransformWidget::on_TransformGenerateCButton_clicked(bool checked)
 {
 	// Generate orthogonal vector from other vectors
  	Vec3<double> v1, v2, v;
@@ -296,7 +296,7 @@ void TransformWidget::on_TransformGenerateCButton_clicked(bool on)
 	ui.TransformMatrixCZSpin->setValue(v.z);
 }
 
-void TransformWidget::on_TransformOriginCellCentreButton_clicked(bool on)
+void TransformWidget::on_TransformOriginCellCentreButton_clicked(bool checked)
 {
 	Vec3<double> o;
 	if (parent_.aten().currentModelOrFrame()->cell().type() == UnitCell::NoCell) o.set(0.0,0.0,0.0);
@@ -306,7 +306,7 @@ void TransformWidget::on_TransformOriginCellCentreButton_clicked(bool on)
 	ui.TransformOriginZSpin->setValue(o.z);
 }
 
-void TransformWidget::on_TransformDefineOriginButton_clicked(bool on)
+void TransformWidget::on_TransformDefineOriginButton_clicked(bool checked)
 {
 	// Get geometric centre of selection
 	Vec3<double> v = parent_.aten().currentModelOrFrame()->selectionCentreOfGeometry();
@@ -320,7 +320,7 @@ void TransformWidget::on_TransformDefineOriginButton_clicked(bool on)
  * Matrix Transformation 
  */
 
-void TransformWidget::on_ConvertRotateIntoButton_clicked(bool on)
+void TransformWidget::on_ConvertRotateIntoButton_clicked(bool checked)
 {
 	// Put values into our matrices...
 	Matrix source, target, rotmat;
@@ -379,25 +379,25 @@ void convertSourcePickCButton_callback(Reflist<Atom,int>* picked)
 // 	ui.ConvertSourceMatrixCZSpin->setValue(v.z);
 }
 
-void TransformWidget::on_ConvertSourcePickAButton_clicked(bool on)
+void TransformWidget::on_ConvertSourcePickAButton_clicked(bool checked)
 {
 	// Enter manual picking mode
 	parent_.ui.MainView->setSelectedMode(UserAction::ConvertSourcePickAAction,2,&convertSourcePickAButton_callback);
 }
 
-void TransformWidget::on_ConvertSourcePickBButton_clicked(bool on)
+void TransformWidget::on_ConvertSourcePickBButton_clicked(bool checked)
 {
 	// Enter manual picking mode
 	parent_.ui.MainView->setSelectedMode(UserAction::ConvertSourcePickBAction,2,&convertSourcePickBButton_callback);
 }
 
-void TransformWidget::on_ConvertSourcePickCButton_clicked(bool on)
+void TransformWidget::on_ConvertSourcePickCButton_clicked(bool checked)
 {
 	// Enter manual picking mode
 	parent_.ui.MainView->setSelectedMode(UserAction::ConvertSourcePickCAction,2,&convertSourcePickCButton_callback);
 }
 
-void TransformWidget::on_ConvertSourceNormaliseAButton_clicked(bool on)
+void TransformWidget::on_ConvertSourceNormaliseAButton_clicked(bool checked)
 {
 	// Normalise vector in widgets
  	Vec3<double> v;
@@ -408,7 +408,7 @@ void TransformWidget::on_ConvertSourceNormaliseAButton_clicked(bool on)
 	ui.ConvertSourceMatrixAZSpin->setValue(v.z);
 }
 
-void TransformWidget::on_ConvertSourceNormaliseBButton_clicked(bool on)
+void TransformWidget::on_ConvertSourceNormaliseBButton_clicked(bool checked)
 {
 	// Normalise vector in widgets
  	Vec3<double> v;
@@ -419,7 +419,7 @@ void TransformWidget::on_ConvertSourceNormaliseBButton_clicked(bool on)
 	ui.ConvertSourceMatrixBZSpin->setValue(v.z);
 }
 
-void TransformWidget::on_ConvertSourceNormaliseCButton_clicked(bool on)
+void TransformWidget::on_ConvertSourceNormaliseCButton_clicked(bool checked)
 {
 	// Normalise vector in widgets
  	Vec3<double> v;
@@ -430,7 +430,7 @@ void TransformWidget::on_ConvertSourceNormaliseCButton_clicked(bool on)
 	ui.ConvertSourceMatrixCZSpin->setValue(v.z);
 }
 
-void TransformWidget::on_ConvertSourceOrthogonaliseAButton_clicked(bool on)
+void TransformWidget::on_ConvertSourceOrthogonaliseAButton_clicked(bool checked)
 {
 	// Orthogonalise vector from x vector (or y vector)
  	Vec3<double> v, ref;
@@ -443,7 +443,7 @@ void TransformWidget::on_ConvertSourceOrthogonaliseAButton_clicked(bool on)
 	ui.ConvertSourceMatrixAZSpin->setValue(v.z);
 }
 
-void TransformWidget::on_ConvertSourceOrthogonaliseBButton_clicked(bool on)
+void TransformWidget::on_ConvertSourceOrthogonaliseBButton_clicked(bool checked)
 {
 	// Orthogonalise orthogonal vector from other vectors
  	Vec3<double> v, ref;
@@ -456,7 +456,7 @@ void TransformWidget::on_ConvertSourceOrthogonaliseBButton_clicked(bool on)
 	ui.ConvertSourceMatrixBZSpin->setValue(v.z);
 }
 
-void TransformWidget::on_ConvertSourceOrthogonaliseCButton_clicked(bool on)
+void TransformWidget::on_ConvertSourceOrthogonaliseCButton_clicked(bool checked)
 {
 	// Orthogonalise orthogonal vector from other vectors
  	Vec3<double> v, ref;
@@ -469,7 +469,7 @@ void TransformWidget::on_ConvertSourceOrthogonaliseCButton_clicked(bool on)
 	ui.ConvertSourceMatrixCZSpin->setValue(v.z);
 }
 
-void TransformWidget::on_ConvertSourceGenerateAButton_clicked(bool on)
+void TransformWidget::on_ConvertSourceGenerateAButton_clicked(bool checked)
 {
 	// Generate orthogonal vector from other vectors
  	Vec3<double> v1, v2, v;
@@ -482,7 +482,7 @@ void TransformWidget::on_ConvertSourceGenerateAButton_clicked(bool on)
 	ui.ConvertSourceMatrixAZSpin->setValue(v.z);
 }
 
-void TransformWidget::on_ConvertSourceGenerateBButton_clicked(bool on)
+void TransformWidget::on_ConvertSourceGenerateBButton_clicked(bool checked)
 {
 	// Generate orthogonal vector from other vectors
  	Vec3<double> v1, v2, v;
@@ -494,7 +494,7 @@ void TransformWidget::on_ConvertSourceGenerateBButton_clicked(bool on)
 	ui.ConvertSourceMatrixBZSpin->setValue(v.z);
 }
 
-void TransformWidget::on_ConvertSourceGenerateCButton_clicked(bool on)
+void TransformWidget::on_ConvertSourceGenerateCButton_clicked(bool checked)
 {
 	// Generate orthogonal vector from other vectors
  	Vec3<double> v1, v2, v;
@@ -507,7 +507,7 @@ void TransformWidget::on_ConvertSourceGenerateCButton_clicked(bool on)
 	ui.ConvertSourceMatrixCZSpin->setValue(v.z);
 }
 
-void TransformWidget::on_ConvertOriginCellCentreButton_clicked(bool on)
+void TransformWidget::on_ConvertOriginCellCentreButton_clicked(bool checked)
 {
 	Vec3<double> o;
 	if (parent_.aten().currentModelOrFrame()->cell().type() == UnitCell::NoCell) o.set(0.0,0.0,0.0);
@@ -517,7 +517,7 @@ void TransformWidget::on_ConvertOriginCellCentreButton_clicked(bool on)
 	ui.ConvertOriginZSpin->setValue(o.z);
 }
 
-void TransformWidget::on_ConvertDefineOriginButton_clicked(bool on)
+void TransformWidget::on_ConvertDefineOriginButton_clicked(bool checked)
 {
 	// Get geometric centre of selection
 	Vec3<double> v = parent_.aten().currentModelOrFrame()->selectionCentreOfGeometry();
@@ -566,25 +566,25 @@ void convertTargetDefineCButton_callback(Reflist<Atom,int>* picked)
 // 	ui.ConvertTargetMatrixCZSpin->setValue(v.z);
 }
 
-void TransformWidget::on_ConvertTargetPickAButton_clicked(bool on)
+void TransformWidget::on_ConvertTargetPickAButton_clicked(bool checked)
 {
 	// Enter manual picking mode
 	parent_.ui.MainView->setSelectedMode(UserAction::ConvertTargetPickAAction,2,&convertTargetDefineAButton_callback);
 }
 
-void TransformWidget::on_ConvertTargetPickBButton_clicked(bool on)
+void TransformWidget::on_ConvertTargetPickBButton_clicked(bool checked)
 {
 	// Enter manual picking mode
 	parent_.ui.MainView->setSelectedMode(UserAction::ConvertTargetPickBAction,2,&convertTargetDefineBButton_callback);
 }
 
-void TransformWidget::on_ConvertTargetPickCButton_clicked(bool on)
+void TransformWidget::on_ConvertTargetPickCButton_clicked(bool checked)
 {
 	// Enter manual picking mode
 	parent_.ui.MainView->setSelectedMode(UserAction::ConvertTargetPickCAction,2,&convertTargetDefineCButton_callback);
 }
 
-void TransformWidget::on_ConvertTargetNormaliseAButton_clicked(bool on)
+void TransformWidget::on_ConvertTargetNormaliseAButton_clicked(bool checked)
 {
 	// Normalise vector in widgets
  	Vec3<double> v;
@@ -595,7 +595,7 @@ void TransformWidget::on_ConvertTargetNormaliseAButton_clicked(bool on)
 	ui.ConvertTargetMatrixAZSpin->setValue(v.z);
 }
 
-void TransformWidget::on_ConvertTargetNormaliseBButton_clicked(bool on)
+void TransformWidget::on_ConvertTargetNormaliseBButton_clicked(bool checked)
 {
 	// Normalise vector in widgets
  	Vec3<double> v;
@@ -606,7 +606,7 @@ void TransformWidget::on_ConvertTargetNormaliseBButton_clicked(bool on)
 	ui.ConvertTargetMatrixBZSpin->setValue(v.z);
 }
 
-void TransformWidget::on_ConvertTargetNormaliseCButton_clicked(bool on)
+void TransformWidget::on_ConvertTargetNormaliseCButton_clicked(bool checked)
 {
 	// Normalise vector in widgets
  	Vec3<double> v;
@@ -617,7 +617,7 @@ void TransformWidget::on_ConvertTargetNormaliseCButton_clicked(bool on)
 	ui.ConvertTargetMatrixCZSpin->setValue(v.z);
 }
 
-void TransformWidget::on_ConvertTargetOrthogonaliseAButton_clicked(bool on)
+void TransformWidget::on_ConvertTargetOrthogonaliseAButton_clicked(bool checked)
 {
 	// Orthogonalise vector from x vector (or y vector)
  	Vec3<double> v, ref;
@@ -630,7 +630,7 @@ void TransformWidget::on_ConvertTargetOrthogonaliseAButton_clicked(bool on)
 	ui.ConvertTargetMatrixAZSpin->setValue(v.z);
 }
 
-void TransformWidget::on_ConvertTargetOrthogonaliseBButton_clicked(bool on)
+void TransformWidget::on_ConvertTargetOrthogonaliseBButton_clicked(bool checked)
 {
 	// Orthogonalise orthogonal vector from other vectors
  	Vec3<double> v, ref;
@@ -643,7 +643,7 @@ void TransformWidget::on_ConvertTargetOrthogonaliseBButton_clicked(bool on)
 	ui.ConvertTargetMatrixBZSpin->setValue(v.z);
 }
 
-void TransformWidget::on_ConvertTargetOrthogonaliseCButton_clicked(bool on)
+void TransformWidget::on_ConvertTargetOrthogonaliseCButton_clicked(bool checked)
 {
 	// Orthogonalise orthogonal vector from other vectors
  	Vec3<double> v, ref;
@@ -656,7 +656,7 @@ void TransformWidget::on_ConvertTargetOrthogonaliseCButton_clicked(bool on)
 	ui.ConvertTargetMatrixCZSpin->setValue(v.z);
 }
 
-void TransformWidget::on_ConvertTargetGenerateAButton_clicked(bool on)
+void TransformWidget::on_ConvertTargetGenerateAButton_clicked(bool checked)
 {
 	// Generate orthogonal vector from other vectors
  	Vec3<double> v1, v2, v;
@@ -669,7 +669,7 @@ void TransformWidget::on_ConvertTargetGenerateAButton_clicked(bool on)
 	ui.ConvertTargetMatrixAZSpin->setValue(v.z);
 }
 
-void TransformWidget::on_ConvertTargetGenerateBButton_clicked(bool on)
+void TransformWidget::on_ConvertTargetGenerateBButton_clicked(bool checked)
 {
 	// Generate orthogonal vector from other vectors
  	Vec3<double> v1, v2, v;
@@ -681,7 +681,7 @@ void TransformWidget::on_ConvertTargetGenerateBButton_clicked(bool on)
 	ui.ConvertTargetMatrixBZSpin->setValue(v.z);
 }
 
-void TransformWidget::on_ConvertTargetGenerateCButton_clicked(bool on)
+void TransformWidget::on_ConvertTargetGenerateCButton_clicked(bool checked)
 {
 	// Generate orthogonal vector from other vectors
  	Vec3<double> v1, v2, v;
