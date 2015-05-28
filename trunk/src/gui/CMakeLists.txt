@@ -66,7 +66,6 @@ SET(gui_MOC_HDRS
   selectfilter.h
   selectpattern.h
   selectvariable.h
-  trajectory.h
   transform.h
   vibrations.h
   viewbasis.h
@@ -147,7 +146,6 @@ SET(gui_UIS
   selectfilter.ui
   selectpattern.ui
   selectvariable.ui
-  trajectory.ui
   transform.ui
   vibrations.ui
   viewbasis.ui
@@ -187,6 +185,7 @@ set(gui_SRCS
   mainwindow_panel_cell.cpp
   mainwindow_panel_grids.cpp
   mainwindow_panel_transform.cpp
+  mainwindow_panel_trajectory.cpp
   mainwindow_panel_view.cpp
   mainwindow_update.cpp
   popupbuildaddh_funcs.cpp
@@ -246,7 +245,6 @@ set(gui_SRCS
   tdoublespindelegate_funcs.cpp
   texponentialspin_funcs.cpp
   tintegerspindelegate_funcs.cpp
-  trajectory_funcs.cpp
   transform_funcs.cpp
   tprocess_funcs.cpp
   tprompt_funcs.cpp

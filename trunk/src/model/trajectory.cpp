@@ -463,6 +463,7 @@ void Model::trajectoryCopyAtomStyle(Model* source)
 		Messenger::exit("Model::trajectoryCopyAtomStyle");
 		return;
 	}
+
 	int pid = progress.initialise("Applying style to trajectory frames...", trajectoryFrames_.nItems());
 	for (Model* m = trajectoryFrames_.first(); m != NULL; m = m->next)
 	{

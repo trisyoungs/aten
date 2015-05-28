@@ -34,50 +34,98 @@ ATEN_USING_NAMESPACE
 class TColourWheel : public QWidget
 {
 	Q_OBJECT
-	
+
 	public:
 	// Constructor
 	TColourWheel(QWidget* parent = 0);
 
+
+	/*
+	 * Qt Reimplementations
+	 */
+	protected:
+	void mousePressEvent(QMouseEvent* event);
+	void mouseMoveEvent(QMouseEvent* event);
+	void mouseReleaseEvent(QMouseEvent* event);
+	void resizeEvent(QResizeEvent* event);
+	void paintEvent(QPaintEvent* event);
+
+	public:
+	// Qt size hint
 	virtual QSize sizeHint () const;
+	// Qt minimum size hint
 	virtual QSize minimumSizeHint () const;
-	QColor colour();
+
+
+	/*
+	 * Layout / Control
+	 */
+	private:
+	// Local mouse regions
+	enum TColourWheelRegion { NoRegion, WheelRegion, SquareRegion };
+
+	private:
+	// Margin around edge of widget
+	int margin_;
+	// Centre coordinate of widget
+	QPoint centre_;
+	// Outer radius of colour wheel
+	int outerRadius_;
+	// Size of square
+	int squareSize_;
+	// Width of wheel (in pixels)
+	int wheelWidth_;
+	// Whether mouse button is currently down on the widget
+	bool mouseDown_;
+	// Last position of mouse over widget
+	QPoint lastPos_;
+	// Wheel (hue) region
+	QRegion wheelRegion_;
+	// Square (saturation/value) region
+	QRegion squareRegion_;
+	// Current region that the mouse is over
+	TColourWheelRegion currentRegion_;
+	// Gradient for hue wheel
+	QConicalGradient wheelGradient_;
+	// Pre-drawn image of the hue wheel
+	QImage wheelImage_;
+	// Pre-drawn image of the saturation / value square
+	QImage squareImage_;
+	// Composite image containing all elements
+	QPixmap compositeImage_;
+
+	private:
+	// Return colour at last mouse position
+	QColor lastPosColour();
+	// Update wheel image and region
+	void updateWheel(const QSize widgetSize);
+	// Update square (saturation / value) image and region
+	void updateSquare(const int currentHue);
+	// Update composite image
+	void updateComposite();
+	// Hue changed, so update
+	void hueChanged(const int hue);
+	// Saturation / value changed so update
+	void svChanged(const QColor newColour);
+
+
+	/*
+	 * Colour
+	 */
+	private:
+	// Colour selected in widget
+	QColor currentColour_;
+
+	public:
+	// Return colour selected in widget
+	QColor currentColour();
+
+	public slots:
+	// Set colour selected in widget
+	void setColour(const QColor colour);
 	
 	signals:
-	void colourChanged(const QColor &colour);
-	
-	public slots:
-	void setColour(const QColor &colour);
-
-	protected:
-	void mousePressEvent(QMouseEvent *event);
-	void mouseMoveEvent(QMouseEvent *event);
-	void mouseReleaseEvent(QMouseEvent *);
-	void resizeEvent(QResizeEvent *event);
-	void paintEvent(QPaintEvent *);
-	private:
-	QSize initSize;
-	QImage wheelImage;
-	QImage squareImage;
-	QPixmap wheel;
-	bool mouseDown;
-	QPoint lastPos;
-	int margin;
-	int wheelWidth;
-	QRegion wheelRegion;
-	QRegion squareRegion;
-	QColor current;
-	bool inWheel;
-	bool inSquare;
-	QColor posColour(const QPoint &point);
-	void drawWheelImage(const QSize &newSize);
-	void drawIndicator(const int &hue);
-	void drawPicker(const QColor &colour);
-	void drawSquareImage(const int &hue);
-	void composeWheel();
-	private slots:
-	void hueChanged(const int &hue);
-	void svChanged(const QColor &newcolour);
+	void colourChanged(const QColor colour);
 };
 
 #endif

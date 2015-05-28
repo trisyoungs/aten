@@ -248,6 +248,8 @@ void ColourPopup::on_Wheel_colourChanged(const QColor& colour)
 
 	setCurrentColour(colour);
 
+	updateParentButtonIcon();
+
 	changed();
 }
 

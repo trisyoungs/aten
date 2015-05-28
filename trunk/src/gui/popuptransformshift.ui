@@ -288,7 +288,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QToolButton" name="BackButton">
+      <widget class="QToolButton" name="BackwardButton">
        <property name="minimumSize">
         <size>
          <width>56</width>

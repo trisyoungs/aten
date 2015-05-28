@@ -64,7 +64,6 @@ class PoresWidget;
 class ScriptMovieWidget;
 class SelectWidget;
 class ToolBoxWidget;
-class TrajectoryWidget;
 class TransformWidget;
 class VibrationsWidget;
 
@@ -123,7 +122,7 @@ class AtenWindow : public QMainWindow
 	 */
 	public:
 	// Update Targets
-	enum UpdateTarget { AtomsTarget = 1, CalculatePanelTarget = 2, ForcefieldsTarget = 4, GlyphsTarget = 8, GridsPanelTarget = 16, MainWindowTarget = 32, MainViewTarget = 64, StatusBarTarget = 128, GeometryTarget = 256, VibrationsTarget = 512, SelectTarget = 1024, TrajectoryTarget = 2048, BuildPanelTarget = 4096, CellPanelTarget = 8192, ViewPanelTarget = 16384, TransformPanelTarget = 32768, ContextMenuTarget = 65536, ModelListTarget = 131072, AllTarget = 262143};
+	enum UpdateTarget { AtomsTarget = 1, CalculatePanelTarget = 2, ForcefieldsTarget = 4, GlyphsTarget = 8, GridsPanelTarget = 16, MainWindowTarget = 32, MainViewTarget = 64, StatusBarTarget = 128, GeometryTarget = 256, VibrationsTarget = 512, SelectTarget = 1024, TrajectoryPanelTarget = 2048, BuildPanelTarget = 4096, CellPanelTarget = 8192, ViewPanelTarget = 16384, TransformPanelTarget = 32768, ContextMenuTarget = 65536, ModelListTarget = 131072, AllTarget = 262143};
 
 	private:
 	// Whether window is currently refreshing
@@ -132,8 +131,6 @@ class AtenWindow : public QMainWindow
 	private:
 	// Refresh main window
 	void updateMainWindow();
-	// Update trajectory control widgets
-	void updateTrajectoryMenu();
 	// Update context menu
 	void updateContextMenu(Model* currentModel);
 
@@ -159,7 +156,6 @@ class AtenWindow : public QMainWindow
 	void on_actionFileClose_triggered(bool checked);
 	void on_actionFileSaveImage_triggered(bool checked);
 	void on_actionFileQuit_triggered(bool checked);
-	void on_actionFileOpenGrid_triggered(bool checked);
 
 	
 	/*
@@ -234,23 +230,6 @@ class AtenWindow : public QMainWindow
 	void on_actionModelPrevious_triggered(bool checked);
 	void on_actionModelShowAll_triggered(bool checked);
 	void on_actionListMeasurements_triggered(bool checked);
-
-	
-	/*
-	 * Trajectory Menu
-	 */
-	private slots:
-	void on_actionTrajectoryOpen_triggered(bool checked);
-	void on_actionTrajectoryRemove_triggered(bool checked);
-	void on_actionTrajectoryInheritParentStyle_triggered(bool checked);
-	void on_actionTrajectoryCopyStyleToParent_triggered(bool checked);
-	void on_actionTrajectoryPropagateStyleFromHere_triggered(bool checked);
-	void on_actionTrajectoryFirstFrame_triggered(bool checked);
-	void on_actionTrajectoryLastFrame_triggered(bool checked);
-	void on_actionTrajectoryPlayPause_triggered(bool checked);
-	void on_actionTrajectoryModel_triggered(bool checked);
-	void on_actionTrajectoryFrames_triggered(bool checked);
-	void on_actionTrajectorySaveMovie_triggered(bool checked);
 
 
 	/*
@@ -398,9 +377,12 @@ class AtenWindow : public QMainWindow
 	void updateGridInformation(Grid* sourceGrid);
 
 	private slots:
-	// Define
+	// Manage
+	void on_GridsLoadButton_clicked(bool checked);
+	void on_GridsRemoveButton_clicked(bool checked);
 	void on_GridsList_currentItemChanged(QListWidgetItem* current, QListWidgetItem* previous);
-	// Priary Surface
+	void gridsListContextMenuRequested(const QPoint& point);
+	// Primary Surface
 	void on_GridsPrimaryLowerCutoffSpin_valueChanged(double value);
 	void on_GridsPrimaryUpperCutoffSpin_valueChanged(double value);
 	void on_GridsPrimaryColourButton_popupChanged();
@@ -412,6 +394,41 @@ class AtenWindow : public QMainWindow
 	// Options
 	void on_GridsOptionsOutlineButton_clicked(bool checked);
 	void on_GridsOptionsPeriodicButton_clicked(bool checked);
+
+
+	/*
+	 * Trajectory Panel
+	 */
+	private:
+	// Trajectory timer id (if any)
+	int trajectoryTimerId_;
+
+	private:
+	// Update trajectory panel
+	void updateTrajectoryPanel(Model* sourceModel);
+	// Stop trajectory playback
+	void stopTrajectoryPlayback();
+
+	private slots:
+	// Source
+	void on_TrajectorySourceOpenButton_clicked(bool checked);
+	void on_TrajectorySourceRemoveButton_clicked(bool checked);
+	void on_TrajectorySourceFramesButton_clicked(bool checked);
+	// Control
+	void on_TrajectoryControlFirstButton_clicked(bool checked);
+	void on_TrajectoryControlPreviousButton_clicked(bool checked);
+	void on_TrajectoryControlPlayButton_clicked(bool checked);
+	void on_TrajectoryControlNextButton_clicked(bool checked);
+	void on_TrajectoryControlLastButton_clicked(bool checked);
+	void on_TrajectoryControlFrameSpin_valueChanged(int value);
+	void on_TrajectoryControlFrameSlider_positionChanged(int position);
+	void on_TrajectoryControlDelaySpin_valueCHanged(int value);
+	// Style
+	void on_TrajectoryStyleInheritButton_clicked(bool checked);
+	void on_TrajectoryStylePropagateButton_clicked(bool checked);
+	void on_TrajectoryStylePromoteButton_clicked(bool checked);
+	// Tools
+	void on_TrajectoryToolsMovietButton_clicked(bool checked);
 
 
 	/*
@@ -461,6 +478,10 @@ class AtenWindow : public QMainWindow
 	Tree* saveModelFilter_;
 	// Filename set from save model dialog
 	QString saveModelFilename_;
+
+	protected:
+	// Timer event
+	void timerEvent(QTimerEvent* event);
 
 	public:
 	// Update undo/redo labels
@@ -533,8 +554,6 @@ class AtenWindow : public QMainWindow
 	ScriptMovieWidget *scriptMovieWidget;
 	// Atom selection dock widget
 	SelectWidget *selectWidget;
-	// Trajectory control dock widget
-	TrajectoryWidget *trajectoryWidget;
 	// Atom transformation dock widget
 	TransformWidget *transformWidget;
 	// Vibrations dock widget

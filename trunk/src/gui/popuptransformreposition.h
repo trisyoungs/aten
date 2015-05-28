@@ -70,7 +70,6 @@ class TransformRepositionPopup : public TMenuButtonPopupWidget
 	 * Widget Functions
 	 */
 	private slots:
-	void on_RepositionButton_clicked(bool checked);
 	void on_DefineReferenceButton_clicked(bool checked);
 	void on_DefineTargetButton_clicked(bool checked);
 };

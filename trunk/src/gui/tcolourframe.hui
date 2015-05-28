@@ -30,7 +30,8 @@ class TColourFrame : public QFrame
 	Q_OBJECT
 
 	public:
-	TColourFrame(QWidget *parent = 0);
+	// Constructor
+	TColourFrame(QWidget* parent = 0);
 
 	protected:
 	void paintEvent(QPaintEvent *event);
