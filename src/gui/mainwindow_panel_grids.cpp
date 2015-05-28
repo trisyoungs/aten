@@ -23,6 +23,7 @@
 #include "main/aten.h"
 #include "command/commands.h"
 #include "templates/variantpointer.h"
+#include <QFileDialog>
 
 // Update grids panel
 void AtenWindow::updateGridsPanel(Model* sourceModel)
@@ -110,6 +111,50 @@ void AtenWindow::updateGridInformation(Grid* sourceGrid)
 	ui.GridsOptionsPeriodicButton->setChecked(sourceGrid->periodic());
 }
 
+/*
+ * Manage
+ */
+
+void AtenWindow::on_GridsLoadButton_clicked(bool checked)
+{
+	Messenger::enter("GridsWidget::loadGrid");
+
+	Tree* filter;
+	static QDir currentDirectory_(aten_.workDir());
+	QString selFilter;
+	QString filename = QFileDialog::getOpenFileName(this, "Open Grid", currentDirectory_.path(), aten_.fileDialogFilters(FilterData::GridImport), &selFilter);
+	if (!filename.isEmpty())
+	{
+		// Store path for next use
+		currentDirectory_.setPath(filename);
+		
+		// Find the filter that was selected
+		filter = aten().findFilterByDescription(FilterData::GridImport, qPrintable(selFilter));
+		if (filter == NULL) filter = aten_.probeFile(qPrintable(filename), FilterData::GridImport);
+		if (filter != NULL)
+		{
+			// Run any import options in the filter
+			if (!filter->executeRead(qPrintable(filename))) return;
+		}
+	}
+
+	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::GridsPanelTarget);
+
+	Messenger::exit("GridsWidget::loadGrid");
+}
+
+void AtenWindow::on_GridsRemoveButton_clicked(bool checked)
+{
+	// Get current grid
+	Grid* currentGrid;
+	if (!aten_.currentGrid(currentGrid)) return;
+
+	Model* parentModel = currentGrid->parent();
+	if (parentModel) parentModel->removeGrid(currentGrid);
+
+	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::GridsPanelTarget);
+}
+
 void AtenWindow::on_GridsList_currentItemChanged(QListWidgetItem* current, QListWidgetItem* previous)
 {
 	if (refreshing_ || (!current)) return;
@@ -122,6 +167,70 @@ void AtenWindow::on_GridsList_currentItemChanged(QListWidgetItem* current, QList
 
 	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::GridsPanelTarget);
 }
+
+// Context menu requested for GridsList
+void AtenWindow::gridsListContextMenuRequested(const QPoint& point)
+{
+	// Is there a current grid?
+	Grid* currentGrid;
+	if (!aten_.currentGrid(currentGrid)) return;
+
+	// Build the context menu to display
+	QMenu contextMenu;
+	QAction* action;
+	// -- Main 'edit' functions
+	QAction* copyAction = contextMenu.addAction("&Copy");
+	QAction* cutAction = contextMenu.addAction("Cu&t");
+	QAction* pasteAction = contextMenu.addAction("&Paste");
+	QAction* duplicateAction = contextMenu.addAction("D&uplicate");
+	QAction* deleteAction = contextMenu.addAction("&Delete");
+	
+	// Show it
+	QAction* menuResult = contextMenu.exec(QCursor::pos());
+
+	// What was clicked?
+	if (menuResult == copyAction)
+	{
+		aten_.copyGrid(currentGrid);
+	}
+	else if (menuResult == cutAction)
+	{
+		Model* parentModel = currentGrid->parent();
+		if (!parentModel) return;
+		aten().copyGrid(currentGrid);
+		parentModel->removeGrid(currentGrid);
+		updateWidgets(AtenWindow::MainViewTarget+AtenWindow::GridsPanelTarget);
+	}
+	else if (menuResult == deleteAction)
+	{
+		Model* parentModel = currentGrid->parent();
+		if (!parentModel) return;
+		parentModel->removeGrid(currentGrid);
+		updateWidgets(AtenWindow::MainViewTarget+AtenWindow::GridsPanelTarget);
+	}
+	else if (menuResult == pasteAction)
+	{
+		Model* parentModel = currentGrid->parent();
+		if (!parentModel) return;
+		Grid* clipGrid = aten_.gridClipboard();
+		if (!clipGrid) return;
+		Grid* newGrid = parentModel->addGrid();
+		*newGrid = *clipGrid;
+		updateWidgets(AtenWindow::MainViewTarget+AtenWindow::GridsPanelTarget);
+	}
+	else if (menuResult == duplicateAction)
+	{
+		Model* parentModel = currentGrid->parent();
+		if (!parentModel) return;
+		Grid* newGrid = parentModel->addGrid();
+		*newGrid = *currentGrid;
+		updateWidgets(AtenWindow::MainViewTarget+AtenWindow::GridsPanelTarget);
+	}
+}
+
+/*
+ * Primary Surface
+ */
 
 void AtenWindow::on_GridsPrimaryLowerCutoffSpin_valueChanged(double value)
 {
@@ -164,6 +273,10 @@ void AtenWindow::on_GridsPrimaryColourButton_popupChanged()
 
 	updateWidgets(AtenWindow::MainViewTarget);
 }
+
+/*
+ * Secondary Surface
+ */
 
 void AtenWindow::on_GridsSecondarySurfaceCheck_clicked(bool checked)
 {

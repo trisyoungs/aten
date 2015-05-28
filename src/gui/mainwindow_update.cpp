@@ -22,7 +22,6 @@
 #include "main/version.h"
 #include "gui/mainwindow.h"
 #include "main/aten.h"
-#include "gui/trajectory.h"
 #include "gui/select.h"
 #include "gui/forcefields.h"
 #include "gui/vibrations.h"
@@ -48,7 +47,6 @@ void AtenWindow::updateMainWindow()
 			if (currentModel->renderSourceModel() == currentModel) s = "(Parent of " + QString::number(currentModel->nTrajectoryFrames()) + " frames) ";
 			else s = "(Frame " + QString::number(currentModel->trajectoryFrameIndex()+1) + " of " + QString::number(currentModel->nTrajectoryFrames()) + ") ";
 		}
-		updateTrajectoryMenu();	// ATEN2 TODO
 
 		currentModel = currentModel->renderSourceModel();
 		s += QString::number(currentModel->nAtoms());
@@ -114,31 +112,6 @@ void AtenWindow::updateMainWindow()
 	setWindowTitle(title);
 
 	refreshing_ = false;
-}
-
-// Update trajectory menu
-void AtenWindow::updateTrajectoryMenu()
-{
-	// First see if the model has a trajectory associated to it
-	Model* m = aten_.currentModel();
-	Model::RenderSource rs = m->renderSource();
-	bool hasTrj = (m->nTrajectoryFrames() != 0);
-	int frameNAtoms = hasTrj ? m->trajectoryCurrentFrame()->nAtoms() : -1;
-	ui.actionTrajectoryRemove->setEnabled(hasTrj);
-	ui.actionTrajectoryInheritParentStyle->setChecked(m->trajectoryPropagateParentStyle());
-	ui.actionTrajectoryInheritParentStyle->setEnabled(m->nAtoms() == frameNAtoms);
-	ui.actionTrajectoryCopyStyleToParent->setEnabled((rs == Model::TrajectorySource) && (m->nAtoms() == frameNAtoms));
-	ui.actionTrajectoryPropagateStyleFromHere->setEnabled((rs == Model::TrajectorySource) && m->trajectoryIsCached());
-	ui.actionTrajectoryFirstFrame->setEnabled(hasTrj);
-	ui.actionTrajectoryLastFrame->setEnabled(hasTrj);
-	ui.actionTrajectoryPlayPause->setEnabled(hasTrj);
-	ui.actionTrajectoryPlayPause->setChecked(trajectoryWidget->ui.TrajectoryPlayPauseButton->isChecked());
-	ui.actionTrajectoryFrames->setEnabled(hasTrj);
-	ui.actionTrajectorySaveMovie->setEnabled(hasTrj);
-
-	// Select the correct view action
-	ui.actionTrajectoryModel->setChecked(rs == Model::ModelSource);
-	ui.actionTrajectoryFrames->setChecked(rs == Model::TrajectorySource);
 }
 
 // Update context menu
@@ -221,11 +194,11 @@ void AtenWindow::updateWidgets(int targets)
 	if (targets&AtenWindow::CalculatePanelTarget) updateCalculatePanel(currentModel);
 	if (targets&AtenWindow::TransformPanelTarget) updateTransformPanel(currentModel);
 	if (targets&AtenWindow::GridsPanelTarget) updateGridsPanel(currentModel);
+	if (targets&AtenWindow::TrajectoryPanelTarget) updateTrajectoryPanel(currentModel);
 
 	
 	if (targets&AtenWindow::SelectTarget) selectWidget->refresh();
 	if (targets&AtenWindow::VibrationsTarget) vibrationsWidget->refresh();
-	if (targets&AtenWindow::TrajectoryTarget) trajectoryWidget->refresh();
 
 	// Update contents of the atom list
 	if (targets&AtenWindow::AtomsTarget) atomListWidget->refresh();

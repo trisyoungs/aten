@@ -1,4 +1,3 @@
-Remove empty destructors.
 Add ObjectLists (when using CHECK)?
 Move sg code to separate dir.
 Remove dialog pointers (use instances instead).
@@ -40,11 +39,8 @@ Clear selected measurements on panel popup clears all measurements.
 CRASH - Click in empty space in model list causes fp exception. Related to no current model selected.  Force ListWidget to always have one selected?
 Allow right-click on elements in PTable to set as member of common elements popup.
 Finish Spacegroup popup.
-Modifying anything on Grid tool widget is slow, forcing update of grid primitive?
 Add Calculate tool to work out centre of geometry/mass.
-Tidy up/rework TColourWheel code.
---- Colour wheel seems to forget alpha value when selecting a new colour.
---- Add option to display ColourScale selector (e.g. for Grid colour buttons)
+Add option to display ColourScale selector (e.g. for Grid colour buttons)
 Reimplement drawing of grid (volume) axes.
 Shortcuts for panel buttons do not work (use QActions again?).
 Make Model::EnergyStore a private member with accessor?
@@ -54,6 +50,8 @@ Fix grid rendering - triangle grid not rendered in unfilled polygon mode, and po
 Add button to Transform/Position to centre entire model at zero?
 Have Tools page? With, for instance:
 --- Plot Orbital (raising dialog from old GridsWidget).
+Remove TColourFrame (after updating Prefs and Glyphs windows).
+Have small, additional black icons at top-left of each model window, illustrating whether it has been modified, is displaying trajetory frames, etc.
 
 GUI TODO:
 AddAtom functionality (from old Build menu).

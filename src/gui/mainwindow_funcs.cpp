@@ -24,7 +24,6 @@
 #include "gui/mainwindow.h"
 #include "gui/prefs.h"
 #include "gui/loadmodel.h"
-#include "gui/trajectory.h"
 #include "gui/ffeditor.h"
 #include "gui/selectpattern.h"
 #include "gui/about.h"
@@ -81,7 +80,6 @@
 #include "gui/pores.h"
 #include "gui/scriptmovie.h"
 #include "gui/select.h"
-#include "gui/trajectory.h"
 #include "gui/transform.h"
 #include "gui/vibrations.h"
 
@@ -105,6 +103,7 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 	contextAtom_ = NULL;
 	messageDisplay_ = MessagesUnderScene;
 	refreshing_ = false;
+	trajectoryTimerId_ = -1;
 
 	// Public variables
 	infoLabel1_ = NULL;
@@ -121,7 +120,6 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 	poresWidget = new PoresWidget(*this, Qt::Tool);
 	scriptMovieWidget = new ScriptMovieWidget(*this, Qt::Tool);
 	selectWidget = new SelectWidget(*this, Qt::Tool);
-	trajectoryWidget = new TrajectoryWidget(*this, Qt::Tool);
 	transformWidget = new TransformWidget(*this, Qt::Tool);
 	vibrationsWidget = new VibrationsWidget(*this, Qt::Tool);
 	dockWidgets_ << atomListWidget << commandWidget << fragmentsWidget << glyphsWidget << poresWidget << scriptMovieWidget << selectWidget << transformWidget << vibrationsWidget;
@@ -144,7 +142,7 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 	group->addAction(ui.actionTrajectoryModel);
 	group->addAction(ui.actionTrajectoryFrames);
 
-	// Add buttons related to user actions to our button group, and add popup widgets to those buttons that have them
+	// Add buttons related to user actions to our button group, add popup widgets to those buttons that have them, and set up anything else we need to
 
 	// -- Build Panel (Select)
 	ui.BuildSelectAtomsButton->setGroup("UserActions", UserAction::SelectAction);
@@ -211,6 +209,8 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 	ui.TransformPositionShiftButton->setPopupWidget(new TransformShiftPopup(*this, ui.TransformPositionShiftButton), true);
 	ui.TransformPositionRepositionButton->setPopupWidget(new TransformRepositionPopup(*this, ui.TransformPositionRepositionButton));
 
+	// -- Grids Panel (Manage)
+	connect(ui.GridsList, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(gridsListContextMenuRequested(QPoint)));
 	// -- Grids Panel (Define)
 	ui.GridsDefineAxesButton->setPopupWidget(new GridMatrixPopup(*this, ui.GridsDefineAxesButton), true);
 	ui.GridsDefineOriginButton->setPopupWidget(new GridOriginPopup(*this, ui.GridsDefineOriginButton), true);
@@ -547,4 +547,29 @@ void AtenWindow::setActiveUserAction(UserAction::Action ua)
 void AtenWindow::setMessageLabel(QString message)
 {
 	messageLabel_->setText(message);
+}
+
+// Timer event
+void AtenWindow::timerEvent(QTimerEvent* event)
+{
+	static bool trajectoryDrawFlag = false;
+
+	if (event->timerId() == trajectoryTimerId_)
+	{
+		// Move on to the next frame in the trajectory
+		// Check that we're not still drawing the last frame from the last timerEvent
+		if (trajectoryDrawFlag) printf("Still drawing previous frame.\n");
+		else
+		{
+			trajectoryDrawFlag = true;
+			Model* currentModel = aten_.currentModel();
+			if (currentModel)
+			{
+				currentModel->seekNextTrajectoryFrame();
+				if (currentModel->trajectoryFrameIndex() == currentModel->nTrajectoryFrames()-1) ui.TrajectoryControlPlayButton->click();
+				updateWidgets(AtenWindow::MainViewTarget);
+			}
+			trajectoryDrawFlag = false;
+		}
+	}
 }
