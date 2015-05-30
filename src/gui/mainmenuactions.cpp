@@ -251,19 +251,19 @@ void AtenWindow::on_actionFileQuit_triggered(bool checked)
 void AtenWindow::on_actionEditUndo_triggered(bool checked)
 {
 	CommandNode::run(Commands::Undo, "");
-	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget+AtenWindow::GlyphsTarget);
+	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget+AtenWindow::SelectPanelTarget+AtenWindow::GlyphsTarget);
 }
 
 void AtenWindow::on_actionEditRedo_triggered(bool checked)
 {
 	CommandNode::run(Commands::Redo, "");
-	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget+AtenWindow::GlyphsTarget);
+	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget+AtenWindow::SelectPanelTarget+AtenWindow::GlyphsTarget);
 }
 
 void AtenWindow::on_actionEditCut_triggered(bool checked)
 {
 	CommandNode::run(Commands::Cut, "");
-	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
+	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget+AtenWindow::SelectPanelTarget);
 }
 
 void AtenWindow::on_actionEditCopy_triggered(bool checked)
@@ -276,7 +276,7 @@ void AtenWindow::on_actionEditPaste_triggered(bool checked)
 {
 	CommandNode::run(Commands::Paste, "");
 
-	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
+	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget+AtenWindow::SelectPanelTarget);
 }
 
 void AtenWindow::on_actionEditPasteTranslated_triggered(bool checked)
@@ -296,38 +296,38 @@ void AtenWindow::on_actionEditPasteTranslated_triggered(bool checked)
 		Vec3<double> r = ui.asVec3("newx", "newy", "newz");
 		CommandNode::run(Commands::Paste, "ddd", r.x, r.y, r.z);
 
-		updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
+		updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget+AtenWindow::SelectPanelTarget);
 	}
 }
 
 void AtenWindow::on_actionEditDelete_triggered(bool checked)
 {
 	CommandNode::run(Commands::Delete, "");
-	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
+	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget+AtenWindow::SelectPanelTarget);
 }
 
 void AtenWindow::on_actionSelectionAll_triggered(bool checked)
 {
 	CommandNode::run(Commands::SelectAll, "");
-	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
+	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget+AtenWindow::SelectPanelTarget);
 }
 
 void AtenWindow::on_actionSelectionNone_triggered(bool checked)
 {
 	CommandNode::run(Commands::SelectNone, "");
-	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
+	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget+AtenWindow::SelectPanelTarget);
 }
 
 void AtenWindow::on_actionSelectionInvert_triggered(bool checked)
 {
 	CommandNode::run(Commands::Invert, "");
-	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
+	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget+AtenWindow::SelectPanelTarget);
 }
 
 void AtenWindow::on_actionSelectionExpand_triggered(bool checked)
 {
 	CommandNode::run(Commands::Expand, "");
-	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
+	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget+AtenWindow::SelectPanelTarget);
 }
 
 void AtenWindow::on_actionEditQuickCommand_triggered(bool checked)

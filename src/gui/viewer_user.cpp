@@ -305,7 +305,7 @@ void Viewer::endMode(Prefs::MouseButton button)
 				else source->selectAtom(atomClicked_);
 			}
 			source->endUndoState();
-			atenWindow_->updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
+			atenWindow_->updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget+AtenWindow::SelectPanelTarget);
 			break;
 		// Other selection operations
 		case (UserAction::SelectBoundAction):
@@ -313,14 +313,14 @@ void Viewer::endMode(Prefs::MouseButton button)
 			if (!modded) source->selectNone();
 			if (atomClicked_ != NULL)	source->selectTree(atomClicked_, false, ctrled);
 			source->endUndoState();
-			atenWindow_->updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
+			atenWindow_->updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget+AtenWindow::SelectPanelTarget);
 			break;
 		case (UserAction::SelectElementAction):
 			source->beginUndoState("Select Element");
 			if (!modded) source->selectNone();
 			if (atomClicked_ != NULL) source->selectElement(atomClicked_, false, ctrled);
 			source->endUndoState();
-			atenWindow_->updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
+			atenWindow_->updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget+AtenWindow::SelectPanelTarget);
 			break;
 		case (UserAction::SelectRadialAction):
 			source->beginUndoState("Select Radial");
@@ -333,7 +333,7 @@ void Viewer::endMode(Prefs::MouseButton button)
 				source->selectRadial(atomClicked_, radius);
 			}
 			source->endUndoState();
-			atenWindow_->updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget+AtenWindow::SelectTarget);
+			atenWindow_->updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget+AtenWindow::SelectPanelTarget);
 			break;
 		// Measurements
 		case (UserAction::MeasureDistanceAction):

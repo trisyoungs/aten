@@ -482,15 +482,15 @@ class Commands
 
 		// Select Commands
 		DeSelect,
-		DeSelectFor,
+		DeSelectCode,
 		DeSelectFormatted,
 		DeSelectType,
 		Expand,
 		Invert,
 		Select,
 		SelectAll,
+		SelectCode,
 		SelectFFType,
-		SelectFor,
 		SelectFormatted,
 		SelectInsideCell,
 		SelectionCog,
@@ -950,15 +950,15 @@ class Commands
 	bool function_RunScript(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	// Select Commands
 	bool function_DeSelect(CommandNode* c, Bundle& obj, ReturnValue& rv);
-	bool function_DeSelectFor(CommandNode* c, Bundle& obj, ReturnValue& rv);
+	bool function_DeSelectCode(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_DeSelectFormatted(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_DeSelectType(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_Expand(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_Invert(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_Select(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_SelectAll(CommandNode* c, Bundle& obj, ReturnValue& rv);
+	bool function_SelectCode(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_SelectFFType(CommandNode* c, Bundle& obj, ReturnValue& rv);
-	bool function_SelectFor(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_SelectFormatted(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_SelectInsideCell(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_SelectionCog(CommandNode* c, Bundle& obj, ReturnValue& rv);

@@ -440,15 +440,15 @@ void Commands::initPointers()
 
 	// Select Commands
 	pointers_[DeSelect] = &AtenSpace::Commands::function_DeSelect;
-	pointers_[DeSelectFor] = &AtenSpace::Commands::function_DeSelectFor;
+	pointers_[DeSelectCode] = &AtenSpace::Commands::function_DeSelectCode;
 	pointers_[DeSelectFormatted] = &AtenSpace::Commands::function_DeSelectFormatted;
 	pointers_[DeSelectType] = &AtenSpace::Commands::function_DeSelectType;
 	pointers_[Expand] = &AtenSpace::Commands::function_Expand;
 	pointers_[Invert] = &AtenSpace::Commands::function_Invert;
 	pointers_[Select] = &AtenSpace::Commands::function_Select;
 	pointers_[SelectAll] = &AtenSpace::Commands::function_SelectAll;
+	pointers_[SelectCode] = &AtenSpace::Commands::function_SelectCode;
 	pointers_[SelectFFType] = &AtenSpace::Commands::function_SelectFFType;
-	pointers_[SelectFor] = &AtenSpace::Commands::function_SelectFor;
 	pointers_[SelectFormatted] = &AtenSpace::Commands::function_SelectFormatted;
 	pointers_[SelectInsideCell] = &AtenSpace::Commands::function_SelectInsideCell;
 	pointers_[SelectionCog] = &AtenSpace::Commands::function_SelectionCog;

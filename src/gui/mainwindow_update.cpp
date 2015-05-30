@@ -22,7 +22,6 @@
 #include "main/version.h"
 #include "gui/mainwindow.h"
 #include "main/aten.h"
-#include "gui/select.h"
 #include "gui/forcefields.h"
 #include "gui/vibrations.h"
 #include "gui/atomlist.h"
@@ -195,9 +194,10 @@ void AtenWindow::updateWidgets(int targets)
 	if (targets&AtenWindow::TransformPanelTarget) updateTransformPanel(currentModel);
 	if (targets&AtenWindow::GridsPanelTarget) updateGridsPanel(currentModel);
 	if (targets&AtenWindow::TrajectoryPanelTarget) updateTrajectoryPanel(currentModel);
+	if (targets&AtenWindow::SelectPanelTarget) updateSelectPanel(currentModel);
 
 	
-	if (targets&AtenWindow::SelectTarget) selectWidget->refresh();
+	
 	if (targets&AtenWindow::VibrationsTarget) vibrationsWidget->refresh();
 
 	// Update contents of the atom list

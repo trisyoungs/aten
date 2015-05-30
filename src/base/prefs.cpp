@@ -159,7 +159,7 @@ Prefs::EnergyUnit Prefs::energyUnit(QString s, bool reportError)
 const char* GG_strings[Prefs::nGuideGeometries] = { "Square", "Hexagonal" };
 
 // GUI history types
-const char* HistoryTypeKeywords[Prefs::nHistoryTypes] = { "Command", "RecentFile", "Script", "SelectFor", "Select", "SelectNeta" };
+const char* HistoryTypeKeywords[Prefs::nHistoryTypes] = { "Command", "RecentFile", "Script", "Select", "SelectCode", "SelectNETA" };
 const char* Prefs::historyType(Prefs::HistoryType i)
 {
 	return HistoryTypeKeywords[i];

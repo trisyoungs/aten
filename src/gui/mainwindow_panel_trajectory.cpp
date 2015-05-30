@@ -210,7 +210,7 @@ void AtenWindow::on_TrajectoryControlFrameSpin_valueChanged(int value)
 	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget+AtenWindow::GridsPanelTarget);
 }
 
-void AtenWindow::on_TrajectoryControlFrameSlider_positionChanged(int position)
+void AtenWindow::on_TrajectoryControlFrameSlider_valueChanged(int position)
 {
 	if (refreshing_) return;
 
@@ -221,10 +221,6 @@ void AtenWindow::on_TrajectoryControlFrameSlider_positionChanged(int position)
 	currentModel->seekTrajectoryFrame(position-1);
 
 	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget+AtenWindow::GridsPanelTarget);
-}
-
-void AtenWindow::on_TrajectoryControlDelaySpin_valueCHanged(int value)
-{
 }
 
 /*
@@ -272,7 +268,7 @@ void AtenWindow::on_TrajectoryStylePromoteButton_clicked(bool checked)
  * Tools
  */
 
-void AtenWindow::on_TrajectoryToolsMovietButton_clicked(bool checked)
+void AtenWindow::on_TrajectoryToolsMovieButton_clicked(bool checked)
 {
 	QString geometry;
 	geometry.sprintf("%ix%i", ui.MainView->width(), ui.MainView->height());

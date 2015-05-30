@@ -122,7 +122,7 @@ class AtenWindow : public QMainWindow
 	 */
 	public:
 	// Update Targets
-	enum UpdateTarget { AtomsTarget = 1, CalculatePanelTarget = 2, ForcefieldsTarget = 4, GlyphsTarget = 8, GridsPanelTarget = 16, MainWindowTarget = 32, MainViewTarget = 64, StatusBarTarget = 128, GeometryTarget = 256, VibrationsTarget = 512, SelectTarget = 1024, TrajectoryPanelTarget = 2048, BuildPanelTarget = 4096, CellPanelTarget = 8192, ViewPanelTarget = 16384, TransformPanelTarget = 32768, ContextMenuTarget = 65536, ModelListTarget = 131072, AllTarget = 262143};
+	enum UpdateTarget { AtomsTarget = 1, CalculatePanelTarget = 2, ForcefieldsTarget = 4, GlyphsTarget = 8, GridsPanelTarget = 16, MainWindowTarget = 32, MainViewTarget = 64, StatusBarTarget = 128, GeometryTarget = 256, VibrationsTarget = 512, SelectPanelTarget = 1024, TrajectoryPanelTarget = 2048, BuildPanelTarget = 4096, CellPanelTarget = 8192, ViewPanelTarget = 16384, TransformPanelTarget = 32768, ContextMenuTarget = 65536, ModelListTarget = 131072, AllTarget = 262143};
 
 	private:
 	// Whether window is currently refreshing
@@ -421,14 +421,37 @@ class AtenWindow : public QMainWindow
 	void on_TrajectoryControlNextButton_clicked(bool checked);
 	void on_TrajectoryControlLastButton_clicked(bool checked);
 	void on_TrajectoryControlFrameSpin_valueChanged(int value);
-	void on_TrajectoryControlFrameSlider_positionChanged(int position);
-	void on_TrajectoryControlDelaySpin_valueCHanged(int value);
+	void on_TrajectoryControlFrameSlider_valueChanged(int position);
 	// Style
 	void on_TrajectoryStyleInheritButton_clicked(bool checked);
 	void on_TrajectoryStylePropagateButton_clicked(bool checked);
 	void on_TrajectoryStylePromoteButton_clicked(bool checked);
 	// Tools
-	void on_TrajectoryToolsMovietButton_clicked(bool checked);
+	void on_TrajectoryToolsMovieButton_clicked(bool checked);
+
+
+	/*
+	 * Select Panel
+	 */
+	private:
+	// Update select panel
+	void updateSelectPanel(Model* sourceModel);
+
+	private slots:
+	// Basic
+	void on_SelectBasicAllButton_clicked(bool checked);
+	void on_SelectBasicNoneButton_clicked(bool checked);
+	void on_SelectBasicInvertButton_clicked(bool checked);
+	void on_SelectBasicExpandButton_clicked(bool checked);
+	// ID / Element
+	void on_SelectElementSelectButton_clicked(bool checked);
+	void on_SelectElementDeselectButton_clicked(bool checked);
+	// Type
+	void on_SelectNETASelectButton_clicked(bool checked);
+	void on_SelectNETADeselectButton_clicked(bool checked);
+	// Code
+	void on_SelectCodeSelectButton_clicked(bool checked);
+	void on_SelectCodeDeselectButton_clicked(bool checked);
 
 
 	/*
@@ -553,8 +576,6 @@ class AtenWindow : public QMainWindow
 	// Scripted movie dock widget
 	ScriptMovieWidget *scriptMovieWidget;
 	// Atom selection dock widget
-	SelectWidget *selectWidget;
-	// Atom transformation dock widget
 	TransformWidget *transformWidget;
 	// Vibrations dock widget
 	VibrationsWidget *vibrationsWidget;

@@ -23,7 +23,6 @@
 #include "base/sysfunc.h"
 #include "gui/mainwindow.h"
 #include "gui/command.h"
-#include "gui/select.h"
 #include "main/aten.h"
 #include <QSettings>
 
@@ -33,7 +32,7 @@ void AtenWindow::loadSettings()
 	QString key;
 	QFileInfo fi1, fi2;
 	QString filename;
-	QStringList commandHistory, selectHistory, selectForHistory, selectNetaHistory;
+	QStringList commandHistory, selectHistory, selectCodeHistory, selectNETAHistory;
 	Program* prog, *loadedscript;
 	int n;
 
@@ -119,14 +118,14 @@ void AtenWindow::loadSettings()
 						}
 					}
 					break;
-				case (Prefs::SelectForHistory):
-					selectForHistory << data;
+				case (Prefs::SelectCodeHistory):
+					selectCodeHistory << data;
 					break;
 				case (Prefs::SelectHistory):
 					selectHistory << data;
 					break;
-				case (Prefs::SelectNetaHistory):
-					selectNetaHistory << data;
+				case (Prefs::SelectNETAHistory):
+					selectNETAHistory << data;
 					break;
 			}
 		}
@@ -136,7 +135,13 @@ void AtenWindow::loadSettings()
 	
 	// Update GUI controls
 	commandWidget->setCommandList(commandHistory);
-	selectWidget->setHistories(selectHistory, selectForHistory, selectNetaHistory);
+	// -- Combo histories on Select panel
+	ui.SelectElementSelectCombo->addItems(selectHistory);
+	ui.SelectNETACodeCombo->addItems(selectNETAHistory);
+	ui.SelectCodeCodeCombo->addItems(selectCodeHistory);
+	ui.SelectElementSelectCombo->setCurrentIndex(-1);
+	ui.SelectNETACodeCombo->setCurrentIndex(-1);
+	ui.SelectCodeCodeCombo->setCurrentIndex(-1);
 }
 
 // Save Qt settings
@@ -159,14 +164,14 @@ void AtenWindow::saveSettings()
 		{
 			// Check file entry contains data (is visible in the GUI)
 			if (!actionRecentFile[n]->isVisible()) continue;
-			line.sprintf("RecentFile  %s\n", qPrintable(actionRecentFile[n]->data().toString()));
+			line.sprintf("%s  %s\n", Prefs::historyType(Prefs::RecentFileHistory), qPrintable(actionRecentFile[n]->data().toString()));
 			historyFile.writeLine(line);
 		}
 		
 		// Scripts
 		for (Program* prog = aten_.scripts(); prog != NULL; prog = prog->next)
 		{
-			line.sprintf("Script  %s\n", qPrintable(prog->filename()));
+			line.sprintf("%s  %s\n", Prefs::historyType(Prefs::ScriptHistory), qPrintable(prog->filename()));
 			historyFile.writeLine(line);
 		}
 
@@ -174,28 +179,28 @@ void AtenWindow::saveSettings()
 		history = commandWidget->commandList();
 		for (n=0; n < history.count(); ++n)
 		{
-			line.sprintf("Command  %s\n", qPrintable(history.at(n)));
+			line.sprintf("%s  %s\n", Prefs::historyType(Prefs::CommandHistory), qPrintable(history.at(n)));
 			historyFile.writeLine(line);
 		}
 		
 		// Select combo history
-		for (n=0; n < selectWidget->ui.SelectCombo->count(); ++n)
+		for (n=0; n < ui.SelectElementSelectCombo->count(); ++n)
 		{
-			line.sprintf("Select  %s\n", qPrintable(selectWidget->ui.SelectCombo->itemText(n)));
+			line.sprintf("%s  %s\n", Prefs::historyType(Prefs::SelectHistory), qPrintable(ui.SelectElementSelectCombo->itemText(n)));
 			historyFile.writeLine(line);
 		}
 		
-		// SelectFor combo history
-		for (n=0; n < selectWidget->ui.SelectForCombo->count(); ++n)
+		// SelectCodecombo history
+		for (n=0; n < ui.SelectCodeCodeCombo->count(); ++n)
 		{
-			line.sprintf("SelectFor  %s\n", qPrintable(selectWidget->ui.SelectForCombo->itemText(n)));
+			line.sprintf("%s  %s\n", Prefs::historyType(Prefs::SelectCodeHistory), qPrintable(ui.SelectCodeCodeCombo->itemText(n)));
 			historyFile.writeLine(line);
 		}
 		
 		// SelectNeta combo history
-		for (n=0; n < selectWidget->ui.SelectNetaCombo->count(); ++n)
+		for (n=0; n < ui.SelectNETACodeCombo->count(); ++n)
 		{
-			line.sprintf("SelectNeta  %s\n", qPrintable(selectWidget->ui.SelectNetaCombo->itemText(n)));
+			line.sprintf("%s  %s\n", Prefs::historyType(Prefs::SelectNETAHistory), qPrintable(ui.SelectNETACodeCombo->itemText(n)));
 			historyFile.writeLine(line);
 		}
 		
