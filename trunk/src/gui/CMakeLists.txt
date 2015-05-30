@@ -62,7 +62,6 @@ SET(gui_MOC_HDRS
   progress.h
   saveimage.h
   scriptmovie.h
-  select.h
   selectfilter.h
   selectpattern.h
   selectvariable.h
@@ -142,7 +141,6 @@ SET(gui_UIS
   progress.ui
   saveimage.ui
   scriptmovie.ui
-  select.ui
   selectfilter.ui
   selectpattern.ui
   selectvariable.ui
@@ -184,6 +182,7 @@ set(gui_SRCS
   mainwindow_panel_calculate.cpp
   mainwindow_panel_cell.cpp
   mainwindow_panel_grids.cpp
+  mainwindow_panel_select.cpp
   mainwindow_panel_transform.cpp
   mainwindow_panel_trajectory.cpp
   mainwindow_panel_view.cpp
@@ -226,7 +225,6 @@ set(gui_SRCS
   progress_funcs.cpp
   saveimage_funcs.cpp
   scriptmovie_funcs.cpp
-  select_funcs.cpp
   selectfilter_funcs.cpp
   selectpattern_funcs.cpp
   selectvariable_funcs.cpp

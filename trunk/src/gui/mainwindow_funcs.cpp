@@ -79,7 +79,6 @@
 #include "gui/glyphs.h"
 #include "gui/pores.h"
 #include "gui/scriptmovie.h"
-#include "gui/select.h"
 #include "gui/transform.h"
 #include "gui/vibrations.h"
 
@@ -119,10 +118,9 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 	glyphsWidget = new GlyphsWidget(*this, Qt::Tool);
 	poresWidget = new PoresWidget(*this, Qt::Tool);
 	scriptMovieWidget = new ScriptMovieWidget(*this, Qt::Tool);
-	selectWidget = new SelectWidget(*this, Qt::Tool);
 	transformWidget = new TransformWidget(*this, Qt::Tool);
 	vibrationsWidget = new VibrationsWidget(*this, Qt::Tool);
-	dockWidgets_ << atomListWidget << commandWidget << fragmentsWidget << glyphsWidget << poresWidget << scriptMovieWidget << selectWidget << transformWidget << vibrationsWidget;
+	dockWidgets_ << atomListWidget << commandWidget << fragmentsWidget << glyphsWidget << poresWidget << scriptMovieWidget << transformWidget << vibrationsWidget;
 
 	int n;
 	ReturnValue rv;
@@ -220,7 +218,9 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 	// -- Grids Panel (Secondary Cutoff)
 	ui.GridsSecondaryColourButton->setPopupWidget(new ColourPopup(*this, ui.GridsSecondaryColourButton), true);
 	ui.GridsSecondaryStyleButton->setPopupWidget(new GridStylePopup(*this, ui.GridsPrimaryStyleButton, false), true);
-	
+
+	// -- Select Panel (ID/Element)
+	ui.SelectNETAElementButton->setPopupWidget(new ElementTablePopup(*this, ui.SelectNETAElementButton), true);
 	
 	
 

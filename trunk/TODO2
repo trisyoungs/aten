@@ -67,3 +67,4 @@ Added SetAngles, SetDistances, and SetTorsions commands.
 Add GridStyleSecondary command (GridStyle now explicitly for primary surface).
 Change enum entries for Grid::SurfaceStyle.
 Add GridOutline and GridPeriodic commands.
+Rename (De)SelectFor to (De)SelectCode.

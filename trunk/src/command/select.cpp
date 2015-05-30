@@ -178,7 +178,7 @@ bool Commands::function_DeSelect(CommandNode* c, Bundle& obj, ReturnValue& rv)
 }
 
 // Deselect using conditional code
-bool Commands::function_DeSelectFor(CommandNode* c, Bundle& obj, ReturnValue& rv)
+bool Commands::function_DeSelectCode(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	int nselected = obj.rs()->nSelected();
@@ -335,35 +335,8 @@ bool Commands::function_SelectionCom(CommandNode* c, Bundle& obj, ReturnValue& r
 	return true;
 }
 
-// Select by forcefield type ('selecffttype <fftype>')
-bool Commands::function_SelectFFType(CommandNode* c, Bundle& obj, ReturnValue& rv)
-{
-	if (obj.notifyNull(Bundle::ModelPointer)) return false;
-	Forcefield* ff = obj.rs()->forcefield();
-	if (ff == NULL)
-	{
-		Messenger::print("No forcefield associated to model.");
-		return false;
-	}
-	// Store current number of selected atoms
-	int nselected = obj.rs()->nSelected();
-	ForcefieldAtom* ffa;
-	obj.rs()->beginUndoState("Select by forcefield type (%s)", qPrintable(c->argc(0)));
-	for (Atom* i = obj.rs()->atoms(); i != NULL; i = i->next)
-	{
-		ffa = i->type();
-		if (ffa != NULL)
-		{
-			if (ff->matchType(ffa->name(),c->argc(0)) < 10) obj.rs()->selectAtom(i);
-		}
-	}
-	obj.rs()->endUndoState();
-	rv.set(obj.rs()->nSelected() - nselected);
-	return true;
-}
-
 // Select using conditional code
-bool Commands::function_SelectFor(CommandNode* c, Bundle& obj, ReturnValue& rv)
+bool Commands::function_SelectCode(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	int nselected = obj.rs()->nSelected();
@@ -398,6 +371,33 @@ bool Commands::function_SelectFor(CommandNode* c, Bundle& obj, ReturnValue& rv)
 		atomVariable.set(rv);
 		functionNode.execute(rv);
 		if (rv.asBool()) obj.rs()->selectAtom(i);
+	}
+	obj.rs()->endUndoState();
+	rv.set(obj.rs()->nSelected() - nselected);
+	return true;
+}
+
+// Select by forcefield type ('selecffttype <fftype>')
+bool Commands::function_SelectFFType(CommandNode* c, Bundle& obj, ReturnValue& rv)
+{
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
+	Forcefield* ff = obj.rs()->forcefield();
+	if (ff == NULL)
+	{
+		Messenger::print("No forcefield associated to model.");
+		return false;
+	}
+	// Store current number of selected atoms
+	int nselected = obj.rs()->nSelected();
+	ForcefieldAtom* ffa;
+	obj.rs()->beginUndoState("Select by forcefield type (%s)", qPrintable(c->argc(0)));
+	for (Atom* i = obj.rs()->atoms(); i != NULL; i = i->next)
+	{
+		ffa = i->type();
+		if (ffa != NULL)
+		{
+			if (ff->matchType(ffa->name(),c->argc(0)) < 10) obj.rs()->selectAtom(i);
+		}
 	}
 	obj.rs()->endUndoState();
 	rv.set(obj.rs()->nSelected() - nselected);
