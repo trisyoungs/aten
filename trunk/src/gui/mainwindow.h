@@ -52,7 +52,6 @@ class AtenViewEigenvector;
 class AtenZMatrix;
 
 // Forward Declarations (Aten) 3 - Dock Widgets and Wizards
-class AtomListWidget;
 class CommandWidget;
 class DisorderWizard;
 class ForcefieldsWidget;
@@ -91,6 +90,7 @@ class AtenWindow : public QMainWindow
 
 	protected:
 	void closeEvent(QCloseEvent* event);
+	void resizeEvent(QResizeEvent* event);
 
 
 	/*
@@ -122,7 +122,7 @@ class AtenWindow : public QMainWindow
 	 */
 	public:
 	// Update Targets
-	enum UpdateTarget { AtomsTarget = 1, CalculatePanelTarget = 2, ForcefieldsTarget = 4, GlyphsTarget = 8, GridsPanelTarget = 16, MainWindowTarget = 32, MainViewTarget = 64, StatusBarTarget = 128, GeometryTarget = 256, VibrationsTarget = 512, SelectPanelTarget = 1024, TrajectoryPanelTarget = 2048, BuildPanelTarget = 4096, CellPanelTarget = 8192, ViewPanelTarget = 16384, TransformPanelTarget = 32768, ContextMenuTarget = 65536, ModelListTarget = 131072, AllTarget = 262143};
+	enum UpdateTarget { AtomsTableTarget = 1, CalculatePanelTarget = 2, ForcefieldsTarget = 4, GlyphsTarget = 8, GridsPanelTarget = 16, MainWindowTarget = 32, MainViewTarget = 64, StatusBarTarget = 128, GeometryTarget = 256, VibrationsTarget = 512, SelectPanelTarget = 1024, TrajectoryPanelTarget = 2048, BuildPanelTarget = 4096, CellPanelTarget = 8192, ViewPanelTarget = 16384, TransformPanelTarget = 32768, ContextMenuTarget = 65536, ModelsListTarget = 131072, AllTarget = 262143 }; // 524287
 
 	private:
 	// Whether window is currently refreshing
@@ -144,35 +144,15 @@ class AtenWindow : public QMainWindow
 	/*
 	 * File Menu / Actions
 	 */
-	public:
-	bool runSaveModelDialog();
-
 	private slots:
-	void on_actionFileNew_triggered(bool checked);
-	void on_actionFileOpen_triggered(bool checked);
-	void on_actionFileSave_triggered(bool checked);
-	void on_actionFileSaveAs_triggered(bool checked);
 	void on_actionExportOptions_triggered(bool checked);
-	void on_actionFileClose_triggered(bool checked);
-	void on_actionFileSaveImage_triggered(bool checked);
-	void on_actionFileQuit_triggered(bool checked);
 
 	
 	/*
 	 * Edit Menu / Actions
 	 */
 	private slots:
-	void on_actionEditUndo_triggered(bool checked);
-	void on_actionEditRedo_triggered(bool checked);
-	void on_actionEditCut_triggered(bool checked);
-	void on_actionEditCopy_triggered(bool checked);
-	void on_actionEditPaste_triggered(bool checked);
 	void on_actionEditPasteTranslated_triggered(bool checked);
-	void on_actionEditDelete_triggered(bool checked);
-	void on_actionSelectionAll_triggered(bool checked);
-	void on_actionSelectionNone_triggered(bool checked);
-	void on_actionSelectionExpand_triggered(bool checked);
-	void on_actionSelectionInvert_triggered(bool checked);
 	void on_actionEditQuickCommand_triggered(bool checked);
 
 
@@ -267,6 +247,33 @@ class AtenWindow : public QMainWindow
 
 
 	/*
+	 * Home Panel
+	 */
+	private:
+	// Update home panel
+	void updateHomePanel(Model* sourceModel);
+
+	private slots:
+	// File
+	void on_HomeFileNewButton_clicked(bool checked);
+	void on_HomeFileOpenButton_clicked(bool checked);
+	void on_HomeFileSaveButton_clicked(bool checked);
+	void on_HomeFileSaveAsButton_clicked(bool checked);
+	void on_HomeFileCloseButton_clicked(bool checked);
+	void on_HomeFileImageButton_clicked(bool checked);
+	// Edit
+	void on_HomeEditCopyButton_clicked(bool checked);
+	void on_HomeEditCutButton_clicked(bool checked);
+	void on_HomeEditPasteButton_clicked(bool checked);
+	void on_HomeEditDeleteButton_clicked(bool checked);
+	void on_HomeEditUndoButton_clicked(bool checked);
+	void on_HomeEditRedoButton_clicked(bool checked);
+
+	public:
+	bool runSaveModelDialog();
+
+
+	/*
 	 * Build Panel
 	 */
 	private:
@@ -278,8 +285,6 @@ class AtenWindow : public QMainWindow
 	void on_BuildSelectAtomsButton_clicked(bool checked);
 	void on_BuildSelectBoundButton_clicked(bool checked);
 	void on_BuildSelectElementButton_clicked(bool checked);
-	void on_BuildSelectExpandButton_clicked(bool checked);
-	void on_BuildSelectInvertButton_clicked(bool checked);
 	// Draw
 	void on_BuildDrawDrawButton_clicked(bool checked);
 	void on_BuildDrawFragmentButton_clicked(bool checked);
@@ -455,14 +460,82 @@ class AtenWindow : public QMainWindow
 
 
 	/*
-	 * Model List
+	 * Models List
 	 */
 	private slots:
-	void on_ModelList_itemSelectionChanged();
+	void on_ModelsToggleButton_clicked(bool checked);
+	void on_ModelsList_itemSelectionChanged();
 
 	public:
-	// Refresh model list
-	void updateModelList();
+	// Refresh models list
+	void updateModelsList();
+
+
+	/*
+	 * Atoms List
+	 */
+	public:
+	// Table Columns
+	enum AtomTableItem { AtomIdItem, AtomElementItem, AtomTypeItem, AtomXItem, AtomYItem, AtomZItem, AtomQItem, nAtomItems };
+
+	private:
+	// Custom item delegates for each column
+	QAbstractItemDelegate* atomsTableItemDelegates_[AtenWindow::nAtomItems];
+	// Log points of model info displayed in list
+	int atomsTableStructurePoint_, atomsTableSelectionPoint_;
+	// Whether the current view is by atom (or not)
+	bool atomsTableViewingByAtom_;
+	// Array of currently-visible items
+	bool atomsTableVisibleItems_[nAtomItems];
+	// List of currently-visible atom data
+	QList<int> atomsTableDisplayItems_;
+	// Last model displayed in list
+	Model* atomsTableLastModel_;
+	// Current root atom id of model (ID displayed in row 1)
+	int atomsTableCurrentRootId_;
+	// Whether the widget should refresh when it is next shown
+	bool atomsTableShouldRefresh_;
+	// Number of rows displayed in AtomTable
+	int atomsTableMaxRows_;
+	// Reflist of currently-displayed atoms
+	Reflist<Atom,int> atomsTableItems_;
+	// Last clicked and 'moved over' Atom
+	Atom* atomsTablePrevClicked_, *atomsTableLastClicked_, *atomsTableLastHovered_;
+
+	private:
+	void atomsTableRecalculateRowSize();
+	void atomsTableUpdateRow(int row);
+	void atomsTableUpdateDisplayItems();
+	void atomsTableUpdateSelection();
+	Atom* atomsTableAtomInRow(int row);
+	void atomsTableToggleItem(Atom* i);
+
+	private slots:
+	void on_AtomsToggleButton_clicked(bool checked);
+	void on_AtomsTableScrollBar_valueChanged(int value);
+	void on_ViewStyleCombo_currentIndexChanged(int index);
+	void on_AtomsShiftUpButton_clicked(bool checked);
+	void on_AtomsShiftDownButton_clicked(bool checked);
+	void on_AtomsMoveToStartButton_clicked(bool checked);
+	void on_AtomsMoveToEndButton_clicked(bool checked);
+	void on_AtomsViewElementCheck_clicked(bool checked);
+	void on_AtomsViewIdCheck_clicked(bool checked);
+	void on_AtomsViewTypeCheck_clicked(bool checked);
+	void on_AtomsViewXCheck_clicked(bool checked);
+	void on_AtomsViewYCheck_clicked(bool checked);
+	void on_AtomsViewZCheck_clicked(bool checked);
+	void on_AtomsViewChargeCheck_clicked(bool checked);
+
+	public slots:
+	void atomsTableMousePressEvent(QMouseEvent *event);
+	void atomsTableMouseReleaseEvent(QMouseEvent *event);
+	void atomsTableMouseMoveEvent(QMouseEvent *event);
+	void atomsTableMouseDoubleClickEvent(QMouseEvent *event);
+	void atomsTableItemChanged(QTableWidgetItem *item);
+
+	public:
+	// Refresh atoms table
+	void updateAtomsTable(Model* sourceModel);
 
 
 	/*
@@ -507,8 +580,6 @@ class AtenWindow : public QMainWindow
 	void timerEvent(QTimerEvent* event);
 
 	public:
-	// Update undo/redo labels
-	void updateUndoRedo();
 	// Set action/button to reflect supplied user action
 	void setActiveUserAction(UserAction::Action ua);
 	// Set message label text
@@ -559,8 +630,6 @@ class AtenWindow : public QMainWindow
 	QList<QDockWidget*> dockWidgets_;
 	
 	public:
-	// Atom list dock widget
-	AtomListWidget *atomListWidget;
 	// Command dock widget
 	CommandWidget *commandWidget;
 	// Disorder wizard

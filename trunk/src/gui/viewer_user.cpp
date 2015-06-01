@@ -305,7 +305,7 @@ void Viewer::endMode(Prefs::MouseButton button)
 				else source->selectAtom(atomClicked_);
 			}
 			source->endUndoState();
-			atenWindow_->updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget+AtenWindow::SelectPanelTarget);
+			atenWindow_->updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget+AtenWindow::SelectPanelTarget);
 			break;
 		// Other selection operations
 		case (UserAction::SelectBoundAction):
@@ -313,14 +313,14 @@ void Viewer::endMode(Prefs::MouseButton button)
 			if (!modded) source->selectNone();
 			if (atomClicked_ != NULL)	source->selectTree(atomClicked_, false, ctrled);
 			source->endUndoState();
-			atenWindow_->updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget+AtenWindow::SelectPanelTarget);
+			atenWindow_->updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget+AtenWindow::SelectPanelTarget);
 			break;
 		case (UserAction::SelectElementAction):
 			source->beginUndoState("Select Element");
 			if (!modded) source->selectNone();
 			if (atomClicked_ != NULL) source->selectElement(atomClicked_, false, ctrled);
 			source->endUndoState();
-			atenWindow_->updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget+AtenWindow::SelectPanelTarget);
+			atenWindow_->updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget+AtenWindow::SelectPanelTarget);
 			break;
 		case (UserAction::SelectRadialAction):
 			source->beginUndoState("Select Radial");
@@ -333,7 +333,7 @@ void Viewer::endMode(Prefs::MouseButton button)
 				source->selectRadial(atomClicked_, radius);
 			}
 			source->endUndoState();
-			atenWindow_->updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget+AtenWindow::SelectPanelTarget);
+			atenWindow_->updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget+AtenWindow::SelectPanelTarget);
 			break;
 		// Measurements
 		case (UserAction::MeasureDistanceAction):
@@ -391,7 +391,7 @@ void Viewer::endMode(Prefs::MouseButton button)
 				source->bondAtoms(i,atomClicked_,bt);
 			}
 			source->endUndoState();
-			atenWindow_->updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget);
+			atenWindow_->updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
 			break;
 		// Draw fragments
 		case (UserAction::DrawFragmentsAction):
@@ -409,7 +409,7 @@ void Viewer::endMode(Prefs::MouseButton button)
 				frag->pasteOrientedModel(source->screenToModel(rMouseDown_.x, rMouseDown_.y, prefs.drawDepth()), source);
 			}
 			source->endUndoState();
-			atenWindow_->updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget);
+			atenWindow_->updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
 			break;
 		case (UserAction::DrawTransmuteAction):
 			if (atomClicked_ == NULL) break;
@@ -422,7 +422,7 @@ void Viewer::endMode(Prefs::MouseButton button)
 			}
 			else source->transmuteAtom(atomClicked_, atenWindow_->currentBuildElement());
 			source->endUndoState();
-			atenWindow_->updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget);
+			atenWindow_->updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
 			break;
 		case (UserAction::DrawDeleteAction):
 			if (shifted)
@@ -440,7 +440,7 @@ void Viewer::endMode(Prefs::MouseButton button)
 				source->deleteAtom(atomClicked_);
 				source->endUndoState();
 			}
-			atenWindow_->updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget);
+			atenWindow_->updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
 			break;
 		case (UserAction::DrawProbeAction):
 			if (atomClicked_ != NULL) atomClicked_->print();
@@ -452,7 +452,7 @@ void Viewer::endMode(Prefs::MouseButton button)
 				source->beginUndoState("Add Hydrogen to Atom");
 				source->hydrogenSatisfy(atomClicked_);
 				source->endUndoState();
-				atenWindow_->updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget);
+				atenWindow_->updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
 			}
 			break;
 		case (UserAction::DrawGrowAtomsAction):
@@ -469,7 +469,7 @@ void Viewer::endMode(Prefs::MouseButton button)
 					source->growAtom(atomClicked_, atenWindow_->currentBuildElement(), -1.0, buildGeometry_, true);
 				}
 				source->endUndoState();
-				atenWindow_->updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget);
+				atenWindow_->updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
 			}
 			break;
 		// Model transformations
@@ -479,7 +479,7 @@ void Viewer::endMode(Prefs::MouseButton button)
 			// Clear list of oldPositions_ if nothing was moved
 			if (!hasMoved_) oldPositions_.clear();
 			source->finalizeTransform(oldPositions_, "Transform Selection", noFold);
-			atenWindow_->updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget);
+			atenWindow_->updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
 			break;
 		// View changes (no action)
 		case (UserAction::RotateXYAction):

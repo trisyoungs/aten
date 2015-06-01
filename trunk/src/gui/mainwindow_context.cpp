@@ -206,7 +206,7 @@ void AtenWindow::on_actionOrderMoveToEnd_triggered(bool checked)
 void AtenWindow::on_actionOrderReorder_triggered(bool checked)
 {
 	CommandNode::run(Commands::ReOrder, "");
-	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget);
+	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
 }
 
 // Set atom hidden
@@ -222,7 +222,7 @@ void AtenWindow::setAtomHidden(bool hidden)
 		if (hidden) CommandNode::run(Commands::Hide, "i", contextAtom_->id()+1);
 		else CommandNode::run(Commands::Show, "i", contextAtom_->id()+1);
 	}
-	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget);
+	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
 }
 
 void AtenWindow::on_actionAtomHide_triggered(bool checked)

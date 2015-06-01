@@ -45,24 +45,6 @@ void AtenWindow::on_BuildSelectElementButton_clicked(bool checked)
 	if (checked) ui.MainView->setSelectedMode(UserAction::SelectElementAction);
 }
 
-void AtenWindow::on_BuildSelectExpandButton_clicked(bool checked)
-{
-	// Run command
-	CommandNode::run(Commands::Expand, "");
-
-	// Update
-	updateWidgets(AtenWindow::MainViewTarget);
-}
-
-void AtenWindow::on_BuildSelectInvertButton_clicked(bool checked)
-{
-	// Run command
-	CommandNode::run(Commands::Invert, "");
-
-	// Update
-	updateWidgets(AtenWindow::MainViewTarget);
-}
-
 /*
  * Draw
  */

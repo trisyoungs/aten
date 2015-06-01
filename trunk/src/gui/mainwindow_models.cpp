@@ -1,6 +1,6 @@
 /*
-	*** Main Window - ModelList Functions
-	*** src/gui/mainwindow_modellist.cpp
+	*** Main Window - ModelsList Functions
+	*** src/gui/mainwindow_models.cpp
 	Copyright T. Youngs 2007-2015
 
 	This file is part of Aten.
@@ -24,9 +24,9 @@
 #include "templates/variantpointer.h"
 
 // Refresh model list
-void AtenWindow::updateModelList()
+void AtenWindow::updateModelsList()
 {
-	Messenger::enter("AtenWindow::updateModelList");
+	Messenger::enter("AtenWindow::updateModelsList");
 
 	int row;
 	QListWidgetItem* item;
@@ -34,15 +34,15 @@ void AtenWindow::updateModelList()
 
 	// First, iterate over existing rows in model list and remove any that aren't in our models
 	row = 0;
-	while (row < ui.ModelList->count())
+	while (row < ui.ModelsList->count())
 	{
 		// Get model pointer from item, and see if its in the model list
-		item = ui.ModelList->item(row);
+		item = ui.ModelsList->item(row);
 		model = VariantPointer<Model>(item->data(Qt::UserRole));
 		if (!aten_.isModel(model))
 		{
 			// Not in the list anymore, so remove it from the widget
-			item = ui.ModelList->takeItem(row);
+			item = ui.ModelsList->takeItem(row);
 			if (item) delete item;
 		}
 		else ++row;
@@ -53,7 +53,7 @@ void AtenWindow::updateModelList()
 	for (model = aten_.models(); model != NULL; model = model->next)
 	{
 		// Get model pointer from current row, and see if it matches the current model
-		if (row < ui.ModelList->count()) item = ui.ModelList->item(row);
+		if (row < ui.ModelsList->count()) item = ui.ModelsList->item(row);
 		else item = NULL;
 		itemModel = (item ? VariantPointer<Model>(item->data(Qt::UserRole)) : NULL);
 
@@ -61,32 +61,38 @@ void AtenWindow::updateModelList()
 		if (model != itemModel)
 		{
 			item = new QListWidgetItem;
-			ui.ModelList->insertItem(row, item);
+			ui.ModelsList->insertItem(row, item);
 		}
 
 		// Update the current item
 		item->setData(Qt::UserRole, VariantPointer<Model>(model));
 		if (model->isVisible()) item->setSelected(true);
-		if (!model->iconIsValid()) model->setIcon(modelPixmap(model, ui.ModelList->iconSize()));
+		if (!model->iconIsValid()) model->setIcon(modelPixmap(model, ui.ModelsList->iconSize()));
 		item->setIcon(model->icon());
 
 		// Increase row and move on
 		++row;
 	}
 
-	Messenger::exit("AtenWindow::updateModelList");
+	Messenger::exit("AtenWindow::updateModelsList");
 }
 
-void AtenWindow::on_ModelList_itemSelectionChanged()
+void AtenWindow::on_ModelsToggleButton_clicked(bool checked)
+{
+	ui.ModelsList->setVisible(checked);
+	if (checked) updateWidgets(AtenWindow::ModelsListTarget);
+}
+
+void AtenWindow::on_ModelsList_itemSelectionChanged()
 {
 	if (refreshing_) return;
 
 	// Loop over rows of list, setting 'visible' flags in model list accordingly
 	QListWidgetItem* item;
 	Model* model, *currentModel = NULL;
-	for (int row = 0; row < ui.ModelList->count(); ++row)
+	for (int row = 0; row < ui.ModelsList->count(); ++row)
 	{
-		item = ui.ModelList->item(row);
+		item = ui.ModelsList->item(row);
 		model = VariantPointer<Model>(item->data(Qt::UserRole));
 		if (model)
 		{

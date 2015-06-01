@@ -26,6 +26,7 @@
 #include "gui/loadmodel.h"
 #include "gui/ffeditor.h"
 #include "gui/selectpattern.h"
+#include "gui/tdoublespindelegate.hui"
 #include "gui/about.h"
 #include "model/model.h"
 #include "model/clipboard.h"
@@ -71,7 +72,6 @@
 #include "gui/popupviewreset.h"
 #include "gui/popupviewstyle.h"
 
-#include "gui/atomlist.h"
 #include "gui/command.h"
 #include "gui/disorderwizard.h"
 #include "gui/forcefields.h"
@@ -109,8 +109,40 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 	infoLabel2_ = NULL;
 	messageLabel_ = NULL;
 
+	// Atoms Table variables / setup
+	atomsTableStructurePoint_ = -1;
+	atomsTableSelectionPoint_ = -1;
+	atomsTableLastModel_ = NULL;
+	atomsTableShouldRefresh_ = true;
+	atomsTablePrevClicked_ = NULL;
+	atomsTableLastClicked_ = NULL;
+	atomsTableLastHovered_ = NULL;
+	atomsTableViewingByAtom_ = true;
+	atomsTableMaxRows_ = 0;
+	atomsTableCurrentRootId_ = 0;
+	atomsTableItemDelegates_[AtenWindow::AtomIdItem] = NULL;
+	atomsTableItemDelegates_[AtenWindow::AtomElementItem] = NULL;
+	atomsTableItemDelegates_[AtenWindow::AtomTypeItem] = NULL;
+	atomsTableItemDelegates_[AtenWindow::AtomXItem] = new TDoubleSpinDelegate(this);
+	atomsTableItemDelegates_[AtenWindow::AtomYItem] = new TDoubleSpinDelegate(this);
+	atomsTableItemDelegates_[AtenWindow::AtomZItem] = new TDoubleSpinDelegate(this);
+	atomsTableItemDelegates_[AtenWindow::AtomQItem] = new TDoubleSpinDelegate(this);
+	// -- Set initial display items
+	atomsTableVisibleItems_[AtenWindow::AtomIdItem] = ui.AtomsViewIdCheck->isChecked();
+	atomsTableVisibleItems_[AtenWindow::AtomElementItem] = ui.AtomsViewElementCheck->isChecked();
+	atomsTableVisibleItems_[AtenWindow::AtomTypeItem] = ui.AtomsViewTypeCheck->isChecked();
+	atomsTableVisibleItems_[AtenWindow::AtomXItem] = ui.AtomsViewXCheck->isChecked();
+	atomsTableVisibleItems_[AtenWindow::AtomYItem] = ui.AtomsViewYCheck->isChecked();
+	atomsTableVisibleItems_[AtenWindow::AtomZItem] = ui.AtomsViewZCheck->isChecked();
+	atomsTableVisibleItems_[AtenWindow::AtomQItem] = ui.AtomsViewChargeCheck->isChecked();
+	// -- Connect mouse-tracking signals to AtomTable
+	QObject::connect(ui.AtomsTable, SIGNAL(mousePressEvent(QMouseEvent*)), this, SLOT(atomsTableMousePressEvent(QMouseEvent*)));
+	QObject::connect(ui.AtomsTable, SIGNAL(mouseReleaseEvent(QMouseEvent*)), this, SLOT(atomsTableMouseReleaseEvent(QMouseEvent*)));
+	QObject::connect(ui.AtomsTable, SIGNAL(mouseMoveEvent(QMouseEvent*)), this, SLOT(atomsTableMouseMoveEvent(QMouseEvent*)));
+	QObject::connect(ui.AtomsTable, SIGNAL(mouseDoubleClickEvent(QMouseEvent*)), this, SLOT(atomsTableMouseDoubleClickEvent(QMouseEvent*)));
+	QObject::connect(ui.AtomsTable, SIGNAL(itemChanged(QTableWidgetItem*)), this, SLOT(atomsTableItemChanged(QTableWidgetItem*)));
+
 	// Create dock widgets
-	atomListWidget = new AtomListWidget(*this, Qt::Tool);
 	commandWidget = new CommandWidget(*this, Qt::Tool);
 	disorderWizard = new DisorderWizard(*this);
 	forcefieldsWidget = new ForcefieldsWidget(*this, Qt::Tool);
@@ -120,7 +152,7 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 	scriptMovieWidget = new ScriptMovieWidget(*this, Qt::Tool);
 	transformWidget = new TransformWidget(*this, Qt::Tool);
 	vibrationsWidget = new VibrationsWidget(*this, Qt::Tool);
-	dockWidgets_ << atomListWidget << commandWidget << fragmentsWidget << glyphsWidget << poresWidget << scriptMovieWidget << transformWidget << vibrationsWidget;
+	dockWidgets_ << commandWidget << fragmentsWidget << glyphsWidget << poresWidget << scriptMovieWidget << transformWidget << vibrationsWidget;
 
 	int n;
 	ReturnValue rv;
@@ -134,14 +166,8 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 		ui.RecentMenu->addAction(actionRecentFile[n]);
 	}
 
-	// Create QActionGroup for model / trajectory render source
-	QActionGroup* group = new QActionGroup(this);
-	actionGroups_.add(group);
-	group->addAction(ui.actionTrajectoryModel);
-	group->addAction(ui.actionTrajectoryFrames);
-
 	// Add buttons related to user actions to our button group, add popup widgets to those buttons that have them, and set up anything else we need to
-
+	QShortcut* shortcut;
 	// -- Build Panel (Select)
 	ui.BuildSelectAtomsButton->setGroup("UserActions", UserAction::SelectAction);
 	ui.BuildSelectBoundButton->setGroup("UserActions", UserAction::SelectBoundAction);
@@ -179,10 +205,6 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 	ui.CellMillerDefineButton->setPopupWidget(new CellMillerPopup(*this, ui.CellMillerDefineButton), true);
 
 	// -- View Panel (Control)
-	// Shortcuts
-	QShortcut* shortcut;
-	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_R), ui.ViewControlResetButton, 0, 0, Qt::ApplicationShortcut);
-	connect(shortcut, SIGNAL(activated()), ui.ViewControlResetButton, SLOT(click()));
 	ui.ViewControlResetButton->setPopupWidget(new ResetViewPopup(*this, ui.ViewControlResetButton));
 	// -- View Panel (Appearance)
 	ui.ViewAppearanceStyleButton->setPopupWidget(new ViewStylePopup(*this, ui.ViewAppearanceStyleButton), true);
@@ -221,8 +243,32 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 
 	// -- Select Panel (ID/Element)
 	ui.SelectNETAElementButton->setPopupWidget(new ElementTablePopup(*this, ui.SelectNETAElementButton), true);
-	
-	
+
+
+
+	// Setup Shortcuts
+	// Home Panel
+	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::ALT + Qt::Key_N), this, 0, 0, Qt::ApplicationShortcut);
+	connect(shortcut, SIGNAL(activated()), ui.HomeFileNewButton, SLOT(click()));
+	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_O), this, 0, 0, Qt::ApplicationShortcut);
+	connect(shortcut, SIGNAL(activated()), ui.HomeFileOpenButton, SLOT(click()));
+	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_S), this, 0, 0, Qt::ApplicationShortcut);
+	connect(shortcut, SIGNAL(activated()), ui.HomeFileSaveButton, SLOT(click()));
+	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::ALT + Qt::Key_S), this, 0, 0, Qt::ApplicationShortcut);
+	connect(shortcut, SIGNAL(activated()), ui.HomeFileSaveAsButton, SLOT(click()));
+	// View Panel
+	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_R), this, 0, 0, Qt::ApplicationShortcut);
+	connect(shortcut, SIGNAL(activated()), ui.ViewControlResetButton, SLOT(click()));
+	// Select Panel
+	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_A), this, 0, 0, Qt::ApplicationShortcut);
+	connect(shortcut, SIGNAL(activated()), ui.SelectBasicAllButton, SLOT(click()));
+	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_N), this, 0, 0, Qt::ApplicationShortcut);
+	connect(shortcut, SIGNAL(activated()), ui.SelectBasicNoneButton, SLOT(click()));
+	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_I), this, 0, 0, Qt::ApplicationShortcut);
+	connect(shortcut, SIGNAL(activated()), ui.SelectBasicInvertButton, SLOT(click()));
+	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_E), this, 0, 0, Qt::ApplicationShortcut);
+	connect(shortcut, SIGNAL(activated()), ui.SelectBasicExpandButton, SLOT(click()));
+
 
 // 	// -- From Transform Dock Widget
 // 	uaButtons_.addButton(transformWidget->ui.TransformPickAButton, UserAction::TransformPickAAction);
@@ -287,7 +333,6 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 	// Refresh the necessary windows, including the mainwindow
 	forcefieldsWidget->refresh();
 	commandWidget->refreshScripts();
-	atomListWidget->refresh();
 	updateWidgets();
 
 	// Set some preferences back to their default values
@@ -327,6 +372,11 @@ void AtenWindow::closeEvent(QCloseEvent* event)
 	else event->ignore();
 }
 
+void AtenWindow::resizeEvent(QResizeEvent* event)
+{
+	// Update row information in AtomsTable
+	atomsTableRecalculateRowSize();
+}
 
 /*
  * Methods
@@ -401,9 +451,6 @@ void AtenWindow::setInteractive(bool interactive)
 {
 	// Set enabled status of all the dock widgets..
 	foreach( QObject *obj, dockWidgets_) obj->setProperty("enabled", interactive);
-
-	// ...and the main toolbar...
-	ui.MainToolbar->setEnabled(interactive);
 	
 	// ...and set the canvas 'editability'
 	ui.MainView->setEditable(interactive);
@@ -506,34 +553,6 @@ void AtenWindow::on_actionAboutAten_triggered(bool checked)
 void AtenWindow::on_actionAboutQt_triggered(bool checked)
 {
 	QMessageBox::aboutQt(this, "About Qt");
-}
-
-// Update undo/redo actions in Edit menu
-void AtenWindow::updateUndoRedo()
-{
-	Model* currentModel = aten_.currentModelOrFrame();
-
-	// Check the model's state pointers
-	if (currentModel && currentModel->currentUndoState())
-	{
-		ui.actionEditUndo->setText("Undo (" + currentModel->currentUndoState()->description() + ")");
-		ui.actionEditUndo->setEnabled(true);
-	}
-	else
-	{
-		ui.actionEditUndo->setText("Undo");
-		ui.actionEditUndo->setEnabled(false);
-	}
-	if (currentModel && currentModel->currentRedoState())
-	{
-		ui.actionEditRedo->setText("Redo (" + currentModel->currentRedoState()->description() + ")");
-		ui.actionEditRedo->setEnabled(true);
-	}
-	else
-	{
-		ui.actionEditRedo->setText("Redo");
-		ui.actionEditRedo->setEnabled(false);
-	}
 }
 
 // Set action/button to reflect supplied user action
