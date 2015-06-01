@@ -13,7 +13,6 @@ INCLUDE_DIRECTORIES(
 # Meta-Objects
 SET(gui_MOC_HDRS
   about.h
-  atomlist.h
   command.h
   disorderoptions.h
   disorderwizard.h
@@ -93,7 +92,6 @@ QT5_WRAP_CPP(treegui_MOC_SRCS ${treegui_MOC_HDRS})
 # User Interface Files
 SET(gui_UIS
   about.ui
-  atomlist.ui
   command.ui
   disorderoptions.ui
   disorderwizard.ui
@@ -162,7 +160,6 @@ set(gui_SRCS
   useractions.h
   useractions.cpp
   about_funcs.cpp
-  atomlist_funcs.cpp
   command_funcs.cpp
   disorderoptions_funcs.cpp
   disorderwizard_funcs.cpp
@@ -173,15 +170,18 @@ set(gui_SRCS
   layoutlist.cpp
   loadmodel_funcs.cpp
   mainmenuactions.cpp
+  mainwindow_atoms.cpp
+  mainwindow_models.cpp
   mainwindow_context.cpp
   mainwindow_funcs.cpp
   mainwindow_image.cpp
   mainwindow_messages.cpp
-  mainwindow_modellist.cpp
+  mainwindow_models.cpp
   mainwindow_panel_build.cpp
   mainwindow_panel_calculate.cpp
   mainwindow_panel_cell.cpp
   mainwindow_panel_grids.cpp
+  mainwindow_panel_home.cpp
   mainwindow_panel_select.cpp
   mainwindow_panel_transform.cpp
   mainwindow_panel_trajectory.cpp

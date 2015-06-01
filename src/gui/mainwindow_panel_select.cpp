@@ -39,7 +39,7 @@ void AtenWindow::on_SelectBasicAllButton_clicked(bool checked)
 	// Run command
 	CommandNode::run(Commands::SelectAll, "");
 
-	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget); // ATEN2 TODO Plus wherever selection information is going to be displayed.
+	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget); // ATEN2 TODO Plus wherever selection information is going to be displayed.
 }
 
 void AtenWindow::on_SelectBasicNoneButton_clicked(bool checked)
@@ -47,7 +47,7 @@ void AtenWindow::on_SelectBasicNoneButton_clicked(bool checked)
 	// Run command
 	CommandNode::run(Commands::SelectNone, "");
 
-	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget); // ATEN2 TODO Plus wherever selection information is going to be displayed.
+	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget); // ATEN2 TODO Plus wherever selection information is going to be displayed.
 }
 
 void AtenWindow::on_SelectBasicInvertButton_clicked(bool checked)
@@ -55,7 +55,7 @@ void AtenWindow::on_SelectBasicInvertButton_clicked(bool checked)
 	// Run command
 	CommandNode::run(Commands::Invert, "");
 
-	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget); // ATEN2 TODO Plus wherever selection information is going to be displayed.
+	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget); // ATEN2 TODO Plus wherever selection information is going to be displayed.
 }
 
 void AtenWindow::on_SelectBasicExpandButton_clicked(bool checked)
@@ -63,7 +63,7 @@ void AtenWindow::on_SelectBasicExpandButton_clicked(bool checked)
 	// Run command
 	CommandNode::run(Commands::Expand, "");
 
-	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget); // ATEN2 TODO Plus wherever selection information is going to be displayed.
+	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget); // ATEN2 TODO Plus wherever selection information is going to be displayed.
 }
 
 /*
@@ -74,14 +74,14 @@ void AtenWindow::on_SelectElementSelectButton_clicked(bool checked)
 {
 	CommandNode::run(Commands::Select, "c", qPrintable(ui.SelectElementSelectCombo->currentText()));
 
-	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget+AtenWindow::SelectPanelTarget);
+	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget+AtenWindow::SelectPanelTarget);
 }
 
 void AtenWindow::on_SelectElementDeselectButton_clicked(bool checked)
 {
 	CommandNode::run(Commands::DeSelect, "c", qPrintable(ui.SelectElementSelectCombo->currentText()));
 
-	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget+AtenWindow::SelectPanelTarget);
+	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget+AtenWindow::SelectPanelTarget);
 }
 
 /*
@@ -99,7 +99,7 @@ void AtenWindow::on_SelectNETASelectButton_clicked(bool checked)
 	{
 		CommandNode::run(Commands::SelectType, "ic", rv.asInteger(), qPrintable(ui.SelectNETACodeCombo->currentText()));
 
-		updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget+AtenWindow::SelectPanelTarget);
+		updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget+AtenWindow::SelectPanelTarget);
 	}
 }
 
@@ -114,7 +114,7 @@ void AtenWindow::on_SelectNETADeselectButton_clicked(bool checked)
 	{
 		CommandNode::run(Commands::DeSelectType, "ic", rv.asInteger(), qPrintable(ui.SelectNETACodeCombo->currentText()));
 
-		updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget+AtenWindow::SelectPanelTarget);
+		updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget+AtenWindow::SelectPanelTarget);
 	}
 }
 
@@ -126,14 +126,14 @@ void AtenWindow::on_SelectCodeSelectButton_clicked(bool checked)
 {
 	CommandNode::run(Commands::SelectType, "c", qPrintable(ui.SelectCodeCodeCombo->currentText()));
 
-	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget+AtenWindow::SelectPanelTarget);
+	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget+AtenWindow::SelectPanelTarget);
 }
 
 void AtenWindow::on_SelectCodeDeselectButton_clicked(bool checked)
 {
 	CommandNode::run(Commands::DeSelectType, "c", qPrintable(ui.SelectCodeCodeCombo->currentText()));
 
-	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget+AtenWindow::SelectPanelTarget);
+	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget+AtenWindow::SelectPanelTarget);
 }
 
 // 	// Update selection text details

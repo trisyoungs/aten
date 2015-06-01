@@ -96,7 +96,7 @@ void CellSpacegroupPopup::on_PackButton_clicked(bool checked)
 	CommandNode::run(Commands::Pack, "");
 
 	// Update display
-	parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget);
+	parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
 
 	done();
 }

@@ -24,15 +24,12 @@
 #include "main/aten.h"
 #include "gui/forcefields.h"
 #include "gui/vibrations.h"
-#include "gui/atomlist.h"
 #include "gui/glyphs.h"
 #include <QtWidgets/QMessageBox>
 
 // Update GUI after model change (or different model selected)
 void AtenWindow::updateMainWindow()
 {
-	refreshing_ = true;
-
 	// Get current model
 	Model* currentModel = aten_.currentModel();
 
@@ -86,9 +83,6 @@ void AtenWindow::updateMainWindow()
 	// Enable the Atom menu if one or more atoms are selected
 	ui.AtomContextMenu->setEnabled( currentModel ? currentModel->renderSourceModel()->nSelected() != 0 : false );
 
-	// Update Undo Redo lists
-	updateUndoRedo();
-
 	// Enable/Disable cut/copy/paste/delete based on selection status and clipboard contents
 	ui.actionEditPaste->setEnabled( aten_.userClipboard->nAtoms() != 0);
 	ui.actionEditPasteTranslated->setEnabled( aten_.userClipboard->nAtoms() != 0);
@@ -97,11 +91,8 @@ void AtenWindow::updateMainWindow()
 	ui.actionEditDelete->setEnabled( currentModel ? currentModel->nSelected() != 0 : false );
 
 	// Check for empty filters list and enable/disable menu actions accordingly
-	ui.actionFileOpen->setEnabled(!aten_.fileDialogFilters(FilterData::ModelImport).isEmpty());
 	ui.RecentMenu->setEnabled(!aten_.fileDialogFilters(FilterData::ModelImport).isEmpty());
-	ui.actionTrajectoryOpen->setEnabled(!aten_.fileDialogFilters(FilterData::TrajectoryImport).isEmpty());
-	ui.actionFileSave->setEnabled(!aten_.fileDialogFilters(FilterData::ModelExport).isEmpty());
-	ui.actionFileSaveAs->setEnabled(!aten_.fileDialogFilters(FilterData::ModelExport).isEmpty());
+
 	ui.actionSaveExpression->setEnabled(!aten_.fileDialogFilters(FilterData::ExpressionExport).isEmpty());
 
 	// Update main window title
@@ -109,8 +100,6 @@ void AtenWindow::updateMainWindow()
 	if (currentModel) title += QString(" - %1 (%2)%3").arg(currentModel->name(), currentModel->filename().isEmpty() ? "<<no filename>>" : currentModel->filename(), currentModel->isModified() ? " [Modified]" : "");
 	else title += " [[[ No Current Model ]]]";
 	setWindowTitle(title);
-
-	refreshing_ = false;
 }
 
 // Update context menu
@@ -178,10 +167,16 @@ void AtenWindow::updateWidgets(int targets)
 	if (targets&AtenWindow::MainViewTarget) ui.MainView->update();
 
 	// Update model list
-	if (targets&AtenWindow::ModelListTarget) updateModelList();
+	if (targets&AtenWindow::ModelsListTarget) updateModelsList();
 
 	// Get current model
 	Model* currentModel = aten_.currentModelOrFrame();
+
+	// Always update Home panel
+	updateHomePanel(currentModel);
+
+	// Update atoms table
+	if (targets&AtenWindow::AtomsTableTarget) updateAtomsTable(currentModel);
 
 	// Update context menu
 	if (targets&AtenWindow::ContextMenuTarget) updateContextMenu(currentModel);
@@ -201,7 +196,6 @@ void AtenWindow::updateWidgets(int targets)
 	if (targets&AtenWindow::VibrationsTarget) vibrationsWidget->refresh();
 
 	// Update contents of the atom list
-	if (targets&AtenWindow::AtomsTarget) atomListWidget->refresh();
 
 	// Update contents of the glyph list
 	if (targets&AtenWindow::GlyphsTarget) glyphsWidget->refresh();

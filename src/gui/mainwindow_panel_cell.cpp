@@ -70,7 +70,7 @@ void AtenWindow::on_CellTransformReplicateButton_clicked(bool checked)
 	ReturnValue rv;
 	ui.CellTransformReplicateButton->callPopupMethod("replicate", rv);
 
-	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget);
+	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
 }
 
 void AtenWindow::on_CellTransformScaleButton_clicked(bool checked)
@@ -78,7 +78,7 @@ void AtenWindow::on_CellTransformScaleButton_clicked(bool checked)
 	ReturnValue rv;
 	ui.CellTransformScaleButton->callPopupMethod("scale", rv);
 
-	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget);
+	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
 }
 
 /*

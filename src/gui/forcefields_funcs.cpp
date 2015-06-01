@@ -200,7 +200,7 @@ void ForcefieldsWidget::on_ForcefieldMinimiseButton_clicked(bool checked)
 			break;
 	}
 	// Update the view
-	parent_.updateWidgets(AtenWindow::AtomsTarget+AtenWindow::MainViewTarget);
+	parent_.updateWidgets(AtenWindow::AtomsTableTarget+AtenWindow::MainViewTarget);
 }
 
 void ForcefieldsWidget::on_MopacMinimiseButton_clicked(bool checked)
@@ -210,7 +210,7 @@ void ForcefieldsWidget::on_MopacMinimiseButton_clicked(bool checked)
 	options.sprintf("BFGS %s %s %s CHARGE=%i", qPrintable(ui.MopacHFCombo->currentText()), qPrintable(ui.MopacHamiltonianCombo->currentText()), 	qPrintable(ui.MopacSpinCombo->currentText()), ui.MopacChargeSpin->value());
 	if (ui.MopacMozymeCheck->isChecked()) options += " MOZYME";
 	CommandNode::run(Commands::MopacMinimise, "c", qPrintable(options));
-	parent_.updateWidgets(AtenWindow::AtomsTarget+AtenWindow::MainViewTarget);
+	parent_.updateWidgets(AtenWindow::AtomsTableTarget+AtenWindow::MainViewTarget);
 }
 			
 /*

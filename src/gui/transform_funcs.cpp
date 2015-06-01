@@ -106,7 +106,7 @@ void TransformWidget::rotateSelection(double direction)
 	CommandNode::run(Commands::AxisRotate, "ddddddd", v.x, v.y, v.z, direction * ui.RotateAngleSpin->value(), o.x, o.y, o.z);
 	Model* m = parent_.aten().currentModelOrFrame();
 	m->updateMeasurements();
-	parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget);
+	parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
 }
 
 /*
@@ -126,7 +126,7 @@ void TransformWidget::on_TransformApplyButton_clicked(bool checked)
 	CommandNode::run(Commands::MatrixTransform, "dddddddddddd", mat[0], mat[1], mat[2], mat[4], mat[5], mat[6], mat[8], mat[9], mat[10], v.x, v.y, v.z);
 
 	parent_.aten().currentModelOrFrame()->updateMeasurements();
-	parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget);
+	parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
 }
 
 void transformPickAButton_callback(Reflist<Atom,int>* picked)
@@ -337,7 +337,7 @@ void TransformWidget::on_ConvertRotateIntoButton_clicked(bool checked)
 	CommandNode::run(Commands::MatrixConvert, "ddddddddddddddddddddd", source[0], source[1], source[2], source[4], source[5], source[6], source[8], source[9], source[10], target[0], target[1], target[2], target[4], target[5], target[6], target[8], target[9], target[10], v.x, v.y, v.z);
 
 	parent_.aten().currentModelOrFrame()->updateMeasurements();
-	parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget);
+	parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
 }
 
 void convertSourcePickAButton_callback(Reflist<Atom,int>* picked)

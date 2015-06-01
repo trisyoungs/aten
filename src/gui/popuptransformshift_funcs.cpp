@@ -120,7 +120,7 @@ void TransformShiftPopup::on_ForwardButton_clicked(bool checked)
 	currentModel->endUndoState();
 
 	// Update
-	parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget);
+	parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
 }
 
 void TransformShiftPopup::on_BackwardButton_clicked(bool checked)
@@ -138,6 +138,6 @@ void TransformShiftPopup::on_BackwardButton_clicked(bool checked)
 	currentModel->endUndoState();
 
 	// Update
-	parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget);
+	parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
 }
 

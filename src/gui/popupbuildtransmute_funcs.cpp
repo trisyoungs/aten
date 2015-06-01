@@ -66,7 +66,7 @@ void TransmutePopup::on_TransmuteSelectionButton_clicked(bool checked)
 	CommandNode::run(Commands::Transmute, "i", parent_.currentBuildElement());
 
 	// Update display
-	parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTarget);
+	parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
 
 	// Hide popup
 	done();
