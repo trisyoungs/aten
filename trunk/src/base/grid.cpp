@@ -160,10 +160,13 @@ void Grid::operator=(Grid& source)
 	cell_ = source.cell_;
 	origin_ = source.origin_;
 	nXYZ_ = source.nXYZ_;
+
 	// Delete any existing 2D or 3D array in this Grid
 	deleteArrays();
+
 	// Create new data structure
 	allocateArrays();
+
 	// Copy data from source structure
 	int x,y,z;
 	if (type_ == Grid::RegularXYZData)
@@ -1093,9 +1096,10 @@ void Grid::sendPrimaryPrimitive(Matrix baseTransform)
 	// Render it
 	glPushMatrix();
 	glLoadMatrixd(A.matrix());
+	glPointSize(3.0f);
 	if (primaryStyle_ == Grid::SolidSurface) primaryPrimitive_->sendToGL(QOpenGLContext::currentContext(), GL_FILL, true, !useColourScale_, primaryColour_);
-	else if (primaryStyle_ == Grid::MeshSurface) primaryPrimitive_->sendToGL(QOpenGLContext::currentContext(), GL_LINES, false, !useColourScale_, primaryColour_);
-	else if (primaryStyle_ == Grid::PointSurface) primaryPrimitive_->sendToGL(QOpenGLContext::currentContext(), GL_POINTS, false, !useColourScale_, primaryColour_);
+	else if (primaryStyle_ == Grid::MeshSurface) primaryPrimitive_->sendToGL(QOpenGLContext::currentContext(), GL_LINE, false, !useColourScale_, primaryColour_);
+	else if (primaryStyle_ == Grid::PointSurface) primaryPrimitive_->sendToGL(QOpenGLContext::currentContext(), GL_POINT, false, !useColourScale_, primaryColour_);
 	glPopMatrix();
 }
 

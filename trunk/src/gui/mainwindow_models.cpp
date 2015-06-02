@@ -77,7 +77,7 @@ void AtenWindow::updateModelsList()
 	Messenger::exit("AtenWindow::updateModelsList");
 }
 
-void AtenWindow::on_ModelsToggleButton_clicked(bool checked)
+void AtenWindow::on_ModelsListToggleButton_clicked(bool checked)
 {
 	ui.ModelsList->setVisible(checked);
 	if (checked) updateWidgets(AtenWindow::ModelsListTarget);

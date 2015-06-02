@@ -1,6 +1,6 @@
 /*
-	*** Aten version information
-	*** src/main/version.h
+	*** TTabWidget - QTabWidget with custom paint event
+	*** src/gui/ttabwidget.hui
 	Copyright T. Youngs 2007-2015
 
 	This file is part of Aten.
@@ -19,12 +19,30 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_VERSION_H
-#define ATEN_VERSION_H
+#ifndef ATEN_TTABWIDGET_H
+#define ATEN_TTABWIDGET_H
 
-#define ATENVERSION "1.968"
-#define ATENREVISION "1968"
-#define ATENDATE "Thu 28 Jun - 13:36"
-#define ATENURL "http://aten.googlecode.com/svn/trunk"
+#include <QtWidgets/QTabWidget>
+#include "parser/returnvalue.h"
+
+// Forward Declarations (Qt)
+/* none */
+
+ATEN_USING_NAMESPACE
+
+// TTabWidget
+class TTabWidget : public QTabWidget
+{
+	Q_OBJECT
+	
+	public:
+	// Constructor
+	TTabWidget(QWidget* parent = 0);
+
+
+	protected:
+	void paintEvent(QPaintEvent* event);
+};
 
 #endif
+

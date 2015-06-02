@@ -463,7 +463,7 @@ class AtenWindow : public QMainWindow
 	 * Models List
 	 */
 	private slots:
-	void on_ModelsToggleButton_clicked(bool checked);
+	void on_ModelsListToggleButton_clicked(bool checked);
 	void on_ModelsList_itemSelectionChanged();
 
 	public:
@@ -511,7 +511,7 @@ class AtenWindow : public QMainWindow
 	void atomsTableToggleItem(Atom* i);
 
 	private slots:
-	void on_AtomsToggleButton_clicked(bool checked);
+	void on_AtomsTableToggleButton_clicked(bool checked);
 	void on_AtomsTableScrollBar_valueChanged(int value);
 	void on_ViewStyleCombo_currentIndexChanged(int index);
 	void on_AtomsShiftUpButton_clicked(bool checked);
