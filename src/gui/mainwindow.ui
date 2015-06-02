@@ -7,8 +7,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1223</width>
-    <height>672</height>
+    <width>1172</width>
+    <height>787</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -56,7 +56,7 @@
      <number>2</number>
     </property>
     <item>
-     <widget class="QTabWidget" name="ToolTabs">
+     <widget class="TTabWidget" name="ToolTabs">
       <property name="sizePolicy">
        <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
         <horstretch>0</horstretch>
@@ -2561,8 +2561,8 @@
             </property>
             <property name="iconSize">
              <size>
-              <width>30</width>
-              <height>30</height>
+              <width>24</width>
+              <height>24</height>
              </size>
             </property>
             <property name="checkable">
@@ -2614,8 +2614,8 @@
               </property>
               <property name="iconSize">
                <size>
-                <width>20</width>
-                <height>20</height>
+                <width>14</width>
+                <height>14</height>
                </size>
               </property>
              </widget>
@@ -2640,8 +2640,8 @@
               </property>
               <property name="iconSize">
                <size>
-                <width>20</width>
-                <height>20</height>
+                <width>14</width>
+                <height>14</height>
                </size>
               </property>
              </widget>
@@ -2673,8 +2673,8 @@
               </property>
               <property name="iconSize">
                <size>
-                <width>20</width>
-                <height>20</height>
+                <width>14</width>
+                <height>14</height>
                </size>
               </property>
               <property name="checkable">
@@ -2705,8 +2705,8 @@
               </property>
               <property name="iconSize">
                <size>
-                <width>20</width>
-                <height>20</height>
+                <width>14</width>
+                <height>14</height>
                </size>
               </property>
               <property name="checkable">
@@ -2764,8 +2764,8 @@
             </property>
             <property name="iconSize">
              <size>
-              <width>30</width>
-              <height>30</height>
+              <width>24</width>
+              <height>24</height>
              </size>
             </property>
             <property name="checkable">
@@ -2842,7 +2842,7 @@
           <item row="0" column="15">
            <widget class="TMenuButton" name="ViewAppearancePerspectiveButton">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -2856,7 +2856,7 @@
             <property name="maximumSize">
              <size>
               <width>56</width>
-              <height>66</height>
+              <height>100</height>
              </size>
             </property>
             <property name="toolTip">
@@ -2871,8 +2871,8 @@
             </property>
             <property name="iconSize">
              <size>
-              <width>30</width>
-              <height>30</height>
+              <width>24</width>
+              <height>24</height>
              </size>
             </property>
             <property name="checkable">
@@ -6073,6 +6073,11 @@
         </item>
        </layout>
       </widget>
+      <widget class="QWidget" name="SelectionTab">
+       <attribute name="title">
+        <string>Selection</string>
+       </attribute>
+      </widget>
      </widget>
     </item>
     <item>
@@ -6081,7 +6086,13 @@
        <number>2</number>
       </property>
       <item>
-       <widget class="QFrame" name="ModelsFrame">
+       <widget class="QFrame" name="ModelsListFrame">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="frameShape">
          <enum>QFrame::StyledPanel</enum>
         </property>
@@ -6090,13 +6101,13 @@
         </property>
         <layout class="QHBoxLayout" name="horizontalLayout_2">
          <property name="spacing">
-          <number>2</number>
+          <number>0</number>
          </property>
          <property name="margin">
           <number>2</number>
          </property>
          <item>
-          <widget class="QPushButton" name="ModelsToggleButton">
+          <widget class="QPushButton" name="ModelsListToggleButton">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
              <horstretch>0</horstretch>
@@ -6170,7 +6181,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QFrame" name="AtomsFrame">
+       <widget class="QFrame" name="AtomsTableFrame">
         <property name="frameShape">
          <enum>QFrame::StyledPanel</enum>
         </property>
@@ -6179,13 +6190,13 @@
         </property>
         <layout class="QHBoxLayout" name="horizontalLayout_21">
          <property name="spacing">
-          <number>2</number>
+          <number>0</number>
          </property>
          <property name="margin">
           <number>2</number>
          </property>
          <item>
-          <widget class="QPushButton" name="AtomsToggleButton">
+          <widget class="QPushButton" name="AtomsTableToggleButton">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Fixed" vsizetype="Expanding">
              <horstretch>0</horstretch>
@@ -6210,9 +6221,9 @@
           </widget>
          </item>
          <item>
-          <widget class="QWidget" name="AtomsWidget" native="true">
+          <widget class="QWidget" name="AtomsTableWidget" native="true">
            <property name="sizePolicy">
-            <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
              <horstretch>1</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
@@ -6646,7 +6657,7 @@
        <widget class="QFrame" name="ViewFrame">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-          <horstretch>5</horstretch>
+          <horstretch>7</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
@@ -6807,8 +6818,8 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1223</width>
-     <height>22</height>
+     <width>1172</width>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="SettingsMenu">
@@ -7535,6 +7546,12 @@
    <class>TTableWidget</class>
    <extends>QTableWidget</extends>
    <header>gui/ttablewidget.hui</header>
+  </customwidget>
+  <customwidget>
+   <class>TTabWidget</class>
+   <extends>QTabWidget</extends>
+   <header>gui/ttabwidget.hui</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources>

@@ -109,6 +109,9 @@ void Viewer::setupGL()
 // Render messages
 void Viewer::renderMessages(QPainter& painter)
 {
+	// Set polygon mode / style
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	glEnable(GL_LIGHTING);
 	// Grab message buffer
 	QList<Message>& messages = Messenger::messageBuffer();
 	int margin = 4;
@@ -150,7 +153,6 @@ void Viewer::renderFullScene()
 	glEnable(GL_COLOR_MATERIAL);
 	glEnable(GL_TEXTURE_2D);
 	glClear(GL_DEPTH_BUFFER_BIT);
-
 
 	// Reset local renderGroup_
 	renderGroup_.clear();
@@ -222,21 +224,6 @@ void Viewer::renderFullScene()
 	QBrush nobrush(Qt::NoBrush), solidbrush(Qt::SolidPattern);
 	QPen pen;
 // 	QPainter painter(this);
-// 
-// 	// Draw box around current model
-// 	color.setRgbF(0.0,0.0,0.0,1.0);
-// 	pen.setColor(color);
-// 	pen.setWidth(2);
-// 	painter.setBrush(nobrush);
-// 	painter.setPen(Qt::SolidLine);
-// 	painter.setPen(pen);
-
-// 	if (prefs.frameCurrentModel()) painter.drawRect(currentBox);
-// 	if (prefs.frameWholeView())
-// 	{
-// 		currentBox.setRect(0, 0, contextWidth_, contextHeight_);
-// 		painter.drawRect(currentBox);
-// 	}
 
 	// Render active user modes
 // 	if (renderType == OnscreenScene) renderActiveModes(painter, width, height);  ATEN2 TODO
@@ -324,6 +311,7 @@ void Viewer::paintGL()
 			// Messages - Need a fresh QPainter here...
 			painter.begin(this);
 			painter.setBrush(QColor(255,255,255,128));
+			painter.setPen(QPen(Qt::NoPen));
 			painter.drawRect(0, 0, contextWidth_, contextHeight_);
 			renderMessages(painter);
 			break;
@@ -331,6 +319,7 @@ void Viewer::paintGL()
 			// Messages
 			renderMessages(painter);
 			painter.setBrush(QColor(255,255,255,128));
+			painter.setPen(QPen(Qt::NoPen));
 			painter.drawRect(0, 0, contextWidth_, contextHeight_);
 			// Scene
 			painter.beginNativePainting();

@@ -79,6 +79,7 @@ SET(gui_MOC_HDRS
   tprocess.hui
   tprompt.hui
   ttablewidget.hui
+  ttabwidget.hui
   ttreewidget.hui
   viewer.hui
 )
@@ -243,6 +244,7 @@ set(gui_SRCS
   tdoublespindelegate_funcs.cpp
   texponentialspin_funcs.cpp
   tintegerspindelegate_funcs.cpp
+  ttabwidget_funcs.cpp
   transform_funcs.cpp
   tprocess_funcs.cpp
   tprompt_funcs.cpp

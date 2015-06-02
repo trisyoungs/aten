@@ -114,20 +114,11 @@ void AtenWindow::updateAtomsTable(Model* sourceModel)
 	Messenger::exit("AtenWindow::updateAtomsTable");
 }
 
-void AtenWindow::on_AtomsToggleButton_clicked(bool checked)
+void AtenWindow::on_AtomsTableToggleButton_clicked(bool checked)
 {
-	ui.AtomsWidget->setVisible(checked);
+	ui.AtomsTableWidget->setVisible(checked);
 	if (checked) updateWidgets(AtenWindow::ModelsListTarget);
 }
-
-// void AtenWindow::showWidget()
-// {
-// 	show();
-// 	recalculateRowSize();
-// 	if (shouldRefresh_) refresh();
-// 	// Make sure toolbutton is in correct state
-// // 	gui.toolBoxWidget->ui.AtomListButton->setChecked(true);
-// }
 
 // Redetermine max number of visible rows
 void AtenWindow::atomsTableRecalculateRowSize()

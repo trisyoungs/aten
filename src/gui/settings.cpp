@@ -35,14 +35,23 @@ void AtenWindow::loadSettings()
 	QStringList commandHistory, selectHistory, selectCodeHistory, selectNETAHistory;
 	Program* prog, *loadedscript;
 	int n;
+	bool collapsed;
 
-	// Toolbar visibility / position
+	// Window geometry / position
 	if (prefs.loadQtSettings())
 	{
 		if (settings_.contains("MainWinPositions")) restoreState( settings_.value("MainWinPositions").toByteArray());
 		if (settings_.contains("MainWinGeometries")) restoreGeometry( settings_.value("MainWinGeometries").toByteArray());
 		if (settings_.contains("MainWinSize")) resize(settings_.value("mainwin_size", QSize(400, 400)).toSize());
 		if (settings_.contains("MainWinPosition")) move(settings_.value("mainwin_pos", QPoint(200, 200)).toPoint());
+
+		// Model list and atom table collapsed status
+		collapsed = (settings_.contains("AtomsTableCollapsed") ? settings_.value("AtomsTableCollapsed").toBool() : true);
+		ui.AtomsTableToggleButton->setChecked(!collapsed);
+		ui.AtomsTableWidget->setVisible(!collapsed);
+		collapsed = (settings_.contains("ModelsListCollapsed") ? settings_.value("ModelsListCollapsed").toBool() : true);
+		ui.ModelsListToggleButton->setChecked(!collapsed);
+		ui.ModelsList->setVisible(!collapsed);
 	}
 
 	// Check for old command history information, read it, and then remove it
@@ -217,8 +226,12 @@ void AtenWindow::on_actionStoreDefaultWindowState_triggered(bool checked)
 	// Toolbar visibility / position
 	settings_.setValue("MainWinPositions", saveState() );
 	settings_.setValue("MainWinGeometries", saveGeometry() );
-	settings_.value("MainWinSize", size());
-	settings_.value("MainWinPosition", pos());
+	settings_.setValue("MainWinSize", size());
+	settings_.setValue("MainWinPosition", pos());
+
+	// Atoms table and models list
+	settings_.setValue("AtomsTableCollapsed", !ui.AtomsTableToggleButton->isChecked());
+	settings_.setValue("ModelsListCollapsed", !ui.ModelsListToggleButton->isChecked());
 
 	// Synchronise (i.e. save) changes to settings
 	settings_.sync();

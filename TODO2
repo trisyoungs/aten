@@ -45,7 +45,6 @@ Reimplement drawing of grid (volume) axes.
 Shortcuts for panel buttons do not work (use QActions again?).
 Make Model::EnergyStore a private member with accessor?
 Click to select grid.
-Add panel option to show grid outline.
 Fix grid rendering - triangle grid not rendered in unfilled polygon mode, and points surface is completely broken.
 Add button to Transform/Position to centre entire model at zero?
 Have Tools page? With, for instance:
