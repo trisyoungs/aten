@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>288</width>
+    <width>230</width>
     <height>56</height>
    </rect>
   </property>
@@ -215,53 +215,6 @@
      </property>
      <property name="shortcut">
       <string>Ctrl+4</string>
-     </property>
-     <property name="checkable">
-      <bool>true</bool>
-     </property>
-     <property name="autoExclusive">
-      <bool>false</bool>
-     </property>
-     <property name="toolButtonStyle">
-      <enum>Qt::ToolButtonTextUnderIcon</enum>
-     </property>
-     <property name="autoRaise">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="TMenuButton" name="OwnButton">
-     <property name="minimumSize">
-      <size>
-       <width>56</width>
-       <height>56</height>
-      </size>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>56</width>
-       <height>56</height>
-      </size>
-     </property>
-     <property name="toolTip">
-      <string>Draw atoms and bonds according to individual atom style settings</string>
-     </property>
-     <property name="text">
-      <string>Own</string>
-     </property>
-     <property name="icon">
-      <iconset resource="icons.qrc">
-       <normaloff>:/viewstyle/icons/viewstyle_own.png</normaloff>:/viewstyle/icons/viewstyle_own.png</iconset>
-     </property>
-     <property name="iconSize">
-      <size>
-       <width>30</width>
-       <height>30</height>
-      </size>
-     </property>
-     <property name="shortcut">
-      <string>Ctrl+5</string>
      </property>
      <property name="checkable">
       <bool>true</bool>

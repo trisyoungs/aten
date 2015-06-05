@@ -1,5 +1,5 @@
 /*
-	*** TMenuButton - QToolButton with custom handling of mousepress/release events
+	*** TMenuButton - TMenuButton with custom handling of mousepress/release events
 	*** src/gui/tmenubutton.hui
 	Copyright T. Youngs 2007-2015
 
@@ -83,7 +83,7 @@ class TMenuButtonGroup : public ListItem<TMenuButtonGroup>
 	private:
 	// Name of group
 	QString name_;
-	// List of TMenuUButtons in this group
+	// List of TMenuButtons (or TMenuButtons) in this group
 	QList<TMenuButton*> buttons_;
 
 	public:
@@ -131,6 +131,8 @@ class TMenuButton : public QToolButton
 	TMenuButtonPopupWidget* popupWidget_;
 	// Whether popup is instant when button is pressed
 	bool instantPopup_;
+	// Whether button should be 'clicked' when the popup is done
+	bool clickOnPopupDone_;
 	// Timer for popup window
 	QTimer popupTimer_;
 	// Whether button was already checked before being pressed
@@ -138,7 +140,7 @@ class TMenuButton : public QToolButton
 
 	public:
 	// Set popup widget for button
-	void setPopupWidget(TMenuButtonPopupWidget* widget, bool instantPopup = false);
+	void setPopupWidget(TMenuButtonPopupWidget* widget, bool instantPopup = false, bool clickOnPopupDone = false);
 	// Return popup widget set for button
 	TMenuButtonPopupWidget* popupWidget();
 	// Call named method in associated popup widget

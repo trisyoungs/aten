@@ -104,5 +104,5 @@ void AtenWindow::on_ModelsList_itemSelectionChanged()
 	// Need to set the (a) current model
 	aten_.setCurrentModel(currentModel);
 
-	updateWidgets();
+	updateWidgets(AtenWindow::AllTarget);
 }

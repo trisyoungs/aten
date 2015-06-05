@@ -168,6 +168,21 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 
 	// Add buttons related to user actions to our button group, add popup widgets to those buttons that have them, and set up anything else we need to
 	QShortcut* shortcut;
+	// -- Home Panel (File)
+	// -- Home Panel (Appearance)
+	ui.HomeAppearanceLineButton->setGroup("ViewStyles", Prefs::LineStyle);
+	ui.HomeAppearanceTubeButton->setGroup("ViewStyles", Prefs::TubeStyle);
+	ui.HomeAppearanceSphereButton->setGroup("ViewStyles", Prefs::SphereStyle);
+	ui.HomeAppearanceScaledButton->setGroup("ViewStyles", Prefs::ScaledStyle);
+	ui.HomeAppearanceOwnStyleButton->setGroup("ViewStyles", Prefs::OwnStyle);
+	ui.HomeAppearanceElementButton->setGroup("ColourSchemes", Prefs::ElementScheme);
+	ui.HomeAppearanceChargeButton->setGroup("ColourSchemes", Prefs::ChargeScheme);
+	ui.HomeAppearanceForceButton->setGroup("ColourSchemes", Prefs::ForceScheme);
+	ui.HomeAppearanceVelocityButton->setGroup("ColourSchemes", Prefs::VelocityScheme);
+	ui.HomeAppearanceOwnColourButton->setGroup("ColourSchemes", Prefs::OwnScheme);
+	// -- View Panel (Control)
+	ui.HomeViewResetButton->setPopupWidget(new ResetViewPopup(*this, ui.HomeViewResetButton));
+
 	// -- Build Panel (Select)
 	ui.BuildSelectAtomsButton->setGroup("UserActions", UserAction::SelectAction);
 	ui.BuildSelectBoundButton->setGroup("UserActions", UserAction::SelectBoundAction);
@@ -204,12 +219,6 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 	// -- Cell Panel (Miller)
 	ui.CellMillerDefineButton->setPopupWidget(new CellMillerPopup(*this, ui.CellMillerDefineButton), true);
 
-	// -- View Panel (Control)
-	ui.ViewControlResetButton->setPopupWidget(new ResetViewPopup(*this, ui.ViewControlResetButton));
-	// -- View Panel (Appearance)
-	ui.ViewAppearanceStyleButton->setPopupWidget(new ViewStylePopup(*this, ui.ViewAppearanceStyleButton), true);
-	ui.ViewAppearanceColourButton->setPopupWidget(new ViewColourSchemePopup(*this, ui.ViewAppearanceColourButton), true);
-
 	// -- Calculate Panel (Measure)
 	ui.CalculateMeasureDistanceButton->setGroup("UserActions", UserAction::MeasureDistanceAction);
 	ui.CalculateMeasureDistanceButton->setPopupWidget(new MeasureDistancePopup(*this, ui.CalculateMeasureDistanceButton));
@@ -239,15 +248,18 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 	ui.GridsPrimaryStyleButton->setPopupWidget(new GridStylePopup(*this, ui.GridsPrimaryStyleButton, true), true);
 	// -- Grids Panel (Secondary Cutoff)
 	ui.GridsSecondaryColourButton->setPopupWidget(new ColourPopup(*this, ui.GridsSecondaryColourButton), true);
-	ui.GridsSecondaryStyleButton->setPopupWidget(new GridStylePopup(*this, ui.GridsPrimaryStyleButton, false), true);
+	ui.GridsSecondaryStyleButton->setPopupWidget(new GridStylePopup(*this, ui.GridsSecondaryStyleButton, false), true);
 
 	// -- Select Panel (ID/Element)
 	ui.SelectNETAElementButton->setPopupWidget(new ElementTablePopup(*this, ui.SelectNETAElementButton), true);
 
-
+	// -- Selection Panel (Appearance)
+	ui.SelectionAppearanceStyleButton->setPopupWidget(new ViewStylePopup(*this, ui.SelectionAppearanceStyleButton), false, true);
+	ui.SelectionAppearanceStyleButton->callPopupMethod("updateButtonIcon", rv = QString(Prefs::drawStyle(Prefs::SphereStyle)));
+	ui.SelectionAppearanceColourButton->setPopupWidget(new ColourPopup(*this, ui.SelectionAppearanceColourButton), false);
 
 	// Setup Shortcuts
-	// Home Panel
+	// Home Panel (File)
 	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::ALT + Qt::Key_N), this, 0, 0, Qt::ApplicationShortcut);
 	connect(shortcut, SIGNAL(activated()), ui.HomeFileNewButton, SLOT(click()));
 	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_O), this, 0, 0, Qt::ApplicationShortcut);
@@ -256,9 +268,22 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 	connect(shortcut, SIGNAL(activated()), ui.HomeFileSaveButton, SLOT(click()));
 	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::ALT + Qt::Key_S), this, 0, 0, Qt::ApplicationShortcut);
 	connect(shortcut, SIGNAL(activated()), ui.HomeFileSaveAsButton, SLOT(click()));
-	// View Panel
+	// Home Panel (Edit)
+	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_C), this, 0, 0, Qt::ApplicationShortcut);
+	connect(shortcut, SIGNAL(activated()), ui.HomeEditCopyButton, SLOT(click()));
+	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_X), this, 0, 0, Qt::ApplicationShortcut);
+	connect(shortcut, SIGNAL(activated()), ui.HomeEditCutButton, SLOT(click()));
+	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_V), this, 0, 0, Qt::ApplicationShortcut);
+	connect(shortcut, SIGNAL(activated()), ui.HomeEditPasteButton, SLOT(click()));
+	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_Backspace), this, 0, 0, Qt::ApplicationShortcut);
+	connect(shortcut, SIGNAL(activated()), ui.HomeEditDeleteButton, SLOT(click()));
+	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_Z), this, 0, 0, Qt::ApplicationShortcut);
+	connect(shortcut, SIGNAL(activated()), ui.HomeEditUndoButton, SLOT(click()));
+	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_Z), this, 0, 0, Qt::ApplicationShortcut);
+	connect(shortcut, SIGNAL(activated()), ui.HomeEditRedoButton, SLOT(click()));
+	// Home Panel (View)
 	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_R), this, 0, 0, Qt::ApplicationShortcut);
-	connect(shortcut, SIGNAL(activated()), ui.ViewControlResetButton, SLOT(click()));
+	connect(shortcut, SIGNAL(activated()), ui.HomeViewResetButton, SLOT(click()));
 	// Select Panel
 	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_A), this, 0, 0, Qt::ApplicationShortcut);
 	connect(shortcut, SIGNAL(activated()), ui.SelectBasicAllButton, SLOT(click()));
@@ -333,7 +358,7 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 	// Refresh the necessary windows, including the mainwindow
 	forcefieldsWidget->refresh();
 	commandWidget->refreshScripts();
-	updateWidgets();
+	updateWidgets(AtenWindow::AllTarget);
 
 	// Set some preferences back to their default values
 	prefs.setZMapType(ElementMap::AutoZMap, false);

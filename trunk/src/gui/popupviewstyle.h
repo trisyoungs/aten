@@ -74,7 +74,6 @@ class ViewStylePopup : public TMenuButtonPopupWidget
 	void on_TubeButton_clicked(bool checked);
 	void on_SphereButton_clicked(bool checked);
 	void on_ScaledButton_clicked(bool checked);
-	void on_OwnButton_clicked(bool checked);
 };
 
 #endif

@@ -29,6 +29,11 @@
   </qresource>
   <qresource prefix="/basic">
     <file>icons/basic_pointer.svg</file>
+    <file>icons/basic_abc.svg</file>
+    <file>icons/basic_alphabetagamma.svg</file>
+    <file>icons/basic_capitalabc.svg</file>
+    <file>icons/basic_xyz.svg</file>
+    <file>icons/basic_matrix.svg</file>
     <file>icons/basic_menuarrow.svg</file>
     <file>icons/basic_cross.svg</file>
     <file>icons/basic_colour.svg</file>

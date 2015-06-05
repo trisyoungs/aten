@@ -184,9 +184,9 @@ set(gui_SRCS
   mainwindow_panel_grids.cpp
   mainwindow_panel_home.cpp
   mainwindow_panel_select.cpp
+  mainwindow_panel_selection.cpp
   mainwindow_panel_transform.cpp
   mainwindow_panel_trajectory.cpp
-  mainwindow_panel_view.cpp
   mainwindow_update.cpp
   popupbuildaddh_funcs.cpp
   popupbuildgrow_funcs.cpp
