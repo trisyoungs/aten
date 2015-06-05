@@ -11,7 +11,6 @@
     <file>icons/arrow_up.svg</file>
     <file>icons/arrow_upline.svg</file>
   </qresource>
-  <qresource prefix="/viewstyle"/>
   <qresource prefix="/colourscheme">
     <file>icons/colourscheme_charge.png</file>
     <file>icons/colourscheme_element.png</file>
@@ -38,30 +37,15 @@
     <file>icons/basic_pick.svg</file>
     <file>icons/basic_plus.svg</file>
   </qresource>
-  <qresource prefix="/bond">
-    <file>icons/bond_augment.svg</file>
-    <file>icons/bond_calc.svg</file>
-    <file>icons/bond_calcsel.svg</file>
-    <file>icons/bond_clear.svg</file>
-    <file>icons/bond_clearsel.svg</file>
-    <file>icons/bond_delete.svg</file>
-    <file>icons/bond_double.svg</file>
-    <file>icons/bond_single.svg</file>
-    <file>icons/bond_triple.svg</file>
-  </qresource>
   <qresource prefix="/build">
     <file>icons/build_transmutesel.svg</file>
-    <file>icons/build_grow.svg</file>
-    <file>icons/build_growsel.svg</file>
-    <file>icons/build_fragment.svg</file>
-    <file>icons/build_c.svg</file>
-    <file>icons/build_h.svg</file>
-    <file>icons/build_n.svg</file>
-    <file>icons/build_o.svg</file>
+    <file>icons/build_draw.svg</file>
     <file>icons/build_addh.svg</file>
-    <file>icons/build_atom.svg</file>
+    <file>icons/build_clearbonds.svg</file>
+    <file>icons/build_augment.svg</file>
+    <file>icons/build_fragment.svg</file>
+    <file>icons/build_rebond.svg</file>
     <file>icons/build_atomaddh.svg</file>
-    <file>icons/build_chain.svg</file>
     <file>icons/build_delete.svg</file>
     <file>icons/build_probe.svg</file>
     <file>icons/build_transmute.svg</file>
