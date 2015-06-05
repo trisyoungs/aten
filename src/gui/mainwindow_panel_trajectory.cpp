@@ -130,7 +130,7 @@ void AtenWindow::on_TrajectorySourceFramesButton_clicked(bool checked)
 
 	currentModel->setRenderSource(checked ? Model::TrajectorySource : Model::ModelSource);
 
-	updateWidgets();
+	updateWidgets(AtenWindow::AllTarget);
 }
 
 /*

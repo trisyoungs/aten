@@ -29,6 +29,9 @@
 ColourPopup::ColourPopup(AtenWindow& parent, TMenuButton* buttonParent) : TMenuButtonPopupWidget(buttonParent), parent_(parent)
 {
 	ui.setupUi(this);
+
+	setCurrentColour(Qt::blue);
+	updateParentButtonIcon();
 }
 
 // Show popup, updating any controls as necessary beforehand

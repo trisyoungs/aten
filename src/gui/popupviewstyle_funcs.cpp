@@ -34,11 +34,12 @@ ViewStylePopup::ViewStylePopup(AtenWindow& parent, TMenuButton* buttonParent) : 
 	ui.setupUi(this);
 
 	// Add style tool buttons to their button group
-	ui.LineButton->setGroup("ViewStyles");
-	ui.TubeButton->setGroup("ViewStyles");
-	ui.SphereButton->setGroup("ViewStyles");
-	ui.ScaledButton->setGroup("ViewStyles");
-	ui.OwnButton->setGroup("ViewStyles");
+	static int popupCounter = 0;
+	ui.LineButton->setGroup("ViewStylePopup"+QString::number(popupCounter));
+	ui.TubeButton->setGroup("ViewStylePopup"+QString::number(popupCounter));
+	ui.SphereButton->setGroup("ViewStylePopup"+QString::number(popupCounter));
+	ui.ScaledButton->setGroup("ViewStylePopup"+QString::number(popupCounter));
+	++popupCounter;
 }
 
 // Show popup, updating any controls as necessary beforehand
@@ -59,9 +60,6 @@ void ViewStylePopup::popup()
 			break;
 		case (Prefs::ScaledStyle):
 			ui.ScaledButton->setChecked(true);
-			break;
-		case (Prefs::OwnStyle):
-			ui.OwnButton->setChecked(true);
 			break;
 		default:
 			printf("Warning: Prefs has odd render style (%i)\n", prefs.renderStyle());
@@ -95,13 +93,18 @@ bool ViewStylePopup::callMethod(QString methodName, ReturnValue& rv)
 			case (Prefs::ScaledStyle):
 				parentMenuButton()->setIcon(QIcon(":/viewstyle/icons/viewstyle_scaled.png"));
 				break;
-			case (Prefs::OwnStyle):
-				parentMenuButton()->setIcon(QIcon(":/viewstyle/icons/viewstyle_own.png"));
-				break;
 			default:
 				printf("Warning: Odd render style (%s) passed so can't set parent button's icon.\n", qPrintable(rv.asString()));
 				break;
 		}
+	}
+	else if (methodName == "currentStyle")
+	{
+		if (ui.LineButton->isChecked()) rv = QString(Prefs::drawStyle(Prefs::LineStyle));
+		else if (ui.TubeButton->isChecked()) rv = QString(Prefs::drawStyle(Prefs::TubeStyle));
+		else if (ui.SphereButton->isChecked()) rv = QString(Prefs::drawStyle(Prefs::SphereStyle));
+		else if (ui.ScaledButton->isChecked()) rv = QString(Prefs::drawStyle(Prefs::ScaledStyle));
+		return true;
 	}
 	else if (methodName == "hideEvent")
 	{
@@ -119,14 +122,8 @@ void ViewStylePopup::on_LineButton_clicked(bool checked)
 {
 	if (!checked) return;
 
-	prefs.setRenderStyle(Prefs::LineStyle);
-
 	// Update icon
 	callMethodSimple("updateButtonIcon", Prefs::drawStyle(Prefs::LineStyle));
-
-	parent_.aten().globalLogChange(Log::Style);
-
-	parent_.updateWidgets(AtenWindow::MainViewTarget);
 
 	// Hide popup
 	done();
@@ -136,14 +133,8 @@ void ViewStylePopup::on_TubeButton_clicked(bool checked)
 {
 	if (!checked) return;
 
-	prefs.setRenderStyle(Prefs::TubeStyle);
-
 	// Update icon
 	callMethodSimple("updateButtonIcon", Prefs::drawStyle(Prefs::TubeStyle));
-
-	parent_.aten().globalLogChange(Log::Style);
-
-	parent_.updateWidgets(AtenWindow::MainViewTarget);
 
 	// Hide popup
 	done();
@@ -153,14 +144,8 @@ void ViewStylePopup::on_SphereButton_clicked(bool checked)
 {
 	if (!checked) return;
 
-	prefs.setRenderStyle(Prefs::SphereStyle);
-
 	// Update icon
 	callMethodSimple("updateButtonIcon", Prefs::drawStyle(Prefs::SphereStyle));
-
-	parent_.aten().globalLogChange(Log::Style);
-
-	parent_.updateWidgets(AtenWindow::MainViewTarget);
 
 	// Hide popup
 	done();
@@ -170,31 +155,8 @@ void ViewStylePopup::on_ScaledButton_clicked(bool checked)
 {
 	if (!checked) return;
 
-	prefs.setRenderStyle(Prefs::ScaledStyle);
-
 	// Update icon
 	callMethodSimple("updateButtonIcon", Prefs::drawStyle(Prefs::ScaledStyle));
-
-	parent_.aten().globalLogChange(Log::Style);
-
-	parent_.updateWidgets(AtenWindow::MainViewTarget);
-
-	// Hide popup
-	done();
-}
-
-void ViewStylePopup::on_OwnButton_clicked(bool checked)
-{
-	if (!checked) return;
-
-	prefs.setRenderStyle(Prefs::OwnStyle);
-
-	// Update icon
-	callMethodSimple("updateButtonIcon", Prefs::drawStyle(Prefs::OwnStyle));
-
-	parent_.aten().globalLogChange(Log::Style);
-
-	parent_.updateWidgets(AtenWindow::MainViewTarget);
 
 	// Hide popup
 	done();

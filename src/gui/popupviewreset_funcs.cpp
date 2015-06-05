@@ -65,7 +65,10 @@ void ResetViewPopup::setCartesianView(double x, double y, double z)
 {
 	// Set model rotation matrix to be along the specified axis
 	parent_.aten().currentModelOrFrame()->viewAlong(x,y,z);
+
 	parent_.updateWidgets(AtenWindow::MainViewTarget);
+
+	done();
 }
 
 // Set view along cell axis supplied
@@ -73,7 +76,10 @@ void ResetViewPopup::setCellView(double x, double y, double z)
 {
 	// Set model rotation matrix to be along the specified cell axis
 	parent_.aten().currentModelOrFrame()->viewAlongCell(x,y,z);
+
 	parent_.updateWidgets(AtenWindow::MainViewTarget);
+
+	done();
 }
 
 void ResetViewPopup::on_CartesianPositiveXButton_clicked(bool checked)

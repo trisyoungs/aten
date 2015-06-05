@@ -148,7 +148,7 @@ void AtenWindow::initialUpdateAndShow()
 	show();
 
 	// Update everything else
-	updateWidgets();
+	updateWidgets(AtenWindow::AllTarget);
 
 	Messenger::exit("AtenWindow::initialUpdateAndShow");
 }
@@ -160,8 +160,8 @@ void AtenWindow::updateWidgets(int targets)
 
 	refreshing_ = true;
 
-	// Main window bottom-left status info, menu items, and titlebar
-	if (targets&AtenWindow::MainWindowTarget) updateMainWindow();
+	// Always update main window bottom-left status info, menu items, and titlebar
+	updateMainWindow();
 
 	// Update main view
 	if (targets&AtenWindow::MainViewTarget) ui.MainView->update();
@@ -175,6 +175,9 @@ void AtenWindow::updateWidgets(int targets)
 	// Always update Home panel
 	updateHomePanel(currentModel);
 
+	// Enable / disable Selection tab
+	ui.SelectionTab->setEnabled(currentModel && currentModel->nSelected());
+
 	// Update atoms table
 	if (targets&AtenWindow::AtomsTableTarget) updateAtomsTable(currentModel);
 
@@ -184,7 +187,6 @@ void AtenWindow::updateWidgets(int targets)
 	// Panels
 	if (targets&AtenWindow::BuildPanelTarget) updateBuildPanel(currentModel);
 	if (targets&AtenWindow::CellPanelTarget) updateCellPanel(currentModel);
-	if (targets&AtenWindow::ViewPanelTarget) updateViewPanel(currentModel);
 	if (targets&AtenWindow::CalculatePanelTarget) updateCalculatePanel(currentModel);
 	if (targets&AtenWindow::TransformPanelTarget) updateTransformPanel(currentModel);
 	if (targets&AtenWindow::GridsPanelTarget) updateGridsPanel(currentModel);

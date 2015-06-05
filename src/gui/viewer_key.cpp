@@ -113,7 +113,7 @@ void Viewer::keyPressEvent(QKeyEvent* event)
 			n = prefs.renderStyle() + 1;
 			if (n == Prefs::nDrawStyles) n = 0;
 			prefs.setRenderStyle((Prefs::DrawStyle) n);
-			atenWindow_->updateWidgets(AtenWindow::ViewPanelTarget);
+			atenWindow_->updateWidgets(AtenWindow::MainViewTarget);
 			ignore = false;
 			break;
 		// Cycle colouring styles
@@ -121,7 +121,7 @@ void Viewer::keyPressEvent(QKeyEvent* event)
 			n = prefs.colourScheme() + 1;
 			if (n == Prefs::nColouringSchemes) n = 0;
 			prefs.setColourScheme((Prefs::ColouringScheme) n);
-			atenWindow_->updateWidgets(AtenWindow::ViewPanelTarget);
+			atenWindow_->updateWidgets(AtenWindow::MainViewTarget);
 			ignore = false;
 			break;
 		default:

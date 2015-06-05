@@ -197,10 +197,11 @@ int TMenuButton::index()
 }
 
 // Set popup widget for button
-void TMenuButton::setPopupWidget(TMenuButtonPopupWidget* widget, bool instantPopup)
+void TMenuButton::setPopupWidget(TMenuButtonPopupWidget* widget, bool instantPopup, bool clickOnPopupDone)
 {
 	popupWidget_ = widget;
 	instantPopup_ = instantPopup;
+	clickOnPopupDone_ = clickOnPopupDone;
 }
 
 // Return popup widget set for button
@@ -213,6 +214,9 @@ void TMenuButton::popupDone(bool setButtonDown)
 {
 	if (!setButtonDown) setDown(false);
 	else if (group_) group_->setCurrentButton(this);
+
+	// Click button if requested
+	if (clickOnPopupDone_) emit(click());
 }
 
 // Notify button that the popup has been hidden

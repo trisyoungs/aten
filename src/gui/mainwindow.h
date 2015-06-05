@@ -122,7 +122,7 @@ class AtenWindow : public QMainWindow
 	 */
 	public:
 	// Update Targets
-	enum UpdateTarget { AtomsTableTarget = 1, CalculatePanelTarget = 2, ForcefieldsTarget = 4, GlyphsTarget = 8, GridsPanelTarget = 16, MainWindowTarget = 32, MainViewTarget = 64, StatusBarTarget = 128, GeometryTarget = 256, VibrationsTarget = 512, SelectPanelTarget = 1024, TrajectoryPanelTarget = 2048, BuildPanelTarget = 4096, CellPanelTarget = 8192, ViewPanelTarget = 16384, TransformPanelTarget = 32768, ContextMenuTarget = 65536, ModelsListTarget = 131072, AllTarget = 262143 }; // 524287
+	enum UpdateTarget { DefaultTarget = 0, AtomsTableTarget = 1, CalculatePanelTarget = 2, ForcefieldsTarget = 4, GlyphsTarget = 8, GridsPanelTarget = 16, MainViewTarget = 64, StatusBarTarget = 128, GeometryTarget = 256, VibrationsTarget = 512, SelectPanelTarget = 1024, TrajectoryPanelTarget = 2048, BuildPanelTarget = 4096, CellPanelTarget = 8192, TransformPanelTarget = 16384, ContextMenuTarget = 32768, ModelsListTarget = 65536, AllTarget = 131071 };
 
 	private:
 	// Whether window is currently refreshing
@@ -138,7 +138,7 @@ class AtenWindow : public QMainWindow
 	// Initial update and show
 	void initialUpdateAndShow();
 	// Refreshes specified (or all) dock widgets
-	void updateWidgets(int targets = AtenWindow::AllTarget);
+	void updateWidgets(int targets = AtenWindow::DefaultTarget);
 
 
 	/*
@@ -268,6 +268,26 @@ class AtenWindow : public QMainWindow
 	void on_HomeEditDeleteButton_clicked(bool checked);
 	void on_HomeEditUndoButton_clicked(bool checked);
 	void on_HomeEditRedoButton_clicked(bool checked);
+	// Appearance
+	void on_HomeAppearanceLineButton_clicked(bool checked);
+	void on_HomeAppearanceTubeButton_clicked(bool checked);
+	void on_HomeAppearanceSphereButton_clicked(bool checked);
+	void on_HomeAppearanceScaledButton_clicked(bool checked);
+	void on_HomeAppearanceOwnStyleButton_clicked(bool checked);
+	void on_HomeAppearanceElementButton_clicked(bool checked);
+	void on_HomeAppearanceChargeButton_clicked(bool checked);
+	void on_HomeAppearanceForceButton_clicked(bool checked);
+	void on_HomeAppearanceVelocityButton_clicked(bool checked);
+	void on_HomeAppearanceOwnColourButton_clicked(bool checked);
+	void on_HomeAppearancePerspectiveButton_clicked(bool checked);
+	// View
+	void on_HomeViewResetButton_clicked(bool checked);
+	void on_HomeViewZoomInButton_clicked(bool checked);
+	void on_HomeViewZoomOutButton_clicked(bool checked);
+	void on_HomeViewGetButton_clicked(bool checked);
+	void on_HomeViewSetButton_clicked(bool checked);
+	void on_HomeViewHBondsButton_clicked(bool checked);
+	void on_HomeViewLockButton_clicked(bool checked);
 
 	public:
 	bool runSaveModelDialog();
@@ -318,26 +338,6 @@ class AtenWindow : public QMainWindow
 	void on_CellTransformScaleButton_clicked(bool checked);
 	// Miller
 	void on_CellMillerSelectButton_clicked(bool checked);
-
-
-	/*
-	 * View Panel
-	 */
-	private:
-	// Update view panel
-	void updateViewPanel(Model* sourceModel);
-
-	private slots:
-	// Control
-	void on_ViewControlResetButton_clicked(bool checked);
-	void on_ViewControlZoomInButton_clicked(bool checked);
-	void on_ViewControlZoomOutButton_clicked(bool checked);
-	void on_ViewControlGetButton_clicked(bool checked);
-	void on_ViewControlSetButton_clicked(bool checked);
-	void on_ViewControlDetectHBondsButton_clicked(bool checked);
-	void on_ViewControlLockViewButton_clicked(bool checked);
-	// Appearance
-	void on_ViewAppearancePerspectiveButton_clicked(bool checked);
 
 
 	/*
@@ -457,6 +457,34 @@ class AtenWindow : public QMainWindow
 	// Code
 	void on_SelectCodeSelectButton_clicked(bool checked);
 	void on_SelectCodeDeselectButton_clicked(bool checked);
+
+
+	/*
+	 * Selection Panel
+	 */
+	private:
+	// Update selection panel
+	void updateSelectionPanel(Model* sourceModel);
+
+	private slots:
+	// Appearance
+	void on_SelectionAppearanceStyleButton_clicked(bool checked);
+	void on_SelectionAppearanceColourButton_clicked(bool checked);
+	void on_SelectionAppearanceResetToElementButton_clicked(bool checked);
+	void on_SelectionAppearanceHideButton_clicked(bool checked);
+	// Label
+	void on_SelectionLabelIDButton_clicked(bool checked);
+	void on_SelectionLabelElementButton_clicked(bool checked);
+	void on_SelectionLabelChargeButton_clicked(bool checked);
+	void on_SelectionLabelTypeButton_clicked(bool checked);
+	void on_SelectionLabelEquivalentButton_clicked(bool checked);
+	void on_SelectionLabelClearButton_clicked(bool checked);
+	// Position
+	void on_SelectionPositionFixButton_clicked(bool checked);
+	void on_SelectionPositionFreeButton_clicked(bool checked);
+
+
+	
 
 
 	/*

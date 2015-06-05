@@ -27,16 +27,21 @@
 #include "model/undostate.h"
 #include <QFileDialog>
 
+// Static local variables
+Matrix storedView;
+
 // Update home panel
 void AtenWindow::updateHomePanel(Model* sourceModel)
 {
 	Messenger::enter("AtenWindow::updateHomePanel");
 
+	// File
 	ui.HomeFileOpenButton->setEnabled(!aten_.fileDialogFilters(FilterData::ModelImport).isEmpty());
 	ui.HomeFileSaveButton->setEnabled((!aten_.fileDialogFilters(FilterData::ModelExport).isEmpty()) && sourceModel && sourceModel->isModified());
 	ui.HomeFileSaveAsButton->setEnabled(!aten_.fileDialogFilters(FilterData::ModelExport).isEmpty());
 
-	// Update undo / redo state
+	// Edit
+	// -- Update undo / redo state
 	if (sourceModel && sourceModel->currentUndoState())
 	{
 		ui.HomeEditUndoButton->setToolTip("Undo (" + sourceModel->currentUndoState()->description() + ")");
@@ -57,6 +62,13 @@ void AtenWindow::updateHomePanel(Model* sourceModel)
 		ui.HomeEditRedoButton->setToolTip("(Nothing to Redo)");
 		ui.HomeEditRedoButton->setEnabled(false);
 	}
+
+	// Appearance
+	ui.HomeAppearancePerspectiveButton->setChecked(prefs.hasPerspective());
+	ui.HomeViewHBondsButton->setChecked(prefs.drawHydrogenBonds());  //ATEN2 TODO Move this from Prefs?
+	ui.HomeViewLockButton->setChecked(Model::useCommonModelViewMatrix());
+	TMenuButton::setGroupButtonChecked("ViewStyles", Prefs::drawStyle(prefs.renderStyle()));
+	TMenuButton::setGroupButtonChecked("ColourSchemes", Prefs::colouringScheme(prefs.colourScheme()));
 
 	Messenger::exit("AtenWindow::updateHomePanel");
 }
@@ -129,6 +141,7 @@ void AtenWindow::on_HomeFileSaveButton_clicked(bool checked)
 		m->updateSavePoint();
 		m->enableUndoRedo();
 	}
+
 	updateWidgets();
 }
 
@@ -227,7 +240,187 @@ void AtenWindow::on_HomeEditRedoButton_clicked(bool checked)
 	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget+AtenWindow::SelectPanelTarget+AtenWindow::GlyphsTarget);
 }
 
-// Local save function
+
+/*
+ * Control
+ */
+
+void AtenWindow::on_HomeViewResetButton_clicked(bool checked)
+{
+	aten_.currentModelOrFrame()->resetView(ui.MainView->contextWidth(), ui.MainView->contextHeight());
+	updateWidgets(AtenWindow::MainViewTarget);
+}
+
+void AtenWindow::on_HomeViewZoomInButton_clicked(bool checked)
+{
+	aten_.currentModelOrFrame()->adjustCamera(0.0,0.0,5.0);
+	updateWidgets(AtenWindow::MainViewTarget);
+}
+
+void AtenWindow::on_HomeViewZoomOutButton_clicked(bool checked)
+{
+	aten_.currentModelOrFrame()->adjustCamera(0.0,0.0,-5.0);
+	updateWidgets(AtenWindow::MainViewTarget);
+}
+
+// Get current view
+void AtenWindow::on_HomeViewGetButton_clicked(bool checked)
+{
+	// Get view from current model
+	Model* currentModel = aten_.currentModelOrFrame();
+	if (!currentModel) return;
+	storedView = currentModel->modelViewMatrix();
+}
+
+// Set current view (from stored view)
+void AtenWindow::on_HomeViewSetButton_clicked(bool checked)
+{
+	// Run command
+	CommandNode::run(Commands::SetView, "dddddddddddd", storedView[0], storedView[1], storedView[2], storedView[4], storedView[5], storedView[6], storedView[8], storedView[9], storedView[10], storedView[12], storedView[13], storedView[14]);
+
+	updateWidgets(AtenWindow::MainViewTarget);
+}
+
+// Toggle detection of H-Bonds
+void AtenWindow::on_HomeViewHBondsButton_clicked(bool checked)
+{
+	if (refreshing_) return;
+	
+	prefs.setDrawHydrogenBonds(checked);
+
+	updateWidgets(AtenWindow::MainViewTarget);
+}
+
+void AtenWindow::on_HomeViewLockButton_clicked(bool checked)
+{
+	if (refreshing_) return;
+
+	// Get view from current model
+	Model* currentModel = aten_.currentModelOrFrame();
+	if (!currentModel) return;
+	currentModel->setCommonViewMatrixFromLocal();
+
+	Model::setUseCommonModelViewMatrix(checked);
+
+
+	updateWidgets(AtenWindow::MainViewTarget);
+}
+
+/*
+ * Appearance
+ */
+
+void AtenWindow::on_HomeAppearanceLineButton_clicked(bool checked)
+{
+	if (!checked) return;
+
+	prefs.setRenderStyle(Prefs::LineStyle);
+	aten_.globalLogChange(Log::Style);
+
+	updateWidgets(AtenWindow::MainViewTarget);
+}
+
+void AtenWindow::on_HomeAppearanceTubeButton_clicked(bool checked)
+{
+	if (!checked) return;
+
+	prefs.setRenderStyle(Prefs::TubeStyle);
+	aten_.globalLogChange(Log::Style);
+
+	updateWidgets(AtenWindow::MainViewTarget);
+}
+
+void AtenWindow::on_HomeAppearanceSphereButton_clicked(bool checked)
+{
+	if (!checked) return;
+
+	prefs.setRenderStyle(Prefs::SphereStyle);
+	aten_.globalLogChange(Log::Style);
+
+	updateWidgets(AtenWindow::MainViewTarget);
+}
+
+void AtenWindow::on_HomeAppearanceScaledButton_clicked(bool checked)
+{
+	if (!checked) return;
+
+	prefs.setRenderStyle(Prefs::ScaledStyle);
+	aten_.globalLogChange(Log::Style);
+
+	updateWidgets(AtenWindow::MainViewTarget);
+}
+
+void AtenWindow::on_HomeAppearanceOwnStyleButton_clicked(bool checked)
+{
+	if (!checked) return;
+
+	prefs.setRenderStyle(Prefs::OwnStyle);
+	aten_.globalLogChange(Log::Style);
+
+	updateWidgets(AtenWindow::MainViewTarget);
+}
+
+void AtenWindow::on_HomeAppearanceElementButton_clicked(bool checked)
+{
+	if (!checked) return;
+
+	prefs.setColourScheme(Prefs::ElementScheme);
+	aten_.globalLogChange(Log::Style);
+
+	updateWidgets(AtenWindow::MainViewTarget);
+}
+
+void AtenWindow::on_HomeAppearanceChargeButton_clicked(bool checked)
+{
+	if (!checked) return;
+
+	prefs.setColourScheme(Prefs::ChargeScheme);
+	aten_.globalLogChange(Log::Style);
+
+	updateWidgets(AtenWindow::MainViewTarget);
+}
+
+void AtenWindow::on_HomeAppearanceForceButton_clicked(bool checked)
+{
+	if (!checked) return;
+
+	prefs.setColourScheme(Prefs::ForceScheme);
+	aten_.globalLogChange(Log::Style);
+
+	updateWidgets(AtenWindow::MainViewTarget);
+}
+
+void AtenWindow::on_HomeAppearanceVelocityButton_clicked(bool checked)
+{
+	if (!checked) return;
+
+	prefs.setColourScheme(Prefs::VelocityScheme);
+	aten_.globalLogChange(Log::Style);
+
+	updateWidgets(AtenWindow::MainViewTarget);
+}
+
+void AtenWindow::on_HomeAppearanceOwnColourButton_clicked(bool checked)
+{
+	if (!checked) return;
+
+	prefs.setColourScheme(Prefs::OwnScheme);
+	aten_.globalLogChange(Log::Style);
+
+	updateWidgets(AtenWindow::MainViewTarget);
+}
+
+// Set perspective view
+void AtenWindow::on_HomeAppearancePerspectiveButton_clicked(bool checked)
+{
+	if (refreshing_) return;
+
+	prefs.setPerspective(checked);
+
+	updateWidgets(AtenWindow::MainViewTarget);
+}
+
+// Local save function  ATEN2 TODO Move this!
 bool AtenWindow::runSaveModelDialog()
 {
 	saveModelFilename_.clear();

@@ -19,7 +19,6 @@ Make ElementMap store reference to Aten, preventing passing of FFs.
 Implement optional startup 'guide' or 'wizard' that will disable all controls on the GUI and explain what means what, highlighting them as appropriate.
 Scale molecule COM inverts coordinates??
 Reformulate Pattern::bondEnergy() and others into a separate class, since the Pattern class shouldn't really own them.
-Use indices in rendering Primitives.
 Change SaveImageDialog to check for empty image filename, and disable OK button accordingly.
 Check - is using redirected filenames really necessary when saveing movie frame images?
 Fix image saving - in particular scaling & offset when saving large image (what role will/did ViewLayout play?)
@@ -45,12 +44,13 @@ Reimplement drawing of grid (volume) axes.
 Shortcuts for panel buttons do not work (use QActions again?).
 Make Model::EnergyStore a private member with accessor?
 Click to select grid.
-Fix grid rendering - triangle grid not rendered in unfilled polygon mode, and points surface is completely broken.
 Add button to Transform/Position to centre entire model at zero?
 Have Tools page? With, for instance:
 --- Plot Orbital (raising dialog from old GridsWidget).
 Remove TColourFrame (after updating Prefs and Glyphs windows).
 Have small, additional black icons at top-left of each model window, illustrating whether it has been modified, is displaying trajetory frames, etc.
+Grids, Outline Volume doesn't do / display anything.
+Cell, Perspective check doesn't do anything.
 
 GUI TODO:
 AddAtom functionality (from old Build menu).
