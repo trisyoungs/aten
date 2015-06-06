@@ -37,6 +37,7 @@ SET(gui_MOC_HDRS
   popupcolour.h
   popupelementcommon.h
   popupelementtable.h
+  popupfilesave.h
   popupgridmatrix.h
   popupgridorigin.h
   popupgridshift.h
@@ -116,6 +117,7 @@ SET(gui_UIS
   popupcolour.ui
   popupelementcommon.ui
   popupelementtable.ui
+  popupfilesave.ui
   popupgridmatrix.ui
   popupgridorigin.ui
   popupgridshift.ui
@@ -187,6 +189,7 @@ set(gui_SRCS
   mainwindow_panel_selection.cpp
   mainwindow_panel_transform.cpp
   mainwindow_panel_trajectory.cpp
+  mainwindow_quickcommand.cpp
   mainwindow_update.cpp
   popupbuildaddh_funcs.cpp
   popupbuildgrow_funcs.cpp
@@ -202,6 +205,7 @@ set(gui_SRCS
   popupcolour_funcs.cpp
   popupelementcommon_funcs.cpp
   popupelementtable_funcs.cpp
+  popupfilesave_funcs.cpp
   popupgridmatrix_funcs.cpp
   popupgridorigin_funcs.cpp
   popupgridshift_funcs.cpp

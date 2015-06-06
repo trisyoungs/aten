@@ -131,17 +131,17 @@ class TreeGuiWidget : public ListItem<TreeGuiWidget>
 	// Local name used for reference and retrieval
 	QString name_;
 	// Parent TreeGui
-	TreeGui *parent_;
+	TreeGui* parent_;
 	
 	public:
 	// Set widget type, name, and parent
-	void set(TreeGuiWidget::WidgetType type, QString name, TreeGui *parent);
+	void set(TreeGuiWidget::WidgetType type, QString name, TreeGui* parent);
 	// Return widget type
 	TreeGuiWidget::WidgetType type();
 	// Return widget name
 	QString name();
 	// Return widget parent
-	TreeGui *parent();
+	TreeGui* parent();
 	// Set corresponding Qt QWidget/QObject
 	void setQtWidgetObject(QtWidgetObject* wo);
 	// Return associated qtWidgetObject

@@ -53,6 +53,7 @@
 #include "gui/popupcolour.h"
 #include "gui/popupelementcommon.h"
 #include "gui/popupelementtable.h"
+#include "gui/popupfilesave.h"
 #include "gui/popupgridmatrix.h"
 #include "gui/popupgridorigin.h"
 #include "gui/popupgridstyle.h"
@@ -169,6 +170,7 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 	// Add buttons related to user actions to our button group, add popup widgets to those buttons that have them, and set up anything else we need to
 	QShortcut* shortcut;
 	// -- Home Panel (File)
+	ui.HomeFileSaveButton->setPopupWidget(new FileSavePopup(*this, ui.HomeFileSaveButton));
 	// -- Home Panel (Appearance)
 	ui.HomeAppearanceLineButton->setGroup("ViewStyles", Prefs::LineStyle);
 	ui.HomeAppearanceTubeButton->setGroup("ViewStyles", Prefs::TubeStyle);
@@ -293,6 +295,9 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 	connect(shortcut, SIGNAL(activated()), ui.SelectBasicInvertButton, SLOT(click()));
 	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_E), this, 0, 0, Qt::ApplicationShortcut);
 	connect(shortcut, SIGNAL(activated()), ui.SelectBasicExpandButton, SLOT(click()));
+	// Main Window
+	shortcut = new QShortcut(QKeySequence(Qt::Key_F10), this, 0, 0, Qt::ApplicationShortcut);
+	connect(shortcut, SIGNAL(activated()), ui.QuickCommandToggleButton, SLOT(click()));
 
 
 // 	// -- From Transform Dock Widget
@@ -306,10 +311,12 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 // 	uaButtons_.addButton(transformWidget->ui.ConvertTargetPickBButton, UserAction::ConvertTargetPickBAction);
 // 	uaButtons_.addButton(transformWidget->ui.ConvertTargetPickCButton, UserAction::ConvertTargetPickCAction);
 
-	/*
-	 * Create Context Menu
-	 */
+	// Create Context Menu
 	createContextMenu();
+
+	// Link QuickCommand line edit to run slot
+	connect(ui.QuickCommandCombo->lineEdit(), SIGNAL(returnPressed()), this, SLOT(quickCommandRun()));
+	ui.QuickCommandFrame->setVisible(false);
 
 	/*
 	 * Statusbar
@@ -340,15 +347,6 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 	infoLabel2_->setFont(font);
 	infolayout->addWidget(infoLabel2_);
 	lablayout->addLayout(infolayout,0);
-
-	// Create glyph actions for Selection (atom context) menu
-	QMenu *menu = new QMenu(this);
-	for (int n=0; n<Glyph::nGlyphTypes; ++n)
-	{
-		createGlyphActions[n] = menu->addAction(Glyph::glyphTypeName( (Glyph::GlyphType) n));
-		QObject::connect(createGlyphActions[n], SIGNAL(triggered()), this, SLOT(createGlyph()));
-	}
-	ui.actionCreateGlyph->setMenu(menu);
 
 	// Load Qt Settings
 	loadSettings();

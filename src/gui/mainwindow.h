@@ -138,22 +138,7 @@ class AtenWindow : public QMainWindow
 	// Refreshes specified (or all) dock widgets
 	void updateWidgets(int targets = AtenWindow::DefaultTarget);
 
-
-	/*
-	 * File Menu / Actions
-	 */
-	private slots:
-	void on_actionExportOptions_triggered(bool checked);
-
 	
-	/*
-	 * Edit Menu / Actions
-	 */
-	private slots:
-	void on_actionEditPasteTranslated_triggered(bool checked);
-	void on_actionEditQuickCommand_triggered(bool checked);
-
-
 	/*
 	 * Context Menu
 	 */
@@ -551,6 +536,14 @@ class AtenWindow : public QMainWindow
 	public:
 	// Refresh atoms table
 	void updateAtomsTable(Model* sourceModel);
+
+
+	/*
+	 * Quick Command Box
+	 */
+	private slots:
+	void on_QuickCommandToggleButton_clicked(bool checked);
+	void quickCommandRun();	
 
 
 	/*

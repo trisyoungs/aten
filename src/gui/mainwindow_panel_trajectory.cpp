@@ -278,7 +278,7 @@ void AtenWindow::on_TrajectoryToolsMovieButton_clicked(bool checked)
 	
 	Model* m = aten_.currentModel();
 	Tree dialog;
-	TreeGui &ui = dialog.defaultDialog();
+	TreeGui& ui = dialog.defaultDialog();
 	ui.setProperty(TreeGuiWidgetEvent::TextProperty, "Movie Options");
 	ui.addEdit("geometry", "Image Geometry", geometry ,1,1);
 	ui.addIntegerSpin("firstframe", "First Frame", 1, m->nTrajectoryFrames(), 1, 1 ,1,2);

@@ -195,7 +195,7 @@ void VibrationsWidget::on_DelaySpin_valueChanged(int value)
 
 void VibrationsWidget::on_SaveImageButton_clicked(bool checked)
 {
-	parent_.ui.actionFileSaveImage->trigger();
+// 	parent_.ui.actionFileSaveImage->trigger();
 }
 
 void VibrationsWidget::on_SaveMovieButton_clicked(bool checked)
@@ -205,7 +205,7 @@ void VibrationsWidget::on_SaveMovieButton_clicked(bool checked)
 	int width, height;
 	
 	Tree dialog;
-	TreeGui &dialogui = dialog.defaultDialog();
+	TreeGui& dialogui = dialog.defaultDialog();
 	dialogui.setProperty(TreeGuiWidgetEvent::TextProperty, "Vibration Movie Options");
 	dialogui.addEdit("geometry", "Image Geometry", geometry,1,1);
 	dialogui.addIntegerSpin("cycles", "Number of Cycles", 1, 1000, 1, 10 ,1,2);

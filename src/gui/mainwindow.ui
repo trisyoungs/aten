@@ -75,7 +75,7 @@
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>10</number>
+       <number>0</number>
       </property>
       <property name="usesScrollButtons">
        <bool>true</bool>
@@ -7782,44 +7782,114 @@
        </widget>
       </item>
       <item>
-       <widget class="QFrame" name="ViewFrame">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-          <horstretch>7</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
+       <layout class="QVBoxLayout" name="verticalLayout">
+        <property name="spacing">
+         <number>0</number>
         </property>
-        <property name="frameShape">
-         <enum>QFrame::StyledPanel</enum>
-        </property>
-        <property name="frameShadow">
-         <enum>QFrame::Raised</enum>
-        </property>
-        <layout class="QHBoxLayout" name="horizontalLayout">
-         <property name="spacing">
-          <number>0</number>
-         </property>
-         <property name="margin">
-          <number>0</number>
-         </property>
-         <item>
-          <widget class="Viewer" name="MainView" native="true">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
+        <item>
+         <widget class="QFrame" name="ViewFrame">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+            <horstretch>7</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <property name="frameShadow">
+           <enum>QFrame::Raised</enum>
+          </property>
+          <layout class="QHBoxLayout" name="horizontalLayout">
+           <property name="spacing">
+            <number>2</number>
            </property>
-           <property name="mouseTracking">
-            <bool>true</bool>
+           <property name="margin">
+            <number>2</number>
            </property>
-          </widget>
-         </item>
-        </layout>
-       </widget>
+           <item>
+            <widget class="Viewer" name="MainView" native="true">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="mouseTracking">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QFrame" name="QuickCommandFrame">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="frameShape">
+           <enum>QFrame::StyledPanel</enum>
+          </property>
+          <property name="frameShadow">
+           <enum>QFrame::Raised</enum>
+          </property>
+          <layout class="QHBoxLayout" name="horizontalLayout_22">
+           <property name="spacing">
+            <number>2</number>
+           </property>
+           <property name="margin">
+            <number>2</number>
+           </property>
+           <item>
+            <widget class="QLabel" name="QuickCommandLabel">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="text">
+              <string>Command</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QComboBox" name="QuickCommandCombo">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="editable">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QToolButton" name="QuickCommandToggleButton">
+             <property name="toolTip">
+              <string>Hide the Quick Command box</string>
+             </property>
+             <property name="text">
+              <string>...</string>
+             </property>
+             <property name="checkable">
+              <bool>false</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
       </item>
       <item>
-       <layout class="QVBoxLayout" name="verticalLayout">
+       <layout class="QVBoxLayout" name="MessagesLayout">
         <property name="spacing">
          <number>2</number>
         </property>
@@ -7971,28 +8041,8 @@
       <string>&amp;Recent Files</string>
      </property>
     </widget>
-    <addaction name="actionFileNew"/>
-    <addaction name="actionFileOpen"/>
     <addaction name="RecentMenu"/>
-    <addaction name="separator"/>
-    <addaction name="actionFileClose"/>
-    <addaction name="actionFileSave"/>
-    <addaction name="actionFileSaveAs"/>
-    <addaction name="actionExportOptions"/>
-    <addaction name="separator"/>
-    <addaction name="actionFileSaveImage"/>
-    <addaction name="separator"/>
     <addaction name="actionFileQuit"/>
-   </widget>
-   <widget class="QMenu" name="EditMenu">
-    <property name="title">
-     <string>&amp;Edit</string>
-    </property>
-    <addaction name="actionEditPasteTranslated"/>
-    <addaction name="separator"/>
-    <addaction name="actionSelect"/>
-    <addaction name="separator"/>
-    <addaction name="actionEditQuickCommand"/>
    </widget>
    <widget class="QMenu" name="ModelMenu">
     <property name="title">
@@ -8009,75 +8059,6 @@
     <addaction name="separator"/>
     <addaction name="actionModelNext"/>
     <addaction name="actionModelPrevious"/>
-   </widget>
-   <widget class="QMenu" name="AtomContextMenu">
-    <property name="title">
-     <string>&amp;Selection</string>
-    </property>
-    <widget class="QMenu" name="AtomLabelsMenu">
-     <property name="title">
-      <string>Labels</string>
-     </property>
-     <addaction name="actionAtomLabelID"/>
-     <addaction name="actionAtomLabelCharge"/>
-     <addaction name="actionAtomLabelElement"/>
-     <addaction name="actionAtomLabelFFType"/>
-     <addaction name="actionAtomLabelFFEquiv"/>
-     <addaction name="separator"/>
-     <addaction name="actionAtomLabelClear"/>
-     <addaction name="actionAtomLabelClearAll"/>
-    </widget>
-    <widget class="QMenu" name="AtomStyleMenu">
-     <property name="title">
-      <string>Style</string>
-     </property>
-     <addaction name="actionAtomStyleStick"/>
-     <addaction name="actionAtomStyleTube"/>
-     <addaction name="actionAtomStyleSphere"/>
-     <addaction name="actionAtomStyleScaled"/>
-    </widget>
-    <widget class="QMenu" name="AtomColourMenu">
-     <property name="title">
-      <string>Colour</string>
-     </property>
-     <addaction name="actionAtomColourReset"/>
-     <addaction name="actionAtomColourSet"/>
-    </widget>
-    <widget class="QMenu" name="AtomOrderMenu">
-     <property name="title">
-      <string>Order</string>
-     </property>
-     <addaction name="actionOrderShiftUp"/>
-     <addaction name="actionOrderShiftDown"/>
-     <addaction name="actionOrderMoveToStart"/>
-     <addaction name="actionOrderMoveToEnd"/>
-     <addaction name="separator"/>
-     <addaction name="actionOrderReorder"/>
-    </widget>
-    <addaction name="AtomStyleMenu"/>
-    <addaction name="AtomLabelsMenu"/>
-    <addaction name="AtomColourMenu"/>
-    <addaction name="AtomOrderMenu"/>
-    <addaction name="separator"/>
-    <addaction name="actionAtomFixPosition"/>
-    <addaction name="actionAtomFreePosition"/>
-    <addaction name="actionAtomHide"/>
-    <addaction name="separator"/>
-    <addaction name="actionAtomProbe"/>
-    <addaction name="separator"/>
-    <addaction name="actionEditCut"/>
-    <addaction name="actionEditCopy"/>
-    <addaction name="actionEditPaste"/>
-    <addaction name="actionEditDelete"/>
-    <addaction name="separator"/>
-    <addaction name="actionSetBondLength"/>
-    <addaction name="actionSetBondAngle"/>
-    <addaction name="actionSetTorsionAngle"/>
-    <addaction name="separator"/>
-    <addaction name="actionCreateGlyph"/>
-    <addaction name="actionCreateFragment"/>
-    <addaction name="separator"/>
-    <addaction name="actionCentreAtOrigin"/>
    </widget>
    <widget class="QMenu" name="HelpMenu">
     <property name="title">
@@ -8107,131 +8088,12 @@
     <addaction name="actionModelAddDefaultPattern"/>
    </widget>
    <addaction name="FileMenu"/>
-   <addaction name="EditMenu"/>
-   <addaction name="AtomContextMenu"/>
    <addaction name="ModelMenu"/>
    <addaction name="ForcefieldMenu"/>
    <addaction name="SettingsMenu"/>
    <addaction name="HelpMenu"/>
   </widget>
   <widget class="QStatusBar" name="MainWindowStatusBar"/>
-  <action name="actionFileOpen">
-   <property name="icon">
-    <iconset resource="icons.qrc">
-     <normaloff>:/file/icons/file_open.svg</normaloff>:/file/icons/file_open.svg</iconset>
-   </property>
-   <property name="text">
-    <string>&amp;Open Model</string>
-   </property>
-   <property name="toolTip">
-    <string>Open an existing model</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+O</string>
-   </property>
-  </action>
-  <action name="actionFileSave">
-   <property name="icon">
-    <iconset resource="icons.qrc">
-     <normaloff>:/file/icons/file_save.svg</normaloff>:/file/icons/file_save.svg</iconset>
-   </property>
-   <property name="text">
-    <string>&amp;Save Model</string>
-   </property>
-   <property name="toolTip">
-    <string>Save the current model</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+S</string>
-   </property>
-  </action>
-  <action name="actionFileNew">
-   <property name="icon">
-    <iconset resource="icons.qrc">
-     <normaloff>:/file/icons/file_new.svg</normaloff>:/file/icons/file_new.svg</iconset>
-   </property>
-   <property name="text">
-    <string>&amp;New Model</string>
-   </property>
-   <property name="toolTip">
-    <string>Create a new, empty model</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+N</string>
-   </property>
-  </action>
-  <action name="actionFileSaveAs">
-   <property name="icon">
-    <iconset resource="icons.qrc">
-     <normaloff>:/file/icons/file_saveas.svg</normaloff>:/file/icons/file_saveas.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Save Model &amp;As</string>
-   </property>
-   <property name="toolTip">
-    <string>Save the current model under a different filename</string>
-   </property>
-  </action>
-  <action name="actionEditCut">
-   <property name="icon">
-    <iconset resource="icons.qrc">
-     <normaloff>:/edit/icons/edit_cut.svg</normaloff>:/edit/icons/edit_cut.svg</iconset>
-   </property>
-   <property name="text">
-    <string>&amp;Cut</string>
-   </property>
-   <property name="toolTip">
-    <string>Cut the current selection</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+X</string>
-   </property>
-  </action>
-  <action name="actionEditCopy">
-   <property name="icon">
-    <iconset resource="icons.qrc">
-     <normaloff>:/edit/icons/edit_copy.svg</normaloff>:/edit/icons/edit_copy.svg</iconset>
-   </property>
-   <property name="text">
-    <string>C&amp;opy</string>
-   </property>
-   <property name="toolTip">
-    <string>Copy the current selection</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+C</string>
-   </property>
-  </action>
-  <action name="actionEditPaste">
-   <property name="icon">
-    <iconset resource="icons.qrc">
-     <normaloff>:/edit/icons/edit_paste.svg</normaloff>:/edit/icons/edit_paste.svg</iconset>
-   </property>
-   <property name="text">
-    <string>&amp;Paste</string>
-   </property>
-   <property name="toolTip">
-    <string>Paste the contents of the clipboard to the current model</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+V</string>
-   </property>
-  </action>
-  <action name="actionEditDelete">
-   <property name="icon">
-    <iconset resource="icons.qrc">
-     <normaloff>:/edit/icons/edit_delete.svg</normaloff>:/edit/icons/edit_delete.svg</iconset>
-   </property>
-   <property name="text">
-    <string>&amp;Delete</string>
-   </property>
-   <property name="toolTip">
-    <string>Delete the current selection</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+Del</string>
-   </property>
-  </action>
   <action name="actionModelFFType">
    <property name="text">
     <string>Perform &amp;Typing</string>
@@ -8290,131 +8152,14 @@
     <string>Ctrl+Left</string>
    </property>
   </action>
-  <action name="actionFileClose">
-   <property name="icon">
-    <iconset resource="icons.qrc">
-     <normaloff>:/file/icons/file_close.svg</normaloff>:/file/icons/file_close.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Close Model</string>
-   </property>
-  </action>
-  <action name="actionAtomStyleStick">
-   <property name="icon">
-    <iconset>
-     <normaloff>:/draw_styles/icons/style_stick.svg</normaloff>:/draw_styles/icons/style_stick.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Stick</string>
-   </property>
-  </action>
-  <action name="actionAtomStyleTube">
-   <property name="icon">
-    <iconset>
-     <normaloff>:/draw_styles/icons/style_tube.svg</normaloff>:/draw_styles/icons/style_tube.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Tube</string>
-   </property>
-  </action>
-  <action name="actionAtomStyleSphere">
-   <property name="icon">
-    <iconset>
-     <normaloff>:/draw_styles/icons/style_sphere.svg</normaloff>:/draw_styles/icons/style_sphere.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Sphere</string>
-   </property>
-  </action>
-  <action name="actionAtomStyleScaled">
-   <property name="icon">
-    <iconset>
-     <normaloff>:/draw_styles/icons/style_scaled.svg</normaloff>:/draw_styles/icons/style_scaled.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Scaled</string>
-   </property>
-  </action>
-  <action name="actionAtomLabelID">
-   <property name="text">
-    <string>Atom ID</string>
-   </property>
-  </action>
-  <action name="actionAtomLabelCharge">
-   <property name="text">
-    <string>Charge</string>
-   </property>
-  </action>
-  <action name="actionAtomLabelFFType">
-   <property name="text">
-    <string>FF Type</string>
-   </property>
-   <property name="iconText">
-    <string>FF Type</string>
-   </property>
-   <property name="toolTip">
-    <string>FF Type</string>
-   </property>
-  </action>
-  <action name="actionAtomLabelElement">
-   <property name="text">
-    <string>Element</string>
-   </property>
-  </action>
-  <action name="actionAtomLabelFFEquiv">
-   <property name="text">
-    <string>FF Equivalent</string>
-   </property>
-  </action>
   <action name="actionFileQuit">
    <property name="text">
     <string>&amp;Quit</string>
    </property>
   </action>
-  <action name="actionFileSaveImage">
-   <property name="icon">
-    <iconset resource="icons.qrc">
-     <normaloff>:/file/icons/file_saveimage.svg</normaloff>:/file/icons/file_saveimage.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Save &amp;Image</string>
-   </property>
-  </action>
   <action name="actionPreferences">
    <property name="text">
     <string>&amp;Preferences</string>
-   </property>
-  </action>
-  <action name="actionAtomHide">
-   <property name="text">
-    <string>Hide</string>
-   </property>
-   <property name="iconText">
-    <string>Hide</string>
-   </property>
-   <property name="toolTip">
-    <string>Hide selected atoms</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+H</string>
-   </property>
-  </action>
-  <action name="actionAtomLabelClear">
-   <property name="icon">
-    <iconset resource="icons.qrc">
-     <normaloff>:/basic/icons/basic_cross.svg</normaloff>:/basic/icons/basic_cross.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Clear</string>
-   </property>
-  </action>
-  <action name="actionAtomLabelClearAll">
-   <property name="icon">
-    <iconset resource="icons.qrc">
-     <normaloff>:/basic/icons/basic_cross.svg</normaloff>:/basic/icons/basic_cross.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Clear all</string>
    </property>
   </action>
   <action name="actionSaveExpression">
@@ -8441,18 +8186,6 @@
    </property>
    <property name="text">
     <string>Rename</string>
-   </property>
-  </action>
-  <action name="actionAtomProbe">
-   <property name="icon">
-    <iconset resource="icons.qrc">
-     <normaloff>:/build/icons/build_probe.svg</normaloff>:/build/icons/build_probe.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Probe Atom</string>
-   </property>
-   <property name="toolTip">
-    <string>Probe individual atoms</string>
    </property>
   </action>
   <action name="actionOpenForcefield">
@@ -8509,81 +8242,14 @@
     <string>&amp;List Patterns</string>
    </property>
   </action>
-  <action name="actionAtomFixPosition">
-   <property name="text">
-    <string>Fix Position</string>
-   </property>
-  </action>
-  <action name="actionAtomFreePosition">
-   <property name="text">
-    <string>Free Position</string>
-   </property>
-  </action>
-  <action name="actionSetBondLength">
-   <property name="text">
-    <string>Set Bond Length</string>
-   </property>
-  </action>
-  <action name="actionSetBondAngle">
-   <property name="text">
-    <string>Set Bond Angle</string>
-   </property>
-  </action>
-  <action name="actionSetTorsionAngle">
-   <property name="text">
-    <string>Set Torsion Angle</string>
-   </property>
-  </action>
-  <action name="actionCentreAtOrigin">
-   <property name="text">
-    <string>Centre at Origin</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+Alt+C</string>
-   </property>
-  </action>
-  <action name="actionCreateGlyph">
-   <property name="text">
-    <string>Create Glyph</string>
-   </property>
-  </action>
   <action name="actionExportOptions">
    <property name="text">
     <string>E&amp;xport Options</string>
    </property>
   </action>
-  <action name="actionEditPasteTranslated">
-   <property name="icon">
-    <iconset resource="icons.qrc">
-     <normaloff>:/edit/icons/edit_paste.svg</normaloff>:/edit/icons/edit_paste.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Paste &amp;Translated</string>
-   </property>
-  </action>
-  <action name="actionSelect">
-   <property name="text">
-    <string>&amp;Select...</string>
-   </property>
-  </action>
   <action name="actionModelCreateExpression">
    <property name="text">
     <string>Create Expression</string>
-   </property>
-  </action>
-  <action name="actionCreateFragment">
-   <property name="text">
-    <string>Create Fragment</string>
-   </property>
-  </action>
-  <action name="actionAtomColourReset">
-   <property name="text">
-    <string>Reset to Element</string>
-   </property>
-  </action>
-  <action name="actionAtomColourSet">
-   <property name="text">
-    <string>Set...</string>
    </property>
   </action>
   <action name="actionOpenExpression">
@@ -8609,46 +8275,9 @@
     <string>Manual Swap Buffers</string>
    </property>
   </action>
-  <action name="actionEditQuickCommand">
-   <property name="icon">
-    <iconset resource="icons.qrc">
-     <normaloff>:/stackicons/icons/stack_command.svg</normaloff>:/stackicons/icons/stack_command.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Quick Command</string>
-   </property>
-   <property name="shortcut">
-    <string>F10</string>
-   </property>
-  </action>
   <action name="actionModelAddDefaultPattern">
    <property name="text">
     <string>Add Default Pattern</string>
-   </property>
-  </action>
-  <action name="actionOrderShiftUp">
-   <property name="text">
-    <string>Shift Up</string>
-   </property>
-  </action>
-  <action name="actionOrderShiftDown">
-   <property name="text">
-    <string>Shift Down</string>
-   </property>
-  </action>
-  <action name="actionOrderMoveToStart">
-   <property name="text">
-    <string>Move to Start</string>
-   </property>
-  </action>
-  <action name="actionOrderMoveToEnd">
-   <property name="text">
-    <string>Move to End</string>
-   </property>
-  </action>
-  <action name="actionOrderReorder">
-   <property name="text">
-    <string>Reorder</string>
    </property>
   </action>
  </widget>
