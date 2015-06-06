@@ -49,7 +49,7 @@ class Atom : public ListItem<Atom>
 	Atom();
 	~Atom();
 	// Atom label enum
-	enum AtomLabel { IdLabel, ElementLabel, TypeLabel, EquivLabel, ChargeLabel, nLabelTypes };
+	enum AtomLabel { IdLabel, ElementLabel, TypeLabel, EquivalentLabel, ChargeLabel, nLabelTypes };
 	static AtomLabel atomLabel(QString s, bool reportError = false);
 	static const char* atomLabel(Atom::AtomLabel al);
 	// Atom structure data

@@ -1060,6 +1060,15 @@ bool Grid::fillEnclosedVolume()
  * Rendering
  */
 
+// Return voxel matrix, offset to grid origin
+Matrix Grid::voxelMatrix()
+{
+	Matrix A;
+	A.applyTranslation(origin_);
+	A.multiplyRotation(cell_.axes());
+	return A;
+}
+
 // Return primiary primitive
 Primitive* Grid::primaryPrimitive()
 {
@@ -1067,7 +1076,7 @@ Primitive* Grid::primaryPrimitive()
 }
 
 // Send primary primitive to GL, regenerating if necessary
-void Grid::sendPrimaryPrimitive(Matrix baseTransform)
+void Grid::sendPrimaryPrimitive()
 {
 	if (primaryPrimitivePoint_ != log_)
 	{
@@ -1079,12 +1088,6 @@ void Grid::sendPrimaryPrimitive(Matrix baseTransform)
 		primaryPrimitivePoint_ = log_;
 	}
 
-	// Set transformation matrix for primitive
-	Matrix A;
-	A.applyTranslation(origin_);
-	A.multiplyRotation(cell_.axes());
-	A = baseTransform * A;
-
 	// Set colour
 	if (!useColourScale_)
 	{
@@ -1094,13 +1097,13 @@ void Grid::sendPrimaryPrimitive(Matrix baseTransform)
 	}
 
 	// Render it
-	glPushMatrix();
-	glLoadMatrixd(A.matrix());
-	glPointSize(3.0f);
 	if (primaryStyle_ == Grid::SolidSurface) primaryPrimitive_->sendToGL(QOpenGLContext::currentContext(), GL_FILL, true, !useColourScale_, primaryColour_);
 	else if (primaryStyle_ == Grid::MeshSurface) primaryPrimitive_->sendToGL(QOpenGLContext::currentContext(), GL_LINE, false, !useColourScale_, primaryColour_);
-	else if (primaryStyle_ == Grid::PointSurface) primaryPrimitive_->sendToGL(QOpenGLContext::currentContext(), GL_POINT, false, !useColourScale_, primaryColour_);
-	glPopMatrix();
+	else if (primaryStyle_ == Grid::PointSurface)
+	{
+		glPointSize(3.0f);
+		primaryPrimitive_->sendToGL(QOpenGLContext::currentContext(), GL_POINT, false, !useColourScale_, primaryColour_);
+	}
 }
 
 // Return primiary primitive
@@ -1110,7 +1113,7 @@ Primitive* Grid::secondaryPrimitive()
 }
 
 // Send primary primitive to GL, regenerating if necessary
-void Grid::sendSecondaryPrimitive(Matrix baseTransform)
+void Grid::sendSecondaryPrimitive()
 {
 	if (secondaryPrimitivePoint_ != log_)
 	{
@@ -1122,12 +1125,6 @@ void Grid::sendSecondaryPrimitive(Matrix baseTransform)
 		secondaryPrimitivePoint_ = log_;
 	}
 
-	// Set transformation matrix for primitive
-	Matrix A;
-	A.applyTranslation(origin_);
-	A.multiplyRotation(cell_.axes());
-	A = baseTransform * A;
-
 	// Set colour
 	if (!useColourScale_)
 	{
@@ -1137,12 +1134,13 @@ void Grid::sendSecondaryPrimitive(Matrix baseTransform)
 	}
 
 	// Render it
-	glPushMatrix();
-	glLoadMatrixd(A.matrix());
 	if (secondaryStyle_ == Grid::SolidSurface) secondaryPrimitive_->sendToGL(QOpenGLContext::currentContext(), GL_FILL, true, !useColourScale_, secondaryColour_);
 	else if (secondaryStyle_ == Grid::MeshSurface) secondaryPrimitive_->sendToGL(QOpenGLContext::currentContext(), GL_LINES, false, !useColourScale_, secondaryColour_);
-	else if (secondaryStyle_ == Grid::PointSurface) secondaryPrimitive_->sendToGL(QOpenGLContext::currentContext(), GL_POINTS, false, !useColourScale_, secondaryColour_);
-	glPopMatrix();
+	else if (secondaryStyle_ == Grid::PointSurface)
+	{
+		glPointSize(3.0f);
+		secondaryPrimitive_->sendToGL(QOpenGLContext::currentContext(), GL_POINTS, false, !useColourScale_, secondaryColour_);
+	}
 }
 
 /*

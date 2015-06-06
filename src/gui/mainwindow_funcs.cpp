@@ -307,6 +307,11 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 // 	uaButtons_.addButton(transformWidget->ui.ConvertTargetPickCButton, UserAction::ConvertTargetPickCAction);
 
 	/*
+	 * Create Context Menu
+	 */
+	createContextMenu();
+
+	/*
 	 * Statusbar
 	 */
 	// Fix up the statusbar with a single big frame and no size grip

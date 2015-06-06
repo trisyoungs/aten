@@ -123,6 +123,7 @@ void Viewer::renderModel(Model* source, int viewPortX, int viewPortY, int viewPo
 		repeatMax = 0;
 	}
 	int x, y, z;
+	Model gridMatrix;
 	for (x = repeatMin.x; x <= repeatMax.x; ++x)
 	{
 		for (y = repeatMin.y; y <= repeatMax.y; ++y)
@@ -138,8 +139,21 @@ void Viewer::renderModel(Model* source, int viewPortX, int viewPortY, int viewPo
 				// Render grids
 				for (Grid* g = source->grids(); g != NULL; g = g->next)
 				{
-					g->sendPrimaryPrimitive(offset);
-					if (g->useSecondary()) g->sendSecondaryPrimitive(offset);
+					glPushMatrix();
+					glLoadMatrixd((offset * g->voxelMatrix()).matrix());
+
+					g->sendPrimaryPrimitive();
+					if (g->useSecondary()) g->sendSecondaryPrimitive();
+					if (g->outlineVolume())
+					{
+						glDisable(GL_LIGHTING);
+						glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
+						Vec3<int> nXYZ = g->nXYZ();
+						glScaled(nXYZ.x, nXYZ.y, nXYZ.z);
+						primitives_[primitiveSet_].wireCube().sendToGL(QOpenGLContext::currentContext());
+					}
+
+					glPopMatrix();
 				}
 			}
 		}
