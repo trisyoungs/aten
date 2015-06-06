@@ -26,14 +26,11 @@ Make UserActions a member of something (Viewer?).
 Optimise basic primitives to use vertex/index arrays instead of just vertices (also check end caps of spheres).
 Check picked atom rendering (probably broken).
 Optimise primitive drawing / generation by allowing use of GL_TRIANGLE_STRIP?
-Note not related to Aten2 - pdens visualising areas of low probability (less than bulk) to see excluded areas?
 Sort out recent files list - not working?
 Octahedral Growing doesn't work.
 Add option to specify grow distance (instead of calculating from VDW radii).
 Automatically adjust grid size for number of visible models, based on current aspect ratio and context size etc.
 Cif/mol2/pdb import broken?
-Recognise bonds in both selection and right-click:
-o Context menu for bond then can replicate bond, angle, and torsion adjustment
 Clear selected measurements on panel popup clears all measurements.
 CRASH - Click in empty space in model list causes fp exception. Related to no current model selected.  Force ListWidget to always have one selected?
 Allow right-click on elements in PTable to set as member of common elements popup.
@@ -49,8 +46,8 @@ Have Tools page? With, for instance:
 --- Plot Orbital (raising dialog from old GridsWidget).
 Remove TColourFrame (after updating Prefs and Glyphs windows).
 Have small, additional black icons at top-left of each model window, illustrating whether it has been modified, is displaying trajetory frames, etc.
-Grids, Outline Volume doesn't do / display anything.
-Cell, Perspective check doesn't do anything.
+Context Menu:
+o Set Colour doesn't work, since it needs a colour selector popup.
 
 GUI TODO:
 AddAtom functionality (from old Build menu).

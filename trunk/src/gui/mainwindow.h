@@ -122,7 +122,7 @@ class AtenWindow : public QMainWindow
 	 */
 	public:
 	// Update Targets
-	enum UpdateTarget { DefaultTarget = 0, AtomsTableTarget = 1, CalculatePanelTarget = 2, ForcefieldsTarget = 4, GlyphsTarget = 8, GridsPanelTarget = 16, MainViewTarget = 64, StatusBarTarget = 128, GeometryTarget = 256, VibrationsTarget = 512, SelectPanelTarget = 1024, TrajectoryPanelTarget = 2048, BuildPanelTarget = 4096, CellPanelTarget = 8192, TransformPanelTarget = 16384, ContextMenuTarget = 32768, ModelsListTarget = 65536, AllTarget = 131071 };
+	enum UpdateTarget { DefaultTarget = 0, AtomsTableTarget = 1, CalculatePanelTarget = 2, ForcefieldsTarget = 4, GlyphsTarget = 8, GridsPanelTarget = 16, MainViewTarget = 64, StatusBarTarget = 128, GeometryTarget = 256, VibrationsTarget = 512, SelectPanelTarget = 1024, TrajectoryPanelTarget = 2048, BuildPanelTarget = 4096, CellPanelTarget = 8192, TransformPanelTarget = 16384, ModelsListTarget = 32768, AllTarget = 65535 };
 
 	private:
 	// Whether window is currently refreshing
@@ -131,8 +131,6 @@ class AtenWindow : public QMainWindow
 	private:
 	// Refresh main window
 	void updateMainWindow();
-	// Update context menu
-	void updateContextMenu(Model* currentModel);
 
 	public:
 	// Initial update and show
@@ -157,46 +155,34 @@ class AtenWindow : public QMainWindow
 
 
 	/*
-	 * Selection Menu / Actions (doubles as Atom Context Menu)
+	 * Context Menu
 	 */
 	private:
+	// Context menu
+	QMenu contextMenu_;
 	// Atom under mouse when context menu was called
 	Atom* contextAtom_;
-	void setAtomStyle(Prefs::DrawStyle ds);
-	void setAtomLabel(Atom::AtomLabel al);
-	void removeAtomLabels(bool all);
-	void setAtomHidden(bool hidden);
-	QAction *createGlyphActions[Glyph::nGlyphTypes];
+	QAction* createGlyphActions[Glyph::nGlyphTypes];
+
+	private:
+	// Create context menu and setup actions
+	void createContextMenu();
 
 	private slots:
-	void on_actionAtomStyleStick_triggered(bool checked);
-	void on_actionAtomStyleTube_triggered(bool checked);
-	void on_actionAtomStyleSphere_triggered(bool checked);
-	void on_actionAtomStyleScaled_triggered(bool checked);
-	void on_actionAtomLabelID_triggered(bool checked);
-	void on_actionAtomLabelCharge_triggered(bool checked);
-	void on_actionAtomLabelFFType_triggered(bool checked);
-	void on_actionAtomLabelElement_triggered(bool checked);
-	void on_actionAtomLabelFFEquiv_triggered(bool checked);
-	void on_actionAtomLabelClear_triggered(bool checked);
-	void on_actionAtomLabelClearAll_triggered(bool checked);
-	void on_actionAtomColourReset_triggered(bool checked);
-	void on_actionAtomColourSet_triggered(bool checked);
-	void on_actionOrderShiftUp_triggered(bool checked);
-	void on_actionOrderShiftDown_triggered(bool checked);
-	void on_actionOrderMoveToStart_triggered(bool checked);
-	void on_actionOrderMoveToEnd_triggered(bool checked);
-	void on_actionOrderReorder_triggered(bool checked);
-	void on_actionAtomHide_triggered(bool checked);
-	void on_actionAtomProbe_triggered(bool checked);
-	void on_actionAtomFixPosition_triggered(bool checked);
-	void on_actionAtomFreePosition_triggered(bool checked);
+	void contextMenuSetAtomStyle(bool checked);
+	void contextMenuSetAtomLabel(bool checked);
+	void contextMenuProbeAtom(bool checked);
+
 	void on_actionSetBondLength_triggered(bool checked);
 	void on_actionSetBondAngle_triggered(bool checked);
 	void on_actionSetTorsionAngle_triggered(bool checked);
 	void on_actionCreateFragment_triggered(bool checked);
 	void on_actionCentreAtOrigin_triggered(bool checked);
 	void createGlyph();
+
+	public:
+	// Call the atom context menu
+	void callContextMenu(Atom* atomUnderMouse, int x, int y);
 
 
 	/*
@@ -482,6 +468,7 @@ class AtenWindow : public QMainWindow
 	// Position
 	void on_SelectionPositionFixButton_clicked(bool checked);
 	void on_SelectionPositionFreeButton_clicked(bool checked);
+	void on_SelectionPositionReorderButton_clicked(bool checked);
 
 
 	
@@ -500,7 +487,7 @@ class AtenWindow : public QMainWindow
 
 
 	/*
-	 * Atoms List
+	 * Atoms Table
 	 */
 	public:
 	// Table Columns
@@ -612,14 +599,6 @@ class AtenWindow : public QMainWindow
 	void setActiveUserAction(UserAction::Action ua);
 	// Set message label text
 	void setMessageLabel(QString message);
-
-
-	/*
-	 * Context Menu
-	 */
-	public:
-	// Call the atom context menu
-	void callContextMenu(Atom*, int, int);
 
 
 	/*

@@ -102,26 +102,6 @@ void AtenWindow::updateMainWindow()
 	setWindowTitle(title);
 }
 
-// Update context menu
-void AtenWindow::updateContextMenu(Model* currentModel)
-{
-	Messenger::enter("AtenWindow::updateContextMenu");
-
-	// Enable bond, angle, and torsion editing
-	int nSelected = (currentModel ? currentModel->nSelected() : 0);
-	ui.actionSetBondLength->setEnabled(false);
-	ui.actionSetBondAngle->setEnabled(false);
-	ui.actionSetTorsionAngle->setEnabled(false);
-	if (nSelected == 2) ui.actionSetBondLength->setEnabled(true);
-	else if (nSelected == 3) ui.actionSetBondAngle->setEnabled(true);
-	else if (nSelected == 4) ui.actionSetTorsionAngle->setEnabled(true);
-
-	// (De)Activate glyph menu items based on number of atoms selected
-	for (int gt=0; gt<Glyph::nGlyphTypes; ++gt) createGlyphActions[gt]->setEnabled( Glyph::nGlyphData( (Glyph::GlyphType) gt) == nSelected);
-
-	Messenger::exit("AtenWindow::updateContextMenu");
-}
-
 // Update and show
 void AtenWindow::initialUpdateAndShow()
 {
@@ -180,9 +160,6 @@ void AtenWindow::updateWidgets(int targets)
 
 	// Update atoms table
 	if (targets&AtenWindow::AtomsTableTarget) updateAtomsTable(currentModel);
-
-	// Update context menu
-	if (targets&AtenWindow::ContextMenuTarget) updateContextMenu(currentModel);
 
 	// Panels
 	if (targets&AtenWindow::BuildPanelTarget) updateBuildPanel(currentModel);

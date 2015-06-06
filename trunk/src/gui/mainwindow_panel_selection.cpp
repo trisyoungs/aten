@@ -107,7 +107,7 @@ void AtenWindow::on_SelectionLabelTypeButton_clicked(bool checked)
 
 void AtenWindow::on_SelectionLabelEquivalentButton_clicked(bool checked)
 {
-	CommandNode::run(Commands::Label, "c", Atom::atomLabel(Atom::EquivLabel));
+	CommandNode::run(Commands::Label, "c", Atom::atomLabel(Atom::EquivalentLabel));
 
 	updateWidgets(AtenWindow::MainViewTarget);
 }
@@ -136,3 +136,11 @@ void AtenWindow::on_SelectionPositionFreeButton_clicked(bool checked)
 
 	updateWidgets(AtenWindow::MainViewTarget);
 }
+
+void AtenWindow::on_SelectionPositionReorderButton_clicked(bool checked)
+{
+	CommandNode::run(Commands::ReOrder, "");
+
+	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
+}
+	

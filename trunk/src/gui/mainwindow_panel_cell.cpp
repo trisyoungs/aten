@@ -30,14 +30,20 @@ void AtenWindow::updateCellPanel(Model* sourceModel)
 
 	Messenger::enter("AtenWindow::updateCellPanel");
 
+	// Define
 	ui.CellDefinePeriodicButton->setEnabled(sourceModel);
 	if (sourceModel) ui.CellDefinePeriodicButton->setChecked(sourceModel->cell().type() != UnitCell::NoCell);
 	ui.CellDefineAnglesButton->setEnabled(sourceModel ? sourceModel->cell().type() != UnitCell::NoCell : false);
 	ui.CellDefineLengthsButton->setEnabled(sourceModel ? sourceModel->cell().type() != UnitCell::NoCell : false);
 	ui.CellDefineMatrixButton->setEnabled(sourceModel ? sourceModel->cell().type() != UnitCell::NoCell : false);
+	// Spacegroup
 	ui.CellSpacegroupSetButton->setEnabled(sourceModel ? sourceModel->cell().type() != UnitCell::NoCell : false);
+	// Transform
 	ui.CellTransformReplicateButton->setEnabled(sourceModel ? sourceModel->cell().type() != UnitCell::NoCell : false);
 	ui.CellTransformScaleButton->setEnabled(sourceModel ? sourceModel->cell().type() != UnitCell::NoCell : false);
+	// Miller
+	ui.CellMillerDefineButton->setEnabled(sourceModel ? sourceModel->cell().type() != UnitCell::NoCell : false);
+	ui.CellMillerSelectButton->setEnabled(sourceModel ? sourceModel->cell().type() != UnitCell::NoCell : false);
 
 	Messenger::exit("AtenWindow::updateCellPanel");
 }
@@ -53,12 +59,12 @@ void AtenWindow::on_CellDefinePeriodicButton_clicked(bool checked)
 	if (checked)
 	{
 		ReturnValue rv;
-		ui.CellDefinePeriodicButton->callPopupMethod("setMatrix", rv);
+		ui.CellDefineMatrixButton->callPopupMethod("setMatrix", rv);
 	}
 	else CommandNode::run(Commands::NoCell, "");
 
 	// Update display
-	updateWidgets(AtenWindow::MainViewTarget);
+	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::CellPanelTarget);
 }
 
 /*

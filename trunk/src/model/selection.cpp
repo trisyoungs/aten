@@ -209,8 +209,7 @@ void Model::selectionResetColour()
 // Set selection style
 void Model::selectionSetStyle(Prefs::DrawStyle ds)
 {
-	// Sets all atoms currently selected to have the drawing style specified
-	for (Atom* i = atoms_.first(); i != NULL; i = i->next) if (i->isSelected()) atomSetStyle(i, ds);
+	for (Refitem<Atom,int>* ri = selection_.first(); ri != NULL; ri = ri->next) if (ri->item->isSelected()) atomSetStyle(ri->item, ds);
 }
 
 // Select bound and selected atoms from the current atom
@@ -239,9 +238,11 @@ void Model::fragmentFromSelection(Atom* start, Reflist<Atom,int>& list)
 		Messenger::exit("Model::fragmentFromSelection");
 		return;
 	}
+
 	// Clear the provided list and add the start atom
 	list.clear();
 	list.add(start);
+
 	// From the atom provided, put all bound and selected atoms in the reflist provided
 	deselectAtom(start);
 	fragmentFromSelectionSelector(start, list);

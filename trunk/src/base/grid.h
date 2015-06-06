@@ -368,14 +368,16 @@ class Grid : public ListItem<Grid>, ObjectStore<Grid>
 	int primaryPrimitivePoint_, secondaryPrimitivePoint_;
 
 	public:
-	// Return primiary primitive
+	// Return voxel matrix, offset to grid origin
+	Matrix voxelMatrix();
+	// Return primary primitive
 	Primitive* primaryPrimitive();
 	// Send primary primitive to GL, regenerating if necessary
-	void sendPrimaryPrimitive(Matrix baseTransform);
+	void sendPrimaryPrimitive();
 	// Return secondary primitive
 	Primitive* secondaryPrimitive();
 	// Return secondary primitive to GL, regenerating if necessary
-	void sendSecondaryPrimitive(Matrix baseTransform);
+	void sendSecondaryPrimitive();
 
 
 	/*
