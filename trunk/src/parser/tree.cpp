@@ -1143,11 +1143,11 @@ bool Tree::isFilter() const
 }
 
 /*
-// Qt/CLI GUI Definition
-*/
+ * Qt/CLI GUI Definition
+ */
 
 // Return default dialog structure
-TreeGui &Tree::defaultDialog()
+TreeGui& Tree::defaultDialog()
 {
 	// Run the stored 'createDefaultDialog' function if it hasn't already been done
 	if (!defaultDialogCreated_)
@@ -1168,9 +1168,9 @@ TreeGui &Tree::defaultDialog()
 }
 
 // Create and return new, temporary dialog
-TreeGui *Tree::createDialog(QString title)
+TreeGui* Tree::createDialog(QString title)
 {
-	TreeGui *dialog = new TreeGui;
+	TreeGui* dialog = new TreeGui;
 	dialogs_.own(dialog);
 	dialog->setProperty(TreeGuiWidgetEvent::TextProperty, title);
 	return dialog;

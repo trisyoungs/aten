@@ -77,19 +77,6 @@ void AtenWindow::updateMainWindow()
 	else s = "(No Model)";
 	infoLabel2_->setText(s);
 
-	// Update save button status
-	ui.actionFileSave->setEnabled( currentModel ? currentModel->isModified() : false );
-
-	// Enable the Atom menu if one or more atoms are selected
-	ui.AtomContextMenu->setEnabled( currentModel ? currentModel->renderSourceModel()->nSelected() != 0 : false );
-
-	// Enable/Disable cut/copy/paste/delete based on selection status and clipboard contents
-	ui.actionEditPaste->setEnabled( aten_.userClipboard->nAtoms() != 0);
-	ui.actionEditPasteTranslated->setEnabled( aten_.userClipboard->nAtoms() != 0);
-	ui.actionEditCopy->setEnabled( currentModel ? currentModel->nSelected() != 0 : false );
-	ui.actionEditCut->setEnabled( currentModel ? currentModel->nSelected() != 0 : false );
-	ui.actionEditDelete->setEnabled( currentModel ? currentModel->nSelected() != 0 : false );
-
 	// Check for empty filters list and enable/disable menu actions accordingly
 	ui.RecentMenu->setEnabled(!aten_.fileDialogFilters(FilterData::ModelImport).isEmpty());
 

@@ -5,13 +5,12 @@ Remove Scripts menu, and automatic loading of scripts on startup.
 Fix callbacks for atom picking etc.
 Add new RefList definition.
 Move Prefs from being a static global to a member of Aten?
-Split gui/mainmenu_actions.cpp into menu_* files.
 In AtenWindow::on_actionFileSaveImage_triggered convert options to proper QDialog.
 Add large image creation functions.
 Redo ProgressIndicator, making into a class much like QProgress (can't just use QProgress, since we want to have progress indicator functionality in the CLI....). Make it clever enough to realise that the gui is visible or not. Perhaps integrate it into Messenger, so that messages printed out while the indicator is running don't disrupt the indicator?
 Remove global MC, CG, SD declarations, and put them in Aten?
 Reimplement KeepNames functionality.
-Add in calculation of quantities and graphing.
+Add in calculation of quantities and graphing?
 Crash if model is saved, then filters reloaded, then model is saved again (since filter pointer will be wrong)?
 In top-left corner of main window, have a black icon illustrating which mode is active (except for Interact).
 Instead of a separate AtenVariable, make Aten subclass Variable?
@@ -38,7 +37,6 @@ Finish Spacegroup popup.
 Add Calculate tool to work out centre of geometry/mass.
 Add option to display ColourScale selector (e.g. for Grid colour buttons)
 Reimplement drawing of grid (volume) axes.
-Shortcuts for panel buttons do not work (use QActions again?).
 Make Model::EnergyStore a private member with accessor?
 Click to select grid.
 Add button to Transform/Position to centre entire model at zero?

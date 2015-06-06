@@ -379,7 +379,7 @@ bool QtWidgetObject::addSpacer(bool expandHorizontal, bool expandVertical, int l
  */
 
 // Constructor
-AtenTreeGuiDialog::AtenTreeGuiDialog(TreeGui *parent) : QDialog()
+AtenTreeGuiDialog::AtenTreeGuiDialog(TreeGui* parent) : QDialog()
 {
 	updating_ = false;
 // 	setVisible(false);
@@ -703,7 +703,7 @@ QtWidgetObject* AtenTreeGuiDialog::addCombo(TreeGuiWidget* widget, QString label
 }
 
 // Create new dialog layout
-QtWidgetObject* AtenTreeGuiDialog::addDialogLayout(TreeGui *treeGui)
+QtWidgetObject* AtenTreeGuiDialog::addDialogLayout(TreeGui* treeGui)
 {
 	QtWidgetObject* qtwo = widgetObjects_.add();
 	qtwo->set(treeGui, this, NULL, mainLayout_);

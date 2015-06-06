@@ -196,7 +196,7 @@ bool Model::createExpression(Choice vdwOnly, Choice allowDummy, Choice assignCha
 				Tree dialog;
 				QString title;
 				title.sprintf("Expression for Pattern '%s'", qPrintable(p->name()));
-				TreeGui &ui = dialog.defaultDialog();
+				TreeGui& ui = dialog.defaultDialog();
 				ui.setProperty(TreeGuiWidgetEvent::TextProperty, title);
 				ui.addLabel("", "One or more forcefield terms are not availablefor this pattern:", 1, 1);
 				ui.addRadioGroup("choice");

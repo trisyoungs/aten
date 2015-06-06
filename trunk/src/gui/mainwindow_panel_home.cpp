@@ -41,6 +41,10 @@ void AtenWindow::updateHomePanel(Model* sourceModel)
 	ui.HomeFileSaveAsButton->setEnabled(!aten_.fileDialogFilters(FilterData::ModelExport).isEmpty());
 
 	// Edit
+	ui.HomeEditPasteButton->setEnabled( sourceModel && aten_.userClipboard->nAtoms() != 0);
+	ui.HomeEditCopyButton->setEnabled( sourceModel ? sourceModel->nSelected() != 0 : false );
+	ui.HomeEditCutButton->setEnabled( sourceModel ? sourceModel->nSelected() != 0 : false );
+	ui.HomeEditDeleteButton->setEnabled( sourceModel ? sourceModel->nSelected() != 0 : false );
 	// -- Update undo / redo state
 	if (sourceModel && sourceModel->currentUndoState())
 	{

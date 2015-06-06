@@ -1,6 +1,6 @@
 /*
-	*** Aten version information
-	*** src/main/version.h
+	*** Main Window - Quick Command Functions
+	*** src/gui/mainwindow_quickcommand.cpp
 	Copyright T. Youngs 2007-2015
 
 	This file is part of Aten.
@@ -19,12 +19,25 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_VERSION_H
-#define ATEN_VERSION_H
+#include "main/aten.h"
+#include "gui/mainwindow.h"
 
-#define ATENVERSION "1.973"
-#define ATENREVISION "1973"
-#define ATENDATE "Thu 28 Jun - 13:36"
-#define ATENURL "http://aten.googlecode.com/svn/trunk"
+void AtenWindow::on_QuickCommandToggleButton_clicked(bool checked)
+{
+	ui.QuickCommandFrame->setVisible(!ui.QuickCommandFrame->isVisible());
+}
 
-#endif
+void AtenWindow::quickCommandRun()
+{
+	Program program;;
+	if (program.generateFromString(ui.QuickCommandCombo->currentText(), "Quick Command", "QuickCommand"))
+	{
+		ReturnValue rv;
+		program.execute(rv);
+		updateWidgets(AtenWindow::AllTarget);
+	}
+	else
+	{
+
+	}
+}

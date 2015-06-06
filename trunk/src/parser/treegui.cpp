@@ -236,7 +236,7 @@ TreeGuiWidget::~TreeGuiWidget()
 }
 
 // Set widget type, name, and parent
-void TreeGuiWidget::set(TreeGuiWidget::WidgetType type, QString name, TreeGui *parent)
+void TreeGuiWidget::set(TreeGuiWidget::WidgetType type, QString name, TreeGui* parent)
 {
 	type_ = type;
 	name_ = name;
@@ -256,7 +256,7 @@ QString TreeGuiWidget::name()
 }
 
 // Return widget parent
-TreeGui *TreeGuiWidget::parent()
+TreeGui* TreeGuiWidget::parent()
 {
 	return parent_;
 }

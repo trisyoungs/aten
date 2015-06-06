@@ -36,7 +36,7 @@ class DialogVariable : public PointerVariable
 {
 	public:
 	// Constructor / Destructor
-	DialogVariable(TreeGui *i = NULL, bool constant = false);
+	DialogVariable(TreeGui* i = NULL, bool constant = false);
 	~DialogVariable();
 
 

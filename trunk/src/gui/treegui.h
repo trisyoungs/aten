@@ -112,7 +112,7 @@ class AtenTreeGuiDialog : public QDialog
 
 	public:
 	// Constructor / Destructor
-	AtenTreeGuiDialog(TreeGui *parent = 0);
+	AtenTreeGuiDialog(TreeGui* parent = 0);
 	~AtenTreeGuiDialog();
 	// Main form declaration
 	Ui::AtenTreeGuiDialog ui;
@@ -142,7 +142,7 @@ class AtenTreeGuiDialog : public QDialog
 	// Main Grid layout
 	QGridLayout *mainLayout_;
 	// Associated TreeGui parent
-	TreeGui *parentTree_;
+	TreeGui* parentTree_;
 	// List of Qt/TreeGui pairs
 	List<QtWidgetObject> widgetObjects_;
 
@@ -158,7 +158,7 @@ class AtenTreeGuiDialog : public QDialog
 	// Create new combo widget
 	QtWidgetObject* addCombo(TreeGuiWidget* widget, QString label);
 	// Create new dialog layout
-	QtWidgetObject* addDialogLayout(TreeGui *treeGui);
+	QtWidgetObject* addDialogLayout(TreeGui* treeGui);
 	// Create new double spin widget
 	QtWidgetObject* addDoubleSpin(TreeGuiWidget* widget, QString label, double step);
 	// Create new edit widget
