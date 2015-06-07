@@ -1,6 +1,6 @@
 /*
-	*** Popup Widget - File Save
-	*** src/gui/popupfilesave.h
+	*** Popup Widget - File Open
+	*** src/gui/popupfileopen.h
 	Copyright T. Youngs 2007-2015
 
 	This file is part of Aten.
@@ -19,10 +19,10 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_HOMEFILESAVE_H
-#define ATEN_HOMEFILESAVE_H
+#ifndef ATEN_HOMEFILEOPEN_H
+#define ATEN_HOMEFILEOPEN_H
 
-#include "gui/ui_popupfilesave.h"
+#include "gui/ui_popupfileopen.h"
 #include "gui/tmenubutton.hui"
 #include "parser/returnvalue.h"
 
@@ -39,7 +39,7 @@ ATEN_END_NAMESPACE
 ATEN_USING_NAMESPACE
 
 // Popup Widget - Grow
-class FileSavePopup : public TMenuButtonPopupWidget
+class FileOpenPopup : public TMenuButtonPopupWidget
 {
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
@@ -50,9 +50,9 @@ class FileSavePopup : public TMenuButtonPopupWidget
 
 	public:
 	// Constructor / Destructor
-	FileSavePopup(AtenWindow& parent, TMenuButton* buttonParent);
+	FileOpenPopup(AtenWindow& parent, TMenuButton* buttonParent);
 	// Main form declaration
-	Ui::FileSavePopup ui;
+	Ui::FileOpenPopup ui;
 	// Show popup, updating any controls as necessary beforehand
 	void popup();
 	// Call named method associated to popup
@@ -67,10 +67,20 @@ class FileSavePopup : public TMenuButtonPopupWidget
 
 
 	/*
+	 * Data
+	 */
+	private:
+	// Maximum number of recent files to store in our list
+	const int maxRecentFiles_;
+	// List of recent files
+	QStringList recentFiles_;
+
+
+	/*
 	 * Widget Functions
 	 */
 	private slots:
-	void on_OptionsButton_clicked(bool checked);
+	void on_FilesTable_itemDoubleClicked(QTableWidgetItem* item);
 };
 
 #endif

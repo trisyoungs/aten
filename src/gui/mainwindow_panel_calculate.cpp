@@ -20,10 +20,14 @@
 */
 
 #include "gui/mainwindow.h"
+#include "main/aten.h"
 
 // Update calculate panel
 void AtenWindow::updateCalculatePanel(Model* sourceModel)
 {
+	Messenger::enter("AtenWindow::updateCalculatePanel");
+
+	Messenger::exit("AtenWindow::updateCalculatePanel");
 }
 
 /*
@@ -49,6 +53,17 @@ void AtenWindow::on_CalculateMeasureClearButton_clicked(bool checked)
 {
 	// Run command
 	CommandNode::run(Commands::ClearMeasurements);
+
+	// Update display
+	updateWidgets(AtenWindow::MainViewTarget);
+}
+
+void AtenWindow::on_CalculateMeasureListButton_clicked(bool checked)
+{
+	Model* currentModel = aten_.currentModelOrFrame();
+	if (!currentModel) return;
+
+	currentModel->listMeasurements();
 
 	// Update display
 	updateWidgets(AtenWindow::MainViewTarget);

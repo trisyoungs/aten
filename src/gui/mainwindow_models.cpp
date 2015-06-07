@@ -22,6 +22,7 @@
 #include "main/aten.h"
 #include "gui/mainwindow.h"
 #include "templates/variantpointer.h"
+#include <QInputDialog>
 
 // Refresh model list
 void AtenWindow::updateModelsList()
@@ -77,6 +78,37 @@ void AtenWindow::updateModelsList()
 	Messenger::exit("AtenWindow::updateModelsList");
 }
 
+void AtenWindow::modelsListContextMenuRequested(const QPoint& point)
+{
+	// Get item at point
+	QListWidgetItem* item = ui.ModelsList->itemAt(point);
+	if (!item) return;
+
+	// Get model pointer from item
+	Model* model = VariantPointer<Model>(item->data(Qt::UserRole));
+	if (!model) return;
+
+	// Build the context menu to display
+	QMenu contextMenu;
+	QAction* renameAction = contextMenu.addAction("Rename...");
+
+	// Show it
+	QAction* menuResult = contextMenu.exec(point);
+
+	// What was clicked?
+	if (menuResult == renameAction)
+	{
+		bool ok;
+		QString text = QInputDialog::getText(this, tr("Rename Model: ") + model->name(), tr("New name:"), QLineEdit::Normal, model->name(), &ok);
+		if (ok && !text.isEmpty())
+		{
+			CommandNode::run(Commands::SetName, "c", qPrintable(text));
+
+			updateWidgets(AtenWindow::ModelsListTarget);
+		}
+	}
+}
+
 void AtenWindow::on_ModelsListToggleButton_clicked(bool checked)
 {
 	ui.ModelsList->setVisible(checked);
@@ -103,6 +135,58 @@ void AtenWindow::on_ModelsList_itemSelectionChanged()
 
 	// Need to set the (a) current model
 	aten_.setCurrentModel(currentModel);
+
+	updateWidgets(AtenWindow::AllTarget);
+}
+
+// Move to next model in list
+void AtenWindow::on_ModelsNextButton_clicked(bool checked)
+{
+	// If multiple models are visible, step along to next visible model. Otherwise, just next in list
+	if (aten_.nVisibleModels() > 1)
+	{
+		// Find current model in visible models list...
+		Refitem<Model,int>* ri;
+		for (ri = aten_.visibleModels(); ri != NULL; ri = ri->next) if (ri->item == aten_.currentModel()) break;
+		if (ri == NULL)
+		{
+			printf("Internal Error : Failed to find current model in visible models list.\n");
+			return;
+		}
+		aten_.setCurrentModel(ri->next == NULL ? aten_.visibleModels()->item : ri->next->item);
+	}
+	else
+	{
+		Model* m = aten_.currentModel();
+		aten_.setCurrentModel(m->next == NULL ? aten_.models() : m->next);
+	}
+
+	updateWidgets(AtenWindow::AllTarget);
+}
+
+// Move to previous model in list
+void AtenWindow::on_ModelsPreviousButton_clicked(bool checked)
+{
+	// If multiple models are visible, step back to previous visible model. Otherwise, just previous in list
+	if (aten_.nVisibleModels() > 1)
+	{
+		// Find current model in visible models list...
+		Refitem<Model,int>* ri;
+		for (ri = aten_.visibleModels(); ri != NULL; ri = ri->next) if (ri->item == aten_.currentModel()) break;
+		if (ri == NULL)
+		{
+			printf("Internal Error : Failed to find current model in visible models list.\n");
+			return;
+		}
+		// If previous pointer is NULL, need to get the last item in the list by hand
+		if (ri->prev != NULL) aten_.setCurrentModel(ri->prev->item);
+		else for (ri = aten_.visibleModels(); ri != NULL; ri = ri->next) if (ri->next == NULL) aten_.setCurrentModel(ri->item);
+	}
+	else
+	{
+		Model* m = aten_.currentModel();
+		aten_.setCurrentModel(m->prev == NULL ? aten_.model(aten_.nModels()-1) : m->prev);
+	}
 
 	updateWidgets(AtenWindow::AllTarget);
 }

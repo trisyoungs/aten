@@ -93,4 +93,23 @@ void AtenWindow::on_CellTransformScaleButton_clicked(bool checked)
 
 void AtenWindow::on_CellMillerSelectButton_clicked(bool checked)
 {
+	// ATEN2 TODO
+}
+
+/*
+ * Fold
+ */
+
+void AtenWindow::on_CellFoldAtomsButton_clicked(bool checked)
+{
+	CommandNode::run(Commands::Fold, "");
+
+	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
+}
+
+void AtenWindow::on_CellFoldMoleculesButton_clicked(bool checked)
+{
+	CommandNode::run(Commands::FoldMolecules, "");
+
+	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
 }

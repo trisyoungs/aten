@@ -3,7 +3,7 @@ project(Aten)
 set(DESCRIPTION "Aten - Atomic configuration builder and editor")
 set(AUTHOR "Tristan Youngs")
 set(VERSION_MAJOR "1")
-set(VERSION_MINOR "973")
+set(VERSION_MINOR "974")
 set(VERSION_PATCH "1")
 
 set(CMAKE_BUILD_TYPE "Release")
@@ -117,11 +117,11 @@ IF(WIN32)
 ELSEIF(APPLE)
   set(ATEN_LINK_LIBS Qt5::Widgets Qt5::Core ${FTGL_LIBRARIES} ${OPENGL_LIBRARIES} ${FT2_LIBRARIES} ${READLINE_LIBRARY})
 ELSE(APPLE)
-  set(ATEN_LINK_LIBS Qt5::Widgets Qt5::Core -lGL -lftgl)
+  set(ATEN_LINK_LIBS Qt5::Widgets Qt5::Core -lGL -lftgl ${READLINE_LIBRARY})
 ENDIF(WIN32)
 
 target_link_libraries( ${target_name}
-    gui parser treegui command methods render model math sg main fourier ff base
+    gui parser treegui command methods render model math main fourierdata ff base sg
     ${ATEN_LINK_LIBS}
     )
 

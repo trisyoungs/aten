@@ -25,7 +25,6 @@ Make UserActions a member of something (Viewer?).
 Optimise basic primitives to use vertex/index arrays instead of just vertices (also check end caps of spheres).
 Check picked atom rendering (probably broken).
 Optimise primitive drawing / generation by allowing use of GL_TRIANGLE_STRIP?
-Sort out recent files list - not working?
 Octahedral Growing doesn't work.
 Add option to specify grow distance (instead of calculating from VDW radii).
 Automatically adjust grid size for number of visible models, based on current aspect ratio and context size etc.
@@ -46,6 +45,9 @@ Remove TColourFrame (after updating Prefs and Glyphs windows).
 Have small, additional black icons at top-left of each model window, illustrating whether it has been modified, is displaying trajetory frames, etc.
 Context Menu:
 o Set Colour doesn't work, since it needs a colour selector popup.
+Recent files list - enable load on double-click, settings not loaded/saved properly?
+TMenuButton - after (long-) click to show popup, allow popup to be hidden with no actions if the button is clicked on again.
+
 
 GUI TODO:
 AddAtom functionality (from old Build menu).

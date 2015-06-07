@@ -77,9 +77,6 @@ void AtenWindow::updateMainWindow()
 	else s = "(No Model)";
 	infoLabel2_->setText(s);
 
-	// Check for empty filters list and enable/disable menu actions accordingly
-	ui.RecentMenu->setEnabled(!aten_.fileDialogFilters(FilterData::ModelImport).isEmpty());
-
 	ui.actionSaveExpression->setEnabled(!aten_.fileDialogFilters(FilterData::ExpressionExport).isEmpty());
 
 	// Update main window title

@@ -92,7 +92,7 @@ add_library(sg
 add_library(fourierdata
   fourierdata.cpp
   fourierdata.h
-}
+)
 
 include_directories(
   ../
