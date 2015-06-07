@@ -52,6 +52,22 @@ void AtenWindow::loadSettings()
 		collapsed = (settings_.contains("ModelsListCollapsed") ? settings_.value("ModelsListCollapsed").toBool() : true);
 		ui.ModelsListToggleButton->setChecked(!collapsed);
 		ui.ModelsList->setVisible(!collapsed);
+
+		// Recent files
+		ReturnValue maxRecentFiles, recentFile;
+		if (ui.HomeFileOpenButton->callPopupMethod("maxRecentFiles", maxRecentFiles))
+		{
+			settings_.beginGroup("RecentFiles");
+			for (n = 0; n < maxRecentFiles.asInteger(); ++n)
+			{
+				if (settings_.contains(QString::number(n)))
+				{
+					recentFile = settings_.value(QString::number(n)).toString();
+					ui.HomeFileOpenButton->callPopupMethod("addRecentFile", recentFile);
+				}
+			}
+			settings_.endGroup();
+		}
 	}
 
 	// Check for old command history information, read it, and then remove it
@@ -99,9 +115,6 @@ void AtenWindow::loadSettings()
 			{
 				case (Prefs::CommandHistory):
 					commandHistory << data;
-					break;
-				case (Prefs::RecentFileHistory):
-					addRecent(data);
 					break;
 				case (Prefs::ScriptHistory):
 					// Has this script already been loaded?
@@ -161,22 +174,29 @@ void AtenWindow::saveSettings()
 	Messenger::print("Saving program history file '%s'...", qPrintable(filename));
 	LineParser historyFile;
 	historyFile.openOutput(filename, true);
-	
+
+	// Qt Settings
+	ReturnValue nItems, recentFile;
+	if (ui.HomeFileOpenButton->callPopupMethod("nRecentFiles", nItems))
+	{
+		int count = 0;
+		settings_.remove("RecentFiles");
+		settings_.beginGroup("RecentFiles");
+		for (int n = 0; n < nItems.asInteger(); ++n)
+		{
+			if (!ui.HomeFileOpenButton->callPopupMethod("recentFile", recentFile)) continue;
+			settings_.setValue(QString::number(count++), recentFile.asString());
+		}
+		settings_.endGroup();
+	}
+	settings_.sync();
+
 	if (historyFile.isFileGoodForWriting())
 	{
 		QString line;
 		int n;
 		QStringList history;
-		
-		// Recent file entries
-		for (n=0; n<MAXRECENTFILES; n++)
-		{
-			// Check file entry contains data (is visible in the GUI)
-			if (!actionRecentFile[n]->isVisible()) continue;
-			line.sprintf("%s  %s\n", Prefs::historyType(Prefs::RecentFileHistory), qPrintable(actionRecentFile[n]->data().toString()));
-			historyFile.writeLine(line);
-		}
-		
+
 		// Scripts
 		for (Program* prog = aten_.scripts(); prog != NULL; prog = prog->next)
 		{

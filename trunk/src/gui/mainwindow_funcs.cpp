@@ -53,6 +53,7 @@
 #include "gui/popupcolour.h"
 #include "gui/popupelementcommon.h"
 #include "gui/popupelementtable.h"
+#include "gui/popupfileopen.h"
 #include "gui/popupfilesave.h"
 #include "gui/popupgridmatrix.h"
 #include "gui/popupgridorigin.h"
@@ -110,6 +111,9 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 	infoLabel2_ = NULL;
 	messageLabel_ = NULL;
 
+	// Models List setup
+	connect(ui.ModelsList, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(modelsListContextMenuRequested(QPoint)));
+
 	// Atoms Table variables / setup
 	atomsTableStructurePoint_ = -1;
 	atomsTableSelectionPoint_ = -1;
@@ -158,18 +162,9 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 	int n;
 	ReturnValue rv;
 
-	// Set up recent files list (create all actions first)
-	for (n=0; n<MAXRECENTFILES; n++)
-	{
-		actionRecentFile[n] = new QAction(this);
-		actionRecentFile[n]->setVisible(false);
-		QObject::connect(actionRecentFile[n], SIGNAL(triggered()), this, SLOT(loadRecent()));
-		ui.RecentMenu->addAction(actionRecentFile[n]);
-	}
-
 	// Add buttons related to user actions to our button group, add popup widgets to those buttons that have them, and set up anything else we need to
-	QShortcut* shortcut;
 	// -- Home Panel (File)
+	ui.HomeFileOpenButton->setPopupWidget(new FileOpenPopup(*this, ui.HomeFileOpenButton));
 	ui.HomeFileSaveButton->setPopupWidget(new FileSavePopup(*this, ui.HomeFileSaveButton));
 	// -- Home Panel (Appearance)
 	ui.HomeAppearanceLineButton->setGroup("ViewStyles", Prefs::LineStyle);
@@ -261,6 +256,12 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 	ui.SelectionAppearanceColourButton->setPopupWidget(new ColourPopup(*this, ui.SelectionAppearanceColourButton), false);
 
 	// Setup Shortcuts
+	QShortcut* shortcut;
+	// -- Model List
+	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_Left), this, 0, 0, Qt::ApplicationShortcut);
+	connect(shortcut, SIGNAL(activated()), ui.ModelsPreviousButton, SLOT(click()));
+	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_Right), this, 0, 0, Qt::ApplicationShortcut);
+	connect(shortcut, SIGNAL(activated()), ui.ModelsNextButton, SLOT(click()));
 	// Home Panel (File)
 	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::ALT + Qt::Key_N), this, 0, 0, Qt::ApplicationShortcut);
 	connect(shortcut, SIGNAL(activated()), ui.HomeFileNewButton, SLOT(click()));
@@ -482,94 +483,6 @@ void AtenWindow::setInteractive(bool interactive)
 	
 	// ...and set the canvas 'editability'
 	ui.MainView->setEditable(interactive);
-}
-
-// Load recent file
-void AtenWindow::loadRecent()
-{
-	QString filename;
-	Model* m;
-	Tree* filter;
-
-	// Cast sending QAction and grab filename
-	QAction* action = qobject_cast<QAction*> (sender());
-	if (!action)
-	{
-		printf("AtenWindow::loadRecent - Sender was not a QAction.\n");
-		return;
-	}
-
-	// Grab the filename from the action
-	filename = action->data().toString();
-
-	// See if any loaded model filename matches this filename
-	for (m = aten_.models(); m != NULL; m = m->next)
-	{
-		Messenger::print(Messenger::Verbose, "Checking loaded models for '%s': %s", qPrintable(filename), qPrintable(m->filename()));
-		if (filename == m->filename())
-		{
-			Messenger::print(Messenger::Verbose, "Matched filename to loaded model.");
-			aten_.setCurrentModel(m);
-			// Update GUI
-			updateWidgets(AtenWindow::AllTarget);
-			return;
-		}
-	}
-
-	// If we get to here then the model is not currently loaded...
-	filter = aten_.probeFile(filename, FilterData::ModelImport);
-	if (filter != NULL)
-	{
-		ReturnValue rv;
-		filter->executeRead(filename, rv);
-
-		// Update GUI
-		updateWidgets(AtenWindow::AllTarget);
-	}
-	else
-	{
-		// Remove file from recent files list
-		int last, n;
-		for (last=0; last<MAXRECENTFILES; last++) if (!actionRecentFile[last]->isVisible()) break;
-		for (n=last+1; n<MAXRECENTFILES; ++n)
-		{
-			if (actionRecentFile[last]->isVisible())
-			{
-				actionRecentFile[n-1]->setText(actionRecentFile[n]->text());
-				actionRecentFile[n-1]->setData(actionRecentFile[n]->data());
-			}
-		}
-	}
-}
-
-// Add file to top of recent list
-void AtenWindow::addRecent(QString filename)
-{
-	// Find unused (i.e. still hidden) recent file action
-	int last, n;
-	QString temp;
-	for (last=0; last<MAXRECENTFILES; last++) if (!actionRecentFile[last]->isVisible()) break;
-
-	// 'last' now holds the first empty slot in the recent files list.
-	// If 'last' == MAXRECENTFILES then shuffle top 'n-1' down a position and add at '0'.
-	if (last == MAXRECENTFILES)
-	{
-		// Push the top items down the list
-		for (n=MAXRECENTFILES-2; n>=0; n--)
-		{
-			actionRecentFile[n+1]->setData(actionRecentFile[n]->data());
-			temp.sprintf("&%i %s", n+1, qPrintable(actionRecentFile[n]->data().toString()));
-			actionRecentFile[n+1]->setText(temp);
-			actionRecentFile[n+1]->setData(actionRecentFile[n]->data());
-		}
-		last = 0;
-	}
-
-	// Set the new data
-	temp.sprintf("&%i %s", last, qPrintable(filename));
-	actionRecentFile[last]->setText(temp);
-	actionRecentFile[last]->setData(filename);
-	actionRecentFile[last]->setVisible(true);
 }
 
 void AtenWindow::on_actionAboutAten_triggered(bool checked)

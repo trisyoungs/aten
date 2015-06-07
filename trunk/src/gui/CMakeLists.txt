@@ -37,6 +37,7 @@ SET(gui_MOC_HDRS
   popupcolour.h
   popupelementcommon.h
   popupelementtable.h
+  popupfileopen.h
   popupfilesave.h
   popupgridmatrix.h
   popupgridorigin.h
@@ -117,6 +118,7 @@ SET(gui_UIS
   popupcolour.ui
   popupelementcommon.ui
   popupelementtable.ui
+  popupfileopen.ui
   popupfilesave.ui
   popupgridmatrix.ui
   popupgridorigin.ui
@@ -205,6 +207,7 @@ set(gui_SRCS
   popupcolour_funcs.cpp
   popupelementcommon_funcs.cpp
   popupelementtable_funcs.cpp
+  popupfileopen_funcs.cpp
   popupfilesave_funcs.cpp
   popupgridmatrix_funcs.cpp
   popupgridorigin_funcs.cpp

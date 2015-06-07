@@ -104,7 +104,8 @@ void AtenWindow::on_HomeFileOpenButton_clicked(bool checked)
 		if (filter != NULL)
 		{
 			if (!filter->executeRead(loadModelDialog.selectedFilename())) return;
-			addRecent(loadModelDialog.selectedFilename());
+			ReturnValue rv = loadModelDialog.selectedFilename();
+			ui.HomeFileOpenButton->callPopupMethod("addRecentFile", rv);
 			updateWidgets(AtenWindow::AllTarget);
 		}
 	}
@@ -422,6 +423,13 @@ void AtenWindow::on_HomeAppearancePerspectiveButton_clicked(bool checked)
 	prefs.setPerspective(checked);
 
 	updateWidgets(AtenWindow::MainViewTarget);
+}
+
+void AtenWindow::on_HomeAppearanceShowAllButton_clicked(bool checked)
+{
+	CommandNode::run(Commands::ShowAll, "");
+
+	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
 }
 
 // Local save function  ATEN2 TODO Move this!

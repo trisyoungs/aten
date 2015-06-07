@@ -33,8 +33,6 @@
 #include "base/glyph.h"
 #include "base/namespace.h"
 
-#define MAXRECENTFILES 10
-
 // Forward Declarations (Aten) 1 - Main Form and Windows
 class AtenAbout;
 class AtenPrefs;
@@ -171,19 +169,6 @@ class AtenWindow : public QMainWindow
 
 
 	/*
-	 * Model Menu
-	 */
-	private slots:
-	void on_actionModelRename_triggered(bool checked);
-	void on_actionModelFoldAtoms_triggered(bool checked);
-	void on_actionModelFoldMolecules_triggered(bool checked);
-	void on_actionModelNext_triggered(bool checked);
-	void on_actionModelPrevious_triggered(bool checked);
-	void on_actionModelShowAll_triggered(bool checked);
-	void on_actionListMeasurements_triggered(bool checked);
-
-
-	/*
 	 * Expression Menu
 	 */
 	private slots:
@@ -251,6 +236,7 @@ class AtenWindow : public QMainWindow
 	void on_HomeAppearanceVelocityButton_clicked(bool checked);
 	void on_HomeAppearanceOwnColourButton_clicked(bool checked);
 	void on_HomeAppearancePerspectiveButton_clicked(bool checked);
+	void on_HomeAppearanceShowAllButton_clicked(bool checked);
 	// View
 	void on_HomeViewResetButton_clicked(bool checked);
 	void on_HomeViewZoomInButton_clicked(bool checked);
@@ -309,6 +295,9 @@ class AtenWindow : public QMainWindow
 	void on_CellTransformScaleButton_clicked(bool checked);
 	// Miller
 	void on_CellMillerSelectButton_clicked(bool checked);
+	// Fold
+	void on_CellFoldAtomsButton_clicked(bool checked);
+	void on_CellFoldMoleculesButton_clicked(bool checked);
 
 
 	/*
@@ -324,6 +313,7 @@ class AtenWindow : public QMainWindow
 	void on_CalculateMeasureAngleButton_clicked(bool checked);
 	void on_CalculateMeasureTorsionButton_clicked(bool checked);
 	void on_CalculateMeasureClearButton_clicked(bool checked);
+	void on_CalculateMeasureListButton_clicked(bool checked);
 
 
 	/*
@@ -456,15 +446,15 @@ class AtenWindow : public QMainWindow
 	void on_SelectionPositionReorderButton_clicked(bool checked);
 
 
-	
-
-
 	/*
 	 * Models List
 	 */
 	private slots:
+	void modelsListContextMenuRequested(const QPoint& point);
 	void on_ModelsListToggleButton_clicked(bool checked);
 	void on_ModelsList_itemSelectionChanged();
+	void on_ModelsPreviousButton_clicked(bool checked);
+	void on_ModelsNextButton_clicked(bool checked);
 
 	public:
 	// Refresh models list
@@ -604,22 +594,6 @@ class AtenWindow : public QMainWindow
 	void loadSettings();
 	// Save settings
 	void saveSettings();
-
-
-	/*
-	 * Recent files
-	 */
-	private slots:
-	// Load recent file
-	void loadRecent();
-
-	private:
-	// Pointers to recent file actions
-	QAction* actionRecentFile[MAXRECENTFILES];
-
-	public:
-	// Add file to top of recent list
-	void addRecent(QString filename);
 
 
 	/*
