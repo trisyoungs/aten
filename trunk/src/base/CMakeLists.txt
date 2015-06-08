@@ -76,19 +76,6 @@ add_library(base
   zmatrixelement.h
 )
 
-add_library(sg
-  generator.h
-  spacegroup.h
-  sginfo.h
-  generator.cpp 
-  sgclib.c
-  sgfind.c
-  sghkl.c
-  sgio.c
-  sgsi.c
-  spacegroup.cpp
-)
-
 add_library(fourierdata
   fourierdata.cpp
   fourierdata.h

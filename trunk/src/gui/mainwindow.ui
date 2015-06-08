@@ -75,7 +75,7 @@
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>2</number>
+       <number>0</number>
       </property>
       <property name="usesScrollButtons">
        <bool>true</bool>
@@ -84,8 +84,12 @@
        <bool>true</bool>
       </property>
       <widget class="QWidget" name="HomeTab">
+       <attribute name="icon">
+        <iconset resource="icons.qrc">
+         <normaloff>:/program/icons/aten.png</normaloff>:/program/icons/aten.png</iconset>
+       </attribute>
        <attribute name="title">
-        <string>  Home  </string>
+        <string>Home  </string>
        </attribute>
        <layout class="QHBoxLayout" name="horizontalLayout_18">
         <property name="spacing">
@@ -96,7 +100,7 @@
         </property>
         <item>
          <layout class="QGridLayout" name="gridLayout_9">
-          <item row="0" column="13">
+          <item row="0" column="16">
            <layout class="QVBoxLayout" name="verticalLayout_12">
             <property name="spacing">
              <number>2</number>
@@ -158,7 +162,7 @@
           <item row="0" column="4">
            <widget class="TMenuButton" name="HomeFileCloseButton">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -213,7 +217,7 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="7" rowspan="2">
+          <item row="0" column="10" rowspan="2">
            <widget class="Line" name="line_49">
             <property name="orientation">
              <enum>Qt::Vertical</enum>
@@ -223,7 +227,7 @@
           <item row="0" column="0">
            <widget class="TMenuButton" name="HomeFileNewButton">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -278,20 +282,10 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="0" colspan="7">
-           <widget class="QLabel" name="label_67">
-            <property name="text">
-             <string>File</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
-            </property>
-           </widget>
-          </item>
           <item row="0" column="2">
            <widget class="TMenuButton" name="HomeFileSaveButton">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -346,7 +340,7 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="8">
+          <item row="1" column="11">
            <widget class="QLabel" name="label_68">
             <property name="text">
              <string>Edit</string>
@@ -359,7 +353,7 @@
           <item row="0" column="6">
            <widget class="TMenuButton" name="HomeFileImageButton">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -417,7 +411,7 @@
           <item row="0" column="1">
            <widget class="TMenuButton" name="HomeFileOpenButton">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -479,7 +473,7 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="10">
+          <item row="1" column="13">
            <widget class="QLabel" name="label_70">
             <property name="text">
              <string>Appearance</string>
@@ -489,7 +483,17 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="10">
+          <item row="1" column="15" colspan="3">
+           <widget class="QLabel" name="label_71">
+            <property name="text">
+             <string>View</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="13">
            <layout class="QGridLayout" name="gridLayout_5">
             <item row="1" column="3">
              <widget class="TMenuButton" name="HomeAppearanceVelocityButton">
@@ -1137,7 +1141,7 @@
             </item>
            </layout>
           </item>
-          <item row="0" column="9" rowspan="2">
+          <item row="0" column="12" rowspan="2">
            <widget class="Line" name="line_13">
             <property name="orientation">
              <enum>Qt::Vertical</enum>
@@ -1147,7 +1151,7 @@
           <item row="0" column="3">
            <widget class="TMenuButton" name="HomeFileSaveAsButton">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="MinimumExpanding" vsizetype="Preferred">
+             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -1202,14 +1206,14 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="11" rowspan="2">
+          <item row="0" column="14" rowspan="2">
            <widget class="Line" name="line_27">
             <property name="orientation">
              <enum>Qt::Vertical</enum>
             </property>
            </widget>
           </item>
-          <item row="0" column="8">
+          <item row="0" column="11">
            <layout class="QGridLayout" name="gridLayout_3">
             <property name="spacing">
              <number>2</number>
@@ -1564,7 +1568,7 @@
             </item>
            </layout>
           </item>
-          <item row="0" column="12">
+          <item row="0" column="15">
            <widget class="TMenuButton" name="HomeViewResetButton">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -1617,7 +1621,7 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="14">
+          <item row="0" column="17">
            <layout class="QVBoxLayout" name="verticalLayout_13">
             <property name="spacing">
              <number>2</number>
@@ -1688,10 +1692,75 @@
             </item>
            </layout>
           </item>
-          <item row="1" column="12" colspan="3">
-           <widget class="QLabel" name="label_71">
+          <item row="0" column="8">
+           <widget class="TMenuButton" name="HomeFileAtenButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>40</width>
+              <height>66</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>128</width>
+              <height>66</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>8</pointsize>
+             </font>
+            </property>
+            <property name="toolTip">
+             <string>Close the current model</string>
+            </property>
             <property name="text">
-             <string>View</string>
+             <string>Aten</string>
+            </property>
+            <property name="icon">
+             <iconset resource="icons.qrc">
+              <normaloff>:/program/icons/aten.png</normaloff>:/program/icons/aten.png</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>30</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="checkable">
+             <bool>false</bool>
+            </property>
+            <property name="checked">
+             <bool>false</bool>
+            </property>
+            <property name="autoExclusive">
+             <bool>false</bool>
+            </property>
+            <property name="toolButtonStyle">
+             <enum>Qt::ToolButtonTextUnderIcon</enum>
+            </property>
+            <property name="autoRaise">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="7">
+           <widget class="Line" name="line_29">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0" colspan="9">
+           <widget class="QLabel" name="label_67">
+            <property name="text">
+             <string>File</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
@@ -3981,7 +4050,7 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="9">
+          <item row="0" column="11">
            <spacer name="horizontalSpacer_5">
             <property name="orientation">
              <enum>Qt::Horizontal</enum>
@@ -4213,6 +4282,66 @@
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="9">
+           <widget class="Line" name="line_30">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="10">
+           <widget class="TMenuButton" name="TransformPositionZeroButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>40</width>
+              <height>66</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>56</width>
+              <height>66</height>
+             </size>
+            </property>
+            <property name="toolTip">
+             <string>Set torsions in the current selection</string>
+            </property>
+            <property name="text">
+             <string>Zero</string>
+            </property>
+            <property name="icon">
+             <iconset resource="icons.qrc">
+              <normaloff>:/geometry/icons/measure_torsion.svg</normaloff>:/geometry/icons/measure_torsion.svg</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>30</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="checkable">
+             <bool>false</bool>
+            </property>
+            <property name="checked">
+             <bool>false</bool>
+            </property>
+            <property name="autoExclusive">
+             <bool>false</bool>
+            </property>
+            <property name="toolButtonStyle">
+             <enum>Qt::ToolButtonTextUnderIcon</enum>
+            </property>
+            <property name="autoRaise">
+             <bool>false</bool>
             </property>
            </widget>
           </item>
@@ -8328,26 +8457,6 @@
      <height>22</height>
     </rect>
    </property>
-   <widget class="QMenu" name="SettingsMenu">
-    <property name="title">
-     <string>Sett&amp;ings</string>
-    </property>
-    <addaction name="actionPreferences"/>
-    <addaction name="separator"/>
-    <addaction name="actionReloadFilters"/>
-    <addaction name="actionShowToolBox"/>
-    <addaction name="actionStoreDefaultWindowState"/>
-    <addaction name="separator"/>
-    <addaction name="actionManualSwapBuffers"/>
-   </widget>
-   <widget class="QMenu" name="HelpMenu">
-    <property name="title">
-     <string>&amp;Help</string>
-    </property>
-    <addaction name="actionAboutAten"/>
-    <addaction name="actionAboutQt"/>
-    <addaction name="separator"/>
-   </widget>
    <widget class="QMenu" name="ForcefieldMenu">
     <property name="title">
      <string>F&amp;orcefield</string>
@@ -8368,8 +8477,6 @@
     <addaction name="actionModelAddDefaultPattern"/>
    </widget>
    <addaction name="ForcefieldMenu"/>
-   <addaction name="SettingsMenu"/>
-   <addaction name="HelpMenu"/>
   </widget>
   <widget class="QStatusBar" name="MainWindowStatusBar"/>
   <action name="actionModelFFType">

@@ -1,5 +1,4 @@
 Add ObjectLists (when using CHECK)?
-Move sg code to separate dir.
 Remove dialog pointers (use instances instead).
 Remove Scripts menu, and automatic loading of scripts on startup.
 Fix callbacks for atom picking etc.
@@ -38,7 +37,6 @@ Add option to display ColourScale selector (e.g. for Grid colour buttons)
 Reimplement drawing of grid (volume) axes.
 Make Model::EnergyStore a private member with accessor?
 Click to select grid.
-Add button to Transform/Position to centre entire model at zero?
 Have Tools page? With, for instance:
 --- Plot Orbital (raising dialog from old GridsWidget).
 Remove TColourFrame (after updating Prefs and Glyphs windows).
@@ -47,7 +45,7 @@ Context Menu:
 o Set Colour doesn't work, since it needs a colour selector popup.
 Recent files list - enable load on double-click, settings not loaded/saved properly?
 TMenuButton - after (long-) click to show popup, allow popup to be hidden with no actions if the button is clicked on again.
-
+When messages display is on top, pass wheel event onto MessagesScroll.
 
 GUI TODO:
 AddAtom functionality (from old Build menu).
@@ -64,3 +62,4 @@ Add GridStyleSecondary command (GridStyle now explicitly for primary surface).
 Change enum entries for Grid::SurfaceStyle.
 Add GridOutline and GridPeriodic commands.
 Rename (De)SelectFor to (De)SelectCode.
+Remove ManualSwapBuffers from Prefs accessor.

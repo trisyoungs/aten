@@ -39,9 +39,9 @@ class TTabWidget : public QTabWidget
 	// Constructor
 	TTabWidget(QWidget* parent = 0);
 
-
 	protected:
 	void paintEvent(QPaintEvent* event);
+	void wheelEvent(QWheelEvent* event);
 };
 
 #endif

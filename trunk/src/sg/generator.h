@@ -1,6 +1,6 @@
 /*
 	*** Symmetry generator
-	*** src/base/generator.h
+	*** src/sg/generator.h
 	Copyright T. Youngs 2007-2015
 
 	This file is part of Aten.

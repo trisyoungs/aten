@@ -68,3 +68,12 @@ void AtenWindow::on_TransformPositionRepositionButton_clicked(bool checked)
 	ReturnValue rv;
 	ui.TransformPositionRepositionButton->callPopupMethod("reposition", rv);
 }
+
+void AtenWindow::on_TransformPositionZeroButton_clicked(bool checked)
+{
+	// Run command
+	CommandNode::run(Commands::Centre, "ddd", 0.0, 0.0, 0.0);
+
+	// Update display
+	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
+}

@@ -1,6 +1,6 @@
 /*
 	*** Crystal spacegroups
-	*** src/base/spacegroup.h
+	*** src/sg/spacegroup.h
 	Copyright T. Youngs 2007-2015
 
 	This file is part of Aten.

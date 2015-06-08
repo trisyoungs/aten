@@ -245,8 +245,6 @@ class Prefs
 	QString chargeLabelFormat_;
 	// Relative size for text labels, in percentage of view height
 	double labelSize_;
-	// Flag to manually perform swapBuffers
-	bool manualSwapBuffers_;
 	// Flag to use pixelbuffers for image saving rather than the renderPixmap() method
 	bool usePixelBuffers_;
 	// Whether to use solid or dashed circles for aromatic ring rendering
@@ -277,10 +275,6 @@ class Prefs
 	void setLabelSize(double size);
 	// Return the current label pointsize
 	double labelSize() const;
-	// Set manual swapbuffers
-	void setManualSwapBuffers(bool checked);
-	// Return whether manual buffer swapping is enabled
-	bool manualSwapBuffers() const;
 	// Set usage of pixelbuffers in image saving
 	void setUsePixelBuffers(bool checked);
 	// Return whether to use pixelbuffers for image saving

@@ -22,12 +22,10 @@
 #include <QtWidgets/QMessageBox>
 #include "main/aten.h"
 #include "gui/mainwindow.h"
-#include "gui/prefs.h"
 #include "gui/loadmodel.h"
 #include "gui/ffeditor.h"
 #include "gui/selectpattern.h"
 #include "gui/tdoublespindelegate.hui"
-#include "gui/about.h"
 #include "model/model.h"
 #include "model/clipboard.h"
 #include "model/undostate.h"
@@ -53,6 +51,7 @@
 #include "gui/popupcolour.h"
 #include "gui/popupelementcommon.h"
 #include "gui/popupelementtable.h"
+#include "gui/popupfileaten.h"
 #include "gui/popupfileopen.h"
 #include "gui/popupfilesave.h"
 #include "gui/popupgridmatrix.h"
@@ -166,6 +165,7 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 	// -- Home Panel (File)
 	ui.HomeFileOpenButton->setPopupWidget(new FileOpenPopup(*this, ui.HomeFileOpenButton));
 	ui.HomeFileSaveButton->setPopupWidget(new FileSavePopup(*this, ui.HomeFileSaveButton));
+	ui.HomeFileAtenButton->setPopupWidget(new FileAtenPopup(*this, ui.HomeFileAtenButton), true);
 	// -- Home Panel (Appearance)
 	ui.HomeAppearanceLineButton->setGroup("ViewStyles", Prefs::LineStyle);
 	ui.HomeAppearanceTubeButton->setGroup("ViewStyles", Prefs::TubeStyle);
@@ -296,6 +296,9 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 	connect(shortcut, SIGNAL(activated()), ui.SelectBasicInvertButton, SLOT(click()));
 	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_E), this, 0, 0, Qt::ApplicationShortcut);
 	connect(shortcut, SIGNAL(activated()), ui.SelectBasicExpandButton, SLOT(click()));
+	// Transform Panel
+	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::ALT + Qt::Key_C), this, 0, 0, Qt::ApplicationShortcut);
+	connect(shortcut, SIGNAL(activated()), ui.TransformPositionZeroButton, SLOT(click()));
 	// Main Window
 	shortcut = new QShortcut(QKeySequence(Qt::Key_F10), this, 0, 0, Qt::ApplicationShortcut);
 	connect(shortcut, SIGNAL(activated()), ui.QuickCommandToggleButton, SLOT(click()));
@@ -483,17 +486,6 @@ void AtenWindow::setInteractive(bool interactive)
 	
 	// ...and set the canvas 'editability'
 	ui.MainView->setEditable(interactive);
-}
-
-void AtenWindow::on_actionAboutAten_triggered(bool checked)
-{
-	AtenAbout aboutDialog;
-	aboutDialog.show();
-}
-
-void AtenWindow::on_actionAboutQt_triggered(bool checked)
-{
-	QMessageBox::aboutQt(this, "About Qt");
 }
 
 // Set action/button to reflect supplied user action

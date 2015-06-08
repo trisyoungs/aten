@@ -1,6 +1,6 @@
 /*
 	*** Symmetry generator definition
-	*** src/base/generator.cpp
+	*** src/sg/generator.cpp
 	Copyright T. Youngs 2007-2015
 
 	This file is part of Aten.
@@ -19,10 +19,10 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "base/generator.h"
+#include "sg/generator.h"
 #include "base/lineparser.h"
 #include "base/sysfunc.h"
-#include "base/sginfo.h"
+#include "sg/sginfo.h"
 #include <string.h>
 
 ATEN_USING_NAMESPACE

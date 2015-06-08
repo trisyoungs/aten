@@ -22,11 +22,11 @@
 #ifndef ATEN_UNITCELL_H
 #define ATEN_UNITCELL_H
 
-#include "base/generator.h"
+#include "sg/generator.h"
 #include "templates/vector3.h"
 #include "templates/reflist.h"
 #define SGCOREDEF__
-#include "base/sginfo.h"
+#include "sg/sginfo.h"
 #include "base/namespace.h"
 
 ATEN_BEGIN_NAMESPACE
