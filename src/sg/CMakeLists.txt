@@ -1,0 +1,21 @@
+add_library(sg
+  generator.h
+  spacegroup.h
+  sginfo.h
+  generator.cpp 
+  sgclib.c
+  sgfind.c
+  sghkl.c
+  sgio.c
+  sgsi.c
+  spacegroup.cpp
+)
+
+include_directories(
+  ../
+  ${QT_INCLUDE_DIR}
+  ${CMAKE_SOURCE_DIR}
+  ${CMAKE_BINARY_DIR}
+  ${CMAKE_BINARY_DIR}/src
+  ${CMAKE_SOURCE_DIR}/src/gui
+)

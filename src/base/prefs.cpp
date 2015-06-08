@@ -343,7 +343,6 @@ Prefs::Prefs()
 	angleLabelFormat_ = "%0.2f";
 	chargeLabelFormat_ = "(%0.3f e)";
 	labelSize_ = 1.5;
-	manualSwapBuffers_ = false;
 	mouseMoveFilter_ = 10;
 	usePixelBuffers_ = true;
 	renderDashedAromatics_ = true;
@@ -1628,18 +1627,6 @@ void Prefs::setLabelSize(double size)
 double Prefs::labelSize() const
 {
 	return labelSize_;
-}
-
-// Set manual swapbuffers
-void Prefs::setManualSwapBuffers(bool checked)
-{
-	manualSwapBuffers_ = checked;
-}
-
-// Return whether manual buffer swapping is enabled
-bool Prefs::manualSwapBuffers() const
-{
-	return manualSwapBuffers_;
 }
 
 // Return whether manual buffer swapping is enabled

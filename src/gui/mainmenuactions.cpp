@@ -27,7 +27,6 @@
 #include "gui/loadmodel.h"
 #include "gui/selectfilter.h"
 #include "gui/saveimage.h"
-#include "gui/prefs.h"
 #include "gui/forcefields.h"
 #include "base/sysfunc.h"
 
@@ -189,32 +188,3 @@ void AtenWindow::on_actionModelAddDefaultPattern_triggered(bool checked)
 	aten_.currentModelOrFrame()->createDefaultPattern();
 	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
 }
-
-/*
- * Settings Actions
- */
-
-// Show preferences window
-void AtenWindow::on_actionPreferences_triggered(bool checked)
-{
-	AtenPrefs prefsDialog(*this);
-	prefsDialog.setControls();
-	prefsDialog.exec();
-}
-
-// Reload all filters
-void AtenWindow::on_actionReloadFilters_triggered(bool checked)
-{
-	if (aten_.reloadFilters() > 0)
-	{
-		QMessageBox::warning(this, "Aten", "Errors encountered while reloading filters - see message box for details.", QMessageBox::Ok);
-	}
-}
-
-// Toggle manualswapbuffers option
-void AtenWindow::on_actionManualSwapBuffers_triggered(bool checked)
-{
-	prefs.setManualSwapBuffers(checked);
-	updateWidgets(AtenWindow::MainViewTarget);
-}
-

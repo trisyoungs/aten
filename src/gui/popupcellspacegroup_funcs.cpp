@@ -23,7 +23,7 @@
 #include "main/aten.h"
 #include "gui/mainwindow.h"
 #include "base/namespace.h"
-#include "base/spacegroup.h"
+#include "sg/spacegroup.h"
 
 ATEN_USING_NAMESPACE
 

@@ -207,12 +207,6 @@ void AtenWindow::on_actionSetTorsionAngle_triggered(bool checked)
 // 	gui.geometryWidget->showWidget(); ATEN2 TODO
 }
 
-void AtenWindow::on_actionCentreAtOrigin_triggered(bool checked)
-{
-	CommandNode::run(Commands::Centre, "ddd", 0.0, 0.0, 0.0);
-	updateWidgets(AtenWindow::MainViewTarget);
-}
-
 void AtenWindow::on_actionCreateFragment_triggered(bool checked)
 {
 	Model* viewTarget = aten_.currentModelOrFrame();

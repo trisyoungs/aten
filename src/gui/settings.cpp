@@ -36,20 +36,21 @@ void AtenWindow::loadSettings()
 	Program* prog, *loadedscript;
 	int n;
 	bool collapsed;
+	QSettings settings;
 
 	// Window geometry / position
 	if (prefs.loadQtSettings())
 	{
-		if (settings_.contains("MainWinPositions")) restoreState( settings_.value("MainWinPositions").toByteArray());
-		if (settings_.contains("MainWinGeometries")) restoreGeometry( settings_.value("MainWinGeometries").toByteArray());
-		if (settings_.contains("MainWinSize")) resize(settings_.value("mainwin_size", QSize(400, 400)).toSize());
-		if (settings_.contains("MainWinPosition")) move(settings_.value("mainwin_pos", QPoint(200, 200)).toPoint());
+		if (settings.contains("MainWinPositions")) restoreState( settings.value("MainWinPositions").toByteArray());
+		if (settings.contains("MainWinGeometries")) restoreGeometry( settings.value("MainWinGeometries").toByteArray());
+		if (settings.contains("MainWinSize")) resize(settings.value("mainwin_size", QSize(400, 400)).toSize());
+		if (settings.contains("MainWinPosition")) move(settings.value("mainwin_pos", QPoint(200, 200)).toPoint());
 
 		// Model list and atom table collapsed status
-		collapsed = (settings_.contains("AtomsTableCollapsed") ? settings_.value("AtomsTableCollapsed").toBool() : true);
+		collapsed = (settings.contains("AtomsTableCollapsed") ? settings.value("AtomsTableCollapsed").toBool() : true);
 		ui.AtomsTableToggleButton->setChecked(!collapsed);
 		ui.AtomsTableWidget->setVisible(!collapsed);
-		collapsed = (settings_.contains("ModelsListCollapsed") ? settings_.value("ModelsListCollapsed").toBool() : true);
+		collapsed = (settings.contains("ModelsListCollapsed") ? settings.value("ModelsListCollapsed").toBool() : true);
 		ui.ModelsListToggleButton->setChecked(!collapsed);
 		ui.ModelsList->setVisible(!collapsed);
 
@@ -57,16 +58,16 @@ void AtenWindow::loadSettings()
 		ReturnValue maxRecentFiles, recentFile;
 		if (ui.HomeFileOpenButton->callPopupMethod("maxRecentFiles", maxRecentFiles))
 		{
-			settings_.beginGroup("RecentFiles");
+			settings.beginGroup("RecentFiles");
 			for (n = 0; n < maxRecentFiles.asInteger(); ++n)
 			{
-				if (settings_.contains(QString::number(n)))
+				if (settings.contains(QString::number(n)))
 				{
-					recentFile = settings_.value(QString::number(n)).toString();
+					recentFile = settings.value(QString::number(n)).toString();
 					ui.HomeFileOpenButton->callPopupMethod("addRecentFile", recentFile);
 				}
 			}
-			settings_.endGroup();
+			settings.endGroup();
 		}
 	}
 
@@ -76,14 +77,14 @@ void AtenWindow::loadSettings()
 	{
 		key = "CommandHistory";
 		key += QString::number(n);
-		if (settings_.contains(key))
+		if (settings.contains(key))
 		{
-			commandHistory << settings_.value(key).toString();
-			settings_.remove(key);
+			commandHistory << settings.value(key).toString();
+			settings.remove(key);
 		}
 		++n;
-	} while (settings_.contains(key));
-	settings_.sync();
+	} while (settings.contains(key));
+	settings.sync();
 
 	// Probe user history file...
 	filename = aten_.atenDirectoryFile("history.txt");
@@ -179,17 +180,18 @@ void AtenWindow::saveSettings()
 	ReturnValue nItems, recentFile;
 	if (ui.HomeFileOpenButton->callPopupMethod("nRecentFiles", nItems))
 	{
+		QSettings settings;
 		int count = 0;
-		settings_.remove("RecentFiles");
-		settings_.beginGroup("RecentFiles");
+		settings.remove("RecentFiles");
+		settings.beginGroup("RecentFiles");
 		for (int n = 0; n < nItems.asInteger(); ++n)
 		{
 			if (!ui.HomeFileOpenButton->callPopupMethod("recentFile", recentFile)) continue;
-			settings_.setValue(QString::number(count++), recentFile.asString());
+			settings.setValue(QString::number(count++), recentFile.asString());
 		}
-		settings_.endGroup();
+		settings.endGroup();
+		settings.sync();
 	}
-	settings_.sync();
 
 	if (historyFile.isFileGoodForWriting())
 	{
@@ -239,20 +241,3 @@ void AtenWindow::saveSettings()
 	Messenger::print("Done.");
 }
 
-
-// Save default window state
-void AtenWindow::on_actionStoreDefaultWindowState_triggered(bool checked)
-{
-	// Toolbar visibility / position
-	settings_.setValue("MainWinPositions", saveState() );
-	settings_.setValue("MainWinGeometries", saveGeometry() );
-	settings_.setValue("MainWinSize", size());
-	settings_.setValue("MainWinPosition", pos());
-
-	// Atoms table and models list
-	settings_.setValue("AtomsTableCollapsed", !ui.AtomsTableToggleButton->isChecked());
-	settings_.setValue("ModelsListCollapsed", !ui.ModelsListToggleButton->isChecked());
-
-	// Synchronise (i.e. save) changes to settings
-	settings_.sync();
-}

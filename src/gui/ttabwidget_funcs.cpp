@@ -23,6 +23,7 @@
 #include <QtWidgets/QStyle>
 #include <QtWidgets/QStylePainter>
 #include <QtWidgets/QStyleOptionTabBarBaseV2>
+#include <QWheelEvent>
 
 // Constructor
 TTabWidget::TTabWidget(QWidget* parent) : QTabWidget(parent)
@@ -172,4 +173,13 @@ void TTabWidget::paintEvent(QPaintEvent* event)
 // 			}
 // 		}
 // 	}
+}
+
+void TTabWidget::wheelEvent(QWheelEvent* event)
+{
+	int index = currentIndex() + (event->delta() > 0 ? 1 : -1);
+	if (index < 0) index = count()-1;
+	else if (index >= count()) index = 0;
+
+	setCurrentIndex(index);
 }

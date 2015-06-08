@@ -12,7 +12,6 @@ INCLUDE_DIRECTORIES(
 
 # Meta-Objects
 SET(gui_MOC_HDRS
-  about.h
   command.h
   disorderoptions.h
   disorderwizard.h
@@ -37,6 +36,7 @@ SET(gui_MOC_HDRS
   popupcolour.h
   popupelementcommon.h
   popupelementtable.h
+  popupfileaten.h
   popupfileopen.h
   popupfilesave.h
   popupgridmatrix.h
@@ -94,7 +94,6 @@ QT5_WRAP_CPP(treegui_MOC_SRCS ${treegui_MOC_HDRS})
 
 # User Interface Files
 SET(gui_UIS
-  about.ui
   command.ui
   disorderoptions.ui
   disorderwizard.ui
@@ -118,6 +117,7 @@ SET(gui_UIS
   popupcolour.ui
   popupelementcommon.ui
   popupelementtable.ui
+  popupfileaten.ui
   popupfileopen.ui
   popupfilesave.ui
   popupgridmatrix.ui
@@ -164,7 +164,6 @@ QT5_WRAP_UI(treegui_UIS_H ${treegui_UIS})
 set(gui_SRCS
   useractions.h
   useractions.cpp
-  about_funcs.cpp
   command_funcs.cpp
   disorderoptions_funcs.cpp
   disorderwizard_funcs.cpp
@@ -207,6 +206,7 @@ set(gui_SRCS
   popupcolour_funcs.cpp
   popupelementcommon_funcs.cpp
   popupelementtable_funcs.cpp
+  popupfileaten_funcs.cpp
   popupfileopen_funcs.cpp
   popupfilesave_funcs.cpp
   popupgridmatrix_funcs.cpp

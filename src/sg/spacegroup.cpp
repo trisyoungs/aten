@@ -1,6 +1,6 @@
 /*
 	*** Crystal spacegroups
-	*** src/base/spacegroup.cpp
+	*** src/sg/spacegroup.cpp
 	Copyright T. Youngs 2007-2015
 
 	This file is part of Aten.
@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "base/spacegroup.h"
+#include "sg/spacegroup.h"
 
 ATEN_BEGIN_NAMESPACE
 

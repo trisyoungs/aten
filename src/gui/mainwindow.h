@@ -120,7 +120,7 @@ class AtenWindow : public QMainWindow
 	 */
 	public:
 	// Update Targets
-	enum UpdateTarget { DefaultTarget = 0, AtomsTableTarget = 1, CalculatePanelTarget = 2, ForcefieldsTarget = 4, GlyphsTarget = 8, GridsPanelTarget = 16, MainViewTarget = 64, StatusBarTarget = 128, GeometryTarget = 256, VibrationsTarget = 512, SelectPanelTarget = 1024, TrajectoryPanelTarget = 2048, BuildPanelTarget = 4096, CellPanelTarget = 8192, TransformPanelTarget = 16384, ModelsListTarget = 32768, AllTarget = 65535 };
+	enum UpdateTarget { DefaultTarget = 0, AtomsTableTarget = 1, CalculatePanelTarget = 2, ForcefieldsTarget = 4, GlyphsTarget = 8, GridsPanelTarget = 16, MainViewTarget = 64, StatusBarTarget = 128, VibrationsTarget = 512, SelectPanelTarget = 1024, TrajectoryPanelTarget = 2048, BuildPanelTarget = 4096, CellPanelTarget = 8192, TransformPanelTarget = 16384, ModelsListTarget = 32768, AllTarget = 65535 };
 
 	private:
 	// Whether window is currently refreshing
@@ -160,7 +160,6 @@ class AtenWindow : public QMainWindow
 	void on_actionSetBondAngle_triggered(bool checked);
 	void on_actionSetTorsionAngle_triggered(bool checked);
 	void on_actionCreateFragment_triggered(bool checked);
-	void on_actionCentreAtOrigin_triggered(bool checked);
 	void createGlyph();
 
 	public:
@@ -182,24 +181,6 @@ class AtenWindow : public QMainWindow
 	void on_actionModelFFUntype_triggered(bool checked);
 	void on_actionModelCreateExpression_triggered(bool checked);
 	void on_actionModelAddDefaultPattern_triggered(bool checked);
-
-
-	/*
-	 * Settings Menu / Actions
-	 */
-	private slots:
-	void on_actionPreferences_triggered(bool checked);
-	void on_actionReloadFilters_triggered(bool checked);
-	void on_actionStoreDefaultWindowState_triggered(bool checked);
-	void on_actionManualSwapBuffers_triggered(bool checked);
-
-
-	/*
-	 * Help Menu / Actions
-	 */
-	private slots:
-	void on_actionAboutAten_triggered(bool checked);
-	void on_actionAboutQt_triggered(bool checked);
 
 
 	/*
@@ -331,6 +312,7 @@ class AtenWindow : public QMainWindow
 	// Position
 	void on_TransformPositionCentreButton_clicked(bool checked);
 	void on_TransformPositionRepositionButton_clicked(bool checked);
+	void on_TransformPositionZeroButton_clicked(bool checked);
 
 
 	/*
@@ -550,6 +532,7 @@ class AtenWindow : public QMainWindow
 	void on_MessagesCopyButton_clicked(bool checked);
 	void on_MessagesClearButton_clicked(bool checked);
 	void on_MessagesScroll_sliderMoved(int position);
+	void on_MessagesScroll_valueChanged(int value);
 
 	public:
 	// Return current message display style
@@ -588,8 +571,6 @@ class AtenWindow : public QMainWindow
 	 * Settings
 	 */
 	private:
-	// Settings structure
-	QSettings settings_;
 	// Load settings
 	void loadSettings();
 	// Save settings

@@ -23,7 +23,7 @@
 #include "parser/stepnode.h"
 #include "base/cell.h"
 #include "base/sysfunc.h"
-#include "base/spacegroup.h"
+#include "sg/spacegroup.h"
 #include "base/prefs.h"
 #include "model/model.h"
 #include <string.h>

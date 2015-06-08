@@ -23,7 +23,7 @@
 #include "parser/commandnode.h"
 #include "model/bundle.h"
 #include "model/model.h"
-#include "base/generator.h"
+#include "sg/generator.h"
 
 ATEN_USING_NAMESPACE
 

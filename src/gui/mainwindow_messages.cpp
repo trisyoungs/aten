@@ -51,13 +51,11 @@ void AtenWindow::on_MessagesClearButton_clicked(bool checked)
 	Messenger::clearMessageBuffer();
 
 	updateWidgets(AtenWindow::MainViewTarget);
-
 }
 
-void AtenWindow::on_MessagesScroll_sliderMoved(int position)
+void AtenWindow::on_MessagesScroll_valueChanged(int value)
 {
 	updateWidgets(AtenWindow::MainViewTarget);
-
 }
 
 // Return current message display style

@@ -22,7 +22,7 @@
 #include "base/cell.h"
 #include "base/atom.h"
 #include "base/sysfunc.h"
-#include "base/spacegroup.h"
+#include "sg/spacegroup.h"
 #include "model/model.h"
 #include "math/mathfunc.h"
 
