@@ -111,7 +111,7 @@ void AtenWindow::modelsListContextMenuRequested(const QPoint& point)
 
 void AtenWindow::on_ModelsListToggleButton_clicked(bool checked)
 {
-	ui.ModelsList->setVisible(checked);
+	ui.ModelsListWidget->setVisible(checked);
 	if (checked) updateWidgets(AtenWindow::ModelsListTarget);
 }
 

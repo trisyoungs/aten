@@ -11,6 +11,10 @@
     <file>icons/arrow_up.svg</file>
     <file>icons/arrow_upline.svg</file>
   </qresource>
+  <qresource prefix="/buttons">
+    <file>icons/button_atoms.svg</file>
+    <file>icons/button_models.svg</file>
+  </qresource>
   <qresource prefix="/colourscheme">
     <file>icons/colourscheme_charge.png</file>
     <file>icons/colourscheme_element.png</file>
