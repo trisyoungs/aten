@@ -531,7 +531,6 @@ class AtenWindow : public QMainWindow
 	void on_MessagesCycleButton_clicked(bool checked);
 	void on_MessagesCopyButton_clicked(bool checked);
 	void on_MessagesClearButton_clicked(bool checked);
-	void on_MessagesScroll_sliderMoved(int position);
 	void on_MessagesScroll_valueChanged(int value);
 
 	public:
