@@ -3,7 +3,7 @@ project(Aten)
 set(DESCRIPTION "Aten - Atomic configuration builder and editor")
 set(AUTHOR "Tristan Youngs")
 set(VERSION_MAJOR "1")
-set(VERSION_MINOR "976")
+set(VERSION_MINOR "99")
 set(VERSION_PATCH "1")
 
 set(CMAKE_BUILD_TYPE "Release")
@@ -106,7 +106,8 @@ include_directories(
 # Process CMakeLists in subdirs
 add_subdirectory(${SRCS})
 
-add_executable(${target_name}  MACOSX_BUNDLE
+add_executable(${target_name}
+  MACOSX_BUNDLE
   ${SRCS}/main.cpp 
 )
 

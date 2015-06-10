@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Aten"
-#define MyAppVersion "2.0"
+#define MyAppVersion "1.99"
 #define MyAppPublisher "Tristan Youngs"
 #define MyAppURL "http://www.projectaten.net/"
 #define MyAppExeName "Aten.exe"
@@ -21,10 +21,10 @@ AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
 DefaultDirName={pf}\Aten2
 DefaultGroupName={#MyAppName}
-LicenseFile=C:\Users\axr61803\src\aten\COPYING
-OutputDir=C:\Users\axr61803\src\aten_build
-OutputBaseFilename=Aten2-VERSION
-SetupIconFile=C:\Users\axr61803\src\aten\extra\Aten.ico
+LicenseFile=..\COPYING
+OutputDir=..\
+OutputBaseFilename=Aten2-1.99
+SetupIconFile=Aten.ico
 Compression=lzma
 SolidCompression=yes
 
@@ -36,8 +36,8 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked; OnlyBelowVersion: 0,6.1
 
 [Files]
-Source: "C:\Users\axr61803\src\aten_build\bin\Aten.exe"; DestDir: "{app}"; Flags: ignoreversion
-Source: "C:\Users\axr61803\src\aten\data\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "..\build\bin\Aten.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "..\data\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 Source: "C:\GnuWin32\bin\freetype6.dll"; DestDir: "{app}"
 Source: "C:\GnuWin32\bin\readline5.dll"; DestDir: "{app}"

@@ -4,3 +4,19 @@
 configure
 aclocal.m4
 /autom4te.cache/
+Makefile
+.deps/
+config.h
+config.log
+config.status
+libtool
+stamp-h1
+
+# Build objects
+*.a
+*.o
+*.cc
+*.hh
+ui_*
+src/aten
+Aten.desktop
