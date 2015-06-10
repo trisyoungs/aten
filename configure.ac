@@ -3,7 +3,7 @@
 AC_PREREQ(2.60)
 
 # Set program name, version, bug-address and source directory
-m4_define([ATEN_VERSION],[1.976])
+m4_define([ATEN_VERSION],[1.99.0])
 AC_INIT(aten,ATEN_VERSION,tris@projectaten.net)
 AC_CONFIG_SRCDIR([src/main.cpp])
 
@@ -117,8 +117,9 @@ if test "x$with_qt" = "x"; then
   PKG_CHECK_MODULES(QTOPENGL, Qt5OpenGL >= 5.0.0)
   PKG_CHECK_MODULES(QTWIDGETS, Qt5Widgets >= 5.0.0)
 fi
+VERSION=ATEN_VERSION
 ATEN_LDLIBS="$FTGL_LIBS $FREETYPE_LIBS $QTGUI_LIBS $QTOPENGL_LIBS -lreadline -lncurses -lGL -lfreetype"
-ATEN_CFLAGS="-fPIC $FREETYPE_CFLAGS $QTGUI_CFLAGS $QTWIDGETS_CFLAGS -I$RLINCDIR $CHECK_FLAGS"
+ATEN_CFLAGS="-fPIC -DATENVERSION=$VERSION $FREETYPE_CFLAGS $QTGUI_CFLAGS $QTWIDGETS_CFLAGS -I$RLINCDIR $CHECK_CFLAGS"
 
 # Perform Makefile substitutions
 AC_SUBST(ATEN_LDLIBS)

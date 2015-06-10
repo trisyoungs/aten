@@ -1,1 +1,1 @@
-Updated git ignore. Modified ISS script, changeversion script to integrate better with Jenkins build. Commented out defines in src/main/version.h (now defunct, but still present in repo).
+Updated git ignore. Reworked changeversion script to use GIT - ATENVERSION is now the only define present in src/main/version.h, and is updated (along with other values) only on a bump request to changversion or commit.

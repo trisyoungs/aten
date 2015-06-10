@@ -6,28 +6,44 @@
 if [ "$#" -eq "0" ]
 then
   echo "Checking current version numbers only..."
-elif [ "$#" -ne "2" ]
+  TEST="true"
+elif [ "$1" = "bump" ]
 then
-  echo "Improper version number supplied (use 'changeversion MAJOR MINOR', or no args to check existing files)"
+  echo "Bumping version number..."
+  MAJOR=`grep 'set(VERSION_MAJOR' ./CMakeLists.txt | sed -e 's/set(VERSION_MAJOR \"\([0-9a-z\.]\+\)\")/\1/g'`
+  MINOR=`grep 'set(VERSION_MINOR' ./CMakeLists.txt | sed -e 's/set(VERSION_MINOR \"\([0-9a-z\.]\+\)\")/\1/g'`
+  PATCH=`grep 'set(VERSION_PATCH' ./CMakeLists.txt | sed -e 's/set(VERSION_PATCH \"\([0-9a-z\.]\+\)\")/\1/g'`
+  echo "Current version is $MAJOR.$MINOR.$PATCH"
+  PATCH=$(($PATCH+1))
+  echo "New version will be $MAJOR.$MINOR.$PATCH"
+  TEST="false"
+elif [ "$#" -ne "3" ]
+then
+  echo "Improper version number supplied (use 'changeversion MAJOR MINOR PATCH', 'bump' to increase patch number, or no args to check existing files)"
   exit 1
+else
+  MAJOR=$1
+  MINOR=$2
+  PATCH=$3
+  TEST="false"
 fi
 
 echo "Changing version numbers in files..."
 
 # Program (version.h)
-if [ "$#" -eq "2" ]
+if [ "$TEST" = "false" ]
 then
   #cp src/main/version.h src/main/version.h.orig
-  sed -i -e "s/#define ATENVERSION \"[0-9\.]\+\(.*\)\"/#define ATENVERSION \"$1.$2\"\1/g" src/main/version.h
+  sed -i -e "s/#define ATENVERSION \"[0-9\.]\+\(.*\)\"/#define ATENVERSION \"$MAJOR.$MINOR.$PATCH\"\1/g" src/main/version.h
 fi
 echo -n "       version.h (Program Version) : "
 grep '#define ATENVERSION' src/main/version.h | sed -e 's/#define ATENVERSION "\([0-9a-z\.]\+\).*"/\1/g'
 
 
 # ./CMakeLists.txt
-if [ "$#" -eq "2" ]
+if [ "$TEST" = "false" ]
 then
-  sed -i -e "s/set(VERSION_MAJOR \"\([0-9\.]\+\)\")/set(VERSION_MAJOR \"$1\")/g" -e "s/set(VERSION_MINOR \"\([0-9a-z\.]\+\)\")/set(VERSION_MINOR \"$2\")/g" CMakeLists.txt
+  sed -i -e "s/set(VERSION_MAJOR \"\([0-9\.]\+\)\")/set(VERSION_MAJOR \"$MAJOR\")/g" -e "s/set(VERSION_MINOR \"\([0-9a-z\.]\+\)\")/set(VERSION_MINOR \"$MINOR\")/g" -e "s/set(VERSION_PATCH \"\([0-9a-z\.]\+\)\")/set(VERSION_PATCH \"$PATCH\")/g" CMakeLists.txt
 fi
 echo -n "  ./CMakeLists.txt (Major Version) : "
 grep 'set(VERSION_MAJOR' ./CMakeLists.txt | sed -e 's/set(VERSION_MAJOR \"\([0-9a-z\.]\+\)\")/\1/g'
@@ -39,18 +55,18 @@ grep 'set(VERSION_PATCH' ./CMakeLists.txt | sed -e 's/set(VERSION_PATCH \"\([0-9
 
 # ./configure.ac
 echo -n "  ./configure.ac (Package Version) : "
-if [ "$#" -eq "2" ]
+if [ "$TEST" = "false" ]
 then
-  sed -i -e "s/m4_define(\[ATEN_VERSION\],\[\([0-9a-z\.]\+\)\])/m4_define([ATEN_VERSION],[$1.$2])/g" configure.ac
+  sed -i -e "s/m4_define(\[ATEN_VERSION\],\[\([0-9a-z\.]\+\)\])/m4_define([ATEN_VERSION],[$MAJOR.$MINOR.$PATCH])/g" configure.ac
 fi
 grep 'm4_define(\[ATEN_VERSION\]' ./configure.ac | sed -e 's/m4_define(\[ATEN_VERSION\],\[\([0-9a-z\.]\+\)\])/\1/g'
 
 
 # Change specfile name and contents
-if [ "$#" -eq "2" ]
+if [ "$TEST" = "false" ]
 then
   echo "Writing new specfile..."
-  sed -i -e "s/Version: [0-9a-z\.]\+/Version: $1.$2/g" aten.spec
+  sed -i -e "s/Version: [0-9a-z\.]\+/Version: $MAJOR.$MINOR.$PATCH/g" aten.spec
   grep "Version:" aten.spec
 else
   echo -n "                          Specfile : "
@@ -59,25 +75,25 @@ fi
 
 # ./extra/aten.dsc
 echo -n "        aten.dsc (Program Version) : "
-if [ "$#" -eq "2" ]
+if [ "$TEST" = "false" ]
 then
-  sed -i -e "s/Version: \([0-9a-z\.]\+\)/Version: $1.$2/g" -e "s/^ \([a-z0-9]*\) \([0-9]*\) .*/ \1 \2 aten-$1.$2.tar.gz/g" ./extra/aten.dsc
+  sed -i -e "s/Version: \([0-9a-z\.]\+\)/Version: $MAJOR.$MINOR.$PATCH/g" -e "s/^ \([a-z0-9]*\) \([0-9]*\) .*/ \1 \2 aten-$MAJOR.$MINOR.$PATCH.tar.gz/g" ./extra/aten.dsc
 fi
 grep 'Version:' ./extra/aten.dsc | sed -e 's/Version: \([0-9a-z\.]\+\)/\1/g'
 
 # ./extra/dmginfo.txt
 echo -n "     dmginfo.txt (Program Version) : "
-if [ "$#" -eq "2" ]
+if [ "$TEST" = "false" ]
 then
-  sed -i -e "s/APP_VERSION=\"\([0-9a-z\.]\+\)\"/APP_VERSION=\"$1.$2\"/g" ./extra/dmginfo.txt
+  sed -i -e "s/APP_VERSION=\"\([0-9a-z\.]\+\)\"/APP_VERSION=\"$MAJOR.$MINOR.$PATCH\"/g" ./extra/dmginfo.txt
 fi
 grep 'APP_VERSION=' ./extra/dmginfo.txt | sed -e 's/APP_VERSION=\"\([0-9a-z\.]\+\)\"/\1/g'
 
 # ./extra/aten.iss
 echo -n "         aten.iss (Program Version) : "
-if [ "$#" -eq "2" ]
+if [ "$TEST" = "false" ]
 then
-  sed -i -e "s/#define MyAppVersion \"[0-9\.]*\"/#define MyAppVersion \"$1.$2\"/g" -e "s/OutputBaseFilename=Aten-[0-9\.]*/OutputBaseFilename=Aten-$MAJOR.$MINOR/g" extra/aten.iss
+  sed -i -e "s/#define MyAppVersion \"[0-9\.]*\"/#define MyAppVersion \"$MAJOR.$MINOR.$PATCH\"/g" -e "s/OutputBaseFilename=Aten-[0-9\.]*/OutputBaseFilename=Aten-$MAJOR.$MINOR.$PATCH/g" extra/aten.iss
 fi
 grep 'define MyAppVersion' extra/aten.iss
 grep 'OutputBaseFilename' extra/aten.iss

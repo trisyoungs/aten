@@ -18,5 +18,6 @@ stamp-h1
 *.cc
 *.hh
 ui_*
+moc_*
 src/aten
 Aten.desktop

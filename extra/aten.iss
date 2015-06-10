@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Aten"
-#define MyAppVersion "1.99"
+#define MyAppVersion "1.99.0"
 #define MyAppPublisher "Tristan Youngs"
 #define MyAppURL "http://www.projectaten.net/"
 #define MyAppExeName "Aten.exe"
