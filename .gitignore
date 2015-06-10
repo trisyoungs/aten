@@ -1,0 +1,6 @@
+# Makefile stuff
+*.in
+/config/
+configure
+aclocal.m4
+/autom4te.cache/
