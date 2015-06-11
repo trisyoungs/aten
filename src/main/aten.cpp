@@ -20,7 +20,6 @@
 */
 
 #include "main/aten.h"
-#include "main/version.h"
 #include "gui/mainwindow.h"
 #include "model/model.h"
 #include "model/clipboard.h"

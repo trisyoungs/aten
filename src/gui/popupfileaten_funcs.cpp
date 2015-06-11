@@ -21,6 +21,7 @@
 
 #include "gui/popupfileaten.h"
 #include "main/aten.h"
+#include "main/version.h"
 #include "gui/mainwindow.h"
 #include "base/namespace.h"
 #include "gui/prefs.h"
@@ -33,13 +34,16 @@ FileAtenPopup::FileAtenPopup(AtenWindow& parent, TMenuButton* buttonParent) : TM
 {
 	// Set up interface
 	ui.setupUi(this);
+
+	// Set version label
+	ui.VersionLabel->setText("v" + QString(ATENVERSION));
 }
 
 // Show popup, updating any controls as necessary beforehand
 void FileAtenPopup::popup()
 {
 	refreshing_ = true;
-	
+
 	show();
 
 	refreshing_ = false;

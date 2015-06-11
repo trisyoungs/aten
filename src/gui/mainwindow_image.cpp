@@ -19,26 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-// #include <QtWidgets/QMessageBox>
-// #include "main/aten.h"
 #include "gui/mainwindow.h"
-// #include "gui/prefs.h"
-// #include "gui/loadmodel.h"
-// #include "gui/trajectory.h"
-// #include "gui/ffeditor.h"
-// #include "gui/selectpattern.h"
-// #include "gui/about.h"
-// #include "model/model.h"
-// #include "model/clipboard.h"
-// #include "model/undostate.h"
-// #include "parser/commandnode.h"
-// #include <QtWidgets/QFileDialog>
-// #include <QKeyEvent>
-// #include <QtWidgets/QProgressBar>
 #include "base/sysfunc.h"
-// #include "main/version.h"
-// #include <iostream>
-// #include <fstream>
 
 // Bitmap Image Formats (conform to allowable pixmap formats in Qt)
 const char* bitmapFormatFilters[AtenWindow::nBitmapFormats] = { "Windows Bitmap (*.bmp)", "Joint Photographic Experts Group (*.jpg)", "Portable Network Graphics (*.png)", "Portable Pixmap (*.ppm)", "X11 Bitmap (*.xbm)", "X11 Pixmap (*.xpm)" };

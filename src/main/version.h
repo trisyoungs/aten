@@ -23,7 +23,5 @@
 #define ATEN_VERSION_H
 
 #define ATENVERSION "1.99.0"
-// #define ATENDATE "Thu 28 Jun - 13:36"
-// #define ATENURL "http://github.com/trisyoungs/aten.git"
 
 #endif

@@ -35,7 +35,6 @@
 #include <QtWidgets/QProgressBar>
 #include <QShortcut>
 #include "base/sysfunc.h"
-#include "main/version.h"
 #include <iostream>
 #include <fstream>
 #include "gui/popupbuildaddh.h"

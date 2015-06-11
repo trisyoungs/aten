@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "main/version.h"
 #include "gui/mainwindow.h"
+#include "main/version.h" 
 #include "main/aten.h"
 #include "gui/forcefields.h"
 #include "gui/vibrations.h"
