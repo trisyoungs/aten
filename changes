@@ -1,1 +1,0 @@
-Updated changeversion to create git tag when bumping / changing version numbers. Removed ATENVERSION define from configure.ac, since versioning is now handled (again) by changeversion alone. Added version label to FileAtenPopup. Updated TODO2.

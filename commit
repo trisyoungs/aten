@@ -7,6 +7,7 @@ COMMITMSG="none"
 COMMITTYPE="none"
 BUMP="false"
 PUSH="false"
+ALL="false"
 
 # Parse CLI arguments / options
 USAGE1="commit [-F <filename>] [-m <text>] [-t] [-p]"
@@ -58,7 +59,7 @@ fi
 # Push changes to server?
 if [ "$PUSH" = "true" ]
 then
-  git push --tags
+  git push origin --tags
 fi
 
 exit 0
