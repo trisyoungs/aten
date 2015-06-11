@@ -59,7 +59,7 @@ fi
 # Push changes to server?
 if [ "$PUSH" = "true" ]
 then
-  git push origin --tags
+  git push origin master --tags
 fi
 
 exit 0

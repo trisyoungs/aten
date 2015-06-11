@@ -96,13 +96,14 @@ fi
 grep 'APP_VERSION=' ./extra/dmginfo.txt | sed -e 's/APP_VERSION=\"\([0-9a-z\.]\+\)\"/\1/g'
 
 # ./extra/aten.iss
-echo -n "         aten.iss (Program Version) : "
 if [ "$TEST" = "false" ]
 then
   sed -i -e "s/#define MyAppVersion \"[0-9\.]*\"/#define MyAppVersion \"$MAJOR.$MINOR.$PATCH\"/g" -e "s/OutputBaseFilename=Aten-[0-9\.]*/OutputBaseFilename=Aten-$MAJOR.$MINOR.$PATCH/g" extra/aten.iss
 fi
-grep 'define MyAppVersion' extra/aten.iss
-grep 'OutputBaseFilename' extra/aten.iss
+echo -n "        aten.iss (Program Version) : "
+grep 'define MyAppVersion' extra/aten.iss | sed -e 's/#define MyAppVersion \"\([0-9\.]*\)\"/\1/g'
+echo -n "        aten.iss (Output Filename) : "
+grep 'OutputBaseFilename' extra/aten.iss | sed -e 's/OutputBaseFilename=Aten-\([0-9\.]*\)/\1/g'
 
 exit 0
 
