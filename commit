@@ -5,12 +5,13 @@
 COMMITFILE="none"
 COMMITMSG="none"
 COMMITTYPE="none"
-TEST="false"
+BUMP="false"
+PUSH="false"
 
 # Parse CLI arguments / options
-USAGE1="commit [-F <filename>] [-m <text>] [-t]"
+USAGE1="commit [-F <filename>] [-m <text>] [-t] [-p]"
 
-while getopts "F:m:tu" options; do
+while getopts "F:m:bp" options; do
   case $options in
     F ) COMMITFILE=$OPTARG
 	COMMITTYPE="file"
@@ -18,8 +19,10 @@ while getopts "F:m:tu" options; do
     m ) COMMITMSG=$OPTARG
 	COMMITTYPE="msg"
         echo "Using supplied text for commit message.";;
-    t ) TEST="true"
-	echo "Test only - no file changes will be made.";;
+    b ) BUMP="true"
+	echo "Version (patch) number will be bumped.";;
+    p ) PUSH="true"
+	echo "Files will be committed and local changes pushed to server.";;
     \? ) echo -e $USAGE1
          exit 1;;
     * ) echo -e $USAGE1
@@ -28,64 +31,34 @@ while getopts "F:m:tu" options; do
 done
 
 # Check that a commit type was given
-if [ "$COMMITTYPE" = "none" ] && [ "$TEST" = "false" ]
+if [ "$COMMITTYPE" = "none" ]
 then
   echo "No commit message/file was given."
   exit 0
 fi
 
-# Determine current svn version number and increase it by one.
-OLDREV=`svn info -r HEAD | grep Revision | sed "s/Revision: \([0-9]*\)/\1/g"`
-let REVISION=OLDREV+1
-# Check for failed svn command
-if [ "$REVISION" = "1" ]
+# Bump version if requested
+if [ "$BUMP" = "true" ]
 then
-  echo "Failed."
-  exit 1
-fi
-echo "Current version is revision $OLDREV - committed version will be revision $REVISION..."
-
-# Determine svn URL
-URL=`svn info | grep URL | sed -e "s/URL: \(.*\)/\1/g" -e "s/https/http/g"`
-echo "Subversion repository is: "$URL
-
-# Get current date and time
-DATE=`date "+%a %d %b - %H:%M"`
-
-# Change URL revision information
-echo "Setting revision information..."
-
-if [ "$TEST" = "false" ]
-then
-  MAJOR=$(( REVISION/1000 ))
-  MINOR=$(( REVISION%1000 ))
-  if [ "$BETA" = "true" ]
-  then
-    ./changeversion $MAJOR $MINOR $REVISION
-  else
-    ./changeversion 0 0 $REVISION
-  fi
+  ./changeversion bump
 else
   ./changeversion
-fi
-
-# Update ChangeLog
-#TODO
-
-# If this was just a test we're done at this point
-if [ "$TEST" = "true" ]
-then
-  exit 0
 fi
 
 # Commit changes
 if [ "$COMMITTYPE" = "file" ]
 then
-  svn commit -F $COMMITFILE
+  git commit -a -F $COMMITFILE
 fi
 if [ "$COMMITTYPE" = "msg" ]
 then
-  svn commit -m "$COMMITMSG"
+  git commit -a -m "$COMMITMSG"
+fi
+
+# Push changes to server?
+if [ "$PUSH" = "true" ]
+then
+  git push --tags
 fi
 
 exit 0

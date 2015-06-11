@@ -1,1 +1,1 @@
-Updated git ignore. Modified ISS script, changeversion script to integrate better with Jenkins build. Commented out defines in src/main/version.h (now defunct, but still present in repo).
+Updated changeversion to create git tag when bumping / changing version numbers. Removed ATENVERSION define from configure.ac, since versioning is now handled (again) by changeversion alone. Added version label to FileAtenPopup. Updated TODO2.
