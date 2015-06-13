@@ -185,12 +185,17 @@ bool Commands::function_GrowAtom(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	Atom::AtomGeometry ag = Atom::TetrahedralGeometry;
 	if (c->hasArg(2)) ag = Atom::atomGeometry(c->argc(2), true);
 	if (ag == Atom::nAtomGeometries) return false;
-	double distance;
+
+	// Get distance (if specified)
+	double distance = -1.0;
 	if (c->hasArg(3)) distance = c->argd(3);
-	else distance = -1.0;
+
+	// Get bond boolean (if specified)
+	bool bond = true;
+	if (c->hasArg(4)) bond = c->argb(4);
 
 	obj.rs()->beginUndoState("Grow Atom");
-	aten_.current().i = obj.rs()->growAtom(i, el, distance, ag, true);
+	aten_.current().i = obj.rs()->growAtom(i, el, distance, ag, bond);
 	obj.rs()->endUndoState();
 	rv.set(VTypes::AtomData, aten_.current().i);
 	return true;
@@ -432,8 +437,15 @@ bool Commands::function_SelectionGrowAtom(CommandNode* c, Bundle& obj, ReturnVal
 	Atom::AtomGeometry ag = Atom::TetrahedralGeometry;
 	if (c->hasArg(1)) ag = Atom::atomGeometry(c->argc(1), true);
 	if (ag == Atom::nAtomGeometries) return false;
-	double distance;
+
+	// Get distance (if specified)
+	double distance = -1.0;
 	if (c->hasArg(2)) distance = c->argd(2);
+
+	// Get bond boolean (if specified)
+	bool bond = true;
+	if (c->hasArg(3)) bond = c->argb(3);
+
 
 	obj.rs()->beginUndoState("Selection Grow Atom");
 	for (Refitem<Atom,int>* ri = obj.rs()->selection(); ri != NULL; ri = ri->next)

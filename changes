@@ -1,1 +1,1 @@
-Removed unnecessary set of button icon from Selection button in Grow popup.
+Removed unnecessary set of button icon from Selection button in Grow popup. Added optional bool argument to 'growAtom' and 'selectionGrowAtom' to specify creation of bond with grown atom(s).
