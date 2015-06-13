@@ -11,6 +11,14 @@
     <file>icons/arrow_up.svg</file>
     <file>icons/arrow_upline.svg</file>
   </qresource>
+  <qresource prefix="/transform">
+    <file>icons/transform_angle.svg</file>
+    <file>icons/transform_centre.svg</file>
+    <file>icons/transform_translate.svg</file>
+    <file>icons/transform_zero.svg</file>
+    <file>icons/transform_distance.svg</file>
+    <file>icons/transform_torsion.svg</file>
+  </qresource>
   <qresource prefix="/buttons">
     <file>icons/button_atoms.svg</file>
     <file>icons/button_models.svg</file>

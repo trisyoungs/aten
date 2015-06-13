@@ -69,7 +69,7 @@
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>2</number>
+       <number>0</number>
       </property>
       <property name="usesScrollButtons">
        <bool>true</bool>
@@ -1481,8 +1481,8 @@
               </property>
               <property name="iconSize">
                <size>
-                <width>18</width>
-                <height>18</height>
+                <width>14</width>
+                <height>14</height>
                </size>
               </property>
               <property name="checkable">
@@ -1539,8 +1539,8 @@
               </property>
               <property name="iconSize">
                <size>
-                <width>18</width>
-                <height>18</height>
+                <width>14</width>
+                <height>14</height>
                </size>
               </property>
               <property name="checkable">
@@ -3915,7 +3915,7 @@
             </property>
             <property name="icon">
              <iconset resource="icons.qrc">
-              <normaloff>:/geometry/icons/measure_torsion.svg</normaloff>:/geometry/icons/measure_torsion.svg</iconset>
+              <normaloff>:/transform/icons/transform_torsion.svg</normaloff>:/transform/icons/transform_torsion.svg</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -3978,7 +3978,7 @@
             </property>
             <property name="icon">
              <iconset resource="icons.qrc">
-              <normaloff>:/geometry/icons/measure_distance.svg</normaloff>:/geometry/icons/measure_distance.svg</iconset>
+              <normaloff>:/transform/icons/transform_distance.svg</normaloff>:/transform/icons/transform_distance.svg</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -4031,7 +4031,7 @@
             </property>
             <property name="icon">
              <iconset resource="icons.qrc">
-              <normaloff>:/geometry/icons/measure_angle.svg</normaloff>:/geometry/icons/measure_angle.svg</iconset>
+              <normaloff>:/transform/icons/transform_angle.svg</normaloff>:/transform/icons/transform_angle.svg</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -4084,7 +4084,7 @@
             </property>
             <property name="icon">
              <iconset resource="icons.qrc">
-              <normaloff>:/geometry/icons/measure_torsion.svg</normaloff>:/geometry/icons/measure_torsion.svg</iconset>
+              <normaloff>:/transform/icons/transform_translate.svg</normaloff>:/transform/icons/transform_translate.svg</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -4130,7 +4130,7 @@
              </size>
             </property>
             <property name="toolTip">
-             <string>Set torsions in the current selection</string>
+             <string>Shift atoms along an arbitrary vector (hold for options)</string>
             </property>
             <property name="text">
              <string>Shift</string>
@@ -4190,7 +4190,7 @@
             </property>
             <property name="icon">
              <iconset resource="icons.qrc">
-              <normaloff>:/geometry/icons/measure_torsion.svg</normaloff>:/geometry/icons/measure_torsion.svg</iconset>
+              <normaloff>:/transform/icons/transform_centre.svg</normaloff>:/transform/icons/transform_centre.svg</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -4236,7 +4236,7 @@
              </size>
             </property>
             <property name="toolTip">
-             <string>Set torsions in the current selection</string>
+             <string>Reposition atoms with respect to a reference point (hold for options)</string>
             </property>
             <property name="text">
              <string>Reposition</string>
@@ -4306,14 +4306,14 @@
              </size>
             </property>
             <property name="toolTip">
-             <string>Set torsions in the current selection</string>
+             <string>Centre the current selection at (0,0,0)</string>
             </property>
             <property name="text">
              <string>Zero</string>
             </property>
             <property name="icon">
              <iconset resource="icons.qrc">
-              <normaloff>:/geometry/icons/measure_torsion.svg</normaloff>:/geometry/icons/measure_torsion.svg</iconset>
+              <normaloff>:/transform/icons/transform_zero.svg</normaloff>:/transform/icons/transform_zero.svg</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -8497,7 +8497,7 @@
      <x>0</x>
      <y>0</y>
      <width>1247</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="ForcefieldMenu">
