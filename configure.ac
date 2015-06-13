@@ -27,9 +27,6 @@ AC_PROG_YACC
 #
 
 # QT Tools
-QTMOC="moc"
-QTRCC="rcc"
-QTUIC="uic"
 AC_ARG_WITH([qtmoc],[AC_HELP_STRING([--with-qtmoc=<executable>],
     [Specify Qt5 Meta-Object Compiler tool (moc) [default="moc-qt5"]])], ,
     [with_qtmoc="moc-qt5"])

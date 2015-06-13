@@ -69,7 +69,7 @@
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>2</number>
       </property>
       <property name="usesScrollButtons">
        <bool>true</bool>
@@ -115,7 +115,7 @@
               </property>
               <property name="icon">
                <iconset resource="icons.qrc">
-                <normaloff>:/select/icons/select_expand.svg</normaloff>:/select/icons/select_expand.svg</iconset>
+                <normaloff>:/view/icons/view_get.svg</normaloff>:/view/icons/view_get.svg</iconset>
               </property>
               <property name="iconSize">
                <size>
@@ -141,7 +141,7 @@
               </property>
               <property name="icon">
                <iconset resource="icons.qrc">
-                <normaloff>:/select/icons/select_invert.svg</normaloff>:/select/icons/select_invert.svg</iconset>
+                <normaloff>:/view/icons/view_set.svg</normaloff>:/view/icons/view_set.svg</iconset>
               </property>
               <property name="iconSize">
                <size>
@@ -1078,14 +1078,14 @@
                </size>
               </property>
               <property name="toolTip">
-               <string>Copy current model's view matrix</string>
+               <string>Toggle perspective view</string>
               </property>
               <property name="text">
                <string>Perspective</string>
               </property>
               <property name="icon">
                <iconset resource="icons.qrc">
-                <normaloff>:/select/icons/select_expand.svg</normaloff>:/select/icons/select_expand.svg</iconset>
+                <normaloff>:/view/icons/view_perspective.svg</normaloff>:/view/icons/view_perspective.svg</iconset>
               </property>
               <property name="iconSize">
                <size>
@@ -1110,7 +1110,7 @@
                </size>
               </property>
               <property name="toolTip">
-               <string>Copy current model's view matrix</string>
+               <string>Un-hide any hidden atoms in the current model</string>
               </property>
               <property name="text">
                <string>Show All</string>
@@ -3103,7 +3103,7 @@
             </property>
             <property name="icon">
              <iconset resource="icons.qrc">
-              <normaloff>:/stackicons/icons/stack_celldefine.svg</normaloff>:/stackicons/icons/stack_celldefine.svg</iconset>
+              <normaloff>:/cell/icons/cell_replicate.svg</normaloff>:/cell/icons/cell_replicate.svg</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -3161,7 +3161,7 @@
             </property>
             <property name="icon">
              <iconset resource="icons.qrc">
-              <normaloff>:/stackicons/icons/stack_celldefine.svg</normaloff>:/stackicons/icons/stack_celldefine.svg</iconset>
+              <normaloff>:/cell/icons/cell_scale.svg</normaloff>:/cell/icons/cell_scale.svg</iconset>
             </property>
             <property name="iconSize">
              <size>
