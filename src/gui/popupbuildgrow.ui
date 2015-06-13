@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>234</width>
-    <height>177</height>
+    <width>255</width>
+    <height>239</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -26,101 +26,19 @@
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <property name="margin">
-    <number>0</number>
+    <number>2</number>
    </property>
    <property name="spacing">
     <number>2</number>
    </property>
-   <item row="3" column="0">
-    <widget class="QToolButton" name="GrowSelectionButton">
-     <property name="minimumSize">
-      <size>
-       <width>56</width>
-       <height>56</height>
-      </size>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>56</width>
-       <height>56</height>
-      </size>
-     </property>
-     <property name="toolTip">
-      <string>Grow atom onto all atoms in current selection</string>
-     </property>
-     <property name="text">
-      <string>Selection</string>
-     </property>
-     <property name="icon">
-      <iconset resource="icons.qrc">
-       <normaloff>:/build/icons/build_growsel.svg</normaloff>:/build/icons/build_growsel.svg</iconset>
-     </property>
-     <property name="iconSize">
-      <size>
-       <width>30</width>
-       <height>30</height>
-      </size>
-     </property>
-     <property name="checkable">
-      <bool>false</bool>
-     </property>
-     <property name="autoExclusive">
-      <bool>false</bool>
-     </property>
-     <property name="toolButtonStyle">
-      <enum>Qt::ToolButtonTextUnderIcon</enum>
-     </property>
-     <property name="autoRaise">
-      <bool>false</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="2">
-    <widget class="QToolButton" name="GeometryTShapeButton">
-     <property name="minimumSize">
-      <size>
-       <width>56</width>
-       <height>56</height>
-      </size>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>56</width>
-       <height>56</height>
-      </size>
-     </property>
-     <property name="toolTip">
-      <string>Set grow geometry to T-shape</string>
-     </property>
-     <property name="text">
-      <string>T-Shape</string>
-     </property>
-     <property name="icon">
-      <iconset resource="icons.qrc">
-       <normaloff>:/atomgeometry/icons/atomgeometry_tshape.png</normaloff>:/atomgeometry/icons/atomgeometry_tshape.png</iconset>
-     </property>
-     <property name="iconSize">
-      <size>
-       <width>30</width>
-       <height>30</height>
-      </size>
-     </property>
-     <property name="checkable">
-      <bool>true</bool>
-     </property>
-     <property name="autoExclusive">
-      <bool>true</bool>
-     </property>
-     <property name="toolButtonStyle">
-      <enum>Qt::ToolButtonTextUnderIcon</enum>
-     </property>
-     <property name="autoRaise">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
    <item row="0" column="0">
     <widget class="QToolButton" name="GeometryLinearButton">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="minimumSize">
       <size>
        <width>56</width>
@@ -129,7 +47,7 @@
      </property>
      <property name="maximumSize">
       <size>
-       <width>56</width>
+       <width>128</width>
        <height>56</height>
       </size>
      </property>
@@ -163,8 +81,14 @@
      </property>
     </widget>
    </item>
-   <item row="1" column="0">
-    <widget class="QToolButton" name="GeometryTetrahedralButton">
+   <item row="0" column="1">
+    <widget class="QToolButton" name="GeometryTShapeButton">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="minimumSize">
       <size>
        <width>56</width>
@@ -173,19 +97,19 @@
      </property>
      <property name="maximumSize">
       <size>
-       <width>56</width>
+       <width>128</width>
        <height>56</height>
       </size>
      </property>
      <property name="toolTip">
-      <string>Set grow geometry to tetrahedral</string>
+      <string>Set grow geometry to T-shape</string>
      </property>
      <property name="text">
-      <string>Tetrahedral</string>
+      <string>T-Shape</string>
      </property>
      <property name="icon">
       <iconset resource="icons.qrc">
-       <normaloff>:/atomgeometry/icons/atomgeometry_tetrahedral.png</normaloff>:/atomgeometry/icons/atomgeometry_tetrahedral.png</iconset>
+       <normaloff>:/atomgeometry/icons/atomgeometry_tshape.png</normaloff>:/atomgeometry/icons/atomgeometry_tshape.png</iconset>
      </property>
      <property name="iconSize">
       <size>
@@ -207,147 +131,14 @@
      </property>
     </widget>
    </item>
-   <item row="1" column="2">
-    <widget class="QToolButton" name="GeometrySqPlanarButton">
-     <property name="minimumSize">
-      <size>
-       <width>56</width>
-       <height>56</height>
-      </size>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>56</width>
-       <height>56</height>
-      </size>
-     </property>
-     <property name="toolTip">
-      <string>Set grow geometry to square planar</string>
-     </property>
-     <property name="text">
-      <string>Sq. Planar</string>
-     </property>
-     <property name="icon">
-      <iconset resource="icons.qrc">
-       <normaloff>:/atomgeometry/icons/atomgeometry_sqplanar.png</normaloff>:/atomgeometry/icons/atomgeometry_sqplanar.png</iconset>
-     </property>
-     <property name="iconSize">
-      <size>
-       <width>30</width>
-       <height>30</height>
-      </size>
-     </property>
-     <property name="checkable">
-      <bool>true</bool>
-     </property>
-     <property name="autoExclusive">
-      <bool>true</bool>
-     </property>
-     <property name="toolButtonStyle">
-      <enum>Qt::ToolButtonTextUnderIcon</enum>
-     </property>
-     <property name="autoRaise">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="4">
-    <widget class="QToolButton" name="GeometryTrigBipyramidButton">
-     <property name="minimumSize">
-      <size>
-       <width>56</width>
-       <height>56</height>
-      </size>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>56</width>
-       <height>56</height>
-      </size>
-     </property>
-     <property name="toolTip">
-      <string>Set grow geometry to trigonal bipyramidal</string>
-     </property>
-     <property name="text">
-      <string>Trig. Bip.</string>
-     </property>
-     <property name="icon">
-      <iconset resource="icons.qrc">
-       <normaloff>:/atomgeometry/icons/atomgeometry_trigbipy.png</normaloff>:/atomgeometry/icons/atomgeometry_trigbipy.png</iconset>
-     </property>
-     <property name="iconSize">
-      <size>
-       <width>30</width>
-       <height>30</height>
-      </size>
-     </property>
-     <property name="checkable">
-      <bool>true</bool>
-     </property>
-     <property name="autoExclusive">
-      <bool>true</bool>
-     </property>
-     <property name="toolButtonStyle">
-      <enum>Qt::ToolButtonTextUnderIcon</enum>
-     </property>
-     <property name="autoRaise">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="5">
-    <widget class="QToolButton" name="GeometryOctahedralButton">
-     <property name="minimumSize">
-      <size>
-       <width>56</width>
-       <height>56</height>
-      </size>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>56</width>
-       <height>56</height>
-      </size>
-     </property>
-     <property name="toolTip">
-      <string>Set grow geometry to octahedral</string>
-     </property>
-     <property name="text">
-      <string>Octahedral</string>
-     </property>
-     <property name="icon">
-      <iconset resource="icons.qrc">
-       <normaloff>:/atomgeometry/icons/atomgeometry_octahedral.png</normaloff>:/atomgeometry/icons/atomgeometry_octahedral.png</iconset>
-     </property>
-     <property name="iconSize">
-      <size>
-       <width>30</width>
-       <height>30</height>
-      </size>
-     </property>
-     <property name="checkable">
-      <bool>true</bool>
-     </property>
-     <property name="autoExclusive">
-      <bool>true</bool>
-     </property>
-     <property name="toolButtonStyle">
-      <enum>Qt::ToolButtonTextUnderIcon</enum>
-     </property>
-     <property name="autoRaise">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0" colspan="6">
-    <widget class="Line" name="line">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="4">
+   <item row="0" column="2">
     <widget class="QToolButton" name="GeometryTrigonalButton">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
      <property name="minimumSize">
       <size>
        <width>56</width>
@@ -356,7 +147,7 @@
      </property>
      <property name="maximumSize">
       <size>
-       <width>56</width>
+       <width>128</width>
        <height>56</height>
       </size>
      </property>
@@ -390,10 +181,343 @@
      </property>
     </widget>
    </item>
+   <item row="2" column="0" colspan="4">
+    <widget class="Line" name="line">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="0">
+    <widget class="QToolButton" name="GrowSelectionButton">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>56</width>
+       <height>56</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>128</width>
+       <height>56</height>
+      </size>
+     </property>
+     <property name="toolTip">
+      <string>Grow atom onto all atoms in current selection</string>
+     </property>
+     <property name="text">
+      <string>Selection</string>
+     </property>
+     <property name="icon">
+      <iconset>
+       <normaloff>:/build/icons/build_growsel.svg</normaloff>:/build/icons/build_growsel.svg</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>30</width>
+       <height>30</height>
+      </size>
+     </property>
+     <property name="checkable">
+      <bool>false</bool>
+     </property>
+     <property name="autoExclusive">
+      <bool>false</bool>
+     </property>
+     <property name="toolButtonStyle">
+      <enum>Qt::ToolButtonTextUnderIcon</enum>
+     </property>
+     <property name="autoRaise">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="3">
+    <widget class="QToolButton" name="GeometryOctahedralButton">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>56</width>
+       <height>56</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>128</width>
+       <height>56</height>
+      </size>
+     </property>
+     <property name="toolTip">
+      <string>Set grow geometry to octahedral</string>
+     </property>
+     <property name="text">
+      <string>Octahedral</string>
+     </property>
+     <property name="icon">
+      <iconset resource="icons.qrc">
+       <normaloff>:/atomgeometry/icons/atomgeometry_octahedral.png</normaloff>:/atomgeometry/icons/atomgeometry_octahedral.png</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>30</width>
+       <height>30</height>
+      </size>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+     <property name="autoExclusive">
+      <bool>true</bool>
+     </property>
+     <property name="toolButtonStyle">
+      <enum>Qt::ToolButtonTextUnderIcon</enum>
+     </property>
+     <property name="autoRaise">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QToolButton" name="GeometryTetrahedralButton">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>56</width>
+       <height>56</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>128</width>
+       <height>56</height>
+      </size>
+     </property>
+     <property name="toolTip">
+      <string>Set grow geometry to tetrahedral</string>
+     </property>
+     <property name="text">
+      <string>Tetrahedral</string>
+     </property>
+     <property name="icon">
+      <iconset resource="icons.qrc">
+       <normaloff>:/atomgeometry/icons/atomgeometry_tetrahedral.png</normaloff>:/atomgeometry/icons/atomgeometry_tetrahedral.png</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>30</width>
+       <height>30</height>
+      </size>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+     <property name="autoExclusive">
+      <bool>true</bool>
+     </property>
+     <property name="toolButtonStyle">
+      <enum>Qt::ToolButtonTextUnderIcon</enum>
+     </property>
+     <property name="autoRaise">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="0" colspan="4">
+    <widget class="Line" name="line_2">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QToolButton" name="GeometrySqPlanarButton">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>56</width>
+       <height>56</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>128</width>
+       <height>56</height>
+      </size>
+     </property>
+     <property name="toolTip">
+      <string>Set grow geometry to square planar</string>
+     </property>
+     <property name="text">
+      <string>Sq. Planar</string>
+     </property>
+     <property name="icon">
+      <iconset resource="icons.qrc">
+       <normaloff>:/atomgeometry/icons/atomgeometry_sqplanar.png</normaloff>:/atomgeometry/icons/atomgeometry_sqplanar.png</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>30</width>
+       <height>30</height>
+      </size>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+     <property name="autoExclusive">
+      <bool>true</bool>
+     </property>
+     <property name="toolButtonStyle">
+      <enum>Qt::ToolButtonTextUnderIcon</enum>
+     </property>
+     <property name="autoRaise">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="2">
+    <widget class="QToolButton" name="GeometryTrigBipyramidButton">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>56</width>
+       <height>56</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>128</width>
+       <height>56</height>
+      </size>
+     </property>
+     <property name="toolTip">
+      <string>Set grow geometry to trigonal bipyramidal</string>
+     </property>
+     <property name="text">
+      <string>Trig. Bip.</string>
+     </property>
+     <property name="icon">
+      <iconset resource="icons.qrc">
+       <normaloff>:/atomgeometry/icons/atomgeometry_trigbipy.png</normaloff>:/atomgeometry/icons/atomgeometry_trigbipy.png</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>30</width>
+       <height>30</height>
+      </size>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+     <property name="autoExclusive">
+      <bool>true</bool>
+     </property>
+     <property name="toolButtonStyle">
+      <enum>Qt::ToolButtonTextUnderIcon</enum>
+     </property>
+     <property name="autoRaise">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0" colspan="4">
+    <widget class="QRadioButton" name="VanDerWaalsRadio">
+     <property name="toolTip">
+      <string>Use van der Waals radii of elements to determine grow distance</string>
+     </property>
+     <property name="text">
+      <string>Use van der Waals radii</string>
+     </property>
+     <property name="checked">
+      <bool>true</bool>
+     </property>
+     <property name="autoExclusive">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0" colspan="2">
+    <widget class="QRadioButton" name="FixedRadio">
+     <property name="toolTip">
+      <string>Used fixed grow distance</string>
+     </property>
+     <property name="text">
+      <string>Fixed distance</string>
+     </property>
+     <property name="autoExclusive">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="2" colspan="2">
+    <widget class="TExponentialSpin" name="DistanceSpin">
+     <property name="suffix">
+      <string> A</string>
+     </property>
+     <property name="decimals">
+      <number>4</number>
+     </property>
+     <property name="maximum">
+      <double>1000.000000000000000</double>
+     </property>
+     <property name="value">
+      <double>1.090000000000000</double>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>TExponentialSpin</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>gui/texponentialspin.hui</header>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="icons.qrc"/>
  </resources>
- <connections/>
+ <connections>
+  <connection>
+   <sender>FixedRadio</sender>
+   <signal>toggled(bool)</signal>
+   <receiver>DistanceSpin</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>32</x>
+     <y>158</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>171</x>
+     <y>160</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

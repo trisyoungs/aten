@@ -458,15 +458,17 @@ void Viewer::endMode(Prefs::MouseButton button)
 		case (UserAction::DrawGrowAtomsAction):
 			if (atomClicked_ != NULL)
 			{
+				ReturnValue distance;
+				atenWindow_->ui.BuildDrawGrowButton->callPopupMethod("distance", distance);
 				if (shifted)
 				{
 					source->beginUndoState("Grow Atom (unbound)");
-					source->growAtom(atomClicked_, atenWindow_->currentBuildElement(), -1.0, buildGeometry_, false);
+					source->growAtom(atomClicked_, atenWindow_->currentBuildElement(), distance.asDouble(), buildGeometry_, false);
 				}
 				else
 				{
 					source->beginUndoState("Grow Atom");
-					source->growAtom(atomClicked_, atenWindow_->currentBuildElement(), -1.0, buildGeometry_, true);
+					source->growAtom(atomClicked_, atenWindow_->currentBuildElement(), distance.asDouble(), buildGeometry_, true);
 				}
 				source->endUndoState();
 				atenWindow_->updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);

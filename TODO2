@@ -5,7 +5,6 @@ Fix callbacks for atom picking etc.
 Add new RefList definition.
 Move Prefs from being a static global to a member of Aten?
 In AtenWindow::on_actionFileSaveImage_triggered convert options to proper QDialog.
-Add large image creation functions.
 Redo ProgressIndicator, making into a class much like QProgress (can't just use QProgress, since we want to have progress indicator functionality in the CLI....). Make it clever enough to realise that the gui is visible or not. Perhaps integrate it into Messenger, so that messages printed out while the indicator is running don't disrupt the indicator?
 Remove global MC, CG, SD declarations, and put them in Aten?
 Reimplement KeepNames functionality.
@@ -25,7 +24,6 @@ Optimise basic primitives to use vertex/index arrays instead of just vertices (a
 Check picked atom rendering (probably broken).
 Optimise primitive drawing / generation by allowing use of GL_TRIANGLE_STRIP?
 Octahedral Growing doesn't work.
-Add option to specify grow distance (instead of calculating from VDW radii).
 Automatically adjust grid size for number of visible models, based on current aspect ratio and context size etc.
 Cif/mol2/pdb import broken?
 Clear selected measurements on panel popup clears all measurements.
@@ -65,3 +63,4 @@ Change enum entries for Grid::SurfaceStyle.
 Add GridOutline and GridPeriodic commands.
 Rename (De)SelectFor to (De)SelectCode.
 Remove ManualSwapBuffers from Prefs accessor.
+growAtom / selectionGrowAtom - add optional parameter "bool bond = true".

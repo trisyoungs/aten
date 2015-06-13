@@ -32,6 +32,10 @@ GrowPopup::GrowPopup(AtenWindow& parent, TMenuButton* buttonParent) : TMenuButto
 {
 	// Set up interface
 	ui.setupUi(this);
+
+	QButtonGroup* buttonGroup = new QButtonGroup(this);
+	buttonGroup->addButton(ui.VanDerWaalsRadio);
+	buttonGroup->addButton(ui.FixedRadio);
 }
 
 // Show popup, updating any controls as necessary beforehand
@@ -114,6 +118,12 @@ bool GrowPopup::callMethod(QString methodName, ReturnValue& rv)
 				printf("Warning: Odd atom geometry passed (%s) so can't set parent button's icon.\n", qPrintable(rv.asString()));
 				break;
 		}
+	}
+	else if (methodName == "distance")
+	{
+		if (ui.VanDerWaalsRadio->isChecked()) rv = -1.0;
+		else rv = ui.DistanceSpin->value();
+		return true;
 	}
 	else if (methodName == "hideEvent")
 	{
@@ -213,10 +223,8 @@ void GrowPopup::on_GeometryOctahedralButton_clicked(bool checked)
 void GrowPopup::on_GrowSelectionButton_clicked(bool checked)
 {
 	// Run command
-	CommandNode::run(Commands::SelectionGrowAtom, "ic", parent_.currentBuildElement(), Atom::atomGeometry(parent_.ui.MainView->buildGeometry()));
-
-	// Set icon
-	callMethodSimple("updateButtonIcon", Atom::atomGeometry(parent_.ui.MainView->buildGeometry()));
+	if (ui.FixedRadio->isChecked()) CommandNode::run(Commands::SelectionGrowAtom, "icd", parent_.currentBuildElement(), Atom::atomGeometry(parent_.ui.MainView->buildGeometry()), ui.DistanceSpin->value());
+	else CommandNode::run(Commands::SelectionGrowAtom, "ic", parent_.currentBuildElement(), Atom::atomGeometry(parent_.ui.MainView->buildGeometry()));
 
 	// Hide popup
 	done();
