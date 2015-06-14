@@ -69,7 +69,7 @@
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>6</number>
       </property>
       <property name="usesScrollButtons">
        <bool>true</bool>
@@ -2765,7 +2765,7 @@
             </property>
             <property name="icon">
              <iconset resource="icons.qrc">
-              <normaloff>:/stackicons/icons/stack_celldefine.svg</normaloff>:/stackicons/icons/stack_celldefine.svg</iconset>
+              <normaloff>:/cell/icons/cell_periodic.svg</normaloff>:/cell/icons/cell_periodic.svg</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -2786,11 +2786,11 @@
              <enum>Qt::ToolButtonTextUnderIcon</enum>
             </property>
             <property name="autoRaise">
-             <bool>false</bool>
+             <bool>true</bool>
             </property>
            </widget>
           </item>
-          <item row="0" column="1">
+          <item row="0" column="2">
            <widget class="TMenuButton" name="CellDefineMatrixButton">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -2848,7 +2848,7 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="2">
+          <item row="0" column="3">
            <widget class="TMenuButton" name="CellDefineLengthsButton">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -2906,7 +2906,7 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="3">
+          <item row="0" column="4">
            <widget class="TMenuButton" name="CellDefineAnglesButton">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -2964,13 +2964,20 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="0" colspan="4">
+          <item row="1" column="0" colspan="5">
            <widget class="QLabel" name="label_5">
             <property name="text">
              <string>Define</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="Line" name="line_31">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
             </property>
            </widget>
           </item>
@@ -3540,7 +3547,7 @@
             </property>
             <property name="icon">
              <iconset resource="icons.qrc">
-              <normaloff>:/geometry/icons/measure_distance.svg</normaloff>:/geometry/icons/measure_distance.svg</iconset>
+              <normaloff>:/calculate/icons/calculate_distance.svg</normaloff>:/calculate/icons/calculate_distance.svg</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -3600,7 +3607,7 @@
             </property>
             <property name="icon">
              <iconset resource="icons.qrc">
-              <normaloff>:/geometry/icons/measure_torsion.svg</normaloff>:/geometry/icons/measure_torsion.svg</iconset>
+              <normaloff>:/calculate/icons/calculate_torsion.svg</normaloff>:/calculate/icons/calculate_torsion.svg</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -3653,7 +3660,7 @@
             </property>
             <property name="icon">
              <iconset resource="icons.qrc">
-              <normaloff>:/geometry/icons/measure_angle.svg</normaloff>:/geometry/icons/measure_angle.svg</iconset>
+              <normaloff>:/calculate/icons/calculate_angle.svg</normaloff>:/calculate/icons/calculate_angle.svg</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -3861,7 +3868,7 @@
              <string>Flip</string>
             </property>
             <property name="icon">
-             <iconset resource="icons.qrc">
+             <iconset>
               <normaloff>:/geometry/icons/measure_torsion.svg</normaloff>:/geometry/icons/measure_torsion.svg</iconset>
             </property>
             <property name="iconSize">
@@ -4136,7 +4143,7 @@
              <string>Shift</string>
             </property>
             <property name="icon">
-             <iconset resource="icons.qrc">
+             <iconset>
               <normaloff>:/geometry/icons/measure_torsion.svg</normaloff>:/geometry/icons/measure_torsion.svg</iconset>
             </property>
             <property name="iconSize">
@@ -4242,7 +4249,7 @@
              <string>Reposition</string>
             </property>
             <property name="icon">
-             <iconset resource="icons.qrc">
+             <iconset>
               <normaloff>:/geometry/icons/measure_torsion.svg</normaloff>:/geometry/icons/measure_torsion.svg</iconset>
             </property>
             <property name="iconSize">
@@ -5093,7 +5100,7 @@
               </property>
               <property name="icon">
                <iconset resource="icons.qrc">
-                <normaloff>:/select/icons/select_invert.svg</normaloff>:/select/icons/select_invert.svg</iconset>
+                <normaloff>:/cell/icons/cell_periodic.svg</normaloff>:/cell/icons/cell_periodic.svg</iconset>
               </property>
               <property name="iconSize">
                <size>
@@ -8642,7 +8649,7 @@
   </action>
   <action name="actionListMeasurements">
    <property name="icon">
-    <iconset resource="icons.qrc">
+    <iconset>
      <normaloff>:/geometry/icons/measure_list.svg</normaloff>:/geometry/icons/measure_list.svg</iconset>
    </property>
    <property name="text">

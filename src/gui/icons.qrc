@@ -95,21 +95,17 @@
     <file>icons/forcefield_forces.svg</file>
     <file>icons/forcefield_minimise.svg</file>
   </qresource>
-  <qresource prefix="/geometry">
-    <file>icons/measure_angle.svg</file>
-    <file>icons/measure_anglesel.svg</file>
-    <file>icons/measure_distance.svg</file>
-    <file>icons/measure_distancesel.svg</file>
-    <file>icons/measure_list.svg</file>
-    <file>icons/measure_torsion.svg</file>
-    <file>icons/measure_torsionsel.svg</file>
-  </qresource>
   <qresource prefix="/model">
     <file>icons/model_foldatoms.svg</file>
     <file>icons/model_foldmolecules.svg</file>
     <file>icons/model_next.svg</file>
     <file>icons/model_prev.svg</file>
     <file>icons/model_rename.svg</file>
+  </qresource>
+  <qresource prefix="/calculate">
+    <file>icons/calculate_angle.svg</file>
+    <file>icons/calculate_distance.svg</file>
+    <file>icons/calculate_torsion.svg</file>
   </qresource>
   <qresource prefix="/mouse">
     <file>icons/mouse_interact.svg</file>
