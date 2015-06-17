@@ -42,8 +42,8 @@ Source: "..\data\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs creat
 Source: "C:\GnuWin32\bin\freetype6.dll"; DestDir: "{app}"
 Source: "C:\GnuWin32\bin\readline5.dll"; DestDir: "{app}"
 Source: "C:\GnuWin32\bin\history5.dll"; DestDir: "{app}"
-Source: "C:\MinGW\bin\libgcc_s_dw2-1.dll"; DestDir: "{app}"
-Source: "C:\MinGW\bin\libstdc++-6.dll"; DestDir: "{app}"
+Source: "C:\MinGW32\bin\libgcc_s_dw2-1.dll"; DestDir: "{app}"
+Source: "C:\MinGW32\bin\libstdc++-6.dll"; DestDir: "{app}"
 
 [Icons]
 Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
