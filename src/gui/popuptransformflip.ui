@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>94</width>
-    <height>172</height>
+    <width>172</width>
+    <height>56</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -24,102 +24,14 @@
   <property name="windowTitle">
    <string>Transform Centre Popup</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout">
-   <property name="margin">
-    <number>0</number>
-   </property>
+  <layout class="QHBoxLayout" name="horizontalLayout">
    <property name="spacing">
     <number>2</number>
    </property>
-   <item row="0" column="0">
-    <widget class="QToolButton" name="FlipXButton">
-     <property name="minimumSize">
-      <size>
-       <width>56</width>
-       <height>56</height>
-      </size>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>56</width>
-       <height>56</height>
-      </size>
-     </property>
-     <property name="toolTip">
-      <string>Flip current selection about the X axis</string>
-     </property>
-     <property name="text">
-      <string>X</string>
-     </property>
-     <property name="icon">
-      <iconset resource="icons.qrc">
-       <normaloff>:/position/icons/position_flipx.svg</normaloff>:/position/icons/position_flipx.svg</iconset>
-     </property>
-     <property name="iconSize">
-      <size>
-       <width>30</width>
-       <height>30</height>
-      </size>
-     </property>
-     <property name="checkable">
-      <bool>false</bool>
-     </property>
-     <property name="autoExclusive">
-      <bool>false</bool>
-     </property>
-     <property name="toolButtonStyle">
-      <enum>Qt::ToolButtonTextUnderIcon</enum>
-     </property>
-     <property name="autoRaise">
-      <bool>false</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="0">
-    <widget class="QToolButton" name="FlipYButton">
-     <property name="minimumSize">
-      <size>
-       <width>56</width>
-       <height>56</height>
-      </size>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>56</width>
-       <height>56</height>
-      </size>
-     </property>
-     <property name="toolTip">
-      <string>Flip current selection about the Y axis</string>
-     </property>
-     <property name="text">
-      <string>Y</string>
-     </property>
-     <property name="icon">
-      <iconset resource="icons.qrc">
-       <normaloff>:/position/icons/position_flipy.svg</normaloff>:/position/icons/position_flipy.svg</iconset>
-     </property>
-     <property name="iconSize">
-      <size>
-       <width>30</width>
-       <height>30</height>
-      </size>
-     </property>
-     <property name="checkable">
-      <bool>false</bool>
-     </property>
-     <property name="autoExclusive">
-      <bool>false</bool>
-     </property>
-     <property name="toolButtonStyle">
-      <enum>Qt::ToolButtonTextUnderIcon</enum>
-     </property>
-     <property name="autoRaise">
-      <bool>false</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0">
+   <property name="margin">
+    <number>0</number>
+   </property>
+   <item>
     <widget class="QToolButton" name="FlipZButton">
      <property name="minimumSize">
       <size>
@@ -141,7 +53,95 @@
      </property>
      <property name="icon">
       <iconset resource="icons.qrc">
-       <normaloff>:/position/icons/position_flipz.svg</normaloff>:/position/icons/position_flipz.svg</iconset>
+       <normaloff>:/transform/icons/transform_flipz.svg</normaloff>:/transform/icons/transform_flipz.svg</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>30</width>
+       <height>30</height>
+      </size>
+     </property>
+     <property name="checkable">
+      <bool>false</bool>
+     </property>
+     <property name="autoExclusive">
+      <bool>false</bool>
+     </property>
+     <property name="toolButtonStyle">
+      <enum>Qt::ToolButtonTextUnderIcon</enum>
+     </property>
+     <property name="autoRaise">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QToolButton" name="FlipYButton">
+     <property name="minimumSize">
+      <size>
+       <width>56</width>
+       <height>56</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>56</width>
+       <height>56</height>
+      </size>
+     </property>
+     <property name="toolTip">
+      <string>Flip current selection about the Y axis</string>
+     </property>
+     <property name="text">
+      <string>Y</string>
+     </property>
+     <property name="icon">
+      <iconset resource="icons.qrc">
+       <normaloff>:/transform/icons/transform_flipy.svg</normaloff>:/transform/icons/transform_flipy.svg</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>30</width>
+       <height>30</height>
+      </size>
+     </property>
+     <property name="checkable">
+      <bool>false</bool>
+     </property>
+     <property name="autoExclusive">
+      <bool>false</bool>
+     </property>
+     <property name="toolButtonStyle">
+      <enum>Qt::ToolButtonTextUnderIcon</enum>
+     </property>
+     <property name="autoRaise">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QToolButton" name="FlipXButton">
+     <property name="minimumSize">
+      <size>
+       <width>56</width>
+       <height>56</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>56</width>
+       <height>56</height>
+      </size>
+     </property>
+     <property name="toolTip">
+      <string>Flip current selection about the X axis</string>
+     </property>
+     <property name="text">
+      <string>X</string>
+     </property>
+     <property name="icon">
+      <iconset resource="icons.qrc">
+       <normaloff>:/transform/icons/transform_flipx.svg</normaloff>:/transform/icons/transform_flipx.svg</iconset>
      </property>
      <property name="iconSize">
       <size>

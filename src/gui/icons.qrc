@@ -15,6 +15,9 @@
     <file>icons/transform_angle.svg</file>
     <file>icons/transform_centre.svg</file>
     <file>icons/transform_translate.svg</file>
+    <file>icons/transform_flipx.svg</file>
+    <file>icons/transform_flipy.svg</file>
+    <file>icons/transform_flipz.svg</file>
     <file>icons/transform_zero.svg</file>
     <file>icons/transform_distance.svg</file>
     <file>icons/transform_torsion.svg</file>
@@ -96,8 +99,6 @@
     <file>icons/forcefield_minimise.svg</file>
   </qresource>
   <qresource prefix="/model">
-    <file>icons/model_foldatoms.svg</file>
-    <file>icons/model_foldmolecules.svg</file>
     <file>icons/model_next.svg</file>
     <file>icons/model_prev.svg</file>
     <file>icons/model_rename.svg</file>
@@ -124,11 +125,6 @@
     <file>icons/gridstyle_mesh.png</file>
     <file>icons/gridstyle_points.png</file>
     <file>icons/gridstyle_solid.png</file>
-  </qresource>
-  <qresource prefix="/position">
-    <file>icons/position_flipx.svg</file>
-    <file>icons/position_flipy.svg</file>
-    <file>icons/position_flipz.svg</file>
   </qresource>
   <qresource prefix="/program">
     <file>icons/aten.png</file>
@@ -179,6 +175,8 @@
   <qresource prefix="/cell">
     <file>icons/cell_periodic.svg</file>
     <file>icons/cell_replicate.svg</file>
+    <file>icons/cell_foldatoms.svg</file>
+    <file>icons/cell_foldmolecules.svg</file>
     <file>icons/cell_scale.svg</file>
   </qresource>
 </RCC>
