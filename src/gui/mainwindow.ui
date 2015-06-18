@@ -1589,8 +1589,8 @@
              <string>Reset</string>
             </property>
             <property name="icon">
-             <iconset>
-              <normaloff>:/draw_styles/icons/style_tube.svg</normaloff>:/draw_styles/icons/style_tube.svg</iconset>
+             <iconset resource="icons.qrc">
+              <normaloff>:/view/icons/view_reset.svg</normaloff>:/view/icons/view_reset.svg</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -1636,7 +1636,7 @@
               </property>
               <property name="icon">
                <iconset resource="icons.qrc">
-                <normaloff>:/select/icons/select_expand.svg</normaloff>:/select/icons/select_expand.svg</iconset>
+                <normaloff>:/view/icons/view_hbonds.svg</normaloff>:/view/icons/view_hbonds.svg</iconset>
               </property>
               <property name="iconSize">
                <size>

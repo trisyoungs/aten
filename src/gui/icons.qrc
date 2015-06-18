@@ -167,7 +167,9 @@
   <qresource prefix="/view">
     <file>icons/view_zoomin.svg</file>
     <file>icons/view_set.svg</file>
+    <file>icons/view_reset.svg</file>
     <file>icons/view_get.svg</file>
+    <file>icons/view_hbonds.svg</file>
     <file>icons/view_perspective.svg</file>
     <file>icons/view_perspective.svg</file>
     <file>icons/view_zoomout.svg</file>
