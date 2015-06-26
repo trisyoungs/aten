@@ -1,0 +1,1 @@
+Fixed - LineParser::getNextN() was always taking characters from the beginning of the line, rather than the current linePos_.

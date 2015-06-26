@@ -483,6 +483,7 @@ int Format::read(QString line, int optionMask)
 int Format::read(LineParser* parser, int optionMask)
 {
 	Messenger::enter("Format::read[file]");
+
 	// Read a new line using the supplied parser
 	if (parser == NULL)
 	{
@@ -490,9 +491,11 @@ int Format::read(LineParser* parser, int optionMask)
 		Messenger::exit("Format::read[file]");
 		return 1;
 	}
+
 	// Get next line from file and parse line
 	int result = parser->readNextLine(optionMask);
 	if (result == 0) result = executeRead(parser, optionMask);
+
 	Messenger::exit("Format::read[file]");
 	return result;
 }

@@ -1,20 +1,27 @@
 Add ObjectLists (when using CHECK)?
-Remove dialog pointers (use instances instead).
 Remove Scripts menu, and automatic loading of scripts on startup.
-Fix callbacks for atom picking etc.
 Add new RefList definition.
 Move Prefs from being a static global to a member of Aten?
 In AtenWindow::on_actionFileSaveImage_triggered convert options to proper QDialog.
 Redo ProgressIndicator, making into a class much like QProgress (can't just use QProgress, since we want to have progress indicator functionality in the CLI....). Make it clever enough to realise that the gui is visible or not. Perhaps integrate it into Messenger, so that messages printed out while the indicator is running don't disrupt the indicator?
 Remove global MC, CG, SD declarations, and put them in Aten?
 Reimplement KeepNames functionality.
-Add in calculation of quantities and graphing?
+
+TODO
 Crash if model is saved, then filters reloaded, then model is saved again (since filter pointer will be wrong)?
-In top-left corner of main window, have a black icon illustrating which mode is active (except for Interact).
-Instead of a separate AtenVariable, make Aten subclass Variable?
-Make ElementMap store reference to Aten, preventing passing of FFs.
-Implement optional startup 'guide' or 'wizard' that will disable all controls on the GUI and explain what means what, highlighting them as appropriate.
 Scale molecule COM inverts coordinates??
+Implement optional startup 'guide' or 'wizard' that will disable all controls on the GUI and explain what means what, highlighting them as appropriate.
+Remove dialog pointers (use instances instead).
+Fix callbacks for atom picking etc.
+
+Graphics TODO
+In top-left corner of main window, have a black icon illustrating which mode is active (except for Interact).
+
+Possible TODO
+Add in calculation of quantities and graphing?
+Instead of a separate AtenVariable, make Aten subclass Variable?
+
+Make ElementMap store reference to Aten, preventing passing of FFs.
 Reformulate Pattern::bondEnergy() and others into a separate class, since the Pattern class shouldn't really own them.
 Change SaveImageDialog to check for empty image filename, and disable OK button accordingly.
 Check - is using redirected filenames really necessary when saveing movie frame images?
@@ -25,7 +32,6 @@ Check picked atom rendering (probably broken).
 Optimise primitive drawing / generation by allowing use of GL_TRIANGLE_STRIP?
 Octahedral Growing doesn't work.
 Automatically adjust grid size for number of visible models, based on current aspect ratio and context size etc.
-Cif/mol2/pdb import broken?
 Clear selected measurements on panel popup clears all measurements.
 CRASH - Click in empty space in model list causes fp exception. Related to no current model selected.  Force ListWidget to always have one selected?
 Allow right-click on elements in PTable to set as member of common elements popup.

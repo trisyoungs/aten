@@ -493,19 +493,19 @@ bool LineParser::getNextN(int optionMask, int length, QString& destArg)
 	bool stripTrailing = (length < 0);
 	length = abs(length);
 	if (length > charsLeft) length = charsLeft;
-	//if (length > lineLength_) length = lineLength_;
+
 	for (n=0; n<length; ++n)
 	{
-		switch (line_.at(n).toLatin1())
+		switch (line_.at(linePos_).toLatin1())
 		{
 			// Brackets
 			case ('('):	// Left parenthesis
 			case (')'):	// Right parenthesis
 				if (optionMask&LineParser::StripBrackets) break;
-				destArg += line_.at(n);
+				destArg += line_.at(linePos_);
 				break;
 			default:
-				destArg += line_.at(n);
+				destArg += line_.at(linePos_);
 				break;
 		}
 		++linePos_;
