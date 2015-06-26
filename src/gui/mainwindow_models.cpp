@@ -146,7 +146,7 @@ void AtenWindow::on_ModelsNextButton_clicked(bool checked)
 	if (aten_.nVisibleModels() > 1)
 	{
 		// Find current model in visible models list...
-		Refitem<Model,int>* ri;
+		RefListItem<Model,int>* ri;
 		for (ri = aten_.visibleModels(); ri != NULL; ri = ri->next) if (ri->item == aten_.currentModel()) break;
 		if (ri == NULL)
 		{
@@ -171,7 +171,7 @@ void AtenWindow::on_ModelsPreviousButton_clicked(bool checked)
 	if (aten_.nVisibleModels() > 1)
 	{
 		// Find current model in visible models list...
-		Refitem<Model,int>* ri;
+		RefListItem<Model,int>* ri;
 		for (ri = aten_.visibleModels(); ri != NULL; ri = ri->next) if (ri->item == aten_.currentModel()) break;
 		if (ri == NULL)
 		{

@@ -92,16 +92,16 @@ VTypes::DataType FormatChunk::retrieveType()
  */
 
 // Constructor
-Format::Format(Refitem<TreeNode,int>* firstarg)
+Format::Format(RefListItem<TreeNode,int>* firstarg)
 {
 	// Construct a delimited list of chunks with no specific format
-	for (Refitem<TreeNode,int>* ri = firstarg; ri != NULL; ri = ri->next) addDelimitedChunk(ri->item);
+	for (RefListItem<TreeNode,int>* ri = firstarg; ri != NULL; ri = ri->next) addDelimitedChunk(ri->item);
 	delimited_ = true;
 	isValid_ = true;
 }
 
 // Constructor
-Format::Format(QString cFormat, Refitem<TreeNode,int>* firstarg)
+Format::Format(QString cFormat, RefListItem<TreeNode,int>* firstarg)
 {
 	// Private variables
 	isValid_ = true;
@@ -113,7 +113,7 @@ Format::Format(QString cFormat, Refitem<TreeNode,int>* firstarg)
 	QString plainText;
 	VTypes::DataType type;
 	bool isFormatter = false, isDiscarder, restOfLine;
-	Refitem<TreeNode,int>* arg = firstarg;
+	RefListItem<TreeNode,int>* arg = firstarg;
 	Messenger::print(Messenger::Parse, "Creating Format object from string '%s' (and any supplied arguments)...", qPrintable(cFormat));
 	do
 	{

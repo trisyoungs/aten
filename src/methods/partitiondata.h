@@ -54,8 +54,8 @@ class PartitionData : public ListItem<PartitionData>
 	double volume_;
 	// Current reduced atomic mass present in partition
 	double reducedMass_;
-	// Reflist of components targeting this partition
-	Reflist<DisorderData,int> components_;
+	// RefList of components targeting this partition
+	RefList<DisorderData,int> components_;
 	// Primitive containing surface data
 	Primitive primitive_;
 	

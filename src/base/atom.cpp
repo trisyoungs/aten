@@ -225,7 +225,7 @@ bool Atom::isPositionFixed() const
 int Atom::nHydrogens()
 {
 	int nh = 0;
-	for (Refitem<Bond,int>* bref = bonds_.first(); bref != NULL; bref = bref->next) if (bref->item->partner(this)->element() == 1) nh++;
+	for (RefListItem<Bond,int>* bref = bonds_.first(); bref != NULL; bref = bref->next) if (bref->item->partner(this)->element() == 1) nh++;
 	return nh;
 }
 
@@ -333,13 +333,13 @@ int Atom::nBonds() const
 }
 
 // Return the current bond list
-Refitem<Bond,int>* Atom::bonds()
+RefListItem<Bond,int>* Atom::bonds()
 {
 	return bonds_.first();
 }
 
 // Return nth bond in the list
-Refitem<Bond,int>* Atom::bond(int index)
+RefListItem<Bond,int>* Atom::bond(int index)
 {
 	if ((index < 0) || (index >= bonds_.nItems())) Messenger::print("Bond index %i is out of range for atom.", index);
 	else return bonds_[index];
@@ -362,7 +362,7 @@ void Atom::acceptBond(Bond* b)
 void Atom::detachBond(Bond* xbond)
 {
 	Messenger::enter("Atom::detachBond");
-	// Remove the reference to the bond from the Reflist on the atom.
+	// Remove the reference to the bond from the RefList on the atom.
 	bonds_.remove(xbond);
 	// Mark pointer as NULL.
 	if (xbond->atomI() == this) xbond->setAtomI(NULL);
@@ -377,7 +377,7 @@ int Atom::totalBondOrder()
 	// Returned result is 2*actual bond order (to account for aromatic bonds [BO = 1.5])
 	Messenger::enter("Atom::totalBondOrder");
 	double result = 0;
-	for (Refitem<Bond,int>* bref = bonds_.first(); bref != NULL; bref = bref->next) result += bref->item->order();
+	for (RefListItem<Bond,int>* bref = bonds_.first(); bref != NULL; bref = bref->next) result += bref->item->order();
 	Messenger::exit("Atom::totalBondOrder");
 	return int(result * 2.0 + 0.1);
 }
@@ -387,7 +387,7 @@ Bond* Atom::findBond(Atom* j)
 {
 	Messenger::enter("Atom::findBond");
 	Bond* result = NULL;
-	for (Refitem<Bond,int>* bref = bonds_.first(); bref != NULL; bref = bref->next)
+	for (RefListItem<Bond,int>* bref = bonds_.first(); bref != NULL; bref = bref->next)
 	{
 		if (bref->item->partner(this) == j)
 		{
@@ -416,11 +416,11 @@ double Atom::bondOrder(Atom* j)
 	return b->order();
 }
 
-// Add bound neighbours to Reflist
-void Atom::addBoundToReflist(Reflist<Atom,int>* rlist)
+// Add bound neighbours to RefList
+void Atom::addBoundToRefList(RefList<Atom,int>* rlist)
 {
-	// Add all atoms bound to the supplied atom to the atomReflist.
-	for (Refitem<Bond,int>* bref = bonds(); bref != NULL; bref = bref->next)
+	// Add all atoms bound to the supplied atom to the atomRefList.
+	for (RefListItem<Bond,int>* bref = bonds(); bref != NULL; bref = bref->next)
 		rlist->add(bref->item->partner(this), bref->item->type());
 }
 

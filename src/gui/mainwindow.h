@@ -469,8 +469,8 @@ class AtenWindow : public QMainWindow
 	bool atomsTableShouldRefresh_;
 	// Number of rows displayed in AtomTable
 	int atomsTableMaxRows_;
-	// Reflist of currently-displayed atoms
-	Reflist<Atom,int> atomsTableItems_;
+	// RefList of currently-displayed atoms
+	RefList<Atom,int> atomsTableItems_;
 	// Last clicked and 'moved over' Atom
 	Atom* atomsTablePrevClicked_, *atomsTableLastClicked_, *atomsTableLastHovered_;
 
@@ -547,7 +547,7 @@ class AtenWindow : public QMainWindow
 	 */
 	private:
 	// List of manually-created QActionGroups
-	Reflist<QActionGroup,int> actionGroups_;
+	RefList<QActionGroup,int> actionGroups_;
 	// Text labels for model information and UI messages in status bar
 	QLabel *infoLabel1_, *infoLabel2_, *messageLabel_;
 	// Filter set from save model dialog

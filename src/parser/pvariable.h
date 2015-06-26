@@ -32,7 +32,7 @@ class PointerVariable : public Variable
 	public:
 	// Pointer variable
 	void* pointerData_;
-	// Pointer to parent Refitem structure, if valid
+	// Pointer to parent RefListItem structure, if valid
 	void* refitemData_;
 
 

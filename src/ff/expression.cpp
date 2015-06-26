@@ -36,7 +36,7 @@ bool Pattern::createExpression(bool vdwOnly, bool allowDummy, Forcefield* defaul
 	// NTorsions can be calculated from the bond list and atomic nBonds data.
 	Messenger::enter("Pattern::createExpression");
 	Atom* i;
-	Refitem<Bond,int>* bref;
+	RefListItem<Bond,int>* bref;
 	int atomId, nBonds = 0, nAngles = 0, nTorsions = 0, nImpropers = 0, nUreyBradleys = 0;
 	int nDummyBonds = 0, nDummyAngles = 0, nDummyTorsions = 0;
 	Atom* ai, *aj, *ak, *al;

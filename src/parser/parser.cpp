@@ -403,7 +403,7 @@ void CommandParser::popTree()
 {
 	Messenger::enter("CommandParser::popTree");
 	// If the tree to be popped is a Filter, check that a filter type has been defined
-	Refitem<Tree,bool>* ri = stack_.last();
+	RefListItem<Tree,bool>* ri = stack_.last();
 	if (ri->data)
 	{
 		// Can use the 'isFilter' member function to check for the lack of a proper type

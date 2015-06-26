@@ -1,1 +1,1 @@
-Fixed - LineParser::getNextN() was always taking characters from the beginning of the line, rather than the current linePos_.
+Updated to new RefList and RefListItem classes. Fixed - TTableWidget was declared in AtenSpace when it shouldn't have been. Fixed - Many template classes were not declared within the Aten namespace.

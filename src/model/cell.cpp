@@ -37,7 +37,7 @@ Vec3<double> Model::reassembleFragment(Atom* i, int referenceBit, int &count, bo
 	if (centreOfMass) total *= Elements().atomicMass(i);
 	++count;
 	selectAtom(i, true);
-	for (Refitem<Bond,int>* bref = i->bonds(); bref != NULL; bref = bref->next)
+	for (RefListItem<Bond,int>* bref = i->bonds(); bref != NULL; bref = bref->next)
 	{
 		j = bref->item->partner(i);
 		if (!j->hasBit(referenceBit))
@@ -60,7 +60,7 @@ Vec3<double> Model::reassembleFragment(Atom* i, Vec3<double> referencePos, int r
 	if (centreOfMass) total *= Elements().atomicMass(i);
 	++count;
 	selectAtom(i, true);
-	for (Refitem<Bond,int>* bref = i->bonds(); bref != NULL; bref = bref->next)
+	for (RefListItem<Bond,int>* bref = i->bonds(); bref != NULL; bref = bref->next)
 	{
 		j = bref->item->partner(i);
 		if (!j->hasBit(referenceBit))

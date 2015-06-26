@@ -78,7 +78,7 @@ class TreeNode : public ListItem<TreeNode>
 	 */
 	protected:
 	// Arguments (if any) to leaf node operation
-	Reflist<TreeNode,int> args_;
+	RefList<TreeNode,int> args_;
 
 	public:
 	// Return number of arguments currently assigned to node

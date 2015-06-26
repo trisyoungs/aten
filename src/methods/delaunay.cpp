@@ -495,9 +495,9 @@ void DelaunaySurface::add3DPoint(GridPoint* gp)
 	Messenger::enter("DelaunaySurface::add3DPoint");
 	// Create reflist of all existing tetrahedra that this point encroaches.
 	// At the same time, create a reflist of the triangles involved, counting the number of overlapping tetrahedra that use it
-	Reflist<DelaunayTetrahedron,int> overlaps;
-	Reflist<DelaunayTriangle,int> triangles;
-	Refitem<DelaunayTriangle,int>* rtri;
+	RefList<DelaunayTetrahedron,int> overlaps;
+	RefList<DelaunayTriangle,int> triangles;
+	RefListItem<DelaunayTriangle,int>* rtri;
 	int n;
 	DelaunayEdge *newedges[2], *edge;
 	DelaunayTriangle *newtriangles[3];
@@ -538,7 +538,7 @@ void DelaunaySurface::add3DPoint(GridPoint* gp)
 		createTetrahedron(rtri->item, newtriangles[0], newtriangles[1], newtriangles[2]);
 	}
 	// Finally, delete all tetrahedra in the reflist
-	for (Refitem<DelaunayTetrahedron,int>* rtet = overlaps.first(); rtet != NULL; rtet = rtet->next) removeTetrahedron(rtet->item);
+	for (RefListItem<DelaunayTetrahedron,int>* rtet = overlaps.first(); rtet != NULL; rtet = rtet->next) removeTetrahedron(rtet->item);
 	Messenger::exit("DelaunaySurface::add3DPoint");
 }
 

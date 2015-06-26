@@ -36,7 +36,7 @@
 ATEN_USING_NAMESPACE
 
 // Static Members
-template<class Grid> Reflist<Grid,int> ObjectStore<Grid>::objects_;
+template<class Grid> RefList<Grid,int> ObjectStore<Grid>::objects_;
 template<class Grid> int ObjectStore<Grid>::objectCount_ = 0;
 
 // Grid data types

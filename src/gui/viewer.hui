@@ -176,15 +176,15 @@ class Viewer : public QOpenGLWidget, protected QOpenGLFunctions
 	// User action before picking mode was entered
 	UserAction::Action actionBeforePick_;
 	// List of picked atoms
-	Reflist<Atom,int> pickedAtoms_;
+	RefList<Atom,int> pickedAtoms_;
 	// Pointer to callback function when PickAtomsAction exits
-	void (*pickAtomsCallback_)(Reflist<Atom,int>*);
+	void (*pickAtomsCallback_)(RefList<Atom,int>*);
 	// Atom that was clicked at the start of a mouse press event
 	Atom* atomClicked_;
 	// Whether we are selecting atoms and placing them in the subsel list	
 	bool pickEnabled_;
-	// Reflist of selected atoms and their positions so manipulations may be un-done
-	Reflist< Atom,Vec3<double> > oldPositions_;
+	// RefList of selected atoms and their positions so manipulations may be un-done
+	RefList< Atom,Vec3<double> > oldPositions_;
 
 	private:
 	// Begin an action on the model (called from MouseButtondown)
@@ -196,7 +196,7 @@ class Viewer : public QOpenGLWidget, protected QOpenGLFunctions
 	// Set the active mode to the current user mode
 	void useSelectedMode();
 	// Sets the currently selected interact mode
-	void setSelectedMode(UserAction::Action ua, int atomsToPick = -1, void (*callback)(Reflist<Atom,int>*) = NULL);
+	void setSelectedMode(UserAction::Action ua, int atomsToPick = -1, void (*callback)(RefList<Atom,int>*) = NULL);
 	// Cancel any current mode and return to select
 	void cancelCurrentMode();
 	// Return the currently selected mode
@@ -220,7 +220,7 @@ class Viewer : public QOpenGLWidget, protected QOpenGLFunctions
 	// End manual picking
 	void endManualPick(bool resetaction);
 	// Return start of picked atom list
-	Refitem<Atom,int>* pickedAtoms();
+	RefListItem<Atom,int>* pickedAtoms();
 
 
 	/*

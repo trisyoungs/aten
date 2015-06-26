@@ -25,7 +25,7 @@
 #include "main/aten.h"
 
 // Set selected mode
-void Viewer::setSelectedMode(UserAction::Action ua, int atomsToPick, void (*callback)(Reflist<Atom,int>*))
+void Viewer::setSelectedMode(UserAction::Action ua, int atomsToPick, void (*callback)(RefList<Atom,int>*))
 {
 	Messenger::enter("Viewer::setSelectedMode");
 
@@ -237,11 +237,11 @@ void Viewer::beginMode(Prefs::MouseButton button)
 		if (manipulate)
 		{
 			/* We don't begin an undostate here - this will be done in endMode().
-			Instead, store pointers to all selected atoms in a Reflist, along
+			Instead, store pointers to all selected atoms in a RefList, along
 			with their current positions.
 			*/
 			oldPositions_.clear();
-			for (Refitem<Atom,int>* ri = source->selection(); ri != NULL; ri = ri->next) oldPositions_.add(ri->item, ri->item->r());
+			for (RefListItem<Atom,int>* ri = source->selection(); ri != NULL; ri = ri->next) oldPositions_.add(ri->item, ri->item->r());
 			source->prepareTransform();
 		}
 	}
@@ -311,7 +311,7 @@ void Viewer::endMode(Prefs::MouseButton button)
 		case (UserAction::SelectBoundAction):
 			source->beginUndoState("Select Bound");
 			if (!modded) source->selectNone();
-			if (atomClicked_ != NULL)	source->selectTree(atomClicked_, false, ctrled);
+			if (atomClicked_ != NULL) source->selectTree(atomClicked_, false, ctrled);
 			source->endUndoState();
 			atenWindow_->updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget+AtenWindow::SelectPanelTarget);
 			break;
@@ -340,8 +340,8 @@ void Viewer::endMode(Prefs::MouseButton button)
 			// Must be two atoms in subselection to continue
 			if (pickedAtoms_.nItems() != 2) break;
 			source->beginUndoState("Measure Distance");
-			pickedAtoms_.fillArray(2,atoms);
-			source->addDistanceMeasurement(atoms[0],atoms[1]);
+			pickedAtoms_.fillArray(2, atoms);
+			source->addDistanceMeasurement(atoms[0], atoms[1]);
 			source->endUndoState();
 			pickedAtoms_.clear();
 			atenWindow_->updateWidgets(AtenWindow::MainViewTarget);
@@ -350,8 +350,8 @@ void Viewer::endMode(Prefs::MouseButton button)
 			// Must be two atoms in subselection to continue
 			if (pickedAtoms_.nItems() != 3) break;
 			source->beginUndoState("Measure Angle");
-			pickedAtoms_.fillArray(3,atoms);
-			source->addAngleMeasurement(atoms[0],atoms[1],atoms[2]);
+			pickedAtoms_.fillArray(3, atoms);
+			source->addAngleMeasurement(atoms[0], atoms[1], atoms[2]);
 			source->endUndoState();
 			pickedAtoms_.clear();
 			atenWindow_->updateWidgets(AtenWindow::MainViewTarget);
@@ -360,8 +360,8 @@ void Viewer::endMode(Prefs::MouseButton button)
 			// Must be two atoms in subselection to continue
 			if (pickedAtoms_.nItems() != 4) break;
 			source->beginUndoState("Measure Torsion");
-			pickedAtoms_.fillArray(4,atoms);
-			source->addTorsionMeasurement(atoms[0],atoms[1],atoms[2],atoms[3]);
+			pickedAtoms_.fillArray(4, atoms);
+			source->addTorsionMeasurement(atoms[0], atoms[1], atoms[2], atoms[3]);
 			source->endUndoState();
 			pickedAtoms_.clear();
 			atenWindow_->updateWidgets(AtenWindow::MainViewTarget);
@@ -531,7 +531,7 @@ void Viewer::clearPicked()
 }
 
 // Return start of picked atom list
-Refitem<Atom,int>* Viewer::pickedAtoms()
+RefListItem<Atom,int>* Viewer::pickedAtoms()
 {
 	return pickedAtoms_.first();
 }

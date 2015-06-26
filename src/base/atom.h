@@ -69,7 +69,7 @@ class Atom : public ListItem<Atom>
 
 	public:
 	// Add bound neighbours to reflist specified
-	void addBoundToReflist(Reflist<Atom,int>*);
+	void addBoundToRefList(RefList<Atom,int>*);
 	// Reset all data items in structure
 	void reset();
 	// Copy atom data from supplied atom
@@ -176,15 +176,15 @@ class Atom : public ListItem<Atom>
 	 */
 	protected:
 	// Bond list for atom
-	Reflist<Bond,int> bonds_;
+	RefList<Bond,int> bonds_;
 
 	public:
 	// Return the number of bonds to the atom
 	int nBonds() const;
 	// Return the current bond list
-	Refitem<Bond,int>* bonds();
+	RefListItem<Bond,int>* bonds();
 	// Return nth bond in the list
-	Refitem<Bond,int>* bond(int index);
+	RefListItem<Bond,int>* bond(int index);
 	// Check the number of bonds against the supplied value
 	bool isNBonds(int n) const;
 	// Accept the specified bond to the atom's local reference list

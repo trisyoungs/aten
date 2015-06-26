@@ -1,7 +1,7 @@
 /*
 	*** TTableWidget - QTableWidget with mouse virtuals
 	*** src/gui/ttablewidget.hui
-	Copyright T. Youngs 2007-2012
+	Copyright T. Youngs 2007-2015
 
 	This file is part of Aten.
 
@@ -27,10 +27,6 @@
 #include <QObject>
 #include "base/namespace.h"
 
-ATEN_USING_NAMESPACE
-
-ATEN_BEGIN_NAMESPACE
-
 class TTableWidget : public QTableWidget
 {
 	Q_OBJECT
@@ -44,7 +40,5 @@ class TTableWidget : public QTableWidget
 	void mouseReleaseEvent(QMouseEvent *event);
 	void mouseMoveEvent(QMouseEvent *event);
 };
-
-ATEN_END_NAMESPACE
 
 #endif

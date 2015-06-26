@@ -22,3 +22,6 @@ moc_*
 src/aten
 Aten.desktop
 .kdev4/
+
+# Miscellaneous
+*swp

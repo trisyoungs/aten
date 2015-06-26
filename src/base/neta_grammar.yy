@@ -27,17 +27,17 @@ Neta::NetaValue savedVal;
 /* Type Definition */
 %union
 {
-	NetaNode* netaNode;			/* Generic node pointer */
-	NetaBoundNode* boundNode;		/* Bound node pointer */
-	NetaRingNode* ringNode;			/* Ring node pointer */
-	NetaChainNode* chainNode;		/* Chain node pointer */
-	NetaMeasurementNode* measureNode;	/* Measurement node pointer */
-	int intConst;				/* Integer number */
-	double doubleConst;			/* Floating point number */
-	Neta::NetaKeyword netaKey;		/* NETA keyword ID */
-	Atom::AtomGeometry atomGeom;		/* NETA geometry ID */
-	Neta::NetaValue netaVal;		/* NETA value ID */
-	Refitem<ForcefieldAtom,int>* typeList;	/* Pointer to head of created element/type list */
+	NetaNode* netaNode;				/* Generic node pointer */
+	NetaBoundNode* boundNode;			/* Bound node pointer */
+	NetaRingNode* ringNode;				/* Ring node pointer */
+	NetaChainNode* chainNode;			/* Chain node pointer */
+	NetaMeasurementNode* measureNode;		/* Measurement node pointer */
+	int intConst;					/* Integer number */
+	double doubleConst;				/* Floating point number */
+	Neta::NetaKeyword netaKey;			/* NETA keyword ID */
+	Atom::AtomGeometry atomGeom;			/* NETA geometry ID */
+	Neta::NetaValue netaVal;			/* NETA value ID */
+	RefListItem<ForcefieldAtom,int>* typeList;	/* Pointer to head of created element/type list */
 };
 
 %token IF

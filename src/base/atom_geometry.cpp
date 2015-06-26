@@ -33,7 +33,7 @@ Atom::AtomGeometry Atom::geometry()
 	Atom::AtomGeometry result = Atom::UnboundGeometry;
 	double angle, largest;
 	Bond* b1, *b2;
-	Refitem<Bond,int>* bref1, *bref2;
+	RefListItem<Bond,int>* bref1, *bref2;
 	result = Atom::NoGeometry;
 	// Separate the tests by number of bound atoms...
 	switch (nBonds())
@@ -118,7 +118,7 @@ bool Atom::isPlanar(double tolerance)
 	}
 	// Any other case is more complex.
 	bool result = true;
-	Refitem<Bond,int>* ri = bonds_.first();
+	RefListItem<Bond,int>* ri = bonds_.first();
 	// Take the first two bound atom vectors and get the cross product to define the plane's normal
 	Vec3<double> v1 = parent_->cell().mimVector(this, ri->item->partner(this));
 	v1.normalise();
@@ -150,7 +150,7 @@ Vec3<double> Atom::findBondPlane(Atom* other, Bond* excludedBond, const Vec3<dou
 {
 	// Given this atom, another (j), and a bond node on 'this' between them, determine the plane of the bond if possible.
 	Vec3<double> rk, xp, vijnorm;
-	Refitem<Bond,int>* bref;
+	RefListItem<Bond,int>* bref;
 	Atom* origin;
 
 	vijnorm = vij;

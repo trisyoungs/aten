@@ -71,7 +71,7 @@ class AtenSelectFilter : public QDialog
 	 */
 	private:
 	// First items in reference lists
-	Reflist<Tree,int>* partialList_, *fullList_;
+	RefList<Tree,int>* partialList_, *fullList_;
 	// Selected filter
 	Tree* selectedFilter_;
 	// Whether to append extension to filename automatically
@@ -87,7 +87,7 @@ class AtenSelectFilter : public QDialog
 
 	public:
 	// Select a filter from the list(s) provided
-	Tree* selectFilter(const char* text, Reflist<Tree,int>* partial, Reflist<Tree,int>* full, bool showExtCheck = false);
+	Tree* selectFilter(const char* text, RefList<Tree,int>* partial, RefList<Tree,int>* full, bool showExtCheck = false);
 	// Whether to append extension to filename
 	bool appendExtension();
 };

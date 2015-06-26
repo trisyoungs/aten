@@ -297,7 +297,7 @@ class Model : public ListItem<Model>
 	// Bonds in the model
 	List<Bond> bonds_;
 	// Atom reflists (pointers) for bond calculation
-	Reflist<Atom,double>* bondingCuboids_, *bondingOverlays_;
+	RefList<Atom,double>* bondingCuboids_, *bondingOverlays_;
 	// Number of cuboids in atom reflists
 	int nCuboids_;
 	// Integer number of boxes in each direction
@@ -350,10 +350,10 @@ class Model : public ListItem<Model>
 	 * Selection / Marked Atoms
 	 */
 	private:
-	// Reflist of selected atoms
-	Reflist<Atom,int> selection_;
-	// Reflist of marked atoms, always in ID order
-	Reflist<Atom,int> marked_;
+	// RefList of selected atoms
+	RefList<Atom,int> selection_;
+	// RefList of marked atoms, always in ID order
+	RefList<Atom,int> marked_;
 
 	public:
 	// Select the specified atom
@@ -407,9 +407,9 @@ class Model : public ListItem<Model>
 	// Select all atoms within cutoff of specified atom
 	void selectRadial(Atom* i, double d);
 	// Return the first selected atom in the model (if any)
-	Refitem<Atom,int>* selection(bool markOnly = false) const;
+	RefListItem<Atom,int>* selection(bool markOnly = false) const;
 	// Return the nth selected atom in the model
-	Refitem<Atom,int>* selected(int n);
+	RefListItem<Atom,int>* selected(int n);
 	// Move selected atoms one place 'up' in the list
 	void shiftSelectionUp(bool markOnly = false);
 	// Move selected atoms one place 'down' in the list
@@ -429,9 +429,9 @@ class Model : public ListItem<Model>
 	// Select atoms within distance from a line (i.e. cylinder select)
 	void selectLine(Vec3<double> line, Vec3<double> point, double dr, bool markOnly = false);
 	// Get atoms of a bound fragment with the current selection
-	void fragmentFromSelection(Atom* start, Reflist<Atom,int>& list);
+	void fragmentFromSelection(Atom* start, RefList<Atom,int>& list);
 	// Recursive selector for fragmentFromSelection()
-	void fragmentFromSelectionSelector(Atom* start, Reflist<Atom,int>& list);
+	void fragmentFromSelectionSelector(Atom* start, RefList<Atom,int>& list);
 	// Clear all atom labelling from the current selection
 	void selectionClearLabels();
 	// Clear specified atom labelling from the current selection
@@ -575,15 +575,15 @@ class Model : public ListItem<Model>
 	// Whether the last succesfully created expression was VDW-only
 	bool expressionVdwOnly_;
 	// List containing references tobond interactions in model (useful in expression export)
-	Reflist<ForcefieldBound,int> forcefieldBonds_;
+	RefList<ForcefieldBound,int> forcefieldBonds_;
 	// List containing references to angle interactions in model (useful in expression export)
-	Reflist<ForcefieldBound,int> forcefieldAngles_;
+	RefList<ForcefieldBound,int> forcefieldAngles_;
 	// List containing references to torsion interactions in model (useful in expression export)
-	Reflist<ForcefieldBound,int> forcefieldTorsions_;
+	RefList<ForcefieldBound,int> forcefieldTorsions_;
 	// List containing references to unique (by name) atom types in used in model (useful in expression export)
-	Reflist<ForcefieldAtom,int> uniqueForcefieldTypes_;
+	RefList<ForcefieldAtom,int> uniqueForcefieldTypes_;
 	// List containing references to all (i.e. unique by pointer) atom types use in model
-	Reflist<ForcefieldAtom,int> allForcefieldTypes_;
+	RefList<ForcefieldAtom,int> allForcefieldTypes_;
 	// Combination table, containing pre-combined VDW parameters
 	PairTable<ForcefieldAtom,double> combinationTable_;
 
@@ -603,27 +603,27 @@ class Model : public ListItem<Model>
 	// Return number of unique bond interactions in model
 	int nForcefieldBonds() const;
 	// Return the first item in the list of unique bond interactions in the model
-	Refitem<ForcefieldBound,int>* forcefieldBonds();
+	RefListItem<ForcefieldBound,int>* forcefieldBonds();
 	// Return the unique bond term specified
-	Refitem<ForcefieldBound,int>* forcefieldBond(int i);
+	RefListItem<ForcefieldBound,int>* forcefieldBond(int i);
 	// Return number of unique angle interactions in model
 	int nForcefieldAngles() const;
 	// Return the first item in the list of unique angle interactions in the model
-	Refitem<ForcefieldBound,int>* forcefieldAngles();
+	RefListItem<ForcefieldBound,int>* forcefieldAngles();
 	// Return the unique angle term specified
-	Refitem<ForcefieldBound,int>* forcefieldAngle(int i);
+	RefListItem<ForcefieldBound,int>* forcefieldAngle(int i);
 	// Return number of unique torsion interactionss in model
 	int nForcefieldTorsions() const;
 	// Return the list of unique torsion interactions in the model
-	Refitem<ForcefieldBound,int>* forcefieldTorsions();
+	RefListItem<ForcefieldBound,int>* forcefieldTorsions();
 	// Return the unique torsion term specified
-	Refitem<ForcefieldBound,int>* forcefieldTorsion(int i);
+	RefListItem<ForcefieldBound,int>* forcefieldTorsion(int i);
 	// Return number of unique (by name) atom types in model
 	int nUniqueForcefieldTypes() const;
 	// Return the first item in the list of unique types in the model
-	Refitem<ForcefieldAtom,int>* uniqueForcefieldTypes();
+	RefListItem<ForcefieldAtom,int>* uniqueForcefieldTypes();
 	// Return the unique type specified
-	Refitem<ForcefieldAtom,int>* uniqueForcefieldType(int i);
+	RefListItem<ForcefieldAtom,int>* uniqueForcefieldType(int i);
 	// Create total energy function shell for the model
 	bool createExpression(Choice vdwOnly, Choice allowDummy, Choice assignCharges, Forcefield* defaultForcefield, CombinationRules& combine);
 	// Return whether the expression is valid
@@ -806,7 +806,7 @@ class Model : public ListItem<Model>
 	// Return the translation scale
 	double translateScale() const;
 	// Finalize atom transform
-	void finalizeTransform(Reflist< Atom,Vec3<double> >&, const char* statetitle, bool nofold);
+	void finalizeTransform(RefList< Atom,Vec3<double> >&, const char* statetitle, bool nofold);
 	// Rotate the atom selection
 	void rotateSelectionWorld(double, double);
 	// Spin the atom selection
@@ -1022,8 +1022,8 @@ class Model : public ListItem<Model>
 	private:
 	// List of glyphs within model
 	List<Glyph> glyphs_;
-	// Reflist of text glyphs in model
-	Reflist<Glyph,int> textGlyphs_;
+	// RefList of text glyphs in model
+	RefList<Glyph,int> textGlyphs_;
 
 	public:
 	// Create new glyph in this model
@@ -1035,7 +1035,7 @@ class Model : public ListItem<Model>
 	// Return first glyph in list (if any)
 	Glyph* glyphs() const;
 	// Return first text glyph in list (if any)
-	Refitem<Glyph,int>* textGlyphs() const;
+	RefListItem<Glyph,int>* textGlyphs() const;
 	// Return specific glyph
 	Glyph* glyph(int n);
 	// Return vector for data point in Glyph

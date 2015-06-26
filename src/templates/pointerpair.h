@@ -23,6 +23,9 @@
 #define ATEN_POINTERPAIR_H
 
 #include "templates/list.h"
+#include "base/namespace.h"
+
+ATEN_BEGIN_NAMESPACE
 
 // Pointer pair/data class
 template <class T, class D> class PointerPair : public ListItem< PointerPair<T,D> >
@@ -179,5 +182,7 @@ template <class T, class D> PointerPair<T,D> *PairTable<T,D>::find(T* ptr1, T* p
 	}
 	return pp;
 }
+
+ATEN_END_NAMESPACE
 
 #endif

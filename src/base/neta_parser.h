@@ -82,7 +82,7 @@ class NetaParser
 	 */
 	private:
 	// Node context stack
-	Reflist<NetaContextNode,int> contextStack_;
+	RefList<NetaContextNode,int> contextStack_;
 	// Current NETA structure target
 	Neta* neta_;
 	// Current NETA target structure parent
@@ -104,9 +104,9 @@ class NetaParser
 	// Link two nodes together (with direct pointers)
 	NetaNode* link(NetaNode* node1, NetaNode* node2);
 	// Create element/type list item
-	Refitem<ForcefieldAtom,int>* createElementType(int eltype);
+	RefListItem<ForcefieldAtom,int>* createElementType(int eltype);
 	// Join element/type list items
-	Refitem<ForcefieldAtom,int>* joinElementTypes(Refitem<ForcefieldAtom,int>* type1, Refitem<ForcefieldAtom,int>* type2);
+	RefListItem<ForcefieldAtom,int>* joinElementTypes(RefListItem<ForcefieldAtom,int>* type1, RefListItem<ForcefieldAtom,int>* type2);
 	// Create keyword node in current NETA structure
 	NetaNode* createKeywordNode(Neta::NetaKeyword nk);
 	// Create geometry node in current NETA structure

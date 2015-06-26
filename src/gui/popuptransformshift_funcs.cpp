@@ -60,7 +60,7 @@ bool TransformShiftPopup::callMethod(QString methodName, ReturnValue& rv)
  * Widget Functions
  */
 
-// void shiftPickAxisButton_callback(Reflist<Atom,int>* picked)
+// void shiftPickAxisButton_callback(RefList<Atom,int>* picked)
 // {
 // 	gui.positionWidget->ui.ShiftPickVectorButton->setChecked(false); ATEN2 TODO
 // 	// If there are not two atoms in the list then the mode must have been canceled

@@ -24,6 +24,9 @@
 
 #include "math/constants.h"
 #include "templates/list.h"
+#include "base/namespace.h"
+
+ATEN_BEGIN_NAMESPACE
 
 /*
 // Simple string key/value pair template object
@@ -190,5 +193,7 @@ template <class K, class V> KVData<K,V> *KVTable<K,V>::pairs()
 {
 	return pairs_.first();
 }
+
+ATEN_END_NAMESPACE
 
 #endif

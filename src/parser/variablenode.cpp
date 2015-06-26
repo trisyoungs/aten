@@ -121,7 +121,7 @@ bool VariableNode::execute(ReturnValue& rv)
 	}
 	// If a path is present (i.e. there are arguments to the VariableNode, then execute it. Otherwise, just return the variable contents
 	// Next, step through accessnodes, passing the returnvalue to each in turn
-	if (result) for (Refitem<TreeNode,int>* ri = args_.first(); ri != NULL; ri = ri->next)
+	if (result) for (RefListItem<TreeNode,int>* ri = args_.first(); ri != NULL; ri = ri->next)
 	{
 		result = ri->item->execute(rv);
 		if (!result) break;
@@ -158,7 +158,7 @@ void VariableNode::nodePrint(int offset, const char* prefix)
 		tab += prefix;
 
 		printf("[PATH]%s (basevar).", qPrintable(tab));
-		for (Refitem<TreeNode,int>* ri = args_.first(); ri != NULL; ri = ri->next)
+		for (RefListItem<TreeNode,int>* ri = args_.first(); ri != NULL; ri = ri->next)
 		{
 			ri->item->nodePrint(offset);
 			if (ri->next != NULL) printf(".");
@@ -253,7 +253,7 @@ bool VariableNode::set(ReturnValue& setrv)
 		if (result2)
 		{
 			lastresult = executerv;
-			for (Refitem<TreeNode,int>* ri = args_.first(); ri != args_.last(); ri = ri->next)
+			for (RefListItem<TreeNode,int>* ri = args_.first(); ri != args_.last(); ri = ri->next)
 			{
 				result = ri->item->execute(executerv);
 				if (!result) break;
@@ -266,7 +266,7 @@ bool VariableNode::set(ReturnValue& setrv)
 			{
 // 				printf("Path set result execute = %s\n", executerv.info());
 				// If the node prior to the last is a vector, we must do something special!
-				Refitem<TreeNode,int>* ri = args_.last()->prev;
+				RefListItem<TreeNode,int>* ri = args_.last()->prev;
 				if ((ri != NULL) && (ri->item->returnType() == VTypes::VectorData))
 				{
 //					StepNode* step = (StepNode*) ri->item;

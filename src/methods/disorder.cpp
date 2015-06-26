@@ -36,7 +36,7 @@ bool MonteCarlo::disorder(Model* allModels, Model* destmodel, PartitioningScheme
 {
 	Messenger::enter("MonteCarlo::disorder");
 	DisorderData *component, *other;
-	Refitem<DisorderData,int>* ri;
+	RefListItem<DisorderData,int>* ri;
 	PartitionData* pd;
 	Atom* i;
 	int n, m, id, cycle, nSatisfied, nInsertions, nRelative = 0, totalToAdd = 0;
@@ -65,7 +65,7 @@ bool MonteCarlo::disorder(Model* allModels, Model* destmodel, PartitioningScheme
 	Model* targetModel_ = destmodel;
 	UnitCell& cell = targetModel_->cell();
 	List<DisorderData> components_;
-	Reflist<DisorderData, int> componentsOrder_;
+	RefList<DisorderData, int> componentsOrder_;
 	for (Model* m = allModels; m != NULL; m = m->next)
 	{
 		if (m->componentInsertionPolicy() == Model::NoPolicy) continue;

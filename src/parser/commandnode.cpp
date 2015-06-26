@@ -143,7 +143,7 @@ Format* CommandNode::createFormat(int fmtArgId, int firstArgId)
 	// firstargid = id of first data argument
 	// If we do not currently have a format associated to the node, create it regardless
 	bool result = false;
-	Refitem<TreeNode,int>* firstarg = firstArgId >= args_.nItems() ? NULL : args_[firstArgId];
+	RefListItem<TreeNode,int>* firstarg = firstArgId >= args_.nItems() ? NULL : args_[firstArgId];
 	if (format_ == NULL)
 	{
 		result = true;
@@ -198,7 +198,7 @@ void CommandNode::nodePrint(int offset, const char* prefix)
 // 	printf("Function id = %p\n", function_);
 	printf("[CN]%s%s (Command) (%i arguments)\n", qPrintable(tab), aten_->commandKeyword(function_), args_.nItems());
 	// Output Argument data
-	for (Refitem<TreeNode,int>* ri = args_.first(); ri != NULL; ri = ri->next) ri->item->nodePrint(offset+1);
+	for (RefListItem<TreeNode,int>* ri = args_.first(); ri != NULL; ri = ri->next) ri->item->nodePrint(offset+1);
 }
 
 // Set from returnvalue node

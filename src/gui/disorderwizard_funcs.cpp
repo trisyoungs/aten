@@ -94,7 +94,7 @@ int DisorderWizard::run()
 void DisorderWizard::setComponentData(Model* m)
 {
 	// Find the corresponding QTreeWidgetItem
-	Refitem<QTreeWidgetItem, Model*>* ri = componentModelItems_.containsData(m);
+	RefListItem<QTreeWidgetItem, Model*>* ri = componentModelItems_.containsData(m);
 	if (ri == NULL) return;
 	ri->item->setIcon(0, m->icon());
 	QString text;
@@ -402,7 +402,7 @@ void DisorderWizard::on_PartitionTree_itemSelectionChanged()
 void DisorderWizard::on_PartitionTree_currentItemChanged(QTreeWidgetItem* current, QTreeWidgetItem* previous)
 {
 	if (current == NULL) return;
-	Refitem<QTreeWidgetItem, PartitioningScheme*>* ri = partitioningSchemeItems_.contains(current);
+	RefListItem<QTreeWidgetItem, PartitioningScheme*>* ri = partitioningSchemeItems_.contains(current);
 	if (ri == NULL) return;
 	partitioningScheme_ = ri->data;
 	parent_.updateWidgets(AtenWindow::MainViewTarget);
@@ -417,7 +417,7 @@ void DisorderWizard::on_PartitionSchemeOptionsButton_clicked(bool checked)
 	if (!partitioningScheme_->hasOptions()) return;
 	if (!partitioningScheme_->showOptions()) return;
 	partitioningScheme_->recalculatePartitions();
-	Refitem<QTreeWidgetItem, PartitioningScheme*>* ri = partitioningSchemeItems_.containsData(partitioningScheme_);
+	RefListItem<QTreeWidgetItem, PartitioningScheme*>* ri = partitioningSchemeItems_.containsData(partitioningScheme_);
 	if (ri == NULL) return;
 	setPartitionData(ri->item, ri->data);
 	partitioningScheme_ = ri->data;
@@ -439,7 +439,7 @@ void DisorderWizard::on_ChooseComponentsTree_itemSelectionChanged()
 
 void DisorderWizard::on_EditComponentsTree_currentItemChanged(QTreeWidgetItem* current, QTreeWidgetItem* previous)
 {
-	Refitem<QTreeWidgetItem, Model*>* ri = componentModelItems_.contains(current);
+	RefListItem<QTreeWidgetItem, Model*>* ri = componentModelItems_.contains(current);
 	if (ri == NULL) return;
 	componentTarget_ = ri->data;
 	updateComponentControls();

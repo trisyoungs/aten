@@ -51,7 +51,7 @@ Tree* Aten::probeFile(QString filename, FilterData::FilterType filterType)
 
 	LineParser parser;
 	int n, m;
-	Refitem<Tree,int>* ri;
+	RefListItem<Tree,int>* ri;
 	Tree* filter = NULL, *result = NULL;
 
 	// Go through list of filters and do checks...

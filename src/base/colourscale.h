@@ -121,7 +121,7 @@ class ColourScale : public ListItem<ColourScale>
 	 */
 	private:
 	// Grids that use the colour scale
-	Reflist<Grid,int> grids_;
+	RefList<Grid,int> grids_;
 	// Refresh all linked objects
 	void refreshObjects();
 

@@ -25,6 +25,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <QString>
+#include "base/namespace.h"
+
+ATEN_BEGIN_NAMESPACE
 
 // Forward Declarations (Aten)
 template <class T> class List;
@@ -906,5 +909,7 @@ template <class T, class P> class ParentList : public List<T>
 		List<T>::regenerate_ = 1;
 	}
 };
+
+ATEN_END_NAMESPACE
 
 #endif

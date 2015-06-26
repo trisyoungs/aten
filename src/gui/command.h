@@ -95,7 +95,7 @@ class CommandWidget : public QDockWidget
 	 */
 	private:
 	// List of scripts and their associated Menu item actions
-	Reflist<QAction, Program*> scriptActions_;
+	RefList<QAction, Program*> scriptActions_;
 	
 	private slots:
 	void on_ReloadAllScriptsButton_clicked(bool checked);

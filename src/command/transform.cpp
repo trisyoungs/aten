@@ -400,11 +400,11 @@ bool Commands::function_SetAngles(CommandNode* c, Bundle& obj, ReturnValue& rv)
 
 	// Loop over selected atoms
 	Atom* i, *j, *k, *order[2];
-	Refitem<Bond,int>* bi, *bk;
+	RefListItem<Bond,int>* bi, *bk;
 	Bond* bji, *bjk;
 	Vec3<double> rotationVector;
 	double delta;
-	for (Refitem<Atom,int>* rj = obj.rs()->selection(); rj != NULL; rj = rj->next)
+	for (RefListItem<Atom,int>* rj = obj.rs()->selection(); rj != NULL; rj = rj->next)
 	{
 		j = rj->item;
 
@@ -556,11 +556,11 @@ bool Commands::function_SetDistances(CommandNode* c, Bundle& obj, ReturnValue& r
 
 	// Loop over selected atoms
 	Atom* i, *j, *order[2];
-	Refitem<Bond,int>* bi;
+	RefListItem<Bond,int>* bi;
 	Bond* bij;
 	Vec3<double> translationVector;
 	double delta;
-	for (Refitem<Atom,int>* ri = obj.rs()->selection(); ri != NULL; ri = ri->next)
+	for (RefListItem<Atom,int>* ri = obj.rs()->selection(); ri != NULL; ri = ri->next)
 	{
 		i = ri->item;
 
@@ -721,11 +721,11 @@ bool Commands::function_SetTorsions(CommandNode* c, Bundle& obj, ReturnValue& rv
 
 	// Loop over selected atoms
 	Atom* i, *j, *k, *l, *order[2];
-	Refitem<Bond,int>* bi, *bj, *bl;
+	RefListItem<Bond,int>* bi, *bj, *bl;
 	Bond* bji, *bjk, *bkl;
 	Vec3<double> rotationVector;
 	double delta;
-	for (Refitem<Atom,int>* rj = obj.rs()->selection(); rj != NULL; rj = rj->next)
+	for (RefListItem<Atom,int>* rj = obj.rs()->selection(); rj != NULL; rj = rj->next)
 	{
 		j = rj->item;
 

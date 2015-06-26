@@ -231,8 +231,8 @@ void RenderGroup::createAtomsAndBonds(PrimitiveSet& primitiveSet, Model* source,
 	Vec3<double> pos, v, ijk, r1, r2, r3, r4;
 	Vec4<double> screenr;
 	Matrix atomTransform, A, B;
-	Refitem<Bond,int>* rb;
-	Refitem<Atom,int>* ra;
+	RefListItem<Bond,int>* rb;
+	RefListItem<Atom,int>* ra;
 	Prefs::DrawStyle style_i, style_j, globalstyle;
 	Prefs::ColouringScheme scheme;
 	ForcefieldAtom* ffa;

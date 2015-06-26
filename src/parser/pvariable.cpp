@@ -155,7 +155,7 @@ void PointerArrayVariable::reset()
 	{
 		int count = 0;
 		ReturnValue value;
-		for (Refitem<TreeNode,int>* ri = args_.first(); ri != NULL; ri = ri->next)
+		for (RefListItem<TreeNode,int>* ri = args_.first(); ri != NULL; ri = ri->next)
 		{
 			if (!ri->item->execute(value)) pointerArrayData_[count++] = 0;
 			else pointerArrayData_[count++] = value.asPointer(returnType_);
@@ -239,7 +239,7 @@ bool PointerArrayVariable::initialise()
 	{
 		int count = 0;
 		ReturnValue value;
-		for (Refitem<TreeNode,int>* ri = args_.first(); ri != NULL; ri = ri->next)
+		for (RefListItem<TreeNode,int>* ri = args_.first(); ri != NULL; ri = ri->next)
 		{
 			if (!ri->item->execute(value)) return false;
 			pointerArrayData_[count++] = value.asPointer(returnType_);

@@ -65,7 +65,7 @@ class ReturnValue : public ListItem<ReturnValue>
 	QString valueS_;
 	Vec3<double> valueV_;
 	Matrix valueM_;
-	void* valueP_, *valueRefitem_;
+	void* valueP_, *valueRefListItem_;
 	// Array members for returns
 	int* arrayI_;
 	double* arrayD_;

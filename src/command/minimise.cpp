@@ -51,7 +51,7 @@ bool Commands::function_CGMinimise(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	cg.setNCycles( c->hasArg(0) ? c->argi(0) : 100);
 
 	// Store current positions of atoms so we can undo the minimisation
-	Reflist< Atom, Vec3<double> > oldpos;
+	RefList< Atom, Vec3<double> > oldpos;
 	for (Atom* i = obj.rs()->atoms(); i != NULL; i = i->next) oldpos.add(i, i->r());
 	cg.minimise(obj.rs(), econverge, fconverge);
 
@@ -85,7 +85,7 @@ bool Commands::function_MCMinimise(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	mc.setNCycles( c->hasArg(0) ? c->argi(0) : 100);
 
 	// Store current positions of atoms so we can undo the minimisation
-	Reflist< Atom, Vec3<double> > oldpos;
+	RefList< Atom, Vec3<double> > oldpos;
 	for (Atom* i = obj.rs()->atoms(); i != NULL; i = i->next) oldpos.add(i, i->r());
 	mc.minimise(obj.rs(), econverge, fconverge);
 
@@ -237,7 +237,7 @@ bool Commands::function_SDMinimise(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	sd.setNCycles( c->hasArg(0) ? c->argi(0) : 100);
 
 	// Store current positions of atoms so we can undo the minimisation
-	Reflist< Atom, Vec3<double> > oldpos;
+	RefList< Atom, Vec3<double> > oldpos;
 	for (Atom* i = obj.rs()->atoms(); i != NULL; i = i->next) oldpos.add(i, i->r());
 	sd.minimise(obj.rs(), econverge, fconverge, c->hasArg(1) ? c->argb(1) : false);
 	// Finalise the 'transformation' (creates an undo state)

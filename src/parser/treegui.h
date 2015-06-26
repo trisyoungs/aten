@@ -223,7 +223,7 @@ class TreeGuiWidget : public ListItem<TreeGuiWidget>
 	 */
 	private:
 	// List of buttons contained within this widget (if ButtonGroupWidget)
-	Reflist<TreeGuiWidget,int> buttonList_;
+	RefList<TreeGuiWidget,int> buttonList_;
 
 	private:
 	// Add widget to the layout in this widget (if it has one) at specified geometry, returning added widget for convenience

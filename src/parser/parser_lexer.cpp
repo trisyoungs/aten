@@ -298,7 +298,7 @@ int CommandParser::lex()
 			}
 
 			// Is it an existing variable in global scope?
-			for (Refitem<Tree,bool>* ri = stack_.first(); ri != NULL; ri = ri->next)
+			for (RefListItem<Tree,bool>* ri = stack_.first(); ri != NULL; ri = ri->next)
 			{
 				v = ri->item->globalVariables().find(token);
 				if (v != NULL)

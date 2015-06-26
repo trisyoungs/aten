@@ -339,7 +339,7 @@ bool Tree::execute(ReturnValue& rv)
 				break;
 		}
 	}
-	for (Refitem<TreeNode,int>* ri = statements_.first(); ri != NULL; ri = ri->next)
+	for (RefListItem<TreeNode,int>* ri = statements_.first(); ri != NULL; ri = ri->next)
 	{
 		Messenger::print(Messenger::Commands, "Executing tree statement %p...", ri->item);
 // 		ri->item->nodePrint(1);
@@ -498,7 +498,7 @@ void Tree::print()
 {
 	printf("Leaf Structure (%i statements):\n", statements_.nItems());
 	int n=1;
-	for (Refitem<TreeNode,int>* ri = statements_.first(); ri != NULL; ri = ri->next)
+	for (RefListItem<TreeNode,int>* ri = statements_.first(); ri != NULL; ri = ri->next)
 	{
 		printf("-------------------------------------------------------------\n");
 		printf("Statement %i:\n", n);
@@ -710,7 +710,7 @@ TreeNode* Tree::pushScope(Commands::Function func)
 // Pop the topmost scope node
 bool Tree::popScope()
 {
-	Refitem<ScopeNode,int>* ri = scopeStack_.last();
+	RefListItem<ScopeNode,int>* ri = scopeStack_.last();
 	if (ri == NULL)
 	{
 		printf("Internal Error: No scoped node to pop from stack.\n");
@@ -796,7 +796,7 @@ TreeNode* Tree::addVariable(VTypes::DataType type, QString name, TreeNode* initi
 	if (global) scope = &globalScope_;
 	else
 	{
-		Refitem<ScopeNode,int>* ri = scopeStack_.last();
+		RefListItem<ScopeNode,int>* ri = scopeStack_.last();
 		if (ri == NULL)
 		{
 			printf("Internal Error: No current scope in which to define variable '%s'.\n", qPrintable(name));
@@ -836,7 +836,7 @@ TreeNode* Tree::addArrayVariable(VTypes::DataType type, QString name, TreeNode* 
 	if (global) scope = &globalScope_;
 	else
 	{
-		Refitem<ScopeNode,int>* ri = scopeStack_.last();
+		RefListItem<ScopeNode,int>* ri = scopeStack_.last();
 		if (ri == NULL)
 		{
 			printf("Internal Error: No current scope in which to define array variable '%s'.\n", qPrintable(name));
@@ -858,7 +858,7 @@ TreeNode* Tree::addArrayVariable(VTypes::DataType type, QString name, TreeNode* 
 // Add constant vector
 TreeNode* Tree::addArrayConstant(TreeNode* values)
 {
-	Refitem<ScopeNode,int>* ri = scopeStack_.last();
+	RefListItem<ScopeNode,int>* ri = scopeStack_.last();
 	// Determine numbers of each type in array
 	TreeNode* first;
 	bool badData = false;
@@ -918,7 +918,7 @@ Variable* Tree::findLocalVariable(QString name, int& scopelevel)
 	scopelevel = 0;
 	Messenger::print(Messenger::Parse, "Searching scope for variable '%s'...", qPrintable(name));
 	// Search the current ScopeNode list for the variable name requested
-	for (Refitem<ScopeNode,int>* ri = scopeStack_.last(); ri != NULL; ri = ri->prev)
+	for (RefListItem<ScopeNode,int>* ri = scopeStack_.last(); ri != NULL; ri = ri->prev)
 	{
 		Messenger::print(Messenger::Parse," ... scopenode %p...", ri->item);
 		result = ri->item->variables.find(name);
@@ -1001,7 +1001,7 @@ TreeNode* Tree::finalisePath()
 {
 	Messenger::enter("Tree::finalisePath");
 	// Finalise the path before we remove it
-	Refitem<VariableNode,TreeNode*>* ri = pathStack_.last();
+	RefListItem<VariableNode,TreeNode*>* ri = pathStack_.last();
 	if (ri == NULL)
 	{
 		Messenger::print("Internal Error: No path on stack to finalise.");
@@ -1026,7 +1026,7 @@ bool Tree::expandPath(QString name, TreeNode* arrayIndex, TreeNode* argList)
 		return false;
 	}
 	// Get last item on path stack
-	Refitem<VariableNode,TreeNode*>* ri = pathStack_.last();
+	RefListItem<VariableNode,TreeNode*>* ri = pathStack_.last();
 	if (ri == NULL)
 	{
 		printf("Internal Error: No path on stack to expand with accessor '%s'.\n", qPrintable(name));
@@ -1055,7 +1055,7 @@ bool Tree::expandPath(QString name, TreeNode* arrayIndex, TreeNode* argList)
 		ri->data = (TreeNode*) result;
 		nodes_.own(result);
 		// Finalise the path before we remove it
-		Refitem<VariableNode,TreeNode*>* ri = pathStack_.last();
+		RefListItem<VariableNode,TreeNode*>* ri = pathStack_.last();
 		if (ri == NULL)
 		{
 			Messenger::print("Internal Error: No path on stack to expand!");
@@ -1082,7 +1082,7 @@ TreeNode* Tree::args() const
 }
 
 // Return first in stack of scopenodes
-Refitem<ScopeNode,int>* Tree::scopeNodes()
+RefListItem<ScopeNode,int>* Tree::scopeNodes()
 {
 	return scopeStack_.first();
 }

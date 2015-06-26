@@ -56,7 +56,7 @@ int ZMatrix::nVariables()
 }
 
 // Add single definition to list
-ZMatrixElement* ZMatrix::addElement(Reflist<Atom,int>& atoms)
+ZMatrixElement* ZMatrix::addElement(RefList<Atom,int>& atoms)
 {
 	Messenger::enter("ZMatrix::addElement");
 	int i;
@@ -66,7 +66,7 @@ ZMatrixElement* ZMatrix::addElement(Reflist<Atom,int>& atoms)
 	ZMatrixElement* zel = elements_.add();
 	zel->setParent(this);
 	i = 0;
-	for (Refitem<Atom,int>* ri = atoms.first(); ri != NULL; ri = ri->next)
+	for (RefListItem<Atom,int>* ri = atoms.first(); ri != NULL; ri = ri->next)
 	{
 		zel->setAtom(i++, ri->item);
 		if (i == 4) break;
@@ -108,7 +108,7 @@ ZMatrixElement* ZMatrix::addElement(Reflist<Atom,int>& atoms)
 }
 
 // Create (recursively) along bonds in the model wherever possible
-void ZMatrix::createAlongBonds(Atom* target, Reflist<Atom,int>& atomlist)
+void ZMatrix::createAlongBonds(Atom* target, RefList<Atom,int>& atomlist)
 {
 	Messenger::enter("ZMatrix::createAlongBonds");
 	// Add the current atom to the list and create an element for it
@@ -118,7 +118,7 @@ void ZMatrix::createAlongBonds(Atom* target, Reflist<Atom,int>& atomlist)
 	parent_->selectAtom(target, true);
 	// Cycle over bonds, progressing along each connected atom
 	Atom* i;
-	for (Refitem<Bond,int>* ri = target->bonds(); ri != NULL; ri = ri->next)
+	for (RefListItem<Bond,int>* ri = target->bonds(); ri != NULL; ri = ri->next)
 	{
 		i = ri->item->partner(target);
 		if (i->isSelected(true)) continue;
@@ -128,7 +128,7 @@ void ZMatrix::createAlongBonds(Atom* target, Reflist<Atom,int>& atomlist)
 }
 
 // Create path of bound atoms of the requested size, starting from last atom of the supplied list
-bool ZMatrix::createBoundPath(Reflist<Atom,int>& atomlist, int size, Reflist<Atom,int>& bestlist)
+bool ZMatrix::createBoundPath(RefList<Atom,int>& atomlist, int size, RefList<Atom,int>& bestlist)
 {
 	// Check for correct path size...
 	if (atomlist.nItems() == size)
@@ -139,7 +139,7 @@ bool ZMatrix::createBoundPath(Reflist<Atom,int>& atomlist, int size, Reflist<Ato
 	// From last atom in path, add bound neighbours to path list (if their ID is lower) and recurse if necessary
 	Atom* i = atomlist.last()->item, *j;
 	int maxid = atomlist.first()->item->id();
-	for (Refitem<Bond,int>* ri = i->bonds(); ri != NULL; ri = ri->next)
+	for (RefListItem<Bond,int>* ri = i->bonds(); ri != NULL; ri = ri->next)
 	{
 		// Get bond neighbour and check that it has a lower ID *and* doesn't already exist in the list
 		j = ri->item->partner(i);
@@ -168,7 +168,7 @@ void ZMatrix::create(Model* source, bool usebonds)
 	torsions_.clear();
 	parent_ = source;
 	// Lists of previous atoms
-	Reflist<Atom,int> atomlist, boundpath, bestpath;
+	RefList<Atom,int> atomlist, boundpath, bestpath;
 	ZMatrixElement* zel;
 	if (parent_->nAtoms() == 0)
 	{
@@ -195,7 +195,7 @@ void ZMatrix::create(Model* source, bool usebonds)
 			else
 			{
 				// Take best path found, and add extra atoms to it
-				for (Refitem<Atom,int>* ri = atomlist.first(); ri != NULL; ri = ri->next)
+				for (RefListItem<Atom,int>* ri = atomlist.first(); ri != NULL; ri = ri->next)
 				{
 					if (!bestpath.contains(ri->item)) bestpath.add(ri->item);
 					if (bestpath.nItems() == atomlist.nItems()) break;

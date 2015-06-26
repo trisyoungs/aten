@@ -173,7 +173,7 @@ void Model::deleteAtom(Atom* xatom, bool noupdate)
 		// Remove measurements
 		removeMeasurements(xatom);
 		// Delete All Bonds To Specific Atom
-		Refitem<Bond,int>* bref = xatom->bonds();
+		RefListItem<Bond,int>* bref = xatom->bonds();
 		while (bref != NULL)
 		{
 			// Need to detach the bond from both atoms involved
@@ -442,7 +442,7 @@ int Model::countBondsToAtom(Atom* i, Bond::BondType type)
 {
 	Messenger::enter("Model::countBondsToAtom");
 	int count = 0;
-	for (Refitem<Bond,int>* bref = i->bonds(); bref != NULL; bref = bref->next)
+	for (RefListItem<Bond,int>* bref = i->bonds(); bref != NULL; bref = bref->next)
 		if (bref->item->order() == type) count ++;
 	Messenger::exit("Model::countBondsToAtom");
 	return count;

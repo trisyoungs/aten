@@ -144,7 +144,7 @@ Vec3<double> Model::selectionCentreOfGeometry() const
 	Vec3<double> result;
 	if (selection_.nItems() != 0)
 	{
-		for (Refitem<Atom,int>* ri = selection_.first(); ri != NULL; ri = ri->next) result += cell_.mim(ri->item, selection_.first()->item);
+		for (RefListItem<Atom,int>* ri = selection_.first(); ri != NULL; ri = ri->next) result += cell_.mim(ri->item, selection_.first()->item);
 		result /= selection_.nItems();
 	}
 	return result;
@@ -158,7 +158,7 @@ Vec3<double> Model::selectionCentreOfMass() const
 	double massnorm = 0.0;
 	if (selection_.nItems() != 0)
 	{
-		for (Refitem<Atom,int>* ri = selection_.first(); ri != NULL; ri = ri->next)
+		for (RefListItem<Atom,int>* ri = selection_.first(); ri != NULL; ri = ri->next)
 		{
 			i = ri->item;
 			if (i->element() == 0)
@@ -181,7 +181,7 @@ Vec3<double> Model::selectionCentreOfMass() const
 // Set selection visibility
 void Model::selectionSetHidden(bool hidden)
 {
-	for (Refitem<Atom,int>* ri = selection(); ri != NULL; ri = ri->next) atomSetHidden(ri->item, hidden);
+	for (RefListItem<Atom,int>* ri = selection(); ri != NULL; ri = ri->next) atomSetHidden(ri->item, hidden);
 	logChange(Log::Selection);
 }
 
@@ -189,34 +189,34 @@ void Model::selectionSetHidden(bool hidden)
 void Model::selectionSetFixed(bool fixed)
 {
 	// Sets 'fixed' values to true
-	for (Refitem<Atom,int>* ri = selection(); ri != NULL; ri = ri->next) atomSetFixed(ri->item, fixed);
+	for (RefListItem<Atom,int>* ri = selection(); ri != NULL; ri = ri->next) atomSetFixed(ri->item, fixed);
 }
 
 // Set custom colour of atoms in selection
 void Model::selectionSetColour(double r, double g, double b, double a)
 {
-	for (Refitem<Atom,int>* ri = selection(); ri != NULL; ri = ri->next) atomSetColour(ri->item, r, g, b, a);
+	for (RefListItem<Atom,int>* ri = selection(); ri != NULL; ri = ri->next) atomSetColour(ri->item, r, g, b, a);
 	logChange(Log::Style);
 }
 
 // Reset custom colour of atoms in selection back to element defaults
 void Model::selectionResetColour()
 {
-	for (Refitem<Atom,int>* ri = selection(); ri != NULL; ri = ri->next) atomResetColour(ri->item);
+	for (RefListItem<Atom,int>* ri = selection(); ri != NULL; ri = ri->next) atomResetColour(ri->item);
 	logChange(Log::Style);
 }
 
 // Set selection style
 void Model::selectionSetStyle(Prefs::DrawStyle ds)
 {
-	for (Refitem<Atom,int>* ri = selection_.first(); ri != NULL; ri = ri->next) if (ri->item->isSelected()) atomSetStyle(ri->item, ds);
+	for (RefListItem<Atom,int>* ri = selection_.first(); ri != NULL; ri = ri->next) if (ri->item->isSelected()) atomSetStyle(ri->item, ds);
 }
 
 // Select bound and selected atoms from the current atom
-void Model::fragmentFromSelectionSelector(Atom* i, Reflist<Atom,int>& list)
+void Model::fragmentFromSelectionSelector(Atom* i, RefList<Atom,int>& list)
 {
 	Atom* j;
-	for (Refitem<Bond,int>* bref = i->bonds(); bref != NULL; bref = bref->next)
+	for (RefListItem<Bond,int>* bref = i->bonds(); bref != NULL; bref = bref->next)
 	{
 		j = bref->item->partner(i);
 		if (j->isSelected())
@@ -229,7 +229,7 @@ void Model::fragmentFromSelectionSelector(Atom* i, Reflist<Atom,int>& list)
 }
 
 // Get atoms of a bound fragment with the current selection
-void Model::fragmentFromSelection(Atom* start, Reflist<Atom,int>& list)
+void Model::fragmentFromSelection(Atom* start, RefList<Atom,int>& list)
 {
 	Messenger::enter("Model::fragmentFromSelection");
 	if ((start == NULL) || (!start->isSelected()))
@@ -263,16 +263,16 @@ void Model::reorderSelectedAtoms()
 	}
 
 	// First, create a copy of the list of selected atoms
-	Reflist<Atom,int> targetAtoms = selection_;
+	RefList<Atom,int> targetAtoms = selection_;
 	Atom* i, *j;
-	Refitem<Atom,int>* ri;
-	Refitem<Atom, List<Neta> >* rj, *rk;
-	Refitem<Bond,int>* rb;
+	RefListItem<Atom,int>* ri;
+	RefListItem<Atom, List<Neta> >* rj, *rk;
+	RefListItem<Bond,int>* rb;
 	int diff, n;
 
 	// First we will make sure that all molecular fragments in the current selection contain consecutive atoms
 	Messenger::print("Enforcing consecutive atom numbering in all molecular fragments...");
-	Reflist<Atom,int> selectedAtoms = targetAtoms;
+	RefList<Atom,int> selectedAtoms = targetAtoms;
 	while (selectedAtoms.first())
 	{
 		// Deselect everything, and then treeselect from the first atom remaining in our list
@@ -295,7 +295,7 @@ void Model::reorderSelectedAtoms()
 
 	// Select first fragment, add it to a separate list, and remove its atoms from selectedAtoms
 	selectedAtoms = targetAtoms;
-	Reflist<Atom, List<Neta> > referenceFragment;
+	RefList<Atom, List<Neta> > referenceFragment;
 	selectNone(true);
 	selectTree(targetAtoms.first()->item,true);
 	Neta* neta;
@@ -414,15 +414,15 @@ QString Model::selectionEmpirical(bool markOnly, bool addSpaces) const
 	Messenger::enter("Model::selectionEmpirical");
 
 	Array<int> elcount(MAXELEMENTS);
-	Refitem<Atom,int>* firstAtom = (markOnly ? marked_.first() : selection_.first());
+	RefListItem<Atom,int>* firstAtom = (markOnly ? marked_.first() : selection_.first());
 
 	// Loop over atoms in list
 	Atom* i;
-	for (Refitem<Atom,int>* ri = firstAtom; ri != NULL; ri = ri->next)
+	for (RefListItem<Atom,int>* ri = firstAtom; ri != NULL; ri = ri->next)
 	{
 		i = ri->item;
 		if (i != NULL) ++elcount[i->element()];
-		else printf("Internal Error: Reflist had a NULL atom pointer in Model::selectionEmpirical().\n");
+		else printf("Internal Error: RefList had a NULL atom pointer in Model::selectionEmpirical().\n");
 	}
 
 	// Construct element string
@@ -451,7 +451,7 @@ QString Model::selectionAtomFingerprint()
 		Messenger::exit("Model::selectionAtomFingerprint");
 		return QString();
 	}
-	Refitem<Atom,int>* ri = selection_.first();
+	RefListItem<Atom,int>* ri = selection_.first();
 	int lastel = ri->item->element(), newel;
 	int count = 1;
 	QString result;
@@ -488,7 +488,7 @@ QString Model::selectionBondFingerprint()
 	Messenger::enter("Model::selectionBondFingerprint");
 
 	int count = 0, diff;
-	Refitem<Bond,int>* ri;
+	RefListItem<Bond,int>* ri;
 	QString result;
 	Atom* i = atoms_.first();
 	Atom* j;

@@ -233,7 +233,7 @@ bool Commands::function_Terminate(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	obj.rs()->selectNone(true);
 	Atom* i, *j;
 	obj.rs()->beginUndoState("Terminate atoms");
-	for (Refitem<Atom,int>* ri = obj.rs()->selection(); ri != NULL; ri = ri->next)
+	for (RefListItem<Atom,int>* ri = obj.rs()->selection(); ri != NULL; ri = ri->next)
 	{
 		i = ri->item;
 		switch (i->element())

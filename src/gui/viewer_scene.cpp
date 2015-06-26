@@ -167,7 +167,7 @@ void Viewer::renderFullScene()
 	// Loop over model refitems in list (or single refitem)
 	col = 0;
 	row = 0;
-	for (Refitem<Model,int>* ri = aten_->visibleModels(); ri != NULL; ri = ri->next)
+	for (RefListItem<Model,int>* ri = aten_->visibleModels(); ri != NULL; ri = ri->next)
 	{
 		// Grab model pointer
 		m = ri->item;

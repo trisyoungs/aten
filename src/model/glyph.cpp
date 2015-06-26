@@ -64,7 +64,7 @@ Glyph* Model::glyphs() const
 }
 
 // Return first text glyph in list (if any)
-Refitem<Glyph,int>* Model::textGlyphs() const
+RefListItem<Glyph,int>* Model::textGlyphs() const
 {
 	return textGlyphs_.first();
 }
@@ -123,9 +123,9 @@ void Model::addPolyhedraGlyphs(bool centresonly, bool linkatoms, double rcut)
 {
 	Messenger::enter("Model::addPolyhedraGlyphs");
 	// From the current selection of atoms, add polyhedra to/around them.
-	Reflist<Atom,int> atoms;
+	RefList<Atom,int> atoms;
 	Atom* i, *j;
-	Refitem<Atom,int>* ri, *rj, *rk;
+	RefListItem<Atom,int>* ri, *rj, *rk;
 	Glyph* g;
 	while (selection_.nItems() > 0)
 	{
@@ -136,7 +136,7 @@ void Model::addPolyhedraGlyphs(bool centresonly, bool linkatoms, double rcut)
 		if (centresonly)
 		{
 			deselectAtom(i);
-			for (Refitem<Bond,int>* bref = i->bonds(); bref != NULL; bref = bref->next)
+			for (RefListItem<Bond,int>* bref = i->bonds(); bref != NULL; bref = bref->next)
 				{
 					j = bref->item->partner(i);
 					if (j->nBonds() == 1) atoms.add(j);
@@ -193,14 +193,14 @@ void Model::addEllipsoidGlyphs()
 {
 	Messenger::enter("Model::addEllipsoidGlyphs");
 	// From the current selection of atoms, add polyhedra to/around them.
-	Reflist<Atom,int> atoms;
+	RefList<Atom,int> atoms;
 	Vec3<double> centroid, v, u, vecx, vecy, vecz;
 	double mag, best, r, phi;
-	Refitem<Atom,int>* ri, *rj;
+	RefListItem<Atom,int>* ri, *rj;
 	Atom* i, *j, *k, *l;
 	Matrix A;
-	Reflist<Atom, Vec3<double> > xaxisatoms;
-	Refitem<Atom, Vec3<double> >* rid;
+	RefList<Atom, Vec3<double> > xaxisatoms;
+	RefListItem<Atom, Vec3<double> >* rid;
 	Glyph* g;
 	while (selection_.nItems() > 0)
 	{

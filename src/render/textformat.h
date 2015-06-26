@@ -27,6 +27,10 @@
 // Forward Declarations (Aten)
 /* none */
 
+ATEN_USING_NAMESPACE
+
+ATEN_BEGIN_NAMESPACE
+
 // Text Formatter
 class TextFormat : public ListItem<TextFormat>
 {
@@ -73,5 +77,7 @@ class TextFormat : public ListItem<TextFormat>
 	// Return whether text is bold
 	bool bold();
 };
+
+ATEN_END_NAMESPACE
 
 #endif

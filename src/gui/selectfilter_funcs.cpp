@@ -64,12 +64,12 @@ void AtenSelectFilter::on_ShowAllCheck_clicked(bool checked)
 void AtenSelectFilter::update()
 {
 	ui.FilterTable->clear();
-	Refitem<Tree,int>* first = (ui.ShowAllCheck->isChecked() ? fullList_->first() : partialList_->first());
+	RefListItem<Tree,int>* first = (ui.ShowAllCheck->isChecked() ? fullList_->first() : partialList_->first());
 	ui.FilterTable->setHorizontalHeaderLabels(QStringList() << "Extension(s)" << "Filter" << "Source");
 	ui.FilterTable->setRowCount( ui.ShowAllCheck->isChecked() ? fullList_->nItems() : partialList_->nItems() );
 	QTableWidgetItem *item;
 	int count = 0;
-	for (Refitem<Tree,int>* ri = first; ri != NULL; ri = ri->next)
+	for (RefListItem<Tree,int>* ri = first; ri != NULL; ri = ri->next)
 	{
 		// First column lists the extensions, second column the filter description, third column the source filter file
 		item = new QTableWidgetItem(ri->item->filter.extensionList());
@@ -84,7 +84,7 @@ void AtenSelectFilter::update()
 }
 
 // Select a filter from the list supplied
-Tree* AtenSelectFilter::selectFilter(const char* text, Reflist<Tree,int>* partial, Reflist<Tree,int>* full, bool showExtCheck)
+Tree* AtenSelectFilter::selectFilter(const char* text, RefList<Tree,int>* partial, RefList<Tree,int>* full, bool showExtCheck)
 {
 	// Set source structures
 	partialList_ = partial;

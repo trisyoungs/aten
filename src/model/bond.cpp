@@ -166,7 +166,7 @@ void Model::clearBonding()
         // Clear the bond list.
 	for (Atom* i = atoms_.first(); i != NULL; i = i->next)
 	{
-		Refitem<Bond,int>* bref = i->bonds();
+		RefListItem<Bond,int>* bref = i->bonds();
 		while (bref != NULL)
 		{
 			// Need to detach the bond from both atoms involved
@@ -248,8 +248,8 @@ void Model::initialiseBondingCuboids()
 // 	printf("ExtentMin = "); extentMin_.print(); 
 // 	printf("ExtentMax = "); extentMax_.print();
 // 	printf("ExtentRange = "); extentRange_.print();
-	bondingCuboids_ = new Reflist<Atom,double>[nCuboids_];
-	bondingOverlays_ = new Reflist<Atom,double>[nCuboids_];
+	bondingCuboids_ = new RefList<Atom,double>[nCuboids_];
+	bondingOverlays_ = new RefList<Atom,double>[nCuboids_];
 	Messenger::exit("Model::initialiseBondingCuboids");
 }
 
@@ -353,7 +353,7 @@ void Model::rebond()
 	double tolerance = prefs.bondTolerance();
 	Atom* i, *j;
 	// Loop over cuboids, checking distances with atoms in adjacent boxes
-	Refitem<Atom,double>* ri, *rj;
+	RefListItem<Atom,double>* ri, *rj;
 	x = 0;
 	y = 0;
 	z = 0;

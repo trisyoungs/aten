@@ -19,10 +19,13 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <QtCore/QVariant>
+#ifndef ATEN_VARIANTPOINTER_H
+#define ATEN_VARIANTPOINTER_H
 
-#ifndef UCHROMA_VARIANTPOINTER_H
-#define UCHROMA_VARIANTPOINTER_H
+#include <QtCore/QVariant>
+#include "base/namespace.h"
+
+ATEN_BEGIN_NAMESPACE
 
 // Simple class to convert between QVariant pointer (void*) and a custom class pointer
 template <class A> class VariantPointer
@@ -55,5 +58,7 @@ template <class A> class VariantPointer
 		return pointer_;
 	}
 };
+
+ATEN_END_NAMESPACE
 
 #endif

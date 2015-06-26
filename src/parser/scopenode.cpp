@@ -84,5 +84,5 @@ void ScopeNode::nodePrint(int offset, const char* prefix)
 	}
 	printf("[SN]%s%s (Command) (%i arguments)\n", qPrintable(tab), Commands::command(function_), args_.nItems());
 	// Output Argument data
-	for (Refitem<TreeNode,int>* ri = args_.first(); ri != NULL; ri = ri->next) ri->item->nodePrint(offset+1);
+	for (RefListItem<TreeNode,int>* ri = args_.first(); ri != NULL; ri = ri->next) ri->item->nodePrint(offset+1);
 }

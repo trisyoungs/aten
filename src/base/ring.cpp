@@ -52,7 +52,7 @@ bool Ring::operator==(Ring &r) const
 	// Check ring sizes first
 	if (atoms_.nItems() != r.atoms_.nItems()) return false;
 	// Search for first atom of ring 'r' in this ring's atom list
-	Refitem<Atom,int>* commonatom, *ri, *rj;
+	RefListItem<Atom,int>* commonatom, *ri, *rj;
 	for (commonatom = atoms_.first(); commonatom != NULL; commonatom = commonatom->next) if (commonatom->item == r.atoms_.first()->item) break;
 	if (commonatom == NULL) return false;
 	// The atom exists in both rings, so check all atoms....
@@ -96,24 +96,24 @@ Pattern* Ring::parent()
 */
 
 // Circular list browsing
-Refitem<Atom,int>* Ring::getNext(Refitem<Atom,int>* ri) const
+RefListItem<Atom,int>* Ring::getNext(RefListItem<Atom,int>* ri) const
 {
 	return (ri->next == NULL ? atoms_.first() : ri->next);
 }
 
-Refitem<Atom,int>* Ring::getPrev(Refitem<Atom,int>* ri) const
+RefListItem<Atom,int>* Ring::getPrev(RefListItem<Atom,int>* ri) const
 {
 	return (ri->prev == NULL ? atoms_.last() : ri->prev);
 }
 
 // Return first referenced atom
-Refitem<Atom,int>* Ring::atoms() const
+RefListItem<Atom,int>* Ring::atoms() const
 {
 	return atoms_.first();
 }
 
 // Return last referenced atom
-Refitem<Atom,int>* Ring::lastAtom() const
+RefListItem<Atom,int>* Ring::lastAtom() const
 {
 	return atoms_.last();
 }
@@ -125,7 +125,7 @@ int Ring::nAtoms() const
 }
 
 // Return first referenced bond
-Refitem<Bond,Bond::BondType> *Ring::bonds() const
+RefListItem<Bond,Bond::BondType> *Ring::bonds() const
 {
 	return bonds_.first();
 }
@@ -165,14 +165,14 @@ bool Ring::addAtom(Atom* i)
 		Messenger::exit("Ring::addAtom");
 		return false;
 	}
-	// Append a ringatom to the list, pointing to atom i, storing the atom ID in the Refitem's data variable
+	// Append a ringatom to the list, pointing to atom i, storing the atom ID in the RefListItem's data variable
 	atoms_.add(i,i->id());
 	Messenger::exit("Ring::addAtom");
 	return true;
 }
 
 // Remove the specified refitem from the find
-void Ring::removeAtom(Refitem<Atom,int>* ri)
+void Ring::removeAtom(RefListItem<Atom,int>* ri)
 {
 	atoms_.remove(ri);
 }
@@ -181,20 +181,20 @@ void Ring::removeAtom(Refitem<Atom,int>* ri)
 int Ring::totalBondOrderPenalty()
 {
 	int result = 0;
-	for (Refitem<Atom,int>* ri = atoms_.first(); ri != NULL; ri = ri->next) result += Elements().bondOrderPenalty(ri->item, ri->item->totalBondOrder()/2);
+	for (RefListItem<Atom,int>* ri = atoms_.first(); ri != NULL; ri = ri->next) result += Elements().bondOrderPenalty(ri->item, ri->item->totalBondOrder()/2);
 	return result;
 }
 
 // Store current bond types for referenced bonds
 void Ring::storeBondTypes()
 {
-	for (Refitem<Bond,Bond::BondType> *rb = bonds_.first(); rb != NULL; rb = rb->next) rb->data = rb->item->type();
+	for (RefListItem<Bond,Bond::BondType> *rb = bonds_.first(); rb != NULL; rb = rb->next) rb->data = rb->item->type();
 }
 
 // Recall stored bond orders for referenced bonds
 void Ring::recallBondTypes()
 {
-	for (Refitem<Bond,Bond::BondType> *rb = bonds_.first(); rb != NULL; rb = rb->next) rb->item->setType(rb->data);
+	for (RefListItem<Bond,Bond::BondType> *rb = bonds_.first(); rb != NULL; rb = rb->next) rb->item->setType(rb->data);
 }
 
 // Detect ring type based on atom hybridicities and bonds
@@ -205,7 +205,7 @@ void Ring::detectType()
 	Bond::BondType lasttype, thistype;
 	bool alternating = true;
 	// Get numbers of single/double bonds, and whether they alternate around the ring
-	for (Refitem<Bond,Bond::BondType> *rb = bonds_.first(); rb != NULL; rb = rb->next)
+	for (RefListItem<Bond,Bond::BondType> *rb = bonds_.first(); rb != NULL; rb = rb->next)
 	{
 		thistype = rb->item->type();
 		if (thistype == Bond::Single) nsingle ++;
@@ -246,7 +246,7 @@ void Ring::detectType()
 		bool failed = false;
 		Bond::BondType bt1, bt2;
 		// For rings with an odd number of atoms, adjacent single bonds may use a medial heteroatom to grant aromaticity
-		for (Refitem<Atom,int>* ra = atoms_.first(); ra != NULL; ra = ra->next)
+		for (RefListItem<Atom,int>* ra = atoms_.first(); ra != NULL; ra = ra->next)
 		{
 			group = Elements().group(ra->item);
 			// If its a heteroatom there's a chance. If not, we're done
@@ -274,8 +274,8 @@ void Ring::detectType()
 	// Set aromatic bonds if so detected
 	if (type_ == Ring::AromaticRing)
 	{
-		for (Refitem<Atom,int>* ra = atoms_.first(); ra != NULL; ra = ra->next) ra->item->setEnvironment(Atom::AromaticEnvironment);
-		for (Refitem<Bond,Bond::BondType> *rb = bonds_.first(); rb != NULL; rb = rb->next) 
+		for (RefListItem<Atom,int>* ra = atoms_.first(); ra != NULL; ra = ra->next) ra->item->setEnvironment(Atom::AromaticEnvironment);
+		for (RefListItem<Bond,Bond::BondType> *rb = bonds_.first(); rb != NULL; rb = rb->next) 
 		{
 			if (rb->item->type() != Bond::Aromatic) parent_->parent()->changeBond(rb->item, Bond::Aromatic);
 // 			rb->data = Bond::Aromatic;
@@ -299,7 +299,7 @@ void Ring::finalise()
 {
 	// Perform some finishing tasks on the list
 	Messenger::enter("Ring::finalise");
-	Refitem<Atom,int>* ra, *lowid;
+	RefListItem<Atom,int>* ra, *lowid;
 	// Make the list head point to the atom with the lowest id
 	if (atoms_.nItems() == 0)
 	{	
@@ -326,7 +326,7 @@ void Ring::finalise()
 		if (b == NULL) printf("Odd internal error - couldn't find bond between atoms in ring.\n");
 		else bonds_.add(b);
 		// Search the bond list of this atom for the next atom in the list
-		//for (Refitem<Bond,int>* bref = ra->item->bonds(); bref != NULL; bref = bref->next)
+		//for (RefListItem<Bond,int>* bref = ra->item->bonds(); bref != NULL; bref = bref->next)
 		//	if (bref->item->partner(ra->item) == getNext(ra)->item) ra->data = bref->item->order();
 	}
 	Messenger::exit("Ring::finalise");
@@ -337,7 +337,7 @@ void Ring::copy(Ring *source)
 {
 	// Copy the data in source to the current ring.
 	atoms_.clear();
-	for (Refitem<Atom,int>* ra = source->atoms_.first(); ra != NULL; ra= ra->next) addAtom(ra->item);
+	for (RefListItem<Atom,int>* ra = source->atoms_.first(); ra != NULL; ra= ra->next) addAtom(ra->item);
 }
 
 // Print
@@ -345,7 +345,7 @@ void Ring::print() const
 {
 	// Print out the data of the ring.
 	Messenger::print(Messenger::Verbose, "Ring has %i atoms: ",atoms_.nItems());
-	for (Refitem<Atom,int>* ra = atoms_.first(); ra != NULL; ra = ra->next)
+	for (RefListItem<Atom,int>* ra = atoms_.first(); ra != NULL; ra = ra->next)
 		Messenger::print(Messenger::Verbose, "%s(%i),", Elements().symbol(ra->item),ra->data);
 	Messenger::print(Messenger::Verbose, "");
 }
@@ -356,9 +356,9 @@ void Ring::clear()
 	atoms_.clear();
 }
 
-// Add atoms_.to Reflist
-void Ring::addAtomsToReflist(Reflist<Atom,int>* rlist, Atom* i)
+// Add atoms_.to RefList
+void Ring::addAtomsToRefList(RefList<Atom,int>* rlist, Atom* i)
 {
 	// Add all atoms_.in the ring 'r' to the list, excluding the atom 'i'
-	for (Refitem<Atom,int>* ra = atoms_.first(); ra != NULL; ra = ra->next) if (ra->item != i) rlist->add(ra->item);
+	for (RefListItem<Atom,int>* ra = atoms_.first(); ra != NULL; ra = ra->next) if (ra->item != i) rlist->add(ra->item);
 }

@@ -24,6 +24,9 @@
 
 #include "templates/reflist.h"
 #include <stdio.h>
+#include "base/namespace.h"
+
+ATEN_BEGIN_NAMESPACE
 
 // Object type enum
 class ObjectTypes
@@ -128,7 +131,7 @@ template <class T> class ObjectStore
 	 */
 	private:
 	// Master list of available objects
-	static Reflist<T,int> objects_;
+	static RefList<T,int> objects_;
 	// Integer count for object IDs
 	static int objectCount_;
 
@@ -162,14 +165,14 @@ template <class T> class ObjectStore
 	// Return object with specified ID
 	static T* object(int id)
 	{
-		for (Refitem<T,int>* ri = objects_.first(); ri != NULL; ri = ri->next) if (ri->data == id) return ri->item;
+		for (RefListItem<T,int>* ri = objects_.first(); ri != NULL; ri = ri->next) if (ri->data == id) return ri->item;
 		return NULL;
 	}
 	// Set id of specified object, returning if we were successful
 	static bool setObjectId(T* target, int id)
 	{
 		// Find the RefItem object in the list
-		Refitem<T,int>* targetRefItem = objects_.contains(target);
+		RefListItem<T,int>* targetRefItem = objects_.contains(target);
 		if (targetRefItem == NULL)
 		{
 			printf("Internal Error: Couldn't find specified object %p in object list.\n", target);
@@ -177,7 +180,7 @@ template <class T> class ObjectStore
 		}
 
 		// Can we find an object with the same id?
-		Refitem<T,int>* rj = objects_.containsData(id);
+		RefListItem<T,int>* rj = objects_.containsData(id);
 		if ((rj != NULL) && (rj != targetRefItem))
 		{
 			printf("Internal Error: Another object with id %i already exists in the ObjectStore, so refusing to duplicate it.\n", id);
@@ -196,5 +199,7 @@ template <class T> class ObjectStore
 		return true;
 	}
 };
+
+ATEN_END_NAMESPACE
 
 #endif

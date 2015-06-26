@@ -342,7 +342,7 @@ bool Commands::function_FixType(CommandNode* c, Bundle& obj, ReturnValue& rv)
 		obj.m->setAtomType(i, ffa, true);
 		Messenger::print("Atom type for atom id %i fixed to %i (%s/%s).", i->id()+1, c->argi(0), qPrintable(ffa->name()), qPrintable(ffa->equivalent()));
 	}
-	else for (Refitem<Atom,int>* ri = obj.rs()->selection(); ri != NULL; ri = ri->next)
+	else for (RefListItem<Atom,int>* ri = obj.rs()->selection(); ri != NULL; ri = ri->next)
 	{
 		obj.m->setAtomType(ri->item, ffa, true);
 		Messenger::print("Atom type for atom id %i fixed to %i (%s/%s).", ri->item->id()+1, c->argi(0), qPrintable(ffa->name()), qPrintable(ffa->equivalent()));
@@ -362,7 +362,7 @@ bool Commands::function_FreeType(CommandNode* c, Bundle& obj, ReturnValue& rv)
 		if (i == NULL) return false;
 		obj.m->setAtomType(i, i->type(), false);
 	}
-	else for (Refitem<Atom,int>* ri = obj.rs()->selection(); ri != NULL; ri = ri->next) obj.m->setAtomType(ri->item, ri->item->type(), true);
+	else for (RefListItem<Atom,int>* ri = obj.rs()->selection(); ri != NULL; ri = ri->next) obj.m->setAtomType(ri->item, ri->item->type(), true);
 	obj.m->logChange(Log::Structure);
 	rv.reset();
 	return true;

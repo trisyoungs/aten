@@ -78,8 +78,8 @@ class Format
 {
 	public:
 	// Constructors / Destructor
-	Format(Refitem<TreeNode,int>* firstarg);
-	Format(QString cFormat, Refitem<TreeNode,int>* firstarg);
+	Format(RefListItem<TreeNode,int>* firstarg);
+	Format(QString cFormat, RefListItem<TreeNode,int>* firstarg);
 	~Format();
 
 

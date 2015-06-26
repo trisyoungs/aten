@@ -356,55 +356,55 @@ int Pattern::nUniqueForcefieldTypes() const
 }
 
 // Return first forcefield bond used in the pattern
-Refitem<ForcefieldBound,int>* Pattern::forcefieldBonds()
+RefListItem<ForcefieldBound,int>* Pattern::forcefieldBonds()
 {
 	return forcefieldBonds_.first();
 }
 
 // Return first forcefield angle used in the pattern
-Refitem<ForcefieldBound,int>* Pattern::forcefieldAngles()
+RefListItem<ForcefieldBound,int>* Pattern::forcefieldAngles()
 {
 	return forcefieldAngles_.first();
 }
 
 // Return first forcefield torsion used in the pattern
-Refitem<ForcefieldBound,int>* Pattern::forcefieldTorsions()
+RefListItem<ForcefieldBound,int>* Pattern::forcefieldTorsions()
 {
 	return forcefieldTorsions_.first();
 }
 
 // Return first unique (by name) forcefield type used in the pattern
-Refitem<ForcefieldAtom,int>* Pattern::uniqueForcefieldTypes()
+RefListItem<ForcefieldAtom,int>* Pattern::uniqueForcefieldTypes()
 {
 	return uniqueForcefieldTypes_.first();
 }
 
 // Return first unique (by pointer) forcefield type used in the pattern
-Refitem<ForcefieldAtom,int>* Pattern::allForcefieldTypes()
+RefListItem<ForcefieldAtom,int>* Pattern::allForcefieldTypes()
 {
 	return allForcefieldTypes_.first();
 }
 
 // Return selected forcefield bond used in the pattern
-Refitem<ForcefieldBound,int>* Pattern::forcefieldBond(int i)
+RefListItem<ForcefieldBound,int>* Pattern::forcefieldBond(int i)
 {
 	return forcefieldBonds_[i];
 }
 
 // Return selected forcefield angle used in the pattern
-Refitem<ForcefieldBound,int>* Pattern::forcefieldAngle(int i)
+RefListItem<ForcefieldBound,int>* Pattern::forcefieldAngle(int i)
 {
 	return forcefieldAngles_[i];
 }
 
 // Return selected forcefield torsion used in the pattern
-Refitem<ForcefieldBound,int>* Pattern::forcefieldTorsion(int i)
+RefListItem<ForcefieldBound,int>* Pattern::forcefieldTorsion(int i)
 {
 	return forcefieldTorsions_[i];
 }
 
 // Return selected forcefield type used in the pattern
-Refitem<ForcefieldAtom,int>* Pattern::uniqueForcefieldType(int i)
+RefListItem<ForcefieldAtom,int>* Pattern::uniqueForcefieldType(int i)
 {
 	return uniqueForcefieldTypes_[i];
 }
@@ -779,7 +779,7 @@ void Pattern::createMatrices()
 			parent_->selectTree(i, true);
 
 			// For the current marked selection, set the diagonal matrix elements to the current 'count' value
-			for (Refitem<Atom,int>* ri = parent_->selection(true); ri != NULL; ri = ri->next)
+			for (RefListItem<Atom,int>* ri = parent_->selection(true); ri != NULL; ri = ri->next)
 			{
 				ii = ri->item->id() - startAtom_;
 				conMatrix_[ii][ii] = count;
@@ -1133,7 +1133,7 @@ void Pattern::propagateBondTypes()
 	Messenger::enter("Pattern::propagateBondTypes");
 	int n,m,o,offset;
 	Atom* i, *j, *k;
-	Refitem<Bond,int>* bref;
+	RefListItem<Bond,int>* bref;
 	Bond* b1, *b2;
 	// Set the pointer 'j' to be the first atom of the second molecule
 	j = firstAtom_;
@@ -1270,9 +1270,9 @@ bool Pattern::ringSearch(Atom* i, Ring *currentpath)
 {
 	// Extend the path (ring) passed by the atom 'i', searching for a path length of 'ringsize'
 	Messenger::enter("Pattern::ringSearch");
-	Refitem<Bond,int>* bref;
+	RefListItem<Bond,int>* bref;
 	Ring *r;
-	Refitem<Atom,int>* lastra;
+	RefListItem<Atom,int>* lastra;
 	bool done, maxreached = false;
 	// Otherwise, add it to the current path
 	lastra = currentpath->lastAtom();
@@ -1356,11 +1356,11 @@ void Pattern::augment()
 {
 	Messenger::enter("Pattern::augment");
 	Atom* i, *j;
-	Reflist<Bond,Bond::BondType> refbonds;
-	Refitem<Bond,Bond::BondType> *rb;
-	Refitem<Bond,int>* bref, *heavybond = NULL, *bestref, *bref2;
-	Refitem<Atom,int>* aref;
-	Reflist<Bond,int> bondlist;
+	RefList<Bond,Bond::BondType> refbonds;
+	RefListItem<Bond,Bond::BondType> *rb;
+	RefListItem<Bond,int>* bref, *heavybond = NULL, *bestref, *bref2;
+	RefListItem<Atom,int>* aref;
+	RefList<Bond,int> bondlist;
 	Bond* b1, *b2, *b3;
 	Bond::BondType bt;
 	int n, nHeavy, totalpenalty, ringpenalty, newpenalty, m, o, p;
@@ -1500,7 +1500,7 @@ void Pattern::augment()
 	{
 		Messenger::print("...Augmentation second pass...");
 		// Construct bond reference list for the first molecule, storing current bond type in extradata for our base reference
-		Reflist<Bond,Bond::BondType> bondlist;
+		RefList<Bond,Bond::BondType> bondlist;
 		i = firstAtom_;
 		for (n=0; n<nAtoms_; n++)
 		{
@@ -1640,7 +1640,7 @@ void Pattern::assignEnvironments()
 		// We can increase the hybridisation at any point, but never decrease it.
 		nsingle = 0;
 		nother = 0;
-		for (Refitem<Bond,int>* bref = i->bonds(); bref != NULL; bref = bref->next)
+		for (RefListItem<Bond,int>* bref = i->bonds(); bref != NULL; bref = bref->next)
 		{
 			switch (bref->item->type())
 			{

@@ -109,12 +109,12 @@ class Tree : public ListItem<Tree>
 	List<TreeNode> nodes_;
 	// Argument list - if the tree is a function, this is the expected argument list
 	List<TreeNode> arguments_;
-	// Reflist of all statements in the Tree, to be executed sequentially
-	Reflist<TreeNode,int> statements_;
+	// RefList of all statements in the Tree, to be executed sequentially
+	RefList<TreeNode,int> statements_;
 	// Stack of ScopeNodes
-	Reflist<ScopeNode,int> scopeStack_;
+	RefList<ScopeNode,int> scopeStack_;
 	// Stack of variable paths (and last added stepnode)
-	Reflist<VariableNode,TreeNode*> pathStack_;
+	RefList<VariableNode,TreeNode*> pathStack_;
 	// Number of syntactic errors encountered
 	int nErrors_;
 	// Check unary operator type compatibility
@@ -136,7 +136,7 @@ class Tree : public ListItem<Tree>
 	// Return first argument defined (for function)
 	TreeNode* args() const;
 	// Return first in stack of scopenodes
-	Refitem<ScopeNode,int>* scopeNodes();
+	RefListItem<ScopeNode,int>* scopeNodes();
 	
 
 	/*

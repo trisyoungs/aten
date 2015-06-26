@@ -40,7 +40,7 @@ ReturnValue::ReturnValue() : ListItem<ReturnValue>()
 	valueI_ = 0;
 	valueD_ = 0.0;
 	valueP_ = NULL;
-	valueRefitem_ = NULL;
+	valueRefListItem_ = NULL;
 	arraySize_ = -1;
 	arrayI_ = NULL;
 	arrayD_ = NULL;
@@ -268,7 +268,7 @@ void ReturnValue::set(int i)
 	type_ = VTypes::IntegerData;
 	valueI_ = i;
 	arraySize_ = -1;
-	valueRefitem_ = NULL;
+	valueRefListItem_ = NULL;
 }
 
 // Set from double value
@@ -278,7 +278,7 @@ void ReturnValue::set(double d)
 	type_ = VTypes::DoubleData;
 	valueD_ = d;
 	arraySize_ = -1;
-	valueRefitem_ = NULL;
+	valueRefListItem_ = NULL;
 }
 
 // Set from character value
@@ -288,7 +288,7 @@ void ReturnValue::set(QString  s)
 	type_ = VTypes::StringData;
 	valueS_ = s;
 	arraySize_ = -1;
-	valueRefitem_ = NULL;
+	valueRefListItem_ = NULL;
 }
 
 // Set from vector value
@@ -298,7 +298,7 @@ void ReturnValue::set(Vec3<double> v)
 	type_ = VTypes::VectorData;
 	valueV_ = v;
 	arraySize_ = -1;
-	valueRefitem_ = NULL;
+	valueRefListItem_ = NULL;
 }
 
 // Set from individual vector data
@@ -308,7 +308,7 @@ void ReturnValue::set(double x, double y, double z)
 	type_ = VTypes::VectorData;
 	valueV_.set(x,y,z);
 	arraySize_ = -1;
-	valueRefitem_ = NULL;
+	valueRefListItem_ = NULL;
 }
 
 // Set from Matrix value
@@ -318,7 +318,7 @@ void ReturnValue::set(Matrix m)
 	type_ = VTypes::MatrixData;
 	valueM_ = m;
 	arraySize_ = -1;
-	valueRefitem_ = NULL;
+	valueRefListItem_ = NULL;
 }
 
 // Set from pointer value
@@ -327,7 +327,7 @@ void ReturnValue::set(VTypes::DataType ptrtype, void* ptr, void *refitem)
 	clearArrayData();
 	type_ = ptrtype;
 	valueP_ = ptr;
-	valueRefitem_ = refitem;
+	valueRefListItem_ = refitem;
 	arraySize_ = -1;
 }
 
@@ -337,7 +337,7 @@ void ReturnValue::setArray(VTypes::DataType type, void *array, int arraysize)
 	clearArrayData();
 	type_ = type;
 	arraySize_ = arraysize;
-	valueRefitem_ = NULL;
+	valueRefListItem_ = NULL;
 	int i;
 	if (type_ == VTypes::IntegerData)
 	{
@@ -378,7 +378,7 @@ void ReturnValue::setArray(Vec3<int> vec)
 	clearArrayData();
 	type_ = VTypes::IntegerData;
 	arraySize_ = 3;
-	valueRefitem_ = NULL;
+	valueRefListItem_ = NULL;
 	arrayI_ = new int[arraySize_];
 	for (int i = 0; i < 3; ++i) arrayI_[i] = vec.get(i);
 }
@@ -693,7 +693,7 @@ void *ReturnValue::asPointer(VTypes::DataType ptrtype, bool& success)
 // Return pointer refitem data
 void *ReturnValue::refPointer()
 {
-	return valueRefitem_;
+	return valueRefListItem_;
 }
 
 // Return integer element value
@@ -1022,121 +1022,121 @@ bool ReturnValue::increase()
 			break;
 		case (VTypes::AtomData):
 			if (valueP_ == NULL) result = false;
-			else if (valueRefitem_ != NULL)
+			else if (valueRefListItem_ != NULL)
 			{
-				valueRefitem_ = ((Refitem<Atom,int>*) valueRefitem_)->next;
-				if (valueRefitem_ == NULL) valueP_ = NULL;
-				else valueP_ = ((Refitem<Atom,int>*) valueRefitem_)->item;
+				valueRefListItem_ = ((RefListItem<Atom,int>*) valueRefListItem_)->next;
+				if (valueRefListItem_ == NULL) valueP_ = NULL;
+				else valueP_ = ((RefListItem<Atom,int>*) valueRefListItem_)->item;
 			}
 			else valueP_ = ((Atom*) valueP_)->next;
 			break;
 		case (VTypes::BondData):
 			if (valueP_ == NULL) result = false;
-			else if (valueRefitem_ != NULL)
+			else if (valueRefListItem_ != NULL)
 			{
-				valueRefitem_ = ((Refitem<Bond,int>*) valueRefitem_)->next;
-				if (valueRefitem_ == NULL) valueP_ = NULL;
-				else valueP_ = ((Refitem<Bond,int>*) valueRefitem_)->item;
+				valueRefListItem_ = ((RefListItem<Bond,int>*) valueRefListItem_)->next;
+				if (valueRefListItem_ == NULL) valueP_ = NULL;
+				else valueP_ = ((RefListItem<Bond,int>*) valueRefListItem_)->item;
 			}
 			else valueP_ = ((Bond*) valueP_)->next;
 			break;
 		case (VTypes::ForcefieldData):
 			if (valueP_ == NULL) result = false;
-			else if (valueRefitem_ != NULL)
+			else if (valueRefListItem_ != NULL)
 			{
-				valueRefitem_ = ((Refitem<Forcefield,int>*) valueRefitem_)->next;
-				if (valueRefitem_ == NULL) valueP_ = NULL;
-				else valueP_ = ((Refitem<Forcefield,int>*) valueRefitem_)->item;
+				valueRefListItem_ = ((RefListItem<Forcefield,int>*) valueRefListItem_)->next;
+				if (valueRefListItem_ == NULL) valueP_ = NULL;
+				else valueP_ = ((RefListItem<Forcefield,int>*) valueRefListItem_)->item;
 			}
 			else valueP_ = ((Forcefield*) valueP_)->next;
 			break;
 		case (VTypes::ForcefieldAtomData):
 			if (valueP_ == NULL) result = false;
-			else if (valueRefitem_ != NULL)
+			else if (valueRefListItem_ != NULL)
 			{
-				valueRefitem_ = ((Refitem<ForcefieldAtom,int>*) valueRefitem_)->next;
-				if (valueRefitem_ == NULL) valueP_ = NULL;
-				else valueP_ = ((Refitem<ForcefieldAtom,int>*) valueRefitem_)->item;
+				valueRefListItem_ = ((RefListItem<ForcefieldAtom,int>*) valueRefListItem_)->next;
+				if (valueRefListItem_ == NULL) valueP_ = NULL;
+				else valueP_ = ((RefListItem<ForcefieldAtom,int>*) valueRefListItem_)->item;
 			}
 			else valueP_ = ((ForcefieldAtom*) valueP_)->next;
 			break;
 		case (VTypes::ForcefieldBoundData):
 			if (valueP_ == NULL) result = false;
-			else if (valueRefitem_ != NULL)
+			else if (valueRefListItem_ != NULL)
 			{
-				valueRefitem_ = ((Refitem<ForcefieldBound,int>*) valueRefitem_)->next;
-				if (valueRefitem_ == NULL) valueP_ = NULL;
-				else valueP_ = ((Refitem<ForcefieldBound,int>*) valueRefitem_)->item;
+				valueRefListItem_ = ((RefListItem<ForcefieldBound,int>*) valueRefListItem_)->next;
+				if (valueRefListItem_ == NULL) valueP_ = NULL;
+				else valueP_ = ((RefListItem<ForcefieldBound,int>*) valueRefListItem_)->item;
 			}
 			else valueP_ = ((ForcefieldBound*) valueP_)->next;
 			break;
 		case (VTypes::GlyphData):
 			if (valueP_ == NULL) result = false;
-			else if (valueRefitem_ != NULL)
+			else if (valueRefListItem_ != NULL)
 			{
-				valueRefitem_ = ((Refitem<Glyph,int>*) valueRefitem_)->next;
-				if (valueRefitem_ == NULL) valueP_ = NULL;
-				else valueP_ = ((Refitem<Glyph,int>*) valueRefitem_)->item;
+				valueRefListItem_ = ((RefListItem<Glyph,int>*) valueRefListItem_)->next;
+				if (valueRefListItem_ == NULL) valueP_ = NULL;
+				else valueP_ = ((RefListItem<Glyph,int>*) valueRefListItem_)->item;
 			}
 			else valueP_ = ((Glyph*) valueP_)->next;
 			break;
 		case (VTypes::GridData):
 			if (valueP_ == NULL) result = false;
-			else if (valueRefitem_ != NULL)
+			else if (valueRefListItem_ != NULL)
 			{
-				valueRefitem_ = ((Refitem<Grid,int>*) valueRefitem_)->next;
-				if (valueRefitem_ == NULL) valueP_ = NULL;
-				else valueP_ = ((Refitem<Grid,int>*) valueRefitem_)->item;
+				valueRefListItem_ = ((RefListItem<Grid,int>*) valueRefListItem_)->next;
+				if (valueRefListItem_ == NULL) valueP_ = NULL;
+				else valueP_ = ((RefListItem<Grid,int>*) valueRefListItem_)->item;
 			}
 			else valueP_ = ((Grid*) valueP_)->next;
 			break;
 		case (VTypes::MeasurementData):
 			if (valueP_ == NULL) result = false;
-			else if (valueRefitem_ != NULL)
+			else if (valueRefListItem_ != NULL)
 			{
-				valueRefitem_ = ((Refitem<Measurement,int>*) valueRefitem_)->next;
-				if (valueRefitem_ == NULL) valueP_ = NULL;
-				else valueP_ = ((Refitem<Measurement,int>*) valueRefitem_)->item;
+				valueRefListItem_ = ((RefListItem<Measurement,int>*) valueRefListItem_)->next;
+				if (valueRefListItem_ == NULL) valueP_ = NULL;
+				else valueP_ = ((RefListItem<Measurement,int>*) valueRefListItem_)->item;
 			}
 			else valueP_ = ((Measurement*) valueP_)->next;
 			break;
 		case (VTypes::ModelData):
 			if (valueP_ == NULL) result = false;
-			else if (valueRefitem_ != NULL)
+			else if (valueRefListItem_ != NULL)
 			{
-				valueRefitem_ = ((Refitem<Model,int>*) valueRefitem_)->next;
-				if (valueRefitem_ == NULL) valueP_ = NULL;
-				else valueP_ = ((Refitem<Model,int>*) valueRefitem_)->item;
+				valueRefListItem_ = ((RefListItem<Model,int>*) valueRefListItem_)->next;
+				if (valueRefListItem_ == NULL) valueP_ = NULL;
+				else valueP_ = ((RefListItem<Model,int>*) valueRefListItem_)->item;
 			}
 			else valueP_ = ((Model*) valueP_)->next;
 			break;
 		case (VTypes::PatternData):
 			if (valueP_ == NULL) result = false;
-			else if (valueRefitem_ != NULL)
+			else if (valueRefListItem_ != NULL)
 			{
-				valueRefitem_ = ((Refitem<Pattern,int>*) valueRefitem_)->next;
-				if (valueRefitem_ == NULL) valueP_ = NULL;
-				else valueP_ = ((Refitem<Pattern,int>*) valueRefitem_)->item;
+				valueRefListItem_ = ((RefListItem<Pattern,int>*) valueRefListItem_)->next;
+				if (valueRefListItem_ == NULL) valueP_ = NULL;
+				else valueP_ = ((RefListItem<Pattern,int>*) valueRefListItem_)->item;
 			}
 			else valueP_ = ((Pattern*) valueP_)->next;
 			break;
 		case (VTypes::PatternBoundData):
 			if (valueP_ == NULL) result = false;
-			else if (valueRefitem_ != NULL)
+			else if (valueRefListItem_ != NULL)
 			{
-				valueRefitem_ = ((Refitem<PatternBound,int>*) valueRefitem_)->next;
-				if (valueRefitem_ == NULL) valueP_ = NULL;
-				else valueP_ = ((Refitem<PatternBound,int>*) valueRefitem_)->item;
+				valueRefListItem_ = ((RefListItem<PatternBound,int>*) valueRefListItem_)->next;
+				if (valueRefListItem_ == NULL) valueP_ = NULL;
+				else valueP_ = ((RefListItem<PatternBound,int>*) valueRefListItem_)->item;
 			}
 			else valueP_ = ((PatternBound*) valueP_)->next;
 			break;
 		case (VTypes::ZMatrixElementData):
 			if (valueP_ == NULL) result = false;
-			else if (valueRefitem_ != NULL)
+			else if (valueRefListItem_ != NULL)
 			{
-				valueRefitem_ = ((Refitem<ZMatrixElement,int>*) valueRefitem_)->next;
-				if (valueRefitem_ == NULL) valueP_ = NULL;
-				else valueP_ = ((Refitem<ZMatrixElement,int>*) valueRefitem_)->item;
+				valueRefListItem_ = ((RefListItem<ZMatrixElement,int>*) valueRefListItem_)->next;
+				if (valueRefListItem_ == NULL) valueP_ = NULL;
+				else valueP_ = ((RefListItem<ZMatrixElement,int>*) valueRefListItem_)->item;
 			}
 			else valueP_ = ((ZMatrixElement*) valueP_)->next;
 			break;
@@ -1170,121 +1170,121 @@ bool ReturnValue::decrease()
 			break;
 		case (VTypes::AtomData):
 			if (valueP_ == NULL) result = false;
-			else if (valueRefitem_ != NULL)
+			else if (valueRefListItem_ != NULL)
 			{
-				valueRefitem_ = ((Refitem<Atom,int>*) valueRefitem_)->prev;
-				if (valueRefitem_ == NULL) valueP_ = NULL;
-				else valueP_ = ((Refitem<Atom,int>*) valueRefitem_)->item;
+				valueRefListItem_ = ((RefListItem<Atom,int>*) valueRefListItem_)->prev;
+				if (valueRefListItem_ == NULL) valueP_ = NULL;
+				else valueP_ = ((RefListItem<Atom,int>*) valueRefListItem_)->item;
 			}
 			else valueP_ = ((Atom*) valueP_)->prev;
 			break;
 		case (VTypes::BondData):
 			if (valueP_ == NULL) result = false;
-			else if (valueRefitem_ != NULL)
+			else if (valueRefListItem_ != NULL)
 			{
-				valueRefitem_ = ((Refitem<Bond,int>*) valueRefitem_)->prev;
-				if (valueRefitem_ == NULL) valueP_ = NULL;
-				else valueP_ = ((Refitem<Bond,int>*) valueRefitem_)->item;
+				valueRefListItem_ = ((RefListItem<Bond,int>*) valueRefListItem_)->prev;
+				if (valueRefListItem_ == NULL) valueP_ = NULL;
+				else valueP_ = ((RefListItem<Bond,int>*) valueRefListItem_)->item;
 			}
 			else valueP_ = ((Bond*) valueP_)->prev;
 			break;
 		case (VTypes::ForcefieldData):
 			if (valueP_ == NULL) result = false;
-			else if (valueRefitem_ != NULL)
+			else if (valueRefListItem_ != NULL)
 			{
-				valueRefitem_ = ((Refitem<Forcefield,int>*) valueRefitem_)->prev;
-				if (valueRefitem_ == NULL) valueP_ = NULL;
-				else valueP_ = ((Refitem<Forcefield,int>*) valueRefitem_)->item;
+				valueRefListItem_ = ((RefListItem<Forcefield,int>*) valueRefListItem_)->prev;
+				if (valueRefListItem_ == NULL) valueP_ = NULL;
+				else valueP_ = ((RefListItem<Forcefield,int>*) valueRefListItem_)->item;
 			}
 			else valueP_ = ((Forcefield*) valueP_)->prev;
 			break;
 		case (VTypes::ForcefieldAtomData):
 			if (valueP_ == NULL) result = false;
-			else if (valueRefitem_ != NULL)
+			else if (valueRefListItem_ != NULL)
 			{
-				valueRefitem_ = ((Refitem<ForcefieldAtom,int>*) valueRefitem_)->prev;
-				if (valueRefitem_ == NULL) valueP_ = NULL;
-				else valueP_ = ((Refitem<ForcefieldAtom,int>*) valueRefitem_)->item;
+				valueRefListItem_ = ((RefListItem<ForcefieldAtom,int>*) valueRefListItem_)->prev;
+				if (valueRefListItem_ == NULL) valueP_ = NULL;
+				else valueP_ = ((RefListItem<ForcefieldAtom,int>*) valueRefListItem_)->item;
 			}
 			else valueP_ = ((ForcefieldAtom*) valueP_)->prev;
 			break;
 		case (VTypes::ForcefieldBoundData):
 			if (valueP_ == NULL) result = false;
-			else if (valueRefitem_ != NULL)
+			else if (valueRefListItem_ != NULL)
 			{
-				valueRefitem_ = ((Refitem<ForcefieldBound,int>*) valueRefitem_)->prev;
-				if (valueRefitem_ == NULL) valueP_ = NULL;
-				else valueP_ = ((Refitem<ForcefieldBound,int>*) valueRefitem_)->item;
+				valueRefListItem_ = ((RefListItem<ForcefieldBound,int>*) valueRefListItem_)->prev;
+				if (valueRefListItem_ == NULL) valueP_ = NULL;
+				else valueP_ = ((RefListItem<ForcefieldBound,int>*) valueRefListItem_)->item;
 			}
 			else valueP_ = ((ForcefieldBound*) valueP_)->prev;
 			break;
 		case (VTypes::GridData):
 			if (valueP_ == NULL) result = false;
-			else if (valueRefitem_ != NULL)
+			else if (valueRefListItem_ != NULL)
 			{
-				valueRefitem_ = ((Refitem<Grid,int>*) valueRefitem_)->prev;
-				if (valueRefitem_ == NULL) valueP_ = NULL;
-				else valueP_ = ((Refitem<Grid,int>*) valueRefitem_)->item;
+				valueRefListItem_ = ((RefListItem<Grid,int>*) valueRefListItem_)->prev;
+				if (valueRefListItem_ == NULL) valueP_ = NULL;
+				else valueP_ = ((RefListItem<Grid,int>*) valueRefListItem_)->item;
 			}
 			else valueP_ = ((Grid*) valueP_)->prev;
 			break;
 		case (VTypes::GlyphData):
 			if (valueP_ == NULL) result = false;
-			else if (valueRefitem_ != NULL)
+			else if (valueRefListItem_ != NULL)
 			{
-				valueRefitem_ = ((Refitem<Glyph,int>*) valueRefitem_)->prev;
-				if (valueRefitem_ == NULL) valueP_ = NULL;
-				else valueP_ = ((Refitem<Glyph,int>*) valueRefitem_)->item;
+				valueRefListItem_ = ((RefListItem<Glyph,int>*) valueRefListItem_)->prev;
+				if (valueRefListItem_ == NULL) valueP_ = NULL;
+				else valueP_ = ((RefListItem<Glyph,int>*) valueRefListItem_)->item;
 			}
 			else valueP_ = ((Glyph*) valueP_)->prev;
 			break;
 		case (VTypes::MeasurementData):
 			if (valueP_ == NULL) result = false;
-			else if (valueRefitem_ != NULL)
+			else if (valueRefListItem_ != NULL)
 			{
-				valueRefitem_ = ((Refitem<Measurement,int>*) valueRefitem_)->prev;
-				if (valueRefitem_ == NULL) valueP_ = NULL;
-				else valueP_ = ((Refitem<Measurement,int>*) valueRefitem_)->item;
+				valueRefListItem_ = ((RefListItem<Measurement,int>*) valueRefListItem_)->prev;
+				if (valueRefListItem_ == NULL) valueP_ = NULL;
+				else valueP_ = ((RefListItem<Measurement,int>*) valueRefListItem_)->item;
 			}
 			else valueP_ = ((Measurement*) valueP_)->prev;
 			break;
 		case (VTypes::ModelData):
 			if (valueP_ == NULL) result = false;
-			else if (valueRefitem_ != NULL)
+			else if (valueRefListItem_ != NULL)
 			{
-				valueRefitem_ = ((Refitem<Model,int>*) valueRefitem_)->prev;
-				if (valueRefitem_ == NULL) valueP_ = NULL;
-				else valueP_ = ((Refitem<Model,int>*) valueRefitem_)->item;
+				valueRefListItem_ = ((RefListItem<Model,int>*) valueRefListItem_)->prev;
+				if (valueRefListItem_ == NULL) valueP_ = NULL;
+				else valueP_ = ((RefListItem<Model,int>*) valueRefListItem_)->item;
 			}
 			else valueP_ = ((Model*) valueP_)->prev;
 			break;
 		case (VTypes::PatternData):
 			if (valueP_ == NULL) result = false;
-			else if (valueRefitem_ != NULL)
+			else if (valueRefListItem_ != NULL)
 			{
-				valueRefitem_ = ((Refitem<Pattern,int>*) valueRefitem_)->prev;
-				if (valueRefitem_ == NULL) valueP_ = NULL;
-				else valueP_ = ((Refitem<Pattern,int>*) valueRefitem_)->item;
+				valueRefListItem_ = ((RefListItem<Pattern,int>*) valueRefListItem_)->prev;
+				if (valueRefListItem_ == NULL) valueP_ = NULL;
+				else valueP_ = ((RefListItem<Pattern,int>*) valueRefListItem_)->item;
 			}
 			else valueP_ = ((Pattern*) valueP_)->prev;
 			break;
 		case (VTypes::PatternBoundData):
 			if (valueP_ == NULL) result = false;
-			else if (valueRefitem_ != NULL)
+			else if (valueRefListItem_ != NULL)
 			{
-				valueRefitem_ = ((Refitem<PatternBound,int>*) valueRefitem_)->prev;
-				if (valueRefitem_ == NULL) valueP_ = NULL;
-				else valueP_ = ((Refitem<PatternBound,int>*) valueRefitem_)->item;
+				valueRefListItem_ = ((RefListItem<PatternBound,int>*) valueRefListItem_)->prev;
+				if (valueRefListItem_ == NULL) valueP_ = NULL;
+				else valueP_ = ((RefListItem<PatternBound,int>*) valueRefListItem_)->item;
 			}
 			else valueP_ = ((PatternBound*) valueP_)->prev;
 			break;
 		case (VTypes::ZMatrixElementData):
 			if (valueP_ == NULL) result = false;
-			else if (valueRefitem_ != NULL)
+			else if (valueRefListItem_ != NULL)
 			{
-				valueRefitem_ = ((Refitem<ZMatrixElement,int>*) valueRefitem_)->prev;
-				if (valueRefitem_ == NULL) valueP_ = NULL;
-				else valueP_ = ((Refitem<ZMatrixElement,int>*) valueRefitem_)->item;
+				valueRefListItem_ = ((RefListItem<ZMatrixElement,int>*) valueRefListItem_)->prev;
+				if (valueRefListItem_ == NULL) valueP_ = NULL;
+				else valueP_ = ((RefListItem<ZMatrixElement,int>*) valueRefListItem_)->item;
 			}
 			else valueP_ = ((ZMatrixElement*) valueP_)->prev;
 			break;

@@ -73,8 +73,8 @@ class Aten
 	List<Model> workingModels_;
 	// Current target list for new generation of models
 	Aten::TargetModelList targetModelList_;
-	// Reflist of visible models
-	Reflist<Model,int> visibleModels_;
+	// RefList of visible models
+	RefList<Model,int> visibleModels_;
 	
 	public:
 	// Set usage of working model list
@@ -104,7 +104,7 @@ class Aten
 	// Return number of visible models
 	int nVisibleModels();
 	// Return reflist of visible models
-	Refitem<Model, int>* visibleModels();
+	RefListItem<Model, int>* visibleModels();
 	// Return n'th visible model
 	Model* visibleModel(int id);
 	// Log specified change(s) in all models
@@ -121,8 +121,8 @@ class Aten
 	void partnerFilters();
 	// List of Filter programs
 	List<Program> filterPrograms_;
-	// Reflists of file filters of different types
-	Reflist<Tree,int> filters_[FilterData::nFilterTypes];
+	// RefLists of file filters of different types
+	RefList<Tree,int> filters_[FilterData::nFilterTypes];
 	// Filter strings for filter file dialogs
 	QString fileDialogFilters_[FilterData::nFilterTypes];
 	// Filter strings for bitmap file dialogs
@@ -154,13 +154,13 @@ class Aten
 	// Find filter by description
 	Tree* findFilterByDescription(FilterData::FilterType filterType, QString description) const;
 	// Return first filter in list (of a given type)
-	Refitem<Tree,int>* filters(FilterData::FilterType filterType) const;
+	RefListItem<Tree,int>* filters(FilterData::FilterType filterType) const;
 	// Return nth filter in list (of a given type)
-	Refitem<Tree,int>* filter(FilterData::FilterType filterType, int index);
+	RefListItem<Tree,int>* filter(FilterData::FilterType filterType, int index);
 	// Return number of filters of a given type
 	int nFilters(FilterData::FilterType filterType) const;
 	// Return pointer to list of filters of given type
-	Reflist<Tree,int>* filterList(FilterData::FilterType filterType);
+	RefList<Tree,int>* filterList(FilterData::FilterType filterType);
 	// Print list of valid filter nicknames
 	void printValidNicknames(FilterData::FilterType filterType);
 	// Return filter strings for file dialogs

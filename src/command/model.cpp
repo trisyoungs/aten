@@ -414,7 +414,7 @@ bool Commands::function_SaveSelection(CommandNode* c, Bundle& obj, ReturnValue& 
 	if (filter == NULL)
 	{
 		Messenger::print("Valid model export nicknames are:");
-		for (Refitem<Tree,int>* ri = aten_.filters(FilterData::ModelExport); ri != NULL; ri = ri->next)
+		for (RefListItem<Tree,int>* ri = aten_.filters(FilterData::ModelExport); ri != NULL; ri = ri->next)
 			Messenger::print("  %-15s %s", qPrintable(ri->item->filter.nickname()), qPrintable(ri->item->filter.name()));
 		Messenger::print("Not saved.");
 		return false;

@@ -81,11 +81,11 @@ void AtenWindow::on_actionSaveExpression_triggered(bool checked)
 		QFileInfo fileInfo(filename);
 	
 		// Does this extension uniquely identify a specific filter?
-		Reflist<Tree,int> filters;
+		RefList<Tree,int> filters;
 		if (fileInfo.suffix().isEmpty())
 		{
 			// Does this filename uniquely identify a specific filter?
-			for (Refitem<Tree,int>* ri = aten_.filters(FilterData::ExpressionExport); ri != NULL; ri = ri->next)
+			for (RefListItem<Tree,int>* ri = aten_.filters(FilterData::ExpressionExport); ri != NULL; ri = ri->next)
 			{
 				if (ri->item->filter.doesNameMatch(qPrintable(fileInfo.fileName()))) filters.add(ri->item);
 			}
@@ -105,7 +105,7 @@ void AtenWindow::on_actionSaveExpression_triggered(bool checked)
 		}
 		else
 		{
-			for (Refitem<Tree,int>* ri = aten_.filters(FilterData::ExpressionExport); ri != NULL; ri = ri->next)
+			for (RefListItem<Tree,int>* ri = aten_.filters(FilterData::ExpressionExport); ri != NULL; ri = ri->next)
 			{
 				if (ri->item->filter.doesExtensionMatch(fileInfo.suffix())) filters.add(ri->item);
 			}

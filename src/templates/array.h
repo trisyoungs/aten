@@ -26,6 +26,9 @@
 
 #include "templates/list.h"
 #include "templates/vector3.h"
+#include "base/namespace.h"
+
+ATEN_BEGIN_NAMESPACE
 
 /*!
  * \short Array
@@ -483,4 +486,6 @@ template <class A> class Array2D
 	///@}
 };
 	
+ATEN_END_NAMESPACE
+
 #endif

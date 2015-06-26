@@ -50,21 +50,21 @@ void Model::markAll()
 void Model::markSelectedAtoms()
 {
 	selectNone(true);
-	for (Refitem<Atom,int>* ri = selection_.first(); ri != NULL; ri = ri->next) selectAtom(ri->item, true);
+	for (RefListItem<Atom,int>* ri = selection_.first(); ri != NULL; ri = ri->next) selectAtom(ri->item, true);
 	Messenger::print(Messenger::Verbose, "There are now %i atoms marked.", marked_.nItems());
 }
 
 // Select marked atoms
 void Model::selectMarkedAtoms()
 {
-	for (Refitem<Atom,int>* ri = marked_.first(); ri != NULL; ri = ri->next) selectAtom(ri->item);
+	for (RefListItem<Atom,int>* ri = marked_.first(); ri != NULL; ri = ri->next) selectAtom(ri->item);
 }
 
 // Put selected atom in specified array
 bool Model::selectedAtoms(int nAtoms, Atom** array)
 {
 	int n = 0;
-	for (Refitem<Atom,int>* ri = selection_.first(); ri != NULL; ri = ri->next)
+	for (RefListItem<Atom,int>* ri = selection_.first(); ri != NULL; ri = ri->next)
 	{
 		array[n] = ri->item;
 		++n;
@@ -90,7 +90,7 @@ void Model::selectAtom(Atom* i, bool markonly)
 		{
 			i->setSelected(true, true);
 			// Add at correct position in list
-			Refitem<Atom,int>* ri = marked_.first();
+			RefListItem<Atom,int>* ri = marked_.first();
 			if (ri == NULL) marked_.add(i);
 			else if (ri->item->id() > i->id()) marked_.addStart(i);
 			else
@@ -187,8 +187,8 @@ void Model::selectionDelete(bool markonly)
 	bool cancelled = false;
 	// Attempt to be clever here for the sake of undo/redo, while avoiding renumbering at every step.
 	// 1) First, delete all measurements and bonds to the selected atoms
-	Refitem<Bond,int>* bref;
-	for (Refitem<Atom,int>* ri = selection(markonly); ri != NULL; ri = ri->next)
+	RefListItem<Bond,int>* bref;
+	for (RefListItem<Atom,int>* ri = selection(markonly); ri != NULL; ri = ri->next)
 	{
 		i = ri->item;
 		// Remove measurements
@@ -230,7 +230,7 @@ void Model::selectionExpand(bool markonly)
 {
 	Messenger::enter("Model::selectionExpand");
 	Atom* i;
-	Refitem<Bond,int>* bref;
+	RefListItem<Bond,int>* bref;
 	// Store the current selection state in i->tempBit_
 	for (i = atoms_.first(); i != NULL; i = i->next) i->setBit(i->isSelected(markonly));
 	// Now use the temporary state to find atoms where we select atomic neighbours
@@ -279,7 +279,7 @@ void Model::selectNone(bool markonly)
 	Messenger::enter("Model::selectNone");
 	if (markonly)
 	{
-		for (Refitem<Atom,int>* ri = marked_.first(); ri != NULL; ri = ri->next) ri->item->setSelected(false, true);
+		for (RefListItem<Atom,int>* ri = marked_.first(); ri != NULL; ri = ri->next) ri->item->setSelected(false, true);
 		marked_.clear();
 	}
 	else
@@ -373,7 +373,7 @@ void Model::selectTree(Atom* i, bool markonly, bool deselect, Bond* omitbond)
 	bool status;
 	Atom* j;
 	deselect ? deselectAtom(i, markonly) : selectAtom(i, markonly);
-	for (Refitem<Bond,int>* bref = i->bonds(); bref != NULL; bref = bref->next)
+	for (RefListItem<Bond,int>* bref = i->bonds(); bref != NULL; bref = bref->next)
 	{
 		if (bref->item == omitbond) continue;
 		j = bref->item->partner(i);
@@ -496,14 +496,14 @@ void Model::selectPattern(Pattern* p, bool markonly, bool deselect)
 }
 
 // Get first selected
-Refitem<Atom,int>* Model::selection(bool markonly) const
+RefListItem<Atom,int>* Model::selection(bool markonly) const
 {
 	if (markonly) return marked_.first();
 	else return selection_.first();
 }
 
 // Return the nth selected atom in the model
-Refitem<Atom,int>* Model::selected(int n)
+RefListItem<Atom,int>* Model::selected(int n)
 {
 	if ((n<0) || (n>=selection_.nItems())) printf("Array index for selection_ is out of bounds : %i.\n", n);
 	else return selection_[n];
@@ -515,8 +515,8 @@ void Model::shiftSelectionUp(bool markOnly)
 {
 	Messenger::enter("Model::shiftSelectionUp");
 
-	if (markOnly) for (Refitem<Atom,int>* ri = marked_.last(); ri != NULL; ri = ri->prev) shiftAtomUp(ri->item);
-	else for (Refitem<Atom,int>* ri = selection_.last(); ri != NULL; ri = ri->prev) shiftAtomUp(ri->item);
+	if (markOnly) for (RefListItem<Atom,int>* ri = marked_.last(); ri != NULL; ri = ri->prev) shiftAtomUp(ri->item);
+	else for (RefListItem<Atom,int>* ri = selection_.last(); ri != NULL; ri = ri->prev) shiftAtomUp(ri->item);
 	logChange(Log::Structure);
 	Messenger::exit("Model::shiftSelectionUp");
 }
@@ -525,8 +525,8 @@ void Model::shiftSelectionUp(bool markOnly)
 void Model::shiftSelectionDown(bool markOnly)
 {
 	Messenger::enter("Model::shiftSelectionDown");
-	if (markOnly) for (Refitem<Atom,int>* ri = marked_.first(); ri != NULL; ri = ri->next) shiftAtomDown(ri->item);
-	else for (Refitem<Atom,int>* ri = selection_.first(); ri != NULL; ri = ri->next) shiftAtomDown(ri->item);
+	if (markOnly) for (RefListItem<Atom,int>* ri = marked_.first(); ri != NULL; ri = ri->next) shiftAtomDown(ri->item);
+	else for (RefListItem<Atom,int>* ri = selection_.first(); ri != NULL; ri = ri->next) shiftAtomDown(ri->item);
 	logChange(Log::Structure);
 	Messenger::exit("Model::shiftSelectionDown");
 }
@@ -535,8 +535,8 @@ void Model::shiftSelectionDown(bool markOnly)
 void Model::moveSelectionToStart(bool markOnly)
 {
 	Messenger::enter("Model::moveSelectionToStart");
-	if (markOnly) for (Refitem<Atom,int>* ri = marked_.last(); ri != NULL; ri = ri->prev) moveAtomAfter(ri->item, NULL);
-	else for (Refitem<Atom,int>* ri = selection_.last(); ri != NULL; ri = ri->prev) moveAtomAfter(ri->item, NULL);
+	if (markOnly) for (RefListItem<Atom,int>* ri = marked_.last(); ri != NULL; ri = ri->prev) moveAtomAfter(ri->item, NULL);
+	else for (RefListItem<Atom,int>* ri = selection_.last(); ri != NULL; ri = ri->prev) moveAtomAfter(ri->item, NULL);
 	logChange(Log::Structure);
 	Messenger::exit("Model::moveSelectionToStart");
 }
@@ -545,8 +545,8 @@ void Model::moveSelectionToStart(bool markOnly)
 void Model::moveSelectionToEnd(bool markOnly)
 {
 	Messenger::enter("Model::moveSelectionToEnd");
-	if (markOnly) for (Refitem<Atom,int>* ri = marked_.first(); ri != NULL; ri = ri->next) moveAtomAfter(ri->item, atoms_.last());
-	else for (Refitem<Atom,int>* ri = selection_.first(); ri != NULL; ri = ri->next) moveAtomAfter(ri->item, atoms_.last());
+	if (markOnly) for (RefListItem<Atom,int>* ri = marked_.first(); ri != NULL; ri = ri->next) moveAtomAfter(ri->item, atoms_.last());
+	else for (RefListItem<Atom,int>* ri = selection_.first(); ri != NULL; ri = ri->next) moveAtomAfter(ri->item, atoms_.last());
 	logChange(Log::Structure);
 	Messenger::exit("Model::moveSelectionToEnd");
 }
@@ -564,7 +564,7 @@ void Model::selectOverlaps(double tolerance, bool markonly)
 	// Add all atoms to cuboid list
 	for (i = atoms_.first(); i != NULL; i = i->next) addAtomToCuboid(i);
 	// Loop over cuboids, checking distances with atoms in adjacent boxes
-	Refitem<Atom,double>* ri, *rj;
+	RefListItem<Atom,double>* ri, *rj;
 	x = 0;
 	y = 0;
 	z = 0;

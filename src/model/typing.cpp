@@ -32,13 +32,13 @@ int Model::nUniqueForcefieldTypes() const
 }
 
 // Return the list of forcefield types in the model
-Refitem <ForcefieldAtom,int>* Model::uniqueForcefieldTypes()
+RefListItem <ForcefieldAtom,int>* Model::uniqueForcefieldTypes()
 {
 	return uniqueForcefieldTypes_.first();
 }
 
 // Return the nth forcefield type interaction in the model
-Refitem <ForcefieldAtom,int>* Model::uniqueForcefieldType(int i)
+RefListItem <ForcefieldAtom,int>* Model::uniqueForcefieldType(int i)
 {
 	return uniqueForcefieldTypes_[i];
 }
@@ -50,13 +50,13 @@ int Model::nForcefieldBonds() const
 }
 
 // Return the first in the list of forcefield bond interactions in the model
-Refitem <ForcefieldBound,int>* Model::forcefieldBonds()
+RefListItem <ForcefieldBound,int>* Model::forcefieldBonds()
 {
 	return forcefieldBonds_.first();
 }
 
 // Return the nth forcefield bond interaction in the model
-Refitem <ForcefieldBound,int>* Model::forcefieldBond(int i)
+RefListItem <ForcefieldBound,int>* Model::forcefieldBond(int i)
 {
 	return forcefieldBonds_[i];
 }
@@ -68,13 +68,13 @@ int Model::nForcefieldAngles() const
 }
 
 // Return the first in the list of forcefield angle interactions in the model
-Refitem <ForcefieldBound,int>* Model::forcefieldAngles()
+RefListItem <ForcefieldBound,int>* Model::forcefieldAngles()
 {
 	return forcefieldAngles_.first();
 }
 
 // Return the nth forcefield angle interaction in the model
-Refitem <ForcefieldBound,int>* Model::forcefieldAngle(int i)
+RefListItem <ForcefieldBound,int>* Model::forcefieldAngle(int i)
 {
 	return forcefieldAngles_[i];
 }
@@ -86,13 +86,13 @@ int Model::nForcefieldTorsions() const
 }
 
 // Return the first in the list of forcefield torsion interactions in the model
-Refitem <ForcefieldBound,int>* Model::forcefieldTorsions()
+RefListItem <ForcefieldBound,int>* Model::forcefieldTorsions()
 {
 	return forcefieldTorsions_.first();
 }
 
 // Return the nth forcefield torsion interaction in the model
-Refitem <ForcefieldBound,int>* Model::forcefieldTorsion(int i)
+RefListItem <ForcefieldBound,int>* Model::forcefieldTorsion(int i)
 {
 	return forcefieldTorsions_[i];
 }
@@ -177,7 +177,7 @@ bool Model::typeAll(Forcefield* defaultForcefield)
 void Model::selectionSetType(ForcefieldAtom* ffa, bool fixed)
 {
 	Messenger::enter("Pattern::selectionSetType");
-	for (Refitem<Atom,int>* ri = selection_.first(); ri != NULL; ri = ri->next) setAtomType(ri->item, ffa, fixed);
+	for (RefListItem<Atom,int>* ri = selection_.first(); ri != NULL; ri = ri->next) setAtomType(ri->item, ffa, fixed);
 	logChange(Log::Coordinates);
 	Messenger::exit("Pattern::selectionSetType");
 }

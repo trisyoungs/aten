@@ -253,15 +253,15 @@ class Pattern : public ListItem<Pattern>
 	// List of torsions in one pattern molecule
 	List<PatternBound> torsions_;
 	// Reference list of bond terms in pattern
-	Reflist<ForcefieldBound, int> forcefieldBonds_;
+	RefList<ForcefieldBound, int> forcefieldBonds_;
 	// Reference list of angle terms in pattern
-	Reflist<ForcefieldBound, int> forcefieldAngles_;
+	RefList<ForcefieldBound, int> forcefieldAngles_;
 	// Reference list of torsion terms in pattern
-	Reflist<ForcefieldBound, int> forcefieldTorsions_;
+	RefList<ForcefieldBound, int> forcefieldTorsions_;
 	// Reference list of unique (by name) atom types used in the pattern
-	Reflist<ForcefieldAtom, int> uniqueForcefieldTypes_;
+	RefList<ForcefieldAtom, int> uniqueForcefieldTypes_;
 	// Reference list of all (i.e. unique by pointer) atom types used in the pattern
-	Reflist<ForcefieldAtom, int> allForcefieldTypes_;
+	RefList<ForcefieldAtom, int> allForcefieldTypes_;
 	// List of dummy bond terms local to this pattern
 	List<ForcefieldBound> dummyForcefieldBonds_;
 	// List of dummy angle terms local to this pattern
@@ -323,25 +323,25 @@ class Pattern : public ListItem<Pattern>
 	// Return number of forcefield types used in the pattern
 	int nUniqueForcefieldTypes() const;
 	// Return first forcefield bond of the pattern
-	Refitem<ForcefieldBound,int>* forcefieldBonds();
+	RefListItem<ForcefieldBound,int>* forcefieldBonds();
 	// Return first forcefield angle of the pattern
-	Refitem<ForcefieldBound,int>* forcefieldAngles();
+	RefListItem<ForcefieldBound,int>* forcefieldAngles();
 	// Return first forcefield torsion of the pattern
-	Refitem<ForcefieldBound,int>* forcefieldTorsions();
+	RefListItem<ForcefieldBound,int>* forcefieldTorsions();
 	// Return first (unique by name) forcefield type of the pattern
-	Refitem<ForcefieldAtom,int>* uniqueForcefieldTypes();
+	RefListItem<ForcefieldAtom,int>* uniqueForcefieldTypes();
 	// Return first (unique by pointer) forcefield type of the pattern
-	Refitem<ForcefieldAtom,int>* allForcefieldTypes();
+	RefListItem<ForcefieldAtom,int>* allForcefieldTypes();
 	// Return selected forcefield bond of the pattern
-	Refitem<ForcefieldBound,int>* forcefieldBond(int i);
+	RefListItem<ForcefieldBound,int>* forcefieldBond(int i);
 	// Return selected forcefield angle of the pattern
-	Refitem<ForcefieldBound,int>* forcefieldAngle(int i);
+	RefListItem<ForcefieldBound,int>* forcefieldAngle(int i);
 	// Return selected forcefield torsion of the pattern
-	Refitem<ForcefieldBound,int>* forcefieldTorsion(int i);
+	RefListItem<ForcefieldBound,int>* forcefieldTorsion(int i);
 	// Return selected (unique by name) forcefield type of the pattern
-	Refitem<ForcefieldAtom,int>* uniqueForcefieldType(int i);
+	RefListItem<ForcefieldAtom,int>* uniqueForcefieldType(int i);
 	// Return selected (unique by pointer) forcefield type of the pattern
-	Refitem<ForcefieldAtom,int>* allForcefieldType(int i);
+	RefListItem<ForcefieldAtom,int>* allForcefieldType(int i);
 	// Return whether the positions of all molecules/atoms in the pattern are fixed in minimisations
 	bool areAtomsFixed() const;
 	// Set whether the positions of all molecules/atoms in the pattern are fixed in minimisations

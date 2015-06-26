@@ -140,7 +140,7 @@ void AtenLoadModel::updateAndShow()
 	ui.ZMappingCombo->setCurrentIndex( prefs.zMapType() );
 	ui.FormatCombo->clear();
 	ui.FormatCombo->addItem("<Auto Detect>");
-	Refitem<Tree,int>* ri;
+	RefListItem<Tree,int>* ri;
 	for (ri = parent_.aten().filters(FilterData::ModelImport); ri != NULL; ri = ri->next) ui.FormatCombo->addItem(ri->item->filter.description());
 
 	ui.KeepNamesCheck->setChecked(prefs.keepNames());
@@ -158,7 +158,7 @@ Tree* AtenLoadModel::selectedFormat()
 {
 	// Return the filter selected in the combo (or NULL if <Auto Detect> was selected)
 	int i = ui.FormatCombo->currentIndex();
-	Refitem<Tree,int>* filter = (i == 0 ? NULL : parent_.aten().filter(FilterData::ModelImport, i-1));
+	RefListItem<Tree,int>* filter = (i == 0 ? NULL : parent_.aten().filter(FilterData::ModelImport, i-1));
 	return (filter != NULL ? filter->item : NULL);
 }
 

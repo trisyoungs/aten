@@ -84,7 +84,7 @@ void CommandWidget::updateVariableList()
 {
 	// Count number of variables
 	int count = 0;
-	for (Refitem<ScopeNode,int>* sn = interactiveProgram_.mainProgram()->scopeNodes(); sn != NULL; sn = sn->next) count += sn->item->variables.nVariables();
+	for (RefListItem<ScopeNode,int>* sn = interactiveProgram_.mainProgram()->scopeNodes(); sn != NULL; sn = sn->next) count += sn->item->variables.nVariables();
 	// Reset table
 	ui.VariableTable->clear();
 	ui.VariableTable->setRowCount(count);
@@ -95,7 +95,7 @@ void CommandWidget::updateVariableList()
 	Variable* var;
 	ReturnValue rv;
 	QString s;
-	for (Refitem<ScopeNode,int>* sn = interactiveProgram_.mainProgram()->scopeNodes(); sn != NULL; sn = sn->next)
+	for (RefListItem<ScopeNode,int>* sn = interactiveProgram_.mainProgram()->scopeNodes(); sn != NULL; sn = sn->next)
 	{
 		count = 0;
 		for (node = sn->item->variables.variables(); node != NULL; node = node->next)
@@ -148,17 +148,17 @@ void CommandWidget::refreshScripts(bool refreshactions, bool refreshlist)
 	// Refresh scripts menu
 	if (refreshactions)
 	{
-		for (Refitem<QAction, Program*> *sa = scriptActions_.first(); sa != NULL; sa = sa->next)
+		for (RefListItem<QAction, Program*> *sa = scriptActions_.first(); sa != NULL; sa = sa->next)
 		{
 // 			gui.mainWindow()->ui.ScriptsMenu->removeAction(sa->item);
-			// Free Reflist QActions
+			// Free RefList QActions
 			delete sa->item;
 		}
-		// Clear Reflist and repopulate, along with Scripts menu actions
+		// Clear RefList and repopulate, along with Scripts menu actions
 		scriptActions_.clear();
 		for (Program* prog = parent_.aten().scripts(); prog != NULL; prog = prog->next)
 		{
-			// Create new QAction and add to Reflist
+			// Create new QAction and add to RefList
 			QAction *qa = new QAction(this);
 			// Set action data
 			qa->setVisible(true);
@@ -304,8 +304,8 @@ void CommandWidget::runScript()
 		return;
 	}
 	// Find the relevant Script entry...
-	Refitem<QAction, Program*>* ri = scriptActions_.contains(action);
-	if (ri == NULL) printf("AtenForm::runScript - Could not find QAction in Reflist.\n");
+	RefListItem<QAction, Program*>* ri = scriptActions_.contains(action);
+	if (ri == NULL) printf("AtenForm::runScript - Could not find QAction in RefList.\n");
 	else
 	{
 		// Execute the script

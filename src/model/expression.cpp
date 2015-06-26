@@ -272,10 +272,10 @@ bool Model::createExpression(Choice vdwOnly, Choice allowDummy, Choice assignCha
 	ForcefieldAtom* ffa, *ffb;
 	CombinationRules::CombinationRule *crflags;
 	int i;
-	for (Refitem<ForcefieldAtom,int>* rfa = allForcefieldTypes_.first(); rfa != NULL; rfa = rfa->next)
+	for (RefListItem<ForcefieldAtom,int>* rfa = allForcefieldTypes_.first(); rfa != NULL; rfa = rfa->next)
 	{
 		ffa = rfa->item;
-		for (Refitem<ForcefieldAtom,int>* rfb = rfa; rfb != NULL; rfb = rfb->next)
+		for (RefListItem<ForcefieldAtom,int>* rfb = rfa; rfb != NULL; rfb = rfb->next)
 		{
 			ffb = rfb->item;
 			// Check for compatible interaction types between atoms
@@ -318,7 +318,7 @@ void Model::createForcefieldLists()
 	forcefieldTorsions_.clear();
 	uniqueForcefieldTypes_.clear();
 
-	Refitem<ForcefieldAtom,int>* ffa2;
+	RefListItem<ForcefieldAtom,int>* ffa2;
 
 	// Cycle over patterns, adding their unique forcefield terms to ours...
 	for (Pattern* p = patterns_.first(); p != NULL; p = p->next)
@@ -326,7 +326,7 @@ void Model::createForcefieldLists()
 		Messenger::print(Messenger::Verbose, "Pattern '%s' uses %i atom types, %i bond terms, %i angle terms, and %i torsion terms.", qPrintable(p->name()), p->nUniqueForcefieldTypes(), p->nForcefieldBonds(), p->nForcefieldAngles(), p->nForcefieldTorsions());
 
 		// Atom types. We only add types to the list that have a unique type name.
-		for (Refitem<ForcefieldAtom,int>* ffa1 = p->allForcefieldTypes(); ffa1 != NULL; ffa1 = ffa1->next)
+		for (RefListItem<ForcefieldAtom,int>* ffa1 = p->allForcefieldTypes(); ffa1 != NULL; ffa1 = ffa1->next)
 		{
 			// Add to list of unique (by pointer) types
 			allForcefieldTypes_.addUnique(ffa1->item);
@@ -337,19 +337,19 @@ void Model::createForcefieldLists()
 		}
 
 		// Bond terms
-		for (Refitem<ForcefieldBound,int>* ffb = p->forcefieldBonds(); ffb != NULL; ffb = ffb->next)
+		for (RefListItem<ForcefieldBound,int>* ffb = p->forcefieldBonds(); ffb != NULL; ffb = ffb->next)
 		{
 			if (forcefieldBonds_.contains(ffb->item) == NULL) forcefieldBonds_.add(ffb->item);
 		}
 
 		// Angle terms
-		for (Refitem<ForcefieldBound,int>* ffb = p->forcefieldAngles(); ffb != NULL; ffb = ffb->next)
+		for (RefListItem<ForcefieldBound,int>* ffb = p->forcefieldAngles(); ffb != NULL; ffb = ffb->next)
 		{
 			if (forcefieldAngles_.contains(ffb->item) == NULL) forcefieldAngles_.add(ffb->item);
 		}
 
 		// Torsion terms
-		for (Refitem<ForcefieldBound,int>* ffb = p->forcefieldTorsions(); ffb != NULL; ffb = ffb->next)
+		for (RefListItem<ForcefieldBound,int>* ffb = p->forcefieldTorsions(); ffb != NULL; ffb = ffb->next)
 		{
 			if (forcefieldTorsions_.contains(ffb->item) == NULL) forcefieldTorsions_.add(ffb->item);
 		}

@@ -419,7 +419,7 @@ bool Commands::function_SelectionAddHydrogen(CommandNode* c, Bundle& obj, Return
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	obj.rs()->beginUndoState("Add Hydrogens to selection");
-	for (Refitem<Atom,int>* ri = obj.rs()->selection(); ri != NULL; ri = ri->next) obj.rs()->hydrogenSatisfy(ri->item);
+	for (RefListItem<Atom,int>* ri = obj.rs()->selection(); ri != NULL; ri = ri->next) obj.rs()->hydrogenSatisfy(ri->item);
 	obj.rs()->endUndoState();
 	rv.reset();
 	return true;
@@ -448,7 +448,7 @@ bool Commands::function_SelectionGrowAtom(CommandNode* c, Bundle& obj, ReturnVal
 
 
 	obj.rs()->beginUndoState("Selection Grow Atom");
-	for (Refitem<Atom,int>* ri = obj.rs()->selection(); ri != NULL; ri = ri->next)
+	for (RefListItem<Atom,int>* ri = obj.rs()->selection(); ri != NULL; ri = ri->next)
 	{
 		// Set distance if no general distance was provided
 		if (!c->hasArg(2)) distance = (Elements().atomicRadius(ri->item) + Elements().atomicRadius(el));
@@ -488,7 +488,7 @@ bool Commands::function_Transmute(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	short int el = c->argz(0);
 	obj.rs()->beginUndoState("Transmute selection");
-	for (Refitem<Atom,int>* ri = obj.rs()->selection(); ri != NULL; ri = ri->next) obj.rs()->transmuteAtom(ri->item,el);
+	for (RefListItem<Atom,int>* ri = obj.rs()->selection(); ri != NULL; ri = ri->next) obj.rs()->transmuteAtom(ri->item,el);
 	obj.rs()->endUndoState();
 	rv.reset();
 	return true;

@@ -51,7 +51,7 @@ void Model::prepareTransform()
 	Vec4<double> screenr;
 	transformationCentre_.zero();
 	translateScale_ = 0.0;
-	for (Refitem<Atom,int>* ri = selection_.first(); ri != NULL; ri = ri->next)
+	for (RefListItem<Atom,int>* ri = selection_.first(); ri != NULL; ri = ri->next)
 	{
 		transformationCentre_ += modelToWorld(ri->item->r(), &screenr, 1.0);
 		translateScale_ += screenr.w;
@@ -62,7 +62,7 @@ void Model::prepareTransform()
 }
 
 // Finalize Model Manipulation
-void Model::finalizeTransform(Reflist< Atom,Vec3<double> > &originalr, const char* statetitle, bool nofold)
+void Model::finalizeTransform(RefList< Atom,Vec3<double> > &originalr, const char* statetitle, bool nofold)
 {
 	// Called after mouse-up.
 	beginUndoState(statetitle);
@@ -73,7 +73,7 @@ void Model::finalizeTransform(Reflist< Atom,Vec3<double> > &originalr, const cha
 	{
 		TranslateEvent* newchange;
 		Vec3<double> delta;
-		for (Refitem< Atom,Vec3<double> >* ri = originalr.first(); ri != NULL; ri = ri->next)
+		for (RefListItem< Atom,Vec3<double> >* ri = originalr.first(); ri != NULL; ri = ri->next)
 		{
 			delta = ri->item->r() - ri->data;
 			newchange = new TranslateEvent;
@@ -101,7 +101,7 @@ void Model::rotateSelectionWorld(double dx, double dy)
 	rotmat.createRotationXY(rotx, roty);
 	inverse = modelViewMatrixInverse();
 
-	for (Refitem<Atom,int>* ri = selection_.first(); ri != NULL; ri = ri->next)
+	for (RefListItem<Atom,int>* ri = selection_.first(); ri != NULL; ri = ri->next)
 	{
 		// Rotate this atom's position about the geometric centre of all selected atoms.
 		newr = (rotmat * (modelToWorld(ri->item->r()) - transformationCentre_)) + transformationCentre_;
@@ -134,7 +134,7 @@ void Model::rotateSelectionVector(Vec3<double> origin, Vec3<double> vector, doub
 	A.createRotationAxis(vector.x, vector.y, vector.z, angle, true);
 
 	// Loop over selected atoms
-	for (Refitem<Atom,int>* ri = selection(markonly); ri != NULL; ri = ri->next)
+	for (RefListItem<Atom,int>* ri = selection(markonly); ri != NULL; ri = ri->next)
 	{
 		tempv = A * (ri->item->r() - origin);
 		positionAtom(ri->item, tempv+origin);
@@ -157,7 +157,7 @@ void Model::rotateSelectionZaxis(double dz)
 	rotmat.createRotationZ(dz);
 	inverse = modelViewMatrixInverse();
 	
-	for (Refitem<Atom,int>* ri = selection_.first(); ri != NULL; ri = ri->next)
+	for (RefListItem<Atom,int>* ri = selection_.first(); ri != NULL; ri = ri->next)
 	{
 		// Rotate this atom's position about the geometric centre of all selected atoms.
 		newr = (rotmat * (modelToWorld(ri->item->r()) - transformationCentre_)) + transformationCentre_;
@@ -182,7 +182,7 @@ void Model::translateSelectionWorld(const Vec3<double>& v, bool markonly)
 	// Take the local coordinates of each selected atom and add our position delta to it.
 	// We then unproject this new local coordinate to get the new model (world) coordinate.
 	inverse = modelViewMatrixInverse();
-	for (Refitem<Atom,int>* ri = selection(markonly); ri != NULL; ri = ri->next)
+	for (RefListItem<Atom,int>* ri = selection(markonly); ri != NULL; ri = ri->next)
 	{
 		newr = modelToWorld(ri->item->r()) + v;
 		newr = inverse * newr + cell_.centre();
@@ -202,7 +202,7 @@ void Model::translateSelectionLocal(const Vec3<double>& tvec, bool markonly)
 	// Translate the model's current selection by the vector supplied.
 	Messenger::enter("Model::translateSelectionLocal");
 
-	for (Refitem<Atom,int>* ri = selection(markonly); ri != NULL; ri = ri->next) translateAtom(ri->item,tvec);
+	for (RefListItem<Atom,int>* ri = selection(markonly); ri != NULL; ri = ri->next) translateAtom(ri->item,tvec);
 
 	// Update model measurements
 	updateMeasurements();
@@ -219,7 +219,7 @@ void Model::mirrorSelectionLocal(int axis, bool markonly)
 	// Get selection's local COG in the desired coordinate
 	Vec3<double> newr, vec, cog = selectionCentreOfGeometry();
 	for (int n=0; n<3; n++) vec.set(n, n == axis ? -1.0 : 1.0);
-	for (Refitem<Atom,int>* ri = selection(markonly); ri != NULL; ri = ri->next)
+	for (RefListItem<Atom,int>* ri = selection(markonly); ri != NULL; ri = ri->next)
 	{
 		// Calculate newr
 		newr = (ri->item->r() - cog);
@@ -260,7 +260,7 @@ void Model::matrixTransformSelection(Vec3<double> origin, Matrix matrix, bool ma
 {
 	Messenger::enter("Model::matrixTransformSelection");
 	Vec3<double> newr;
-	for (Refitem<Atom,int>* ri = selection(markedonly); ri != NULL; ri = ri->next)
+	for (RefListItem<Atom,int>* ri = selection(markedonly); ri != NULL; ri = ri->next)
 	{
 		newr = matrix * (ri->item->r() - origin);
 		positionAtom(ri->item, newr + origin);

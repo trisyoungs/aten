@@ -77,7 +77,7 @@ void AtenWindow::updateAtomsTable(Model* sourceModel)
 	// Start the refresh
 	atomsTableCurrentRootId_ = ui.AtomsTableScrollBar->value();
 	
-	Refitem<Atom,int>* refAtom = atomsTableItems_.first();
+	RefListItem<Atom,int>* refAtom = atomsTableItems_.first();
 	Atom* i;
 	for (int row = 0; row < ui.AtomsTable->rowCount(); ++row)
 	{
@@ -146,7 +146,7 @@ void AtenWindow::atomsTableRecalculateRowSize()
 	}
 	
 	// Extend atom reference list to new size (if necessary)
-	Refitem<Atom,int>* ri;
+	RefListItem<Atom,int>* ri;
 	for (int n=atomsTableItems_.nItems(); n<atomsTableMaxRows_; ++n)
 	{
 		ri = atomsTableItems_.add(NULL);
@@ -171,7 +171,7 @@ void AtenWindow::atomsTableUpdateRow(int row)
 	// Go through visible data items, setting relevant column
 	QTableWidgetItem *item;
 	static Vec3<double> r;
-	Refitem<Atom,int>* ri = atomsTableItems_[row];
+	RefListItem<Atom,int>* ri = atomsTableItems_[row];
 	if (ri == NULL)
 	{
 		printf("Internal Error - Couldn't get atom reference in AtenWindow::updateRow()\n");
@@ -248,7 +248,7 @@ void AtenWindow::atomsTableUpdateSelection()
 	// Clear selection in table
 	ui.AtomsTable->clearSelection();
 
-	Refitem<Atom,int>* refAtom = atomsTableItems_.first();
+	RefListItem<Atom,int>* refAtom = atomsTableItems_.first();
 	Atom* i;
 	for (int row = 0; row < ui.AtomsTable->rowCount(); ++row)
 	{
@@ -273,7 +273,7 @@ void AtenWindow::atomsTableUpdateSelection()
 Atom* AtenWindow::atomsTableAtomInRow(int row)
 {
 	if ((row < 0) || (row > atomsTableMaxRows_)) return NULL;
-	Refitem<Atom,int>* ri = atomsTableItems_[row];
+	RefListItem<Atom,int>* ri = atomsTableItems_[row];
 	if (ri == NULL) return NULL;
 	return ri->item;
 }

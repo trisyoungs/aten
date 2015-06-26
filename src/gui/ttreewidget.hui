@@ -40,7 +40,7 @@ class TTreeWidget : public QTreeWidget
 
 	private:
 	// List of QTreeWidgetItems that this TTreeWidget contains
-	Reflist<QTreeWidgetItem,int> atomItems_;
+	RefList<QTreeWidgetItem,int> atomItems_;
 
 	signals:
 	void mouseDoubleClickEvent(QMouseEvent *event);
@@ -65,7 +65,7 @@ class TTreeWidget : public QTreeWidget
 		return atomItems_.last()->item;
 	}
 	// Return the reflist of TTreeViewAtoms
-	Refitem<QTreeWidgetItem,int>* atomItems() { return atomItems_.first(); }
+	RefListItem<QTreeWidgetItem,int>* atomItems() { return atomItems_.first(); }
 };
 
 ATEN_END_NAMESPACE

@@ -250,7 +250,7 @@ void ColourScale::clear()
 void ColourScale::refreshObjects()
 {
 	// Go through lists of linked objects and poke their logs...
-	for (Refitem<Grid,int>* ri = grids_.first(); ri != NULL; ri = ri->next) if (ri->item->useColourScale()) ri->item->logChange();
+	for (RefListItem<Grid,int>* ri = grids_.first(); ri != NULL; ri = ri->next) if (ri->item->useColourScale()) ri->item->logChange();
 }
 
 // Return number of objects linked to this colourscale

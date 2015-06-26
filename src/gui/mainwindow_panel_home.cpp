@@ -447,12 +447,12 @@ bool AtenWindow::runSaveModelDialog()
 		currentDirectory_.setPath(filename);
 		// Grab file extension and search for it in our current lists...
 		QString ext = QFileInfo(filename).suffix();
-		Reflist<Tree,int> filters;
+		RefList<Tree,int> filters;
 		if (ext.isEmpty())
 		{
 			QFileInfo fileInfo( filename );
 			// Does this filename uniquely identify a specific filter?
-			for (Refitem<Tree,int>* ri = aten_.filters(FilterData::ModelExport); ri != NULL; ri = ri->next)
+			for (RefListItem<Tree,int>* ri = aten_.filters(FilterData::ModelExport); ri != NULL; ri = ri->next)
 			{
 				if (ri->item->filter.doesNameMatch(qPrintable(fileInfo.fileName()))) filters.add(ri->item);
 			}
@@ -473,7 +473,7 @@ bool AtenWindow::runSaveModelDialog()
 		else
 		{
 			// Does this extension uniquely identify a specific filter?
-			for (Refitem<Tree,int>* ri = aten_.filters(FilterData::ModelExport); ri != NULL; ri = ri->next)
+			for (RefListItem<Tree,int>* ri = aten_.filters(FilterData::ModelExport); ri != NULL; ri = ri->next)
 			{
 				if (ri->item->filter.doesExtensionMatch(ext)) filters.add(ri->item);
 			}

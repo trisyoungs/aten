@@ -123,7 +123,7 @@ class CommandParser
 	// Current tree (target of node creation)
 	Tree* tree_;
 	// Stack of created trees
-	Reflist<Tree,bool> stack_;
+	RefList<Tree,bool> stack_;
 	// Flag to indicate failure in tree generation (set by tree() function)
 	bool failed_;
 	// Perform tree generation (base function, called by generateFrom*)

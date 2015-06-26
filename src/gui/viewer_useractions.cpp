@@ -116,7 +116,7 @@ void Viewer::renderUserActions(Model* source)
 	// Draw on the selection highlights (for atoms in the canvas' pickedAtoms list)
 	prefs.copyColour(Prefs::TextColour, colour_i);
 	glColor4f(colour_i.x, colour_i.y, colour_i.z, colour_i.w);
-	for (Refitem<Atom,int>* ri = pickedAtoms_.first(); ri != NULL; ri = ri->next)
+	for (RefListItem<Atom,int>* ri = pickedAtoms_.first(); ri != NULL; ri = ri->next)
 	{
 		// Get Atom pointer
 		Atom* i = ri->item;

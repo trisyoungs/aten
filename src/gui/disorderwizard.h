@@ -72,12 +72,12 @@ class DisorderWizard : public QWizard
 	Model* newModel_;
 	// Selected partitioning scheme
 	PartitioningScheme* partitioningScheme_;
-	// Reflist of tree items and partitioning schemes
-	Reflist<QTreeWidgetItem, PartitioningScheme*> partitioningSchemeItems_;
+	// RefList of tree items and partitioning schemes
+	RefList<QTreeWidgetItem, PartitioningScheme*> partitioningSchemeItems_;
 	// Current component (Model*) editing target
 	Model* componentTarget_;
-	// Reflist of tree items and selected model components
-	Reflist<QTreeWidgetItem, Model*> componentModelItems_;
+	// RefList of tree items and selected model components
+	RefList<QTreeWidgetItem, Model*> componentModelItems_;
 	
 	public:
 	// Return currently-selected partitioning scheme

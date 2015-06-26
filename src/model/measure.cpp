@@ -305,8 +305,8 @@ void Model::addMeasurementsInSelection(Measurement::MeasurementType gt)
 {
 	Messenger::enter("Model::addMeasurementsInSelection");
 	Atom* i, *j, *k, *l;
-	Refitem<Atom,int>* ri;
-	Refitem<Bond,int>* b1, *b2, *b3;
+	RefListItem<Atom,int>* ri;
+	RefListItem<Bond,int>* b1, *b2, *b3;
 	switch (gt)
 	{
 		case (Measurement::DistanceMeasurement):

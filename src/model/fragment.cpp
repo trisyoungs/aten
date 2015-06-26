@@ -131,7 +131,7 @@ void Fragment::rotateOrientedModel(double dx, double dy)
 {
 	Matrix rotmat;
 	rotmat.createRotationXY(dy,dx);
-	for (Refitem<Atom,int>* ri = orientedModel_.selection(true); ri != NULL; ri = ri->next) ri->item->r() = rotmat * ri->item->r();
+	for (RefListItem<Atom,int>* ri = orientedModel_.selection(true); ri != NULL; ri = ri->next) ri->item->r() = rotmat * ri->item->r();
 }
 
 // Return oriented model pointer
@@ -182,7 +182,7 @@ void Fragment::rotateAnchoredModel(double dx, double dy)
 	{
 		Matrix rotmat;
 		rotmat.createRotationXY(dy,dx);
-		for (Refitem<Atom,int>* ri = orientedModel_.selection(true); ri != NULL; ri = ri->next) ri->item->r() = rotmat * ri->item->r();
+		for (RefListItem<Atom,int>* ri = orientedModel_.selection(true); ri != NULL; ri = ri->next) ri->item->r() = rotmat * ri->item->r();
 	}
 
 	Messenger::exit("Fragment::rotateAnchoredModel");
@@ -205,7 +205,7 @@ Model* Fragment::anchoredModel(Atom* anchorpoint, bool replace, int &replacebond
 		// Clamp range of replaced atom id
 		if (replacebond >= anchorpoint->nBonds()) replacebond = 0;
 		// Grab atom along n'th bond
-		Refitem<Bond,int>* ri = anchorpoint->bond(replacebond);
+		RefListItem<Bond,int>* ri = anchorpoint->bond(replacebond);
 		orientation = anchorpoint->parent()->cell().mimVector(anchorpoint, ri->item->partner(anchorpoint));
 		orientation.normalise();
 	}
@@ -242,7 +242,7 @@ Model* Fragment::anchoredModel(Atom* anchorpoint, bool replace, int &replacebond
 	anchoredModel_.markAll();
 	Matrix A;
 	A.createRotationAxis(xp.x, xp.y, xp.z, -angle, true);
-	for (Refitem<Atom,int>* ri = anchoredModel_.selection(true); ri != NULL; ri = ri->next) ri->item->r() = A * ri->item->r();
+	for (RefListItem<Atom,int>* ri = anchoredModel_.selection(true); ri != NULL; ri = ri->next) ri->item->r() = A * ri->item->r();
 
 	Messenger::exit("Fragment::anchoredModel");
 	return &anchoredModel_;	
@@ -283,7 +283,7 @@ void Fragment::pasteAnchoredModel(Atom* anchorpoint, bool replace, int &replaceb
 		// For safety, clamp range of replaced atom id (shouldn't be necessary)
 		if (replacebond >= anchorpoint->nBonds()) replacebond = 0;
 		// Grab atom along n'th bond
-		Refitem<Bond,int>* ri = anchorpoint->bond(replacebond);
+		RefListItem<Bond,int>* ri = anchorpoint->bond(replacebond);
 		target->deleteAtom(ri->item->partner(anchorpoint));
 	}
 

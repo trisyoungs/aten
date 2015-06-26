@@ -158,7 +158,7 @@ void Aten::setModelVisible(Model* m, bool visible)
 	m->setVisible(visible);
 
 	// Search list for specified model
-	Refitem<Model,int>* ri = visibleModels_.contains(m);
+	RefListItem<Model,int>* ri = visibleModels_.contains(m);
 	if ((ri == NULL) && visible) visibleModels_.add(m);
 	else if ((ri != NULL) && (!visible)) visibleModels_.remove(m);
 }
@@ -170,7 +170,7 @@ int Aten::nVisibleModels()
 }
 
 // Return reflist of visible models
-Refitem<Model,int>* Aten::visibleModels()
+RefListItem<Model,int>* Aten::visibleModels()
 {
 	return visibleModels_.first();
 }

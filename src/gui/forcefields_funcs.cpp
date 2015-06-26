@@ -375,7 +375,7 @@ void ForcefieldsWidget::on_ManualTypeTestButton_clicked(bool checked)
 			// Prepare for typing
 			m->describeAtoms();
 			int matchscore;
-			for (Refitem<Atom,int>* ri = m->selection(); ri != NULL; ri = ri->next)
+			for (RefListItem<Atom,int>* ri = m->selection(); ri != NULL; ri = ri->next)
 			{
 				// Get the pattern in which the atom exists
 				Pattern* p = m->pattern(ri->item);

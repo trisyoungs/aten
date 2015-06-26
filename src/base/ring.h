@@ -40,8 +40,8 @@ class Ring : public ListItem<Ring>
 	Ring();
 	~Ring();
 	// Circular list browsing
-	Refitem<Atom,int>* getNext(Refitem<Atom,int>* ri) const;
-	Refitem<Atom,int>* getPrev(Refitem<Atom,int>* ri) const;
+	RefListItem<Atom,int>* getNext(RefListItem<Atom,int>* ri) const;
+	RefListItem<Atom,int>* getPrev(RefListItem<Atom,int>* ri) const;
 	// Ring type
 	enum RingType { AnyRing, AliphaticRing, NonAromaticRing, AromaticRing, nRingTypes };
 	static const char* ringType(Ring::RingType);
@@ -55,9 +55,9 @@ class Ring : public ListItem<Ring>
 	// Parent pattern
 	Pattern* parent_;
 	// List of referenced atoms
-	Reflist<Atom,int> atoms_;
+	RefList<Atom,int> atoms_;
 	// List of referenced bonds (and their types)
-	Reflist<Bond,Bond::BondType> bonds_;
+	RefList<Bond,Bond::BondType> bonds_;
 	// Requested size of ring when ring searching
 	int requestedSize_;
 	// Type of ring
@@ -69,11 +69,11 @@ class Ring : public ListItem<Ring>
 	// Return parent pattern
 	Pattern* parent();
 	// Return first referenced atom
-	Refitem<Atom,int>* atoms() const;
+	RefListItem<Atom,int>* atoms() const;
 	// Return last referenced atom
-	Refitem<Atom,int>* lastAtom() const;
+	RefListItem<Atom,int>* lastAtom() const;
 	// Return first referenced bond
-	Refitem<Bond,Bond::BondType> *bonds() const;
+	RefListItem<Bond,Bond::BondType> *bonds() const;
 	// Return size of atom reflist
 	int nAtoms() const;
 	// Search ring list for specified atom
@@ -85,7 +85,7 @@ class Ring : public ListItem<Ring>
 	// Append the atom 'i' to the end of the list. Returns false is this exceeds MAXRINGSIZE
 	bool addAtom(Atom*);
 	// Remove the specified refitem from the find
-	void removeAtom(Refitem<Atom,int>*);
+	void removeAtom(RefListItem<Atom,int>*);
 	// Store current bond types for referenced bonds
 	void storeBondTypes();
 	// Recall stored bond orders for referenced bonds
@@ -109,7 +109,7 @@ class Ring : public ListItem<Ring>
 	// Print out the data contained in the structure
 	void print() const;
 	// Add atoms in ring to supplied reflist
-	void addAtomsToReflist(Reflist<Atom,int>*, Atom*);
+	void addAtomsToRefList(RefList<Atom,int>*, Atom*);
 	// Clear atoms in reflist
 	void clear();
 };

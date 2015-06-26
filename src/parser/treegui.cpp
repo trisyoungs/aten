@@ -694,7 +694,7 @@ bool TreeGuiWidget::activateProperty(TreeGuiWidgetEvent::EventProperty property)
 	// If this was a radiogroup, activate the current button as well
 	if ((type_ == TreeGuiWidget::RadioGroupWidget) && (property == TreeGuiWidgetEvent::ValueProperty))
 	{
-		Refitem<TreeGuiWidget,int>* button = buttonList_[valueI_-1];
+		RefListItem<TreeGuiWidget,int>* button = buttonList_[valueI_-1];
 		if (button == NULL)
 		{
 			Messenger::exit("TreeGuiWidget::activateProperty");

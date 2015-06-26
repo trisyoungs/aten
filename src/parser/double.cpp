@@ -202,7 +202,7 @@ void DoubleArrayVariable::reset()
 	{
 		int count = 0;
 		ReturnValue value;
-		for (Refitem<TreeNode,int>* ri = args_.first(); ri != NULL; ri = ri->next)
+		for (RefListItem<TreeNode,int>* ri = args_.first(); ri != NULL; ri = ri->next)
 		{
 			if (!ri->item->execute(value)) doubleArrayData_[count++] = 0;
 			else doubleArrayData_[count++] = value.asDouble();
@@ -289,7 +289,7 @@ bool DoubleArrayVariable::initialise()
 	{
 		int count = 0;
 		ReturnValue value;
-		for (Refitem<TreeNode,int>* ri = args_.first(); ri != NULL; ri = ri->next)
+		for (RefListItem<TreeNode,int>* ri = args_.first(); ri != NULL; ri = ri->next)
 		{
 			if (!ri->item->execute(value)) return false;
 			doubleArrayData_[count++] = value.asDouble();

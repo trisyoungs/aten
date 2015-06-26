@@ -192,7 +192,7 @@ void StringArrayVariable::reset()
 	{
 		int count = 0;
 		ReturnValue value;
-		for (Refitem<TreeNode,int>* ri = args_.first(); ri != NULL; ri = ri->next)
+		for (RefListItem<TreeNode,int>* ri = args_.first(); ri != NULL; ri = ri->next)
 		{
 			if (!ri->item->execute(value)) stringArrayData_[count++].clear();
 			else stringArrayData_[count++] = value.asString();
@@ -276,7 +276,7 @@ bool StringArrayVariable::initialise()
 	{
 		int count = 0;
 		ReturnValue value;
-		for (Refitem<TreeNode,int>* ri = args_.first(); ri != NULL; ri = ri->next)
+		for (RefListItem<TreeNode,int>* ri = args_.first(); ri != NULL; ri = ri->next)
 		{
 			if (!ri->item->execute(value)) return false;
 			stringArrayData_[count++] = value.asString();

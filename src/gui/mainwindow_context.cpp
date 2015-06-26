@@ -237,7 +237,7 @@ void AtenWindow::createGlyph()
 	// Set data to atom selection
 	Model* viewTarget = aten_.currentModelOrFrame();
 	n = 1;
-	for (Refitem<Atom,int>* ri = viewTarget->selection(); ri != NULL; ri = ri->next)
+	for (RefListItem<Atom,int>* ri = viewTarget->selection(); ri != NULL; ri = ri->next)
 	{
 		CommandNode::run(Commands::GlyphAtomR, "ii", n, ri->item->id()+1);
 		n++;

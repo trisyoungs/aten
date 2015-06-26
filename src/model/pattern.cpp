@@ -195,10 +195,10 @@ bool Model::createPatterns()
 	QString empirical;
 	Clipboard patclip;
 	Pattern* p;
-	Refitem<Bond,int>* rb;
+	RefListItem<Bond,int>* rb;
 	Atom* i, *selectSource;
 	ClipAtom* clipi;
-	Refitem<Atom,int>* isel;
+	RefListItem<Atom,int>* isel;
 	
 	// Check current pattern first...
 	if (arePatternsValid())
