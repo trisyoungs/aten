@@ -420,8 +420,10 @@ bool Forcefield::readData(QString vars)
 bool Forcefield::readFunctions()
 {
 	Messenger::enter("Forcefield::readFunctions");
+
 	// Store every line from the file up to the next 'end' block
 	bool done = false;
+	generatorFunctionText_.clear();
 	int success;
 	do
 	{
@@ -450,7 +452,7 @@ bool Forcefield::readFunctions()
 	}
 
 	// Now, attempt to parser the lines we just read in to create functions....
-	bool result = generatorFunctions_.generateFromStringList(generatorFunctionText_, "GeneratorFuncs", "Generator Function", true);
+	bool result = generatorFunctions_.generateFromStringList(generatorFunctionText_, "GeneratorFuncs", "Generator Function", false);
 
 	// Search for functions we recognise
 	vdwGenerator_ = generatorFunctions_.findFunction("vdwgenerator");

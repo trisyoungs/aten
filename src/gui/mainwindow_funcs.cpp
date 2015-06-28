@@ -53,6 +53,8 @@
 #include "gui/popupfileaten.h"
 #include "gui/popupfileopen.h"
 #include "gui/popupfilesave.h"
+#include "gui/popupforcefieldsassign.h"
+#include "gui/popupforcefieldsminimise.h"
 #include "gui/popupgridmatrix.h"
 #include "gui/popupgridorigin.h"
 #include "gui/popupgridstyle.h"
@@ -248,6 +250,10 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 
 	// -- Select Panel (ID/Element)
 	ui.SelectNETAElementButton->setPopupWidget(new ElementTablePopup(*this, ui.SelectNETAElementButton), true);
+
+	// -- Forcefields Panel (Manage)
+	ui.ForcefieldsManageAssignButton->setPopupWidget(new ForcefieldsAssignPopup(*this, ui.ForcefieldsManageAssignButton));
+	ui.ForcefieldsCalculateMinimiseButton->setPopupWidget(new ForcefieldsMinimisePopup(*this, ui.ForcefieldsCalculateMinimiseButton));
 
 	// -- Selection Panel (Appearance)
 	ui.SelectionAppearanceStyleButton->setPopupWidget(new ViewStylePopup(*this, ui.SelectionAppearanceStyleButton), false, true);

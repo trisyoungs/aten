@@ -397,8 +397,6 @@ class Commands
 	
 		// Minimisation Commands
 		CGMinimise,
-		Converge,
-		LineTolerance,
 		MCMinimise,
 		MopacMinimise,
 		SDMinimise,
@@ -872,8 +870,6 @@ class Commands
 	bool function_Verbose(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	// Minimisation Commands
 	bool function_CGMinimise(CommandNode* c, Bundle& obj, ReturnValue& rv);
-	bool function_Converge(CommandNode* c, Bundle& obj, ReturnValue& rv);
-	bool function_LineTolerance(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_MCMinimise(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_MopacMinimise(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_SDMinimise(CommandNode* c, Bundle& obj, ReturnValue& rv);

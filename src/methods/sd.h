@@ -47,7 +47,7 @@ class MethodSd : public LineMinimiser
 	// Get maximum number of  for MC move
 	int nCycles() const;
 	// Minimise the specified model
-	void minimise(Model* source, double econ, double fcon, bool simple);
+	double minimise(Model* sourceModel, double eConverge, double fConverge, bool simple);
 };
 
 // Static Singleton

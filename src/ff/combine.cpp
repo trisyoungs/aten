@@ -57,7 +57,7 @@ bool CombinationRules::regenerateEquations()
 		equation.sprintf("double %s(double a, double b) { double c = 0.0; %s; return c; }", CombinationRules::combinationRule(cr), qPrintable(prefs.combinationRule(cr)));
 		equations << equation;
 	}
-	bool success = combinationRules_.generateFromStringList(equations, "CombinationRules", "Combination Rule", true);
+	bool success = combinationRules_.generateFromStringList(equations, "CombinationRules", "Combination Rule", false);
 	Messenger::exit("CombinationRules::regenerateEquations");
 	return success;
 }

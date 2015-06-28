@@ -56,7 +56,7 @@
      </property>
      <property name="icon">
       <iconset resource="icons.qrc">
-       <normaloff>:/bond/icons/bond_calc.svg</normaloff>:/bond/icons/bond_calc.svg</iconset>
+       <normaloff>:/build/icons/build_rebond.svg</normaloff>:/build/icons/build_rebond.svg</iconset>
      </property>
      <property name="iconSize">
       <size>
@@ -100,7 +100,7 @@
      </property>
      <property name="icon">
       <iconset resource="icons.qrc">
-       <normaloff>:/bond/icons/bond_calcsel.svg</normaloff>:/bond/icons/bond_calcsel.svg</iconset>
+       <normaloff>:/build/icons/build_rebondsel.svg</normaloff>:/build/icons/build_rebondsel.svg</iconset>
      </property>
      <property name="iconSize">
       <size>
@@ -143,7 +143,7 @@
       <string>Selection</string>
      </property>
      <property name="icon">
-      <iconset resource="icons.qrc">
+      <iconset>
        <normaloff>:/bond/icons/bond_calcsel.svg</normaloff>:/bond/icons/bond_calcsel.svg</iconset>
      </property>
      <property name="iconSize">
@@ -187,7 +187,7 @@
       <string>Patterns</string>
      </property>
      <property name="icon">
-      <iconset resource="icons.qrc">
+      <iconset>
        <normaloff>:/bond/icons/bond_calc.svg</normaloff>:/bond/icons/bond_calc.svg</iconset>
      </property>
      <property name="iconSize">
@@ -231,7 +231,7 @@
       <string>Patterns</string>
      </property>
      <property name="icon">
-      <iconset resource="icons.qrc">
+      <iconset>
        <normaloff>:/bond/icons/bond_calc.svg</normaloff>:/bond/icons/bond_calc.svg</iconset>
      </property>
      <property name="iconSize">

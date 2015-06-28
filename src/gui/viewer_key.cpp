@@ -52,7 +52,7 @@ void Viewer::keyPressEvent(QKeyEvent* event)
 
 	// Set some useful flags...
 	bool manipulate = false;
-	bool noFold = atenWindow_->ui.BuildOptionsPreventFoldCheck->isChecked();
+	bool noFold = atenWindow_->ui.BuildDrawPreventFoldButton->isChecked();
 	for (int n=0; n<3; n++)
 	{
 		if (keyModifier_[n])

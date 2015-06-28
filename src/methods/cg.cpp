@@ -51,7 +51,7 @@ int MethodCg::nCycles() const
 }
 
 // Minimise Energy w.r.t. coordinates by Conjugate Gradient
-void MethodCg::minimise(Model* srcmodel, double econ, double fcon)
+double MethodCg::minimise(Model* sourceModel, double eConverge, double fConverge)
 {
 	// Line Search (Steepest Descent) energy minimisation.
 	Messenger::enter("MethodCg::minimise");
@@ -59,67 +59,67 @@ void MethodCg::minimise(Model* srcmodel, double econ, double fcon)
 	double currentEnergy, oldEnergy, deltaEnergy = 0.0, lastPrintedEnergy, oldForce, newForce, deltaForce = 0.0, g_old_sq, gamma, g_current_sq;
 	double* g_old;
 	Vec3<double> f;
-	Atom** modelatoms;
-	bool linedone, converged, success;
+	Atom** modelAtoms;
+	bool lineDone, converged, success;
 
 	/*
 	 * Prepare the calculation
 	 */
 	// First, create expression for the current model and assign charges
-	if ((!srcmodel->isExpressionValid()) || (srcmodel->nAtoms() == 0))
+	if ((!sourceModel->isExpressionValid()) || (sourceModel->nAtoms() == 0))
 	{
 	        Messenger::exit("MethodCg::minimise");
-	        return;
+	        return 0.0;
 	}
 	
 	// Calculate initial reference energy and RMS force
-	modelatoms = srcmodel->atomArray();
-	g_old = new double[srcmodel->nAtoms()*3];
-	currentEnergy = srcmodel->totalEnergy(srcmodel, success);
+	modelAtoms = sourceModel->atomArray();
+	g_old = new double[sourceModel->nAtoms()*3];
+	currentEnergy = sourceModel->totalEnergy(sourceModel, success);
 	if (!success)
 	{
 	        Messenger::exit("MethodCg::minimise");
-	        return;
+	        return 0.0;
 	}
 
-	srcmodel->calculateForces(srcmodel);
-	newForce = srcmodel->rmsForce();
+	sourceModel->calculateForces(sourceModel);
+	newForce = sourceModel->rmsForce();
 	lastPrintedEnergy = currentEnergy;
-	srcmodel->energy.print();
+	sourceModel->energy.print();
 
 	converged = false;
-	linedone = false;
+	lineDone = false;
 
 	// Initialise the line minimiser
-	initialise(srcmodel);
+	initialise(sourceModel);
 
 	Messenger::print("Step      Energy       DeltaE       RMS Force      E(vdW)        E(elec)       E(Bond)      E(Angle)     E(Torsion)");
-	Messenger::print("Init  %12.5e        ---           ---     %12.5e  %12.5e  %12.5e  %12.5e  %12.5e %s", currentEnergy, newForce, srcmodel->energy.vdw(), srcmodel->energy.electrostatic(), srcmodel->energy.bond(), srcmodel->energy.angle(), srcmodel->energy.torsion(), "--:--:--");
+	Messenger::print("Init  %12.5e        ---           ---     %12.5e  %12.5e  %12.5e  %12.5e  %12.5e %s", currentEnergy, newForce, sourceModel->energy.vdw(), sourceModel->energy.electrostatic(), sourceModel->energy.bond(), sourceModel->energy.angle(), sourceModel->energy.torsion(), "--:--:--");
 
 	int pid = progress.initialise("Minimising (CG)", nCycles_);
 
-	srcmodel->normaliseForces(1.0, true);
+	sourceModel->normaliseForces(1.0, true);
 
 	for (cycle=0; cycle<nCycles_; cycle++)
 	{
 		// Perform linesearch along the gradient vector
-		if (!progress.update(pid, cycle)) linedone = true;
+		if (!progress.update(pid, cycle)) lineDone = true;
 		else
 		{
 			oldEnergy = currentEnergy;
 			oldForce = newForce;
-			currentEnergy = lineMinimise(srcmodel);
-			newForce = srcmodel->rmsForce();
+			currentEnergy = lineMinimise(sourceModel);
+			newForce = sourceModel->rmsForce();
 			deltaEnergy = currentEnergy - oldEnergy;
 			deltaForce = newForce - oldForce;
 			// Check convergence criteria
-			if ((fabs(deltaEnergy) < econ) && (fabs(deltaForce) < fcon)) converged = true;
+			if ((fabs(deltaEnergy) < eConverge) && (fabs(deltaForce) < fConverge)) converged = true;
 		}
 
 		// Print out the step data
 		if (prefs.shouldUpdateEnergy(cycle+1))
 		{
-			Messenger::print("%-5i %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e %s", cycle+1, currentEnergy, currentEnergy-lastPrintedEnergy, newForce, srcmodel->energy.vdw(), srcmodel->energy.electrostatic(), srcmodel->energy.bond(), srcmodel->energy.angle(), srcmodel->energy.torsion(), qPrintable(progress.eta()));
+			Messenger::print("%-5i %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e %s", cycle+1, currentEnergy, currentEnergy-lastPrintedEnergy, newForce, sourceModel->energy.vdw(), sourceModel->energy.electrostatic(), sourceModel->energy.bond(), sourceModel->energy.angle(), sourceModel->energy.torsion(), qPrintable(progress.eta()));
 			lastPrintedEnergy = currentEnergy;
 		}
 		if (converged) break;
@@ -127,45 +127,49 @@ void MethodCg::minimise(Model* srcmodel, double econ, double fcon)
 // 		if (prefs.shouldUpdateModel(cycle+1)) parent_.updateWidgets(AtenWindow::MainViewTarget); ATEN2 TODO
 
 		// Store old forces and calculate new forces at the new line-minimised position
-		for (i=0; i<srcmodel->nAtoms()*3; i += 3)
+		for (i=0; i<sourceModel->nAtoms()*3; i += 3)
 		{
-			f = modelatoms[i/3]->f();
+			f = modelAtoms[i/3]->f();
 			g_old[i] = f.x;
 			g_old[i+1] = f.y;
 			g_old[i+2] = f.z;
 		}
-		srcmodel->calculateForces(srcmodel);
-		srcmodel->normaliseForces(1.0, true);
+		sourceModel->calculateForces(sourceModel);
+		sourceModel->normaliseForces(1.0, true);
 
 		// Calculate new conjugate gradient vector, if this isn't the first cycle
 		if (cycle != 0)
 		{
-			/* The next gradient vector is given by (Polak-Ribiere):
-			g[new] = g[current] + gamma * g[old]     where  gamma = (g[current] - g[old]).g[current]  /  g[old].g[old]
-			**or** (Fletcher-Reeves)
-			g[new] = g[current] + gamma * g[old]     where  gamma = g[current].g[current]  /  g[old].g[old]
-			*/
+			/* 
+			 * The next gradient vector is given by (Polak-Ribiere):
+			 *    g[new] = g[current] + gamma * g[old]     where  gamma = (g[current] - g[old]).g[current]  /  g[old].g[old]
+			 *    **or** (Fletcher-Reeves)
+			 *    g[new] = g[current] + gamma * g[old]     where  gamma = g[current].g[current]  /  g[old].g[old]
+			 */
+
 			// Calculate 'g[current].g[current]' and '(g[current] - g[old]).g[current]'
 			g_old_sq = 0.0;
 			g_current_sq = 0.0;
-			for (i=0; i<srcmodel->nAtoms()*3; i++) g_old_sq += g_old[i] * g_old[i];
-			for (i=0; i<srcmodel->nAtoms(); i++)
+			for (i=0; i<sourceModel->nAtoms()*3; i++) g_old_sq += g_old[i] * g_old[i];
+			for (i=0; i<sourceModel->nAtoms(); i++)
 			{
-				f = modelatoms[i]->f();
+				f = modelAtoms[i]->f();
 				g_current_sq += f.x * f.x;
 				g_current_sq += f.y * f.y;
 				g_current_sq += f.z * f.z;
 			}
+
 			// Calculate gamma
 			gamma = g_current_sq / g_old_sq;
+
 			// Calculate new gradient vector
-			for (int i=0; i<srcmodel->nAtoms()*3; i += 3)
+			for (int i=0; i<sourceModel->nAtoms()*3; i += 3)
 			{
-				f = modelatoms[i/3]->f();
+				f = modelAtoms[i/3]->f();
 				f.x = g_old[i] + gamma * f.x;
 				f.y = g_old[i+1] + gamma * f.y;
 				f.z = g_old[i+2] + gamma * f.z;
-				modelatoms[i/3]->f() = f;
+				modelAtoms[i/3]->f() = f;
 			}
 		}
 	}
@@ -174,13 +178,15 @@ void MethodCg::minimise(Model* srcmodel, double econ, double fcon)
 	if (converged) Messenger::print("Conjugate gradient converged in %i steps.",cycle+1);
 	else Messenger::print("Conjugate gradient did not converge within %i steps.",nCycles_);
 	Messenger::print("Final energy:");
-	currentEnergy = srcmodel->totalEnergy(srcmodel, success);
-	srcmodel->energy.print();
+	currentEnergy = sourceModel->totalEnergy(sourceModel, success);
+	sourceModel->energy.print();
 
 	// Calculate fresh new forces for the model, log changes / update, and exit.
-	srcmodel->calculateForces(srcmodel);
-	srcmodel->updateMeasurements();
-	srcmodel->logChange(Log::Coordinates);
+	sourceModel->calculateForces(sourceModel);
+	sourceModel->updateMeasurements();
+	sourceModel->logChange(Log::Coordinates);
+
 	Messenger::exit("MethodCg::minimise");
+	return currentEnergy;
 }
 

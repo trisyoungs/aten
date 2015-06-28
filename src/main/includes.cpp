@@ -69,14 +69,8 @@ int Aten::parseIncludeDir(QDir path)
 	for (i=0; i< includeList.size(); i++)
 	{
 		// Load filter Program...
-		QString filename = QDir::toNativeSeparators(path.absoluteFilePath(includeList.at(i)));
-		if (!includeFunctions_.generateFromFile(qPrintable(QDir::toNativeSeparators(filename)), qPrintable(includeList.at(i)), true, false, false))
-		{
-			Messenger::error("Failed to load includes from '%s'...", qPrintable(includeList.at(i)));
-			failedIncludes_ << filename;
-			++nFailed;
-		}
-		else s += includeList.at(i) + "  ";
+		if (openInclude(path.absoluteFilePath(includeList.at(i)), includeList.at(i))) s += includeList.at(i) + "  ";
+		else ++nFailed;
 	}
 	Messenger::print(s);
 
@@ -85,15 +79,15 @@ int Aten::parseIncludeDir(QDir path)
 }
 
 // Load include from specified filename
-bool Aten::openInclude(QString filename)
+bool Aten::openInclude(QString fileName, QString name)
 {
 	Messenger::enter("Aten::openInclude");
 
 	// Construct includes Program...
-	if (!includeFunctions_.generateFromFile(filename, filename, true, false, false))
+	if (!includeFunctions_.generateFromFile(fileName, name, false, false))
 	{
-		Messenger::error("Failed to load includes from '%s'...", qPrintable(filename));
-		failedIncludes_ << filename;
+		Messenger::error("Failed to load includes from '%s'...", qPrintable(fileName));
+		failedIncludes_ << fileName;
 		Messenger::exit("Aten::openInclude");
 		return false;
 	}

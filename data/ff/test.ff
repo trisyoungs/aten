@@ -93,7 +93,7 @@ end
 # generator function is called (if one exists). The functions themselves have strict declarations that must be followed.
 # Functions are defined in one or more 'function' blocks
 function
-int bondgenerator(ffbound newterm, atom i, atom j)
+int bondgenerator(FFBound newterm, Atom i, Atom j)
 {
 	printf("Here we are in the bond generation function.\n");
 	printf("The atoms passed are have assigned equivalent types of '%s' and '%s'.\n", i.type.equivalent,j.type.equivalent);

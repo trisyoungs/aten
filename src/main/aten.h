@@ -194,7 +194,7 @@ class Aten
 	// Load global include functions
 	void openIncludes();
 	// Load include from specified filename
-	bool openInclude(QString filename);
+	bool openInclude(QString fileName, QString name);
 	// Whether includes loaded succesfully on startup
 	int nIncludesFailed() const;
 	// Return first item in failed includes list
@@ -204,7 +204,7 @@ class Aten
 	// Load global partition functions
 	void openPartitions();
 	// Load partition from specified filename
-	bool openPartition(QString filename);
+	bool openPartition(QString fileName, QString name);
 	// Whether partitions loaded succesfully on startup
 	int nPartitioningSchemesFailed() const;
 	// Return first item in failed partitions list

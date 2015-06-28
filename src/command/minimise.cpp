@@ -32,9 +32,6 @@
 
 ATEN_USING_NAMESPACE
 
-// Local variables
-double econverge = 0.001, fconverge = 0.01, linetolerance = 0.0001;
-
 // Minimise with conjugate gradient
 bool Commands::function_CGMinimise(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
@@ -47,34 +44,23 @@ bool Commands::function_CGMinimise(CommandNode* c, Bundle& obj, ReturnValue& rv)
 		return false;
 	}
 
-	cg.setTolerance(linetolerance);
-	cg.setNCycles( c->hasArg(0) ? c->argi(0) : 100);
+	// Get argument values
+	int nCycles = c->hasArg(0) ? c->argi(0) : 100;
+	double eConverge = c->hasArg(1) ? c->argd(1) : 1.0e-3;
+	double fConverge = c->hasArg(2) ? c->argd(2) : 1.0e-2;
+	double lineTolerance = c->hasArg(3) ? c->argd(3) : 1.0e-4;
+
+	cg.setTolerance(lineTolerance);
+	cg.setNCycles(nCycles);
 
 	// Store current positions of atoms so we can undo the minimisation
 	RefList< Atom, Vec3<double> > oldpos;
 	for (Atom* i = obj.rs()->atoms(); i != NULL; i = i->next) oldpos.add(i, i->r());
-	cg.minimise(obj.rs(), econverge, fconverge);
+	rv = cg.minimise(obj.rs(), eConverge, fConverge);
 
 	// Finalise the 'transformation' (creates an undo state)
 	obj.rs()->finalizeTransform(oldpos, "Minimise (Conjugate Gradient)", true);
-	rv.reset();
-	return true;
-}
 
-// Set convergence criteria
-bool Commands::function_Converge(CommandNode* c, Bundle& obj, ReturnValue& rv)
-{
-	econverge = c->argd(0);
-	fconverge = c->argd(1);
-	rv.reset();
-	return true;
-}
-
-// Set line minimiser tolerance
-bool Commands::function_LineTolerance(CommandNode* c, Bundle& obj, ReturnValue& rv)
-{
-	linetolerance = c->argd(0);
-	rv.reset();
 	return true;
 }
 
@@ -82,16 +68,22 @@ bool Commands::function_LineTolerance(CommandNode* c, Bundle& obj, ReturnValue& 
 bool Commands::function_MCMinimise(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return false;
-	mc.setNCycles( c->hasArg(0) ? c->argi(0) : 100);
+
+	// Get argument values
+	int nCycles = c->hasArg(0) ? c->argi(0) : 100;
+	double eConverge = c->hasArg(1) ? c->argd(1) : 1.0e-3;
+	double fConverge = c->hasArg(2) ? c->argd(2) : 1.0e-2;
+
+	mc.setNCycles(nCycles);
 
 	// Store current positions of atoms so we can undo the minimisation
 	RefList< Atom, Vec3<double> > oldpos;
 	for (Atom* i = obj.rs()->atoms(); i != NULL; i = i->next) oldpos.add(i, i->r());
-	mc.minimise(obj.rs(), econverge, fconverge);
+	rv = mc.minimise(obj.rs(), eConverge, fConverge);
 
 	// Finalise the 'transformation' (creates an undo state)
 	obj.rs()->finalizeTransform(oldpos, "Minimise (Monte Carlo)", true);
-	rv.reset();
+
 	return true;
 }
 
@@ -233,15 +225,23 @@ bool Commands::function_SDMinimise(CommandNode* c, Bundle& obj, ReturnValue& rv)
 		return false;
 	}
 
-	sd.setTolerance(linetolerance);
-	sd.setNCycles( c->hasArg(0) ? c->argi(0) : 100);
+	// Get converge values passed
+	int nCycles = c->hasArg(0) ? c->argi(0) : 100;
+	double eConverge = c->hasArg(1) ? c->argd(1) : 1.0e-3;
+	double fConverge = c->hasArg(2) ? c->argd(2) : 1.0e-2;
+	double lineTolerance = c->hasArg(3) ? c->argd(3) : 1.0e-4;
+	bool simple = c->hasArg(4) ? c->argb(4) : false;
+
+	sd.setTolerance(lineTolerance);
+	sd.setNCycles(nCycles);
 
 	// Store current positions of atoms so we can undo the minimisation
 	RefList< Atom, Vec3<double> > oldpos;
 	for (Atom* i = obj.rs()->atoms(); i != NULL; i = i->next) oldpos.add(i, i->r());
-	sd.minimise(obj.rs(), econverge, fconverge, c->hasArg(1) ? c->argb(1) : false);
+	rv = sd.minimise(obj.rs(), eConverge, fConverge, simple);
+
 	// Finalise the 'transformation' (creates an undo state)
 	obj.rs()->finalizeTransform(oldpos, "Minimise (Steepest Descent)", true);
-	rv.reset();
+
 	return true;
 }

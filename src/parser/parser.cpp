@@ -242,7 +242,7 @@ bool CommandParser::generate()
 }
 
 // Fill target Program from specified character string
-bool CommandParser::generateFromString(Program* prog, QString string, QString sourceInfo, bool dontPushTree, bool clearExisting)
+bool CommandParser::generateFromString(Program* prog, QString string, QString sourceInfo, bool pushTree, bool clearExisting)
 {
 	Messenger::enter("CommandParser::generateFromString");
 
@@ -257,7 +257,7 @@ bool CommandParser::generateFromString(Program* prog, QString string, QString so
 	if (clearExisting) program_->clear();
 		
 	// Stack an initial Tree?
-	if (!dontPushTree)
+	if (pushTree)
 	{
 		tree_ = program_->mainProgram();
 		stack_.add(tree_, false);
@@ -279,7 +279,7 @@ bool CommandParser::generateFromString(Program* prog, QString string, QString so
 }
 
 // Populate target Program from specified string list
-bool CommandParser::generateFromStringList(Program* prog, QStringList stringList, QString sourceInfo, bool dontPushTree, bool clearExisting)
+bool CommandParser::generateFromStringList(Program* prog, QStringList stringList, QString sourceInfo, bool pushTree, bool clearExisting)
 {
 	Messenger::enter("CommandParser::generateFromStringList");
 
@@ -294,7 +294,7 @@ bool CommandParser::generateFromStringList(Program* prog, QStringList stringList
 	if (clearExisting) program_->clear();
 	
 	// Stack an initial Tree?
-	if (!dontPushTree)
+	if (pushTree)
 	{
 		tree_ = program_->mainProgram();
 		stack_.add(tree_, false);
@@ -309,7 +309,7 @@ bool CommandParser::generateFromStringList(Program* prog, QStringList stringList
 	if (stringListSource_.count() > 0)
 	{
 		stringSource_ = stringListSource_.at(0);
-		if (stringListSource_.count() > 1) stringListSourceIndex_ = 1;
+		if (stringListSource_.count() > 1) stringListSourceIndex_ = 0;
 	}
 	
 	stringPos_ = 0;
@@ -324,7 +324,7 @@ bool CommandParser::generateFromStringList(Program* prog, QStringList stringList
 }
 
 // Fill target Program from specified file
-bool CommandParser::generateFromFile(Program* prog, QString filename, bool dontPushTree, bool clearExisting)
+bool CommandParser::generateFromFile(Program* prog, QString filename, bool pushTree, bool clearExisting)
 {
 	Messenger::enter("CommandParser::generateFromFile");
 
@@ -339,7 +339,7 @@ bool CommandParser::generateFromFile(Program* prog, QString filename, bool dontP
 	if (clearExisting) program_->clear();
 	
 	// Stack initial Tree?
-	if (!dontPushTree)
+	if (pushTree)
 	{
 		tree_ = program_->mainProgram();
 		stack_.add(tree_, false);

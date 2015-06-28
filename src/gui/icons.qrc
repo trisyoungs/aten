@@ -66,6 +66,7 @@
     <file>icons/build_fragment.svg</file>
     <file>icons/build_rebond.svg</file>
     <file>icons/build_atomaddh.svg</file>
+    <file>icons/build_rebondsel.svg</file>
     <file>icons/build_delete.svg</file>
     <file>icons/build_probe.svg</file>
     <file>icons/build_transmute.svg</file>
@@ -170,7 +171,6 @@
     <file>icons/view_reset.svg</file>
     <file>icons/view_get.svg</file>
     <file>icons/view_hbonds.svg</file>
-    <file>icons/view_perspective.svg</file>
     <file>icons/view_perspective.svg</file>
     <file>icons/view_zoomout.svg</file>
   </qresource>

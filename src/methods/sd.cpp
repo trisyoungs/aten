@@ -53,7 +53,7 @@ int MethodSd::nCycles() const
 }
 
 // Minimise Energy w.r.t. coordinates by Steepest Descent
-void MethodSd::minimise(Model* srcmodel, double econ, double fcon, bool simple)
+double MethodSd::minimise(Model* sourceModel, double eConverge, double fConverge, bool simple)
 {
 	Messenger::enter("MethodSd::minimise");
 	int cycle, nattempts;
@@ -64,34 +64,34 @@ void MethodSd::minimise(Model* srcmodel, double econ, double fcon, bool simple)
 	 * Prepare the calculation
 	 */
 	// First, create expression for the current model and assign charges
-	if ((!srcmodel->isExpressionValid()) || (srcmodel->nAtoms() == 0))
+	if ((!sourceModel->isExpressionValid()) || (sourceModel->nAtoms() == 0))
 	{
 	        Messenger::exit("MethodSd::minimise");
-	        return;
+	        return 0.0;
 	}
 	
 	// Calculate initial reference energy and forces
-	currentEnergy = srcmodel->totalEnergy(srcmodel, success);
+	currentEnergy = sourceModel->totalEnergy(sourceModel, success);
 	if (!success)
 	{
 	        Messenger::exit("MethodSd::minimise");
-	        return;
+	        return 0.0;
 	}
 	lastPrintedEnergy = currentEnergy;
-	srcmodel->energy.print();
+	sourceModel->energy.print();
 
 	converged = false;
 	lineDone = false;
 
 	// Initialise the line minimiser
-	initialise(srcmodel);
+	initialise(sourceModel);
 
 	// Calculate initial forces and corresponding rms
-	srcmodel->calculateForces(srcmodel);
-	newForce = srcmodel->rmsForce();
+	sourceModel->calculateForces(sourceModel);
+	newForce = sourceModel->rmsForce();
 
 	Messenger::print("Step      Energy       DeltaE       RMS Force      E(vdW)        E(elec)       E(Bond)      E(Angle)     E(Torsion)");
-	Messenger::print("Init  %12.5e       ---      %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e %s", currentEnergy, newForce, srcmodel->energy.vdw(), srcmodel->energy.electrostatic(), srcmodel->energy.bond(), srcmodel->energy.angle(), srcmodel->energy.torsion(), "--:--:--");
+	Messenger::print("Init  %12.5e       ---      %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e %s", currentEnergy, newForce, sourceModel->energy.vdw(), sourceModel->energy.electrostatic(), sourceModel->energy.bond(), sourceModel->energy.angle(), sourceModel->energy.torsion(), "--:--:--");
 	int pid = progress.initialise("Minimising (SD)", nCycles_);
 
 	stepsize = 1.0;
@@ -106,7 +106,7 @@ void MethodSd::minimise(Model* srcmodel, double econ, double fcon, bool simple)
 			oldForce = newForce;
 
 			// Minimise along gradient vector
-			srcmodel->normaliseForces(1.0, true);
+			sourceModel->normaliseForces(1.0, true);
 			if (simple)
 			{
 				// Step along gradient (with reducing step size until energy decreases)
@@ -114,24 +114,24 @@ void MethodSd::minimise(Model* srcmodel, double econ, double fcon, bool simple)
 				do
 				{
 					++nattempts;
-					gradientMove(srcmodel, stepsize);
-					currentEnergy = srcmodel->totalEnergy(&tempModel_, success);
+					gradientMove(sourceModel, stepsize);
+					currentEnergy = sourceModel->totalEnergy(&tempModel_, success);
 					if (currentEnergy > oldEnergy) stepsize *= 0.5;
 				} while (currentEnergy > oldEnergy);
 				// If the very first attempt was successful, increase the stepsize again
 				if (nattempts == 1) stepsize *= 1.5;
 			}
-			else currentEnergy = lineMinimise(srcmodel);
-			srcmodel->copyAtomData(&tempModel_, Atom::PositionData);
+			else currentEnergy = lineMinimise(sourceModel);
+			sourceModel->copyAtomData(&tempModel_, Atom::PositionData);
 
 			// Calculate forces ready for next cycle
-			srcmodel->calculateForces(srcmodel);
-			newForce = srcmodel->rmsForce();
+			sourceModel->calculateForces(sourceModel);
+			newForce = sourceModel->rmsForce();
 			deltaEnergy = currentEnergy - oldEnergy;
 			deltaForce = newForce - oldForce;
 
 			// Check convergence criteria
-			if ((fabs(deltaEnergy) < econ) && (fabs(newForce) < fcon))
+			if ((fabs(deltaEnergy) < eConverge) && (fabs(newForce) < fConverge))
 			{
 				converged = true;
 				break;
@@ -142,7 +142,7 @@ void MethodSd::minimise(Model* srcmodel, double econ, double fcon, bool simple)
 		// Print out the step data
 		if (prefs.shouldUpdateEnergy(cycle+1))
 		{
-			Messenger::print("%-5i %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e %s",cycle+1, currentEnergy, currentEnergy-lastPrintedEnergy, newForce, srcmodel->energy.vdw(), srcmodel->energy.electrostatic(), srcmodel->energy.bond(), srcmodel->energy.angle(), srcmodel->energy.torsion(), qPrintable(progress.eta()));
+			Messenger::print("%-5i %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e %s",cycle+1, currentEnergy, currentEnergy-lastPrintedEnergy, newForce, sourceModel->energy.vdw(), sourceModel->energy.electrostatic(), sourceModel->energy.bond(), sourceModel->energy.angle(), sourceModel->energy.torsion(), qPrintable(progress.eta()));
 			lastPrintedEnergy = currentEnergy;
 		}
 
@@ -155,14 +155,15 @@ void MethodSd::minimise(Model* srcmodel, double econ, double fcon, bool simple)
 	if (converged) Messenger::print("Steepest descent converged in %i steps.",cycle+1);
 	else Messenger::print("Steepest descent did not converge within %i steps.",nCycles_);
 	Messenger::print("Final energy:");
-	currentEnergy = srcmodel->totalEnergy(srcmodel, success);
-	srcmodel->energy.print();
+	currentEnergy = sourceModel->totalEnergy(sourceModel, success);
+	sourceModel->energy.print();
 	
 	// Calculate fresh new forces for the model, log changes / update, and exit.
-// 	srcmodel->calculateForces(srcmodel);
-	srcmodel->updateMeasurements();
-	srcmodel->logChange(Log::Coordinates);
+// 	sourceModel->calculateForces(sourceModel);
+	sourceModel->updateMeasurements();
+	sourceModel->logChange(Log::Coordinates);
 	
 	Messenger::exit("MethodSd::minimise");
+	return currentEnergy;
 }
 

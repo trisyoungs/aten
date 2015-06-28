@@ -22,6 +22,9 @@ Check - is using redirected filenames really necessary when saving movie frame i
 Automatically adjust grid size for number of visible models, based on current aspect ratio and context size etc.
 Click to select grid.
 Redo ProgressIndicator, making into a class much like QProgress (can't just use QProgress, since we want to have progress indicator functionality in the CLI....). Make it clever enough to realise that the gui is visible or not. Perhaps integrate it into Messenger, so that messages printed out while the indicator is running don't disrupt the indicator?
+Implement checkbox for secondary grid on/off.
+Sort out remaining icons!
+Command prompt doesn't update main view after running command?
 
 Graphics TODO
 =============
@@ -58,7 +61,8 @@ Finish Spacegroup popup.
 Add Calculate tool to work out centre of geometry/mass.
 Add option to display ColourScale selector (e.g. for Grid colour buttons)
 Have Tools page? With, for instance:
---- Plot Orbital (raising dialog from old GridsWidget).
+--- Plot Orbital (raising dialog from old GridsWidget)
+Forcefields list!
 
 Manual TODO:
 Remove level of detail and transparency options from Prefs.
@@ -74,3 +78,4 @@ Add GridOutline and GridPeriodic commands.
 Rename (De)SelectFor to (De)SelectCode.
 Remove ManualSwapBuffers from Prefs accessor.
 growAtom / selectionGrowAtom - add optional parameter "bool bond = true".
+Remove LineTol and Converge commands, and update minimisation command signatures (inc return values).

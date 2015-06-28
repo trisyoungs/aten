@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>TransformFlipPopup</class>
- <widget class="QWidget" name="TransformFlipPopup">
+ <class>ForcefieldsAssignPopup</class>
+ <widget class="QWidget" name="ForcefieldsAssignPopup">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>172</width>
+    <width>114</width>
     <height>56</height>
    </rect>
   </property>
@@ -22,7 +22,7 @@
    </font>
   </property>
   <property name="windowTitle">
-   <string>Transform Flip Popup</string>
+   <string>Forcefields Assign Popup</string>
   </property>
   <layout class="QHBoxLayout" name="horizontalLayout">
    <property name="spacing">
@@ -32,7 +32,7 @@
     <number>0</number>
    </property>
    <item>
-    <widget class="QToolButton" name="FlipXButton">
+    <widget class="QToolButton" name="PatternButton">
      <property name="minimumSize">
       <size>
        <width>56</width>
@@ -49,11 +49,7 @@
       <string>Flip current selection about the X axis</string>
      </property>
      <property name="text">
-      <string>X</string>
-     </property>
-     <property name="icon">
-      <iconset resource="icons.qrc">
-       <normaloff>:/transform/icons/transform_flipx.svg</normaloff>:/transform/icons/transform_flipx.svg</iconset>
+      <string>Pattern...</string>
      </property>
      <property name="iconSize">
       <size>
@@ -76,7 +72,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QToolButton" name="FlipYButton">
+    <widget class="QToolButton" name="AllModelsButton">
      <property name="minimumSize">
       <size>
        <width>56</width>
@@ -90,58 +86,10 @@
       </size>
      </property>
      <property name="toolTip">
-      <string>Flip current selection about the Y axis</string>
+      <string>Flip current selection about the X axis</string>
      </property>
      <property name="text">
-      <string>Y</string>
-     </property>
-     <property name="icon">
-      <iconset resource="icons.qrc">
-       <normaloff>:/transform/icons/transform_flipy.svg</normaloff>:/transform/icons/transform_flipy.svg</iconset>
-     </property>
-     <property name="iconSize">
-      <size>
-       <width>30</width>
-       <height>30</height>
-      </size>
-     </property>
-     <property name="checkable">
-      <bool>false</bool>
-     </property>
-     <property name="autoExclusive">
-      <bool>false</bool>
-     </property>
-     <property name="toolButtonStyle">
-      <enum>Qt::ToolButtonTextUnderIcon</enum>
-     </property>
-     <property name="autoRaise">
-      <bool>false</bool>
-     </property>
-    </widget>
-   </item>
-   <item>
-    <widget class="QToolButton" name="FlipZButton">
-     <property name="minimumSize">
-      <size>
-       <width>56</width>
-       <height>56</height>
-      </size>
-     </property>
-     <property name="maximumSize">
-      <size>
-       <width>56</width>
-       <height>56</height>
-      </size>
-     </property>
-     <property name="toolTip">
-      <string>Flip current selection about the Z axis</string>
-     </property>
-     <property name="text">
-      <string>Z</string>
-     </property>
-     <property name="icon">
-      <iconset resource="icons.qrc">
-       <normaloff>:/transform/icons/transform_flipz.svg</normaloff>:/transform/icons/transform_flipz.svg</iconset>
+      <string>All Models</string>
      </property>
      <property name="iconSize">
       <size>

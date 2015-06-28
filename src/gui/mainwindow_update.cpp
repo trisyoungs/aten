@@ -153,18 +153,15 @@ void AtenWindow::updateWidgets(int targets)
 	if (targets&AtenWindow::GridsPanelTarget) updateGridsPanel(currentModel);
 	if (targets&AtenWindow::TrajectoryPanelTarget) updateTrajectoryPanel(currentModel);
 	if (targets&AtenWindow::SelectPanelTarget) updateSelectPanel(currentModel);
+	if (targets&AtenWindow::ForcefieldsTarget) updateForcefieldsPanel(currentModel);
 
 	
 	
 	if (targets&AtenWindow::VibrationsTarget) vibrationsWidget->refresh();
 
-	// Update contents of the atom list
-
 	// Update contents of the glyph list
 	if (targets&AtenWindow::GlyphsTarget) glyphsWidget->refresh();
 
-	// Update forcefields in the forcefield widget
-	if (targets&AtenWindow::ForcefieldsTarget) forcefieldsWidget->refresh();
 
 	if (targets&AtenWindow::StatusBarTarget)
 	{

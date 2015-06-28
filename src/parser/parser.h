@@ -129,11 +129,11 @@ class CommandParser
 	// Perform tree generation (base function, called by generateFrom*)
 	bool generate();
 	// Populate target Program from specified character string
-	bool generateFromString(Program* prog, QString string, QString sourceInfo, bool dontPushTree = false, bool clearExisting = true);
+	bool generateFromString(Program* prog, QString string, QString sourceInfo, bool pushTree = true, bool clearExisting = true);
 	// Populate target Program from specified string list
-	bool generateFromStringList(Program* prog, QStringList stringList, QString sourceInfo, bool dontPushTree = false, bool clearExisting = true);
+	bool generateFromStringList(Program* prog, QStringList stringList, QString sourceInfo, bool pushTree = true, bool clearExisting = true);
 	// Populate target Program from specified file(name)
-	bool generateFromFile(Program* prog, QString filename, bool dontPushTree = false, bool clearExisting = true);
+	bool generateFromFile(Program* prog, QString filename, bool pushTree = true, bool clearExisting = true);
 
 	public:
 	// Return current Tree target, raising warning and setting fail flag if no tree is defined...

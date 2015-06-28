@@ -39,6 +39,8 @@ SET(gui_MOC_HDRS
   popupfileaten.h
   popupfileopen.h
   popupfilesave.h
+  popupforcefieldsassign.h
+  popupforcefieldsminimise.h
   popupgridmatrix.h
   popupgridorigin.h
   popupgridshift.h
@@ -120,6 +122,8 @@ SET(gui_UIS
   popupfileaten.ui
   popupfileopen.ui
   popupfilesave.ui
+  popupforcefieldsassign.ui
+  popupforcefieldsminimise.ui
   popupgridmatrix.ui
   popupgridorigin.ui
   popupgridshift.ui
@@ -184,6 +188,7 @@ set(gui_SRCS
   mainwindow_panel_build.cpp
   mainwindow_panel_calculate.cpp
   mainwindow_panel_cell.cpp
+  mainwindow_panel_forcefields.cpp
   mainwindow_panel_grids.cpp
   mainwindow_panel_home.cpp
   mainwindow_panel_select.cpp
@@ -209,6 +214,8 @@ set(gui_SRCS
   popupfileaten_funcs.cpp
   popupfileopen_funcs.cpp
   popupfilesave_funcs.cpp
+  popupforcefieldsassign_funcs.cpp
+  popupforcefieldsminimise_funcs.cpp
   popupgridmatrix_funcs.cpp
   popupgridorigin_funcs.cpp
   popupgridshift_funcs.cpp

@@ -275,7 +275,7 @@ void Viewer::endMode(Prefs::MouseButton button)
 	bool shifted = keyModifier_[Prefs::ShiftKey];
 	bool ctrled = keyModifier_[Prefs::CtrlKey];
 	bool modded = (shifted || ctrled);
-	bool noFold = atenWindow_->ui.BuildOptionsPreventFoldCheck->isChecked();
+	bool noFold = atenWindow_->ui.BuildDrawPreventFoldButton->isChecked();
 	
 	// Reset mouse button flag
 	mouseButton_[button] = false;

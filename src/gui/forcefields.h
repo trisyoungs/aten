@@ -68,35 +68,16 @@ class ForcefieldsWidget : public QDockWidget
 	void showWidget();
 	void refresh();
 	void refreshTypes();
-	void loadForcefield();
 
 	private slots:
-	// Energy Tab
-	void on_CurrentEnergyButton_clicked(bool checked);
-	void on_CurrentForcesButton_clicked(bool checked);
-	void on_ForcefieldMinimiseButton_clicked(bool checked);
-	void on_MopacMinimiseButton_clicked(bool checked);
-	// Forcefields Tab
-	void on_ForcefieldCombo_currentIndexChanged(int index);
-	void on_OpenForcefieldButton_clicked(bool checked);
 	void on_SaveForcefieldButton_clicked(bool checked);
 	void on_SaveForcefieldAsButton_clicked(bool checked);
-	void on_CloseForcefieldButton_clicked(bool checked);
-	void on_EditForcefieldButton_clicked(bool checked);
-	void on_TypeModelButton_clicked(bool checked);
-	void on_UntypeModelButton_clicked(bool checked);
-	void on_AssignFFToCurrentButton_clicked(bool checked);
-	void on_AssignFFToAllButton_clicked(bool checked);
-	void on_AssignFFToPatternButton_clicked(bool clicked);
-	void on_CreateExpressionButton_clicked(bool clicked);
+
 	// Manual Typing Tab
 	void on_ManualTypeSetButton_clicked(bool checked);
 	void on_ManualTypeClearButton_clicked(bool checked);
 	void on_ManualTypeTestButton_clicked(bool checked);
 	void on_ManualTypeEdit_returnPressed();
-
-	protected:
-	void closeEvent(QCloseEvent* event);
 };
 
 #endif

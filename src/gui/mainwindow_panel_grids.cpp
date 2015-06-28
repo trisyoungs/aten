@@ -74,7 +74,7 @@ void AtenWindow::updateGridInformation(Grid* sourceGrid)
 	ui.GridsSecondaryUpperCutoffSpin->setEnabled(sourceGrid);
 	ui.GridsSecondaryColourButton->setEnabled(sourceGrid);
 	ui.GridsSecondaryStyleButton->setEnabled(sourceGrid);
-	ui.GridsSecondarySurfaceCheck->setEnabled(sourceGrid);
+	ui.GridsSecondaryActiveButton->setEnabled(sourceGrid);
 	ui.GridsOptionsOutlineButton->setEnabled(sourceGrid);
 	ui.GridsOptionsPeriodicButton->setEnabled(sourceGrid);
 	if (!sourceGrid) return;
@@ -100,7 +100,7 @@ void AtenWindow::updateGridInformation(Grid* sourceGrid)
 	ui.GridsSecondaryStyleButton->callPopupMethod("updateButtonIcon", rv = QString(Grid::surfaceStyle(sourceGrid->secondaryStyle())));
 
 	// Enable / disable secondary surface controls
-	ui.GridsSecondarySurfaceCheck->setChecked(sourceGrid->useSecondary());
+	ui.GridsSecondaryActiveButton->setChecked(sourceGrid->useSecondary());
 	ui.GridsSecondaryLowerCutoffSpin->setEnabled(sourceGrid->useSecondary());
 	ui.GridsSecondaryUpperCutoffSpin->setEnabled(sourceGrid->useSecondary());
 	ui.GridsSecondaryColourButton->setEnabled(sourceGrid->useSecondary());
@@ -117,7 +117,7 @@ void AtenWindow::updateGridInformation(Grid* sourceGrid)
 
 void AtenWindow::on_GridsLoadButton_clicked(bool checked)
 {
-	Messenger::enter("GridsWidget::loadGrid");
+	Messenger::enter("AtenWindow::loadGrid");
 
 	Tree* filter;
 	static QDir currentDirectory_(aten_.workDir());
@@ -140,7 +140,7 @@ void AtenWindow::on_GridsLoadButton_clicked(bool checked)
 
 	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::GridsPanelTarget);
 
-	Messenger::exit("GridsWidget::loadGrid");
+	Messenger::exit("AtenWindow::loadGrid");
 }
 
 void AtenWindow::on_GridsRemoveButton_clicked(bool checked)

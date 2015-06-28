@@ -26,20 +26,12 @@
 #include "main/aten.h"
 #include "gui/loadmodel.h"
 #include "gui/selectfilter.h"
-#include "gui/saveimage.h"
 #include "gui/forcefields.h"
 #include "base/sysfunc.h"
 
 /*
  * Forcefield Actions
  */
-
-// Open forcefield file
-void AtenWindow::on_actionOpenForcefield_triggered(bool checked)
-{
-	// Call routine in forcefields window...
-	forcefieldsWidget->loadForcefield();
-}
 
 // Open expression file
 void AtenWindow::on_actionOpenExpression_triggered(bool checked)
@@ -141,26 +133,6 @@ void AtenWindow::on_actionSaveExpression_triggered(bool checked)
 	}
 }
 
-// Create patterns for model
-void AtenWindow::on_actionModelCreatePatterns_triggered(bool checked)
-{
-	aten_.currentModelOrFrame()->createPatterns();
-	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
-}
-
-// Remove patterns from model
-void AtenWindow::on_actionModelRemovePatterns_triggered(bool checked)
-{
-	aten_.currentModelOrFrame()->clearPatterns();
-	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
-}
-
-// List patterns in model
-void AtenWindow::on_actionModelListPatterns_triggered(bool checked)
-{
-	aten_.currentModelOrFrame()->printPatterns();
-}
-
 // Perform forcefield typing in model
 void AtenWindow::on_actionModelFFType_triggered(bool checked)
 {
@@ -179,12 +151,5 @@ void AtenWindow::on_actionModelFFUntype_triggered(bool checked)
 void AtenWindow::on_actionModelCreateExpression_triggered(bool checked)
 {
 	aten_.currentModelOrFrame()->createExpression(Choice(), Choice(), Choice(), aten_.currentForcefield(), aten_.combinationRules());
-	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
-}
-
-// Add default pattern
-void AtenWindow::on_actionModelAddDefaultPattern_triggered(bool checked)
-{
-	aten_.currentModelOrFrame()->createDefaultPattern();
 	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
 }

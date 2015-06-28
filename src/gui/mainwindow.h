@@ -171,16 +171,11 @@ class AtenWindow : public QMainWindow
 	 * Expression Menu
 	 */
 	private slots:
-	void on_actionOpenForcefield_triggered(bool checked);
 	void on_actionOpenExpression_triggered(bool checked);
 	void on_actionSaveExpression_triggered(bool checked);
-	void on_actionModelCreatePatterns_triggered(bool checked);
-	void on_actionModelRemovePatterns_triggered(bool checked);
-	void on_actionModelListPatterns_triggered(bool checked);
 	void on_actionModelFFType_triggered(bool checked);
 	void on_actionModelFFUntype_triggered(bool checked);
 	void on_actionModelCreateExpression_triggered(bool checked);
-	void on_actionModelAddDefaultPattern_triggered(bool checked);
 
 
 	/*
@@ -376,6 +371,35 @@ class AtenWindow : public QMainWindow
 	void on_TrajectoryStylePromoteButton_clicked(bool checked);
 	// Tools
 	void on_TrajectoryToolsMovieButton_clicked(bool checked);
+
+
+	/*
+	 * Forcefields Panel
+	 */
+	private:
+	// Update forcefields panel
+	void updateForcefieldsPanel(Model* sourceModel);
+
+	private slots:
+	// Manage
+	void on_ForcefieldsList_currentRowChanged(int row);
+	void on_ForcefieldsManageLoadButton_clicked(bool checked);
+	void on_ForcefieldsManageCloseButton_clicked(bool checked);
+	void on_ForcefieldsManageEditButton_clicked(bool checked);
+	void on_ForcefieldsManageAssignButton_clicked(bool checked);
+	// Calculate
+	void on_ForcefieldsCalculateMinimiseButton_clicked(bool checked);
+	void on_ForcefieldsCalculateEnergyButton_clicked(bool checked);
+	void on_ForcefieldsCalculateForcesButton_clicked(bool checked);
+	// Patterns
+	void on_ForcefieldsPatternsCreateButton_clicked(bool checked);
+	void on_ForcefieldsPatternsClearButton_clicked(bool checked);
+	void on_ForcefieldsPatternsListButton_clicked(bool checked);
+	void on_ForcefieldsPatternsDefaultButton_clicked(bool checked);
+	// Expression
+	void on_ForcefieldsExpressionTypeButton_clicked(bool checked);
+	void on_ForcefieldsExpressionCreateButton_clicked(bool checked);
+	void on_ForcefieldsExpressionClearButton_clicked(bool checked);
 
 
 	/*
