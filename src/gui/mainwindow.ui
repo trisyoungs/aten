@@ -69,7 +69,7 @@
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>7</number>
+       <number>0</number>
       </property>
       <property name="usesScrollButtons">
        <bool>true</bool>
@@ -1758,7 +1758,7 @@
             </property>
             <property name="icon">
              <iconset resource="icons.qrc">
-              <normaloff>:/select/icons/select_invert.svg</normaloff>:/select/icons/select_invert.svg</iconset>
+              <normaloff>:/view/icons/view_lock.svg</normaloff>:/view/icons/view_lock.svg</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -3100,7 +3100,7 @@
              <string>Set</string>
             </property>
             <property name="icon">
-             <iconset resource="icons.qrc">
+             <iconset>
               <normaloff>:/stackicons/icons/stack_celldefine.svg</normaloff>:/stackicons/icons/stack_celldefine.svg</iconset>
             </property>
             <property name="iconSize">
@@ -3322,7 +3322,7 @@
              <string>Define</string>
             </property>
             <property name="icon">
-             <iconset resource="icons.qrc">
+             <iconset>
               <normaloff>:/stackicons/icons/stack_celldefine.svg</normaloff>:/stackicons/icons/stack_celldefine.svg</iconset>
             </property>
             <property name="iconSize">
@@ -3380,7 +3380,7 @@
              <string>Select</string>
             </property>
             <property name="icon">
-             <iconset resource="icons.qrc">
+             <iconset>
               <normaloff>:/stackicons/icons/stack_celldefine.svg</normaloff>:/stackicons/icons/stack_celldefine.svg</iconset>
             </property>
             <property name="iconSize">
@@ -5941,7 +5941,7 @@
              <string>Inherit</string>
             </property>
             <property name="icon">
-             <iconset resource="icons.qrc">
+             <iconset>
               <normaloff>:/stackicons/icons/stack_celldefine.svg</normaloff>:/stackicons/icons/stack_celldefine.svg</iconset>
             </property>
             <property name="iconSize">
@@ -5999,7 +5999,7 @@
              <string>Propagate</string>
             </property>
             <property name="icon">
-             <iconset resource="icons.qrc">
+             <iconset>
               <normaloff>:/stackicons/icons/stack_celldefine.svg</normaloff>:/stackicons/icons/stack_celldefine.svg</iconset>
             </property>
             <property name="iconSize">
@@ -6057,7 +6057,7 @@
              <string>Promote</string>
             </property>
             <property name="icon">
-             <iconset resource="icons.qrc">
+             <iconset>
               <normaloff>:/stackicons/icons/stack_celldefine.svg</normaloff>:/stackicons/icons/stack_celldefine.svg</iconset>
             </property>
             <property name="iconSize">
@@ -6136,7 +6136,7 @@
              <string>Save Movie</string>
             </property>
             <property name="icon">
-             <iconset resource="icons.qrc">
+             <iconset>
               <normaloff>:/stackicons/icons/stack_celldefine.svg</normaloff>:/stackicons/icons/stack_celldefine.svg</iconset>
             </property>
             <property name="iconSize">
@@ -9430,82 +9430,10 @@
     </property>
     <addaction name="actionOpenExpression"/>
     <addaction name="actionSaveExpression"/>
-    <addaction name="separator"/>
-    <addaction name="actionModelFFType"/>
-    <addaction name="actionModelFFUntype"/>
-    <addaction name="actionModelCreateExpression"/>
    </widget>
    <addaction name="ForcefieldMenu"/>
   </widget>
   <widget class="QStatusBar" name="MainWindowStatusBar"/>
-  <action name="actionModelFFType">
-   <property name="text">
-    <string>Perform &amp;Typing</string>
-   </property>
-  </action>
-  <action name="actionModelFFUntype">
-   <property name="text">
-    <string>Remove Typing</string>
-   </property>
-  </action>
-  <action name="actionModelFoldAtoms">
-   <property name="icon">
-    <iconset>
-     <normaloff>:/model/icons/model_foldatoms.svg</normaloff>:/model/icons/model_foldatoms.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Fold Atoms</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+F</string>
-   </property>
-  </action>
-  <action name="actionModelFoldMolecules">
-   <property name="icon">
-    <iconset>
-     <normaloff>:/model/icons/model_foldmolecules.svg</normaloff>:/model/icons/model_foldmolecules.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Fold Molecules</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+Shift+F</string>
-   </property>
-  </action>
-  <action name="actionModelNext">
-   <property name="icon">
-    <iconset resource="icons.qrc">
-     <normaloff>:/model/icons/model_next.svg</normaloff>:/model/icons/model_next.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Next</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+Right</string>
-   </property>
-  </action>
-  <action name="actionModelPrevious">
-   <property name="icon">
-    <iconset resource="icons.qrc">
-     <normaloff>:/model/icons/model_prev.svg</normaloff>:/model/icons/model_prev.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Previous</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+Left</string>
-   </property>
-  </action>
-  <action name="actionFileQuit">
-   <property name="text">
-    <string>&amp;Quit</string>
-   </property>
-  </action>
-  <action name="actionPreferences">
-   <property name="text">
-    <string>&amp;Preferences</string>
-   </property>
-  </action>
   <action name="actionSaveExpression">
    <property name="icon">
     <iconset resource="icons.qrc">
@@ -9515,113 +9443,9 @@
     <string>Save &amp;Expression</string>
    </property>
   </action>
-  <action name="actionModelShowAll">
-   <property name="text">
-    <string>Show All Atoms</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+Shift+H</string>
-   </property>
-  </action>
-  <action name="actionModelRename">
-   <property name="icon">
-    <iconset resource="icons.qrc">
-     <normaloff>:/model/icons/model_rename.svg</normaloff>:/model/icons/model_rename.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Rename</string>
-   </property>
-  </action>
-  <action name="actionOpenForcefield">
-   <property name="icon">
-    <iconset resource="icons.qrc">
-     <normaloff>:/file/icons/file_open.svg</normaloff>:/file/icons/file_open.svg</iconset>
-   </property>
-   <property name="text">
-    <string>&amp;Open Forcefield</string>
-   </property>
-  </action>
-  <action name="actionAboutQt">
-   <property name="text">
-    <string>About Qt</string>
-   </property>
-  </action>
-  <action name="actionAboutAten">
-   <property name="text">
-    <string>About Aten</string>
-   </property>
-  </action>
-  <action name="actionReloadFilters">
-   <property name="text">
-    <string>&amp;Reload Filters</string>
-   </property>
-  </action>
-  <action name="actionListMeasurements">
-   <property name="icon">
-    <iconset>
-     <normaloff>:/geometry/icons/measure_list.svg</normaloff>:/geometry/icons/measure_list.svg</iconset>
-   </property>
-   <property name="text">
-    <string>List Measurements</string>
-   </property>
-   <property name="iconText">
-    <string>List Measurements</string>
-   </property>
-   <property name="toolTip">
-    <string>List all measurements in the model</string>
-   </property>
-  </action>
-  <action name="actionModelCreatePatterns">
-   <property name="text">
-    <string>Create &amp;Patterns</string>
-   </property>
-  </action>
-  <action name="actionModelRemovePatterns">
-   <property name="text">
-    <string>Remove Patterns</string>
-   </property>
-  </action>
-  <action name="actionModelListPatterns">
-   <property name="text">
-    <string>&amp;List Patterns</string>
-   </property>
-  </action>
-  <action name="actionExportOptions">
-   <property name="text">
-    <string>E&amp;xport Options</string>
-   </property>
-  </action>
-  <action name="actionModelCreateExpression">
-   <property name="text">
-    <string>Create Expression</string>
-   </property>
-  </action>
   <action name="actionOpenExpression">
    <property name="text">
     <string>Open E&amp;xpression</string>
-   </property>
-  </action>
-  <action name="actionShowToolBox">
-   <property name="text">
-    <string>Show &amp;ToolBox</string>
-   </property>
-  </action>
-  <action name="actionStoreDefaultWindowState">
-   <property name="text">
-    <string>Store Default &amp;Window State</string>
-   </property>
-  </action>
-  <action name="actionManualSwapBuffers">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>Manual Swap Buffers</string>
-   </property>
-  </action>
-  <action name="actionModelAddDefaultPattern">
-   <property name="text">
-    <string>Add Default Pattern</string>
    </property>
   </action>
  </widget>

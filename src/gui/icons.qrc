@@ -11,6 +11,11 @@
     <file>icons/arrow_up.svg</file>
     <file>icons/arrow_upline.svg</file>
   </qresource>
+  <qresource prefix="/aten">
+    <file>icons/aten_preferences.svg</file>
+    <file>icons/aten_reloadfilters.svg</file>
+    <file>icons/aten_storedefault.svg</file>
+  </qresource>
   <qresource prefix="/transform">
     <file>icons/transform_angle.svg</file>
     <file>icons/transform_centre.svg</file>
@@ -109,11 +114,6 @@
     <file>icons/calculate_distance.svg</file>
     <file>icons/calculate_torsion.svg</file>
   </qresource>
-  <qresource prefix="/mouse">
-    <file>icons/mouse_interact.svg</file>
-    <file>icons/mouse_rotate.svg</file>
-    <file>icons/mouse_translate.svg</file>
-  </qresource>
   <qresource prefix="/trajectory">
     <file>icons/traj_first.svg</file>
     <file>icons/traj_last.svg</file>
@@ -139,33 +139,13 @@
     <file>icons/select_molecules.svg</file>
     <file>icons/select_none.svg</file>
   </qresource>
-  <qresource prefix="/stackicons">
-    <file>icons/stack_pores.svg</file>
-    <file>icons/stack_select.svg</file>
-    <file>icons/stack_vibrations.svg</file>
-    <file>icons/stack_zmatrix.svg</file>
-    <file>icons/stack_md.svg</file>
-    <file>icons/stack_glyphs.svg</file>
-    <file>icons/stack_fragment.svg</file>
-    <file>icons/stack_command.svg</file>
-    <file>icons/stack_geometry.svg</file>
-    <file>icons/stack_atomlist.svg</file>
-    <file>icons/stack_celldefine.svg</file>
-    <file>icons/stack_celledit.svg</file>
-    <file>icons/stack_disorder.svg</file>
-    <file>icons/stack_ff.svg</file>
-    <file>icons/stack_build.svg</file>
-    <file>icons/stack_minimiser.svg</file>
-    <file>icons/stack_position.svg</file>
-    <file>icons/stack_surfaces.svg</file>
-    <file>icons/stack_transform.svg</file>
-  </qresource>
   <qresource prefix="/vector">
     <file>icons/vector_generatexp.svg</file>
     <file>icons/vector_normalise.svg</file>
     <file>icons/vector_orthogonalise.svg</file>
   </qresource>
   <qresource prefix="/view">
+    <file>icons/view_lock.svg</file>
     <file>icons/view_zoomin.svg</file>
     <file>icons/view_set.svg</file>
     <file>icons/view_reset.svg</file>
