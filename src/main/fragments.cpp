@@ -143,7 +143,7 @@ bool Aten::parseFragmentDir(QDir path, QString groupName)
 
 		// Store the last model on the list.
 		f = fg->addFragment();
-		if (!f->setMasterModel(fragmentModels_.last())) fg->removeFragment(f);
+		if (!f->setMasterModel(fragments_.last())) fg->removeFragment(f);
 	}
 
 	// Check for other directories
@@ -172,3 +172,32 @@ FragmentGroup* Aten::fragmentGroups()
 	return fragmentGroups_.first();
 }
 
+// Return number of fragments available
+int Aten::nFragments()
+{
+	return fragments_.nItems();
+}
+
+// Set current fragment for drawing
+void Aten::setCurrentFragment(Fragment* fragment)
+{
+	currentFragment_ = fragment;
+}
+
+// Return current fragment for drawing
+Fragment* Aten::currentFragment()
+{
+	return currentFragment_;
+}
+
+// Increment bond id value
+void Aten::increaseFragmentBondId()
+{
+	++fragmentBondId_;
+}
+
+// Return fragment bondId (as reference so it can be reset by associated Fragment routines)
+int& Aten::fragmentBondId()
+{
+	return fragmentBondId_;
+}

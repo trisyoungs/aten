@@ -21,7 +21,6 @@
 
 #include <QKeyEvent>
 #include "gui/mainwindow.h"
-#include "gui/fragments.h"
 #include "model/model.h"
 #include "main/aten.h"
 
@@ -135,9 +134,8 @@ void Viewer::keyPressEvent(QKeyEvent* event)
 			// Cycle link atom....
 			if (keyModifier_[Prefs::AltKey])
 			{
-				Fragment* frag = atenWindow_->fragmentsWidget->currentFragment();	// ATEN2 TODO
-				if (frag == NULL) break;
-				frag->cycleLinkAtom();
+				if (!aten_->currentFragment()) break;
+				else aten_->currentFragment()->cycleLinkAtom();
 				refresh = true;
 			}
 			// Refresh if Shift status has changed
@@ -145,7 +143,7 @@ void Viewer::keyPressEvent(QKeyEvent* event)
 			if (keyModifier_[Prefs::CtrlKey])
 			{
 				refresh = true;
-				atenWindow_->fragmentsWidget->increaseBondId();
+				aten_->increaseFragmentBondId();
 			}
 			break;
 		default:

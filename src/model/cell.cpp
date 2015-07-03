@@ -29,7 +29,7 @@
 ATEN_USING_NAMESPACE
 
 // Reassemble molecule/fragment, beginning at supplied atom, returning COG of atoms
-Vec3<double> Model::reassembleFragment(Atom* i, int referenceBit, int &count, bool centreOfMass)
+Vec3<double> Model::reassembleFragment(Atom* i, int referenceBit, int& count, bool centreOfMass)
 {
 	i->addBit(referenceBit);
 	Atom* j;
@@ -52,7 +52,7 @@ Vec3<double> Model::reassembleFragment(Atom* i, int referenceBit, int &count, bo
 }
 
 // Determine COG or COM of reassembled fragment without actually reassembling it
-Vec3<double> Model::reassembleFragment(Atom* i, Vec3<double> referencePos, int referenceBit, int &count, bool centreOfMass)
+Vec3<double> Model::reassembleFragment(Atom* i, Vec3<double> referencePos, int referenceBit, int& count, bool centreOfMass)
 {
 	i->addBit(referenceBit);
 	Atom* j;

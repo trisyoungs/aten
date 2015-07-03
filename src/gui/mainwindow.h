@@ -155,11 +155,7 @@ class AtenWindow : public QMainWindow
 	void contextMenuSetAtomStyle(bool checked);
 	void contextMenuSetAtomLabel(bool checked);
 	void contextMenuProbeAtom(bool checked);
-
-	void on_actionSetBondLength_triggered(bool checked);
-	void on_actionSetBondAngle_triggered(bool checked);
-	void on_actionSetTorsionAngle_triggered(bool checked);
-	void on_actionCreateFragment_triggered(bool checked);
+	void contextMenuCreateFragment(bool checked);
 	void createGlyph();
 
 	public:
@@ -215,8 +211,6 @@ class AtenWindow : public QMainWindow
 	void on_HomeAppearanceShowAllButton_clicked(bool checked);
 	// View
 	void on_HomeViewResetButton_clicked(bool checked);
-	void on_HomeViewZoomInButton_clicked(bool checked);
-	void on_HomeViewZoomOutButton_clicked(bool checked);
 	void on_HomeViewGetButton_clicked(bool checked);
 	void on_HomeViewSetButton_clicked(bool checked);
 	void on_HomeViewHBondsButton_clicked(bool checked);
@@ -330,7 +324,7 @@ class AtenWindow : public QMainWindow
 	void on_GridsPrimaryUpperCutoffSpin_valueChanged(double value);
 	void on_GridsPrimaryColourButton_popupChanged();
 	// Secondary Surface
-	void on_GridsSecondarySurfaceCheck_clicked(bool checked);
+	void on_GridsSecondaryActiveButton_clicked(bool checked);
 	void on_GridsSecondaryLowerCutoffSpin_valueChanged(double value);
 	void on_GridsSecondaryUpperCutoffSpin_valueChanged(double value);
 	void on_GridsSecondaryColourButton_popupChanged();
@@ -398,7 +392,7 @@ class AtenWindow : public QMainWindow
 	void on_ForcefieldsPatternsDefaultButton_clicked(bool checked);
 	// Expression
 	void on_ForcefieldsExpressionTypeButton_clicked(bool checked);
-	void on_ForcefieldsExpressionCreateButton_clicked(bool checked);
+	void on_ForcefieldsExpressionDescribeButton_clicked(bool checked);
 	void on_ForcefieldsExpressionClearButton_clicked(bool checked);
 
 
@@ -479,8 +473,8 @@ class AtenWindow : public QMainWindow
 	QAbstractItemDelegate* atomsTableItemDelegates_[AtenWindow::nAtomItems];
 	// Log points of model info displayed in list
 	int atomsTableStructurePoint_, atomsTableSelectionPoint_;
-	// Whether the current view is by atom (or not)
-	bool atomsTableViewingByAtom_;
+	// Whether the current view is by pattern
+	bool atomsTableViewingByPattern_;
 	// Array of currently-visible items
 	bool atomsTableVisibleItems_[nAtomItems];
 	// List of currently-visible atom data
@@ -509,7 +503,7 @@ class AtenWindow : public QMainWindow
 	private slots:
 	void on_AtomsTableToggleButton_clicked(bool checked);
 	void on_AtomsTableScrollBar_valueChanged(int value);
-	void on_ViewStyleCombo_currentIndexChanged(int index);
+	void on_AtomsViewByPatternCheck_clicked(bool checked);
 	void on_AtomsShiftUpButton_clicked(bool checked);
 	void on_AtomsShiftDownButton_clicked(bool checked);
 	void on_AtomsMoveToStartButton_clicked(bool checked);
@@ -614,8 +608,6 @@ class AtenWindow : public QMainWindow
 	DisorderWizard *disorderWizard;
 	// Forcefields dock widget
 	ForcefieldsWidget *forcefieldsWidget;
-	// Fragment Library dock widget
-	FragmentsWidget *fragmentsWidget;
 	// Glyphs dock widget
 	GlyphsWidget *glyphsWidget;
 	// Pore builder dock widget

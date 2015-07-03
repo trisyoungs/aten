@@ -38,6 +38,7 @@
 #include <iostream>
 #include <fstream>
 #include "gui/popupbuildaddh.h"
+#include "gui/popupbuildfragments.h"
 #include "gui/popupbuildgrow.h"
 #include "gui/popupbuildrebond.h"
 #include "gui/popupbuildtransmute.h"
@@ -77,7 +78,6 @@
 #include "gui/command.h"
 #include "gui/disorderwizard.h"
 #include "gui/forcefields.h"
-#include "gui/fragments.h"
 #include "gui/glyphs.h"
 #include "gui/pores.h"
 #include "gui/scriptmovie.h"
@@ -122,7 +122,6 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 	atomsTablePrevClicked_ = NULL;
 	atomsTableLastClicked_ = NULL;
 	atomsTableLastHovered_ = NULL;
-	atomsTableViewingByAtom_ = true;
 	atomsTableMaxRows_ = 0;
 	atomsTableCurrentRootId_ = 0;
 	atomsTableItemDelegates_[AtenWindow::AtomIdItem] = NULL;
@@ -151,13 +150,12 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 	commandWidget = new CommandWidget(*this, Qt::Tool);
 	disorderWizard = new DisorderWizard(*this);
 	forcefieldsWidget = new ForcefieldsWidget(*this, Qt::Tool);
-	fragmentsWidget = new FragmentsWidget(*this, Qt::Tool);
 	glyphsWidget = new GlyphsWidget(*this, Qt::Tool);
 	poresWidget = new PoresWidget(*this, Qt::Tool);
 	scriptMovieWidget = new ScriptMovieWidget(*this, Qt::Tool);
 	transformWidget = new TransformWidget(*this, Qt::Tool);
 	vibrationsWidget = new VibrationsWidget(*this, Qt::Tool);
-	dockWidgets_ << commandWidget << fragmentsWidget << glyphsWidget << poresWidget << scriptMovieWidget << transformWidget << vibrationsWidget;
+	dockWidgets_ << commandWidget << glyphsWidget << poresWidget << scriptMovieWidget << transformWidget << vibrationsWidget;
 
 	int n;
 	ReturnValue rv;
@@ -188,6 +186,7 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 	// -- Build Panel (Build)
 	ui.BuildDrawDrawButton->setGroup("UserActions", UserAction::DrawAtomsAction);
 	ui.BuildDrawFragmentButton->setGroup("UserActions", UserAction::DrawFragmentsAction);
+	ui.BuildDrawFragmentButton->setPopupWidget(new BuildFragmentsPopup(*this, ui.BuildDrawFragmentButton));
 	ui.BuildDrawDeleteButton->setGroup("UserActions", UserAction::DrawDeleteAction);
 	ui.BuildDrawTransmuteButton->setGroup("UserActions", UserAction::DrawTransmuteAction);
 	ui.BuildDrawTransmuteButton->setPopupWidget(new TransmutePopup(*this, ui.BuildDrawTransmuteButton));
@@ -361,7 +360,6 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 	loadSettings();
 
 	// Set controls in some windows
-	fragmentsWidget->refresh();
 	commandWidget->refresh();
 
 	// Reset view of all loaded models

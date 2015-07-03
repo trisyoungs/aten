@@ -21,7 +21,6 @@
 
 #include <QMouseEvent>
 #include "gui/mainwindow.h"
-#include "gui/fragments.h"
 #include "main/aten.h"
 
 // Qt Signal (mouse press event)
@@ -171,10 +170,10 @@ void Viewer::mouseMoveEvent(QMouseEvent* event)
 				source->adjustZoom(delta.y < 0.0);
 				break;
 			case (UserAction::DrawFragmentsAction):
-				if (atenWindow_->fragmentsWidget->currentFragment() != NULL)
+				if (aten_->currentFragment())
 				{
-					if (atomClicked_ == NULL) atenWindow_->fragmentsWidget->currentFragment()->rotateOrientedModel(delta.x/2.0,delta.y/2.0);
-					else atenWindow_->fragmentsWidget->currentFragment()->rotateAnchoredModel(delta.x, delta.y);
+					if (atomClicked_ == NULL) aten_->currentFragment()->rotateOrientedModel(delta.x/2.0,delta.y/2.0);
+					else aten_->currentFragment()->rotateAnchoredModel(delta.x, delta.y);
 					update();
 				}
 				break;

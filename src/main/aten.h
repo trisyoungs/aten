@@ -442,11 +442,15 @@ class Aten
 	 */
 	private:
 	// Models making up fragment library
-	List<Model> fragmentModels_;
+	List<Model> fragments_;
 	// Groups of fragments within the library
 	List<FragmentGroup> fragmentGroups_;
 	// Internal count for naming new fragments
 	int fragmentModelId_;
+	// Current fragment for drawing
+	Fragment* currentFragment_;
+	// Bond id for current fragment drawing
+	int fragmentBondId_;
 
 	private:
 	// Parse fragment directory
@@ -459,8 +463,18 @@ class Aten
 	void openFragments();
 	// Add new fragment model from specified model's current selection
 	void addFragmentFromSelection(Model* source, QString parentGroup);
-	// Return first fragment library
+	// Return first fragment group
 	FragmentGroup* fragmentGroups();
+	// Return number of fragments available
+	int nFragments();
+	// Set current fragment for drawing
+	void setCurrentFragment(Fragment* fragment);
+	// Return current fragment for drawing
+	Fragment* currentFragment();
+	// Increment bond id value
+	void increaseFragmentBondId();
+	// Return bondId (as reference so it can be reset by associated Fragment routines)
+	int& fragmentBondId();
 
 
 	/*

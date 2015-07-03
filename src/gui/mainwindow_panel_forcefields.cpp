@@ -173,7 +173,7 @@ void AtenWindow::on_ForcefieldsExpressionTypeButton_clicked(bool checked)
 	updateWidgets(AtenWindow::MainViewTarget);
 }
 
-void AtenWindow::on_ForcefieldsExpressionCreateButton_clicked(bool checked)
+void AtenWindow::on_ForcefieldsExpressionDescribeButton_clicked(bool checked)
 {
 	Model* currentModel = aten_.currentModelOrFrame();
 	if (!currentModel) return;

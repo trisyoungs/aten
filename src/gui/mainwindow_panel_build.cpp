@@ -20,10 +20,13 @@
 */
 
 #include "gui/mainwindow.h"
+#include "main/aten.h"
 
 // Update build panel
 void AtenWindow::updateBuildPanel(Model* sourceModel)
 {
+	// Deactivate Fragments button if no fragments are available...
+	ui.BuildDrawFragmentButton->setEnabled(aten_.nFragments() > 0);
 }
 
 /*

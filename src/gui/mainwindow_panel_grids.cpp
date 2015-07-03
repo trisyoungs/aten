@@ -278,7 +278,8 @@ void AtenWindow::on_GridsPrimaryColourButton_popupChanged()
  * Secondary Surface
  */
 
-void AtenWindow::on_GridsSecondarySurfaceCheck_clicked(bool checked)
+
+void AtenWindow::on_GridsSecondaryActiveButton_clicked(bool checked)
 {
 	if (refreshing_) return;
 

@@ -17,12 +17,12 @@ SET(gui_MOC_HDRS
   disorderwizard.h
   ffeditor.h
   forcefields.h
-  fragments.h
   glyphs.h
   layoutlist.h
   loadmodel.h
   mainwindow.h
   popupbuildaddh.h
+  popupbuildfragments.h
   popupbuildgrow.h
   popupbuildrebond.h
   popupbuildtransmute.h
@@ -101,11 +101,11 @@ SET(gui_UIS
   disorderwizard.ui
   ffeditor.ui
   forcefields.ui
-  fragments.ui
   glyphs.ui
   loadmodel.ui
   mainwindow.ui
   popupbuildaddh.ui
+  popupbuildfragments.ui
   popupbuildgrow.ui
   popupbuildrebond.ui
   popupbuildtransmute.ui
@@ -173,7 +173,6 @@ set(gui_SRCS
   disorderwizard_funcs.cpp
   ffeditor_funcs.cpp
   forcefields_funcs.cpp
-  fragments_funcs.cpp
   glyphs_funcs.cpp
   layoutlist.cpp
   loadmodel_funcs.cpp
@@ -198,6 +197,7 @@ set(gui_SRCS
   mainwindow_quickcommand.cpp
   mainwindow_update.cpp
   popupbuildaddh_funcs.cpp
+  popupbuildfragments_funcs.cpp
   popupbuildgrow_funcs.cpp
   popupbuildrebond_funcs.cpp
   popupbuildtransmute_funcs.cpp

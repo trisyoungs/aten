@@ -21,7 +21,6 @@
 
 #include <QMouseEvent>
 #include "gui/mainwindow.h"
-#include "gui/fragments.h"
 #include "main/aten.h"
 
 // Set selected mode
@@ -260,7 +259,6 @@ void Viewer::endMode(Prefs::MouseButton button)
 	Atom* atoms[4], *i;
 	Bond* b;
 	Bond::BondType bt;
-	Fragment* frag;
 	
 	// Get current active model
 	Model* source = aten_->currentModelOrFrame();
@@ -395,18 +393,17 @@ void Viewer::endMode(Prefs::MouseButton button)
 			break;
 		// Draw fragments
 		case (UserAction::DrawFragmentsAction):
-			frag = atenWindow_->fragmentsWidget->currentFragment();
-			if (frag == NULL) break;
+			if (!aten_->currentFragment()) break;
 			if (atomClicked_ != NULL)
 			{
-				source->beginUndoState("Draw Attached Fragment");
-				frag->pasteAnchoredModel(atomClicked_, keyModifier_[Prefs::ShiftKey], atenWindow_->fragmentsWidget->bondId(), source, atenWindow_->fragmentsWidget->ui.AdjustBondLengthCheck->isChecked());
+				source->beginUndoState("Draw Anchored Fragment");
+				aten_->currentFragment()->pasteAnchoredModel(atomClicked_, keyModifier_[Prefs::ShiftKey], aten_->fragmentBondId(), source, true);
 			}
 			else
 			{
 				// No atom under the moust pointer, so draw on at the prefs drawing depth in its current orientation
 				source->beginUndoState("Draw Fragment");
-				frag->pasteOrientedModel(source->screenToModel(rMouseDown_.x, rMouseDown_.y, prefs.drawDepth()), source);
+				aten_->currentFragment()->pasteOrientedModel(source->screenToModel(rMouseDown_.x, rMouseDown_.y, prefs.drawDepth()), source);
 			}
 			source->endUndoState();
 			atenWindow_->updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);

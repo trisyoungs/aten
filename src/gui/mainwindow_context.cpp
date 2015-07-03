@@ -22,7 +22,6 @@
 #include <QtWidgets/QColorDialog>
 #include "main/aten.h"
 #include "gui/mainwindow.h"
-#include "gui/fragments.h"
 #include "model/model.h"
 #include "parser/commandnode.h"
 
@@ -97,15 +96,11 @@ void AtenWindow::createContextMenu()
 	action = contextMenu_.addAction("Probe");
 	connect(action, SIGNAL(triggered(bool)), this, SLOT(contextMenuProbeAtom(bool)));
 
-	// 	// Enable bond, angle, and torsion editing
-// 	int nSelected = (currentModel ? currentModel->nSelected() : 0);
-// 	ui.actionSetBondLength->setEnabled(false);
-// 	ui.actionSetBondAngle->setEnabled(false);
-// 	ui.actionSetTorsionAngle->setEnabled(false);
-// 	if (nSelected == 2) ui.actionSetBondLength->setEnabled(true);
-// 	else if (nSelected == 3) ui.actionSetBondAngle->setEnabled(true);
-// 	else if (nSelected == 4) ui.actionSetTorsionAngle->setEnabled(true);
-// 
+	// Create
+	contextMenu_.addSeparator();
+	action = contextMenu_.addAction("Create Fragment");
+	connect(action, SIGNAL(triggered(bool)), this, SLOT(contextMenuCreateFragment(bool)));
+
 // 	// (De)Activate glyph menu items based on number of atoms selected
 // 	for (int gt=0; gt<Glyph::nGlyphTypes; ++gt) createGlyphActions[gt]->setEnabled( Glyph::nGlyphData( (Glyph::GlyphType) gt) == nSelected);
 }
@@ -192,26 +187,16 @@ void AtenWindow::on_actionAtomColourSet_triggered(bool checked)
 	updateWidgets(AtenWindow::MainViewTarget);
 }*/
 
-void AtenWindow::on_actionSetBondLength_triggered(bool checked)
-{
-// 	gui.geometryWidget->showWidget(); ATEN2 TODO
-}
-
-void AtenWindow::on_actionSetBondAngle_triggered(bool checked)
-{
-// 	gui.geometryWidget->showWidget(); ATEN2 TODO
-}
-
-void AtenWindow::on_actionSetTorsionAngle_triggered(bool checked)
-{
-// 	gui.geometryWidget->showWidget(); ATEN2 TODO
-}
-
-void AtenWindow::on_actionCreateFragment_triggered(bool checked)
+// Create fragment from current selection
+void AtenWindow::contextMenuCreateFragment(bool checked)
 {
 	Model* viewTarget = aten_.currentModelOrFrame();
 	aten_.addFragmentFromSelection(viewTarget, "Selections");
-	fragmentsWidget->refresh();
+
+	// Update
+	updateWidgets(AtenWindow::BuildPanelTarget);
+	ReturnValue rv;
+	ui.BuildDrawFragmentButton->callPopupMethod("updateFragments", rv);
 }
 
 void AtenWindow::createGlyph()

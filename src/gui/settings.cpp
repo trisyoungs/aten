@@ -52,7 +52,7 @@ void AtenWindow::loadSettings()
 		ui.AtomsTableWidget->setVisible(!collapsed);
 		collapsed = (settings.contains("ModelsListCollapsed") ? settings.value("ModelsListCollapsed").toBool() : true);
 		ui.ModelsListToggleButton->setChecked(!collapsed);
-		ui.ModelsList->setVisible(!collapsed);
+		ui.ModelsListWidget->setVisible(!collapsed);
 
 		// Recent files
 		ReturnValue maxRecentFiles, recentFile;

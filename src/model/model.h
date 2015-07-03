@@ -253,9 +253,9 @@ class Model : public ListItem<Model>
 	// Cell definition (also contains reciprocal cell definition)
 	UnitCell cell_;
 	// Reassemble molecule/fragment, beginning at supplied atom, returning COG (or COM) of atoms
-	Vec3<double> reassembleFragment(Atom* i, int referenceBit, int &count, bool centreOfMass = false);
+	Vec3<double> reassembleFragment(Atom* i, int referenceBit, int& count, bool centreOfMass = false);
 	// Determine COG or COM of reassembled fragment without actually reassembling it
-	Vec3<double> reassembleFragment(Atom* i, Vec3<double> referencePos, int referenceBit, int &count, bool centreOfMass = false);
+	Vec3<double> reassembleFragment(Atom* i, Vec3<double> referencePos, int referenceBit, int& count, bool centreOfMass = false);
 
 	public:
 	// Return pointer to unit cell structure

@@ -296,17 +296,14 @@ void AtenWindow::on_AtomsTableScrollBar_valueChanged(int value)
 	updateWidgets(AtenWindow::AtomsTableTarget);
 }
 
-void AtenWindow::on_ViewStyleCombo_currentIndexChanged(int index)
+void AtenWindow::on_AtomsViewByPatternCheck_clicked(bool checked)
 {
-	// Check previous state and refresh if necessary
-	if (index == atomsTableViewingByAtom_)
-	{
-		atomsTableViewingByAtom_ = !index;
-		atomsTableSelectionPoint_ = -1;
-		atomsTableStructurePoint_ = -1;
+	atomsTableViewingByPattern_ = checked;
 
-		updateWidgets(AtenWindow::AtomsTableTarget);
-	}
+	atomsTableSelectionPoint_ = -1;
+	atomsTableStructurePoint_ = -1;
+
+	updateWidgets(AtenWindow::AtomsTableTarget);
 }
 
 void AtenWindow::on_AtomsViewElementCheck_clicked(bool checked)

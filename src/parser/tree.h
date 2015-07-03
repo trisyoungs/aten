@@ -196,7 +196,7 @@ class Tree : public ListItem<Tree>
 	// Add array 'constant'
 	TreeNode* addArrayConstant(TreeNode* values);
 	// Search for variable in current local scope
-	Variable* findLocalVariable(QString name, int &scopelevel);
+	Variable* findLocalVariable(QString name, int& scopelevel);
 	// Wrap named variable (and array index)
 	TreeNode* wrapVariable(Variable* var, TreeNode* arrayIndex = NULL);
 	// Return local scope's variable list

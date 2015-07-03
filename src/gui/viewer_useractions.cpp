@@ -23,7 +23,6 @@
 #include "gui/viewer.hui"
 #include "model/model.h"
 #include "model/fragment.h"
-#include "gui/fragments.h"
 #include "base/sysfunc.h"
 #include "gui/mainwindow.h"
 #include <QPainter>
@@ -111,7 +110,6 @@ void Viewer::renderUserActions(Model* source)
 	Bond::BondType bt = Bond::Single;
 	double radius_i, radius_j;
 	QString text;
-	Fragment* frag;
 
 	// Draw on the selection highlights (for atoms in the canvas' pickedAtoms list)
 	prefs.copyColour(Prefs::TextColour, colour_i);
@@ -210,15 +208,14 @@ void Viewer::renderUserActions(Model* source)
 	{
 		// Draw on fragment (as long as mode is selected)
 		case (UserAction::DrawFragmentsAction):
-			if (atenWindow_->fragmentsWidget->currentFragment() == NULL) break;
-			frag = atenWindow_->fragmentsWidget->currentFragment();
+			if (!aten_->currentFragment()) break;
 			j = source->atomOnScreen(rMouseLast_.x, rMouseLast_.y);
 			if ((atomClicked_ != NULL) || (j != NULL))
 			{
 				// Atom is now fragment anchor point - make sure we select a non-null atom i or j
 				if (atomClicked_ != NULL) j = atomClicked_;
 				pos = j->r();
-				Model* m = frag->anchoredModel(j, keyModifier(Prefs::ShiftKey), atenWindow_->fragmentsWidget->bondId());
+				Model* m = aten_->currentFragment()->anchoredModel(j, keyModifier(Prefs::ShiftKey), aten_->fragmentBondId());
 
 				A.setIdentity();
 				A.applyTranslation(pos);
@@ -238,7 +235,7 @@ void Viewer::renderUserActions(Model* source)
 				else pos = source->screenToModel(rMouseLast_.x, rMouseLast_.y, prefs.drawDepth());
 				A.setIdentity();
 				A.applyTranslation(pos);
-				renderGroup_.createAtomsAndBonds(primitives_[primitiveSet_], frag->orientedModel(), A);
+				renderGroup_.createAtomsAndBonds(primitives_[primitiveSet_], aten_->currentFragment()->orientedModel(), A);
 			}
 			break;
 	}

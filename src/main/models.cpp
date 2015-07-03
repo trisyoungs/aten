@@ -100,7 +100,7 @@ Model* Aten::addModel()
 			setCurrentModel(m);
 			break;
 		case (Aten::FragmentLibraryList):
-			m = fragmentModels_.add();
+			m = fragments_.add();
 			m->setType(Model::ParentModelType);
 			m->setName(QString("Fragment%1").arg(++fragmentModelId_, 3, 10, QChar('0')));
 			m->resetLogs();

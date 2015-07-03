@@ -67,6 +67,8 @@ Aten::Aten() : commands_(*this)
 
 	// Fragments
 	fragmentModelId_ = 0;
+	fragmentBondId_ = 0;
+	currentFragment_ = 0;
 
 	// Pointer to AtenWindow
 	atenWindow_ = NULL;

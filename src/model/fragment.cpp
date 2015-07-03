@@ -189,7 +189,7 @@ void Fragment::rotateAnchoredModel(double dx, double dy)
 }
 
 // Return anchored model, oriented to attach to specified atom
-Model* Fragment::anchoredModel(Atom* anchorpoint, bool replace, int &replacebond)
+Model* Fragment::anchoredModel(Atom* anchorpoint, bool replace, int& replacebond)
 {
 	Messenger::enter("Fragment::anchoredModel");
 
@@ -249,7 +249,7 @@ Model* Fragment::anchoredModel(Atom* anchorpoint, bool replace, int &replacebond
 }
 
 // Paste anchored model to target model
-void Fragment::pasteAnchoredModel(Atom* anchorpoint, bool replace, int &replacebond, Model* target, bool adjustbond)
+void Fragment::pasteAnchoredModel(Atom* anchorpoint, bool replace, int& replacebond, Model* target, bool adjustbond)
 {
 	Messenger::enter("Fragment::pasteAnchoredModel");
 
@@ -282,6 +282,7 @@ void Fragment::pasteAnchoredModel(Atom* anchorpoint, bool replace, int &replaceb
 	{
 		// For safety, clamp range of replaced atom id (shouldn't be necessary)
 		if (replacebond >= anchorpoint->nBonds()) replacebond = 0;
+
 		// Grab atom along n'th bond
 		RefListItem<Bond,int>* ri = anchorpoint->bond(replacebond);
 		target->deleteAtom(ri->item->partner(anchorpoint));

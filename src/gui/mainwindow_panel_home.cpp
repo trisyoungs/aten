@@ -256,18 +256,6 @@ void AtenWindow::on_HomeViewResetButton_clicked(bool checked)
 	updateWidgets(AtenWindow::MainViewTarget);
 }
 
-void AtenWindow::on_HomeViewZoomInButton_clicked(bool checked)
-{
-	aten_.currentModelOrFrame()->adjustCamera(0.0,0.0,5.0);
-	updateWidgets(AtenWindow::MainViewTarget);
-}
-
-void AtenWindow::on_HomeViewZoomOutButton_clicked(bool checked)
-{
-	aten_.currentModelOrFrame()->adjustCamera(0.0,0.0,-5.0);
-	updateWidgets(AtenWindow::MainViewTarget);
-}
-
 // Get current view
 void AtenWindow::on_HomeViewGetButton_clicked(bool checked)
 {
