@@ -224,7 +224,7 @@ void Viewer::renderUserActions(Model* source)
 				else
 				{
 					prefs.copyColour(Prefs::TextColour, colour_i);
-					renderGroup_.addLines(primitives_[primitiveSet_].crossedCube(), A, colour_i, 2.0);
+					renderGroup_.addLines(primitives_[primitiveSet_].crossedCube(), A, colour_i, true);
 				}
 			}
 			else

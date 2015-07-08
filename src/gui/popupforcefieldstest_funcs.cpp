@@ -1,6 +1,6 @@
 /*
-	*** FF/Energy Dock Widget
-	*** src/gui/forcefields_funcs.cpp
+	*** Popup Widget - Forcefields Test Functions
+	*** src/gui/popupforcefieldstest_funcs.cpp
 	Copyright T. Youngs 2007-2015
 
 	This file is part of Aten.
@@ -19,82 +19,72 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <QCloseEvent>
-#include <QtWidgets/QFileDialog>
+#include "gui/popupforcefieldstest.h"
 #include "main/aten.h"
-#include "methods/mc.h"
-#include "methods/sd.h"
-#include "methods/cg.h"
+#include "gui/mainwindow.h"
+#include "gui/popupelementtable.h"
+#include "base/namespace.h"
 #include "ff/forcefield.h"
 #include "base/pattern.h"
-#include "base/sysfunc.h"
 #include "base/forcefieldatom.h"
-#include "gui/ffeditor.h"
-#include "gui/selectpattern.h"
-#include "gui/mainwindow.h"
-#include "gui/forcefields.h"
-#include "model/model.h"
-#include "parser/commandnode.h"
 
 ATEN_USING_NAMESPACE
 
 // Constructor
-ForcefieldsWidget::ForcefieldsWidget(AtenWindow& parent, Qt::WindowFlags flags) : QDockWidget(&parent, flags), parent_(parent)
+ForcefieldsTestPopup::ForcefieldsTestPopup(AtenWindow& parent, TMenuButton* buttonParent) : TMenuButtonPopupWidget(buttonParent), parent_(parent)
 {
+	// Set up interface
 	ui.setupUi(this);
 
-	// Private variables
-	typelistElement_ = -1;
-	refreshing_ = false;
+	ui.ElementButton->setPopupWidget(new ElementTablePopup(parent_, ui.ElementButton), true);
 }
 
-void ForcefieldsWidget::showWidget()
+// Show popup, updating any controls as necessary beforehand
+void ForcefieldsTestPopup::popup()
 {
-	show();
-	refresh();
-}
-
-void ForcefieldsWidget::refresh()
-{
-	Messenger::enter("ForcefieldsWidget::refresh");
-	
-	// Update list of forcefields in the combo box
 	refreshing_ = true;
-// 	QStringList slist;
-// 	int def = -1, n = 0;
-// 	slist << "<No Forcefield>";
-// 	for (Forcefield* ff = parent_.aten().forcefields(); ff != NULL; ff = ff->next)
-// 	{
-// 		n++;
-// 		if (ff == parent_.aten().currentForcefield()) def = n;
-// 		slist << ff->name();
-// 	}
-// 	ui.ForcefieldCombo->clear();
-// 	ui.ForcefieldCombo->addItems(slist);
-// 	ui.ForcefieldCombo->setEnabled( n == 0 ? false : true );
-// 	
-// 	// Select whichever forcefield is marked as the default
-// 	if (def != -1) ui.ForcefieldCombo->setCurrentIndex(def);
-// 	else ui.ForcefieldCombo->setCurrentIndex(0);
-	
+
+	refreshTypes();
+
+	show();
 
 	refreshing_ = false;
-	Messenger::exit("ForcefieldsWidget::refresh");
 }
 
-// Update list of forcefield types in typelist
-void ForcefieldsWidget::refreshTypes()
+// Call named method associated to popup
+bool ForcefieldsTestPopup::callMethod(QString methodName, ReturnValue& rv)
+{
+	if (methodName == "TEST") return true;
+	else if (methodName == "hideEvent")
+	{
+		return true;
+	}
+	else printf("No method called '%s' is available in this popup.\n", qPrintable(methodName));
+	return false;
+}
+
+/*
+ * Private Functions
+ */
+
+void ForcefieldsTestPopup::refreshTypes()
 {
 	ui.FFTypeTable->clear();
 	QTableWidgetItem *item;
 	int count = 0;
 	Forcefield* ff = parent_.aten().currentForcefield();
 	if (ff == NULL) return;
+
+	// Get current element from button
+	ReturnValue element;
+	ui.ElementButton->callPopupMethod("currentElement", element);
+
 	// Reset header labels
 	ui.FFTypeTable->setHorizontalHeaderLabels(QStringList() << "TypeID" << "Name" << "Description");
 	for (ForcefieldAtom* ffa = ff->types(); ffa != NULL; ffa = ffa->next)
 	{
-		if (ffa->neta()->characterElement() != typelistElement_) continue;
+		if (ffa->neta()->characterElement() != element.asInteger()) continue;
+		
 		ui.FFTypeTable->setRowCount(count+1);
 		item = new QTableWidgetItem(QString::number(ffa->typeId()));
 		ui.FFTypeTable->setItem(count, 0, item);
@@ -104,53 +94,19 @@ void ForcefieldsWidget::refreshTypes()
 		ui.FFTypeTable->setItem(count, 2, item);
 		count ++;
 	}
+
 	// Resize the columns
 	ui.FFTypeTable->resizeColumnToContents(0);
 	ui.FFTypeTable->resizeColumnToContents(1);
 	ui.FFTypeTable->resizeColumnToContents(2);
 }
 
-// Save forcefield 
-void ForcefieldsWidget::on_SaveForcefieldButton_clicked(bool checked)
-{
-	// Get current forcefield
-	Forcefield* ff = parent_.aten().currentForcefield();
-	if (ff == NULL) return;
-
-	// Does forcefield have a valid filename? If not, call the other routine....
-	QString filename = ff->filename();
-	if (filename.isEmpty()) ui.SaveForcefieldAsButton->click();
-	else
-	{
-		// Save forcefield under filename currently in 'filenanme'
-		Messenger::print("Saving forcefield '%s' to file '%s'...", qPrintable(ff->name()), qPrintable(ff->filename()));
-		ff->save();
-	}
-}
-
-// Save forcefield 
-void ForcefieldsWidget::on_SaveForcefieldAsButton_clicked(bool checked)
-{
-	// Get current forcefield
-	Forcefield* ff = parent_.aten().currentForcefield();
-	if (ff == NULL) return;
-
-	static QDir currentDirectory_(parent_.aten().dataDir());
-	QString filename = QFileDialog::getSaveFileName(this, "Save Forcefield", currentDirectory_.path());
-	if (filename.isEmpty()) return;
-	ff->setFilename(qPrintable(filename));
-	
-	// Save forcefield under filename currently in 'filenanme'
-	Messenger::print("Saving forcefield '%s' to file '%s'...", qPrintable(ff->name()), qPrintable(ff->filename()));
-	ff->save();
-}
-
 /*
- * Manual Typing Tab
+ * Widget Functions
  */
 
 // Set the selected atoms to have the specified forcefield type
-void ForcefieldsWidget::on_ManualTypeSetButton_clicked(bool checked)
+void ForcefieldsTestPopup::on_SetButton_clicked(bool checked)
 {
 	// Check selected forcefield against that assigned to the model
 	Model* m = parent_.aten().currentModel();
@@ -161,6 +117,7 @@ void ForcefieldsWidget::on_ManualTypeSetButton_clicked(bool checked)
 		Messenger::print("The type you are trying to assign is in a different forcefield to that assigned to the model.");
 		return;
 	}
+
 	// Get the selected row in the FFTypeList
 	int row = ui.FFTypeTable->currentRow();
 	if (row == -1) return;
@@ -175,7 +132,7 @@ void ForcefieldsWidget::on_ManualTypeSetButton_clicked(bool checked)
 }
 
 // Clear type definitions from the selected atoms
-void ForcefieldsWidget::on_ManualTypeClearButton_clicked(bool checked)
+void ForcefieldsTestPopup::on_ClearButton_clicked(bool checked)
 {
 	parent_.aten().currentModel()->selectionSetType(NULL, false);
 	Messenger::print("Cleared types of %i atoms.", parent_.aten().currentModel()->nSelected());
@@ -183,7 +140,7 @@ void ForcefieldsWidget::on_ManualTypeClearButton_clicked(bool checked)
 }
 
 // Test selected atom type on current atom selection
-void ForcefieldsWidget::on_ManualTypeTestButton_clicked(bool checked)
+void ForcefieldsTestPopup::on_TestButton_clicked(bool checked)
 {
 	Forcefield* ff = parent_.aten().currentForcefield();
 	int row = ui.FFTypeTable->currentRow();
@@ -197,6 +154,7 @@ void ForcefieldsWidget::on_ManualTypeTestButton_clicked(bool checked)
 		if (m->createPatterns())
 		{
 			Messenger::print("Testing atom type '%s' (id = %i) from forcefield '%s' on current selection:", qPrintable(ffa->name()), ffa->typeId(), qPrintable(ff->name()));
+
 			// Prepare for typing
 			m->describeAtoms();
 			int matchscore;
@@ -214,19 +172,3 @@ void ForcefieldsWidget::on_ManualTypeTestButton_clicked(bool checked)
 		}
 	}
 }
-
-// Change target element in type list
-void ForcefieldsWidget::on_ManualTypeEdit_returnPressed()
-{
-	// Get the contents of the line edit and check that it is an element symbol
-	int el = Elements().find(qPrintable(ui.ManualTypeEdit->text()), ElementMap::AlphaZMap);
-	if (el == -1)
-	{
-		Messenger::print("Unknown element '%s'",qPrintable(ui.ManualTypeEdit->text()));
-		ui.ManualTypeEdit->setText("H");
-		typelistElement_ = 1;
-	}
-	else typelistElement_ = el;
-	refreshTypes();
-}
-

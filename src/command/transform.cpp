@@ -33,6 +33,7 @@ bool Commands::function_AxisRotate(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	double angle;
 	Atom* i, *j;
 	Vec3<double> v, o;
+
 	// Determine which data has been supplied
 	switch (c->nArgs())
 	{
@@ -69,9 +70,11 @@ bool Commands::function_AxisRotate(CommandNode* c, Bundle& obj, ReturnValue& rv)
 			return false;
 			break;
 	}
+
 	obj.rs()->beginUndoState("Rotate %i atom(s)", obj.rs()->nSelected());
 	obj.rs()->rotateSelectionVector(o, v, angle);
 	obj.rs()->endUndoState();
+
 	rv.reset();
 	return true;
 }

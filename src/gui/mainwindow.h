@@ -24,6 +24,7 @@
 
 #include <QtWidgets/QButtonGroup>
 #include <QSettings>
+#include <QMenu>
 #include "base/atom.h"
 #include "base/prefs.h"
 #include "gui/ui_mainwindow.h"
@@ -168,10 +169,6 @@ class AtenWindow : public QMainWindow
 	 */
 	private slots:
 	void on_actionOpenExpression_triggered(bool checked);
-	void on_actionSaveExpression_triggered(bool checked);
-	void on_actionModelFFType_triggered(bool checked);
-	void on_actionModelFFUntype_triggered(bool checked);
-	void on_actionModelCreateExpression_triggered(bool checked);
 
 
 	/*
@@ -302,6 +299,10 @@ class AtenWindow : public QMainWindow
 	void on_TransformPositionCentreButton_clicked(bool checked);
 	void on_TransformPositionRepositionButton_clicked(bool checked);
 	void on_TransformPositionZeroButton_clicked(bool checked);
+	// Transform
+	void on_TransformTransformRotateButton_clicked(bool checked);
+	void on_TransformTransformMultiplyButton_clicked(bool checked);
+	void on_TransformTransformConvertButton_clicked(bool checked);
 
 
 	/*
@@ -393,6 +394,7 @@ class AtenWindow : public QMainWindow
 	// Expression
 	void on_ForcefieldsExpressionTypeButton_clicked(bool checked);
 	void on_ForcefieldsExpressionDescribeButton_clicked(bool checked);
+	void on_ForcefieldsExpressionExportButton_clicked(bool checked);
 	void on_ForcefieldsExpressionClearButton_clicked(bool checked);
 
 

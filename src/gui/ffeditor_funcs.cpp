@@ -1,5 +1,5 @@
 /*
-	*** Qt forcefield editor window functions
+	*** Forcefield Editor
 	*** src/gui/ffeditor_funcs.cpp
 	Copyright T. Youngs 2007-2015
 
@@ -19,15 +19,16 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <QtWidgets/QMessageBox>
-#include <QtWidgets/QComboBox>
+#include <QMessageBox>
+#include <QComboBox>
+#include <QFileDialog>
 #include "base/sysfunc.h"
 #include "gui/ffeditor.h"
 #include "gui/tdoublespindelegate.hui"
 #include "gui/tintegerspindelegate.hui"
 #include "ff/forcefield.h"
 #include "model/model.h"
-#include "main/aten.h"
+// #include "main/aten.h"
 #include "base/forcefieldatom.h"
 #include "base/forcefieldbound.h"
 #include "templates/variantpointer.h"
@@ -376,6 +377,12 @@ void AtenForcefieldEditor::boundFunctionChanged(QComboBox* sender, int i, Forcef
 /*
  * Types Page
  */
+
+// Generate type
+void AtenForcefieldEditor::on_FFEditorGenerateTypeButton_clicked(bool checked)
+{
+	// ATEN2 TODO
+}
 
 // Test entered atom type
 void AtenForcefieldEditor::on_FFEditorTestTypeButton_clicked(bool checked)
@@ -971,10 +978,39 @@ void AtenForcefieldEditor::on_FFEditorUreyBradleysTable_itemSelectionChanged()
 }
 
 /*
- * Generate Page
+ * Generate Tab
  */
 
-// Generate type
-void AtenForcefieldEditor::on_FFEditorGenerateTypeButton_clicked(bool checked)
+
+/*
+ * Buttons
+ */
+
+void AtenForcefieldEditor::on_CloseButton_clicked(bool checked)
 {
+}
+
+void AtenForcefieldEditor::on_SaveButton_clicked(bool checked)
+{
+	// Does forcefield have a valid filename? If not, call the other routine....
+	QString filename = targetForcefield_->filename();
+	if (filename.isEmpty()) ui.SaveAsButton->click();
+	else
+	{
+		// Save forcefield under filename currently in 'filenanme'
+		Messenger::print("Saving forcefield '%s' to file '%s'...", qPrintable(targetForcefield_->name()), qPrintable(targetForcefield_->filename()));
+		targetForcefield_->save();
+	}
+}
+
+void AtenForcefieldEditor::on_SaveAsButton_clicked(bool checked)
+{
+	QDir currentDirectory_;
+	QString filename = QFileDialog::getSaveFileName(this, "Save Forcefield", currentDirectory_.path());
+	if (filename.isEmpty()) return;
+	targetForcefield_->setFilename(qPrintable(filename));
+	
+	// Save forcefield under filename currently in 'filenanme'
+	Messenger::print("Saving forcefield '%s' to file '%s'...", qPrintable(targetForcefield_->name()), qPrintable(targetForcefield_->filename()));
+	targetForcefield_->save();
 }

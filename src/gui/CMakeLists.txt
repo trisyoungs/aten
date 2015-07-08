@@ -16,7 +16,6 @@ SET(gui_MOC_HDRS
   disorderoptions.h
   disorderwizard.h
   ffeditor.h
-  forcefields.h
   glyphs.h
   layoutlist.h
   loadmodel.h
@@ -41,6 +40,7 @@ SET(gui_MOC_HDRS
   popupfilesave.h
   popupforcefieldsassign.h
   popupforcefieldsminimise.h
+  popupforcefieldstest.h
   popupgridmatrix.h
   popupgridorigin.h
   popupgridshift.h
@@ -51,9 +51,12 @@ SET(gui_MOC_HDRS
   popupmeasuretorsion.h
   popuptransformangle.h
   popuptransformcentre.h
+  popuptransformconvert.h
   popuptransformdistance.h
   popuptransformflip.h
+  popuptransformmultiply.h
   popuptransformreposition.h
+  popuptransformrotate.h
   popuptransformshift.h
   popuptransformtorsion.h
   popuptransformtranslate.h
@@ -68,7 +71,6 @@ SET(gui_MOC_HDRS
   selectfilter.h
   selectpattern.h
   selectvariable.h
-  transform.h
   vibrations.h
   viewbasis.h
   vieweigenvector.h
@@ -100,7 +102,6 @@ SET(gui_UIS
   disorderoptions.ui
   disorderwizard.ui
   ffeditor.ui
-  forcefields.ui
   glyphs.ui
   loadmodel.ui
   mainwindow.ui
@@ -124,6 +125,7 @@ SET(gui_UIS
   popupfilesave.ui
   popupforcefieldsassign.ui
   popupforcefieldsminimise.ui
+  popupforcefieldstest.ui
   popupgridmatrix.ui
   popupgridorigin.ui
   popupgridshift.ui
@@ -134,8 +136,11 @@ SET(gui_UIS
   popupmeasuretorsion.ui
   popuptransformangle.ui
   popuptransformcentre.ui
+  popuptransformconvert.ui
   popuptransformdistance.ui
   popuptransformflip.ui
+  popuptransformmultiply.ui
+  popuptransformrotate.ui
   popuptransformreposition.ui
   popuptransformshift.ui
   popuptransformtorsion.ui
@@ -151,7 +156,6 @@ SET(gui_UIS
   selectfilter.ui
   selectpattern.ui
   selectvariable.ui
-  transform.ui
   vibrations.ui
   viewbasis.ui
   vieweigenvector.ui
@@ -172,7 +176,6 @@ set(gui_SRCS
   disorderoptions_funcs.cpp
   disorderwizard_funcs.cpp
   ffeditor_funcs.cpp
-  forcefields_funcs.cpp
   glyphs_funcs.cpp
   layoutlist.cpp
   loadmodel_funcs.cpp
@@ -216,6 +219,7 @@ set(gui_SRCS
   popupfilesave_funcs.cpp
   popupforcefieldsassign_funcs.cpp
   popupforcefieldsminimise_funcs.cpp
+  popupforcefieldstest_funcs.cpp
   popupgridmatrix_funcs.cpp
   popupgridorigin_funcs.cpp
   popupgridshift_funcs.cpp
@@ -226,9 +230,12 @@ set(gui_SRCS
   popupmeasuretorsion_funcs.cpp
   popuptransformangle_funcs.cpp
   popuptransformcentre_funcs.cpp
+  popuptransformconvert_funcs.cpp
   popuptransformdistance_funcs.cpp
   popuptransformflip_funcs.cpp
+  popuptransformmultiply_funcs.cpp
   popuptransformreposition_funcs.cpp
+  popuptransformrotate_funcs.cpp
   popuptransformshift_funcs.cpp
   popuptransformtorsion_funcs.cpp
   popuptransformtranslate_funcs.cpp
@@ -259,7 +266,6 @@ set(gui_SRCS
   texponentialspin_funcs.cpp
   tintegerspindelegate_funcs.cpp
   ttabwidget_funcs.cpp
-  transform_funcs.cpp
   tprocess_funcs.cpp
   tprompt_funcs.cpp
   textratreewidgetitem_funcs.cpp

@@ -14,15 +14,21 @@ if(COMMAND cmake_policy)
   cmake_policy(VERSION 2.6)
 endif(COMMAND cmake_policy)
 
+# Add definitions
+include(DefineOptions.cmake)
+include(DefineFunctions.cmake)
+include(GNUInstallDirs)
+
 # Find required packages for this project
-set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}")
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 find_package(Qt5Widgets REQUIRED)
 find_package(Qt5Core REQUIRED)
 find_package(Qt5Gui REQUIRED)
 find_package(READLINE REQUIRED)
 include(FindBISON)
 find_package(BISON REQUIRED)
-
+find_package(OpenGL REQUIRED)
+message(STATUS  "readline ${READLINE_LIBRARY}")
 # Find includes in corresponding build directories
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
@@ -43,7 +49,6 @@ if(WIN32)
   set(FT2_LIBRARIES "C:/GnuWin32/lib/libfreetype.dll.a")
   set(GLEXT_INCLUDES "C:/Users/axr61803/src/include")
   # Find OpenGL
-  find_package(OPENGL REQUIRED)
   # Add global NOMINMAX define for Windows systems, and inhibit console creation
   ADD_DEFINITIONS("-DNOMINMAX")
   SET(GUI_TYPE WIN32)
@@ -67,7 +72,6 @@ if(APPLE)
   # Set include location for FreeType2
   set(FT2_INCLUDES "/usr/local/include/freetype2")
   # Find OpenGL and GLUT
-  find_package(OPENGL REQUIRED)
   find_package(GLUT REQUIRED)
   # Set libraries for link time
   set(FTGL_LIBRARIES "-L/usr/local/lib -lftgl")
@@ -117,7 +121,8 @@ IF(WIN32)
 ELSEIF(APPLE)
   set(ATEN_LINK_LIBS Qt5::Widgets Qt5::Core ${FTGL_LIBRARIES} ${OPENGL_LIBRARIES} ${FT2_LIBRARIES} ${READLINE_LIBRARY})
 ELSE(APPLE)
-  set(ATEN_LINK_LIBS Qt5::Widgets Qt5::Core -lGL -lftgl ${READLINE_LIBRARY})
+  set(ATEN_LINK_LIBS Qt5::Widgets Qt5::Core ${OPENGL_LIBRARIES}  -lftgl ${READLINE_LIBRARY})
+  set(ATEN_LINK_LIBS Qt5::Widgets Qt5::Core ${OPENGL_LIBRARIES}  -lftgl ${READLINE_LIBRARY})
 ENDIF(WIN32)
 
 target_link_libraries( ${target_name}
@@ -125,3 +130,18 @@ target_link_libraries( ${target_name}
     ${ATEN_LINK_LIBS}
     )
 
+################install
+
+INSTALL_TARGET(${target_name} "")
+if(UNIX AND NOT APPLE)
+configure_file(${CMAKE_SOURCE_DIR}/desktop.cmake Aten.desktop)
+install(FILES ${CMAKE_SOURCE_DIR}/src/gui/icons/aten.png 
+        DESTINATION share/aten)
+install(FILES ${CMAKE_BINARY_DIR}/Aten.desktop 
+        DESTINATION share/applications)
+endif(UNIX AND NOT APPLE)
+foreach(i ff fftesting fragments partitions scripts test includes)
+  install(DIRECTORY ${CMAKE_SOURCE_DIR}/data/${i}
+          DESTINATION share/aten
+          REGEX ".svn" EXCLUDE)
+endforeach()

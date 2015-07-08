@@ -1,6 +1,6 @@
 /*
-	*** Popup Widget - Colour Select
-	*** src/gui/popupcolour.h
+	*** Popup Widget - Forcefields Test
+	*** src/gui/popupforcefieldstest.h
 	Copyright T. Youngs 2007-2015
 
 	This file is part of Aten.
@@ -19,18 +19,15 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_COLOURPOPUP_H
-#define ATEN_COLOURPOPUP_H
+#ifndef ATEN_FORCEFIELDSTESTPOPUP_H
+#define ATEN_FORCEFIELDSTESTPOPUP_H
 
-#include "gui/ui_popupcolour.h"
+#include "gui/ui_popupforcefieldstest.h"
 #include "gui/tmenubutton.hui"
-#include "base/namespace.h"
-#include <QPushButton>
 #include "parser/returnvalue.h"
 
 // Forward Declarations (Qt)
 class AtenWindow;
-class QColorDialog;
 
 ATEN_BEGIN_NAMESPACE
 
@@ -41,8 +38,8 @@ ATEN_END_NAMESPACE
 
 ATEN_USING_NAMESPACE
 
-// Popup Widget - Colour
-class ColourPopup : public TMenuButtonPopupWidget
+// Popup Widget - Forcefields Assign
+class ForcefieldsTestPopup : public TMenuButtonPopupWidget
 {
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
@@ -53,9 +50,9 @@ class ColourPopup : public TMenuButtonPopupWidget
 
 	public:
 	// Constructor / Destructor
-	ColourPopup(AtenWindow& parent, TMenuButton* buttonParent);
+	ForcefieldsTestPopup(AtenWindow& parent, TMenuButton* buttonParent);
 	// Main form declaration
-	Ui::ColourPopup ui;
+	Ui::ForcefieldsTestPopup ui;
 	// Show popup, updating any controls as necessary beforehand
 	void popup();
 	// Call named method associated to popup
@@ -63,40 +60,27 @@ class ColourPopup : public TMenuButtonPopupWidget
 
 
 	/*
-	 * Qt Functions
+	 * Reimplementations
 	 */
-	private slots:
-	void on_RedSlider_valueChanged(int value);
-	void on_RedSpin_valueChanged(int value);
-	void on_GreenSlider_valueChanged(int value);
-	void on_GreenSpin_valueChanged(int value);
-	void on_BlueSlider_valueChanged(int value);
-	void on_BlueSpin_valueChanged(int value);
-	void on_HueSlider_valueChanged(int value);
-	void on_HueSpin_valueChanged(int value);
-	void on_SaturationSlider_valueChanged(int value);
-	void on_SaturationSpin_valueChanged(int value);
-	void on_ValueSlider_valueChanged(int value);
-	void on_ValueSpin_valueChanged(int value);
-	void on_AlphaSlider_valueChanged(int value);
-	void on_AlphaSpin_valueChanged(int value);
-	void on_Wheel_colourChanged(const QColor& colour);
+	protected:
+	void hideEvent(QHideEvent* event) { TMenuButtonPopupWidget::hideEvent(event); }
 
 
 	/*
-	 * Local variables
+	 * Private Functions
 	 */
 	private:
-	// Selected colour
-	QColor currentColour_;
+	// Refresh types list
+	void refreshTypes();
 
-	private:
-	// Update parent button's icon
-	void updateParentButtonIcon();
 
-	public:
-	// Set current colour
-	void setCurrentColour(QColor color);
+	/*
+	 * Widget Functions
+	 */
+	private slots:
+	void on_SetButton_clicked(bool checked);
+	void on_ClearButton_clicked(bool checked);
+	void on_TestButton_clicked(bool checked);
 };
 
 #endif

@@ -77,3 +77,23 @@ void AtenWindow::on_TransformPositionZeroButton_clicked(bool checked)
 	// Update display
 	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
 }
+
+/*
+ * Transform
+ */
+
+void AtenWindow::on_TransformTransformRotateButton_clicked(bool checked)
+{
+}
+
+void AtenWindow::on_TransformTransformMultiplyButton_clicked(bool checked)
+{
+	ReturnValue rv;
+	ui.TransformTransformMultiplyButton->callPopupMethod("multiply", rv);
+}
+
+void AtenWindow::on_TransformTransformConvertButton_clicked(bool checked)
+{
+	ReturnValue rv;
+	ui.TransformTransformConvertButton->callPopupMethod("convert", rv);
+}

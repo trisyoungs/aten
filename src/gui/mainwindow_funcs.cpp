@@ -65,9 +65,12 @@
 #include "gui/popupcellspacegroup.h"
 #include "gui/popuptransformangle.h"
 #include "gui/popuptransformcentre.h"
+#include "gui/popuptransformconvert.h"
 #include "gui/popuptransformdistance.h"
 #include "gui/popuptransformflip.h"
+#include "gui/popuptransformmultiply.h"
 #include "gui/popuptransformreposition.h"
+#include "gui/popuptransformrotate.h"
 #include "gui/popuptransformshift.h"
 #include "gui/popuptransformtorsion.h"
 #include "gui/popuptransformtranslate.h"
@@ -77,11 +80,9 @@
 
 #include "gui/command.h"
 #include "gui/disorderwizard.h"
-#include "gui/forcefields.h"
 #include "gui/glyphs.h"
 #include "gui/pores.h"
 #include "gui/scriptmovie.h"
-#include "gui/transform.h"
 #include "gui/vibrations.h"
 
 // Constructor
@@ -149,13 +150,11 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 	// Create dock widgets
 	commandWidget = new CommandWidget(*this, Qt::Tool);
 	disorderWizard = new DisorderWizard(*this);
-	forcefieldsWidget = new ForcefieldsWidget(*this, Qt::Tool);
 	glyphsWidget = new GlyphsWidget(*this, Qt::Tool);
 	poresWidget = new PoresWidget(*this, Qt::Tool);
 	scriptMovieWidget = new ScriptMovieWidget(*this, Qt::Tool);
-	transformWidget = new TransformWidget(*this, Qt::Tool);
 	vibrationsWidget = new VibrationsWidget(*this, Qt::Tool);
-	dockWidgets_ << commandWidget << glyphsWidget << poresWidget << scriptMovieWidget << transformWidget << vibrationsWidget;
+	dockWidgets_ << commandWidget << glyphsWidget << poresWidget << scriptMovieWidget << vibrationsWidget;
 
 	int n;
 	ReturnValue rv;
@@ -234,6 +233,10 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 	ui.TransformPositionTranslateButton->setPopupWidget(new TransformTranslatePopup(*this, ui.TransformPositionTranslateButton), true);
 	ui.TransformPositionShiftButton->setPopupWidget(new TransformShiftPopup(*this, ui.TransformPositionShiftButton), true);
 	ui.TransformPositionRepositionButton->setPopupWidget(new TransformRepositionPopup(*this, ui.TransformPositionRepositionButton));
+	// -- Transform Panel (Position)
+	ui.TransformTransformRotateButton->setPopupWidget(new TransformRotatePopup(*this, ui.TransformTransformRotateButton), true);
+	ui.TransformTransformMultiplyButton->setPopupWidget(new TransformMultiplyPopup(*this, ui.TransformTransformMultiplyButton));
+	ui.TransformTransformConvertButton->setPopupWidget(new TransformConvertPopup(*this, ui.TransformTransformConvertButton));
 
 	// -- Grids Panel (Manage)
 	connect(ui.GridsList, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(gridsListContextMenuRequested(QPoint)));
@@ -365,8 +368,7 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
 	// Reset view of all loaded models
 	for (Model* m = aten.models(); m != NULL; m = m->next) if (!prefs.keepView()) m->resetView(ui.MainView->contextWidth(), ui.MainView->contextHeight());
 
-	// Refresh the necessary windows, including the mainwindow
-	forcefieldsWidget->refresh();
+	// Refresh everything
 	commandWidget->refreshScripts();
 	updateWidgets(AtenWindow::AllTarget);
 

@@ -22,7 +22,6 @@
 #include "gui/mainwindow.h"
 #include "main/version.h" 
 #include "main/aten.h"
-#include "gui/forcefields.h"
 #include "gui/vibrations.h"
 #include "gui/glyphs.h"
 #include <QtWidgets/QMessageBox>

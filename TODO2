@@ -62,7 +62,7 @@ Add Calculate tool to work out centre of geometry/mass.
 Add option to display ColourScale selector (e.g. for Grid colour buttons)
 Have Tools page? With, for instance:
 --- Plot Orbital (raising dialog from old GridsWidget)
-Remove Forcefields widget and Transform widget.
+Reimplement Open Expression somewhere.
 
 Manual TODO:
 Remove level of detail and transparency options from Prefs.
