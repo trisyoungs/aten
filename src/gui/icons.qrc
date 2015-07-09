@@ -22,6 +22,8 @@
     <file>icons/transform_translate.svg</file>
     <file>icons/transform_flipx.svg</file>
     <file>icons/transform_flipy.svg</file>
+    <file>icons/transform_rotate.svg</file>
+    <file>icons/transform_multiply.svg</file>
     <file>icons/transform_flipz.svg</file>
     <file>icons/transform_zero.svg</file>
     <file>icons/transform_distance.svg</file>
