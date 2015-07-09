@@ -87,13 +87,13 @@ then
 fi
 grep 'Version:' ./extra/aten.dsc | sed -e 's/Version: \([0-9a-z\.]\+\)/\1/g'
 
-# ./extra/dmginfo.txt
-echo -n "     dmginfo.txt (Program Version) : "
+# ./extra/aten.dmginfo
+echo -n "    aten.dmginfo (Program Version) : "
 if [ "$TEST" = "false" ]
 then
-  sed -i -e "s/APP_VERSION=\"\([0-9a-z\.]\+\)\"/APP_VERSION=\"$MAJOR.$MINOR.$PATCH\"/g" ./extra/dmginfo.txt
+  sed -i -e "s/APP_VERSION=\"\([0-9a-z\.]\+\)\"/APP_VERSION=\"$MAJOR.$MINOR.$PATCH\"/g" ./extra/aten.dmginfo
 fi
-grep 'APP_VERSION=' ./extra/dmginfo.txt | sed -e 's/APP_VERSION=\"\([0-9a-z\.]\+\)\"/\1/g'
+grep 'APP_VERSION=' ./extra/aten.dmginfo | sed -e 's/APP_VERSION=\"\([0-9a-z\.]\+\)\"/\1/g'
 
 # ./extra/aten.iss
 if [ "$TEST" = "false" ]
