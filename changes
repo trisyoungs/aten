@@ -1,1 +1,1 @@
-Removed old Forcefields and Transform dock widgets. Added Save/SaveAs buttons to FFEditor. Added type test popup. Added popups reproducing axis rotate, multiply, and convert functions from old Transform dock widget. Tweaked root CMakeLists to only build 64-bit target on OSX. Updated root CMakeLists.txt and CMake includes (thanks AE). Renamed extra/dmginfo.txt to extra/aten.dmginfo.
+Fixed - Module search path was set in wrong place in CMakeLists.txt.

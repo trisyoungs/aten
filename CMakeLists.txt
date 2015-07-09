@@ -15,17 +15,17 @@ if(COMMAND cmake_policy)
 endif(COMMAND cmake_policy)
 
 # Add definitions
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 include(DefineOptions.cmake)
 include(DefineFunctions.cmake)
 include(GNUInstallDirs)
+include(FindBISON)
 
 # Find required packages for this project
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
 find_package(Qt5Widgets REQUIRED)
 find_package(Qt5Core REQUIRED)
 find_package(Qt5Gui REQUIRED)
 find_package(READLINE REQUIRED)
-include(FindBISON)
 find_package(BISON REQUIRED)
 find_package(OpenGL REQUIRED)
 message(STATUS  "readline ${READLINE_LIBRARY}")
