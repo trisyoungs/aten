@@ -21,6 +21,7 @@ include(DefineFunctions)
 include(GNUInstallDirs)
 include(FindREADLINE)
 include(FindBISON)
+include(FindFTGL)
 
 # Find required packages for this project
 find_package(Qt5Widgets REQUIRED)
@@ -29,6 +30,8 @@ find_package(Qt5Gui REQUIRED)
 find_package(READLINE REQUIRED)
 find_package(BISON REQUIRED)
 find_package(OpenGL REQUIRED)
+find_package(FTGL REQUIRED)
+find_package(Freetype REQUIRED)
 message(STATUS  "readline ${READLINE_LIBRARY}")
 
 # Find includes in corresponding build directories
@@ -63,7 +66,7 @@ endif(WIN32)
 if(UNIX)
   set (target_name aten)
   # Set include location for FreeType2
-  set(FT2_INCLUDES "/usr/include/freetype2")
+  #set(FT2_INCLUDES "/usr/include/freetype2")
 endif(UNIX)
 
 # -- OSX
@@ -72,7 +75,7 @@ if(APPLE)
   #set(CMAKE_OSX_ARCHITECTURES "x86_64")
   ADD_DEFINITIONS(-D_MAC)
   # Set include location for FreeType2
-  set(FT2_INCLUDES "/usr/local/include/freetype2")
+  #set(FT2_INCLUDES "/usr/local/include/freetype2")
   # Find OpenGL and GLUT
   find_package(GLUT REQUIRED)
   # Set libraries for link time
@@ -101,10 +104,11 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/src
   ${CMAKE_SOURCE_DIR}/src/gui
   ${Qt5Widgets_INCLUDE_DIRS}
+  ${Qt5OpenGL_INCLUDE_DIRS}
   ${Qt5Core_INCLUDE_DIRS}
   ${Qt5Gui_INCLUDE_DIRS}
-  ${FTGL_INCLUDES}
-  ${FT2_INCLUDES}
+  ${FTGL_INCLUDE_DIRS}
+  ${FREETYPE_INCLUDE_DIRS}
   ${GLEXT_INCLUDES}
 )
 
@@ -119,12 +123,11 @@ add_executable(${target_name}
 # Perform final link
 link_directories (${LIBRARY_OUTPUT_PATH})
 IF(WIN32)
-  set(ATEN_LINK_LIBS Qt5::Widgets Qt5::Core ${FTGL_LIBRARIES} ${OPENGL_LIBRARIES} ${FT2_LIBRARIES} C:/GnuWin32/lib/libreadline.dll.a)
+  set(ATEN_LINK_LIBS Qt5::Widgets Qt5::Core ${FTGL_LIBRARIES} ${OPENGL_LIBRARIES} ${FREETYPE_LIBRARIES} C:/GnuWin32/lib/libreadline.dll.a)
 ELSEIF(APPLE)
-  set(ATEN_LINK_LIBS Qt5::Widgets Qt5::Core ${FTGL_LIBRARIES} ${OPENGL_LIBRARIES} ${FT2_LIBRARIES} ${READLINE_LIBRARY})
+  set(ATEN_LINK_LIBS Qt5::Widgets Qt5::Core ${FTGL_LIBRARIES} ${OPENGL_LIBRARIES} ${FREETYPE_LIBRARIES} ${READLINE_LIBRARY})
 ELSE(APPLE)
-  set(ATEN_LINK_LIBS Qt5::Widgets Qt5::Core ${OPENGL_LIBRARIES}  -lftgl ${READLINE_LIBRARY})
-  set(ATEN_LINK_LIBS Qt5::Widgets Qt5::Core ${OPENGL_LIBRARIES}  -lftgl ${READLINE_LIBRARY})
+  set(ATEN_LINK_LIBS Qt5::Widgets Qt5::Core ${OPENGL_LIBRARIES} ${FTGL_LIBRARIES} ${FREETYPE_LIBRARIES} ${READLINE_LIBRARY})
 ENDIF(WIN32)
 
 target_link_libraries( ${target_name}
