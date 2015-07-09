@@ -15,10 +15,11 @@ if(COMMAND cmake_policy)
 endif(COMMAND cmake_policy)
 
 # Add definitions
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/Modules/")
-include(DefineOptions.cmake)
-include(DefineFunctions.cmake)
+LIST(APPEND CMAKE_MODULE_PATH "${Aten_SOURCE_DIR}/cmake/Modules") 
+include(DefineOptions)
+include(DefineFunctions)
 include(GNUInstallDirs)
+include(FindREADLINE)
 include(FindBISON)
 
 # Find required packages for this project
@@ -29,6 +30,7 @@ find_package(READLINE REQUIRED)
 find_package(BISON REQUIRED)
 find_package(OpenGL REQUIRED)
 message(STATUS  "readline ${READLINE_LIBRARY}")
+
 # Find includes in corresponding build directories
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
