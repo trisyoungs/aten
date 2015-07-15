@@ -18,6 +18,4 @@ bob@pc:~> ln -s extra/ubuntu14.04 ./debian
 
 Now run debuild:
 
-bob@pc:~> debuild 
-
--uc -us -b
+bob@pc:~> debuild -uc -us -b
