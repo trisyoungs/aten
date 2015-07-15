@@ -1,12 +1,12 @@
 Source: aten
+Maintainer: Tristan Youngs <tris@projectaten.net>
 Section: unknown
 Priority: optional
-Maintainer: Tris Youngs <tris@projectaten.net>
-Build-Depends: debhelper (>= 4.1.16)
+Build-Depends: debhelper (>= 9),ftgl-dev,libreadline6-dev,bison,libtool,qt54base
 
 Package: aten
 Architecture: any
-Depends: ${shlibs:Depends}
+Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: Atomic configuration creator and editor
  Aten allows configurations suitable for molecular dynamics, Monte Carlo, and ab initio codes
  to be created easily. Periodic and non-periodic systems can be generated automatically or
