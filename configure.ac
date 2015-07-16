@@ -92,9 +92,6 @@ fi
 # Check for other dependencies
 AC_CHECK_HEADER([$RLINCDIR/readline.h],,[AC_MSG_ERROR([Cannot find headers for readline.])])
 
-# Determine whether to link against libncurses or libncurses5
-AC_SEARCH_LIBS(tgetent, [ncurses ncurses5 curses termcap])
-
 # Set up compilation for Qt GUI
 if test "$with_qt" = "framework"; then
   QTGUI_LIBS="-framework QtGui -framework QtOpenGL -framework QtCore -framework OpenGL"
@@ -114,7 +111,7 @@ if test "x$with_qt" = "x"; then
   PKG_CHECK_MODULES(QTOPENGL, Qt5OpenGL >= 5.0.0)
   PKG_CHECK_MODULES(QTWIDGETS, Qt5Widgets >= 5.0.0)
 fi
-ATEN_LDLIBS="$FTGL_LIBS $FREETYPE_LIBS $QTGUI_LIBS $QTOPENGL_LIBS -lreadline -lncurses -lGL -lfreetype"
+ATEN_LDLIBS="$FTGL_LIBS $FREETYPE_LIBS $QTGUI_LIBS $QTOPENGL_LIBS -lreadline -lGL -lfreetype"
 ATEN_CFLAGS="-fPIC $FREETYPE_CFLAGS $QTGUI_CFLAGS $QTWIDGETS_CFLAGS -I$RLINCDIR $CHECK_CFLAGS"
 
 # Perform Makefile substitutions
