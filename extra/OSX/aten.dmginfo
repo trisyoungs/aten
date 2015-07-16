@@ -18,13 +18,13 @@ APP_BIN="bin/Aten.app/Contents/MacOS/Aten"
 APP_PLIST="bin/Aten.app/Contents/Info.plist"
 
 # -- APP_ICON : A 1024x1024 png file from which to create an icon set
-APP_ICON="/Users/tris/src/aten/extra/aten1024.png"
+APP_ICON="../extra/aten1024.png"
 
 # -- APP_LICENSE : License information file to put in the bundle
-APP_LICENSE="/Users/tris/src/aten/COPYING"
+APP_LICENSE="../COPYING"
 
 # -- APP_EXTRA : Directory containing additional files to contain in bundle (or NONE)
-APP_EXTRA="/Users/tris/src/aten/data/"
+APP_EXTRA="../data/"
 
 # -- APP_DSSTORE : Specifies a directory containing DS_Store and background image for dmg (or NONE)
 APP_DSSTORE="NONE"
