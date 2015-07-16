@@ -41,7 +41,7 @@ set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC OFF)
 
 # Set policy for automatic linkage of Qt libs to project
-CMAKE_POLICY(SET CMP0020 OLD)
+CMAKE_POLICY(SET CMP0020 NEW)
 
 # Perform system-specific setup
 # -- Windows
@@ -53,7 +53,6 @@ if(WIN32)
   set(FTGL_LIBRARIES "C:/Users/axr61803/src/ftgl-2.1.3~rc5/src/libftgl.a")
   set(FT2_LIBRARIES "C:/GnuWin32/lib/libfreetype.dll.a")
   set(GLEXT_INCLUDES "C:/Users/axr61803/src/include")
-  # Find OpenGL
   # Add global NOMINMAX define for Windows systems, and inhibit console creation
   ADD_DEFINITIONS("-DNOMINMAX")
   SET(GUI_TYPE WIN32)
@@ -72,15 +71,10 @@ endif(UNIX)
 # -- OSX
 if(APPLE)
   set (target_name aten)
-  #set(CMAKE_OSX_ARCHITECTURES "x86_64")
+  set(CMAKE_OSX_ARCHITECTURES "x86_64")
   ADD_DEFINITIONS(-D_MAC)
-  # Set include location for FreeType2
-  #set(FT2_INCLUDES "/usr/local/include/freetype2")
   # Find OpenGL and GLUT
   find_package(GLUT REQUIRED)
-  # Set libraries for link time
-  set(FTGL_LIBRARIES "-L/usr/local/lib -lftgl")
-  # Add define to suppress gl.h/gl3.h include warnings
 endif(APPLE)
 
 set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
@@ -135,18 +129,3 @@ target_link_libraries( ${target_name}
     ${ATEN_LINK_LIBS}
     )
 
-################install
-
-INSTALL_TARGET(${target_name} "")
-if(UNIX AND NOT APPLE)
-configure_file(${CMAKE_SOURCE_DIR}/desktop.cmake Aten.desktop)
-install(FILES ${CMAKE_SOURCE_DIR}/src/gui/icons/aten.png 
-        DESTINATION share/aten)
-install(FILES ${CMAKE_BINARY_DIR}/Aten.desktop 
-        DESTINATION share/applications)
-endif(UNIX AND NOT APPLE)
-foreach(i ff fftesting fragments partitions scripts test includes)
-  install(DIRECTORY ${CMAKE_SOURCE_DIR}/data/${i}
-          DESTINATION share/aten
-          REGEX ".svn" EXCLUDE)
-endforeach()
