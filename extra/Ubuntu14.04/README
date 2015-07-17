@@ -7,14 +7,15 @@ The highest available version from the package universe on the 14.04 LTS version
 Aten requires version >= 5.4, since it makes use of QOpenGLWidget which was only introduced in version 5.4.
 The relevant packages can be downloaded and installed from various user PPA repositories. The one 'expected'
 by the Debian build files is from https://launchpad.net/~beineri/+archive/ubuntu/opt-qt541-trusty (qt54base).
+In order for button icons to work correctly you will also need the qt54svg package from the same repo.
 
 
 Building
 --------
 Check out / unpack the source to a directory of your choice, and descend into that directory.
-The package build files are stored in extra/ubuntu14.04, so create a symbolic link to this directory:
+The package build files are stored in extra/Ubuntu14.04, so create a symbolic link to this directory:
 
-bob@pc:~> ln -s extra/ubuntu14.04 ./debian
+bob@pc:~> ln -s extra/Ubuntu14.04 ./debian
 
 Now run debuild:
 
