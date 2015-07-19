@@ -69,6 +69,8 @@ int movieSetup(bool pre, int height)
 	{
 		prefs.setViewRotationGlobe(viewglobe);
 	}
+
+	return -1;
 }
 
 // Perform post-processing on saved movie frames

@@ -308,7 +308,7 @@ void PartitioningScheme::recalculatePartitions()
 	}
 
 	// Recalculate grid points
-	double*** data = data = grid_.data3d();
+	double*** data = grid_.data3d();
 	
 	// Clear partition data
 	for (PartitionData* pd = partitions_.first(); pd != NULL; pd = pd->next) pd->clear();

@@ -607,6 +607,8 @@ int Grid::nPoints() const
 		default:
 			break;
 	}
+
+	return 0;
 }
 
 // Return minimum value in data[]
