@@ -281,7 +281,7 @@ class Model : public ListItem<Model>
 	// Fold all molecules into the cell
 	void foldAllMolecules();
 	// Replicate cell to create supercell
-	void replicateCell(const Vec3<double>&, const Vec3<double>&);
+	void replicateCell(const Vec3<double>& negativeCells, const Vec3<double>& positiveCells, bool foldBefore, bool trimAfter);
 	// Scale cell and contents
 	bool scaleCell(const Vec3<double>& scale, bool useCog);
 	// Rotate cell and contents

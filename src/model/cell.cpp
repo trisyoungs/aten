@@ -401,7 +401,7 @@ bool Model::scaleCell(const Vec3<double>& scale, bool useCog)
 }
 
 // Replicate Cell
-void Model::replicateCell(const Vec3<double>& neg, const Vec3<double>& pos)
+void Model::replicateCell(const Vec3<double>& negativeCells, const Vec3<double>& positiveCells, bool foldBefore, bool trimAfter)
 {
 	Messenger::enter("Model::replicateCell");
 	int count;
@@ -419,7 +419,7 @@ void Model::replicateCell(const Vec3<double>& neg, const Vec3<double>& pos)
 	}
 
 	// Perform an atomic fold on the crystal before we begin
-	if (prefs.replicateFold()) foldAllAtoms();
+	if (foldBefore) foldAllAtoms();
 
 	// Copy model contents to clipboard ready for pasting and then clear the model
 	clip.copyAll(this);
@@ -430,15 +430,15 @@ void Model::replicateCell(const Vec3<double>& neg, const Vec3<double>& pos)
 	newaxes = oldaxes;
 
 	// Set new unit cell dimensions
-	tvec.set(pos.x-neg.x, pos.y-neg.y, pos.z-neg.z);
+	tvec.set(positiveCells.x- negativeCells.x, positiveCells.y- negativeCells.y, positiveCells.z- negativeCells.z);
 	newaxes.columnMultiply(tvec);
 	setCell(newaxes);
 
 	// Paste in whole copies of the original cell - don't worry about fractional cells yet
 	Vec3<int> ineg, ipos;
 	int ii, jj, kk;
-	ineg.set(int(floor(neg.x)), int(floor(neg.y)), int(floor(neg.z)));
-	ipos.set(int(ceil(pos.x))-1, int(ceil(pos.y))-1, int(ceil(pos.z))-1);
+	ineg.set(int(floor(negativeCells.x)), int(floor(negativeCells.y)), int(floor(negativeCells.z)));
+	ipos.set(int(ceil(positiveCells.x))-1, int(ceil(positiveCells.y))-1, int(ceil(positiveCells.z))-1);
 
 	// Set up progress indicator
 	count = ( (ipos.x - ineg.x) + 1) * ( (ipos.y - ineg.y) + 1) * ( (ipos.z - ineg.z) + 1);
@@ -470,14 +470,14 @@ void Model::replicateCell(const Vec3<double>& neg, const Vec3<double>& pos)
 
 	// Select all atoms and shift if negative replication values were provided
 	selectAll();
-	tvec = oldaxes.columnAsVec3(0) * -neg.x;
-	tvec += oldaxes.columnAsVec3(1) * -neg.y;
-	tvec += oldaxes.columnAsVec3(2) * -neg.z;
+	tvec = oldaxes.columnAsVec3(0) * -negativeCells.x;
+	tvec += oldaxes.columnAsVec3(1) * -negativeCells.y;
+	tvec += oldaxes.columnAsVec3(2) * -negativeCells.z;
 	translateSelectionLocal(tvec);
 	selectNone();
 
 	// Now trim off atoms that are outside the new cell
-	if (prefs.replicateTrim())
+	if (trimAfter)
 	{
 		bool delatom;
 		Atom* i, *j;

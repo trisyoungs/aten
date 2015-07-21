@@ -168,9 +168,14 @@ bool Commands::function_PrintCell(CommandNode* c, Bundle& obj, ReturnValue& rv)
 bool Commands::function_Replicate(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return false;
+
+	bool foldBefore = (c->hasArg(6) ? c->argb(6) : false);
+	bool trimAfter = (c->hasArg(7) ? c->argb(7) : false);
+
 	obj.rs()->beginUndoState("Replicate cell");
-	obj.rs()->replicateCell(c->arg3d(0), c->arg3d(3));
+	obj.rs()->replicateCell(c->arg3d(0), c->arg3d(3), foldBefore, trimAfter);
 	obj.rs()->endUndoState();
+
 	rv.reset();
 	return true;
 }

@@ -109,8 +109,6 @@ Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
 	{ "polygonAliasing",		VTypes::IntegerData,		0, false },
 	{ "quality"	,		VTypes::IntegerData,		0, false },
 	{ "renderStyle",		VTypes::StringData,		0, false },
-	{ "replicateFold",		VTypes::IntegerData,		0, false },
-	{ "replicateTrim",		VTypes::IntegerData,		0, false },
 	{ "reuseQuality",		VTypes::IntegerData,		0, false },
 	{ "selectionScale",		VTypes::DoubleData,		0, false },
 	{ "shininess",			VTypes::IntegerData,		0, false },
@@ -433,12 +431,6 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArray
 			break;
 		case (PreferencesVariable::RenderStyle):
 			rv.set( Prefs::drawStyle(ptr->renderStyle()) );
-			break;
-		case (PreferencesVariable::ReplicateFold):
-			rv.set( ptr->replicateFold() );
-			break;
-		case (PreferencesVariable::ReplicateTrim):
-			rv.set( ptr->replicateTrim() );
 			break;
 		case (PreferencesVariable::ReuseQuality):
 			rv.set( ptr->reusePrimitiveQuality() );
@@ -858,12 +850,6 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue&
 			ds = Prefs::drawStyle( newValue.asString(result), true );
 			if ((ds != Prefs::nDrawStyles) && result) ptr->setRenderStyle(ds);
 			else result = false;
-			break;
-		case (PreferencesVariable::ReplicateFold):
-			ptr->setReplicateFold( newValue.asBool() );
-			break;
-		case (PreferencesVariable::ReplicateTrim):
-			ptr->setReplicateTrim( newValue.asBool() );
 			break;
 		case (PreferencesVariable::ReuseQuality):
 			ptr->setReusePrimitiveQuality( newValue.asBool() );

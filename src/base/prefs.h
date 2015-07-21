@@ -560,10 +560,6 @@ class Prefs
 	int maxRings_;
 	// Maximum number of bonding cuboids in each direction
 	int maxCuboids_;
-	// Whether to fold atoms before replication
-	bool replicateFold_;
-	// Whether to trim atoms after replication
-	bool replicateTrim_;
 	// Maximum number of undo levels (-1 for unlimited)
 	int maxUndoLevels_;
 	// List of common drawing elements to put in SelectElement dialog
@@ -616,14 +612,6 @@ class Prefs
 	int maxCuboids() const;
 	// Set maximum number of bonding cuboids in each direction
 	void setMaxCuboids(int i);
-	// Set whether to fold atoms before replication
-	void setReplicateFold(bool b);
-	// Return whether to fold atoms before replication
-	bool replicateFold() const;
-	// Set whether to trim atoms after replication
-	void setReplicateTrim(bool b);
-	// Return whether to trim atoms after replication
-	bool replicateTrim() const;
 	// Set the maximum number of undo levels allowed
 	void setMaxUndoLevels(int n);
 	// Return the maximum number of undo levels allowed

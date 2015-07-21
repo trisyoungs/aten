@@ -279,8 +279,6 @@ Prefs::Prefs()
 	maxRingSize_ = 6;
 	maxRings_ = 100;
 	maxCuboids_ = 100;
-	replicateFold_ = true;
-	replicateTrim_ = true;
 	forceRhombohedral_ = false;
 	augmentAfterRebond_ = true;
 	loadIncludes_ = true;
@@ -1245,30 +1243,6 @@ int Prefs::maxCuboids() const
 void Prefs::setMaxCuboids(int i)
 {
 	maxCuboids_ = i;
-}
-
-// Set whether to fold atoms before replication
-void Prefs::setReplicateFold(bool b)
-{
-	replicateFold_ = b;
-}
-
-// Return whether to fold atoms before replication
-bool Prefs::replicateFold() const
-{
-	return replicateFold_;
-}
-
-// Set whether to trim atoms after replication
-void Prefs::setReplicateTrim(bool b)
-{
-	replicateTrim_ = b;
-}
-
-// Return whether to trim atoms after replication
-bool Prefs::replicateTrim() const
-{
-	return replicateTrim_;
 }
 
 // Return whether to augment when rebonding

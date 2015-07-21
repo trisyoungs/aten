@@ -39,10 +39,6 @@ void CellReplicatePopup::popup()
 {
 	refreshing_ = true;
 
-	// Update checkboxes in replicate group
-	ui.FoldBeforeCheck->setChecked( prefs.replicateFold() );
-	ui.TrimAfterCheck->setChecked( prefs.replicateTrim() );
-
 	show();
 
 	refreshing_ = false;
