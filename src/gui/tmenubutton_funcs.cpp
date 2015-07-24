@@ -212,6 +212,7 @@ TMenuButtonPopupWidget* TMenuButton::popupWidget()
 
 void TMenuButton::popupDone(bool setButtonDown)
 {
+	printf("POPUPDONE.\n");
 	if (!setButtonDown) setDown(false);
 	else if (group_) group_->setCurrentButton(this);
 
@@ -377,7 +378,7 @@ void TMenuButton::popup()
 {
 	if (!popupWidget_) return;
 
-// 	printf("POPUP signalled (wasChecked = %i).\n", checkedBeforePressed_);
+// 	printf("POPUP signalled (wasChecked = %i, down = %i).\n", checkedBeforePressed_, popupWidget_->shown());
 
 	// Show the popup widget - call the widget's popup() method, so controls are set correctly
 	popupWidget_->popup();
@@ -398,6 +399,7 @@ void TMenuButton::popup()
 void TMenuButton::buttonPressed()
 {
 // 	printf("PRESSED [%s] (isDown=%i, isChecked=%i)\n", qPrintable(text()), isDown(), isChecked());
+
 	// Store current checked state of button
 	checkedBeforePressed_ = isChecked();
 

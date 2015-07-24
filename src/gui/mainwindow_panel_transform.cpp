@@ -84,6 +84,7 @@ void AtenWindow::on_TransformPositionZeroButton_clicked(bool checked)
 
 void AtenWindow::on_TransformTransformRotateButton_clicked(bool checked)
 {
+	// ATEN2 TODO
 }
 
 void AtenWindow::on_TransformTransformMultiplyButton_clicked(bool checked)

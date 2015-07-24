@@ -133,6 +133,13 @@ void AtenWindow::on_ModelsList_itemSelectionChanged()
 		}
 	}
 
+	// Is anything selected? If not, select one
+	if (!currentModel)
+	{
+		if (aten_.nModels() == 0) Messenger::print("Internal Error: No model to select.");
+		else currentModel = aten_.models();
+	}
+
 	// Need to set the (a) current model
 	aten_.setCurrentModel(currentModel);
 
