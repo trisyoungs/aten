@@ -75,7 +75,7 @@
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>4</number>
+       <number>0</number>
       </property>
       <property name="usesScrollButtons">
        <bool>true</bool>
@@ -1550,7 +1550,7 @@
             </property>
             <property name="icon">
              <iconset resource="icons.qrc">
-              <normaloff>:/select/icons/select_expand.svg</normaloff>:/select/icons/select_expand.svg</iconset>
+              <normaloff>:/select/icons/select_all.svg</normaloff>:/select/icons/select_all.svg</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -2205,7 +2205,7 @@
             </property>
             <property name="icon">
              <iconset resource="icons.qrc">
-              <normaloff>:/view/icons/view_perspective.svg</normaloff>:/view/icons/view_perspective.svg</iconset>
+              <normaloff>:/build/icons/build_nofold.svg</normaloff>:/build/icons/build_nofold.svg</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -6636,10 +6636,14 @@
              </font>
             </property>
             <property name="toolTip">
-             <string>Automatically create patterns for current model</string>
+             <string>Perform geometry optimisation on the current model</string>
             </property>
             <property name="text">
              <string>Minimise</string>
+            </property>
+            <property name="icon">
+             <iconset resource="icons.qrc">
+              <normaloff>:/forcefield/icons/forcefield_minimise.svg</normaloff>:/forcefield/icons/forcefield_minimise.svg</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -6690,10 +6694,14 @@
              </font>
             </property>
             <property name="toolTip">
-             <string>List patterns in current model</string>
+             <string>Calculate the current forces for the current model</string>
             </property>
             <property name="text">
              <string>Forces</string>
+            </property>
+            <property name="icon">
+             <iconset resource="icons.qrc">
+              <normaloff>:/forcefield/icons/forcefield_forces.svg</normaloff>:/forcefield/icons/forcefield_forces.svg</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -6744,10 +6752,14 @@
              </font>
             </property>
             <property name="toolTip">
-             <string>Clear patterns from current model</string>
+             <string notr="true">Calculate the current energy of the current model</string>
             </property>
             <property name="text">
              <string>Energy</string>
+            </property>
+            <property name="icon">
+             <iconset resource="icons.qrc">
+              <normaloff>:/forcefield/icons/forcefield_energy.svg</normaloff>:/forcefield/icons/forcefield_energy.svg</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -7073,7 +7085,7 @@
              </font>
             </property>
             <property name="toolTip">
-             <string>Automatically create patterns for current model</string>
+             <string>Perform atom typing on the current model</string>
             </property>
             <property name="text">
              <string>Type</string>
@@ -7127,7 +7139,7 @@
              </font>
             </property>
             <property name="toolTip">
-             <string>Clear patterns from current model</string>
+             <string>Create a full energy expression for the current model</string>
             </property>
             <property name="text">
              <string>Describe</string>
@@ -7177,7 +7189,7 @@
             </property>
             <property name="icon">
              <iconset resource="icons.qrc">
-              <normaloff>:/select/icons/select_expand.svg</normaloff>:/select/icons/select_expand.svg</iconset>
+              <normaloff>:/colourscheme/icons/colourscheme_charge.png</normaloff>:/colourscheme/icons/colourscheme_charge.png</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -7219,7 +7231,7 @@
              </font>
             </property>
             <property name="toolTip">
-             <string>List patterns in current model</string>
+             <string>Clear the expression for the current model</string>
             </property>
             <property name="text">
              <string>Clear</string>
@@ -7341,7 +7353,7 @@
              </font>
             </property>
             <property name="toolTip">
-             <string>Clear patterns from current model</string>
+             <string>Export the current model's forcefield expression</string>
             </property>
             <property name="text">
              <string>Export</string>
@@ -7376,9 +7388,12 @@
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::MinimumExpanding</enum>
+          </property>
           <property name="sizeHint" stdset="0">
            <size>
-            <width>709</width>
+            <width>1</width>
             <height>20</height>
            </size>
           </property>

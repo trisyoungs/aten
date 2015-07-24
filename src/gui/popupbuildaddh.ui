@@ -56,7 +56,7 @@
      </property>
      <property name="icon">
       <iconset resource="icons.qrc">
-       <normaloff>:/build/icons/build_addh.svg</normaloff>:/build/icons/build_addh.svg</iconset>
+       <normaloff>:/build/icons/build_addhsel.svg</normaloff>:/build/icons/build_addhsel.svg</iconset>
      </property>
      <property name="iconSize">
       <size>

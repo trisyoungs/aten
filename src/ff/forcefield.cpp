@@ -23,6 +23,7 @@
 #include "base/forcefieldatom.h"
 #include "base/forcefieldbound.h"
 #include "base/sysfunc.h"
+#include <QRegularExpression>
 
 ATEN_USING_NAMESPACE
 
@@ -709,7 +710,7 @@ int Forcefield::matchType(QString test, QString target)
 	// Return 1 for a wildcard, '0' for an exact match, and an arbitrary '10' for no match
 	if (test == target) return 0;
 	bool wild = false, failed = false;
-	int length = std::max(test.length(), target.length());
+	int length = std::min(test.length(), target.length());
 	for (int n=0; n <length; ++n)
 	{
 		if ((target.at(n) == '*') || (test.at(n) == '*'))
@@ -725,7 +726,7 @@ int Forcefield::matchType(QString test, QString target)
 	}
 	if (failed) return 10;
 	if (wild) return 1;
-	printf("Forcefield::matchType <<<< Weird error - missed exact match? >>>>\n");
+	if (test.length() == target.length()) printf("Forcefield::matchType <<<< Weird error - missed exact match? >>>>\n");
 	return 10;
 }
 

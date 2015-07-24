@@ -11,6 +11,11 @@
     <file>icons/arrow_up.svg</file>
     <file>icons/arrow_upline.svg</file>
   </qresource>
+  <qresource prefix="forcefield">
+    <file>icons/forcefield_energy.svg</file>
+    <file>icons/forcefield_forces.svg</file>
+    <file>icons/forcefield_minimise.svg</file>
+  </qresource>
   <qresource prefix="/aten">
     <file>icons/aten_preferences.svg</file>
     <file>icons/aten_reloadfilters.svg</file>
@@ -66,13 +71,14 @@
   </qresource>
   <qresource prefix="/build">
     <file>icons/build_transmutesel.svg</file>
+    <file>icons/build_nofold.svg</file>
     <file>icons/build_draw.svg</file>
+    <file>icons/build_addhsel.svg</file>
     <file>icons/build_addh.svg</file>
     <file>icons/build_clearbonds.svg</file>
     <file>icons/build_augment.svg</file>
     <file>icons/build_fragment.svg</file>
     <file>icons/build_rebond.svg</file>
-    <file>icons/build_atomaddh.svg</file>
     <file>icons/build_rebondsel.svg</file>
     <file>icons/build_delete.svg</file>
     <file>icons/build_probe.svg</file>

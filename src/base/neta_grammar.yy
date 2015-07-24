@@ -127,9 +127,9 @@ repeat:
 /* Expanders : NETA statements that may optionally take a bracketed expansion */
 expander:
 	NETARING					{ $$ = netaparser.createRingNode(); netaparser.popContext(); }
-	| NETACHAIN					{ $$ = netaparser.createChainNode(); netaparser.popContext(); }
 	| NETARING '(' pushctxtr nodelist ')'		{ $3->setInnerNeta($4); $$ = $3; netaparser.popContext(); }
-	| NETACHAIN '(' pushctxtc chain ',' repeat ')'	{ $3->setInnerNeta(NULL,$4); $$ = $3; netaparser.popContext(); }
+	| NETACHAIN '(' pushctxtc chain ')'		{ Messenger::error("NETA Error: 'chain' keyword must have repeat specifier as last argument."); $$ = NULL; }
+	| NETACHAIN '(' pushctxtc chain ',' repeat ')'	{ printf("HERE\n"); $3->setInnerNeta(NULL,$4); $$ = $3; netaparser.popContext(); }
 	| NETAGEOMETRY '(' pushctxtg DOUBLECONST ',' DOUBLECONST ',' chain ')' { $3->setInnerNeta(NULL,$8); $3->setRequiredValue($4,$6); $$ = $3; netaparser.popContext(); }
 	| NETAPATH '(' pushctxtp DOUBLECONST ',' DOUBLECONST ',' chain ')' { $3->setInnerNeta(NULL,$8); $3->setRequiredValue($4,$6); $$ = $3; netaparser.popContext(); }
 	;
@@ -137,7 +137,8 @@ expander:
 chain:
 	bound						{ $$ = $1; }
 	| '!' bound					{ $$ = $2; $2->setReverseLogic(); }
-	| chain ',' chain				{ $$ = netaparser.link($1,$3); }
+	| chain ',' bound				{ $$ = netaparser.link($1,$3); }
+	| chain ',' '!' bound				{ $4->setReverseLogic(); $$ = netaparser.link($1,$4); }
 	;
 
 bound:

@@ -387,6 +387,7 @@ bool Commands::function_SelectFFType(CommandNode* c, Bundle& obj, ReturnValue& r
 		Messenger::print("No forcefield associated to model.");
 		return false;
 	}
+
 	// Store current number of selected atoms
 	int nselected = obj.rs()->nSelected();
 	ForcefieldAtom* ffa;
@@ -401,6 +402,7 @@ bool Commands::function_SelectFFType(CommandNode* c, Bundle& obj, ReturnValue& r
 	}
 	obj.rs()->endUndoState();
 	rv.set(obj.rs()->nSelected() - nselected);
+
 	return true;
 }
 

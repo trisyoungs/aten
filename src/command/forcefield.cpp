@@ -216,6 +216,7 @@ bool Commands::function_Equivalent(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	if (obj.notifyNull(Bundle::ForcefieldPointer)) return false;
 	ForcefieldAtom* ffa;
 	LineParser parser;
+
 	// Loop over command arguments
 	for (int n=1; n<c->nArgs(); ++n)
 	{
@@ -227,6 +228,7 @@ bool Commands::function_Equivalent(CommandNode* c, Bundle& obj, ReturnValue& rv)
 				if (obj.ff->matchType(ffa->name(),parser.argc(i)) < 10) ffa->setEquivalent(c->argc(0));
 		}
 	}
+
 	rv.reset();
 	return true;
 }
