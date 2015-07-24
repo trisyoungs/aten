@@ -28,7 +28,6 @@
 #include "gui/tintegerspindelegate.hui"
 #include "ff/forcefield.h"
 #include "model/model.h"
-// #include "main/aten.h"
 #include "base/forcefieldatom.h"
 #include "base/forcefieldbound.h"
 #include "templates/variantpointer.h"
@@ -921,7 +920,7 @@ void AtenForcefieldEditor::updateUreyBradleysLabels(ForcefieldBound* ffb)
 	{
 		if (n != 0) text += ", ";
 		if (BondFunctions::BondFunctions[bf].isEnergyParameter[n]) text += "<b>" + QString(BondFunctions::BondFunctions[bf].parameterKeywords[n]) + "</b>";
-		else text += "%s", BondFunctions::BondFunctions[bf].parameterKeywords[n];
+		else text += BondFunctions::BondFunctions[bf].parameterKeywords[n];
 	}
 	ui.FFEditorUreyBradleyParametersLabel->setText(text);
 }
