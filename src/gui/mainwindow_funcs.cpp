@@ -467,9 +467,6 @@ bool AtenWindow::closeModel(Model* m)
 	// Remove model and update gui
 	aten_.removeModel(m);
 
-	// Update GUI
-	updateWidgets(AtenWindow::AllTarget);
-	
 	return true;
 }
 
@@ -479,6 +476,9 @@ bool AtenWindow::saveBeforeClose()
 	while (aten_.models())
 	{
 		if (!closeModel(aten_.models())) return false;
+
+		// Update GUI
+		updateWidgets(AtenWindow::AllTarget);
 	}
 	return true;
 }

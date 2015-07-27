@@ -180,6 +180,16 @@ void AtenWindow::on_HomeFileSaveAsButton_clicked(bool checked)
 void AtenWindow::on_HomeFileCloseButton_clicked(bool checked)
 {
 	closeModel(aten_.currentModel());
+
+	// Check for there being no models
+	if (aten_.nModels() == 0)
+	{
+		aten_.setCurrentModel(aten_.addModel());
+	}
+
+	// Update GUI
+	updateWidgets(AtenWindow::AllTarget);
+
 	updateWidgets(AtenWindow::AllTarget);
 }
 

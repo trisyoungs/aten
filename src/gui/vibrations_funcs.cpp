@@ -51,12 +51,12 @@ void VibrationsWidget::showWidget()
 // Refresh window contents
 void VibrationsWidget::refresh()
 {
+	Model* m = parent_.aten().currentModelOrFrame();
+	if (!m) return;
+
 	Messenger::enter("VibrationsWidget::refresh");
 	refreshing_ = true;
 
-	Model* m = parent_.aten().currentModelOrFrame();
-	if (!m) return;
-	
 	QString text;
 	ui.VibrationsList->clear();
 	ui.DisplacementsTable->clear();
