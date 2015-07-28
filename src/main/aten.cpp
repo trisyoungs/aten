@@ -223,6 +223,7 @@ void Aten::setDirectories()
 	paths << "../share/aten";
 	paths << QApplication::applicationDirPath() + "/../share/aten";
 	paths << QApplication::applicationDirPath() + "/../SharedSupport";
+	paths << QApplication::applicationDirPath() + "/..";
 
 	// Check each one until we find one that exists
 	for (int i=0; i < paths.size(); ++i)
