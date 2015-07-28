@@ -39,25 +39,26 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked; OnlyBelowVersion: 0,6.1
 
 [Files]
-Source: "..\..\build\bin\Aten.exe"; DestDir: "{app}/bin"; Flags: ignoreversion
+Source: "..\..\build\bin\Aten.exe"; DestDir: "{app}\bin"; Flags: ignoreversion
 Source: "..\..\data\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "Aten.ico"; DestDir: "{app}\bin"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
-Source: "{#GnuWin32Dir}\freetype6.dll"; DestDir: "{app}/bin"
-Source: "{#GnuWin32Dir}\readline5.dll"; DestDir: "{app}/bin"
-Source: "{#GnuWin32Dir}\history5.dll"; DestDir: "{app}/bin"
-Source: "{#GnuWin32Dir}\zlib1.dll"; DestDir: "{app}/bin"
-Source: "C:\MinGW32\bin\libgcc_s_dw2-1.dll"; DestDir: "{app}/bin"
-Source: "C:\MinGW32\bin\libstdc++-6.dll"; DestDir: "{app}/bin"
-Source: "{#QtDir}\Qt5Gui.dll"; DestDir: "{app}/bin"; Flags: ignoreversion
-Source: "{#QtDir}\Qt5Core.dll"; DestDir: "{app}/bin"; Flags: ignoreversion
-Source: "{#QtDir}\Qt5OpenGL.dll"; DestDir: "{app}/bin"; Flags: ignoreversion
-Source: "{#QtDir}\Qt5Svg.dll"; DestDir: "{app}/bin"; Flags: ignoreversion
-Source: "{#QtDir}\Qt5Widgets.dll"; DestDir: "{app}/bin"; Flags: ignoreversion
+Source: "{#GnuWin32Dir}\freetype6.dll"; DestDir: "{app}\bin"
+Source: "{#GnuWin32Dir}\readline5.dll"; DestDir: "{app}\bin"
+Source: "{#GnuWin32Dir}\history5.dll"; DestDir: "{app}\bin"
+Source: "{#GnuWin32Dir}\zlib1.dll"; DestDir: "{app}\bin"
+Source: "C:\MinGW32\bin\libgcc_s_dw2-1.dll"; DestDir: "{app}\bin"
+Source: "C:\MinGW32\bin\libstdc++-6.dll"; DestDir: "{app}\bin"
+Source: "{#QtDir}\Qt5Gui.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
+Source: "{#QtDir}\Qt5Core.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
+Source: "{#QtDir}\Qt5OpenGL.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
+Source: "{#QtDir}\Qt5Svg.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
+Source: "{#QtDir}\Qt5Widgets.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
 
 [Icons]
-Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
-Name: "{commondesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: desktopicon
-Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: quicklaunchicon
+Name: "{group}\{#MyAppName}"; Filename: "{app}\bin\Aten.ico"
+Name: "{commondesktop}\{#MyAppName}"; Filename: "{app}\bin\Aten.ico"; Tasks: desktopicon
+Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\{#MyAppName}"; Filename: "{app}\bin\Aten.ico"; Tasks: quicklaunchicon
 
 [Run]
-Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent
+Filename: "{app}\bin\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent
