@@ -189,8 +189,6 @@ void AtenWindow::on_HomeFileCloseButton_clicked(bool checked)
 
 	// Update GUI
 	updateWidgets(AtenWindow::AllTarget);
-
-	updateWidgets(AtenWindow::AllTarget);
 }
 
 void AtenWindow::on_HomeFileImageButton_clicked(bool checked)
