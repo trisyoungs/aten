@@ -57,6 +57,8 @@
   <qresource prefix="/basic">
     <file>icons/basic_pointer.svg</file>
     <file>icons/basic_abc.svg</file>
+    <file>icons/basic_off.svg</file>
+    <file>icons/basic_on.svg</file>
     <file>icons/basic_alphabetagamma.svg</file>
     <file>icons/basic_capitalabc.svg</file>
     <file>icons/basic_xyz.svg</file>

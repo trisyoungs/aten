@@ -4638,7 +4638,7 @@
         <item>
          <layout class="QGridLayout" name="gridLayout_43">
           <item row="0" column="0">
-           <widget class="QPushButton" name="GridsLoadButton">
+           <widget class="QPushButton" name="GridsManageLoadButton">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -4699,12 +4699,15 @@
              <set>QAbstractItemView::NoEditTriggers</set>
             </property>
             <property name="selectionMode">
-             <enum>QAbstractItemView::ExtendedSelection</enum>
+             <enum>QAbstractItemView::SingleSelection</enum>
+            </property>
+            <property name="selectionBehavior">
+             <enum>QAbstractItemView::SelectRows</enum>
             </property>
            </widget>
           </item>
           <item row="1" column="0">
-           <widget class="QPushButton" name="GridsRemoveButton">
+           <widget class="QPushButton" name="GridsManageRemoveButton">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -5303,6 +5306,11 @@
             </property>
             <property name="text">
              <string>Active</string>
+            </property>
+            <property name="icon">
+             <iconset resource="icons.qrc">
+              <normaloff>:/basic/icons/basic_off.svg</normaloff>
+              <normalon>:/basic/icons/basic_on.svg</normalon>:/basic/icons/basic_off.svg</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -9120,7 +9128,7 @@
                </widget>
               </item>
               <item>
-               <widget class="QCheckBox" name="AtomsViewByPattern">
+               <widget class="QCheckBox" name="AtomsViewByPatternCheck">
                 <property name="text">
                  <string>View by pattern</string>
                 </property>

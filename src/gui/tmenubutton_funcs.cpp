@@ -212,7 +212,6 @@ TMenuButtonPopupWidget* TMenuButton::popupWidget()
 
 void TMenuButton::popupDone(bool setButtonDown)
 {
-	printf("POPUPDONE.\n");
 	if (!setButtonDown) setDown(false);
 	else if (group_) group_->setCurrentButton(this);
 

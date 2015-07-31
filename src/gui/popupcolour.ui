@@ -32,13 +32,16 @@
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <property name="margin">
-    <number>0</number>
+    <number>2</number>
    </property>
    <property name="spacing">
     <number>2</number>
    </property>
    <item row="4" column="1">
     <widget class="QSlider" name="HueSlider">
+     <property name="toolTip">
+      <string>Set the hue component of the colour (HSV)</string>
+     </property>
      <property name="maximum">
       <number>359</number>
      </property>
@@ -62,6 +65,9 @@
    </item>
    <item row="1" column="1">
     <widget class="QSlider" name="GreenSlider">
+     <property name="toolTip">
+      <string>Set the green component of the colour (RGB)</string>
+     </property>
      <property name="maximum">
       <number>255</number>
      </property>
@@ -72,6 +78,9 @@
    </item>
    <item row="5" column="2">
     <widget class="QSpinBox" name="SaturationSpin">
+     <property name="toolTip">
+      <string>Set the saturation component of the colour (HSV)</string>
+     </property>
      <property name="maximum">
       <number>255</number>
      </property>
@@ -79,6 +88,9 @@
    </item>
    <item row="4" column="2">
     <widget class="QSpinBox" name="HueSpin">
+     <property name="toolTip">
+      <string>Set the hue component of the colour (HSV)</string>
+     </property>
      <property name="maximum">
       <number>359</number>
      </property>
@@ -119,6 +131,9 @@
    </item>
    <item row="1" column="2">
     <widget class="QSpinBox" name="GreenSpin">
+     <property name="toolTip">
+      <string>Set the green component of the colour (RGB)</string>
+     </property>
      <property name="maximum">
       <number>255</number>
      </property>
@@ -139,6 +154,9 @@
    </item>
    <item row="2" column="2">
     <widget class="QSpinBox" name="BlueSpin">
+     <property name="toolTip">
+      <string>Set the blue component of the colour (RGB)</string>
+     </property>
      <property name="maximum">
       <number>255</number>
      </property>
@@ -146,6 +164,9 @@
    </item>
    <item row="6" column="1">
     <widget class="QSlider" name="ValueSlider">
+     <property name="toolTip">
+      <string>Set the value component of the colour (HSV)</string>
+     </property>
      <property name="maximum">
       <number>255</number>
      </property>
@@ -169,6 +190,9 @@
    </item>
    <item row="2" column="1">
     <widget class="QSlider" name="BlueSlider">
+     <property name="toolTip">
+      <string>Set the blue component of the colour (RGB)</string>
+     </property>
      <property name="maximum">
       <number>255</number>
      </property>
@@ -186,6 +210,9 @@
    </item>
    <item row="6" column="2">
     <widget class="QSpinBox" name="ValueSpin">
+     <property name="toolTip">
+      <string>Set the value component of the colour (HSV)</string>
+     </property>
      <property name="maximum">
       <number>255</number>
      </property>
@@ -193,6 +220,9 @@
    </item>
    <item row="5" column="1">
     <widget class="QSlider" name="SaturationSlider">
+     <property name="toolTip">
+      <string>Set the saturation component of the colour (HSV)</string>
+     </property>
      <property name="maximum">
       <number>255</number>
      </property>
@@ -216,6 +246,9 @@
    </item>
    <item row="0" column="2">
     <widget class="QSpinBox" name="RedSpin">
+     <property name="toolTip">
+      <string>Set the red component of the colour (RGB)</string>
+     </property>
      <property name="maximum">
       <number>255</number>
      </property>
@@ -223,6 +256,9 @@
    </item>
    <item row="0" column="1">
     <widget class="QSlider" name="RedSlider">
+     <property name="toolTip">
+      <string>Set the red component of the colour (RGB)</string>
+     </property>
      <property name="maximum">
       <number>255</number>
      </property>
@@ -246,6 +282,9 @@
    </item>
    <item row="8" column="1">
     <widget class="QSlider" name="AlphaSlider">
+     <property name="toolTip">
+      <string>Set the alpha component of the colour</string>
+     </property>
      <property name="maximum">
       <number>255</number>
      </property>
@@ -256,6 +295,9 @@
    </item>
    <item row="8" column="2">
     <widget class="QSpinBox" name="AlphaSpin">
+     <property name="toolTip">
+      <string>Set the alpha component of the colour</string>
+     </property>
      <property name="maximum">
       <number>255</number>
      </property>

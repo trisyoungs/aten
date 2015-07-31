@@ -316,9 +316,9 @@ class AtenWindow : public QMainWindow
 
 	private slots:
 	// Manage
-	void on_GridsLoadButton_clicked(bool checked);
-	void on_GridsRemoveButton_clicked(bool checked);
-	void on_GridsList_currentItemChanged(QListWidgetItem* current, QListWidgetItem* previous);
+	void on_GridsManageLoadButton_clicked(bool checked);
+	void on_GridsManageRemoveButton_clicked(bool checked);
+	void on_GridsList_currentRowChanged(int row);
 	void gridsListContextMenuRequested(const QPoint& point);
 	// Primary Surface
 	void on_GridsPrimaryLowerCutoffSpin_valueChanged(double value);

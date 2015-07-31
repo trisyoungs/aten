@@ -141,7 +141,7 @@ QPixmap Viewer::generateImage(int width, int height)
 	}
 	else
 	{
-		pixmap = atenWindow_->ui.MainView->generateImage(width, height);
+// 		pixmap = renderPixmap(width, height);
 	}
 
 	// Reset line width and text size

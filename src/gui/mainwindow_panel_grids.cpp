@@ -41,23 +41,21 @@ void AtenWindow::updateGridsPanel(Model* sourceModel)
 	if (sourceModel)
 	{
 		// Update the list of grids
-		for (Grid* g = sourceModel->grids(); g != NULL; g = g->next)
+		int count = 0;
+		for (Grid* g = sourceModel->grids(); g != NULL; g = g->next, ++count)
 		{
 			QListWidgetItem* item = new QListWidgetItem(g->name());
 			item->setData(Qt::UserRole, VariantPointer<Grid>(g));
-			if (g == currentGrid) item->setSelected(true);
 			ui.GridsList->addItem(item);
-		}
 
-		// Check to see if a grid is selected - if not, try to select one...
-		if (ui.GridsList->currentRow() == -1) ui.GridsList->setCurrentRow(0);
-		if (ui.GridsList->currentRow() == -1) currentGrid = NULL;
-		else currentGrid = (Grid*) VariantPointer<Grid>(ui.GridsList->currentItem()->data(Qt::UserRole));
+			if (g == currentGrid) ui.GridsList->setCurrentRow(count);
+		}
 	}
 
 	updateGridInformation(currentGrid);
 
-	ui.GridsLoadButton->setEnabled(!aten_.fileDialogFilters(FilterData::GridImport).isEmpty());
+	ui.GridsManageLoadButton->setEnabled(!aten_.fileDialogFilters(FilterData::GridImport).isEmpty());
+	ui.GridsManageRemoveButton->setEnabled(ui.GridsList->currentRow() != -1);
 
 	Messenger::exit("AtenWindow::updateGridPanel");
 }
@@ -115,10 +113,8 @@ void AtenWindow::updateGridInformation(Grid* sourceGrid)
  * Manage
  */
 
-void AtenWindow::on_GridsLoadButton_clicked(bool checked)
+void AtenWindow::on_GridsManageLoadButton_clicked(bool checked)
 {
-	Messenger::enter("AtenWindow::loadGrid");
-
 	Tree* filter;
 	static QDir currentDirectory_(aten_.workDir());
 	QString selFilter;
@@ -139,28 +135,40 @@ void AtenWindow::on_GridsLoadButton_clicked(bool checked)
 	}
 
 	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::GridsPanelTarget);
-
-	Messenger::exit("AtenWindow::loadGrid");
 }
 
-void AtenWindow::on_GridsRemoveButton_clicked(bool checked)
+void AtenWindow::on_GridsManageRemoveButton_clicked(bool checked)
 {
-	// Get current grid
-	Grid* currentGrid;
-	if (!aten_.currentGrid(currentGrid)) return;
+	if (ui.GridsList->currentRow() == -1) return;
 
-	Model* parentModel = currentGrid->parent();
-	if (parentModel) parentModel->removeGrid(currentGrid);
+	// Get current selected grid
+	QListWidgetItem* item = ui.GridsList->item(ui.GridsList->currentRow());
+	if (!item) return;
+
+	// Get grid from current item
+	Grid* grid = (Grid*) VariantPointer<Grid>(item->data(Qt::UserRole));
+	if (!grid) return;
+
+	Model* parentModel = grid->parent();
+	if (parentModel)
+	{
+		aten_.setCurrentGrid(grid->next ? grid->next : grid->prev);
+		parentModel->removeGrid(grid);
+	}
 
 	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::GridsPanelTarget);
 }
 
-void AtenWindow::on_GridsList_currentItemChanged(QListWidgetItem* current, QListWidgetItem* previous)
+void AtenWindow::on_GridsList_currentRowChanged(int row)
 {
-	if (refreshing_ || (!current)) return;
+	if (refreshing_ || (row == -1)) return;
+
+	// Get widget for specified row
+	QListWidgetItem* item = ui.GridsList->item(row);
+	if (!item) return;
 
 	// Get grid from current item
-	Grid* grid = (Grid*) VariantPointer<Grid>(current->data(Qt::UserRole));
+	Grid* grid = (Grid*) VariantPointer<Grid>(item->data(Qt::UserRole));
 	if (!grid) return;
 
 	aten_.setCurrentGrid(grid);
@@ -198,6 +206,7 @@ void AtenWindow::gridsListContextMenuRequested(const QPoint& point)
 		Model* parentModel = currentGrid->parent();
 		if (!parentModel) return;
 		aten().copyGrid(currentGrid);
+		aten_.setCurrentGrid(currentGrid->next ? currentGrid->next : currentGrid->prev);
 		parentModel->removeGrid(currentGrid);
 		updateWidgets(AtenWindow::MainViewTarget+AtenWindow::GridsPanelTarget);
 	}
@@ -205,6 +214,7 @@ void AtenWindow::gridsListContextMenuRequested(const QPoint& point)
 	{
 		Model* parentModel = currentGrid->parent();
 		if (!parentModel) return;
+		aten_.setCurrentGrid(currentGrid->next ? currentGrid->next : currentGrid->prev);
 		parentModel->removeGrid(currentGrid);
 		updateWidgets(AtenWindow::MainViewTarget+AtenWindow::GridsPanelTarget);
 	}

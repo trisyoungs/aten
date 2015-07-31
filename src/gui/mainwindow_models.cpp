@@ -93,7 +93,8 @@ void AtenWindow::modelsListContextMenuRequested(const QPoint& point)
 	QAction* renameAction = contextMenu.addAction("Rename...");
 
 	// Show it
-	QAction* menuResult = contextMenu.exec(point);
+	QPoint menuPosition = ui.ModelsList->mapToGlobal(point);
+	QAction* menuResult = contextMenu.exec(menuPosition);
 
 	// What was clicked?
 	if (menuResult == renameAction)
