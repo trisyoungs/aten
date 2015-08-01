@@ -29,6 +29,7 @@
 // Forward Declarations (Qt)
 class QLabel;
 class QGridLayout;
+class AtenWindow;
 
 // Default height for 'single-line' widgets
 #define WIDGETHEIGHT 20
@@ -38,7 +39,6 @@ ATEN_BEGIN_NAMESPACE
 // Forward Declarations (Aten)
 class TreeGui;
 class TreeGuiWidget;
-class AtenWindow;
 
 ATEN_END_NAMESPACE
 

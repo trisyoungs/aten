@@ -193,17 +193,16 @@ void AtenWindow::on_HomeFileCloseButton_clicked(bool checked)
 
 void AtenWindow::on_HomeFileImageButton_clicked(bool checked)
 {
-	static SaveImageDialog saveImageDialog(this);
-	if (!saveImageDialog.getImageDetails(ui.MainView->width(), ui.MainView->height())) return;
+	if (!exportImageDialog_.getImageDetails()) return;
 
 	// Get values from dialog
-	int imageWidth = saveImageDialog.ui.ImageWidthSpin->value();
-	int imageHeight = saveImageDialog.ui.ImageHeightSpin->value();
-	AtenWindow::BitmapFormat bf = AtenWindow::bitmapFormatFromFilter(qPrintable(saveImageDialog.ui.ImageFormatCombo->currentText()));
-	QString fileName = saveImageDialog.ui.FileNameEdit->text();
+	int imageWidth = exportImageDialog_.ui.ImageWidthSpin->value();
+	int imageHeight = exportImageDialog_.ui.ImageHeightSpin->value();
+	QString fileName = exportImageDialog_.fileName();
 	if (fileName.isEmpty()) return;
 
-	QPixmap pixmap = ui.MainView->generateImage(imageWidth, imageHeight);
+	QPixmap pixmap = scenePixmap(imageWidth, imageHeight);
+	AtenWindow::BitmapFormat bf = (AtenWindow::BitmapFormat) exportImageDialog_.ui.ImageFormatCombo->currentIndex();
 	pixmap.save(fileName, AtenWindow::bitmapFormatExtension(bf), -1);
 }
 

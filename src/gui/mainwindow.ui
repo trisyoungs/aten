@@ -426,7 +426,7 @@
              <string>Close the current model</string>
             </property>
             <property name="text">
-             <string>Save Image</string>
+             <string>Export Image</string>
             </property>
             <property name="icon">
              <iconset resource="icons.qrc">

@@ -142,12 +142,6 @@ void Viewer::checkGlError()
 	} while (glerr != GL_NO_ERROR);
 }
 
-// Set whether we are currently rendering offscreen
-void Viewer::setRenderingOffScreen(bool b)
-{
-	renderingOffScreen_ = b;
-}
-
 // Set line width and text scaling to use
 void Viewer::setObjectScaling(double scaling)
 {
@@ -176,14 +170,6 @@ Model* Viewer::modelAt(int x, int y)
 
 	// In the case of clicking in a blank part of the canvas with no model (i.e. bottom-right corner) return a safe model pointer
 	return (id >= aten_->nVisibleModels() ? aten_->currentModel() : aten_->visibleModel(id));
-}
-
-// Request a high-quality rendering pass on next redraw (for image saving, etc.)
-void Viewer::requestHighQuality()
-{
-	primitiveSet_ = Viewer::HighQuality;
-
-	updatePrimitives(Viewer::HighQuality);
 }
 
 // Return height, in pixels, of single line of text

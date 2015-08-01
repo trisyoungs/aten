@@ -21,68 +21,91 @@
 
 #include "gui/saveimage.h"
 #include "gui/mainwindow.h"
+#include <main/aten.h>
 #include <QtWidgets/QFileDialog>
+#include <QMessageBox>
 
 ATEN_USING_NAMESPACE
 
-// Static Members
-QDir SaveImageDialog::currentDirectory_;
-
 // Constructor
-SaveImageDialog::SaveImageDialog(QWidget* parent) : QDialog(parent)
+AtenExportImage::AtenExportImage(AtenWindow& parent) : atenWindow_(parent), QDialog(&parent)
 {
 	ui.setupUi(this);
-	
+
+	firstShow_ = true;
+
 	// Populate format combo
-	for (int n=0; n<AtenWindow::nBitmapFormats; ++n) ui.ImageFormatCombo->addItem( QString(AtenWindow::bitmapFormatExtension((AtenWindow::BitmapFormat) n)).toUpper());
+	for (int n=0; n<AtenWindow::nBitmapFormats; ++n) ui.ImageFormatCombo->addItem( AtenWindow::bitmapFormatFilter((AtenWindow::BitmapFormat) n) );
+	ui.ImageFormatCombo->setCurrentIndex(AtenWindow::BitmapPNG);
+
 }
 
 // Destructor
-SaveImageDialog::~SaveImageDialog()
+AtenExportImage::~AtenExportImage()
 {
 }
 
 // Call dialog to get image save information
-bool SaveImageDialog::getImageDetails(int startWidth, int startHeight)
+bool AtenExportImage::getImageDetails()
 {
-	ui.FileNameEdit->setText(currentDirectory_.absolutePath());
-	aspectRatio_ = double(startWidth) / double(startHeight);
-// 	ui.MaintainAspectRatioCheck->setChecked(Aten::bitmapExportMaintainAspect());
-	ui.ImageWidthSpin->setValue(startWidth);
-	ui.ImageHeightSpin->setValue(ui.MaintainAspectRatioCheck->checkState() == Qt::Checked ? startWidth / aspectRatio_ : startHeight);
-// 	ui.ImageFormatCombo->setCurrentIndex(Aten::bitmapExportFormat());
+	// If this is the first show, set the defaults in the controls
+	if (firstShow_)
+	{
+		ui.FileNameEdit->setText(atenWindow_.aten().workDir().absoluteFilePath("image.png"));
+		ui.ImageWidthSpin->setValue(atenWindow_.ui.MainView->contextWidth());
+		ui.ImageHeightSpin->setValue(atenWindow_.ui.MainView->contextHeight());
+		ui.ImageHeightSpin->setValue(ui.MaintainAspectRatioCheck->checkState() == Qt::Checked ? ui.ImageWidthSpin->value() / aspectRatio_ : ui.ImageHeightSpin->value());
+		ui.ImageFormatCombo->setCurrentIndex(AtenWindow::BitmapPNG);
+	}
+
+	aspectRatio_ = double(ui.ImageWidthSpin->value()) / double(ui.ImageHeightSpin->value());
+
+	firstShow_ = false;
 
 	int result = exec();
 	return (result == 1);
+}
+
+// Return selected filename
+QString AtenExportImage::fileName()
+{
+	return ui.FileNameEdit->text();
 }
 
 /*
  * Slots
  */
 
-void SaveImageDialog::on_SelectFileNameButton_clicked(bool checked)
+void AtenExportImage::on_SelectFileNameButton_clicked(bool checked)
 {
-	QString newFile = QFileDialog::getSaveFileName(this, "Choose image save file name", currentDirectory_.absolutePath(), QString(AtenWindow::bitmapFormatFilter((AtenWindow::BitmapFormat) ui.ImageFormatCombo->currentIndex())) + ";;All files (*.*)");
+	QString newFile = QFileDialog::getSaveFileName(this, "Choose image save file name", ui.FileNameEdit->text(), QString(AtenWindow::bitmapFormatFilter((AtenWindow::BitmapFormat) ui.ImageFormatCombo->currentIndex())) + ";;All files (*.*)");
 	if (!newFile.isEmpty()) ui.FileNameEdit->setText(newFile);
 }
 
-void SaveImageDialog::on_ImageWidthSpin_valueChanged(int value)
+void AtenExportImage::on_ImageWidthSpin_valueChanged(int value)
 {
 	if (ui.MaintainAspectRatioCheck->isChecked()) ui.ImageHeightSpin->setValue(value / aspectRatio_);
 }
 
-void SaveImageDialog::on_MaintainAspectRatioCheck_toggled(bool checked)
+void AtenExportImage::on_MaintainAspectRatioCheck_toggled(bool checked)
 {
 	ui.ImageHeightSpin->setDisabled(checked);
 	if (checked) ui.ImageHeightSpin->setValue(ui.ImageWidthSpin->value() / aspectRatio_);
 }
 
-void SaveImageDialog::on_SaveImageButton_clicked(bool checked)
+void AtenExportImage::on_SaveImageButton_clicked(bool checked)
 {
+	// Check if specified filename already exists
+	QFile file(ui.FileNameEdit->text());
+	if (file.exists())
+	{
+		if (QMessageBox::warning(this, "File Exists", "The specified file already exists. Overwrite it?", QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Cancel) == QMessageBox::Cancel) return;
+	}
+
 	accept();
 }
 
-void SaveImageDialog::on_CancelButton_clicked(bool checked)
+void AtenExportImage::on_CancelButton_clicked(bool checked)
 {
 	reject();
 }

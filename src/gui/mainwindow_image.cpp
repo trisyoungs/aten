@@ -21,6 +21,8 @@
 
 #include "gui/mainwindow.h"
 #include "base/sysfunc.h"
+#include <QOpenGLFramebufferObject>
+#include <QOpenGLPaintDevice>
 
 // Bitmap Image Formats (conform to allowable pixmap formats in Qt)
 const char* bitmapFormatFilters[AtenWindow::nBitmapFormats] = { "Windows Bitmap (*.bmp)", "Joint Photographic Experts Group (*.jpg)", "Portable Network Graphics (*.png)", "Portable Pixmap (*.ppm)", "X11 Bitmap (*.xbm)", "X11 Pixmap (*.xpm)" };

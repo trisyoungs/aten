@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>SaveImageDialog</class>
- <widget class="QDialog" name="SaveImageDialog">
+ <class>AtenExportImage</class>
+ <widget class="QDialog" name="AtenExportImage">
   <property name="windowModality">
    <enum>Qt::ApplicationModal</enum>
   </property>
@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>368</width>
-    <height>186</height>
+    <width>370</width>
+    <height>190</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -25,10 +25,10 @@
    </font>
   </property>
   <property name="windowTitle">
-   <string>Save Image</string>
+   <string>Export Image</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="icons.qrc">
+   <iconset>
     <normaloff>:/uchroma/icons/uchroma.png</normaloff>:/uchroma/icons/uchroma.png</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">

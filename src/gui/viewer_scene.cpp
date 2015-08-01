@@ -134,7 +134,7 @@ void Viewer::renderMessages(QPainter& painter)
 }
 
 // Render full scene
-void Viewer::renderFullScene()
+void Viewer::renderFullScene(int contextWidth, int contextHeight, int xOffset, int yOffset)
 {
 	Messenger::enter("Viewer::renderFullScene");
 	QColor color;
@@ -143,6 +143,10 @@ void Viewer::renderFullScene()
 	int viewPortX, viewPortY, viewPortWidth, viewPortHeight;
 	double viewPortAspect;
 	Model* m;
+
+	// Grab context dimensions if they were not provided
+	if (contextWidth < 0) contextWidth = contextWidth_;
+	if (contextHeight < 0) contextHeight = contextHeight_;
 
 	// Restore all GL state variables, and setup GL
 	glPopAttrib();
@@ -160,8 +164,8 @@ void Viewer::renderFullScene()
 	// Set up some useful values
 	nModels = aten_->nVisibleModels();
 	nRows = nModels / nPerRow + ( nModels %nPerRow == 0 ? 0 : 1);
-	viewPortWidth = ( nModels == 1 ? contextWidth_ : contextWidth_ / nPerRow);
-	viewPortHeight = contextHeight_ / nRows;
+	viewPortWidth = ( nModels == 1 ? contextWidth : contextWidth / nPerRow);
+	viewPortHeight = contextHeight / nRows;
 	viewPortAspect = double(viewPortWidth) / double(viewPortHeight);
 
 	// Loop over model refitems in list (or single refitem)
@@ -175,7 +179,7 @@ void Viewer::renderFullScene()
 
 		// Set viewport for this modsl
 		viewPortX = col*viewPortWidth;
-		viewPortY = contextHeight_-(row+1)*viewPortHeight;
+		viewPortY = contextHeight-(row+1)*viewPortHeight;
 
 		// Draw on halo for current model
 		if ((m == aten_->currentModel()) && (nModels > 1))
@@ -195,7 +199,7 @@ void Viewer::renderFullScene()
 		}
 
 		// Render the whole model
-		renderModel(m, viewPortX, viewPortY, viewPortWidth, viewPortHeight, true);
+		renderModel(m, viewPortX+xOffset, viewPortY+yOffset, viewPortWidth, viewPortHeight, true);
 
 		// Render additional data for active model
 		if (m == aten_->currentModel())

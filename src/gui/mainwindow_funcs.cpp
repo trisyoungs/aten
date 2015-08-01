@@ -86,7 +86,7 @@
 #include "gui/vibrations.h"
 
 // Constructor
-AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten)
+AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportImageDialog_(*this)
 {
 	Messenger::enter("AtenWindow::AtenWindow()");
 

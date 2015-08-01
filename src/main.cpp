@@ -35,8 +35,10 @@ int main(int argc, char* argv[])
 	QCoreApplication::setOrganizationDomain("www.projectaten.net");
 	QCoreApplication::setApplicationName("Aten");
 
-	/* Tweak the default QGLFormat */
-// 	QOpenGLFormat::defaultFormat().setSampleBuffers(true); // ATEN2 TODO
+	/* Tweak the default QSurfaceFormat */
+	QSurfaceFormat surfaceFormat;
+	surfaceFormat.setSamples(2);
+	QSurfaceFormat::setDefaultFormat(surfaceFormat);
 
 	/* Create main Aten object before anything else, since this sets pointers in other dependent static objects */
 	Aten MrAten;

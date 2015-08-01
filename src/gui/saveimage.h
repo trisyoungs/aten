@@ -19,35 +19,41 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_SAVEIMAGEDIALOG_H
-#define ATEN_SAVEIMAGEDIALOG_H
+#ifndef ATEN_ATENEXPORTIMAGE_H
+#define ATEN_ATENEXPORTIMAGE_H
 
 #include "gui/ui_saveimage.h"
-#include "base/namespace.h"
-#include <QtWidgets/QDialog>
+#include <QDialog>
 #include <QDir>
 
-class SaveImageDialog : public QDialog
+// Forward Declarations (Qt)
+class AtenWindow;
+
+class AtenExportImage : public QDialog
 {
 	// All Qt declarations must include this macro
 	Q_OBJECT
 
 	public:
 	// Constructor / Destructor
-	SaveImageDialog(QWidget* parent);
-	~SaveImageDialog();
+	AtenExportImage(AtenWindow& parent);
+	~AtenExportImage();
 	// Main form declaration
-	Ui::SaveImageDialog ui;
+	Ui::AtenExportImage ui;
+	// Reference to main window
+	AtenWindow& atenWindow_;
 
 	private:
-	// Current directory for image filename
-	static QDir currentDirectory_;
+	// Whether the dialog is still awaiting it's first show
+	bool firstShow_;
 	// Current aspect ratio
 	double aspectRatio_;
 
 	public:
 	// Call dialog to get/update image save information
-	bool getImageDetails(int startWidth, int startHeight);
+	bool getImageDetails();
+	// Return selected filename
+	QString fileName();
 
 
 	/*

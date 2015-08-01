@@ -63,9 +63,9 @@ class Viewer : public QOpenGLWidget, protected QOpenGLFunctions
 	 * Character / Setup
 	 */
 	private:
-	// Poiner to Aten
+	// Pointer to Aten
 	Aten* aten_;
-	// Poiner to AtenWindow
+	// Pointer to AtenWindow
 	AtenWindow* atenWindow_;
 	// Width, height, and aspect ratio of the canvas
 	GLsizei contextWidth_, contextHeight_;
@@ -93,16 +93,12 @@ class Viewer : public QOpenGLWidget, protected QOpenGLFunctions
 	void probeFeatures();
 	// Check for GL error
 	void checkGlError();
-	// Set whether we are currently rendering offscreen
-	void setRenderingOffScreen(bool b);
 	// Set line width and text scaling to use
 	void setObjectScaling(double scaling);
 	
 	public:
 	// Determine target model based on clicked position on TCanvas
 	Model* modelAt(int x, int y);
-	// Request a high-quality rendering pass on next redraw (for image saving, etc.)
-	void requestHighQuality();
 	// Return height, in pixels, of single line of text
 	int fontPixelHeight();
 
@@ -248,7 +244,7 @@ class Viewer : public QOpenGLWidget, protected QOpenGLFunctions
 	// Render messages
 	void renderMessages(QPainter& painter);
 	// Render full scene
-	void renderFullScene();
+	void renderFullScene(int contextWidth = -1, int contextHeight = -1, int xOffset = 0, int yOffset = 0);
 
 	protected:
 	// Initialise context widget (when created by Qt)
@@ -291,6 +287,8 @@ class Viewer : public QOpenGLWidget, protected QOpenGLFunctions
 	QOffscreenSurface offscreenSurface_;
 
 	public:
+	// Grab current contents of framebuffer
+	QPixmap frameBuffer();
 	// Generate image of specified model
 	QPixmap generateModelImage(Model* model, int width, int height);
 	// Render current scene at supplied size

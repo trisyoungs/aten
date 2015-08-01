@@ -30,6 +30,7 @@
 #include "gui/ui_mainwindow.h"
 #include "gui/ui_prefs.h"
 #include "gui/useractions.h"
+#include "gui/saveimage.h"
 #include "templates/reflist.h"
 #include "base/glyph.h"
 #include "base/namespace.h"
@@ -54,15 +55,11 @@ class AtenZMatrix;
 class CommandWidget;
 class DisorderWizard;
 class ForcefieldsWidget;
-class FragmentsWidget;
 class GlyphsWidget;
-class GridsWidget;
 class MDWidget;
 class PoresWidget;
 class ScriptMovieWidget;
-class SelectWidget;
 class ToolBoxWidget;
-class TransformWidget;
 class VibrationsWidget;
 
 ATEN_BEGIN_NAMESPACE
@@ -616,10 +613,10 @@ class AtenWindow : public QMainWindow
 	PoresWidget *poresWidget;
 	// Scripted movie dock widget
 	ScriptMovieWidget *scriptMovieWidget;
-	// Atom selection dock widget
-	TransformWidget *transformWidget;
 	// Vibrations dock widget
 	VibrationsWidget *vibrationsWidget;
+	// Export Image dialog
+	AtenExportImage exportImageDialog_;
 
 
 	/*

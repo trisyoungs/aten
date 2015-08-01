@@ -23,13 +23,13 @@ clean-local:
 
 libtreegui_a_SOURCES = treegui.ui treegui_funcs.cpp
 
-libgui_a_SOURCES = icons.qrc ffeditor.ui loadmodel.ui prefs.ui progress.ui selectfilter.ui selectpattern.ui selectvariable.ui mainwindow.ui
+libgui_a_SOURCES = icons.qrc saveimage.ui ffeditor.ui loadmodel.ui prefs.ui progress.ui selectfilter.ui selectpattern.ui selectvariable.ui mainwindow.ui
 
 libgui_a_SOURCES += popupbuildaddh.ui popupbuildfragments.ui popupbuildgrow.ui popupbuildrebond.ui popupbuildtransmute.ui popupcellangles.ui popupcelllengths.ui popupcellmatrix.ui popupcellmiller.ui popupcellreplicate.ui popupcellscale.ui popupcellspacegroup.ui popupcolour.ui popupelementcommon.ui popupelementtable.ui popupfileaten.ui popupfileopen.ui popupfilesave.ui popupforcefieldsassign.ui popupforcefieldsminimise.ui popupforcefieldstest.ui popupgridmatrix.ui popupgridorigin.ui popupgridshift.ui popupgridstyle.ui popupmeasureangle.ui popupmeasureclear.ui popupmeasuredistance.ui popupmeasuretorsion.ui popuptransformangle.ui popuptransformcentre.ui popuptransformconvert.ui popuptransformdistance.ui popuptransformflip.ui popuptransformrotate.ui popuptransformmultiply.ui popuptransformreposition.ui popuptransformshift.ui popuptransformtorsion.ui popuptransformtranslate.ui popupviewcolourscheme.ui popupviewreset.ui popupviewstyle.ui
 
 libgui_a_SOURCES += popupbuildaddh_funcs.cpp popupbuildfragments_funcs.cpp popupbuildgrow_funcs.cpp popupbuildrebond_funcs.cpp popupbuildtransmute_funcs.cpp popupcellangles_funcs.cpp popupcelllengths_funcs.cpp popupcellmatrix_funcs.cpp popupcellmiller_funcs.cpp popupcellreplicate_funcs.cpp popupcellscale_funcs.cpp popupcellspacegroup_funcs.cpp popupcolour_funcs.cpp popupelementcommon_funcs.cpp popupelementtable_funcs.cpp popupfileaten_funcs.cpp popupfileopen_funcs.cpp popupfilesave_funcs.cpp popupforcefieldsassign_funcs.cpp popupforcefieldsminimise_funcs.cpp popupforcefieldstest_funcs.cpp popupgridmatrix_funcs.cpp popupgridorigin_funcs.cpp popupgridshift_funcs.cpp popupgridstyle_funcs.cpp popupmeasureangle_funcs.cpp popupmeasureclear_funcs.cpp popupmeasuredistance_funcs.cpp popupmeasuretorsion_funcs.cpp popuptransformangle_funcs.cpp popuptransformcentre_funcs.cpp popuptransformconvert_funcs.cpp popuptransformdistance_funcs.cpp popuptransformflip_funcs.cpp popuptransformmultiply_funcs.cpp popuptransformreposition_funcs.cpp popuptransformrotate_funcs.cpp popuptransformshift_funcs.cpp popuptransformtorsion_funcs.cpp popuptransformtranslate_funcs.cpp popupviewcolourscheme_funcs.cpp popupviewreset_funcs.cpp popupviewstyle_funcs.cpp
 
-libgui_a_SOURCES += command.ui disorderoptions.ui disorderwizard.ui glyphs.ui pores.ui saveimage.ui scriptmovie.ui vibrations.ui viewbasis.ui vieweigenvector.ui zmatrix.ui
+libgui_a_SOURCES += command.ui disorderoptions.ui disorderwizard.ui glyphs.ui pores.ui scriptmovie.ui vibrations.ui viewbasis.ui vieweigenvector.ui zmatrix.ui
 
 libgui_a_SOURCES += command_funcs.cpp disorderoptions_funcs.cpp disorderwizard_funcs.cpp glyphs_funcs.cpp pores_funcs.cpp saveimage_funcs.cpp scriptmovie_funcs.cpp vibrations_funcs.cpp viewbasis_funcs.cpp vieweigenvector_funcs.cpp zmatrix_funcs.cpp
 
