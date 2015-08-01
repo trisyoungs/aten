@@ -15,6 +15,7 @@ SET(gui_MOC_HDRS
   command.h
   disorderoptions.h
   disorderwizard.h
+  exportimage.h
   ffeditor.h
   glyphs.h
   layoutlist.h
@@ -66,7 +67,6 @@ SET(gui_MOC_HDRS
   pores.h
   prefs.h
   progress.h
-  saveimage.h
   scriptmovie.h
   selectfilter.h
   selectpattern.h
@@ -101,6 +101,7 @@ SET(gui_UIS
   command.ui
   disorderoptions.ui
   disorderwizard.ui
+  exportimage.ui
   ffeditor.ui
   glyphs.ui
   loadmodel.ui
@@ -151,7 +152,6 @@ SET(gui_UIS
   pores.ui
   prefs.ui
   progress.ui
-  saveimage.ui
   scriptmovie.ui
   selectfilter.ui
   selectpattern.ui
@@ -175,6 +175,7 @@ set(gui_SRCS
   command_funcs.cpp
   disorderoptions_funcs.cpp
   disorderwizard_funcs.cpp
+  exportimage_funcs.cpp
   ffeditor_funcs.cpp
   glyphs_funcs.cpp
   layoutlist.cpp
@@ -245,7 +246,6 @@ set(gui_SRCS
   pores_funcs.cpp
   prefs_funcs.cpp
   progress_funcs.cpp
-  saveimage_funcs.cpp
   scriptmovie_funcs.cpp
   selectfilter_funcs.cpp
   selectpattern_funcs.cpp

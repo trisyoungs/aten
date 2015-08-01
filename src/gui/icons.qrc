@@ -109,11 +109,6 @@
     <file>icons/file_saveas.svg</file>
     <file>icons/file_saveimage.svg</file>
   </qresource>
-  <qresource prefix="/forcefield">
-    <file>icons/forcefield_energy.svg</file>
-    <file>icons/forcefield_forces.svg</file>
-    <file>icons/forcefield_minimise.svg</file>
-  </qresource>
   <qresource prefix="/model">
     <file>icons/model_next.svg</file>
     <file>icons/model_prev.svg</file>

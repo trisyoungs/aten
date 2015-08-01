@@ -8,12 +8,7 @@ Implement optional startup 'guide' or 'wizard' that will disable all controls on
 Remove dialog pointers (use instances instead).
 Fix callbacks for atom picking etc.
 Octahedral Growing doesn't work.
-
-In AtenWindow::on_actionFileSaveImage_triggered convert options to proper QDialog.
-o Change SaveImageDialog to check for empty image filename, and disable OK button accordingly.
-Fix image saving - in particular scaling & offset when saving large image (what role will/did ViewLayout play?)
 Snapshot option, copying current view or image save details directly to clipboard
-
 Clear selected measurements on panel popup clears all measurements.
 Recent files list - enable load on double-click, settings not loaded/saved properly?
 TMenuButton - after (long-) click to show popup, allow popup to be hidden with no actions if the button is clicked on again. Tricky - might have to store pointer to previous popup and check this in the pressed() function of the button.

@@ -23,7 +23,7 @@
 #include "main/aten.h"
 #include "gui/selectfilter.h"
 #include "gui/loadmodel.h"
-#include "gui/saveimage.h"
+#include "gui/exportimage.h"
 #include "model/undostate.h"
 #include <QFileDialog>
 

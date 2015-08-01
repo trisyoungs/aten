@@ -30,7 +30,7 @@
 #include "gui/ui_mainwindow.h"
 #include "gui/ui_prefs.h"
 #include "gui/useractions.h"
-#include "gui/saveimage.h"
+#include "gui/exportimage.h"
 #include "templates/reflist.h"
 #include "base/glyph.h"
 #include "base/namespace.h"

@@ -1,6 +1,6 @@
 /*
-	*** Save Image Dialog
-	*** src/gui/saveimage_funcs.cpp
+	*** Export Image Dialog
+	*** src/gui/exportimage_funcs.cpp
 	Copyright T. Youngs 2013-2015
 
 	This file is part of Aten.
@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "gui/saveimage.h"
+#include "gui/exportimage.h"
 #include "gui/mainwindow.h"
 #include <main/aten.h>
 #include <QtWidgets/QFileDialog>

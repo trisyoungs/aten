@@ -1,6 +1,6 @@
 /*
-	*** Save Image Dialog
-	*** src/gui/saveimage.h
+	*** Export Image Dialog
+	*** src/gui/exportimage.h
 	Copyright T. Youngs 2013-2015
 
 	This file is part of Aten.
@@ -22,7 +22,7 @@
 #ifndef ATEN_ATENEXPORTIMAGE_H
 #define ATEN_ATENEXPORTIMAGE_H
 
-#include "gui/ui_saveimage.h"
+#include "gui/ui_exportimage.h"
 #include <QDialog>
 #include <QDir>
 
