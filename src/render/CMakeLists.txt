@@ -27,10 +27,10 @@ add_library(render
   textprimitivelist.cpp
 )
 
-include_directories(
-../
-${QT_INCLUDE_DIR}
-${CMAKE_SOURCE_DIR} 
-${CMAKE_BINARY_DIR}
-${CMAKE_BINARY_DIR}/src
+target_include_directories(render PRIVATE
+  ${PROJECT_SOURCE_DIR}/src
+  ${PROJECT_BINARY_DIR}/src
+  ${Qt5Core_INCLUDE_DIRS}
+  ${Qt5Gui_INCLUDE_DIRS}
+  ${FREETYPE_INCLUDE_DIRS}
 )

@@ -40,11 +40,8 @@ add_library(model
   view.cpp
   zmatrix.cpp
 )
-
-include_directories(
-../
-${QT_INCLUDE_DIR}
-${CMAKE_SOURCE_DIR}
-${CMAKE_BINARY_DIR}
-${CMAKE_BINARY_DIR}/src
+target_include_directories(model PRIVATE
+	${PROJECT_SOURCE_DIR}/src
+  ${Qt5Gui_INCLUDE_DIRS}
 )
+

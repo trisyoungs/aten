@@ -10,12 +10,9 @@ add_library(sg
   sgsi.c
   spacegroup.cpp
 )
-
-include_directories(
-  ../
-  ${QT_INCLUDE_DIR}
-  ${CMAKE_SOURCE_DIR}
-  ${CMAKE_BINARY_DIR}
-  ${CMAKE_BINARY_DIR}/src
-  ${CMAKE_SOURCE_DIR}/src/gui
+target_include_directories(sg PRIVATE
+	${PROJECT_SOURCE_DIR}/src
+  ${Qt5Core_INCLUDE_DIRS}
+  ${Qt5Gui_INCLUDE_DIRS}
 )
+
