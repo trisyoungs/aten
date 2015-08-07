@@ -109,7 +109,7 @@ target_include_directories(${target_name} PRIVATE
 )
 
 # Perform final link
-set(ATEN_LINK_LIBS Qt5::Widgets Qt5::Core ${OPENGL_LIBRARIES} ${FTGL_LIBRARIES} ${FREETYPE_LIBRARIES} ${READLINE_LIBRARIES})
+set(ATEN_LINK_LIBS Qt5::Widgets Qt5::Core ${FTGL_LIBRARIES} ${OPENGL_LIBRARIES} ${FREETYPE_LIBRARIES} ${READLINE_LIBRARIES})
 target_link_libraries( ${target_name}
     gui parser treegui command methods render model math main fourierdata ff base sg
     ${ATEN_LINK_LIBS}
