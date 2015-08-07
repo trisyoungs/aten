@@ -39,12 +39,13 @@ trajectory.cpp
 transform.cpp
 view.cpp
 )
-
-include_directories(
-../
-${QT_INCLUDE_DIR}
-${CMAKE_SOURCE_DIR}
-${CMAKE_BINARY_DIR}
-${CMAKE_BINARY_DIR}/src
-${CMAKE_SOURCE_DIR}/src/gui
+target_include_directories(command PRIVATE
+	${PROJECT_SOURCE_DIR}/src
+	${PROJECT_BINARY_DIR}/src
+  ${Qt5Core_INCLUDE_DIRS}
+  ${Qt5Gui_INCLUDE_DIRS}
+  ${Qt5Widgets_INCLUDE_DIRS}
+	${PROJECT_SOURCE_DIR}/src/gui
 )
+
+target_link_libraries(command gui) 

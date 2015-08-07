@@ -75,17 +75,20 @@ add_library(base
   zmatrix.h
   zmatrixelement.h
 )
+target_include_directories(base PRIVATE
+	${PROJECT_SOURCE_DIR}/src
+	${PROJECT_BINARY_DIR}/src
+  ${Qt5Core_INCLUDE_DIRS}
+  ${Qt5Gui_INCLUDE_DIRS}
+)
 
 add_library(fourierdata
   fourierdata.cpp
   fourierdata.h
 )
 
-include_directories(
-  ../
-  ${QT_INCLUDE_DIR}
-  ${CMAKE_SOURCE_DIR}
-  ${CMAKE_BINARY_DIR}
-  ${CMAKE_BINARY_DIR}/src
-  ${CMAKE_SOURCE_DIR}/src/gui
+target_include_directories(fourierdata PRIVATE
+	${PROJECT_SOURCE_DIR}/src
+  ${Qt5Core_INCLUDE_DIRS}
+  ${Qt5Gui_INCLUDE_DIRS}
 )

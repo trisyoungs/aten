@@ -1,15 +1,5 @@
 # Don't forget to include output directory, otherwise
 # the UI file won't be wrapped!
-INCLUDE_DIRECTORIES(
-  ${CMAKE_CURRENT_BINARY_DIR} 
-  ${CMAKE_CURRENT_BINARY_DIR}/../
-  ${Qt5Widgets_INCLUDE_DIRS}
-  ./
-  ../
-  ${CMAKE_SOURCE_DIR}
-  ${CMAKE_BINARY_DIR}
-)
-
 # Meta-Objects
 SET(gui_MOC_HDRS
   command.h
@@ -288,6 +278,11 @@ add_library(gui
   ${gui_SRCS}
   ${gui_MOC_SRCS}
 )
+target_include_directories(gui PRIVATE
+	${PROJECT_SOURCE_DIR}/src
+	${PROJECT_BINARY_DIR}/src
+  ${Qt5Widgets_INCLUDE_DIRS}
+)
 
 # Target 'treegui'
 add_library(treegui
@@ -295,4 +290,9 @@ add_library(treegui
   ${treegui_MOC_SRCS}
   treegui_funcs.cpp
 )
-
+target_include_directories(treegui PRIVATE
+	${PROJECT_SOURCE_DIR}/src
+	${PROJECT_BINARY_DIR}/src
+  ${Qt5Widgets_INCLUDE_DIRS}
+)
+target_link_libraries(treegui gui)

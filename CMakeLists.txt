@@ -8,7 +8,7 @@ set(VERSION_PATCH "0")
 
 set(CMAKE_BUILD_TYPE "Release")
 
-cmake_minimum_required(VERSION 2.8.11)
+cmake_minimum_required(VERSION 2.8.12)
 
 if(COMMAND cmake_policy)
   cmake_policy(VERSION 2.6)
@@ -77,8 +77,8 @@ if(APPLE)
   find_package(GLUT REQUIRED)
 endif(APPLE)
 
-set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/lib)
-set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/bin)
+set(LIBRARY_OUTPUT_PATH ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_LIBDIR})
+set(EXECUTABLE_OUTPUT_PATH ${PROJECT_BINARY_DIR}/${CMAKE_INSTALL_BINDIR})
 set(SRCS src/)
 
 # Set bundle info
@@ -92,19 +92,17 @@ If(APPLE)
   set(MACOSX_BUNDLE_COPYRIGHT "${AUTHOR}")
 endif(APPLE)
 
-# Set include directories
-include_directories(
-  ${CMAKE_BINARY_DIR}/src
-  ${CMAKE_SOURCE_DIR}/src
-  ${CMAKE_SOURCE_DIR}/src/gui
-  ${Qt5Widgets_INCLUDE_DIRS}
-  ${Qt5OpenGL_INCLUDE_DIRS}
-  ${Qt5Core_INCLUDE_DIRS}
-  ${Qt5Gui_INCLUDE_DIRS}
-  ${FTGL_INCLUDE_DIRS}
-  ${FREETYPE_INCLUDE_DIRS}
-  ${GLEXT_INCLUDES}
-)
+### htese shall go once is confirmed all is kosher
+#include_directories(
+#  ${CMAKE_BINARY_DIR}/src
+#  ${Qt5Widgets_INCLUDE_DIRS}
+#  ${Qt5OpenGL_INCLUDE_DIRS}
+#  ${Qt5Core_INCLUDE_DIRS}
+#  ${Qt5Gui_INCLUDE_DIRS}
+#  ${FTGL_INCLUDE_DIRS}
+#  ${FREETYPE_INCLUDE_DIRS}
+#  ${GLEXT_INCLUDES}
+#)
 
 # Process CMakeLists in subdirs
 add_subdirectory(${SRCS})
@@ -113,9 +111,13 @@ add_executable(${target_name}
   MACOSX_BUNDLE
   ${SRCS}/main.cpp 
 )
-
+target_include_directories(${target_name} PRIVATE
+	${PROJECT_SOURCE_DIR}/src
+	${PROJECT_BINARY_DIR}/src
+	${PROJECT_SOURCE_DIR}/src/gui
+)
 # Perform final link
-link_directories (${LIBRARY_OUTPUT_PATH})
+#link_directories (${LIBRARY_OUTPUT_PATH})
 IF(WIN32)
   set(ATEN_LINK_LIBS Qt5::Widgets Qt5::Core ${FTGL_LIBRARIES} ${OPENGL_LIBRARIES} ${FREETYPE_LIBRARIES} C:/GnuWin32/lib/libreadline.dll.a)
 ELSEIF(APPLE)
@@ -129,3 +131,15 @@ target_link_libraries( ${target_name}
     ${ATEN_LINK_LIBS}
     )
 
+if(UNIX AND NOT APPLE)
+  INSTALL_TARGET(${target_name} "")
+  configure_file(${PROJECT_SOURCE_DIR}/desktop.cmake Aten.desktop)
+  install(FILES ${PROJECT_SOURCE_DIR}/src/gui/icons/aten.png
+        DESTINATION share/aten)
+  install(FILES ${PROJECT_BINARY_DIR}/Aten.desktop
+        DESTINATION share/applications)
+  foreach(i ff filters fftesting fragments partitions scripts test includes)
+    install(DIRECTORY ${PROJECT_SOURCE_DIR}/data/${i}
+          DESTINATION share/aten)
+  endforeach(i)
+endif(UNIX AND NOT APPLE)
