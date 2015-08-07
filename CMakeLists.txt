@@ -53,7 +53,7 @@ if(WIN32)
   include_directories(
     ${FTGL_INCLUDE_DIRS}
     ${FREETYPE_INCLUDE_DIRS}
-    ${GLEXT_INCLUDES}
+    ${GLEXT_INCLUDE_DIRS}
   )
 
   # Add global NOMINMAX define for Windows systems, and inhibit console creation
