@@ -22,6 +22,7 @@ include(GNUInstallDirs)
 include(FindREADLINE)
 include(FindBISON)
 include(FindFTGL)
+include(FindGLEXT)
 
 # Find required packages for this project
 find_package(Qt5Widgets REQUIRED)
@@ -32,7 +33,7 @@ find_package(BISON REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(FTGL REQUIRED)
 find_package(Freetype REQUIRED)
-message(STATUS  "readline ${READLINE_LIBRARY}")
+find_package(GLEXT REQUIRED)
 
 # Find includes in corresponding build directories
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
@@ -47,12 +48,14 @@ CMAKE_POLICY(SET CMP0020 NEW)
 # -- Windows
 if(WIN32)
   set (target_name Aten)
-  # Setup FTGL and GLExt bits and pieces (for custom build machine)
-  set(FTGL_INCLUDES "C:/Users/axr61803/src/ftgl-2.1.3~rc5/src")
-  set(FT2_INCLUDES "C:/GnuWin32/include" "C:/GnuWin32/include/freetype2")
-  set(FTGL_LIBRARIES "C:/Users/axr61803/src/ftgl-2.1.3~rc5/src/libftgl.a")
-  set(FT2_LIBRARIES "C:/GnuWin32/lib/libfreetype.dll.a")
-  set(GLEXT_INCLUDES "C:/Users/axr61803/src/include")
+
+  # Adjust external include directories
+  include_directories(
+    ${FTGL_INCLUDE_DIRS}
+    ${FREETYPE_INCLUDE_DIRS}
+    ${GLEXT_INCLUDES}
+  )
+
   # Add global NOMINMAX define for Windows systems, and inhibit console creation
   ADD_DEFINITIONS("-DNOMINMAX")
   SET(GUI_TYPE WIN32)
@@ -64,8 +67,6 @@ endif(WIN32)
 # -- Unix
 if(UNIX)
   set (target_name aten)
-  # Set include location for FreeType2
-  #set(FT2_INCLUDES "/usr/include/freetype2")
 endif(UNIX)
 
 # -- OSX
@@ -92,18 +93,6 @@ If(APPLE)
   set(MACOSX_BUNDLE_COPYRIGHT "${AUTHOR}")
 endif(APPLE)
 
-### htese shall go once is confirmed all is kosher
-#include_directories(
-#  ${CMAKE_BINARY_DIR}/src
-#  ${Qt5Widgets_INCLUDE_DIRS}
-#  ${Qt5OpenGL_INCLUDE_DIRS}
-#  ${Qt5Core_INCLUDE_DIRS}
-#  ${Qt5Gui_INCLUDE_DIRS}
-#  ${FTGL_INCLUDE_DIRS}
-#  ${FREETYPE_INCLUDE_DIRS}
-#  ${GLEXT_INCLUDES}
-#)
-
 # Process CMakeLists in subdirs
 add_subdirectory(${SRCS})
 
@@ -111,26 +100,22 @@ add_executable(${target_name}
   MACOSX_BUNDLE
   ${SRCS}/main.cpp 
 )
+
+# Set project-local include directories for target
 target_include_directories(${target_name} PRIVATE
 	${PROJECT_SOURCE_DIR}/src
 	${PROJECT_BINARY_DIR}/src
 	${PROJECT_SOURCE_DIR}/src/gui
 )
-# Perform final link
-#link_directories (${LIBRARY_OUTPUT_PATH})
-IF(WIN32)
-  set(ATEN_LINK_LIBS Qt5::Widgets Qt5::Core ${FTGL_LIBRARIES} ${OPENGL_LIBRARIES} ${FREETYPE_LIBRARIES} C:/GnuWin32/lib/libreadline.dll.a)
-ELSEIF(APPLE)
-  set(ATEN_LINK_LIBS Qt5::Widgets Qt5::Core ${FTGL_LIBRARIES} ${OPENGL_LIBRARIES} ${FREETYPE_LIBRARIES} ${READLINE_LIBRARY})
-ELSE(APPLE)
-  set(ATEN_LINK_LIBS Qt5::Widgets Qt5::Core ${OPENGL_LIBRARIES} ${FTGL_LIBRARIES} ${FREETYPE_LIBRARIES} ${READLINE_LIBRARY})
-ENDIF(WIN32)
 
+# Perform final link
+set(ATEN_LINK_LIBS Qt5::Widgets Qt5::Core ${OPENGL_LIBRARIES} ${FTGL_LIBRARIES} ${FREETYPE_LIBRARIES} ${READLINE_LIBRARIES})
 target_link_libraries( ${target_name}
     gui parser treegui command methods render model math main fourierdata ff base sg
     ${ATEN_LINK_LIBS}
     )
 
+# Install target for unix
 if(UNIX AND NOT APPLE)
   INSTALL_TARGET(${target_name} "")
   configure_file(${PROJECT_SOURCE_DIR}/desktop.cmake Aten.desktop)
