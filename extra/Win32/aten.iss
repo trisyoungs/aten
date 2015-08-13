@@ -7,8 +7,10 @@
 #define MyAppURL "http://www.projectaten.net/"
 #define MyAppExeName "Aten.exe"
 
-#define QtDir "C:\Qt\5.4.1\qtbase\bin"
-#define GnuWin32Dir "C:\GnuWin32\bin"
+; Locations of bin directories of Qt, GnuWin(32), and MinGW(32)
+#define QtDir "C:\Qt\5.4.1\qtbase"
+#define GnuWinDir "C:\GnuWin32"
+#define MinGWDir "C:\MinGW32"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
@@ -43,17 +45,24 @@ Source: "..\..\build\bin\Aten.exe"; DestDir: "{app}\bin"; Flags: ignoreversion
 Source: "..\..\data\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "Aten.ico"; DestDir: "{app}\bin"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
-Source: "{#GnuWin32Dir}\freetype6.dll"; DestDir: "{app}\bin"
-Source: "{#GnuWin32Dir}\readline5.dll"; DestDir: "{app}\bin"
-Source: "{#GnuWin32Dir}\history5.dll"; DestDir: "{app}\bin"
-Source: "{#GnuWin32Dir}\zlib1.dll"; DestDir: "{app}\bin"
-Source: "C:\MinGW32\bin\libgcc_s_dw2-1.dll"; DestDir: "{app}\bin"
-Source: "C:\MinGW32\bin\libstdc++-6.dll"; DestDir: "{app}\bin"
-Source: "{#QtDir}\Qt5Gui.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
-Source: "{#QtDir}\Qt5Core.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
-Source: "{#QtDir}\Qt5OpenGL.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
-Source: "{#QtDir}\Qt5Svg.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
-Source: "{#QtDir}\Qt5Widgets.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
+Source: "{#GnuWinDir}\bin\freetype6.dll"; DestDir: "{app}\bin"
+Source: "{#GnuWinDir}\bin\readline5.dll"; DestDir: "{app}\bin"
+Source: "{#GnuWinDir}\bin\history5.dll"; DestDir: "{app}\bin"
+Source: "{#GnuWinDir}\bin\zlib1.dll"; DestDir: "{app}\bin"
+Source: "{#MinGWDir}\bin\libgcc_s_dw2-1.dll"; DestDir: "{app}\bin"
+Source: "{#MinGWDir}\bin\libstdc++-6.dll"; DestDir: "{app}\bin"
+Source: "{#MinGWDir}\bin\libwinpthread-1.dll"; DestDir: "{app}\bin"
+Source: "{#QtDir}\bin\Qt5Gui.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
+Source: "{#QtDir}\bin\Qt5Core.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
+Source: "{#QtDir}\bin\Qt5OpenGL.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
+Source: "{#QtDir}\bin\Qt5Svg.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
+Source: "{#QtDir}\bin\Qt5Widgets.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
+Source: "{#QtDir}\bin\libEGL.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
+Source: "{#QtDir}\bin\libGLESv2.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
+Source: "{#QtDir}\plugins\iconengines\qsvgicon.dll"; DestDir: "{app}\bin\iconengines"; Flags: ignoreversion
+Source: "{#QtDir}\plugins\platforms\qwindows.dll"; DestDir: "{app}\bin\platforms"; Flags: ignoreversion
+Source: "{#QtDir}\plugins\imageformats\*.dll"; DestDir: "{app}\bin\imageformats"; Flags: ignoreversion
+Source: "C:\Windows\System32\D3DCompiler_43.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
 
 [Icons]
 Name: "{group}\{#MyAppName}"; Filename: "{app}\bin\Aten.ico"
