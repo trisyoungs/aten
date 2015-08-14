@@ -26,9 +26,8 @@ else
   MINOR=$2
   PATCH=$3
   TEST="false"
+  echo "Changing version numbers in files (to ${MAJOR}.${MINOR}.{$PATCH}..."
 fi
-
-echo "Changing version numbers in files..."
 
 # Create git tag
 if [ "$TEST" = "false" ]

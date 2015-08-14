@@ -17,6 +17,11 @@ Automatically adjust grid size for number of visible models, based on current as
 Redo ProgressIndicator, making into a class much like QProgress (can't just use QProgress, since we want to have progress indicator functionality in the CLI....). Make it clever enough to realise that the gui is visible or not. Perhaps integrate it into Messenger, so that messages printed out while the indicator is running don't disrupt the indicator?
 Sort out remaining icons!
 Command prompt doesn't update main view after running command?
+On model load, empty (and saved) model is not removed / replaced.
+Display upper cutoff for grids somewhere.
+Do upper cutoff edits for grid respect actual maximum?
+View by percentage and multiple of rho for grid cutoff (put in popup).
+Not possible to hide grids!
 
 Graphics TODO
 =============
@@ -26,6 +31,7 @@ Optimise basic primitives to use vertex/index arrays instead of just vertices (a
 Check picked atom rendering (probably broken).
 Optimise primitive drawing / generation by allowing use of GL_TRIANGLE_STRIP?
 Reimplement drawing of grid (volume) axes.
+Fix grid transparency (reconstruct grids according to view angle?).
 
 Possible TODO
 =============
