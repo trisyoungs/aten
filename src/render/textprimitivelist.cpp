@@ -35,7 +35,7 @@ void TextPrimitiveList::clear()
 }
 
 // Set data from literal coordinates and text
-void TextPrimitiveList::add(QString text, Vec3<double> anchorPoint, TextPrimitive::TextAnchor anchorPosition, Vec3<double> adjustmentVector, Matrix& rotation, double textSize)
+void TextPrimitiveList::add(QString text, Vec3<double> anchorPoint, TextPrimitive::TextAnchor anchorPosition, Vec3<double> adjustmentVector, Matrix rotation, double textSize)
 {
 	TextPrimitive* primitive = textPrimitives_.add();
 	primitive->set(text, anchorPoint, anchorPosition, adjustmentVector, rotation, textSize);

@@ -73,3 +73,4 @@ Remove ManualSwapBuffers from Prefs accessor.
 growAtom / selectionGrowAtom - add optional parameter "bool bond = true".
 Remove LineTol and Converge commands, and update minimisation command signatures (inc return values).
 Remove prefs options for replicate, and add extra options to turn on folding and trimming to replicate() command.
+Add viewerFontFileName member Prefs accessor.

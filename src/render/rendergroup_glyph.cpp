@@ -67,7 +67,7 @@ void RenderGroup::createGlyphs(PrimitiveSet& primitiveSet, Model* source)
 				if ((fabs(phi) < 0.01) || (phi > 179.99)) A.applyRotationX(phi);
 				else A.applyRotationAxis(-r[2].y, r[2].x, 0.0, phi, true);
 				// Move to endpoint
-				A.applyTranslationZ(rij*arrowBodyLength);
+				A.applyTranslation(0.0, 0.0, rij*arrowBodyLength);
 				A.applyScaling(0.2,0.2,rij*arrowHeadLength/arrowBodyLength);
 				addTriangles(primitiveSet.cone(), A, colour[0], GL_LINE);
 				break;
@@ -247,10 +247,10 @@ void RenderGroup::createGlyphs(PrimitiveSet& primitiveSet, Model* source)
 			// Text (2D)
 			case (Glyph::TextGlyph):
 				r[0] = g->data(0)->vector();
-				addText2D(r[0].x, r[0].y, g->text());
+// 				addText2D(r[0].x, r[0].y, g->text()); // ATEN2 TODO
 				break;
 			case (Glyph::Text3DGlyph):
-				addText3D(g->data(0)->vector(), g->text());
+// 				addText3D(g->data(0)->vector(), g->text()); // ATEN2 TODO
 				break;
 			// Tube arrow - tail = data[0], head = data[1]
 			case (Glyph::TubeArrowGlyph):
@@ -269,7 +269,7 @@ void RenderGroup::createGlyphs(PrimitiveSet& primitiveSet, Model* source)
 				A.applyScaling(0.1,0.1,rij*arrowBodyLength);
 				addTriangles(primitiveSet.cylinder(), A, colour[0], g->isSolid() ? GL_FILL : GL_LINE);
 				// Move to endpoint
-				A.applyTranslationZ(1.0);
+				A.applyTranslation(0.0, 0.0, 1.0);
 				A.applyScaling(2.0,2.0,arrowHeadLength/arrowBodyLength);
 				addTriangles(primitiveSet.cone(), A, colour[0], g->isSolid() ? GL_FILL : GL_LINE);
 				break;
@@ -290,7 +290,7 @@ void RenderGroup::createGlyphs(PrimitiveSet& primitiveSet, Model* source)
 				A.applyScaling(0.1,0.1,rij*arrowBodyLength);
 				addTriangles(primitiveSet.cylinder(), A, colour[0], g->isSolid() ? GL_FILL : GL_LINE);
 				// Move to endpoint
-				A.applyTranslationZ(1.0);
+				A.applyTranslation(0.0, 0.0, 1.0);
 				A.applyScaling(2.0,2.0,arrowHeadLength/arrowBodyLength);
 				addTriangles(primitiveSet.cone(), A, colour[0], g->isSolid() ? GL_FILL : GL_LINE);
 				break;
@@ -311,7 +311,7 @@ void RenderGroup::createGlyphs(PrimitiveSet& primitiveSet, Model* source)
 				if ((fabs(phi) < 0.01) || (phi > 179.99)) A.applyRotationX(phi);
 				else A.applyRotationAxis(-r[1].y, r[1].x, 0.0, phi, true);
 				// Move to endpoint
-				A.applyTranslationZ(rij*arrowBodyLength);
+				A.applyTranslation(0.0, 0.0, rij*arrowBodyLength);
 				A.applyScaling(0.2, 0.2, rij*arrowHeadLength/arrowBodyLength);
 				addTriangles(primitiveSet.cone(), A, colour[0], GL_LINE);
 				break;

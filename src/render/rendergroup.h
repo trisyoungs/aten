@@ -25,6 +25,7 @@
 #include "render/rendergroup.h"
 #include "render/primitive.h"
 #include "render/primitiveinfo.h"
+#include "render/textprimitivelist.h"
 #include "base/prefs.h"
 #include "base/bond.h"
 #include <QColor>
@@ -62,18 +63,20 @@ class RenderGroup
 	Primitive extraNormalLines_;
 	// Bold lines
 	Primitive extraBoldLines_;
+	// Overlay lines
+	Primitive overlayLines_;
 	// Additional solid triangles
 	Primitive extraSolidTriangles_;
 	// Additional wire triangles
 	Primitive extraWireTriangles_;
+	// Overlay text primitives
+	TextPrimitiveList overlayTextPrimitives_;
 
 	public:
 	// Clear lists
 	void clear();
-	// Add text primitive (2D)
-	void addText2D(int x, int y, QString text, bool rightalign = false);
-	// Add text primitive (3D)
-	void addText3D(Vec3<double> pos, QString text, bool rightalign = false);
+	// Add overlay text primitive
+	void addOverlayText(Vec3<double> pos, QString text, TextPrimitive::TextAnchor anchor = TextPrimitive::CentralAnchor);
 	// Add triangle primitive in specified colour
 	void addTriangles(Primitive& targetPrimitive, Matrix& transform, Vec4<GLfloat>& colour, GLenum fillMode = GL_FILL, GLfloat lineWidth = -1.0);
 	// Add triangle primitive (which has it's own colour info)
@@ -94,6 +97,8 @@ class RenderGroup
 	void createAtomsAndBonds(PrimitiveSet& primitiveSet, Model* source, Matrix baseTransform);
 	// Generate primitive data for model glyphs
 	void createGlyphs(PrimitiveSet& primitiveSet, Model* source);
+	// Generate overlays (labels and measurements)
+	void createOverlays(Model* source, Matrix baseTransform);
 
 
 	/*

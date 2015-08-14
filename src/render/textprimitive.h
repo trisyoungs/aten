@@ -76,6 +76,8 @@ class TextPrimitive : public ListItem<TextPrimitive>
 	double textSize_;
 	// Text fragments to render
 	List<TextFragment> fragments_;
+	// Whether to outline all bounding boxes for primitives
+	static bool outline_;
 
 	public:
 	// Set text scaling factor

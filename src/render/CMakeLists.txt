@@ -21,6 +21,7 @@ add_library(render
   rendergroup.cpp
   rendergroup_glyph.cpp
   rendergroup_model.cpp
+  rendergroup_overlays.cpp
   textformat.cpp
   textfragment.cpp
   textprimitive.cpp

@@ -1230,7 +1230,7 @@ class Model : public ListItem<Model>
 	RenderSource renderSource_;
 	// Flags whether to draw from associated vibration instead of model
 	bool renderFromVibration_;
-	// Primitives representing model, or current vibration / trajectory frame
+	// Primitives representing structure of model, or current vibration / trajectory frame
 	RenderGroup renderGroup_;
 	// Logpoint at which renderGroup_ was last created
 	int renderGroupPoint_;
@@ -1238,7 +1238,7 @@ class Model : public ListItem<Model>
 	public:
 	// Set rendering source
 	void setRenderSource(RenderSource rs);
-	// Return whether rendering from self
+	// Return rendering source
 	RenderSource renderSource() const;
 	// Return the current rendering source for the model
 	Model* renderSourceModel();

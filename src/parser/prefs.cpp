@@ -26,6 +26,7 @@
 #include "main/aten.h"
 #include "ff/forcefield.h"
 #include "gui/mainwindow.h"
+#include <render/fontinstance.h>
 
 ATEN_USING_NAMESPACE
 
@@ -83,6 +84,7 @@ Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
 	{ "ewaldAlpha",			VTypes::DoubleData,		0, false },
 	{ "ewaldKMax",			VTypes::IntegerData,		3, false },
 	{ "ewaldPrecision",		VTypes::DoubleData,		0, false },
+	{ "fontFileName",		VTypes::StringData,		0, false },
 	{ "forceRhombohedral",		VTypes::IntegerData,		0, false },
 	{ "globeSize",			VTypes::IntegerData,		0, false },
 	{ "glyphColour",		VTypes::DoubleData,		4, false },
@@ -349,6 +351,9 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArray
 			break;
 		case (PreferencesVariable::EwaldPrecision):
 			rv.set( ptr->ewaldPrecision().value() );
+			break;
+		case (PreferencesVariable::FontFileName):
+			rv.set( ptr->viewerFontFileName() );
 			break;
 		case (PreferencesVariable::ForceRhombohedral):
 			rv.set( ptr->forceRhombohedral() );
@@ -727,6 +732,10 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue&
 			break;
 		case (PreferencesVariable::EwaldPrecision):
 			ptr->ewaldPrecision().set( newValue.asDouble(result) );
+			break;
+		case (PreferencesVariable::FontFileName):
+			ptr->setViewerFontFileName( newValue.asString() );
+			FontInstance::setupFont(ptr->viewerFontFileName());
 			break;
 		case (PreferencesVariable::ForceRhombohedral):
 			ptr->setForceRhombohedral( newValue.asBool() );

@@ -85,11 +85,11 @@ void RenderGroup::createBond(PrimitiveSet& primitiveSet, Matrix A, Vec3<double> 
 	
 	// We can perform an initial translation to the 'edge' of atom i, and scale to visible bond length
 	B = A;
-	A.applyTranslationZ(radius_i);
+	A.applyTranslation(0.0, 0.0, radius_i);
 	A.applyScalingZ(dvisible);
 	// Move matrix B to be centred on atom j
 	B.addTranslation(j->r() - i->r());
-	B.applyTranslationZ(-radius_j);
+	B.applyTranslation(0.0, 0.0, -radius_j);
 	B.applyScalingZ(-dvisible);
 
 	// Draw first bond half
@@ -142,7 +142,7 @@ void RenderGroup::createBond(PrimitiveSet& primitiveSet, Matrix A, Vec3<double> 
 			if (i->isSelected() && (selvisible > 0.0))
 			{
 				// Move to edge of selected atom and apply selection bond scaling
-				A.applyTranslationZ((selscale*radius_i-radius_i) / dvisible);
+				A.applyTranslation(0.0, 0.0, (selscale*radius_i-radius_i) / dvisible);
 				A.applyScalingZ(selvisible/dvisible);
 				if (transparentSel)
 				{
@@ -189,7 +189,7 @@ void RenderGroup::createBond(PrimitiveSet& primitiveSet, Matrix A, Vec3<double> 
 			addTriangles(primitiveSet.bond(style_j, bt), B, colour_j);
 			if (j->isSelected())
 			{
-				B.applyTranslationZ((selscale*radius_j-radius_j) / dvisible);
+				B.applyTranslation(0.0, 0.0, (selscale*radius_j-radius_j) / dvisible);
 				if (transparentSel)
 				{
 					colour_j.w = 0.5f;
@@ -204,7 +204,7 @@ void RenderGroup::createBond(PrimitiveSet& primitiveSet, Matrix A, Vec3<double> 
 			addTriangles(primitiveSet.bond(style_j, bt), B, colour_j);
 			if (j->isSelected() && (selvisible > 0.0))
 			{
-				B.applyTranslationZ((selscale*radius_j-radius_j) / dvisible);
+				B.applyTranslation(0.0, 0.0, (selscale*radius_j-radius_j) / dvisible);
 				B.applyScalingZ(selvisible / dvisible);
 				if (transparentSel)
 				{
@@ -637,146 +637,5 @@ void RenderGroup::createAtomsAndBonds(PrimitiveSet& primitiveSet, Model* source,
 // 	}
 // 	Messenger::exit("Viewer::renderGridText");
 // }
-// 
-// // Render additional model information (measurements etc.)
-// void Viewer::renderModelOverlays(Model* source)
-// {
-// 	Vec3<double> r1, r2, r3, r4, rji, rjk, pos;
-// 	Vec4<double> screenr;
-// 	GLfloat colour[4];
-// 	double gamma, t;
-// 	int labels;
-// 	Dnchar text(512);
-// 	Atom **atoms, *i;
-// 	ForcefieldAtom* ffa;
-// 
-// 	// Clear depth buffer to force lines on top of existing primitives,
-// 	glDisable(GL_DEPTH_TEST);
-// 	
-// 	// Set colour
-// 	prefs.copyColour(Prefs::TextColour, colour);
-// 	glColor4fv(colour);
-// 	
-// 	// Atoms and Bonds
-// 	atoms = source->atomArray();
-// 	for (int n = 0; n<source->nAtoms(); ++n)
-// 	{
-// 		// Get atom pointer
-// 		i = atoms[n];
-// 		
-// 		// Skip hidden atoms
-// 		if (i->isHidden()) continue;
-// 		
-// 		// Labels
-// 		labels = i->labels();
-// 		if (labels == 0) continue;
-// 		
-// 		// Grab forcefield atom pointer
-// 		ffa = i->type();
-// 		
-// 		// Blank label string
-// 		text.clear();
-// 		// Now add on all parts of the label that are required
-// 		if (labels&(1 << Atom::IdLabel)) text.strcatf("%i ", i->id()+1);
-// 		if (labels&(1 << Atom::ElementLabel)) text.strcatf("%s ", Elements().symbol(i));
-// 		if (labels&(1 << Atom::TypeLabel))
-// 		{
-// 			if (ffa == NULL) text.strcat("[None] ");
-// 			else text.strcatf("[%i %s] ", ffa->typeId(), ffa->name());
-// 		}
-// 		if (labels&(1 << Atom::EquivLabel)) text.strcatf("[=%s] ", ffa == NULL ? "None" : ffa->equivalent());
-// 		if (labels&(1 << Atom::ChargeLabel)) text.strcatf(prefs.chargeLabelFormat(), i->charge());
-// 		
-// 		// Add text object
-// 		r2 = source->modelToWorld(i->r(), &screenr);
-// 		if (r2.z < -1.0) renderTextPrimitive(screenr.x, screenr.y, text.get());
-// 	}
-// 	
-// 	// Measurements
-// 	// Apply standard transformation matrix to OpenGL so we may just use local atom positions for vertices
-// 	// Load model transformation matrix
-// 	glLoadIdentity();
-// 	glMultMatrixd(modelTransformationMatrix_.matrix());
-// 	
-// 	// Distances
-// 	for (Measurement* m = source->distanceMeasurements(); m != NULL; m = m->next)
-// 	{
-// 		atoms = m->atoms();
-// 		// Check that all atoms involved in the measurement are visible (i.e. not hidden)
-// 		if (atoms[0]->isHidden() || atoms[1]->isHidden()) continue;
-// 		r1 = atoms[0]->r();
-// 		r2 = atoms[1]->r();
-// 		glBegin(GL_LINES);
-// 		glVertex3d(r1.x, r1.y, r1.z);
-// 		glVertex3d(r2.x, r2.y, r2.z);
-// 		glEnd();
-// 		r4 = (r1+r2)*0.5;
-// 		r3 = source->modelToWorld(r4, &screenr);
-// 		if (r3.z < -1.0) renderTextPrimitive(screenr.x, screenr.y, ftoa(m->value(), prefs.distanceLabelFormat()), 0x212b);
-// 	}
-// 	
-// 	// Angles
-// 	for (Measurement* m = source->angleMeasurements(); m != NULL; m = m->next)
-// 	{
-// 		atoms = m->atoms();
-// 		// Check that all atoms involved in the measurement are visible (i.e. not hidden)
-// 		if (atoms[0]->isHidden() || atoms[1]->isHidden() || atoms[2]->isHidden()) continue;
-// 		r1 = atoms[0]->r();
-// 		r2 = atoms[1]->r();
-// 		r3 = atoms[2]->r();
-// 		glBegin(GL_LINE_STRIP);
-// 		glVertex3d(r1.x, r1.y, r1.z);
-// 		glVertex3d(r2.x, r2.y, r2.z);
-// 		glVertex3d(r3.x, r3.y, r3.z);
-// 		glEnd();
-// 		// Curved angle marker
-// 		rji = (r1 - r2);
-// 		rjk = (r3 - r2);
-// 		rji.normalise();
-// 		rjk.normalise();
-// 		gamma = acos(rji.dp(rjk));
-// 		// Draw segments
-// 		t = 0.0;
-// 		glBegin(GL_LINES);
-// 		for (int n=0; n<11; n++)
-// 		{
-// 			pos = (rji * sin((1.0-t)*gamma) + rjk * sin(t*gamma)) / sin(gamma);
-// 			pos *= 0.2;
-// 			pos += r2;
-// 			glVertex3d(pos.x, pos.y, pos.z);
-// 			t += 0.1;
-// 			// Store text position
-// 			if (n == 5) r4 = pos;
-// 		}
-// 		glEnd();
-// 		// Determine left or right-alignment of text
-// 		source->modelToWorld(r2, &screenr);
-// 		gamma = screenr.x;
-// 		r3 = source->modelToWorld(r4, &screenr);
-// 		if (r3.z < -1.0) renderTextPrimitive(screenr.x, screenr.y, ftoa(m->value(), prefs.angleLabelFormat()), 176, gamma > screenr.x);
-// 	}
-// 	
-// 	// Torsions
-// 	for (Measurement* m = source->torsionMeasurements(); m != NULL; m = m->next)
-// 	{
-// 		atoms = m->atoms();
-// 		// Check that all atoms involved in the measurement are visible (i.e. not hidden)
-// 		if (atoms[0]->isHidden() || atoms[1]->isHidden() || atoms[2]->isHidden() || atoms[3]->isHidden()) continue;
-// 		r1 = atoms[0]->r();
-// 		r2 = atoms[1]->r();
-// 		r3 = atoms[2]->r();
-// 		r4 = atoms[3]->r();
-// 		glBegin(GL_LINE_STRIP);
-// 		glVertex3d(r1.x, r1.y, r1.z);
-// 		glVertex3d(r2.x, r2.y, r2.z);
-// 		glVertex3d(r3.x, r3.y, r3.z);
-// 		glVertex3d(r4.x, r4.y, r4.z);
-// 		glEnd();
-// 		r1 = (r2+r3)*0.5;
-// 		r4 = source->modelToWorld(r1, &screenr);
-// 		if (r4.z < -1.0) renderTextPrimitive(screenr.x, screenr.y, ftoa(m->value(), prefs.angleLabelFormat()), 176);
-// 	}
-// 	
-// 	// Re-enable depth buffer
-// 	glEnable(GL_DEPTH_TEST);
-// }
+
+

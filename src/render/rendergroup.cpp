@@ -21,6 +21,7 @@
 
 #include "render/rendergroup.h"
 #include "base/messenger.h"
+#include "render/fontinstance.h"
 #include <QOpenGLContext>
 #ifdef __APPLE__
 #include <OpenGL/gl.h>
@@ -35,6 +36,8 @@ RenderGroup::RenderGroup()
 	extraNormalLines_.initialise(GL_LINES, true);
 	extraBoldLines_.setNoInstances();
 	extraBoldLines_.initialise(GL_LINES, true);
+	overlayLines_.setNoInstances();
+	overlayLines_.initialise(GL_LINES, true);
 	extraSolidTriangles_.setNoInstances();
 	extraSolidTriangles_.initialise(GL_TRIANGLES, true);
 	extraWireTriangles_.setNoInstances();
@@ -57,20 +60,14 @@ void RenderGroup::clear()
 	extraBoldLines_.forgetAll();
 	extraSolidTriangles_.forgetAll();
 	extraWireTriangles_.forgetAll();
+	overlayLines_.forgetAll();
+	overlayTextPrimitives_.clear();
 }
 
-// Add text primitive (2D)
-void RenderGroup::addText2D(int x, int y, QString text, bool rightAlign)
+// Add flat text primitive
+void RenderGroup::addOverlayText(Vec3<double> pos, QString text, TextPrimitive::TextAnchor anchor)
 {
-	printf("Text rendering in 2D is broken.\n");
-//         textPrimitives_.add(x, contextHeight_-y, text, addChar, rightalign);  ATEN2 TODO
-}
-
-// Add text primitive (3D)
-void RenderGroup::addText3D(Vec3<double> pos, QString text, bool rightalign)
-{
-	printf("Text rendering in 3D is broken.\n");
-//         textPrimitives_.add(x, contextHeight_-y, text, addChar, rightalign);  ATEN2 TODO
+	overlayTextPrimitives_.add(text, pos, anchor, Vec3<double>(), Matrix(), 1.0);
 }
 
 // Add triangle primitive in specified colour
@@ -225,7 +222,7 @@ void RenderGroup::sendToGL(Matrix& modelTransformationMatrix)
 	// Extra bold lines
 	glLoadMatrixd(modelTransformationMatrix.matrix());
 	extraBoldLines_.sendToGL(QOpenGLContext::currentContext());
-	
+
 	// Transparent triangles
 	glEnable(GL_LIGHTING);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -236,6 +233,26 @@ void RenderGroup::sendToGL(Matrix& modelTransformationMatrix)
 		A = modelTransformationMatrix * pi->localTransform();
 		glLoadMatrixd(A.matrix());
 		primitive.sendToGL(QOpenGLContext::currentContext());
+	}
+
+	// Overlays
+	glDisable(GL_DEPTH_TEST);
+	GLfloat colour[4];
+	prefs.copyColour(Prefs::TextColour, colour);
+	glColor4fv(colour);
+
+	// Overlay lines
+	glDisable(GL_LIGHTING);
+	glLoadMatrixd(modelTransformationMatrix.matrix());
+	overlayLines_.sendToGL(QOpenGLContext::currentContext());
+
+	// Overlay text
+	glEnable(GL_MULTISAMPLE);
+	glEnable(GL_BLEND);
+	if (FontInstance::fontOK())
+	{
+		FontInstance::font()->FaceSize(1);
+		overlayTextPrimitives_.renderAll(modelTransformationMatrix, true, 1.0);
 	}
 }
 

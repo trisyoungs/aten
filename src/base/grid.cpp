@@ -1066,7 +1066,7 @@ bool Grid::fillEnclosedVolume()
 Matrix Grid::voxelMatrix()
 {
 	Matrix A;
-	A.applyTranslation(origin_);
+	A.createTranslation(origin_);
 	A.multiplyRotation(cell_.axes());
 	return A;
 }

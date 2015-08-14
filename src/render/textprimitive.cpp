@@ -32,6 +32,7 @@ int TextPrimitive::stringPos_, TextPrimitive::stringLength_;
 List<TextFormat> TextPrimitive::formatStack_;
 double TextPrimitive::horizontalPosition_;
 double TextPrimitive::textSizeScale_ = 1.0;
+bool TextPrimitive::outline_ = true;
 
 // Constructor
 TextPrimitive::TextPrimitive() : ListItem<TextPrimitive>()
@@ -76,7 +77,7 @@ void TextPrimitive::setTextSizeScale(double textSizeScale)
 }
 
 // Set data
-void TextPrimitive::set(QString text, Vec3< double > anchorPoint, TextPrimitive::TextAnchor anchorPosition, Vec3< double > adjustmentVector, Matrix rotation, double textSize)
+void TextPrimitive::set(QString text, Vec3<double> anchorPoint, TextPrimitive::TextAnchor anchorPosition, Vec3<double> adjustmentVector, Matrix rotation, double textSize)
 {
 	// Call the parser
 	generateFragments(this, text);
@@ -150,7 +151,7 @@ Matrix TextPrimitive::transformationMatrix(double baseFontSize, TextFragment* fr
 	if (fragment)
 	{
 		// -- Apply local scaling to text (if fragment was provided)
-		textMatrix.applyScaling(fragment->scale());
+		textMatrix.applyScaling(fragment->scale(), fragment->scale(), fragment->scale());
 		// -- Apply local shear to text (if fragment is italic)
 		if (fragment->italic()) textMatrix.applyShearX(0.2);
 	}
@@ -202,11 +203,11 @@ void TextPrimitive::render(Matrix viewMatrix, bool correctOrientation, double ba
 	// Loop over fragments
 	for (TextFragment* fragment = fragments_.first(); fragment != NULL; fragment = fragment->next)
 	{
-		textMatrix = transformationMatrix(baseFontSize, fragment) * viewMatrix;
+		textMatrix = viewMatrix*transformationMatrix(baseFontSize, fragment);
 		glLoadMatrixd(textMatrix.matrix());
 
 		// Draw bounding boxes around each fragment
-		if (false)
+		if (outline_)
 		{
 			glDisable(GL_LINE_STIPPLE);
 			glLineWidth(1.0);

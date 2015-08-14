@@ -257,6 +257,8 @@ class Prefs
 	bool drawHydrogenBonds_;
 	// Radius of hydrogen bond dots
 	double hydrogenBondDotRadius_;
+	// Font filename
+	QString viewerFontFileName_;
 	
 	public:
 	// Set C-style format for distance label values
@@ -299,6 +301,10 @@ class Prefs
 	double hydrogenBondDotRadius();
 	// Set radius of hydrogen bond dots
 	void setHydrogenBondDotRadius(double r);
+	// Set viewer font filename
+	void setViewerFontFileName(QString fileName);
+	// Return viewer font filename
+	QString viewerFontFileName();
 
 
 	/*
