@@ -25,6 +25,7 @@
 void AtenWindow::on_QuickCommandToggleButton_clicked(bool checked)
 {
 	ui.QuickCommandFrame->setVisible(!ui.QuickCommandFrame->isVisible());
+	if (ui.QuickCommandFrame->isVisible()) ui.QuickCommandCombo->setFocus();
 }
 
 void AtenWindow::quickCommandRun()
@@ -34,10 +35,11 @@ void AtenWindow::quickCommandRun()
 	{
 		ReturnValue rv;
 		program.execute(rv);
-		updateWidgets(AtenWindow::AllTarget);
+		ui.QuickCommandCombo->clear();
 	}
 	else
 	{
-
 	}
+
+	updateWidgets(AtenWindow::AllTarget);
 }

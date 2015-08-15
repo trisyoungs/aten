@@ -96,6 +96,7 @@ double Model::addDistanceMeasurement(Atom* i, Atom* j, bool quiet)
 	Messenger::enter("Model::addDistanceMeasurement");
 	double result = 0.0;
 	Measurement* newdist = findDistanceMeasurement(i,j);
+
 	// If this distance isn't currently in the list, add it. Otherwise, delete it
 	if (newdist == NULL)
 	{
@@ -104,6 +105,7 @@ double Model::addDistanceMeasurement(Atom* i, Atom* j, bool quiet)
 		result = newdist->value();
 	}
 	else removeMeasurement(newdist);
+
 	Messenger::exit("Model::addDistanceMeasurement");
 	return result;
 }
@@ -121,6 +123,7 @@ double Model::addAngleMeasurement(Atom* i, Atom* j, Atom* k, bool quiet)
 	Messenger::enter("Model::addAngleMeasurement");
 	double result = 0.0;
 	Measurement* newangle = findAngleMeasurement(i,j,k);
+
 	// Check that this angle isn't already in the list. If it is, delete it
 	if (newangle == NULL)
 	{
@@ -129,6 +132,7 @@ double Model::addAngleMeasurement(Atom* i, Atom* j, Atom* k, bool quiet)
 		result = newangle->value();
 	}
 	else removeMeasurement(newangle);
+
 	Messenger::exit("Model::addAngleMeasurement");
 	return result;
 }
@@ -146,6 +150,7 @@ double Model::addTorsionMeasurement(Atom* i, Atom* j, Atom* k, Atom* l, bool qui
 	Messenger::enter("Model::addTorsionMeasurement");
 	double result = 0.0;
 	Measurement* newtorsion = findTorsionMeasurement(i,j,k,l);
+
 	// If this torsion isn't in the list, add it. Otherwise, delete it.
 	if (newtorsion == NULL)
 	{
@@ -154,6 +159,7 @@ double Model::addTorsionMeasurement(Atom* i, Atom* j, Atom* k, Atom* l, bool qui
 		result = newtorsion->value();
 	}
 	else removeMeasurement(newtorsion);
+
 	Messenger::exit("Model::addTorsionMeasurement");
 	return result;
 }
@@ -169,6 +175,7 @@ void Model::removeMeasurement(Measurement* me)
 {
 	Messenger::enter("Model::removeMeasurement");
 	Measurement::MeasurementType type = me->type();
+
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
@@ -190,6 +197,7 @@ void Model::removeMeasurement(Measurement* me)
 		}
 		recordingState_->addEvent(newchange);
 	}
+
 	switch (type)
 	{
 		case (Measurement::DistanceMeasurement):
@@ -204,6 +212,9 @@ void Model::removeMeasurement(Measurement* me)
 		default:
 			break;
 	}
+
+	logChange(Log::Labels);
+
 	Messenger::exit("Model::removeMeasurement");
 }
 
@@ -211,9 +222,13 @@ void Model::removeMeasurement(Measurement* me)
 void Model::removeMeasurements(Measurement::MeasurementType gt)
 {
 	Messenger::enter("Model::removeMeasurements");
+
 	if (gt == Measurement::DistanceMeasurement) distanceMeasurements_.clear();
 	else if (gt == Measurement::AngleMeasurement) angleMeasurements_.clear();
 	else if (gt == Measurement::TorsionMeasurement) torsionMeasurements_.clear();
+
+	logChange(Log::Labels);
+
 	Messenger::exit("Model::removeMeasurements");
 }
 
@@ -244,6 +259,9 @@ void Model::removeMeasurements(Atom* xatom)
 		if (m->involvesAtom(xatom)) removeMeasurement(m);
 		m = prevm;
 	}
+
+	logChange(Log::Labels);
+
 	Messenger::exit("Model::removeMeasurements[atom]");
 }
 
@@ -252,6 +270,7 @@ Measurement* Model::addMeasurement(Measurement::MeasurementType gt, ...)
 {
 	Messenger::enter("Model::addMeasurement");
 	Atom* i, *atoms[4];
+
 	// Get remaining atoms_...
 	int n, nexpected = Measurement::nMeasurementAtoms(gt);
 	va_list vars;
@@ -276,6 +295,7 @@ Measurement* Model::addMeasurement(Measurement::MeasurementType gt, ...)
 	for (n=0; n<nexpected; ++n) newm->setAtom(n, atoms[n]);
 	newm->setType(gt);
 	newm->calculate(&cell_);
+
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
@@ -296,6 +316,9 @@ Measurement* Model::addMeasurement(Measurement::MeasurementType gt, ...)
 		}
 		recordingState_->addEvent(newchange);
 	}
+
+	logChange(Log::Labels);
+
 	Messenger::exit("Model::addMeasurement");
 	return newm;
 }

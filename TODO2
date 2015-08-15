@@ -16,7 +16,6 @@ Check - is using redirected filenames really necessary when saving movie frame i
 Automatically adjust grid size for number of visible models, based on current aspect ratio and context size etc.
 Redo ProgressIndicator, making into a class much like QProgress (can't just use QProgress, since we want to have progress indicator functionality in the CLI....). Make it clever enough to realise that the gui is visible or not. Perhaps integrate it into Messenger, so that messages printed out while the indicator is running don't disrupt the indicator?
 Sort out remaining icons!
-Command prompt doesn't update main view after running command?
 On model load, empty (and saved) model is not removed / replaced.
 Display upper cutoff for grids somewhere.
 Do upper cutoff edits for grid respect actual maximum?
@@ -25,6 +24,7 @@ Not possible to hide grids!
 
 Graphics TODO
 =============
+Image saving is crocked.
 In top-left corner of main window, have a black icon illustrating which mode is active (except for Interact).
 Have small, additional black icons at top-right of each model window, illustrating whether it has been modified, is displaying trajetory frames, etc.
 Optimise basic primitives to use vertex/index arrays instead of just vertices (also check end caps of spheres).

@@ -44,7 +44,7 @@ class Log
 	// Selection	: atom selection
 	// Glyphs	: glyphs
 	// Grids	: grids
-	// Labels	: atom labels
+	// Labels	: atom labels or measurements
 	// Misc		: miscellaneous changes (e.g. title changes)
 	// Total	: sum of all changes
 
