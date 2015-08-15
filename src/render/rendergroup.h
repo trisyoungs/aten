@@ -69,14 +69,18 @@ class RenderGroup
 	Primitive extraSolidTriangles_;
 	// Additional wire triangles
 	Primitive extraWireTriangles_;
+	// Text primitives
+	TextPrimitiveList textPrimitives_;
 	// Overlay text primitives
 	TextPrimitiveList overlayTextPrimitives_;
 
 	public:
 	// Clear lists
 	void clear();
+	// Add text primitive
+	void addText(QString text, Vec3<double> pos, double textSize, TextPrimitive::TextAnchor anchor = TextPrimitive::CentralAnchor, Vec3<double> globalAdjustment = Vec3<double>(), bool flat = true);
 	// Add overlay text primitive
-	void addOverlayText(Vec3<double> pos, QString text, TextPrimitive::TextAnchor anchor = TextPrimitive::CentralAnchor);
+	void addOverlayText(QString text, Vec3<double> pos, double textSize, TextPrimitive::TextAnchor anchor = TextPrimitive::CentralAnchor, Vec3<double> globalAdjustment = Vec3<double>(), bool flat = true);
 	// Add triangle primitive in specified colour
 	void addTriangles(Primitive& targetPrimitive, Matrix& transform, Vec4<GLfloat>& colour, GLenum fillMode = GL_FILL, GLfloat lineWidth = -1.0);
 	// Add triangle primitive (which has it's own colour info)

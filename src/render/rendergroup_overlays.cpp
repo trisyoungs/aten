@@ -33,14 +33,16 @@ void RenderGroup::createOverlays(Model* source, Matrix baseTransform)
 
 	Vec3<double> r1, r2, r3, r4, rji, rjk, pos;
 	Vec4<double> screenr;
-	GLfloat colour[4];
-	double gamma, t;
+	Vec4<GLfloat> colour;
+	double gamma, t, atomSize;
 	int labels;
-	QString text;
 	Atom** atoms, *i;
 	ForcefieldAtom* ffa;
+	QStringList labelStrings;
+	Prefs::DrawStyle style, globalstyle = prefs.renderStyle();
+	prefs.copyColour(Prefs::TextColour, colour);
 
-	// Atoms and Bonds
+	// Atom labels
 	atoms = source->atomArray();
 	for (int n = 0; n<source->nAtoms(); ++n)
 	{
@@ -56,23 +58,23 @@ void RenderGroup::createOverlays(Model* source, Matrix baseTransform)
 		
 		// Grab forcefield atom pointer
 		ffa = i->type();
-		
-		// Blank label string
-		text.clear();
 
 		// Now add on all parts of the label that are required
-		if (labels&(1 << Atom::IdLabel)) text += QString::number(i->id()+1) + " ";
-		if (labels&(1 << Atom::ElementLabel)) text += QString(Elements().symbol(i)) + " ";
+		labelStrings.clear();
+		if (labels&(1 << Atom::IdLabel)) labelStrings << QString::number(i->id()+1);
+		if (labels&(1 << Atom::ElementLabel)) labelStrings << QString(Elements().symbol(i));
 		if (labels&(1 << Atom::TypeLabel))
 		{
-			if (ffa == NULL) text += "[None] ";
-			else text += QString("[%1 %2] ").arg(ffa->typeId()).arg(ffa->name());
+			if (ffa == NULL) labelStrings << "[None]";
+			else labelStrings << QString("[%1 %2] ").arg(ffa->typeId()).arg(ffa->name());
 		}
-		if (labels&(1 << Atom::EquivalentLabel)) text += QString("[=%1] ").arg(ffa == NULL ? "None" : ffa->equivalent());
-		if (labels&(1 << Atom::ChargeLabel)) text += QString().sprintf(qPrintable(prefs.chargeLabelFormat()), i->charge());
-		
+		if (labels&(1 << Atom::EquivalentLabel)) labelStrings << QString("[=%1]").arg(ffa == NULL ? "None" : ffa->equivalent());
+		if (labels&(1 << Atom::ChargeLabel)) labelStrings << QString().sprintf(qPrintable(prefs.chargeLabelFormat()), i->charge());
+
 		// Add text object
-		addOverlayText(i->r(), text);
+		style = (globalstyle == Prefs::OwnStyle ? i->style() : globalstyle);
+		atomSize = (style == Prefs::ScaledStyle ? prefs.atomStyleRadius(style) * Elements().atomicRadius(i->element()) : prefs.atomStyleRadius(style)) * 1.05;
+		addText(labelStrings.join(" "), i->r(), 0.25, TextPrimitive::CentralAnchor, Vec3<double>(0.0, 0.0, atomSize), true);
 	}
 
 	// Distance Measurements
@@ -86,9 +88,8 @@ void RenderGroup::createOverlays(Model* source, Matrix baseTransform)
 		r2 = atoms[1]->r();
 
 		// Add line and text
-		overlayLines_.line(r1, r2);
-		text.sprintf(qPrintable(prefs.distanceLabelFormat()), m->value()) += QChar(0x212b);
-		addOverlayText((r1+r2)*0.5, text);
+		overlayLines_.line(r1, r2, colour);
+		addOverlayText(QString().sprintf(qPrintable(prefs.distanceLabelFormat()), m->value()) + QChar(0x212b), (r1+r2)*0.5, 0.1, TextPrimitive::MiddleLeftAnchor);
 	}
 	
 	// Angle Measurements
@@ -103,8 +104,8 @@ void RenderGroup::createOverlays(Model* source, Matrix baseTransform)
 		r3 = atoms[2]->r();
 
 		// Add lines and text
-		overlayLines_.line(r1, r2);
-		overlayLines_.line(r2, r3);
+		overlayLines_.line(r1, r2, colour);
+		overlayLines_.line(r2, r3, colour);
 
 		// Curved angle marker
 		rji = (r1 - r2);
@@ -120,14 +121,13 @@ void RenderGroup::createOverlays(Model* source, Matrix baseTransform)
 			pos = (rji * sin((1.0-t)*gamma) + rjk * sin(t*gamma)) / sin(gamma);
 			pos *= 0.2;
 			pos += r2;
-			overlayLines_.defineVertex(pos.x, pos.y, pos.z, 0.0, 0.0, 1.0);
+			overlayLines_.defineVertex(pos.x, pos.y, pos.z, 0.0, 0.0, 1.0, colour);
 			t += 0.1;
 
 			// Add text
 			if (n == 5)
 			{
-				text.sprintf(qPrintable(prefs.angleLabelFormat()), m->value()) += QChar(176);
-				addOverlayText(pos, text);
+				addOverlayText(QString().sprintf(qPrintable(prefs.angleLabelFormat()), m->value()) + QChar(176), pos, 0.1, TextPrimitive::MiddleLeftAnchor);
 			}
 		}
 	}
@@ -146,9 +146,8 @@ void RenderGroup::createOverlays(Model* source, Matrix baseTransform)
 		overlayLines_.line(r1, r2);
 		overlayLines_.line(r2, r3);
 		overlayLines_.line(r3, r4);
-		
-		text.sprintf(qPrintable(prefs.angleLabelFormat()), m->value()) += QChar(176);
-		addOverlayText((r2+r3)*0.5, text);
+
+		addOverlayText(QString().sprintf(qPrintable(prefs.angleLabelFormat()), m->value()) + QChar(176), (r2+r3)*0.5, 0.1, TextPrimitive::MiddleLeftAnchor);
 	}
 
 	Messenger::exit("Viewer::createOverlays");

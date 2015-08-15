@@ -142,9 +142,9 @@ class Matrix
 	 * Translations
 	 */
 	public:
-	// Create a translation to the matrix (as glTranslated would do)
+	// Create a translation matrix
 	void createTranslation(double dx, double dy, double dz);
-	// Create a translation to the matrix (as glTranslated would do)
+	// Create a translation matrix
 	void createTranslation(Vec3<double> vec);
 	// Apply a translation to the matrix (as glTranslated would do)
 	void applyTranslation(double dx, double dy, double dz);
@@ -156,9 +156,9 @@ class Matrix
 	void applyTranslationY(double dy);
 	// Apply an Z-translation to the matrix (as glTranslated would do)
 	void applyTranslationZ(double dz);
-	// Add a translation to the matrix
+	// Add a global translation to the matrix
 	void addTranslation(Vec3<double> v);
-	// Add a translation to the matrix
+	// Add a global translation to the matrix
 	void addTranslation(double dx, double dy, double dz);
 
 

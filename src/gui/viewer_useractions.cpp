@@ -119,9 +119,8 @@ void Viewer::renderUserActions(Model* source)
 		// Get Atom pointer
 		Atom* i = ri->item;
 
-		// Move to local atom position
-		A.setIdentity();
-		A.applyTranslation(i->r());
+		// Set a matrix to move to the local atom position
+		A.createTranslation(i->r());
 
 		// Draw a wireframe sphere at the atoms position
 		style_i = (prefs.renderStyle() == Prefs::OwnStyle ? i->style() : prefs.renderStyle());
@@ -190,8 +189,7 @@ void Viewer::renderUserActions(Model* source)
 			Elements().copyColour(atenWindow_->currentBuildElement(), colour_j);
 			
 			// Construct transformation matrix to centre on original (first) atom
-			A.setIdentity();
-			A.applyTranslation(pos);
+			A.createTranslation(pos);
 			
 			// Render new (temporary) bond
 			// ATEN2 TODO Add a RenderGroup to Viewer, in order to store the bond primitive?
@@ -216,9 +214,8 @@ void Viewer::renderUserActions(Model* source)
 				if (atomClicked_ != NULL) j = atomClicked_;
 				pos = j->r();
 				Model* m = aten_->currentFragment()->anchoredModel(j, keyModifier(Prefs::ShiftKey), aten_->fragmentBondId());
+				A.createTranslation(pos);
 
-				A.setIdentity();
-				A.applyTranslation(pos);
 				// Did we find a valid anchor point?
 				if (m != NULL) renderGroup_.createAtomsAndBonds(primitives_[primitiveSet_], m, A);
 				else
@@ -233,8 +230,7 @@ void Viewer::renderUserActions(Model* source)
 				// Get drawing point origin, translate to it, and render the stored model
 				if (activeMode_ == UserAction::DrawFragmentsAction) pos = source->screenToModel(rMouseDown_.x, rMouseDown_.y, prefs.drawDepth());
 				else pos = source->screenToModel(rMouseLast_.x, rMouseLast_.y, prefs.drawDepth());
-				A.setIdentity();
-				A.applyTranslation(pos);
+				A.createTranslation(pos);
 				renderGroup_.createAtomsAndBonds(primitives_[primitiveSet_], aten_->currentFragment()->orientedModel(), A);
 			}
 			break;

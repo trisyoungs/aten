@@ -61,13 +61,20 @@ void RenderGroup::clear()
 	extraSolidTriangles_.forgetAll();
 	extraWireTriangles_.forgetAll();
 	overlayLines_.forgetAll();
+	textPrimitives_.clear();
 	overlayTextPrimitives_.clear();
 }
 
-// Add flat text primitive
-void RenderGroup::addOverlayText(Vec3<double> pos, QString text, TextPrimitive::TextAnchor anchor)
+// Add text primitive
+void RenderGroup::addText(QString text, Vec3<double> pos, double textSize, TextPrimitive::TextAnchor anchor, Vec3<double> globalAdjustment, bool flat)
 {
-	overlayTextPrimitives_.add(text, pos, anchor, Vec3<double>(), Matrix(), 1.0);
+	textPrimitives_.add(text, pos, textSize, anchor, globalAdjustment, flat);
+}
+
+// Add overlay text primitive
+void RenderGroup::addOverlayText(QString text, Vec3<double> pos, double textSize, TextPrimitive::TextAnchor anchor, Vec3<double> globalAdjustment, bool flat)
+{
+	overlayTextPrimitives_.add(text, pos, textSize, anchor, globalAdjustment, flat);
 }
 
 // Add triangle primitive in specified colour
@@ -154,6 +161,11 @@ void RenderGroup::addLines(Primitive& targetPrimitive, Matrix& transform, bool b
 // Sort and render filtered polygons by depth
 void RenderGroup::sendToGL(Matrix& modelTransformationMatrix)
 {
+	// Calculate inverse model matrix
+	Matrix inverseMatrix = modelTransformationMatrix;
+	inverseMatrix.removeTranslationAndScaling();
+	inverseMatrix.invert();
+
 	Matrix A;
 
 	// Solid triangles
@@ -235,24 +247,42 @@ void RenderGroup::sendToGL(Matrix& modelTransformationMatrix)
 		primitive.sendToGL(QOpenGLContext::currentContext());
 	}
 
-	// Overlays
-	glDisable(GL_DEPTH_TEST);
+	// Text
+	glEnable(GL_MULTISAMPLE);
+	glEnable(GL_BLEND);
 	GLfloat colour[4];
 	prefs.copyColour(Prefs::TextColour, colour);
 	glColor4fv(colour);
+	if (FontInstance::fontOK())
+	{
+		Matrix inverseMatrix = modelTransformationMatrix;
+		inverseMatrix.removeTranslationAndScaling();
+		inverseMatrix.invert();
 
-	// Overlay lines
+		FontInstance::font()->FaceSize(1);
+		textPrimitives_.renderAll(modelTransformationMatrix, inverseMatrix, 1.0);
+	}
+
+	/*
+	 * Overlays
+	 */
+
+	glDisable(GL_DEPTH_TEST);
+
+	// Overlay Lines
 	glDisable(GL_LIGHTING);
 	glLoadMatrixd(modelTransformationMatrix.matrix());
 	overlayLines_.sendToGL(QOpenGLContext::currentContext());
 
-	// Overlay text
+	// Overlay Text
 	glEnable(GL_MULTISAMPLE);
 	glEnable(GL_BLEND);
+	prefs.copyColour(Prefs::TextColour, colour);
+	glColor4fv(colour);
 	if (FontInstance::fontOK())
 	{
 		FontInstance::font()->FaceSize(1);
-		overlayTextPrimitives_.renderAll(modelTransformationMatrix, true, 1.0);
+		overlayTextPrimitives_.renderAll(modelTransformationMatrix, inverseMatrix, 1.0);
 	}
 }
 

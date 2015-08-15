@@ -675,7 +675,7 @@ void Matrix::applyRotationAxis(double ax, double ay, double az, double angle, bo
  * Translations
  */
 
-// Apply a translation to the matrix (as glTranslated would do)
+// Create a translation matrix
 void Matrix::createTranslation(double dx, double dy, double dz)
 {
 	matrix_[0] = 1.0;
@@ -696,7 +696,7 @@ void Matrix::createTranslation(double dx, double dy, double dz)
 	matrix_[15] = 1.0;
 }
 
-// Create a translation to the matrix (as glTranslated would do)
+// Create a translation matrix
 void Matrix::createTranslation(Vec3<double> vec)
 {
 	createTranslation(vec.x, vec.y, vec.z);
@@ -742,7 +742,7 @@ void Matrix::applyTranslationZ(double dz)
 	matrix_[14] += matrix_[10]*dz;
 }
 
-// Add a translation to the matrix
+// Add a global translation to the matrix
 void Matrix::addTranslation(double dx, double dy, double dz)
 {
 	matrix_[12] += dx;
@@ -750,7 +750,7 @@ void Matrix::addTranslation(double dx, double dy, double dz)
 	matrix_[14] += dz;
 }
 
-// Add a translation to the matrix
+// Add a global translation to the matrix
 void Matrix::addTranslation(Vec3<double> v)
 {
 	matrix_[12] += v.x;

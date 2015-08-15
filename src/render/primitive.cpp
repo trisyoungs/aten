@@ -374,6 +374,13 @@ void Primitive::line(Vec3<double> v1, Vec3<double> v2)
 	defineVertex(v2.x, v2.y, v2.z, 1.0, 0.0, 0.0);
 }
 
+// Draw line with colour
+void Primitive::line(Vec3<double> v1, Vec3<double> v2, Vec4<GLfloat> colour)
+{
+	defineVertex(v1.x, v1.y, v1.z, 1.0, 0.0, 0.0, colour.x, colour.y, colour.z, colour.w);
+	defineVertex(v2.x, v2.y, v2.z, 1.0, 0.0, 0.0, colour.x, colour.y, colour.z, colour.w);
+}
+
 // Create vertices of sphere with specified radius and quality
 void Primitive::plotSphere(double radius, int nStacks, int nSlices, bool colourData, Vec4<GLfloat> colour)
 {

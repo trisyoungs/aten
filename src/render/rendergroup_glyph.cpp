@@ -58,8 +58,7 @@ void RenderGroup::createGlyphs(PrimitiveSet& primitiveSet, Model* source)
 				extraNormalLines_.defineVertex(r[0].x, r[0].y, r[0].z, 0.0, 0.0, 1.0, colour[0]);
 				extraNormalLines_.defineVertex(r[1].x, r[1].y, r[1].z, 0.0, 0.0, 1.0, colour[0]);
 				// Draw cylinder arrowhead in wireframe
-				A.setIdentity();
-				A.applyTranslation(r[0]);
+				A.createTranslation(r[0]);
 				r[2] = r[1]-r[0];
 				rij = r[2].magnitude();
 				phi = DEGRAD * acos(r[2].z/rij);
@@ -82,8 +81,7 @@ void RenderGroup::createGlyphs(PrimitiveSet& primitiveSet, Model* source)
 			case (Glyph::SphereGlyph):
 				r[1] = g->data(1)->vector();
 				g->data(0)->copyColour(colour[0]);
-				A.setIdentity();
-				A.applyTranslation(r[0]);
+				A.createTranslation(r[0]);
 				g->applyRotation(A);
 				A.applyScaling(r[1]);
 				if (g->isSolid())
@@ -101,8 +99,7 @@ void RenderGroup::createGlyphs(PrimitiveSet& primitiveSet, Model* source)
 			case (Glyph::CubeGlyph):
 				r[1] = g->data(1)->vector();
 				g->data(0)->copyColour(colour[0]);
-				A.setIdentity();
-				A.applyTranslation(r[0]);
+				A.createTranslation(r[0]);
 				g->applyRotation(A);
 				A.applyScaling(r[1]);
 				if (g->isSolid())
@@ -218,8 +215,7 @@ void RenderGroup::createGlyphs(PrimitiveSet& primitiveSet, Model* source)
 			case (Glyph::EllipsoidGlyph):
 			case (Glyph::EllipsoidXYZGlyph):
 				g->data(0)->copyColour(colour[0]);
-				A.setIdentity();
-				A.applyTranslation(r[0].x, r[0].y, r[0].z);
+				A.createTranslation(r[0].x, r[0].y, r[0].z);
 				r[1] = g->data(1)->vector() - r[0];
 				r[2] = g->data(2)->vector() - r[0];
 				if (g->type() == Glyph::EllipsoidXYZGlyph) r[3] = g->data(3)->vector() - r[0];
@@ -257,8 +253,7 @@ void RenderGroup::createGlyphs(PrimitiveSet& primitiveSet, Model* source)
 				r[1] = g->data(1)->vector();
 				g->data(0)->copyColour(colour[0]);
 				// Draw cylinder body and arrowhead
-				A.setIdentity();
-				A.applyTranslation(r[0]);
+				A.createTranslation(r[0]);
 				r[2] = r[1]-r[0];
 				rij = r[2].magnitude();
 				phi = DEGRAD * acos(r[2].z/rij);
@@ -279,8 +274,7 @@ void RenderGroup::createGlyphs(PrimitiveSet& primitiveSet, Model* source)
 				r[0] -= r[1]*0.5;
 				g->data(0)->copyColour(colour[0]);
 				// Draw cylinder body and arrowhead
-				A.setIdentity();
-				A.applyTranslation(r[0]);
+				A.createTranslation(r[0]);
 				rij = r[1].magnitude();
 				phi = DEGRAD * acos(r[1].z/rij);
 				// Special case where the bond is exactly in the XY plane.
@@ -303,8 +297,7 @@ void RenderGroup::createGlyphs(PrimitiveSet& primitiveSet, Model* source)
 				extraNormalLines_.defineVertex(r[0].x, r[0].y, r[0].z, 0.0, 0.0, 1.0, colour[0]);
 				extraNormalLines_.defineVertex(r[0].x+r[1].x, r[0].y+r[1].y, r[0].z+r[1].z, 0.0, 0.0, 1.0, colour[0]);
 				// Draw cylinder arrowhead in wireframe
-				A.setIdentity();
-				A.applyTranslation(r[0]);
+				A.createTranslation(r[0]);
 				rij = r[1].magnitude();
 				phi = DEGRAD * acos(r[1].z/rij);
 				// Special case where the bond is exactly in the XY plane.

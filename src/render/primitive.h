@@ -135,6 +135,8 @@ class Primitive : public ListItem<Primitive>
 	void line(double x1, double y1, double z1, double x2, double y2, double z2);
 	// Draw line
 	void line(Vec3<double> v1, Vec3<double> v2);
+	// Draw line with colour
+	void line(Vec3<double> v1, Vec3<double> v2, Vec4<GLfloat> colour);
 	// Plot vertices of sphere with specified radius and quality
 	void plotSphere(double radius, int nStacks, int nSlices, bool colourData = false, Vec4<GLfloat> colour = Vec4<GLfloat>());
 	// Plot cylinder vertices from origin {ox,oy,oz}, following vector {vx,vy,vz}, for 'length', with radii and quality specified

@@ -32,6 +32,8 @@ Check picked atom rendering (probably broken).
 Optimise primitive drawing / generation by allowing use of GL_TRIANGLE_STRIP?
 Reimplement drawing of grid (volume) axes.
 Fix grid transparency (reconstruct grids according to view angle?).
+Make main view background and text/overlay colour aware of Qt widget colouring style.
+Remove transparent atom selections, and move to wireframe selections (possibly 'flat').
 
 Possible TODO
 =============

@@ -22,6 +22,7 @@
 #include "render/textprimitive.h"
 #include "render/textprimitive_grammar.hh"
 #include "render/fontinstance.h"
+#include <src/math/matrix.h>
 
 ATEN_USING_NAMESPACE
 
@@ -31,8 +32,8 @@ QString TextPrimitive::stringSource_;
 int TextPrimitive::stringPos_, TextPrimitive::stringLength_;
 List<TextFormat> TextPrimitive::formatStack_;
 double TextPrimitive::horizontalPosition_;
-double TextPrimitive::textSizeScale_ = 1.0;
-bool TextPrimitive::outline_ = true;
+double TextPrimitive::scalingFactor_ = 1.0;
+bool TextPrimitive::outline_ = false;
 
 // Constructor
 TextPrimitive::TextPrimitive() : ListItem<TextPrimitive>()
@@ -70,96 +71,62 @@ TextPrimitive::EscapeSequence TextPrimitive::escapeSequence(QString s)
 	return TextPrimitive::nEscapeSequences;
 }
 
-// Set text scaling facotor
-void TextPrimitive::setTextSizeScale(double textSizeScale)
+// Set text scaling factor
+void TextPrimitive::setScalingFactor(double scalingFactor)
 {
-	textSizeScale_ = textSizeScale;
+	scalingFactor_ = scalingFactor;
 }
 
 // Set data
-void TextPrimitive::set(QString text, Vec3<double> anchorPoint, TextPrimitive::TextAnchor anchorPosition, Vec3<double> adjustmentVector, Matrix rotation, double textSize)
+void TextPrimitive::set(QString text, Vec3<double> anchorPoint, double textSize, TextPrimitive::TextAnchor anchor, Vec3<double> globalAdjustment, bool flat)
 {
 	// Call the parser
 	generateFragments(this, text);
 
 	anchorPoint_ = anchorPoint;
-	anchorPosition_ = anchorPosition;
-	adjustmentVector_ = adjustmentVector;
-	localRotation_ = rotation;
+	anchor_ = anchor;
+	globalAdjustment_ = globalAdjustment;
 	textSize_ = textSize;
-}
+	flat_ = flat;
 
-// Return transformation matrix to use when rendering the text
-Matrix TextPrimitive::transformationMatrix(double baseFontSize, TextFragment* fragment)
-{
-	Matrix textMatrix, A;
-	Vec3<double> lowerLeft, upperRight, anchorPos, anchorPosRotated, textCentre;
-
-	// Calculate scaling factor for font
-	double scale = FontInstance::fontBaseHeight() * textSizeScale_ * textSize_ / baseFontSize;
-	
-	// Calculate bounding box and anchor position on it
-	boundingBox(lowerLeft, upperRight);
-	switch (anchorPosition_)
+	// Calculate bounding box and anchor position
+	// First, calculate bounding box and achor position offset ATEN2 TODO Could pre-calculate this provided RenderGroup is recreated on bas font size change.
+	boundingBox(lowerLeftCorner_, upperRightCorner_);
+	switch (anchor_)
 	{
 		case (TextPrimitive::TopLeftAnchor):
-			anchorPos.set(lowerLeft.x, upperRight.y, 0.0);
+			anchorOffset_.set(lowerLeftCorner_.x, upperRightCorner_.y, 0.0);
 			break;
 		case (TextPrimitive::TopMiddleAnchor):
-			anchorPos.set((lowerLeft.x+upperRight.x)*0.5, upperRight.y, 0.0);
+			anchorOffset_.set((lowerLeftCorner_.x+upperRightCorner_.x)*0.5, upperRightCorner_.y, 0.0);
 			break;
 		case (TextPrimitive::TopRightAnchor):
-			anchorPos = upperRight;
+			anchorOffset_ = upperRightCorner_;
 			break;
 		case (TextPrimitive::MiddleLeftAnchor):
-			anchorPos.set(lowerLeft.x, (lowerLeft.y+upperRight.y)*0.5, 0.0);
+			anchorOffset_.set(lowerLeftCorner_.x, (lowerLeftCorner_.y+upperRightCorner_.y)*0.5, 0.0);
 			break;
 		case (TextPrimitive::CentralAnchor):
-			anchorPos.set((lowerLeft.x+upperRight.x)*0.5, (lowerLeft.y+upperRight.y)*0.5, 0.0);
+			anchorOffset_.set((lowerLeftCorner_.x+upperRightCorner_.x)*0.5, (lowerLeftCorner_.y+upperRightCorner_.y)*0.5, 0.0);
 			break;
 		case (TextPrimitive::MiddleRightAnchor):
-			anchorPos.set(upperRight.x, (lowerLeft.y+upperRight.y)*0.5, 0.0);
+			anchorOffset_.set(upperRightCorner_.x, (lowerLeftCorner_.y+upperRightCorner_.y)*0.5, 0.0);
 			break;
 		case (TextPrimitive::BottomLeftAnchor):
-			anchorPos = lowerLeft;
+			anchorOffset_ = lowerLeftCorner_;
 			break;
 		case (TextPrimitive::BottomMiddleAnchor):
-			anchorPos.set((lowerLeft.x+upperRight.x)*0.5, lowerLeft.y, 0.0);
+			anchorOffset_.set((lowerLeftCorner_.x+upperRightCorner_.x)*0.5, lowerLeftCorner_.y, 0.0);
 			break;
 		case (TextPrimitive::BottomRightAnchor):
-			anchorPos.set(upperRight.x, lowerLeft.y, 0.0);
+			anchorOffset_.set(upperRightCorner_.x, lowerLeftCorner_.y, 0.0);
 			break;
 		default:
 			break;
 	}
-
-	// Rotate anchor position with local rotation matrix
-	textCentre = (lowerLeft + upperRight) * 0.5;
-	anchorPosRotated = localRotation_ * (anchorPos - textCentre) * scale;
-
-	// Construct matrix
-	// -- Translate to centre of text bounding box (not rotated) accounting for fragment translation if one was specified
-	if (fragment) textCentre -= fragment->translation();
-	textMatrix.createTranslation(-textCentre);
-	// -- Apply scaled local rotation matrix
-	A = localRotation_;
-	A.applyScaling(scale, scale, scale);
-	textMatrix *= A;
-	// -- Apply translation to text anchor point
-	textMatrix.applyTranslation(-anchorPosRotated+anchorPoint_+adjustmentVector_*scale);
-	// -- Apply fragment specific operations
-	if (fragment)
-	{
-		// -- Apply local scaling to text (if fragment was provided)
-		textMatrix.applyScaling(fragment->scale(), fragment->scale(), fragment->scale());
-		// -- Apply local shear to text (if fragment is italic)
-		if (fragment->italic()) textMatrix.applyShearX(0.2);
-	}
-
-	return textMatrix;
 }
 
-// Calculate bounding box of primitive
+// Calculate unscaled bounding box of primitive
 void TextPrimitive::boundingBox(Vec3<double>& lowerLeft, Vec3<double>& upperRight)
 {
 	// Set initial lowerLeft and upperRight from the first primitive in the list
@@ -196,17 +163,44 @@ void TextPrimitive::boundingBox(Vec3<double>& lowerLeft, Vec3<double>& upperRigh
 }
 
 // Render primitive
-void TextPrimitive::render(Matrix viewMatrix, bool correctOrientation, double baseFontSize)
+void TextPrimitive::render(const Matrix& viewMatrix, const Matrix& rotationMatrixInverse, double baseFontSize)
 {
-	Matrix textMatrix;
+	// Calculate scaling factor for font
+	double scale = FontInstance::fontBaseHeight() * scalingFactor_ * textSize_ / baseFontSize;
+
+	// Construct our basic matrix
+	Matrix textMatrix = viewMatrix;
+	// -- First, translate to main coordinate origin
+	textMatrix.applyTranslation(anchorPoint_);
+	// -- MORE!
+	if (flat_) textMatrix *= rotationMatrixInverse;
+	// -- Apply global transform
+	textMatrix.addTranslation(globalAdjustment_);
+	// -- Apply general scaling factor
+	textMatrix.applyScaling(scale, scale, scale);
+	// -- Account for text anchor position
+	textMatrix.applyTranslation(-anchorOffset_);
+
+	// Draw bounding box for whole TextFragment if requested
+	if (outline_)
+	{
+		glLoadMatrixd(textMatrix.matrix());
+		glDisable(GL_LINE_STIPPLE);
+		glLineWidth(1.0);
+		glBegin(GL_LINE_LOOP);
+		glVertex3d(lowerLeftCorner_.x, lowerLeftCorner_.y, 0.0);
+		glVertex3d(upperRightCorner_.x, lowerLeftCorner_.y, 0.0);
+		glVertex3d(upperRightCorner_.x, upperRightCorner_.y, 0.0);
+		glVertex3d(lowerLeftCorner_.x, upperRightCorner_.y, 0.0);
+		glEnd();
+	}
 
 	// Loop over fragments
+	Matrix fragmentMatrix;
 	for (TextFragment* fragment = fragments_.first(); fragment != NULL; fragment = fragment->next)
 	{
-		textMatrix = viewMatrix*transformationMatrix(baseFontSize, fragment);
-		glLoadMatrixd(textMatrix.matrix());
 
-		// Draw bounding boxes around each fragment
+		// Draw bounding boxes around each fragment if requested
 		if (outline_)
 		{
 			glDisable(GL_LINE_STIPPLE);
@@ -221,6 +215,17 @@ void TextPrimitive::render(Matrix viewMatrix, bool correctOrientation, double ba
 			glEnd();
 		}
 
+		// Apply fragment specific operations
+		fragmentMatrix = textMatrix;
+		// -- Translate to fragment position
+		fragmentMatrix.applyTranslation(fragment->translation());
+		// -- Apply local scaling to text (if fragment was provided)
+		fragmentMatrix.applyScaling(fragment->scale(), fragment->scale(), fragment->scale());
+		// -- Apply local shear to text (if fragment is italic)
+		if (fragment->italic()) fragmentMatrix.applyShearX(0.2);
+		glLoadMatrixd(fragmentMatrix.matrix());
+
+		// Render fragment
 		if (fragment->bold())
 		{
 			// Render the text twice - once with lines, and once with polygon fill
@@ -405,7 +410,7 @@ bool TextPrimitive::addEscape(TextPrimitive::EscapeSequence escSeq)
 			break;
 		// Newline
 		case (TextPrimitive::NewLineEscape):
-// 			newFormat->		TODO
+// 			newFormat->		/*/*TODO*/*/
 			break;
 		// Add subscript level - adjust baseline position and scale of current format
 		case (TextPrimitive::SubScriptEscape):

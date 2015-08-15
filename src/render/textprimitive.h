@@ -63,33 +63,40 @@ class TextPrimitive : public ListItem<TextPrimitive>
 	 */
 	private:
 	// General text scaling factor
-	static double textSizeScale_;
+	static double scalingFactor_;
 	// Coordinates of anchorpoint of text
 	Vec3<double> anchorPoint_;
-	// Location of anchorpoint on text bounding box
-	TextAnchor anchorPosition_;
-	// Vector by which to adjust position of text
-	Vec3<double> adjustmentVector_;
-	// Local transform matrix for the text
-	Matrix localRotation_;
+	// Location of anchor for text bounding box
+	TextAnchor anchor_;
+	// Coordinate offset required for specified anchor position
+	Vec3<double> anchorOffset_;
+	// Coordinate adjustment to make, in global coordinates, to text position
+	Vec3<double> globalAdjustment_;
+	// Whether text is to be displayed flat (w.r.t screen)
+	bool flat_;
 	// Text size
 	double textSize_;
+	// Lower-left corner of bounding box for text
+	Vec3<double> lowerLeftCorner_;
+	// Upper-right corner of bounding box for text
+	Vec3<double> upperRightCorner_;
+	//
 	// Text fragments to render
 	List<TextFragment> fragments_;
 	// Whether to outline all bounding boxes for primitives
 	static bool outline_;
 
+	private:
+	// Calculate unscaled bounding box of primitive
+	void boundingBox(Vec3<double>& lowerLeft, Vec3<double>& upperRight);
+
 	public:
 	// Set text scaling factor
-	static void setTextSizeScale(double textSizeScale);
+	static void setScalingFactor(double scalingFactor);
 	// Set data
-	void set(QString text, Vec3<double> anchorPoint, TextAnchor anchorPosition, Vec3<double> adjustmentVector, Matrix rotation, double textSize);
-	// Return transformation matrix to use when rendering (including fragment scale/translation if one is specified)
-	Matrix transformationMatrix(double baseFontSize, TextFragment* fragment = NULL);
-	// Calculate bounding box of primitive
-	void boundingBox(Vec3<double>& lowerLeft, Vec3<double>& upperRight);
+	void set(QString text, Vec3<double> anchorPoint, double textSize, TextAnchor anchorPosition, Vec3<double> globalAdjustment, bool flat);
 	// Render primitive
-	void render(Matrix viewMatrix, bool correctOrientation, double baseFontSize);
+	void render(const Matrix& viewMatrix, const Matrix& rotationMatrixInverse, double baseFontSize);
 
 
 	/*

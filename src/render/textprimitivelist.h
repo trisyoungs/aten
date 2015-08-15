@@ -24,7 +24,6 @@
 
 #include "render/textprimitive.h"
 #include "math/matrix.h"
-#include "math/cuboid.h"
 #include "templates/vector3.h"
 #include "templates/list.h"
 #include <QString>
@@ -33,7 +32,7 @@
 ATEN_BEGIN_NAMESPACE
 
 // Forward Declarations (Aten)
-class ViewPane;
+/* none */
 
 // Text Primitive List
 class TextPrimitiveList
@@ -50,11 +49,9 @@ class TextPrimitiveList
 	// Clear list
 	void clear();
 	// Add primitive to list
-	void add( QString text, Vec3< double > anchorPoint, TextPrimitive::TextAnchor anchorPosition, Vec3< double > adjustmentVector, Matrix rotation, double textSize );
-	// Update global bounding cuboid for all text primitives in the list
-	Cuboid boundingCuboid(ViewPane& pane, bool flatLabels, double baseFontSize, Cuboid startingCuboid = Cuboid());
+	void add(QString text, Vec3<double> anchorPoint, double textSize, TextPrimitive::TextAnchor anchorPosition, Vec3<double> globalAdjustment, bool flat);
 	// Render all primitives in list
-	void renderAll(Matrix viewMatrix, bool flatLabels, double baseFontSize);
+	void renderAll(const Matrix& viewMatrix, const Matrix& viewMatrixInverse, double baseFontSize);
 };
 
 ATEN_END_NAMESPACE

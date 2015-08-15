@@ -149,7 +149,7 @@ void Viewer::setObjectScaling(double scaling)
 
 	// Pass this value on to those that depend on it
 // 	LineStyle::setLineWidthScale(scaling);
-	TextPrimitive::setTextSizeScale(scaling);
+	TextPrimitive::setScalingFactor(scaling);
 }
 
 // Determine target model based on clicked position on Viewer

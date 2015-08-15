@@ -123,7 +123,6 @@ void Viewer::renderModel(Model* source, int viewPortX, int viewPortY, int viewPo
 		repeatMax = 0;
 	}
 	int x, y, z;
-	Model gridMatrix;
 	for (x = repeatMin.x; x <= repeatMax.x; ++x)
 	{
 		for (y = repeatMin.y; y <= repeatMax.y; ++y)
