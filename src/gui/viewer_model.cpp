@@ -138,6 +138,8 @@ void Viewer::renderModel(Model* source, int viewPortX, int viewPortY, int viewPo
 				// Render grids
 				for (Grid* g = source->grids(); g != NULL; g = g->next)
 				{
+					if (!g->isVisible()) continue;
+
 					glPushMatrix();
 					glLoadMatrixd((offset * g->voxelMatrix()).matrix());
 

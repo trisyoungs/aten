@@ -18,9 +18,10 @@ Redo ProgressIndicator, making into a class much like QProgress (can't just use 
 Sort out remaining icons!
 On model load, empty (and saved) model is not removed / replaced.
 Display upper cutoff for grids somewhere.
-Do upper cutoff edits for grid respect actual maximum?
 View by percentage and multiple of rho for grid cutoff (put in popup).
-Not possible to hide grids!
+Undo/Redo:
+  * Rework UndoEvent to use an enum and stored data rather than an individual class for each event type.
+  * Add Grid-related undo/redo (e.g. title changes, colour etc.)
 
 Graphics TODO
 =============

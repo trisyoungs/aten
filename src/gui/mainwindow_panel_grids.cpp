@@ -46,7 +46,10 @@ void AtenWindow::updateGridsPanel(Model* sourceModel)
 		{
 			QListWidgetItem* item = new QListWidgetItem(g->name());
 			item->setData(Qt::UserRole, VariantPointer<Grid>(g));
+			item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
 			ui.GridsList->addItem(item);
+
+			if (g->isVisible()) item->setCheckState(Qt::Checked);
 
 			if (g == currentGrid) ui.GridsList->setCurrentRow(count);
 		}
@@ -174,6 +177,29 @@ void AtenWindow::on_GridsList_currentRowChanged(int row)
 	aten_.setCurrentGrid(grid);
 
 	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::GridsPanelTarget);
+}
+
+void AtenWindow::on_GridsList_itemChanged(QListWidgetItem* item)
+{
+	if (refreshing_ || (!item)) return;
+
+	// Get grid from current item
+	Grid* grid = (Grid*) VariantPointer<Grid>(item->data(Qt::UserRole));
+	if (!grid) return;
+
+	// This signal could have originated from the checkstate being changed, so check the text...
+	if (item->text() != grid->name())
+	{
+		grid->setName(item->text());
+
+		// ATEN2 TODO Update main window undo/redo (when this is undo/redoable)
+	}
+
+	// What about the checkstate?
+	bool checked = item->checkState() == Qt::Checked;
+	if (checked != grid->isVisible()) grid->setVisible(checked);
+
+	updateWidgets(AtenWindow::MainViewTarget);
 }
 
 // Context menu requested for GridsList

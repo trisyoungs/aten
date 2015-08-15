@@ -4696,7 +4696,7 @@
              <enum>Qt::CustomContextMenu</enum>
             </property>
             <property name="editTriggers">
-             <set>QAbstractItemView::NoEditTriggers</set>
+             <set>QAbstractItemView::DoubleClicked</set>
             </property>
             <property name="selectionMode">
              <enum>QAbstractItemView::SingleSelection</enum>

@@ -140,6 +140,7 @@ void TExponentialSpin::setSingleStep(double step)
 void TExponentialSpin::updateValue()
 {
 	value_.set(qPrintable(text()));
+	if (clamp()) updateText();
 	emit(valueChanged(value_.value()));
 }
 
