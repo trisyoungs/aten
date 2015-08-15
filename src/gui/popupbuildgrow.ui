@@ -214,10 +214,6 @@
      <property name="text">
       <string>Selection</string>
      </property>
-     <property name="icon">
-      <iconset>
-       <normaloff>:/build/icons/build_growsel.svg</normaloff>:/build/icons/build_growsel.svg</iconset>
-     </property>
      <property name="iconSize">
       <size>
        <width>30</width>

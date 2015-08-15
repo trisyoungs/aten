@@ -62,7 +62,7 @@
      </property>
      <property name="icon">
       <iconset resource="icons.qrc">
-       <normaloff>:/geometry/icons/measure_anglesel.svg</normaloff>:/geometry/icons/measure_anglesel.svg</iconset>
+       <normaloff>:/calculate/icons/calculate_anglesel.svg</normaloff>:/calculate/icons/calculate_anglesel.svg</iconset>
      </property>
      <property name="iconSize">
       <size>

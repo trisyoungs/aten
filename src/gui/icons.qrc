@@ -79,6 +79,8 @@
     <file>icons/build_addh.svg</file>
     <file>icons/build_clearbonds.svg</file>
     <file>icons/build_augment.svg</file>
+    <file>icons/build_rebondnoaugment.svg</file>
+    <file>icons/build_rebondselnoaugment.svg</file>
     <file>icons/build_fragment.svg</file>
     <file>icons/build_rebond.svg</file>
     <file>icons/build_rebondsel.svg</file>
@@ -117,6 +119,9 @@
   <qresource prefix="/calculate">
     <file>icons/calculate_angle.svg</file>
     <file>icons/calculate_distance.svg</file>
+    <file>icons/calculate_anglesel.svg</file>
+    <file>icons/calculate_distancesel.svg</file>
+    <file>icons/calculate_torsionsel.svg</file>
     <file>icons/calculate_torsion.svg</file>
   </qresource>
   <qresource prefix="/trajectory">

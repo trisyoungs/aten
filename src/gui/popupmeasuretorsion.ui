@@ -62,7 +62,7 @@
      </property>
      <property name="icon">
       <iconset resource="icons.qrc">
-       <normaloff>:/geometry/icons/measure_torsionsel.svg</normaloff>:/geometry/icons/measure_torsionsel.svg</iconset>
+       <normaloff>:/calculate/icons/calculate_torsionsel.svg</normaloff>:/calculate/icons/calculate_torsionsel.svg</iconset>
      </property>
      <property name="iconSize">
       <size>

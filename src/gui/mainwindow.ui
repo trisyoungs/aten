@@ -3105,10 +3105,6 @@
             <property name="text">
              <string>Set</string>
             </property>
-            <property name="icon">
-             <iconset>
-              <normaloff>:/stackicons/icons/stack_celldefine.svg</normaloff>:/stackicons/icons/stack_celldefine.svg</iconset>
-            </property>
             <property name="iconSize">
              <size>
               <width>30</width>
@@ -3327,10 +3323,6 @@
             <property name="text">
              <string>Define</string>
             </property>
-            <property name="icon">
-             <iconset>
-              <normaloff>:/stackicons/icons/stack_celldefine.svg</normaloff>:/stackicons/icons/stack_celldefine.svg</iconset>
-            </property>
             <property name="iconSize">
              <size>
               <width>30</width>
@@ -3384,10 +3376,6 @@
             </property>
             <property name="text">
              <string>Select</string>
-            </property>
-            <property name="icon">
-             <iconset>
-              <normaloff>:/stackicons/icons/stack_celldefine.svg</normaloff>:/stackicons/icons/stack_celldefine.svg</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -4278,10 +4266,6 @@
             <property name="text">
              <string>Shift</string>
             </property>
-            <property name="icon">
-             <iconset>
-              <normaloff>:/geometry/icons/measure_torsion.svg</normaloff>:/geometry/icons/measure_torsion.svg</iconset>
-            </property>
             <property name="iconSize">
              <size>
               <width>30</width>
@@ -4330,10 +4314,6 @@
             </property>
             <property name="text">
              <string>Reposition</string>
-            </property>
-            <property name="icon">
-             <iconset>
-              <normaloff>:/geometry/icons/measure_torsion.svg</normaloff>:/geometry/icons/measure_torsion.svg</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -6130,10 +6110,6 @@
             <property name="text">
              <string>Inherit</string>
             </property>
-            <property name="icon">
-             <iconset>
-              <normaloff>:/stackicons/icons/stack_celldefine.svg</normaloff>:/stackicons/icons/stack_celldefine.svg</iconset>
-            </property>
             <property name="iconSize">
              <size>
               <width>30</width>
@@ -6188,10 +6164,6 @@
             <property name="text">
              <string>Propagate</string>
             </property>
-            <property name="icon">
-             <iconset>
-              <normaloff>:/stackicons/icons/stack_celldefine.svg</normaloff>:/stackicons/icons/stack_celldefine.svg</iconset>
-            </property>
             <property name="iconSize">
              <size>
               <width>30</width>
@@ -6245,10 +6217,6 @@
             </property>
             <property name="text">
              <string>Promote</string>
-            </property>
-            <property name="icon">
-             <iconset>
-              <normaloff>:/stackicons/icons/stack_celldefine.svg</normaloff>:/stackicons/icons/stack_celldefine.svg</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -6324,10 +6292,6 @@
             </property>
             <property name="text">
              <string>Save Movie</string>
-            </property>
-            <property name="icon">
-             <iconset>
-              <normaloff>:/stackicons/icons/stack_celldefine.svg</normaloff>:/stackicons/icons/stack_celldefine.svg</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -7904,10 +7868,6 @@
             <property name="text">
              <string/>
             </property>
-            <property name="icon">
-             <iconset>
-              <normaloff>:/build/icons/build_ptable.svg</normaloff>:/build/icons/build_ptable.svg</iconset>
-            </property>
             <property name="iconSize">
              <size>
               <width>16</width>
@@ -8123,10 +8083,6 @@
             </property>
             <property name="text">
              <string>Style</string>
-            </property>
-            <property name="icon">
-             <iconset>
-              <normaloff>:/draw_styles/icons/style_individual.svg</normaloff>:/draw_styles/icons/style_individual.svg</iconset>
             </property>
             <property name="iconSize">
              <size>

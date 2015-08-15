@@ -62,7 +62,7 @@
      </property>
      <property name="icon">
       <iconset resource="icons.qrc">
-       <normaloff>:/geometry/icons/measure_distancesel.svg</normaloff>:/geometry/icons/measure_distancesel.svg</iconset>
+       <normaloff>:/calculate/icons/calculate_distancesel.svg</normaloff>:/calculate/icons/calculate_distancesel.svg</iconset>
      </property>
      <property name="iconSize">
       <size>

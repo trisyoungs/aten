@@ -36,21 +36,9 @@ Fix grid transparency (reconstruct grids according to view angle?).
 Make main view background and text/overlay colour aware of Qt widget colouring style.
 Remove transparent atom selections, and move to wireframe selections (possibly 'flat').
 
-Possible TODO
-=============
-Add in calculation of quantities and graphing?
-Instead of a separate AtenVariable, make Aten subclass Variable?
-Move Prefs from being a static global to a member of Aten?
-Make ElementMap store reference to Aten, preventing passing of FFs?
-Make UserActions a member of something (Viewer?).
-Reformulate Pattern::bondEnergy() and others into a separate class, since the Pattern class shouldn't really own them.
-Make Model::EnergyStore a private member with accessor?
-Add ObjectLists (when using CHECK)?
-Click to select grid.
-Remove global MC, CG, SD declarations, and put them in Aten?
-
 GUI TODO
 ========
+Is NETASelectElement button updated / initialised at startup?
 AddAtom functionality (from old Build menu).
 Context Menu:
 o Set Colour doesn't work, since it needs a colour selector popup.
@@ -66,7 +54,21 @@ Have Tools page? With, for instance:
 --- Plot Orbital (raising dialog from old GridsWidget)
 Reimplement Open Expression somewhere.
 
-Manual TODO:
+Possible TODO
+=============
+Add in calculation of quantities and graphing?
+Instead of a separate AtenVariable, make Aten subclass Variable?
+Move Prefs from being a static global to a member of Aten?
+Make ElementMap store reference to Aten, preventing passing of FFs?
+Make UserActions a member of something (Viewer?).
+Reformulate Pattern::bondEnergy() and others into a separate class, since the Pattern class shouldn't really own them.
+Make Model::EnergyStore a private member with accessor?
+Add ObjectLists (when using CHECK)?
+Click to select grid.
+Remove global MC, CG, SD declarations, and put them in Aten?
+
+Manual TODO
+===========
 Remove level of detail and transparency options from Prefs.
 More examples (e.g. slab generation)
 Remove 'gui' keyword.
