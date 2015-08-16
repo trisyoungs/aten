@@ -11,6 +11,9 @@
     <file>icons/arrow_up.svg</file>
     <file>icons/arrow_upline.svg</file>
   </qresource>
+  <qresource prefix="tools">
+    <file>icons/tools_disorder.svg</file>
+  </qresource>
   <qresource prefix="forcefield">
     <file>icons/forcefield_energy.svg</file>
     <file>icons/forcefield_forces.svg</file>

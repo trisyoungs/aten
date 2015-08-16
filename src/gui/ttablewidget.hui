@@ -1,5 +1,5 @@
 /*
-	*** TTableWidget - QTableWidget with mouse virtuals
+	*** TTableWidget - QTableWidget with exposed mouse virtuals
 	*** src/gui/ttablewidget.hui
 	Copyright T. Youngs 2007-2015
 
@@ -32,13 +32,36 @@ class TTableWidget : public QTableWidget
 	Q_OBJECT
 
 	public:
-	TTableWidget(QWidget *parent) : QTableWidget(parent) {};
+	TTableWidget(QWidget* parent) : QTableWidget(parent) {};
+
+	protected:
+	void mouseDoubleClickEvent(QMouseEvent* event)
+	{
+		emit(tableMouseDoubleClicked(event));
+	}
+	void mousePressEvent(QMouseEvent* event)
+	{
+		emit(tableMousePressed(event));
+	}
+	void mouseReleaseEvent(QMouseEvent* event)
+	{
+		emit(tableMouseReleased(event));
+	}
+	void mouseMoveEvent(QMouseEvent* event)
+	{
+		emit(tableMouseMoved(event));
+	}
+	void wheelEvent(QWheelEvent* event)
+	{
+		emit(tableMouseWheeled(event));
+	}
 
 	signals:
-	void mouseDoubleClickEvent(QMouseEvent *event);
-	void mousePressEvent(QMouseEvent *event);
-	void mouseReleaseEvent(QMouseEvent *event);
-	void mouseMoveEvent(QMouseEvent *event);
+	void tableMouseDoubleClicked(QMouseEvent* event);
+	void tableMousePressed(QMouseEvent* event);
+	void tableMouseReleased(QMouseEvent* event);
+	void tableMouseMoved(QMouseEvent* event);
+	void tableMouseWheeled(QWheelEvent* event);
 };
 
 #endif

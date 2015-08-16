@@ -186,6 +186,7 @@ set(gui_SRCS
   mainwindow_panel_home.cpp
   mainwindow_panel_select.cpp
   mainwindow_panel_selection.cpp
+  mainwindow_panel_tools.cpp
   mainwindow_panel_transform.cpp
   mainwindow_panel_trajectory.cpp
   mainwindow_quickcommand.cpp

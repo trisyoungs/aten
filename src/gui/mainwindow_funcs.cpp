@@ -19,7 +19,6 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <QtWidgets/QMessageBox>
 #include "main/aten.h"
 #include "gui/mainwindow.h"
 #include "gui/loadmodel.h"
@@ -86,7 +85,7 @@
 #include "gui/vibrations.h"
 
 // Constructor
-AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportImageDialog_(*this)
+AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportImageDialog_(*this), disorderWizard_(*this)
 {
 	Messenger::enter("AtenWindow::AtenWindow()");
 
@@ -141,15 +140,15 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportImage
 	atomsTableVisibleItems_[AtenWindow::AtomZItem] = ui.AtomsViewZCheck->isChecked();
 	atomsTableVisibleItems_[AtenWindow::AtomQItem] = ui.AtomsViewChargeCheck->isChecked();
 	// -- Connect mouse-tracking signals to AtomTable
-	QObject::connect(ui.AtomsTable, SIGNAL(mousePressEvent(QMouseEvent*)), this, SLOT(atomsTableMousePressEvent(QMouseEvent*)));
-	QObject::connect(ui.AtomsTable, SIGNAL(mouseReleaseEvent(QMouseEvent*)), this, SLOT(atomsTableMouseReleaseEvent(QMouseEvent*)));
-	QObject::connect(ui.AtomsTable, SIGNAL(mouseMoveEvent(QMouseEvent*)), this, SLOT(atomsTableMouseMoveEvent(QMouseEvent*)));
-	QObject::connect(ui.AtomsTable, SIGNAL(mouseDoubleClickEvent(QMouseEvent*)), this, SLOT(atomsTableMouseDoubleClickEvent(QMouseEvent*)));
+	QObject::connect(ui.AtomsTable, SIGNAL(tableMousePressed(QMouseEvent*)), this, SLOT(atomsTableMousePressEvent(QMouseEvent*)));
+	QObject::connect(ui.AtomsTable, SIGNAL(tableMouseReleased(QMouseEvent*)), this, SLOT(atomsTableMouseReleaseEvent(QMouseEvent*)));
+	QObject::connect(ui.AtomsTable, SIGNAL(tableMouseMoved(QMouseEvent*)), this, SLOT(atomsTableMouseMoveEvent(QMouseEvent*)));
+	QObject::connect(ui.AtomsTable, SIGNAL(tableMouseWheeled(QWheelEvent*)), this, SLOT(atomsTableMouseWheelEvent(QWheelEvent*)));
+	QObject::connect(ui.AtomsTable, SIGNAL(tableMouseDoubleClicked(QMouseEvent*)), this, SLOT(atomsTableMouseDoubleClickEvent(QMouseEvent*)));
 	QObject::connect(ui.AtomsTable, SIGNAL(itemChanged(QTableWidgetItem*)), this, SLOT(atomsTableItemChanged(QTableWidgetItem*)));
 
 	// Create dock widgets
 	commandWidget = new CommandWidget(*this, Qt::Tool);
-	disorderWizard = new DisorderWizard(*this);
 	glyphsWidget = new GlyphsWidget(*this, Qt::Tool);
 	poresWidget = new PoresWidget(*this, Qt::Tool);
 	scriptMovieWidget = new ScriptMovieWidget(*this, Qt::Tool);
@@ -252,6 +251,7 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportImage
 
 	// -- Select Panel (ID/Element)
 	ui.SelectNETAElementButton->setPopupWidget(new ElementTablePopup(*this, ui.SelectNETAElementButton), true);
+	ui.SelectNETAElementButton->callPopupMethod("setSelectedElement", rv = 6);
 
 	// -- Forcefields Panel (Manage)
 	ui.ForcefieldsManageAssignButton->setPopupWidget(new ForcefieldsAssignPopup(*this, ui.ForcefieldsManageAssignButton));
@@ -415,73 +415,20 @@ void AtenWindow::resizeEvent(QResizeEvent* event)
 	atomsTableRecalculateRowSize();
 }
 
+void AtenWindow::wheelEvent(QWheelEvent* event)
+{
+// 	// Take the wheel event if the mouse was over the AtomsTable, otherwise ignore it
+// 	printf("Geom = %i %i %i %i, pos = %i %i\n", ui.AtomsTable->geometry().x(), ui.AtomsTable->geometry().y(), ui.AtomsTable->geometry().width(), ui.AtomsTable->geometry().height(), event->pos().x(), event->pos().y());
+// 	if (ui.AtomsTable->geometry().contains(ui.AtomsTable->mapFromParent(event->pos())))
+// 	{
+// 		printf("WHeel on atoms table.\n");
+// 	}
+// 	else event->ignore();
+}
+
 /*
  * Methods
  */
-
-// Close specified model, saving first if requested
-bool AtenWindow::closeModel(Model* m)
-{
-	QString text;
-	Tree* filter;
-	if (m->isModified())
-	{
-		// Create a modal message dialog
-		text.sprintf("Model '%s' has been modified.", qPrintable(m->name()));
-		int returnvalue = QMessageBox::warning(this, "Aten", text, QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel, QMessageBox::Save);
-		switch (returnvalue)
-		{
-			// Discard changes
-			case (QMessageBox::Discard):
-				break;
-				// Cancel close
-			case (QMessageBox::Cancel):
-				return false;
-				// Save model before quit
-			case (QMessageBox::Save):
-				// Temporarily disable undo/redo for the model, save, and re-enable
-				m->disableUndoRedo();
-				// If model has a filter set, just save it
-				filter = m->filter();
-				if (filter != NULL) filter->executeWrite(m->filename());
-				else if (runSaveModelDialog())
-				{
-					m->setFilter(saveModelFilter_);
-					m->setFilename(saveModelFilename_);
-					if (!saveModelFilter_->executeWrite(saveModelFilename_))
-					{
-						Messenger::print("Not saved.");
-						m->enableUndoRedo();
-						return false;
-					}
-				}
-				else
-				{
-					m->enableUndoRedo();
-					return false;
-				}
-				break;
-		}
-	}
-
-	// Remove model and update gui
-	aten_.removeModel(m);
-
-	return true;
-}
-
-// Check the status of all models, asking to save before close if necessary
-bool AtenWindow::saveBeforeClose()
-{
-	while (aten_.models())
-	{
-		if (!closeModel(aten_.models())) return false;
-
-		// Update GUI
-		updateWidgets(AtenWindow::AllTarget);
-	}
-	return true;
-}
 
 // Set interactivity (to full or zero), except for main view camera changes
 void AtenWindow::setInteractive(bool interactive)

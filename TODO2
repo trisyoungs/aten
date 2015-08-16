@@ -38,7 +38,6 @@ Remove transparent atom selections, and move to wireframe selections (possibly '
 
 GUI TODO
 ========
-Is NETASelectElement button updated / initialised at startup?
 AddAtom functionality (from old Build menu).
 Context Menu:
 o Set Colour doesn't work, since it needs a colour selector popup.

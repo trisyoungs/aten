@@ -117,7 +117,11 @@ void AtenWindow::updateAtomsTable(Model* sourceModel)
 void AtenWindow::on_AtomsTableToggleButton_clicked(bool checked)
 {
 	ui.AtomsTableWidget->setVisible(checked);
-	if (checked) updateWidgets(AtenWindow::ModelsListTarget);
+	if (checked)
+	{
+		atomsTableRecalculateRowSize();
+		updateWidgets(AtenWindow::ModelsListTarget+AtenWindow::AtomsTableTarget);
+	}
 }
 
 // Redetermine max number of visible rows
@@ -572,7 +576,7 @@ void AtenWindow::atomsTableMouseDoubleClickEvent(QMouseEvent* event)
 	event->accept();
 }
 
-void AtenWindow::atomsTableItemChanged(QTableWidgetItem *item)
+void AtenWindow::atomsTableItemChanged(QTableWidgetItem* item)
 {
 	if (refreshing_) return;
 
@@ -624,10 +628,10 @@ void AtenWindow::atomsTableItemChanged(QTableWidgetItem *item)
 	updateWidgets(AtenWindow::MainViewTarget);
 }
 
-// void AtenWindow::wheelEvent(QWheelEvent* event)
-// {
-// 	// Grab current slider position
-// 	int pos = ui.AtomsTableScrollBar->value();
-// 	pos -= ui.AtomsTableScrollBar->pageStep() * (event->delta() / 120);
-// 	ui.AtomsTableScrollBar->setValue(pos);
-// }
+void AtenWindow::atomsTableMouseWheelEvent(QWheelEvent* event)
+{
+	// Grab current slider position
+	int pos = ui.AtomsTableScrollBar->value();
+	pos -= ui.AtomsTableScrollBar->pageStep() * (event->delta() / 120);
+	ui.AtomsTableScrollBar->setValue(pos);
+}

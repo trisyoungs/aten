@@ -30,6 +30,7 @@
 #include "gui/ui_mainwindow.h"
 #include "gui/ui_prefs.h"
 #include "gui/useractions.h"
+#include "gui/disorderwizard.h"
 #include "gui/exportimage.h"
 #include "templates/reflist.h"
 #include "base/glyph.h"
@@ -53,13 +54,11 @@ class AtenZMatrix;
 
 // Forward Declarations (Aten) 3 - Dock Widgets and Wizards
 class CommandWidget;
-class DisorderWizard;
 class ForcefieldsWidget;
 class GlyphsWidget;
 class MDWidget;
 class PoresWidget;
 class ScriptMovieWidget;
-class ToolBoxWidget;
 class VibrationsWidget;
 
 ATEN_BEGIN_NAMESPACE
@@ -87,6 +86,7 @@ class AtenWindow : public QMainWindow
 	protected:
 	void closeEvent(QCloseEvent* event);
 	void resizeEvent(QResizeEvent* event);
+	void wheelEvent(QWheelEvent* event);
 
 
 	/*
@@ -105,10 +105,7 @@ class AtenWindow : public QMainWindow
 	 * Methods
 	 */
 	public:
-	// Close specified model, saving first if requested
-	bool closeModel(Model* m);
-	// Save before close
-	bool saveBeforeClose();
+
 	// Set interactivity (to full or zero), except for main view camera changes
 	void setInteractive(bool interactive);
 
@@ -447,6 +444,18 @@ class AtenWindow : public QMainWindow
 
 
 	/*
+	 * Tools Panel
+	 */
+	private:
+	// Update tools panel
+	void updateToolsPanel(Model* sourceModel);
+
+	private slots:
+	// Tools
+	void on_ToolsToolsDisorderButton_clicked(bool checked);
+
+
+	/*
 	 * Models List
 	 */
 	private slots:
@@ -459,6 +468,10 @@ class AtenWindow : public QMainWindow
 	public:
 	// Refresh models list
 	void updateModelsList();
+	// Close specified model, saving first if requested
+	bool closeModel(Model* m);
+	// Save before close
+	bool saveBeforeClose();
 
 
 	/*
@@ -517,11 +530,12 @@ class AtenWindow : public QMainWindow
 	void on_AtomsViewChargeCheck_clicked(bool checked);
 
 	public slots:
-	void atomsTableMousePressEvent(QMouseEvent *event);
-	void atomsTableMouseReleaseEvent(QMouseEvent *event);
-	void atomsTableMouseMoveEvent(QMouseEvent *event);
-	void atomsTableMouseDoubleClickEvent(QMouseEvent *event);
-	void atomsTableItemChanged(QTableWidgetItem *item);
+	void atomsTableMousePressEvent(QMouseEvent* event);
+	void atomsTableMouseReleaseEvent(QMouseEvent* event);
+	void atomsTableMouseMoveEvent(QMouseEvent* event);
+	void atomsTableMouseWheelEvent(QWheelEvent* event);
+	void atomsTableMouseDoubleClickEvent(QMouseEvent* event);
+	void atomsTableItemChanged(QTableWidgetItem* item);
 
 	public:
 	// Refresh atoms table
@@ -558,6 +572,8 @@ class AtenWindow : public QMainWindow
 	void updateMessagesWidgets();
 	// Return current position of messages scrollbar
 	int messagesScrollPosition();
+	// Scroll messages by one step
+	void scrollMessages(bool up);
 
 
 	/*
@@ -567,7 +583,7 @@ class AtenWindow : public QMainWindow
 	// List of manually-created QActionGroups
 	RefList<QActionGroup,int> actionGroups_;
 	// Text labels for model information and UI messages in status bar
-	QLabel *infoLabel1_, *infoLabel2_, *messageLabel_;
+	QLabel* infoLabel1_, *infoLabel2_, *messageLabel_;
 	// Filter set from save model dialog
 	Tree* saveModelFilter_;
 	// Filename set from save model dialog
@@ -604,10 +620,6 @@ class AtenWindow : public QMainWindow
 	public:
 	// Command dock widget
 	CommandWidget *commandWidget;
-	// Disorder wizard
-	DisorderWizard *disorderWizard;
-	// Forcefields dock widget
-	ForcefieldsWidget *forcefieldsWidget;
 	// Glyphs dock widget
 	GlyphsWidget *glyphsWidget;
 	// Pore builder dock widget
@@ -616,6 +628,8 @@ class AtenWindow : public QMainWindow
 	ScriptMovieWidget *scriptMovieWidget;
 	// Vibrations dock widget
 	VibrationsWidget *vibrationsWidget;
+	// Disorder wizard
+	DisorderWizard disorderWizard_;
 	// Export Image dialog
 	AtenExportImage exportImageDialog_;
 

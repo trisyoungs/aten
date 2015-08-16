@@ -23,6 +23,7 @@
 #include "gui/mainwindow.h"
 #include "templates/variantpointer.h"
 #include <QInputDialog>
+#include <QMessageBox>
 
 // Refresh model list
 void AtenWindow::updateModelsList()
@@ -76,6 +77,70 @@ void AtenWindow::updateModelsList()
 	}
 
 	Messenger::exit("AtenWindow::updateModelsList");
+}
+
+// Close specified model, saving first if requested
+bool AtenWindow::closeModel(Model* m)
+{
+	QString text;
+	Tree* filter;
+	if (m->isModified())
+	{
+		// Create a modal message dialog
+		text.sprintf("Model '%s' has been modified.", qPrintable(m->name()));
+		int returnvalue = QMessageBox::warning(this, "Aten", text, QMessageBox::Save | QMessageBox::Discard | QMessageBox::Cancel, QMessageBox::Save);
+		switch (returnvalue)
+		{
+			// Discard changes
+			case (QMessageBox::Discard):
+				break;
+				// Cancel close
+			case (QMessageBox::Cancel):
+				return false;
+				// Save model before quit
+			case (QMessageBox::Save):
+				// Temporarily disable undo/redo for the model, save, and re-enable
+				m->disableUndoRedo();
+				// If model has a filter set, just save it
+				filter = m->filter();
+				if (filter != NULL) filter->executeWrite(m->filename());
+				else if (runSaveModelDialog())
+				{
+					m->setFilter(saveModelFilter_);
+					m->setFilename(saveModelFilename_);
+					if (!saveModelFilter_->executeWrite(saveModelFilename_))
+					{
+						Messenger::print("Not saved.");
+						m->enableUndoRedo();
+						return false;
+					}
+				}
+				else
+				{
+					m->enableUndoRedo();
+					return false;
+				}
+				break;
+		}
+	}
+
+	// Remove model and update gui
+	aten_.removeModel(m);
+
+	return true;
+}
+
+// Check the status of all models, asking to save before close if necessary
+bool AtenWindow::saveBeforeClose()
+{
+	while (aten_.models())
+	{
+		if (!closeModel(aten_.models())) return false;
+
+		// Update GUI
+		updateWidgets(AtenWindow::AllTarget);
+	}
+	return true;
 }
 
 void AtenWindow::modelsListContextMenuRequested(const QPoint& point)

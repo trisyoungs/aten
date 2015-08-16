@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>DisorderWizard</class>
  <widget class="QWizard" name="DisorderWizard">
@@ -14,7 +15,7 @@
   </property>
   <property name="windowIcon">
    <iconset resource="icons.qrc">
-    <normaloff>:/stackicons/icons/stack_disorder.svg</normaloff>:/stackicons/icons/stack_disorder.svg</iconset>
+    <normaloff>:/tools/icons/tools_disorder.svg</normaloff>:/tools/icons/tools_disorder.svg</iconset>
   </property>
   <property name="modal">
    <bool>true</bool>

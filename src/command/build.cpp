@@ -223,12 +223,12 @@ bool Commands::function_InsertAtom(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	aten_.current().i = obj.rs()->addAtomWithId(el, pos, id-1);
 
 	// Add the name to the model's namesForcefield, if requested and it exists
-// 	if (prefs.keepNames())
-// 	{
-// 		ForcefieldAtom* ffa = obj.rs()->addAtomName(el, c->argc(0));
-// 		aten_.current().i->setType(ffa);
-// 		if (ffa != NULL) aten_.current().i->setTypeFixed(true);
-// 	}
+	if (prefs.keepNames())
+	{
+		ForcefieldAtom* ffa = obj.rs()->addAtomName(el, c->argc(0));
+		aten_.current().i->setType(ffa);
+		if (ffa != NULL) aten_.current().i->setTypeFixed(true);
+	}
 	if (prefs.keepTypes())
 	{
 		ForcefieldAtom* ffa = NULL;

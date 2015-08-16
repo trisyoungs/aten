@@ -31,7 +31,6 @@ void AtenWindow::on_MessagesCycleButton_clicked(bool checked)
 	else messageDisplay_ = AtenWindow::FullMessages;
 
 	updateWidgets(AtenWindow::MainViewTarget);
-
 }
 
 void AtenWindow::on_MessagesCopyButton_clicked(bool checked)
@@ -77,4 +76,11 @@ void AtenWindow::updateMessagesWidgets()
 int AtenWindow::messagesScrollPosition()
 {
 	return ui.MessagesScroll->sliderPosition();
+}
+
+// Scroll messages by one step
+void AtenWindow::scrollMessages(bool up)
+{
+	if (up) ui.MessagesScroll->setValue(ui.MessagesScroll->value()+ui.MessagesScroll->pageStep());
+	else ui.MessagesScroll->setValue(ui.MessagesScroll->value()-ui.MessagesScroll->pageStep());
 }

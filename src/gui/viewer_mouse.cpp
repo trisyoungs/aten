@@ -211,42 +211,50 @@ void Viewer::mouseMoveEvent(QMouseEvent* event)
 void Viewer::wheelEvent(QWheelEvent* event)
 {
 	Messenger::enter("Viewer::wheelEvent");
-	
-	// Get current active model
-	Model* source = aten_->currentModelOrFrame();
-	if (source == NULL)
-	{
-		printf("Pointless Viewer::wheelEvent - no source model.\n");
-		Messenger::exit("Viewer::wheelEvent");
-		return;
-	}
 
-	// Do the requested wheel action as defined in the control panel
-	bool scrollup = event->delta() > 0;
-	switch (prefs.mouseAction(Prefs::WheelButton))
+	// If the messages are currently on top, scroll them. Otherwise, manipulate the model.
+	if ((atenWindow_->messageDisplay() == AtenWindow::FullMessages) || (atenWindow_->messageDisplay() == AtenWindow::MessagesOverScene))
 	{
-		case (Prefs::NoAction):
-			break;
-		case (Prefs::InteractAction):
-			// Only act if the editable_ flag is set
-			if (!editable_) break;
-			useSelectedMode();
-			break;
-		case (Prefs::RotateAction):
-			scrollup ? source->rotateView(1.0,0.0) : source->rotateView(-1.0,0.0);
-			break;
-		case (Prefs::TranslateAction):
-			// Only act if the editable_ flag is set
-			if (!editable_) break;
-			break;
-		case (Prefs::ZoomAction):
-			source->adjustZoom(scrollup);
-			break;
-		default:
-			break;
+		atenWindow_->scrollMessages(event->delta() > 0);
 	}
+	else
+	{
+		// Get current active model
+		Model* source = aten_->currentModelOrFrame();
+		if (source == NULL)
+		{
+			printf("Pointless Viewer::wheelEvent - no source model.\n");
+			Messenger::exit("Viewer::wheelEvent");
+			return;
+		}
 
-	update();
+		// Do the requested wheel action as defined in the control panel
+		bool scrollup = event->delta() > 0;
+		switch (prefs.mouseAction(Prefs::WheelButton))
+		{
+			case (Prefs::NoAction):
+				break;
+			case (Prefs::InteractAction):
+				// Only act if the editable_ flag is set
+				if (!editable_) break;
+				useSelectedMode();
+				break;
+			case (Prefs::RotateAction):
+				scrollup ? source->rotateView(1.0,0.0) : source->rotateView(-1.0,0.0);
+				break;
+			case (Prefs::TranslateAction):
+				// Only act if the editable_ flag is set
+				if (!editable_) break;
+				break;
+			case (Prefs::ZoomAction):
+				source->adjustZoom(scrollup);
+				break;
+			default:
+				break;
+		}
+
+		update();
+	}
 
 	Messenger::exit("Viewer::wheelEvent");
 }
