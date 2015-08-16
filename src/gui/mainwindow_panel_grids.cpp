@@ -69,11 +69,13 @@ void AtenWindow::updateGridInformation(Grid* sourceGrid)
 	// Enable / disable controls
 	ui.GridsPrimaryLowerCutoffSpin->setEnabled(sourceGrid);
 	ui.GridsPrimaryUpperCutoffSpin->setEnabled(sourceGrid);
+	ui.GridsPrimarySetButton->setEnabled(sourceGrid);
 	ui.GridsPrimaryColourButton->setEnabled(sourceGrid);
 	ui.GridsPrimaryStyleButton->setEnabled(sourceGrid);
 	ui.GridsSecondaryLowerCutoffSpin->setEnabled(sourceGrid);
 	ui.GridsSecondaryUpperCutoffSpin->setEnabled(sourceGrid);
 	ui.GridsSecondaryColourButton->setEnabled(sourceGrid);
+	ui.GridsSecondarySetButton->setEnabled(sourceGrid);
 	ui.GridsSecondaryStyleButton->setEnabled(sourceGrid);
 	ui.GridsSecondaryActiveButton->setEnabled(sourceGrid);
 	ui.GridsOptionsOutlineButton->setEnabled(sourceGrid);

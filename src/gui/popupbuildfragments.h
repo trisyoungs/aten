@@ -39,7 +39,7 @@ ATEN_END_NAMESPACE
 
 ATEN_USING_NAMESPACE
 
-// Popup Widget - Grow
+// Popup Widget - Fragments
 class BuildFragmentsPopup : public TMenuButtonPopupWidget
 {
 	// All Qt declarations derived from QObject must include this macro

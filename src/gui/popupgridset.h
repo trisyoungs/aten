@@ -1,6 +1,6 @@
 /*
-	*** Popup Widget - View ColourScheme
-	*** src/gui/popupviewcolourscheme.h
+	*** Popup Widget - Grid Set
+	*** src/gui/popupgridset.h
 	Copyright T. Youngs 2007-2015
 
 	This file is part of Aten.
@@ -19,10 +19,10 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_VIEWCOLOURSCHEMEPOPUP_H
-#define ATEN_VIEWCOLOURSCHEMEPOPUP_H
+#ifndef ATEN_GRIDSETPOPUP_H
+#define ATEN_GRIDSETPOPUP_H
 
-#include "gui/ui_popupviewcolourscheme.h"
+#include "gui/ui_popupgridset.h"
 #include "gui/tmenubutton.hui"
 #include "parser/returnvalue.h"
 
@@ -38,8 +38,8 @@ ATEN_END_NAMESPACE
 
 ATEN_USING_NAMESPACE
 
-// Popup Widget - View Colour Scheme
-class ViewColourSchemePopup : public TMenuButtonPopupWidget
+// Popup Widget - Grid Set
+class GridSetPopup : public TMenuButtonPopupWidget
 {
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
@@ -50,13 +50,17 @@ class ViewColourSchemePopup : public TMenuButtonPopupWidget
 
 	public:
 	// Constructor / Destructor
-	ViewColourSchemePopup(AtenWindow& parent, TMenuButton* buttonParent);
+	GridSetPopup(AtenWindow& parent, TMenuButton* buttonParent, bool primary);
 	// Main form declaration
-	Ui::ViewColourSchemePopup ui;
+	Ui::GridSetPopup ui;
 	// Show popup, updating any controls as necessary beforehand
 	void popup();
 	// Call named method associated to popup
 	bool callMethod(QString methodName, ReturnValue& rv);
+
+	private:
+	// Whether this popup is related to the primary surface of the current grid
+	bool primary_;
 
 
 	/*
@@ -70,11 +74,8 @@ class ViewColourSchemePopup : public TMenuButtonPopupWidget
 	 * Widget Functions
 	 */
 	private slots:
-	void on_ElementButton_clicked(bool checked);
-	void on_ChargeButton_clicked(bool checked);
-	void on_ForceButton_clicked(bool checked);
-	void on_VelocityButton_clicked(bool checked);
-	void on_OwnButton_clicked(bool checked);
+	void on_SetDensityMultipleButton_clicked(bool checked);
+	void on_SetViewPercentageButton_clicked(bool checked);
 };
 
 #endif

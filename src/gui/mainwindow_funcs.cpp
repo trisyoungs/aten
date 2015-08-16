@@ -57,6 +57,7 @@
 #include "gui/popupforcefieldsminimise.h"
 #include "gui/popupgridmatrix.h"
 #include "gui/popupgridorigin.h"
+#include "gui/popupgridset.h"
 #include "gui/popupgridstyle.h"
 #include "gui/popupmeasureangle.h"
 #include "gui/popupmeasuredistance.h"
@@ -242,10 +243,12 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportImage
 	// -- Grids Panel (Define)
 	ui.GridsDefineAxesButton->setPopupWidget(new GridMatrixPopup(*this, ui.GridsDefineAxesButton), true);
 	ui.GridsDefineOriginButton->setPopupWidget(new GridOriginPopup(*this, ui.GridsDefineOriginButton), true);
-	// -- Grids Panel (Primary Cutoff)
+	// -- Grids Panel (Primary Surface)
+	ui.GridsPrimarySetButton->setPopupWidget(new GridSetPopup(*this, ui.GridsPrimarySetButton, true), true);
 	ui.GridsPrimaryColourButton->setPopupWidget(new ColourPopup(*this, ui.GridsPrimaryColourButton), true);
 	ui.GridsPrimaryStyleButton->setPopupWidget(new GridStylePopup(*this, ui.GridsPrimaryStyleButton, true), true);
-	// -- Grids Panel (Secondary Cutoff)
+	// -- Grids Panel (Secondary Surface)
+	ui.GridsSecondarySetButton->setPopupWidget(new GridSetPopup(*this, ui.GridsSecondarySetButton, true), true);
 	ui.GridsSecondaryColourButton->setPopupWidget(new ColourPopup(*this, ui.GridsSecondaryColourButton), true);
 	ui.GridsSecondaryStyleButton->setPopupWidget(new GridStylePopup(*this, ui.GridsSecondaryStyleButton, false), true);
 

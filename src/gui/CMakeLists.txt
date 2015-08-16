@@ -34,6 +34,7 @@ SET(gui_MOC_HDRS
   popupforcefieldstest.h
   popupgridmatrix.h
   popupgridorigin.h
+  popupgridset.h
   popupgridshift.h
   popupgridstyle.h
   popupmeasureangle.h
@@ -119,6 +120,7 @@ SET(gui_UIS
   popupforcefieldstest.ui
   popupgridmatrix.ui
   popupgridorigin.ui
+  popupgridset.ui
   popupgridshift.ui
   popupgridstyle.ui
   popupmeasureangle.ui
@@ -214,6 +216,7 @@ set(gui_SRCS
   popupforcefieldstest_funcs.cpp
   popupgridmatrix_funcs.cpp
   popupgridorigin_funcs.cpp
+  popupgridset_funcs.cpp
   popupgridshift_funcs.cpp
   popupgridstyle_funcs.cpp
   popupmeasureangle_funcs.cpp
