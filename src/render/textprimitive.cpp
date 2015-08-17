@@ -22,7 +22,7 @@
 #include "render/textprimitive.h"
 #include "render/textprimitive_grammar.hh"
 #include "render/fontinstance.h"
-#include <src/math/matrix.h>
+#include "math/matrix.h"
 
 ATEN_USING_NAMESPACE
 
