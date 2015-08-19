@@ -39,14 +39,12 @@ ForcefieldsTestPopup::ForcefieldsTestPopup(AtenWindow& parent, TMenuButton* butt
 	ui.ElementButton->setPopupWidget(new ElementTablePopup(parent_, ui.ElementButton), true);
 }
 
-// Show popup, updating any controls as necessary beforehand
-void ForcefieldsTestPopup::popup()
+// Update controls (before show()) (virtual)
+void ForcefieldsTestPopup::updateControls()
 {
 	refreshing_ = true;
 
 	refreshTypes();
-
-	show();
 
 	refreshing_ = false;
 }

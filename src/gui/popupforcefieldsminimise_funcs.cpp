@@ -40,12 +40,10 @@ ForcefieldsMinimisePopup::ForcefieldsMinimisePopup(AtenWindow& parent, TMenuButt
 	ui.ForceConvergeSpin->setValue(1.0e-3);
 }
 
-// Show popup, updating any controls as necessary beforehand
-void ForcefieldsMinimisePopup::popup()
+// Update controls (before show()) (virtual)
+void ForcefieldsMinimisePopup::updateControls()
 {
 	refreshing_ = true;
-
-	show();
 
 	refreshing_ = false;
 }

@@ -53,8 +53,8 @@ class MeasureTorsionPopup : public TMenuButtonPopupWidget
 	MeasureTorsionPopup(AtenWindow& parent, TMenuButton* buttonParent);
 	// Main form declaration
 	Ui::MeasureTorsionPopup ui;
-	// Show popup, updating any controls as necessary beforehand
-	void popup();
+	// Update controls (before show()) (virtual)
+	void updateControls();
 	// Call named method associated to popup
 	bool callMethod(QString methodName, ReturnValue& rv);
 

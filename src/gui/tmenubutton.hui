@@ -25,6 +25,7 @@
 #include <QtWidgets/QToolButton>
 #include <QMouseEvent>
 #include <QTimer>
+#include <QTime>
 #include "parser/returnvalue.h"
 
 // Forward Declarations (Qt)
@@ -48,6 +49,8 @@ class TMenuButtonPopupWidget : public QWidget
 	bool refreshing_;
 
 	protected:
+	// Update controls (before show())
+	virtual void updateControls() = 0;
 	// Local function called when the widget should be closed after a button has been selceted
 	void done(bool setParentButtonDown = false);
 	// Notify parent button that one of our widgets has changed
@@ -57,7 +60,7 @@ class TMenuButtonPopupWidget : public QWidget
 	// Constructor
 	TMenuButtonPopupWidget(TMenuButton* parent);
 	// Show popup, updating any controls as necessary beforehand
-	virtual void popup() = 0;
+	void popup();
 	// Call named method associated to popup
 	virtual bool callMethod(QString methodName, ReturnValue& rv) = 0;
 	// Call named method associated to popup (without ReturnValue)
@@ -71,6 +74,16 @@ class TMenuButtonPopupWidget : public QWidget
 	 */
 	protected:
 	void hideEvent(QHideEvent* event);
+
+
+	/*
+	 * Internal Static Data
+	 */
+	protected:
+	// Time when last popup was hidden
+	static QTime lastPopupHideTime_;
+	// Last popup widget displayed
+	static TMenuButtonPopupWidget* lastPopup_;
 };
 
 // Exclusive menu button group
@@ -162,7 +175,7 @@ class TMenuButton : public QToolButton
 	void paintEvent(QPaintEvent* event);
 
 	private slots:
-	// Call popoup widget
+	// Call popup widget
 	void popup();
 	// Mouse button was pressed on the button
 	void buttonPressed();

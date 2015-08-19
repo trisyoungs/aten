@@ -34,12 +34,10 @@ GridShiftPopup::GridShiftPopup(AtenWindow& parent, TMenuButton* buttonParent) : 
 	ui.setupUi(this);
 }
 
-// Show popup, updating any controls as necessary beforehand
-void GridShiftPopup::popup()
+// Update controls (before show()) (virtual)
+void GridShiftPopup::updateControls()
 {
 	refreshing_ = true;
-
-	show();
 
 	refreshing_ = false;
 }

@@ -34,12 +34,10 @@ TransformTranslatePopup::TransformTranslatePopup(AtenWindow& parent, TMenuButton
 	ui.setupUi(this);
 }
 
-// Show popup, updating any controls as necessary beforehand
-void TransformTranslatePopup::popup()
+// Update controls (before show()) (virtual)
+void TransformTranslatePopup::updateControls()
 {
 	refreshing_ = true;
-
-	show();
 
 	refreshing_ = false;
 }

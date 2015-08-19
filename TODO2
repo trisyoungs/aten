@@ -1,23 +1,19 @@
 TODO
 ====
 Remove automatic loading of scripts on startup.
-Reimplement KeepNames functionality.
 Crash if model is saved, then filters reloaded, then model is saved again (since filter pointer will be wrong)?
 Scale molecule COM inverts coordinates??
-Implement optional startup 'guide' or 'wizard' that will disable all controls on the GUI and explain what means what, highlighting them as appropriate.
 Remove dialog pointers (use instances instead).
 Fix callbacks for atom picking etc.
 Octahedral Growing doesn't work.
 Snapshot option, copying current view or image save details directly to clipboard
 Clear selected measurements on panel popup clears all measurements.
 Recent files list - enable load on double-click, settings not loaded/saved properly?
-TMenuButton - after (long-) click to show popup, allow popup to be hidden with no actions if the button is clicked on again. Tricky - might have to store pointer to previous popup and check this in the pressed() function of the button.
 Check - is using redirected filenames really necessary when saving movie frame images?
 Automatically adjust grid size for number of visible models, based on current aspect ratio and context size etc.
 Redo ProgressIndicator, making into a class much like QProgress (can't just use QProgress, since we want to have progress indicator functionality in the CLI....). Make it clever enough to realise that the gui is visible or not. Perhaps integrate it into Messenger, so that messages printed out while the indicator is running don't disrupt the indicator?
 Sort out remaining icons!
 On model load, empty (and saved) model is not removed / replaced.
-Display upper cutoff for grids somewhere.
 View by percentage and multiple of rho for grid cutoff (put in popup).
 Undo/Redo:
   * Rework UndoEvent to use an enum and stored data rather than an individual class for each event type.
@@ -43,7 +39,6 @@ Context Menu:
 o Set Colour doesn't work, since it needs a colour selector popup.
 Build option - keep centred.
 Remove TColourFrame (after updating Prefs and Glyphs windows).
-When messages display is on top, pass wheel event onto MessagesScroll.
 Button to calculate / show total charge in selection.
 Allow right-click on elements in PTable to set as member of common elements popup.
 Finish Spacegroup popup.
@@ -55,6 +50,7 @@ Reimplement Open Expression somewhere.
 
 Possible TODO
 =============
+Implement optional startup 'guide' or 'wizard' that will disable all controls on the GUI and explain what means what, highlighting them as appropriate.
 Add in calculation of quantities and graphing?
 Instead of a separate AtenVariable, make Aten subclass Variable?
 Move Prefs from being a static global to a member of Aten?

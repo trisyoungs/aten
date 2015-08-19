@@ -39,12 +39,10 @@ FileAtenPopup::FileAtenPopup(AtenWindow& parent, TMenuButton* buttonParent) : TM
 	ui.VersionLabel->setText("v" + QString(ATENVERSION));
 }
 
-// Show popup, updating any controls as necessary beforehand
-void FileAtenPopup::popup()
+// Update controls (before show()) (virtual)
+void FileAtenPopup::updateControls()
 {
 	refreshing_ = true;
-
-	show();
 
 	refreshing_ = false;
 }

@@ -34,15 +34,13 @@ RebondPopup::RebondPopup(AtenWindow& parent, TMenuButton* buttonParent) : TMenuB
 	ui.setupUi(this);
 }
 
-// Show popup, updating any controls as necessary beforehand
-void RebondPopup::popup()
+// Update controls (before show()) (virtual)
+void RebondPopup::updateControls()
 {
 	refreshing_ = true;
 
 	ui.ToleranceSpin->setValue(prefs.bondTolerance());
 	ui.ToleranceDial->setValue(int(prefs.bondTolerance()*1000.0));
-
-	show();
 
 	refreshing_ = false;
 }

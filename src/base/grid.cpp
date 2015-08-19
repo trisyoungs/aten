@@ -1099,6 +1099,8 @@ void Grid::sendPrimaryPrimitive()
 	}
 
 	// Render it
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_LIGHTING);
 	if (primaryStyle_ == Grid::SolidSurface) primaryPrimitive_->sendToGL(QOpenGLContext::currentContext(), GL_FILL, true, !useColourScale_, primaryColour_);
 	else if (primaryStyle_ == Grid::MeshSurface) primaryPrimitive_->sendToGL(QOpenGLContext::currentContext(), GL_LINE, false, !useColourScale_, primaryColour_);
 	else if (primaryStyle_ == Grid::PointSurface)
@@ -1136,6 +1138,8 @@ void Grid::sendSecondaryPrimitive()
 	}
 
 	// Render it
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_LIGHTING);
 	if (secondaryStyle_ == Grid::SolidSurface) secondaryPrimitive_->sendToGL(QOpenGLContext::currentContext(), GL_FILL, true, !useColourScale_, secondaryColour_);
 	else if (secondaryStyle_ == Grid::MeshSurface) secondaryPrimitive_->sendToGL(QOpenGLContext::currentContext(), GL_LINES, false, !useColourScale_, secondaryColour_);
 	else if (secondaryStyle_ == Grid::PointSurface)

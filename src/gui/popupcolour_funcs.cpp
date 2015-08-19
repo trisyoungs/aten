@@ -34,12 +34,10 @@ ColourPopup::ColourPopup(AtenWindow& parent, TMenuButton* buttonParent) : TMenuB
 	updateParentButtonIcon();
 }
 
-// Show popup, updating any controls as necessary beforehand
-void ColourPopup::popup()
+// Update controls (before show()) (virtual)
+void ColourPopup::updateControls()
 {
 	refreshing_ = true;
-
-	show();
 
 	setCurrentColour(currentColour_);
 

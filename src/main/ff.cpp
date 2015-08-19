@@ -34,6 +34,12 @@ Forcefield* Aten::addForcefield(QString name)
 	return current_.ff;
 }
 
+// Take ownership of the specified forcefield
+void Aten::ownForcefield(Forcefield* ff)
+{
+	forcefields_.own(ff);
+}
+
 // Load forcefield
 Forcefield* Aten::loadForcefield(QString ffFile)
 {

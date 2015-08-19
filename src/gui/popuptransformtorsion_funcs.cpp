@@ -34,8 +34,8 @@ TransformTorsionPopup::TransformTorsionPopup(AtenWindow& parent, TMenuButton* bu
 	ui.setupUi(this);
 }
 
-// Show popup, updating any controls as necessary beforehand
-void TransformTorsionPopup::popup()
+// Update controls (before show()) (virtual)
+void TransformTorsionPopup::updateControls()
 {
 	refreshing_ = true;
 
@@ -65,8 +65,6 @@ void TransformTorsionPopup::popup()
 		ui.CopyCurrentTorsionButton->setEnabled(validTorsion);
 	}
 	else setEnabled(false);
-
-	show();
 
 	refreshing_ = false;
 }

@@ -33,8 +33,8 @@ GridMatrixPopup::GridMatrixPopup(AtenWindow& parent, TMenuButton* buttonParent) 
 	ui.setupUi(this);
 }
 
-// Show popup, updating any controls as necessary beforehand
-void GridMatrixPopup::popup()
+// Update controls (before show()) (virtual)
+void GridMatrixPopup::updateControls()
 {
 	// Update angles in spin boxes
 	refreshing_ = true;
@@ -53,8 +53,6 @@ void GridMatrixPopup::popup()
 		ui.AxisCYSpin->setValue(grid->cell()->parameter(UnitCell::CellCY));
 		ui.AxisCZSpin->setValue(grid->cell()->parameter(UnitCell::CellCZ));
 	}
-
-	show();
 
 	refreshing_ = false;
 }

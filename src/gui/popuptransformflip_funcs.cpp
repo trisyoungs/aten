@@ -34,12 +34,10 @@ TransformFlipPopup::TransformFlipPopup(AtenWindow& parent, TMenuButton* buttonPa
 	ui.setupUi(this);
 }
 
-// Show popup, updating any controls as necessary beforehand
-void TransformFlipPopup::popup()
+// Update controls (before show()) (virtual)
+void TransformFlipPopup::updateControls()
 {
 	refreshing_ = true;
-
-	show();
 
 	refreshing_ = false;
 }

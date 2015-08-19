@@ -34,12 +34,10 @@ TransmutePopup::TransmutePopup(AtenWindow& parent, TMenuButton* buttonParent) : 
 	ui.setupUi(this);
 }
 
-// Show popup, updating any controls as necessary beforehand
-void TransmutePopup::popup()
+// Update controls (before show()) (virtual)
+void TransmutePopup::updateControls()
 {
 	refreshing_ = true;
-
-	show();
 
 	refreshing_ = false;
 }

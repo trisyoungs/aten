@@ -39,8 +39,8 @@ GridOriginPopup::GridOriginPopup(AtenWindow& parent, TMenuButton* buttonParent) 
 	ui.ZSpin->setRange(false, 0.0, false, 0.0);
 }
 
-// Show popup, updating any controls as necessary beforehand
-void GridOriginPopup::popup()
+// Update controls (before show()) (virtual)
+void GridOriginPopup::updateControls()
 {
 	// Update angles in spin boxes
 	refreshing_ = true;
@@ -53,8 +53,6 @@ void GridOriginPopup::popup()
 		ui.YSpin->setValue(grid->origin().y);
 		ui.ZSpin->setValue(grid->origin().z);
 	}
-
-	show();
 
 	refreshing_ = false;
 }

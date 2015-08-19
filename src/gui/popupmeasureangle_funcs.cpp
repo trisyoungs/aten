@@ -34,12 +34,10 @@ MeasureAnglePopup::MeasureAnglePopup(AtenWindow& parent, TMenuButton* buttonPare
 	ui.setupUi(this);
 }
 
-// Show popup, updating any controls as necessary beforehand
-void MeasureAnglePopup::popup()
+// Update controls (before show()) (virtual)
+void MeasureAnglePopup::updateControls()
 {
 	refreshing_ = true;
-
-	show();
 
 	refreshing_ = false;
 }

@@ -33,8 +33,8 @@ CellAnglesPopup::CellAnglesPopup(AtenWindow& parent, TMenuButton* buttonParent) 
 	ui.setupUi(this);
 }
 
-// Show popup, updating any controls as necessary beforehand
-void CellAnglesPopup::popup()
+// Update controls (before show()) (virtual)
+void CellAnglesPopup::updateControls()
 {
 	// Update angles in spin boxes
 	refreshing_ = true;
@@ -47,8 +47,6 @@ void CellAnglesPopup::popup()
 		ui.BetaSpin->setValue(model->cell().angles().y);
 		ui.GammaSpin->setValue(model->cell().angles().z);
 	}
-
-	show();
 
 	refreshing_ = false;
 }

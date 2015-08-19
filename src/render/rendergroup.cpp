@@ -1,5 +1,5 @@
 /*
-	*** Render GroupRenderGroup
+	*** Render Group
 	*** src/render/rendergroup.cpp
 	Copyright T. Youngs 2013-2015
 
@@ -167,6 +167,8 @@ void RenderGroup::sendToGL(Matrix& modelTransformationMatrix)
 	inverseMatrix.invert();
 
 	Matrix A;
+
+	glEnable(GL_DEPTH_TEST);
 
 	// Solid triangles
 	glEnable(GL_LIGHTING);

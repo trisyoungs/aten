@@ -34,12 +34,10 @@ MeasureClearPopup::MeasureClearPopup(AtenWindow& parent, TMenuButton* buttonPare
 	ui.setupUi(this);
 }
 
-// Show popup, updating any controls as necessary beforehand
-void MeasureClearPopup::popup()
+// Update controls (before show()) (virtual)
+void MeasureClearPopup::updateControls()
 {
 	refreshing_ = true;
-
-	show();
 
 	refreshing_ = false;
 }

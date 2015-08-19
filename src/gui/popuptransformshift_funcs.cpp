@@ -34,12 +34,10 @@ TransformShiftPopup::TransformShiftPopup(AtenWindow& parent, TMenuButton* button
 	ui.setupUi(this);
 }
 
-// Show popup, updating any controls as necessary beforehand
-void TransformShiftPopup::popup()
+// Update controls (before show()) (virtual)
+void TransformShiftPopup::updateControls()
 {
 	refreshing_ = true;
-
-	show();
 
 	refreshing_ = false;
 }

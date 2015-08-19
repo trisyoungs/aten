@@ -63,12 +63,10 @@ ElementCommonPopup::ElementCommonPopup(AtenWindow& parent, TMenuButton* buttonPa
 	setLayout(gl);
 }
 
-// Show popup, updating any controls as necessary beforehand
-void ElementCommonPopup::popup()
+// Update controls (before show()) (virtual)
+void ElementCommonPopup::updateControls()
 {
 	refreshing_ = true;
-
-	show();
 
 	refreshing_ = false;
 }

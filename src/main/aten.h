@@ -233,6 +233,8 @@ class Aten
 	public:
 	// Add a new forcefield
 	Forcefield* addForcefield(QString name = QString());
+	// Take ownership of the specified forcefield
+	void ownForcefield(Forcefield* ff);
 	// Load the specified forcefield
 	Forcefield* loadForcefield(QString filename);
 	// Find forcefield by name

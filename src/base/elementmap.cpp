@@ -515,7 +515,7 @@ int ElementMap::find(QString query, ElementMap::ZMapType zmt, Forcefield* firstF
 	if (result != -1) return result;
 	
 	// Convert the query string according to the specified rule
-	switch (zmt == ElementMap::nZMapTypes ? prefs.zMapType() : zmt)
+	switch (zmt)
 	{
 		// Automatic determination
 		case (ElementMap::AutoZMap):

@@ -34,12 +34,10 @@ MeasureTorsionPopup::MeasureTorsionPopup(AtenWindow& parent, TMenuButton* button
 	ui.setupUi(this);
 }
 
-// Show popup, updating any controls as necessary beforehand
-void MeasureTorsionPopup::popup()
+// Update controls (before show()) (virtual)
+void MeasureTorsionPopup::updateControls()
 {
 	refreshing_ = true;
-
-	show();
 
 	refreshing_ = false;
 }

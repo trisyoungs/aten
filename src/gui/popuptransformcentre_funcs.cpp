@@ -34,12 +34,10 @@ TransformCentrePopup::TransformCentrePopup(AtenWindow& parent, TMenuButton* butt
 	ui.setupUi(this);
 }
 
-// Show popup, updating any controls as necessary beforehand
-void TransformCentrePopup::popup()
+// Update controls (before show()) (virtual)
+void TransformCentrePopup::updateControls()
 {
 	refreshing_ = true;
-
-	show();
 
 	refreshing_ = false;
 }

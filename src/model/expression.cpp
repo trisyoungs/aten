@@ -34,12 +34,10 @@ Forcefield* Model::forcefield()
 // Create a forcefield containing original atom names for the model
 void Model::createNamesForcefield()
 {
-	// ATEN2 TODO
-// 	if (namesForcefield_ != NULL) Messenger::print("Warning - an atom names forcefield already exists for model '%s'.", qPrintable(name_));
-// 	Messenger::print("Creating atom names forcefield for model '%s'.", qPrintable(name_));
-// 	Dnchar s;
-// 	s.sprintf("Names kept from Model %s",qPrintable(name_));
-// 	namesForcefield_ = aten.addForcefield(s);
+	if (namesForcefield_ != NULL) Messenger::print("Warning - an atom names forcefield already exists for model '%s'.", qPrintable(name_));
+	Messenger::print("Creating atom names forcefield for model '%s'.", qPrintable(name_));
+	namesForcefield_ = new Forcefield;
+	namesForcefield_->setName(QString("Names kept from model ")+name_);
 }
 
 // Return the forcefield containing original atom names for the model

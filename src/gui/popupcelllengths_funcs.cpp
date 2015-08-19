@@ -33,8 +33,8 @@ CellLengthsPopup::CellLengthsPopup(AtenWindow& parent, TMenuButton* buttonParent
 	ui.setupUi(this);
 }
 
-// Show popup, updating any controls as necessary beforehand
-void CellLengthsPopup::popup()
+// Update controls (before show()) (virtual)
+void CellLengthsPopup::updateControls()
 {
 	refreshing_ = true;
 
@@ -46,8 +46,6 @@ void CellLengthsPopup::popup()
 		ui.BSpin->setValue(model->cell().lengths().y);
 		ui.CSpin->setValue(model->cell().lengths().z);
 	}
-
-	show();
 
 	refreshing_ = false;
 }

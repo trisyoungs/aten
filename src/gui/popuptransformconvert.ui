@@ -105,7 +105,7 @@
     </widget>
    </item>
    <item row="0" column="6">
-    <widget class="QPushButton" name="OrthogonaliseXButton">
+    <widget class="QPushButton" name="SourceOrthogonaliseXButton">
      <property name="sizePolicy">
       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Expanding">
        <horstretch>0</horstretch>
@@ -405,7 +405,7 @@
     </widget>
    </item>
    <item row="2" column="6">
-    <widget class="QPushButton" name="OrthogonaliseYButton">
+    <widget class="QPushButton" name="SourceOrthogonaliseYButton">
      <property name="sizePolicy">
       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Expanding">
        <horstretch>0</horstretch>
@@ -754,7 +754,7 @@
     </widget>
    </item>
    <item row="3" column="6">
-    <widget class="QPushButton" name="OrthogonaliseZButton">
+    <widget class="QPushButton" name="SourceOrthogonaliseZButton">
      <property name="sizePolicy">
       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Expanding">
        <horstretch>0</horstretch>

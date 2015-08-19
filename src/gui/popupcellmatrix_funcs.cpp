@@ -33,8 +33,8 @@ CellMatrixPopup::CellMatrixPopup(AtenWindow& parent, TMenuButton* buttonParent) 
 	ui.setupUi(this);
 }
 
-// Show popup, updating any controls as necessary beforehand
-void CellMatrixPopup::popup()
+// Update controls (before show()) (virtual)
+void CellMatrixPopup::updateControls()
 {
 	// Update angles in spin boxes
 	refreshing_ = true;
@@ -53,8 +53,6 @@ void CellMatrixPopup::popup()
 		ui.AxisCYSpin->setValue(model->cell().parameter(UnitCell::CellCY));
 		ui.AxisCZSpin->setValue(model->cell().parameter(UnitCell::CellCZ));
 	}
-
-	show();
 
 	refreshing_ = false;
 }

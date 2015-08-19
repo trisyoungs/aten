@@ -41,8 +41,8 @@ ViewColourSchemePopup::ViewColourSchemePopup(AtenWindow& parent, TMenuButton* bu
 	ui.OwnButton->setGroup("Colourschemes");
 }
 
-// Show popup, updating any controls as necessary beforehand
-void ViewColourSchemePopup::popup()
+// Update controls (before show()) (virtual)
+void ViewColourSchemePopup::updateControls()
 {
 	refreshing_ = true;
 
@@ -67,8 +67,6 @@ void ViewColourSchemePopup::popup()
 			printf("Warning: Prefs has odd render style (%i)\n", prefs.renderStyle());
 			break;
 	}
-
-	show();
 
 	refreshing_ = false;
 }

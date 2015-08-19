@@ -34,12 +34,10 @@ TransformRotatePopup::TransformRotatePopup(AtenWindow& parent, TMenuButton* butt
 	ui.setupUi(this);
 }
 
-// Show popup, updating any controls as necessary beforehand
-void TransformRotatePopup::popup()
+// Update controls (before show()) (virtual)
+void TransformRotatePopup::updateControls()
 {
 	refreshing_ = true;
-
-	show();
 
 	refreshing_ = false;
 }

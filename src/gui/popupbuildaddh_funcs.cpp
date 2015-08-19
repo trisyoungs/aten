@@ -34,12 +34,10 @@ AddHPopup::AddHPopup(AtenWindow& parent, TMenuButton* buttonParent) : TMenuButto
 	ui.setupUi(this);
 }
 
-// Show popup, updating any controls as necessary beforehand
-void AddHPopup::popup()
+// Update controls (before show()) (virtual)
+void AddHPopup::updateControls()
 {
 	refreshing_ = true;
-
-	show();
 
 	refreshing_ = false;
 }

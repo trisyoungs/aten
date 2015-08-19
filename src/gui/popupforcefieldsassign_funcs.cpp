@@ -36,12 +36,10 @@ ForcefieldsAssignPopup::ForcefieldsAssignPopup(AtenWindow& parent, TMenuButton* 
 	ui.setupUi(this);
 }
 
-// Show popup, updating any controls as necessary beforehand
-void ForcefieldsAssignPopup::popup()
+// Update controls (before show()) (virtual)
+void ForcefieldsAssignPopup::updateControls()
 {
 	refreshing_ = true;
-
-	show();
 
 	refreshing_ = false;
 }

@@ -143,6 +143,9 @@ bool Commands::function_FinaliseModel(CommandNode* c, Bundle& obj, ReturnValue& 
 	Messenger::print(Messenger::Verbose, "Cell   : %s", UnitCell::cellType(obj.m->cell().type()));
 	if (obj.m->cell().type() != UnitCell::NoCell) obj.m->cell().print();
 
+	// If a names forcefield was created, add it to Aten's list 
+	if (obj.m->namesForcefield()) aten_.ownForcefield(obj.m->namesForcefield());
+
 	// If a trajectory exists for this model, by default we view from trajectory in the GUI
 	if (obj.m->nTrajectoryFrames() > 0) obj.m->setRenderSource(Model::TrajectorySource);
 

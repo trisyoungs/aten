@@ -34,12 +34,10 @@ TransformConvertPopup::TransformConvertPopup(AtenWindow& parent, TMenuButton* bu
 	ui.setupUi(this);
 }
 
-// Show popup, updating any controls as necessary beforehand
-void TransformConvertPopup::popup()
+// Update controls (before show()) (virtual)
+void TransformConvertPopup::updateControls()
 {
 	refreshing_ = true;
-
-	show();
 
 	refreshing_ = false;
 }

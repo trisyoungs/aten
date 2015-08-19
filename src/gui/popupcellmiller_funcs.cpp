@@ -33,12 +33,10 @@ CellMillerPopup::CellMillerPopup(AtenWindow& parent, TMenuButton* buttonParent) 
 	ui.setupUi(this);
 }
 
-// Show popup, updating any controls as necessary beforehand
-void CellMillerPopup::popup()
+// Update controls (before show()) (virtual)
+void CellMillerPopup::updateControls()
 {
 	refreshing_ = true;
-
-	show();
 
 	refreshing_ = false;
 }

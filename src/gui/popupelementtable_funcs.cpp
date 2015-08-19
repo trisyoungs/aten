@@ -128,12 +128,10 @@ ElementTablePopup::ElementTablePopup(AtenWindow& parent, TMenuButton* buttonPare
 	setLayout(gl);
 }
 
-// Show popup, updating any controls as necessary beforehand
-void ElementTablePopup::popup()
+// Update controls (before show()) (virtual)
+void ElementTablePopup::updateControls()
 {
 	refreshing_ = true;
-
-	show();
 
 	refreshing_ = false;
 }

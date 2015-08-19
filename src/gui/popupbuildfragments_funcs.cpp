@@ -38,12 +38,10 @@ BuildFragmentsPopup::BuildFragmentsPopup(AtenWindow& parent, TMenuButton* button
 	callMethodSimple("updateFragments", "");
 }
 
-// Show popup, updating any controls as necessary beforehand
-void BuildFragmentsPopup::popup()
+// Update controls (before show()) (virtual)
+void BuildFragmentsPopup::updateControls()
 {
 	refreshing_ = true;
-
-	show();
 
 	refreshing_ = false;
 }

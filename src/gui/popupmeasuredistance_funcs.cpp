@@ -34,12 +34,10 @@ MeasureDistancePopup::MeasureDistancePopup(AtenWindow& parent, TMenuButton* butt
 	ui.setupUi(this);
 }
 
-// Show popup, updating any controls as necessary beforehand
-void MeasureDistancePopup::popup()
+// Update controls (before show()) (virtual)
+void MeasureDistancePopup::updateControls()
 {
 	refreshing_ = true;
-
-	show();
 
 	refreshing_ = false;
 }

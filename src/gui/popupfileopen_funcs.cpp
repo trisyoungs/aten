@@ -33,8 +33,8 @@ FileOpenPopup::FileOpenPopup(AtenWindow& parent, TMenuButton* buttonParent) : TM
 	ui.setupUi(this);
 }
 
-// Show popup, updating any controls as necessary beforehand
-void FileOpenPopup::popup()
+// Update controls (before show()) (virtual)
+void FileOpenPopup::updateControls()
 {
 	refreshing_ = true;
 
@@ -58,8 +58,6 @@ void FileOpenPopup::popup()
 	}
 
 	ui.FilesTable->setColumnWidth(0, width());
-
-	show();
 
 	refreshing_ = false;
 }

@@ -31,11 +31,28 @@
  * TMenuButtonPopupWidget
  */
 
+// Static members
+TMenuButtonPopupWidget* TMenuButtonPopupWidget::lastPopup_ = NULL;
+QTime TMenuButtonPopupWidget::lastPopupHideTime_;
+
 // Constructor
 TMenuButtonPopupWidget::TMenuButtonPopupWidget(TMenuButton* parent) : QWidget(parent, Qt::FramelessWindowHint | Qt::Popup)
 {
 	parentMenuButton_ = parent;
 	widgetDone_ = false;
+}
+
+// Show popup, updating any controls as necessary beforehand
+void TMenuButtonPopupWidget::popup()
+{
+	// Check time of last popup - if it was too short, then we assume this was a click on the same source button
+	if ((lastPopup_ == this) && (lastPopupHideTime_.msecsTo(QTime::currentTime()) < 50)) return;
+
+	updateControls();
+
+	show();
+
+	lastPopup_ = this;
 }
 
 // Call named method associated to popup (without ReturnValue)
@@ -79,6 +96,9 @@ void TMenuButtonPopupWidget::hideEvent(QHideEvent* event)
 
 	// Reset the widgetDone_ flag
 	widgetDone_ = false;
+
+	// Set the hide time
+	lastPopupHideTime_ = QTime::currentTime();
 
 	event->accept();
 
@@ -212,7 +232,11 @@ TMenuButtonPopupWidget* TMenuButton::popupWidget()
 
 void TMenuButton::popupDone(bool setButtonDown)
 {
-	if (!setButtonDown) setDown(false);
+	if (!setButtonDown)
+	{
+		setDown(false);
+		setChecked(false);
+	}
 	else if (group_) group_->setCurrentButton(this);
 
 	// Click button if requested

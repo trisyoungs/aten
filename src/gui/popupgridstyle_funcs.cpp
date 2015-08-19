@@ -36,8 +36,8 @@ GridStylePopup::GridStylePopup(AtenWindow& parent, TMenuButton* buttonParent, bo
 	primary_ = primary;
 }
 
-// Show popup, updating any controls as necessary beforehand
-void GridStylePopup::popup()
+// Update controls (before show()) (virtual)
+void GridStylePopup::updateControls()
 {
 	// Get current grid
 	Grid* currentGrid;
@@ -61,8 +61,6 @@ void GridStylePopup::popup()
 			printf("Warning: Grid has odd surface style set (%i)\n", style);
 			break;
 	}
-
-	show();
 
 	refreshing_ = false;
 }

@@ -34,8 +34,8 @@ CellSpacegroupPopup::CellSpacegroupPopup(AtenWindow& parent, TMenuButton* button
 	ui.setupUi(this);
 }
 
-// Show popup, updating any controls as necessary beforehand
-void CellSpacegroupPopup::popup()
+// Update controls (before show()) (virtual)
+void CellSpacegroupPopup::updateControls()
 {
 	refreshing_ = true;
 
@@ -49,8 +49,6 @@ void CellSpacegroupPopup::popup()
 
 	// Enable / disable controls as necessary
 	ui.SpacegroupCombo->setEnabled(model);
-
-	show();
 
 	refreshing_ = false;
 }

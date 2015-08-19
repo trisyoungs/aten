@@ -34,12 +34,10 @@ TransformRepositionPopup::TransformRepositionPopup(AtenWindow& parent, TMenuButt
 	ui.setupUi(this);
 }
 
-// Show popup, updating any controls as necessary beforehand
-void TransformRepositionPopup::popup()
+// Update controls (before show()) (virtual)
+void TransformRepositionPopup::updateControls()
 {
 	refreshing_ = true;
-
-	show();
 
 	refreshing_ = false;
 }

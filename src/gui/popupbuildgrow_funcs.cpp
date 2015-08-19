@@ -38,8 +38,8 @@ GrowPopup::GrowPopup(AtenWindow& parent, TMenuButton* buttonParent) : TMenuButto
 	buttonGroup->addButton(ui.FixedRadio);
 }
 
-// Show popup, updating any controls as necessary beforehand
-void GrowPopup::popup()
+// Update controls (before show()) (virtual)
+void GrowPopup::updateControls()
 {
 	refreshing_ = true;
 
@@ -70,8 +70,6 @@ void GrowPopup::popup()
 			printf("Warning: Viewer has odd atom geometry set for build (%i)\n", parent_.ui.MainView->buildGeometry());
 			break;
 	}
-
-	show();
 
 	refreshing_ = false;
 }

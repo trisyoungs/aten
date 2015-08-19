@@ -42,8 +42,8 @@ ViewStylePopup::ViewStylePopup(AtenWindow& parent, TMenuButton* buttonParent) : 
 	++popupCounter;
 }
 
-// Show popup, updating any controls as necessary beforehand
-void ViewStylePopup::popup()
+// Update controls (before show()) (virtual)
+void ViewStylePopup::updateControls()
 {
 	refreshing_ = true;
 
@@ -65,8 +65,6 @@ void ViewStylePopup::popup()
 			printf("Warning: Prefs has odd render style (%i)\n", prefs.renderStyle());
 			break;
 	}
-
-	show();
 
 	refreshing_ = false;
 }

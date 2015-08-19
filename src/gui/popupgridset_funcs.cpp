@@ -36,8 +36,8 @@ GridSetPopup::GridSetPopup(AtenWindow& parent, TMenuButton* buttonParent, bool p
 	primary_ = primary;
 }
 
-// Show popup, updating any controls as necessary beforehand
-void GridSetPopup::popup()
+// Update controls (before show()) (virtual)
+void GridSetPopup::updateControls()
 {
 	// Get current grid
 	Grid* currentGrid;
@@ -53,8 +53,6 @@ void GridSetPopup::popup()
 	double total = currentGrid->totalPositiveSum() + fabs(currentGrid->totalNegativeSum());
 	ui.GridTotalAbsoluteLabel->setText(QString::number(total));
 	ui.ViewPercentageSpin->setValue(100.0*currentGrid->partialPrimarySum()/total);
-
-	show();
 
 	refreshing_ = false;
 }

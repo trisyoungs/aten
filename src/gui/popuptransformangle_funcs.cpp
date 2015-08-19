@@ -34,8 +34,8 @@ TransformAnglePopup::TransformAnglePopup(AtenWindow& parent, TMenuButton* button
 	ui.setupUi(this);
 }
 
-// Show popup, updating any controls as necessary beforehand
-void TransformAnglePopup::popup()
+// Update controls (before show()) (virtual)
+void TransformAnglePopup::updateControls()
 {
 	refreshing_ = true;
 
@@ -62,8 +62,6 @@ void TransformAnglePopup::popup()
 		else ui.AngleLabel->setText("N/A");
 	}
 	else setEnabled(false);
-
-	show();
 
 	refreshing_ = false;
 }

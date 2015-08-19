@@ -34,8 +34,8 @@ TransformDistancePopup::TransformDistancePopup(AtenWindow& parent, TMenuButton* 
 	ui.setupUi(this);
 }
 
-// Show popup, updating any controls as necessary beforehand
-void TransformDistancePopup::popup()
+// Update controls (before show()) (virtual)
+void TransformDistancePopup::updateControls()
 {
 	refreshing_ = true;
 
@@ -56,8 +56,6 @@ void TransformDistancePopup::popup()
 		else ui.DistanceLabel->setText("N/A");
 	}
 	else setEnabled(false);
-
-	show();
 
 	refreshing_ = false;
 }

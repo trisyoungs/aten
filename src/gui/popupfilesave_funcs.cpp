@@ -33,8 +33,8 @@ FileSavePopup::FileSavePopup(AtenWindow& parent, TMenuButton* buttonParent) : TM
 	ui.setupUi(this);
 }
 
-// Show popup, updating any controls as necessary beforehand
-void FileSavePopup::popup()
+// Update controls (before show()) (virtual)
+void FileSavePopup::updateControls()
 {
 	refreshing_ = true;
 
@@ -43,8 +43,6 @@ void FileSavePopup::popup()
 
 	ui.OptionsButton->setEnabled(currentModel && currentModel->filter() && (currentModel->filter()->defaultDialog().nWidgets() != 0));
 	
-	show();
-
 	refreshing_ = false;
 }
 
