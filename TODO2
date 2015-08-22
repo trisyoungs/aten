@@ -2,7 +2,6 @@ TODO
 ====
 Remove automatic loading of scripts on startup.
 Crash if model is saved, then filters reloaded, then model is saved again (since filter pointer will be wrong)?
-Scale molecule COM inverts coordinates??
 Remove dialog pointers (use instances instead).
 Fix callbacks for atom picking etc.
 Octahedral Growing doesn't work.

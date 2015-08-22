@@ -1005,7 +1005,7 @@ class Model : public ListItem<Model>
 	// Return the empirical formula of the selected atoms
 	QString selectionEmpirical(bool markOnly, bool addSpaces = false ) const;
 	// Get selection's centre of geometry
-	Vec3<double> selectionCentreOfGeometry() const;
+	Vec3<double> selectionCentreOfGeometry(bool markOnly = false) const;
 	// Get selection's centre of mass
 	Vec3<double> selectionCentreOfMass() const;
 	// Reorder bound atoms/fragments within the selection so that they are consecutive

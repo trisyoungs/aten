@@ -139,10 +139,18 @@ void Model::moveAtomAfter(Atom* i, Atom* reference)
  */
 
 // Get selection cog
-Vec3<double> Model::selectionCentreOfGeometry() const
+Vec3<double> Model::selectionCentreOfGeometry(bool markOnly) const
 {
 	Vec3<double> result;
-	if (selection_.nItems() != 0)
+	if (markOnly)
+	{
+		if (marked_.nItems() != 0)
+		{
+			for (RefListItem<Atom,int>* ri = marked_.first(); ri != NULL; ri = ri->next) result += cell_.mim(ri->item, marked_.first()->item);
+			result /= marked_.nItems();
+		}
+	}
+	else if (selection_.nItems() != 0)
 	{
 		for (RefListItem<Atom,int>* ri = selection_.first(); ri != NULL; ri = ri->next) result += cell_.mim(ri->item, selection_.first()->item);
 		result /= selection_.nItems();

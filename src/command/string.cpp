@@ -36,7 +36,7 @@ bool Commands::function_AfterStr(CommandNode* c, Bundle& obj, ReturnValue& rv)
 // Convert string to floating point number
 bool Commands::function_AToF(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	static QRegularExpression re("[\\d.\\-e]+");
+	static QRegularExpression re("[\\d.\\-eE]+");
 	QRegularExpressionMatch match = re.match(c->argc(0));
 	if (match.hasMatch()) rv.set( match.captured(0).toDouble() );
 	else
@@ -50,7 +50,7 @@ bool Commands::function_AToF(CommandNode* c, Bundle& obj, ReturnValue& rv)
 // Convert string to integer number
 bool Commands::function_AToI(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	static QRegularExpression re("[\\d.\\-e]+");
+	static QRegularExpression re("[\\d.\\-eE]+");
 	QRegularExpressionMatch match = re.match(c->argc(0));
 	if (match.hasMatch()) rv.set( match.captured(0).toInt() );
 	else

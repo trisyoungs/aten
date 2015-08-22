@@ -330,13 +330,13 @@ void Model::pack()
 bool Model::scaleCell(const Vec3<double>& scale, bool useCog)
 {
 	Messenger::enter("Model::scaleCell");
-	Vec3<double> oldcog, newcog, newpos;
-	UnitCell newcell;
-	Matrix newaxes;
-	double olde = 0.0, newe;
-	bool success;
-	int n,m;
+
+	Vec3<double> oldCog, delta, newPos;
+	UnitCell newCell;
+	Matrix newAxes;
 	Atom* i;
+	RefListItem<Atom,int>* ri;
+
 	// First, make sure we have a cell and a valid pattern (if using cog)
 	if (cell_.type() == UnitCell::NoCell)
 	{
@@ -344,42 +344,38 @@ bool Model::scaleCell(const Vec3<double>& scale, bool useCog)
 		Messenger::exit("Model::scaleCell");
 		return false;
 	}
-	if (useCog)
-	{
- 		if (!createPatterns())
-		{
-			Messenger::print("Cell contents cannot be scaled by their centres of geometry if a proper pattern definition does not exist.");
-			Messenger::exit("Model::scaleCell");
-			return false;
-		}
-	}
 
 	// Copy original cell axes, expand and save for later
-	newaxes = cell_.axes();
-	newaxes.columnMultiply(scale);
-	newcell.set(newaxes);
+	newAxes = cell_.axes();
+	newAxes.columnMultiply(scale);
+	newCell.set(newAxes);
 
 	// Cycle over patterns, get COG, convert to old fractional coordinates, then
 	// use new cell to get new local coordinates.
 	foldAllAtoms();
 	if (useCog)
 	{
-		for (Pattern* p = patterns_.first(); p != NULL; p = p->next)
+		// Clear atom bits and marked selection
+		clearAtomBits();
+		for (i = atoms_.first(); i != NULL; i = i->next)
 		{
-			i = p->firstAtom();
-			for (n=0; n<p->nMolecules(); n++)
+			if (i->bit() == 1) continue;
+
+			// Perform tree select from the current atom
+			selectNone(true);
+			selectTree(i, true);
+
+			// Get centre of geometry of current marked selection
+			oldCog = selectionCentreOfGeometry(true);
+
+			// Get COG delta using new cell
+			delta = newCell.fracToReal(cell_.realToFrac(oldCog)) - oldCog;
+
+			// Adjust positions of marked atoms and set their bits
+			for (ri = marked_.first(); ri != NULL; ri = ri->next)
 			{
-				// Get fractional coordinate COG of this molecule
-				oldcog = p->calculateCog(n,this);
-				// Get new COG using new cell
-				newcog = newcell.fracToReal(cell_.realToFrac(oldcog));
-				// Set new atom positions
-				for (m=0; m<p->nAtoms(); m++)
-				{
-					newpos = cell_.mimVector(i,oldcog) + newcog;
-					positionAtom(i,newpos);
-					i = i->next;
-				}
+				positionAtom(ri->item, ri->item->r() + delta);
+				ri->item->setBit(1);
 			}
 		}
 	}
@@ -388,13 +384,13 @@ bool Model::scaleCell(const Vec3<double>& scale, bool useCog)
 		// Reposition individual atoms
 		for (i = atoms_.first(); i != NULL; i = i->next)
 		{
-			newpos = newcell.fracToReal(cell_.realToFrac(i->r()));
-			positionAtom(i,newpos);
+			newPos = newCell.fracToReal(cell_.realToFrac(i->r()));
+			positionAtom(i, newPos);
 		}
 	}
 
 	// Set new cell and update model
-	setCell(newaxes);
+	setCell(newAxes);
 	logChange(Log::Coordinates);
 	Messenger::exit("Model::scaleCell");
 	return true;

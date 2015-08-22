@@ -53,7 +53,7 @@ bool Commands::function_Error(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	}
 	if (fmt->writeToString())
 	{
-		Messenger::print(fmt->string());
+		Messenger::error(fmt->string());
 		QMessageBox::critical(NULL, "Aten", fmt->string(), QMessageBox::Ok, QMessageBox::Ok);
 	}
 	c->parent()->setAcceptedFail(Commands::Error);
@@ -82,12 +82,25 @@ bool Commands::function_Message(CommandNode* c, Bundle& obj, ReturnValue& rv)
 bool Commands::function_Printf(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	Format* fmt = c->createFormat(0,1);
+	static QString buffer;
 	if (fmt == NULL)
 	{
 		printf("Error - No format defined in 'printf' command.\n");
 		return false;
 	}
-	if (fmt->writeToString()) Messenger::print(fmt->string());
+	if (fmt->writeToString())
+	{
+		// Add the created string to the buffer
+		buffer += fmt->string();
+
+		// If the last character of the buffer is now a newline, print it and clear it
+		if (buffer.endsWith('\n'))
+		{
+			buffer.chop(1);
+			Messenger::print(buffer);
+			buffer.clear();
+		}
+	}
 	else return false;
 	return true;
 }
