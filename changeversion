@@ -71,11 +71,11 @@ grep 'm4_define(\[ATEN_VERSION\]' ./configure.ac | sed -e 's/m4_define(\[ATEN_VE
 if [ "$TEST" = "false" ]
 then
   echo "Writing new specfile..."
-  sed -i -e "s/Version: [0-9a-z\.]\+/Version: $MAJOR.$MINOR.$PATCH/g" aten.spec
-  grep "Version:" aten.spec
+  sed -i -e "s/Version: [0-9a-z\.]\+/Version: $MAJOR.$MINOR.$PATCH/g" extra/OpenSuSE13.2/aten.spec
+  grep "Version:" extra/OpenSuSE13.2/aten.spec
 else
   echo -n "                          Specfile : "
-  grep "Version:" aten.spec | sed -e 's/Version: \([0-9a-z\.]\+\)/\1/g'
+  grep "Version:" extra/OpenSuSE13.2/aten.spec | sed -e 's/Version: \([0-9a-z\.]\+\)/\1/g'
 fi
 
 # Debian build files
