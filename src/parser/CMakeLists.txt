@@ -117,6 +117,7 @@ target_include_directories(parser PRIVATE
   ${Qt5Gui_INCLUDE_DIRS}
   ${Qt5Widgets_INCLUDE_DIRS}
 	${PROJECT_SOURCE_DIR}/src/gui
+	${FREETYPE_INCLUDE_DIRS}
 )
 
 target_link_libraries(parser gui) 
