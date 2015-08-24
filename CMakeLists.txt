@@ -106,6 +106,7 @@ target_include_directories(${target_name} PRIVATE
 	${PROJECT_SOURCE_DIR}/src
 	${PROJECT_BINARY_DIR}/src
 	${PROJECT_SOURCE_DIR}/src/gui
+  ${FREETYPE_INCLUDE_DIRS}
 )
 
 # Perform final link
