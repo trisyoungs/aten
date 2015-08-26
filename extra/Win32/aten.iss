@@ -38,7 +38,6 @@ Name: "english"; MessagesFile: "compiler:Default.isl"
 
 [Tasks]
 Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked
-Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked; OnlyBelowVersion: 0,6.1
 
 [Files]
 Source: "..\..\build\bin\Aten.exe"; DestDir: "{app}\bin"; Flags: ignoreversion
@@ -49,6 +48,7 @@ Source: "{#GnuWinDir}\bin\freetype6.dll"; DestDir: "{app}\bin"
 Source: "{#GnuWinDir}\bin\readline5.dll"; DestDir: "{app}\bin"
 Source: "{#GnuWinDir}\bin\history5.dll"; DestDir: "{app}\bin"
 Source: "{#GnuWinDir}\bin\zlib1.dll"; DestDir: "{app}\bin"
+Source: "{#GnuWinDir}\bin\libftgl.dll"; DestDir: "{app}\bin"
 Source: "{#MinGWDir}\bin\libgcc_s_dw2-1.dll"; DestDir: "{app}\bin"
 Source: "{#MinGWDir}\bin\libstdc++-6.dll"; DestDir: "{app}\bin"
 Source: "{#MinGWDir}\bin\libwinpthread-1.dll"; DestDir: "{app}\bin"
@@ -63,12 +63,10 @@ Source: "{#QtDir}\plugins\iconengines\qsvgicon.dll"; DestDir: "{app}\bin\iconeng
 Source: "{#QtDir}\plugins\platforms\qwindows.dll"; DestDir: "{app}\bin\platforms"; Flags: ignoreversion
 Source: "{#QtDir}\plugins\imageformats\*.dll"; DestDir: "{app}\bin\imageformats"; Flags: ignoreversion
 Source: "C:\Windows\System32\D3DCompiler_43.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
-Source: "Aten.ico"; DestDir: "{app}\bin"; Flags: ignoreversion
 
 [Icons]
-Name: "{group}\{#MyAppName}"; Filename: "{app}\bin\Aten.ico"
-Name: "{commondesktop}\{#MyAppName}"; Filename: "{app}\bin\Aten.ico"; Tasks: desktopicon
-Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\{#MyAppName}"; Filename: "{app}\bin\Aten.ico"; Tasks: quicklaunchicon
+Name: "{group}\{#MyAppName}"; IconFilename: "{app}\bin\Aten.ico"; Filename: "{app}\bin\{#MyAppExeName}"; WorkingDir: "{app}"
+Name: "{commondesktop}\{#MyAppName}"; IconFilename: "{app}\bin\Aten.ico"; Filename: "{app}\bin\{#MyAppExeName}"; WorkingDir: "{app}"; Tasks: desktopicon
 
 [Run]
 Filename: "{app}\bin\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent
