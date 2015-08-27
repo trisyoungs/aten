@@ -242,8 +242,6 @@ void Viewer::renderFullScene(int contextWidth, int contextHeight, int xOffset, i
 void Viewer::initializeGL()
 {
 	Messenger::enter("Viewer::initializeGL");
-	
-        valid_ = true;
 
 	// Setup function pointers to OpenGL extension functions
 	initializeOpenGLFunctions();
@@ -266,6 +264,8 @@ void Viewer::initializeGL()
                 Messenger::warn("VBO extension is requested but not available, so reverting to display lists instead.\n");
                 PrimitiveInstance::setGlobalInstanceType(PrimitiveInstance::ListInstance);
         }
+
+	valid_ = true;
 
 	Messenger::exit("Viewer::initializeGL");
 }

@@ -110,6 +110,9 @@
            <height>75</height>
           </size>
          </property>
+         <attribute name="horizontalHeaderVisible">
+          <bool>false</bool>
+         </attribute>
         </widget>
        </item>
       </layout>

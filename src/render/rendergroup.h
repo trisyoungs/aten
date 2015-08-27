@@ -22,7 +22,6 @@
 #ifndef ATEN_RENDERGROUP_H
 #define ATEN_RENDERGROUP_H
 
-#include "render/rendergroup.h"
 #include "render/primitive.h"
 #include "render/primitiveinfo.h"
 #include "render/textprimitivelist.h"

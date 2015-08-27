@@ -1,5 +1,5 @@
 /*
-	*** Viewer - GL Drawing class based on QGLWidget
+	*** Viewer - GL Drawing class based on QOpenGLWidget
 	*** src/gui/viewer.hui
 	Copyright T. Youngs 2007-2015
 

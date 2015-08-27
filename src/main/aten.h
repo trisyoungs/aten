@@ -477,6 +477,8 @@ class Aten
 	void increaseFragmentBondId();
 	// Return bondId (as reference so it can be reset by associated Fragment routines)
 	int& fragmentBondId();
+	// Update all fragment icons
+	void updateFragmentIcons();
 
 
 	/*

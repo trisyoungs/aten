@@ -5,7 +5,6 @@ Crash if model is saved, then filters reloaded, then model is saved again (since
 Remove dialog pointers (use instances instead).
 Fix callbacks for atom picking etc.
 Octahedral Growing doesn't work.
-Snapshot option, copying current view or image save details directly to clipboard
 Clear selected measurements on panel popup clears all measurements.
 Recent files list - enable load on double-click, settings not loaded/saved properly?
 Check - is using redirected filenames really necessary when saving movie frame images?
@@ -17,6 +16,8 @@ View by percentage and multiple of rho for grid cutoff (put in popup).
 Undo/Redo:
   * Rework UndoEvent to use an enum and stored data rather than an individual class for each event type.
   * Add Grid-related undo/redo (e.g. title changes, colour etc.)
+Rendering of current fragment is broken (use a local RenderGroup? For bond drawing as well...).
+Make Delete tool have a click-drag action that deletes the bond between the clicked atoms.
 
 Graphics TODO
 =============
@@ -60,6 +61,7 @@ Make Model::EnergyStore a private member with accessor?
 Add ObjectLists (when using CHECK)?
 Click to select grid.
 Remove global MC, CG, SD declarations, and put them in Aten?
+Snapshot option, copying current view or image save details directly to clipboard
 
 Manual TODO
 ===========

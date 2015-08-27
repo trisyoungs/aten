@@ -97,15 +97,6 @@ if test "$with_qt" = "framework"; then
   QTGUI_LIBS="-framework QtGui -framework QtOpenGL -framework QtCore -framework OpenGL"
   QTGUI_CFLAGS="-F QtGui -F QtOpenGl -F QtCore"
 fi
-if test "$with_qt" = "fink"; then
-  QTGUI_LIBS="-L/sw/lib/qt4-x11/lib -lQtGui -lQtCore -lQtOpenGL"
-  QTGUI_CFLAGS="-I/sw/lib/qt4-x11/include -I/usr/X11R6/include"
-  QTOPENGL_CFLAGS="-I/sw/lib/qt4-x11/include"
-  QTOPENGL_LIBS="-I/sw/lib/qt4-x11/lib"
-  PKG_CHECK_MODULES(QTGUI, Qt5Gui >= 5.0.0)
-  PKG_CHECK_MODULES(QTOPENGL, Qt5OpenGL >= 5.0.0)
-  PKG_CHECK_MODULES(QTWIDGETS, Qt5Widgets >= 5.0.0)
-fi
 if test "x$with_qt" = "x"; then
   PKG_CHECK_MODULES(QTGUI, Qt5Gui >= 5.0.0)
   PKG_CHECK_MODULES(QTOPENGL, Qt5OpenGL >= 5.0.0)

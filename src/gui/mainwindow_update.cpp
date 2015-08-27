@@ -110,6 +110,11 @@ void AtenWindow::initialUpdateAndShow()
 	// Show the window
 	show();
 
+	// Update the fragments widget and icons
+	ReturnValue rv;
+	aten_.updateFragmentIcons();
+	ui.BuildDrawFragmentButton->callPopupMethod("updateFragments", rv);
+
 	// Update everything else
 	updateWidgets(AtenWindow::AllTarget);
 
@@ -175,9 +180,9 @@ void AtenWindow::updateWidgets(int targets)
 		{
 			lastAction = ui.MainView->selectedMode();
 			text.sprintf("<b>%s:</b> %s", UserActions[lastAction].name, UserActions[lastAction].unModified);
-			if (UserActions[lastAction].shiftModified[0] != '\0') text += ", <b>+shift</b> %s" + QString(UserActions[lastAction].shiftModified);
-			if (UserActions[lastAction].ctrlModified[0] != '\0') text += ", <b>+ctrl</b> %s" + QString(UserActions[lastAction].ctrlModified);
-			if (UserActions[lastAction].altModified[0] != '\0') text += ", <b>+alt</b> %s" + QString(UserActions[lastAction].altModified);
+			if (UserActions[lastAction].shiftModified[0] != '\0') text += ", <b>+shift</b> " + QString(UserActions[lastAction].shiftModified);
+			if (UserActions[lastAction].ctrlModified[0] != '\0') text += ", <b>+ctrl</b> " + QString(UserActions[lastAction].ctrlModified);
+			if (UserActions[lastAction].altModified[0] != '\0') text += ", <b>+alt</b> " + QString(UserActions[lastAction].altModified);
 		}
 
 		// Set text in statusbar widget

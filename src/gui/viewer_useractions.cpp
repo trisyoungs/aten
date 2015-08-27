@@ -181,7 +181,7 @@ void Viewer::renderUserActions(Model* source)
 					prefs.colourScale[2].colour(atomClicked_->f().magnitude(), colour_i);
 					break;
 				case (Prefs::OwnScheme):
-						atomClicked_->copyColour(colour_i);
+					atomClicked_->copyColour(colour_i);
 					break;
 				default:
 					break;
