@@ -129,7 +129,7 @@ void Viewer::renderUserActions(Model* source)
 		A.applyScaling(radius_i, radius_i, radius_i);
 		A *= modelTransformationMatrix_;
 		glLoadMatrixd(A.matrix());
-// 		renderGroup_.addLines(); primitives_[primitiveSet_].selectedAtom(); ATEN2 TODO 
+// 		renderGroup_.addLines(); primitives_[primitiveSet_].selectedAtom(); ATEN2 TODO Do this as a set of arrows pointing at the atom?
 	}
 
 	// Active user actions
