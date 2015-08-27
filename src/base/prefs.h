@@ -165,8 +165,6 @@ class Prefs
 	double stickLineNormalWidth_;
 	// Line width for selected stick atoms
 	double stickLineSelectedWidth_;
-	// Whether to use fancy transparent objects for selection
-	bool transparentSelectionStyle_;
 
 	public:
 	// Sets the specified atom size to the given value
@@ -227,10 +225,6 @@ class Prefs
 	void setStickLineSelectedWidth(double width);
 	// Return line width for selected stick atoms
 	double stickLineSelectedWidth();
-	// Set whether to use fancy transparent objects for selection
-	void setTransparentSelectionStyle(bool b);
-	// Return whether to use fancy transparent objects for selection
-	bool transparentSelectionStyle();
 
 
 	/*

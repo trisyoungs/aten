@@ -224,7 +224,6 @@ Prefs::Prefs()
 	primitiveQuality_ = 10;
 	imagePrimitiveQuality_ = 50;
 	reusePrimitiveQuality_ = false;
-	transparentSelectionStyle_ = true;
 
 	// Build
 	showGuide_ = false;
@@ -626,18 +625,6 @@ void Prefs::setStickLineSelectedWidth(double width)
 double Prefs::stickLineSelectedWidth()
 {
 	return stickLineSelectedWidth_;
-}
-
-// Set whether to use fancy transparent objects for selection
-void Prefs::setTransparentSelectionStyle(bool b)
-{
-	transparentSelectionStyle_ = b;
-}
-
-// Return whether to use fancy transparent objects for selection
-bool Prefs::transparentSelectionStyle()
-{
-	return transparentSelectionStyle_;
 }
 
 /*

@@ -129,7 +129,7 @@ void Viewer::renderUserActions(Model* source)
 		A.applyScaling(radius_i, radius_i, radius_i);
 		A *= modelTransformationMatrix_;
 		glLoadMatrixd(A.matrix());
-		primitives_[primitiveSet_].selectedAtom();
+// 		renderGroup_.addLines(); primitives_[primitiveSet_].selectedAtom(); ATEN2 TODO 
 	}
 
 	// Active user actions
