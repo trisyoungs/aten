@@ -182,7 +182,7 @@ void Viewer::renderFullScene(int contextWidth, int contextHeight, int xOffset, i
 		viewPortY = contextHeight-(row+1)*viewPortHeight;
 
 		// Draw on halo for current model
-		if ((m == aten_->currentModel()) && (nModels > 1))
+		if ((!renderingOffScreen_) && (m == aten_->currentModel()) && (nModels > 1))
 		{
 			glViewport(viewPortX, viewPortY, viewPortWidth, viewPortHeight);
 			glMatrixMode(GL_PROJECTION);
@@ -199,7 +199,7 @@ void Viewer::renderFullScene(int contextWidth, int contextHeight, int xOffset, i
 		}
 
 		// Render the whole model
-		renderModel(m, viewPortX+xOffset, viewPortY+yOffset, viewPortWidth, viewPortHeight, true);
+		renderModel(m, viewPortX+xOffset, viewPortY+yOffset, viewPortWidth, viewPortHeight, !renderingOffScreen_);
 
 		// Render additional data for active model
 		if (m == aten_->currentModel())

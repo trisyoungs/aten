@@ -292,7 +292,7 @@ class Viewer : public QOpenGLWidget, protected QOpenGLFunctions
 	// Generate image of specified model
 	QPixmap generateModelImage(Model* model, int width, int height);
 	// Render current scene at supplied size
-	QPixmap generateImage(int width, int height);
+	QPixmap generateImage(int imageWidth, int imageHeight);
 };
 
 ATEN_END_NAMESPACE

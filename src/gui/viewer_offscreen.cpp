@@ -89,17 +89,19 @@ QPixmap Viewer::generateModelImage(Model* model, int width, int height)
 }
 
 // Render current scene at supplied size
-QPixmap Viewer::generateImage(int width, int height)
+QPixmap Viewer::generateImage(int imageWidth, int imageHeight)
 {
 	Messenger::enter("Viewer::generateImage");
 
+	// Make sure high quality primitives are up-to-date
+	updatePrimitives(Viewer::HighQuality);
+
 	// Flag that we are rendering offscreen, and that we want high quality primitives
 	renderingOffScreen_ = true;
-	updatePrimitives(Viewer::HighQuality);
 	primitiveSet_ = Viewer::HighQuality;
 
 	// Scale current line width and text scaling to reflect size of exported image
-	setObjectScaling( double(height) / double(contextHeight()) );
+	setObjectScaling( double(imageHeight) / double(contextHeight()) );
 
 	// Make the offscreen surface the current context
 	offscreenContext_.makeCurrent(&offscreenSurface_);
@@ -127,19 +129,19 @@ QPixmap Viewer::generateImage(int width, int height)
 	}
 
 	// Create a QPixmap of the desired full size and a QPainter for it
-	QPixmap pixmap = QPixmap(width, height);
+	QPixmap pixmap = QPixmap(imageWidth, imageHeight);
 	QPainter painter(&pixmap);
+	painter.setPen(Qt::NoPen);
+	painter.setBrush(Qt::white);
+	painter.drawRect(0,0,imageWidth, imageHeight);
 
 	// Calculate scale factors for ViewLayout, so that the context width/height is scaled to the desired image size
-	double xScale = double(width) / double(tileWidth);
-	double yScale = double(height) / double(tileHeight);
-	int nX = width / tileWidth + ((width%tileWidth) ? 1 : 0);
-	int nY = height / tileHeight + ((height%tileHeight) ? 1 : 0);
+	int nX = imageWidth / tileWidth + ((imageWidth %tileWidth) ? 1 : 0);
+	int nY = imageHeight / tileHeight + ((imageHeight %tileHeight) ? 1 : 0);
 
 	// Loop over tiles in x and y
 	QProgressDialog progress("Generating tiled image", "Cancel", 0, nX*nY, atenWindow_);
 	progress.setWindowTitle("Aten");
-	progress.show();
 	for (int x=0; x<nX; ++x)
 	{
 		for (int y=0; y<nY; ++y)
@@ -148,18 +150,18 @@ QPixmap Viewer::generateImage(int width, int height)
 			if (progress.wasCanceled()) break;
 			progress.setValue(x*nY+y);
 
-			// Clear the tile
+			// Generate this tile
+			frameBufferObject.bind();
 			glClearColor(col[0], col[1], col[2], col[3]);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-			// Render the scene
-			renderFullScene(width, height, -x*tileWidth, -y*tileHeight);
+			renderFullScene(imageWidth, imageHeight, -x*tileWidth, -y*tileHeight);
 
 			// Generate this tile
-			QPixmap tile = QPixmap::fromImage(frameBufferObject.toImage());
+			QImage fboImage(frameBufferObject.toImage());
+			QImage tile(fboImage.constBits(), fboImage.width(), fboImage.height(), QImage::Format_ARGB32);
 
 			// Paste this tile into the main image
-			painter.drawPixmap(x*tileWidth, height-(y+1)*tileHeight, tile);
+			painter.drawImage(x*tileWidth, imageHeight-(y+1)*tileHeight, tile);
 		}
 		if (progress.wasCanceled()) break;
 	}
@@ -173,10 +175,6 @@ QPixmap Viewer::generateImage(int width, int height)
 	// Make sure the Viewer knows we no longer want offscreen rendering, and revert to normal quality primitives
 	renderingOffScreen_ = false;
 	primitiveSet_ = Viewer::LowQuality;
-
-	// The sizes of panes may now be incorrect, so reset everything
-// 	UChromaSession::viewLayout().setOffsetAndScale(0, 0, 1.0, 1.0);  // ATEN2 TODO
-// 	UChromaSession::viewLayout().recalculate(ui.MainView->contextWidth(), ui.MainView->contextHeight());  // ATEN2 TODO
 
 	// Reset context back to main view
 	makeCurrent();

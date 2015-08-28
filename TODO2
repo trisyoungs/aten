@@ -21,7 +21,6 @@ Make Delete tool have a click-drag action that deletes the bond between the clic
 
 Graphics TODO
 =============
-Image saving is crocked.
 In top-left corner of main window, have a black icon illustrating which mode is active (except for Interact).
 Have small, additional black icons at top-right of each model window, illustrating whether it has been modified, is displaying trajetory frames, etc.
 Optimise basic primitives to use vertex/index arrays instead of just vertices (also check end caps of spheres).
