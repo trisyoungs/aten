@@ -86,7 +86,6 @@ class AtenWindow : public QMainWindow
 	protected:
 	void closeEvent(QCloseEvent* event);
 	void resizeEvent(QResizeEvent* event);
-	void wheelEvent(QWheelEvent* event);
 
 
 	/*

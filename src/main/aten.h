@@ -109,6 +109,8 @@ class Aten
 	Model* visibleModel(int id);
 	// Log specified change(s) in all models
 	void globalLogChange(Log::LogType);
+	// Load model (if it is not loaded already)
+	bool loadModel(QString fileName, Tree* filter = NULL);
 
 
 	/*

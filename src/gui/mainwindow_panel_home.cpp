@@ -98,16 +98,7 @@ void AtenWindow::on_HomeFileOpenButton_clicked(bool checked)
 	Tree* filter;
 	if (loadModelDialog.exec() == 1)
 	{
-		filter = loadModelDialog.selectedFormat();
-		// If filter == NULL then we didn't match a filter, i.e. the 'All files' filter was selected, and we must probe the file first.
-		if (filter == NULL) filter = aten_.probeFile(loadModelDialog.selectedFilename(), FilterData::ModelImport);
-		if (filter != NULL)
-		{
-			if (!filter->executeRead(loadModelDialog.selectedFilename())) return;
-			ReturnValue rv = loadModelDialog.selectedFilename();
-			ui.HomeFileOpenButton->callPopupMethod("addRecentFile", rv);
-			updateWidgets(AtenWindow::AllTarget);
-		}
+		aten_.loadModel(loadModelDialog.selectedFilename(), loadModelDialog.selectedFormat());
 	}
 }
 
@@ -163,6 +154,7 @@ void AtenWindow::on_HomeFileSaveAsButton_clicked(bool checked)
 		}
 		m->setFilter(saveModelFilter_);
 		m->setFilename(saveModelFilename_);
+
 		// Temporarily disable undo/redo for the model, save, and re-enable
 		m->disableUndoRedo();
 		

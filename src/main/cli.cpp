@@ -827,10 +827,7 @@ int Aten::parseCli(int argc, char *argv[])
 		{
 			// Not a CLI switch, so try to load it as a model
 			++nTried;
-			if (modelFilter != NULL) filter = modelFilter;
-			else filter = probeFile(argv[argn], FilterData::ModelImport);
-			if (filter != NULL) filter->executeRead(argv[argn]);
-			else return -1;
+			if (!loadModel(argv[argn], modelFilter)) return -1;
 		}
 	}
 

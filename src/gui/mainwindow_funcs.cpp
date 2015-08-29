@@ -418,17 +418,6 @@ void AtenWindow::resizeEvent(QResizeEvent* event)
 	atomsTableRecalculateRowSize();
 }
 
-void AtenWindow::wheelEvent(QWheelEvent* event)
-{
-// 	// Take the wheel event if the mouse was over the AtomsTable, otherwise ignore it
-// 	printf("Geom = %i %i %i %i, pos = %i %i\n", ui.AtomsTable->geometry().x(), ui.AtomsTable->geometry().y(), ui.AtomsTable->geometry().width(), ui.AtomsTable->geometry().height(), event->pos().x(), event->pos().y());
-// 	if (ui.AtomsTable->geometry().contains(ui.AtomsTable->mapFromParent(event->pos())))
-// 	{
-// 		printf("WHeel on atoms table.\n");
-// 	}
-// 	else event->ignore();
-}
-
 /*
  * Methods
  */

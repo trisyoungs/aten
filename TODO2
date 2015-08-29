@@ -1,12 +1,10 @@
 TODO
 ====
-Remove automatic loading of scripts on startup.
 Crash if model is saved, then filters reloaded, then model is saved again (since filter pointer will be wrong)?
 Remove dialog pointers (use instances instead).
 Fix callbacks for atom picking etc.
 Octahedral Growing doesn't work.
 Clear selected measurements on panel popup clears all measurements.
-Recent files list - enable load on double-click, settings not loaded/saved properly?
 Check - is using redirected filenames really necessary when saving movie frame images?
 Automatically adjust grid size for number of visible models, based on current aspect ratio and context size etc.
 Redo ProgressIndicator, making into a class much like QProgress (can't just use QProgress, since we want to have progress indicator functionality in the CLI....). Make it clever enough to realise that the gui is visible or not. Perhaps integrate it into Messenger, so that messages printed out while the indicator is running don't disrupt the indicator?

@@ -192,3 +192,37 @@ void Aten::globalLogChange(Log::LogType log)
 	// Loop over all loaded models and log change in their current rendersource
 	for (Model* m = models_.first(); m != NULL; m = m->next) m->renderSourceModel()->logChange(log);
 }
+
+// Load model (if it is not loaded already)
+bool Aten::loadModel(QString fileName, Tree* filter)
+{
+	// Check to see if current list of loaded models matches the filename supplied
+	QFileInfo newFileInfo(fileName);
+	for (Model* model = models_.first(); model != NULL; model = model->next)
+	{
+		// If there is no filename for this model, carry on
+		if (model->filename().isEmpty()) continue;
+
+		// Get file info for the model's filename
+		QFileInfo oldFileInfo(model->filename());
+		if (newFileInfo == oldFileInfo)
+		{
+			Messenger::warn("Refusing to load model '%s' since it is already loaded.\n", qPrintable(fileName));
+			setCurrentModel(model);
+			return false;
+		}
+	}
+
+	// If filter == NULL then we didn't match a filter we must probe the file first to try and find its format
+	if (filter == NULL) filter = probeFile(fileName, FilterData::ModelImport);
+	if (filter != NULL)
+	{
+		if (!filter->executeRead(fileName)) return false;
+		ReturnValue rv = fileName;
+		atenWindow_->ui.HomeFileOpenButton->callPopupMethod("addRecentFile", rv);
+		atenWindow_->updateWidgets(AtenWindow::AllTarget);
+	}
+	else return false;
+
+	return true;
+}

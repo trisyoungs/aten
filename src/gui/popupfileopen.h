@@ -80,7 +80,7 @@ class FileOpenPopup : public TMenuButtonPopupWidget
 	 * Widget Functions
 	 */
 	private slots:
-	void on_FilesTable_itemDoubleClicked(QTableWidgetItem* item);
+	void on_FilesTable_itemClicked(QTableWidgetItem* item);
 };
 
 #endif
