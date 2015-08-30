@@ -101,6 +101,8 @@ class Aten
 	Model* findModel(QString name) const;
 	// Set visible flag for specified model
 	void setModelVisible(Model* m, bool visible);
+	// Set the specified model to be the only one visible
+	void setSingleModelVisible(Model* m);
 	// Return number of visible models
 	int nVisibleModels();
 	// Return reflist of visible models

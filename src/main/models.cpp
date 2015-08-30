@@ -163,6 +163,19 @@ void Aten::setModelVisible(Model* m, bool visible)
 	else if ((ri != NULL) && (!visible)) visibleModels_.remove(m);
 }
 
+// Set the specified model to be the only one visible
+void Aten::setSingleModelVisible(Model* m)
+{
+	// Check model pointer
+	if (m == NULL) return;
+
+	// Make all visible models invisible
+	for (RefListItem<Model,int>* ri = visibleModels_.first(); ri != NULL; ri = ri->next) ri->item->setVisible(false);
+	visibleModels_.clear();
+
+	setCurrentModel(m);
+}
+
 // Return number of visible models
 int Aten::nVisibleModels()
 {
@@ -213,16 +226,32 @@ bool Aten::loadModel(QString fileName, Tree* filter)
 		}
 	}
 
+	// If the current model is empty, has no fileName, and has no modifications to it, delete it after we have finished loading...
+	Model* removeAfterLoad = NULL;
+	if (current_.m)
+	{
+		if ((current_.m->nAtoms() == 0) && (current_.m->filename().isEmpty()) && (!current_.m->isModified())) removeAfterLoad = current_.m;
+	}
+
 	// If filter == NULL then we didn't match a filter we must probe the file first to try and find its format
+	bool result = false;
 	if (filter == NULL) filter = probeFile(fileName, FilterData::ModelImport);
 	if (filter != NULL)
 	{
-		if (!filter->executeRead(fileName)) return false;
-		ReturnValue rv = fileName;
-		atenWindow_->ui.HomeFileOpenButton->callPopupMethod("addRecentFile", rv);
+		if (filter->executeRead(fileName))
+		{
+			ReturnValue rv = fileName;
+			atenWindow_->ui.HomeFileOpenButton->callPopupMethod("addRecentFile", rv);
+			result = true;
+		}
+	}
+
+	// If we loaded something successfully, have we flagged an empty model to delete?
+	if (result)
+	{
+		if (removeAfterLoad) removeModel(removeAfterLoad);
 		atenWindow_->updateWidgets(AtenWindow::AllTarget);
 	}
-	else return false;
 
-	return true;
+	return result;
 }

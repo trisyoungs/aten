@@ -47,7 +47,14 @@ void AtenWindow::updateModelsList()
 			item = ui.ModelsList->takeItem(row);
 			if (item) delete item;
 		}
-		else ++row;
+		else
+		{
+			// Update current item status
+			item->setSelected(model->isVisible());
+			if (!model->iconIsValid()) model->setIcon(modelPixmap(model, ui.ModelsList->iconSize()));
+			item->setIcon(model->icon());
+			++row;
+		}
 	}
 
 	// Now, iterate over the rows again, adding missing items...

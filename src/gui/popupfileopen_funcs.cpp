@@ -122,7 +122,10 @@ void FileOpenPopup::on_FilesTable_itemClicked(QTableWidgetItem* item)
 	if (item == NULL) return;
 
 	// Load model
-	parent_.aten().loadModel(item->text());
+	if (parent_.aten().loadModel(item->text())) parent_.aten().setSingleModelVisible(parent_.aten().currentModel());
+
+	// Update main window
+	parent_.updateWidgets(AtenWindow::AllTarget);
 
 	done();
 }
