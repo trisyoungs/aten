@@ -114,22 +114,25 @@ void Viewer::renderUserActions(Model* source)
 	// Draw on the selection highlights (for atoms in the canvas' pickedAtoms list)
 	prefs.copyColour(Prefs::TextColour, colour_i);
 	glColor4f(colour_i.x, colour_i.y, colour_i.z, colour_i.w);
+	glEnable(GL_DEPTH_TEST);
 	for (RefListItem<Atom,int>* ri = pickedAtoms_.first(); ri != NULL; ri = ri->next)
 	{
 		// Get Atom pointer
 		Atom* i = ri->item;
 
-		// Set a matrix to move to the local atom position
-		A.createTranslation(i->r());
-
-		// Draw a wireframe sphere at the atoms position
+		// Get radius information
 		style_i = (prefs.renderStyle() == Prefs::OwnStyle ? i->style() : prefs.renderStyle());
 		radius_i = prefs.atomStyleRadius(style_i);
 		if (style_i == Prefs::ScaledStyle) radius_i *= Elements().atomicRadius(i->element());
+
+		// Create matrix
+		A = modelTransformationMatrix_;
+		A.applyTranslation(i->r());
 		A.applyScaling(radius_i, radius_i, radius_i);
-		A *= modelTransformationMatrix_;
+
+		// Draw arrow indicator primitive
 		glLoadMatrixd(A.matrix());
-// 		renderGroup_.addLines(); primitives_[primitiveSet_].selectedAtom(); ATEN2 TODO Do this as a set of arrows pointing at the atom?
+		primitives_[primitiveSet_].pickedAtom().sendToGL(QOpenGLContext::currentContext());
 	}
 
 	// Active user actions
