@@ -13,7 +13,7 @@ View by percentage and multiple of rho for grid cutoff (put in popup).
 Undo/Redo:
   * Rework UndoEvent to use an enum and stored data rather than an individual class for each event type.
   * Add Grid-related undo/redo (e.g. title changes, colour etc.)
-Rendering of current fragment is broken (use a local RenderGroup? For bond drawing in DrawAtomsas well...).
+Rendering of current fragment is broken (use a local RenderGroup? For bond drawing in DrawAtoms as well...).
 Make Delete tool have a click-drag action that deletes the bond between the clicked atoms.
 
 Graphics TODO

@@ -206,9 +206,6 @@ class AtenWindow : public QMainWindow
 	void on_HomeViewHBondsButton_clicked(bool checked);
 	void on_HomeViewLockButton_clicked(bool checked);
 
-	public:
-	bool runSaveModelDialog();
-
 
 	/*
 	 * Build Panel
@@ -471,6 +468,8 @@ class AtenWindow : public QMainWindow
 	bool closeModel(Model* m);
 	// Save before close
 	bool saveBeforeClose();
+	// Run SaveModel dialog to get filename and format
+	bool runSaveModelDialog();
 
 
 	/*

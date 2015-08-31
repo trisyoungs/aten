@@ -299,7 +299,6 @@ Prefs::Prefs()
 	packOnLoad_ = Choice::Default;
 	cacheLimit_ = 512000;
 	zMapType_ = ElementMap::AutoZMap;
-	fixedZMapType_ = false;
 	coordsInBohr_ = false;
 	keepNames_ = false;
 	keepTypes_ = false;
@@ -1009,19 +1008,10 @@ int Prefs::cacheLimit() const
 }
 
 // Sets the style of element conversion to use
-void Prefs::setZMapType(ElementMap::ZMapType i)
+void Prefs::setZMapType(ElementMap::ZMapType zmt)
 {
-	if (fixedZMapType_) Messenger::print("Ignored change of ZMapping type to '%s' since it is currently fixed to '%s'.", ElementMap::zMapType(i), ElementMap::zMapType(zMapType_));
-	else zMapType_ = i;
+	zMapType_ = zmt;
 	Messenger::print(Messenger::Verbose, "ZMapping type is now %s", ElementMap::zMapType(zMapType_));
-}
-
-
-// Sets the style of element conversion to use, and the fixed status of the mapping type
-void Prefs::setZMapType(ElementMap::ZMapType i, bool fixed)
-{
-	fixedZMapType_ = fixed;
-	zMapType_ = i;
 }
 
 // Return the style of element conversion in use

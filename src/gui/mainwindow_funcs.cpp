@@ -297,6 +297,11 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportImage
 	// Home Panel (View)
 	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_R), this, 0, 0, Qt::ApplicationShortcut);
 	connect(shortcut, SIGNAL(activated()), ui.HomeViewResetButton, SLOT(click()));
+	// Cell Panel (Fold)
+	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_F), this, 0, 0, Qt::ApplicationShortcut);
+	connect(shortcut, SIGNAL(activated()), ui.CellFoldAtomsButton, SLOT(click()));
+	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_F), this, 0, 0, Qt::ApplicationShortcut);
+	connect(shortcut, SIGNAL(activated()), ui.CellFoldMoleculesButton, SLOT(click()));
 	// Select Panel
 	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_A), this, 0, 0, Qt::ApplicationShortcut);
 	connect(shortcut, SIGNAL(activated()), ui.SelectBasicAllButton, SLOT(click()));
@@ -376,7 +381,7 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportImage
 	updateWidgets(AtenWindow::AllTarget);
 
 	// Set some preferences back to their default values
-	prefs.setZMapType(ElementMap::AutoZMap, false);
+	prefs.setZMapType(ElementMap::AutoZMap);
 	prefs.setKeepView(false);
 
 	Messenger::exit("AtenWindow::AtenWindow()");

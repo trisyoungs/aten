@@ -89,8 +89,6 @@ class Viewer : public QOpenGLWidget, protected QOpenGLFunctions
 	GLsizei contextHeight() const;
 	// Return the current width of the drawing area
 	GLsizei contextWidth() const;
-	// Probe widget/context/format features
-	void probeFeatures();
 	// Check for GL error
 	void checkGlError();
 	// Set line width and text scaling to use

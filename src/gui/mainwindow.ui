@@ -2198,7 +2198,7 @@
              </size>
             </property>
             <property name="toolTip">
-             <string>Toggle perspective view</string>
+             <string>Prevent folding of atoms when building</string>
             </property>
             <property name="text">
              <string>Prevent Fold</string>
@@ -2342,7 +2342,7 @@
              </size>
             </property>
             <property name="toolTip">
-             <string>Toggle perspective view</string>
+             <string>Keep model atoms centered when building</string>
             </property>
             <property name="text">
              <string>Keep Centered</string>

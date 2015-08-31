@@ -407,8 +407,6 @@ class Prefs
 	int cacheLimit_;
 	// Type of name->Z mapping to use
 	ElementMap::ZMapType zMapType_;
-	// Whether the zmapping type is currently fixed (i.e. unchangeable)
-	bool fixedZMapType_;
 	// Whether to retain file atom type names on load (in a new forcefield)
 	bool keepNames_;
 	// Whether to retain and fix atom types on load (when converting names using forcefield types)
@@ -438,8 +436,7 @@ class Prefs
 	// Return the cache limit for trajectory files
 	int cacheLimit() const;
 	// Sets the style of element conversion to use
-	void setZMapType(ElementMap::ZMapType i);
-	void setZMapType(ElementMap::ZMapType i, bool fixed);
+	void setZMapType(ElementMap::ZMapType zmt);
 	// Return the style of element conversion in use
 	ElementMap::ZMapType zMapType() const;
 	// Sets whether to convert coords from Bohr to Angstrom on load

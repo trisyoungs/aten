@@ -211,10 +211,6 @@ void Viewer::renderFullScene(int contextWidth, int contextHeight, int xOffset, i
 	// 		renderWindowExtras(source);	// ATEN2 TODO
 		}
 
-		// Render overlays
-	// 	renderModelOverlays(source); // ATEN2 TODO Text labels!
-
-
 		// Increase counters
 		++col;
 		if (col%nPerRow == 0)

@@ -21,9 +21,133 @@
 
 #include "main/aten.h"
 #include "gui/mainwindow.h"
+#include "gui/selectfilter.h"
 #include "templates/variantpointer.h"
 #include <QInputDialog>
 #include <QMessageBox>
+#include <QFileDialog>
+
+void AtenWindow::modelsListContextMenuRequested(const QPoint& point)
+{
+	// Get item at point
+	QListWidgetItem* item = ui.ModelsList->itemAt(point);
+	if (!item) return;
+
+	// Get model pointer from item
+	Model* model = VariantPointer<Model>(item->data(Qt::UserRole));
+	if (!model) return;
+
+	// Build the context menu to display
+	QMenu contextMenu;
+	QAction* renameAction = contextMenu.addAction("Rename...");
+
+	// Show it
+	QPoint menuPosition = ui.ModelsList->mapToGlobal(point);
+	QAction* menuResult = contextMenu.exec(menuPosition);
+
+	// What was clicked?
+	if (menuResult == renameAction)
+	{
+		bool ok;
+		QString text = QInputDialog::getText(this, tr("Rename Model: ") + model->name(), tr("New name:"), QLineEdit::Normal, model->name(), &ok);
+		if (ok && !text.isEmpty())
+		{
+			CommandNode::run(Commands::SetName, "c", qPrintable(text));
+
+			updateWidgets(AtenWindow::ModelsListTarget);
+		}
+	}
+}
+
+void AtenWindow::on_ModelsListToggleButton_clicked(bool checked)
+{
+	ui.ModelsListWidget->setVisible(checked);
+	if (checked) updateWidgets(AtenWindow::ModelsListTarget);
+}
+
+void AtenWindow::on_ModelsList_itemSelectionChanged()
+{
+	if (refreshing_) return;
+
+	// Loop over rows of list, setting 'visible' flags in model list accordingly
+	QListWidgetItem* item;
+	Model* model, *currentModel = NULL;
+	for (int row = 0; row < ui.ModelsList->count(); ++row)
+	{
+		item = ui.ModelsList->item(row);
+		model = VariantPointer<Model>(item->data(Qt::UserRole));
+		if (model)
+		{
+			aten_.setModelVisible(model, item->isSelected());
+			if (item->isSelected()) currentModel = model;
+		}
+	}
+
+	// Is anything selected? If not, select one
+	if (!currentModel)
+	{
+		if (aten_.nModels() == 0) Messenger::print("Internal Error: No model to select.");
+		else currentModel = aten_.models();
+	}
+
+	// Need to set the (a) current model
+	aten_.setCurrentModel(currentModel);
+
+	updateWidgets(AtenWindow::AllTarget);
+}
+
+// Move to next model in list
+void AtenWindow::on_ModelsNextButton_clicked(bool checked)
+{
+	// If multiple models are visible, step along to next visible model. Otherwise, just next in list
+	if (aten_.nVisibleModels() > 1)
+	{
+		// Find current model in visible models list...
+		RefListItem<Model,int>* ri;
+		for (ri = aten_.visibleModels(); ri != NULL; ri = ri->next) if (ri->item == aten_.currentModel()) break;
+		if (ri == NULL)
+		{
+			printf("Internal Error : Failed to find current model in visible models list.\n");
+			return;
+		}
+		aten_.setCurrentModel(ri->next == NULL ? aten_.visibleModels()->item : ri->next->item);
+	}
+	else
+	{
+		Model* m = aten_.currentModel();
+		aten_.setCurrentModel(m->next == NULL ? aten_.models() : m->next);
+	}
+
+	updateWidgets(AtenWindow::AllTarget);
+}
+
+// Move to previous model in list
+void AtenWindow::on_ModelsPreviousButton_clicked(bool checked)
+{
+	// If multiple models are visible, step back to previous visible model. Otherwise, just previous in list
+	if (aten_.nVisibleModels() > 1)
+	{
+		// Find current model in visible models list...
+		RefListItem<Model,int>* ri;
+		for (ri = aten_.visibleModels(); ri != NULL; ri = ri->next) if (ri->item == aten_.currentModel()) break;
+		if (ri == NULL)
+		{
+			printf("Internal Error : Failed to find current model in visible models list.\n");
+			return;
+		}
+		// If previous pointer is NULL, need to get the last item in the list by hand
+		if (ri->prev != NULL) aten_.setCurrentModel(ri->prev->item);
+		else for (ri = aten_.visibleModels(); ri != NULL; ri = ri->next) if (ri->next == NULL) aten_.setCurrentModel(ri->item);
+	}
+	else
+	{
+		Model* m = aten_.currentModel();
+		aten_.setCurrentModel(m->prev == NULL ? aten_.model(aten_.nModels()-1) : m->prev);
+	}
+
+	updateWidgets(AtenWindow::AllTarget);
+}
+
 
 // Refresh model list
 void AtenWindow::updateModelsList()
@@ -150,123 +274,73 @@ bool AtenWindow::saveBeforeClose()
 	return true;
 }
 
-void AtenWindow::modelsListContextMenuRequested(const QPoint& point)
+// Run SaveModel dialog to get filename and format
+bool AtenWindow::runSaveModelDialog()
 {
-	// Get item at point
-	QListWidgetItem* item = ui.ModelsList->itemAt(point);
-	if (!item) return;
-
-	// Get model pointer from item
-	Model* model = VariantPointer<Model>(item->data(Qt::UserRole));
-	if (!model) return;
-
-	// Build the context menu to display
-	QMenu contextMenu;
-	QAction* renameAction = contextMenu.addAction("Rename...");
-
-	// Show it
-	QPoint menuPosition = ui.ModelsList->mapToGlobal(point);
-	QAction* menuResult = contextMenu.exec(menuPosition);
-
-	// What was clicked?
-	if (menuResult == renameAction)
+	saveModelFilename_.clear();
+	saveModelFilter_ = NULL;
+	Tree* filter = NULL;
+	static QString selectedFilter(aten_.filters(FilterData::ModelExport) == NULL ? NULL : aten_.filters(FilterData::ModelExport)->item->filter.name());
+	static QDir currentDirectory_(aten_.workDir());
+	QString filename = QFileDialog::getSaveFileName(this, "Save Model", currentDirectory_.path(), aten_.fileDialogFilters(FilterData::ModelExport), &selectedFilter);
+	if (!filename.isEmpty())
 	{
-		bool ok;
-		QString text = QInputDialog::getText(this, tr("Rename Model: ") + model->name(), tr("New name:"), QLineEdit::Normal, model->name(), &ok);
-		if (ok && !text.isEmpty())
+		// Store path for next use
+		currentDirectory_.setPath(filename);
+		// Grab file extension and search for it in our current lists...
+		QString ext = QFileInfo(filename).suffix();
+		RefList<Tree,int> filters;
+		if (ext.isEmpty())
 		{
-			CommandNode::run(Commands::SetName, "c", qPrintable(text));
+			QFileInfo fileInfo( filename );
+			// Does this filename uniquely identify a specific filter?
+			for (RefListItem<Tree,int>* ri = aten_.filters(FilterData::ModelExport); ri != NULL; ri = ri->next)
+			{
+				if (ri->item->filter.doesNameMatch(qPrintable(fileInfo.fileName()))) filters.add(ri->item);
+			}
+			Messenger::print(Messenger::Verbose, "Exact filename '%s' matches %i filters...", qPrintable(filename), filters.nItems());
 
-			updateWidgets(AtenWindow::ModelsListTarget);
+			// If only one filter matched the filename extension, use it. Otherwise, ask for confirmation *or* list all filters.
+			AtenSelectFilter selectFilter(*this);
+			if (filters.nItems() != 0) filter = selectFilter.selectFilter("Name matches one or more model export filters.", &filters, aten_.filterList(FilterData::ModelExport));
+			else
+			{
+				filter = selectFilter.selectFilter("Couldn't determine format to save expression in.", NULL, aten_.filterList(FilterData::ModelExport), true);
+				if ((filter != NULL) && selectFilter.appendExtension())
+				{
+					if (filter->filter.extensions().count() != 0) filename += QString(".") + filter->filter.extensions().at(0);
+				}
+			}
 		}
-	}
-}
-
-void AtenWindow::on_ModelsListToggleButton_clicked(bool checked)
-{
-	ui.ModelsListWidget->setVisible(checked);
-	if (checked) updateWidgets(AtenWindow::ModelsListTarget);
-}
-
-void AtenWindow::on_ModelsList_itemSelectionChanged()
-{
-	if (refreshing_) return;
-
-	// Loop over rows of list, setting 'visible' flags in model list accordingly
-	QListWidgetItem* item;
-	Model* model, *currentModel = NULL;
-	for (int row = 0; row < ui.ModelsList->count(); ++row)
-	{
-		item = ui.ModelsList->item(row);
-		model = VariantPointer<Model>(item->data(Qt::UserRole));
-		if (model)
+		else
 		{
-			aten_.setModelVisible(model, item->isSelected());
-			if (item->isSelected()) currentModel = model;
+			// Does this extension uniquely identify a specific filter?
+			for (RefListItem<Tree,int>* ri = aten_.filters(FilterData::ModelExport); ri != NULL; ri = ri->next)
+			{
+				if (ri->item->filter.doesExtensionMatch(ext)) filters.add(ri->item);
+			}
+			Messenger::print(Messenger::Verbose, "Extension of filename '%s' matches %i filters...", qPrintable(filename), filters.nItems());
+			// If only one filter matched the filename extension, use it. Otherwise, ask for confirmation *or* list all filters.
+			if (filters.nItems() == 1) filter = filters.first()->item;
+			else if (filters.nItems() > 1)
+			{
+				AtenSelectFilter selectFilter(*this);
+				filter = selectFilter.selectFilter("Extension matches one or more model export filters.", &filters, aten_.filterList(FilterData::ModelExport));
+			}
+			else
+			{
+				AtenSelectFilter selectFilter(*this);
+				filter = selectFilter.selectFilter("Extension doesn't match any in known model export filters.", NULL, aten_.filterList(FilterData::ModelExport), true);
+				if ((filter != NULL) && selectFilter.appendExtension())
+				{
+					if (filter->filter.extensions().count() != 0) filename += QString(".") + filter->filter.extensions().at(0);
+				}
+			}
 		}
+		saveModelFilter_ = filter;
+		saveModelFilename_ = qPrintable(filename);
+		if (filter == NULL) Messenger::print("No filter selected to save file '%s'. Not saved.", qPrintable(saveModelFilename_));
+		return (saveModelFilter_ == NULL ? false : true);
 	}
-
-	// Is anything selected? If not, select one
-	if (!currentModel)
-	{
-		if (aten_.nModels() == 0) Messenger::print("Internal Error: No model to select.");
-		else currentModel = aten_.models();
-	}
-
-	// Need to set the (a) current model
-	aten_.setCurrentModel(currentModel);
-
-	updateWidgets(AtenWindow::AllTarget);
-}
-
-// Move to next model in list
-void AtenWindow::on_ModelsNextButton_clicked(bool checked)
-{
-	// If multiple models are visible, step along to next visible model. Otherwise, just next in list
-	if (aten_.nVisibleModels() > 1)
-	{
-		// Find current model in visible models list...
-		RefListItem<Model,int>* ri;
-		for (ri = aten_.visibleModels(); ri != NULL; ri = ri->next) if (ri->item == aten_.currentModel()) break;
-		if (ri == NULL)
-		{
-			printf("Internal Error : Failed to find current model in visible models list.\n");
-			return;
-		}
-		aten_.setCurrentModel(ri->next == NULL ? aten_.visibleModels()->item : ri->next->item);
-	}
-	else
-	{
-		Model* m = aten_.currentModel();
-		aten_.setCurrentModel(m->next == NULL ? aten_.models() : m->next);
-	}
-
-	updateWidgets(AtenWindow::AllTarget);
-}
-
-// Move to previous model in list
-void AtenWindow::on_ModelsPreviousButton_clicked(bool checked)
-{
-	// If multiple models are visible, step back to previous visible model. Otherwise, just previous in list
-	if (aten_.nVisibleModels() > 1)
-	{
-		// Find current model in visible models list...
-		RefListItem<Model,int>* ri;
-		for (ri = aten_.visibleModels(); ri != NULL; ri = ri->next) if (ri->item == aten_.currentModel()) break;
-		if (ri == NULL)
-		{
-			printf("Internal Error : Failed to find current model in visible models list.\n");
-			return;
-		}
-		// If previous pointer is NULL, need to get the last item in the list by hand
-		if (ri->prev != NULL) aten_.setCurrentModel(ri->prev->item);
-		else for (ri = aten_.visibleModels(); ri != NULL; ri = ri->next) if (ri->next == NULL) aten_.setCurrentModel(ri->item);
-	}
-	else
-	{
-		Model* m = aten_.currentModel();
-		aten_.setCurrentModel(m->prev == NULL ? aten_.model(aten_.nModels()-1) : m->prev);
-	}
-
-	updateWidgets(AtenWindow::AllTarget);
+	else return false;
 }
