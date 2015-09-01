@@ -578,8 +578,6 @@ class AtenWindow : public QMainWindow
 	 * Local Widgets and Routines
 	 */
 	private:
-	// List of manually-created QActionGroups
-	RefList<QActionGroup,int> actionGroups_;
 	// Text labels for model information and UI messages in status bar
 	QLabel* infoLabel1_, *infoLabel2_, *messageLabel_;
 	// Filter set from save model dialog

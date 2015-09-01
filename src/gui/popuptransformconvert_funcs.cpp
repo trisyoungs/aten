@@ -64,6 +64,90 @@ bool TransformConvertPopup::callMethod(QString methodName, ReturnValue& rv)
 
 		parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
 	}
+	else if (methodName == "setSourceXVector")
+	{
+		bool success;
+		Vec3<double> v = rv.asVector(success);
+		if (!success)
+		{
+			Messenger::error("Failed to get vector for source X axis.");
+			return false;
+		}
+		ui.SourceMatrixXXSpin->setValue(v.x);
+		ui.SourceMatrixXYSpin->setValue(v.y);
+		ui.SourceMatrixXZSpin->setValue(v.z);
+		return true;
+	}
+	else if (methodName == "setSourceYVector")
+	{
+		bool success;
+		Vec3<double> v = rv.asVector(success);
+		if (!success)
+		{
+			Messenger::error("Failed to get vector for source Y axis.");
+			return false;
+		}
+		ui.SourceMatrixYXSpin->setValue(v.x);
+		ui.SourceMatrixYYSpin->setValue(v.y);
+		ui.SourceMatrixYZSpin->setValue(v.z);
+		return true;
+	}
+	else if (methodName == "setSourceZVector")
+	{
+		bool success;
+		Vec3<double> v = rv.asVector(success);
+		if (!success)
+		{
+			Messenger::error("Failed to get vector for source Z axis.");
+			return false;
+		}
+		ui.SourceMatrixZXSpin->setValue(v.x);
+		ui.SourceMatrixZYSpin->setValue(v.y);
+		ui.SourceMatrixZZSpin->setValue(v.z);
+		return true;
+	}
+	else if (methodName == "setTargetXVector")
+	{
+		bool success;
+		Vec3<double> v = rv.asVector(success);
+		if (!success)
+		{
+			Messenger::error("Failed to get vector for target X axis.");
+			return false;
+		}
+		ui.TargetMatrixXXSpin->setValue(v.x);
+		ui.TargetMatrixXYSpin->setValue(v.y);
+		ui.TargetMatrixXZSpin->setValue(v.z);
+		return true;
+	}
+	else if (methodName == "setTargetYVector")
+	{
+		bool success;
+		Vec3<double> v = rv.asVector(success);
+		if (!success)
+		{
+			Messenger::error("Failed to get vector for target Y axis.");
+			return false;
+		}
+		ui.TargetMatrixYXSpin->setValue(v.x);
+		ui.TargetMatrixYYSpin->setValue(v.y);
+		ui.TargetMatrixYZSpin->setValue(v.z);
+		return true;
+	}
+	else if (methodName == "setTargetZVector")
+	{
+		bool success;
+		Vec3<double> v = rv.asVector(success);
+		if (!success)
+		{
+			Messenger::error("Failed to get vector for target Z axis.");
+			return false;
+		}
+		ui.TargetMatrixZXSpin->setValue(v.x);
+		ui.TargetMatrixZYSpin->setValue(v.y);
+		ui.TargetMatrixZZSpin->setValue(v.z);
+		return true;
+	}
 	else if (methodName == "hideEvent")
 	{
 		return true;
@@ -118,19 +202,25 @@ void convertSourcePickZButton_callback(RefList<Atom,int>* picked)
 void TransformConvertPopup::on_SourcePickXButton_clicked(bool checked)
 {
 	// Enter manual picking mode
-	parent_.ui.MainView->setSelectedMode(UserAction::ConvertSourcePickAAction,2,&convertSourcePickXButton_callback);
+	parent_.ui.MainView->setSelectedMode(UserAction::ConvertSourcePickAAction);
+
+	done();
 }
 
 void TransformConvertPopup::on_SourcePickYButton_clicked(bool checked)
 {
 	// Enter manual picking mode
-	parent_.ui.MainView->setSelectedMode(UserAction::ConvertSourcePickBAction,2,&convertSourcePickYButton_callback);
+	parent_.ui.MainView->setSelectedMode(UserAction::ConvertSourcePickBAction);
+
+	done();
 }
 
 void TransformConvertPopup::on_SourcePickZButton_clicked(bool checked)
 {
 	// Enter manual picking mode
-	parent_.ui.MainView->setSelectedMode(UserAction::ConvertSourcePickCAction,2,&convertSourcePickZButton_callback);
+	parent_.ui.MainView->setSelectedMode(UserAction::ConvertSourcePickCAction);
+
+	done();
 }
 
 void TransformConvertPopup::on_SourceNormaliseXButton_clicked(bool checked)

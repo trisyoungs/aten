@@ -50,6 +50,21 @@ bool TransformShiftPopup::callMethod(QString methodName, ReturnValue& rv)
 	{
 		return true;
 	}
+	else if (methodName == "setShiftVector")
+	{
+		bool success;
+		Vec3<double> v = rv.asVector(success);
+		if (!success)
+		{
+			Messenger::error("Failed to get vector for shift axis.");
+			return false;
+		}
+		ui.XSpin->setValue(v.x);
+		ui.YSpin->setValue(v.y);
+		ui.ZSpin->setValue(v.z);
+		ui.MagnitudeLabel->setText(QString::number(v.magnitude()));
+		return true;
+	}
 	else printf("No method called '%s' is available in this popup.\n", qPrintable(methodName));
 	return false;
 }
@@ -59,21 +74,12 @@ bool TransformShiftPopup::callMethod(QString methodName, ReturnValue& rv)
  */
 
 // void shiftPickAxisButton_callback(RefList<Atom,int>* picked)
-// {
-// 	gui.positionWidget->ui.ShiftPickVectorButton->setChecked(false); ATEN2 TODO
-// 	// If there are not two atoms in the list then the mode must have been canceled
-// 	if (picked->nItems() != 2) return;
-// 	Vec3<double> v = picked->last()->item->r() - picked->first()->item->r();
-// 	gui.positionWidget->ui.ShiftVectorXSpin->setValue(v.x);
-// 	gui.positionWidget->ui.ShiftVectorYSpin->setValue(v.y);
-// 	gui.positionWidget->ui.ShiftVectorZSpin->setValue(v.z);
-// 	gui.positionWidget->ui.ShiftVectorMagnitudeLabel->setText(QString::number(v.magnitude()));
-// }
-
 void TransformShiftPopup::on_PickButton_clicked(bool checked)
 {
-	// Enter manual picking mode // ATEN2 TODO
-// 	parent_.ui.MainView->setSelectedMode(UserAction::ShiftPickVectorAction,2, &shiftPickAxisButton_callback);
+	// Enter manual picking mode
+	parent_.ui.MainView->setSelectedMode(UserAction::ShiftPickVectorAction);
+
+	done();
 }
 
 void TransformShiftPopup::on_NormaliseButton_clicked(bool checked)
@@ -138,4 +144,3 @@ void TransformShiftPopup::on_BackwardButton_clicked(bool checked)
 	// Update
 	parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
 }
-

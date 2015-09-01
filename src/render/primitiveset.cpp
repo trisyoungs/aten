@@ -416,12 +416,12 @@ void PrimitiveSet::recreatePrimitives()
 	halo_.initialise(GL_TRIANGLES, false);
 	halo_.plotHalo(0.6f, 1.0f, 32);
 	pickedAtom_.initialise(GL_TRIANGLES, false);
-	pickedAtom_.plotCylinder(1.5f, 0.0f, 0.0f, -0.5f, 0.0f, 0.0f, 0.2f, 0.0f, 8, 10, true, false);
-	pickedAtom_.plotCylinder(-1.5f, 0.0f, 0.0f, 0.5f, 0.0f, 0.0f, 0.2f, 0.0f, 8, 10, true, false);
-	pickedAtom_.plotCylinder(0.0, 1.5f, 0.0f, 0.0f, -0.5f, 0.0f, 0.2f, 0.0f, 8, 10, true, false);
-	pickedAtom_.plotCylinder(0.0, -1.5f, 0.0f, 0.0f, 0.5f, 0.0f, 0.2f, 0.0f, 8, 10, true, false);
-	pickedAtom_.plotCylinder(0.0, 0.0f, 1.5f, 0.0f, 0.0f, -0.5f, 0.2f, 0.0f, 8, 10, true, false);
-	pickedAtom_.plotCylinder(0.0, 0.0f, -1.50f, 0.0f, 0.0f, 0.5f, 0.2f, 0.0f, 8, 10, true, false);
+	pickedAtom_.plotCylinder(1.5f, 0.0f, 0.0f, -0.25f, 0.0f, 0.0f, 0.2f, 0.0f, 2, 10, true, false);
+	pickedAtom_.plotCylinder(-1.5f, 0.0f, 0.0f, 0.25f, 0.0f, 0.0f, 0.2f, 0.0f, 2, 10, true, false);
+	pickedAtom_.plotCylinder(0.0, 1.5f, 0.0f, 0.0f, -0.25f, 0.0f, 0.2f, 0.0f, 2, 10, true, false);
+	pickedAtom_.plotCylinder(0.0, -1.5f, 0.0f, 0.0f, 0.25f, 0.0f, 0.2f, 0.0f, 2, 10, true, false);
+	pickedAtom_.plotCylinder(0.0, 0.0f, 1.5f, 0.0f, 0.0f, -0.25f, 0.2f, 0.0f, 2, 10, true, false);
+	pickedAtom_.plotCylinder(0.0, 0.0f, -1.50f, 0.0f, 0.0f, 0.25f, 0.2f, 0.0f, 2, 10, true, false);
 
 	Messenger::exit("PrimitiveSet::recreatePrimitives");
 }

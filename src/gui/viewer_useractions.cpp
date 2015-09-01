@@ -126,13 +126,11 @@ void Viewer::renderUserActions(Model* source)
 		if (style_i == Prefs::ScaledStyle) radius_i *= Elements().atomicRadius(i->element());
 
 		// Create matrix
-		A = modelTransformationMatrix_;
-		A.applyTranslation(i->r());
+		A.createTranslation(i->r());
 		A.applyScaling(radius_i, radius_i, radius_i);
 
 		// Draw arrow indicator primitive
-		glLoadMatrixd(A.matrix());
-		primitives_[primitiveSet_].pickedAtom().sendToGL(QOpenGLContext::currentContext());
+		renderGroup_.addTriangles(primitives_[primitiveSet_].pickedAtom(), A, colour_i);
 	}
 
 	// Active user actions
@@ -195,12 +193,11 @@ void Viewer::renderUserActions(Model* source)
 			A.createTranslation(pos);
 			
 			// Render new (temporary) bond
-			// ATEN2 TODO Add a RenderGroup to Viewer, in order to store the bond primitive?
-// 			renderBond(GuiObject, GuiObject, A, v, atomClicked_, style_i, colour_i, radius_i, j, style_j, colour_j, radius_j, bt, prefs.selectionScale(), NULL, false);
+			renderGroup_.createBond(primitives_[primitiveSet_], A, v, atomClicked_, style_i, colour_i, radius_i, j, style_j, colour_j, radius_j, bt, prefs.selectionScale(), NULL);
 			
 			// Draw text showing distance
 			text.sprintf("r = %f ", v.magnitude());
-// 			renderTextPrimitive(rMouseLast_.x, contextHeight_-rMouseLast_.y, text.get(), 0x212b);
+			renderGroup_.addOverlayText(QString::number(v.magnitude()) + " " + QChar(0x212b), v, 0.2);
 			break;
 	}
 	

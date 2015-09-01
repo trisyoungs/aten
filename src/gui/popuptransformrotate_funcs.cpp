@@ -50,6 +50,20 @@ bool TransformRotatePopup::callMethod(QString methodName, ReturnValue& rv)
 	{
 		return true;
 	}
+	else if (methodName == "setRotationVector")
+	{
+		bool success;
+		Vec3<double> v = rv.asVector(success);
+		if (!success)
+		{
+			Messenger::error("Failed to get vector for rotation axis.");
+			return false;
+		}
+		ui.AxisXSpin->setValue(v.x);
+		ui.AxisYSpin->setValue(v.y);
+		ui.AxisZSpin->setValue(v.z);
+		return true;
+	}
 	else printf("No method called '%s' is available in this popup.\n", qPrintable(methodName));
 	return false;
 }
@@ -74,22 +88,12 @@ void TransformRotatePopup::on_DefineAxisButton_clicked(bool checked)
 	ui.AxisZSpin->setValue(v.z);
 }
 
-void rotatePickAxisButton_callback(RefList<Atom,int>* picked)
-{
-// 	ui.PickAxisButton->setChecked(false); ATEN2 TODO
-// 	// If there are not two atoms in the list then the mode must have been canceled
-// 	if (picked->nItems() != 2) return;
-// 	Vec3<double> v = picked->last()->item->r();
-// 	v -= picked->first()->item->r();
-// 	ui.AxisXSpin->setValue(v.x);
-// 	ui.AxisYSpin->setValue(v.y);
-// 	ui.AxisZSpin->setValue(v.z);
-}
-
 void TransformRotatePopup::on_PickAxisButton_clicked(bool checked)
 {
 	// Enter manual picking mode
-	(UserAction::RotatePickAxisAction,2,&rotatePickAxisButton_callback);
+	parent_.ui.MainView->setSelectedMode(UserAction::RotatePickAxisAction);
+
+	done();
 }
 
 void TransformRotatePopup::on_DefineOriginButton_clicked(bool checked)

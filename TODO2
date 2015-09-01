@@ -2,7 +2,6 @@ TODO
 ====
 Crash if model is saved, then filters reloaded, then model is saved again (since filter pointer will be wrong)?
 Remove dialog pointers (use instances instead).
-Fix callbacks for atom picking etc.
 Octahedral Growing doesn't work.
 Check - is using redirected filenames really necessary when saving movie frame images?
 Automatically adjust grid size for number of visible models, based on current aspect ratio and context size etc.
@@ -12,8 +11,8 @@ View by percentage and multiple of rho for grid cutoff (put in popup).
 Undo/Redo:
   * Rework UndoEvent to use an enum and stored data rather than an individual class for each event type.
   * Add Grid-related undo/redo (e.g. title changes, colour etc.)
-Rendering of current fragment is broken (use a local RenderGroup? For bond drawing in DrawAtoms as well...).
 Make Delete tool have a click-drag action that deletes the bond between the clicked atoms.
+TExponentialSpin does not update text when calling setValue() and widget is hidden?
 
 Graphics TODO
 =============
@@ -40,6 +39,7 @@ Add option to display ColourScale selector (e.g. for Grid colour buttons)
 Have Tools page? With, for instance:
 --- Plot Orbital (raising dialog from old GridsWidget)
 Reimplement Open Expression somewhere.
+Where to show current (empirical) selection
 
 Possible TODO
 =============

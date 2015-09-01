@@ -48,8 +48,6 @@ Viewer::Viewer(QWidget* parent) : QOpenGLWidget(parent)
 	atomClicked_ = NULL;
 	pickEnabled_ = false;
 	actionBeforePick_ = UserAction::NoAction;
-	pickAtomsCallback_ = NULL;
-	nAtomsToPick_ = -1;
 
 	// Mouse Input
 	for (int i=0; i<3; i++) mouseButton_[i] = false;
