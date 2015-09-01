@@ -70,6 +70,9 @@ Aten::Aten() : commands_(*this)
 	fragmentBondId_ = 0;
 	currentFragment_ = 0;
 
+	//  Partitioning schemes
+	poresPartitioningScheme_.initialiseAbsolute("Generated Scheme", "Scheme generated from model pores");
+
 	// Pointer to AtenWindow
 	atenWindow_ = NULL;
 }

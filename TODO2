@@ -13,16 +13,21 @@ Undo/Redo:
   * Add Grid-related undo/redo (e.g. title changes, colour etc.)
 Make Delete tool have a click-drag action that deletes the bond between the clicked atoms.
 TExponentialSpin does not update text when calling setValue() and widget is hidden?
+Scripts need updating - capitalised function names etc.
+Trajectory playback is broken.
+For menubuttons that have instant popup, display ellipsis instead of arrow.
+Need to shrink used button space when window is not large enough to display all widgets in panel.
 
 Graphics TODO
 =============
 In top-left corner of main window, have a black icon illustrating which mode is active (except for Interact).
-Have small, additional black icons at top-right of each model window, illustrating whether it has been modified, is displaying trajetory frames, etc.
+Have small, additional black icons at top-right of each model window, illustrating whether it has been modified, is displaying trajectory frames, etc.
 Optimise basic primitives to use vertex/index arrays instead of just vertices (also check end caps of spheres).
 Optimise primitive drawing / generation by allowing use of GL_TRIANGLE_STRIP?
 Reimplement drawing of grid (volume) axes.
 Fix grid transparency (reconstruct grids according to view angle?).
 Make main view background and text/overlay colour aware of Qt widget colouring style.
+Frame individual model areas when displaying multiple models.
 
 GUI TODO
 ========

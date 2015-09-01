@@ -193,7 +193,9 @@ class Aten
 	QStringList failedPartitioningSchemes_;
 	// Parse directory index and load includes
 	int parsePartitionsDir(QDir path);
-	
+	// Partitioning scheme for Pores tool
+	PartitioningScheme poresPartitioningScheme_;
+
 	public:
 	// Load global include functions
 	void openIncludes();
@@ -222,7 +224,9 @@ class Aten
 	// Return nth partitioning scheme in the list
 	PartitioningScheme* partitioningSchemes(int index);
 	// Copy specified partitioning scheme and add it to the list
-	void addPartitioningScheme(PartitioningScheme &scheme);
+	void addPartitioningScheme(PartitioningScheme& scheme);
+	// Return partitioning scheme for Pores tool
+	PartitioningScheme& poresPartitioningScheme();
 
 
 	/*

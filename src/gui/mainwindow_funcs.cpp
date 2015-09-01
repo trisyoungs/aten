@@ -63,6 +63,8 @@
 #include "gui/popupmeasuredistance.h"
 #include "gui/popupmeasuretorsion.h"
 #include "gui/popupcellspacegroup.h"
+#include "gui/popupporesdrill.h"
+#include "gui/popupporesscheme.h"
 #include "gui/popuptransformangle.h"
 #include "gui/popuptransformcentre.h"
 #include "gui/popuptransformconvert.h"
@@ -81,7 +83,6 @@
 #include "gui/command.h"
 #include "gui/disorderwizard.h"
 #include "gui/glyphs.h"
-#include "gui/pores.h"
 #include "gui/scriptmovie.h"
 #include "gui/vibrations.h"
 
@@ -151,10 +152,9 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportImage
 	// Create dock widgets
 	commandWidget = new CommandWidget(*this, Qt::Tool);
 	glyphsWidget = new GlyphsWidget(*this, Qt::Tool);
-	poresWidget = new PoresWidget(*this, Qt::Tool);
 	scriptMovieWidget = new ScriptMovieWidget(*this, Qt::Tool);
 	vibrationsWidget = new VibrationsWidget(*this, Qt::Tool);
-	dockWidgets_ << commandWidget << glyphsWidget << poresWidget << scriptMovieWidget << vibrationsWidget;
+	dockWidgets_ << commandWidget << glyphsWidget << scriptMovieWidget << vibrationsWidget;
 
 	int n;
 	ReturnValue rv;
@@ -264,6 +264,10 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportImage
 	ui.SelectionAppearanceStyleButton->setPopupWidget(new ViewStylePopup(*this, ui.SelectionAppearanceStyleButton), false, true);
 	ui.SelectionAppearanceStyleButton->callPopupMethod("updateButtonIcon", rv = QString(Prefs::drawStyle(Prefs::SphereStyle)));
 	ui.SelectionAppearanceColourButton->setPopupWidget(new ColourPopup(*this, ui.SelectionAppearanceColourButton), false);
+
+	// -- Tools Panel (Pores)
+	ui.ToolsPoresDrillButton->setPopupWidget(new PoresDrillPopup(*this, ui.ToolsPoresDrillButton), true);
+	ui.ToolsPoresSchemeButton->setPopupWidget(new PoresSchemePopup(*this, ui.ToolsPoresSchemeButton, aten_.poresPartitioningScheme()), true);
 
 	// Setup Shortcuts
 	QShortcut* shortcut;

@@ -31,10 +31,31 @@ void AtenWindow::updateToolsPanel(Model* sourceModel)
 }
 
 /*
- * Tools
+ * Disorder
  */
 
-void AtenWindow::on_ToolsToolsDisorderButton_clicked(bool checked)
+void AtenWindow::on_ToolsDisorderCreateButton_clicked(bool checked)
 {
 	disorderWizard_.run();
+}
+
+/*
+ * Surface
+ */
+
+void AtenWindow::on_ToolsSurfaceTerminateButton_clicked(bool checked)
+{
+	// First check - are any atoms selected
+	Model* currentModel = aten().currentModelOrFrame();
+	if (currentModel->nSelected() == 0)
+	{
+		Messenger::print("No atoms selected in current model, so nothing to terminate.");
+		return;
+	}
+
+	// Run the command
+	CommandNode::run(Commands::Terminate, "");
+
+	// Update the main window
+	updateWidgets(AtenWindow::MainViewTarget);
 }

@@ -27,6 +27,7 @@
 #include <QMenu>
 #include "base/atom.h"
 #include "base/prefs.h"
+#include "methods/partitioningscheme.h"
 #include "gui/ui_mainwindow.h"
 #include "gui/ui_prefs.h"
 #include "gui/useractions.h"
@@ -57,7 +58,6 @@ class CommandWidget;
 class ForcefieldsWidget;
 class GlyphsWidget;
 class MDWidget;
-class PoresWidget;
 class ScriptMovieWidget;
 class VibrationsWidget;
 
@@ -447,8 +447,10 @@ class AtenWindow : public QMainWindow
 	void updateToolsPanel(Model* sourceModel);
 
 	private slots:
-	// Tools
-	void on_ToolsToolsDisorderButton_clicked(bool checked);
+	// Disorder
+	void on_ToolsDisorderCreateButton_clicked(bool checked);
+	// Surface
+	void on_ToolsSurfaceTerminateButton_clicked(bool checked);
 
 
 	/*
@@ -618,8 +620,6 @@ class AtenWindow : public QMainWindow
 	CommandWidget *commandWidget;
 	// Glyphs dock widget
 	GlyphsWidget *glyphsWidget;
-	// Pore builder dock widget
-	PoresWidget *poresWidget;
 	// Scripted movie dock widget
 	ScriptMovieWidget *scriptMovieWidget;
 	// Vibrations dock widget

@@ -1,6 +1,6 @@
 /*
-	*** Pores Dock Widget
-	*** src/gui/pores.h
+	*** Popup Widget - Pores Drill
+	*** src/gui/popupporesdrill.h
 	Copyright T. Youngs 2007-2015
 
 	This file is part of Aten.
@@ -19,67 +19,69 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_PORESWIDGET_H
-#define ATEN_PORESWIDGET_H
+#ifndef ATEN_TOOLSPORESDRILL_H
+#define ATEN_TOOLSPORESDRILL_H
 
-#include "gui/ui_pores.h"
-#include "base/namespace.h"
-#include "methods/partitioningscheme.h"
+#include "gui/ui_popupporesdrill.h"
+#include "gui/tmenubutton.hui"
+#include "parser/returnvalue.h"
 
 // Forward Declarations (Qt)
 class AtenWindow;
 
+ATEN_BEGIN_NAMESPACE
+
+// Forward Declarations (Aten)
+class ReturnValue;
+
+ATEN_END_NAMESPACE
+
 ATEN_USING_NAMESPACE
 
-// Pores window
-class PoresWidget : public QDockWidget
+// Popup Widget - File Open
+class PoresDrillPopup : public TMenuButtonPopupWidget
 {
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
-
-	public:
-	// Constructor / Destructor
-	PoresWidget(AtenWindow& parent, Qt::WindowFlags flags = 0);
-	// Main form declaration
-	Ui::PoresWidget ui;
-	// Enum for pore shapes
-	enum PoreGeometry { CylinderGeometry };
 
 	private:
 	// Reference to main window
 	AtenWindow& parent_;
 
+	public:
+	// Constructor / Destructor
+	PoresDrillPopup(AtenWindow& parent, TMenuButton* buttonParent);
+	// Main form declaration
+	Ui::PoresDrillPopup ui;
+	// Update controls (before show()) (virtual)
+	void updateControls();
+	// Call named method associated to popup
+	bool callMethod(QString methodName, ReturnValue& rv);
+
 
 	/*
-	 * Local variables
+	 * Reimplementations
 	 */
+	protected:
+	void hideEvent(QHideEvent* event) { TMenuButtonPopupWidget::hideEvent(event); }
+
+
+	/*
+	 * Data
+	 */
+	public:
+	// Pore Geometries
+	enum PoreGeometry { CylindricalGeometry };
+
 	private:
-	// Partitioning scheme
-	PartitioningScheme partitioningScheme_;
-	
-	public:
-	// Return the widgets partitioning scheme
-	PartitioningScheme& partitioningScheme();
 
 
 	/*
-	 * Window Functions
+	 * Widget Functions
 	 */
-	public:
-	void showWidget();
-
 	private slots:
-	// Drill Tab
 	void on_PoreSelectButton_clicked(bool checked);
 	void on_PoreSelectAndCutButton_clicked(bool checked);
-	// Terminate Tab
-	void on_TerminateButton_clicked(bool checked);
-	// Scheme Tab
-	void on_GenerateSchemeButton_clicked(bool checked);
-	void on_CopySchemeButton_clicked(bool checked);
-
-	protected:
-	void closeEvent(QCloseEvent* event);
 };
 
 #endif
