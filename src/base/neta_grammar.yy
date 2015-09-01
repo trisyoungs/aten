@@ -12,7 +12,7 @@
 
 /* Prototypes */
 int NetaParser_lex(void);
-void NetaParser_error(char *s);
+void NetaParser_error(char const *s);
 
 ATEN_USING_NAMESPACE
 
@@ -22,7 +22,7 @@ Neta::NetaValue savedVal;
 %}
 
 // Redeclare function names
-%name-prefix="NetaParser_"
+%name-prefix "NetaParser_"
 
 /* Type Definition */
 %union
@@ -194,6 +194,6 @@ pushctxtb:
 
 %%
 
-void yyerror(char *s)
+void yyerror(char const *s)
 {
 }

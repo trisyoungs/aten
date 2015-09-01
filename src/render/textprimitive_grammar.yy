@@ -10,14 +10,14 @@
 
 /* Prototypes */
 int TextPrimitiveParser_lex(void);
-void TextPrimitiveParser_error(char *s);
+void TextPrimitiveParser_error(char const *s);
 
 ATEN_USING_NAMESPACE
 
 %}
 
 // Redeclare function names
-%name-prefix="TextPrimitiveParser_"
+%name-prefix "TextPrimitiveParser_"
 
 /* Type Definition */
 %union {
@@ -73,6 +73,6 @@ popescape:
 
 %%
 
-void yyerror(char *s)
+void yyerror(char const *s)
 {
 }
