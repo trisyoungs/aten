@@ -14,7 +14,7 @@
 
 /* Prototypes */
 int CommandParser_lex(void);
-void CommandParser_error(char *s);
+void CommandParser_error(char const *s);
 
 ATEN_USING_NAMESPACE
 
@@ -29,7 +29,7 @@ QString variableName;
 %}
 
 // Redeclare function names
-%name-prefix="CommandParser_"
+%name-prefix "CommandParser_"
 
 /* Type Definition */
 %union {
@@ -698,6 +698,6 @@ unsetglobal:
 
 %%
 
-void yyerror(char *s)
+void yyerror(char const *s)
 {
 }
