@@ -283,8 +283,8 @@ add_library(gui
   ${gui_MOC_SRCS}
 )
 target_include_directories(gui PRIVATE
-	${PROJECT_SOURCE_DIR}/src
-	${PROJECT_BINARY_DIR}/src
+  ${PROJECT_SOURCE_DIR}/src
+  ${PROJECT_BINARY_DIR}/src
   ${Qt5Widgets_INCLUDE_DIRS}
 )
 
@@ -295,8 +295,8 @@ add_library(treegui
   treegui_funcs.cpp
 )
 target_include_directories(treegui PRIVATE
-	${PROJECT_SOURCE_DIR}/src
-	${PROJECT_BINARY_DIR}/src
+  ${PROJECT_SOURCE_DIR}/src
+  ${PROJECT_BINARY_DIR}/src
   ${Qt5Widgets_INCLUDE_DIRS}
 )
 target_link_libraries(treegui gui)

@@ -52,7 +52,6 @@ if(WIN32)
   # Adjust external include directories
   include_directories(
     ${FTGL_INCLUDE_DIRS}
-    ${FREETYPE_INCLUDE_DIRS}
     ${GLEXT_INCLUDE_DIRS}
   )
 
@@ -103,9 +102,9 @@ add_executable(${target_name}
 
 # Set project-local include directories for target
 target_include_directories(${target_name} PRIVATE
-	${PROJECT_SOURCE_DIR}/src
-	${PROJECT_BINARY_DIR}/src
-	${PROJECT_SOURCE_DIR}/src/gui
+  ${PROJECT_SOURCE_DIR}/src
+  ${PROJECT_BINARY_DIR}/src
+  ${PROJECT_SOURCE_DIR}/src/gui
   ${FREETYPE_INCLUDE_DIRS}
 )
 
