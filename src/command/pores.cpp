@@ -23,7 +23,6 @@
 #include "parser/commandnode.h"
 #include "main/aten.h"
 #include "parser/tree.h"
-#include "gui/pores.h"
 
 ATEN_USING_NAMESPACE
 
@@ -43,16 +42,14 @@ bool Commands::function_CreateScheme(CommandNode* c, Bundle& obj, ReturnValue& r
 	if (c->hasArg(6)) copyToBuilder = c->argb(6);
 
 	// Create temporary partitioning scheme structure
-	// ATEN2 TODO
-// 	PartitioningScheme& scheme = aten_.atenWindow()->ui.PoresWidget.partitioningScheme();
-	PartitioningScheme scheme;
+	PartitioningScheme& scheme = aten_.poresPartitioningScheme();
 	scheme.initialiseAbsolute(c->argc(0), "Scheme generated from model");
 	Vec3<double> cellDelta(1.0/gridSize.x, 1.0/gridSize.y, 1.0/gridSize.z);
 	scheme.setGridSize(gridSize);
 	Grid& schemeGrid = scheme.grid();
 	double volumeElement = obj.rs()->cell().volume() / gridSize.dp(gridSize);
 	schemeGrid.setAxes(cellDelta);
-	double** *data = schemeGrid.data3d();
+	double*** data = schemeGrid.data3d();
 	int minimumSize = gridSize.x*gridSize.y*gridSize.z*minSizePcnt;
 
 	// Set all grid data to -1.0 to start with (i.e. all space available)

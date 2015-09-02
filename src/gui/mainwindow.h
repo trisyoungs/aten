@@ -27,6 +27,7 @@
 #include <QMenu>
 #include "base/atom.h"
 #include "base/prefs.h"
+#include "methods/partitioningscheme.h"
 #include "gui/ui_mainwindow.h"
 #include "gui/ui_prefs.h"
 #include "gui/useractions.h"
@@ -57,7 +58,6 @@ class CommandWidget;
 class ForcefieldsWidget;
 class GlyphsWidget;
 class MDWidget;
-class PoresWidget;
 class ScriptMovieWidget;
 class VibrationsWidget;
 
@@ -86,7 +86,6 @@ class AtenWindow : public QMainWindow
 	protected:
 	void closeEvent(QCloseEvent* event);
 	void resizeEvent(QResizeEvent* event);
-	void wheelEvent(QWheelEvent* event);
 
 
 	/*
@@ -206,9 +205,6 @@ class AtenWindow : public QMainWindow
 	void on_HomeViewSetButton_clicked(bool checked);
 	void on_HomeViewHBondsButton_clicked(bool checked);
 	void on_HomeViewLockButton_clicked(bool checked);
-
-	public:
-	bool runSaveModelDialog();
 
 
 	/*
@@ -451,8 +447,10 @@ class AtenWindow : public QMainWindow
 	void updateToolsPanel(Model* sourceModel);
 
 	private slots:
-	// Tools
-	void on_ToolsToolsDisorderButton_clicked(bool checked);
+	// Disorder
+	void on_ToolsDisorderCreateButton_clicked(bool checked);
+	// Surface
+	void on_ToolsSurfaceTerminateButton_clicked(bool checked);
 
 
 	/*
@@ -472,6 +470,8 @@ class AtenWindow : public QMainWindow
 	bool closeModel(Model* m);
 	// Save before close
 	bool saveBeforeClose();
+	// Run SaveModel dialog to get filename and format
+	bool runSaveModelDialog();
 
 
 	/*
@@ -580,8 +580,6 @@ class AtenWindow : public QMainWindow
 	 * Local Widgets and Routines
 	 */
 	private:
-	// List of manually-created QActionGroups
-	RefList<QActionGroup,int> actionGroups_;
 	// Text labels for model information and UI messages in status bar
 	QLabel* infoLabel1_, *infoLabel2_, *messageLabel_;
 	// Filter set from save model dialog
@@ -622,8 +620,6 @@ class AtenWindow : public QMainWindow
 	CommandWidget *commandWidget;
 	// Glyphs dock widget
 	GlyphsWidget *glyphsWidget;
-	// Pore builder dock widget
-	PoresWidget *poresWidget;
 	// Scripted movie dock widget
 	ScriptMovieWidget *scriptMovieWidget;
 	// Vibrations dock widget

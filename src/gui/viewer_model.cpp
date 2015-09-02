@@ -66,6 +66,7 @@ void Viewer::renderModel(Model* source, int viewPortX, int viewPortY, int viewPo
 
 		// Draw globe axes, rotated by current view
 		Matrix A = modelTransformationMatrix_;
+
 		A.removeTranslationAndScaling();
 		A[14] = -1.2;
 		glLoadMatrixd(A.matrix());

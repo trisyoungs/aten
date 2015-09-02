@@ -512,7 +512,7 @@ template <class T> Vec3<T> Vec3<T>::orthogonal(bool isNormalised) const
 	if (!isNormalised) currentVec.normalise();
 	
 	// Check dot product of unitX with the current vector - if greater than 0.5, use unitY instead
-	if (unitX.dp(currentVec) > 0.5) return currentVec * unitY;
+	if (fabs(unitX.dp(currentVec)) > 0.5) return currentVec * unitY;
 	else return currentVec * unitX;
 }
 

@@ -63,6 +63,48 @@ bool TransformMultiplyPopup::callMethod(QString methodName, ReturnValue& rv)
 
 		parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
 	}
+	else if (methodName == "setXVector")
+	{
+		bool success;
+		Vec3<double> v = rv.asVector(success);
+		if (!success)
+		{
+			Messenger::error("Failed to get vector for X axis.");
+			return false;
+		}
+		ui.MatrixXXSpin->setValue(v.x);
+		ui.MatrixXYSpin->setValue(v.y);
+		ui.MatrixXZSpin->setValue(v.z);
+		return true;
+	}
+	else if (methodName == "setYVector")
+	{
+		bool success;
+		Vec3<double> v = rv.asVector(success);
+		if (!success)
+		{
+			Messenger::error("Failed to get vector for Y axis.");
+			return false;
+		}
+		ui.MatrixYXSpin->setValue(v.x);
+		ui.MatrixYYSpin->setValue(v.y);
+		ui.MatrixYZSpin->setValue(v.z);
+		return true;
+	}
+	else if (methodName == "setZVector")
+	{
+		bool success;
+		Vec3<double> v = rv.asVector(success);
+		if (!success)
+		{
+			Messenger::error("Failed to get vector for Z axis.");
+			return false;
+		}
+		ui.MatrixZXSpin->setValue(v.x);
+		ui.MatrixZYSpin->setValue(v.y);
+		ui.MatrixZZSpin->setValue(v.z);
+		return true;
+	}
 	else if (methodName == "hideEvent")
 	{
 		return true;
@@ -75,61 +117,28 @@ bool TransformMultiplyPopup::callMethod(QString methodName, ReturnValue& rv)
  * Widget Functions
  */
 
-void transformPickXButton_callback(RefList<Atom,int>* picked)
-{
-// 	ui.PickXButton->setChecked(false); ATEN2 TODO
-// 	// If there are not two atoms in the list then the mode must have been canceled
-// 	if (picked->nItems() != 2) return;
-// 	Vec3<double> v = picked->last()->item->r();
-// 	v -= picked->first()->item->r();
-// 	v.normalise();
-// 	ui.MatrixXXSpin->setValue(v.x);
-// 	ui.MatrixXYSpin->setValue(v.y);
-// 	ui.MatrixXZSpin->setValue(v.z);
-}
-
-void transformPickYButton_callback(RefList<Atom,int>* picked)
-{
-// 	ui.PickYButton->setChecked(false); ATEN2 TODO
-// 	// If there are not two atoms in the list then the mode must have been canceled
-// 	if (picked->nItems() != 2) return;
-// 	Vec3<double> v = picked->last()->item->r();
-// 	v -= picked->first()->item->r();
-// 	v.normalise();
-// 	ui.MatrixYXSpin->setValue(v.x);
-// 	ui.MatrixYYSpin->setValue(v.y);
-// 	ui.MatrixYZSpin->setValue(v.z);
-}
-
-void transformPickZButton_callback(RefList<Atom,int>* picked)
-{
-// 	ui.PickZButton->setChecked(false); ATEN2 TODO
-// 	// If there are not two atoms in the list then the mode must have been canceled
-// 	if (picked->nItems() != 2) return;
-// 	Vec3<double> v = picked->last()->item->r();
-// 	v -= picked->first()->item->r();
-// 	v.normalise();
-// 	ui.MatrixZXSpin->setValue(v.x);
-// 	ui.MatrixZYSpin->setValue(v.y);
-// 	ui.MatrixZZSpin->setValue(v.z);
-}
-
 void TransformMultiplyPopup::on_PickXButton_clicked(bool checked)
 {
 	// Enter manual picking mode
-// 	parent_.ui.MainView->setSelectedMode(UserAction::TransformPickAAction,2,&transformPickXButton_callback);
+	parent_.ui.MainView->setSelectedMode(UserAction::TransformPickAAction);
+
+	done();
 }
 
 void TransformMultiplyPopup::on_PickYButton_clicked(bool checked)
 {
 	// Enter manual picking mode
-// 	parent_.ui.MainView->setSelectedMode(UserAction::TransformPickBAction,2,&transformPickYButton_callback);
+	parent_.ui.MainView->setSelectedMode(UserAction::TransformPickBAction);
+
+	done();
 }
 
 void TransformMultiplyPopup::on_PickZButton_clicked(bool checked)
 {
 	// Enter manual picking mode
-// 	parent_.ui.MainView->setSelectedMode(UserAction::TransformPickCAction,2,&transformPickZButton_callback);
+	parent_.ui.MainView->setSelectedMode(UserAction::TransformPickCAction);
+
+	done();
 }
 
 void TransformMultiplyPopup::on_NormaliseXButton_clicked(bool checked)

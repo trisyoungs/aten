@@ -158,9 +158,14 @@ PartitioningScheme* Aten::partitioningSchemes(int index)
 }
 
 // Copy specified partitioning scheme and add it to the list
-void Aten::addPartitioningScheme(PartitioningScheme &scheme)
+void Aten::addPartitioningScheme(PartitioningScheme& scheme)
 {
 	PartitioningScheme* newScheme = partitioningSchemes_.add();
 	newScheme->copy(scheme);
 }
 
+// Return partitioning scheme for Pores tool
+PartitioningScheme& Aten::poresPartitioningScheme()
+{
+	return poresPartitioningScheme_;
+}

@@ -175,12 +175,14 @@ class TMenuButton : public QToolButton
 	void paintEvent(QPaintEvent* event);
 
 	private slots:
-	// Call popup widget
-	void popup();
 	// Mouse button was pressed on the button
 	void buttonPressed();
 	// Mouse button was released
 	void buttonReleased();
+
+	public slots:
+	// Call popup widget
+	void popup();
 
 	signals:
 	void popupHidden();

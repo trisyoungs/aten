@@ -40,6 +40,7 @@ class UserAction
 	const char* shiftModified;
 	const char* ctrlModified;
 	const char* altModified;
+	int nAtomsToPick;
 };
 
 extern UserAction UserActions[];

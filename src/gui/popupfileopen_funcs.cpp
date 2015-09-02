@@ -85,7 +85,7 @@ bool FileOpenPopup::callMethod(QString methodName, ReturnValue& rv)
 		// Not in the list, so add it to the top
 		recentFiles_.prepend(rv.asString());
 
-		// Remove files until we reach the 
+		// Remove files until we reach the max number (or lower) of allowable files
 		while (recentFiles_.count() > maxRecentFiles_) recentFiles_.removeLast();
 
 		return true;
@@ -117,96 +117,15 @@ bool FileOpenPopup::callMethod(QString methodName, ReturnValue& rv)
  * Widget Functions
  */
 
-void FileOpenPopup::on_FilesTable_itemDoubleClicked(QTableWidgetItem* item)
+void FileOpenPopup::on_FilesTable_itemClicked(QTableWidgetItem* item)
 {
-	// ATEN2 TODO
+	if (item == NULL) return;
+
+	// Load model
+	if (parent_.aten().loadModel(item->text())) parent_.aten().setSingleModelVisible(parent_.aten().currentModel());
+
+	// Update main window
+	parent_.updateWidgets(AtenWindow::AllTarget);
+
+	done();
 }
-
-/*
-// Load recent file
-void AtenWindow::loadRecent()
-{
-	QString filename;
-	Model* m;
-	Tree* filter;
-
-	// Cast sending QAction and grab filename
-	QAction* action = qobject_cast<QAction*> (sender());
-	if (!action)
-	{
-		printf("AtenWindow::loadRecent - Sender was not a QAction.\n");
-		return;
-	}
-
-	// Grab the filename from the action
-	filename = action->data().toString();
-
-	// See if any loaded model filename matches this filename
-	for (m = aten_.models(); m != NULL; m = m->next)
-	{
-		Messenger::print(Messenger::Verbose, "Checking loaded models for '%s': %s", qPrintable(filename), qPrintable(m->filename()));
-		if (filename == m->filename())
-		{
-			Messenger::print(Messenger::Verbose, "Matched filename to loaded model.");
-			aten_.setCurrentModel(m);
-			// Update GUI
-			updateWidgets(AtenWindow::AllTarget);
-			return;
-		}
-	}
-
-	// If we get to here then the model is not currently loaded...
-	filter = aten_.probeFile(filename, FilterData::ModelImport);
-	if (filter != NULL)
-	{
-		ReturnValue rv;
-		filter->executeRead(filename, rv);
-
-		// Update GUI
-		updateWidgets(AtenWindow::AllTarget);
-	}
-	else
-	{
-		// Remove file from recent files list
-		int last, n;
-		for (last=0; last<MAXRECENTFILES; last++) if (!actionRecentFile[last]->isVisible()) break;
-		for (n=last+1; n<MAXRECENTFILES; ++n)
-		{
-			if (actionRecentFile[last]->isVisible())
-			{
-				actionRecentFile[n-1]->setText(actionRecentFile[n]->text());
-				actionRecentFile[n-1]->setData(actionRecentFile[n]->data());
-			}
-		}
-	}
-}
-
-// Add file to top of recent list
-void AtenWindow::addRecent(QString filename)
-{
-	// Find unused (i.e. still hidden) recent file action
-	int last, n;
-	QString temp;
-	for (last=0; last<MAXRECENTFILES; last++) if (!actionRecentFile[last]->isVisible()) break;
-
-	// 'last' now holds the first empty slot in the recent files list.
-	// If 'last' == MAXRECENTFILES then shuffle top 'n-1' down a position and add at '0'.
-	if (last == MAXRECENTFILES)
-	{
-		// Push the top items down the list
-		for (n=MAXRECENTFILES-2; n>=0; n--)
-		{
-			actionRecentFile[n+1]->setData(actionRecentFile[n]->data());
-			temp.sprintf("&%i %s", n+1, qPrintable(actionRecentFile[n]->data().toString()));
-			actionRecentFile[n+1]->setText(temp);
-			actionRecentFile[n+1]->setData(actionRecentFile[n]->data());
-		}
-		last = 0;
-	}
-
-	// Set the new data
-	temp.sprintf("&%i %s", last, qPrintable(filename));
-	actionRecentFile[last]->setText(temp);
-	actionRecentFile[last]->setData(filename);
-	actionRecentFile[last]->setVisible(true);
-}*/

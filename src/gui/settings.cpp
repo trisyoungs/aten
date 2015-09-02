@@ -119,7 +119,7 @@ void AtenWindow::loadSettings()
 					break;
 				case (Prefs::ScriptHistory):
 					// Has this script already been loaded?
-					// Use a couple of QFileInfo's to find out...
+					// Use a couple of QFileInfos to find out...
 					fi1.setFile(data);
 					for (loadedscript = aten_.scripts(); loadedscript != NULL; loadedscript = loadedscript->next)
 					{
@@ -173,8 +173,6 @@ void AtenWindow::saveSettings()
 	// Open new file for writing...
 	QString filename = aten_.atenDirectoryFile("history.txt");
 	Messenger::print("Saving program history file '%s'...", qPrintable(filename));
-	LineParser historyFile;
-	historyFile.openOutput(filename, true);
 
 	// Qt Settings
 	ReturnValue nItems, recentFile;
@@ -186,13 +184,16 @@ void AtenWindow::saveSettings()
 		settings.beginGroup("RecentFiles");
 		for (int n = 0; n < nItems.asInteger(); ++n)
 		{
-			if (!ui.HomeFileOpenButton->callPopupMethod("recentFile", recentFile)) continue;
+			if (!ui.HomeFileOpenButton->callPopupMethod("recentFile", recentFile = n)) continue;
 			settings.setValue(QString::number(count++), recentFile.asString());
 		}
 		settings.endGroup();
 		settings.sync();
 	}
 
+	// History file
+	LineParser historyFile;
+	historyFile.openOutput(filename, true);
 	if (historyFile.isFileGoodForWriting())
 	{
 		QString line;

@@ -22,7 +22,6 @@
 #ifndef ATEN_RENDERGROUP_H
 #define ATEN_RENDERGROUP_H
 
-#include "render/rendergroup.h"
 #include "render/primitive.h"
 #include "render/primitiveinfo.h"
 #include "render/textprimitivelist.h"
@@ -96,7 +95,7 @@ class RenderGroup
 	 */
 	public:
 	// Render bond
-	void createBond(PrimitiveSet& primitiveSet, Matrix A, Vec3<double> vij, Atom* i, Prefs::DrawStyle style_i, Vec4<GLfloat>& colour_i, double radius_i, Atom* j, Prefs::DrawStyle style_j, Vec4<GLfloat>& colour_j, double radius_j, Bond::BondType bt, double selscale, Bond* b = 0, bool transparentSel = false);
+	void createBond(PrimitiveSet& primitiveSet, Matrix A, Vec3<double> vij, Atom* i, Prefs::DrawStyle style_i, Vec4<GLfloat>& colour_i, double radius_i, Atom* j, Prefs::DrawStyle style_j, Vec4<GLfloat>& colour_j, double radius_j, Bond::BondType bt, double selscale, Bond* b = NULL);
 	// Generate primitive info for atoms and bonds of specified model
 	void createAtomsAndBonds(PrimitiveSet& primitiveSet, Model* source, Matrix baseTransform);
 	// Generate primitive data for model glyphs

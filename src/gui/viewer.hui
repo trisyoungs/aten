@@ -1,5 +1,5 @@
 /*
-	*** Viewer - GL Drawing class based on QGLWidget
+	*** Viewer - GL Drawing class based on QOpenGLWidget
 	*** src/gui/viewer.hui
 	Copyright T. Youngs 2007-2015
 
@@ -89,8 +89,6 @@ class Viewer : public QOpenGLWidget, protected QOpenGLFunctions
 	GLsizei contextHeight() const;
 	// Return the current width of the drawing area
 	GLsizei contextWidth() const;
-	// Probe widget/context/format features
-	void probeFeatures();
 	// Check for GL error
 	void checkGlError();
 	// Set line width and text scaling to use
@@ -167,14 +165,10 @@ class Viewer : public QOpenGLWidget, protected QOpenGLFunctions
 	Atom::AtomGeometry buildGeometry_;
 	// Whether to accept editing actions (i.e. anything other than view manipulation)
 	bool editable_;
-	// Number of atoms to pick in PickAtomsAction
-	int nAtomsToPick_;
 	// User action before picking mode was entered
 	UserAction::Action actionBeforePick_;
 	// List of picked atoms
 	RefList<Atom,int> pickedAtoms_;
-	// Pointer to callback function when PickAtomsAction exits
-	void (*pickAtomsCallback_)(RefList<Atom,int>*);
 	// Atom that was clicked at the start of a mouse press event
 	Atom* atomClicked_;
 	// Whether we are selecting atoms and placing them in the subsel list	
@@ -211,10 +205,6 @@ class Viewer : public QOpenGLWidget, protected QOpenGLFunctions
 	bool editable();
 	// Returns the clicked atom within a mouse click event
 	Atom* atomClicked();
-	// Clears the subsel of atoms
-	void clearPicked();
-	// End manual picking
-	void endManualPick(bool resetaction);
 	// Return start of picked atom list
 	RefListItem<Atom,int>* pickedAtoms();
 
@@ -292,7 +282,7 @@ class Viewer : public QOpenGLWidget, protected QOpenGLFunctions
 	// Generate image of specified model
 	QPixmap generateModelImage(Model* model, int width, int height);
 	// Render current scene at supplied size
-	QPixmap generateImage(int width, int height);
+	QPixmap generateImage(int imageWidth, int imageHeight);
 };
 
 ATEN_END_NAMESPACE

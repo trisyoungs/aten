@@ -1,6 +1,6 @@
 /*
-	*** Popup Widget - File Open
-	*** src/gui/popupfileopen.h
+	*** Popup Widget - Pores Scheme
+	*** src/gui/popupporesscheme.h
 	Copyright T. Youngs 2007-2015
 
 	This file is part of Aten.
@@ -19,10 +19,10 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_HOMEFILEOPEN_H
-#define ATEN_HOMEFILEOPEN_H
+#ifndef ATEN_TOOLSPORESSCHEME_H
+#define ATEN_TOOLSPORESSCHEME_H
 
-#include "gui/ui_popupfileopen.h"
+#include "gui/ui_popupporesscheme.h"
 #include "gui/tmenubutton.hui"
 #include "parser/returnvalue.h"
 
@@ -33,13 +33,14 @@ ATEN_BEGIN_NAMESPACE
 
 // Forward Declarations (Aten)
 class ReturnValue;
+class PartitioningScheme;
 
 ATEN_END_NAMESPACE
 
 ATEN_USING_NAMESPACE
 
 // Popup Widget - File Open
-class FileOpenPopup : public TMenuButtonPopupWidget
+class PoresSchemePopup : public TMenuButtonPopupWidget
 {
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
@@ -50,9 +51,9 @@ class FileOpenPopup : public TMenuButtonPopupWidget
 
 	public:
 	// Constructor / Destructor
-	FileOpenPopup(AtenWindow& parent, TMenuButton* buttonParent);
+	PoresSchemePopup(AtenWindow& parent, TMenuButton* buttonParent, PartitioningScheme& scheme);
 	// Main form declaration
-	Ui::FileOpenPopup ui;
+	Ui::PoresSchemePopup ui;
 	// Update controls (before show()) (virtual)
 	void updateControls();
 	// Call named method associated to popup
@@ -70,17 +71,16 @@ class FileOpenPopup : public TMenuButtonPopupWidget
 	 * Data
 	 */
 	private:
-	// Maximum number of recent files to store in our list
-	const int maxRecentFiles_;
-	// List of recent files
-	QStringList recentFiles_;
+	// Reference to partitioning scheme
+	PartitioningScheme& partitioningScheme_;
 
 
 	/*
 	 * Widget Functions
 	 */
 	private slots:
-	void on_FilesTable_itemClicked(QTableWidgetItem* item);
+	void on_GenerateSchemeButton_clicked(bool checked);
+	void on_CopySchemeButton_clicked(bool checked);
 };
 
 #endif

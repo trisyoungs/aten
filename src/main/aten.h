@@ -101,6 +101,8 @@ class Aten
 	Model* findModel(QString name) const;
 	// Set visible flag for specified model
 	void setModelVisible(Model* m, bool visible);
+	// Set the specified model to be the only one visible
+	void setSingleModelVisible(Model* m);
 	// Return number of visible models
 	int nVisibleModels();
 	// Return reflist of visible models
@@ -109,6 +111,8 @@ class Aten
 	Model* visibleModel(int id);
 	// Log specified change(s) in all models
 	void globalLogChange(Log::LogType);
+	// Load model (if it is not loaded already)
+	bool loadModel(QString fileName, Tree* filter = NULL);
 
 
 	/*
@@ -189,7 +193,9 @@ class Aten
 	QStringList failedPartitioningSchemes_;
 	// Parse directory index and load includes
 	int parsePartitionsDir(QDir path);
-	
+	// Partitioning scheme for Pores tool
+	PartitioningScheme poresPartitioningScheme_;
+
 	public:
 	// Load global include functions
 	void openIncludes();
@@ -218,7 +224,9 @@ class Aten
 	// Return nth partitioning scheme in the list
 	PartitioningScheme* partitioningSchemes(int index);
 	// Copy specified partitioning scheme and add it to the list
-	void addPartitioningScheme(PartitioningScheme &scheme);
+	void addPartitioningScheme(PartitioningScheme& scheme);
+	// Return partitioning scheme for Pores tool
+	PartitioningScheme& poresPartitioningScheme();
 
 
 	/*
@@ -477,6 +485,8 @@ class Aten
 	void increaseFragmentBondId();
 	// Return bondId (as reference so it can be reset by associated Fragment routines)
 	int& fragmentBondId();
+	// Update all fragment icons
+	void updateFragmentIcons();
 
 
 	/*

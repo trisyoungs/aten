@@ -36,26 +36,8 @@ void Viewer::setSelectedMode(UserAction::Action ua, int atomsToPick, void (*call
 		Messenger::exit("Viewer::setSelectedMode");
 		return;
 	}
-	
-	// If previous action was a Pick action then finalise it first
-	if (selectedMode_ >= UserAction::ShiftPickVectorAction)
-	{
-		// If a previous callback was defined then call it before we move on
-		if (pickAtomsCallback_ != NULL) (*pickAtomsCallback_)(&pickedAtoms_);
-		pickAtomsCallback_ = NULL;
-		pickedAtoms_.clear();
-		nAtomsToPick_ = -1;
-	}
-	
-	// Store picking information in case that's what we're about to do
-	actionBeforePick_ = selectedMode_;
-	pickAtomsCallback_ = callback;
-	nAtomsToPick_ = atomsToPick;
-	
-	// Clear any old selection (from e.g. bonding, measurements....)
-	clearPicked();
-	
-	// Prepare canvas for the selected action
+
+	// Enable picking mode if relevant
 	switch (ua)
 	{
 		case (UserAction::ShiftPickVectorAction):
@@ -74,9 +56,12 @@ void Viewer::setSelectedMode(UserAction::Action ua, int atomsToPick, void (*call
 		case (UserAction::MeasureTorsionAction):
 			pickEnabled_ = true;
 			pickedAtoms_.clear();
+			actionBeforePick_ = selectedMode_;
 			break;
 		default:
 			pickEnabled_ = false;
+			pickedAtoms_.clear();
+			actionBeforePick_ = UserAction::NoAction;
 			break;
 	}
 
@@ -232,6 +217,7 @@ void Viewer::beginMode(Prefs::MouseButton button)
 			default:
 				break;
 		}
+
 		// If we're manipulating, prepare the transform
 		if (manipulate)
 		{
@@ -256,6 +242,9 @@ void Viewer::endMode(Prefs::MouseButton button)
 	Messenger::enter("Viewer::endMode");
 	double area, radius;
 	Vec4<double> screenr;
+	Vec3<double> v;
+	QString methodName;
+	ReturnValue rv;
 	Atom* atoms[4], *i;
 	Bond* b;
 	Bond::BondType bt;
@@ -488,25 +477,48 @@ void Viewer::endMode(Prefs::MouseButton button)
 			break;
 		// Manual picking modes (for axis definitions etc.)
 		case (UserAction::ShiftPickVectorAction):
+			if (pickedAtoms_.nItems() != UserActions[selectedMode_].nAtomsToPick) break;
+			rv = pickedAtoms_.last()->item->r() - pickedAtoms_.first()->item->r();
+			setSelectedMode(actionBeforePick_);
+			atenWindow_->ui.TransformPositionShiftButton->callPopupMethod("setShiftVector", rv);
+			atenWindow_->ui.TransformPositionShiftButton->popup();
+			break;
 		case (UserAction::RotatePickAxisAction):
+			if (pickedAtoms_.nItems() != UserActions[selectedMode_].nAtomsToPick) break;
+			rv = pickedAtoms_.last()->item->r() - pickedAtoms_.first()->item->r();
+			setSelectedMode(actionBeforePick_);
+			atenWindow_->ui.TransformTransformRotateButton->callPopupMethod("setRotationVector", rv);
+			atenWindow_->ui.TransformTransformRotateButton->popup();
+			break;
 		case (UserAction::TransformPickAAction):
 		case (UserAction::TransformPickBAction):
 		case (UserAction::TransformPickCAction):
+			if (pickedAtoms_.nItems() != UserActions[selectedMode_].nAtomsToPick) break;
+			rv = pickedAtoms_.last()->item->r() - pickedAtoms_.first()->item->r();
+			setSelectedMode(actionBeforePick_);
+			methodName.sprintf("set%cVector", 88+(endingMode-UserAction::TransformPickAAction));
+			atenWindow_->ui.TransformTransformMultiplyButton->callPopupMethod(methodName, rv);
+			atenWindow_->ui.TransformTransformMultiplyButton->popup();
+			break;
 		case (UserAction::ConvertSourcePickAAction):
 		case (UserAction::ConvertSourcePickBAction):
 		case (UserAction::ConvertSourcePickCAction):
+			if (pickedAtoms_.nItems() != UserActions[selectedMode_].nAtomsToPick) break;
+			rv = pickedAtoms_.last()->item->r() - pickedAtoms_.first()->item->r();
+			setSelectedMode(actionBeforePick_);
+			methodName.sprintf("setSource%cVector", 88+(endingMode-UserAction::ConvertSourcePickAAction));
+			atenWindow_->ui.TransformTransformConvertButton->callPopupMethod(methodName, rv);
+			atenWindow_->ui.TransformTransformConvertButton->popup();
+			break;
 		case (UserAction::ConvertTargetPickAAction):
 		case (UserAction::ConvertTargetPickBAction):
 		case (UserAction::ConvertTargetPickCAction):
-			printf("Current number of atoms picked = %i, wanted = %i\n", pickedAtoms_.nItems(), nAtomsToPick_);
-			// Have we picked the right number of atoms?
-			if (pickedAtoms_.nItems() != nAtomsToPick_) break;
-			// If a previous callback was defined then call it before we move on
-			if (pickAtomsCallback_ != NULL) (*pickAtomsCallback_)(&pickedAtoms_);
-			pickAtomsCallback_ = NULL;
-			atenWindow_->setActiveUserAction(actionBeforePick_);
-			pickedAtoms_.clear();
-			nAtomsToPick_ = -1;
+			if (pickedAtoms_.nItems() != UserActions[selectedMode_].nAtomsToPick) break;
+			rv = pickedAtoms_.last()->item->r() - pickedAtoms_.first()->item->r();
+			setSelectedMode(actionBeforePick_);
+			methodName.sprintf("setTarget%cVector", 88+(endingMode-UserAction::ConvertTargetPickAAction));
+			atenWindow_->ui.TransformTransformConvertButton->callPopupMethod(methodName, rv);
+			atenWindow_->ui.TransformTransformConvertButton->popup();
 			break;
 		default:
 			printf("No endMode handler defined for UserAction %i.\n", endingMode);
@@ -519,12 +531,6 @@ void Viewer::endMode(Prefs::MouseButton button)
 Atom* Viewer::atomClicked()
 {
 	return atomClicked_;
-}
-
-// Clears the list of picked atoms
-void Viewer::clearPicked()
-{
-	pickedAtoms_.clear();
 }
 
 // Return start of picked atom list

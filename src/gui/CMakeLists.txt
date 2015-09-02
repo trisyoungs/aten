@@ -41,6 +41,8 @@ SET(gui_MOC_HDRS
   popupmeasureclear.h
   popupmeasuredistance.h
   popupmeasuretorsion.h
+  popupporesdrill.h
+  popupporesscheme.h
   popuptransformangle.h
   popuptransformcentre.h
   popuptransformconvert.h
@@ -55,7 +57,6 @@ SET(gui_MOC_HDRS
   popupviewcolourscheme.h
   popupviewreset.h
   popupviewstyle.h
-  pores.h
   prefs.h
   progress.h
   scriptmovie.h
@@ -127,6 +128,8 @@ SET(gui_UIS
   popupmeasureclear.ui
   popupmeasuredistance.ui
   popupmeasuretorsion.ui
+  popupporesdrill.ui
+  popupporesscheme.ui
   popuptransformangle.ui
   popuptransformcentre.ui
   popuptransformconvert.ui
@@ -141,7 +144,6 @@ SET(gui_UIS
   popupviewcolourscheme.ui
   popupviewreset.ui
   popupviewstyle.ui
-  pores.ui
   prefs.ui
   progress.ui
   scriptmovie.ui
@@ -223,6 +225,8 @@ set(gui_SRCS
   popupmeasureclear_funcs.cpp
   popupmeasuredistance_funcs.cpp
   popupmeasuretorsion_funcs.cpp
+  popupporesdrill_funcs.cpp
+  popupporesscheme_funcs.cpp
   popuptransformangle_funcs.cpp
   popuptransformcentre_funcs.cpp
   popuptransformconvert_funcs.cpp
@@ -237,7 +241,6 @@ set(gui_SRCS
   popupviewcolourscheme_funcs.cpp
   popupviewreset_funcs.cpp
   popupviewstyle_funcs.cpp
-  pores_funcs.cpp
   prefs_funcs.cpp
   progress_funcs.cpp
   scriptmovie_funcs.cpp

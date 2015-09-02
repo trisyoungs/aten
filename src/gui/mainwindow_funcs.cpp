@@ -63,6 +63,8 @@
 #include "gui/popupmeasuredistance.h"
 #include "gui/popupmeasuretorsion.h"
 #include "gui/popupcellspacegroup.h"
+#include "gui/popupporesdrill.h"
+#include "gui/popupporesscheme.h"
 #include "gui/popuptransformangle.h"
 #include "gui/popuptransformcentre.h"
 #include "gui/popuptransformconvert.h"
@@ -81,7 +83,6 @@
 #include "gui/command.h"
 #include "gui/disorderwizard.h"
 #include "gui/glyphs.h"
-#include "gui/pores.h"
 #include "gui/scriptmovie.h"
 #include "gui/vibrations.h"
 
@@ -151,10 +152,9 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportImage
 	// Create dock widgets
 	commandWidget = new CommandWidget(*this, Qt::Tool);
 	glyphsWidget = new GlyphsWidget(*this, Qt::Tool);
-	poresWidget = new PoresWidget(*this, Qt::Tool);
 	scriptMovieWidget = new ScriptMovieWidget(*this, Qt::Tool);
 	vibrationsWidget = new VibrationsWidget(*this, Qt::Tool);
-	dockWidgets_ << commandWidget << glyphsWidget << poresWidget << scriptMovieWidget << vibrationsWidget;
+	dockWidgets_ << commandWidget << glyphsWidget << scriptMovieWidget << vibrationsWidget;
 
 	int n;
 	ReturnValue rv;
@@ -265,6 +265,10 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportImage
 	ui.SelectionAppearanceStyleButton->callPopupMethod("updateButtonIcon", rv = QString(Prefs::drawStyle(Prefs::SphereStyle)));
 	ui.SelectionAppearanceColourButton->setPopupWidget(new ColourPopup(*this, ui.SelectionAppearanceColourButton), false);
 
+	// -- Tools Panel (Pores)
+	ui.ToolsPoresDrillButton->setPopupWidget(new PoresDrillPopup(*this, ui.ToolsPoresDrillButton), true);
+	ui.ToolsPoresSchemeButton->setPopupWidget(new PoresSchemePopup(*this, ui.ToolsPoresSchemeButton, aten_.poresPartitioningScheme()), true);
+
 	// Setup Shortcuts
 	QShortcut* shortcut;
 	// -- Model List
@@ -297,6 +301,11 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportImage
 	// Home Panel (View)
 	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_R), this, 0, 0, Qt::ApplicationShortcut);
 	connect(shortcut, SIGNAL(activated()), ui.HomeViewResetButton, SLOT(click()));
+	// Cell Panel (Fold)
+	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_F), this, 0, 0, Qt::ApplicationShortcut);
+	connect(shortcut, SIGNAL(activated()), ui.CellFoldAtomsButton, SLOT(click()));
+	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_F), this, 0, 0, Qt::ApplicationShortcut);
+	connect(shortcut, SIGNAL(activated()), ui.CellFoldMoleculesButton, SLOT(click()));
 	// Select Panel
 	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_A), this, 0, 0, Qt::ApplicationShortcut);
 	connect(shortcut, SIGNAL(activated()), ui.SelectBasicAllButton, SLOT(click()));
@@ -312,18 +321,6 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportImage
 	// Main Window
 	shortcut = new QShortcut(QKeySequence(Qt::Key_F10), this, 0, 0, Qt::ApplicationShortcut);
 	connect(shortcut, SIGNAL(activated()), ui.QuickCommandToggleButton, SLOT(click()));
-
-
-// 	// -- From Transform Dock Widget
-// 	uaButtons_.addButton(transformWidget->ui.TransformPickAButton, UserAction::TransformPickAAction);
-// 	uaButtons_.addButton(transformWidget->ui.TransformPickBButton, UserAction::TransformPickBAction);
-// 	uaButtons_.addButton(transformWidget->ui.TransformPickCButton, UserAction::TransformPickCAction);
-// 	uaButtons_.addButton(transformWidget->ui.ConvertSourcePickAButton, UserAction::ConvertSourcePickAAction);
-// 	uaButtons_.addButton(transformWidget->ui.ConvertSourcePickBButton, UserAction::ConvertSourcePickBAction);
-// 	uaButtons_.addButton(transformWidget->ui.ConvertSourcePickCButton, UserAction::ConvertSourcePickCAction);
-// 	uaButtons_.addButton(transformWidget->ui.ConvertTargetPickAButton, UserAction::ConvertTargetPickAAction);
-// 	uaButtons_.addButton(transformWidget->ui.ConvertTargetPickBButton, UserAction::ConvertTargetPickBAction);
-// 	uaButtons_.addButton(transformWidget->ui.ConvertTargetPickCButton, UserAction::ConvertTargetPickCAction);
 
 	// Create Context Menu
 	createContextMenu();
@@ -376,7 +373,7 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportImage
 	updateWidgets(AtenWindow::AllTarget);
 
 	// Set some preferences back to their default values
-	prefs.setZMapType(ElementMap::AutoZMap, false);
+	prefs.setZMapType(ElementMap::AutoZMap);
 	prefs.setKeepView(false);
 
 	Messenger::exit("AtenWindow::AtenWindow()");
@@ -416,17 +413,6 @@ void AtenWindow::resizeEvent(QResizeEvent* event)
 {
 	// Update row information in AtomsTable
 	atomsTableRecalculateRowSize();
-}
-
-void AtenWindow::wheelEvent(QWheelEvent* event)
-{
-// 	// Take the wheel event if the mouse was over the AtomsTable, otherwise ignore it
-// 	printf("Geom = %i %i %i %i, pos = %i %i\n", ui.AtomsTable->geometry().x(), ui.AtomsTable->geometry().y(), ui.AtomsTable->geometry().width(), ui.AtomsTable->geometry().height(), event->pos().x(), event->pos().y());
-// 	if (ui.AtomsTable->geometry().contains(ui.AtomsTable->mapFromParent(event->pos())))
-// 	{
-// 		printf("WHeel on atoms table.\n");
-// 	}
-// 	else event->ignore();
 }
 
 /*

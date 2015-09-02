@@ -256,19 +256,26 @@ void Model::selectAll(bool markonly)
 	else
 	{
 		// Here, just add atoms which are not currently selected (i.e. we assume the atom selection flags and selection_ list reflect each other)
-		for (Atom* i = atoms_.first(); i != NULL; i = i->next) if (!i->isSelected())
+		int nChanges = 0;
+		for (Atom* i = atoms_.first(); i != NULL; i = i->next)
 		{
-			i->setSelected(true);
-			// Add the change to the undo state (if there is one)
-			if (recordingState_ != NULL)
+			if (!i->isSelected())
 			{
-				SelectEvent* newchange = new SelectEvent;
-				newchange->set(true, i->id());
-				recordingState_->addEvent(newchange);
+				i->setSelected(true);
+
+				// Add the change to the undo state (if there is one)
+				if (recordingState_ != NULL)
+				{
+					SelectEvent* newchange = new SelectEvent;
+					newchange->set(true, i->id());
+					recordingState_->addEvent(newchange);
+				}
+
+				selection_.add(i);
+				++nChanges;
 			}
-			selection_.add(i);
 		}
-		logChange(Log::Selection);
+		if (nChanges) logChange(Log::Selection);
 	}
 	Messenger::exit("Model::selectAll");
 }
@@ -284,19 +291,25 @@ void Model::selectNone(bool markonly)
 	}
 	else
 	{
-		for (Atom* i = atoms_.first(); i != NULL; i = i->next) if (i->isSelected())
+		int nChanges = 0;
+		for (Atom* i = atoms_.first(); i != NULL; i = i->next)
 		{
-			i->setSelected(false);
-
-			// Add the change to the undo state (if there is one)
-			if (recordingState_ != NULL)
+			if (i->isSelected())
 			{
-				SelectEvent* newchange = new SelectEvent;
-				newchange->set(false, i->id());
-				recordingState_->addEvent(newchange);
+				i->setSelected(false);
+
+				// Add the change to the undo state (if there is one)
+				if (recordingState_ != NULL)
+				{
+					SelectEvent* newchange = new SelectEvent;
+					newchange->set(false, i->id());
+					recordingState_->addEvent(newchange);
+				}
+
+				++nChanges;
 			}
 		}
-		logChange(Log::Selection);
+		if (nChanges) logChange(Log::Selection);
 		selection_.clear();
 	}
 	Messenger::exit("Model::selectNone");

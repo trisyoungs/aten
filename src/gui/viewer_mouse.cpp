@@ -98,6 +98,7 @@ void Viewer::mousePressEvent(QMouseEvent* event)
 	
 	// Activate mode...
 	beginMode(button);
+
 	Messenger::exit("Viewer::mousePressEvent");
 }
 

@@ -188,7 +188,7 @@ void AtenPrefs::on_PrefsOkButton_clicked(bool checked)
 
 	// Copy old preferences values back into main structure, update view and close window
 	parent_.aten().globalLogChange(Log::Style);
-	parent_.updateWidgets(AtenWindow::MainViewTarget); //ATEN2 TODO Any other targets here?
+	parent_.updateWidgets(AtenWindow::MainViewTarget);
 	accept();
 }
 
@@ -200,7 +200,7 @@ void AtenPrefs::on_PrefsCancelButton_clicked(bool checked)
 	Elements().restoreData();
 
 	parent_.aten().globalLogChange(Log::Style);
-	parent_.updateWidgets(AtenWindow::MainViewTarget); //ATEN2 TODO Any other targets here?
+	parent_.updateWidgets(AtenWindow::MainViewTarget);
 	reject();
 }
 

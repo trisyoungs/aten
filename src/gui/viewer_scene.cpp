@@ -158,12 +158,9 @@ void Viewer::renderFullScene(int contextWidth, int contextHeight, int xOffset, i
 	glEnable(GL_TEXTURE_2D);
 	glClear(GL_DEPTH_BUFFER_BIT);
 
-	// Reset local renderGroup_
-	renderGroup_.clear();
-
 	// Set up some useful values
 	nModels = aten_->nVisibleModels();
-	nRows = nModels / nPerRow + ( nModels %nPerRow == 0 ? 0 : 1);
+	nRows = nModels / nPerRow + (nModels %nPerRow == 0 ? 0 : 1);
 	viewPortWidth = ( nModels == 1 ? contextWidth : contextWidth / nPerRow);
 	viewPortHeight = contextHeight / nRows;
 	viewPortAspect = double(viewPortWidth) / double(viewPortHeight);
@@ -182,7 +179,7 @@ void Viewer::renderFullScene(int contextWidth, int contextHeight, int xOffset, i
 		viewPortY = contextHeight-(row+1)*viewPortHeight;
 
 		// Draw on halo for current model
-		if ((m == aten_->currentModel()) && (nModels > 1))
+		if ((!renderingOffScreen_) && (m == aten_->currentModel()) && (nModels > 1))
 		{
 			glViewport(viewPortX, viewPortY, viewPortWidth, viewPortHeight);
 			glMatrixMode(GL_PROJECTION);
@@ -198,8 +195,11 @@ void Viewer::renderFullScene(int contextWidth, int contextHeight, int xOffset, i
 			glEnable(GL_DEPTH_TEST);
 		}
 
+		// Reset local renderGroup_
+		renderGroup_.clear();
+
 		// Render the whole model
-		renderModel(m, viewPortX+xOffset, viewPortY+yOffset, viewPortWidth, viewPortHeight, true);
+		renderModel(m, viewPortX+xOffset, viewPortY+yOffset, viewPortWidth, viewPortHeight, !renderingOffScreen_);
 
 		// Render additional data for active model
 		if (m == aten_->currentModel())
@@ -211,9 +211,8 @@ void Viewer::renderFullScene(int contextWidth, int contextHeight, int xOffset, i
 	// 		renderWindowExtras(source);	// ATEN2 TODO
 		}
 
-		// Render overlays
-	// 	renderModelOverlays(source); // ATEN2 TODO Text labels!
-
+		// Send the local renderGroup
+		renderGroup_.sendToGL(modelTransformationMatrix_);
 
 		// Increase counters
 		++col;
@@ -223,17 +222,9 @@ void Viewer::renderFullScene(int contextWidth, int contextHeight, int xOffset, i
 			++row;
 		}
 	}
-	
-	// Start of QPainter code
-	QBrush nobrush(Qt::NoBrush), solidbrush(Qt::SolidPattern);
-	QPen pen;
-// 	QPainter painter(this);
 
 	// Render active user modes
 // 	if (renderType == OnscreenScene) renderActiveModes(painter, width, height);  ATEN2 TODO
-
-	// Done
-// 	painter.end();
 
 	Messenger::exit("Viewer::renderFullScene");
 }
@@ -242,8 +233,6 @@ void Viewer::renderFullScene(int contextWidth, int contextHeight, int xOffset, i
 void Viewer::initializeGL()
 {
 	Messenger::enter("Viewer::initializeGL");
-	
-        valid_ = true;
 
 	// Setup function pointers to OpenGL extension functions
 	initializeOpenGLFunctions();
@@ -266,6 +255,8 @@ void Viewer::initializeGL()
                 Messenger::warn("VBO extension is requested but not available, so reverting to display lists instead.\n");
                 PrimitiveInstance::setGlobalInstanceType(PrimitiveInstance::ListInstance);
         }
+
+	valid_ = true;
 
 	Messenger::exit("Viewer::initializeGL");
 }

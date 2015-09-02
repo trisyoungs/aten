@@ -23,9 +23,6 @@
 #include "base/messenger.h"
 #include "render/fontinstance.h"
 #include <QOpenGLContext>
-#ifdef __APPLE__
-#include <OpenGL/gl.h>
-#endif
 
 ATEN_USING_NAMESPACE
 
@@ -99,7 +96,6 @@ void RenderGroup::addTriangles(Primitive& targetPrimitive, Matrix& transform, Ve
 	}
 	else wireTrianglePrimitives_.own(pi);
 }
-
 
 // Add triangle primitive
 void RenderGroup::addTriangles(Primitive& targetPrimitive, Matrix& transform, GLenum fillMode, GLfloat lineWidth)

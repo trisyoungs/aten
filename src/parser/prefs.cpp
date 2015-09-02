@@ -124,7 +124,6 @@ Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
 	{ "stickSelectedWidth",		VTypes::DoubleData,		4, false },
 	{ "tempDir",			VTypes::StringData,		0, false },
 	{ "textColour",			VTypes::DoubleData,		4, false },
-	{ "transparentSelection",	VTypes::IntegerData,		0, false },
 	{ "usePixelBuffers",		VTypes::IntegerData,		0, false },
 	{ "vdwCutoff",			VTypes::DoubleData,		0, false },
 	{ "vibrationArrowColour",	VTypes::DoubleData,		4, false },
@@ -481,9 +480,6 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArray
 		case (PreferencesVariable::TextColour):
 			if (hasArrayIndex) rv.set( ptr->colour(Prefs::TextColour)[arrayIndex-1] );
 			else rv.setArray( VTypes::DoubleData, ptr->colour(Prefs::TextColour), 4);
-			break;
-		case (PreferencesVariable::TransparentSelection):
-			rv.set( ptr->transparentSelectionStyle() );
 			break;
 		case (PreferencesVariable::UsePixelBuffers):
 			rv.set( ptr->usePixelBuffers() );
@@ -917,9 +913,6 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue&
 			else if (newValue.arraySize() != -1) for (n=0; n<newValue.arraySize(); ++n) ptr->setColour(Prefs::TextColour, n, newValue.asDouble(n, result));
 			else if (hasArrayIndex) ptr->setColour(Prefs::TextColour, arrayIndex-1, newValue.asDouble(result));
 			else for (n=0; n<4; ++n) ptr->setColour(Prefs::TextColour, n, newValue.asDouble(result));
-			break;
-		case (PreferencesVariable::TransparentSelection):
-			ptr->setTransparentSelectionStyle( newValue.asInteger() );
 			break;
 		case (PreferencesVariable::UsePixelBuffers):
 			ptr->setUsePixelBuffers( newValue.asBool() );

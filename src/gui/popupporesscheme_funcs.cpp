@@ -1,6 +1,6 @@
 /*
-	*** Pores Dock Widget
-	*** src/gui/pores_funcs.cpp
+	*** Popup Widget - Pores Scheme
+	*** src/gui/popupporesscheme_funcs.cpp
 	Copyright T. Youngs 2007-2015
 
 	This file is part of Aten.
@@ -19,109 +19,50 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <QCloseEvent>
+#include "gui/popupporesscheme.h"
 #include "main/aten.h"
 #include "gui/mainwindow.h"
-#include "gui/pores.h"
+#include "methods/partitioningscheme.h"
 #include "methods/partitiondata.h"
-#include "base/sysfunc.h"
+#include "base/namespace.h"
 
-// Static members
-// PartitioningScheme PoresWidget::partitioningScheme_;
+ATEN_USING_NAMESPACE
 
 // Constructor
-PoresWidget::PoresWidget(AtenWindow& parent, Qt::WindowFlags flags) : QDockWidget(&parent, flags), parent_(parent)
+PoresSchemePopup::PoresSchemePopup(AtenWindow& parent, TMenuButton* buttonParent, PartitioningScheme& scheme) : TMenuButtonPopupWidget(buttonParent), parent_(parent), partitioningScheme_(scheme)
 {
 	// Set up interface
 	ui.setupUi(this);
-	
-	// Private variables
-	partitioningScheme_.initialiseAbsolute("Generated Scheme", "Scheme generated from model");
 }
 
-// Show window
-void PoresWidget::showWidget()
+// Update controls (before show()) (virtual)
+void PoresSchemePopup::updateControls()
 {
-	show();
+	refreshing_ = true;
+
+	refreshing_ = false;
 }
 
-// Return the widgets partitioning scheme
-PartitioningScheme &PoresWidget::partitioningScheme()
+// Call named method associated to popup
+bool PoresSchemePopup::callMethod(QString methodName, ReturnValue& rv)
 {
-	return partitioningScheme_;
+	if (methodName == "TEST") return true;
+	else if (methodName == "hideEvent")
+	{
+		return true;
+	}
+	else printf("No method called '%s' is available in this popup.\n", qPrintable(methodName));
+	return false;
 }
 
 /*
- * Drill Tab
+ * Widget Functions
  */
 
-void PoresWidget::on_PoreSelectButton_clicked(bool checked)
+void PoresSchemePopup::on_GenerateSchemeButton_clicked(bool checked)
 {
 	// First check - does the current model have a unit cell?
 	Model* m = parent_.aten().currentModelOrFrame();
-	if (m->cell().type() == UnitCell::NoCell)
-	{
-		Messenger::print("Can't drill pores in a non-periodic model.");
-		return;
-	}
-
-	// Grab some values so we are ready to run the command
-	int nx = ui.ArrayXSpin->value(), ny = ui.ArrayYSpin->value();
-	int face = ui.OriginPlaneCombo->currentIndex()+1;
-	Vec3<double> v(ui.PoreVectorX->value(), ui.PoreVectorY->value(), ui.PoreVectorZ->value());
-	QString geometry = ui.PoreGeometryCombo->currentText();
-	double sizeParam = ui.PoreSizeSpin->value();
-	CommandNode::run(Commands::SelectPores, "cdiiiddd", qPrintable(geometry), sizeParam, nx, ny, face, v.x, v.y, v.z);
-	parent_.updateWidgets(AtenWindow::MainViewTarget);
-}
-
-void PoresWidget::on_PoreSelectAndCutButton_clicked(bool checked)
-{
-	// First check - does the current model have a unit cell?
-	Model* m =parent_.aten().currentModelOrFrame();
-	if (m->cell().type() == UnitCell::NoCell)
-	{
-		Messenger::print("Can't drill pores in a non-periodic model.");
-		return;
-	}
-
-	// Grab some values so we are ready to run the command
-	int nx = ui.ArrayXSpin->value(), ny = ui.ArrayYSpin->value();
-	int face = ui.OriginPlaneCombo->currentIndex()+1;
-	Vec3<double> v(ui.PoreVectorX->value(), ui.PoreVectorY->value(), ui.PoreVectorZ->value());
-	QString geometry = ui.PoreGeometryCombo->currentText();
-	double sizeParam = ui.PoreSizeSpin->value();
-	CommandNode::run(Commands::DrillPores, "cdiiiddd", qPrintable(geometry), sizeParam, nx, ny, face, v.x, v.y, v.z);
-	parent_.updateWidgets(AtenWindow::MainViewTarget);
-}
-
-/*
- * Terminate Tab
- */
-
-void PoresWidget::on_TerminateButton_clicked(bool checked)
-{
-	// First check - are any atoms selected
-	Model* m =parent_.aten().currentModelOrFrame();
-	if (m->nSelected() == 0)
-	{
-		Messenger::print("No atoms selected in current model, so nothing to terminate.");
-		return;
-	}
-
-	// Run the command
-	CommandNode::run(Commands::Terminate, "");
-	parent_.updateWidgets(AtenWindow::MainViewTarget);
-}
-
-/*
- * Scheme Tab
- */
-
-void PoresWidget::on_GenerateSchemeButton_clicked(bool checked)
-{
-	// First check - does the current model have a unit cell?
-	Model* m =parent_.aten().currentModelOrFrame();
 	if (m->cell().type() == UnitCell::NoCell)
 	{
 		Messenger::print("Can't generate a partitioning scheme for a non-periodic model.");
@@ -134,6 +75,8 @@ void PoresWidget::on_GenerateSchemeButton_clicked(bool checked)
 	Vec3<int> npoints(ui.PartitionGridXSpin->value(), ui.PartitionGridYSpin->value(), ui.PartitionGridZSpin->value());
 	double minSizePcnt = ui.MinimumPartitionSizeSpin->value();
 	int atomExtent = ui.AtomExtentSpin->value();
+
+	// Run the command
 	CommandNode::run(Commands::CreateScheme, "ciiidii", qPrintable(name), npoints.x, npoints.y, npoints.z, minSizePcnt, atomExtent, 0);
 	
 	// Update info in window
@@ -149,10 +92,12 @@ void PoresWidget::on_GenerateSchemeButton_clicked(bool checked)
 	ui.PartitionNumberLabel->setText( QString::number(partitioningScheme_.nPartitions()-1) );
 	ui.PartitionVolumeLabel->setText( QString::number(volume, 'f', 2) );
 	ui.PartitionVolumePercentLabel->setText( QString::number(100.0*volume/m->cell().volume(), 'f', 2) + "%" );
+
+	// Update the main window
 	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
-void PoresWidget::on_CopySchemeButton_clicked(bool checked)
+void PoresSchemePopup::on_CopySchemeButton_clicked(bool checked)
 {
 	// First check - does the current model have a unit cell?
 	Model* m =parent_.aten().currentModelOrFrame();
@@ -170,9 +115,4 @@ void PoresWidget::on_CopySchemeButton_clicked(bool checked)
 	int atomExtent = ui.AtomExtentSpin->value();
 	CommandNode::run(Commands::CreateScheme, "ciiidii", qPrintable(name), npoints.x, npoints.y, npoints.z, minSizePcnt, atomExtent, 1);
 	parent_.updateWidgets(AtenWindow::MainViewTarget);
-}
-
-void PoresWidget::closeEvent(QCloseEvent* event)
-{
-	event->accept();
 }

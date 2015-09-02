@@ -131,6 +131,7 @@ bool BuildFragmentsPopup::callMethod(QString methodName, ReturnValue& rv)
 		// Resize columns and rows
 		for (int n=0; n<3; n++) ui.FragmentTree->resizeColumnToContents(n);
 		ui.FragmentTable->resizeRowsToContents();
+		ui.FragmentTable->resizeColumnsToContents();
 	}
 	else printf("No method called '%s' is available in this popup.\n", qPrintable(methodName));
 	return false;
@@ -148,14 +149,8 @@ void BuildFragmentsPopup::on_FragmentTree_currentItemChanged(QTreeWidgetItem* cu
 	if (current == NULL) currentFragment_ = NULL;
 	else
 	{
-		// Cast into TTreeWidgetItem
-		if (current == NULL) currentFragment_ = NULL;
-		else
-		{
-			// If this is a header item in the Tree, the fragment pointer will be NULL
-			// No VTypes::FragmentData exists, so it was stored as a model
-			currentFragment_ = VariantPointer<Fragment>(current->data(0, Qt::UserRole));
-		}
+		currentFragment_ = VariantPointer<Fragment>(current->data(0, Qt::UserRole));
+		parent_.aten().setCurrentFragment(currentFragment_);
 	}
 
 	hide();
@@ -168,14 +163,8 @@ void BuildFragmentsPopup::on_FragmentTable_currentItemChanged(QTableWidgetItem *
 	if (current == NULL) currentFragment_ = NULL;
 	else
 	{
-		// Cast into TTreeWidgetItem
-		if (current == NULL) currentFragment_ = NULL;
-		else
-		{
-			// If this is a header item in the Tree, the fragment pointer will be NULL
-			// No VTypes::FragmentData exists, so it was stored as a model
-			currentFragment_ = VariantPointer<Fragment>(current->data(Qt::UserRole));
-		}
+		currentFragment_ = VariantPointer<Fragment>(current->data(Qt::UserRole));
+		parent_.aten().setCurrentFragment(currentFragment_);
 	}
 	
 	hide();

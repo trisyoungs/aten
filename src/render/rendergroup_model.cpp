@@ -30,7 +30,7 @@
 ATEN_USING_NAMESPACE
 
 // Render bond
-void RenderGroup::createBond(PrimitiveSet& primitiveSet, Matrix A, Vec3<double> vij, Atom* i, Prefs::DrawStyle style_i, Vec4<GLfloat>& colour_i, double radius_i, Atom* j, Prefs::DrawStyle style_j, Vec4<GLfloat>& colour_j, double radius_j, Bond::BondType bt, double selscale, Bond* b, bool transparentSel)
+void RenderGroup::createBond(PrimitiveSet& primitiveSet, Matrix A, Vec3< double > vij, Atom* i, Prefs::DrawStyle style_i, Vec4< GLfloat >& colour_i, double radius_i, Atom* j, Prefs::DrawStyle style_j, Vec4< GLfloat >& colour_j, double radius_j, Bond::BondType bt, double selscale, Bond* b)
 {
 	double dvisible, selvisible, factor, rij, phi;
 	Vec3<double> ri, rj, localx, localy, localz, stickpos, dx, normz;
@@ -125,16 +125,7 @@ void RenderGroup::createBond(PrimitiveSet& primitiveSet, Matrix A, Vec3<double> 
 			break;
 		case (Prefs::TubeStyle):
 			addTriangles(primitiveSet.bond(style_i, bt), A, colour_i);
-			if (i->isSelected() && (selvisible > 0.0))
-			{
-				if (transparentSel)
-				{
-					colour_i.w = 0.5f;
-					addTriangles(primitiveSet.selectedBond(style_i, bt), A, colour_i);
-					colour_i.w = alpha_i;
-				}
-				else addTriangles(primitiveSet.selectedBond(style_i, bt), A, colour_i, GL_LINE);
-			}
+			if (i->isSelected() && (selvisible > 0.0)) addTriangles(primitiveSet.selectedBond(style_i, bt), A, colour_i, GL_LINE);
 			break;
 		case (Prefs::SphereStyle):
 		case (Prefs::ScaledStyle):
@@ -144,13 +135,7 @@ void RenderGroup::createBond(PrimitiveSet& primitiveSet, Matrix A, Vec3<double> 
 				// Move to edge of selected atom and apply selection bond scaling
 				A.applyTranslation(0.0, 0.0, (selscale*radius_i-radius_i) / dvisible);
 				A.applyScalingZ(selvisible/dvisible);
-				if (transparentSel)
-				{
-					colour_i.w = 0.5f;
-					addTriangles(primitiveSet.selectedBond(style_i, bt), A, colour_i);
-					colour_i.w = alpha_i;
-				}
-				else addTriangles(primitiveSet.selectedBond(style_i, bt), A, colour_i, GL_LINE);
+				addTriangles(primitiveSet.selectedBond(style_i, bt), A, colour_i, GL_LINE);
 			}
 			break;
 	}
@@ -190,13 +175,7 @@ void RenderGroup::createBond(PrimitiveSet& primitiveSet, Matrix A, Vec3<double> 
 			if (j->isSelected())
 			{
 				B.applyTranslation(0.0, 0.0, (selscale*radius_j-radius_j) / dvisible);
-				if (transparentSel)
-				{
-					colour_j.w = 0.5f;
-					addTriangles(primitiveSet.selectedBond(style_j, bt), B, colour_j);
-					colour_j.w = alpha_j;
-				}
-				else addTriangles(primitiveSet.selectedBond(style_j, bt), B, colour_j, GL_LINE);
+				addTriangles(primitiveSet.selectedBond(style_j, bt), B, colour_j, GL_LINE);
 			}
 			break;
 		case (Prefs::SphereStyle):
@@ -206,13 +185,7 @@ void RenderGroup::createBond(PrimitiveSet& primitiveSet, Matrix A, Vec3<double> 
 			{
 				B.applyTranslation(0.0, 0.0, (selscale*radius_j-radius_j) / dvisible);
 				B.applyScalingZ(selvisible / dvisible);
-				if (transparentSel)
-				{
-					colour_j.w = 0.5f;
-					addTriangles(primitiveSet.selectedBond(style_j, bt), B, colour_j);
-					colour_j.w = alpha_j;
-				}
-				else addTriangles(primitiveSet.selectedBond(style_j, bt), B, colour_j, GL_LINE);
+				addTriangles(primitiveSet.selectedBond(style_j, bt), B, colour_j, GL_LINE);
 			}
 			break;
 	}
@@ -242,7 +215,6 @@ void RenderGroup::createAtomsAndBonds(PrimitiveSet& primitiveSet, Model* source,
 	globalstyle = prefs.renderStyle();
 	selscale = prefs.selectionScale();
 	for (n=0; n<Prefs::nDrawStyles; ++n) aradius[n] = prefs.atomStyleRadius( (Prefs::DrawStyle) n);
-	bool transparentSel = prefs.transparentSelectionStyle();
 	prefs.copyColour(Prefs::TextColour, penColour);
 
 	// Atoms and Bonds
@@ -307,16 +279,7 @@ void RenderGroup::createAtomsAndBonds(PrimitiveSet& primitiveSet, Model* source,
 			A = atomTransform;
 			A.applyScaling(radius_i, radius_i, radius_i);
 			addTriangles(primitiveSet.atom(), A, colour_i);
-			if (i->isSelected())
-			{
-				if (transparentSel)
-				{
-					colour_i.w = 0.5f;
-					addTriangles(primitiveSet.selectedAtom(), A, colour_i);
-					colour_i.w = alpha_i;
-				}
-				else addTriangles(primitiveSet.selectedAtom(), A, penColour, GL_LINE);
-			}
+			if (i->isSelected()) addTriangles(primitiveSet.selectedAtom(), A, penColour, GL_LINE);
 		}
 
 		// Bonds
@@ -364,7 +327,7 @@ void RenderGroup::createAtomsAndBonds(PrimitiveSet& primitiveSet, Model* source,
 			v = source->cell().mimVector(i, j);
 			
 			// Render bond
-			createBond(primitiveSet, atomTransform, v, i, style_i, colour_i, radius_i, j, style_j, colour_j, radius_j, rb->item->type(), selscale, rb->item, transparentSel);
+			createBond(primitiveSet, atomTransform, v, i, style_i, colour_i, radius_i, j, style_j, colour_j, radius_j, rb->item->type(), selscale, rb->item);
 		}
 		
 	}

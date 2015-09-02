@@ -20,6 +20,7 @@
 */
 
 #include "main/aten.h"
+#include "gui/mainwindow.h"
 #include <QDir>
 
 ATEN_USING_NAMESPACE
@@ -200,4 +201,16 @@ void Aten::increaseFragmentBondId()
 int& Aten::fragmentBondId()
 {
 	return fragmentBondId_;
+}
+
+// Update all fragment icons
+void Aten::updateFragmentIcons()
+{
+	for (FragmentGroup* fg = fragmentGroups_.first(); fg != NULL; fg = fg->next)
+	{
+		for (Fragment* fragment = fg->fragments(); fragment != NULL; fragment = fragment->next)
+		{
+			fragment->masterModel()->setIcon(atenWindow_->modelPixmap(fragment->masterModel(), QSize(64,64)));
+		}
+	}
 }

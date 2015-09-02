@@ -21,6 +21,7 @@
 
 #include "gui/texponentialspin.hui"
 #include <QLineEdit>
+#include <stdio.h>
 
 // Constructor
 TExponentialSpin::TExponentialSpin(QWidget* parent) : QDoubleSpinBox(parent)
@@ -67,6 +68,7 @@ bool TExponentialSpin::clamp()
 // Create text from current value, and display in lineEdit
 void TExponentialSpin::updateText(int precision)
 {
+// 	printf("Here we are in updateText, setting [%s].\n", qPrintable(value_.text(precision)));
 	lineEdit()->setText(value_.text(precision));
 }
 

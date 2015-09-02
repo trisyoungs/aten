@@ -48,8 +48,6 @@ Viewer::Viewer(QWidget* parent) : QOpenGLWidget(parent)
 	atomClicked_ = NULL;
 	pickEnabled_ = false;
 	actionBeforePick_ = UserAction::NoAction;
-	pickAtomsCallback_ = NULL;
-	nAtomsToPick_ = -1;
 
 	// Mouse Input
 	for (int i=0; i<3; i++) mouseButton_[i] = false;
@@ -101,23 +99,6 @@ GLsizei Viewer::contextHeight() const
 GLsizei Viewer::contextWidth() const
 {
 	return contextWidth_;
-}
-
-// Probe features
-void Viewer::probeFeatures()
-{
-	// Probe this format!
-	QSurfaceFormat format = context()->format();
-	Messenger::print(Messenger::Verbose, "QGLFormat: Alpha buffer is %s.", format.hasAlpha() ? "enabled" : "disabled");
-	// ATEN2 TODO
-// 	Messenger::print(Messenger::Verbose, "QGLFormat: Accumulation buffer is %s.", format.a() ? "enabled" : "disabled");
-// 	Messenger::print(Messenger::Verbose, "QGLFormat: Depth buffer is %s.", format.depth() ? "enabled" : "disabled");
-// 	Messenger::print(Messenger::Verbose, "QGLFormat: Double-buffering is %s.", format.doubleBuffer() ? "enabled" : "disabled");
-// 	Messenger::print(Messenger::Verbose, "QGLFormat: Direct rendering is %s.", format.directRendering() ? "enabled" : "disabled");
-// 	Messenger::print(Messenger::Verbose, "QGLFormat: RGBA colour mode is %s.", format.rgba() ? "enabled" : "disabled");
-// 	Messenger::print(Messenger::Verbose, "QGLFormat: Multisample buffer is %s.", format.sampleBuffers() ? "enabled" : "disabled");
-// 	Messenger::print(Messenger::Verbose, "QGLFormat: Stencil buffer is %s.", format.stencil() ? "enabled" : "disabled");
-// 	Messenger::print(Messenger::Verbose, "QGLWidget: Autoswap buffers is %s.", autoBufferSwap() ? "enabled" : "disabled");
 }
 
 // Check for GL error

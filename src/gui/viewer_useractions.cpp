@@ -114,22 +114,23 @@ void Viewer::renderUserActions(Model* source)
 	// Draw on the selection highlights (for atoms in the canvas' pickedAtoms list)
 	prefs.copyColour(Prefs::TextColour, colour_i);
 	glColor4f(colour_i.x, colour_i.y, colour_i.z, colour_i.w);
+	glEnable(GL_DEPTH_TEST);
 	for (RefListItem<Atom,int>* ri = pickedAtoms_.first(); ri != NULL; ri = ri->next)
 	{
 		// Get Atom pointer
 		Atom* i = ri->item;
 
-		// Set a matrix to move to the local atom position
-		A.createTranslation(i->r());
-
-		// Draw a wireframe sphere at the atoms position
+		// Get radius information
 		style_i = (prefs.renderStyle() == Prefs::OwnStyle ? i->style() : prefs.renderStyle());
 		radius_i = prefs.atomStyleRadius(style_i);
 		if (style_i == Prefs::ScaledStyle) radius_i *= Elements().atomicRadius(i->element());
+
+		// Create matrix
+		A.createTranslation(i->r());
 		A.applyScaling(radius_i, radius_i, radius_i);
-		A *= modelTransformationMatrix_;
-		glLoadMatrixd(A.matrix());
-		primitives_[primitiveSet_].selectedAtom();
+
+		// Draw arrow indicator primitive
+		renderGroup_.addTriangles(primitives_[primitiveSet_].pickedAtom(), A, colour_i);
 	}
 
 	// Active user actions
@@ -181,7 +182,7 @@ void Viewer::renderUserActions(Model* source)
 					prefs.colourScale[2].colour(atomClicked_->f().magnitude(), colour_i);
 					break;
 				case (Prefs::OwnScheme):
-						atomClicked_->copyColour(colour_i);
+					atomClicked_->copyColour(colour_i);
 					break;
 				default:
 					break;
@@ -192,12 +193,11 @@ void Viewer::renderUserActions(Model* source)
 			A.createTranslation(pos);
 			
 			// Render new (temporary) bond
-			// ATEN2 TODO Add a RenderGroup to Viewer, in order to store the bond primitive?
-// 			renderBond(GuiObject, GuiObject, A, v, atomClicked_, style_i, colour_i, radius_i, j, style_j, colour_j, radius_j, bt, prefs.selectionScale(), NULL, false);
+			renderGroup_.createBond(primitives_[primitiveSet_], A, v, atomClicked_, style_i, colour_i, radius_i, j, style_j, colour_j, radius_j, bt, prefs.selectionScale(), NULL);
 			
 			// Draw text showing distance
 			text.sprintf("r = %f ", v.magnitude());
-// 			renderTextPrimitive(rMouseLast_.x, contextHeight_-rMouseLast_.y, text.get(), 0x212b);
+			renderGroup_.addOverlayText(QString::number(v.magnitude()) + " " + QChar(0x212b), v, 0.2);
 			break;
 	}
 	

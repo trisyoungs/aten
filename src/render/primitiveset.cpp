@@ -207,6 +207,12 @@ Primitive& PrimitiveSet::halo()
 	return halo_;
 }
 
+// Return picked atom primitive
+Primitive& PrimitiveSet::pickedAtom()
+{
+	return pickedAtom_;
+}
+
 // Create and return new dynamic Primitive
 Primitive* PrimitiveSet::createDynamicPrimitive()
 {
@@ -273,6 +279,7 @@ void PrimitiveSet::recreatePrimitives()
 	cellAxes_.forgetAll();
 	rotationGlobe_.forgetAll();
 	halo_.forgetAll();
+	pickedAtom_.forgetAll();
 
 	// To clean up following code, grab radii here
 	for (n=0; n<Prefs::nDrawStyles; ++n)
@@ -408,7 +415,14 @@ void PrimitiveSet::recreatePrimitives()
 	rotationGlobeAxes_.plotCylinder(0.0f, 0.0f, 0.7f, 0.0f, 0.0f, 0.3f, 0.2f, 0.0f, 8, 10, false, false, true, Vec4<GLfloat>(0.0f, 0.0f, 1.0f, 1.0f));
 	halo_.initialise(GL_TRIANGLES, false);
 	halo_.plotHalo(0.6f, 1.0f, 32);
-	
+	pickedAtom_.initialise(GL_TRIANGLES, false);
+	pickedAtom_.plotCylinder(1.5f, 0.0f, 0.0f, -0.25f, 0.0f, 0.0f, 0.2f, 0.0f, 2, 10, true, false);
+	pickedAtom_.plotCylinder(-1.5f, 0.0f, 0.0f, 0.25f, 0.0f, 0.0f, 0.2f, 0.0f, 2, 10, true, false);
+	pickedAtom_.plotCylinder(0.0, 1.5f, 0.0f, 0.0f, -0.25f, 0.0f, 0.2f, 0.0f, 2, 10, true, false);
+	pickedAtom_.plotCylinder(0.0, -1.5f, 0.0f, 0.0f, 0.25f, 0.0f, 0.2f, 0.0f, 2, 10, true, false);
+	pickedAtom_.plotCylinder(0.0, 0.0f, 1.5f, 0.0f, 0.0f, -0.25f, 0.2f, 0.0f, 2, 10, true, false);
+	pickedAtom_.plotCylinder(0.0, 0.0f, -1.50f, 0.0f, 0.0f, 0.25f, 0.2f, 0.0f, 2, 10, true, false);
+
 	Messenger::exit("PrimitiveSet::recreatePrimitives");
 }
 
@@ -443,6 +457,7 @@ void PrimitiveSet::pushInstance(const QOpenGLContext* context)
 	rotationGlobe_.pushInstance(context);
 	rotationGlobeAxes_.pushInstance(context);
 	halo_.pushInstance(context);
+	pickedAtom_.pushInstance(context);
 
 	// Factory objects
 	for (Primitive* p = dynamicPrimitives_.first(); p != NULL; p = p->next) p->pushInstance(context);
@@ -482,6 +497,7 @@ void PrimitiveSet::popInstance(const QOpenGLContext* context)
 	rotationGlobe_.popInstance(context);
 	rotationGlobeAxes_.popInstance(context);
 	halo_.popInstance(context);
+	pickedAtom_.popInstance(context);
 
 	// Factory objects
 	for (Primitive* p = dynamicPrimitives_.first(); p != NULL; p = p->next) p->popInstance(context);

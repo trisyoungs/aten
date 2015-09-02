@@ -355,10 +355,9 @@ void Grid::setLimits(double d)
 	else if (d > maximum_) maximum_ = d;
 	lowerPrimaryCutoff_ = 0.5 * maximum_;
 	upperPrimaryCutoff_ = maximum_;
-	lowerSecondaryCutoff_ = 0.5 * minimum_;
-	upperSecondaryCutoff_ = minimum_;
+	lowerSecondaryCutoff_ = 0.5 * maximum_;
+	upperSecondaryCutoff_ = maximum_;
 }
-
 
 // Calculate sums
 void Grid::calculateSums()
