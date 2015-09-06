@@ -2,60 +2,61 @@
 
 # Create benzene model
 int n;
-newmodel("benzene");
+newModel("benzene");
 for (n=1; n<7; ++n)
 {
 	move(0, 1.39, 0);
-	newatom(C);
-	rotz(-60.0);
+	newAtom(C);
+	rotZ(-60.0);
 	move(0, 1.0, 0);
-	newatom(H);
+	newAtom(H);
 	move(0, -1.0, 0);
-	rotz(120);
+	rotZ(120);
 }
 rebond();
-selectall();
+selectAll();
 copy();
-setupcomponent("number", 1, 200);
+setupComponent("number", 1, 200);
 
 # Create fluorobenzene model
-newmodel("fluorobenzene");
+newModel("fluorobenzene");
 paste();
-selectnone();
+selectNone();
 select(H);
 transmute(F);
-setupcomponent("number", 1, 200);
+setupComponent("number", 1, 200);
 
 # Create naphthalene model
-newmodel("naphthalene");
+newModel("naphthalene");
 for (n=1; n<11; ++n)
 {
 	chain(C, n%2+1);
-	if (n%5 == 0) rotz(-60.0);
-	else rotz(60.0);
+	if (n%5 == 0) rotZ(-60.0);
+	else rotZ(60.0);
 	move(0, 1.39, 0);
 }
-newbond(1, 10, "double");
-newbond(5, 10);
-addhydrogen();
-setupcomponent("number", 1, 100);
+newBond(1, 10, "double");
+newBond(5, 10);
+addHydrogen();
+setupComponent("number", 1, 100);
 
 # Create mixture model
-newmodel("mixture");
+newModel("mixture");
 cell(100, 60, 25, 90, 90, 90);
 disorder("None");
 
 # Fold molecules into cell and add ellipsoids
-foldmolecules();
-selectpattern(1);
-aten.prefs.glyphcolour = {1.0, 1.0, 1.0, 1.0};
-autoellipsoids();
-selectpattern(2);
-aten.prefs.glyphcolour = {0.2, 1.0, 0.2, 1.0};
-autoellipsoids();
-selectpattern(3);
-aten.prefs.glyphcolour = {0.0, 0.0, 1.0, 1.0};
-autoellipsoids();
+foldMolecules();
+selectPattern(1);
+aten.prefs.glyphColour = {1.0, 1.0, 1.0, 1.0};
+autoEllipsoids();
+selectPattern(2);
+aten.prefs.glyphColour = {0.2, 1.0, 0.2, 1.0};
+autoEllipsoids();
+selectPattern(3);
+aten.prefs.glyphColour = {0.0, 0.0, 1.0, 1.0};
+autoEllipsoids();
+
 # Hide original atoms
-selectall();
+selectAll();
 hide();

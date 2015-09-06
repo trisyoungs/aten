@@ -37,23 +37,11 @@
 #include "base/glyph.h"
 #include "base/namespace.h"
 
-// Forward Declarations (Aten) 1 - Main Form and Windows
+// Forward Declarations
 class AtenAbout;
 class AtenPrefs;
 class AtenForcefieldEditor;
 class AtenProgress;
-
-// Forward Declarations (Aten) 2 - Dialogs
-class AtenLoadModel;
-class AtenSelectFilter;
-class AtenSelectPattern;
-class AtenSelectElement;
-class AtenSelectVariable;
-class AtenViewBasis;
-class AtenViewEigenvector;
-class AtenZMatrix;
-
-// Forward Declarations (Aten) 3 - Dock Widgets and Wizards
 class CommandWidget;
 class ForcefieldsWidget;
 class GlyphsWidget;

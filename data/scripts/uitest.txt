@@ -4,9 +4,7 @@
 # use the 'defaultDialog()' function to get the current scope's permanent dialog, and use/set the 'created' property
 # as shown here.
 
-Dialog ui = defaultDialog();
-
-if (!ui.created)
+void createDefaultDialog(Dialog ui)
 {
 	Widget w, group, w2, tabs, page;
 
@@ -51,14 +49,14 @@ if (!ui.created)
 	w.onInteger(1, 1, "set", "combo", "items", "Bach,Chopin,Rachmaninov");
 	ui.widget("contentsgroup").onInteger(1, 3, "sendbool", "group3", "disabled");
 	ui.widget("contentsgroup").onInteger(4, 4, "activate", "musicgroup", "value");
-
-	# Flag that the UI has been created, so we don't do it again
-	ui.created = TRUE;
 }
 
 # Show (execute) the dialog to allow user interaction. The show() function returns 0 for 'canceled' or '1' for 'ok'
-if (ui.show())
+if (!showDefaultDialog()) error("Dialog canceled.\n");
+else
 {
+        Dialog ui = defaultDialog();
+
 	# Print out status of the widgets
 	printf("Widget Status:\n\n");
 
@@ -67,4 +65,3 @@ if (ui.show())
 	printf("Contents group index    : %i\n", ui.asInteger("contentsgroup"));
 	printf("Music group index       : %i\n", ui.asInteger("musicgroup"));
 }
-else printf("Canceled.\n");

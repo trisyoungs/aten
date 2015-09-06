@@ -43,6 +43,7 @@ Aten::Aten() : commands_(*this)
 	CommandParser::setAten(this);
 	Variable::setAten(this);
 	Tree::setAten(this);
+	Elements().setAten(this);
 
 	// Models
 	modelId_ = 0;

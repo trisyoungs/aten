@@ -1,5 +1,5 @@
 /*
-	*** Element definitions
+	*** Element Definitions
 	*** src/base/elements.cpp
 	Copyright T. Youngs 2007-2015
 
@@ -24,6 +24,7 @@
 #include "ff/forcefield.h"
 #include "base/forcefieldatom.h"
 #include "base/atom.h"
+#include "main/aten.h"
 #include <QPainter>
 
 ATEN_BEGIN_NAMESPACE
@@ -312,6 +313,9 @@ const Element ElementMap::defaultElements_[] = {
 // Constructor
 ElementMap::ElementMap()
 {
+	// Private variables
+	aten_ = NULL;
+
 	// Determine number of defined elements, and double-check against MAXELEMENTS constant
 	nElements_ = sizeof(defaultElements_) / sizeof(defaultElements_[0]);
 	if (nElements_ > MAXELEMENTS) printf("Warning - Number of internally-defined elements exceeds MAXELEMENTS constant.\n");
@@ -332,6 +336,16 @@ ElementMap::~ElementMap()
 {
 	delete[] backupElements_;
 	delete[] elements_;
+}
+
+/*
+ * Pointer to Aten
+ */
+
+// Set pointer to main Aten object
+void ElementMap::setAten(Aten* aten)
+{
+	aten_ = aten;
 }
 
 /*
@@ -483,11 +497,12 @@ int ElementMap::nameToZ(QString alpha) const
 }
 
 // Convert string from fftype to element number
-int ElementMap::ffToZ(QString s, Forcefield* firstFF) const
+int ElementMap::ffToZ(QString s) const
 {
+	if (!aten_) return -1;
 	ForcefieldAtom* ffa;
 	int result = -1;
-	for (Forcefield* ff = firstFF; ff != NULL; ff = ff->next)
+	for (Forcefield* ff = aten_->forcefields(); ff != NULL; ff = ff->next)
 	{
 		ffa = ff->findType(s);
 		// Found a match, so find out what element it is...
@@ -498,7 +513,7 @@ int ElementMap::ffToZ(QString s, Forcefield* firstFF) const
 }
 
 // Search for element named 'query' in the list of known elements
-int ElementMap::find(QString query, ElementMap::ZMapType zmt, Forcefield* firstFF) const
+int ElementMap::find(QString query, ElementMap::ZMapType zmt) const
 {
 	// Get the element number from the element name provided.
 	Messenger::enter("ElementMap::find");
@@ -513,7 +528,7 @@ int ElementMap::find(QString query, ElementMap::ZMapType zmt, Forcefield* firstF
 	// Attempt conversion of the string first from any defined mappings
 	result = mappings_.data(query);
 	if (result != -1) return result;
-	
+
 	// Convert the query string according to the specified rule
 	switch (zmt)
 	{
@@ -529,7 +544,7 @@ int ElementMap::find(QString query, ElementMap::ZMapType zmt, Forcefield* firstF
 			result = nameToZ(query);
 			if (result != -1) break;
 			// Finally, try FF conversion
-			result = ffToZ(query, firstFF);
+			result = ffToZ(query);
 			break;
 		// Name search
 		case (ElementMap::NameZMap):
@@ -537,7 +552,7 @@ int ElementMap::find(QString query, ElementMap::ZMapType zmt, Forcefield* firstF
 			break;
 		// Search loaded forcefields for atom names
 		case (ElementMap::ForcefieldZMap):
-			result = ffToZ(query, firstFF);
+			result = ffToZ(query);
 			// Attempt an alpha conversion if the FF conversion failed
 			if (result == -1) result = alphaToZ(query);
 			break;

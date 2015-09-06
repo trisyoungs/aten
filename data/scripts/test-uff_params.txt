@@ -11,7 +11,7 @@ int errors = 0;
 double tol = 0.2;	# Percentage tolerance
 
 # Define some commonly-used functions
-int testbond(double tol, int i, int j, string si, string sj, double d1, double d2, double d3, double d4, double d5, double d6)
+int testBond(double tol, int i, int j, string si, string sj, double d1, double d2, double d3, double d4, double d5, double d6)
 {
 	int n, result = 0;
 	double diff[6], data[6] = { d1, d2, d3, d4, d5, d6 };
@@ -20,9 +20,9 @@ int testbond(double tol, int i, int j, string si, string sj, double d1, double d
 	{
 		for (n=1; n<=6; ++n) diff[n] =  ffb.data[n] - data[n];
 		printf("            Bond %s-%s: generated (expected) parameters are:\n", si, sj);
-		for (n=1; n<=ffb.nparams; ++n)
+		for (n=1; n<=ffb.nParams; ++n)
 		{
-			printf("    %2i %12s %14.5f (%14.5f)   [error = %8.4f%%]", n, ffb.dataname[n], ffb.data[n], data[n], (data[n]/ffb.data[n] * 100.0)-100.0);
+			printf("    %2i %12s %14.5f (%14.5f)   [error = %8.4f%%]", n, ffb.dataName[n], ffb.data[n], data[n], (data[n]/ffb.data[n] * 100.0)-100.0);
 			if (abs(data[n]/ffb.data[n]*100.0-100.0) < tol) printf("  Ok\n");
 			else { printf("  *** ERROR\n"); result++; }
 		}
@@ -34,7 +34,7 @@ int testbond(double tol, int i, int j, string si, string sj, double d1, double d
 	}
 	return result;
 }
-int testangle(double tol, int i, int j, int k, string si, string sj, string sk, double d1, double d2, double d3, double d4, double d5, double d6)
+int testAngle(double tol, int i, int j, int k, string si, string sj, string sk, double d1, double d2, double d3, double d4, double d5, double d6)
 {
 	int n, result = 0;
 	double diff[6], data[6] = { d1, d2, d3, d4, d5, d6 };
@@ -43,9 +43,9 @@ int testangle(double tol, int i, int j, int k, string si, string sj, string sk, 
 	{
 		for (n=1; n<=6; ++n) diff[n] =  ffb.data[n] - data[n];
 		printf("        Angle %s-%s-%s: generated (expected) parameters are:\n", si, sj, sk);
-		for (n=1; n<=ffb.nparams; ++n)
+		for (n=1; n<=ffb.nParams; ++n)
 		{
-			printf("    %2i %12s %14.5f (%14.5f)   [error = %8.4f%%]", n, ffb.dataname[n], ffb.data[n], data[n], (data[n]/ffb.data[n] * 100.0)-100.0);
+			printf("    %2i %12s %14.5f (%14.5f)   [error = %8.4f%%]", n, ffb.dataName[n], ffb.data[n], data[n], (data[n]/ffb.data[n] * 100.0)-100.0);
 			if (abs(data[n]/ffb.data[n]*100.0-100.0) < tol) printf("  Ok\n");
 			else { printf("  *** ERROR\n"); result++; }
 		}
@@ -57,7 +57,7 @@ int testangle(double tol, int i, int j, int k, string si, string sj, string sk, 
 	}
 	return result;
 }
-int testtorsion(double tol, int i, int j, int k, int l, string si, string sj, string sk, string sl,  double d1, double d2, double d3, double d4, double d5, double d6)
+int testTorsion(double tol, int i, int j, int k, int l, string si, string sj, string sk, string sl,  double d1, double d2, double d3, double d4, double d5, double d6)
 {
 	int n, result = 0;
 	double diff[6], data[6] = { d1, d2, d3, d4, d5, d6 };
@@ -66,9 +66,9 @@ int testtorsion(double tol, int i, int j, int k, int l, string si, string sj, st
 	{
 		for (n=1; n<=6; ++n) diff[n] =  ffb.data[n] - data[n];
 		printf("   Torsion %s-%s-%s-%s: generated (expected) parameters are:\n", si, sj, sk, sl);
-		for (n=1; n<=ffb.nparams; ++n)
+		for (n=1; n<=ffb.nParams; ++n)
 		{
-			printf("    %2i %12s %14.5f (%14.5f)   [error = %8.4f%%]", n, ffb.dataname[n], ffb.data[n], data[n], (data[n]/ffb.data[n] * 100.0)-100.0);
+			printf("    %2i %12s %14.5f (%14.5f)   [error = %8.4f%%]", n, ffb.dataName[n], ffb.data[n], data[n], (data[n]/ffb.data[n] * 100.0)-100.0);
 			if (abs(data[n]/ffb.data[n]*100.0-100.0) < tol) printf("  Ok\n");
 			else { printf("  *** ERROR\n"); result++; }
 		}
@@ -80,11 +80,11 @@ int testtorsion(double tol, int i, int j, int k, int l, string si, string sj, st
 	}
 	return result;
 }
-int testtype(int id, string name)
+int testType(int id, string name)
 {
 	int result = 1;
 	atom i = aten.model.atoms[id];
-	if (i == NULL) printf("Invalid atom ID (%i) passed to testtype.", id);
+	if (i == NULL) printf("Invalid atom ID (%i) passed to testType.", id);
 	else if (i.type == NULL) printf("  Atom %2i does not have an assigned type.", id);
 	else if (i.type.name != name) printf("  Atom %2i assigned type DOES NOT match expected type (%s)", id, name); 
 	else
@@ -96,7 +96,7 @@ int testtype(int id, string name)
 	else printf("  *** ERROR\n");
 	return result;
 }
-int testvdw(double tol, int id, string si, double d1, double d2, double d3, double d4, double d5, double d6)
+int testVdw(double tol, int id, string si, double d1, double d2, double d3, double d4, double d5, double d6)
 {
 	int n, result = 0;
 	double diff[6], data[6] = { d1, d2, d3, d4, d5, d6 };
@@ -105,9 +105,9 @@ int testvdw(double tol, int id, string si, double d1, double d2, double d3, doub
 	{
 		for (n=1; n<=6; ++n) diff[n] =  ffa.data[n] - data[n];
 		printf("          Atomtype %5s: generated (expected) parameters are:\n", si);
-		for (n=1; n<=ffa.nparams; ++n)
+		for (n=1; n<=ffa.nParams; ++n)
 		{
-			printf("    %2i %12s %14.5f (%14.5f)   [error = %8.4f%%]", n, ffa.dataname[n], ffa.data[n], data[n], (data[n]/ffa.data[n]*100.0)-100.0);
+			printf("    %2i %12s %14.5f (%14.5f)   [error = %8.4f%%]", n, ffa.dataName[n], ffa.data[n], data[n], (data[n]/ffa.data[n]*100.0)-100.0);
 			if (abs(data[n]/ffa.data[n]*100.0-100.0) < tol) printf("  Ok\n");
 			else { printf("  *** ERROR\n"); result++; }
 		}
@@ -127,13 +127,13 @@ string water_types[3] = { "O_3", "H_", "H_" };
 loadModel("data/test/water.xyz");
 typeModel();
 # Check assigned atom types
-for (n=1; n<=aten.model.natoms(); ++n) errors += testtype(n, water_types[n]);
+for (n=1; n<=aten.model.nAtoms(); ++n) errors += testType(n, water_types[n]);
 # Create and check intramolecular terms
-errors += testbond(tol,1,2, water_types[1], water_types[2], 281798.9*2.0, 0.9903, 0, 0, 0, 0 ); 
-errors += testangle(tol,2,1,3, water_types[2], water_types[1], water_types[3], 60637.511, 0.300, 0.267, 0.267, 0.0, 0.0 );
+errors += testBond(tol,1,2, water_types[1], water_types[2], 281798.9*2.0, 0.9903, 0, 0, 0, 0 ); 
+errors += testAngle(tol,2,1,3, water_types[2], water_types[1], water_types[3], 60637.511, 0.300, 0.267, 0.267, 0.0, 0.0 );
 # Create and check VDW types
-errors += testvdw(tol,1, water_types[1], 30.193, 3.118, 0.0, 0.0, 0.0, 0.0);
-errors += testvdw(tol,2, water_types[2], 22.142, 2.571, 0.0, 0.0, 0.0, 0.0);
+errors += testVdw(tol,1, water_types[1], 30.193, 3.118, 0.0, 0.0, 0.0, 0.0);
+errors += testVdw(tol,2, water_types[2], 22.142, 2.571, 0.0, 0.0, 0.0, 0.0);
 
 printf("\n=================================\n");
 printf("Test 2) Methane\n");
@@ -144,13 +144,13 @@ newAtom(C,0,0,0);
 addHydrogen();
 typeModel();
 # Check assigned atom types
-for (n=1; n<=aten.model.natoms(); ++n) errors += testtype(n, methane_types[n]);
+for (n=1; n<=aten.model.nAtoms(); ++n) errors += testType(n, methane_types[n]);
 # Create and check intramolecular terms
-errors += testbond(tol,1,2, methane_types[1], methane_types[2], 166599.6*2.0, 1.1094, 0, 0, 0, 0 ); 
-errors += testangle(tol,2,1,3, methane_types[2], methane_types[1], methane_types[3], 37992.232, 0.344, 0.375, 0.281, 0.0, 0.0 );
+errors += testBond(tol,1,2, methane_types[1], methane_types[2], 166599.6*2.0, 1.1094, 0, 0, 0, 0 ); 
+errors += testAngle(tol,2,1,3, methane_types[2], methane_types[1], methane_types[3], 37992.232, 0.344, 0.375, 0.281, 0.0, 0.0 );
 # Create and check VDW types
-errors += testvdw(tol,1, methane_types[1], 52.838, 3.431, 0.0, 0.0, 0.0, 0.0);
-errors += testvdw(tol,2, methane_types[2], 22.142, 2.571, 0.0, 0.0, 0.0, 0.0);
+errors += testVdw(tol,1, methane_types[1], 52.838, 3.431, 0.0, 0.0, 0.0, 0.0);
+errors += testVdw(tol,2, methane_types[2], 22.142, 2.571, 0.0, 0.0, 0.0, 0.0);
 
 printf("\n=================================\n");
 printf("Test 3) Benzene\n");
@@ -160,16 +160,16 @@ loadScript("data/scripts/benzene.txt", "benzene");
 runScript("benzene");
 typeModel();
 # Check assigned atom types
-for (n=1; n<=aten.model.natoms(); ++n) errors += testtype(n, benzene_types[n]);
+for (n=1; n<=aten.model.nAtoms(); ++n) errors += testType(n, benzene_types[n]);
 # Create and check intramolecular terms (N.B. fourth torsion parameter 's' is opposite sign since Towhee uses (1-cos) term in equation)
-errors += testbond(tol,1,2, benzene_types[1], benzene_types[2], 179869.9*2.0, 1.0814, 0, 0, 0, 0 ); 
-errors += testbond(tol,1,3, benzene_types[1], benzene_types[3], 232815.7*2.0, 1.3793, 0, 0, 0, 0 ); 
-errors += testangle(tol,2,1,3, benzene_types[2], benzene_types[1], benzene_types[3], 57657.568, 0.500, 0.667, 0.333, 0.0, 0.0 );
-errors += testangle(tol,1,3,5, benzene_types[1], benzene_types[3], benzene_types[5], 112013.508, 0.500, 0.667, 0.333, 0.0, 0.0 );
-errors += testtorsion(tol,1,3,5,7, benzene_types[1], benzene_types[3], benzene_types[5], benzene_types[7], 6780.452, 2.0, 0.0, -1.0, 0.0, 0.0 );
+errors += testBond(tol,1,2, benzene_types[1], benzene_types[2], 179869.9*2.0, 1.0814, 0, 0, 0, 0 ); 
+errors += testBond(tol,1,3, benzene_types[1], benzene_types[3], 232815.7*2.0, 1.3793, 0, 0, 0, 0 ); 
+errors += testAngle(tol,2,1,3, benzene_types[2], benzene_types[1], benzene_types[3], 57657.568, 0.500, 0.667, 0.333, 0.0, 0.0 );
+errors += testAngle(tol,1,3,5, benzene_types[1], benzene_types[3], benzene_types[5], 112013.508, 0.500, 0.667, 0.333, 0.0, 0.0 );
+errors += testTorsion(tol,1,3,5,7, benzene_types[1], benzene_types[3], benzene_types[5], benzene_types[7], 6780.452, 2.0, 0.0, -1.0, 0.0, 0.0 );
 # Create and check VDW types
-errors += testvdw(tol,1, benzene_types[1], 52.838, 3.431, 0.0, 0.0, 0.0, 0.0);
-errors += testvdw(tol,2, benzene_types[2], 22.142, 2.571, 0.0, 0.0, 0.0, 0.0);
+errors += testVdw(tol,1, benzene_types[1], 52.838, 3.431, 0.0, 0.0, 0.0, 0.0);
+errors += testVdw(tol,2, benzene_types[2], 22.142, 2.571, 0.0, 0.0, 0.0, 0.0);
 
 printf("\n=================================\n");
 printf("Results of all tests....\n");

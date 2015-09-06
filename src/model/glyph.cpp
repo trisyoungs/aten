@@ -33,6 +33,7 @@ Glyph* Model::addGlyph(Glyph::GlyphType gt)
 	newglyph->setParent(this);
 	newglyph->setType(gt);
 	if ((gt == Glyph::TextGlyph) || (gt == Glyph::Text3DGlyph)) textGlyphs_.add(newglyph);
+
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
@@ -40,6 +41,7 @@ Glyph* Model::addGlyph(Glyph::GlyphType gt)
 // 		newchange->set(true, newglyph);
 // 		recordingState_->addEvent(newchange);
 	}
+
 	return newglyph;
 }
 

@@ -479,6 +479,7 @@ void Primitive::createSurface(Grid* source, Vec4<GLfloat> colour, int colourScal
 		if (i == nPoints.x-2) di2 = 1;
 		dj = 0;
 		dj2 = 2;
+
 		for (j = 0; j< nPoints.y-1; ++j)
 		{
 			if (j == nPoints.y-2) dj2 = 1;

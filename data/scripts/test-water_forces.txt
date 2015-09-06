@@ -1,73 +1,73 @@
 # Load reference forces models - Note that all forces in these files are in units of 10J/mol rather than kJ/mol
-loadmodel("data/test/water-forces-elec.CONFIG");
-model elecref = aten.model;
-loadmodel("data/test/water-forces-vdw.CONFIG");
-model vdwref = aten.model;
-loadmodel("data/test/water-forces-intra.CONFIG");
-model intraref = aten.model;
+loadModel("data/test/water-forces-elec.CONFIG");
+Model elecref = aten.model;
+loadModel("data/test/water-forces-vdw.CONFIG");
+Model vdwref = aten.model;
+loadModel("data/test/water-forces-intra.CONFIG");
+Model intraref = aten.model;
 
 # Create test forcefield (compatible with reference forces)
-forcefield waterff = newff("Water Test");
-waterff.units = "kj";
+Forcefield waterFF = newFF("Water Test");
+waterFF.units = "kj";
 
 # Create type definitions
-waterff.addtype(1,"HW","HW",H, "nbonds=1,-O(nh=2)", "Water hydrogen");
-waterff.addtype(2,"OW","OW",O, "nbonds=2,nh=2", "Water oxygen");
-waterff.addinter("lj", 1, 0.4238, 0.0, 0.0);
-waterff.addinter("lj", 2, -0.8476, 0.65, 3.166);
-waterff.addbond("harmonic", "HW", "OW", 4184.0, 1.0);
-waterff.addangle("harmonic", "HW", "OW", "HW", 414.0, 109.5);
-waterff.finalise();
+waterFF.addType(1,"HW","HW",H, "nbonds=1,-O(nh=2)", "Water hydrogen");
+waterFF.addType(2,"OW","OW",O, "nbonds=2,nh=2", "Water oxygen");
+waterFF.addInter("lj", 1, 0.4238, 0.0, 0.0);
+waterFF.addInter("lj", 2, -0.8476, 0.65, 3.166);
+waterFF.addBond("harmonic", "HW", "OW", 4184.0, 1.0);
+waterFF.addAngle("harmonic", "HW", "OW", "HW", 414.0, 109.5);
+waterFF.finalise();
 
 # Load another copy of one of the reference models so we have the coordinates
-loadmodel("data/test/water-forces-vdw.CONFIG");
+loadModel("data/test/water-forces-vdw.CONFIG");
 
 # Check various force components
-aten.prefs.eleccutoff = 10.0;
-aten.prefs.vdwcutoff = 10.0;
-aten.prefs.elecmethod = "ewald";
-aten.prefs.ewaldalpha = 0.36292;
-aten.prefs.ewaldkmax = {8,8,8}; 
-vector v;
+aten.prefs.elecCutoff = 10.0;
+aten.prefs.vdwCutoff = 10.0;
+aten.prefs.elecMethod = "ewald";
+aten.prefs.ewaldAlpha = 0.36292;
+aten.prefs.ewaldKMax = {8,8,8}; 
+Vector v;
 
 # Electrostatics (via Ewald sum)
-aten.prefs.calculateintra = FALSE;
-aten.prefs.calculatevdw = FALSE;
-modelforces();
+aten.prefs.calculateIntra = FALSE;
+aten.prefs.calculateVdw = FALSE;
+modelForces();
 double rmse_elec = 0.0;
-for (int i=1; i<=aten.model.natoms; ++i)
+for (int i=1; i<=aten.model.nAtoms; ++i)
 {
 	v = aten.model.atoms[i].f - elecref.atoms[i].f/100.0;
 	rmse_elec += v.x*v.x + v.y*v.y + v.z*v.z;
 }
-rmse_elec = sqrt(rmse_elec / aten.model.natoms);
+rmse_elec = sqrt(rmse_elec / aten.model.nAtoms);
 
 # Intramolecular terms
-aten.prefs.elecmethod = "none";
-aten.prefs.calculateintra = TRUE;
-aten.prefs.calculatevdw = FALSE;
-modelforces();
+aten.prefs.elecMethod = "none";
+aten.prefs.calculateIntra = TRUE;
+aten.prefs.calculateVdw = FALSE;
+modelForces();
 double rmse_intra = 0.0;
-for (int i=1; i<=aten.model.natoms; ++i)
+for (int i=1; i<=aten.model.nAtoms; ++i)
 {
 	v = aten.model.atoms[i].f - intraref.atoms[i].f/100.0;
 	rmse_intra += v.x*v.x + v.y*v.y + v.z*v.z;
 }
-rmse_intra = sqrt(rmse_intra / aten.model.natoms);
+rmse_intra = sqrt(rmse_intra / aten.model.nAtoms);
 
 # Short-range (vdW)
-aten.prefs.elecmethod = "none";
-aten.prefs.calculateintra = FALSE;
-aten.prefs.calculatevdw = TRUE;
-modelforces();
+aten.prefs.elecMethod = "none";
+aten.prefs.calculateIntra = FALSE;
+aten.prefs.calculateVdw = TRUE;
+modelForces();
 double rmse_vdw = 0.0;
-for (int i=1; i<=aten.model.natoms; ++i)
+for (int i=1; i<=aten.model.nAtoms; ++i)
 {
 	printf(" D/A = %f %f %f  %f %f %f\n", aten.model.atoms[i].fx,aten.model.atoms[i].fy,aten.model.atoms[i].fz,vdwref.atoms[i].fx/100.0,vdwref.atoms[i].fy/100.0,vdwref.atoms[i].fz/100.0);
 	v = aten.model.atoms[i].f - vdwref.atoms[i].f/100.0;
 	rmse_vdw += v.x*v.x + v.y*v.y + v.z*v.z;
 }
-rmse_vdw = sqrt(rmse_vdw / aten.model.natoms);
+rmse_vdw = sqrt(rmse_vdw / aten.model.nAtoms);
 
 printf("Electrostatic  force RMSE = %f\n", rmse_elec);
 printf("Short-range    force RMSE = %f\n", rmse_vdw);

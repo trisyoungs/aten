@@ -5,15 +5,15 @@ int nx = 50, ny = 50, ix, iy;
 
 double x, y, fxy, slice1[2*ny+1], slice2[2*ny+1], r, g, b, a;
 
-aten.prefs.glyphcolour = { 0, 0, 1, 0.5 };
-model m = newmodel("Function Plot");
-glyph gl;
+aten.prefs.glyphColour = { 0, 0, 1, 0.5 };
+Model m = newModel("Function Plot");
+Glyph gl;
 
 # Set up a colourscale to colour the plot nicely
-colourscale cs = aten.prefs.colourscales[8];
+Colourscale cs = aten.prefs.colourScales[8];
 cs.clear();
-cs.addpoint(0.0,1,1,1,1.0);
-cs.addpoint(2.0,0,0,1,1.0);
+cs.addPoint(0.0,1,1,1,1.0);
+cs.addPoint(2.0,0,0,1,1.0);
 
 # Double loop begins
 for (ix = 0; ix <= 2*nx; ++ix)
@@ -43,7 +43,7 @@ for (ix = 0; ix <= 2*nx; ++ix)
 		for (iy = 1; iy <=2*ny; ++iy)
 		{
 			y = (iy-ny) * deltay;
-			gl = m.newglyph("triangle");
+			gl = m.newGlyph("triangle");
 			gl.data[1].vector = { x-deltax, y-deltay, slice1[iy] };
 			cs.colour(slice1[iy], r, g, b, a);
 			gl.data[1].colour = { r, g, b, a };
@@ -54,7 +54,7 @@ for (ix = 0; ix <= 2*nx; ++ix)
 			cs.colour(slice2[iy], r, g, b, a);
 			gl.data[3].colour = { r, g, b, a };
 
-			gl = m.newglyph("triangle");
+			gl = m.newGlyph("triangle");
 			gl.data[1].vector = { x, y-deltay, slice2[iy] };
 			cs.colour(slice2[iy], r, g, b, a);
 			gl.data[1].colour = { r, g, b, a };

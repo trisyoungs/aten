@@ -47,7 +47,7 @@ void GridSetPopup::updateControls()
 
 	ui.GridMinimumLabel->setText(QString::number(currentGrid->minimum()));
 	ui.GridMaximumLabel->setText(QString::number(currentGrid->maximum()));
-	ui.GridNPointsLabel->setText(QString::number(currentGrid->nXYZ().x*currentGrid->nXYZ().y*currentGrid->nXYZ().z));
+	ui.GridNPointsLabel->setText(QString::number(currentGrid->nPoints()));
 	ui.GridTotalPositiveSumLabel->setText(QString::number(currentGrid->totalPositiveSum()));
 	ui.GridTotalNegativeSumLabel->setText(QString::number(currentGrid->totalNegativeSum()));
 	double total = currentGrid->totalPositiveSum() + fabs(currentGrid->totalNegativeSum());

@@ -1,7 +1,6 @@
 TODO
 ====
 Crash if model is saved, then filters reloaded, then model is saved again (since filter pointer will be wrong)?
-Remove dialog pointers (use instances instead).
 Octahedral Growing doesn't work.
 Check - is using redirected filenames really necessary when saving movie frame images?
 Automatically adjust grid size for number of visible models, based on current aspect ratio and context size etc.
@@ -13,10 +12,13 @@ Undo/Redo:
   * Add Grid-related undo/redo (e.g. title changes, colour etc.)
 Make Delete tool have a click-drag action that deletes the bond between the clicked atoms.
 TExponentialSpin does not update text when calling setValue() and widget is hidden?
-Scripts need updating - capitalised function names etc.
 Trajectory playback is broken.
 For menubuttons that have instant popup, display ellipsis instead of arrow.
 Need to shrink used button space when window is not large enough to display all widgets in panel.
+Partitioning scheme usage from CLI (e.g. in cgparticle.txt or chloroform.txt scripts) causes a segfault owing to Primitive creation when no context is available.
+silica.txt needs new option dialog.
+Custom dialog code example (uitest.txt) does not successfully retrieve widget values (true for all dialogs on save?).
+Rename commands for consistency - e.g. newFF to newForcefield?
 
 Graphics TODO
 =============
@@ -52,7 +54,6 @@ Implement optional startup 'guide' or 'wizard' that will disable all controls on
 Add in calculation of quantities and graphing?
 Instead of a separate AtenVariable, make Aten subclass Variable?
 Move Prefs from being a static global to a member of Aten?
-Make ElementMap store reference to Aten, preventing passing of FFs?
 Make UserActions a member of something (Viewer?).
 Reformulate Pattern::bondEnergy() and others into a separate class, since the Pattern class shouldn't really own them.
 Make Model::EnergyStore a private member with accessor?

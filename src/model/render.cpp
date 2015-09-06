@@ -72,6 +72,8 @@ RenderGroup& Model::renderGroup(PrimitiveSet& primitiveSet)
 
 	renderGroup_.createAtomsAndBonds(primitiveSet, this, Matrix());
 
+	renderGroup_.createGlyphs(primitiveSet, this);
+
 	renderGroup_.createOverlays(this, Matrix());
 
 	renderGroupPoint_ = log(Log::Total);

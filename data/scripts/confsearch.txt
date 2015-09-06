@@ -7,8 +7,8 @@ int excludering = option("Exclude Rings", "checkbox", 1);
 int minimise = option("Minimisation", "intcombo", "None,'Steepest Descent','Conjugate Gradient',MOPAC", 1)
 double oldtors, delta = 360.0 / nsteps;
 
-model conf, m = aten.frame;
-createpatterns();
+Model conf, m = aten.frame;
+createPatterns();
 
 if (m.zmatrix.ntorsions == 0)
 {
@@ -19,9 +19,9 @@ if (m.zmatrix.ntorsions == 0)
 printf("Model contains %i torsions.\n", m.zmatrix.ntorsions);
 
 # Construct list of variable torsions
-zmatrixelement torsions[m.zmatrix.ntorsions];
+ZMatrixElement torsions[m.zmatrix.ntorsions];
 int ntorsions = 0;
-for (zmatrixelement el = m.zmatrix.elements; el; ++el) if (el.torsionatom)
+for (ZMatrixElement el = m.zmatrix.elements; el; ++el) if (el.torsionatom)
 {
 	# Exclude torsions for which either terminal atom is a hydrogen?
 	if (excludeh && ((el.targetatom.z == 1) || (el.torsionatom.z == 1)))
@@ -48,22 +48,22 @@ printf("Total number of conformers to be generated (with nsteps=%i) is %i.\n", n
 # paste it to a new model. We will then use settorsion() to modify this new model using the (equivalent) atom IDs
 # from the stored zmtrixelement.
 int counters[ntorsions] = 0;
-m.selectall();
+m.selectAll();
 m.copy();
 for (int t = 1; t<=nconformers; ++t)
 {
 	# Create a new model and paste the contents
-	model conf = newmodel(toa("Conformer%i",t));
+	Model conf = newModel(toa("Conformer%i",t));
 	conf.paste();
 
 	# Always rotate first torsion (this is the 'most quickly varying index')
-	i = torsions[1].targetatom.id;
-	j = torsions[1].distanceatom.id;
-	k = torsions[1].angleatom.id;
-	l = torsions[1].torsionatom.id;
+	i = torsions[1].targetAtom.id;
+	j = torsions[1].distanceAtom.id;
+	k = torsions[1].angleAtom.id;
+	l = torsions[1].torsionAtom.id;
 	# Get current torsion value
 	oldtors = torsion(i,j,k,l);
-	settorsion(i,j,k,l,oldtors+delta);
+	setTorsion(i,j,k,l,oldtors+delta);
 	++counters[1];
 
 	# Increase other counters and rotate other torsions if necessary
@@ -73,19 +73,19 @@ for (int t = 1; t<=nconformers; ++t)
 
 		# Reset counter and rotate next torsion
 		counters[n] = 0;
-		i = torsions[n+1].targetatom.id;
-		j = torsions[n+1].distanceatom.id;
-		k = torsions[n+1].angleatom.id;
-		l = torsions[n+1].torsionatom.id;
+		i = torsions[n+1].targetAtom.id;
+		j = torsions[n+1].distanceAtom.id;
+		k = torsions[n+1].angleAtom.id;
+		l = torsions[n+1].torsionAtom.id;
 
 		# Get current torsion value
 		oldtors = torsion(i,j,k,l);
-		settorsion(i,j,k,l,oldtors+delta);
+		setTorsion(i,j,k,l,oldtors+delta);
 
 		# Minimise?
-		if (minimise == 2) sdminimise();
-		else if (minimise == 3) cgminimise();
-		else if (minimise == 4) mopacminimise();
+		if (minimise == 2) sdMinimise();
+		else if (minimise == 3) cgMinimise();
+		else if (minimise == 4) mopacMinimise();
 
 		++counters[n+1];
 	}

@@ -75,7 +75,7 @@
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>10</number>
+       <number>0</number>
       </property>
       <property name="usesScrollButtons">
        <bool>true</bool>
@@ -9189,10 +9189,6 @@
             </property>
             <property name="text">
              <string>Terminate</string>
-            </property>
-            <property name="icon">
-             <iconset resource="icons.qrc">
-              <normaloff>:/tools/icons/tools_disorder.svg</normaloff>:/tools/icons/tools_disorder.svg</iconset>
             </property>
             <property name="iconSize">
              <size>

@@ -189,7 +189,7 @@ types
 168	HO		H	"-O(-&166)"				"H phenol (use with 145 and 146)"
 169	OH		O	"-H,-C(-C(-O(-H)))"			"O:    diols"
 170	HO		H	"-&169"					"H(O): diols"
-171	OH		O	"-H,chain(-C,-C(-O(-H)),-C(-O(-H))) | -C(chain(-C,-O(notself),-H,n=2))"	"O:    triols"
+171	OH		O	"-H,chain(-C,-C(-O(-H)),-C(-O(-H)),n=1) | -C(chain(-C,-O(notself),-H,n=2))"	"O:    triols"
 172	HO		H	"-&171"					"H(O): triols"
 173	CT		C	"-&171,nh=2,-C"				"C(H2OH): triols"
 174	CT		C	"-&171,nh=1"				"C(HROH): triols"

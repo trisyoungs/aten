@@ -10,7 +10,7 @@ nstacks = 8;		// Length of tube will be 2*nstacks-1 benzene units
 dz = 360.0/(nbenz*2.0);	// Rotation increment around circumference
 
 # Create target model
-newmodel("buckytube");
+newModel("buckytube");
 
 nstacks = nstacks*2 - 1;
 
@@ -23,27 +23,27 @@ for (stack=1; stack <= nstacks; ++stack)
 		if (stack == 1)
 		{
 			move(0, 0, -1);
-			newatom(H);
+			newAtom(H);
 			move(0, 0, 1);
 		}
-		newatom(C);
+		newAtom(C);
 		move(rcc*cos(30), 0.0, rcc*sin(30));
-		rotz(dz);
+		rotZ(dz);
 		if (stack == nstacks)
 		{
 			move(0, 0, 1);
-			newatom(H);
+			newAtom(H);
 			move(0, 0, -1);
 		}
-		newatom(C);
+		newAtom(C);
 		move(rcc*cos(30), 0, -rcc*sin(30));
-		rotz(dz);
+		rotZ(dz);
 	}
 	
 	# Move pen along tube length, and one step around circumference to offset next layer
 	move(0, 0, rcc*1.5);
 	move(rcc*cos(30), 0, 0);
-	rotz(dz);
+	rotZ(dz);
 }
 
 # Rebond and augment

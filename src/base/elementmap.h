@@ -38,7 +38,7 @@ ATEN_BEGIN_NAMESPACE
 
 // Forward Declarations (Aten)
 class Atom;
-class Forcefield;
+class Aten;
 
 // Element map
 class ElementMap
@@ -51,6 +51,19 @@ class ElementMap
 	enum ZMapType { AlphaZMap, FirstAlphaZMap, SingleAlphaZMap, NameZMap, NumericZMap, ForcefieldZMap, AutoZMap, nZMapTypes };
 	static ElementMap::ZMapType zMapType(QString s, bool reportError = false);
 	static const char* zMapType(ElementMap::ZMapType zm);
+
+
+	/*
+	 * Pointer to Aten
+	 */
+	private:
+	// Pointer to main Aten object
+	Aten* aten_;
+
+	public:
+	// Set pointer to main Aten object
+	void setAten(Aten* aten);
+
 
 	/*
 	 * Element Data
@@ -93,9 +106,9 @@ class ElementMap
 	// Convert string from name to element number
 	int nameToZ(QString name) const;
 	// Convert string from fftype to element number
-	int ffToZ(QString s, Forcefield* firstFF) const;
+	int ffToZ(QString s) const;
 	// Return atomic number of element in string using supplied method (if specified)
-	int find(QString query, ElementMap::ZMapType zmt = ElementMap::AutoZMap, Forcefield* firstFF = NULL) const;
+	int find(QString query, ElementMap::ZMapType zmt = ElementMap::AutoZMap) const;
 
 
 	/*

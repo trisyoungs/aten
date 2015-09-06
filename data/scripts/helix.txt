@@ -11,16 +11,16 @@ int nunits = 50;
 double deltaz = 360.0/(nperloop*2.0);
 
 # Create model
-newmodel("helix");
+newModel("helix");
 for (int n=1; n<=nunits; ++n)
 {
 	chain(C);
 	move(rcc*cos(30.0), 0.0, rcc*sin(30.0));
-	rotz(deltaz);
+	rotZ(deltaz);
 	chain(C,"double");
 	move(rcc*cos(30.0), 0.0, -rcc*sin(30.0));
-	rotz(deltaz);
-	rotx(5.0);
+	rotZ(deltaz);
+	rotX(5.0);
 }
 
-addhydrogen();
+addHydrogen();

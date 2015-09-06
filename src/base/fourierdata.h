@@ -54,9 +54,9 @@ class FourierData
 
 	public:
 	// Return cosine array
-	Array2D< Vec3<double> > rCos() const;
+	const Array2D< Vec3<double> >& rCos();
 	// Return sine array
-	Array2D< Vec3<double> > rSin() const;
+	const Array2D< Vec3<double> >& rSin();
 	// Return number of kvectors along each cell axis
 	Vec3<int> kVec() const;
 	// Return maximum number of kvectors

@@ -44,13 +44,13 @@ FourierData::~FourierData()
 }
 
 // Return cosine array
-Array2D< Vec3<double> > FourierData::rCos() const
+const Array2D< Vec3<double> >& FourierData::rCos()
 {
 	return rCos_;
 }
 
 // Return sine array
-Array2D< Vec3<double> > FourierData::rSin() const
+const Array2D< Vec3<double> >& FourierData::rSin()
 {
 	return rSin_;
 }
@@ -85,7 +85,7 @@ void FourierData::calculate(Model* sourceModel, int startAtom, int nAtomsToDo)
 	if (nAtomsToDo == -1) nAtomsToDo = sourceModel->nAtoms();
 	if (sourceModel->nAtoms() != nAtomsToDo)
 	{
-		printf("Indescribable fourier error! Wrong number of atoms in supplied config.\n");
+		printf("Indescribable FourierData error! Wrong number of atoms in supplied config.\n");
 		Messenger::exit("FourierData:::calculate");
 		return;
 	}
