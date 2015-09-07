@@ -5991,7 +5991,7 @@
              </size>
             </property>
             <property name="checkable">
-             <bool>false</bool>
+             <bool>true</bool>
             </property>
             <property name="checked">
              <bool>false</bool>
@@ -10194,5 +10194,38 @@
  <resources>
   <include location="icons.qrc"/>
  </resources>
- <connections/>
+ <connections>
+  <connection>
+   <sender>TrajectoryControlFrameSpin</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>TrajectoryControlFrameSlider</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>469</x>
+     <y>44</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>543</x>
+     <y>45</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>TrajectoryControlFrameSlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>TrajectoryControlFrameSpin</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>614</x>
+     <y>53</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>468</x>
+     <y>58</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

@@ -21,6 +21,7 @@
 
 #include "gui/viewer.hui"
 #include "gui/mainwindow.h"
+#include "main/aten.h"
 #include <QOpenGLFramebufferObject>
 #include <QPainter>
 #include <QtWidgets/QProgressDialog>
@@ -100,6 +101,9 @@ QPixmap Viewer::generateImage(int imageWidth, int imageHeight)
 	renderingOffScreen_ = true;
 	primitiveSet_ = Viewer::HighQuality;
 
+	// Force regeneration of all rendergroups for models so that the high quality primitives are used
+	aten_->globalLogChange(Log::Style);
+
 	// Scale current line width and text scaling to reflect size of exported image
 	setObjectScaling( double(imageHeight) / double(contextHeight()) );
 
@@ -175,6 +179,9 @@ QPixmap Viewer::generateImage(int imageWidth, int imageHeight)
 	// Make sure the Viewer knows we no longer want offscreen rendering, and revert to normal quality primitives
 	renderingOffScreen_ = false;
 	primitiveSet_ = Viewer::LowQuality;
+
+	// Force regeneration of all rendergroups for models so that the low quality primitives are used
+	aten_->globalLogChange(Log::Style);
 
 	// Reset context back to main view
 	makeCurrent();

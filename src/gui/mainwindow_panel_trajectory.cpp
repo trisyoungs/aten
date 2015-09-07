@@ -29,30 +29,34 @@ void AtenWindow::updateTrajectoryPanel(Model* sourceModel)
 {
 	Messenger::enter("AtenWindow::updateTrajectoryPanel");
 
+	// Get parent model, if there is one...
+	bool hasTraj = false;
+	Model* parentModel = sourceModel ? (sourceModel->parent() ? sourceModel->parent() : sourceModel) : NULL;
+	if (parentModel) hasTraj = parentModel->hasTrajectory();
+
 	// Enable / disable controls
-	bool hasTraj = sourceModel ? sourceModel->hasTrajectory() : false;
 	ui.TrajectorySourceOpenButton->setEnabled(!aten_.fileDialogFilters(FilterData::TrajectoryImport).isEmpty());
-	ui.TrajectorySourceRemoveButton->setEnabled(sourceModel && hasTraj);
-	ui.TrajectorySourceFramesButton->setEnabled(sourceModel && hasTraj);
-	ui.TrajectoryControlFirstButton->setEnabled(sourceModel && hasTraj);
-	ui.TrajectoryControlPreviousButton->setEnabled(sourceModel && hasTraj);
-	ui.TrajectoryControlPlayButton->setEnabled(sourceModel && hasTraj);
-	ui.TrajectoryControlNextButton->setEnabled(sourceModel && hasTraj);
-	ui.TrajectoryControlLastButton->setEnabled(sourceModel && hasTraj);
-	ui.TrajectoryControlFrameSpin->setEnabled(sourceModel && hasTraj);
-	ui.TrajectoryControlFrameSlider->setEnabled(sourceModel && hasTraj);
-	ui.TrajectoryControlDelaySpin->setEnabled(sourceModel && hasTraj);
-	ui.TrajectoryStyleInheritButton->setEnabled(sourceModel && hasTraj);
-	ui.TrajectoryStylePromoteButton->setEnabled(sourceModel && hasTraj);
-	ui.TrajectoryStylePropagateButton->setEnabled(sourceModel && sourceModel->trajectoryIsCached());
+	ui.TrajectorySourceRemoveButton->setEnabled(parentModel && hasTraj);
+	ui.TrajectorySourceFramesButton->setEnabled(parentModel && hasTraj);
+	ui.TrajectoryControlFirstButton->setEnabled(parentModel && hasTraj);
+	ui.TrajectoryControlPreviousButton->setEnabled(parentModel && hasTraj);
+	ui.TrajectoryControlPlayButton->setEnabled(parentModel && hasTraj);
+	ui.TrajectoryControlNextButton->setEnabled(parentModel && hasTraj);
+	ui.TrajectoryControlLastButton->setEnabled(parentModel && hasTraj);
+	ui.TrajectoryControlFrameSpin->setEnabled(parentModel && hasTraj);
+	ui.TrajectoryControlFrameSlider->setEnabled(parentModel && hasTraj);
+	ui.TrajectoryControlDelaySpin->setEnabled(parentModel && hasTraj);
+	ui.TrajectoryStyleInheritButton->setEnabled(parentModel && hasTraj);
+	ui.TrajectoryStylePromoteButton->setEnabled(parentModel && hasTraj);
+	ui.TrajectoryStylePropagateButton->setEnabled(parentModel && parentModel->trajectoryIsCached());
 
 	if (hasTraj)
 	{
-		ui.TrajectorySourceFramesButton->setChecked(sourceModel->renderSource() == Model::TrajectorySource);
-		ui.TrajectoryControlFrameSlider->setRange(1, sourceModel->nTrajectoryFrames());
-		ui.TrajectoryControlFrameSlider->setValue(sourceModel->trajectoryFrameIndex()+1);
-		ui.TrajectoryControlFrameSpin->setRange(1, sourceModel->nTrajectoryFrames());
-		ui.TrajectoryControlFrameSpin->setValue(sourceModel->trajectoryFrameIndex()+1);
+		ui.TrajectorySourceFramesButton->setChecked(parentModel->renderSource() == Model::TrajectorySource);
+		ui.TrajectoryControlFrameSlider->setRange(1, parentModel->nTrajectoryFrames());
+		ui.TrajectoryControlFrameSlider->setValue(parentModel->trajectoryFrameIndex()+1);
+		ui.TrajectoryControlFrameSpin->setRange(1, parentModel->nTrajectoryFrames());
+		ui.TrajectoryControlFrameSpin->setValue(parentModel->trajectoryFrameIndex()+1);
 	}
 
 	Messenger::exit("AtenWindow::updateTrajectoryPanel");
@@ -78,7 +82,7 @@ void AtenWindow::on_TrajectorySourceOpenButton_clicked(bool checked)
 	stopTrajectoryPlayback();
 
 	// Get current model
-	Model* currentModel = aten_.currentModelOrFrame();
+	Model* currentModel = aten_.currentModel();
 	if (!currentModel) return;
 
 	Tree* filter;
@@ -111,7 +115,7 @@ void AtenWindow::on_TrajectorySourceRemoveButton_clicked(bool checked)
 	stopTrajectoryPlayback();
 
 	// Get current model
-	Model* currentModel = aten_.currentModelOrFrame();
+	Model* currentModel = aten_.currentModel();
 	if (!currentModel) return;
 	
 	currentModel->clearTrajectory();
@@ -125,7 +129,7 @@ void AtenWindow::on_TrajectorySourceFramesButton_clicked(bool checked)
 	if (refreshing_) return;
 
 	// Get current model
-	Model* currentModel = aten_.currentModelOrFrame();
+	Model* currentModel = aten_.currentModel();
 	if (!currentModel) return;
 
 	currentModel->setRenderSource(checked ? Model::TrajectorySource : Model::ModelSource);
@@ -140,7 +144,7 @@ void AtenWindow::on_TrajectorySourceFramesButton_clicked(bool checked)
 // Skip to first frame in trajectory
 void AtenWindow::on_TrajectoryControlFirstButton_clicked(bool checked)
 {
-	Model* currentModel = aten_.currentModelOrFrame();
+	Model* currentModel = aten_.currentModel();
 	if (!currentModel) return;
 
 	currentModel->seekFirstTrajectoryFrame();
@@ -151,7 +155,7 @@ void AtenWindow::on_TrajectoryControlFirstButton_clicked(bool checked)
 // Skip to previous frame in trajectory
 void AtenWindow::on_TrajectoryControlPreviousButton_clicked(bool checked)
 {
-	Model* currentModel = aten_.currentModelOrFrame();
+	Model* currentModel = aten_.currentModel();
 	if (!currentModel) return;
 
 	currentModel->seekPreviousTrajectoryFrame();
@@ -180,7 +184,7 @@ void AtenWindow::on_TrajectoryControlPlayButton_clicked(bool checked)
 // Skip to next frame in trajectory
 void AtenWindow::on_TrajectoryControlNextButton_clicked(bool checked)
 {
-	Model* currentModel = aten_.currentModelOrFrame();
+	Model* currentModel = aten_.currentModel();
 	if (!currentModel) return;
 
 	currentModel->seekNextTrajectoryFrame();
@@ -191,7 +195,7 @@ void AtenWindow::on_TrajectoryControlNextButton_clicked(bool checked)
 // Skip to last frame in trajectory
 void AtenWindow::on_TrajectoryControlLastButton_clicked(bool checked)
 {
-	Model* currentModel = aten_.currentModelOrFrame();
+	Model* currentModel = aten_.currentModel();
 	if (!currentModel) return;
 
 	currentModel->seekLastTrajectoryFrame();
@@ -203,7 +207,7 @@ void AtenWindow::on_TrajectoryControlFrameSpin_valueChanged(int value)
 {
 	if (refreshing_) return;
 
-	Model* currentModel = aten_.currentModelOrFrame();
+	Model* currentModel = aten_.currentModel();
 	if (!currentModel) return;
 
 	// Slider range is from 1-NFrames, so pass (N-1) to the seekTrajectoryFrame function
@@ -216,7 +220,7 @@ void AtenWindow::on_TrajectoryControlFrameSlider_valueChanged(int position)
 {
 	if (refreshing_) return;
 
-	Model* currentModel = aten_.currentModelOrFrame();
+	Model* currentModel = aten_.currentModel();
 	if (!currentModel) return;
 
 	// Slider range is from 1-NFrames, so pass (N-1) to the seekTrajectoryFrame function

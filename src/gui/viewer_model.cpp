@@ -21,7 +21,7 @@
 
 #include "gui/viewer.hui"
 #include "model/model.h"
-#include <base/grid.h>
+#include "base/grid.h"
 
 ATEN_USING_NAMESPACE
 
@@ -29,7 +29,6 @@ ATEN_USING_NAMESPACE
 void Viewer::renderModel(Model* source, int viewPortX, int viewPortY, int viewPortWidth, int viewPortHeight, bool drawRotationGlobe)
 {
 	Messenger::enter("Viewer::renderModel");
-	GLfloat colour[4];
 
 	// Valid pointer passed?
 	if (source == NULL)
@@ -38,6 +37,15 @@ void Viewer::renderModel(Model* source, int viewPortX, int viewPortY, int viewPo
 		return;
 	}
 	Messenger::print(Messenger::Verbose, " --> RENDERING BEGIN : source model pointer = %p, renderpoint = %d", source, source->log(Log::Total));
+
+	// Set the source Model pointer to be the current trajectory frame if relevant
+	if (source->hasTrajectory() && (source->renderSource() == Model::TrajectorySource))
+	{
+		source = source->trajectoryCurrentFrame();
+	}
+
+	// Set the source Model pointer to be the current vibration frame if relevant
+	// ATEN2 TODO
 
 	// Setup view for model, in the supplied viewport
 	source->setupView(viewPortX, viewPortY, viewPortWidth, viewPortHeight);
