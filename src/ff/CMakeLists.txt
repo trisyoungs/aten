@@ -19,7 +19,7 @@ add_library(ff
   vdw.cpp
 )
 target_include_directories(ff PRIVATE
-	${PROJECT_SOURCE_DIR}/src
+  ${PROJECT_SOURCE_DIR}/src
   ${Qt5Gui_INCLUDE_DIRS}
 )
 

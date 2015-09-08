@@ -40,12 +40,12 @@ transform.cpp
 view.cpp
 )
 target_include_directories(command PRIVATE
-	${PROJECT_SOURCE_DIR}/src
-	${PROJECT_BINARY_DIR}/src
+  ${PROJECT_SOURCE_DIR}/src
+  ${PROJECT_BINARY_DIR}/src
   ${Qt5Core_INCLUDE_DIRS}
   ${Qt5Gui_INCLUDE_DIRS}
   ${Qt5Widgets_INCLUDE_DIRS}
-	${PROJECT_SOURCE_DIR}/src/gui
+  ${PROJECT_SOURCE_DIR}/src/gui
 )
 
 target_link_libraries(command gui) 
