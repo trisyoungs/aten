@@ -41,7 +41,7 @@ add_library(model
   zmatrix.cpp
 )
 target_include_directories(model PRIVATE
-	${PROJECT_SOURCE_DIR}/src
+  ${PROJECT_SOURCE_DIR}/src
   ${Qt5Gui_INCLUDE_DIRS}
 )
 target_link_libraries(model render)

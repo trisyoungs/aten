@@ -111,13 +111,13 @@ zmatrix.cpp
 zmatrixelement.cpp
 )
 target_include_directories(parser PRIVATE
-	${PROJECT_SOURCE_DIR}/src
-	${PROJECT_BINARY_DIR}/src
+  ${PROJECT_SOURCE_DIR}/src
+  ${PROJECT_BINARY_DIR}/src
   ${Qt5Core_INCLUDE_DIRS}
   ${Qt5Gui_INCLUDE_DIRS}
   ${Qt5Widgets_INCLUDE_DIRS}
-	${PROJECT_SOURCE_DIR}/src/gui
-	${FREETYPE_INCLUDE_DIRS}
+  ${PROJECT_SOURCE_DIR}/src/gui
+  ${FREETYPE_INCLUDE_DIRS}
 )
 
 target_link_libraries(parser gui) 

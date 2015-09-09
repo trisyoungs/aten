@@ -18,11 +18,12 @@ add_library(main
   scripts.cpp
 )
 target_include_directories(main PRIVATE
-	${PROJECT_SOURCE_DIR}/src
-	${PROJECT_BINARY_DIR}/src
+  ${PROJECT_SOURCE_DIR}/src
+  ${PROJECT_BINARY_DIR}/src
   ${Qt5Core_INCLUDE_DIRS}
   ${Qt5Gui_INCLUDE_DIRS}
   ${Qt5Widgets_INCLUDE_DIRS}
-	${PROJECT_SOURCE_DIR}/src/gui
+  ${READLINE_INCLUDE_DIRS}
+  ${PROJECT_SOURCE_DIR}/src/gui
 )
 target_link_libraries(main gui) 
