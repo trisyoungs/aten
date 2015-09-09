@@ -1,5 +1,5 @@
 /*
-	*** Qt loadmodel functions interface
+	*** LoadModel Dialog
 	*** src/gui/loadmodel_funcs.cpp
 	Copyright T. Youngs 2007-2015
 
@@ -51,6 +51,7 @@ void AtenLoadModel::on_BrowseButton_clicked(bool checked)
 	static QDir currentDirectory_(parent_.aten().workDir());
 	QString selFilter;
 	selectedFilename_ = qPrintable(QFileDialog::getOpenFileName(this, "Select Model File", currentDirectory_.path(), parent_.aten().fileDialogFilters(FilterData::ModelImport), &selFilter));
+
 	// Store path for next use
 	currentDirectory_.setPath(selectedFilename_);
 	ui.FilenameEdit->setText(selectedFilename_);
@@ -112,8 +113,8 @@ void AtenLoadModel::on_KeepTypesCheck_clicked(bool checked)
 	prefs.setKeepTypes(checked);
 }
 
-// Update controls and show dialog
-void AtenLoadModel::updateAndShow()
+// Update controls and execute dialog
+int AtenLoadModel::updateAndExec()
 {
 	refreshing_ = true;
 
@@ -147,6 +148,8 @@ void AtenLoadModel::updateAndShow()
 	ui.KeepTypesCheck->setChecked(prefs.keepTypes());
 
 	refreshing_ = false;
+
+	return exec();
 }
 
 /*
@@ -156,9 +159,11 @@ void AtenLoadModel::updateAndShow()
 // Return the selected filter
 Tree* AtenLoadModel::selectedFormat()
 {
-	// Return the filter selected in the combo (or NULL if <Auto Detect> was selected)
+	// Return the filter selected in the combo (or NULL if <Auto Detect>, index o, was selected)
 	int i = ui.FormatCombo->currentIndex();
-	RefListItem<Tree,int>* filter = (i == 0 ? NULL : parent_.aten().filter(FilterData::ModelImport, i-1));
+	if (i <= 0) return NULL;
+
+	RefListItem<Tree,int>* filter = parent_.aten().filter(FilterData::ModelImport, i-1);
 	return (filter != NULL ? filter->item : NULL);
 }
 
