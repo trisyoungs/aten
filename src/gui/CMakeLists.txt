@@ -255,7 +255,6 @@ set(gui_SRCS
   viewer_mouse.cpp
   viewer_offscreen.cpp
   viewer_scene.cpp
-  viewer_user.cpp
   viewer_useractions.cpp
   tcolourframe_funcs.cpp
   tcolourwheel_funcs.cpp
