@@ -105,6 +105,7 @@ Atom* Model::addCopy(Atom* source)
 	newatom->setId(atoms_.nItems() - 1);
 	logChange(Log::Structure);
 	increaseMass(newatom->element());
+
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
@@ -112,6 +113,7 @@ Atom* Model::addCopy(Atom* source)
 		newchange->set(true, newatom);
 		recordingState_->addEvent(newchange);
 	}
+
 	Messenger::exit("Model::addCopy");
 	return newatom;
 }
@@ -123,9 +125,11 @@ Atom* Model::addCopy(Atom* afterthis, Atom* source)
 	Atom* newatom = atoms_.insertAfter(afterthis);
 	//printf("Adding copy after... %p %p\n",afterthis,source);
 	newatom->copy(source);
+	newatom->setParent(this);
 	renumberAtoms(afterthis);
 	logChange(Log::Structure);
 	increaseMass(newatom->element());
+
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
@@ -133,6 +137,7 @@ Atom* Model::addCopy(Atom* afterthis, Atom* source)
 		newchange->set(true,newatom);
 		recordingState_->addEvent(newchange);
 	}
+
 	Messenger::exit("Model::addCopy");
 	return newatom;
 }
@@ -158,6 +163,7 @@ void Model::removeAtom(Atom* xatom, bool noupdate)
 		recordingState_->addEvent(newchange);
 	}
 	atoms_.remove(xatom);
+
 	Messenger::exit("Model::removeAtom");
 }
 

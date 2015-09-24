@@ -97,9 +97,10 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportImage
 	// Seutp user interface
 	ui.setupUi(this);
 
-	// Set pointer to Aten and AtenWindow in the Viewer
+	// Set pointers to Aten and AtenWindow in gui objects that need them
 	ui.MainView->setAten(&aten_);
 	ui.MainView->setAtenWindow(this);
+	TMenuButton::setAtenWindow(this);
 
 	// Private variables
 	saveModelFilter_ = NULL;
@@ -107,6 +108,16 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportImage
 	messageDisplay_ = MessagesUnderScene;
 	refreshing_ = false;
 	trajectoryTimerId_ = -1;
+
+	// Interaction / User Modes
+	clickedAtom_ = NULL;
+	pickEnabled_ = false;
+	actionBeforePick_ = UserAction::NoAction;
+	activeMode_ = UserAction::NoAction;
+	selectedMode_ = UserAction::SelectAction;
+	currentDrawDepth_ = -5.0;
+	buildGeometry_ = Atom::TetrahedralGeometry;
+	editable_ = true;
 
 	// Public variables
 	infoLabel1_ = NULL;
@@ -261,7 +272,7 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportImage
 	ui.ForcefieldsCalculateMinimiseButton->setPopupWidget(new ForcefieldsMinimisePopup(*this, ui.ForcefieldsCalculateMinimiseButton));
 
 	// -- Selection Panel (Appearance)
-	ui.SelectionAppearanceStyleButton->setPopupWidget(new ViewStylePopup(*this, ui.SelectionAppearanceStyleButton), false, true);
+	ui.SelectionAppearanceStyleButton->setPopupWidget(new ViewStylePopup(*this, ui.SelectionAppearanceStyleButton), false);
 	ui.SelectionAppearanceStyleButton->callPopupMethod("updateButtonIcon", rv = QString(Prefs::drawStyle(Prefs::SphereStyle)));
 	ui.SelectionAppearanceColourButton->setPopupWidget(new ColourPopup(*this, ui.SelectionAppearanceColourButton), false);
 
@@ -420,20 +431,14 @@ void AtenWindow::resizeEvent(QResizeEvent* event)
  */
 
 // Set interactivity (to full or zero), except for main view camera changes
+// ATEN2 TODO Update this!
 void AtenWindow::setInteractive(bool interactive)
 {
 	// Set enabled status of all the dock widgets..
 	foreach( QObject *obj, dockWidgets_) obj->setProperty("enabled", interactive);
 	
 	// ...and set the canvas 'editability'
-	ui.MainView->setEditable(interactive);
-}
-
-// Set action/button to reflect supplied user action
-void AtenWindow::setActiveUserAction(UserAction::Action ua)
-{
-	// Set (check) relevant action or button based on supplied UserAction
-	if (!TMenuButton::setGroupButtonChecked("UserActions", ua)) printf("AtenWindow::setActiveUserAction() - No button associated to user action %i.\n", ua);
+	editable_ = interactive;
 }
 
 // Set message label text

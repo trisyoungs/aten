@@ -806,7 +806,7 @@ class Model : public ListItem<Model>
 	// Return the translation scale
 	double translateScale() const;
 	// Finalize atom transform
-	void finalizeTransform(RefList< Atom,Vec3<double> >&, const char* statetitle, bool nofold);
+	void finalizeTransform(RefList< Atom,Vec3<double> >& rOriginal, const char* stateTitle, bool noFold);
 	// Rotate the atom selection
 	void rotateSelectionWorld(double, double);
 	// Spin the atom selection

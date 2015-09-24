@@ -111,7 +111,9 @@ class Viewer : public QOpenGLWidget, protected QOpenGLFunctions
 	Vec3<double> rMouseUp_, rMouseDown_;
 	// Canvas coordinates of mouse cursor
 	Vec3<double> rMouseLast_;
-	
+	// Whether the mouse has moved between mose press and release events
+	bool mouseHasMoved_;
+
 	protected:
 	// Qt Virtual (mouse press event)
 	void mousePressEvent(QMouseEvent* event);
@@ -129,8 +131,10 @@ class Viewer : public QOpenGLWidget, protected QOpenGLFunctions
 	Vec3<double> rMouseUp();
 	// Return mouse coordinates at last mousemove event
 	Vec3<double> rMouseLast();
+	// Return whether the mouse has moved between mouse press and release events
+	bool mouseHasMoved();
 
-	
+
 	/*
 	 * Key Input
 	 */
@@ -147,66 +151,6 @@ class Viewer : public QOpenGLWidget, protected QOpenGLFunctions
 	void keyPressEvent(QKeyEvent* event);
 	// Qt Slot (key release event)
 	void keyReleaseEvent(QKeyEvent* event);
-	
-	
-	/*
-	 * User Actions
-	 */
-	private:
-	// Active interaction mode of the main canvas
-	UserAction::Action activeMode_;
-	// Selected interaction mode (from GUI)
-	UserAction::Action selectedMode_;
-	// Whether the mouse has moved between beginMode() and endMode() calls 
-	bool hasMoved_;
-	// Current drawing depth for certain tools
-	double currentDrawDepth_;
-	// Current build geometry
-	Atom::AtomGeometry buildGeometry_;
-	// Whether to accept editing actions (i.e. anything other than view manipulation)
-	bool editable_;
-	// User action before picking mode was entered
-	UserAction::Action actionBeforePick_;
-	// List of picked atoms
-	RefList<Atom,int> pickedAtoms_;
-	// Atom that was clicked at the start of a mouse press event
-	Atom* atomClicked_;
-	// Whether we are selecting atoms and placing them in the subsel list	
-	bool pickEnabled_;
-	// RefList of selected atoms and their positions so manipulations may be un-done
-	RefList< Atom,Vec3<double> > oldPositions_;
-
-	private:
-	// Begin an action on the model (called from MouseButtondown)
-	void beginMode(Prefs::MouseButton);
-	// End an action on the model (called from MouseButtonup)
-	void endMode(Prefs::MouseButton);
-	
-	public:
-	// Set the active mode to the current user mode
-	void useSelectedMode();
-	// Sets the currently selected interact mode
-	void setSelectedMode(UserAction::Action ua, int atomsToPick = -1, void (*callback)(RefList<Atom,int>*) = NULL);
-	// Cancel any current mode and return to select
-	void cancelCurrentMode();
-	// Return the currently selected mode
-	UserAction::Action selectedMode() const;
-	// Return the currently active mode
-	UserAction::Action activeMode() const;
-	// Set current build geometry
-	void setBuildGeometry(Atom::AtomGeometry ag);
-	// Return current build geometry
-	Atom::AtomGeometry buildGeometry() const;
-	// Current drawing depth for certain tools
-	double currentDrawDepth();
-	// Set whether to accept editing actions (i.e. anything other than view manipulation)
-	void setEditable(bool b);
-	// Return whether to accept editing actions (i.e. anything other than view manipulation)
-	bool editable();
-	// Returns the clicked atom within a mouse click event
-	Atom* atomClicked();
-	// Return start of picked atom list
-	RefListItem<Atom,int>* pickedAtoms();
 
 
 	/*

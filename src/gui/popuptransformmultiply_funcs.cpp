@@ -120,7 +120,7 @@ bool TransformMultiplyPopup::callMethod(QString methodName, ReturnValue& rv)
 void TransformMultiplyPopup::on_PickXButton_clicked(bool checked)
 {
 	// Enter manual picking mode
-	parent_.ui.MainView->setSelectedMode(UserAction::TransformPickAAction);
+	parent_.setSelectedMode(UserAction::TransformPickAAction);
 
 	done();
 }
@@ -128,7 +128,7 @@ void TransformMultiplyPopup::on_PickXButton_clicked(bool checked)
 void TransformMultiplyPopup::on_PickYButton_clicked(bool checked)
 {
 	// Enter manual picking mode
-	parent_.ui.MainView->setSelectedMode(UserAction::TransformPickBAction);
+	parent_.setSelectedMode(UserAction::TransformPickBAction);
 
 	done();
 }
@@ -136,7 +136,7 @@ void TransformMultiplyPopup::on_PickYButton_clicked(bool checked)
 void TransformMultiplyPopup::on_PickZButton_clicked(bool checked)
 {
 	// Enter manual picking mode
-	parent_.ui.MainView->setSelectedMode(UserAction::TransformPickCAction);
+	parent_.setSelectedMode(UserAction::TransformPickCAction);
 
 	done();
 }

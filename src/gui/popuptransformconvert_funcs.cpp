@@ -202,7 +202,7 @@ void convertSourcePickZButton_callback(RefList<Atom,int>* picked)
 void TransformConvertPopup::on_SourcePickXButton_clicked(bool checked)
 {
 	// Enter manual picking mode
-	parent_.ui.MainView->setSelectedMode(UserAction::ConvertSourcePickAAction);
+	parent_.setSelectedMode(UserAction::ConvertSourcePickAAction);
 
 	done();
 }
@@ -210,7 +210,7 @@ void TransformConvertPopup::on_SourcePickXButton_clicked(bool checked)
 void TransformConvertPopup::on_SourcePickYButton_clicked(bool checked)
 {
 	// Enter manual picking mode
-	parent_.ui.MainView->setSelectedMode(UserAction::ConvertSourcePickBAction);
+	parent_.setSelectedMode(UserAction::ConvertSourcePickBAction);
 
 	done();
 }
@@ -218,7 +218,7 @@ void TransformConvertPopup::on_SourcePickYButton_clicked(bool checked)
 void TransformConvertPopup::on_SourcePickZButton_clicked(bool checked)
 {
 	// Enter manual picking mode
-	parent_.ui.MainView->setSelectedMode(UserAction::ConvertSourcePickCAction);
+	parent_.setSelectedMode(UserAction::ConvertSourcePickCAction);
 
 	done();
 }
@@ -353,61 +353,28 @@ void TransformConvertPopup::on_DefineOriginButton_clicked(bool checked)
 	ui.OriginZSpin->setValue(v.z);
 }
 
-void convertTargetDefineXButton_callback(RefList<Atom,int>* picked)
-{
-// 	ui.TargetPickXButton->setChecked(false); ATEN2 TODO
-// 	// If there are not two atoms in the list then the mode must have been canceled
-// 	if (picked->nItems() != 2) return;
-// 	Vec3<double> v = picked->last()->item->r();
-// 	v -= picked->first()->item->r();
-// 	v.normalise();
-// 	ui.TargetMatrixXXSpin->setValue(v.x);
-// 	ui.TargetMatrixXYSpin->setValue(v.y);
-// 	ui.TargetMatrixXZSpin->setValue(v.z);
-}
-
-void convertTargetDefineYButton_callback(RefList<Atom,int>* picked)
-{
-// 	ui.TargetPickYButton->setChecked(false); ATEN2 TODO
-// 	// If there are not two atoms in the list then the mode must have been canceled
-// 	if (picked->nItems() != 2) return;
-// 	Vec3<double> v = picked->last()->item->r();
-// 	v -= picked->first()->item->r();
-// 	v.normalise();
-// 	ui.TargetMatrixYXSpin->setValue(v.x);
-// 	ui.TargetMatrixYYSpin->setValue(v.y);
-// 	ui.TargetMatrixYZSpin->setValue(v.z);
-}
-
-void convertTargetDefineZButton_callback(RefList<Atom,int>* picked)
-{
-// 	ui.TargetPickZButton->setChecked(false);  ATEN2 TODO
-// 	// If there are not two atoms in the list then the mode must have been canceled
-// 	if (picked->nItems() != 2) return;
-// 	Vec3<double> v = picked->last()->item->r();
-// 	v -= picked->first()->item->r();
-// 	v.normalise();
-// 	ui.TargetMatrixZXSpin->setValue(v.x);
-// 	ui.TargetMatrixZYSpin->setValue(v.y);
-// 	ui.TargetMatrixZZSpin->setValue(v.z);
-}
-
 void TransformConvertPopup::on_TargetPickXButton_clicked(bool checked)
 {
 	// Enter manual picking mode
-	parent_.ui.MainView->setSelectedMode(UserAction::ConvertTargetPickAAction,2,&convertTargetDefineXButton_callback);
+	parent_.setSelectedMode(UserAction::ConvertTargetPickAAction);
+
+	done();
 }
 
 void TransformConvertPopup::on_TargetPickYButton_clicked(bool checked)
 {
 	// Enter manual picking mode
-	parent_.ui.MainView->setSelectedMode(UserAction::ConvertTargetPickBAction,2,&convertTargetDefineYButton_callback);
+	parent_.setSelectedMode(UserAction::ConvertTargetPickBAction);
+
+	done();
 }
 
 void TransformConvertPopup::on_TargetPickZButton_clicked(bool checked)
 {
 	// Enter manual picking mode
-	parent_.ui.MainView->setSelectedMode(UserAction::ConvertTargetPickCAction,2,&convertTargetDefineZButton_callback);
+	parent_.setSelectedMode(UserAction::ConvertTargetPickCAction);
+
+	done();
 }
 
 void TransformConvertPopup::on_TargetNormaliseXButton_clicked(bool checked)

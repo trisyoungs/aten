@@ -29,9 +29,6 @@ void Viewer::mousePressEvent(QMouseEvent* event)
 	Messenger::enter("Viewer::mousePressEvent");
 
 	static Prefs::MouseButton button = Prefs::nMouseButtons;
-
-	// End old mode if one is active (i.e. prevent mode overlap on different mouse buttons)
-	if (activeMode_ != UserAction::NoAction) endMode(button);
 	
 	// Which mouse button was pressed?
 	if (event->button() == Qt::LeftButton) button = Prefs::LeftButton;
@@ -69,7 +66,7 @@ void Viewer::mousePressEvent(QMouseEvent* event)
 	}
 
 	// Preliminary check to see if RMB was pressed over an atom - if so , show the popup menu and exit.
-	if ((button == Prefs::RightButton) && editable_)
+	if (button == Prefs::RightButton)
 	{
 		Atom* tempi = source->atomOnScreen(event->x(), contextHeight_-event->y());
 		if (tempi != NULL)
@@ -82,22 +79,17 @@ void Viewer::mousePressEvent(QMouseEvent* event)
 	}
 
 	// Determine if there is an atom under the mouse
-	atomClicked_ = source->atomOnScreen(event->x(), contextHeight_-event->y());
-	
-	// Perform atom picking before entering mode (if required)
-	if (pickEnabled_ && (atomClicked_ != NULL))
-	{
-		// Don't add the same atom more than once
-		if (pickedAtoms_.contains(atomClicked_) == NULL)
-		{
-			pickedAtoms_.add(atomClicked_);
-			Messenger::print(Messenger::Verbose, "Adding atom %i to canvas subselection.",atomClicked_);
-		}
-		else Messenger::print(Messenger::Verbose, "Atom %i is already in canvas subselection.",atomClicked_);
-	}
-	
+	Atom* atomClicked = source->atomOnScreen(event->x(), contextHeight_-event->y());
+
+	// If there was, pass this information back to AtenWindow
+	if (atomClicked) atenWindow_->atomClicked(atomClicked);
+
+	// Note the mouse button pressed, and reset the mouse movement flag
+	mouseButton_[button] = true;
+	mouseHasMoved_ = false;
+
 	// Activate mode...
-	beginMode(button);
+	atenWindow_->beginMode(button, keyModifier_);
 
 	Messenger::exit("Viewer::mousePressEvent");
 }
@@ -116,15 +108,20 @@ void Viewer::mouseReleaseEvent(QMouseEvent* event)
 		Messenger::exit("Viewer::mouseReleaseEvent");
 		return;
 	}
-	
+
 	// Only finalise the mode if the button is the same as the one that caused the mousepress event.
 	if (mouseButton_[button])
 	{
 		rMouseUp_.set(event->x(), event->y(), 0.0);
+
+		// Reset mouse button flag
+		mouseButton_[button] = false;
+
 		// Deactivate mode...
-		endMode(button);
+		atenWindow_->endMode(button, keyModifier_);
 	}
-	atomClicked_ = NULL;
+
+	atenWindow_->atomClicked(NULL);
 	
 	update();
 	
@@ -148,13 +145,14 @@ void Viewer::mouseMoveEvent(QMouseEvent* event)
 	}
 
 	// Perform action associated with mode (if any)
-	if ((activeMode_ != UserAction::NoAction) || (selectedMode_ == UserAction::DrawFragmentsAction))
+	if ((atenWindow_->activeMode() != UserAction::NoAction) || (atenWindow_->selectedMode() == UserAction::DrawFragmentsAction))
 	{
 		// Calculate new delta.
 		delta.set(event->x(), event->y(), 0.0);
 		delta = delta - rMouseLast_;
-		// Use activeMode_ to determine what needs to be performed
-		switch (activeMode_)
+
+		// Use activeMode_ to determine what needs to be done (if anything)
+		switch (atenWindow_->activeMode())
 		{
 			case (UserAction::NoAction):
 				break;
@@ -173,7 +171,7 @@ void Viewer::mouseMoveEvent(QMouseEvent* event)
 			case (UserAction::DrawFragmentsAction):
 				if (aten_->currentFragment())
 				{
-					if (atomClicked_ == NULL) aten_->currentFragment()->rotateOrientedModel(delta.x/2.0,delta.y/2.0);
+					if (atenWindow_->clickedAtom() == NULL) aten_->currentFragment()->rotateOrientedModel(delta.x/2.0,delta.y/2.0);
 					else aten_->currentFragment()->rotateAnchoredModel(delta.x, delta.y);
 					update();
 				}
@@ -181,19 +179,19 @@ void Viewer::mouseMoveEvent(QMouseEvent* event)
 			case (UserAction::TransformRotateXYAction):
 				source->rotateSelectionWorld(delta.x/2.0,delta.y/2.0);
 				source->updateMeasurements();
-				hasMoved_ = true;
+				mouseHasMoved_ = true;
 				break;
 			case (UserAction::TransformRotateZAction):
 				source->rotateSelectionZaxis(delta.x/2.0);
 				source->updateMeasurements();
-				hasMoved_ = true;
+				mouseHasMoved_ = true;
 				break;
 			case (UserAction::TransformTranslateAction):
 				delta.y = -delta.y;
 				delta /= source->translateScale() * 2.0;
 				source->translateSelectionWorld(delta);
 				source->updateMeasurements();
-				hasMoved_ = true;
+				mouseHasMoved_ = true;
 				break;
 			default:
 				break;
@@ -236,16 +234,12 @@ void Viewer::wheelEvent(QWheelEvent* event)
 			case (Prefs::NoAction):
 				break;
 			case (Prefs::InteractAction):
-				// Only act if the editable_ flag is set
-				if (!editable_) break;
-				useSelectedMode();
+				atenWindow_->useSelectedMode();
 				break;
 			case (Prefs::RotateAction):
 				scrollup ? source->rotateView(1.0,0.0) : source->rotateView(-1.0,0.0);
 				break;
 			case (Prefs::TranslateAction):
-				// Only act if the editable_ flag is set
-				if (!editable_) break;
 				break;
 			case (Prefs::ZoomAction):
 				source->adjustZoom(scrollup);
@@ -276,4 +270,10 @@ Vec3<double> Viewer::rMouseUp()
 Vec3<double> Viewer::rMouseLast()
 {
 	return rMouseLast_;
+}
+
+// Return whether the mouse has moved between mouse press and release events
+bool Viewer::mouseHasMoved()
+{
+	return mouseHasMoved_;
 }

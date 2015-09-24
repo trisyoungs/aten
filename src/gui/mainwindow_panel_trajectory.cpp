@@ -170,13 +170,13 @@ void AtenWindow::on_TrajectoryControlPlayButton_clicked(bool checked)
 	if (checked)
 	{
 		trajectoryTimerId_ = startTimer(ui.TrajectoryControlDelaySpin->value());
-		ui.MainView->setEditable(false);
+		editable_ = false;
 	}
 	else
 	{
 		killTimer(trajectoryTimerId_);
 		trajectoryTimerId_ = -1;
-		ui.MainView->setEditable(true);
+		editable_ = true;
 	}
 	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::TrajectoryPanelTarget);
 }

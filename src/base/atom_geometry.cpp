@@ -209,15 +209,15 @@ bool Atom::nextBondVector(Vec3<double>& vector, Atom::AtomGeometry geometry)
 	}
 	
 	// Only try to find a new bond if we have free bonds to add...
-	if (this->nBonds() >= Atom::atomGeometryNBonds(geometry))
+	if (bonds_.nItems() >= Atom::atomGeometryNBonds(geometry))
 	{
-		Messenger::print("Attempted to grow an atom on an existing atom which already has the correct (or greater) number of bonds (%i) for the requested geometry (%s)", this->nBonds(), Atom::atomGeometry(geometry));
+		Messenger::print("Attempted to grow an atom on an existing atom which already has the correct (or greater) number of bonds (%i) for the requested geometry (%s)", bonds_.nItems(), Atom::atomGeometry(geometry));
 		Messenger::exit("Atom::nextBondVector");
 		return false;
 	}
 
 	// Now, find the next position for the required geometry
-	Atom* atoms[5];
+	Atom* atoms[5], *i;
 	static Vec3<double> vec[5], u, v;
 	Matrix rotMat;
 	static double** angleArray = NULL;
@@ -373,51 +373,51 @@ bool Atom::nextBondVector(Vec3<double>& vector, Atom::AtomGeometry geometry)
 				vec[n] = cell.mimVector(this, atoms[n]);
 				vec[n].normalise();
 			}
-			if (geometry == Atom::TrigBipyramidGeometry)
+			// Same as before: if we have an angle of 180deg between any two atoms, then add final atom in central plane
+			// Calculate all angles first
+			for (n=0; n<4; ++n) for (m=0; m<4; ++m) if (n != m) angleArray[n][m] = vec[n].dp(vec[m]);
+			foundAngle = false;
+			for (n=0; n<3; ++n)
 			{
-				// Same as before: if we have an angle of 180deg between any two atoms, then add final atom in central plane
-				// Calculate all angles first
-				for (n=0; n<4; ++n) for (m=0; m<4; ++m) if (n != m) angleArray[n][m] = vec[n].dp(vec[m]);
-				foundAngle = false;
-				for (n=0; n<3; ++n)
+				for (m=n+1; m<4; ++m)
 				{
-					for (m=n+1; m<4; ++m)
+					if (angleArray[n][m] < -0.75)
 					{
-						if (angleArray[n][m] < -0.75)
-						{
-							foundAngle = true;
-							// Find the other two atoms which aren't in the 180degree bond
-							o = n;
-							do { o = (o+1)%4; } while (o == m);
-							p = o;
-							do { p = (p+1)%4; } while (p == m);
-							rotMat.createRotationAxis(vec[n].x, vec[n].y, vec[n].z, 120.0, false);
-							vector = rotMat * vec[o];
-							// Check we have not overlapped with the other atom
-							if (vector.dp(vec[p]) > 0.75) vector = rotMat * vector;
-						}
+						foundAngle = true;
+						// Find the other two atoms which aren't in the 180degree bond
+						o = n;
+						do { o = (o+1)%4; } while (o == m);
+						p = o;
+						do { p = (p+1)%4; } while (p == m);
+						rotMat.createRotationAxis(vec[n].x, vec[n].y, vec[n].z, geometry == Atom::TrigBipyramidGeometry ? 120 : 90.0, false);
+						vector = rotMat * vec[o];
+						// Check we have not overlapped with the other atom
+						if (vector.dp(vec[p]) > 0.75) vector = rotMat * vector;
 					}
-					if (foundAngle) break;
 				}
-				if (!foundAngle)
-				{
-					// No sign of 180degree angle, so find bond which makes smallest average angle with the rest...
-					for (n=0; n<4; ++n) for (m=0; m<4; ++m) if (m != n) angleArray[n][n] += angleArray[n][m];
-					for (n=0; n<4; ++n) angleArray[n][n] = fabs(angleArray[n][n] / 3.0);
-					o = 0;
-					for (n=1; n<4; ++n) if (angleArray[n][n] < angleArray[o][o]) o = n;
-					vector = -vec[o];
-				}
+				if (foundAngle) break;
 			}
-			else if (geometry == Atom::OctahedralGeometry)
+			if (!foundAngle)
 			{
-				// TODO
+				// No sign of 180degree angle, so find bond which makes smallest average angle with the rest...
+				for (n=0; n<4; ++n) for (m=0; m<4; ++m) if (m != n) angleArray[n][n] += angleArray[n][m];
+				for (n=0; n<4; ++n) angleArray[n][n] = fabs(angleArray[n][n] / 3.0);
+				o = 0;
+				for (n=1; n<4; ++n) if (angleArray[n][n] < angleArray[o][o]) o = n;
+				vector = -vec[o];
 			}
 			break;
 		// Five bonds already present
 		case (5):
 			// Only octahedral geometry relevant at this point
-			// TODO
+			// Lazy - take average vectors of all bonds, reverse it, and add atom along that vector
+			vector = 0.0;
+			for (RefListItem<Bond,int>* ri = bonds_.first(); ri != NULL; ri = ri->next)
+			{
+				i = ri->item->partner(this);
+				vector += cell.mimVector(this, i);
+			}
+			vector = -vector;
 			break;
 	}
 

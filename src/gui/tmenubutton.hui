@@ -27,9 +27,11 @@
 #include <QTimer>
 #include <QTime>
 #include "parser/returnvalue.h"
+#include "gui/useractions.h"
 
 // Forward Declarations (Qt)
 class TMenuButton;
+class AtenWindow;
 
 ATEN_USING_NAMESPACE
 
@@ -52,7 +54,7 @@ class TMenuButtonPopupWidget : public QWidget
 	// Update controls (before show())
 	virtual void updateControls() = 0;
 	// Local function called when the widget should be closed after a button has been selceted
-	void done(bool setParentButtonDown = false);
+	void done(bool setParentButtonDown = false, UserAction::Action setActionToEnable = UserAction::NoAction);
 	// Notify parent button that one of our widgets has changed
 	void changed(int data = 0);
 
@@ -125,6 +127,18 @@ class TMenuButton : public QToolButton
 
 
 	/*
+	 * Link to AtenWindow
+	 */
+	private:
+	// Pointer to Aten
+	static AtenWindow* atenWindow_;
+
+	public:
+	// Set pointer to AtenWindow
+	static void setAtenWindow(AtenWindow* atenWindow);
+
+
+	/*
 	 * Button
 	 */
 	private:
@@ -144,8 +158,6 @@ class TMenuButton : public QToolButton
 	TMenuButtonPopupWidget* popupWidget_;
 	// Whether popup is instant when button is pressed
 	bool instantPopup_;
-	// Whether button should be 'clicked' when the popup is done
-	bool clickOnPopupDone_;
 	// Timer for popup window
 	QTimer popupTimer_;
 	// Whether button was already checked before being pressed
@@ -153,7 +165,7 @@ class TMenuButton : public QToolButton
 
 	public:
 	// Set popup widget for button
-	void setPopupWidget(TMenuButtonPopupWidget* widget, bool instantPopup = false, bool clickOnPopupDone = false);
+	void setPopupWidget(TMenuButtonPopupWidget* widget, bool instantPopup = false);
 	// Return popup widget set for button
 	TMenuButtonPopupWidget* popupWidget();
 	// Call named method in associated popup widget
@@ -165,7 +177,7 @@ class TMenuButton : public QToolButton
 		return false;
 	}
 	// Notify button that popup is done
-	void popupDone(bool setButtonDown);
+	void popupDone(bool setButtonDown, UserAction::Action setActionToEnable = UserAction::NoAction);
 	// Notify button that the popup has been hidden
 	void popupWidgetHidden();
 	// Notify button that a widget on the popup has been changed

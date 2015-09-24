@@ -108,6 +108,9 @@ void AtenWindow::createContextMenu()
 // Show the modelview context menu
 void AtenWindow::callContextMenu(Atom* atomUnderMouse, int x, int y)
 {
+	// If we are not currently editable_, return now
+	if (!editable_) return;
+
 	// If there is no atom under the mouse, then exit
 	contextAtom_ = atomUnderMouse;
 	if (contextAtom_ == NULL) return;

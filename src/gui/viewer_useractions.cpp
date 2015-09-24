@@ -46,7 +46,7 @@ void Viewer::renderActiveModes(Model* currentModel)
 	painter.setPen(color);
 	painter.setPen(Qt::DashLine);
 	painter.setBrush(nobrush);
-	switch (activeMode_)
+	switch (atenWindow_->activeMode())
 	{
 		case (UserAction::NoAction):
 			break;
@@ -59,13 +59,13 @@ void Viewer::renderActiveModes(Model* currentModel)
 	}
 
 	// Passive mode embellishments
-	if (currentModel != NULL) switch (selectedMode_)
+	if (currentModel != NULL) switch (atenWindow_->selectedMode())
 	{
 		// Draw on distance ruler for drawing modes //ATEN2 TODO
 		case (UserAction::DrawAtomsAction):
 			// Get pixel 'length' in Angstrom terms at current draw depth
-			r = currentModel->screenToModel(contextWidth_/2+10, contextHeight_/2, currentDrawDepth_);
-			r -= currentModel->screenToModel(contextWidth_/2, contextHeight_/2, currentDrawDepth_);
+			r = currentModel->screenToModel(contextWidth_/2+10, contextHeight_/2, atenWindow_->currentDrawDepth());
+			r -= currentModel->screenToModel(contextWidth_/2, contextHeight_/2, atenWindow_->currentDrawDepth());
 			dx = 10.0 / r.magnitude();
 			
 			halfw = contextWidth_ / 2.0;
@@ -115,7 +115,7 @@ void Viewer::renderUserActions(Model* source)
 	prefs.copyColour(Prefs::TextColour, colour_i);
 	glColor4f(colour_i.x, colour_i.y, colour_i.z, colour_i.w);
 	glEnable(GL_DEPTH_TEST);
-	for (RefListItem<Atom,int>* ri = pickedAtoms_.first(); ri != NULL; ri = ri->next)
+	for (RefListItem<Atom,int>* ri = atenWindow_->pickedAtoms(); ri != NULL; ri = ri->next)
 	{
 		// Get Atom pointer
 		Atom* i = ri->item;
@@ -133,24 +133,27 @@ void Viewer::renderUserActions(Model* source)
 		renderGroup_.addTriangles(primitives_[primitiveSet_].pickedAtom(), A, colour_i);
 	}
 
+	// Grab the clicked atom
+	Atom* clickedAtom = atenWindow_->clickedAtom();
+
 	// Active user actions
-	switch (activeMode_)
+	switch (atenWindow_->activeMode())
 	{
 		// Draw on bond and new atom for chain drawing (if mode is active)
 		case (UserAction::DrawAtomsAction):
-			if (atomClicked_ == NULL) break;
-			pos = atomClicked_->r();
-			style_i = (prefs.renderStyle() == Prefs::OwnStyle ? atomClicked_->style() : prefs.renderStyle());
+			if (clickedAtom == NULL) break;
+			pos = clickedAtom->r();
+			style_i = (prefs.renderStyle() == Prefs::OwnStyle ? clickedAtom->style() : prefs.renderStyle());
 			if (style_i == Prefs::TubeStyle) radius_i = 0.0;
-			else if (style_i == Prefs::ScaledStyle) radius_i = prefs.styleRadius(Prefs::ScaledStyle, atomClicked_->element()) - primitives_[primitiveSet_].scaledAtomAdjustment(atomClicked_->element());
-			else radius_i = prefs.styleRadius(style_i, atomClicked_->element()) - primitives_[primitiveSet_].sphereAtomAdjustment();
+			else if (style_i == Prefs::ScaledStyle) radius_i = prefs.styleRadius(Prefs::ScaledStyle, clickedAtom->element()) - primitives_[primitiveSet_].scaledAtomAdjustment(clickedAtom->element());
+			else radius_i = prefs.styleRadius(style_i, clickedAtom->element()) - primitives_[primitiveSet_].sphereAtomAdjustment();
 
 			// We need to project a point from the mouse position onto the canvas plane, unless the mouse is over an existing atom in which case we snap to its position instead
 			j = source->atomOnScreen(rMouseLast_.x, rMouseLast_.y);
 			if (j == NULL)
 			{
 				j = &tempj;
-				v = source->screenToModel(rMouseLast_.x, rMouseLast_.y, currentDrawDepth_);
+				v = source->screenToModel(rMouseLast_.x, rMouseLast_.y, atenWindow_->currentDrawDepth());
 				j->r() = v;
 				style_j = (prefs.renderStyle() == Prefs::OwnStyle ? Prefs::LineStyle : prefs.renderStyle());
 				j->setStyle(style_j);
@@ -166,23 +169,23 @@ void Viewer::renderUserActions(Model* source)
 			v -= pos;
 
 			// Select colour
-			if (atomClicked_->isPositionFixed()) prefs.copyColour(Prefs::FixedAtomColour, colour_i);
+			if (clickedAtom->isPositionFixed()) prefs.copyColour(Prefs::FixedAtomColour, colour_i);
 			else switch (prefs.colourScheme())
 			{
 				case (Prefs::ElementScheme):
-					Elements().copyColour(atomClicked_->element(), colour_i);
+					Elements().copyColour(clickedAtom->element(), colour_i);
 					break;
 				case (Prefs::ChargeScheme):
-					prefs.colourScale[0].colour(atomClicked_->charge(), colour_i);
+					prefs.colourScale[0].colour(clickedAtom->charge(), colour_i);
 					break;
 				case (Prefs::VelocityScheme):
-					prefs.colourScale[1].colour(atomClicked_->v().magnitude(), colour_i);
+					prefs.colourScale[1].colour(clickedAtom->v().magnitude(), colour_i);
 					break;
 				case (Prefs::ForceScheme):
-					prefs.colourScale[2].colour(atomClicked_->f().magnitude(), colour_i);
+					prefs.colourScale[2].colour(clickedAtom->f().magnitude(), colour_i);
 					break;
 				case (Prefs::OwnScheme):
-					atomClicked_->copyColour(colour_i);
+					clickedAtom->copyColour(colour_i);
 					break;
 				default:
 					break;
@@ -193,7 +196,7 @@ void Viewer::renderUserActions(Model* source)
 			A.createTranslation(pos);
 			
 			// Render new (temporary) bond
-			renderGroup_.createBond(primitives_[primitiveSet_], A, v, atomClicked_, style_i, colour_i, radius_i, j, style_j, colour_j, radius_j, bt, prefs.selectionScale(), NULL);
+			renderGroup_.createBond(primitives_[primitiveSet_], A, v, clickedAtom, style_i, colour_i, radius_i, j, style_j, colour_j, radius_j, bt, prefs.selectionScale(), NULL);
 			
 			// Draw text showing distance
 			text.sprintf("r = %f ", v.magnitude());
@@ -202,16 +205,16 @@ void Viewer::renderUserActions(Model* source)
 	}
 	
 	// Selected user mode actions
-	switch (selectedMode_)
+	switch (atenWindow_->selectedMode())
 	{
 		// Draw on fragment (as long as mode is selected)
 		case (UserAction::DrawFragmentsAction):
 			if (!aten_->currentFragment()) break;
 			j = source->atomOnScreen(rMouseLast_.x, rMouseLast_.y);
-			if ((atomClicked_ != NULL) || (j != NULL))
+			if ((clickedAtom != NULL) || (j != NULL))
 			{
 				// Atom is now fragment anchor point - make sure we select a non-null atom i or j
-				if (atomClicked_ != NULL) j = atomClicked_;
+				if (clickedAtom != NULL) j = clickedAtom;
 				pos = j->r();
 				Model* m = aten_->currentFragment()->anchoredModel(j, keyModifier(Prefs::ShiftKey), aten_->fragmentBondId());
 				A.createTranslation(pos);
@@ -228,7 +231,7 @@ void Viewer::renderUserActions(Model* source)
 			{
 				// No atom under the mouse pointer, so draw on at the prefs drawing depth in its current orientation
 				// Get drawing point origin, translate to it, and render the stored model
-				if (activeMode_ == UserAction::DrawFragmentsAction) pos = source->screenToModel(rMouseDown_.x, rMouseDown_.y, prefs.drawDepth());
+				if (atenWindow_->activeMode() == UserAction::DrawFragmentsAction) pos = source->screenToModel(rMouseDown_.x, rMouseDown_.y, prefs.drawDepth());
 				else pos = source->screenToModel(rMouseLast_.x, rMouseLast_.y, prefs.drawDepth());
 				A.createTranslation(pos);
 				renderGroup_.createAtomsAndBonds(primitives_[primitiveSet_], aten_->currentFragment()->orientedModel(), A);

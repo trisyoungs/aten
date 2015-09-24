@@ -77,7 +77,7 @@ bool TransformShiftPopup::callMethod(QString methodName, ReturnValue& rv)
 void TransformShiftPopup::on_PickButton_clicked(bool checked)
 {
 	// Enter manual picking mode
-	parent_.ui.MainView->setSelectedMode(UserAction::ShiftPickVectorAction);
+	parent_.setSelectedMode(UserAction::ShiftPickVectorAction);
 
 	done();
 }

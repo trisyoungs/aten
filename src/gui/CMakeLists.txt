@@ -176,10 +176,11 @@ set(gui_SRCS
   loadmodel_funcs.cpp
   mainmenuactions.cpp
   mainwindow_atoms.cpp
-  mainwindow_models.cpp
   mainwindow_context.cpp
   mainwindow_funcs.cpp
   mainwindow_image.cpp
+  mainwindow_interaction.cpp
+  mainwindow_models.cpp
   mainwindow_messages.cpp
   mainwindow_models.cpp
   mainwindow_panel_build.cpp
