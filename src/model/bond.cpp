@@ -188,7 +188,16 @@ void Model::initialiseBondingCuboids()
 	Vec3<double> r;
 	extentMin_ = 1e6;
 	extentMax_ = -1e6;
-	
+
+	// Nothing to do if there are no atoms in the system
+	cuboidSize_.set(size,size,size);
+	nCuboids_ = 0;
+	if (atoms_.nItems() == 0)
+	{
+		Messenger::exit("Model::initialiseBondingCuboids");
+		return;
+	}
+
 	// Prepare (if non-periodic cell)
 	if (cell_.type() == UnitCell::NoCell)
 	{
@@ -204,7 +213,7 @@ void Model::initialiseBondingCuboids()
 		}
 		extentRange_ = extentMax_ - extentMin_;
 	}
-	
+
 	// Main loop
 	do
 	{
