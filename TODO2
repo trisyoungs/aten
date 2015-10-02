@@ -18,6 +18,7 @@ Partitioning scheme usage from CLI (e.g. in cgparticle.txt or chloroform.txt scr
 silica.txt needs new option dialog.
 Custom dialog code example (uitest.txt) does not successfully retrieve widget values (true for all dialogs on save?).
 Rename commands for consistency - e.g. newFF to newForcefield?
+Ato export format is incorrect if nrestraints == 0 (i.e. for single atoms) since newline is not printed.
 
 Graphics TODO
 =============
