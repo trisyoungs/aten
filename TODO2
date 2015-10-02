@@ -17,6 +17,7 @@ Partitioning scheme usage from CLI (e.g. in cgparticle.txt or chloroform.txt scr
 silica.txt needs new option dialog.
 Custom dialog code example (uitest.txt) does not successfully retrieve widget values (true for all dialogs on save?).
 Rename commands for consistency - e.g. newFF to newForcefield?
+DL_POLY trajectory cannot be properly loaded without a model containing the correct atoms - add the ability to create a local, temporary model in the filter, and store atom information in this in the readHeader() function. Then could update modelTemplate to take a model pointer as an optional argument. Does this mean we should rewrite the language to properly use pointer specifications?
 
 Graphics TODO
 =============
@@ -79,3 +80,4 @@ Remove LineTol and Converge commands, and update minimisation command signatures
 Remove prefs options for replicate, and add extra options to turn on folding and trimming to replicate() command.
 Add viewerFontFileName member Prefs accessor.
 Remove TransparentSelection Prefs accessor.
+Add TrajectoryFormat CLI switch (trajectoryformat).
