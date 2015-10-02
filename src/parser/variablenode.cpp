@@ -110,15 +110,21 @@ bool VariableNode::execute(ReturnValue& rv)
 		Messenger::exit("VariableNode::execute");
 		return false;
 	}
+
 	// Call the local variable's execute() function to get the base value
 	bool result;
 	if (arrayIndex_ == NULL) result = variable_->execute(rv);
 	else
 	{
 		ReturnValue index;
-		if (!arrayIndex_->execute(index)) return false;
+		if (!arrayIndex_->execute(index))
+		{
+			Messenger::exit("VariableNode::execute");
+			return false;
+		}
 		result = variable_->executeAsArray(rv, index.asInteger()-1);
 	}
+
 	// If a path is present (i.e. there are arguments to the VariableNode, then execute it. Otherwise, just return the variable contents
 	// Next, step through accessnodes, passing the returnvalue to each in turn
 	if (result) for (RefListItem<TreeNode,int>* ri = args_.first(); ri != NULL; ri = ri->next)
@@ -132,6 +138,7 @@ bool VariableNode::execute(ReturnValue& rv)
 // 		rv.info();
 	}
 	else Messenger::print(Messenger::Verbose, "Variable retrieval failed.");
+
 	Messenger::exit("VariableNode::execute");
 	return result;
 }

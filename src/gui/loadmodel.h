@@ -88,8 +88,8 @@ class AtenLoadModel : public QDialog
 	void on_KeepTypesCheck_clicked(bool checked);
 
 	public:
-	// Update controls and show dialog
-	void updateAndShow();
+	// Update controls and execute dialog
+	int updateAndExec();
 };
 
 #endif

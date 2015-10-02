@@ -86,8 +86,8 @@ Cli cliSwitches[] = {
 		"",
 		"Force folding of atoms in periodic systems" },
 	{ Cli::FormatSwitch,		'f',"format",		1,
-		"",
-		"Load models from command-line with specified <format>" },
+		"<format>",
+		"Load models from command-line assuming specified <format>" },
 	{ Cli::GridSwitch,		'g',"grid",		1,
 		"<file>",
 		"Load the specified gridded data file" },
@@ -175,6 +175,9 @@ Cli cliSwitches[] = {
 	{ Cli::TrajectorySwitch,	't',"trajectory",	1,
 		"<file>",
 		"Associate a trajectory with the last loaded model" },
+	{ Cli::TrajectoryFormatSwitch,	'\0',"trajectoryformat",	1,
+		"<format>",
+		"Load trajectories from command-line assuming specified <format>" },
 	{ Cli::UndoLevelSwitch,		'u',"undolevels",	1,
 		"<nlevels>",
 		"Set the maximum number of undo levels per model (-1 = unlimited)" },
@@ -393,7 +396,7 @@ int Aten::parseCli(int argc, char *argv[])
 	Model* model;
 	Program* script, tempProgram;
 	ReturnValue rv;
-	Tree* filter, *modelFilter = NULL;
+	Tree* filter, *modelFilter = NULL, *trajectoryFilter = NULL;
 	Program interactiveScript;
 	QStringList items;
 
@@ -802,9 +805,19 @@ int Aten::parseCli(int argc, char *argv[])
 					}
 					else
 					{
-						Tree* filter = probeFile(argText, FilterData::TrajectoryImport);
+						Tree* filter = (trajectoryFilter ? trajectoryFilter : probeFile(argText, FilterData::TrajectoryImport));
 						if (filter == NULL) return -1;
 						if (!current_.m->initialiseTrajectory(argText,filter)) return -1;
+					}
+					break;
+				// Set forced trajectory load format
+				case (Cli::TrajectoryFormatSwitch):
+					trajectoryFilter = findFilter(FilterData::TrajectoryImport, argText);
+					if (trajectoryFilter == NULL)
+					{
+						// Print list of valid filter nicknames
+						printValidNicknames(FilterData::TrajectoryImport);
+						return -1;
 					}
 					break;
 				// Set maximum number of undolevels per model

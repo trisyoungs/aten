@@ -43,7 +43,7 @@ void GrowPopup::updateControls()
 {
 	refreshing_ = true;
 
-	switch (parent_.ui.MainView->buildGeometry())
+	switch (parent_.buildGeometry())
 	{
 		case (Atom::LinearGeometry):
 			ui.GeometryLinearButton->setChecked(true);
@@ -67,7 +67,7 @@ void GrowPopup::updateControls()
 			ui.GeometryOctahedralButton->setChecked(true);
 			break;
 		default:
-			printf("Warning: Viewer has odd atom geometry set for build (%i)\n", parent_.ui.MainView->buildGeometry());
+			printf("Warning: Viewer has odd atom geometry set for build (%i)\n", parent_.buildGeometry());
 			break;
 	}
 
@@ -138,91 +138,92 @@ bool GrowPopup::callMethod(QString methodName, ReturnValue& rv)
 void GrowPopup::on_GeometryLinearButton_clicked(bool checked)
 {
 	// Set geometry in viewer
-	parent_.ui.MainView->setBuildGeometry(Atom::LinearGeometry);
+	parent_.setBuildGeometry(Atom::LinearGeometry);
 
 	// Update icon
 	callMethodSimple("updateButtonIcon", Atom::atomGeometry(Atom::LinearGeometry));
 
-	// Hide popup
-	done();
+	// Hide popup (set button down, and click it)
+	done(true, UserAction::DrawGrowAtomsAction);
 }
 
 void GrowPopup::on_GeometryTShapeButton_clicked(bool checked)
 {
 	// Set geometry in viewer
-	parent_.ui.MainView->setBuildGeometry(Atom::TShapeGeometry);
+	parent_.setBuildGeometry(Atom::TShapeGeometry);
 
 	// Update icon
 	callMethodSimple("updateButtonIcon", Atom::atomGeometry(Atom::TShapeGeometry));
 
-	// Hide popup
-	done();
+	// Hide popup (set button down, and click it)
+	done(true, UserAction::DrawGrowAtomsAction);
 }
 
 void GrowPopup::on_GeometryTrigonalButton_clicked(bool checked)
 {
 	// Set geometry in viewer
-	parent_.ui.MainView->setBuildGeometry(Atom::TrigPlanarGeometry);
+	parent_.setBuildGeometry(Atom::TrigPlanarGeometry);
 
 	// Update icon
 	callMethodSimple("updateButtonIcon", Atom::atomGeometry(Atom::TrigPlanarGeometry));
 
-	// Hide popup
-	done();
+	// Hide popup (set button down, and click it)
+	done(true, UserAction::DrawGrowAtomsAction);
 }
 
 void GrowPopup::on_GeometryTetrahedralButton_clicked(bool checked)
 {
 	// Set geometry in viewer
-	parent_.ui.MainView->setBuildGeometry(Atom::TetrahedralGeometry);
+	parent_.setBuildGeometry(Atom::TetrahedralGeometry);
 
 	// Update icon
 	callMethodSimple("updateButtonIcon", Atom::atomGeometry(Atom::TetrahedralGeometry));
 
-	// Hide popup
-	done();
+	// Hide popup (set button down, and click it)
+	done(true, UserAction::DrawGrowAtomsAction);
 }
+
 void GrowPopup::on_GeometrySqPlanarButton_clicked(bool checked)
 {
 	// Set geometry in viewer
-	parent_.ui.MainView->setBuildGeometry(Atom::SquarePlanarGeometry);
+	parent_.setBuildGeometry(Atom::SquarePlanarGeometry);
 
 	// Update icon
 	callMethodSimple("updateButtonIcon", Atom::atomGeometry(Atom::SquarePlanarGeometry));
 
-	// Hide popup
-	done();
+	// Hide popup (set button down, and click it)
+	done(true, UserAction::DrawGrowAtomsAction);
 }
 
 void GrowPopup::on_GeometryTrigBipyramidButton_clicked(bool checked)
 {
 	// Set geometry in viewer
-	parent_.ui.MainView->setBuildGeometry(Atom::TrigBipyramidGeometry);
+	parent_.setBuildGeometry(Atom::TrigBipyramidGeometry);
 
 	// Update icon
 	callMethodSimple("updateButtonIcon", Atom::atomGeometry(Atom::TrigBipyramidGeometry));
 
-	// Hide popup
-	done();
+	// Hide popup (set button down, and click it)
+	done(true, UserAction::DrawGrowAtomsAction);
 }
 
 void GrowPopup::on_GeometryOctahedralButton_clicked(bool checked)
 {
 	// Set geometry in viewer
-	parent_.ui.MainView->setBuildGeometry(Atom::OctahedralGeometry);
+	parent_.setBuildGeometry(Atom::OctahedralGeometry);
 
 	// Update icon
 	callMethodSimple("updateButtonIcon", Atom::atomGeometry(Atom::OctahedralGeometry));
 
-	// Hide popup
-	done();
+	// Hide popup (set button down, and click it)
+	done(true, UserAction::DrawGrowAtomsAction);
 }
 
 void GrowPopup::on_GrowSelectionButton_clicked(bool checked)
 {
 	// Run command
-	if (ui.FixedRadio->isChecked()) CommandNode::run(Commands::SelectionGrowAtom, "icd", parent_.currentBuildElement(), Atom::atomGeometry(parent_.ui.MainView->buildGeometry()), ui.DistanceSpin->value());
-	else CommandNode::run(Commands::SelectionGrowAtom, "ic", parent_.currentBuildElement(), Atom::atomGeometry(parent_.ui.MainView->buildGeometry()));
+	if (ui.FixedRadio->isChecked()) CommandNode::run(Commands::SelectionGrowAtom, "icd", parent_.currentBuildElement(), Atom::atomGeometry(parent_.buildGeometry()), ui.DistanceSpin->value());
+	else CommandNode::run(Commands::SelectionGrowAtom, "ic", parent_.currentBuildElement(), Atom::atomGeometry(parent_.buildGeometry()));
 
 	// Hide popup
 	done();

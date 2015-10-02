@@ -44,23 +44,11 @@ Viewer::Viewer(QWidget* parent) : QOpenGLWidget(parent)
 	primitiveSet_ = Viewer::LowQuality;
 	fontPixelHeight_ = 1;
 
-	// Atom Selection
-	atomClicked_ = NULL;
-	pickEnabled_ = false;
-	actionBeforePick_ = UserAction::NoAction;
-
 	// Mouse Input
 	for (int i=0; i<3; i++) mouseButton_[i] = false;
 
 	// Key Input
 	for (int i=0; i<3; i++) keyModifier_[i] = false;
-
-	// User Actions
-	activeMode_ = UserAction::NoAction;
-	selectedMode_ = UserAction::SelectAction;
-	currentDrawDepth_ = -5.0;
-	buildGeometry_ = Atom::TetrahedralGeometry;
-	editable_ = true;
 
 	// Prevent QPainter from autofilling widget background
 	setAutoFillBackground(false);

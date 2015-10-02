@@ -80,7 +80,7 @@ void Viewer::keyPressEvent(QKeyEvent* event)
 				source->rotateSelectionWorld(2.0,0.0);
 				source->endUndoState();
 				source->updateMeasurements();
-				source->finalizeTransform(oldPositions_, "Transform Selection", noFold);
+				source->finalizeTransform(atenWindow_->oldPositions(), "Transform Selection", noFold);
 				atenWindow_->updateWidgets(AtenWindow::MainViewTarget);
 			}
 			else source->rotateView( keyModifier_[Prefs::ShiftKey] ? -1.0 : -10.0, 0.0);
@@ -103,12 +103,11 @@ void Viewer::keyPressEvent(QKeyEvent* event)
 			ignore = false;
 			break;
 		case (Qt::Key_Escape):
-			setSelectedMode(UserAction::SelectAction);
+			atenWindow_->setSelectedMode(UserAction::SelectAction);
 			refresh = true;
 			ignore = false;
 			break;
 		// Cycle render styles
-		case (Qt::Key_F8):
 			n = prefs.renderStyle() + 1;
 			if (n == Prefs::nDrawStyles) n = 0;
 			prefs.setRenderStyle((Prefs::DrawStyle) n);
@@ -128,7 +127,7 @@ void Viewer::keyPressEvent(QKeyEvent* event)
 	}
 	
 	// Mode-specific
-	switch (selectedMode_)
+	switch (atenWindow_->selectedMode())
 	{
 		case (UserAction::DrawFragmentsAction):
 			// Cycle link atom....
@@ -194,7 +193,7 @@ void Viewer::keyReleaseEvent(QKeyEvent* event)
 	}
 	
 	// Mode-specific
-	switch (selectedMode_)
+	switch (atenWindow_->selectedMode())
 	{
 		case (UserAction::DrawFragmentsAction):
 			// Refresh if Shift status has changed

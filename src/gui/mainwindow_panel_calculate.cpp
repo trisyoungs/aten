@@ -36,17 +36,17 @@ void AtenWindow::updateCalculatePanel(Model* sourceModel)
 
 void AtenWindow::on_CalculateMeasureDistanceButton_clicked(bool checked)
 {
-	if (checked) ui.MainView->setSelectedMode(UserAction::MeasureDistanceAction);
+	if (checked) setSelectedMode(UserAction::MeasureDistanceAction);
 }
 
 void AtenWindow::on_CalculateMeasureAngleButton_clicked(bool checked)
 {
-	if (checked) ui.MainView->setSelectedMode(UserAction::MeasureAngleAction);
+	if (checked) setSelectedMode(UserAction::MeasureAngleAction);
 }
 
 void AtenWindow::on_CalculateMeasureTorsionButton_clicked(bool checked)
 {
-	if (checked) ui.MainView->setSelectedMode(UserAction::MeasureTorsionAction);
+	if (checked) setSelectedMode(UserAction::MeasureTorsionAction);
 }
 
 void AtenWindow::on_CalculateMeasureClearButton_clicked(bool checked)

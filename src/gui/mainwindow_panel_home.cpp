@@ -96,7 +96,8 @@ void AtenWindow::on_HomeFileOpenButton_clicked(bool checked)
 {
 	AtenLoadModel loadModelDialog(*this);
 	Tree* filter;
-	if (loadModelDialog.exec() == 1)
+
+	if (loadModelDialog.updateAndExec() == 1)
 	{
 		bool result = aten_.loadModel(loadModelDialog.selectedFilename(), loadModelDialog.selectedFormat());
 		if (result)

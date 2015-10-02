@@ -176,9 +176,9 @@ void AtenWindow::updateWidgets(int targets)
 		if (lastAction == UserAction::NoAction) text.clear();
 		
 		// If current action is not the same as the last action, recreate string
-		if (lastAction != ui.MainView->selectedMode())
+		if (lastAction != selectedMode_)
 		{
-			lastAction = ui.MainView->selectedMode();
+			lastAction = selectedMode_;
 			text.sprintf("<b>%s:</b> %s", UserActions[lastAction].name, UserActions[lastAction].unModified);
 			if (UserActions[lastAction].shiftModified[0] != '\0') text += ", <b>+shift</b> " + QString(UserActions[lastAction].shiftModified);
 			if (UserActions[lastAction].ctrlModified[0] != '\0') text += ", <b>+ctrl</b> " + QString(UserActions[lastAction].ctrlModified);

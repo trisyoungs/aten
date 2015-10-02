@@ -580,8 +580,6 @@ class AtenWindow : public QMainWindow
 	void timerEvent(QTimerEvent* event);
 
 	public:
-	// Set action/button to reflect supplied user action
-	void setActiveUserAction(UserAction::Action ua);
 	// Set message label text
 	void setMessageLabel(QString message);
 
@@ -616,6 +614,60 @@ class AtenWindow : public QMainWindow
 	DisorderWizard disorderWizard_;
 	// Export Image dialog
 	AtenExportImage exportImageDialog_;
+
+
+	/*
+	 * Interactive Modes
+	 */
+	private:
+	// Active interaction mode of the main canvas
+	UserAction::Action activeMode_;
+	// Selected interaction mode (from GUI)
+	UserAction::Action selectedMode_;
+	// Current drawing depth for certain tools
+	double currentDrawDepth_;
+	// Current build geometry
+	Atom::AtomGeometry buildGeometry_;
+	// Whether we are selecting atoms and placing them in the pickedAtoms_ list	
+	bool pickEnabled_;
+	// User action before picking mode was entered
+	UserAction::Action actionBeforePick_;
+	// List of picked atoms
+	RefList<Atom,int> pickedAtoms_;
+	// Atom that was clicked at the start of a mouse press event
+	Atom* clickedAtom_;
+	// RefList of selected atoms and their positions so manipulations may be un-done
+	RefList< Atom,Vec3<double> > oldPositions_;
+	// Whether to accept editing actions (i.e. anything other than view manipulation)
+	bool editable_;
+
+	public:
+	// Begin an action on the model
+	void beginMode(Prefs::MouseButton button, bool* keyModifiers);
+	// End an action on the model
+	void endMode(Prefs::MouseButton button, bool* keyModifiers);
+	// Set the active mode to the current user mode
+	void useSelectedMode();
+	// Sets the currently selected interact mode
+	void setSelectedMode(UserAction::Action ua);
+	// Return the currently selected mode
+	UserAction::Action selectedMode() const;
+	// Return the currently active mode
+	UserAction::Action activeMode() const;
+	// Set current build geometry
+	void setBuildGeometry(Atom::AtomGeometry ag);
+	// Return current build geometry
+	Atom::AtomGeometry buildGeometry() const;
+	// Current drawing depth for certain tools
+	double currentDrawDepth();
+	// Notify that an atom was clicked
+	void atomClicked(Atom* atom);
+	// Return the last clicked atom
+	Atom* clickedAtom();
+	// Return start of picked atom list
+	RefListItem<Atom,int>* pickedAtoms();
+	// RefList of selected atoms and their positions so manipulations may be un-done
+	RefList< Atom,Vec3<double> >& oldPositions();
 
 
 	/*

@@ -20,6 +20,7 @@
 */
 
 #include "gui/tmenubutton.hui"
+#include "gui/mainwindow.h"
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QApplication>
 #include <QtWidgets/QStyle>
@@ -69,9 +70,9 @@ TMenuButton* TMenuButtonPopupWidget::parentMenuButton()
 }
 
 // Local function called when the widget should be closed after a button has been selceted
-void TMenuButtonPopupWidget::done(bool setParentButtonDown)
+void TMenuButtonPopupWidget::done(bool setParentButtonDown, UserAction::Action userActionToEnable)
 {
-	if (parentMenuButton_) parentMenuButton_->popupDone(setParentButtonDown);
+	if (parentMenuButton_) parentMenuButton_->popupDone(setParentButtonDown, userActionToEnable);
 	else Messenger::print("Internal Error: No parent button set in TMenuButtonPopupWidget::done().\n");
 
 	widgetDone_ = true;
@@ -189,8 +190,9 @@ bool TMenuButtonGroup::setCurrentButton(int buttonIndex)
  * TMenuButton
  */
 
-// Static singleton
+// Static Singletons
 List<TMenuButtonGroup> TMenuButton::groups_;
+AtenWindow* TMenuButton::atenWindow_ = NULL;
 
 // Constructor
 TMenuButton::TMenuButton(QWidget* parent) : QToolButton(parent)
@@ -210,6 +212,12 @@ TMenuButton::TMenuButton(QWidget* parent) : QToolButton(parent)
 	connect(this, SIGNAL(released()), this, SLOT(buttonReleased()));
 }
 
+// Set pointer to AtenWindow
+void TMenuButton::setAtenWindow(AtenWindow* atenWindow)
+{
+	atenWindow_ = atenWindow;
+}
+
 // Return user-assigned index of button
 int TMenuButton::index()
 {
@@ -217,11 +225,10 @@ int TMenuButton::index()
 }
 
 // Set popup widget for button
-void TMenuButton::setPopupWidget(TMenuButtonPopupWidget* widget, bool instantPopup, bool clickOnPopupDone)
+void TMenuButton::setPopupWidget(TMenuButtonPopupWidget* widget, bool instantPopup)
 {
 	popupWidget_ = widget;
 	instantPopup_ = instantPopup;
-	clickOnPopupDone_ = clickOnPopupDone;
 }
 
 // Return popup widget set for button
@@ -230,8 +237,10 @@ TMenuButtonPopupWidget* TMenuButton::popupWidget()
 	return popupWidget_;
 }
 
-void TMenuButton::popupDone(bool setButtonDown)
+// Notify button that popup is done
+void TMenuButton::popupDone(bool setButtonDown, UserAction::Action userActionToEnable)
 {
+	// What we do here exactly depends on the current stated of the button
 	if (!setButtonDown)
 	{
 		setDown(false);
@@ -239,8 +248,10 @@ void TMenuButton::popupDone(bool setButtonDown)
 	}
 	else if (group_) group_->setCurrentButton(this);
 
-	// Click button if requested
-	if (clickOnPopupDone_) emit(click());
+	if (userActionToEnable != UserAction::NoAction) atenWindow_->setSelectedMode(userActionToEnable);
+
+// 	// Click button if requested
+// 	if (clickButton && (!setButtonDown)) emit(click());
 }
 
 // Notify button that the popup has been hidden

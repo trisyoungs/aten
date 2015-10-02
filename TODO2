@@ -1,7 +1,6 @@
 TODO
 ====
 Crash if model is saved, then filters reloaded, then model is saved again (since filter pointer will be wrong)?
-Octahedral Growing doesn't work.
 Check - is using redirected filenames really necessary when saving movie frame images?
 Automatically adjust grid size for number of visible models, based on current aspect ratio and context size etc.
 Redo ProgressIndicator, making into a class much like QProgress (can't just use QProgress, since we want to have progress indicator functionality in the CLI....). Make it clever enough to realise that the gui is visible or not. Perhaps integrate it into Messenger, so that messages printed out while the indicator is running don't disrupt the indicator?
@@ -19,6 +18,7 @@ silica.txt needs new option dialog.
 Custom dialog code example (uitest.txt) does not successfully retrieve widget values (true for all dialogs on save?).
 Rename commands for consistency - e.g. newFF to newForcefield?
 Ato export format is incorrect if nrestraints == 0 (i.e. for single atoms) since newline is not printed.
+DL_POLY trajectory cannot be properly loaded without a model containing the correct atoms - add the ability to create a local, temporary model in the filter, and store atom information in this in the readHeader() function. Then could update modelTemplate to take a model pointer as an optional argument. Does this mean we should rewrite the language to properly use pointer specifications?
 
 Graphics TODO
 =============
@@ -81,3 +81,7 @@ Remove LineTol and Converge commands, and update minimisation command signatures
 Remove prefs options for replicate, and add extra options to turn on folding and trimming to replicate() command.
 Add viewerFontFileName member Prefs accessor.
 Remove TransparentSelection Prefs accessor.
+<<<<<<< HEAD
+=======
+Add TrajectoryFormat CLI switch (trajectoryformat).
+>>>>>>> 37794d6a58ffa7d0c1ea87eac8b0d882974ec46c

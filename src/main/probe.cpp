@@ -59,33 +59,31 @@ Tree* Aten::probeFile(QString filename, FilterData::FilterType filterType)
 	{
 		filter = ri->item;
 
-		// Check filename extensions *or* exact names (if either were provided)
-		if (filter->filter.extensions().count() > 0)
+		// Check filename extensions (if our filename has an extension)
+		if (!fileInfo.suffix().isEmpty()) for (n=0; n<filter->filter.extensions().count(); ++n)
 		{
-			// If a file extension is not present on the filename, then the filter is not a match
-			if (fileInfo.suffix().isEmpty()) continue;
-
-			// Otherwise, try to match extension - if no match, then the filter is not a match
-			for (n=0; n<filter->filter.extensions().count(); ++n)
+			if (filter->filter.extensions().at(n) == fileInfo.suffix())
 			{
-				if (filter->filter.extensions().at(n) == fileInfo.suffix())
-				{
-					Messenger::print(Messenger::Verbose, "PROBE: Filter '%s' matches file extension (%s).", qPrintable(filter->name()), qPrintable(fileInfo.suffix()));
-					break;
-				}
+				Messenger::print(Messenger::Verbose, "PROBE: Filter '%s' matches file extension (%s).", qPrintable(filter->name()), qPrintable(fileInfo.suffix()));
+				result = filter;
+				if (result) break;
 			}
-			if (n >= filter->filter.extensions().count()) continue;
 		}
-		else if (filter->filter.exactNames().count() > 0)
+
+		// Check for exact name matches
+		if (!result) for (n=0; n<filter->filter.exactNames().count(); ++n)
 		{
-			for (n=0; n<filter->filter.exactNames().count(); ++n) if (filter->filter.exactNames().at(n) == fileInfo.fileName()) break;
-			if (n >= filter->filter.exactNames().count()) continue;
+			if (filter->filter.exactNames().at(n) == fileInfo.fileName())
+			{
+				Messenger::print(Messenger::Verbose, "PROBE: Filter '%s' matched exact name (%s).", qPrintable(filter->filter.exactNames().at(n)));
+				result = filter;
+				break;
+			}
 		}
 		
 		// Try to match text within files
-		if (filter->filter.searchStrings().count() > 0)
+		if (!result)
 		{
-			bool found = false;
 			parser.openInput(filename);
 			for (n=0; n<filter->filter.searchStrings().count(); ++n)
 			{
@@ -102,20 +100,19 @@ Tree* Aten::probeFile(QString filename, FilterData::FilterType filterType)
 					}
 					else if (parser.line().contains(filter->filter.searchStrings().at(n)))
 					{
-						found = true;
+						Messenger::print(Messenger::Verbose, "PROBE: Filter '%s' matched search string (%s).", qPrintable(filter->filter.searchStrings().at(n)));
+						result = filter;
 						break;
 					}
 				}
 				
-				if (found) break;
+				if (result) break;
 			}
 			parser.closeFiles();
-			if (!found) continue;
 		}
 
-		// If we reach this point, then the filter is a match
-		result = filter;
-		break;
+		// Is this filter a match?
+		if (result) break;
 	}
 
 	if (result == NULL) Messenger::print("Couldn't determine format of file '%s'.", qPrintable(filename));

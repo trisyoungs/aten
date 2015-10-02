@@ -35,17 +35,17 @@ void AtenWindow::updateBuildPanel(Model* sourceModel)
 
 void AtenWindow::on_BuildSelectAtomsButton_clicked(bool checked)
 {
-	if (checked) ui.MainView->setSelectedMode(UserAction::SelectAction);
+	if (checked) setSelectedMode(UserAction::SelectAction);
 }
 
 void AtenWindow::on_BuildSelectBoundButton_clicked(bool checked)
 {
-	if (checked) ui.MainView->setSelectedMode(UserAction::SelectBoundAction);
+	if (checked) setSelectedMode(UserAction::SelectBoundAction);
 }
 
 void AtenWindow::on_BuildSelectElementButton_clicked(bool checked)
 {
-	if (checked) ui.MainView->setSelectedMode(UserAction::SelectElementAction);
+	if (checked) setSelectedMode(UserAction::SelectElementAction);
 }
 
 /*
@@ -54,32 +54,32 @@ void AtenWindow::on_BuildSelectElementButton_clicked(bool checked)
 
 void AtenWindow::on_BuildDrawDrawButton_clicked(bool checked)
 {
-	if (checked) ui.MainView->setSelectedMode(UserAction::DrawAtomsAction);
+	if (checked) setSelectedMode(UserAction::DrawAtomsAction);
 }
 
 void AtenWindow::on_BuildDrawFragmentButton_clicked(bool checked)
 {
-	if (checked) ui.MainView->setSelectedMode(UserAction::DrawFragmentsAction);
+	if (checked) setSelectedMode(UserAction::DrawFragmentsAction);
 }
 
 void AtenWindow::on_BuildDrawDeleteButton_clicked(bool checked)
 {
-	if (checked) ui.MainView->setSelectedMode(UserAction::DrawDeleteAction);
+	if (checked) setSelectedMode(UserAction::DrawDeleteAction);
 }
 
 void AtenWindow::on_BuildDrawTransmuteButton_clicked(bool checked)
 {
-	if (checked) ui.MainView->setSelectedMode(UserAction::DrawTransmuteAction);
+	if (checked) setSelectedMode(UserAction::DrawTransmuteAction);
 }
 
 void AtenWindow::on_BuildDrawAddHButton_clicked(bool checked)
 {
-	if (checked) ui.MainView->setSelectedMode(UserAction::DrawAddHydrogenAction);
+	if (checked) setSelectedMode(UserAction::DrawAddHydrogenAction);
 }
 
 void AtenWindow::on_BuildDrawGrowButton_clicked(bool checked)
 {
-	if (checked) ui.MainView->setSelectedMode(UserAction::DrawGrowAtomsAction);
+	if (checked) setSelectedMode(UserAction::DrawGrowAtomsAction);
 }
 
 /*

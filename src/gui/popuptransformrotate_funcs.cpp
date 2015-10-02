@@ -91,7 +91,7 @@ void TransformRotatePopup::on_DefineAxisButton_clicked(bool checked)
 void TransformRotatePopup::on_PickAxisButton_clicked(bool checked)
 {
 	// Enter manual picking mode
-	parent_.ui.MainView->setSelectedMode(UserAction::RotatePickAxisAction);
+	parent_.setSelectedMode(UserAction::RotatePickAxisAction);
 
 	done();
 }
