@@ -42,6 +42,10 @@ class UnitCell
 	// Constructor / Destructur
 	UnitCell();
 	~UnitCell();
+	// Copy Constructor
+	UnitCell(const UnitCell& source);
+	// Assignment operator
+	void operator=(const UnitCell& source);
 	// Cell types
 	enum CellType { NoCell, CubicCell, OrthorhombicCell, ParallelepipedCell, nCellTypes };
 	static const char* cellType(CellType);
@@ -49,8 +53,7 @@ class UnitCell
 	// Cell definition parameters
 	enum CellParameter { CellA, CellB, CellC, CellAlpha, CellBeta, CellGamma, CellAX, CellAY, CellAZ, CellBX, CellBY, CellBZ, CellCX, CellCY, CellCZ, nCellParameters };
 	static CellParameter cellParameter(QString s);
-	// Assignment operator
-	void operator=(UnitCell &source);
+
 
 	/*
 	 * Cell Definition

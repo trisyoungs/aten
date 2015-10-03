@@ -75,6 +75,7 @@ void CellLengthsPopup::adjustCurrentMatrix(int lengthIndex, double value)
 	{
 		UnitCell cell = model->cell();
 		cell.setLength(lengthIndex, value);
+		cell.axes().print();
 		CommandNode::run(Commands::CellAxes, "ddddddddd", cell.parameter(UnitCell::CellAX), cell.parameter(UnitCell::CellAY), cell.parameter(UnitCell::CellAZ), cell.parameter(UnitCell::CellBX), cell.parameter(UnitCell::CellBY), cell.parameter(UnitCell::CellBZ),  cell.parameter(UnitCell::CellCX), cell.parameter(UnitCell::CellCY), cell.parameter(UnitCell::CellCZ)); 
 	}
 }

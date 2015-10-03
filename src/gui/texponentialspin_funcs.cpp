@@ -24,7 +24,7 @@
 #include <stdio.h>
 
 // Constructor
-TExponentialSpin::TExponentialSpin(QWidget* parent) : QDoubleSpinBox(parent)
+TExponentialSpin::TExponentialSpin(QWidget* parent) : QAbstractSpinBox(parent)
 {
 	// Set default values
 	value_ = 0.0;
@@ -40,7 +40,7 @@ TExponentialSpin::TExponentialSpin(QWidget* parent) : QDoubleSpinBox(parent)
 	lineEdit()->setValidator(&validator_);
 
 	// Connect signals to slots
-	connect(this, SIGNAL(editingFinished()), this, SLOT(updateValue()));
+	connect(lineEdit(), SIGNAL(textChanged(QString)), this, SLOT(updateValue(QString)));
 }
 
 /*
@@ -53,13 +53,11 @@ bool TExponentialSpin::clamp()
 	if (limitMinValue_ && (value_.value() < valueMin_))
 	{
 		value_ = valueMin_;
-		emit(valueChanged(value_.value()));
 		return true;
 	}
 	else if (limitMaxValue_ && (value_.value() > valueMax_))
 	{
 		value_ = valueMax_;
-		emit(valueChanged(value_.value()));
 		return true;
 	}
 	return false;
@@ -93,14 +91,14 @@ void TExponentialSpin::setValue(double value)
 }
 
 // Set minimum limit
-void TExponentialSpin::setMinimumValue(double value)
+void TExponentialSpin::setMinimum(double value)
 {
 	valueMin_ = value;
 	limitMinValue_ = true;
 }
 
 // Set minimum limit
-void TExponentialSpin::setMaximumValue(double value)
+void TExponentialSpin::setMaximum(double value)
 {
 	valueMax_ = value;
 	limitMaxValue_ = true;
@@ -118,7 +116,11 @@ void TExponentialSpin::setRange(bool limitMin, double minValue, bool limitMax, d
 	if (nSteps > 0) setSingleStep((maxValue - minValue) / nSteps);
 
 	// Clamp current value if necessary
-	if (clamp()) updateText();
+	if (clamp())
+	{
+		updateText();
+		emit(valueChanged(value_.value()));
+	}
 }
 
 // Remove range limits
@@ -134,14 +136,38 @@ void TExponentialSpin::setSingleStep(double step)
 	valueStep_ = step;
 }
 
+// Return number of decimals to use when converting to text
+int TExponentialSpin::decimals()
+{
+	return decimals_;
+}
+
+// Set number of decimals to use when converting to text
+void TExponentialSpin::setDecimals(int nDecimals)
+{
+	decimals_ = nDecimals;
+}
+
+// Return suffix for value
+QString TExponentialSpin::suffix()
+{
+	return suffix_;
+}
+
+// Set suffix for value
+void TExponentialSpin::setSuffix(QString suffix)
+{
+	suffix_ = suffix;
+}
+
 /*
  * Slots (Private)
  */
 
 // Update value from current text
-void TExponentialSpin::updateValue()
+void TExponentialSpin::updateValue(QString text)
 {
-	value_.set(qPrintable(text()));
+	value_.set(qPrintable(text));
 	if (clamp()) updateText();
 	emit(valueChanged(value_.value()));
 }

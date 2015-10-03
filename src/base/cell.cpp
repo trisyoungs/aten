@@ -79,8 +79,14 @@ UnitCell::~UnitCell()
 	delete[] spacegroup_.ListRotMxInfo;
 }
 
+// Copy Constructor
+UnitCell::UnitCell(const UnitCell& source)
+{
+	(*this) = source;
+}
+
 // Assignment operator
-void UnitCell::operator=(UnitCell &source)
+void UnitCell::operator=(const UnitCell& source)
 {
 	type_ = source.type_;
 	axes_ = source.axes_;
@@ -92,6 +98,19 @@ void UnitCell::operator=(UnitCell &source)
 	volume_ = source.volume_;
 	reciprocalVolume_ = source.reciprocalVolume_;
 	density_ = source.density_;
+
+	// Allocate SGInfo Seitz matrix arrays
+	spacegroup_.MaxList = 192;
+	spacegroup_.ListSeitzMx = new T_RTMx[192];
+	spacegroup_.ListRotMxInfo = new T_RotMxInfo[192];
+
+	// Copy SGinfo
+	spacegroupId_ = source.spacegroupId_;
+	for (int n=0; n<192; ++n)
+	{
+		spacegroup_.ListSeitzMx[n] = source.spacegroup_.ListSeitzMx[n];
+		spacegroup_.ListRotMxInfo[n] = source.spacegroup_.ListRotMxInfo[n];
+	}
 }
 
 // Set parent model
@@ -182,7 +201,7 @@ void UnitCell::setAngle(int i, double d)
 	// Store the supplied matrix
 	angles_.set(i,d);
 	// Calculate new vectors
-	calculateVectors();
+	calculateMatrix();
 	// Update dependent quantities
 	update();
 }
