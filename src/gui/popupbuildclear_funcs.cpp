@@ -39,9 +39,6 @@ void ClearPopup::updateControls()
 {
 	refreshing_ = true;
 
-	ui.ToleranceSpin->setValue(prefs.bondTolerance());
-	ui.ToleranceDial->setValue(int(prefs.bondTolerance()*1000.0));
-
 	refreshing_ = false;
 }
 
@@ -61,86 +58,14 @@ bool ClearPopup::callMethod(QString methodName, ReturnValue& rv)
  * Widget Functions
  */
 
-void ClearPopup::on_RebondModelNoAugmentButton_clicked(bool checked)
+void ClearPopup::on_ClearWithinSelectionButton_clicked(bool checked)
 {
 	// Run command
-	CommandNode::run(Commands::ReBond, "i", 0);
+	CommandNode::run(Commands::ClearSelectedBonds, "");
 
 	// Update display
 	parent_.updateWidgets(AtenWindow::MainViewTarget);
 
 	// Hide popup
 	done();
-}
-
-void ClearPopup::on_RebondSelectionButton_clicked(bool checked)
-{
-	// Run command
-	CommandNode::run(Commands::ReBondSelection, "i", 0);
-
-	// Update display
-	parent_.updateWidgets(AtenWindow::MainViewTarget);
-
-	// Hide popup
-	done();
-}
-
-void ClearPopup::on_RebondSelectionNoAugmentButton_clicked(bool checked)
-{
-	// Run command
-	CommandNode::run(Commands::ReBondSelection, "i", 1);
-
-	// Update display
-	parent_.updateWidgets(AtenWindow::MainViewTarget);
-
-	// Hide popup
-	done();
-}
-
-void ClearPopup::on_RebondPatternsButton_clicked(bool checked)
-{
-	// Run command
-	CommandNode::run(Commands::ReBondPatterns, "i", 0);
-
-	// Update display
-	parent_.updateWidgets(AtenWindow::MainViewTarget);
-
-	// Hide popup
-	done();
-}
-
-void ClearPopup::on_RebondPatternsNoAugmentButton_clicked(bool checked)
-{
-	// Run command
-	CommandNode::run(Commands::ReBondPatterns, "i", 1);
-
-	// Update display
-	parent_.updateWidgets(AtenWindow::MainViewTarget);
-
-	// Hide popup
-	done();
-}
-
-void ClearPopup::on_ToleranceDial_valueChanged(int value)
-{
-	// Convert integer value to real value
-	double tolerance = double(value)/1000.0;
-
-	// Set spinbox
-	ui.ToleranceSpin->setValue(tolerance);
-
-	// Set prefs value
-	prefs.setBondTolerance(tolerance);
-}
-
-void ClearPopup::on_ToleranceSpin_valueChanged(double value)
-{
-	// Convert integer value to real value
-	int tolerance = int(value*1000.0);
-
-	// Set slider
-	ui.ToleranceDial->setValue(tolerance);
-
-	// Set prefs value
-	prefs.setBondTolerance(value);
 }

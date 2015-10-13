@@ -70,17 +70,23 @@ void AtenWindow::on_ForcefieldsList_currentRowChanged(int row)
 
 void AtenWindow::on_ForcefieldsManageLoadButton_clicked(bool checked)
 {
-	static QDir currentDirectory_(aten_.dataDir());
-	QString filename = QFileDialog::getOpenFileName(this, "Open Forcefield", currentDirectory_.path(), "Forcefield Files (*.ff);;All files (*)");
+	static QDir currentDirectory_(aten_.workDir());
+	QString filename = QFileDialog::getOpenFileName(this, "Open Forcefield", currentDirectory_.path(), aten_.fileDialogFilters(FilterData::ExpressionImport));
 	if (!filename.isEmpty())
 	{
-		aten_.loadForcefield(qPrintable(filename));
+		Tree* filter = aten_.probeFile(qPrintable(filename), FilterData::ExpressionImport);
+		if (filter)
+		{
+			if (!filter->executeRead(qPrintable(filename))) return;
+		}
 
 		updateWidgets(AtenWindow::ForcefieldsTarget);
 
 		// Store path for next use
 		currentDirectory_.setPath(filename);
 	}
+
+	updateWidgets(AtenWindow::MainViewTarget);
 }
 
 void AtenWindow::on_ForcefieldsManageCloseButton_clicked(bool checked)

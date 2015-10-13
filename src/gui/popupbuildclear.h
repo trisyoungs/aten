@@ -70,13 +70,7 @@ class ClearPopup : public TMenuButtonPopupWidget
 	 * Widget Functions
 	 */
 	private slots:
-	void on_RebondModelNoAugmentButton_clicked(bool checked);
-	void on_RebondSelectionButton_clicked(bool checked);
-	void on_RebondSelectionNoAugmentButton_clicked(bool checked);
-	void on_RebondPatternsButton_clicked(bool checked);
-	void on_RebondPatternsNoAugmentButton_clicked(bool checked);
-	void on_ToleranceDial_valueChanged(int value);
-	void on_ToleranceSpin_valueChanged(double value);
+	void on_ClearWithinSelectionButton_clicked(bool checked);
 };
 
 #endif

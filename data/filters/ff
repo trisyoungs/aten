@@ -1,23 +1,29 @@
-# Export for Aten-format Forcefield File (BETA)
+# Import/Export for Aten-format Forcefield File (BETA)
 # Created:	 23/02/2011
-# Last modified: 02/09/2011
+# Last modified: 13/10/2015
 # ChangeLog:
+#	13/10/2015 - Added stub filter for FF import
 #	02/09/2011 - Tweaked to use capitalised command/member names in v1.8
 #	23/02/2011 - Initial version.
 
-filter(type="exportexpression",name="Aten Forcefield Format", extension="ff", glob="*.ff",nickname="ff")
+filter(type="importexpression",name="Aten Forcefield Format", extension="ff", glob="*.ff", nickname="ff")
+{
+	loadFF(filterFilename());
+}
+
+filter(type="exportexpression",name="Aten Forcefield Format", extension="ff", glob="*.ff", nickname="ff")
 {
 	# Variable declaration
-        pattern p;
-	atom i;
-	ffbound b;
-	ffatom fi;
+        Pattern p;
+	Atom i;
+	FFBound b;
+	FFAtom fi;
 	double escale = 1.0, vscale = 1.0;
 	int uselj = TRUE, n, nconstraints, nfailed[3] = 0, nub, hasub;
 	string forms, currentform;
 	
 	# Get current model
-	model m = aten.frame;
+	Model m = aten.frame;
 
 	# Write header
 	writeLineF("name \"%s\"\n", m.name());

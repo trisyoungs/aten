@@ -176,7 +176,6 @@ set(gui_SRCS
   glyphs_funcs.cpp
   layoutlist.cpp
   loadmodel_funcs.cpp
-  mainmenuactions.cpp
   mainwindow_atoms.cpp
   mainwindow_context.cpp
   mainwindow_funcs.cpp

@@ -6498,7 +6498,7 @@
             </property>
             <property name="icon">
              <iconset resource="icons.qrc">
-              <normaloff>:/file/icons/file_open.svg</normaloff>:/file/icons/file_open.svg</iconset>
+              <normaloff>:/basic/icons/basic_edit.svg</normaloff>:/basic/icons/basic_edit.svg</iconset>
             </property>
             <property name="iconSize">
              <size>

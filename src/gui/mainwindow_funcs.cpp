@@ -37,6 +37,7 @@
 #include <iostream>
 #include <fstream>
 #include "gui/popupbuildaddh.h"
+#include "gui/popupbuildclear.h"
 #include "gui/popupbuildfragments.h"
 #include "gui/popupbuildgrow.h"
 #include "gui/popupbuildrebond.h"
@@ -213,6 +214,7 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportImage
 	ui.BuildElementCommonButton->callPopupMethod("setSelectedElement", rv = 8);
 	// -- Build Panel (Bonding)
 	ui.BuildBondingRebondButton->setPopupWidget(new RebondPopup(*this, ui.BuildBondingRebondButton));
+	ui.BuildBondingClearButton->setPopupWidget(new ClearPopup(*this, ui.BuildBondingClearButton));
 
 	// -- Cell Panel (Define)
 	ui.CellDefineAnglesButton->setPopupWidget(new CellAnglesPopup(*this, ui.CellDefineAnglesButton), true);
