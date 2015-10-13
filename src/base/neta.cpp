@@ -93,7 +93,7 @@ bool Neta::netaValueCompare(int lhsvalue, NetaValueComparison nvc, int rhsvalue)
 			result = (lhsvalue <= rhsvalue);
 			break;
 		default:
-			printf("Internal Error: Unrecognised operator in Neta::netaValueCompare.\n");
+			printf("Internal Error: Unrecognised operator (%i) in Neta::netaValueCompare.\n", nvc);
 			break;
 	}
 	return result;
@@ -441,6 +441,7 @@ NetaContextNode::NetaContextNode()
 {
 	// Private variables
 	repeat_ = -1;
+	repeatComparison_ = Neta::nNetaValueComparisons;
 	innerNeta_ = NULL;
 	linearNeta_ = NULL;
 }

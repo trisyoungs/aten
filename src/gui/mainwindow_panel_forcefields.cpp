@@ -77,7 +77,7 @@ void AtenWindow::on_ForcefieldsManageLoadButton_clicked(bool checked)
 		aten_.loadForcefield(qPrintable(filename));
 
 		updateWidgets(AtenWindow::ForcefieldsTarget);
-		
+
 		// Store path for next use
 		currentDirectory_.setPath(filename);
 	}
