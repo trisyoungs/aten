@@ -76,8 +76,6 @@ void AtenWindow::updateMainWindow()
 	else s = "(No Model)";
 	infoLabel2_->setText(s);
 
-	ui.actionSaveExpression->setEnabled(!aten_.fileDialogFilters(FilterData::ExpressionExport).isEmpty());
-
 	// Update main window title
 	QString title = QString("Aten v2 PRERELEASE (v%1)").arg(ATENVERSION);
 	if (currentModel) title += QString(" - %1 (%2)%3").arg(currentModel->name(), currentModel->filename().isEmpty() ? "<<no filename>>" : currentModel->filename(), currentModel->isModified() ? " [Modified]" : "");
