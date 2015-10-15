@@ -146,13 +146,6 @@ class AtenWindow : public QMainWindow
 
 
 	/*
-	 * Expression Menu
-	 */
-	private slots:
-	void on_actionOpenExpression_triggered(bool checked);
-
-
-	/*
 	 * Home Panel
 	 */
 	private:

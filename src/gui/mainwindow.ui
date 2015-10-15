@@ -10146,20 +10146,6 @@
    </layout>
   </widget>
   <widget class="QStatusBar" name="MainWindowStatusBar"/>
-  <action name="actionSaveExpression">
-   <property name="icon">
-    <iconset resource="icons.qrc">
-     <normaloff>:/file/icons/file_save.svg</normaloff>:/file/icons/file_save.svg</iconset>
-   </property>
-   <property name="text">
-    <string>Save &amp;Expression</string>
-   </property>
-  </action>
-  <action name="actionOpenExpression">
-   <property name="text">
-    <string>Open E&amp;xpression</string>
-   </property>
-  </action>
  </widget>
  <layoutdefault spacing="0" margin="0"/>
  <customwidgets>
