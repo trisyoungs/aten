@@ -44,6 +44,7 @@ void FileOpenPopup::updateControls()
 	ui.FilesTable->setRowCount(recentFiles_.count());
 
 	QTableWidgetItem* item;
+	int count = 0;
 	for (int n=0; n<recentFiles_.count(); ++n)
 	{
 		QFileInfo fileInfo(recentFiles_.at(n));
@@ -54,10 +55,11 @@ void FileOpenPopup::updateControls()
 		}
 
 		item = new QTableWidgetItem(recentFiles_.at(n));
-		ui.FilesTable->setItem(n, 0, item);
+		ui.FilesTable->setItem(count++, 0, item);
 	}
 
 	ui.FilesTable->setColumnWidth(0, width());
+	ui.FilesTable->setRowCount(count);
 
 	refreshing_ = false;
 }
@@ -83,7 +85,7 @@ bool FileOpenPopup::callMethod(QString methodName, ReturnValue& rv)
 		}
 
 		// Not in the list, so add it to the top
-		recentFiles_.prepend(rv.asString());
+		recentFiles_.prepend(newFileInfo.absoluteFilePath());
 
 		// Remove files until we reach the max number (or lower) of allowable files
 		while (recentFiles_.count() > maxRecentFiles_) recentFiles_.removeLast();
