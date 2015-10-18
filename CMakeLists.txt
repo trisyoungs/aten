@@ -129,4 +129,6 @@ if(UNIX AND NOT APPLE)
     install(DIRECTORY ${PROJECT_SOURCE_DIR}/data/${i}
           DESTINATION share/aten)
   endforeach(i)
+  install(FILES ${PROJECT_SOURCE_DIR}/data/wright.ttf
+          DESTINATION share/aten)
 endif(UNIX AND NOT APPLE)
