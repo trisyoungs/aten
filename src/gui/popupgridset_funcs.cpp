@@ -75,18 +75,12 @@ bool GridSetPopup::callMethod(QString methodName, ReturnValue& rv)
 
 void GridSetPopup::on_SetDensityMultipleButton_clicked(bool checked)
 {
-// 	// Run command
-// 	if (primary_) CommandNode::run(Commands::GridStyle, "c", Grid::surfaceStyle(Grid::SolidSurface));
-// 	else CommandNode::run(Commands::GridStyleSecondary, "c", Grid::surfaceStyle(Grid::SolidSurface));
-// 
-// 	// Update icon
-// 	callMethodSimple("updateButtonIcon", Grid::surfaceStyle(Grid::SolidSurface));
-// 
-// 	// Update display
-// 	parent_.updateWidgets(AtenWindow::MainViewTarget);
-// 
-// 	// Hide popup
-// 	done();
+	// Run command
+	if (primary_) CommandNode::run(Commands::GridCutoff, "d", ui.NumberDensitySpin->value()*ui.MultipleSpin->value());
+	else CommandNode::run(Commands::GridCutoffSecondary, "d", ui.NumberDensitySpin->value()*ui.MultipleSpin->value());
+
+	// Update display
+	parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::GridsPanelTarget);
 }
 
 void GridSetPopup::on_SetViewPercentageButton_clicked(bool checked)

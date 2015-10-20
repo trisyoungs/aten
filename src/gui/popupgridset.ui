@@ -196,7 +196,7 @@
      <item row="0" column="2" rowspan="2">
       <widget class="QToolButton" name="SetDensityMultipleButton">
        <property name="enabled">
-        <bool>false</bool>
+        <bool>true</bool>
        </property>
        <property name="minimumSize">
         <size>
@@ -276,6 +276,9 @@
        </property>
        <property name="decimals">
         <number>5</number>
+       </property>
+       <property name="value">
+        <double>0.020000000000000</double>
        </property>
       </widget>
      </item>

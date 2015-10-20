@@ -44,8 +44,7 @@ void Viewer::setupGL()
 	glEnable(GL_NORMALIZE);
 
 	// Set alpha-blending function
-	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-	//glBlendFunc(GL_SRC_ALPHA_SATURATE, GL_ONE);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 	// Set up the light model
 	GLfloat col[4];
