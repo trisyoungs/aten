@@ -345,7 +345,7 @@ Prefs::Prefs()
 	nModelsPerRow_ = 2;
 	drawHydrogenBonds_ = false;
 	hydrogenBondDotRadius_ = 0.075;
-	viewerFontFileName_ = "wright.ttf";
+	viewerFontFileName_ = "";
 
 	// External programs
 #ifdef _WIN32
