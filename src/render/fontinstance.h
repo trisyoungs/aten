@@ -25,6 +25,7 @@
 #include "templates/vector3.h"
 #include <FTGL/ftgl.h>
 #include <QString>
+#include <QResource>
 
 ATEN_BEGIN_NAMESPACE
 
@@ -37,6 +38,8 @@ class FontInstance
 	private:
 	// Font file last passed to setupFont()
 	static QString fontFile_;
+	// Font data
+	static QResource* fontData_;
 	// FTGL font for text
 	static FTFont* font_;
 	// Font full height (from bottom of descender to top of ascender)
@@ -48,7 +51,7 @@ class FontInstance
 
 	public:
 	// Setup font specified
-	static bool setupFont(QString fontName);
+	static bool setup(QString fontFileName);
 	// Return whether font exists and is ready for use
 	static bool fontOK();
 	// Return current font

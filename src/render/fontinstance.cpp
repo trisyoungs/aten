@@ -26,22 +26,29 @@ ATEN_USING_NAMESPACE
 
 // Static Members
 QString FontInstance::fontFile_ = "";
+QResource* FontInstance::fontData_ = NULL;
 FTFont* FontInstance::font_ = NULL;
 double FontInstance::fontBaseHeight_ = 0.0;
 double FontInstance::fontFullHeight_ = 0.0;
 double FontInstance::dotWidth_ = 0.0;
 
 // Setup font specified
-bool FontInstance::setupFont(QString fontName)
+bool FontInstance::setup(QString fontFileName)
 {
-	// If the current font is valid, and matches the name of the new font supplied, do nothing
-	if (font_ && (fontFile_ == fontName)) return true;
-
+	// Delete any previous font
 	if (font_) delete font_;
 	font_ = NULL;
-	fontFile_ = fontName;
+	if (fontData_) delete fontData_;
+	fontData_ = NULL;
 
-	FTPolygonFont* newFont = new FTPolygonFont(qPrintable(fontName));
+	// Check the fontFileName - if it's empty then we try to load the default font from our resource
+	fontFile_ = fontFileName;
+	if (fontFile_.isEmpty()) fontData_ = new QResource(":/fonts/OpenSans-Regular.ttf");
+	else fontData_ = new QResource(fontFileName);
+	if (fontData_->size() <= 0) return false;
+
+	// Construct font
+	FTPolygonFont* newFont = new FTPolygonFont(fontData_->data(), fontData_->size());
 	if (newFont->Error())
 	{
 		printf("Error generating font.\n");

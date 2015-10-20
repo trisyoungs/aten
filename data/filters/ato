@@ -73,10 +73,17 @@ filter(type="importmodel",name="EPSR ATO File", nickname="ato", extension="ato",
 			if (!nextArg(nres)) error("Error reading nrestraints for atom %i of molecule %i.\n", n+1, m+1);
 			for (l=0; l<nres; ++l)
 			{
-				if (!nextArg(id) || !nextArg(temp)) error("Erro reading restraint information %i for atom %i of molecule %i.\n", l+1, n+1, m+1);
+				if (!nextArg(id) || !nextArg(temp)) error("Error reading restraint information %i for atom %i of molecule %i.\n", l+1, n+1, m+1);
+
 				// If the relative atom id is greater than the current atom number, ignore it (it will be repeated the other way around for the second atom)
 				if (id > (n+1)) continue;
-				newBond(count+n+1, count+id);
+
+				// Check for bonding the atom to itself (never a good idea)
+				if ((n+1) == id)
+				{
+					printf("Warning: Ato file specifies a distance restraint to the same atom.\n");
+				}
+				else newBond(count+n+1, count+id);
 			}
 		}
 

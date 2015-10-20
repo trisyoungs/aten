@@ -731,7 +731,7 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue&
 			break;
 		case (PreferencesVariable::FontFileName):
 			ptr->setViewerFontFileName( newValue.asString() );
-			FontInstance::setupFont(ptr->viewerFontFileName());
+			FontInstance::setup(ptr->viewerFontFileName());
 			break;
 		case (PreferencesVariable::ForceRhombohedral):
 			ptr->setForceRhombohedral( newValue.asBool() );

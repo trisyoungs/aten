@@ -44,8 +44,8 @@ Add Calculate tool to work out centre of geometry/mass.
 Add option to display ColourScale selector (e.g. for Grid colour buttons)
 Have Tools page? With, for instance:
 --- Plot Orbital (raising dialog from old GridsWidget)
-Reimplement Open Expression somewhere.
 Where to show current (empirical) selection
+Add manual typing popup.
 
 Possible TODO
 =============

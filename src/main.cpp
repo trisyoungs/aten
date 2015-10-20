@@ -25,6 +25,7 @@
 #include "render/fontinstance.h"
 #include <QApplication>
 #include <QMessageBox>
+#include <QResource>
 #include <time.h>
 
 ATEN_USING_NAMESPACE
@@ -91,11 +92,7 @@ int main(int argc, char* argv[])
 	if (MrAten.parseCli(argc,argv) != 1) return -1;
 
 	/* Load font */
-	QString fontFile;
-	if (QDir::isRelativePath(prefs.viewerFontFileName())) fontFile = MrAten.dataDirectoryFile(prefs.viewerFontFileName());
-	else fontFile = prefs.viewerFontFileName();
-	if (!QFile::exists(fontFile)) QMessageBox::warning(0, "Font Error", "The specified font file '" + fontFile + "' does not exist.");
-	else if (!FontInstance::setupFont(fontFile)) QMessageBox::warning(0, "Font Error", "Failed to create a font from the specified font file '" + fontFile +"'.");
+	if (!FontInstance::setup(prefs.viewerFontFileName())) QMessageBox::warning(0, "Font Error", "Failed to setup font '" + prefs.viewerFontFileName() + "'.");
 
 	/* Enter the correct program mode */
 	int result = 0;
