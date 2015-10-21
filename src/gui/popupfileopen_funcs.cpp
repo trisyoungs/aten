@@ -31,6 +31,9 @@ FileOpenPopup::FileOpenPopup(AtenWindow& parent, TMenuButton* buttonParent) : TM
 {
 	// Set up interface
 	ui.setupUi(this);
+
+	// Connect signal for context menu on FilesTable
+	connect(ui.FilesTable, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(filesTableContextMenuRequested(QPoint)));
 }
 
 // Update controls (before show()) (virtual)
@@ -55,6 +58,8 @@ void FileOpenPopup::updateControls()
 		}
 
 		item = new QTableWidgetItem(recentFiles_.at(n));
+		item->setToolTip(recentFiles_.at(n));
+		item->setData(Qt::UserRole, count);
 		ui.FilesTable->setItem(count++, 0, item);
 	}
 
@@ -130,4 +135,34 @@ void FileOpenPopup::on_FilesTable_itemClicked(QTableWidgetItem* item)
 	parent_.updateWidgets(AtenWindow::AllTarget);
 
 	done();
+}
+
+// Context menu requested for FilesTable
+void FileOpenPopup::filesTableContextMenuRequested(const QPoint& point)
+{
+	// Is there an item under the pointer?
+	QTableWidgetItem* item = ui.FilesTable->itemAt(point);
+	if (!item) return;
+
+	// Build the context menu to display
+	QMenu contextMenu;
+	QAction* removeAction = contextMenu.addAction("&Remove Entry");
+// 	QAction* pinAction = contextMenu.addAction("&Pin");
+// 	QAction* unpinAction = contextMenu.addAction("&Unpin");
+	
+	// Show it
+	QAction* menuResult = contextMenu.exec(QCursor::pos());
+
+	// What was clicked?
+	if (menuResult == removeAction)
+	{
+		recentFiles_.removeAt(item->data(Qt::UserRole).toInt());
+		updateControls();
+	}
+// 	else if (menuResult == pinAction)
+// 	{
+// 	}
+// 	else if (menuResult == unpinAction)
+// 	{
+// 	}
 }

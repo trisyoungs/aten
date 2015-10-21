@@ -40,7 +40,9 @@ TExponentialSpin::TExponentialSpin(QWidget* parent) : QAbstractSpinBox(parent)
 	lineEdit()->setValidator(&validator_);
 
 	// Connect signals to slots
-	connect(lineEdit(), SIGNAL(textChanged(QString)), this, SLOT(updateValue(QString)));
+	connect(lineEdit(), SIGNAL(textChanged(QString)), this, SLOT(textChanged(QString)));
+	connect(lineEdit(), SIGNAL(editingFinished()), this, SLOT(updateValue()));
+	connect(lineEdit(), SIGNAL(returnPressed()), this, SLOT(updateValue()));
 }
 
 /*
@@ -68,6 +70,7 @@ void TExponentialSpin::updateText(int precision)
 {
 // 	printf("Here we are in updateText, setting [%s].\n", qPrintable(value_.text(precision)));
 	lineEdit()->setText(value_.text(precision));
+	textChanged_ = true;
 }
 
 // Return double value
@@ -88,6 +91,7 @@ void TExponentialSpin::setValue(double value)
 
 	// Emit signal
 	emit(valueChanged(value_.value()));
+	textChanged_ = false;
 }
 
 // Set minimum limit
@@ -120,6 +124,7 @@ void TExponentialSpin::setRange(bool limitMin, double minValue, bool limitMax, d
 	{
 		updateText();
 		emit(valueChanged(value_.value()));
+		textChanged_ = false;
 	}
 }
 
@@ -165,11 +170,25 @@ void TExponentialSpin::setSuffix(QString suffix)
  */
 
 // Update value from current text
-void TExponentialSpin::updateValue(QString text)
+void TExponentialSpin::updateValue()
 {
-	value_.set(qPrintable(text));
-	if (clamp()) updateText();
+	if (!textChanged_) return;
+
+	// If the line edit is empty, revert to the previous value
+	if (lineEdit()->text().isEmpty()) updateText();
+	else
+	{
+		value_.set(lineEdit()->text());
+		if (clamp()) updateText();
+	}
 	emit(valueChanged(value_.value()));
+	textChanged_ = false;
+}
+
+// Flag that the text has been modified since the last emit of valueChanged()
+void TExponentialSpin::textChanged(QString text)
+{
+	textChanged_ = true;
 }
 
 /*
@@ -185,6 +204,7 @@ void TExponentialSpin::stepBy(int nSteps)
 	clamp();
 	updateText();
 	emit(valueChanged(value_.value()));
+	textChanged_ = false;
 }
 
 // Return which steps should be enabled

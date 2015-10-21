@@ -80,6 +80,8 @@ class FileOpenPopup : public TMenuButtonPopupWidget
 	 * Widget Functions
 	 */
 	private slots:
+	// Context menu requested for FilesTable
+	void filesTableContextMenuRequested(const QPoint& point);
 	void on_FilesTable_itemClicked(QTableWidgetItem* item);
 };
 

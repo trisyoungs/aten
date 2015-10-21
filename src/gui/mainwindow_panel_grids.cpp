@@ -49,7 +49,7 @@ void AtenWindow::updateGridsPanel(Model* sourceModel)
 			item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
 			ui.GridsList->addItem(item);
 
-			if (g->isVisible()) item->setCheckState(Qt::Checked);
+			item->setCheckState(g->isVisible() ? Qt::Checked : Qt::Unchecked);
 
 			if (g == currentGrid) ui.GridsList->setCurrentRow(count);
 		}

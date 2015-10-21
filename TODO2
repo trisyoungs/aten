@@ -32,6 +32,8 @@ Frame individual model areas when displaying multiple models.
 
 GUI TODO
 ========
+Grids list - change to combo or custom drop-down list (a la recent files menu, with a context menu) since it's a pain.
+Nowhere to Hide Atoms (Ctrl-H)
 AddAtom functionality (from old Build menu).
 Context Menu:
 o Set Colour doesn't work, since it needs a colour selector popup.

@@ -293,6 +293,7 @@ void RenderGroup::createAtomsAndBonds(PrimitiveSet& primitiveSet, Model* source,
 		{
 			j = rb->item->partner(i);
 			if (id_i > j->id()) continue;
+			if (j->isHidden()) continue;
 			
 			// Grab colour of second atom
 			if (j->isPositionFixed()) prefs.copyColour(Prefs::FixedAtomColour, colour_j);

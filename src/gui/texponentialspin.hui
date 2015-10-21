@@ -55,7 +55,9 @@ class TExponentialSpin : public QAbstractSpinBox
 	int decimals_;
 	// Suffix for value
 	QString suffix_;
-	
+	// Whether text has changed (been edited)
+	bool textChanged_;
+
 	private:
 	// Clamp current value to allowable range
 	bool clamp();
@@ -99,8 +101,10 @@ class TExponentialSpin : public QAbstractSpinBox
 	 * Slots
 	 */
 	private slots:
-	// Update value from supplied text
-	void updateValue(QString text);
+	// Update value from current textEdit text
+	void updateValue();
+	// Flag that the text has been modified since the last emit of valueChanged()
+	void textChanged(QString text);
 
 
 	/*
