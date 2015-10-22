@@ -175,7 +175,7 @@ Cli cliSwitches[] = {
 	{ Cli::TrajectorySwitch,	't',"trajectory",	1,
 		"<file>",
 		"Associate a trajectory with the last loaded model" },
-	{ Cli::TrajectoryFormatSwitch,	'\0',"trajectoryformat",	1,
+	{ Cli::TrajectoryFormatSwitch,	'\0',"tf",	1,
 		"<format>",
 		"Load trajectories from command-line assuming specified <format>" },
 	{ Cli::UndoLevelSwitch,		'u',"undolevels",	1,

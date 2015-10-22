@@ -128,4 +128,3 @@ bool Commands::function_Verbose(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	else return false;
 	return true;
 }
-

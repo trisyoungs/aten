@@ -99,17 +99,20 @@ int main(int argc, char* argv[])
 	switch (MrAten.programMode())
 	{
 		case (Aten::GuiMode):
-			// If no model loaded, add one
+			/* If no model is loaded, add one */
 			if (MrAten.nModels() == 0)
 			{
 				Model* m = MrAten.addModel();
 				m->enableUndoRedo();
 			}
 
+			/* Turn on filter dialogs */
+			prefs.setAllowDialogs(true);
+
 			/* Show the main window */
 			mainWindow.initialUpdateAndShow();
 
-			// Tell Messenger to stop printing to stdout
+			/* Tell Messenger to stop printing to stdout */
 			Messenger::setPrintToConsole(false);
 
 			/* Enter Qt's main events loop */
