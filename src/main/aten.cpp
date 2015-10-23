@@ -54,10 +54,6 @@ Aten::Aten() : commands_(*this)
 
 	// Program control / settings (not prefs)
 	typeExportMapping_ = false;
-	redirectedImagesActive_ = false;
-	redirectedImageFormat_ = "";
-	redirectedImageCount_ = 0;
-	maxRedirectedImages_ = 100;
 
 	// Clipboards
 	userClipboard = new Clipboard;
@@ -124,38 +120,6 @@ QString Aten::typeExportConvert(QString oldName) const
 	if (!typeExportMapping_) return oldName;
 	KVPair* kvp = typeExportMap.search(oldName);
 	return (kvp == NULL ? oldName : kvp->value());
-}
-
-// Return whether saveImage redirect is active (for scripted movie making)
-bool Aten::redirectedImagesActive()
-{
-	return redirectedImagesActive_;
-}
-
-// Initialise image redirection
-void Aten::initialiseImageRedirect(QString filenameFormat, int maxImages)
-{
-	redirectedImageCount_ = 0;
-	maxRedirectedImages_ = maxImages;
-	redirectedImageFormat_ = filenameFormat;
-	redirectedImagesActive_ = true;
-	Messenger::print(Messenger::Verbose, "Image redirect active - name format = [%s], maxImages = %i", qPrintable(redirectedImageFormat_), maxRedirectedImages_);
-}
-
-// Return next filename for image redirection
-QString Aten::nextRedirectedFilename()
-{
-	if (redirectedImageCount_ == maxRedirectedImages_) return NULL;
-	QString filename;
-	filename.sprintf(qPrintable(redirectedImageFormat_), redirectedImageCount_++);
-	return filename;
-}
-
-// Cancel image redirection
-int Aten::cancelImageRedirect()
-{
-	redirectedImagesActive_ = false;
-	return redirectedImageCount_;
 }
 
 /*

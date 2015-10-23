@@ -32,6 +32,7 @@
 #include "gui/ui_prefs.h"
 #include "gui/useractions.h"
 #include "gui/disorderwizard.h"
+#include "gui/exportfilm.h"
 #include "gui/exportimage.h"
 #include "templates/reflist.h"
 #include "base/glyph.h"
@@ -46,7 +47,6 @@ class CommandWidget;
 class ForcefieldsWidget;
 class GlyphsWidget;
 class MDWidget;
-class ScriptMovieWidget;
 class VibrationsWidget;
 
 ATEN_BEGIN_NAMESPACE
@@ -599,12 +599,12 @@ class AtenWindow : public QMainWindow
 	CommandWidget *commandWidget;
 	// Glyphs dock widget
 	GlyphsWidget *glyphsWidget;
-	// Scripted movie dock widget
-	ScriptMovieWidget *scriptMovieWidget;
 	// Vibrations dock widget
 	VibrationsWidget *vibrationsWidget;
 	// Disorder wizard
 	DisorderWizard disorderWizard_;
+	// Export Film dialog
+	AtenExportFilm exportFilmDialog_;
 	// Export Image dialog
 	AtenExportImage exportImageDialog_;
 

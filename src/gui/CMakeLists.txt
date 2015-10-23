@@ -5,6 +5,7 @@ SET(gui_MOC_HDRS
   command.h
   disorderoptions.h
   disorderwizard.h
+  exportfilm.h
   exportimage.h
   ffeditor.h
   glyphs.h
@@ -60,7 +61,6 @@ SET(gui_MOC_HDRS
   popupviewstyle.h
   prefs.h
   progress.h
-  scriptmovie.h
   selectfilter.h
   selectpattern.h
   selectvariable.h
@@ -94,6 +94,7 @@ SET(gui_UIS
   command.ui
   disorderoptions.ui
   disorderwizard.ui
+  exportfilm.ui
   exportimage.ui
   ffeditor.ui
   glyphs.ui
@@ -148,7 +149,6 @@ SET(gui_UIS
   popupviewstyle.ui
   prefs.ui
   progress.ui
-  scriptmovie.ui
   selectfilter.ui
   selectpattern.ui
   selectvariable.ui
@@ -171,6 +171,7 @@ set(gui_SRCS
   command_funcs.cpp
   disorderoptions_funcs.cpp
   disorderwizard_funcs.cpp
+  exportfilm_funcs.cpp
   exportimage_funcs.cpp
   ffeditor_funcs.cpp
   glyphs_funcs.cpp
@@ -246,7 +247,6 @@ set(gui_SRCS
   popupviewstyle_funcs.cpp
   prefs_funcs.cpp
   progress_funcs.cpp
-  scriptmovie_funcs.cpp
   selectfilter_funcs.cpp
   selectpattern_funcs.cpp
   selectvariable_funcs.cpp

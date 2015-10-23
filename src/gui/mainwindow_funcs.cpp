@@ -84,11 +84,10 @@
 #include "gui/command.h"
 #include "gui/disorderwizard.h"
 #include "gui/glyphs.h"
-#include "gui/scriptmovie.h"
 #include "gui/vibrations.h"
 
 // Constructor
-AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportImageDialog_(*this), disorderWizard_(*this)
+AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportFilmDialog_(*this), exportImageDialog_(*this), disorderWizard_(*this)
 {
 	Messenger::enter("AtenWindow::AtenWindow()");
 
@@ -164,9 +163,8 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportImage
 	// Create dock widgets
 	commandWidget = new CommandWidget(*this, Qt::Tool);
 	glyphsWidget = new GlyphsWidget(*this, Qt::Tool);
-	scriptMovieWidget = new ScriptMovieWidget(*this, Qt::Tool);
 	vibrationsWidget = new VibrationsWidget(*this, Qt::Tool);
-	dockWidgets_ << commandWidget << glyphsWidget << scriptMovieWidget << vibrationsWidget;
+	dockWidgets_ << commandWidget << glyphsWidget << vibrationsWidget;
 
 	int n;
 	ReturnValue rv;

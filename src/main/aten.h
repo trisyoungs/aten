@@ -351,14 +351,6 @@ class Aten
 	private:
 	// Whether type export conversion is enabled
 	bool typeExportMapping_;
-	// Whether saveImage redirect is active (for scripted movie making)
-	bool redirectedImagesActive_;
-	// Format string (containing only a single variable integer) for image redirect filenames
-	QString redirectedImageFormat_;
-	// Current count for image file (increased each time redirectedImageFilename() is called)
-	int redirectedImageCount_;
-	// Maximum allowed images to be saved before 'saveimage' command raises an error
-	int maxRedirectedImages_;
 
 	public:
 	// Type map name conversions to apply on save
@@ -369,14 +361,6 @@ class Aten
 	bool typeExportMapping() const;
 	// Convert supplied type name according to export type map
 	QString typeExportConvert(QString typeName) const;
-	// Return whether saveImage redirect is active (for scripted movie making)
-	bool redirectedImagesActive();
-	// Initialise image redirection
-	void initialiseImageRedirect(QString filenameFormat, int maxFrames);
-	// Return next filename for image redirection
-	QString nextRedirectedFilename();
-	// Cancel image redirection, returning number of images saved
-	int cancelImageRedirect();
 
 
 	/*

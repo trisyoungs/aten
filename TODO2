@@ -1,7 +1,6 @@
 TODO
 ====
 Crash if model is saved, then filters reloaded, then model is saved again (since filter pointer will be wrong)?
-Check - is using redirected filenames really necessary when saving movie frame images?
 Automatically adjust grid size for number of visible models, based on current aspect ratio and context size etc.
 Redo ProgressIndicator, making into a class much like QProgress (can't just use QProgress, since we want to have progress indicator functionality in the CLI....). Make it clever enough to realise that the gui is visible or not. Perhaps integrate it into Messenger, so that messages printed out while the indicator is running don't disrupt the indicator?
 Sort out remaining icons!
@@ -21,6 +20,10 @@ DL_POLY trajectory cannot be properly loaded without a model containing the corr
 Trajectory handling:
 o Change of colour happens only in the current frame
 o Inherit generates a crash when at first frame
+Session Saving - loaded models, view orientations, loaded grids and cutoff values etc.
+Image saving:
+o Copy to clipboard option
+o Continuous image saving - function key to save image under a set-filename, incrementing a number suffix each time.
 
 Graphics TODO
 =============
@@ -68,7 +71,6 @@ Make Model::EnergyStore a private member with accessor?
 Add ObjectLists (when using CHECK)?
 Click to select grid.
 Remove global MC, CG, SD declarations, and put them in Aten?
-Snapshot option, copying current view or image save details directly to clipboard
 
 Manual TODO
 ===========

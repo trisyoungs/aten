@@ -184,26 +184,8 @@ bool Commands::function_SaveBitmap(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	rv.reset();
 	bool result;
 
-	// Has image saving been redirected? If so, use filename provided by Aten
- 	if (aten_.redirectedImagesActive())
-	{
-		QString fileName = aten_.nextRedirectedFilename();
-		if (fileName.isEmpty())
-		{
-			Messenger::print("Maximum number of frames for image redirect reached. Raising error...");
-			result = false;
-		}
-		else
-		{
-			QPixmap pixmap = aten_.atenWindow()->scenePixmap(width, height);
-			result = pixmap.save(fileName, AtenWindow::bitmapFormatExtension(bf), quality);
-		}
-	}
- 	else
-	{
-		QPixmap pixmap = aten_.atenWindow()->scenePixmap(width, height);
-		result = pixmap.save(c->argc(1), AtenWindow::bitmapFormatExtension(bf), quality);
-	}
+	QPixmap pixmap = aten_.atenWindow()->scenePixmap(width, height);
+	result = pixmap.save(c->argc(1), AtenWindow::bitmapFormatExtension(bf), quality);
 
 	prefs.setViewRotationGlobe(viewGlobe);
 	return result;

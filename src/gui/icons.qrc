@@ -112,6 +112,7 @@
     <file>icons/viewstyle_tube.png</file>
   </qresource>
   <qresource prefix="/file">
+    <file>icons/file_savefilm.svg</file>
     <file>icons/file_close.svg</file>
     <file>icons/file_new.svg</file>
     <file>icons/file_open.svg</file>
