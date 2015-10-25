@@ -1,0 +1,18 @@
+# Encoder definitions for film/movie saving
+
+# mencoder test definition
+Name 'mencoder / mp4'
+Nickname 'menc-mp4'
+# -- First pass
+Command mencoder
+CommandSearchPaths /usr/bin /usr/local/bin
+CommandArguments -f OUTPUTFILE -s FRAMESFILE
+# -- Second pass
+Command mencoder
+CommandSearchPaths /usr/bin /usr/local/bin
+CommandArguments -f OUTPUTFILE -s FRAMESFILE second pass
+# -- MP4 creation
+Command MP4Box
+CommandSearchPaths /usr/bin /usr/local/bin
+CommandArguments -f OUTPUTFILE -s FRAMESFILE second pass
+

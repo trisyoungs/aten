@@ -23,6 +23,7 @@
 #include "main/aten.h"
 #include "gui/selectfilter.h"
 #include "gui/loadmodel.h"
+#include "gui/exportfilm.h"
 #include "gui/exportimage.h"
 #include "model/undostate.h"
 #include <QFileDialog>
@@ -203,6 +204,17 @@ void AtenWindow::on_HomeFileImageButton_clicked(bool checked)
 	QPixmap pixmap = scenePixmap(imageWidth, imageHeight);
 	AtenWindow::BitmapFormat bf = (AtenWindow::BitmapFormat) exportImageDialog_.ui.ImageFormatCombo->currentIndex();
 	pixmap.save(fileName, AtenWindow::bitmapFormatExtension(bf), -1);
+}
+
+void AtenWindow::on_HomeFileFilmButton_clicked(bool checked)
+{
+	if (!exportFilmDialog_.getFilmDetails()) return;
+
+	// Get values from dialog
+	int imageWidth = exportFilmDialog_.ui.FilmWidthSpin->value();
+	int imageHeight = exportFilmDialog_.ui.FilmHeightSpin->value();
+
+	// ATEN2 TODO!
 }
 
 /*

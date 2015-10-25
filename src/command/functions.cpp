@@ -307,8 +307,6 @@ void Commands::initPointers()
 
 	// Image Commands
 	pointers_[SaveBitmap] = &AtenSpace::Commands::function_SaveBitmap;
-	pointers_[SaveMovie] = &AtenSpace::Commands::function_SaveMovie;
-	pointers_[SaveVibrationMovie] = &AtenSpace::Commands::function_SaveVibrationMovie;
 
 	// Labeling Commands
 	pointers_[ClearLabels] = &AtenSpace::Commands::function_ClearLabels;

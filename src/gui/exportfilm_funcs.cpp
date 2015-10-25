@@ -19,15 +19,52 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <QCloseEvent>
-#include <QtWidgets/QFileDialog>
-#include <QtWidgets/QMessageBox>
-#include "gui/tprocess.hui"
-#include "main/aten.h"
+#include "gui/exportfilm.h"
 #include "gui/mainwindow.h"
-#include "base/progress.h"
-#include "parser/commandnode.h"
-#include "base/sysfunc.h"
+#include <main/aten.h>
+
+// Constructor
+AtenExportFilm::AtenExportFilm(AtenWindow& parent) : atenWindow_(parent), QDialog(&parent)
+{
+	ui.setupUi(this);
+
+	firstShow_ = true;
+
+	// Populate format combo
+	for (int n=0; n<AtenWindow::nBitmapFormats; ++n) ui.ImageFormatCombo->addItem( AtenWindow::bitmapFormatFilter((AtenWindow::BitmapFormat) n) );
+	ui.ImageFormatCombo->setCurrentIndex(AtenWindow::BitmapPNG);
+
+	// Populate encoder combo
+	for (EncoderDefinition* encoder = atenWindow_.aten().encoders(); encoder != NULL; encoder = encoder->next) ui.EncoderCombo->addItem(encoder->name());
+}
+
+// Destructor
+AtenExportFilm::~AtenExportFilm()
+{
+}
+
+// Call dialog to get film save information
+bool AtenExportFilm::getFilmDetails()
+{
+	// If this is the first show, set the defaults in the controls
+	if (firstShow_)
+	{
+		// Size
+		ui.FilmWidthSpin->setValue(atenWindow_.ui.MainView->contextWidth());
+		ui.FilmHeightSpin->setValue(atenWindow_.ui.MainView->contextHeight());
+		ui.FilmHeightSpin->setValue(ui.MaintainAspectRatioCheck->checkState() == Qt::Checked ? ui.FilmHeightSpin->value() / aspectRatio_ : ui.FilmHeightSpin->value());
+		// Output
+		ui.BaseFilenameEdit->setText(atenWindow_.aten().workDir().absoluteFilePath("image"));
+		
+	}
+
+	aspectRatio_ = double(ui.FilmWidthSpin->value()) / double(ui.FilmHeightSpin->value());
+
+	firstShow_ = false;
+
+	int result = exec();
+	return (result == 1);
+}
 
 // void ScriptMovieWidget::on_SaveScriptedMovieButton_clicked(bool checked)
 // {
@@ -46,7 +83,7 @@
 // 	Tree dialog;
 // 	TreeGui& ui = dialog.defaultDialog();
 // 	ui.setProperty(TreeGuiWidgetEvent::TextProperty, "Movie Options");
-// 	ui.addEdit("geometry", "Image Geometry", geometry,1,1);
+// 	ui.addEdit("geometry", "Film Geometry", geometry,1,1);
 // 	ui.addIntegerSpin("maxframes", "Maximum Frames", 1, 1e6, 100, 1000 ,1,2);
 // 	ui.addIntegerSpin("fps", "Movie FPS", 1, 200, 1, 25 ,1,2);
 // 
@@ -95,7 +132,7 @@
 // 		fileInfo.setFile(basename);
 // 	} while (fileInfo.exists());
 // // 	basename.sprintf("%s%caten-movie-%i-%i-%%09i.png", qPrintable(prefs.tempDir()), PATHSEP, parent_.pid(), runid); ATEN2 TODO
-// 	parent_.aten().initialiseImageRedirect(basename, maxframes);
+// 	parent_.aten().initialiseFilmRedirect(basename, maxframes);
 // 	
 // 	int progid = progress.initialise("Saving scripted movie frames...", -1);
 // 	bool canceled = false;
@@ -153,7 +190,7 @@
 // 	}
 // 
 // 	// Cancel image redirection and perform cleanup
-// 	int nframes = parent_.aten().cancelImageRedirect();
+// 	int nframes = parent_.aten().cancelFilmRedirect();
 // 	bool pid = progress.initialise("Cleaning up...", nframes);
 // 	for (int n = 0; n < nframes; ++n)
 // 	{

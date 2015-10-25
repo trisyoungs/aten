@@ -160,6 +160,7 @@ class AtenWindow : public QMainWindow
 	void on_HomeFileSaveAsButton_clicked(bool checked);
 	void on_HomeFileCloseButton_clicked(bool checked);
 	void on_HomeFileImageButton_clicked(bool checked);
+	void on_HomeFileFilmButton_clicked(bool checked);
 	// Edit
 	void on_HomeEditCopyButton_clicked(bool checked);
 	void on_HomeEditCutButton_clicked(bool checked);

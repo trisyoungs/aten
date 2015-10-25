@@ -1,6 +1,6 @@
 /*
-	*** Aten's commands
-	*** src/main/aten_commands.cpp
+	*** Aten's Commands
+	*** src/main/commands.cpp
 	Copyright T. Youngs 2007-2015
 
 	This file is part of Aten.

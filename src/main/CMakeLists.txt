@@ -6,6 +6,7 @@ add_library(main
   cli.cpp
   commands.cpp
   current.cpp
+  encoders.cpp
   ff.cpp
   filters.cpp
   fragments.cpp

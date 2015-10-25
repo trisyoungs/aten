@@ -1,6 +1,6 @@
 /*
-	*** Aten model functions
-	*** src/main/aten.cpp
+	*** Aten Model Functions
+	*** src/main/models.cpp
 	Copyright T. Youngs 2007-2015
 
 	This file is part of Aten.

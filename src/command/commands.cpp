@@ -784,13 +784,7 @@ CommandData Commands::data_[Commands::nCommands] = {
 	{ "saveBitmap",		"CCnnn",	VTypes::NoData,
 		"string format, string filename, int width = -1, int height = -1, int quality = -1",
 		"Save the current model view as a bitmap image: formats available are bmp, jpg, png, ppm, xbm, and xpm" },
-	{ "saveMovie",		"Cnnnnnnn",	VTypes::NoData,
-		"string filename, int width = -1, int height = -1, int quality = -1, int firstframe = 1, int lastframe = <last>, int frameskip = 0, int fps = 25",
-		"Save a movie of the trajectory associated with the current model" },
-	{ "saveVibrationMovie",	"CNNNNNNN",	VTypes::NoData,
-		"string filename, int width, int height, int quality, int vibrationId, int framespercycle, int ncycles, int fps",
-		"Save the specified vibration of the current model as a movie" },
-	
+
 	// Labeling commands
 	{ "clearLabels",	"",		VTypes::NoData,
 		"",

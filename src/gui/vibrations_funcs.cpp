@@ -235,7 +235,7 @@ void VibrationsWidget::on_SaveMovieButton_clicked(bool checked)
 	currentDirectory_.setPath(filename);
 	
 	// Generate movie file...
-	CommandNode::run(Commands::SaveVibrationMovie, "ciiiiiii", qPrintable(filename), width, height, -1, ui.VibrationsList->currentRow()+1, 20, ncycles, fps);
+// 	CommandNode::run(Commands::SaveVibrationMovie, "ciiiiiii", qPrintable(filename), width, height, -1, ui.VibrationsList->currentRow()+1, 20, ncycles, fps);
 }
 
 // Stop current timer (if any)

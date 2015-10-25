@@ -52,19 +52,19 @@ class AtenExportFilm : public QDialog
 	public:
 	// Call dialog to get/update image save information
 	bool getFilmDetails();
-	// Return selected filename
-	QString fileName();
+// 	// Return selected filename
+// 	QString fileName();
 
 
 	/*
 	 * Slots
 	 */
 	private slots:
-	void on_SelectFileNameButton_clicked(bool checked);
-	void on_FilmWidthSpin_valueChanged(int value);
-	void on_MaintainAspectRatioCheck_toggled(bool checked);
-	void on_SaveFilmButton_clicked(bool checked);
-	void on_CancelButton_clicked(bool checked);
+// 	void on_SelectFileNameButton_clicked(bool checked);
+// 	void on_FilmWidthSpin_valueChanged(int value);
+// 	void on_MaintainAspectRatioCheck_toggled(bool checked);
+// 	void on_SaveFilmButton_clicked(bool checked);
+// 	void on_CancelButton_clicked(bool checked);
 };
 
 #endif

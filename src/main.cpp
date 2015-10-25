@@ -82,6 +82,9 @@ int main(int argc, char* argv[])
 	/* Load in partitions */
 	if (prefs.loadPartitions()) MrAten.openPartitions();
 
+	/* Load in encoder definitions */
+	MrAten.loadEncoderDefinitions();
+
 	/* Load in program and user preferences */
 	if (!MrAten.loadPrefs()) return -1;
 

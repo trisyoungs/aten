@@ -317,5 +317,5 @@ void AtenWindow::on_TrajectoryToolsMovieButton_clicked(bool checked)
 	currentDirectory_.setPath(filename);
 	
 	// Generate movie file...
-	CommandNode::run(Commands::SaveMovie, "ciiiiiii", qPrintable(filename), width, height, -1, firstframe, lastframe, frameskip, fps);
+// 	CommandNode::run(Commands::SaveMovie, "ciiiiiii", qPrintable(filename), width, height, -1, firstframe, lastframe, frameskip, fps);
 }

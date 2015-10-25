@@ -1,6 +1,6 @@
 /*
-	*** Aten forcefield functions
-	*** src/main/aten.cpp
+	*** Aten's Forcefield Functions
+	*** src/main/ff.cpp
 	Copyright T. Youngs 2007-2015
 
 	This file is part of Aten.

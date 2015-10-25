@@ -1,6 +1,6 @@
 /*
 	*** Aten Fragment Functions
-	*** src/main/aten_fragment.cpp
+	*** src/main/fragment.cpp
 	Copyright T. Youngs 2007-2015
 
 	This file is part of Aten.

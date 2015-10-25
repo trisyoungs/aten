@@ -15,6 +15,8 @@ add_library(base
   eigenvector.cpp
   element.cpp
   elementmap.cpp
+  encoderdefinition.cpp
+  externalcommand.cpp
   forcefieldatom.cpp
   forcefieldbound.cpp
   grid.cpp
@@ -51,6 +53,8 @@ add_library(base
   eigenvector.h
   element.h
   elementmap.h
+  encoderdefinition.h
+  externalcommand.h
   forcefieldatom.h
   forcefieldbound.h
   glyph.h

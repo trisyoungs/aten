@@ -1,6 +1,6 @@
 /*
 	*** Aten Partition-Specific Routines
-	*** src/main/aten_partition.cpp
+	*** src/main/partitions.cpp
 	Copyright T. Youngs 2007-2015
 
 	This file is part of Aten.

@@ -116,7 +116,7 @@ bool Commands::function_MopacMinimise(CommandNode* c, Bundle& obj, ReturnValue& 
 	}
 
 	// Grab/create various filenames and paths
-	TProcess mopacProcess;
+// 	TProcess mopacProcess; // ATEN2 TODO
 	QString mopacInput, mopacArc, mopacCmd, mopacOut;
 	int runid;
 
@@ -154,20 +154,20 @@ bool Commands::function_MopacMinimise(CommandNode* c, Bundle& obj, ReturnValue& 
 	}
 	parser.closeFiles();
 	
-	// Ready to run command....
-	if (!mopacProcess.execute(mopacCmd, NULL, mopacOut))
-	{
-		Messenger::print("Error: Failed to run MOPAC. Is it installed correctly?");
-		return false;
-	}
+	// Ready to run command....  ATEN2 TODO
+// 	if (!mopacProcess.execute(mopacCmd, NULL, mopacOut))
+// 	{
+// 		Messenger::print("Error: Failed to run MOPAC. Is it installed correctly?");
+// 		return false;
+// 	}
 
-	// Follow output here...
-	while (!mopacProcess.finished())
-	{
-		// Is output file already present?
-		while (mopacProcess.outputAvailable()) mopacProcess.printLineToMessages();
-		QApplication::processEvents();
-	}
+	// Follow output here...    ATEN2 TODO
+// 	while (!mopacProcess.finished())
+// 	{
+// 		// Is output file already present?
+// 		while (mopacProcess.outputAvailable()) mopacProcess.printLineToMessages();
+// 		QApplication::processEvents();
+// 	}
 	
 	// Check for existence of output file....
 	fileInfo.setFile(mopacArc);

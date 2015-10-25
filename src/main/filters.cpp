@@ -1,6 +1,6 @@
 /*
 	*** Aten Filter-Specific Routines
-	*** src/main/aten_filters.cpp
+	*** src/main/filters.cpp
 	Copyright T. Youngs 2007-2015
 
 	This file is part of Aten.

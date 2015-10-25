@@ -1,6 +1,6 @@
 /*
 	*** Aten Include-Specific Routines
-	*** src/main/aten_includes.cpp
+	*** src/main/includes.cpp
 	Copyright T. Youngs 2007-2015
 
 	This file is part of Aten.

@@ -25,6 +25,7 @@
 #include <QDir>
 #include "base/kvmap.h"
 #include "base/prefs.h"
+#include "base/encoderdefinition.h"
 #include "model/bundle.h"
 #include "model/fragment.h"
 #include "model/fragmentgroup.h"
@@ -471,6 +472,20 @@ class Aten
 	int& fragmentBondId();
 	// Update all fragment icons
 	void updateFragmentIcons();
+
+
+	/*
+	 * Encoder Definitions
+	 */
+	private:
+	// List of encoder definitions
+	List<EncoderDefinition> encoders_;
+
+	public:
+	// Load encoder definitions
+	void loadEncoderDefinitions();
+	// Return list of encoder definitions
+	EncoderDefinition* encoders();
 
 
 	/*

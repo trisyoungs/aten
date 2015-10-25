@@ -1,6 +1,6 @@
 noinst_LIBRARIES = libmain.a
 
-libmain_a_SOURCES = aten.cpp cli.cpp commands.cpp current.cpp ff.cpp filters.cpp fragments.cpp includes.cpp models.cpp modes.cpp partitions.cpp prefs.cpp probe.cpp scripts.cpp
+libmain_a_SOURCES = aten.cpp cli.cpp commands.cpp current.cpp encoders.cpp ff.cpp filters.cpp fragments.cpp includes.cpp models.cpp modes.cpp partitions.cpp prefs.cpp probe.cpp scripts.cpp
 
 noinst_HEADERS = aten.h cli.h version.h
 

@@ -349,8 +349,6 @@ class Commands
 	
 		// Image Commands
 		SaveBitmap,
-		SaveMovie,
-		SaveVibrationMovie,
 	
 		// Labeling commands
 		ClearLabels,
