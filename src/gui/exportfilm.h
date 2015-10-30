@@ -44,6 +44,8 @@ class AtenExportFilm : public QDialog
 	AtenWindow& atenWindow_;
 
 	private:
+	// Whether the widget is currently refreshing
+	bool refreshing_;
 	// Whether the dialog is still awaiting it's first show
 	bool firstShow_;
 	// Current aspect ratio
@@ -52,6 +54,8 @@ class AtenExportFilm : public QDialog
 	public:
 	// Call dialog to get/update image save information
 	bool getFilmDetails();
+	// Update controls
+	void updateControls();
 // 	// Return selected filename
 // 	QString fileName();
 
@@ -59,12 +63,25 @@ class AtenExportFilm : public QDialog
 	/*
 	 * Slots
 	 */
+	private:
+	// Enable / Disable relevant controls
+	void setControlsEnabled(bool imagesOnly);
+
 	private slots:
-// 	void on_SelectFileNameButton_clicked(bool checked);
-// 	void on_FilmWidthSpin_valueChanged(int value);
-// 	void on_MaintainAspectRatioCheck_toggled(bool checked);
-// 	void on_SaveFilmButton_clicked(bool checked);
-// 	void on_CancelButton_clicked(bool checked);
+	// Definition Group
+	void on_FilmWidthSpin_valueChanged(int value);
+	void on_MaintainAspectRatioCheck_toggled(bool checked);
+	void on_FramesPerSecondSpin_valueChanged(int value);
+	// Output -- Images Only
+	void on_ImagesOnlyRadio_clicked(bool checked);
+	void on_SelectBasenameButton_clicked(bool checked);
+	// Output -- Encoder
+	void on_FilmRadio_clicked(bool checked);
+	void on_EncodersCombo_currentIndexChanged(int index);
+	void on_EncoderStepCombo_currentIndexChanged(int index);
+	// Dialog Buttons
+	void on_SaveFilmButton_clicked(bool checked);
+	void on_CancelButton_clicked(bool checked);
 };
 
 #endif

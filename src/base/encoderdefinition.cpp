@@ -25,7 +25,7 @@
 ATEN_USING_NAMESPACE
 
 // Encoder Definition Keywords
-const char* EncoderDefinitionKeywords[] = { "Command", "CommandArguments", "CommandSearchPaths", "Name", "Nickname" };
+const char* EncoderDefinitionKeywords[] = { "Command", "CommandArguments", "CommandName", "CommandSearchPaths", "Name", "Nickname" };
 EncoderDefinition::EncoderDefinitionKeyword EncoderDefinition::encoderDefinitionKeyword(QString s, bool reportError)
 {
 	EncoderDefinition::EncoderDefinitionKeyword edk = (EncoderDefinition::EncoderDefinitionKeyword) enumSearch("encoder definition keyword", EncoderDefinition::nEncoderDefinitionKeywords, EncoderDefinitionKeywords, s, reportError);

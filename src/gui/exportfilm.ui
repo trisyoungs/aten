@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>558</width>
-    <height>354</height>
+    <width>767</width>
+    <height>514</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -36,14 +36,21 @@
     <number>2</number>
    </property>
    <item>
-    <widget class="QGroupBox" name="SizeGroup">
+    <widget class="QGroupBox" name="DefinitionGroup">
      <property name="title">
-      <string>Size</string>
+      <string>Definition</string>
      </property>
      <layout class="QGridLayout" name="gridLayout">
       <property name="margin">
        <number>0</number>
       </property>
+      <item row="0" column="3">
+       <widget class="QLabel" name="label_5">
+        <property name="text">
+         <string>Frames per second</string>
+        </property>
+       </widget>
+      </item>
       <item row="0" column="0">
        <widget class="QLabel" name="label_2">
         <property name="text">
@@ -106,6 +113,28 @@
         </property>
        </widget>
       </item>
+      <item row="0" column="4">
+       <widget class="QSpinBox" name="FramesPerSecondSpin">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="suffix">
+         <string/>
+        </property>
+        <property name="minimum">
+         <number>1</number>
+        </property>
+        <property name="maximum">
+         <number>1000000</number>
+        </property>
+        <property name="value">
+         <number>25</number>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>
@@ -125,10 +154,17 @@
         </property>
        </widget>
       </item>
-      <item row="5" column="1">
-       <widget class="QLabel" name="EncoderExecutableLabel">
+      <item row="3" column="0" colspan="4">
+       <widget class="QRadioButton" name="FilmRadio">
         <property name="text">
-         <string>Encoder Executable</string>
+         <string>Film</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QLabel" name="BasenameLabel">
+        <property name="text">
+         <string>Base Filename</string>
         </property>
        </widget>
       </item>
@@ -142,13 +178,6 @@
         </property>
         <property name="checked">
          <bool>true</bool>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="2">
-       <widget class="QLineEdit" name="BaseFilenameEdit">
-        <property name="toolTip">
-         <string>Base filename to use (will be appended by frame number)</string>
         </property>
        </widget>
       </item>
@@ -168,17 +197,49 @@
         </property>
        </spacer>
       </item>
-      <item row="1" column="3">
-       <widget class="QToolButton" name="SelectFilenameButton">
+      <item row="1" column="4">
+       <widget class="QToolButton" name="SelectBasenameButton">
         <property name="text">
          <string>...</string>
         </property>
        </widget>
       </item>
-      <item row="3" column="0" colspan="3">
-       <widget class="QRadioButton" name="radioButton">
+      <item row="1" column="2" colspan="2">
+       <widget class="QLineEdit" name="ImageBasenameEdit">
+        <property name="toolTip">
+         <string>Base filename to use (will be appended by frame number)</string>
+        </property>
+       </widget>
+      </item>
+      <item row="7" column="2">
+       <widget class="QLabel" name="CommandSearchPathsLabel">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
         <property name="text">
-         <string>Film</string>
+         <string>Search Paths</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="8" column="2">
+       <widget class="QLabel" name="CommandArgumentsLabel">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Arguments</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
         </property>
        </widget>
       </item>
@@ -189,24 +250,79 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="1">
-       <widget class="QLabel" name="FilenameLabel">
+      <item row="5" column="2" colspan="2">
+       <widget class="QComboBox" name="EncoderStepCombo"/>
+      </item>
+      <item row="7" column="3">
+       <widget class="QLineEdit" name="CommandSearchPathsEdit"/>
+      </item>
+      <item row="8" column="3">
+       <widget class="QLineEdit" name="CommandArgumentsEdit"/>
+      </item>
+      <item row="2" column="2" colspan="2">
+       <widget class="QComboBox" name="ImageFormatCombo"/>
+      </item>
+      <item row="5" column="1">
+       <widget class="QLabel" name="EncoderStepLabel">
         <property name="text">
-         <string>Base Filename</string>
+         <string>Encoding Steps</string>
         </property>
        </widget>
       </item>
-      <item row="4" column="2">
-       <widget class="QComboBox" name="EncoderCombo"/>
+      <item row="4" column="2" colspan="2">
+       <widget class="QComboBox" name="EncodersCombo"/>
       </item>
-      <item row="5" column="2">
-       <widget class="QLineEdit" name="EncoderExecutableEdit"/>
+      <item row="6" column="3">
+       <widget class="QLineEdit" name="CommandExecutableEdit"/>
       </item>
-      <item row="2" column="2">
-       <widget class="QComboBox" name="ImageFormatCombo"/>
+      <item row="6" column="2">
+       <widget class="QLabel" name="CommandExecutableLabel">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Executable</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="9" column="3">
+       <widget class="QLabel" name="label_4">
+        <property name="font">
+         <font>
+          <pointsize>8</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>The following substrings in the arguments will be replaced:
+OUTPUTFILE  -  Will be substituted for the output name of the film
+FRAMESFILE  -  Will be substituted with the name of a file containing a list of image files in the order they should be added to the film</string>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>
+   </item>
+   <item>
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
    </item>
    <item>
     <widget class="Line" name="line">

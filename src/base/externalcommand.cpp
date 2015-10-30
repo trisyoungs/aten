@@ -20,6 +20,9 @@
 */
 
 #include "base/externalcommand.h"
+#include <QFileInfo>
+#include <QDir>
+#include <QStandardPaths>
 
 ATEN_USING_NAMESPACE
 
@@ -31,6 +34,18 @@ ExternalCommand::ExternalCommand() : ListItem<ExternalCommand>()
 /*
  * Definition
  */
+
+// Set short name of command
+void ExternalCommand::setName(QString name)
+{
+	name_= name;
+}
+
+// Return short name of command
+QString ExternalCommand::name()
+{
+	return name_;
+}
 
 // Set executable name
 void ExternalCommand::setExecutable(QString executable)
@@ -54,6 +69,23 @@ void ExternalCommand::addSearchPath(QString path)
 QStringList ExternalCommand::searchPaths()
 {
 	return searchPaths_;
+}
+
+// Return absolute path to command (using search paths)
+QString ExternalCommand::absoluteExecutable()
+{
+	// Go through specified paths first
+	foreach(QString path, searchPaths_)
+	{
+		QDir searchDir = path;
+		printf("Searching path '%s' for exe '%s' == %i...\n", qPrintable(path), qPrintable(executable_), searchDir.exists(executable_));
+		if (searchDir.exists(executable_)) return searchDir.absoluteFilePath(executable_);
+	}
+
+	// Now search system paths
+	QString absolutePath = QStandardPaths::locate(QStandardPaths::ApplicationsLocation, executable_, QStandardPaths::LocateFile);
+
+	return absolutePath;
 }
 
 // Set arguments

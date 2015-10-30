@@ -63,21 +63,30 @@ void Aten::loadEncoderDefinitions()
 		// Deal with remaining keywords
 		switch (edk)
 		{
-			// Command
-			case (EncoderDefinition::CommandKeyword):
+			// Command Name
+			case (EncoderDefinition::CommandNameKeyword):
 				if (!encoder)
 				{
 					Messenger::error("No encoder definition yet created in which to set data (use 'Name' keyword before all others).\n");
 					continue;
 				}
 				command = encoder->addCommand();
-				command->setArguments(arg);
+				command->setName(arg);
+				break;
+			// Command
+			case (EncoderDefinition::CommandKeyword):
+				if (!command)
+				{
+					Messenger::error("No command definition yet created in which to set data (use 'CommandName' keyword before its siblings).\n");
+					continue;
+				}
+				command->setExecutable(arg);
 				break;
 			// Command arguments
 			case (EncoderDefinition::CommandArgumentsKeyword):
 				if (!command)
 				{
-					Messenger::error("No command definition yet created in which to set data (use 'Command' keyword before its siblings).\n");
+					Messenger::error("No command definition yet created in which to set data (use 'CommandName' keyword before its siblings).\n");
 					continue;
 				}
 				command->setArguments(arg);
@@ -85,10 +94,10 @@ void Aten::loadEncoderDefinitions()
 			case (EncoderDefinition::CommandSearchPathsKeyword):
 				if (!command)
 				{
-					Messenger::error("No command definition yet created in which to set data (use 'Command' keyword before its siblings).\n");
+					Messenger::error("No command definition yet created in which to set data (use 'CommandName' keyword before its siblings).\n");
 					continue;
 				}
-				searchPaths = arg.split(" ", QString::SkipEmptyParts);
+				searchPaths = arg.split(",", QString::SkipEmptyParts);
 				for (int n=0; n<searchPaths.count(); ++n) command->addSearchPath(searchPaths.at(n));
 				break;
 			// Name (create new object)

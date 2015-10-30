@@ -40,6 +40,8 @@ class ExternalCommand : public ListItem<ExternalCommand>
 	 * Definition
 	 */
 	private:
+	// Short name of command
+	QString name_;
 	// Executable name
 	QString executable_;
 	// Search paths for executable
@@ -48,6 +50,10 @@ class ExternalCommand : public ListItem<ExternalCommand>
 	QString arguments_;
 
 	public:
+	// Set short name of command
+	void setName(QString name);
+	// Return short name of command
+	QString name();
 	// Set executable name
 	void setExecutable(QString executable);
 	// Return executable name
@@ -56,9 +62,11 @@ class ExternalCommand : public ListItem<ExternalCommand>
 	void addSearchPath(QString path);
 	// Return list of search paths
 	QStringList searchPaths();
+	// Return absolute path to command (using search paths) or empty string if not found
+	QString absoluteExecutable();
 	// Set arguments
 	void setArguments(QString arguments);
-	// Return argumenets list
+	// Return arguments list
 	QString arguments();
 };
 

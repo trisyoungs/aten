@@ -4,15 +4,18 @@
 Name 'mencoder / mp4'
 Nickname 'menc-mp4'
 # -- First pass
+CommandName 'First Pass'
 Command mencoder
-CommandSearchPaths /usr/bin /usr/local/bin
+CommandSearchPaths /usr/bin,/usr/local/bin
 CommandArguments -f OUTPUTFILE -s FRAMESFILE
 # -- Second pass
+CommandName 'Second Pass'
 Command mencoder
-CommandSearchPaths /usr/bin /usr/local/bin
+CommandSearchPaths /usr/bin,/usr/local/bin
 CommandArguments -f OUTPUTFILE -s FRAMESFILE second pass
 # -- MP4 creation
+CommandName 'MP4 Creation'
 Command MP4Box
-CommandSearchPaths /usr/bin /usr/local/bin
+CommandSearchPaths /usr/bin,/usr/local/bin
 CommandArguments -f OUTPUTFILE -s FRAMESFILE second pass
 

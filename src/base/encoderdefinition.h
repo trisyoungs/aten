@@ -36,7 +36,7 @@ class EncoderDefinition : public ListItem<EncoderDefinition>
 	// Constructor / Destructor
 	EncoderDefinition();
 	// Definition Keywords
-	enum EncoderDefinitionKeyword { CommandKeyword, CommandArgumentsKeyword, CommandSearchPathsKeyword, NameKeyword, NicknameKeyword, nEncoderDefinitionKeywords };
+	enum EncoderDefinitionKeyword { CommandKeyword, CommandArgumentsKeyword, CommandNameKeyword, CommandSearchPathsKeyword, NameKeyword, NicknameKeyword, nEncoderDefinitionKeywords };
 	static EncoderDefinition::EncoderDefinitionKeyword encoderDefinitionKeyword(QString s, bool reportError = false);
 	static const char* encoderDefinitionKeyword(EncoderDefinition::EncoderDefinitionKeyword edk);
 

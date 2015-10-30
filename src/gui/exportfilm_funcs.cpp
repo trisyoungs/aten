@@ -21,7 +21,10 @@
 
 #include "gui/exportfilm.h"
 #include "gui/mainwindow.h"
-#include <main/aten.h>
+#include "main/aten.h"
+#include "templates/variantpointer.h"
+#include <QMessageBox>
+#include <QFileDialog>
 
 // Constructor
 AtenExportFilm::AtenExportFilm(AtenWindow& parent) : atenWindow_(parent), QDialog(&parent)
@@ -29,13 +32,11 @@ AtenExportFilm::AtenExportFilm(AtenWindow& parent) : atenWindow_(parent), QDialo
 	ui.setupUi(this);
 
 	firstShow_ = true;
+	refreshing_ = false;
 
 	// Populate format combo
 	for (int n=0; n<AtenWindow::nBitmapFormats; ++n) ui.ImageFormatCombo->addItem( AtenWindow::bitmapFormatFilter((AtenWindow::BitmapFormat) n) );
 	ui.ImageFormatCombo->setCurrentIndex(AtenWindow::BitmapPNG);
-
-	// Populate encoder combo
-	for (EncoderDefinition* encoder = atenWindow_.aten().encoders(); encoder != NULL; encoder = encoder->next) ui.EncoderCombo->addItem(encoder->name());
 }
 
 // Destructor
@@ -54,8 +55,10 @@ bool AtenExportFilm::getFilmDetails()
 		ui.FilmHeightSpin->setValue(atenWindow_.ui.MainView->contextHeight());
 		ui.FilmHeightSpin->setValue(ui.MaintainAspectRatioCheck->checkState() == Qt::Checked ? ui.FilmHeightSpin->value() / aspectRatio_ : ui.FilmHeightSpin->value());
 		// Output
-		ui.BaseFilenameEdit->setText(atenWindow_.aten().workDir().absoluteFilePath("image"));
-		
+		ui.ImageBasenameEdit->setText(atenWindow_.aten().workDir().absoluteFilePath("image"));
+		// Populate encoder combo
+		for (EncoderDefinition* encoder = atenWindow_.aten().encoders(); encoder != NULL; encoder = encoder->next) ui.EncodersCombo->addItem(encoder->name(), VariantPointer<EncoderDefinition>(encoder));
+		ui.EncodersCombo->addItem("Custom");
 	}
 
 	aspectRatio_ = double(ui.FilmWidthSpin->value()) / double(ui.FilmHeightSpin->value());
@@ -65,6 +68,142 @@ bool AtenExportFilm::getFilmDetails()
 	int result = exec();
 	return (result == 1);
 }
+
+// Update controls
+void AtenExportFilm::updateControls()
+{
+	if (refreshing_) return;
+	
+	refreshing_ = true;
+
+	// Update the command info for the current encoder
+	ui.CommandArgumentsEdit->setEnabled(ui.EncodersCombo->currentIndex() != -1);
+	ui.CommandExecutableEdit->setEnabled(ui.EncodersCombo->currentIndex() != -1);
+	ui.CommandSearchPathsEdit->setEnabled(ui.EncodersCombo->currentIndex() != -1);
+	ExternalCommand* command = (ExternalCommand*) VariantPointer<ExternalCommand>(ui.EncoderStepCombo->currentData());
+	if (command)
+	{
+		ui.CommandArgumentsEdit->setText(command->arguments());
+		ui.CommandExecutableEdit->setText(command->executable());
+		QString absoluteExe = command->absoluteExecutable();
+		QPalette redPalette = ui.CommandArgumentsLabel->palette();
+		if (absoluteExe.isEmpty()) redPalette.setColor(QPalette::Text, Qt::red);
+		ui.CommandExecutableEdit->setPalette(redPalette);
+		ui.CommandSearchPathsEdit->setText(command->searchPaths().join(","));
+	}
+	else
+	{
+		ui.CommandArgumentsEdit->clear();
+		ui.CommandExecutableEdit->clear();
+		ui.CommandSearchPathsEdit->clear();
+	}
+
+	refreshing_ = false;
+}
+
+/*
+ * Definition
+ */
+
+void AtenExportFilm::on_FilmWidthSpin_valueChanged(int value)
+{
+	if (ui.MaintainAspectRatioCheck->isChecked()) ui.FilmHeightSpin->setValue(value / aspectRatio_);
+}
+
+void AtenExportFilm::on_MaintainAspectRatioCheck_toggled(bool checked)
+{
+	ui.FilmHeightSpin->setDisabled(checked);
+	if (checked) ui.FilmHeightSpin->setValue(ui.FilmWidthSpin->value() / aspectRatio_);
+}
+
+void AtenExportFilm::on_FramesPerSecondSpin_valueChanged(int value)
+{
+	updateControls();
+}
+
+/*
+ * Output - Images Only
+ */
+
+// Enable / Disable relevant controls
+void AtenExportFilm::setControlsEnabled(bool imagesOnly)
+{
+	// Images Only
+	ui.ImageBasenameEdit->setEnabled(imagesOnly);
+	ui.ImageFormatCombo->setEnabled(imagesOnly);
+	ui.SelectBasenameButton->setEnabled(imagesOnly);
+
+	// Film Output
+	ui.EncodersCombo->setDisabled(imagesOnly);
+	ui.EncoderStepCombo->setDisabled(imagesOnly);
+	ui.CommandArgumentsEdit->setDisabled(imagesOnly);
+	ui.CommandExecutableEdit->setDisabled(imagesOnly);
+	ui.CommandSearchPathsEdit->setDisabled(imagesOnly);
+}
+
+void AtenExportFilm::on_ImagesOnlyRadio_clicked(bool checked)
+{
+	setControlsEnabled(checked);
+}
+
+void AtenExportFilm::on_SelectBasenameButton_clicked(bool checked)
+{
+	QString newFile = QFileDialog::getSaveFileName(this, "Choose image base file name", ui.ImageBasenameEdit->text(), QString(AtenWindow::bitmapFormatFilter((AtenWindow::BitmapFormat) ui.ImageFormatCombo->currentIndex())) + ";;All files (*.*)");
+	if (!newFile.isEmpty()) ui.ImageBasenameEdit->setText(newFile);
+	updateControls();
+}
+
+// Output -- Encoder
+void AtenExportFilm::on_FilmRadio_clicked(bool checked)
+{
+	setControlsEnabled(!checked);
+}
+
+void AtenExportFilm::on_EncodersCombo_currentIndexChanged(int index)
+{
+	// Repopulate steps
+	ui.EncoderStepCombo->clear();
+
+	if (index == -1) return;
+
+	EncoderDefinition* definition = (EncoderDefinition*) VariantPointer<EncoderDefinition>(ui.EncodersCombo->currentData());
+	if (!definition) return;
+	for (ExternalCommand* command = definition->commands(); command != NULL; command = command->next) ui.EncoderStepCombo->addItem(command->name(), VariantPointer<ExternalCommand>(command));
+}
+
+void AtenExportFilm::on_EncoderStepCombo_currentIndexChanged(int index)
+{
+	updateControls();
+}
+
+/*
+ * Output - Film
+ */
+
+void AtenExportFilm::on_SaveFilmButton_clicked(bool checked)
+{
+	// What to do?
+	// We will always save the images, regardless of the type of output we're doing - the only difference will be the basename
+	QString imageBasename;
+	if (ui.ImagesOnlyRadio->isChecked())
+	{
+		// Construct the image basename based upon the text in the lineedit
+		QFileInfo fileInfo(imageBasename);
+// 		if (fileInfo.
+	}
+	else
+	{
+		
+	}
+
+	accept();
+}
+
+void AtenExportFilm::on_CancelButton_clicked(bool checked)
+{
+	reject();
+}
+
 
 // void ScriptMovieWidget::on_SaveScriptedMovieButton_clicked(bool checked)
 // {
