@@ -41,8 +41,7 @@ void Aten::loadEncoderDefinitions()
 	}
 
 	// Read in encoder definitions from file
-	QString keyword, arg;
-	QStringList searchPaths;
+	QString keyword;
 	EncoderDefinition::EncoderDefinitionKeyword edk;
 	EncoderDefinition* encoder = NULL;
 	ExternalCommand* command = NULL;
@@ -50,9 +49,9 @@ void Aten::loadEncoderDefinitions()
 	{
 		// Read first argument from file, which is our keyword
 		parser.readNextLine(LineParser::SkipBlanks + LineParser::StripComments);
-		parser.getNextArg(LineParser::SkipBlanks + LineParser::StripComments, keyword);
-		parser.getRestDelim(arg);
-		printf("Kwd = [%s], arg=[%s]\n", qPrintable(keyword), qPrintable(arg));
+		parser.getArgsDelim(LineParser::SkipBlanks + LineParser::StripComments + LineParser::UseQuotes);
+		keyword = parser.argc(0);
+		printf("Kwd = [%s], nArgs=[%i]\n", qPrintable(keyword), parser.nArgs());
 		edk = EncoderDefinition::encoderDefinitionKeyword(keyword);
 		if (edk == EncoderDefinition::nEncoderDefinitionKeywords)
 		{
@@ -71,7 +70,7 @@ void Aten::loadEncoderDefinitions()
 					continue;
 				}
 				command = encoder->addCommand();
-				command->setName(arg);
+				command->setName(parser.argc(1));
 				break;
 			// Command
 			case (EncoderDefinition::CommandKeyword):
@@ -80,7 +79,7 @@ void Aten::loadEncoderDefinitions()
 					Messenger::error("No command definition yet created in which to set data (use 'CommandName' keyword before its siblings).\n");
 					continue;
 				}
-				command->setExecutable(arg);
+				command->setExecutable(parser.argc(1));
 				break;
 			// Command arguments
 			case (EncoderDefinition::CommandArgumentsKeyword):
@@ -89,7 +88,7 @@ void Aten::loadEncoderDefinitions()
 					Messenger::error("No command definition yet created in which to set data (use 'CommandName' keyword before its siblings).\n");
 					continue;
 				}
-				command->setArguments(arg);
+				command->setArguments(parser.argc(1));
 				break;
 			case (EncoderDefinition::CommandSearchPathsKeyword):
 				if (!command)
@@ -97,13 +96,12 @@ void Aten::loadEncoderDefinitions()
 					Messenger::error("No command definition yet created in which to set data (use 'CommandName' keyword before its siblings).\n");
 					continue;
 				}
-				searchPaths = arg.split(",", QString::SkipEmptyParts);
-				for (int n=0; n<searchPaths.count(); ++n) command->addSearchPath(searchPaths.at(n));
+				for (int n=1; n<parser.nArgs(); ++n) command->addSearchPath(parser.argc(n));
 				break;
 			// Name (create new object)
 			case (EncoderDefinition::NameKeyword):
 				encoder = encoders_.add();
-				encoder->setName(arg);
+				encoder->setName(parser.argc(1));
 				break;
 			case (EncoderDefinition::NicknameKeyword):
 				if (!encoder)
@@ -111,7 +109,7 @@ void Aten::loadEncoderDefinitions()
 					Messenger::error("No encoder definition yet created in which to set data (use 'Name' keyword before all others).\n");
 					continue;
 				}
-				encoder->setNickname(arg);
+				encoder->setNickname(parser.argc(1));
 				break;
 		}
 	}

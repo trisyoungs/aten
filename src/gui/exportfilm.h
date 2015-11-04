@@ -23,11 +23,14 @@
 #define ATEN_ATENEXPORTFILM_H
 
 #include "gui/ui_exportfilm.h"
+#include "base/encoderdefinition.h"
 #include <QDialog>
 #include <QDir>
 
 // Forward Declarations (Qt)
 class AtenWindow;
+
+ATEN_USING_NAMESPACE
 
 class AtenExportFilm : public QDialog
 {
@@ -50,6 +53,8 @@ class AtenExportFilm : public QDialog
 	bool firstShow_;
 	// Current aspect ratio
 	double aspectRatio_;
+	// Custom encoder definition
+	EncoderDefinition customEncoder_;
 
 	public:
 	// Call dialog to get/update image save information
@@ -65,18 +70,25 @@ class AtenExportFilm : public QDialog
 	 */
 	private:
 	// Enable / Disable relevant controls
-	void setControlsEnabled(bool imagesOnly);
+	void setOutputControlsEnabled();
+	void setSourceControlsEnabled();
 
 	private slots:
 	// Definition Group
 	void on_FilmWidthSpin_valueChanged(int value);
 	void on_MaintainAspectRatioCheck_toggled(bool checked);
 	void on_FramesPerSecondSpin_valueChanged(int value);
+	// Source -- View Only
+	void on_SourceViewOnlyRadio_clicked(bool checked);
+	// Source -- Trajectory
+	void on_SourceTrajectoryRadio_clicked(bool checked);
+	// Source -- Vibration
+	void on_SourceVibrationRadio_clicked(bool checked);
 	// Output -- Images Only
-	void on_ImagesOnlyRadio_clicked(bool checked);
-	void on_SelectBasenameButton_clicked(bool checked);
+	void on_OutputImagesOnlyRadio_clicked(bool checked);
+	void on_ImagesSelectBasenameButton_clicked(bool checked);
 	// Output -- Encoder
-	void on_FilmRadio_clicked(bool checked);
+	void on_OutputFilmRadio_clicked(bool checked);
 	void on_EncodersCombo_currentIndexChanged(int index);
 	void on_EncoderStepCombo_currentIndexChanged(int index);
 	// Dialog Buttons

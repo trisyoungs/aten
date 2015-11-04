@@ -78,7 +78,6 @@ QString ExternalCommand::absoluteExecutable()
 	foreach(QString path, searchPaths_)
 	{
 		QDir searchDir = path;
-		printf("Searching path '%s' for exe '%s' == %i...\n", qPrintable(path), qPrintable(executable_), searchDir.exists(executable_));
 		if (searchDir.exists(executable_)) return searchDir.absoluteFilePath(executable_);
 	}
 

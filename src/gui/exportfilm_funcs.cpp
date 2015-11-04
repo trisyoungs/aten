@@ -37,6 +37,9 @@ AtenExportFilm::AtenExportFilm(AtenWindow& parent) : atenWindow_(parent), QDialo
 	// Populate format combo
 	for (int n=0; n<AtenWindow::nBitmapFormats; ++n) ui.ImageFormatCombo->addItem( AtenWindow::bitmapFormatFilter((AtenWindow::BitmapFormat) n) );
 	ui.ImageFormatCombo->setCurrentIndex(AtenWindow::BitmapPNG);
+
+	// Setup bsic custom encoder information
+	customEncoder_.setName("Custom Encoder");
 }
 
 // Destructor
@@ -58,12 +61,20 @@ bool AtenExportFilm::getFilmDetails()
 		ui.ImageBasenameEdit->setText(atenWindow_.aten().workDir().absoluteFilePath("image"));
 		// Populate encoder combo
 		for (EncoderDefinition* encoder = atenWindow_.aten().encoders(); encoder != NULL; encoder = encoder->next) ui.EncodersCombo->addItem(encoder->name(), VariantPointer<EncoderDefinition>(encoder));
-		ui.EncodersCombo->addItem("Custom");
+		ui.EncodersCombo->addItem(customEncoder_.name(), VariantPointer<EncoderDefinition>(&customEncoder_));
 	}
 
 	aspectRatio_ = double(ui.FilmWidthSpin->value()) / double(ui.FilmHeightSpin->value());
 
 	firstShow_ = false;
+
+	// Disable / enable controls based on Model contents
+	Model* currentModel = atenWindow_.aten().currentModel();
+	if (!currentModel) return false;
+	ui.SourceTrajectoryRadio->setEnabled(currentModel->hasTrajectory());
+
+	setOutputControlsEnabled();
+	setSourceControlsEnabled();
 
 	int result = exec();
 	return (result == 1);
@@ -122,31 +133,72 @@ void AtenExportFilm::on_FramesPerSecondSpin_valueChanged(int value)
 }
 
 /*
+ * Source
+ */
+
+// Enable / disable controls
+void AtenExportFilm::setSourceControlsEnabled()
+{
+	refreshing_ = true;
+
+	// Make sure that, if trajectory or vibration sources are disabled, that they are not checked
+	if ((!ui.SourceTrajectoryRadio->isEnabled()) && ui.SourceTrajectoryRadio->isChecked()) ui.SourceViewOnlyRadio->setChecked(true);
+	else if ((!ui.SourceVibrationRadio->isEnabled()) && ui.SourceVibrationRadio->isChecked()) ui.SourceViewOnlyRadio->setChecked(true);
+
+	// Trajectory Source
+	ui.TrajectoryFirstFrameSpin->setEnabled(ui.SourceTrajectoryRadio->isEnabled() ? ui.SourceTrajectoryRadio->isChecked() : false);
+	ui.TrajectoryLastFrameSpin->setEnabled(ui.SourceTrajectoryRadio->isEnabled() ? ui.SourceTrajectoryRadio->isChecked() : false);
+
+	refreshing_ = false;
+}
+
+/*
+ * Source -- View Only
+ */
+
+void AtenExportFilm::on_SourceViewOnlyRadio_clicked(bool checked)
+{
+	setSourceControlsEnabled();
+}
+
+// Source -- Trajectory
+void AtenExportFilm::on_SourceTrajectoryRadio_clicked(bool checked)
+{
+	setSourceControlsEnabled();
+}
+
+// Source -- Vibration
+void AtenExportFilm::on_SourceVibrationRadio_clicked(bool checked)
+{
+	setSourceControlsEnabled();
+}
+
+/*
  * Output - Images Only
  */
 
-// Enable / Disable relevant controls
-void AtenExportFilm::setControlsEnabled(bool imagesOnly)
+// Enable / Disable relevant output controls
+void AtenExportFilm::setOutputControlsEnabled()
 {
 	// Images Only
-	ui.ImageBasenameEdit->setEnabled(imagesOnly);
-	ui.ImageFormatCombo->setEnabled(imagesOnly);
-	ui.SelectBasenameButton->setEnabled(imagesOnly);
+	ui.ImageBasenameEdit->setEnabled(ui.OutputImagesOnlyRadio->isChecked());
+	ui.ImageFormatCombo->setEnabled(ui.OutputImagesOnlyRadio->isChecked());
+	ui.ImagesSelectBasenameButton->setEnabled(ui.OutputImagesOnlyRadio->isChecked());
 
 	// Film Output
-	ui.EncodersCombo->setDisabled(imagesOnly);
-	ui.EncoderStepCombo->setDisabled(imagesOnly);
-	ui.CommandArgumentsEdit->setDisabled(imagesOnly);
-	ui.CommandExecutableEdit->setDisabled(imagesOnly);
-	ui.CommandSearchPathsEdit->setDisabled(imagesOnly);
+	ui.EncodersCombo->setEnabled(ui.OutputFilmRadio->isChecked());
+	ui.EncoderStepCombo->setEnabled(ui.OutputFilmRadio->isChecked());
+	ui.CommandArgumentsEdit->setEnabled(ui.OutputFilmRadio->isChecked());
+	ui.CommandExecutableEdit->setEnabled(ui.OutputFilmRadio->isChecked());
+	ui.CommandSearchPathsEdit->setEnabled(ui.OutputFilmRadio->isChecked());
 }
 
-void AtenExportFilm::on_ImagesOnlyRadio_clicked(bool checked)
+void AtenExportFilm::on_OutputImagesOnlyRadio_clicked(bool checked)
 {
-	setControlsEnabled(checked);
+	setOutputControlsEnabled();
 }
 
-void AtenExportFilm::on_SelectBasenameButton_clicked(bool checked)
+void AtenExportFilm::on_ImagesSelectBasenameButton_clicked(bool checked)
 {
 	QString newFile = QFileDialog::getSaveFileName(this, "Choose image base file name", ui.ImageBasenameEdit->text(), QString(AtenWindow::bitmapFormatFilter((AtenWindow::BitmapFormat) ui.ImageFormatCombo->currentIndex())) + ";;All files (*.*)");
 	if (!newFile.isEmpty()) ui.ImageBasenameEdit->setText(newFile);
@@ -154,9 +206,9 @@ void AtenExportFilm::on_SelectBasenameButton_clicked(bool checked)
 }
 
 // Output -- Encoder
-void AtenExportFilm::on_FilmRadio_clicked(bool checked)
+void AtenExportFilm::on_OutputFilmRadio_clicked(bool checked)
 {
-	setControlsEnabled(!checked);
+	setOutputControlsEnabled();
 }
 
 void AtenExportFilm::on_EncodersCombo_currentIndexChanged(int index)
@@ -185,7 +237,7 @@ void AtenExportFilm::on_SaveFilmButton_clicked(bool checked)
 	// What to do?
 	// We will always save the images, regardless of the type of output we're doing - the only difference will be the basename
 	QString imageBasename;
-	if (ui.ImagesOnlyRadio->isChecked())
+	if (ui.OutputImagesOnlyRadio->isChecked())
 	{
 		// Construct the image basename based upon the text in the lineedit
 		QFileInfo fileInfo(imageBasename);
