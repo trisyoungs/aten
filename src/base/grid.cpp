@@ -450,6 +450,41 @@ void Grid::calculateBounds()
 	Messenger::exit("Grid::calculateBounds");
 }
 
+// Calculate sum of points between given cutoffs
+double Grid::sum(double lowerCutoff, double upperCutoff)
+{
+	// Get sum between specified points
+	int x, y, z;
+	double sum = 0.0;
+	if (type_ == Grid::RegularXYZData)
+	{
+		for (x=0; x<nXYZ_.x; x++)
+		{
+			for (y=0; y<nXYZ_.y; y++)
+			{
+				for (z=0; z<nXYZ_.z; z++)
+				{
+					if (data3d_[x][y][z] < lowerCutoff) continue;
+					if (data3d_[x][y][z] > upperCutoff) continue;
+					sum += data3d_[x][y][z];
+				}
+			}
+		}
+	}
+	else
+	{
+		for (x=0; x<nXYZ_.x; x++)
+		{
+			for (y=0; y<nXYZ_.y; y++)
+			{
+				if (data2d_[x][y] < lowerCutoff) continue;
+				if (data2d_[x][y] > upperCutoff) continue;
+				sum += data2d_[x][y];
+			}
+		}
+	}
+	return sum;
+}
 
 // Return pointer to the underlying cell structure
 UnitCell* Grid::cell()
@@ -654,6 +689,19 @@ void Grid::setUpperPrimaryCutoff(double d)
 {
 	upperPrimaryCutoff_ = d;
 	logChange();
+}
+
+// Set primary cutoff as view percentage
+double Grid::setPrimaryCutoffAsViewPercentage(double d)
+{
+	// First, check limits of percentage
+	if ((d < 0.0) || (d > 100.0))
+	{
+		Messenger::print("Percentage value is not a real percentage (%f).\n", d);
+		return 100.0*partialPrimarySum_/(totalPositiveSum_+totalNegativeSum_);
+	}
+
+	XXX
 }
 
 // Return upper isovalue cutoff for primary surface

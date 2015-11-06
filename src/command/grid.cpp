@@ -312,6 +312,15 @@ bool Commands::function_GridUseZ(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	return true;
 }
 
+// Set view percentage for primary surface
+bool Commands::function_GridViewPercentage(CommandNode* c, Bundle& obj, ReturnValue& rv)
+{
+	if (obj.notifyNull(Bundle::GridPointer)) return false;
+	if (c->hasArg(0)) rv.set(obj.g->setPrimaryCutoffAsViewPercentage(c->argd(0)));
+	rv.set(obj.g->primaryViewPercentage());
+	return true;
+}
+
 // Set visibility of grid data
 bool Commands::function_GridVisible(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {

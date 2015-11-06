@@ -140,6 +140,8 @@ class Grid : public ListItem<Grid>, ObjectStore<Grid>
 	void calculateSums();
 	// Calculate bounding lower-left and upper-right corners
 	void calculateBounds();
+	// Calculate sum of points between given cutoffs
+	double sum(double lowerCutoff, double upperCutoff);
 
 	public:
 	// Return pointer to the underlying cell structure
@@ -171,7 +173,7 @@ class Grid : public ListItem<Grid>, ObjectStore<Grid>
 	// Return whether axis is visible
 	bool isAxisVisible(int id);
 	// Return axis visibility array
-	bool *axisVisible();
+	bool* axisVisible();
 	// Set axis position element
 	void setAxisPosition(int axis, int el, double value);
 	// Return axis position
@@ -200,8 +202,10 @@ class Grid : public ListItem<Grid>, ObjectStore<Grid>
 	void setLowerPrimaryCutoff(double d);
 	// Return lower isovalue cutoff for primary surface
 	double lowerPrimaryCutoff() const;
-	// Set uppwer isovalue cutoff for primary surface
+	// Set upper isovalue cutoff for primary surface
 	void setUpperPrimaryCutoff(double d);
+	// Set primary cutoff as view percentage
+	double setPrimaryCutoffAsViewPercentage(double d);
 	// Return upper isovalue cutoff for primary surface
 	double upperPrimaryCutoff() const;
 	// Return whether supplied number is within primary cutoff range
@@ -210,14 +214,14 @@ class Grid : public ListItem<Grid>, ObjectStore<Grid>
 	void setLowerSecondaryCutoff(double d);
 	// Return lower isovalue cutoff for secondary surface
 	double lowerSecondaryCutoff() const;
-	// Set uppwer isovalue cutoff for secondary surface
+	// Set upper isovalue cutoff for secondary surface
 	void setUpperSecondaryCutoff(double d);
 	// Return upper isovalue cutoff for secondary surface
 	double upperSecondaryCutoff() const;
 	// Return whether supplied number is within secondary cutoff range
 	bool withinSecondaryCutoff(double d) const;
 	// Return 3D data array
-	double** *data3d();
+	double*** data3d();
 	// Return 2D data array
 	double** data2d();
 	// Return head of gridpoints array

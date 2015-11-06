@@ -342,6 +342,8 @@ class Commands
 		GridStyle,
 		GridStyleSecondary,
 		GridUseZ,
+		GridViewPercentage,
+		GridViewPercentageSecondary,
 		GridVisible,
 		InitialiseGrid,
 		LoadGrid,
@@ -820,6 +822,8 @@ class Commands
 	bool function_GridStyle(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_GridStyleSecondary(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_GridUseZ(CommandNode* c, Bundle& obj, ReturnValue& rv);
+	bool function_GridViewPercentage(CommandNode* c, Bundle& obj, ReturnValue& rv);
+	bool function_GridViewPercentageSecondary(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_GridVisible(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_InitialiseGrid(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_LoadGrid(CommandNode* c, Bundle& obj, ReturnValue& rv);

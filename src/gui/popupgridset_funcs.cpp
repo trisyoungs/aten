@@ -85,4 +85,10 @@ void GridSetPopup::on_SetDensityMultipleButton_clicked(bool checked)
 
 void GridSetPopup::on_SetViewPercentageButton_clicked(bool checked)
 {
+	// Run command
+	if (primary_) CommandNode::run(Commands::GridViewPercentage, "d", ui.NumberDensitySpin->value()*ui.MultipleSpin->value());
+	else CommandNode::run(Commands::GridViewPercentageSecondary, "d", ui.NumberDensitySpin->value()*ui.MultipleSpin->value());
+
+	// Update display
+	parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::GridsPanelTarget);
 }
