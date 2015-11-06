@@ -230,13 +230,15 @@ class Grid : public ListItem<Grid>, ObjectStore<Grid>
 	void setUseDataForZ(bool b);
 	// Whether to use data2d_ values for z-component of 2D surface
 	bool useDataForZ() const;
-	// Return the total positive sum of the grid (calculated when drawn)
+	// Return the total positive sum of the grid
 	double totalPositiveSum();
-	// Return the total negative sum of the grid (calculated when drawn)
+	// Return the total negative sum of the grid
 	double totalNegativeSum();
-	// Return the partial primary sum of the grid, determined by cutoffs (calculated when drawn)
+	// Return the total absolute sum of the grid
+	double totalAbsoluteSum();
+	// Return the partial primary sum of the grid, determined by cutoffs
 	double partialPrimarySum();
-	// Return the partial secondary sum of the grid, determined by cutoffs (calculated when drawn)
+	// Return the partial secondary sum of the grid, determined by cutoffs
 	double partialSecondarySum();
 
 

@@ -10140,6 +10140,11 @@
  <layoutdefault spacing="0" margin="0"/>
  <customwidgets>
   <customwidget>
+   <class>TExponentialSpin</class>
+   <extends>QDoubleSpinBox</extends>
+   <header>texponentialspin.hui</header>
+  </customwidget>
+  <customwidget>
    <class>Viewer</class>
    <extends>QWidget</extends>
    <header>gui/viewer.hui</header>
@@ -10149,11 +10154,6 @@
    <class>TMenuButton</class>
    <extends>QToolButton</extends>
    <header>tmenubutton.hui</header>
-  </customwidget>
-  <customwidget>
-   <class>TExponentialSpin</class>
-   <extends>QDoubleSpinBox</extends>
-   <header>gui/texponentialspin.hui</header>
   </customwidget>
   <customwidget>
    <class>TTabWidget</class>
