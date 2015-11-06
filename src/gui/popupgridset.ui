@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>269</width>
-    <height>228</height>
+    <width>247</width>
+    <height>252</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -185,6 +185,51 @@
     </layout>
    </item>
    <item>
+    <widget class="QGroupBox" name="groupBox_3">
+     <property name="title">
+      <string>View</string>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_5">
+      <property name="spacing">
+       <number>4</number>
+      </property>
+      <property name="margin">
+       <number>2</number>
+      </property>
+      <item>
+       <layout class="QGridLayout" name="gridLayout_4">
+        <property name="spacing">
+         <number>4</number>
+        </property>
+        <item row="0" column="0">
+         <widget class="QLabel" name="label_40">
+          <property name="text">
+           <string>Percentage</string>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QLabel" name="ViewPercentageLabel">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+          <property name="toolTip">
+           <string>Percentage of the total absolute data sum visible with the current cutoffs</string>
+          </property>
+          <property name="text">
+           <string>0.0%</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
     <widget class="Line" name="line">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
@@ -289,46 +334,13 @@
        </property>
       </widget>
      </item>
-     <item row="4" column="2">
-      <widget class="QToolButton" name="SetViewPercentageButton">
-       <property name="enabled">
-        <bool>true</bool>
-       </property>
-       <property name="minimumSize">
-        <size>
-         <width>56</width>
-         <height>56</height>
-        </size>
-       </property>
-       <property name="maximumSize">
-        <size>
-         <width>56</width>
-         <height>56</height>
-        </size>
-       </property>
-       <property name="toolTip">
-        <string>Set grow geometry to T-shape</string>
-       </property>
+     <item row="4" column="0">
+      <widget class="QLabel" name="label_7">
        <property name="text">
-        <string>Set</string>
+        <string>View%</string>
        </property>
-       <property name="iconSize">
-        <size>
-         <width>30</width>
-         <height>30</height>
-        </size>
-       </property>
-       <property name="checkable">
-        <bool>true</bool>
-       </property>
-       <property name="autoExclusive">
-        <bool>true</bool>
-       </property>
-       <property name="toolButtonStyle">
-        <enum>Qt::ToolButtonTextUnderIcon</enum>
-       </property>
-       <property name="autoRaise">
-        <bool>false</bool>
+       <property name="alignment">
+        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
        </property>
       </widget>
      </item>
@@ -343,18 +355,11 @@
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
+       <property name="toolTip">
+        <string>Set the lower cutoff to a value that displays a given percentage of the total data in the grid</string>
+       </property>
        <property name="decimals">
         <number>5</number>
-       </property>
-      </widget>
-     </item>
-     <item row="4" column="0">
-      <widget class="QLabel" name="label_7">
-       <property name="text">
-        <string>View%</string>
-       </property>
-       <property name="alignment">
-        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
        </property>
       </widget>
      </item>

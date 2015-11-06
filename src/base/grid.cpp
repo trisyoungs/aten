@@ -823,7 +823,7 @@ double Grid::partialPrimarySum()
 	return partialPrimarySum_;
 }
 
-// Return the total negative sum of the grid (calculated when drawn)
+// Return the total negative sum of the grid
 double Grid::totalNegativeSum()
 {
 	if (log_ != sumPoint_)
@@ -834,7 +834,7 @@ double Grid::totalNegativeSum()
 	return totalNegativeSum_;
 }
 
-// Return the partial negative sum of the grid, determined by cutoffs (calculated when drawn)
+// Return the partial negative sum of the grid, determined by cutoffs
 double Grid::partialSecondarySum()
 {
 	if (log_ != sumPoint_)
@@ -843,6 +843,17 @@ double Grid::partialSecondarySum()
 		sumPoint_ = log_;
 	}
 	return partialSecondarySum_;
+}
+
+// Return the total absolute sum of the grid
+double Grid::totalAbsoluteSum()
+{
+	if (log_ != sumPoint_)
+	{
+		calculateSums();
+		sumPoint_ = log_;
+	}
+	return totalPositiveSum_ + fabs(totalNegativeSum_);
 }
 
 /*

@@ -75,7 +75,7 @@ class GridSetPopup : public TMenuButtonPopupWidget
 	 */
 	private slots:
 	void on_SetDensityMultipleButton_clicked(bool checked);
-	void on_SetViewPercentageButton_clicked(bool checked);
+	void on_ViewPercentageSpin_valueChanged(double value);
 };
 
 #endif
