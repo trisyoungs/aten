@@ -7,7 +7,6 @@ Sort out remaining icons!
 Undo/Redo:
   * Rework UndoEvent to use an enum and stored data rather than an individual class for each event type.
   * Add Grid-related undo/redo (e.g. title changes, colour etc.)
-Make Delete tool have a click-drag action that deletes the bond between the clicked atoms.
 For menubuttons that have instant popup, display ellipsis instead of arrow.
 Need to shrink used button space when window is not large enough to display all widgets in panel.
 Partitioning scheme usage from CLI (e.g. in cgparticle.txt or chloroform.txt scripts) causes a segfault owing to Primitive creation when no context is available.

@@ -324,6 +324,7 @@ Atom* Model::atomOnScreen(double x1, double y1)
 	Vec3<double> wr;
 	Vec4<double> sr;
 	double closestz = 10000.0, dist, nclip = prefs.clipNear();
+
 	for (Atom* i = atoms_.first(); i != NULL; i = i->next)
 	{
 		if (i->isHidden()) continue;

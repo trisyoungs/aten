@@ -149,7 +149,7 @@ void Viewer::renderUserActions(Model* source)
 			else radius_i = prefs.styleRadius(style_i, clickedAtom->element()) - primitives_[primitiveSet_].sphereAtomAdjustment();
 
 			// We need to project a point from the mouse position onto the canvas plane, unless the mouse is over an existing atom in which case we snap to its position instead
-			j = source->atomOnScreen(rMouseLast_.x, rMouseLast_.y);
+			j = source->atomOnScreen(rMouseLast_.x, contextHeight_ - rMouseLast_.y);
 			if (j == NULL)
 			{
 				j = &tempj;
@@ -199,8 +199,42 @@ void Viewer::renderUserActions(Model* source)
 			renderGroup_.createBond(primitives_[primitiveSet_], A, v, clickedAtom, style_i, colour_i, radius_i, j, style_j, colour_j, radius_j, bt, prefs.selectionScale(), NULL);
 			
 			// Draw text showing distance
-			text.sprintf("r = %f ", v.magnitude());
-			renderGroup_.addOverlayText(QString::number(v.magnitude()) + " " + QChar(0x212b), v, 0.2);
+			renderGroup_.addOverlayText(QString("r = %1 %2").arg(v.magnitude()).arg(QChar(0x212b)), v, 0.2);
+			break;
+		// Draw on selection bond for bond deletion click-drag
+		case (UserAction::DrawDeleteAction):
+			if (clickedAtom == NULL) break;
+			pos = clickedAtom->r();
+			style_i = (prefs.renderStyle() == Prefs::OwnStyle ? clickedAtom->style() : prefs.renderStyle());
+			if (style_i == Prefs::TubeStyle) radius_i = 0.0;
+			else if (style_i == Prefs::ScaledStyle) radius_i = prefs.styleRadius(Prefs::ScaledStyle, clickedAtom->element()) - primitives_[primitiveSet_].scaledAtomAdjustment(clickedAtom->element());
+			else radius_i = prefs.styleRadius(style_i, clickedAtom->element()) - primitives_[primitiveSet_].sphereAtomAdjustment();
+
+			// If the mouse isn't currently over an atom, don't draw anything
+			// We need to project a point from the mouse position onto the canvas plane, unless the mouse is over an existing atom in which case we snap to its position instead
+			j = source->atomOnScreen(rMouseLast_.x, contextHeight_ - rMouseLast_.y);
+			if (j && (j != clickedAtom))
+			{
+				Bond* b = clickedAtom->findBond(j);
+				if (!b) break;
+
+				colour_i.set(0.0, 0.0, 0.0, 1.0);
+				v = j->r();
+				style_j = (prefs.renderStyle() == Prefs::OwnStyle ? j->style() : prefs.renderStyle());
+				if (style_j == Prefs::TubeStyle) radius_j = 0.0;
+				else if (style_j == Prefs::ScaledStyle) radius_j = prefs.styleRadius(Prefs::ScaledStyle, j->element()) - primitives_[primitiveSet_].scaledAtomAdjustment(atenWindow_->currentBuildElement());
+				else radius_j = prefs.styleRadius(style_j, j->element()) - primitives_[primitiveSet_].sphereAtomAdjustment();
+				v -= pos;
+				
+				// Construct transformation matrix to centre on original (first) atom
+				A.createTranslation(pos);
+				
+				// Render new (temporary) bond
+				renderGroup_.createSelectedBond(primitives_[primitiveSet_], A, v, clickedAtom, style_i, colour_i, radius_i, j, style_j, colour_i, radius_j, b->type(), 1.0, NULL);
+				
+				// Draw text indicating deletion
+				renderGroup_.addOverlayText("DEL", v, 0.2);
+			}
 			break;
 	}
 	

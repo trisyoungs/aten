@@ -30,7 +30,160 @@
 ATEN_USING_NAMESPACE
 
 // Render bond
-void RenderGroup::createBond(PrimitiveSet& primitiveSet, Matrix A, Vec3< double > vij, Atom* i, Prefs::DrawStyle style_i, Vec4< GLfloat >& colour_i, double radius_i, Atom* j, Prefs::DrawStyle style_j, Vec4< GLfloat >& colour_j, double radius_j, Bond::BondType bt, double selscale, Bond* b)
+void RenderGroup::createSelectedBond(PrimitiveSet& primitiveSet, Matrix A, Vec3<double> vij, Atom* i, Prefs::DrawStyle style_i, Vec4<GLfloat>& colour_i, double radius_i, Atom* j, Prefs::DrawStyle style_j, Vec4<GLfloat>& colour_j, double radius_j, Bond::BondType bt, double selscale, Bond* bondInPlane)
+{
+	double dvisible, selvisible, factor, rij, phi;
+	Vec3<double> ri, rj, localx, localy, localz, stickpos, dx, normz;
+	GLfloat alpha_i, alpha_j;
+	Matrix B;
+
+	// Store copies of alpha values
+	alpha_i = colour_i[3];
+	alpha_j = colour_j[3];
+	
+	localz = vij;
+	rij = localz.magAndNormalise();
+	
+	// If bond is not visible, don't bother drawing it...
+	dvisible = 0.5 * (rij - radius_i - radius_j);
+	if (dvisible < 0.0) return;
+	selvisible = 0.5 * (rij - selscale*radius_i - selscale*radius_j);
+
+	// Determine bond plane rotation if a multiple bond
+	if (((bt == Bond::Double) || (bt == Bond::Triple)) && (bondInPlane != NULL))
+	{
+		// Desired z-axis is already known ( = vijn) so get normalised copy
+		normz = localz / rij;
+		
+		// X axis is bond plane vector...
+		localx = i->findBondPlane(j, bondInPlane,normz,true);
+
+		// Generate Y-axis from cross-product of z and x axes
+		localy = localx * normz;
+		localy.normalise();
+		A[0] = localx.x;
+		A[1] = localx.y;
+		A[2] = localx.z;
+		A[4] = localy.x;
+		A[5] = localy.y;
+		A[6] = localy.z;
+		A[8] = localz.x;
+		A[9] = localz.y;
+		A[10] = localz.z;
+	}
+	else
+	{
+		// Calculate dot product with vector {0,0,1}
+		phi = DEGRAD * acos(localz.z);
+		
+		// Special case where the bond is exactly along Z already
+		if (phi > 179.99) A.applyRotationX(phi);
+		else if (phi >= 0.01) A.applyRotationAxis(-vij.y, vij.x, 0.0, phi, true);
+	}
+	
+	// We can perform an initial translation to the 'edge' of atom i, and scale to visible bond length
+	B = A;
+	A.applyTranslation(0.0, 0.0, radius_i);
+	A.applyScalingZ(dvisible);
+	// Move matrix B to be centred on atom j
+	B.addTranslation(j->r() - i->r());
+	B.applyTranslation(0.0, 0.0, -radius_j);
+	B.applyScalingZ(-dvisible);
+
+	// Draw first bond half
+	switch (style_i)
+	{
+		case (Prefs::LineStyle):
+			// First vertex is at 0,0,0 (i.e. translation elements of A). Second is vij * (0,0,1)
+			stickpos = A * Vec3<double>(0.0,0.0,1.0);
+			// Determine how many sticks to draw (bond multiplicity : aromatic still counts as one bond)
+			switch (bt)
+			{
+				case (Bond::Double):
+					dx = A.rotateVector(prefs.atomStyleRadius(Prefs::LineStyle)*0.5,0.0,0.0);
+					extraBoldLines_.defineVertex(A[12]+dx.x, A[13]+dx.y, A[14]+dx.z, 0.0,0.0,1.0, colour_i);
+					extraBoldLines_.defineVertex(stickpos.x+dx.x, stickpos.y+dx.y, stickpos.z+dx.z, 0.0,0.0,1.0, colour_i);
+					extraBoldLines_.defineVertex(A[12]-dx.x, A[13]-dx.y, A[14]-dx.z, 0.0,0.0,1.0, colour_i);
+					extraBoldLines_.defineVertex(stickpos.x-dx.x, stickpos.y-dx.y, stickpos.z-dx.z, 0.0,0.0,1.0, colour_i);
+					break;
+				case (Bond::Triple):
+					dx = A.rotateVector(prefs.atomStyleRadius(Prefs::LineStyle),0.0,0.0);
+					extraBoldLines_.defineVertex(A[12], A[13], A[14], 0.0,0.0,1.0, colour_i);
+					extraBoldLines_.defineVertex(stickpos.x, stickpos.y, stickpos.z, 0.0,0.0,1.0, colour_i);
+					extraBoldLines_.defineVertex(A[12]+dx.x, A[13]+dx.y, A[14]+dx.z, 0.0,0.0,1.0, colour_i);
+					extraBoldLines_.defineVertex(stickpos.x+dx.x, stickpos.y+dx.y, stickpos.z+dx.z, 0.0,0.0,1.0, colour_i);
+					extraBoldLines_.defineVertex(A[12]-dx.x, A[13]-dx.y, A[14]-dx.z, 0.0,0.0,1.0, colour_i);
+					extraBoldLines_.defineVertex(stickpos.x-dx.x, stickpos.y-dx.y, stickpos.z-dx.z, 0.0,0.0,1.0, colour_i);
+					break;
+				default:
+					extraBoldLines_.defineVertex(A[12], A[13], A[14], 0.0,0.0,1.0, colour_i);
+					extraBoldLines_.defineVertex(stickpos.x, stickpos.y, stickpos.z, 0.0,0.0,1.0, colour_i);
+					break;
+			}
+			break;
+		case (Prefs::TubeStyle):
+			if (selvisible > 0.0) addTriangles(primitiveSet.selectedBond(style_i, bt), A, colour_i, GL_LINE);
+			break;
+		case (Prefs::SphereStyle):
+		case (Prefs::ScaledStyle):
+			if (selvisible > 0.0)
+			{
+				// Move to edge of selected atom and apply selection bond scaling
+				A.applyTranslation(0.0, 0.0, (selscale*radius_i-radius_i) / dvisible);
+				A.applyScalingZ(selvisible/dvisible);
+				addTriangles(primitiveSet.selectedBond(style_i, bt), A, colour_i, GL_LINE);
+			}
+			break;
+	}
+	
+	// Draw second bond half
+	switch (style_j)
+	{
+		case (Prefs::LineStyle):
+			// First vertex is *still* at 0,0,0 (i.e. translation elements of A). Second is vij * (0,0,1)
+			stickpos = B * Vec3<double>(0.0,0.0,1.0);
+			switch (bt)
+			{
+				case (Bond::Double):
+					dx = B.rotateVector(prefs.atomStyleRadius(Prefs::LineStyle)*0.5,0.0,0.0);
+					extraBoldLines_.defineVertex(B[12]+dx.x, B[13]+dx.y, B[14]+dx.z, 0.0,0.0,1.0, colour_j);
+					extraBoldLines_.defineVertex(stickpos.x+dx.x, stickpos.y+dx.y, stickpos.z+dx.z, 0.0,0.0,1.0, colour_j);
+					extraBoldLines_.defineVertex(B[12]-dx.x, B[13]-dx.y, B[14]-dx.z, 0.0,0.0,1.0, colour_j);
+					extraBoldLines_.defineVertex(stickpos.x-dx.x, stickpos.y-dx.y, stickpos.z-dx.z, 0.0,0.0,1.0, colour_j);
+					break;
+				case (Bond::Triple):
+					dx = B.rotateVector(prefs.atomStyleRadius(Prefs::LineStyle),0.0,0.0);
+					extraBoldLines_.defineVertex(B[12], B[13], B[14], 0.0,0.0,1.0, colour_j);
+					extraBoldLines_.defineVertex(stickpos.x, stickpos.y, stickpos.z, 0.0,0.0,1.0, colour_j);
+					extraBoldLines_.defineVertex(B[12]+dx.x, B[13]+dx.y, B[14]+dx.z, 0.0,0.0,1.0, colour_j);
+					extraBoldLines_.defineVertex(stickpos.x+dx.x, stickpos.y+dx.y, stickpos.z+dx.z, 0.0,0.0,1.0, colour_j);
+					extraBoldLines_.defineVertex(B[12]-dx.x, B[13]-dx.y, B[14]-dx.z, 0.0,0.0,1.0, colour_j);
+					extraBoldLines_.defineVertex(stickpos.x-dx.x, stickpos.y-dx.y, stickpos.z-dx.z, 0.0,0.0,1.0, colour_j);
+					break;
+				default:
+					extraBoldLines_.defineVertex(B[12], B[13], B[14], 0.0,0.0,1.0, colour_j);
+					extraBoldLines_.defineVertex(stickpos.x, stickpos.y, stickpos.z, 0.0,0.0,1.0, colour_j);
+					break;
+			}
+			break;
+		case (Prefs::TubeStyle):
+			B.applyTranslation(0.0, 0.0, (selscale*radius_j-radius_j) / dvisible);
+			addTriangles(primitiveSet.selectedBond(style_j, bt), B, colour_j, GL_LINE);
+			break;
+		case (Prefs::SphereStyle):
+		case (Prefs::ScaledStyle):
+			if (selvisible > 0.0)
+			{
+				B.applyTranslation(0.0, 0.0, (selscale*radius_j-radius_j) / dvisible);
+				B.applyScalingZ(selvisible / dvisible);
+				addTriangles(primitiveSet.selectedBond(style_j, bt), B, colour_j, GL_LINE);
+			}
+			break;
+	}
+}
+
+// Render bond
+void RenderGroup::createBond(PrimitiveSet& primitiveSet, Matrix A, Vec3<double> vij, Atom* i, Prefs::DrawStyle style_i, Vec4<GLfloat>& colour_i, double radius_i, Atom* j, Prefs::DrawStyle style_j, Vec4<GLfloat>& colour_j, double radius_j, Bond::BondType bt, double selscale, Bond* bondInPlane)
 {
 	double dvisible, selvisible, factor, rij, phi;
 	Vec3<double> ri, rj, localx, localy, localz, stickpos, dx, normz;
@@ -52,13 +205,13 @@ void RenderGroup::createBond(PrimitiveSet& primitiveSet, Matrix A, Vec3< double 
 	selvisible = 0.5 * (rij - selscale*radius_i - selscale*radius_j);
 
 	// Determine bond plane rotation if a multiple bond
-	if (((bt == Bond::Double) || (bt == Bond::Triple)) && (b != NULL))
+	if (((bt == Bond::Double) || (bt == Bond::Triple)) && (bondInPlane != NULL))
 	{
 		// Desired z-axis is already known ( = vijn) so get normalised copy
 		normz = localz / rij;
 		
 		// X axis is bond plane vector...
-		localx = i->findBondPlane(j,b,normz,true);
+		localx = i->findBondPlane(j, bondInPlane,normz,true);
 
 		// Generate Y-axis from cross-product of z and x axes
 		localy = localx * normz;

@@ -121,8 +121,8 @@ void Model::bondAtoms(int ii, int jj, Bond::BondType bt)
 // Delete Bond
 void Model::unbondAtoms(Atom* i, Atom* j, Bond* bij)
 {
-        // Delete info from bond lists for atoms i and j.
 	Messenger::enter("Model::unbondAtoms");
+	
 	// Find bond between atoms (unless already supplied)
 	Bond* b;
 	if (bij != NULL) b = bij;
@@ -136,12 +136,14 @@ void Model::unbondAtoms(Atom* i, Atom* j, Bond* bij)
 			return;
 		}
 	}
+
 	// Store type for use later
 	Bond::BondType bt = b->type();
 	i->detachBond(b);
 	j->detachBond(b);
 	bonds_.remove(b);
 	logChange(Log::Structure);
+
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
@@ -149,6 +151,7 @@ void Model::unbondAtoms(Atom* i, Atom* j, Bond* bij)
 		newchange->set(false, i->id(), j->id(), bt);
 		recordingState_->addEvent(newchange);
 	}
+
 	Messenger::exit("Model::unbondAtoms");
 }
 

@@ -133,10 +133,10 @@ void AtenWindow::beginMode(Prefs::MouseButton button, bool* keyModifiers)
 	// the signal, current selection / draw modes and key modifier states.
 
 	// Get current active model
-	Model* source = aten_.currentModelOrFrame();
-	if (source == NULL)
+	Model* targetModel = aten_.currentModelOrFrame();
+	if (targetModel == NULL)
 	{
-		printf("Pointless AtenWindow::beginMode - no source model.\n");
+		printf("Pointless AtenWindow::beginMode - no target model.\n");
 		Messenger::exit("AtenWindow::beginMode");
 		return;
 	}
@@ -180,14 +180,14 @@ void AtenWindow::beginMode(Prefs::MouseButton button, bool* keyModifiers)
 						// If there is currently no atom under the mouse, draw one...
 						if (clickedAtom_ == NULL)
 						{
-							source->beginUndoState("Draw Atoms");
+							targetModel->beginUndoState("Draw Atoms");
 							currentDrawDepth_ = prefs.drawDepth();
 							Vec3<double> rMouseDown = ui.MainView->rMouseDown();
-							i = source->addAtom(currentBuildElement(), source->screenToModel(rMouseDown.x, rMouseDown.y, currentDrawDepth_));
-							source->endUndoState();
+							i = targetModel->addAtom(currentBuildElement(), targetModel->screenToModel(rMouseDown.x, rMouseDown.y, currentDrawDepth_));
+							targetModel->endUndoState();
 							clickedAtom_ = i;
 						}
-						else currentDrawDepth_ = source->modelToWorld(clickedAtom_->r()).z;
+						else currentDrawDepth_ = targetModel->modelToWorld(clickedAtom_->r()).z;
 						break;
 					default:
 						break;
@@ -220,8 +220,8 @@ void AtenWindow::beginMode(Prefs::MouseButton button, bool* keyModifiers)
 			with their current positions.
 			*/
 			oldPositions_.clear();
-			for (RefListItem<Atom,int>* ri = source->selection(); ri != NULL; ri = ri->next) oldPositions_.add(ri->item, ri->item->r());
-			source->prepareTransform();
+			for (RefListItem<Atom,int>* ri = targetModel->selection(); ri != NULL; ri = ri->next) oldPositions_.add(ri->item, ri->item->r());
+			targetModel->prepareTransform();
 		}
 	}
 
@@ -244,8 +244,8 @@ void AtenWindow::endMode(Prefs::MouseButton button, bool* keyModifiers)
 	Bond::BondType bt;
 	
 	// Get current active model
-	Model* source = aten_.currentModelOrFrame();
-	if (source == NULL)
+	Model* targetModel = aten_.currentModelOrFrame();
+	if (targetModel == NULL)
 	{
 		printf("Pointless AtenWindow::endMode - no source model.\n");
 		Messenger::exit("AtenWindow::endMode");
@@ -275,89 +275,89 @@ void AtenWindow::endMode(Prefs::MouseButton button, bool* keyModifiers)
 		// Plain atom / box select
 		case (UserAction::SelectAction):
 			area = fabs(rMouseUp.x - rMouseDown.x) * fabs(rMouseUp.y - rMouseDown.y);
-			source->beginUndoState("Change Selection");
+			targetModel->beginUndoState("Change Selection");
 			// If neither shift nor ctrl are not held down, deselect the current selection
-			if (!modded) source->selectNone();
+			if (!modded) targetModel->selectNone();
 			// Do either point select or box select based on the size of the selected area
-			if (area > 50.0) source->selectBox(rMouseDown.x, ui.MainView->contextHeight()-rMouseDown.y, rMouseUp.x, ui.MainView->contextHeight()-rMouseUp.y, ctrled);
+			if (area > 50.0) targetModel->selectBox(rMouseDown.x, ui.MainView->contextHeight()-rMouseDown.y, rMouseUp.x, ui.MainView->contextHeight()-rMouseUp.y, ctrled);
 			else if (clickedAtom_ != NULL)
 			{
-				if (shifted) source->selectionToggle(clickedAtom_);
-				else if (ctrled) source->deselectAtom(clickedAtom_);
-				else source->selectAtom(clickedAtom_);
+				if (shifted) targetModel->selectionToggle(clickedAtom_);
+				else if (ctrled) targetModel->deselectAtom(clickedAtom_);
+				else targetModel->selectAtom(clickedAtom_);
 			}
-			source->endUndoState();
+			targetModel->endUndoState();
 			updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget+AtenWindow::SelectPanelTarget);
 			break;
 		// Other selection operations
 		case (UserAction::SelectBoundAction):
-			source->beginUndoState("Select Bound");
-			if (!modded) source->selectNone();
-			if (clickedAtom_ != NULL) source->selectTree(clickedAtom_, false, ctrled);
-			source->endUndoState();
+			targetModel->beginUndoState("Select Bound");
+			if (!modded) targetModel->selectNone();
+			if (clickedAtom_ != NULL) targetModel->selectTree(clickedAtom_, false, ctrled);
+			targetModel->endUndoState();
 			updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget+AtenWindow::SelectPanelTarget);
 			break;
 		case (UserAction::SelectElementAction):
-			source->beginUndoState("Select Element");
-			if (!modded) source->selectNone();
-			if (clickedAtom_ != NULL) source->selectElement(clickedAtom_, false, ctrled);
-			source->endUndoState();
+			targetModel->beginUndoState("Select Element");
+			if (!modded) targetModel->selectNone();
+			if (clickedAtom_ != NULL) targetModel->selectElement(clickedAtom_, false, ctrled);
+			targetModel->endUndoState();
 			updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget+AtenWindow::SelectPanelTarget);
 			break;
 		case (UserAction::SelectRadialAction):
-			source->beginUndoState("Select Radial");
-			if (!modded) source->selectNone();
+			targetModel->beginUndoState("Select Radial");
+			if (!modded) targetModel->selectNone();
 			if (clickedAtom_ != NULL)
 			{
 				radius = (rMouseDown-rMouseUp).magnitude();
-				source->modelToWorld(clickedAtom_->r(), &screenr, prefs.styleRadius(clickedAtom_->style(), clickedAtom_->element()));
+				targetModel->modelToWorld(clickedAtom_->r(), &screenr, prefs.styleRadius(clickedAtom_->style(), clickedAtom_->element()));
 				radius /= screenr.w * prefs.styleRadius(clickedAtom_->style(), clickedAtom_->element());
-				source->selectRadial(clickedAtom_, radius);
+				targetModel->selectRadial(clickedAtom_, radius);
 			}
-			source->endUndoState();
+			targetModel->endUndoState();
 			updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget+AtenWindow::SelectPanelTarget);
 			break;
 		// Measurements
 		case (UserAction::MeasureDistanceAction):
 			// Must be two atoms in subselection to continue
 			if (pickedAtoms_.nItems() != 2) break;
-			source->beginUndoState("Measure Distance");
+			targetModel->beginUndoState("Measure Distance");
 			pickedAtoms_.fillArray(2, atoms);
-			source->addDistanceMeasurement(atoms[0], atoms[1]);
-			source->endUndoState();
+			targetModel->addDistanceMeasurement(atoms[0], atoms[1]);
+			targetModel->endUndoState();
 			pickedAtoms_.clear();
 			updateWidgets(AtenWindow::MainViewTarget);
 			break;
 		case (UserAction::MeasureAngleAction):
 			// Must be two atoms in subselection to continue
 			if (pickedAtoms_.nItems() != 3) break;
-			source->beginUndoState("Measure Angle");
+			targetModel->beginUndoState("Measure Angle");
 			pickedAtoms_.fillArray(3, atoms);
-			source->addAngleMeasurement(atoms[0], atoms[1], atoms[2]);
-			source->endUndoState();
+			targetModel->addAngleMeasurement(atoms[0], atoms[1], atoms[2]);
+			targetModel->endUndoState();
 			pickedAtoms_.clear();
 			updateWidgets(AtenWindow::MainViewTarget);
 			break;
 		case (UserAction::MeasureTorsionAction):
 			// Must be two atoms in subselection to continue
 			if (pickedAtoms_.nItems() != 4) break;
-			source->beginUndoState("Measure Torsion");
+			targetModel->beginUndoState("Measure Torsion");
 			pickedAtoms_.fillArray(4, atoms);
-			source->addTorsionMeasurement(atoms[0], atoms[1], atoms[2], atoms[3]);
-			source->endUndoState();
+			targetModel->addTorsionMeasurement(atoms[0], atoms[1], atoms[2], atoms[3]);
+			targetModel->endUndoState();
 			pickedAtoms_.clear();
 			updateWidgets(AtenWindow::MainViewTarget);
 			break;
 		// Draw atoms
 		case (UserAction::DrawAtomsAction):
 			// If there is no atom under the mouse we draw one
-			i = source->atomOnScreen(rMouseUp.x, ui.MainView->contextHeight()-rMouseUp.y);
+			i = targetModel->atomOnScreen(rMouseUp.x, ui.MainView->contextHeight()-rMouseUp.y);
 			if ((clickedAtom_ == i) && (i != NULL)) break;
-			source->beginUndoState("Draw Chain");
+			targetModel->beginUndoState("Draw Chain");
 			if (i == NULL)
 			{
 				// No atom under the mouse, so draw an atom at previous draw depth
-				i = source->addAtom(currentBuildElement(), source->screenToModel(rMouseUp.x, rMouseUp.y, currentDrawDepth_));
+				i = targetModel->addAtom(currentBuildElement(), targetModel->screenToModel(rMouseUp.x, rMouseUp.y, currentDrawDepth_));
 			}
 			// Now bond the atoms, unless clickedAtom_ and i are the same (i.e. the button was clicked and not moved)
 			if (clickedAtom_ != i)
@@ -368,11 +368,11 @@ void AtenWindow::endMode(Prefs::MouseButton button, bool* keyModifiers)
 				else
 				{
 					bt = Bond::increase(b->type());
-					source->unbondAtoms(i,clickedAtom_);
+					targetModel->unbondAtoms(i,clickedAtom_);
 				}
-				source->bondAtoms(i,clickedAtom_,bt);
+				targetModel->bondAtoms(i,clickedAtom_,bt);
 			}
-			source->endUndoState();
+			targetModel->endUndoState();
 			updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
 			break;
 		// Draw fragments
@@ -380,46 +380,55 @@ void AtenWindow::endMode(Prefs::MouseButton button, bool* keyModifiers)
 			if (!aten_.currentFragment()) break;
 			if (clickedAtom_ != NULL)
 			{
-				source->beginUndoState("Draw Anchored Fragment");
-				aten_.currentFragment()->pasteAnchoredModel(clickedAtom_, keyModifiers[Prefs::ShiftKey], aten_.fragmentBondId(), source, true);
+				targetModel->beginUndoState("Draw Anchored Fragment");
+				aten_.currentFragment()->pasteAnchoredModel(clickedAtom_, keyModifiers[Prefs::ShiftKey], aten_.fragmentBondId(), targetModel, true);
 			}
 			else
 			{
 				// No atom under the moust pointer, so draw on at the prefs drawing depth in its current orientation
-				source->beginUndoState("Draw Fragment");
-				aten_.currentFragment()->pasteOrientedModel(source->screenToModel(rMouseDown.x, rMouseDown.y, prefs.drawDepth()), source);
+				targetModel->beginUndoState("Draw Fragment");
+				aten_.currentFragment()->pasteOrientedModel(targetModel->screenToModel(rMouseDown.x, rMouseDown.y, prefs.drawDepth()), targetModel);
 			}
-			source->endUndoState();
+			targetModel->endUndoState();
 			updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
 			break;
 		case (UserAction::DrawTransmuteAction):
 			if (clickedAtom_ == NULL) break;
-			source->beginUndoState("Transmute");
+			targetModel->beginUndoState("Transmute");
 			// If SHIFT was held, transmute all atoms of the same element...
 			if (shifted)
 			{
 				int element = clickedAtom_->element();
-				for (Atom* i = source->atoms(); i != NULL; i = i->next) if (i->element() == element) source->transmuteAtom(i, currentBuildElement());
+				for (Atom* i = targetModel->atoms(); i != NULL; i = i->next) if (i->element() == element) targetModel->transmuteAtom(i, currentBuildElement());
 			}
-			else source->transmuteAtom(clickedAtom_, currentBuildElement());
-			source->endUndoState();
+			else targetModel->transmuteAtom(clickedAtom_, currentBuildElement());
+			targetModel->endUndoState();
 			updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
 			break;
 		case (UserAction::DrawDeleteAction):
-			if (shifted)
+			if (clickedAtom_ == NULL) break;
+			i = targetModel->atomOnScreen(rMouseUp.x, ui.MainView->contextHeight()-rMouseUp.y);
+			if (i != clickedAtom_)
 			{
-				source->beginUndoState("Delete Bonds to Atom");
+				// Delete specific bond between atoms....
+				targetModel->beginUndoState("Delete Bond");
+				targetModel->unbondAtoms(clickedAtom_, i);
+				targetModel->endUndoState();
+			}
+			else if (shifted)
+			{
+				targetModel->beginUndoState("Delete Bonds to Atom");
 				while (clickedAtom_->bonds() != NULL)
 				{
-					source->unbondAtoms(clickedAtom_, clickedAtom_->bonds()->item->partner(clickedAtom_));
+					targetModel->unbondAtoms(clickedAtom_, clickedAtom_->bonds()->item->partner(clickedAtom_));
 				}
-				source->endUndoState();
+				targetModel->endUndoState();
 			}
 			else
 			{
-				source->beginUndoState("Delete Atom");
-				source->deleteAtom(clickedAtom_);
-				source->endUndoState();
+				targetModel->beginUndoState("Delete Atom");
+				targetModel->deleteAtom(clickedAtom_);
+				targetModel->endUndoState();
 			}
 			updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
 			break;
@@ -430,9 +439,9 @@ void AtenWindow::endMode(Prefs::MouseButton button, bool* keyModifiers)
 		case (UserAction::DrawAddHydrogenAction):
 			if (clickedAtom_ != NULL)
 			{
-				source->beginUndoState("Add Hydrogen to Atom");
-				source->hydrogenSatisfy(clickedAtom_);
-				source->endUndoState();
+				targetModel->beginUndoState("Add Hydrogen to Atom");
+				targetModel->hydrogenSatisfy(clickedAtom_);
+				targetModel->endUndoState();
 				updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
 			}
 			break;
@@ -443,15 +452,15 @@ void AtenWindow::endMode(Prefs::MouseButton button, bool* keyModifiers)
 				ui.BuildDrawGrowButton->callPopupMethod("distance", distance);
 				if (shifted)
 				{
-					source->beginUndoState("Grow Atom (unbound)");
-					source->growAtom(clickedAtom_, currentBuildElement(), distance.asDouble(), buildGeometry_, false);
+					targetModel->beginUndoState("Grow Atom (unbound)");
+					targetModel->growAtom(clickedAtom_, currentBuildElement(), distance.asDouble(), buildGeometry_, false);
 				}
 				else
 				{
-					source->beginUndoState("Grow Atom");
-					source->growAtom(clickedAtom_, currentBuildElement(), distance.asDouble(), buildGeometry_, true);
+					targetModel->beginUndoState("Grow Atom");
+					targetModel->growAtom(clickedAtom_, currentBuildElement(), distance.asDouble(), buildGeometry_, true);
 				}
-				source->endUndoState();
+				targetModel->endUndoState();
 				updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
 			}
 			break;
@@ -461,7 +470,7 @@ void AtenWindow::endMode(Prefs::MouseButton button, bool* keyModifiers)
 		case (UserAction::TransformTranslateAction):
 			// Clear list of oldPositions_ if nothing was moved
 			if (!ui.MainView->mouseHasMoved()) oldPositions_.clear();
-			source->finalizeTransform(oldPositions_, "Transform Selection", noFold);
+			targetModel->finalizeTransform(oldPositions_, "Transform Selection", noFold);
 			updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
 			break;
 		// View changes (no action)
