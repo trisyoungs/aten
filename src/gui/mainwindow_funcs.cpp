@@ -259,7 +259,7 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportFilmD
 	ui.GridsPrimaryColourButton->setPopupWidget(new ColourPopup(*this, ui.GridsPrimaryColourButton), true);
 	ui.GridsPrimaryStyleButton->setPopupWidget(new GridStylePopup(*this, ui.GridsPrimaryStyleButton, true), true);
 	// -- Grids Panel (Secondary Surface)
-	ui.GridsSecondarySetButton->setPopupWidget(new GridSetPopup(*this, ui.GridsSecondarySetButton, true), true);
+	ui.GridsSecondarySetButton->setPopupWidget(new GridSetPopup(*this, ui.GridsSecondarySetButton, false), true);
 	ui.GridsSecondaryColourButton->setPopupWidget(new ColourPopup(*this, ui.GridsSecondaryColourButton), true);
 	ui.GridsSecondaryStyleButton->setPopupWidget(new GridStylePopup(*this, ui.GridsSecondaryStyleButton, false), true);
 

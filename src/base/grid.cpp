@@ -486,6 +486,128 @@ double Grid::sum(double lowerCutoff, double upperCutoff)
 	return sum;
 }
 
+
+// Calculate lower (or upper) cutoff to give requested percentage of grid encapsulated in displayed surface
+bool Grid::calculateCutoff(double percentage, bool upperCutoff, bool secondary, double& newCutoff)
+{
+	const int nBins = 100, maxPasses = 10;
+	double binDelta, histogramStart;
+	Array<double> histogram(nBins), fractions(nBins);
+	double point;
+	int bin, x, y, z, n, m, lowBin, highBin;
+
+	// Set initial histogram limits
+	histogramStart = minimum_;
+	if (secondary)
+	{
+		if (upperCutoff) binDelta = (maximum_ - lowerSecondaryCutoff_) / nBins;
+		else binDelta = (upperSecondaryCutoff_ - minimum_) / nBins;
+		newCutoff = (upperCutoff ? upperSecondaryCutoff_ : lowerSecondaryCutoff_);
+	}
+	else
+	{
+		if (upperCutoff) binDelta = (maximum_ - lowerPrimaryCutoff_) / nBins;
+		else binDelta = (upperPrimaryCutoff_ - minimum_) / nBins;
+		newCutoff = (upperCutoff ? upperPrimaryCutoff_ : lowerPrimaryCutoff_);
+	}
+
+	// Loop over passes
+	for (int pass = 0; pass < maxPasses; ++pass)
+	{
+		// Zero histogram
+		histogram = 0.0;
+
+		// Bin grid data
+		if (type_ == Grid::RegularXYZData)
+		{
+			for (x=0; x<nXYZ_.x; ++x)
+			{
+				for (y=0; y<nXYZ_.y; ++y)
+				{
+					for (z=0; z<nXYZ_.z; ++z)
+					{
+						point = data3d_[x][y][z];
+						// Ignore points above / below relevant cutoffs
+						if (upperCutoff)
+						{
+							if (point < (secondary ? lowerSecondaryCutoff_ : lowerPrimaryCutoff_)) continue;
+						}
+						else if (point > (secondary ? upperSecondaryCutoff_ : upperPrimaryCutoff_)) continue;
+						bin = (point - histogramStart) / binDelta;
+						if (bin < 0) bin = 0;
+						else if (bin >= nBins) bin = nBins-1;
+						histogram[bin] += fabs(point);
+					}
+				}
+			}
+		}
+		else if (type_ == Grid::RegularXYData)
+		{
+			for (x=0; x<nXYZ_.x; ++x)
+			{
+				for (y=0; y<nXYZ_.y; ++y)
+				{
+					point = data2d_[x][y];
+					// Ignore points above / below relevant cutoffs
+					if (upperCutoff)
+					{
+						if (point < (secondary ? lowerSecondaryCutoff_ : lowerPrimaryCutoff_)) continue;
+					}
+					else if (point > (secondary ? upperSecondaryCutoff_ : upperPrimaryCutoff_)) continue;
+					bin = (point - histogramStart) / binDelta;
+					if (bin < 0) bin = 0;
+					else if (bin >= nBins) bin = nBins-1;
+					histogram[bin] += fabs(point);
+				}
+			}
+		}
+		else if (type_ == Grid::FreeXYZData)
+		{
+			printf("TODO - Not implemented yet!\n");
+		}
+
+		// Calculate fractions of data represented by each bin (cutoff)
+		fractions = 0.0;
+		for (n=0; n<nBins; ++n)
+		{
+			for (m=0; m<=n; ++m) fractions[m] += histogram[n];
+		}
+		fractions /= totalAbsoluteSum();
+
+		// TEST print out bin values and sums
+// 		for (n=0; n<nBins; ++n) printf("HistoBin %i (x=%f) grid% = %f\n", n, histogramStart+binDelta*n, fractions[n]*100.0);
+
+		// Find new limits for next pass
+		for (highBin=0; highBin<nBins; ++highBin) if ((fractions[highBin]*100.0) < percentage) break;
+		if (highBin >= nBins)
+		{
+			// Target cutoff is beyond the current maximum limit of the histogram?
+			Messenger::print("Unable to find suitable cutoff for requested percentage (%f)", percentage);
+			return false;
+		}
+		for (lowBin=highBin-1; lowBin>=0; --lowBin) if ((fractions[lowBin]*100.0) > percentage) break;
+		if (lowBin < 0)
+		{
+			// Target cutoff is beyond the current minimum limit of the histogram?
+			Messenger::print("Unable to find suitable cutoff for requested percentage (%f)", percentage);
+			return false;
+		}
+
+		// Set new cutoff limits for next pass
+// 		printf("Low/Hi bins are %i and %i\n", lowBin, highBin);
+		histogramStart = histogramStart+binDelta*lowBin;
+		binDelta = (binDelta*(highBin-lowBin)) / nBins;
+// 		printf("New start and delta are %f and %f\n", histogramStart, binDelta);
+
+		// Done?
+		if (binDelta < (maximum_-minimum_)*0.00001) break;
+	}
+
+	newCutoff = histogramStart;
+
+	return true;
+}
+
 // Return pointer to the underlying cell structure
 UnitCell* Grid::cell()
 {
@@ -692,16 +814,24 @@ void Grid::setUpperPrimaryCutoff(double d)
 }
 
 // Set primary cutoff as view percentage
-double Grid::setPrimaryCutoffAsViewPercentage(double d)
+double Grid::setPrimaryCutoffAsViewPercentage(double d, bool upperCutoff)
 {
 	// First, check limits of percentage
 	if ((d < 0.0) || (d > 100.0))
 	{
 		Messenger::print("Percentage value is not a real percentage (%f).\n", d);
-		return 100.0*partialPrimarySum_/(totalPositiveSum_+totalNegativeSum_);
+		return 100.0*partialPrimarySum()/totalAbsoluteSum();
 	}
 
-	XXX
+	// Calculate new cutoff
+	double newCutoff;
+	if (calculateCutoff(d, upperCutoff, false, newCutoff))
+	{
+		if (upperCutoff) setUpperPrimaryCutoff(newCutoff);
+		else setLowerPrimaryCutoff(newCutoff);
+	}
+
+	return 100.0*partialPrimarySum()/totalAbsoluteSum();
 }
 
 // Return upper isovalue cutoff for primary surface
@@ -739,6 +869,27 @@ void Grid::setUpperSecondaryCutoff(double d)
 {
 	upperSecondaryCutoff_ = d;
 	logChange();
+}
+
+// Set secondary lower/upper cutoff based on view percentage
+double Grid::setSecondaryCutoffAsViewPercentage(double d, bool upperCutoff)
+{
+	// First, check limits of percentage
+	if ((d < 0.0) || (d > 100.0))
+	{
+		Messenger::print("Percentage value is not a real percentage (%f).\n", d);
+		return 100.0*partialSecondarySum()/totalAbsoluteSum();
+	}
+
+	// Calculate new cutoff
+	double newCutoff;
+	if (calculateCutoff(d, upperCutoff, true, newCutoff))
+	{
+		if (upperCutoff) setUpperSecondaryCutoff(newCutoff);
+		else setLowerSecondaryCutoff(newCutoff);
+	}
+
+	return 100.0*partialSecondarySum()/totalAbsoluteSum();
 }
 
 // Return upper isovalue cutoff for secondary surface

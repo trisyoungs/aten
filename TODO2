@@ -4,7 +4,6 @@ Crash if model is saved, then filters reloaded, then model is saved again (since
 Automatically adjust grid size for number of visible models, based on current aspect ratio and context size etc.
 Redo ProgressIndicator, making into a class much like QProgress (can't just use QProgress, since we want to have progress indicator functionality in the CLI....). Make it clever enough to realise that the gui is visible or not. Perhaps integrate it into Messenger, so that messages printed out while the indicator is running don't disrupt the indicator?
 Sort out remaining icons!
-View by percentage for grid cutoff (put in popup).
 Undo/Redo:
   * Rework UndoEvent to use an enum and stored data rather than an individual class for each event type.
   * Add Grid-related undo/redo (e.g. title changes, colour etc.)
@@ -92,7 +91,5 @@ Remove LineTol and Converge commands, and update minimisation command signatures
 Remove prefs options for replicate, and add extra options to turn on folding and trimming to replicate() command.
 Add viewerFontFileName member Prefs accessor.
 Remove TransparentSelection Prefs accessor.
-<<<<<<< HEAD
-=======
-Add TrajectoryFormat CLI switch (trajectoryformat).
->>>>>>> 37794d6a58ffa7d0c1ea87eac8b0d882974ec46c
+Add TrajectoryFormat CLI switch (tf).
+Add GridViewPercentage and GridViewSecondaryPercentage commands.

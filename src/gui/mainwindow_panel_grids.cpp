@@ -98,7 +98,7 @@ void AtenWindow::updateGridInformation(Grid* sourceGrid)
 	ui.GridsSecondaryLowerCutoffSpin->setValue(sourceGrid->lowerSecondaryCutoff());
 	ui.GridsSecondaryUpperCutoffSpin->setRange(true, sourceGrid->minimum(), true, sourceGrid->maximum(), 100);
 	ui.GridsSecondaryUpperCutoffSpin->setValue(sourceGrid->upperSecondaryCutoff());
-	rv.setArray(VTypes::DoubleData, sourceGrid->primaryColour(), 4);
+	rv.setArray(VTypes::DoubleData, sourceGrid->secondaryColour(), 4);
 	ui.GridsSecondaryColourButton->callPopupMethod("setCurrentColour", rv);
 	ui.GridsSecondaryStyleButton->callPopupMethod("updateButtonIcon", rv = QString(Grid::surfaceStyle(sourceGrid->secondaryStyle())));
 

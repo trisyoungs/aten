@@ -316,8 +316,17 @@ bool Commands::function_GridUseZ(CommandNode* c, Bundle& obj, ReturnValue& rv)
 bool Commands::function_GridViewPercentage(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::GridPointer)) return false;
-	if (c->hasArg(0)) rv.set(obj.g->setPrimaryCutoffAsViewPercentage(c->argd(0)));
-	rv.set(obj.g->primaryViewPercentage());
+	if (c->hasArg(0)) obj.g->setPrimaryCutoffAsViewPercentage(c->argd(0), c->hasArg(1) ? c->argb(1) : false);
+	rv.set((obj.g->partialPrimarySum() / obj.g->totalAbsoluteSum())*100.0);
+	return true;
+}
+
+// Set view percentage for secondary surface
+bool Commands::function_GridViewPercentageSecondary(CommandNode* c, Bundle& obj, ReturnValue& rv)
+{
+	if (obj.notifyNull(Bundle::GridPointer)) return false;
+	if (c->hasArg(0)) obj.g->setSecondaryCutoffAsViewPercentage(c->argd(0), c->hasArg(1) ? c->argb(1) : false);
+	rv.set((obj.g->partialSecondarySum() / obj.g->totalAbsoluteSum())*100.0);
 	return true;
 }
 

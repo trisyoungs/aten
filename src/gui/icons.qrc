@@ -11,6 +11,14 @@
     <file>icons/arrow_up.svg</file>
     <file>icons/arrow_upline.svg</file>
   </qresource>
+  <qresource prefix="selection">
+    <file>icons/selection_free.svg</file>
+    <file>icons/selection_fix.svg</file>
+  </qresource>
+  <qresource prefix="grid">
+    <file>icons/grid_setinfo.svg</file>
+    <file>icons/grid_translate.svg</file>
+  </qresource>
   <qresource prefix="fonts">
     <file>OpenSans-Regular.ttf</file>
   </qresource>
@@ -29,9 +37,11 @@
   </qresource>
   <qresource prefix="/transform">
     <file>icons/transform_angle.svg</file>
+    <file>icons/transform_matrix.svg</file>
     <file>icons/transform_centre.svg</file>
     <file>icons/transform_translate.svg</file>
     <file>icons/transform_flipx.svg</file>
+    <file>icons/translate_reposition.svg</file>
     <file>icons/transform_flipy.svg</file>
     <file>icons/transform_rotate.svg</file>
     <file>icons/transform_multiply.svg</file>
@@ -63,6 +73,7 @@
   <qresource prefix="/basic">
     <file>icons/basic_pointer.svg</file>
     <file>icons/basic_abc.svg</file>
+    <file>icons/basic_list.svg</file>
     <file>icons/basic_off.svg</file>
     <file>icons/basic_on.svg</file>
     <file>icons/basic_edit.svg</file>

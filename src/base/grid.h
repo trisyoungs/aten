@@ -142,6 +142,8 @@ class Grid : public ListItem<Grid>, ObjectStore<Grid>
 	void calculateBounds();
 	// Calculate sum of points between given cutoffs
 	double sum(double lowerCutoff, double upperCutoff);
+	// Calculate cutoff to give requested percentage of grid encapsulated in displayed surface
+	bool calculateCutoff(double percentage, bool upperCutoff, bool secondary, double& newCutoff);
 
 	public:
 	// Return pointer to the underlying cell structure
@@ -204,8 +206,8 @@ class Grid : public ListItem<Grid>, ObjectStore<Grid>
 	double lowerPrimaryCutoff() const;
 	// Set upper isovalue cutoff for primary surface
 	void setUpperPrimaryCutoff(double d);
-	// Set primary cutoff as view percentage
-	double setPrimaryCutoffAsViewPercentage(double d);
+	// Set primary lower/upper cutoff based on view percentage
+	double setPrimaryCutoffAsViewPercentage(double d, bool upperCutoff);
 	// Return upper isovalue cutoff for primary surface
 	double upperPrimaryCutoff() const;
 	// Return whether supplied number is within primary cutoff range
@@ -216,6 +218,8 @@ class Grid : public ListItem<Grid>, ObjectStore<Grid>
 	double lowerSecondaryCutoff() const;
 	// Set upper isovalue cutoff for secondary surface
 	void setUpperSecondaryCutoff(double d);
+	// Set secondary lower/upper cutoff based on view percentage
+	double setSecondaryCutoffAsViewPercentage(double d, bool upperCutoff);
 	// Return upper isovalue cutoff for secondary surface
 	double upperSecondaryCutoff() const;
 	// Return whether supplied number is within secondary cutoff range

@@ -75,7 +75,7 @@
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>9</number>
       </property>
       <property name="usesScrollButtons">
        <bool>true</bool>
@@ -3901,7 +3901,7 @@
             </property>
             <property name="icon">
              <iconset resource="icons.qrc">
-              <normaloff>:/basic/icons/basic_cross.svg</normaloff>:/basic/icons/basic_cross.svg</iconset>
+              <normaloff>:/basic/icons/basic_list.svg</normaloff>:/basic/icons/basic_list.svg</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -4373,6 +4373,10 @@
             <property name="text">
              <string>Reposition</string>
             </property>
+            <property name="icon">
+             <iconset resource="icons.qrc">
+              <normaloff>:/transform/icons/translate_reposition.svg</normaloff>:/transform/icons/translate_reposition.svg</iconset>
+            </property>
             <property name="iconSize">
              <size>
               <width>30</width>
@@ -4608,6 +4612,10 @@
             </property>
             <property name="text">
              <string>Convert</string>
+            </property>
+            <property name="icon">
+             <iconset resource="icons.qrc">
+              <normaloff>:/transform/icons/transform_matrix.svg</normaloff>:/transform/icons/transform_matrix.svg</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -5156,6 +5164,10 @@
             <property name="text">
              <string>Set/Info</string>
             </property>
+            <property name="icon">
+             <iconset resource="icons.qrc">
+              <normaloff>:/grid/icons/grid_setinfo.svg</normaloff>:/grid/icons/grid_setinfo.svg</iconset>
+            </property>
             <property name="iconSize">
              <size>
               <width>30</width>
@@ -5468,6 +5480,10 @@
             <property name="text">
              <string>Set/Info</string>
             </property>
+            <property name="icon">
+             <iconset resource="icons.qrc">
+              <normaloff>:/grid/icons/grid_setinfo.svg</normaloff>:/grid/icons/grid_setinfo.svg</iconset>
+            </property>
             <property name="iconSize">
              <size>
               <width>30</width>
@@ -5629,6 +5645,10 @@
             </property>
             <property name="text">
              <string>Translate</string>
+            </property>
+            <property name="icon">
+             <iconset resource="icons.qrc">
+              <normaloff>:/grid/icons/grid_translate.svg</normaloff>:/grid/icons/grid_translate.svg</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -8714,6 +8734,10 @@
             <property name="text">
              <string>Fix</string>
             </property>
+            <property name="icon">
+             <iconset resource="icons.qrc">
+              <normaloff>:/selection/icons/selection_fix.svg</normaloff>:/selection/icons/selection_fix.svg</iconset>
+            </property>
             <property name="iconSize">
              <size>
               <width>30</width>
@@ -8767,6 +8791,10 @@
             </property>
             <property name="text">
              <string>Free</string>
+            </property>
+            <property name="icon">
+             <iconset resource="icons.qrc">
+              <normaloff>:/selection/icons/selection_free.svg</normaloff>:/selection/icons/selection_free.svg</iconset>
             </property>
             <property name="iconSize">
              <size>
