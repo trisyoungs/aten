@@ -8673,6 +8673,10 @@
             <property name="text">
              <string>Clear</string>
             </property>
+            <property name="icon">
+             <iconset resource="icons.qrc">
+              <normaloff>:/basic/icons/basic_cross.svg</normaloff>:/basic/icons/basic_cross.svg</iconset>
+            </property>
             <property name="iconSize">
              <size>
               <width>30</width>
@@ -8860,6 +8864,10 @@
             </property>
             <property name="text">
              <string>Reorder</string>
+            </property>
+            <property name="icon">
+             <iconset resource="icons.qrc">
+              <normaloff>:/selection/icons/selection_reorder.svg</normaloff>:/selection/icons/selection_reorder.svg</iconset>
             </property>
             <property name="iconSize">
              <size>

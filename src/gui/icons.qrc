@@ -15,6 +15,7 @@
     <file>icons/selection_free.svg</file>
     <file>icons/selection_hide.svg</file>
     <file>icons/selection_fix.svg</file>
+    <file>icons/selection_reorder.svg</file>
   </qresource>
   <qresource prefix="grid">
     <file>icons/grid_setinfo.svg</file>
