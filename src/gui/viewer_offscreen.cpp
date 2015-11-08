@@ -89,13 +89,20 @@ QPixmap Viewer::generateModelImage(Model* model, int width, int height)
 	return QPixmap::fromImage(image);
 }
 
-// Render current scene at supplied size
+// Render current scene at supplied size (or current widget size if none provided)
 QPixmap Viewer::generateImage(int imageWidth, int imageHeight)
 {
 	Messenger::enter("Viewer::generateImage");
 
 	// Make sure high quality primitives are up-to-date
 	updatePrimitives(Viewer::HighQuality);
+
+	// Check provided width/height
+	if ((imageWidth == -1) || (imageHeight == -1))
+	{
+		imageWidth = contextWidth_;
+		imageHeight = contextHeight_;
+	}
 
 	// Flag that we are rendering offscreen, and that we want high quality primitives
 	renderingOffScreen_ = true;

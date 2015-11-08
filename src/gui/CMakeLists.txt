@@ -29,6 +29,7 @@ SET(gui_MOC_HDRS
   popupelementcommon.h
   popupelementtable.h
   popupfileaten.h
+  popupfileimage.h
   popupfileopen.h
   popupfilesave.h
   popupforcefieldsassign.h
@@ -117,6 +118,7 @@ SET(gui_UIS
   popupelementcommon.ui
   popupelementtable.ui
   popupfileaten.ui
+  popupfileimage.ui
   popupfileopen.ui
   popupfilesave.ui
   popupforcefieldsassign.ui
@@ -215,6 +217,7 @@ set(gui_SRCS
   popupelementcommon_funcs.cpp
   popupelementtable_funcs.cpp
   popupfileaten_funcs.cpp
+  popupfileimage_funcs.cpp
   popupfileopen_funcs.cpp
   popupfilesave_funcs.cpp
   popupforcefieldsassign_funcs.cpp

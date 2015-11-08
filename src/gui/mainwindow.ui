@@ -75,7 +75,7 @@
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>9</number>
+       <number>0</number>
       </property>
       <property name="usesScrollButtons">
        <bool>true</bool>
@@ -8313,6 +8313,10 @@
             </property>
             <property name="text">
              <string>Hide</string>
+            </property>
+            <property name="icon">
+             <iconset resource="icons.qrc">
+              <normaloff>:/selection/icons/selection_hide.svg</normaloff>:/selection/icons/selection_hide.svg</iconset>
             </property>
             <property name="iconSize">
              <size>

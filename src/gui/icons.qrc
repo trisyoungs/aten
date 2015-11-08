@@ -13,6 +13,7 @@
   </qresource>
   <qresource prefix="selection">
     <file>icons/selection_free.svg</file>
+    <file>icons/selection_hide.svg</file>
     <file>icons/selection_fix.svg</file>
   </qresource>
   <qresource prefix="grid">
@@ -34,6 +35,9 @@
     <file>icons/aten_preferences.svg</file>
     <file>icons/aten_reloadfilters.svg</file>
     <file>icons/aten_storedefault.svg</file>
+  </qresource>
+  <qresource prefix="image">
+    <file>icons/image_copytoclipboard.svg</file>
   </qresource>
   <qresource prefix="/transform">
     <file>icons/transform_angle.svg</file>

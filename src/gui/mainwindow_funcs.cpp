@@ -52,6 +52,7 @@
 #include "gui/popupelementcommon.h"
 #include "gui/popupelementtable.h"
 #include "gui/popupfileaten.h"
+#include "gui/popupfileimage.h"
 #include "gui/popupfileopen.h"
 #include "gui/popupfilesave.h"
 #include "gui/popupforcefieldsassign.h"
@@ -173,6 +174,7 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportFilmD
 	// -- Home Panel (File)
 	ui.HomeFileOpenButton->setPopupWidget(new FileOpenPopup(*this, ui.HomeFileOpenButton));
 	ui.HomeFileSaveButton->setPopupWidget(new FileSavePopup(*this, ui.HomeFileSaveButton));
+	ui.HomeFileImageButton->setPopupWidget(new FileImagePopup(*this, ui.HomeFileImageButton));
 	ui.HomeFileAtenButton->setPopupWidget(new FileAtenPopup(*this, ui.HomeFileAtenButton), true);
 	// -- Home Panel (Appearance)
 	ui.HomeAppearanceLineButton->setGroup("ViewStyles", Prefs::LineStyle);
@@ -326,6 +328,9 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportFilmD
 	connect(shortcut, SIGNAL(activated()), ui.SelectBasicInvertButton, SLOT(click()));
 	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_E), this, 0, 0, Qt::ApplicationShortcut);
 	connect(shortcut, SIGNAL(activated()), ui.SelectBasicExpandButton, SLOT(click()));
+	// Selection Panel
+	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_H), this, 0, 0, Qt::ApplicationShortcut);
+	connect(shortcut, SIGNAL(activated()), ui.SelectionAppearanceHideButton, SLOT(click()));
 	// Transform Panel
 	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::ALT + Qt::Key_C), this, 0, 0, Qt::ApplicationShortcut);
 	connect(shortcut, SIGNAL(activated()), ui.TransformPositionZeroButton, SLOT(click()));

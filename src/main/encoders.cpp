@@ -48,10 +48,8 @@ void Aten::loadEncoderDefinitions()
 	while (!parser.eofOrBlank())
 	{
 		// Read first argument from file, which is our keyword
-		parser.readNextLine(LineParser::SkipBlanks + LineParser::StripComments);
 		parser.getArgsDelim(LineParser::SkipBlanks + LineParser::StripComments + LineParser::UseQuotes);
 		keyword = parser.argc(0);
-		printf("Kwd = [%s], nArgs=[%i]\n", qPrintable(keyword), parser.nArgs());
 		edk = EncoderDefinition::encoderDefinitionKeyword(keyword);
 		if (edk == EncoderDefinition::nEncoderDefinitionKeywords)
 		{

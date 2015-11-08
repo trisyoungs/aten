@@ -359,7 +359,49 @@ void TMenuButton::paintEvent(QPaintEvent* event)
 				arrowOpt.rect = arrowRect;
 				arrowOpt.palette = inner.palette;
 				arrowOpt.state = inner.state;
-				style()->drawPrimitive(QStyle::PE_IndicatorArrowDown, &arrowOpt, &painter, this);
+				if (instantPopup_)
+				{
+					if (!(inner.state & QStyle::State_Enabled))
+					{
+						painter.translate(1, 1);
+						painter.setBrush(arrowOpt.palette.light().color());
+						painter.setPen(arrowOpt.palette.light().color());
+						painter.drawEllipse(arrowRect.center(), 2, 2);
+						painter.drawEllipse(arrowRect.center()-QPoint(arrowRect.width()/6,0), 2, 2);
+						painter.drawEllipse(arrowRect.center()+QPoint(arrowRect.width()/6,0), 2, 2);
+						painter.translate(-1, -1);
+						painter.setBrush(arrowOpt.palette.mid().color());
+						painter.setPen(arrowOpt.palette.mid().color());
+					}
+					else if (inner.state & QStyle::State_MouseOver)
+					{
+						painter.translate(1, 1);
+						painter.setBrush(arrowOpt.palette.mid().color());
+						painter.setPen(arrowOpt.palette.mid().color());
+						painter.drawEllipse(arrowRect.center(), 2, 2);
+						painter.drawEllipse(arrowRect.center()-QPoint(arrowRect.width()/6,0), 2, 2);
+						painter.drawEllipse(arrowRect.center()+QPoint(arrowRect.width()/6,0), 2, 2);
+						painter.translate(-1, -1);
+						painter.setBrush(arrowOpt.palette.buttonText().color());
+						painter.setPen(arrowOpt.palette.buttonText().color());
+					}
+					else
+					{
+						painter.translate(1, 1);
+						painter.setBrush(arrowOpt.palette.light().color());
+						painter.setPen(arrowOpt.palette.light().color());
+						painter.drawEllipse(arrowRect.center(), 2, 2);
+						painter.drawEllipse(arrowRect.center()-QPoint(arrowRect.width()/6,0), 2, 2);
+						painter.drawEllipse(arrowRect.center()+QPoint(arrowRect.width()/6,0), 2, 2);
+						painter.translate(-1, -1);
+						painter.setBrush(arrowOpt.palette.mid().color());
+						painter.setPen(arrowOpt.palette.mid().color());
+					}
+					painter.drawEllipse(arrowRect.center(), 2, 2);
+					painter.drawEllipse(arrowRect.center()-QPoint(arrowRect.width()/6,0), 2, 2);
+					painter.drawEllipse(arrowRect.center()+QPoint(arrowRect.width()/6,0), 2, 2);
+				}
+				else style()->drawPrimitive(QStyle::PE_IndicatorArrowDown, &arrowOpt, &painter, this);
 			}
 
 			// Draw text
