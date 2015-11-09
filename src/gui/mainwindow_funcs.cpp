@@ -470,7 +470,7 @@ void AtenWindow::timerEvent(QTimerEvent* event)
 			{
 				currentModel->seekNextTrajectoryFrame();
 				if (currentModel->trajectoryFrameIndex() == currentModel->nTrajectoryFrames()-1) ui.TrajectoryControlPlayButton->click();
-				updateWidgets(AtenWindow::MainViewTarget);
+				updateWidgets(AtenWindow::MainViewTarget+AtenWindow::TrajectoryPanelTarget);
 			}
 			trajectoryDrawFlag = false;
 		}

@@ -43,6 +43,7 @@
   <qresource prefix="/transform">
     <file>icons/transform_angle.svg</file>
     <file>icons/transform_matrix.svg</file>
+    <file>icons/transform_shift.svg</file>
     <file>icons/transform_centre.svg</file>
     <file>icons/transform_translate.svg</file>
     <file>icons/transform_flipx.svg</file>
@@ -156,6 +157,9 @@
     <file>icons/traj_playpause.svg</file>
     <file>icons/traj_prev.svg</file>
     <file>icons/traj_view.svg</file>
+    <file>icons/traj_promote.svg</file>
+    <file>icons/traj_propagate.svg</file>
+    <file>icons/traj_inherit.svg</file>
   </qresource>
   <qresource prefix="/gridstyle">
     <file>icons/gridstyle_mesh.png</file>

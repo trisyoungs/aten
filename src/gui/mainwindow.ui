@@ -4324,6 +4324,10 @@
             <property name="text">
              <string>Shift</string>
             </property>
+            <property name="icon">
+             <iconset resource="icons.qrc">
+              <normaloff>:/transform/icons/transform_shift.svg</normaloff>:/transform/icons/transform_shift.svg</iconset>
+            </property>
             <property name="iconSize">
              <size>
               <width>30</width>
@@ -6296,6 +6300,10 @@
             <property name="text">
              <string>Inherit</string>
             </property>
+            <property name="icon">
+             <iconset resource="icons.qrc">
+              <normaloff>:/trajectory/icons/traj_inherit.svg</normaloff>:/trajectory/icons/traj_inherit.svg</iconset>
+            </property>
             <property name="iconSize">
              <size>
               <width>30</width>
@@ -6350,6 +6358,10 @@
             <property name="text">
              <string>Propagate</string>
             </property>
+            <property name="icon">
+             <iconset resource="icons.qrc">
+              <normaloff>:/trajectory/icons/traj_propagate.svg</normaloff>:/trajectory/icons/traj_propagate.svg</iconset>
+            </property>
             <property name="iconSize">
              <size>
               <width>30</width>
@@ -6403,6 +6415,10 @@
             </property>
             <property name="text">
              <string>Promote</string>
+            </property>
+            <property name="icon">
+             <iconset resource="icons.qrc">
+              <normaloff>:/trajectory/icons/traj_promote.svg</normaloff>:/trajectory/icons/traj_promote.svg</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -6926,6 +6942,10 @@
             <property name="text">
              <string>Clear</string>
             </property>
+            <property name="icon">
+             <iconset resource="icons.qrc">
+              <normaloff>:/basic/icons/basic_cross.svg</normaloff>:/basic/icons/basic_cross.svg</iconset>
+            </property>
             <property name="iconSize">
              <size>
               <width>30</width>
@@ -7325,6 +7345,10 @@
             </property>
             <property name="text">
              <string>Clear</string>
+            </property>
+            <property name="icon">
+             <iconset resource="icons.qrc">
+              <normaloff>:/basic/icons/basic_cross.svg</normaloff>:/basic/icons/basic_cross.svg</iconset>
             </property>
             <property name="iconSize">
              <size>

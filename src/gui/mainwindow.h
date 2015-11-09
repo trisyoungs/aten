@@ -337,8 +337,6 @@ class AtenWindow : public QMainWindow
 	void on_TrajectoryStyleInheritButton_clicked(bool checked);
 	void on_TrajectoryStylePropagateButton_clicked(bool checked);
 	void on_TrajectoryStylePromoteButton_clicked(bool checked);
-	// Tools
-	void on_TrajectoryToolsMovieButton_clicked(bool checked);
 
 
 	/*

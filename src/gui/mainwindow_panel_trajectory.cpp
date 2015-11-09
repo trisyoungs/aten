@@ -30,22 +30,26 @@ void AtenWindow::updateTrajectoryPanel(Model* sourceModel)
 	Messenger::enter("AtenWindow::updateTrajectoryPanel");
 
 	// Get parent model, if there is one...
-	bool hasTraj = false;
+	bool hasTraj = false, trajSource = false;
 	Model* parentModel = sourceModel ? (sourceModel->parent() ? sourceModel->parent() : sourceModel) : NULL;
-	if (parentModel) hasTraj = parentModel->hasTrajectory();
+	if (parentModel)
+	{
+		hasTraj = parentModel->hasTrajectory();
+		trajSource = parentModel->renderSource() == Model::TrajectorySource;
+	}
 
 	// Enable / disable controls
 	ui.TrajectorySourceOpenButton->setEnabled(!aten_.fileDialogFilters(FilterData::TrajectoryImport).isEmpty());
 	ui.TrajectorySourceRemoveButton->setEnabled(parentModel && hasTraj);
 	ui.TrajectorySourceFramesButton->setEnabled(parentModel && hasTraj);
-	ui.TrajectoryControlFirstButton->setEnabled(parentModel && hasTraj);
-	ui.TrajectoryControlPreviousButton->setEnabled(parentModel && hasTraj);
-	ui.TrajectoryControlPlayButton->setEnabled(parentModel && hasTraj);
-	ui.TrajectoryControlNextButton->setEnabled(parentModel && hasTraj);
-	ui.TrajectoryControlLastButton->setEnabled(parentModel && hasTraj);
-	ui.TrajectoryControlFrameSpin->setEnabled(parentModel && hasTraj);
-	ui.TrajectoryControlFrameSlider->setEnabled(parentModel && hasTraj);
-	ui.TrajectoryControlDelaySpin->setEnabled(parentModel && hasTraj);
+	ui.TrajectoryControlFirstButton->setEnabled(parentModel && hasTraj && trajSource);
+	ui.TrajectoryControlPreviousButton->setEnabled(parentModel && hasTraj && trajSource);
+	ui.TrajectoryControlPlayButton->setEnabled(parentModel && hasTraj && trajSource);
+	ui.TrajectoryControlNextButton->setEnabled(parentModel && hasTraj && trajSource);
+	ui.TrajectoryControlLastButton->setEnabled(parentModel && hasTraj && trajSource);
+	ui.TrajectoryControlFrameSpin->setEnabled(parentModel && hasTraj && trajSource);
+	ui.TrajectoryControlFrameSlider->setEnabled(parentModel && hasTraj && trajSource);
+	ui.TrajectoryControlDelaySpin->setEnabled(parentModel && hasTraj && trajSource);
 	ui.TrajectoryStyleInheritButton->setEnabled(parentModel && hasTraj);
 	ui.TrajectoryStylePromoteButton->setEnabled(parentModel && hasTraj);
 	ui.TrajectoryStylePropagateButton->setEnabled(parentModel && parentModel->trajectoryIsCached());
@@ -270,52 +274,3 @@ void AtenWindow::on_TrajectoryStylePromoteButton_clicked(bool checked)
 	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget+AtenWindow::GridsPanelTarget);
 }
 
-/*
- * Tools
- */
-
-void AtenWindow::on_TrajectoryToolsMovieButton_clicked(bool checked)
-{
-	QString geometry;
-	geometry.sprintf("%ix%i", ui.MainView->width(), ui.MainView->height());
-	int width, height;
-	
-	Model* m = aten_.currentModel();
-	Tree dialog;
-	TreeGui& ui = dialog.defaultDialog();
-	ui.setProperty(TreeGuiWidgetEvent::TextProperty, "Movie Options");
-	ui.addEdit("geometry", "Image Geometry", geometry ,1,1);
-	ui.addIntegerSpin("firstframe", "First Frame", 1, m->nTrajectoryFrames(), 1, 1 ,1,2);
-	ui.addIntegerSpin("lastframe", "Last Frame", 1, m->nTrajectoryFrames(), 1, m->nTrajectoryFrames(),1,3);
-	ui.addIntegerSpin("frameskip", "Frame Skip", 0, 1e6, 1, 0 ,1,4);
-	ui.addIntegerSpin("fps", "Movie FPS", 1, 200, 1, 25 ,1,5);
-	
-	if (!dialog.defaultDialog().execute()) return;
-
-	// Retrieve widget values
-	geometry = ui.asString("geometry");
-// 	width = atoi(beforeChar(geometry,'x'));	ATEN2 TODO
-// 	height = atoi(afterChar(geometry,'x'));
-	if ((width < 1) || (height < 1))
-	{
-		QString message = "The geometry '" + geometry + "' is not valid since one (or both) components are less than 1.";
-		QMessageBox::warning(this, "Aten", message, QMessageBox::Ok);
-		return;
-	}
-	int firstframe = ui.asInteger("firstframe");
-	int lastframe = ui.asInteger("lastframe");
-	int frameskip = ui.asInteger("frameskip");
-	int fps = ui.asInteger("fps");
-	
-	// Get movie filename
-	static QString selectedFilter("All Files (*.*)");
-	static QDir currentDirectory_(aten_.workDir());
-	QString filename = QFileDialog::getSaveFileName(this, "Save Movie", currentDirectory_.path(), "All Files (*.*)", &selectedFilter);
-	if (filename.isEmpty()) return;
-
-	// Store path for next use
-	currentDirectory_.setPath(filename);
-	
-	// Generate movie file...
-// 	CommandNode::run(Commands::SaveMovie, "ciiiiiii", qPrintable(filename), width, height, -1, firstframe, lastframe, frameskip, fps);
-}
