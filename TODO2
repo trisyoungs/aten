@@ -21,6 +21,7 @@ Session Saving - loaded models, view orientations, loaded grids and cutoff value
 Image saving:
 o Continuous image saving - function key to save image under a set-filename, incrementing a number suffix each time.
 Select Panel - Make into one 'smart' edit box which recognises what is being entered? And add support for selection by type name (e.g. O*, OW etc.).
+Matrix class, with set members allowing axes to be set from atoms in models?
 
 Graphics TODO
 =============

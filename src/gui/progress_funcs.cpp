@@ -20,7 +20,7 @@
 */
 
 #include "gui/progress.h"
-#include "base/progress.h"
+#include "base/messenger.h"
 
 ATEN_USING_NAMESPACE
 

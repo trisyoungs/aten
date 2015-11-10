@@ -26,9 +26,9 @@
 #include "model/model.h"
 #include "methods/mc.h"
 #include "base/sysfunc.h"
-#include "base/progress.h"
 #include "parser/commandnode.h"
 #include "templates/variantpointer.h"
+#include <QProgressDialog>
 
 // Constructor
 DisorderWizard::DisorderWizard(AtenWindow& parent) : QWizard(&parent), parent_(parent)
@@ -79,14 +79,14 @@ int DisorderWizard::run()
 	restart();
 	
 	// Update partition grids
-	int pid = progress.initialise("Generating Partition Info", parent_.aten().nPartitioningSchemes());
+	QProgressDialog progress("Generating Partition Info", "Cancel", 0, parent_.aten().nPartitioningSchemes(), this);
+	int count = 0;
 	for (PartitioningScheme* ps = parent_.aten().partitioningSchemes(); ps != NULL; ps = ps->next)
 	{
-		progress.update(pid, -1, ps->name());
 		ps->setGridSize(prefs.partitionGridSize());
 		ps->recalculatePartitions();
+		progress.setValue(++count);
 	}
-	progress.terminate(pid);
 	return exec();
 }
 

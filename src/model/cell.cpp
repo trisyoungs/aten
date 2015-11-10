@@ -24,7 +24,6 @@
 #include "model/clipboard.h"
 #include "model/undoevent.h"
 #include "model/undostate.h"
-#include "base/progress.h"
 
 ATEN_USING_NAMESPACE
 

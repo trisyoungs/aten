@@ -33,7 +33,6 @@ add_library(base
   neta_parser.cpp
   pattern.cpp
   prefs.cpp
-  progress.cpp
   ring.cpp
   site.cpp
   sysfunc.cpp
@@ -70,7 +69,6 @@ add_library(base
   messenger.h
   pattern.h
   prefs.h
-  progress.h
   ring.h
   site.h
   sysfunc.h

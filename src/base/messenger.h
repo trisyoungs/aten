@@ -24,11 +24,45 @@
 
 #include "base/namespace.h"
 #include "base/message.h"
+#include "templates/list.h"
+#include <QDateTime>
 
 ATEN_BEGIN_NAMESPACE
 
 // Forward Declarations (Aten)
 /* none */
+
+// Task
+class Task
+{
+	public:
+	// Constructor
+	Task();
+
+
+	/*
+	 * Data
+	 */
+	private:
+	// Title of task
+	QString title_;
+	// Total steps in task
+	int totalSteps_;
+	// Current step in task
+	int currentStep;
+	// Percentage completion
+	double completion_;
+	// Timestamp of task creation
+	QDateTime startTime_;
+	// Timestamp of last completed step
+	QDateTime lastStepTime_;
+
+	public:
+	// Initialise task
+	void initialise(QString title, int nSteps);
+	// Update task, returning if canceled by the user
+	bool update(int deltaSteps = 1);
+};
 
 // Global messaging and program output levels
 class Messenger
@@ -71,6 +105,18 @@ class Messenger
 	// Set status console printing
 	static void setPrintToConsole(bool printToConsole);
 
+
+	/*
+	 * Progress Indication
+	 */
+	private:
+	// Stack of current tasks
+	static List<Task> tasks_;
+
+	public:
+	// Push new task to stack
+	static Task* initialiseTask(QString title, int totalSteps);
+	
 
 	/*
 	 * Messaging functions
