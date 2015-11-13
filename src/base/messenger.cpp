@@ -1,5 +1,5 @@
 /*
-	*** Messaging routines
+	*** Messaging Routines
 	*** src/base/messenger.cpp
 	Copyright T. Youngs 2007-2015
 
@@ -21,6 +21,7 @@
 
 #include "base/messenger.h"
 #include "base/sysfunc.h"
+#include <progress.h>
 #include <QTextStream>
 #include <stdarg.h>
 #include <stdio.h>
@@ -34,6 +35,118 @@ bool Messenger::quiet_ = false;
 bool Messenger::printToConsole_ = true;
 int Messenger::bufferSize_ = 100;
 QList<Message> Messenger::messageBuffer_;
+AtenProgress* Messenger::atenProgress_ = NULL;
+List<Task> Messenger::tasks_;
+int Messenger::taskPoint_ = -1;
+
+/*
+ * Task
+ */
+
+// Constructor
+Task::Task() : ListItem<Task>()
+{
+	currentStep_ = 0;
+	nSteps_ = 0;
+	canceled_ = false;
+}
+
+// Initialise task
+void Task::initialise(QString title, int nSteps)
+{
+	title_ = title;
+	currentStep_ = 0;
+	nSteps_ = nSteps;
+	completion_ = 0.0;
+	startTime_ = QDateTime::currentDateTime();
+	lastStepTime_ = QDateTime();
+}
+
+// Return title
+QString Task::title()
+{
+	return title_;
+}
+
+// Return total number of steps in task
+int Task::nSteps()
+{
+	return nSteps_;
+}
+
+// Return current step in task
+int Task::currentStep()
+{
+	return currentStep_;
+}
+
+// Return percentage completion
+double Task::completion()
+{
+	return completion_;
+}
+
+// Return estimated time until completion of task (as string)
+QString Task::etaText()
+{
+	// If no steps yet completed, no way to estimate
+	if (currentStep_ == 0) return "??:??:??";
+
+	// Get time difference between last known step and the beginning of the task, and project the total time required
+	int mSecs = startTime_.msecsTo(lastStepTime_);
+	double mSecsPerStep = mSecs / double(currentStep_);
+	QDateTime endTime = startTime_.addMSecs(mSecsPerStep*nSteps_);
+
+	// Calculate number of seconds to end time, and format into string
+	int nSecs = QDateTime::currentDateTime().secsTo(endTime);
+	int nHours = nSecs/3600;
+	nSecs -= nHours*3600;
+	int nMinutes = nSecs/60;
+	nSecs -= nMinutes*60;
+	return QString("%1:%2:%3").arg(nHours, 2, 10, QChar('0')).arg(nMinutes, 2, 10, QChar('0')).arg(nSecs, 2, 10, QChar('0'));
+}
+
+// Update task, returning if canceled by the user
+bool Task::update(int newCurrentStep)
+{
+	currentStep_ = newCurrentStep;
+	completion_ = 100.0 * currentStep_ / nSteps_;
+	lastStepTime_ = QDateTime::currentDateTime();
+}
+
+// Increment task progress, returning if canceled by the user
+bool Task::increment(int deltaSteps)
+{
+	update(currentStep_ + deltaSteps);
+}
+
+// Return timestamp of task creation
+QDateTime Task::startTime()
+{
+	return startTime_;
+}
+
+// Return timestamp of last completed step
+QDateTime Task::lastStepTime()
+{
+	return lastStepTime_;
+}
+
+// Cancel task (set flag)
+void Task::cancel()
+{
+	canceled_ = true;
+}
+
+// Return if task has been canceled
+bool Task::canceled()
+{
+	return canceled_;
+}
+
+/*
+ * Messenger
+ */
 
 // Message output types
 const char* OutputTypeKeywords[] = { "all", "calls", "commands", "parse", "typing", "verbose" };
@@ -297,4 +410,146 @@ void Messenger::exit(const char* callName)
 	printf("%2i ", callLevel_);
 	for (int n=0; n<callLevel_; ++n) printf("--");
 	printf("End   : %s.\n", callName);
+}
+
+/*
+ * Progress Indication
+ */
+
+// Whether the progress indicator should be shown
+bool Messenger::progressIndicatorRequired()
+{
+	if (tasks_.nItems() == 0) return false;
+
+	// Check start time of first task
+	Task* task = tasks_.first();
+	return (task->startTime().secsTo(QDateTime::currentDateTime()) >= 0);
+}
+
+// Show CLI progress indicator
+void Messenger::showCLIProgress()
+{
+	if (!printToConsole_) return;
+
+	// Get last Task in list
+	Task* task = tasks_.last();
+	if (!task) return;
+
+	// Get last message text in buffer
+	QString messageText;
+	if (messageBuffer_.count() > 0) messageText = messageBuffer_.first().text();
+	else messageText = "???";
+
+	// Overwrite last message with abbreviated progress information
+	QString progressString = QString("\r(%1 %2%) [%3] %4").arg(task->etaText()).arg(int(task->completion()),3,10).arg(tasks_.nItems()).arg(messageText);
+
+	QTextStream(stdout) << progressString;
+}
+
+// Set pointer to custom progress dialog in GUI
+void Messenger::setAtenProgress(AtenProgress* atenProgress)
+{
+	atenProgress_ = atenProgress;
+}
+
+// Push new task onto stack
+Task* Messenger::initialiseTask(QString title, int totalSteps)
+{
+	Task* task = tasks_.add();
+	task->initialise(title, totalSteps);
+	++taskPoint_;
+
+	return task;
+}
+
+// Return number of current tasks
+int Messenger::nTasks()
+{
+	return tasks_.nItems();
+}
+
+// Return list of current tasks
+Task* Messenger::tasks()
+{
+	return tasks_.first();
+}
+
+// Flag all tasks as being canceled
+void Messenger::cancelAllTasks()
+{
+	// Set canceled status of all tasks
+	for (Task* task = tasks_.first(); task != NULL; task = task->next) task->cancel();
+}
+
+// Return task log point
+int Messenger::taskPoint()
+{
+	return taskPoint_;
+}
+
+// Update specified task
+bool Messenger::updateTaskProgress(Task* task, int newCurrentStep)
+{
+	// Check that task is in list
+	bool canceled = false;
+	if (!tasks_.contains(task)) error("Internal Error: Tried to update a task that doesn't exist.");
+	else
+	{
+		task->update(newCurrentStep);
+		canceled = task->canceled();
+	}
+
+	// Call progress indicator if necessary
+	if (progressIndicatorRequired())
+	{
+		if (atenProgress_) atenProgress_->updateAndShow();
+		else if (printToConsole_) showCLIProgress();
+	}
+
+	return (!canceled);
+}
+
+// Update specified task
+bool Messenger::incrementTaskProgress(Task* task, int deltaSteps)
+{
+	// Check that task is in list
+	bool canceled = false;
+	if (!tasks_.contains(task)) error("Internal Error: Tried to update a task that doesn't exist.");
+	else
+	{
+		task->increment(deltaSteps);
+		canceled = task->canceled();
+	}
+
+	// Call progress indicator if necessary
+	if (progressIndicatorRequired())
+	{
+		if (atenProgress_) atenProgress_->updateAndShow();
+		else if (printToConsole_) showCLIProgress();
+	}
+
+	return (!canceled);
+}
+
+// Terminate specifed task
+void Messenger::terminateTask(Task* task)
+{
+	if (!tasks_.contains(task)) error("Internal Error: Tried to cancel a task that doesn't exist.");
+	else tasks_.remove(task);
+	++taskPoint_;
+
+	// Call progress indicator if necessary
+	if (progressIndicatorRequired())
+	{
+		if (atenProgress_) 
+		{
+			if (tasks_.nItems() == 0) atenProgress_->terminate();
+			else atenProgress_->updateAndShow();
+		}
+		else if (printToConsole_)
+		{
+			if (tasks_.nItems() > 0) showCLIProgress();
+			else printf("\n");
+		}
+	}
 }

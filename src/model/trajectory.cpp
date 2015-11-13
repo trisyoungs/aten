@@ -21,7 +21,6 @@
 
 #include "model/model.h"
 #include "parser/tree.h"
-#include "base/progress.h"	
 
 ATEN_USING_NAMESPACE
 
@@ -193,11 +192,10 @@ bool Model::initialiseTrajectory(QString filename, Tree* filter)
 	if ((nTrajectoryFileFrames_ * trajectoryFrameSize_)/1024 < prefs.cacheLimit())
 	{
 		Messenger::print("Caching all frames from trajectory...");
- 		int pid = progress.initialise("Caching Frames", nTrajectoryFileFrames_);
+ 		Task* task = Messenger::initialiseTask("Caching Frames", nTrajectoryFileFrames_);
 		// Read all frames from trajectory file
 		for (int n=1; n<nTrajectoryFileFrames_; n++)
 		{
- 			if (!progress.update(pid,n)) break;
 			newFrame = addTrajectoryFrame();
 			success = trajectoryFrameFunction_->execute(&trajectoryParser_, rv);
 			if ((!success) || (rv.asInteger() != 1))
@@ -207,8 +205,9 @@ bool Model::initialiseTrajectory(QString filename, Tree* filter)
 				break;
 			}
 			newFrame->enableUndoRedo();
+ 			if (!Messenger::updateTaskProgress(task, n)) break;
 		}
- 		progress.terminate(pid);
+ 		Messenger::terminateTask(task);
 		nTrajectoryFileFrames_ = 0;
 		trajectoryFramesAreCached_ = true;
 		trajectoryParser_.closeFiles();
@@ -464,12 +463,13 @@ void Model::trajectoryCopyAtomStyle(Model* source)
 		return;
 	}
 
-	int pid = progress.initialise("Applying style to trajectory frames...", trajectoryFrames_.nItems());
+	Task* task = Messenger::initialiseTask("Applying style to trajectory frames...", trajectoryFrames_.nItems());
 	for (Model* m = trajectoryFrames_.first(); m != NULL; m = m->next)
 	{
 		if (m != source) m->copyAtomStyle(source);
-		progress.update(pid);
+		Messenger::incrementTaskProgress(task);
 	}
-	progress.terminate(pid);
+	Messenger::terminateTask(task);
+
 	Messenger::exit("Model::trajectoryCopyAtomStyle");
 }

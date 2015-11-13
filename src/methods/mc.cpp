@@ -24,7 +24,6 @@
 #include "model/clipboard.h"
 #include "base/pattern.h"
 #include "base/sysfunc.h"
-#include "base/progress.h"
 
 ATEN_BEGIN_NAMESPACE
 
@@ -383,7 +382,7 @@ bool MonteCarlo::minimise(Model* srcmodel, double econ, double fcon)
 	Pattern* p = NULL;
 
 	// Start progess indicator
-	int pid = progress.initialise("Performing MC minimisation...", nCycles_ * MonteCarlo::Insert);
+	Task* task = Messenger::initialiseTask("Performing MC minimisation...", nCycles_ * MonteCarlo::Insert);
 
 	// Loop over MC cycles
 	for (cycle=0; cycle<nCycles_; cycle++)
@@ -392,7 +391,7 @@ bool MonteCarlo::minimise(Model* srcmodel, double econ, double fcon)
 		for (move=0; move<MonteCarlo::Insert; ++move)
 		{
 			// Update progress indicator
- 			if (!progress.update(pid)) break;
+ 			if (!Messenger::updateTaskProgress(task, cycle)) break;
 
 			acceptanceRatio_[0][move] = 0;
 			// If this move type isn't moveAllowed_ then continue onto the next
@@ -474,7 +473,7 @@ bool MonteCarlo::minimise(Model* srcmodel, double econ, double fcon)
 // 		if (prefs.shouldUpdateModel(cycle+1)) updateWidgets(AtenWindow::MainViewTarget);  ATEN2 TODO
 
 	} // Loop over MC cycles
-	progress.terminate(pid);
+	Messenger::terminateTask(task);
 
 	// Print final energy
 	newEnergy = srcmodel->totalEnergy(srcmodel, success);

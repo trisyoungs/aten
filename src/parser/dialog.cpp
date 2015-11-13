@@ -27,7 +27,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <base/progress.h>
 
 ATEN_USING_NAMESPACE
 

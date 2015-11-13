@@ -28,7 +28,6 @@
 #include "base/sysfunc.h"
 #include <QtGui>
 #include <QFileInfo>
-#include "base/progress.h"
 #include "main/aten.h"
 
 ATEN_USING_NAMESPACE
@@ -151,7 +150,7 @@ ATEN_USING_NAMESPACE
 // 		QFile::remove(str);
 // 		if (!progress.update(pid,++n)) break;
 // 	}
-// 	progress.terminate(pid);	
+// 	Messenger::terminateTask(task);	
 // 
 // 	return true;
 // }

@@ -43,6 +43,9 @@ TExponentialSpin::TExponentialSpin(QWidget* parent) : QAbstractSpinBox(parent)
 	connect(lineEdit(), SIGNAL(textChanged(QString)), this, SLOT(textChanged(QString)));
 	connect(lineEdit(), SIGNAL(editingFinished()), this, SLOT(updateValue()));
 	connect(lineEdit(), SIGNAL(returnPressed()), this, SLOT(updateValue()));
+
+	// Update initial text value
+	updateText();
 }
 
 /*
@@ -99,6 +102,9 @@ void TExponentialSpin::setMinimum(double value)
 {
 	valueMin_ = value;
 	limitMinValue_ = true;
+
+	clamp();
+	updateText();
 }
 
 // Set minimum limit
@@ -106,6 +112,9 @@ void TExponentialSpin::setMaximum(double value)
 {
 	valueMax_ = value;
 	limitMaxValue_ = true;
+
+	clamp();
+	updateText();
 }
 
 // Set allowable range of value

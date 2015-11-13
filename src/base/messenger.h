@@ -1,5 +1,5 @@
 /*
-	*** Messaging routines
+	*** Messaging Routines
 	*** src/base/messenger.h
 	Copyright T. Youngs 2007-2015
 
@@ -27,13 +27,13 @@
 #include "templates/list.h"
 #include <QDateTime>
 
+// Forward Declarations (Aten)
+class AtenProgress;
+
 ATEN_BEGIN_NAMESPACE
 
-// Forward Declarations (Aten)
-/* none */
-
 // Task
-class Task
+class Task : public ListItem<Task>
 {
 	public:
 	// Constructor
@@ -46,22 +46,44 @@ class Task
 	private:
 	// Title of task
 	QString title_;
-	// Total steps in task
-	int totalSteps_;
+	// Number of steps in task
+	int nSteps_;
 	// Current step in task
-	int currentStep;
+	int currentStep_;
 	// Percentage completion
 	double completion_;
 	// Timestamp of task creation
 	QDateTime startTime_;
 	// Timestamp of last completed step
 	QDateTime lastStepTime_;
+	// Flag indicating task has been canceled
+	bool canceled_;
 
 	public:
 	// Initialise task
 	void initialise(QString title, int nSteps);
+	// Return title
+	QString title();
+	// Return total number of steps in task
+	int nSteps();
+	// Return current step in task
+	int currentStep();
+	// Return percentage completion
+	double completion();
+	// Return estimated time until completion of task (as string)
+	QString etaText();
 	// Update task, returning if canceled by the user
-	bool update(int deltaSteps = 1);
+	bool update(int newCurrentStep);
+	// Increment task progress, returning if canceled by the user
+	bool increment(int deltaSteps = 1);
+	// Return timestamp of task creation
+	QDateTime startTime();
+	// Return timestamp of last completed step
+	QDateTime lastStepTime();
+	// Cancel task (set flag)
+	void cancel();
+	// Return if task has been canceled
+	bool canceled();
 };
 
 // Global messaging and program output levels
@@ -107,18 +129,6 @@ class Messenger
 
 
 	/*
-	 * Progress Indication
-	 */
-	private:
-	// Stack of current tasks
-	static List<Task> tasks_;
-
-	public:
-	// Push new task to stack
-	static Task* initialiseTask(QString title, int totalSteps);
-	
-
-	/*
 	 * Messaging functions
 	 */
 	private:
@@ -160,6 +170,44 @@ class Messenger
 	static void enter(const char* callName);
 	// Exit from subroutine
 	static void exit(const char* callName);
+
+
+	/*
+	 * Progress Indication
+	 */
+	private:
+	// Pointer to custom progress dialog in GUI (if available)
+	static AtenProgress* atenProgress_;
+	// Stack of current tasks
+	static List<Task> tasks_;
+	// Point at which task list was updated (new task added, old task completed, or list cleares)
+	static int taskPoint_;
+
+	private:
+	// Whether the progress indicator should be shown
+	static bool progressIndicatorRequired();
+	// Show CLI progress indicator
+	static void showCLIProgress();
+
+	public:
+	// Set pointer to custom progress dialog in GUI
+	static void setAtenProgress(AtenProgress* atenProgress);
+	// Push new task onto stack
+	static Task* initialiseTask(QString title, int totalSteps);
+	// Return number of current tasks
+	static int nTasks();
+	// Return list of current tasks
+	static Task* tasks();
+	// Flag all tasks as being canceled
+	static void cancelAllTasks();
+	// Return task log point
+	static int taskPoint();
+	// Update specified task
+	static bool updateTaskProgress(Task* task, int newCurrentStep);
+	// Update specified task
+	static bool incrementTaskProgress(Task* task, int deltaSteps = 1);
+	// Terminate specifed task
+	static void terminateTask(Task* task);
 };
 
 ATEN_END_NAMESPACE

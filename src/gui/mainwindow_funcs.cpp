@@ -98,7 +98,7 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportFilmD
 	// Seutp user interface
 	ui.setupUi(this);
 
-	// Set pointers to Aten and AtenWindow in gui objects that need them
+	// Set pointers to Aten and AtenWindow in objects that need them
 	ui.MainView->setAten(&aten_);
 	ui.MainView->setAtenWindow(this);
 	TMenuButton::setAtenWindow(this);

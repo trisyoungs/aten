@@ -21,53 +21,92 @@
 
 #include "gui/progress.h"
 #include "base/messenger.h"
+#include "templates/variantpointer.h"
 
 ATEN_USING_NAMESPACE
 
 // Constructor
-AtenProgress::AtenProgress(QWidget* parent, Qt::WindowFlags flags ) : QDialog(parent, flags)
+AtenProgress::AtenProgress(QWidget* parent, Qt::WindowFlags flags) : QDialog(parent, flags)
 {
 	ui.setupUi(this);
+	taskPoint_ = -1;
 }
 
 void AtenProgress::on_CancelButton_clicked(bool checked)
 {
-	progress.notifyCanceled();
-}
+	Messenger::cancelAllTasks();
 
-// Set minor job title (if one exists)
-void AtenProgress::setSubTitle()
-{
-	if (!progress.subTitle().isEmpty())
-	{
-		ui.SubTitleLabel->setText(progress.subTitle());
-		ui.SubTitleLabel->setEnabled(true);
-	}
-	else
-	{
-		ui.SubTitleLabel->setEnabled(true);
-		ui.SubTitleLabel->setText("---");
-	}
+	hide();
 }
 
 // Show dialog, setting all widget values and titles
-void AtenProgress::initialise()
+void AtenProgress::updateAndShow()
 {
-	ui.ProgressBar->setMaximum(progress.stepsToDo());
-	ui.ProgressBar->setValue(progress.currentStep());
-	ui.JobTitleLabel->setText(progress.jobTitle());
-	ui.TimeRemainingLabel->setText(progress.eta());
-	setSubTitle();
-	QApplication::processEvents();
-}
+	QTableWidgetItem* item;
+	QProgressBar* bar;
+	int row = 0;
 
-// Update dialog, setting new secondary job title if necessary
-void AtenProgress::updateProgress()
-{
-	ui.ProgressBar->setValue(progress.currentStep());
-	ui.TimeRemainingLabel->setText(progress.eta());
-	setSubTitle();
+	// Clear and update task table if necessary
+	if (taskPoint_ != Messenger::taskPoint())
+	{
+		ui.TaskTable->clear();
+		ui.TaskTable->setColumnCount(3);
+		ui.TaskTable->setRowCount(Messenger::nTasks());
+		for (Task* task = Messenger::tasks(); task != NULL; task = task->next)
+		{
+			item = new QTableWidgetItem(task->title());
+			item->setData(Qt::UserRole, VariantPointer<Task>(task));
+			ui.TaskTable->setItem(row, 0, item);
+			bar = new QProgressBar(this);
+			bar->setRange(0, task->nSteps());
+			ui.TaskTable->setCellWidget(row, 1, bar);
+			item = new QTableWidgetItem(task->title());
+			ui.TaskTable->setItem(row, 2, item);
+		}
+		taskPoint_ = Messenger::taskPoint();
+	}
+
+	// Update item information
+	for (int row=0; row < ui.TaskTable->rowCount(); ++row)
+	{
+		// Get first item (which contains Task pointer)
+		item = ui.TaskTable->item(row, 0);
+		if (!item) return;
+		Task* task = (Task*) VariantPointer<Task>(item->data(Qt::UserRole));
+		if (!task) return;
+		item->setText(task->title());
+
+		// Get second item (progress bar)
+		bar = (QProgressBar*) ui.TaskTable->cellWidget(row, 1);
+		if (bar) bar->setValue(task->currentStep());
+
+		// Get third item
+		item = ui.TaskTable->item(row, 2);
+		if (item) item->setText(task->etaText());
+	}
+
+	// Update main ETA information (from first task)
+	Task* task = Messenger::tasks();
+	if (task)
+	{
+		ui.TitleLabel->setText(task->title());
+		ui.ProgressBar->setRange(0, task->nSteps());
+		ui.ProgressBar->setValue(task->currentStep());
+		ui.TimeRemainingLabel->setText(task->etaText());
+	}
+	else
+	{
+		ui.TitleLabel->setText("No Task");
+		ui.ProgressBar->setRange(0, 1);
+		ui.ProgressBar->setValue(0);
+		ui.TimeRemainingLabel->setText("N/A");
+	}
+
 	QApplication::processEvents();
+	
+	// If there are no tasks, close the window
+	if (Messenger::nTasks() == 0) hide();
+	else show();
 }
 
 // Close dialog window

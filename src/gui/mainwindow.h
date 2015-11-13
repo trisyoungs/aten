@@ -34,6 +34,7 @@
 #include "gui/disorderwizard.h"
 #include "gui/exportfilm.h"
 #include "gui/exportimage.h"
+#include "gui/progress.h"
 #include "templates/reflist.h"
 #include "base/glyph.h"
 #include "base/namespace.h"
@@ -42,7 +43,6 @@
 class AtenAbout;
 class AtenPrefs;
 class AtenForcefieldEditor;
-class AtenProgress;
 class CommandWidget;
 class ForcefieldsWidget;
 class GlyphsWidget;
@@ -587,7 +587,7 @@ class AtenWindow : public QMainWindow
 
 
 	/*
-	 * Dock Widgets
+	 * Wizards and Dialogs
 	 */
 	private:
 	// List of dock widgets
@@ -606,6 +606,8 @@ class AtenWindow : public QMainWindow
 	AtenExportFilm exportFilmDialog_;
 	// Export Image dialog
 	AtenExportImage exportImageDialog_;
+	// Progress Indicator
+	AtenProgress progressDialog_;
 
 
 	/*

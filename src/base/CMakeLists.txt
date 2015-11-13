@@ -26,8 +26,6 @@ add_library(base
   lineparser.cpp
   log.cpp
   measurement.cpp
-  message.cpp
-  messenger.cpp
   neta.cpp
   neta_lexer.cpp
   neta_parser.cpp
@@ -65,8 +63,6 @@ add_library(base
   neta.h
   neta_parser.h
   measurement.h
-  message.h
-  messenger.h
   pattern.h
   prefs.h
   ring.h
@@ -90,6 +86,19 @@ add_library(fourierdata
 )
 
 target_include_directories(fourierdata PRIVATE
+  ${PROJECT_SOURCE_DIR}/src
+  ${Qt5Core_INCLUDE_DIRS}
+  ${Qt5Gui_INCLUDE_DIRS}
+)
+
+add_library(messenger
+  message.cpp
+  messenger.cpp
+  message.h
+  messenger.h
+)
+
+target_include_directories(messenger PRIVATE
   ${PROJECT_SOURCE_DIR}/src
   ${Qt5Core_INCLUDE_DIRS}
   ${Qt5Gui_INCLUDE_DIRS}

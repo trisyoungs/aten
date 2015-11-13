@@ -26,7 +26,6 @@
 #include "methods/partitiondata.h"
 #include "model/clipboard.h"
 #include "base/sysfunc.h"
-#include "base/progress.h"
 #include "base/pattern.h"
 
 ATEN_USING_NAMESPACE
@@ -35,7 +34,7 @@ ATEN_USING_NAMESPACE
 bool MonteCarlo::disorder(Model* allModels, Model* destmodel, PartitioningScheme* scheme, bool fixedCell)
 {
 	Messenger::enter("MonteCarlo::disorder");
-	DisorderData *component, *other;
+	DisorderData* component, *other;
 	RefListItem<DisorderData,int>* ri;
 	PartitionData* pd;
 	Atom* i;
@@ -51,6 +50,7 @@ bool MonteCarlo::disorder(Model* allModels, Model* destmodel, PartitioningScheme
 		Messenger::exit("MonteCarlo::disorder");
 		return false;
 	}
+
 	// If we are using the default 'cell' scheme, then no need to generate a fine mesh
 	if (!scheme->staticData())
 	{
@@ -206,7 +206,7 @@ bool MonteCarlo::disorder(Model* allModels, Model* destmodel, PartitioningScheme
 	}
 	
 	// All set up and ready - do the build
-	int pid = progress.initialise("Performing Disorder build", disorderMaxCycles_);
+	Task* task = Messenger::initialiseTask("Performing Disorder build", disorderMaxCycles_);
 	Messenger::print("Cycle   Component       Region      Pop   (Req)     Density  (Req)        RSF");
 	for (cycle = 1; cycle <= disorderMaxCycles_; ++cycle)
 	{
@@ -392,17 +392,16 @@ bool MonteCarlo::disorder(Model* allModels, Model* destmodel, PartitioningScheme
 			break;
 		}
 
-// 		gui.processMessages(); // ATEN2 TODO
-		if (!progress.update(pid))
+		if (!Messenger::updateTaskProgress(task, cycle))
 		{
 			Messenger::print("Canceled.");
 			break;
 		}
 	}
-	progress.terminate(pid);
+	Messenger::terminateTask(task);
 	
 	// Perform a relaxation on the system by attempting to get the component scale ratios back as high as possible
-	pid = progress.initialise("Performing Recovery", disorderRecoveryMaxCycles_);
+	task = Messenger::initialiseTask("Performing Recovery", disorderRecoveryMaxCycles_);
 	Messenger::print("Target scale factor is %f", disorderMaximumScaleFactor_);
 	
 	Messenger::print("Cycle   Component       Region      Pop   (Req)     Density  (Req)        RSF    Frac");
@@ -478,14 +477,13 @@ bool MonteCarlo::disorder(Model* allModels, Model* destmodel, PartitioningScheme
 			break;
 		}
 		
-// 		gui.processMessages(); ATEN2 TODO
-		if (!progress.update(pid))
+		if (!Messenger::updateTaskProgress(task, cycle))
 		{
 			Messenger::print("Canceled.");
 			break;
 		}
 	}
-	progress.terminate(pid);
+	Messenger::terminateTask(task);
 	
 	// Copy component model contents across to targetModel_, in the order they were originally listed
 	targetModel_->beginUndoState("Disorder build");

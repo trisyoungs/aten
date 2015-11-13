@@ -22,7 +22,6 @@
 #include "methods/cg.h"
 #include "model/model.h"
 #include "ff/energystore.h"
-#include "base/progress.h"
 
 ATEN_BEGIN_NAMESPACE
 
@@ -96,14 +95,14 @@ double MethodCg::minimise(Model* sourceModel, double eConverge, double fConverge
 	Messenger::print("Step      Energy       DeltaE       RMS Force      E(vdW)        E(elec)       E(Bond)      E(Angle)     E(Torsion)");
 	Messenger::print("Init  %12.5e        ---           ---     %12.5e  %12.5e  %12.5e  %12.5e  %12.5e %s", currentEnergy, newForce, sourceModel->energy.vdw(), sourceModel->energy.electrostatic(), sourceModel->energy.bond(), sourceModel->energy.angle(), sourceModel->energy.torsion(), "--:--:--");
 
-	int pid = progress.initialise("Minimising (CG)", nCycles_);
+	Task* task = Messenger::initialiseTask("Minimising (CG)", nCycles_);
 
 	sourceModel->normaliseForces(1.0, true);
 
 	for (cycle=0; cycle<nCycles_; cycle++)
 	{
 		// Perform linesearch along the gradient vector
-		if (!progress.update(pid, cycle)) lineDone = true;
+		if (!Messenger::updateTaskProgress(task, cycle)) break;
 		else
 		{
 			oldEnergy = currentEnergy;
@@ -119,7 +118,7 @@ double MethodCg::minimise(Model* sourceModel, double eConverge, double fConverge
 		// Print out the step data
 		if (prefs.shouldUpdateEnergy(cycle+1))
 		{
-			Messenger::print("%-5i %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e %s", cycle+1, currentEnergy, currentEnergy-lastPrintedEnergy, newForce, sourceModel->energy.vdw(), sourceModel->energy.electrostatic(), sourceModel->energy.bond(), sourceModel->energy.angle(), sourceModel->energy.torsion(), qPrintable(progress.eta()));
+			Messenger::print("%-5i %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e", cycle+1, currentEnergy, currentEnergy-lastPrintedEnergy, newForce, sourceModel->energy.vdw(), sourceModel->energy.electrostatic(), sourceModel->energy.bond(), sourceModel->energy.angle(), sourceModel->energy.torsion());
 			lastPrintedEnergy = currentEnergy;
 		}
 		if (converged) break;
@@ -173,7 +172,7 @@ double MethodCg::minimise(Model* sourceModel, double eConverge, double fConverge
 			}
 		}
 	}
- 	progress.terminate(pid);
+ 	Messenger::terminateTask(task);
 
 	if (converged) Messenger::print("Conjugate gradient converged in %i steps.",cycle+1);
 	else Messenger::print("Conjugate gradient did not converge within %i steps.",nCycles_);

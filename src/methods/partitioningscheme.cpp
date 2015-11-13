@@ -21,7 +21,6 @@
 
 #include "methods/partitioningscheme.h"
 #include "methods/partitiondata.h"
-#include "base/progress.h"
 
 ATEN_USING_NAMESPACE
 
@@ -322,7 +321,7 @@ void PartitioningScheme::recalculatePartitions()
 
 	// Okay, do the calculation
 	QString text = "Generating partition data for scheme '" + name_ + "'";
-	int progid = progress.initialise(text, gridSize_.x);
+	Task* task = Messenger::initialiseTask(text, gridSize_.x);
 	x = 0.5*dx;
 	for (i=0; i<gridSize_.x; ++i)
 	{
@@ -346,9 +345,9 @@ void PartitioningScheme::recalculatePartitions()
 			y += dy;
 		}
 		x += dx;
-		progress.update(progid);
+		Messenger::incrementTaskProgress(task);
 	}
-	progress.terminate(progid);
+	Messenger::terminateTask(task);
 	
 	// Generate rendergroup data for each partition
 	for (PartitionData* pd = partitions_.first(); pd != NULL; pd = pd->next)

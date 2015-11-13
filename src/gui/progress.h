@@ -40,26 +40,21 @@ class AtenProgress : public QDialog
 
 
 	/*
-	 * Local Variables
+	 * Local Data
 	 */
 	private:
-	// Set subtitle (if one exists)
-	void setSubTitle();
-	
-	public:
-	// Initialise dialog, setting all widget values and titles (but not making it visible)
-	void initialise();
-	// Update dialog, setting new secondary job title if necessary
-	void updateProgress();
-	// Close dialog window
-	void terminate();
+	// Point at which task table was last updated
+	int taskPoint_;
 
-	
+
 	/*
 	 * Window Functions
 	 */
 	public:
-	void showWindow();
+	// Show and update dialog
+	void updateAndShow();
+	// Close dialog window
+	void terminate();
 
 	private slots:
 	void on_CancelButton_clicked(bool checked);

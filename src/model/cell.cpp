@@ -437,7 +437,7 @@ void Model::replicateCell(const Vec3<double>& negativeCells, const Vec3<double>&
 
 	// Set up progress indicator
 	count = ( (ipos.x - ineg.x) + 1) * ( (ipos.y - ineg.y) + 1) * ( (ipos.z - ineg.z) + 1);
-	bool pid = progress.initialise("Creating cell copies...", count);
+	Task* task = Messenger::initialiseTask("Creating cell copies", count);
 
 	// Create cell copies
 	count = 0;
@@ -452,16 +452,19 @@ void Model::replicateCell(const Vec3<double>& negativeCells, const Vec3<double>&
 				tvec = oldaxes.columnAsVec3(0) * ii;
 				tvec += oldaxes.columnAsVec3(1) * jj;
 				tvec += oldaxes.columnAsVec3(2) * kk;
-				//tvec.print();
 				clip.pasteToModel(this,tvec);
 				Messenger::print(Messenger::Verbose, "Created copy for vector %8.4f %8.4f %8.4f",tvec.x,tvec.y,tvec.z);
-				if (!progress.update(pid)) stop = true;
+				if (!Messenger::incrementTaskProgress(task))
+				{
+					stop = true;
+					break;
+				}
 			}
 			if (stop) break;
 		}
 		if (stop) break;
 	}
-	progress.terminate(pid);
+	Messenger::terminateTask(task);
 
 	// Select all atoms and shift if negative replication values were provided
 	selectAll();
@@ -479,7 +482,7 @@ void Model::replicateCell(const Vec3<double>& negativeCells, const Vec3<double>&
 		Vec3<double> fracr;
 		Matrix cellinverse = cell_.inverse();
 	
-		int pid = progress.initialise("Trimming excess atoms...", atoms_.nItems());
+		Task* task = Messenger::initialiseTask("Trimming excess atoms...", atoms_.nItems());
 		i = atoms_.first();
 		count = 0;
 		while (i != NULL)
@@ -497,9 +500,9 @@ void Model::replicateCell(const Vec3<double>& negativeCells, const Vec3<double>&
 				i = j;
 			}
 			else i = i->next;
-			if (!progress.update(pid,++count)) break;
+			if (!Messenger::updateTaskProgress(task, ++count)) break;
 		}
-		progress.terminate(pid);
+		Messenger::terminateTask(task);
 	}
 
 	logChange(Log::Structure);

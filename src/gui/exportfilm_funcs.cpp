@@ -389,6 +389,6 @@ void AtenExportFilm::on_CancelButton_clicked(bool checked)
 // 		QFile::remove(basename);
 // 		if (!progress.update(pid,n)) break;
 // 	}
-// 	progress.terminate(pid);
+// 	Messenger::terminateTask(task);
 // }
 
