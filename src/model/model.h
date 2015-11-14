@@ -356,6 +356,8 @@ class Model : public ListItem<Model>
 	RefList<Atom,int> marked_;
 
 	public:
+	// Select atoms based on ranges, atom pointers etc.
+	bool selectAtoms(TreeNode* node, bool deselect, bool testSyntaxOnly = false);
 	// Select the specified atom
 	void selectAtom(Atom* i, bool markOnly = false);
 	// Select the specified atom ID

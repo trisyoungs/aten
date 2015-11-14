@@ -1296,7 +1296,7 @@ void Grid::sendPrimaryPrimitive()
 
 		Vec4<GLfloat> colour(primaryColour_[0], primaryColour_[1], primaryColour_[2], primaryColour_[3]);
 		if (type_ == Grid::RegularXYData) primaryPrimitive_->createSurface(this, colour, useColourScale_ ? colourScale_ : -1);
-		else if (type_ == Grid::RegularXYZData) primaryPrimitive_->marchingCubes(this, lowerPrimaryCutoff_, upperPrimaryCutoff_, colour, useColourScale_ ? colourScale_ : -1);
+		else if (type_ == Grid::RegularXYZData) primaryPrimitive_->marchingCubes(this, lowerPrimaryCutoff_, upperPrimaryCutoff_, useColourScale_ ? colourScale_ : -1);
 		else printf("Don't know how to create a primitive based on this type of Grid data (%s)\n", Grid::gridType(type_));
 		primaryPrimitivePoint_ = log_;
 	}
@@ -1336,9 +1336,9 @@ void Grid::sendSecondaryPrimitive()
 		if (!secondaryPrimitive_) secondaryPrimitive_ = PrimitiveSet::createDynamicPrimitive();
 
 		Vec4<GLfloat> colour(secondaryColour_[0], secondaryColour_[1], secondaryColour_[2], secondaryColour_[3]);
-		secondaryPrimitive_->marchingCubes(this, lowerSecondaryCutoff_, upperSecondaryCutoff_, colour, useColourScale_ ? colourScale_ : -1);
+		secondaryPrimitive_->marchingCubes(this, lowerSecondaryCutoff_, upperSecondaryCutoff_, useColourScale_ ? colourScale_ : -1);
 		if (type_ == Grid::RegularXYData) secondaryPrimitive_->createSurface(this, colour, useColourScale_ ? colourScale_ : -1);
-		else if (type_ == Grid::RegularXYZData) secondaryPrimitive_->marchingCubes(this, lowerSecondaryCutoff_, upperSecondaryCutoff_, colour, useColourScale_ ? colourScale_ : -1);
+		else if (type_ == Grid::RegularXYZData) secondaryPrimitive_->marchingCubes(this, lowerSecondaryCutoff_, upperSecondaryCutoff_, useColourScale_ ? colourScale_ : -1);
 		else printf("Don't know how to create a primitive based on this type of Grid data (%s)\n", Grid::gridType(type_));
 		secondaryPrimitivePoint_ = log_;
 	}

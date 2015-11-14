@@ -291,7 +291,7 @@ bool DisorderData::selfOverlaps(UnitCell& globalCell)
 bool DisorderData::otherOverlaps(DisorderData* first, UnitCell& globalCell)
 {
 	// Go through list of DisorderedData
-	for (DisorderData *dd = first; dd != NULL; dd = dd->next)
+	for (DisorderData* dd = first; dd != NULL; dd = dd->next)
 	{
 		if (dd == this) continue;
 		if (modelOverlaps(&dd->targetModel_, globalCell)) return true;

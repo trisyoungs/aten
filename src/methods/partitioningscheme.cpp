@@ -242,6 +242,7 @@ void PartitioningScheme::createPartitionsFromGrid()
 	PartitionData* pd = partitions_.add();
 	pd->setId(0);
 	pd->setName("Excluded Space");
+	pd->setParent(this);
 	
 	// Loop over grid elements - we will add new partition nodes as we go...
 	int i, j, k, pid;
@@ -274,14 +275,7 @@ void PartitioningScheme::createPartitionsFromGrid()
 			}
 		}
 	}
-	
-	// Generate rendergroup data for each partition
-	for (PartitionData* pd = partitions_.first(); pd != NULL; pd = pd->next)
-	{
-		grid_.setLowerPrimaryCutoff(pd->id()-0.5);
-		grid_.setUpperPrimaryCutoff(pd->id()+0.5);
-		pd->primitive().marchingCubes(&grid_, pd->id()-0.5, pd->id()+0.5, Vec4<GLfloat>(0.0,0.0,0.0,0.7), -1);
-	}
+
 	Messenger::exit("PartitioningScheme::createPartitionsFromGrid");
 }
 
@@ -348,15 +342,7 @@ void PartitioningScheme::recalculatePartitions()
 		Messenger::incrementTaskProgress(task);
 	}
 	Messenger::terminateTask(task);
-	
-	// Generate rendergroup data for each partition
-	for (PartitionData* pd = partitions_.first(); pd != NULL; pd = pd->next)
-	{
-		grid_.setLowerPrimaryCutoff(pd->id()-0.5);
-		grid_.setUpperPrimaryCutoff(pd->id()+0.5);
-		pd->primitive().marchingCubes(&grid_, pd->id()-0.5, pd->id()+0.5, Vec4<GLfloat>(0.0,0.0,0.0,0.7), -1);
-	}
-	
+
 	partitionLogPoint_ = changeLog_;
 
 	Messenger::exit("PartitioningScheme::recalculatePartitions");

@@ -20,6 +20,9 @@
 */
 
 #include "methods/partitiondata.h"
+#include "partitioningscheme.h"
+#include "render/primitiveset.h"
+#include <QOpenGLContext>
 
 ATEN_USING_NAMESPACE
 
@@ -28,8 +31,15 @@ PartitionData::PartitionData() : ListItem<PartitionData>()
 {
 	// Private variables
 	id_ = -1;
+	parent_ = NULL;
 	nCells_ = 0;
 	currentCellChunk_ = NULL;
+}
+
+// Set parent partitioning scheme
+void PartitionData::setParent(PartitioningScheme* scheme)
+{
+	parent_ = scheme;
 }
 
 // Copy data from specified PartitionData
@@ -163,7 +173,7 @@ void PartitionData::clearComponents()
 }
 
 // Add specified component to list
-void PartitionData::addComponent(DisorderData *component)
+void PartitionData::addComponent(DisorderData* component)
 {
 	components_.add(component);
 }
@@ -175,14 +185,23 @@ int PartitionData::nComponents()
 }
 
 // Return nth component in list
-DisorderData *PartitionData::component(int id)
+DisorderData* PartitionData::component(int id)
 {
 	if ((id < 0) || (id >= components_.nItems())) return NULL;
 	return components_[id]->item;
 }
 
-// Return primitive for this partition
-Primitive& PartitionData::primitive()
+// Send primitive for this partition, generating first if necessary
+void PartitionData::sendPrimitive()
 {
-	return primitive_;
+	// Create primitive if we don't already have one
+	if (!primitive_) primitive_ = PrimitiveSet::createDynamicPrimitive();
+
+	primitive_->marchingCubes(&parent_->grid(), id_-0.5, id_+0.5, -1);
+
+	// Render it
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_LIGHTING);
+	double colour[4] = { 0.0,0.0,0.0,0.7 };
+	primitive_->sendToGL(QOpenGLContext::currentContext(), GL_FILL, true, true, colour);
 }

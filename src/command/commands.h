@@ -503,6 +503,7 @@ class Commands
 		SelectRadial,
 		SelectTree,
 		SelectType,
+		TestSelect,
 
 		// Site Commands
 		GetSite,
@@ -971,6 +972,7 @@ class Commands
 	bool function_SelectRadial(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_SelectTree(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_SelectType(CommandNode* c, Bundle& obj, ReturnValue& rv);
+	bool function_TestSelect(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	// Site Commands
 	bool function_GetSite(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_ListSites(CommandNode* c, Bundle& obj, ReturnValue& rv);

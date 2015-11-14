@@ -1194,7 +1194,10 @@ CommandData Commands::data_[Commands::nCommands] = {
 	{ "selectType",		"EC",		VTypes::IntegerData,
 		"Element el, string neta",
 		"Select all atoms that match the provided atomtype description (returning the number matched)" },
-	
+	{ "testSelect",		"Z*",		VTypes::IntegerData,
+		"string|int|Element atom(s) ...",
+		"Test selection by specific atoms / ranges in the current model" },
+
 	// Site commands
 	{ "getSite",		"C",		VTypes::NoData,
 		"string name",

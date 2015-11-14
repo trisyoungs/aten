@@ -156,7 +156,7 @@ class Primitive : public ListItem<Primitive>
 	// Create halo
 	void plotHalo(double radius1, double radius2, int nSegments);
 	// Generate surface via marching cubes algorithm
-	void marchingCubes(Grid* source, double lowerCutoff, double upperCutoff, Vec4<GLfloat> colour, int colourScale);
+	void marchingCubes(Grid* source, double lowerCutoff, double upperCutoff, int colourScale);
 	// Generate surface via marching cubes algorithm
 	void createSurface(Grid* source, Vec4<GLfloat> colour, int colourScale);
 

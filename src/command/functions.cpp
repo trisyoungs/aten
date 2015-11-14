@@ -461,6 +461,7 @@ void Commands::initPointers()
 	pointers_[SelectRadial] = &AtenSpace::Commands::function_SelectRadial;
 	pointers_[SelectTree] = &AtenSpace::Commands::function_SelectTree;
 	pointers_[SelectType] = &AtenSpace::Commands::function_SelectType;
+	pointers_[TestSelect] = &AtenSpace::Commands::function_TestSelect;
 	
 	// Site Commands
 	pointers_[GetSite] = &AtenSpace::Commands::function_GetSite;

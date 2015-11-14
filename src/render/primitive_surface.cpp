@@ -320,15 +320,15 @@ int facetriples[256][15] = {
 ATEN_USING_NAMESPACE
 
 // Render volumetric isosurface with Marching Cubes
-void Primitive::marchingCubes(Grid* source, double lowerCutoff, double upperCutoff, Vec4<GLfloat> colour, int colourScale)
+void Primitive::marchingCubes(Grid* source, double lowerCutoff, double upperCutoff, int colourScale)
 {
 	int ii, jj, kk, n, cubeType, *faces;
 	Vec3<GLfloat> normal, gradient[8];
 	Vec3<double> r;
 	Vec3<int> nPoints = source->nXYZ(), shift = source->shift();
 	WrapInt i, j, k;
-	GLfloat minAlpha;
 	double*** data, vertex[8], ipol, a, b, *v1, *v2, twodx, twody, twodz, mult = 1.0;
+	Vec4<GLfloat> colour;
 	data = source->data3d();
 	bool periodic = source->periodic();
 	bool fillVolume = source->fillEnclosedVolume();
@@ -341,9 +341,6 @@ void Primitive::marchingCubes(Grid* source, double lowerCutoff, double upperCuto
 
 	// Initialise
 	initialise(GL_TRIANGLES, colourScale != -1);
-
-	// Grab colours (if not using a colourscale) and determine colour mode to use
-	minAlpha = colourScale == -1 ? colour[3] : 1.0f;
 
 	// Loops here will go over 0 to npoints-1, but actual array indices will be based on this plus shift amounts, folded into limits
 	// Set up the wrapped integers for this purpose
@@ -444,9 +441,6 @@ void Primitive::marchingCubes(Grid* source, double lowerCutoff, double upperCuto
 							defineVertex(r.x, r.y, r.z, normal.x, normal.y, normal.z, colour);
 						}
 						else defineVertex(r.x, r.y, r.z, normal.x, normal.y, normal.z);
-
-						// Store minimal alpha value in order to determine transparency
-						if (colour[3] < minAlpha) minAlpha = colour[3];
 					}
 				}
 			}

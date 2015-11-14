@@ -21,6 +21,8 @@
 
 #include "gui/mainwindow.h"
 #include "main/aten.h"
+#include "base/neta.h"
+#include "base/neta_parser.h"
 
 // Update select panel
 void AtenWindow::updateSelectPanel(Model* sourceModel)
@@ -69,6 +71,21 @@ void AtenWindow::on_SelectBasicExpandButton_clicked(bool checked)
 /*
  * ID / Element
  */
+
+// void AtenWindow::on_SelectElementSelectCombo_currentTextChanged(const QString& text)
+// {
+// 	return;
+// 
+// 	// See if we can determine what sort of text has been entered.
+// 	Program program;
+// 	Neta neta;
+// 
+// 	// First, try code (since it is the most complicated)
+// 	if (program.generateFromString(text, "SelectionCode", "Selection Code")) printf("This is some code.\n");
+// 	else if (netaparser.createNeta(&neta, text, NULL)) printf("This is a NETA description.\n");
+// 	else if (CommandNode::run(Commands::TestSelect, "c", qPrintable(text)).asBool()) printf("This is a selection range.\n");
+// 	else printf("Unrecognised selection .\n");
+// }
 
 void AtenWindow::on_SelectElementSelectButton_clicked(bool checked)
 {

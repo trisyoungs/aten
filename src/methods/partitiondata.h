@@ -40,6 +40,8 @@ class PartitionData : public ListItem<PartitionData>
 	 * Data
 	 */
 	private:
+	// Parent partitioning scheme
+	PartitioningScheme* parent_;
 	// Integer id of partition
 	int id_;
 	// Name of the partition
@@ -56,10 +58,12 @@ class PartitionData : public ListItem<PartitionData>
 	double reducedMass_;
 	// RefList of components targeting this partition
 	RefList<DisorderData,int> components_;
-	// Primitive containing surface data
-	Primitive primitive_;
+	// Pointer to primitive containing surface data
+	Primitive* primitive_;
 	
 	public:
+	// Set parent partitioning scheme
+	void setParent(PartitioningScheme* scheme);
 	// Copy data from specified PartitionData
 	void copy(PartitionData* source);
 	// Set id of partition
@@ -93,13 +97,13 @@ class PartitionData : public ListItem<PartitionData>
 	// Clear component list
 	void clearComponents();
 	// Add specified component to list
-	void addComponent(DisorderData *component);
+	void addComponent(DisorderData* component);
 	// Return number of components in list
 	int nComponents();
 	// Return nth component in list
 	DisorderData* component(int id);
-	// Return primitive for surface data
-	Primitive& primitive();
+	// Send primitive for surface data, generating if necessary
+	void sendPrimitive();
 };
 
 ATEN_END_NAMESPACE

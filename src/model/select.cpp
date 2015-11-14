@@ -27,6 +27,153 @@
 
 ATEN_USING_NAMESPACE
 
+// Select atoms based on ranges, atom pointers etc.
+bool Model::selectAtoms(TreeNode* node, bool deselect, bool testQuietly)
+{
+	QString from, to;
+	int i, j, n, plus = 0;
+	bool range;
+
+	// Execute argument to get result
+	ReturnValue value;
+	if (!node->execute(value)) return false;
+
+	// If the argument is an atom or integer variable, (de)select the corresponding atom. Otherwise, perform ranged selections
+	if ((value.type() == VTypes::AtomData) || (value.type() == VTypes::IntegerData))
+	{
+		if (!testQuietly)
+		{
+			Atom* ii = value.type() == VTypes::IntegerData ? atom(value.asInteger()-1) : (Atom*) value.asPointer(VTypes::AtomData);
+			beginUndoState("%select (%i)", deselect ? "Des" : "S", ii->id()+1);
+			deselect ? deselectAtom(ii) : selectAtom(ii);
+			endUndoState();
+		}
+	}
+	else if (value.type() == VTypes::ElementData)
+	{
+		Element* elem = (Element*) value.asPointer(VTypes::ElementData);
+		if (elem == NULL) return false;
+		if (!testQuietly)
+		{
+			beginUndoState("%select element (%s)", deselect ? "Des" : "S", elem->symbol);
+			deselect ? deselectElement(elem->z) : selectElement(elem->z);
+			endUndoState();
+		}
+	}
+	else if (value.type() == VTypes::PatternData)
+	{
+		if (!testQuietly)
+		{
+			Pattern* pp = (Pattern*) value.asPointer(VTypes::PatternData);
+			beginUndoState("%select pattern '%s' (%i atoms)", deselect ? "Des" : "S", qPrintable(pp->name()), pp->totalAtoms());
+			selectPattern(pp, false, deselect);
+			endUndoState();
+		}
+	}
+	else if (value.type() == VTypes::StringData)
+	{
+		// Use a parser to split up the line, in case there are multiple selections separated by commas
+		LineParser parser;
+		parser.getArgsDelim(0, value.asString());
+		for (int arg=0; arg<parser.nArgs(); ++arg)
+		{
+			// If arg contains a '-', select by range
+			if (parser.argc(arg).contains('-'))
+			{
+				range = true;
+				QStringList items = parser.argc(arg).split('-');
+				from = items.at(0);
+				to = items.at(1);
+
+				// Arguments for ranges cannot have '+' in them
+				if ((from.contains('+')) || (to.contains('+')))
+				{
+					if (!testQuietly) Messenger::print("Range symbol (+) cannot be given in static range X-Y (input was '%s-%s').", qPrintable(from), qPrintable(to));
+					return false;
+				}
+			}
+			else
+			{
+				range = false;
+				from = parser.argc(arg);
+				if (!from.contains('+')) plus = 0;
+				else if (from.at(0) == '+') plus = -1;
+				else if (from.at(from.length()-1) == '+') plus = 1;
+				else
+				{
+					if (!testQuietly) Messenger::print("Invalid range symbol (+) given in middle of selection element '%s'.", qPrintable(from));
+					return false;
+				}
+			}
+			// Do the selection
+			if (!testQuietly) beginUndoState("%select (%s)", deselect ? "Des" : "S", qPrintable(parser.argc(arg)));
+			if (!range)
+			{
+				if (VTypes::determineType(from) == VTypes::IntegerData)
+				{
+					// Integer atom ID selection
+					i = from.toInt();
+					if (!testQuietly)
+					{
+						if (plus == 0) (deselect ? deselectAtom(i-1) : selectAtom(i-1));
+						else if (plus == -1) for (n=0; n < i; n++) (deselect ? deselectAtom(n) : selectAtom(n));
+						else if (plus == 1) for (n=i-1; n < nAtoms(); n++) (deselect ? deselectAtom(n) : selectAtom(n));
+					}
+				}
+				else
+				{
+					i = Elements().find(from, ElementMap::AlphaZMap);
+					if (i == 0)
+					{
+						if (!testQuietly) Messenger::print("Unrecognised element (%s) in select.", qPrintable(from));
+						return false;
+					}
+
+					if (!testQuietly)
+					{
+						if (plus == 0) (deselect ? deselectElement(i) : selectElement(i));
+						else if (plus == -1) for (n=1; n <= i; n++) (deselect ? deselectElement(n) : selectElement(n));
+						else if (plus == 1) for (n=i; n <= Elements().nElements(); n++) (deselect ? deselectElement(n) : selectElement(n));
+					}
+				}
+			}
+			else
+			{
+				// Range of id's or elements
+				if (VTypes::determineType(from) == VTypes::IntegerData)
+				{
+					i = from.toInt();
+					j = to.toInt();
+					if (!testQuietly) for (n=i-1; n<j; n++) (deselect ? deselectAtom(n) : selectAtom(n));
+				}
+				else
+				{
+					i = Elements().find(from, ElementMap::AlphaZMap);
+					if (i == 0)
+					{
+						if (!testQuietly) Messenger::print("Unrecognised element (%s) on left-hand side of range.", qPrintable(from));
+						return false;
+					}
+					j = Elements().find(to, ElementMap::AlphaZMap);
+					if (j == 0)
+					{
+						if (!testQuietly) Messenger::print("Unrecognised element (%s) on right-hand side of range.", qPrintable(to));
+						return false;
+					}
+					if (!testQuietly) for (n=i; n <= j; n++) (deselect ? deselectElement(n) : selectElement(n));
+				}
+			}
+			if (!testQuietly) endUndoState();
+		}
+	}
+	else
+	{
+		if (!testQuietly) Messenger::print("Cannot (de)select atoms based on supplied %s.", VTypes::dataType(value.type()));
+		return false;
+	}
+	return true;
+}
+
 // Return the number of selected atoms
 int Model::nSelected() const
 {

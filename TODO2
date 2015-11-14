@@ -7,7 +7,6 @@ Undo/Redo:
   * Rework UndoEvent to use an enum and stored data rather than an individual class for each event type.
   * Add Grid-related undo/redo (e.g. title changes, colour etc.)
 Need to shrink used button space when window is not large enough to display all widgets in panel.
-Partitioning scheme usage from CLI (e.g. in cgparticle.txt or chloroform.txt scripts) causes a segfault owing to Primitive creation when no context is available.
 silica.txt needs new option dialog.
 Custom dialog code example (uitest.txt) does not successfully retrieve widget values (true for all dialogs on save?).
 Rename commands for consistency - e.g. newFF to newForcefield?
@@ -88,3 +87,4 @@ Add viewerFontFileName member Prefs accessor.
 Remove TransparentSelection Prefs accessor.
 Add TrajectoryFormat CLI switch (tf).
 Add GridViewPercentage and GridViewSecondaryPercentage commands.
+TestSelect command.

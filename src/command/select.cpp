@@ -32,148 +32,23 @@
 
 ATEN_USING_NAMESPACE
 
-bool selectAtoms(Model* m, TreeNode* node, bool deselect)
-{
-	QString from, to;
-	int i, j, n, plus = 0;
-	bool range;
-	// Execute argument to get result
-	ReturnValue value;
-	if (!node->execute(value)) return false;
-	// If the argument is an atom or integer variable, (de)select the corresponding atom. Otherwise, perform ranged selections
-	if ((value.type() == VTypes::AtomData) || (value.type() == VTypes::IntegerData))
-	{
-		Atom* ii = value.type() == VTypes::IntegerData ? m->atom(value.asInteger()-1) : (Atom*) value.asPointer(VTypes::AtomData);
-		m->beginUndoState("%select (%i)", deselect ? "Des" : "S", ii->id()+1);
-		deselect ? m->deselectAtom(ii) : m->selectAtom(ii);
-		m->endUndoState();
-	}
-	else if (value.type() == VTypes::ElementData)
-	{
-		Element* elem = (Element*) value.asPointer(VTypes::ElementData);
-		if (elem == NULL) return false;
-		m->beginUndoState("%select element (%s)", deselect ? "Des" : "S", elem->symbol);
-		deselect ? m->deselectElement(elem->z) : m->selectElement(elem->z);
-		m->endUndoState();
-	}
-	else if (value.type() == VTypes::PatternData)
-	{
-		Pattern* pp = (Pattern*) value.asPointer(VTypes::PatternData);
-		m->beginUndoState("%select pattern '%s' (%i atoms)", deselect ? "Des" : "S", qPrintable(pp->name()), pp->totalAtoms());
-		m->selectPattern(pp, false, deselect);
-		m->endUndoState();
-	}
-	else if (value.type() == VTypes::StringData)
-	{
-		// Use a parser to split up the line, in case there are multiple selections separated by commas
-		LineParser parser;
-		parser.getArgsDelim(0, value.asString());
-		for (int arg=0; arg<parser.nArgs(); ++arg)
-		{
-			// If arg contains a '-', select by range
-			if (parser.argc(arg).contains('-'))
-			{
-				range = true;
-				QStringList items = parser.argc(arg).split('-');
-				from = items.at(0);
-				to = items.at(1);
-
-				// Arguments for ranges cannot have '+' in them
-				if ((from.contains('+')) || (to.contains('+')))
-				{
-					Messenger::print("Range symbol (+) cannot be given in static range X-Y (input was '%s-%s').", qPrintable(from), qPrintable(to));
-					return false;
-				}
-			}
-			else
-			{
-				range = false;
-				from = parser.argc(arg);
-				if (!from.contains('+')) plus = 0;
-				else if (from.at(0) == '+') plus = -1;
-				else if (from.at(from.length()-1) == '+') plus = 1;
-				else
-				{
-					Messenger::print("Invalid range symbol (+) given in middle of selection element '%s'.", qPrintable(from));
-					return false;
-				}
-			}
-			// Do the selection
-			m->beginUndoState("%select (%s)", deselect ? "Des" : "S", qPrintable(parser.argc(arg)));
-			if (!range)
-			{
-				if (VTypes::determineType(from) == VTypes::IntegerData)
-				{
-					i = from.toInt();
-					// Integer atom ID selection
-					if (plus == 0) (deselect ? m->deselectAtom(i-1) : m->selectAtom(i-1));
-					else if (plus == -1) for (n=0; n < i; n++) (deselect ? m->deselectAtom(n) : m->selectAtom(n));
-					else if (plus == 1) for (n=i-1; n < m->nAtoms(); n++) (deselect ? m->deselectAtom(n) : m->selectAtom(n));
-				}
-				else
-				{
-					i = Elements().find(from, ElementMap::AlphaZMap);
-					if (i == 0)
-					{
-						Messenger::print("Unrecognised element (%s) in select.", qPrintable(from));
-						return false;
-					}
-					if (plus == 0) (deselect ? m->deselectElement(i) : m->selectElement(i));
-					else if (plus == -1) for (n=1; n <= i; n++) (deselect ? m->deselectElement(n) : m->selectElement(n));
-					else if (plus == 1) for (n=i; n <= Elements().nElements(); n++) (deselect ? m->deselectElement(n) : m->selectElement(n));
-				}
-			}
-			else
-			{
-				// Range of id's or elements
-				if (VTypes::determineType(from) == VTypes::IntegerData)
-				{
-					i = from.toInt();
-					j = to.toInt();
-					for (n=i-1; n<j; n++) (deselect ? m->deselectAtom(n) : m->selectAtom(n));
-				}
-				else
-				{
-					i = Elements().find(from, ElementMap::AlphaZMap);
-					if (i == 0)
-					{
-						Messenger::print("Unrecognised element (%s) on left-hand side of range.", qPrintable(from));
-						return false;
-					}
-					j = Elements().find(to, ElementMap::AlphaZMap);
-					if (j == 0)
-					{
-						Messenger::print("Unrecognised element (%s) on right-hand side of range.", qPrintable(to));
-						return false;
-					}
-					for (n=i; n <= j; n++) (deselect ? m->deselectElement(n) : m->selectElement(n));
-				}
-			}
-			m->endUndoState();
-		}
-	}
-	else
-	{
-		Messenger::print("Cannot (de)select atoms based on supplied %s.", VTypes::dataType(value.type()));
-		return false;
-	}
-	return true;
-}
-
 // Deselect atom, range of atoms, or elements ('deselect <n>')
 bool Commands::function_DeSelect(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return false;
+
 	// Store current number of selected atoms
 	int nselected = obj.rs()->nSelected();
 	bool result = true;
+
 	// Loop over arguments given to command, passing them in turn to selectAtoms
-	for (int i=0; i<c->nArgs(); i++) if (!selectAtoms(obj.rs(), c->argNode(i), true))
+	for (int i=0; i<c->nArgs(); i++) if (!obj.rs()->selectAtoms(c->argNode(i), true))
 	{
 		result = false;
 		break;
 	}
 	rv.set(nselected - obj.rs()->nSelected());
+
 	return result;
 }
 
@@ -240,7 +115,7 @@ bool Commands::function_DeSelectFormatted(CommandNode* c, Bundle& obj, ReturnVal
 	for (int i=0; i<parser.nArgs(); i++)
 	{
 		StringVariable stringvar(parser.argc(i));
-		if (!selectAtoms(obj.rs(), &stringvar, true)) { result = false; break; }
+		if (!obj.rs()->selectAtoms(&stringvar, true)) { result = false; break; }
 	}
 	rv.set(nselected - obj.rs()->nSelected());
 	return result;
@@ -312,7 +187,7 @@ bool Commands::function_Select(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	int nselected = obj.rs()->nSelected();
 	bool result = true;
 	// Loop over arguments given to command, passing them in turn to selectAtoms
-	for (int i=0; i<c->nArgs(); i++) if (!selectAtoms(obj.rs(), c->argNode(i), false)) { result = false; break; }
+	for (int i=0; i<c->nArgs(); i++) if (!obj.rs()->selectAtoms(c->argNode(i), false)) { result = false; break; }
 	rv.set(obj.rs()->nSelected() - nselected);
 	return result;
 }
@@ -340,6 +215,7 @@ bool Commands::function_SelectCode(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	int nselected = obj.rs()->nSelected();
+
 	// Construct program
 	QString code;
 	code.sprintf("int internalSelectAtom(atom i) { %s; return false; }", qPrintable(c->argc(0)));
@@ -350,6 +226,7 @@ bool Commands::function_SelectCode(CommandNode* c, Bundle& obj, ReturnValue& rv)
 		rv.reset();
 		return false;
 	}
+
 	// Get global function and set up variable and UserCommandNode
 	Tree* function = program.mainProgram()->findLocalFunction("internalSelectAtom");
 	if (function == NULL)
@@ -425,7 +302,7 @@ bool Commands::function_SelectFormatted(CommandNode* c, Bundle& obj, ReturnValue
 	for (int i=0; i<parser.nArgs(); i++)
 	{
 		StringVariable stringvar(parser.argc(i));
-		if (!selectAtoms(obj.rs(), &stringvar, false)) { result = false; break; }
+		if (!obj.rs()->selectAtoms(&stringvar, false)) { result = false; break; }
 	}
 	rv.set(obj.rs()->nSelected() - nselected);
 	return result;
@@ -594,3 +471,18 @@ bool Commands::function_SelectType(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	return false;
 }
 
+// Test selection by atom, range of atoms, or elements
+bool Commands::function_TestSelect(CommandNode* c, Bundle& obj, ReturnValue& rv)
+{
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
+
+	// Loop over arguments given to command, passing them in turn to selectAtoms
+	for (int i=0; i<c->nArgs(); i++) if (!obj.rs()->selectAtoms(c->argNode(i), true, true))
+	{
+		rv.set(false);
+		break;
+	}
+	rv.set(true);
+
+	return true;
+}

@@ -111,7 +111,7 @@ class DisorderData : public ListItem<DisorderData>
 	// Determine whether candidate molecule overlaps rest of population
 	bool selfOverlaps(UnitCell& globalCell);
 	// Determine whether candidate molecule overlaps with all other insertion models
-	bool otherOverlaps(DisorderData *first, UnitCell& globalCell);
+	bool otherOverlaps(DisorderData* first, UnitCell& globalCell);
 	// Return number of copies added
 	int nAdded();
 	// Return number of successive failures since last successful insertion
