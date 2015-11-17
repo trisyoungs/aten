@@ -371,8 +371,7 @@ filter(type="importtrajectory", name="DL_POLY Formatted History", extension="HIS
 		setName(title);
 
 		# Check number of atoms in trajectory frame
-		if (aten.model.nAtoms != natoms) { printf("Parent model contains different number of atoms to trajectory - aborting.\n"); return FALSE; }
-		modelTemplate();
+		if (aten.model.nAtoms != natoms) printf("Parent model contains different number of atoms to trajectory...\n");
 
 		# Read cell if its present
 		if (imcon > 0)
@@ -399,8 +398,8 @@ filter(type="importtrajectory", name="DL_POLY Formatted History", extension="HIS
 		{
 			readLineF("%8s%10i%12.6f%12.6f", e, id, mass, q);
 			readLineF("%12.4e%12.4e%f12.4e", x.x, x.y, x.z);
-			if (cellShift) setCoords(x.x+v.x, x.y+v.y, x.z+v.z, n);
-			else setCoords(x.x, x.y, x.z, n);
+			if (cellShift) newAtom(e, x.x+v.x, x.y+v.y, x.z+v.z);
+			else newAtom(e, x.x, x.y, x.z);
 			if (keytrj > 0)
 			{
 				readLineF("%12.4e%12.4e%f12.4e", x.x, x.y, x.z);
@@ -416,8 +415,8 @@ filter(type="importtrajectory", name="DL_POLY Formatted History", extension="HIS
 		{
 			readLine(e, id, mass, q);
 			readLine(x.x, x.y, x.z);
-			if (cellShift) setCoords(x.x+v.x, x.y+v.y, x.z+v.z, n);
-			else setCoords(x.x, x.y, x.z, n);
+			if (cellShift) newAtom(e, x.x+v.x, x.y+v.y, x.z+v.z);
+			else newAtom(e, x.x, x.y, x.z);
 			if (keytrj > 0)
 			{
 				readLine(x.x, x.y, x.z);

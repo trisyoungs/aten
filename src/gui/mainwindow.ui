@@ -7,8 +7,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1247</width>
-    <height>737</height>
+    <width>1347</width>
+    <height>797</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -100,8 +100,8 @@
         </property>
         <item>
          <layout class="QGridLayout" name="gridLayout_13">
-          <item row="0" column="0">
-           <widget class="TMenuButton" name="HomeFileNewButton">
+          <item row="0" column="3">
+           <widget class="TMenuButton" name="HomeFileSaveAsButton">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
               <horstretch>0</horstretch>
@@ -126,14 +126,14 @@
              </font>
             </property>
             <property name="toolTip">
-             <string>Create a new, empty model</string>
+             <string>Save the current model under a different name</string>
             </property>
             <property name="text">
-             <string>New</string>
+             <string>Save As</string>
             </property>
             <property name="icon">
              <iconset resource="icons.qrc">
-              <normaloff>:/file/icons/file_new.svg</normaloff>:/file/icons/file_new.svg</iconset>
+              <normaloff>:/file/icons/file_saveas.svg</normaloff>:/file/icons/file_saveas.svg</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -158,61 +158,10 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="1">
-           <widget class="TMenuButton" name="HomeFileOpenButton">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>40</width>
-              <height>66</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>128</width>
-              <height>66</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>8</pointsize>
-             </font>
-            </property>
-            <property name="toolTip">
-             <string>Open an existing model</string>
-            </property>
-            <property name="text">
-             <string>Open</string>
-            </property>
-            <property name="icon">
-             <iconset resource="icons.qrc">
-              <normaloff>:/file/icons/file_open.svg</normaloff>:/file/icons/file_open.svg</iconset>
-            </property>
-            <property name="iconSize">
-             <size>
-              <width>30</width>
-              <height>30</height>
-             </size>
-            </property>
-            <property name="checkable">
-             <bool>false</bool>
-            </property>
-            <property name="checked">
-             <bool>false</bool>
-            </property>
-            <property name="autoExclusive">
-             <bool>false</bool>
-            </property>
-            <property name="toolButtonStyle">
-             <enum>Qt::ToolButtonTextUnderIcon</enum>
-            </property>
-            <property name="autoRaise">
-             <bool>false</bool>
+          <item row="0" column="5">
+           <widget class="Line" name="line_29">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
             </property>
            </widget>
           </item>
@@ -250,64 +199,6 @@
             <property name="icon">
              <iconset resource="icons.qrc">
               <normaloff>:/file/icons/file_save.svg</normaloff>:/file/icons/file_save.svg</iconset>
-            </property>
-            <property name="iconSize">
-             <size>
-              <width>30</width>
-              <height>30</height>
-             </size>
-            </property>
-            <property name="checkable">
-             <bool>false</bool>
-            </property>
-            <property name="checked">
-             <bool>false</bool>
-            </property>
-            <property name="autoExclusive">
-             <bool>false</bool>
-            </property>
-            <property name="toolButtonStyle">
-             <enum>Qt::ToolButtonTextUnderIcon</enum>
-            </property>
-            <property name="autoRaise">
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="3">
-           <widget class="TMenuButton" name="HomeFileSaveAsButton">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>40</width>
-              <height>66</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>128</width>
-              <height>66</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>8</pointsize>
-             </font>
-            </property>
-            <property name="toolTip">
-             <string>Save the current model under a different name</string>
-            </property>
-            <property name="text">
-             <string>Save As</string>
-            </property>
-            <property name="icon">
-             <iconset resource="icons.qrc">
-              <normaloff>:/file/icons/file_saveas.svg</normaloff>:/file/icons/file_saveas.svg</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -390,15 +281,8 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="5">
-           <widget class="Line" name="line_29">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="6">
-           <widget class="TMenuButton" name="HomeFileImageButton">
+          <item row="0" column="7">
+           <widget class="TMenuButton" name="HomeFileFilmButton">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
               <horstretch>0</horstretch>
@@ -426,11 +310,11 @@
              <string>Close the current model</string>
             </property>
             <property name="text">
-             <string>Export Image</string>
+             <string>Export Film</string>
             </property>
             <property name="icon">
              <iconset resource="icons.qrc">
-              <normaloff>:/file/icons/file_saveimage.svg</normaloff>:/file/icons/file_saveimage.svg</iconset>
+              <normaloff>:/file/icons/file_savefilm.svg</normaloff>:/file/icons/file_savefilm.svg</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -452,13 +336,6 @@
             </property>
             <property name="autoRaise">
              <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="8">
-           <widget class="Line" name="line_32">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
             </property>
            </widget>
           </item>
@@ -520,18 +397,73 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="0" colspan="10">
-           <widget class="QLabel" name="label_67">
-            <property name="text">
-             <string>File</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
+          <item row="0" column="8">
+           <widget class="Line" name="line_32">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
             </property>
            </widget>
           </item>
-          <item row="0" column="7">
-           <widget class="TMenuButton" name="HomeFileFilmButton">
+          <item row="0" column="0">
+           <widget class="TMenuButton" name="HomeFileNewButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>40</width>
+              <height>66</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>128</width>
+              <height>66</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>8</pointsize>
+             </font>
+            </property>
+            <property name="toolTip">
+             <string>Create a new, empty model</string>
+            </property>
+            <property name="text">
+             <string>New</string>
+            </property>
+            <property name="icon">
+             <iconset resource="icons.qrc">
+              <normaloff>:/file/icons/file_new.svg</normaloff>:/file/icons/file_new.svg</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>30</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="checkable">
+             <bool>false</bool>
+            </property>
+            <property name="checked">
+             <bool>false</bool>
+            </property>
+            <property name="autoExclusive">
+             <bool>false</bool>
+            </property>
+            <property name="toolButtonStyle">
+             <enum>Qt::ToolButtonTextUnderIcon</enum>
+            </property>
+            <property name="autoRaise">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="6">
+           <widget class="TMenuButton" name="HomeFileImageButton">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
               <horstretch>0</horstretch>
@@ -559,11 +491,79 @@
              <string>Close the current model</string>
             </property>
             <property name="text">
-             <string>Export Film</string>
+             <string>Export Image</string>
             </property>
             <property name="icon">
              <iconset resource="icons.qrc">
-              <normaloff>:/file/icons/file_savefilm.svg</normaloff>:/file/icons/file_savefilm.svg</iconset>
+              <normaloff>:/file/icons/file_saveimage.svg</normaloff>:/file/icons/file_saveimage.svg</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>30</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="checkable">
+             <bool>false</bool>
+            </property>
+            <property name="checked">
+             <bool>false</bool>
+            </property>
+            <property name="autoExclusive">
+             <bool>false</bool>
+            </property>
+            <property name="toolButtonStyle">
+             <enum>Qt::ToolButtonTextUnderIcon</enum>
+            </property>
+            <property name="autoRaise">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0" colspan="10">
+           <widget class="QLabel" name="label_67">
+            <property name="text">
+             <string>File</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="TMenuButton" name="HomeFileOpenButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>40</width>
+              <height>66</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>128</width>
+              <height>66</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>8</pointsize>
+             </font>
+            </property>
+            <property name="toolTip">
+             <string>Open an existing model</string>
+            </property>
+            <property name="text">
+             <string>Open</string>
+            </property>
+            <property name="icon">
+             <iconset resource="icons.qrc">
+              <normaloff>:/file/icons/file_open.svg</normaloff>:/file/icons/file_open.svg</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -599,6 +599,64 @@
         </item>
         <item>
          <layout class="QGridLayout" name="gridLayout_14">
+          <item row="1" column="0" colspan="2">
+           <widget class="QToolButton" name="HomeEditUndoButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>28</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>100</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>8</pointsize>
+             </font>
+            </property>
+            <property name="toolTip">
+             <string>Undo</string>
+            </property>
+            <property name="text">
+             <string>Undo</string>
+            </property>
+            <property name="icon">
+             <iconset resource="icons.qrc">
+              <normaloff>:/edit/icons/edit_undo.svg</normaloff>:/edit/icons/edit_undo.svg</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>18</width>
+              <height>18</height>
+             </size>
+            </property>
+            <property name="checkable">
+             <bool>false</bool>
+            </property>
+            <property name="checked">
+             <bool>false</bool>
+            </property>
+            <property name="autoExclusive">
+             <bool>false</bool>
+            </property>
+            <property name="toolButtonStyle">
+             <enum>Qt::ToolButtonTextBesideIcon</enum>
+            </property>
+            <property name="autoRaise">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
           <item row="0" column="0">
            <widget class="QToolButton" name="HomeEditCopyButton">
             <property name="sizePolicy">
@@ -825,64 +883,6 @@
             </property>
             <property name="toolButtonStyle">
              <enum>Qt::ToolButtonTextUnderIcon</enum>
-            </property>
-            <property name="autoRaise">
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0" colspan="2">
-           <widget class="QToolButton" name="HomeEditUndoButton">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>28</width>
-              <height>30</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>100</width>
-              <height>30</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>8</pointsize>
-             </font>
-            </property>
-            <property name="toolTip">
-             <string>Undo</string>
-            </property>
-            <property name="text">
-             <string>Undo</string>
-            </property>
-            <property name="icon">
-             <iconset resource="icons.qrc">
-              <normaloff>:/edit/icons/edit_undo.svg</normaloff>:/edit/icons/edit_undo.svg</iconset>
-            </property>
-            <property name="iconSize">
-             <size>
-              <width>18</width>
-              <height>18</height>
-             </size>
-            </property>
-            <property name="checkable">
-             <bool>false</bool>
-            </property>
-            <property name="checked">
-             <bool>false</bool>
-            </property>
-            <property name="autoExclusive">
-             <bool>false</bool>
-            </property>
-            <property name="toolButtonStyle">
-             <enum>Qt::ToolButtonTextBesideIcon</enum>
             </property>
             <property name="autoRaise">
              <bool>false</bool>
@@ -3975,7 +3975,7 @@
             </property>
             <property name="maximumSize">
              <size>
-              <width>56</width>
+              <width>128</width>
               <height>66</height>
              </size>
             </property>
@@ -4028,7 +4028,7 @@
             </property>
             <property name="maximumSize">
              <size>
-              <width>56</width>
+              <width>128</width>
               <height>66</height>
              </size>
             </property>
@@ -4081,7 +4081,7 @@
             </property>
             <property name="maximumSize">
              <size>
-              <width>56</width>
+              <width>128</width>
               <height>66</height>
              </size>
             </property>
@@ -4155,8 +4155,8 @@
             </property>
             <property name="maximumSize">
              <size>
-              <width>56</width>
-              <height>66</height>
+              <width>128</width>
+              <height>128</height>
              </size>
             </property>
             <property name="toolTip">
@@ -4208,7 +4208,7 @@
             </property>
             <property name="maximumSize">
              <size>
-              <width>56</width>
+              <width>128</width>
               <height>66</height>
              </size>
             </property>
@@ -4261,8 +4261,8 @@
             </property>
             <property name="maximumSize">
              <size>
-              <width>56</width>
-              <height>66</height>
+              <width>128</width>
+              <height>128</height>
              </size>
             </property>
             <property name="toolTip">
@@ -4314,7 +4314,7 @@
             </property>
             <property name="maximumSize">
              <size>
-              <width>56</width>
+              <width>128</width>
               <height>66</height>
              </size>
             </property>
@@ -4367,7 +4367,7 @@
             </property>
             <property name="maximumSize">
              <size>
-              <width>56</width>
+              <width>128</width>
               <height>66</height>
              </size>
             </property>
@@ -4427,7 +4427,7 @@
             </property>
             <property name="maximumSize">
              <size>
-              <width>56</width>
+              <width>128</width>
               <height>66</height>
              </size>
             </property>
@@ -4501,7 +4501,7 @@
             </property>
             <property name="maximumSize">
              <size>
-              <width>56</width>
+              <width>128</width>
               <height>66</height>
              </size>
             </property>
@@ -4554,7 +4554,7 @@
             </property>
             <property name="maximumSize">
              <size>
-              <width>56</width>
+              <width>128</width>
               <height>66</height>
              </size>
             </property>
@@ -4607,7 +4607,7 @@
             </property>
             <property name="maximumSize">
              <size>
-              <width>56</width>
+              <width>128</width>
               <height>66</height>
              </size>
             </property>
@@ -5645,7 +5645,7 @@
              </font>
             </property>
             <property name="toolTip">
-             <string>Style of secondary surface</string>
+             <string>Translate the current grid</string>
             </property>
             <property name="text">
              <string>Translate</string>
@@ -5695,7 +5695,7 @@
            <enum>Qt::Horizontal</enum>
           </property>
           <property name="sizeType">
-           <enum>QSizePolicy::MinimumExpanding</enum>
+           <enum>QSizePolicy::Minimum</enum>
           </property>
           <property name="sizeHint" stdset="0">
            <size>
@@ -10005,6 +10005,16 @@
            <property name="mouseTracking">
             <bool>true</bool>
            </property>
+           <widget class="QWidget" name="widget" native="true">
+            <property name="geometry">
+             <rect>
+              <x>180</x>
+              <y>130</y>
+              <width>120</width>
+              <height>80</height>
+             </rect>
+            </property>
+           </widget>
           </widget>
          </item>
          <item>
