@@ -91,6 +91,13 @@ bool Model::selectAtoms(TreeNode* node, bool deselect, bool testQuietly)
 					if (!testQuietly) Messenger::print("Range symbol (+) cannot be given in static range X-Y (input was '%s-%s').", qPrintable(from), qPrintable(to));
 					return false;
 				}
+
+				// Check for empty parts of ranges
+				if (from.isEmpty() || to.isEmpty()) 
+				{
+					if (!testQuietly) Messenger::print("One or both limits in range X-Y are empty (input was '%s-%s').", qPrintable(from), qPrintable(to));
+					return false;
+				}
 			}
 			else
 			{
@@ -105,6 +112,7 @@ bool Model::selectAtoms(TreeNode* node, bool deselect, bool testQuietly)
 					return false;
 				}
 			}
+
 			// Do the selection
 			if (!testQuietly) beginUndoState("%select (%s)", deselect ? "Des" : "S", qPrintable(parser.argc(arg)));
 			if (!range)
@@ -583,7 +591,7 @@ int Model::selectType(int element, QString typeDesc, bool markonly, bool deselec
 	Messenger::enter("Model::selectType");
 	Neta testat;
 	testat.setCharacterElement(element);
-	if (!netaparser.createNeta(&testat, typeDesc, NULL))
+	if (!NetaParser::createNeta(&testat, typeDesc, NULL))
 	{
 		Messenger::print("Failed to create type description.");
 		Messenger::exit("Model::selectType");

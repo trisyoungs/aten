@@ -37,7 +37,7 @@ int NetaSymbolTokenValues[NetaParser::nNetaSymbolTokens] = { GEQ, LEQ, NEQ, NEQ 
 // Bison-generated NetaParser_lex()
 int NetaParser_lex()
 {
-	return netaparser.lex();
+	return NetaParser::lex();
 }
 
 // Parser lexer, called by yylex()

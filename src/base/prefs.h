@@ -84,7 +84,7 @@ class Prefs
 	// OpenGL colour components
 	enum ColourComponent { AmbientComponent, DiffuseComponent, SpecularComponent, nColourComponents };
 	// GUI history types
-	enum HistoryType { CommandHistory, ScriptHistory, SelectHistory, SelectCodeHistory, SelectNETAHistory, nHistoryTypes };
+	enum HistoryType { CommandHistory, ScriptHistory, SelectHistory, nHistoryTypes };
 	static const char* historyType(HistoryType ht);
 	static HistoryType historyType(QString s, bool reportError = false);
 	

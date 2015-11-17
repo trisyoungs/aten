@@ -375,6 +375,10 @@ class AtenWindow : public QMainWindow
 	private:
 	// Update select panel
 	void updateSelectPanel(Model* sourceModel);
+	// Enum for selection auto target type
+	enum SelectTargetType { AutoSelectType, RangeSelectType, NETASelectType, LoopSelectType, nSelectTargetTypes };
+	// Last auto-determined selection type
+	SelectTargetType lastSelectionType_;
 
 	private slots:
 	// Basic
@@ -382,15 +386,11 @@ class AtenWindow : public QMainWindow
 	void on_SelectBasicNoneButton_clicked(bool checked);
 	void on_SelectBasicInvertButton_clicked(bool checked);
 	void on_SelectBasicExpandButton_clicked(bool checked);
-	// ID / Element
-	void on_SelectElementSelectButton_clicked(bool checked);
-	void on_SelectElementDeselectButton_clicked(bool checked);
-	// Type
-	void on_SelectNETASelectButton_clicked(bool checked);
-	void on_SelectNETADeselectButton_clicked(bool checked);
-	// Code
-	void on_SelectCodeSelectButton_clicked(bool checked);
-	void on_SelectCodeDeselectButton_clicked(bool checked);
+	// Intelligent Select
+	void on_SelectIntelligentTargetCombo_currentTextChanged(const QString& text);
+	void on_SelectIntelligentTypeCombo_currentIndexChanged(int index);
+	void on_SelectIntelligentAddButton_clicked(bool checked);
+	void on_SelectIntelligentRemoveButton_clicked(bool checked);
 
 
 	/*

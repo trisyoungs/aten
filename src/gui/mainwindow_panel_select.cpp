@@ -29,6 +29,35 @@ void AtenWindow::updateSelectPanel(Model* sourceModel)
 {
 	Messenger::enter("AtenWindow::updateSelectPanel");
 
+	refreshing_ = true;
+
+	// Change text of selection type combo to reflect last auto-determined type
+	int previousIndex = ui.SelectIntelligentTypeCombo->currentIndex();
+	QStringList items;
+	switch (lastSelectionType_)
+	{
+		case (RangeSelectType):
+			items << "Auto (Range Selection)";
+			break;
+		case (NETASelectType):
+			items << "Auto (NETA Description)";
+			break;
+		case (LoopSelectType):
+			items << "Auto (Code Loop Selection)";
+			break;
+		default:
+			items << "Auto (<unknown>)";
+	}
+	items << "Range Selection (n-m, C-Ag, 4+, +21, etc.)";
+	items << "NETA Description";
+	items << "Code Loop Selection";
+	ui.SelectIntelligentTypeCombo->clear();
+	ui.SelectIntelligentTypeCombo->addItems(items);
+	ui.SelectIntelligentTypeCombo->setCurrentIndex(previousIndex);
+
+	// Enable / disable controls
+	refreshing_ = false;
+
 	Messenger::exit("AtenWindow::updateSelectPanel");
 }
 
@@ -69,88 +98,120 @@ void AtenWindow::on_SelectBasicExpandButton_clicked(bool checked)
 }
 
 /*
- * ID / Element
+ * Intelligent Select
  */
 
-// void AtenWindow::on_SelectElementSelectCombo_currentTextChanged(const QString& text)
-// {
-// 	return;
-// 
-// 	// See if we can determine what sort of text has been entered.
-// 	Program program;
-// 	Neta neta;
-// 
-// 	// First, try code (since it is the most complicated)
-// 	if (program.generateFromString(text, "SelectionCode", "Selection Code")) printf("This is some code.\n");
-// 	else if (netaparser.createNeta(&neta, text, NULL)) printf("This is a NETA description.\n");
-// 	else if (CommandNode::run(Commands::TestSelect, "c", qPrintable(text)).asBool()) printf("This is a selection range.\n");
-// 	else printf("Unrecognised selection .\n");
-// }
-
-void AtenWindow::on_SelectElementSelectButton_clicked(bool checked)
+void AtenWindow::on_SelectIntelligentTargetCombo_currentTextChanged(const QString& text)
 {
-	CommandNode::run(Commands::Select, "c", qPrintable(ui.SelectElementSelectCombo->currentText()));
-
-	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget+AtenWindow::SelectPanelTarget);
-}
-
-void AtenWindow::on_SelectElementDeselectButton_clicked(bool checked)
-{
-	CommandNode::run(Commands::DeSelect, "c", qPrintable(ui.SelectElementSelectCombo->currentText()));
-
-	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget+AtenWindow::SelectPanelTarget);
-}
-
-/*
- * Type
- */
-
-void AtenWindow::on_SelectNETASelectButton_clicked(bool checked)
-{
-	// Get element
-	ReturnValue rv;
-	if (!ui.SelectNETAElementButton->callPopupMethod("currentElement", rv)) return;
-	
-	if (rv.asInteger() == 0) Messenger::print("Invalid element '%s'", qPrintable(rv.asInteger()));
-	else
+	// Empty text?
+	if (text.isEmpty())
 	{
-		CommandNode::run(Commands::SelectType, "ic", rv.asInteger(), qPrintable(ui.SelectNETACodeCombo->currentText()));
-
-		updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget+AtenWindow::SelectPanelTarget);
+		lastSelectionType_ = AtenWindow::nSelectTargetTypes;
+		updateSelectPanel(NULL);
+		return;
 	}
-}
 
-void AtenWindow::on_SelectNETADeselectButton_clicked(bool checked)
-{
-	// Get element
-	ReturnValue rv;
-	if (!ui.SelectNETAElementButton->callPopupMethod("currentElement", rv)) return;
-	
-	if (rv.asInteger() == 0) Messenger::print("Invalid element '%s'", qPrintable(rv.asInteger()));
-	else
+	// If the current selection type is not automatic, test specifically for that type of target. Otherwise, try to guess...
+	bool valid = false;
+	if (ui.SelectIntelligentTypeCombo->currentIndex() == AtenWindow::AutoSelectType) 
 	{
-		CommandNode::run(Commands::DeSelectType, "ic", rv.asInteger(), qPrintable(ui.SelectNETACodeCombo->currentText()));
+		// See if we can determine what sort of text has been entered.
+		Program program;
+		Neta neta;
 
-		updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget+AtenWindow::SelectPanelTarget);
+		// First, try code (since it is the most complicated)
+		valid = true;
+		if (program.generateFromString(text, "SelectionCode", "Selection Code")) lastSelectionType_ = AtenWindow::LoopSelectType;
+		else if (NetaParser::createNeta(&neta, text, NULL, true)) lastSelectionType_ = AtenWindow::NETASelectType;
+		else if (CommandNode::run(Commands::TestSelect, "c", qPrintable(text)).asBool()) lastSelectionType_ = AtenWindow::RangeSelectType;
+		else
+		{
+			lastSelectionType_ = AtenWindow::nSelectTargetTypes;
+			valid = false;
+		}
 	}
+	else if (ui.SelectIntelligentTypeCombo->currentIndex() == AtenWindow::RangeSelectType)
+	{
+		if (CommandNode::run(Commands::TestSelect, "c", qPrintable(text)).asBool()) valid = true;
+	}
+	else if (ui.SelectIntelligentTypeCombo->currentIndex() == AtenWindow::NETASelectType)
+	{
+		Neta neta;
+		if (NetaParser::createNeta(&neta, text, NULL, true)) valid = true;
+	}
+	else if (ui.SelectIntelligentTypeCombo->currentIndex() == AtenWindow::LoopSelectType)
+	{
+		Program program;
+		if (program.generateFromString(text, "SelectionCode", "Selection Code")) valid = true;
+	}
+	
+
+	// Change color of text if an unrecognised target
+	QPalette palette = ui.SelectIntelligentTypeCombo->palette();
+	if (!valid) palette.setColor(QPalette::Text, Qt::red);
+	ui.SelectIntelligentTargetCombo->setPalette(palette);
+
+	updateSelectPanel(NULL);
 }
 
-/*
- * Code
- */
-
-void AtenWindow::on_SelectCodeSelectButton_clicked(bool checked)
+void AtenWindow::on_SelectIntelligentTypeCombo_currentIndexChanged(int index)
 {
-	CommandNode::run(Commands::SelectType, "c", qPrintable(ui.SelectCodeCodeCombo->currentText()));
-
-	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget+AtenWindow::SelectPanelTarget);
+	// Trigger currentTextChanged() signal to check text in combo box
+	on_SelectIntelligentTargetCombo_currentTextChanged(ui.SelectIntelligentTargetCombo->currentText());
 }
 
-void AtenWindow::on_SelectCodeDeselectButton_clicked(bool checked)
+void AtenWindow::on_SelectIntelligentAddButton_clicked(bool checked)
 {
-	CommandNode::run(Commands::DeSelectType, "c", qPrintable(ui.SelectCodeCodeCombo->currentText()));
+	// Which selection are we going to try to perform?
+	AtenWindow::SelectTargetType selectType = (AtenWindow::SelectTargetType) ui.SelectIntelligentTypeCombo->currentIndex();
+	if (selectType == AtenWindow::AutoSelectType) selectType = lastSelectionType_;
 
-	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget+AtenWindow::SelectPanelTarget);
+	ReturnValue rv;
+
+	switch (selectType)
+	{
+		case (AtenWindow::RangeSelectType):
+			CommandNode::run(Commands::Select, "c", qPrintable(ui.SelectIntelligentTargetCombo->currentText()));
+			break;
+		case (AtenWindow::NETASelectType):
+			// Get element
+			if (!ui.SelectIntelligentElementButton->callPopupMethod("currentElement", rv)) return;
+			if (rv.asInteger() == 0) Messenger::print("Invalid element.'");
+			else CommandNode::run(Commands::SelectType, "ic", rv.asInteger(), qPrintable(ui.SelectIntelligentTargetCombo->currentText()));
+			break;
+		case (AtenWindow::LoopSelectType):
+			CommandNode::run(Commands::SelectCode, "c", qPrintable(ui.SelectIntelligentTargetCombo->currentText()));
+			break;
+	}
+
+	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
+}
+
+void AtenWindow::on_SelectIntelligentRemoveButton_clicked(bool checked)
+{
+	// Which selection are we going to try to perform?
+	AtenWindow::SelectTargetType selectType = (AtenWindow::SelectTargetType) ui.SelectIntelligentTypeCombo->currentIndex();
+	if (selectType == AtenWindow::AutoSelectType) selectType = lastSelectionType_;
+
+	ReturnValue rv;
+
+	switch (selectType)
+	{
+		case (AtenWindow::RangeSelectType):
+			CommandNode::run(Commands::DeSelect, "c", qPrintable(ui.SelectIntelligentTargetCombo->currentText()));
+			break;
+		case (AtenWindow::NETASelectType):
+			// Get element
+			if (!ui.SelectIntelligentElementButton->callPopupMethod("currentElement", rv)) return;
+			if (rv.asInteger() == 0) Messenger::print("Invalid element.'");
+			else CommandNode::run(Commands::DeSelectType, "ic", rv.asInteger(), qPrintable(ui.SelectIntelligentTargetCombo->currentText()));
+			break;
+		case (AtenWindow::LoopSelectType):
+			CommandNode::run(Commands::DeSelectCode, "c", qPrintable(ui.SelectIntelligentTargetCombo->currentText()));
+			break;
+	}
+
+	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
 }
 
 // 	// Update selection text details

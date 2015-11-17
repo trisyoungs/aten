@@ -109,6 +109,7 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportFilmD
 	messageDisplay_ = MessagesUnderScene;
 	refreshing_ = false;
 	trajectoryTimerId_ = -1;
+	lastSelectionType_ = nSelectTargetTypes;
 
 	// Interaction / User Modes
 	clickedAtom_ = NULL;
@@ -265,9 +266,9 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportFilmD
 	ui.GridsSecondaryColourButton->setPopupWidget(new ColourPopup(*this, ui.GridsSecondaryColourButton), true);
 	ui.GridsSecondaryStyleButton->setPopupWidget(new GridStylePopup(*this, ui.GridsSecondaryStyleButton, false), true);
 
-	// -- Select Panel (ID/Element)
-	ui.SelectNETAElementButton->setPopupWidget(new ElementTablePopup(*this, ui.SelectNETAElementButton), true);
-	ui.SelectNETAElementButton->callPopupMethod("setSelectedElement", rv = 6);
+	// -- Select Panel (Intelligent)
+	ui.SelectIntelligentElementButton->setPopupWidget(new ElementTablePopup(*this, ui.SelectIntelligentElementButton), true);
+	ui.SelectIntelligentElementButton->callPopupMethod("setSelectedElement", rv = 6);
 
 	// -- Forcefields Panel (Manage)
 	ui.ForcefieldsManageAssignButton->setPopupWidget(new ForcefieldsAssignPopup(*this, ui.ForcefieldsManageAssignButton));

@@ -144,7 +144,7 @@ bool ForcefieldAtom::setNeta(QString neta, Forcefield* parent)
 		parent = parent_;
 		if (parent == NULL) printf("ForcefieldAtom::setNeta has no valid parent forcefield.\n");
 	}
-	return netaparser.createNeta(&neta_, netaString_, parent);
+	return NetaParser::createNeta(&neta_, netaString_, parent);
 }
 
 // Return original typestring

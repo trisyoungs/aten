@@ -83,6 +83,985 @@
       <property name="documentMode">
        <bool>true</bool>
       </property>
+      <widget class="QWidget" name="BuildTab">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <attribute name="title">
+        <string>  Build  </string>
+       </attribute>
+       <layout class="QHBoxLayout" name="horizontalLayout_16">
+        <property name="spacing">
+         <number>4</number>
+        </property>
+        <property name="margin">
+         <number>2</number>
+        </property>
+        <item>
+         <layout class="QGridLayout" name="gridLayout_9">
+          <item row="0" column="0">
+           <widget class="TMenuButton" name="BuildSelectAtomsButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>40</width>
+              <height>66</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>128</width>
+              <height>66</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>8</pointsize>
+             </font>
+            </property>
+            <property name="toolTip">
+             <string>Select atoms individually or by box-select</string>
+            </property>
+            <property name="text">
+             <string>Atoms</string>
+            </property>
+            <property name="icon">
+             <iconset resource="icons.qrc">
+              <normaloff>:/select/icons/select_atoms.svg</normaloff>:/select/icons/select_atoms.svg</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>30</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+            <property name="autoExclusive">
+             <bool>false</bool>
+            </property>
+            <property name="toolButtonStyle">
+             <enum>Qt::ToolButtonTextUnderIcon</enum>
+            </property>
+            <property name="autoRaise">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="TMenuButton" name="BuildSelectBoundButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>40</width>
+              <height>66</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>128</width>
+              <height>66</height>
+             </size>
+            </property>
+            <property name="toolTip">
+             <string>Select atoms in bound fragments</string>
+            </property>
+            <property name="text">
+             <string>Bound</string>
+            </property>
+            <property name="icon">
+             <iconset resource="icons.qrc">
+              <normaloff>:/select/icons/select_molecules.svg</normaloff>:/select/icons/select_molecules.svg</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>30</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <property name="autoExclusive">
+             <bool>false</bool>
+            </property>
+            <property name="toolButtonStyle">
+             <enum>Qt::ToolButtonTextUnderIcon</enum>
+            </property>
+            <property name="autoRaise">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="2">
+           <widget class="TMenuButton" name="BuildSelectElementButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>40</width>
+              <height>66</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>128</width>
+              <height>66</height>
+             </size>
+            </property>
+            <property name="toolTip">
+             <string>Select atoms by element</string>
+            </property>
+            <property name="text">
+             <string>Element</string>
+            </property>
+            <property name="icon">
+             <iconset resource="icons.qrc">
+              <normaloff>:/select/icons/select_element.svg</normaloff>:/select/icons/select_element.svg</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>30</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <property name="autoExclusive">
+             <bool>false</bool>
+            </property>
+            <property name="toolButtonStyle">
+             <enum>Qt::ToolButtonTextUnderIcon</enum>
+            </property>
+            <property name="autoRaise">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0" colspan="3">
+           <widget class="QLabel" name="label_8">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>Select</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="Line" name="line_14">
+          <property name="lineWidth">
+           <number>3</number>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <layout class="QGridLayout" name="gridLayout_18">
+          <item row="3" column="0" colspan="8">
+           <widget class="QLabel" name="label_9">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>Draw</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="3" rowspan="2">
+           <widget class="TMenuButton" name="BuildDrawTransmuteButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>40</width>
+              <height>66</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>128</width>
+              <height>66</height>
+             </size>
+            </property>
+            <property name="toolTip">
+             <string>Transmute atoms to other elements</string>
+            </property>
+            <property name="text">
+             <string>Transmute</string>
+            </property>
+            <property name="icon">
+             <iconset resource="icons.qrc">
+              <normaloff>:/build/icons/build_transmute.svg</normaloff>:/build/icons/build_transmute.svg</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>30</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <property name="autoExclusive">
+             <bool>false</bool>
+            </property>
+            <property name="toolButtonStyle">
+             <enum>Qt::ToolButtonTextUnderIcon</enum>
+            </property>
+            <property name="autoRaise">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0" rowspan="2">
+           <widget class="TMenuButton" name="BuildDrawDrawButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>40</width>
+              <height>66</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>128</width>
+              <height>66</height>
+             </size>
+            </property>
+            <property name="toolTip">
+             <string>Draw atoms, chains, and individual bonds</string>
+            </property>
+            <property name="text">
+             <string>Draw</string>
+            </property>
+            <property name="icon">
+             <iconset resource="icons.qrc">
+              <normaloff>:/build/icons/build_draw.svg</normaloff>:/build/icons/build_draw.svg</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>30</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <property name="autoExclusive">
+             <bool>false</bool>
+            </property>
+            <property name="toolButtonStyle">
+             <enum>Qt::ToolButtonTextUnderIcon</enum>
+            </property>
+            <property name="autoRaise">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="4" rowspan="2">
+           <widget class="TMenuButton" name="BuildDrawAddHButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>40</width>
+              <height>66</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>128</width>
+              <height>66</height>
+             </size>
+            </property>
+            <property name="toolTip">
+             <string>Add hydrogens to individual atoms</string>
+            </property>
+            <property name="text">
+             <string>Add H</string>
+            </property>
+            <property name="icon">
+             <iconset resource="icons.qrc">
+              <normaloff>:/build/icons/build_addh.svg</normaloff>:/build/icons/build_addh.svg</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>30</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <property name="autoExclusive">
+             <bool>false</bool>
+            </property>
+            <property name="toolButtonStyle">
+             <enum>Qt::ToolButtonTextUnderIcon</enum>
+            </property>
+            <property name="autoRaise">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="7">
+           <widget class="QPushButton" name="BuildDrawPreventFoldButton">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="toolTip">
+             <string>Prevent folding of atoms when building</string>
+            </property>
+            <property name="text">
+             <string>Prevent Fold</string>
+            </property>
+            <property name="icon">
+             <iconset resource="icons.qrc">
+              <normaloff>:/build/icons/build_nofold.svg</normaloff>:/build/icons/build_nofold.svg</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>18</width>
+              <height>18</height>
+             </size>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <property name="flat">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="2" rowspan="2">
+           <widget class="TMenuButton" name="BuildDrawDeleteButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>40</width>
+              <height>66</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>128</width>
+              <height>66</height>
+             </size>
+            </property>
+            <property name="toolTip">
+             <string>Delete atoms and bonds</string>
+            </property>
+            <property name="text">
+             <string>Delete</string>
+            </property>
+            <property name="icon">
+             <iconset resource="icons.qrc">
+              <normaloff>:/build/icons/build_delete.svg</normaloff>:/build/icons/build_delete.svg</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>30</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <property name="checked">
+             <bool>false</bool>
+            </property>
+            <property name="autoExclusive">
+             <bool>false</bool>
+            </property>
+            <property name="toolButtonStyle">
+             <enum>Qt::ToolButtonTextUnderIcon</enum>
+            </property>
+            <property name="autoRaise">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1" rowspan="2">
+           <widget class="TMenuButton" name="BuildDrawFragmentButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>40</width>
+              <height>66</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>128</width>
+              <height>66</height>
+             </size>
+            </property>
+            <property name="toolTip">
+             <string>Draw fragments</string>
+            </property>
+            <property name="text">
+             <string>Fragment</string>
+            </property>
+            <property name="icon">
+             <iconset resource="icons.qrc">
+              <normaloff>:/build/icons/build_fragment.svg</normaloff>:/build/icons/build_fragment.svg</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>30</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <property name="autoExclusive">
+             <bool>false</bool>
+            </property>
+            <property name="toolButtonStyle">
+             <enum>Qt::ToolButtonTextUnderIcon</enum>
+            </property>
+            <property name="autoRaise">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="7">
+           <widget class="QPushButton" name="BuildDrawKeepCenteredButton">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="toolTip">
+             <string>Keep model atoms centered when building</string>
+            </property>
+            <property name="text">
+             <string>Keep Centered</string>
+            </property>
+            <property name="icon">
+             <iconset resource="icons.qrc">
+              <normaloff>:/view/icons/view_perspective.svg</normaloff>:/view/icons/view_perspective.svg</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>18</width>
+              <height>18</height>
+             </size>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <property name="flat">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="5" rowspan="2">
+           <widget class="TMenuButton" name="BuildDrawGrowButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>40</width>
+              <height>66</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>128</width>
+              <height>66</height>
+             </size>
+            </property>
+            <property name="toolTip">
+             <string>Grow atoms on other atoms (icon reflects current geometry)</string>
+            </property>
+            <property name="text">
+             <string>Grow</string>
+            </property>
+            <property name="icon">
+             <iconset resource="icons.qrc">
+              <normaloff>:/atomgeometry/icons/atomgeometry_tetrahedral.png</normaloff>:/atomgeometry/icons/atomgeometry_tetrahedral.png</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>30</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <property name="autoExclusive">
+             <bool>false</bool>
+            </property>
+            <property name="toolButtonStyle">
+             <enum>Qt::ToolButtonTextUnderIcon</enum>
+            </property>
+            <property name="autoRaise">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="6" rowspan="2">
+           <widget class="Line" name="line_66">
+            <property name="lineWidth">
+             <number>3</number>
+            </property>
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="Line" name="line_10">
+          <property name="lineWidth">
+           <number>3</number>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <layout class="QGridLayout" name="gridLayout_19">
+          <item row="0" column="0">
+           <widget class="TMenuButton" name="BuildElementTableButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>40</width>
+              <height>66</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>128</width>
+              <height>66</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Table</string>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>30</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <property name="checked">
+             <bool>true</bool>
+            </property>
+            <property name="autoExclusive">
+             <bool>false</bool>
+            </property>
+            <property name="toolButtonStyle">
+             <enum>Qt::ToolButtonTextUnderIcon</enum>
+            </property>
+            <property name="autoRaise">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="TMenuButton" name="BuildElementCommonButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>40</width>
+              <height>66</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>128</width>
+              <height>66</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Common</string>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>30</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <property name="checked">
+             <bool>false</bool>
+            </property>
+            <property name="autoExclusive">
+             <bool>false</bool>
+            </property>
+            <property name="toolButtonStyle">
+             <enum>Qt::ToolButtonTextUnderIcon</enum>
+            </property>
+            <property name="autoRaise">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0" colspan="2">
+           <widget class="QLabel" name="label_4">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="frameShape">
+             <enum>QFrame::NoFrame</enum>
+            </property>
+            <property name="text">
+             <string>Element</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="Line" name="line_21">
+          <property name="lineWidth">
+           <number>3</number>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <layout class="QGridLayout" name="gridLayout_20">
+          <item row="0" column="0">
+           <widget class="TMenuButton" name="BuildBondingRebondButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>40</width>
+              <height>66</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>128</width>
+              <height>66</height>
+             </size>
+            </property>
+            <property name="toolTip">
+             <string>Recalculate bonding between all atoms</string>
+            </property>
+            <property name="text">
+             <string>Rebond</string>
+            </property>
+            <property name="icon">
+             <iconset resource="icons.qrc">
+              <normaloff>:/build/icons/build_rebond.svg</normaloff>:/build/icons/build_rebond.svg</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>30</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="checkable">
+             <bool>false</bool>
+            </property>
+            <property name="checked">
+             <bool>false</bool>
+            </property>
+            <property name="autoExclusive">
+             <bool>false</bool>
+            </property>
+            <property name="toolButtonStyle">
+             <enum>Qt::ToolButtonTextUnderIcon</enum>
+            </property>
+            <property name="autoRaise">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="TMenuButton" name="BuildBondingAugmentButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>40</width>
+              <height>66</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>128</width>
+              <height>66</height>
+             </size>
+            </property>
+            <property name="toolTip">
+             <string>Augment bonding between all atoms</string>
+            </property>
+            <property name="text">
+             <string>Augment</string>
+            </property>
+            <property name="icon">
+             <iconset resource="icons.qrc">
+              <normaloff>:/build/icons/build_augment.svg</normaloff>:/build/icons/build_augment.svg</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>30</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="checkable">
+             <bool>false</bool>
+            </property>
+            <property name="autoExclusive">
+             <bool>false</bool>
+            </property>
+            <property name="toolButtonStyle">
+             <enum>Qt::ToolButtonTextUnderIcon</enum>
+            </property>
+            <property name="autoRaise">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="2">
+           <widget class="TMenuButton" name="BuildBondingClearButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>40</width>
+              <height>66</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>128</width>
+              <height>66</height>
+             </size>
+            </property>
+            <property name="toolTip">
+             <string>Remove all bonds</string>
+            </property>
+            <property name="text">
+             <string>Clear</string>
+            </property>
+            <property name="icon">
+             <iconset resource="icons.qrc">
+              <normaloff>:/build/icons/build_clearbonds.svg</normaloff>:/build/icons/build_clearbonds.svg</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>30</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="checkable">
+             <bool>false</bool>
+            </property>
+            <property name="autoExclusive">
+             <bool>false</bool>
+            </property>
+            <property name="toolButtonStyle">
+             <enum>Qt::ToolButtonTextUnderIcon</enum>
+            </property>
+            <property name="autoRaise">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0" colspan="3">
+           <widget class="QLabel" name="label_6">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>0</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>16777215</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <underline>false</underline>
+              <strikeout>false</strikeout>
+             </font>
+            </property>
+            <property name="autoFillBackground">
+             <bool>false</bool>
+            </property>
+            <property name="frameShape">
+             <enum>QFrame::NoFrame</enum>
+            </property>
+            <property name="text">
+             <string>Bonding</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <spacer name="horizontalSpacer">
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::MinimumExpanding</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>1</width>
+            <height>20</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </widget>
       <widget class="QWidget" name="HomeTab">
        <attribute name="icon">
         <iconset resource="icons.qrc">
@@ -1852,985 +2831,6 @@
         </item>
         <item>
          <spacer name="horizontalSpacer_17">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-          <property name="sizeType">
-           <enum>QSizePolicy::MinimumExpanding</enum>
-          </property>
-          <property name="sizeHint" stdset="0">
-           <size>
-            <width>1</width>
-            <height>20</height>
-           </size>
-          </property>
-         </spacer>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="BuildTab">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <attribute name="title">
-        <string>  Build  </string>
-       </attribute>
-       <layout class="QHBoxLayout" name="horizontalLayout_16">
-        <property name="spacing">
-         <number>4</number>
-        </property>
-        <property name="margin">
-         <number>2</number>
-        </property>
-        <item>
-         <layout class="QGridLayout" name="gridLayout_9">
-          <item row="0" column="0">
-           <widget class="TMenuButton" name="BuildSelectAtomsButton">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>40</width>
-              <height>66</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>128</width>
-              <height>66</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>8</pointsize>
-             </font>
-            </property>
-            <property name="toolTip">
-             <string>Select atoms individually or by box-select</string>
-            </property>
-            <property name="text">
-             <string>Atoms</string>
-            </property>
-            <property name="icon">
-             <iconset resource="icons.qrc">
-              <normaloff>:/select/icons/select_atoms.svg</normaloff>:/select/icons/select_atoms.svg</iconset>
-            </property>
-            <property name="iconSize">
-             <size>
-              <width>30</width>
-              <height>30</height>
-             </size>
-            </property>
-            <property name="checkable">
-             <bool>true</bool>
-            </property>
-            <property name="checked">
-             <bool>true</bool>
-            </property>
-            <property name="autoExclusive">
-             <bool>false</bool>
-            </property>
-            <property name="toolButtonStyle">
-             <enum>Qt::ToolButtonTextUnderIcon</enum>
-            </property>
-            <property name="autoRaise">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="TMenuButton" name="BuildSelectBoundButton">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>40</width>
-              <height>66</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>128</width>
-              <height>66</height>
-             </size>
-            </property>
-            <property name="toolTip">
-             <string>Select atoms in bound fragments</string>
-            </property>
-            <property name="text">
-             <string>Bound</string>
-            </property>
-            <property name="icon">
-             <iconset resource="icons.qrc">
-              <normaloff>:/select/icons/select_molecules.svg</normaloff>:/select/icons/select_molecules.svg</iconset>
-            </property>
-            <property name="iconSize">
-             <size>
-              <width>30</width>
-              <height>30</height>
-             </size>
-            </property>
-            <property name="checkable">
-             <bool>true</bool>
-            </property>
-            <property name="autoExclusive">
-             <bool>false</bool>
-            </property>
-            <property name="toolButtonStyle">
-             <enum>Qt::ToolButtonTextUnderIcon</enum>
-            </property>
-            <property name="autoRaise">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="2">
-           <widget class="TMenuButton" name="BuildSelectElementButton">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>40</width>
-              <height>66</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>128</width>
-              <height>66</height>
-             </size>
-            </property>
-            <property name="toolTip">
-             <string>Select atoms by element</string>
-            </property>
-            <property name="text">
-             <string>Element</string>
-            </property>
-            <property name="icon">
-             <iconset resource="icons.qrc">
-              <normaloff>:/select/icons/select_element.svg</normaloff>:/select/icons/select_element.svg</iconset>
-            </property>
-            <property name="iconSize">
-             <size>
-              <width>30</width>
-              <height>30</height>
-             </size>
-            </property>
-            <property name="checkable">
-             <bool>true</bool>
-            </property>
-            <property name="autoExclusive">
-             <bool>false</bool>
-            </property>
-            <property name="toolButtonStyle">
-             <enum>Qt::ToolButtonTextUnderIcon</enum>
-            </property>
-            <property name="autoRaise">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0" colspan="3">
-           <widget class="QLabel" name="label_8">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text">
-             <string>Select</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <widget class="Line" name="line_14">
-          <property name="lineWidth">
-           <number>3</number>
-          </property>
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <layout class="QGridLayout" name="gridLayout_18">
-          <item row="3" column="0" colspan="8">
-           <widget class="QLabel" name="label_9">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text">
-             <string>Draw</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="3" rowspan="2">
-           <widget class="TMenuButton" name="BuildDrawTransmuteButton">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>40</width>
-              <height>66</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>128</width>
-              <height>66</height>
-             </size>
-            </property>
-            <property name="toolTip">
-             <string>Transmute atoms to other elements</string>
-            </property>
-            <property name="text">
-             <string>Transmute</string>
-            </property>
-            <property name="icon">
-             <iconset resource="icons.qrc">
-              <normaloff>:/build/icons/build_transmute.svg</normaloff>:/build/icons/build_transmute.svg</iconset>
-            </property>
-            <property name="iconSize">
-             <size>
-              <width>30</width>
-              <height>30</height>
-             </size>
-            </property>
-            <property name="checkable">
-             <bool>true</bool>
-            </property>
-            <property name="autoExclusive">
-             <bool>false</bool>
-            </property>
-            <property name="toolButtonStyle">
-             <enum>Qt::ToolButtonTextUnderIcon</enum>
-            </property>
-            <property name="autoRaise">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0" rowspan="2">
-           <widget class="TMenuButton" name="BuildDrawDrawButton">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>40</width>
-              <height>66</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>128</width>
-              <height>66</height>
-             </size>
-            </property>
-            <property name="toolTip">
-             <string>Draw atoms, chains, and individual bonds</string>
-            </property>
-            <property name="text">
-             <string>Draw</string>
-            </property>
-            <property name="icon">
-             <iconset resource="icons.qrc">
-              <normaloff>:/build/icons/build_draw.svg</normaloff>:/build/icons/build_draw.svg</iconset>
-            </property>
-            <property name="iconSize">
-             <size>
-              <width>30</width>
-              <height>30</height>
-             </size>
-            </property>
-            <property name="checkable">
-             <bool>true</bool>
-            </property>
-            <property name="autoExclusive">
-             <bool>false</bool>
-            </property>
-            <property name="toolButtonStyle">
-             <enum>Qt::ToolButtonTextUnderIcon</enum>
-            </property>
-            <property name="autoRaise">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="4" rowspan="2">
-           <widget class="TMenuButton" name="BuildDrawAddHButton">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>40</width>
-              <height>66</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>128</width>
-              <height>66</height>
-             </size>
-            </property>
-            <property name="toolTip">
-             <string>Add hydrogens to individual atoms</string>
-            </property>
-            <property name="text">
-             <string>Add H</string>
-            </property>
-            <property name="icon">
-             <iconset resource="icons.qrc">
-              <normaloff>:/build/icons/build_addh.svg</normaloff>:/build/icons/build_addh.svg</iconset>
-            </property>
-            <property name="iconSize">
-             <size>
-              <width>30</width>
-              <height>30</height>
-             </size>
-            </property>
-            <property name="checkable">
-             <bool>true</bool>
-            </property>
-            <property name="autoExclusive">
-             <bool>false</bool>
-            </property>
-            <property name="toolButtonStyle">
-             <enum>Qt::ToolButtonTextUnderIcon</enum>
-            </property>
-            <property name="autoRaise">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="7">
-           <widget class="QPushButton" name="BuildDrawPreventFoldButton">
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>30</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>16777215</width>
-              <height>30</height>
-             </size>
-            </property>
-            <property name="toolTip">
-             <string>Prevent folding of atoms when building</string>
-            </property>
-            <property name="text">
-             <string>Prevent Fold</string>
-            </property>
-            <property name="icon">
-             <iconset resource="icons.qrc">
-              <normaloff>:/build/icons/build_nofold.svg</normaloff>:/build/icons/build_nofold.svg</iconset>
-            </property>
-            <property name="iconSize">
-             <size>
-              <width>18</width>
-              <height>18</height>
-             </size>
-            </property>
-            <property name="checkable">
-             <bool>true</bool>
-            </property>
-            <property name="flat">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="2" rowspan="2">
-           <widget class="TMenuButton" name="BuildDrawDeleteButton">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>40</width>
-              <height>66</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>128</width>
-              <height>66</height>
-             </size>
-            </property>
-            <property name="toolTip">
-             <string>Delete atoms and bonds</string>
-            </property>
-            <property name="text">
-             <string>Delete</string>
-            </property>
-            <property name="icon">
-             <iconset resource="icons.qrc">
-              <normaloff>:/build/icons/build_delete.svg</normaloff>:/build/icons/build_delete.svg</iconset>
-            </property>
-            <property name="iconSize">
-             <size>
-              <width>30</width>
-              <height>30</height>
-             </size>
-            </property>
-            <property name="checkable">
-             <bool>true</bool>
-            </property>
-            <property name="checked">
-             <bool>false</bool>
-            </property>
-            <property name="autoExclusive">
-             <bool>false</bool>
-            </property>
-            <property name="toolButtonStyle">
-             <enum>Qt::ToolButtonTextUnderIcon</enum>
-            </property>
-            <property name="autoRaise">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1" rowspan="2">
-           <widget class="TMenuButton" name="BuildDrawFragmentButton">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>40</width>
-              <height>66</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>128</width>
-              <height>66</height>
-             </size>
-            </property>
-            <property name="toolTip">
-             <string>Draw fragments</string>
-            </property>
-            <property name="text">
-             <string>Fragment</string>
-            </property>
-            <property name="icon">
-             <iconset resource="icons.qrc">
-              <normaloff>:/build/icons/build_fragment.svg</normaloff>:/build/icons/build_fragment.svg</iconset>
-            </property>
-            <property name="iconSize">
-             <size>
-              <width>30</width>
-              <height>30</height>
-             </size>
-            </property>
-            <property name="checkable">
-             <bool>true</bool>
-            </property>
-            <property name="autoExclusive">
-             <bool>false</bool>
-            </property>
-            <property name="toolButtonStyle">
-             <enum>Qt::ToolButtonTextUnderIcon</enum>
-            </property>
-            <property name="autoRaise">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="7">
-           <widget class="QPushButton" name="BuildDrawKeepCenteredButton">
-            <property name="enabled">
-             <bool>false</bool>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>30</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>16777215</width>
-              <height>30</height>
-             </size>
-            </property>
-            <property name="toolTip">
-             <string>Keep model atoms centered when building</string>
-            </property>
-            <property name="text">
-             <string>Keep Centered</string>
-            </property>
-            <property name="icon">
-             <iconset resource="icons.qrc">
-              <normaloff>:/view/icons/view_perspective.svg</normaloff>:/view/icons/view_perspective.svg</iconset>
-            </property>
-            <property name="iconSize">
-             <size>
-              <width>18</width>
-              <height>18</height>
-             </size>
-            </property>
-            <property name="checkable">
-             <bool>true</bool>
-            </property>
-            <property name="flat">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="5" rowspan="2">
-           <widget class="TMenuButton" name="BuildDrawGrowButton">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>40</width>
-              <height>66</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>128</width>
-              <height>66</height>
-             </size>
-            </property>
-            <property name="toolTip">
-             <string>Grow atoms on other atoms (icon reflects current geometry)</string>
-            </property>
-            <property name="text">
-             <string>Grow</string>
-            </property>
-            <property name="icon">
-             <iconset resource="icons.qrc">
-              <normaloff>:/atomgeometry/icons/atomgeometry_tetrahedral.png</normaloff>:/atomgeometry/icons/atomgeometry_tetrahedral.png</iconset>
-            </property>
-            <property name="iconSize">
-             <size>
-              <width>30</width>
-              <height>30</height>
-             </size>
-            </property>
-            <property name="checkable">
-             <bool>true</bool>
-            </property>
-            <property name="autoExclusive">
-             <bool>false</bool>
-            </property>
-            <property name="toolButtonStyle">
-             <enum>Qt::ToolButtonTextUnderIcon</enum>
-            </property>
-            <property name="autoRaise">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="6" rowspan="2">
-           <widget class="Line" name="line_66">
-            <property name="lineWidth">
-             <number>3</number>
-            </property>
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <widget class="Line" name="line_10">
-          <property name="lineWidth">
-           <number>3</number>
-          </property>
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <layout class="QGridLayout" name="gridLayout_19">
-          <item row="0" column="0">
-           <widget class="TMenuButton" name="BuildElementTableButton">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>40</width>
-              <height>66</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>128</width>
-              <height>66</height>
-             </size>
-            </property>
-            <property name="text">
-             <string>Table</string>
-            </property>
-            <property name="iconSize">
-             <size>
-              <width>30</width>
-              <height>30</height>
-             </size>
-            </property>
-            <property name="checkable">
-             <bool>true</bool>
-            </property>
-            <property name="checked">
-             <bool>true</bool>
-            </property>
-            <property name="autoExclusive">
-             <bool>false</bool>
-            </property>
-            <property name="toolButtonStyle">
-             <enum>Qt::ToolButtonTextUnderIcon</enum>
-            </property>
-            <property name="autoRaise">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="TMenuButton" name="BuildElementCommonButton">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>40</width>
-              <height>66</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>128</width>
-              <height>66</height>
-             </size>
-            </property>
-            <property name="text">
-             <string>Common</string>
-            </property>
-            <property name="iconSize">
-             <size>
-              <width>30</width>
-              <height>30</height>
-             </size>
-            </property>
-            <property name="checkable">
-             <bool>true</bool>
-            </property>
-            <property name="checked">
-             <bool>false</bool>
-            </property>
-            <property name="autoExclusive">
-             <bool>false</bool>
-            </property>
-            <property name="toolButtonStyle">
-             <enum>Qt::ToolButtonTextUnderIcon</enum>
-            </property>
-            <property name="autoRaise">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0" colspan="2">
-           <widget class="QLabel" name="label_4">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>16777215</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="frameShape">
-             <enum>QFrame::NoFrame</enum>
-            </property>
-            <property name="text">
-             <string>Element</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <widget class="Line" name="line_21">
-          <property name="lineWidth">
-           <number>3</number>
-          </property>
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <layout class="QGridLayout" name="gridLayout_20">
-          <item row="0" column="0">
-           <widget class="TMenuButton" name="BuildBondingRebondButton">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>40</width>
-              <height>66</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>128</width>
-              <height>66</height>
-             </size>
-            </property>
-            <property name="toolTip">
-             <string>Recalculate bonding between all atoms</string>
-            </property>
-            <property name="text">
-             <string>Rebond</string>
-            </property>
-            <property name="icon">
-             <iconset resource="icons.qrc">
-              <normaloff>:/build/icons/build_rebond.svg</normaloff>:/build/icons/build_rebond.svg</iconset>
-            </property>
-            <property name="iconSize">
-             <size>
-              <width>30</width>
-              <height>30</height>
-             </size>
-            </property>
-            <property name="checkable">
-             <bool>false</bool>
-            </property>
-            <property name="checked">
-             <bool>false</bool>
-            </property>
-            <property name="autoExclusive">
-             <bool>false</bool>
-            </property>
-            <property name="toolButtonStyle">
-             <enum>Qt::ToolButtonTextUnderIcon</enum>
-            </property>
-            <property name="autoRaise">
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1">
-           <widget class="TMenuButton" name="BuildBondingAugmentButton">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>40</width>
-              <height>66</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>128</width>
-              <height>66</height>
-             </size>
-            </property>
-            <property name="toolTip">
-             <string>Augment bonding between all atoms</string>
-            </property>
-            <property name="text">
-             <string>Augment</string>
-            </property>
-            <property name="icon">
-             <iconset resource="icons.qrc">
-              <normaloff>:/build/icons/build_augment.svg</normaloff>:/build/icons/build_augment.svg</iconset>
-            </property>
-            <property name="iconSize">
-             <size>
-              <width>30</width>
-              <height>30</height>
-             </size>
-            </property>
-            <property name="checkable">
-             <bool>false</bool>
-            </property>
-            <property name="autoExclusive">
-             <bool>false</bool>
-            </property>
-            <property name="toolButtonStyle">
-             <enum>Qt::ToolButtonTextUnderIcon</enum>
-            </property>
-            <property name="autoRaise">
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="2">
-           <widget class="TMenuButton" name="BuildBondingClearButton">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>40</width>
-              <height>66</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>128</width>
-              <height>66</height>
-             </size>
-            </property>
-            <property name="toolTip">
-             <string>Remove all bonds</string>
-            </property>
-            <property name="text">
-             <string>Clear</string>
-            </property>
-            <property name="icon">
-             <iconset resource="icons.qrc">
-              <normaloff>:/build/icons/build_clearbonds.svg</normaloff>:/build/icons/build_clearbonds.svg</iconset>
-            </property>
-            <property name="iconSize">
-             <size>
-              <width>30</width>
-              <height>30</height>
-             </size>
-            </property>
-            <property name="checkable">
-             <bool>false</bool>
-            </property>
-            <property name="autoExclusive">
-             <bool>false</bool>
-            </property>
-            <property name="toolButtonStyle">
-             <enum>Qt::ToolButtonTextUnderIcon</enum>
-            </property>
-            <property name="autoRaise">
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0" colspan="3">
-           <widget class="QLabel" name="label_6">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>16777215</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <underline>false</underline>
-              <strikeout>false</strikeout>
-             </font>
-            </property>
-            <property name="autoFillBackground">
-             <bool>false</bool>
-            </property>
-            <property name="frameShape">
-             <enum>QFrame::NoFrame</enum>
-            </property>
-            <property name="text">
-             <string>Bonding</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </item>
-        <item>
-         <spacer name="horizontalSpacer">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
           </property>
@@ -7802,12 +7802,12 @@
              </size>
             </property>
             <property name="text">
-             <string>ID / Elements</string>
+             <string>Target</string>
             </property>
            </widget>
           </item>
           <item row="0" column="1" colspan="2">
-           <widget class="QComboBox" name="SelectElementSelectCombo">
+           <widget class="QComboBox" name="SelectIntelligentTargetCombo">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -7834,87 +7834,20 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="0" colspan="2">
-           <widget class="QPushButton" name="SelectElementSelectButton">
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>30</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>16777215</width>
-              <height>30</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <weight>50</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="toolTip">
-             <string>Select atoms according to the supplied expression</string>
-            </property>
-            <property name="text">
-             <string>Select</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="2">
-           <widget class="QPushButton" name="SelectElementDeselectButton">
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>30</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>16777215</width>
-              <height>30</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <weight>50</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="toolTip">
-             <string>Deselect atoms according to the supplied expression</string>
-            </property>
-            <property name="text">
-             <string>Deselect</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0" colspan="3">
+          <item row="2" column="0" colspan="5">
            <widget class="QLabel" name="label_26">
             <property name="text">
-             <string>Select by ID/Element</string>
+             <string>Intelligent Select</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
             </property>
            </widget>
           </item>
-         </layout>
-        </item>
-        <item>
-         <widget class="Line" name="line_23">
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <layout class="QGridLayout" name="gridLayout_52">
-          <item row="0" column="0">
-           <widget class="QLabel" name="label_27">
+          <item row="1" column="1">
+           <widget class="QComboBox" name="SelectIntelligentTypeCombo">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -7922,73 +7855,45 @@
             <property name="minimumSize">
              <size>
               <width>0</width>
-              <height>30</height>
+              <height>0</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
               <width>16777215</width>
-              <height>30</height>
+              <height>24</height>
              </size>
             </property>
-            <property name="text">
-             <string>NETA</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="1" colspan="2">
-           <widget class="QComboBox" name="SelectNETACodeCombo">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
+            <property name="toolTip">
+             <string>Specify elements or atom IDs (e.g. C, He-Ar, or 1-10). Use '+' to indicate 'up to' or 'and after' (e.g. +N, 100+)</string>
             </property>
             <property name="editable">
              <bool>true</bool>
             </property>
+            <item>
+             <property name="text">
+              <string>Auto (&lt;unknown&gt;)</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Range Selection (n-m, C-Ag, 4+, +21, etc.)</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>NETA Description</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Code Loop Selection</string>
+             </property>
+            </item>
            </widget>
           </item>
-          <item row="2" column="0" colspan="4">
-           <widget class="QLabel" name="label_28">
-            <property name="text">
-             <string>Select by Type</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0" colspan="2">
-           <widget class="QPushButton" name="SelectNETASelectButton">
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>30</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>16777215</width>
-              <height>30</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <weight>50</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="toolTip">
-             <string>Select atoms according to the supplied expression</string>
-            </property>
-            <property name="text">
-             <string>Select</string>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="3">
-           <widget class="TMenuButton" name="SelectNETAElementButton">
+          <item row="1" column="2">
+           <widget class="TMenuButton" name="SelectIntelligentElementButton">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -8018,35 +7923,122 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="2" colspan="2">
-           <widget class="QPushButton" name="SelectNETADeselectButton">
+          <item row="0" column="3" rowspan="2">
+           <widget class="TMenuButton" name="SelectIntelligentAddButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
             <property name="minimumSize">
              <size>
-              <width>0</width>
-              <height>30</height>
+              <width>40</width>
+              <height>66</height>
              </size>
             </property>
             <property name="maximumSize">
              <size>
-              <width>16777215</width>
-              <height>30</height>
+              <width>128</width>
+              <height>66</height>
              </size>
             </property>
             <property name="font">
              <font>
-              <weight>50</weight>
-              <bold>false</bold>
+              <pointsize>8</pointsize>
              </font>
             </property>
             <property name="toolTip">
-             <string>Deselect atoms according to the supplied expression</string>
+             <string>Expand the current selection</string>
             </property>
             <property name="text">
-             <string>Deselect</string>
+             <string>Add</string>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>30</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="checkable">
+             <bool>false</bool>
+            </property>
+            <property name="checked">
+             <bool>false</bool>
+            </property>
+            <property name="autoExclusive">
+             <bool>false</bool>
+            </property>
+            <property name="toolButtonStyle">
+             <enum>Qt::ToolButtonTextUnderIcon</enum>
+            </property>
+            <property name="autoRaise">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="4" rowspan="2">
+           <widget class="TMenuButton" name="SelectIntelligentRemoveButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>40</width>
+              <height>66</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>128</width>
+              <height>66</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>8</pointsize>
+             </font>
+            </property>
+            <property name="toolTip">
+             <string>Expand the current selection</string>
+            </property>
+            <property name="text">
+             <string>Remove</string>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>30</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="checkable">
+             <bool>false</bool>
+            </property>
+            <property name="checked">
+             <bool>false</bool>
+            </property>
+            <property name="autoExclusive">
+             <bool>false</bool>
+            </property>
+            <property name="toolButtonStyle">
+             <enum>Qt::ToolButtonTextUnderIcon</enum>
+            </property>
+            <property name="autoRaise">
+             <bool>false</bool>
             </property>
            </widget>
           </item>
          </layout>
+        </item>
+        <item>
+         <widget class="Line" name="line_23">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+         </widget>
         </item>
         <item>
          <widget class="Line" name="line_25">
@@ -8054,117 +8046,6 @@
            <enum>Qt::Vertical</enum>
           </property>
          </widget>
-        </item>
-        <item>
-         <layout class="QGridLayout" name="gridLayout_53">
-          <item row="0" column="1" colspan="2">
-           <widget class="QComboBox" name="SelectCodeCodeCombo">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="toolTip">
-             <string>The code written here will be executed for each atom 'i' (supplied as a variable of the same name). It should 'return TRUE;' when the atom 'i' is to be selected.'</string>
-            </property>
-            <property name="editable">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="2">
-           <widget class="QPushButton" name="SelectCodeDeselectButton">
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>30</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>16777215</width>
-              <height>30</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <weight>50</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="toolTip">
-             <string>Run the selected code as 'for (i in atoms) if (&lt;code&gt;) deselectatom(i);'</string>
-            </property>
-            <property name="text">
-             <string>Deselect</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0" colspan="3">
-           <widget class="QLabel" name="label_29">
-            <property name="text">
-             <string>Select by Code</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="0">
-           <widget class="QLabel" name="CodeLabel">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>30</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>16777215</width>
-              <height>30</height>
-             </size>
-            </property>
-            <property name="text">
-             <string>Code</string>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0" colspan="2">
-           <widget class="QPushButton" name="SelectCodeSelectButton">
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>30</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>16777215</width>
-              <height>30</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <weight>50</weight>
-              <bold>false</bold>
-             </font>
-            </property>
-            <property name="toolTip">
-             <string>Run the selected code as 'for (i in atoms) if (&lt;code&gt;) selectatom(i);'</string>
-            </property>
-            <property name="text">
-             <string>Select</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
         </item>
         <item>
          <spacer name="horizontalSpacer_16">
