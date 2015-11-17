@@ -48,33 +48,33 @@ class NetaParser
 	 */
 	private:
 	// Character string source
-	QString stringSource_;
+	static QString stringSource_;
 	// Integer position in stringSource, total length of string, and starting position of current token/function
-	int stringPos_, stringLength_, tokenStart_, functionStart_;
+	static int stringPos_, stringLength_, tokenStart_, functionStart_;
 	// Line parser
-	LineParser parser_;
+	static LineParser parser_;
 	// Line number in source file that we've just read
-	int lineNumber_;
+	static int lineNumber_;
 	// Whether the current input source is a file or not
-	bool isFileSource_;
+	static bool isFileSource_;
 
 	public:
 	// Parser lexer, called by yylex()
-	int lex();
+	static int lex();
 	// Return whether the current input stream is a file or not
-	bool isFileSource();
+	static bool isFileSource();
 	// Get next character from current input stream
-	char getChar();
+	static char getChar();
 	// Peek next character from current input stream
-	char peekChar();
+	static char peekChar();
 	// 'Replace' last character read from current input stream
-	void unGetChar();
+	static void unGetChar();
 	// Clear all node data
-	void clear();
+	static void clear();
 	// Print layout of current tree
-	void print();
+	static void print();
 	// Print error information and location
-	void printErrorInfo();
+	static void printErrorInfo();
 
 
 	/*
@@ -82,51 +82,55 @@ class NetaParser
 	 */
 	private:
 	// Node context stack
-	RefList<NetaContextNode,int> contextStack_;
+	static RefList<NetaContextNode,int> contextStack_;
 	// Current NETA structure target
-	Neta* neta_;
+	static Neta* neta_;
 	// Current NETA target structure parent
-	Forcefield* targetParentForcefield_;
+	static Forcefield* targetParentForcefield_;
 	// Name of last unrecognised token
-	QString lastUnknownToken_;
+	static QString lastUnknownToken_;
+	// Whether to suppress messaging output
+	static bool quiet_;
 
 	public:
 	// Pop topmost node of contextStack_
-	void popContext();
+	static void popContext();
 	// Return name of last unrecognised token
-	QString lastUnknownToken();
+	static QString lastUnknownToken();
+	// Return whether the parser is in quiet mode
+	static bool quiet();
 	// Create guts of within supplied NETA structure from supplied character element and string
-	bool createNeta(Neta* target, QString neta, Forcefield* parentff );
+	static bool createNeta(Neta* target, QString neta, Forcefield* parentff, bool quiet = false);
 	// Set description (called by lexer)
-	void setDescription(NetaNode* desc);
+	static void setDescription(NetaNode* desc);
 	// Join two nodes together
-	NetaNode* join(Neta::NetaLogicType logic, NetaNode* node1, NetaNode* node2);
+	static NetaNode* join(Neta::NetaLogicType logic, NetaNode* node1, NetaNode* node2);
 	// Link two nodes together (with direct pointers)
-	NetaNode* link(NetaNode* node1, NetaNode* node2);
+	static NetaNode* link(NetaNode* node1, NetaNode* node2);
 	// Create element/type list item
-	RefListItem<ForcefieldAtom,int>* createElementType(int eltype);
+	static RefListItem<ForcefieldAtom,int>* createElementType(int eltype);
 	// Join element/type list items
-	RefListItem<ForcefieldAtom,int>* joinElementTypes(RefListItem<ForcefieldAtom,int>* type1, RefListItem<ForcefieldAtom,int>* type2);
+	static RefListItem<ForcefieldAtom,int>* joinElementTypes(RefListItem<ForcefieldAtom,int>* type1, RefListItem<ForcefieldAtom,int>* type2);
 	// Create keyword node in current NETA structure
-	NetaNode* createKeywordNode(Neta::NetaKeyword nk);
+	static NetaNode* createKeywordNode(Neta::NetaKeyword nk);
 	// Create geometry node in current NETA structure
-	NetaNode* createGeometryNode(Atom::AtomGeometry ag);
+	static NetaNode* createGeometryNode(Atom::AtomGeometry ag);
 	// Create value node in current NETA structure
-	NetaNode* createValueNode(Neta::NetaValue nv, Neta::NetaValueComparison nvc, int value);
+	static NetaNode* createValueNode(Neta::NetaValue nv, Neta::NetaValueComparison nvc, int value);
 	// Create bound node in current NETA structure
-	NetaBoundNode* createBoundNode();
+	static NetaBoundNode* createBoundNode();
 	// Create ring node in current NETA structure
-	NetaRingNode* createRingNode();
+	static NetaRingNode* createRingNode();
 	// Create chain node in current NETA structure
-	NetaChainNode* createChainNode();
+	static NetaChainNode* createChainNode();
 	// Create measurement node in current NETA structure
-	NetaMeasurementNode* createMeasurementNode(bool removeNeighbours);
+	static NetaMeasurementNode* createMeasurementNode(bool removeNeighbours);
 	// Find named define in forcefield
-	NetaNode* findDefine(QString name);
+	static NetaNode* findDefine(QString name);
 };
 
 // External declaration
-extern NetaParser netaparser;
+// extern NetaParser netaparser;
 
 ATEN_END_NAMESPACE
 

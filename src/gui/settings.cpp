@@ -32,7 +32,7 @@ void AtenWindow::loadSettings()
 	QString key;
 	QFileInfo fi1, fi2;
 	QString filename;
-	QStringList commandHistory, selectHistory, selectCodeHistory, selectNETAHistory;
+	QStringList commandHistory, selectHistory;
 	Program* prog, *loadedscript;
 	int n;
 	bool collapsed;
@@ -141,14 +141,8 @@ void AtenWindow::loadSettings()
 						}
 					}
 					break;
-				case (Prefs::SelectCodeHistory):
-					selectCodeHistory << data;
-					break;
 				case (Prefs::SelectHistory):
 					selectHistory << data;
-					break;
-				case (Prefs::SelectNETAHistory):
-					selectNETAHistory << data;
 					break;
 			}
 		}
@@ -159,12 +153,8 @@ void AtenWindow::loadSettings()
 	// Update GUI controls
 	commandWidget->setCommandList(commandHistory);
 	// -- Combo histories on Select panel
-	ui.SelectElementSelectCombo->addItems(selectHistory);
-	ui.SelectNETACodeCombo->addItems(selectNETAHistory);
-	ui.SelectCodeCodeCombo->addItems(selectCodeHistory);
-	ui.SelectElementSelectCombo->setCurrentIndex(-1);
-	ui.SelectNETACodeCombo->setCurrentIndex(-1);
-	ui.SelectCodeCodeCombo->setCurrentIndex(-1);
+	ui.SelectIntelligentTargetCombo->addItems(selectHistory);
+	ui.SelectIntelligentTargetCombo->setCurrentIndex(-1);
 }
 
 // Save Qt settings
@@ -215,27 +205,12 @@ void AtenWindow::saveSettings()
 			historyFile.writeLine(line);
 		}
 		
-		// Select combo history
-		for (n=0; n < ui.SelectElementSelectCombo->count(); ++n)
+		// Intelligent Selection history
+		for (n=0; n < ui.SelectIntelligentTargetCombo->count(); ++n)
 		{
-			line.sprintf("%s  %s\n", Prefs::historyType(Prefs::SelectHistory), qPrintable(ui.SelectElementSelectCombo->itemText(n)));
+			line.sprintf("%s  %s\n", Prefs::historyType(Prefs::SelectHistory), qPrintable(ui.SelectIntelligentTargetCombo->itemText(n)));
 			historyFile.writeLine(line);
 		}
-		
-		// SelectCodecombo history
-		for (n=0; n < ui.SelectCodeCodeCombo->count(); ++n)
-		{
-			line.sprintf("%s  %s\n", Prefs::historyType(Prefs::SelectCodeHistory), qPrintable(ui.SelectCodeCodeCombo->itemText(n)));
-			historyFile.writeLine(line);
-		}
-		
-		// SelectNeta combo history
-		for (n=0; n < ui.SelectNETACodeCombo->count(); ++n)
-		{
-			line.sprintf("%s  %s\n", Prefs::historyType(Prefs::SelectNETAHistory), qPrintable(ui.SelectNETACodeCombo->itemText(n)));
-			historyFile.writeLine(line);
-		}
-		
 	}
 	
 	historyFile.closeFiles();

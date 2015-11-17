@@ -480,7 +480,7 @@ bool Commands::function_TestSelect(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	for (int i=0; i<c->nArgs(); i++) if (!obj.rs()->selectAtoms(c->argNode(i), true, true))
 	{
 		rv.set(false);
-		break;
+		return true;
 	}
 	rv.set(true);
 

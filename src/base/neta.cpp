@@ -350,7 +350,7 @@ bool Neta::createBasic(Atom* i, bool explicitBondType, double torsionTolerance)
 	}
 	if (!torsionDesc.isEmpty()) typeDesc += torsionDesc;
 
-	if (!netaparser.createNeta(this, typeDesc, NULL))
+	if (!NetaParser::createNeta(this, typeDesc, NULL))
 	{
 		Messenger::print("Failed to create type description in Neta::createBasic().");
 		return false;

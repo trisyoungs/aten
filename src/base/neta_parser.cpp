@@ -28,8 +28,23 @@ int NetaParser_parse();
 
 ATEN_BEGIN_NAMESPACE
 
-// External Declarations
-NetaParser netaparser;
+// // External Declarations
+// NetaParser netaparser;
+
+// Static Members
+QString NetaParser::stringSource_;
+int NetaParser::stringPos_ = 0;
+int NetaParser::stringLength_ = 0;
+int NetaParser::tokenStart_ = 0;
+int NetaParser::functionStart_ = 0;
+LineParser NetaParser::parser_;
+int NetaParser::lineNumber_ = 0;
+bool NetaParser::isFileSource_ = false;
+RefList<NetaContextNode,int> NetaParser::contextStack_;
+Neta* NetaParser::neta_ = NULL;
+Forcefield* NetaParser::targetParentForcefield_ = NULL;
+QString NetaParser::lastUnknownToken_;
+bool NetaParser::quiet_ = false;
 
 ATEN_END_NAMESPACE
 
@@ -49,7 +64,7 @@ void NetaParser::printErrorInfo()
 	if (isFileSource_) Messenger::print("Error occurred here (line %i in file '%s'):", parser_.lastLineNo(), qPrintable(parser_.inputFilename()));
 	// QUICK'n'DIRTY!
 	int i;
-	char *temp = new char[stringLength_+32];
+	char* temp = new char[stringLength_+32];
 	for (i=0; i<stringLength_+32; ++i) temp[i] = '\0';
 	for (i=0; i<tokenStart_; i++) temp[i] = (stringSource_.at(i) == '\t' ? '\t' : ' ');
 	if (functionStart_ > -1) for (i=functionStart_; i<stringPos_; i++) if (temp[i] != '\t') temp[i] = '-';
@@ -143,8 +158,14 @@ QString NetaParser::lastUnknownToken()
 	return lastUnknownToken_;
 }
 
+// Return whether the parser is in quiet mode
+bool NetaParser::quiet()
+{
+	return quiet_;
+}
+
 // Create and return NETA structure from supplied character element and string
-bool NetaParser::createNeta(Neta* target, QString neta, Forcefield* parentff)
+bool NetaParser::createNeta(Neta* target, QString neta, Forcefield* parentff, bool quiet)
 {
 	Messenger::enter("NetaParser::createNeta");
 
@@ -168,6 +189,7 @@ bool NetaParser::createNeta(Neta* target, QString neta, Forcefield* parentff)
 	neta_ = target;
 	neta_->clear();
 	targetParentForcefield_ = parentff;
+	quiet_ = quiet;
 
 	// Store the source string
 	stringSource_ = neta;
