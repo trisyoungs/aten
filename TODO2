@@ -1,12 +1,8 @@
 TODO
 ====
-Crash if model is saved, then filters reloaded, then model is saved again (since filter pointer will be wrong)?
-Automatically adjust grid size for number of visible models, based on current aspect ratio and context size etc.
-Sort out remaining icons!
 Undo/Redo:
   * Rework UndoEvent to use an enum and stored data rather than an individual class for each event type.
   * Add Grid-related undo/redo (e.g. title changes, colour etc.)
-Need to shrink used button space when window is not large enough to display all widgets in panel.
 silica.txt needs new option dialog.
 Custom dialog code example (uitest.txt) does not successfully retrieve widget values (true for all dialogs on save?).
 Rename commands for consistency - e.g. newFF to newForcefield?
@@ -18,7 +14,7 @@ o Inherit generates a crash when at first frame
 Session Saving - loaded models, view orientations, loaded grids and cutoff values etc.
 Image saving:
 o Continuous image saving - function key to save image under a set-filename, incrementing a number suffix each time.
-Select Panel - Add support for selection by type name (e.g. O*, OW etc.).
+Intelligent Select - add support for selection by type name (e.g. O*, OW etc.).
 Add set members to Matrix class allowing axes to be set from atoms in models.
 
 Graphics TODO
@@ -31,9 +27,12 @@ Reimplement drawing of grid (volume) axes.
 Fix grid transparency (reconstruct grids according to view angle?).
 Make main view background and text/overlay colour aware of Qt widget colouring style.
 Frame individual model areas when displaying multiple models.
+Automatically adjust grid size for number of visible models, based on current aspect ratio and context size etc.
 
 GUI TODO
 ========
+Need to shrink used button space when window is not large enough to display all widgets in panel.
+Sort out remaining icons!
 AddAtom functionality (from old Build menu).
 Context Menu:
 o Set Colour doesn't work, since it needs a colour selector popup.

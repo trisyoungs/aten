@@ -158,6 +158,8 @@ class Aten
 	Tree* findFilter(FilterData::FilterType filterType, QString nickname) const;
 	// Find filter by description
 	Tree* findFilterByDescription(FilterData::FilterType filterType, QString description) const;
+	// Find filter by id
+	Tree* findFilterByID(FilterData::FilterType filterType, int id) const;
 	// Return first filter in list (of a given type)
 	RefListItem<Tree,int>* filters(FilterData::FilterType filterType) const;
 	// Return nth filter in list (of a given type)

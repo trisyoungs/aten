@@ -118,6 +118,19 @@ int Aten::reloadFilters()
 {
 	Messenger::enter("Aten::reloadFilters");
 
+	// Construct a reflist of all current models and frames that have filters currently set, and store the id of the filter...
+	RefList<Model,int> modelFilterIDs;
+	Model* m, *frame;
+	for (m = models_.first(); m != NULL; m = m->next)
+	{
+		if (m->filter()) modelFilterIDs.add(m, m->filter()->filter.id());
+		for (int n=0; n<m->nTrajectoryFrames(); ++n)
+		{
+			frame = m->trajectoryFrame(n);
+			if (frame->filter()) modelFilterIDs.add(frame, frame->filter()->filter.id());
+		}
+	}
+
 	Messenger::print("Clearing current filters....");
 	filters_[FilterData::ModelImport].clear();
 	filters_[FilterData::ModelExport].clear();
@@ -144,6 +157,14 @@ int Aten::reloadFilters()
 
 	// Create filter lists
 	createFileDialogFilters();
+
+	// Re-set all filter pointers...
+	for (RefListItem<Model,int>* ri = modelFilterIDs.first(); ri != NULL; ri = ri->next)
+	{
+		m = ri->item;
+		Tree* filter = findFilterByID(FilterData::ModelExport, ri->data);
+		m->setFilter(filter);
+	}
 
 	Messenger::exit("Aten::reloadFilters");
 	return nLoaded;
@@ -255,25 +276,37 @@ void Aten::partnerFilters()
 }
 
 // Find filter with specified type and nickname
-Tree* Aten::findFilter(FilterData::FilterType ft, QString nickname) const
+Tree* Aten::findFilter(FilterData::FilterType filterType, QString nickname) const
 {
 	Messenger::enter("Aten::findFilter");
 
 	RefListItem<Tree,int>* result;
-	for (result = filters_[ft].first(); result != NULL; result = result->next) if (result->item->filter.nickname() == nickname) break;
-	if (result == NULL) Messenger::print("No %s filter with nickname '%s' defined.", FilterData::filterType(ft), qPrintable(nickname));
+	for (result = filters_[filterType].first(); result != NULL; result = result->next) if (result->item->filter.nickname() == nickname) break;
+	if (result == NULL) Messenger::print("No %s filter with nickname '%s' defined.", FilterData::filterType(filterType), qPrintable(nickname));
 
 	Messenger::exit("Aten::findFilter");
 	return (result == NULL ? NULL : result->item);
 }
 
-// Find filter by description
-Tree* Aten::findFilterByDescription(FilterData::FilterType ft, QString description) const
+// Find filter by id
+Tree* Aten::findFilterByID(FilterData::FilterType filterType, int id) const
 {
 	Messenger::enter("Aten::findFilterByDescription");
 
 	RefListItem<Tree,int>* result;
-	for (result = filters_[ft].first(); result != NULL; result = result->next) if (result->item->filter.description() == description) break;
+	for (result = filters_[filterType].first(); result != NULL; result = result->next) if (result->item->filter.id() == id) break;
+
+	Messenger::exit("Aten::findFilterByDescription");
+	return (result == NULL ? NULL : result->item);
+}
+
+// Find filter by description
+Tree* Aten::findFilterByDescription(FilterData::FilterType filterType, QString description) const
+{
+	Messenger::enter("Aten::findFilterByDescription");
+
+	RefListItem<Tree,int>* result;
+	for (result = filters_[filterType].first(); result != NULL; result = result->next) if (result->item->filter.description() == description) break;
 // 	if (result == NULL) Messenger::print("Internal Error: No %s filter matches description '%s'.", FilterData::filterType(ft), description);
 
 	Messenger::exit("Aten::findFilterByDescription");
@@ -281,47 +314,47 @@ Tree* Aten::findFilterByDescription(FilterData::FilterType ft, QString descripti
 }
 
 // Return first filter refitem in list (of a given type)
-RefListItem<Tree,int>* Aten::filters(FilterData::FilterType ft) const
+RefListItem<Tree,int>* Aten::filters(FilterData::FilterType filterType) const
 {
-	return filters_[ft].first();
+	return filters_[filterType].first();
 }
 
 // Return nth filter in list (of a given type)
-RefListItem<Tree,int>* Aten::filter(FilterData::FilterType ft, int index)
+RefListItem<Tree,int>* Aten::filter(FilterData::FilterType filterType, int index)
 {
-	if ((index < 0) || (index >= filters_[ft].nItems()))
+	if ((index < 0) || (index >= filters_[filterType].nItems()))
 	{
-		printf("Internal Error : Index %i is out of range for '%s' filter list.\n", index, FilterData::filterType(ft));
+		printf("Internal Error : Index %i is out of range for '%s' filter list.\n", index, FilterData::filterType(filterType));
 		return NULL;
 	}
-	return filters_[ft][index];
+	return filters_[filterType][index];
 }
 
 // Return number of filters of a given type
-int Aten::nFilters(FilterData::FilterType ft) const
+int Aten::nFilters(FilterData::FilterType filterType) const
 {
-	return filters_[ft].nItems();
+	return filters_[filterType].nItems();
 }
 
 // Return pointer to list of filters of given type
-RefList<Tree,int>* Aten::filterList(FilterData::FilterType ft)
+RefList<Tree,int>* Aten::filterList(FilterData::FilterType filterType)
 {
-	return &filters_[ft];
+	return &filters_[filterType];
 }
 
 // Print list of valid filter nicknames
-void Aten::printValidNicknames(FilterData::FilterType ft)
+void Aten::printValidNicknames(FilterData::FilterType filterType)
 {
-	Messenger::print("Valid %s nicknames are:", FilterData::filterType(ft));
-	if (filters_[ft].nItems() == 0) Messenger::print("  <None Available>");
-	for (RefListItem<Tree,int>* ri = filters_[ft].first(); ri != NULL; ri = ri->next)
+	Messenger::print("Valid %s nicknames are:", FilterData::filterType(filterType));
+	if (filters_[filterType].nItems() == 0) Messenger::print("  <None Available>");
+	for (RefListItem<Tree,int>* ri = filters_[filterType].first(); ri != NULL; ri = ri->next)
 		Messenger::print("  %-15s %s", qPrintable(ri->item->filter.nickname()), qPrintable(ri->item->filter.name()));
 }
 
 // Return filter strings for file dialogs
-const QString& Aten::fileDialogFilters(FilterData::FilterType ft) const
+const QString& Aten::fileDialogFilters(FilterData::FilterType filterType) const
 {
-	return fileDialogFilters_[ft];
+	return fileDialogFilters_[filterType];
 }
 
 // Return filter strings for bitmap file dialogs
