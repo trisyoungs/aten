@@ -112,5 +112,5 @@ void AtenProgress::updateAndShow()
 // Close dialog window
 void AtenProgress::terminate()
 {
-	close();
+	hide();
 }

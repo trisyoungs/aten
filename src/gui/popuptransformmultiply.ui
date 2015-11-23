@@ -956,8 +956,8 @@
       <string/>
      </property>
      <property name="icon">
-      <iconset>
-       <normaloff>:/stackicons/icons/stack_celldefine.svg</normaloff>:/stackicons/icons/stack_celldefine.svg</iconset>
+      <iconset resource="icons.qrc">
+       <normaloff>:/basic/icons/basic_cellcentre.svg</normaloff>:/basic/icons/basic_cellcentre.svg</iconset>
      </property>
      <property name="iconSize">
       <size>
@@ -976,6 +976,34 @@
    <header>gui/texponentialspin.hui</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>MatrixXXSpin</tabstop>
+  <tabstop>MatrixXYSpin</tabstop>
+  <tabstop>MatrixXZSpin</tabstop>
+  <tabstop>MatrixYXSpin</tabstop>
+  <tabstop>MatrixYYSpin</tabstop>
+  <tabstop>MatrixYZSpin</tabstop>
+  <tabstop>MatrixZXSpin</tabstop>
+  <tabstop>MatrixZYSpin</tabstop>
+  <tabstop>MatrixZZSpin</tabstop>
+  <tabstop>OriginXSpin</tabstop>
+  <tabstop>OriginYSpin</tabstop>
+  <tabstop>OriginZSpin</tabstop>
+  <tabstop>PickXButton</tabstop>
+  <tabstop>NormaliseXButton</tabstop>
+  <tabstop>OrthogonaliseXButton</tabstop>
+  <tabstop>GenerateXButton</tabstop>
+  <tabstop>PickYButton</tabstop>
+  <tabstop>NormaliseYButton</tabstop>
+  <tabstop>OrthogonaliseYButton</tabstop>
+  <tabstop>GenerateYButton</tabstop>
+  <tabstop>PickZButton</tabstop>
+  <tabstop>NormaliseZButton</tabstop>
+  <tabstop>OrthogonaliseZButton</tabstop>
+  <tabstop>GenerateZButton</tabstop>
+  <tabstop>DefineOriginButton</tabstop>
+  <tabstop>OriginCellCentreButton</tabstop>
+ </tabstops>
  <resources>
   <include location="icons.qrc"/>
  </resources>

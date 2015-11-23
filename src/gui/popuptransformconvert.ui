@@ -267,8 +267,8 @@
       <string/>
      </property>
      <property name="icon">
-      <iconset>
-       <normaloff>:/stackicons/icons/stack_celldefine.svg</normaloff>:/stackicons/icons/stack_celldefine.svg</iconset>
+      <iconset resource="icons.qrc">
+       <normaloff>:/basic/icons/basic_cellcentre.svg</normaloff>:/basic/icons/basic_cellcentre.svg</iconset>
      </property>
      <property name="iconSize">
       <size>
@@ -1746,6 +1746,62 @@
     </widget>
    </item>
   </layout>
+  <zorder>OriginCellCentreButton</zorder>
+  <zorder>SourcePickYButton</zorder>
+  <zorder>line_2</zorder>
+  <zorder>OriginXSpin</zorder>
+  <zorder>SourceOrthogonaliseXButton</zorder>
+  <zorder>SourceMatrixYYSpin</zorder>
+  <zorder>SourceGenerateXButton</zorder>
+  <zorder>label_7</zorder>
+  <zorder>line</zorder>
+  <zorder>SourceMatrixYZSpin</zorder>
+  <zorder>label_3</zorder>
+  <zorder>OriginYSpin</zorder>
+  <zorder>DefineOriginButton</zorder>
+  <zorder>SourceMatrixZXSpin</zorder>
+  <zorder>SourceOrthogonaliseYButton</zorder>
+  <zorder>label</zorder>
+  <zorder>SourcePickXButton</zorder>
+  <zorder>SourcePickZButton</zorder>
+  <zorder>SourceMatrixXXSpin</zorder>
+  <zorder>SourceGenerateYButton</zorder>
+  <zorder>SourceNormaliseXButton</zorder>
+  <zorder>SourceMatrixZZSpin</zorder>
+  <zorder>label_6</zorder>
+  <zorder>SourceNormaliseYButton</zorder>
+  <zorder>SourceOrthogonaliseZButton</zorder>
+  <zorder>label_2</zorder>
+  <zorder>SourceNormaliseZButton</zorder>
+  <zorder>SourceMatrixXYSpin</zorder>
+  <zorder>SourceMatrixXZSpin</zorder>
+  <zorder>SourceGenerateZButton</zorder>
+  <zorder>OriginZSpin</zorder>
+  <zorder>label_4</zorder>
+  <zorder>SourceMatrixZYSpin</zorder>
+  <zorder>SourceMatrixYXSpin</zorder>
+  <zorder>label_5</zorder>
+  <zorder>TargetMatrixXXSpin</zorder>
+  <zorder>TargetMatrixYXSpin</zorder>
+  <zorder>TargetMatrixZXSpin</zorder>
+  <zorder>TargetMatrixXYSpin</zorder>
+  <zorder>TargetMatrixYYSpin</zorder>
+  <zorder>TargetMatrixZYSpin</zorder>
+  <zorder>TargetMatrixXZSpin</zorder>
+  <zorder>TargetMatrixYZSpin</zorder>
+  <zorder>TargetMatrixZZSpin</zorder>
+  <zorder>TargetPickXButton</zorder>
+  <zorder>TargetPickYButton</zorder>
+  <zorder>TargetPickZButton</zorder>
+  <zorder>TargetNormaliseXButton</zorder>
+  <zorder>TargetNormaliseYButton</zorder>
+  <zorder>TargetNormaliseZButton</zorder>
+  <zorder>TargetOrthogonaliseXButton</zorder>
+  <zorder>TargetOrthogonaliseYButton</zorder>
+  <zorder>TargetOrthogonaliseZButton</zorder>
+  <zorder>TargetGenerateXButton</zorder>
+  <zorder>TargetGenerateYButton</zorder>
+  <zorder>TargetGenerateZButton</zorder>
  </widget>
  <customwidgets>
   <customwidget>
@@ -1754,6 +1810,55 @@
    <header>gui/texponentialspin.hui</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>SourceMatrixXXSpin</tabstop>
+  <tabstop>SourceMatrixXYSpin</tabstop>
+  <tabstop>SourceMatrixXZSpin</tabstop>
+  <tabstop>SourceMatrixYXSpin</tabstop>
+  <tabstop>SourceMatrixYYSpin</tabstop>
+  <tabstop>SourceMatrixYZSpin</tabstop>
+  <tabstop>SourceMatrixZXSpin</tabstop>
+  <tabstop>SourceMatrixZYSpin</tabstop>
+  <tabstop>SourceMatrixZZSpin</tabstop>
+  <tabstop>TargetMatrixXXSpin</tabstop>
+  <tabstop>TargetMatrixXYSpin</tabstop>
+  <tabstop>TargetMatrixXZSpin</tabstop>
+  <tabstop>TargetMatrixYXSpin</tabstop>
+  <tabstop>TargetMatrixYYSpin</tabstop>
+  <tabstop>TargetMatrixYZSpin</tabstop>
+  <tabstop>TargetMatrixZXSpin</tabstop>
+  <tabstop>TargetMatrixZYSpin</tabstop>
+  <tabstop>TargetMatrixZZSpin</tabstop>
+  <tabstop>OriginXSpin</tabstop>
+  <tabstop>OriginYSpin</tabstop>
+  <tabstop>OriginZSpin</tabstop>
+  <tabstop>SourcePickXButton</tabstop>
+  <tabstop>SourceNormaliseXButton</tabstop>
+  <tabstop>SourceOrthogonaliseXButton</tabstop>
+  <tabstop>SourceGenerateXButton</tabstop>
+  <tabstop>SourcePickYButton</tabstop>
+  <tabstop>SourceNormaliseYButton</tabstop>
+  <tabstop>SourceOrthogonaliseYButton</tabstop>
+  <tabstop>SourceGenerateYButton</tabstop>
+  <tabstop>SourcePickZButton</tabstop>
+  <tabstop>SourceNormaliseZButton</tabstop>
+  <tabstop>SourceOrthogonaliseZButton</tabstop>
+  <tabstop>SourceGenerateZButton</tabstop>
+  <tabstop>TargetPickXButton</tabstop>
+  <tabstop>TargetNormaliseXButton</tabstop>
+  <tabstop>TargetOrthogonaliseXButton</tabstop>
+  <tabstop>TargetGenerateXButton</tabstop>
+  <tabstop>TargetPickYButton</tabstop>
+  <tabstop>TargetNormaliseYButton</tabstop>
+  <tabstop>TargetOrthogonaliseYButton</tabstop>
+  <tabstop>TargetGenerateYButton</tabstop>
+  <tabstop>TargetPickZButton</tabstop>
+  <tabstop>TargetNormaliseZButton</tabstop>
+  <tabstop>TargetOrthogonaliseZButton</tabstop>
+  <tabstop>TargetGenerateZButton</tabstop>
+  <tabstop>DefineOriginButton</tabstop>
+  <tabstop>OriginCellCentreButton</tabstop>
+ </tabstops>
  <resources>
   <include location="icons.qrc"/>
  </resources>

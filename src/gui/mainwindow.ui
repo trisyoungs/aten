@@ -2075,22 +2075,6 @@
         </item>
         <item>
          <layout class="QGridLayout" name="gridLayout_18">
-          <item row="3" column="0" colspan="8">
-           <widget class="QLabel" name="label_9">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="text">
-             <string>Draw</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
-            </property>
-           </widget>
-          </item>
           <item row="0" column="3" rowspan="2">
            <widget class="TMenuButton" name="BuildDrawTransmuteButton">
             <property name="sizePolicy">
@@ -2480,6 +2464,22 @@
             </property>
             <property name="orientation">
              <enum>Qt::Vertical</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0" colspan="8">
+           <widget class="QLabel" name="label_9">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>Draw</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
             </property>
            </widget>
           </item>
@@ -8836,7 +8836,7 @@
           <property name="spacing">
            <number>6</number>
           </property>
-          <item row="0" column="4">
+          <item row="0" column="5">
            <widget class="QListWidget" name="ScriptsList">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Minimum" vsizetype="Ignored">
@@ -8870,7 +8870,7 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="3">
+          <item row="0" column="4">
            <widget class="TMenuButton" name="ToolsScriptsReloadButton">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
@@ -8900,6 +8900,10 @@
             </property>
             <property name="text">
              <string>Reload</string>
+            </property>
+            <property name="icon">
+             <iconset resource="icons.qrc">
+              <normaloff>:/tools/icons/script_reload.svg</normaloff>:/tools/icons/script_reload.svg</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -8955,6 +8959,10 @@
             <property name="text">
              <string>Load</string>
             </property>
+            <property name="icon">
+             <iconset resource="icons.qrc">
+              <normaloff>:/tools/icons/script_load.svg</normaloff>:/tools/icons/script_load.svg</iconset>
+            </property>
             <property name="iconSize">
              <size>
               <width>30</width>
@@ -8978,7 +8986,7 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="5">
+          <item row="0" column="6">
            <widget class="TMenuButton" name="ToolsScriptsRunButton">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
@@ -9009,6 +9017,10 @@
             <property name="text">
              <string>Run</string>
             </property>
+            <property name="icon">
+             <iconset resource="icons.qrc">
+              <normaloff>:/tools/icons/script_run.svg</normaloff>:/tools/icons/script_run.svg</iconset>
+            </property>
             <property name="iconSize">
              <size>
               <width>30</width>
@@ -9032,7 +9044,7 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="0" colspan="6">
+          <item row="1" column="0" colspan="7">
            <widget class="QLabel" name="label_7">
             <property name="text">
              <string>Scripts</string>
@@ -9073,6 +9085,10 @@
             <property name="text">
              <string>Remove</string>
             </property>
+            <property name="icon">
+             <iconset resource="icons.qrc">
+              <normaloff>:/tools/icons/script_remove.svg</normaloff>:/tools/icons/script_remove.svg</iconset>
+            </property>
             <property name="iconSize">
              <size>
               <width>30</width>
@@ -9096,6 +9112,13 @@
             </property>
            </widget>
           </item>
+          <item row="0" column="3">
+           <widget class="Line" name="line_87">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+           </widget>
+          </item>
          </layout>
         </item>
         <item>
@@ -9107,25 +9130,6 @@
         </item>
         <item>
          <layout class="QGridLayout" name="gridLayout_24">
-          <item row="1" column="0" colspan="2">
-           <widget class="QLabel" name="label_76">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="frameShape">
-             <enum>QFrame::NoFrame</enum>
-            </property>
-            <property name="text">
-             <string>Disorder</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
-            </property>
-           </widget>
-          </item>
           <item row="0" column="0">
            <widget class="TMenuButton" name="ToolsDisorderCreateButton">
             <property name="sizePolicy">
@@ -9181,6 +9185,25 @@
             </property>
             <property name="autoRaise">
              <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_76">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="frameShape">
+             <enum>QFrame::NoFrame</enum>
+            </property>
+            <property name="text">
+             <string>Disorder</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
             </property>
            </widget>
           </item>
@@ -9249,25 +9272,6 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="0" colspan="3">
-           <widget class="QLabel" name="label_77">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="frameShape">
-             <enum>QFrame::NoFrame</enum>
-            </property>
-            <property name="text">
-             <string>Pores</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
-            </property>
-           </widget>
-          </item>
           <item row="0" column="1">
            <widget class="TMenuButton" name="ToolsPoresSchemeButton">
             <property name="sizePolicy">
@@ -9322,6 +9326,25 @@
             </property>
            </widget>
           </item>
+          <item row="1" column="0" colspan="2">
+           <widget class="QLabel" name="label_77">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="frameShape">
+             <enum>QFrame::NoFrame</enum>
+            </property>
+            <property name="text">
+             <string>Pores</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
          </layout>
         </item>
         <item>
@@ -9333,25 +9356,6 @@
         </item>
         <item>
          <layout class="QGridLayout" name="gridLayout_26">
-          <item row="1" column="0" colspan="2">
-           <widget class="QLabel" name="label_78">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="frameShape">
-             <enum>QFrame::NoFrame</enum>
-            </property>
-            <property name="text">
-             <string>Surface</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
-            </property>
-           </widget>
-          </item>
           <item row="0" column="0">
            <widget class="TMenuButton" name="ToolsSurfaceTerminateButton">
             <property name="sizePolicy">
@@ -9403,6 +9407,25 @@
             </property>
             <property name="autoRaise">
              <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_78">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="frameShape">
+             <enum>QFrame::NoFrame</enum>
+            </property>
+            <property name="text">
+             <string>Surface</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
             </property>
            </widget>
           </item>

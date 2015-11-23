@@ -87,6 +87,7 @@ int DisorderWizard::run()
 		ps->recalculatePartitions();
 		progress.setValue(++count);
 	}
+
 	return exec();
 }
 

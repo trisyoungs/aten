@@ -26,6 +26,10 @@
   </qresource>
   <qresource prefix="tools">
     <file>icons/tools_disorder.svg</file>
+    <file>icons/script_load.svg</file>
+    <file>icons/script_reload.svg</file>
+    <file>icons/script_remove.svg</file>
+    <file>icons/script_run.svg</file>
   </qresource>
   <qresource prefix="forcefield">
     <file>icons/forcefield_energy.svg</file>
@@ -79,6 +83,7 @@
   <qresource prefix="/basic">
     <file>icons/basic_pointer.svg</file>
     <file>icons/basic_abc.svg</file>
+    <file>icons/basic_cellcentre.svg</file>
     <file>icons/basic_list.svg</file>
     <file>icons/basic_off.svg</file>
     <file>icons/basic_on.svg</file>

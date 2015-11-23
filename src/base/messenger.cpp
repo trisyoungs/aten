@@ -561,18 +561,15 @@ void Messenger::terminateTask(Task* task)
 	else tasks_.remove(task);
 	++taskPoint_;
 
-	// Call progress indicator if necessary
-	if (progressIndicatorRequired())
+	// Still tasks remaining?
+	if (tasks_.nItems() == 0)
 	{
-		if (atenProgress_) 
-		{
-			if (tasks_.nItems() == 0) atenProgress_->terminate();
-			else atenProgress_->updateAndShow();
-		}
-		else if (printToConsole_)
-		{
-			if (tasks_.nItems() > 0) showCLIProgress();
-			else printf("\n");
-		}
+		if (atenProgress_) atenProgress_->terminate();
+		else if (printToConsole_) printf("\n");
+	}
+	else
+	{
+		if (atenProgress_) atenProgress_->updateAndShow();
+		else if (printToConsole_) showCLIProgress();
 	}
 }
