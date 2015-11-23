@@ -156,6 +156,8 @@ void AtenWindow::on_SelectIntelligentTargetCombo_currentTextChanged(const QStrin
 
 void AtenWindow::on_SelectIntelligentTypeCombo_currentIndexChanged(int index)
 {
+	if (refreshing_) return;
+
 	// Trigger currentTextChanged() signal to check text in combo box
 	on_SelectIntelligentTargetCombo_currentTextChanged(ui.SelectIntelligentTargetCombo->currentText());
 }

@@ -136,10 +136,14 @@ class Messenger
 	static int bufferSize_;
 	// List of recent messages
 	static QList<Message> messageBuffer_;
+	// Logpoint for message buffer
+	static int messageBufferPoint_;
 
 	private:
 	// Add message to buffer
 	static void addToBuffer(QString message, Message::MessageType type = Message::NormalMessage);
+	// Output message to console
+	static void outputMessage(QString message);
 
 	public:
 	// Clear message buffer
@@ -180,13 +184,17 @@ class Messenger
 	static AtenProgress* atenProgress_;
 	// Stack of current tasks
 	static List<Task> tasks_;
-	// Point at which task list was updated (new task added, old task completed, or list cleares)
+	// Point at which task list was updated (new task added, old task completed, or list cleared)
 	static int taskPoint_;
+	// Current CLI progress text
+	static QString cliProgressText_;
+	// Buffer point at which a message was last backprinted as a result of showCLIProgress
+	static int backPrintedMessagePoint_;
 
 	private:
 	// Whether the progress indicator should be shown
 	static bool progressIndicatorRequired();
-	// Show CLI progress indicator
+	// Show/update CLI progress indicator
 	static void showCLIProgress();
 
 	public:

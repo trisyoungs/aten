@@ -76,7 +76,15 @@ QString Program::filename()
 bool Program::finalise(Aten* aten)
 {
 	Messenger::enter("Program::finalise");
-	
+
+	// Finalise main program
+	if (!mainProgram_.finalise())
+	{
+		Messenger::print("Failed to finalise main content of Program.\n");
+		Messenger::exit("Program::finalise");
+		return false;
+	}
+
 	// Cycle over generated filters
 	for (Tree* filter = filters_.first(); filter != NULL; filter = filter->next)
 	{
@@ -127,7 +135,7 @@ bool Program::finalise(Aten* aten)
 			}
 		}
 	}
-	
+
 	// Cycle over defined local functions and finalise
 	for (Tree* func = functions_.first(); func != NULL; func = func->next)
 	{

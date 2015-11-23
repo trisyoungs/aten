@@ -38,6 +38,9 @@ QList<Message> Messenger::messageBuffer_;
 AtenProgress* Messenger::atenProgress_ = NULL;
 List<Task> Messenger::tasks_;
 int Messenger::taskPoint_ = -1;
+QString Messenger::cliProgressText_;
+int Messenger::messageBufferPoint_ = 0;
+int Messenger::backPrintedMessagePoint_ = -1;
 
 /*
  * Task
@@ -226,6 +229,17 @@ void Messenger::addToBuffer(QString message, Message::MessageType type)
 	// Add to buffer (at start), and reduce buffer to max allowable size
 	messageBuffer_.prepend(Message(message, type));
 	while (messageBuffer_.count() > bufferSize_) messageBuffer_.removeLast();
+	++messageBufferPoint_;
+}
+
+// Output message to console
+void Messenger::outputMessage(QString message)
+{
+	if (!printToConsole_) return;
+
+	// Prepend message with current CLI progress?
+	if (tasks_.nItems()) QTextStream(stdout) << cliProgressText_ << message << endl;
+	else QTextStream(stdout) << message << endl;
 }
 
 // Return list of messages in buffer
@@ -256,7 +270,8 @@ void Messenger::print(const char* fmtString, ...)
 	// Add to message buffer
 	addToBuffer(message);
 
-	if (printToConsole_) QTextStream(stdout) << message << endl;
+	// Output message
+	outputMessage(message);
 }
 
 // Print formatted warning message
@@ -275,7 +290,8 @@ void Messenger::warn(const char* fmtString, ...)
 	// Add to message buffer
 	addToBuffer(message, Message::WarningMessage);
 
-	if (printToConsole_) QTextStream(stdout) << message << endl;
+	// Output message
+	outputMessage(message);
 }
 
 // Print formatted error message
@@ -294,7 +310,8 @@ void Messenger::error(const char* fmtString, ...)
 	// Add to message buffer
 	addToBuffer(message, Message::ErrorMessage);
 
-	if (printToConsole_) QTextStream(stdout) << message << endl;
+	// Output message
+	outputMessage(message);
 }
 
 // Print normal message (QString)
@@ -306,7 +323,8 @@ void Messenger::print(QString message)
 	// Add to message buffer
 	addToBuffer(message);
 
-	if (printToConsole_) QTextStream(stdout) << message << endl;
+	// Output message
+	outputMessage(message);
 }
 
 // Print warning message (QString)
@@ -318,7 +336,8 @@ void Messenger::warn(QString message)
 	// Add to message buffer
 	addToBuffer(message, Message::WarningMessage);
 
-	if (printToConsole_) QTextStream(stdout) << message << endl;
+	// Output message
+	outputMessage(message);
 }
 
 // Print error message (QString)
@@ -330,7 +349,8 @@ void Messenger::error(QString message)
 	// Add to message buffer
 	addToBuffer(message, Message::ErrorMessage);
 
-	if (printToConsole_) QTextStream(stdout) << message << endl;
+	// Output message
+	outputMessage(message);
 }
 
 // Print normal message in specific output level
@@ -349,7 +369,8 @@ void Messenger::print(Messenger::OutputType outputType, const char* fmtString, .
 	// Add to message buffer
 	addToBuffer(message);
 
-	if (printToConsole_) QTextStream(stdout) << message << endl;
+	// Output message
+	outputMessage(message);
 }
 
 // Print warning message in specific output level
@@ -368,7 +389,8 @@ void Messenger::warn(Messenger::OutputType outputType, const char* fmtString, ..
 	// Add to message buffer
 	addToBuffer(message, Message::WarningMessage);
 
-	if (printToConsole_) QTextStream(stdout) << message << endl;
+	// Output message
+	outputMessage(message);
 }
 
 // Print error message in specific output level
@@ -387,7 +409,8 @@ void Messenger::error(Messenger::OutputType outputType, const char* fmtString, .
 	// Add to message buffer
 	addToBuffer(message, Message::ErrorMessage);
 
-	if (printToConsole_) QTextStream(stdout) << message << endl;
+	// Output message
+	outputMessage(message);
 }
 
 // Function enter
@@ -435,15 +458,15 @@ void Messenger::showCLIProgress()
 	Task* task = tasks_.last();
 	if (!task) return;
 
-	// Get last message text in buffer
-	QString messageText;
-	if (messageBuffer_.count() > 0) messageText = messageBuffer_.first().text();
-	else messageText = "???";
+	// Get most recent message in buffer
+	QString messageText = messageBuffer_.count() > 0 ? messageBuffer_.first().text() : "???";
 
-	// Overwrite last message with abbreviated progress information
-	QString progressString = QString("\r(%1 %2%) [%3] %4").arg(task->etaText()).arg(int(task->completion()),3,10).arg(tasks_.nItems()).arg(messageText);
+	// Create CLI progress text prefix string
+	cliProgressText_ = QString("\r(%1 %2%) [%3] ").arg(task->etaText()).arg(int(task->completion()),3,10).arg(tasks_.nItems());
 
-	QTextStream(stdout) << progressString;
+	// Overwrite last message with abbreviated progress information if the current message is the same as the last time we updated
+	if (messageBufferPoint_ == backPrintedMessagePoint_) QTextStream(stdout) << cliProgressText_ << messageText;
+	else backPrintedMessagePoint_ = messageBufferPoint_;
 }
 
 // Set pointer to custom progress dialog in GUI
