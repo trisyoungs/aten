@@ -39,6 +39,7 @@ Program::Program() : ListItem<Program>()
 	fromFilterFile_ = false;
 	initialPushTree_ = false;
 	mainProgram_.setParent(this);
+	generatedSuccessfully_ = false;
 }
 
 // Destructor
@@ -52,6 +53,8 @@ void Program::clear()
 	functions_.clear();
 	filters_.clear();
 	mainProgram_.reset();
+
+	generatedSuccessfully_ = false;
 }
 
 // Set name of Program
@@ -170,26 +173,30 @@ Tree* Program::addFilter()
 bool Program::generateFromString(QString line, QString name, QString sourceInfo, bool pushTree, bool clearExisting)
 {
 	Messenger::enter("Program::generateFromString");
+
 	name_ = name;
 	fromFilterFile_ = false;
 	initialPushTree_ = pushTree;
-	bool result = cmdparser.generateFromString(this, line, sourceInfo, initialPushTree_, clearExisting);
-	if (result) result = finalise(cmdparser.aten());
+	generatedSuccessfully_ = cmdparser.generateFromString(this, line, sourceInfo, initialPushTree_, clearExisting);
+	if (generatedSuccessfully_) generatedSuccessfully_ = finalise(cmdparser.aten());
+
 	Messenger::exit("Program::generateFromString");
-	return result;
+	return generatedSuccessfully_;
 }
 
 // Generate Program from string list
 bool Program::generateFromStringList(QStringList stringList, QString name, QString sourceInfo, bool pushTree, bool clearExisting)
 {
 	Messenger::enter("Program::generateFromStringList");
+
 	name_ = name;
 	fromFilterFile_ = false;
 	initialPushTree_ = pushTree;
-	bool result = cmdparser.generateFromStringList(this, stringList, sourceInfo, initialPushTree_, clearExisting);
-	if (result) result = finalise(cmdparser.aten());
+	generatedSuccessfully_ = cmdparser.generateFromStringList(this, stringList, sourceInfo, initialPushTree_, clearExisting);
+	if (generatedSuccessfully_) generatedSuccessfully_ = finalise(cmdparser.aten());
+
 	Messenger::exit("Program::generateFromStringList");
-	return result;
+	return generatedSuccessfully_;
 }
 
 // Generate Program from input file
@@ -203,10 +210,11 @@ bool Program::generateFromFile(QString filename, QString name, bool pushTree, bo
 	else name_ = filename;
 	fromFilterFile_ = isFilterFile;
 	initialPushTree_ = pushTree;
-	bool result = cmdparser.generateFromFile(this, filename, initialPushTree_, clearExisting);
-	if (result) result = finalise(cmdparser.aten());
+	generatedSuccessfully_ = cmdparser.generateFromFile(this, filename, initialPushTree_, clearExisting);
+	if (generatedSuccessfully_) generatedSuccessfully_ = finalise(cmdparser.aten());
+
 	Messenger::exit("Program::generateFromFile");
-	return result;
+	return generatedSuccessfully_;
 }
 
 // Reload Program (provided it was from a file...)
@@ -260,6 +268,12 @@ void Program::print()
 	for (int n=0; n<filters_.nItems(); ++n) printf("     %-3i  %s\n", n+1, qPrintable(filters_[n]->name()));
 	if (functions_.nItems() > 0) printf("  Functions:\n");
 	for (int n=0; n<functions_.nItems(); ++n) printf("     %-3i  %s\n", n+1, qPrintable(functions_[n]->name()));
+}
+
+// Return whether the program was successfully created by the last generate*() call
+bool Program::generatedSuccessfully()
+{
+	return generatedSuccessfully_;
 }
 
 /*

@@ -777,7 +777,7 @@ int Aten::parseCli(int argc, char *argv[])
 				// Load and run a script file
 				case (Cli::ScriptSwitch):
 					script = addScript();
-					if (script->generateFromFile(argText, "CliScript"))
+					if (script->generateFromFile(argText, argText))
 					{
 						Messenger::print("Successfully loaded script.");
 						programMode_ = Aten::CommandMode;

@@ -158,10 +158,10 @@ void AtenWindow::updateWidgets(int targets)
 	if (targets&AtenWindow::GridsPanelTarget) updateGridsPanel(currentModel);
 	if (targets&AtenWindow::TrajectoryPanelTarget) updateTrajectoryPanel(currentModel);
 	if (targets&AtenWindow::SelectPanelTarget) updateSelectPanel(currentModel);
-	if (targets&AtenWindow::ForcefieldsTarget) updateForcefieldsPanel(currentModel);
+	if (targets&AtenWindow::SelectionPanelTarget) updateSelectionPanel(currentModel);
+	if (targets&AtenWindow::ToolsPanelTarget) updateToolsPanel(currentModel);
+	if (targets&AtenWindow::ForcefieldsPanelTarget) updateForcefieldsPanel(currentModel);
 
-	
-	
 	if (targets&AtenWindow::VibrationsTarget) vibrationsWidget->refresh();
 
 	// Update contents of the glyph list

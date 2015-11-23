@@ -80,7 +80,7 @@ void AtenWindow::on_ForcefieldsManageLoadButton_clicked(bool checked)
 			if (!filter->executeRead(qPrintable(filename))) return;
 		}
 
-		updateWidgets(AtenWindow::ForcefieldsTarget);
+		updateWidgets(AtenWindow::ForcefieldsPanelTarget);
 
 		// Store path for next use
 		currentDirectory_.setPath(filename);
@@ -92,7 +92,7 @@ void AtenWindow::on_ForcefieldsManageLoadButton_clicked(bool checked)
 void AtenWindow::on_ForcefieldsManageCloseButton_clicked(bool checked)
 {
 	aten_.removeForcefield(aten_.currentForcefield());
-	updateWidgets(AtenWindow::ForcefieldsTarget);
+	updateWidgets(AtenWindow::ForcefieldsPanelTarget);
 }
 
 void AtenWindow::on_ForcefieldsManageEditButton_clicked(bool checked)

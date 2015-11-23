@@ -1,26 +1,47 @@
 # Create a buckytube of some length and 'radius' along the z-axis (Example 4 in published paper)
 
-# Variables
-int nbenz, nstacks, stack, benz;
+# Create an options dialog
+void createDefaultDialog(Dialog ui)
+{
+        Widget w;
+
+        # Set title and vertical automatic filling of main dialog layout
+        ui.title = "Bucky Tubulator";
+
+	# Basic controls
+	ui.verticalFill = TRUE;
+	ui.addIntegerSpin("nBenzeneSpin", "Number of benzenes around circumference", 4, 1000, 1, 10);
+	ui.addIntegerSpin("nStacksSpin", "Number of stacks along tube length", 1, 1000, 1, 10);
+	ui.addDoubleSpin("bondLengthSpin", "Benzene C-C bond length", 0.1, 100.0, 0.01, 1.39);
+}
+
+# Show (execute) the dialog to allow user interaction. The show() function returns 0 for 'canceled' or '1' for 'ok'
+if (!showDefaultDialog()) error("Dialog canceled.\n");
+
+# Get widget values
+Dialog ui = defaultDialog();
+int nbenz, nstacks, benz;
 double rcc, dz;
 
-nbenz = 10;		// Number of benzene molecules around tube circumference
-rcc = 1.39;		// C-C bond length to use
-nstacks = 8;		// Length of tube will be 2*nstacks-1 benzene units
+nbenz = ui.asInteger("nBenzeneSpin");
+nstacks = ui.asInteger("nStacksSpin");
+rcc = ui.asDouble("bondLengthSpin");
+
 dz = 360.0/(nbenz*2.0);	// Rotation increment around circumference
+
 
 # Create target model
 newModel("buckytube");
 
-nstacks = nstacks*2 - 1;
+int nloops = nstacks; //*2 - 1;
 
 # Outer loop - loop over stacks
-for (stack=1; stack <= nstacks; ++stack)
+for (int loop=0; loop <= nloops; ++loop)
 {
 	# Inner loop - loop over benzene molecules
 	for (benz=0; benz<nbenz; ++benz)
 	{
-		if (stack == 1)
+		if (loop == 0)
 		{
 			move(0, 0, -1);
 			newAtom(H);
@@ -29,7 +50,7 @@ for (stack=1; stack <= nstacks; ++stack)
 		newAtom(C);
 		move(rcc*cos(30), 0.0, rcc*sin(30));
 		rotZ(dz);
-		if (stack == nstacks)
+		if (loop == nloops)
 		{
 			move(0, 0, 1);
 			newAtom(H);

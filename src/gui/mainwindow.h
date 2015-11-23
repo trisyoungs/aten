@@ -102,7 +102,7 @@ class AtenWindow : public QMainWindow
 	 */
 	public:
 	// Update Targets
-	enum UpdateTarget { DefaultTarget = 0, AtomsTableTarget = 1, CalculatePanelTarget = 2, ForcefieldsTarget = 4, GlyphsTarget = 8, GridsPanelTarget = 16, MainViewTarget = 64, StatusBarTarget = 128, VibrationsTarget = 512, SelectPanelTarget = 1024, TrajectoryPanelTarget = 2048, BuildPanelTarget = 4096, CellPanelTarget = 8192, TransformPanelTarget = 16384, ModelsListTarget = 32768, AllTarget = 65535 };
+	enum UpdateTarget { DefaultTarget = 0, AtomsTableTarget = 1, CalculatePanelTarget = 2, ForcefieldsPanelTarget = 4, GlyphsTarget = 8, GridsPanelTarget = 16, ToolsPanelTarget = 32, MainViewTarget = 64, StatusBarTarget = 128, SelectionPanelTarget = 256, VibrationsTarget = 512, SelectPanelTarget = 1024, TrajectoryPanelTarget = 2048, BuildPanelTarget = 4096, CellPanelTarget = 8192, TransformPanelTarget = 16384, ModelsListTarget = 32768, AllTarget = 65535 };
 
 	private:
 	// Whether window is currently refreshing
@@ -427,6 +427,11 @@ class AtenWindow : public QMainWindow
 	void updateToolsPanel(Model* sourceModel);
 
 	private slots:
+	// Scripts
+	void on_ToolsScriptsLoadButton_clicked(bool checked);
+	void on_ToolsScriptsRemoveButton_clicked(bool checked);
+	void on_ToolsScriptsReloadButton_clicked(bool checked);
+	void on_ToolsScriptsRunButton_clicked(bool checked);
 	// Disorder
 	void on_ToolsDisorderCreateButton_clicked(bool checked);
 	// Surface

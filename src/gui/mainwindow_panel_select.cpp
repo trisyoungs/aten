@@ -29,8 +29,6 @@ void AtenWindow::updateSelectPanel(Model* sourceModel)
 {
 	Messenger::enter("AtenWindow::updateSelectPanel");
 
-	refreshing_ = true;
-
 	// Change text of selection type combo to reflect last auto-determined type
 	int previousIndex = ui.SelectIntelligentTypeCombo->currentIndex();
 	QStringList items;
@@ -54,9 +52,6 @@ void AtenWindow::updateSelectPanel(Model* sourceModel)
 	ui.SelectIntelligentTypeCombo->clear();
 	ui.SelectIntelligentTypeCombo->addItems(items);
 	ui.SelectIntelligentTypeCombo->setCurrentIndex(previousIndex);
-
-	// Enable / disable controls
-	refreshing_ = false;
 
 	Messenger::exit("AtenWindow::updateSelectPanel");
 }
@@ -144,14 +139,13 @@ void AtenWindow::on_SelectIntelligentTargetCombo_currentTextChanged(const QStrin
 		Program program;
 		if (program.generateFromString(text, "SelectionCode", "Selection Code")) valid = true;
 	}
-	
 
 	// Change color of text if an unrecognised target
 	QPalette palette = ui.SelectIntelligentTypeCombo->palette();
 	if (!valid) palette.setColor(QPalette::Text, Qt::red);
 	ui.SelectIntelligentTargetCombo->setPalette(palette);
 
-	updateSelectPanel(NULL);
+	updateWidgets(AtenWindow::SelectPanelTarget);
 }
 
 void AtenWindow::on_SelectIntelligentTypeCombo_currentIndexChanged(int index)

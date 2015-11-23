@@ -56,6 +56,8 @@ class Program : public ListItem<Program>
 	bool fromFilterFile_;
 	// Whether or not a tree was pushed initially
 	bool initialPushTree_;
+	// Whether the program was successfully created by the last generate*() call
+	bool generatedSuccessfully_;
 	
 	public:
 	// Clear contents of program, including filters and functions
@@ -88,6 +90,8 @@ class Program : public ListItem<Program>
 	bool execute(ReturnValue& rv);
 	// Print program information
 	void print();
+	// Return whether the program was successfully created by the last generate*() call
+	bool generatedSuccessfully();
 
 
 	/*
