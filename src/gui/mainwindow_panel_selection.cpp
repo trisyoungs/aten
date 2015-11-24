@@ -50,11 +50,12 @@ void AtenWindow::on_SelectionAppearanceColourButton_clicked(bool checked)
 {
 	// Get current colour selected in popup widget
 	ReturnValue rv;
-	if (!ui.SelectionAppearanceStyleButton->callPopupMethod("currentColour", rv)) return;
+	if (!ui.SelectionAppearanceColourButton->callPopupMethod("currentColour", rv)) return;
 
 	// Apply the selected style to the current atom selection
 	bool success;
 	CommandNode::run(Commands::ColourAtoms, "dddd", rv.asDouble(0, success), rv.asDouble(1, success), rv.asDouble(2, success), rv.asDouble(3, success));
+	if (prefs.colourScheme() != Prefs::OwnScheme) ui.HomeAppearanceOwnColourButton->click();
 
 	updateWidgets(AtenWindow::MainViewTarget);
 }

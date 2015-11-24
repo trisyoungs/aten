@@ -236,6 +236,7 @@ void RenderGroup::sendToGL(Matrix& modelTransformationMatrix)
 	// Transparent triangles
 	glEnable(GL_LIGHTING);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	glDepthMask(GL_FALSE);
 	for (PrimitiveInfo* pi = transparentTrianglePrimitives_.first(); pi != NULL; pi = pi->next)
 	{
 		Primitive& primitive = pi->primitive();
@@ -244,6 +245,7 @@ void RenderGroup::sendToGL(Matrix& modelTransformationMatrix)
 		glLoadMatrixd(A.matrix());
 		primitive.sendToGL(QOpenGLContext::currentContext());
 	}
+	glDepthMask(GL_TRUE);
 
 	// Text
 	glEnable(GL_MULTISAMPLE);

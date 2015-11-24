@@ -347,7 +347,7 @@ void Primitive::marchingCubes(Grid* source, double lowerCutoff, double upperCuto
 	i.setLimits(0, nPoints.x-1);
 	j.setLimits(0, nPoints.y-1);
 	k.setLimits(0, nPoints.z-1);
-	
+
 	// Generate isosurface
 	for (ii=0; ii< nPoints.x; ++ii)
 	{

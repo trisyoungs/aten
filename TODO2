@@ -26,6 +26,7 @@ Fix grid transparency (reconstruct grids according to view angle?).
 Make main view background and text/overlay colour aware of Qt widget colouring style.
 Frame individual model areas when displaying multiple models.
 Automatically adjust grid size for number of visible models, based on current aspect ratio and context size etc.
+Multiple bonds (double, definitely) are not drawn correctly, becoming squashed as the bond length increases.
 
 GUI TODO
 ========

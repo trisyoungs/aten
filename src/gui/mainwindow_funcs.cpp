@@ -286,9 +286,9 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportFilmD
 	// Setup Shortcuts
 	QShortcut* shortcut;
 	// -- Model List
-	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_Left), this, 0, 0, Qt::ApplicationShortcut);
+	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_Up), this, 0, 0, Qt::ApplicationShortcut);
 	connect(shortcut, SIGNAL(activated()), ui.ModelsPreviousButton, SLOT(click()));
-	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_Right), this, 0, 0, Qt::ApplicationShortcut);
+	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_Down), this, 0, 0, Qt::ApplicationShortcut);
 	connect(shortcut, SIGNAL(activated()), ui.ModelsNextButton, SLOT(click()));
 	// Home Panel (File)
 	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::ALT + Qt::Key_N), this, 0, 0, Qt::ApplicationShortcut);
@@ -312,6 +312,27 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportFilmD
 	connect(shortcut, SIGNAL(activated()), ui.HomeEditUndoButton, SLOT(click()));
 	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_Z), this, 0, 0, Qt::ApplicationShortcut);
 	connect(shortcut, SIGNAL(activated()), ui.HomeEditRedoButton, SLOT(click()));
+	// Home Panel (Style)
+	shortcut = new QShortcut(QKeySequence(Qt::Key_F1), this, 0, 0, Qt::ApplicationShortcut);
+	connect(shortcut, SIGNAL(activated()), ui.HomeAppearanceLineButton, SLOT(click()));
+	shortcut = new QShortcut(QKeySequence(Qt::Key_F2), this, 0, 0, Qt::ApplicationShortcut);
+	connect(shortcut, SIGNAL(activated()), ui.HomeAppearanceTubeButton, SLOT(click()));
+	shortcut = new QShortcut(QKeySequence(Qt::Key_F3), this, 0, 0, Qt::ApplicationShortcut);
+	connect(shortcut, SIGNAL(activated()), ui.HomeAppearanceSphereButton, SLOT(click()));
+	shortcut = new QShortcut(QKeySequence(Qt::Key_F4), this, 0, 0, Qt::ApplicationShortcut);
+	connect(shortcut, SIGNAL(activated()), ui.HomeAppearanceScaledButton, SLOT(click()));
+	shortcut = new QShortcut(QKeySequence(Qt::Key_F5), this, 0, 0, Qt::ApplicationShortcut);
+	connect(shortcut, SIGNAL(activated()), ui.HomeAppearanceOwnStyleButton, SLOT(click()));
+	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_F1), this, 0, 0, Qt::ApplicationShortcut);
+	connect(shortcut, SIGNAL(activated()), ui.HomeAppearanceElementButton, SLOT(click()));
+	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_F2), this, 0, 0, Qt::ApplicationShortcut);
+	connect(shortcut, SIGNAL(activated()), ui.HomeAppearanceChargeButton, SLOT(click()));
+	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_F3), this, 0, 0, Qt::ApplicationShortcut);
+	connect(shortcut, SIGNAL(activated()), ui.HomeAppearanceForceButton, SLOT(click()));
+	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_F4), this, 0, 0, Qt::ApplicationShortcut);
+	connect(shortcut, SIGNAL(activated()), ui.HomeAppearanceVelocityButton, SLOT(click()));
+	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_F5), this, 0, 0, Qt::ApplicationShortcut);
+	connect(shortcut, SIGNAL(activated()), ui.HomeAppearanceOwnColourButton, SLOT(click()));
 	// Home Panel (View)
 	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_R), this, 0, 0, Qt::ApplicationShortcut);
 	connect(shortcut, SIGNAL(activated()), ui.HomeViewResetButton, SLOT(click()));
