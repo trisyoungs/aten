@@ -79,16 +79,16 @@ StepNode* ColourScaleVariable::accessorSearch(QString name, TreeNode* arrayIndex
 	if (i == -1)
 	{
 		// No accessor found - is it a function definition?
-		// for (i = 0; i < nFunctions; i++) if (strcmp(functionData[i].name,s) == 0) break;
+		// for (i = 0; i < nFunctions; i++) if (strcmp(qPrintable(functionData[i].name),s) == 0) break;
 		i = Variable::searchAccessor(name, nFunctions, functionData);
 		if (i == -1)
 		{
 			Messenger::print("Error: Type 'ColourScale&' has no member or function named '%s'.", qPrintable(name));
-			printAccessors();
+			printValidAccessors(nAccessors, accessorData, nFunctions, functionData);
 			Messenger::exit("ColourScaleVariable::accessorSearch");
 			return NULL;
 		}
-		Messenger::print(Messenger::Parse, "FunctionAccessor match = %i (%s)", i, functionData[i].name);
+		Messenger::print(Messenger::Parse, "FunctionAccessor match = %i (%s)", i, qPrintable(functionData[i].name));
 		if (arrayIndex != NULL)
 		{
 			Messenger::print("Error: Array index given to 'ColourScale&' function named '%s'.", qPrintable(name));
@@ -98,20 +98,20 @@ StepNode* ColourScaleVariable::accessorSearch(QString name, TreeNode* arrayIndex
 		// Add and check supplied arguments...
 		result = new StepNode(i, VTypes::ColourScaleData, functionData[i].returnType);
 		result->addJoinedArguments(argList);
-		if (!result->checkArguments(functionData[i].arguments, functionData[i].name))
+		if (!result->checkArguments(functionData[i].arguments, qPrintable(functionData[i].name)))
 		{
-			Messenger::print("Error: Syntax for 'ColourScale&' function '%s' is '%s(%s)'.", functionData[i].name, functionData[i].name, functionData[i].argText );
+			Messenger::print("Error: Syntax for 'ColourScale&' function '%s' is '%s(%s)'.", qPrintable(functionData[i].name), qPrintable(functionData[i].name), qPrintable(functionData[i].argText) );
 			delete result;
 			result = NULL;
 		}
 	}
 	else
 	{
-		Messenger::print(Messenger::Parse, "Accessor match = %i (%s)", i, accessorData[i].name);
+		Messenger::print(Messenger::Parse, "Accessor match = %i (%s)", i, qPrintable(accessorData[i].name));
 		// Were we given an array index when we didn't want one?
 		if ((accessorData[i].arraySize == 0) && (arrayIndex != NULL))
 		{
-			Messenger::print("Error: Irrelevant array index provided for member '%s'.", accessorData[i].name);
+			Messenger::print("Error: Irrelevant array index provided for member '%s'.", qPrintable(accessorData[i].name));
 			result = NULL;
 		}
 		// Were we given an argument list when we didn't want one?
@@ -142,7 +142,7 @@ bool ColourScaleVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArray
 	// Check for correct lack/presence of array index given
 	if ((accessorData[i].arraySize == 0) && hasArrayIndex)
 	{
-		Messenger::print("Error: Unnecessary array index provided for member '%s'.", accessorData[i].name);
+		Messenger::print("Error: Unnecessary array index provided for member '%s'.", qPrintable(accessorData[i].name));
 		Messenger::exit("ColourScaleVariable::retrieveAccessor");
 		return false;
 	}
@@ -150,7 +150,7 @@ bool ColourScaleVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArray
 	{
 		if ((arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize))
 		{
-			Messenger::print("Error: Array index out of bounds for member '%s' (%i, range is 1-%i).", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
+			Messenger::print("Error: Array index out of bounds for member '%s' (%i, range is 1-%i).", qPrintable(accessorData[i].name), arrayIndex, accessorData[i].arraySize);
 			Messenger::exit("ColourScaleVariable::retrieveAccessor");
 			return false;
 		}
@@ -177,7 +177,7 @@ bool ColourScaleVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArray
 			else rv.set(VTypes::ColourScalePointData, ptr->point(arrayIndex-1));
 			break;
 		default:
-			printf("Internal Error: Access to member '%s' has not been defined in ColourScaleVariable.\n", accessorData[i].name);
+			printf("Internal Error: Access to member '%s' has not been defined in ColourScaleVariable.\n", qPrintable(accessorData[i].name));
 			result = false;
 			break;
 	}
@@ -197,54 +197,15 @@ bool ColourScaleVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue&
 		return false;
 	}
 	Accessors acc = (Accessors) i;
+
 	// Check for correct lack/presence of array index given to original accessor, and nature of new value
-	bool result = true;
-	if (accessorData[i].arraySize != 0)
-	{
-		if (hasArrayIndex)
-		{
-			if ((accessorData[i].arraySize > 0) && ( (arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize) ))
-			{
-				Messenger::print("Error: Array index provided for member '%s' is out of range (%i, range is 1-%i).", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
-				result = false;
-			}
-			if (newValue.arraySize() > 0)
-			{
-				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.", accessorData[i].name);
-				result = false;
-			}
-		}
-		else
-		{
-			if (newValue.arraySize() > accessorData[i].arraySize)
-			{
-				Messenger::print("Error: The array being assigned to member '%s' is larger than the size of the desination array (%i cf. %i).", accessorData[i].name, newValue.arraySize(), accessorData[i].arraySize);
-				result = false;
-			}
-		}
-	}
-	else
-	{
-		// This is not an array member, so cannot be assigned an array unless its a Vector
-		if (newValue.arraySize() != -1)
-		{
-			if (accessorData[i].returnType != VTypes::VectorData)
-			{
-				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.", accessorData[i].name);
-				result = false;
-			}
-			else if ((newValue.type() != VTypes::VectorData) && (newValue.arraySize() != 3))
-			{
-				Messenger::print("Error: Only an array of size 3 can be assigned to a vector (member '%s').", accessorData[i].name);
-				result = false;
-			}
-		}
-	}
+	bool result = checkAccessorArrays(accessorData[acc], newValue, hasArrayIndex, arrayIndex);
 	if (!result)
 	{
 		Messenger::exit("ColourScaleVariable::setAccessor");
 		return false;
 	}
+
 	// Get current data from ReturnValue
 	ColourScale* ptr = (ColourScale*) sourcerv.asPointer(VTypes::ColourScaleData, result);
 	if ((!result) || (ptr == NULL))
@@ -255,7 +216,7 @@ bool ColourScaleVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue&
 	if (result) switch (acc)
 	{
 		default:
-			printf("ColourScaleVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);
+			printf("ColourScaleVariable::setAccessor doesn't know how to use member '%s'.\n", qPrintable(accessorData[acc].name));
 			result = false;
 			break;
 	}
@@ -297,32 +258,12 @@ bool ColourScaleVariable::performFunction(int i, ReturnValue& rv, TreeNode* node
 			rv.reset();
 			break;
 		default:
-			printf("Internal Error: Access to function '%s' has not been defined in ColourScaleVariable.\n", functionData[i].name);
+			printf("Internal Error: Access to function '%s' has not been defined in ColourScaleVariable.\n", qPrintable(functionData[i].name));
 			result = false;
 			break;
 	}
 	Messenger::exit("ColourScaleVariable::performFunction");
 	return result;
-}
-
-
-// Print valid accessors/functions
-void ColourScaleVariable::printAccessors()
-{
-	if (ColourScaleVariable::nAccessors > 0)
-	{
-		Messenger::print("Valid accessors are:");
-		QString accessors;
-		for (int n=0; n<ColourScaleVariable::nAccessors; ++n) accessors += QString("%1%2%3").arg(n == 0 ? " " : ", ", accessorData[n].name, accessorData[n].arraySize > 0 ? "[]" : "");
-		Messenger::print(accessors);
-	}
-	if ((ColourScaleVariable::nFunctions > 0) && (strcmp(functionData[0].name,".dummy") != 0))
-	{
-		Messenger::print("Valid functions are:");
-		QString functions;
-		for (int n=0; n<ColourScaleVariable::nFunctions; ++n) functions += QString("%1%2(%3)").arg(n == 0 ? " " : ", ", functionData[n].name, functionData[n].argText);
-		Messenger::print(functions);
-	}
 }
 
 /*

@@ -85,3 +85,5 @@ Remove TransparentSelection Prefs accessor.
 Add TrajectoryFormat CLI switch (tf).
 Add GridViewPercentage and GridViewSecondaryPercentage commands.
 TestSelect command.
+Added MovePen, ResetPen, RotatePenX|Y|Z commands to Model variable.
+Add Transform-related commands to Model variable.

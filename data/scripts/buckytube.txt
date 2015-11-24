@@ -13,6 +13,7 @@ void createDefaultDialog(Dialog ui)
 	ui.addIntegerSpin("nBenzeneSpin", "Number of benzenes around circumference", 4, 1000, 1, 10);
 	ui.addIntegerSpin("nStacksSpin", "Number of stacks along tube length", 1, 1000, 1, 10);
 	ui.addDoubleSpin("bondLengthSpin", "Benzene C-C bond length", 0.1, 100.0, 0.01, 1.39);
+	ui.addCheck("createModelCheck", "Create new model", 1);
 }
 
 # Show (execute) the dialog to allow user interaction. The show() function returns 0 for 'canceled' or '1' for 'ok'
@@ -22,6 +23,7 @@ if (!showDefaultDialog()) error("Dialog canceled.\n");
 Dialog ui = defaultDialog();
 int nbenz, nstacks, benz;
 double rcc, dz;
+Atom hAtom;
 
 nbenz = ui.asInteger("nBenzeneSpin");
 nstacks = ui.asInteger("nStacksSpin");
@@ -29,44 +31,48 @@ rcc = ui.asDouble("bondLengthSpin");
 
 dz = 360.0/(nbenz*2.0);	// Rotation increment around circumference
 
+# Create / get target model
+Model targetModel;
+if (ui.asInteger("createModelCheck")) targetModel = newModel("BuckyTube");
+else targetModel = aten.frame;
+if (!targetModel) error("No valid target model.\n");
 
-# Create target model
-newModel("buckytube");
-
-int nloops = nstacks; //*2 - 1;
+# Clear the current selection
+targetModel.selectNone();
 
 # Outer loop - loop over stacks
-for (int loop=0; loop <= nloops; ++loop)
+for (int loop=0; loop <= nstacks; ++loop)
 {
 	# Inner loop - loop over benzene molecules
 	for (benz=0; benz<nbenz; ++benz)
 	{
 		if (loop == 0)
 		{
-			move(0, 0, -1);
-			newAtom(H);
-			move(0, 0, 1);
+			targetModel.movePen(0, 0, -1);
+			targetModel.select(targetModel.newAtom(H));
+			targetModel.movePen(0, 0, 1);
 		}
-		newAtom(C);
-		move(rcc*cos(30), 0.0, rcc*sin(30));
-		rotZ(dz);
-		if (loop == nloops)
+		targetModel.select(targetModel.newAtom(C));
+		targetModel.movePen(rcc*cos(30), 0.0, rcc*sin(30));
+		targetModel.rotatePenZ(dz);
+		if (loop == nstacks)
 		{
-			move(0, 0, 1);
-			newAtom(H);
-			move(0, 0, -1);
+			targetModel.movePen(0, 0, 1);
+			targetModel.select(targetModel.newAtom(H));
+			targetModel.movePen(0, 0, -1);
 		}
-		newAtom(C);
-		move(rcc*cos(30), 0, -rcc*sin(30));
-		rotZ(dz);
+		targetModel.select(targetModel.newAtom(C));
+		targetModel.movePen(rcc*cos(30), 0, -rcc*sin(30));
+		targetModel.rotatePenZ(dz);
 	}
 	
 	# Move pen along tube length, and one step around circumference to offset next layer
-	move(0, 0, rcc*1.5);
-	move(rcc*cos(30), 0, 0);
-	rotZ(dz);
+	targetModel.movePen(0, 0, rcc*1.5);
+	targetModel.movePen(rcc*cos(30), 0, 0);
+	targetModel.rotatePenZ(dz);
 }
 
-# Rebond and augment
-rebond();
-augment();
+
+# Centre the selection, rebond and augment
+targetModel.centreSelection(0.0, 0.0, 0.0);
+targetModel.rebondSelection();

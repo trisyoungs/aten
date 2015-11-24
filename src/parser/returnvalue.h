@@ -80,7 +80,7 @@ class ReturnValue : public ListItem<ReturnValue>
 
 	public:
 	// Return type of the stored data
-	VTypes::DataType type();
+	VTypes::DataType type() const;
 	// Reset data
 	void reset();
 	// Return string of contained data
@@ -160,7 +160,7 @@ class ReturnValue : public ListItem<ReturnValue>
 	// Return pointer element data
 	void* asPointer(int index, VTypes::DataType type, bool& success);
 	// Return array size of data
-	int arraySize();
+	int arraySize() const;
 
 
 	/*

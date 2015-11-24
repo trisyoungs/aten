@@ -46,8 +46,8 @@ class ModelVariable : public PointerVariable
 	// Accessor list
 	enum Accessors { Angles, Atoms, Bonds, Celldata, ComponentDensity, ComponentPartition, ComponentPolicy, ComponentPopulation, Distances, Eigenvectors, Energy, FFAngles, FFBonds, FFMass, FFTorsions, FFTypes, FField, Filename, Frame, Frames, Glyphs, Grids, Id, Mass, Name, NAngles, NAtoms, NBasisCartesians, NBasisShells, NBonds, NDistances, NEigenvectors, NFFAngles, NFFBonds, NFFTorsions, NFFTypes, NFrames, NGlyphs, NGrids, NPatterns, NSelected, NTorsions, NUnknown, NVibrations, Patterns, PropagateStyle, RepeatCellNegative, RepeatCellPositive, Selection, Torsions, Vibrations, ZMatrix, nAccessors };
 	// Function list
-	enum Functions { AddHydrogen, AngleEnergy, AtomWithBit, Augment, BondEnergy, Charge, ClearBonds, ClearCharges, ClearPatterns, ClearSelectedBonds, Copy, Cut, Delete, DeSelect, ElectrostaticEnergy, Expand, Finalise, InterEnergy, IntraEnergy, MoveToEnd, MoveToStart, NewAtom, NewAtomFrac, NewBasisShell, NewBond, NewEigenvector, NewGlyph, NewGrid, NewPattern, NewVibration, Paste, ReBond, ReBondPatterns, ReBondSelection, Redo, ReOrder, SaveBitmap, Select, SelectAll, SelectionAddHydrogen, SelectNone, SelectTree, SetupComponent, ShiftDown, ShiftUp, ShowAll, ToAngstroms, TorsionEnergy, Transmute, Undo, VdwEnergy, nFunctions };
-
+	enum Functions { AddHydrogen, AngleEnergy, AtomWithBit, Augment, AxisRotateSelection, BondEnergy, CentreSelection, Charge, ClearBonds, ClearCharges, ClearPatterns, ClearSelectedBonds, Copy, Cut, Delete, DeSelect, ElectrostaticEnergy, Expand, Finalise, FlipSelectionX, FlipSelectionY, FlipSelectionZ, InterEnergy, IntraEnergy, MatrixConvertSelection, MatrixTransformSelection, MirrorSelection, MovePen, MoveToEnd, MoveToStart, NewAtom, NewAtomFrac, NewBasisShell, NewBond, NewEigenvector, NewGlyph, NewGrid, NewPattern, NewVibration, Paste, ReBond, ReBondPatterns, ReBondSelection, Redo, ReOrder, ReOrientSelection, ResetPen, RotatePenX, RotatePenY, RotatePenZ, SaveBitmap, Select, SelectAll, SelectionAddHydrogen, SelectNone, SelectTree, SetAngles, SetDistances, SetTorsions, SetupComponent, ShiftDown, ShiftUp, ShowAll, ToAngstroms, TorsionEnergy, TranslateSelection, Transmute, Undo, VdwEnergy, nFunctions };
+	
 	// Search variable access list for provided accessor
 	StepNode* findAccessor(QString name, TreeNode* arrayIndex, TreeNode* argList = NULL);
 	// Static function to search accessors
@@ -58,8 +58,6 @@ class ModelVariable : public PointerVariable
 	static bool setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newValue, bool hasArrayIndex, int arrayIndex = -1);
 	// Perform desired function
 	static bool performFunction(int i, ReturnValue& rv, TreeNode* node);
-	// Print valid accessors/functions
-	static void printAccessors();
 	// Accessor data
 	static Accessor accessorData[nAccessors];
 	// Function Accessor data

@@ -32,7 +32,7 @@ class Accessor
 {
 	public:
 	// Accessor name
-	const char* name;
+	const QString name;
 	// Return type of accessor
 	VTypes::DataType returnType;
 	// Array data size (-1 = dynamic list, 0 = no array, N = size)
@@ -46,13 +46,13 @@ class FunctionAccessor
 {
 	public:
 	// Function name
-	const char* name;
+	const QString name;
 	// Return type of function
 	VTypes::DataType returnType;
 	// Function argument specification
 	const char* arguments;
 	// Function argument text
-	const char* argText;
+	const QString argText;
 };
 
 ATEN_END_NAMESPACE

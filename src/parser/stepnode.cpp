@@ -281,97 +281,97 @@ void StepNode::nodePrint(int offset, const char* prefix)
 			printf("Internal Error: StepNode was expecting NoData (print).\n");
 			break;
 		case (VTypes::AtenData):
-			printf("%s", AtenVariable::accessorData[accessor_].name);
+			printf("%s", qPrintable(AtenVariable::accessorData[accessor_].name));
 			break;
 		case (VTypes::AtomData):
-			printf("%s", AtomVariable::accessorData[accessor_].name);
+			printf("%s", qPrintable(AtomVariable::accessorData[accessor_].name));
 			break;
 		case (VTypes::BasisPrimitiveData):
-			printf("%s", BasisPrimitiveVariable::accessorData[accessor_].name);
+			printf("%s", qPrintable(BasisPrimitiveVariable::accessorData[accessor_].name));
 			break;
 		case (VTypes::BasisShellData):
-			printf("%s", BasisShellVariable::accessorData[accessor_].name);
+			printf("%s", qPrintable(BasisShellVariable::accessorData[accessor_].name));
 			break;
 		case (VTypes::BondData):
-			printf("%s", BondVariable::accessorData[accessor_].name);
+			printf("%s", qPrintable(BondVariable::accessorData[accessor_].name));
 			break;
 		case (VTypes::CellData):
-			printf("%s", CellVariable::accessorData[accessor_].name);
+			printf("%s", qPrintable(CellVariable::accessorData[accessor_].name));
 			break;
 		case (VTypes::ColourScaleData):
-			printf("%s", ColourScaleVariable::accessorData[accessor_].name);
+			printf("%s", qPrintable(ColourScaleVariable::accessorData[accessor_].name));
 			break;
 		case (VTypes::ColourScalePointData):
-			printf("%s", ColourScalePointVariable::accessorData[accessor_].name);
+			printf("%s", qPrintable(ColourScalePointVariable::accessorData[accessor_].name));
 			break;
 		case (VTypes::DialogData):
-			printf("%s", DialogVariable::accessorData[accessor_].name);
+			printf("%s", qPrintable(DialogVariable::accessorData[accessor_].name));
 			break;
 		case (VTypes::EigenvectorData):
-			printf("%s", EigenvectorVariable::accessorData[accessor_].name);
+			printf("%s", qPrintable(EigenvectorVariable::accessorData[accessor_].name));
 			break;
 		case (VTypes::ElementData):
-			printf("%s", ElementVariable::accessorData[accessor_].name);
+			printf("%s", qPrintable(ElementVariable::accessorData[accessor_].name));
 			break;
 		case (VTypes::EnergyStoreData):
-			printf("%s", EnergyStoreVariable::accessorData[accessor_].name);
+			printf("%s", qPrintable(EnergyStoreVariable::accessorData[accessor_].name));
 			break;
 		case (VTypes::ForcefieldData):
-			printf("%s", ForcefieldVariable::accessorData[accessor_].name);
+			printf("%s", qPrintable(ForcefieldVariable::accessorData[accessor_].name));
 			break;
 		case (VTypes::ForcefieldAtomData):
-			printf("%s", ForcefieldAtomVariable::accessorData[accessor_].name);
+			printf("%s", qPrintable(ForcefieldAtomVariable::accessorData[accessor_].name));
 			break;
 		case (VTypes::ForcefieldBoundData):
-			printf("%s", ForcefieldBoundVariable::accessorData[accessor_].name);
+			printf("%s", qPrintable(ForcefieldBoundVariable::accessorData[accessor_].name));
 			break;
 		case (VTypes::GlyphData):
-			printf("%s", GlyphVariable::accessorData[accessor_].name);
+			printf("%s", qPrintable(GlyphVariable::accessorData[accessor_].name));
 			break;
 		case (VTypes::GlyphDataData):
-			printf("%s", GlyphDataVariable::accessorData[accessor_].name);
+			printf("%s", qPrintable(GlyphDataVariable::accessorData[accessor_].name));
 			break;
 		case (VTypes::GridData):
-			printf("%s", GridVariable::accessorData[accessor_].name);
+			printf("%s", qPrintable(GridVariable::accessorData[accessor_].name));
 			break;
 		case (VTypes::MatrixData):
-			printf("%s", MatrixVariable::accessorData[accessor_].name);
+			printf("%s", qPrintable(MatrixVariable::accessorData[accessor_].name));
 			break;
 		case (VTypes::MeasurementData):
-			printf("%s", MeasurementVariable::accessorData[accessor_].name);
+			printf("%s", qPrintable(MeasurementVariable::accessorData[accessor_].name));
 			break;
 		case (VTypes::ModelData):
-			printf("%s", ModelVariable::accessorData[accessor_].name);
+			printf("%s", qPrintable(ModelVariable::accessorData[accessor_].name));
 			break;
 		case (VTypes::MonteCarloData):
-			printf("%s", MonteCarloVariable::accessorData[accessor_].name);
+			printf("%s", qPrintable(MonteCarloVariable::accessorData[accessor_].name));
 			break;
 		case (VTypes::PatternData):
-			printf("%s", PatternVariable::accessorData[accessor_].name);
+			printf("%s", qPrintable(PatternVariable::accessorData[accessor_].name));
 			break;
 		case (VTypes::PatternBoundData):
-			printf("%s", PatternBoundVariable::accessorData[accessor_].name);
+			printf("%s", qPrintable(PatternBoundVariable::accessorData[accessor_].name));
 			break;
 		case (VTypes::PreferencesData):
-			printf("%s", PreferencesVariable::accessorData[accessor_].name);
+			printf("%s", qPrintable(PreferencesVariable::accessorData[accessor_].name));
 			break;
 		case (VTypes::SiteData):
-			printf("%s", SiteVariable::accessorData[accessor_].name);
+			printf("%s", qPrintable(SiteVariable::accessorData[accessor_].name));
 			break;
 		case (VTypes::VectorData):
-			printf("%s", VectorVariable::accessorData[accessor_].name);
+			printf("%s", qPrintable(VectorVariable::accessorData[accessor_].name));
 			break;
 		case (VTypes::VibrationData):
-			printf("%s", VectorVariable::accessorData[accessor_].name);
+			printf("%s", qPrintable(VectorVariable::accessorData[accessor_].name));
 			break;
 		case (VTypes::WidgetData):
-			printf("%s", WidgetVariable::accessorData[accessor_].name);
+			printf("%s", qPrintable(WidgetVariable::accessorData[accessor_].name));
 			break;
 		case (VTypes::ZMatrixData):
-			printf("%s", ZMatrixVariable::accessorData[accessor_].name);
+			printf("%s", qPrintable(ZMatrixVariable::accessorData[accessor_].name));
 			break;
 		case (VTypes::ZMatrixElementData):
-			printf("%s", ZMatrixElementVariable::accessorData[accessor_].name);
+			printf("%s", qPrintable(ZMatrixElementVariable::accessorData[accessor_].name));
 			break;
 		default:
 			printf("Internal Error: StepNode doesn't know how to print a member from type (%s)\n", VTypes::dataType(previousType_));

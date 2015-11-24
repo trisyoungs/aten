@@ -110,7 +110,9 @@ FunctionAccessor ModelVariable::functionData[ModelVariable::nFunctions] = {
 	{ "angleEnergy",	VTypes::DoubleData,	"",							"" },
 	{ "atomWithBit",	VTypes::AtomData,	"i",							"" },
 	{ "augment",		VTypes::NoData,		aten_->commandArguments(Commands::Augment),		aten_->commandArgText(Commands::Augment) },
+	{ "axisRotateSelection",VTypes::NoData,		aten_->commandArguments(Commands::AxisRotate),		aten_->commandArgText(Commands::AxisRotate) },
 	{ "bondEnergy",		VTypes::DoubleData,	"",							"" },
+	{ "centreSelection",	VTypes::NoData,		aten_->commandArguments(Commands::Centre),		aten_->commandArgText(Commands::Centre) },
 	{ "charge",		VTypes::NoData,		aten_->commandArguments(Commands::Charge),		aten_->commandArgText(Commands::Charge) },
 	{ "clearBonds",		VTypes::NoData,		aten_->commandArguments(Commands::ClearBonds),		aten_->commandArgText(Commands::ClearBonds) },
 	{ "clearCharges",	VTypes::NoData,		aten_->commandArguments(Commands::ClearCharges),		aten_->commandArgText(Commands::ClearCharges) },
@@ -123,8 +125,15 @@ FunctionAccessor ModelVariable::functionData[ModelVariable::nFunctions] = {
 	{ "elecEnergy",		VTypes::DoubleData,	"",							"" },
 	{ "expand",		VTypes::NoData,		aten_->commandArguments(Commands::Expand),		aten_->commandArgText(Commands::Expand) },
 	{ "finalise",		VTypes::NoData,		aten_->commandArguments(Commands::Finalise),		aten_->commandArgText(Commands::Finalise) },
+	{ "flipSelectionX",	VTypes::NoData,		aten_->commandArguments(Commands::FlipX),		aten_->commandArgText(Commands::FlipX) },
+	{ "flipSelectionY",	VTypes::NoData,		aten_->commandArguments(Commands::FlipY),		aten_->commandArgText(Commands::FlipY) },
+	{ "flipSelectionZ",	VTypes::NoData,		aten_->commandArguments(Commands::FlipZ),		aten_->commandArgText(Commands::FlipZ) },
 	{ "interEnergy",	VTypes::DoubleData,	"",							"" },
 	{ "intraEnergy",	VTypes::DoubleData,	"",							"" },
+	{ "matrixConvertSelection",	 VTypes::NoData,	aten_->commandArguments(Commands::MatrixConvert),         aten_->commandArgText(Commands::MatrixConvert) },
+	{ "matrixTransformSelection",	 VTypes::NoData,	aten_->commandArguments(Commands::MatrixTransform),         aten_->commandArgText(Commands::MatrixTransform) },
+	{ "mirrorSelection",	VTypes::NoData,		aten_->commandArguments(Commands::Mirror),		aten_->commandArgText(Commands::Mirror) },
+	{ "movePen",		VTypes::NoData,		aten_->commandArguments(Commands::Move),		aten_->commandArgText(Commands::Move) },
 	{ "moveToEnd",		VTypes::NoData,		aten_->commandArguments(Commands::MoveToEnd),		aten_->commandArgText(Commands::MoveToEnd) },
 	{ "moveToStart",	VTypes::NoData,		aten_->commandArguments(Commands::MoveToStart),		aten_->commandArgText(Commands::MoveToStart) },
 	{ "newAtom",		VTypes::AtomData,	aten_->commandArguments(Commands::NewAtom),		aten_->commandArgText(Commands::NewAtom) },
@@ -135,27 +144,36 @@ FunctionAccessor ModelVariable::functionData[ModelVariable::nFunctions] = {
 	{ "newGlyph",		VTypes::GlyphData,	aten_->commandArguments(Commands::NewGlyph),		aten_->commandArgText(Commands::NewGlyph) },
 	{ "newGrid",		VTypes::GridData,	aten_->commandArguments(Commands::NewGrid),		aten_->commandArgText(Commands::NewGrid) },
 	{ "newPattern",		VTypes::PatternData,	aten_->commandArguments(Commands::NewPattern),		aten_->commandArgText(Commands::NewPattern) },
-	{ "newVibration",	VTypes::VibrationData,	aten_->commandArguments(Commands::NewVibration),		aten_->commandArgText(Commands::NewVibration) },
+	{ "newVibration",	VTypes::VibrationData,	aten_->commandArguments(Commands::NewVibration),	aten_->commandArgText(Commands::NewVibration) },
 	{ "paste",		VTypes::NoData,		aten_->commandArguments(Commands::Paste),		aten_->commandArgText(Commands::Paste) },
 	{ "rebond",		VTypes::NoData,		aten_->commandArguments(Commands::ReBond),		aten_->commandArgText(Commands::ReBond) },
 	{ "rebondPatterns",	VTypes::NoData,		aten_->commandArguments(Commands::ReBondPatterns),	aten_->commandArgText(Commands::ReBondPatterns) },
 	{ "rebondSelection",	VTypes::NoData,		aten_->commandArguments(Commands::ReBondSelection),	aten_->commandArgText(Commands::ReBondSelection) },
-	{ "redo",		VTypes::NoData,		aten_->commandArguments(Commands::Redo),			aten_->commandArgText(Commands::Redo) },
+	{ "redo",		VTypes::NoData,		aten_->commandArguments(Commands::Redo),		aten_->commandArgText(Commands::Redo) },
 	{ "reorder",		VTypes::NoData,		aten_->commandArguments(Commands::ReOrder),		aten_->commandArgText(Commands::ReOrder) },
+	{ "reorientSelection",	VTypes::NoData,		aten_->commandArguments(Commands::Reorient),		aten_->commandArgText(Commands::Reorient) },
+	{ "resetPen",		VTypes::NoData,		aten_->commandArguments(Commands::ResetPen),		aten_->commandArgText(Commands::ResetPen) },
+	{ "rotatePenX",		VTypes::NoData,		aten_->commandArguments(Commands::RotX),		aten_->commandArgText(Commands::RotX) },
+	{ "rotatePenY",		VTypes::NoData,		aten_->commandArguments(Commands::RotY),		aten_->commandArgText(Commands::RotY) },
+	{ "rotatePenZ",		VTypes::NoData,		aten_->commandArguments(Commands::RotZ),		aten_->commandArgText(Commands::RotZ) },
 	{ "saveBitmap",		VTypes::NoData,		aten_->commandArguments(Commands::SaveBitmap),		aten_->commandArgText(Commands::SaveBitmap) },
 	{ "select",		VTypes::NoData,		aten_->commandArguments(Commands::Select),		aten_->commandArgText(Commands::Select) },
 	{ "selectAll",		VTypes::NoData,		aten_->commandArguments(Commands::SelectAll),		aten_->commandArgText(Commands::SelectAll) },
-	{ "selectionAddHydrogen",VTypes::NoData,	aten_->commandArguments(Commands::SelectionAddHydrogen),	aten_->commandArgText(Commands::SelectionAddHydrogen) },
+	{ "selectionAddHydrogen",VTypes::NoData,	aten_->commandArguments(Commands::SelectionAddHydrogen),aten_->commandArgText(Commands::SelectionAddHydrogen) },
 	{ "selectNone",		VTypes::NoData,		aten_->commandArguments(Commands::SelectNone),		aten_->commandArgText(Commands::SelectNone) },
 	{ "selectTree",		VTypes::NoData,		aten_->commandArguments(Commands::SelectTree),		aten_->commandArgText(Commands::SelectTree) },
+	{ "setAngles",		VTypes::NoData,		aten_->commandArguments(Commands::SetAngles),		aten_->commandArgText(Commands::SetAngles) },
+	{ "setDistances",	VTypes::NoData,		aten_->commandArguments(Commands::SetDistances),	aten_->commandArgText(Commands::SetDistances) },
+	{ "setTorsions",	VTypes::NoData,		aten_->commandArguments(Commands::SetTorsions),		aten_->commandArgText(Commands::SetTorsions) },
 	{ "setupComponent",	VTypes::NoData,		aten_->commandArguments(Commands::SetupComponent),	aten_->commandArgText(Commands::SetupComponent) },
 	{ "shiftDown",		VTypes::NoData,		aten_->commandArguments(Commands::ShiftDown),		aten_->commandArgText(Commands::ShiftDown) },
 	{ "shiftUp",		VTypes::NoData,		aten_->commandArguments(Commands::ShiftUp),		aten_->commandArgText(Commands::ShiftUp) },
 	{ "showAll",		VTypes::NoData,		aten_->commandArguments(Commands::ShowAll),		aten_->commandArgText(Commands::ShowAll) },
 	{ "toAngstroms",	VTypes::NoData,		"",							"" },
 	{ "torsionEnergy",	VTypes::DoubleData,	"",							"" },
+	{ "translateSelection",	VTypes::NoData,		aten_->commandArguments(Commands::Translate),		aten_->commandArgText(Commands::Translate) },
 	{ "transmute",		VTypes::NoData,		aten_->commandArguments(Commands::Transmute),		aten_->commandArgText(Commands::Transmute) },
-	{ "undo",		VTypes::NoData,		aten_->commandArguments(Commands::Undo),			aten_->commandArgText(Commands::Undo) },
+	{ "undo",		VTypes::NoData,		aten_->commandArguments(Commands::Undo),		aten_->commandArgText(Commands::Undo) },
 	{ "vdwEnergy",		VTypes::DoubleData,	"",							"" }
 };
 
@@ -175,16 +193,16 @@ StepNode* ModelVariable::accessorSearch(QString name, TreeNode* arrayIndex, Tree
 	if (i == -1)
 	{
 		// No accessor found - is it a function definition?
-		// for (i = 0; i < nFunctions; i++) if (strcmp(functionData[i].name,s) == 0) break;
+		// for (i = 0; i < nFunctions; i++) if (strcmp(qPrintable(functionData[i].name),s) == 0) break;
 		i = Variable::searchAccessor(name, nFunctions, functionData);
 		if (i == -1)
 		{
 			Messenger::print("Error: Type 'Model&' has no member or function named '%s'.", qPrintable(name));
-			printAccessors();
+			printValidAccessors(nAccessors, accessorData, nFunctions, functionData);
 			Messenger::exit("ModelVariable::accessorSearch");
 			return NULL;
 		}
-		Messenger::print(Messenger::Parse, "FunctionAccessor match = %i (%s)", i, functionData[i].name);
+		Messenger::print(Messenger::Parse, "FunctionAccessor match = %i (%s)", i, qPrintable(functionData[i].name));
 		if (arrayIndex != NULL)
 		{
 			Messenger::print("Error: Array index given to 'Model&' function named '%s'.", qPrintable(name));
@@ -194,20 +212,20 @@ StepNode* ModelVariable::accessorSearch(QString name, TreeNode* arrayIndex, Tree
 		// Add and check supplied arguments...
 		result = new StepNode(i, VTypes::ModelData, functionData[i].returnType);
 		result->addJoinedArguments(argList);
-		if (!result->checkArguments(functionData[i].arguments, functionData[i].name))
+		if (!result->checkArguments(functionData[i].arguments, qPrintable(functionData[i].name)))
 		{
-			Messenger::print("Error: Syntax for 'Model&' function '%s' is '%s(%s)'.", functionData[i].name, functionData[i].name, functionData[i].argText );
+			Messenger::print("Error: Syntax for 'Model&' function '%s' is '%s(%s)'.", qPrintable(functionData[i].name), qPrintable(functionData[i].name), qPrintable(functionData[i].argText) );
 			delete result;
 			result = NULL;
 		}
 	}
 	else
 	{
-		Messenger::print(Messenger::Parse, "Accessor match = %i (%s)", i, accessorData[i].name);
+		Messenger::print(Messenger::Parse, "Accessor match = %i (%s)", i, qPrintable(accessorData[i].name));
 		// Were we given an array index when we didn't want one?
 		if ((accessorData[i].arraySize == 0) && (arrayIndex != NULL))
 		{
-			Messenger::print("Error: Irrelevant array index provided for member '%s'.", accessorData[i].name);
+			Messenger::print("Error: Irrelevant array index provided for member '%s'.", qPrintable(accessorData[i].name));
 			result = NULL;
 		}
 		// Were we given an argument list when we didn't want one?
@@ -238,7 +256,7 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex,
 	// Check for correct lack/presence of array index given
 	if ((accessorData[i].arraySize == 0) && hasArrayIndex)
 	{
-		Messenger::print("Error: Unnecessary array index provided for member '%s'.", accessorData[i].name);
+		Messenger::print("Error: Unnecessary array index provided for member '%s'.", qPrintable(accessorData[i].name));
 		Messenger::exit("ModelVariable::retrieveAccessor");
 		return false;
 	}
@@ -246,7 +264,7 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex,
 	{
 		if ((arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize))
 		{
-			Messenger::print("Error: Array index out of bounds for member '%s' (%i, range is 1-%i).", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
+			Messenger::print("Error: Array index out of bounds for member '%s' (%i, range is 1-%i).", qPrintable(accessorData[i].name), arrayIndex, accessorData[i].arraySize);
 			Messenger::exit("ModelVariable::retrieveAccessor");
 			return false;
 		}
@@ -530,7 +548,7 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex,
 			rv.set(VTypes::ZMatrixData, ptr->zMatrix());
 			break;
 		default:
-			printf("Internal Error: Access to member '%s' has not been defined in ModelVariable.\n", accessorData[i].name);
+			printf("Internal Error: Access to member '%s' has not been defined in ModelVariable.\n", qPrintable(accessorData[i].name));
 			result = false;
 			break;
 	}
@@ -550,54 +568,15 @@ bool ModelVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newVa
 		return false;
 	}
 	Accessors acc = (Accessors) i;
+
 	// Check for correct lack/presence of array index given to original accessor, and nature of new value
-	bool result = true;
-	if (accessorData[i].arraySize != 0)
-	{
-		if (hasArrayIndex)
-		{
-			if ((accessorData[i].arraySize > 0) && ( (arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize) ))
-			{
-				Messenger::print("Error: Array index provided for member '%s' is out of range (%i, range is 1-%i).", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
-				result = false;
-			}
-			if (newValue.arraySize() > 0)
-			{
-				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.", accessorData[i].name);
-				result = false;
-			}
-		}
-		else
-		{
-			if (newValue.arraySize() > accessorData[i].arraySize)
-			{
-				Messenger::print("Error: The array being assigned to member '%s' is larger than the size of the desination array (%i cf. %i).", accessorData[i].name, newValue.arraySize(), accessorData[i].arraySize);
-				result = false;
-			}
-		}
-	}
-	else
-	{
-		// This is not an array member, so cannot be assigned an array unless its a Vector
-		if (newValue.arraySize() != -1)
-		{
-			if (accessorData[i].returnType != VTypes::VectorData)
-			{
-				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.", accessorData[i].name);
-				result = false;
-			}
-			else if ((newValue.type() != VTypes::VectorData) && (newValue.arraySize() != 3))
-			{
-				Messenger::print("Error: Only an array of size 3 can be assigned to a vector (member '%s').", accessorData[i].name);
-				result = false;
-			}
-		}
-	}
+	bool result = checkAccessorArrays(accessorData[acc], newValue, hasArrayIndex, arrayIndex);
 	if (!result)
 	{
 		Messenger::exit("ModelVariable::setAccessor");
 		return false;
 	}
+
 	// Get current data from ReturnValue
 	Model::InsertionPolicy inspol;
 	Model* ptr = (Model*) sourcerv.asPointer(VTypes::ModelData, result);
@@ -650,7 +629,7 @@ bool ModelVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newVa
 			ptr->logChange(Log::Style);
 			break;
 		default:
-			printf("ModelVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);
+			printf("ModelVariable::setAccessor doesn't know how to use member '%s'.\n", qPrintable(accessorData[acc].name));
 			result = false;
 			break;
 	}
@@ -694,8 +673,14 @@ bool ModelVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
  		case (ModelVariable::Augment):
 			result = aten_->callCommand(Commands::Augment, node, rv, bundle);
 			break;
+		case (ModelVariable::AxisRotateSelection):
+			result = aten_->callCommand(Commands::AxisRotate, node, rv, bundle);
+			break;
 		case (ModelVariable::BondEnergy):
 			rv.set( ptr->bondEnergy(ptr, result));
+			break;
+		case (ModelVariable::CentreSelection):
+			result = aten_->callCommand(Commands::Centre, node, rv, bundle);
 			break;
  		case (ModelVariable::Charge):
 			result = aten_->callCommand(Commands::Charge, node, rv, bundle);
@@ -734,11 +719,32 @@ bool ModelVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
  		case (ModelVariable::Finalise):
 			result = aten_->callCommand(Commands::Finalise, node, rv, bundle);
 			break;
+		case (ModelVariable::FlipSelectionX):
+			result = aten_->callCommand(Commands::FlipX, node, rv, bundle);
+			break;
+		case (ModelVariable::FlipSelectionY):
+			result = aten_->callCommand(Commands::FlipY, node, rv, bundle);
+			break;
+		case (ModelVariable::FlipSelectionZ):
+			result = aten_->callCommand(Commands::FlipZ, node, rv, bundle);
+			break;
 		case (ModelVariable::InterEnergy):
 			rv.set( ptr->intermolecularEnergy(ptr, result));
 			break;
 		case (ModelVariable::IntraEnergy):
 			rv.set( ptr->intramolecularEnergy(ptr, result));
+			break;
+		case (ModelVariable::MatrixConvertSelection):
+			result = aten_->callCommand(Commands::MatrixConvert, node, rv, bundle);
+			break;
+		case (ModelVariable::MatrixTransformSelection):
+			result = aten_->callCommand(Commands::MatrixTransform, node, rv, bundle);
+			break;
+		case (ModelVariable::MirrorSelection):
+			result = aten_->callCommand(Commands::Mirror, node, rv, bundle);
+			break;
+ 		case (ModelVariable::MovePen):
+			result = aten_->callCommand(Commands::Move, node, rv, bundle);
 			break;
  		case (ModelVariable::MoveToEnd):
 			result = aten_->callCommand(Commands::MoveToEnd, node, rv, bundle);
@@ -792,7 +798,22 @@ bool ModelVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
  		case (ModelVariable::ReOrder):
 			result = aten_->callCommand(Commands::ReOrder, node, rv, bundle);
 			break;
- 		case (ModelVariable::SaveBitmap):
+		case (ModelVariable::ReOrientSelection):
+			result = aten_->callCommand(Commands::Reorient, node, rv, bundle);
+			break;
+ 		case (ModelVariable::ResetPen):
+			result = aten_->callCommand(Commands::ResetPen, node, rv, bundle);
+			break;
+ 		case (ModelVariable::RotatePenX):
+			result = aten_->callCommand(Commands::RotX, node, rv, bundle);
+			break;
+ 		case (ModelVariable::RotatePenY):
+			result = aten_->callCommand(Commands::RotY, node, rv, bundle);
+			break;
+ 		case (ModelVariable::RotatePenZ):
+			result = aten_->callCommand(Commands::RotZ, node, rv, bundle);
+			break;
+		case (ModelVariable::SaveBitmap):
 			result = aten_->callCommand(Commands::SaveBitmap, node, rv, bundle);
 			break;
  		case (ModelVariable::Select):
@@ -828,6 +849,9 @@ bool ModelVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
  		case (ModelVariable::TorsionEnergy):
 			rv.set( ptr->torsionEnergy(ptr, result));
 			break;
+		case (ModelVariable::TranslateSelection):
+			result = aten_->callCommand(Commands::Translate, node, rv, bundle);
+			break;
  		case (ModelVariable::Transmute):
 			result = aten_->callCommand(Commands::Transmute, node, rv, bundle);
 			break;
@@ -838,31 +862,12 @@ bool ModelVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 			rv.set( ptr->vdwEnergy(ptr, result));
 			break;
 		default:
-			printf("Internal Error: Access to function '%s' has not been defined in ModelVariable.\n", functionData[i].name);
+			printf("Internal Error: Access to function '%s' has not been defined in ModelVariable.\n", qPrintable(functionData[i].name));
 			result = false;
 			break;
 	}
 	Messenger::exit("ModelVariable::performFunction");
 	return result;
-}
-
-// Print valid accessors/functions
-void ModelVariable::printAccessors()
-{
-	if (ModelVariable::nAccessors > 0)
-	{
-		Messenger::print("Valid accessors are:");
-		QString accessors;
-		for (int n=0; n<ModelVariable::nAccessors; ++n) accessors += QString("%1%2%3").arg(n == 0 ? " " : ", ", accessorData[n].name, accessorData[n].arraySize > 0 ? "[]" : "");
-		Messenger::print(accessors);
-	}
-	if ((ModelVariable::nFunctions > 0) && (strcmp(functionData[0].name,".dummy") != 0))
-	{
-		Messenger::print("Valid functions are:");
-		QString functions;
-		for (int n=0; n<ModelVariable::nFunctions; ++n) functions += QString("%1%2(%3)").arg(n == 0 ? " " : ", ", functionData[n].name, functionData[n].argText);
-		Messenger::print(functions);
-	}
 }
 
 /*

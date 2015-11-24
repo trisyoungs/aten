@@ -106,6 +106,7 @@ bool Commands::function_ReBond(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 
 	// If we're reading from a file (via a filter) check for prefs override
+	printf("C = %p, parent = %p\n", c, c->parent());
 	if (c->parent()->parser() == NULL)
 	{
 		obj.rs()->beginUndoState("Calculate Bonding");

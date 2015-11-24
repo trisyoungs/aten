@@ -202,7 +202,7 @@ void ReturnValue::clearArrayData()
 }
 
 // Return type of the stored data
-VTypes::DataType ReturnValue::type()
+VTypes::DataType ReturnValue::type() const
 {
 	return type_;
 }
@@ -902,7 +902,7 @@ void *ReturnValue::asPointer(int index, VTypes::DataType type, bool& success)
 }
 
 // Return array size of data
-int ReturnValue::arraySize()
+int ReturnValue::arraySize() const
 {
 	return arraySize_;
 }

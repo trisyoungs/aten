@@ -58,8 +58,6 @@ class WidgetVariable : public PointerVariable
 	static bool setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newValue, bool hasArrayIndex, int arrayIndex = -1);
 	// Perform desired function
 	static bool performFunction(int i, ReturnValue& rv, TreeNode* node);
-	// Print valid accessors/functions
-	static void printAccessors();
 	// Accessor data
 	static Accessor accessorData[nAccessors];
 	// Function Accessor data

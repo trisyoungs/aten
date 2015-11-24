@@ -130,8 +130,8 @@ bool Aten::savePrefs(QString fileName)
 			// Compare the two strings - if different, write the prefs value to the file....
 // 			printf("acc = %i [%s], default = '%s', new = '%s'\n", i, PreferencesVariable::accessorData[i].name, defaultValue.get(), newValue.get());
 			if (defaultValue == newValue) continue;
-			if ((PreferencesVariable::accessorData[i].returnType == VTypes::StringData) && (PreferencesVariable::accessorData[i].arraySize == 0)) line.sprintf("aten.prefs.%s = \"%s\";\n", PreferencesVariable::accessorData[i].name, qPrintable(newValue));
-			else line.sprintf("aten.prefs.%s = %s;\n", PreferencesVariable::accessorData[i].name, qPrintable(newValue));
+			if ((PreferencesVariable::accessorData[i].returnType == VTypes::StringData) && (PreferencesVariable::accessorData[i].arraySize == 0)) line.sprintf("aten.prefs.%s = \"%s\";\n", qPrintable(PreferencesVariable::accessorData[i].name), qPrintable(newValue));
+			else line.sprintf("aten.prefs.%s = %s;\n", qPrintable(PreferencesVariable::accessorData[i].name), qPrintable(newValue));
 			prefsfile.writeLine(line);
 		}
 	}

@@ -111,16 +111,16 @@ StepNode* AtomVariable::accessorSearch(QString name, TreeNode* arrayIndex, TreeN
 	if (i == -1)
 	{
 		// No accessor found - is it a function definition?
-		// for (i = 0; i < nFunctions; i++) if (strcmp(functionData[i].name,s) == 0) break;
+		// for (i = 0; i < nFunctions; i++) if (strcmp(qPrintable(functionData[i].name),s) == 0) break;
 		i = Variable::searchAccessor(name, nFunctions, functionData);
 		if (i == -1)
 		{
 			Messenger::print("Error: Type 'Atom&' has no member or function named '%s'.", qPrintable(name));
-			printAccessors();
+			printValidAccessors(nAccessors, accessorData, nFunctions, functionData);
 			Messenger::exit("AtomVariable::accessorSearch");
 			return NULL;
 		}
-		Messenger::print(Messenger::Parse, "FunctionAccessor match = %i (%s)", i, functionData[i].name);
+		Messenger::print(Messenger::Parse, "FunctionAccessor match = %i (%s)", i, qPrintable(functionData[i].name));
 		if (arrayIndex != NULL)
 		{
 			Messenger::print("Error: Array index given to 'Atom&' function '%s'.", qPrintable(name));
@@ -130,20 +130,20 @@ StepNode* AtomVariable::accessorSearch(QString name, TreeNode* arrayIndex, TreeN
 		// Add and check supplied arguments...
 		result = new StepNode(i, VTypes::AtomData, functionData[i].returnType);
 		result->addJoinedArguments(argList);
-		if (!result->checkArguments(functionData[i].arguments, functionData[i].name))
+		if (!result->checkArguments(functionData[i].arguments, qPrintable(functionData[i].name)))
 		{
-			Messenger::print("Error: Syntax for 'Atom&' function '%s' is '%s(%s)'.", functionData[i].name, functionData[i].name, functionData[i].argText );
+			Messenger::print("Error: Syntax for 'Atom&' function '%s' is '%s(%s)'.", qPrintable(functionData[i].name), qPrintable(functionData[i].name), qPrintable(functionData[i].argText) );
 			delete result;
 			result = NULL;
 		}
 	}
 	else
 	{
-		Messenger::print(Messenger::Parse, "Accessor match = %i (%s)", i, accessorData[i].name);
+		Messenger::print(Messenger::Parse, "Accessor match = %i (%s)", i, qPrintable(qPrintable(accessorData[i].name)));
 		// Were we given an array index when we didn't want one?
 		if ((accessorData[i].arraySize == 0) && (arrayIndex != NULL))
 		{
-			Messenger::print("Error: Irrelevant array index provided for member '%s'.", accessorData[i].name);
+			Messenger::print("Error: Irrelevant array index provided for member '%s'.", qPrintable(qPrintable(accessorData[i].name)));
 			result = NULL;
 		}
 		// Were we given an argument list when we didn't want one?
@@ -174,7 +174,7 @@ bool AtomVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex, 
 	// Check for correct lack/presence of array index given
 	if ((accessorData[i].arraySize == 0) && hasArrayIndex)
 	{
-		Messenger::print("Error: Unnecessary array index provided for member '%s'.", accessorData[i].name);
+		Messenger::print("Error: Unnecessary array index provided for member '%s'.", qPrintable(qPrintable(accessorData[i].name)));
 		Messenger::exit("AtomVariable::retrieveAccessor");
 		return false;
 	}
@@ -182,7 +182,7 @@ bool AtomVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex, 
 	{
 		if ((arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize))
 		{
-			Messenger::print("Error: Array index out of bounds for member '%s' (%i, range is 1-%i).", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
+			Messenger::print("Error: Array index out of bounds for member '%s' (%i, range is 1-%i).", qPrintable(qPrintable(accessorData[i].name)), arrayIndex, accessorData[i].arraySize);
 			Messenger::exit("AtomVariable::retrieveAccessor");
 			return false;
 		}
@@ -290,7 +290,7 @@ bool AtomVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex, 
 			rv.set(ptr->element());
 			break;
 		default:
-			printf("Internal Error: Access to member '%s' has not been defined in AtomVariable.\n", accessorData[i].name);
+			printf("Internal Error: Access to member '%s' has not been defined in AtomVariable.\n", qPrintable(qPrintable(accessorData[i].name)));
 			result = false;
 			break;
 	}
@@ -310,54 +310,15 @@ bool AtomVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newVal
 		return false;
 	}
 	Accessors acc = (Accessors) i;
+
 	// Check for correct lack/presence of array index given to original accessor, and nature of new value
-	bool result = true;
-	if (accessorData[i].arraySize != 0)
-	{
-		if (hasArrayIndex)
-		{
-			if ((accessorData[i].arraySize > 0) && ( (arrayIndex < 1) || (arrayIndex > accessorData[i].arraySize) ))
-			{
-				Messenger::print("Error: Array index provided for member '%s' is out of range (%i, range is 1-%i).", accessorData[i].name, arrayIndex, accessorData[i].arraySize);
-				result = false;
-			}
-			if (newValue.arraySize() > 0)
-			{
-				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.", accessorData[i].name);
-				result = false;
-			}
-		}
-		else
-		{
-			if (newValue.arraySize() > accessorData[i].arraySize)
-			{
-				Messenger::print("Error: The array being assigned to member '%s' is larger than the size of the desination array (%i cf. %i).", accessorData[i].name, newValue.arraySize(), accessorData[i].arraySize);
-				result = false;
-			}
-		}
-	}
-	else
-	{
-		// This is not an array member, so cannot be assigned an array unless its a Vector
-		if (newValue.arraySize() != -1)
-		{
-			if (accessorData[i].returnType != VTypes::VectorData)
-			{
-				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.", accessorData[i].name);
-				result = false;
-			}
-			else if ((newValue.type() != VTypes::VectorData) && (newValue.arraySize() != 3))
-			{
-				Messenger::print("Error: Only an array of size 3 can be assigned to a vector (member '%s').", accessorData[i].name);
-				result = false;
-			}
-		}
-	}
+	bool result = checkAccessorArrays(accessorData[acc], newValue, hasArrayIndex, arrayIndex);
 	if (!result)
 	{
 		Messenger::exit("AtomVariable::setAccessor");
 		return false;
 	}
+
 	// Get current data from ReturnValue
 	Vec3<double> v;
 	int n;
@@ -504,7 +465,7 @@ bool AtomVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newVal
 			else ptr->setElement( newValue.asInteger() );
 			break;
 		default:
-			printf("AtomVariable::setAccessor doesn't know how to use member '%s'.\n", accessorData[acc].name);
+			printf("AtomVariable::setAccessor doesn't know how to use member '%s'.\n", qPrintable(accessorData[acc].name));
 			result = false;
 			break;
 	}
@@ -560,31 +521,12 @@ bool AtomVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 			ptr->removeBit( node->argi(0) );
 			break;
 		default:
-			printf("Internal Error: Access to function '%s' has not been defined in AtomVariable.\n", functionData[i].name);
+			printf("Internal Error: Access to function '%s' has not been defined in AtomVariable.\n", qPrintable(functionData[i].name));
 			result = false;
 			break;
 	}
 	Messenger::exit("AtomVariable::performFunction");
 	return result;
-}
-
-// Print valid accessors/functions
-void AtomVariable::printAccessors()
-{
-	if (AtomVariable::nAccessors > 0)
-	{
-		Messenger::print("Valid accessors are:");
-		QString accessors;
-		for (int n=0; n<AtomVariable::nAccessors; ++n) accessors += QString("%1%2%3").arg(n == 0 ? " " : ", ", accessorData[n].name, accessorData[n].arraySize > 0 ? "[]" : "");
-		Messenger::print(accessors);
-	}
-	if ((AtomVariable::nFunctions > 0) && (strcmp(functionData[0].name,".dummy") != 0))
-	{
-		Messenger::print("Valid functions are:");
-		QString functions;
-		for (int n=0; n<AtomVariable::nFunctions; ++n) functions += QString("%1%2(%3)").arg(n == 0 ? " " : ", ", functionData[n].name, functionData[n].argText);
-		Messenger::print(functions);
-	}
 }
 
 /*

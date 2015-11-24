@@ -1054,6 +1054,7 @@ bool Tree::expandPath(QString name, TreeNode* arrayIndex, TreeNode* argList)
 		Messenger::print(Messenger::Parse,"...OK - matching accessor found: return type is %s", VTypes::dataType(result->returnType()));
 		ri->data = (TreeNode*) result;
 		nodes_.own(result);
+		result->setParent(this);
 		// Finalise the path before we remove it
 		RefListItem<VariableNode,TreeNode*>* ri = pathStack_.last();
 		if (ri == NULL)

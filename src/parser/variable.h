@@ -90,13 +90,17 @@ class Variable : public TreeNode
 
 
 	/*
-	 * Accessor Search
+	 * Accessor Search / Print
 	 */
 	public:
 	// Search accessor list provided
 	static int searchAccessor(QString name, int nAccessors, Accessor *accessors);
 	// Search accessor list provided
 	static int searchAccessor(QString name, int nAccessors, FunctionAccessor *accessors);
+	// Print valid accessors
+	static void printValidAccessors(int nAccessors, Accessor* accessors, int nFunctions, FunctionAccessor* functions);
+	// Check array source and destination sizes
+	static bool checkAccessorArrays(Accessor& accessor, const ReturnValue& newValue, bool hasArrayIndex, int arrayIndex);
 };
 
 // Array Variable

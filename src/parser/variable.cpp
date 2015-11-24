@@ -175,6 +175,87 @@ int Variable::searchAccessor(QString name, int nAccessors, FunctionAccessor *acc
 	return -1;
 }
 
+// Print valid accessors
+void Variable::printValidAccessors(int nAccessors, Accessor* accessors, int nFunctions, FunctionAccessor* functions)
+{
+	// Print accessor info
+	if (nAccessors > 0)
+	{
+		// Get maximum length of accessor name
+		int maxLength = 0;
+		for (int n=0; n<nAccessors; ++n) if (accessors[n].name.length() > maxLength) maxLength = accessors[n].name.length();
+		maxLength += 6;
+
+		// Print info
+		Messenger::print("Valid accessors are:");
+		for (int n=0; n<nAccessors; ++n)
+		{
+			if (accessors[n].arraySize > 0) Messenger::print(QString("\t%1 %2").arg(QString("%1[%2]").arg(accessors[n].name, -maxLength).arg(accessors[n].arraySize)).arg(accessors[n].isReadOnly ? "(ro)" : ""));
+			else Messenger::print(QString("\t%1").arg(accessors[n].name, -maxLength));
+		}
+		Messenger::print("");
+	}
+
+	if ((nFunctions > 0) && (functions[0].name != ".dummy"))
+	{
+		// Get maximum length of function name + arguments
+		int maxLength = 0;
+		for (int n=0; n<nFunctions; ++n) if ((functions[n].name.length()+functions[n].argText.length()) > maxLength) maxLength = functions[n].name.length()+functions[n].argText.length()+2;
+		maxLength += 6;
+
+		Messenger::print("Valid functions are:");
+		for (int n=0; n<nFunctions; ++n) Messenger::print(QString("%1 %2").arg(functions[n].returnType == VTypes::NoData ? "void" : VTypes::dataType(functions[n].returnType), 15).arg(QString("%1(%2)").arg(functions[n].name, functions[n].argText)));
+	}
+}
+
+// Check array source and destination sizes
+bool Variable::checkAccessorArrays(Accessor& accessor, const ReturnValue& newValue, bool hasArrayIndex, int arrayIndex)
+{
+	if (accessor.arraySize != 0)
+	{
+		if (hasArrayIndex)
+		{
+			if ((accessor.arraySize > 0) && ( (arrayIndex < 1) || (arrayIndex > accessor.arraySize) ))
+			{
+				Messenger::print("Error: Array index provided for member '%s' is out of range (%i, range is 1-%i).", qPrintable(accessor.name), arrayIndex, accessor.arraySize);
+				return false;
+			}
+			if (newValue.arraySize() > 0)
+			{
+				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.", qPrintable(accessor.name));
+				return false;
+			}
+		}
+		else
+		{
+			if (newValue.arraySize() > accessor.arraySize)
+			{
+				Messenger::print("Error: The array being assigned to member '%s' is larger than the size of the desination array (%i cf. %i).", qPrintable(accessor.name), newValue.arraySize(), accessor.arraySize);
+				return false;
+			}
+		}
+	}
+	else
+	{
+		// This is not an array member, so cannot be assigned an array unless its a Vector
+		if (newValue.arraySize() != -1)
+		{
+			if (accessor.returnType != VTypes::VectorData)
+			{
+				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.", qPrintable(accessor.name));
+				return false;
+			}
+			else if ((newValue.type() != VTypes::VectorData) && (newValue.arraySize() != 3))
+			{
+				Messenger::print("Error: Only an array of size 3 can be assigned to a vector (member '%s').", qPrintable(accessor.name));
+				return false;
+			}
+		}
+	}
+
+	return true;
+}
+
 /*
  * Array Variable
  */
