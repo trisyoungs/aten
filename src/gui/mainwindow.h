@@ -40,7 +40,6 @@
 #include "base/namespace.h"
 
 // Forward Declarations
-class AtenAbout;
 class AtenPrefs;
 class AtenForcefieldEditor;
 class CommandWidget;
@@ -599,8 +598,6 @@ class AtenWindow : public QMainWindow
 	QList<QDockWidget*> dockWidgets_;
 	
 	public:
-	// Command dock widget
-	CommandWidget *commandWidget;
 	// Glyphs dock widget
 	GlyphsWidget *glyphsWidget;
 	// Vibrations dock widget

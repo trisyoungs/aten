@@ -22,7 +22,6 @@
 #include <QFileInfo>
 #include "base/sysfunc.h"
 #include "gui/mainwindow.h"
-#include "gui/command.h"
 #include "main/aten.h"
 #include <QSettings>
 
@@ -151,8 +150,8 @@ void AtenWindow::loadSettings()
 	else Messenger::print("Program history file not found.");
 	
 	// Update GUI controls
-	commandWidget->setCommandList(commandHistory);
-	// -- Combo histories on Select panel
+	ui.QuickCommandCombo->addItems(commandHistory);
+	ui.QuickCommandCombo->setCurrentIndex(-1);
 	ui.SelectIntelligentTargetCombo->addItems(selectHistory);
 	ui.SelectIntelligentTargetCombo->setCurrentIndex(-1);
 }
@@ -188,7 +187,6 @@ void AtenWindow::saveSettings()
 	{
 		QString line;
 		int n;
-		QStringList history;
 
 		// Scripts
 		for (Program* prog = aten_.scripts(); prog != NULL; prog = prog->next)
@@ -197,11 +195,10 @@ void AtenWindow::saveSettings()
 			historyFile.writeLine(line);
 		}
 
-		// Command toolbar history
-		history = commandWidget->commandList();
-		for (n=0; n < history.count(); ++n)
+		// Quick command history
+		for (n=0; n < ui.QuickCommandCombo->count(); ++n)
 		{
-			line.sprintf("%s  %s\n", Prefs::historyType(Prefs::CommandHistory), qPrintable(history.at(n)));
+			line.sprintf("%s  %s\n", Prefs::historyType(Prefs::CommandHistory), qPrintable(ui.QuickCommandCombo->itemText(n)));
 			historyFile.writeLine(line);
 		}
 		

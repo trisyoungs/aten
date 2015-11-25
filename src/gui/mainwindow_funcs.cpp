@@ -36,6 +36,7 @@
 #include "base/sysfunc.h"
 #include <iostream>
 #include <fstream>
+// Popups
 #include "gui/popupbuildaddh.h"
 #include "gui/popupbuildclear.h"
 #include "gui/popupbuildfragments.h"
@@ -81,9 +82,7 @@
 #include "gui/popupviewcolourscheme.h"
 #include "gui/popupviewreset.h"
 #include "gui/popupviewstyle.h"
-
-#include "gui/command.h"
-#include "gui/disorderwizard.h"
+// OLD
 #include "gui/glyphs.h"
 #include "gui/vibrations.h"
 
@@ -163,10 +162,9 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportFilmD
 	QObject::connect(ui.AtomsTable, SIGNAL(itemChanged(QTableWidgetItem*)), this, SLOT(atomsTableItemChanged(QTableWidgetItem*)));
 
 	// Create dock widgets
-	commandWidget = new CommandWidget(*this, Qt::Tool);
 	glyphsWidget = new GlyphsWidget(*this, Qt::Tool);
 	vibrationsWidget = new VibrationsWidget(*this, Qt::Tool);
-	dockWidgets_ << commandWidget << glyphsWidget << vibrationsWidget;
+	dockWidgets_ << glyphsWidget << vibrationsWidget;
 
 	int n;
 	ReturnValue rv;
@@ -400,14 +398,10 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportFilmD
 	// Load Qt Settings
 	loadSettings();
 
-	// Set controls in some windows
-	commandWidget->refresh();
-
 	// Reset view of all loaded models
 	for (Model* m = aten.models(); m != NULL; m = m->next) if (!prefs.keepView()) m->resetView(ui.MainView->contextWidth(), ui.MainView->contextHeight());
 
 	// Refresh everything
-	commandWidget->refreshScripts();
 	updateWidgets(AtenWindow::AllTarget);
 
 	// Set some preferences back to their default values

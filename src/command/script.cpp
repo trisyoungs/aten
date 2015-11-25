@@ -23,7 +23,6 @@
 #include "parser/commandnode.h"
 #include "main/aten.h"
 #include "gui/mainwindow.h"
-#include "gui/command.h"
 
 ATEN_USING_NAMESPACE
 
@@ -49,8 +48,10 @@ bool Commands::function_LoadScript(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	if (c->hasArg(1)) prog->setName(c->argc(1));
 	else prog->setName(c->argc(0));
 	rv.reset();
+
 	// Update GUI
-	aten_.atenWindow()->commandWidget->refreshScripts();
+	aten_.atenWindow()->updateWidgets(AtenWindow::ToolsPanelTarget);
+
 	return true;
 }
 

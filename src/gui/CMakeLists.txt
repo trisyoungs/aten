@@ -2,7 +2,6 @@
 # the UI file won't be wrapped!
 # Meta-Objects
 SET(gui_MOC_HDRS
-  command.h
   disorderoptions.h
   disorderwizard.h
   exportfilm.h
@@ -77,7 +76,6 @@ SET(gui_MOC_HDRS
   tintegerspindelegate.hui
   tmenubutton.hui
   tprocess.hui
-  tprompt.hui
   ttablewidget.hui
   ttabwidget.hui
   ttreewidget.hui
@@ -92,7 +90,6 @@ QT5_WRAP_CPP(treegui_MOC_SRCS ${treegui_MOC_HDRS})
 
 # User Interface Files
 SET(gui_UIS
-  command.ui
   disorderoptions.ui
   disorderwizard.ui
   exportfilm.ui
@@ -170,7 +167,6 @@ QT5_WRAP_UI(treegui_UIS_H ${treegui_UIS})
 set(gui_SRCS
   useractions.h
   useractions.cpp
-  command_funcs.cpp
   disorderoptions_funcs.cpp
   disorderwizard_funcs.cpp
   exportfilm_funcs.cpp
@@ -269,7 +265,6 @@ set(gui_SRCS
   tintegerspindelegate_funcs.cpp
   ttabwidget_funcs.cpp
   tprocess_funcs.cpp
-  tprompt_funcs.cpp
   textratreewidgetitem_funcs.cpp
   vibrations_funcs.cpp
   viewbasis_funcs.cpp
