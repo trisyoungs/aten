@@ -177,6 +177,7 @@ set(gui_SRCS
   loadmodel_funcs.cpp
   mainwindow_atoms.cpp
   mainwindow_context.cpp
+  mainwindow_film.cpp
   mainwindow_funcs.cpp
   mainwindow_image.cpp
   mainwindow_interaction.cpp

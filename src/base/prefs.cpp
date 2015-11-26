@@ -353,11 +353,6 @@ Prefs::Prefs()
 #else
 	tempDir_ = "/tmp";
 #endif
-	encoderExe_ = "/usr/bin/mencoder";
-	encoderArguments_ = "-ovc lavc -lavcopts vcodec=msmpeg4v2:vpass=1:vbitrate=2343750:mbd=2:keyint=132:vqblur=1.0:cmp=2:subcmp=2:dia=2:mv0:last_pred=3 -mf type=png:fps=FPS -nosound -o /dev/null mf://FILES";
-	encoderPostExe_ = "/usr/bin/mencoder";
-	encoderPostArguments_ = "-ovc lavc -lavcopts vcodec=msmpeg4v2:vpass=2:vbitrate=2343750:mbd=2:keyint=132:vqblur=1.0:cmp=2:subcmp=2:dia=2:mv0:last_pred=3 -mf type=png:fps=FPS -nosound -o OUTPUT mf://FILES";
-// 	encoderArguments_ = "mf://FILES -ovc x264 -fps FPS -v -o OUTPUT";
 }
 
 /*
@@ -1691,52 +1686,4 @@ void Prefs::setMopacExe(QString exe)
 QString Prefs::mopacExe() const
 {
 	return mopacExe_;
-}
-
-// Encoder command
-void Prefs::setEncoderExe(QString exe)
-{
-	encoderExe_ = exe;
-}
-
-// Return encoder command
-QString Prefs::encoderExe() const
-{
-	return encoderExe_;
-}
-
-// Encoder arguments
-void Prefs::setEncoderArguments(QString arguments)
-{
-	encoderArguments_ = arguments;
-}
-
-// Return encoder arguments
-QString Prefs::encoderArguments() const
-{
-	return encoderArguments_;
-}
-
-// Video encoder post-process command
-void Prefs::setEncoderPostExe(QString exe)
-{
-	encoderPostExe_ = exe;
-}
-
-// Return the video encoder post-process command
-QString Prefs::encoderPostExe() const
-{
-	return encoderPostExe_;
-}
-
-// Video encoder post-process arguments
-void Prefs::setEncoderPostArguments(QString arguments)
-{
-	encoderPostArguments_ = arguments;
-}
-
-// Return the video encoder post-process arguments
-QString Prefs::encoderPostArguments() const
-{
-	return encoderPostArguments_;
 }

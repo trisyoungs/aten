@@ -1,18 +1,18 @@
 # Encoder definitions for film/movie saving
 
 # mencoder test definition
-Name 'mencoder / mp4'
+Name 'OLD mencoder / mp4'
 Nickname 'menc-mp4'
 # -- First pass
 CommandName 'First Pass'
 Command mencoder
 CommandSearchPaths /usr/bin,/usr/local/bin
-CommandArguments '-f OUTPUTFILE -s FRAMESFILE'
+CommandArguments '-ovc lavc -lavcopts vcodec=msmpeg4v2:vpass=1:vbitrate=2343750:mbd=2:keyint=132:vqblur=1.0:cmp=2:subcmp=2:dia=2:mv0:last_pred=3 -mf type=png:fps=FRAMESPERSECOND -nosound -o /dev/null mf://FRAMESFILE'
 # -- Second pass
 CommandName 'Second Pass'
 Command mencoder
 CommandSearchPaths /usr/bin,/usr/local/bin
-CommandArguments '-f OUTPUTFILE -s FRAMESFILE second pass'
+CommandArguments '-ovc lavc -lavcopts vcodec=msmpeg4v2:vpass=2:vbitrate=2343750:mbd=2:keyint=132:vqblur=1.0:cmp=2:subcmp=2:dia=2:mv0:last_pred=3 -mf type=png:fps=FRAMESPERSECOND -nosound -o OUTPUTFILE mf://@FRAMESFILE'
 # -- MP4 creation
 CommandName 'MP4 Creation'
 Command MP4Box

@@ -24,6 +24,7 @@
 
 #include "gui/ui_exportfilm.h"
 #include "base/encoderdefinition.h"
+#include "templates/vector3.h"
 #include <QDialog>
 #include <QDir>
 
@@ -61,29 +62,77 @@ class AtenExportFilm : public QDialog
 	bool getFilmDetails();
 	// Update controls
 	void updateControls();
-// 	// Return selected filename
-// 	QString fileName();
 
 
 	/*
-	 * Slots
+	 * Definition
+	 */
+	private slots:
+	void on_FilmWidthSpin_valueChanged(int value);
+	void on_MaintainAspectRatioCheck_toggled(bool checked);
+	void on_FramesPerSecondSpin_valueChanged(int value);
+
+	public:
+	// Return film width
+	int filmWidth();
+	// Return film height
+	int filmHeight();
+	// Return frames per second
+	int fps();
+
+
+	/*
+	 * Source
+	 */
+	private:
+	// Enable / Disable relevant controls
+	void setSourceControlsEnabled();
+
+	private slots:
+	// View Only
+	void on_SourceViewOnlyRadio_clicked(bool checked);
+	// Trajectory
+	void on_SourceTrajectoryRadio_clicked(bool checked);
+	// Vibration
+	void on_SourceVibrationRadio_clicked(bool checked);
+	// Rotate View
+	void on_RotateViewXCheck_clicked(bool checked);
+	void on_RotateViewYCheck_clicked(bool checked);
+	void on_RotateViewZCheck_clicked(bool checked);	
+
+	public:
+	// Return if source is view only
+	bool viewSource();
+	// Return number of frames to write for view only
+	int viewNFrames();
+	// Return if source is trajectory
+	bool trajectorySource();
+	// Return start frame of trajectory to use
+	int trajectoryStartFrame();
+	// Return end frame of trajectory to use
+	int trajectoryEndFrame();
+	// Return if source is vibration
+	bool vibrationSource();
+	// Return if view should be rotated during the course of the film
+	bool rotateView();
+	// Return view axes flagged for rotation
+	Vec3<bool> rotateViewAxes();
+	// Return view axes whole rotation flags
+	Vec3<bool> rotateViewWhole();
+	// Return view rotation deltas
+	Vec3<double> rotateViewDeltas();
+	// Return view rotation number of whole rotations
+	Vec3<double> rotateViewWholeRotations();
+
+
+	/*
+	 * Output
 	 */
 	private:
 	// Enable / Disable relevant controls
 	void setOutputControlsEnabled();
-	void setSourceControlsEnabled();
 
 	private slots:
-	// Definition Group
-	void on_FilmWidthSpin_valueChanged(int value);
-	void on_MaintainAspectRatioCheck_toggled(bool checked);
-	void on_FramesPerSecondSpin_valueChanged(int value);
-	// Source -- View Only
-	void on_SourceViewOnlyRadio_clicked(bool checked);
-	// Source -- Trajectory
-	void on_SourceTrajectoryRadio_clicked(bool checked);
-	// Source -- Vibration
-	void on_SourceVibrationRadio_clicked(bool checked);
 	// Output -- Images Only
 	void on_OutputImagesOnlyRadio_clicked(bool checked);
 	void on_ImagesSelectBasenameButton_clicked(bool checked);
@@ -91,6 +140,27 @@ class AtenExportFilm : public QDialog
 	void on_OutputFilmRadio_clicked(bool checked);
 	void on_EncodersCombo_currentIndexChanged(int index);
 	void on_EncoderStepCombo_currentIndexChanged(int index);
+
+	public:
+	// Return if image output only is requested
+	bool outputImages();
+	// Return image basename
+	QString imageBasename();
+	// Return image bitmap format extension
+	QString imageExtension();
+	// Return if film output is requested
+	bool outputFilm();
+	// Return selected encoder
+	EncoderDefinition* encoder();
+	// 
+// 	// Return selected filename
+// // 	QString fileName();
+
+
+	/*
+	 * Dialog Button
+	 */
+	private slots:
 	// Dialog Buttons
 	void on_SaveFilmButton_clicked(bool checked);
 	void on_CancelButton_clicked(bool checked);

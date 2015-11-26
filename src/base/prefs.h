@@ -789,14 +789,6 @@ class Prefs
 	QDir tempDir_;
 	// Location of MOPAC executable
 	QString mopacExe_;
-	// Video encoder executable
-	QString encoderExe_;
-	// Video encoder arguments
-	QString encoderArguments_;
-	// Video encoder post-process executable
-	QString encoderPostExe_;
-	// Video encoder post-process arguments
-	QString encoderPostArguments_;
 
 	public:
 	// Set temp directory

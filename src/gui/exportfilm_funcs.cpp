@@ -112,6 +112,24 @@ void AtenExportFilm::updateControls()
 	refreshing_ = false;
 }
 
+// Return film width
+int AtenExportFilm::filmWidth()
+{
+	return ui.FilmWidthSpin->value();
+}
+
+// Return film height
+int AtenExportFilm::filmHeight()
+{
+	return ui.FilmHeightSpin->value();
+}
+
+// Return frames per second
+int AtenExportFilm::fps()
+{
+	return ui.FramesPerSecondSpin->value();
+}
+
 /*
  * Definition
  */
@@ -152,25 +170,102 @@ void AtenExportFilm::setSourceControlsEnabled()
 	refreshing_ = false;
 }
 
-/*
- * Source -- View Only
- */
-
 void AtenExportFilm::on_SourceViewOnlyRadio_clicked(bool checked)
 {
 	setSourceControlsEnabled();
 }
 
-// Source -- Trajectory
 void AtenExportFilm::on_SourceTrajectoryRadio_clicked(bool checked)
 {
 	setSourceControlsEnabled();
 }
 
-// Source -- Vibration
 void AtenExportFilm::on_SourceVibrationRadio_clicked(bool checked)
 {
 	setSourceControlsEnabled();
+}
+
+void AtenExportFilm::on_RotateViewXCheck_clicked(bool checked)
+{
+	ui.RotateViewXDeltaRadio->setEnabled(checked);
+	ui.RotateViewXDeltaSpin->setEnabled(checked);
+	ui.RotateViewXWholeRadio->setEnabled(checked);
+	ui.RotateViewXWholeSpin->setEnabled(checked);
+
+}
+
+void AtenExportFilm::on_RotateViewYCheck_clicked(bool checked)
+{
+}
+
+void AtenExportFilm::on_RotateViewZCheck_clicked(bool checked)
+{
+}
+
+// Return if source is view manipulaton only
+bool AtenExportFilm::viewSource()
+{
+	return ui.SourceViewOnlyRadio->isChecked();
+}
+
+// Return number of frames to write for view only
+int AtenExportFilm::viewNFrames()
+{
+	return ui.ViewNFramesSpin->value();
+}
+
+// Return if source is trajectory
+bool AtenExportFilm::trajectorySource()
+{
+	return ui.SourceTrajectoryRadio->isChecked();
+}
+
+// Return start frame of trajectory to use
+int AtenExportFilm::trajectoryStartFrame()
+{
+	return ui.TrajectoryFirstFrameSpin->value();
+}
+
+// Return end frame of trajectory to use
+int AtenExportFilm::trajectoryEndFrame()
+{
+	return ui.TrajectoryLastFrameSpin->value();
+}
+
+// Return if source is vibration
+bool AtenExportFilm::vibrationSource()
+{
+	return ui.SourceVibrationRadio->isChecked();
+}
+
+// Return if view should be rotated during the course of the film
+bool AtenExportFilm::rotateView()
+{
+	return ui.ViewRotationGroup->isChecked();
+}
+
+// Return view axes flagged for rotation
+Vec3<bool> AtenExportFilm::rotateViewAxes()
+{
+	return Vec3<bool>(ui.RotateViewXCheck->isChecked(), ui.RotateViewYCheck->isChecked(), ui.RotateViewZCheck->isChecked());
+}
+
+// Return view axes whole rotation flags
+Vec3<bool> AtenExportFilm::rotateViewWhole()
+{
+	return Vec3<bool>(ui.RotateViewXWholeRadio->isChecked(), ui.RotateViewYWholeRadio->isChecked(), ui.RotateViewZWholeRadio->isChecked());
+}
+
+// Return view rotation deltas
+Vec3<double> AtenExportFilm::rotateViewDeltas()
+{
+	return Vec3<double>(ui.RotateViewXDeltaSpin->value(), ui.RotateViewYDeltaSpin->value(), ui.RotateViewZDeltaSpin->value());
+}
+
+// Return view rotation number of whole rotations
+Vec3<double> AtenExportFilm::rotateViewWholeRotations()
+{
+	return Vec3<double>(ui.RotateViewXWholeSpin->value(), ui.RotateViewYWholeSpin->value(), ui.RotateViewZWholeSpin->value());
 }
 
 /*
@@ -205,7 +300,10 @@ void AtenExportFilm::on_ImagesSelectBasenameButton_clicked(bool checked)
 	updateControls();
 }
 
-// Output -- Encoder
+/*
+ * Output -- Film
+ */
+
 void AtenExportFilm::on_OutputFilmRadio_clicked(bool checked)
 {
 	setOutputControlsEnabled();
@@ -228,26 +326,43 @@ void AtenExportFilm::on_EncoderStepCombo_currentIndexChanged(int index)
 	updateControls();
 }
 
+// Return if image output only is requested
+bool AtenExportFilm::outputImages()
+{
+	return ui.OutputImagesOnlyRadio->isChecked();
+}
+
+// Return image basename
+QString AtenExportFilm::imageBasename()
+{
+	return ui.ImageBasenameEdit->text();
+}
+
+// Return image bitmap format extension
+QString AtenExportFilm::imageExtension()
+{
+	return AtenWindow::bitmapFormatExtension( (AtenWindow::BitmapFormat) ui.ImageFormatCombo->currentIndex() );
+}
+
+// Return if film output is requested
+bool AtenExportFilm::outputFilm()
+{
+	return ui.OutputFilmRadio->isChecked();
+}
+
+// Return selected encoder
+EncoderDefinition* AtenExportFilm::encoder()
+{
+	EncoderDefinition* definition = (EncoderDefinition*) VariantPointer<EncoderDefinition>(ui.EncodersCombo->currentData());
+	return definition;
+}
+
 /*
- * Output - Film
+ * Dialog Functions
  */
 
 void AtenExportFilm::on_SaveFilmButton_clicked(bool checked)
 {
-	// What to do?
-	// We will always save the images, regardless of the type of output we're doing - the only difference will be the basename
-	QString imageBasename;
-	if (ui.OutputImagesOnlyRadio->isChecked())
-	{
-		// Construct the image basename based upon the text in the lineedit
-		QFileInfo fileInfo(imageBasename);
-// 		if (fileInfo.
-	}
-	else
-	{
-		
-	}
-
 	accept();
 }
 
@@ -255,140 +370,3 @@ void AtenExportFilm::on_CancelButton_clicked(bool checked)
 {
 	reject();
 }
-
-
-// void ScriptMovieWidget::on_SaveScriptedMovieButton_clicked(bool checked)
-// {
-// 	// First, attempt to generate script from supplied code
-// 	Program script;
-// 	if (!script.generateFromString(qPrintable(ui.ScriptTextEdit->toPlainText()), "ScriptedMovie", "Scripted Movie Command"))
-// 	{
-// 		QMessageBox::warning(NULL, "Aten", "Couldn't compile script for movie generation.\nCheck message box for errors.", QMessageBox::Ok, QMessageBox::Ok);
-// 		return;
-// 	}
-// 	
-// 	QString geometry;
-// 	geometry.sprintf("%ix%i", (int) parent_.ui.MainView->width(), (int) parent_.ui.MainView->height());
-// 	int width, height;
-// 	
-// 	Tree dialog;
-// 	TreeGui& ui = dialog.defaultDialog();
-// 	ui.setProperty(TreeGuiWidgetEvent::TextProperty, "Movie Options");
-// 	ui.addEdit("geometry", "Film Geometry", geometry,1,1);
-// 	ui.addIntegerSpin("maxframes", "Maximum Frames", 1, 1e6, 100, 1000 ,1,2);
-// 	ui.addIntegerSpin("fps", "Movie FPS", 1, 200, 1, 25 ,1,2);
-// 
-// 	if (!dialog.defaultDialog().execute()) return;
-// 
-// 	// Retrieve widget values
-// 	geometry = ui.asString("geometry");
-// // 	width = atoi(beforeChar(geometry,'x'));	// ATEN2 TODO
-// // 	height = atoi(afterChar(geometry,'x'));
-// 	if ((width < 1) || (height < 1))
-// 	{
-// 		QMessageBox::warning(this, "Aten", "The geometry '" + geometry + "' is not valid since one (or both) components are less than 1.", QMessageBox::Ok);
-// 		return;
-// 	}
-// 	int maxframes = ui.asInteger("maxframes");
-// 	int fps = ui.asInteger("fps");
-// 	
-// 	// Get movie filename
-// 	static QString selectedFilter("All Files (*.*)");
-// 	static QDir currentDirectory(parent_.aten().workDir());
-// 	QString filename = QFileDialog::getSaveFileName(this, "Save Scripted Movie", currentDirectory.path(), "All Files (*.*)", &selectedFilter);
-// 	if (filename.isEmpty()) return;
-// 	// Store path for next use
-// 	currentDirectory.setPath(filename);
-// 	
-// 	// Check that defined encoder exe exists
-// 	QFileInfo fileInfo(prefs.encoderExe());
-// 	if (!fileInfo.exists())
-// 	{
-// 		QString message = "Error: Encoder executable doesn't appear to exist ('" + prefs.encoderExe() + "').";
-// 		QMessageBox::warning(this, "Aten", message, QMessageBox::Ok);
-// 		return;
-// 	}
-// 	
-// 	// Set offscreen rendering and save some current view preferences
-// 	bool viewglobe = prefs.viewRotationGlobe();
-// 	prefs.setViewRotationGlobe(false);
-// 	
-// 	// Generate unique file basename and initialise image redirection
-// 	int runid;
-// 	QString basename;
-// 	do
-// 	{
-// 		runid = AtenMath::randomimax();
-// 		basename = prefs.tempDir().filePath("aten-movie-%1-%2-%3.arc").arg(QApplication::applicationPid(), runid).arg(0, 9, 10, QChar('0'));
-// 		fileInfo.setFile(basename);
-// 	} while (fileInfo.exists());
-// // 	basename.sprintf("%s%caten-movie-%i-%i-%%09i.png", qPrintable(prefs.tempDir()), PATHSEP, parent_.pid(), runid); ATEN2 TODO
-// 	parent_.aten().initialiseFilmRedirect(basename, maxframes);
-// 	
-// 	int progid = progress.initialise("Saving scripted movie frames...", -1);
-// 	bool canceled = false;
-// 	ReturnValue rv;
-// 	script.execute(rv);
-// 
-// 	progress.terminate(progid);
-// 	prefs.setViewRotationGlobe(viewglobe);
-// 
-// 	// Now run external program to create movie
-// 	TProcess encoderProcess;
-// 
-// 	// Grab encoder command and replace
-// 	basename = prefs.tempDir().filePath("aten-movie-%1-%2-*.png").arg(QApplication::applicationPid(), runid);
-// 	QString encoderArgs = prefs.encoderArguments();
-// 	encoderArgs.replace("OUTPUT", qPrintable(filename));
-// 	encoderArgs.replace("FILES", basename);
-// 	encoderArgs.replace("FPS", QString::number(fps));
-// 	Messenger::print("Command to run will be '%s %s'", qPrintable(prefs.encoderExe()), qPrintable(encoderArgs));
-// 	if (!encoderProcess.execute(prefs.encoderExe(), qPrintable(encoderArgs), NULL))
-// 	{
-// 		Messenger::print("Error: Failed to run encoder command.");
-// 		return;
-// 	}
-// 
-// 	// Follow output here...
-// 	while (!encoderProcess.finished())
-// 	{
-// 		// Is output file already present?
-// 		while (encoderProcess.outputAvailable()) encoderProcess.printLineToMessages();
-// 		QCoreApplication::processEvents(QEventLoop::AllEvents, 50);
-// 	}
-// 
-// 	// Run secondary, post-process command (if one was given)
-// 	if (prefs.encoderPostExe() != NULL)
-// 	{
-// // 		printf("Post encoder command given is [%s]\n", prefs.encoderPostExe());
-// 		TProcess postProcess;
-// 		// Grab encoder command and replace
-// 		QString encoderArgs = prefs.encoderPostArguments();
-// 		encoderArgs.replace("OUTPUT", qPrintable(filename));
-// 		encoderArgs.replace("FILES", basename);
-// 		encoderArgs.replace("FPS", QString::number(fps));
-// 		Messenger::print("Command to run will be '%s %s'", qPrintable(prefs.encoderPostExe()), qPrintable(encoderArgs));
-// 		if (!postProcess.execute(prefs.encoderPostExe(), encoderArgs, NULL))
-// 		{
-// 			Messenger::print("Error: Failed to run encoder post-processing command.");
-// 		}
-// 		else while (!postProcess.finished())
-// 		{
-// 			// Is output file already present?
-// 			while (postProcess.outputAvailable()) postProcess.printLineToMessages();
-// 			QCoreApplication::processEvents(QEventLoop::AllEvents, 50);
-// 		}
-// 	}
-// 
-// 	// Cancel image redirection and perform cleanup
-// 	int nframes = parent_.aten().cancelFilmRedirect();
-// 	bool pid = progress.initialise("Cleaning up...", nframes);
-// 	for (int n = 0; n < nframes; ++n)
-// 	{
-// 		basename = prefs.tempDir().filePath("aten-movie-%1-%2-%3.arc").arg(QApplication::applicationPid(), runid).arg(n, 9, 10, QChar('0'));
-// 		QFile::remove(basename);
-// 		if (!progress.update(pid,n)) break;
-// 	}
-// 	Messenger::terminateTask(task);
-// }
-

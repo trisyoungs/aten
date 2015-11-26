@@ -218,12 +218,6 @@ class AtenPrefs : public QDialog
 	void on_TemporaryDirEdit_textEdited(const QString &text);
 	void on_MopacExecutableEdit_textEdited(const QString &text);
 	void on_MopacExecutableButton_clicked(bool checked);
-	void on_EncoderExecutableEdit_textEdited(const QString &text);
-	void on_EncoderExecutableButton_clicked(bool checked);
-	void on_EncoderArgumentsEdit_textEdited(const QString &text);
-	void on_EncoderPostExecutableEdit_textEdited(const QString &text);
-	void on_EncoderPostExecutableButton_clicked(bool checked);
-	void on_EncoderPostArgumentsEdit_textEdited(const QString &text);
 };
 
 #endif

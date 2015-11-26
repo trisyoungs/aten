@@ -682,6 +682,14 @@ class AtenWindow : public QMainWindow
 	QPixmap scenePixmap(int width, int height);
 	// Return pixmap of specified model
 	QPixmap modelPixmap(Model* model, QSize pixmapSize);
+
+
+	/*
+	 * Film Generation
+	 */
+	public:
+	// Export film
+	bool exportFilm();
 };
 
 #endif

@@ -75,10 +75,6 @@ Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
 	{ "distanceLabelFormat",	VTypes::StringData,		0, false },
 	{ "elecCutoff",			VTypes::DoubleData,		0, false },
 	{ "elecMethod",			VTypes::StringData,		0, false },
-	{ "encoderArgs",		VTypes::StringData,		0, false },
-	{ "encoderExe",			VTypes::StringData,		0, false },
-	{ "encoderPostArgs",		VTypes::StringData,		0, false },
-	{ "encoderPostExe",		VTypes::StringData,		0, false },
 	{ "energyUnit",			VTypes::StringData,		0, false },
 	{ "energyUpdate",		VTypes::IntegerData,		0, false },
 	{ "ewaldAlpha",			VTypes::DoubleData,		0, false },
@@ -322,18 +318,6 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArray
 			break;
 		case (PreferencesVariable::ElecMethod):
 			rv.set(Electrostatics::elecMethod(ptr->electrostaticsMethod()));
-			break;
-		case (PreferencesVariable::EncoderArgs):
-			rv.set( ptr->encoderArguments() );
-			break;
-		case (PreferencesVariable::EncoderExe):
-			rv.set( ptr->encoderExe() );
-			break;
-		case (PreferencesVariable::EncoderPostArgs):
-			rv.set( ptr->encoderPostArguments() );
-			break;
-		case (PreferencesVariable::EncoderPostExe):
-			rv.set( ptr->encoderPostExe() );
 			break;
 		case (PreferencesVariable::EnergyUnit):
 			rv.set(Prefs::energyUnit(ptr->energyUnit()));
@@ -653,18 +637,6 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue&
 			em = Electrostatics::elecMethod( newValue.asString(result), true );
 			if (em != Electrostatics::nElectrostatics) ptr->setElectrostaticsMethod(em);
 			else result = false;
-			break;
-		case (PreferencesVariable::EncoderArgs):
-			ptr->setEncoderArguments( newValue.asString(result) );
-			break;
-		case (PreferencesVariable::EncoderExe):
-			ptr->setEncoderExe( newValue.asString(result) );
-			break;
-		case (PreferencesVariable::EncoderPostArgs):
-			ptr->setEncoderPostArguments( newValue.asString(result) );
-			break;
-		case (PreferencesVariable::EncoderPostExe):
-			ptr->setEncoderPostExe( newValue.asString(result) );
 			break;
 		case (PreferencesVariable::EnergyUnit):
 			eu = Prefs::energyUnit( newValue.asString(result), true );
