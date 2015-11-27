@@ -230,9 +230,9 @@ void TextPrimitive::render(const Matrix& viewMatrix, const Matrix& rotationMatri
 		{
 			// Render the text twice - once with lines, and once with polygon fill
 			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-			FontInstance::font()->Render(qPrintable(fragment->text()));
+			FontInstance::font()->Render(fragment->text().toUtf8());
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-			FontInstance::font()->Render(qPrintable(fragment->text()));
+			FontInstance::font()->Render(fragment->text().toUtf8());
 		}
 		else FontInstance::font()->Render(qPrintable(fragment->text()));
 	}

@@ -43,7 +43,7 @@ bool FontInstance::setup(QString fontFileName)
 
 	// Check the fontFileName - if it's empty then we try to load the default font from our resource
 	fontFile_ = fontFileName;
-	if (fontFile_.isEmpty()) fontData_ = new QResource(":/fonts/OpenSans-Regular.ttf");
+	if (fontFile_.isEmpty()) fontData_ = new QResource(":/freefont/freefont/FreeSans.ttf");
 	else fontData_ = new QResource(fontFileName);
 	if (fontData_->size() <= 0) return false;
 

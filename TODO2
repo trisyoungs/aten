@@ -78,7 +78,7 @@ Add GridStyleSecondary command (GridStyle now explicitly for primary surface).
 Change enum entries for Grid::SurfaceStyle.
 Add GridOutline and GridPeriodic commands.
 Rename (De)SelectFor to (De)SelectCode.
-Remove ManualSwapBuffers from Prefs accessor.
+Remove ManualSwapBuffers and Encoder-related members from Prefs accessor.
 growAtom / selectionGrowAtom - add optional parameter "bool bond = true".
 Remove LineTol and Converge commands, and update minimisation command signatures (inc return values).
 Remove prefs options for replicate, and add extra options to turn on folding and trimming to replicate() command.
@@ -89,3 +89,4 @@ Add GridViewPercentage and GridViewSecondaryPercentage commands.
 TestSelect command.
 Added MovePen, ResetPen, RotatePenX|Y|Z commands to Model variable.
 Add Transform-related commands to Model variable.
+SelectCode and DeSelectCode code 'style' has changed.

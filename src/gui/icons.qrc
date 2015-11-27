@@ -14,6 +14,7 @@
   <qresource prefix="selection">
     <file>icons/selection_free.svg</file>
     <file>icons/selection_hide.svg</file>
+    <file>icons/selection_resetcolour.svg</file>
     <file>icons/selection_fix.svg</file>
     <file>icons/selection_reorder.svg</file>
   </qresource>
@@ -21,15 +22,19 @@
     <file>icons/grid_setinfo.svg</file>
     <file>icons/grid_translate.svg</file>
   </qresource>
-  <qresource prefix="fonts">
-    <file>OpenSans-Regular.ttf</file>
-  </qresource>
   <qresource prefix="tools">
     <file>icons/tools_disorder.svg</file>
     <file>icons/script_load.svg</file>
     <file>icons/script_reload.svg</file>
     <file>icons/script_remove.svg</file>
     <file>icons/script_run.svg</file>
+  </qresource>
+  <qresource prefix="freefont">
+    <file>freefont/AUTHORS</file>
+    <file>freefont/COPYING</file>
+    <file>freefont/CREDITS</file>
+    <file>freefont/FreeSans.ttf</file>
+    <file>freefont/FreeSerif.ttf</file>
   </qresource>
   <qresource prefix="forcefield">
     <file>icons/forcefield_energy.svg</file>
@@ -178,6 +183,8 @@
     <file>icons/select_all.svg</file>
     <file>icons/select_atoms.svg</file>
     <file>icons/select_element.svg</file>
+    <file>icons/select_remove.svg</file>
+    <file>icons/select_add.svg</file>
     <file>icons/select_expand.svg</file>
     <file>icons/select_invert.svg</file>
     <file>icons/select_molecules.svg</file>

@@ -7941,6 +7941,10 @@
             <property name="text">
              <string>Add</string>
             </property>
+            <property name="icon">
+             <iconset resource="icons.qrc">
+              <normaloff>:/select/icons/select_add.svg</normaloff>:/select/icons/select_add.svg</iconset>
+            </property>
             <property name="iconSize">
              <size>
               <width>30</width>
@@ -7994,6 +7998,10 @@
             </property>
             <property name="text">
              <string>Remove</string>
+            </property>
+            <property name="icon">
+             <iconset resource="icons.qrc">
+              <normaloff>:/select/icons/select_remove.svg</normaloff>:/select/icons/select_remove.svg</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -8289,6 +8297,10 @@
             </property>
             <property name="text">
              <string>Reset Colour</string>
+            </property>
+            <property name="icon">
+             <iconset resource="icons.qrc">
+              <normaloff>:/selection/icons/selection_resetcolour.svg</normaloff>:/selection/icons/selection_resetcolour.svg</iconset>
             </property>
             <property name="iconSize">
              <size>
