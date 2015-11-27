@@ -115,7 +115,7 @@ value:
 	| NETAVAL saveval NEQ INTCONST			{ $$ = NetaParser::createValueNode(savedVal, Neta::NotEqualTo, $4); }
 	;
 
-/* Values: Special case for repeat (which we use exclusively elsewhere in 'chain' */
+/* Values: Special case for repeat (which we use exclusively elsewhere in 'chain') */
 repeat:
 	NETAREPEAT saveval '=' '=' INTCONST		{ $$ = NetaParser::createValueNode(savedVal, Neta::EqualTo, $5); }
 	| NETAREPEAT saveval '=' INTCONST		{ $$ = NetaParser::createValueNode(savedVal, Neta::EqualTo, $4); }
@@ -130,7 +130,7 @@ repeat:
 expander:
 	NETARING					{ $$ = NetaParser::createRingNode(); NetaParser::popContext(); }
 	| NETARING '(' pushctxtr nodelist ')'		{ $3->setInnerNeta($4); $$ = $3; NetaParser::popContext(); }
-	| NETACHAIN '(' pushctxtc chain ')'		{ if (!NetaParser::quiet()) Messenger::error("NETA Error: 'chain' keyword must have repeat specifier as last argument."); $$ = NULL; }
+	| NETACHAIN '(' pushctxtc chain ')'		{ if (!NetaParser::quiet()) Messenger::error("NETA Error: 'chain' keyword must have repeat specifier as last argument."); $$ = NULL;  YYABORT; }
 	| NETACHAIN '(' pushctxtc chain ',' repeat ')'	{ $3->setInnerNeta(NULL,$4); $$ = $3; NetaParser::popContext(); }
 	| NETAGEOMETRY '(' pushctxtg DOUBLECONST ',' DOUBLECONST ',' chain ')' { $3->setInnerNeta(NULL,$8); $3->setRequiredValue($4,$6); $$ = $3; NetaParser::popContext(); }
 	| NETAPATH '(' pushctxtp DOUBLECONST ',' DOUBLECONST ',' chain ')' { $3->setInnerNeta(NULL,$8); $3->setRequiredValue($4,$6); $$ = $3; NetaParser::popContext(); }
@@ -150,6 +150,7 @@ bound:
 	| '~' elemtypelist '(' pushctxtb nodelist ')'	{ $4->set($2, $5, Bond::Any); $$ = $4; NetaParser::popContext(); }
 	| '-' elemtypelist '(' pushctxtb nodelist ')'	{ $4->set($2, $5, Bond::Single); $$ = $4; NetaParser::popContext(); }
 	| '=' elemtypelist '(' pushctxtb nodelist ')'	{ $4->set($2, $5, Bond::Double); $$ = $4; NetaParser::popContext(); }
+	| elemtypelist					{ if (!NetaParser::quiet()) Messenger::error("Illegal use of element type list."); YYABORT; }
 	;
 
 /* Element/type list */

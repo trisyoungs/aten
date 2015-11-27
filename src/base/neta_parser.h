@@ -129,9 +129,6 @@ class NetaParser
 	static NetaNode* findDefine(QString name);
 };
 
-// External declaration
-// extern NetaParser netaparser;
-
 ATEN_END_NAMESPACE
 
 #endif

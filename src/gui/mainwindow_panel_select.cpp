@@ -102,7 +102,7 @@ void AtenWindow::on_SelectIntelligentTargetCombo_currentTextChanged(const QStrin
 	if (text.isEmpty())
 	{
 		lastSelectionType_ = AtenWindow::nSelectTargetTypes;
-		updateSelectPanel(NULL);
+		updateWidgets(AtenWindow::SelectPanelTarget);
 		return;
 	}
 

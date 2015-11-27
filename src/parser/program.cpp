@@ -170,13 +170,14 @@ Tree* Program::addFilter()
 }
 
 // Generate Program from string 
-bool Program::generateFromString(QString line, QString name, QString sourceInfo, bool pushTree, bool clearExisting)
+bool Program::generateFromString(QString line, QString name, QString sourceInfo, bool pushTree, bool clearExisting, bool quiet)
 {
 	Messenger::enter("Program::generateFromString");
 
 	name_ = name;
 	fromFilterFile_ = false;
 	initialPushTree_ = pushTree;
+	quiet_ = quiet;
 	generatedSuccessfully_ = cmdparser.generateFromString(this, line, sourceInfo, initialPushTree_, clearExisting);
 	if (generatedSuccessfully_) generatedSuccessfully_ = finalise(cmdparser.aten());
 
@@ -185,13 +186,14 @@ bool Program::generateFromString(QString line, QString name, QString sourceInfo,
 }
 
 // Generate Program from string list
-bool Program::generateFromStringList(QStringList stringList, QString name, QString sourceInfo, bool pushTree, bool clearExisting)
+bool Program::generateFromStringList(QStringList stringList, QString name, QString sourceInfo, bool pushTree, bool clearExisting, bool quiet)
 {
 	Messenger::enter("Program::generateFromStringList");
 
 	name_ = name;
 	fromFilterFile_ = false;
 	initialPushTree_ = pushTree;
+	quiet_ = quiet;
 	generatedSuccessfully_ = cmdparser.generateFromStringList(this, stringList, sourceInfo, initialPushTree_, clearExisting);
 	if (generatedSuccessfully_) generatedSuccessfully_ = finalise(cmdparser.aten());
 
@@ -200,7 +202,7 @@ bool Program::generateFromStringList(QStringList stringList, QString name, QStri
 }
 
 // Generate Program from input file
-bool Program::generateFromFile(QString filename, QString name, bool pushTree, bool clearExisting, bool isFilterFile)
+bool Program::generateFromFile(QString filename, QString name, bool pushTree, bool clearExisting, bool quiet, bool isFilterFile)
 {
 	Messenger::enter("Program::generateFromFile");
 	
@@ -210,6 +212,7 @@ bool Program::generateFromFile(QString filename, QString name, bool pushTree, bo
 	else name_ = filename;
 	fromFilterFile_ = isFilterFile;
 	initialPushTree_ = pushTree;
+	quiet_ = quiet;
 	generatedSuccessfully_ = cmdparser.generateFromFile(this, filename, initialPushTree_, clearExisting);
 	if (generatedSuccessfully_) generatedSuccessfully_ = finalise(cmdparser.aten());
 
@@ -274,6 +277,12 @@ void Program::print()
 bool Program::generatedSuccessfully()
 {
 	return generatedSuccessfully_;
+}
+
+// Return whether to generate program quietly (i.e. don't print any error messages)
+bool Program::quiet()
+{
+	return quiet_;
 }
 
 /*

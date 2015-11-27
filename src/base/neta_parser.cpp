@@ -28,9 +28,6 @@ int NetaParser_parse();
 
 ATEN_BEGIN_NAMESPACE
 
-// // External Declarations
-// NetaParser netaparser;
-
 // Static Members
 QString NetaParser::stringSource_;
 int NetaParser::stringPos_ = 0;
@@ -203,7 +200,7 @@ bool NetaParser::createNeta(Neta* target, QString neta, Forcefield* parentff, bo
 	int result = NetaParser_parse();
 	if (result != 0)
 	{
-		printErrorInfo();
+		if (!quiet_) printErrorInfo();
 		neta_->clear();
 	}
 // 	neta_->print();

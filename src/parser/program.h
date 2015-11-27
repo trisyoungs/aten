@@ -58,6 +58,8 @@ class Program : public ListItem<Program>
 	bool initialPushTree_;
 	// Whether the program was successfully created by the last generate*() call
 	bool generatedSuccessfully_;
+	// Whether to generate program quietly (i.e. don't print any error messages)
+	bool quiet_;
 	
 	public:
 	// Clear contents of program, including filters and functions
@@ -69,11 +71,11 @@ class Program : public ListItem<Program>
 	// Return associated filename (if any)
 	QString filename();
 	// Generate program from string 
-	bool generateFromString(QString string, QString name, QString sourceInfo, bool pushTree = true, bool clearExisting = true);
+	bool generateFromString(QString string, QString name, QString sourceInfo, bool pushTree = true, bool clearExisting = true, bool quiet = false);
 	// Generate program from string list
-	bool generateFromStringList(QStringList stringList, QString name, QString sourceInfo, bool pushTree = true, bool clearExisting = true);
+	bool generateFromStringList(QStringList stringList, QString name, QString sourceInfo, bool pushTree = true, bool clearExisting = true, bool quiet = false);
 	// Generate program from input file
-	bool generateFromFile(QString filename, QString name, bool pushTree = true, bool clearExisting = true, bool isFilterFile = false);
+	bool generateFromFile(QString filename, QString name, bool pushTree = true, bool clearExisting = true, bool quiet = false, bool isFilterFile = false);
 	// Reload program (provided it was from a file...)
 	bool reload();
 	// Finalise program
@@ -92,6 +94,8 @@ class Program : public ListItem<Program>
 	void print();
 	// Return whether the program was successfully created by the last generate*() call
 	bool generatedSuccessfully();
+	// Return whether to generate program quietly (i.e. don't print any error messages)
+	bool quiet();
 
 
 	/*

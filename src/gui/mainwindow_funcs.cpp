@@ -361,9 +361,12 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportFilmD
 	// Create Context Menu
 	createContextMenu();
 
-	// Link QuickCommand line edit to run slot
+	// Connect additional signals
+	// -- Link QuickCommand line edit to run slot
 	connect(ui.QuickCommandCombo->lineEdit(), SIGNAL(returnPressed()), this, SLOT(quickCommandRun()));
 	ui.QuickCommandFrame->setVisible(false);
+	// -- Connect Select panel's intelligent select combo lineEdit to the 'Add' button
+	connect(ui.SelectIntelligentTargetCombo->lineEdit(), SIGNAL(returnPressed()), ui.SelectIntelligentAddButton, SLOT(click()));
 
 	/*
 	 * Statusbar

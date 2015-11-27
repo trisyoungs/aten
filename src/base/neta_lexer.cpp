@@ -53,7 +53,6 @@ int NetaParser::lex()
 	bool done;
 	static QString token;
 	char c;
-// 	static QString name;
 	token.clear();
 
 	// Skip over whitespace

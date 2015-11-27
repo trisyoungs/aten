@@ -232,7 +232,7 @@ bool CommandParser::generate()
 	int result = CommandParser_parse();
 	if (result != 0)
 	{
-		printErrorInfo();
+		if (!program_->quiet()) printErrorInfo();
 // 		program_->clear();
 	}
 	if (failed_) result = -1;
