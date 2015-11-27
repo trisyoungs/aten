@@ -177,9 +177,8 @@ bool Program::generateFromString(QString line, QString name, QString sourceInfo,
 	name_ = name;
 	fromFilterFile_ = false;
 	initialPushTree_ = pushTree;
-	quiet_ = quiet;
-	generatedSuccessfully_ = cmdparser.generateFromString(this, line, sourceInfo, initialPushTree_, clearExisting);
-	if (generatedSuccessfully_) generatedSuccessfully_ = finalise(cmdparser.aten());
+	generatedSuccessfully_ = CommandParser::generateFromString(this, line, sourceInfo, initialPushTree_, clearExisting, quiet);
+	if (generatedSuccessfully_) generatedSuccessfully_ = finalise(CommandParser::aten());
 
 	Messenger::exit("Program::generateFromString");
 	return generatedSuccessfully_;
@@ -193,9 +192,8 @@ bool Program::generateFromStringList(QStringList stringList, QString name, QStri
 	name_ = name;
 	fromFilterFile_ = false;
 	initialPushTree_ = pushTree;
-	quiet_ = quiet;
-	generatedSuccessfully_ = cmdparser.generateFromStringList(this, stringList, sourceInfo, initialPushTree_, clearExisting);
-	if (generatedSuccessfully_) generatedSuccessfully_ = finalise(cmdparser.aten());
+	generatedSuccessfully_ = CommandParser::generateFromStringList(this, stringList, sourceInfo, initialPushTree_, clearExisting, quiet);
+	if (generatedSuccessfully_) generatedSuccessfully_ = finalise(CommandParser::aten());
 
 	Messenger::exit("Program::generateFromStringList");
 	return generatedSuccessfully_;
@@ -212,9 +210,8 @@ bool Program::generateFromFile(QString filename, QString name, bool pushTree, bo
 	else name_ = filename;
 	fromFilterFile_ = isFilterFile;
 	initialPushTree_ = pushTree;
-	quiet_ = quiet;
-	generatedSuccessfully_ = cmdparser.generateFromFile(this, filename, initialPushTree_, clearExisting);
-	if (generatedSuccessfully_) generatedSuccessfully_ = finalise(cmdparser.aten());
+	generatedSuccessfully_ = CommandParser::generateFromFile(this, filename, initialPushTree_, clearExisting, quiet);
+	if (generatedSuccessfully_) generatedSuccessfully_ = finalise(CommandParser::aten());
 
 	Messenger::exit("Program::generateFromFile");
 	return generatedSuccessfully_;
@@ -232,8 +229,8 @@ bool Program::reload()
 	}
 	// Clear old data...
 	clear();
-	bool result = cmdparser.generateFromFile(this, filename_, initialPushTree_);
-	if (result) result = finalise(cmdparser.aten());
+	bool result = CommandParser::generateFromFile(this, filename_, initialPushTree_);
+	if (result) result = finalise(CommandParser::aten());
 	Messenger::exit("Program::reload");
 	return result;
 }
@@ -277,12 +274,6 @@ void Program::print()
 bool Program::generatedSuccessfully()
 {
 	return generatedSuccessfully_;
-}
-
-// Return whether to generate program quietly (i.e. don't print any error messages)
-bool Program::quiet()
-{
-	return quiet_;
 }
 
 /*

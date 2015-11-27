@@ -116,7 +116,7 @@ void AtenWindow::on_SelectIntelligentTargetCombo_currentTextChanged(const QStrin
 
 		// First, try code (since it is the most complicated)
 		valid = true;
-		if (program.generateFromString(text, "SelectionCode", "Selection Code")) lastSelectionType_ = AtenWindow::LoopSelectType;
+		if (program.generateFromString(QString("Atom i; %1").arg(text), "SelectionCode", "Selection Code", true, true, true)) lastSelectionType_ = AtenWindow::LoopSelectType;
 		else if (NetaParser::createNeta(&neta, text, NULL, true)) lastSelectionType_ = AtenWindow::NETASelectType;
 		else if (CommandNode::run(Commands::TestSelect, "c", qPrintable(text)).asBool()) lastSelectionType_ = AtenWindow::RangeSelectType;
 		else
@@ -140,7 +140,7 @@ void AtenWindow::on_SelectIntelligentTargetCombo_currentTextChanged(const QStrin
 		if (program.generateFromString(text, "SelectionCode", "Selection Code")) valid = true;
 	}
 
-	// Change color of text if an unrecognised target
+	// Change color of text to red if an unrecognised target
 	QPalette palette = ui.SelectIntelligentTypeCombo->palette();
 	if (!valid) palette.setColor(QPalette::Text, Qt::red);
 	ui.SelectIntelligentTargetCombo->setPalette(palette);

@@ -59,38 +59,35 @@ bool Commands::function_DeSelectCode(CommandNode* c, Bundle& obj, ReturnValue& r
 	int nselected = obj.rs()->nSelected();
 	
 	// Construct program
-	QString code;
-	code.sprintf("int internalDeselectAtom(Atom i) { %s; return false; }", qPrintable(c->argc(0)));
+	QString code = QString("Atom i; %1").arg(c->argc(0));
 	Program program;
-	if (!program.generateFromString(code, "SelectionCode", "Selection Code"))
+	if (!program.generateFromString(code, "DeSelectionCode", "DeSelection Code"))
 	{
-		Messenger::print("Error: Couldn't construct selection code.");
+		Messenger::print("Error: Couldn't construct deselection code.");
 		rv.reset();
 		return false;
 	}
-	
-	// Get global function and set up variable and UserCommandNode
-	Tree* function = program.mainProgram()->findLocalFunction("internalDeselectAtom");
-	if (function == NULL)
+
+	int scopeLevel;
+	Variable* variable = program.mainProgram()->findLocalVariable("i", scopeLevel);
+	if (!variable)
 	{
-		Messenger::print("Internal Error: Couldn't find generated deselection function.");
+		Messenger::error("Internal Error: Couldn't find Atom variable 'i' in deselection code.");
 		return false;
 	}
-	Tree tree;
-	UserCommandNode functionNode;
-	functionNode.setParent(&tree);
-	functionNode.setFunction(function);
 	AtomVariable atomVariable;
-	functionNode.addArgument(&atomVariable);
-	obj.rs()->beginUndoState("Deselect atoms by for loop");
+	variable->setInitialValue(&atomVariable);
+
+	obj.rs()->beginUndoState("Deelect atoms by code loop");
 	for (Atom* i = obj.rs()->atoms(); i != NULL; i = i->next)
 	{
 		// Poke atom value 
 		rv.set(VTypes::AtomData, i);
 		atomVariable.set(rv);
-		functionNode.execute(rv);
+		program.execute(rv);
 		if (rv.asBool()) obj.rs()->deselectAtom(i);
 	}
+
 	obj.rs()->endUndoState();
 	rv.set(nselected - obj.rs()->nSelected());
 	return true;
@@ -217,8 +214,7 @@ bool Commands::function_SelectCode(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	int nselected = obj.rs()->nSelected();
 
 	// Construct program
-	QString code;
-	code.sprintf("int internalSelectAtom(atom i) { %s; return false; }", qPrintable(c->argc(0)));
+	QString code = QString("Atom i; %1").arg(c->argc(0));
 	Program program;
 	if (!program.generateFromString(code, "SelectionCode", "Selection Code"))
 	{
@@ -227,26 +223,23 @@ bool Commands::function_SelectCode(CommandNode* c, Bundle& obj, ReturnValue& rv)
 		return false;
 	}
 
-	// Get global function and set up variable and UserCommandNode
-	Tree* function = program.mainProgram()->findLocalFunction("internalSelectAtom");
-	if (function == NULL)
+	int scopeLevel;
+	Variable* variable = program.mainProgram()->findLocalVariable("i", scopeLevel);
+	if (!variable)
 	{
-		Messenger::print("Internal Error: Couldn't find generated selection function.");
+		Messenger::error("Internal Error: Couldn't find Atom variable 'i' in selection code.");
 		return false;
 	}
-	Tree tree;
-	UserCommandNode functionNode;
-	functionNode.setParent(&tree);
-	functionNode.setFunction(function);
 	AtomVariable atomVariable;
-	functionNode.addArgument(&atomVariable);
-	obj.rs()->beginUndoState("Select atoms by for loop");
+	variable->setInitialValue(&atomVariable);
+
+	obj.rs()->beginUndoState("Select atoms by code loop");
 	for (Atom* i = obj.rs()->atoms(); i != NULL; i = i->next)
 	{
 		// Poke atom value 
 		rv.set(VTypes::AtomData, i);
 		atomVariable.set(rv);
-		functionNode.execute(rv);
+		program.execute(rv);
 		if (rv.asBool()) obj.rs()->selectAtom(i);
 	}
 	obj.rs()->endUndoState();

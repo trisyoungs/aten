@@ -24,9 +24,25 @@
 
 ATEN_BEGIN_NAMESPACE
 
-// External Declaration and Static Members
-CommandParser cmdparser;
+// Static Members
 Aten* CommandParser::aten_ = NULL;
+QString CommandParser::stringSource_;
+QStringList CommandParser::stringListSource_;
+int CommandParser::stringListSourceIndex_;
+int CommandParser::stringPos_;
+int CommandParser::stringLength_;
+int CommandParser::tokenStart_;
+int CommandParser::functionStart_;
+LineParser CommandParser::parser_;
+QString CommandParser::sourceInfo_;
+CommandParser::ParserSource CommandParser::source_;
+bool CommandParser::expectPathStep_;
+QString CommandParser::lexedName_;
+Program* CommandParser::program_;
+Tree* CommandParser::tree_;
+RefList<Tree,bool> CommandParser::stack_;
+bool CommandParser::failed_;
+bool CommandParser::quiet_;
 
 ATEN_END_NAMESPACE
 
@@ -232,7 +248,7 @@ bool CommandParser::generate()
 	int result = CommandParser_parse();
 	if (result != 0)
 	{
-		if (!program_->quiet()) printErrorInfo();
+		if (!quiet_) printErrorInfo();
 // 		program_->clear();
 	}
 	if (failed_) result = -1;
@@ -242,7 +258,7 @@ bool CommandParser::generate()
 }
 
 // Fill target Program from specified character string
-bool CommandParser::generateFromString(Program* prog, QString string, QString sourceInfo, bool pushTree, bool clearExisting)
+bool CommandParser::generateFromString(Program* prog, QString string, QString sourceInfo, bool pushTree, bool clearExisting, bool quiet)
 {
 	Messenger::enter("CommandParser::generateFromString");
 
@@ -255,7 +271,8 @@ bool CommandParser::generateFromString(Program* prog, QString string, QString so
 	}
 	program_ = prog;
 	if (clearExisting) program_->clear();
-		
+	quiet_ = quiet;
+
 	// Stack an initial Tree?
 	if (pushTree)
 	{
@@ -263,7 +280,7 @@ bool CommandParser::generateFromString(Program* prog, QString string, QString so
 		stack_.add(tree_, false);
 		Messenger::print(Messenger::Parse, "Main program stacked - %p", tree_);
 	}
-	
+
 	// Store the source string
 	sourceInfo_ = sourceInfo;
 	stringSource_ = string;
@@ -279,7 +296,7 @@ bool CommandParser::generateFromString(Program* prog, QString string, QString so
 }
 
 // Populate target Program from specified string list
-bool CommandParser::generateFromStringList(Program* prog, QStringList stringList, QString sourceInfo, bool pushTree, bool clearExisting)
+bool CommandParser::generateFromStringList(Program* prog, QStringList stringList, QString sourceInfo, bool pushTree, bool clearExisting, bool quiet)
 {
 	Messenger::enter("CommandParser::generateFromStringList");
 
@@ -292,7 +309,8 @@ bool CommandParser::generateFromStringList(Program* prog, QStringList stringList
 	}
 	program_ = prog;
 	if (clearExisting) program_->clear();
-	
+	quiet_ = quiet;
+
 	// Stack an initial Tree?
 	if (pushTree)
 	{
@@ -324,7 +342,7 @@ bool CommandParser::generateFromStringList(Program* prog, QStringList stringList
 }
 
 // Fill target Program from specified file
-bool CommandParser::generateFromFile(Program* prog, QString filename, bool pushTree, bool clearExisting)
+bool CommandParser::generateFromFile(Program* prog, QString filename, bool pushTree, bool clearExisting, bool quiet)
 {
 	Messenger::enter("CommandParser::generateFromFile");
 
@@ -337,6 +355,7 @@ bool CommandParser::generateFromFile(Program* prog, QString filename, bool pushT
 	}
 	program_ = prog;
 	if (clearExisting) program_->clear();
+	quiet_ = quiet;
 	
 	// Stack initial Tree?
 	if (pushTree)
@@ -362,6 +381,12 @@ bool CommandParser::generateFromFile(Program* prog, QString filename, bool pushT
 	reset();
 	Messenger::exit("CommandParser::generateFromFile");
 	return result;
+}
+
+// Return whether to generate program quietly (i.e. don't print any error messages)
+bool CommandParser::quiet()
+{
+	return quiet_;
 }
 
 // Return current tree target, raising warning and setting fail flag if no tree is defined...
@@ -426,138 +451,8 @@ void CommandParser::deleteCurrentTree()
 }
 
 /*
-// Pass-Throughs to Tree Functions
-*/
-
-// Add integer constant
-TreeNode* CommandParser::addConstant(int i)
-{
-	return tree()->addConstant(i);
-}
-
-// Add double constant
-TreeNode* CommandParser::addConstant(double d)
-{
-	return tree()->addConstant(d);
-}
-
-// Add string constant
-TreeNode* CommandParser::addConstant(QString s)
-{
-	return tree()->addConstant(s);
-}
-
-// Add Element constant
-TreeNode* CommandParser::addElementConstant(int el)
-{
-	return tree()->addElementConstant(el);
-}
-
-// Create a new path on the stack with the specified base 'variable'
-TreeNode* CommandParser::createPath(TreeNode* var)
-{
-	return tree()->createPath(var);
-}
-
-// Expand topmost path
-bool CommandParser::expandPath(QString name, TreeNode* arrayIndex, TreeNode* argList)
-{
-	return tree()->expandPath(name, arrayIndex, argList);
-}
-
-// Finalise and remove the topmost path on the stack
-TreeNode* CommandParser::finalisePath()
-{
-	return tree()->finalisePath();
-}
-
-// Join two commands together
-TreeNode* CommandParser::joinCommands(TreeNode* node1, TreeNode* node2)
-{
-	return tree()->joinCommands(node1, node2);
-}
-
-// Add on a new scope to the stack
-TreeNode* CommandParser::pushScope(Commands::Function func)
-{
-	return tree()->pushScope(func);
-}
-
-// Pop the topmost scope node
-bool CommandParser::popScope()
-{
-	return tree()->popScope();
-}
-
-// Add a node representing a whole statement to the execution list
-bool CommandParser::addStatement(TreeNode* leaf)
-{
-	return tree()->addStatement(leaf);
-}
-
-// Add a 'new' node to the Tree
-TreeNode* CommandParser::addNew(VTypes::DataType type)
-{
-	return tree()->addNew(type);
-}
-
-// Add an operator to the Tree
-TreeNode* CommandParser::addOperator(Commands::Function func, TreeNode* arg1, TreeNode* arg2, TreeNode* arg3)
-{
-	return tree()->addOperator(func, arg1, arg2, arg3);
-}
-
-// Associate a command-based leaf node to the Tree
-TreeNode* CommandParser::addFunctionWithArglist(Commands::Function func, TreeNode* argList)
-{
-	return tree()->addFunctionWithArglist(func, argList);
-}
-
-// Add a function node to the list (overloaded to accept simple arguments instead of a list)
-TreeNode* CommandParser::addFunction(Commands::Function func, TreeNode* a1, TreeNode* a2, TreeNode* a3, TreeNode* a4)
-{
-	return tree()->addFunction(func, a1, a2, a3, a4);
-}
-
-// Associate a user-defined command-based leaf node to the Tree
-TreeNode* CommandParser::addUserFunction(Tree* func, TreeNode* argList)
-{
-	return tree()->addUserFunction(func, argList);
-}
-
-// Add a declaration list
-TreeNode* CommandParser::addDeclarations(TreeNode* declist)
-{
-	return tree()->addDeclarations(declist);
-}
-
-// Wrap named variable (and array index)
-TreeNode* CommandParser::wrapVariable(Variable* var, TreeNode* arrayIndex)
-{
-	return tree()->wrapVariable(var, arrayIndex);
-}
-
-// Add variable to topmost ScopeNode
-TreeNode* CommandParser::addVariable(VTypes::DataType type, QString name, TreeNode* initialValue, bool global)
-{
-	return tree()->addVariable(type, name, initialValue, global);
-}
-
-// Add array variable to topmost ScopeNode
-TreeNode* CommandParser::addArrayVariable(VTypes::DataType type, QString name, TreeNode* sizeexpr, TreeNode* initialvalue, bool global)
-{
-	return tree()->addArrayVariable(type, name, sizeexpr, initialvalue, global);
-}
-
-// Add array 'constant'
-TreeNode* CommandParser::addArrayConstant(TreeNode* values)
-{
-	return tree()->addArrayConstant(values);
-}
-
-/*
-// Filters / GUI
-*/
+ * Filters / GUI
+ */
 
 // Set filter option
 bool CommandParser::setFilterOption(QString name, TreeNode* value)

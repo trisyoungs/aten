@@ -207,10 +207,10 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportFilmD
 	// -- Build Panel (Element)
 	ui.BuildElementTableButton->setPopupWidget(new ElementTablePopup(*this, ui.BuildElementTableButton));
 	ui.BuildElementTableButton->setGroup("CurrentElement");
-	ui.BuildElementTableButton->callPopupMethod("setSelectedElement", rv = 6);
+	ui.BuildElementTableButton->callPopupMethod("setCurrentElement", rv = 6);
 	ui.BuildElementCommonButton->setPopupWidget(new ElementCommonPopup(*this, ui.BuildElementCommonButton));
 	ui.BuildElementCommonButton->setGroup("CurrentElement");
-	ui.BuildElementCommonButton->callPopupMethod("setSelectedElement", rv = 8);
+	ui.BuildElementCommonButton->callPopupMethod("setCurrentElement", rv = 8);
 	// -- Build Panel (Bonding)
 	ui.BuildBondingRebondButton->setPopupWidget(new RebondPopup(*this, ui.BuildBondingRebondButton));
 	ui.BuildBondingClearButton->setPopupWidget(new ClearPopup(*this, ui.BuildBondingClearButton));
@@ -266,7 +266,7 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportFilmD
 
 	// -- Select Panel (Intelligent)
 	ui.SelectIntelligentElementButton->setPopupWidget(new ElementTablePopup(*this, ui.SelectIntelligentElementButton), true);
-	ui.SelectIntelligentElementButton->callPopupMethod("setSelectedElement", rv = 6);
+	ui.SelectIntelligentElementButton->callPopupMethod("setCurrentElement", rv = 6);
 
 	// -- Forcefields Panel (Manage)
 	ui.ForcefieldsManageAssignButton->setPopupWidget(new ForcefieldsAssignPopup(*this, ui.ForcefieldsManageAssignButton));

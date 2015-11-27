@@ -14,6 +14,7 @@ Image saving:
 o Continuous image saving - function key to save image under a set-filename, incrementing a number suffix each time.
 Intelligent Select - add support for selection by type name (e.g. O*, OW etc.).
 Add set members to Matrix class allowing axes to be set from atoms in models.
+Printf command buffered output is never printed if no newline ever occurs.  Need to store data somewhere other than the Printf function itself, and flush it at the end of command execution.
 
 Graphics TODO
 =============

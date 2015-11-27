@@ -121,8 +121,8 @@ void AtenWindow::on_BuildBondingClearButton_clicked(bool checked)
 int AtenWindow::currentBuildElement()
 {
 	ReturnValue rv(0);
-	if (ui.BuildElementTableButton->isChecked()) ui.BuildElementTableButton->callPopupMethod("selectedElement", rv);
-	else if (ui.BuildElementCommonButton->isChecked()) ui.BuildElementCommonButton->callPopupMethod("selectedElement", rv);
+	if (ui.BuildElementTableButton->isChecked()) ui.BuildElementTableButton->callPopupMethod("currentElement", rv);
+	else if (ui.BuildElementCommonButton->isChecked()) ui.BuildElementCommonButton->callPopupMethod("currentElement", rv);
 	else Messenger::print("Internal Error: No element button is checked?");
 
 	return rv.asInteger();

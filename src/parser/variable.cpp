@@ -88,6 +88,7 @@ bool Variable::initialise()
 				return false;
 			}
 		}
+		else printf("Failed to execute var.\n");
 		return false;
 	}
 	return true;
@@ -98,6 +99,7 @@ bool Variable::setInitialValue(TreeNode* node)
 {
 	initialValue_ = node;
 	if (initialValue_ == NULL) return true;
+
 	// Check return types (again, int and double are interchangeable)
 	VTypes::DataType dt = node->returnType();
 	switch (returnType_)

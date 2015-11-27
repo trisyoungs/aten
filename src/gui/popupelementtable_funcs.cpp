@@ -27,7 +27,7 @@ ElementTablePopup::ElementTablePopup(AtenWindow& parent, TMenuButton* buttonPare
 {
 	ui.setupUi(this);
 
-	selectedElement_ = -1;
+	currentElement_ = -1;
 
 	// Create grid layout for widget
 	QGridLayout* gl = new QGridLayout;
@@ -140,17 +140,17 @@ void ElementTablePopup::updateControls()
 bool ElementTablePopup::callMethod(QString methodName, ReturnValue& rv)
 {
 	if (methodName == "TEST") return true;
-	else if (methodName == "selectedElement")
+	else if (methodName == "currentElement")
 	{
-		rv = selectedElement_;
+		rv = currentElement_;
 		return true;
 	}
-	else if (methodName == "setSelectedElement")
+	else if (methodName == "setCurrentElement")
 	{
-		selectedElement_ = rv.asInteger();
+		currentElement_ = rv.asInteger();
 
 		// Set icon on parent button
-		parentMenuButton()->setIcon(Elements().icon(selectedElement_));
+		parentMenuButton()->setIcon(Elements().icon(currentElement_));
 
 		return true;
 	}
@@ -174,14 +174,14 @@ void ElementTablePopup::ElementButton_clicked(bool checked)
         if (!button)
         {
                 printf("ElementTablePopup::ElementButton_clicked - Sender was not a QPushButton.\n");
-		selectedElement_ = -1;
+		currentElement_ = -1;
 		done();
         }
 
-	selectedElement_ = Elements().find(button->text());
+	currentElement_ = Elements().find(button->text());
 
 	// Set icon on parent button
-	parentMenuButton()->setIcon(Elements().icon(selectedElement_));
+	parentMenuButton()->setIcon(Elements().icon(currentElement_));
 
 	done(true);
 }

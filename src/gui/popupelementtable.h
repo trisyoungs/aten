@@ -72,8 +72,8 @@ class ElementTablePopup : public TMenuButtonPopupWidget
 	 * Local variables
 	 */
 	private:
-	// Selected element
-	int selectedElement_;
+	// Current element
+	int currentElement_;
 	// Array of element buttons
 	QList<QPushButton*> elementButtons_;
 };

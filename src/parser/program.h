@@ -58,8 +58,6 @@ class Program : public ListItem<Program>
 	bool initialPushTree_;
 	// Whether the program was successfully created by the last generate*() call
 	bool generatedSuccessfully_;
-	// Whether to generate program quietly (i.e. don't print any error messages)
-	bool quiet_;
 	
 	public:
 	// Clear contents of program, including filters and functions
@@ -94,8 +92,6 @@ class Program : public ListItem<Program>
 	void print();
 	// Return whether the program was successfully created by the last generate*() call
 	bool generatedSuccessfully();
-	// Return whether to generate program quietly (i.e. don't print any error messages)
-	bool quiet();
 
 
 	/*

@@ -35,7 +35,7 @@ int SymbolTokenValues[CommandParser::nSymbolTokens] = { EQ, GEQ, LEQ, NEQ, NEQ, 
 // Bison-generated CommandParser_lex()
 int CommandParser_lex()
 {
-	return cmdparser.lex();
+	return CommandParser::lex();
 }
 
 // Parser lexer, called by yylex()
@@ -95,7 +95,7 @@ int CommandParser::lex()
 				// Check for previous exponential in number
 				if (hasExp)
 				{
-					Messenger::print("Error: Number has two exponentiations (e/E).");
+					if (!quiet_) Messenger::print("Error: Number has two exponentiations (e/E).");
 					return 0;
 				}
 				token += 'E';
@@ -165,7 +165,7 @@ int CommandParser::lex()
 			else if (c == quoteChar) done = true;
 			else if (c == '\0')
 			{
-				Messenger::print("Runaway character constant in input.");
+				if (!quiet_) Messenger::print("Runaway character constant in input.");
 				return 0;
 			}
 			else token += c;

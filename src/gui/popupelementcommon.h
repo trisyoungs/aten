@@ -72,8 +72,8 @@ class ElementCommonPopup : public TMenuButtonPopupWidget
 	 * Local variables
 	 */
 	private:
-	// Selected element
-	int selectedElement_;
+	// Current element
+	int currentElement_;
 };
 
 #endif

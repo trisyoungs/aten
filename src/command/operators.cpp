@@ -196,6 +196,7 @@ bool Commands::function_OperatorEqualTo(CommandNode* c, Bundle& obj, ReturnValue
 	if (!c->arg(0,lhs)) return false;
 	if (!c->arg(1,rhs)) return false;
 	int id = lhs.dataPair(rhs);
+
 	if (id < 0) b = false;
 	else switch (id)
 	{

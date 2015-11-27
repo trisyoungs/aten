@@ -117,12 +117,14 @@ class Tree : public ListItem<Tree>
 	RefList<VariableNode,TreeNode*> pathStack_;
 	// Number of syntactic errors encountered
 	int nErrors_;
+
+	private:
 	// Check unary operator type compatibility
-	VTypes::DataType checkUnaryOperatorTypes(Commands::Function func, VTypes::DataType type, bool array, bool &returnsarray);
+	VTypes::DataType checkUnaryOperatorTypes(Commands::Function func, VTypes::DataType type, bool array, bool& returnsarray, bool quiet = false);
 	// Check binary operator type compatibility
-	VTypes::DataType checkBinaryOperatorTypes(Commands::Function func, VTypes::DataType type1, bool array1, VTypes::DataType type2, bool array2, bool &returnsarray);
+	VTypes::DataType checkBinaryOperatorTypes(Commands::Function func, VTypes::DataType type1, bool array1, VTypes::DataType type2, bool array2, bool& returnsarray, bool quiet = false);
 	// Check ternary operator type compatibility
-	VTypes::DataType checkTernaryOperatorTypes(Commands::Function func, VTypes::DataType type1, bool array1, VTypes::DataType type2, bool array2, VTypes::DataType type3, bool array3, bool &returnsarray);
+	VTypes::DataType checkTernaryOperatorTypes(Commands::Function func, VTypes::DataType type1, bool array1, VTypes::DataType type2, bool array2, VTypes::DataType type3, bool array3, bool& returnsarray, bool quiet = false);
 	
 	public:
 	// Create a new path on the stack with the specified base 'variable'
