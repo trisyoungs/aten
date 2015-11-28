@@ -63,12 +63,12 @@ DisorderWizard::DisorderWizard(AtenWindow& parent) : QWizard(&parent), parent_(p
 int DisorderWizard::run()
 {
 	// If there are no loaded models with periodicity, disable this option on page 1
-	int nperiodic = 0;
-	for (Model* m = parent_.aten().models(); m != NULL; m = m->next) if (m->renderSourceModel()->cell().type() != UnitCell::NoCell) ++nperiodic;
-	ui.TargetExistingRadio->setEnabled(nperiodic != 0);
-	ui.TargetNewRadio->setChecked(nperiodic == 0);
-	ui.TargetExistingRadio->setChecked(nperiodic != 0);
-	targetType_ = nperiodic == 0 ? DisorderWizard::NewTarget : DisorderWizard::ExistingTarget;
+	int nPeriodic = 0;
+	for (Model* m = parent_.aten().models(); m != NULL; m = m->next) if (m->renderSourceModel()->cell().type() != UnitCell::NoCell) ++nPeriodic;
+	ui.TargetExistingRadio->setEnabled(nPeriodic != 0);
+	ui.TargetNewRadio->setChecked(nPeriodic == 0);
+	ui.TargetExistingRadio->setChecked(nPeriodic != 0);
+	targetType_ = nPeriodic == 0 ? DisorderWizard::NewTarget : DisorderWizard::ExistingTarget;
 	existingModel_ = NULL;
 	newModel_ = NULL;
 	partitioningScheme_ = NULL;
@@ -79,14 +79,14 @@ int DisorderWizard::run()
 	restart();
 	
 	// Update partition grids
-	QProgressDialog progress("Generating Partition Info", "Cancel", 0, parent_.aten().nPartitioningSchemes(), this);
-	int count = 0;
+	Task* task = Messenger::initialiseTask("Generating Partition Data", parent_.aten().nPartitioningSchemes());
 	for (PartitioningScheme* ps = parent_.aten().partitioningSchemes(); ps != NULL; ps = ps->next)
 	{
 		ps->setGridSize(prefs.partitionGridSize());
 		ps->recalculatePartitions();
-		progress.setValue(++count);
+		if (!Messenger::incrementTaskProgress(task)) return QDialog::Rejected;
 	}
+	Messenger::terminateTask(task);
 
 	return exec();
 }
@@ -171,7 +171,7 @@ void DisorderWizard::pageChanged(int id)
 		// Step 2 / 5 - Select model or define unit cell
 		case (2):
 			// INITIALISE - Create new model if necessary
-			if (targetType_ != DisorderWizard::ExistingTarget)
+			if ((targetType_ != DisorderWizard::ExistingTarget) && (newModel_ == NULL))
 			{
 				newModel_ = parent_.aten().addModel();
 				parent_.aten().setCurrentModel(newModel_);
@@ -219,7 +219,7 @@ void DisorderWizard::pageChanged(int id)
 				setPartitionData(qitem,ps);
 				if (selectItem == NULL) selectItem = qitem;
 				// If the selected mode is DisorderWizard::GenerateTarget then we only allow the simple unit cell partitioning
-				// Since it is always the first in the list, we cna just exit early.
+				// Since it is always the first in the list, we can just exit early.
 				if (targetType_ == DisorderWizard::GenerateTarget) break;
 			}
 			ui.PartitionTree->resizeColumnToContents(0);

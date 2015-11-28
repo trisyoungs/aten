@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>DisorderOptions</class>
  <widget class="QDialog" name="DisorderOptions">
@@ -8,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>399</width>
-    <height>316</height>
+    <width>381</width>
+    <height>336</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -17,6 +18,11 @@
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
+  </property>
+  <property name="font">
+   <font>
+    <pointsize>8</pointsize>
+   </font>
   </property>
   <property name="windowTitle">
    <string>Method Options</string>

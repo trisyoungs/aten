@@ -21,6 +21,22 @@
 
 #include "gui/mainwindow.h"
 #include "main/aten.h"
+#include <QMessageBox>
+
+// Cleanup film export files
+void AtenWindow::cleanupFilmExport(QStringList images, QString imagesFile)
+{
+	// Remove all files specified in the images list
+	for (int n=0; n<images.count(); ++n)
+	{
+		// Make sure image exists before we try to delete it...
+		if (!QFileInfo::exists(images.at(n))) continue;
+		QFile::remove(images.at(n));
+	}
+
+	// Check imagesFile
+	if ((!imagesFile.isEmpty()) && QFileInfo::exists(imagesFile)) QFile::remove(imagesFile);
+}
 
 // Export film
 bool AtenWindow::exportFilm()
@@ -29,12 +45,20 @@ bool AtenWindow::exportFilm()
 	int indexWidth = 7;
 
 	// Get relevant info for film
-	EncoderDefinition* encoder = exportFilmDialog_.encoder();
 	int imageWidth = exportFilmDialog_.filmWidth();
 	int imageHeight = exportFilmDialog_.filmHeight();
 	int fps = exportFilmDialog_.fps();
 
-	// What to do?
+	// If encoding, get output filename and make sure it doesn't exist (or we are allowed to overwrite it)
+	QString outputFile = exportFilmDialog_.outputFilename();
+	if (exportFilmDialog_.outputFilm())
+	{
+		if (QFileInfo::exists(outputFile))
+		{
+			if (QMessageBox::question(this, "Overwrite File?", "Output film file already exists. Overwrite it?") == QMessageBox::No) return false;
+		}
+	}
+
 	// We will always save the images, regardless of the type of output we're doing - the only difference will be the basename/location
 	QString imageBasename;
 	QString imageExtension;
@@ -69,7 +93,6 @@ bool AtenWindow::exportFilm()
 
 	// Always need global frameIndex variable
 	scriptStrings << "    int next(int frameIndex) {";
-	scriptStrings << "printf(\"HELLOHEREWEARE frameIndex = %i\n\", frameIndex);";
 
 	// Get start and end frame indices, and add necessary code to script
 	if (exportFilmDialog_.viewSource())
@@ -139,6 +162,7 @@ bool AtenWindow::exportFilm()
 	// Ready - loop over start/end frame range. Save images and build up image list
 	QStringList frameImages;
 	ReturnValue rv;
+	Task* task = Messenger::initialiseTask("Exporting Images", nFrames);
 	for (int frame = startIndex; frame <= endIndex; ++frame)
 	{
 		// Generate image filename
@@ -150,49 +174,79 @@ bool AtenWindow::exportFilm()
 		if (!pixmap.save(imageFilename, qPrintable(imageExtension), -1))
 		{
 			Messenger::error("Failed to save image '%s'.", qPrintable(imageFilename));
+			if (!exportFilmDialog_.outputImages()) cleanupFilmExport(frameImages, QString());
 			return false;
 		}
 
 		// Run script commands
 		rv.set(frame);
 		filmScript.executeFunction("next", rv, "i", frame);
+
+		if (!Messenger::incrementTaskProgress(task))
+		{
+			if (!exportFilmDialog_.outputImages()) cleanupFilmExport(frameImages, QString());
+			return false;
+		}
+	}
+	Messenger::terminateTask(task);
+
+	// Perform encoding?
+	if (exportFilmDialog_.outputFilm())
+	{
+		// Check encoder 
+		EncoderDefinition* encoder = exportFilmDialog_.encoder();
+		if (!encoder)
+		{
+			Messenger::error("Film output requested, but no encoder specified.");
+			cleanupFilmExport(frameImages, QString());
+			return false;
+		}
+
+		// Write frames file
+		QString framesFile = imageBasename + ".frames";
+		LineParser parser;
+		parser.openOutput(framesFile, true);
+		if (!parser.isFileGoodForWriting())
+		{
+			Messenger::error("Failed to open frames file '%s' for writing.", qPrintable(framesFile));
+			cleanupFilmExport(frameImages, QString());
+			return false;
+		}
+		for (int n=0; n<frameImages.count(); ++n) parser.writeLine(frameImages.at(n));
+
+		// Loop over steps defined in encoder definition
+		for (ExternalCommand* command = encoder->commands(); command != NULL; command = command->next)
+		{
+			Messenger::print("Executing command '%s'", qPrintable(command->name()));
+
+			// Grab executable absolute path (and check it)
+			QString executable = command->absoluteExecutable();
+			if (executable.isEmpty())
+			{
+				Messenger::error("Failed to locate executable '%s' in any search path specified.", qPrintable(command->executable()));
+				cleanupFilmExport(frameImages, framesFile);
+				return false;
+			}
+
+			// Construct arguments stringlist, replacing any strings that we need to
+			QString arguments = command->arguments();
+			arguments.replace("FRAMESPERSECOND", QString::number(fps));
+			arguments.replace("FRAMESFILE", framesFile);
+			arguments.replace("OUTPUTFILE", outputFile);
+
+			// Print intended comand to execute
+			Messenger::print(QString("Command to execute is: %1 %2").arg(executable, arguments));
+		}
 	}
 
 	return true;
 }
 
-
-
-
-// 	// Generate unique file basename and initialise image redirection
-// 	int runid;
-// 	QString basename;
-// 	do
-// 	{
-// 		runid = AtenMath::randomimax();
-// 		basename = prefs.tempDir().filePath("aten-movie-%1-%2-%3.arc").arg(QApplication::applicationPid(), runid).arg(0, 9, 10, QChar('0'));
-// 		fileInfo.setFile(basename);
-// 	} while (fileInfo.exists());
-// // 	basename.sprintf("%s%caten-movie-%i-%i-%%09i.png", qPrintable(prefs.tempDir()), PATHSEP, parent_.pid(), runid); ATEN2 TODO
-// 	parent_.aten().initialiseFilmRedirect(basename, maxframes);
-// 	
-// 	int progid = progress.initialise("Saving scripted movie frames...", -1);
-// 	bool canceled = false;
-// 	ReturnValue rv;
-// 	script.execute(rv);
-// 
-// 	progress.terminate(progid);
-// 	prefs.setViewRotationGlobe(viewglobe);
 // 
 // 	// Now run external program to create movie
 // 	TProcess encoderProcess;
 // 
 // 	// Grab encoder command and replace
-// 	basename = prefs.tempDir().filePath("aten-movie-%1-%2-*.png").arg(QApplication::applicationPid(), runid);
-// 	QString encoderArgs = prefs.encoderArguments();
-// 	encoderArgs.replace("OUTPUT", qPrintable(filename));
-// 	encoderArgs.replace("FILES", basename);
-// 	encoderArgs.replace("FPS", QString::number(fps));
 // 	Messenger::print("Command to run will be '%s %s'", qPrintable(prefs.encoderExe()), qPrintable(encoderArgs));
 // 	if (!encoderProcess.execute(prefs.encoderExe(), qPrintable(encoderArgs), NULL))
 // 	{
@@ -208,38 +262,3 @@ bool AtenWindow::exportFilm()
 // 		QCoreApplication::processEvents(QEventLoop::AllEvents, 50);
 // 	}
 // 
-// 	// Run secondary, post-process command (if one was given)
-// 	if (prefs.encoderPostExe() != NULL)
-// 	{
-// // 		printf("Post encoder command given is [%s]\n", prefs.encoderPostExe());
-// 		TProcess postProcess;
-// 		// Grab encoder command and replace
-// 		QString encoderArgs = prefs.encoderPostArguments();
-// 		encoderArgs.replace("OUTPUT", qPrintable(filename));
-// 		encoderArgs.replace("FILES", basename);
-// 		encoderArgs.replace("FPS", QString::number(fps));
-// 		Messenger::print("Command to run will be '%s %s'", qPrintable(prefs.encoderPostExe()), qPrintable(encoderArgs));
-// 		if (!postProcess.execute(prefs.encoderPostExe(), encoderArgs, NULL))
-// 		{
-// 			Messenger::print("Error: Failed to run encoder post-processing command.");
-// 		}
-// 		else while (!postProcess.finished())
-// 		{
-// 			// Is output file already present?
-// 			while (postProcess.outputAvailable()) postProcess.printLineToMessages();
-// 			QCoreApplication::processEvents(QEventLoop::AllEvents, 50);
-// 		}
-// 	}
-// 
-// 	// Cancel image redirection and perform cleanup
-// 	int nframes = parent_.aten().cancelFilmRedirect();
-// 	bool pid = progress.initialise("Cleaning up...", nframes);
-// 	for (int n = 0; n < nframes; ++n)
-// 	{
-// 		basename = prefs.tempDir().filePath("aten-movie-%1-%2-%3.arc").arg(QApplication::applicationPid(), runid).arg(n, 9, 10, QChar('0'));
-// 		QFile::remove(basename);
-// 		if (!progress.update(pid,n)) break;
-// 	}
-// 	Messenger::terminateTask(task);
-// }
-

@@ -64,7 +64,7 @@ void Aten::loadEncoderDefinitions()
 			case (EncoderDefinition::CommandNameKeyword):
 				if (!encoder)
 				{
-					Messenger::error("No encoder definition yet created in which to set data (use 'Name' keyword before all others).\n");
+					Messenger::error("No encoder definition yet created in which to set name data (use 'Name' keyword before all others).\n");
 					continue;
 				}
 				command = encoder->addCommand();
@@ -74,7 +74,7 @@ void Aten::loadEncoderDefinitions()
 			case (EncoderDefinition::CommandKeyword):
 				if (!command)
 				{
-					Messenger::error("No command definition yet created in which to set data (use 'CommandName' keyword before its siblings).\n");
+					Messenger::error("No command definition yet created in which to set command data (use 'CommandName' keyword before its siblings).\n");
 					continue;
 				}
 				command->setExecutable(parser.argc(1));
@@ -83,7 +83,7 @@ void Aten::loadEncoderDefinitions()
 			case (EncoderDefinition::CommandArgumentsKeyword):
 				if (!command)
 				{
-					Messenger::error("No command definition yet created in which to set data (use 'CommandName' keyword before its siblings).\n");
+					Messenger::error("No command definition yet created in which to set argument data (use 'CommandName' keyword before its siblings).\n");
 					continue;
 				}
 				command->setArguments(parser.argc(1));
@@ -91,7 +91,7 @@ void Aten::loadEncoderDefinitions()
 			case (EncoderDefinition::CommandSearchPathsKeyword):
 				if (!command)
 				{
-					Messenger::error("No command definition yet created in which to set data (use 'CommandName' keyword before its siblings).\n");
+					Messenger::error("No command definition yet created in which to set searchpath data (use 'CommandName' keyword before its siblings).\n");
 					continue;
 				}
 				for (int n=1; n<parser.nArgs(); ++n) command->addSearchPath(parser.argc(n));

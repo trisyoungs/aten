@@ -301,8 +301,15 @@ void AtenExportFilm::on_ImagesSelectBasenameButton_clicked(bool checked)
 }
 
 /*
- * Output -- Film
+ * Output - Film
  */
+
+void AtenExportFilm::on_OutputSelectFilenameButton_clicked(bool checked)
+{
+	QString newFile = QFileDialog::getSaveFileName(this, "Choose output film file name", ui.OutputFilenameEdit->text(), "All files (*.*)");
+	if (!newFile.isEmpty()) ui.OutputFilenameEdit->setText(newFile);
+	updateControls();
+}
 
 void AtenExportFilm::on_OutputFilmRadio_clicked(bool checked)
 {
@@ -348,6 +355,12 @@ QString AtenExportFilm::imageExtension()
 bool AtenExportFilm::outputFilm()
 {
 	return ui.OutputFilmRadio->isChecked();
+}
+
+// Return output filename
+QString AtenExportFilm::outputFilename()
+{
+	return ui.OutputFilenameEdit->text();
 }
 
 // Return selected encoder

@@ -137,6 +137,7 @@ class AtenExportFilm : public QDialog
 	void on_OutputImagesOnlyRadio_clicked(bool checked);
 	void on_ImagesSelectBasenameButton_clicked(bool checked);
 	// Output -- Encoder
+	void on_OutputSelectFilenameButton_clicked(bool checked);
 	void on_OutputFilmRadio_clicked(bool checked);
 	void on_EncodersCombo_currentIndexChanged(int index);
 	void on_EncoderStepCombo_currentIndexChanged(int index);
@@ -150,11 +151,10 @@ class AtenExportFilm : public QDialog
 	QString imageExtension();
 	// Return if film output is requested
 	bool outputFilm();
+	// Return output filename
+	QString outputFilename();
 	// Return selected encoder
 	EncoderDefinition* encoder();
-	// 
-// 	// Return selected filename
-// // 	QString fileName();
 
 
 	/*

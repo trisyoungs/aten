@@ -372,6 +372,14 @@ void AtenWindow::endMode(Prefs::MouseButton button, bool* keyModifiers)
 				}
 				targetModel->bondAtoms(i,clickedAtom_,bt);
 			}
+
+			// Centre model if the relevant option is checked
+			if (ui.BuildDrawKeepCenteredButton->isChecked())
+			{
+				targetModel->selectAll(true);
+				targetModel->centre(0.0, 0.0, 0.0, false, false, false, true);
+			}
+
 			targetModel->endUndoState();
 			updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
 			break;
@@ -390,6 +398,14 @@ void AtenWindow::endMode(Prefs::MouseButton button, bool* keyModifiers)
 				aten_.currentFragment()->pasteOrientedModel(targetModel->screenToModel(rMouseDown.x, rMouseDown.y, prefs.drawDepth()), targetModel);
 			}
 			targetModel->endUndoState();
+
+			// Centre model if the relevant option is checked
+			if (ui.BuildDrawKeepCenteredButton->isChecked())
+			{
+				targetModel->selectAll(true);
+				targetModel->centre(0.0, 0.0, 0.0, false, false, false, true);
+			}
+
 			updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
 			break;
 		case (UserAction::DrawTransmuteAction):

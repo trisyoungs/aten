@@ -687,6 +687,10 @@ class AtenWindow : public QMainWindow
 	/*
 	 * Film Generation
 	 */
+	private:
+	// Cleanup film export files
+	void cleanupFilmExport(QStringList images, QString imagesFile);
+
 	public:
 	// Export film
 	bool exportFilm();

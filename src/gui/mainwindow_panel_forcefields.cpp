@@ -92,6 +92,7 @@ void AtenWindow::on_ForcefieldsManageLoadButton_clicked(bool checked)
 void AtenWindow::on_ForcefieldsManageCloseButton_clicked(bool checked)
 {
 	aten_.removeForcefield(aten_.currentForcefield());
+
 	updateWidgets(AtenWindow::ForcefieldsPanelTarget);
 }
 
@@ -113,6 +114,8 @@ void AtenWindow::on_ForcefieldsManageAssignButton_clicked(bool checked)
 
 void AtenWindow::on_ForcefieldsCalculateMinimiseButton_clicked(bool checked)
 {
+	ReturnValue rv;
+	ui.ForcefieldsCalculateMinimiseButton->callPopupMethod("minimise", rv);
 }
 
 void AtenWindow::on_ForcefieldsCalculateEnergyButton_clicked(bool checked)
@@ -123,6 +126,8 @@ void AtenWindow::on_ForcefieldsCalculateEnergyButton_clicked(bool checked)
 
 	// Print energy
 	aten_.currentModel()->renderSourceModel()->energy.print();
+
+	updateWidgets(AtenWindow::MainViewTarget);
 }
 
 void AtenWindow::on_ForcefieldsCalculateForcesButton_clicked(bool checked)
@@ -141,6 +146,7 @@ void AtenWindow::on_ForcefieldsCalculateForcesButton_clicked(bool checked)
 void AtenWindow::on_ForcefieldsPatternsCreateButton_clicked(bool checked)
 {
 	CommandNode::run(Commands::CreatePatterns, "");
+	CommandNode::run(Commands::ListPatterns, "");
 
 	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
 }

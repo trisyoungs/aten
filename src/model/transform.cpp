@@ -236,22 +236,24 @@ void Model::mirrorSelectionLocal(int axis, bool markonly)
 	Messenger::exit("Model::mirrorSelectionLocal");
 }
 
-// Puts the selections centre of geometry at 0,0,0
-void Model::centre(const Vec3<double>& v, bool lockx, bool locky, bool lockz)
+// Puts the selections centre of geometry at the specified coordinates
+void Model::centre(const Vec3<double>& v, bool lockx, bool locky, bool lockz, bool markedOnly)
 {
-	centre(v.x, v.y, v.z, lockx, locky, lockz);
+	centre(v.x, v.y, v.z, lockx, locky, lockz, markedOnly);
 }
 
 // Centre current selection at specified coordinates
-void Model::centre(double newx, double newy, double newz, bool lockx, bool locky, bool lockz)
+void Model::centre(double newx, double newy, double newz, bool lockx, bool locky, bool lockz, bool markedOnly)
 {
 	Messenger::enter("Model::centre");
 	Vec3<double> cog(newx, newy, newz);
-	cog -= selectionCentreOfGeometry();
+
+	cog -= selectionCentreOfGeometry(markedOnly);
 	if (lockx) cog.x = 0.0;
 	if (locky) cog.y = 0.0;
 	if (lockz) cog.z = 0.0;
-	translateSelectionLocal(cog);
+	translateSelectionLocal(cog, markedOnly);
+
 	Messenger::exit("Model::centre");
 }
 

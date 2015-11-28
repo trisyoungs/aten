@@ -813,9 +813,10 @@ class Model : public ListItem<Model>
 	void rotateSelectionWorld(double, double);
 	// Spin the atom selection
 	void rotateSelectionZaxis(double);
-	// Puts the selections centre of geometry at 0,0,0
-	void centre(const Vec3<double>& v, bool lockx = false, bool locky = false, bool lockz = false);
-	void centre(double x, double y, double z, bool lockx = false, bool locky = false, bool lockz = false);
+	// Puts the selections centre of geometry at the specified coordinates (as Vec3<double>)
+	void centre(const Vec3<double>& v, bool lockx = false, bool locky = false, bool lockz = false, bool markedOnly = false);
+	// Puts the selections centre of geometry at the specified coordinates (as doubles)
+	void centre(double x, double y, double z, bool lockx = false, bool locky = false, bool lockz = false, bool markedOnly = false);
 	// Translate selection by the vector specified
 	void translateSelectionLocal(const Vec3<double>&, bool markOnly = false);
 	// Translate selection by the vector specified (in world coordinates)
