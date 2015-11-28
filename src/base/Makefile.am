@@ -1,9 +1,14 @@
 noinst_LIBRARIES = libbase.a libfourierdata.a libmessenger.a
 
-SUFFIXES: .h
+SUFFIXES: .h .hui
 
 .h.hh:
 	ln -s $< $@
+
+.hui.o:
+	$(QTMOC) -o $*.cpp -f$< $<
+	$(CXX) 	-I$(top_srcdir)/src -I../ -I./ $(CXXFLAGS) $(ATEN_CFLAGS) -c $*.cpp -o $@
+	rm $*.cpp
 
 AM_YFLAGS = -d
 
@@ -11,7 +16,7 @@ libbase_a_SOURCES = atomaddress.cpp atom.cpp atom_geometry.cpp basisshell.cpp bo
 
 libfourierdata_a_SOURCES = fourierdata.cpp
 
-libmessenger_a_SOURCES = message.cpp messenger.cpp
+libmessenger_a_SOURCES = message.cpp messenger.hui messenger_funcs.cpp
 
 noinst_HEADERS = atomaddress.h atom.h basisshell.h bond.h cell.h choice.h colourscale.h colourscalepoint.h datastore.h eigenvector.h element.h elementmap.h encoderdefinition.h externalcommand.h forcefieldatom.h forcefieldbound.h fourierdata.h glyph.h grid.h gridpoint.h kvmap.h lineparser.h log.h measurement.h message.h messenger.h namespace.h neta.h neta_parser.h pattern.h prefs.h ring.h site.h sysfunc.h vibration.h wrapint.h zmatrix.h zmatrixelement.h
 

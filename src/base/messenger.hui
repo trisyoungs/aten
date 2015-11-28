@@ -26,6 +26,7 @@
 #include "base/message.h"
 #include "templates/list.h"
 #include <QDateTime>
+#include <QProcess>
 
 // Forward Declarations (Aten)
 class AtenProgress;
@@ -33,8 +34,10 @@ class AtenProgress;
 ATEN_BEGIN_NAMESPACE
 
 // Task
-class Task : public ListItem<Task>
+class Task : public ListItem<Task>, public QProcess
 {
+	Q_OBJECT
+
 	public:
 	// Constructor
 	Task();
@@ -89,6 +92,8 @@ class Task : public ListItem<Task>
 // Global messaging and program output levels
 class Messenger
 {
+	Q_OBJECT
+
 	public:
 	// Constructor
 	Messenger();
