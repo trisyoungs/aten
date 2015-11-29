@@ -19,6 +19,7 @@ Selecting a long-press option on an already-selected TMenuButton wrongly un-chec
 Pressing escape when on Home panel reverts to Stick view style.
 Clicking to select atoms drawn in stick style is impossible - check selection criteria.
 Clicking to select atoms without perspective view is broken?
+Trajectory playback when not cached is broken (model does not change).
 
 Graphics TODO
 =============

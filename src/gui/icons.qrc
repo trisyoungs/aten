@@ -39,6 +39,11 @@
   <qresource prefix="forcefield">
     <file>icons/forcefield_energy.svg</file>
     <file>icons/forcefield_forces.svg</file>
+    <file>icons/patterns_default.svg</file>
+    <file>icons/patterns_clear.svg</file>
+    <file>icons/patterns_list.svg</file>
+    <file>icons/expression_type.svg</file>
+    <file>icons/patterns_create.svg</file>
     <file>icons/forcefield_minimise.svg</file>
   </qresource>
   <qresource prefix="/aten">

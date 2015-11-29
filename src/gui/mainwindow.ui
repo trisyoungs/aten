@@ -3137,6 +3137,9 @@
           </property>
           <item row="0" column="0">
            <widget class="TMenuButton" name="CellSpacegroupSetButton">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -3161,7 +3164,7 @@
              </font>
             </property>
             <property name="toolTip">
-             <string>Edit / set cell angles</string>
+             <string>Set / edit spacegroup</string>
             </property>
             <property name="text">
              <string>Set</string>
@@ -3216,7 +3219,7 @@
           <item row="0" column="0">
            <widget class="TMenuButton" name="CellTransformReplicateButton">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -3355,6 +3358,9 @@
           </property>
           <item row="0" column="0">
            <widget class="TMenuButton" name="CellMillerDefineButton">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -3379,7 +3385,7 @@
              </font>
             </property>
             <property name="toolTip">
-             <string>Edit / set cell angles</string>
+             <string>Define miller plane</string>
             </property>
             <property name="text">
              <string>Define</string>
@@ -3409,6 +3415,9 @@
           </item>
           <item row="0" column="1">
            <widget class="TMenuButton" name="CellMillerSelectButton">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -3433,7 +3442,7 @@
              </font>
             </property>
             <property name="toolTip">
-             <string>Edit / set cell angles</string>
+             <string>Select based on Miller plane</string>
             </property>
             <property name="text">
              <string>Select</string>
@@ -3511,7 +3520,7 @@
              </font>
             </property>
             <property name="toolTip">
-             <string>Edit / set cell angles</string>
+             <string>Fold atoms into the defined unit cell</string>
             </property>
             <property name="text">
              <string>Atoms</string>
@@ -3569,7 +3578,7 @@
              </font>
             </property>
             <property name="toolTip">
-             <string>Edit / set cell angles</string>
+             <string>Fold molecules into the defined unit cell</string>
             </property>
             <property name="text">
              <string>Molecules</string>
@@ -3897,7 +3906,7 @@
              </size>
             </property>
             <property name="toolTip">
-             <string>Clear all measurements in model</string>
+             <string>List all measurements in model</string>
             </property>
             <property name="text">
              <string>List All</string>
@@ -6931,7 +6940,7 @@
             </property>
             <property name="icon">
              <iconset resource="icons.qrc">
-              <normaloff>:/basic/icons/basic_cross.svg</normaloff>:/basic/icons/basic_cross.svg</iconset>
+              <normaloff>:/forcefield/icons/patterns_clear.svg</normaloff>:/forcefield/icons/patterns_clear.svg</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -6997,6 +7006,10 @@
             <property name="text">
              <string>Create</string>
             </property>
+            <property name="icon">
+             <iconset resource="icons.qrc">
+              <normaloff>:/forcefield/icons/patterns_create.svg</normaloff>:/forcefield/icons/patterns_create.svg</iconset>
+            </property>
             <property name="iconSize">
              <size>
               <width>30</width>
@@ -7053,7 +7066,7 @@
             </property>
             <property name="icon">
              <iconset resource="icons.qrc">
-              <normaloff>:/basic/icons/basic_list.svg</normaloff>:/basic/icons/basic_list.svg</iconset>
+              <normaloff>:/forcefield/icons/patterns_list.svg</normaloff>:/forcefield/icons/patterns_list.svg</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -7108,6 +7121,10 @@
             </property>
             <property name="text">
              <string>Default</string>
+            </property>
+            <property name="icon">
+             <iconset resource="icons.qrc">
+              <normaloff>:/forcefield/icons/patterns_default.svg</normaloff>:/forcefield/icons/patterns_default.svg</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -7190,6 +7207,10 @@
             </property>
             <property name="text">
              <string>Type</string>
+            </property>
+            <property name="icon">
+             <iconset resource="icons.qrc">
+              <normaloff>:/forcefield/icons/expression_type.svg</normaloff>:/forcefield/icons/expression_type.svg</iconset>
             </property>
             <property name="iconSize">
              <size>
