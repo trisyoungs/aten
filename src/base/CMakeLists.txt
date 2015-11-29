@@ -91,12 +91,23 @@ target_include_directories(fourierdata PRIVATE
   ${Qt5Gui_INCLUDE_DIRS}
 )
 
+# Messenger
+
+# Meta-Objects
+set(messenger_MOC_HDRS
+  task.hui
+)
+QT5_WRAP_CPP(messenger_MOC_SRCS ${messenger_MOC_HDRS})
+
 add_library(messenger
   message.cpp
   messenger.cpp
   message.h
   messenger.h
+  task_funcs.cpp
+  ${messenger_MOC_SRCS}
 )
+
 
 target_include_directories(messenger PRIVATE
   ${PROJECT_SOURCE_DIR}/src

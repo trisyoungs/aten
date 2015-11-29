@@ -75,7 +75,7 @@
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <property name="usesScrollButtons">
        <bool>true</bool>
@@ -8922,7 +8922,7 @@
              </font>
             </property>
             <property name="toolTip">
-             <string>Edit / set cell lengths</string>
+             <string>Reload selected script</string>
             </property>
             <property name="text">
              <string>Reload</string>
@@ -8980,7 +8980,7 @@
              </font>
             </property>
             <property name="toolTip">
-             <string>Edit / set cell matrix</string>
+             <string>Open script...</string>
             </property>
             <property name="text">
              <string>Load</string>
@@ -9038,7 +9038,7 @@
              </font>
             </property>
             <property name="toolTip">
-             <string>Edit / set cell lengths</string>
+             <string>Run selected script</string>
             </property>
             <property name="text">
              <string>Run</string>
@@ -9106,7 +9106,7 @@
              </font>
             </property>
             <property name="toolTip">
-             <string>Edit / set cell lengths</string>
+             <string>Remove selected script</string>
             </property>
             <property name="text">
              <string>Remove</string>
@@ -9270,7 +9270,7 @@
              </font>
             </property>
             <property name="toolTip">
-             <string>Run disorder builder wizard</string>
+             <string>Drill pores in the current model</string>
             </property>
             <property name="text">
              <string>Drill</string>
@@ -9324,7 +9324,7 @@
              </font>
             </property>
             <property name="toolTip">
-             <string>Run disorder builder wizard</string>
+             <string>Create scheme from current model</string>
             </property>
             <property name="text">
              <string>Create Scheme</string>
@@ -9408,7 +9408,7 @@
              </font>
             </property>
             <property name="toolTip">
-             <string>Run disorder builder wizard</string>
+             <string>Terminate surfaces in current model</string>
             </property>
             <property name="text">
              <string>Terminate</string>

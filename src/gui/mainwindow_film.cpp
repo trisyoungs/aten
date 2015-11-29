@@ -26,6 +26,7 @@
 // Cleanup film export files
 void AtenWindow::cleanupFilmExport(QStringList images, QString imagesFile)
 {
+	return;
 	// Remove all files specified in the images list
 	for (int n=0; n<images.count(); ++n)
 	{
@@ -212,9 +213,11 @@ bool AtenWindow::exportFilm()
 			cleanupFilmExport(frameImages, QString());
 			return false;
 		}
-		for (int n=0; n<frameImages.count(); ++n) parser.writeLine(frameImages.at(n));
+		for (int n=0; n<frameImages.count(); ++n) parser.writeLineF("%s\n", qPrintable(frameImages.at(n)));
+		parser.closeFiles();
 
 		// Loop over steps defined in encoder definition
+		Task* encoderTask = Messenger::initialiseTask("Encoding film", encoder->nCommands());
 		for (ExternalCommand* command = encoder->commands(); command != NULL; command = command->next)
 		{
 			Messenger::print("Executing command '%s'", qPrintable(command->name()));
@@ -225,6 +228,7 @@ bool AtenWindow::exportFilm()
 			{
 				Messenger::error("Failed to locate executable '%s' in any search path specified.", qPrintable(command->executable()));
 				cleanupFilmExport(frameImages, framesFile);
+				Messenger::terminateTask(encoderTask);
 				return false;
 			}
 
@@ -236,6 +240,32 @@ bool AtenWindow::exportFilm()
 
 			// Print intended comand to execute
 			Messenger::print(QString("Command to execute is: %1 %2").arg(executable, arguments));
+
+			// Execute external task
+			Task* commandTask = Messenger::initialiseCommandTask(command->name(), executable, arguments);
+			while (!commandTask->commandFinished())
+			{
+				if (!Messenger::incrementTaskProgress(commandTask))
+				{
+					cleanupFilmExport(frameImages, framesFile);
+					return false;
+				}
+			}
+			if (commandTask->commandFailed())
+			{
+				cleanupFilmExport(frameImages, framesFile);
+				return false;
+			}
+			Messenger::terminateTask(commandTask);
+
+		
+
+			// Check for cancellation in main encoding task
+			if (!Messenger::incrementTaskProgress(encoderTask))
+			{
+				cleanupFilmExport(frameImages, framesFile);
+				return false;
+			}
 		}
 	}
 

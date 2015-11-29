@@ -52,8 +52,10 @@ void AtenProgress::updateAndShow()
 		ui.TaskTable->clear();
 		ui.TaskTable->setColumnCount(3);
 		ui.TaskTable->setRowCount(Messenger::nTasks());
-		for (Task* task = Messenger::tasks(); task != NULL; task = task->next)
+		for (RefListItem<Task,int>* ri = Messenger::tasks(); ri != NULL; ri = ri->next)
 		{
+			Task *task = ri->item;
+
 			bar = new QProgressBar(this);
 			bar->setRange(0, task->nSteps());
 			ui.TaskTable->setCellWidget(row, 0, bar);
@@ -90,7 +92,8 @@ void AtenProgress::updateAndShow()
 	}
 
 	// Update main ETA information (from first task)
-	Task* task = Messenger::tasks();
+	RefListItem<Task,int>* ri = Messenger::tasks();
+	Task* task = ri->item;
 	if (task)
 	{
 		ui.TitleLabel->setText(task->title());

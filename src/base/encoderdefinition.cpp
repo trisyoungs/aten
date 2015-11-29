@@ -85,3 +85,9 @@ ExternalCommand* EncoderDefinition::commands()
 {
 	return commands_.first();
 }
+
+// Return number of defined commands
+int EncoderDefinition::nCommands() const
+{
+	return commands_.nItems();
+}

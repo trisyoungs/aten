@@ -73,6 +73,8 @@ class EncoderDefinition : public ListItem<EncoderDefinition>
 	ExternalCommand* addCommand();
 	// Return first defined command
 	ExternalCommand* commands();
+	// Return number of defined commands
+	int nCommands() const;
 };
 
 ATEN_END_NAMESPACE

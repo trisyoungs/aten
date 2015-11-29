@@ -21,7 +21,7 @@
 
 #include "base/messenger.h"
 #include "base/sysfunc.h"
-#include <progress.h>
+#include "gui/progress.h"
 #include <QTextStream>
 #include <stdarg.h>
 #include <stdio.h>
@@ -36,120 +36,11 @@ bool Messenger::printToConsole_ = true;
 int Messenger::bufferSize_ = 100;
 QList<Message> Messenger::messageBuffer_;
 AtenProgress* Messenger::atenProgress_ = NULL;
-List<Task> Messenger::tasks_;
+RefList<Task,int> Messenger::tasks_;
 int Messenger::taskPoint_ = -1;
 QString Messenger::cliProgressText_;
 int Messenger::messageBufferPoint_ = 0;
 int Messenger::backPrintedMessagePoint_ = -1;
-
-/*
- * Task
- */
-
-// Constructor
-Task::Task() : ListItem<Task>()
-{
-	currentStep_ = 0;
-	nSteps_ = 0;
-	canceled_ = false;
-}
-
-// Initialise task
-void Task::initialise(QString title, int nSteps)
-{
-	title_ = title;
-	currentStep_ = 0;
-	nSteps_ = nSteps;
-	completion_ = 0.0;
-	startTime_ = QDateTime::currentDateTime();
-	lastStepTime_ = QDateTime();
-}
-
-// Return title
-QString Task::title()
-{
-	return title_;
-}
-
-// Return total number of steps in task
-int Task::nSteps()
-{
-	return nSteps_;
-}
-
-// Return current step in task
-int Task::currentStep()
-{
-	return currentStep_;
-}
-
-// Return percentage completion
-double Task::completion()
-{
-	return completion_;
-}
-
-// Return estimated time until completion of task (as string)
-QString Task::etaText()
-{
-	// If no steps yet completed, no way to estimate
-	if (currentStep_ == 0) return "??:??:??";
-
-	// Get time difference between last known step and the beginning of the task, and project the total time required
-	int mSecs = startTime_.msecsTo(lastStepTime_);
-	double mSecsPerStep = mSecs / double(currentStep_);
-	QDateTime endTime = startTime_.addMSecs(mSecsPerStep*nSteps_);
-
-	// Calculate number of seconds to end time, and format into string
-	int nSecs = QDateTime::currentDateTime().secsTo(endTime);
-	int nHours = nSecs/3600;
-	nSecs -= nHours*3600;
-	int nMinutes = nSecs/60;
-	nSecs -= nMinutes*60;
-	return QString("%1:%2:%3").arg(nHours, 2, 10, QChar('0')).arg(nMinutes, 2, 10, QChar('0')).arg(nSecs, 2, 10, QChar('0'));
-}
-
-// Update task, returning if canceled by the user
-bool Task::update(int newCurrentStep)
-{
-	currentStep_ = newCurrentStep;
-	completion_ = 100.0 * currentStep_ / nSteps_;
-	lastStepTime_ = QDateTime::currentDateTime();
-}
-
-// Increment task progress, returning if canceled by the user
-bool Task::increment(int deltaSteps)
-{
-	update(currentStep_ + deltaSteps);
-}
-
-// Return timestamp of task creation
-QDateTime Task::startTime()
-{
-	return startTime_;
-}
-
-// Return timestamp of last completed step
-QDateTime Task::lastStepTime()
-{
-	return lastStepTime_;
-}
-
-// Cancel task (set flag)
-void Task::cancel()
-{
-	canceled_ = true;
-}
-
-// Return if task has been canceled
-bool Task::canceled()
-{
-	return canceled_;
-}
-
-/*
- * Messenger
- */
 
 // Message output types
 const char* OutputTypeKeywords[] = { "all", "calls", "commands", "parse", "typing", "verbose" };
@@ -445,7 +336,9 @@ bool Messenger::progressIndicatorRequired()
 	if (tasks_.nItems() == 0) return false;
 
 	// Check start time of first task
-	Task* task = tasks_.first();
+	RefListItem<Task,int>* ri= tasks_.first();
+	Task* task = ri->item;
+
 	return (task->startTime().secsTo(QDateTime::currentDateTime()) >= 0);
 }
 
@@ -455,8 +348,9 @@ void Messenger::showCLIProgress()
 	if (!printToConsole_) return;
 
 	// Get last Task in list
-	Task* task = tasks_.last();
-	if (!task) return;
+	RefListItem<Task,int>* ri = tasks_.last();
+	if (!ri) return;
+	Task* task = ri->item;
 
 	// Get most recent message in buffer
 	QString messageText = messageBuffer_.count() > 0 ? messageBuffer_.first().text() : "???";
@@ -478,8 +372,22 @@ void Messenger::setAtenProgress(AtenProgress* atenProgress)
 // Push new task onto stack
 Task* Messenger::initialiseTask(QString title, int totalSteps)
 {
-	Task* task = tasks_.add();
+	Task* task = new Task;
+	tasks_.add(task);
+
 	task->initialise(title, totalSteps);
+	++taskPoint_;
+
+	return task;
+}
+
+// Push new command task onto stack
+Task* Messenger::initialiseCommandTask(QString title, QString command, QString args, QString outputFile)
+{
+	Task* task = new Task;
+	tasks_.add(task);
+
+	task->initialiseCommand(title, command, args, outputFile);
 	++taskPoint_;
 
 	return task;
@@ -492,7 +400,7 @@ int Messenger::nTasks()
 }
 
 // Return list of current tasks
-Task* Messenger::tasks()
+RefListItem<Task,int>* Messenger::tasks()
 {
 	return tasks_.first();
 }
@@ -501,7 +409,11 @@ Task* Messenger::tasks()
 void Messenger::cancelAllTasks()
 {
 	// Set canceled status of all tasks
-	for (Task* task = tasks_.first(); task != NULL; task = task->next) task->cancel();
+	for (RefListItem<Task,int>* ri = tasks_.first(); ri!= NULL; ri = ri->next)
+	{
+		Task* task = ri->item;
+		task->cancel();
+	}
 }
 
 // Return task log point
@@ -516,10 +428,17 @@ bool Messenger::updateTaskProgress(Task* task, int newCurrentStep)
 	// Check that task is in list
 	bool canceled = false;
 	if (!tasks_.contains(task)) error("Internal Error: Tried to update a task that doesn't exist.");
-	else
+	else if (task->type() == Task::SteppedTask)
 	{
 		task->update(newCurrentStep);
 		canceled = task->canceled();
+	}
+	else if (task->type() == Task::ExternalTask)
+	{
+		if (task->commandOutputAvailable()) task->printLineToMessages();
+		QCoreApplication::processEvents(QEventLoop::AllEvents, 50);
+		canceled = task->canceled();
+		if (!canceled) canceled = task->commandFailed();
 	}
 
 	// Call progress indicator if necessary
@@ -538,10 +457,17 @@ bool Messenger::incrementTaskProgress(Task* task, int deltaSteps)
 	// Check that task is in list
 	bool canceled = false;
 	if (!tasks_.contains(task)) error("Internal Error: Tried to update a task that doesn't exist.");
-	else
+	else if (task->type() == Task::SteppedTask)
 	{
 		task->increment(deltaSteps);
 		canceled = task->canceled();
+	}
+	else if (task->type() == Task::ExternalTask)
+	{
+		if (task->commandOutputAvailable()) task->printLineToMessages();
+		QCoreApplication::processEvents(QEventLoop::AllEvents, 50);
+		canceled = task->canceled();
+		if (!canceled) canceled = task->commandFailed();
 	}
 
 	// Call progress indicator if necessary

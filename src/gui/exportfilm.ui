@@ -10,7 +10,7 @@
     <x>0</x>
     <y>0</y>
     <width>545</width>
-    <height>717</height>
+    <height>754</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -317,16 +317,6 @@
             </property>
             <item>
              <layout class="QGridLayout" name="gridLayout_4">
-              <item row="1" column="1">
-               <widget class="QRadioButton" name="RotateViewXWholeRadio">
-                <property name="enabled">
-                 <bool>false</bool>
-                </property>
-                <property name="text">
-                 <string>Whole rotations per film</string>
-                </property>
-               </widget>
-              </item>
               <item row="1" column="2">
                <widget class="QDoubleSpinBox" name="RotateViewXWholeSpin">
                 <property name="enabled">
@@ -346,19 +336,6 @@
                 </property>
                 <property name="value">
                  <double>1.000000000000000</double>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="1">
-               <widget class="QRadioButton" name="RotateViewXDeltaRadio">
-                <property name="enabled">
-                 <bool>false</bool>
-                </property>
-                <property name="text">
-                 <string>Degrees per frame</string>
-                </property>
-                <property name="checked">
-                 <bool>true</bool>
                 </property>
                </widget>
               </item>
@@ -391,33 +368,45 @@
                 </property>
                </widget>
               </item>
+              <item row="0" column="1" rowspan="2">
+               <widget class="QWidget" name="widget" native="true">
+                <layout class="QVBoxLayout" name="verticalLayout_4">
+                 <property name="spacing">
+                  <number>2</number>
+                 </property>
+                 <property name="margin">
+                  <number>2</number>
+                 </property>
+                 <item>
+                  <widget class="QRadioButton" name="RotateViewXDeltaRadio">
+                   <property name="enabled">
+                    <bool>false</bool>
+                   </property>
+                   <property name="text">
+                    <string>Degrees per frame</string>
+                   </property>
+                   <property name="checked">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QRadioButton" name="RotateViewXWholeRadio">
+                   <property name="enabled">
+                    <bool>false</bool>
+                   </property>
+                   <property name="text">
+                    <string>Whole rotations per film</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
              </layout>
             </item>
             <item>
              <layout class="QGridLayout" name="gridLayout_3">
-              <item row="1" column="1">
-               <widget class="QRadioButton" name="RotateViewYWholeRadio">
-                <property name="enabled">
-                 <bool>false</bool>
-                </property>
-                <property name="text">
-                 <string>Whole rotations per film</string>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="1">
-               <widget class="QRadioButton" name="RotateViewYDeltaRadio">
-                <property name="enabled">
-                 <bool>false</bool>
-                </property>
-                <property name="text">
-                 <string>Degrees per frame</string>
-                </property>
-                <property name="checked">
-                 <bool>true</bool>
-                </property>
-               </widget>
-              </item>
               <item row="0" column="2">
                <widget class="QDoubleSpinBox" name="RotateViewYDeltaSpin">
                 <property name="enabled">
@@ -469,20 +458,45 @@
                 </property>
                </widget>
               </item>
+              <item row="0" column="1" rowspan="2">
+               <widget class="QWidget" name="widget_2" native="true">
+                <layout class="QVBoxLayout" name="verticalLayout_5">
+                 <property name="spacing">
+                  <number>2</number>
+                 </property>
+                 <property name="margin">
+                  <number>2</number>
+                 </property>
+                 <item>
+                  <widget class="QRadioButton" name="RotateViewYDeltaRadio">
+                   <property name="enabled">
+                    <bool>false</bool>
+                   </property>
+                   <property name="text">
+                    <string>Degrees per frame</string>
+                   </property>
+                   <property name="checked">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QRadioButton" name="RotateViewYWholeRadio">
+                   <property name="enabled">
+                    <bool>false</bool>
+                   </property>
+                   <property name="text">
+                    <string>Whole rotations per film</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
              </layout>
             </item>
             <item>
              <layout class="QGridLayout" name="gridLayout_5">
-              <item row="1" column="1">
-               <widget class="QRadioButton" name="RotateViewZWholeRadio">
-                <property name="enabled">
-                 <bool>false</bool>
-                </property>
-                <property name="text">
-                 <string>Whole rotations per film</string>
-                </property>
-               </widget>
-              </item>
               <item row="1" column="2">
                <widget class="QDoubleSpinBox" name="RotateViewZWholeSpin">
                 <property name="enabled">
@@ -502,19 +516,6 @@
                 </property>
                 <property name="value">
                  <double>1.000000000000000</double>
-                </property>
-               </widget>
-              </item>
-              <item row="0" column="1">
-               <widget class="QRadioButton" name="RotateViewZDeltaRadio">
-                <property name="enabled">
-                 <bool>false</bool>
-                </property>
-                <property name="text">
-                 <string>Degrees per frame</string>
-                </property>
-                <property name="checked">
-                 <bool>false</bool>
                 </property>
                </widget>
               </item>
@@ -545,6 +546,41 @@
                 <property name="text">
                  <string>Z</string>
                 </property>
+               </widget>
+              </item>
+              <item row="0" column="1" rowspan="2">
+               <widget class="QWidget" name="widget_3" native="true">
+                <layout class="QVBoxLayout" name="verticalLayout_6">
+                 <property name="spacing">
+                  <number>2</number>
+                 </property>
+                 <property name="margin">
+                  <number>2</number>
+                 </property>
+                 <item>
+                  <widget class="QRadioButton" name="RotateViewZDeltaRadio">
+                   <property name="enabled">
+                    <bool>false</bool>
+                   </property>
+                   <property name="text">
+                    <string>Degrees per frame</string>
+                   </property>
+                   <property name="checked">
+                    <bool>true</bool>
+                   </property>
+                  </widget>
+                 </item>
+                 <item>
+                  <widget class="QRadioButton" name="RotateViewZWholeRadio">
+                   <property name="enabled">
+                    <bool>false</bool>
+                   </property>
+                   <property name="text">
+                    <string>Whole rotations per film</string>
+                   </property>
+                  </widget>
+                 </item>
+                </layout>
                </widget>
               </item>
              </layout>

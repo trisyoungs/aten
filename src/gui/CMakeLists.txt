@@ -75,7 +75,6 @@ SET(gui_MOC_HDRS
   textratreewidgetitem.h
   tintegerspindelegate.hui
   tmenubutton.hui
-  tprocess.hui
   ttablewidget.hui
   ttabwidget.hui
   ttreewidget.hui
@@ -265,7 +264,6 @@ set(gui_SRCS
   texponentialspin_funcs.cpp
   tintegerspindelegate_funcs.cpp
   ttabwidget_funcs.cpp
-  tprocess_funcs.cpp
   textratreewidgetitem_funcs.cpp
   vibrations_funcs.cpp
   viewbasis_funcs.cpp

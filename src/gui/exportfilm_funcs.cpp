@@ -59,6 +59,7 @@ bool AtenExportFilm::getFilmDetails()
 		ui.FilmHeightSpin->setValue(ui.MaintainAspectRatioCheck->checkState() == Qt::Checked ? ui.FilmHeightSpin->value() / aspectRatio_ : ui.FilmHeightSpin->value());
 		// Output
 		ui.ImageBasenameEdit->setText(atenWindow_.aten().workDir().absoluteFilePath("image"));
+		ui.OutputFilenameEdit->setText(atenWindow_.aten().workDir().absoluteFilePath("movie"));
 		// Populate encoder combo
 		for (EncoderDefinition* encoder = atenWindow_.aten().encoders(); encoder != NULL; encoder = encoder->next) ui.EncodersCombo->addItem(encoder->name(), VariantPointer<EncoderDefinition>(encoder));
 		ui.EncodersCombo->addItem(customEncoder_.name(), VariantPointer<EncoderDefinition>(&customEncoder_));
@@ -191,15 +192,22 @@ void AtenExportFilm::on_RotateViewXCheck_clicked(bool checked)
 	ui.RotateViewXDeltaSpin->setEnabled(checked);
 	ui.RotateViewXWholeRadio->setEnabled(checked);
 	ui.RotateViewXWholeSpin->setEnabled(checked);
-
 }
 
 void AtenExportFilm::on_RotateViewYCheck_clicked(bool checked)
 {
+	ui.RotateViewYDeltaRadio->setEnabled(checked);
+	ui.RotateViewYDeltaSpin->setEnabled(checked);
+	ui.RotateViewYWholeRadio->setEnabled(checked);
+	ui.RotateViewYWholeSpin->setEnabled(checked);
 }
 
 void AtenExportFilm::on_RotateViewZCheck_clicked(bool checked)
 {
+	ui.RotateViewZDeltaRadio->setEnabled(checked);
+	ui.RotateViewZDeltaSpin->setEnabled(checked);
+	ui.RotateViewZWholeRadio->setEnabled(checked);
+	ui.RotateViewZWholeSpin->setEnabled(checked);
 }
 
 // Return if source is view manipulaton only
@@ -281,6 +289,8 @@ void AtenExportFilm::setOutputControlsEnabled()
 	ui.ImagesSelectBasenameButton->setEnabled(ui.OutputImagesOnlyRadio->isChecked());
 
 	// Film Output
+	ui.OutputFilenameEdit->setEnabled(ui.OutputFilmRadio->isChecked());
+	ui.OutputSelectFilenameButton->setEnabled(ui.OutputFilmRadio->isChecked());
 	ui.EncodersCombo->setEnabled(ui.OutputFilmRadio->isChecked());
 	ui.EncoderStepCombo->setEnabled(ui.OutputFilmRadio->isChecked());
 	ui.CommandArgumentsEdit->setEnabled(ui.OutputFilmRadio->isChecked());

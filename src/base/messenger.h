@@ -23,8 +23,9 @@
 #define ATEN_MESSENGER_H
 
 #include "base/namespace.h"
+#include "base/task.hui"
 #include "base/message.h"
-#include "templates/list.h"
+#include "templates/reflist.h"
 #include <QDateTime>
 #include <QProcess>
 
@@ -33,67 +34,9 @@ class AtenProgress;
 
 ATEN_BEGIN_NAMESPACE
 
-// Task
-class Task : public ListItem<Task>, public QProcess
-{
-	Q_OBJECT
-
-	public:
-	// Constructor
-	Task();
-
-
-	/*
-	 * Data
-	 */
-	private:
-	// Title of task
-	QString title_;
-	// Number of steps in task
-	int nSteps_;
-	// Current step in task
-	int currentStep_;
-	// Percentage completion
-	double completion_;
-	// Timestamp of task creation
-	QDateTime startTime_;
-	// Timestamp of last completed step
-	QDateTime lastStepTime_;
-	// Flag indicating task has been canceled
-	bool canceled_;
-
-	public:
-	// Initialise task
-	void initialise(QString title, int nSteps);
-	// Return title
-	QString title();
-	// Return total number of steps in task
-	int nSteps();
-	// Return current step in task
-	int currentStep();
-	// Return percentage completion
-	double completion();
-	// Return estimated time until completion of task (as string)
-	QString etaText();
-	// Update task, returning if canceled by the user
-	bool update(int newCurrentStep);
-	// Increment task progress, returning if canceled by the user
-	bool increment(int deltaSteps = 1);
-	// Return timestamp of task creation
-	QDateTime startTime();
-	// Return timestamp of last completed step
-	QDateTime lastStepTime();
-	// Cancel task (set flag)
-	void cancel();
-	// Return if task has been canceled
-	bool canceled();
-};
-
 // Global messaging and program output levels
 class Messenger
 {
-	Q_OBJECT
-
 	public:
 	// Constructor
 	Messenger();
@@ -188,7 +131,7 @@ class Messenger
 	// Pointer to custom progress dialog in GUI (if available)
 	static AtenProgress* atenProgress_;
 	// Stack of current tasks
-	static List<Task> tasks_;
+	static RefList<Task,int> tasks_;
 	// Point at which task list was updated (new task added, old task completed, or list cleared)
 	static int taskPoint_;
 	// Current CLI progress text
@@ -207,10 +150,12 @@ class Messenger
 	static void setAtenProgress(AtenProgress* atenProgress);
 	// Push new task onto stack
 	static Task* initialiseTask(QString title, int totalSteps);
+	// Push new command task onto stack
+	static Task* initialiseCommandTask(QString title, QString command, QString args, QString outputFile = QString());
 	// Return number of current tasks
 	static int nTasks();
 	// Return list of current tasks
-	static Task* tasks();
+	static RefListItem<Task,int>* tasks();
 	// Flag all tasks as being canceled
 	static void cancelAllTasks();
 	// Return task log point
