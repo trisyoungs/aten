@@ -192,6 +192,8 @@ void AtenWindow::on_ForcefieldsExpressionDescribeButton_clicked(bool checked)
 	if (!currentModel) return;
 
 	currentModel->createExpression(Choice::Default, Choice::Default, ui.ForcefieldsExpressionChargesButton->isChecked() ? Choice::Yes : Choice::No, aten_.currentForcefield(), aten_.combinationRules());
+
+	updateWidgets(AtenWindow::MainViewTarget);
 }
 
 void AtenWindow::on_ForcefieldsExpressionExportButton_clicked(bool checked)
@@ -267,6 +269,8 @@ void AtenWindow::on_ForcefieldsExpressionExportButton_clicked(bool checked)
 			m->enableUndoRedo();
 		}
 	}
+
+	updateWidgets(AtenWindow::MainViewTarget);
 }
 
 void AtenWindow::on_ForcefieldsExpressionClearButton_clicked(bool checked)

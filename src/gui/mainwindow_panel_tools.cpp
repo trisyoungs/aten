@@ -113,6 +113,8 @@ void AtenWindow::on_ToolsScriptsLoadButton_clicked(bool checked)
 		// Store path for next use
 		currentDirectory_.setPath(filename);
 	}
+
+	updateWidgets(AtenWindow::MainViewTarget);
 }
 
 void AtenWindow::on_ToolsScriptsRemoveButton_clicked(bool checked)
@@ -126,7 +128,7 @@ void AtenWindow::on_ToolsScriptsRemoveButton_clicked(bool checked)
 
 	aten_.removeScript(script);
 
-	updateWidgets(AtenWindow::ToolsPanelTarget);
+	updateWidgets(AtenWindow::MainViewTarget + AtenWindow::ToolsPanelTarget);
 }
 
 void AtenWindow::on_ToolsScriptsReloadButton_clicked(bool checked)
@@ -140,7 +142,7 @@ void AtenWindow::on_ToolsScriptsReloadButton_clicked(bool checked)
 
 	script->reload();
 
-	updateWidgets(AtenWindow::ToolsPanelTarget);
+	updateWidgets(AtenWindow::MainViewTarget + AtenWindow::ToolsPanelTarget);
 }
 
 void AtenWindow::on_ToolsScriptsRunButton_clicked(bool checked)
@@ -155,6 +157,8 @@ void AtenWindow::on_ToolsScriptsRunButton_clicked(bool checked)
 	// Run it
 	ReturnValue rv;
 	if (!script->execute(rv)) Messenger::print("Script execution failed.");
+
+	updateWidgets(AtenWindow::AllTarget);
 }
 
 /*
