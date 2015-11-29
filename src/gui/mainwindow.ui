@@ -423,7 +423,7 @@
              </font>
             </property>
             <property name="toolTip">
-             <string>Close the current model</string>
+             <string>Export an image of the current view</string>
             </property>
             <property name="text">
              <string>Export Image</string>
@@ -488,7 +488,7 @@
              </font>
             </property>
             <property name="toolTip">
-             <string>Close the current model</string>
+             <string>Extra settings and preferences</string>
             </property>
             <property name="text">
              <string>Aten</string>
@@ -556,7 +556,7 @@
              </font>
             </property>
             <property name="toolTip">
-             <string>Close the current model</string>
+             <string>Export a film or sequence of images</string>
             </property>
             <property name="text">
              <string>Export Film</string>
@@ -683,7 +683,7 @@
              </font>
             </property>
             <property name="toolTip">
-             <string>Create a new, empty model</string>
+             <string>Cut the current atom selection</string>
             </property>
             <property name="text">
              <string/>
@@ -741,7 +741,7 @@
              </font>
             </property>
             <property name="toolTip">
-             <string>Create a new, empty model</string>
+             <string>Paste the last copied/cut atom selection into the current model</string>
             </property>
             <property name="text">
              <string/>
@@ -799,7 +799,7 @@
              </font>
             </property>
             <property name="toolTip">
-             <string>Create a new, empty model</string>
+             <string>Delete the current atom selection</string>
             </property>
             <property name="text">
              <string/>
@@ -857,7 +857,7 @@
              </font>
             </property>
             <property name="toolTip">
-             <string>Undo</string>
+             <string>Undo the last action</string>
             </property>
             <property name="text">
              <string>Undo</string>
@@ -915,7 +915,7 @@
              </font>
             </property>
             <property name="toolTip">
-             <string>Redo</string>
+             <string>Redo the last undone action</string>
             </property>
             <property name="text">
              <string>Redo</string>

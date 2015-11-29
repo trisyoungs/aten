@@ -258,8 +258,6 @@ bool AtenWindow::exportFilm()
 			}
 			Messenger::terminateTask(commandTask);
 
-		
-
 			// Check for cancellation in main encoding task
 			if (!Messenger::incrementTaskProgress(encoderTask))
 			{
@@ -271,24 +269,3 @@ bool AtenWindow::exportFilm()
 
 	return true;
 }
-
-// 
-// 	// Now run external program to create movie
-// 	TProcess encoderProcess;
-// 
-// 	// Grab encoder command and replace
-// 	Messenger::print("Command to run will be '%s %s'", qPrintable(prefs.encoderExe()), qPrintable(encoderArgs));
-// 	if (!encoderProcess.execute(prefs.encoderExe(), qPrintable(encoderArgs), NULL))
-// 	{
-// 		Messenger::print("Error: Failed to run encoder command.");
-// 		return;
-// 	}
-// 
-// 	// Follow output here...
-// 	while (!encoderProcess.finished())
-// 	{
-// 		// Is output file already present?
-// 		while (encoderProcess.outputAvailable()) encoderProcess.printLineToMessages();
-// 		QCoreApplication::processEvents(QEventLoop::AllEvents, 50);
-// 	}
-// 
