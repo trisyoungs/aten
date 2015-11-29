@@ -132,7 +132,7 @@ double Task::completion()
 }
 
 // Update stepped task, returning if canceled by the user
-bool Task::update(int newCurrentStep)
+void Task::update(int newCurrentStep)
 {
 	currentStep_ = newCurrentStep;
 	completion_ = 100.0 * currentStep_ / nSteps_;
@@ -140,7 +140,7 @@ bool Task::update(int newCurrentStep)
 }
 
 // Increment stepped task progress, returning if canceled by the user
-bool Task::increment(int deltaSteps)
+void Task::increment(int deltaSteps)
 {
 	update(currentStep_ + deltaSteps);
 }

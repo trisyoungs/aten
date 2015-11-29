@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>545</width>
-    <height>754</height>
+    <width>541</width>
+    <height>710</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -775,7 +775,7 @@
           </font>
          </property>
          <property name="text">
-          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The following substrings in the arguments will be replaced:&lt;/p&gt;&lt;p&gt;OUTPUTFILE  -  Will be substituted for the output name of the film&lt;/p&gt;&lt;p&gt;FRAMESFILE  -  Will be substituted with the name of a file containing a list of image files in the order they should be added to the film&lt;/p&gt;&lt;p&gt;FRAMESPERSECOND - Will be replaced with the integer frames per second&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;The following substrings in the arguments will be replaced:&lt;/p&gt;&lt;p&gt;OUTPUTFILE, FRAMESFILE, FRAMEBASENAME, FRAMESPERSECOND, FRAMEFORMAT, FRAMESIZE, FRAMEWIDTH, FRAMEHEIGHT&lt;/p&gt;&lt;p&gt;See the manual for a full description of each.&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
          </property>
          <property name="wordWrap">
           <bool>true</bool>

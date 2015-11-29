@@ -113,7 +113,7 @@ target_include_directories(${target_name} PRIVATE
 # Perform final link
 set(ATEN_LINK_LIBS Qt5::Widgets Qt5::Core ${FTGL_LIBRARIES} ${OPENGL_LIBRARIES} ${FREETYPE_LIBRARIES} ${READLINE_LIBRARIES})
 target_link_libraries( ${target_name}
-    gui parser treegui command methods render model math main fourierdata ff base sg
+    messenger gui parser treegui command methods render model math main fourierdata ff base sg
     ${ATEN_LINK_LIBS}
     )
 
@@ -125,7 +125,7 @@ if(UNIX AND NOT APPLE)
         DESTINATION share/aten)
   install(FILES ${PROJECT_BINARY_DIR}/Aten.desktop
         DESTINATION share/applications)
-  foreach(i ff filters fftesting fragments partitions scripts test includes)
+  foreach(i ff filters fftesting fragments partitions scripts test includes external)
     install(DIRECTORY ${PROJECT_SOURCE_DIR}/data/${i}
           DESTINATION share/aten)
   endforeach(i)

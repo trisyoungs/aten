@@ -135,7 +135,7 @@ bool AtenWindow::exportFilm()
 			if (!rotateAxis[n]) continue;
 
 			// Calculate rotation deltas if using whole numbers of rotations
-			if (!rotateWhole[n]) rotationDelta[n] = (rotationWhole[n]*360.0) / nFrames;
+			if (rotateWhole[n]) rotationDelta[n] = (rotationWhole[n]*360.0) / nFrames;
 
 			if (n == 0) scriptStrings << QString("rotateView(%1, 0.0);").arg(rotationDelta[n]);
 			else if (n == 1) scriptStrings << QString("rotateView(0.0, %1);").arg(rotationDelta[n]);
@@ -236,7 +236,12 @@ bool AtenWindow::exportFilm()
 			QString arguments = command->arguments();
 			arguments.replace("FRAMESPERSECOND", QString::number(fps));
 			arguments.replace("FRAMESFILE", framesFile);
+			arguments.replace("FRAMEBASENAME", imageBasename);
 			arguments.replace("OUTPUTFILE", outputFile);
+			arguments.replace("FRAMEFORMAT", imageExtension);
+			arguments.replace("FRAMEWIDTH", QString::number(imageWidth));
+			arguments.replace("FRAMEHEIGHT", QString::number(imageHeight));
+			arguments.replace("FRAMESIZE", QString("%1x%2").arg(imageWidth).arg(imageHeight));
 
 			// Print intended comand to execute
 			Messenger::print(QString("Command to execute is: %1 %2").arg(executable, arguments));

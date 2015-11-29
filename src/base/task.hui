@@ -96,9 +96,9 @@ class Task : public QProcess
 	// Return percentage completion
 	double completion();
 	// Update task, returning if canceled by the user
-	bool update(int newCurrentStep);
+	void update(int newCurrentStep);
 	// Increment task progress, returning if canceled by the user
-	bool increment(int deltaSteps = 1);
+	void increment(int deltaSteps = 1);
 
 
 	/*
