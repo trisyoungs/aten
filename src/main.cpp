@@ -38,6 +38,9 @@ int main(int argc, char* argv[])
 	QCoreApplication::setOrganizationDomain("www.projectaten.net");
 	QCoreApplication::setApplicationName("Aten");
 
+	/* Set native siblings attribute to prevent odd rendering artefacts on some systems */
+	QCoreApplication::setAttribute(Qt::AA_DontCreateNativeWidgetSiblings);
+
 	/* Tweak the default QSurfaceFormat */
 	QSurfaceFormat surfaceFormat;
 	surfaceFormat.setSamples(2);
