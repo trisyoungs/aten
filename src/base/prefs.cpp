@@ -177,7 +177,7 @@ Prefs::Prefs()
 	// Rendering - Style
 	renderStyle_ = Prefs::SphereStyle;
 	colourScheme_ = Prefs::ElementScheme;
-	atomStyleRadius_[Prefs::LineStyle] = 0.1;	// Only used as a selection radius
+	atomStyleRadius_[Prefs::LineStyle] = 0.15;	// Only used as a selection radius
 	atomStyleRadius_[Prefs::TubeStyle] = 0.15;
 	atomStyleRadius_[Prefs::SphereStyle] = 0.35;
 	atomStyleRadius_[Prefs::ScaledStyle] = 1.0;	// Used as a general scaling factor for all atoms

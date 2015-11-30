@@ -799,22 +799,6 @@ class Prefs
 	void setMopacExe(QString exe);
 	// Return the location of the MOPAC executable
 	QString mopacExe() const;
-	// Video encoder command
-	void setEncoderExe(QString exe);
-	// Return the video encoder command
-	QString encoderExe() const;
-	// Video encoder arguments
-	void setEncoderArguments(QString arguments);
-	// Return the video encoder arguments
-	QString encoderArguments() const;
-	// Video encoder post-process command
-	void setEncoderPostExe(QString exe);
-	// Return the video encoder post-process command
-	QString encoderPostExe() const;
-	// Video encoder post-process arguments
-	void setEncoderPostArguments(QString arguments);
-	// Return the video encoder post-process arguments
-	QString encoderPostArguments() const;
 };
 
 extern Prefs prefs;

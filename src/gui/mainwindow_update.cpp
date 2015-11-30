@@ -105,9 +105,6 @@ void AtenWindow::initialUpdateAndShow()
 		QMessageBox::warning(NULL, "Aten", text, QMessageBox::Ok, QMessageBox::Ok);
 	}
 
-	// Set the progress dialog pointer in Messenger
-	Messenger::setAtenProgress(&progressDialog_);
-
 	// Show the window
 	show();
 
@@ -118,6 +115,9 @@ void AtenWindow::initialUpdateAndShow()
 
 	// Update everything else
 	updateWidgets(AtenWindow::AllTarget);
+
+	// Finally, set the progress dialog pointer in Messenger
+	Messenger::setAtenProgress(&progressDialog_);
 
 	Messenger::exit("AtenWindow::initialUpdateAndShow");
 }

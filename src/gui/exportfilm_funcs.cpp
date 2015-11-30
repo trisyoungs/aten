@@ -73,6 +73,12 @@ bool AtenExportFilm::getFilmDetails()
 	Model* currentModel = atenWindow_.aten().currentModel();
 	if (!currentModel) return false;
 	ui.SourceTrajectoryRadio->setEnabled(currentModel->hasTrajectory());
+	if (currentModel->hasTrajectory())
+	{
+		ui.TrajectoryFirstFrameSpin->setRange(1, currentModel->nTrajectoryFrames());
+		ui.TrajectoryLastFrameSpin->setRange(1, currentModel->nTrajectoryFrames());
+		ui.TrajectoryLastFrameSpin->setValue(currentModel->nTrajectoryFrames());
+	}
 
 	setOutputControlsEnabled();
 	setSourceControlsEnabled();

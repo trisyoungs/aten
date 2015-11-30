@@ -16,10 +16,7 @@ Intelligent Select - add support for selection by type name (e.g. O*, OW etc.).
 Add set members to Matrix class allowing axes to be set from atoms in models.
 Printf command buffered output is never printed if no newline ever occurs.  Need to store data somewhere other than the Printf function itself, and flush it at the end of command execution.
 Selecting a long-press option on an already-selected TMenuButton wrongly un-checks the button (but does not exit the mode).
-Pressing escape when on Home panel reverts to Stick view style.
-Clicking to select atoms drawn in stick style is impossible - check selection criteria.
 Clicking to select atoms without perspective view is broken?
-Trajectory playback when not cached is broken (model does not change).
 
 Graphics TODO
 =============
@@ -95,3 +92,4 @@ TestSelect command.
 Added MovePen, ResetPen, RotatePenX|Y|Z commands to Model variable.
 Add Transform-related commands to Model variable.
 SelectCode and DeSelectCode code 'style' has changed.
+Keyboard shortcuts: F6 now cycles rendering styles, Ctrl-F6 colouring styles (with F1-5 and Ctrl-F1-5 selecting individual styles), F10 shows quick command bar.

@@ -61,6 +61,7 @@
 #include "gui/popupgridmatrix.h"
 #include "gui/popupgridorigin.h"
 #include "gui/popupgridset.h"
+#include "gui/popupgridshift.h"
 #include "gui/popupgridstyle.h"
 #include "gui/popupmeasureangle.h"
 #include "gui/popupmeasuredistance.h"
@@ -263,6 +264,8 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportFilmD
 	ui.GridsSecondarySetButton->setPopupWidget(new GridSetPopup(*this, ui.GridsSecondarySetButton, false), true);
 	ui.GridsSecondaryColourButton->setPopupWidget(new ColourPopup(*this, ui.GridsSecondaryColourButton), true);
 	ui.GridsSecondaryStyleButton->setPopupWidget(new GridStylePopup(*this, ui.GridsSecondaryStyleButton, false), true);
+	// -- Gris Panel (Transform)
+	ui.GridsTransformTranslateButton->setPopupWidget(new GridShiftPopup(*this, ui.GridsTransformTranslateButton), true);
 
 	// -- Select Panel (Intelligent)
 	ui.SelectIntelligentElementButton->setPopupWidget(new ElementTablePopup(*this, ui.SelectIntelligentElementButton), true);
@@ -334,6 +337,8 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportFilmD
 	// Home Panel (View)
 	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_R), this, 0, 0, Qt::ApplicationShortcut);
 	connect(shortcut, SIGNAL(activated()), ui.HomeViewResetButton, SLOT(click()));
+	shortcut = new QShortcut(QKeySequence(Qt::Key_F8), this, 0, 0, Qt::ApplicationShortcut);
+	connect(shortcut, SIGNAL(activated()), ui.HomeViewHBondsButton, SLOT(click()));
 	// Cell Panel (Fold)
 	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_F), this, 0, 0, Qt::ApplicationShortcut);
 	connect(shortcut, SIGNAL(activated()), ui.CellFoldAtomsButton, SLOT(click()));

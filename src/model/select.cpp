@@ -483,11 +483,13 @@ Atom* Model::atomOnScreen(double x1, double y1)
 	for (Atom* i = atoms_.first(); i != NULL; i = i->next)
 	{
 		if (i->isHidden()) continue;
+
+		// Get draw style for atom - if stick, 
 		wr = -modelToWorld(i->r(), &sr, prefs.styleRadius(i->style(), i->element()));
 		if (wr.z > nclip)
 		{
 			dist = sqrt((sr.x - x1)*(sr.x - x1) + (sr.y - y1)*(sr.y - y1));
-			if (dist < sr.w)	// Mouse is inside bounding sphere
+			if (dist < sr.w)	// Mouse is inside bounding circle
 			{
 				if ((closest == NULL) || (wr.z < closestz))
 				{

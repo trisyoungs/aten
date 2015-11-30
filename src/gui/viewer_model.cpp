@@ -39,13 +39,15 @@ void Viewer::renderModel(Model* source, int viewPortX, int viewPortY, int viewPo
 	Messenger::print(Messenger::Verbose, " --> RENDERING BEGIN : source model pointer = %p, renderpoint = %d", source, source->log(Log::Total));
 
 	// Set the source Model pointer to be the current trajectory frame if relevant
-	if (source->hasTrajectory() && (source->renderSource() == Model::TrajectorySource))
+	if (source->renderSource() == Model::TrajectorySource)
 	{
-		source = source->trajectoryCurrentFrame();
+		if (source->hasTrajectory()) source = source->trajectoryCurrentFrame();
+		else Messenger::error("Internal Error: Requested trajectory rendering, but no trajectory associated to current model.");
 	}
-
-	// Set the source Model pointer to be the current vibration frame if relevant
-	// ATEN2 TODO
+// 	else if (source->renderSource() == Model::VibrationSource)
+// 	{
+		// ATEN2 TODO
+// 	}
 
 	// Setup view for model, in the supplied viewport
 	source->setupView(viewPortX, viewPortY, viewPortWidth, viewPortHeight);

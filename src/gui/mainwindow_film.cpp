@@ -103,8 +103,8 @@ bool AtenWindow::exportFilm()
 	}
 	else if (exportFilmDialog_.trajectorySource())
 	{
-		// Double-check that current model has a trajectory
-		if (!model->hasTrajectory())
+		// Double-check that current model has a trajectory, or this is a trajectory frame
+		if ((!model->hasTrajectory()) && (model->type() != Model::TrajectoryFrameType))
 		{
 			Messenger::error("Trajectory film requested, but none associated to current model.");
 			return false;
@@ -252,13 +252,18 @@ bool AtenWindow::exportFilm()
 			{
 				if (!Messenger::incrementTaskProgress(commandTask))
 				{
+					Messenger::error("Encoder task '%s' exited early. See messages for details.", qPrintable(command->name()));
 					cleanupFilmExport(frameImages, framesFile);
+					Messenger::terminateTask(encoderTask);
 					return false;
 				}
 			}
 			if (commandTask->commandFailed())
 			{
+				Messenger::error("Encoder task '%s' failed. See messages for details.", qPrintable(command->name()));
 				cleanupFilmExport(frameImages, framesFile);
+				Messenger::terminateTask(commandTask);
+				Messenger::terminateTask(encoderTask);
 				return false;
 			}
 			Messenger::terminateTask(commandTask);
@@ -266,11 +271,85 @@ bool AtenWindow::exportFilm()
 			// Check for cancellation in main encoding task
 			if (!Messenger::incrementTaskProgress(encoderTask))
 			{
+				Messenger::error("Encoding canceled.");
 				cleanupFilmExport(frameImages, framesFile);
 				return false;
 			}
 		}
+		Messenger::terminateTask(encoderTask);
 	}
 
 	return true;
 }
+
+// 	// Check that the specified vibration exists
+// 	Vibration* vib = obj.rs()->vibration(vibrationId);
+// 	if (!vib)
+// 	{
+// 		Messenger::print("Specified vibration (id %i) does not exist in current model.", vibrationId);
+// 		return false;
+// 	}
+// 	
+// 	// Check initial movie 'setup'
+// 	int runid = movieSetup(true, height);
+// 	if (runid == -1) return false;
+// 
+// 	// Generate vibration frams info
+// 	obj.rs()->generateVibration(vibrationId, framesPerVibration);
+// 	obj.rs()->setVibrationFrameIndex(0);
+// 	obj.rs()->setRenderFromVibration(true);
+// 
+// 	QPixmap pixmap;
+// 	QImage image;
+// 
+// 	int progid = progress.initialise("Saving vibration movie frames...", framesPerVibration);
+// 	bool canceled = false;
+// 	QString basename;
+// 	for (int n = 0; n < framesPerVibration; ++n)
+// 	{
+// 		obj.rs()->setVibrationFrameIndex(n);
+// 		
+// 		basename = prefs.tempDir().filePath("aten-movie-%1-%2-%3.png").arg(QApplication::applicationPid(), runid).arg(n, 9, 10, QChar('0'));
+// // 		parent_.updateWidgets(AtenWindow::MainViewTarget);
+// 
+// 		pixmap = aten_.atenWindow()->scenePixmap(width, height);
+// 		pixmap.save(basename, "png", -1);
+// 		
+// 		if (!progress.update(progid,n))
+// 		{
+// 			canceled = true;
+// 			Messenger::print("Canceled.");
+// 			break;
+// 		}
+// 	}
+// 	progress.terminate(progid);
+// 	obj.rs()->setRenderFromVibration(fromVib);
+// 
+// 	// Construct list of ping-pong'ed frame images
+// 	QStringList files;
+// 	int n;
+// 	for (int cycle = 0; cycle < nCycles; ++cycle)
+// 	{
+// 		// First half...
+// 		for (n=0; n<framesPerVibration; ++n)
+// 		{
+// 			basename = prefs.tempDir().filePath("aten-movie-%1-%2-%3.png").arg(QApplication::applicationPid(), runid).arg(n, 9, 10, QChar('0'));
+// 			files << basename;
+// 		}
+// 		// Second half...
+// 		for (n=framesPerVibration-1; n>0; --n)
+// 		{
+// 			basename = prefs.tempDir().filePath("aten-movie-%1-%2-%3.png").arg(QApplication::applicationPid(), runid).arg(n, 9, 10, QChar('0'));
+// 			files << basename;
+// 		}
+// 	}
+// 
+// 	// Reset after movie frame creation
+// 	movieSetup(false, -1);
+// 
+// 	// Perform post-processing of movie frames
+// 	if (!moviePostProcess(files, runid, c->argc(0), fps)) return false;
+// 
+// 	if (canceled) return false;
+// 	
+// 	return true;

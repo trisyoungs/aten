@@ -173,6 +173,7 @@ void Model::clear()
 	expressionPoint_ = -1;
 	zMatrixPoint_ = -1;
 	iconPoint_ = -1;
+	renderGroupPoint_ = -1;
 	icon_ = QIcon();
 }
 
