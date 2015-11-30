@@ -490,10 +490,8 @@ void Messenger::terminateTask(Task* task)
 	// Still tasks remaining?
 	if (tasks_.nItems() == 0)
 	{
-		printf("POOP1\n");
 		if (atenProgress_) atenProgress_->terminate();
 		else if (printToConsole_) printf("\n");
-		printf("POOP2\n");
 	}
 	else
 	{

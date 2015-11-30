@@ -26,7 +26,6 @@
 // Cleanup film export files
 void AtenWindow::cleanupFilmExport(QStringList images, QString imagesFile)
 {
-	return;
 	// Remove all files specified in the images list
 	for (int n=0; n<images.count(); ++n)
 	{
