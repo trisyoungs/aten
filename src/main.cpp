@@ -115,9 +115,6 @@ int main(int argc, char* argv[])
 			/* Show the main window */
 			mainWindow.initialUpdateAndShow();
 
-			/* Tell Messenger to stop printing to stdout */
-			Messenger::setPrintToConsole(false);
-
 			/* Enter Qt's main events loop */
 			result =  app.exec();
 			break;
@@ -136,9 +133,6 @@ int main(int argc, char* argv[])
 
 			/* Show the main window */
 			mainWindow.initialUpdateAndShow();
-
-			// Tell Messenger to stop printing to stdout
-			Messenger::setPrintToConsole(false);
 
 			/* Enter Qt's main events loop */
 			result =  app.exec();

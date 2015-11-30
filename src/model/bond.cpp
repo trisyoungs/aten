@@ -427,17 +427,32 @@ void Model::calculateBonding(bool augment)
 {
 	Messenger::enter("Model::calculateBonding");
 	Messenger::print(Messenger::Verbose, "Calculating bonds in model (tolerance = %5.2f)...", prefs.bondTolerance());
+	Task* task = Messenger::initialiseTask("Calculating bonding", 6);
+
 	clearBonding();
+	Messenger::incrementTaskProgress(task);
+
 	// Create cuboid lists
 	initialiseBondingCuboids();
+	Messenger::incrementTaskProgress(task);
+
 	// Add all atoms to cuboid list
 	for (Atom* i = atoms_.first(); i != NULL; i = i->next) addAtomToCuboid(i);
+	Messenger::incrementTaskProgress(task);
+
 	// Rebond within the cuboids
 	rebond();
+	Messenger::incrementTaskProgress(task);
+
 	// Free bonding cuboids
 	freeBondingCuboids();
+	Messenger::incrementTaskProgress(task);
+
 	// Augment?
 	if (augment) augmentBonding();
+	Messenger::incrementTaskProgress(task);
+
+	Messenger::terminateTask(task);
 	Messenger::print(Messenger::Verbose, "Done.");
 	Messenger::exit("Model::calculateBonding");
 }

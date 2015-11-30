@@ -1366,6 +1366,7 @@ void Pattern::augment()
 	int n, nHeavy, totalpenalty, ringpenalty, newpenalty, m, o, p;
 
 	Messenger::print("Augmenting bonds in pattern %s...",qPrintable(name_));
+
 	/*
 	Assume the structure is chemically 'correct' - i.e. each atom is bound to a likely number of other atoms.
 	If hydrogens are missing then the results will be unpredictable.

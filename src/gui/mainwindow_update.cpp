@@ -116,8 +116,9 @@ void AtenWindow::initialUpdateAndShow()
 	// Update everything else
 	updateWidgets(AtenWindow::AllTarget);
 
-	// Finally, set the progress dialog pointer in Messenger
+	// Finally, set the progress dialog pointer in Messenger, and tell it to stop printing to stdout
 	Messenger::setAtenProgress(&progressDialog_);
+	Messenger::setPrintToConsole(false);
 
 	Messenger::exit("AtenWindow::initialUpdateAndShow");
 }

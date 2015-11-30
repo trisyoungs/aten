@@ -356,7 +356,7 @@ void Messenger::showCLIProgress()
 	QString messageText = messageBuffer_.count() > 0 ? messageBuffer_.first().text() : "???";
 
 	// Create CLI progress text prefix string
-	cliProgressText_ = QString("\r(%1 %2%) [%3] ").arg(task->etaText()).arg(int(task->completion()),3,10).arg(tasks_.nItems());
+	cliProgressText_ = QString("\r(%1 %2%) [%3] ").arg(task->etaText()).arg(int(task->completion()),3,10).arg(task->title()); //arg(tasks_.nItems());
 
 	// Overwrite last message with abbreviated progress information if the current message is the same as the last time we updated
 	if (messageBufferPoint_ == backPrintedMessagePoint_) QTextStream(stdout) << cliProgressText_ << messageText;
@@ -492,6 +492,8 @@ void Messenger::terminateTask(Task* task)
 	{
 		if (atenProgress_) atenProgress_->terminate();
 		else if (printToConsole_) printf("\n");
+		cliProgressText_.clear();
+		backPrintedMessagePoint_ = -1;
 	}
 	else
 	{

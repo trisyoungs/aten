@@ -5,7 +5,7 @@ SUFFIXES: .dt
 .dt.desktop:
 	sed -e "s:PREFIX:@INSTALLDIR@:" -e "s:VERSION:@VERSION@:" $< > $@
 
-EXTRA_DIST = src/gui/icons/*.* src/gui/OpenSans-*
+EXTRA_DIST = src/gui/icons/*.* src/gui/freefont/*
 EXTRA_DIST += data/ff/* data/fftesting/* data/filters/* data/fragments/*/* data/includes/* data/partitions/* data/test/* data/scripts/*
 EXTRA_DIST += TODO TODO2
 EXTRA_DIST += CMakeLists.txt cmake/* src/CMakeLists.txt src/*/CMakeLists.txt
