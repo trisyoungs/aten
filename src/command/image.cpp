@@ -22,7 +22,6 @@
 #include "command/commands.h"
 #include "parser/commandnode.h"
 #include "gui/mainwindow.h"
-#include "gui/tprocess.hui"
 #include "model/model.h"
 #include "base/prefs.h"
 #include "base/sysfunc.h"
@@ -31,129 +30,6 @@
 #include "main/aten.h"
 
 ATEN_USING_NAMESPACE
-
-// Pre-setup
-// int movieSetup(bool pre, int height)
-// {
-// 	static bool viewglobe;
-// 	if (pre)
-// 	{
-// 		// Check that defined encoder exe exists
-// 		QFileInfo fileInfo(prefs.encoderExe());
-// 		if (!fileInfo.exists())
-// 		{
-// 			Messenger::print("Error: Encoder excutable doesn't appear to exist ('%s').", qPrintable(prefs.encoderExe()));
-// 			return false;
-// 		}
-// 		else Messenger::print(Messenger::Verbose, "Found encoder executable ('%s').", qPrintable(prefs.encoderExe()));
-// 
-// 		// Save some current view preferences
-// 		viewglobe = prefs.viewRotationGlobe();
-// 		prefs.setViewRotationGlobe(false);
-// 		
-// 		// Generate unique file basename
-// 		int runid;
-// 		QString basename;
-// 		do
-// 		{
-// 			runid = AtenMath::randomimax();
-// 			basename = prefs.tempDir().filePath("aten-movie-%1-%2-%3.png").arg(QApplication::applicationPid(), runid).arg(0, 9, 10, QChar('0'));
-// 			fileInfo.setFile(basename);
-// 		} while (fileInfo.exists());
-// 		Messenger::print("First temporary basename for movie images is '%s'.", qPrintable(basename));
-// 
-// 		return runid;
-// 	}
-// 	else
-// 	{
-// 		prefs.setViewRotationGlobe(viewglobe);
-// 	}
-// 
-// 	return -1;
-// }
-// 
-// // Perform post-processing on saved movie frames
-// bool moviePostProcess(QStringList files, int runid, QString movieFilename, int fps)
-// {
-// 	// Create filelist on disk
-// 	QString framesFile = prefs.tempDir().filePath("aten-movie-%1-%2-files.txt").arg(QApplication::applicationPid(), runid);
-// 	LineParser parser;
-// 	parser.openOutput(framesFile, true);
-// 	if (parser.isFileGoodForWriting())
-// 	{
-// 		foreach (QString str, files) parser.writeLineF("%s", qPrintable(str));
-// 		parser.closeFiles();
-// 	}
-// 	else
-// 	{
-// 		Messenger::print("Error: Couldn't create framelist file '%s'.", qPrintable(framesFile));
-// 		return false;
-// 	}
-// 
-// 	// Now run external program to create movie
-// 	TProcess encoderProcess;
-// 	
-// 	// Grab encoder command and replace control strings
-// 	QString encoderArgs = prefs.encoderArguments();
-// 	QString quotedMovieFilename = '"' + movieFilename + '"';
-// 	QString atFramesFile = "@\"" + framesFile + "\"";
-// 	encoderArgs.replace("OUTPUT", quotedMovieFilename);
-// 	encoderArgs.replace("FILES", atFramesFile);
-// 	encoderArgs.replace("FPS", QString::number(fps));
-// 	Messenger::print("Command to run will be '%s %s'", qPrintable(prefs.encoderExe()), qPrintable(encoderArgs));
-// 	if (!encoderProcess.execute(prefs.encoderExe(),qPrintable(encoderArgs),NULL))
-// 	{
-// 		Messenger::print("Error: Failed to run encoder command.");
-// 		return false;
-// 	}
-// 
-// 	// Follow output here...
-// 	while (!encoderProcess.finished())
-// 	{
-// 		// Is output file already present?
-// 		while (encoderProcess.outputAvailable()) encoderProcess.printLineToMessages();
-// 		QApplication::processEvents();
-// 	}
-// 
-// 	// Run secondary, post-process command (if one was given)
-// 	if (prefs.encoderPostExe() != NULL)
-// 	{
-// 		TProcess postProcess;
-// 		// Grab encoder command and replace
-// 		encoderArgs = prefs.encoderPostArguments();
-// 		encoderArgs.replace("OUTPUT", quotedMovieFilename);
-// 		encoderArgs.replace("FILES", atFramesFile);
-// 		encoderArgs.replace("FPS", QString::number(fps));
-// 
-// 		Messenger::print("Post-process command to run will be '%s %s'", qPrintable(prefs.encoderPostExe()), qPrintable(encoderArgs));
-// 		if (!postProcess.execute(prefs.encoderPostExe(),qPrintable(encoderArgs),NULL))
-// 		{
-// 			Messenger::print("Error: Failed to run encoder post-processing command.");
-// 			return false;
-// 		}
-// 		
-// 		// Follow output here...
-// 		while (!postProcess.finished())
-// 		{
-// 			// Is output file already present?
-// 			while (postProcess.outputAvailable()) postProcess.printLineToMessages();
-// 			QApplication::processEvents();
-// 		}
-// 	}
-// 
-// 	// Cleanup
-// 	QFile::remove(framesFile);
-// 	bool pid = progress.initialise("Cleaning up...", files.size());
-// 	int n = 0;
-// 	foreach (QString str, files)
-// 	{
-// 		QFile::remove(str);
-// 		if (!progress.update(pid,++n)) break;
-// 	}
-// 	Messenger::terminateTask(task);	
-// 
-// 	return true;
-// }
 
 // Save current view as bitmap image
 bool Commands::function_SaveBitmap(CommandNode* c, Bundle& obj, ReturnValue& rv)
@@ -189,3 +65,4 @@ bool Commands::function_SaveBitmap(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	prefs.setViewRotationGlobe(viewGlobe);
 	return result;
 }
+
