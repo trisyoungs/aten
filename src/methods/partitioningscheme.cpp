@@ -161,6 +161,7 @@ bool PartitioningScheme::initialiseFromProgram()
 	for (int n = 0; n<nparts; ++n)
 	{
 		PartitionData* pd = partitions_.add();
+		pd->setParent(this);
 		pd->setId(n);
 		pd->setName(partitionName(n));
 	}

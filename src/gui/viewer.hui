@@ -93,8 +93,6 @@ class Viewer : public QOpenGLWidget, protected QOpenGLFunctions
 	void checkGlError();
 	// Set line width and text scaling to use
 	void setObjectScaling(double scaling);
-	
-	public:
 	// Determine target model based on clicked position on TCanvas
 	Model* modelAt(int x, int y);
 	// Return height, in pixels, of single line of text
@@ -207,8 +205,8 @@ class Viewer : public QOpenGLWidget, protected QOpenGLFunctions
 	void renderActiveModes(Model* currentModel);
 	// Render addition elements related to selected/active UserActions
 	void renderUserActions(Model* source);
-	// Render addition elements related to visible windows
-// 	void renderWindowExtras(Model* source);		// ATEN2 TODO
+	// Render extras from specific popups / windows
+	void renderExtras(Model* source);
 
 
 	/*

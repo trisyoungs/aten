@@ -26,7 +26,8 @@
 ATEN_USING_NAMESPACE
 
 // Static Objects
-List<Primitive> PrimitiveSet::dynamicPrimitives_;
+RefList<Primitive,int> PrimitiveSet::dynamicPrimitives_;
+int PrimitiveSet::nInstances_;
 
 // Constructor
 PrimitiveSet::PrimitiveSet()
@@ -213,18 +214,25 @@ Primitive& PrimitiveSet::pickedAtom()
 	return pickedAtom_;
 }
 
-// Create and return new dynamic Primitive
-Primitive* PrimitiveSet::createDynamicPrimitive()
+// Register the specified primitive as dynamic
+void PrimitiveSet::registerDynamicPrimitive(Primitive* primitive)
 {
-	Primitive* primitive = dynamicPrimitives_.add();
-	
-	return primitive;
+	dynamicPrimitives_.add(primitive);
+	primitive->setRegisteredAsDynamic(true);
+
+	// Push an instance if the other primitives already have one?
+	if (nInstances_ > 0) primitive->pushInstance(QOpenGLContext::currentContext());
 }
 
 // Release and destroy specified dynamic primitive
 void PrimitiveSet::releaseDynamicPrimitive(Primitive* primitive)
 {
-	dynamicPrimitives_.remove(primitive);
+	if (!dynamicPrimitives_.contains(primitive)) Messenger::error("Internal Error: Tried to release a dynamic primitive that wasn't registered in the first place.");
+	else
+	{
+		dynamicPrimitives_.remove(primitive);
+		primitive->setRegisteredAsDynamic(false);
+	}
 }
 
 /*
@@ -509,8 +517,8 @@ void PrimitiveSet::pushInstance(const QOpenGLContext* context)
 	halo_.pushInstance(context);
 	pickedAtom_.pushInstance(context);
 
-	// Factory objects
-	for (Primitive* p = dynamicPrimitives_.first(); p != NULL; p = p->next) p->pushInstance(context);
+	// Dynamic objects
+	for (RefListItem<Primitive,int>* ri = dynamicPrimitives_.first(); ri != NULL; ri = ri->next) ri->item->pushInstance(context);
 	
 	++nInstances_;
 
@@ -549,8 +557,8 @@ void PrimitiveSet::popInstance(const QOpenGLContext* context)
 	halo_.popInstance(context);
 	pickedAtom_.popInstance(context);
 
-	// Factory objects
-	for (Primitive* p = dynamicPrimitives_.first(); p != NULL; p = p->next) p->popInstance(context);
+	// Dynamic objects
+	for (RefListItem<Primitive,int>* ri = dynamicPrimitives_.first(); ri != NULL; ri = ri->next) ri->item->popInstance(context);
 
 	--nInstances_;
 

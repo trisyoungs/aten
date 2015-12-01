@@ -93,6 +93,8 @@ class Primitive : public ListItem<Primitive>
 	List<PrimitiveInstance> instances_;
 	// Flag stating whether or not instances should be used for this primitive
 	bool useInstances_;
+	// Whether primitive is registered as a dynamic primitive (in PrimitiveSet)
+	bool registeredAsDynamic_;
 
 	public:
 	// Flag that this primitive should not use instances (rendering will use vertex arrays)
@@ -103,6 +105,10 @@ class Primitive : public ListItem<Primitive>
 	void popInstance(const QOpenGLContext* context);
 	// Return number of instances available
 	int nInstances();
+	// Set whether primitive is registered as a dynamic primitive (in PrimitiveSet)
+	void setRegisteredAsDynamic(bool b);
+	// Return whether primitive is registered as a dynamic primitive (in PrimitiveSet)
+	bool registeredAsDynamic();
 
 
 	/*

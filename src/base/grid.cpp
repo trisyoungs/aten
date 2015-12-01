@@ -79,8 +79,8 @@ Grid::Grid() : ListItem<Grid>(), ObjectStore<Grid>(this, ObjectTypes::GridObject
 	upperSecondaryCutoff_ = 0.0;
 	log_ = -1;
 	boundsLog_ = -1;
-	primaryPrimitive_ = NULL;
-	secondaryPrimitive_ = NULL;
+// 	primaryPrimitive_ = NULL;
+// 	secondaryPrimitive_ = NULL;
 	primaryStyle_ = Grid::SolidSurface;
 	secondaryStyle_ = Grid::SolidSurface;
 	visible_ = true;
@@ -122,8 +122,8 @@ Grid::~Grid()
 	clear();
 	if (useColourScale_ && (colourScale_ != -1)) prefs.colourScale[colourScale_].breakLink(this);
 
-	if (primaryPrimitive_) PrimitiveSet::releaseDynamicPrimitive(primaryPrimitive_);
-	if (secondaryPrimitive_) PrimitiveSet::releaseDynamicPrimitive(secondaryPrimitive_);
+	if (primaryPrimitive_.registeredAsDynamic()) PrimitiveSet::releaseDynamicPrimitive(&primaryPrimitive_);
+	if (secondaryPrimitive_.registeredAsDynamic()) PrimitiveSet::releaseDynamicPrimitive(&secondaryPrimitive_);
 }
 
 // Assignment operator
@@ -1281,7 +1281,7 @@ Matrix Grid::voxelMatrix()
 }
 
 // Return primiary primitive
-Primitive* Grid::primaryPrimitive()
+Primitive& Grid::primaryPrimitive()
 {
 	return primaryPrimitive_;
 }
@@ -1292,11 +1292,11 @@ void Grid::sendPrimaryPrimitive()
 	if (primaryPrimitivePoint_ != log_)
 	{
 		// Create primitive if we don't already have one
-		if (!primaryPrimitive_) primaryPrimitive_ = PrimitiveSet::createDynamicPrimitive();
+		if (!primaryPrimitive_.registeredAsDynamic()) PrimitiveSet::registerDynamicPrimitive(&primaryPrimitive_);
 
 		Vec4<GLfloat> colour(primaryColour_[0], primaryColour_[1], primaryColour_[2], primaryColour_[3]);
-		if (type_ == Grid::RegularXYData) primaryPrimitive_->createSurface(this, colour, useColourScale_ ? colourScale_ : -1);
-		else if (type_ == Grid::RegularXYZData) primaryPrimitive_->marchingCubes(this, lowerPrimaryCutoff_, upperPrimaryCutoff_, useColourScale_ ? colourScale_ : -1);
+		if (type_ == Grid::RegularXYData) primaryPrimitive_.createSurface(this, colour, useColourScale_ ? colourScale_ : -1);
+		else if (type_ == Grid::RegularXYZData) primaryPrimitive_.marchingCubes(this, lowerPrimaryCutoff_, upperPrimaryCutoff_, useColourScale_ ? colourScale_ : -1);
 		else printf("Don't know how to create a primitive based on this type of Grid data (%s)\n", Grid::gridType(type_));
 		primaryPrimitivePoint_ = log_;
 	}
@@ -1312,17 +1312,17 @@ void Grid::sendPrimaryPrimitive()
 	// Render it
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_LIGHTING);
-	if (primaryStyle_ == Grid::SolidSurface) primaryPrimitive_->sendToGL(QOpenGLContext::currentContext(), GL_FILL, true, !useColourScale_, primaryColour_);
-	else if (primaryStyle_ == Grid::MeshSurface) primaryPrimitive_->sendToGL(QOpenGLContext::currentContext(), GL_LINE, false, !useColourScale_, primaryColour_);
+	if (primaryStyle_ == Grid::SolidSurface) primaryPrimitive_.sendToGL(QOpenGLContext::currentContext(), GL_FILL, true, !useColourScale_, primaryColour_);
+	else if (primaryStyle_ == Grid::MeshSurface) primaryPrimitive_.sendToGL(QOpenGLContext::currentContext(), GL_LINE, false, !useColourScale_, primaryColour_);
 	else if (primaryStyle_ == Grid::PointSurface)
 	{
 		glPointSize(3.0f);
-		primaryPrimitive_->sendToGL(QOpenGLContext::currentContext(), GL_POINT, false, !useColourScale_, primaryColour_);
+		primaryPrimitive_.sendToGL(QOpenGLContext::currentContext(), GL_POINT, false, !useColourScale_, primaryColour_);
 	}
 }
 
 // Return primiary primitive
-Primitive* Grid::secondaryPrimitive()
+Primitive& Grid::secondaryPrimitive()
 {
 	return secondaryPrimitive_;
 }
@@ -1333,12 +1333,12 @@ void Grid::sendSecondaryPrimitive()
 	if (secondaryPrimitivePoint_ != log_)
 	{
 		// Create primitive if we don't already have one
-		if (!secondaryPrimitive_) secondaryPrimitive_ = PrimitiveSet::createDynamicPrimitive();
+		if (!secondaryPrimitive_.registeredAsDynamic()) PrimitiveSet::registerDynamicPrimitive(&secondaryPrimitive_);
 
 		Vec4<GLfloat> colour(secondaryColour_[0], secondaryColour_[1], secondaryColour_[2], secondaryColour_[3]);
-		secondaryPrimitive_->marchingCubes(this, lowerSecondaryCutoff_, upperSecondaryCutoff_, useColourScale_ ? colourScale_ : -1);
-		if (type_ == Grid::RegularXYData) secondaryPrimitive_->createSurface(this, colour, useColourScale_ ? colourScale_ : -1);
-		else if (type_ == Grid::RegularXYZData) secondaryPrimitive_->marchingCubes(this, lowerSecondaryCutoff_, upperSecondaryCutoff_, useColourScale_ ? colourScale_ : -1);
+		secondaryPrimitive_.marchingCubes(this, lowerSecondaryCutoff_, upperSecondaryCutoff_, useColourScale_ ? colourScale_ : -1);
+		if (type_ == Grid::RegularXYData) secondaryPrimitive_.createSurface(this, colour, useColourScale_ ? colourScale_ : -1);
+		else if (type_ == Grid::RegularXYZData) secondaryPrimitive_.marchingCubes(this, lowerSecondaryCutoff_, upperSecondaryCutoff_, useColourScale_ ? colourScale_ : -1);
 		else printf("Don't know how to create a primitive based on this type of Grid data (%s)\n", Grid::gridType(type_));
 		secondaryPrimitivePoint_ = log_;
 	}
@@ -1354,12 +1354,12 @@ void Grid::sendSecondaryPrimitive()
 	// Render it
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_LIGHTING);
-	if (secondaryStyle_ == Grid::SolidSurface) secondaryPrimitive_->sendToGL(QOpenGLContext::currentContext(), GL_FILL, true, !useColourScale_, secondaryColour_);
-	else if (secondaryStyle_ == Grid::MeshSurface) secondaryPrimitive_->sendToGL(QOpenGLContext::currentContext(), GL_LINES, false, !useColourScale_, secondaryColour_);
+	if (secondaryStyle_ == Grid::SolidSurface) secondaryPrimitive_.sendToGL(QOpenGLContext::currentContext(), GL_FILL, true, !useColourScale_, secondaryColour_);
+	else if (secondaryStyle_ == Grid::MeshSurface) secondaryPrimitive_.sendToGL(QOpenGLContext::currentContext(), GL_LINES, false, !useColourScale_, secondaryColour_);
 	else if (secondaryStyle_ == Grid::PointSurface)
 	{
 		glPointSize(3.0f);
-		secondaryPrimitive_->sendToGL(QOpenGLContext::currentContext(), GL_POINTS, false, !useColourScale_, secondaryColour_);
+		secondaryPrimitive_.sendToGL(QOpenGLContext::currentContext(), GL_POINTS, false, !useColourScale_, secondaryColour_);
 	}
 }
 

@@ -43,6 +43,27 @@ TMenuButtonPopupWidget::TMenuButtonPopupWidget(TMenuButton* parent) : QWidget(pa
 	widgetDone_ = false;
 }
 
+// Protected Functions
+
+// Local function called when the widget should be closed after a button has been selceted
+void TMenuButtonPopupWidget::done(bool setParentButtonDown, UserAction::Action userActionToEnable)
+{
+	if (parentMenuButton_) parentMenuButton_->popupDone(setParentButtonDown, userActionToEnable);
+	else Messenger::print("Internal Error: No parent button set in TMenuButtonPopupWidget::done().\n");
+
+	widgetDone_ = true;
+
+	hide();
+}
+
+// Notify parent button that one of our widgets has changed
+void TMenuButtonPopupWidget::changed(int data)
+{
+	if (parentMenuButton_) parentMenuButton_->popupWidgetChanged(data);
+}
+
+// Public
+
 // Show popup, updating any controls as necessary beforehand
 void TMenuButtonPopupWidget::popup()
 {
@@ -69,22 +90,7 @@ TMenuButton* TMenuButtonPopupWidget::parentMenuButton()
 	return parentMenuButton_;
 }
 
-// Local function called when the widget should be closed after a button has been selceted
-void TMenuButtonPopupWidget::done(bool setParentButtonDown, UserAction::Action userActionToEnable)
-{
-	if (parentMenuButton_) parentMenuButton_->popupDone(setParentButtonDown, userActionToEnable);
-	else Messenger::print("Internal Error: No parent button set in TMenuButtonPopupWidget::done().\n");
-
-	widgetDone_ = true;
-
-	hide();
-}
-
-// Notify parent button that one of our widgets has changed
-void TMenuButtonPopupWidget::changed(int data)
-{
-	if (parentMenuButton_) parentMenuButton_->popupWidgetChanged(data);
-}
+// Virtual Reimplementations
 
 void TMenuButtonPopupWidget::hideEvent(QHideEvent* event)
 {
@@ -212,17 +218,23 @@ TMenuButton::TMenuButton(QWidget* parent) : QToolButton(parent)
 	connect(this, SIGNAL(released()), this, SLOT(buttonReleased()));
 }
 
+// Link to AtenWindow
+
 // Set pointer to AtenWindow
 void TMenuButton::setAtenWindow(AtenWindow* atenWindow)
 {
 	atenWindow_ = atenWindow;
 }
 
+// Button Data
+
 // Return user-assigned index of button
 int TMenuButton::index()
 {
 	return index_;
 }
+
+// Widget for popup
 
 // Set popup widget for button
 void TMenuButton::setPopupWidget(TMenuButtonPopupWidget* widget, bool instantPopup)
@@ -265,6 +277,8 @@ void TMenuButton::popupWidgetChanged(int data)
 {
 	emit(popupChanged(data));
 }
+
+// Protected functions
 
 // Draw the button
 void TMenuButton::paintEvent(QPaintEvent* event)
@@ -469,6 +483,13 @@ void TMenuButton::popup()
 	// Reposition popup widget to sit flush left with the tool button, and immediately underneath it
 	QPoint toolPos = parentWidget()->mapToGlobal(pos()+QPoint(0,height()));
 	popupWidget_->move(toolPos);
+}
+
+// Return whether popup (if there is one) is visible
+bool TMenuButton::popupVisible()
+{
+	if (popupWidget_) return popupWidget_->isVisible();
+	else return false;
 }
 
 // Mouse button was pressed on the button

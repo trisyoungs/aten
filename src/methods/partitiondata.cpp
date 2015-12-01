@@ -191,17 +191,26 @@ DisorderData* PartitionData::component(int id)
 	return components_[id]->item;
 }
 
+// Return primitive for this partition, generating first if necessary
+Primitive& PartitionData::primitive()
+{
+	// Create primitive if we don't already have one
+	if (!primitive_.registeredAsDynamic()) PrimitiveSet::registerDynamicPrimitive(&primitive_);
+
+	primitive_.marchingCubes(&parent_->grid(), id_-0.5, id_+0.5, -1);
+
+	return primitive_;
+}
+
 // Send primitive for this partition, generating first if necessary
 void PartitionData::sendPrimitive()
 {
-	// Create primitive if we don't already have one
-	if (!primitive_) primitive_ = PrimitiveSet::createDynamicPrimitive();
-
-	primitive_->marchingCubes(&parent_->grid(), id_-0.5, id_+0.5, -1);
+	// Grab primitive
+	Primitive& prim = primitive();
 
 	// Render it
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_LIGHTING);
 	double colour[4] = { 0.0,0.0,0.0,0.7 };
-	primitive_->sendToGL(QOpenGLContext::currentContext(), GL_FILL, true, true, colour);
+	prim.sendToGL(QOpenGLContext::currentContext(), GL_FILL, true, true, colour);
 }

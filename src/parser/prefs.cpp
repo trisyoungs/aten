@@ -82,6 +82,7 @@ Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
 	{ "ewaldPrecision",		VTypes::DoubleData,		0, false },
 	{ "fontFileName",		VTypes::StringData,		0, false },
 	{ "forceRhombohedral",		VTypes::IntegerData,		0, false },
+	{ "foregroundColour",		VTypes::DoubleData,		4, false },
 	{ "globeSize",			VTypes::IntegerData,		0, false },
 	{ "glyphColour",		VTypes::DoubleData,		4, false },
 	{ "hBonds",			VTypes::IntegerData,		0, false },
@@ -119,12 +120,10 @@ Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
 	{ "stickNormalWidth",		VTypes::DoubleData,		4, false },
 	{ "stickSelectedWidth",		VTypes::DoubleData,		4, false },
 	{ "tempDir",			VTypes::StringData,		0, false },
-	{ "textColour",			VTypes::DoubleData,		4, false },
 	{ "usePixelBuffers",		VTypes::IntegerData,		0, false },
 	{ "vdwCutoff",			VTypes::DoubleData,		0, false },
 	{ "vibrationArrowColour",	VTypes::DoubleData,		4, false },
 	{ "viewRotationGlobe",		VTypes::IntegerData,		0, false },
-	{ "wireSelectionColour",	VTypes::DoubleData,		4, false },
 	{ "zMap",			VTypes::StringData,		0, false },
 	{ "zoomThrottle",		VTypes::DoubleData,		0, false }
 };
@@ -341,6 +340,10 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArray
 		case (PreferencesVariable::ForceRhombohedral):
 			rv.set( ptr->forceRhombohedral() );
 			break;
+		case (PreferencesVariable::ForegroundColour):
+			if (hasArrayIndex) rv.set( ptr->colour(Prefs::ForegroundColour)[arrayIndex-1] );
+			else rv.setArray( VTypes::DoubleData, ptr->colour(Prefs::ForegroundColour), 4);
+			break;
 		case (PreferencesVariable::GlobeSize):
 			rv.set(ptr->globeSize() );
 			break;
@@ -461,10 +464,6 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArray
 		case (PreferencesVariable::TempDir):
 			rv.set( ptr->tempDir().path() );
 			break;
-		case (PreferencesVariable::TextColour):
-			if (hasArrayIndex) rv.set( ptr->colour(Prefs::TextColour)[arrayIndex-1] );
-			else rv.setArray( VTypes::DoubleData, ptr->colour(Prefs::TextColour), 4);
-			break;
 		case (PreferencesVariable::UsePixelBuffers):
 			rv.set( ptr->usePixelBuffers() );
 			break;
@@ -477,10 +476,6 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArray
 			break;
 		case (PreferencesVariable::ViewRotationGlobe):
 			rv.set( ptr->viewRotationGlobe() );
-			break;
-		case (PreferencesVariable::WireSelectionColour):
-			if (hasArrayIndex) rv.set( ptr->colour(Prefs::WireSelectionColour)[arrayIndex-1] );
-			else rv.setArray( VTypes::DoubleData, ptr->colour(Prefs::WireSelectionColour), 4);
 			break;
 		case (PreferencesVariable::ZMapping):
 			rv.set( ElementMap::zMapType( ptr->zMapType()) );
@@ -669,6 +664,12 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue&
 		case (PreferencesVariable::ForceRhombohedral):
 			ptr->setForceRhombohedral( newValue.asBool() );
 			break;
+		case (PreferencesVariable::ForegroundColour):
+			if (newValue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->setColour(Prefs::ForegroundColour, n, newValue.asVector(result)[n]);
+			else if (newValue.arraySize() != -1) for (n=0; n<newValue.arraySize(); ++n) ptr->setColour(Prefs::ForegroundColour, n, newValue.asDouble(n, result));
+			else if (hasArrayIndex) ptr->setColour(Prefs::ForegroundColour, arrayIndex-1, newValue.asDouble(result));
+			else for (n=0; n<4; ++n) ptr->setColour(Prefs::ForegroundColour, n, newValue.asDouble(result));
+			break;
 		case (PreferencesVariable::GlobeSize):
 			ptr->setGlobeSize( newValue.asInteger(result) );
 			break;
@@ -841,12 +842,6 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue&
 		case (PreferencesVariable::TempDir):
 			ptr->setTempDir( newValue.asString(result) );
 			break;
-		case (PreferencesVariable::TextColour):
-			if (newValue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->setColour(Prefs::TextColour, n, newValue.asVector(result)[n]);
-			else if (newValue.arraySize() != -1) for (n=0; n<newValue.arraySize(); ++n) ptr->setColour(Prefs::TextColour, n, newValue.asDouble(n, result));
-			else if (hasArrayIndex) ptr->setColour(Prefs::TextColour, arrayIndex-1, newValue.asDouble(result));
-			else for (n=0; n<4; ++n) ptr->setColour(Prefs::TextColour, n, newValue.asDouble(result));
-			break;
 		case (PreferencesVariable::UsePixelBuffers):
 			ptr->setUsePixelBuffers( newValue.asBool() );
 			break;
@@ -861,12 +856,6 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue&
 			break;
 		case (PreferencesVariable::ViewRotationGlobe):
 			ptr->setViewRotationGlobe( newValue.asBool() );
-			break;
-		case (PreferencesVariable::WireSelectionColour):
-			if (newValue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->setColour(Prefs::WireSelectionColour, n, newValue.asVector(result)[n]);
-			else if (newValue.arraySize() != -1) for (n=0; n<newValue.arraySize(); ++n) ptr->setColour(Prefs::WireSelectionColour, n, newValue.asDouble(n, result));
-			else if (hasArrayIndex) ptr->setColour(Prefs::WireSelectionColour, arrayIndex-1, newValue.asDouble(result));
-			else for (n=0; n<4; ++n) ptr->setColour(Prefs::WireSelectionColour, n, newValue.asDouble(result));
 			break;
 		case (PreferencesVariable::ZMapping):
 			zm = ElementMap::zMapType( newValue.asString(result), true );

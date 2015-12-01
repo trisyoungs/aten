@@ -45,17 +45,31 @@ void CellReplicatePopup::updateControls()
 // Call named method associated to popup
 bool CellReplicatePopup::callMethod(QString methodName, ReturnValue& rv)
 {
+	bool result = true;
 	if (methodName == "TEST") return true;
 	else if (methodName == "replicate")
 	{
-		CommandNode::run(Commands::Replicate, "dddddd", ui.NegativeXSpin->value(), ui.NegativeYSpin->value(), ui.NegativeZSpin->value(), ui.PositiveXSpin->value(), ui.PositiveYSpin->value(),  ui.PositiveZSpin->value());
+		rv = CommandNode::run(Commands::Replicate, "dddddd", ui.NegativeXSpin->value(), ui.NegativeYSpin->value(), ui.NegativeZSpin->value(), ui.PositiveXSpin->value(), ui.PositiveYSpin->value(),  ui.PositiveZSpin->value()).asBool();
+	}
+	else if (methodName == "negativeVector")
+	{
+		rv.set(Vec3<double>(ui.NegativeXSpin->value(), ui.NegativeYSpin->value(), ui.NegativeZSpin->value()));
+	}
+	else if (methodName == "positiveVector")
+	{
+		rv.set(Vec3<double>(ui.PositiveXSpin->value(), ui.PositiveYSpin->value(),  ui.PositiveZSpin->value()));
 	}
 	else if (methodName == "hideEvent")
 	{
 		return true;
 	}
-	else printf("No method called '%s' is available in this popup.\n", qPrintable(methodName));
-	return false;
+	else
+	{
+		printf("No method called '%s' is available in this popup.\n", qPrintable(methodName));
+		result = false;
+	}
+
+	return result;
 }
 
 /*

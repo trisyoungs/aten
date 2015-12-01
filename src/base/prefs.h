@@ -59,7 +59,7 @@ class Prefs
 	static KeyAction keyAction(QString s, bool reportError = false);
 	static const char* keyAction(KeyAction ka);
 	// Property/Object Colours
-	enum ObjectColour { AromaticRingColour, BackgroundColour, FixedAtomColour, GlyphDefaultColour, HydrogenBondColour, SpecularColour, TextColour, VibrationArrowColour, WireSelectionColour, nObjectColours };
+	enum ObjectColour { AromaticRingColour, BackgroundColour, FixedAtomColour, ForegroundColour, GlyphDefaultColour, HydrogenBondColour, SpecularColour, VibrationArrowColour, nObjectColours };
 	static const char* objectColour(ObjectColour oc);
 	static const char* objectColourName(ObjectColour oc);
 	static ObjectColour objectColour(QString s, bool reportError = false);

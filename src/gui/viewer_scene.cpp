@@ -201,14 +201,10 @@ void Viewer::renderFullScene(int contextWidth, int contextHeight, int xOffset, i
 		renderModel(m, viewPortX+xOffset, viewPortY+yOffset, viewPortWidth, viewPortHeight, !renderingOffScreen_);
 
 		// Render additional data for active model
-		if (m == aten_->currentModel())
-		{
-			// Render embellishments for current UserAction
-			renderUserActions(m);
+		if (m == aten_->currentModel()) renderUserActions(m);
 
-			// Render extras arising from open tool windows (current model only)
-	// 		renderWindowExtras(source);	// ATEN2 TODO
-		}
+		// Render extras from specific windows / popups
+		renderExtras(m);
 
 		// Send the local renderGroup
 		renderGroup_.sendToGL(modelTransformationMatrix_);

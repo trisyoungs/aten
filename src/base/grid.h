@@ -27,12 +27,13 @@
 #include "base/gridpoint.h"
 #include "math/constants.h"
 #include "base/namespace.h"
+#include "render/primitive.h"
 #include "templates/objectstore.h"
 
 ATEN_BEGIN_NAMESPACE
 
 // Forward Declarations
-class Primitive;
+/* none */
 
 // Grid Data
 class Grid : public ListItem<Grid>, ObjectStore<Grid>
@@ -371,9 +372,9 @@ class Grid : public ListItem<Grid>, ObjectStore<Grid>
 	 */
 	private:
 	// Primitives representing primary surface
-	Primitive* primaryPrimitive_;
+	Primitive primaryPrimitive_;
 	// Primitives representing secondary surface
-	Primitive* secondaryPrimitive_;
+	Primitive secondaryPrimitive_;
 	// Logpoints at which rendergroups were last created
 	int primaryPrimitivePoint_, secondaryPrimitivePoint_;
 
@@ -381,11 +382,11 @@ class Grid : public ListItem<Grid>, ObjectStore<Grid>
 	// Return voxel matrix, offset to grid origin
 	Matrix voxelMatrix();
 	// Return primary primitive
-	Primitive* primaryPrimitive();
+	Primitive& primaryPrimitive();
 	// Send primary primitive to GL, regenerating if necessary
 	void sendPrimaryPrimitive();
 	// Return secondary primitive
-	Primitive* secondaryPrimitive();
+	Primitive& secondaryPrimitive();
 	// Return secondary primitive to GL, regenerating if necessary
 	void sendSecondaryPrimitive();
 

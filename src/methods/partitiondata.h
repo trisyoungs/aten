@@ -58,8 +58,8 @@ class PartitionData : public ListItem<PartitionData>
 	double reducedMass_;
 	// RefList of components targeting this partition
 	RefList<DisorderData,int> components_;
-	// Pointer to primitive containing surface data
-	Primitive* primitive_;
+	// Primitive containing surface data
+	Primitive primitive_;
 	
 	public:
 	// Set parent partitioning scheme
@@ -102,6 +102,8 @@ class PartitionData : public ListItem<PartitionData>
 	int nComponents();
 	// Return nth component in list
 	DisorderData* component(int id);
+	// Return primitive, generating if necessary
+	Primitive& primitive();
 	// Send primitive for surface data, generating if necessary
 	void sendPrimitive();
 };

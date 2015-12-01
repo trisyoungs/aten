@@ -368,7 +368,7 @@ void RenderGroup::createAtomsAndBonds(PrimitiveSet& primitiveSet, Model* source,
 	globalstyle = prefs.renderStyle();
 	selscale = prefs.selectionScale();
 	for (n=0; n<Prefs::nDrawStyles; ++n) aradius[n] = prefs.atomStyleRadius( (Prefs::DrawStyle) n);
-	prefs.copyColour(Prefs::TextColour, penColour);
+	prefs.copyColour(Prefs::ForegroundColour, penColour);
 
 	// Atoms and Bonds
 	atoms = source->atomArray();

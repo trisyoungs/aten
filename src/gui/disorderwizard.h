@@ -80,6 +80,8 @@ class DisorderWizard : public QWizard
 	RefList<QTreeWidgetItem, Model*> componentModelItems_;
 	
 	public:
+	// Return current target model
+	Model* targetModel();
 	// Return currently-selected partitioning scheme
 	PartitioningScheme* partitioningScheme();
 	// Return relevant unit cell

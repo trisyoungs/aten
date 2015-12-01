@@ -40,6 +40,10 @@ class TMenuButtonPopupWidget : public QWidget
 {
 	Q_OBJECT
 
+	public:
+	// Constructor
+	TMenuButtonPopupWidget(TMenuButton* parent);
+
 	private:
 	// Parent TMenuButton
 	TMenuButton* parentMenuButton_;
@@ -59,8 +63,6 @@ class TMenuButtonPopupWidget : public QWidget
 	void changed(int data = 0);
 
 	public:
-	// Constructor
-	TMenuButtonPopupWidget(TMenuButton* parent);
 	// Show popup, updating any controls as necessary beforehand
 	void popup();
 	// Call named method associated to popup
@@ -195,6 +197,10 @@ class TMenuButton : public QToolButton
 	public slots:
 	// Call popup widget
 	void popup();
+
+	public:
+	// Return whether popup (if there is one) is visible
+	bool popupVisible();
 
 	signals:
 	void popupHidden();

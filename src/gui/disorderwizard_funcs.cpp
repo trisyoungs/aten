@@ -516,6 +516,13 @@ void DisorderWizard::on_MethodOptionsButton_clicked(bool checked)
  * Local Variable Functions
  */
 
+// Return current target model
+Model* DisorderWizard::targetModel()
+{
+	if (targetType_ == DisorderWizard::ExistingTarget) return existingModel_;
+	else return newModel_;
+}
+
 // Return currently-selected partitioning scheme
 PartitioningScheme* DisorderWizard::partitioningScheme()
 {

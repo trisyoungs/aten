@@ -253,6 +253,18 @@ int Primitive::nInstances()
 	return instances_.nItems();
 }
 
+// Set whether primitive is registered as a dynamic primitive (in PrimitiveSet)
+void Primitive::setRegisteredAsDynamic(bool b)
+{
+	registeredAsDynamic_ = b;
+}
+
+// Return whether primitive is registered as a dynamic primitive (in PrimitiveSet)
+bool Primitive::registeredAsDynamic()
+{
+	return registeredAsDynamic_;
+}
+
 /*
  * Vertex / Index Generation
  */

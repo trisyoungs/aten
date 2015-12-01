@@ -85,8 +85,8 @@ class PrimitiveSet
 	Primitive cube_, wireCube_, originCube_, sphere_, cylinder_, cone_;
 	// Specialist objects
 	Primitive crossedCube_, cellAxes_, rotationGlobe_, rotationGlobeAxes_, halo_, pickedAtom_;
-	// Dyanmic primitives, created and updated as and when required
-	static List<Primitive> dynamicPrimitives_;
+	// List of registered dynamic primitives, managed and updated as and when required
+	static RefList<Primitive,int> dynamicPrimitives_;
 
 	public:
 	// Return atom primitive
@@ -129,8 +129,8 @@ class PrimitiveSet
 	Primitive& halo();
 	// Return picked atom primitive
 	Primitive& pickedAtom();
-	// Create and return new dynamic Primitive
-	static Primitive* createDynamicPrimitive();
+	// Register the specified primitive as dynamic
+	static void registerDynamicPrimitive(Primitive* primitive);
 	// Release and destroy specified dynamic primitive
 	static void releaseDynamicPrimitive(Primitive* primitive);
 
@@ -140,7 +140,7 @@ class PrimitiveSet
 	 */
 	private:
 	// Number of instances of primitives
-	int nInstances_;
+	static int nInstances_;
 	// Quality setting that primitives should be next generated at
 	int requestedQuality_;
 	// Quality setting that primitives were last generated at (if at all)
@@ -156,7 +156,7 @@ class PrimitiveSet
 	// Pop last instance layer
 	void popInstance(const QOpenGLContext* context);
 	// Return number of instances currently pushed
-	int nInstances();
+	static int nInstances();
 };
 
 ATEN_END_NAMESPACE
