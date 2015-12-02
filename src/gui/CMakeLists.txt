@@ -289,6 +289,7 @@ target_include_directories(gui PRIVATE
   ${PROJECT_SOURCE_DIR}/src
   ${PROJECT_BINARY_DIR}/src
   ${Qt5Widgets_INCLUDE_DIRS}
+  ${FREETYPE_INCLUDE_DIRS}
 )
 
 # Target 'treegui'
