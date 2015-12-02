@@ -22,7 +22,6 @@
 #include "main/aten.h"
 #include "main/version.h"
 #include "gui/mainwindow.h"
-#include "render/fontinstance.h"
 #include <QApplication>
 #include <QMessageBox>
 #include <QResource>
@@ -96,9 +95,6 @@ int main(int argc, char* argv[])
 	
 	/* Parse program arguments - returns -1 for failure, 0 for quit, or 1 for success */
 	if (MrAten.parseCli(argc,argv) != 1) return -1;
-
-	/* Load font */
-	if (!FontInstance::setup(prefs.viewerFontFileName())) QMessageBox::warning(0, "Font Error", "Failed to setup font '" + prefs.viewerFontFileName() + "'.");
 
 	/* Enter the correct program mode */
 	int result = 0;

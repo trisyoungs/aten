@@ -24,6 +24,7 @@
 #include "main/aten.h"
 #include "gui/vibrations.h"
 #include "gui/glyphs.h"
+#include "render/fontinstance.h"
 #include <QtWidgets/QMessageBox>
 
 // Update GUI after model change (or different model selected)
@@ -107,6 +108,9 @@ void AtenWindow::initialUpdateAndShow()
 
 	// Show the window
 	show();
+
+	/* Load font */
+	if (!FontInstance::setup(prefs.viewerFontFileName())) QMessageBox::warning(0, "Font Error", "Failed to setup font '" + prefs.viewerFontFileName() + "'.");
 
 	// Update the fragments widget and icons
 	ReturnValue rv;
