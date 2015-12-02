@@ -250,7 +250,7 @@ set(gui_SRCS
   selectpattern_funcs.cpp
   selectvariable_funcs.cpp
   settings.cpp
-  viewer_extra.cpp
+  viewer_extras.cpp
   viewer_funcs.cpp
   viewer_key.cpp
   viewer_model.cpp
