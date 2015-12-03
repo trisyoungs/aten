@@ -28,7 +28,7 @@
 ATEN_USING_NAMESPACE
 
 // Constructor
-GridStylePopup::GridStylePopup(AtenWindow& parent, TMenuButton* buttonParent, bool primary) : TMenuButtonPopupWidget(buttonParent), parent_(parent)
+GridStylePopup::GridStylePopup(AtenWindow& parent, TMenuButton* buttonParent, bool primary) : TPopupWidget(buttonParent), parent_(parent)
 {
 	// Set up interface
 	ui.setupUi(this);

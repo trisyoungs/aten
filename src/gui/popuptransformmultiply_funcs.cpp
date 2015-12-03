@@ -28,7 +28,7 @@
 ATEN_USING_NAMESPACE
 
 // Constructor
-TransformMultiplyPopup::TransformMultiplyPopup(AtenWindow& parent, TMenuButton* buttonParent) : TMenuButtonPopupWidget(buttonParent), parent_(parent)
+TransformMultiplyPopup::TransformMultiplyPopup(AtenWindow& parent, TMenuButton* buttonParent) : TPopupWidget(buttonParent), parent_(parent)
 {
 	// Set up interface
 	ui.setupUi(this);

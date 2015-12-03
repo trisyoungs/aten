@@ -28,7 +28,7 @@
 ATEN_USING_NAMESPACE
 
 // Constructor
-GridOriginPopup::GridOriginPopup(AtenWindow& parent, TMenuButton* buttonParent) : TMenuButtonPopupWidget(buttonParent), parent_(parent)
+GridOriginPopup::GridOriginPopup(AtenWindow& parent, TMenuButton* buttonParent) : TPopupWidget(buttonParent), parent_(parent)
 {
 	// Set up interface
 	ui.setupUi(this);

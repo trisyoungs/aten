@@ -29,7 +29,7 @@
 ATEN_USING_NAMESPACE
 
 // Constructor
-PoresSchemePopup::PoresSchemePopup(AtenWindow& parent, TMenuButton* buttonParent, PartitioningScheme& scheme) : TMenuButtonPopupWidget(buttonParent), parent_(parent), partitioningScheme_(scheme)
+PoresSchemePopup::PoresSchemePopup(AtenWindow& parent, TMenuButton* buttonParent, PartitioningScheme& scheme) : TPopupWidget(buttonParent), parent_(parent), partitioningScheme_(scheme)
 {
 	// Set up interface
 	ui.setupUi(this);

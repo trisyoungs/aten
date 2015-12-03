@@ -16,7 +16,7 @@ Intelligent Select - add support for selection by type name (e.g. O*, OW etc.).
 Add set members to Matrix class allowing axes to be set from atoms in models.
 Printf command buffered output is never printed if no newline ever occurs.  Need to store data somewhere other than the Printf function itself, and flush it at the end of command execution.
 Selecting a long-press option on an already-selected TMenuButton wrongly un-checks the button (but does not exit the mode).
-TIDY - Make all TMenuButton::callPopupMethods() same as PopupCellReplicate, and split TMenuButton souce into separate files.
+TIDY - Make all TMenuButton::callPopupMethods() same as PopupCellReplicate.
 Add recent files menu to Script load button.
 
 Graphics TODO

@@ -23,7 +23,7 @@
 #define ATEN_TRANSFORMSHIFTPOPUP_H
 
 #include "gui/ui_popuptransformshift.h"
-#include "gui/tmenubutton.hui"
+#include "gui/tpopupwidget.hui"
 #include "parser/returnvalue.h"
 
 // Forward Declarations (Qt)
@@ -39,7 +39,7 @@ ATEN_END_NAMESPACE
 ATEN_USING_NAMESPACE
 
 // Popup Widget - Transform Shift
-class TransformShiftPopup : public TMenuButtonPopupWidget
+class TransformShiftPopup : public TPopupWidget
 {
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
@@ -63,7 +63,7 @@ class TransformShiftPopup : public TMenuButtonPopupWidget
 	 * Reimplementations
 	 */
 	protected:
-	void hideEvent(QHideEvent* event) { TMenuButtonPopupWidget::hideEvent(event); }
+	void hideEvent(QHideEvent* event) { TPopupWidget::hideEvent(event); }
 
 
 	/*

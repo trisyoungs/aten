@@ -23,7 +23,7 @@
 #define ATEN_VIEWSTYLEPOPUP_H
 
 #include "gui/ui_popupviewstyle.h"
-#include "gui/tmenubutton.hui"
+#include "gui/tpopupwidget.hui"
 #include "parser/returnvalue.h"
 
 // Forward Declarations (Qt)
@@ -39,7 +39,7 @@ ATEN_END_NAMESPACE
 ATEN_USING_NAMESPACE
 
 // Popup Widget - View Style
-class ViewStylePopup : public TMenuButtonPopupWidget
+class ViewStylePopup : public TPopupWidget
 {
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
@@ -63,7 +63,7 @@ class ViewStylePopup : public TMenuButtonPopupWidget
 	 * Reimplementations
 	 */
 	protected:
-	void hideEvent(QHideEvent* event) { TMenuButtonPopupWidget::hideEvent(event); }
+	void hideEvent(QHideEvent* event) { TPopupWidget::hideEvent(event); }
 
 
 	/*

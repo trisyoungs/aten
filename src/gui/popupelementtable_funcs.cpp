@@ -23,7 +23,7 @@
 #include "gui/popupelementtable.h"
 
 // Constructor
-ElementTablePopup::ElementTablePopup(AtenWindow& parent, TMenuButton* buttonParent) : TMenuButtonPopupWidget(buttonParent), parent_(parent)
+ElementTablePopup::ElementTablePopup(AtenWindow& parent, TMenuButton* buttonParent) : TPopupWidget(buttonParent), parent_(parent)
 {
 	ui.setupUi(this);
 

@@ -23,7 +23,7 @@
 #define ATEN_CELLMILLERPOPUP_H
 
 #include "gui/ui_popupcellmiller.h"
-#include "gui/tmenubutton.hui"
+#include "gui/tpopupwidget.hui"
 #include "parser/returnvalue.h"
 
 // Forward Declarations (Qt)
@@ -39,7 +39,7 @@ ATEN_END_NAMESPACE
 ATEN_USING_NAMESPACE
 
 // Popup Widget - Cell Miller
-class CellMillerPopup : public TMenuButtonPopupWidget
+class CellMillerPopup : public TPopupWidget
 {
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
@@ -63,7 +63,7 @@ class CellMillerPopup : public TMenuButtonPopupWidget
 	 * Reimplementations
 	 */
 	protected:
-	void hideEvent(QHideEvent* event) { TMenuButtonPopupWidget::hideEvent(event); }
+	void hideEvent(QHideEvent* event) { TPopupWidget::hideEvent(event); }
 
 
 	/*

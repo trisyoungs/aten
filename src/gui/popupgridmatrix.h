@@ -23,7 +23,7 @@
 #define ATEN_GRIDMATRIXPOPUP_H
 
 #include "gui/ui_popupgridmatrix.h"
-#include "gui/tmenubutton.hui"
+#include "gui/tpopupwidget.hui"
 #include "parser/returnvalue.h"
 
 // Forward Declarations (Qt)
@@ -39,7 +39,7 @@ ATEN_END_NAMESPACE
 ATEN_USING_NAMESPACE
 
 // Popup Widget - Grids Matrix
-class GridMatrixPopup : public TMenuButtonPopupWidget
+class GridMatrixPopup : public TPopupWidget
 {
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
@@ -63,7 +63,7 @@ class GridMatrixPopup : public TMenuButtonPopupWidget
 	 * Reimplementations
 	 */
 	protected:
-	void hideEvent(QHideEvent* event) { TMenuButtonPopupWidget::hideEvent(event); }
+	void hideEvent(QHideEvent* event) { TPopupWidget::hideEvent(event); }
 
 
 	/*

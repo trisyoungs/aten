@@ -23,7 +23,7 @@
 #define ATEN_GRIDSHIFTPOPUP_H
 
 #include "gui/ui_popupgridshift.h"
-#include "gui/tmenubutton.hui"
+#include "gui/tpopupwidget.hui"
 #include "parser/returnvalue.h"
 
 // Forward Declarations (Qt)
@@ -39,7 +39,7 @@ ATEN_END_NAMESPACE
 ATEN_USING_NAMESPACE
 
 // Popup Widget - Grid Shift
-class GridShiftPopup : public TMenuButtonPopupWidget
+class GridShiftPopup : public TPopupWidget
 {
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
@@ -63,7 +63,7 @@ class GridShiftPopup : public TMenuButtonPopupWidget
 	 * Reimplementations
 	 */
 	protected:
-	void hideEvent(QHideEvent* event) { TMenuButtonPopupWidget::hideEvent(event); }
+	void hideEvent(QHideEvent* event) { TPopupWidget::hideEvent(event); }
 
 
 	/*

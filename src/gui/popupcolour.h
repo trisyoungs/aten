@@ -23,7 +23,7 @@
 #define ATEN_COLOURPOPUP_H
 
 #include "gui/ui_popupcolour.h"
-#include "gui/tmenubutton.hui"
+#include "gui/tpopupwidget.hui"
 #include "base/namespace.h"
 #include <QPushButton>
 #include "parser/returnvalue.h"
@@ -42,7 +42,7 @@ ATEN_END_NAMESPACE
 ATEN_USING_NAMESPACE
 
 // Popup Widget - Colour
-class ColourPopup : public TMenuButtonPopupWidget
+class ColourPopup : public TPopupWidget
 {
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT

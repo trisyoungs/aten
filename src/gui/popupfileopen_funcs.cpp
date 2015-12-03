@@ -27,7 +27,7 @@
 ATEN_USING_NAMESPACE
 
 // Constructor
-FileOpenPopup::FileOpenPopup(AtenWindow& parent, TMenuButton* buttonParent) : TMenuButtonPopupWidget(buttonParent), parent_(parent), maxRecentFiles_(100)
+FileOpenPopup::FileOpenPopup(AtenWindow& parent, TMenuButton* buttonParent) : TPopupWidget(buttonParent), parent_(parent), maxRecentFiles_(100)
 {
 	// Set up interface
 	ui.setupUi(this);

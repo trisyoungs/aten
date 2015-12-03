@@ -23,7 +23,7 @@
 #include "gui/popupelementcommon.h"
 
 // Constructor
-ElementCommonPopup::ElementCommonPopup(AtenWindow& parent, TMenuButton* buttonParent) : TMenuButtonPopupWidget(buttonParent), parent_(parent)
+ElementCommonPopup::ElementCommonPopup(AtenWindow& parent, TMenuButton* buttonParent) : TPopupWidget(buttonParent), parent_(parent)
 {
 	ui.setupUi(this);
 

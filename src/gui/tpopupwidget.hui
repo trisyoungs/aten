@@ -1,0 +1,91 @@
+/*
+	*** TPopupWidget - Popup widget functions
+	*** src/gui/tpopupwidget.hui
+	Copyright T. Youngs 2007-2015
+
+	This file is part of Aten.
+
+	Aten is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	Aten is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#ifndef ATEN_TPOPUPWIDGET_H
+#define ATEN_TPOPUPWIDGET_H
+
+#include <QtWidgets/QWidget>
+#include "parser/returnvalue.h"
+#include "gui/useractions.h"
+
+// Forward Declarations (Qt)
+class TMenuButton;
+class AtenWindow;
+
+ATEN_USING_NAMESPACE
+
+// Popup Widget for TMenuButton
+class TPopupWidget : public QWidget
+{
+	Q_OBJECT
+
+	public:
+	// Constructor
+	TPopupWidget(TMenuButton* parent);
+
+	private:
+	// Parent TMenuButton
+	TMenuButton* parentMenuButton_;
+	// Flag indicating that done() was called
+	bool widgetDone_;
+
+	protected:
+	// Whether widget is refreshing
+	bool refreshing_;
+
+	protected:
+	// Update controls (before show())
+	virtual void updateControls() = 0;
+	// Local function called when the widget should be closed after a button has been selceted
+	void done(bool setParentButtonDown = false, UserAction::Action setActionToEnable = UserAction::NoAction);
+	// Notify parent button that one of our widgets has changed
+	void changed(int data = 0);
+
+	public:
+	// Show popup, updating any controls as necessary beforehand
+	void popup();
+	// Call named method associated to popup
+	virtual bool callMethod(QString methodName, ReturnValue& rv) = 0;
+	// Call named method associated to popup (without ReturnValue)
+	bool callMethodSimple(QString methodName, QString value = QString());
+	// Return parent TMenuButton
+	TMenuButton* parentMenuButton();
+
+
+	/*
+	 * Virtual Reimplementations
+	 */
+	protected:
+	void hideEvent(QHideEvent* event);
+
+
+	/*
+	 * Internal Static Data
+	 */
+	protected:
+	// Time when last popup was hidden
+	static QTime lastPopupHideTime_;
+	// Last popup widget displayed
+	static TPopupWidget* lastPopup_;
+};
+
+#endif
+

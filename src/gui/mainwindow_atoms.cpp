@@ -23,6 +23,7 @@
 #include "gui/mainwindow.h"
 #include "base/forcefieldatom.h"
 #include "templates/variantpointer.h"
+#include <QMouseEvent>
 
 const char* AtomsTableItemHeader[AtenWindow::nAtomItems] = { "ID", "El", "Type", "X", "Y", "Z", "Q" };
 bool AtomsTableItemDelegateType[AtenWindow::nAtomItems] = { 0, 0, 0, 1, 1, 1, 1 };

@@ -27,7 +27,7 @@
 ATEN_USING_NAMESPACE
 
 // Constructor
-FileSavePopup::FileSavePopup(AtenWindow& parent, TMenuButton* buttonParent) : TMenuButtonPopupWidget(buttonParent), parent_(parent)
+FileSavePopup::FileSavePopup(AtenWindow& parent, TMenuButton* buttonParent) : TPopupWidget(buttonParent), parent_(parent)
 {
 	// Set up interface
 	ui.setupUi(this);

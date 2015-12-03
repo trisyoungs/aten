@@ -30,7 +30,7 @@
 ATEN_USING_NAMESPACE
 
 // Constructor
-ForcefieldsAssignPopup::ForcefieldsAssignPopup(AtenWindow& parent, TMenuButton* buttonParent) : TMenuButtonPopupWidget(buttonParent), parent_(parent)
+ForcefieldsAssignPopup::ForcefieldsAssignPopup(AtenWindow& parent, TMenuButton* buttonParent) : TPopupWidget(buttonParent), parent_(parent)
 {
 	// Set up interface
 	ui.setupUi(this);

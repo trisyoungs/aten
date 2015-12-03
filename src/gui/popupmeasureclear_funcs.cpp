@@ -28,7 +28,7 @@
 ATEN_USING_NAMESPACE
 
 // Constructor
-MeasureClearPopup::MeasureClearPopup(AtenWindow& parent, TMenuButton* buttonParent) : TMenuButtonPopupWidget(buttonParent), parent_(parent)
+MeasureClearPopup::MeasureClearPopup(AtenWindow& parent, TMenuButton* buttonParent) : TPopupWidget(buttonParent), parent_(parent)
 {
 	// Set up interface
 	ui.setupUi(this);

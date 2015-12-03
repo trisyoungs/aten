@@ -20,6 +20,7 @@
 */
 
 #include "gui/tmenubutton.hui"
+#include "gui/tpopupwidget.hui"
 #include "gui/mainwindow.h"
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QApplication>
@@ -27,174 +28,6 @@
 #include <QtWidgets/QStylePainter>
 #include <QtWidgets/QStyleOptionToolButton>
 #include <QButtonGroup>
-
-/*
- * TMenuButtonPopupWidget
- */
-
-// Static members
-TMenuButtonPopupWidget* TMenuButtonPopupWidget::lastPopup_ = NULL;
-QTime TMenuButtonPopupWidget::lastPopupHideTime_;
-
-// Constructor
-TMenuButtonPopupWidget::TMenuButtonPopupWidget(TMenuButton* parent) : QWidget(parent, Qt::FramelessWindowHint | Qt::Popup)
-{
-	parentMenuButton_ = parent;
-	widgetDone_ = false;
-}
-
-// Protected Functions
-
-// Local function called when the widget should be closed after a button has been selceted
-void TMenuButtonPopupWidget::done(bool setParentButtonDown, UserAction::Action userActionToEnable)
-{
-	if (parentMenuButton_) parentMenuButton_->popupDone(setParentButtonDown, userActionToEnable);
-	else Messenger::print("Internal Error: No parent button set in TMenuButtonPopupWidget::done().\n");
-
-	widgetDone_ = true;
-
-	hide();
-}
-
-// Notify parent button that one of our widgets has changed
-void TMenuButtonPopupWidget::changed(int data)
-{
-	if (parentMenuButton_) parentMenuButton_->popupWidgetChanged(data);
-}
-
-// Public
-
-// Show popup, updating any controls as necessary beforehand
-void TMenuButtonPopupWidget::popup()
-{
-	// Check time of last popup - if it was too short, then we assume this was a click on the same source button
-	if ((lastPopup_ == this) && (lastPopupHideTime_.msecsTo(QTime::currentTime()) < 50)) return;
-
-	updateControls();
-
-	show();
-
-	lastPopup_ = this;
-}
-
-// Call named method associated to popup (without ReturnValue)
-bool TMenuButtonPopupWidget::callMethodSimple(QString methodName, QString value)
-{
-	ReturnValue rv(value);
-	return callMethod(methodName, rv);
-}
-
-// Return parent TMenuButton
-TMenuButton* TMenuButtonPopupWidget::parentMenuButton()
-{
-	return parentMenuButton_;
-}
-
-// Virtual Reimplementations
-
-void TMenuButtonPopupWidget::hideEvent(QHideEvent* event)
-{
-	// Call the parent's popupDone() function, unless the widgetDone_ flag is set
-	if (parentMenuButton_ && (!widgetDone_)) parentMenuButton_->popupDone(false);
-
-	// Call the 'hide' method of the widget, to perform any post-hide functions
-	ReturnValue rv;
-	callMethod("hideEvent", rv);
-
-	// Reset the widgetDone_ flag
-	widgetDone_ = false;
-
-	// Set the hide time
-	lastPopupHideTime_ = QTime::currentTime();
-
-	event->accept();
-
-	// Notify the parent button that we have been hidden
-	if (parentMenuButton_) parentMenuButton_->popupHidden();
-}
-
-/*
- * TMenuButtonGroup
- */
-
-// Constructor
-TMenuButtonGroup::TMenuButtonGroup() : ListItem<TMenuButtonGroup>()
-{
-	name_ = "UnnamedGroup";
-}
-
-// Set name of group
-void TMenuButtonGroup::setName(QString name)
-{
-	name_ = name;
-}
-
-// Return name of group
-QString TMenuButtonGroup::name()
-{
-	return name_;
-}
-
-// Add button to group
-void TMenuButtonGroup::addButton(TMenuButton* button)
-{
-	buttons_.append(button);
-}
-
-// Set specified button as checked button
-void TMenuButtonGroup::setCurrentButton(TMenuButton* button)
-{
-	// Loop over buttons in group, unchecking all others except the one provided (which we will check)
-	TMenuButton* groupButton;
-	for (int n=0; n<buttons_.count(); ++n)
-	{
-		groupButton = buttons_.at(n);
-		if (groupButton == button) groupButton->setChecked(true);
-		else
-		{
-			groupButton->setChecked(false);
-			groupButton->setDown(false);
-		}
-	}
-}
-
-// Set button with specified text as checked button
-bool TMenuButtonGroup::setCurrentButton(QString buttonText)
-{
-	// Loop over buttons in group, unchecking all others except the one provided (which we will check)
-	TMenuButton* groupButton;
-	for (int n=0; n<buttons_.count(); ++n)
-	{
-		groupButton = buttons_.at(n);
-		if (groupButton->text() == buttonText)
-		{
-			setCurrentButton(groupButton);
-			return true;
-		}
-	}
-	return false;
-}
-
-// Set button with specified index as checked button
-bool TMenuButtonGroup::setCurrentButton(int buttonIndex)
-{
-	// Loop over buttons in group, unchecking all others except the one provided (which we will check)
-	TMenuButton* groupButton;
-	for (int n=0; n<buttons_.count(); ++n)
-	{
-		groupButton = buttons_.at(n);
-		if (groupButton->index() == buttonIndex)
-		{
-			setCurrentButton(groupButton);
-			return true;
-		}
-	}
-	return false;
-}
-
-/*
- * TMenuButton
- */
 
 // Static Singletons
 List<TMenuButtonGroup> TMenuButton::groups_;
@@ -237,16 +70,25 @@ int TMenuButton::index()
 // Widget for popup
 
 // Set popup widget for button
-void TMenuButton::setPopupWidget(TMenuButtonPopupWidget* widget, bool instantPopup)
+void TMenuButton::setPopupWidget(TPopupWidget* widget, bool instantPopup)
 {
 	popupWidget_ = widget;
 	instantPopup_ = instantPopup;
 }
 
 // Return popup widget set for button
-TMenuButtonPopupWidget* TMenuButton::popupWidget()
+TPopupWidget* TMenuButton::popupWidget()
 {
 	return popupWidget_;
+}
+
+// Call named method in associated popup widget
+bool TMenuButton::callPopupMethod(QString methodName, ReturnValue& rv)
+{
+	if (popupWidget_) return popupWidget_->callMethod(methodName, rv);
+	else printf("No popup set on button with text '%s', so method '%s' cannot be called.\n", qPrintable(text()), qPrintable(methodName));
+
+	return false;
 }
 
 // Notify button that popup is done

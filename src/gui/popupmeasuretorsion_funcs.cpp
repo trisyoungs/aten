@@ -28,7 +28,7 @@
 ATEN_USING_NAMESPACE
 
 // Constructor
-MeasureTorsionPopup::MeasureTorsionPopup(AtenWindow& parent, TMenuButton* buttonParent) : TMenuButtonPopupWidget(buttonParent), parent_(parent)
+MeasureTorsionPopup::MeasureTorsionPopup(AtenWindow& parent, TMenuButton* buttonParent) : TPopupWidget(buttonParent), parent_(parent)
 {
 	// Set up interface
 	ui.setupUi(this);

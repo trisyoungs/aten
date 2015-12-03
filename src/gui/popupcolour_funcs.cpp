@@ -26,7 +26,7 @@
 #include <QPainter>
 
 // Constructor
-ColourPopup::ColourPopup(AtenWindow& parent, TMenuButton* buttonParent) : TMenuButtonPopupWidget(buttonParent), parent_(parent)
+ColourPopup::ColourPopup(AtenWindow& parent, TMenuButton* buttonParent) : TPopupWidget(buttonParent), parent_(parent)
 {
 	ui.setupUi(this);
 

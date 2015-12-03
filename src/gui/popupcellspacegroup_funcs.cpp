@@ -28,7 +28,7 @@
 ATEN_USING_NAMESPACE
 
 // Constructor
-CellSpacegroupPopup::CellSpacegroupPopup(AtenWindow& parent, TMenuButton* buttonParent) : TMenuButtonPopupWidget(buttonParent), parent_(parent)
+CellSpacegroupPopup::CellSpacegroupPopup(AtenWindow& parent, TMenuButton* buttonParent) : TPopupWidget(buttonParent), parent_(parent)
 {
 	// Set up interface
 	ui.setupUi(this);

@@ -28,7 +28,7 @@
 ATEN_USING_NAMESPACE
 
 // Constructor
-TransformTorsionPopup::TransformTorsionPopup(AtenWindow& parent, TMenuButton* buttonParent) : TMenuButtonPopupWidget(buttonParent), parent_(parent)
+TransformTorsionPopup::TransformTorsionPopup(AtenWindow& parent, TMenuButton* buttonParent) : TPopupWidget(buttonParent), parent_(parent)
 {
 	// Set up interface
 	ui.setupUi(this);

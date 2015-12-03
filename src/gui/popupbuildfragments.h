@@ -23,7 +23,7 @@
 #define ATEN_BUILDFRAGMENTSPOPUP_H
 
 #include "gui/ui_popupbuildfragments.h"
-#include "gui/tmenubutton.hui"
+#include "gui/tpopupwidget.hui"
 #include "parser/returnvalue.h"
 
 // Forward Declarations (Qt)
@@ -40,7 +40,7 @@ ATEN_END_NAMESPACE
 ATEN_USING_NAMESPACE
 
 // Popup Widget - Fragments
-class BuildFragmentsPopup : public TMenuButtonPopupWidget
+class BuildFragmentsPopup : public TPopupWidget
 {
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
@@ -64,7 +64,7 @@ class BuildFragmentsPopup : public TMenuButtonPopupWidget
 	 * Reimplementations
 	 */
 	protected:
-	void hideEvent(QHideEvent* event) { TMenuButtonPopupWidget::hideEvent(event); }
+	void hideEvent(QHideEvent* event) { TPopupWidget::hideEvent(event); }
 
 
 	/*

@@ -75,6 +75,8 @@ SET(gui_MOC_HDRS
   textratreewidgetitem.h
   tintegerspindelegate.hui
   tmenubutton.hui
+  tmenubuttongroup.h
+  tpopupwidget.hui
   ttablewidget.hui
   ttabwidget.hui
   ttreewidget.hui
@@ -261,6 +263,8 @@ set(gui_SRCS
   tcolourframe_funcs.cpp
   tcolourwheel_funcs.cpp
   tmenubutton_funcs.cpp
+  tmenubuttongroup_funcs.cpp
+  tpopupwidget_funcs.cpp
   tdoublespindelegate_funcs.cpp
   texponentialspin_funcs.cpp
   tintegerspindelegate_funcs.cpp

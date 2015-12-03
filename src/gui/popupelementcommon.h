@@ -23,7 +23,7 @@
 #define ATEN_ELEMENTCOMMONPOPUP_H
 
 #include "gui/ui_popupelementcommon.h"
-#include "gui/tmenubutton.hui"
+#include "gui/tpopupwidget.hui"
 #include "base/namespace.h"
 #include <QPushButton>
 #include "parser/returnvalue.h"
@@ -41,7 +41,7 @@ ATEN_END_NAMESPACE
 ATEN_USING_NAMESPACE
 
 // Popup Widget - Build/Element/Common
-class ElementCommonPopup : public TMenuButtonPopupWidget
+class ElementCommonPopup : public TPopupWidget
 {
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
