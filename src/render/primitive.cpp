@@ -148,19 +148,38 @@ void Primitive::pushInstance(const QOpenGLContext* context)
 		int vboSize = nDefinedVertices_ * (colouredVertexData_ ? 10 : 6) * sizeof(GLfloat);
 		
 		// Generate vertex array object
+		glGetError();
 		glFunctions->glGenBuffers(1, &vertexVBO);
+		GLenum glError = glGetError();
+		if (glError != GL_NO_ERROR)
+		{
+			vertexVBO = 0;
+			Messenger::print("Failed to generate suitable OpenGL buffer for Primitive instance.");
+			Messenger::exit("Primitive::pushInstance");
+			return;
+		}
 
 		// Bind VBO
 		glFunctions->glBindBuffer(GL_ARRAY_BUFFER, vertexVBO);
+		glError = glGetError();
+		if (glError != GL_NO_ERROR)
+		{
+			vertexVBO = 0;
+			Messenger::print("Failed to bind vertex data buffer when pushing Primitive instance.");
+			Messenger::exit("Primitive::pushInstance");
+			return;
+		}
 		
 		// Initialise vertex array data
 		glFunctions->glBufferData(GL_ARRAY_BUFFER, vboSize, vertexData_.array(), GL_STATIC_DRAW);
-		if (glGetError() != GL_NO_ERROR)
+		glError = glGetError();
+		if (glError != GL_NO_ERROR)
 		{
 			glFunctions->glBindBuffer(GL_ARRAY_BUFFER, 0);
-			printf("Error occurred while generating vertex buffer object for Primitive.\n");
+			Messenger::print("Failed to initialise vertex data buffer object when pushing Primitive instance.");
 			glFunctions->glDeleteBuffers(1, &vertexVBO);
 			vertexVBO = 0;
+			Messenger::exit("Primitive::pushInstance");
 			return;
 		}
 		glFunctions->glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -170,16 +189,33 @@ void Primitive::pushInstance(const QOpenGLContext* context)
 		{
 			// Generate index array object
 			glFunctions->glGenBuffers(1, &indexVBO);
+			glError = glGetError();
+			if (glError != GL_NO_ERROR)
+			{
+				indexVBO = 0;
+				Messenger::print("Failed to generate index data buffer when pushing Primitive instance.");
+				Messenger::exit("Primitive::pushInstance");
+				return;
+			}
 
 			// Bind VBO
 			glFunctions->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexVBO);
-			
+			glError = glGetError();
+			if (glError != GL_NO_ERROR)
+			{
+				indexVBO = 0;
+				Messenger::print("Failed to bind index data buffer when pushing Primitive instance.");
+				Messenger::exit("Primitive::pushInstance");
+				return;
+			}
+
 			// Initialise index array data
 			glFunctions->glBufferData(GL_ELEMENT_ARRAY_BUFFER, indexData_.nItems()*sizeof(GLuint), indexData_.array(), GL_STATIC_DRAW);
-			if (glGetError() != GL_NO_ERROR)
+			glError = glGetError();
+			if (glError != GL_NO_ERROR)
 			{
 				glFunctions->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-				printf("Error occurred while generating index buffer object for Primitive.\n");
+				Messenger::print("Failed to initialise index data buffer object when pushing Primitive instance.");
 				glFunctions->glDeleteBuffers(1, &indexVBO);
 				indexVBO = 0;
 				return;
@@ -190,7 +226,7 @@ void Primitive::pushInstance(const QOpenGLContext* context)
 		// Store instance data
 		pi->setVBO(context, vertexVBO, indexData_.nItems() != 0 ? indexVBO : 0);
 	}
-	else
+	else if (PrimitiveInstance::globalInstanceType() == PrimitiveInstance::VBOInstance)
 	{
 		// Generate display list
 		int listId = glGenLists(1);
@@ -263,6 +299,44 @@ void Primitive::setRegisteredAsDynamic(bool b)
 bool Primitive::registeredAsDynamic()
 {
 	return registeredAsDynamic_;
+}
+
+
+/*
+ * GL Error Reporting
+ */
+
+// Check for GL error
+bool Primitive::glFlaggedError()
+{
+	GLenum glerr;
+	int nErrors = 0;
+	do
+	{
+		glerr = glGetError();
+		switch (glerr)
+		{
+			case (GL_INVALID_ENUM): Messenger::print("GLenum argument out of range"); ++nErrors; break;
+			case (GL_INVALID_VALUE): Messenger::print("Numeric argument out of range"); ++nErrors; break;
+			case (GL_INVALID_OPERATION): Messenger::print("Operation illegal in current state"); ++nErrors; break;
+			case (GL_STACK_OVERFLOW): Messenger::print("Command would cause a stack overflow"); ++nErrors; break;
+			case (GL_STACK_UNDERFLOW): Messenger::print("Command would cause a stack underflow"); ++nErrors; break;
+			case (GL_OUT_OF_MEMORY): Messenger::print("Not enough memory left to execute command"); ++nErrors; break;
+			case (GL_NO_ERROR): break;
+			default:
+				Messenger::print("Unknown GL error?");
+				break;
+		}
+	} while (glerr != GL_NO_ERROR);
+	return (nErrors != 0);
+}
+
+// Clear GL errors
+void Primitive::clearGLErrors()
+{
+	do
+	{
+	} while (glGetError() != GL_NO_ERROR);
 }
 
 /*

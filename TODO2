@@ -19,7 +19,6 @@ Selecting a long-press option on an already-selected TMenuButton wrongly un-chec
 TIDY - Make all TMenuButton::callPopupMethods() same as PopupCellReplicate, and split TMenuButton souce into separate files.
 Add recent files menu to Script load button.
 
-
 Graphics TODO
 =============
 In top-left corner of main window, have a black icon illustrating which mode is active (except for Interact).
@@ -97,3 +96,4 @@ Add Transform-related commands to Model variable.
 SelectCode and DeSelectCode code 'style' has changed.
 Keyboard shortcuts: F6 now cycles rendering styles, Ctrl-F6 colouring styles (with F1-5 and Ctrl-F1-5 selecting individual styles), F10 shows quick command bar.
 Removed Prefs::textColour and WireSelectioNColour accessors, and added ForegroundColour.
+Removed VBO CLI switch, and added Lists and NoInstances switches.

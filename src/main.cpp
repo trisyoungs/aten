@@ -38,7 +38,7 @@ int main(int argc, char* argv[])
 	QCoreApplication::setApplicationName("Aten");
 
 	/* Set native siblings attribute to prevent odd rendering artefacts on some systems */
-	QCoreApplication::setAttribute(Qt::AA_DontCreateNativeWidgetSiblings);
+	app.setAttribute(Qt::AA_DontCreateNativeWidgetSiblings);
 
 	/* Tweak the default QSurfaceFormat */
 	QSurfaceFormat surfaceFormat;

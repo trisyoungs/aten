@@ -109,6 +109,9 @@ Cli cliSwitches[] = {
 	{ Cli::KeepViewSwitch,		'k',"keepview",		0,
 		"",
 		"Keep (don't reset) view when GUI starts" },
+	{ Cli::ListsSwitch,		'\0',"lists",		0,
+		"",
+		"Enable use of OpenGL display lists (in preference to VBOs)" },
 	{ Cli::LoadFromListSwitch,	'\0',"loadfromlist",	1,
 		"<file>",
 		"Assume that <file> is a textfile containing a list of filenames to be loaded as models" },
@@ -142,9 +145,9 @@ Cli cliSwitches[] = {
 	{ Cli::NoIncludesSwitch,	'\0',"noincludes",	0,
 		"",
 		"Prevent loading of includes on startup" },
-	{ Cli::NoListsSwitch,		'\0',"nolists",		0,
+	{ Cli::NoInstancesSwitch,		'\0',"noinstances",		0,
 		"",
-		"Disable use of OpenGL display lists" },
+		"Disable use of both OpenGL display lists and VBOs" },
 	{ Cli::NoPackSwitch,		'\0',"nopack",		0,
 		"",
 		"Prevent generation of symmetry-equivalent atoms from spacegroup information" },
@@ -181,9 +184,6 @@ Cli cliSwitches[] = {
 	{ Cli::UndoLevelSwitch,		'u',"undolevels",	1,
 		"<nlevels>",
 		"Set the maximum number of undo levels per model (-1 = unlimited)" },
-	{ Cli::VBOSwitch,		'\0',"vbo",		0,
-		"",
-		"Use OpenGL Vertex Buffer Objects for rendering" },
 	{ Cli::VerboseSwitch,		'v',"verbose",		0,
 		"",
 		"Enable verbose program output" },
@@ -332,6 +332,11 @@ bool Aten::parseCliEarly(int argc, char *argv[])
 					printUsage();
 					return false;
 					break;
+				// Turn on display list usage (in preference to VBOs)
+				case (Cli::ListsSwitch):
+					Messenger::print("OpenGL display lists will be used for rendering instead of VBOs.");
+					PrimitiveInstance::setGlobalInstanceType(PrimitiveInstance::ListInstance);
+					break;
 				// Restrict filter loading on startup
 				case (Cli::NoFiltersSwitch):
 					prefs.setLoadFilters(false);
@@ -348,23 +353,18 @@ bool Aten::parseCliEarly(int argc, char *argv[])
 				case (Cli::NoIncludesSwitch):
 					prefs.setLoadIncludes(false);
 					break;
+				// Turn off VBO and display list usage
+				case (Cli::NoInstancesSwitch):
+					Messenger::print("VBO and display lists will not be used for rendering.");
+					PrimitiveInstance::setGlobalInstanceType(PrimitiveInstance::NoInstances);
+					break;
 				// Restrict partition loading on startup
 				case (Cli::NoPartitionsSwitch):
 					prefs.setLoadPartitions(false);
 					break;
-				// Turn off display list usage
-				case (Cli::NoListsSwitch):
-					Messenger::print("OpenGL display lists will not be used.");
-					PrimitiveInstance::setGlobalInstanceType(PrimitiveInstance::NoInstances);
-					break;
 				// Run in silent mode (no CLI output)
 				case (Cli::QuietSwitch):
 					Messenger::setQuiet(true);
-					break;
-				// Turn on VBO usage
-				case (Cli::VBOSwitch):
-					Messenger::print("OpenGL Vertex Buffer Objects will be used.");
-					PrimitiveInstance::setGlobalInstanceType(PrimitiveInstance::VBOInstance);
 					break;
 				// Turn on verbose messaging
 				case (Cli::VerboseSwitch):
@@ -494,14 +494,14 @@ int Aten::parseCli(int argc, char *argv[])
 				case (Cli::AtenDataSwitch):
 				case (Cli::DebugSwitch):
 				case (Cli::HelpSwitch):
+				case (Cli::ListsSwitch):
 				case (Cli::NoFiltersSwitch):
 				case (Cli::NoFragmentsSwitch):
 				case (Cli::NoFragmentIconsSwitch):
 				case (Cli::NoIncludesSwitch):
-				case (Cli::NoListsSwitch):
+				case (Cli::NoInstancesSwitch):
 				case (Cli::NoPartitionsSwitch):
 				case (Cli::QuietSwitch):
-				case (Cli::VBOSwitch):
 				case (Cli::VerboseSwitch):
 				case (Cli::VersionSwitch):
 					break;

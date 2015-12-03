@@ -89,28 +89,6 @@ GLsizei Viewer::contextWidth() const
 	return contextWidth_;
 }
 
-// Check for GL error
-void Viewer::checkGlError()
-{
-	GLenum glerr = GL_NO_ERROR;
-	do
-	{
-		switch (glGetError())
-		{
-			case (GL_INVALID_ENUM): Messenger::print(Messenger::Verbose, "GLenum argument out of range"); break;
-			case (GL_INVALID_VALUE): Messenger::print(Messenger::Verbose, "Numeric argument out of range"); break;
-			case (GL_INVALID_OPERATION): Messenger::print(Messenger::Verbose, "Operation illegal in current state"); break;
-			case (GL_STACK_OVERFLOW): Messenger::print(Messenger::Verbose, "Command would cause a stack overflow"); break;
-			case (GL_STACK_UNDERFLOW): Messenger::print(Messenger::Verbose, "Command would cause a stack underflow"); break;
-			case (GL_OUT_OF_MEMORY): Messenger::print(Messenger::Verbose, "Not enough memory left to execute command"); break;
-			case (GL_NO_ERROR): Messenger::print(Messenger::Verbose, "No GL error"); break;
-			default:
-				Messenger::print(Messenger::Verbose, "Unknown GL error?");
-				break;
-		}
-	} while (glerr != GL_NO_ERROR);
-}
-
 // Set line width and text scaling to use
 void Viewer::setObjectScaling(double scaling)
 {

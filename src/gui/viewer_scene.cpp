@@ -232,6 +232,7 @@ void Viewer::initializeGL()
 	// Setup function pointers to OpenGL extension functions
 	initializeOpenGLFunctions();
 
+
 	// Setup offscreen context
 	Messenger::print(Messenger::Verbose, "Setting up offscreen context and surface...");
         offscreenContext_.setShareContext(context());
@@ -241,15 +242,15 @@ void Viewer::initializeGL()
 	offscreenSurface_.create();
 	Messenger::print(Messenger::Verbose, "Done.");
 
-	// Make sure low-quality primitives are up-to-date
-	updatePrimitives(Viewer::LowQuality);
-
         // Check for vertex buffer extensions
         if ((!hasOpenGLFeature(QOpenGLFunctions::Buffers)) && (PrimitiveInstance::globalInstanceType() == PrimitiveInstance::VBOInstance))
         {
                 Messenger::warn("VBO extension is requested but not available, so reverting to display lists instead.\n");
                 PrimitiveInstance::setGlobalInstanceType(PrimitiveInstance::ListInstance);
         }
+
+	// Make sure low-quality primitives are up-to-date
+	updatePrimitives(Viewer::LowQuality);
 
 	valid_ = true;
 

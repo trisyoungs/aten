@@ -36,7 +36,7 @@ PrimitiveInstance::PrimitiveInstance() : ListItem<PrimitiveInstance>()
 {
 	// Private variables
 	context_ = NULL;
-	type_ = PrimitiveInstance::ListInstance;
+	type_ = globalInstanceType_;
 	listObject_ = 0;
 	vboVertexObject_ = 0;
 	vboIndexObject_ = 0;

@@ -112,6 +112,16 @@ class Primitive : public ListItem<Primitive>
 
 
 	/*
+	 * GL Error Reporting
+	 */
+	public:
+	// Clear GL errors
+	static void clearGLErrors();
+	// Check for GL errors, returning if any were encountered
+	static bool glFlaggedError();
+
+
+	/*
 	 * Vertex / Index Generation
 	 */
 	public:
