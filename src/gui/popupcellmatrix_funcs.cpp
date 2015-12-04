@@ -60,6 +60,7 @@ void CellMatrixPopup::updateControls()
 // Call named method associated to popup
 bool CellMatrixPopup::callMethod(QString methodName, ReturnValue& rv)
 {
+	bool result = true;
 	if (methodName == "TEST") return true;
 	else if (methodName == "hideEvent")
 	{
@@ -69,8 +70,12 @@ bool CellMatrixPopup::callMethod(QString methodName, ReturnValue& rv)
 	{	
 		CommandNode::run(Commands::CellAxes, "ddddddddd", ui.AxisAXSpin->value(), ui.AxisAYSpin->value(), ui.AxisAZSpin->value(), ui.AxisBXSpin->value(), ui.AxisBYSpin->value(), ui.AxisBZSpin->value(), ui.AxisCXSpin->value(), ui.AxisCYSpin->value(), ui.AxisCZSpin->value());
 	}
-	else printf("No method called '%s' is available in this popup.\n", qPrintable(methodName));
-	return false;
+	else
+	{
+		printf("No method called '%s' is available in this popup.\n", qPrintable(methodName));
+		result = false;
+	}
+	return result;
 }
 
 /*

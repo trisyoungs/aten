@@ -50,13 +50,18 @@ void FileAtenPopup::updateControls()
 // Call named method associated to popup
 bool FileAtenPopup::callMethod(QString methodName, ReturnValue& rv)
 {
+	bool result = true;
 	if (methodName == "TEST") return true;
 	else if (methodName == "hideEvent")
 	{
 		return true;
 	}
-	else printf("No method called '%s' is available in this popup.\n", qPrintable(methodName));
-	return false;
+	else
+	{
+		printf("No method called '%s' is available in this popup.\n", qPrintable(methodName));
+		result = false;
+	}
+	return result;
 }
 
 /*

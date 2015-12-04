@@ -215,7 +215,7 @@ void TMenuButton::paintEvent(QPaintEvent* event)
 				arrowOpt.rect = arrowRect;
 				arrowOpt.palette = inner.palette;
 				arrowOpt.state = inner.state;
-				if (instantPopup_)
+				if (!instantPopup_)
 				{
 					if (!(inner.state & QStyle::State_Enabled))
 					{

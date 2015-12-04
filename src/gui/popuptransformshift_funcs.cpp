@@ -45,6 +45,7 @@ void TransformShiftPopup::updateControls()
 // Call named method associated to popup
 bool TransformShiftPopup::callMethod(QString methodName, ReturnValue& rv)
 {
+	bool result = true;
 	if (methodName == "TEST") return true;
 	else if (methodName == "hideEvent")
 	{
@@ -65,8 +66,12 @@ bool TransformShiftPopup::callMethod(QString methodName, ReturnValue& rv)
 		ui.MagnitudeLabel->setText(QString::number(v.magnitude()));
 		return true;
 	}
-	else printf("No method called '%s' is available in this popup.\n", qPrintable(methodName));
-	return false;
+	else
+	{
+		printf("No method called '%s' is available in this popup.\n", qPrintable(methodName));
+		result = false;
+	}
+	return result;
 }
 
 /*
