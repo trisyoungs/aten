@@ -94,13 +94,13 @@ bool TMenuButton::callPopupMethod(QString methodName, ReturnValue& rv)
 // Notify button that popup is done
 void TMenuButton::popupDone(bool setButtonDown, UserAction::Action userActionToEnable)
 {
-	// What we do here exactly depends on the current stated of the button
-	if (!setButtonDown)
+	// What we do here exactly depends on the current state of the button
+	if ((!setButtonDown) && (userActionToEnable != atenWindow_->selectedMode()))
 	{
 		setDown(false);
 		setChecked(false);
 	}
-	else if (group_) group_->setCurrentButton(this);
+	else if (group_ && (!isDown())) group_->setCurrentButton(this);
 
 	if (userActionToEnable != UserAction::NoAction) atenWindow_->setSelectedMode(userActionToEnable);
 

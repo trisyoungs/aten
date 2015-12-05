@@ -72,7 +72,7 @@ void AddHPopup::on_AddHSelectionButton_clicked(bool checked)
 	parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
 
 	// Hide popup
-	done();
+	done(false, UserAction::DrawAddHydrogenAction);
 }
 
 void AddHPopup::on_AddHModelButton_clicked(bool checked)
@@ -84,5 +84,5 @@ void AddHPopup::on_AddHModelButton_clicked(bool checked)
 	parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
 
 	// Hide popup
-	done();
+	done(false, UserAction::DrawAddHydrogenAction);
 }

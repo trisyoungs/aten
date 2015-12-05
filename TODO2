@@ -15,7 +15,6 @@ o Continuous image saving - function key to save image under a set-filename, inc
 Intelligent Select - add support for selection by type name (e.g. O*, OW etc.).
 Add set members to Matrix class allowing axes to be set from atoms in models.
 Printf command buffered output is never printed if no newline ever occurs.  Need to store data somewhere other than the Printf function itself, and flush it at the end of command execution.
-Selecting a long-press option on an already-selected TMenuButton wrongly un-checks the button (but does not exit the mode).
 Add recent files menu to Script load button.
 
 Graphics TODO
@@ -30,7 +29,6 @@ Make main view background and text/overlay colour aware of Qt widget colouring s
 Frame individual model areas when displaying multiple models.
 Automatically adjust grid size for number of visible models, based on current aspect ratio and context size etc.
 Multiple bonds (double, definitely) are not drawn correctly, becoming squashed as the bond length increases.
-Partition schemes are not displayed in target model in Disordered Builder.
 
 GUI TODO
 ========

@@ -262,7 +262,7 @@ void PrimitiveSet::recreatePrimitives()
 
 	currentQuality_ = requestedQuality_;
 
-	Task* task = Messenger::initialiseTask("Generating high-quality primitives", 33);
+	Task* task = Messenger::initialiseTask("(Re)generating primitives", 33);
 
 	// Clear old primitives
 	atom_.forgetAll();

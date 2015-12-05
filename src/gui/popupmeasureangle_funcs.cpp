@@ -72,6 +72,6 @@ void MeasureAnglePopup::on_SelectionButton_clicked(bool checked)
 	parent_.updateWidgets(AtenWindow::MainViewTarget);
 
 	// Hide popup
-	done();
+	done(false, UserAction::MeasureAngleAction);
 }
 

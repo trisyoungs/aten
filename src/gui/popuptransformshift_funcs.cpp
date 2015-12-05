@@ -78,7 +78,6 @@ bool TransformShiftPopup::callMethod(QString methodName, ReturnValue& rv)
  * Widget Functions
  */
 
-// void shiftPickAxisButton_callback(RefList<Atom,int>* picked)
 void TransformShiftPopup::on_PickButton_clicked(bool checked)
 {
 	// Enter manual picking mode

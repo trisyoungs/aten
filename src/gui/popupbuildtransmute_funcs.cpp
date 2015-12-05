@@ -72,5 +72,5 @@ void TransmutePopup::on_TransmuteSelectionButton_clicked(bool checked)
 	parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
 
 	// Hide popup
-	done();
+	done(false, UserAction::DrawTransmuteAction);
 }

@@ -34,7 +34,9 @@ TPopupWidget::TPopupWidget(TMenuButton* parent) : QWidget(parent, Qt::FramelessW
 	widgetDone_ = false;
 }
 
-// Protected Functions
+/*
+ * Protected Functions
+ */
 
 // Local function called when the widget should be closed after a button has been selceted
 void TPopupWidget::done(bool setParentButtonDown, UserAction::Action userActionToEnable)
@@ -53,7 +55,9 @@ void TPopupWidget::changed(int data)
 	if (parentMenuButton_) parentMenuButton_->popupWidgetChanged(data);
 }
 
-// Public
+/*
+ * Public
+ */
 
 // Show popup, updating any controls as necessary beforehand
 void TPopupWidget::popup()
@@ -81,7 +85,9 @@ TMenuButton* TPopupWidget::parentMenuButton()
 	return parentMenuButton_;
 }
 
-// Virtual Reimplementations
+/*
+ * Virtual Reimplementations
+ */
 
 void TPopupWidget::hideEvent(QHideEvent* event)
 {

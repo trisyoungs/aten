@@ -165,45 +165,6 @@ bool TransformConvertPopup::callMethod(QString methodName, ReturnValue& rv)
  * Widget Functions
  */
 
-void convertSourcePickXButton_callback(RefList<Atom,int>* picked)
-{
-// 	ui.SourcePickXButton->setChecked(false); ATEN2 TODO
-// 	// If there are not two atoms in the list then the mode must have been canceled
-// 	if (picked->nItems() != 2) return;
-// 	Vec3<double> v = picked->last()->item->r();
-// 	v -= picked->first()->item->r();
-// 	v.normalise();
-// 	ui.SourceMatrixXXSpin->setValue(v.x);
-// 	ui.SourceMatrixXYSpin->setValue(v.y);
-// 	ui.SourceMatrixXZSpin->setValue(v.z);
-}
-
-void convertSourcePickYButton_callback(RefList<Atom,int>* picked)
-{
-// 	ui.SourcePickYButton->setChecked(false); ATEN2 TODO
-// 	// If there are not two atoms in the list then the mode must have been canceled
-// 	if (picked->nItems() != 2) return;
-// 	Vec3<double> v = picked->last()->item->r();
-// 	v -= picked->first()->item->r();
-// 	v.normalise();
-// 	ui.SourceMatrixYXSpin->setValue(v.x);
-// 	ui.SourceMatrixYYSpin->setValue(v.y);
-// 	ui.SourceMatrixYZSpin->setValue(v.z);
-}
-
-void convertSourcePickZButton_callback(RefList<Atom,int>* picked)
-{
-// 	ui.SourcePickZButton->setChecked(false); ATEN2 TODO
-// 	// If there are not two atoms in the list then the mode must have been canceled
-// 	if (picked->nItems() != 2) return;
-// 	Vec3<double> v = picked->last()->item->r();
-// 	v -= picked->first()->item->r();
-// 	v.normalise();
-// 	ui.SourceMatrixZXSpin->setValue(v.x);
-// 	ui.SourceMatrixZYSpin->setValue(v.y);
-// 	ui.SourceMatrixZZSpin->setValue(v.z);
-}
-
 void TransformConvertPopup::on_SourcePickXButton_clicked(bool checked)
 {
 	// Enter manual picking mode

@@ -172,26 +172,16 @@ void AtenWindow::updateWidgets(int targets)
 	// Update contents of the glyph list
 	if (targets&AtenWindow::GlyphsTarget) glyphsWidget->refresh();
 
-
+	// Main window statusbar
 	if (targets&AtenWindow::StatusBarTarget)
 	{
+		// Update mode help text
 		QString text;
-		static UserAction::Action lastAction = UserAction::NoAction;
-		
-		// Initialise string if NoAction
-		if (lastAction == UserAction::NoAction) text.clear();
-		
-		// If current action is not the same as the last action, recreate string
-		if (lastAction != selectedMode_)
-		{
-			lastAction = selectedMode_;
-			text.sprintf("<b>%s:</b> %s", UserActions[lastAction].name, UserActions[lastAction].unModified);
-			if (UserActions[lastAction].shiftModified[0] != '\0') text += ", <b>+shift</b> " + QString(UserActions[lastAction].shiftModified);
-			if (UserActions[lastAction].ctrlModified[0] != '\0') text += ", <b>+ctrl</b> " + QString(UserActions[lastAction].ctrlModified);
-			if (UserActions[lastAction].altModified[0] != '\0') text += ", <b>+alt</b> " + QString(UserActions[lastAction].altModified);
-		}
+		text.sprintf("<b>%s:</b> %s", UserActions[selectedMode_].name, UserActions[selectedMode_].unModified);
+		if (UserActions[selectedMode_].shiftModified[0] != '\0') text += ", <b>+shift</b> " + QString(UserActions[selectedMode_].shiftModified);
+		if (UserActions[selectedMode_].ctrlModified[0] != '\0') text += ", <b>+ctrl</b> " + QString(UserActions[selectedMode_].ctrlModified);
+		if (UserActions[selectedMode_].altModified[0] != '\0') text += ", <b>+alt</b> " + QString(UserActions[selectedMode_].altModified);
 
-		// Set text in statusbar widget
 		this->setMessageLabel(text);
 	}
 

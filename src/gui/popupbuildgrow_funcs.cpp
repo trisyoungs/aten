@@ -231,5 +231,5 @@ void GrowPopup::on_GrowSelectionButton_clicked(bool checked)
 	else CommandNode::run(Commands::SelectionGrowAtom, "ic", parent_.currentBuildElement(), Atom::atomGeometry(parent_.buildGeometry()));
 
 	// Hide popup
-	done();
+	done(false, UserAction::DrawGrowAtomsAction);
 }
