@@ -23,10 +23,8 @@
 #define ATEN_TMENUBUTTON_H
 
 #include <QToolButton>
-// #include <QMouseEvent>
 #include <QTimer>
 #include "gui/tmenubuttongroup.h"
-// #include <QTime>
 #include "parser/returnvalue.h"
 #include "gui/useractions.h"
 

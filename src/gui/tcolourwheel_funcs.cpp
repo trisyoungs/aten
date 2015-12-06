@@ -339,7 +339,7 @@ void TColourWheel::hueChanged(const int hue)
 		update();
 	}
 
-	emit colourChanged(currentColour_);
+	emit(colourChanged(currentColour_));
 }
 
 // Saturation / value changed, so update
@@ -356,7 +356,7 @@ void TColourWheel::svChanged(const QColor newcolor)
 		update();
 	}
 
-	emit colourChanged(currentColour_);
+	emit(colourChanged(currentColour_));
 }
 
 /*
@@ -385,5 +385,5 @@ void TColourWheel::setColour(const QColor colour)
 	update();
 
 	// Signal that the colour has been changed
-	emit colourChanged(currentColour_);
+	emit(colourChanged(currentColour_));
 }

@@ -77,6 +77,7 @@ SET(gui_MOC_HDRS
   tmenubutton.hui
   tmenubuttongroup.h
   tpopupwidget.hui
+  trecentfiles.hui
   ttablewidget.hui
   ttabwidget.hui
   ttreewidget.hui
@@ -269,6 +270,7 @@ set(gui_SRCS
   texponentialspin_funcs.cpp
   tintegerspindelegate_funcs.cpp
   ttabwidget_funcs.cpp
+  trecentfiles_funcs.cpp
   textratreewidgetitem_funcs.cpp
   vibrations_funcs.cpp
   viewbasis_funcs.cpp

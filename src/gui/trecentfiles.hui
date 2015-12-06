@@ -1,0 +1,106 @@
+/*
+	*** Recent Files Widget
+	*** src/gui/trecentfiles.hui
+	Copyright T. Youngs 2007-2015
+
+	This file is part of Aten.
+
+	Aten is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	Aten is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#ifndef ATEN_RECENTFILES_H
+#define ATEN_RECENTFILES_H
+
+#include "parser/returnvalue.h"
+#include <QWidget>
+
+// Forward Declarations (Qt)
+class QTableWidgetItem;
+class QVBoxLayout;
+class QTableWidget;
+
+ATEN_BEGIN_NAMESPACE
+
+// Forward Declarations (Aten)
+/* none */
+
+ATEN_END_NAMESPACE
+
+ATEN_USING_NAMESPACE
+
+// Recent Files
+class TRecentFiles : public QWidget
+{
+	// All Qt declarations derived from QObject must include this macro
+	Q_OBJECT
+
+	public:
+	// Constructor / Destructor
+	TRecentFiles(QWidget* parent);
+
+
+	/*
+	 * Widgets
+	 */
+	private:
+	// Layout for widgets
+	QVBoxLayout* layout_;
+	// Files table
+	QTableWidget* filesTable_;
+	// Whether the widget is currently refreshing
+	bool refreshing_;
+
+	public:
+	// Update controls
+	void updateControls();
+
+
+	/*
+	 * Data
+	 */
+	private:
+	// Maximum number of recent files to store in our list
+	const int maxRecentFiles_;
+	// List of recent files
+	QStringList recentFiles_;
+
+	public:
+	// Add file to list
+	void addFile(QString fileName);
+	// Return maximum allowable files in list
+	int maxFiles();
+	// Return number of files in list
+	int nFiles();
+	// Return nth recent file in list
+	QString file(int n);
+
+
+	/*
+	 * Signals
+	 */
+	signals:
+	void fileSelected(QString fileName);
+
+
+	/*
+	 * Widget Functions
+	 */
+	private slots:
+	// Context menu requested for FilesTable
+	void filesTableContextMenuRequested(const QPoint& point);
+	// Item clicked in FilesTable
+	void filesTableItemClicked(QTableWidgetItem* item);
+};
+
+#endif

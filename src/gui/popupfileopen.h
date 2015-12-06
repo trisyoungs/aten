@@ -67,22 +67,11 @@ class FileOpenPopup : public TPopupWidget
 
 
 	/*
-	 * Data
-	 */
-	private:
-	// Maximum number of recent files to store in our list
-	const int maxRecentFiles_;
-	// List of recent files
-	QStringList recentFiles_;
-
-
-	/*
 	 * Widget Functions
 	 */
 	private slots:
-	// Context menu requested for FilesTable
-	void filesTableContextMenuRequested(const QPoint& point);
-	void on_FilesTable_itemClicked(QTableWidgetItem* item);
+	// Load specified file
+	void loadFile(QString fileName);
 };
 
 #endif
