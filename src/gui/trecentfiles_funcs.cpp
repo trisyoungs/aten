@@ -22,7 +22,7 @@
 #include "gui/trecentfiles.hui"
 #include "base/namespace.h"
 #include <QVBoxLayout>
-#include <QTableWidget>
+#include <QListWidget>
 #include <QFileInfo>
 #include <QMenu>
 
@@ -37,14 +37,17 @@ TRecentFiles::TRecentFiles(QWidget* parent) : QWidget(parent), maxRecentFiles_(1
 	layout_->setSpacing(2);
 
 	// Create widgets
-	filesTable_ = new QTableWidget(this);
-	layout_->addWidget(filesTable_);
+	filesList_ = new QListWidget(this);
+	filesList_->setContextMenuPolicy(Qt::CustomContextMenu);
+
+	// Add widgets to layout
+	layout_->addWidget(filesList_);
 
 	refreshing_ = false;
 
 	// Connect signal for context menu on FilesTable
-	connect(filesTable_, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(filesTableContextMenuRequested(QPoint)));
-	connect(filesTable_, SIGNAL(itemClicked(QTableWidgetItem*)), this, SLOT(filesTableItemClicked(QTableWidgetItem*)));
+	connect(filesList_, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(filesListContextMenuRequested(QPoint)));
+	connect(filesList_, SIGNAL(itemClicked(QListWidgetItem*)), this, SLOT(filesListItemClicked(QListWidgetItem*)));
 }
 
 // Update controls
@@ -53,11 +56,9 @@ void TRecentFiles::updateControls()
 	refreshing_ = true;
 
 	// Recreate the list
-	filesTable_->clear();
-	filesTable_->setColumnCount(1);
-	filesTable_->setRowCount(recentFiles_.count());
+	filesList_->clear();
 
-	QTableWidgetItem* item;
+	QListWidgetItem* item;
 	int count = 0;
 	for (int n=0; n<recentFiles_.count(); ++n)
 	{
@@ -68,14 +69,12 @@ void TRecentFiles::updateControls()
 			continue;
 		}
 
-		item = new QTableWidgetItem(recentFiles_.at(n));
+		item = new QListWidgetItem(recentFiles_.at(n));
 		item->setToolTip(recentFiles_.at(n));
 		item->setData(Qt::UserRole, count);
-		filesTable_->setItem(count++, 0, item);
+// 		item->setCheckState(Qt::Unchecked);
+		filesList_->addItem(item);
 	}
-
-	filesTable_->setColumnWidth(0, width());
-	filesTable_->setRowCount(count);
 
 	refreshing_ = false;
 }
@@ -130,7 +129,7 @@ QString TRecentFiles::file(int n)
  * Widget Functions
  */
 
-void TRecentFiles::filesTableItemClicked(QTableWidgetItem* item)
+void TRecentFiles::filesListItemClicked(QListWidgetItem* item)
 {
 	if (item == NULL) return;
 
@@ -139,10 +138,10 @@ void TRecentFiles::filesTableItemClicked(QTableWidgetItem* item)
 }
 
 // Context menu requested for FilesTable
-void TRecentFiles::filesTableContextMenuRequested(const QPoint& point)
+void TRecentFiles::filesListContextMenuRequested(const QPoint& point)
 {
 	// Is there an item under the pointer?
-	QTableWidgetItem* item = filesTable_->itemAt(point);
+	QListWidgetItem* item = filesList_->itemAt(point);
 	if (!item) return;
 
 	// Build the context menu to display

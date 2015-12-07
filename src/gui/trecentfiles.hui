@@ -26,9 +26,9 @@
 #include <QWidget>
 
 // Forward Declarations (Qt)
-class QTableWidgetItem;
+class QListWidget;
 class QVBoxLayout;
-class QTableWidget;
+class QListWidgetItem;
 
 ATEN_BEGIN_NAMESPACE
 
@@ -56,8 +56,8 @@ class TRecentFiles : public QWidget
 	private:
 	// Layout for widgets
 	QVBoxLayout* layout_;
-	// Files table
-	QTableWidget* filesTable_;
+	// Files list
+	QListWidget* filesList_;
 	// Whether the widget is currently refreshing
 	bool refreshing_;
 
@@ -98,9 +98,9 @@ class TRecentFiles : public QWidget
 	 */
 	private slots:
 	// Context menu requested for FilesTable
-	void filesTableContextMenuRequested(const QPoint& point);
+	void filesListContextMenuRequested(const QPoint& point);
 	// Item clicked in FilesTable
-	void filesTableItemClicked(QTableWidgetItem* item);
+	void filesListItemClicked(QListWidgetItem* item);
 };
 
 #endif
