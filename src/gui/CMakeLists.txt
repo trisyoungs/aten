@@ -264,7 +264,7 @@ set(gui_SRCS
   tcolourframe_funcs.cpp
   tcolourwheel_funcs.cpp
   tmenubutton_funcs.cpp
-  tmenubuttongroup_funcs.cpp
+  tmenubuttongroup.cpp
   tpopupwidget_funcs.cpp
   tdoublespindelegate_funcs.cpp
   texponentialspin_funcs.cpp
