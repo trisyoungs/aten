@@ -16,6 +16,9 @@ Intelligent Select - add support for selection by type name (e.g. O*, OW etc.).
 Add set members to Matrix class allowing axes to be set from atoms in models.
 Printf command buffered output is never printed if no newline ever occurs.  Need to store data somewhere other than the Printf function itself, and flush it at the end of command execution.
 Add recent files menu to Script load button.
+Tube bond radius can't be changed?
+Ctrl-N doesn't create new model.
+Crash when tree selecting large models (recursion overflow?)
 
 Graphics TODO
 =============
