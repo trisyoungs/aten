@@ -292,7 +292,7 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportFilmD
 	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_Down), this, 0, 0, Qt::ApplicationShortcut);
 	connect(shortcut, SIGNAL(activated()), ui.ModelsNextButton, SLOT(click()));
 	// Home Panel (File)
-	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::ALT + Qt::Key_N), this, 0, 0, Qt::ApplicationShortcut);
+	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_N), this, 0, 0, Qt::ApplicationShortcut);
 	connect(shortcut, SIGNAL(activated()), ui.HomeFileNewButton, SLOT(click()));
 	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_O), this, 0, 0, Qt::ApplicationShortcut);
 	connect(shortcut, SIGNAL(activated()), ui.HomeFileOpenButton, SLOT(click()));

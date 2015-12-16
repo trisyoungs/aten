@@ -31,6 +31,17 @@ CellMatrixPopup::CellMatrixPopup(AtenWindow& parent, TMenuButton* buttonParent) 
 {
 	// Set up interface
 	ui.setupUi(this);
+
+	// Unset limits on spinboxes
+	ui.AxisAXSpin->setRange(false, 0.0, false, 0.0);
+	ui.AxisAYSpin->setRange(false, 0.0, false, 0.0);
+	ui.AxisAZSpin->setRange(false, 0.0, false, 0.0);
+	ui.AxisBXSpin->setRange(false, 0.0, false, 0.0);
+	ui.AxisBYSpin->setRange(false, 0.0, false, 0.0);
+	ui.AxisBZSpin->setRange(false, 0.0, false, 0.0);
+	ui.AxisCXSpin->setRange(false, 0.0, false, 0.0);
+	ui.AxisCYSpin->setRange(false, 0.0, false, 0.0);
+	ui.AxisCZSpin->setRange(false, 0.0, false, 0.0);
 }
 
 // Update controls (before show()) (virtual)

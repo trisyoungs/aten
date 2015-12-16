@@ -27,6 +27,7 @@ ATEN_USING_NAMESPACE
 
 // Static Objects
 RefList<Primitive,int> PrimitiveSet::dynamicPrimitives_;
+int PrimitiveSet::logPoint_ = 0;
 int PrimitiveSet::nInstances_;
 
 // Constructor
@@ -37,7 +38,8 @@ PrimitiveSet::PrimitiveSet()
 	scaledAtomAdjustments_.createEmpty(Elements().nElements());
 
 	// Primitives
-	requestedQuality_ = -1;
+	creationPoint_ = -1;
+	requestedQuality_ = 0;
 	currentQuality_ = -1;
 	nInstances_ = 0;
 }
@@ -244,7 +246,13 @@ void PrimitiveSet::setQuality(int quality)
 {
 	requestedQuality_ = quality;
 }
-	
+
+// Flag the primitive set for regeneration
+void PrimitiveSet::flagForReCreation()
+{
+	++logPoint_;
+}
+
 // (Re)Generate primitives
 void PrimitiveSet::recreatePrimitives()
 {
@@ -254,13 +262,14 @@ void PrimitiveSet::recreatePrimitives()
 	int n, m, nStacks, nSlices;
 	
 	// If current quality is the same as the requested quality, do nothing
-	if (requestedQuality_ == currentQuality_)
+	if ((requestedQuality_ == currentQuality_) && (logPoint_ == creationPoint_))
 	{
 		Messenger::exit("PrimitiveSet::recreatePrimitives");
 		return;
 	}
 
 	currentQuality_ = requestedQuality_;
+	creationPoint_ = logPoint_;
 
 	Task* task = Messenger::initialiseTask("(Re)generating primitives", 33);
 

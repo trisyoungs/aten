@@ -272,6 +272,8 @@ bool AtenWindow::exportFilm()
 			{
 				Messenger::error("Encoding canceled.");
 				cleanupFilmExport(frameImages, framesFile);
+				Messenger::terminateTask(commandTask);
+				Messenger::terminateTask(encoderTask);
 				return false;
 			}
 		}

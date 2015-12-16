@@ -187,15 +187,10 @@ void RenderGroup::createBond(PrimitiveSet& primitiveSet, Matrix A, Vec3<double> 
 {
 	double dvisible, selvisible, factor, rij, phi;
 	Vec3<double> ri, rj, localx, localy, localz, stickpos, dx, normz;
-	GLfloat alpha_i, alpha_j;
 	Primitive& iLinePrimitives = (i->isSelected() ? extraBoldLines_ : extraNormalLines_);
 	Primitive& jLinePrimitives = (j->isSelected() ? extraBoldLines_ : extraNormalLines_);
 	Matrix B;
 
-	// Store copies of alpha values
-	alpha_i = colour_i[3];
-	alpha_j = colour_j[3];
-	
 	localz = vij;
 	rij = localz.magAndNormalise();
 	
@@ -361,7 +356,6 @@ void RenderGroup::createAtomsAndBonds(PrimitiveSet& primitiveSet, Model* source,
 	RefListItem<Atom,int>* ra;
 	Prefs::DrawStyle style_i, style_j, globalstyle;
 	Prefs::ColouringScheme scheme;
-	ForcefieldAtom* ffa;
 
 	// Grab global style values and atom radii
 	scheme = prefs.colourScheme();

@@ -151,16 +151,11 @@ QPixmap Viewer::generateImage(int imageWidth, int imageHeight)
 	int nY = imageHeight / tileHeight + ((imageHeight %tileHeight) ? 1 : 0);
 
 	// Loop over tiles in x and y
-	QProgressDialog progress("Generating tiled image", "Cancel", 0, nX*nY, atenWindow_);
-	progress.setWindowTitle("Aten");
+	Task* task = Messenger::initialiseTask("Generating tiled image", nX*nY);
 	for (int x=0; x<nX; ++x)
 	{
 		for (int y=0; y<nY; ++y)
 		{
-			// Set progress value and check for cancellation
-			if (progress.wasCanceled()) break;
-			progress.setValue(x*nY+y);
-
 			// Generate this tile
 			frameBufferObject.bind();
 			glClearColor(col[0], col[1], col[2], col[3]);
@@ -169,13 +164,16 @@ QPixmap Viewer::generateImage(int imageWidth, int imageHeight)
 
 			// Generate this tile
 			QImage fboImage(frameBufferObject.toImage());
-			QImage tile(fboImage.constBits(), fboImage.width(), fboImage.height(), QImage::Format_ARGB32);
+			QImage tile(fboImage.constBits(), fboImage.width(), fboImage.height(), fboImage.format());
 
 			// Paste this tile into the main image
 			painter.drawImage(x*tileWidth, imageHeight-(y+1)*tileHeight, tile);
+
+			if (!Messenger::incrementTaskProgress(task)) break;
 		}
-		if (progress.wasCanceled()) break;
+		if (!Messenger::incrementTaskProgress(task)) break;
 	}
+	Messenger::terminateTask(task);
 
 	// Finalise painter
 	painter.end();

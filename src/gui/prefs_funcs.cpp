@@ -274,8 +274,16 @@ void AtenPrefs::updateAfterViewPrefs()
 void AtenPrefs::setRadiusChanged(Prefs::DrawStyle ds, double value, bool foratom)
 {
 	if (refreshing_) return;
+
 	if (foratom) prefs.setAtomStyleRadius(ds, value);
 	else prefs.setBondStyleRadius(ds, value);
+
+	if (!foratom)
+	{
+		PrimitiveSet::flagForReCreation();
+		parent_.ui.MainView->updatePrimitives(Viewer::LowQuality);
+	}
+
 	updateAfterViewPrefs();
 }
 

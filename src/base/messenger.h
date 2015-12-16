@@ -138,6 +138,10 @@ class Messenger
 	static QString cliProgressText_;
 	// Buffer point at which a message was last backprinted as a result of showCLIProgress
 	static int backPrintedMessagePoint_;
+	// Time at which first (main) task was started
+	static QDateTime tasksStartTime_;
+	// Minimum amount of time that needs to have elapsed (in msecs) before the progress dialog is shown
+	static int minimumDialogShowTime_;
 
 	private:
 	// Whether the progress indicator should be shown

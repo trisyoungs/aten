@@ -139,16 +139,22 @@ class PrimitiveSet
 	 * Creation / Instantiation
 	 */
 	private:
+	// Log for tweaks affecting primitives across all sets
+	static int logPoint_;
 	// Number of instances of primitives
 	static int nInstances_;
 	// Quality setting that primitives should be next generated at
 	int requestedQuality_;
 	// Quality setting that primitives were last generated at (if at all)
 	int currentQuality_;
+	// Logpoint at which primitives were last recreated
+	int creationPoint_;
 
 	public:
 	// Set the desired primitive quality
-	void setQuality(int quality);	
+	void setQuality(int quality);
+	// Flag all primitive sets for regeneration
+	static void flagForReCreation();
 	// (Re)Generate primitive vertex arrays (if necessary)
 	void recreatePrimitives();
 	// Push instance layer for all primitives

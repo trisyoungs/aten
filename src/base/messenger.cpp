@@ -41,6 +41,8 @@ int Messenger::taskPoint_ = -1;
 QString Messenger::cliProgressText_;
 int Messenger::messageBufferPoint_ = 0;
 int Messenger::backPrintedMessagePoint_ = -1;
+QDateTime Messenger::tasksStartTime_;
+int Messenger::minimumDialogShowTime_ = 3000;
 
 // Message output types
 const char* OutputTypeKeywords[] = { "all", "calls", "commands", "parse", "typing", "verbose" };
@@ -339,7 +341,7 @@ bool Messenger::progressIndicatorRequired()
 	RefListItem<Task,int>* ri= tasks_.first();
 	Task* task = ri->item;
 
-	return (task->startTime().secsTo(QDateTime::currentDateTime()) >= 0);
+	return (tasksStartTime_.msecsTo(QDateTime::currentDateTime()) >= minimumDialogShowTime_);
 }
 
 // Show CLI progress indicator
@@ -377,6 +379,9 @@ Task* Messenger::initialiseTask(QString title, int totalSteps)
 
 	task->initialise(title, totalSteps);
 	++taskPoint_;
+
+	// If this is the first task in the list, reset the start time
+	if (tasks_.nItems() == 1) tasksStartTime_ = QDateTime::currentDateTime();
 
 	return task;
 }

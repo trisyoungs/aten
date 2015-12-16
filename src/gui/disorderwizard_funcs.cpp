@@ -28,7 +28,6 @@
 #include "base/sysfunc.h"
 #include "parser/commandnode.h"
 #include "templates/variantpointer.h"
-#include <QProgressDialog>
 
 // Constructor
 DisorderWizard::DisorderWizard(AtenWindow& parent) : QWizard(&parent), parent_(parent)
