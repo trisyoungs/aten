@@ -287,7 +287,7 @@ class AtenWindow : public QMainWindow
 
 	private slots:
 	// Manage
-	void on_GridsManageLoadButton_clicked(bool checked);
+	void on_GridsManageOpenButton_clicked(bool checked);
 	void on_GridsManageRemoveButton_clicked(bool checked);
 	void on_GridsList_currentRowChanged(int row);
 	void on_GridsList_itemChanged(QListWidgetItem* item);
@@ -348,8 +348,8 @@ class AtenWindow : public QMainWindow
 	private slots:
 	// Manage
 	void on_ForcefieldsList_currentRowChanged(int row);
-	void on_ForcefieldsManageLoadButton_clicked(bool checked);
-	void on_ForcefieldsManageCloseButton_clicked(bool checked);
+	void on_ForcefieldsManageOpenButton_clicked(bool checked);
+	void on_ForcefieldsManageRemoveButton_clicked(bool checked);
 	void on_ForcefieldsManageEditButton_clicked(bool checked);
 	void on_ForcefieldsManageAssignButton_clicked(bool checked);
 	// Calculate
@@ -427,7 +427,7 @@ class AtenWindow : public QMainWindow
 
 	private slots:
 	// Scripts
-	void on_ToolsScriptsLoadButton_clicked(bool checked);
+	void on_ToolsScriptsOpenButton_clicked(bool checked);
 	void on_ToolsScriptsRemoveButton_clicked(bool checked);
 	void on_ToolsScriptsReloadButton_clicked(bool checked);
 	void on_ToolsScriptsRunButton_clicked(bool checked);

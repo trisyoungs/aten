@@ -59,7 +59,6 @@ void TRecentFiles::updateControls()
 	filesList_->clear();
 
 	QListWidgetItem* item;
-	int count = 0;
 	for (int n=0; n<recentFiles_.count(); ++n)
 	{
 		QFileInfo fileInfo(recentFiles_.at(n));
@@ -71,7 +70,7 @@ void TRecentFiles::updateControls()
 
 		item = new QListWidgetItem(recentFiles_.at(n));
 		item->setToolTip(recentFiles_.at(n));
-		item->setData(Qt::UserRole, count);
+		item->setData(Qt::UserRole, n);
 // 		item->setCheckState(Qt::Unchecked);
 		filesList_->addItem(item);
 	}

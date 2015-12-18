@@ -95,7 +95,7 @@ void AtenWindow::updateToolsPanel(Model* sourceModel)
  * Scripts
  */
 
-void AtenWindow::on_ToolsScriptsLoadButton_clicked(bool checked)
+void AtenWindow::on_ToolsScriptsOpenButton_clicked(bool checked)
 {
 	static QDir currentDirectory_(aten_.workDir());
 	QString filename = QFileDialog::getOpenFileName(this, "Load Script", currentDirectory_.path(), aten_.fileDialogFilters(FilterData::ExpressionImport));

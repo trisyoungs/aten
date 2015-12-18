@@ -57,7 +57,7 @@ void AtenWindow::updateGridsPanel(Model* sourceModel)
 
 	updateGridInformation(currentGrid);
 
-	ui.GridsManageLoadButton->setEnabled(!aten_.fileDialogFilters(FilterData::GridImport).isEmpty());
+	ui.GridsManageOpenButton->setEnabled(!aten_.fileDialogFilters(FilterData::GridImport).isEmpty());
 	ui.GridsManageRemoveButton->setEnabled(ui.GridsList->currentRow() != -1);
 
 	Messenger::exit("AtenWindow::updateGridPanel");
@@ -118,7 +118,7 @@ void AtenWindow::updateGridInformation(Grid* sourceGrid)
  * Manage
  */
 
-void AtenWindow::on_GridsManageLoadButton_clicked(bool checked)
+void AtenWindow::on_GridsManageOpenButton_clicked(bool checked)
 {
 	Tree* filter;
 	static QDir currentDirectory_(aten_.workDir());

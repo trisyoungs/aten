@@ -42,7 +42,7 @@ void AtenWindow::updateForcefieldsPanel(Model* sourceModel)
 		if (ff == aten_.currentForcefield()) ui.ForcefieldsList->setCurrentRow(n);
 		++n;
 	}
-	ui.ForcefieldsManageCloseButton->setEnabled(currentForcefield);
+	ui.ForcefieldsManageRemoveButton->setEnabled(currentForcefield);
 	ui.ForcefieldsManageEditButton->setEnabled(currentForcefield);
 	ui.ForcefieldsManageAssignButton->setEnabled(currentForcefield);
 // 	ui.AutomaticTypingGroup->setEnabled(ffselected);  // ATEN2 TODO
@@ -68,7 +68,7 @@ void AtenWindow::on_ForcefieldsList_currentRowChanged(int row)
 	aten_.setCurrentForcefield(row);
 }
 
-void AtenWindow::on_ForcefieldsManageLoadButton_clicked(bool checked)
+void AtenWindow::on_ForcefieldsManageOpenButton_clicked(bool checked)
 {
 	static QDir currentDirectory_(aten_.workDir());
 	QString filename = QFileDialog::getOpenFileName(this, "Open Forcefield", currentDirectory_.path(), aten_.fileDialogFilters(FilterData::ExpressionImport));
@@ -89,7 +89,7 @@ void AtenWindow::on_ForcefieldsManageLoadButton_clicked(bool checked)
 	updateWidgets(AtenWindow::MainViewTarget);
 }
 
-void AtenWindow::on_ForcefieldsManageCloseButton_clicked(bool checked)
+void AtenWindow::on_ForcefieldsManageRemoveButton_clicked(bool checked)
 {
 	aten_.removeForcefield(aten_.currentForcefield());
 

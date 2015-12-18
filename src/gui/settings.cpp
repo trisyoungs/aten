@@ -1,5 +1,5 @@
 /*
-	*** Qt Settings Load/Save
+	*** GUI Settings Load/Save
 	*** src/gui/settings.cpp
 	Copyright T. Youngs 2007-2015
 
@@ -55,9 +55,10 @@ void AtenWindow::loadSettings()
 
 		// Recent files
 		ReturnValue maxRecentFiles, recentFile;
+		// -- Models
 		if (ui.HomeFileOpenButton->callPopupMethod("maxRecentFiles", maxRecentFiles))
 		{
-			settings.beginGroup("RecentFiles");
+			settings.beginGroup("RecentModels");
 			for (n = 0; n < maxRecentFiles.asInteger(); ++n)
 			{
 				if (settings.contains(QString::number(n)))
@@ -68,6 +69,50 @@ void AtenWindow::loadSettings()
 			}
 			settings.endGroup();
 		}
+		// -- Forcefields
+		if (ui.ForcefieldsManageOpenButton->callPopupMethod("maxRecentFiles", maxRecentFiles))
+		{
+			settings.beginGroup("RecentForcefields");
+			for (n = 0; n < maxRecentFiles.asInteger(); ++n)
+			{
+				if (settings.contains(QString::number(n)))
+				{
+					recentFile = settings.value(QString::number(n)).toString();
+					ui.HomeFileOpenButton->callPopupMethod("addRecentFile", recentFile);
+				}
+			}
+			settings.endGroup();
+		}
+		// -- Grids
+		if (ui.GridsManageOpenButton->callPopupMethod("maxRecentFiles", maxRecentFiles))
+		{
+			settings.beginGroup("RecentGrids");
+			for (n = 0; n < maxRecentFiles.asInteger(); ++n)
+			{
+				if (settings.contains(QString::number(n)))
+				{
+					recentFile = settings.value(QString::number(n)).toString();
+					ui.HomeFileOpenButton->callPopupMethod("addRecentFile", recentFile);
+				}
+			}
+			settings.endGroup();
+		}
+		// -- Scripts
+		if (ui.ToolsScriptsOpenButton->callPopupMethod("maxRecentFiles", maxRecentFiles))
+		{
+			settings.beginGroup("RecentScripts");
+			for (n = 0; n < maxRecentFiles.asInteger(); ++n)
+			{
+				if (settings.contains(QString::number(n)))
+				{
+					recentFile = settings.value(QString::number(n)).toString();
+					ui.HomeFileOpenButton->callPopupMethod("addRecentFile", recentFile);
+				}
+			}
+			settings.endGroup();
+		}
+
+
 	}
 
 	// Check for old command history information, read it, and then remove it
@@ -163,22 +208,62 @@ void AtenWindow::saveSettings()
 	QString filename = aten_.atenDirectoryFile("history.txt");
 	Messenger::print("Saving program history file '%s'...", qPrintable(filename));
 
-	// Qt Settings
+	// GUI Settings
 	ReturnValue nItems, recentFile;
+	QSettings settings;
+	// -- Recent Models
+	settings.remove("RecentModels");
 	if (ui.HomeFileOpenButton->callPopupMethod("nRecentFiles", nItems))
 	{
-		QSettings settings;
 		int count = 0;
-		settings.remove("RecentFiles");
-		settings.beginGroup("RecentFiles");
+		settings.beginGroup("RecentModels");
 		for (int n = 0; n < nItems.asInteger(); ++n)
 		{
 			if (!ui.HomeFileOpenButton->callPopupMethod("recentFile", recentFile = n)) continue;
 			settings.setValue(QString::number(count++), recentFile.asString());
 		}
 		settings.endGroup();
-		settings.sync();
 	}
+	// -- Recent Forcefields
+	settings.remove("RecentForcefields");
+	if (ui.HomeFileOpenButton->callPopupMethod("nRecentFiles", nItems))
+	{
+		int count = 0;
+		settings.beginGroup("RecentForcefields");
+		for (int n = 0; n < nItems.asInteger(); ++n)
+		{
+			if (!ui.HomeFileOpenButton->callPopupMethod("recentFile", recentFile = n)) continue;
+			settings.setValue(QString::number(count++), recentFile.asString());
+		}
+		settings.endGroup();
+	}
+	// -- Recent Grids
+	settings.remove("RecentGrids");
+	if (ui.HomeFileOpenButton->callPopupMethod("nRecentFiles", nItems))
+	{
+		int count = 0;
+		settings.beginGroup("RecentGrids");
+		for (int n = 0; n < nItems.asInteger(); ++n)
+		{
+			if (!ui.HomeFileOpenButton->callPopupMethod("recentFile", recentFile = n)) continue;
+			settings.setValue(QString::number(count++), recentFile.asString());
+		}
+		settings.endGroup();
+	}
+	// -- Recent Scripts
+	settings.remove("RecentScripts");
+	if (ui.HomeFileOpenButton->callPopupMethod("nRecentFiles", nItems))
+	{
+		int count = 0;
+		settings.beginGroup("RecentScripts");
+		for (int n = 0; n < nItems.asInteger(); ++n)
+		{
+			if (!ui.HomeFileOpenButton->callPopupMethod("recentFile", recentFile = n)) continue;
+			settings.setValue(QString::number(count++), recentFile.asString());
+		}
+		settings.endGroup();
+	}
+
 
 	// History file
 	LineParser historyFile;

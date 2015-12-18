@@ -33,18 +33,21 @@ SET(gui_MOC_HDRS
   popupfilesave.h
   popupforcefieldsassign.h
   popupforcefieldsminimise.h
+  popupforcefieldsopen.h
   popupforcefieldstest.h
   popupgridmatrix.h
   popupgridorigin.h
   popupgridset.h
   popupgridshift.h
   popupgridstyle.h
+  popupgridsopen.h
   popupmeasureangle.h
   popupmeasureclear.h
   popupmeasuredistance.h
   popupmeasuretorsion.h
   popupporesdrill.h
   popupporesscheme.h
+  popupscriptsopen.h
   popuptransformangle.h
   popuptransformcentre.h
   popuptransformconvert.h
@@ -122,18 +125,21 @@ SET(gui_UIS
   popupfilesave.ui
   popupforcefieldsassign.ui
   popupforcefieldsminimise.ui
+  popupforcefieldsopen.ui
   popupforcefieldstest.ui
   popupgridmatrix.ui
   popupgridorigin.ui
   popupgridset.ui
   popupgridshift.ui
   popupgridstyle.ui
+  popupgridsopen.ui
   popupmeasureangle.ui
   popupmeasureclear.ui
   popupmeasuredistance.ui
   popupmeasuretorsion.ui
   popupporesdrill.ui
   popupporesscheme.ui
+  popupscriptsopen.ui
   popuptransformangle.ui
   popuptransformcentre.ui
   popuptransformconvert.ui
@@ -221,18 +227,21 @@ set(gui_SRCS
   popupfilesave_funcs.cpp
   popupforcefieldsassign_funcs.cpp
   popupforcefieldsminimise_funcs.cpp
+  popupforcefieldsopen_funcs.cpp
   popupforcefieldstest_funcs.cpp
   popupgridmatrix_funcs.cpp
   popupgridorigin_funcs.cpp
   popupgridset_funcs.cpp
   popupgridshift_funcs.cpp
   popupgridstyle_funcs.cpp
+  popupgridsopen_funcs.cpp
   popupmeasureangle_funcs.cpp
   popupmeasureclear_funcs.cpp
   popupmeasuredistance_funcs.cpp
   popupmeasuretorsion_funcs.cpp
   popupporesdrill_funcs.cpp
   popupporesscheme_funcs.cpp
+  popupscriptsopen_funcs.cpp
   popuptransformangle_funcs.cpp
   popuptransformcentre_funcs.cpp
   popuptransformconvert_funcs.cpp

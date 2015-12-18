@@ -58,17 +58,20 @@
 #include "gui/popupfilesave.h"
 #include "gui/popupforcefieldsassign.h"
 #include "gui/popupforcefieldsminimise.h"
+#include "gui/popupforcefieldsopen.h"
 #include "gui/popupgridmatrix.h"
 #include "gui/popupgridorigin.h"
 #include "gui/popupgridset.h"
 #include "gui/popupgridshift.h"
 #include "gui/popupgridstyle.h"
+#include "gui/popupgridsopen.h"
 #include "gui/popupmeasureangle.h"
 #include "gui/popupmeasuredistance.h"
 #include "gui/popupmeasuretorsion.h"
 #include "gui/popupcellspacegroup.h"
 #include "gui/popupporesdrill.h"
 #include "gui/popupporesscheme.h"
+#include "gui/popupscriptsopen.h"
 #include "gui/popuptransformangle.h"
 #include "gui/popuptransformcentre.h"
 #include "gui/popuptransformconvert.h"
@@ -252,6 +255,7 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportFilmD
 	ui.TransformTransformConvertButton->setPopupWidget(new TransformConvertPopup(*this, ui.TransformTransformConvertButton));
 
 	// -- Grids Panel (Manage)
+	ui.GridsManageOpenButton->setPopupWidget(new GridsOpenPopup(*this, ui.GridsManageOpenButton));
 	connect(ui.GridsList, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(gridsListContextMenuRequested(QPoint)));
 	// -- Grids Panel (Define)
 	ui.GridsDefineAxesButton->setPopupWidget(new GridMatrixPopup(*this, ui.GridsDefineAxesButton), true);
@@ -264,7 +268,7 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportFilmD
 	ui.GridsSecondarySetButton->setPopupWidget(new GridSetPopup(*this, ui.GridsSecondarySetButton, false), true);
 	ui.GridsSecondaryColourButton->setPopupWidget(new ColourPopup(*this, ui.GridsSecondaryColourButton), true);
 	ui.GridsSecondaryStyleButton->setPopupWidget(new GridStylePopup(*this, ui.GridsSecondaryStyleButton, false), true);
-	// -- Gris Panel (Transform)
+	// -- Grids Panel (Transform)
 	ui.GridsTransformTranslateButton->setPopupWidget(new GridShiftPopup(*this, ui.GridsTransformTranslateButton), true);
 
 	// -- Select Panel (Intelligent)
@@ -272,6 +276,7 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportFilmD
 	ui.SelectIntelligentElementButton->callPopupMethod("setCurrentElement", rv = 6);
 
 	// -- Forcefields Panel (Manage)
+	ui.ForcefieldsManageOpenButton->setPopupWidget(new ForcefieldsOpenPopup(*this, ui.ForcefieldsManageOpenButton));
 	ui.ForcefieldsManageAssignButton->setPopupWidget(new ForcefieldsAssignPopup(*this, ui.ForcefieldsManageAssignButton));
 	ui.ForcefieldsCalculateMinimiseButton->setPopupWidget(new ForcefieldsMinimisePopup(*this, ui.ForcefieldsCalculateMinimiseButton));
 
@@ -280,6 +285,8 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportFilmD
 	ui.SelectionAppearanceStyleButton->callPopupMethod("updateButtonIcon", rv = QString(Prefs::drawStyle(Prefs::SphereStyle)));
 	ui.SelectionAppearanceColourButton->setPopupWidget(new ColourPopup(*this, ui.SelectionAppearanceColourButton), false);
 
+	// -- Tools Panel (Scripts)
+	ui.ToolsScriptsOpenButton->setPopupWidget(new ScriptsOpenPopup(*this, ui.ToolsScriptsOpenButton));
 	// -- Tools Panel (Pores)
 	ui.ToolsPoresDrillButton->setPopupWidget(new PoresDrillPopup(*this, ui.ToolsPoresDrillButton), true);
 	ui.ToolsPoresSchemeButton->setPopupWidget(new PoresSchemePopup(*this, ui.ToolsPoresSchemeButton, aten_.poresPartitioningScheme()), true);
