@@ -4,10 +4,12 @@ add_library(render
   ${BISON_TextPrimitiveParser_OUTPUTS}
   fontinstance.h
   primitive.h
-  primitiveinfo.h
   primitiveinstance.h
   primitiveset.h
   rendergroup.h
+  renderlist.h
+  renderoccurrence.h
+  renderoccurrencechunk.h
   textformat.h
   textfragment.h
   textprimitive.h
@@ -15,13 +17,15 @@ add_library(render
   fontinstance.cpp
   primitive.cpp
   primitive_surface.cpp
-  primitiveinfo.cpp
   primitiveinstance.cpp
   primitiveset.cpp
   rendergroup.cpp
   rendergroup_glyph.cpp
   rendergroup_model.cpp
   rendergroup_overlays.cpp
+  renderlist.cpp
+  renderoccurrence.cpp
+  renderoccurrencechunk.cpp
   textformat.cpp
   textfragment.cpp
   textprimitive.cpp

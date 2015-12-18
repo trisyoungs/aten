@@ -27,8 +27,6 @@ ATEN_USING_NAMESPACE
 void Model::setRenderSource(Model::RenderSource rs)
 {
 	renderSource_ = rs;
-	// Log a visual change here so we make sure that the GUI is updated properly
-// 	logChange(Log::Visual);
 }
 
 // Return rendering source

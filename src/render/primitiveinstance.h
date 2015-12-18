@@ -53,11 +53,9 @@ class PrimitiveInstance : public ListItem<PrimitiveInstance>
 	
 	private:
 	// Global instance type to use
-	static PrimitiveInstance::InstanceType globalInstanceType_;
+	static PrimitiveInstance::InstanceType instanceType_;
 	// Context to which primitive instance is associated
 	const QOpenGLContext* context_;
-	// Type of instance
-	InstanceType type_;
 	// List ID of instance (if using display lists)
 	GLuint listObject_;
 	// VBO ID of vertex array (if using VBOs)
@@ -67,17 +65,15 @@ class PrimitiveInstance : public ListItem<PrimitiveInstance>
 	
 	public:
 	// Return global instance type to use
-	static PrimitiveInstance::InstanceType globalInstanceType();
+	static PrimitiveInstance::InstanceType instanceType();
 	// Set global instance type to use
-	static void setGlobalInstanceType(PrimitiveInstance::InstanceType instanceType);
+	static void setInstanceType(PrimitiveInstance::InstanceType instanceType);
 	// Return context to which primitive instance is associated
 	const QOpenGLContext* context();
 	// Set display list data
 	void setDisplayList(const QOpenGLContext* context, GLuint listObject);
 	// Set vbo object data
 	void setVBO(const QOpenGLContext* context, GLuint vertexObject, GLuint indexObject);
-	// Return type of instance
-	InstanceType type();
 	// Return display list object for instance
 	GLuint listObject();
 	// Return VBO ID of vertex array for instance

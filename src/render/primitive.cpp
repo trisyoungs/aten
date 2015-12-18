@@ -132,7 +132,7 @@ void Primitive::pushInstance(const QOpenGLContext* context)
 	PrimitiveInstance* pi = instances_.add();
 
 	// Vertex buffer object or plain old display list?
-	if (PrimitiveInstance::globalInstanceType() == PrimitiveInstance::VBOInstance)
+	if (PrimitiveInstance::instanceType() == PrimitiveInstance::VBOInstance)
 	{
 		// Prepare local array of data to pass to VBO
 		GLuint vertexVBO = 0, indexVBO = 0;
@@ -226,7 +226,7 @@ void Primitive::pushInstance(const QOpenGLContext* context)
 		// Store instance data
 		pi->setVBO(context, vertexVBO, indexData_.nItems() != 0 ? indexVBO : 0);
 	}
-	else if (PrimitiveInstance::globalInstanceType() == PrimitiveInstance::VBOInstance)
+	else if (PrimitiveInstance::instanceType() == PrimitiveInstance::ListInstance)
 	{
 		// Generate display list
 		int listId = glGenLists(1);
@@ -267,7 +267,7 @@ void Primitive::popInstance(const QOpenGLContext* context)
 		if (pi->context() == context)
 		{
 			// Vertex buffer object or plain old display list?
-			if (pi->type() == PrimitiveInstance::VBOInstance)
+			if (PrimitiveInstance::instanceType() == PrimitiveInstance::VBOInstance)
 			{
 				GLuint bufid  = pi->vboVertexObject();
 				if (bufid != 0) glFunctions->glDeleteBuffers(1, &bufid);
@@ -277,7 +277,10 @@ void Primitive::popInstance(const QOpenGLContext* context)
 					if (bufid != 0) glFunctions->glDeleteBuffers(1, &bufid);
 				}
 			}
-			else if (pi->listObject() != 0) glDeleteLists(pi->listObject(),1);
+			else if (PrimitiveInstance::instanceType() == PrimitiveInstance::ListInstance)
+			{
+				if (pi->listObject() != 0) glDeleteLists(pi->listObject(), 1);
+			}
 		}
 		instances_.removeLast();
 	}
@@ -287,6 +290,12 @@ void Primitive::popInstance(const QOpenGLContext* context)
 int Primitive::nInstances()
 {
 	return instances_.nItems();
+}
+
+// Return topmost instance in list
+PrimitiveInstance* Primitive::lastInstance()
+{
+	return instances_.last();
 }
 
 // Set whether primitive is registered as a dynamic primitive (in PrimitiveSet)
@@ -904,6 +913,80 @@ void Primitive::plotHalo(double radius1, double radius2, int nSegments)
  * OpenGL
  */
 
+// Prepare for GL rendering
+bool Primitive::beginGL(QOpenGLFunctions* glFunctions)
+{
+	// If no vertices are defined, nothing to do...
+	if (nDefinedVertices_ == 0) return false;
+
+	// Check if using instances...
+	if (useInstances_)
+	{
+		// Grab topmost instance
+		PrimitiveInstance* pi = instances_.last();
+		if (pi == NULL)
+		{
+			printf("Internal Error: No instance on stack in primitive %p.\n", this);
+			return false;
+		}
+		else if (PrimitiveInstance::instanceType() == PrimitiveInstance::VBOInstance)
+		{
+			glEnableClientState(GL_VERTEX_ARRAY);
+			glEnableClientState(GL_NORMAL_ARRAY);
+			glEnableClientState(GL_COLOR_ARRAY);
+			if (indexData_.nItems() != 0) glEnableClientState(GL_INDEX_ARRAY);
+			else glDisableClientState(GL_INDEX_ARRAY);
+
+			// Bind VBO and index buffer (if using it)
+			glFunctions->glBindBuffer(GL_ARRAY_BUFFER, pi->vboVertexObject());
+			if (indexData_.nItems() != 0) glFunctions->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, pi->vboIndexObject());
+
+			glInterleavedArrays(colouredVertexData_ ? GL_C4F_N3F_V3F : GL_N3F_V3F, 0, NULL);
+		}
+	}
+	else
+	{
+		// Does the vertex data contain colour-per-vertex information?
+		glInterleavedArrays(colouredVertexData_ ? GL_C4F_N3F_V3F : GL_N3F_V3F, 0, vertexData_.array());
+	}
+
+	return true;
+}
+
+// Draw primitive (as VBO, with indices)
+void Primitive::sendVBOWithIndices()
+{
+	glDrawElements(type_, indexData_.nItems(), GL_UNSIGNED_INT, 0);
+}
+
+// Draw primitive (as VBO, with indices)
+void Primitive::sendVBO()
+{
+	glDrawArrays(type_, 0, nDefinedVertices_);
+}
+
+// Finalise after GL rendering
+void Primitive::finishGL(QOpenGLFunctions* glFunctions)
+{
+	// Check if using instances...
+	if (useInstances_)
+	{
+		// Grab topmost instance
+		PrimitiveInstance* pi = instances_.last();
+		if (pi == NULL) printf("Internal Error: No instance on stack in primitive %p.\n", this);
+		else if (PrimitiveInstance::instanceType() == PrimitiveInstance::VBOInstance)
+		{
+			// Revert to normal operation - pass 0 as VBO index
+			glFunctions->glBindBuffer(GL_ARRAY_BUFFER, 0);
+			if (indexData_.nItems() != 0) glFunctions->glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+			glDisableClientState(GL_VERTEX_ARRAY);
+			glDisableClientState(GL_NORMAL_ARRAY);
+			glDisableClientState(GL_COLOR_ARRAY);
+			if (indexData_.nItems() != 0) glDisableClientState(GL_INDEX_ARRAY);
+		}
+	}
+}
+
 // Send to OpenGL (i.e. render)
 void Primitive::sendToGL(const QOpenGLContext* context)
 {
@@ -919,7 +1002,7 @@ void Primitive::sendToGL(const QOpenGLContext* context)
 		// Grab topmost instance
 		PrimitiveInstance* pi = instances_.last();
 		if (pi == NULL) printf("Internal Error: No instance on stack in primitive %p.\n", this);
-		else if (pi->type() == PrimitiveInstance::VBOInstance)
+		else if (PrimitiveInstance::instanceType() == PrimitiveInstance::VBOInstance)
 		{
 			glEnableClientState(GL_VERTEX_ARRAY);
 			glEnableClientState(GL_NORMAL_ARRAY);
@@ -943,7 +1026,10 @@ void Primitive::sendToGL(const QOpenGLContext* context)
 			glDisableClientState(GL_COLOR_ARRAY);
 			if (indexData_.nItems() != 0) glDisableClientState(GL_INDEX_ARRAY);
 		}
-		else if (pi->listObject() != 0) glCallList(pi->listObject());
+		else if (PrimitiveInstance::instanceType() == PrimitiveInstance::VBOInstance)
+		{
+			if (pi->listObject() != 0) glCallList(pi->listObject());
+		}
 	}
 	else
 	{

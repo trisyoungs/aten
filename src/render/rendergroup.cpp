@@ -87,34 +87,33 @@ void RenderGroup::addTriangles(Primitive& targetPrimitive, Matrix& transform, Ve
 	// Check if supplied primitive contains colour data already
 	if (targetPrimitive.colouredVertexData()) printf("Warning: Triangle primitive added to RenderGroup contains colour data and had colour supplied.\n");
 	
-	// Create new PrimitiveInfo in correct list
-	PrimitiveInfo* pi = new PrimitiveInfo(targetPrimitive, transform, colour, lineWidth);
+	// Add occurrence to correct list
 	if (fillMode == GL_FILL)
 	{
-		if (colour.w > 0.99) solidTrianglePrimitives_.own(pi);
-		else transparentTrianglePrimitives_.own(pi);
+		if (colour.w > 0.99) solidTrianglePrimitives_.addOccurrence(targetPrimitive, transform, colour);
+		else transparentTrianglePrimitives_.addOccurrence(targetPrimitive, transform, colour);
 	}
-	else wireTrianglePrimitives_.own(pi);
+	else wireTrianglePrimitives_.addOccurrence(targetPrimitive, transform, colour);
 }
 
-// Add triangle primitive
-void RenderGroup::addTriangles(Primitive& targetPrimitive, Matrix& transform, GLenum fillMode, GLfloat lineWidth)
-{
-	// Check type of supplied primitive
-	if (targetPrimitive.type() != GL_TRIANGLES)
-	{
-		printf("Warning: RenderGroup is rejecting primitive for triangle list, since it doesn't contain GL_TRIANGLES.\n");
-		return;
-	}
-
-	// Check if supplied primitive contains colour data already
-	if (!targetPrimitive.colouredVertexData()) printf("Warning: Triangle primitive added to RenderGroup contains no colour data and has no colour supplied.\n");
-	
-	// Create new PrimitiveInfo in correct list
-	PrimitiveInfo* pi = new PrimitiveInfo(targetPrimitive, transform, lineWidth);
-	if (fillMode == GL_FILL) solidTrianglePrimitives_.own(pi);
-	else wireTrianglePrimitives_.own(pi);
-}
+// // Add triangle primitive
+// void RenderGroup::addTriangles(Primitive& targetPrimitive, Matrix& transform, GLenum fillMode, GLfloat lineWidth)
+// {
+// 	// Check type of supplied primitive
+// 	if (targetPrimitive.type() != GL_TRIANGLES)
+// 	{
+// 		printf("Warning: RenderGroup is rejecting primitive for triangle list, since it doesn't contain GL_TRIANGLES.\n");
+// 		return;
+// 	}
+// 
+// 	// Check if supplied primitive contains colour data already
+// 	if (!targetPrimitive.colouredVertexData()) printf("Warning: Triangle primitive added to RenderGroup contains no colour data and has no colour supplied.\n");
+// 	
+// 	// Create new PrimitiveInfo in correct list
+// 	PrimitiveInfo* pi = new PrimitiveInfo(targetPrimitive, transform, lineWidth);
+// 	if (fillMode == GL_FILL) solidTrianglePrimitives_.addOccurrence(targetPrimitive, transform, colour
+// 	else wireTrianglePrimitives_.own(pi);
+// }
 
 // Add line primitive in specified colour
 void RenderGroup::addLines(Primitive& targetPrimitive, Matrix& transform, Vec4<GLfloat>& colour, bool bold)
@@ -130,9 +129,8 @@ void RenderGroup::addLines(Primitive& targetPrimitive, Matrix& transform, Vec4<G
 	if (targetPrimitive.colouredVertexData()) printf("Warning: Line primitive added to RenderGroup contains colour data and had colour supplied.\n");
 	
 	// Create new PrimitiveInfo in correct list
-	PrimitiveInfo* pi = new PrimitiveInfo(targetPrimitive, transform, colour);
-	if (bold) normalLinePrimitives_.own(pi);
-	else boldLinePrimitives_.own(pi);
+	if (bold) normalLinePrimitives_.addOccurrence(targetPrimitive, transform, colour);
+	else boldLinePrimitives_.addOccurrence(targetPrimitive, transform, colour);
 }
 
 // Add line primitive (which has it's own colour info)
@@ -149,9 +147,8 @@ void RenderGroup::addLines(Primitive& targetPrimitive, Matrix& transform, bool b
 	if (targetPrimitive.colouredVertexData()) printf("Warning: Line primitive added to RenderGroup does not contain colour data and had no colour supplied.\n");
 	
 	// Create new PrimitiveInfo in correct list
-	PrimitiveInfo* pi = new PrimitiveInfo(targetPrimitive, transform);
-	if (bold) normalLinePrimitives_.own(pi);
-	else boldLinePrimitives_.own(pi);
+	if (bold) normalLinePrimitives_.addOccurrence(targetPrimitive, transform);
+	else boldLinePrimitives_.addOccurrence(targetPrimitive, transform);
 }
 
 // Sort and render filtered polygons by depth
@@ -169,14 +166,7 @@ void RenderGroup::sendToGL(Matrix& modelTransformationMatrix)
 	// Solid triangles
 	glEnable(GL_LIGHTING);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	for (PrimitiveInfo* pi = solidTrianglePrimitives_.first(); pi != NULL; pi = pi->next)
-	{
-		Primitive& primitive = pi->primitive();
-		if (!primitive.colouredVertexData()) glColor4fv(pi->colour());
-		A = modelTransformationMatrix * pi->localTransform();
-		glLoadMatrixd(A.matrix());
-		primitive.sendToGL(QOpenGLContext::currentContext());
-	}
+	solidTrianglePrimitives_.sendToGL(modelTransformationMatrix);
 
 	// Extra solid triangles
 	glLoadMatrixd(modelTransformationMatrix.matrix());
@@ -185,15 +175,8 @@ void RenderGroup::sendToGL(Matrix& modelTransformationMatrix)
 	// Wire triangles
 	glDisable(GL_LIGHTING);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-	for (PrimitiveInfo* pi = wireTrianglePrimitives_.first(); pi != NULL; pi = pi->next)
-	{
-		Primitive& primitive = pi->primitive();
-		if (!primitive.colouredVertexData()) glColor4fv(pi->colour());
-		glLineWidth(pi->lineWidth());
-		A = modelTransformationMatrix * pi->localTransform();
-		glLoadMatrixd(A.matrix());
-		primitive.sendToGL(QOpenGLContext::currentContext());
-	}
+	glLineWidth(1.0f);
+	wireTrianglePrimitives_.sendToGL(modelTransformationMatrix);
 
 	// Extra wire triangles
 	glLoadMatrixd(modelTransformationMatrix.matrix());
@@ -203,14 +186,7 @@ void RenderGroup::sendToGL(Matrix& modelTransformationMatrix)
 	glDisable(GL_LIGHTING);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	glLineWidth(1.0f);
-	for (PrimitiveInfo* pi = normalLinePrimitives_.first(); pi != NULL; pi = pi->next)
-	{
-		Primitive& primitive = pi->primitive();
-		if (!primitive.colouredVertexData()) glColor4fv(pi->colour());
-		A = modelTransformationMatrix * pi->localTransform();
-		glLoadMatrixd(A.matrix());
-		primitive.sendToGL(QOpenGLContext::currentContext());
-	}
+	normalLinePrimitives_.sendToGL(modelTransformationMatrix);
 
 	// Extra normal lines
 	glLoadMatrixd(modelTransformationMatrix.matrix());
@@ -220,14 +196,7 @@ void RenderGroup::sendToGL(Matrix& modelTransformationMatrix)
 	glDisable(GL_LIGHTING);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	glLineWidth(3.0f);
-	for (PrimitiveInfo* pi = boldLinePrimitives_.first(); pi != NULL; pi = pi->next)
-	{
-		Primitive& primitive = pi->primitive();
-		if (!primitive.colouredVertexData()) glColor4fv(pi->colour());
-		A = modelTransformationMatrix * pi->localTransform();
-		glLoadMatrixd(A.matrix());
-		primitive.sendToGL(QOpenGLContext::currentContext());
-	}
+	boldLinePrimitives_.sendToGL(modelTransformationMatrix);
 
 	// Extra bold lines
 	glLoadMatrixd(modelTransformationMatrix.matrix());
@@ -237,14 +206,7 @@ void RenderGroup::sendToGL(Matrix& modelTransformationMatrix)
 	glEnable(GL_LIGHTING);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glDepthMask(GL_FALSE);
-	for (PrimitiveInfo* pi = transparentTrianglePrimitives_.first(); pi != NULL; pi = pi->next)
-	{
-		Primitive& primitive = pi->primitive();
-		if (!primitive.colouredVertexData()) glColor4fv(pi->colour());
-		A = modelTransformationMatrix * pi->localTransform();
-		glLoadMatrixd(A.matrix());
-		primitive.sendToGL(QOpenGLContext::currentContext());
-	}
+	transparentTrianglePrimitives_.sendToGL(modelTransformationMatrix);
 	glDepthMask(GL_TRUE);
 
 	// Text

@@ -335,7 +335,7 @@ bool Aten::parseCliEarly(int argc, char *argv[])
 				// Turn on display list usage (in preference to VBOs)
 				case (Cli::ListsSwitch):
 					Messenger::print("OpenGL display lists will be used for rendering instead of VBOs.");
-					PrimitiveInstance::setGlobalInstanceType(PrimitiveInstance::ListInstance);
+					PrimitiveInstance::setInstanceType(PrimitiveInstance::ListInstance);
 					break;
 				// Restrict filter loading on startup
 				case (Cli::NoFiltersSwitch):
@@ -356,7 +356,7 @@ bool Aten::parseCliEarly(int argc, char *argv[])
 				// Turn off VBO and display list usage
 				case (Cli::NoInstancesSwitch):
 					Messenger::print("VBO and display lists will not be used for rendering.");
-					PrimitiveInstance::setGlobalInstanceType(PrimitiveInstance::NoInstances);
+					PrimitiveInstance::setInstanceType(PrimitiveInstance::NoInstances);
 					break;
 				// Restrict partition loading on startup
 				case (Cli::NoPartitionsSwitch):

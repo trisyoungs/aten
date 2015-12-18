@@ -22,6 +22,7 @@
 #ifndef ATEN_ARRAY_H
 #define ATEN_ARRAY_H
 
+// #define CHUNKSIZE 65536
 #define CHUNKSIZE 128
 
 #include "templates/list.h"

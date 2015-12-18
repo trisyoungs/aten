@@ -20,38 +20,37 @@
 */
 
 // Need to include <QString>, <GL/glx.h>, and then "render/glextensions.h" in that order, to prevent hideous errors.
-#include <QString>
-#ifdef __unix__
-#include <GL/glx.h>
-#endif
+// #include <QString>
+// #ifdef __unix__
+// #include <GL/glx.h>
+// #endif
 #include "render/primitiveinstance.h"
 
 ATEN_USING_NAMESPACE
 
 // Static members
-PrimitiveInstance::InstanceType PrimitiveInstance::globalInstanceType_ = PrimitiveInstance::VBOInstance;
+PrimitiveInstance::InstanceType PrimitiveInstance::instanceType_ = PrimitiveInstance::VBOInstance;
 
 // Constructor
 PrimitiveInstance::PrimitiveInstance() : ListItem<PrimitiveInstance>()
 {
 	// Private variables
 	context_ = NULL;
-	type_ = globalInstanceType_;
 	listObject_ = 0;
 	vboVertexObject_ = 0;
 	vboIndexObject_ = 0;
 }
 
 // Return global instance type to use
-PrimitiveInstance::InstanceType PrimitiveInstance::globalInstanceType()
+PrimitiveInstance::InstanceType PrimitiveInstance::instanceType()
 {
-	return globalInstanceType_;
+	return instanceType_;
 }
 
 // Set global instance type to use
-void PrimitiveInstance::setGlobalInstanceType(PrimitiveInstance::InstanceType instanceType)
+void PrimitiveInstance::setInstanceType(PrimitiveInstance::InstanceType instanceType)
 {
-	globalInstanceType_ = instanceType;
+	instanceType_ = instanceType;
 }
 
 // Return context to which primitive instance is associated
@@ -60,17 +59,10 @@ const QOpenGLContext* PrimitiveInstance::context()
 	return context_;
 }
 
-// Return type of instance
-PrimitiveInstance::InstanceType PrimitiveInstance::type()
-{
-	return type_;
-}
-
 // Set display list data
 void PrimitiveInstance::setDisplayList(const QOpenGLContext* context, GLuint listObject)
 {
 	context_ = context;
-	type_ = PrimitiveInstance::ListInstance;
 	listObject_ = listObject;
 }
 
@@ -78,7 +70,6 @@ void PrimitiveInstance::setDisplayList(const QOpenGLContext* context, GLuint lis
 void PrimitiveInstance::setVBO(const QOpenGLContext* context, GLuint vertexObject, GLuint indexObject)
 {
 	context_ = context;
-	type_ = PrimitiveInstance::VBOInstance;
 	vboVertexObject_ = vertexObject;
 	vboIndexObject_ = indexObject;
 }

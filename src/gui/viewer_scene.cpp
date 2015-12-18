@@ -243,10 +243,10 @@ void Viewer::initializeGL()
 	Messenger::print(Messenger::Verbose, "Done.");
 
         // Check for vertex buffer extensions
-        if ((!hasOpenGLFeature(QOpenGLFunctions::Buffers)) && (PrimitiveInstance::globalInstanceType() == PrimitiveInstance::VBOInstance))
+        if ((!hasOpenGLFeature(QOpenGLFunctions::Buffers)) && (PrimitiveInstance::instanceType() == PrimitiveInstance::VBOInstance))
         {
                 Messenger::warn("VBO extension is requested but not available, so reverting to display lists instead.\n");
-                PrimitiveInstance::setGlobalInstanceType(PrimitiveInstance::ListInstance);
+                PrimitiveInstance::setInstanceType(PrimitiveInstance::ListInstance);
         }
 
 	// Make sure low-quality primitives are up-to-date

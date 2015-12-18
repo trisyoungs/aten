@@ -34,6 +34,7 @@
 
 // Forward Declarations (Qt)
 class QOpenGLContext;
+class QOpenGLFunctions;
 
 ATEN_BEGIN_NAMESPACE
 
@@ -105,6 +106,8 @@ class Primitive : public ListItem<Primitive>
 	void popInstance(const QOpenGLContext* context);
 	// Return number of instances available
 	int nInstances();
+	// Return topmost instance in list
+	PrimitiveInstance* lastInstance();
 	// Set whether primitive is registered as a dynamic primitive (in PrimitiveSet)
 	void setRegisteredAsDynamic(bool b);
 	// Return whether primitive is registered as a dynamic primitive (in PrimitiveSet)
@@ -181,9 +184,17 @@ class Primitive : public ListItem<Primitive>
 	 * OpenGL
 	 */
 	public:
-	// Send to GL (i.e. render)
+	// Prepare for GL rendering
+	bool beginGL(QOpenGLFunctions* glFunctions);
+	// Draw primitive (as VBO, with indices)
+	void sendVBOWithIndices();
+	// Draw primitive (as VBO, with indices)
+	void sendVBO();
+	// Finalise after GL rendering
+	void finishGL(QOpenGLFunctions* glFunctions);
+	// Send to GL (i.e. prep, send, and release)
 	void sendToGL(const QOpenGLContext* context);
-	// Send to GL(i.e. render) in specified style
+	// Send to GL (i.e. prep, send, and release) in specified style
 	void sendToGL(const QOpenGLContext* context, GLenum style, bool lighting, bool hasColour, double* colour);
 };
 

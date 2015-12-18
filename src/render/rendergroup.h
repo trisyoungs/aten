@@ -23,7 +23,7 @@
 #define ATEN_RENDERGROUP_H
 
 #include "render/primitive.h"
-#include "render/primitiveinfo.h"
+#include "render/renderlist.h"
 #include "render/textprimitivelist.h"
 #include "base/prefs.h"
 #include "base/bond.h"
@@ -49,15 +49,15 @@ class RenderGroup
 	 */
 	private:
 	// Primitives to be rendered as solid triangles
-	List<PrimitiveInfo> solidTrianglePrimitives_;
+	RenderList solidTrianglePrimitives_;
 	// Primitives to be rendered as transparent triangles
-	List<PrimitiveInfo> transparentTrianglePrimitives_;
+	RenderList transparentTrianglePrimitives_;
 	// Primitives to be rendered as wireframe triangles
-	List<PrimitiveInfo> wireTrianglePrimitives_;
+	RenderList wireTrianglePrimitives_;
 	// Primitives to be rendered as normal lines
-	List<PrimitiveInfo> normalLinePrimitives_;
-	// Primitives to be rendered as bold lines
-	List<PrimitiveInfo> boldLinePrimitives_;
+	RenderList normalLinePrimitives_;
+	// Primitives to be rendered as bold lines ATEN2 TODO This is probably unnecessary with new RenderList/Occurrence/Chunk classes
+	RenderList boldLinePrimitives_;
 	// Normal lines
 	Primitive extraNormalLines_;
 	// Bold lines

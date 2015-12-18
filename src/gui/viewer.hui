@@ -32,7 +32,6 @@
 #include "base/log.h"
 #include "render/primitiveset.h"
 #include "render/rendergroup.h"
-#include "render/primitiveinfo.h"
 #include "render/textprimitivelist.h"
 #include "base/namespace.h"
 #include "templates/array.h"
