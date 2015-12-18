@@ -33,14 +33,26 @@ ColourScalePoint::ColourScalePoint() : ListItem<ColourScalePoint>()
 	parent_ = NULL;
 }
 
+// Operator!=
+bool ColourScalePoint::operator!=(const ColourScalePoint& other)
+{
+	if (fabs(value_-other.value_) > 1.0e-6) return true;
+	if (fabs(colour_[0]-other.colour_[0]) > 1.0e-6) return true;
+	if (fabs(colour_[1]-other.colour_[1]) > 1.0e-6) return true;
+	if (fabs(colour_[2]-other.colour_[2]) > 1.0e-6) return true;
+	if (fabs(colour_[3]-other.colour_[3]) > 1.0e-6) return true;
+
+	return false;
+}
+
 // Set parent colourscale
-void ColourScalePoint::setParent(ColourScale *cscale)
+void ColourScalePoint::setParent(ColourScale* cscale)
 {
 	parent_ = cscale;
 }
 
 // Return parent colourscale
-ColourScale *ColourScalePoint::parent()
+ColourScale* ColourScalePoint::parent()
 {
 	return parent_;
 }

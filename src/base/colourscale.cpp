@@ -32,6 +32,26 @@ ColourScale::ColourScale() : ListItem<ColourScale>()
 	interpolated_ = true;
 }
 
+// Operator==
+bool ColourScale::operator==(const ColourScale& other)
+{
+	if (name_ != other.name_) return false;
+	if (interpolated_ != other.interpolated_) return false;
+
+	if (points_.nItems() != other.points_.nItems()) return false;
+	ColourScalePoint* othercsp = other.points_.first();
+	for (ColourScalePoint* csp = points_.first(); csp != NULL; csp = csp->next, othercsp = othercsp->next)
+	{
+		if ((*csp) != (*othercsp)) return false;
+	}
+
+	return true;
+}
+
+/*
+ * General
+ */
+
 // Set the name of the colourscale
 void ColourScale::setName(QString name)
 {
@@ -67,6 +87,10 @@ bool ColourScale::interpolated() const
 {
 	return interpolated_;
 }
+
+/*
+ * Points
+ */
 
 // Recalculate colour deltas between points
 void ColourScale::calculateDeltas()
@@ -148,6 +172,7 @@ void ColourScale::setPointColour(int position, double r, double g, double b, dou
 void ColourScale::removePoint(int position)
 {
 	Messenger::enter("ColourScale::removePoint");
+
 	// Check position supplied
 	if ((position < 0) || (position >= points_.nItems()))
 	{
@@ -156,10 +181,13 @@ void ColourScale::removePoint(int position)
 		return;
 	}
 	points_.remove( points_[position] );
+
 	// Recalculate colour deltas
 	calculateDeltas();
+
 	// Refresh linked objects
 	refreshObjects();
+
 	Messenger::exit("ColourScale::removePoint");
 }
 

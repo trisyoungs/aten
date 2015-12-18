@@ -181,10 +181,12 @@ Prefs::Prefs()
 	atomStyleRadius_[Prefs::TubeStyle] = 0.15;
 	atomStyleRadius_[Prefs::SphereStyle] = 0.35;
 	atomStyleRadius_[Prefs::ScaledStyle] = 1.0;	// Used as a general scaling factor for all atoms
+	atomStyleRadius_[Prefs::OwnStyle] = 0.0;
 	bondStyleRadius_[Prefs::LineStyle] = 0.1;	// Unused
 	bondStyleRadius_[Prefs::TubeStyle] = 0.15;
 	bondStyleRadius_[Prefs::SphereStyle] = 0.15;
 	bondStyleRadius_[Prefs::ScaledStyle] = 0.15;
+	bondStyleRadius_[Prefs::OwnStyle] = 0.0;
 	stickLineNormalWidth_ = 2.0;
 	stickLineSelectedWidth_ = 4.0;
 	selectionScale_ = 1.5;
@@ -339,7 +341,6 @@ Prefs::Prefs()
 	chargeLabelFormat_ = "(%0.3f e)";
 	labelSize_ = 1.5;
 	mouseMoveFilter_ = 10;
-	usePixelBuffers_ = true;
 	renderDashedAromatics_ = true;
 	nModelsPerRow_ = 2;
 	drawHydrogenBonds_ = false;
@@ -1573,18 +1574,6 @@ void Prefs::setLabelSize(double size)
 double Prefs::labelSize() const
 {
 	return labelSize_;
-}
-
-// Return whether manual buffer swapping is enabled
-bool Prefs::usePixelBuffers() const
-{
-	return usePixelBuffers_;
-}
-
-// Set manual swapbuffers
-void Prefs::setUsePixelBuffers(bool checked)
-{
-	usePixelBuffers_ = checked;
 }
 
 // Return whether to use solid or dashed circles for aromatic ring rendering

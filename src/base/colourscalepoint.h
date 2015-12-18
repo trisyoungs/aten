@@ -43,12 +43,14 @@ class ColourScalePoint : public ListItem<ColourScalePoint>
 	public:
 	// Constructor
 	ColourScalePoint();
+	// Operator!=
+	bool operator!=(const ColourScalePoint& other);
 	// Friend class
 	friend class ColourScaleDelta;
 
 	private:
 	// Parent colourscale
-	ColourScale *parent_;
+	ColourScale* parent_;
 	// Value at which this point occurs
 	double value_;
 	// Colour of this point
@@ -56,9 +58,9 @@ class ColourScalePoint : public ListItem<ColourScalePoint>
 
 	public:
 	// Set parent colourscale
-	void setParent(ColourScale *cscale);
+	void setParent(ColourScale* cscale);
 	// Return parent colourscale
-	ColourScale *parent();
+	ColourScale* parent();
 	// Set value for scalepoint
 	void setValue(double d);
 	// Return value for scalepoint

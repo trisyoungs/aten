@@ -239,8 +239,6 @@ class Prefs
 	QString chargeLabelFormat_;
 	// Relative size for text labels, in percentage of view height
 	double labelSize_;
-	// Flag to use pixelbuffers for image saving rather than the renderPixmap() method
-	bool usePixelBuffers_;
 	// Whether to use solid or dashed circles for aromatic ring rendering
 	bool renderDashedAromatics_;
 	// Mouse move event filter rate

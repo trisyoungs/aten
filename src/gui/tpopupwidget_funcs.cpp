@@ -32,6 +32,7 @@ TPopupWidget::TPopupWidget(TMenuButton* parent) : QWidget(parent, Qt::FramelessW
 {
 	parentMenuButton_ = parent;
 	widgetDone_ = false;
+	mouseEntered_ = false;
 }
 
 /*
@@ -45,8 +46,11 @@ void TPopupWidget::done(bool setParentButtonDown, UserAction::Action userActionT
 	else Messenger::print("Internal Error: No parent button set in TPopupWidget::done().\n");
 
 	widgetDone_ = true;
+	mouseEntered_ = false;
 
 	hide();
+
+	emit(popupDone());
 }
 
 // Notify parent button that one of our widgets has changed
@@ -89,6 +93,16 @@ TMenuButton* TPopupWidget::parentMenuButton()
  * Virtual Reimplementations
  */
 
+void TPopupWidget::enterEvent(QEvent* event)
+{
+	mouseEntered_ = true;
+}
+
+void TPopupWidget::leaveEvent(QEvent* event)
+{
+	if (mouseEntered_) close();
+}
+
 void TPopupWidget::hideEvent(QHideEvent* event)
 {
 	// Call the parent's popupDone() function, unless the widgetDone_ flag is set
@@ -98,8 +112,9 @@ void TPopupWidget::hideEvent(QHideEvent* event)
 	ReturnValue rv;
 	callMethod("hideEvent", rv);
 
-	// Reset the widgetDone_ flag
+	// Reset the popup's flags
 	widgetDone_ = false;
+	mouseEntered_ = false;
 
 	// Set the hide time
 	lastPopupHideTime_ = QTime::currentTime();
@@ -108,5 +123,7 @@ void TPopupWidget::hideEvent(QHideEvent* event)
 
 	// Notify the parent button that we have been hidden
 	if (parentMenuButton_) parentMenuButton_->popupHidden();
+
+	emit(popupDone());
 }
 

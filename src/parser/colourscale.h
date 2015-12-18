@@ -35,7 +35,7 @@ class ColourScaleVariable : public PointerVariable
 {
 	public:
 	// Constructor / Destructor
-	ColourScaleVariable(ColourScale *cs = NULL, bool constant = false);
+	ColourScaleVariable(ColourScale* cs = NULL, bool constant = false);
 	~ColourScaleVariable();
 
 

@@ -44,10 +44,12 @@ class ColourScale : public ListItem<ColourScale>
 	public:
 	// Constructor
 	ColourScale();
+	// Operator==
+	bool operator==(const ColourScale& other);
 
 
 	/*
-	 * Rendering
+	 * General
 	 */
 	private:
 	// Name of the colourscale
@@ -73,7 +75,7 @@ class ColourScale : public ListItem<ColourScale>
 
 
 	/*
-	 * Data and data range
+	 * Points
 	 */
 	private:
 	// List of points in the colourscale

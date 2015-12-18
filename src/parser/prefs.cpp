@@ -120,7 +120,6 @@ Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
 	{ "stickNormalWidth",		VTypes::DoubleData,		4, false },
 	{ "stickSelectedWidth",		VTypes::DoubleData,		4, false },
 	{ "tempDir",			VTypes::StringData,		0, false },
-	{ "usePixelBuffers",		VTypes::IntegerData,		0, false },
 	{ "vdwCutoff",			VTypes::DoubleData,		0, false },
 	{ "vibrationArrowColour",	VTypes::DoubleData,		4, false },
 	{ "viewRotationGlobe",		VTypes::IntegerData,		0, false },
@@ -463,9 +462,6 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArray
 			break;
 		case (PreferencesVariable::TempDir):
 			rv.set( ptr->tempDir().path() );
-			break;
-		case (PreferencesVariable::UsePixelBuffers):
-			rv.set( ptr->usePixelBuffers() );
 			break;
 		case (PreferencesVariable::VdwCutoff):
 			rv.set( ptr->vdwCutoff() );
@@ -841,9 +837,6 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue&
 			break;
 		case (PreferencesVariable::TempDir):
 			ptr->setTempDir( newValue.asString(result) );
-			break;
-		case (PreferencesVariable::UsePixelBuffers):
-			ptr->setUsePixelBuffers( newValue.asBool() );
 			break;
 		case (PreferencesVariable::VdwCutoff):
 			ptr->setVdwCutoff( newValue.asDouble(result) );

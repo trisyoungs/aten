@@ -29,6 +29,7 @@
 // Forward Declarations (Qt)
 class TMenuButton;
 class AtenWindow;
+class QEvent;
 
 ATEN_USING_NAMESPACE
 
@@ -46,6 +47,8 @@ class TPopupWidget : public QWidget
 	TMenuButton* parentMenuButton_;
 	// Flag indicating that done() was called
 	bool widgetDone_;
+	// Whether mouse has entered the popup
+	bool mouseEntered_;
 
 	protected:
 	// Whether widget is refreshing
@@ -71,9 +74,18 @@ class TPopupWidget : public QWidget
 
 
 	/*
+	 * Signals
+	 */
+	signals:
+	void popupDone();
+
+
+	/*
 	 * Virtual Reimplementations
 	 */
 	protected:
+	void enterEvent(QEvent* event);
+	void leaveEvent(QEvent* event);
 	void hideEvent(QHideEvent* event);
 
 

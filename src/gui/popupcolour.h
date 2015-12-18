@@ -30,7 +30,6 @@
 
 // Forward Declarations (Qt)
 class AtenWindow;
-class QColorDialog;
 
 ATEN_BEGIN_NAMESPACE
 

@@ -112,27 +112,45 @@ bool Aten::savePrefs(QString fileName)
 		Prefs defaults;
 		ReturnValue rv;
 		QString newValue, defaultValue;
+		bool success;
 		for (i = 0; i < PreferencesVariable::nAccessors; ++i)
 		{
-			rv.set(VTypes::PreferencesData, this);
 
-			// Convert original new value to string representation
-			if (!PreferencesVariable::retrieveAccessor(i, rv, false)) continue;
-			if (rv.type() == VTypes::DoubleData) newValue.sprintf("%10.5e", rv.asDouble());
-			else newValue = rv.asString();
-			
-			// Convert default value to string representation
-			rv.set(VTypes::PreferencesData, &defaults);
-			if (!PreferencesVariable::retrieveAccessor(i, rv, false)) continue;
-			if (rv.type() == VTypes::DoubleData) defaultValue.sprintf("%10.5e", rv.asDouble());
-			else defaultValue = rv.asString();
+			// Treat some accessors as special cases
+			if (i == PreferencesVariable::ColourScales)
+			{
+				// Loop over defined colourscales
+				for (int n=0; n<10; ++n)
+				{
+					if (prefs.colourScale[n] == defaults.colourScale[n]) continue;
 
-			// Compare the two strings - if different, write the prefs value to the file....
-// 			printf("acc = %i [%s], default = '%s', new = '%s'\n", i, PreferencesVariable::accessorData[i].name, defaultValue.get(), newValue.get());
-			if (defaultValue == newValue) continue;
-			if ((PreferencesVariable::accessorData[i].returnType == VTypes::StringData) && (PreferencesVariable::accessorData[i].arraySize == 0)) line.sprintf("aten.prefs.%s = \"%s\";\n", qPrintable(PreferencesVariable::accessorData[i].name), qPrintable(newValue));
-			else line.sprintf("aten.prefs.%s = %s;\n", qPrintable(PreferencesVariable::accessorData[i].name), qPrintable(newValue));
-			prefsfile.writeLine(line);
+					// Write out colourscale creation data
+					prefsfile.writeLineF("aten.prefs.colourScales[%i].clear();\n", n);
+					for (ColourScalePoint* csp = prefs.colourScale[n].firstPoint(); csp != NULL; csp = csp->next)
+					{
+						prefsfile.writeLineF("aten.prefs.colourScales[%i].addPoint(%f, %f, %f, %f);\n", n, csp->value(), csp->colour()[0], csp->colour()[1], csp->colour()[2], csp->colour()[3]);
+					}
+				}
+			}
+			else
+			{
+				// Convert current prefs value to string representation
+				rv.set(VTypes::PreferencesData, &prefs);
+				if (!PreferencesVariable::retrieveAccessor(i, rv, false)) continue;
+				newValue = rv.asString();
+
+				// Convert default value to string representation
+				rv.set(VTypes::PreferencesData, &defaults);
+				if (!PreferencesVariable::retrieveAccessor(i, rv, false)) continue;
+				defaultValue = rv.asString();
+
+				// Compare the two strings - if different, write the prefs value to the file....
+// 				printf("acc = %i [%s], default = '%s', new = '%s'\n", i, qPrintable(PreferencesVariable::accessorData[i].name), qPrintable(defaultValue), qPrintable(newValue));
+				if (defaultValue == newValue) continue;
+				if ((PreferencesVariable::accessorData[i].returnType == VTypes::StringData) && (PreferencesVariable::accessorData[i].arraySize == 0)) line.sprintf("aten.prefs.%s = \"%s\";\n", qPrintable(PreferencesVariable::accessorData[i].name), qPrintable(newValue));
+				else line.sprintf("aten.prefs.%s = %s;\n", qPrintable(PreferencesVariable::accessorData[i].name), qPrintable(newValue));
+				prefsfile.writeLine(line);
+			}
 		}
 	}
 	else result = false;

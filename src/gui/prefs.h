@@ -97,8 +97,8 @@ class AtenPrefs : public QDialog
 	 */
 	private slots:
 	void on_ElementList_currentRowChanged(int row);
-	void on_ElementColourButton_clicked(bool checked);
 	void on_ElementRadiusSpin_valueChanged(double value);
+	void elementColourChanged();
 
 
 	/*

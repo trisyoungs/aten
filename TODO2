@@ -53,7 +53,7 @@ Add manual typing popup.
 Prefs window needs updating:
 o Remove use of TColourFrames
 o Add font selection option
-o Changing colour of an atom in Element page - click save and crash.
+TColourPopup circle indicator is slightly offset, and general usability (i.e. mouse move outside of wheel after click) needs improving.
 
 Possible TODO
 =============
@@ -96,3 +96,4 @@ SelectCode and DeSelectCode code 'style' has changed.
 Keyboard shortcuts: F6 now cycles rendering styles, Ctrl-F6 colouring styles (with F1-5 and Ctrl-F1-5 selecting individual styles), F10 shows quick command bar.
 Removed Prefs::textColour and WireSelectioNColour accessors, and added ForegroundColour.
 Removed VBO CLI switch, and added Lists and NoInstances switches.
+Removed prefs "usePixelBuffers" accessor.

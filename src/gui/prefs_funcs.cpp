@@ -24,6 +24,7 @@
 #include <QtWidgets/QInputDialog>
 #include <QtWidgets/QFileDialog>
 #include "main/aten.h"
+#include "gui/popupcolour.h"
 #include "gui/prefs.h"
 #include "gui/mainwindow.h"
 #include "model/model.h"
@@ -34,6 +35,10 @@
 AtenPrefs::AtenPrefs(AtenWindow& parent) : QDialog(&parent), parent_(parent)
 {
 	ui.setupUi(this);
+
+	// Add colour popups to buttons
+	ui.ElementColourButton->setPopupWidget(new ColourPopup(parent_, ui.ElementColourButton), true);
+	connect(ui.ElementColourButton->popupWidget(), SIGNAL(popupDone()), this, SLOT(elementColourChanged()));
 
 	refreshing_ = false;
 
@@ -219,30 +224,11 @@ void AtenPrefs::on_ElementList_currentRowChanged(int row)
 	ui.ElementNameLabel->setText(Elements().name(row));
 	ui.ElementSymbolLabel->setText(Elements().symbol(row));
 	ui.ElementMassLabel->setText(QString::number(Elements().atomicMass(row)));
-	ui.ElementColourFrame->setColour(Elements().colour(row));
 	ui.ElementRadiusSpin->setValue(Elements().atomicRadius(row));
-}
 
-void AtenPrefs::on_ElementColourButton_clicked(bool checked)
-{
-	// Get current row
-	int el = ui.ElementList->currentRow();
-	if (el == -1) return;
-	// Get element's current ambient colour and convert into a QColor
-	double* col = Elements().colour(el);
-	QColor oldcol, newcol;
-	oldcol.setRgbF( col[0], col[1], col[2], col[3] );
-	// Request a colour dialog
-	bool ok = false;
-	newcol.setRgba(QColorDialog::getRgba(oldcol.rgba(), &ok, this));
-	if (!ok) return;
-	// Store new colour
-	Elements().setColour(el, newcol.redF(), newcol.greenF(), newcol.blueF(), newcol.alphaF());
-	ui.ElementColourFrame->setColour(newcol);
-	ui.ElementColourFrame->update();
-	// Re-set atom colours in model(s)
-	parent_.aten().currentModel()->logChange(Log::Style);
-	parent_.updateWidgets(AtenWindow::MainViewTarget);
+	ReturnValue rv;
+	rv.setArray(VTypes::DoubleData, Elements().colour(row), 4);
+	ui.ElementColourButton->callPopupMethod("setCurrentColour", rv);
 }
 
 void AtenPrefs::on_ElementRadiusSpin_valueChanged(double value)
@@ -253,6 +239,24 @@ void AtenPrefs::on_ElementRadiusSpin_valueChanged(double value)
 	Elements().setAtomicRadius(el, value);
 	// Re-draw models
 	parent_.aten().currentModel()->logChange(Log::Style);
+	parent_.updateWidgets(AtenWindow::MainViewTarget);
+}
+
+void AtenPrefs::elementColourChanged()
+{
+	// Get selected element
+	int el = ui.ElementList->currentRow();
+	if (el == -1) return;
+
+	// Get and store new colour
+	ReturnValue rv;
+	bool success;
+	ui.ElementColourButton->callPopupMethod("currentColour", rv);
+	Elements().setColour(el, rv.asDouble(0, success), rv.asDouble(1, success), rv.asDouble(2, success), rv.asDouble(3, success));
+
+	// Re-set atom colours in models
+	parent_.aten().globalLogChange(Log::Style);
+
 	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
