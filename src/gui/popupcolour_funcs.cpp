@@ -26,12 +26,21 @@
 #include <QPainter>
 
 // Constructor
-ColourPopup::ColourPopup(AtenWindow& parent, TMenuButton* buttonParent) : TPopupWidget(buttonParent), parent_(parent)
+ColourPopup::ColourPopup(AtenWindow& parent, TMenuButton* buttonParent, int options) : TPopupWidget(buttonParent), parent_(parent), options_(options)
 {
 	ui.setupUi(this);
 
 	setCurrentColour(Qt::blue);
 	updateParentButtonIcon();
+
+	// Tweak based on options
+	if (options_&NoAlphaOption)
+	{
+		ui.AlphaLine->setVisible(false);
+		ui.AlphaSlider->setVisible(false);
+		ui.AlphaSpin->setVisible(false);
+		ui.AlphaSpin->setValue(255);
+	}
 }
 
 // Update controls (before show()) (virtual)

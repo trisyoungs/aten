@@ -274,8 +274,6 @@ Prefs::Prefs()
 	colourScale[2].addPoint(2, 1000.0, 1.0f, 0.0f, 0.0f);
 
 	// General Prefs / Methods
-	modelUpdate_ = 5;
-	energyUpdate_ = 5;
 	maxRingSize_ = 6;
 	maxRings_ = 100;
 	maxCuboids_ = 100;
@@ -1142,44 +1140,6 @@ double Prefs::convertEnergy(double energy, EnergyUnit fromUnit, EnergyUnit toUni
 /*
  * Method Preferences
  */
-
-// Set the model update frequency
-void Prefs::setModelUpdate(int n)
-{
-	modelUpdate_ = n;
-}
-
-// Return the model update frequency
-int Prefs::modelUpdate() const
-{
-	return modelUpdate_;
-}
-
-// Return whether to update the energy, given the cycle number
-bool Prefs::shouldUpdateModel(int n)
-{
-	if (n == 1) return false;
-	else return (n%modelUpdate_ == 0);
-}
-
-// Set the energy update frequency
-void Prefs::setEnergyUpdate(int n)
-{
-	energyUpdate_ = n;
-}
-
-// Return the energy update frequency
-int Prefs::energyUpdate() const
-{
-	return energyUpdate_;
-}
-
-// Return whether to update the energy, given the cycle number
-bool Prefs::shouldUpdateEnergy(int n)
-{
-	if (n == 1) return false;
-	else return (n%energyUpdate_ == 0);
-}
 
 // Return the maximum ring size allowed
 int Prefs::maxRingSize() const

@@ -140,9 +140,9 @@ double MethodSd::minimise(Model* sourceModel, double eConverge, double fConverge
 		}
 
 		// Print out the step data
-		if (prefs.shouldUpdateEnergy(cycle+1))
+		if (cycle%5 == 0)
 		{
-			Messenger::print("%-5i %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e",cycle+1, currentEnergy, currentEnergy-lastPrintedEnergy, newForce, sourceModel->energy.vdw(), sourceModel->energy.electrostatic(), sourceModel->energy.bond(), sourceModel->energy.angle(), sourceModel->energy.torsion());
+			Messenger::print("%-5i %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e  %12.5e", cycle+1, currentEnergy, currentEnergy-lastPrintedEnergy, newForce, sourceModel->energy.vdw(), sourceModel->energy.electrostatic(), sourceModel->energy.bond(), sourceModel->energy.angle(), sourceModel->energy.torsion());
 			lastPrintedEnergy = currentEnergy;
 		}
 

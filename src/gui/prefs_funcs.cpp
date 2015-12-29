@@ -39,6 +39,12 @@ AtenPrefs::AtenPrefs(AtenWindow& parent) : QDialog(&parent), parent_(parent)
 	// Add colour popups to buttons
 	ui.ElementColourButton->setPopupWidget(new ColourPopup(parent_, ui.ElementColourButton), true);
 	connect(ui.ElementColourButton->popupWidget(), SIGNAL(popupDone()), this, SLOT(elementColourChanged()));
+	ui.SpotlightAmbientColourButton->setPopupWidget(new ColourPopup(parent_, ui.SpotlightAmbientColourButton, ColourPopup::NoAlphaOption), true);
+	connect(ui.SpotlightAmbientColourButton->popupWidget(), SIGNAL(popupDone()), this, SLOT(spotlightAmbientChanged()));
+	ui.SpotlightDiffuseColourButton->setPopupWidget(new ColourPopup(parent_, ui.SpotlightDiffuseColourButton, ColourPopup::NoAlphaOption), true);
+	connect(ui.SpotlightDiffuseColourButton->popupWidget(), SIGNAL(popupDone()), this, SLOT(spotlightDiffuseChanged()));
+	ui.SpotlightSpecularColourButton->setPopupWidget(new ColourPopup(parent_, ui.SpotlightSpecularColourButton, ColourPopup::NoAlphaOption), true);
+	connect(ui.SpotlightSpecularColourButton->popupWidget(), SIGNAL(popupDone()), this, SLOT(spotlightSpecularChanged()));
 
 	refreshing_ = false;
 
@@ -49,13 +55,7 @@ AtenPrefs::AtenPrefs(AtenWindow& parent) : QDialog(&parent), parent_(parent)
 		item = new QListWidgetItem(ui.ElementList);
 		item->setText(Elements().name(i));
 	}
-	ui.ElementList->setCurrentRow(0);
-}
 
-// Set controls
-void AtenPrefs::setControls()
-{
-	Messenger::enter("AtenPrefs::setControls");
 	refreshing_ = true;
 
 	// Select the first element in the elements list
@@ -97,9 +97,13 @@ void AtenPrefs::setControls()
 	}
 
 	// View Page - Rendering / Quality tab
-	ui.SpotlightAmbientColourFrame->setColour(prefs.spotlightColour(Prefs::AmbientComponent));
-	ui.SpotlightDiffuseColourFrame->setColour(prefs.spotlightColour(Prefs::DiffuseComponent));
-	ui.SpotlightSpecularColourFrame->setColour(prefs.spotlightColour(Prefs::SpecularComponent));
+	ReturnValue rv;
+	rv.setArray(VTypes::DoubleData, prefs.spotlightColour(Prefs::AmbientComponent), 4);
+	ui.SpotlightAmbientColourButton->callPopupMethod("setCurrentColour", rv);
+	rv.setArray(VTypes::DoubleData, prefs.spotlightColour(Prefs::DiffuseComponent), 4);
+	ui.SpotlightDiffuseColourButton->callPopupMethod("setCurrentColour", rv);
+	rv.setArray(VTypes::DoubleData, prefs.spotlightColour(Prefs::SpecularComponent), 4);
+	ui.SpotlightSpecularColourButton->callPopupMethod("setCurrentColour", rv);
 	double* pos = prefs.spotlightPosition();
 	ui.SpotlightPositionXSpin->setValue(pos[0]);
 	ui.SpotlightPositionYSpin->setValue(pos[1]);
@@ -131,13 +135,11 @@ void AtenPrefs::setControls()
 	ui.CommonElementsEdit->setText(prefs.commonElements());
 	ui.DensityUnitCombo->setCurrentIndex(prefs.densityUnit());
 	ui.EnergyUnitCombo->setCurrentIndex(prefs.energyUnit());
-	ui.EnergyUpdateSpin->setValue(prefs.energyUpdate());
 	ui.HAddDistanceSpin->setValue(prefs.hydrogenDistance());
 	ui.MaxCuboidsSpin->setValue(prefs.maxCuboids());
 	ui.MaxRingsSpin->setValue(prefs.maxRings());
 	ui.MaxRingSizeSpin->setValue(prefs.maxRingSize());
 	ui.MaxUndoLevelsSpin->setValue(prefs.maxUndoLevels());
-	ui.ModelUpdateSpin->setValue(prefs.modelUpdate());
 
 	// Set pen colours and colourscale names and checks
 	for (int n=0; n<10; n++)
@@ -178,7 +180,6 @@ void AtenPrefs::setControls()
 	Elements().backupData();
 
 	refreshing_ = false;
-	Messenger::exit("AtenPrefs::setControls");
 }
 
 // Close window (accepted)
@@ -522,41 +523,37 @@ void AtenPrefs::on_SpotlightPositionZSpin_valueChanged(double value)
 	spotlightPosChanged(2, value);
 }
 
-void AtenPrefs::spotlightColourChanged(Prefs::ColourComponent sc)
+void AtenPrefs::spotlightAmbientChanged()
 {
-	// Get current component colour and convert it to a QColor
-	double* col = prefs.spotlightColour(sc);
-	QColor oldcol, newcol;
-	oldcol.setRgbF( col[0], col[1], col[2], col[3] );
-	// Request a colour dialog
-	bool ok = false;
-	newcol.setRgba(QColorDialog::getRgba(oldcol.rgba(), &ok, this));
-	if (!ok) return;
-	// Store new colour
-	prefs.setSpotlightColour(sc, newcol.redF(), newcol.greenF(), newcol.blueF());
-	TColourFrame *colframe = NULL;
-	if (sc == Prefs::AmbientComponent) colframe = ui.SpotlightAmbientColourFrame;
-	else if (sc == Prefs::DiffuseComponent) colframe = ui.SpotlightDiffuseColourFrame;
-	else if (sc == Prefs::SpecularComponent) colframe = ui.SpotlightSpecularColourFrame;	
-	colframe->setColour(newcol);
-	colframe->update();
-	// Update display
+	// Get and store new colour
+	ReturnValue rv;
+	bool success;
+	ui.SpotlightAmbientColourButton->callPopupMethod("currentColour", rv);
+	prefs.setSpotlightColour(Prefs::AmbientComponent, rv.asDouble(0, success), rv.asDouble(1, success), rv.asDouble(2, success));
+
 	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
-void AtenPrefs::on_SpotlightAmbientColourButton_clicked(bool checked)
+void AtenPrefs::spotlightDiffuseChanged()
 {
-	spotlightColourChanged(Prefs::AmbientComponent);
+	// Get and store new colour
+	ReturnValue rv;
+	bool success;
+	ui.SpotlightDiffuseColourButton->callPopupMethod("currentColour", rv);
+	prefs.setSpotlightColour(Prefs::DiffuseComponent, rv.asDouble(0, success), rv.asDouble(1, success), rv.asDouble(2, success));
+
+	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
-void AtenPrefs::on_SpotlightDiffuseColourButton_clicked(bool checked)
+void AtenPrefs::spotlightSpecularChanged()
 {
-	spotlightColourChanged(Prefs::DiffuseComponent);
-}
+	// Get and store new colour
+	ReturnValue rv;
+	bool success;
+	ui.SpotlightSpecularColourButton->callPopupMethod("currentColour", rv);
+	prefs.setSpotlightColour(Prefs::SpecularComponent, rv.asDouble(0, success), rv.asDouble(1, success), rv.asDouble(2, success));
 
-void AtenPrefs::on_SpotlightSpecularColourButton_clicked(bool checked)
-{
-	spotlightColourChanged(Prefs::SpecularComponent);
+	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
 void AtenPrefs::on_ShininessSpin_valueChanged(int value)
@@ -774,11 +771,6 @@ void AtenPrefs::on_EnergyUnitCombo_currentIndexChanged(int index)
 	prefs.setEnergyUnit( (Prefs::EnergyUnit) index );
 }
 
-void AtenPrefs::on_EnergyUpdateSpin_valueChanged(int value)
-{
-	prefs.setEnergyUpdate(value);
-}
-
 void AtenPrefs::on_HAddDistanceSpin_valueChanged(double value)
 {
 	prefs.setHydrogenDistance(value);
@@ -802,11 +794,6 @@ void AtenPrefs::on_MaxRingSizeSpin_valueChanged(int value)
 void AtenPrefs::on_MaxUndoLevelsSpin_valueChanged(int value)
 {
 	prefs.setMaxUndoLevels(value);
-}
-
-void AtenPrefs::on_ModelUpdateSpin_valueChanged(int value)
-{
-	prefs.setModelUpdate(value);
 }
 
 /*

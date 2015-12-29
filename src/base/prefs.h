@@ -547,8 +547,6 @@ class Prefs
 	 * General Program / Method Preferences
 	 */
 	private:
-	// Main modelview update and energy output frequencies
-	int modelUpdate_, energyUpdate_;
 	// Maximum ring size in ring search algorithm
 	int maxRingSize_;
 	// Maximum number of rings to detect per pattern
@@ -583,18 +581,6 @@ class Prefs
 	bool allowDialogs_;
 	
 	public:
-	// Set the model update frequency
-	void setModelUpdate(int n);
-	// Return the model update frequency
-	int modelUpdate() const;
-	// Return whether to update the model, given the cycle number
-	bool shouldUpdateModel(int n);
-	// Set the energy update frequency
-	void setEnergyUpdate(int n);
-	// Return the energy update frequency
-	int energyUpdate() const;
-	// Return whether to update the energy, given the cycle number
-	bool shouldUpdateEnergy(int n);
 	// Return the maximum ring size allowed
 	int maxRingSize() const;
 	// Set the maximum ring size allowed

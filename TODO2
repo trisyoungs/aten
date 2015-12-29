@@ -97,3 +97,4 @@ Keyboard shortcuts: F6 now cycles rendering styles, Ctrl-F6 colouring styles (wi
 Removed Prefs::textColour and WireSelectioNColour accessors, and added ForegroundColour.
 Removed VBO CLI switch, and added Lists and NoInstances switches.
 Removed prefs "usePixelBuffers" accessor.
+Remove modelUpdate and energyUpdate accessors from Prefs.
