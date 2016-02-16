@@ -31,14 +31,19 @@ ATEN_USING_NAMESPACE
 
 int main(int argc, char* argv[])
 {
+	/* Set some Qt environment variables */
+	// -- Correct rendering on systems that use scaled displays
+	qputenv("QT_DEVICE_PIXEL_RATIO", "auto");
+
 	/* Create the main QApplication */
 	QApplication app(argc, argv);
 	QCoreApplication::setOrganizationName("ProjectAten");
 	QCoreApplication::setOrganizationDomain("www.projectaten.net");
 	QCoreApplication::setApplicationName("Aten");
-
-	/* Set native siblings attribute to prevent odd rendering artefacts on some systems */
+	// -- Set native siblings attribute to prevent odd rendering artefacts on some systems
 	app.setAttribute(Qt::AA_DontCreateNativeWidgetSiblings);
+	// -- Set high DPI pixmaps
+	app.setAttribute(Qt::AA_UseHighDpiPixmaps, true);
 
 	/* Tweak the default QSurfaceFormat */
 	QSurfaceFormat surfaceFormat;
