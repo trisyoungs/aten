@@ -98,3 +98,5 @@ Removed Prefs::textColour and WireSelectioNColour accessors, and added Foregroun
 Removed VBO CLI switch, and added Lists and NoInstances switches.
 Removed prefs "usePixelBuffers" accessor.
 Remove modelUpdate and energyUpdate accessors from Prefs.
+Add 'external' dir description to quickstart.
+Is CombinationRule enum still valid / used?
