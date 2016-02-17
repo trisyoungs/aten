@@ -49,8 +49,6 @@ class AtenPrefs : public QDialog
 	AtenPrefs(AtenWindow& parent);
 	// Main form declaration
 	Ui::PrefsDialog ui;
-	// Set controls to reflect program variables
-	void setControls(); // ATEN2 TODO Do we need this?  Can't just set in updateAndShow() / Constructor
 
 	private:
 	// Reference to main window
@@ -83,13 +81,11 @@ class AtenPrefs : public QDialog
 	void on_CommonElementsEdit_textEdited(const QString &text);
 	void on_DensityUnitCombo_currentIndexChanged(int index);
 	void on_EnergyUnitCombo_currentIndexChanged(int index);
-	void on_EnergyUpdateSpin_valueChanged(int value);
 	void on_HAddDistanceSpin_valueChanged(double value);
 	void on_MaxCuboidsSpin_valueChanged(int value);
 	void on_MaxRingsSpin_valueChanged(int value);
 	void on_MaxRingSizeSpin_valueChanged(int value);
 	void on_MaxUndoLevelsSpin_valueChanged(int value);
-	void on_ModelUpdateSpin_valueChanged(int value);
 
 
 	/*
@@ -161,12 +157,12 @@ class AtenPrefs : public QDialog
 	void on_PolygonAliasingCheck_stateChanged(int state);
 	void on_MultiSamplingCheck_stateChanged(int state);
 	void on_SpotlightGroup_clicked(bool checked);
-	void on_SpotlightAmbientColourButton_clicked(bool checked);
-	void on_SpotlightDiffuseColourButton_clicked(bool checked);
-	void on_SpotlightSpecularColourButton_clicked(bool checked);
 	void on_SpotlightPositionXSpin_valueChanged(double value);
 	void on_SpotlightPositionYSpin_valueChanged(double value);
 	void on_SpotlightPositionZSpin_valueChanged(double value);
+	void spotlightAmbientChanged();
+	void spotlightDiffuseChanged();
+	void spotlightSpecularChanged();
 	void on_ShininessSpin_valueChanged(int value);
 
 

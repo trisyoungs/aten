@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>373</width>
-    <height>218</height>
+    <height>222</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -202,7 +202,7 @@
     </widget>
    </item>
    <item row="7" column="0" colspan="3">
-    <widget class="Line" name="line_2">
+    <widget class="Line" name="AlphaLine">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>

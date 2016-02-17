@@ -49,16 +49,23 @@ class ColourPopup : public TPopupWidget
 	private:
 	// Reference to main window
 	AtenWindow& parent_;
+	// Options passed to constructor (summed from Options enum)
+	int options_;
 
 	public:
 	// Constructor / Destructor
-	ColourPopup(AtenWindow& parent, TMenuButton* buttonParent);
+	ColourPopup(AtenWindow& parent, TMenuButton* buttonParent, int options = 0);
 	// Main form declaration
 	Ui::ColourPopup ui;
 	// Update controls (before show()) (virtual)
 	void updateControls();
 	// Call named method associated to popup
 	bool callMethod(QString methodName, ReturnValue& rv);
+	// Options
+	enum Options
+	{
+		NoAlphaOption = 1
+	};
 
 
 	/*

@@ -93,7 +93,6 @@ void FileAtenPopup::on_StoreStateButton_clicked(bool checked)
 void FileAtenPopup::on_PreferencesButton_clicked(bool checked)
 {
 	AtenPrefs prefsDialog(parent_);
-	prefsDialog.setControls();
 	prefsDialog.exec();
 
 	// Hide popup

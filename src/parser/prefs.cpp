@@ -76,7 +76,6 @@ Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
 	{ "elecCutoff",			VTypes::DoubleData,		0, false },
 	{ "elecMethod",			VTypes::StringData,		0, false },
 	{ "energyUnit",			VTypes::StringData,		0, false },
-	{ "energyUpdate",		VTypes::IntegerData,		0, false },
 	{ "ewaldAlpha",			VTypes::DoubleData,		0, false },
 	{ "ewaldKMax",			VTypes::IntegerData,		3, false },
 	{ "ewaldPrecision",		VTypes::DoubleData,		0, false },
@@ -96,7 +95,6 @@ Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
 	{ "maxRings",			VTypes::IntegerData,		0, false },
 	{ "maxRingsize",		VTypes::IntegerData,		0, false },
 	{ "maxUndo",			VTypes::IntegerData,		0, false },
-	{ "modelUpdate",		VTypes::IntegerData,		0, false },
 	{ "mopacExe",			VTypes::StringData,		0, false },
 	{ "mouseAction",		VTypes::StringData,		Prefs::nMouseButtons, false },
 	{ "mouseMoveFilter",		VTypes::IntegerData,		0, false },
@@ -320,9 +318,6 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArray
 		case (PreferencesVariable::EnergyUnit):
 			rv.set(Prefs::energyUnit(ptr->energyUnit()));
 			break;
-		case (PreferencesVariable::EnergyUpdate):
-			rv.set( ptr->energyUpdate() );
-			break;
 		case (PreferencesVariable::EwaldAlpha):
 			rv.set( ptr->ewaldAlpha() );
 			break;
@@ -383,9 +378,6 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArray
 			break;
 		case (PreferencesVariable::MaxUndo):
 			rv.set( ptr->maxUndoLevels() );
-			break;
-		case (PreferencesVariable::ModelUpdate):
-			rv.set( ptr->modelUpdate() );
 			break;
 		case (PreferencesVariable::MopacExe):
 			rv.set( ptr->mopacExe() );
@@ -639,9 +631,6 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue&
 			}
 			else result = false;
 			break;
-		case (PreferencesVariable::EnergyUpdate):
-			ptr->setEnergyUpdate( newValue.asInteger(result) );
-			break;
 		case (PreferencesVariable::EwaldAlpha):
 			ptr->setEwaldAlpha( newValue.asDouble(result) );
 			break;
@@ -725,9 +714,6 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue&
 			break;
 		case (PreferencesVariable::MaxUndo):
 			ptr->setMaxUndoLevels( newValue.asInteger(result) );
-			break;
-		case (PreferencesVariable::ModelUpdate):
-			ptr->setModelUpdate( newValue.asInteger(result) );
 			break;
 		case (PreferencesVariable::MopacExe):
 			ptr->setMopacExe( newValue.asString(result) );

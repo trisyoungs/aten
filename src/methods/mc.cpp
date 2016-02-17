@@ -461,7 +461,7 @@ bool MonteCarlo::minimise(Model* srcmodel, double econ, double fcon)
 			if (nTrials_[move] != 0) acceptanceRatio_[0][move] /= nTrials_[move];
 		} // Loop over MC moves
 
-		if (prefs.shouldUpdateEnergy(cycle))
+		if (cycle%5 == 0)
 		{
 			QString s;
 			s.sprintf(" %-5i %13.6e %13.6e %13.6e %13.6e ", cycle, currentEnergy, currentEnergy-lastPrintedEnergy, currentVdwEnergy, currentElecEnergy);
