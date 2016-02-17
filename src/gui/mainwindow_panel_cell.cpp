@@ -1,7 +1,7 @@
 /*
 	*** Main Window - Cell Panel Functions
 	*** src/gui/mainwindow_panel_cell.cpp
-	Copyright T. Youngs 2007-2015
+	Copyright T. Youngs 2007-2016
 
 	This file is part of Aten.
 

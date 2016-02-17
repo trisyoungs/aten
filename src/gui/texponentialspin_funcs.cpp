@@ -1,7 +1,7 @@
 /*
 	*** TExponentialSpin Functions
 	*** src/gui/texponentialspin_funcs.cpp
-	Copyright T. Youngs 2015
+	Copyright T. Youngs 2016
 
 	This file is part of Aten.
 

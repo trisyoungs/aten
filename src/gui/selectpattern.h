@@ -1,7 +1,7 @@
 /*
 	*** Select Pattern Dialog
 	*** src/gui/selectpattern.h
-	Copyright T. Youngs 2007-2015
+	Copyright T. Youngs 2007-2016
 
 	This file is part of Aten.
 

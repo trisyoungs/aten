@@ -1,7 +1,7 @@
 /*
 	*** Font Instance
 	*** src/render/fontinstance.cpp
-	Copyright T. Youngs 2013-2015
+	Copyright T. Youngs 2013-2016
 
 	This file is part of Aten.
 

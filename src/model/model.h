@@ -1,7 +1,7 @@
 /*
 	*** Main Model Class
 	*** src/model/model.h
-	Copyright T. Youngs 2007-2015
+	Copyright T. Youngs 2007-2016
 
 	This file is part of Aten.
 

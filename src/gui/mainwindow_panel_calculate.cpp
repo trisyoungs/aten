@@ -1,7 +1,7 @@
 /*
 	*** Main Window - Calculate Panel Functions
 	*** src/gui/mainwindow_panel_calculate.cpp
-	Copyright T. Youngs 2007-2015
+	Copyright T. Youngs 2007-2016
 
 	This file is part of Aten.
 

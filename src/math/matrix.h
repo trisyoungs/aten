@@ -1,7 +1,7 @@
 /*
 	*** Column-Major (OpenGL-friendly) 4x4 Matrix class
 	*** src/math/matrix.h
-	Copyright T. Youngs 2007-2015
+	Copyright T. Youngs 2007-2016
 
 	This file is part of Aten.
 
