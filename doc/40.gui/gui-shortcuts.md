@@ -153,12 +153,12 @@ header_class: alt
   <column>Zoom in</column>
  </row>
  <row>
-  <column>Ctrl-Alt-&lt;</column>
+  <column>Ctrl-Alt-<</column>
   <column>First Frame</column>
   <column>Jump to first frame of current trajectory</column>
  </row>
  <row>
-  <column>Ctrl-Alt-&gt;</column>
+  <column>Ctrl-Alt-></column>
   <column>Last Frame</column>
   <column>Jump to last frame of current trajectory</column>
  </row>

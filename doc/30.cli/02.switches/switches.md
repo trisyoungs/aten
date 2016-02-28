@@ -9,7 +9,7 @@ header_class: alt
 
 ## A
 
-`--atendata &lt;dir&gt;`<a id="atendata"></a>
+`--atendata <dir>`<a id="atendata"></a>
 
 Tells **Aten** to use the specified _dir_ as its data directory (where filters etc. are stored). This overrides the **ATENDATA** shell variable.
 
@@ -29,7 +29,7 @@ Force recalculation of bonding in loaded models, regardless of whether the filte
 
 ## C
 
-`-c &lt;commands&gt;, --command &lt;commands&gt;`<a id="c"></a>
+`-c <commands>, --command <commands>`<a id="c"></a>
 
 Provides a command or compound command to execute. Commands should be enclosed in single quotes (to prevent the shell from misquoting any character strings) and individual commands separated with semicolons. Commands provided in this way can be used to set up **Aten** in the way you want it from the command line, perform operations on model files before loading the GUI, or perform operations on model files without loading the GUI at all.
 
@@ -59,7 +59,7 @@ bob@pc:~> aten source.xyz -c 'selectAll; copy();' target.xyz -c 'paste(10,10,10)
 
 Take care here, since the commands provided act on the current model, i.e. the one that was most recently loaded. Commands are available that select between the loaded models – see the list of model-related commands in Section 9.22.
 
-`--cachelimit &lt;limit&gt;`<a id="cachelimit"></a>
+`--cachelimit <limit>`<a id="cachelimit"></a>
 
 Sets the size limit for trajectory loading, in kilobytes. If an entire trajectory will fit into this cache, all frames in the trajectory are loaded immediately. If not, frames will be read from disk as and when required.
 
@@ -69,7 +69,7 @@ Force translation of non-periodic models centre-of-geometry to the origin, even 
 
 ## D
 
-`-d [&lt;type&gt;], --debug [type]`<a id="d"></a>
+`-d [<type>], --debug [type]`<a id="d"></a>
 
 Enables debugging of subroutine calls so that program execution can be traced, or enables extra debug output from specific types of routines (if a _type_ is given). Warning - this creates a lot of output, most of which is incomprehensible to people with their sanity still intact, but is useful to track the program up to the point of, say, a hideous crash. Valid _type_ values are listed under [a]Output Enums,enums-output[/a].
 
@@ -77,7 +77,7 @@ Enables debugging of subroutine calls so that program execution can be traced, o
 
 By default, filter and script user dialogs are not shown when performing functions on the command-line. This switch forces dialogs to be shown.
 
-`--double &lt;name=value&gt;`<a id="double"></a>
+`--double <name=value>`<a id="double"></a>
 
 Creates a ‘floating’ variable _name_ which is of type [type]double[/type] and that can be accessed from any subsequent script, command, or filter. Note that declarations of variables with the same name made in scripts, commands and filters will override any passed value names in order to avoid conflicts and breaking of existing filters and scripts. The intended use is to be able to pass values easily from the command-line into scripts or one-line commands.
 
@@ -89,11 +89,11 @@ bob@pc:~> for num in 10.0 50.5 100.0; do aten --double d=$num -c 'printf("Value 
 
 ## E
 
-`--export &lt;nickname&gt;`<a id="export"></a>
+`--export <nickname>`<a id="export"></a>
 
 Enter export  mode, where each model specified on the command line is loaded and saved in the format corresponding to the _nickname_ specified. If specified in conjunction with [--batch](/aten/docs/cli/switches#batch), batch export mode is entered instead, with commands run on models before being saved to the new format. See Section 6.3 for details and a list of other modes. 
 
-`--exportmap &lt;name=element,...&gt;`<a id="exportmap"></a>
+`--exportmap <name=element,...>`<a id="exportmap"></a>
 
 Manually map assigned atom typenames in an expression to the names defined here when expressions are written to a file. For example:
 
@@ -103,21 +103,21 @@ bob@pc:~> aten --ff spc.ff data/test/water.xyz --exportmap "OW=Ospc,H=Hspc" -c '
 
 writes the water forcefield with the **OW** and **HW** atomtype names mapped to **Ospc** and **Hspc** respectively.
 
-`--expression &lt;file&gt;`<a id="expression"></a>
+`--expression <file>`<a id="expression"></a>
 
 Loads the specified _file_ as if it were an expression.
 
 ## F
 
-`-f &lt;nickname&gt;, --format &lt;nickname&gt;`<a id="f"></a>
+`-f <nickname>, --format <nickname>`<a id="f"></a>
 
 For any forthcoming model files provided as arguments on the command line, the specified model import filter is used to load them, regardless of their filename extension (or, indeed, actual format). Since **Aten** tends not to determine file formats by looking at their content, this is useful for when you know that file is in a particular format, but with an extension that doesn't help **Aten** recognise it as such.
 
-`--ff &lt;file&gt;`<a id="ff"></a>
+`--ff <file>`<a id="ff"></a>
 
 Loads the specified forcefield file, making it the current forcefield. If the desired forcefield is present in either **Aten**’s installed **data/** directory or in your own **~/.aten/ff** directory (see the quick guide on [a]Locations,quick-locations[/a]), then just the filename need be given as **Aten** searches these locations by default.
 
-`--filter &lt;file&gt;`<a id="filter"></a>
+`--filter <file>`<a id="filter"></a>
 
 Load the specified **file** as if it were a filter file, installing any filters defined within it. Any filters already loaded that have the same ‘nickname’, ‘id’ etc. will be hidden by those loaded from **file**. See [a]overriding existing filters,filters-overriding[/a] for more information.
 
@@ -127,7 +127,7 @@ Force folding of atoms to within the boundaries of the unit cell (if one is pres
 
 ## G
 
-`-g &lt;file&gt;, --grid &lt;file&gt;`<a id="g"></a>
+`-g <file>, --grid <file>`<a id="g"></a>
 
 Loads the specified grid data **file**, associating it to the current model, and making it the current grid. A model (even an empty one) must exist for a grid to be loaded.
 
@@ -143,7 +143,7 @@ Show the possible command-line switches and a short description of their meaning
 
 Starts **Aten** in interactive mode, where commands are typed and immediately executed. The GUI is not started by default, but may be invoked.
 
-`--int &lt;name=value&gt;`<a id="int"></a>
+`--int <name=value>`<a id="int"></a>
 
 Creates a floating integer variable _name_. See the [--double](/aten/docs/cli/switches#d) switch for a full description.
 
@@ -167,7 +167,7 @@ Note that the [--keeptypes](/aten/docs/cli/switches#keeptypes) and [--keepnames]
 
 ## M
 
-`-m &lt;name=element,...&gt;, --map &lt;name=element,...&gt;`<a id="m"></a>
+`-m <name=element,...>, --map <name=element,...>`<a id="m"></a>
 
 Manually map atom typenames occurring in model files to elements according to the rules defined here. For example:
 
@@ -249,23 +249,23 @@ Prevents nearly all text output from **Aten**, including error messages and the 
 
 ## S
 
-`-s &lt;file&gt;, --script &lt;file&gt;`<a id="s"></a>
+`-s <file>, --script <file>`<a id="s"></a>
 
 Specifies that the script file is to be loaded and run before moving on to the next command-line argument. A script file is just a plain text file that contains sequence of commands to be executed, written in the [a]command language style,cmdlang[/a].
 
-`--string &lt;name=value&gt;`<a id="string"></a>
+`--string <name=value>`<a id="string"></a>
 
 Creates a floating string variable _name_. See the [--double](/aten/docs/cli/switches#d) switch for a full description.
 
 ## T
 
-`-t &lt;file&gt;, --trajectory &lt;file&gt;`<a id="t"></a>
+`-t <file>, --trajectory <file>`<a id="t"></a>
 
 Associates a trajectory file with the last loaded / current model.
 
 ## U
 
-`-u &lt;nlevels&gt;, --undolevels &lt;nlevels&gt;`<a id="u"></a>
+`-u <nlevels>, --undolevels <nlevels>`<a id="u"></a>
 
 Set the maximum number of undo levels per model, or -1 for unlimited (the default).
 
@@ -281,7 +281,7 @@ Attempt to use OpenGL vertex buffer objects when rendering, for maximum performa
 
 ## Z
 
-`-z &lt;maptype&gt;, --zmap &lt;maptype&gt;`<a id="z"></a>
+`-z <maptype>, --zmap <maptype>`<a id="z"></a>
 
 Override the names to elements z-mapping style defined in file filters. For a list of possible mapping types see [a]ZMapping Types,enums-zmapping[/a].
 

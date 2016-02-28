@@ -24,7 +24,7 @@ For example:
 
 ```
 int i = 1;
-do { i = i * 2; printf("i = %d\n", i); } while (i &lt; 100);
+do { i = i * 2; printf("i = %d\n", i); } while (i < 100);
 ```
 
 will print out the following:
@@ -55,7 +55,7 @@ Some examples:
 
 
 ```
-for (int i=1; i&lt;=10; i = i + 1) printf("%i\n", i);
+for (int i=1; i<=10; i = i + 1) printf("%i\n", i);
 ```
 
 
@@ -63,7 +63,7 @@ Loop over and print all integers between 1 and 10. A local variable _i_ is decla
 
 
 ```
-for (n = 100; n&gt;0; --n) printf("Counting down... %i\n", n);
+for (n = 100; n>0; --n) printf("Counting down... %i\n", n);
 ```
 
 
@@ -109,7 +109,7 @@ Typically, comparisons are made between two variables, for example:
 
 
 ```
-if ( var1 &gt; var2 ) ...
+if ( var1 > var2 ) ...
 ```
 
 
@@ -130,23 +130,23 @@ checks for _var1_ being greater in value than _var2_, executing the following co
   <column>Not equal to</column>
  </row>
  <row>
-  <column>&lt;&gt;</column>
+  <column><></column>
   <column>Not equal to</column>
  </row>
  <row>
-  <column>&gt;</column>
+  <column>></column>
   <column>Greater than</column>
  </row>
  <row>
-  <column>&lt;</column>
+  <column><</column>
   <column>Less than</column>
  </row>
  <row>
-  <column>&gt;=</column>
+  <column>>=</column>
   <column>Greater than or equal to</column>
  </row>
  <row>
-  <column>&lt;=</column>
+  <column><=</column>
   <column>Less than or equal to</column>
  </row>
 </table>
@@ -157,21 +157,21 @@ For example:
 
 ```
 int i = 10;
-if (i &gt; 5) printf("Hooray!\n");
+if (i > 5) printf("Hooray!\n");
 ```
 
 in this case 'Hooray!' will be printed, because _i_ is greater than 5.
 
 ```
 int i = 10, j = 20;
-if (i &gt; j) printf("Hooray!\n");
+if (i > j) printf("Hooray!\n");
 ```
 
 but in this case 'Hooray!' will **not** be printed, because _i_ is not greater than _j_.
 
 ```
 int i = 10, j = 20;
-if (i &gt; j) printf("Hooray!\n");
+if (i > j) printf("Hooray!\n");
 else { printf("Too small.\n"); i = j; }
 ```
 
@@ -192,7 +192,7 @@ In a similar way, a reference variable has a positive integer value at its heart
 ```
 Atom a = newAtom("H");
 double alpha = 100.0;
-if ( (a) &amp;&amp; (alpha &lt; 50.0) ) printf("Alpha and atom are OK.\n");
+if ( (a) &amp;&amp; (alpha < 50.0) ) printf("Alpha and atom are OK.\n");
 else printf("No good!\n");
 ```
 
@@ -200,7 +200,7 @@ Two or more consecutive _conditions_ can be tested in order to determine ‘trut
 
 ```
 if (time == 0) printf("There is no time.");
-else if (time &gt; 5) printf("There is more than enough time.");
+else if (time > 5) printf("There is more than enough time.");
 else printf("There is only a little time.");
 ```
 
@@ -232,7 +232,7 @@ For example:
 
 ```
 int i = 1024;
-while (i &gt; 100) { i = i / 2; printf("i = %d\n", i); }
+while (i > 100) { i = i / 2; printf("i = %d\n", i); }
 ```
 
 will print out the following:

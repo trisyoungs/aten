@@ -19,13 +19,13 @@ int nAtoms = aten.model.nAtoms;
 printf("Number of frames is %i\n", nFrames);
 for (Model f = aten.model.frames; f; ++f)
 {
-      for (int n=1; n&lt;=nAtoms; ++n) xyz[n] += f.atoms[n].r;
+      for (int n=1; n<=nAtoms; ++n) xyz[n] += f.atoms[n].r;
 }
-for (int n=1; n&lt;=nAtoms; ++n) xyz[n] = xyz[n] / nFrames;
+for (int n=1; n<=nAtoms; ++n) xyz[n] = xyz[n] / nFrames;
 
 Model f = aten.model.frames;
 newModel("Average");
-for (int n=1; n&lt;= nAtoms; ++n)
+for (int n=1; n<= nAtoms; ++n)
 {
       newAtom(f.atoms[n].z, xyz[n].x, xyz[n].y, xyz[n].z);
 }

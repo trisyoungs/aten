@@ -16,7 +16,7 @@ Invoked by the [`--batch`](/aten/docs/cli/switches#switch_batch) switch, this mo
 For example, to transmute all iron atoms into cobalt for a series of xyz files named [name]complex_001.xyz[/name], [name]complex_002.xyz[/name] etc.
 
 ```
-bob@pc:~&gt; aten --batch -c 'select(Fe); transmute(Co);' complex_*.xyz
+bob@pc:~> aten --batch -c 'select(Fe); transmute(Co);' complex_*.xyz
 ```
 
 ## Export Mode
@@ -26,7 +26,7 @@ Invoked by the [`--export`](/aten/docs/cli/switches#switch_export) switch, in ex
 For instance, to convert three DL_POLY CONFIG files and an xyz into mol2 format:
 
 ```
-bob@pc:~&gt; aten --export mol2 bio1.CONFIG bio2.CONFIG watercell.CONFIG random.xyz
+bob@pc:~> aten --export mol2 bio1.CONFIG bio2.CONFIG watercell.CONFIG random.xyz
 ```
 
 If specified in conjunction with the [`--batch`](/aten/docs/cli/switches#switch_batch) switch, batch export mode is entered instead, and any supplied commands are executed on each loaded model file before it is saved. The original model files are not modified.
@@ -38,7 +38,7 @@ Invoked by providing the [`--batch`](/aten/docs/cli/switches#switch_batch) and [
 Let’s say that you have a directory full of xyz files that you wish to energy minimise with MOPAC2009 (see [a]External Programs - Mopac,extern-mopac[/a]), centre at zero, and then save as input to GAMESS-US. This can be achieved with the following command:
 
 ```
-bob@pc:~&gt; aten --export gamusinp --batch –c 'mopacMinimise(); selectAll(); centre();' *.xyz
+bob@pc:~> aten --export gamusinp --batch –c 'mopacMinimise(); selectAll(); centre();' *.xyz
 ```
 
 Various export options for the GAMESS-US filter (e.g. method type, basis set) can be set at the same time. See how to set filter options in Section 11.1.5, and Section 5.11 for an example.

@@ -165,7 +165,7 @@ A type description containing no terms has a maximum score of 1 (coming from a m
 
 matches any carbon in any system, but will be replaced fairly easily by other types since it has such a low score.
 
-### Normal Types (Score &gt; 1)
+### Normal Types (Score > 1)
 
 For a type in which all terms are matched successfully, one point is scored for each individual term. All of the following types have a potential maximum score of 3 (don't forget, one point comes from matching the element):
 

@@ -75,7 +75,7 @@ For functions defined to return a specific type, at some point in the body of th
 ```
 int checksign ( double num )
 {
-      if (num &lt; 0) return -1;
+      if (num < 0) return -1;
       else return 1;
 }
 ```
