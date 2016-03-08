@@ -115,7 +115,7 @@ bool Aten::saveSession(QString filename)
 			}
 			// Write axes, offset, and cutoff information
 			double* axes = g->axes().matrix();
-			parser.writeLineF("%s.axes.matrix = { %f, %f, %f, %f, %f, %f, %f, %f, %f};\n", qPrintable(gridVar), axes[0], axes[1], axes[2], axes[3], axes[4], axes[5], axes[6], axes[7], axes[8]);
+			parser.writeLineF("%s.axes.matrix = { %f, %f, %f, %f, %f, %f, %f, %f, %f};\n", qPrintable(gridVar), axes[0], axes[1], axes[2], axes[4], axes[5], axes[6], axes[8], axes[9], axes[10]);
 			parser.writeLineF("%s.origin = { %f, %f, %f };\n", qPrintable(gridVar), g->origin().x, g->origin().y, g->origin().z);
 			parser.writeLineF("%s.cutoff = %f;\n", qPrintable(gridVar), g->lowerPrimaryCutoff());
 			parser.writeLineF("%s.upperCutoff = %f;\n", qPrintable(gridVar), g->upperPrimaryCutoff());

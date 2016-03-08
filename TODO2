@@ -101,3 +101,4 @@ Remove modelUpdate and energyUpdate accessors from Prefs.
 Add 'external' dir description to quickstart.
 Is CombinationRule enum still valid / used?
 Added Grid accessors for Style.
+Add --session option.
