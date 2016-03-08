@@ -77,162 +77,18 @@ Aten::Aten() : commands_(*this)
 // Destructor
 Aten::~Aten()
 {
-	clear();
-	delete userClipboard;
-	if (gridClipboard_ != NULL) delete gridClipboard_;
-}
-
-// Clear
-void Aten::clear()
-{
+	// User data
 	models_.clear();
 	forcefields_.clear();
-	userClipboard->clear();
 	scripts_.clear();
+
+	// Filters
 	for (int i=0; i<FilterData::nFilterTypes; i++) filters_[i].clear();
-}
 
-// Return the current program mode
-Aten::ProgramMode Aten::programMode() const
-{
-	return programMode_;
-}
-
-/*
-// Program Control / Settings (not prefs)
-*/
-
-// Set whether type export conversion is enabled
-void Aten::setTypeExportMapping(bool b)
-{
-	typeExportMapping_ = b;
-}
-
-// Return whether type export conversion is enabled
-bool Aten::typeExportMapping() const
-{
-	return typeExportMapping_;
-}
-
-// Convert supplied type name according to export type map
-QString Aten::typeExportConvert(QString oldName) const
-{
-	if (!typeExportMapping_) return oldName;
-	KVPair* kvp = typeExportMap.search(oldName);
-	return (kvp == NULL ? oldName : kvp->value());
-}
-
-/*
- * Locations
- */
-
-// Return the home directory path
-QDir Aten::homeDir() const
-{
-	return homeDir_;
-}
-
-// Return the working directory path
-QDir Aten::workDir() const
-{
-	return workDir_;
-}
-
-// Return the data directory path
-QDir Aten::dataDir() const
-{
-	return dataDir_;
-}
-
-// Return full path of file in data directory
-QString Aten::dataDirectoryFile(QString filename)
-{
-	return QDir::toNativeSeparators(dataDir_.absoluteFilePath(filename));
-}
-
-// Return full path of file in user's Aten directory
-QString Aten::atenDirectoryFile(QString filename)
-{
-	QDir atenDir = homeDir_.absoluteFilePath(atenDirName_);
-	return QDir::toNativeSeparators(atenDir.absoluteFilePath(filename));
-}
-
-// Set/get necessary directories
-void Aten::setDirectories()
-{
-	Messenger::enter("Aten::setDirectories()");
-
-	// User's home directory
-#ifdef _WIN32
-	if (getenv("USERPROFILE") != '\0') homeDir_ = getenv("USERPROFILE");
-	else homeDir_ = "C:\\";
-#else
-	if (getenv("HOME") != '\0') homeDir_ = getenv("HOME");	
-	else homeDir_ = "/tmp";
-#endif
-
-	// Name of user's aten directory in user's home directory
-#ifdef _WIN32
-	atenDirName_ = "aten";
-#else
-	atenDirName_ = ".aten";
-#endif
-
-	// Working directory
-	workDir_ = getenv("PWD");
-
-
-	// Construct a list of possible paths, including the current value of dataDir_
-	QStringList paths;
-	if (dataDir_ != QDir()) paths << dataDir_.path();
-	else if (getenv("ATENDATA") != '\0') paths << getenv("ATENDATA");
-	paths << "/usr/share/aten";
-	paths << "/usr/local/share/aten";
-	paths << "../share/aten";
-	paths << QApplication::applicationDirPath() + "/../share/aten";
-	paths << QApplication::applicationDirPath() + "/../SharedSupport";
-	paths << QApplication::applicationDirPath() + "/..";
-
-	// Check each one until we find one that exists
-	for (int i=0; i < paths.size(); ++i)
-	{
-		QDir path = paths.at(i);
-		Messenger::print("Checking for data directory '%s'...", qPrintable(path.absolutePath()));
-		if (path.exists())
-		{
-			Messenger::print("Data directory exists at '%s' - using this path...", qPrintable(path.absolutePath()));
-			dataDir_ = path;
-
-			Messenger::enter("Aten::setDataDir()");
-			return;
-		}
-	}
-	Messenger::print("No valid data directory found in any location.");
-
-	Messenger::enter("Aten::setDirectories()");
-}
-
-/*
- * Grid clipboard functions
- */
-
-// Copy specified grid
-void Aten::copyGrid(Grid* g)
-{
-	// If there is an old grid here, delete it first
+	// Clipboards
+	userClipboard->clear();
+	delete userClipboard;
 	if (gridClipboard_ != NULL) delete gridClipboard_;
-	gridClipboard_ = NULL;
-	if (g != NULL)
-	{
-		gridClipboard_ = new Grid;
-		*gridClipboard_ = *g;
-	}
-}
-
-// Return grid on clipboard (if any)
-Grid* Aten::gridClipboard()
-{
-	return gridClipboard_;
 }
 
 // Set pointer to AtenWindow

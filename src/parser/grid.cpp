@@ -50,7 +50,7 @@ GridVariable::~GridVariable()
 
 // Accessor data
 Accessor GridVariable::accessorData[GridVariable::nAccessors] = {
-	{ "axes",			VTypes::CellData,	0, true },
+	{ "axes",			VTypes::MatrixData,	0, false },
 	{ "axisMajorSpacing", 		VTypes::VectorData,	0, false },
 	{ "axisMinorTicks", 		VTypes::IntegerData,	3, false },
 	{ "axisPositionX", 		VTypes::VectorData,	0, false },
@@ -73,10 +73,12 @@ Accessor GridVariable::accessorData[GridVariable::nAccessors] = {
 	{ "periodic",			VTypes::IntegerData,	0, false },
 	{ "secondaryColour",		VTypes::DoubleData,	4, false },
 	{ "secondaryCutoff",		VTypes::DoubleData,	0, false },
+	{ "secondaryStyle",		VTypes::StringData,	0, false },
 	{ "secondaryUpperCutoff",	VTypes::DoubleData,	0, false },
 	{ "shiftX",			VTypes::IntegerData,	0, false },
 	{ "shiftY",			VTypes::IntegerData,	0, false },
 	{ "shiftZ",			VTypes::IntegerData,	0, false },
+	{ "style",			VTypes::StringData,	0, false },
 	{ "type",			VTypes::StringData,	0, true },
 	{ "upperCutoff",		VTypes::DoubleData,	0, false },
 	{ "useColourScale",		VTypes::IntegerData,	0, false },
@@ -166,7 +168,9 @@ bool GridVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex, 
 		Messenger::exit("GridVariable::retrieveAccessor");
 		return false;
 	}
+
 	Accessors acc = (Accessors) i;
+
 	// Check for correct lack/presence of array index given
 	if ((accessorData[i].arraySize == 0) && hasArrayIndex)
 	{
@@ -183,8 +187,10 @@ bool GridVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex, 
 			return false;
 		}
 	}
+
 	// Get current data from ReturnValue
 	bool result = true;
+	double axes[9], *matrix;
 	Grid* ptr = (Grid*) rv.asPointer(VTypes::GridData, result);
 	if ((!result) || (ptr == NULL))
 	{
@@ -194,7 +200,8 @@ bool GridVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex, 
 	if (result) switch (acc)
 	{
 		case (GridVariable::Axes):
-			rv.set(VTypes::CellData, ptr->cell());
+			if (hasArrayIndex) rv.set( ptr->cell()->axes().matrix()[arrayIndex-1] );
+			else rv.set(ptr->cell()->axes());
 			break;
 		case (GridVariable::AxisMajorSpacing):
 			if (hasArrayIndex) rv.set( ptr->axisMajorSpacing()[arrayIndex-1] );
@@ -268,6 +275,9 @@ bool GridVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex, 
 		case (GridVariable::SecondaryCutoff):
 			rv.set(ptr->lowerSecondaryCutoff());
 			break;
+		case (GridVariable::SecondaryStyle):
+			rv.set(Grid::surfaceStyle(ptr->secondaryStyle()));
+			break;
 		case (GridVariable::SecondaryUpperCutoff):
 			rv.set(ptr->upperSecondaryCutoff());
 			break;
@@ -279,6 +289,9 @@ bool GridVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex, 
 			break;
 		case (GridVariable::ShiftZ):
 			rv.set(ptr->shift().z);
+			break;
+		case (GridVariable::Style):
+			rv.set(Grid::surfaceStyle(ptr->primaryStyle()));
 			break;
 		case (GridVariable::Type):
 			rv.set(Grid::gridType(ptr->type()));
@@ -335,6 +348,17 @@ bool GridVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newVal
 	}
 	if (result) switch (acc)
 	{
+		case (GridVariable::Axes):
+			if (newValue.type() == VTypes::MatrixData) ptr->setAxes(newValue.asMatrix(result));
+			else
+			{
+				Matrix mat = ptr->axes();
+				if (newValue.arraySize() != -1) for (n=0; n<newValue.arraySize(); ++n) mat[n] = newValue.asDouble(n, result);
+				else if (hasArrayIndex) mat[arrayIndex-1] = newValue.asDouble(result);
+				else for (n=0; n<16; ++n) mat[n] = newValue.asDouble(result);
+				ptr->setAxes(mat);
+			}
+			break;
 		case (GridVariable::AxisMajorSpacing):
 			if (newValue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->setAxisMajorSpacing(n, newValue.asVector(result)[n]);
 			else if (newValue.arraySize() != -1) for (n=0; n<newValue.arraySize(); ++n) ptr->setAxisMajorSpacing(n, newValue.asDouble(n, result));
@@ -401,6 +425,9 @@ bool GridVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newVal
 		case (GridVariable::SecondaryCutoff):
 			ptr->setLowerSecondaryCutoff( newValue.asDouble() );
 			break;
+		case (GridVariable::SecondaryStyle):
+			ptr->setSecondaryStyle(Grid::surfaceStyle( newValue.asString() ));
+			break;
 		case (GridVariable::SecondaryUpperCutoff):
 			ptr->setUpperSecondaryCutoff( newValue.asDouble() );
 			break;
@@ -412,6 +439,9 @@ bool GridVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newVal
 			break;
 		case (GridVariable::ShiftZ):
 			ptr->setShift(2, newValue.asInteger());
+			break;
+		case (GridVariable::Style):
+			ptr->setPrimaryStyle(Grid::surfaceStyle( newValue.asString() ));
 			break;
 		case (GridVariable::UpperCutoff):
 			ptr->setUpperPrimaryCutoff( newValue.asDouble() );

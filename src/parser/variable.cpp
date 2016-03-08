@@ -123,7 +123,7 @@ bool Variable::setInitialValue(TreeNode* node)
 		// Exact match required for everything else (or pointer and integer is ok)
 		default:
 			if (returnType_ == dt) break;
-			if ((dt == VTypes::IntegerData) && (returnType_ > VTypes::VectorData)) break;
+			if ((dt == VTypes::IntegerData) && (returnType_ >= VTypes::AtenData)) break;
 			Messenger::print("Error: Initial value for variable '%s' is of an incompatible type (%s).", qPrintable(name_), VTypes::dataType(dt));
 			return false;
 			break;
@@ -239,17 +239,22 @@ bool Variable::checkAccessorArrays(Accessor& accessor, const ReturnValue& newVal
 	}
 	else
 	{
-		// This is not an array member, so cannot be assigned an array unless its a Vector
+		// The target variable is not an array, and so cannot be assigned an array unless its a Vector or a Matrix
 		if (newValue.arraySize() != -1)
 		{
-			if (accessor.returnType != VTypes::VectorData)
+			if ((accessor.returnType != VTypes::VectorData) && (accessor.returnType != VTypes::MatrixData))
 			{
 				Messenger::print("Error: An array can't be assigned to the single valued member '%s'.", qPrintable(accessor.name));
 				return false;
 			}
-			else if ((newValue.type() != VTypes::VectorData) && (newValue.arraySize() != 3))
+			else if ((accessor.returnType == VTypes::VectorData) && (newValue.arraySize() != 3))
 			{
 				Messenger::print("Error: Only an array of size 3 can be assigned to a vector (member '%s').", qPrintable(accessor.name));
+				return false;
+			}
+			else if ((accessor.returnType == VTypes::MatrixData) && (newValue.arraySize() != 16))
+			{
+				Messenger::print("Error: Only an array of size 16 can be assigned to a matrix (member '%s').", qPrintable(accessor.name));
 				return false;
 			}
 		}
@@ -267,6 +272,7 @@ ArrayVariable::ArrayVariable()
 {
 	arraySizeExpression_ = NULL;
 	arraySize_ = -1;
+	returnsArray_ = true;
 }
 
 // Destructor (virtual)

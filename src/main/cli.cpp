@@ -32,6 +32,7 @@
 #include "parser/double.h"
 #include "parser/integer.h"
 #include "parser/character.h"
+#include <QRegularExpression>
 
 ATEN_USING_NAMESPACE
 
@@ -145,7 +146,7 @@ Cli cliSwitches[] = {
 	{ Cli::NoIncludesSwitch,	'\0',"noincludes",	0,
 		"",
 		"Prevent loading of includes on startup" },
-	{ Cli::NoInstancesSwitch,		'\0',"noinstances",		0,
+	{ Cli::NoInstancesSwitch,	'\0',"noinstances",		0,
 		"",
 		"Disable use of both OpenGL display lists and VBOs" },
 	{ Cli::NoPackSwitch,		'\0',"nopack",		0,
@@ -172,6 +173,9 @@ Cli cliSwitches[] = {
 	{ Cli::ScriptSwitch,		's',"script",		1,
 		"<file>",
 		"Load and execute the script file specified" },
+	{ Cli::SessionSwitch,		'\0',"session",		1,
+		"<file>",
+		"Load the session file specified" },
 	{ Cli::StringSwitch,		'\0',"string",		1,
 		"<var>=<value>",
 		"Pass a string <value> into Aten with variable name <var>" },
@@ -225,9 +229,12 @@ Cli::CliSwitch Cli::cliSwitch(QString s)
 bool Aten::parseCliEarly(int argc, char *argv[])
 {
 	int argn, opt;
-	bool isShort, hasArg;
+	bool isShort, hasArg, argIsNext;
 	Messenger::OutputType ot;
 	QString arg, argText;
+
+	// Regular expression for long option matching
+	QRegularExpression longRE("--([a-z]+)=*(.*)");
 
 	// Cycle over program arguments and available CLI options (skip [0] which is the binary name)
 	argn = 0;
@@ -250,23 +257,30 @@ bool Aten::parseCliEarly(int argc, char *argv[])
 
 			// Is this a long or short option?
 			isShort = (argv[argn][1] != '-');
+			argText.clear();
+			hasArg = false;
+			argIsNext = false;
 			if (isShort)
 			{
 				arg = &argv[argn][1];
-				argText.clear();
-				if ((argv[argn][1] != '\0') && (argv[argn][2] != '\0'))
-				{
-					isShort = false;
-					QStringList items = QString(&argv[argn][1]).split('=');
-					arg = items.at(0);
-					if (items.count() == 2) argText = items.at(1);
-				}
+				// Check the next item on the command-line - might it be an argument?
+				if (argn < (argc-1)) argIsNext = argv[argn+1][0] != '-';
 			}
 			else
 			{
-				QStringList items = QString(&argv[argn][2]).split('=');
-				arg = items.at(0);
-				if (items.count() == 2) argText = items.at(1);
+				// Long options must have the argument specified in one continuous --switch=value chunk
+				QRegularExpressionMatch match = longRE.match(argv[argn]);
+				if (match.hasMatch() || match.hasPartialMatch())
+				{
+					arg = match.captured(1);
+					argText = match.captured(2);
+					hasArg = !argText.isEmpty();
+				}
+				else
+				{
+					printf("Mangled long switch found: '%s'\n", argv[argn]);
+					return -1;
+				}
 			}
 
 			// Search for option...
@@ -275,32 +289,42 @@ bool Aten::parseCliEarly(int argc, char *argv[])
 			// Check to see if we matched any of the known CLI switches
 			if (opt == Cli::nSwitchItems)
 			{
-				printf("Unrecognised command-line option '%s%s'.\n", isShort ? "-" : "--", qPrintable(arg));
-				return false;
+				Messenger::print("Unrecognised command-line option '%s%s'.", isShort ? "-" : "--", qPrintable(arg));
+				return -1;
 			}
 
-			// Check if an argument to the switch has been supplied...
-			if (!argText.isEmpty()) hasArg = true;
-			else if ((argn < (argc-1)) && (argv[argn+1][0] != '-') && (cliSwitches[opt].argument != 0))
-			{
-				hasArg = true;
-				argText = argv[++argn];
-			}
-			else hasArg = false;
-
-			// ...and whether it expects one
+			// Does the switch expect an argument, and do we have one?
+			// For short options we have already checked the next arg in line - may need to grab it here...
 			switch (cliSwitches[opt].argument)
 			{
 				// No argument required
 				case (0):
+					if (hasArg)
+					{
+						Messenger::print("Usage Error: '--%s' does not accept an argument.", cliSwitches[opt].longOpt);
+						return -1;
+					}
 					break;
 				// Required argument
 				case (1):
 					if (!hasArg)
 					{
-						if (isShort) Messenger::print("Usage Error: '-%c' requires an argument.", cliSwitches[opt].shortOpt);
-						else Messenger::print("Usage Error: '--%s' requires an argument.", cliSwitches[opt].longOpt);
-						return false;
+						if (isShort)
+						{
+							if (!argIsNext)
+							{
+								Messenger::print("Usage Error: '-%c' requires an argument.", cliSwitches[opt].shortOpt);
+								return -1;
+							}
+
+							// Grab argument
+							argText = argv[++argn];
+						}
+						else
+						{
+							Messenger::print("Usage Error: '--%s' requires an argument.", cliSwitches[opt].longOpt);
+							return -1;
+						}
 					}
 					break;
 				// Optional argument
@@ -315,7 +339,7 @@ bool Aten::parseCliEarly(int argc, char *argv[])
 				// Set data directory location
 				case (Cli::AtenDataSwitch):
 					dataDir_ = argText;
-					Messenger::print("Will search for filters in '%s'.", qPrintable(argText));
+					Messenger::print("Will search for data in '%s'.", qPrintable(argText));
 					break;
 				// Turn on debug messages for calls (or specified output)
 				case (Cli::DebugSwitch):
@@ -386,7 +410,7 @@ bool Aten::parseCliEarly(int argc, char *argv[])
 int Aten::parseCli(int argc, char *argv[])
 {
 	int argn, opt, nTried = 0, n, el, i;
-	bool isShort, hasArg;
+	bool isShort, hasArg, argIsNext;
 	char* line;
 	QString arg, argText, prompt;
 	Forcefield* ff;
@@ -399,6 +423,9 @@ int Aten::parseCli(int argc, char *argv[])
 	Tree* filter, *modelFilter = NULL, *trajectoryFilter = NULL;
 	Program interactiveScript;
 	QStringList items;
+
+	// Regular expression for long option matching
+	QRegularExpression longRE("--([a-z]+)=*(.*)");
 
 	// Cycle over program arguments and available CLI options (skip [0] which is the binary name)
 	argn = 0;
@@ -422,30 +449,29 @@ int Aten::parseCli(int argc, char *argv[])
 			// Is this a long or short option?
 			isShort = (argv[argn][1] != '-');
 			argText.clear();
+			hasArg = false;
+			argIsNext = false;
 			if (isShort)
 			{
 				arg = &argv[argn][1];
-				if ((argv[argn][1] != '\0') && (argv[argn][2] != '\0'))
-				{
-					isShort = false;
-					int equalsPos = QString(&argv[argn][2]).indexOf("=");
-					if (equalsPos != -1)
-					{
-						arg = QString(&argv[argn][2]).left(equalsPos);
-						argText = QString(&argv[argn][2]).remove(0, equalsPos+1);
-					}
-					else arg = &argv[argn][2];
-				}
+				// Check the next item on the command-line - might it be an argument?
+				if (argn < (argc-1)) argIsNext = argv[argn+1][0] != '-';
 			}
 			else
 			{
-				int equalsPos = QString(&argv[argn][2]).indexOf("=");
-				if (equalsPos != -1)
+				// Long options must have the argument specified in one continuous --switch=value chunk
+				QRegularExpressionMatch match = longRE.match(argv[argn]);
+				if (match.hasMatch() || match.hasPartialMatch())
 				{
-					arg = QString(&argv[argn][2]).left(equalsPos);
-					argText = QString(&argv[argn][2]).remove(0, equalsPos+1);
+					arg = match.captured(1);
+					argText = match.captured(2);
+					hasArg = !argText.isEmpty();
 				}
-				else arg = &argv[argn][2];
+				else
+				{
+					printf("Mangled long switch found: '%s'\n", argv[argn]);
+					return -1;
+				}
 			}
 
 			// Search for option...
@@ -458,28 +484,38 @@ int Aten::parseCli(int argc, char *argv[])
 				return -1;
 			}
 
-			// Check if an argument to the switch has been supplied...
-			if (!argText.isEmpty()) hasArg = true;
-			else if ((argn < (argc-1)) && (argv[argn+1][0] != '-') && (cliSwitches[opt].argument != 0))
-			{
-				hasArg = true;
-				argText = argv[++argn];
-			}
-			else hasArg = false;
-
-			// ...and whether it expects one
+			// Does the switch expect an argument, and do we have one?
+			// For short options we have already checked the next arg in line - may need to grab it here...
 			switch (cliSwitches[opt].argument)
 			{
 				// No argument required
 				case (0):
+					if (hasArg)
+					{
+						Messenger::print("Usage Error: '--%s' does not accept an argument.", cliSwitches[opt].longOpt);
+						return -1;
+					}
 					break;
 				// Required argument
 				case (1):
 					if (!hasArg)
 					{
-						if (isShort) Messenger::print("Usage Error: '-%c' requires an argument.", cliSwitches[opt].shortOpt);
-						else Messenger::print("Usage Error: '--%s' requires an argument.", cliSwitches[opt].longOpt);
-						return -1;
+						if (isShort)
+						{
+							if (!argIsNext)
+							{
+								Messenger::print("Usage Error: '-%c' requires an argument.", cliSwitches[opt].shortOpt);
+								return -1;
+							}
+
+							// Grab argument
+							argText = argv[++argn];
+						}
+						else
+						{
+							Messenger::print("Usage Error: '--%s' requires an argument.", cliSwitches[opt].longOpt);
+							return -1;
+						}
 					}
 					break;
 				// Optional argument
@@ -794,6 +830,10 @@ int Aten::parseCli(int argc, char *argv[])
 						removeScript(script);
 						return -1;
 					}
+					break;
+				// Load in a session file
+				case (Cli::SessionSwitch):
+					if (!loadSession(argText)) return -1;
 					break;
 				// Associate trajectory with last loaded model
 				case (Cli::TrajectorySwitch):

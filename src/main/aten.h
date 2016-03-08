@@ -58,8 +58,16 @@ class Aten
 	enum ProgramMode { CommandMode, InteractiveMode, GuiMode, ExportMode, BatchMode, ProcessMode, BatchExportMode, NoMode };
 	// Target list for model creation
 	enum TargetModelList { MainModelList, FragmentLibraryList, WorkingModelList };
-	// Remove all dynamic data
-	void clear();
+
+	private:
+	// Pointer to AtenWindow
+	AtenWindow* atenWindow_;
+
+	public:
+	// Set pointer to AtenWindow
+	void setAtenWindow(AtenWindow* atenWindow);
+	// Return pointer to AtenWindow
+	AtenWindow* atenWindow();
 
 
 	/*
@@ -177,7 +185,7 @@ class Aten
 
 
 	/*
-	 * Global Function Includes and Partitioning Schemes
+	 * Global Function Includes
 	 */
 	private:
 	// Program containing all globally-defined include functions
@@ -188,16 +196,6 @@ class Aten
 	QStringList failedIncludes_;
 	// Parse directory index and load includes
 	int parseIncludeDir(QDir path);
-	// Programs containing partitioning schemes
-	List<PartitioningScheme> partitioningSchemes_;
-	// How many partitioning files had errors on startup
-	int nPartitioningSchemesFailed_;
-	// Filenames (including paths) of partitions that failed to load
-	QStringList failedPartitioningSchemes_;
-	// Parse directory index and load includes
-	int parsePartitionsDir(QDir path);
-	// Partitioning scheme for Pores tool
-	PartitioningScheme poresPartitioningScheme_;
 
 	public:
 	// Load global include functions
@@ -210,6 +208,24 @@ class Aten
 	QStringList failedIncludes() const;
 	// Find global include function by name
 	Tree* findIncludeFunction(QString name);
+
+
+	/*
+	 * Partitioning Schemes
+	 */
+	private:
+	// Programs containing partitioning schemes
+	List<PartitioningScheme> partitioningSchemes_;
+	// How many partitioning files had errors on startup
+	int nPartitioningSchemesFailed_;
+	// Filenames (including paths) of partitions that failed to load
+	QStringList failedPartitioningSchemes_;
+	// Parse directory index and load includes
+	int parsePartitionsDir(QDir path);
+	// Partitioning scheme for Pores tool
+	PartitioningScheme poresPartitioningScheme_;
+
+	public:
 	// Load global partition functions
 	void openPartitions();
 	// Load partition from specified filename
@@ -317,15 +333,23 @@ class Aten
 
 
 	/*
-	 * Program Modes
+	 * Session
 	 */
 	private:
-	// Current mode of program operation
-	ProgramMode programMode_;
+	// Name of current session file, if any
+	QString sessionFile_;
 
 	public:
-	// Return the current program mode
-	ProgramMode programMode() const;
+	// Set name of current session file, if any
+	void setSessionFile(QString filename);
+	// Return name of current session file, if any
+	QString sessionFile();
+	// Clear current session (remove all user data)
+	void clearSession();
+	// Load session from filename specified
+	bool loadSession(QString filename);
+	// Save session under specified filename
+	bool saveSession(QString filename);
 
 
 	/*
@@ -349,24 +373,6 @@ class Aten
 
 
 	/*
-	 * Program Control / Settings (not Prefs)
-	 */
-	private:
-	// Whether type export conversion is enabled
-	bool typeExportMapping_;
-
-	public:
-	// Type map name conversions to apply on save
-	KVMap typeExportMap;
-	// Set whether type export conversion is enabled
-	void setTypeExportMapping(bool b);
-	// Return whether type export conversion is enabled
-	bool typeExportMapping() const;
-	// Convert supplied type name according to export type map
-	QString typeExportConvert(QString typeName) const;
-
-
-	/*
 	 * CLI
 	 */
 	private:
@@ -387,15 +393,21 @@ class Aten
 
 
 	/*
-	 * Single-shot program modes
+	 * Program Modes / Control
 	 */
 	private:
+	// Current mode of program operation
+	ProgramMode programMode_;
 	// Model format in which to export models
 	Tree* exportFilter_;
 	// Cached commands to use in batch processing mode
 	List<Program> batchCommands_;
+	// Whether type export conversion is enabled
+	bool typeExportMapping_;
 
 	public:
+	// Return the current program mode
+	ProgramMode programMode() const;
 	// Set format to use in export
 	void setExportFilter(Tree* f);
 	// Export all currently loaded models in the referenced format
@@ -406,6 +418,14 @@ class Aten
 	void processModels();
 	// Save all models under their original names
 	void saveModels();
+	// Type map name conversions to apply on save
+	KVMap typeExportMap;
+	// Set whether type export conversion is enabled
+	void setTypeExportMapping(bool b);
+	// Return whether type export conversion is enabled
+	bool typeExportMapping() const;
+	// Convert supplied type name according to export type map
+	QString typeExportConvert(QString typeName) const;
 
 
 	/*
@@ -488,20 +508,6 @@ class Aten
 	void loadEncoderDefinitions();
 	// Return list of encoder definitions
 	EncoderDefinition* encoders();
-
-
-	/*
-	 * Link to AtenWindow
-	 */
-	private:
-	// Pointer to AtenWindow
-	AtenWindow* atenWindow_;
-
-	public:
-	// Set pointer to AtenWindow
-	void setAtenWindow(AtenWindow* atenWindow);
-	// Return pointer to AtenWindow
-	AtenWindow* atenWindow();
 
 
 	/*

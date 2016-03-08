@@ -24,6 +24,12 @@
 
 ATEN_USING_NAMESPACE
 
+// Return the current program mode
+Aten::ProgramMode Aten::programMode() const
+{
+	return programMode_;
+}
+
 /*
  * BatchExport
  */
@@ -69,10 +75,6 @@ void Aten::exportModels()
 	Messenger::exit("Aten::exportModels");
 }
 
-/*
- * Batch Process
- */
-
 // Add set of batch commands
 Program  *Aten::addBatchCommand()
 {
@@ -117,4 +119,24 @@ void Aten::saveModels()
 		
 		if (!m->filename().isEmpty()) filter->executeWrite(m->filename());
 	}
+}
+
+// Set whether type export conversion is enabled
+void Aten::setTypeExportMapping(bool b)
+{
+	typeExportMapping_ = b;
+}
+
+// Return whether type export conversion is enabled
+bool Aten::typeExportMapping() const
+{
+	return typeExportMapping_;
+}
+
+// Convert supplied type name according to export type map
+QString Aten::typeExportConvert(QString oldName) const
+{
+	if (!typeExportMapping_) return oldName;
+	KVPair* kvp = typeExportMap.search(oldName);
+	return (kvp == NULL ? oldName : kvp->value());
 }

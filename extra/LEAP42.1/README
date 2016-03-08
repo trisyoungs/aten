@@ -1,0 +1,26 @@
+Notes for building on LEAP 42.1
+===============================
+
+Packaging
+---------
+The package spec file is stored in extra/LEAP42.1.
+
+First, create a heirarchy of build dirs:
+
+bob@pc:~> mkdir -p rpm/BUILD rpm/BUILDROOT rpm/RPMS rpm/SRPMS rpm/SOURCES
+
+Copy the spec file to the rpm directory:
+
+bob@pc:~> cp extra/LEAP42.1/aten.spec ./rpm
+
+You now need to get/make a tardist of the source and place in rpm/SOURCES
+
+bob@pc:~> make dist
+bob@pc:~> mv aten-*.tar.gz rpm/SOURCES
+
+Descend into the directory, and build the rpm.
+
+bob@pc:~> cd rpm
+bob@pc:~> rpmbuild --define "_topdir ${PWD}" -ba aten.spec
+
+Optionally, provide a --target=i386 switch to force a specific architecture.

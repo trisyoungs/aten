@@ -591,7 +591,7 @@ StepNode* StepNode::findAccessor(QString name, TreeNode* arrayIndex, TreeNode* a
 			result = GridVariable::accessorSearch(name, arrayIndex, argList);
 			break;
 		case (VTypes::MatrixData):
-			result = VectorVariable::accessorSearch(name, arrayIndex, argList);
+			result = MatrixVariable::accessorSearch(name, arrayIndex, argList);
 			break;
 		case (VTypes::MeasurementData):
 			result = MeasurementVariable::accessorSearch(name, arrayIndex, argList);

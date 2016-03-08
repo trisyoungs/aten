@@ -123,9 +123,11 @@ void AtenWindow::on_GridsManageOpenButton_clicked(bool checked)
 	Tree* filter;
 	static QDir currentDirectory_(aten_.workDir());
 	QString selFilter;
-	QString filename = QFileDialog::getOpenFileName(this, "Open Grid", currentDirectory_.path(), aten_.fileDialogFilters(FilterData::GridImport), &selFilter);
-	if (!filename.isEmpty())
+	QStringList filenames = QFileDialog::getOpenFileNames(this, "Open Grid", currentDirectory_.path(), aten_.fileDialogFilters(FilterData::GridImport), &selFilter);
+	for (int n=0; n<filenames.count(); ++n)
 	{
+		QString filename = filenames.at(n);
+
 		// Store path for next use
 		currentDirectory_.setPath(filename);
 		
@@ -178,7 +180,11 @@ void AtenWindow::on_GridsList_currentRowChanged(int row)
 
 	aten_.setCurrentGrid(grid);
 
-	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::GridsPanelTarget);
+	refreshing_ = true;
+
+	updateGridInformation(grid);
+
+	refreshing_ = false;
 }
 
 void AtenWindow::on_GridsList_itemChanged(QListWidgetItem* item)

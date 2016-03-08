@@ -57,7 +57,7 @@ const char* VTypes::aDataType(VTypes::DataType dt, int arraysize)
 // Return whether specified datatype is inherently a class (pointer) datatype
 bool VTypes::isPointer(VTypes::DataType dt)
 {
-	if (dt > VTypes::VectorData) return true;
+	if (dt >= VTypes::AtenData) return true;
 	return false;
 }
 

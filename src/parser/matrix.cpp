@@ -153,17 +153,24 @@ Accessor MatrixVariable::accessorData[MatrixVariable::nAccessors] = {
 	{ "xx", VTypes::DoubleData, false, false },
 	{ "xy", VTypes::DoubleData, false, false },
 	{ "xz", VTypes::DoubleData, false, false },
+	{ "xw", VTypes::DoubleData, false, false },
 	{ "yx", VTypes::DoubleData, false, false },
 	{ "yy", VTypes::DoubleData, false, false },
 	{ "yz", VTypes::DoubleData, false, false },
+	{ "yw", VTypes::DoubleData, false, false },
 	{ "zx", VTypes::DoubleData, false, false },
 	{ "zy", VTypes::DoubleData, false, false },
-	{ "zz", VTypes::DoubleData, false, false }
+	{ "zz", VTypes::DoubleData, false, false },
+	{ "zw", VTypes::DoubleData, false, false },
+	{ "wx", VTypes::DoubleData, false, false },
+	{ "wy", VTypes::DoubleData, false, false },
+	{ "wz", VTypes::DoubleData, false, false },
+	{ "ww", VTypes::DoubleData, false, false }
 };
 
 // Function data
 FunctionAccessor MatrixVariable::functionData[MatrixVariable::nFunctions] = {
-	{ ".dummy",	VTypes::IntegerData,	"",	"" }
+	{ "setIdentity",	VTypes::NoData,		"",	"" }
 };
 
 // Search variable access list for provided accessor (call private static function)
@@ -259,13 +266,20 @@ bool MatrixVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex
 		case (MatrixVariable::XX):
 		case (MatrixVariable::XY):
 		case (MatrixVariable::XZ):
+		case (MatrixVariable::XW):
 		case (MatrixVariable::YX):
 		case (MatrixVariable::YY):
 		case (MatrixVariable::YZ):
+		case (MatrixVariable::YW):
 		case (MatrixVariable::ZX):
 		case (MatrixVariable::ZY):
 		case (MatrixVariable::ZZ):
-			rv.set(m[(acc-MatrixVariable::XX)/3*4+(acc-MatrixVariable::XX)%3]);
+		case (MatrixVariable::ZW):
+		case (MatrixVariable::WX):
+		case (MatrixVariable::WY):
+		case (MatrixVariable::WZ):
+		case (MatrixVariable::WW):
+			rv.set(m[acc-MatrixVariable::XX]);
 			break;
 		default:
 			printf("Internal Error: Access to member '%s' has not been defined in MatrixVariable.\n", qPrintable(accessorData[i].name));
@@ -304,13 +318,20 @@ bool MatrixVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newV
 		case (MatrixVariable::XX):
 		case (MatrixVariable::XY):
 		case (MatrixVariable::XZ):
+		case (MatrixVariable::XW):
 		case (MatrixVariable::YX):
 		case (MatrixVariable::YY):
 		case (MatrixVariable::YZ):
+		case (MatrixVariable::YW):
 		case (MatrixVariable::ZX):
 		case (MatrixVariable::ZY):
 		case (MatrixVariable::ZZ):
-			m[(acc-MatrixVariable::XX)/3*4+(acc-MatrixVariable::XX)%3] = newValue.asDouble(result);
+		case (MatrixVariable::ZW):
+		case (MatrixVariable::WX):
+		case (MatrixVariable::WY):
+		case (MatrixVariable::WZ):
+		case (MatrixVariable::WW):
+			m[acc-MatrixVariable::XX] = newValue.asDouble(result);
 			break;
 		default:
 			printf("MatrixVariable::setAccessor doesn't know how to use member '%s'.\n", qPrintable(accessorData[acc].name));
