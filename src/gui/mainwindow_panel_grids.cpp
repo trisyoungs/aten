@@ -179,8 +179,12 @@ void AtenWindow::on_GridsList_currentRowChanged(int row)
 	if (!grid) return;
 
 	aten_.setCurrentGrid(grid);
-	
+
+	refreshing_ = true;
+
 	updateGridInformation(grid);
+
+	refreshing_ = false;
 }
 
 void AtenWindow::on_GridsList_itemChanged(QListWidgetItem* item)
