@@ -9,11 +9,11 @@ DL_POLY trajectory cannot be properly loaded without a model containing the corr
 Trajectory handling:
 o Change of colour happens only in the current frame
 o Inherit generates a crash when at first frame
-Session Saving - loaded models, view orientations, loaded grids and cutoff values etc.
 Image saving:
 o Continuous image saving - function key to save image under a set-filename, incrementing a number suffix each time.
 Intelligent Select - add support for selection by type name (e.g. O*, OW etc.).
 Add set members to Matrix class allowing axes to be set from atoms in models.
+Convert other member accessors to MatrixData type where appropriate.
 Printf command buffered output is never printed if no newline ever occurs.  Need to store data somewhere other than the Printf function itself, and flush it at the end of command execution.
 Crash when tree selecting large models (recursion overflow?)
 Selecting and then deselecting large numbers of atoms causes rendering artefacts afterwards.
@@ -102,3 +102,5 @@ Add 'external' dir description to quickstart.
 Is CombinationRule enum still valid / used?
 Added Grid accessors for Style.
 Add --session option.
+Changed type of Grid::Axes accessor from CellData to MatrixData.
+Add WX, WY, WZ etc. accessors to MatrixVariable, and 'setIdentity()' function.

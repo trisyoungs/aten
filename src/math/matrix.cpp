@@ -128,14 +128,14 @@ Matrix& Matrix::operator*=(const Matrix& B)
 	return *this;
 }
 
-double &Matrix::operator[](int index)
+double& Matrix::operator[](int index)
 {
 	return matrix_[index];
 }
 
 /*
-// Basic Set/Get
-*/
+ * Basic Set/Get
+ */
 
 // Reset to the identity matrix
 void Matrix::setIdentity()

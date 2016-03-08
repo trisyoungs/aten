@@ -281,6 +281,13 @@ bool VariableNode::set(ReturnValue& setrv)
 					// We must 'step back' a bit here, taking the current vector result and setting the penultimate step with it
 					result = ((StepNode*) ri->item)->set(lastresult,executerv);
 				}
+				else if ((ri != NULL) && (ri->item->returnType() == VTypes::MatrixData))
+				{
+//					StepNode* step = (StepNode*) ri->item;
+// 					printf("Previous step type = %s.\n", VTypes::dataType(step->returnType()));
+					// We must 'step back' a bit here, taking the current vector result and setting the penultimate step with it
+					result = ((StepNode*) ri->item)->set(lastresult,executerv);
+				}
 			}
 		}
 		else result = false;

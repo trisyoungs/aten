@@ -264,7 +264,7 @@ bool Aten::parseCliEarly(int argc, char *argv[])
 			{
 				arg = &argv[argn][1];
 				// Check the next item on the command-line - might it be an argument?
-				if (argn < (argc-2)) argIsNext = argv[argn+1][0] != '-';
+				if (argn < (argc-1)) argIsNext = argv[argn+1][0] != '-';
 			}
 			else
 			{
@@ -455,7 +455,7 @@ int Aten::parseCli(int argc, char *argv[])
 			{
 				arg = &argv[argn][1];
 				// Check the next item on the command-line - might it be an argument?
-				if (argn < (argc-2)) argIsNext = argv[argn+1][0] != '-';
+				if (argn < (argc-1)) argIsNext = argv[argn+1][0] != '-';
 			}
 			else
 			{

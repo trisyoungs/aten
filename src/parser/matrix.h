@@ -74,9 +74,9 @@ class MatrixVariable : public Variable
 	 */
 	public:
 	// Accessor list
-	enum Accessors { Determinant, XX, XY, XZ, YX, YY, YZ, ZX, ZY, ZZ, nAccessors };
+	enum Accessors { Determinant, XX, XY, XZ, XW, YX, YY, YZ, YW, ZX, ZY, ZZ, ZW, WX, WY, WZ, WW, nAccessors };
 	// Function list
-	enum Functions { DummyFunction, nFunctions };
+	enum Functions { SetIdentity, nFunctions };
 	// Search variable access list for provided accessor
 	StepNode* findAccessor(QString name, TreeNode* arrayIndex, TreeNode* argList = NULL);
 	// Static function to search accessors

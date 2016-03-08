@@ -144,6 +144,7 @@ bool DoubleArrayVariable::set(ReturnValue& rv)
 		return false;
 	}
 	bool success = false;
+
 	// Is the supplied ReturnValue an array?
 	if (rv.type() == VTypes::VectorData)
 	{

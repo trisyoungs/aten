@@ -111,7 +111,7 @@ filter(type="importmodel",name="Aten Keyword Format", nickname="akf", extension=
 			do
 			{
 				readLineF("%s%r",keywd,line);
-				if (keywd == "axes") readVarF(line,"%f %f %f %f %f %f %f %f %f", g.axes.ax, g.axes.ay, g.axes.az, g.axes.bx, g.axes.by, g.axes.bz, g.axes.cx, g.axes.cy, g.axes.cz);
+				if (keywd == "axes") readVarF(line,"%f %f %f %f %f %f %f %f %f", g.axes.xx, g.axes.xy, g.axes.xz, g.axes.yx, g.axes.yy, g.axes.yz, g.axes.zx, g.axes.zy, g.axes.zz);
 				else if (keywd == "origin") readVarF(line,"%f %f %f", g.origin.x, g.origin.y, g.origin.z);
 				else if (keywd == "data")
 				{
@@ -174,7 +174,7 @@ filter(type="exportmodel", name="Aten Keyword Format", nickname="akf", extension
 	{
 		writeLineF("grid  %s  %i  %i  %i\n", g.type, g.nx, g.ny, g.nz);
 		#writeLineF("  looporder  xyz\n");
-		writeLineF("  axes       %f  %f  %f  %f  %f  %f  %f  %f  %f\n", g.axes.ax, g.axes.ay, g.axes.az, g.axes.bx, g.axes.by, g.axes.bz, g.axes.cx, g.axes.cy, g.axes.cz);
+		writeLineF("  axes       %f  %f  %f  %f  %f  %f  %f  %f  %f\n", g.axes.xx, g.axes.xy, g.axes.xz, g.axes.yx, g.axes.yy, g.axes.yz, g.axes.zx, g.axes.zy, g.axes.zz);
 		writeLineF("  origin     %f  %f  %f\n", g.origin.x, g.origin.y, g.origin.z);
 		writeLineF("  data\n");
 		if (g.type == "regularxy")
