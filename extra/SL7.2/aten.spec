@@ -32,7 +32,7 @@ Packager: Tristan Youngs
 AutoReq: yes
 
 # Build dependencies
-BuildRequires: gcc-c++ bison Mesa-devel readline-devel ftgl-devel qt5-qtbase-devel qt5-qtsvg-devel
+BuildRequires: gcc-c++ bison readline-devel ftgl-devel qt5-qtbase-devel qt5-qtsvg-devel
 
 # In-depth description.
 %description
