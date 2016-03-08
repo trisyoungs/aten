@@ -218,14 +218,22 @@ void Viewer::wheelEvent(QWheelEvent* event)
 	}
 	else
 	{
-		// Get current active model
-		Model* source = aten_->currentModelOrFrame();
+		// Determine whether we need to change Aten's currentmodel based on click position on the canvas
+		Model* source = modelAt(event->x(), event->y());
 		if (source == NULL)
 		{
 			printf("Pointless Viewer::wheelEvent - no source model.\n");
 			Messenger::exit("Viewer::wheelEvent");
 			return;
 		}
+		if (source != aten_->currentModel())
+		{
+			aten_->setCurrentModel(source);
+			atenWindow_->updateWidgets(AtenWindow::AllTarget);
+		}
+
+		// Now get target model to work with...
+		source = aten_->currentModelOrFrame();
 
 		// Do the requested wheel action as defined in the control panel
 		bool scrollup = event->delta() > 0;
