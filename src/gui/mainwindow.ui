@@ -1797,7 +1797,7 @@
           <item row="0" column="1">
            <widget class="QToolButton" name="HomeViewGetButton">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -1838,7 +1838,7 @@
           <item row="1" column="1">
            <widget class="QToolButton" name="HomeViewSetButton">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -1879,7 +1879,7 @@
           <item row="0" column="2">
            <widget class="QToolButton" name="HomeViewHBondsButton">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -1923,7 +1923,7 @@
           <item row="1" column="2">
            <widget class="QToolButton" name="HomeViewLockButton">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -4924,7 +4924,7 @@
             </property>
             <property name="icon">
              <iconset resource="icons.qrc">
-              <normaloff>:/file/icons/file_open.svg</normaloff>:/file/icons/file_open.svg</iconset>
+              <normaloff>:/grid/icons/grid_open.svg</normaloff>:/grid/icons/grid_open.svg</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -4982,7 +4982,7 @@
             </property>
             <property name="icon">
              <iconset resource="icons.qrc">
-              <normaloff>:/file/icons/file_open.svg</normaloff>:/file/icons/file_open.svg</iconset>
+              <normaloff>:/grid/icons/grid_remove.svg</normaloff>:/grid/icons/grid_remove.svg</iconset>
             </property>
             <property name="iconSize">
              <size>

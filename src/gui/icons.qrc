@@ -20,6 +20,8 @@
   </qresource>
   <qresource prefix="grid">
     <file>icons/grid_setinfo.svg</file>
+    <file>icons/grid_open.svg</file>
+    <file>icons/grid_remove.svg</file>
     <file>icons/grid_translate.svg</file>
   </qresource>
   <qresource prefix="tools">
