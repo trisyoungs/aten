@@ -4,6 +4,7 @@ add_library(main
   version.h 
   aten.cpp
   cli.cpp
+  clipboards.cpp
   commands.cpp
   current.cpp
   encoders.cpp
@@ -11,12 +12,14 @@ add_library(main
   filters.cpp
   fragments.cpp
   includes.cpp
+  locations.cpp
   models.cpp
   modes.cpp
   partitions.cpp
   prefs.cpp
   probe.cpp
   scripts.cpp
+  session.cpp
 )
 target_include_directories(main PRIVATE
   ${PROJECT_SOURCE_DIR}/src

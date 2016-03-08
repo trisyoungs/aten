@@ -187,11 +187,24 @@ void Grid::operator=(Grid& source)
 		}
 	}
 	name_ = source.name_;
+	filename_ = source.filename_;
 }
 
 /*
  * Identity
  */
+
+// Set filename of grid data
+void Grid::setFilename(QString filename)
+{
+	filename_ = filename;
+}
+
+// Return filename of grid data
+QString Grid::filename() const
+{
+	return filename_;
+}
 
 // Set name of Grid data
 void Grid::setName(QString s)
@@ -262,6 +275,7 @@ void Grid::setParent(Model* parent)
 void Grid::clear()
 {
 	Messenger::enter("Grid::clear");
+
 	dataFull_ = false;
 	minimum_ = 10000.0;
 	maximum_ = -10000.0;
@@ -272,6 +286,8 @@ void Grid::clear()
 	currentPoint_.zero();
 	visible_ = true;
 	deleteArrays();
+	filename_.clear();
+
 	Messenger::exit("Grid::clear");
 }
 

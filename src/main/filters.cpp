@@ -42,14 +42,11 @@ void Aten::openFilters()
 	nLoaded += parseFilterDir(path);
 
 	// Print out info and partner filters if all was successful
-	if (found)
-	{
-		partnerFilters();
-		Messenger::print("Found (import/export):  Models (%i/%i) ", filters_[FilterData::ModelImport].nItems(), filters_[FilterData::ModelExport].nItems());
-		Messenger::print("Trajectory (%i/%i) ", filters_[FilterData::TrajectoryImport].nItems(), filters_[FilterData::TrajectoryExport].nItems());
-		Messenger::print("Expression (%i/%i) ", filters_[FilterData::ExpressionImport].nItems(), filters_[FilterData::ExpressionExport].nItems());
-		Messenger::print("Grid (%i/%i)", filters_[FilterData::GridImport].nItems(), filters_[FilterData::GridExport].nItems());
-	}
+	partnerFilters();
+	Messenger::print("Found (import/export):  Models (%i/%i) ", filters_[FilterData::ModelImport].nItems(), filters_[FilterData::ModelExport].nItems());
+	Messenger::print("Trajectory (%i/%i) ", filters_[FilterData::TrajectoryImport].nItems(), filters_[FilterData::TrajectoryExport].nItems());
+	Messenger::print("Expression (%i/%i) ", filters_[FilterData::ExpressionImport].nItems(), filters_[FilterData::ExpressionExport].nItems());
+	Messenger::print("Grid (%i/%i)", filters_[FilterData::GridImport].nItems(), filters_[FilterData::GridExport].nItems());
 
 	// Create filter lists
 	createFileDialogFilters();

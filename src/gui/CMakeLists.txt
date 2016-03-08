@@ -31,6 +31,7 @@ SET(gui_MOC_HDRS
   popupfileimage.h
   popupfileopen.h
   popupfilesave.h
+  popupfilesession.h
   popupforcefieldsassign.h
   popupforcefieldsminimise.h
   popupforcefieldsopen.h
@@ -123,6 +124,7 @@ SET(gui_UIS
   popupfileimage.ui
   popupfileopen.ui
   popupfilesave.ui
+  popupfilesession.ui
   popupforcefieldsassign.ui
   popupforcefieldsminimise.ui
   popupforcefieldsopen.ui
@@ -204,6 +206,7 @@ set(gui_SRCS
   mainwindow_panel_transform.cpp
   mainwindow_panel_trajectory.cpp
   mainwindow_quickcommand.cpp
+  mainwindow_session.cpp
   mainwindow_update.cpp
   popupbuildaddh_funcs.cpp
   popupbuildclear_funcs.cpp
@@ -225,6 +228,7 @@ set(gui_SRCS
   popupfileimage_funcs.cpp
   popupfileopen_funcs.cpp
   popupfilesave_funcs.cpp
+  popupfilesession_funcs.cpp
   popupforcefieldsassign_funcs.cpp
   popupforcefieldsminimise_funcs.cpp
   popupforcefieldsopen_funcs.cpp

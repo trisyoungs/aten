@@ -73,10 +73,12 @@ Accessor GridVariable::accessorData[GridVariable::nAccessors] = {
 	{ "periodic",			VTypes::IntegerData,	0, false },
 	{ "secondaryColour",		VTypes::DoubleData,	4, false },
 	{ "secondaryCutoff",		VTypes::DoubleData,	0, false },
+	{ "secondaryStyle",		VTypes::StringData,	0, false },
 	{ "secondaryUpperCutoff",	VTypes::DoubleData,	0, false },
 	{ "shiftX",			VTypes::IntegerData,	0, false },
 	{ "shiftY",			VTypes::IntegerData,	0, false },
 	{ "shiftZ",			VTypes::IntegerData,	0, false },
+	{ "style",			VTypes::StringData,	0, false },
 	{ "type",			VTypes::StringData,	0, true },
 	{ "upperCutoff",		VTypes::DoubleData,	0, false },
 	{ "useColourScale",		VTypes::IntegerData,	0, false },
@@ -268,6 +270,9 @@ bool GridVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex, 
 		case (GridVariable::SecondaryCutoff):
 			rv.set(ptr->lowerSecondaryCutoff());
 			break;
+		case (GridVariable::SecondaryStyle):
+			rv.set(Grid::surfaceStyle(ptr->secondaryStyle()));
+			break;
 		case (GridVariable::SecondaryUpperCutoff):
 			rv.set(ptr->upperSecondaryCutoff());
 			break;
@@ -279,6 +284,9 @@ bool GridVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex, 
 			break;
 		case (GridVariable::ShiftZ):
 			rv.set(ptr->shift().z);
+			break;
+		case (GridVariable::Style):
+			rv.set(Grid::surfaceStyle(ptr->primaryStyle()));
 			break;
 		case (GridVariable::Type):
 			rv.set(Grid::gridType(ptr->type()));
@@ -401,6 +409,9 @@ bool GridVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newVal
 		case (GridVariable::SecondaryCutoff):
 			ptr->setLowerSecondaryCutoff( newValue.asDouble() );
 			break;
+		case (GridVariable::SecondaryStyle):
+			ptr->setSecondaryStyle(Grid::surfaceStyle( newValue.asString() ));
+			break;
 		case (GridVariable::SecondaryUpperCutoff):
 			ptr->setUpperSecondaryCutoff( newValue.asDouble() );
 			break;
@@ -412,6 +423,9 @@ bool GridVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newVal
 			break;
 		case (GridVariable::ShiftZ):
 			ptr->setShift(2, newValue.asInteger());
+			break;
+		case (GridVariable::Style):
+			ptr->setPrimaryStyle(Grid::surfaceStyle( newValue.asString() ));
 			break;
 		case (GridVariable::UpperCutoff):
 			ptr->setUpperPrimaryCutoff( newValue.asDouble() );

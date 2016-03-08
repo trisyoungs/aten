@@ -60,12 +60,18 @@ class Grid : public ListItem<Grid>, ObjectStore<Grid>
 	private:
 	// Parent model
 	Model* parent_;
+	// Filename from which the grid data was loaded
+	QString filename_;
 	// Name of the Grid data
 	QString name_;
 	// Type of data contained in the class
 	GridType type_;
 
 	public:
+	// Set filename of grid data
+	void setFilename(QString filename);
+	// Return filename of grid data
+	QString filename() const;
 	// Set name of Grid data
 	void setName(QString name);
 	// Return name of Grid data

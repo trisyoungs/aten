@@ -78,11 +78,20 @@ bool Commands::function_CurrentGrid(CommandNode* c, Bundle& obj, ReturnValue& rv
 	return true;
 }
 
-// Finalise current surface
+// Finalise current grid
 bool Commands::function_FinaliseGrid(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::GridPointer)) return false;
+
+	// If this command is being run from a filter, set the output filter in the model.
+	if (c->parent()->isFilter())
+	{
+		Tree* t = c->parent();
+		obj.g->setFilename(c->parent()->parser()->inputFilename());
+	}
+
 	if (prefs.coordsInBohr()) obj.g->bohrToAngstrom();
+
 	rv.reset();
 	return true;
 }

@@ -1,0 +1,38 @@
+Notes for building on Scientific Linux 7
+========================================
+
+Prerequisites
+-------------
+
+Need to enable Extra Packages for Enterprise Linux (EPEL) in order to install
+necessary Qt5 dependencies:
+
+yum install epel-release
+
+Install Qt5 libs with:
+
+yum install qt5-qtbase-devel qt5-qtsvg-devel
+
+Packaging
+---------
+The package spec file is stored in extra/SL7.2
+
+First, create a heirarchy of build dirs:
+
+bob@pc:~> mkdir -p rpm/BUILD rpm/BUILDROOT rpm/RPMS rpm/SRPMS rpm/SOURCES
+
+Copy the spec file to the rpm directory:
+
+bob@pc:~> cp extra/SL7.2/jv.spec ./rpm
+
+You now need to get/make a tardist of the source and place in rpm/SOURCES
+
+bob@pc:~> make dist
+bob@pc:~> mv jv-*.tar.gz rpm/SOURCES
+
+Descend into the directory, and build the rpm.
+
+bob@pc:~> cd rpm
+bob@pc:~> rpmbuild --define "_topdir ${PWD}" -ba jv.spec
+
+Optionally, provide a --target=i386 switch to force a specific architecture.

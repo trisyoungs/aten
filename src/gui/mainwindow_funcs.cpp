@@ -56,6 +56,7 @@
 #include "gui/popupfileimage.h"
 #include "gui/popupfileopen.h"
 #include "gui/popupfilesave.h"
+#include "gui/popupfilesession.h"
 #include "gui/popupforcefieldsassign.h"
 #include "gui/popupforcefieldsminimise.h"
 #include "gui/popupforcefieldsopen.h"
@@ -179,6 +180,7 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportFilmD
 	ui.HomeFileSaveButton->setPopupWidget(new FileSavePopup(*this, ui.HomeFileSaveButton));
 	ui.HomeFileImageButton->setPopupWidget(new FileImagePopup(*this, ui.HomeFileImageButton));
 	ui.HomeFileAtenButton->setPopupWidget(new FileAtenPopup(*this, ui.HomeFileAtenButton), true);
+	ui.HomeFileSessionButton->setPopupWidget(new FileSessionPopup(*this, ui.HomeFileSessionButton), true);
 	// -- Home Panel (Appearance)
 	ui.HomeAppearanceLineButton->setGroup("ViewStyles", Prefs::LineStyle);
 	ui.HomeAppearanceTubeButton->setGroup("ViewStyles", Prefs::TubeStyle);

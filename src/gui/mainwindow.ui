@@ -52,7 +52,16 @@
     <property name="spacing">
      <number>2</number>
     </property>
-    <property name="margin">
+    <property name="leftMargin">
+     <number>2</number>
+    </property>
+    <property name="topMargin">
+     <number>2</number>
+    </property>
+    <property name="rightMargin">
+     <number>2</number>
+    </property>
+    <property name="bottomMargin">
      <number>2</number>
     </property>
     <item>
@@ -95,7 +104,16 @@
         <property name="spacing">
          <number>4</number>
         </property>
-        <property name="margin">
+        <property name="leftMargin">
+         <number>2</number>
+        </property>
+        <property name="topMargin">
+         <number>2</number>
+        </property>
+        <property name="rightMargin">
+         <number>2</number>
+        </property>
+        <property name="bottomMargin">
          <number>2</number>
         </property>
         <item>
@@ -390,14 +408,14 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="5">
+          <item row="0" column="7">
            <widget class="Line" name="line_29">
             <property name="orientation">
              <enum>Qt::Vertical</enum>
             </property>
            </widget>
           </item>
-          <item row="0" column="6">
+          <item row="0" column="8">
            <widget class="TMenuButton" name="HomeFileImageButton">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -455,14 +473,14 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="8">
+          <item row="0" column="10">
            <widget class="Line" name="line_32">
             <property name="orientation">
              <enum>Qt::Vertical</enum>
             </property>
            </widget>
           </item>
-          <item row="0" column="9">
+          <item row="0" column="11">
            <widget class="TMenuButton" name="HomeFileAtenButton">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -520,7 +538,7 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="0" colspan="10">
+          <item row="1" column="0" colspan="12">
            <widget class="QLabel" name="label_67">
             <property name="text">
              <string>File</string>
@@ -530,7 +548,7 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="7">
+          <item row="0" column="9">
            <widget class="TMenuButton" name="HomeFileFilmButton">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -585,6 +603,71 @@
             </property>
             <property name="autoRaise">
              <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="6">
+           <widget class="TMenuButton" name="HomeFileSessionButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>40</width>
+              <height>66</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>128</width>
+              <height>66</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>8</pointsize>
+             </font>
+            </property>
+            <property name="toolTip">
+             <string>Close the current model</string>
+            </property>
+            <property name="text">
+             <string>Session</string>
+            </property>
+            <property name="icon">
+             <iconset resource="icons.qrc">
+              <normaloff>:/file/icons/file_session.svg</normaloff>:/file/icons/file_session.svg</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>30</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="checkable">
+             <bool>false</bool>
+            </property>
+            <property name="checked">
+             <bool>false</bool>
+            </property>
+            <property name="autoExclusive">
+             <bool>false</bool>
+            </property>
+            <property name="toolButtonStyle">
+             <enum>Qt::ToolButtonTextUnderIcon</enum>
+            </property>
+            <property name="autoRaise">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="5">
+           <widget class="Line" name="line_42">
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
             </property>
            </widget>
           </item>
@@ -847,7 +930,7 @@
             </property>
             <property name="maximumSize">
              <size>
-              <width>100</width>
+              <width>16777215</width>
               <height>30</height>
              </size>
             </property>
@@ -892,7 +975,7 @@
           <item row="1" column="2" colspan="2">
            <widget class="QToolButton" name="HomeEditRedoButton">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -905,7 +988,7 @@
             </property>
             <property name="maximumSize">
              <size>
-              <width>100</width>
+              <width>16777215</width>
               <height>30</height>
              </size>
             </property>
@@ -1258,44 +1341,6 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="5">
-           <widget class="QPushButton" name="HomeAppearancePerspectiveButton">
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>30</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>16777215</width>
-              <height>30</height>
-             </size>
-            </property>
-            <property name="toolTip">
-             <string>Toggle perspective view</string>
-            </property>
-            <property name="text">
-             <string>Perspective</string>
-            </property>
-            <property name="icon">
-             <iconset resource="icons.qrc">
-              <normaloff>:/view/icons/view_perspective.svg</normaloff>:/view/icons/view_perspective.svg</iconset>
-            </property>
-            <property name="iconSize">
-             <size>
-              <width>18</width>
-              <height>18</height>
-             </size>
-            </property>
-            <property name="checkable">
-             <bool>true</bool>
-            </property>
-            <property name="flat">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
           <item row="1" column="0">
            <widget class="TMenuButton" name="HomeAppearanceElementButton">
             <property name="sizePolicy">
@@ -1586,8 +1631,56 @@
             </property>
            </widget>
           </item>
+          <item row="2" column="0" colspan="6">
+           <widget class="QLabel" name="label_70">
+            <property name="text">
+             <string>Appearance</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="5">
+           <widget class="QToolButton" name="HomeAppearancePerspectiveButton">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="toolTip">
+             <string>Toggle perspective view</string>
+            </property>
+            <property name="text">
+             <string>Perspective</string>
+            </property>
+            <property name="icon">
+             <iconset resource="icons.qrc">
+              <normaloff>:/view/icons/view_perspective.svg</normaloff>:/view/icons/view_perspective.svg</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>18</width>
+              <height>18</height>
+             </size>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <property name="toolButtonStyle">
+             <enum>Qt::ToolButtonTextBesideIcon</enum>
+            </property>
+           </widget>
+          </item>
           <item row="1" column="5">
-           <widget class="QPushButton" name="HomeAppearanceShowAllButton">
+           <widget class="QToolButton" name="HomeAppearanceShowAllButton">
             <property name="minimumSize">
              <size>
               <width>0</width>
@@ -1619,18 +1712,11 @@
             <property name="checkable">
              <bool>false</bool>
             </property>
-            <property name="flat">
+            <property name="toolButtonStyle">
+             <enum>Qt::ToolButtonTextBesideIcon</enum>
+            </property>
+            <property name="autoRaise">
              <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0" colspan="6">
-           <widget class="QLabel" name="label_70">
-            <property name="text">
-             <string>Appearance</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
             </property>
            </widget>
           </item>
@@ -1698,8 +1784,24 @@
             </property>
            </widget>
           </item>
+          <item row="2" column="0" colspan="3">
+           <widget class="QLabel" name="label_71">
+            <property name="text">
+             <string>View</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
           <item row="0" column="1">
-           <widget class="QPushButton" name="HomeViewGetButton">
+           <widget class="QToolButton" name="HomeViewGetButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
             <property name="minimumSize">
              <size>
               <width>0</width>
@@ -1728,10 +1830,60 @@
               <height>18</height>
              </size>
             </property>
+            <property name="toolButtonStyle">
+             <enum>Qt::ToolButtonTextBesideIcon</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="1">
+           <widget class="QToolButton" name="HomeViewSetButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="toolTip">
+             <string>Set view of the current model to the stored matrix</string>
+            </property>
+            <property name="text">
+             <string>Set</string>
+            </property>
+            <property name="icon">
+             <iconset resource="icons.qrc">
+              <normaloff>:/view/icons/view_set.svg</normaloff>:/view/icons/view_set.svg</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>18</width>
+              <height>18</height>
+             </size>
+            </property>
+            <property name="toolButtonStyle">
+             <enum>Qt::ToolButtonTextBesideIcon</enum>
+            </property>
            </widget>
           </item>
           <item row="0" column="2">
-           <widget class="QPushButton" name="HomeViewHBondsButton">
+           <widget class="QToolButton" name="HomeViewHBondsButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
             <property name="minimumSize">
              <size>
               <width>0</width>
@@ -1763,45 +1915,19 @@
             <property name="checkable">
              <bool>true</bool>
             </property>
-            <property name="flat">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="1">
-           <widget class="QPushButton" name="HomeViewSetButton">
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>30</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>16777215</width>
-              <height>30</height>
-             </size>
-            </property>
-            <property name="toolTip">
-             <string>Set view of the current model to the stored matrix</string>
-            </property>
-            <property name="text">
-             <string>Set</string>
-            </property>
-            <property name="icon">
-             <iconset resource="icons.qrc">
-              <normaloff>:/view/icons/view_set.svg</normaloff>:/view/icons/view_set.svg</iconset>
-            </property>
-            <property name="iconSize">
-             <size>
-              <width>18</width>
-              <height>18</height>
-             </size>
+            <property name="toolButtonStyle">
+             <enum>Qt::ToolButtonTextBesideIcon</enum>
             </property>
            </widget>
           </item>
           <item row="1" column="2">
-           <widget class="QPushButton" name="HomeViewLockButton">
+           <widget class="QToolButton" name="HomeViewLockButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
             <property name="minimumSize">
              <size>
               <width>0</width>
@@ -1833,18 +1959,8 @@
             <property name="checkable">
              <bool>true</bool>
             </property>
-            <property name="flat">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0" colspan="3">
-           <widget class="QLabel" name="label_71">
-            <property name="text">
-             <string>View</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
+            <property name="toolButtonStyle">
+             <enum>Qt::ToolButtonTextBesideIcon</enum>
             </property>
            </widget>
           </item>
@@ -1882,7 +1998,16 @@
         <property name="spacing">
          <number>4</number>
         </property>
-        <property name="margin">
+        <property name="leftMargin">
+         <number>2</number>
+        </property>
+        <property name="topMargin">
+         <number>2</number>
+        </property>
+        <property name="rightMargin">
+         <number>2</number>
+        </property>
+        <property name="bottomMargin">
          <number>2</number>
         </property>
         <item>
@@ -2225,44 +2350,6 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="7">
-           <widget class="QPushButton" name="BuildDrawPreventFoldButton">
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>30</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>16777215</width>
-              <height>30</height>
-             </size>
-            </property>
-            <property name="toolTip">
-             <string>Prevent folding of atoms when building</string>
-            </property>
-            <property name="text">
-             <string>Prevent Fold</string>
-            </property>
-            <property name="icon">
-             <iconset resource="icons.qrc">
-              <normaloff>:/build/icons/build_nofold.svg</normaloff>:/build/icons/build_nofold.svg</iconset>
-            </property>
-            <property name="iconSize">
-             <size>
-              <width>18</width>
-              <height>18</height>
-             </size>
-            </property>
-            <property name="checkable">
-             <bool>true</bool>
-            </property>
-            <property name="flat">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
           <item row="0" column="2" rowspan="2">
            <widget class="TMenuButton" name="BuildDrawDeleteButton">
             <property name="sizePolicy">
@@ -2366,47 +2453,6 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="7">
-           <widget class="QPushButton" name="BuildDrawKeepCenteredButton">
-            <property name="enabled">
-             <bool>true</bool>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>30</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>16777215</width>
-              <height>30</height>
-             </size>
-            </property>
-            <property name="toolTip">
-             <string>Keep model atoms centered when drawing atoms / fragments</string>
-            </property>
-            <property name="text">
-             <string>Keep Centered</string>
-            </property>
-            <property name="icon">
-             <iconset resource="icons.qrc">
-              <normaloff>:/view/icons/view_perspective.svg</normaloff>:/view/icons/view_perspective.svg</iconset>
-            </property>
-            <property name="iconSize">
-             <size>
-              <width>18</width>
-              <height>18</height>
-             </size>
-            </property>
-            <property name="checkable">
-             <bool>true</bool>
-            </property>
-            <property name="flat">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
           <item row="0" column="5" rowspan="2">
            <widget class="TMenuButton" name="BuildDrawGrowButton">
             <property name="sizePolicy">
@@ -2480,6 +2526,85 @@
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="7">
+           <widget class="QToolButton" name="BuildDrawKeepCenteredButton">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="toolTip">
+             <string>Keep model atoms centered when drawing atoms / fragments</string>
+            </property>
+            <property name="text">
+             <string>Keep Centered</string>
+            </property>
+            <property name="icon">
+             <iconset resource="icons.qrc">
+              <normaloff>:/view/icons/view_perspective.svg</normaloff>:/view/icons/view_perspective.svg</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>18</width>
+              <height>18</height>
+             </size>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <property name="toolButtonStyle">
+             <enum>Qt::ToolButtonTextBesideIcon</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="7">
+           <widget class="QToolButton" name="BuildDrawPreventFoldButton">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="toolTip">
+             <string>Prevent folding of atoms when building</string>
+            </property>
+            <property name="text">
+             <string>Prevent Fold</string>
+            </property>
+            <property name="icon">
+             <iconset resource="icons.qrc">
+              <normaloff>:/build/icons/build_nofold.svg</normaloff>:/build/icons/build_nofold.svg</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>18</width>
+              <height>18</height>
+             </size>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <property name="toolButtonStyle">
+             <enum>Qt::ToolButtonTextBesideIcon</enum>
             </property>
            </widget>
           </item>
@@ -2861,7 +2986,16 @@
         <property name="spacing">
          <number>4</number>
         </property>
-        <property name="margin">
+        <property name="leftMargin">
+         <number>2</number>
+        </property>
+        <property name="topMargin">
+         <number>2</number>
+        </property>
+        <property name="rightMargin">
+         <number>2</number>
+        </property>
+        <property name="bottomMargin">
          <number>2</number>
         </property>
         <item>
@@ -3645,7 +3779,16 @@
         <property name="spacing">
          <number>4</number>
         </property>
-        <property name="margin">
+        <property name="leftMargin">
+         <number>2</number>
+        </property>
+        <property name="topMargin">
+         <number>2</number>
+        </property>
+        <property name="rightMargin">
+         <number>2</number>
+        </property>
+        <property name="bottomMargin">
          <number>2</number>
         </property>
         <item>
@@ -3963,7 +4106,16 @@
         <property name="spacing">
          <number>4</number>
         </property>
-        <property name="margin">
+        <property name="leftMargin">
+         <number>2</number>
+        </property>
+        <property name="topMargin">
+         <number>2</number>
+        </property>
+        <property name="rightMargin">
+         <number>2</number>
+        </property>
+        <property name="bottomMargin">
          <number>2</number>
         </property>
         <item>
@@ -4691,7 +4843,16 @@
         <property name="spacing">
          <number>4</number>
         </property>
-        <property name="margin">
+        <property name="leftMargin">
+         <number>2</number>
+        </property>
+        <property name="topMargin">
+         <number>2</number>
+        </property>
+        <property name="rightMargin">
+         <number>2</number>
+        </property>
+        <property name="bottomMargin">
          <number>2</number>
         </property>
         <item>
@@ -5754,7 +5915,16 @@
         <property name="spacing">
          <number>4</number>
         </property>
-        <property name="margin">
+        <property name="leftMargin">
+         <number>2</number>
+        </property>
+        <property name="topMargin">
+         <number>2</number>
+        </property>
+        <property name="rightMargin">
+         <number>2</number>
+        </property>
+        <property name="bottomMargin">
          <number>2</number>
         </property>
         <item>
@@ -6530,7 +6700,16 @@
         <property name="spacing">
          <number>4</number>
         </property>
-        <property name="margin">
+        <property name="leftMargin">
+         <number>2</number>
+        </property>
+        <property name="topMargin">
+         <number>2</number>
+        </property>
+        <property name="rightMargin">
+         <number>2</number>
+        </property>
+        <property name="bottomMargin">
          <number>2</number>
         </property>
         <item>
@@ -7372,44 +7551,6 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="7">
-           <widget class="QPushButton" name="ForcefieldsExpressionChargesButton">
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>30</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>16777215</width>
-              <height>30</height>
-             </size>
-            </property>
-            <property name="toolTip">
-             <string>Toggle drawing of total grid volume box</string>
-            </property>
-            <property name="text">
-             <string>Charges</string>
-            </property>
-            <property name="icon">
-             <iconset resource="icons.qrc">
-              <normaloff>:/colourscheme/icons/colourscheme_charge.png</normaloff>:/colourscheme/icons/colourscheme_charge.png</iconset>
-            </property>
-            <property name="iconSize">
-             <size>
-              <width>18</width>
-              <height>18</height>
-             </size>
-            </property>
-            <property name="checkable">
-             <bool>true</bool>
-            </property>
-            <property name="flat">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
           <item row="0" column="3" rowspan="2">
            <widget class="TMenuButton" name="ForcefieldsExpressionClearButton">
             <property name="sizePolicy">
@@ -7597,6 +7738,44 @@
             </property>
            </widget>
           </item>
+          <item row="0" column="7">
+           <widget class="QToolButton" name="ForcefieldsExpressionChargesButton">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="toolTip">
+             <string>Toggle drawing of total grid volume box</string>
+            </property>
+            <property name="text">
+             <string>Charges</string>
+            </property>
+            <property name="icon">
+             <iconset resource="icons.qrc">
+              <normaloff>:/colourscheme/icons/colourscheme_charge.png</normaloff>:/colourscheme/icons/colourscheme_charge.png</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>18</width>
+              <height>18</height>
+             </size>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <property name="toolButtonStyle">
+             <enum>Qt::ToolButtonTextBesideIcon</enum>
+            </property>
+           </widget>
+          </item>
          </layout>
         </item>
         <item>
@@ -7625,7 +7804,16 @@
         <property name="spacing">
          <number>4</number>
         </property>
-        <property name="margin">
+        <property name="leftMargin">
+         <number>2</number>
+        </property>
+        <property name="topMargin">
+         <number>2</number>
+        </property>
+        <property name="rightMargin">
+         <number>2</number>
+        </property>
+        <property name="bottomMargin">
          <number>2</number>
         </property>
         <item>
@@ -8183,7 +8371,16 @@
         <property name="spacing">
          <number>4</number>
         </property>
-        <property name="margin">
+        <property name="leftMargin">
+         <number>2</number>
+        </property>
+        <property name="topMargin">
+         <number>2</number>
+        </property>
+        <property name="rightMargin">
+         <number>2</number>
+        </property>
+        <property name="bottomMargin">
          <number>2</number>
         </property>
         <item>
@@ -8958,7 +9155,16 @@
         <property name="spacing">
          <number>4</number>
         </property>
-        <property name="margin">
+        <property name="leftMargin">
+         <number>2</number>
+        </property>
+        <property name="topMargin">
+         <number>2</number>
+        </property>
+        <property name="rightMargin">
+         <number>2</number>
+        </property>
+        <property name="bottomMargin">
          <number>2</number>
         </property>
         <item>
@@ -9601,7 +9807,16 @@
          <property name="spacing">
           <number>2</number>
          </property>
-         <property name="margin">
+         <property name="leftMargin">
+          <number>2</number>
+         </property>
+         <property name="topMargin">
+          <number>2</number>
+         </property>
+         <property name="rightMargin">
+          <number>2</number>
+         </property>
+         <property name="bottomMargin">
           <number>2</number>
          </property>
          <item>
@@ -9651,7 +9866,16 @@
             <property name="spacing">
              <number>2</number>
             </property>
-            <property name="margin">
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
              <number>0</number>
             </property>
             <item>
@@ -9765,7 +9989,16 @@
          <property name="spacing">
           <number>2</number>
          </property>
-         <property name="margin">
+         <property name="leftMargin">
+          <number>2</number>
+         </property>
+         <property name="topMargin">
+          <number>2</number>
+         </property>
+         <property name="rightMargin">
+          <number>2</number>
+         </property>
+         <property name="bottomMargin">
           <number>2</number>
          </property>
          <item>
@@ -9818,7 +10051,16 @@
             <property name="spacing">
              <number>2</number>
             </property>
-            <property name="margin">
+            <property name="leftMargin">
+             <number>2</number>
+            </property>
+            <property name="topMargin">
+             <number>2</number>
+            </property>
+            <property name="rightMargin">
+             <number>2</number>
+            </property>
+            <property name="bottomMargin">
              <number>2</number>
             </property>
             <item>
@@ -10283,7 +10525,16 @@
          <property name="spacing">
           <number>2</number>
          </property>
-         <property name="margin">
+         <property name="leftMargin">
+          <number>2</number>
+         </property>
+         <property name="topMargin">
+          <number>2</number>
+         </property>
+         <property name="rightMargin">
+          <number>2</number>
+         </property>
+         <property name="bottomMargin">
           <number>2</number>
          </property>
          <item>
@@ -10317,7 +10568,16 @@
             <property name="spacing">
              <number>2</number>
             </property>
-            <property name="margin">
+            <property name="leftMargin">
+             <number>2</number>
+            </property>
+            <property name="topMargin">
+             <number>2</number>
+            </property>
+            <property name="rightMargin">
+             <number>2</number>
+            </property>
+            <property name="bottomMargin">
              <number>2</number>
             </property>
             <item>

@@ -146,7 +146,9 @@
   <qresource prefix="/file">
     <file>icons/file_savefilm.svg</file>
     <file>icons/file_close.svg</file>
+    <file>icons/file_session.svg</file>
     <file>icons/file_new.svg</file>
+    <file>icons/file_clear.svg</file>
     <file>icons/file_open.svg</file>
     <file>icons/file_save.svg</file>
     <file>icons/file_saveas.svg</file>
