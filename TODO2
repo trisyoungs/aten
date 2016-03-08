@@ -18,6 +18,7 @@ Printf command buffered output is never printed if no newline ever occurs.  Need
 Crash when tree selecting large models (recursion overflow?)
 Selecting and then deselecting large numbers of atoms causes rendering artefacts afterwards.
 Add specific line primitive class that allows chunking (for speedup of stick rendering, because otherwise an enormous array is continually deleted'd/new'd).
+Add 'Rename' and 'Reload' options to Grid context menu, and show original filename as tooltip.
 
 Graphics TODO
 =============

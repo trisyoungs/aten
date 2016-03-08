@@ -81,6 +81,8 @@ Grid::Grid() : ListItem<Grid>(), ObjectStore<Grid>(this, ObjectTypes::GridObject
 	boundsLog_ = -1;
 // 	primaryPrimitive_ = NULL;
 // 	secondaryPrimitive_ = NULL;
+	primaryPrimitivePoint_ = 0;
+	secondaryPrimitivePoint_ = 0;
 	primaryStyle_ = Grid::SolidSurface;
 	secondaryStyle_ = Grid::SolidSurface;
 	visible_ = true;
