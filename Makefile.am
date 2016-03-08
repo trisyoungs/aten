@@ -51,3 +51,6 @@ fragments5_DATA = data/fragments/rings/*
 desktopdir = @BUILDDIR@/usr/share/applications
 desktop_DATA = extra/Aten.desktop
 
+icondir = @BUILDDIR@/usr/share/pixmaps
+icon_DATA = extra/aten.png
+
