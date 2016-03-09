@@ -329,6 +329,11 @@ bool Aten::parseCliEarly(int argc, char *argv[])
 					break;
 				// Optional argument
 				case (2):
+					if (isShort)
+					{
+						// Grab argument if it exists
+						if (argIsNext) argText = argv[++argn];
+					}
 					break;
 			}
 
@@ -520,6 +525,11 @@ int Aten::parseCli(int argc, char *argv[])
 					break;
 				// Optional argument
 				case (2):
+					if (isShort)
+					{
+						// Grab argument if it exists
+						if (argIsNext) argText = argv[++argn];
+					}
 					break;
 			}
 

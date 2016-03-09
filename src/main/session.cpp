@@ -42,8 +42,6 @@ void Aten::clearSession()
 // Load session from filename specified
 bool Aten::loadSession(QString filename)
 {
-	bool result = true;
-
 	// Attempt to create a script from the file
 	Program sessionScript;
 	sessionFilename_ = filename;
@@ -58,14 +56,15 @@ bool Aten::loadSession(QString filename)
 		{
 			sessionFilename_.clear();
 
-			result = false;
+			return false;
 		}
 
 		// If there are no models, we must add one
 		if (models_.nItems() == 0) addModel();
 	}
+	else return false;
 
-	return result;
+	return true;
 }
 
 // Save session under specified filename
