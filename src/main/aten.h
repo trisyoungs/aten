@@ -337,13 +337,11 @@ class Aten
 	 */
 	private:
 	// Name of current session file, if any
-	QString sessionFile_;
+	QString sessionFilename_;
 
 	public:
-	// Set name of current session file, if any
-	void setSessionFile(QString filename);
 	// Return name of current session file, if any
-	QString sessionFile();
+	QString sessionFilename();
 	// Clear current session (remove all user data)
 	void clearSession();
 	// Load session from filename specified

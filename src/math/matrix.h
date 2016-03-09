@@ -86,10 +86,10 @@ class Matrix
 	 * Column Operations
 	 */
 	public:
-	// Copy column contents to supplied Vec3
-	Vec3<double> columnAsVec3(int col);
-	// Copy column contents to supplied Vec4
-	Vec4<double> columnAsVec4(int col);
+	// Return column contents as Vec3
+	Vec3<double> columnAsVec3(int col) const;
+	// Return column contents as Vec4
+	Vec4<double> columnAsVec4(int col) const;
 	// Set specified row from supplied triplet of values
 	void setRow(int row, double x, double y, double z);
 	// Set specified row from supplied values

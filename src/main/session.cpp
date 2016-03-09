@@ -25,16 +25,10 @@
 
 ATEN_USING_NAMESPACE
 
-// Set name of current session file, if any
-void Aten::setSessionFile(QString filename)
-{
-	sessionFile_ = filename;
-}
-
 // Return name of current session file, if any
-QString Aten::sessionFile()
+QString Aten::sessionFilename()
 {
-	return sessionFile_;
+	return sessionFilename_;
 }
 
 // Clear current session (remove all user data)
@@ -52,8 +46,8 @@ bool Aten::loadSession(QString filename)
 
 	// Attempt to create a script from the file
 	Program sessionScript;
-	sessionFile_ = filename;
-	if (sessionScript.generateFromFile(sessionFile_, "SessionScript"))
+	sessionFilename_ = filename;
+	if (sessionScript.generateFromFile(sessionFilename_, "SessionScript"))
 	{
 		// Clear all current information
 		clearSession();
@@ -62,7 +56,7 @@ bool Aten::loadSession(QString filename)
 		ReturnValue rv;
 		if (!sessionScript.execute(rv))
 		{
-			sessionFile_.clear();
+			sessionFilename_.clear();
 
 			result = false;
 		}
@@ -77,11 +71,17 @@ bool Aten::loadSession(QString filename)
 // Save session under specified filename
 bool Aten::saveSession(QString filename)
 {
+	sessionFilename_ = filename;
+
 	LineParser parser;
-	if (!parser.openOutput(filename, true)) return false;
+	if (!parser.openOutput(sessionFilename_, true)) return false;
 
 	// Write header information
 	parser.writeLineF("// Session file saved from Aten version %s on %s\n", ATENVERSION, qPrintable(QDateTime::currentDateTime().toString()));
+
+	
+	// Non-model related settings / aspects
+	// TODO Forcefields etc.
 
 	// Loop over all loaded models. Save original file source information as a comment only, since a filter may have loaded in multiple models, we can never be sure.
 	int modelId = 0, gridId = 0;
@@ -103,7 +103,7 @@ bool Aten::saveSession(QString filename)
 		for (RefListItem<Atom,int>* ri = m->selection(); ri != NULL; ri = ri->next) parser.writeLineF("%s.select(%i);\n", qPrintable(modelVar), ri->item->id()+1);
 		
 		// Done - Finalise it
-		parser.writeLineF("finaliseModel();");
+		parser.writeLineF("finaliseModel();\n");
 
 		// Grid data
 		for (Grid* g = m->grids(); g != NULL; g = g->next, ++gridId)
@@ -116,9 +116,10 @@ bool Aten::saveSession(QString filename)
 			{
 				parser.writeLineF("Grid %s = loadGrid('%s');\n", qPrintable(gridVar), qPrintable(g->filename()));
 			}
+			parser.writeLineF("%s.name = '%s';\n", qPrintable(gridVar), qPrintable(g->name()));
 			// Write axes, offset, and cutoff information
 			double* axes = g->axes().matrix();
-			parser.writeLineF("%s.axes.matrix = { %f, %f, %f, %f, %f, %f, %f, %f, %f};\n", qPrintable(gridVar), axes[0], axes[1], axes[2], axes[4], axes[5], axes[6], axes[8], axes[9], axes[10]);
+			parser.writeLineF("%s.axes = { %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f};\n", qPrintable(gridVar), axes[0], axes[1], axes[2], axes[3], axes[4], axes[5], axes[6], axes[7], axes[8], axes[9], axes[10], axes[11], axes[12], axes[13], axes[14], axes[15]);
 			parser.writeLineF("%s.origin = { %f, %f, %f };\n", qPrintable(gridVar), g->origin().x, g->origin().y, g->origin().z);
 			parser.writeLineF("%s.cutoff = %f;\n", qPrintable(gridVar), g->lowerPrimaryCutoff());
 			parser.writeLineF("%s.upperCutoff = %f;\n", qPrintable(gridVar), g->upperPrimaryCutoff());
@@ -138,4 +139,8 @@ bool Aten::saveSession(QString filename)
 		Matrix view = m->modelViewMatrix();
 		parser.writeLineF("setView(%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f);\n", view[0], view[1], view[2], view[4], view[5], view[6], view[8], view[9], view[10], view[12], view[13], view[14]);
 	}
+
+	parser.closeFiles();
+
+	return true;
 }

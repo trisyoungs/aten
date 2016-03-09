@@ -210,12 +210,13 @@ VTypes::DataType ReturnValue::type() const
 // Reset data
 void ReturnValue::reset()
 {
+	clearArrayData();
 	type_ = VTypes::NoData;
 	arraySize_ = -1;
 }
 
 // Return string of contained data
-QString ReturnValue::info()
+QString ReturnValue::info() const
 {
 	QString result;
 	switch (type_)
@@ -240,7 +241,11 @@ QString ReturnValue::info()
 			else result.sprintf("%i elements (array of %s)", arraySize_, VTypes::dataType(type_));
 			break;
 		case (VTypes::MatrixData):
-			if (arraySize_ == -1) result.sprintf("{%f,%f,%f,%f,%f,%f,%f,%f,%f} (%s)", valueM_[0], valueM_[1], valueM_[2], valueM_[4], valueM_[5], valueM_[6], valueM_[8], valueM_[9], valueM_[10], VTypes::dataType(type_));
+			if (arraySize_ == -1) result.sprintf("{%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f} (%s)",
+				valueM_.columnAsVec4(0).x, valueM_.columnAsVec4(0).y, valueM_.columnAsVec4(0).z, valueM_.columnAsVec4(0).w,
+				valueM_.columnAsVec4(1).x, valueM_.columnAsVec4(1).y, valueM_.columnAsVec4(1).z, valueM_.columnAsVec4(1).w,
+				valueM_.columnAsVec4(2).x, valueM_.columnAsVec4(2).y, valueM_.columnAsVec4(2).z, valueM_.columnAsVec4(2).w,
+				valueM_.columnAsVec4(3).x, valueM_.columnAsVec4(3).y, valueM_.columnAsVec4(3).z, valueM_.columnAsVec4(3).w, VTypes::dataType(type_));
 			else result.sprintf("%i elements (array of %s)", arraySize_, VTypes::dataType(type_));
 			break;
 		default:

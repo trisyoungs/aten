@@ -317,15 +317,15 @@ void Matrix::invert()
  * Column Operations
  */
 
-// Copy column contents to supplied Vec3
-Vec3<double> Matrix::columnAsVec3(int col)
+// Return column contents as Vec3
+Vec3<double> Matrix::columnAsVec3(int col) const
 {
 	Vec3<double> vec(matrix_[col*4], matrix_[col*4+1], matrix_[col*4+2]);
 	return vec;
 }
 
-// Copy column contents to supplied Vec4
-Vec4<double> Matrix::columnAsVec4(int col)
+// Return column contents as Vec4
+Vec4<double> Matrix::columnAsVec4(int col) const
 {
 	Vec4<double> vec(matrix_[col*4], matrix_[col*4+1], matrix_[col*4+2], matrix_[col*4+3]);
 	return vec;

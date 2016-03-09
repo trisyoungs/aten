@@ -44,7 +44,7 @@ class GridVariable : public PointerVariable
 	 */
 	public:
 	// Accessor list
-        enum Accessors { Axes, AxisMajorSpacing, AxisMinorTicks, AxisPositionX, AxisPositionY, AxisPositionZ, AxisVisible, Colour, ColourScale, Cutoff, DataMaximum, DataMinimum, LoopOrder, Name, NX, NY, NZ, NPoints, Origin, OutlineVolume, Periodic, SecondaryColour, SecondaryCutoff, SecondaryStyle, SecondaryUpperCutoff, ShiftX, ShiftY, ShiftZ, Style, Type, Visible, UpperCutoff, UseColourScale, UseDataForZ, nAccessors };
+        enum Accessors { Axes, AxisMajorSpacing, AxisMinorTicks, AxisPositionX, AxisPositionY, AxisPositionZ, AxisVisible, Colour, ColourScale, Cutoff, DataMaximum, DataMinimum, LoopOrder, Name, NX, NY, NZ, NPoints, Origin, OutlineVolume, Periodic, SecondaryColour, SecondaryCutoff, SecondaryStyle, SecondaryUpperCutoff, ShiftX, ShiftY, ShiftZ, Style, Type, UpperCutoff, UseColourScale, UseDataForZ, Visible, nAccessors };
 	// Function list
 	enum Functions { Data, Initialise, Shift, nFunctions };
 	// Search variable access list for provided accessor

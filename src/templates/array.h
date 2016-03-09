@@ -22,8 +22,7 @@
 #ifndef ATEN_ARRAY_H
 #define ATEN_ARRAY_H
 
-// #define CHUNKSIZE 65536
-#define CHUNKSIZE 128
+#define CHUNKSIZE 1024*1024
 
 #include "templates/list.h"
 #include "templates/vector3.h"

@@ -24,6 +24,7 @@
 #include "command/commands.h"
 #include "templates/variantpointer.h"
 #include <QFileDialog>
+#include <QInputDialog>
 
 // Update grids panel
 void AtenWindow::updateGridsPanel(Model* sourceModel)
@@ -47,6 +48,7 @@ void AtenWindow::updateGridsPanel(Model* sourceModel)
 			QListWidgetItem* item = new QListWidgetItem(g->name());
 			item->setData(Qt::UserRole, VariantPointer<Grid>(g));
 			item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
+			item->setToolTip(g->filename());
 			ui.GridsList->addItem(item);
 
 			item->setCheckState(g->isVisible() ? Qt::Checked : Qt::Unchecked);
@@ -220,10 +222,15 @@ void AtenWindow::gridsListContextMenuRequested(const QPoint& point)
 	// Build the context menu to display
 	QMenu contextMenu;
 	QAction* action;
+	// -- Rename / Reload
+	QAction* renameAction = contextMenu.addAction("&Rename");
+	QAction* reloadAction = contextMenu.addAction("Re&load");	
 	// -- Main 'edit' functions
+	contextMenu.addSeparator();
 	QAction* copyAction = contextMenu.addAction("&Copy");
 	QAction* cutAction = contextMenu.addAction("Cu&t");
 	QAction* pasteAction = contextMenu.addAction("&Paste");
+	contextMenu.addSeparator();
 	QAction* duplicateAction = contextMenu.addAction("D&uplicate");
 	QAction* deleteAction = contextMenu.addAction("&Delete");
 	
@@ -231,7 +238,21 @@ void AtenWindow::gridsListContextMenuRequested(const QPoint& point)
 	QAction* menuResult = contextMenu.exec(QCursor::pos());
 
 	// What was clicked?
-	if (menuResult == copyAction)
+	if (menuResult == renameAction)
+	{
+		bool ok = false;
+		QString newName = QInputDialog::getText(this, "Rename Grid", "Enter new name for grid", QLineEdit::Normal, currentGrid->name(), &ok);
+		if (ok)
+		{
+			currentGrid->setName(newName);
+			updateWidgets(AtenWindow::GridsPanelTarget);
+		}
+	}
+	else if (menuResult == reloadAction)
+	{
+		// TODO
+	}
+	else if (menuResult == copyAction)
 	{
 		aten_.copyGrid(currentGrid);
 	}

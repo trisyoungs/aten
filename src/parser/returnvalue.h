@@ -84,7 +84,7 @@ class ReturnValue : public ListItem<ReturnValue>
 	// Reset data
 	void reset();
 	// Return string of contained data
-	QString info();
+	QString info() const;
 	// Return unique 'pair' code based on return types
 	int dataPair(ReturnValue& source);
 

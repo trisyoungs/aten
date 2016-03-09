@@ -108,12 +108,12 @@ void FileSessionPopup::on_SaveButton_clicked(bool checked)
 {
 	// Check for existing session file name...
 	static QDir currentDirectory_(parent_.aten().workDir());
-	if (!parent_.aten().sessionFile().isEmpty())
+	if (!parent_.aten().sessionFilename().isEmpty())
 	{
 		// Does this file exist?
-		if (QFile::exists(parent_.aten().sessionFile()))
+		if (QFile::exists(parent_.aten().sessionFilename()))
 		{
-			if (QMessageBox::question(this, "Save Session", "A file named '" + parent_.aten().sessionFile() + "' already exists.\nOverwrite it?") == QMessageBox::No)
+			if (QMessageBox::question(this, "Save Session", "A file named '" + parent_.aten().sessionFilename() + "' already exists.\nOverwrite it?") == QMessageBox::No)
 			{
 				
 				QString filename = QFileDialog::getSaveFileName(this, "Save Session", currentDirectory_.path(), "Aten Session File (*.asf);; All Files (*)");
@@ -131,7 +131,7 @@ void FileSessionPopup::on_SaveButton_clicked(bool checked)
 			else
 			{
 				// OK to overwrite old file...
-				if (!parent_.aten().saveSession(parent_.aten().sessionFile()))
+				if (!parent_.aten().saveSession(parent_.aten().sessionFilename()))
 				{
 					QMessageBox::warning(this, "Error saving session file", "The session file could not be saved.");
 				}
@@ -159,5 +159,38 @@ void FileSessionPopup::on_SaveButton_clicked(bool checked)
 
 void FileSessionPopup::on_SaveAsButton_clicked(bool checked)
 {
+	static QDir currentDirectory_(parent_.aten().workDir());
+	QString filename = QFileDialog::getSaveFileName(this, "Save Session", currentDirectory_.path(), "Aten Session File (*.asf);; All Files (*)");
+	if (!filename.isEmpty())
+	{
+		// Does this file exist?
+		if (QFile::exists(filename))
+		{
+			if (QMessageBox::question(this, "Save Session", "A file named '" + parent_.aten().sessionFilename() + "' already exists.\nOverwrite it?") == QMessageBox::Yes)
+			{
+				
+				// Store path for next use
+				currentDirectory_.setPath(filename);
+
+				if (!parent_.aten().saveSession(filename))
+				{
+					QMessageBox::warning(this, "Error saving session file", "The session file could not be saved.");
+				}
+			}
+		}
+		else
+		{
+			// Store path for next use
+			currentDirectory_.setPath(filename);
+
+			if (!parent_.aten().saveSession(filename))
+			{
+				QMessageBox::warning(this, "Error saving session file", "The session file could not be saved.");
+			}
+		}
+	}
+
+	// Hide popup
+	done();
 }
 

@@ -1,6 +1,6 @@
 /*
 	*** Render Occurrence
-	*** src/render/renderoccurrence.h
+	*** src/render/renderoccurrencechunk.h
 	Copyright T. Youngs 2013-2016
 
 	This file is part of Aten.
@@ -26,7 +26,7 @@
 #include "templates/list.h"
 #include "templates/vector4.h"
 
-#define OCCURRENCECHUNKSIZE 32768
+#define OCCURRENCECHUNKSIZE 65536
 
 ATEN_BEGIN_NAMESPACE
 
