@@ -8,13 +8,13 @@ docroot: /aten/docs
 header_class: alt
 ---
 
-The [**Atom**](/aten/docs/scripting/variabletypes/atom) type encompasses a single atom in a model or frame.
+The [**Atom**](/aten/docs/scripting/variabletypes/atom) type encompasses the complete description of a single atom in a model or frame.
  
 | Member | Type | RW | Description |
 |--------|------|----|-------------|
 | bit | **int** | • | Temporary integer value, with associated bit-setting functions (see Section 8.2.5) |
-| bonds | [**Bond**]\[\](/aten/docs/scripting/variabletypes/bond) | | List of bonds the atom is involved in |
-| colour | **double**[4] | • | Custom colour of the atom (used when the Colouring Scheme, see Section 16.5, is set to ‘custom’) |
+| bonds | [**Bond**](/aten/docs/scripting/variabletypes/bond)[] | | List of bonds the atom is involved in |
+| colour | **double**[4] | • | Custom colour of the atom (used when the [Colouring Scheme](/aten/docs/enums/colourscheme) is set to ‘custom’) |
 | data | **string** | • | Temporary character data stored on the atom (for use in filters etc.) |
 | element | [**Element**](/aten/docs/scripting/variabletypes/element) | • | Returns a pointer to the assigned element data of the atom |
 | fixed | **int** | • | Whether the atom's position is fixed (1) or not (0) |
@@ -44,19 +44,19 @@ The [**Atom**](/aten/docs/scripting/variabletypes/atom) type encompasses a sing
 | vz | **double** | • | Velocity z-component |
 | z | **int** | • | Atomic number of the atom |
 
-# Atom Type Functions
+## Atom Type Functions
 
-## addBit <a id="addbit"></a>
+### addBit <a id="addbit"></a>
 
 _Syntax:_
 
 **void** **addBit** ( **int** _bit_ )
 
-Add (set) the specified bit for this [**Atom**](/aten/docs/scripting/variabletypes/atom).  If it is desired to set the [**Atom**](/aten/docs/scripting/variabletypes/atom)’s bit to a certain value, use the accessor listed in Section 8.2.4.
+Add (set) the specified bit for this [**Atom**](/aten/docs/scripting/variabletypes/atom).  If it is desired to set the [**Atom**](/aten/docs/scripting/variabletypes/atom)’s bit to a certain value, use the accessor instead.
 
 ---
 
-## copy <a id="copy"></a>
+### copy <a id="copy"></a>
 
 _Syntax:_
 
@@ -66,7 +66,7 @@ Copy all information from the source [**Atom**](/aten/docs/scripting/variabletyp
 
 ---
 
-## findBond <a id="findbond"></a>
+### findBond <a id="findbond"></a>
 
 _Syntax:_
 
@@ -76,7 +76,7 @@ Return the [**Bond**](/aten/docs/scripting/variabletypes/bond) (if any) between 
 
 ---
 
-## hasBit <a id="hasbit"></a>
+### hasBit <a id="hasbit"></a>
 
 _Syntax:_
 
@@ -86,7 +86,7 @@ Return whether this [**Atom**](/aten/docs/scripting/variabletypes/atom) has the 
 
 ---
 
-## removeBit <a id="removebit"></a>
+### removeBit <a id="removebit"></a>
 
 _Syntax:_
 

@@ -15,11 +15,11 @@ The [**Bond**](/aten/docs/scripting/variabletypes/bond) type represents a chemi
 | i | [**Atom**](/aten/docs/scripting/variabletypes/atom) | | First atom involved in the bond |
 | j | [**Atom**](/aten/docs/scripting/variabletypes/atom) | | Second atom involved in the bond |
 | order | **double** | | Bond order |
-| type | **string** | • | Bond Type – see Section 16.2 for a list |
+| type | **string** | • | Bond type (see [Bond Enumerations](/aten/docs/enums/bondtype) for a list) |
 
-# Bond Type Functions
+## Bond Type Functions
 
-## partner <a id="partner"></a>
+### partner <a id="partner"></a>
 
 _Syntax:_
 

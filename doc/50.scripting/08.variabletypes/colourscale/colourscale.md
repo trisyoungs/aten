@@ -15,9 +15,9 @@ The [**ColourScale**](/aten/docs/scripting/variabletypes/colourscale) type allo
 | nPoints | **int** | | Number of points contained in the colourscale |
 | points | [**ColourScalePoint**](/aten/docs/scripting/variabletypes/colourscalepoint)\[\] | | Array of points in the colourscale |
 
-# ColourScale Type Functions
+## ColourScale Type Functions
 
-## addPoint <a id="addpoint"></a>
+### addPoint <a id="addpoint"></a>
 
 _Syntax:_
 
@@ -27,7 +27,7 @@ Add a new point to the colourscale at point _value_ and RGB(A) colour specified,
 
 ---
 
-## clear <a id="clear"></a>
+### clear <a id="clear"></a>
 
 _Syntax:_
 
@@ -37,7 +37,7 @@ Clear all points contained in the colourscale
 
 ---
 
-## colour <a id="colour"></a>
+### colour <a id="colour"></a>
 
 _Syntax:_
 

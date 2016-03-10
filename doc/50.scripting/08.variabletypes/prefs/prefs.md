@@ -14,10 +14,10 @@ The [**Prefs**](/aten/docs/scripting/variabletypes/prefs) type contains all pre
 |--------|------|----|-------------|
 | angleLabelFormat | **string** | • | The C-style format to use for the numerical value of angle labels |
 | aromaticRingColour | **double**[4] | • | Colour of aromatic ring circles |
-| atomStyleRadius | **double**[4] | • | The atom radii used for selection and rendering in the four Drawing Styles (see Section 16.7) |
+| atomStyleRadius | **double**[4] | • | The atom radii used for selection and rendering in the available [Drawing Styles](/aten/docs/enums/drawstyle) |
 | backCull | **int** | • | Whether culling of backward-facing polygons should be performed |
 | backGroundColour | **double**[4] | • | Background colour of the main canvas on which models are drawn |
-| bondStyleRadius | **double**[4] | • | The bond radii used for selection and rendering in the four Drawing Styles (see Section 16.7) |
+| bondStyleRadius | **double**[4] | • | The bond radii used for selection and rendering in the available [Drawing Styles](/aten/docs/enums/drawstyle) |
 | bondTolerance | **double** | • | Tolerance used in automatic calculation of bonds between atoms |
 | cacheLimit | **int** | • | The trajectory cache size (in kilobytes) - trajectory files calculated to have more than this amount of data will not be cached in memory |
 | calculateIntra | **int** | • | Controls whether intramolecular contributions to the energy/forces are calculated |
@@ -26,8 +26,8 @@ The [**Prefs**](/aten/docs/scripting/variabletypes/prefs) type contains all pre
 | clipFar | **double** | • | The far clipping distance used when rendering |
 | clipNear | **double** | • | The near clipping distance used when rendering |
 | colourScales | [**ColourScale**][10](/aten/docs/scripting/variabletypes/colourscale) | | List of colourscales |
-| colourScheme | **string** | • | The current Colour Scheme used to colour atoms and bonds (see Section 16.5) |
-| combinationRule | **string** | • | Lennard-Jones parameter combination rule equations. See Combination Rules in Section 16.6 for a list |
+| colourScheme | **string** | • | The current [Colour Scheme](/aten/docs/enums/colourscheme) used to colour atoms and bonds |
+| combinationRule | **string** | • | Lennard-Jones parameter combination rule equations. See [Combination Rules](/aten/docs/enums/combinationrule) for a list |
 | commonElements | **string** | • | Comma-separated list of common elements that appear in the Select Element dialog |
 | dashedAromatics | **int** | • | Whether to render solid or dashed rings for aromatics |
 | densityUnit | **string** | • | The unit of density to used when displaying cell densities |

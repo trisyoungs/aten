@@ -12,15 +12,15 @@ The [**Pattern**](/aten/docs/scripting/variabletypes/pattern) type describes a 
  
 | Member | Type | RW | Description |
 |--------|------|----|-------------|
-| angles | [**Bound**]\[\](/aten/docs/scripting/variabletypes/bound)  | | Array of angle interactions in one molecule of the pattern |
-| atoms | [**Atom**]\[\](/aten/docs/scripting/variabletypes/atom) | | Array of atoms spanned by the pattern |
-| bonds | [**Bound**]\[\](/aten/docs/scripting/variabletypes/bound) | | Array of bond interactions in one molecule of the pattern |
+| angles | [**Bound**](/aten/docs/scripting/variabletypes/bound)[]  | | Array of angle interactions in one molecule of the pattern |
+| atoms | [**Atom**](/aten/docs/scripting/variabletypes/atom)[] | | Array of atoms spanned by the pattern |
+| bonds | [**Bound**](/aten/docs/scripting/variabletypes/bound)[] | | Array of bond interactions in one molecule of the pattern |
 | ff | [**Forcefield**](/aten/docs/scripting/variabletypes/forcefield) | • | Reference to the forcefield associated to the pattern (if any) |
-| ffAngles | [**FFBound**]\[\](/aten/docs/scripting/variabletypes/ffbound) | | List of unique forcefield angle terms in the pattern |
-| ffBonds | [**FFBound**]\[\](/aten/docs/scripting/variabletypes/ffbound) | | List of unique forcefield bond terms in the pattern |
-| ffTorsions | [**FFBound**]\[\](/aten/docs/scripting/variabletypes/ffbound) | | List of unique forcefield torsion terms in the pattern |
+| ffAngles | [**FFBound**](/aten/docs/scripting/variabletypes/ffbound)[] | | List of unique forcefield angle terms in the pattern |
+| ffBonds | [**FFBound**](/aten/docs/scripting/variabletypes/ffbound)[] | | List of unique forcefield bond terms in the pattern |
+| ffTorsions | [**FFBound**](/aten/docs/scripting/variabletypes/ffbound)[] | | List of unique forcefield torsion terms in the pattern |
 | ffTypes | [**FFAtom**](/aten/docs/scripting/variabletypes/ffatom) | | Array of unique atom types used in the pattern |
-| firstAtom | [**Atom**]\[\](/aten/docs/scripting/variabletypes/atom) | | Reference to the first atom spanned by the pattern |
+| firstAtom | [**Atom**](/aten/docs/scripting/variabletypes/atom)[] | | Reference to the first atom spanned by the pattern |
 | firstAtomId | **int** | | Atom ID of the first atom spanned by the pattern |
 | fixed | **int** | • | Whether the coordinates of all atoms in the pattern are fixed in minimisation routines |
 | lastAtom | [**Atom**](/aten/docs/scripting/variabletypes/atom) | | Reference to the last atom spanned by the pattern |
@@ -36,11 +36,11 @@ The [**Pattern**](/aten/docs/scripting/variabletypes/pattern) type describes a 
 | nMolAtoms | **int** | | Number of atoms in one molecule of the pattern |
 | nMols | **int** | | Number of molecules (repeat units) in the pattern |
 | nTorsions | **int** | | Number of torsion interactions in one molecule of the pattern |
-| torsions | [**Bound**]\[\](/aten/docs/scripting/variabletypes/bound) | | Array of torsion interactions in one molecule of the pattern |
+| torsions | [**Bound**](/aten/docs/scripting/variabletypes/bound)[] | | Array of torsion interactions in one molecule of the pattern |
 
-# Pattern Type Functions
+## Pattern Type Functions
 
-## atomsInRing <a id="atomsinring"></a>
+### atomsInRing <a id="atomsinring"></a>
 
 _Syntax:_
 
@@ -50,7 +50,7 @@ Return whether the supplied atom index (indices), given in local pattern atom nu
 
 ---
 
-## cog <a id="cog"></a>
+### cog <a id="cog"></a>
 
 _Syntax:_
 
@@ -60,7 +60,7 @@ Return calculated centre of geometry for the molecule index provided
 
 ---
 
-## com <a id="com"></a>
+### com <a id="com"></a>
 
 _Syntax:_
 

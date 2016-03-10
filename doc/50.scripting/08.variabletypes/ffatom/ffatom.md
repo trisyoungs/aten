@@ -14,8 +14,8 @@ The [**FFAtom**](/aten/docs/scripting/variabletypes/ffatom) type stores paramete
 |--------|------|----|-------------|
 | charge | **double** | • | Charge associated to the type |
 | data | **double**[6] | • | Parameter data for short-range potential |
-| dataKeyword | **string**\[\] | | Keyword names of the associated parameters, up to 'nParams' |
-| dataNames | **string**\[\] | | Proper names of the associated parameters, up to 'nParams' |
+| dataKeyword | **string**[] | | Keyword names of the associated parameters, up to 'nParams' |
+| dataNames | **string**[] | | Proper names of the associated parameters, up to 'nParams' |
 | description | **string** | • | Text data describing the type |
 | equivalent | **string** | • | Equivalent name for the type |
 | form | **string** | • | Functional form of short-range potential |
@@ -27,9 +27,9 @@ The [**FFAtom**](/aten/docs/scripting/variabletypes/ffatom) type stores paramete
 | ff | [**Forcefield**](/aten/docs/scripting/variabletypes/forcefield) | | Parent forcefield containing the type |
 | z | **int** | • | Element id (Z) corresponding to the target element of this type |
 
-# FFAtom Type Functions
+## FFAtom Type Functions
 
-## dataD <a id="datad"></a>
+### dataD <a id="datad"></a>
 
 _Syntax:_
 
@@ -39,7 +39,7 @@ Return the value of the defined data item _varName_ as a double if it has been d
 
 ---
 
-## dataI <a id="datai"></a>
+### dataI <a id="datai"></a>
 
 _Syntax:_
 
@@ -49,7 +49,7 @@ Return the value of the defined data item _varName_ as an integer if it has been
 
 ---
 
-## dataS <a id="datas"></a>
+### dataS <a id="datas"></a>
 
 _Syntax:_
 
@@ -59,7 +59,7 @@ Return the value of the defined data item _varName_ as a string if it has been d
 
 ---
 
-## parameter <a id="parameter"></a>
+### parameter <a id="parameter"></a>
 
 _Syntax:_
 

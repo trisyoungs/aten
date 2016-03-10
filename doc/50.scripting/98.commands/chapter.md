@@ -1,5 +1,5 @@
 ---
-title: Commands
+title: Command Reference
 taxonomy:
   category: docs
 docroot: /aten/docs

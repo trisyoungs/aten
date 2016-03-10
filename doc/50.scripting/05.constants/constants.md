@@ -19,7 +19,7 @@ Several predefined constants exist, and may not be overridden by variables of th
 | PI | **double** | 3.14159265358979323846 |
 | TRUE | **int** | 1 |
 
-In addition, all element symbols found in the input will be seen as their equivalent integer atomic number. So, instead of having to provide short strings containing the element name to, for example, the [a]transmute,cmd-build#transmute[/a] command, the capitalised element name itself may be used. Thus...
+In addition, all element symbols found in the input will be seen as their equivalent integer atomic number. So, instead of having to provide short strings containing the element name to, for example, the [transmute](/aten/docs/scripting/commands/build#transmute) command, the capitalised element name itself may be used. Thus...
 
 ```
 transmute("Xe");

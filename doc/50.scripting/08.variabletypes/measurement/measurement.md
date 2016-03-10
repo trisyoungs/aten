@@ -12,7 +12,7 @@ The [**Measurement**](/aten/docs/scripting/variabletypes/measurement) type stor
  
 | Member | Type | RW | Description |
 |--------|------|----|-------------|
-| atoms | [**Atom**]\[\](/aten/docs/scripting/variabletypes/atom) | | Array of atoms involved in the measurement |
+| atoms | [**Atom**](/aten/docs/scripting/variabletypes/atom)[] | | Array of atoms involved in the measurement |
 | i | [**Atom**](/aten/docs/scripting/variabletypes/atom) | | First atom involved in the measurement |
 | j | [**Atom**](/aten/docs/scripting/variabletypes/atom) | | Second atom involved in the measurement |
 | k | [**Atom**](/aten/docs/scripting/variabletypes/atom) | | Third atom involved in the measurement (if any) |

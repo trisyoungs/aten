@@ -16,7 +16,7 @@ The [**Widget**](/aten/docs/scripting/variabletypes/widget) is a control presen
 | verticalFill | **int** | • | If TRUE then child widgets without specific coordinates will be created in a vertical stack. Otherwise child widgets will be added in a horizontal line |
 | visible | **int** | • | Whether the widget is visible in the GUI |
 
-# Widget Type Functions
+## Widget Type Functions
 
 Most functions to create child widgets accept four optional integer arguments determining the position and size of the widget in the parent. These are:
 
@@ -29,7 +29,7 @@ If neither of the first two values are given (or both are set to -1) then the ch
 
 ---
 
-## addButton <a id="addbutton"></a>
+### addButton <a id="addbutton"></a>
 
 _Syntax:_
 
@@ -39,7 +39,7 @@ Add a new button widget to this widget.
 
 ---
 
-## addCheck <a id="addcheck"></a>
+### addCheck <a id="addcheck"></a>
 
 _Syntax:_
 
@@ -49,7 +49,7 @@ Add a new checkbox widget to this widget.
 
 ---
 
-## addCombo <a id="addcombo"></a>
+### addCombo <a id="addcombo"></a>
 
 _Syntax:_
 
@@ -59,7 +59,7 @@ Add a new combo widget (drop-down list) to this widget.
 
 ---
 
-## addDoubleSpin <a id="adddoublespin"></a>
+### addDoubleSpin <a id="adddoublespin"></a>
 
 _Syntax:_
 
@@ -69,7 +69,7 @@ Add a new doublespin widget to this widget.
 
 ---
 
-## addEdit <a id="addedit"></a>
+### addEdit <a id="addedit"></a>
 
 _Syntax:_
 
@@ -79,7 +79,7 @@ Add a new single-line edit box to this widget.
 
 ---
 
-## addFrame <a id="addframe"></a>
+### addFrame <a id="addframe"></a>
 
 _Syntax:_
 
@@ -89,7 +89,7 @@ Add a simple frame to this widget.
 
 ---
 
-## addGroup <a id="addgroup"></a>
+### addGroup <a id="addgroup"></a>
 
 _Syntax:_
 
@@ -99,7 +99,7 @@ Add a new groupbox to this widget.
 
 ---
 
-## addIntegerSpin <a id="addintegerspin"></a>
+### addIntegerSpin <a id="addintegerspin"></a>
 
 _Syntax:_
 
@@ -109,7 +109,7 @@ Add a new integer spin widget to this widget.
 
 ---
 
-## addLabel <a id="addlabel"></a>
+### addLabel <a id="addlabel"></a>
 
 _Syntax:_
 
@@ -119,7 +119,7 @@ Add a simple label to this widget.
 
 ---
 
-## addPage <a id="addpage"></a>
+### addPage <a id="addpage"></a>
 
 _Syntax:_
 
@@ -129,7 +129,7 @@ Add a new page to this widget, which must be either a tab widget or a stack widg
 
 ---
 
-## addRadioButton <a id="addradiobutton"></a>
+### addRadioButton <a id="addradiobutton"></a>
 
 _Syntax:_
 
@@ -139,7 +139,7 @@ Add a new radiobutton to this widget.
 
 ---
 
-## addRadioGroup <a id="addradiogroup"></a>
+### addRadioGroup <a id="addradiogroup"></a>
 
 _Syntax:_
 
@@ -149,7 +149,7 @@ Add a new (invisible) radiobutton group to the widget (but whichi is owned by th
 
 ---
 
-## addSpacer <a id="addspacer"></a>
+### addSpacer <a id="addspacer"></a>
 
 _Syntax:_
 
@@ -159,7 +159,7 @@ _Syntax:_
 
 ---
 
-## addStack <a id="addstack"></a>
+### addStack <a id="addstack"></a>
 
 _Syntax:_
 
@@ -169,7 +169,7 @@ Add a new widget stack to this widget. Individual tabs should be added with the 
 
 ---
 
-## addTabs <a id="addtabs"></a>
+### addTabs <a id="addtabs"></a>
 
 _Syntax:_
 
@@ -179,7 +179,7 @@ Add a new tabbed widget to this widget. Individual tabs should be added with the
 
 ---
 
-## onDouble <a id="ondouble"></a>
+### onDouble <a id="ondouble"></a>
 
 _Syntax:_
 
@@ -189,7 +189,7 @@ Define an action to be performed when this widget’s double value is within a c
 
 ---
 
-## onInteger <a id="oninteger"></a>
+### onInteger <a id="oninteger"></a>
 
 _Syntax:_
 
@@ -199,7 +199,7 @@ Define an action to be performed when this widget’s integer value is within a 
 
 ---
 
-## onString <a id="onstring"></a>
+### onString <a id="onstring"></a>
 
 _Syntax:_
 
@@ -209,7 +209,7 @@ Define an action to be performed when this widget takes on a specific string val
 
 ---
 
-## setProperty <a id="setproperty"></a>
+### setProperty <a id="setproperty"></a>
 
 _Syntax:_
 

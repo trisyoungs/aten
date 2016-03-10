@@ -13,11 +13,11 @@ The [**BasisPrimitive**](/aten/docs/scripting/variabletypes/basisprimitive) typ
 | Member | Type | RW | Description |
 |--------|------|----|-------------|
 | exponent | **double** | • | Exponent of the basis primitive |
-| coefficients | **double**\[\] | • | Coefficients of the basis primitive |
+| coefficients | **double**[] | • | Coefficients of the basis primitive |
 
-# BasisPrimitive Type Functions
+## BasisPrimitive Type Functions
 
-## addCoefficient <a id="addcoefficient"></a>
+### addCoefficient <a id="addcoefficient"></a>
 
 _Syntax:_
 

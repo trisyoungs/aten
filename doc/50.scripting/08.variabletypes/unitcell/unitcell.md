@@ -37,9 +37,9 @@ The [**UnitCell**](/aten/docs/scripting/variabletypes/unitcell) type contains a
 | type | **string** | | Type of the current unit cell (see Cell Types in Section 16.4) |
 | volume | **double** | | Volume of the cell in cubic Å |
 
-# UnitCell Type Functions
+## UnitCell Type Functions
 
-## copy <a id="copy"></a>
+### copy <a id="copy"></a>
 
 _Syntax:_
 
@@ -49,7 +49,7 @@ Copy all information from the source [**UnitCell**](/aten/docs/scripting/variabl
 
 ---
 
-## fracToReal <a id="fractoreal"></a>
+### fracToReal <a id="fractoreal"></a>
 
 _Syntax:_
 
@@ -59,7 +59,7 @@ Returns the real-space coordinates of the supplied fractional (cell) coordinates
 
 ---
 
-## mim <a id="mim"></a>
+### mim <a id="mim"></a>
 
 _Syntax:_
 
@@ -69,7 +69,7 @@ Returns a vector containing the minimum image coordinates of the atom _i_ with r
 
 ---
 
-## mimVector <a id="mimvector"></a>
+### mimVector <a id="mimvector"></a>
 
 _Syntax:_
 
@@ -79,7 +79,7 @@ Returns the minimum image vector from atom _i_ to atom _j_. Note that the coordi
 
 ---
 
-## realToFrac <a id="realtofrac"></a>
+### realToFrac <a id="realtofrac"></a>
 
 _Syntax:_
 
@@ -89,7 +89,7 @@ Returns the fractional coordinates of the supplied real-space coordinates.
 
 ---
 
-## translateAtom <a id="translateatom"></a>
+### translateAtom <a id="translateatom"></a>
 
 _Syntax:_
 
