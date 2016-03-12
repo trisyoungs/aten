@@ -96,7 +96,7 @@ void TColourWheel::mouseMoveEvent(QMouseEvent* event)
 	{
 		svChanged(lastPosColour());
 	}
-	else
+	else if (currentRegion_ == TColourWheel::SquareRegion)
 	{
         // TODO: due with cursor out of region after press
         //        int length = qMin(width(), height());
