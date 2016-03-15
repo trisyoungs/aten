@@ -40,7 +40,6 @@ Sort out remaining icons!
 AddAtom functionality (from old Build menu).
 Context Menu:
 o Set Colour doesn't work, since it needs a colour selector popup.
-Build option - keep centred.
 Remove TColourFrame (after updating Prefs and Glyphs windows).
 Button to calculate / show total charge in selection.
 Allow right-click on elements in PTable to set as member of common elements popup.
@@ -49,7 +48,6 @@ Add Calculate tool to work out centre of geometry/mass.
 Add option to display ColourScale selector (e.g. for Grid colour buttons)
 Have Tools page? With, for instance:
 --- Plot Orbital (raising dialog from old GridsWidget)
-Where to show current (empirical) selection
 Add manual typing popup.
 Prefs window needs updating:
 o Remove use of TColourFrames

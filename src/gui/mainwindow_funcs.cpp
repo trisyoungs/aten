@@ -126,8 +126,11 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportFilmD
 	editable_ = true;
 
 	// Public variables
-	infoLabel1_ = NULL;
-	infoLabel2_ = NULL;
+	massLabel_ = NULL;
+	densityLabel_ = NULL;
+	cellInfoLabel_ = NULL;
+	atomsLabel_ = NULL;
+	selectionLabel_ = NULL;
 	messageLabel_ = NULL;
 
 	// Models List setup
@@ -387,10 +390,10 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportFilmD
 	 */
 	// Fix up the statusbar with a single big frame and no size grip
 	ui.MainWindowStatusBar->setSizeGripEnabled(false);
-	QFrame *frame = new QFrame(this);
+	QFrame* frame = new QFrame(this);
 	ui.MainWindowStatusBar->addPermanentWidget(frame,1);
 	// Message label
-	QHBoxLayout *lablayout = new QHBoxLayout(frame);
+	QHBoxLayout* lablayout = new QHBoxLayout(frame);
 	messageLabel_ = new QLabel(this);
 	messageLabel_->setTextFormat(Qt::RichText);
 	messageLabel_->setWordWrap(true);
@@ -398,18 +401,33 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportFilmD
 	font.setPointSize(8);
 	messageLabel_->setFont(font);
 	lablayout->addWidget(messageLabel_, 100);
-	QFrame *sep = new QFrame;
+	QFrame* sep = new QFrame;
 	sep->setFrameStyle(QFrame::VLine);
 	lablayout->addWidget(sep,0);
 	// Info labels
-	QVBoxLayout *infolayout = new QVBoxLayout;
+	QGridLayout* infolayout = new QGridLayout;
 	infolayout->setSizeConstraint(QLayout::SetMaximumSize);
-	infoLabel1_ = new QLabel(this);
-	infoLabel1_->setFont(font);
-	infolayout->addWidget(infoLabel1_);
-	infoLabel2_ = new QLabel(this);
-	infoLabel2_->setFont(font);
-	infolayout->addWidget(infoLabel2_);
+	infolayout->setHorizontalSpacing(6);
+	infolayout->setVerticalSpacing(2);
+	infolayout->setMargin(0);
+	modelLabel_ = new QLabel(this);
+	modelLabel_->setFont(font);
+	infolayout->addWidget(modelLabel_, 0, 0);
+	cellInfoLabel_ = new QLabel(this);
+	cellInfoLabel_->setFont(font);
+	infolayout->addWidget(cellInfoLabel_, 1, 0);
+	atomsLabel_ = new QLabel(this);
+	atomsLabel_->setFont(font);
+	infolayout->addWidget(atomsLabel_, 0, 1);
+	selectionLabel_ = new QLabel(this);
+	selectionLabel_->setFont(font);
+	infolayout->addWidget(selectionLabel_, 1, 1);
+	massLabel_ = new QLabel(this);
+	massLabel_->setFont(font);
+	infolayout->addWidget(massLabel_, 0, 2);
+	densityLabel_ = new QLabel(this);
+	densityLabel_->setFont(font);
+	infolayout->addWidget(densityLabel_, 1, 2);
 	lablayout->addLayout(infolayout,0);
 
 	// Load Qt Settings

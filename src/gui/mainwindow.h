@@ -565,7 +565,7 @@ class AtenWindow : public QMainWindow
 	 */
 	private:
 	// Text labels for model information and UI messages in status bar
-	QLabel* infoLabel1_, *infoLabel2_, *messageLabel_;
+	QLabel* cellInfoLabel_, *massLabel_, *densityLabel_, *selectionLabel_, *modelLabel_, *atomsLabel_, *messageLabel_;
 	// Filter set from save model dialog
 	Tree* saveModelFilter_;
 	// Filename set from save model dialog
