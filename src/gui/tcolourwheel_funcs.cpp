@@ -96,8 +96,25 @@ void TColourWheel::mouseMoveEvent(QMouseEvent* event)
 	{
 		svChanged(lastPosColour());
 	}
-	else
+	else if (currentRegion_ == TColourWheel::SquareRegion)
 	{
+		// Snap lastPos_ to the rectangle
+		if (lastPos_.x() < squareRegion_.boundingRect().left()) lastPos_.setX(squareRegion_.boundingRect().left());
+		else if (lastPos_.x() > squareRegion_.boundingRect().right()) lastPos_.setX(squareRegion_.boundingRect().right());
+		if (lastPos_.y() < squareRegion_.boundingRect().top()) lastPos_.setY(squareRegion_.boundingRect().top());
+		else if (lastPos_.y() > squareRegion_.boundingRect().bottom()) lastPos_.setY(squareRegion_.boundingRect().bottom());
+		svChanged(lastPosColour());
+	}
+	else if (currentRegion_ == TColourWheel::WheelRegion)
+	{
+		// Scale lastPos_ so it is inside the wheel
+		int dx = lastPos_.x()-squareRegion_.boundingRect().center().x();
+		int dy = lastPos_.y()-squareRegion_.boundingRect().center().y();
+		double scale = sqrt(dx*dx+dy*dy) / (outerRadius_-wheelWidth_*0.5);
+		lastPos_.setX(squareRegion_.boundingRect().center().x() + dx/scale);
+		lastPos_.setY(squareRegion_.boundingRect().center().y() + dy/scale);
+		QColor colour = lastPosColour();
+		hueChanged(colour.hue());
         // TODO: due with cursor out of region after press
         //        int length = qMin(width(), height());
         //        QPoint center(length/2, length/2);
@@ -226,7 +243,6 @@ void TColourWheel::updateWheel(const QSize widgetSize)
 	// Initialise style
 	QStyleOption option;
 	option.initFrom(this);
-	//    QStyle::State state = option.state;
 
 	// Set background brush
 	QBrush background = option.palette.window();
@@ -302,8 +318,8 @@ void TColourWheel::updateComposite()
 	// Draw indicator for saturation / value
 	pen.setColor( ((currentColour_.saturation() > 30) || (currentColour_.value() < 50)) ? Qt::white : Qt::black ); 
 	painter.setPen(pen);
-	point.setX(currentColour_.saturationF()*squareSize_ - (indicatorSize+penWidth)/2 - squareSize_/2);
-	point.setY(currentColour_.valueF()*squareSize_ - (indicatorSize+penWidth)/2 - squareSize_/2);
+	point.setX(currentColour_.saturationF()*squareSize_ - squareSize_/2);
+	point.setY(currentColour_.valueF()*squareSize_ - squareSize_/2);
 	painter.drawEllipse(point, indicatorSize, indicatorSize);
 
 	// Draw indicator for hue

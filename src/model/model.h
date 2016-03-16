@@ -1006,7 +1006,7 @@ class Model : public ListItem<Model>
 	 */
 	public:
 	// Return the empirical formula of the selected atoms
-	QString selectionEmpirical(bool markOnly, bool addSpaces = false ) const;
+	QString selectionEmpirical(bool markOnly = false, bool addSpaces = false ) const;
 	// Get selection's centre of geometry
 	Vec3<double> selectionCentreOfGeometry(bool markOnly = false) const;
 	// Get selection's centre of mass

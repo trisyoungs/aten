@@ -42,7 +42,7 @@ For example:
 
 ```
 double rij[50];
-for (int i=1; i&lt;=50; ++i) rij_ = geometry(1,i); 
+for (int i=1; i<=50; ++i) rij_ = geometry(1,i); 
 ```
 
 calculates the distances between the first 50 atoms in the model and the first, regardless of whether they are bound or not

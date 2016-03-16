@@ -13,7 +13,7 @@ header_class: alt
 Quickly getting at geometric data in a model file is often useful without having to go through the GUI, in order to quickly verify a geometry or get certain data into a file. The following command prints out all of the bond distances, including the indices of the atoms involved, from the command line:
 
 ```
-bob@pc:~&gt; aten data/test/methanol.inp -c 'for (Bond b = aten.model.bonds; b; ++b) printf("Distance %i-%i = %f\n", b.i.id, b.j.id, geometry(b.i,b.j)); quit();'
+bob@pc:~> aten data/test/methanol.inp -c 'for (Bond b = aten.model.bonds; b; ++b) printf("Distance %i-%i = %f\n", b.i.id, b.j.id, geometry(b.i,b.j)); quit();'
 ```
 
 This will give you output along the following lines:

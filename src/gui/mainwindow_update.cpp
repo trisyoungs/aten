@@ -34,48 +34,65 @@ void AtenWindow::updateMainWindow()
 	Model* currentModel = aten_.currentModel();
 
 	// Update status bar
-	QString s;
+	QString modelLabelText, cellInfoText, selectionText, massText, densityText, atomsLabelText;
 	if (currentModel)
 	{
-		// First label - atom and trajectory frame information
+		// Parent / frame information
 		if (currentModel->hasTrajectory())
 		{
-			if (currentModel->renderSourceModel() == currentModel) s = "(Parent of " + QString::number(currentModel->nTrajectoryFrames()) + " frames) ";
-			else s = "(Frame " + QString::number(currentModel->trajectoryFrameIndex()+1) + " of " + QString::number(currentModel->nTrajectoryFrames()) + ") ";
+			if (currentModel->renderSourceModel() == currentModel) modelLabelText = "(Parent of " + QString::number(currentModel->nTrajectoryFrames()) + " frames) ";
+			else modelLabelText = "(Frame " + QString::number(currentModel->trajectoryFrameIndex()+1) + " of " + QString::number(currentModel->nTrajectoryFrames()) + ") ";
 		}
+		else modelLabelText = "[Model]";
 
+		// Get current render target for remainder of information
 		currentModel = currentModel->renderSourceModel();
-		s += QString::number(currentModel->nAtoms());
-		s += " Atoms ";
 
-		// Add on unknown atom information
-		if (currentModel->nUnknownAtoms() != 0) s += " (<b>" + QString::number(currentModel->nUnknownAtoms()) + " unknown</b>) ";
-		if (currentModel->nSelected() != 0) s += "(<b>" + QString::number(currentModel->nSelected()) + " selected</b>) ";
-		s += QString::number(currentModel->mass());
-		s += " g mol<sup>-1</sup> ";
-		infoLabel1_->setText(s);
+		// Atoms label
+		if (currentModel->nAtoms() == 1) atomsLabelText = "1 Atom";
+		else atomsLabelText = QString::number(currentModel->nAtoms()) + " Atoms";
+		if (currentModel->nUnknownAtoms() != 0) atomsLabelText += " (<b>? = " + QString::number(currentModel->nUnknownAtoms()) + "</b>)";
 
-		// Second label - cell information
+		// Mass
+		massText = QString::number(currentModel->mass()) + " g mol<sup>-1</sup>";
+
+		// Selection
+		if (currentModel->nSelected() == 0) selectionText = "0 / --";
+		else selectionText = QString::number(currentModel->nSelected()) + " / " + currentModel->selectionEmpirical();
+
+		// Cell information
 		UnitCell::CellType ct = currentModel->cell().type();
 		if (ct != UnitCell::NoCell)
 		{
-			s = QString("%1, %2").arg(UnitCell::cellType(ct)).arg(currentModel->density());
+			cellInfoText = UnitCell::cellType(ct);
+
+			densityText = QString::number(currentModel->density());
 			switch (prefs.densityUnit())
 			{
 				case (Prefs::GramsPerCm):
-					s += " g cm<sup>-3</sup>";
+					densityText += " g cm<sup>-3</sup>";
 					break;
 				case (Prefs::AtomsPerAngstrom):
-					s += " atoms &#8491;<sup>-3</sup>";
+					densityText += " atoms &#8491;<sup>-3</sup>";
 					break;
 				default:
 					break;
 			}
 		}
-		else s = "Non-periodic";
+		else
+		{
+			cellInfoText = "Non-periodic";
+			densityText = "--";
+		}
 	}
-	else s = "(No Model)";
-	infoLabel2_->setText(s);
+
+	// Set labels
+	cellInfoLabel_->setText(cellInfoText);
+	atomsLabel_->setText(atomsLabelText);
+	massLabel_->setText(massText);
+	densityLabel_->setText(densityText);
+	selectionLabel_->setText(selectionText);
+	modelLabel_->setText(modelLabelText);
 
 	// Update main window title
 	QString title = QString("Aten v2 PRERELEASE (v%1)").arg(ATENVERSION);

@@ -27,9 +27,9 @@ The [**MonteCarlo**](/aten/docs/scripting/variabletypes/montecarlo) type stores
 | nCycles | **int** | • | Maximum number of Monte Carlo cycles to perform |
 | temperature | **double** | • | Temperature for Monte Carlo ‘simulation’ |
 
-# MonteCarlo Type Functions
+## MonteCarlo Type Functions
 
-## eAccept <a id="eaccept"></a>
+### eAccept <a id="eaccept"></a>
 
 _Syntax:_
 
@@ -39,7 +39,7 @@ Return the current acceptance energy threshold for the specified _moveType_, set
 
 ---
 
-## maxStep <a id="maxstep"></a>
+### maxStep <a id="maxstep"></a>
 
 _Syntax:_
 
@@ -49,7 +49,7 @@ Return the current maximum step size for the specified _moveType_ (if applicable
 
 ---
 
-## moveAllowed <a id="moveallowed"></a>
+### moveAllowed <a id="moveallowed"></a>
 
 _Syntax:_
 
@@ -59,7 +59,7 @@ Return whether the specified _moveType_ is allowed to take place, setting to the
 
 ---
 
-## nTrials <a id="ntrials"></a>
+### nTrials <a id="ntrials"></a>
 
 _Syntax:_
 

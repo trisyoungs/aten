@@ -54,7 +54,7 @@ filter(type="importmodel",name="XMol XYZ Coordinates (in Bohr)", nickname="xyzb"
                 readLine(natoms);
                 getLine(title);
                 newModel(title);
-                for (n=1; n&lt;=natoms; ++n)
+                for (n=1; n<=natoms; ++n)
                 {
                         readLine(e,rx,ry,rz,q);
                         i = newAtom(e, rx/0.529, ry/0.529, rz/0.529);

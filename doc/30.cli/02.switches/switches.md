@@ -9,7 +9,7 @@ header_class: alt
 
 ## A
 
-`--atendata &lt;dir&gt;`<a id="atendata"></a>
+`--atendata=<dir>`<a id="atendata"></a>
 
 Tells **Aten** to use the specified _dir_ as its data directory (where filters etc. are stored). This overrides the **ATENDATA** shell variable.
 
@@ -21,15 +21,15 @@ Specifies that the unit of length used in any models and grid data that follow i
 
 `--batch`<a id="batch"></a>
 
-Enter batch processing  mode, modifying and saving models to their original filenames. See Section 6.3 for details and a list of other modes. 
+Enter batch processing mode, modifying and saving models to their original filenames. See [Batch Processing](/aten/docs/cli/batch) for details and a list of other modes. 
 
 `--bond`<a id="bond"></a>
 
-Force recalculation of bonding in loaded models, regardless of whether the filter used any of the rebond commands (see the list of [a]bond-related commands,command-bond[/a]).
+Force recalculation of bonding in loaded models, regardless of whether the filter used any of the rebond commands (see the list of [bond-related commands](/aten/docs/scripting/commands/bond)).
 
 ## C
 
-`-c &lt;commands&gt;, --command &lt;commands&gt;`<a id="c"></a>
+`-c <commands>, --command=<commands>`<a id="c"></a>
 
 Provides a command or compound command to execute. Commands should be enclosed in single quotes (to prevent the shell from misquoting any character strings) and individual commands separated with semicolons. Commands provided in this way can be used to set up **Aten** in the way you want it from the command line, perform operations on model files before loading the GUI, or perform operations on model files without loading the GUI at all.
 
@@ -45,7 +45,7 @@ Similarly, to load a model and make a duplicate copy of the atoms (pasted into t
 bob@pc:~> aten original.xyz -c 'selectAll(); copy(); paste(10,10,10);'
 ```
 
-In both cases the GUI initialises itself without being told, but this can be prevented with the [a]quit,command-system#quit[/a] command. Consider the last example – to save the newly-expanded model and quit without ever launching the GUI:
+In both cases the GUI initialises itself without being told, but this can be prevented with the [quit](/aten/docs/scripting/commands/system#quit) command. Consider the last example – to save the newly-expanded model and quit without ever launching the GUI:
 
 ```
 bob@pc:~> aten original.xyz -c 'selectAll; copy(); paste(10,10,10); saveModel("xyz", "pasted.xyz"); quit;'
@@ -57,29 +57,29 @@ Multiple sets of commands may be given:
 bob@pc:~> aten source.xyz -c 'selectAll; copy();' target.xyz -c 'paste(10,10,10);'
 ```
 
-Take care here, since the commands provided act on the current model, i.e. the one that was most recently loaded. Commands are available that select between the loaded models – see the list of model-related commands in Section 9.22.
+Take care here, since the commands provided act on the current model, i.e. the one that was most recently loaded. Commands are available that select between the loaded models – see the list of [model-related commands](/aten/docs/scripting/commands/model).
 
-`--cachelimit &lt;limit&gt;`<a id="cachelimit"></a>
+`--cachelimit=<limit>`<a id="cachelimit"></a>
 
 Sets the size limit for trajectory loading, in kilobytes. If an entire trajectory will fit into this cache, all frames in the trajectory are loaded immediately. If not, frames will be read from disk as and when required.
 
 `--centre`<a id="centre"></a>
 
-Force translation of non-periodic models centre-of-geometry to the origin, even if the [a]centre,command-transform#centre[/a] command was not used in the corresponding filter.
+Force translation of non-periodic models centre-of-geometry to the origin, even if the [centre](/aten/docs/scripting/commands/transform#centre) command was not used in the corresponding filter.
 
 ## D
 
-`-d [&lt;type&gt;], --debug [type]`<a id="d"></a>
+`-d [<type>], --debug=[type]`<a id="d"></a>
 
-Enables debugging of subroutine calls so that program execution can be traced, or enables extra debug output from specific types of routines (if a _type_ is given). Warning - this creates a lot of output, most of which is incomprehensible to people with their sanity still intact, but is useful to track the program up to the point of, say, a hideous crash. Valid _type_ values are listed under [a]Output Enums,enums-output[/a].
+Enables debugging of subroutine calls so that program execution can be traced, or enables extra debug output from specific types of routines (if a _type_ is given). Warning - this creates a lot of output, most of which is incomprehensible to people with their sanity still intact, but is useful to track the program up to the point of, say, a hideous crash. Valid _type_ values are listed under [output enumerations](/aten/docs/enums/output).
 
 `--dialogs`<a id="dialogs"></a>
 
 By default, filter and script user dialogs are not shown when performing functions on the command-line. This switch forces dialogs to be shown.
 
-`--double &lt;name=value&gt;`<a id="double"></a>
+`--double=<name=value>`<a id="double"></a>
 
-Creates a ‘floating’ variable _name_ which is of type [type]double[/type] and that can be accessed from any subsequent script, command, or filter. Note that declarations of variables with the same name made in scripts, commands and filters will override any passed value names in order to avoid conflicts and breaking of existing filters and scripts. The intended use is to be able to pass values easily from the command-line into scripts or one-line commands.
+Creates a ‘floating’ variable _name_ which is of type **double** and that can be accessed from any subsequent script, command, or filter. Note that declarations of variables with the same name made in scripts, commands and filters will override any passed value names in order to avoid conflicts and breaking of existing filters and scripts. The intended use is to be able to pass values easily from the command-line into scripts or one-line commands.
 
 For example, in a bash shell:
 
@@ -89,11 +89,11 @@ bob@pc:~> for num in 10.0 50.5 100.0; do aten --double d=$num -c 'printf("Value 
 
 ## E
 
-`--export &lt;nickname&gt;`<a id="export"></a>
+`--export=<nickname>`<a id="export"></a>
 
-Enter export  mode, where each model specified on the command line is loaded and saved in the format corresponding to the _nickname_ specified. If specified in conjunction with [--batch](/aten/docs/cli/switches#batch), batch export mode is entered instead, with commands run on models before being saved to the new format. See Section 6.3 for details and a list of other modes. 
+Enter export  mode, where each model specified on the command line is loaded and saved in the format corresponding to the _nickname_ specified. If specified in conjunction with [--batch](/aten/docs/cli/switches#batch), batch export mode is entered instead, with commands run on models before being saved to the new format. See [Batch Processing](/aten/docs/cli/batch) for details and a list of other modes. 
 
-`--exportmap &lt;name=element,...&gt;`<a id="exportmap"></a>
+`--exportmap=<name=element,...>`<a id="exportmap"></a>
 
 Manually map assigned atom typenames in an expression to the names defined here when expressions are written to a file. For example:
 
@@ -103,37 +103,37 @@ bob@pc:~> aten --ff spc.ff data/test/water.xyz --exportmap "OW=Ospc,H=Hspc" -c '
 
 writes the water forcefield with the **OW** and **HW** atomtype names mapped to **Ospc** and **Hspc** respectively.
 
-`--expression &lt;file&gt;`<a id="expression"></a>
+`--expression=<file>`<a id="expression"></a>
 
 Loads the specified _file_ as if it were an expression.
 
 ## F
 
-`-f &lt;nickname&gt;, --format &lt;nickname&gt;`<a id="f"></a>
+`-f <nickname>, --format=<nickname>`<a id="f"></a>
 
 For any forthcoming model files provided as arguments on the command line, the specified model import filter is used to load them, regardless of their filename extension (or, indeed, actual format). Since **Aten** tends not to determine file formats by looking at their content, this is useful for when you know that file is in a particular format, but with an extension that doesn't help **Aten** recognise it as such.
 
-`--ff &lt;file&gt;`<a id="ff"></a>
+`--ff=<file>`<a id="ff"></a>
 
-Loads the specified forcefield file, making it the current forcefield. If the desired forcefield is present in either **Aten**’s installed **data/** directory or in your own **~/.aten/ff** directory (see the quick guide on [a]Locations,quick-locations[/a]), then just the filename need be given as **Aten** searches these locations by default.
+Loads the specified forcefield file, making it the current forcefield. If the desired forcefield is present in either **Aten**’s installed `data/` directory or in your own `~/.aten/ff` directory (see the section on [Locations](/aten/docs/quickstart/locations)), then just the filename need be given as **Aten** searches these locations by default.
 
-`--filter &lt;file&gt;`<a id="filter"></a>
+`--filter=<file>`<a id="filter"></a>
 
-Load the specified **file** as if it were a filter file, installing any filters defined within it. Any filters already loaded that have the same ‘nickname’, ‘id’ etc. will be hidden by those loaded from **file**. See [a]overriding existing filters,filters-overriding[/a] for more information.
+Load the specified **file** as if it were a filter file, installing any filters defined within it. Any filters already loaded that have the same ‘nickname’, ‘id’ etc. will be hidden by those loaded from **file**. See [overriding existing filters](/aten/docs/filters/overriding) for more information.
 
 `--fold`<a id="fold"></a>
 
-Force folding of atoms to within the boundaries of the unit cell (if one is present) in loaded models, even if the command [a]fold,command-cell#fold[/a] was not used in the corresponding filter.
+Force folding of atoms to within the boundaries of the unit cell (if one is present) in loaded models, even if the [fold](/aten/docs/scripting/commands/cell#fold) command was not used in the corresponding filter.
 
 ## G
 
-`-g &lt;file&gt;, --grid &lt;file&gt;`<a id="g"></a>
+`-g <file>, --grid=<file>`<a id="g"></a>
 
 Loads the specified grid data **file**, associating it to the current model, and making it the current grid. A model (even an empty one) must exist for a grid to be loaded.
 
 ## H
 
-`-h, --help `<a id="h"></a>
+`-h, --help=`<a id="h"></a>
 
 Show the possible command-line switches and a short description of their meaning.
 
@@ -143,9 +143,9 @@ Show the possible command-line switches and a short description of their meaning
 
 Starts **Aten** in interactive mode, where commands are typed and immediately executed. The GUI is not started by default, but may be invoked.
 
-`--int &lt;name=value&gt;`<a id="int"></a>
+`--int=<name=value>`<a id="int"></a>
 
-Creates a floating integer variable _name_. See the [--double](/aten/docs/cli/switches#d) switch for a full description.
+Creates a floating **integer** variable _name_. See the [--double](/aten/docs/cli/switches#d) switch for a full description.
 
 ## K
 
@@ -167,7 +167,7 @@ Note that the [--keeptypes](/aten/docs/cli/switches#keeptypes) and [--keepnames]
 
 ## M
 
-`-m &lt;name=element,...&gt;, --map &lt;name=element,...&gt;`<a id="m"></a>
+`-m <name=element,...>, --map=<name=element,...>`<a id="m"></a>
 
 Manually map atom typenames occurring in model files to elements according to the rules defined here. For example:
 
@@ -189,7 +189,7 @@ Print a list of all available import/output filter nicknames and quit.
 
 `--nobond`<a id="nobond"></a>
 
-Prevent recalculation of bonding in loaded models, overriding filter directives. This basically means that, if a filter tries to run the [a]rebond,command-bond#rebond[/a] command, then specifying this switch will prevent it.
+Prevent recalculation of bonding in loaded models, overriding filter directives. This basically means that, if a filter tries to run the [rebon](/aten/docs/scripting/commands/bond#rebond) command, then specifying this switch will prevent it.
 
 `--nocentre`<a id="nocentre"></a>
 
@@ -197,7 +197,7 @@ Prevent translation of non-periodic models centre-of-geometry to the origin, ove
 
 `--nofold`<a id="nofold"></a>
 
-Prevent initial folding of atoms to within the boundaries of the unit cell (if one is present) in loaded models, overriding the use of the [a]fold,command-cell#fold[/a] command in the corresponding filters.
+Prevent initial folding of atoms to within the boundaries of the unit cell (if one is present) in loaded models, overriding the use of the [fold](/aten/docs/scripting/commands/cell#fold) command in the corresponding filters.
 
 `--nofragments`<a id="nofragments"></a>
 
@@ -205,7 +205,7 @@ Prevent loading of fragments from both standard and user locations on startup.
 
 `--nofragmenticons`<a id="nofragmenticons"></a>
 
-Prevent generation of fragment icons, used in the Fragment Library Window (see Section 7.13).
+Prevent generation of fragment icons, used in the [Fragment Library Popup](/aten/docs/gui/TODO).
 
 `--noincludes`<a id="noincludes"></a>
 
@@ -217,7 +217,7 @@ Prevent the use of OpenGL display lists for rendering.  Simple vertex arrays wi
 
 `--nopack`<a id="nopack"></a>
 
-Prevent generation of symmetry-equivalent atoms from spacegroup information in loaded models, overriding any occurrences of the [a]pack,command-cell#pack[/a] command is used in the corresponding filter.
+Prevent generation of symmetry-equivalent atoms from spacegroup information in loaded models, overriding any occurrences of the [pack](/aten/docs/scripting/commands/cell#pack) command is used in the corresponding filter.
 
 `--nopartitions`<a id="nopartitions"></a>
 
@@ -231,7 +231,7 @@ Don’t read in any system-stored Qt settings on startup (such as window positio
 
 `--pack`<a id="pack"></a>
 
-Force generation of symmetry-equivalent atoms from spacegroup information in loaded models, even if the [a]pack,command-cell#pack[/a] command was not used in the corresponding filter.
+Force generation of symmetry-equivalent atoms from spacegroup information in loaded models, even if the [pack](/aten/docs/scripting/commands/cell#pack) command was not used in the corresponding filter.
 
 `--pipe`<a id="pipe"></a>
 
@@ -239,33 +239,33 @@ Read and execute commands from piped input on startup.
 
 `--process`<a id="process"></a>
 
-Enter process mode, where commands are run on models but no changes are saved – instead, the GUI is started once all commands have been executed. See Section 6.3 for details and a list of other modes. 
+Enter process mode, where commands are run on models but no changes are saved – instead, the GUI is started once all commands have been executed. See [Batch Processing](/aten/docs/cli/batch) for details and a list of other modes. 
 
 ## Q
 
 `-q, --quiet`<a id="q"></a>
 
-Prevents nearly all text output from **Aten**, including error messages and the like, but does allow printing of user output via the [a]printf,command-messaging#printf[/a] command in scripts and commands passed with [`--command`](/aten/docs/cli/switches#c). Useful in order to print clean data to a file or standard output.
+Prevents nearly all text output from **Aten**, including error messages and the like, but does allow printing of user output via the [printf](/aten/docs/scripting/commands/messaging#printf) command in scripts and commands passed with [`--command`](/aten/docs/cli/switches#c). Useful in order to print clean data to a file or standard output.
 
 ## S
 
-`-s &lt;file&gt;, --script &lt;file&gt;`<a id="s"></a>
+`-s <file>, --script=<file>`<a id="s"></a>
 
-Specifies that the script file is to be loaded and run before moving on to the next command-line argument. A script file is just a plain text file that contains sequence of commands to be executed, written in the [a]command language style,cmdlang[/a].
+Specifies that the script file is to be loaded and run before moving on to the next command-line argument. A script file is just a plain text file that contains sequence of commands to be executed, written in the [command language style](/aten/docs/scripting/language) native to Aten..
 
-`--string &lt;name=value&gt;`<a id="string"></a>
+`--string=<name=value>`<a id="string"></a>
 
-Creates a floating string variable _name_. See the [--double](/aten/docs/cli/switches#d) switch for a full description.
+Creates a floating **string** variable _name_. See the [--double](/aten/docs/cli/switches#d) switch for a full description.
 
 ## T
 
-`-t &lt;file&gt;, --trajectory &lt;file&gt;`<a id="t"></a>
+`-t <file>, --trajectory=<file>`<a id="t"></a>
 
 Associates a trajectory file with the last loaded / current model.
 
 ## U
 
-`-u &lt;nlevels&gt;, --undolevels &lt;nlevels&gt;`<a id="u"></a>
+`-u <nlevels>, --undolevels=<nlevels>`<a id="u"></a>
 
 Set the maximum number of undo levels per model, or -1 for unlimited (the default).
 
@@ -281,8 +281,8 @@ Attempt to use OpenGL vertex buffer objects when rendering, for maximum performa
 
 ## Z
 
-`-z &lt;maptype&gt;, --zmap &lt;maptype&gt;`<a id="z"></a>
+`-z <maptype>, --zmap=<maptype>`<a id="z"></a>
 
-Override the names to elements z-mapping style defined in file filters. For a list of possible mapping types see [a]ZMapping Types,enums-zmapping[/a].
+Override the names to elements z-mapping style defined in file filters. For a list of possible mapping types see [ZMapping Types](/aten/docs/enums/zmaptype).
 
 

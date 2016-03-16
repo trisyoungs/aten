@@ -12,27 +12,27 @@ The [**Model**](/aten/docs/scripting/variabletypes/model) type contains all the 
  
 | Member | Type | RW | Description |
 |--------|------|----|-------------|
-| angles | [**Measurement**]\[\](/aten/docs/scripting/variabletypes/measurement)  | | List of current angle measurements in the model |
-| atoms | [**Atom**]\[\](/aten/docs/scripting/variabletypes/atom) | | Array of atoms in the model |
-| bonds | [**Bond**]\[\](/aten/docs/scripting/variabletypes/bond) | | Array of bonds defined in the model |
+| angles | [**Measurement**](/aten/docs/scripting/variabletypes/measurement)[]  | | List of current angle measurements in the model |
+| atoms | [**Atom**](/aten/docs/scripting/variabletypes/atom)[] | | Array of atoms in the model |
+| bonds | [**Bond**](/aten/docs/scripting/variabletypes/bond)[] | | Array of bonds defined in the model |
 | cell | [**UnitCell**](/aten/docs/scripting/variabletypes/unitcell) | • | The model’s unit cell |
 | componentDensity | **double** | • | Requested density of the model |
 | componentPartition | **int** | • | The integer index of the partition which this model will be added to in the disordered builder |
 | componentPolicy | **string** | • | Insertion policy for this model |
 | componentPopulation | **int** | • | The number of times this model will be added to the specified partition in the disordered builder |
-| distances | [**Measurement**]\[\](/aten/docs/scripting/variabletypes/measurement) | | List of current distance measurements in the model |
-| eigenvectors | [**Eigenvector**]\[\](/aten/docs/scripting/variabletypes/eigenvector) | | List of current eigenvectors stored in the model |
+| distances | [**Measurement**](/aten/docs/scripting/variabletypes/measurement)[] | | List of current distance measurements in the model |
+| eigenvectors | [**Eigenvector**](/aten/docs/scripting/variabletypes/eigenvector)[] | | List of current eigenvectors stored in the model |
 | energy | [**EnergyStore**](/aten/docs/scripting/variabletypes/energystore) | | The model’s energy store, containing the total calculated energy and all associated contributions |
 | ff | [**Forcefield**](/aten/docs/scripting/variabletypes/forcefield) | • | Forcefield associated to the model (if any) |
-| ffAngles | [**FFBound**]\[\](/aten/docs/scripting/variabletypes/ffbound) | | List of unique forcefield angle terms in the model |
-| ffBonds | [**FFBound**]\[\](/aten/docs/scripting/variabletypes/ffbound) | | List of unique forcefield bond terms in the model |
+| ffAngles | [**FFBound**](/aten/docs/scripting/variabletypes/ffbound)[] | | List of unique forcefield angle terms in the model |
+| ffBonds | [**FFBound**](/aten/docs/scripting/variabletypes/ffbound)[] | | List of unique forcefield bond terms in the model |
 | ffMass | **double** | | Forcefield mass of the current model, which can differ from the actual mass if united-atom types have been assigned |
-| ffTorsions | [**FFBound**]\[\](/aten/docs/scripting/variabletypes/ffbound) | | List of unique forcefield torsion terms in the model |
-| ffTypes | [**FFAtom**]\[\](/aten/docs/scripting/variabletypes/ffatom) | | Array of unique atom types used in the model |
+| ffTorsions | [**FFBound**](/aten/docs/scripting/variabletypes/ffbound)[] | | List of unique forcefield torsion terms in the model |
+| ffTypes | [**FFAtom**](/aten/docs/scripting/variabletypes/ffatom)[] | | Array of unique atom types used in the model |
 | frame | [**Model**](/aten/docs/scripting/variabletypes/model) | | The current frame in the model's trajectory (if it has one) |
-| frames | [**Model**]\[\](/aten/docs/scripting/variabletypes/model) | | Array of trajectory frame pointers (only if the trajectory is cached) |
-| glyphs | [**Glyph**]\[\](/aten/docs/scripting/variabletypes/glyph) | | List of glyphs owned by the model |
-| grids | [**Grid**]\[\](/aten/docs/scripting/variabletypes/grid) | | List of grids owned by the model |
+| frames | [**Model**](/aten/docs/scripting/variabletypes/model)[] | | Array of trajectory frame pointers (only if the trajectory is cached) |
+| glyphs | [**Glyph**](/aten/docs/scripting/variabletypes/glyph)[] | | List of glyphs owned by the model |
+| grids | [**Grid**](/aten/docs/scripting/variabletypes/grid)[] | | List of grids owned by the model |
 | id | **int** | | The index of the model in Aten's internal list of loaded models |
 | mass | **double** | | Mass of the current model |
 | name | **string** | • | Name of the model |
@@ -53,13 +53,13 @@ The [**Model**](/aten/docs/scripting/variabletypes/model) type contains all the 
 | nSelected | **int** | | Number of atoms selected in the model |
 | nTorsions | **int** | | Number of torsion angle measurements in the model |
 | nUnknown | **int** | | Number of atoms in the model that are of unknown element |
-| patterns | [**Pattern**]\[\](/aten/docs/scripting/variabletypes/pattern) | | Array of patterns currently defined for the model |
-| selection | [**Atom**]\[\](/aten/docs/scripting/variabletypes/atom) | | A list of atoms in representing the current atom selection of the model |
-| torsions | [**Measurement**]\[\](/aten/docs/scripting/variabletypes/measurement) | | List of current torsion angle measurements in the model |
+| patterns | [**Pattern**](/aten/docs/scripting/variabletypes/pattern)[] | | Array of patterns currently defined for the model |
+| selection | [**Atom**](/aten/docs/scripting/variabletypes/atom)[] | | A list of atoms in representing the current atom selection of the model |
+| torsions | [**Measurement**](/aten/docs/scripting/variabletypes/measurement)[] | | List of current torsion angle measurements in the model |
 
-# Model Type Functions
+## Model Type Functions
 
-## atomWithBit <a id="atomwithbit"></a>
+### atomWithBit <a id="atomwithbit"></a>
 
 _Syntax:_
 
@@ -69,7 +69,7 @@ Returns the first [**Atom**](/aten/docs/scripting/variabletypes/atom) in the [**
 
 ---
 
-## copy <a id="copy"></a>
+### copy <a id="copy"></a>
 
 _Syntax:_
 
@@ -79,7 +79,7 @@ Copy all information from the source [**Model**](/aten/docs/scripting/variablety
 
 ---
 
-## addHydrogen <a id="addhydrogen"></a>
+### addHydrogen <a id="addhydrogen"></a>
 
 _Syntax:_
 
@@ -89,7 +89,7 @@ Hydrogen satisfy all atoms in the model. See the [**addHydrogen**](/aten/docs/sc
 
 ---
 
-## angleEnergy <a id="angleenergy"></a>
+### angleEnergy <a id="angleenergy"></a>
 
 _Syntax:_
 
@@ -99,7 +99,7 @@ Calculates and returns the total angle energy for the current model.
 
 ---
 
-## augment <a id="augment"></a>
+### augment <a id="augment"></a>
 
 _Syntax:_
 
@@ -109,7 +109,7 @@ Automatically detect and add multiple bonds in the system. See the [**augment**]
 
 ---
 
-## bondEnergy <a id="bondenergy"></a>
+### bondEnergy <a id="bondenergy"></a>
 
 _Syntax:_
 
@@ -119,7 +119,7 @@ Calculates and returns the total bond energy (including Urey-Bradley contributio
 
 ---
 
-## charge <a id="charge"></a>
+### charge <a id="charge"></a>
 
 _Syntax:_
 
@@ -129,7 +129,7 @@ Assign charges to the model from the current forcefield. See the [**chargeFF**](
 
 ---
 
-## clearBonds <a id="clearbonds"></a>
+### clearBonds <a id="clearbonds"></a>
 
 _Syntax:_
 
@@ -139,7 +139,7 @@ Remove all bonds from the model. See the [**clearBonds**](/aten/docs/scripting/c
 
 ---
 
-## clearCharges <a id="clearcharges"></a>
+### clearCharges <a id="clearcharges"></a>
 
 _Syntax:_
 
@@ -149,7 +149,7 @@ Remove al charges from the model, setting them to zero. See the [**clearCharges*
 
 ---
 
-## clearSelectedBonds <a id="clearselectedbonds"></a>
+### clearSelectedBonds <a id="clearselectedbonds"></a>
 
 _Syntax:_
 
@@ -159,7 +159,7 @@ Remove all bonds from the current atom selection. See the [**clearSelectedBonds*
 
 ---
 
-## copy <a id="copy"></a>
+### copy <a id="copy"></a>
 
 _Syntax:_
 
@@ -169,7 +169,7 @@ Copy the current atom selection to the clipboard. See the [**copy**](/aten/docs/
 
 ---
 
-## cut <a id="cut"></a>
+### cut <a id="cut"></a>
 
 _Syntax:_
 
@@ -179,7 +179,7 @@ Cut the current atom selection to the clipboard. See the [**cut**](/aten/docs/sc
 
 ---
 
-## delete <a id="delete"></a>
+### delete <a id="delete"></a>
 
 _Syntax:_
 
@@ -189,7 +189,7 @@ Delete the current atom selection. See the [**delete**](/aten/docs/scripting/com
 
 ---
 
-## elecEnergy <a id="elecenergy"></a>
+### elecEnergy <a id="elecenergy"></a>
 
 _Syntax:_
 
@@ -199,7 +199,7 @@ Calculates and returns the total electrostatic energy for the current model, usi
 
 ---
 
-## expand <a id="expand"></a>
+### expand <a id="expand"></a>
 
 _Syntax:_
 
@@ -209,7 +209,7 @@ Expand the current atom selection along bonds. See the [**expand**](/aten/docs/s
 
 ---
 
-## finalise <a id="finalise"></a>
+### finalise <a id="finalise"></a>
 
 _Syntax:_
 
@@ -219,7 +219,7 @@ Finalise the current model. See the [**finaliseModel**](/aten/docs/scripting/com
 
 ---
 
-## interEnergy <a id="interenergy"></a>
+### interEnergy <a id="interenergy"></a>
 
 _Syntax:_
 
@@ -229,7 +229,7 @@ Calculates and returns the total intermolecular (i.e. combined van der Waals and
 
 ---
 
-## intraEnergy <a id="intraenergy"></a>
+### intraEnergy <a id="intraenergy"></a>
 
 _Syntax:_
 
@@ -239,7 +239,7 @@ Calculates and returns the total intramolecular (i.e. combined bond, angle, and 
 
 ---
 
-## moveToEnd <a id="movetoend"></a>
+### moveToEnd <a id="movetoend"></a>
 
 _Syntax:_
 
@@ -249,7 +249,7 @@ Move the current atom selection to the bottom (highest IDs) of the atom list. Se
 
 ---
 
-## moveToStart <a id="movetostart"></a>
+### moveToStart <a id="movetostart"></a>
 
 _Syntax:_
 
@@ -259,7 +259,7 @@ Move the current atom selection to the top (lowest IDs) of the atom list. See th
 
 ---
 
-## newAtom <a id="newatom"></a>
+### newAtom <a id="newatom"></a>
 
 _Syntax:_
 
@@ -269,7 +269,7 @@ Create a new atom in the model. See the [**newAtom**](/aten/docs/scripting/comma
 
 ---
 
-## newAtomFrac <a id="newatomfrac"></a>
+### newAtomFrac <a id="newatomfrac"></a>
 
 _Syntax:_
 
@@ -279,7 +279,7 @@ Create a new atom in the model, in fractional coordinates. See the [**newAtomFra
 
 ---
 
-## newBasisShell <a id="newbasisshell"></a>
+### newBasisShell <a id="newbasisshell"></a>
 
 _Syntax:_
 
@@ -289,7 +289,7 @@ Create a new basis shell definition in the model, centred on the specified atom/
 
 ---
 
-## newBond <a id="newbond"></a>
+### newBond <a id="newbond"></a>
 
 _Syntax:_
 
@@ -299,7 +299,7 @@ Create a new bond between atoms in the model. See the [**newBond**](/aten/docs/s
 
 ---
 
-## newBondId <a id="newbondid"></a>
+### newBondId <a id="newbondid"></a>
 
 _Syntax:_
 
@@ -309,7 +309,7 @@ Create a new bond between atom IDs in the model. See the [**newBond**](/aten/doc
 
 ---
 
-## newEigenvector <a id="neweigenvector"></a>
+### newEigenvector <a id="neweigenvector"></a>
 
 _Syntax:_
 
@@ -319,7 +319,7 @@ Create a new eigenvector in the model of the specified size. If the size is not 
 
 ---
 
-## newGlyph <a id="newglyph"></a>
+### newGlyph <a id="newglyph"></a>
 
 _Syntax:_
 
@@ -329,7 +329,7 @@ Create a new glyph in the model. See the [**newGlyph**](/aten/docs/scripting/com
 
 ---
 
-## newGrid <a id="newgrid"></a>
+### newGrid <a id="newgrid"></a>
 
 _Syntax:_
 
@@ -339,7 +339,7 @@ Create a new gridh in the model. See the [**newGrid**](/aten/docs/scripting/comm
 
 ---
 
-## paste <a id="paste"></a>
+### paste <a id="paste"></a>
 
 _Syntax:_
 
@@ -349,7 +349,7 @@ Paste the current clipboard contents into the model. See the [**paste**](/aten/d
 
 ---
 
-## rebond <a id="rebond"></a>
+### rebond <a id="rebond"></a>
 
 _Syntax:_
 
@@ -359,7 +359,7 @@ Calculate bonds in the model. See the [**rebond**](/aten/docs/scripting/commands
 
 ---
 
-## rebondPatterns <a id="rebondpatterns"></a>
+### rebondPatterns <a id="rebondpatterns"></a>
 
 _Syntax:_
 
@@ -367,7 +367,7 @@ _Syntax:_
 
 Calculate bonds within patterns in the model. See the [**rebondPatterns**](/aten/docs/scripting/commands/bond#rebondpatterns) command for more details.
 
-## rebondSelection <a id="rebondselection"></a>
+### rebondSelection <a id="rebondselection"></a>
 
 _Syntax:_
 
@@ -377,7 +377,7 @@ Calculate bonds in the current selection. See the [**rebondSelection**](/aten/do
 
 ---
 
-## redo <a id="redo"></a>
+### redo <a id="redo"></a>
 
 _Syntax:_
 
@@ -387,7 +387,7 @@ Redo the last undone change in the model. See the [**redo**](/aten/docs/scriptin
 
 ---
 
-## reorder <a id="reorder"></a>
+### reorder <a id="reorder"></a>
 
 _Syntax:_
 
@@ -397,7 +397,7 @@ Reorder atoms so bound atoms have adjacent IDs. See the [**reorder**](/aten/docs
 
 ---
 
-## saveBitmap <a id="savebitmap"></a>
+### saveBitmap <a id="savebitmap"></a>
 
 _Syntax:_
 
@@ -407,7 +407,7 @@ Save a bitmap image of the current model view. See the [**saveBitmap**](/aten/do
 
 ---
 
-## selectAll <a id="selectall"></a>
+### selectAll <a id="selectall"></a>
 
 _Syntax:_
 
@@ -417,7 +417,7 @@ Select all atoms in the model. See the [**selectAll**](/aten/docs/scripting/comm
 
 ---
 
-## selectionAddHydrogen <a id="selectionaddhydrogen"></a>
+### selectionAddHydrogen <a id="selectionaddhydrogen"></a>
 
 _Syntax:_
 
@@ -427,7 +427,7 @@ Hydrogen satisfy all atoms in the current selection. See the [**selectionAddHydr
 
 ---
 
-## selectNone <a id="selectnone"></a>
+### selectNone <a id="selectnone"></a>
 
 _Syntax:_
 
@@ -437,7 +437,7 @@ Deselect all atoms in the model. See the [**selectNone**](/aten/docs/scripting/c
 
 ---
 
-## selectTree <a id="selecttree"></a>
+### selectTree <a id="selecttree"></a>
 
 _Syntax:_
 
@@ -447,7 +447,7 @@ Select all atoms from atom _i_ reachable by following any number of chemical bon
 
 ---
 
-## shiftDown <a id="shiftdown"></a>
+### shiftDown <a id="shiftdown"></a>
 
 _Syntax:_
 
@@ -457,7 +457,7 @@ Shift the current atom selection down one (or more) places in the atom list (tow
 
 ---
 
-## shiftUp <a id="shiftup"></a>
+### shiftUp <a id="shiftup"></a>
 
 _Syntax:_
 
@@ -467,7 +467,7 @@ Shift the current atom selection up one (or more) places in the atom list (towar
 
 ---
 
-## showAll <a id="showall"></a>
+### showAll <a id="showall"></a>
 
 _Syntax:_
 
@@ -477,7 +477,7 @@ Unhides any hidden atoms in the model. See the [**showAll**](/aten/docs/scriptin
 
 ---
 
-## toAngstroms <a id="toangstroms"></a>
+### toAngstroms <a id="toangstroms"></a>
 
 _Syntax:_
 
@@ -487,7 +487,7 @@ Converts cell specification and atomic coordinates in the model from (assumed un
 
 ---
 
-## torsionEnergy <a id="torsionenergy"></a>
+### torsionEnergy <a id="torsionenergy"></a>
 
 _Syntax:_
 
@@ -497,7 +497,7 @@ Calculates and returns the total torsion energy (including improper terms) for t
 
 ---
 
-## transmute <a id="transmute"></a>
+### transmute <a id="transmute"></a>
 
 _Syntax:_
 
@@ -507,7 +507,7 @@ Transmute all selected atoms to the specified element. See the [**transmute**](/
 
 ---
 
-## undo <a id="undo"></a>
+### undo <a id="undo"></a>
 
 _Syntax:_
 
@@ -517,7 +517,7 @@ Undo the last change made to the model. See the [**undo**](/aten/docs/scripting/
 
 ---
 
-## vdwEnergy <a id="vdwenergy"></a>
+### vdwEnergy <a id="vdwenergy"></a>
 
 _Syntax:_
 

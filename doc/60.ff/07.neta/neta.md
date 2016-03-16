@@ -370,13 +370,13 @@ description.
 
 ## linear <a id="linear"></a>
 
-Two bonds to the atom in a  arrangement (angle [value]i-j-k[/value] &gt; 170°).
+Two bonds to the atom in a  arrangement (angle [value]i-j-k[/value] > 170°).
 
 ---
 
 ## tshape <a id="tshape"></a>
 
-Three bonds to the atom in a  geometry (with two bonds making an angle &gt; 170°).
+Three bonds to the atom in a  geometry (with two bonds making an angle > 170°).
 
 ---
 

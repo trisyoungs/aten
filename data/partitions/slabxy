@@ -7,16 +7,19 @@ int nPartitions = 2;
 
 # A partition may contain options set through a function called partitionOptions()...
 global double start = 0.4, end = 0.6;
+global int invert = 0;
 int partitionOptions()
 {
 	Dialog ui = createDialog("SlabXY Scheme Options");
 	ui.verticalFill = TRUE;
 	ui.addDoubleSpin("start", "Start", 0.0, 1.0, 0.1, start);
 	ui.addDoubleSpin("end", "End", 0.0, 1.0, 0.1, end);
+	ui.addCheck("invert", "Invert", invert);
 	if (ui.show())
 	{
 		start = ui.asDouble("start");
 		end = ui.asDouble("end");
+		invert = ui.asInteger("invert");
 		return TRUE;
 	}
 	else return FALSE;
@@ -25,11 +28,22 @@ int partitionOptions()
 # Every partition definition *must* contain 'partition' and 'partitionName' functions
 int partition(double x, double y, double z)
 {
-	// Check 1 - Is the point inside the slab (region 1)
-	if ((z >= start) && (z <= end)) return 1;
-
-	// Not inside any defined regions, so return '0' for 'inside rest of cell'
-	return 0;
+	if (invert)
+	{
+		// Check 1 - Is the point inside the slab (region 1)
+		if ((z >= start) && (z <= end)) return 1;
+	
+		// Not inside any defined regions, so return '0' for 'inside rest of cell'
+		return 0;
+	}
+	else
+	{
+		// Check 1 - Is the point outside the slab (region 1)
+		if ((z < start) && (z > end)) return 1;
+	
+		// Not inside any defined regions, so return '0' for 'inside rest of cell'
+		return 0;
+	}
 }
 
 string partitionName(int id)

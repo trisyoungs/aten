@@ -14,12 +14,12 @@ The [**BasisShell**](/aten/docs/scripting/variabletypes/basisshell) type contai
 |--------|------|----|-------------|
 | atomId | **int** | • | Atom ID on which the basis shell is centred |
 | nPrimitives | **int** | | Number of primitives defined for the basis shell |
-| primitives | [**BasisPrimitive**]\[\](/aten/docs/scripting/variabletypes/basisprimitive) | | List of primitives defined for the basis shell |
+| primitives | [**BasisPrimitive**](/aten/docs/scripting/variabletypes/basisprimitive)[] | | List of primitives defined for the basis shell |
 | type | **string** | • | The type (shape) of the basis shell. See Basis Shell Types in Section 16.1 for a list. |
 
-# BasisShell Type Functions
+## BasisShell Type Functions
 
-## addPrimitive <a id="addprimitive"></a>
+### addPrimitive <a id="addprimitive"></a>
 
 _Syntax:_
 

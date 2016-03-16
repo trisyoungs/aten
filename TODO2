@@ -31,7 +31,7 @@ Optimise primitive drawing / generation by allowing use of GL_TRIANGLE_STRIP?
 Reimplement drawing of grid (volume) axes.
 Fix grid transparency (reconstruct grids according to view angle?).
 Make main view background and text/overlay colour aware of Qt widget colouring style.
-Frame individual model areas when displaying multiple models.
+Frame individual model areas when displaying multiple models OR light checkerboard background?
 Automatically adjust grid size for number of visible models, based on current aspect ratio and context size etc.
 Multiple bonds (double, definitely) are not drawn correctly, becoming squashed as the bond length increases.
 
@@ -42,29 +42,26 @@ Sort out remaining icons!
 AddAtom functionality (from old Build menu).
 Context Menu:
 o Set Colour doesn't work, since it needs a colour selector popup.
-Build option - keep centred.
 Remove TColourFrame (after updating Prefs and Glyphs windows).
 Button to calculate / show total charge in selection.
 Allow right-click on elements in PTable to set as member of common elements popup.
+Element popup - are colours of buttons set correctly? Need to set Qt::Window and other palette entry (as in JV prefs).
 Finish Spacegroup popup.
 Add Calculate tool to work out centre of geometry/mass.
 Add option to display ColourScale selector (e.g. for Grid colour buttons)
 Have Tools page? With, for instance:
 --- Plot Orbital (raising dialog from old GridsWidget)
-Where to show current (empirical) selection
 Add manual typing popup.
 Prefs window needs updating:
 o Remove use of TColourFrames
 o Add font selection option
-TColourPopup circle indicator is slightly offset, and general usability (i.e. mouse move outside of wheel after click) needs improving.
+ZMatrix Window (popup under Tools?)
 
 Possible TODO
 =============
 Implement optional startup 'guide' or 'wizard' that will disable all controls on the GUI and explain what means what, highlighting them as appropriate.
 Add in calculation of quantities and graphing?
-Instead of a separate AtenVariable, make Aten subclass Variable?
 Move Prefs from being a static global to a member of Aten?
-Make UserActions a member of something (Viewer?).
 Reformulate Pattern::bondEnergy() and others into a separate class, since the Pattern class shouldn't really own them.
 Make Model::EnergyStore a private member with accessor?
 Add ObjectLists (when using CHECK)?
@@ -107,3 +104,4 @@ Added Grid accessors for Style.
 Add --session option.
 Changed type of Grid::Axes accessor from CellData to MatrixData.
 Add WX, WY, WZ etc. accessors to MatrixVariable, and 'setIdentity()' function.
+Setting of filter options when using --batch CLI mode (in 03.cli/batch).

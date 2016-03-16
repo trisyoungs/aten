@@ -16,7 +16,7 @@ This example demonstrates a simple energy analysis procedure in which we load a 
 bob@pc:~> aten --ff oplsaa.ff data/test/methanol.inp -q -c 'aten.prefs.elecMethod = "coulomb";
              printf("Torsion Angle   E(Torsion)     E(VDW)     E(Coulomb)\n");
              Model m = aten.model;
-             for (double phi = -180.0; phi &lt;= 180.0; phi += 5) { 
+             for (double phi = -180.0; phi <= 180.0; phi += 5) { 
                  setTorsion(2,1,4,6,phi);
                  printf("%12.6f %12.6f %12.6f %12.6f\n", phi, m.torsionEnergy(), m.vdwEnergy(), m.elecEnergy());
              }

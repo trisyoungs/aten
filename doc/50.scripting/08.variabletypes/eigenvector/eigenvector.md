@@ -16,7 +16,5 @@ The [**Eigenvector**](/aten/docs/scripting/variabletypes/eigenvector) type stor
 | name | **string** | • | Name of the eigenvector, e.g. orbital symmetry |
 | occupancy | **double** | • | Associated occupancy of the eigenvector |
 | size | **int** | • | Current size of the eigenvector array. Can be set to reinitialise the array. |
-| vector | **double**\[\]  | • | The eigenvector data array |
-
-
+| vector | **double**[]  | • | The eigenvector data array |
 

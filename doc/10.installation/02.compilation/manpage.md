@@ -71,7 +71,7 @@ bob@pc:~> ./autogen.sh
 
 This creates the necessary files needed to properly configure the build. If you unpacked the source from a tar.gz, it is not necessary to run autogen.sh.
 
-Next, run the configure script to check for all programs and files that **Aten** depends on, and set up the build. If you plan on installing **Aten** ‘properly’ (i.e. install it on your machine so it is available to all users) the configure script will place all binaries and necessary files in `/usr/local` by default. This default location can be overridden by using the [var]--prefix=&lt;path&gt;[/var] option. So, the plain command is:
+Next, run the configure script to check for all programs and files that **Aten** depends on, and set up the build. If you plan on installing **Aten** ‘properly’ (i.e. install it on your machine so it is available to all users) the configure script will place all binaries and necessary files in `/usr/local` by default. This default location can be overridden by using the [var]--prefix=<path>[/var] option. So, the plain command is:
 
 ```
 bob@pc:~> ./configure
@@ -87,7 +87,7 @@ On Mac OS X it is necessary to specify which Qt4 installation you have installed
 
 XXX TODO
 
-where [value]&lt;path&gt;[/value] points to the location of the Qt4 development binaries. All being well, no errors should be encountered by either of these two scripts. Check out the list of [a]frequently encountered problems,fep[/a]. If you get find yourself up against unresolvable issues, please email me and I’ll try to help.
+where [value]<path>[/value] points to the location of the Qt4 development binaries. All being well, no errors should be encountered by either of these two scripts. Check out the list of [a]frequently encountered problems,fep[/a]. If you get find yourself up against unresolvable issues, please email me and I’ll try to help.
 
 ## CMake
 

@@ -22,7 +22,7 @@ newAtom(C);
 addHydrogen();
 select(3,4,5);
 transmute(Cl);
-for (int n=3; n&lt;6; ++n) setDistance(1,n,1.758);
+for (int n=3; n<6; ++n) setDistance(1,n,1.758);
 
 # Set number of molecules and density required (g/cm3)
 setupComponent("both", 1, 100, 1.483);

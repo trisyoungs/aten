@@ -209,6 +209,21 @@ void Viewer::renderFullScene(int contextWidth, int contextHeight, int xOffset, i
 		// Send the local renderGroup
 		renderGroup_.sendToGL(modelTransformationMatrix_);
 
+		// TEST Render additional info glyphs
+		glClear(GL_DEPTH_BUFFER_BIT);
+		glViewport(viewPortX, viewPortY, viewPortWidth, viewPortHeight);
+		glMatrixMode(GL_PROJECTION);
+		glLoadIdentity();
+		glOrtho(0, viewPortAspect, 1.0, 0.0, -1.0, 1.0);
+		glMatrixMode(GL_MODELVIEW);
+		glLoadIdentity();
+		glColor4f(0.0, 0.0, 0.0, 1.0);
+		glBegin(GL_TRIANGLES);
+// 		glVertex3f(0.0, 0.0, 0.0);
+// 		glVertex3f(0.0, 0.5, 0.0);
+// 		glVertex3f(0.5, 0.0, 0.0);
+		glEnd();
+
 		// Increase counters
 		++col;
 		if (col%nPerRow == 0)
@@ -217,9 +232,6 @@ void Viewer::renderFullScene(int contextWidth, int contextHeight, int xOffset, i
 			++row;
 		}
 	}
-
-	// Render active user modes
-// 	if (renderType == OnscreenScene) renderActiveModes(painter, width, height);  ATEN2 TODO
 
 	Messenger::exit("Viewer::renderFullScene");
 }

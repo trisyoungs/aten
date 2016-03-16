@@ -15,7 +15,7 @@ A model is a single molecule, a snapshot of an ensemble of molecules in a liquid
 
 ## Pattern
 
-A system containing many molecules can be described (and manipulated) efficiently through the recognition that there are sets of molecules of the same type. A pattern describes one such set of similar molecules, and a model’s pattern definition may contain many individual patterns.  Many operations in **Aten** require that a pattern definition be present, and one is automatically created as and when necessary. See the section on [a]patterns,topics-patterns[/a] for more information.
+A system containing many molecules can be described (and manipulated) efficiently through the recognition that there are sets of molecules of the same type. A pattern describes one such set of similar molecules, and a model’s pattern definition may contain many individual patterns.  Many operations in **Aten** require that a pattern definition be present, and one is automatically created as and when necessary. See the topic on [Patterns](/aten/docs/topics/patterns) for more information.
 
 ## Filter
 
@@ -27,7 +27,7 @@ While a forcefield is a collection of terms (bonds, angles, van der Waals terms,
 
 ## NETA
 
-**Aten** is able to automatically assign forcefield atom types to atoms in a model through the use of type descriptions in the Nested English Typing of Atoms (NETA) language. This is a simple, readable system for describing the connectivity and environment of individual atoms. See Section 12.5 for more information.
+**Aten** is able to automatically assign forcefield atom types to atoms in a model through the use of type descriptions in the [Nested English Typing of Atoms](/aten/docs/ff/neta) (NETA) language. This is a simple, readable system for describing the connectivity and environment of individual atoms.
 
 ## Fragment
 

@@ -31,9 +31,9 @@ The [**Grid**](/aten/docs/scripting/variabletypes/grid) type stores all informa
 | upperCutoff | **double** | • | The upper primary cutoff value |
 | visible | **int** | • | Flag specifying whether the grid is visible (i.e. should be drawn in the model) |
 
-# Grid Type Functions
+## Grid Type Functions
 
-## data <a id="data"></a>
+### data <a id="data"></a>
 
 _Syntax:_
 
@@ -43,7 +43,7 @@ Return the value of the datapoint at grid ‘coordinates’ (_i_,_j_,_k_).
 
 ---
 
-## shift <a id="shift"></a>
+### shift <a id="shift"></a>
 
 _Syntax:_
 

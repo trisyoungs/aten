@@ -15,13 +15,13 @@ The [**Dialog**](/aten/docs/scripting/variabletypes/dialog) is a parent window 
 | title | **string** | • | Text displayed in the Dialog’s titlebar |
 | verticalFill | **int** | • | If TRUE then child widgets without specific coordinates will be created in a vertical stack. Otherwise child widgets will be added in a horizontal line |
 
-# Dialog Type Functions
+## Dialog Type Functions
 
-The [**Dialog**](/aten/docs/scripting/variabletypes/dialog) is itself a [**Widget**](/aten/docs/scripting/variabletypes/widget) – for widget creation functions refer to Section 8.2.45 (the [**Widget**](/aten/docs/scripting/variabletypes/widget) variable).
+The [**Dialog**](/aten/docs/scripting/variabletypes/dialog) is itself a [**Widget**](/aten/docs/scripting/variabletypes/widget) – for widget creation functions refer to the [**Widget**](/aten/docs/scripting/variabletypes/widget) variable.
 
 ---
 
-## asDouble <a id="asdouble"></a>
+### asDouble <a id="asdouble"></a>
 
 _Syntax:_
 
@@ -31,7 +31,7 @@ Return the value of the named widget as a double.
 
 ---
 
-## asInteger <a id="asinteger"></a>
+### asInteger <a id="asinteger"></a>
 
 _Syntax:_
 
@@ -41,7 +41,7 @@ Return the value of the named widget as an integer.
 
 ---
 
-## asString <a id="asstring"></a>
+### asString <a id="asstring"></a>
 
 _Syntax:_
 
@@ -51,7 +51,7 @@ Return the value of the named widget as a string.
 
 ---
 
-## asVector <a id="asvector"></a>
+### asVector <a id="asvector"></a>
 
 _Syntax:_
 
@@ -61,7 +61,7 @@ Return the values of the three named widgets as a Vector.
 
 ---
 
-## isInteger <a id="isinteger"></a>
+### isInteger <a id="isinteger"></a>
 
 _Syntax:_
 
@@ -71,7 +71,7 @@ Returns TRUE (1) if the named widget’s current value matches that provided, or
 
 ---
 
-## isRange <a id="isrange"></a>
+### isRange <a id="isrange"></a>
 
 _Syntax:_
 
@@ -81,7 +81,7 @@ Returns TRUE (1) if the named widget’s current value is within the range provi
 
 ---
 
-## isString <a id="isstring"></a>
+### isString <a id="isstring"></a>
 
 _Syntax:_
 
@@ -91,7 +91,7 @@ Returns TRUE (1) if the named widget’s current string value matches that provi
 
 ---
 
-## show <a id="show"></a>
+### show <a id="show"></a>
 
 _Syntax:_
 
@@ -101,7 +101,7 @@ Shows (executes) the Dialog, blocking all input to Aten until it is accepted (OK
 
 ---
 
-## widget <a id="widget"></a>
+### widget <a id="widget"></a>
 
 _Syntax:_
 

@@ -12,6 +12,6 @@ The [**ColourScalePoint**](/aten/docs/scripting/variabletypes/colourscalepoint)�
  
 | Member | Type | RW | Description |
 |--------|------|----|-------------|
-| colour | **double**[4] | • | Colour associated to the point |
+| colour | **double**[4] | • | Colour (RGBA) associated to the point |
 
 

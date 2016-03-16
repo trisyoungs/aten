@@ -190,7 +190,7 @@ C:\Documents and Settings\Your Name\My Documents\aten-1.7.1626\src\main.cpp(52) 
         C:\Program Files\Microsoft Visual Studio 10.0\VC\INCLUDE\stdlib.h(433) : see declaration of 'getenv'
 Linking CXX executable bin\**Aten**.exe
 [100%] Built target **Aten**
-PS C:\Documents and Settings\Your Name\My Documents\aten-1.7.1626&gt;
+PS C:\Documents and Settings\Your Name\My Documents\aten-1.7.1626>
 ```
 
 If this is what you see, then you’ve built **Aten** successfully. You’ll need to point **Aten** to it’s data directory by hand. From the command line, you can run the following:
@@ -216,7 +216,7 @@ Stop.
 NMAKE : fatal error U1077: 'C:\Program Files\Microsoft Visual Studio 10.0\VC\BIN\nmake.exe' : return code '0x2'
 Stop.
 
-PS C:\Documents and Settings\Your Name\My Documents\aten-1.7.1626&gt;
+PS C:\Documents and Settings\Your Name\My Documents\aten-1.7.1626>
 ```
 
 These errors arise because the functions [value]rl_*_*[/value] are declared differently between the readline.h and keymaps.h header files, but can be fixed as follows. Since keymaps are not used, the offending lines can be commented out in readline.h. Locate the file (by default, it is installed in [value]C:\Program Files\GnuWin32\include\readline/readline.h[/value]) and edit it with Notepad or something similar. Put a comment marker ([value]/*[/value]) at the very beginning of line 356, and a comment end marker ([value]*/[/value]) at the very end of line 364. Rerun  and everything should be fine.

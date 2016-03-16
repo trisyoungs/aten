@@ -133,7 +133,7 @@ For example:
 
 ```
 Atom i = newAtom(P);
-for (int n=0; n&lt;6; ++n) growAtom(F, i, "octahedral");
+for (int n=0; n<6; ++n) growAtom(F, i, "octahedral");
 ```
 
 creates a PF6 (anion), with a perfect octahedral arrangement of F atoms, and calculating the bond distance from the atomic radii of P and F atoms.

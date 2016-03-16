@@ -7,7 +7,7 @@ docroot: /aten/docs
 header_class: alt
 ---
 
-Two important things to consider here. Firstly, short options (e.g. [`-b`](/aten/docs/cli/switches#switch_b), [`-d`](/aten/docs/cli/switches#switch_d) etc.) may not be concatenated into one long specification of a short option (i.e. `-bd`) - they must be given separately as `-b -d` or they will not be recognised. Secondly, the order of the given switches is important since their meaning is applied or acted out immediately. For example:
+Two important things to consider here. Firstly, short options (e.g. [`-b`](/aten/docs/cli/switches#b), [`-d`](/aten/docs/cli/switches#d) etc.) may not be concatenated into one long specification of a short option (i.e. `-bd`) - they must be given separately as `-b -d` or they will not be recognised. Secondly, the order of the given switches is important since their meaning is applied or acted out immediately. For example:
 
 ```
 bob@pc:~> aten --nobond test1.xyz test2.xyz

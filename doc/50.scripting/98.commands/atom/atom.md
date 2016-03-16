@@ -74,7 +74,7 @@ fixes the positions of all selected atoms.
 
 
 ```
-for (int n=1; n&lt;=10; ++n) fix(n);
+for (int n=1; n<=10; ++n) fix(n);
 ```
 
 

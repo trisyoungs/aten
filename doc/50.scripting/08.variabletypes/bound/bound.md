@@ -15,15 +15,15 @@ The [**Bound**](/aten/docs/scripting/variabletypes/bound) type is used by the pa
 | data | **double** | | Parameters describing the bound interaction |
 | eScale | **double** | | Electrostatic 1-4 scaling factor (for torsion interactions) |
 | form | **string** | | Functional form of the bound interaction |
-| id | **int**\[\] | | Array of atom IDs involved in the interaction |
+| id | **int**[] | | Array of atom IDs involved in the interaction |
 | termId | **int** | | Array index of forcefield term in relevant list (ffangles, ffbonds, or fftorsions) in local pattern |
 | type | **string** | | Returns the Bound Type (Section 16.3) of the interaction. |
-| typeNames | **string**\[\] | | Array of typenames involved in the interaction |
+| typeNames | **string**[] | | Array of typenames involved in the interaction |
 | vScale | **double** | | Short-range 1-4 scaling factor (for torsion interactions) |
 
-# Bound Type Functions
+## Bound Type Functions
 
-## parameter <a id="parameter"></a>
+### parameter <a id="parameter"></a>
 
 _Syntax:_
 

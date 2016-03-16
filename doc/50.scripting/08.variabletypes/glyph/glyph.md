@@ -15,16 +15,16 @@ The [**Glyph**](/aten/docs/scripting/variabletypes/glyph) type contains informa
 | data | [**GlyphData**](/aten/docs/scripting/variabletypes/glyphdata) | | Individual data for each vertex of the glyph |
 | nData | **int** | | How many data points (vertices) are associated with this glyph's type |
 | rotated | **int** | • | Flag to indicate whether the glyph’s rotation matrix has been modified (i.e. the glyph has been rotated). Setting this to '0' resets (and removes) any current rotation matrix (same as calling member function 'resetrotation'). |
-| rotation | **double**[9] | • | Rotation matrix for the glyph. Note that not all glyphs can be rotated (see the topic on <a href="#_Glyphs">Glyphs</a> for more information. |
+| rotation | **double**[9] | • | Rotation matrix for the glyph. Note that not all glyphs can be rotated (see the topic on [Glyphs](/aten/docs/topics/glyphs) for more information. |
 | selected | **int** | • | Whether the glyph is currently selected |
 | solid | **int** | • | Specifies whether the glyph is drawn as a filled (solid) shape or in wireframe |
 | text | **string** | • | Text data associated to the glyph. Not all glyphs use text |
 | type | **string** | • | Style of the glyph – see Glyph Types (Section 16.9) for a list |
 | visible | **int** | • | Flag indicating whether the glyph is currently visible |
 
-# Glyph Type Functions
+## Glyph Type Functions
 
-## recolour <a id="recolour"></a>
+### recolour <a id="recolour"></a>
 
 _Syntax:_
 
@@ -34,7 +34,7 @@ Recolour all data vertices of the glyph to the specified RGB(A) value, each comp
 
 ---
 
-## resetRotation <a id="resetRotation"></a>
+### resetRotation <a id="resetRotation"></a>
 
 _Syntax:_
 
@@ -44,7 +44,7 @@ Reset any rotation applied to the glyph
 
 ---
 
-## rotateX <a id="rotateX"></a>
+### rotateX <a id="rotateX"></a>
 
 _Syntax:_
 
@@ -54,7 +54,7 @@ Rotates the glyph by _angle_ degrees about its x axis
 
 ---
 
-## rotateY <a id="rotateY"></a>
+### rotateY <a id="rotateY"></a>
 
 _Syntax:_
 
@@ -64,7 +64,7 @@ Rotates the glyph by _angle_ degrees about its y axis
 
 ---
 
-## rotateZ <a id="rotateZ"></a>
+### rotateZ <a id="rotateZ"></a>
 
 _Syntax:_
 
