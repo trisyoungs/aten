@@ -21,6 +21,7 @@ Add specific line primitive class that allows chunking (for speedup of stick ren
 Add 'Reload' options to Grid context menu.
 Add context menu "Copy" and "Set" to TColourButtons.
 Tooltips need to include keyboard shortcuts (e.g. style buttons, colourscheme buttons...)
+Need to print out accessor variable types in lists when one is unrecognised.
 
 Graphics TODO
 =============

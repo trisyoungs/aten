@@ -74,6 +74,22 @@ int WrapInt::operator-(int i)
 	return (j%range_) + minimum_;
 }
 
+// Prefix increment
+int WrapInt::operator++()
+{
+	++value_;
+	if (value_ > maximum_) value_ = minimum_;
+	return value_;
+}
+
+// Prefix decrement
+int WrapInt::operator--()
+{
+	--value_;
+	if (value_ < minimum_) value_ = maximum_;
+	return value_;
+}
+
 // Conversion
 WrapInt::operator int()
 {

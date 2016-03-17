@@ -283,11 +283,11 @@ template <class A> class Array : public ListItem< Array<A> >
  * \short Array2D
  * \details A simple two-dimensional array class
  */
-template <class A> class Array2D
+template <class A> class Array2D : public ListItem< Array2D<A> >
 {
 	public:
 	// Constructor
-	Array2D(int nrows = 0, int ncolumns = 0, bool half = false)
+	Array2D(int nrows = 0, int ncolumns = 0, bool half = false) : ListItem< Array2D<A> > ()
 	{
 		array_ = NULL;
 		linearSize_ = 0;
@@ -313,7 +313,7 @@ template <class A> class Array2D
 		nColumns_ = 0;
 	}
 	// Copy Constructor
-	Array2D(const Array2D<A>& source)
+	Array2D(const Array2D<A>& source) : ListItem< Array2D<A> > ()
 	{
 		(*this) = source;
 	}

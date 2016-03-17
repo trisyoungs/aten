@@ -162,7 +162,7 @@ void Viewer::renderModel(Model* source, int viewPortX, int viewPortY, int viewPo
 						glDisable(GL_LIGHTING);
 						glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
 						Vec3<int> nXYZ = g->nXYZ();
-						glScaled(nXYZ.x, nXYZ.y, nXYZ.z);
+						glScaled(nXYZ.x-1, nXYZ.y-1, nXYZ.z-1);
 						primitives_[primitiveSet_].wireCube().sendToGL(QOpenGLContext::currentContext());
 					}
 
@@ -187,7 +187,7 @@ void Viewer::renderModel(Model* source, int viewPortX, int viewPortY, int viewPo
 						glDisable(GL_LIGHTING);
 						glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
 						Vec3<int> nXYZ = g->nXYZ();
-						glScaled(nXYZ.x, nXYZ.y, nXYZ.z);
+						glScaled(nXYZ.x-1, nXYZ.y-1, nXYZ.z-1);
 						primitives_[primitiveSet_].wireCube().sendToGL(QOpenGLContext::currentContext());
 					}
 
