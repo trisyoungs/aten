@@ -38,6 +38,7 @@ ATEN_USING_NAMESPACE
 // Static Members
 template<class Grid> RefList<Grid,int> ObjectStore<Grid>::objects_;
 template<class Grid> int ObjectStore<Grid>::objectCount_ = 0;
+Vec3<int> Grid::axesOrder_ = Vec3<int>(0,1,2);
 
 // Grid data types
 const char* GridTypeKeywords[Grid::nGridTypes] = { "none", "regularxy", "regularxyz", "freexyz" };
@@ -1283,6 +1284,18 @@ void Grid::setFillEnclosedVolume(bool b)
 bool Grid::fillEnclosedVolume()
 {
 	return fillEnclosedVolume_;
+}
+
+// Set axes order for surface generation
+void Grid::setAxesOrder(Vec3<int> order)
+{
+	axesOrder_ = order;
+}
+
+// Return axes order for surface generation
+Vec3<int> Grid::axesOrder()
+{
+	return axesOrder_;
 }
 
 /*

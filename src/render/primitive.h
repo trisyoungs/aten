@@ -149,6 +149,9 @@ class Primitive : public ListItem<Primitive>
 	/*
 	 * Geometric Primitive Generation
 	 */
+	private:
+	inline void plotEdge(const int cubeType, const double lowerCutoff, const double valueA, const double valueB, const Vec3<double> gradientA, const Vec3<double> gradientB, const Vec3<double> cubeLLC, const int edgeIndexA, const int edgeIndexB, const int colourscale = -1);
+
 	public:
 	// Draw line
 	void line(double x1, double y1, double z1, double x2, double y2, double z2);

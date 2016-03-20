@@ -292,6 +292,7 @@ class AtenWindow : public QMainWindow
 	void on_GridsList_currentRowChanged(int row);
 	void on_GridsList_itemChanged(QListWidgetItem* item);
 	void gridsListContextMenuRequested(const QPoint& point);
+	void recreateGridsForView();
 	// Primary Surface
 	void on_GridsPrimaryLowerCutoffSpin_valueChanged(double value);
 	void on_GridsPrimaryUpperCutoffSpin_valueChanged(double value);

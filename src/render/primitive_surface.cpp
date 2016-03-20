@@ -23,7 +23,8 @@
 #include "base/prefs.h"
 #include "base/grid.h"
 #include "base/wrapint.h"
-#include <base/sysfunc.h>
+#include "base/sysfunc.h"
+#include "templates/array.h"
 
 /*
 	Marching Cube vertex and [edge] numbering
@@ -49,12 +50,31 @@ int edgevertices[12][2] = { { 0,1 }, { 1,2 }, { 2,3 }, { 0,3 },
 	{ 4,5 }, { 5,6 }, { 6,7 }, { 4,7 },
 	{ 0,4 }, { 1,5 }, { 3,7 }, { 2,6 } };
 
+Vec3<double> vertexPos[8] = { Vec3<double>(0,0,0), Vec3<double>(1,0,0), Vec3<double>(1,1,0), Vec3<double>(0,1,0),
+	Vec3<double>(0,0,1), Vec3<double>(1,0,1), Vec3<double>(1,1,1), Vec3<double>(0,1,1) };
+
+// Mappings for cube vertices (shown above) onto slice data (0,3,4,7 = back slice, 1,2,5,6 = front slice
+Vec3<int> masterEdgeData[12][2] = {
+			{ Vec3<int>( 0, 0, 0), Vec3<int>(1, 0, 0 ) },	// = 0,1
+			{ Vec3<int>( 1, 0, 0), Vec3<int>(1, 1, 0 ) },	// = 1,2
+			{ Vec3<int>( 1, 1, 0), Vec3<int>(0, 1, 0 ) },	// = 2,3
+			{ Vec3<int>( 0, 0, 0), Vec3<int>(0, 1, 0 ) },	// = 0,3
+			{ Vec3<int>( 0, 0, 1), Vec3<int>(1, 0, 1 ) },	// = 4,5
+			{ Vec3<int>( 1, 0, 1), Vec3<int>(1, 1, 1 ) },	// = 5,6
+			{ Vec3<int>( 1, 1, 1), Vec3<int>(0, 1, 1 ) },	// = 6,7
+			{ Vec3<int>( 0, 0, 1), Vec3<int>(0, 1, 1 ) },	// = 4,7
+			{ Vec3<int>( 0, 0, 0), Vec3<int>(0, 0, 1 ) },	// = 0,4
+			{ Vec3<int>( 1, 0, 0), Vec3<int>(1, 0, 1 ) },	// = 1,5
+			{ Vec3<int>( 0, 1, 0), Vec3<int>(0, 1, 1 ) },	// = 3,7
+			{ Vec3<int>( 1, 1, 0), Vec3<int>(1, 1, 1 ) }	// = 2,6
+			};	 // = 2,6
+
 //double vertexpos[8][3] = { {1.0,0.0,0.0}, {0.0,1.0,0.0}, {-1.0,0.0,0.0}, {0.0,-1.0,0.0},
 //	{1.0,0.0,0.0}, {0.0,1.0,0.0}, {-1.0,0.0,0.0}, {0.0,-1.0,0.0},
 //	{0.0,0.0,1.0}, {0.0,0.0,1.0}, {0.0,0.0,1.0}, {0.0,0.0,1.0} };
 
-double vertexpos[8][3] = { {0,0,0}, {1,0,0}, {1,1,0}, {0,1,0},
-	{0,0,1}, {1,0,1}, {1,1,1}, {0,1,1} };
+// double vertexpos[8][3] = { {0,0,0}, {1,0,0}, {1,1,0}, {0,1,0},
+// 	{0,0,1}, {1,0,1}, {1,1,1}, {0,1,1} };
 
 // Marching Cube Face Triplet Lookup Table
 int facetriples[256][15] = {
@@ -319,7 +339,357 @@ int facetriples[256][15] = {
 
 ATEN_USING_NAMESPACE
 
+// Plot single marching cube
+void Primitive::plotEdge(const int cubeType, const double lowerCutoff, const double valueA, const double valueB, const Vec3<double> gradientA, const Vec3<double> gradientB, const Vec3<double> cubeLLC, const int edgeIndexA, const int edgeIndexB, const int colourScale)
+{
+	Vec3<double> normal;
+	double ipol;
+	Vec3<double> r;
+	Vec4<GLfloat> colour;
+	int* faces;
+	faces = facetriples[cubeType];
+
+	// Get edge vectors, interpolate, and set tri-points
+	ipol = ((lowerCutoff) - valueA) / (valueB-valueA);
+	if (ipol > 1.0) ipol = 1.0;
+	if (ipol < 0.0) ipol = 0.0;
+
+	// Grab cube vertex coordinates (using existing edgevertices array to map onto vertexpos array)
+	r = (vertexPos[edgeIndexB] - vertexPos[edgeIndexA]) * ipol + vertexPos[edgeIndexA] + cubeLLC;
+	normal = -(gradientA + (gradientB - gradientA) * ipol);
+	normal.normalise();
+
+	// Set triangle coordinates and add cube position
+	if (colourScale != -1)
+	{
+		prefs.colourScale[colourScale].colour((valueA+valueB)/2.0, colour);
+		defineVertex(r.x, r.y, r.z, normal.x, normal.y, normal.z, colour);
+	}
+	else defineVertex(r.x, r.y, r.z, normal.x, normal.y, normal.z);
+}
+			
 // Render volumetric isosurface with Marching Cubes
+void Primitive::marchingCubes(Grid* source, double lowerCutoff, double upperCutoff, int colourScale)
+{
+	int outer, ii, jj, kk, n, cubeType, *faces;
+	Vec3<GLfloat> gradA, gradB;
+	Vec3<double> r, cubeLLC;
+	Vec3<int> nPoints = source->nXYZ(), shift = source->shift(), indexMapped;
+	Vec3<WrapInt> indexLocal;
+	double*** data, ipol, a, b, *v1, *v2, twodx, twody, twodz, value;
+	data = source->data3d();
+	bool periodic = source->periodic();
+	bool fillVolume = source->fillEnclosedVolume();
+	// 3D slice region for necessary data, and last initialised sizes
+	static Vec3<double>*** gradients = NULL;
+	static double*** values = NULL;
+	static bool*** flags = NULL;
+
+	static Vec3<int> sliceSize;
+	bool frontSwap = true;
+	int front, back;
+	Vec3<int> shiftIJK, newSliceSize;
+
+	// Get distances between grid points
+	r = source->lengths();
+	twodx = r.x / nPoints.x * 2.0;
+	twody = r.y / nPoints.y * 2.0;
+	twodz = r.z / nPoints.z * 2.0;
+
+	// Initialise primitive
+	initialise(GL_TRIANGLES, colourScale != -1);
+
+	// ii, jj, and kk are cube index variables, not value index variables.
+	// 'ii' represents our principal direction, along which we are taking slices of the data in order to generate the data
+
+	// Set up our directions array
+	//  dirs[0] == main axis for traversing data (principal loop variable 'ii')
+	//  dirs[1] == first axis for slice data
+	//  dirs[2] == second axis for slice data
+	Vec3<int> dirs = Grid::axesOrder();
+	printf("Axes order is : "); dirs.print();
+
+	// Set up the wrapped integers for safe access to the data[][][] array
+	indexLocal[0].setLimits(0, nPoints.x-1);
+	indexLocal[1].setLimits(0, nPoints.y-1);
+	indexLocal[2].setLimits(0, nPoints.z-1);
+
+	// Grab shift values in the new dir order for convenience
+	shiftIJK.x = shift[dirs.x];
+	shiftIJK.y = shift[dirs.y];
+	shiftIJK.z = shift[dirs.z];
+
+	// Set start values and limits for ii, jj, and kk control variables
+	int outerStart, outerLimit, outerDelta, jjStart, jjLimit, jjDelta, kkStart, kkLimit, kkDelta;
+	if (periodic)
+	{
+		outerStart = 0;
+		outerLimit = nPoints[dirs.x];
+		outerDelta = 1;
+		jjStart = 0;
+		jjLimit = nPoints[dirs.y];
+		jjDelta = 1;
+		kkStart = 0;
+		kkLimit = nPoints[dirs.z];
+		kkDelta = 1;
+	}
+	else
+	{
+		outerStart = 1;
+		outerLimit = nPoints[dirs.x]-1;
+		outerDelta = 1;
+		jjStart = 1;
+		jjLimit = nPoints[dirs.y]-1;
+		jjDelta = 1;
+		kkStart = 1;
+		kkLimit = nPoints[dirs.z]-1;
+		kkDelta = 1;
+	}
+
+	// Work out nx and ny from the loop limits we have just set.
+	// When constructing cubes, we will always use loop ranges 1, (sliceNX-1)
+	newSliceSize[dirs.x] = 2;
+	newSliceSize[dirs.y] = (jjLimit - jjStart);
+	newSliceSize[dirs.z] = (kkLimit - kkStart);
+
+	// (Re)initialise arrays
+	if ((gradients == NULL) || (newSliceSize.x != sliceSize.x) || (newSliceSize.y != sliceSize.y) || (newSliceSize.z != sliceSize.z))
+	{
+		// Reallocate arrays if necessary
+		if (gradients != NULL)
+		{
+			for (ii = 0; ii < sliceSize.x; ++ii)
+			{
+				for (jj = 0; jj < sliceSize.y; ++jj)
+				{
+					delete[] gradients[ii][jj];
+					delete[] values[ii][jj];
+					delete[] flags[ii][jj];
+				}
+				delete[] gradients[ii];
+				delete[] values[ii];
+				delete[] flags[ii];
+			}
+			delete[] gradients;
+			delete[] values;
+			delete[] flags;
+		}
+
+		// New arrays
+		sliceSize = newSliceSize;
+		gradients = new Vec3<double>**[sliceSize.x];
+		values = new double**[sliceSize.x];
+		flags = new bool**[sliceSize.x];
+		for (ii = 0; ii < sliceSize.x; ++ii)
+		{
+			gradients[ii] = new Vec3<double>*[sliceSize.y];
+			values[ii] = new double*[sliceSize.y];
+			flags[ii] = new bool*[sliceSize.y];
+			for (jj = 0; jj < sliceSize.y; ++jj)
+			{
+				gradients[ii][jj] = new Vec3<double>[sliceSize.z];
+				values[ii][jj] = new double[sliceSize.z];
+				flags[ii][jj] = new bool[sliceSize.z];
+			}
+		}
+	}
+
+	// Make a copy of the masterEdgeData so that we can modify it to reflect back/front switches
+	Vec3<int> edgeData[12][2];
+	for (ii = 0; ii < 12; ++ii)
+	{
+		edgeData[ii][0] = masterEdgeData[ii][0];
+		edgeData[ii][1] = masterEdgeData[ii][1];
+	}
+
+	cubeLLC[dirs.x] = outerStart - 1;
+	indexLocal[dirs.x] = (outerStart - shiftIJK.x);
+	for (outer = outerStart; outer< outerLimit; outer += outerDelta, ++indexLocal[dirs.x], ++cubeLLC[dirs.x])
+	{
+		// Get swap variables, and switch back/front indices for our principal direction
+		frontSwap = !frontSwap;
+		front = (frontSwap ? 0 : 1);
+		back = (frontSwap ? 1 : 0);
+		indexMapped[dirs.x] = back;
+		for (ii = 0; ii <12; ++ii)
+		{
+			edgeData[ii][0][dirs.x] = frontSwap ? masterEdgeData[ii][0][dirs.x] : (masterEdgeData[ii][0][dirs.x] == 1 ? 0 : 1);
+			edgeData[ii][1][dirs.x] = frontSwap ? masterEdgeData[ii][1][dirs.x] : (masterEdgeData[ii][1][dirs.x] == 1 ? 0 : 1);
+		}
+
+		// Calculate gradients, validity, and storing values... for the 'back' arrays
+		indexMapped[dirs.y] = 0;
+		indexLocal[dirs.y] = jjStart-shiftIJK.y;
+		for (jj=jjStart; jj< jjLimit; jj+=jjDelta, ++indexMapped[dirs.y], ++indexLocal[dirs.y])
+		{
+			indexMapped[dirs.z] = 0;
+			indexLocal[dirs.z] = kkStart-shiftIJK.z;
+			for (kk=kkStart; kk< kkLimit; kk+=kkDelta, ++indexMapped[dirs.z], ++indexLocal[dirs.z])
+			{
+				// Calculate gradient
+				indexMapped.print();
+				gradients[indexMapped.x][indexMapped.y][indexMapped.z].x = (data[indexLocal.x+1][indexLocal.y][indexLocal.z] - data[indexLocal.x-1][indexLocal.y][indexLocal.z]) / twodx;
+				gradients[indexMapped.x][indexMapped.y][indexMapped.z].y = (data[indexLocal.x][indexLocal.y+1][indexLocal.z] - data[indexLocal.x][indexLocal.y-1][indexLocal.z]) / twody;
+				gradients[indexMapped.x][indexMapped.y][indexMapped.z].z = (data[indexLocal.x][indexLocal.y][indexLocal.z+1] - data[indexLocal.x][indexLocal.y][indexLocal.z-1]) / twodz;
+				// Grab value and test against cutoffs
+				value = data[indexLocal.x][indexLocal.y][indexLocal.z];
+				values[indexMapped.x][indexMapped.y][indexMapped.z] = value;
+				flags[indexMapped.x][indexMapped.y][indexMapped.z] = ((value >= lowerCutoff) && (value <= upperCutoff));
+			}
+		}
+
+		// Loop again to generate second set of values if outer = outerStart
+		if (outer == outerStart) continue;
+
+// 			   7---------6			128------64
+// 			  /|        /|		       /|        /|
+// 			 / |       / |		      / |       / |
+// 			3---------2  |		     8---------4  |
+// 			|  |      |  |		     |  |      |  |
+// 			|  4------|--5		     |  16-----|-32
+// 		y z	| /       | /		     | /       | /
+// 		|/	|/        |/		     |/        |/
+// 		o->x	0---------1		     1---------2
+	
+		// Create cube vertex information based on the gradients, values, and flags for our sliced data
+		// We'll use tailored loops to avoid having a wasteful single-valued loop somewhere, and to keep value / vertex probing simpler
+		if (dirs.x == 0)
+		{
+			// Principal direction is X : slice is in YZ
+			cubeLLC[dirs.y] = jjStart;
+
+			for (jj=0; jj<sliceSize.y-1; ++jj, ++cubeLLC[dirs.y])
+			{
+				cubeLLC[dirs.z] = kkStart;
+				for (kk=0; kk< sliceSize.z-1; ++kk, ++cubeLLC[dirs.z])
+				{
+					// Determine cube type
+					cubeType = 0;
+					if (flags[back][jj][kk]) cubeType += 1;
+					if (flags[front][jj][kk]) cubeType += 2;
+					if (flags[front][jj+1][kk]) cubeType += 4;
+					if (flags[back][jj+1][kk]) cubeType += 8;
+					if (flags[back][jj][kk+1]) cubeType += 16;
+					if (flags[front][jj][kk+1]) cubeType += 32;
+					if (flags[front][jj+1][kk+1]) cubeType += 64;
+					if (flags[back][jj+1][kk+1]) cubeType += 128;
+					printf("ii, jj, kk = %i %i %i, cubetype = %i\n", back, jj, kk, cubeType);
+					cubeLLC.print();
+
+					// Quick check for 'whole cube'
+					if (cubeType == 255) { /*if (fillVolume) */ plotCube(1.0, 1, cubeLLC.x, cubeLLC.y, cubeLLC.z); }
+					else if (cubeType < 0)
+					{
+						// Get edges from list and draw triangles or points
+						faces = facetriples[cubeType];
+						for (n = 0; n<15; ++n)
+						{
+							if (faces[n] == -1) break;
+							plotEdge(cubeType, lowerCutoff,
+								values[ edgeData[faces[n]][0].x ][ edgeData[faces[n]][0].y ][ edgeData[faces[n]][0].z ],
+								values[ edgeData[faces[n]][1].x ][ edgeData[faces[n]][1].y ][ edgeData[faces[n]][1].z ],
+								gradients[ edgeData[faces[n]][0].x ][ edgeData[faces[n]][0].y ][ edgeData[faces[n]][0].z ],
+								gradients[ edgeData[faces[n]][1].x ][ edgeData[faces[n]][1].y ][ edgeData[faces[n]][1].z ],
+								cubeLLC, edgevertices[faces[n]][0], edgevertices[faces[n]][1], colourScale);
+						}
+					}
+				}
+			}
+		}
+		else if (dirs.x == 1)
+		{
+			// Principal direction is Y : slice is in XZ
+			cubeLLC[dirs.y] = jjStart;
+
+			for (jj=0; jj<sliceSize.y-1; ++jj, ++cubeLLC[dirs.y])
+			{
+				cubeLLC[dirs.z] = kkStart;
+				for (kk=0; kk< sliceSize.z-1; ++kk, ++cubeLLC[dirs.z])
+				{
+					// Determine cube type
+					cubeType = 0;
+					if (flags[jj][back][kk]) cubeType += 1;
+					if (flags[jj+1][back][kk]) cubeType += 2;
+					if (flags[jj+1][front][kk]) cubeType += 4;
+					if (flags[jj][front][kk]) cubeType += 8;
+					if (flags[jj][back][kk+1]) cubeType += 16;
+					if (flags[jj+1][back][kk+1]) cubeType += 32;
+					if (flags[jj+1][front][kk+1]) cubeType += 64;
+					if (flags[jj][front][kk+1]) cubeType += 128;
+					printf("ii, jj, kk = %i %i %i, cubetype = %i\n", jj, back, kk, cubeType);
+					cubeLLC.print();
+
+					// Quick check for 'whole cube'
+					if (cubeType == 255) { /*if (fillVolume) */ plotCube(1.0, 1, cubeLLC.x, cubeLLC.y, cubeLLC.z); }
+					else if (cubeType < 0)
+					{
+						// Get edges from list and draw triangles or points
+						faces = facetriples[cubeType];
+						for (n = 0; n<15; ++n)
+						{
+							if (faces[n] == -1) break;
+							plotEdge(cubeType, lowerCutoff,
+								values[ edgeData[faces[n]][0].x ][ edgeData[faces[n]][0].y ][ edgeData[faces[n]][0].z ],
+								values[ edgeData[faces[n]][1].x ][ edgeData[faces[n]][1].y ][ edgeData[faces[n]][1].z ],
+								gradients[ edgeData[faces[n]][0].x ][ edgeData[faces[n]][0].y ][ edgeData[faces[n]][0].z ],
+								gradients[ edgeData[faces[n]][1].x ][ edgeData[faces[n]][1].y ][ edgeData[faces[n]][1].z ],
+								cubeLLC, edgevertices[faces[n]][0], edgevertices[faces[n]][1], colourScale);
+						}
+					}
+				}
+			}
+		}
+		else if (dirs.x == 2)
+		{
+			printf("ZZZZZZZZZZZZ\n");
+			// Principal direction is Z : slice is in XY
+			cubeLLC[dirs.y] = jjStart;
+
+			for (jj=0; jj<sliceSize.y-1; ++jj, ++cubeLLC[dirs.y])
+			{
+				cubeLLC[dirs.z] = kkStart;
+				for (kk=0; kk< sliceSize.z-1; ++kk, ++cubeLLC[dirs.z])
+				{
+					// Determine cube type
+					cubeType = 0;
+					if (flags[jj][kk][back]) cubeType += 1;
+					if (flags[jj+1][kk][back]) cubeType += 2;
+					if (flags[jj+1][kk+1][back]) cubeType += 4;
+					if (flags[jj][kk+1][back]) cubeType += 8;
+					if (flags[jj][kk][front]) cubeType += 16;
+					if (flags[jj+1][kk][front]) cubeType += 32;
+					if (flags[jj+1][kk+1][front]) cubeType += 64;
+					if (flags[jj][kk+1][front]) cubeType += 128;
+					printf("ii, jj, kk = %i %i %i, cubetype = %i\n", jj, kk, back, cubeType);
+					cubeLLC.print();
+
+					// Quick check for 'whole cube'
+					if (cubeType == 255) { /*if (fillVolume) */ plotCube(1.0, 1, cubeLLC.x, cubeLLC.y, cubeLLC.z); }
+					else if (cubeType < 0)
+					{
+						// Get edges from list and draw triangles or points
+						faces = facetriples[cubeType];
+						for (n = 0; n<15; ++n)
+						{
+							if (faces[n] == -1) break;
+							plotEdge(cubeType, lowerCutoff,
+								values[ edgeData[faces[n]][0].x ][ edgeData[faces[n]][0].y ][ edgeData[faces[n]][0].z ],
+								values[ edgeData[faces[n]][1].x ][ edgeData[faces[n]][1].y ][ edgeData[faces[n]][1].z ],
+								gradients[ edgeData[faces[n]][0].x ][ edgeData[faces[n]][0].y ][ edgeData[faces[n]][0].z ],
+								gradients[ edgeData[faces[n]][1].x ][ edgeData[faces[n]][1].y ][ edgeData[faces[n]][1].z ],
+								cubeLLC, edgevertices[faces[n]][0], edgevertices[faces[n]][1], colourScale);
+						}
+					}
+				}
+			}
+		}
+	}
+
+	updateMesh();
+}
+
+/*
+// Render volumetric isosurface with Marching Cubes ORIGINAL
 void Primitive::marchingCubes(Grid* source, double lowerCutoff, double upperCutoff, int colourScale)
 {
 	int ii, jj, kk, n, cubeType, *faces;
@@ -335,7 +705,7 @@ void Primitive::marchingCubes(Grid* source, double lowerCutoff, double upperCuto
 
 	// Get distances between grid points
 	r = source->lengths();
-	twodx = r.x / nPoints.x * 2.0;
+	twodx = r.x / nPoints.x * 2.0;sliceNY-1
 	twody = r.y / nPoints.y * 2.0;
 	twodz = r.z / nPoints.z * 2.0;
 
@@ -448,7 +818,7 @@ void Primitive::marchingCubes(Grid* source, double lowerCutoff, double upperCuto
 	}
 
 	updateMesh();
-}
+}*/
 
 // Render normal '2D' surface 
 void Primitive::createSurface(Grid* source, Vec4<GLfloat> colour, int colourScale)
