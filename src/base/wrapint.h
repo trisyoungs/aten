@@ -63,10 +63,12 @@ class WrapInt
 	int operator+(int i);
 	// Binary subtraction
 	int operator-(int i);
+	// +=
+	int& operator+=(int i);
 	// Prefix increment
-	int operator++();
+	int& operator++();
 	// Prefix decrement
-	int operator--();
+	int& operator--();
 	// Conversion (int)
 	operator int();
 };

@@ -301,8 +301,6 @@ class Grid : public ListItem<Grid>, ObjectStore<Grid>
 	Vec3<int> shift_;
 	// Whether to fill enclosed volume
 	bool fillEnclosedVolume_;
-	// Axes order for surface generation
-	static Vec3<int> axesOrder_;
 
 	public:
 	// Increase the internal log
@@ -373,10 +371,6 @@ class Grid : public ListItem<Grid>, ObjectStore<Grid>
 	void setFillEnclosedVolume(bool b);
 	// Return whether to fill enclosed volume
 	bool fillEnclosedVolume();
-	// Set axes order for surface generation
-	static void setAxesOrder(Vec3<int> order);
-	// Return axes order for surface generation
-	static Vec3<int> axesOrder();
 
 
 	/*

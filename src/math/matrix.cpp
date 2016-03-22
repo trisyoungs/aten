@@ -314,21 +314,31 @@ void Matrix::invert()
 }
 
 /*
- * Column Operations
+ * Row / Column Operations
  */
 
 // Return column contents as Vec3
 Vec3<double> Matrix::columnAsVec3(int col) const
 {
-	Vec3<double> vec(matrix_[col*4], matrix_[col*4+1], matrix_[col*4+2]);
-	return vec;
+	return Vec3<double>(matrix_[col*4], matrix_[col*4+1], matrix_[col*4+2]);
 }
 
 // Return column contents as Vec4
 Vec4<double> Matrix::columnAsVec4(int col) const
 {
-	Vec4<double> vec(matrix_[col*4], matrix_[col*4+1], matrix_[col*4+2], matrix_[col*4+3]);
-	return vec;
+	return Vec4<double>(matrix_[col*4], matrix_[col*4+1], matrix_[col*4+2], matrix_[col*4+3]);
+}
+
+// Return row contents (i.e. x, y, z, or w components of each vector) as Vec3
+Vec3<double> Matrix::rowAsVec3(int row) const
+{
+	return Vec3<double>(matrix_[row], matrix_[4+row], matrix_[8+row]);
+}
+
+// Return row contents (i.e. x, y, z, or w components, including w vector, of each vector) as Vec4
+Vec4<double> Matrix::rowAsVec4(int row) const
+{
+	return Vec4<double>(matrix_[row], matrix_[4+row], matrix_[8+row], matrix_[12+row]);
 }
 
 // Set specified row from supplied triplet of values

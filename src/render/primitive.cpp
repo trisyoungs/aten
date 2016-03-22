@@ -37,6 +37,7 @@ Primitive::Primitive() : ListItem<Primitive>()
 	dataPerVertex_ = 6;
 	nDefinedVertices_ = 0;
 	useInstances_ = true;
+	registeredAsDynamic_ = false;
 }
 
 // Destructor

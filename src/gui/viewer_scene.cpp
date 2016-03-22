@@ -106,7 +106,7 @@ void Viewer::setupGL()
 }
 
 // Render messages
-void Viewer::renderMessages(QPainter& painter)
+void Viewer::renderMessages(QPainter& painter, bool fade)
 {
 	// Set polygon mode / style
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -114,11 +114,18 @@ void Viewer::renderMessages(QPainter& painter)
 	// Grab message buffer
 	QList<Message>& messages = Messenger::messageBuffer();
 	int margin = 4;
+	QColor textColour;
 	QRectF textRect(margin, margin, contextWidth_-2*margin, contextHeight_-2*margin), actualRect;
 	for (int n=atenWindow_->messagesScrollPosition(); n<messages.count(); ++n)
 	{
 		// Set brush colour to correspond to message type
-		painter.setPen(messages.at(n).colour());
+		if (fade)
+		{
+			textColour = messages.at(n).colour();
+			textColour.setAlphaF(0.5);
+			painter.setPen(textColour);
+		}
+		else painter.setPen(messages.at(n).colour());
 
 		// Set initial textRect
 		textRect.setWidth(contextWidth_-2*margin);
@@ -320,10 +327,7 @@ void Viewer::paintGL()
 			break;
 		case (AtenWindow::MessagesUnderScene):
 			// Messages
-			renderMessages(painter);
-			painter.setBrush(QColor(255,255,255,128));
-			painter.setPen(QPen(Qt::NoPen));
-			painter.drawRect(0, 0, contextWidth_, contextHeight_);
+			renderMessages(painter, true);
 			// Scene
 			painter.beginNativePainting();
 			renderFullScene();

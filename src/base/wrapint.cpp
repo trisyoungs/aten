@@ -20,6 +20,7 @@
 */
 
 #include "base/wrapint.h"
+#include <stdio.h>
 
 ATEN_USING_NAMESPACE
 
@@ -74,8 +75,17 @@ int WrapInt::operator-(int i)
 	return (j%range_) + minimum_;
 }
 
+// +=
+int& WrapInt::operator+=(int i)
+{
+	int j = ((value_ + i) - minimum_)%range_;
+	if (j < 0) j+= range_;
+	value_ = (j%range_) + minimum_;
+	return value_;
+}
+
 // Prefix increment
-int WrapInt::operator++()
+int& WrapInt::operator++()
 {
 	++value_;
 	if (value_ > maximum_) value_ = minimum_;
@@ -83,7 +93,7 @@ int WrapInt::operator++()
 }
 
 // Prefix decrement
-int WrapInt::operator--()
+int& WrapInt::operator--()
 {
 	--value_;
 	if (value_ < minimum_) value_ = maximum_;

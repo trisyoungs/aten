@@ -83,13 +83,17 @@ class Matrix
 
 
 	/*
-	 * Column Operations
+	 * Row / Column Operations
 	 */
 	public:
-	// Return column contents as Vec3
+	// Return column contents (i.e. entire x, y, z, or w vector) as Vec3
 	Vec3<double> columnAsVec3(int col) const;
-	// Return column contents as Vec4
+	// Return column contents (i.e. entire x, y, z, or w vector, plus w component) as Vec4
 	Vec4<double> columnAsVec4(int col) const;
+	// Return row contents (i.e. x, y, z, or w components of each vector) as Vec3
+	Vec3<double> rowAsVec3(int row) const;
+	// Return row contents (i.e. x, y, z, or w components, including w vector, of each vector) as Vec4
+	Vec4<double> rowAsVec4(int row) const;
 	// Set specified row from supplied triplet of values
 	void setRow(int row, double x, double y, double z);
 	// Set specified row from supplied values

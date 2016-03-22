@@ -171,7 +171,7 @@ class Viewer : public QOpenGLWidget, protected QOpenGLFunctions
 	// Setup basic GL properties
 	void setupGL();
 	// Render messages
-	void renderMessages(QPainter& painter);
+	void renderMessages(QPainter& painter, bool fade = false);
 	// Render full scene
 	void renderFullScene(int contextWidth = -1, int contextHeight = -1, int xOffset = 0, int yOffset = 0);
 

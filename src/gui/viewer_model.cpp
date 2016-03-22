@@ -150,7 +150,6 @@ void Viewer::renderModel(Model* source, int viewPortX, int viewPortY, int viewPo
 				for (Grid* g = source->grids(); g != NULL; g = g->next)
 				{
 					if (!g->isVisible()) continue;
-					if (g->primaryAlpha() < 0.999) continue; // TEST related to below
 
 					glPushMatrix();
 					glLoadMatrixd((offset * g->voxelMatrix()).matrix());
@@ -162,39 +161,13 @@ void Viewer::renderModel(Model* source, int viewPortX, int viewPortY, int viewPo
 						glDisable(GL_LIGHTING);
 						glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
 						Vec3<int> nXYZ = g->nXYZ();
-						glScaled(nXYZ.x-1, nXYZ.y-1, nXYZ.z-1);
+						if (!g->periodic()) nXYZ -= 1;
+						glScaled(nXYZ.x, nXYZ.y, nXYZ.z);
 						primitives_[primitiveSet_].wireCube().sendToGL(QOpenGLContext::currentContext());
 					}
 
 					glPopMatrix();
 				}
-				
-				// TEST
-// 				glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-				glDepthMask(GL_FALSE);
-				for (Grid* g = source->grids(); g != NULL; g = g->next)
-				{
-					if (!g->isVisible()) continue;
-					if (g->primaryAlpha() >= 0.999) continue;
-
-					glPushMatrix();
-					glLoadMatrixd((offset * g->voxelMatrix()).matrix());
-
-					g->sendPrimaryPrimitive();
-					if (g->useSecondary()) g->sendSecondaryPrimitive();
-					if (g->outlineVolume())
-					{
-						glDisable(GL_LIGHTING);
-						glColor4f(0.0f, 0.0f, 0.0f, 1.0f);
-						Vec3<int> nXYZ = g->nXYZ();
-						glScaled(nXYZ.x-1, nXYZ.y-1, nXYZ.z-1);
-						primitives_[primitiveSet_].wireCube().sendToGL(QOpenGLContext::currentContext());
-					}
-
-					glPopMatrix();
-				}
-				glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
-				glDepthMask(GL_TRUE);
 			}
 		}
 	}

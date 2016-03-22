@@ -295,10 +295,6 @@ void AtenWindow::gridsListContextMenuRequested(const QPoint& point)
 
 void AtenWindow::recreateGridsForView()
 {
-	// TEST
-	Vec3<int> axesOrder = Grid::axesOrder();
-	Grid::setAxesOrder(Vec3<int>(axesOrder[1],axesOrder[2],axesOrder[0]));
-
 	// For all models, log a change so that we recreate all grids
 	for (Model* m = aten_.models(); m != NULL; m = m->next)
 	{
