@@ -301,6 +301,10 @@ class Grid : public ListItem<Grid>, ObjectStore<Grid>
 	Vec3<int> shift_;
 	// Whether to fill enclosed volume
 	bool fillEnclosedVolume_;
+	// Axis order used in last generation
+	Vec3<int> axisLoopOrder_;
+	// Directions for axis order
+	Vec3<int> axisLoopSigns_;
 
 	public:
 	// Increase the internal log
@@ -371,6 +375,14 @@ class Grid : public ListItem<Grid>, ObjectStore<Grid>
 	void setFillEnclosedVolume(bool b);
 	// Return whether to fill enclosed volume
 	bool fillEnclosedVolume();
+	// Set axis order used in last generation
+	void setAxisLoopOrder(Vec3<int> order);
+	// Return axis order used in last generation
+	Vec3<int> axisLoopOrder();
+	// Set directions for axis order
+	void setAxisLoopSigns(Vec3<int> signs);
+	// Return directions for axis order
+	Vec3<int> axisLoopSigns();
 
 
 	/*

@@ -67,6 +67,7 @@ Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
 	{ "colourScheme",		VTypes::StringData,		0, false },
 	{ "combinationRule",		VTypes::StringData,		CombinationRules::nCombinationRules, false },
 	{ "commonElements",		VTypes::StringData,		0, false },
+	{ "correctTransparentGrids",	VTypes::IntegerData,		0, false },
 	{ "dashedAromatics",		VTypes::IntegerData,		0, false },
 	{ "densityUnit",		VTypes::StringData,		0, false },
 	{ "depthCue",			VTypes::IntegerData,		0, false },
@@ -290,6 +291,9 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArray
 			break;
 		case (PreferencesVariable::CommonElements):
 			rv.set(ptr->commonElements());
+			break;
+		case (PreferencesVariable::CorrectTransparentGrids):
+			rv.set(ptr->correctTransparentGrids());
 			break;
 		case (PreferencesVariable::DashedAromatics):
 			rv.set(ptr->renderDashedAromatics());
@@ -592,6 +596,9 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue&
 			break;
 		case (PreferencesVariable::CommonElements):
 			ptr->setCommonElements( newValue.asString(result) );
+			break;
+		case (PreferencesVariable::CorrectTransparentGrids):
+			ptr->setCorrectTransparentGrids(newValue.asBool());
 			break;
 		case (PreferencesVariable::DashedAromatics):
 			ptr->setRenderDashedAromatics(newValue.asBool());

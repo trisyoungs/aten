@@ -68,9 +68,10 @@ void AtenWindow::updateHomePanel(Model* sourceModel)
 		ui.HomeEditRedoButton->setEnabled(false);
 	}
 
-	// Appearance
+	// View
 	ui.HomeAppearancePerspectiveButton->setChecked(prefs.hasPerspective());
-	ui.HomeViewHBondsButton->setChecked(prefs.drawHydrogenBonds());  //ATEN2 TODO Move this from Prefs?
+	ui.HomeViewHBondsButton->setChecked(prefs.drawHydrogenBonds());
+	ui.HomeViewCorrectGridsButton->setChecked(prefs.correctTransparentGrids());
 	ui.HomeViewLockButton->setChecked(Model::useCommonModelViewMatrix());
 	TMenuButton::setGroupButtonChecked("ViewStyles", Prefs::drawStyle(prefs.renderStyle()));
 	TMenuButton::setGroupButtonChecked("ColourSchemes", Prefs::colouringScheme(prefs.colourScheme()));
@@ -298,6 +299,21 @@ void AtenWindow::on_HomeViewHBondsButton_clicked(bool checked)
 	updateWidgets(AtenWindow::MainViewTarget);
 }
 
+// Toggle automatic correction of (transparent) grid data
+void AtenWindow::on_HomeViewCorrectGridsButton_clicked(bool checked)
+{
+	if (refreshing_) return;
+	
+	prefs.setCorrectTransparentGrids(checked);
+
+	if (prefs.correctTransparentGrids())
+	{
+		for (Model* m = aten_.models(); m != NULL; m = m->next) m->updateGridAxisOrdering();
+	}
+
+	updateWidgets(AtenWindow::MainViewTarget);
+}
+
 void AtenWindow::on_HomeViewLockButton_clicked(bool checked)
 {
 	if (refreshing_) return;
@@ -308,7 +324,6 @@ void AtenWindow::on_HomeViewLockButton_clicked(bool checked)
 	currentModel->setCommonViewMatrixFromLocal();
 
 	Model::setUseCommonModelViewMatrix(checked);
-
 
 	updateWidgets(AtenWindow::MainViewTarget);
 }

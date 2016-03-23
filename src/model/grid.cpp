@@ -55,3 +55,58 @@ void Model::removeGrid(Grid* xgrid)
 {
 	grids_.remove(xgrid);
 }
+
+// Update grid axis ordering based on current view
+void Model::updateGridAxisOrdering()
+{
+	int n, ii, jj;
+
+	// Determine which axis/axes overlap most with cardinal Z (i.e. perpendicular to current view)
+	Vec3<int> dirs = Vec3<int>(-1, -1, -1);
+	Vec3<int> signs = Vec3<int>(1, 1, 1);
+	
+	// Grab components of the view matrix column vectors in sequential directions/rows, finding the largest component each time
+	for (n=0; n<3; ++n)
+	{
+		// Grab components of the view matrix column vectors in the (2-n) direction/row
+		Vec3<double> components = modelViewMatrix().rowAsVec3(2-n);
+
+		// Find next largest component (in a vector direction we haven't used yet...)
+		int maxEl = -1;
+		double maxVal = -1.0;
+		for (ii=0; ii<3; ++ii)
+		{
+			// For direction 'ii', check that it has not yet been entered into the dirs array
+			for (jj=0; jj<n; ++jj) if (dirs[jj] == ii) break;
+			if (jj < n) continue;
+
+			// Check absolute value of this element against our stored value
+			if (fabs(components[ii]) > maxVal)
+			{
+				maxVal = fabs(components[ii]);
+				maxEl = ii;
+			}
+		}
+
+		dirs[n] = maxEl;
+		signs[n] = components[dirs[n]] < 0 ? -1 : 1;
+	}
+
+	// Reorder last two loops so that we are always ordered in x-y-z precedence
+	if (dirs.z < dirs.y)
+	{
+		ii = dirs.z;
+		dirs.z = dirs.y;
+		dirs.y = ii;
+		ii = signs.z;
+		signs.z = signs.y;
+		signs.y = ii;
+	}
+
+	// Set for all grids...
+	for (Grid* grid = grids_.first(); grid != NULL; grid = grid->next)
+	{
+		grid->setAxisLoopOrder(dirs);
+		grid->setAxisLoopSigns(signs);
+	}
+}

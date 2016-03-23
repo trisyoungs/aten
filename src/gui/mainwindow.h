@@ -185,6 +185,7 @@ class AtenWindow : public QMainWindow
 	void on_HomeViewGetButton_clicked(bool checked);
 	void on_HomeViewSetButton_clicked(bool checked);
 	void on_HomeViewHBondsButton_clicked(bool checked);
+	void on_HomeViewCorrectGridsButton_clicked(bool checked);
 	void on_HomeViewLockButton_clicked(bool checked);
 
 

@@ -105,3 +105,4 @@ Add --session option.
 Changed type of Grid::Axes accessor from CellData to MatrixData.
 Add WX, WY, WZ etc. accessors to MatrixVariable, and 'setIdentity()' function.
 Setting of filter options when using --batch CLI mode (in 03.cli/batch).
+Add correctTransparentGrids accessor to Prefs.

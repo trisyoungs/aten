@@ -251,6 +251,8 @@ class Prefs
 	double hydrogenBondDotRadius_;
 	// Font filename
 	QString viewerFontFileName_;
+	// Whether to correct transparent grids
+	bool correctTransparentGrids_;
 	
 	public:
 	// Set C-style format for distance label values
@@ -297,6 +299,10 @@ class Prefs
 	void setViewerFontFileName(QString fileName);
 	// Return viewer font filename
 	QString viewerFontFileName();
+	// Set whether to correct grids for transparency artefacts
+	void setCorrectTransparentGrids(bool b);
+	// Return whether to correct grids for transparency artefacts
+	bool correctTransparentGrids();
 
 
 	/*

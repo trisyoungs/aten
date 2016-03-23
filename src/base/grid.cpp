@@ -116,6 +116,8 @@ Grid::Grid() : ListItem<Grid>(), ObjectStore<Grid>(this, ObjectTypes::GridObject
 	axisPosition_[2].set(0.0,0.0,0.0);
 	axisMajorSpacing_.set(1.0, 1.0, 1.0);
 	axisMinorTicks_.set(3, 3, 3);
+	axisLoopOrder_.set(2, 0, 1);
+	axisLoopSigns_.set(-1, 1, 1);
 }
 
 // Destructor
@@ -162,6 +164,8 @@ void Grid::operator=(Grid& source)
 	cell_ = source.cell_;
 	origin_ = source.origin_;
 	nXYZ_ = source.nXYZ_;
+	axisLoopOrder_ = source.axisLoopOrder_;
+	axisLoopSigns_ = source.axisLoopSigns_;
 
 	// Delete any existing 2D or 3D array in this Grid
 	deleteArrays();
@@ -1283,6 +1287,34 @@ void Grid::setFillEnclosedVolume(bool b)
 bool Grid::fillEnclosedVolume()
 {
 	return fillEnclosedVolume_;
+}
+
+// Set axis order used in last generation
+void Grid::setAxisLoopOrder(Vec3<int> order)
+{
+	// If the order is different, log a change so the grid gets regenerated
+	if ((axisLoopOrder_.x != order.x) || (axisLoopOrder_.y != order.y) || (axisLoopOrder_.z != order.z)) logChange();
+	axisLoopOrder_ = order;
+}
+
+// Return axis order used in last generation
+Vec3<int> Grid::axisLoopOrder()
+{
+	return axisLoopOrder_;
+}
+
+// Set directions for axis order
+void Grid::setAxisLoopSigns(Vec3<int> signs)
+{
+	// If the signs are different, log a change so the grid gets regenerated
+	if ((axisLoopSigns_.x != signs.x) || (axisLoopSigns_.y != signs.y) || (axisLoopSigns_.z != signs.z)) logChange();
+	axisLoopSigns_ = signs;
+}
+
+// Return directions for axis order
+Vec3<int> Grid::axisLoopSigns()
+{
+	return axisLoopSigns_;
 }
 
 /*

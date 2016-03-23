@@ -344,6 +344,7 @@ Prefs::Prefs()
 	drawHydrogenBonds_ = false;
 	hydrogenBondDotRadius_ = 0.075;
 	viewerFontFileName_ = "";
+	correctTransparentGrids_ = false;
 
 	// External programs
 #ifdef _WIN32
@@ -1606,6 +1607,18 @@ void Prefs::setViewerFontFileName(QString fileName)
 QString Prefs::viewerFontFileName()
 {
 	return viewerFontFileName_;
+}
+
+// Set whether to correct grids for transparency artefacts
+void Prefs::setCorrectTransparentGrids(bool b)
+{
+	correctTransparentGrids_ = b;
+}
+
+// Return whether to correct grids for transparency artefacts
+bool Prefs::correctTransparentGrids()
+{
+	return correctTransparentGrids_;
 }
 
 /*

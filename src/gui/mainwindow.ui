@@ -1643,6 +1643,12 @@
           </item>
           <item row="0" column="5">
            <widget class="QToolButton" name="HomeAppearancePerspectiveButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
             <property name="minimumSize">
              <size>
               <width>0</width>
@@ -1681,6 +1687,12 @@
           </item>
           <item row="1" column="5">
            <widget class="QToolButton" name="HomeAppearanceShowAllButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
             <property name="minimumSize">
              <size>
               <width>0</width>
@@ -1781,16 +1793,6 @@
             </property>
             <property name="autoRaise">
              <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0" colspan="3">
-           <widget class="QLabel" name="label_71">
-            <property name="text">
-             <string>View</string>
-            </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
             </property>
            </widget>
           </item>
@@ -1941,7 +1943,7 @@
              </size>
             </property>
             <property name="toolTip">
-             <string>Lock view between models</string>
+             <string>Lock view between models, so that models share a single view transformation</string>
             </property>
             <property name="text">
              <string>Lock</string>
@@ -1961,6 +1963,60 @@
             </property>
             <property name="toolButtonStyle">
              <enum>Qt::ToolButtonTextBesideIcon</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="3">
+           <widget class="QToolButton" name="HomeViewCorrectGridsButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="toolTip">
+             <string>Correct transparent grid display by reordering triangles (press F11 to perform once for current view)</string>
+            </property>
+            <property name="text">
+             <string>Correct</string>
+            </property>
+            <property name="icon">
+             <iconset resource="icons.qrc">
+              <normaloff>:/gridstyle/icons/gridstyle_mesh.png</normaloff>:/gridstyle/icons/gridstyle_mesh.png</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>18</width>
+              <height>18</height>
+             </size>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <property name="toolButtonStyle">
+             <enum>Qt::ToolButtonTextBesideIcon</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0" colspan="4">
+           <widget class="QLabel" name="label_71">
+            <property name="text">
+             <string>View</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
             </property>
            </widget>
           </item>

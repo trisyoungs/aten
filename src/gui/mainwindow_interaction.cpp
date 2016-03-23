@@ -272,6 +272,22 @@ void AtenWindow::endMode(Prefs::MouseButton button, bool* keyModifiers)
 		// No action
 		case (UserAction::NoAction):
 			break;
+		// View changes (needing action)
+		case (UserAction::RotateXYAction):
+		case (UserAction::RotateZAction):
+			if (prefs.correctTransparentGrids())
+			{
+				if (Model::useCommonModelViewMatrix()) 
+				{
+					for (Model* m = aten_.models(); m != NULL; m = m->next) m->updateGridAxisOrdering();
+				}
+				else targetModel->updateGridAxisOrdering();
+			}
+			break;
+		// View changes (no action)
+		case (UserAction::TranslateAction):
+		case (UserAction::ZoomAction):
+			break;
 		// Plain atom / box select
 		case (UserAction::SelectAction):
 			area = fabs(rMouseUp.x - rMouseDown.x) * fabs(rMouseUp.y - rMouseDown.y);
@@ -488,12 +504,6 @@ void AtenWindow::endMode(Prefs::MouseButton button, bool* keyModifiers)
 			if (!ui.MainView->mouseHasMoved()) oldPositions_.clear();
 			targetModel->finalizeTransform(oldPositions_, "Transform Selection", noFold);
 			updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
-			break;
-		// View changes (no action)
-		case (UserAction::RotateXYAction):
-		case (UserAction::RotateZAction):
-		case (UserAction::TranslateAction):
-		case (UserAction::ZoomAction):
 			break;
 		// Manual picking modes (for axis definitions etc.)
 		case (UserAction::ShiftPickVectorAction):

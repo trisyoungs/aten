@@ -1141,6 +1141,8 @@ class Model : public ListItem<Model>
 	Grid* addGrid();
 	// Remove surface
 	void removeGrid(Grid* s);
+	// Update grid axis ordering based on current view
+	void updateGridAxisOrdering();
 
 
 	/*
