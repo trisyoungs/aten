@@ -1,6 +1,8 @@
 ---
 title: The NETA Algorithm
 brief: Description of the NETA algorithm
+visible: true
+template: manpage
 taxonomy:
   category: docs
 docroot: /aten/docs

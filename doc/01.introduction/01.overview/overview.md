@@ -1,5 +1,6 @@
 ---
 title: Overview
+brief: What is <strong>Aten</strong>, and what can it do
 taxonomy:
   category: docs
 template: manpage

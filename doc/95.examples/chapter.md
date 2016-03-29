@@ -1,6 +1,6 @@
 ---
-title: Examples
-brief: Usage examples covering many aspects of Aten's functionality
+title: Usage Examples
+brief: Examples covering many aspects of <strong>Aten</strong>'s functionality
 taxonomy:
   category: docs
 docroot: /aten/docs

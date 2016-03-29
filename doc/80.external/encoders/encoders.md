@@ -1,5 +1,6 @@
 ---
 title: Encoders
+brief: Using external movie-generation tools with <strong>Aten</strong>
 visible: true
 taxonomy:
   category: docs

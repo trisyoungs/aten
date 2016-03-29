@@ -1,5 +1,6 @@
 ---
 title: Trajectory Filters
+brief: Filters for import of trajectory (multiple-model) files
 taxonomy:
   category: docs
 template: manpage

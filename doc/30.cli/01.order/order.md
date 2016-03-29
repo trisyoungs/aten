@@ -1,5 +1,6 @@
 ---
 title: Switch Order
+brief: A note on the ordering of switches provided on the command line
 taxonomy:
   category: docs
 template: manpage

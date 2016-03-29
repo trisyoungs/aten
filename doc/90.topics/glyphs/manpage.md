@@ -1,6 +1,8 @@
----
+--
 title: Glyphs
 brief: An overview of additional drawing objects (glyphs)
+visible: true
+template: manpage
 taxonomy:
   category: docs
 docroot: /aten/docs

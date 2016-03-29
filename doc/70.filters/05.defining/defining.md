@@ -1,5 +1,6 @@
 ---
-title: Defining
+title: Definitions
+brief: What's in a filter file
 taxonomy:
   category: docs
 template: manpage
@@ -7,7 +8,7 @@ docroot: /aten/docs
 header_class: alt
 ---
 
-Filter definitions are made in a filter file in a similar way to declaring a user subroutine or function (see Section 8.1.7). The **filter** keyword marks the start of a filter definition, and contains a list of properties in parentheses that define the subsequent filter, its name, and how to recognise the files (from their filenames and/or contents) that it is designed for. The definition of the filter to import XYZ-style model data is as follows:
+Filter definitions are made in a filter file in a similar way to declaring a user subroutine or function (see the [Functions](/aten/docs/scripting/functions) section in the [Scripting](/aten/docs/scripting) chapter). The **filter** keyword marks the start of a filter definition, and contains a list of properties in parentheses that define the subsequent filter, its name, and how to recognise the files (from their filenames and/or contents) that it is designed for. The definition of the filter to import XYZ-style model data is as follows:
 
 ```
 filter(type="importmodel", name="XMol XYZ Coordinates", nickname="xyz", extension="xyz", glob="*.xyz", id=3)
@@ -17,57 +18,22 @@ filter(type="importmodel", name="XMol XYZ Coordinates", nickname="xyz", extensio
 }
 ```
 
-The comma-separated list of properties defines the type of filter ('[name]type="importmodel"[/name]') and how to recognise files of that type (e.g., '[name]extension="xyz"[/name]'), amongst other things. 
+The comma-separated list of properties defines the type of filter ('type="importmodel"') and how to recognise files of that type (e.g., 'extension="xyz"'), amongst other things. 
 
 The full list of possible properties is as follows:
 
-<table>
- <title>Filter Definition Keyword Summary</title>
- <header>
-  <column>Property</column>
-  <column>Description</column>
- </header>
- <row>
-  <column></column>
-  <column>Comma-separated list of filenames that are of this type</column>
- </row>
- <row>
-  <column></column>
-  <column>Comma-separated list of filename extensions that indicate files of this type</column>
- </row>
- <row>
-  <column></column>
-  <column>Shell-style glob to use in file fialogs in order to filter out files of the described type</column>
- </row>
- <row>
-  <column></column>
-  <column>Numerical ID of the filter to enable partnering of import/export filters for files of the same type</column>
- </row>
- <row>
-  <column></column>
-  <column>Descriptive name for the filter, shown in file dialogs etc.</column>
- </row>
- <row>
-  <column></column>
-  <column>Short name used by commands in order to identify specific filters</column>
- </row>
- <row>
-  <column></column>
-  <column>Provides a string to search for in the file. If the string is found, the file is identified as being readable by this filter type. The number of lines searched is governed by the  property</column>
- </row>
- <row>
-  <column></column>
-  <column>Defines the kind of filter that is described (i.e. if it loads/saves, acts on models/grid data etc.) so that **Aten** knows when to use it. This must always be defined!</column>
- </row>
- <row>
-  <column></column>
-  <column>Specifies the number of lines to search for any supplied  strings</column>
- </row>
- <row>
-  <column></column>
-  <column>Determines which zmapping style to employ when converting atom names from the file</column>
- </row>
-</table>
+| Property | Description |
+|----------|-------------|
+|exact |Comma-separated list of filenames that are of this type|
+|extension |Comma-separated list of filename extensions that indicate files of this type|
+|glob |Shell-style glob to use in file fialogs in order to filter out files of the described type|
+|id |Numerical ID of the filter to enable partnering of import/export filters for files of the same type|
+|name |Descriptive name for the filter, shown in file dialogs etc.|
+|nickname |Short name used by commands in order to identify specific filters|
+|search |Provides a string to search for in the file. If the string is found, the file is identified as being readable by this filter type. The number of lines searched is governed by the within property|
+|type |Defines the kind of filter that is described (i.e. if it loads/saves, acts on models/grid data etc.) so that **Aten** knows when to use it. This must always be defined!|
+|within |Specifies the number of lines to search for any supplied search strings|
+|zmap |Determines which zmapping style to employ when converting atom names from the file|
 
 ---
 
@@ -133,7 +99,7 @@ For example:
 glob="*.doc"
 ```
 
-filters any file matching '[var]*.doc[/var]' in the relevant GUI file selector dialogs.
+filters any file matching '*.doc' in the relevant GUI file selector dialogs.
 
 ---
 

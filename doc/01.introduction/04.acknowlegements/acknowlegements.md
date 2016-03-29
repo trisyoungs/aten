@@ -1,5 +1,6 @@
 ---
 title: Acknowlegements
+brief: People worthy of a mention
 taxonomy:
   category: docs
 template: manpage

@@ -7,4 +7,4 @@ docroot: /aten/docs
 header_class: alt
 ---
 
-Information on forcefield file format and scope, and **Aten**'s typing language, **NETA**..
+Information on forcefield file format and scope, and **Aten**'s typing language, **NETA**.

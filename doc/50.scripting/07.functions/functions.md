@@ -1,5 +1,6 @@
 ---
 title: Functions
+brief: Declaring and using user-defined functions
 taxonomy:
   category: docs
 template: manpage

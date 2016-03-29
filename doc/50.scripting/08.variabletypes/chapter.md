@@ -1,5 +1,6 @@
 ---
 title: Variable Types
+brief: Beyond plain old datatypes - class variables available in <strong>Aten</strong>
 taxonomy:
   category: docs
 docroot: /aten/docs

@@ -1,5 +1,6 @@
 ---
 title: Overview
+brief: Overview of filters - what they are, and what they do
 taxonomy:
   category: docs
 template: manpage

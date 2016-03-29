@@ -1,6 +1,6 @@
 ---
 title: CLI Usage
-brief: HOw to use Aten from the command line
+brief: How to use Aten from the command line, including descriptions of all available switches
 taxonomy:
   category: docs
 docroot: /aten/docs

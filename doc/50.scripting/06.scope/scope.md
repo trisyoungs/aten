@@ -1,5 +1,6 @@
 ---
 title: Scope
+brief: A discussion of variable scope
 taxonomy:
   category: docs
 template: manpage

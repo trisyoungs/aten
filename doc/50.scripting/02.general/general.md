@@ -1,5 +1,6 @@
 ---
 title: General Style
+brief: Basic style / syntax guidelines
 taxonomy:
   category: docs
 template: manpage

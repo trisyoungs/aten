@@ -1,43 +1,43 @@
 ---
-title: Compilation (Windows) OUT-OF-DATE
+title: Compilation (Windows)
 taxonomy:
   category: docs
-template: docs
+template: manpage
 docroot: /aten/docs
 header_class: alt
 ---
 
-Note that these instructions were written from the perspective of a Windows 7 system. It’s likely that the procedure for other versions will be similar, but might need tweaking in places. This
+Note that these instructions were written from the perspective of a Windows 7 / Visual Studio toolchain system and the old version of Aten which utilised Qt4, and so are **out-of-date**! It’s likely that the procedure for other versions will be similar, but might need tweaking in places. This
 
 ## Install Prerequisites
 
 ### Visual Studio C++ 2010
 
-Get the C++ version of Visual Studio from [a]http://www.microsoft.com/express/Windows/,http://www.microsoft.com/express/Windows/[/a] – at the time of writing this was version 10.0, but earlier versions 8.0 and 9.0 are also fine). This will download a small web installer to your machine called [name]vc_web.exe[/name]. Run this, and accept the license. You may choose not to install Silverlight since it is not necessary for **Aten**. Remember where the installation location is set to (by default it is [value]C:\Program Files\Microsoft Visual Studio 10.0\[/value]) because you’ll need this later on for the installation of Windows PowerShell. Chances are you’ll need to restart your machine after the installation.
+Get the C++ version of Visual Studio from [http://www.microsoft.com/express/Windows/](http://www.microsoft.com/express/Windows/) – at the time of writing this was version 10.0, but earlier versions 8.0 and 9.0 are also fine). This will download a small web installer to your machine called `vc_web.exe`. Run this, and accept the license. You may choose not to install Silverlight since it is not necessary for **Aten**. Remember where the installation location is set to (by default it is `C:\Program Files\Microsoft Visual Studio 10.0\`) because you’ll need this later on for the installation of Windows PowerShell. Chances are you’ll need to restart your machine after the installation.
 
 ### Install the Windows SDK
 
-Get the Windows SDK from [a]http://msdn.microsoft.com/en-us/windows/bb980924,http://msdn.microsoft.com/en-us/windows/bb980924[/a] (or search for ‘Windows SDK’ on the internet). Note that the download is described as being for 'Windows 7 and .NET' but this is fine since it’s backwardly compatible with XP. Run the installer ([name]winsdk_web.exe[/name]) and accept the license, and again take note of the installation directories (since they need to be provided in the PowerShell setup later on). The default installation options are fine, although you can uncheck the installation of ‘Samples’ since they are not required. Once installation has finished, the Windows Help Centre may pop up and ask where your local resources are. This can safely be canceled.
+Get the Windows SDK from [http://msdn.microsoft.com/en-us/windows/bb980924](http://msdn.microsoft.com/en-us/windows/bb980924) (or search for ‘Windows SDK’ on the internet). Note that the download is described as being for 'Windows 7 and .NET' but this is fine since it’s backwardly compatible with XP. Run the installer (`winsdk_web.exe`) and accept the license, and again take note of the installation directories (since they need to be provided in the PowerShell setup later on). The default installation options are fine, although you can uncheck the installation of ‘Samples’ since they are not required. Once installation has finished, the Windows Help Centre may pop up and ask where your local resources are. This can safely be canceled.
 
 ### Install CMake
 
-Download the lastest CMake installer from [a]http://www.cmake.org/,http://www.cmake.org/[/a] (version 2.8.4 at the time or writing) and install it. Make sure you choose to add CMake to the PATH for all users when running the installation.
+Download the lastest CMake installer from [http://www.cmake.org/](http://www.cmake.org/) (version 2.8.4 at the time or writing) and install it. Make sure you choose to add CMake to the PATH for all users when running the installation.
 
 ### Install Readline
 
-Go to [a]http://gnuwin32.sourceforge.net/packages/readline.htm,http://gnuwin32.sourceforge.net/packages/readline.htm[/a] (or search for ‘Windows Readline’ on the internet) and download the 'Complete package, except sources' installer (around 2.3 Mb). If you choose to install somewhere other than the default location, you’ll need to tweak the PowerShell profile given in Step 7.
+Go to [http://gnuwin32.sourceforge.net/packages/readline.htm](http://gnuwin32.sourceforge.net/packages/readline.htm) (or search for ‘Windows Readline’ on the internet) and download the 'Complete package, except sources' installer (around 2.3 Mb). If you choose to install somewhere other than the default location, you’ll need to tweak the PowerShell profile given in Step 7.
 
 ### Download GLext Header
 
-Go to [a]http://www.opengl.org/registry/api/glext.h,http://www.opengl.org/registry/api/glext.h[/a] and save the page as ‘glext.h’ somwhere like your ‘My Documents’ directory. Again, if you choose somewhere other than this location, you’ll need to tweak the PowerShell profile given in Step 7.
+Go to [http://www.opengl.org/registry/api/glext.h](http://www.opengl.org/registry/api/glext.h) and save the page as ‘glext.h’ somwhere like your ‘My Documents’ directory. Again, if you choose somewhere other than this location, you’ll need to tweak the PowerShell profile given in Step 7.
 
 ## Download and Unpack Qt4 Source
 
-Go to [a]http://qt.nokia.com/downloads,http://qt.nokia.com/downloads[/a] and download the LGPL package for Windows (approx 322 Mb) and run the installer file. Again, you may choose where to unpack the files to (the default is [value]C:\Qt\2010.05[/value] for the release downloaded here) but if you change the default you’ll need to modify the relevant paths accordingly in Step 7. You may choose not to install the MinGW part of the package since we will be using Visual Studio for the compilation. There is no need to run Qt Creator once the installation is finished.
+Go to [http://qt.nokia.com/downloads](http://qt.nokia.com/downloads) and download the LGPL package for Windows (approx 322 Mb) and run the installer file. Again, you may choose where to unpack the files to (the default is `C:\Qt\2010.05` for the release downloaded here) but if you change the default you’ll need to modify the relevant paths accordingly in Step 7. You may choose not to install the MinGW part of the package since we will be using Visual Studio for the compilation. There is no need to run Qt Creator once the installation is finished.
 
 ### Windows PowerShell
 
-Download PowerShell from [a]http://support.microsoft.com/kb/968930,http://support.microsoft.com/kb/968930[/a]. Once installed, run PowerShell (its Start Menu entry is typically placed inside the 'Accessories' folder) and you should be presented with a blue shell, starting inside your Documents and Settings folder ([value]C:\Documents and Settings\Your Name[/value]). First thing is to set up your profile with the relevant paths set so we can find the Visual Studio, readline, and Qt4 files. Such settings are stored in a file which doesn’t yet exist, and which is referenced by the environment variable [var]$profile[/var]. You can type this into PowerShell and see exactly where it points to:
+Download PowerShell from [http://support.microsoft.com/kb/968930](http://support.microsoft.com/kb/968930). Once installed, run PowerShell (its Start Menu entry is typically placed inside the 'Accessories' folder) and you should be presented with a blue shell, starting inside your Documents and Settings folder (`C:\Documents and Settings\Your Name`). First thing is to set up your profile with the relevant paths set so we can find the Visual Studio, readline, and Qt4 files. Such settings are stored in a file which doesn’t yet exist, and which is referenced by the environment variable [var]$profile[/var]. You can type this into PowerShell and see exactly where it points to:
 
 <command style="win">$profile</command>
 
@@ -172,7 +172,7 @@ This will take a fair amount of time. Best go and do something else for a bit.
 
 ## Download and Build **Aten**
 
-Get the zipped copy of the source from the [a]downloads,aten,downloads[/a] section - for this example the latest beta version is 1.7.1626, so the zipfile is called [value]aten-1.7.1626.zip[/value]. Unpack the source somewhere – here it has been placed in the users’s home directory – and run  to generate the necessary makefiles:
+Get the zipped copy of the source from the [downloads](/aten/downloads) section - for this example the latest beta version is 1.7.1626, so the zipfile is called `aten-1.7.1626.zip`. Unpack the source somewhere – here it has been placed in the users’s home directory – and run  to generate the necessary makefiles:
 
 <command style="win">cd aten-1.7.1626</command>
 
@@ -182,7 +182,7 @@ Then, build **Aten** by running nmake:
 
 <command style="win" path="C:\Documents and Settings\Your Name\aten-1.7.1626">nmake</command>
 
-Time to wait again, but hopefully after a little while you will see something resembling the following (the important part is the [value][100%] Built target **Aten**[/value]):
+Time to wait again, but hopefully after a little while you will see something resembling the following (the important part is the `[100%] Built target **Aten**`):
 
 ```
 C:\Program Files\Microsoft Visual Studio 10.0\VC\INCLUDE\stdlib.h(433) : see declaration of 'getenv'
@@ -219,10 +219,10 @@ Stop.
 PS C:\Documents and Settings\Your Name\My Documents\aten-1.7.1626>
 ```
 
-These errors arise because the functions [value]rl_*_*[/value] are declared differently between the readline.h and keymaps.h header files, but can be fixed as follows. Since keymaps are not used, the offending lines can be commented out in readline.h. Locate the file (by default, it is installed in [value]C:\Program Files\GnuWin32\include\readline/readline.h[/value]) and edit it with Notepad or something similar. Put a comment marker ([value]/*[/value]) at the very beginning of line 356, and a comment end marker ([value]*/[/value]) at the very end of line 364. Rerun  and everything should be fine.
+These errors arise because the functions `rl_*_*` are declared differently between the readline.h and keymaps.h header files, but can be fixed as follows. Since keymaps are not used, the offending lines can be commented out in readline.h. Locate the file (by default, it is installed in `C:\Program Files\GnuWin32\include\readline/readline.h`) and edit it with Notepad or something similar. Put a comment marker (`/*`) at the very beginning of line 356, and a comment end marker (`*/`) at the very end of line 364. Rerun  and everything should be fine.
 
 ## Anything Else?
 
-Instead of downloading the zipped source of **Aten**, you could download a Windows subversion client and maintain an up-to-date copy of the source on your machine – useful if you want to frequently get the latest updates. There are many subversion clients available, but Win32svn ([a]http://sourceforge.net/projects/win32svn/,http://sourceforge.net/projects/win32svn/[/a]) works well for me.
+Instead of downloading the zipped source of **Aten**, you could download a Windows subversion client and maintain an up-to-date copy of the source on your machine – useful if you want to frequently get the latest updates. There are many subversion clients available, but Win32svn ([http://sourceforge.net/projects/win32svn/](http://sourceforge.net/projects/win32svn/)) works well for me.
 
 

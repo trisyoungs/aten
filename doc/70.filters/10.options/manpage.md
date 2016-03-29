@@ -3,7 +3,7 @@ title: Option Dialogs
 brief: Adding option dialogs to filters
 taxonomy:
   category: docs
-template: docs
+template: manpage
 docroot: /aten/docs
 header_class: alt
 ---

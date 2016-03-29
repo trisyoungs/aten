@@ -1,5 +1,6 @@
 ---
 title: File Formats
+brief: Lists of file formats supported by <strong>Aten</strong>
 taxonomy:
   category: docs
 template: manpage
@@ -7,7 +8,7 @@ docroot: /aten/docs
 header_class: alt
 ---
 
-A list of formats currently supported by **Aten** follows as well as the file extensions and assigned filter IDs. Remember, adding support for other codes and formats is in your hands with **Aten**’s [filters](XXXfilters).
+A list of formats currently supported by **Aten** follows as well as the file extensions and assigned filter IDs. Remember, adding support for other codes and formats is in your hands with **Aten**’s [filters](/aten/docs/filters) system.
 		
 ## Model Formats
 

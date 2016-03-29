@@ -1,5 +1,6 @@
 ---
 title: Switches
+brief: All command-line switches recognised by <strong>Aten</strong>
 taxonomy:
   category: docs
 template: manpage

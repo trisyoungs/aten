@@ -3,7 +3,7 @@ title: Common Problems
 brief: Common problems encountered when compiling
 taxonomy:
   category: docs
-template: docs
+template: manpage
 docroot: /aten/docs
 header_class: alt
 ---

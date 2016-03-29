@@ -1,5 +1,6 @@
 ---
 title: Filter Options
+brief: Providing options to filters to allow user control
 taxonomy:
   category: docs
 template: manpage

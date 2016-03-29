@@ -1,5 +1,6 @@
 ---
 title: Referencing Aten
+brief: How to cite <strong>Aten</strong> in your work
 taxonomy:
   category: docs
 template: manpage

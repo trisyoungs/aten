@@ -1,5 +1,6 @@
 ---
 title: Typing
+brief: Recognising atom types
 taxonomy:
   category: docs
 template: manpage

@@ -1,5 +1,6 @@
 ---
 title: Terminology
+brief: Some terms frequently used in the manual
 taxonomy:
   category: docs
 template: manpage

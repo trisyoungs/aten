@@ -1,6 +1,8 @@
 ---
 title: Patterns
 brief: Pattern definitions and their use
+visible: true
+template: manpage
 taxonomy:
   category: docs
 docroot: /aten/docs

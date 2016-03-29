@@ -1,5 +1,6 @@
 ---
 title: Filter RW
+brief: Reading and writing from filter definitions
 taxonomy:
   category: docs
 template: manpage

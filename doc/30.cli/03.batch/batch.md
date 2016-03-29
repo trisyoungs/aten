@@ -1,5 +1,6 @@
 ---
 title: Batch Processing
+brief: An overview of batch processing capabilities from the command-line
 taxonomy:
   category: docs
 template: manpage

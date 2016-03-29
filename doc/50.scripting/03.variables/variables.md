@@ -1,5 +1,6 @@
 ---
 title: Variables
+brief: Declaring and using variables
 taxonomy:
   category: docs
 template: manpage

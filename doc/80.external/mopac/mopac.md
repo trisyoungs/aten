@@ -1,5 +1,6 @@
 ---
 title: MOPAC
+brief: Using <strong>MOPAC</strong> as an external minimiser
 visible: true
 taxonomy:
   category: docs

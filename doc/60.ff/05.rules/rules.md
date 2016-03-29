@@ -1,5 +1,6 @@
 ---
 title: Rule-based FFs
+brief: How to write rule-based forcefields
 taxonomy:
   category: docs
 template: manpage

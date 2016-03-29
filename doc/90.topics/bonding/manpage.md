@@ -1,6 +1,8 @@
 ---
 title: Bonding
 brief: How Aten calculates and augments bonding patterns
+visible: true
+template: manpage
 taxonomy:
   category: docs
 docroot: /aten/docs

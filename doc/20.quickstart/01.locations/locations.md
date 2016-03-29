@@ -1,5 +1,6 @@
 ---
 title: File Locations
+brief: Data file locations searched by <strong>Aten</strong>
 taxonomy:
   category: docs
 template: manpage

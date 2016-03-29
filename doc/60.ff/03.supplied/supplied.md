@@ -1,5 +1,6 @@
 ---
 title: Supplied FFs
+brief: List of forcefields supplied with <strong>Aten</strong>
 taxonomy:
   category: docs
 template: manpage

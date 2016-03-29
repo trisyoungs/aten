@@ -1,5 +1,6 @@
 ---
 title: Keywords
+brief: Recognised forcefield section keywords
 taxonomy:
   category: docs
 template: manpage

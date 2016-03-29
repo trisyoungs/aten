@@ -1,5 +1,6 @@
 ---
 title: Overview
+brief: Brief overview of the scripting language
 taxonomy:
   category: docs
 template: manpage

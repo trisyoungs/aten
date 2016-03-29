@@ -1,5 +1,6 @@
 ---
 title: NETA Reference
+brief: Descriptions of all <strong>NETA</strong> keywords
 taxonomy:
   category: docs
 template: manpage

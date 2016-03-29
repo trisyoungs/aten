@@ -1,5 +1,6 @@
 ---
 title: Constants
+brief: Built-in constants available in the scripting language
 taxonomy:
   category: docs
 template: manpage

@@ -1,5 +1,6 @@
 ---
 title: Arrays
+brief: Declaring and using arrays
 taxonomy:
   category: docs
 template: manpage

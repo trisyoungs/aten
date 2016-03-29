@@ -1,5 +1,6 @@
 ---
 title: Files
+brief: Forcefield-definition files
 taxonomy:
   category: docs
 template: manpage
