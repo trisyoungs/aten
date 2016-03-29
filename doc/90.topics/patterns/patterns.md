@@ -23,12 +23,12 @@ From the atoms and the connectivity between them **Aten** will automatically det
 
 Consider the following examples:
 
-| System | Atom Ordering | Automatic Pattern |
-|--------|---------------|-------------------|
-| 1) [img]patterns-ex1.gif[/img] | `H1 O2 H3` `H4 O5 H6` `H7 O8 H9` | `HOH(3)` |
-| 2) [img]patterns-ex2.gif[/img] | `H1 Cl2` `H3 O4 H5` `H6 O7 H8` | `HCl(1) HOH(2)` |
-| 3) [img]patterns-ex3.gif[/img] | `H1 O2 H3` `H4 Cl5` `H6 O7 H8` | `HOH(1) HCl(1) HOH(1)` |
-| 4) [img]patterns-ex4.gif[/img] | `H1 O2 H3` `H4` `H5 O6 H7` `Cl8` | `HOH(1) H(1) HHO(1) Cl(1)` |
+| | System | Atom Ordering | Automatic Pattern |
+|-|--------|---------------|-------------------|
+| 1) | ![](patterns-ex1.gif) | `H1 O2 H3`<br/>`H4 O5 H6`<br/> `H7 O8 H9` | `HOH(3)` |
+| 2) | ![](patterns-ex2.gif) | `H1 Cl2`<br/> `H3 O4 H5`<br/> `H6 O7 H8` | `HCl(1) HOH(2)` |
+| 3) | ![](patterns-ex3.gif) | `H1 O2 H3`<br/> `H4 Cl5`<br/> `H6 O7 H8` | `HOH(1) HCl(1) HOH(1)` |
+| 4) | ![](patterns-ex4.gif) | `H1 O2 H3`<br/> `H4`<br/> `H5 O6 H7` `Cl8` | `HOH(1) H(1) HHO(1) Cl(1)` |
 
 In 1) the three water molecules are identical with respect to the ordering of the atoms, so our description consists of a single pattern describing one HOH moiety. Obvious, huh? The two-component system illustrated in 2) has all molecules of the same type one after the other, giving a simple two-term pattern. However, in 3) the two water molecules are separated (in terms of their order) by the HCl, and so a three-term pattern results. In 4) there are, from the point of view of the program, three distinct molecules, since the ordering of atoms in the two water molecules is different, and so three terms are again necessary in the pattern description.
 
