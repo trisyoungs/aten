@@ -2,7 +2,7 @@
 title: The Main Window
 brief: Basic layout of the main window
 taxonomy:
-| category: docs
+  category: docs
 template: manpage
 docroot: /aten/docs
 header_class: alt
