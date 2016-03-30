@@ -1,7 +1,7 @@
 # Simple plot example, rendering a function over a regular 2D grid using triangle glyphs
 
-double deltax = PI/5.0, deltay = PI/5.0;
-int nx = 50, ny = 50, ix, iy;
+double deltax = PI/15.0, deltay = PI/15.0;
+int nx = 150, ny = 150, ix, iy;
 
 double x, y, fxy, slice1[2*ny+1], slice2[2*ny+1], r, g, b, a;
 
