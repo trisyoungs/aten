@@ -118,27 +118,27 @@ header_class: alt
   <column>Undo last operation</column>
  </row>
  <row>
-  <column>Ctrl-1</column>
+  <column>F1</column>
   <column>Stick</column>
   <column>View models as sticks</column>
  </row>
  <row>
-  <column>Ctrl-2</column>
+  <column>F2</column>
   <column>Tube</column>
   <column>View models as tubes</column>
  </row>
  <row>
-  <column>Ctrl-3</column>
+  <column>F3</column>
   <column>Sphere</column>
   <column>View models as tubes and spheres</column>
  </row>
  <row>
-  <column>Ctrl-4</column>
+  <column>F4</column>
   <column>Scaled</column>
   <column>View models as tubes and scaled spheres</column>
  </row>
  <row>
-  <column>Ctrl-5</column>
+  <column>F5</column>
   <column>Individual</column>
   <column>View models according to atom’s assigned styles</column>
  </row>
