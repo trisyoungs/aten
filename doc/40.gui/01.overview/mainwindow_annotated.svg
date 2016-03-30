@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="210mm"
+   height="297mm"
+   viewBox="0 0 744.09448819 1052.3622047"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.91 r13725"
+   sodipodi:docname="mainwindow_annotated.svg">
+  <defs
+     id="defs4" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.98994949"
+     inkscape:cx="600.77226"
+     inkscape:cy="923.72456"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1920"
+     inkscape:window-height="1138"
+     inkscape:window-x="0"
+     inkscape:window-y="25"
+     inkscape:window-maximized="1" />
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <image
+       sodipodi:absref="/home/tris/src/aten/doc/40.gui/01.overview/mainwindow.png"
+       xlink:href="mainwindow.png"
+       inkscape:export-ydpi="199.88448"
+       inkscape:export-xdpi="199.88448"
+       width="566.73309"
+       height="385.25113"
+       preserveAspectRatio="none"
+       style="image-rendering:optimizeQuality"
+       id="image3417"
+       x="100.75857"
+       y="102.6273" />
+    <g
+       id="g4369"
+       transform="translate(75.761441,45.961941)"
+       inkscape:export-filename="/home/tris/src/aten/doc/40.gui/01.overview/mainwindow_annotated.png"
+       inkscape:export-xdpi="199.88448"
+       inkscape:export-ydpi="199.88448">
+      <circle
+         r="17.142859"
+         cy="102.36222"
+         cx="29.285727"
+         id="path3417"
+         style="opacity:1;fill:#ffbc00;fill-opacity:1;stroke:#000000;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.67065872" />
+      <text
+         sodipodi:linespacing="125%"
+         id="text4219"
+         y="111.27494"
+         x="21.740297"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:25.3202343px;line-height:125%;font-family:'Adobe New Century Schoolbook';-inkscape-font-specification:'Adobe New Century Schoolbook';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         xml:space="preserve"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-family:'Century Schoolbook L';-inkscape-font-specification:'Century Schoolbook L Medium'"
+           y="111.27494"
+           x="21.740297"
+           id="tspan4221"
+           sodipodi:role="line">1</tspan></text>
+    </g>
+    <g
+       id="g4364"
+       transform="translate(127.06448,148.33331)"
+       inkscape:export-filename="/home/tris/src/aten/doc/40.gui/01.overview/mainwindow_annotated.png"
+       inkscape:export-xdpi="199.88448"
+       inkscape:export-ydpi="199.88448">
+      <circle
+         r="17.142859"
+         cy="153.07649"
+         cx="18.571428"
+         id="path3417-6"
+         style="opacity:1;fill:#ffbc00;fill-opacity:1;stroke:#000000;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.67065872" />
+      <text
+         sodipodi:linespacing="125%"
+         id="text4219-0"
+         y="161.98921"
+         x="11.734965"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:25.3202343px;line-height:125%;font-family:'Adobe New Century Schoolbook';-inkscape-font-specification:'Adobe New Century Schoolbook';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         xml:space="preserve"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-family:'Century Schoolbook L';-inkscape-font-specification:'Century Schoolbook L Medium'"
+           y="161.98921"
+           x="11.734965"
+           id="tspan4221-7"
+           sodipodi:role="line">2</tspan></text>
+    </g>
+    <g
+       id="g4359"
+       transform="translate(230.22919,111.90474)"
+       inkscape:export-filename="/home/tris/src/aten/doc/40.gui/01.overview/mainwindow_annotated.png"
+       inkscape:export-xdpi="199.88448"
+       inkscape:export-ydpi="199.88448">
+      <circle
+         r="17.142859"
+         cy="189.50507"
+         cx="25.714285"
+         id="path3417-0"
+         style="opacity:1;fill:#ffbc00;fill-opacity:1;stroke:#000000;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.67065872" />
+      <text
+         sodipodi:linespacing="125%"
+         id="text4219-6"
+         y="198.22789"
+         x="18.877821"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:25.3202343px;line-height:125%;font-family:'Adobe New Century Schoolbook';-inkscape-font-specification:'Adobe New Century Schoolbook';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         xml:space="preserve"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-family:'Century Schoolbook L';-inkscape-font-specification:'Century Schoolbook L Medium'"
+           y="198.22789"
+           x="18.877821"
+           id="tspan4221-0"
+           sodipodi:role="line">3</tspan></text>
+    </g>
+    <g
+       id="g4354"
+       transform="translate(475.40643,70.476163)"
+       inkscape:export-filename="/home/tris/src/aten/doc/40.gui/01.overview/mainwindow_annotated.png"
+       inkscape:export-xdpi="199.88448"
+       inkscape:export-ydpi="199.88448">
+      <circle
+         r="17.142859"
+         cy="230.93364"
+         cx="21.071428"
+         id="path3417-7"
+         style="opacity:1;fill:#ffbc00;fill-opacity:1;stroke:#000000;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.67065872" />
+      <text
+         sodipodi:linespacing="125%"
+         id="text4219-3"
+         y="239.84636"
+         x="14.045063"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:25.3202343px;line-height:125%;font-family:'Adobe New Century Schoolbook';-inkscape-font-specification:'Adobe New Century Schoolbook';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         xml:space="preserve"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-family:'Century Schoolbook L';-inkscape-font-specification:'Century Schoolbook L Medium'"
+           y="239.84636"
+           x="14.045063"
+           id="tspan4221-5"
+           sodipodi:role="line">4</tspan></text>
+    </g>
+    <g
+       id="g4349"
+       transform="translate(297.14287,205.29405)"
+       inkscape:export-filename="/home/tris/src/aten/doc/40.gui/01.overview/mainwindow_annotated.png"
+       inkscape:export-xdpi="199.88448"
+       inkscape:export-ydpi="199.88448">
+      <circle
+         r="17.142859"
+         cy="274.14792"
+         cx="21.428572"
+         id="path3417-9"
+         style="opacity:1;fill:#ffbc00;fill-opacity:1;stroke:#000000;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.67065872" />
+      <text
+         sodipodi:linespacing="125%"
+         id="text4219-2"
+         y="282.87073"
+         x="14.503488"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:25.3202343px;line-height:125%;font-family:'Adobe New Century Schoolbook';-inkscape-font-specification:'Adobe New Century Schoolbook';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         xml:space="preserve"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-family:'Century Schoolbook L';-inkscape-font-specification:'Century Schoolbook L Medium'"
+           y="282.87073"
+           x="14.503488"
+           id="tspan4221-9"
+           sodipodi:role="line">5</tspan></text>
+    </g>
+    <g
+       id="g4344"
+       transform="translate(640.2469,162.53233)"
+       inkscape:export-xdpi="199.88448"
+       inkscape:export-ydpi="199.88448">
+      <circle
+         r="17.142859"
+         cy="316.90964"
+         cx="22.404474"
+         id="path3417-3"
+         style="opacity:1;fill:#ffbc00;fill-opacity:1;stroke:#000000;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.67065872" />
+      <text
+         sodipodi:linespacing="125%"
+         id="text4219-31"
+         y="325.63245"
+         x="15.340129"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:25.3202343px;line-height:125%;font-family:'Adobe New Century Schoolbook';-inkscape-font-specification:'Adobe New Century Schoolbook';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         xml:space="preserve"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-family:'Century Schoolbook L';-inkscape-font-specification:'Century Schoolbook L Medium'"
+           y="325.63245"
+           x="15.340129"
+           id="tspan4221-4"
+           sodipodi:role="line">6</tspan></text>
+    </g>
+    <g
+       id="g4339"
+       transform="translate(13.214298,-17.5)">
+      <circle
+         r="17.142859"
+         cy="354.14792"
+         cx="16.071428"
+         id="path3417-8"
+         style="opacity:1;fill:#ffbc00;fill-opacity:1;stroke:#000000;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.67065872" />
+      <text
+         sodipodi:linespacing="125%"
+         id="text4219-8"
+         y="362.88339"
+         x="8.8931417"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:25.3202343px;line-height:125%;font-family:'Adobe New Century Schoolbook';-inkscape-font-specification:'Adobe New Century Schoolbook';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         xml:space="preserve"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-family:'Century Schoolbook L';-inkscape-font-specification:'Century Schoolbook L Medium'"
+           y="362.88339"
+           x="8.8931417"
+           id="tspan4221-09"
+           sodipodi:role="line">7</tspan></text>
+    </g>
+    <g
+       id="g4334"
+       transform="translate(12.500011,-14.88092)">
+      <circle
+         r="17.142859"
+         cy="390.57648"
+         cx="16.785715"
+         id="path3417-89"
+         style="opacity:1;fill:#ffbc00;fill-opacity:1;stroke:#000000;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.67065872" />
+      <text
+         sodipodi:linespacing="125%"
+         id="text4219-1"
+         y="399.29929"
+         x="9.7720098"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:25.3202343px;line-height:125%;font-family:'Adobe New Century Schoolbook';-inkscape-font-specification:'Adobe New Century Schoolbook';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         xml:space="preserve"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-family:'Century Schoolbook L';-inkscape-font-specification:'Century Schoolbook L Medium'"
+           y="399.29929"
+           x="9.7720098"
+           id="tspan4221-3"
+           sodipodi:role="line">8</tspan></text>
+    </g>
+    <g
+       id="g4329"
+       transform="translate(9.2857265,-4.7619019)">
+      <circle
+         r="17.142859"
+         cy="419.50507"
+         cx="20"
+         id="path3417-97"
+         style="opacity:1;fill:#ffbc00;fill-opacity:1;stroke:#000000;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.67065872" />
+      <text
+         sodipodi:linespacing="125%"
+         id="text4219-25"
+         y="428.22787"
+         x="13.011616"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:25.3202343px;line-height:125%;font-family:'Adobe New Century Schoolbook';-inkscape-font-specification:'Adobe New Century Schoolbook';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         xml:space="preserve"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-family:'Century Schoolbook L';-inkscape-font-specification:'Century Schoolbook L Medium'"
+           y="428.22787"
+           x="13.011616"
+           id="tspan4221-77"
+           sodipodi:role="line">9</tspan></text>
+    </g>
+    <g
+       id="g4324"
+       transform="translate(11.785727,0)">
+      <circle
+         r="17.142859"
+         cy="453.79077"
+         cx="17.5"
+         id="path3417-05"
+         style="opacity:1;fill:#ffbc00;fill-opacity:1;stroke:#000000;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:0.67065872" />
+      <text
+         sodipodi:linespacing="125%"
+         id="text4219-9"
+         y="462.51358"
+         x="2.6795528"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:25.3202343px;line-height:125%;font-family:'Adobe New Century Schoolbook';-inkscape-font-specification:'Adobe New Century Schoolbook';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         xml:space="preserve"><tspan
+           style="font-style:normal;font-variant:normal;font-weight:500;font-stretch:normal;font-family:'Century Schoolbook L';-inkscape-font-specification:'Century Schoolbook L Medium'"
+           y="462.51358"
+           x="2.6795528"
+           id="tspan4221-8"
+           sodipodi:role="line">10</tspan></text>
+    </g>
+  </g>
+</svg>
