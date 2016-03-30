@@ -298,10 +298,7 @@ void AtenWindow::recreateGridsForView()
 	// For all models, log a change so that we recreate all grids
 	for (Model* m = aten_.models(); m != NULL; m = m->next)
 	{
-		for (Grid* g = m->grids(); g != NULL; g = g->next)
-		{
-			g->logChange();
-		}
+		m->updateGridAxisOrdering();
 	}
 
 	updateWidgets(AtenWindow::MainViewTarget);

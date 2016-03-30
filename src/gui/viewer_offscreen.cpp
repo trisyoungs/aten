@@ -52,7 +52,10 @@ QPixmap Viewer::generateModelImage(Model* model, int width, int height)
 	int iconHeight = width;
 
 	// Initialise framebuffer format and object
-	QOpenGLFramebufferObject frameBufferObject(iconWidth, iconHeight, QOpenGLFramebufferObject::Depth);
+	QOpenGLFramebufferObjectFormat fboFormat;
+// 	fboFormat.setMipmap(true);
+// 	fboFormat.setSamples(4);
+	QOpenGLFramebufferObject frameBufferObject(iconWidth, iconHeight, fboFormat);
 
 	if (!frameBufferObject.bind())
 	{
@@ -80,13 +83,14 @@ QPixmap Viewer::generateModelImage(Model* model, int width, int height)
         glFlush();
 
 	// Grab image ready for return
-	QImage image = frameBufferObject.toImage();
+	QImage fboImage(frameBufferObject.toImage());
+	QImage image(fboImage.constBits(), fboImage.width(), fboImage.height(), QImage::Format_ARGB32);
 
 	// Reset context back to main view
 	makeCurrent();
 
 	Messenger::exit("Viewer::generateModelImage");
-	return QPixmap::fromImage(image);
+	return QPixmap::fromImage(image, Qt::AutoColor);
 }
 
 // Render current scene at supplied size (or current widget size if none provided)
@@ -164,10 +168,10 @@ QPixmap Viewer::generateImage(int imageWidth, int imageHeight)
 
 			// Generate this tile
 			QImage fboImage(frameBufferObject.toImage());
-			QImage tile(fboImage.constBits(), fboImage.width(), fboImage.height(), fboImage.format());
+			QImage tile(fboImage.constBits(), fboImage.width(), fboImage.height(), QImage::Format_ARGB32);
 
 			// Paste this tile into the main image
-			painter.drawImage(x*tileWidth, imageHeight-(y+1)*tileHeight, tile);
+			painter.drawImage(x*tileWidth, imageHeight-(y+1)*tileHeight, tile, Qt::ThresholdAlphaDither | Qt::ColorOnly);
 
 			if (!Messenger::incrementTaskProgress(task)) break;
 		}
