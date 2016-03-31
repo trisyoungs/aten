@@ -8,8 +8,6 @@ docroot: /aten/docs
 header_class: alt
 ---
 
-## Installed / Provided Files
-
 **Aten** depends on several sets of files in order to function properly and, generally-speaking, knows where to look for them. Sometimes, however, you may need to tell **Aten** where these files are (e.g. if you have not installed **Aten** after compiling the source yourself). There are several ways of achieving this. When running **Aten** from the command-line, the [--atendata](/aten/docs/cli/switches#atendata) switch can be used to specify the location of **Aten**’s data files. For instance:
 
 ```

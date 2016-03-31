@@ -75,9 +75,9 @@ void FileAtenPopup::on_StoreStateButton_clicked(bool checked)
 
 	// Toolbar visibility / position
 	settings.setValue("MainWinPositions", parent_.saveState() );
-	settings.setValue("MainWinGeometries", saveGeometry() );
-	settings.setValue("MainWinSize", size());
-	settings.setValue("MainWinPosition", pos());
+	settings.setValue("MainWinGeometries", parent_.saveGeometry() );
+	settings.setValue("MainWinSize", parent_.size());
+	settings.setValue("MainWinPosition", parent_.pos());
 
 	// Atoms table and models list
 	settings.setValue("AtomsTableCollapsed", !parent_.ui.AtomsTableToggleButton->isChecked());

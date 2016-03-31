@@ -39,6 +39,16 @@ void ResetViewPopup::updateControls()
 {
 	refreshing_ = true;
 
+	bool periodic = (parent_.aten().currentModelOrFrame() ? parent_.aten().currentModelOrFrame()->isPeriodic() : false);
+
+	// Set enabled state of Cell-based view buttons
+	ui.CellNegativeXButton->setEnabled(periodic);
+	ui.CellNegativeYButton->setEnabled(periodic);
+	ui.CellNegativeZButton->setEnabled(periodic);
+	ui.CellPositiveXButton->setEnabled(periodic);
+	ui.CellPositiveYButton->setEnabled(periodic);
+	ui.CellPositiveZButton->setEnabled(periodic);
+
 	refreshing_ = false;
 }
 

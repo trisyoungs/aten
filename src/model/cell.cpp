@@ -573,3 +573,8 @@ double Model::density() const
 	return density;
 }
 
+	// Return whether the model is periodic
+bool Model::isPeriodic() const
+{
+	return (cell_.type() != UnitCell::NoCell);
+}

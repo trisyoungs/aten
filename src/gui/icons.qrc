@@ -208,7 +208,19 @@
     <file>icons/view_lock.svg</file>
     <file>icons/view_zoomin.svg</file>
     <file>icons/view_set.svg</file>
+    <file>icons/view_minusx.png</file>
+    <file>icons/view_minusy.png</file>
+    <file>icons/view_minusz.png</file>
+    <file>icons/view_plusx.png</file>
+    <file>icons/view_plusy.png</file>
+    <file>icons/view_plusz.png</file>
     <file>icons/view_reset.svg</file>
+    <file>icons/view_minusx_cell.svg</file>
+    <file>icons/view_minusy_cell.svg</file>
+    <file>icons/view_minusz_cell.svg</file>
+    <file>icons/view_plusx_cell.svg</file>
+    <file>icons/view_plusy_cell.svg</file>
+    <file>icons/view_plusz_cell.svg</file>
     <file>icons/view_get.svg</file>
     <file>icons/view_hbonds.svg</file>
     <file>icons/view_perspective.svg</file>

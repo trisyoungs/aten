@@ -25,14 +25,23 @@
    <string>ResetView Popup</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
    <property name="horizontalSpacing">
     <number>0</number>
    </property>
    <property name="verticalSpacing">
     <number>2</number>
-   </property>
-   <property name="margin">
-    <number>0</number>
    </property>
    <item row="0" column="0">
     <widget class="QToolButton" name="CartesianNegativeXButton">
@@ -53,7 +62,7 @@
      </property>
      <property name="icon">
       <iconset resource="icons.qrc">
-       <normaloff>:/stackicons/icons/stack_celldefine.svg</normaloff>:/stackicons/icons/stack_celldefine.svg</iconset>
+       <normaloff>:/view/icons/view_minusx.png</normaloff>:/view/icons/view_minusx.png</iconset>
      </property>
      <property name="iconSize">
       <size>
@@ -94,7 +103,7 @@
      </property>
      <property name="icon">
       <iconset resource="icons.qrc">
-       <normaloff>:/stackicons/icons/stack_celldefine.svg</normaloff>:/stackicons/icons/stack_celldefine.svg</iconset>
+       <normaloff>:/view/icons/view_minusy.png</normaloff>:/view/icons/view_minusy.png</iconset>
      </property>
      <property name="iconSize">
       <size>
@@ -135,7 +144,7 @@
      </property>
      <property name="icon">
       <iconset resource="icons.qrc">
-       <normaloff>:/stackicons/icons/stack_celldefine.svg</normaloff>:/stackicons/icons/stack_celldefine.svg</iconset>
+       <normaloff>:/view/icons/view_minusz.png</normaloff>:/view/icons/view_minusz.png</iconset>
      </property>
      <property name="iconSize">
       <size>
@@ -176,7 +185,7 @@
      </property>
      <property name="icon">
       <iconset resource="icons.qrc">
-       <normaloff>:/stackicons/icons/stack_celldefine.svg</normaloff>:/stackicons/icons/stack_celldefine.svg</iconset>
+       <normaloff>:/view/icons/view_plusx.png</normaloff>:/view/icons/view_plusx.png</iconset>
      </property>
      <property name="iconSize">
       <size>
@@ -217,7 +226,7 @@
      </property>
      <property name="icon">
       <iconset resource="icons.qrc">
-       <normaloff>:/stackicons/icons/stack_celldefine.svg</normaloff>:/stackicons/icons/stack_celldefine.svg</iconset>
+       <normaloff>:/view/icons/view_plusy.png</normaloff>:/view/icons/view_plusy.png</iconset>
      </property>
      <property name="iconSize">
       <size>
@@ -258,7 +267,7 @@
      </property>
      <property name="icon">
       <iconset resource="icons.qrc">
-       <normaloff>:/stackicons/icons/stack_celldefine.svg</normaloff>:/stackicons/icons/stack_celldefine.svg</iconset>
+       <normaloff>:/view/icons/view_plusz.png</normaloff>:/view/icons/view_plusz.png</iconset>
      </property>
      <property name="iconSize">
       <size>
@@ -306,7 +315,7 @@
      </property>
      <property name="icon">
       <iconset resource="icons.qrc">
-       <normaloff>:/stackicons/icons/stack_celldefine.svg</normaloff>:/stackicons/icons/stack_celldefine.svg</iconset>
+       <normaloff>:/view/icons/view_minusx_cell.svg</normaloff>:/view/icons/view_minusx_cell.svg</iconset>
      </property>
      <property name="iconSize">
       <size>
@@ -347,7 +356,7 @@
      </property>
      <property name="icon">
       <iconset resource="icons.qrc">
-       <normaloff>:/stackicons/icons/stack_celldefine.svg</normaloff>:/stackicons/icons/stack_celldefine.svg</iconset>
+       <normaloff>:/view/icons/view_minusy_cell.svg</normaloff>:/view/icons/view_minusy_cell.svg</iconset>
      </property>
      <property name="iconSize">
       <size>
@@ -388,7 +397,7 @@
      </property>
      <property name="icon">
       <iconset resource="icons.qrc">
-       <normaloff>:/stackicons/icons/stack_celldefine.svg</normaloff>:/stackicons/icons/stack_celldefine.svg</iconset>
+       <normaloff>:/view/icons/view_minusz_cell.svg</normaloff>:/view/icons/view_minusz_cell.svg</iconset>
      </property>
      <property name="iconSize">
       <size>
@@ -429,7 +438,7 @@
      </property>
      <property name="icon">
       <iconset resource="icons.qrc">
-       <normaloff>:/stackicons/icons/stack_celldefine.svg</normaloff>:/stackicons/icons/stack_celldefine.svg</iconset>
+       <normaloff>:/view/icons/view_plusx_cell.svg</normaloff>:/view/icons/view_plusx_cell.svg</iconset>
      </property>
      <property name="iconSize">
       <size>
@@ -470,7 +479,7 @@
      </property>
      <property name="icon">
       <iconset resource="icons.qrc">
-       <normaloff>:/stackicons/icons/stack_celldefine.svg</normaloff>:/stackicons/icons/stack_celldefine.svg</iconset>
+       <normaloff>:/view/icons/view_plusy_cell.svg</normaloff>:/view/icons/view_plusy_cell.svg</iconset>
      </property>
      <property name="iconSize">
       <size>
@@ -511,7 +520,7 @@
      </property>
      <property name="icon">
       <iconset resource="icons.qrc">
-       <normaloff>:/stackicons/icons/stack_celldefine.svg</normaloff>:/stackicons/icons/stack_celldefine.svg</iconset>
+       <normaloff>:/view/icons/view_plusz_cell.svg</normaloff>:/view/icons/view_plusz_cell.svg</iconset>
      </property>
      <property name="iconSize">
       <size>

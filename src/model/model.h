@@ -288,6 +288,8 @@ class Model : public ListItem<Model>
 	void rotateCell(int axis, double angle);
 	// Return the density of the model
 	double density() const;
+	// Return whether the model is periodic
+	bool isPeriodic() const;
 
 
 	/*
