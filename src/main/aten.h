@@ -533,6 +533,12 @@ class Aten
 	/*
 	 * Prefs
 	 */
+	private:
+	// Dump element information to specified LineParser
+	void dumpElementInfo(LineParser& parser);
+	// Dump preferences values to specified LineParser
+	void dumpPreferences(LineParser& parser);
+
 	public:
 	// Load user preferences file
 	bool loadPrefs();

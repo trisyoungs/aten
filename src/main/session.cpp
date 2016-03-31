@@ -78,7 +78,12 @@ bool Aten::saveSession(QString filename)
 	// Write header information
 	parser.writeLineF("// Session file saved from Aten version %s on %s\n", ATENVERSION, qPrintable(QDateTime::currentDateTime().toString()));
 
-	
+	// Preferences
+	dumpPreferences(parser);
+
+	// Element information
+	dumpElementInfo(parser);
+
 	// Non-model related settings / aspects
 	// TODO Forcefields etc.
 

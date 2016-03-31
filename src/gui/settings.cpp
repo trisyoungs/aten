@@ -264,7 +264,6 @@ void AtenWindow::saveSettings()
 		settings.endGroup();
 	}
 
-
 	// History file
 	LineParser historyFile;
 	historyFile.openOutput(filename, true);

@@ -40,8 +40,8 @@ void AtenWindow::updateMainWindow()
 		// Parent / frame information
 		if (currentModel->hasTrajectory())
 		{
-			if (currentModel->renderSourceModel() == currentModel) modelLabelText = "(Parent of " + QString::number(currentModel->nTrajectoryFrames()) + " frames) ";
-			else modelLabelText = "(Frame " + QString::number(currentModel->trajectoryFrameIndex()+1) + " of " + QString::number(currentModel->nTrajectoryFrames()) + ") ";
+			if (currentModel->renderSourceModel() == currentModel) modelLabelText = "[Parent of " + QString::number(currentModel->nTrajectoryFrames()) + "]";
+			else modelLabelText = "[Frame " + QString::number(currentModel->trajectoryFrameIndex()+1) + " of " + QString::number(currentModel->nTrajectoryFrames()) + "]";
 		}
 		else modelLabelText = "[Model]";
 
