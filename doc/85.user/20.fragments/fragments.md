@@ -15,8 +15,8 @@ Fragments are useful things when building complex molecules, or when it is just 
 
 The recommended way of creating a user fragment is as follows:
 
-# Draw or import the desired fragment
-# Convert one or more atoms to unknown element XX (by using the [**Set to Unknown**] option on the [**Selection** panel](/aten/docs/gui/selection) or on the atom context menu.
-# Save the model in Aten Keyword Format (akf) since this format retains all bond information exactly
-# Place the model file in your user data directory in the `fragments` folder
-# Reload **Aten** and your fragment(s) will be available in the [Fragment tool](/aten/docs/gui/build#draw).
++ Draw or import the desired fragment
++ Convert one or more atoms to unknown element XX (by using the [**Set to Unknown**] option on the [**Selection** panel](/aten/docs/gui/selection) or on the atom context menu.
++ Save the model in Aten Keyword Format (akf) since this format retains all bond information exactly
++ Place the model file in your user data directory in the `fragments` folder
++ Reload **Aten** and your fragment(s) will be available in the [Fragment tool](/aten/docs/gui/build#draw).

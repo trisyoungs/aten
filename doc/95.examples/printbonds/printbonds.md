@@ -1,14 +1,14 @@
 ---
-title: X
+title: Bond Distances
+brief: Print all bond distances from the CLI
 taxonomy:
   category: docs
+  example: [CLI]
+visible: true
 template: manpage
 docroot: /aten/docs
 header_class: alt
 ---
-
-
-# Example - Print All Bond Distances (CLI)
 
 Quickly getting at geometric data in a model file is often useful without having to go through the GUI, in order to quickly verify a geometry or get certain data into a file. The following command prints out all of the bond distances, including the indices of the atoms involved, from the command line:
 
@@ -31,6 +31,5 @@ Distance 1-5 = 1.080000
 Distance 4-6 = 1.079999
 ```
 
-All very good, but what about the extra information printed by **Aten** (such as pattern detection, etc.)? This can be inhibited by adding the [a]`-q`,cli-switches#switch_q[/a] switch to the command.
-
+All very good, but what about the extra information printed by **Aten** (such as pattern detection, etc.)? This can be inhibited by adding the [`-q` switch](/aten/docs/cli/switches#q) to the command.
 

@@ -1,3 +1,20 @@
+---
+title: Function Plot
+brief: Plot an arbitrary 2D function using glyph triangles
+taxonomy:
+  category: docs
+  example: [scripting, glyphs]
+visible: true
+template: manpage
+docroot: /aten/docs
+header_class: alt
+---
+
+This example demonstrates the use of [Glyphs](/aten/docs/topics/glyphs) by creating a height-map rendering of a 2D function, discretised over a regular grid of points. To give the plotted function some character we use a [ColourScale](/aten/docs/topics/colourscales) to give the surface a nice semi-transparent gradient.
+
+The script for this example can be found in `data/scripts/plotxy.txt`.
+
+```aten
 # Setup some variables - number of points and step deltas
 double deltax = PI/15.0, deltay = PI/15.0;
 int nx = 150, ny = 150, ix, iy;
@@ -80,3 +97,6 @@ for (ix = 0; ix <= 2*nx; ++ix)
 	# Copy slice2[] values into slice1[] for next pass
 	for (iy = 0; iy <=2*ny; ++iy) slice1[iy+1] = slice2[iy+1];
 }
+```
+
+![The function z=100*sin(x)*sin(y)](function.png){.imgfull}
