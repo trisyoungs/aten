@@ -1,20 +1,25 @@
 ---
-title: X
+title: Building Ice
+brief: Building Ice Ih from Crystal Information
 taxonomy:
   category: docs
+  examples: [GUI, building, crystal, spacegroup]
+visible: true
 template: manpage
 docroot: /aten/docs
 header_class: alt
 ---
 
-
-# Example - Building Ice Ih from Crystal Information (GUI)
-
-Similar in spirit to the [a]alumina example,examples-alumina[/a], here we create a single ice I<sub>h</sub> crystal from the crystal information, and then replicate it to form a larger supercell. The crystal information used below is from Leadbetter _et al._, _J. Chem. Phys._, **82**, 424 (1985), Table II (Structural parameters of ice at 5 K).
+Similar in spirit to the [alumina example](/aten/docs/examples/alumina), here we create a single ice I<sub>h</sub> crystal from the crystal information, and then replicate it to form a larger supercell. The crystal information used below is from Leadbetter _et al._, _J. Chem. Phys._, **82**, 424 (1985), Table II (Structural parameters of ice at 5 K).
 
 ## Create the Basic Unit Cell
 
 First, we create the unit cell, which from the paper is orthorhombic with side lengths _a_ = 4.5019, _b_ = 7.7978, and _c_ = 7.328 Å. There are five symmetry-unique atoms to add into the cell. This might seem odd given that this doesn't add up to a whole number of water molecules, but one of the water molecules lays with its oxygen on a mirror plane, and so only needs one hydrogen to be specified. Atom positions in the paper are given in fractional coordinates - we will create the atoms using these coordinates which will be converted by **Aten** into their real (cell) coordinates automatically.
+
+![Cell Panel, Define Group](/aten/docs/gui/cell/define.png){.imgfull}
+
++ Go to the [**Define Group**](/aten/docs/gui/cell#define) on the [**Cell Panel**](/aten/docs/gui/cell), and enable the **Periodic** button to add a basic unit cell to our empty model.
++ 
 
 <table>
   <row>
