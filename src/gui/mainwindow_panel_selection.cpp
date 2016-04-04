@@ -137,11 +137,3 @@ void AtenWindow::on_SelectionPositionFreeButton_clicked(bool checked)
 
 	updateWidgets(AtenWindow::MainViewTarget);
 }
-
-void AtenWindow::on_SelectionPositionReorderButton_clicked(bool checked)
-{
-	CommandNode::run(Commands::ReOrder, "");
-
-	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
-}
-	

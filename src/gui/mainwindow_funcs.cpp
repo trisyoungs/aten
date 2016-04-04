@@ -245,9 +245,9 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportFilmD
 	ui.CalculateMeasureTorsionButton->setPopupWidget(new MeasureTorsionPopup(*this, ui.CalculateMeasureTorsionButton));
 
 	// -- Transform Panel (Set)
-	ui.TransformSetDistanceButton->setPopupWidget(new TransformDistancePopup(*this, ui.TransformSetDistanceButton));
-	ui.TransformSetAngleButton->setPopupWidget(new TransformAnglePopup(*this, ui.TransformSetAngleButton));
-	ui.TransformSetTorsionButton->setPopupWidget(new TransformTorsionPopup(*this, ui.TransformSetTorsionButton));
+	ui.TransformGeometryDistanceButton->setPopupWidget(new TransformDistancePopup(*this, ui.TransformGeometryDistanceButton));
+	ui.TransformGeometryAngleButton->setPopupWidget(new TransformAnglePopup(*this, ui.TransformGeometryAngleButton));
+	ui.TransformGeometryTorsionButton->setPopupWidget(new TransformTorsionPopup(*this, ui.TransformGeometryTorsionButton));
 	// -- Transform Panel (Position)
 	ui.TransformPositionCentreButton->setPopupWidget(new TransformCentrePopup(*this, ui.TransformPositionCentreButton));
 	ui.TransformPositionFlipButton->setPopupWidget(new TransformFlipPopup(*this, ui.TransformPositionFlipButton), true);
@@ -310,8 +310,10 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportFilmD
 	connect(shortcut, SIGNAL(activated()), ui.HomeFileOpenButton, SLOT(click()));
 	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_S), this, 0, 0, Qt::ApplicationShortcut);
 	connect(shortcut, SIGNAL(activated()), ui.HomeFileSaveButton, SLOT(click()));
-	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::ALT + Qt::Key_S), this, 0, 0, Qt::ApplicationShortcut);
+	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_S), this, 0, 0, Qt::ApplicationShortcut);
 	connect(shortcut, SIGNAL(activated()), ui.HomeFileSaveAsButton, SLOT(click()));
+	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_W), this, 0, 0, Qt::ApplicationShortcut);
+	connect(shortcut, SIGNAL(activated()), ui.HomeFileCloseButton, SLOT(click()));
 	// Home Panel (Edit)
 	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_C), this, 0, 0, Qt::ApplicationShortcut);
 	connect(shortcut, SIGNAL(activated()), ui.HomeEditCopyButton, SLOT(click()));
@@ -319,7 +321,7 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportFilmD
 	connect(shortcut, SIGNAL(activated()), ui.HomeEditCutButton, SLOT(click()));
 	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_V), this, 0, 0, Qt::ApplicationShortcut);
 	connect(shortcut, SIGNAL(activated()), ui.HomeEditPasteButton, SLOT(click()));
-	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_Backspace), this, 0, 0, Qt::ApplicationShortcut);
+	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_Delete), this, 0, 0, Qt::ApplicationShortcut);
 	connect(shortcut, SIGNAL(activated()), ui.HomeEditDeleteButton, SLOT(click()));
 	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_Z), this, 0, 0, Qt::ApplicationShortcut);
 	connect(shortcut, SIGNAL(activated()), ui.HomeEditUndoButton, SLOT(click()));
@@ -346,6 +348,8 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportFilmD
 	connect(shortcut, SIGNAL(activated()), ui.HomeAppearanceVelocityButton, SLOT(click()));
 	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_F5), this, 0, 0, Qt::ApplicationShortcut);
 	connect(shortcut, SIGNAL(activated()), ui.HomeAppearanceOwnColourButton, SLOT(click()));
+	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_H), this, 0, 0, Qt::ApplicationShortcut);
+	connect(shortcut, SIGNAL(activated()), ui.HomeAppearanceShowAllButton, SLOT(click()));
 	// Home Panel (View)
 	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_R), this, 0, 0, Qt::ApplicationShortcut);
 	connect(shortcut, SIGNAL(activated()), ui.HomeViewResetButton, SLOT(click()));
@@ -359,8 +363,6 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportFilmD
 	// Select Panel
 	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_A), this, 0, 0, Qt::ApplicationShortcut);
 	connect(shortcut, SIGNAL(activated()), ui.SelectBasicAllButton, SLOT(click()));
-	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_N), this, 0, 0, Qt::ApplicationShortcut);
-	connect(shortcut, SIGNAL(activated()), ui.SelectBasicNoneButton, SLOT(click()));
 	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_I), this, 0, 0, Qt::ApplicationShortcut);
 	connect(shortcut, SIGNAL(activated()), ui.SelectBasicInvertButton, SLOT(click()));
 	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_E), this, 0, 0, Qt::ApplicationShortcut);
@@ -369,7 +371,7 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportFilmD
 	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_H), this, 0, 0, Qt::ApplicationShortcut);
 	connect(shortcut, SIGNAL(activated()), ui.SelectionAppearanceHideButton, SLOT(click()));
 	// Transform Panel
-	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::ALT + Qt::Key_C), this, 0, 0, Qt::ApplicationShortcut);
+	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_0), this, 0, 0, Qt::ApplicationShortcut);
 	connect(shortcut, SIGNAL(activated()), ui.TransformPositionZeroButton, SLOT(click()));
 	// Main Window
 	shortcut = new QShortcut(QKeySequence(Qt::Key_F10), this, 0, 0, Qt::ApplicationShortcut);

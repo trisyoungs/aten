@@ -18,21 +18,31 @@ The **Home** panel contains all common tasks such as model loading / saving, ima
 
 ### New
 
+_Shortcut: Ctrl-N_
+
 Create a new, empty model
 
 ### Open
+
+_Shortcut: Ctrl-O_
 
 Load an existing model from disk.  Long-pressing shows the recent files menu.
 
 ### Save
 
+_Shortcut: Ctrl-S_
+
 Saves the current model, overwriting its existing file.  Long-pressing allows access to any filter **Options** that are available for the current file save format.
 
 ### Save As
 
+_Shortcut: Ctrl-Shift-S_
+
 Saves the current model under a different filename.
 
 ### Close
+
+_Shortcut: Ctrl-W_
 
 Closes the current model, saving any changes first to the existing file (or, optionally, a new file if no there is no existing filename).
 
@@ -56,7 +66,41 @@ The **Aten** button provides access to various program-related functions / optio
 
 ![Edit Group](edit.png){.imgfull}
 
-Standard **Cut**, **Copy**, **Paste**, and **Delete** buttons, and **Undo** and **Redo** for the current model. 
+### Cut
+
+_Shortcut: Ctrl-X_
+
+Copy and remove the current atom selection
+
+### Copy
+
+_Shortcut: Ctrl-C_
+
+Copy the current atom selection
+
+### Paste
+
+_Shortcut: Ctrl-V_
+
+Paste the last copied atom selection at their original coordinates
+
+### Delete
+
+_Shortcut: Ctrl-Delete_
+
+Delete the current atom selection
+
+### Undo
+
+_Shortcut: Ctrl-Z_
+
+Undo the last performed action
+
+### Redo
+
+_Shortcut: Ctrl-Shift-Z_
+
+Redo the last performed action
 
 ## Appearance Group <a id="appearance"></a>
 
@@ -64,9 +108,14 @@ Standard **Cut**, **Copy**, **Paste**, and **Delete** buttons, and **Undo** and 
 
 ### Drawing Style
 
+_Shortcut: F1 - F5_
+
 The top row of five [Drawing Style](/aten/docs/enums/drawstyle) icons affects the global appearance of all models, showing them as (left to right) 'stick', 'tube', 'sphere', 'scaled sphere', and 'individual' styles. The latter renders each atom according to its locally-set style (which defaults to 'stick') and which can be modified through the [**Selection** panel](/aten/docs/gui/selection).
 
 ### Colour Scheme
+
+_Shortcut: Ctrl-F1 - Ctrl-F5_
+
 While the top row of five icons affects drawing style, the bottom row affects the atom [Colour Scheme](/aten/docs/enums/colourscheme) used.  Left to right these are: 'element', 'charge', 'force', 'velocity', and 'custom'. The 'element' style colours atoms according to the colours set for elements in the Preferences, while the 'charge', 'force', and 'velocity' options colour according to the relevant atomic property and the associated [Colourscale](/aten/docs/topics/colourscales) in the Preferences. The final option, 'custom', colours each atom according to its locally-set colour, which defaults to that corresponding to its element, but which may be changed through the [**Selection** panel](/aten/docs/gui/selection).
 
 ### Perspective
@@ -74,6 +123,8 @@ While the top row of five icons affects drawing style, the bottom row affects th
 Toggles between perspective and orthographic displays for all models
 
 ### Show All
+
+_Shortcut: Ctrl-Shift-H_
 
 Un-hides any previously-hidden atoms in the current model.
 
@@ -83,6 +134,8 @@ Un-hides any previously-hidden atoms in the current model.
 
 ### Reset
 
+_Shortcut: Ctrl-R_
+
 Resets the view of the current model to the default, looking straight along negative-Z, with X left-to-right and Y bottom-to-top. Long-pressing shows additional view orientations along cartesian and cell axes that may be set.
 
 ### Get / Set
@@ -90,6 +143,8 @@ Resets the view of the current model to the default, looking straight along nega
 Copies (**Get**) and applies (**Set**) the view from / to the current model, and can be used to apply specific view orientations from one model to another.
 
 ### H-Bonds
+
+_Shortcut: F8_
 
 Toggles detection and display of hydrogen bond-type interactions. The appearance of the H-bond 'dots' can be changed in the [**Preferences** window](/aten/docs/gui/prefs).
 

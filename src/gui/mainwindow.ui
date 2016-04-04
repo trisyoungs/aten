@@ -7,8 +7,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1345</width>
-    <height>733</height>
+    <width>1183</width>
+    <height>715</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -121,7 +121,7 @@
           <item row="0" column="0">
            <widget class="TMenuButton" name="HomeFileNewButton">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+             <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -144,7 +144,7 @@
              </font>
             </property>
             <property name="toolTip">
-             <string>Create a new, empty model</string>
+             <string>Create a new, empty model (Ctrl-N)</string>
             </property>
             <property name="text">
              <string>New</string>
@@ -179,7 +179,7 @@
           <item row="0" column="1">
            <widget class="TMenuButton" name="HomeFileOpenButton">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+             <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -202,7 +202,7 @@
              </font>
             </property>
             <property name="toolTip">
-             <string>Open an existing model</string>
+             <string>Open an existing model (Ctrl-O)</string>
             </property>
             <property name="text">
              <string>Open</string>
@@ -237,7 +237,7 @@
           <item row="0" column="2">
            <widget class="TMenuButton" name="HomeFileSaveButton">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+             <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -260,7 +260,7 @@
              </font>
             </property>
             <property name="toolTip">
-             <string>Save the current model</string>
+             <string>Save the current model (Ctrl-S)</string>
             </property>
             <property name="text">
              <string>Save</string>
@@ -295,7 +295,7 @@
           <item row="0" column="3">
            <widget class="TMenuButton" name="HomeFileSaveAsButton">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+             <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -318,7 +318,7 @@
              </font>
             </property>
             <property name="toolTip">
-             <string>Save the current model under a different name</string>
+             <string>Save the current model under a different name (Ctrl-Alt-S)</string>
             </property>
             <property name="text">
              <string>Save As</string>
@@ -353,7 +353,7 @@
           <item row="0" column="4">
            <widget class="TMenuButton" name="HomeFileCloseButton">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+             <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -376,7 +376,7 @@
              </font>
             </property>
             <property name="toolTip">
-             <string>Close the current model</string>
+             <string>Close the current model (Ctrl-W)</string>
             </property>
             <property name="text">
              <string>Close</string>
@@ -418,7 +418,7 @@
           <item row="0" column="8">
            <widget class="TMenuButton" name="HomeFileImageButton">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+             <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -483,7 +483,7 @@
           <item row="0" column="11">
            <widget class="TMenuButton" name="HomeFileAtenButton">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+             <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -551,7 +551,7 @@
           <item row="0" column="9">
            <widget class="TMenuButton" name="HomeFileFilmButton">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+             <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -609,7 +609,7 @@
           <item row="0" column="6">
            <widget class="TMenuButton" name="HomeFileSessionButton">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+             <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -708,7 +708,7 @@
              </font>
             </property>
             <property name="toolTip">
-             <string>Copy the current atom selection</string>
+             <string>Copy the current atom selection (Ctrl-C)</string>
             </property>
             <property name="text">
              <string/>
@@ -766,7 +766,7 @@
              </font>
             </property>
             <property name="toolTip">
-             <string>Cut the current atom selection</string>
+             <string>Cut the current atom selection (Ctrl-X)</string>
             </property>
             <property name="text">
              <string/>
@@ -824,7 +824,7 @@
              </font>
             </property>
             <property name="toolTip">
-             <string>Paste the last copied/cut atom selection into the current model</string>
+             <string>Paste the last copied/cut atom selection into the current model (Ctrl-V)</string>
             </property>
             <property name="text">
              <string/>
@@ -882,7 +882,7 @@
              </font>
             </property>
             <property name="toolTip">
-             <string>Delete the current atom selection</string>
+             <string>Delete the current atom selection (Ctrl-Delete)</string>
             </property>
             <property name="text">
              <string/>
@@ -917,7 +917,7 @@
           <item row="1" column="0" colspan="2">
            <widget class="QToolButton" name="HomeEditUndoButton">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -940,7 +940,7 @@
              </font>
             </property>
             <property name="toolTip">
-             <string>Undo the last action</string>
+             <string>Undo the last action (Ctrl-Z)</string>
             </property>
             <property name="text">
              <string>Undo</string>
@@ -975,7 +975,7 @@
           <item row="1" column="2" colspan="2">
            <widget class="QToolButton" name="HomeEditRedoButton">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -998,7 +998,7 @@
              </font>
             </property>
             <property name="toolTip">
-             <string>Redo the last undone action</string>
+             <string>Redo the last action (Ctrl-Shift-Z)</string>
             </property>
             <property name="text">
              <string>Redo</string>
@@ -1077,7 +1077,7 @@
              </font>
             </property>
             <property name="toolTip">
-             <string>Draw atoms as lines</string>
+             <string>Draw atoms as lines (F1)</string>
             </property>
             <property name="text">
              <string>Line</string>
@@ -1135,7 +1135,7 @@
              </font>
             </property>
             <property name="toolTip">
-             <string>Draw atoms as tubes</string>
+             <string>Draw atoms as tubes (F2)</string>
             </property>
             <property name="text">
              <string>Tube</string>
@@ -1193,7 +1193,7 @@
              </font>
             </property>
             <property name="toolTip">
-             <string>Draw atoms as spheres</string>
+             <string>Draw atoms as spheres (F3)</string>
             </property>
             <property name="text">
              <string>Sphere</string>
@@ -1251,7 +1251,7 @@
              </font>
             </property>
             <property name="toolTip">
-             <string>Draw atoms as scaled spheres</string>
+             <string>Draw atoms as scaled spheres (F4)</string>
             </property>
             <property name="text">
              <string>Scaled</string>
@@ -1309,7 +1309,7 @@
              </font>
             </property>
             <property name="toolTip">
-             <string>Draw atoms according to their own defined style</string>
+             <string>Draw atoms according to their own defined style (F5)</string>
             </property>
             <property name="text">
              <string>Own</string>
@@ -1367,7 +1367,7 @@
              </font>
             </property>
             <property name="toolTip">
-             <string>Colour atoms according to their element</string>
+             <string>Colour atoms according to their element (Ctrl-F1)</string>
             </property>
             <property name="text">
              <string>Element</string>
@@ -1425,7 +1425,7 @@
              </font>
             </property>
             <property name="toolTip">
-             <string>Colour atoms according to their charge</string>
+             <string>Colour atoms according to their charge (Ctrl-F2)</string>
             </property>
             <property name="text">
              <string>Charge</string>
@@ -1483,7 +1483,7 @@
              </font>
             </property>
             <property name="toolTip">
-             <string>Colour atoms according to their force</string>
+             <string>Colour atoms according to their force (Ctrl-F3)</string>
             </property>
             <property name="text">
              <string>Force</string>
@@ -1541,7 +1541,7 @@
              </font>
             </property>
             <property name="toolTip">
-             <string>Colour atoms according to their velocity</string>
+             <string>Colour atoms according to their velocity (Ctrl-F4)</string>
             </property>
             <property name="text">
              <string>Velocity</string>
@@ -1599,7 +1599,7 @@
              </font>
             </property>
             <property name="toolTip">
-             <string notr="true">Colour atoms according to their own defined colours</string>
+             <string notr="true">Colour atoms according to their own defined colours (Ctrl-F5)</string>
             </property>
             <property name="text">
              <string>Own</string>
@@ -1706,7 +1706,7 @@
              </size>
             </property>
             <property name="toolTip">
-             <string>Un-hide any hidden atoms in the current model</string>
+             <string>Un-hide any hidden atoms in the current model (Ctrl-Shift-H)</string>
             </property>
             <property name="text">
              <string>Show All</string>
@@ -1746,7 +1746,7 @@
           <item row="0" column="0" rowspan="2">
            <widget class="TMenuButton" name="HomeViewResetButton">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -1899,7 +1899,7 @@
              </size>
             </property>
             <property name="toolTip">
-             <string>Toggle detection and display of hydrogen bonds</string>
+             <string>Toggle detection and display of hydrogen bonds (F8)</string>
             </property>
             <property name="text">
              <string>H-Bonds</string>
@@ -2094,7 +2094,7 @@
              </font>
             </property>
             <property name="toolTip">
-             <string>Select atoms individually or by box-select</string>
+             <string>Select atoms individually or by box-select (Escape)</string>
             </property>
             <property name="text">
              <string>Atoms</string>
@@ -3719,7 +3719,7 @@
              </font>
             </property>
             <property name="toolTip">
-             <string>Fold atoms into the defined unit cell</string>
+             <string>Fold atoms into the defined unit cell (Ctrl-F)</string>
             </property>
             <property name="text">
              <string>Atoms</string>
@@ -3777,7 +3777,7 @@
              </font>
             </property>
             <property name="toolTip">
-             <string>Fold molecules into the defined unit cell</string>
+             <string>Fold molecules into the defined unit cell (Ctrl-Shift-F)</string>
             </property>
             <property name="text">
              <string>Molecules</string>
@@ -4189,7 +4189,7 @@
         <item>
          <layout class="QGridLayout" name="gridLayout_41">
           <item row="0" column="0">
-           <widget class="TMenuButton" name="TransformSetDistanceButton">
+           <widget class="TMenuButton" name="TransformGeometryDistanceButton">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -4242,7 +4242,7 @@
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="TMenuButton" name="TransformSetAngleButton">
+           <widget class="TMenuButton" name="TransformGeometryAngleButton">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -4295,7 +4295,7 @@
            </widget>
           </item>
           <item row="0" column="2">
-           <widget class="TMenuButton" name="TransformSetTorsionButton">
+           <widget class="TMenuButton" name="TransformGeometryTorsionButton">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -4350,7 +4350,7 @@
           <item row="1" column="0" colspan="3">
            <widget class="QLabel" name="label_12">
             <property name="text">
-             <string>Set</string>
+             <string>Geometry</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
@@ -4661,7 +4661,7 @@
              </size>
             </property>
             <property name="toolTip">
-             <string>Centre the current selection at (0,0,0)</string>
+             <string>Centre the current selection at (0,0,0) (Ctrl-0)</string>
             </property>
             <property name="text">
              <string>Zero</string>
@@ -7889,7 +7889,7 @@
           <item row="0" column="0">
            <widget class="TMenuButton" name="SelectBasicAllButton">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -7912,7 +7912,7 @@
              </font>
             </property>
             <property name="toolTip">
-             <string>Select all atoms in the model</string>
+             <string>Select all atoms in the model (Ctrl-A)</string>
             </property>
             <property name="text">
              <string>All</string>
@@ -7947,7 +7947,7 @@
           <item row="0" column="1">
            <widget class="TMenuButton" name="SelectBasicNoneButton">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -8005,7 +8005,7 @@
           <item row="0" column="2">
            <widget class="TMenuButton" name="SelectBasicInvertButton">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -8028,7 +8028,7 @@
              </font>
             </property>
             <property name="toolTip">
-             <string>Invert the current selection</string>
+             <string>Invert the current selection (Ctrl-I)</string>
             </property>
             <property name="text">
              <string>Invert</string>
@@ -8063,7 +8063,7 @@
           <item row="0" column="3">
            <widget class="TMenuButton" name="SelectBasicExpandButton">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -8086,7 +8086,7 @@
              </font>
             </property>
             <property name="toolTip">
-             <string>Expand the current selection</string>
+             <string>Expand the current selection (Ctrl-E)</string>
             </property>
             <property name="text">
              <string>Expand</string>
@@ -8284,7 +8284,7 @@
           <item row="0" column="3" rowspan="2">
            <widget class="TMenuButton" name="SelectIntelligentAddButton">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -8342,7 +8342,7 @@
           <item row="0" column="4" rowspan="2">
            <widget class="TMenuButton" name="SelectIntelligentRemoveButton">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -8459,7 +8459,7 @@
           <item row="0" column="0">
            <widget class="TMenuButton" name="SelectionAppearanceStyleButton">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -8505,7 +8505,7 @@
           <item row="0" column="2">
            <widget class="TMenuButton" name="SelectionAppearanceColourButton">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -8566,7 +8566,7 @@
           <item row="0" column="5">
            <widget class="TMenuButton" name="SelectionAppearanceHideButton">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -8589,7 +8589,7 @@
              </font>
             </property>
             <property name="toolTip">
-             <string>Set the individual colour of the current selection (for Own scheme)</string>
+             <string>Hide the current selection (Ctrl-H)</string>
             </property>
             <property name="text">
              <string>Hide</string>
@@ -8650,7 +8650,7 @@
           <item row="0" column="3">
            <widget class="TMenuButton" name="SelectionAppearanceResetToElementButton">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -8929,7 +8929,7 @@
           <item row="0" column="3" rowspan="2">
            <widget class="TMenuButton" name="SelectionLabelClearButton">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -8998,7 +8998,7 @@
           <item row="0" column="0">
            <widget class="TMenuButton" name="SelectionPositionFixButton">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -9021,7 +9021,7 @@
              </font>
             </property>
             <property name="toolTip">
-             <string>Clear all labels from the current selection</string>
+             <string>Fix the positions (in minimisations) of the current selection</string>
             </property>
             <property name="text">
              <string>Fix</string>
@@ -9056,7 +9056,7 @@
           <item row="0" column="1">
            <widget class="TMenuButton" name="SelectionPositionFreeButton">
             <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+             <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
               <horstretch>0</horstretch>
               <verstretch>0</verstretch>
              </sizepolicy>
@@ -9079,7 +9079,7 @@
              </font>
             </property>
             <property name="toolTip">
-             <string>Clear all labels from the current selection</string>
+             <string>Free the positions of all atoms in the current selection</string>
             </property>
             <property name="text">
              <string>Free</string>
@@ -9111,72 +9111,7 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="2">
-           <widget class="Line" name="line_5">
-            <property name="orientation">
-             <enum>Qt::Vertical</enum>
-            </property>
-           </widget>
-          </item>
-          <item row="0" column="3">
-           <widget class="TMenuButton" name="SelectionPositionReorderButton">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>40</width>
-              <height>66</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>128</width>
-              <height>66</height>
-             </size>
-            </property>
-            <property name="font">
-             <font>
-              <pointsize>8</pointsize>
-             </font>
-            </property>
-            <property name="toolTip">
-             <string>Clear all labels from the current selection</string>
-            </property>
-            <property name="text">
-             <string>Reorder</string>
-            </property>
-            <property name="icon">
-             <iconset resource="icons.qrc">
-              <normaloff>:/selection/icons/selection_reorder.svg</normaloff>:/selection/icons/selection_reorder.svg</iconset>
-            </property>
-            <property name="iconSize">
-             <size>
-              <width>30</width>
-              <height>30</height>
-             </size>
-            </property>
-            <property name="checkable">
-             <bool>false</bool>
-            </property>
-            <property name="checked">
-             <bool>false</bool>
-            </property>
-            <property name="autoExclusive">
-             <bool>false</bool>
-            </property>
-            <property name="toolButtonStyle">
-             <enum>Qt::ToolButtonTextUnderIcon</enum>
-            </property>
-            <property name="autoRaise">
-             <bool>false</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0" colspan="4">
+          <item row="1" column="0" colspan="3">
            <widget class="QLabel" name="label_75">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
@@ -9621,6 +9556,94 @@
          </widget>
         </item>
         <item>
+         <layout class="QGridLayout" name="gridLayout_28">
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_79">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="frameShape">
+             <enum>QFrame::NoFrame</enum>
+            </property>
+            <property name="text">
+             <string>Order</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignCenter</set>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0">
+           <widget class="TMenuButton" name="ToolsOrderReorderButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>40</width>
+              <height>66</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>128</width>
+              <height>66</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>8</pointsize>
+             </font>
+            </property>
+            <property name="toolTip">
+             <string>Reorder all atoms in the current selection</string>
+            </property>
+            <property name="text">
+             <string>Reorder</string>
+            </property>
+            <property name="icon">
+             <iconset resource="icons.qrc">
+              <normaloff>:/selection/icons/selection_reorder.svg</normaloff>:/selection/icons/selection_reorder.svg</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>30</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="checkable">
+             <bool>false</bool>
+            </property>
+            <property name="checked">
+             <bool>false</bool>
+            </property>
+            <property name="autoExclusive">
+             <bool>false</bool>
+            </property>
+            <property name="toolButtonStyle">
+             <enum>Qt::ToolButtonTextUnderIcon</enum>
+            </property>
+            <property name="autoRaise">
+             <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
+         <widget class="Line" name="line_43">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+         </widget>
+        </item>
+        <item>
          <layout class="QGridLayout" name="gridLayout_25">
           <item row="0" column="0">
            <widget class="TMenuButton" name="ToolsPoresDrillButton">
@@ -9916,7 +9939,7 @@
            </property>
            <property name="iconSize">
             <size>
-             <width>24</width>
+             <width>12</width>
              <height>55</height>
             </size>
            </property>
@@ -10098,8 +10121,8 @@
            </property>
            <property name="iconSize">
             <size>
-             <width>18</width>
-             <height>55</height>
+             <width>12</width>
+             <height>30</height>
             </size>
            </property>
            <property name="checkable">

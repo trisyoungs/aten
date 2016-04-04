@@ -162,6 +162,17 @@ void AtenWindow::on_ToolsScriptsRunButton_clicked(bool checked)
 }
 
 /*
+ * Order
+ */
+
+void AtenWindow::on_ToolsOrderReorderButton_clicked(bool checked)
+{
+	CommandNode::run(Commands::ReOrder, "");
+
+	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
+}
+
+/*
  * Disorder
  */
 

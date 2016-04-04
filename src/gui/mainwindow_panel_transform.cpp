@@ -27,28 +27,28 @@ void AtenWindow::updateTransformPanel(Model* sourceModel)
 }
 
 /*
- * Set
+ * Geometry
  */
 
-void AtenWindow::on_TransformSetDistanceButton_clicked(bool checked)
+void AtenWindow::on_TransformGeometryDistanceButton_clicked(bool checked)
 {
 	// Call the set method in the popup
 	ReturnValue rv;
-	ui.TransformSetDistanceButton->callPopupMethod("set", rv);
+	ui.TransformGeometryDistanceButton->callPopupMethod("set", rv);
 }
 
-void AtenWindow::on_TransformSetAngleButton_clicked(bool checked)
+void AtenWindow::on_TransformGeometryAngleButton_clicked(bool checked)
 {
 	// Call the set method in the popup
 	ReturnValue rv;
-	ui.TransformSetAngleButton->callPopupMethod("set", rv);
+	ui.TransformGeometryAngleButton->callPopupMethod("set", rv);
 }
 
-void AtenWindow::on_TransformSetTorsionButton_clicked(bool checked)
+void AtenWindow::on_TransformGeometryTorsionButton_clicked(bool checked)
 {
 	// Call the set method in the popup
 	ReturnValue rv;
-	ui.TransformSetTorsionButton->callPopupMethod("set", rv);
+	ui.TransformGeometryTorsionButton->callPopupMethod("set", rv);
 }
 
 /*

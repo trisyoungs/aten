@@ -18,7 +18,9 @@ The **Build** panel provides basic selection and drawing tools, and bond calcula
 
 ### Atoms
 
-The primary selection mode, this allows individual atoms to be clicked or a selection-box to be drawn around multiple atoms in order to select them. With the **Shift** key pressed the selection state of the atoms is toggled, and if **Ctrl** is held down the atoms are removed from the current selection.
+_Shortcut: Escape_
+
+The primary selection mode (and the mode that **Aten** sits in when simply visualising), this allows individual atoms to be clicked or a selection-box to be drawn around multiple atoms in order to select them. With the **Shift** key pressed the selection state of the atoms is toggled, and if **Ctrl** is held down the atoms are removed from the current selection.
 
 ### Bound
 

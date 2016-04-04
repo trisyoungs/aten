@@ -61,6 +61,9 @@ void AtenWindow::createContextMenu()
 	connect(action, SIGNAL(triggered(bool)), ui.AtomsMoveToStartButton, SLOT(click()));
 	action = menu->addAction("Move to End");
 	connect(action, SIGNAL(triggered(bool)), ui.AtomsMoveToEndButton, SLOT(click()));
+	menu->addSeparator();
+	action = menu->addAction("Reorder");
+	connect(action, SIGNAL(triggered(bool)), ui.ToolsOrderReorderButton, SLOT(click()));
 
 	// Appearance
 	contextMenu_.addSeparator();
@@ -77,8 +80,6 @@ void AtenWindow::createContextMenu()
 	connect(action, SIGNAL(triggered(bool)), ui.SelectionPositionFixButton, SLOT(click()));
 	action = contextMenu_.addAction("Free Position");
 	connect(action, SIGNAL(triggered(bool)), ui.SelectionPositionFreeButton, SLOT(click()));
-	action = contextMenu_.addAction("Reorder");
-	connect(action, SIGNAL(triggered(bool)), ui.SelectionPositionReorderButton, SLOT(click()));
 
 	// Edit
 	contextMenu_.addSeparator();

@@ -8,7 +8,7 @@ docroot: /aten/docs
 header_class: alt
 ---
 
-The **Cell* panel allows unit cell definitions to be created and removed, cell contents to be transformed, and packing of atoms (according to crystallographic spacegroups) to be performed.
+The **Cell** panel allows unit cell definitions to be created and removed, cell contents to be transformed, and packing of atoms (according to crystallographic spacegroups) to be performed.
 
 ![Cell Panel](panel.png){.imgfull}
 
@@ -72,8 +72,12 @@ Selects atoms according to the defined Miller plane. The selection of atoms can 
 
 ### Atoms
 
+_Shortcut: Ctrl-F_
+
 Performs periodic boundary condition calculation on all individual atoms in the current model, ensuring that they are within the confines of the defined unit cell.
 
 ### Molecules
+
+_Shortcut: Ctrl-Shift-F_
 
 Performs periodic boundary condition calculation on the centres of geometry of all molecular fragments in the current model, ensuring that they are within the confines of the defined unit cell. The result is that all molecular centres will be inside the defined unit cell, and all molecular fragments will be 'intact', but not all atoms will necessarily be present inside the unit cell.

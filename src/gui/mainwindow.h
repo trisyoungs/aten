@@ -263,10 +263,10 @@ class AtenWindow : public QMainWindow
 	void updateTransformPanel(Model* sourceModel);
 
 	private slots:
-	// Set
-	void on_TransformSetDistanceButton_clicked(bool checked);
-	void on_TransformSetAngleButton_clicked(bool checked);
-	void on_TransformSetTorsionButton_clicked(bool checked);
+	// Geometry
+	void on_TransformGeometryDistanceButton_clicked(bool checked);
+	void on_TransformGeometryAngleButton_clicked(bool checked);
+	void on_TransformGeometryTorsionButton_clicked(bool checked);
 	// Position
 	void on_TransformPositionCentreButton_clicked(bool checked);
 	void on_TransformPositionRepositionButton_clicked(bool checked);
@@ -417,7 +417,6 @@ class AtenWindow : public QMainWindow
 	// Position
 	void on_SelectionPositionFixButton_clicked(bool checked);
 	void on_SelectionPositionFreeButton_clicked(bool checked);
-	void on_SelectionPositionReorderButton_clicked(bool checked);
 
 
 	/*
@@ -433,6 +432,8 @@ class AtenWindow : public QMainWindow
 	void on_ToolsScriptsRemoveButton_clicked(bool checked);
 	void on_ToolsScriptsReloadButton_clicked(bool checked);
 	void on_ToolsScriptsRunButton_clicked(bool checked);
+	// Order
+	void on_ToolsOrderReorderButton_clicked(bool checked);
 	// Disorder
 	void on_ToolsDisorderCreateButton_clicked(bool checked);
 	// Surface
