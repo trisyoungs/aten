@@ -46,7 +46,7 @@ void AtenWindow::updateSelectPanel(Model* sourceModel)
 		default:
 			items << "Auto (<unknown>)";
 	}
-	items << "Range Selection (n-m, C-Ag, 4+, +21, etc.)";
+	items << "Range Selection (1-10, C-Ag, 4+, +21, etc.)";
 	items << "NETA Description";
 	items << "Code Loop Selection";
 	ui.SelectIntelligentTypeCombo->clear();
@@ -65,7 +65,7 @@ void AtenWindow::on_SelectBasicAllButton_clicked(bool checked)
 	// Run command
 	CommandNode::run(Commands::SelectAll, "");
 
-	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget); // ATEN2 TODO Plus wherever selection information is going to be displayed.
+	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
 }
 
 void AtenWindow::on_SelectBasicNoneButton_clicked(bool checked)
@@ -73,7 +73,7 @@ void AtenWindow::on_SelectBasicNoneButton_clicked(bool checked)
 	// Run command
 	CommandNode::run(Commands::SelectNone, "");
 
-	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget); // ATEN2 TODO Plus wherever selection information is going to be displayed.
+	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
 }
 
 void AtenWindow::on_SelectBasicInvertButton_clicked(bool checked)
@@ -81,7 +81,7 @@ void AtenWindow::on_SelectBasicInvertButton_clicked(bool checked)
 	// Run command
 	CommandNode::run(Commands::Invert, "");
 
-	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget); // ATEN2 TODO Plus wherever selection information is going to be displayed.
+	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
 }
 
 void AtenWindow::on_SelectBasicExpandButton_clicked(bool checked)
@@ -89,7 +89,7 @@ void AtenWindow::on_SelectBasicExpandButton_clicked(bool checked)
 	// Run command
 	CommandNode::run(Commands::Expand, "");
 
-	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget); // ATEN2 TODO Plus wherever selection information is going to be displayed.
+	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
 }
 
 /*
@@ -137,7 +137,7 @@ void AtenWindow::on_SelectIntelligentTargetCombo_currentTextChanged(const QStrin
 	else if (ui.SelectIntelligentTypeCombo->currentIndex() == AtenWindow::LoopSelectType)
 	{
 		Program program;
-		if (program.generateFromString(text, "SelectionCode", "Selection Code")) valid = true;
+		if (program.generateFromString("Atom i; " + text, "SelectionCode", "Selection Code")) valid = true;
 	}
 
 	// Change color of text to red if an unrecognised target
@@ -209,10 +209,3 @@ void AtenWindow::on_SelectIntelligentRemoveButton_clicked(bool checked)
 
 	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
 }
-
-// 	// Update selection text details
-// 	// First label, total number of selected atoms.
-// 	ui.SelectionLabel1->setText("Total selected : " + (m ? QString::number(m->nSelected()) : "0"));
-// 	
-// 	// Second label contains empirical formula of selection
-// 	if (m) ui.SelectionLabel2->setText(m ? m->selectionEmpirical(false, true) : "--");

@@ -26,7 +26,7 @@ All model's currently loaded in are displayed in the **Model List** (**2**) as m
 
 For the current model, the **Atom List** (**3**) provides details on every atom present within it, showing coordinates, element information etc. The item selection in the **Atom List** also directly reflects the atom selection in the model, and thus the target of many editing operations (e.g. cut, paste, translate, etc.). Similarly, changing the atom selection via interaction with the model in the Main View (**4**) alters the selection state of items in the **Atom List**. As with the **Model List**, the **Atom List** can be shown and hidden by clicking the associated large vertical button, and its default state on startup can be set with the **Store State** button in the **Aten** submenu of the [**Home** panel](/aten/docs/gui/home#file).
 
-Exactly what information is shown for each atom is controlled with the various toggle buttons at the bottom-right of the list. In descending order, they represent the integer atom index (ID), element (E), assigned forcefield atom type (FF), coordinates (X, Y, Z), and assigned charge (Q). If patterns have been defined for the model, and the **View by pattern** checkbox at the bottom of the list is enabled, the atoms in the list will be grouped according to their encompassing pattern, otherwise they are listed in one continuous run by ascending ID. If patterns **are** defined, (de)selecting the pattern name in the list (de)selects all atoms making up the pattern in the model.
+Exactly what information is shown for each atom is controlled with the various toggle buttons at the bottom-right of the list. In descending order, they represent the integer atom index (ID), element (E), assigned forcefield atom type (FF), coordinates (X, Y, Z), and assigned charge (Q). If [patterns](/aten/docs/topics/patterns) have been defined for the model, and the **View by pattern** checkbox at the bottom of the list is enabled, the atoms in the list will be grouped according to their encompassing pattern, otherwise they are listed in one continuous run by ascending ID. If patterns **are** defined, (de)selecting the pattern name in the list (de)selects all atoms making up the pattern in the model.
 
 The **Atom List** also allows atoms to reordered with the four arrow buttons at the top right of the list. These operations affect the current atom selection, shifting the atoms to the start of the list, up one place in the list (to lower indices), down one place in the list (to higher indices), and to the end of the list respectively. In the case of shifting multiple atoms to the beginning / end of the list, the relative order of atoms is preserved.
 
@@ -53,3 +53,7 @@ The Rendering Source is one of the following:
 + [Model] : indicates that that the rendering source is a model with no trajectory
 + [Parent of N] : indicates that the rendering source is a model that is parent to N trajectory frames
 + [Frame N of M] : indicates that the rendering source is frame N of the trajectory
+
+## Quick Command (7) <a id="quickcommand"></a>
+
+Short (or long!) [commands](/aten/docs/scripting) can be entered into the **Quick Command** bar, with any effects immediately visible in the **Main View**. The **Quick Command** bar can be toggled with F10.

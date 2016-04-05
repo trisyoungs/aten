@@ -196,7 +196,7 @@ void AtenWindow::on_ForcefieldsExpressionDescribeButton_clicked(bool checked)
 	updateWidgets(AtenWindow::MainViewTarget);
 }
 
-void AtenWindow::on_ForcefieldsExpressionExportButton_clicked(bool checked)
+void AtenWindow::on_ForcefieldsExpressionSaveButton_clicked(bool checked)
 {
 	Tree* filter;
 	static QString selectedFilter(aten_.filters(FilterData::ExpressionExport)->item->filter.name());
@@ -273,7 +273,7 @@ void AtenWindow::on_ForcefieldsExpressionExportButton_clicked(bool checked)
 	updateWidgets(AtenWindow::MainViewTarget);
 }
 
-void AtenWindow::on_ForcefieldsExpressionClearButton_clicked(bool checked)
+void AtenWindow::on_ForcefieldsExpressionRemoveButton_clicked(bool checked)
 {
 	Model* currentModel = aten_.currentModelOrFrame();
 	if (!currentModel) return;

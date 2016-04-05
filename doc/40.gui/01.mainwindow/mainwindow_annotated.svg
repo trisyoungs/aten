@@ -26,9 +26,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.98994949"
-     inkscape:cx="600.77226"
-     inkscape:cy="923.72456"
+     inkscape:zoom="1.4"
+     inkscape:cx="540.38457"
+     inkscape:cy="687.75689"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -54,17 +54,17 @@
      inkscape:groupmode="layer"
      id="layer1">
     <image
-       sodipodi:absref="/home/tris/src/aten/doc/40.gui/01.overview/mainwindow.png"
+       sodipodi:absref="/home/tris/src/aten/doc/40.gui/01.mainwindow/mainwindow.png"
        xlink:href="mainwindow.png"
        inkscape:export-ydpi="199.88448"
        inkscape:export-xdpi="199.88448"
-       width="566.73309"
-       height="385.25113"
+       width="604.7644"
+       height="343.14044"
        preserveAspectRatio="none"
        style="image-rendering:optimizeQuality"
-       id="image3417"
-       x="100.75857"
-       y="102.6273" />
+       id="image3450"
+       x="103.03574"
+       y="141.4539" />
     <g
        id="g4369"
        transform="translate(75.761441,45.961941)"
@@ -92,7 +92,7 @@
     </g>
     <g
        id="g4364"
-       transform="translate(127.06448,148.33331)"
+       transform="translate(131.35019,183.33331)"
        inkscape:export-filename="/home/tris/src/aten/doc/40.gui/01.overview/mainwindow_annotated.png"
        inkscape:export-xdpi="199.88448"
        inkscape:export-ydpi="199.88448">
@@ -117,7 +117,7 @@
     </g>
     <g
        id="g4359"
-       transform="translate(230.22919,111.90474)"
+       transform="translate(239.5149,146.90474)"
        inkscape:export-filename="/home/tris/src/aten/doc/40.gui/01.overview/mainwindow_annotated.png"
        inkscape:export-xdpi="199.88448"
        inkscape:export-ydpi="199.88448">
@@ -142,7 +142,7 @@
     </g>
     <g
        id="g4354"
-       transform="translate(475.40643,70.476163)"
+       transform="translate(498.26357,105.47616)"
        inkscape:export-filename="/home/tris/src/aten/doc/40.gui/01.overview/mainwindow_annotated.png"
        inkscape:export-xdpi="199.88448"
        inkscape:export-ydpi="199.88448">
@@ -216,7 +216,9 @@
     </g>
     <g
        id="g4339"
-       transform="translate(13.214298,-17.5)">
+       transform="translate(503.26357,67.5)"
+       inkscape:export-xdpi="199.88448"
+       inkscape:export-ydpi="199.88448">
       <circle
          r="17.142859"
          cy="354.14792"

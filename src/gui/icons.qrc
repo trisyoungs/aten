@@ -11,6 +11,12 @@
     <file>icons/arrow_up.svg</file>
     <file>icons/arrow_upline.svg</file>
   </qresource>
+  <qresource prefix="expression">
+    <file>icons/expression_describe.svg</file>
+    <file>icons/expression_save.svg</file>
+    <file>icons/expression_remove.svg</file>
+    <file>icons/expression_type.svg</file>
+  </qresource>
   <qresource prefix="selection">
     <file>icons/selection_free.svg</file>
     <file>icons/selection_hide.svg</file>
@@ -26,8 +32,8 @@
   </qresource>
   <qresource prefix="tools">
     <file>icons/tools_disorder.svg</file>
-    <file>icons/script_load.svg</file>
     <file>icons/script_reload.svg</file>
+    <file>icons/script_open.svg</file>
     <file>icons/script_remove.svg</file>
     <file>icons/script_run.svg</file>
   </qresource>
@@ -41,10 +47,13 @@
   <qresource prefix="forcefield">
     <file>icons/forcefield_energy.svg</file>
     <file>icons/forcefield_forces.svg</file>
+    <file>icons/forcefield_assign.svg</file>
     <file>icons/patterns_default.svg</file>
+    <file>icons/forcefield_open.svg</file>
+    <file>icons/forcefield_remove.svg</file>
+    <file>icons/forcefield_save.svg</file>
     <file>icons/patterns_clear.svg</file>
     <file>icons/patterns_list.svg</file>
-    <file>icons/expression_type.svg</file>
     <file>icons/patterns_create.svg</file>
     <file>icons/forcefield_minimise.svg</file>
   </qresource>
@@ -176,6 +185,8 @@
     <file>icons/traj_playpause.svg</file>
     <file>icons/traj_prev.svg</file>
     <file>icons/traj_view.svg</file>
+    <file>icons/traj_open.svg</file>
+    <file>icons/traj_remove.svg</file>
     <file>icons/traj_promote.svg</file>
     <file>icons/traj_propagate.svg</file>
     <file>icons/traj_inherit.svg</file>

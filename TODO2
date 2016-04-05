@@ -27,6 +27,7 @@ Add Prefs accessors for Correct and View Lock options (so they can be saved).
 Fragment builder is broken - not attaching to atoms correctly. Also, cycling over attachment points cycles over all atoms, not just XX. AND! What does SHIFT do?
 Need 'Set to Unknown' button (for ease of fragment creation).
 Miller selection.
+Intelligent Select: prepended '+' is interpreted as NETA.
 
 Graphics TODO
 =============

@@ -154,4 +154,6 @@ Each model has its own independent view, unless the **Lock** button is enabled i
 
 ### Correct
 
+_Shortcut: F11 (single-shot)_
+
 When displaying transparent surfaces of gridded data it is likely that rendering artefacts in the surface will appear since the transparent triangles which make up the surface will be drawn in the wrong order (i.e. not back-to-front). Enabling the **Correct** option will regenerate the grid surface at the end of every view manipulation, correcting for the view rotation and removing transparency artefacts.

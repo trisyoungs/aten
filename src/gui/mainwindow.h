@@ -323,9 +323,9 @@ class AtenWindow : public QMainWindow
 
 	private slots:
 	// Source
-	void on_TrajectorySourceOpenButton_clicked(bool checked);
-	void on_TrajectorySourceRemoveButton_clicked(bool checked);
-	void on_TrajectorySourceFramesButton_clicked(bool checked);
+	void on_TrajectoryManageOpenButton_clicked(bool checked);
+	void on_TrajectoryManageRemoveButton_clicked(bool checked);
+	void on_TrajectoryManageFramesButton_clicked(bool checked);
 	// Control
 	void on_TrajectoryControlFirstButton_clicked(bool checked);
 	void on_TrajectoryControlPreviousButton_clicked(bool checked);
@@ -366,8 +366,8 @@ class AtenWindow : public QMainWindow
 	// Expression
 	void on_ForcefieldsExpressionTypeButton_clicked(bool checked);
 	void on_ForcefieldsExpressionDescribeButton_clicked(bool checked);
-	void on_ForcefieldsExpressionExportButton_clicked(bool checked);
-	void on_ForcefieldsExpressionClearButton_clicked(bool checked);
+	void on_ForcefieldsExpressionSaveButton_clicked(bool checked);
+	void on_ForcefieldsExpressionRemoveButton_clicked(bool checked);
 
 
 	/*

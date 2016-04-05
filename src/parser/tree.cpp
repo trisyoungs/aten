@@ -44,6 +44,7 @@ Tree::Tree() : ListItem<Tree>()
 	acceptedFail_ = Commands::NoFunction;
 	name_ = "unnamed";
 	type_ = Tree::UnknownTree;
+	returnType_ = VTypes::NoData;
 	readOptions_ = 0;
 	localScope_ = NULL;
 	runCount_ = 0;
@@ -278,7 +279,9 @@ void Tree::clear()
 void Tree::initialise()
 {
 	Messenger::enter("Tree::initialise");
+
 	clear();
+
 	// Add a dummy ScopeNode to contain the main variable list
 	ScopeNode* root = new ScopeNode(Commands::NoFunction);
 	root->setParent(this);
@@ -613,6 +616,7 @@ TreeNode* Tree::addFunctionWithArglist(Commands::Function func, TreeNode* argLis
 TreeNode* Tree::addFunction(Commands::Function func, TreeNode* a1, TreeNode* a2, TreeNode* a3, TreeNode* a4)
 {
 	Messenger::enter("Tree::addFunction");
+
 	// Create new command node
 	CommandNode* leaf = new CommandNode(func);
 	nodes_.own(leaf);
@@ -622,8 +626,10 @@ TreeNode* Tree::addFunction(Commands::Function func, TreeNode* a1, TreeNode* a2,
 	if (a3 != NULL) leaf->addArgument(a3);
 	if (a4 != NULL) leaf->addArgument(a4);
 	leaf->setParent(this);
+
 	// Store the function's return type
 	leaf->setReturnType(aten_->commandReturnType(func));
+
 	// Check that the correct arguments were given to the command and run any prep functions
 	if (!leaf->checkArguments(aten_->commandArguments(func), Commands::command(func)))
 	{
@@ -631,6 +637,7 @@ TreeNode* Tree::addFunction(Commands::Function func, TreeNode* a1, TreeNode* a2,
 		leaf = NULL;
 	}
 	else if (!leaf->prepFunction()) leaf = NULL;
+
 	Messenger::exit("Tree::addFunction");
 	return leaf;
 }

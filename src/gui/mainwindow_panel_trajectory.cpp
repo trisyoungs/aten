@@ -39,9 +39,9 @@ void AtenWindow::updateTrajectoryPanel(Model* sourceModel)
 	}
 
 	// Enable / disable controls
-	ui.TrajectorySourceOpenButton->setEnabled(!aten_.fileDialogFilters(FilterData::TrajectoryImport).isEmpty());
-	ui.TrajectorySourceRemoveButton->setEnabled(parentModel && hasTraj);
-	ui.TrajectorySourceFramesButton->setEnabled(parentModel && hasTraj);
+	ui.TrajectoryManageOpenButton->setEnabled(!aten_.fileDialogFilters(FilterData::TrajectoryImport).isEmpty());
+	ui.TrajectoryManageRemoveButton->setEnabled(parentModel && hasTraj);
+	ui.TrajectoryManageFramesButton->setEnabled(parentModel && hasTraj);
 	ui.TrajectoryControlFirstButton->setEnabled(parentModel && hasTraj && trajSource);
 	ui.TrajectoryControlPreviousButton->setEnabled(parentModel && hasTraj && trajSource);
 	ui.TrajectoryControlPlayButton->setEnabled(parentModel && hasTraj && trajSource);
@@ -56,7 +56,7 @@ void AtenWindow::updateTrajectoryPanel(Model* sourceModel)
 
 	if (hasTraj)
 	{
-		ui.TrajectorySourceFramesButton->setChecked(parentModel->renderSource() == Model::TrajectorySource);
+		ui.TrajectoryManageFramesButton->setChecked(parentModel->renderSource() == Model::TrajectorySource);
 		ui.TrajectoryControlFrameSlider->setRange(1, parentModel->nTrajectoryFrames());
 		ui.TrajectoryControlFrameSlider->setValue(parentModel->trajectoryFrameIndex()+1);
 		ui.TrajectoryControlFrameSpin->setRange(1, parentModel->nTrajectoryFrames());
@@ -80,7 +80,7 @@ void AtenWindow::stopTrajectoryPlayback()
  * Switch
  */
 
-void AtenWindow::on_TrajectorySourceOpenButton_clicked(bool checked)
+void AtenWindow::on_TrajectoryManageOpenButton_clicked(bool checked)
 {
 	// Stop playback, and set view to be the parent model before we do anything
 	stopTrajectoryPlayback();
@@ -113,7 +113,7 @@ void AtenWindow::on_TrajectorySourceOpenButton_clicked(bool checked)
 	updateWidgets(AtenWindow::AllTarget);
 }
 
-void AtenWindow::on_TrajectorySourceRemoveButton_clicked(bool checked)
+void AtenWindow::on_TrajectoryManageRemoveButton_clicked(bool checked)
 {
 	// Stop playback, and set view to be the parent model before we do anything
 	stopTrajectoryPlayback();
@@ -128,7 +128,7 @@ void AtenWindow::on_TrajectorySourceRemoveButton_clicked(bool checked)
 }
 
 // Switch render focus from the model to the trajectory (or vice versa)
-void AtenWindow::on_TrajectorySourceFramesButton_clicked(bool checked)
+void AtenWindow::on_TrajectoryManageFramesButton_clicked(bool checked)
 {
 	if (refreshing_) return;
 

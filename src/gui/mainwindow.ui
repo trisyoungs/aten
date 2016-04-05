@@ -5998,7 +5998,7 @@
         <item>
          <layout class="QGridLayout" name="gridLayout_4">
           <item row="0" column="0">
-           <widget class="TMenuButton" name="TrajectorySourceOpenButton">
+           <widget class="TMenuButton" name="TrajectoryManageOpenButton">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -6030,7 +6030,7 @@
             </property>
             <property name="icon">
              <iconset resource="icons.qrc">
-              <normaloff>:/file/icons/file_open.svg</normaloff>:/file/icons/file_open.svg</iconset>
+              <normaloff>:/trajectory/icons/traj_open.svg</normaloff>:/trajectory/icons/traj_open.svg</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -6056,7 +6056,7 @@
            </widget>
           </item>
           <item row="0" column="1">
-           <widget class="TMenuButton" name="TrajectorySourceRemoveButton">
+           <widget class="TMenuButton" name="TrajectoryManageRemoveButton">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -6088,7 +6088,7 @@
             </property>
             <property name="icon">
              <iconset resource="icons.qrc">
-              <normaloff>:/basic/icons/basic_cross.svg</normaloff>:/basic/icons/basic_cross.svg</iconset>
+              <normaloff>:/trajectory/icons/traj_remove.svg</normaloff>:/trajectory/icons/traj_remove.svg</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -6114,7 +6114,7 @@
            </widget>
           </item>
           <item row="0" column="2">
-           <widget class="TMenuButton" name="TrajectorySourceFramesButton">
+           <widget class="TMenuButton" name="TrajectoryManageFramesButton">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -6174,7 +6174,7 @@
           <item row="1" column="0" colspan="3">
            <widget class="QLabel" name="label_17">
             <property name="text">
-             <string>Source</string>
+             <string>Manage</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>
@@ -6892,6 +6892,10 @@
             <property name="text">
              <string>Assign</string>
             </property>
+            <property name="icon">
+             <iconset resource="icons.qrc">
+              <normaloff>:/forcefield/icons/forcefield_assign.svg</normaloff>:/forcefield/icons/forcefield_assign.svg</iconset>
+            </property>
             <property name="iconSize">
              <size>
               <width>30</width>
@@ -6948,7 +6952,7 @@
             </property>
             <property name="icon">
              <iconset resource="icons.qrc">
-              <normaloff>:/file/icons/file_open.svg</normaloff>:/file/icons/file_open.svg</iconset>
+              <normaloff>:/forcefield/icons/forcefield_remove.svg</normaloff>:/forcefield/icons/forcefield_remove.svg</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -7006,7 +7010,7 @@
             </property>
             <property name="icon">
              <iconset resource="icons.qrc">
-              <normaloff>:/file/icons/file_open.svg</normaloff>:/file/icons/file_open.svg</iconset>
+              <normaloff>:/forcefield/icons/forcefield_open.svg</normaloff>:/forcefield/icons/forcefield_open.svg</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -7540,7 +7544,7 @@
             </property>
             <property name="icon">
              <iconset resource="icons.qrc">
-              <normaloff>:/forcefield/icons/expression_type.svg</normaloff>:/forcefield/icons/expression_type.svg</iconset>
+              <normaloff>:/expression/icons/expression_type.svg</normaloff>:/expression/icons/expression_type.svg</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -7596,6 +7600,10 @@
             <property name="text">
              <string>Describe</string>
             </property>
+            <property name="icon">
+             <iconset resource="icons.qrc">
+              <normaloff>:/expression/icons/expression_describe.svg</normaloff>:/expression/icons/expression_describe.svg</iconset>
+            </property>
             <property name="iconSize">
              <size>
               <width>30</width>
@@ -7620,7 +7628,7 @@
            </widget>
           </item>
           <item row="0" column="3" rowspan="2">
-           <widget class="TMenuButton" name="ForcefieldsExpressionClearButton">
+           <widget class="TMenuButton" name="ForcefieldsExpressionRemoveButton">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -7648,11 +7656,11 @@
              <string>Clear the expression for the current model</string>
             </property>
             <property name="text">
-             <string>Clear</string>
+             <string>Remove</string>
             </property>
             <property name="icon">
              <iconset resource="icons.qrc">
-              <normaloff>:/basic/icons/basic_cross.svg</normaloff>:/basic/icons/basic_cross.svg</iconset>
+              <normaloff>:/expression/icons/expression_remove.svg</normaloff>:/expression/icons/expression_remove.svg</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -7749,7 +7757,7 @@
            </widget>
           </item>
           <item row="0" column="2" rowspan="2">
-           <widget class="TMenuButton" name="ForcefieldsExpressionExportButton">
+           <widget class="TMenuButton" name="ForcefieldsExpressionSaveButton">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -7777,11 +7785,11 @@
              <string>Export the current model's forcefield expression</string>
             </property>
             <property name="text">
-             <string>Export</string>
+             <string>Save</string>
             </property>
             <property name="icon">
              <iconset resource="icons.qrc">
-              <normaloff>:/file/icons/file_save.svg</normaloff>:/file/icons/file_save.svg</iconset>
+              <normaloff>:/expression/icons/expression_save.svg</normaloff>:/expression/icons/expression_save.svg</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -8394,6 +8402,34 @@
             </property>
             <property name="autoRaise">
              <bool>false</bool>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_27">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>16777215</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="text">
+             <string>Type</string>
+            </property>
+            <property name="alignment">
+             <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
             </property>
            </widget>
           </item>
@@ -9300,7 +9336,7 @@
             </property>
             <property name="icon">
              <iconset resource="icons.qrc">
-              <normaloff>:/tools/icons/script_load.svg</normaloff>:/tools/icons/script_load.svg</iconset>
+              <normaloff>:/tools/icons/script_open.svg</normaloff>:/tools/icons/script_open.svg</iconset>
             </property>
             <property name="iconSize">
              <size>
