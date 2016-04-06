@@ -125,6 +125,7 @@ void AtenWindow::initialUpdateAndShow()
 
 	// Show the window
 	show();
+	shown_ = true;
 
 	/* Load font */
 	if (!FontInstance::setup(prefs.viewerFontFileName())) QMessageBox::warning(0, "Font Error", "Failed to setup font '" + prefs.viewerFontFileName() + "'.");
@@ -142,6 +143,12 @@ void AtenWindow::initialUpdateAndShow()
 	Messenger::setPrintToConsole(false);
 
 	Messenger::exit("AtenWindow::initialUpdateAndShow");
+}
+
+// Return whether main window has been shown
+bool AtenWindow::shown()
+{
+	return shown_;
 }
 
 // Update GUI after model change (or different model selected) (accessible wrapper to call AtenWindow's function)

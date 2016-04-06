@@ -126,6 +126,7 @@ VTypes::DataType Tree::checkBinaryOperatorTypes(Commands::Function func, VTypes:
 				case (VTypes::IntInt):
 				case (VTypes::VecVec):
 				case (VTypes::StrStr):
+				case (VTypes::MatMat):
 					result = type1;
 					break;
 				case (VTypes::IntDbl):
@@ -181,6 +182,8 @@ VTypes::DataType Tree::checkBinaryOperatorTypes(Commands::Function func, VTypes:
 				case (VTypes::VecInt):
 				case (VTypes::VecDbl):
 				case (VTypes::VecVec):
+				case (VTypes::MatInt):
+				case (VTypes::MatDbl):
 				case (VTypes::VecIntA):
 				case (VTypes::VecDblA):
 				case (VTypes::MatIntA):
@@ -217,6 +220,9 @@ VTypes::DataType Tree::checkBinaryOperatorTypes(Commands::Function func, VTypes:
 				case (VTypes::VecVec):
 				case (VTypes::VecMat):
 				case (VTypes::MatVec):
+				case (VTypes::MatInt):
+				case (VTypes::MatDbl):
+				case (VTypes::MatMat):
 				case (VTypes::VecIntA):
 				case (VTypes::VecDblA):
 				case (VTypes::MatIntA):
@@ -292,6 +298,7 @@ VTypes::DataType Tree::checkBinaryOperatorTypes(Commands::Function func, VTypes:
 				case (VTypes::IntInt):
 				case (VTypes::PtrPtr):
 				case (VTypes::VecVec):
+				case (VTypes::MatMat):
 				case (VTypes::StrStr):
 				case (VTypes::IntDbl):
 				case (VTypes::DblInt):
@@ -317,6 +324,8 @@ VTypes::DataType Tree::checkBinaryOperatorTypes(Commands::Function func, VTypes:
 				case (VTypes::IntAVec):
 				case (VTypes::DblAVec):
 				case (VTypes::IntADbl):
+				case (VTypes::IntAMat):
+				case (VTypes::DblAMat):
 				case (VTypes::PtrAPtr):
 					result = type1;
 					returnsarray = true;

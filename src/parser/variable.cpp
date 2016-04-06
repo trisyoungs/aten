@@ -120,6 +120,13 @@ bool Variable::setInitialValue(TreeNode* node)
 				return false;
 			}
 			break;
+		case (VTypes::MatrixData):
+			if ((dt != VTypes::IntegerData) && (dt != VTypes::DoubleData) && (dt != returnType_))
+			{
+				Messenger::print("Error: Initial value for '%s' is of an incompatible type (%s).", qPrintable(name_), VTypes::dataType(dt));
+				return false;
+			}
+			break;
 		// Exact match required for everything else (or pointer and integer is ok)
 		default:
 			if (returnType_ == dt) break;

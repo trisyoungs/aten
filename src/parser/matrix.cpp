@@ -43,12 +43,44 @@ MatrixVariable::MatrixVariable(TreeNode* xx, TreeNode* xy, TreeNode* xz, TreeNod
 	constXX_ = xx;
 	constXY_ = xy;
 	constXZ_ = xz;
+	constXW_ = NULL;
 	constYX_ = yx;
 	constYY_ = yy;
 	constYZ_ = yz;
+	constYW_ = NULL;
 	constZX_ = zx;
 	constZY_ = zy;
 	constZZ_ = zz;
+	constZW_ = NULL;
+	constWX_ = NULL;
+	constWY_ = NULL;
+	constWZ_ = NULL;
+	constWW_ = NULL;
+
+	readOnly_ = true;
+	returnType_ = VTypes::MatrixData;
+}
+
+MatrixVariable::MatrixVariable(TreeNode* xx, TreeNode* xy, TreeNode* xz, TreeNode* xw, TreeNode* yx, TreeNode* yy, TreeNode* yz, TreeNode* yw, TreeNode* zx, TreeNode* zy, TreeNode* zz, TreeNode* zw, TreeNode* wx, TreeNode* wy, TreeNode* wz, TreeNode* ww)
+{
+	// Private variables
+	constXX_ = xx;
+	constXY_ = xy;
+	constXZ_ = xz;
+	constXW_ = xw;
+	constYX_ = yx;
+	constYY_ = yy;
+	constYZ_ = yz;
+	constYW_ = yw;
+	constZX_ = zx;
+	constZY_ = zy;
+	constZZ_ = zz;
+	constZW_ = zw;
+	constWX_ = wx;
+	constWY_ = wy;
+	constWZ_ = wz;
+	constWW_ = ww;
+
 	readOnly_ = true;
 	returnType_ = VTypes::MatrixData;
 }
@@ -74,15 +106,24 @@ bool MatrixVariable::set(ReturnValue& rv)
 	if (rv.arraySize() == -1) matrixData_ = rv.asMatrix(success);
 	else if (rv.arraySize() == 9)
 	{
+		matrixData_.setIdentity();
 		for (int n=0; n<9; ++n)
 		{
 			matrixData_[n/3*4+n%3] = rv.asDouble(n, success);
 			if (!success) break;
 		}
 	}
+	else if (rv.arraySize() == 16)
+	{
+		for (int n=0; n<16; ++n)
+		{
+			matrixData_[n] = rv.asDouble(n, success);
+			if (!success) break;
+		}
+	}
 	else
 	{
-		Messenger::print("Error: Array assigned to matrix variable must contain nine elements.");
+		Messenger::print("Error: Array assigned to matrix variable must contain nine or sixteen elements.");
 		success = false;
 	}
 	return success;
@@ -91,18 +132,57 @@ bool MatrixVariable::set(ReturnValue& rv)
 // Reset variable
 bool MatrixVariable::reCreate()
 {
-	ReturnValue rv[9];
+	ReturnValue rv[16];
 	if (!constXX_->execute(rv[0])) return false;
 	if (!constXY_->execute(rv[1])) return false;
 	if (!constXZ_->execute(rv[2])) return false;
-	if (!constYX_->execute(rv[3])) return false;
-	if (!constYY_->execute(rv[4])) return false;
-	if (!constYZ_->execute(rv[5])) return false;
-	if (!constZX_->execute(rv[6])) return false;
-	if (!constZY_->execute(rv[7])) return false;
-	if (!constZZ_->execute(rv[8])) return false;
+	if (constXW_)
+	{
+		if (!constXW_->execute(rv[3])) return false;
+	}
+	else rv[3] = 0.0;
+
+	if (!constYX_->execute(rv[4])) return false;
+	if (!constYY_->execute(rv[5])) return false;
+	if (!constYZ_->execute(rv[6])) return false;
+	if (constYW_)
+	{
+		if (!constYW_->execute(rv[7])) return false;
+	}
+	else rv[7] = 0.0;
+
+	if (!constZX_->execute(rv[8])) return false;
+	if (!constZY_->execute(rv[9])) return false;
+	if (!constZZ_->execute(rv[10])) return false;
+	if (constZW_)
+	{
+		if (!constZW_->execute(rv[11])) return false;
+	}
+	else rv[11] = 0.0;
+
+	if (constWX_)
+	{
+		if (!constWX_->execute(rv[12])) return false;
+	}
+	else rv[12] = 0.0;
+	if (constWY_)
+	{
+		if (!constWY_->execute(rv[13])) return false;
+	}
+	else rv[13] = 0.0;
+	if (constWZ_)
+	{
+		if (!constWZ_->execute(rv[14])) return false;
+	}
+	else rv[14] = 0.0;
+	if (constWW_)
+	{
+		if (!constWW_->execute(rv[15])) return false;
+	}
+	else rv[15] = 0.0;
+
 	bool success;
-	for (int n=0; n<9; ++n)
+	for (int n=0; n<16; ++n)
 	{
 		matrixData_[n/3*4+n%3] = rv[n].asDouble(success);
 		if (!success) return false;
@@ -138,9 +218,9 @@ void MatrixVariable::nodePrint(int offset, const char* prefix)
 	if (readOnly_)
 	{
 		reCreate();
-		printf("[C]%s{%f,%f,%f,%f,%f,%f,%f,%f,%f} (constant value)\n", qPrintable(tab), matrixData_[0], matrixData_[1], matrixData_[2], matrixData_[4], matrixData_[5], matrixData_[6], matrixData_[8], matrixData_[9], matrixData_[10]);
+		printf("[C]%s{%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f} (constant value)\n", qPrintable(tab), matrixData_[0], matrixData_[1], matrixData_[2], matrixData_[3], matrixData_[4], matrixData_[5], matrixData_[6], matrixData_[7], matrixData_[8], matrixData_[9], matrixData_[10], matrixData_[11], matrixData_[12], matrixData_[13], matrixData_[14], matrixData_[15]);
 	}
-	else printf("[V]%s{%f,%f,%f,%f,%f,%f,%f,%f,%f} (variable, name=%s)\n", qPrintable(tab), matrixData_[0], matrixData_[1], matrixData_[2], matrixData_[4], matrixData_[5], matrixData_[6], matrixData_[8], matrixData_[9], matrixData_[10], qPrintable(name_));
+	else printf("[V]%s{%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f} (variable, name=%s)\n", qPrintable(tab), matrixData_[0], matrixData_[1], matrixData_[2], matrixData_[3], matrixData_[4], matrixData_[5], matrixData_[6], matrixData_[7], matrixData_[8], matrixData_[9], matrixData_[10], matrixData_[11], matrixData_[12], matrixData_[13], matrixData_[14], matrixData_[15], qPrintable(name_));
 }
 
 /*

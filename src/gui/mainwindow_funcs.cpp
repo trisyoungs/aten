@@ -112,6 +112,7 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportFilmD
 	contextAtom_ = NULL;
 	messageDisplay_ = MessagesUnderScene;
 	refreshing_ = false;
+	shown_ = false;
 	trajectoryTimerId_ = -1;
 	lastSelectionType_ = nSelectTargetTypes;
 

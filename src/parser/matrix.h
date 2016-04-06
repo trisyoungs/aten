@@ -39,6 +39,7 @@ class MatrixVariable : public Variable
 	MatrixVariable(bool constant = false);
 	MatrixVariable(Matrix m, bool constant = false);
 	MatrixVariable(TreeNode* xx, TreeNode* xy, TreeNode* xz, TreeNode* yx, TreeNode* yy, TreeNode* yz, TreeNode* zx, TreeNode* zy, TreeNode* zz);
+	MatrixVariable(TreeNode* xx, TreeNode* xy, TreeNode* xz, TreeNode* xw, TreeNode* yx, TreeNode* yy, TreeNode* yz, TreeNode* yw, TreeNode* zx, TreeNode* zy, TreeNode* zz, TreeNode* zw, TreeNode* wx, TreeNode* wy, TreeNode* wz, TreeNode* ww);
 	~MatrixVariable();
 	friend class MatrixArrayVariable;
 
@@ -64,7 +65,7 @@ class MatrixVariable : public Variable
 	// Matrix data
 	Matrix matrixData_;
 	// Node data for constant Matrices
-	TreeNode* constXX_, *constXY_, *constXZ_, *constYX_, *constYY_, *constYZ_, *constZX_, *constZY_, *constZZ_;
+	TreeNode* constXX_, *constXY_, *constXZ_, *constXW_, *constYX_, *constYY_, *constYZ_, *constYW_, *constZX_, *constZY_, *constZZ_, *constZW_, *constWX_, *constWY_, *constWZ_, *constWW_;
 	// Print node contents
 	void nodePrint(int offset, const char* prefix = "");
 
@@ -127,7 +128,7 @@ class MatrixArrayVariable : public Variable
 	// Array size
 	int arraySize_;
 	// Matrix data
-	Matrix *matrixArrayData_;
+	Matrix* matrixArrayData_;
 	// Print node contents
 	void nodePrint(int offset, const char* prefix);
 

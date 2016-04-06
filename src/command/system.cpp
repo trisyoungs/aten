@@ -107,7 +107,8 @@ bool Commands::function_Null(CommandNode* c, Bundle& obj, ReturnValue& rv)
 // Quit main program
 bool Commands::function_Quit(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	aten_.atenWindow()->saveBeforeClose();
+	// If the main window has been shown, check to save all modified models before closing them.
+	if (aten_.atenWindow()->shown()) aten_.atenWindow()->saveBeforeClose();
 
 	c->parent()->setAcceptedFail(Commands::Quit);
 
