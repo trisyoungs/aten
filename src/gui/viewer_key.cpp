@@ -72,18 +72,7 @@ void Viewer::keyPressEvent(QKeyEvent* event)
 	switch (event->key())
 	{
 		case (Qt::Key_Left):
-			if (keyModifier_[Prefs::CtrlKey])
-			{
-				printf("Why doesn't this ever get printed?\n");	// ATEN2 TODO
-				source->prepareTransform();
-				source->beginUndoState("Rotate selection about world Y axis");
-				source->rotateSelectionWorld(2.0,0.0);
-				source->endUndoState();
-				source->updateMeasurements();
-				source->finalizeTransform(atenWindow_->oldPositions(), "Transform Selection", noFold);
-				atenWindow_->updateWidgets(AtenWindow::MainViewTarget);
-			}
-			else source->rotateView( keyModifier_[Prefs::ShiftKey] ? -1.0 : -10.0, 0.0);
+			source->rotateView( keyModifier_[Prefs::ShiftKey] ? -1.0 : -10.0, 0.0);
 			refresh = true;
 			ignore = false;
 			break;

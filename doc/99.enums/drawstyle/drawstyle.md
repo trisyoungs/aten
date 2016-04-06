@@ -17,7 +17,4 @@ Available drawing styles for individual atoms are:
 | **tube** | Atoms and connected bonds are drawn using 'capped' cylinders |
 | **sphere** | Atoms and connected bonds are drawn using spheres and cylinders, with all atoms the same size |
 | **scaled** | Atoms and connected bonds are drawn using spheres and cylinders, with all atoms sized according to their atomic radius set in the preferences |
-
-
-
-
+| **individual** | Atoms and connected bonds are drawn according the local settings on the atom |

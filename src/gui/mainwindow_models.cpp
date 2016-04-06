@@ -99,24 +99,8 @@ void AtenWindow::on_ModelsList_itemSelectionChanged()
 // Move to next model in list
 void AtenWindow::on_ModelsNextButton_clicked(bool checked)
 {
-	// If multiple models are visible, step along to next visible model. Otherwise, just next in list
-	if (aten_.nVisibleModels() > 1)
-	{
-		// Find current model in visible models list...
-		RefListItem<Model,int>* ri;
-		for (ri = aten_.visibleModels(); ri != NULL; ri = ri->next) if (ri->item == aten_.currentModel()) break;
-		if (ri == NULL)
-		{
-			printf("Internal Error : Failed to find current model in visible models list.\n");
-			return;
-		}
-		aten_.setCurrentModel(ri->next == NULL ? aten_.visibleModels()->item : ri->next->item);
-	}
-	else
-	{
-		Model* m = aten_.currentModel();
-		aten_.setCurrentModel(m->next == NULL ? aten_.models() : m->next);
-	}
+	Model* m = aten_.currentModel();
+	aten_.setSingleModelVisible(m->next == NULL ? aten_.models() : m->next);
 
 	updateWidgets(AtenWindow::AllTarget);
 }
@@ -124,30 +108,11 @@ void AtenWindow::on_ModelsNextButton_clicked(bool checked)
 // Move to previous model in list
 void AtenWindow::on_ModelsPreviousButton_clicked(bool checked)
 {
-	// If multiple models are visible, step back to previous visible model. Otherwise, just previous in list
-	if (aten_.nVisibleModels() > 1)
-	{
-		// Find current model in visible models list...
-		RefListItem<Model,int>* ri;
-		for (ri = aten_.visibleModels(); ri != NULL; ri = ri->next) if (ri->item == aten_.currentModel()) break;
-		if (ri == NULL)
-		{
-			printf("Internal Error : Failed to find current model in visible models list.\n");
-			return;
-		}
-		// If previous pointer is NULL, need to get the last item in the list by hand
-		if (ri->prev != NULL) aten_.setCurrentModel(ri->prev->item);
-		else for (ri = aten_.visibleModels(); ri != NULL; ri = ri->next) if (ri->next == NULL) aten_.setCurrentModel(ri->item);
-	}
-	else
-	{
-		Model* m = aten_.currentModel();
-		aten_.setCurrentModel(m->prev == NULL ? aten_.model(aten_.nModels()-1) : m->prev);
-	}
+	Model* m = aten_.currentModel();
+	aten_.setSingleModelVisible(m->prev == NULL ? aten_.model(aten_.nModels()-1) : m->prev);
 
 	updateWidgets(AtenWindow::AllTarget);
 }
-
 
 // Refresh model list
 void AtenWindow::updateModelsList()

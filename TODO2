@@ -22,7 +22,7 @@ Add 'Reload' options to Grid context menu.
 Add context menu "Copy" and "Set" to TColourButtons.
 Tooltips need to include keyboard shortcuts (e.g. style buttons, colourscheme buttons...)
 Need to print out accessor variable types in lists when one is unrecognised.
-Add 'Relative' view control, alongside 'Free' and 'Locked' (Follow).
+Add 'Relative' view control, alongside 'Free' and 'Locked' (Follow)?
 Add Prefs accessors for Correct and View Lock options (so they can be saved).
 Fragment builder is broken - not attaching to atoms correctly. Also, cycling over attachment points cycles over all atoms, not just XX. AND! What does SHIFT do?
 Need 'Set to Unknown' button (for ease of fragment creation).
@@ -40,6 +40,7 @@ Make main view background and text/overlay colour aware of Qt widget colouring s
 Frame individual model areas when displaying multiple models OR light checkerboard background?
 Automatically adjust grid size for number of visible models, based on current aspect ratio and context size etc.
 Multiple bonds (double, definitely) are not drawn correctly, becoming squashed as the bond length increases.
+Remove triangular 'cross-braces' from wireframe selection sphere Pirimitive.
 
 GUI TODO
 ========
