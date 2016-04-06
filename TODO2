@@ -77,39 +77,11 @@ Remove global MC, CG, SD declarations, and put them in Aten?
 
 Manual TODO
 ===========
-Remove level of detail and transparency options from Prefs.
 More examples (e.g. slab generation)
-Remove 'gui' keyword.
-Remove 'calcEnergy' optional args from scaleMolecules and scaleCell.
-Remove replaceChars (after command is removed).
-Remove frameCurrent* from Prefs accessors.
-Added SetAngles, SetDistances, and SetTorsions commands.
-Add GridStyleSecondary command (GridStyle now explicitly for primary surface).
-Change enum entries for Grid::SurfaceStyle.
-Add GridOutline and GridPeriodic commands.
-Rename (De)SelectFor to (De)SelectCode.
-Remove ManualSwapBuffers and Encoder-related members from Prefs accessor.
-growAtom / selectionGrowAtom - add optional parameter "bool bond = true".
 Remove LineTol and Converge commands, and update minimisation command signatures (inc return values).
-Remove prefs options for replicate, and add extra options to turn on folding and trimming to replicate() command.
-Add viewerFontFileName member Prefs accessor.
-Remove TransparentSelection Prefs accessor.
-Add TrajectoryFormat CLI switch (tf).
-Add GridViewPercentage and GridViewSecondaryPercentage commands.
 TestSelect command.
-Added MovePen, ResetPen, RotatePenX|Y|Z commands to Model variable.
-Add Transform-related commands to Model variable.
-SelectCode and DeSelectCode code 'style' has changed.
-Keyboard shortcuts: F6 now cycles rendering styles, Ctrl-F6 colouring styles (with F1-5 and Ctrl-F1-5 selecting individual styles), F10 shows quick command bar.
-Removed Prefs::textColour and WireSelectioNColour accessors, and added ForegroundColour.
-Removed VBO CLI switch, and added Lists and NoInstances switches.
-Removed prefs "usePixelBuffers" accessor.
-Remove modelUpdate and energyUpdate accessors from Prefs.
 Add 'external' dir description to quickstart.
 Is CombinationRule enum still valid / used?
-Added Grid accessors for Style.
-Add --session option.
-Changed type of Grid::Axes accessor from CellData to MatrixData.
 Add WX, WY, WZ etc. accessors to MatrixVariable, and 'setIdentity()' function.
 Setting of filter options when using --batch CLI mode (in 03.cli/batch).
-Add correctTransparentGrids accessor to Prefs.
+Add Matrix variable information.

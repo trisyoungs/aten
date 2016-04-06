@@ -166,6 +166,12 @@ If specified, for each atom name converted to an element using a forcefield name
 
 Note that the [--keeptypes](/aten/docs/cli/switches#keeptypes) and [--keepnames](/aten/docs/cli/switches#keepnames) switches are mutually exclusive.
 
+## L
+
+`--lists`<a id="lists"></a>
+
+Force the use of OpenGL display lists for rendering, rather than vertex buffer objects (the default).
+
 ## M
 
 `-m <name=element,...>, --map=<name=element,...>`<a id="m"></a>
@@ -212,9 +218,9 @@ Prevent generation of fragment icons, used in the [Fragment Library Popup](/aten
 
 Prevent loading of global includes on startup.
 
-`--nolists`<a id="nolists"></a>
+`--noinstances`<a id="noinstances"></a>
 
-Prevent the use of OpenGL display lists for rendering.  Simple vertex arrays will be used instead. Try this option out if rendering is corrupt or **Aten** crashed unexpectedly on startup. The rendering will be slower, but more compatible.
+Prevent the use of both vertex buffer objects and display lists when rendering - simple vertex arrays will be used instead. Try this option out if rendering is corrupt or **Aten** crashed unexpectedly on startup. The rendering will be slower, but more compatible.
 
 `--nopack`<a id="nopack"></a>
 
@@ -254,6 +260,10 @@ Prevents nearly all text output from **Aten**, including error messages and the 
 
 Specifies that the script file is to be loaded and run before moving on to the next command-line argument. A script file is just a plain text file that contains sequence of commands to be executed, written in the [command language style](/aten/docs/scripting/language) native to Aten..
 
+`--session=<file>`<a id="session"></a>
+
+Loads the specified session file.
+
 `--string=<name=value>`<a id="string"></a>
 
 Creates a floating **string** variable _name_. See the [--double](/aten/docs/cli/switches#d) switch for a full description.
@@ -263,6 +273,10 @@ Creates a floating **string** variable _name_. See the [--double](/aten/docs/cli
 `-t <file>, --trajectory=<file>`<a id="t"></a>
 
 Associates a trajectory file with the last loaded / current model.
+
+`--tf=<format>`<a id="tf"></a>
+
+In the same manner as [`-f`](/aten/docs/cli/switches#f), `--tf` sets the format to use when associating trajectory files.
 
 ## U
 
@@ -275,10 +289,6 @@ Set the maximum number of undo levels per model, or -1 for unlimited (the defaul
 `-v, --verbose`<a id="v"></a>
 
 Switch on verbose reporting of program actions.
-
-`--vbo`<a id="vbo"></a>
-
-Attempt to use OpenGL vertex buffer objects when rendering, for maximum performance.
 
 ## Z
 

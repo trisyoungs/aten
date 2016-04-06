@@ -10,7 +10,7 @@ header_class: alt
 
 Define colourscales to colour objects. Each colourscale has a number of points defining colours at specific values - between adjacent points the colour is linearly interpolated. Points in a colourscale are numbered from 1 onwards. There are ten available colourscales, with IDs 1-10. Some of these have specific uses within **Aten**.
 
-The [Topics](/aten/docs/topics) section has an entry on [Colourscales](/aten/docs/topics/colourscales) explaining them in more detail.
+The [**Topics**](/aten/docs/topics) section has an entry on [**Colourscales**](/aten/docs/topics/colourscales) explaining them in more detail.
 
 ---
 

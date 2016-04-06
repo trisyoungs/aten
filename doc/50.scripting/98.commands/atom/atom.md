@@ -28,7 +28,7 @@ atomStyle("tube");
 ```
 
 
-sets the current atom selection to be drawn in the ‘tube’ style. See the (DrawStyle)[/aten/docs/enumerations/drawstyle] enum for a list of all available styles.
+sets the current atom selection to be drawn in the ‘tube’ style. See the [**DrawStyle**](/aten/docs/enumerations/drawstyle) enum for a list of all available styles.
 
 ---
 
@@ -36,9 +36,9 @@ sets the current atom selection to be drawn in the ‘tube’ style. See the (Dr
 
 _Syntax:_
 
-[Atom](/aten/docs/scripting/variabletypes/atom) **currentAtom** ( )
+[**Atom**](/aten/docs/scripting/variabletypes/atom) **currentAtom** ( )
 
-[Atom](/aten/docs/scripting/variabletypes/atom) **currentAtom** ( [Atom](/aten/docs/scripting/variabletypes/atom)|**int** _id_ )
+[**Atom**](/aten/docs/scripting/variabletypes/atom) **currentAtom** ( [**Atom**](/aten/docs/scripting/variabletypes/atom)|**int** _id_ )
 
 Return a reference to the current atom. If a new atom/id is provided the current atom is set before being returned.
 
@@ -58,7 +58,7 @@ makes the first atom in the current model the current atom, and returns a refere
 
 _Syntax:_
 
-**void** **fix** ( [Atom](/aten/docs/scripting/variabletypes/atom)|**int** _id_ = 0 )
+**void** **fix** ( [**Atom**](/aten/docs/scripting/variabletypes/atom)|**int** _id_ = 0 )
 
 Fix the positions of the current atom selection (or individual atom specified) so that they remain in the same position following various methods (e.g. minimisations).
 
@@ -86,7 +86,7 @@ fixes the positions of the first 10 atoms in the current model.
 
 _Syntax:_
 
-**void** **free** ( [Atom](/aten/docs/scripting/variabletypes/atom)|**int** _id_ = 0 )
+**void** **free** ( [**Atom**](/aten/docs/scripting/variabletypes/atom)|**int** _id_ = 0 )
 
 Free the positions of previously fixed atoms in the current selection (or the individual atom specified).
 
@@ -106,7 +106,7 @@ allows the fifth atom in the current model to be moved again.
 
 _Syntax:_
 
-[Atom](/aten/docs/scripting/variabletypes/atom) **getAtom** ( [Atom](/aten/docs/scripting/variabletypes/atom)|**int** _id_ )
+[**Atom**](/aten/docs/scripting/variabletypes/atom) **getAtom** ( [**Atom**](/aten/docs/scripting/variabletypes/atom)|**int** _id_ )
 
 Return a reference to the atom specified.
 
@@ -126,7 +126,7 @@ returns a reference to the third atom in the current model.
 
 _Syntax:_
 
-**void** **hide** ( [Atom](/aten/docs/scripting/variabletypes/atom)|**int** _id_ = 0 )
+**void** **hide** ( [**Atom**](/aten/docs/scripting/variabletypes/atom)|**int** _id_ = 0 )
 
 Hides the current selection of atoms (or the supplied atom) from view, meaning they cannot be selected by direct clicking/highlighting in the GUI. They are still subject to transformation if they are selected by other means.
 
@@ -313,7 +313,7 @@ Set the z velocity of the current (or specified) atom.
 
 _Syntax:_
 
-**void** **show** ( [Atom](/aten/docs/scripting/variabletypes/atom)|**int** _id_ = 0 )
+**void** **show** ( [**Atom**](/aten/docs/scripting/variabletypes/atom)|**int** _id_ = 0 )
 
 Makes the current selection of atoms (or the supplied atom) visible again if they were previously hidden.
 

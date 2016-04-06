@@ -194,13 +194,13 @@ printCell();
 
 _Syntax:_
 
-**void** **replicate** ( **double** _negx_, **double** _negy_, **double** _negz_, **double** _posx_, **double** _posy_, **double** _posz_ )
+**void** **replicate** ( **double** _negx_, **double** _negy_, **double** _negz_, **double** _posx_, **double** _posy_, **double** _posz_ , **bool** _fold_ = **false**, **bool** _trim_ = **false** )
 
-Create a supercell of the current model, creating copies of the cell in each of the three cell axis directions. The number of cells to replicate in each positive and negative direction are specified as 'additional' cells beyond the original. So:
+Create a supercell of the current model, creating copies of the cell in each of the three cell axis directions. The original cell is considered to span {0,0,0} to {1,1,1}, so the number of additional cells should be specified beyond these initial numbers. Thus:
 
 
 ```
-replicate(0, 0, 0, 0, 0, 0);
+replicate(0, 0, 0, 1, 1, 1);
 ```
 
 
@@ -208,18 +208,19 @@ will do nothing at all to the model, while:
 
 
 ```
-replicate(-5, 0, 0, 5, 0, 0);
+replicate(-5, 0, 0, 6, 1, 1);
 ```
-
 
 will result in a supercell that consists of eleven copies of the original cell along the x-axis direction. Similarly,
 
 ```
-replicate(0, 0, 0, 4, 4, 4);
-replicate(-2, -2, -2, 2, 2, 2);
+replicate(0, 0, 0, 5, 5, 5);
+replicate(-2, -2, -2, 3, 3, 3);
 ```
 
 will both create a 5x5x5 arrangement of the original cell.
+
+Optionally, atoms can be folded into the original unit cell before replicating by passing **true** as the _fold_ argument. Similarly, excess atoms that sit outside the unit cell after replication can be removed by passing **true** as the _trim_ argument.
 
 ---
 
@@ -227,9 +228,9 @@ will both create a 5x5x5 arrangement of the original cell.
 
 _Syntax:_
 
-**void** **scale** ( **double** _x_, **double** _y_, **double** _z_, **bool** _calcenergy_ = **FALSE** )
+**void** **scale** ( **double** _x_, **double** _y_, **double** _z_ )
 
-Scale unit cell and its constituent atoms by the scale factors _x_, _y_, and _z_. The optional _calcenergy_ parameter calculates the energy difference resulting from the scaling operation.
+Scale unit cell and its constituent atoms by the scale factors _x_, _y_, and _z_.
 
 For example:
 
@@ -247,9 +248,9 @@ doubles the length of the y-axis of the system. x- and z-axes remain unchanged.
 
 _Syntax:_
 
-**void** **scaleMolecules** ( **double** _x_, **double** _y_, **double** _z_, **bool** _calcenergy_ = **FALSE** )
+**void** **scaleMolecules** ( **double** _x_, **double** _y_, **double** _z_ )
 
-Scale unit cell and centres-of-geometry of molecules within it by the scale factors _x_, _y_, and _z_. Within individual molecules the relative distances between atoms stays the same, but the centres-of-geometry of other molecules do not. The optional _calcenergy_ parameter calculates the energy difference resulting from the scaling operation.
+Scale unit cell and centres-of-geometry of molecules within it by the scale factors _x_, _y_, and _z_. Within individual molecules the relative distances between atoms stays the same, but the centres-of-geometry of other molecules do not.
 
 For example:
 

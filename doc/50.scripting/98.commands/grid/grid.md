@@ -8,9 +8,7 @@ docroot: /aten/docs
 header_class: alt
 ---
 
-Add gridded data to the current model.
-
-Grid window for management of grids in the GUI.
+Add and edit gridded data for the current model.
 
 ---
 
@@ -303,8 +301,27 @@ For example:
 gridOrtho(0.5, 0.5, 0.8);
 ```
 
-
 sets up a system of axes elongated in the z-axis.
+
+---
+
+## gridOutline <a id="gridoutline"></a>
+
+_Syntax:_
+
+**void** **gridOutline* ( **bool** _outline_ )
+
+Sets whether a bounding box on the grid volume should be drawn.
+
+---
+
+## gridPeriodic <a id="gridperiodic"></a>
+
+_Syntax:_
+
+**void** **gridPeriodic* ( **bool** _periodic_ )
+
+Flags that the grid volume should be treated as periodic, allowing data at the extreme faces of the volume to be used in the construction of surface information on the opposite side.
 
 ---
 
@@ -314,17 +331,25 @@ _Syntax:_
 
 **void** **gridStyle** ( **string** _style_ )
 
-Determines how the current grid data is drawn on-screen. Valid _style_s are listed in the (GridStyle)[/aten/docs/enumerations/gridstyle] enum.
+Determines how the current grid data is drawn on-screen. Valid _style_s are listed in the [GridStyle](/aten/docs/enumerations/gridstyle) enum.
 
 For example:
-
 
 ```
 gridStyle("triangles");
 ```
 
-
 draws the current grid as a triangle mesh.
+
+---
+
+## gridStyleSecondary <a id="gridstylesecondary"></a>
+
+_Syntax:_
+
+**void** **gridStyleSecondary** ( **string** _style_ )
+
+Determines how the secondary surface of the current grid data is drawn on-screen. Valid _style_s are listed in the [GridStyle](/aten/docs/enumerations/gridstyle) enum.
 
 ---
 
@@ -332,7 +357,7 @@ draws the current grid as a triangle mesh.
 
 _Syntax:_
 
-**int** **gridUse****Z** ( )
+**int** **gridUseZ** ( )
 
 **int** **gridUseZ** ( **bool** _usez_ )
 
@@ -345,7 +370,25 @@ For example:
 gridUseZ("on");
 ```
 
+---
 
+## gridViewPercentage <a id="gridviewpercentage"></a>
+
+_Syntax:_
+
+**int** **gridViewPercentage** ( **double** _percentage_ )
+
+Attempt to set the lower cutoff of the current grid so that the resulting surface so constructed encompasses the specified percentage of the total value over the grid volume.
+
+---
+
+## gridViewSecondaryPercentage <a id="gridviewsecondarypercentage"></a>
+
+_Syntax:_
+
+**int** **gridViewSecondaryPercentage** ( **double** _percentage_ )
+
+Attempt to set the lower cutoff of the current grid's secondary surface so that the resulting surface so constructed encompasses the specified percentage of the total value over the grid volume.
 ---
 
 ## gridVisible <a id="gridvisible"></a>
@@ -392,7 +435,7 @@ initialises the current grid to be a regularly-spaced and hold a total of (gets 
 
 _Syntax:_
 
-[Grid](/aten/docs/scripting/variabletypes/grid) **loadGrid** ( **string** _filename_ )
+[**Grid**](/aten/docs/scripting/variabletypes/grid) **loadGrid** ( **string** _filename_ )
 
 Load an existing grid from the specified file, and add it to the current model. If successfully loaded, a reference to the new grid is returned.
 
@@ -412,7 +455,7 @@ loads a grid called "density.pdens" and attaches it to current model.
 
 _Syntax:_
 
-[Grid](/aten/docs/scripting/variabletypes/grid) **newGrid** ( **string** _name_ )
+[**Grid**](/aten/docs/scripting/variabletypes/grid) **newGrid** ( **string** _name_ )
 
 Creates a new, empty grid with the provided 'name' in the current model, and returns a reference to it.
 

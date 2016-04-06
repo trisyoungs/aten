@@ -146,7 +146,7 @@ createExpression();
 
 _Syntax:_
 
-**void** **currentFF** ( **string**|**int**|[Forcefield](/aten/docs/scripting/variabletypes/forcefield) _ff_ )
+**void** **currentFF** ( **string**|**int**|[**Forcefield**](/aten/docs/scripting/variabletypes/forcefield) _ff_ )
 
 Delete the specified forcefield (i.e. unload it) and remove all reference to it in all models.
 
@@ -156,7 +156,7 @@ Delete the specified forcefield (i.e. unload it) and remove all reference to it 
 
 _Syntax:_
 
-**void** **deleteFF** ( **string**|**int**|[Forcefield](/aten/docs/scripting/variabletypes/forcefield) _ff_ )
+**void** **deleteFF** ( **string**|**int**|[**Forcefield**](/aten/docs/scripting/variabletypes/forcefield) _ff_ )
 
 Delete the specified forcefield (i.e. unload it) and remove all reference to it in all models.
 
@@ -218,7 +218,7 @@ _Syntax:_
 
 **void** **ffPattern** ( **int** _patternid_ )
 
-**void** **ffPattern** ( [Pattern](/aten/docs/scripting/variabletypes/pattern) _p_ )
+**void** **ffPattern** ( [**Pattern**](/aten/docs/scripting/variabletypes/pattern) _p_ )
 
 Associates current forcefield to the current pattern, or one specified by either a reference, integer ID in the current model, or a pattern pointer.
 
@@ -256,7 +256,7 @@ Perform necessary operations on the current forcefield once all data has been ad
 
 _Syntax:_
 
-**void** **fixType** ( **int** _typeId_, [Atom](/aten/docs/scripting/variabletypes/atom)|**int** _id_ = 0 )
+**void** **fixType** ( **int** _typeId_, [**Atom**](/aten/docs/scripting/variabletypes/atom)|**int** _id_ = 0 )
 
 Set the current atom selection, or the specified atom, to have the type id (in the current forcefield) specified. Types set in this manner will not be overwritten by tha typing routines, allowing specific types to be applied above the normal rules. Note that the type’s NETA description is not checked, and so any (even types not matching the base element) may be applied in this way.
 
@@ -276,7 +276,7 @@ assigns newly-created type _99_ (specific to nitrogen) to all carbons in the mod
 
 _Syntax:_
 
-**void** **freeType** ( [Atom](/aten/docs/scripting/variabletypes/atom)|**int** _id_ = 0 )
+**void** **freeType** ( [**Atom**](/aten/docs/scripting/variabletypes/atom)|**int** _id_ = 0 )
 
 For the current atom selection, or the specified atom, free any previously-fixed types
 
@@ -296,7 +296,7 @@ frees any previously-set type on atom 14.
 
 _Syntax:_
 
- [FFBound](/aten/docs/scripting/variabletypes/ffbound) **generateAngle** ( [Atom](/aten/docs/scripting/variabletypes/atom)|**int** _i_, [Atom](/aten/docs/scripting/variabletypes/atom)|**int** _j_, [Atom](/aten/docs/scripting/variabletypes/atom)|**int** _k_)
+ [**FFBound**](/aten/docs/scripting/variabletypes/ffbound) **generateAngle** ( [**Atom**](/aten/docs/scripting/variabletypes/atom)|**int** _i_, [**Atom**](/aten/docs/scripting/variabletypes/atom)|**int** _j_, [**Atom**](/aten/docs/scripting/variabletypes/atom)|**int** _k_)
 
 Attempt to generate, from defined generator information in the current Forcefield, expression information for the angle between the specified atoms. The newly (or previously) generated term is returned.
 
@@ -316,7 +316,7 @@ attemps to generate an angle term for the newly-created water molecule.
 
 _Syntax:_
 
- [FFBound](/aten/docs/scripting/variabletypes/ffbound) **generateBond** ( [Atom](/aten/docs/scripting/variabletypes/atom)|**int** _i_, [Atom](/aten/docs/scripting/variabletypes/atom)|**int** _j_ )
+ [**FFBound**](/aten/docs/scripting/variabletypes/ffbound) **generateBond** ( [**Atom**](/aten/docs/scripting/variabletypes/atom)|**int** _i_, [**Atom**](/aten/docs/scripting/variabletypes/atom)|**int** _j_ )
 
 Attempt to generate, from defined generator information in the current Forcefield, expression information for the bond between the specified atoms. The newly (or previously) generated term is returned.
 
@@ -326,7 +326,7 @@ Attempt to generate, from defined generator information in the current Forcefiel
 
 _Syntax:_
 
- [FFBound](/aten/docs/scripting/variabletypes/ffbound) **generateTorsion** ( [Atom](/aten/docs/scripting/variabletypes/atom)|**int** _i_, [Atom](/aten/docs/scripting/variabletypes/atom)|**int** _j_, [Atom](/aten/docs/scripting/variabletypes/atom)|**int** _k_, [Atom](/aten/docs/scripting/variabletypes/atom)|**int** _l_ )
+ [**FFBound**](/aten/docs/scripting/variabletypes/ffbound) **generateTorsion** ( [**Atom**](/aten/docs/scripting/variabletypes/atom)|**int** _i_, [**Atom**](/aten/docs/scripting/variabletypes/atom)|**int** _j_, [**Atom**](/aten/docs/scripting/variabletypes/atom)|**int** _k_, [**Atom**](/aten/docs/scripting/variabletypes/atom)|**int** _l_ )
 
 Attempt to generate, from defined generator information in the current Forcefield, expression information for the torsion  between the specified atoms. The newly (or previously) generated term is returned.
 
@@ -336,7 +336,7 @@ Attempt to generate, from defined generator information in the current Forcefiel
 
 _Syntax:_
 
-[FFAtom](/aten/docs/scripting/variabletypes/ffatom) **generateVdw** ( [Atom](/aten/docs/scripting/variabletypes/atom)|**int** _i_ )
+[**FFAtom**](/aten/docs/scripting/variabletypes/ffatom) **generateVdw** ( [**Atom**](/aten/docs/scripting/variabletypes/atom)|**int** _i_ )
 
 Attempt to generate, from defined generator information in the current Forcefield, a van der Waals term for the specified atom. The newly (or previously) generated term is returned.
 
@@ -364,7 +364,7 @@ string cr = getCombinationRule("lj", "epsilon");
 
 _Syntax:_
 
-[Forcefield](/aten/docs/scripting/variabletypes/forcefield) **getFF** ( **string** _name_ | **int** _id_ )
+[**Forcefield**](/aten/docs/scripting/variabletypes/forcefield) **getFF** ( **string** _name_ | **int** _id_ )
 
 Select the named forcefield (or forcefield with the specified _id_) and make it current, returning a reference to it in the process.
 
@@ -394,7 +394,7 @@ Add a new short-range data definition to a type in the current forcefield. _form
 
 _Syntax:_
 
-[Forcefield](/aten/docs/scripting/variabletypes/forcefield) **loadFF** ( **string** _file_, **string** _name_ )
+[**Forcefield**](/aten/docs/scripting/variabletypes/forcefield) **loadFF** ( **string** _file_, **string** _name_ )
 
 Load a forcefield from file and reference it by _name_. Becomes the current forcefield.
 
@@ -434,7 +434,7 @@ converts atoms with names _CT1_ and _CT2_ to carbon.
 
 _Syntax:_
 
-[Forcefield](/aten/docs/scripting/variabletypes/forcefield) **newFF** ( **string** _name_ )
+[**Forcefield**](/aten/docs/scripting/variabletypes/forcefield) **newFF** ( **string** _name_ )
 
 Create a new, empty forcefield with the given _name_ and make it current. Returns a reference to the new forcefield.
 
@@ -592,7 +592,7 @@ int success = typeModel();
 
 _Syntax:_
 
-**int** **typeTest** ( **int** _typeId_, [Atom](/aten/docs/scripting/variabletypes/atom)|**int** _id_ )
+**int** **typeTest** ( **int** _typeId_, [**Atom**](/aten/docs/scripting/variabletypes/atom)|**int** _id_ )
 
 Test the current forcefield's atomtype _typeId_ on the atom specified, returning the type score of the match (zero indicating no match).
 

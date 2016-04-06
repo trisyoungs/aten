@@ -34,7 +34,7 @@ clearMeasurements();
 
 _Syntax:_
 
-**double** **geometry** ( [Atom](/aten/docs/scripting/variabletypes/atom)|**int** _i_, [Atom](/aten/docs/scripting/variabletypes/atom)|**int** _j_, [Atom](/aten/docs/scripting/variabletypes/atom)|**int** _k_ = 0, [Atom](/aten/docs/scripting/variabletypes/atom)|**int** _l_ = 0 )
+**double** **geometry** ( [**Atom**](/aten/docs/scripting/variabletypes/atom)|**int** _i_, [**Atom**](/aten/docs/scripting/variabletypes/atom)|**int** _j_, [**Atom**](/aten/docs/scripting/variabletypes/atom)|**int** _k_ = 0, [**Atom**](/aten/docs/scripting/variabletypes/atom)|**int** _l_ = 0 )
 
 This command is a general measuring tool, able to measure distances, angles, and torsions in the model, depending on how many arguments are supplied. Note that, unlike the measure command, the resulting measurement is _not_ added to the Model’s internal list, and thus will not be displayed in the model.
 
@@ -73,7 +73,7 @@ prints out a list of measurements made so far.
 
 _Syntax:_
 
-**double** **measure** ( [Atom](/aten/docs/scripting/variabletypes/atom)|**int** _i_, [Atom](/aten/docs/scripting/variabletypes/atom)|**int** _j_, [Atom](/aten/docs/scripting/variabletypes/atom)|**int** _k_ = 0, [Atom](/aten/docs/scripting/variabletypes/atom)|**int** _l_ = 0 )
+**double** **measure** ( [**Atom**](/aten/docs/scripting/variabletypes/atom)|**int** _i_, [**Atom**](/aten/docs/scripting/variabletypes/atom)|**int** _j_, [**Atom**](/aten/docs/scripting/variabletypes/atom)|**int** _k_ = 0, [**Atom**](/aten/docs/scripting/variabletypes/atom)|**int** _l_ = 0 )
 
 This command is a general measuring tool, able to measure distances, angles, and torsions in the model, depending on how many arguments are supplied. Note that the resulting measurement is added to the Model's internal list, and will be displayed in the model. Also, note that measuring the same thing between the same atoms twice will remove the measurement from the Model.
 

@@ -16,7 +16,7 @@ Select atoms or groups of atoms within the current model.
 
 _Syntax:_
 
-**int** **deSelect** ( [Atom](/aten/docs/scripting/variabletypes/atom)|**int**|**string** _selection_, ... )
+**int** **deSelect** ( [**Atom**](/aten/docs/scripting/variabletypes/atom)|**int**|**string** _selection_, ... )
 
 Deselect atoms in the current model, returning the number of atoms deselected by the provided selection arguments. One or more arguments may be supplied, and each may be of the type int, atom, or string. In the case of the first two types, individual atoms (or those corresponding to the integer id) are deselected. On the other hand, strings may contain ranges of atom IDs and element symbols permitting atoms to be deselected in groups. Ranges are specified as '_a_-_b_' where _a_ and _b_ are either both atom IDs or both element symbols. In addition, the '+' symbol can be used before ('+a') or after ('a+') an atom ID or element symbol to mean either ‘everything up to and including this’ or ‘this and everything after’. Within a string argument, one or more selection ranges may be separated by commas.
 
@@ -64,6 +64,25 @@ deselects the first, second, and fifth atoms, as well as the eighth atom and all
 
 ---
 
+## deSelectCode <a id="deselectcode"></a>
+
+_Syntax:_
+
+**int** **deSelectCode** ( **string** _code_ )
+
+Evaluates the _code_ snippet for each atom, deselecting any atom for which it evaluates to **true**. Atom information can be accessed through a variable _i_ of type [**Atom**](/aten/docs/scripting/variabletypes/atom).
+
+For example:
+
+
+```
+deSelectCode("(i.z == 6);");
+```
+
+will deselect all carbon atoms in the current model.
+
+---
+
 ## deSelectF <a id="deselectf"></a>
 
 _Syntax:_
@@ -83,31 +102,11 @@ deselects atom ids 10 to 20 inclusive.
 
 ---
 
-## deSelectFor <a id="deselectfor"></a>
-
-_Syntax:_
-
-**int** **deSelectFor** ( **string** _code_ )
-
-Compiles and executes the _code_ supplied within a loop which runs over all atoms. The control variable of the loop in which the _code_ is inserted is of type _Atom_ and is named _i_. The _code_ provided should use this pointer to decide whether or not the atom in question should be selected or not, returning **TRUE** or **FALSE** in the process. A return path resulting in **FALSE** need not be specified, since this is the default if the code supplied does not return a value.
-
-For example:
-
-
-```
-deSelectFor("if (i.z == 6) return TRUE;");
-```
-
-
-will deselect all carbon atoms in the current model.
-
----
-
 ## deSelectType <a id="deselecttype"></a>
 
 _Syntax:_
 
-**int** **deSelectType** ( **string**|**int**|[Element](/aten/docs/scripting/variabletypes/element) _el_, **string** _neta_ )
+**int** **deSelectType** ( **string**|**int**|[**Element**](/aten/docs/scripting/variabletypes/element) _el_, **string** _neta_ )
 
 Deselect all atoms in the current model matching the element and NETA type description specified.
 
@@ -163,7 +162,7 @@ invert();
 
 _Syntax:_
 
-**int** **select** ( [Atom](/aten/docs/scripting/variabletypes/atom)|**int**|**string** _selection_, ... )
+**int** **select** ( [**Atom**](/aten/docs/scripting/variabletypes/atom)|**int**|**string** _selection_, ... )
 
 Select atoms in the current model, keeping any previous selection of atoms. See the **deSelect** command for a full description of the syntax. The number of atoms added to the existing selection is returned.
 
@@ -202,6 +201,15 @@ For example:
 selectAll();
 ```
 
+---
+
+## selectCode <a id="selectcode"></a>
+
+_Syntax:_
+
+**int** **selectCode** ( **string** _code_ )
+
+Select atoms using the supplied _code_ snippet, which is evaluated for each atom. See the [**deSelectCode**](/aten/docs/scripting/selection/deselectcode) command for a full description.
 
 ---
 
@@ -235,16 +243,6 @@ Selects atoms according to a string generated from a C-style **printf** call. Se
 
 ---
 
-## selectFor <a id="selectfor"></a>
-
-_Syntax:_
-
-**int** **selectFor** ( **string** _code_ )
-
-Select atoms using the supplied _code_, which is inserted inside a loop over all atoms in the current model. See the **deSelectFor** command for a full description.
-
----
-
 ## selectInsideCell <a id="selectinsidecell"></a>
 
 _Syntax:_
@@ -267,7 +265,7 @@ int n = selectInsideCell();
 
 _Syntax:_
 
-[Vector](/aten/docs/scripting/variabletypes/vector) **selectionCog** ( )
+[**Vector**](/aten/docs/scripting/variabletypes/vector) **selectionCog** ( )
 
 Return the centre of geometry of the current atom selection.
 
@@ -286,7 +284,7 @@ calculates and prints the centre-of-geometry of the current selection.
 
 _Syntax:_
 
-[Vector](/aten/docs/scripting/variabletypes/vector) **selectionCom** ( )
+[**Vector**](/aten/docs/scripting/variabletypes/vector) **selectionCom** ( )
 
 Return the centre of mass of the current atom selection.
 
@@ -345,7 +343,7 @@ selects all atoms located beyond the (111) plane in the unit cell.
 
 _Syntax:_
 
-**int** **selectMolecule** ( [Atom](/aten/docs/scripting/variabletypes/atom)|**int** _target_ )
+**int** **selectMolecule** ( [**Atom**](/aten/docs/scripting/variabletypes/atom)|**int** _target_ )
 
 Select all atoms in the molecule / fragment to which the supplied _target_ atom belongs.
 
@@ -421,7 +419,7 @@ int n = selectOutsideCell();
 
 _Syntax:_
 
-**int** **selectPattern** ( **int** _id_ | **string** _name_ | [Pattern](/aten/docs/scripting/variabletypes/pattern) _p_ )
+**int** **selectPattern** ( **int** _id_ | **string** _name_ | [**Pattern**](/aten/docs/scripting/variabletypes/pattern) _p_ )
 
 Selects all atoms in the current (or named/specified) pattern. Returns the number of atoms added to the existing selection.
 
@@ -449,7 +447,7 @@ select all atoms in the pattern "bubble" of the current model.
 
 _Syntax:_
 
-**int** **selectRadial** ( [Atom](/aten/docs/scripting/variabletypes/atom)|**int** _id_, **double** _r_ )
+**int** **selectRadial** ( [**Atom**](/aten/docs/scripting/variabletypes/atom)|**int** _id_, **double** _r_ )
 
 Select all atoms within _r_ Å of the supplied target atom (which is also selected). Returns the number of atoms added to the existing selection.
 
@@ -469,7 +467,7 @@ selects all atoms within 4.5 Å of atom 10, and returns the number selected.
 
 _Syntax:_
 
-**int** **selectTree** ( [Atom](/aten/docs/scripting/variabletypes/atom)|**int** _i_, [Bond](/aten/docs/scripting/variabletypes/bond) _exclude_ = (NULL) )
+**int** **selectTree** ( [**Atom**](/aten/docs/scripting/variabletypes/atom)|**int** _i_, [**Bond**](/aten/docs/scripting/variabletypes/bond) _exclude_ = (NULL) )
 
 Select all atoms which are reachable by following chemical bonds, starting from (and including) atom _i_. If a bond to _exclude_ is provided, then this connection will not be followed during the selection process. This is useful when one wishes to select a ‘headgroup' fragment attached to an atom, without selecting the rest of the molecule. The number of atoms selected by the process is returned.
 

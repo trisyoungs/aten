@@ -34,9 +34,9 @@ clearLabels();
 
 _Syntax:_
 
-**void** **label** ( **string** _type_, [Atom](/aten/docs/scripting/variabletypes/atom)|**int** _id_ = 0 )
+**void** **label** ( **string** _type_, [**Atom**](/aten/docs/scripting/variabletypes/atom)|**int** _id_ = 0 )
 
-Adds the specified label to each atom in the current selection, or alternatively just to the atom specified. Valid _type_s are as listed for the (LabelType)[/aten/docs/enumerations/labeltype] enum.
+Adds the specified label to each atom in the current selection, or alternatively just to the atom specified. Valid _type_s are as listed for the [**LabelType**](/aten/docs/enumerations/labeltype) enum.
 
 For example:
 
@@ -54,7 +54,7 @@ adds element labels to the current atom selection.
 
 _Syntax:_
 
-**void** **removeLabel** ( **string** _type_, [Atom](/aten/docs/scripting/variabletypes/atom)|**int** _id_ = 0 )
+**void** **removeLabel** ( **string** _type_, [**Atom**](/aten/docs/scripting/variabletypes/atom)|**int** _id_ = 0 )
 
 Remove the specified label (if it exists) from each atom in the current selection, or alternatively just from the atom specified.
 
@@ -74,7 +74,7 @@ removes the forcefield equivalent type label from each atom in the current selec
 
 _Syntax:_
 
-**void** **removeLabels** ( [Atom](/aten/docs/scripting/variabletypes/atom)|**int** _id_ = 0 )
+**void** **removeLabels** ( [**Atom**](/aten/docs/scripting/variabletypes/atom)|**int** _id_ = 0 )
 
 Remove all labels from all atoms in the current selection, or alternatively just the atom specified.
 

@@ -102,9 +102,9 @@ clearSelectedBonds();
 
 _Syntax:_
 
-**void** **newBond** ( [Atom](/aten/docs/scripting/variabletypes/atom)|**int** _i_, [Atom](/aten/docs/scripting/variabletypes/atom)|**int** _j_, )
+**void** **newBond** ( [**Atom**](/aten/docs/scripting/variabletypes/atom)|**int** _i_, [**Atom**](/aten/docs/scripting/variabletypes/atom)|**int** _j_, )
 
-**void** **newBond** ( [Atom](/aten/docs/scripting/variabletypes/atom)|**int** _i_, [Atom](/aten/docs/scripting/variabletypes/atom)|**int** _j_, **string**|**int** _bondtype_ )
+**void** **newBond** ( [**Atom**](/aten/docs/scripting/variabletypes/atom)|**int** _i_, [**Atom**](/aten/docs/scripting/variabletypes/atom)|**int** _j_, **string**|**int** _bondtype_ )
 
 Create a new bond in the model between the specified atoms. The optional _bondtype_ argument specified the type of bond: e.g. single (default), double, or triple. Alternatively, an integer number representing the bond order may be given.
 

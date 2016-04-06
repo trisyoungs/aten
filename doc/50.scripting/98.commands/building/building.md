@@ -18,7 +18,7 @@ _Syntax:_
 
 **void** **addHydrogen** ( )
 
-**void** **addHydrogen** ( [Atom](/aten/docs/scripting/variabletypes/atom)|**int** _i_ )
+**void** **addHydrogen** ( [**Atom**](/aten/docs/scripting/variabletypes/atom)|**int** _i_ )
 
 Satisfy the valencies of all atoms in the current model by adding hydrogens to heavy atoms. If an integer id or atom reference is provided as the argument then the addition of hydrogen is restricted to the specified atom.
 
@@ -65,13 +65,13 @@ converts the coordinates of the supplied atom from Bohr to Ǻ.
 
 _Syntax:_
 
-[Atom](/aten/docs/scripting/variabletypes/atom) **chain** ( **int**|**string** _el_ )
+[**Atom**](/aten/docs/scripting/variabletypes/atom) **chain** ( **int**|**string** _el_ )
 
-[Atom](/aten/docs/scripting/variabletypes/atom) **chain** ( **int**|**string** _el_, **int**|**string** _bondtype_ )
+[**Atom**](/aten/docs/scripting/variabletypes/atom) **chain** ( **int**|**string** _el_, **int**|**string** _bondtype_ )
 
-[Atom](/aten/docs/scripting/variabletypes/atom) **chain** ( **int**|**string** _el_, **double** _x_, **double** _y_, **double** _z_ )
+[**Atom**](/aten/docs/scripting/variabletypes/atom) **chain** ( **int**|**string** _el_, **double** _x_, **double** _y_, **double** _z_ )
 
-[Atom](/aten/docs/scripting/variabletypes/atom) **chain** ( **int**|**string** _el_, **double** _x_, **double** _y_, **double** _z_, **int**|**string** _bondtype_ )
+[**Atom**](/aten/docs/scripting/variabletypes/atom) **chain** ( **int**|**string** _el_, **double** _x_, **double** _y_, **double** _z_, **int**|**string** _bondtype_ )
 
 Create a new atom of element _el_ at the current pen position (or the specified coordinates) bound to the last drawn atom with a single bond (or of type _bondtype_ if it was specified). The element can be provided as a character string containing the element symbol or element name instead of the integer atomic number. A reference to the new atom is returned.
 
@@ -125,9 +125,9 @@ endChain();
 
 _Syntax:_
 
-[Atom](/aten/docs/scripting/variabletypes/atom) **growAtom** ( [Element](/aten/docs/scripting/variabletypes/element) _el_, [Atom](/aten/docs/scripting/variabletypes/atom)|**int** [var]*i[/var], **string** _geometry_ = "tetrahedral", **double** _distance_ = (auto) )
+[**Atom**](/aten/docs/scripting/variabletypes/atom) **growAtom** ( [**Element**](/aten/docs/scripting/variabletypes/element) _el_, [**Atom**](/aten/docs/scripting/variabletypes/atom)|**int** [var]*i[/var], **string** _geometry_ = "tetrahedral", **double** _distance_ = (auto), **bool** _bond_ = **true** )
 
-Grows a new atom of the specified element from the specified target atom _i_. The position of the new atom will conform to the required geometry, and will have the specified _distance_ from the target atom.  If the supplied _distance_ is negative, then the atomic radii of the target and new atoms are used to calculate the new bond length.  If the target atom already has enough (or too many) atoms to prevent a new position from being calculated, then no atom is added.  If a new atom is successfully added, it is returned.
+Grows a new atom of the specified element from the specified target atom _i_. The position of the new atom will conform to the required geometry, and will have the specified _distance_ from the target atom.  If the supplied _distance_ is negative, then the atomic radii of the target and new atoms are used to calculate the new bond length.  If the target atom already has enough (or too many) atoms to prevent a new position from being calculated, then no atom is added.  If a new atom is successfully added, it is returned. The default is to create a bond between the target and new atoms, but this can be restricted by passing **false** as the _bond_ argument.
 
 For example:
 
@@ -368,9 +368,9 @@ Adds hydrogen atoms to the current atom selection only.
 
 _Syntax:_
 
-**void** **selectionGrowAtom** ( [Element](/aten/docs/scripting/variabletypes/element) _el_, **string** _geometry_ = "tetrahedral", **double** _distance_ = (auto) )
+**void** **selectionGrowAtom** ( [**Element**](/aten/docs/scripting/variabletypes/element) _el_, **string** _geometry_ = "tetrahedral", **double** _distance_ = (auto), **bool** _bond_ = **true** )
 
-Grows a new atom on each of the currently selected atoms, conforming to the specified geometry and distance (if provided). See the **growAtom** command for more information.
+Grows a new atom on each of the currently selected atoms, conforming to the specified geometry and distance (if provided). See the [**growAtom**](/aten/docs/scripting/commands/building#growatom) command for more information.
 
 ---
 

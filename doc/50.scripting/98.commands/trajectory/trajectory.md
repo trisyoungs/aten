@@ -16,9 +16,9 @@ Open and associate trajectory files to models, and select frames to display/edit
 
 _Syntax:_
 
-[Model](/aten/docs/scripting/variabletypes/model) **addFrame** ( )
+[**Model**](/aten/docs/scripting/variabletypes/model) **addFrame** ( )
 
-[Model](/aten/docs/scripting/variabletypes/model) **addFrame** ( **string** _title_ )
+[**Model**](/aten/docs/scripting/variabletypes/model) **addFrame** ( **string** _title_ )
 
 Append a new trajectory frame to the current model’s trajectory. The reference to the new frame is returned.
 

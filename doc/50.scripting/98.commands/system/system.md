@@ -92,22 +92,6 @@ gets the shell variable _count_ as an integer number.
 
 ---
 
-## gui <a id="gui"></a>
-
-_Syntax:_
-
-**void** **gui** ( )
-
-Starts the GUI (e.g. from a script), if it isn't already running.
-
-For example:
-
-
-```
-gui();
-```
-
-
 ## help <a id="help"></a>
 
 _Syntax:_

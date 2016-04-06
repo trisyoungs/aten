@@ -18,7 +18,7 @@ _Syntax:_
 
 **void** **addReadOption** ( **string** _option_ )
 
-Controls aspects of file reading. A list of possible _option_s that affect reading is given in the (ReadOption)[/aten/docs/enumerations/readoption] enum.
+Controls aspects of file reading. A list of possible _option_s that affect reading is given in the [**ReadOption**](/aten/docs/enumerations/readoption) enum.
 
 For example:
 
@@ -104,7 +104,7 @@ _Syntax:_
 
 **int** **getLine** ( **string** _destvar_ )
 
-Read an entire line from the input file, and put it in the character variable provided. The line also becomes the current target for readnext. The command returns a (Read Success)[/aten/docs/enumerations/readsuccess] integer.
+Read an entire line from the input file, and put it in the character variable provided. The line also becomes the current target for readnext. The command returns a [Read Success](/aten/docs/enumerations/readsuccess) integer.
 
 For example:
 
@@ -224,7 +224,7 @@ _Syntax:_
 
 **int** **readDoubleArray** ( **double** _d_\[\], **int** _n_ )
 
-Read _n_ consecutive integer values (whose individual size is determined from the result of calling ‘sizeof(double)’) from an unformatted (binary) input file, placing in the array _d_ provided. The size of the array provided must be at least _n_. The command returns a (Read Success)[/aten/docs/enumerations/readsuccess] integer..
+Read _n_ consecutive integer values (whose individual size is determined from the result of calling ‘sizeof(double)’) from an unformatted (binary) input file, placing in the array _d_ provided. The size of the array provided must be at least _n_. The command returns a [Read Success](/aten/docs/enumerations/readsuccess) integer..
 
 For example:
 
@@ -265,7 +265,7 @@ _Syntax:_
 
 **int** **readIntArray** ( **int** _i_\[\], **int** _n_ )
 
-Read _n_ consecutive integer values (whose individual size is determined from the result of calling ‘sizeof(int)’) from an unformatted (binary) input file, placing in the array _i_ provided. The size of the array provided must be at least _n_. The command returns a (Read Success)[/aten/docs/enumerations/readsuccess] integer..
+Read _n_ consecutive integer values (whose individual size is determined from the result of calling ‘sizeof(int)’) from an unformatted (binary) input file, placing in the array _i_ provided. The size of the array provided must be at least _n_. The command returns a [Read Success](/aten/docs/enumerations/readsuccess) integer..
 
 For example:
 
@@ -404,7 +404,7 @@ _Syntax:_
 
 **void** **removeReadOption** ( **string** _option_ )
 
-Removes a previously-set read option. A list of possible _option_s that affect reading is given in the (ReadOption)[/aten/docs/enumerations/readoption] enum.
+Removes a previously-set read option. A list of possible _option_s that affect reading is given in the [**ReadOption**](/aten/docs/enumerations/readoption) enum.
 
 For example:
 

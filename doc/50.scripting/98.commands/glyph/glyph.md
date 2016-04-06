@@ -84,7 +84,7 @@ _Syntax:_
 
 **void** **glyphAtomF** ( **int** _n_ )
 
-**void** **glyphAtomF** ( **int** _n_, [Atom](/aten/docs/scripting/variabletypes/atom)|**int** _sourceAtom_ )
+**void** **glyphAtomF** ( **int** _n_, [**Atom**](/aten/docs/scripting/variabletypes/atom)|**int** _sourceAtom_ )
 
 Set current (or specified) atom’s forces as data _n_ in the current glyph.
 
@@ -106,7 +106,7 @@ _Syntax:_
 
 **void** **glyphAtomR** ( **int** _n_ )
 
-**void** **glyphAtomR** ( **int** _n_, [Atom](/aten/docs/scripting/variabletypes/atom)|**int** _sourceAtom_ )
+**void** **glyphAtomR** ( **int** _n_, [**Atom**](/aten/docs/scripting/variabletypes/atom)|**int** _sourceAtom_ )
 
 Set current (or specified) atom's position as data _n_ in the current glyph.
 
@@ -128,7 +128,7 @@ _Syntax:_
 
 **void** **glyphAtomV** ( **int** _n_ )
 
-**void** **glyphAtomV** ( **int** _n_, [Atom](/aten/docs/scripting/variabletypes/atom)|**int** _sourceAtom_ )
+**void** **glyphAtomV** ( **int** _n_, [**Atom**](/aten/docs/scripting/variabletypes/atom)|**int** _sourceAtom_ )
 
 Set current (or specified) atom's velocity as data _n_ in the current glyph.
 
@@ -147,7 +147,7 @@ links the velocity of new atom _i_ to the second datum in the current glyph.
 
 _Syntax:_
 
-**void** **glyphAtomsF** ( [Atom](/aten/docs/scripting/variabletypes/atom)|**int** _sourceAtom_ ... )
+**void** **glyphAtomsF** ( [**Atom**](/aten/docs/scripting/variabletypes/atom)|**int** _sourceAtom_ ... )
 
 Accepts one or more atoms, setting consecutive data in the current glyph to the forces of the atoms / atom IDs provided.
 
@@ -167,7 +167,7 @@ links the forces of atoms 1, 2, and 3 to the first three glyph data.
 
 _Syntax:_
 
-**void** **glyphAtomsR** ( [Atom](/aten/docs/scripting/variabletypes/atom)|**int** _sourceAtom_ ... )
+**void** **glyphAtomsR** ( [**Atom**](/aten/docs/scripting/variabletypes/atom)|**int** _sourceAtom_ ... )
 
 Accepts one or more atoms, setting consecutive data in the current glyph to the positions of the atoms / atom IDs provided.
 
@@ -188,7 +188,7 @@ data.
 
 _Syntax:_
 
-**void** **glyphAtomsV** ( [Atom](/aten/docs/scripting/variabletypes/atom)|**int** _sourceAtom_ ... )
+**void** **glyphAtomsV** ( [**Atom**](/aten/docs/scripting/variabletypes/atom)|**int** _sourceAtom_ ... )
 
 Accepts one or more atoms, setting consecutive data in the current glyph to the velocities of the atoms / atom IDs provided.
 
@@ -284,7 +284,7 @@ glyphText("Coordinate Origin");
 
 _Syntax:_
 
-[Glyph](/aten/docs/scripting/variabletypes/glyph) **newGlyph** ( **string** _style_, **string** _options_ = "" )
+[**Glyph**](/aten/docs/scripting/variabletypes/glyph) **newGlyph** ( **string** _style_, **string** _options_ = "" )
 
 Create a new glyph of the specified style, and make it current. The colour of the glyph is set using the default glyph colour set in the global preferences. Valid glyph styles are listed in glyph types. Positional / size / scale vector data should be set afterwards with appropriate [name]glyphAtom*[/name] and [name]glyphData*[/name] commands.
 

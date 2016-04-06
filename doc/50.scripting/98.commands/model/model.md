@@ -34,13 +34,13 @@ createAtoms();
 
 _Syntax:_
 
-[Model](/aten/docs/scripting/variabletypes/model) **currentModel** ( )
+[**Model**](/aten/docs/scripting/variabletypes/model) **currentModel** ( )
 
-[Model](/aten/docs/scripting/variabletypes/model) **currentModel** ( **int** _id_ )
+[**Model**](/aten/docs/scripting/variabletypes/model) **currentModel** ( **int** _id_ )
 
-[Model](/aten/docs/scripting/variabletypes/model) **currentModel** ( **string** _name_ )
+[**Model**](/aten/docs/scripting/variabletypes/model) **currentModel** ( **string** _name_ )
 
-[Model](/aten/docs/scripting/variabletypes/model) **currentmodel** ( [Model](/aten/docs/scripting/variabletypes/model) _m_ )
+[**Model**](/aten/docs/scripting/variabletypes/model) **currentmodel** ( [**Model**](/aten/docs/scripting/variabletypes/model) _m_ )
 
 Returns a reference to the current model (if no argument is given) or selects the supplied model and makes it the current model. The model may be selected either by name, by its integer position in the list of loaded models (i.e. 1 to N), or a model-type variable containing a valid model reference may be passed.
 
@@ -81,7 +81,7 @@ _Syntax:_
 
 **void** **deleteModel** ( **string** _name_ )
 
-**void** **deleteModel** ( [Model](/aten/docs/scripting/variabletypes/model) _m_ )
+**void** **deleteModel** ( [**Model**](/aten/docs/scripting/variabletypes/model) _m_ )
 
 Deletes the current model (if no argument is given) or the supplied model.
 
@@ -127,11 +127,11 @@ firstModel();
 
 _Syntax:_
 
-[Model](/aten/docs/scripting/variabletypes/model) **getModel** ( **int** _id_ )
+[**Model**](/aten/docs/scripting/variabletypes/model) **getModel** ( **int** _id_ )
 
-[Model](/aten/docs/scripting/variabletypes/model) **getModel** ( **string** _name_ )
+[**Model**](/aten/docs/scripting/variabletypes/model) **getModel** ( **string** _name_ )
 
-[Model](/aten/docs/scripting/variabletypes/model) **getModel** ( [**Model**](/aten/docs/scripting/variabletypes/model) _m_ )
+[**Model**](/aten/docs/scripting/variabletypes/model) **getModel** ( [**Model**](/aten/docs/scripting/variabletypes/model) _m_ )
 
 Returns a reference to the requested model, but unlike [**currentModel**](/aten/docs/scripting/variabletypes/model#currentmodel) does not make it the current model.
 
@@ -177,7 +177,7 @@ info();
 
 _Syntax:_
 
-[Model](/aten/docs/scripting/variabletypes/model) **lastModel** ( )
+[**Model**](/aten/docs/scripting/variabletypes/model) **lastModel** ( )
 
 Makes the last loaded / created model the current model, and returns a reference to it.
 
@@ -213,9 +213,9 @@ listModels();
 
 _Syntax:_
 
-[Model](/aten/docs/scripting/variabletypes/model) **loadModel** ( **string** _filename_ )
+[**Model**](/aten/docs/scripting/variabletypes/model) **loadModel** ( **string** _filename_ )
 
-[Model](/aten/docs/scripting/variabletypes/model) **loadModel** ( **string** _filename_, **string** _filter_ = (auto) )
+[**Model**](/aten/docs/scripting/variabletypes/model) **loadModel** ( **string** _filename_, **string** _filter_ = (auto) )
 
 Load model(s) from the _filename_ provided, autodetecting the format of the file. If the optional _filter_ argument is present, then the file is forcibly loaded using the filter with the corresponding nickname. The last loaded model becomes the current model, to which a reference is returned.
 
@@ -271,7 +271,7 @@ modelTemplate();
 
 _Syntax:_
 
-[Model](/aten/docs/scripting/variabletypes/model) **newModel** ( **string** _name_ )
+[**Model**](/aten/docs/scripting/variabletypes/model) **newModel** ( **string** _name_ )
 
 Create a new model called _name_ which becomes the current model, and return a reference to it.
 
@@ -299,7 +299,7 @@ creates a new, empty model called 'dodecane', makes it current, and stores a ref
 
 _Syntax:_
 
-[Model](/aten/docs/scripting/variabletypes/model) **nextModel** ( )
+[**Model**](/aten/docs/scripting/variabletypes/model) **nextModel** ( )
 
 Skips to the next loaded model, makes it current, and returns a reference to it.
 
@@ -335,7 +335,7 @@ parentModel();
 
 _Syntax:_
 
-[Model](/aten/docs/scripting/variabletypes/model) **prevModel** ( )
+[**Model**](/aten/docs/scripting/variabletypes/model) **prevModel** ( )
 
 Skips to the previous loaded model, makes it current, and returns a reference to it.
 

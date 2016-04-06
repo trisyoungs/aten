@@ -52,11 +52,11 @@ createPatterns();
 
 _Syntax:_
 
-[Pattern](/aten/docs/scripting/variabletypes/pattern) **currentPattern** ( )
+[**Pattern**](/aten/docs/scripting/variabletypes/pattern) **currentPattern** ( )
 
-[Pattern](/aten/docs/scripting/variabletypes/pattern) **currentPattern** ( **string** _name_ )
+[**Pattern**](/aten/docs/scripting/variabletypes/pattern) **currentPattern** ( **string** _name_ )
 
-[Pattern](/aten/docs/scripting/variabletypes/pattern) **currentPattern** ( **int** _id_ )
+[**Pattern**](/aten/docs/scripting/variabletypes/pattern) **currentPattern** ( **int** _id_ )
 
 Get the named pattern or pattern with given id (if either was specified), returning its reference and setting it to be the current pattern.
 
@@ -84,9 +84,9 @@ returns a reference to the current pattern.
 
 _Syntax:_
 
-[Pattern](/aten/docs/scripting/variabletypes/pattern) **getPattern** ( **string** _name_ )
+[**Pattern**](/aten/docs/scripting/variabletypes/pattern) **getPattern** ( **string** _name_ )
 
-[Pattern](/aten/docs/scripting/variabletypes/pattern) **getPattern** ( **int** _id_ )
+[**Pattern**](/aten/docs/scripting/variabletypes/pattern) **getPattern** ( **int** _id_ )
 
 Get the named pattern, or pattern with id specified, returning its reference.
 
@@ -132,7 +132,7 @@ listPatterns();
 
 _Syntax:_
 
-[Pattern](/aten/docs/scripting/variabletypes/pattern) **newPattern** ( **string** _name_, **int** _nMols_, **int** _atomsPerMol_ )
+[**Pattern**](/aten/docs/scripting/variabletypes/pattern) **newPattern** ( **string** _name_, **int** _nMols_, **int** _atomsPerMol_ )
 
 Add a new pattern node to the current model, spanning _nMols_ molecules of _atomsPerMol_ atoms each, and called _name_. A reference to the new pattern is returned.
 

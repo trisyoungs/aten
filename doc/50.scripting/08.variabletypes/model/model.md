@@ -239,6 +239,54 @@ Calculates and returns the total intramolecular (i.e. combined bond, angle, and 
 
 ---
 
+### matrixConvertSelection <a id="matrixconvertserlection"></a>
+
+_Syntax:_
+
+**void** **matrixConvertSelection** ( **int** _i_sx_, **int** _j_sx_, **int** _i_sy_, **int** _j_sy_, **int** _i_sz_, **int** _j_sz_, **int** _i_tx_, **int** _j_tx_, **int** _i_ty_, **int** _j_ty_, **int** _i_tz_, **int** _j_tz_ )
+
+**void** **matrixConvertSelection** ( **int** _i_sx_, **int** _j_sx_, **int** _i_sy_, **int** _j_sy_, **int** _i_sz_, **int** _j_sz_, **int** _i_tx_, **int** _j_tx_, **int** _i_ty_, **int** _j_ty_, **int** _i_tz_, **int** _j_tz_, **double** _ox_, **double** _oy_, **double** _oz_ )
+
+**void** **matrixConvertSelection** ( **double** _s_ax_, **double** _s_ay_, **double** _s_az_, **double** _s_bx_, **double** _s_by_, **double** _s_bz_, **double** _s_cx_, **double** _s_cy_, **double** _s_cz_, **double** _t_ax_, **double** _t_ay_, **double** _t_az_, **double** _t_bx_, **double** _t_by_, **double** _t_bz_, **double** _t_cx_, **double** _t_cy_, **double** _t_cz_ )
+
+**void** **matrixConvertSelection** ( **double** _s_ax_, **double** _s_ay_, **double** _s_az_, **double** _s_bx_, **double** _s_by_, **double** _s_bz_, **double** _s_cx_, **double** _s_cy_, **double** _s_cz_, **double** _t_ax_, **double** _t_ay_, **double** _t_az_, **double** _t_bx_, **double** _t_by_, **double** _t_bz_, **double** _t_cx_, **double** _t_cy_, **double** _t_cz_, **double** _ox_, **double** _oy_, **double** _oz_ )
+
+Performs a matrix conversion on the current atom selection of the model. See the [matrixConvert() function reference](/aten/docs/scripting/commands/transform#matrixconvert) for a full description.
+
+---
+
+### matrixTransformSelection <a id="matrixtransformselection"></a>
+
+_Syntax:_
+
+**void** **matrixTransformSelection** ( **double** _ax_, **double** _ay_, **double** _az_, **double** _bx_, **double** _by_, **double** _bz_, **double** _cx_, **double** _cy_, **double** _cz_ )
+
+**void** **matrixTransformSelection** ( **double** _ax_, **double** _ay_, **double** _az_, **double** _bx_, **double** _by_, **double** _bz_, **double** _cx_, **double** _cy_, **double** _cz_, **double** _ox_, **double** _oy_, **double** _oz_ )
+
+Performs a matrix transformation on the current atom selection of the model. See the [matrixTransform() function reference](/aten/docs/scripting/commands/transform#matrixtransform) for a full description.
+
+---
+
+### mirrorSelection <a id="mirrorselection"></a>
+
+_Syntax:_
+
+**void** **mirrorSelection** ( **string** _axis_ )
+
+Mirror the current atom selection in the model in the specified plane about its geometric centre.
+
+---
+
+### movePen <a id="movepen"></a>
+
+_Syntax:_
+
+**void** **movePen** ( **double** _dx_, **double** _dy_, **double** _dz_ )
+
+Move the drawing pen by the specified distances.
+
+---
+
 ### moveToEnd <a id="movetoend"></a>
 
 _Syntax:_
@@ -395,6 +443,56 @@ _Syntax:_
 
 Reorder atoms so bound atoms have adjacent IDs. See the [**reorder**](/aten/docs/scripting/commands/building#reorder) command for more details.
 
+---
+
+### resetPen <a id="resetPen"></a>
+
+_Syntax:_
+
+**void** **resetPen** ( )
+
+Resets the pen coordinates for the model to {0,0,0}.
+
+---
+
+## reorientSelection <a id="reorientselection"></a>
+
+_Syntax:_
+
+**void** **reorientSelection** ( [**Atom**](/aten/docs/scripting/variabletypes/atom)|**int** _i_sx_, [**Atom**](/aten/docs/scripting/variabletypes/atom)|**int** _j_sx_, [**Atom**](/aten/docs/scripting/variabletypes/atom)|**int** _i_sy_, [**Atom**](/aten/docs/scripting/variabletypes/atom)|**int** _j_sy_, [**Atom**](/aten/docs/scripting/variabletypes/atom)|**int** _i_sz_, [**Atom**](/aten/docs/scripting/variabletypes/atom)|**int** _j_sz_, **double** _t_ax_, **double** _t_ay_, **double** _t_az_, **double** _t_bx_, **double** _t_by_, **double** _t_bz_, **double** _t_cx_, **double** _t_cy_, **double** _t_cz_ )
+
+**void** **reorientSelection** ( [**Atom**](/aten/docs/scripting/variabletypes/atom)|**int** _i_sx_, [**Atom**](/aten/docs/scripting/variabletypes/atom)|**int** _j_sx_, [**Atom**](/aten/docs/scripting/variabletypes/atom)|**int** _i_sy_, [**Atom**](/aten/docs/scripting/variabletypes/atom)|**int** _j_sy_, [**Atom**](/aten/docs/scripting/variabletypes/atom)|**int** _i_sz_, [**Atom**](/aten/docs/scripting/variabletypes/atom)|**int** _j_sz_, **double** _t_ax_, **double** _t_ay_, **double** _t_az_, **double** _t_bx_, **double** _t_by_, **double** _t_bz_, **double** _t_cx_, **double** _t_cy_, **double** _t_cz_, **double** _ox_, **double** _oy_, **double** _oz_ )
+
+Operates in exactly the same manner as [matrixTransformSelection()](/aten/docs/scripting/variabletypes/model#matrixtransformselection) except that the source matrix is defined from atoms (or their IDs) and the destination matrix is provided as a matrix.
+
+---
+
+### rotatePenX <a id="rotatePenX"></a>
+
+_Syntax:_
+
+**void** **rotatePenX** ( **double** _delta_ )
+
+Rotate the drawing pen for the current model _delta_ degrees about the X axis.
+
+---
+
+### rotatePenY <a id="rotatePenY"></a>
+
+_Syntax:_
+
+**void** **rotatePenY** ( **double** _delta_ )
+
+Rotate the drawing pen for the current model _delta_ degrees about the Y axis.
+---
+
+### rotatePenZ <a id="rotatePenZ"></a>
+
+_Syntax:_
+
+**void** **rotatePenZ** ( **double** _delta_ )
+
+Rotate the drawing pen for the current model _delta_ degrees about the Z axis.
 ---
 
 ### saveBitmap <a id="savebitmap"></a>

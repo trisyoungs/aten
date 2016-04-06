@@ -16,7 +16,7 @@ Output messages from command lists / filters. All commands work like the C print
 
 _Syntax:_
 
-[Dialog](/aten/docs/scripting/variabletypes/dialog) **createDialog** ( **string** _title_ = (none) )
+[**Dialog**](/aten/docs/scripting/variabletypes/dialog) **createDialog** ( **string** _title_ = (none) )
 
 Create a new, temporary _Dialog_ with titlebar text _title_ (if provided).
 
@@ -40,9 +40,9 @@ else
 
 _Syntax:_
 
-[Dialog](/aten/docs/scripting/variabletypes/dialog) **defaultDialog** ( **string** _title_ = (none) )
+[**Dialog**](/aten/docs/scripting/variabletypes/dialog) **defaultDialog** ( **string** _title_ = (none) )
 
-Returns the default [Dialog](/aten/docs/scripting/variabletypes/dialog) structure for this filter / script / function, setting the window titlebar text to _title_, if it is provided.
+Returns the default [**Dialog**](/aten/docs/scripting/variabletypes/dialog) structure for this filter / script / function, setting the window titlebar text to _title_, if it is provided.
 
 For example:
 
@@ -106,7 +106,7 @@ _Syntax:_
 
 **int** **showDefaultDialog** ( **string** _title_ = (none) )
 
-Shows (executes) the default [Dialog](/aten/docs/scripting/variabletypes/dialog) structure for this filter / script / function, setting the window titlebar text to _title_, if it is provided.
+Shows (executes) the default [**Dialog**](/aten/docs/scripting/variabletypes/dialog) structure for this filter / script / function, setting the window titlebar text to _title_, if it is provided.
 
 For example:
 

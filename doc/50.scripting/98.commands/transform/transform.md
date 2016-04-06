@@ -16,9 +16,9 @@ Commands to transform the current selection of the model.
 
 _Syntax:_
 
-**void** **axisRotate** ( [Atom](/aten/docs/scripting/variabletypes/atom)|**int** _i_, [Atom](/aten/docs/scripting/variabletypes/atom)|**int** _i_, **double** _theta_ )
+**void** **axisRotate** ( [**Atom**](/aten/docs/scripting/variabletypes/atom)|**int** _i_, [**Atom**](/aten/docs/scripting/variabletypes/atom)|**int** _i_, **double** _theta_ )
 
-**void** **axisRotate** ( [Atom](/aten/docs/scripting/variabletypes/atom)|**int** _i_, [Atom](/aten/docs/scripting/variabletypes/atom)|**int** _i_, **double** _theta_, **double** _ox_, **double** _oy_, **double** _oz_ )
+**void** **axisRotate** ( [**Atom**](/aten/docs/scripting/variabletypes/atom)|**int** _i_, [**Atom**](/aten/docs/scripting/variabletypes/atom)|**int** _i_, **double** _theta_, **double** _ox_, **double** _oy_, **double** _oz_ )
 
 **void** **axisRotate** ( **double** _x_, **double** _y_, **double** _z_, **double** _theta_ )
 
@@ -206,11 +206,11 @@ scales the x and y-coordinates of all selected atoms by 0.5, leaving the z coord
 
 _Syntax:_
 
-**void** **reorient** ( [Atom](/aten/docs/scripting/variabletypes/atom)|**int** _i_sx_, [Atom](/aten/docs/scripting/variabletypes/atom)|**int** _j_sx_, [Atom](/aten/docs/scripting/variabletypes/atom)|**int** _i_sy_, [Atom](/aten/docs/scripting/variabletypes/atom)|**int** _j_sy_, [Atom](/aten/docs/scripting/variabletypes/atom)|**int** _i_sz_, [Atom](/aten/docs/scripting/variabletypes/atom)|**int** _j_sz_, **double** _t_ax_, **double** _t_ay_, **double** _t_az_, **double** _t_bx_, **double** _t_by_, **double** _t_bz_, **double** _t_cx_, **double** _t_cy_, **double** _t_cz_ )
+**void** **reorient** ( [**Atom**](/aten/docs/scripting/variabletypes/atom)|**int** _i_sx_, [**Atom**](/aten/docs/scripting/variabletypes/atom)|**int** _j_sx_, [**Atom**](/aten/docs/scripting/variabletypes/atom)|**int** _i_sy_, [**Atom**](/aten/docs/scripting/variabletypes/atom)|**int** _j_sy_, [**Atom**](/aten/docs/scripting/variabletypes/atom)|**int** _i_sz_, [**Atom**](/aten/docs/scripting/variabletypes/atom)|**int** _j_sz_, **double** _t_ax_, **double** _t_ay_, **double** _t_az_, **double** _t_bx_, **double** _t_by_, **double** _t_bz_, **double** _t_cx_, **double** _t_cy_, **double** _t_cz_ )
 
-**void** **reorient** ( [Atom](/aten/docs/scripting/variabletypes/atom)|**int** _i_sx_, [Atom](/aten/docs/scripting/variabletypes/atom)|**int** _j_sx_, [Atom](/aten/docs/scripting/variabletypes/atom)|**int** _i_sy_, [Atom](/aten/docs/scripting/variabletypes/atom)|**int** _j_sy_, [Atom](/aten/docs/scripting/variabletypes/atom)|**int** _i_sz_, [Atom](/aten/docs/scripting/variabletypes/atom)|**int** _j_sz_, **double** _t_ax_, **double** _t_ay_, **double** _t_az_, **double** _t_bx_, **double** _t_by_, **double** _t_bz_, **double** _t_cx_, **double** _t_cy_, **double** _t_cz_, **double** _ox_, **double** _oy_, **double** _oz_ )
+**void** **reorient** ( [**Atom**](/aten/docs/scripting/variabletypes/atom)|**int** _i_sx_, [**Atom**](/aten/docs/scripting/variabletypes/atom)|**int** _j_sx_, [**Atom**](/aten/docs/scripting/variabletypes/atom)|**int** _i_sy_, [**Atom**](/aten/docs/scripting/variabletypes/atom)|**int** _j_sy_, [**Atom**](/aten/docs/scripting/variabletypes/atom)|**int** _i_sz_, [**Atom**](/aten/docs/scripting/variabletypes/atom)|**int** _j_sz_, **double** _t_ax_, **double** _t_ay_, **double** _t_az_, **double** _t_bx_, **double** _t_by_, **double** _t_bz_, **double** _t_cx_, **double** _t_cy_, **double** _t_cz_, **double** _ox_, **double** _oy_, **double** _oz_ )
 
-Operates in exactly the same manner as matrixtransform except that the source matrix is defined from atoms (or their IDs) and the destination matrix is provided as a matrix.
+Operates in exactly the same manner as [matrixTransform()](/aten/docs/scripting/commands/transform#matrixtransform) except that the source matrix is defined from atoms (or their IDs) and the destination matrix is provided as a matrix.
 
 ---
 
@@ -218,7 +218,7 @@ Operates in exactly the same manner as matrixtransform except that the source ma
 
 _Syntax:_
 
-**void** **setAngle** ( [Atom](/aten/docs/scripting/variabletypes/atom)|**int** _i_, [Atom](/aten/docs/scripting/variabletypes/atom)|**int** _j_, [Atom](/aten/docs/scripting/variabletypes/atom)|**int** _k_, **double** _angle_ )
+**void** **setAngle** ( [**Atom**](/aten/docs/scripting/variabletypes/atom)|**int** _i_, [**Atom**](/aten/docs/scripting/variabletypes/atom)|**int** _j_, [**Atom**](/aten/docs/scripting/variabletypes/atom)|**int** _k_, **double** _angle_ )
 
 Adjusts the angle made between atoms _i_-_j_-_k_ so that it becomes the target _value_, moving the atom _k_ and all its direct and indirectly-bound neighbours (except _i_ and _j_). The coordinates of atom _i_ and _j_ remain unaffected.
 
@@ -236,11 +236,27 @@ sets the angle made between atoms 10, 11, and 12 to be 109.5°.
 
 ---
 
+## setAngles <a id="setangles"></a>
+
+_Syntax:_
+
+**void** **setAngles** ( **double** _newAngle_, **string** _moveType_ = "high", **bool** _nudge_ = **false** )
+
+Sets (or nudges, if _nudge_ is **true**) the angles of all bonds in the current atom selection. Attached atoms at either end of the angle are also moved along with the atoms  at the extreme ends of the angle. The _moveType_ determines exactly which atoms are moved in the process:
+
++ **low** : moves only the atom with the lowest ID (and its attached atoms)
++ **high** : moves only the atom with the highest ID (and its attached atoms)
++ **light** : moves only the atom with the lowest mass (and its attached atoms)
++ **heavy** : moves only the atom with the highest mass (and its attached atoms)
++ **both** : both atoms (and their attached atoms) are moved equal amounts
+
+---
+
 ## setDistance <a id="setdistance"></a>
 
 _Syntax:_
 
-**void** **setDistance** ( [Atom](/aten/docs/scripting/variabletypes/atom)|**int** _i_, [Atom](/aten/docs/scripting/variabletypes/atom)|**int** _j_, **double** _dist_ )
+**void** **setDistance** ( [**Atom**](/aten/docs/scripting/variabletypes/atom)|**int** _i_, [**Atom**](/aten/docs/scripting/variabletypes/atom)|**int** _j_, **double** _dist_ )
 
 Shifts the atom _j_ and all its direct and indirectly-bound neighbours (except _i_) so that the distance between _i_ and _j_ is _dist_. The coordinates of atom _i_ remain unaffected.
 
@@ -258,15 +274,35 @@ sets the distance between atoms 1 and 4 to be 4.9 Å.
 
 ---
 
+## setDistances <a id="setdistances"></a>
+
+_Syntax:_
+
+**void** **setDistances** ( **double** _newDistance_, **string** _moveType_ = "high", **bool** _nudge_ = **false** )
+
+Sets (or nudges, if _nudge_ is **true**) the distances (lengths) of all bonds in the current atom selection. Attached atoms at either end of the bond are also moved along with the atoms in the bonds. The _moveType_ determines exactly which atoms are moved in the process (see the [setAngles() command](/aten/docs/scripting/commands/transform#setangles) for a description of the possible options.
+
+---
+
 ## setTorsion <a id="settorsion"></a>
 
 _Syntax:_
 
-**void** **setTorsion** ( [Atom](/aten/docs/scripting/variabletypes/atom)|**int** _i_, [Atom](/aten/docs/scripting/variabletypes/atom)|**int** _j_, [Atom](/aten/docs/scripting/variabletypes/atom)|**int** _k_, [Atom](/aten/docs/scripting/variabletypes/atom)|**int** _l_, **double** _angle_ )
+**void** **setTorsion** ( [**Atom**](/aten/docs/scripting/variabletypes/atom)|**int** _i_, [**Atom**](/aten/docs/scripting/variabletypes/atom)|**int** _j_, [**Atom**](/aten/docs/scripting/variabletypes/atom)|**int** _k_, [**Atom**](/aten/docs/scripting/variabletypes/atom)|**int** _l_, **double** _angle_ )
 
 Adjusts the atoms _i_ and _l_ (and all their attached neighbours) to give the torsion angle specified. The coordinates of atoms _j_ and _k_ remain unaffected.
 
 This operation can only be performed for atoms which are not present in the same cyclic structure, e.g. trying to set the distance of two atoms in a benzene ring is not allowed.
+
+---
+
+## setTorsionsi <a id="settorsions"></a>
+
+_Syntax:_
+
+**void** **setTorsions** ( **double** _newTorsion_, **string** _moveType_ = "high", **bool** _nudge_ = **false** )
+
+Sets (or nudges, if _nudge_ is **true**) all the torsion angles in the current atom selection. Attached atoms at either end of the torsion are also moved along with the atoms at the extreme ends of the torsions. The _moveType_ determines exactly which atoms are moved in the process (see the [setAngles() command](/aten/docs/scripting/commands/transform#setangles) for a description of the possible options.
 
 ---
 

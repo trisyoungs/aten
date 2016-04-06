@@ -36,7 +36,7 @@ Returns the cosine of _angle_ (which should be given in degrees).
 
 _Syntax:_
 
-**double** **dotproduct** ( [Vector](/aten/docs/scripting/variabletypes/vector) _u_, [Vector](/aten/docs/scripting/variabletypes/vector) _v_ )
+**double** **dotproduct** ( [**Vector**](/aten/docs/scripting/variabletypes/vector) _u_, [**Vector**](/aten/docs/scripting/variabletypes/vector) _v_ )
 
 Calculate and return the dot product of the two vectors _u_ and _v_.
 
@@ -86,7 +86,7 @@ Returns the nearest integer value to _x_.
 
 _Syntax:_
 
-**double** **normalise** ( [Vector](/aten/docs/scripting/variabletypes/vector) _v_ )
+**double** **normalise** ( [**Vector**](/aten/docs/scripting/variabletypes/vector) _v_ )
 
 Normalises the vector _v_, returning the magnitude of the vector before the normalisation was performed.
 
