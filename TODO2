@@ -82,6 +82,4 @@ Remove LineTol and Converge commands, and update minimisation command signatures
 TestSelect command.
 Add 'external' dir description to quickstart.
 Is CombinationRule enum still valid / used?
-Add WX, WY, WZ etc. accessors to MatrixVariable, and 'setIdentity()' function.
 Setting of filter options when using --batch CLI mode (in 03.cli/batch).
-Add Matrix variable information.
