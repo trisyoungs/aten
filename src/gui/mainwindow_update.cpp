@@ -95,7 +95,7 @@ void AtenWindow::updateMainWindow()
 	modelLabel_->setText(modelLabelText);
 
 	// Update main window title
-	QString title = QString("Aten v2 PRERELEASE (v%1)").arg(ATENVERSION);
+	QString title = QString("Aten (v%1)").arg(ATENVERSION);
 	if (currentModel) title += QString(" - %1 (%2)%3").arg(currentModel->name(), currentModel->filename().isEmpty() ? "<<no filename>>" : currentModel->filename(), currentModel->isModified() ? " [Modified]" : "");
 	else title += " [[[ No Current Model ]]]";
 	setWindowTitle(title);
