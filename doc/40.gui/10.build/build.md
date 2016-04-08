@@ -66,6 +66,10 @@ The **Grow** tool allows individual atoms of the current [**Element**](/aten/doc
 
 Allows addition of atoms into the current model at specific normal or fractional coordinates.
 
+### Element
+
+The **Element** button allows specification of the element for newly-created atoms by selection from the periodic table.
+
 ### Prevent Fold
 
 When transforming atoms in a periodic system with the mouse (i.e. rotating or translating them) if any move outside the unit cell as a result of the transformation they are automatically folded back in to the confines of the cell. If **Prevent Fold** is enabled these folding operations will not occur.
@@ -73,18 +77,6 @@ When transforming atoms in a periodic system with the mouse (i.e. rotating or tr
 ### Keep Centered
 
 If the **Keep Centred** option is enabled, any editing operation will trigger a 're-centering' of the current model, so that the centre-of-geometry of the model being edited is always at the origin. This can be useful when editing non-periodic models, and keeps everything nice and centered on the screen.
-
-## Element Group <a id="element"></a>
-
-![Element Group](element.png){.imgfull}
-
-### Table
-
-The **Table** button allows specification of the element for newly-created atoms by selection from the periodic table (by long-pressing). **Table** is mutually-exclusive with **Common**.
-
-### Common
-
-The **Common** button allows specification of the element for newly-created atoms from a pre-defined list of 'common' elements, and can be configured as necessary through the [Preferences](/aten/docs/gui/prefs). **Common** is mutually-exclusive with **Table**.
 
 ## Bonding Group <a id="bonding"></a>
 

@@ -38,7 +38,7 @@ Make main view background and text/overlay colour aware of Qt widget colouring s
 Frame individual model areas when displaying multiple models OR light checkerboard background?
 Automatically adjust grid size for number of visible models, based on current aspect ratio and context size etc.
 Multiple bonds (double, definitely) are not drawn correctly, becoming squashed as the bond length increases.
-Remove triangular 'cross-braces' from wireframe selection sphere Pirimitive.
+Remove triangular 'cross-braces' from wireframe selection sphere Primitive.
 
 GUI TODO
 ========
@@ -59,7 +59,7 @@ Prefs window needs updating:
 o Remove use of TColourFrames
 o Add font selection option
 ZMatrix Window (popup under Tools?)
-
+es to which variable the regex is applied, and negates the result of the match; it returns false if the match succeeds, and true if it fails.
 Possible TODO
 =============
 Implement optional startup 'guide' or 'wizard' that will disable all controls on the GUI and explain what means what, highlighting them as appropriate.
@@ -79,3 +79,4 @@ TestSelect command.
 Add 'external' dir description to quickstart.
 Is CombinationRule enum still valid / used?
 Setting of filter options when using --batch CLI mode (in 03.cli/batch).
+Add on 'aten' suffix to code fences (```).
