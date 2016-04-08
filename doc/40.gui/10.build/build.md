@@ -62,6 +62,10 @@ Clicking on individual atoms adds on hydrogen atoms until the basic bond order r
 
 The **Grow** tool allows individual atoms of the current [**Element**](/aten/docs/gui/build#element) to be added ('grown') to clicked atoms. Long-pressing allows selection of the desired geometry in which atoms should be added, along with control over the distance of added atoms (either **Use van der Waals Radii** or a set **Fixed Distance**). There also exists the option of growing an atom, in the specified geometry, onto each atom in the current selection.
 
+### Add Atom
+
+Allows addition of atoms into the current model at specific normal or fractional coordinates.
+
 ### Prevent Fold
 
 When transforming atoms in a periodic system with the mouse (i.e. rotating or translating them) if any move outside the unit cell as a result of the transformation they are automatically folded back in to the confines of the cell. If **Prevent Fold** is enabled these folding operations will not occur.

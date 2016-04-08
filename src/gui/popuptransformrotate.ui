@@ -576,6 +576,20 @@
    <header>gui/texponentialspin.hui</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>AxisXSpin</tabstop>
+  <tabstop>AxisYSpin</tabstop>
+  <tabstop>AxisZSpin</tabstop>
+  <tabstop>DefineAxisButton</tabstop>
+  <tabstop>PickAxisButton</tabstop>
+  <tabstop>AngleSpin</tabstop>
+  <tabstop>RotateAnticlockwiseButton</tabstop>
+  <tabstop>RotateClockwiseButton</tabstop>
+  <tabstop>OriginXSpin</tabstop>
+  <tabstop>OriginYSpin</tabstop>
+  <tabstop>OriginZSpin</tabstop>
+  <tabstop>DefineOriginButton</tabstop>
+ </tabstops>
  <resources>
   <include location="icons.qrc"/>
  </resources>

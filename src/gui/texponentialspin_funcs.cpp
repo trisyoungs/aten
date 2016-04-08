@@ -79,6 +79,9 @@ void TExponentialSpin::updateText(int precision)
 // Return double value
 double TExponentialSpin::value()
 {
+	// If the text has been changed since the value was last retrieved, update it first
+	updateValue();
+	
 	return value_.value();
 }
 

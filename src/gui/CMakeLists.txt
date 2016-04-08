@@ -11,6 +11,7 @@ SET(gui_MOC_HDRS
   layoutlist.h
   loadmodel.h
   mainwindow.h
+  popupbuildaddatom.h
   popupbuildaddh.h
   popupbuildclear.h
   popupbuildfragments.h
@@ -25,7 +26,6 @@ SET(gui_MOC_HDRS
   popupcellscale.h
   popupcellspacegroup.h
   popupcolour.h
-  popupelementcommon.h
   popupelementtable.h
   popupfileaten.h
   popupfileimage.h
@@ -104,6 +104,7 @@ SET(gui_UIS
   glyphs.ui
   loadmodel.ui
   mainwindow.ui
+  popupbuildaddatom.ui
   popupbuildaddh.ui
   popupbuildclear.ui
   popupbuildfragments.ui
@@ -118,7 +119,6 @@ SET(gui_UIS
   popupcellscale.ui
   popupcellspacegroup.ui
   popupcolour.ui
-  popupelementcommon.ui
   popupelementtable.ui
   popupfileaten.ui
   popupfileimage.ui
@@ -208,6 +208,7 @@ set(gui_SRCS
   mainwindow_quickcommand.cpp
   mainwindow_session.cpp
   mainwindow_update.cpp
+  popupbuildaddatom_funcs.cpp
   popupbuildaddh_funcs.cpp
   popupbuildclear_funcs.cpp
   popupbuildfragments_funcs.cpp
@@ -222,7 +223,6 @@ set(gui_SRCS
   popupcellscale_funcs.cpp
   popupcellspacegroup_funcs.cpp
   popupcolour_funcs.cpp
-  popupelementcommon_funcs.cpp
   popupelementtable_funcs.cpp
   popupfileaten_funcs.cpp
   popupfileimage_funcs.cpp

@@ -419,6 +419,20 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>NegativeXButton</tabstop>
+  <tabstop>PositiveYButton</tabstop>
+  <tabstop>PositiveXButton</tabstop>
+  <tabstop>NegativeZButton</tabstop>
+  <tabstop>NegativeYButton</tabstop>
+  <tabstop>PositiveZButton</tabstop>
+  <tabstop>XSpin</tabstop>
+  <tabstop>YSpin</tabstop>
+  <tabstop>ZSpin</tabstop>
+  <tabstop>NoAtomsRadio</tabstop>
+  <tabstop>SelectedAtomsRadio</tabstop>
+  <tabstop>AllAtomsRadio</tabstop>
+ </tabstops>
  <resources>
   <include location="icons.qrc"/>
  </resources>

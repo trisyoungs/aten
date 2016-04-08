@@ -495,6 +495,19 @@
    <header>gui/texponentialspin.hui</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>GeometryLinearButton</tabstop>
+  <tabstop>GeometryTShapeButton</tabstop>
+  <tabstop>GeometryTrigonalButton</tabstop>
+  <tabstop>GeometryTetrahedralButton</tabstop>
+  <tabstop>GeometrySqPlanarButton</tabstop>
+  <tabstop>GeometryTrigBipyramidButton</tabstop>
+  <tabstop>GeometryOctahedralButton</tabstop>
+  <tabstop>VanDerWaalsRadio</tabstop>
+  <tabstop>FixedRadio</tabstop>
+  <tabstop>DistanceSpin</tabstop>
+  <tabstop>GrowSelectionButton</tabstop>
+ </tabstops>
  <resources>
   <include location="icons.qrc"/>
  </resources>

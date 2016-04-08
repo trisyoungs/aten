@@ -370,6 +370,18 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>NegativeXButton</tabstop>
+  <tabstop>PositiveYButton</tabstop>
+  <tabstop>PositiveXButton</tabstop>
+  <tabstop>NegativeZButton</tabstop>
+  <tabstop>NegativeYButton</tabstop>
+  <tabstop>PositiveZButton</tabstop>
+  <tabstop>ShiftSpin</tabstop>
+  <tabstop>ModelFrameRadio</tabstop>
+  <tabstop>WorldFrameRadio</tabstop>
+  <tabstop>CellFrameRadio</tabstop>
+ </tabstops>
  <resources>
   <include location="icons.qrc"/>
  </resources>

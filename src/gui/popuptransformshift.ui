@@ -419,6 +419,16 @@
    <header>gui/texponentialspin.hui</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>XSpin</tabstop>
+  <tabstop>YSpin</tabstop>
+  <tabstop>ZSpin</tabstop>
+  <tabstop>PickButton</tabstop>
+  <tabstop>NormaliseButton</tabstop>
+  <tabstop>ShiftSpin</tabstop>
+  <tabstop>ForwardButton</tabstop>
+  <tabstop>BackwardButton</tabstop>
+ </tabstops>
  <resources>
   <include location="icons.qrc"/>
  </resources>

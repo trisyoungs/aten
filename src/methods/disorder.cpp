@@ -188,6 +188,12 @@ bool MonteCarlo::disorder(Model* allModels, Model* destmodel, PartitioningScheme
 	{
 		pd->calculateVolume(elementVolume);
 		pd->resetReducedMass();
+		if (pd->volume() < 0.5*elementVolume)
+		{
+			Messenger::print("Error: Partition %s has an unusable (small) volume. Check the scheme setup and try again.", qPrintable(pd->name()));
+			Messenger::exit("MonteCarlo::disorder");
+			return false;
+		}
 	}
 	
 	// The target model may contain atoms already, so this must be subtracted from the relevant partitions

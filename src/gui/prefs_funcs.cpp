@@ -132,7 +132,6 @@ AtenPrefs::AtenPrefs(AtenWindow& parent) : QDialog(&parent), parent_(parent)
 	ui.MouseMoveFilterSpin->setValue(prefs.mouseMoveFilter());
 
 	// Set controls in Program page
-	ui.CommonElementsEdit->setText(prefs.commonElements());
 	ui.DensityUnitCombo->setCurrentIndex(prefs.densityUnit());
 	ui.EnergyUnitCombo->setCurrentIndex(prefs.energyUnit());
 	ui.HAddDistanceSpin->setValue(prefs.hydrogenDistance());
@@ -755,11 +754,6 @@ void AtenPrefs::on_ScaleList_itemDoubleClicked(QListWidgetItem* item)
 /*
  * Program Page
  */
-
-void AtenPrefs::on_CommonElementsEdit_textEdited(const QString &text)
-{
-	prefs.setCommonElements( qPrintable(text) );
-}
 
 void AtenPrefs::on_DensityUnitCombo_currentIndexChanged(int index)
 {

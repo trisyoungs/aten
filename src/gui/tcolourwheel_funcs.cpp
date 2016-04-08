@@ -115,21 +115,6 @@ void TColourWheel::mouseMoveEvent(QMouseEvent* event)
 		lastPos_.setY(squareRegion_.boundingRect().center().y() + dy/scale);
 		QColor colour = lastPosColour();
 		hueChanged(colour.hue());
-        // TODO: due with cursor out of region after press
-        //        int length = qMin(width(), height());
-        //        QPoint center(length/2, length/2);
-        //        int R = qSqrt(qPow(qAbs(lastPos_.x()), 2)
-        //                      + qPow(qAbs(lastPos_.y()), 2));
-        //        if(inWheel){
-        //            int r =  length / 2;
-        //            r += qSqrt(qPow(center.x(), 2) + qPow(center.y(), 2));
-        //            int x0 = r/R * qAbs(lastPos_.x());
-        //            int y0 = r/R * qAbs(lastPos_.y());
-        //            QColor color = posColour(QPoint(x0, y0));
-        //            hueChanged(color.hue());
-        //        }else if(inSquare){
-        //            //
-        //        }
 	}
 }
 

@@ -323,6 +323,22 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>RedSlider</tabstop>
+  <tabstop>RedSpin</tabstop>
+  <tabstop>GreenSlider</tabstop>
+  <tabstop>GreenSpin</tabstop>
+  <tabstop>BlueSlider</tabstop>
+  <tabstop>BlueSpin</tabstop>
+  <tabstop>HueSlider</tabstop>
+  <tabstop>HueSpin</tabstop>
+  <tabstop>SaturationSlider</tabstop>
+  <tabstop>SaturationSpin</tabstop>
+  <tabstop>ValueSlider</tabstop>
+  <tabstop>ValueSpin</tabstop>
+  <tabstop>AlphaSlider</tabstop>
+  <tabstop>AlphaSpin</tabstop>
+ </tabstops>
  <resources>
   <include location="icons.qrc"/>
  </resources>

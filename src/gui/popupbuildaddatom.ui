@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>TransformCentrePopup</class>
- <widget class="QWidget" name="TransformCentrePopup">
+ <class>AddAtomPopup</class>
+ <widget class="QWidget" name="AddAtomPopup">
   <property name="geometry">
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>251</width>
-    <height>88</height>
+    <width>213</width>
+    <height>126</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -22,7 +22,7 @@
    </font>
   </property>
   <property name="windowTitle">
-   <string>Transform Centre Popup</string>
+   <string>Build AddAtom Popup</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <property name="margin">
@@ -31,6 +31,13 @@
    <property name="spacing">
     <number>2</number>
    </property>
+   <item row="3" column="1">
+    <widget class="QCheckBox" name="FractionalCheck">
+     <property name="text">
+      <string>Fractional</string>
+     </property>
+    </widget>
+   </item>
    <item row="0" column="0">
     <widget class="QLabel" name="label_42">
      <property name="sizePolicy">
@@ -42,6 +49,31 @@
      <property name="text">
       <string>X</string>
      </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1">
+    <widget class="TExponentialSpin" name="ZSpin">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="decimals">
+      <number>6</number>
+     </property>
+     <property name="minimum">
+      <double>-1000000.000000000000000</double>
+     </property>
+     <property name="maximum">
+      <double>1000000.000000000000000</double>
+     </property>
+     <property name="value">
+      <double>0.000000000000000</double>
+     </property>
     </widget>
    </item>
    <item row="0" column="1">
@@ -51,9 +83,6 @@
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
-     </property>
-     <property name="toolTip">
-      <string>Target x coordinate for geometric centre</string>
      </property>
      <property name="decimals">
       <number>6</number>
@@ -66,20 +95,26 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="2">
-    <widget class="QCheckBox" name="LockXCheck">
-     <property name="toolTip">
-      <string>Lock (do not change) x coordinates when centering</string>
+   <item row="1" column="0">
+    <widget class="QLabel" name="label_40">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
      </property>
      <property name="text">
-      <string>Lock</string>
+      <string>Y</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
     </widget>
    </item>
-   <item row="0" column="3" rowspan="3">
+   <item row="0" column="2" rowspan="4">
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
-      <widget class="QToolButton" name="DefineFromSelectionButton">
+      <widget class="QToolButton" name="AddAgainButton">
        <property name="minimumSize">
         <size>
          <width>56</width>
@@ -93,14 +128,58 @@
         </size>
        </property>
        <property name="toolTip">
-        <string>Define from current selection</string>
+        <string>Add atom at specified coordinates and wait for another</string>
        </property>
        <property name="text">
-        <string>Define</string>
+        <string>Add (+)</string>
        </property>
        <property name="icon">
         <iconset resource="icons.qrc">
-         <normaloff>:/basic/icons/basic_define.svg</normaloff>:/basic/icons/basic_define.svg</iconset>
+         <normaloff>:/build/icons/build_addatomagain.svg</normaloff>:/build/icons/build_addatomagain.svg</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>30</width>
+         <height>30</height>
+        </size>
+       </property>
+       <property name="checkable">
+        <bool>false</bool>
+       </property>
+       <property name="autoExclusive">
+        <bool>false</bool>
+       </property>
+       <property name="toolButtonStyle">
+        <enum>Qt::ToolButtonTextUnderIcon</enum>
+       </property>
+       <property name="autoRaise">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="AddButton">
+       <property name="minimumSize">
+        <size>
+         <width>56</width>
+         <height>56</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>56</width>
+         <height>56</height>
+        </size>
+       </property>
+       <property name="toolTip">
+        <string>Add atom at specified coordinates and close window</string>
+       </property>
+       <property name="text">
+        <string>Add</string>
+       </property>
+       <property name="icon">
+        <iconset resource="icons.qrc">
+         <normaloff>:/build/icons/build_addatom.svg</normaloff>:/build/icons/build_addatom.svg</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -130,25 +209,12 @@
        <property name="sizeHint" stdset="0">
         <size>
          <width>20</width>
-         <height>13</height>
+         <height>1</height>
         </size>
        </property>
       </spacer>
      </item>
     </layout>
-   </item>
-   <item row="1" column="0">
-    <widget class="QLabel" name="label_40">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>Y</string>
-     </property>
-    </widget>
    </item>
    <item row="1" column="1">
     <widget class="TExponentialSpin" name="YSpin">
@@ -158,9 +224,6 @@
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
-     <property name="toolTip">
-      <string>Target y coordinate for geometric centre</string>
-     </property>
      <property name="decimals">
       <number>6</number>
      </property>
@@ -169,16 +232,6 @@
      </property>
      <property name="maximum">
       <double>1000000.000000000000000</double>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="2">
-    <widget class="QCheckBox" name="LockYCheck">
-     <property name="toolTip">
-      <string>Lock (do not change) y coordinates when centering</string>
-     </property>
-     <property name="text">
-      <string>Lock</string>
      </property>
     </widget>
    </item>
@@ -193,37 +246,8 @@
      <property name="text">
       <string>Z</string>
      </property>
-    </widget>
-   </item>
-   <item row="2" column="1">
-    <widget class="TExponentialSpin" name="ZSpin">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="toolTip">
-      <string>Target z coordinate for geometric centre</string>
-     </property>
-     <property name="decimals">
-      <number>6</number>
-     </property>
-     <property name="minimum">
-      <double>-1000000.000000000000000</double>
-     </property>
-     <property name="maximum">
-      <double>1000000.000000000000000</double>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="2">
-    <widget class="QCheckBox" name="LockZCheck">
-     <property name="toolTip">
-      <string>Lock (do not change) z coordinates when centering</string>
-     </property>
-     <property name="text">
-      <string>Lock</string>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
      </property>
     </widget>
    </item>
@@ -240,62 +264,12 @@
   <tabstop>XSpin</tabstop>
   <tabstop>YSpin</tabstop>
   <tabstop>ZSpin</tabstop>
-  <tabstop>LockXCheck</tabstop>
-  <tabstop>LockYCheck</tabstop>
-  <tabstop>LockZCheck</tabstop>
-  <tabstop>DefineFromSelectionButton</tabstop>
+  <tabstop>FractionalCheck</tabstop>
+  <tabstop>AddAgainButton</tabstop>
+  <tabstop>AddButton</tabstop>
  </tabstops>
  <resources>
   <include location="icons.qrc"/>
  </resources>
- <connections>
-  <connection>
-   <sender>LockXCheck</sender>
-   <signal>clicked(bool)</signal>
-   <receiver>XSpin</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>174</x>
-     <y>17</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>62</x>
-     <y>17</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>LockYCheck</sender>
-   <signal>clicked(bool)</signal>
-   <receiver>YSpin</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>164</x>
-     <y>41</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>109</x>
-     <y>43</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
-   <sender>LockZCheck</sender>
-   <signal>clicked(bool)</signal>
-   <receiver>ZSpin</receiver>
-   <slot>setDisabled(bool)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>174</x>
-     <y>82</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>92</x>
-     <y>77</y>
-    </hint>
-   </hints>
-  </connection>
- </connections>
+ <connections/>
 </ui>

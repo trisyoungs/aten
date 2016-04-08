@@ -561,8 +561,6 @@ class Prefs
 	int maxCuboids_;
 	// Maximum number of undo levels (-1 for unlimited)
 	int maxUndoLevels_;
-	// List of common drawing elements to put in SelectElement dialog
-	QString commonElements_;
 	// Whether to load Qt window/toolbar settings on startup
 	bool loadQtSettings_;
 	// Maximum distance allowed between consecutive improper torsion atoms
@@ -603,10 +601,6 @@ class Prefs
 	void setMaxUndoLevels(int n);
 	// Return the maximum number of undo levels allowed
 	int maxUndoLevels() const;
-	// Set list of common elements in SelectElement dialog
-	void setCommonElements(QString elementsList);
-	// Return list of common elements to use in SelectElement dialog
-	QString commonElements() const;
 	// Return whether to load Qt window/toolbar settings on startup
 	bool loadQtSettings();
 	// set whether to load Qt window/toolbar settings on startup

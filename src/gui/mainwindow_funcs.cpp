@@ -37,6 +37,7 @@
 #include <iostream>
 #include <fstream>
 // Popups
+#include "gui/popupbuildaddatom.h"
 #include "gui/popupbuildaddh.h"
 #include "gui/popupbuildclear.h"
 #include "gui/popupbuildfragments.h"
@@ -50,7 +51,6 @@
 #include "gui/popupcellreplicate.h"
 #include "gui/popupcellscale.h"
 #include "gui/popupcolour.h"
-#include "gui/popupelementcommon.h"
 #include "gui/popupelementtable.h"
 #include "gui/popupfileaten.h"
 #include "gui/popupfileimage.h"
@@ -214,13 +214,10 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportFilmD
 	ui.BuildDrawAddHButton->setPopupWidget(new AddHPopup(*this, ui.BuildDrawAddHButton));
 	ui.BuildDrawGrowButton->setGroup("UserActions", UserAction::DrawGrowAtomsAction);
 	ui.BuildDrawGrowButton->setPopupWidget(new GrowPopup(*this, ui.BuildDrawGrowButton));
-	// -- Build Panel (Element)
-	ui.BuildElementTableButton->setPopupWidget(new ElementTablePopup(*this, ui.BuildElementTableButton));
-	ui.BuildElementTableButton->setGroup("CurrentElement");
-	ui.BuildElementTableButton->callPopupMethod("setCurrentElement", rv = 6);
-	ui.BuildElementCommonButton->setPopupWidget(new ElementCommonPopup(*this, ui.BuildElementCommonButton));
-	ui.BuildElementCommonButton->setGroup("CurrentElement");
-	ui.BuildElementCommonButton->callPopupMethod("setCurrentElement", rv = 8);
+	ui.BuildDrawAddAtomButton->setPopupWidget(new AddAtomPopup(*this, ui.BuildDrawAddAtomButton), true);
+	ui.BuildDrawElementButton->setPopupWidget(new ElementTablePopup(*this, ui.BuildDrawElementButton), true);
+	ui.BuildDrawElementButton->setGroup("CurrentElement");
+	ui.BuildDrawElementButton->callPopupMethod("setCurrentElement", rv = 6);
 	// -- Build Panel (Bonding)
 	ui.BuildBondingRebondButton->setPopupWidget(new RebondPopup(*this, ui.BuildBondingRebondButton));
 	ui.BuildBondingClearButton->setPopupWidget(new ClearPopup(*this, ui.BuildBondingClearButton));

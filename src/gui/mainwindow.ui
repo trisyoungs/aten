@@ -2256,6 +2256,26 @@
         </item>
         <item>
          <layout class="QGridLayout" name="gridLayout_18">
+          <item row="0" column="8" rowspan="2">
+           <widget class="Line" name="line_70">
+            <property name="lineWidth">
+             <number>3</number>
+            </property>
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="6" rowspan="2">
+           <widget class="Line" name="line_67">
+            <property name="lineWidth">
+             <number>3</number>
+            </property>
+            <property name="orientation">
+             <enum>Qt::Vertical</enum>
+            </property>
+           </widget>
+          </item>
           <item row="0" column="3" rowspan="2">
            <widget class="TMenuButton" name="BuildDrawTransmuteButton">
             <property name="sizePolicy">
@@ -2559,7 +2579,7 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="6" rowspan="2">
+          <item row="0" column="10" rowspan="2">
            <widget class="Line" name="line_66">
             <property name="lineWidth">
              <number>3</number>
@@ -2569,7 +2589,7 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="0" colspan="8">
+          <item row="2" column="0" colspan="12">
            <widget class="QLabel" name="label_9">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Minimum">
@@ -2585,7 +2605,7 @@
             </property>
            </widget>
           </item>
-          <item row="1" column="7">
+          <item row="1" column="11">
            <widget class="QToolButton" name="BuildDrawKeepCenteredButton">
             <property name="enabled">
              <bool>true</bool>
@@ -2632,7 +2652,7 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="7">
+          <item row="0" column="11">
            <widget class="QToolButton" name="BuildDrawPreventFoldButton">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
@@ -2676,22 +2696,8 @@
             </property>
            </widget>
           </item>
-         </layout>
-        </item>
-        <item>
-         <widget class="Line" name="line_10">
-          <property name="lineWidth">
-           <number>3</number>
-          </property>
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <layout class="QGridLayout" name="gridLayout_19">
-          <item row="0" column="0">
-           <widget class="TMenuButton" name="BuildElementTableButton">
+          <item row="0" column="7" rowspan="2">
+           <widget class="TMenuButton" name="BuildDrawAddAtomButton">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -2710,8 +2716,15 @@
               <height>66</height>
              </size>
             </property>
+            <property name="toolTip">
+             <string>Add atoms at specified positions</string>
+            </property>
             <property name="text">
-             <string>Table</string>
+             <string>Add Atom</string>
+            </property>
+            <property name="icon">
+             <iconset resource="icons.qrc">
+              <normaloff>:/build/icons/build_addatom2.svg</normaloff>:/build/icons/build_addatom2.svg</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -2720,9 +2733,6 @@
              </size>
             </property>
             <property name="checkable">
-             <bool>true</bool>
-            </property>
-            <property name="checked">
              <bool>true</bool>
             </property>
             <property name="autoExclusive">
@@ -2736,8 +2746,8 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="1">
-           <widget class="TMenuButton" name="BuildElementCommonButton">
+          <item row="0" column="9" rowspan="2">
+           <widget class="TMenuButton" name="BuildDrawElementButton">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -2755,68 +2765,37 @@
               <width>128</width>
               <height>66</height>
              </size>
-            </property>
-            <property name="text">
-             <string>Common</string>
-            </property>
-            <property name="iconSize">
-             <size>
-              <width>30</width>
-              <height>30</height>
-             </size>
-            </property>
-            <property name="checkable">
-             <bool>true</bool>
-            </property>
-            <property name="checked">
-             <bool>false</bool>
-            </property>
-            <property name="autoExclusive">
-             <bool>false</bool>
-            </property>
-            <property name="toolButtonStyle">
-             <enum>Qt::ToolButtonTextUnderIcon</enum>
-            </property>
-            <property name="autoRaise">
-             <bool>true</bool>
-            </property>
-           </widget>
-          </item>
-          <item row="1" column="0" colspan="2">
-           <widget class="QLabel" name="label_4">
-            <property name="sizePolicy">
-             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-              <horstretch>0</horstretch>
-              <verstretch>0</verstretch>
-             </sizepolicy>
-            </property>
-            <property name="minimumSize">
-             <size>
-              <width>0</width>
-              <height>0</height>
-             </size>
-            </property>
-            <property name="maximumSize">
-             <size>
-              <width>16777215</width>
-              <height>16777215</height>
-             </size>
-            </property>
-            <property name="frameShape">
-             <enum>QFrame::NoFrame</enum>
             </property>
             <property name="text">
              <string>Element</string>
             </property>
-            <property name="alignment">
-             <set>Qt::AlignCenter</set>
+            <property name="iconSize">
+             <size>
+              <width>30</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="checkable">
+             <bool>false</bool>
+            </property>
+            <property name="checked">
+             <bool>false</bool>
+            </property>
+            <property name="autoExclusive">
+             <bool>false</bool>
+            </property>
+            <property name="toolButtonStyle">
+             <enum>Qt::ToolButtonTextUnderIcon</enum>
+            </property>
+            <property name="autoRaise">
+             <bool>true</bool>
             </property>
            </widget>
           </item>
          </layout>
         </item>
         <item>
-         <widget class="Line" name="line_21">
+         <widget class="Line" name="line_10">
           <property name="lineWidth">
            <number>3</number>
           </property>

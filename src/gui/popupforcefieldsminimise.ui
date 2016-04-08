@@ -430,6 +430,18 @@
    <header>gui/texponentialspin.hui</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>MethodCombo</tabstop>
+  <tabstop>EnergyConvergeSpin</tabstop>
+  <tabstop>ForceConvergeSpin</tabstop>
+  <tabstop>MaxCyclesSpin</tabstop>
+  <tabstop>LineToleranceSpin</tabstop>
+  <tabstop>MopacHFCombo</tabstop>
+  <tabstop>MopacMozymeCheck</tabstop>
+  <tabstop>MopacSpinCombo</tabstop>
+  <tabstop>MopacHamiltonianCombo</tabstop>
+  <tabstop>MopacChargeSpin</tabstop>
+ </tabstops>
  <resources>
   <include location="icons.qrc"/>
  </resources>

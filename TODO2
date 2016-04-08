@@ -20,7 +20,6 @@ Selecting and then deselecting large numbers of atoms causes rendering artefacts
 Add specific line primitive class that allows chunking (for speedup of stick rendering, because otherwise an enormous array is continually deleted'd/new'd).
 Add 'Reload' options to Grid context menu.
 Add context menu "Copy" and "Set" to TColourButtons.
-Tooltips need to include keyboard shortcuts (e.g. style buttons, colourscheme buttons...)
 Need to print out accessor variable types in lists when one is unrecognised.
 Add 'Relative' view control, alongside 'Free' and 'Locked' (Follow)?
 Add Prefs accessors for Correct and View Lock options (so they can be saved).
@@ -31,7 +30,6 @@ Intelligent Select: prepended '+' is interpreted as NETA.
 
 Graphics TODO
 =============
-In top-left corner of main window, have a black icon illustrating which mode is active (except for Interact).
 Have small, additional black icons at top-right of each model window, illustrating whether it has been modified, is displaying trajectory frames, etc.
 Optimise basic primitives to use vertex/index arrays instead of just vertices (also check end caps of spheres).
 Optimise primitive drawing / generation by allowing use of GL_TRIANGLE_STRIP?
@@ -46,12 +44,10 @@ GUI TODO
 ========
 Need to shrink used button space when window is not large enough to display all widgets in panel.
 Sort out remaining icons!
-AddAtom functionality (from old Build menu).
 Context Menu:
 o Set Colour doesn't work, since it needs a colour selector popup.
 Remove TColourFrame (after updating Prefs and Glyphs windows).
 Button to calculate / show total charge in selection.
-Allow right-click on elements in PTable to set as member of common elements popup.
 Element popup - are colours of buttons set correctly? Need to set Qt::Window and other palette entry (as in JV prefs).
 Finish Spacegroup popup.
 Add Calculate tool to work out centre of geometry/mass.

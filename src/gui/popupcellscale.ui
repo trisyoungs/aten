@@ -193,6 +193,12 @@
    <header>gui/texponentialspin.hui</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>ScaleXSpin</tabstop>
+  <tabstop>ScaleYSpin</tabstop>
+  <tabstop>ScaleZSpin</tabstop>
+  <tabstop>ScaleCogsCheck</tabstop>
+ </tabstops>
  <resources>
   <include location="icons.qrc"/>
  </resources>

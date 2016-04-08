@@ -94,7 +94,7 @@
       <string>Set</string>
      </property>
      <property name="icon">
-      <iconset resource="icons.qrc">
+      <iconset>
        <normaloff>:/bond/icons/bond_calc.svg</normaloff>:/bond/icons/bond_calc.svg</iconset>
      </property>
      <property name="iconSize">
@@ -372,6 +372,15 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>SetTorsionButton</tabstop>
+  <tabstop>NewTorsionSpin</tabstop>
+  <tabstop>IncreaseTorsionButton</tabstop>
+  <tabstop>DecreaseTorsionButton</tabstop>
+  <tabstop>DeltaSpin</tabstop>
+  <tabstop>MoveTypeCombo</tabstop>
+  <tabstop>CopyCurrentTorsionButton</tabstop>
+ </tabstops>
  <resources>
   <include location="icons.qrc"/>
  </resources>

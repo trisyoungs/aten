@@ -28,7 +28,6 @@ The [**Prefs**](/aten/docs/scripting/variabletypes/prefs) type contains all pre
 | colourScales | [**ColourScale**][10](/aten/docs/scripting/variabletypes/colourscale) | | List of colourscales |
 | colourScheme | **string** | • | The current [Colour Scheme](/aten/docs/enums/colourscheme) used to colour atoms and bonds |
 | combinationRule | **string** | • | Lennard-Jones parameter combination rule equations. See [Combination Rules](/aten/docs/enums/combinationrule) for a list |
-| commonElements | **string** | • | Comma-separated list of common elements that appear in the Select Element dialog |
 | correctTransparentGrids | **int** | • | Whether to automatically recreate transparent grid surfaces after view manipulation |
 | dashedAromatics | **int** | • | Whether to render solid or dashed rings for aromatics |
 | densityUnit | **string** | • | The unit of density to used when displaying cell densities |

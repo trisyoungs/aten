@@ -41,6 +41,7 @@ ElementTablePopup::ElementTablePopup(AtenWindow& parent, TMenuButton* buttonPare
 	// Create element button array (and buttons)
 	QPushButton* button;
 	QPalette palette = this->palette();
+	QColor background, foreground;
 	for (n=0; n<Elements().nElements(); ++n)
 	{
 		button = new QPushButton(this);
@@ -50,15 +51,21 @@ ElementTablePopup::ElementTablePopup(AtenWindow& parent, TMenuButton* buttonPare
 		button->setMaximumSize(24,24);
 		button->setToolTip(QString("%1 (%2)").arg(Elements().name(n), Elements().symbol(n)));
 		colour = Elements().colour(n);
-		button->setStyleSheet(QString("background-color:%1;").arg(QColor(int(colour[0]*255),int(colour[1]*255),int(colour[2]*255)).name(QColor::HexRgb)));
+		background.setRgbF(colour[0], colour[1], colour[2], colour[3]);
+		foreground = ( ((background.hue() > 20) && (background.hue() < 200)) ? Qt::black : Qt::white );
+		palette.setColor(QPalette::Window, background);
+		palette.setColor(QPalette::Button, background);
+		palette.setColor(QPalette::Text, foreground);
+		palette.setColor(QPalette::WindowText, foreground);
+		button->setPalette(palette);
+		button->setStyleSheet(QString("background-color:%1; color:%2;").arg(background.name(QColor::HexRgb), foreground.name(QColor::HexRgb)));
+		button->update();
 		
 		QObject::connect(button, SIGNAL(clicked(bool)), this, SLOT(ElementButton_clicked(bool)));
 	}
 
-	// Hide 'XX' button
-	elementButtons_[0]->hide();
 
-	// Now add buttons to gridlayout
+	// Now add widgets to gridlayout
 	// First row - Group Number
 	for (n=1; n<19; n++)
 	{
@@ -74,6 +81,9 @@ ElementTablePopup::ElementTablePopup(AtenWindow& parent, TMenuButton* buttonPare
 		label->setText(QString::number(n));
 		gl->addWidget(label, n, 0);
 	}
+
+	// XX
+	gl->addWidget(elementButtons_[0],1,19);
 
 	// H, He
 	gl->addWidget(elementButtons_[1],1,1);

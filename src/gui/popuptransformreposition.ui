@@ -379,6 +379,16 @@
    <header>gui/texponentialspin.hui</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>ReferenceXSpin</tabstop>
+  <tabstop>ReferenceYSpin</tabstop>
+  <tabstop>ReferenceZSpin</tabstop>
+  <tabstop>TargetXSpin</tabstop>
+  <tabstop>TargetYSpin</tabstop>
+  <tabstop>TargetZSpin</tabstop>
+  <tabstop>DefineReferenceButton</tabstop>
+  <tabstop>DefineTargetButton</tabstop>
+ </tabstops>
  <resources>
   <include location="icons.qrc"/>
  </resources>

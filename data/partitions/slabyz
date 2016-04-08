@@ -30,16 +30,16 @@ int partition(double x, double y, double z)
 {
 	if (invert)
 	{
-		// Check 1 - Is the point inside the slab (region 1)
-		if ((x >= start) && (x <= end)) return 1;
+		// Check 1 - Is the point outside the slab (region 1)
+		if ((x < start) || (x > end)) return 1;
 
 		// Not inside any defined regions, so return '0' for 'inside rest of cell'
 		return 0;
 	}
 	else
 	{
-		// Check 1 - Is the point outside the slab (region 1)
-		if ((x < start) && (x > end)) return 1;
+		// Check 1 - Is the point inside the slab (region 1)
+		if ((x >= start) && (x <= end)) return 1;
 
 		// Not inside any defined regions, so return '0' for 'inside rest of cell'
 		return 0;

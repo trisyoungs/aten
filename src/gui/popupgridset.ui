@@ -371,9 +371,15 @@
   <customwidget>
    <class>TExponentialSpin</class>
    <extends>QDoubleSpinBox</extends>
-   <header>texponentialspin.hui</header>
+   <header>gui/texponentialspin.hui</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>NumberDensitySpin</tabstop>
+  <tabstop>MultipleSpin</tabstop>
+  <tabstop>SetDensityMultipleButton</tabstop>
+  <tabstop>ViewPercentageSpin</tabstop>
+ </tabstops>
  <resources>
   <include location="icons.qrc"/>
  </resources>

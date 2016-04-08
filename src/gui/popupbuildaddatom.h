@@ -1,6 +1,6 @@
 /*
-	*** Popup Widget - Element Table
-	*** src/gui/popupelementtable.h
+	*** Popup Widget - Add Atom
+	*** src/gui/popupbuildaddatom.h
 	Copyright T. Youngs 2007-2016
 
 	This file is part of Aten.
@@ -19,13 +19,11 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_ELEMENTCOMMONPOPUP_H
-#define ATEN_ELEMENTCOMMONPOPUP_H
+#ifndef ATEN_BUILDADDATOMPOPUP_H
+#define ATEN_BUILDADDATOMPOPUP_H
 
-#include "gui/ui_popupelementcommon.h"
+#include "gui/ui_popupbuildaddatom.h"
 #include "gui/tpopupwidget.hui"
-#include "base/namespace.h"
-#include <QPushButton>
 #include "parser/returnvalue.h"
 
 // Forward Declarations (Qt)
@@ -40,8 +38,8 @@ ATEN_END_NAMESPACE
 
 ATEN_USING_NAMESPACE
 
-// Popup Widget - Build/Element/Common
-class ElementCommonPopup : public TPopupWidget
+// Popup Widget - AddH
+class AddAtomPopup : public TPopupWidget
 {
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
@@ -52,9 +50,9 @@ class ElementCommonPopup : public TPopupWidget
 
 	public:
 	// Constructor / Destructor
-	ElementCommonPopup(AtenWindow& parent, TMenuButton* buttonParent);
+	AddAtomPopup(AtenWindow& parent, TMenuButton* buttonParent);
 	// Main form declaration
-	Ui::ElementCommonPopup ui;
+	Ui::AddAtomPopup ui;
 	// Update controls (before show()) (virtual)
 	void updateControls();
 	// Call named method associated to popup
@@ -62,18 +60,18 @@ class ElementCommonPopup : public TPopupWidget
 
 
 	/*
-	 * Window Functions
+	 * Reimplementations
+	 */
+	protected:
+	void hideEvent(QHideEvent* event) { TPopupWidget::hideEvent(event); }
+
+
+	/*
+	 * Widget Functions
 	 */
 	private slots:
-	void ElementButton_clicked(bool checked);
-
-	
-	/*
-	 * Local variables
-	 */
-	private:
-	// Current element
-	int currentElement_;
+	void on_AddButton_clicked(bool checked);
+	void on_AddAgainButton_clicked(bool checked);
 };
 
 #endif

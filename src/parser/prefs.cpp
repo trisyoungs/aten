@@ -66,7 +66,6 @@ Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
 	{ "colourScales",		VTypes::ColourScaleData,	10, true },
 	{ "colourScheme",		VTypes::StringData,		0, false },
 	{ "combinationRule",		VTypes::StringData,		CombinationRules::nCombinationRules, false },
-	{ "commonElements",		VTypes::StringData,		0, false },
 	{ "correctTransparentGrids",	VTypes::IntegerData,		0, false },
 	{ "dashedAromatics",		VTypes::IntegerData,		0, false },
 	{ "densityUnit",		VTypes::StringData,		0, false },
@@ -288,9 +287,6 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArray
 		case (PreferencesVariable::CombinationRule):
 			if (hasArrayIndex) rv.set( ptr->combinationRule( (CombinationRules::CombinationRule) (arrayIndex-1)) );
 			else rv.setArray( VTypes::StringData, ptr->combinationRules(), CombinationRules::nCombinationRules);
-			break;
-		case (PreferencesVariable::CommonElements):
-			rv.set(ptr->commonElements());
 			break;
 		case (PreferencesVariable::CorrectTransparentGrids):
 			rv.set(ptr->correctTransparentGrids());
@@ -593,9 +589,6 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue&
 			else for (n=0; n<CombinationRules::nCombinationRules; ++n) ptr->setCombinationRule((CombinationRules::CombinationRule) n, newValue.asString(result));
 			// Regenerate equations to check
 			if (!aten_->combinationRules().regenerateEquations()) result = false;
-			break;
-		case (PreferencesVariable::CommonElements):
-			ptr->setCommonElements( newValue.asString(result) );
 			break;
 		case (PreferencesVariable::CorrectTransparentGrids):
 			ptr->setCorrectTransparentGrids(newValue.asBool());

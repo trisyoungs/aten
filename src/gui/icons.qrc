@@ -123,7 +123,10 @@
   </qresource>
   <qresource prefix="/build">
     <file>icons/build_transmutesel.svg</file>
+    <file>icons/build_addatom2.svg</file>
     <file>icons/build_nofold.svg</file>
+    <file>icons/build_addatom.svg</file>
+    <file>icons/build_addatomagain.svg</file>
     <file>icons/build_draw.svg</file>
     <file>icons/build_addhsel.svg</file>
     <file>icons/build_clearbondssel.svg</file>

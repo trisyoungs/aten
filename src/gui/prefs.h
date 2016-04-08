@@ -78,7 +78,6 @@ class AtenPrefs : public QDialog
 	 * General Page
 	 */
 	private slots:
-	void on_CommonElementsEdit_textEdited(const QString &text);
 	void on_DensityUnitCombo_currentIndexChanged(int index);
 	void on_EnergyUnitCombo_currentIndexChanged(int index);
 	void on_HAddDistanceSpin_valueChanged(double value);

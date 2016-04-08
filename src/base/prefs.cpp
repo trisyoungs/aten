@@ -283,7 +283,6 @@ Prefs::Prefs()
 	loadPartitions_ = true;
 	loadFragments_ = true;
 	generateFragmentIcons_ = true;
-	commonElements_ = "H,C,N,O,Cl";
 	maxUndoLevels_ = -1;
 	loadQtSettings_ = true;
 	maxImproperDist_ = 5.0;
@@ -1285,18 +1284,6 @@ bool Prefs::allowDialogs()
 void Prefs::setAllowDialogs(bool b)
 {
 	allowDialogs_ = b;
-}
-
-// Set list of common elements in SelectElement dialog
-void Prefs::setCommonElements(QString elementsList)
-{
-	commonElements_ = elementsList;
-}
-
-// Return list of common elements to use in SelectElement dialog
-QString Prefs::commonElements() const
-{
-	return commonElements_;
 }
 
 // Set the maximum number of undo levels allowed
