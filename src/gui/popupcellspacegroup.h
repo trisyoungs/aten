@@ -70,8 +70,10 @@ class CellSpacegroupPopup : public TPopupWidget
 	 * Widget Functions
 	 */
 	private slots:
+	void on_LookupEdit_returnPressed();
+	void on_RemoveButton_clicked(bool checked);
+	void on_SetButton_clicked(bool checked);
 	void on_PackButton_clicked(bool checked);
-	void on_SpacegroupEdit_XXX(double value);
 };
 
 #endif

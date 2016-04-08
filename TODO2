@@ -48,8 +48,6 @@ Context Menu:
 o Set Colour doesn't work, since it needs a colour selector popup.
 Remove TColourFrame (after updating Prefs and Glyphs windows).
 Button to calculate / show total charge in selection.
-Element popup - are colours of buttons set correctly? Need to set Qt::Window and other palette entry (as in JV prefs).
-Finish Spacegroup popup.
 Add Calculate tool to work out centre of geometry/mass.
 Add option to display ColourScale selector (e.g. for Grid colour buttons)
 Have Tools page? With, for instance:
@@ -59,7 +57,7 @@ Prefs window needs updating:
 o Remove use of TColourFrames
 o Add font selection option
 ZMatrix Window (popup under Tools?)
-es to which variable the regex is applied, and negates the result of the match; it returns false if the match succeeds, and true if it fails.
+
 Possible TODO
 =============
 Implement optional startup 'guide' or 'wizard' that will disable all controls on the GUI and explain what means what, highlighting them as appropriate.

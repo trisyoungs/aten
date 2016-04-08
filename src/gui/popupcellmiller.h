@@ -70,6 +70,9 @@ class CellMillerPopup : public TPopupWidget
 	 * Widget Functions
 	 */
 	private slots:
+	void on_HSpin_valueChanged(int value);
+	void on_KSpin_valueChanged(int value);
+	void on_LSpin_valueChanged(int value);
 };
 
 #endif

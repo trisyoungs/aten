@@ -104,6 +104,8 @@ class RenderGroup
 	void createGlyphs(PrimitiveSet& primitiveSet, Model* source);
 	// Generate overlays (labels and measurements)
 	void createOverlays(Model* source, Matrix baseTransform);
+	// Add single triangle
+	void addExtraSolidTriangle(Vec3<double> r1, Vec3<double> r2, Vec3<double> r3, Vec4<GLfloat> colour);
 
 
 	/*

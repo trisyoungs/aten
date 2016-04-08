@@ -224,6 +224,7 @@
     <file>icons/view_set.svg</file>
     <file>icons/view_minusx.png</file>
     <file>icons/view_minusy.png</file>
+    <file>icons/cell_spacegroup.svg</file>
     <file>icons/view_minusz.png</file>
     <file>icons/view_plusx.png</file>
     <file>icons/view_plusy.png</file>
@@ -244,6 +245,9 @@
     <file>icons/cell_periodic.svg</file>
     <file>icons/cell_replicate.svg</file>
     <file>icons/cell_foldatoms.svg</file>
+    <file>icons/cell_pack.svg</file>
+    <file>icons/cell_millerdefine.svg</file>
+    <file>icons/cell_millerselect.svg</file>
     <file>icons/cell_foldmolecules.svg</file>
     <file>icons/cell_scale.svg</file>
   </qresource>

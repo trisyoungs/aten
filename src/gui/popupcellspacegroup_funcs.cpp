@@ -32,6 +32,9 @@ CellSpacegroupPopup::CellSpacegroupPopup(AtenWindow& parent, TMenuButton* button
 {
 	// Set up interface
 	ui.setupUi(this);
+
+	// Add spacegroups to SpacegroupCombo
+	for (int n=0; n<231; ++n) ui.SpacegroupCombo->addItem(QString("%1. %2").arg(n).arg(Spacegroups[n].name));
 }
 
 // Update controls (before show()) (virtual)
@@ -41,11 +44,14 @@ void CellSpacegroupPopup::updateControls()
 
 	// Get current model
 	Model* model = parent_.aten().currentModelOrFrame();
-	if (model)
-	{
-// 		Spacegroups[]; ATEN2 TODO
-// 		ui.SpacegroupCombo->setCurrentIndex(model->cell().spacegroupId());
-	}
+	bool enabled = (model ? model->isPeriodic() : false);
+
+	// Enable / disable controls
+	ui.SetButton->setEnabled(enabled);
+	ui.RemoveButton->setEnabled(enabled);
+	ui.PackButton->setEnabled(model && (model->cell().spacegroupId() != 0));
+
+	ui.CurrentLabel->setText(model && (model->cell().spacegroupId() != 0) ? QString("%1 (%2)").arg(Spacegroups[model->cell().spacegroupId()].displayName).arg(model->cell().spacegroupId()) : "<None>"); 
 
 	// Enable / disable controls as necessary
 	ui.SpacegroupCombo->setEnabled(model);
@@ -73,26 +79,51 @@ bool CellSpacegroupPopup::callMethod(QString methodName, ReturnValue& rv)
 /*
  * Widget Functions
  */
-/*
-void CellSpacegroupPopup::on_CellSpacegroupSetButton_clicked(bool checked)
+
+void CellSpacegroupPopup::on_LookupEdit_returnPressed()
 {
-	// Grab the current text of the line edit and determine spacegroup
-	CommandNode::run(Commands::Spacegroup, "c", qPrintable(ui.CellSpacegroupEdit->text()));
-	ui.CellSpacegroupEdit->setText("");
-	// Set spacegroup label
-	Model* m = parent_.aten().currentModelOrFrame();
-	QString label;
-	label.sprintf("%s (%i)\n", Spacegroups[m->cell()->spacegroupId()].name, m->cell()->spacegroupId());
-	ui.SpacegroupLabel->setText(label);
+	// What do we have?
+	QString text = ui.LookupEdit->text();
+
+	// Test for a plain integer
+	bool ok;
+	int sgid = text.toInt(&ok);
+	if (ok)
+	{
+		ui.SpacegroupCombo->setCurrentIndex(sgid);
+		return;
+	}
+
+	// Perhaps a spacegroup name? Look for an exact (case-insensitive) match
+	for (int n=0; n<231; ++n)
+	{
+		QRegExp re(Spacegroups[n].name);
+		re.setPatternSyntax(QRegExp::FixedString);
+		re.setCaseSensitivity(Qt::CaseInsensitive);
+		if (re.exactMatch(text))
+		{
+			ui.SpacegroupCombo->setCurrentIndex(n);
+			return;
+		}
+	}
+
+	// No idea!
 }
 
-void CellSpacegroupPopup::on_CellSpacegroupRemoveButton_clicked(bool checked)
+void CellSpacegroupPopup::on_RemoveButton_clicked(bool checked)
 {
 	CommandNode::run(Commands::Spacegroup, "i", 0);
 
-	// Set spacegroup label
-	// ui.SpacegroupLabel->setText("None (0)"); ATEN2 TODO
-}*/
+	updateControls();
+}
+
+void CellSpacegroupPopup::on_SetButton_clicked(bool checked)
+{
+	// Set the spacegroup based on integer index of the combo
+	CommandNode::run(Commands::Spacegroup, "i", ui.SpacegroupCombo->currentIndex());
+
+	updateControls();
+}
 
 void CellSpacegroupPopup::on_PackButton_clicked(bool checked)
 {
@@ -101,10 +132,7 @@ void CellSpacegroupPopup::on_PackButton_clicked(bool checked)
 	// Update display
 	parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
 
+	// Hide popup
 	done();
 }
 
-void CellSpacegroupPopup::on_SpacegroupEdit_XXX(double value)
-{
-	// ATEN2 TODO
-}

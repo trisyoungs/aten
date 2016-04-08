@@ -131,7 +131,6 @@ void Viewer::renderExtras(Model* sourceModel)
 		atenWindow_->ui.CellMillerDefineButton->callPopupMethod("l", rv);
 		hkl.z = rv.asInteger();
 
-// 		if ((hkl.x == 0) && (hkl.y == 0) && (hkl.z == 0)) return;
 		// Plane Eq : hx + ky + lz = 1    (h, k, and l are reciprocals)
 		for (n=0; n<3; ++n)
 		{
@@ -165,33 +164,32 @@ void Viewer::renderExtras(Model* sourceModel)
 			ncoords = 4;
 		}
 
-		// ATEN2 TODO
-// 		glPushMatrix();
-// 		glMultMatrixd(source->cell()->axes().matrix());
-// 		if (ncoords == 3)
-// 		{
-// 			glBegin(GL_TRIANGLES);
-// 				glVertex3d(coords[0].x, coords[0].y, coords[0].z);
-// 				glVertex3d(coords[1].x, coords[1].y, coords[1].z);
-// 				glVertex3d(coords[2].x, coords[2].y, coords[2].z);
-// 				glVertex3d(1-coords[0].x, 1-coords[0].y, 1-coords[0].z);
-// 				glVertex3d(1-coords[1].x, 1-coords[1].y, 1-coords[1].z);
-// 				glVertex3d(1-coords[2].x, 1-coords[2].y, 1-coords[2].z);
-// 			glEnd();
-// 		}
-// 		else
-// 		{
-// 			glBegin(GL_QUADS);
-// 				glVertex3d(coords[0].x, coords[0].y, coords[0].z);
-// 				glVertex3d(coords[1].x, coords[1].y, coords[1].z);
-// 				glVertex3d(coords[2].x, coords[2].y, coords[2].z);
-// 				glVertex3d(coords[3].x, coords[3].y, coords[3].z);
-// 				glVertex3d(1-coords[0].x, 1-coords[0].y, 1-coords[0].z);
-// 				glVertex3d(1-coords[1].x, 1-coords[1].y, 1-coords[1].z);
-// 				glVertex3d(1-coords[2].x, 1-coords[2].y, 1-coords[2].z);
-// 				glVertex3d(1-coords[3].x, 1-coords[3].y, 1-coords[3].z);
-// 			glEnd();
-// 		}
+		// Add triangle / quad
+		if (ncoords == 3)
+		{
+			renderGroup_.addTriangles();
+			glBegin(GL_TRIANGLES);
+				glVertex3d(coords[0].x, coords[0].y, coords[0].z);
+				glVertex3d(coords[1].x, coords[1].y, coords[1].z);
+				glVertex3d(coords[2].x, coords[2].y, coords[2].z);
+				glVertex3d(1-coords[0].x, 1-coords[0].y, 1-coords[0].z);
+				glVertex3d(1-coords[1].x, 1-coords[1].y, 1-coords[1].z);
+				glVertex3d(1-coords[2].x, 1-coords[2].y, 1-coords[2].z);
+			glEnd();
+		}
+		else
+		{
+			glBegin(GL_QUADS);
+				glVertex3d(coords[0].x, coords[0].y, coords[0].z);
+				glVertex3d(coords[1].x, coords[1].y, coords[1].z);
+				glVertex3d(coords[2].x, coords[2].y, coords[2].z);
+				glVertex3d(coords[3].x, coords[3].y, coords[3].z);
+				glVertex3d(1-coords[0].x, 1-coords[0].y, 1-coords[0].z);
+				glVertex3d(1-coords[1].x, 1-coords[1].y, 1-coords[1].z);
+				glVertex3d(1-coords[2].x, 1-coords[2].y, 1-coords[2].z);
+				glVertex3d(1-coords[3].x, 1-coords[3].y, 1-coords[3].z);
+			glEnd();
+		}
 	}
 
 		// Pores Widget // ATEN2 TODO

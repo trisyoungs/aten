@@ -3316,7 +3316,7 @@
           <item row="0" column="0">
            <widget class="TMenuButton" name="CellSpacegroupSetButton">
             <property name="enabled">
-             <bool>false</bool>
+             <bool>true</bool>
             </property>
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -3345,7 +3345,11 @@
              <string>Set / edit spacegroup</string>
             </property>
             <property name="text">
-             <string>Set</string>
+             <string>Define</string>
+            </property>
+            <property name="icon">
+             <iconset resource="icons.qrc">
+              <normaloff>:/view/icons/cell_spacegroup.svg</normaloff>:/view/icons/cell_spacegroup.svg</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -3537,7 +3541,7 @@
           <item row="0" column="0">
            <widget class="TMenuButton" name="CellMillerDefineButton">
             <property name="enabled">
-             <bool>false</bool>
+             <bool>true</bool>
             </property>
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -3568,6 +3572,10 @@
             <property name="text">
              <string>Define</string>
             </property>
+            <property name="icon">
+             <iconset resource="icons.qrc">
+              <normaloff>:/cell/icons/cell_millerdefine.svg</normaloff>:/cell/icons/cell_millerdefine.svg</iconset>
+            </property>
             <property name="iconSize">
              <size>
               <width>30</width>
@@ -3594,7 +3602,7 @@
           <item row="0" column="1">
            <widget class="TMenuButton" name="CellMillerSelectButton">
             <property name="enabled">
-             <bool>false</bool>
+             <bool>true</bool>
             </property>
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -3624,6 +3632,10 @@
             </property>
             <property name="text">
              <string>Select</string>
+            </property>
+            <property name="icon">
+             <iconset resource="icons.qrc">
+              <normaloff>:/cell/icons/cell_millerselect.svg</normaloff>:/cell/icons/cell_millerselect.svg</iconset>
             </property>
             <property name="iconSize">
              <size>

@@ -46,6 +46,9 @@ bool CellMillerPopup::callMethod(QString methodName, ReturnValue& rv)
 {
 	bool result = true;
 	if (methodName == "TEST") return true;
+	else if (methodName == "h") rv.set(ui.HSpin->value());
+	else if (methodName == "k") rv.set(ui.KSpin->value());
+	else if (methodName == "l") rv.set(ui.LSpin->value());
 	else if (methodName == "hideEvent")
 	{
 		return true;
@@ -61,3 +64,15 @@ bool CellMillerPopup::callMethod(QString methodName, ReturnValue& rv)
 /*
  * Widget Functions
  */
+
+void CellMillerPopup::on_HSpin_valueChanged(int value)
+{
+}
+
+void CellMillerPopup::on_KSpin_valueChanged(int value)
+{
+}
+
+void CellMillerPopup::on_LSpin_valueChanged(int value)
+{
+}

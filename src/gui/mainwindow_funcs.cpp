@@ -227,7 +227,7 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportFilmD
 	ui.CellDefineLengthsButton->setPopupWidget(new CellLengthsPopup(*this, ui.CellDefineLengthsButton), true);
 	ui.CellDefineMatrixButton->setPopupWidget(new CellMatrixPopup(*this, ui.CellDefineMatrixButton), true);
 	// -- Cell Panel (Spacegroup)
-	ui.CellSpacegroupSetButton->setPopupWidget(new CellSpacegroupPopup(*this, ui.CellSpacegroupSetButton));
+	ui.CellSpacegroupSetButton->setPopupWidget(new CellSpacegroupPopup(*this, ui.CellSpacegroupSetButton), true);
 	// -- Cell Panel (Transform)
 	ui.CellTransformReplicateButton->setPopupWidget(new CellReplicatePopup(*this, ui.CellTransformReplicateButton));
 	ui.CellTransformScaleButton->setPopupWidget(new CellScalePopup(*this, ui.CellTransformScaleButton));
