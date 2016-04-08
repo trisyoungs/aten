@@ -20,16 +20,28 @@
 */
 
 #include "gui/progress.h"
+#include "gui/mainwindow.h"
 #include "base/messenger.h"
 #include "templates/variantpointer.h"
 
 ATEN_USING_NAMESPACE
 
 // Constructor
-AtenProgress::AtenProgress(QWidget* parent, Qt::WindowFlags flags) : QDialog(parent, flags)
+AtenProgress::AtenProgress(AtenWindow& parent, Qt::WindowFlags flags) : QDialog(&parent, flags), parent_(parent)
 {
 	ui.setupUi(this);
 	taskPoint_ = -1;
+	lastUpdatePercentage_ = 0;
+}
+
+void AtenProgress::on_UpdateFrequencySlider_valueChanged(int value)
+{
+	lastUpdatePercentage_ = 0;
+	if (value == 0) ui.UpdateFrequencyLabel->setText("Off");
+	else if (value == 1) ui.UpdateFrequencyLabel->setText("Occasionally");
+	else if (value == 2) ui.UpdateFrequencyLabel->setText("Sometimes");
+	else if (value == 3) ui.UpdateFrequencyLabel->setText("Frequently");
+	else if (value == 4) ui.UpdateFrequencyLabel->setText("Always");
 }
 
 void AtenProgress::on_CancelButton_clicked(bool checked)
@@ -93,6 +105,7 @@ void AtenProgress::updateAndShow()
 
 	// Update main ETA information (from first task)
 	RefListItem<Task,int>* ri = Messenger::tasks();
+	int mainCompletion = 0;
 	Task* task = ri->item;
 	if (task)
 	{
@@ -100,6 +113,7 @@ void AtenProgress::updateAndShow()
 		ui.ProgressBar->setRange(0, task->nSteps());
 		ui.ProgressBar->setValue(task->currentStep());
 		ui.TimeRemainingLabel->setText(task->etaText());
+		mainCompletion = ((double)task->currentStep() / (double) task->nSteps()) * 100;
 	}
 	else
 	{
@@ -109,7 +123,20 @@ void AtenProgress::updateAndShow()
 		ui.TimeRemainingLabel->setText("N/A");
 	}
 
+	// Process application events
 	QApplication::processEvents();
+
+	// If the Update slider is enabled, see if we need to do an update
+	if (ui.UpdateFrequencySlider > 0)
+	{
+		int delta = mainCompletion - lastUpdatePercentage_;
+		int divisor = ui.UpdateFrequencySlider->value() == 4 ? 100 : ui.UpdateFrequencySlider->value()*5;
+		if (delta >= (100/divisor))
+		{
+			lastUpdatePercentage_ = mainCompletion;
+			parent_.updateWidgets(AtenWindow::MainViewTarget);
+		}
+	}
 	
 	// If there are no tasks, close the window
 	if (Messenger::nTasks() == 0) hide();

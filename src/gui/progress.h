@@ -26,6 +26,9 @@
 #include <QTime>
 #include "base/namespace.h"
 
+// Forward Declarations (Qt)
+class AtenWindow;
+
 // Progress Dialog
 class AtenProgress : public QDialog
 {
@@ -34,9 +37,16 @@ class AtenProgress : public QDialog
 
 	public:
 	// Constructor / Destructor
-	AtenProgress(QWidget* parent = 0, Qt::WindowFlags flags = 0);
+	AtenProgress(AtenWindow& parent, Qt::WindowFlags flags = 0);
 	// Main form declaration
 	Ui::AtenProgress ui;
+
+
+	/*
+	 * Parent Window
+	 */
+	private:
+	AtenWindow& parent_;
 
 
 	/*
@@ -45,6 +55,8 @@ class AtenProgress : public QDialog
 	private:
 	// Point at which task table was last updated
 	int taskPoint_;
+	// Main completion percentage at which main view was last updated
+	int lastUpdatePercentage_;
 
 
 	/*
@@ -57,6 +69,7 @@ class AtenProgress : public QDialog
 	void terminate();
 
 	private slots:
+	void on_UpdateFrequencySlider_valueChanged(int value);
 	void on_CancelButton_clicked(bool checked);
 };
 

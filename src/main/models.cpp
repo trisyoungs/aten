@@ -97,7 +97,7 @@ Model* Aten::addModel()
 			m->setType(Model::ParentModelType);
 			m->setName(QString("Unnamed%1").arg(++modelId_, 3, 10, QChar('0')));
 			m->resetLogs();
-			setCurrentModel(m);
+			setSingleModelVisible(m);
 			break;
 		case (Aten::FragmentLibraryList):
 			m = fragments_.add();

@@ -1,6 +1,7 @@
 ---
 title: NaCl/Water
 brief: Creating an NaCl/Water Two-Phase System
+visible: true
 taxonomy:
   category: docs
   example: [GUI,building,disorder]
@@ -71,18 +72,20 @@ Now we choose the partitioning scheme for the system. We could be lazy and just 
 
 Finally, model selection and preparation. Select the water molecule from the list and press **Next** to get to the component setup page.  We must change the **Target Partition** of the water molecule to 2 (the slab we defined earlier), and then request that a **Specific Density** of molecules be inserted into this partition (the default of 1.0 g/cm3 is fine). Once this information has been entered, press **Finish** to start the build.
 
-![NaCl/Water - Step 5](nacl5.png){.imgfull}
+![NaCl/Water - Final Result](nacl6.png){.imgfull}
 
 ## Script
 
 The script below creates the water molecule as the first step to make life a little easier.
 
 ```aten
+# Create water model
 newModel("Water");
 newAtom(O);
 addHydrogen();
 setupComponent("density", 2, 0, 1.0);
 
+# Create NaCl lattice
 newModel("fcc");
 cell(1,1,1,90,90,90);
 newAtom(Na,0,0,0);
@@ -94,9 +97,13 @@ copy();
 paste();
 flipX();
 transmute(Cl);
+
+# Scale, replicate and extend cell
 scale(5.628,5.628,5.628);
 replicate(0,0,0,5,2,5);
 setCell("b",28.12);
+
+# Add water
 disorder("SlabXZ,end=1.0");
 ```
 
