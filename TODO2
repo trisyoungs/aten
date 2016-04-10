@@ -15,12 +15,11 @@ Intelligent Select - add support for selection by type name (e.g. O*, OW etc.).
 Add set members to Matrix class allowing axes to be set from atoms in models.
 Convert other member accessors to MatrixData type where appropriate.
 Printf command buffered output is never printed if no newline ever occurs.  Need to store data somewhere other than the Printf function itself, and flush it at the end of command execution.
-Crash when tree selecting large models (recursion overflow?)
+Crash when tree selecting large models (recursion overflow?) - use array-based loop instead.
 Selecting and then deselecting large numbers of atoms causes rendering artefacts afterwards.
 Add specific line primitive class that allows chunking (for speedup of stick rendering, because otherwise an enormous array is continually deleted'd/new'd).
 Add 'Reload' options to Grid context menu.
 Add context menu "Copy" and "Set" to TColourButtons.
-Need to print out accessor variable types in lists when one is unrecognised.
 Add 'Relative' view control, alongside 'Free' and 'Locked' (Follow)?
 Add Prefs accessors for Correct and View Lock options (so they can be saved).
 Fragment builder is broken - not attaching to atoms correctly. Also, cycling over attachment points cycles over all atoms, not just XX. AND! What does SHIFT do?
@@ -54,7 +53,7 @@ Have Tools page? With, for instance:
 Add manual typing popup.
 Prefs window needs updating:
 o Remove use of TColourFrames
-o Add font selection option
+o Add font selection option for main view and messages
 ZMatrix Window (popup under Tools?)
 
 Possible TODO
@@ -71,9 +70,6 @@ Remove global MC, CG, SD declarations, and put them in Aten?
 Manual TODO
 ===========
 More examples (e.g. slab generation)
-Remove LineTol and Converge commands, and update minimisation command signatures (inc return values).
 TestSelect command.
-Add 'external' dir description to quickstart.
-Is CombinationRule enum still valid / used?
 Setting of filter options when using --batch CLI mode (in 03.cli/batch).
 Add on 'aten' suffix to code fences (```).

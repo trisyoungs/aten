@@ -1,5 +1,5 @@
 ---
-title: Minimser Commands
+title: Minimiser Commands
 visible: true
 taxonomy:
   category: docs
@@ -16,9 +16,9 @@ Perform energy minimisation on models.
 
 _Syntax:_
 
-**void** **cgMinimise** ( **int** _maxsteps_ )
+**double** **cgMinimise** ( **int** _maxsteps_ = 100, **double** _eConverge_ = 1.0e-3, **double** _fConverge_ = 1.0e-2, **double** _lineTolerance_ = 1.0e-4 )
 
-Geometry optimises the current model using the conjugate gradient method.
+Geometry optimises the current model using the conjugate gradient method. The final total energy of the model is returned.
 
 For example:
 
@@ -29,48 +29,6 @@ cgMinimise(20);
 
 
 runs a conjugate gradient geometry optimisation for a maximum of 20 cycles.
-
-Literature methods for details on the conjugate gradient method as it is implemented in Aten.
-
----
-
-## converge <a id="converge"></a>
-
-_Syntax:_
-
-**void** **converge** ( **double** _econv_, **double** _fconv_ )
-
-Sets the convergence criteria of the minimisation methods. Energy and force convergence values are given in the current working unit of energy in the program.
-
-For example:
-
-
-```
-converge(1e-6, 1e-4);
-```
-
-
-sets the energy and RMS force convergence criteria to 1.0E-6 and 1.0E-4 respectively.
-
----
-
-## lineTol <a id="linetol"></a>
-
-_Syntax:_
-
-**void** **lineTol** ( **double** _tolerance_ )
-
-Sets the tolerance of the line minimiser.
-
-For example:
-
-
-```
-lineTol(1e-5);
-```
-
-
-sets the line tolerance to 1.0E-5.
 
 ---
 
@@ -91,8 +49,6 @@ mcMinimise(20);
 
 
 runs a geometry optimisation for a maximum of 20 cycles.
-
-Monte Carlo Minimiser method for details on the Monte Carlo minimisation method as it is implemented in Aten.
 
 ---
 
@@ -128,9 +84,9 @@ minimises the current model assuming a triplet state with the UHF method and the
 
 _Syntax:_
 
-**void** **sdMinimise** ( **int** _maxsteps_ )
+**double** **sdMinimise** ( **int** _maxsteps_ = 100, **double** _eConverge_ = 1.0e-3, **double** _fConverge_ = 1.0e-2, **double** _lineTolerance_ = 1.0e-4, **bool** _simple_ = **false** )
 
-Optimises the current model using the Steepest Descent method.
+Optimises the current model using the Steepest Descent method. The final total energy of the model is returned.
 
 For example:
 

@@ -191,16 +191,23 @@ void Variable::printValidAccessors(int nAccessors, Accessor* accessors, int nFun
 	if (nAccessors > 0)
 	{
 		// Get maximum length of accessor name
-		int maxLength = 0;
-		for (int n=0; n<nAccessors; ++n) if (accessors[n].name.length() > maxLength) maxLength = accessors[n].name.length();
-		maxLength += 6;
+		int maxLength = 0, currentLength;
+		for (int n=0; n<nAccessors; ++n)
+		{
+			currentLength = accessors[n].name.length() + (accessors[n].arraySize > 0 ? QString::number(accessors[n].arraySize).length() + 2 : 0);
+			if (currentLength > maxLength) maxLength = currentLength;
+		}
+		maxLength += 4;
 
 		// Print info
 		Messenger::print("Valid accessors are:");
 		for (int n=0; n<nAccessors; ++n)
 		{
-			if (accessors[n].arraySize > 0) Messenger::print(QString("\t%1 %2").arg(QString("%1[%2]").arg(accessors[n].name, -maxLength).arg(accessors[n].arraySize)).arg(accessors[n].isReadOnly ? "(ro)" : ""));
-			else Messenger::print(QString("\t%1").arg(accessors[n].name, -maxLength));
+			QString line = "\t%1  %2  %3";
+			line = line.arg(accessors[n].returnType == VTypes::NoData ? "void" : VTypes::dataType(accessors[n].returnType), 15);
+			line = line.arg(accessors[n].name + (accessors[n].arraySize > 0 ? QString("[" + QString::number(accessors[n].arraySize) + "]") : QString()), -maxLength);
+			line = line.arg(accessors[n].isReadOnly ? "(ro)" : "");
+			Messenger::print(line);
 		}
 		Messenger::print("");
 	}
