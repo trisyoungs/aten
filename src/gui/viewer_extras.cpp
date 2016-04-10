@@ -119,9 +119,8 @@ void Viewer::renderExtras(Model* sourceModel)
 	// Miller Planes
 	if (atenWindow_->ui.CellMillerDefineButton->popupVisible())
 	{
-
 		int n, anindex = -1, notanindex = -1, ncoords = 0;
-		Vec3<double> coords[4], origin;
+		Vec3<double> coords[4], oneMinusCoords[4], one(1.0,1.0,1.0);
 		Vec3<int> hkl;
 		ReturnValue rv;
 		atenWindow_->ui.CellMillerDefineButton->callPopupMethod("h", rv);
@@ -164,31 +163,42 @@ void Viewer::renderExtras(Model* sourceModel)
 			ncoords = 4;
 		}
 
+		// Convert coords from fractional into cell coordinates
+		Model* m = aten_->currentModelOrFrame();
+		for (int n=0; n<4; ++n)
+		{
+			oneMinusCoords[n] = m->cell().axes() * (one-coords[n]);
+			coords[n] = m->cell().axes() * coords[n];
+		}
+
+		// Fold triangles outside of cell back into cell
+		Vec3<double> centre = (coords[0] + coords[1] + coords[2]) / 3.0;
+		Vec3<double> delta = centre - m->cell().fold(centre);
+		for (int n=0; n<4; ++n)
+		{
+			coords[n] -= delta;
+			oneMinusCoords[n] += delta;
+		}
+
+		// Calculate normal
+		Vec3<double> normal = (coords[1] - coords[0])*(coords[1] - coords[2]);
+		normal.normalise();
+
 		// Add triangle / quad
+		Vec4<GLfloat> colour;
+		prefs.copyColour(Prefs::ForegroundColour, colour);
+		colour.w = 0.3;
 		if (ncoords == 3)
 		{
-			renderGroup_.addTriangles();
-			glBegin(GL_TRIANGLES);
-				glVertex3d(coords[0].x, coords[0].y, coords[0].z);
-				glVertex3d(coords[1].x, coords[1].y, coords[1].z);
-				glVertex3d(coords[2].x, coords[2].y, coords[2].z);
-				glVertex3d(1-coords[0].x, 1-coords[0].y, 1-coords[0].z);
-				glVertex3d(1-coords[1].x, 1-coords[1].y, 1-coords[1].z);
-				glVertex3d(1-coords[2].x, 1-coords[2].y, 1-coords[2].z);
-			glEnd();
+			renderGroup_.addExtraSolidTriangle(coords[0], coords[1], coords[2], normal, colour);
+			renderGroup_.addExtraSolidTriangle(oneMinusCoords[0], oneMinusCoords[1], oneMinusCoords[2], normal, colour);
 		}
 		else
 		{
-			glBegin(GL_QUADS);
-				glVertex3d(coords[0].x, coords[0].y, coords[0].z);
-				glVertex3d(coords[1].x, coords[1].y, coords[1].z);
-				glVertex3d(coords[2].x, coords[2].y, coords[2].z);
-				glVertex3d(coords[3].x, coords[3].y, coords[3].z);
-				glVertex3d(1-coords[0].x, 1-coords[0].y, 1-coords[0].z);
-				glVertex3d(1-coords[1].x, 1-coords[1].y, 1-coords[1].z);
-				glVertex3d(1-coords[2].x, 1-coords[2].y, 1-coords[2].z);
-				glVertex3d(1-coords[3].x, 1-coords[3].y, 1-coords[3].z);
-			glEnd();
+			renderGroup_.addExtraSolidTriangle(coords[0], coords[1], coords[2], normal, colour);
+			renderGroup_.addExtraSolidTriangle(coords[0], coords[2], coords[3], normal, colour);
+			renderGroup_.addExtraSolidTriangle(oneMinusCoords[0], oneMinusCoords[1], oneMinusCoords[2], normal, colour);
+			renderGroup_.addExtraSolidTriangle(oneMinusCoords[0], oneMinusCoords[2], oneMinusCoords[3], normal, colour);
 		}
 	}
 
@@ -197,5 +207,3 @@ void Viewer::renderExtras(Model* sourceModel)
 // 			ps = &PoresWidget::partitioningScheme();
 // 			mat = aten.currentModelOrFrame()->cell()->axes();
 }
-
-

@@ -151,7 +151,15 @@ void RenderGroup::addLines(Primitive& targetPrimitive, Matrix& transform, bool b
 	else boldLinePrimitives_.addOccurrence(targetPrimitive, transform);
 }
 
-// Sort and render filtered polygons by depth
+// Add single triangle
+void RenderGroup::addExtraSolidTriangle(Vec3<double> r1, Vec3<double> r2, Vec3<double> r3, Vec3<double> normal, Vec4<GLfloat> colour)
+{
+	extraSolidTriangles_.defineVertex(r1, normal, colour);
+	extraSolidTriangles_.defineVertex(r2, normal, colour);
+	extraSolidTriangles_.defineVertex(r3, normal, colour);
+}
+
+// Send RenderGroup contents to GL
 void RenderGroup::sendToGL(Matrix& modelTransformationMatrix)
 {
 	// Calculate inverse model matrix

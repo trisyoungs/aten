@@ -491,13 +491,17 @@ void AtenWindow::atomsTableMouseMoveEvent(QMouseEvent* event)
 
 	bool shift = event->modifiers()&Qt::ShiftModifier;
 	if (shift) return;
+
+	// If the last hovered atom is null, then we have nothing to do
+	if (atomsTableLastHovered_ == NULL) return;
 	
 	int row = ui.AtomsTable->rowAt(event->pos().y());
 	Atom* i = atomsTableAtomInRow(row);
 	
-	// If the hovered widget is NULL, then we are either above or below the visible widgets, so scroll the slider...
+	// If the hovered atom is NULL, then we are either above or below the visible widgets, so scroll the slider...
 	if (i == NULL)
 	{
+		// Quick check - if 
 		int delta, y = event->pos().y();
 		int rowHeight = ui.AtomsTable->rowHeight(0);
 		int oldValue = ui.AtomsTableScrollBar->value();

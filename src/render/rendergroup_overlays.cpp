@@ -29,7 +29,7 @@ ATEN_USING_NAMESPACE
 // Render measurements
 void RenderGroup::createOverlays(Model* source, Matrix baseTransform)
 {
-	Messenger::enter("Viewer::createOverlays");
+	Messenger::enter("RenderGroup::createOverlays");
 
 	Vec3<double> r1, r2, r3, r4, rji, rjk, pos;
 	Vec4<double> screenr;
@@ -150,5 +150,5 @@ void RenderGroup::createOverlays(Model* source, Matrix baseTransform)
 		addOverlayText(QString().sprintf(qPrintable(prefs.angleLabelFormat()), m->value()) + QChar(176), (r2+r3)*0.5, 0.1, TextPrimitive::MiddleLeftAnchor);
 	}
 
-	Messenger::exit("Viewer::createOverlays");
+	Messenger::exit("RenderGroup::createOverlays");
 }

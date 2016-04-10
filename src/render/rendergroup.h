@@ -88,6 +88,8 @@ class RenderGroup
 	void addLines(Primitive& targetPrimitive, Matrix& transform, Vec4<GLfloat>& colour, bool bold = false);
 	// Add line primitive (which has it's own colour info)
 	void addLines(Primitive& targetPrimitive, Matrix& transform, bool bold = false);
+	// Add single triangle
+	void addExtraSolidTriangle(Vec3<double> r1, Vec3<double> r2, Vec3<double> r3, Vec3<double> normal, Vec4<GLfloat> colour);
 
 
 	/*
@@ -104,8 +106,6 @@ class RenderGroup
 	void createGlyphs(PrimitiveSet& primitiveSet, Model* source);
 	// Generate overlays (labels and measurements)
 	void createOverlays(Model* source, Matrix baseTransform);
-	// Add single triangle
-	void addExtraSolidTriangle(Vec3<double> r1, Vec3<double> r2, Vec3<double> r3, Vec4<GLfloat> colour);
 
 
 	/*
