@@ -52,7 +52,7 @@ ElementTablePopup::ElementTablePopup(AtenWindow& parent, TMenuButton* buttonPare
 		button->setToolTip(QString("%1 (%2)").arg(Elements().name(n), Elements().symbol(n)));
 		colour = Elements().colour(n);
 		background.setRgbF(colour[0], colour[1], colour[2], colour[3]);
-		foreground = ( ((background.hue() > 20) && (background.hue() < 200)) ? Qt::black : Qt::white );
+		foreground = ( ((background.saturation() > 30) || (background.value() < 50)) ? Qt::white : Qt::black);
 		palette.setColor(QPalette::Window, background);
 		palette.setColor(QPalette::Button, background);
 		palette.setColor(QPalette::Text, foreground);
@@ -198,5 +198,5 @@ void ElementTablePopup::ElementButton_clicked(bool checked)
 	// Set icon on parent button
 	parentMenuButton()->setIcon(Elements().icon(currentElement_));
 
-	done(true);
+	done();
 }

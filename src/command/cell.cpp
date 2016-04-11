@@ -147,6 +147,7 @@ bool Commands::function_Pack(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	{
 		obj.rs()->beginUndoState("Pack Cell");
 		obj.rs()->pack();
+		obj.rs()->foldAllAtoms();
 		obj.rs()->endUndoState();
 	}
 	else if (prefs.packOnLoad() != Choice::No) obj.rs()->pack();

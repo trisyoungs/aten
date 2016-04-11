@@ -14,92 +14,70 @@ Similar in spirit to the [alumina example](/aten/docs/examples/alumina), here we
 
 ## Create the Basic Unit Cell
 
-First, we create the unit cell, which from the paper is orthorhombic with side lengths _a_ = 4.5019, _b_ = 7.7978, and _c_ = 7.328 Å. There are five symmetry-unique atoms to add into the cell. This might seem odd given that this doesn't add up to a whole number of water molecules, but one of the water molecules lays with its oxygen on a mirror plane, and so only needs one hydrogen to be specified. Atom positions in the paper are given in fractional coordinates - we will create the atoms using these coordinates which will be converted by **Aten** into their real (cell) coordinates automatically.
+First, we create the unit cell, which from the paper is orthorhombic with side lengths **A** = 4.5019, **B** = 7.7978, and **C** = 7.328 Å. There are five symmetry-unique atoms to add into the cell. This might seem odd given that this doesn't add up to a whole number of water molecules, but one of the water molecules lays with its oxygen on a mirror plane, and so only needs one hydrogen to be specified. Atom positions in the paper are given in fractional coordinates - we will create the atoms using these coordinates which will be converted by **Aten** into their real (cell) coordinates automatically.
 
 ![Cell Panel, Define Group](/aten/docs/gui/cell/define.png){.imgfull}
 
 + Go to the [**Define Group**](/aten/docs/gui/cell#define) on the [**Cell Panel**](/aten/docs/gui/cell), and enable the **Periodic** button to add a basic unit cell to our empty model.
-+ 
++ Using the **Lengths** tool enter the cell lengths _a_, _b_, and _c_ to 4.5019, 7.7978, and 7.328 &#8491; respectively. The cell **Angles** should all be 90°.
 
-<table>
-  <row>
-    <column>[img]aten/manual/img/toolbox_celldefine.png[/img]</column>
-    <column>Open the **Cell Define Window**</column>
-  </row>
-  <row>
-    <column></column>
-    <column>Add a unit cell to the model by checking the **Has Cell?** Checkbox, then go to the **Define/View ABC** page and set the cell lengths _a_, _b_, and _c_ to 4.5019, 7.7978, and 7.328 respectively. Leave the cell angles all at 90°, and click **Define**.</column>
-  </row>
-  <row>
-    <column>[img]aten/manual/img/toolbox_build.png[/img]</column>
-    <column>In the **Build Window** change the active element on the **Edit** page to oxygen by clicking the red **O** button.</column>
-  </row>
-  <row>
-    <column> </column>
-    <column>
-      On the **Add Atom** panel in the **Tools** page make sure **Fractional Coordinates** is checked and then enter the following sets of coordinates, clicking **Add** after each set is entered:
-      x = 0.0, y = 0.6648, z = 0.0631
-      x = 0.5, y = 0.8255, z = -0.0631
-    </column>
-  </row>
-  <row>
-    <column></column>
-    <column>
-      Go back to the the **Edit** page and change the active element to hydrogen by clicking the white **H**, return to the **Tools** page and add three more atoms at the following fractional coordinates:
-      x = 0.0, y = 0.6636, z = 0.1963
-      x = 0.0, y = 0.5363, z = 0.0183
-      x = 0.6766, y = -0.2252, z = -0.0183
-    </column>
-  </row>
-</table>
+On the [**Build Panel**](/aten/docs/gui/build) change the drawing **Element** to oxygen, and then open the **Add Atom** tool. We will specify the new atoms in fractional cell coordinates, so make sure that the **Fractional** checkbox is ticked.
 
-<figure>
-  <image>img/examples-ice-1.jpg</image>
-</figure>
+Add oxygen atoms at the following positions:
+
+| Atom | FracX | FracY | FracZ |
+|------|-------|-------|-------|
+|  O1  | 0.0   | 0.6648| 0.0631|
+|  O2  | 0.5   | 0.8255|-0.0631|
+
+Change the **Element** to hydrogen and add hydrogen atoms at the following positions:
+
+| Atom | FracX | FracY | FracZ |
+|------|-------|-------|-------|
+|  H1  | 0.0   | 0.6636| 0.1963|
+|  H2  | 0.0   | 0.5363| 0.0183|
+|  H3  | 0.6766|-0.2252|-0.0183|
+
+The cell should now look like this:
+
+![Ice Builder - Step 1](ice1.png){.imgfull}
 
 ## Set the Spacegroup and Pack
 
+Back on the [**Cell Panel**](/aten/docs/gui/cell) we now must set the correct spacegroup for the model, so that the full unit cell can be generated from the set of symmetry-unique atoms we have just entered. On the **Define** tool we can set the correct spacegroup (Cmc21) for the model - in the **Set / Lookup** section you can either choose the correct spacegroup from the drop-down list, or enter the name or number (36, in this case) for the spacegroup required. Once selected, press **Set** to assign it to the model, then press **Pack** to pack the unit cell with symmetry-generated atoms.
+
+Finally, click **Rebond** on the [**Build Panel**](/aten/docs/gui/build).
+
+![Ice Builder - Step 2](ice2.png){.imgfull}
+
 To complete the model the spacegroup of the crystal must be set so that generation of the symmetry-related atoms can be performed.
 
-<table>
-  <row>
-    <column>[img]aten/manual/img/toolbox_celldefine.png[/img]</column>
-    <column>Open the **Cell Define Window **again, and on the **Spacegroup** page enter the spacegroup as “Cmc21” or “36” and press **Set** to assign the spacegroup to the model. Then, generate symmetry equivalent atoms by pressing the **Pack** button</column>
-  </row>
-</table>
-
-## Replicate Cell and Calculate Bonding
+## Replicate Cell
 
 The basic cell of ice Ih isn’t particularly interesting by itself, so we will replicate the cell to create a larger supercell, and then calculate bonds in the new model so that the hexagonal structure is clear to see.
 
-<table>
-  <row>
-    <column>[img]aten/manual/img/toolbox_celltransform.png[/img]</column>
-    <column>On the **Cell Transform Window** go to the **Scale** page and enter a scale factor of 5.628 for each of _x_, _y_, and _z_.  Press the **Scale** button to resize the unit cell.</column>
-  </row>
-  <row>
-    <column></column>
-    <column>Now, select the **Replicate** page and enter positive replication values of 5.0 for both _x_ and _z_, and 2.0 for _y_, and press **Replicate** to create the supercell.</column>
-  </row>
-  <row>
-    <column>[img]aten/manual/img/toolbox_build.png[/img]</column>
-    <column>Back in the **Build Window**, go to the **Edit** page and **Rebond** the model.</column>
-  </row>
-</table>
+On the [**Build Panel**](/aten/docs/gui/build) long-press the **Replicate** tool and enter positive replication values of, say, 6 for _x_, 2 for _y_, and 2 for _z_. Close the tool, then single click the **Replicate** to create the supercell. The bonding will now not be pretty, so hit **Rebond** as well.
+
+![Ice Builder - Step 3](ice3.png){.imgfull}
 
 ## Script
 
-```
+```aten
+# Create periodic model
 newModel("ice");
 cell(4.5019,7.7978,7.3280,90,90,90);
+
+# Add symmetry-unique atoms
 newAtomFrac(O,0,0.6648,0.0631);
 newAtomFrac(O,0.5,0.8255,-0.0631);
 newAtomFrac(H,0,0.6636,0.1963);
 newAtomFrac(H,0,0.5363,0.0183);
 newAtomFrac(H,0.6766,-0.2252,-0.0183);
+
+# Set spacegroup, pack, replicate, and rebond
 spacegroup("Cmc21");
 pack();
-replicate(0,0,0,4,4,4);
+replicate(0,0,0,6,2,2);
 rebond();
 ```
 
