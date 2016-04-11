@@ -80,11 +80,8 @@ bool CellSpacegroupPopup::callMethod(QString methodName, ReturnValue& rv)
  * Widget Functions
  */
 
-void CellSpacegroupPopup::on_LookupEdit_returnPressed()
+void CellSpacegroupPopup::on_LookupEdit_textChanged(QString text)
 {
-	// What do we have?
-	QString text = ui.LookupEdit->text();
-
 	// Test for a plain integer
 	bool ok;
 	int sgid = text.toInt(&ok);

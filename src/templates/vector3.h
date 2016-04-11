@@ -140,6 +140,10 @@ template <class T> class Vec3
 	void toCartesian();
 	// Convert cartesian x,y,z coordinates into spherical (rho,phi/zenith,theta/azimuthal)
 	void toSpherical();
+	// Cycle elements forward (x->y->z->x...)
+	void cycleForward();
+	// Cycle elements backward (z->y->x->z...)
+	void cycleBackward();
 };
 
 // Constructor
@@ -575,6 +579,24 @@ template <class T> void Vec3<T>::toSpherical()
 	theta = acos(z/rho);
 	phi = atan2(y,x);
 	set(rho,phi*DEGRAD,theta*DEGRAD);
+}
+
+// Cycle elements forward (x->y->z->x...)
+template <class T> void Vec3<T>::cycleForward()
+{
+	T temp = z;
+	z = y;
+	y = x;
+	x = temp;
+}
+
+// Cycle elements backward (z->y->x->z...)
+template <class T> void Vec3<T>::cycleBackward()
+{
+	T temp = x;
+	x = y;
+	y = z;
+	z = temp;
 }
 
 ATEN_END_NAMESPACE

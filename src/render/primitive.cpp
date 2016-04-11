@@ -851,31 +851,32 @@ void Primitive::plotWireCube(double size, double ox, double oy, double oz)
 void Primitive::plotCrossedCube(double size, int nSubs, double ox, double oy, double oz)
 {
 	// Create wire cube to start with
-	plotWireCube(size, ox, oy, oz);
+	plotWireCube(size, ox-0.5*size, oy-0.5*size, oz-0.5*size);
 
 	// Add crosses to faces
 	int i, j, sign;
 	GLfloat r[3];
+
+	// Loop over cartesian axes
 	for (i=0; i<3; ++i)
 	{
-		for (sign = 1; sign > -2; sign -=2)
+		// Face pairs of cube
+		for (sign = 1; sign > -2; sign -= 2)
 		{
 			// Determine single coordinate on positive face from which to determine all others
-			for (j = 0; j<3; ++j) r[j] = (j == i ? 0.55*size*sign : 0.4*size);
-			r[0] += ox;
-			r[1] += oy;
-			r[2] += oz;
-			defineVertex(r[0], r[1], r[2], 1.0, 0.0, 0.0);
+			for (j = 0; j<3; ++j) r[j] = (j == i ? 0.5*size*sign : 0.4*size);
+			defineVertex(r[0]+ox, r[1]+oy, r[2]+oz, 1.0, 0.0, 0.0);
 			r[(i+1)%3] = -r[(i+1)%3];
 			r[(i+2)%3] = -r[(i+2)%3];
-			defineVertex(r[0], r[1], r[2], 1.0, 0.0, 0.0);
+			defineVertex(r[0]+ox, r[1]+oy, r[2]+oz, 1.0, 0.0, 0.0);
 			r[(i+1)%3] = -r[(i+1)%3];
-			defineVertex(r[0], r[1], r[2], 1.0, 0.0, 0.0);
+			defineVertex(r[0]+ox, r[1]+oy, r[2]+oz, 1.0, 0.0, 0.0);
 			r[(i+1)%3] = -r[(i+1)%3];
 			r[(i+2)%3] = -r[(i+2)%3];
-			defineVertex(r[0], r[1], r[2], 1.0, 0.0, 0.0);
+			defineVertex(r[0]+ox, r[1]+oy, r[2]+oz, 1.0, 0.0, 0.0);
 		}
 	}
+
 }
 
 // Plot halo with specified radii

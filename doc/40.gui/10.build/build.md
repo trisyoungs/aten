@@ -42,7 +42,11 @@ Sketch individual atoms and bonds with the **Draw** tool. New atoms are created 
 
 Draw molecular fragments, and append molecular fragments to existing atoms. Long-pressing the **Fragment** button shows the fragment selection popup, from which the available drawing fragments can be browsed and one selected for drawing.
 
-In this mode a copy of the selected fragment is 'attached' to the mouse cursor and can be drawn in any desired position, but will snap to existing atoms that possess an available binding site (according to their current bond involvement). When snapped, holding **Shift** will replace the clicked atom rather than creating a new bond between it and the attachment point (TODO Check this!). **Ctrl** ??? Finally, **Alt** cycles over the possible attachment points on the fragment.
+In this mode a copy of the selected fragment is 'attached' to the mouse cursor and can be drawn in any desired position, but will snap to existing atoms that possess an available binding site (according to their current bond involvement). Left-clicking will draw a copy of the fragment in its current position, while left-click-dragging allows the copy to be rotated before it is placed - if snapped to an existing atom, the fragment is rotated about the new bond vector. If the atom under the mouse has no available building sites, a crossed-out cube will appear over it.
+
+Holding **Shift** will allow the new fragment to be attached over an existing bond, rather than creating a new one. This works even for atoms that have no available building sites, but do have existing bonds. While holding **Shift**, tapping **Ctrl** allows the bond that will be replaced on the target atom to be selected. Both the anchor atom on the fragment and the atom at the other end of the target bond are removed when the fragment is placed.
+
+Finally, since fragments may have many different attachment points, **Alt** cycles over the possible attachment points on the current fragment.
 
 To define new fragments, see the section on [defining fragments](/aten/docs/user/fragments).
 

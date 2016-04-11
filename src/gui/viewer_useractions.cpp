@@ -244,7 +244,7 @@ void Viewer::renderUserActions(Model* source)
 		// Draw on fragment (as long as mode is selected)
 		case (UserAction::DrawFragmentsAction):
 			if (!aten_->currentFragment()) break;
-			j = source->atomOnScreen(rMouseLast_.x, rMouseLast_.y);
+			j = source->atomOnScreen(rMouseLast_.x, contextHeight_ - rMouseLast_.y);
 			if ((clickedAtom != NULL) || (j != NULL))
 			{
 				// Atom is now fragment anchor point - make sure we select a non-null atom i or j

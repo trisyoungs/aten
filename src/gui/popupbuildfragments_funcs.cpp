@@ -34,6 +34,8 @@ BuildFragmentsPopup::BuildFragmentsPopup(AtenWindow& parent, TMenuButton* button
 	// Set up interface
 	ui.setupUi(this);
 
+	currentFragment_ = NULL;
+
 	// Add in fragments to the table and tree
 	callMethodSimple("updateFragments", "");
 }
@@ -67,6 +69,7 @@ bool BuildFragmentsPopup::callMethod(QString methodName, ReturnValue& rv)
 		ui.FragmentTable->clear();
 		ui.FragmentTable->setColumnCount(nPerRow);
 		ui.FragmentTable->setRowCount(1);
+		currentFragment_ = NULL;
 
 		// Go through all available fragment groups
 		for (FragmentGroup* fragGroup = parent_.aten().fragmentGroups(); fragGroup != NULL; fragGroup = fragGroup->next)
@@ -128,7 +131,10 @@ bool BuildFragmentsPopup::callMethod(QString methodName, ReturnValue& rv)
 				if (currentFragment_ == fragment) item->setSelected(true);
 			}
 		}
-		
+
+		// Set (potentially-new) fragment in master
+		parent_.aten().setCurrentFragment(currentFragment_);
+
 		// Resize columns and rows
 		for (int n=0; n<3; n++) ui.FragmentTree->resizeColumnToContents(n);
 		ui.FragmentTable->resizeRowsToContents();
