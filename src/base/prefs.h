@@ -29,6 +29,7 @@
 #include "base/choice.h"
 #include "base/namespace.h"
 #include <QDir>
+#include <QFont>
 
 ATEN_BEGIN_NAMESPACE
 
@@ -249,8 +250,10 @@ class Prefs
 	bool drawHydrogenBonds_;
 	// Radius of hydrogen bond dots
 	double hydrogenBondDotRadius_;
-	// Font filename
+	// Viewer font filename
 	QString viewerFontFileName_;
+	// Messages font
+	QFont messagesFont_;
 	// Whether to correct transparent grids
 	bool correctTransparentGrids_;
 	
@@ -299,6 +302,10 @@ class Prefs
 	void setViewerFontFileName(QString fileName);
 	// Return viewer font filename
 	QString viewerFontFileName();
+	// Set messages font filename
+	void setMessagesFont(QFont& font);
+	// Return messages font
+	QFont messagesFont();
 	// Set whether to correct grids for transparency artefacts
 	void setCorrectTransparentGrids(bool b);
 	// Return whether to correct grids for transparency artefacts

@@ -22,7 +22,6 @@ Add 'Reload' options to Grid context menu.
 Add context menu "Copy" and "Set" to TColourButtons.
 Add 'Relative' view control, alongside 'Free' and 'Locked' (Follow)?
 Add Prefs accessors for Correct and View Lock options (so they can be saved).
-Fragment builder is broken - not attaching to atoms correctly. Also, cycling over attachment points cycles over all atoms, not just XX. AND! What does SHIFT do?
 Miller selection.
 Intelligent Select: prepended '+' is interpreted as NETA.
 
@@ -60,7 +59,6 @@ Possible TODO
 =============
 Implement optional startup 'guide' or 'wizard' that will disable all controls on the GUI and explain what means what, highlighting them as appropriate.
 Add in calculation of quantities and graphing?
-Move Prefs from being a static global to a member of Aten?
 Reformulate Pattern::bondEnergy() and others into a separate class, since the Pattern class shouldn't really own them.
 Make Model::EnergyStore a private member with accessor?
 Add ObjectLists (when using CHECK)?

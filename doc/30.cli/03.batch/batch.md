@@ -14,7 +14,7 @@ header_class: alt
 
 Invoked by the [`--batch`](/aten/docs/cli/switches#batch) switch, this mode runs all commands provided on all models, once the last model has been loaded. The models are then saved in their original format to the same filename. Note that, if the an export filter does not exist for the original model file format, changes to that model will not be saved. It is advisable to work on a copy of the model files when using this command, or to use batch export mode to save to a different format in order to preserve the original files. The GUI is not automatically started in batch mode.
 
-For example, to transmute all iron atoms into cobalt for a series of xyz files named [name]complex_001.xyz[/name], [name]complex_002.xyz[/name] etc.
+For example, to transmute all iron atoms into cobalt for a series of xyz files named `complex_001.xyz`, `complex_002.xyz` etc.
 
 ```
 bob@pc:~> aten --batch -c 'select(Fe); transmute(Co);' complex_*.xyz
@@ -36,7 +36,7 @@ If specified in conjunction with the [`--batch`](/aten/docs/cli/switches#batch) 
 
 Invoked by providing the [`--batch`](/aten/docs/cli/switches#batch) and [`--export`](/aten/docs/cli/switches#export) switches together, batch export allows a series of commands to be run on a set of loaded models, the results of which are then saved in new files in the model format provided to the [`--export`](/aten/docs/cli/switches#export) switch.  The GUI is not automatically started in batch export mode.
 
-Let’s say that you have a directory full of xyz files that you wish to energy minimise with MOPAC2009 (see [a]External Programs - Mopac,extern-mopac[/a]), centre at zero, and then save as input to GAMESS-US. This can be achieved with the following command:
+Let’s say that you have a directory full of xyz files that you wish to energy minimise with MOPAC2009 (see [External Programs - Mopac](/aten/docs/external/mopac)), centre at zero, and then save as input to GAMESS-US. This can be achieved with the following command:
 
 ```
 bob@pc:~> aten --export gamusinp --batch –c 'mopacMinimise(); selectAll(); centre();' *.xyz
@@ -47,5 +47,4 @@ Various export options for the GAMESS-US filter (e.g. method type, basis set) ca
 ## Process Mode
 
 Similar to the [`--batch`](/aten/docs/cli/switches#batch) switch, in that all commands supplied with [`--command`](/aten/docs/cli/switches#command) are executed on each model, but in this case the results are <b>not</b> saved, and the GUI starts once processing is complete.
-
 

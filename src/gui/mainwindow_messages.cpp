@@ -67,7 +67,7 @@ AtenWindow::MessageDisplay AtenWindow::messageDisplay()
 void AtenWindow::updateMessagesWidgets()
 {
 	// Calculate current display height
-	int maxDisplayLines = ui.MainView->contextHeight() / ui.MainView->fontPixelHeight();
+	int maxDisplayLines = ui.MainView->contextHeight() / prefs.messagesFont().pixelSize();
 	int currentPosition = ui.MessagesScroll->sliderPosition();
 	ui.MessagesScroll->setMaximum( std::max(0, Messenger::nMessagesBuffered()-maxDisplayLines));
 }

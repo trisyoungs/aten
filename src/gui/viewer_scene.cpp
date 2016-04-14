@@ -108,9 +108,6 @@ void Viewer::setupGL()
 // Render messages
 void Viewer::renderMessages(QPainter& painter, bool fade)
 {
-	// Set polygon mode / style
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	glEnable(GL_LIGHTING);
 	// Grab message buffer
 	QList<Message>& messages = Messenger::messageBuffer();
 	int margin = 4;
@@ -289,8 +286,9 @@ void Viewer::paintGL()
 
 	atenWindow_->updateMessagesWidgets();
 
-	// Create a QPainter
+	// Create and setup a QPainter
 	QPainter painter(this);
+	painter.setFont(prefs.messagesFont());
 
 	// Store all GL state variables, since they will be modified by QPainter
 	glPushAttrib(GL_ALL_ATTRIB_BITS);

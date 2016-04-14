@@ -343,6 +343,8 @@ Prefs::Prefs()
 	drawHydrogenBonds_ = false;
 	hydrogenBondDotRadius_ = 0.075;
 	viewerFontFileName_ = "";
+	messagesFont_.setStyleHint(QFont::TypeWriter);
+	messagesFont_.setPixelSize(12);
 	correctTransparentGrids_ = false;
 
 	// External programs
@@ -438,8 +440,8 @@ double Prefs::styleRadius(Prefs::DrawStyle ds, int el) const
 }
 
 /*
-// Rendering - Style
-*/
+ * Rendering - Style
+ */
 
 // Sets the specified atom size to the given value
 void Prefs::setAtomStyleRadius(Prefs::DrawStyle ds, double radius)
@@ -1594,6 +1596,18 @@ void Prefs::setViewerFontFileName(QString fileName)
 QString Prefs::viewerFontFileName()
 {
 	return viewerFontFileName_;
+}
+
+// Set messages font filename
+void Prefs::setMessagesFont(QFont& font)
+{
+	messagesFont_ = font;
+}
+
+// Return messages font
+QFont Prefs::messagesFont()
+{
+	return messagesFont_;
 }
 
 // Set whether to correct grids for transparency artefacts

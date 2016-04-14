@@ -58,7 +58,7 @@ That's it!  You might want to **Replicate** the resulting cell to create a large
 newModel("alumina");
 cell(11.854, 2.904, 5.622, 90, 103.83, 90);
 
-## Add symmetry-unique atoms
+# Add symmetry-unique atoms
 newAtomFrac(Al,0.6595,0,0.3165);
 newAtomFrac(Al,0.9166,0,0.2073);
 newAtomFrac(O,0.8272,0,0.4272);
