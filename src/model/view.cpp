@@ -223,6 +223,7 @@ void Model::resetView(int contextWidth, int contextHeight)
 	target = (cell_.lengths() * 0.5) + extremes;
 
 	// Now, adjust camera matrix so that this atom is on-screen.
+	setModelViewMatrix(mview);
 	setupView(0, 0, contextWidth, contextHeight);
 
 	// Need to do a check for the viability of the canvas first...
@@ -232,6 +233,7 @@ void Model::resetView(int contextWidth, int contextHeight)
 		{
 			// Adjust z-translation by 1 Angstrom. Orthographic view needs the projection matrix to be recreated every time
 			mview[14] -= 1.0;
+			setModelViewMatrix(mview);
 			if (!prefs.hasPerspective()) setupView(0, 0, contextWidth, contextHeight);
 
 			// Project our local atom and grab the z screen coordinate
@@ -243,6 +245,9 @@ void Model::resetView(int contextWidth, int contextHeight)
 		} while (!done);
 	}
 	else mview.setColumn(3, 0.0, 0.0, -10.0, 1.0);
+
+	setModelViewMatrix(mview);
+
 	Messenger::exit("Model::resetView");
 }
 
