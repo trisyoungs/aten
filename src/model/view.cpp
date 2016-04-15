@@ -23,33 +23,30 @@
 
 ATEN_USING_NAMESPACE
 
-// Static members
-bool Model::useCommonModelViewMatrix_ = false;
-Matrix Model::commonModelViewMatrix_;
-
 // Calculate and return inverse of current view matrix
 Matrix& Model::modelViewMatrixInverse()
 {
 	// Grab current modelview matrix
 	modelViewMatrixInverse_ = (parent_ == NULL ? modelViewMatrix_ : parent_->modelViewMatrix());
+
 	// Calculate inverse
 	modelViewMatrixInverse_.invert();
 	return modelViewMatrixInverse_;
 }
 
 // Return the current modelview matrix (local, parent, or common)
-Matrix& Model::modelViewMatrix()
+const Matrix Model::modelViewMatrix()
 {
-	if (useCommonModelViewMatrix_) return commonModelViewMatrix_;
+	if (prefs.viewLock() == Prefs::FullLock) return prefs.commonViewMatrix();
 	else return (parent_ == NULL ? modelViewMatrix_ : parent_->modelViewMatrix());
 }
 
 // Set the current modelview matrix
-void Model::setModelViewMatrix(Matrix& rmat)
+void Model::setModelViewMatrix(Matrix matrix)
 {
-	if (useCommonModelViewMatrix_) commonModelViewMatrix_ = rmat;
-	else if (parent_ == NULL) modelViewMatrix_ = rmat;
-	else parent_->setModelViewMatrix(rmat);
+	if (prefs.viewLock() == Prefs::FullLock) prefs.setCommonViewMatrix(matrix);
+	else if (parent_ == NULL) modelViewMatrix_ = matrix;
+	else parent_->setModelViewMatrix(matrix);
 }
 
 // Return the viewportMatrix
@@ -96,14 +93,15 @@ void Model::axisRotateView(Vec3<double> vec, double angle)
 {
 	// Rotate the whole system by the amounts specified.
 	Messenger::enter("Model::axisRotateView");
-	Matrix newrotmat, oldrotmat;
 	if (parent_ == NULL)
 	{
+		Matrix newrotmat, oldrotmat = modelViewMatrix();
+
 		// Generate quaternion
 		newrotmat.createRotationAxis(vec.x, vec.y, vec.z, angle, true);
 
 		// Now, multiply our matrices together...
-		modelViewMatrix() = newrotmat * modelViewMatrix();
+		setModelViewMatrix(newrotmat * oldrotmat);
 	}
 	else parent_->axisRotateView(vec, angle);
 	Messenger::exit("Model::axisRotateView");
@@ -113,13 +111,13 @@ void Model::axisRotateView(Vec3<double> vec, double angle)
 void Model::setRotation(double rotx, double roty)
 {
 	Messenger::enter("Model::setRotation");
-	Matrix temp;
 	if (parent_ == NULL)
 	{
 		// Store old translation and scaling values
+		Matrix temp;
+		temp.createRotationXY(rotx, roty);
 		temp.copyTranslationAndScaling(modelViewMatrix());
-		modelViewMatrix().createRotationXY(rotx, roty);
-		modelViewMatrix().copyTranslationAndScaling(temp);
+		setModelViewMatrix(temp);
 	}
 	else parent_->setRotation(rotx, roty);
 	Messenger::exit("Model::setRotation");
@@ -131,18 +129,19 @@ void Model::rotateView(double dx, double dy)
 	// Rotate the whole system by the amounts specified.
 	Messenger::enter("Model::rotateView");
 	double rotx, roty;
-	Matrix newrotmat, oldrotmat;
 	if (parent_ == NULL)
 	{
+		Matrix newrotmat, oldrotmat = modelViewMatrix();
+
 		// Create rotation matrix
 		rotx = dy;
 		roty = dx;
 		newrotmat.createRotationXY(rotx, roty);
-		newrotmat.copyTranslationAndScaling(modelViewMatrix());
+		newrotmat.copyTranslationAndScaling(oldrotmat);
 
 		// Reset translation and scaling on original matrix, and multiply
-		modelViewMatrix().removeTranslationAndScaling();
-		modelViewMatrix() = newrotmat * modelViewMatrix();   // TEST Create preMultiply(Matrix&) method.
+		oldrotmat.removeTranslationAndScaling();
+		setModelViewMatrix(newrotmat * oldrotmat);   // TEST Create preMultiply(Matrix&) method.
 	}
 	else parent_->rotateView(dx, dy);
 	Messenger::exit("Model::rotateView");
@@ -153,15 +152,15 @@ void Model::zRotateView(double dz)
 {
 	// Rotate the whole system by the amounts specified.
 	Messenger::enter("Model::zRotateView");
-	Matrix newrotmat, oldrotmat;
 	if (parent_ == NULL)
 	{
+		Matrix newrotmat, oldrotmat = modelViewMatrix();
 		newrotmat.createRotationZ(dz);
-		newrotmat.copyTranslationAndScaling(modelViewMatrix());
+		newrotmat.copyTranslationAndScaling(oldrotmat);
 
 		// Reset translation and scaling on original matrix, and multiply
-		modelViewMatrix().removeTranslationAndScaling();
-		modelViewMatrix() = newrotmat * modelViewMatrix();
+		oldrotmat.removeTranslationAndScaling();
+		setModelViewMatrix(newrotmat * oldrotmat);
 	}
 	else parent_->zRotateView(dz);
 	Messenger::exit("Model::zRotateView");
@@ -174,9 +173,13 @@ void Model::adjustCamera(double dx, double dy, double dz)
 	Messenger::enter("Model::adjustCamera");
 	if (parent_ == NULL)
 	{
-		modelViewMatrix().adjustColumn(3, dx, -dy, dz, 0.0);
+		Matrix newmatrix = modelViewMatrix();
+		newmatrix.adjustColumn(3, dx, -dy, dz, 0.0);
+
 		// Never let camera z go below -1.0...
-		if (modelViewMatrix()[14] > -1.0) modelViewMatrix()[14] = -1.0;
+		if (newmatrix[14] > -1.0) newmatrix[14] = -1.0;
+
+		setModelViewMatrix(newmatrix);
 	}
 	else parent_->adjustCamera(dx, dy, dz);
 	Messenger::exit("Model::adjustCamera");
@@ -186,7 +189,8 @@ void Model::adjustCamera(double dx, double dy, double dz)
 void Model::adjustZoom(bool zoomin)
 {
 	Messenger::enter("Model::adjustZoom");
-	double dz = (parent_ == NULL ? -modelViewMatrix_[14] : -parent_->modelViewMatrix()[14]);
+
+	double dz = (parent_ == NULL ? -modelViewMatrix().element(14) : -parent_->modelViewMatrix().element(14));
 	dz *= prefs.zoomThrottle();
 	if (zoomin) dz = -dz;
 	adjustCamera(0.0,0.0,dz);
@@ -202,9 +206,10 @@ void Model::resetView(int contextWidth, int contextHeight)
 	Vec4<double> screenr;
 	bool done = false;
 	double rad;
-	Matrix& mview = modelViewMatrix();
+	Matrix mview = modelViewMatrix();
 	mview.setIdentity();
 	mview.setColumn(3,0.0,0.0,0.0,1.0);
+
 	// Fit model to screen
 	// Crude approach - find largest coordinate and zoom out so that {0,0,largest} is visible on screen
 	for (Atom* i = atoms_.first(); i != NULL; i = i->next)
@@ -406,20 +411,8 @@ Vec3<int> Model::repeatCellsNegative() const
 	return repeatCellsNegative_;
 }
 
-// Set common view matrix to that of this model
 void Model::setCommonViewMatrixFromLocal()
 {
-	commonModelViewMatrix_ = (parent_ == NULL ? modelViewMatrix_ : parent_->modelViewMatrix());
+	prefs.setCommonViewMatrix(parent_ == NULL ? modelViewMatrix_ : parent_->modelViewMatrix());
 }
 
-// Set whether to use same model view across all models
-void Model::setUseCommonModelViewMatrix(bool b)
-{
-	useCommonModelViewMatrix_ = b;
-}
-
-// Return whether to use same model view across all models
-bool Model::useCommonModelViewMatrix()
-{
-	return useCommonModelViewMatrix_;
-}

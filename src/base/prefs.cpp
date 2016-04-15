@@ -171,6 +171,19 @@ Prefs::HistoryType Prefs::historyType(QString s, bool reportError)
 	return ht;
 }
 
+// View Lock types
+const char* ViewLockKeywords[Prefs::nViewLockTypes] = { "None", "Full" };
+const char* Prefs::viewLock(ViewLock vl)
+{
+	return ViewLockKeywords[vl];
+}
+Prefs::ViewLock Prefs::viewLock(QString s, bool reportError)
+{
+	Prefs::ViewLock vl = (Prefs::ViewLock) enumSearch("view lock type", Prefs::nViewLockTypes, ViewLockKeywords, s);
+	if ((vl == Prefs::nViewLockTypes) && reportError) enumPrintValid(Prefs::nViewLockTypes, ViewLockKeywords);
+	return vl;
+}
+
 // Constructor
 Prefs::Prefs()
 {
@@ -938,6 +951,30 @@ double Prefs::zoomThrottle() const
 	return zoomThrottle_;
 }
 
+// Set view lock type
+void Prefs::setViewLock(ViewLock vl)
+{
+	viewLock_ = vl;
+}
+
+// Return view lock type
+Prefs::ViewLock Prefs::viewLock()
+{
+	return viewLock_;
+}
+
+// Set rotation matrix for common view types
+void Prefs::setCommonViewMatrix(Matrix mat)
+{
+	commonViewMatrix_ = mat;
+}
+
+// Return rotation matrix for common view types
+const Matrix& Prefs::commonViewMatrix()
+{
+	return commonViewMatrix_;
+}
+
 /*
  * File Preferences
  */
@@ -1598,14 +1635,14 @@ QString Prefs::viewerFontFileName()
 	return viewerFontFileName_;
 }
 
-// Set messages font filename
+// Set messages font
 void Prefs::setMessagesFont(QFont& font)
 {
 	messagesFont_ = font;
 }
 
 // Return messages font
-QFont Prefs::messagesFont()
+QFont& Prefs::messagesFont()
 {
 	return messagesFont_;
 }

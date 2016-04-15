@@ -67,6 +67,12 @@
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
+     <property name="minimumSize">
+      <size>
+       <width>25</width>
+       <height>25</height>
+      </size>
+     </property>
      <property name="currentIndex">
       <number>0</number>
      </property>
@@ -553,7 +559,7 @@
       </attribute>
       <layout class="QHBoxLayout" name="horizontalLayout_4">
        <item>
-        <widget class="QTabWidget" name="tabWidget">
+        <widget class="QTabWidget" name="ViewSubTabs">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
            <horstretch>0</horstretch>
@@ -561,7 +567,7 @@
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>0</number>
+          <number>4</number>
          </property>
          <widget class="QWidget" name="StyleSubTab">
           <attribute name="title">
@@ -1222,7 +1228,7 @@
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="QualitySubTab">
+         <widget class="QWidget" name="RenderingSubTab">
           <attribute name="title">
            <string>Rendering</string>
           </attribute>
@@ -1720,7 +1726,7 @@
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="tab_2">
+         <widget class="QWidget" name="QualitySubTab">
           <attribute name="title">
            <string>Quality</string>
           </attribute>
@@ -1862,7 +1868,7 @@
               <string>Primitive quality to use for saved images (or same as current primitive quality if disabled)</string>
              </property>
              <property name="title">
-              <string>Saved Bitmap Primitive Quality</string>
+              <string>Saved Bit&amp;map Primitive Quality</string>
              </property>
              <property name="checkable">
               <bool>true</bool>
@@ -1945,6 +1951,69 @@
               </size>
              </property>
             </spacer>
+           </item>
+          </layout>
+         </widget>
+         <widget class="QWidget" name="FontsTab">
+          <attribute name="title">
+           <string>Fonts</string>
+          </attribute>
+          <layout class="QGridLayout" name="gridLayout_6">
+           <item row="3" column="2">
+            <spacer name="verticalSpacer_6">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item row="0" column="0">
+            <widget class="QLabel" name="label_10">
+             <property name="text">
+              <string>Viewer Font</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1" colspan="2">
+            <widget class="QLineEdit" name="ViewerFontEdit"/>
+           </item>
+           <item row="0" column="3">
+            <widget class="QToolButton" name="ViewerFontButton">
+             <property name="minimumSize">
+              <size>
+               <width>25</width>
+               <height>25</height>
+              </size>
+             </property>
+             <property name="text">
+              <string>...</string>
+             </property>
+             <property name="icon">
+              <iconset resource="icons.qrc">
+               <normaloff>:/file/icons/file_open.svg</normaloff>:/file/icons/file_open.svg</iconset>
+             </property>
+             <property name="iconSize">
+              <size>
+               <width>16</width>
+               <height>16</height>
+              </size>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="1">
+            <widget class="QSpinBox" name="MessagesSizeSpin"/>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="label_11">
+             <property name="text">
+              <string>Messages Font Size</string>
+             </property>
+            </widget>
            </item>
           </layout>
          </widget>
@@ -2386,7 +2455,7 @@
             </property>
             <item>
              <layout class="QGridLayout" name="gridLayout_7">
-              <item row="0" column="0">
+              <item row="1" column="0">
                <widget class="QLabel" name="ZoomThlabel">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
@@ -2399,7 +2468,7 @@
                 </property>
                </widget>
               </item>
-              <item row="0" column="1">
+              <item row="1" column="1">
                <widget class="QDoubleSpinBox" name="ZoomThrottleSpin">
                 <property name="sizePolicy">
                  <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -2409,7 +2478,7 @@
                 </property>
                </widget>
               </item>
-              <item row="1" column="1">
+              <item row="2" column="1">
                <widget class="QSpinBox" name="MouseMoveFilterSpin">
                 <property name="toolTip">
                  <string>Sets the minimum time limit between redraws of the screen when manipulating with the mouse</string>
@@ -2425,12 +2494,22 @@
                 </property>
                </widget>
               </item>
-              <item row="1" column="0">
+              <item row="2" column="0">
                <widget class="QLabel" name="label_59">
                 <property name="text">
                  <string>Mouse Move FIltering Level</string>
                 </property>
                </widget>
+              </item>
+              <item row="0" column="0">
+               <widget class="QLabel" name="label_60">
+                <property name="text">
+                 <string>View Lock</string>
+                </property>
+               </widget>
+              </item>
+              <item row="0" column="1">
+               <widget class="QComboBox" name="ViewLockCombo"/>
               </item>
              </layout>
             </item>
@@ -3123,6 +3202,12 @@
           </item>
           <item>
            <widget class="QToolButton" name="TemporaryDirButton">
+            <property name="minimumSize">
+             <size>
+              <width>25</width>
+              <height>25</height>
+             </size>
+            </property>
             <property name="text">
              <string>...</string>
             </property>
@@ -3167,6 +3252,12 @@
           </item>
           <item>
            <widget class="QToolButton" name="MopacExecutableButton">
+            <property name="minimumSize">
+             <size>
+              <width>25</width>
+              <height>25</height>
+             </size>
+            </property>
             <property name="text">
              <string>...</string>
             </property>

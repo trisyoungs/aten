@@ -128,6 +128,7 @@ AtenPrefs::AtenPrefs(AtenWindow& parent) : QDialog(&parent), parent_(parent)
 	ui.ShiftButtonCombo->setCurrentIndex(prefs.keyAction(Prefs::ShiftKey));
 	ui.CtrlButtonCombo->setCurrentIndex(prefs.keyAction(Prefs::CtrlKey));
 	ui.AltButtonCombo->setCurrentIndex(prefs.keyAction(Prefs::AltKey));
+	ui.ViewLockCombo->setCurrentIndex(prefs.viewLock());
 	ui.ZoomThrottleSpin->setValue(prefs.zoomThrottle());
 	ui.MouseMoveFilterSpin->setValue(prefs.mouseMoveFilter());
 
@@ -562,6 +563,33 @@ void AtenPrefs::on_ShininessSpin_valueChanged(int value)
 }
 
 /*
+ * Fonts page
+ */
+
+void AtenPrefs::on_ViewerFontEdit_textEdited(const QString &text)
+{
+	// TODO XXX
+	printf("Updating of viewer font not yet implemented.\n");
+}
+
+void AtenPrefs::on_ViewerFontButton_clicked(bool checked)
+{
+	// Call a fileselector....
+	QString filename = QFileDialog::getOpenFileName(this, "Select viewer font file", prefs.viewerFontFileName(), "TrueType Fonts (*.ttf);; All Files (*)");
+	if (!filename.isEmpty())
+	{
+		prefs.setViewerFontFileName( qPrintable(filename) );
+		ui.ViewerFontEdit->setText(filename);
+	}
+}
+
+void AtenPrefs::on_MessagesSizeSpin_valueChanged(int value)
+{
+	prefs.messagesFont().setPointSize(value);
+	parent_.updateWidgets(AtenWindow::MainViewTarget);
+}
+
+/*
  * Interaction Page
  */
 
@@ -598,6 +626,11 @@ void AtenPrefs::on_CtrlButtonCombo_currentIndexChanged(int ka)
 void AtenPrefs::on_AltButtonCombo_currentIndexChanged(int ka)
 {
 	prefs.setKeyAction(Prefs::AltKey, (Prefs::KeyAction) ka);
+}
+
+void AtenPrefs::on_ViewLockCombo_currentIndexChanged(int vl)
+{
+	prefs.setViewLock( (Prefs::ViewLock) vl);
 }
 
 void AtenPrefs::on_ZoomThrottleSpin_valueChanged(double value)

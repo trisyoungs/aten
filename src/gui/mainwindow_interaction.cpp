@@ -277,7 +277,7 @@ void AtenWindow::endMode(Prefs::MouseButton button, bool* keyModifiers)
 		case (UserAction::RotateZAction):
 			if (prefs.correctTransparentGrids())
 			{
-				if (Model::useCommonModelViewMatrix()) 
+				if (prefs.viewLock() == Prefs::FullLock)
 				{
 					for (Model* m = aten_.models(); m != NULL; m = m->next) m->updateGridAxisOrdering();
 				}

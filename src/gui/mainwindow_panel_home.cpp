@@ -72,7 +72,7 @@ void AtenWindow::updateHomePanel(Model* sourceModel)
 	ui.HomeAppearancePerspectiveButton->setChecked(prefs.hasPerspective());
 	ui.HomeViewHBondsButton->setChecked(prefs.drawHydrogenBonds());
 	ui.HomeViewCorrectGridsButton->setChecked(prefs.correctTransparentGrids());
-	ui.HomeViewLockButton->setChecked(Model::useCommonModelViewMatrix());
+	ui.HomeViewLockButton->setChecked(prefs.viewLock() == Prefs::FullLock);
 	TMenuButton::setGroupButtonChecked("ViewStyles", Prefs::drawStyle(prefs.renderStyle()));
 	TMenuButton::setGroupButtonChecked("ColourSchemes", Prefs::colouringScheme(prefs.colourScheme()));
 
@@ -323,7 +323,7 @@ void AtenWindow::on_HomeViewLockButton_clicked(bool checked)
 	if (!currentModel) return;
 	currentModel->setCommonViewMatrixFromLocal();
 
-	Model::setUseCommonModelViewMatrix(checked);
+	prefs.setViewLock(checked ? Prefs::FullLock : Prefs::NoLock);
 
 	updateWidgets(AtenWindow::MainViewTarget);
 }

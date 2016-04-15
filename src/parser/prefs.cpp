@@ -95,6 +95,7 @@ Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
 	{ "maxRings",			VTypes::IntegerData,		0, false },
 	{ "maxRingsize",		VTypes::IntegerData,		0, false },
 	{ "maxUndo",			VTypes::IntegerData,		0, false },
+	{ "messagesFontSize",		VTypes::IntegerData,		0, false },
 	{ "mopacExe",			VTypes::StringData,		0, false },
 	{ "mouseAction",		VTypes::StringData,		Prefs::nMouseButtons, false },
 	{ "mouseMoveFilter",		VTypes::IntegerData,		0, false },
@@ -120,6 +121,7 @@ Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
 	{ "tempDir",			VTypes::StringData,		0, false },
 	{ "vdwCutoff",			VTypes::DoubleData,		0, false },
 	{ "vibrationArrowColour",	VTypes::DoubleData,		4, false },
+	{ "viewerFontFilename",		VTypes::StringData,		0, false },
 	{ "viewRotationGlobe",		VTypes::IntegerData,		0, false },
 	{ "zMap",			VTypes::StringData,		0, false },
 	{ "zoomThrottle",		VTypes::DoubleData,		0, false }
@@ -379,6 +381,9 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArray
 		case (PreferencesVariable::MaxUndo):
 			rv.set( ptr->maxUndoLevels() );
 			break;
+		case (PreferencesVariable::MessagesFontSize):
+			rv.set( ptr->messagesFont().pixelSize() );
+			break;
 		case (PreferencesVariable::MopacExe):
 			rv.set( ptr->mopacExe() );
 			break;
@@ -462,6 +467,9 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArray
 			if (hasArrayIndex) rv.set( ptr->colour(Prefs::VibrationArrowColour)[arrayIndex-1] );
 			else rv.setArray( VTypes::DoubleData, ptr->colour(Prefs::VibrationArrowColour), 4);
 			break;
+		case (PreferencesVariable::ViewerFontFileName):
+			rv.set( ptr->viewerFontFileName() );
+			break;
 		case (PreferencesVariable::ViewRotationGlobe):
 			rv.set( ptr->viewRotationGlobe() );
 			break;
@@ -517,6 +525,7 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue&
 	Prefs::KeyAction ka;
 	Prefs::MouseAction ma;
 	Prefs::DrawStyle ds;
+	Prefs::ViewLock vl;
 	ElementMap::ZMapType zm;
 	if (result) switch (acc)
 	{
@@ -715,6 +724,9 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue&
 		case (PreferencesVariable::MaxUndo):
 			ptr->setMaxUndoLevels( newValue.asInteger(result) );
 			break;
+		case (PreferencesVariable::MessagesFontSize):
+			ptr->messagesFont().setPixelSize( newValue.asInteger(result) );
+			break;
 		case (PreferencesVariable::MopacExe):
 			ptr->setMopacExe( newValue.asString(result) );
 			break;
@@ -832,6 +844,14 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue&
 			else if (newValue.arraySize() != -1) for (n=0; n<newValue.arraySize(); ++n) ptr->setColour(Prefs::VibrationArrowColour, n, newValue.asDouble(n, result));
 			else if (hasArrayIndex) ptr->setColour(Prefs::VibrationArrowColour, arrayIndex-1, newValue.asDouble(result));
 			else for (n=0; n<4; ++n) ptr->setColour(Prefs::VibrationArrowColour, n, newValue.asDouble(result));
+			break;
+		case (PreferencesVariable::ViewLock):
+			vl = Prefs::viewLock( newValue.asString(result), true );
+			if (vl != Prefs::nViewLockTypes) ptr->setViewLock(vl);
+			else result = false;
+			break;
+		case (PreferencesVariable::ViewerFontFileName):
+			ptr->setViewerFontFileName( newValue.asString(result) );
 			break;
 		case (PreferencesVariable::ViewRotationGlobe):
 			ptr->setViewRotationGlobe( newValue.asBool() );

@@ -189,11 +189,16 @@ void Matrix::zero()
 	matrix_[15] = 0.0;
 }
 
-
 // Return matrix array
 double* Matrix::matrix()
 {
 	return matrix_;
+}
+
+// Return single element
+double Matrix::element(int index) const
+{
+	return matrix_[index];
 }
 
 // Return transpose of current matrix
@@ -938,7 +943,7 @@ void Matrix::removeTranslationAndScaling()
 }
 
 // Copy translation and scaling parts from specified matrix
-void Matrix::copyTranslationAndScaling(Matrix& source)
+void Matrix::copyTranslationAndScaling(Matrix source)
 {
 	matrix_[3] = source.matrix_[3];
 	matrix_[7] = source.matrix_[7];

@@ -107,6 +107,7 @@ class AtenPrefs : public QDialog
 	void on_ShiftButtonCombo_currentIndexChanged(int ka);
 	void on_CtrlButtonCombo_currentIndexChanged(int ka);
 	void on_AltButtonCombo_currentIndexChanged(int ka);
+	void on_ViewLockCombo_currentIndexChanged(int vl);
 	void on_ZoomThrottleSpin_valueChanged(double value);
 	void on_MouseMoveFilterSpin_valueChanged(int value);
 
@@ -163,6 +164,10 @@ class AtenPrefs : public QDialog
 	void spotlightDiffuseChanged();
 	void spotlightSpecularChanged();
 	void on_ShininessSpin_valueChanged(int value);
+	// Fonts page
+	void on_ViewerFontEdit_textEdited(const QString &text);
+	void on_ViewerFontButton_clicked(bool checked);
+	void on_MessagesSizeSpin_valueChanged(int value);
 
 
 	/*

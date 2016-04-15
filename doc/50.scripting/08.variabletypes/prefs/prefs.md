@@ -55,6 +55,7 @@ The [**Prefs**](/aten/docs/scripting/variabletypes/prefs) type contains all pre
 | maxRings | **int** | • | Maximum allowable number of rings to detect within any single pattern |
 | maxRingSize | **int** | • | Maximum size of ring to detect when atom typing |
 | maxUndo | **int** | • | Maximum number of undo levels remembered for each model (-1 = unlimited) |
+| messagesFontSize | **int** | • | Size, in pixels of the font used for messages |
 | mopacExe | **string** | • | Location of MOPAC executable (including full path) |
 | mouseAction | _string_[4] | • | Current actions of the Left, Middle, Right, and Wheel mouse buttons |
 | mouseMoveFilter | **int** | • | Sets the degree to which mouse move events are filtered, with 1 being no filtering. Use this to reduce update lag on sluggish systems. |

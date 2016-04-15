@@ -88,6 +88,10 @@ class Prefs
 	enum HistoryType { CommandHistory, ScriptHistory, SelectHistory, nHistoryTypes };
 	static const char* historyType(HistoryType ht);
 	static HistoryType historyType(QString s, bool reportError = false);
+	// View Lock types
+	enum ViewLock { NoLock, FullLock, nViewLockTypes };
+	static const char* viewLock(ViewLock vl);
+	static ViewLock viewLock(QString s, bool reportError = false);
 	
 	public:
 	// Constructor
@@ -302,10 +306,10 @@ class Prefs
 	void setViewerFontFileName(QString fileName);
 	// Return viewer font filename
 	QString viewerFontFileName();
-	// Set messages font filename
+	// Set messages font
 	void setMessagesFont(QFont& font);
 	// Return messages font
-	QFont messagesFont();
+	QFont& messagesFont();
 	// Set whether to correct grids for transparency artefacts
 	void setCorrectTransparentGrids(bool b);
 	// Return whether to correct grids for transparency artefacts
@@ -536,6 +540,10 @@ class Prefs
 	QString keyActionTexts_[Prefs::nModifierKeys];
 	// Zoom 'throttle'
 	double zoomThrottle_;
+	// View lock type
+	ViewLock viewLock_;
+	// Rotation matrix for common view types
+	Matrix commonViewMatrix_;
 
 	public:
 	// Sets the action for the specified mouse button
@@ -554,8 +562,16 @@ class Prefs
 	void setZoomThrottle(double throtvalue);
 	// Returns the zoom throttle
 	double zoomThrottle() const;
+	// Set view lock type
+	void setViewLock(ViewLock vl);
+	// Return view lock type
+	ViewLock viewLock();
+	// Set rotation matrix for common view types
+	void setCommonViewMatrix(Matrix mat);
+	// Return rotation matrix for common view types
+	const Matrix& commonViewMatrix();
 
-
+	
 	/*
 	 * General Program / Method Preferences
 	 */

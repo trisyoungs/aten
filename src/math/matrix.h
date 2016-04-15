@@ -72,6 +72,8 @@ class Matrix
 	void print() const;
 	// Set the zero matrix
 	void zero();
+	// Return single element
+	double element(int index) const;
 	// Return matrix array
 	double* matrix();
 	// Return transpose of current matrix
@@ -213,7 +215,7 @@ class Matrix
 	// Remove translation and scaling parts, leaving rotation only
 	void removeTranslationAndScaling();
 	// Copy translation and scaling parts from specified matrix
-	void copyTranslationAndScaling(Matrix& source);
+	void copyTranslationAndScaling(Matrix source);
 };
 
 ATEN_END_NAMESPACE

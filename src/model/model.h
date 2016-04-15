@@ -470,10 +470,6 @@ class Model : public ListItem<Model>
 	Vec3<int> repeatCellsPositive_;
 	// Repeat cells to draw in negative xyz directions
 	Vec3<int> repeatCellsNegative_;
-	// Whether to use same model view across all models
-	static bool useCommonModelViewMatrix_;
-	// Common modelview matrix for all models
-	static Matrix commonModelViewMatrix_;
 
 	private:
 	// Calculate and return inverse of current view matrix
@@ -481,11 +477,11 @@ class Model : public ListItem<Model>
 
 	public:
 	// Return current view matrix (local, parent, or common)
-	Matrix& modelViewMatrix();
+	const Matrix modelViewMatrix();
 	// Set the current modelview matrix
-	void setModelViewMatrix(Matrix& mvmat);
+	void setModelViewMatrix(Matrix matrix);
 	// Return the viewportMatrix
-	GLint *viewportMatrix();
+	GLint* viewportMatrix();
 	// Return current projection matrix
 	Matrix& modelProjectionMatrix();
 	// Set view to be along the specified cartesian axis
@@ -522,10 +518,6 @@ class Model : public ListItem<Model>
 	Vec3<int> repeatCellsNegative() const;
 	// Set common view matrix to that of this model
 	void setCommonViewMatrixFromLocal();
-	// Set whether to use same model view across all models
-	static void setUseCommonModelViewMatrix(bool b);
-	// Return whether to use same model view across all models
-	static bool useCommonModelViewMatrix();
 
 
 	/*

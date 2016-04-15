@@ -19,8 +19,7 @@ Selecting and then deselecting large numbers of atoms causes rendering artefacts
 Add specific line primitive class that allows chunking (for speedup of stick rendering, because otherwise an enormous array is continually deleted'd/new'd).
 Add 'Reload' options to Grid context menu.
 Add context menu "Copy" and "Set" to TColourButtons.
-Add 'Relative' view control, alongside 'Free' and 'Locked' (Follow)?
-Add Prefs accessors for Correct and View Lock options (so they can be saved).
+Add 'Relative' view lock option, alongside 'None' and 'Lock' (Follow)?
 Miller selection.
 Intelligent Select: prepended '+' is interpreted as NETA.
 
