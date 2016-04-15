@@ -122,7 +122,7 @@ void ColourPopup::on_RedSpin_valueChanged(int value)
 	newColour.setRgb(value, ui.GreenSlider->value(), ui.BlueSlider->value(), ui.AlphaSlider->value());
 	setCurrentColour(newColour);
 
-	changed();
+	popupChanged();
 }
 
 void ColourPopup::on_GreenSlider_valueChanged(int value)
@@ -133,7 +133,7 @@ void ColourPopup::on_GreenSlider_valueChanged(int value)
 	newColour.setRgb(ui.RedSlider->value(), value, ui.BlueSlider->value(), ui.AlphaSlider->value());
 	setCurrentColour(newColour);
 
-	changed();
+	popupChanged();
 }
 
 void ColourPopup::on_GreenSpin_valueChanged(int value)
@@ -144,7 +144,7 @@ void ColourPopup::on_GreenSpin_valueChanged(int value)
 	newColour.setRgb(ui.RedSlider->value(), value, ui.BlueSlider->value(), ui.AlphaSlider->value());
 	setCurrentColour(newColour);
 
-	changed();
+	popupChanged();
 }
 
 void ColourPopup::on_BlueSlider_valueChanged(int value)
@@ -155,7 +155,7 @@ void ColourPopup::on_BlueSlider_valueChanged(int value)
 	newColour.setRgb(ui.RedSlider->value(), ui.GreenSlider->value(), value, ui.AlphaSlider->value());
 	setCurrentColour(newColour);
 
-	changed();
+	popupChanged();
 }
 
 void ColourPopup::on_BlueSpin_valueChanged(int value)
@@ -166,7 +166,7 @@ void ColourPopup::on_BlueSpin_valueChanged(int value)
 	newColour.setRgb(ui.RedSlider->value(), ui.GreenSlider->value(), value, ui.AlphaSlider->value());
 	setCurrentColour(newColour);
 
-	changed();
+	popupChanged();
 }
 
 void ColourPopup::on_HueSlider_valueChanged(int value)
@@ -177,7 +177,7 @@ void ColourPopup::on_HueSlider_valueChanged(int value)
 	newColour.setHsv(value, ui.SaturationSlider->value(), ui.ValueSlider->value(), ui.AlphaSlider->value());
 	setCurrentColour(newColour);
 
-	changed();
+	popupChanged();
 }
 
 void ColourPopup::on_HueSpin_valueChanged(int value)
@@ -188,7 +188,7 @@ void ColourPopup::on_HueSpin_valueChanged(int value)
 	newColour.setHsv(value, ui.SaturationSlider->value(), ui.ValueSlider->value(), ui.AlphaSlider->value());
 	setCurrentColour(newColour);
 
-	changed();
+	popupChanged();
 }
 
 void ColourPopup::on_SaturationSlider_valueChanged(int value)
@@ -199,7 +199,7 @@ void ColourPopup::on_SaturationSlider_valueChanged(int value)
 	newColour.setHsv(ui.HueSlider->value(), value, ui.ValueSlider->value(), ui.AlphaSlider->value());
 	setCurrentColour(newColour);
 
-	changed();
+	popupChanged();
 }
 
 void ColourPopup::on_SaturationSpin_valueChanged(int value)
@@ -210,7 +210,7 @@ void ColourPopup::on_SaturationSpin_valueChanged(int value)
 	newColour.setHsv(ui.HueSlider->value(), value, ui.ValueSlider->value(), ui.AlphaSlider->value());
 	setCurrentColour(newColour);
 
-	changed();
+	popupChanged();
 }
 
 void ColourPopup::on_ValueSlider_valueChanged(int value)
@@ -221,7 +221,7 @@ void ColourPopup::on_ValueSlider_valueChanged(int value)
 	newColour.setHsv(ui.HueSlider->value(), ui.SaturationSlider->value(), value, ui.AlphaSlider->value());
 	setCurrentColour(newColour);
 
-	changed();
+	popupChanged();
 }
 
 void ColourPopup::on_ValueSpin_valueChanged(int value)
@@ -232,7 +232,7 @@ void ColourPopup::on_ValueSpin_valueChanged(int value)
 	newColour.setHsv(ui.HueSlider->value(), ui.SaturationSlider->value(), value, ui.AlphaSlider->value());
 	setCurrentColour(newColour);
 
-	changed();
+	popupChanged();
 }
 
 void ColourPopup::on_AlphaSlider_valueChanged(int value)
@@ -243,7 +243,7 @@ void ColourPopup::on_AlphaSlider_valueChanged(int value)
 	newColour.setRgb(ui.RedSlider->value(), ui.GreenSlider->value(), ui.BlueSlider->value(), value);
 	setCurrentColour(newColour);
 
-	changed();
+	popupChanged();
 }
 
 void ColourPopup::on_AlphaSpin_valueChanged(int value)
@@ -254,7 +254,7 @@ void ColourPopup::on_AlphaSpin_valueChanged(int value)
 	newColour.setRgb(ui.RedSlider->value(), ui.GreenSlider->value(), ui.BlueSlider->value(), value);
 	setCurrentColour(newColour);
 
-	changed();
+	popupChanged();
 }
 
 void ColourPopup::on_Wheel_colourChanged(const QColor& colour)
@@ -265,7 +265,7 @@ void ColourPopup::on_Wheel_colourChanged(const QColor& colour)
 
 	updateParentButtonIcon();
 
-	changed();
+	popupChanged();
 }
 
 /*

@@ -10830,6 +10830,64 @@
          </widget>
         </item>
         <item>
+         <widget class="QPushButton" name="MessagesFontIncreaseButton">
+          <property name="maximumSize">
+           <size>
+            <width>16</width>
+            <height>24</height>
+           </size>
+          </property>
+          <property name="toolTip">
+           <string>Clear message buffer</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="icon">
+           <iconset resource="icons.qrc">
+            <normaloff>:/basic/icons/basic_plus.svg</normaloff>:/basic/icons/basic_plus.svg</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>10</width>
+            <height>10</height>
+           </size>
+          </property>
+          <property name="shortcut">
+           <string>Ctrl++</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="MessagesFontDecreaseButton">
+          <property name="maximumSize">
+           <size>
+            <width>16</width>
+            <height>24</height>
+           </size>
+          </property>
+          <property name="toolTip">
+           <string>Clear message buffer</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="icon">
+           <iconset resource="icons.qrc">
+            <normaloff>:/basic/icons/basic_minus.svg</normaloff>:/basic/icons/basic_minus.svg</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>10</width>
+            <height>10</height>
+           </size>
+          </property>
+          <property name="shortcut">
+           <string>Ctrl+-</string>
+          </property>
+         </widget>
+        </item>
+        <item>
          <widget class="QScrollBar" name="MessagesScroll">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Fixed" vsizetype="Expanding">

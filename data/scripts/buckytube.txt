@@ -28,7 +28,7 @@ int loop, benz;
 Atom hAtom;
 
 // Calculate rotation increment around circumference
-double dz = 360.0/(nbenz*2.0)
+double dz = 360.0/(nbenz*2.0);
 
 # Create / get target model
 Model targetModel;
@@ -46,7 +46,7 @@ for (loop=0; loop <= nstacks; ++loop)
 	for (benz=0; benz<nbenz; ++benz)
 	{
 		# If at beginning of tube, draw terminating H
-		if ((loop == 0) || (loop == nstacks))
+		if (loop == 0)
 		{
 			targetModel.movePen(0, 0, -1);
 			targetModel.select(targetModel.newAtom(H));

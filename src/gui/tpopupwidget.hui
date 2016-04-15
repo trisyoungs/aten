@@ -60,7 +60,7 @@ class TPopupWidget : public QWidget
 	// Local function called when the widget should be closed after a button has been selceted
 	void done(bool setParentButtonDown = false, UserAction::Action setActionToEnable = UserAction::NoAction);
 	// Notify parent button that one of our widgets has changed
-	void changed(int data = 0);
+	void popupChanged(int data = 0);
 
 	public:
 	// Show popup, updating any controls as necessary beforehand

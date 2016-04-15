@@ -233,14 +233,14 @@ bool AtenWindow::exportFilm()
 
 			// Construct arguments stringlist, replacing any strings that we need to
 			QString arguments = command->arguments();
-			arguments.replace("FRAMESPERSECOND", QString::number(fps));
-			arguments.replace("FRAMESFILE", framesFile);
-			arguments.replace("FRAMEBASENAME", imageBasename);
-			arguments.replace("OUTPUTFILE", outputFile);
-			arguments.replace("FRAMEFORMAT", imageExtension);
-			arguments.replace("FRAMEWIDTH", QString::number(imageWidth));
-			arguments.replace("FRAMEHEIGHT", QString::number(imageHeight));
-			arguments.replace("FRAMESIZE", QString("%1x%2").arg(imageWidth).arg(imageHeight));
+			arguments.replace("@FPS@", QString::number(fps));
+			arguments.replace("@FRAMESFILE@", framesFile);
+			arguments.replace("@FRAMEBASENAME@", imageBasename);
+			arguments.replace("@OUTPUTFILE@", outputFile);
+			arguments.replace("@FRAMEFORMAT@", imageExtension);
+			arguments.replace("@FRAMEWIDTH@", QString::number(imageWidth));
+			arguments.replace("@FRAMEHEIGHT@", QString::number(imageHeight));
+			arguments.replace("@FRAMESIZE@", QString("%1x%2").arg(imageWidth).arg(imageHeight));
 
 			// Print intended comand to execute
 			Messenger::print(QString("Command to execute is: %1 %2").arg(executable, arguments));

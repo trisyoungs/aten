@@ -561,7 +561,7 @@
           </sizepolicy>
          </property>
          <property name="currentIndex">
-          <number>1</number>
+          <number>0</number>
          </property>
          <widget class="QWidget" name="StyleSubTab">
           <attribute name="title">
@@ -3132,8 +3132,8 @@
             </property>
             <property name="iconSize">
              <size>
-              <width>20</width>
-              <height>20</height>
+              <width>16</width>
+              <height>16</height>
              </size>
             </property>
            </widget>
@@ -3176,8 +3176,8 @@
             </property>
             <property name="iconSize">
              <size>
-              <width>20</width>
-              <height>20</height>
+              <width>16</width>
+              <height>16</height>
              </size>
             </property>
            </widget>

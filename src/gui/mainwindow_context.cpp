@@ -19,9 +19,9 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <QtWidgets/QColorDialog>
 #include "main/aten.h"
 #include "gui/mainwindow.h"
+#include "gui/popupcolour.h"
 #include "model/model.h"
 #include "parser/commandnode.h"
 
@@ -67,7 +67,8 @@ void AtenWindow::createContextMenu()
 
 	// Appearance
 	contextMenu_.addSeparator();
-	action = contextMenu_.addAction("Set Colour...");
+// 	menu = contextMenu_.addMenu("Set Colour...");
+// 	menu->addAction(new ColourPopup(*this, NULL));
 // 	connect(action, SIGNAL(triggered(bool)), ui.SelectionLabelClearButton, SLOT(click()));
 	action = contextMenu_.addAction("Reset Colour to Element");
 	connect(action, SIGNAL(triggered(bool)), ui.SelectionAppearanceResetToElementButton, SLOT(click()));

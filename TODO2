@@ -7,7 +7,6 @@ Rename commands for consistency - e.g. newFF to newForcefield?
 Ato export format is incorrect if nrestraints == 0 (i.e. for single atoms) since newline is not printed.
 DL_POLY trajectory cannot be properly loaded without a model containing the correct atoms - add the ability to create a local, temporary model in the filter, and store atom information in this in the readHeader() function. Then could update modelTemplate to take a model pointer as an optional argument. Does this mean we should rewrite the language to properly use pointer specifications?
 Trajectory handling:
-o Change of colour happens only in the current frame??
 o Inherit generates a crash when at first frame??
 Image saving:
 o Continuous image saving - function key to save image under a set-filename, incrementing a number suffix each time.
@@ -67,7 +66,8 @@ Remove global MC, CG, SD declarations, and put them in Aten?
 
 Manual TODO
 ===========
-More examples (e.g. slab generation)
+Examples: Partitioning (need fancy function to encapsulate), advanced selection (caffeine nitrogens, transmution etc), chloroform glyph triangles, CG particles.
+Sections: ExportFilm (GUI)
 TestSelect command.
 Setting of filter options when using --batch CLI mode (in 03.cli/batch).
 Add on 'aten' suffix to code fences (```).

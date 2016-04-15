@@ -34,13 +34,13 @@ After clicking the **Minimise** button on the [**Forcefields Panel**](/aten/docs
 
 ## Create a Condensed Phase
 
-Now that we have a good source model for the [Disorder Builder](/aten/docs/gui/disorder), it's time to run it!  On the [**Tools Panel**]/aten/docs/gui/tools) click the **Create** button in the **Disorder** group to run the wizard.
+Now that we have a good source model for the [Disorder Builder](/aten/docs/gui/disorder), it's time to run it!  On the [**Tools Panel**](/aten/docs/gui/tools) click the **Create** button in the **Disorder** group to run the wizard.
 
 The first step is to choose the kind of target model - there are several options for this, but in the present case we will choose the last option (**Create New Model and Generate Cell**). This allows us to define the basic shape of the unit cell, but leave it up to **Aten** to calculate the final volume based on what we tell it to put in the cell. On step two of the wizard we can define the relative cell lengths and angles - the default is a cubic cell (relative lengths all set to 1.0), but you may change any of these values if you wish. For this example I have lenghthened the cell along the cell's _b_ direction (relative length of 2.0) and changed the &beta; angle to 110.0&deg;.
 
 Step three is the selection of a partitioning scheme for the unit cell, which allows us to add molecules into different regions of space (see the [partitions example](/aten/docs/examples/partitions)). However, since we have chosen the flexible cell option, the only choice available to us is the simplest case where the only available volume is that of the unit cell itself. Choose it and click **Next**.
 
-Step four allows us to choose the models that we will add into the unit cell - again, there is only one choice (the benzene molecule we created in the first stage of this example) so select it and clidk **Next**.
+Step four allows us to choose the models that we will add into the unit cell - again, there is only one choice (the benzene molecule we created in the first stage of this example) so select it and click **Next**.
 
 Finally, in step five we can define 'how much' of each molecule we have selected we want in the cell. Our choice of flexible cell again limits our options here to one choice of insertion 'policy' which requires both the number of molecules and the desired condensed phase density of those molecules to be defined (without both, the total volume of the unit cell can't be determined). Set the number of molecules to some number (perhaps 100 or more) and the density to 0.876 g/cm3, then click the **Finish** button. Et voila - one disordered system.
 

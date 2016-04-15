@@ -54,7 +54,7 @@ void TPopupWidget::done(bool setParentButtonDown, UserAction::Action userActionT
 }
 
 // Notify parent button that one of our widgets has changed
-void TPopupWidget::changed(int data)
+void TPopupWidget::popupChanged(int data)
 {
 	if (parentMenuButton_) parentMenuButton_->popupWidgetChanged(data);
 }

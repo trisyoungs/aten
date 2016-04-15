@@ -52,6 +52,28 @@ void AtenWindow::on_MessagesClearButton_clicked(bool checked)
 	updateWidgets(AtenWindow::MainViewTarget);
 }
 
+void AtenWindow::on_MessagesFontIncreaseButton_clicked(bool checked)
+{
+	QFont font = prefs.messagesFont();
+	font.setPixelSize( std::min(font.pixelSize()+1, 50) );
+	prefs.setMessagesFont(font);
+
+	updateMessagesWidgets();
+
+	updateWidgets(AtenWindow::MainViewTarget);
+}
+
+void AtenWindow::on_MessagesFontDecreaseButton_clicked(bool checked)
+{
+	QFont font = prefs.messagesFont();
+	font.setPixelSize( std::max(font.pixelSize()-1, 2) );
+	prefs.setMessagesFont(font);
+
+	updateMessagesWidgets();
+
+	updateWidgets(AtenWindow::MainViewTarget);
+}
+
 void AtenWindow::on_MessagesScroll_valueChanged(int value)
 {
 	updateWidgets(AtenWindow::MainViewTarget);

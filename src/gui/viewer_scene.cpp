@@ -108,6 +108,9 @@ void Viewer::setupGL()
 // Render messages
 void Viewer::renderMessages(QPainter& painter, bool fade)
 {
+	// Set font for messages
+	painter.setFont(prefs.messagesFont());
+
 	// Grab message buffer
 	QList<Message>& messages = Messenger::messageBuffer();
 	int margin = 4;
@@ -288,7 +291,6 @@ void Viewer::paintGL()
 
 	// Create and setup a QPainter
 	QPainter painter(this);
-	painter.setFont(prefs.messagesFont());
 
 	// Store all GL state variables, since they will be modified by QPainter
 	glPushAttrib(GL_ALL_ATTRIB_BITS);
