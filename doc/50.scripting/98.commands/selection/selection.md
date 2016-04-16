@@ -22,43 +22,33 @@ Deselect atoms in the current model, returning the number of atoms deselected by
 
 For example:
 
-
-```
+```aten
 deSelect(5);
 ```
 
-
 deselects the 5th atom.
 
-
-```
+```aten
 deSelect("1-10,N");
 ```
 
-
 deselects the first ten atoms, and all nitrogen atoms.
 
-
-```
+```aten
 int n = deSelect("Sc-Zn");
 ```
 
-
 deselects the first transition series of elements, returning the number of atoms that were deselected in the process.
 
-
-```
+```aten
 deSelect("C+");
 ```
 
-
 deselects all elements carbon and above.
 
-
-```
+```aten
 deSelect(1, 2, 5, "8+");
 ```
-
 
 deselects the first, second, and fifth atoms, as well as the eighth atom and all that occur after it.
 
@@ -74,8 +64,7 @@ Evaluates the _code_ snippet for each atom, deselecting any atom for which it ev
 
 For example:
 
-
-```
+```aten
 deSelectCode("(i.z == 6);");
 ```
 
@@ -92,8 +81,7 @@ _Syntax:_
 Deselect atoms using the same syntax as the **deSelect** command, but constructing the string using a C-style **printf** approach. Useful when two integer numbers defining a range of atoms to deselect are stored in two local variables, for instance, or when the selection range must change dynamically in a loop.
 
 For example:
-
-```
+```aten
 int i = 10;
 deSelectF("%i-%i", i, i+10);
 ```
@@ -112,11 +100,9 @@ Deselect all atoms in the current model matching the element and NETA type descr
 
 For example:
 
-
-```
+```aten
 deSelectType(H, "-O(-C)");
 ```
-
 
 will deselect all hydrogen atoms bound to oxygen atoms which are, in turn, bound to carbon atoms (i.e. all hydroxyl hydrogens).
 
@@ -132,11 +118,9 @@ Expand the current selection of atoms by selecting any atoms that are directly b
 
 For example:
 
-
-```
+```aten
 expand();
 ```
-
 
 ---
 
@@ -150,11 +134,9 @@ Inverts the selection of all atoms in the current model. Returns the number of a
 
 For example:
 
-
-```
+```aten
 invert();
 ```
-
 
 ---
 
@@ -168,19 +150,15 @@ Select atoms in the current model, keeping any previous selection of atoms. See 
 
 For example:
 
-
-```
+```aten
 select("+5");
 ```
 
-
 selects the first five atoms.
 
-
-```
+```aten
 int n = select("+5,H");
 ```
-
 
 selects the first five atoms and all hydrogens, storing the number of new atoms selected in the variable _n_.
 
@@ -196,8 +174,7 @@ Select all atoms in the current model. The number of selected atoms is returned.
 
 For example:
 
-
-```
+```aten
 selectAll();
 ```
 
@@ -223,11 +200,9 @@ Select all atoms with forcefield type _ffType_ in the current model. The number 
 
 For example:
 
-
-```
+```aten
 selectFFType("CT");
 ```
-
 
 selects all atoms that have been assigned the forcefield type ‘CT’.
 
@@ -253,11 +228,9 @@ Select all atoms whose coordinates are currently inside the confines of the unit
 
 For example:
 
-
-```
+```aten
 int n = selectInsideCell();
 ```
-
 
 ---
 
@@ -270,8 +243,7 @@ _Syntax:_
 Return the centre of geometry of the current atom selection.
 
 For example:
-
-```
+```aten
 Vector v = selectionCog();
 printf("Centre of geometry of current selection is: %f %f %f\n", v.x, v.y, v.z);
 ```
@@ -289,8 +261,7 @@ _Syntax:_
 Return the centre of mass of the current atom selection.
 
 For example:
-
-```
+```aten
 Vector v = selectionCom();
 newAtom(Be, v.x, v.y, v.z);
 ```
@@ -309,11 +280,9 @@ Selects all atoms that are within a distance _radius_ from a line whose directio
 
 For example:
 
-
-```
+```aten
 selectLine(0,0,1,0,0,0,5.0);
 ```
-
 
 selects all atoms within 5 Å of a line running through the origin along the Cartesian z direction.
 
@@ -329,11 +298,9 @@ Select all atoms that are ‘outside’ the specified Miller plane (and its mirr
 
 For example:
 
-
-```
+```aten
 selectMiller(1, 1, 1);
 ```
-
 
 selects all atoms located beyond the (111) plane in the unit cell.
 
@@ -349,11 +316,9 @@ Select all atoms in the molecule / fragment to which the supplied _target_ atom 
 
 For example:
 
-
-```
+```aten
 selectMolecule(5);
 ```
-
 
 selects the bound fragment in which atom number 5 exists.
 
@@ -369,11 +334,9 @@ Deselect all atoms in the current model.
 
 For example:
 
-
-```
+```aten
 selectNone();
 ```
-
 
 ---
 
@@ -387,11 +350,9 @@ Select all atoms that are within a certain distance of another, or the default o
 
 For example:
 
-
-```
+```aten
 int noverlaps = selectOverlaps("0.1");
 ```
-
 
 selects all atoms that are less than 0.1 Å away from another.
 
@@ -407,11 +368,9 @@ Select all atoms whose coordinates are currently outside the confines of the uni
 
 For example:
 
-
-```
+```aten
 int n = selectOutsideCell();
 ```
-
 
 ---
 
@@ -425,19 +384,15 @@ Selects all atoms in the current (or named/specified) pattern. Returns the numbe
 
 For example:
 
-
-```
+```aten
 selectPattern(2);
 ```
 
-
 select all atoms in the second pattern of the current model.
 
-
-```
+```aten
 selectPattern("bubble");
 ```
-
 
 select all atoms in the pattern "bubble" of the current model.
 
@@ -453,11 +408,9 @@ Select all atoms within _r_ Å of the supplied target atom (which is also select
 
 For example:
 
-
-```
+```aten
 int nclose = selectRadial(10, 4.5);
 ```
-
 
 selects all atoms within 4.5 Å of atom 10, and returns the number selected.
 
@@ -473,11 +426,9 @@ Select all atoms which are reachable by following chemical bonds, starting from 
 
 For example:
 
-
-```
+```aten
 int nclose = selectTree(99);
 ```
-
 
 selects all atoms reachable by following chemical bonds from (and including) atom 99.
 
@@ -493,12 +444,9 @@ Selects all atoms of the given _element_ that also match the NETA description (s
 
 For example:
 
-
-```
+```aten
 int nch2 = selectType("C", "-H(n=2)");
 ```
 
-
 selects all carbon atoms that are bound to two hydrogens.
-
 

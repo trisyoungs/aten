@@ -762,4 +762,3 @@ header_class: alt
 [zoomView](/aten/docs/scripting/commands/view#zoomview)
 
 
-

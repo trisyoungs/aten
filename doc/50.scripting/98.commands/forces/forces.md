@@ -22,11 +22,9 @@ Calculate the atomic forces of the current frame of the trajectory associated wi
 
 For example:
 
-
-```
+```aten
 frameForces();
 ```
-
 
 ---
 
@@ -40,11 +38,9 @@ Calculate the atomic forces of the current model.
 
 For example:
 
-
-```
+```aten
 modelForces();
 ```
-
 
 ---
 
@@ -58,10 +54,8 @@ Print out the forces of the current model.
 
 For example:
 
-
-```
+```aten
 printForces();
 ```
-
 
 

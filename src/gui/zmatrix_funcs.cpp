@@ -1,5 +1,5 @@
 /*
-	*** ZMatrix Dock Widget
+	*** ZMatrix Dialog
 	*** src/gui/zmatrix_funcs.cpp
 	Copyright T. Youngs 2007-2016
 
@@ -285,6 +285,11 @@ void AtenZMatrix::on_MoveToEndButton_clicked(bool checked)
 	CommandNode::run(Commands::MoveToEnd, "");
 	refresh();
 	parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
+}
+
+void AtenZMatrix::on_CloseButton_clicked(bool checked)
+{
+	accept();
 }
 
 void AtenZMatrix::dialogFinished(int result)

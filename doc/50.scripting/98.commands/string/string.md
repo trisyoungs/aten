@@ -21,15 +21,13 @@ _Syntax:_
 Return the part of the _source_ string that comes after the first occurrence of the _search_ string. If _source_ doesn’t contain any occurrences of _search_ an empty string is returned, unless the flag _sourceOnFail_ is set to **TRUE** in which case the original source string is returned instead.
 
 For example:
-
-```
+```aten
 string fullname = "BobBobbinson";
 string firstname = afterStr(name, "Bob");
 ```
 
 sets the variable _firstname_ to the value ‘Bobbinson’.
-
-```
+```aten
 string text1, text2;
 text1 = "No taxes on axes";
 text2 = afterStr(text1, "x");
@@ -49,11 +47,9 @@ Converts the supplied _text_ into its floating point (double) representation. Eq
 
 For example:
 
-
-```
+```aten
 double x = atof("1.099d");
 ```
-
 
 would set _x_ to the value '1.099'.
 
@@ -69,11 +65,9 @@ Converts the supplied _text_ into its integer representation. Equivalent to the 
 
 For example:
 
-
-```
+```aten
 int i = atoi("000023");
 ```
-
 
 would set _i_ to the value '23'.
 
@@ -88,16 +82,14 @@ _Syntax:_
 Return the part of the _source_ string that comes before the first occurrence of the _search_ string. If _source_ doesn't contain any occurrences of _search_ an empty string is returned, unless the flag _sourceOnFail_ is set to **TRUE** in which case the original source string is returned instead.
 
 For example:
-
-```
+```aten
 string source, target;
 source = "Engelbert";
 target = beforeStr(source, "e");
 ```
 
 places the text "Eng" in the variable _target_.
-
-```
+```aten
 string text1 = "No taxes on axes";
 string text2 = beforeStr(text1, " ax");
 ```
@@ -115,8 +107,7 @@ _Syntax:_
 Returns the number of times the _search_ string is found in the _source_ string. The function counts only non-overlapping occurrences of _search_.
 
 For example:
-
-```
+```aten
 string poem = "six sixes are thirty-six";
 int count = contains(poem, "six");
 ```
@@ -135,11 +126,9 @@ Converts the supplied double _d_ into a string representation.
 
 For example:
 
-
-```
+```aten
 string num = ftoa(100.001);
 ```
-
 
 would set _num_ to the value’100.00’.
 
@@ -155,11 +144,9 @@ Converts the supplied integer _i_ into a string representation.
 
 For example:
 
-
-```
+```aten
 string num = itoa(54);
 ```
-
 
 would set _num_ to the value "54".
 
@@ -185,11 +172,9 @@ Searches through the supplied _source_ string, and replaces all occurrences of t
 
 For example:
 
-
-```
+```aten
 string newstring = replaceChars("Zero 2599 these numbers", "123456789", "0");
 ```
-
 
 replaces any numeric character with a zero.
 
@@ -205,11 +190,9 @@ Replaces all occurrences of _searchStr_ with _replaceStr_ in the supplied _sourc
 
 For example:
 
-
-```
+```aten
 string fruity = replaceStr("I don't like apples.", "apples", "oranges");
 ```
-
 
 would change your fondness towards apples.
 
@@ -225,11 +208,9 @@ Removes all occurrences of _searchStr_ from the _source_ string, returning the r
 
 For example:
 
-
-```
+```aten
 string debt = removeStr("I owe you 2 million dollars.", "million ");
 ```
-
 
 would reduce your outgoings considerably.
 
@@ -255,15 +236,12 @@ Strip the supplied character(s) from the _source_ string, returning the result.
 
 For example:
 
-
-```
+```aten
 string abc = stripChars("Oodles of noodles", "o");
 ```
 
-
 places the text "Odles f ndles" in the variable _abc_.
-
-```
+```aten
 string abc = "Oodles of noodles";
 abc = stripChars(abc, "aeiou");
 ```
@@ -289,5 +267,4 @@ _Syntax:_
 **string** **upperCase** ( **string** _source_ )
 
 Returns the source string with all lowercase letters converted to uppercase.
-
 

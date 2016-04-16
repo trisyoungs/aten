@@ -24,19 +24,15 @@ Satisfy the valencies of all atoms in the current model by adding hydrogens to h
 
 For example:
 
-
-```
+```aten
 addHydrogen();
 ```
 
-
 add hydrogens to all atoms in the current model.
 
-
-```
+```aten
 addHydrogen(10);
 ```
-
 
 add hydrogens to atom 10 only.
 
@@ -51,8 +47,7 @@ _Syntax:_
 Converts the specified object(s) data to Ǻ, assuming that it is currently specified in Bohr.
 
 For example:
-
-```
+```aten
 Atom i = aten.model.atoms[2];
 bohr(i);
 ```
@@ -77,27 +72,21 @@ Create a new atom of element _el_ at the current pen position (or the specified 
 
 For example:
 
-
-```
+```aten
 Atom i = chain("C");
 ```
 
-
 places a carbon atom at the current pen coordinates, and creates a single bond with the last drawn atom.
 
-
-```
+```aten
 Atom i = chain(8, "double");
 ```
 
-
 places an oxygen atom at the current pen coordinates, and creates a double bond with the last drawn atom.
 
-
-```
+```aten
 Atom i = chain("Cl", 4.0, 5.0, 6.0, "single");
 ```
-
 
 creates a chlorine at coordinates { 4.0, 5.0, 6.0 }, joined by a single bond to the last drawn atom.
 
@@ -113,11 +102,9 @@ Ends the current chain (so that the next atom drawn with ‘**chain**’ will be
 
 For example:
 
-
-```
+```aten
 endChain();
 ```
-
 
 ---
 
@@ -130,8 +117,7 @@ _Syntax:_
 Grows a new atom of the specified element from the specified target atom _i_. The position of the new atom will conform to the required geometry, and will have the specified _distance_ from the target atom.  If the supplied _distance_ is negative, then the atomic radii of the target and new atoms are used to calculate the new bond length.  If the target atom already has enough (or too many) atoms to prevent a new position from being calculated, then no atom is added.  If a new atom is successfully added, it is returned. The default is to create a bond between the target and new atoms, but this can be restricted by passing **false** as the _bond_ argument.
 
 For example:
-
-```
+```aten
 Atom i = newAtom(P);
 for (int n=0; n<6; ++n) growAtom(F, i, "octahedral");
 ```
@@ -150,11 +136,9 @@ Sets the pen position to the coordinates specified (in Ǻ).
 
 For example:
 
-
-```
+```aten
 locate(0.0, 0.0, 0.0);
 ```
-
 
 moves the pen back to the coordinate origin.
 
@@ -170,11 +154,9 @@ Moves the pen position by the amounts specified (in Ǻ).
 
 For example:
 
-
-```
+```aten
 move(1.0, 1.0, 0.0);
 ```
-
 
 moves the pen one Ǻ in both the positive x and y directions.
 
@@ -189,8 +171,7 @@ _Syntax:_
 Move the current atom selection to the end of the list. The relative order of atoms in the selection is preserved.
 
 For example:
-
-```
+```aten
 select(H);
 moveToEnd();
 ```
@@ -208,8 +189,7 @@ _Syntax:_
 Move the current atom selection to the start of the list. The relative order of the atoms in the selection is preserved.
 
 For example:
-
-```
+```aten
 selectType(O, "nbonds=2,-H(n=2)");
 moveToStart();
 ```
@@ -234,19 +214,15 @@ Create a new atom of element _el_ at the current pen position or, if provided, t
 
 For example:
 
-
-```
+```aten
 Atom i = newAtom("N");
 ```
 
-
 places a nitrogen atom at the current pen coordinates.
 
-
-```
+```aten
 Atom i = newAtom(18, 5.2, 0, 0);
 ```
-
 
 places an argon atom at the coordinates { 5.2, 0.0, 0.0 }.
 
@@ -266,11 +242,9 @@ Create a new atom of element _el_ at the specified fractional coordinates (veloc
 
 For example:
 
-
-```
+```aten
 Atom i = newAtomFrac("C", 0.5, 0.5, 0.5);
 ```
-
 
 places a carbon atom at the centre of the model’s cell.
 
@@ -286,11 +260,9 @@ Adjust the ordering of atoms in the current selection such that atoms in bound f
 
 For example:
 
-
-```
+```aten
 reorder();
 ```
-
 
 ---
 
@@ -304,11 +276,9 @@ Rotates the reference coordinate system about the x axis by _angle_ degrees.
 
 For example:
 
-
-```
+```aten
 rotX(90.0);
 ```
-
 
 rotates around the x axis by 90 degrees.
 
@@ -324,11 +294,9 @@ Rotates the reference coordinate system about the y axis by _angle_ degrees.
 
 For example:
 
-
-```
+```aten
 rotY(45.0);
 ```
-
 
 rotates around the y axis by 45 degrees.
 
@@ -344,11 +312,9 @@ Rotates the reference coordinate system about the z axis by _angle_ degrees.
 
 For example:
 
-
-```
+```aten
 rotZ(109.5);
 ```
-
 
 rotates around the z axis by 109.5 degrees.
 
@@ -386,11 +352,9 @@ Move the current atom selection one (or _n_) places down in the atom list (i.e. 
 
 For example:
 
-
-```
+```aten
 shiftDown(4);
 ```
-
 
 moves the current atom selection down four places.
 
@@ -408,11 +372,9 @@ Move the current atom selection one (or _n_) places up in the atom list (i.e. to
 
 For example:
 
-
-```
+```aten
 shiftUp();
 ```
-
 
 moves the current atom selection up one place.
 
@@ -428,28 +390,21 @@ Transmute the current atom selection to the specified element.
 
 For example:
 
-
-```
+```aten
 transmute("F");
 ```
 
-
 changes all atoms in the current selection to fluorine.
 
-
-```
+```aten
 transmute(Cl);
 ```
 
-
 changes all atoms in the current selection to chlorine.
 
-
-```
+```aten
 transmute(6);
 ```
 
-
 changes all atoms in the current selection to carbon
-
 

@@ -60,19 +60,15 @@ If _width_ and _height_ are not specified the current dimensions of the view are
 
 For example:
 
-
-```
+```aten
 saveBitmap("bmp", "test.bmp");
 ```
 
-
 saves the current view to a file 'test.bmp'.
 
-
-```
+```aten
 saveBitmap("png", "big.png", 5000, 5000, 10);
 ```
-
 
 saves an enormous, highly uncompressed png.
 
@@ -90,12 +86,9 @@ As with the **saveBitmap** command, if _width_ and _height_ are not specified th
 
 For example:
 
-
-```
+```aten
 saveMovie("traj.mpg", 1024, 1024, -1, 50, 1000, 50);
 ```
 
-
 saves a movie called "traj.mpg" with size 1024x1024, beginning at frame 50 and writing every 50th frame until frame 1000.
-
 

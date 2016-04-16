@@ -23,15 +23,13 @@ Note: Experimental Feature!
 Using the current atom selection, this command creates ellipsoid glyphs that cover (or represent) individual bound fragments within the selection. An ellipsoid glyph is added for each bound fragment within the selection, positioned at the geometric centre of the bound fragment, and scaled in an attempt to cover all atoms within the bound fragment. Such things are useful when wanting to represent molecules by simple geometric shapes, rather than by their fine-grained atomic positions.
 
 For instance, given a box full of benzene molecules:
-
-```
+```aten
 selectAll();
 autoEllipsoids();
 ```
 
 will add on a flattened ellipsoid to each individual molecule. To do the same thing but using only the ring carbons to generate the ellipsoids:
-
-```
+```aten
 select("C");
 autoEllipsoids();
 ```
@@ -90,11 +88,9 @@ Set current (or specified) atom’s forces as data _n_ in the current glyph.
 
 For example:
 
-
-```
+```aten
 glyphAtomF(1);
 ```
-
 
 links the current atoms forces to the first datum in the current glyph.
 
@@ -112,11 +108,9 @@ Set current (or specified) atom's position as data _n_ in the current glyph.
 
 For example:
 
-
-```
+```aten
 glyphAtomR(3, 55);
 ```
-
 
 links the 55th atom’s position to the third datum in the current glyph.
 
@@ -133,8 +127,7 @@ _Syntax:_
 Set current (or specified) atom's velocity as data _n_ in the current glyph.
 
 For example:
-
-```
+```aten
 Atom i = newAtom("H");
 glyphAtomV(2,i);
 ```
@@ -153,11 +146,9 @@ Accepts one or more atoms, setting consecutive data in the current glyph to the 
 
 For example:
 
-
-```
+```aten
 glyphAtomsF(1, 2, 3);
 ```
-
 
 links the forces of atoms 1, 2, and 3 to the first three glyph data.
 
@@ -173,11 +164,9 @@ Accepts one or more atoms, setting consecutive data in the current glyph to the 
 
 For example:
 
-
-```
+```aten
 glyphAtomsR(3, 10);
 ```
-
 
 links the positions of atoms 3 and 10 to the first two glyph
 data.
@@ -194,11 +183,9 @@ Accepts one or more atoms, setting consecutive data in the current glyph to the 
 
 For example:
 
-
-```
+```aten
 glyphAtomsV(9, 11, 13);
 ```
-
 
 links the velocities of atoms 9, 11, and 13 to first three glyph data.
 
@@ -214,11 +201,9 @@ Set the colour of vertex _n_ for the current glyph to the RGB(A) colour provided
 
 For example:
 
-
-```
+```aten
 glyphColour(1, 1.0, 0.0, 0.0);
 ```
-
 
 sets the colour of the first vertex in the current glyph to red.
 
@@ -234,11 +219,9 @@ Set vector data _n_ for the current glyph to the fixed values provided.
 
 For example:
 
-
-```
+```aten
 glyphData(1, 0.0, 5.0, 2.4);
 ```
-
 
 sets the first positional data in the glyph to {0.0, 5.0, 2.4}.
 
@@ -254,11 +237,9 @@ Sets the drawing style of the current glyph to solid (true) or wireframe (false)
 
 For example:
 
-
-```
+```aten
 glyphSolid("true");
 ```
-
 
 ---
 
@@ -272,11 +253,9 @@ Set the text data in the current glyph. For text-style glyphs, this is a necessa
 
 For example:
 
-
-```
+```aten
 glyphText("Coordinate Origin");
 ```
-
 
 ---
 
@@ -311,28 +290,21 @@ One or more options may be given to the command. The list of possible _options_ 
 
 For example:
 
-
-```
+```aten
 newGlyph("cube");
 ```
 
-
 creates a new cube in the model.
 
-
-```
+```aten
 newGlyph("text","text=\"I am some text\"");
 ```
 
-
 creates a new text glyph in the model, reading "I am some text". Note the need to escape the quotes surrounding the text.
 
-
-```
+```aten
 newGlyph("tetrahedron", "wire");
 ```
 
-
 creates a new wireframe tetrahedron in the model.
-
 

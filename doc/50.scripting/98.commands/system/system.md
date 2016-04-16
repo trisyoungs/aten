@@ -22,11 +22,9 @@ Toggles debug output from various parts of the code. A full list of valid types 
 
 For example:
 
-
-```
+```aten
 debug("parse");
 ```
-
 
 ---
 
@@ -40,11 +38,9 @@ Retrieves the contents of the named environment variable so that transfer of use
 
 For example:
 
-
-```
+```aten
 string s = getEnv("HOSTNAME");
 ```
-
 
 gets the name of the host Aten is running on (although what you would then usefully do with it I don’t know).
 
@@ -62,11 +58,9 @@ Retrieves the contents of the named environment variable, converting it to a flo
 
 For example:
 
-
-```
+```aten
 double d = getEnvF("num");
 ```
-
 
 gets the shell variable _num_ as a real number.
 
@@ -82,11 +76,9 @@ Retrieves the contents of the named environment variable, converting it to an in
 
 For example:
 
-
-```
+```aten
 int i = getEnvI("count");
 ```
-
 
 gets the shell variable _count_ as an integer number.
 
@@ -96,21 +88,17 @@ gets the shell variable _count_ as an integer number.
 
 _Syntax:_
 
-
-```
+```aten
 help command
 ```
-
 
 Provide short help on the supplied _command_.
 
 For example:
 
-
-```
+```aten
 help cellaxes;
 ```
-
 
 ---
 
@@ -144,11 +132,9 @@ Sets the random seed.
 
 For example:
 
-
-```
+```aten
 seed(3242638);
 ```
-
 
 ---
 
@@ -162,10 +148,8 @@ Quits out of the program.
 
 For example:
 
-
-```
+```aten
 quit();
 ```
-
 
 

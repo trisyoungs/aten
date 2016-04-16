@@ -22,11 +22,9 @@ Delete the pattern description of the current model. It’s a good idea to run t
 
 For example:
 
-
-```
+```aten
 clearPatterns();
 ```
-
 
 ---
 
@@ -40,11 +38,9 @@ Automatically detect and create the pattern description for the current model.
 
 For example:
 
-
-```
+```aten
 createPatterns();
 ```
-
 
 ---
 
@@ -62,19 +58,15 @@ Get the named pattern or pattern with given id (if either was specified), return
 
 For example:
 
-
-```
+```aten
 Pattern p = currentPattern("liquid");
 ```
 
-
 sets the pattern named 'liquid' in the current model to be the current pattern, setting its reference in the variable _p_.
 
-
-```
+```aten
 Pattern p = currentPattern();
 ```
-
 
 returns a reference to the current pattern.
 
@@ -92,19 +84,15 @@ Get the named pattern, or pattern with id specified, returning its reference.
 
 For example:
 
-
-```
+```aten
 Pattern p = getPattern("solid");
 ```
 
-
 gets the pattern named "solid" in the current model, setting its reference in the variable _p_.
 
-
-```
+```aten
 getPattern(3);
 ```
-
 
 gets the third pattern in the current model.
 
@@ -120,11 +108,9 @@ List the patterns in the current model.
 
 For example:
 
-
-```
+```aten
 listPatterns();
 ```
-
 
 ---
 
@@ -138,12 +124,9 @@ Add a new pattern node to the current model, spanning _nMols_ molecules of _atom
 
 For example:
 
-
-```
+```aten
 Pattern p = newPattern("water", 100, 3);
 ```
 
-
 creates a new pattern description of 100 molecules of 3 atoms each named "water" (i.e. 100 water molecules) in the current model, and returns its reference
-
 

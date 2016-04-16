@@ -22,11 +22,9 @@ Augments bonds in the current model, automatically determining multiple bonds ba
 
 For example:
 
-
-```
+```aten
 augment();
 ```
-
 
 Augment method for a description of the rebonding algorithm implemented in Aten
 
@@ -44,19 +42,15 @@ Adjust the bond calculation tolerance. It may often be necessary to tweak the bo
 
 For example:
 
-
-```
+```aten
 bondTolerance(1.20);
 ```
 
-
 sets the bonding tolerance to 1.2.
 
-
-```
+```aten
 double tol = bondTolerance();
 ```
-
 
 retrieve the current bond tolerance. See Section 15.1.5 for a description of the rebonding algorithm implemented in Aten
 
@@ -72,11 +66,9 @@ Delete all bonds in the current model.
 
 For example:
 
-
-```
+```aten
 clearBonds();
 ```
-
 
 ---
 
@@ -90,11 +82,9 @@ Delete all bonds in the current atom selection.
 
 For example:
 
-
-```
+```aten
 clearSelectedBonds();
 ```
-
 
 ---
 
@@ -110,23 +100,18 @@ Create a new bond in the model between the specified atoms. The optional _bondty
 
 For example:
 
-
-```
+```aten
 newBond(4, 5, "double");
 ```
 
-
 creates a double bond between the fourth and fifth atoms in the model.
 
-
-```
+```aten
 newBond(1, 2, 3);
 ```
 
-
 creates a triple bond between the first and second atoms in the model.
-
-```
+```aten
 Atom i,j;
 i = newAtom("C", 0, 0, 0);
 j = newAtom("H", 0, 1.08, 0);
@@ -147,11 +132,9 @@ Calculate bonding in the current model.
 
 For example:
 
-
-```
+```aten
 rebond();
 ```
-
 
 ---
 
@@ -165,17 +148,14 @@ Calculate bonding in the current model, but restrict bond creation to between at
 
 For example:
 
-
-```
+```aten
 rebondPatterns();
 ```
-
 
 This command is useful when molecules in a system are too close together to have the correct bonding detected. In such a case, bonds and any old patterns in the model may be cleared, new patterns created by hand, and then **rebondPatterns** used to calculate bonds only between the atoms of individual molecules in the defined patterns in order to recreate the original molecules.
 
 For example:
-
-```
+```aten
 # Delete existing bonds in model
 clearBonds();
 
@@ -204,10 +184,8 @@ Calculate bonding between atoms in the current atom selection.
 
 For example:
 
-
-```
+```aten
 rebondSelection();
 ```
-
 
 

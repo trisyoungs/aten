@@ -24,11 +24,9 @@ Assigns a charge of _q_ to each selected atom in the current model, or returns t
 
 For example:
 
-
-```
+```aten
 charge(1.0);
 ```
-
 
 gives each atom in the current model's selection a charge of 1.0.
 
@@ -42,11 +40,9 @@ Assigns charges to all atoms in the current model based on the forcefield associ
 
 For example:
 
-
-```
+```aten
 chargeFF();
 ```
-
 
 ---
 
@@ -60,11 +56,9 @@ Copies charges of all atoms in the current model to the atoms of the current tra
 
 For example:
 
-
-```
+```aten
 chargeFromModel();
 ```
-
 
 ---
 
@@ -78,11 +72,9 @@ Assigns a charge of _q_ to atom _id_ in each molecule of the current pattern.
 
 For example:
 
-
-```
+```aten
 chargePAtom(3, 0.1);
 ```
-
 
 assigns a charge of 0.1 to the third atom in each molecule of the current pattern.
 
@@ -98,11 +90,9 @@ Assigns a charge of _q_ to each atom that is of type _fftype_ in the current mod
 
 For example:
 
-
-```
+```aten
 chargeType("OW",-0.8);
 ```
-
 
 gives a charge of -0.8 to every atom that has an assigned typename of _OW_.
 
@@ -118,10 +108,8 @@ Clears all charges in the current model, setting them to zero.
 
 For example:
 
-
-```
+```aten
 clearCharges();
 ```
-
 
 

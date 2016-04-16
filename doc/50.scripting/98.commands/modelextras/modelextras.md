@@ -18,15 +18,13 @@ _Syntax:_
 
 [**BasisShell**](/aten/docs/scripting/variabletypes/basisshell) **newBasisShell** ( [**Atom**](/aten/docs/scripting/variabletypes/atom)|**int** _id_, **string** _type_ )
 
-Adds a new basis shell definition to the current model, returning the generated structure. The atomic centre on which the basis function exists must be provided either as an integer or an atom pointer (from which the integer ID is extracted). For allowed _type_s see the [**BasisShellType**](/aten/docs/enumerations/basisshelltype).
+Adds a new basis shell definition to the current model, returning the generated structure. The atomic centre on which the basis function exists must be provided either as an integer or an atom pointer (from which the integer ID is extracted). For allowed _type_s see the [**BasisShellType**](/aten/docs/enums/basisshelltype).
 
 For example:
 
-
-```
+```aten
 BasisShell = newBasisShell(15, "D");
 ```
-
 
 creates a new D-orbital shell centred on atom 15.
 
@@ -42,11 +40,9 @@ Adds a new, empty eigenvector to the current model. If the _size_ argument is gi
 
 For example:
 
-
-```
+```aten
 Eigenvector = newEigenvector(180);
 ```
-
 
 creates a new eigenvector which will contain 180 coefficients.
 
@@ -69,5 +65,4 @@ _Syntax:_
 **void** **printZMatrix** ( )
 
 Prints a Z-matrix for the current model to the console, creating one first if necessary.
-
 

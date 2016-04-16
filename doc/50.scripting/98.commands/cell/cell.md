@@ -22,19 +22,15 @@ Adjust a single unit cell parameter (one of _a_, _b_, _c_, _alpha_, _beta_, _gam
 
 For example:
 
-
-```
+```aten
 adjustCell("alpha",5.0);
 ```
 
-
 increases the cell angle ‘alpha’ by 5 degrees.
 
-
-```
+```aten
 adjustcell("c",-10.0);
 ```
-
 
 decreases the cell length ‘c’ by 10 Ǻ.
 
@@ -50,11 +46,9 @@ Set cell lengths and angles of current model. This command will modify an existi
 
 For example:
 
-
-```
+```aten
 cell(20.0, 10.0, 10.0, 90.0, 90.0, 90.0);
 ```
-
 
 sets the model's cell to be orthorhombic with side lengths 20x10x10 Ǻ.
 
@@ -70,11 +64,9 @@ Set cell axes of current model. This command will modify an existing cell or add
 
 For example:
 
-
-```
+```aten
 cellAxes(15, 0, 0, 0, 15, 0, 0, 0, 15);
 ```
-
 
 sets the model’s cell to be cubic with side length 15 Ǻ.
 
@@ -90,11 +82,9 @@ Fold all atoms so they are within the boundaries of the unit cell.
 
 For example:
 
-
-```
+```aten
 fold();
 ```
-
 
 ---
 
@@ -108,11 +98,9 @@ Fold all pattern molecules so the are unbroken across cell boundaries.
 
 For example:
 
-
-```
+```aten
 foldMolecules();
 ```
-
 
 ---
 
@@ -126,11 +114,9 @@ Remove all atoms from the unit cell that lay ‘outside’ the specified Miller 
 
 For example:
 
-
-```
+```aten
 millerCut(1,2,1,TRUE);
 ```
-
 
 removes all atoms inside the two enclosing (121) planes.
 
@@ -146,11 +132,9 @@ Clears any cell description (removes periodic boundary conditions) from the curr
 
 For example:
 
-
-```
+```aten
 noCell();
 ```
-
 
 ---
 
@@ -164,11 +148,9 @@ Perform spacegroup packing on the current model.
 
 For example:
 
-
-```
+```aten
 pack();
 ```
-
 
 ---
 
@@ -182,11 +164,9 @@ Prints the cell parameters of the current model.
 
 For example:
 
-
-```
+```aten
 printCell();
 ```
-
 
 ---
 
@@ -198,22 +178,18 @@ _Syntax:_
 
 Create a supercell of the current model, creating copies of the cell in each of the three cell axis directions. The original cell is considered to span {0,0,0} to {1,1,1}, so the number of additional cells should be specified beyond these initial numbers. Thus:
 
-
-```
+```aten
 replicate(0, 0, 0, 1, 1, 1);
 ```
 
-
 will do nothing at all to the model, while:
 
-
-```
+```aten
 replicate(-5, 0, 0, 6, 1, 1);
 ```
 
 will result in a supercell that consists of eleven copies of the original cell along the x-axis direction. Similarly,
-
-```
+```aten
 replicate(0, 0, 0, 5, 5, 5);
 replicate(-2, -2, -2, 3, 3, 3);
 ```
@@ -234,11 +210,9 @@ Scale unit cell and its constituent atoms by the scale factors _x_, _y_, and _z_
 
 For example:
 
-
-```
+```aten
 scale(1.0, 2.0, 1.0);
 ```
-
 
 doubles the length of the y-axis of the system. x- and z-axes remain unchanged.
 
@@ -254,11 +228,9 @@ Scale unit cell and centres-of-geometry of molecules within it by the scale fact
 
 For example:
 
-
-```
+```aten
 scaleMolecules(0.5, 0.5, 0.5);
 ```
-
 
 halves the lengths of all axes, scaling the positions of the molecules to reflect the new size.
 
@@ -274,19 +246,15 @@ Set a single unit cell parameter (one of _a_, _b_, _c_, _alpha_, _beta_, _gamma_
 
 For example:
 
-
-```
+```aten
 setCell("beta", 101.0);
 ```
 
-
 sets the cell angle _beta_ to 101 degrees.
 
-
-```
+```aten
 setCell("a", 15.5);
 ```
-
 
 sets the cell length _a_ to 15.5 Ǻ.
 
@@ -302,20 +270,15 @@ Sets the spacegroup of the model, used for crystal packing.
 
 For example:
 
-
-```
+```aten
 spacegroup(12);
 ```
 
-
 sets the model spacegroup to be C2/m (number 12).
 
-
-```
+```aten
 spacegroup("P1/m");
 ```
 
-
 sets the model spacegroup to P1/m.
-
 

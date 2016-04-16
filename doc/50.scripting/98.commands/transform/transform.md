@@ -28,27 +28,21 @@ Rotate the current selection by an angle _theta_ (in degrees) about an axis defi
 
 For example:
 
-
-```
+```aten
 axisRotate(4, 5, 90.0);
 ```
 
-
 rotates the current selection 90 degrees about the axis formed by the vector between atom ids 4 and 5 (4→5).
 
-
-```
+```aten
 axisRotate(0, 1, 0, -52.0);
 ```
 
-
 rotates the current selection -52 degrees about the y-axis.
 
-
-```
+```aten
 axisRotate(0, 1, 0, -52.0, 4.0, 4.0, 4.0);
 ```
-
 
 rotates the current selection -52 degrees about the y-axis, but with the rotation centre at {4.0,4.0,4.0}.
 
@@ -64,11 +58,9 @@ Centre the current atom selection at the specified coordinates. The three option
 
 For example:
 
-
-```
+```aten
 centre(0.0, 0.0, 15.0);
 ```
-
 
 centres the current selection at the coordinates (0 0 15).
 
@@ -84,11 +76,9 @@ Flip (negate) the x-coordinates of the current selection.
 
 For example:
 
-
-```
+```aten
 flipX();
 ```
-
 
 ---
 
@@ -102,11 +92,9 @@ Flip (negate) the y-coordinates of the current selection.
 
 For example:
 
-
-```
+```aten
 flipY();
 ```
-
 
 ---
 
@@ -120,11 +108,9 @@ Flip (negate) the z-coordinates of the current selection.
 
 For example:
 
-
-```
+```aten
 flipZ();
 ```
-
 
 ---
 
@@ -146,19 +132,15 @@ When supplying atom IDs, the x axis is taken to be absolute, the y-axis is ortho
 
 For example:
 
-
-```
+```aten
 matrixConvert(1, 2, 1, 3, 1, 4, 10, 11, 12, 13, 14, 15);
 ```
 
-
 defines a the current selection's frame of reference as (in terms of atom IDs) X = (1→2), Y = (1→3), and Z = (1→4), which will be rotated such that it corresponds to the new frame of reference (again defined by atom IDs) X = (10→11), Y = (12→13), and Z = (14→15).
 
-
-```
+```aten
 matrixConvert(-0.7348, -0.0192, -0.678, 0.4979, 0.6635, -0.5584, 0.4606, -0.7479, -0.47801, 1, 0, 0, 0, 1, 0, 0, 0, 1)
 ```
-
 
 defines a the current selection's frame of reference as the vectors X={-0.7348, -0.0192, -0.678}, Y={0.4979, 0.6635, -0.5584}, and Z={0.4606, -0.7479, -0.47801}, which will be rotated into the standard reference frame.
 
@@ -176,27 +158,21 @@ Transform the current selection by applying the defined matrix to each coordinat
 
 For example:
 
-
-```
+```aten
 matrixTransform(1, 0, 0, 0, 1, 0, 0, 0, 1);
 ```
 
-
 does absolutely nothing (multiplying by the identity matrix).
 
-
-```
+```aten
 matrixTransform(1, 0, 0, 0, 1, 0, 0, 0, -1);
 ```
 
-
 mirrors the current selection in the xy plane.
 
-
-```
+```aten
 matrixTransform(0.5, 0, 0, 0, 0.5, 0, 0, 0, -1);
 ```
-
 
 scales the x and y-coordinates of all selected atoms by 0.5, leaving the z coordinates intact.
 
@@ -226,11 +202,9 @@ This operation can only be performed when atoms _j_ and _k_ are not present in t
 
 For example:
 
-
-```
+```aten
 setAngle(10,11,12,109.5);
 ```
-
 
 sets the angle made between atoms 10, 11, and 12 to be 109.5°.
 
@@ -264,11 +238,9 @@ This operation can only be performed for atoms which are not present in the same
 
 For example:
 
-
-```
+```aten
 setDistance(1,4,4.9);
 ```
-
 
 sets the distance between atoms 1 and 4 to be 4.9 Å.
 
@@ -316,11 +288,9 @@ Translates the current selection by the specified vector.
 
 For example:
 
-
-```
+```aten
 translate(1, 0, 0);
 ```
-
 
 moves the current selection 1 Å along the x axis.
 
@@ -336,11 +306,9 @@ Translates the current atom by the specified vector.
 
 For example:
 
-
-```
+```aten
 translateAtom(1, 0, -1);
 ```
-
 
 translates the current atom 1 Å along x and -1 Å along z.
 
@@ -356,11 +324,9 @@ Translates the current selection by the fractional cell vectors specified. The m
 
 For example:
 
-
-```
+```aten
 translateCell(0, 0.5, 0);
 ```
-
 
 translates the current selection by an amount equivalent to half of the current cell’s B vector.
 
@@ -376,11 +342,9 @@ Translates the current selection by the Å amounts specified, with the XY plane 
 
 For example:
 
-
-```
+```aten
 translateWorld(0, 0, 10);
 ```
-
 
 translates the current selection 10 Å ‘into’ the screen.
 
@@ -396,12 +360,9 @@ Mirror the current selection in the specified plane about its geometric centre.
 
 For example:
 
-
-```
+```aten
 mirror("y");
 ```
 
-
 mirrors the current selection about the y axis.
-
 

@@ -67,4 +67,3 @@ Examples: Partitioning (need fancy function to encapsulate), advanced selection 
 Sections: ExportFilm (GUI)
 TestSelect command.
 Setting of filter options when using --batch CLI mode (in 03.cli/batch).
-Add on 'aten' suffix to code fences (```).

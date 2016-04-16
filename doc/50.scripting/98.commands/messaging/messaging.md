@@ -21,8 +21,7 @@ _Syntax:_
 Create a new, temporary _Dialog_ with titlebar text _title_ (if provided).
 
 For example:
-
-```
+```aten
 Dialog ui = createDialog("Choose a Number");
 ui.addIntegerSpin("chooser", "Choice", 1, 100, 1, 25);
 
@@ -45,8 +44,7 @@ _Syntax:_
 Returns the default [**Dialog**](/aten/docs/scripting/variabletypes/dialog) structure for this filter / script / function, setting the window titlebar text to _title_, if it is provided.
 
 For example:
-
-```
+```aten
 Dialog ui = defaultDialog();
 if (!ui.show()) error("Dialog Canceled. ");
 ```
@@ -62,8 +60,7 @@ _Syntax:_
 Print a message to screen and immediately exit the current command structure / filter.
 
 For example:
-
-```
+```aten
 int err=23;
 error("Filter failed badly - error = %i.\n", err);
 ```
@@ -82,19 +79,15 @@ Standard printing command.
 
 For example:
 
-
-```
+```aten
 printf("Loading data...\n");
 ```
 
-
 prints the string "Loading data..." to the screen.
 
-
-```
+```aten
 printf("Number of atoms = %i\n", natoms);
 ```
-
 
 prints the contents of the variable _natoms_ to the screen.
 
@@ -110,11 +103,9 @@ Shows (executes) the default [**Dialog**](/aten/docs/scripting/variabletypes/dia
 
 For example:
 
-
-```
+```aten
 if (!showDefaultDialog()) error("Dialog Canceled. ");
 ```
-
 
 ---
 
@@ -128,10 +119,8 @@ Prints a message, but only when verbose output is enabled (with the -v command-l
 
 For example:
 
-
-```
+```aten
 verbose("Extra information for you.\n");
 ```
-
 
 

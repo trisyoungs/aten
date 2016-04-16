@@ -32,11 +32,9 @@ Sets the target energy unit for automatic conversion of energetic forcefield par
 
 For example:
 
-
-```
+```aten
 autoConversionUnit("kcal");
 ```
-
 
 indicates that, no matter what the current internal unit of energy is, all energetic forcefield parameters, when accessed by the means listed above, will be automatically converted into units of kcal.
 
@@ -62,11 +60,9 @@ Clear any manual export typemap definitions.
 
 For example:
 
-
-```
+```aten
 clearExportMap();
 ```
-
 
 ---
 
@@ -80,11 +76,9 @@ Removes any forcefield expression defined for the current model.
 
 For example:
 
-
-```
+```aten
 clearExpression();
 ```
-
 
 ---
 
@@ -98,11 +92,9 @@ Clear any manual typemap definitions.
 
 For example:
 
-
-```
+```aten
 clearMap();
 ```
-
 
 ---
 
@@ -116,11 +108,9 @@ Clear any previously-assigned atom types from the current model.
 
 For example:
 
-
-```
+```aten
 clearTypes();
 ```
-
 
 ---
 
@@ -134,11 +124,9 @@ Creates a suitable energy description for the current model. The optional flags 
 
 For example:
 
-
-```
+```aten
 createExpression();
 ```
-
 
 ---
 
@@ -182,11 +170,9 @@ Set up manual mappings that convert atomtype names when expression are exported.
 
 For example:
 
-
-```
+```aten
 exportMap("CT=Ctet,N3=N");
 ```
-
 
 converts the atomtype names _CT_ and _N3_ so that they appear as _Ctet_ and _N_ in any expression files written out.
 
@@ -202,11 +188,9 @@ Associates current forcefield to the current model.
 
 For example:
 
-
-```
+```aten
 ffModel();
 ```
-
 
 ---
 
@@ -224,19 +208,15 @@ Associates current forcefield to the current pattern, or one specified by either
 
 For example:
 
-
-```
+```aten
 ffPattern();
 ```
 
-
 associates the current forcefield to the current pattern.
 
-
-```
+```aten
 ffPattern("bulk");
 ```
-
 
 associates the current forcefield to a pattern named _bulk_ in the current model.
 
@@ -261,8 +241,7 @@ _Syntax:_
 Set the current atom selection, or the specified atom, to have the type id (in the current forcefield) specified. Types set in this manner will not be overwritten by tha typing routines, allowing specific types to be applied above the normal rules. Note that the type’s NETA description is not checked, and so any (even types not matching the base element) may be applied in this way.
 
 For example:
-
-```
+```aten
 typeDef(99, "NX", "NX", N, "-C(n=4)"); 
 select(C);
 fixType(99); 
@@ -282,11 +261,9 @@ For the current atom selection, or the specified atom, free any previously-fixed
 
 For example:
 
-
-```
+```aten
 freeType(14);
 ```
-
 
 frees any previously-set type on atom 14.
 
@@ -301,8 +278,7 @@ _Syntax:_
 Attempt to generate, from defined generator information in the current Forcefield, expression information for the angle between the specified atoms. The newly (or previously) generated term is returned.
 
 For example:
-
-```
+```aten
 newAtom(O);
 addHydrogen();
 FFBound generateAngle(2, 1, 3);
@@ -352,11 +328,9 @@ Returns the combination rule in use for the specifed parameter of the given func
 
 For example:
 
-
-```
+```aten
 string cr = getCombinationRule("lj", "epsilon");
 ```
-
 
 ---
 
@@ -370,11 +344,9 @@ Select the named forcefield (or forcefield with the specified _id_) and make it 
 
 For example:
 
-
-```
+```aten
 Forcefield uff = getFF("uff");
 ```
-
 
 makes the loaded forcefield named uff the current one, and stores a reference to it.
 
@@ -400,11 +372,9 @@ Load a forcefield from file and reference it by _name_. Becomes the current forc
 
 For example:
 
-
-```
+```aten
 loadFF("/home/foo/complex.ff", "waterff");
 ```
-
 
 loads a forcefield called 'complex.ff' and names it _waterff_.
 
@@ -420,11 +390,9 @@ Set up manual typename mappings for atom names that do not readily correspond to
 
 For example:
 
-
-```
+```aten
 map("CT1=C,CT2=C");
 ```
-
 
 converts atoms with names _CT1_ and _CT2_ to carbon.
 
@@ -440,11 +408,9 @@ Create a new, empty forcefield with the given _name_ and make it current. Return
 
 For example:
 
-
-```
+```aten
 Forcefield ff = newFF("testff");
 ```
-
 
 ---
 
@@ -458,11 +424,9 @@ Prints the current expression setup.
 
 For example:
 
-
-```
+```aten
 printSetup();
 ```
-
 
 ---
 
@@ -476,11 +440,9 @@ Prints the NETA description of type _id_ in the current forcefield.
 
 For example:
 
-
-```
+```aten
 printType(99);
 ```
-
 
 prints the NETA description of typ id 99.
 
@@ -496,11 +458,9 @@ Delete and recreate a suitable energy description for the current model. The opt
 
 For example:
 
-
-```
+```aten
 recreateExpression();
 ```
-
 
 ---
 
@@ -514,11 +474,9 @@ Export the forcefield expression for the current model in the format determined 
 
 For example:
 
-
-```
+```aten
 saveExpression("dlpoly", "data.FIELD");
 ```
-
 
 ---
 
@@ -532,11 +490,9 @@ Sets the combination rule to use for the specifed parameter of the given functio
 
 For example:
 
-
-```
+```aten
 setCombinationRule("lj", "sigma", "geometric");
 ```
-
 
 ---
 
@@ -560,11 +516,9 @@ Add a new atom type definition to the current forcefield, with the identifying _
 
 For example:
 
-
-```
+```aten
 typeDef(101, "Ctet", C, "nbonds=4", "Standard tetrahedral carbon");
 ```
-
 
 creates a new simple type for a carbon atom with four bonds.
 
@@ -580,11 +534,9 @@ Perform atom typing on the current model. Returns _1_ if atom typing was perform
 
 For example:
 
-
-```
+```aten
 int success = typeModel();
 ```
-
 
 ---
 
@@ -598,11 +550,9 @@ Test the current forcefield's atomtype _typeId_ on the atom specified, returning
 
 For example:
 
-
-```
+```aten
 int score = typeTest(112, 10);
 ```
-
 
 tests type id 112 on the tenth atom in the model.
 
@@ -615,6 +565,5 @@ _Syntax:_
 **void** **units** ( **string** _unit_ )
 
 Sets the units in which energetic parameters are given for the current forcefield. For a list of available units see Section 16.8.
-
 
 

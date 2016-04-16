@@ -22,11 +22,9 @@ Set a specific data point in the current grid.
 
 For example:
 
-
-```
+```aten
 addGridPoint(4, 1, 15, 4.123);
 ```
-
 
 set the grid value at point { 4,1,15 } in the dataset to 4.123.
 
@@ -42,11 +40,9 @@ Add the next sequential grid point, starting at (1,1,1) and proceeding through d
 
 For example:
 
-
-```
+```aten
 addNextGridPoint(20.0);
 ```
-
 
 sets the next grid point value to be 20.0.
 
@@ -62,11 +58,9 @@ Perform internal post-load operations on the grid. Must be called for every new 
 
 For example:
 
-
-```
+```aten
 finaliseGrid();
 ```
-
 
 ---
 
@@ -82,11 +76,9 @@ Set the alpha value (transparency of the current surface), with 0.0 being fully 
 
 For example:
 
-
-```
+```aten
 gridAlpha(0.5);
 ```
-
 
 ---
 
@@ -100,19 +92,15 @@ Set the axes of the current grid, specified as three vectors.
 
 For example:
 
-
-```
+```aten
 gridAxes(1, 0, 0, 0, 1, 0, 0, 0, 1);
 ```
 
-
 sets a cubic system of axes for the current grid.
 
-
-```
+```aten
 gridAxes(0.8, 0, 0, 0.1, 0.6, 0, 0, 0, 0.7);
 ```
-
 
 sets a monoclinic system of axes for the current grid.
 
@@ -128,11 +116,9 @@ Set the internal colour of the primary grid surface to the RGB(A) value (each co
 
 For example:
 
-
-```
+```aten
 gridColour(1.0, 1.0, 0.0);
 ```
-
 
 sets the primary surface colour to yellow.
 
@@ -148,11 +134,9 @@ Set the internal colour of secondary grid surface to the RGB(A) value supplied (
 
 For example:
 
-
-```
+```aten
 gridColourSecondary(0.9, 0.9, 0.9);
 ```
-
 
 sets the secondary surface colour to off-white.
 
@@ -168,19 +152,15 @@ Set the colourscale to use for the current grid to the colourscale ID specified,
 
 For example:
 
-
-```
+```aten
 gridColourScale(4);
 ```
 
-
 colours the grid data according to colourscale 4.
 
-
-```
+```aten
 gridColourScale(0);
 ```
-
 
 uses the internal colour(s) specified for the grid.
 
@@ -196,11 +176,9 @@ Sets up a cubic system of axes for the current grid.
 
 For example:
 
-
-```
+```aten
 gridCubic(0.5);
 ```
-
 
 sets up a cubic system of axes, each grid point 0.5 Å apart in all directions.
 
@@ -216,11 +194,9 @@ Sets the lower and (if supplied) upper cutoff values for the current grid.
 
 For example:
 
-
-```
+```aten
 gridCutoff(0.002,0.005);
 ```
-
 
 sets the lower grid cutoff for the current grid to 0.002, and the upper grid cutoff to 0.005.
 
@@ -236,11 +212,9 @@ Sets the lower and (if supplied) upper secondary cutoff values for the current g
 
 For example:
 
-
-```
+```aten
 gridCutoffSecondary(0.0014);
 ```
-
 
 sets the secondary lower grid cutoff for the current grid to 0.0014, leaving the upper secondary cutoff unchanged.
 
@@ -256,11 +230,9 @@ Set the grid loop order to use with addnextgridpoint, affecting in which order t
 
 For example:
 
-
-```
+```aten
 gridLoopOrder("zyx");
 ```
-
 
 sets the loop order to the reverse of the default, so that the z-index is filled first.
 
@@ -276,11 +248,9 @@ Sets the origin of the grid data, in Å.
 
 For example:
 
-
-```
+```aten
 gridOrigin(0, 10, 0);
 ```
-
 
 sets the grid origin to be offset 10 Å along the y-axis.
 
@@ -296,8 +266,7 @@ Sets up an orthorhombic system of axes for the grid data.
 
 For example:
 
-
-```
+```aten
 gridOrtho(0.5, 0.5, 0.8);
 ```
 
@@ -331,11 +300,10 @@ _Syntax:_
 
 **void** **gridStyle** ( **string** _style_ )
 
-Determines how the current grid data is drawn on-screen. Valid _style_s are listed in the [GridStyle](/aten/docs/enumerations/gridstyle) enum.
+Determines how the current grid data is drawn on-screen. Valid _style_s are listed in the [GridStyle](/aten/docs/enums/gridstyle) enum.
 
 For example:
-
-```
+```aten
 gridStyle("triangles");
 ```
 
@@ -349,7 +317,7 @@ _Syntax:_
 
 **void** **gridStyleSecondary** ( **string** _style_ )
 
-Determines how the secondary surface of the current grid data is drawn on-screen. Valid _style_s are listed in the [GridStyle](/aten/docs/enumerations/gridstyle) enum.
+Determines how the secondary surface of the current grid data is drawn on-screen. Valid _style_s are listed in the [GridStyle](/aten/docs/enums/gridstyle) enum.
 
 ---
 
@@ -365,8 +333,7 @@ For two-dimensional grid (i.e. surface) data this option controls whether the da
 
 For example:
 
-
-```
+```aten
 gridUseZ("on");
 ```
 
@@ -403,11 +370,9 @@ Set the visibility of the current grid (i.e. whether it is drawn on screen).
 
 For example:
 
-
-```
+```aten
 gridVisible(FALSE);
 ```
-
 
 ---
 
@@ -421,11 +386,9 @@ Initialises the current grid to be of the specified grid type and with the dimen
 
 For example:
 
-
-```
+```aten
 initGrid("regularxyz", 64, 128, 64);
 ```
-
 
 initialises the current grid to be a regularly-spaced and hold a total of (gets calculator...) 524,288 points.
 
@@ -441,11 +404,9 @@ Load an existing grid from the specified file, and add it to the current model. 
 
 For example:
 
-
-```
+```aten
 Grid density = loadGrid("density.pdens");
 ```
-
 
 loads a grid called "density.pdens" and attaches it to current model.
 
@@ -461,12 +422,9 @@ Creates a new, empty grid with the provided 'name' in the current model, and ret
 
 For example:
 
-
-```
+```aten
 Grid g = newGrid("charlie");
 ```
 
-
 creates a new grid called, for some reason, "charlie".
-
 

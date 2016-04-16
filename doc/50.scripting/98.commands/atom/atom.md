@@ -22,13 +22,11 @@ Sets the individual drawing _style_ for the current atom selection, used when th
 
 For example:
 
-
-```
+```aten
 atomStyle("tube");
 ```
 
-
-sets the current atom selection to be drawn in the ‘tube’ style. See the [**DrawStyle**](/aten/docs/enumerations/drawstyle) enum for a list of all available styles.
+sets the current atom selection to be drawn in the ‘tube’ style. See the [**DrawStyle**](/aten/docs/enums/drawstyle) enum for a list of all available styles.
 
 ---
 
@@ -44,11 +42,9 @@ Return a reference to the current atom. If a new atom/id is provided the current
 
 For example:
 
-
-```
+```aten
 Atom i = currentAtom(1);
 ```
-
 
 makes the first atom in the current model the current atom, and returns a reference to it.
 
@@ -64,19 +60,15 @@ Fix the positions of the current atom selection (or individual atom specified) s
 
 For example:
 
-
-```
+```aten
 fix();
 ```
 
-
 fixes the positions of all selected atoms.
 
-
-```
+```aten
 for (int n=1; n<=10; ++n) fix(n);
 ```
-
 
 fixes the positions of the first 10 atoms in the current model.
 
@@ -92,11 +84,9 @@ Free the positions of previously fixed atoms in the current selection (or the in
 
 For example:
 
-
-```
+```aten
 free(5);
 ```
-
 
 allows the fifth atom in the current model to be moved again.
 
@@ -112,11 +102,9 @@ Return a reference to the atom specified.
 
 For example:
 
-
-```
+```aten
 Atom i = getAtom(3);
 ```
-
 
 returns a reference to the third atom in the current model.
 
@@ -131,8 +119,7 @@ _Syntax:_
 Hides the current selection of atoms (or the supplied atom) from view, meaning they cannot be selected by direct clicking/highlighting in the GUI. They are still subject to transformation if they are selected by other means.
 
 For example:
-
-```
+```aten
 select(H);
 hide();
 ```
@@ -316,5 +303,4 @@ _Syntax:_
 **void** **show** ( [**Atom**](/aten/docs/scripting/variabletypes/atom)|**int** _id_ = 0 )
 
 Makes the current selection of atoms (or the supplied atom) visible again if they were previously hidden.
-
 

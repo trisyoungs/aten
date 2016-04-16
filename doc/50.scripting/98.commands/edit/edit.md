@@ -22,11 +22,9 @@ Copy the current atom selection to the clipboard, ready for pasting.
 
 For example:
 
-
-```
+```aten
 copy();
 ```
-
 
 ---
 
@@ -40,11 +38,9 @@ Cut the current atom selection to the clipboard.
 
 For example:
 
-
-```
+```aten
 cut();
 ```
-
 
 ---
 
@@ -58,11 +54,9 @@ Delete the current atom selection.
 
 For example:
 
-
-```
+```aten
 delete();
 ```
-
 
 ---
 
@@ -76,11 +70,9 @@ Paste the copied atom selection.
 
 For example:
 
-
-```
+```aten
 paste();
 ```
-
 
 ---
 
@@ -94,11 +86,9 @@ Redo the last ‘undone’ operation.
 
 For example:
 
-
-```
+```aten
 redo();
 ```
-
 
 ---
 
@@ -112,10 +102,8 @@ Undo the last operation.
 
 For example:
 
-
-```
+```aten
 undo();
 ```
-
 
 

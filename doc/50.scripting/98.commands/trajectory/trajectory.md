@@ -24,11 +24,9 @@ Append a new trajectory frame to the current model’s trajectory. The reference
 
 For example:
 
-
-```
+```aten
 Model m = addFrame("new config");
 ```
-
 
 ---
 
@@ -42,11 +40,9 @@ Clear any associated trajectory and frame data in the current model.
 
 For example:
 
-
-```
+```aten
 clearTrajectory();
 ```
-
 
 ---
 
@@ -60,11 +56,9 @@ Select the first frame from trajectory of current model.
 
 For example:
 
-
-```
+```aten
 firstFrame();
 ```
-
 
 ---
 
@@ -78,11 +72,9 @@ Select last frame in trajectory of current model.
 
 For example:
 
-
-```
+```aten
 lastFrame();
 ```
-
 
 ---
 
@@ -96,11 +88,9 @@ Associate trajectory in _filename_ with the current model. An integer value of '
 
 For example:
 
-
-```
+```aten
 int success = loadTrajectory("/home/foo/md/water.HISf");
 ```
-
 
 opens and associated the formatted DL_POLY trajectory file "water.HISf" with the current model.
 
@@ -116,11 +106,9 @@ Select next frame from trajectory of current model.
 
 For example:
 
-
-```
+```aten
 nextFrame();
 ```
-
 
 ---
 
@@ -134,11 +122,9 @@ Select the previous frame from the trajectory of the current model.
 
 For example:
 
-
-```
+```aten
 prevFrame();
 ```
-
 
 ---
 
@@ -152,12 +138,9 @@ Seeks to the frame number specified.
 
 For example:
 
-
-```
+```aten
 seekFrame(10);
 ```
 
-
 seeks to the 10th frame of the current trajectory.
-
 

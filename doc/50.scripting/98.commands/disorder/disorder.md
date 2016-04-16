@@ -22,11 +22,9 @@ Start the disordered builder on the current model (which must already possess a 
 
 For example:
 
-
-```
+```aten
 disorder("CylinderX", FALSE);
 ```
-
 
 runs the disorder builder using the ‘CylinderX’ partitioning scheme, and allows the cell size to change.
 
@@ -42,11 +40,9 @@ Prints a list of the currently requested populations, densities, and destination
 
 For example:
 
-
-```
+```aten
 listComponents();
 ```
-
 
 ---
 
@@ -60,12 +56,9 @@ Instead of setting up a model for insertion by the disorder builder by setting i
 
 For example:
 
-
-```
+```aten
 setupComponent("both", 2, 0, 0.8);
 ```
 
-
 sets up the corrent model to be added into partition number 2 (in the example given in the **disorder** command given above, for example, this would correspond to the cylindrical region) with a final density of 0.8 g/cm3.
-
 

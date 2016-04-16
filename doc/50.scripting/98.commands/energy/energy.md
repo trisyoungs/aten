@@ -38,11 +38,9 @@ Calculate energy of the current frame of the trajectory associated with the curr
 
 For example:
 
-
-```
+```aten
 double energy = frameEnergy();
 ```
-
 
 ---
 
@@ -56,11 +54,9 @@ Calculate the energy of the current model, which can then be printed out (in who
 
 For example:
 
-
-```
+```aten
 double e = modelEnergy();
 ```
-
 
 ---
 
@@ -74,11 +70,9 @@ Prints out the electrostatic energy decomposition matrix.
 
 For example:
 
-
-```
+```aten
 printElec();
 ```
-
 
 ---
 
@@ -92,11 +86,9 @@ Prints the components of the Ewald sum energy.
 
 For example:
 
-
-```
+```aten
 printEwald();
 ```
-
 
 ---
 
@@ -110,11 +102,9 @@ Prints out the total inter-pattern energy decomposition matrix.
 
 For example:
 
-
-```
+```aten
 printInter();
 ```
-
 
 ---
 
@@ -128,11 +118,9 @@ Prints out the total intramolecular energy decomposition matrix.
 
 For example:
 
-
-```
+```aten
 printIntra();
 ```
-
 
 ---
 
@@ -146,11 +134,9 @@ Prints the elements of the calculated energy in a list.
 
 For example:
 
-
-```
+```aten
 printEnergy();
 ```
-
 
 ---
 
@@ -164,11 +150,9 @@ Print out a one-line summary of the calculated energy.
 
 For example:
 
-
-```
+```aten
 printSummary();
 ```
-
 
 ---
 
@@ -182,10 +166,8 @@ Prints out the VDW energy decomposition matrix.
 
 For example:
 
-
-```
+```aten
 printVdw();
 ```
-
 
 

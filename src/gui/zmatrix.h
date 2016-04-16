@@ -81,6 +81,7 @@ class AtenZMatrix : public QDialog
 	void on_ShiftDownButton_clicked(bool checked);
 	void on_MoveToStartButton_clicked(bool checked);
 	void on_MoveToEndButton_clicked(bool checked);
+	void on_CloseButton_clicked(bool checked);
 };
 
 #endif

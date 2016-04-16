@@ -21,15 +21,13 @@ _Syntax:_
 The do-while loop is cousin of the ‘for’ loop, except that there is no control variable. The termination of the loop depends on the _condition_ which is tested at the end of every execution of the _commands_. If the condition evaluates to **TRUE**, the _commands_ are executed again, and _condition_ re-tested afterwards. If **FALSE** the loop ends.
 
 For example:
-
-```
+```aten
 int i = 1;
 do { i = i * 2; printf("i = %d\n", i); } while (i < 100);
 ```
 
 will print out the following:
-
-```
+```aten
 i = 2
 i = 4
 i = 8
@@ -53,23 +51,18 @@ Three separate components make up a 'for' loop. _startvalue_ defines both the co
 
 Some examples:
 
-
-```
+```aten
 for (int i=1; i<=10; i = i + 1) printf("%i\n", i);
 ```
 
-
 Loop over and print all integers between 1 and 10. A local variable _i_ is declared and initialised all in one go in the _startvalue_ part of the loop. The 'long' way of incrementing the integer variable (i = i + 1) is typically not used in C/C++, most people preferring to take advantage of the C's useful postfix and prefix operators, as in the next example).
 
-
-```
+```aten
 for (n = 100; n>0; --n) printf("Counting down... %i\n", n);
 ```
 
-
 Here, an existing variable _n_ is decreased from 100 to 1, printing out all numbers along the way. Note the usage of the double-minus '--' operator (the prefix decrease operator) which decreases its associated variable, in this case _n_. For integers, to decrease means to reduce the value by 1. For other types the meaning may vary – for instance, with reference types the '--' operator means 'previous item in the list', since all such objects in Aten (e.g. atoms) are stored in lists containing many objects of the same type. This makes iterating over, say, all atoms in a given model pretty easy...
-
-```
+```aten
 for (atom a = aten.model.atoms; a; ++a)
 {
     printf("Atom id %i is element %s.\n", a.id, a.symbol);
@@ -79,8 +72,7 @@ for (atom a = aten.model.atoms; a; ++a)
 In this example the variable _a_ is declared and initialised to be a reference to the first atom in the current model. The _condition_ part simply consists of the expression ‘_a_’, which effectively tests the reference address currently stored in _a_. Since any positive number equates to **TRUE** (see below for the _if_ test) the loop will continue until _a_ contains no reference. Since most all reference objects in Aten are stored internally in linked lists, the prefix increment operator (++) changes the value of the variable to be the reference of the next item in the list, or 0 if there are no more items. In this way, the whole list of atoms can be traversed and neatly ended once the final item in the list has passed.
 
 A variant of the **for** loop described above is the [name]for/in[/name] loop – here, only a control variable and initial value are supplied, both of which must be of pointer types. The loop itself will increase the value of the variable (i.e. skip to the next item in the linked list) until a **NULL** pointer is found. For example:
-
-```
+```aten
 select(H);
 for (atom i = aten.model.selection; i; ++i)
 {
@@ -107,11 +99,9 @@ The _if_ statement permits sections of code to be executed based on the assessme
 
 Typically, comparisons are made between two variables, for example:
 
-
-```
+```aten
 if ( var1 > var2 ) ...
 ```
-
 
 checks for _var1_ being greater in value than _var2_, executing the following commands if this turns out to be true. The comparison operator may be any one of the following symbols:
 
@@ -154,22 +144,19 @@ checks for _var1_ being greater in value than _var2_, executing the following co
 In truth, the _condition_ part may be any expression, command, or amalgam of both, provided the end result of executing it is a single value. The type of the final result doesn't even matter, since conversion to a boolean is guaranteed. Deep down in the logic of Aten, integers are at the heart of it all, with zero or any negative number being **FALSE**, and any positive number meaning **TRUE**.
 
 For example:
-
-```
+```aten
 int i = 10;
 if (i > 5) printf("Hooray!\n");
 ```
 
 in this case 'Hooray!' will be printed, because _i_ is greater than 5.
-
-```
+```aten
 int i = 10, j = 20;
 if (i > j) printf("Hooray!\n");
 ```
 
 but in this case 'Hooray!' will **not** be printed, because _i_ is not greater than _j_.
-
-```
+```aten
 int i = 10, j = 20;
 if (i > j) printf("Hooray!\n");
 else { printf("Too small.\n"); i = j; }
@@ -178,8 +165,7 @@ else { printf("Too small.\n"); i = j; }
 Here, the test fails for the same reason, but since an _else_ part was provided we still execute some commands (printing 'Too small.' and setting the variable _i_ equal to _j_).
 
 Since any positive number is **TRUE**, we can simply test the value of a variable.
-
-```
+```aten
 int i = -55;
 if (i) printf("Snoopy.\n");
 
@@ -188,8 +174,7 @@ if (a) printf("New atom.\n");
 ```
 
 In a similar way, a reference variable has a positive integer value at its heart, and so can also be tested in this way.
-
-```
+```aten
 Atom a = newAtom("H");
 double alpha = 100.0;
 if ( (a) &amp;&amp; (alpha < 50.0) ) printf("Alpha and atom are OK.\n");
@@ -197,8 +182,7 @@ else printf("No good!\n");
 ```
 
 Two or more consecutive _conditions_ can be tested in order to determine ‘truth’, in this case using the ‘and’ operator '&amp;&amp;'. Here, the value of the reference variable _a_ and the value of _alpha_ are both checked, and the text ‘Alpha and atom are OK.’ is only printed if both turn out to be **TRUE**.
-
-```
+```aten
 if (time == 0) printf("There is no time.");
 else if (time > 5) printf("There is more than enough time.");
 else printf("There is only a little time.");
@@ -229,19 +213,16 @@ _Syntax:_
 The while loop is another cousin of the _for_ loop, and as with the [name]do-while[/name] loop there is no control variable. The termination of the loop depends on the _condition_ which is tested at the beginning of the loop, before execution of the _commands_. If **TRUE**, the _commands_ are executed, but if **FALSE** the loop ends without executing the _commands_ (and meaning that it is possible that the _commands_ are never executed).
 
 For example:
-
-```
+```aten
 int i = 1024;
 while (i > 100) { i = i / 2; printf("i = %d\n", i); }
 ```
 
 will print out the following:
-
-```
+```aten
 i = 512
 i = 256
 i = 128
 i = 64
 ```
-
 

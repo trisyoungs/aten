@@ -91,8 +91,7 @@ _Syntax:_
 Normalises the vector _v_, returning the magnitude of the vector before the normalisation was performed.
 
 For example:
-
-```
+```aten
 vector v = { 1, 2, 3 };
 double mag = normalise(v);
 printf("Normalised vector is { %f, %f, %f }, mag was %f\n", v.x, v.y, v.z, mag);
@@ -100,11 +99,9 @@ printf("Normalised vector is { %f, %f, %f }, mag was %f\n", v.x, v.y, v.z, mag);
 
 prints the following:
 
-
-```
+```aten
 Normalised vector is { 0.267261, 0.534522, 0.801784 }, mag was 3.741657 
 ```
-
 
 ---
 
@@ -155,5 +152,4 @@ _Syntax:_
 **double** **tan** ( **double** _angle_ )
 
 Returns the tangent of _angle_ (which should be given in degrees).
-
 

@@ -20,11 +20,9 @@ Create a partitioning scheme (called _name_) from empty space in the current mod
 
 For example:
 
-
-```
+```aten
 createScheme("", 50, 50, 50, 0.02, 2, TRUE);
 ```
-
 
 ---
 
@@ -40,15 +38,12 @@ At present, the only implemented geometry is "cylindrical".
 
 For example:
 
-
-```
+```aten
 drillPores("cylindrical", 5.0, 3, 3);
 ```
 
-
 creates a 3x3 array of cylindrical pores of radius 5.0 A along the z-axis (the default).
-
-```
+```aten
 loadModel("data/test/amorphous-silica.ato");
 drillPores("cylindrical", 5.0, 1, 3, 2, 25.0, 43.3013, 0.0);
 ```
@@ -66,8 +61,7 @@ _Syntax:_
 This acts as a complement to the **drillPores** command, operating in exactly the same way except that atoms which would be in the pores are not deleted from the model. Obviously, this can be used to assess the exact positions of pores before they are cut from the model.  Furthermore, once the pores have been drilled proper, by increasing the size parameter and using **selectPores** atoms in the pore wall can be selected and then OH terminated with the **terminate** command.  The number of atoms selected is returned. Note that any existing atom selection is cleared before the new pore atoms are selected.
 
 For example:
-
-```
+```aten
 drillPores("cylindrical", 5.0, 3, 3);
 selectPores("cylindrical", 7.0, 3, 3);
 ```
@@ -86,10 +80,8 @@ Adds hydrogen atoms and OH groups to atoms in the current selection, in order to
 
 For example:
 
-
-```
+```aten
 terminate();
 ```
-
 
 

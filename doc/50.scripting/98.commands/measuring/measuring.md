@@ -22,11 +22,9 @@ Clear all measurements in the current model.
 
 For example:
 
-
-```
+```aten
 clearMeasurements();
 ```
-
 
 ---
 
@@ -39,8 +37,7 @@ _Syntax:_
 This command is a general measuring tool, able to measure distances, angles, and torsions in the model, depending on how many arguments are supplied. Note that, unlike the measure command, the resulting measurement is _not_ added to the Model’s internal list, and thus will not be displayed in the model.
 
 For example:
-
-```
+```aten
 double rij[50];
 for (int i=1; i<=50; ++i) rij_ = geometry(1,i); 
 ```
@@ -59,11 +56,9 @@ List all measurements in the current model.
 
 For example:
 
-
-```
+```aten
 listMeasurements();
 ```
-
 
 prints out a list of measurements made so far.
 
@@ -79,23 +74,18 @@ This command is a general measuring tool, able to measure distances, angles, and
 
 For example:
 
-
-```
+```aten
 double rij = measure(1, 2);
 ```
 
-
 returns the distance between atoms 1 and 2.
 
-
-```
+```aten
 double theta = measure(10, 20, 30);
 ```
 
-
 returns the angle between atoms 10, 20, and 30.
-
-```
+```aten
 double phi = measure(9, 8, 7, 6);
 measure(9,8,7,6);
 ```
@@ -114,12 +104,9 @@ This command is a general measuring tool to measure all of one particular type o
 
 For example:
 
-
-```
+```aten
 measureSelected(3);
 ```
 
-
 calculates and displays all bond angles in the current atom selection.
-
 

@@ -22,11 +22,9 @@ Can be run when importing trajectory frames. Creates enough atoms in the current
 
 For example:
 
-
-```
+```aten
 createAtoms();
 ```
-
 
 ---
 
@@ -46,23 +44,18 @@ Returns a reference to the current model (if no argument is given) or selects th
 
 For example:
 
-
-```
+```aten
 currentModel(4);
 ```
 
-
 selects the fourth loaded model.
 
-
-```
+```aten
 currentModel("Protein coordinates");
 ```
 
-
 selects the model named "Protein coordinates" (provided it exists).
-
-```
+```aten
 Model m1, m2;
 m1 = newModel("Test model 1");
 m2 = newModel("Test model 2");
@@ -97,11 +90,9 @@ Performs various internal tasks after a model has been fully created within a fi
 
 For example:
 
-
-```
+```aten
 finaliseModel();
 ```
-
 
 ---
 
@@ -115,11 +106,9 @@ Makes the first loaded / created model the current model, and returns a referenc
 
 For example:
 
-
-```
+```aten
 firstModel();
 ```
-
 
 ---
 
@@ -137,19 +126,15 @@ Returns a reference to the requested model, but unlike [**currentModel**](/aten/
 
 For example:
 
-
-```
+```aten
 Model alpha = getModel("alpha2");
 ```
 
-
 grabs a reference to the model named "alpha2".
 
-
-```
+```aten
 Model m = getModel(5);
 ```
-
 
 gets a reference to the fifth loaded model.
 
@@ -165,11 +150,9 @@ Print out information on the current model and its atoms.
 
 For example:
 
-
-```
+```aten
 info();
 ```
-
 
 ---
 
@@ -183,11 +166,9 @@ Makes the last loaded / created model the current model, and returns a reference
 
 For example:
 
-
-```
+```aten
 Model final = lastModel();
 ```
-
 
 ---
 
@@ -201,11 +182,9 @@ Lists all models currently available.
 
 For example:
 
-
-```
+```aten
 listModels();
 ```
-
 
 ---
 
@@ -221,19 +200,15 @@ Load model(s) from the _filename_ provided, autodetecting the format of the file
 
 For example:
 
-
-```
+```aten
 Model m = loadModel("/home/foo/coords/test.xyz");
 ```
 
-
 loads a model called 'test.xyz', returning a reference to it.
 
-
-```
+```aten
 Model m = loadModel("/home/foo/coords/testfile", "xyz");
 ```
-
 
 forces loading of the model _testfile_ as an **xyz** file.
 
@@ -259,11 +234,9 @@ Can only be run when importing trajectory frames. Templates the atoms in the tra
 
 For example:
 
-
-```
+```aten
 modelTemplate();
 ```
-
 
 ---
 
@@ -277,19 +250,15 @@ Create a new model called _name_ which becomes the current model, and return a r
 
 For example:
 
-
-```
+```aten
 newModel("emptymodel");
 ```
 
-
 creates a new, empty model called 'emptymodel' and makes it current.
 
-
-```
+```aten
 Model c12 = newModel("dodecane");
 ```
-
 
 creates a new, empty model called 'dodecane', makes it current, and stores a reference to it in the variable _c12_.
 
@@ -305,11 +274,9 @@ Skips to the next loaded model, makes it current, and returns a reference to it.
 
 For example:
 
-
-```
+```aten
 Model next = nextModel();
 ```
-
 
 ---
 
@@ -323,11 +290,9 @@ Makes the parent model of the current trajectory frame the current model.
 
 For example:
 
-
-```
+```aten
 parentModel();
 ```
-
 
 ---
 
@@ -341,11 +306,9 @@ Skips to the previous loaded model, makes it current, and returns a reference to
 
 For example:
 
-
-```
+```aten
 model prev = prevmodel();
 ```
-
 
 ---
 
@@ -359,11 +322,9 @@ Save the current model in the _format_ given (which should correspond to a model
 
 For example:
 
-
-```
+```aten
 int success = saveModel("xyz", "/home/foo/newcoords/test.config");
 ```
-
 
 saves the current model in xyz format to the filename given.
 
@@ -389,11 +350,9 @@ Sets the name of the current model.
 
 For example:
 
-
-```
+```aten
 setName("panther");
 ```
-
 
 gives the current model the cool-sounding name of 'panther'! Ahem.
 
@@ -406,5 +365,4 @@ _Syntax:_
 **void** **showAll** ( )
 
 Makes any previously-hidden atoms in the model visible again.
-
 

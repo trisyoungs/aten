@@ -22,11 +22,9 @@ Geometry optimises the current model using the conjugate gradient method. The fi
 
 For example:
 
-
-```
+```aten
 cgMinimise(20);
 ```
-
 
 runs a conjugate gradient geometry optimisation for a maximum of 20 cycles.
 
@@ -42,11 +40,9 @@ Optimises the current model using a molecular Monte Carlo minimisation method.
 
 For example:
 
-
-```
+```aten
 mcMinimise(20);
 ```
-
 
 runs a geometry optimisation for a maximum of 20 cycles.
 
@@ -62,19 +58,15 @@ Optimises the current model using the external MOPAC program (Copyright 2007, St
 
 For example:
 
-
-```
+```aten
 mopacMinimise();
 ```
 
-
 minimises the current model with the default options listed above.
 
-
-```
+```aten
 mopacMinimise("UHF TRIPLET PM6-DH2");
 ```
-
 
 minimises the current model assuming a triplet state with the UHF method and the PM6-DH2 hamiltonian.
 
@@ -90,12 +82,9 @@ Optimises the current model using the Steepest Descent method. The final total e
 
 For example:
 
-
-```
+```aten
 sdMinimise(100);
 ```
 
-
 minimises the current model for a maximum of 100 steps with a simple steepest descent minimiser.
-
 

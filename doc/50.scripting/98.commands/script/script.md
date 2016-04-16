@@ -22,11 +22,9 @@ Lists all loaded scripts.
 
 For example:
 
-
-```
+```aten
 listScripts();
 ```
-
 
 ---
 
@@ -42,11 +40,9 @@ Loads a script from the _filename_ specified, giving it the optional _nickname_.
 
 For example:
 
-
-```
+```aten
 loadScript("scripts/liquid-water.txt", "water");
 ```
-
 
 loads the script from "scripts/liquid-water.txt"  and gives it the nickname "water".
 
@@ -62,12 +58,9 @@ Executes the specified script.
 
 For example:
 
-
-```
+```aten
 runScript("water");
 ```
 
-
 executes the water script loaded in the previous example.
-
 

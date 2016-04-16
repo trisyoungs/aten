@@ -32,11 +32,9 @@ Outputs the rotation matrix elements and position vector of the camera for the c
 
 For example:
 
-
-```
+```aten
 getView();
 ```
-
 
 ---
 
@@ -50,11 +48,9 @@ Set the view for all models to be an orthographic projection.
 
 For example:
 
-
-```
+```aten
 orthographic();
 ```
-
 
 ---
 
@@ -68,11 +64,9 @@ Set the view for all models to be a perspective projection.
 
 For example:
 
-
-```
+```aten
 perspective();
 ```
-
 
 ---
 
@@ -86,11 +80,9 @@ Resets the view rotation and zoom for the current model.
 
 For example:
 
-
-```
+```aten
 resetView();
 ```
-
 
 ---
 
@@ -104,11 +96,9 @@ Rotates the current view by _rotx_ degrees around the x axis and _roty_ degrees 
 
 For example:
 
-
-```
+```aten
 rotateView(10.0, 0.0);
 ```
-
 
 ---
 
@@ -122,11 +112,9 @@ Sets the rotation matrix and position vector of the camera for the current model
 
 For example:
 
-
-```
+```aten
 setView(1, 0, 0 ,0, 0, 1, 0, -1, 0, 0.0, 0.0, -10.0);
 ```
-
 
 sets a view with the z axis pointing up, and the y axis normal to the screen (i.e. rotated 90 degrees around the x axis)
 
@@ -142,19 +130,15 @@ Performs a quick speed test based on rendering of the current model and general 
 
 For example:
 
-
-```
+```aten
 speedTest();
 ```
 
-
 spins the current model for the default of 100 rendering passes.
 
-
-```
+```aten
 speedTest(2000);
 ```
-
 
 spins the current model for 2000 rendering passes.
 
@@ -170,11 +154,9 @@ Translates the camera viewing the current model.
 
 For example:
 
-
-```
+```aten
 translateView(0.0, 0.0, 1.0);
 ```
-
 
 ---
 
@@ -188,11 +170,9 @@ Sets the current view so that it is along the specified vector.
 
 For example:
 
-
-```
+```aten
 viewAlong(0, 0, -1);
 ```
-
 
 view the current model along the negative z-axis.
 
@@ -208,11 +188,9 @@ Sets the current view so that is along the specified cell vector.
 
 For example:
 
-
-```
+```aten
 viewAlongCell(1, 0, 0);
 ```
-
 
 view the current model along the cell’s x axis.
 
@@ -228,20 +206,15 @@ Zooms the view by the specified amount.
 
 For example:
 
-
-```
+```aten
 zoomView(10.0);
 ```
 
-
 moves the camera 10 Å forwards along the z-direction.
 
-
-```
+```aten
 zoomView(-5);
 ```
 
-
 moves the camera 5 Å backwards along the z-direction.
-
 

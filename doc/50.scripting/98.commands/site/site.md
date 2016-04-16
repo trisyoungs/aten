@@ -10,8 +10,6 @@ header_class: alt
 
 
 
-
-
 XXX
 
 Describe sites within molecules for use in analysis.
@@ -30,11 +28,9 @@ Selects (makes current) the site referenced by _name_. If the site cannot be fou
 
 For example:
 
-
-```
+```aten
 getSite("carb1");
 ```
-
 
 makes "carb1" the current site.
 
@@ -50,11 +46,9 @@ Prints the list of sites defined for the current model.
 
 For example:
 
-
-```
+```aten
 listSites();
 ```
-
 
 ---
 
@@ -68,19 +62,15 @@ Creates a new site _name_ for the current model, based on the molecule of _patte
 
 For example:
 
-
-```
+```aten
 newSite("watercentre", "h2o");
 ```
 
-
 adds a site called 'watercentre' based on the pattern called 'h2o' and located at the centre of geometry of all atoms.
 
-
-```
+```aten
 newSite("oxy", "methanol", "5");
 ```
-
 
 adds a site called ‘oxy’ based on the pattern called ‘methanol’ and located at the fifth atom in each molecule.
 
@@ -96,12 +86,9 @@ Sets the local x (first set of atom IDs) and y (second set of atom IDs) axes for
 
 For example:
 
-
-```
+```aten
 siteAxes("1,2", "6");
 ```
 
-
 sets the x axis definition of the current site to be the vector between the site centre and the average position of the first two atoms, and the y axis definition to be the vector between the site centre and the position of the sixth atom.
-
 
