@@ -35,6 +35,7 @@
 #include "gui/exportfilm.h"
 #include "gui/exportimage.h"
 #include "gui/progress.h"
+#include "gui/zmatrix.h"
 #include "templates/reflist.h"
 #include "base/glyph.h"
 #include "base/namespace.h"
@@ -42,10 +43,7 @@
 // Forward Declarations
 class AtenPrefs;
 class AtenForcefieldEditor;
-class CommandWidget;
-class ForcefieldsWidget;
 class GlyphsWidget;
-class MDWidget;
 class VibrationsWidget;
 
 ATEN_BEGIN_NAMESPACE
@@ -435,8 +433,9 @@ class AtenWindow : public QMainWindow
 	void on_ToolsScriptsRemoveButton_clicked(bool checked);
 	void on_ToolsScriptsReloadButton_clicked(bool checked);
 	void on_ToolsScriptsRunButton_clicked(bool checked);
-	// Order
-	void on_ToolsOrderReorderButton_clicked(bool checked);
+	// Atoms
+	void on_ToolsAtomsReorderButton_clicked(bool checked);
+	void on_ToolsAtomsZMatrixButton_clicked(bool checked);
 	// Disorder
 	void on_ToolsDisorderCreateButton_clicked(bool checked);
 	// Surface
@@ -601,10 +600,6 @@ class AtenWindow : public QMainWindow
 	/*
 	 * Wizards and Dialogs
 	 */
-	private:
-	// List of dock widgets
-	QList<QDockWidget*> dockWidgets_;
-	
 	public:
 	// Glyphs dock widget
 	GlyphsWidget *glyphsWidget;
@@ -618,6 +613,8 @@ class AtenWindow : public QMainWindow
 	AtenExportImage exportImageDialog_;
 	// Progress Indicator
 	AtenProgress progressDialog_;
+	// ZMatrix Editor
+	AtenZMatrix zMatrixDialog_;
 
 
 	/*

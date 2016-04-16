@@ -162,14 +162,20 @@ void AtenWindow::on_ToolsScriptsRunButton_clicked(bool checked)
 }
 
 /*
- * Order
+ * Atoms
  */
 
-void AtenWindow::on_ToolsOrderReorderButton_clicked(bool checked)
+void AtenWindow::on_ToolsAtomsReorderButton_clicked(bool checked)
 {
 	CommandNode::run(Commands::ReOrder, "");
 
 	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
+}
+
+void AtenWindow::on_ToolsAtomsZMatrixButton_clicked(bool checked)
+{
+	zMatrixDialog_.refresh(true);
+	zMatrixDialog_.show();
 }
 
 /*

@@ -40,13 +40,17 @@ Run the currently-selected script.
 
 Executes the [**Disorder Builder**](/aten/doc/gui/disorder) on the current model.
 
-## Order Group <a id="order"></a>
+## Atoms Group <a id="atoms"></a>
 
-![Order Group](order.png){.imgfull}
+![Atoms Group](atoms.png){.imgfull}
 
 ### Reorder
 
 Attempts to reorder the atoms in the current atom selection so that they may be treated more effectively by a pattern description.  This tool basically helps to fix configurations in which there are a number of repeating units of the same molecule, but whose individual atoms are not in the same order each time (or are completely jumbled up).
+
+### ZMatrix
+
+Shows the ZMatrix Editor for the current molecule, allowing atoms to be reordered within the z-matrix, and parameters adjusted.
 
 ## Pores Group <a id="pores"></a>
 
