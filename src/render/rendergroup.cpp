@@ -129,8 +129,8 @@ void RenderGroup::addLines(Primitive& targetPrimitive, Matrix& transform, Vec4<G
 	if (targetPrimitive.colouredVertexData()) printf("Warning: Line primitive added to RenderGroup contains colour data and had colour supplied.\n");
 	
 	// Create new PrimitiveInfo in correct list
-	if (bold) normalLinePrimitives_.addOccurrence(targetPrimitive, transform, colour);
-	else boldLinePrimitives_.addOccurrence(targetPrimitive, transform, colour);
+	if (bold) boldLinePrimitives_.addOccurrence(targetPrimitive, transform, colour);
+	else normalLinePrimitives_.addOccurrence(targetPrimitive, transform, colour);
 }
 
 // Add line primitive (which has it's own colour info)
@@ -147,8 +147,8 @@ void RenderGroup::addLines(Primitive& targetPrimitive, Matrix& transform, bool b
 	if (targetPrimitive.colouredVertexData()) printf("Warning: Line primitive added to RenderGroup does not contain colour data and had no colour supplied.\n");
 	
 	// Create new PrimitiveInfo in correct list
-	if (bold) normalLinePrimitives_.addOccurrence(targetPrimitive, transform);
-	else boldLinePrimitives_.addOccurrence(targetPrimitive, transform);
+	if (bold) boldLinePrimitives_.addOccurrence(targetPrimitive, transform);
+	else normalLinePrimitives_.addOccurrence(targetPrimitive, transform);
 }
 
 // Add single triangle

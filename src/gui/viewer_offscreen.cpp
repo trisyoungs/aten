@@ -149,6 +149,7 @@ QPixmap Viewer::generateImage(int imageWidth, int imageHeight)
 	painter.setPen(Qt::NoPen);
 	painter.setBrush(Qt::white);
 	painter.drawRect(0,0,imageWidth, imageHeight);
+	QRect imageRect(0,0,512,512), targetRect(0,0,512,512);
 
 	// Calculate scale factors for ViewLayout, so that the context width/height is scaled to the desired image size
 	int nX = imageWidth / tileWidth + ((imageWidth %tileWidth) ? 1 : 0);
@@ -171,7 +172,8 @@ QPixmap Viewer::generateImage(int imageWidth, int imageHeight)
 			QImage tile(fboImage.constBits(), fboImage.width(), fboImage.height(), QImage::Format_ARGB32);
 
 			// Paste this tile into the main image
-			painter.drawImage(x*tileWidth, imageHeight-(y+1)*tileHeight, tile, Qt::ThresholdAlphaDither | Qt::ColorOnly);
+			targetRect.setRect(x*tileWidth, imageHeight-(y+1)*tileHeight, tileWidth, tileHeight);
+			painter.drawImage(targetRect, tile, imageRect, Qt::ThresholdAlphaDither | Qt::ColorOnly);
 
 			if (!Messenger::incrementTaskProgress(task)) break;
 		}

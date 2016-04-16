@@ -95,6 +95,10 @@ class RenderGroup
 	/*
 	 * Creation
 	 */
+	private:
+	// Foreground pen colour (taken from prefs)
+	Vec4<GLfloat> penColour_;
+
 	public:
 	// Render selected bond between specified atoms
 	void createSelectedBond(PrimitiveSet& primitiveSet, Matrix A, Vec3<double> vij, Atom* i, Prefs::DrawStyle style_i, Vec4<GLfloat>& colour_i, double radius_i, Atom* j, Prefs::DrawStyle style_j, Vec4<GLfloat>& colour_j, double radius_j, Bond::BondType bt, double selscale, Bond* bondInPlane = NULL);
