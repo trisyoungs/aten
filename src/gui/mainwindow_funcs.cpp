@@ -92,11 +92,11 @@
 #include "gui/vibrations.h"
 
 // Constructor
-AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportFilmDialog_(*this), exportImageDialog_(*this), disorderWizard_(*this), progressDialog_(*this)
+AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportFilmDialog_(*this), exportImageDialog_(*this), disorderWizard_(*this), progressDialog_(*this), zMatrixDialog_(*this)
 {
 	Messenger::enter("AtenWindow::AtenWindow()");
 
-	// Initialise Qt's icons resource
+	// Initialise Qt's icon resource
 	Q_INIT_RESOURCE(icons);
 
 	// Seutp user interface
@@ -173,7 +173,6 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportFilmD
 	// Create dock widgets
 	glyphsWidget = new GlyphsWidget(*this, Qt::Tool);
 	vibrationsWidget = new VibrationsWidget(*this, Qt::Tool);
-	dockWidgets_ << glyphsWidget << vibrationsWidget;
 
 	int n;
 	ReturnValue rv;
@@ -492,9 +491,6 @@ void AtenWindow::resizeEvent(QResizeEvent* event)
 // ATEN2 TODO Update this!
 void AtenWindow::setInteractive(bool interactive)
 {
-	// Set enabled status of all the dock widgets..
-	foreach( QObject *obj, dockWidgets_) obj->setProperty("enabled", interactive);
-	
 	// ...and set the canvas 'editability'
 	editable_ = interactive;
 }

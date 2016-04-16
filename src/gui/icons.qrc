@@ -33,6 +33,7 @@
   <qresource prefix="tools">
     <file>icons/tools_disorder.svg</file>
     <file>icons/script_reload.svg</file>
+    <file>icons/tools_zmatrix.svg</file>
     <file>icons/script_open.svg</file>
     <file>icons/script_remove.svg</file>
     <file>icons/script_run.svg</file>

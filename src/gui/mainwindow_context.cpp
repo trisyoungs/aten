@@ -63,7 +63,7 @@ void AtenWindow::createContextMenu()
 	connect(action, SIGNAL(triggered(bool)), ui.AtomsMoveToEndButton, SLOT(click()));
 	menu->addSeparator();
 	action = menu->addAction("Reorder");
-	connect(action, SIGNAL(triggered(bool)), ui.ToolsOrderReorderButton, SLOT(click()));
+	connect(action, SIGNAL(triggered(bool)), ui.ToolsAtomsReorderButton, SLOT(click()));
 
 	// Appearance
 	contextMenu_.addSeparator();

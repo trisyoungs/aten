@@ -543,6 +543,52 @@ void Primitive::plotSphere(double radius, int nStacks, int nSlices, bool colourD
 	}
 }
 
+// Plot line sphere with specified radius and quality
+void Primitive::plotLineSphere(double radius, int nStacks, int nSlices)
+{
+	int i, j, count;
+	double stack0, stack1, z0, zr0, z1, zr1, slice0, slice1, x0, y0, x1, y1;
+	
+	count = 0;
+	for (i = 1; i <= nStacks; ++i)
+	{
+		stack0 = PI * (-0.5 + (double) (i-1) / nStacks );
+		z0  = sin(stack0);
+		zr0 = cos(stack0);
+		
+		stack1 = PI * (-0.5 + (double) i / nStacks );
+		z1 = sin(stack1);
+		zr1 = cos(stack1);
+		
+		for (j = 1; j <= nSlices; ++j)
+		{
+			slice0 = 2 * PI * (double) (j-1) / nSlices;
+			x0 = cos(slice0);
+			y0 = sin(slice0);
+			
+			slice1 = 2 * PI * (double) j / nSlices;
+			x1 = cos(slice1);
+			y1 = sin(slice1);
+			
+			// First triangle - {x0,y0,z0},{x0,y0,z1},{x1,y1,z0}
+			// N.B Don't plot if i == 1, to avoid overlapping with subsequent vertices in this pass
+			if (i > 1)
+			{
+				defineVertex(x0 * zr0 * radius, y0 * zr0 * radius, z0 * radius, x0 * zr0, y0 * zr0, z0);
+				defineVertex(x0 * zr1 * radius, y0 * zr1 * radius, z1 * radius, x0 * zr1, y0 * zr1, z1);
+			}
+			
+			// Second triangle - {x0,y0,z0},{x0,y0,z1},{x1,y1,z0}
+			// N.B. Don't plot if i == nstacks, to avoid overlapping with previous vertices in this pass
+			if (i < nStacks )
+			{
+				defineVertex(x0 * zr1 * radius, y0 * zr1 * radius, z1 * radius, x0 * zr1, y0 * zr1, z1);
+				defineVertex(x1 * zr0 * radius, y1 * zr0 * radius, z0 * radius, x1 * zr0, y1 * zr0, z0);
+			}
+		}
+	}
+}
+
 // Plot cylinder vertices from origin {ox,oy,oz}, following vector {vx,vy,vz}, with radii and quality specified
 void Primitive::plotCylinder(GLfloat ox, GLfloat oy, GLfloat oz, GLfloat vx, GLfloat vy, GLfloat vz, double startRadius, double endRadius, int nStacks, int nSlices, bool capStart, bool capEnd, bool colourData, Vec4<GLfloat> colour)
 {
@@ -644,6 +690,76 @@ void Primitive::plotCylinder(GLfloat ox, GLfloat oy, GLfloat oz, GLfloat vx, GLf
 					defineVertex(ox+vert[1].x, oy+vert[1].y, oz+vert[1].z, w.x, w.y, w.z);
 					defineVertex(ox+vert[3].x, oy+vert[3].y, oz+vert[3].z, w.x, w.y, w.z);
 				}
+			}
+		}
+	}
+}
+
+// Plot cylinder vertices from origin {ox,oy,oz}, following vector {vx,vy,vz}, with radii and quality specified
+void Primitive::plotLineCylinder(GLfloat ox, GLfloat oy, GLfloat oz, GLfloat vx, GLfloat vy, GLfloat vz, double startRadius, double endRadius, int nStacks, int nSlices, bool capStart, bool capEnd)
+{
+	int i, j;
+	Vec3<GLfloat> u, v, w, vert[4], normal[2], deltarj, rj;
+	double d, dTheta, dRadius;
+	
+	// Setup some variables
+	rj.set(vx,vy,vz);
+	dTheta = TWOPI / nSlices;
+	dRadius = ( startRadius - endRadius ) / nStacks;
+	deltarj = rj / nStacks;
+
+	// Calculate orthogonal vectors
+	u = rj.orthogonal();
+// 	u.normalise();
+	v = rj * u;
+	v.normalise();
+	w = rj;
+	w.normalise();
+
+	// ATEN2 TODO Normal calculation for cones will be incorrect
+	for (i = 1; i <= nStacks; ++i)
+	{
+		for (j = 1; j <= nSlices; ++j)
+		{
+			d = (j-1) * dTheta;
+			normal[0] = u*cos(d) + v*sin(d);
+			vert[0] = normal[0]*( startRadius -(i-1)* dRadius ) + deltarj*(i-1);
+			vert[1] = normal[0]*( startRadius -i* dRadius ) + deltarj*i;
+			d = j * dTheta;
+			normal[1] = u*cos(d) + v*sin(d);
+			vert[2] = normal[1]*( startRadius -(i-1)* dRadius ) + deltarj*(i-1);
+			vert[3] = normal[1]*( startRadius -i* dRadius ) + deltarj*i;
+			
+			// Triangle 1
+			if ((i > 1) || ( startRadius > 1.0e-5))
+			{
+				defineVertex(ox+vert[0].x, oy+vert[0].y, oz+vert[0].z, normal[0].x, normal[0].y, normal[0].z);
+				defineVertex(ox+vert[1].x, oy+vert[1].y, oz+vert[1].z, normal[0].x, normal[0].y, normal[0].z);
+// 				defineVertex(ox+vert[2].x, oy+vert[2].y, oz+vert[2].z, normal[1].x, normal[1].y, normal[1].z);
+			}
+ 
+			// Triangle 2
+			if ((i < nStacks ) || ( endRadius > 1.0e-5))
+			{
+				defineVertex(ox+vert[1].x, oy+vert[1].y, oz+vert[1].z, normal[0].x, normal[0].y, normal[0].z);
+				defineVertex(ox+vert[2].x, oy+vert[2].y, oz+vert[2].z, normal[1].x, normal[1].y, normal[1].z);
+// 				defineVertex(ox+vert[3].x, oy+vert[3].y, oz+vert[3].z, normal[1].x, normal[1].y, normal[1].z);
+			}
+			
+			// Start cap
+			if ((i == 1) && ( startRadius > 1.0e-5) && capStart)
+			{
+				defineVertex(ox, oy, oz, -w.x, -w.y, -w.z);
+				defineVertex(ox+vert[0].x, oy+vert[0].y, oz+vert[0].z, -w.x, -w.y, -w.z);
+// 				defineVertex(ox+vert[2].x, oy+vert[2].y, oz+vert[2].z, -w.x, -w.y, -w.z);
+			}
+
+			// End cap
+			if ((i == nStacks ) && ( endRadius > 1.0e-5) && capEnd)
+			{
+				defineVertex(ox+rj.x, oy+rj.y, oz+rj.z, w.x, w.y, w.z);
+				defineVertex(ox+vert[1].x, oy+vert[1].y, oz+vert[1].z, w.x, w.y, w.z);
+// 				defineVertex(ox+vert[3].x, oy+vert[3].y, oz+vert[3].z, w.x, w.y, w.z);
 			}
 		}
 	}
