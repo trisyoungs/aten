@@ -208,10 +208,7 @@ void Viewer::renderFullScene(int contextWidth, int contextHeight, int xOffset, i
 		renderModel(m, viewPortX+xOffset, viewPortY+yOffset, viewPortWidth, viewPortHeight, !renderingOffScreen_);
 
 		// Render additional data for active model
-		if (m == aten_->currentModel())
-		{
-			renderUserActions(m);
-		}
+		if (m == aten_->currentModel()) renderUserActions(m);
 
 		// Render extras from specific windows / popups
 		renderExtras(m);
@@ -226,7 +223,7 @@ void Viewer::renderFullScene(int contextWidth, int contextHeight, int xOffset, i
 			glViewport(viewPortX, viewPortY, viewPortWidth, viewPortHeight);
 			glMatrixMode(GL_PROJECTION);
 			glLoadIdentity();
-			glOrtho(0, viewPortWidth, 0, viewPortHeight, -1.0, 1.0);
+			glOrtho(viewPortX, viewPortX+viewPortWidth, viewPortY, viewPortY+viewPortHeight, -1.0, 1.0);
 			glMatrixMode(GL_MODELVIEW);
 			glLoadIdentity();
 			glLineWidth(1.0);

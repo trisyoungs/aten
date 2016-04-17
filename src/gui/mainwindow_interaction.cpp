@@ -368,8 +368,18 @@ void AtenWindow::endMode(Prefs::MouseButton button, bool* keyModifiers)
 		case (UserAction::DrawAtomsAction):
 			// If there is no atom under the mouse we draw one
 			i = targetModel->atomOnScreen(rMouseUp.x, ui.MainView->contextHeight()-rMouseUp.y);
-			if ((clickedAtom_ == i) && (i != NULL)) break;
-			targetModel->beginUndoState("Draw Chain");
+			if ((clickedAtom_ == i) && (i != NULL))
+			{
+				// Centre model if the relevant option is checked
+				if (ui.BuildDrawKeepCenteredButton->isChecked())
+				{
+					targetModel->selectAll(true);
+					targetModel->centre(0.0, 0.0, 0.0, false, false, false, true);
+				}
+				break;
+			}
+
+			targetModel->beginUndoState("Draw Atoms");
 			if (i == NULL)
 			{
 				// No atom under the mouse, so draw an atom at previous draw depth

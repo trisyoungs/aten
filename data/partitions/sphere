@@ -1,16 +1,11 @@
-# Example partition definition for Aten
-# Everything here works in simple unit cell coordinates, i.e. coordinates range from 0 to 1 in a cubic cell.
-# Shearing / scaling of all coordinates is performed internally by Aten when necessary.
-
 # Name / Description
 string name = "Sphere";
 string description = "Simple spherical region";
 
 # Number of partitions
-# The total possible number of partitions, *including* the unit cell itself.
 int nPartitions = 2;
 
-# A partition may contain options set through the defaultDialog as follows
+# Options
 global double x = 0.5, y = 0.5, z = 0.5, r = 0.3;
 int partitionOptions()
 {
