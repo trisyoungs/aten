@@ -277,7 +277,8 @@ void AtenWindow::on_ForcefieldsExpressionRemoveButton_clicked(bool checked)
 {
 	Model* currentModel = aten_.currentModelOrFrame();
 	if (!currentModel) return;
-	
+
+	currentModel->clearExpression();
 	currentModel->removeTyping();
 
 	updateWidgets(AtenWindow::MainViewTarget);

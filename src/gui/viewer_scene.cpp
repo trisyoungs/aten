@@ -208,7 +208,10 @@ void Viewer::renderFullScene(int contextWidth, int contextHeight, int xOffset, i
 		renderModel(m, viewPortX+xOffset, viewPortY+yOffset, viewPortWidth, viewPortHeight, !renderingOffScreen_);
 
 		// Render additional data for active model
-		if (m == aten_->currentModel()) renderUserActions(m);
+		if (m == aten_->currentModel())
+		{
+			renderUserActions(m);
+		}
 
 		// Render extras from specific windows / popups
 		renderExtras(m);
@@ -216,20 +219,20 @@ void Viewer::renderFullScene(int contextWidth, int contextHeight, int xOffset, i
 		// Send the local renderGroup
 		renderGroup_.sendToGL(modelTransformationMatrix_);
 
-		// TEST Render additional info glyphs
-		glClear(GL_DEPTH_BUFFER_BIT);
-		glViewport(viewPortX, viewPortY, viewPortWidth, viewPortHeight);
-		glMatrixMode(GL_PROJECTION);
-		glLoadIdentity();
-		glOrtho(0, viewPortAspect, 1.0, 0.0, -1.0, 1.0);
-		glMatrixMode(GL_MODELVIEW);
-		glLoadIdentity();
-		glColor4f(0.0, 0.0, 0.0, 1.0);
-		glBegin(GL_TRIANGLES);
-// 		glVertex3f(0.0, 0.0, 0.0);
-// 		glVertex3f(0.0, 0.5, 0.0);
-// 		glVertex3f(0.5, 0.0, 0.0);
-		glEnd();
+		// Render active mode extras (in 2D) for current model
+		if (m == aten_->currentModel())
+		{
+			glClear(GL_DEPTH_BUFFER_BIT);
+			glViewport(viewPortX, viewPortY, viewPortWidth, viewPortHeight);
+			glMatrixMode(GL_PROJECTION);
+			glLoadIdentity();
+			glOrtho(0, viewPortWidth, 0, viewPortHeight, -1.0, 1.0);
+			glMatrixMode(GL_MODELVIEW);
+			glLoadIdentity();
+			glLineWidth(1.0);
+			
+			renderActiveModes(m);
+		}
 
 		// Increase counters
 		++col;

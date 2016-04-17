@@ -31,72 +31,69 @@
 void Viewer::renderActiveModes(Model* currentModel)
 {
 	// Variables
-	QColor color;
-	QBrush nobrush(Qt::NoBrush);
 	GLfloat colour[4];
-	Vec3<double> r, mouseLast, mouseDown;
 	int i, skip, n;
 	double dx, halfw;
 
-	QPainter painter(this);
-	
-	// Active mode embellishments
-	prefs.copyColour(Prefs::BackgroundColour, colour);
-	color.setRgbF(1.0-colour[0], 1.0-colour[1], 1.0-colour[2], 1.0);
-	painter.setPen(color);
-	painter.setPen(Qt::DashLine);
-	painter.setBrush(nobrush);
+	prefs.copyColour(Prefs::ForegroundColour, colour);
+	glColor4fv(colour);
 	switch (atenWindow_->activeMode())
 	{
 		case (UserAction::NoAction):
 			break;
 		// Only selection mode where we draw a selection box
 		case (UserAction::SelectAction):
-			painter.drawRect(rMouseDown_.x, rMouseDown_.y, rMouseLast_.x-rMouseDown_.x, rMouseLast_.y-rMouseDown_.y);
+
+			glBegin(GL_LINE_LOOP);
+			glVertex2d(rMouseDown_.x, contextHeight_-rMouseDown_.y);
+			glVertex2d(rMouseDown_.x, contextHeight_-rMouseLast_.y);
+			glVertex2d(rMouseLast_.x, contextHeight_-rMouseLast_.y);
+			glVertex2d(rMouseLast_.x, contextHeight_-rMouseDown_.y);
+			glEnd();
 			break;
 		default:
 			break;
 	}
 
-	// Passive mode embellishments
-	if (currentModel != NULL) switch (atenWindow_->selectedMode())
-	{
-		// Draw on distance ruler for drawing modes //ATEN2 TODO
-		case (UserAction::DrawAtomsAction):
-			// Get pixel 'length' in Angstrom terms at current draw depth
-			r = currentModel->screenToModel(contextWidth_/2+10, contextHeight_/2, atenWindow_->currentDrawDepth());
-			r -= currentModel->screenToModel(contextWidth_/2, contextHeight_/2, atenWindow_->currentDrawDepth());
-			dx = 10.0 / r.magnitude();
-			
-			halfw = contextWidth_ / 2.0;
-			i = int( halfw / dx);
-			skip = 1;
-			while ( (i/skip) > 5)
-			{
-				skip += (skip == 1 ? 4 : 5);
-			}
-			for (n = -i; n <= i; n ++)
-			{
-				if ((n%skip) != 0) continue;
-				painter.drawLine(halfw + n*dx, 20, halfw + n*dx, 10);
-				painter.drawLine(halfw + n*dx, contextHeight_-20, halfw + n*dx, contextHeight_-10);
-				if (n != i)
-				{
-					painter.drawLine(halfw + (n+0.5*skip)*dx, contextHeight_-15, halfw + (n+0.5*skip)*dx, contextHeight_-10);
-					painter.drawLine(halfw + (n+0.5*skip)*dx, contextHeight_-15, halfw + (n+0.5*skip)*dx, contextHeight_-10);
-				}
-			}
-			painter.drawLine(halfw - i*dx, 10, halfw + i*dx, 10);
-			painter.drawLine(halfw - i*dx, contextHeight_-10, halfw + i*dx, contextHeight_-10);
-			for (n = -i; n <= i; n++)
-			{
-				if ((n%skip) != 0) continue;
-				painter.drawText(halfw + n*dx - (n < 0 ? 8 : 3), contextHeight_, QString::number(n));
-			}
-			break;
-		default:
-			break;
-	}
+// 	// Passive mode embellishments
+// 	if (currentModel != NULL) switch (atenWindow_->selectedMode())
+// 	{
+// 		// Draw on distance ruler for drawing modes //ATEN2 TODO
+// 		case (UserAction::DrawAtomsAction):
+// 			// Get pixel 'length' in Angstrom terms at current draw depth
+// 			r = currentModel->screenToModel(contextWidth_/2+10, contextHeight_/2, atenWindow_->currentDrawDepth());
+// 			r -= currentModel->screenToModel(contextWidth_/2, contextHeight_/2, atenWindow_->currentDrawDepth());
+// 			dx = 10.0 / r.magnitude();
+// 			
+// 			halfw = contextWidth_ / 2.0;
+// 			i = int( halfw / dx);
+// 			skip = 1;
+// 			while ( (i/skip) > 5)
+// 			{
+// 				skip += (skip == 1 ? 4 : 5);
+// 			}
+// 			for (n = -i; n <= i; n ++)
+// 			{
+// 				if ((n%skip) != 0) continue;
+// 				painter.drawLine(halfw + n*dx, 20, halfw + n*dx, 10);
+// 				painter.drawLine(halfw + n*dx, contextHeight_-20, halfw + n*dx, contextHeight_-10);
+// 				if (n != i)
+// 				{
+// 					painter.drawLine(halfw + (n+0.5*skip)*dx, contextHeight_-15, halfw + (n+0.5*skip)*dx, contextHeight_-10);
+// 					painter.drawLine(halfw + (n+0.5*skip)*dx, contextHeight_-15, halfw + (n+0.5*skip)*dx, contextHeight_-10);
+// 				}
+// 			}
+// 			painter.drawLine(halfw - i*dx, 10, halfw + i*dx, 10);
+// 			painter.drawLine(halfw - i*dx, contextHeight_-10, halfw + i*dx, contextHeight_-10);
+// 			for (n = -i; n <= i; n++)
+// 			{
+// 				if ((n%skip) != 0) continue;
+// 				painter.drawText(halfw + n*dx - (n < 0 ? 8 : 3), contextHeight_, QString::number(n));
+// 			}
+// 			break;
+// 		default:
+// 			break;
+// 	}
 }
 
 // Render addition elements related to selected/active UserActions
@@ -199,7 +196,7 @@ void Viewer::renderUserActions(Model* source)
 			renderGroup_.createBond(primitives_[primitiveSet_], A, v, clickedAtom, style_i, colour_i, radius_i, j, style_j, colour_j, radius_j, bt, prefs.selectionScale(), NULL);
 			
 			// Draw text showing distance
-			renderGroup_.addOverlayText(QString("r = %1 %2").arg(v.magnitude()).arg(QChar(0x212b)), v, 0.2);
+			renderGroup_.addOverlayText(QString("r = %1 %2").arg(v.magnitude()).arg(QChar(0x212b)), v+pos, 0.2);
 			break;
 		// Draw on selection bond for bond deletion click-drag
 		case (UserAction::DrawDeleteAction):

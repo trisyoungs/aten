@@ -122,6 +122,7 @@ Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
 	{ "vdwCutoff",			VTypes::DoubleData,		0, false },
 	{ "vibrationArrowColour",	VTypes::DoubleData,		4, false },
 	{ "viewerFontFilename",		VTypes::StringData,		0, false },
+	{ "viewLock",			VTypes::StringData,		0, false },
 	{ "viewRotationGlobe",		VTypes::IntegerData,		0, false },
 	{ "zMap",			VTypes::StringData,		0, false },
 	{ "zoomThrottle",		VTypes::DoubleData,		0, false }
@@ -469,6 +470,9 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArray
 			break;
 		case (PreferencesVariable::ViewerFontFileName):
 			rv.set( ptr->viewerFontFileName() );
+			break;
+		case (PreferencesVariable::ViewLock):
+			rv.set( Prefs::viewLock(ptr->viewLock()) );
 			break;
 		case (PreferencesVariable::ViewRotationGlobe):
 			rv.set( ptr->viewRotationGlobe() );

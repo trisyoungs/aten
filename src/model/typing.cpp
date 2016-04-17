@@ -113,6 +113,9 @@ void Model::setAtomType(Atom* i, ForcefieldAtom* ffa, bool fixed)
 {
 	i->setType(ffa);
 	i->setTypeFixed(fixed);
+
+	// Log change in the model
+	logChange(Log::Style);
 }
 
 // Describe atoms in model
@@ -168,7 +171,8 @@ bool Model::typeAll(Forcefield* defaultForcefield)
 	}
 
 	// Log change in the model
-	logChange(Log::Coordinates);
+	logChange(Log::Style);
+
 	Messenger::exit("Model::typeAll");
 	return true;
 }

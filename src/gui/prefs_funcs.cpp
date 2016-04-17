@@ -120,6 +120,10 @@ AtenPrefs::AtenPrefs(AtenWindow& parent) : QDialog(&parent), parent_(parent)
 	ui.NearDepthSpin->setValue(prefs.depthNear());
 	ui.FarDepthSpin->setValue(prefs.depthFar());
 
+	// View Page - Fonts tab
+	ui.ViewerFontEdit->setText(prefs.viewerFontFileName());
+	ui.MessagesSizeSpin->setValue(prefs.messagesFont().pixelSize());
+
 	// Set controls in interaction page
 	ui.LeftMouseCombo->setCurrentIndex(prefs.mouseAction(Prefs::LeftButton));
 	ui.MiddleMouseCombo->setCurrentIndex(prefs.mouseAction(Prefs::MiddleButton));
@@ -234,6 +238,7 @@ void AtenPrefs::on_ElementList_currentRowChanged(int row)
 
 void AtenPrefs::on_ElementRadiusSpin_valueChanged(double value)
 {
+	if (refreshing_) return;
 	// Get current row
 	int el = ui.ElementList->currentRow();
 	if (el == -1) return;
@@ -294,70 +299,83 @@ void AtenPrefs::setRadiusChanged(Prefs::DrawStyle ds, double value, bool foratom
 
 void AtenPrefs::on_StickRadiusSpin_valueChanged(double value)
 {
+	if (refreshing_) return;
 	setRadiusChanged(Prefs::LineStyle, value, true);
 }
 
 void AtenPrefs::on_TubeRadiusSpin_valueChanged(double value)
 {
+	if (refreshing_) return;
 	setRadiusChanged(Prefs::TubeStyle, value, true);
 }
 
 void AtenPrefs::on_SphereRadiusSpin_valueChanged(double value)
 {
+	if (refreshing_) return;
 	setRadiusChanged(Prefs::SphereStyle, value, true);
 }
 
 void AtenPrefs::on_ScaledRadiusSpin_valueChanged(double value)
 {
+	if (refreshing_) return;
 	setRadiusChanged(Prefs::ScaledStyle, value, true);
 }
 
 void AtenPrefs::on_StickBondRadiusSpin_valueChanged(double value)
 {
+	if (refreshing_) return;
 	setRadiusChanged(Prefs::LineStyle, value, false);
 }
 
 void AtenPrefs::on_TubeBondRadiusSpin_valueChanged(double value)
 {
+	if (refreshing_) return;
 	setRadiusChanged(Prefs::TubeStyle, value, false);
 }
 
 void AtenPrefs::on_SphereBondRadiusSpin_valueChanged(double value)
 {
+	if (refreshing_) return;
 	setRadiusChanged(Prefs::SphereStyle, value, false);
 }
 
 void AtenPrefs::on_ScaledBondRadiusSpin_valueChanged(double value)
 {
+	if (refreshing_) return;
 	setRadiusChanged(Prefs::ScaledStyle, value, false);
 }
 
 void AtenPrefs::on_SelectionScaleSpin_valueChanged(double value)
 {
+	if (refreshing_) return;
 	prefs.setSelectionScale(value);
 	updateAfterViewPrefs();
 }
 
 void AtenPrefs::on_AngleLabelFormatEdit_textEdited(const QString &text)
 {
+	if (refreshing_) return;
 	prefs.setAngleLabelFormat( qPrintable(text) );
 	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
 void AtenPrefs::on_DistanceLabelFormatEdit_textEdited(const QString &text)
 {
+	if (refreshing_) return;
 	prefs.setDistanceLabelFormat( qPrintable(text) );
 	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
 void AtenPrefs::on_ChargeLabelFormatEdit_textEdited(const QString &text)
 {
+	if (refreshing_) return;
 	prefs.setChargeLabelFormat( qPrintable(text) );
 	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
 void AtenPrefs::on_LabelSizeSpin_valueChanged(double value)
 {
+	if (refreshing_) return;
 	prefs.setLabelSize(value);
 	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
@@ -378,6 +396,7 @@ void AtenPrefs::on_DrawHydrogenBondsCheck_clicked(bool checked)
 
 void AtenPrefs::on_HydrogenBondDotRadiusSpin_valueChanged(double value)
 {
+	if (refreshing_) return;
 	prefs.setHydrogenBondDotRadius(value);
 	if (prefs.drawHydrogenBonds())
 	{
@@ -388,12 +407,14 @@ void AtenPrefs::on_HydrogenBondDotRadiusSpin_valueChanged(double value)
 
 void AtenPrefs::on_StickLineNormalWidthSpin_valueChanged(double value)
 {
+	if (refreshing_) return;
 	prefs.setStickLineNormalWidth(value);
 	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
 void AtenPrefs::on_StickLineSelectedWidthSpin_valueChanged(double value)
 {
+	if (refreshing_) return;
 	prefs.setStickLineSelectedWidth(value);
 	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
@@ -429,75 +450,88 @@ void AtenPrefs::on_ColoursTable_cellDoubleClicked(int row, int column)
 
 void AtenPrefs::on_PrimitiveQualitySlider_valueChanged(int value)
 {
+	if (refreshing_) return;
 	prefs.setPrimitiveQuality(value);
 	updateAfterViewPrefs();
 }
 
 void AtenPrefs::on_PrimitiveQualitySpin_valueChanged(int value)
 {
+	if (refreshing_) return;
 	prefs.setPrimitiveQuality(value);
 	updateAfterViewPrefs();
 }
 
 void AtenPrefs::on_ImagePrimitivesGroup_clicked(bool checked)
 {
+	if (refreshing_) return;
 	prefs.setReusePrimitiveQuality(!checked);
 }
 
 void AtenPrefs::on_ImagePrimitiveQualitySlider_valueChanged(int value)
 {
+	if (refreshing_) return;
 	prefs.setImagePrimitiveQuality(value);
 }
 
 void AtenPrefs::on_ImagePrimitiveQualitySpin_valueChanged(int value)
 {
+	if (refreshing_) return;
 	prefs.setImagePrimitiveQuality(value);
 }
 
 void AtenPrefs::on_FarClipSpin_valueChanged(double value)
 {
+	if (refreshing_) return;
 	prefs.setClipFar(value);
 	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
 void AtenPrefs::on_FarDepthSpin_valueChanged(int value)
 {
+	if (refreshing_) return;
 	prefs.setDepthFar(value);
 	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
 void AtenPrefs::on_NearClipSpin_valueChanged(double value)
 {
+	if (refreshing_) return;
 	prefs.setClipNear(value);
 	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
 void AtenPrefs::on_NearDepthSpin_valueChanged(int value)
 {
+	if (refreshing_) return;
 	prefs.setDepthNear(value);
 	updateAfterViewPrefs();
 }
 
 void AtenPrefs::on_LineAliasingCheck_stateChanged(int state)
 {
+	if (refreshing_) return;
 	prefs.setLineAliasing(state == Qt::Checked);
 	updateAfterViewPrefs();
 }
 
 void AtenPrefs::on_PolygonAliasingCheck_stateChanged(int state)
 {
+	if (refreshing_) return;
 	prefs.setPolygonAliasing(state == Qt::Checked);
 	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
 void AtenPrefs::on_MultiSamplingCheck_stateChanged(int state)
 {
+	if (refreshing_) return;
 	prefs.setMultiSampling(state == Qt::Checked);
 	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
 void AtenPrefs::on_SpotlightGroup_clicked(bool checked)
 {
+	if (refreshing_) return;
 	prefs.setSpotlightActive(checked);
 	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
@@ -510,16 +544,19 @@ void AtenPrefs::spotlightPosChanged(int i, double value)
 
 void AtenPrefs::on_SpotlightPositionXSpin_valueChanged(double value)
 {
+	if (refreshing_) return;
 	spotlightPosChanged(0, value);
 }
 
 void AtenPrefs::on_SpotlightPositionYSpin_valueChanged(double value)
 {
+	if (refreshing_) return;
 	spotlightPosChanged(1, value);
 }
 
 void AtenPrefs::on_SpotlightPositionZSpin_valueChanged(double value)
 {
+	if (refreshing_) return;
 	spotlightPosChanged(2, value);
 }
 
@@ -585,7 +622,9 @@ void AtenPrefs::on_ViewerFontButton_clicked(bool checked)
 
 void AtenPrefs::on_MessagesSizeSpin_valueChanged(int value)
 {
-	prefs.messagesFont().setPointSize(value);
+	if (refreshing_) return;
+
+	prefs.messagesFont().setPixelSize(value);
 	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
@@ -595,51 +634,61 @@ void AtenPrefs::on_MessagesSizeSpin_valueChanged(int value)
 
 void AtenPrefs::on_LeftMouseCombo_currentIndexChanged(int ma)
 {
+	if (refreshing_) return;
 	prefs.setMouseAction(Prefs::LeftButton, (Prefs::MouseAction) ma);
 }
 
 void AtenPrefs::on_MiddleMouseCombo_currentIndexChanged(int ma)
 {
+	if (refreshing_) return;
 	prefs.setMouseAction(Prefs::MiddleButton, (Prefs::MouseAction) ma);
 }
 
 void AtenPrefs::on_RightMouseCombo_currentIndexChanged(int ma)
 {
+	if (refreshing_) return;
 	prefs.setMouseAction(Prefs::RightButton, (Prefs::MouseAction) ma);
 }
 
 void AtenPrefs::on_WheelMouseCombo_currentIndexChanged(int ma)
 {
+	if (refreshing_) return;
 	prefs.setMouseAction(Prefs::WheelButton, (Prefs::MouseAction) ma);
 }
 
 void AtenPrefs::on_ShiftButtonCombo_currentIndexChanged(int ka)
 {
+	if (refreshing_) return;
 	prefs.setKeyAction(Prefs::ShiftKey, (Prefs::KeyAction) ka);
 }
 
 void AtenPrefs::on_CtrlButtonCombo_currentIndexChanged(int ka)
 {
+	if (refreshing_) return;
 	prefs.setKeyAction(Prefs::CtrlKey, (Prefs::KeyAction) ka);
 }
 
 void AtenPrefs::on_AltButtonCombo_currentIndexChanged(int ka)
 {
+	if (refreshing_) return;
 	prefs.setKeyAction(Prefs::AltKey, (Prefs::KeyAction) ka);
 }
 
 void AtenPrefs::on_ViewLockCombo_currentIndexChanged(int vl)
 {
+	if (refreshing_) return;
 	prefs.setViewLock( (Prefs::ViewLock) vl);
 }
 
 void AtenPrefs::on_ZoomThrottleSpin_valueChanged(double value)
 {
+	if (refreshing_) return;
 	prefs.setZoomThrottle(value);
 }
 
 void AtenPrefs::on_MouseMoveFilterSpin_valueChanged(int value)
 {
+	if (refreshing_) return;
 	prefs.setMouseMoveFilter(value);
 }
 
@@ -678,7 +727,7 @@ void AtenPrefs::updateScalePointsList()
 
 void AtenPrefs::on_ScaleList_currentRowChanged(int id)
 {
-	if (id == -1) return;
+	if (refreshing_ || (id == -1)) return;
 	// Scale selection has changed, so update points list
 	updateScalePointsList();
 }
@@ -790,36 +839,43 @@ void AtenPrefs::on_ScaleList_itemDoubleClicked(QListWidgetItem* item)
 
 void AtenPrefs::on_DensityUnitCombo_currentIndexChanged(int index)
 {
+	if (refreshing_) return;
 	prefs.setDensityUnit( (Prefs::DensityUnit) index );
 }
 
 void AtenPrefs::on_EnergyUnitCombo_currentIndexChanged(int index)
 {
+	if (refreshing_) return;
 	prefs.setEnergyUnit( (Prefs::EnergyUnit) index );
 }
 
 void AtenPrefs::on_HAddDistanceSpin_valueChanged(double value)
 {
+	if (refreshing_) return;
 	prefs.setHydrogenDistance(value);
 }
 
 void AtenPrefs::on_MaxCuboidsSpin_valueChanged(int value)
 {
+	if (refreshing_) return;
 	prefs.setMaxCuboids(value);
 }
 
 void AtenPrefs::on_MaxRingsSpin_valueChanged(int value)
 {
+	if (refreshing_) return;
 	prefs.setMaxRings(value);
 }
 
 void AtenPrefs::on_MaxRingSizeSpin_valueChanged(int value)
 {
+	if (refreshing_) return;
 	prefs.setMaxRingSize(value);
 }
 
 void AtenPrefs::on_MaxUndoLevelsSpin_valueChanged(int value)
 {
+	if (refreshing_) return;
 	prefs.setMaxUndoLevels(value);
 }
 
@@ -862,56 +918,67 @@ void AtenPrefs::updateParameterTable()
 
 void AtenPrefs::on_CalculateIntraCheck_stateChanged(int state)
 {
+	if (refreshing_) return;
 	prefs.setCalculateIntra(state);
 }
 
 void AtenPrefs::on_CalculateVdwCheck_stateChanged(int state)
 {
+	if (refreshing_) return;
 	prefs.setCalculateVdw(state);
 }
 
 void AtenPrefs::on_ElectrostaticMethodCombo_currentIndexChanged(int index)
 {
+	if (refreshing_) return;
 	prefs.setElectrostaticsMethod( (Electrostatics::ElecMethod) index);
 }
 
 void AtenPrefs::on_VdwCutoffSpin_valueChanged(double d)
 {
+	if (refreshing_) return;
 	prefs.setVdwCutoff(d);
 }
 
 void AtenPrefs::on_ElecCutoffSpin_valueChanged(double d)
 {
+	if (refreshing_) return;
 	prefs.setElecCutoff(d);
 }
 
 void AtenPrefs::on_EwaldPrecisionMantissaSpin_valueChanged(double d)
 {
+	if (refreshing_) return;
 	prefs.ewaldPrecision().setMantissa(d);
 }
 
 void AtenPrefs::on_EwaldPrecisionExponentSpin_valueChanged(int i)
 {
+	if (refreshing_) return;
 	prefs.ewaldPrecision().setExponent(i);
 }
 
 void AtenPrefs::on_EwaldManualAlphaSpin_valueChanged(double d)
 {
+	if (refreshing_) return;
 	prefs.setEwaldAlpha(d);
 }
 
 void AtenPrefs::on_EwaldManualKXSpin_valueChanged(int i)
 {
+	if (refreshing_) return;
 	prefs.setEwaldKMax(0,i);
 }
 
 void AtenPrefs::on_EwaldManualKYSpin_valueChanged(int i)
 {
+	if (refreshing_) return;
 	prefs.setEwaldKMax(1,i);
 }
 
 void AtenPrefs::on_EwaldManualKZSpin_valueChanged(int i)
 {
+	if (refreshing_) return;
 	prefs.setEwaldKMax(2,i);
 }
 
@@ -965,6 +1032,7 @@ void AtenPrefs::on_TemporaryDirButton_clicked(bool checked)
 
 void AtenPrefs::on_TemporaryDirEdit_textEdited(const QString &text)
 {
+	if (refreshing_) return;
 	prefs.setTempDir(QDir(text));
 }
 
@@ -981,5 +1049,6 @@ void AtenPrefs::on_MopacExecutableButton_clicked(bool checked)
 
 void AtenPrefs::on_MopacExecutableEdit_textEdited(const QString &text)
 {
+	if (refreshing_) return;
 	prefs.setMopacExe( qPrintable(text) );
 }

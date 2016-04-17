@@ -26,7 +26,6 @@ Progress indicator jobs in GUI appear to be created even if they are short and n
 
 Graphics TODO
 =============
-Have small, additional black icons at top-right of each model window, illustrating whether it has been modified, is displaying trajectory frames, etc.
 Optimise basic primitives to use vertex/index arrays instead of just vertices (also check end caps of spheres).
 Optimise primitive drawing / generation by allowing use of GL_TRIANGLE_STRIP?
 Reimplement drawing of grid (volume) axes.
