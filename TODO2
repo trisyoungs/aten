@@ -15,7 +15,6 @@ Add set members to Matrix class allowing axes to be set from atoms in models.
 Convert other member accessors to MatrixData type where appropriate.
 Printf command buffered output is never printed if no newline ever occurs.  Need to store data somewhere other than the Printf function itself, and flush it at the end of command execution.
 Crash when tree selecting large models (recursion overflow?) - use array-based loop instead.
-Selecting and then deselecting large numbers of atoms causes rendering artefacts afterwards.
 Add specific line primitive class that allows chunking (for speedup of stick rendering, because otherwise an enormous array is continually deleted'd/new'd).
 Add 'Reload' options to Grid context menu.
 Add context menu "Copy" and "Set" to TColourButtons.
@@ -25,6 +24,7 @@ Intelligent Select: prepended '+' is interpreted as NETA.
 Progress indicator jobs in GUI appear to be created even if they are short and not 'ready' to be shown yet.
 Need a dynamic CHUNKOCCURRENCESIZE!
 Add on simple model variable member 'isPeriodic'.
+Speedup Disorder Builder??
 
 Graphics TODO
 =============

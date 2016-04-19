@@ -27,7 +27,7 @@
 ATEN_USING_NAMESPACE
 
 // Constructor
-RenderOccurrenceChunk::RenderOccurrenceChunk()
+RenderOccurrenceChunk::RenderOccurrenceChunk() : ListItem<RenderOccurrenceChunk>()
 {
 	localTransform_ = new Matrix[OCCURRENCECHUNKSIZE];
 	colourR_ = new GLfloat[OCCURRENCECHUNKSIZE];

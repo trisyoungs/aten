@@ -27,7 +27,7 @@
 
 ATEN_BEGIN_NAMESPACE
 
-#define CELLCHUNKSIZE 1000
+#define CELLCHUNKSIZE 1024
 
 // Partition Cell Data
 class PartitionCellData : public ListItem<PartitionCellData>

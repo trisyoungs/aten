@@ -53,7 +53,12 @@ Primitive& RenderOccurrence::primitive() const
 void RenderOccurrence::addOccurrence(Matrix& transform, Vec4<GLfloat>& colour)
 {
 	// Check current chunk...
-	if ((currentChunk_ == NULL) || currentChunk_->isFull()) currentChunk_ = chunks_.add();
+	if (currentChunk_ == NULL) currentChunk_ = chunks_.add();
+	else if (currentChunk_->isFull())
+	{
+		if (currentChunk_->next) currentChunk_ = currentChunk_->next;
+		else currentChunk_ = chunks_.add();
+	}
 
 	// Add to chunk...
 	currentChunk_->setNextData(transform, colour);
@@ -63,7 +68,12 @@ void RenderOccurrence::addOccurrence(Matrix& transform, Vec4<GLfloat>& colour)
 void RenderOccurrence::addOccurrence(Matrix& transform)
 {
 	// Check current chunk...
-	if ((currentChunk_ == NULL) || currentChunk_->isFull()) currentChunk_ = chunks_.add();
+	if (currentChunk_ == NULL) currentChunk_ = chunks_.add();
+	else if (currentChunk_->isFull())
+	{
+		if (currentChunk_->next) currentChunk_ = currentChunk_->next;
+		else currentChunk_ = chunks_.add();
+	}
 
 	// Add to chunk...
 	currentChunk_->setNextData(transform);
