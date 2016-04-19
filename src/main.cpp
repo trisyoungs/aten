@@ -26,6 +26,7 @@
 #include <QMessageBox>
 #include <QResource>
 #include <time.h>
+#include <QtGlobal>
 
 ATEN_USING_NAMESPACE
 
@@ -33,12 +34,14 @@ int main(int argc, char* argv[])
 {
 	/* Set some Qt environment variables */
 	// -- Correct rendering on systems that use scaled displays
-	qputenv("QT_DEVICE_PIXEL_RATIO", "auto");
+#if QT_VERSION <= QT_VERSION_CHECK(5,5,0)
+	qputenv("QT_DEVICE_PIXEL_RATIO", "auto"); // Now defunct in 5.6
+#endif
 
 	/* Create the main QApplication */
 	QApplication app(argc, argv);
 	QCoreApplication::setOrganizationName("ProjectAten");
-	QCoreApplication::setOrganizationDomain("www.projectaten.net");
+	QCoreApplication::setOrganizationDomain("www.projectaten.com");
 	QCoreApplication::setApplicationName("Aten");
 	// -- Set native siblings attribute to prevent odd rendering artefacts on some systems
 	app.setAttribute(Qt::AA_DontCreateNativeWidgetSiblings);

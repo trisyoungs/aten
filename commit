@@ -8,6 +8,7 @@ COMMITTYPE="none"
 BUMP="false"
 PUSH="false"
 ALL="false"
+FLAGS="-a"
 
 # Parse CLI arguments / options
 USAGE1="commit [-F <filename>] [-m <text>] [-p] [-b]"
@@ -24,6 +25,8 @@ while getopts "F:m:bp" options; do
 	echo "Version (patch) number will be bumped.";;
     p ) PUSH="true"
 	echo "Files will be committed and local changes pushed to server.";;
+    n ) FLAGS=""
+	echo "Manual mode enabled - no changes will be added automatically to the commit.";;
     \? ) echo -e $USAGE1
          exit 1;;
     * ) echo -e $USAGE1
@@ -49,11 +52,11 @@ fi
 # Commit changes
 if [ "$COMMITTYPE" = "file" ]
 then
-  git commit -a -F $COMMITFILE
+  git commit $FLAGS -F $COMMITFILE
 fi
 if [ "$COMMITTYPE" = "msg" ]
 then
-  git commit -a -m "$COMMITMSG"
+  git commit $FLAGS -m "$COMMITMSG"
 fi
 
 # Push changes to server?

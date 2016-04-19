@@ -1,5 +1,14 @@
 # Encoder definitions for film/movie saving
 
+# mencoder one-pass outputting x264
+Name 'mencoder / x264'
+Nickname 'menc-x264'
+# -- First pass
+CommandName 'First Pass'
+Command mencoder
+CommandSearchPaths /usr/bin,/usr/local/bin
+CommandArguments '-ovc x264 -mf type=@FRAMEFORMAT@:fps=@FPS@ -nosound -o @OUTPUTFILE@ mf://@@FRAMESFILE@'
+
 # mencoder two-pass outputting ISO-standard mp4
 Name 'mencoder / ISO-mp4'
 Nickname 'menc-mp4'
