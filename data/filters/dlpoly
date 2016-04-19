@@ -146,7 +146,6 @@ filter(type="exportmodel", name="DL_POLY Configuration", extension="CONFIG,REVCO
 	}
 }
 
-
 filter(type="importtrajectory", name="DL_POLY Unformatted History", extension="HISu", glob="*HISu", exact="HISTORY", nickname="dlpolyu")
 {
 	# Since its a Fortran code, each record in the file is preceded and followed by an integer specifying
@@ -397,6 +396,7 @@ filter(type="importtrajectory", name="DL_POLY Formatted History", extension="HIS
 		{
 			readLineF("%8s%10i%12.6f%12.6f", e, id, mass, q);
 			readLineF("%12.4e%12.4e%f12.4e", x.x, x.y, x.z);
+			e = aten.model.atoms[n].element.symbol;
 			if (cellShift) newAtom(e, x.x+v.x, x.y+v.y, x.z+v.z);
 			else newAtom(e, x.x, x.y, x.z);
 			if (keytrj > 0)
@@ -413,6 +413,7 @@ filter(type="importtrajectory", name="DL_POLY Formatted History", extension="HIS
 		else for (n=1; n<=natoms; ++n)
 		{
 			readLine(e, id, mass, q);
+			e = aten.model.atoms[n].element.symbol;
 			readLine(x.x, x.y, x.z);
 			if (cellShift) newAtom(e, x.x+v.x, x.y+v.y, x.z+v.z);
 			else newAtom(e, x.x, x.y, x.z);

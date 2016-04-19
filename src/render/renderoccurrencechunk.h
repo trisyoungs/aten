@@ -26,7 +26,8 @@
 #include "templates/list.h"
 #include "templates/vector4.h"
 
-#define OCCURRENCECHUNKSIZE 65536
+// #define OCCURRENCECHUNKSIZE 65536
+#define OCCURRENCECHUNKSIZE 256
 
 ATEN_BEGIN_NAMESPACE
 

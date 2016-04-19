@@ -24,6 +24,7 @@ Miller selection.
 Intelligent Select: prepended '+' is interpreted as NETA.
 Progress indicator jobs in GUI appear to be created even if they are short and not 'ready' to be shown yet.
 Need a dynamic CHUNKOCCURRENCESIZE!
+Add on simple model variable member 'isPeriodic'.
 
 Graphics TODO
 =============

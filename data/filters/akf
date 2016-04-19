@@ -144,7 +144,7 @@ filter(type="exportmodel", name="Aten Keyword Format", nickname="akf", extension
 
 	// Cell data
 	//if (m.cell.type != "none") writeLineF("cell   %f %f %f %f %f %f\n", m.cell.a, m.cell.b, m.cell.c, m.cell.alpha, m.cell.beta, m.cell.gamma);
-	if (m.cell.type != "none") writeLineF("cellmatrix   %f %f %f %f %f %f %f %f %f\n", m.cell.ax, m.cell.ay, m.cell.az, m.cell.bx, m.cell.by, m.cell.bz, m.cell.cx, m.cell.cy, m.cell.cz);
+	if (m.cell.type != "None") writeLineF("cellmatrix   %f %f %f %f %f %f %f %f %f\n", m.cell.ax, m.cell.ay, m.cell.az, m.cell.bx, m.cell.by, m.cell.bz, m.cell.cx, m.cell.cy, m.cell.cz);
 
 	// Measurements
 	for (measurement g = m.distances; g; ++g) writeLineF("distance %i %i\t# %f\n", g.i.id, g.j.id, g.value);

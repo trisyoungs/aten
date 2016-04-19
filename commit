@@ -13,7 +13,7 @@ FLAGS="-a"
 # Parse CLI arguments / options
 USAGE1="commit [-F <filename>] [-m <text>] [-p] [-b]"
 
-while getopts "F:m:bp" options; do
+while getopts "F:m:bpn" options; do
   case $options in
     F ) COMMITFILE=$OPTARG
 	COMMITTYPE="file"
