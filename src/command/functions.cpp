@@ -300,6 +300,7 @@ void Commands::initPointers()
 	pointers_[InitialiseGrid] = &AtenSpace::Commands::function_InitialiseGrid;
 	pointers_[GridSecondary] = &AtenSpace::Commands::function_GridSecondary;
 	pointers_[GridStyle] = &AtenSpace::Commands::function_GridStyle;
+	pointers_[GridStyleSecondary] = &AtenSpace::Commands::function_GridStyle;
 	pointers_[GridUseZ] = &AtenSpace::Commands::function_GridUseZ;
 	pointers_[GridViewPercentage] = &AtenSpace::Commands::function_GridViewPercentage;
 	pointers_[GridViewPercentageSecondary] = &AtenSpace::Commands::function_GridViewPercentageSecondary;

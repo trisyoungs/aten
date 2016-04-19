@@ -130,6 +130,7 @@ FunctionAccessor ModelVariable::functionData[ModelVariable::nFunctions] = {
 	{ "flipSelectionZ",	VTypes::NoData,		aten_->commandArguments(Commands::FlipZ),		aten_->commandArgText(Commands::FlipZ) },
 	{ "interEnergy",	VTypes::DoubleData,	"",							"" },
 	{ "intraEnergy",	VTypes::DoubleData,	"",							"" },
+	{ "isPeriodic",		VTypes::IntegerData,	"",							"" },
 	{ "matrixConvertSelection",	 VTypes::NoData,	aten_->commandArguments(Commands::MatrixConvert),         aten_->commandArgText(Commands::MatrixConvert) },
 	{ "matrixTransformSelection",	 VTypes::NoData,	aten_->commandArguments(Commands::MatrixTransform),         aten_->commandArgText(Commands::MatrixTransform) },
 	{ "mirrorSelection",	VTypes::NoData,		aten_->commandArguments(Commands::Mirror),		aten_->commandArgText(Commands::Mirror) },
@@ -733,6 +734,9 @@ bool ModelVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 			break;
 		case (ModelVariable::IntraEnergy):
 			rv.set( ptr->intramolecularEnergy(ptr, result));
+			break;
+		case (ModelVariable::IsPeriodic):
+			rv.set( ptr->isPeriodic() );
 			break;
 		case (ModelVariable::MatrixConvertSelection):
 			result = aten_->callCommand(Commands::MatrixConvert, node, rv, bundle);

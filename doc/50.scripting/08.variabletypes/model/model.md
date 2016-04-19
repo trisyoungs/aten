@@ -239,6 +239,16 @@ Calculates and returns the total intramolecular (i.e. combined bond, angle, and 
 
 ---
 
+### isPeriodic <a id="isPeriodic"></a>
+
+_Syntax:_
+
+**int** **isPeriodic** ( )
+
+Returns **1** if the model has some kind of unit cell, or **0** if it is non-periodic.
+
+---
+
 ### matrixConvertSelection <a id="matrixconvertserlection"></a>
 
 _Syntax:_
