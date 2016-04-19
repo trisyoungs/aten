@@ -26,13 +26,9 @@
 #include "templates/list.h"
 #include "templates/vector4.h"
 
-// #define OCCURRENCECHUNKSIZE 65536
-#define OCCURRENCECHUNKSIZE 256
-
 ATEN_BEGIN_NAMESPACE
 
 // Forward Declarations (Aten)
-class Primitive;
 class Matrix;
 
 // RenderOccurrenceChunk
@@ -40,7 +36,7 @@ class RenderOccurrenceChunk : public ListItem<RenderOccurrenceChunk>
 {
 	public:
 	// Constructor
-	RenderOccurrenceChunk();
+	RenderOccurrenceChunk(int chunkSize);
 	// Destructor
 	~RenderOccurrenceChunk();
 
@@ -49,6 +45,8 @@ class RenderOccurrenceChunk : public ListItem<RenderOccurrenceChunk>
 	 * Data
 	 */
 	private:
+	// Size of arrays
+	int chunkSize_;
 	// Local transformations
 	Matrix* localTransform_;
 	// Red colour component

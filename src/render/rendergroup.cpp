@@ -45,14 +45,14 @@ RenderGroup::RenderGroup()
  * Object Lists
  */
 
-// Clear lists
-void RenderGroup::clear()
+// Clear lists (recreating them with new chunksize if necessary)
+void RenderGroup::clear(int chunkSize)
 {
-	solidTrianglePrimitives_.clear();
-	transparentTrianglePrimitives_.clear();
-	wireTrianglePrimitives_.clear();
-	normalLinePrimitives_.clear();
-	boldLinePrimitives_.clear();
+	solidTrianglePrimitives_.clear(chunkSize);
+	transparentTrianglePrimitives_.clear(chunkSize);
+	wireTrianglePrimitives_.clear(chunkSize);
+	normalLinePrimitives_.clear(chunkSize);
+	boldLinePrimitives_.clear(chunkSize);
 	extraNormalLines_.forgetAll();
 	extraBoldLines_.forgetAll();
 	extraSolidTriangles_.forgetAll();

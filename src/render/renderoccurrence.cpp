@@ -26,20 +26,43 @@
 ATEN_USING_NAMESPACE
 
 // Constructor
-RenderOccurrence::RenderOccurrence(Primitive& targetPrimitive) : ListItem<RenderOccurrence>(), primitive_(targetPrimitive)
+RenderOccurrence::RenderOccurrence(Primitive& targetPrimitive, int initialChunkSize) : ListItem<RenderOccurrence>(), primitive_(targetPrimitive)
 {
 	currentChunk_ = NULL;
+	chunkSize_ = initialChunkSize;
 }
 
 /*
  * Primitive Data
  */
 
-// Clear data, but do not free arrays
-void RenderOccurrence::clear()
+// Add chunk (with current chunkSize_)
+RenderOccurrenceChunk* RenderOccurrence::addChunk()
 {
-	// Loop over chunks and clear data
-	for (RenderOccurrenceChunk* chunk = chunks_.first(); chunk != NULL; chunk = chunk->next) chunk->clear();
+	RenderOccurrenceChunk* newChunk = new RenderOccurrenceChunk(chunkSize_);
+	chunks_.own(newChunk);
+
+	return newChunk;
+}
+
+// Clear data (retaining arrays) adjusting chunkSize_ if necessary
+void RenderOccurrence::clear(int newChunkSize)
+{
+	// If chunkSize_ has changed, delete all old arrays
+	if (chunkSize_ != newChunkSize)
+	{
+		Messenger::print(Messenger::Verbose, "Setting new chunkSize to %i\n", newChunkSize);
+
+		// Remove all old chunks
+		chunks_.clear();
+		chunkSize_ = newChunkSize;
+		currentChunk_ = addChunk();
+	}
+	else
+	{
+		// Loop over chunks and clear data
+		for (RenderOccurrenceChunk* chunk = chunks_.first(); chunk != NULL; chunk = chunk->next) chunk->clear();
+	}
 	currentChunk_ = chunks_.first();
 }
 
@@ -53,11 +76,11 @@ Primitive& RenderOccurrence::primitive() const
 void RenderOccurrence::addOccurrence(Matrix& transform, Vec4<GLfloat>& colour)
 {
 	// Check current chunk...
-	if (currentChunk_ == NULL) currentChunk_ = chunks_.add();
+	if (currentChunk_ == NULL) currentChunk_ = addChunk();
 	else if (currentChunk_->isFull())
 	{
 		if (currentChunk_->next) currentChunk_ = currentChunk_->next;
-		else currentChunk_ = chunks_.add();
+		else currentChunk_ = addChunk();
 	}
 
 	// Add to chunk...
@@ -68,11 +91,11 @@ void RenderOccurrence::addOccurrence(Matrix& transform, Vec4<GLfloat>& colour)
 void RenderOccurrence::addOccurrence(Matrix& transform)
 {
 	// Check current chunk...
-	if (currentChunk_ == NULL) currentChunk_ = chunks_.add();
+	if (currentChunk_ == NULL) currentChunk_ = addChunk();
 	else if (currentChunk_->isFull())
 	{
 		if (currentChunk_->next) currentChunk_ = currentChunk_->next;
-		else currentChunk_ = chunks_.add();
+		else currentChunk_ = addChunk();
 	}
 
 	// Add to chunk...

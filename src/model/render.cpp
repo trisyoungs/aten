@@ -66,7 +66,9 @@ RenderGroup& Model::renderGroup(PrimitiveSet& primitiveSet)
 	// Check the logs, and decide if we need to regenerate the primitive list for the model
 	if (renderGroupPoint_ == log(Log::Total)) return renderGroup_;
 
-	renderGroup_.clear();
+	// Calculate chunkSize, based on number of atoms in the model
+	int chunkSize = pow(8, int(log10(atoms_.nItems() / 10)));
+	renderGroup_.clear(chunkSize);
 
 	renderGroup_.createAtomsAndBonds(primitiveSet, this, Matrix());
 

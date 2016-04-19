@@ -74,8 +74,8 @@ class RenderGroup
 	TextPrimitiveList overlayTextPrimitives_;
 
 	public:
-	// Clear lists
-	void clear();
+	// Clear lists (recreating them with new chunksize if necessary)
+	void clear(int chunkSize = MINIMUMOCCURRENCECHUNKSIZE);
 	// Add text primitive
 	void addText(QString text, Vec3<double> pos, double textSize, TextPrimitive::TextAnchor anchor = TextPrimitive::CentralAnchor, Vec3<double> globalAdjustment = Vec3<double>(), bool flat = true);
 	// Add overlay text primitive

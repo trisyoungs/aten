@@ -27,6 +27,9 @@
 #include "templates/list.h"
 #include "templates/vector4.h"
 
+#define MINIMUMOCCURRENCECHUNKSIZE 256
+#define MAXIMUMOCCURRENCECHUNKSIZE 65536
+
 ATEN_BEGIN_NAMESPACE
 
 // Forward Declarations (Aten)
@@ -38,7 +41,7 @@ class RenderOccurrence : public QOpenGLFunctions, public ListItem<RenderOccurren
 {
 	public:
 	// Constructor
-	RenderOccurrence(Primitive& targetPrimitive);
+	RenderOccurrence(Primitive& targetPrimitive, int initialChunkSize);
 
 
 	/*
@@ -51,10 +54,16 @@ class RenderOccurrence : public QOpenGLFunctions, public ListItem<RenderOccurren
 	List<RenderOccurrenceChunk> chunks_;
 	// Current RenderOccurrenceChunk target
 	RenderOccurrenceChunk* currentChunk_;
+	// Chunksize currently in use by RenderOccurrenceChunks
+	int chunkSize_;
+
+	private:
+	// Add chunk (with current chunkSize_)
+	RenderOccurrenceChunk* addChunk();
 
 	public:
-	// Clear data, but do not free arrays
-	void clear();
+	// Clear data (retaining arrays) adjusting chunkSize_ if necessary
+	void clear(int newChunkSize);
 	// Return target primitive
 	Primitive& primitive() const;
 	// Add occurrence (with colour as Vec4)

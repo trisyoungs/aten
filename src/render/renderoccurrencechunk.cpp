@@ -27,13 +27,14 @@
 ATEN_USING_NAMESPACE
 
 // Constructor
-RenderOccurrenceChunk::RenderOccurrenceChunk() : ListItem<RenderOccurrenceChunk>()
+RenderOccurrenceChunk::RenderOccurrenceChunk(int chunkSize) : ListItem<RenderOccurrenceChunk>()
 {
-	localTransform_ = new Matrix[OCCURRENCECHUNKSIZE];
-	colourR_ = new GLfloat[OCCURRENCECHUNKSIZE];
-	colourG_ = new GLfloat[OCCURRENCECHUNKSIZE];
-	colourB_ = new GLfloat[OCCURRENCECHUNKSIZE];
-	colourA_ = new GLfloat[OCCURRENCECHUNKSIZE];
+	chunkSize_ = chunkSize;
+	localTransform_ = new Matrix[chunkSize_];
+	colourR_ = new GLfloat[chunkSize_];
+	colourG_ = new GLfloat[chunkSize_];
+	colourB_ = new GLfloat[chunkSize_];
+	colourA_ = new GLfloat[chunkSize_];
 	nDefined_ = 0;
 }
 
@@ -66,7 +67,7 @@ int RenderOccurrenceChunk::nDefined() const
 // Return whether arrays are full
 bool RenderOccurrenceChunk::isFull() const
 {
-	return nDefined_ == OCCURRENCECHUNKSIZE;
+	return nDefined_ == chunkSize_;
 }
 
 // Set next data (with colour as Vec4)
@@ -74,7 +75,7 @@ void RenderOccurrenceChunk::setNextData(Matrix& transform, Vec4<GLfloat>& colour
 {
 	if (isFull())
 	{
-		printf("Internal Error: RenderoccurrenceChunk is full, so can't setNextData...\n");
+		printf("Internal Error: RenderOccurrenceChunk is full, so can't setNextData...\n");
 		return;
 	}
 
@@ -110,7 +111,7 @@ void RenderOccurrenceChunk::setNextData(Matrix& transform)
 {
 	if (isFull())
 	{
-		printf("Internal Error: RenderoccurrenceChunk is full, so can't setNextData...\n");
+		printf("Internal Error: RenderOccurrenceChunk is full, so can't setNextData...\n");
 		return;
 	}
 

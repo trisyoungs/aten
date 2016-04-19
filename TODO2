@@ -22,8 +22,10 @@ Add 'Relative' view lock option, alongside 'None' and 'Lock' (Follow)?
 Miller selection.
 Intelligent Select: prepended '+' is interpreted as NETA.
 Progress indicator jobs in GUI appear to be created even if they are short and not 'ready' to be shown yet.
-Need a dynamic CHUNKOCCURRENCESIZE!
 Speedup Disorder Builder??
+Implement 'factory' for common objects such as Atom & Bond, to save new'ing all the time (esp. for large systems).
+Make expand(-1) repeat until no more are selected.
+Panel for User tools, essentially loaded from scripts in a user's tools/X directory.
 
 Graphics TODO
 =============
@@ -63,7 +65,9 @@ Remove global MC, CG, SD declarations, and put them in Aten?
 
 Manual TODO
 ===========
-Examples: Partitioning (need fancy function to encapsulate), advanced selection (caffeine nitrogens, transmution etc), chloroform glyph triangles, CG particles.
+Examples: Partitioning (torus), advanced selection (caffeine nitrogens, transmutation etc), chloroform glyph triangles, CG particles.
 Sections: ExportFilm (GUI)
 TestSelect command.
 Setting of filter options when using --batch CLI mode (in 03.cli/batch).
+Switch / Case.
+More descriptions / examples for Disorder Builder options.

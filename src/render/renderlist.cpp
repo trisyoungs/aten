@@ -39,15 +39,20 @@ RenderOccurrence* RenderList::occurrenceForPrimitive(Primitive& primitive)
 	for (RenderOccurrence* occurrence = targets_.first(); occurrence != NULL; occurrence = occurrence->next) if (&primitive == &occurrence->primitive()) return occurrence;
 
 	// No matching occurrence - so create new one and return it
-	RenderOccurrence* occurrence = new RenderOccurrence(primitive);
+	RenderOccurrence* occurrence = new RenderOccurrence(primitive, lastChunkSize_);
 	targets_.own(occurrence);
 	return occurrence;
 }
 
-// Clear data, but do not free arrays
-void RenderList::clear()
+// Clear chunk data (recreating with new chunksize if necessary)
+void RenderList::clear(int chunkSize)
 {
-	for (RenderOccurrence* occurrence = targets_.first(); occurrence != NULL; occurrence = occurrence->next) occurrence->clear();
+	// Clamp newChunkSize
+	if (chunkSize < MINIMUMOCCURRENCECHUNKSIZE) chunkSize = MINIMUMOCCURRENCECHUNKSIZE;
+	else if (chunkSize > MAXIMUMOCCURRENCECHUNKSIZE) chunkSize = MAXIMUMOCCURRENCECHUNKSIZE;
+
+	lastChunkSize_ = chunkSize;
+	for (RenderOccurrence* occurrence = targets_.first(); occurrence != NULL; occurrence = occurrence->next) occurrence->clear(lastChunkSize_);
 }
 
 // Add primitive to internal lists

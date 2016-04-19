@@ -43,6 +43,8 @@ class RenderList
 	 * Primitive Data
 	 */
 	private:
+	// Last chunksize passed through clear()
+	int lastChunkSize_;
 	// Occurrences of primitive to be rendered
 	List<RenderOccurrence> targets_;
 
@@ -51,8 +53,8 @@ class RenderList
 	RenderOccurrence* occurrenceForPrimitive(Primitive& primitive);
 
 	public:
-	// Clear data, but do not free arrays
-	void clear();
+	// Clear chunk data (recreating with new chunksize if necessary)
+	void clear(int chunkSize = MINIMUMOCCURRENCECHUNKSIZE);
 	// Add primitive to internal lists
 	void addOccurrence(Primitive& primitive, Matrix& transform, Vec4<GLfloat>& colour);
 	// Add primitive to internal lists (without colour or linewidth)
