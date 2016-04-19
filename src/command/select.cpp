@@ -147,7 +147,20 @@ bool Commands::function_Expand(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	obj.rs()->beginUndoState("Expand current selection");
 	int nselected = obj.rs()->nSelected();
-	if (c->hasArg(0)) for (int n=0; n<c->argi(0); ++n) obj.rs()->selectionExpand();
+	if (c->hasArg(0))
+	{
+		// If arg is -1, keep expanding until nothing more is selected
+		if (c->argi(0) == -1)
+		{
+			int lastSelected;
+			do
+			{
+				lastSelected = obj.rs()->nSelected();
+				obj.rs()->selectionExpand();
+			} while (lastSelected != obj.rs()->nSelected());
+		}
+		else for (int n=0; n<c->argi(0); ++n) obj.rs()->selectionExpand();
+	}
 	else obj.rs()->selectionExpand();
 	obj.rs()->endUndoState();
 	rv.set( obj.rs()->nSelected() - nselected );

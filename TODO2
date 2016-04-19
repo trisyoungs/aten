@@ -24,7 +24,6 @@ Intelligent Select: prepended '+' is interpreted as NETA.
 Progress indicator jobs in GUI appear to be created even if they are short and not 'ready' to be shown yet.
 Speedup Disorder Builder??
 Implement 'factory' for common objects such as Atom & Bond, to save new'ing all the time (esp. for large systems).
-Make expand(-1) repeat until no more are selected.
 Panel for User tools, essentially loaded from scripts in a user's tools/X directory.
 
 Graphics TODO

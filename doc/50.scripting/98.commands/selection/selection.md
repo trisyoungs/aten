@@ -113,8 +113,9 @@ will deselect all hydrogen atoms bound to oxygen atoms which are, in turn, bound
 _Syntax:_
 
 **int** **expand** ( )
+**int** **expand** ( **int** _repeat_ )
 
-Expand the current selection of atoms by selecting any atoms that are directly bound to an already-selected atom. The number of atoms added to the previous selection is returned.
+Expand the current selection of atoms by selecting any atoms that are directly bound to an already-selected atom. The number of atoms added to the previous selection is returned. If a _repeat_ number is given the expansion is repeated that number of times. If `-1` is passed as the _repeat_, then expansion of the selection continues until no more atoms can be selected.
 
 For example:
 
