@@ -684,6 +684,8 @@ class AtenWindow : public QMainWindow
 
 	public:
 	// Save image of current view
+	bool saveCurrentView(QString fileName, int width, int height);
+	// Return image of current view
 	QPixmap scenePixmap(int width, int height);
 	// Return pixmap of specified model
 	QPixmap modelPixmap(Model* model, QSize pixmapSize);

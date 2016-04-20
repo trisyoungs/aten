@@ -164,7 +164,7 @@ void BuildFragmentsPopup::on_FragmentTree_currentItemChanged(QTreeWidgetItem* cu
 		parent_.aten().setCurrentFragment(currentFragment_);
 	}
 
-	hide();
+	done(true, UserAction::DrawFragmentsAction);
 }
 
 void BuildFragmentsPopup::on_FragmentTable_currentItemChanged(QTableWidgetItem *current, QTableWidgetItem *previous)
@@ -178,7 +178,7 @@ void BuildFragmentsPopup::on_FragmentTable_currentItemChanged(QTableWidgetItem *
 		parent_.aten().setCurrentFragment(currentFragment_);
 	}
 	
-	hide();
+	done(true, UserAction::DrawFragmentsAction);
 }
 
 void BuildFragmentsPopup::on_FilterEdit_textChanged(const QString& text)

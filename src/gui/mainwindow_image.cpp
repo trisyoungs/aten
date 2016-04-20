@@ -45,6 +45,12 @@ const char* AtenWindow::bitmapFormatExtension(AtenWindow::BitmapFormat bf)
 }
 
 // Save image of current view
+bool AtenWindow::saveCurrentView(QString fileName, int width, int height)
+{
+	// ATEN2 TODO
+}
+
+// Return image of current view
 QPixmap AtenWindow::scenePixmap(int width, int height)
 {
 	return ui.MainView->generateImage(width, height);

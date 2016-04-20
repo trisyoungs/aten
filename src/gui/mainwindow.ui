@@ -7,7 +7,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1183</width>
+    <width>1202</width>
     <height>715</height>
    </rect>
   </property>
@@ -7820,7 +7820,7 @@
              </size>
             </property>
             <property name="toolTip">
-             <string>Toggle drawing of total grid volume box</string>
+             <string>Assign charges to atoms when describing system</string>
             </property>
             <property name="text">
              <string>Charges</string>
@@ -7836,6 +7836,9 @@
              </size>
             </property>
             <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <property name="checked">
              <bool>true</bool>
             </property>
             <property name="toolButtonStyle">

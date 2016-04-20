@@ -81,7 +81,7 @@ void RebondPopup::on_RebondModelNoAugmentButton_clicked(bool checked)
 void RebondPopup::on_RebondSelectionButton_clicked(bool checked)
 {
 	// Run command
-	CommandNode::run(Commands::ReBondSelection, "i", 0);
+	CommandNode::run(Commands::ReBondSelection, "i", 1);
 
 	// Update display
 	parent_.updateWidgets(AtenWindow::MainViewTarget);
@@ -93,7 +93,7 @@ void RebondPopup::on_RebondSelectionButton_clicked(bool checked)
 void RebondPopup::on_RebondSelectionNoAugmentButton_clicked(bool checked)
 {
 	// Run command
-	CommandNode::run(Commands::ReBondSelection, "i", 1);
+	CommandNode::run(Commands::ReBondSelection, "i", 0);
 
 	// Update display
 	parent_.updateWidgets(AtenWindow::MainViewTarget);
@@ -105,7 +105,7 @@ void RebondPopup::on_RebondSelectionNoAugmentButton_clicked(bool checked)
 void RebondPopup::on_RebondPatternsButton_clicked(bool checked)
 {
 	// Run command
-	CommandNode::run(Commands::ReBondPatterns, "i", 0);
+	CommandNode::run(Commands::ReBondPatterns, "i", 1);
 
 	// Update display
 	parent_.updateWidgets(AtenWindow::MainViewTarget);
@@ -117,7 +117,7 @@ void RebondPopup::on_RebondPatternsButton_clicked(bool checked)
 void RebondPopup::on_RebondPatternsNoAugmentButton_clicked(bool checked)
 {
 	// Run command
-	CommandNode::run(Commands::ReBondPatterns, "i", 1);
+	CommandNode::run(Commands::ReBondPatterns, "i", 0);
 
 	// Update display
 	parent_.updateWidgets(AtenWindow::MainViewTarget);

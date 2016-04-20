@@ -557,12 +557,12 @@ void RenderGroup::createAtomsAndBonds(PrimitiveSet& primitiveSet, Model* source,
 					// Render ring
 					if (prefs.renderDashedAromatics())
 					{
-						if (globalstyle == Prefs::LineStyle) addTriangles(primitiveSet.segmentedLineRing(), atomTransform, colour_i);
+						if (globalstyle == Prefs::LineStyle) addLines(primitiveSet.segmentedLineRing(), atomTransform, colour_i);
 						else addTriangles(primitiveSet.segmentedTubeRing(), atomTransform, colour_i);
 					}
 					else
 					{
-						if (globalstyle == Prefs::LineStyle) addTriangles(primitiveSet.lineRing(), atomTransform, colour_i);
+						if (globalstyle == Prefs::LineStyle) addLines(primitiveSet.lineRing(), atomTransform, colour_i);
 						else addTriangles(primitiveSet.tubeRing(), atomTransform, colour_i);
 					}
 

@@ -278,6 +278,9 @@ bool AtenWindow::exportFilm()
 			}
 		}
 		Messenger::terminateTask(encoderTask);
+
+		// Cleanup after film export
+		cleanupFilmExport(frameImages, framesFile);
 	}
 
 	return true;
