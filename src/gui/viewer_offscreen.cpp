@@ -94,7 +94,7 @@ QPixmap Viewer::generateModelImage(Model* model, int width, int height)
 }
 
 // Render current scene at supplied size (or current widget size if none provided)
-QPixmap Viewer::generateImage(int imageWidth, int imageHeight)
+QPixmap Viewer::generateImage(int imageWidth, int imageHeight, bool transparent)
 {
 	Messenger::enter("Viewer::generateImage");
 
@@ -145,10 +145,10 @@ QPixmap Viewer::generateImage(int imageWidth, int imageHeight)
 
 	// Create a QPixmap of the desired full size and a QPainter for it
 	QPixmap pixmap = QPixmap(imageWidth, imageHeight);
+	if (transparent) pixmap.fill(Qt::transparent);
+	else pixmap.fill(Qt::white);
 	QPainter painter(&pixmap);
 	painter.setPen(Qt::NoPen);
-	painter.setBrush(Qt::white);
-	painter.drawRect(0,0,imageWidth, imageHeight);
 	QRect imageRect(0,0,512,512), targetRect(0,0,512,512);
 
 	// Calculate scale factors for ViewLayout, so that the context width/height is scaled to the desired image size
@@ -163,7 +163,8 @@ QPixmap Viewer::generateImage(int imageWidth, int imageHeight)
 		{
 			// Generate this tile
 			frameBufferObject.bind();
-			glClearColor(col[0], col[1], col[2], col[3]);
+			if (transparent) glClearColor(col[0], col[1], col[2], 0.0f);
+			else glClearColor(col[0], col[1], col[2], col[3]);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			renderFullScene(imageWidth, imageHeight, -x*tileWidth, -y*tileHeight);
 

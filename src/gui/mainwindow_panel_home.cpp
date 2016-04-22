@@ -197,14 +197,13 @@ void AtenWindow::on_HomeFileImageButton_clicked(bool checked)
 	if (!exportImageDialog_.getImageDetails()) return;
 
 	// Get values from dialog
-	int imageWidth = exportImageDialog_.ui.ImageWidthSpin->value();
-	int imageHeight = exportImageDialog_.ui.ImageHeightSpin->value();
+	int imageWidth = exportImageDialog_.imageWidth();
+	int imageHeight = exportImageDialog_.imageHeight();
 	QString fileName = exportImageDialog_.fileName();
 	if (fileName.isEmpty()) return;
 
-	QPixmap pixmap = scenePixmap(imageWidth, imageHeight);
-	AtenWindow::BitmapFormat bf = (AtenWindow::BitmapFormat) exportImageDialog_.ui.ImageFormatCombo->currentIndex();
-	pixmap.save(fileName, AtenWindow::bitmapFormatExtension(bf), -1);
+	QPixmap pixmap = scenePixmap(imageWidth, imageHeight, exportImageDialog_.imageTransparent());
+	pixmap.save(fileName, exportImageDialog_.imageFormat(), -1);
 }
 
 void AtenWindow::on_HomeFileFilmButton_clicked(bool checked)
