@@ -71,6 +71,14 @@ bool Commands::function_AxisRotate(CommandNode* c, Bundle& obj, ReturnValue& rv)
 			break;
 	}
 
+	// Check vector
+	if (v.magnitude() < 1.0e-5)
+	{
+		Messenger::print("Error: Invalid vector supplied for axis rotation. Not done.\n");
+		rv.reset();
+		return false;
+	}
+
 	obj.rs()->beginUndoState("Rotate %i atom(s)", obj.rs()->nSelected());
 	obj.rs()->rotateSelectionVector(o, v, angle);
 	obj.rs()->endUndoState();
