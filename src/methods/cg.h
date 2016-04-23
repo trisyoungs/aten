@@ -39,7 +39,7 @@ class MethodCg : public LineMinimiser
 
 	private:
 	// Maximum number of iterations to perform
-	int nCycles_;;
+	int nCycles_;
 
 	public:
 	// Set maximum number of cycles to perform

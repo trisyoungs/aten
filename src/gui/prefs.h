@@ -178,9 +178,8 @@ class AtenPrefs : public QDialog
 
 	private slots:
 	void on_ScaleList_currentRowChanged(int id);
-	void on_ScalePointsTable_currentCellChanged(int row, int col, int prevrow, int prevcol);
-	void on_PointValueSpin_valueChanged(double d);
-	void on_PointColourButton_clicked(bool checked);
+	void on_ScalePointsTable_cellChanged(int row, int col);
+	void on_ScalePointsTable_cellDoubleClicked(int row, int column);
 	void on_AddPointButton_clicked(bool checked);
 	void on_RemovePointButton_clicked(bool checked);
 	void on_ScaleList_itemClicked(QListWidgetItem* item);
