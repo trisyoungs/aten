@@ -59,7 +59,6 @@ Reformulate Pattern::bondEnergy() and others into a separate class, since the Pa
 Make Model::EnergyStore a private member with accessor?
 Add ObjectLists (when using CHECK)?
 Click to select grid.
-Remove global MC, CG, SD declarations, and put them in Aten? NO - Just require them to be instantiated as objects when used.
 
 Manual TODO
 ===========

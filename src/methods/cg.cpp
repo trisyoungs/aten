@@ -23,37 +23,31 @@
 #include "model/model.h"
 #include "ff/energystore.h"
 
-ATEN_BEGIN_NAMESPACE
-
-// Static Singleton
-MethodCg cg;
-
-ATEN_END_NAMESPACE
-
 ATEN_USING_NAMESPACE
+
 // Constructor
-MethodCg::MethodCg()
+CGMinimiser::CGMinimiser()
 {
 	nCycles_ = 100;
 }
 
 // Set maximum number of cycles to perform
-void MethodCg::setNCycles(int i)
+void CGMinimiser::setNCycles(int i)
 {
 	nCycles_ = i;
 }
 
 // Get maximum number of cycles
-int MethodCg::nCycles() const
+int CGMinimiser::nCycles() const
 {
 	return nCycles_;
 }
 
 // Minimise Energy w.r.t. coordinates by Conjugate Gradient
-double MethodCg::minimise(Model* sourceModel, double eConverge, double fConverge)
+double CGMinimiser::minimise(Model* sourceModel, double eConverge, double fConverge)
 {
 	// Line Search (Steepest Descent) energy minimisation.
-	Messenger::enter("MethodCg::minimise");
+	Messenger::enter("CGMinimiser::minimise");
 	int cycle, i;
 	double currentEnergy, oldEnergy, deltaEnergy = 0.0, lastPrintedEnergy, oldForce, newForce, deltaForce = 0.0, g_old_sq, gamma, g_current_sq;
 	double* g_old;
@@ -67,7 +61,7 @@ double MethodCg::minimise(Model* sourceModel, double eConverge, double fConverge
 	// First, create expression for the current model and assign charges
 	if ((!sourceModel->isExpressionValid()) || (sourceModel->nAtoms() == 0))
 	{
-	        Messenger::exit("MethodCg::minimise");
+	        Messenger::exit("CGMinimiser::minimise");
 	        return 0.0;
 	}
 	
@@ -77,7 +71,7 @@ double MethodCg::minimise(Model* sourceModel, double eConverge, double fConverge
 	currentEnergy = sourceModel->totalEnergy(sourceModel, success);
 	if (!success)
 	{
-	        Messenger::exit("MethodCg::minimise");
+	        Messenger::exit("CGMinimiser::minimise");
 	        return 0.0;
 	}
 
@@ -185,7 +179,7 @@ double MethodCg::minimise(Model* sourceModel, double eConverge, double fConverge
 	sourceModel->updateMeasurements();
 	sourceModel->logChange(Log::Coordinates);
 
-	Messenger::exit("MethodCg::minimise");
+	Messenger::exit("CGMinimiser::minimise");
 	return currentEnergy;
 }
 

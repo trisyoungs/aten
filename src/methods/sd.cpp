@@ -23,38 +23,31 @@
 #include "model/model.h"
 #include "ff/energystore.h"
 
-ATEN_BEGIN_NAMESPACE
-
-// Static Singleton
-MethodSd sd;
-
-ATEN_END_NAMESPACE
-
 ATEN_USING_NAMESPACE
 
 // Constructor
-MethodSd::MethodSd()
+SDMinimiser::SDMinimiser()
 {
 	// Private variables
 	nCycles_ = 100;
 }
 
 // Set maximum number of cycles to perform
-void MethodSd::setNCycles(int i)
+void SDMinimiser::setNCycles(int i)
 {
 	nCycles_ = i;
 }
 
 // Get maximum number of  for MC move
-int MethodSd::nCycles() const
+int SDMinimiser::nCycles() const
 {
 	return nCycles_;
 }
 
 // Minimise Energy w.r.t. coordinates by Steepest Descent
-double MethodSd::minimise(Model* sourceModel, double eConverge, double fConverge, bool simple)
+double SDMinimiser::minimise(Model* sourceModel, double eConverge, double fConverge, bool simple)
 {
-	Messenger::enter("MethodSd::minimise");
+	Messenger::enter("SDMinimiser::minimise");
 	int cycle, nattempts;
 	double oldEnergy, currentEnergy, deltaEnergy, lastPrintedEnergy, oldForce, newForce, deltaForce, stepsize;
 	bool lineDone, converged, success;
@@ -65,7 +58,7 @@ double MethodSd::minimise(Model* sourceModel, double eConverge, double fConverge
 	// First, create expression for the current model and assign charges
 	if ((!sourceModel->isExpressionValid()) || (sourceModel->nAtoms() == 0))
 	{
-	        Messenger::exit("MethodSd::minimise");
+	        Messenger::exit("SDMinimiser::minimise");
 	        return 0.0;
 	}
 	
@@ -73,7 +66,7 @@ double MethodSd::minimise(Model* sourceModel, double eConverge, double fConverge
 	currentEnergy = sourceModel->totalEnergy(sourceModel, success);
 	if (!success)
 	{
-	        Messenger::exit("MethodSd::minimise");
+	        Messenger::exit("SDMinimiser::minimise");
 	        return 0.0;
 	}
 	lastPrintedEnergy = currentEnergy;
@@ -163,7 +156,7 @@ double MethodSd::minimise(Model* sourceModel, double eConverge, double fConverge
 	sourceModel->updateMeasurements();
 	sourceModel->logChange(Log::Coordinates);
 	
-	Messenger::exit("MethodSd::minimise");
+	Messenger::exit("SDMinimiser::minimise");
 	return currentEnergy;
 }
 

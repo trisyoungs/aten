@@ -31,11 +31,11 @@ ATEN_BEGIN_NAMESPACE
 class Model;
 
 // Conjugate gradient minimiser
-class MethodCg : public LineMinimiser
+class CGMinimiser : public LineMinimiser
 {
 	public:
 	// Constructor
-	MethodCg();
+	CGMinimiser();
 
 	private:
 	// Maximum number of iterations to perform
@@ -49,9 +49,6 @@ class MethodCg : public LineMinimiser
 	// Minimise the energy of the specified model
 	double minimise(Model* sourceModel, double eConverge, double fConverge);
 };
-
-// Static Singleton
-extern MethodCg cg;
 
 ATEN_END_NAMESPACE
 

@@ -49,6 +49,8 @@ bool Commands::function_CGMinimise(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	double fConverge = c->hasArg(2) ? c->argd(2) : 1.0e-2;
 	double lineTolerance = c->hasArg(3) ? c->argd(3) : 1.0e-4;
 
+	// Create and setup the minimiser
+	CGMinimiser cg;
 	cg.setTolerance(lineTolerance);
 	cg.setNCycles(nCycles);
 
@@ -231,6 +233,8 @@ bool Commands::function_SDMinimise(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	double lineTolerance = c->hasArg(3) ? c->argd(3) : 1.0e-4;
 	bool simple = c->hasArg(4) ? c->argb(4) : false;
 
+	// Create and setup minimiser
+	SDMinimiser sd;
 	sd.setTolerance(lineTolerance);
 	sd.setNCycles(nCycles);
 

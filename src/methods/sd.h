@@ -31,11 +31,11 @@ ATEN_BEGIN_NAMESPACE
 class Model;
 
 // Steepest Descent Minimiser
-class MethodSd : public LineMinimiser
+class SDMinimiser : public LineMinimiser
 {
 	public:
 	// Constructor
-	MethodSd();
+	SDMinimiser();
 
 	private:
 	// Maximum number of iterations to perform
@@ -49,9 +49,6 @@ class MethodSd : public LineMinimiser
 	// Minimise the specified model
 	double minimise(Model* sourceModel, double eConverge, double fConverge, bool simple);
 };
-
-// Static Singleton
-extern MethodSd sd;
 
 ATEN_END_NAMESPACE
 
