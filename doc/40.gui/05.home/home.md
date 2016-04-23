@@ -54,6 +54,8 @@ The **Session** button allows access to Session control, loading and saving.  A 
 
 Allows export of the current (potentially multiple-model) view to an image of arbitrary size. Long-pressing allows the current view to be copied to the clipboard - the resulting image will have dimensions corresponding to those of the **Main View**.
 
+**Aten** also has a 'snapshot' function - pressing **F12** at any time will save an image of the current view in the size and format specified in the Export Image popup. These files are named `Aten-Snapshot-YYYY-MM-DD_HH-MM-SS.???` and are placed in the current working directory.
+
 ### Export Film
 
 Raises the [**Export Film**](/aten/docs/gui/exportfilm) dialog, allowing a movie of the current model and/or its trajectory to be saved. See the [**Export Film**](/aten/docs/gui/exportfilm) section for more information.

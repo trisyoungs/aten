@@ -59,7 +59,7 @@ bool Commands::function_SaveBitmap(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	rv.reset();
 	bool result;
 
-	QPixmap pixmap = aten_.atenWindow()->scenePixmap(width, height);
+	QPixmap pixmap = aten_.atenWindow()->scenePixmap(width, height, false);
 	result = pixmap.save(c->argc(1), AtenWindow::bitmapFormatExtension(bf), quality);
 
 	prefs.setViewRotationGlobe(viewGlobe);

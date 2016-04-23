@@ -34,14 +34,16 @@ class AtenExportImage : public QDialog
 	// All Qt declarations must include this macro
 	Q_OBJECT
 
-	public:
-	// Constructor / Destructor
-	AtenExportImage(AtenWindow& parent);
-	~AtenExportImage();
+	private:
 	// Main form declaration
 	Ui::AtenExportImage ui;
 	// Reference to main window
 	AtenWindow& atenWindow_;
+
+	public:
+	// Constructor / Destructor
+	AtenExportImage(AtenWindow& parent);
+	~AtenExportImage();
 
 	private:
 	// Whether the dialog is still awaiting it's first show
@@ -52,6 +54,14 @@ class AtenExportImage : public QDialog
 	public:
 	// Call dialog to get/update image save information
 	bool getImageDetails();
+	// Return selected image width
+	double imageWidth();
+	// Return selected image height
+	double imageHeight();
+	// Return image format extension selected
+	const char* imageFormat();
+	// Return whether image should be transparent
+	bool imageTransparent();
 	// Return selected filename
 	QString fileName();
 
@@ -61,6 +71,7 @@ class AtenExportImage : public QDialog
 	 */
 	private slots:
 	void on_SelectFileNameButton_clicked(bool checked);
+	void on_ResetToCurrentButton_clicked(bool checked);
 	void on_ImageWidthSpin_valueChanged(int value);
 	void on_MaintainAspectRatioCheck_toggled(bool checked);
 	void on_SaveImageButton_clicked(bool checked);

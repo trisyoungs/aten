@@ -40,6 +40,7 @@ header_class: alt
 | F8 | Detect H-Bonds | Toggle detection and display of hydrogen bonds |
 | F10 | Quick Command | Raise a dialog window allowing a quick command to be run |
 | F11 | Correct Grids | Perform a single-shot correction (reconstruction) of grid data |
+| F12 | Snapshot | Snapshot the current view as an image (named "Aten-Snapshot-YYYY-MM-DD_HH-MM-SS.???") in the size and format specified in the Export Image dialog |
 | Ctrl-F1 | Element Colouring | Set main [colouring scheme](/aten/docs/enums/colourscheme) to use element colours |
 | Ctrl-F2 | Charge Colouring | Set main [colouring scheme](/aten/docs/enums/colourscheme) to colour based on charge |
 | Ctrl-F3 | Force Colouring | Set main [colouring scheme](/aten/docs/enums/colourscheme) to colour based on force |

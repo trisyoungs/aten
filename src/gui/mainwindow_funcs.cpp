@@ -375,6 +375,8 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportFilmD
 	connect(shortcut, SIGNAL(activated()), ui.QuickCommandToggleButton, SLOT(click()));
 	shortcut = new QShortcut(QKeySequence(Qt::Key_F11), this, 0, 0, Qt::ApplicationShortcut);
 	connect(shortcut, SIGNAL(activated()), this, SLOT(recreateGridsForView()));
+	shortcut = new QShortcut(QKeySequence(Qt::Key_F12), this, 0, 0, Qt::ApplicationShortcut);
+	connect(shortcut, SIGNAL(activated()), this, SLOT(snapshotCurrentView()));
 
 	// Create Context Menu
 	createContextMenu();

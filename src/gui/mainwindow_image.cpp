@@ -21,6 +21,7 @@
 
 #include "gui/mainwindow.h"
 #include "base/sysfunc.h"
+#include <main/aten.h>
 
 // Bitmap Image Formats (conform to allowable pixmap formats in Qt)
 const char* bitmapFormatFilters[AtenWindow::nBitmapFormats] = { "Windows Bitmap (*.bmp)", "Joint Photographic Experts Group (*.jpg)", "Portable Network Graphics (*.png)", "Portable Pixmap (*.ppm)", "X11 Bitmap (*.xbm)", "X11 Pixmap (*.xpm)" };
@@ -44,16 +45,34 @@ const char* AtenWindow::bitmapFormatExtension(AtenWindow::BitmapFormat bf)
 	return bitmapFormatExtensions[bf];
 }
 
-// Save image of current view
-bool AtenWindow::saveCurrentView(QString fileName, int width, int height)
+// Return current width of main view context
+int AtenWindow::contextWidth()
 {
-	// ATEN2 TODO
+	return ui.MainView->contextWidth();
+}
+
+// Return current height of main view context
+int AtenWindow::contextHeight()
+{
+	return ui.MainView->contextHeight();
+}
+
+// Save automatically-named image of current scene
+void AtenWindow::snapshotCurrentView()
+{
+	// Get image
+	QPixmap pixmap = scenePixmap(exportImageDialog_.imageWidth(), exportImageDialog_.imageHeight(), exportImageDialog_.imageTransparent());
+
+	// Construct filename
+	QString fileName = aten_.workDir().absoluteFilePath(QString("Aten-Snapshot-%1.%2").arg(QDateTime::currentDateTime().toString("yyyy-MM-dd_HH-mm-ss"), exportImageDialog_.imageFormat()));
+
+	pixmap.save(fileName, qPrintable(exportImageDialog_.imageFormat()));
 }
 
 // Return image of current view
-QPixmap AtenWindow::scenePixmap(int width, int height)
+QPixmap AtenWindow::scenePixmap(int width, int height, bool transparent)
 {
-	return ui.MainView->generateImage(width, height);
+	return ui.MainView->generateImage(width, height, transparent);
 }
 
 // Return pixmap of specified model

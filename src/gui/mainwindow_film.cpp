@@ -170,7 +170,7 @@ bool AtenWindow::exportFilm()
 		frameImages << imageFilename;
 
 		// Generate and save image
-		QPixmap pixmap = scenePixmap(imageWidth, imageHeight);
+		QPixmap pixmap = scenePixmap(imageWidth, imageHeight, false);
 		if (!pixmap.save(imageFilename, qPrintable(imageExtension), -1))
 		{
 			Messenger::error("Failed to save image '%s'.", qPrintable(imageFilename));

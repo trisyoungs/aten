@@ -8,8 +8,6 @@ Ato export format is incorrect if nrestraints == 0 (i.e. for single atoms) since
 DL_POLY trajectory cannot be properly loaded without a model containing the correct atoms - add the ability to create a local, temporary model in the filter, and store atom information in this in the readHeader() function. Then could update modelTemplate to take a model pointer as an optional argument. Does this mean we should rewrite the language to properly use pointer specifications?
 Trajectory handling:
 o Inherit generates a crash when at first frame??
-Image saving:
-o Continuous image saving - function key to save image under a set-filename, incrementing a number suffix each time.
 Intelligent Select - add support for selection by type name (e.g. O*, OW etc.).
 Add set members to Matrix class allowing axes to be set from atoms in models.
 Printf command buffered output is never printed if no newline ever occurs.  Need to store data somewhere other than the Printf function itself, and flush it at the end of command execution.

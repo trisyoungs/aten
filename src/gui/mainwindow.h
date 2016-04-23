@@ -127,6 +127,9 @@ class AtenWindow : public QMainWindow
 	QMenu contextMenu_;
 	// Atom under mouse when context menu was called
 	Atom* contextAtom_;
+
+	private:
+	// Create actions for glyph creation in context menu
 	QAction* createGlyphActions[Glyph::nGlyphTypes];
 
 	private:
@@ -683,12 +686,18 @@ class AtenWindow : public QMainWindow
 	static const char* bitmapFormatExtension(BitmapFormat bf);
 
 	public:
-	// Save image of current view
-	bool saveCurrentView(QString fileName, int width, int height);
+	// Return current width of main view context
+	int contextWidth();
+	// Return current height of main view context
+	int contextHeight();
 	// Return image of current view
-	QPixmap scenePixmap(int width, int height);
+	QPixmap scenePixmap(int width, int height, bool transparent);
 	// Return pixmap of specified model
 	QPixmap modelPixmap(Model* model, QSize pixmapSize);
+
+	public slots:
+	// Save automatically-named image of current scene
+	void snapshotCurrentView();
 
 
 	/*

@@ -66,7 +66,7 @@ void AtenProgress::updateAndShow()
 		ui.TaskTable->setRowCount(Messenger::nTasks());
 		for (RefListItem<Task,int>* ri = Messenger::tasks(); ri != NULL; ri = ri->next)
 		{
-			Task *task = ri->item;
+			Task* task = ri->item;
 
 			bar = new QProgressBar(this);
 			bar->setRange(0, task->nSteps());

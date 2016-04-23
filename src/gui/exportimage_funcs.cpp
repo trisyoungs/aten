@@ -37,7 +37,6 @@ AtenExportImage::AtenExportImage(AtenWindow& parent) : atenWindow_(parent), QDia
 	// Populate format combo
 	for (int n=0; n<AtenWindow::nBitmapFormats; ++n) ui.ImageFormatCombo->addItem( AtenWindow::bitmapFormatFilter((AtenWindow::BitmapFormat) n) );
 	ui.ImageFormatCombo->setCurrentIndex(AtenWindow::BitmapPNG);
-
 }
 
 // Destructor
@@ -52,8 +51,8 @@ bool AtenExportImage::getImageDetails()
 	if (firstShow_)
 	{
 		ui.FileNameEdit->setText(atenWindow_.aten().workDir().absoluteFilePath("image.png"));
-		ui.ImageWidthSpin->setValue(atenWindow_.ui.MainView->contextWidth());
-		ui.ImageHeightSpin->setValue(atenWindow_.ui.MainView->contextHeight());
+		ui.ImageWidthSpin->setValue(atenWindow_.contextWidth());
+		ui.ImageHeightSpin->setValue(atenWindow_.contextHeight());
 		ui.ImageHeightSpin->setValue(ui.MaintainAspectRatioCheck->checkState() == Qt::Checked ? ui.ImageWidthSpin->value() / aspectRatio_ : ui.ImageHeightSpin->value());
 		ui.ImageFormatCombo->setCurrentIndex(AtenWindow::BitmapPNG);
 	}
@@ -64,6 +63,30 @@ bool AtenExportImage::getImageDetails()
 
 	int result = exec();
 	return (result == 1);
+}
+
+// Return selected image width
+double AtenExportImage::imageWidth()
+{
+	return (firstShow_ ? atenWindow_.contextWidth() : ui.ImageWidthSpin->value());
+}
+
+// Return selected image height
+double AtenExportImage::imageHeight()
+{
+	return (firstShow_ ? atenWindow_.contextHeight() : ui.ImageHeightSpin->value());
+}
+
+// Return selected image format
+const char* AtenExportImage::imageFormat()
+{
+	return AtenWindow::bitmapFormatExtension((AtenWindow::BitmapFormat) ui.ImageFormatCombo->currentIndex());
+}
+
+// Return whether image should be transparent
+bool AtenExportImage::imageTransparent()
+{
+	return ui.TransparentCheck->isChecked();
 }
 
 // Return selected filename
@@ -80,6 +103,12 @@ void AtenExportImage::on_SelectFileNameButton_clicked(bool checked)
 {
 	QString newFile = QFileDialog::getSaveFileName(this, "Choose image save file name", ui.FileNameEdit->text(), QString(AtenWindow::bitmapFormatFilter((AtenWindow::BitmapFormat) ui.ImageFormatCombo->currentIndex())) + ";;All files (*.*)");
 	if (!newFile.isEmpty()) ui.FileNameEdit->setText(newFile);
+}
+
+void AtenExportImage::on_ResetToCurrentButton_clicked(bool checked)
+{
+	ui.ImageHeightSpin->setValue(atenWindow_.contextHeight());
+	ui.ImageWidthSpin->setValue(atenWindow_.contextWidth());
 }
 
 void AtenExportImage::on_ImageWidthSpin_valueChanged(int value)
