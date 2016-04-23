@@ -12,7 +12,6 @@ Image saving:
 o Continuous image saving - function key to save image under a set-filename, incrementing a number suffix each time.
 Intelligent Select - add support for selection by type name (e.g. O*, OW etc.).
 Add set members to Matrix class allowing axes to be set from atoms in models.
-Convert other member accessors to MatrixData type where appropriate.
 Printf command buffered output is never printed if no newline ever occurs.  Need to store data somewhere other than the Printf function itself, and flush it at the end of command execution.
 Crash when tree selecting large models (recursion overflow?) - use array-based loop instead.
 Add specific line primitive class that allows chunking (for speedup of stick rendering, because otherwise an enormous array is continually deleted'd/new'd).
@@ -40,9 +39,7 @@ GUI TODO
 ========
 Need to shrink used button space when window is not large enough to display all widgets in panel.
 Sort out remaining icons!
-Context Menu:
-o Set Colour doesn't work, since it needs a colour selector popup.
-Colour Selection:
+Colour Selector:
 o Need widget that is ebeddable as a QMenuAction* (for atom context menu)
 o Need simple button class (essentially a specific TMenuButton for ColourPopup) for Glyphs popup etc.
 Button to calculate / show total charge in selection.
