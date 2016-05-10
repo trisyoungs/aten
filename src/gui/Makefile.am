@@ -19,7 +19,7 @@ SUFFIXES: .ui .hui .qrc
 	rm $*.cpp
 
 clean-local:
-	-rm -f ui_* *.o icons.cpp tcolourframe.cpp tdoublespindelegate.cpp tintegerspindelegate.cpp tmenubutton.cpp tpopupwidget.cpp trecentfiles.cpp ttablewidget.cpp ttabwidget.cpp ttreewidget.cpp viewer.cpp moc_*.cpp
+	-rm -f ui_* *.o icons.cpp tdoublespindelegate.cpp tintegerspindelegate.cpp tmenubutton.cpp tpopupwidget.cpp trecentfiles.cpp ttablewidget.cpp ttabwidget.cpp ttreewidget.cpp viewer.cpp moc_*.cpp
 
 libtreegui_a_SOURCES = treegui.ui treegui_funcs.cpp
 
@@ -35,8 +35,8 @@ libgui_a_SOURCES += disorderoptions_funcs.cpp disorderwizard_funcs.cpp exportfil
 
 libgui_a_SOURCES += popupbuildaddatom_funcs.cpp popupbuildaddh_funcs.cpp popupbuildclear_funcs.cpp popupbuildfragments_funcs.cpp popupbuildgrow_funcs.cpp popupbuildrebond_funcs.cpp popupbuildtransmute_funcs.cpp popupcellangles_funcs.cpp popupcelllengths_funcs.cpp popupcellmatrix_funcs.cpp popupcellmiller_funcs.cpp popupcellreplicate_funcs.cpp popupcellscale_funcs.cpp popupcellspacegroup_funcs.cpp popupcolour_funcs.cpp popupelementtable_funcs.cpp popupfileaten_funcs.cpp popupfileimage_funcs.cpp popupfileopen_funcs.cpp popupfilesave_funcs.cpp popupfilesession_funcs.cpp popupforcefieldsassign_funcs.cpp popupforcefieldsminimise_funcs.cpp popupforcefieldsopen_funcs.cpp popupforcefieldstest_funcs.cpp popupgridmatrix_funcs.cpp popupgridorigin_funcs.cpp popupgridset_funcs.cpp popupgridshift_funcs.cpp popupgridstyle_funcs.cpp popupgridsopen_funcs.cpp popupmeasureangle_funcs.cpp popupmeasureclear_funcs.cpp popupmeasuredistance_funcs.cpp popupmeasuretorsion_funcs.cpp popupporesdrill_funcs.cpp popupporesscheme_funcs.cpp popupscriptsopen_funcs.cpp popuptransformangle_funcs.cpp popuptransformcentre_funcs.cpp popuptransformconvert_funcs.cpp popuptransformdistance_funcs.cpp popuptransformflip_funcs.cpp popuptransformmultiply_funcs.cpp popuptransformreposition_funcs.cpp popuptransformrotate_funcs.cpp popuptransformshift_funcs.cpp popuptransformtorsion_funcs.cpp popuptransformtranslate_funcs.cpp popupviewcolourscheme_funcs.cpp popupviewreset_funcs.cpp popupviewstyle_funcs.cpp
 
-libgui_a_SOURCES += tcolourframe.hui tcolourwheel.hui tdoublespindelegate.hui texponentialspin.hui tintegerspindelegate.hui tmenubutton.hui tpopupwidget.hui trecentfiles.hui ttablewidget.hui ttabwidget.hui ttreewidget.hui viewer.hui
-libgui_a_SOURCES += viewer_extras.cpp viewer_funcs.cpp viewer_key.cpp viewer_model.cpp viewer_mouse.cpp viewer_offscreen.cpp viewer_scene.cpp viewer_useractions.cpp tdoublespindelegate_funcs.cpp tcolourframe_funcs.cpp tcolourwheel_funcs.cpp texponentialspin_funcs.cpp textratreewidgetitem_funcs.cpp tintegerspindelegate_funcs.cpp tmenubutton_funcs.cpp tmenubuttongroup.cpp tpopupwidget_funcs.cpp trecentfiles_funcs.cpp ttabwidget_funcs.cpp
+libgui_a_SOURCES += tcolourwheel.hui tdoublespindelegate.hui texponentialspin.hui tintegerspindelegate.hui tmenubutton.hui tpopupwidget.hui trecentfiles.hui ttablewidget.hui ttabwidget.hui ttreewidget.hui viewer.hui
+libgui_a_SOURCES += viewer_extras.cpp viewer_funcs.cpp viewer_key.cpp viewer_model.cpp viewer_mouse.cpp viewer_offscreen.cpp viewer_scene.cpp viewer_useractions.cpp tdoublespindelegate_funcs.cpp tcolourwheel_funcs.cpp texponentialspin_funcs.cpp textratreewidgetitem_funcs.cpp tintegerspindelegate_funcs.cpp tmenubutton_funcs.cpp tmenubuttongroup.cpp tpopupwidget_funcs.cpp trecentfiles_funcs.cpp ttabwidget_funcs.cpp
 
 #OLD FILES FOR UPDATING BEGIN HERE
 libgui_a_SOURCES += glyphs_funcs.cpp vibrations_funcs.cpp viewbasis_funcs.cpp vieweigenvector_funcs.cpp

@@ -25,7 +25,6 @@
 #include "gui/glyphs.h"
 #include "model/model.h"
 #include "main/aten.h"
-//#include "base/sysfunc.h"
 #include "templates/variantpointer.h"
 
 // Constructor
@@ -66,10 +65,10 @@ GlyphsWidget::GlyphsWidget(AtenWindow& parent, Qt::WindowFlags flags) : QDockWid
 	dataAtomDataCombo[1] = ui.Data2AtomCombo;
 	dataAtomDataCombo[2] = ui.Data3AtomCombo;
 	dataAtomDataCombo[3] = ui.Data4AtomCombo;
-	dataColourFrame[0] = ui.Data1ColourFrame;
-	dataColourFrame[1] = ui.Data2ColourFrame;
-	dataColourFrame[2] = ui.Data3ColourFrame;
-	dataColourFrame[3] = ui.Data4ColourFrame;
+	dataColourButton[0] = ui.Data1ColourButton;
+	dataColourButton[1] = ui.Data2ColourButton;
+	dataColourButton[2] = ui.Data3ColourButton;
+	dataColourButton[3] = ui.Data4ColourButton;
 	dataTabWidget[0] = ui.Vertex1Tab;
 	dataTabWidget[1] = ui.Vertex2Tab;
 	dataTabWidget[2] = ui.Vertex3Tab;
@@ -151,8 +150,7 @@ void GlyphsWidget::updateData(Glyph* g)
 			dataValueYSpin[n]->setValue(gd->vector().y);
 			dataValueZSpin[n]->setValue(gd->vector().z);
 		}
-		dataColourFrame[n]->setColour(gd->colour());
-		dataColourFrame[n]->update();
+// 		dataColourButton[n]->setColour(gd->colour());
 	}
 }
 
@@ -614,14 +612,15 @@ void GlyphsWidget::dataColourChanged(int id)
 {
 	if (refreshing_) return;
 	// Get current colour from frame and convert into a QColor
-	QColor oldcol = dataColourFrame[id]->colour(), newcol;
+	QColor oldcol /* = dataColourButton[id]->colour() */, newcol;
 	// Request a colour dialog
 	bool ok = false;
 	newcol.setRgba(QColorDialog::getRgba(oldcol.rgba(), &ok, this));
 	if (!ok) return;
+
 	// Store new colour in frame
-	dataColourFrame[id]->setColour(newcol);
-	dataColourFrame[id]->update();
+// 	dataColourFrame[id]->setColour(newcol);
+// 	dataColourFrame[id]->update();
 
 	// Loop over list of selected items and set new colour
 	QList<QListWidgetItem*> items = ui.GlyphList->selectedItems();

@@ -72,7 +72,6 @@ SET(gui_MOC_HDRS
   viewbasis.h
   vieweigenvector.h
   zmatrix.h
-  tcolourframe.hui
   tcolourwheel.hui
   tdoublespindelegate.hui
   texponentialspin.hui
@@ -274,7 +273,6 @@ set(gui_SRCS
   viewer_offscreen.cpp
   viewer_scene.cpp
   viewer_useractions.cpp
-  tcolourframe_funcs.cpp
   tcolourwheel_funcs.cpp
   tmenubutton_funcs.cpp
   tmenubuttongroup.cpp

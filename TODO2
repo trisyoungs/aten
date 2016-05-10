@@ -12,7 +12,6 @@ Trajectory handling:
 o Inherit generates a crash when at first frame??
 Intelligent Select - add support for selection by type name (e.g. O*, OW etc.).
 Add set members to Matrix class allowing axes to be set from atoms in models.
-Convert other member accessors to MatrixData type where appropriate.
 Printf command buffered output is never printed if no newline ever occurs.  Need to store data somewhere other than the Printf function itself, and flush it at the end of command execution.
 Crash when tree selecting large models (recursion overflow?) - use array-based loop instead.
 Add specific line primitive class that allows chunking (for speedup of stick rendering, because otherwise an enormous array is continually deleted'd/new'd).
@@ -41,17 +40,14 @@ GUI TODO
 ========
 Need to shrink used button space when window is not large enough to display all widgets in panel.
 Sort out remaining icons!
-Context Menu:
-o Set Colour doesn't work, since it needs a colour selector popup.
-Remove TColourFrame (after updating Prefs and Glyphs windows).
+Colour Selector:
+o Need widget that is ebeddable as a QMenuAction* (for atom context menu)
+o Need simple button class (essentially a specific TMenuButton for ColourPopup) for Glyphs popup etc.
 Button to calculate / show total charge in selection.
 Add Calculate tool to work out centre of geometry/mass.
 Add option to display ColourScale selector (e.g. for Grid colour buttons)
-Have Tools page? With, for instance:
---- Plot Orbital (raising dialog from old GridsWidget)
+Add Plot Orbital to Tools page (raising dialog from old GridsWidget)
 Add manual typing popup.
-Prefs window needs updating:
-o Remove use of TColourFrames
 
 Possible TODO
 =============
@@ -61,7 +57,6 @@ Reformulate Pattern::bondEnergy() and others into a separate class, since the Pa
 Make Model::EnergyStore a private member with accessor?
 Add ObjectLists (when using CHECK)?
 Click to select grid.
-Remove global MC, CG, SD declarations, and put them in Aten?
 
 Manual TODO
 ===========

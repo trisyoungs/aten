@@ -420,8 +420,8 @@ void AtenPrefs::on_StickLineSelectedWidthSpin_valueChanged(double value)
 }
 
 /*
-// View Page - Colours Tab
-*/
+ * View Page - Colours Tab
+ */
 
 void AtenPrefs::on_ColoursTable_cellDoubleClicked(int row, int column)
 {
@@ -432,21 +432,24 @@ void AtenPrefs::on_ColoursTable_cellDoubleClicked(int row, int column)
 	double* col = prefs.colour(pencol);
 	QColor oldcol, newcol;
 	oldcol.setRgbF( col[0], col[1], col[2], col[3] );
+
 	// Request a colour dialog
 	bool ok = false;
 	newcol.setRgba(QColorDialog::getRgba(oldcol.rgba(), &ok, this));
 	if (!ok) return;
+
 	// Store new colour
 	prefs.setColour(pencol, newcol.redF(), newcol.greenF(), newcol.blueF(), newcol.alphaF());
 	ui.ColoursTable->item(row, 1)->setBackgroundColor(newcol);
-	parent_.aten().currentModel()->logChange(Log::Style);
+
 	// Update display
+	parent_.aten().globalLogChange(Log::Style);
 	parent_.updateWidgets(AtenWindow::MainViewTarget);
 }
 
 /*
-// View Page - Rendering / Quality Tab
-*/
+ * View Page - Rendering / Quality Tab
+ */
 
 void AtenPrefs::on_PrimitiveQualitySlider_valueChanged(int value)
 {
@@ -700,6 +703,7 @@ void AtenPrefs::updateScalePointsList()
 {
 	// Clear current list items
 	ui.ScalePointsTable->clear();
+
 	// Get the id of the currently selected point and scale
 	int scale = ui.ScaleList->currentRow();
 	if (scale == -1) return;
@@ -732,58 +736,58 @@ void AtenPrefs::on_ScaleList_currentRowChanged(int id)
 	updateScalePointsList();
 }
 
-void AtenPrefs::on_ScalePointsTable_currentCellChanged(int row, int col, int prevrow, int prevcol)
+void AtenPrefs::on_ScalePointsTable_cellChanged(int row, int col)
 {
-	// Get the id of the currently selected point and scale
-	int scale = ui.ScaleList->currentRow();
-	if (scale == -1) return;
+	// Column 0 - Value
+	if (col == 0)
+	{
+		// Get the id of the currently selected point and scale
+		int scale = ui.ScaleList->currentRow();
+		if (scale == -1) return;
+		if (row == -1) return;
+		
+		QTableWidgetItem* item = ui.ScalePointsTable->item(row, col);
+
+		// Set value in colourscale
+		prefs.colourScale[scale].setPointValue(row, item->text().toDouble());
+
+		// Update display
+		parent_.aten().currentModel()->logChange(Log::Style);
+		parent_.updateWidgets(AtenWindow::MainViewTarget);
+	}
+}
+
+void AtenPrefs::on_ScalePointsTable_cellDoubleClicked(int row, int column)
+{
+	// Get clicked item in table
 	if (row == -1) return;
-	// Set colour frame and value spin
-	ColourScalePoint* csp = prefs.colourScale[scale].point(row);
-	ui.PointColourFrame->setColour(csp->colour());
-	ui.PointColourFrame->update();
-	ui.PointValueSpin->setValue(csp->value());
-}
 
-void AtenPrefs::on_PointValueSpin_valueChanged(double d)
-{
-	// Get the id of the currently selected point and scale
-	int scale = ui.ScaleList->currentRow();
-	if (scale == -1) return;
-	int id = ui.ScalePointsTable->currentRow();
-	if (id == -1) return;
-	// Set value in colourscale
-	prefs.colourScale[scale].setPointValue(id, d);
-	ui.ScalePointsTable->item(id, 0)->setText(QString::number(d));
-	// Update display
-	parent_.aten().currentModel()->logChange(Log::Style);
-	parent_.updateWidgets(AtenWindow::MainViewTarget);
-}
+	// Column 1 - Colour
+	if (column == 1)
+	{
+		// Get active ColourScale
+		int scale = ui.ScaleList->currentRow();
+		if (scale == -1) return;
 
-void AtenPrefs::on_PointColourButton_clicked(bool checked)
-{
-	// Get the id of the currently selected point and scale
-	int scale = ui.ScaleList->currentRow();
-	if (scale == -1) return;
-	int id = ui.ScalePointsTable->currentRow();
-	if (id == -1) return;
-	// Get new colour
-	ColourScalePoint* csp = prefs.colourScale[scale].point(id);
-	double* col = csp->colour();
-	QColor oldcol, newcol;
-	oldcol.setRgbF( col[0], col[1], col[2], col[3] );
-	// Request a colour dialog
-	bool ok = false;
-	newcol.setRgba(QColorDialog::getRgba(oldcol.rgba(), &ok, this));
-	if (!ok) return;
-	// Store new colour, and set colours in frame and pointlist
-	prefs.colourScale[scale].setPointColour(id, newcol.redF(), newcol.greenF(), newcol.blueF(), newcol.alphaF());
-	ui.PointColourFrame->setColour(newcol);
-	ui.PointColourFrame->update();
-	ui.ScalePointsTable->item(id, 1)->setBackgroundColor(newcol);
-	// Update display
-	parent_.aten().currentModel()->logChange(Log::Style);
-	parent_.updateWidgets(AtenWindow::MainViewTarget);
+		// Get new colour
+		ColourScalePoint* csp = prefs.colourScale[scale].point(row);
+		double* col = csp->colour();
+		QColor oldcol, newcol;
+		oldcol.setRgbF( col[0], col[1], col[2], col[3] );
+
+		// Request a colour dialog
+		bool ok = false;
+		newcol.setRgba(QColorDialog::getRgba(oldcol.rgba(), &ok, this));
+		if (!ok) return;
+
+		// Store new colour
+		prefs.colourScale[scale].setPointColour(row, newcol.redF(), newcol.greenF(), newcol.blueF(), newcol.alphaF());
+		ui.ScalePointsTable->item(row, 1)->setBackgroundColor(newcol);
+
+		// Update display
+		parent_.aten().currentModel()->logChange(Log::Style);
+		parent_.updateWidgets(AtenWindow::MainViewTarget);
+	}
 }
 
 void AtenPrefs::on_AddPointButton_clicked(bool checked)
@@ -804,6 +808,7 @@ void AtenPrefs::on_RemovePointButton_clicked(bool checked)
 	if (scale == -1) return;
 	int id = ui.ScalePointsTable->currentRow();
 	if (id == -1) return;
+
 	// Remove selected point
 	prefs.colourScale[scale].removePoint(id);
 	updateScalePointsList();
