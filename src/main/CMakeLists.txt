@@ -16,6 +16,7 @@ add_library(main
   models.cpp
   modes.cpp
   partitions.cpp
+  plugins.cpp
   prefs.cpp
   probe.cpp
   scripts.cpp

@@ -544,6 +544,16 @@ class Aten
 	bool loadPrefs();
 	// Save user preferences file
 	bool savePrefs(QString fileName);
+
+
+	/*
+	 * Plugins
+	 */
+	private:
+
+	public:
+	// Load in external plugins
+	bool loadPlugins();
 };
 
 ATEN_END_NAMESPACE

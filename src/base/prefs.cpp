@@ -250,7 +250,7 @@ Prefs::Prefs()
 	guideShape_ = Prefs::SquareGuide;
 	hydrogenDistance_ = 1.08;
 
-	// Input
+	// Interaction Preferences
 	mouseAction_[Prefs::LeftButton] = Prefs::InteractAction;
 	mouseAction_[Prefs::MiddleButton] = Prefs::TranslateAction;
 	mouseAction_[Prefs::RightButton] = Prefs::RotateAction;
@@ -261,6 +261,7 @@ Prefs::Prefs()
 	keyAction_[Prefs::AltKey] = Prefs::NoKeyAction;
 	for (int i=0; i<Prefs::nModifierKeys; ++i) keyActionTexts_[i] = KeyActionKeywords[keyAction_[i]];
 	zoomThrottle_ = 0.15;
+	viewLock_ = Prefs::NoLock;
 
 	// Colours
 	setColour(Prefs::AromaticRingColour, 0.4, 0.4, 0.7, 1.0);

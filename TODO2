@@ -5,7 +5,9 @@ Undo/Redo:
   * Add Grid-related undo/redo (e.g. title changes, colour etc.)
 Rename commands for consistency - e.g. newFF to newForcefield?
 Ato export format is incorrect if nrestraints == 0 (i.e. for single atoms) since newline is not printed.
-DL_POLY trajectory cannot be properly loaded without a model containing the correct atoms - add the ability to create a local, temporary model in the filter, and store atom information in this in the readHeader() function. Then could update modelTemplate to take a model pointer as an optional argument. Does this mean we should rewrite the language to properly use pointer specifications?
+Plugin Implementation
+o DL_POLY trajectory cannot be properly loaded without a model containing the correct atoms - add the ability to create a local, temporary model in the filter, and store atom information in this in the readHeader() function. Then could update modelTemplate to take a model pointer as an optional argument. Does this mean we should rewrite the language to properly use pointer specifications?
+o Better detection of correct format - i.e. search function broken (e.g. in GAMESS filter).
 Trajectory handling:
 o Inherit generates a crash when at first frame??
 Intelligent Select - add support for selection by type name (e.g. O*, OW etc.).
@@ -23,6 +25,7 @@ Progress indicator jobs in GUI appear to be created even if they are short and n
 Speedup Disorder Builder??
 Implement 'factory' for common objects such as Atom & Bond, to save new'ing all the time (esp. for large systems).
 Panel for User tools, essentially loaded from scripts in a user's tools/X directory.
+Visualise toolbar, containing Glyph management, polyhedra etc.
 
 Graphics TODO
 =============

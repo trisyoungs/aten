@@ -53,11 +53,11 @@ class CommandParser
 	 * Link to Aten
 	 */
 	private:
-	// Reference to Aten
+	// Pointer to Aten
 	static Aten* aten_;
 
 	public:
-	// Return reference to Aten
+	// Return pointer to Aten
 	static Aten* aten();
 
 	// Set pointer to Aten

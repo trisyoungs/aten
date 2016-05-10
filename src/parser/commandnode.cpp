@@ -54,7 +54,7 @@ CommandNode::~CommandNode()
  * Link to Aten
  */
 
-// Return reference to Aten
+// Return pointer to Aten
 Aten* CommandNode::aten()
 {
 	return aten_;
