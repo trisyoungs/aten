@@ -274,7 +274,7 @@ bool FilterData::setOption(QString name, TreeNode* value)
 QString FilterData::description()
 {
 	// If the description string is empty, create a new one
-	if (description_.length() < 3) description_.sprintf("%s (%s)", qPrintable(name_), qPrintable(glob_));
+	if (description_.isEmpty()) description_.sprintf("%s (%s)", qPrintable(name_), qPrintable(glob_));
 	return description_;
 }
 

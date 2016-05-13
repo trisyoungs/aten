@@ -241,7 +241,7 @@ void Aten::partnerFilters()
 				}
 			}
 		}
-		s += QString(" %1[r%2]").arg(imp->filter.nickname(), exp == NULL ? "o" : "w");
+		s += QString(" %1[r%2]").arg(imp->filter.nickname(), imp->filter.partner() == NULL ? "o" : "w");
 	}
 	Messenger::print(s);
 
