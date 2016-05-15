@@ -81,16 +81,16 @@ int main(int argc, char* argv[])
 	Messenger::print(Messenger::Verbose, "Home directory is %s, working directory is %s, data directory is %s.", qPrintable(MrAten.homeDir().path()), qPrintable(MrAten.workDir().path()), qPrintable(MrAten.dataDir().path()));
 
 	/* Read in includes (if unsuccessful, a messagebox will be raised in the GUI) */
-	if (prefs.loadIncludes()) MrAten.openIncludes();
+	if (prefs.loadIncludes()) MrAten.loadIncludes();
 
 	/* Read in file filters (if unsuccessful, a messagebox will be raised in the GUI) */
-	if (prefs.loadFilters()) MrAten.openFilters();
+	if (prefs.loadFilters()) MrAten.loadFilters();
 
 	/* Load in fragments */
-	if (prefs.loadFragments()) MrAten.openFragments();
+	if (prefs.loadFragments()) MrAten.loadFragments();
 	
 	/* Load in partitions */
-	if (prefs.loadPartitions()) MrAten.openPartitions();
+	if (prefs.loadPartitions()) MrAten.loadPartitions();
 
 	/* Load in encoder definitions */
 	MrAten.loadEncoderDefinitions();

@@ -654,7 +654,7 @@ int Aten::parseCli(int argc, char *argv[])
 					break;
 				// Load additional filter data from specified filename
 				case (Cli::FilterSwitch):
-					if (!openFilter(argText)) return -1;
+					if (!loadFilter(argText)) return -1;
 					break;
 				// Force folding (MIM'ing) of atoms in periodic systems on load
 				case (Cli::FoldSwitch):

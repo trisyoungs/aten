@@ -20,36 +20,82 @@
 */
 
 #include "main/aten.h"
-#include "gui/mainwindow.h"
+#include "plugins/interfaces/io.h"
 #include <QDir>
 #include <QPluginLoader>
 
-// Load plugins
-bool Aten::loadPlugins()
+// Load specified plugin and register its functions
+bool Aten::loadPlugin(QString fileName)
 {
-// 	foreach (QObject *plugin, QPluginLoader::staticInstances())
+	// Create a pluginloader for the filename provided
+	QPluginLoader loader(fileName);
 
-// 	// Get plugins directory, accounting for Windows and Mac platforms
-// 	QDir pluginsDir = QDir(qApp->applicationDirPath());
-// #if defined(Q_OS_WIN)
-// 	if (pluginsDir.dirName().toLower() == "debug" || pluginsDir.dirName().toLower() == "release")
-// 	pluginsDir.cdUp();
-// #elif defined(Q_OS_MAC)
-// 	if (pluginsDir.dirName() == "MacOS")
-// 	{
-// 		pluginsDir.cdUp();
-// 		pluginsDir.cdUp();
-// 		pluginsDir.cdUp();
-// 	}
-// #endif
-// 	pluginsDir.cd("plugins");
-// 
-// 	foreach (QString fileName, pluginsDir.entryList(QDir::Files)) {
-// 	QPluginLoader loader(pluginsDir.absoluteFilePath(fileName));
-// 	QObject *plugin = loader.instance();
-// 	if (plugin) {
-// 		populateMenus(plugin);
-// 		pluginFileNames += fileName;
-// 	}
-//     }
+	QObject *plugin = loader.instance();
+	if (!plugin)
+	{
+		Messenger::error("File '%s' does not appear to be a valid plugin.", qPrintable(fileName));
+		Messenger::print(loader.errorString());
+		return false;
+	}
+
+	// Determine which type of plugin this is by attempting to cast it to the available types
+	IOPluginInterface* ioPlugin = qobject_cast<IOPluginInterface *>(plugin);
+	if (ioPlugin)
+	{
+// 		addToMenu(plugin, iBrush->brushes(), brushMenu, SLOT(changeBrush()),
+//                   brushActionGroup)
+	}
+	return true;
+}
+
+// Load plugins
+void Aten::loadPlugins()
+{
+	Messenger::enter("Aten::loadPlugins");
+
+	nPluginsFailed_ = 0;
+	failedPlugins_.clear();
+
+	// Load main plugins
+	QDir pluginsDir = dataDirectoryFile("plugins");
+	Messenger::print(Messenger::Verbose, "Looking for plugins in '%s'...", qPrintable(pluginsDir.path()));
+	int nFailed = searchPluginsDir(pluginsDir);
+	if (nFailed > 0) nPluginsFailed_ += nFailed;
+
+	// Try to load user plugins - we don't mind if the directory doesn't exist...
+	pluginsDir = atenDirectoryFile("plugins");
+	Messenger::print(Messenger::Verbose, "Looking for user plugins in '%s'...", qPrintable(pluginsDir.path()));
+	nFailed = searchPluginsDir(pluginsDir);
+	if (nFailed > 0) nPluginsFailed_ += nFailed;
+
+	Messenger::exit("Aten::loadPlugins");
+}
+
+// Search directory for plugins
+int Aten::searchPluginsDir(QDir path)
+{
+	Messenger::enter("Aten::searchPluginsDir");
+
+	int i, nFailed = 0;
+	QString s = "Plugins --> [" + path.absolutePath() + "] ";
+	
+	// First check - does this directory actually exist
+	if (!path.exists())
+	{
+		Messenger::exit("Aten::searchPluginsDir");
+		return -1;
+	}
+
+	// Plugins the directory contents - show only files and exclude '.' and '..'
+	QStringList pluginsList = path.entryList(QDir::Files | QDir::NoDotAndDotDot, QDir::Name);
+	for (i=0; i< pluginsList.size(); i++)
+	{
+		if (!loadPlugin(path.absoluteFilePath(pluginsList.at(i)))) s += pluginsList.at(i) + "  ";
+		else ++nFailed;
+	}
+	Messenger::print(s);
+
+	Messenger::exit("Aten::searchPluginsDir");
+
+	return nFailed;
 }

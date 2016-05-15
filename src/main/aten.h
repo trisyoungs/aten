@@ -142,14 +142,14 @@ class Aten
 	QString bitmapFileDialogFilters_;
 
 	private:
-	// Parse directory index and load filters
-	int parseFilterDir(QDir path);
+	// Search specified directory for filters
+	int searchFilterDir(QDir path);
 
 	public:
 	// Load filters
-	void openFilters();
+	void loadFilters();
 	// Load filter from specified filename
-	bool openFilter(QString filename);
+	bool loadFilter(QString filename);
 	// Create filter strings for file dialogs
 	void createFileDialogFilters();
 	// Register a filter of a given type
@@ -194,14 +194,16 @@ class Aten
 	int nIncludesFailed_;
 	// Filenames (including paths) of includes that failed to load
 	QStringList failedIncludes_;
-	// Parse directory index and load includes
-	int parseIncludeDir(QDir path);
+
+	private:
+	// Search directory for includes
+	int searchIncludeDir(QDir path);
 
 	public:
 	// Load global include functions
-	void openIncludes();
+	void loadIncludes();
 	// Load include from specified filename
-	bool openInclude(QString fileName, QString name);
+	bool loadInclude(QString fileName, QString name);
 	// Whether includes loaded succesfully on startup
 	int nIncludesFailed() const;
 	// Return first item in failed includes list
@@ -220,16 +222,18 @@ class Aten
 	int nPartitioningSchemesFailed_;
 	// Filenames (including paths) of partitions that failed to load
 	QStringList failedPartitioningSchemes_;
-	// Parse directory index and load includes
-	int parsePartitionsDir(QDir path);
 	// Partitioning scheme for Pores tool
 	PartitioningScheme poresPartitioningScheme_;
 
+	private:
+	// Search specified directory for partitions
+	int searchPartitionsDir(QDir path);
+
 	public:
 	// Load global partition functions
-	void openPartitions();
+	void loadPartitions();
 	// Load partition from specified filename
-	bool openPartition(QString fileName, QString name);
+	bool loadPartition(QString fileName, QString name);
 	// Whether partitions loaded succesfully on startup
 	int nPartitioningSchemesFailed() const;
 	// Return first item in failed partitions list
@@ -468,14 +472,14 @@ class Aten
 	int fragmentBondId_;
 
 	private:
-	// Parse fragment directory
-	bool parseFragmentDir(QDir path, QString groupName);
-	// Search for name fragment group
+	// Search specified directory for fragments
+	bool searchFragmentDir(QDir path, QString groupName);
+	// Search for named fragment group
 	FragmentGroup* findFragmentGroup(QString name);
 
 	public:
 	// Load fragment library
-	void openFragments();
+	void loadFragments();
 	// Add new fragment model from specified model's current selection
 	void addFragmentFromSelection(Model* source, QString parentGroup);
 	// Return first fragment group
@@ -550,10 +554,22 @@ class Aten
 	 * Plugins
 	 */
 	private:
+	// How many plugins had errors when loaded
+	int nPluginsFailed_;
+	// Filenames (including paths) of plugins that failed to load
+	QStringList failedPlugins_;
+// 	List of data structures that describe all known filters ( IOPluginInterface* newInstance() { return new XYZPlugin; ); }
+// 	RefList<Tree,int> filters_[FilterData::nFilterTypes];
+
+	private:
+	// Search specified directory for plugins
+	int searchPluginsDir(QDir path);
+	// Load specified plugin and register its functions
+	bool loadPlugin(QString fileName);
 
 	public:
-	// Load in external plugins
-	bool loadPlugins();
+	// Load plugins
+	void loadPlugins();
 };
 
 ATEN_END_NAMESPACE

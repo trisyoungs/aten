@@ -25,9 +25,9 @@
 ATEN_USING_NAMESPACE
 
 // Load partitions
-void Aten::openPartitions()
+void Aten::loadPartitions()
 {
-	Messenger::enter("Aten::openPartitions");
+	Messenger::enter("Aten::loadPartitions");
 
 	bool found = false;
 	int nFailed = 0;
@@ -49,28 +49,28 @@ void Aten::openPartitions()
 	
 	QDir path = dataDir_.filePath("partitions");
 	Messenger::print(Messenger::Verbose, "Looking for partitions in '%s'...", qPrintable(path.absolutePath()));
-	nFailed = parsePartitionsDir(path);
+	nFailed = searchPartitionsDir(path);
 	if (nFailed > 0) nPartitioningSchemesFailed_ += nFailed;
 
 	// Try to load user partitions - we don't mind if the directory doesn't exist...
 	path = atenDirectoryFile("partitions");
 	Messenger::print(Messenger::Verbose, "Looking for user partitions in '%s'...", qPrintable(path.path()));
-	nFailed = parsePartitionsDir(path);
+	nFailed = searchPartitionsDir(path);
 	if (nFailed > 0) nPartitioningSchemesFailed_ += nFailed;
 
-	Messenger::exit("Aten::openPartitions");
+	Messenger::exit("Aten::loadPartitions");
 }
 
 // Parse filter index file (rooted in the path provided)
-int Aten::parsePartitionsDir(QDir path)
+int Aten::searchPartitionsDir(QDir path)
 {
-	Messenger::enter("Aten::parsePartitionsDir");
+	Messenger::enter("Aten::searchPartitionsDir");
 
 	// First check - does this directory actually exist
 	if (!path.exists())
 	{
 		Messenger::warn("Partitions directory '%s' does not exist.", qPrintable(path.path()));
-		Messenger::exit("Aten::parsePartitionsDir");
+		Messenger::exit("Aten::searchPartitionsDir");
 		return -1;
 	}
 
@@ -81,19 +81,19 @@ int Aten::parsePartitionsDir(QDir path)
 	for (i=0; i<partitionList.size(); ++i)
 	{
 		// Construct Program...
-		if (openPartition(path.absoluteFilePath(partitionList.at(i)), partitionList.at(i))) s += partitionList.at(i) + "  ";
+		if (loadPartition(path.absoluteFilePath(partitionList.at(i)), partitionList.at(i))) s += partitionList.at(i) + "  ";
 		else ++nFailed;
 	}
 	Messenger::print(s);
 
-	Messenger::exit("Aten::parsePartitionsDir");
+	Messenger::exit("Aten::searchPartitionsDir");
 	return nFailed;
 }
 
 // Load partition from specified filename
-bool Aten::openPartition(QString fileName, QString name)
+bool Aten::loadPartition(QString fileName, QString name)
 {
-	Messenger::enter("Aten::openPartition");
+	Messenger::enter("Aten::loadPartition");
 
 	// Construct partitions Program...
 	PartitioningScheme* ps = partitioningSchemes_.add();
@@ -104,11 +104,11 @@ bool Aten::openPartition(QString fileName, QString name)
 		Messenger::print("Failed to load partition from '%s'...", qPrintable(fileName));
 		failedPartitioningSchemes_ << fileName;
 		partitioningSchemes_.remove(ps);
-		Messenger::exit("Aten::openPartition");
+		Messenger::exit("Aten::loadPartition");
 		return false;
 	}
 	
-	Messenger::exit("Aten::openPartition");
+	Messenger::exit("Aten::loadPartition");
 	return true;
 }
 

@@ -24,9 +24,9 @@
 #include <QDir>
 
 // Load filters
-void Aten::openFilters()
+void Aten::loadFilters()
 {
-	Messenger::enter("Aten::openFilters");
+	Messenger::enter("Aten::loadFilters");
 
 	bool found = false;
 
@@ -34,12 +34,12 @@ void Aten::openFilters()
 
 	QDir path = dataDirectoryFile("filters");
 	Messenger::print(Messenger::Verbose, "Looking for filters in '%s'...", qPrintable(path.path()));
-	int nLoaded = parseFilterDir(path);
+	int nLoaded = searchFilterDir(path);
 
 	// Try to load user filters - we don't mind if the directory doesn't exist...
 	path = atenDirectoryFile("filters");
 	Messenger::print(Messenger::Verbose, "Looking for user filters in '%s'...", qPrintable(path.path()));
-	nLoaded += parseFilterDir(path);
+	nLoaded += searchFilterDir(path);
 
 	// Print out info and partner filters if all was successful
 	partnerFilters();
@@ -51,13 +51,13 @@ void Aten::openFilters()
 	// Create filter lists
 	createFileDialogFilters();
 
-	Messenger::exit("Aten::openFilters");
+	Messenger::exit("Aten::loadFilters");
 }
 
 // Load filter from specified filename
-bool Aten::openFilter(QString filename)
+bool Aten::loadFilter(QString filename)
 {
-	Messenger::enter("Aten::openFilter");
+	Messenger::enter("Aten::loadFilter");
 
 	// Construct filter Program...
 	Program* filter = filterPrograms_.add();
@@ -67,11 +67,11 @@ bool Aten::openFilter(QString filename)
 		failedFilters_ << filename;
 		filterPrograms_.remove(filter);
 
-		Messenger::exit("Aten::openFilter");
+		Messenger::exit("Aten::loadFilter");
 		return false;
 	}
 
-	Messenger::exit("Aten::openFilter");
+	Messenger::exit("Aten::loadFilter");
 	return true;
 }
 
@@ -143,7 +143,7 @@ int Aten::reloadFilters()
 	// Load filters
 	QDir path = dataDirectoryFile("filters");
 	Messenger::print("Reading filters from '%s'...", qPrintable(path.absolutePath()));
-	int nLoaded = parseFilterDir(path);
+	int nLoaded = searchFilterDir(path);
 
 	// Print out info and partner filters 
 	partnerFilters();
@@ -179,16 +179,16 @@ QStringList Aten::failedFilters() const
 	return failedFilters_;
 }
 
-// Parse directory index and load filters
-int Aten::parseFilterDir(QDir path)
+// Search specified directory for filters
+int Aten::searchFilterDir(QDir path)
 {
-	Messenger::enter("Aten::parseFilterDir");
+	Messenger::enter("Aten::searchFilterDir");
 
 	// First check - does this directory actually exist
 	if (!path.exists())
 	{
 		Messenger::warn("Filter directory '%s' does not exist.", qPrintable(path.path()));
-		Messenger::exit("Aten::parseFilterDir");
+		Messenger::exit("Aten::searchFilterDir");
 		return 0;
 	}
 
@@ -200,7 +200,7 @@ int Aten::parseFilterDir(QDir path)
 	{
 		// Construct filter Program...
 		QString filename = path.filePath(filterList.at(i));
-		if (openFilter(QDir::toNativeSeparators(filename)))
+		if (loadFilter(QDir::toNativeSeparators(filename)))
 		{
 			s += filterList.at(i) + "  ";
 			++nLoaded;
@@ -208,7 +208,7 @@ int Aten::parseFilterDir(QDir path)
 	}
 	Messenger::print(s);
 
-	Messenger::exit("Aten::parseFilterDir");
+	Messenger::exit("Aten::searchFilterDir");
 	return nLoaded;
 }
 
