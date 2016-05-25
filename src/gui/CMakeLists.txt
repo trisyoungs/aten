@@ -7,10 +7,12 @@ SET(gui_MOC_HDRS
   exportfilm.h
   exportimage.h
   ffeditor.h
+  fileselectorwidget.h
   glyphs.h
   layoutlist.h
   loadmodel.h
   mainwindow.h
+  openmodel.h
   popupbuildaddatom.h
   popupbuildaddh.h
   popupbuildclear.h
@@ -76,6 +78,7 @@ SET(gui_MOC_HDRS
   tdoublespindelegate.hui
   texponentialspin.hui
   textratreewidgetitem.h
+  fileselectorwidget.h
   tintegerspindelegate.hui
   tmenubutton.hui
   tmenubuttongroup.h
@@ -103,6 +106,7 @@ SET(gui_UIS
   glyphs.ui
   loadmodel.ui
   mainwindow.ui
+  openmodel.ui
   popupbuildaddatom.ui
   popupbuildaddh.ui
   popupbuildclear.ui
@@ -160,6 +164,7 @@ SET(gui_UIS
   selectfilter.ui
   selectpattern.ui
   selectvariable.ui
+  fileselectorwidget.ui
   vibrations.ui
   viewbasis.ui
   vieweigenvector.ui
@@ -181,6 +186,7 @@ set(gui_SRCS
   exportfilm_funcs.cpp
   exportimage_funcs.cpp
   ffeditor_funcs.cpp
+  fileselectorwidget_funcs.cpp
   glyphs_funcs.cpp
   layoutlist.cpp
   loadmodel_funcs.cpp
@@ -207,6 +213,7 @@ set(gui_SRCS
   mainwindow_quickcommand.cpp
   mainwindow_session.cpp
   mainwindow_update.cpp
+  openmodel_funcs.cpp
   popupbuildaddatom_funcs.cpp
   popupbuildaddh_funcs.cpp
   popupbuildclear_funcs.cpp
