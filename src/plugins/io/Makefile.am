@@ -1,6 +1,7 @@
-noinst_LIBRARIES = libxyz.a
+lib_LTLIBRARIES = xyz.la
 
-libxyz_a_SOURCES = xyz.cpp
+xyz_la_SOURCES = xyz.cpp
+xyz_la_LDFLAGS = -module
 
 noinst_HEADERS = xyz.h 
 

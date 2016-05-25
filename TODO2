@@ -66,3 +66,4 @@ TestSelect command.
 Setting of filter options when using --batch CLI mode (in 03.cli/batch).
 Switch / Case.
 More descriptions / examples for Disorder Builder options.
+--noplugins CLI switch.

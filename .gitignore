@@ -14,6 +14,9 @@ stamp-h1
 
 # Build objects
 *.a
+*.la
+*.lo
+.libs/
 *.o
 *.cc
 *.hh

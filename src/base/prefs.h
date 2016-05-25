@@ -592,6 +592,8 @@ class Prefs
 	bool augmentAfterRebond_;
 	// Force spacegroups that are in hexagonal basis to be in rhombohedral basis
 	bool forceRhombohedral_;
+	// Whether to load plugins on startup
+	bool loadPlugins_;
 	// Whether to load filters on startup
 	bool loadFilters_;
 	// Whether to load includes on startup
@@ -640,6 +642,10 @@ class Prefs
 	bool forceRhombohedral() const;
 	// Set whether rhombohedral (over hexagonal) spacegroup basis is to be forced
 	void setForceRhombohedral(bool b);
+	// Return whether to load plugins on startup
+	bool loadPlugins() const;
+	// Set whether to load plugins on startup
+	void setLoadPlugins(bool b);
 	// Return whether to load filters on startup
 	bool loadFilters() const;
 	// Set whether to load filters on startup

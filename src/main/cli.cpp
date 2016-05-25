@@ -155,6 +155,9 @@ Cli cliSwitches[] = {
 	{ Cli::NoPartitionsSwitch,	'\0',"nopartitions",	0,
 		"",
 		"Prevent loading of partitions on startup" },
+	{ Cli::NoPluginsSwitch,		'\0',"noplugins",	0,
+		"",
+		"Prevent loading of plugins on startup" },
 	{ Cli::NoQtSettingsSwitch,	'\0',"noqtsettings",	0,
 		"",
 		"Don't load in Qt window/toolbar settings on startup" },
@@ -390,6 +393,10 @@ bool Aten::parseCliEarly(int argc, char *argv[])
 				// Restrict partition loading on startup
 				case (Cli::NoPartitionsSwitch):
 					prefs.setLoadPartitions(false);
+					break;
+				// Restrict plugin loading on startup
+				case (Cli::NoPluginsSwitch):
+					prefs.setLoadPlugins(false);
 					break;
 				// Run in silent mode (no CLI output)
 				case (Cli::QuietSwitch):

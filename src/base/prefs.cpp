@@ -293,6 +293,8 @@ Prefs::Prefs()
 	maxCuboids_ = 100;
 	forceRhombohedral_ = false;
 	augmentAfterRebond_ = true;
+	loadPlugins_ = true;
+	loadFilters_ = true;
 	loadIncludes_ = true;
 	loadPartitions_ = true;
 	loadFragments_ = true;
@@ -300,7 +302,6 @@ Prefs::Prefs()
 	maxUndoLevels_ = -1;
 	loadQtSettings_ = true;
 	maxImproperDist_ = 5.0;
-	loadFilters_ = true;
 	readPipe_ = false;
 	allowDialogs_ = false;
 	
@@ -1240,6 +1241,18 @@ void Prefs::setForceRhombohedral(bool b)
 bool Prefs::forceRhombohedral() const
 {
 	return forceRhombohedral_;
+}
+
+// Return whether to load plugins on startup
+bool Prefs::loadPlugins() const
+{
+	return loadPlugins_;
+}
+
+// Set whether to load plugins on startup
+void Prefs::setLoadPlugins(bool b)
+{
+	loadPlugins_ = b;
 }
 
 // Whether to load filters on startup
