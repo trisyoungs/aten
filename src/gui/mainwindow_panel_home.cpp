@@ -25,6 +25,7 @@
 #include "gui/loadmodel.h"
 #include "gui/exportfilm.h"
 #include "gui/exportimage.h"
+#include "gui/openmodel.h"
 #include "model/undostate.h"
 #include <QFileDialog>
 
@@ -96,6 +97,13 @@ void AtenWindow::on_HomeFileNewButton_clicked(bool checked)
 
 void AtenWindow::on_HomeFileOpenButton_clicked(bool checked)
 {
+// 	static AtenOpenModel openModelDialog(this, aten_.workDir());
+// 
+// 	if (openModelDialog.execute())
+// 	{
+// 	}
+// 	return;
+
 	AtenLoadModel loadModelDialog(*this);
 	Tree* filter;
 

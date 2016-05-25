@@ -22,6 +22,7 @@
 #ifndef ATEN_IOPLUGIN_H
 #define ATEN_IOPLUGIN_H
 
+#include "plugins/plugintypes.h"
 #include "base/namespace.h"
 #include "templates/reflist.h"
 #include <QStringList>
@@ -38,8 +39,6 @@ class IOPluginInterface
 	public:
 	// Destructor 
 	virtual ~IOPluginInterface() {}
-	// Type enum
-	enum IOPluginType { ModelIOPlugin, TrajectoryIOPlugin, ExpressionIOPlugin, GridIOPlugin, nIOPluginTypes };
 
 
 	/*
@@ -47,7 +46,7 @@ class IOPluginInterface
 	 */
 	public:
 	// Return type of plugin
-	virtual IOPluginType type() const = 0;
+	virtual PluginTypes::PluginType type() const = 0;
 	// Return name of plugin
 	virtual QString name() const = 0;
 	// Return nickname of plugin
