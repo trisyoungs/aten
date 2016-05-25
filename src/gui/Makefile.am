@@ -43,7 +43,6 @@ libgui_a_SOURCES += tcolourwheel.hui tdoublespindelegate.hui texponentialspin.hu
 
 libgui_a_SOURCES += viewer_extras.cpp viewer_funcs.cpp viewer_key.cpp viewer_model.cpp viewer_mouse.cpp viewer_offscreen.cpp viewer_scene.cpp viewer_useractions.cpp tdoublespindelegate_funcs.cpp tcolourwheel_funcs.cpp texponentialspin_funcs.cpp textratreewidgetitem_funcs.cpp tintegerspindelegate_funcs.cpp tmenubutton_funcs.cpp tmenubuttongroup.cpp tpopupwidget_funcs.cpp trecentfiles_funcs.cpp ttabwidget_funcs.cpp
 
-
 #OLD FILES FOR UPDATING BEGIN HERE
 libgui_a_SOURCES += glyphs_funcs.cpp vibrations_funcs.cpp viewbasis_funcs.cpp vieweigenvector_funcs.cpp
 #OLD FILES END HERE

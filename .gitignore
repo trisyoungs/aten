@@ -23,6 +23,7 @@ stamp-h1
 ui_*
 moc_*
 src/aten
+data/plugins/*
 Aten.desktop
 .kdev4/
 build/

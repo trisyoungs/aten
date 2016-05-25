@@ -23,13 +23,18 @@
 #include "base/lineparser.h"
 #include <QFileSystemModel>
 
+// Static Singletons
+QStringList FileSelectorWidget::favourites_;
+
 // Constructor
 FileSelectorWidget::FileSelectorWidget(QWidget* parent) : QWidget(parent)
 {
 	ui.setupUi(this);
 
 	fileSystemModel_.setRootPath("");
+	fileSystemModel_.setFilter(QDir::AllDirs | QDir::AllEntries);
 	ui.FileView->setModel(&fileSystemModel_);
+	ui.FileView->hideColumn(2);
 
 	refreshing_ = false;
 }
@@ -71,6 +76,12 @@ void FileSelectorWidget::setCurrentDirectory(QString directory)
 	updateWidgets();
 }
 
+// Clear selected filenames list
+void FileSelectorWidget::clearSelectedFilenames()
+{
+	selectedFilenames_.clear();
+}
+
 // Return selected files, including full path
 QStringList FileSelectorWidget::selectedFiles()
 {
@@ -88,7 +99,15 @@ QStringList FileSelectorWidget::selectedFiles()
 void FileSelectorWidget::updateWidgets()
 {
 	// Favourites list
-	// ATEN2 TODO
+	ui.FavouritesTable->clear();
+	ui.FavouritesTable->setColumnCount(1);
+	ui.FavouritesTable->setHorizontalHeaderLabels(QStringList() << "Favourites");
+	ui.FavouritesTable->setRowCount(favourites_.count());
+	for (int n=0; n<favourites_.count(); ++n)
+	{
+		QTableWidgetItem* item = new QTableWidgetItem(favourites_.at(n));
+		ui.FavouritesTable->setItem(0, n, item);
+	}
 
 	// File table
 	ui.FileView->resizeColumnsToContents();
@@ -109,17 +128,43 @@ void FileSelectorWidget::on_FileView_clicked(const QModelIndex& index)
 	QItemSelectionModel* selectionModel = ui.FileView->selectionModel();
 	QModelIndexList selectedRows = selectionModel->selectedRows();
 	selectedFilenames_.clear();
-	for (int n=0; n<selectedRows.count(); ++n) selectedFilenames_ << fileSystemModel_.fileName(selectedRows.at(n));
+	for (int n=0; n<selectedRows.count(); ++n)
+	{
+		if (fileSystemModel_.isDir(selectedRows.at(n))) continue;
+		selectedFilenames_ << fileSystemModel_.fileName(selectedRows.at(n));
+	}
+
+	emit(selectionValid(selectedFilenames_.count() > 0));
 
 	updateWidgets();
 }
 
 void FileSelectorWidget::on_FileView_doubleClicked(const QModelIndex& index)
 {
+	// If the target is a directory, change to that directory.
+	// Otherwise, adjust the selectedFilenames_ list and emit the selectionMade() signal.
+	if (fileSystemModel_.isDir(index))
+	{
+		setCurrentDirectory(fileSystemModel_.filePath(index));
+
+		// Need to clear the current files list, since it will no longer be valid
+		selectedFilenames_.clear();
+		emit(selectionValid(false));
+
+		return;
+	}
+
+	// Not a dir, so adjust the filenames list and emit the signal
 	QItemSelectionModel* selectionModel = ui.FileView->selectionModel();
 	QModelIndexList selectedRows = selectionModel->selectedRows();
 	selectedFilenames_.clear();
-	for (int n=0; n<selectedRows.count(); ++n) selectedFilenames_ << fileSystemModel_.fileName(selectedRows.at(n));
+	for (int n=0; n<selectedRows.count(); ++n)
+	{
+		if (fileSystemModel_.isDir(selectedRows.at(n))) continue;
+		selectedFilenames_ << fileSystemModel_.fileName(selectedRows.at(n));
+	}
+
+	emit(selectionValid(selectedFilenames_.count() > 0));
 
 	updateWidgets();
 
@@ -128,6 +173,7 @@ void FileSelectorWidget::on_FileView_doubleClicked(const QModelIndex& index)
 
 void FileSelectorWidget::on_FilesEdit_returnPressed()
 {
+	emit(selectionMade(false));
 }
 
 void FileSelectorWidget::on_FilesEdit_textChanged(QString textChanged)
@@ -138,6 +184,8 @@ void FileSelectorWidget::on_FilesEdit_textChanged(QString textChanged)
 
 	selectedFilenames_.clear();
 	for (int n = 0; n < parser.nArgs(); ++n) selectedFilenames_ << parser.argc(n);
+
+	emit(selectionValid(selectedFilenames_.count() > 0));
 }
 
 void FileSelectorWidget::on_FilterCombo_currentIndexChanged(int index)

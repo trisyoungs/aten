@@ -27,6 +27,8 @@
 // Load specified plugin and register its functions
 bool Aten::loadPlugin(QString fileName)
 {
+	Messenger::print(Messenger::Verbose, "Querying plugin file '%s'...\n", qPrintable(fileName));
+
 	// Create a pluginloader for the filename provided
 	QPluginLoader loader(fileName);
 
@@ -42,6 +44,7 @@ bool Aten::loadPlugin(QString fileName)
 	IOPluginInterface* ioPlugin = qobject_cast<IOPluginInterface *>(plugin);
 	if (ioPlugin)
 	{
+// 		plugins_.register(ioPlugin);
 // 		addToMenu(plugin, iBrush->brushes(), brushMenu, SLOT(changeBrush()),
 //                   brushActionGroup)
 	}

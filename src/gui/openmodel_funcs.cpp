@@ -33,6 +33,7 @@ AtenOpenModel::AtenOpenModel(QWidget* parent, QDir startingDirectory) : QDialog(
 
 	// Link up some slots
 	connect(ui.FileSelector, SIGNAL(selectionMade(bool)), this, SLOT(on_OpenButton_clicked(bool)));
+	connect(ui.FileSelector, SIGNAL(selectionValid(bool)), ui.OpenButton, SLOT(setEnabled(bool)));
 }
 
 /*
@@ -69,5 +70,9 @@ void AtenOpenModel::on_CancelButton_clicked(bool checked)
 // Execute dialog
 bool AtenOpenModel::execute()
 {
+	// Make sure the file selector is up to date
+	ui.FileSelector->clearSelectedFilenames();
+	ui.FileSelector->updateWidgets();
+
 	return exec();
 }

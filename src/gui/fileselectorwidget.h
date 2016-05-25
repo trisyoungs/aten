@@ -74,6 +74,8 @@ class FileSelectorWidget : public QWidget
 	void setMode(SelectionMode mode, PluginTypes::PluginType pluginType, QDir startingDir);
 	// Set current directory of file selector
 	void setCurrentDirectory(QString directory);
+	// Clear selected filenames list
+	void clearSelectedFilenames();
 	// Return selected files, including full path
 	QStringList selectedFiles();
 
@@ -81,10 +83,6 @@ class FileSelectorWidget : public QWidget
 	/*
 	 * Widget Functions
 	 */
-	private:
-	// Update widgets, e.g. after directory change
-	void updateWidgets();
-
 	private slots:
 	void on_FileView_clicked(const QModelIndex& index);
 	void on_FileView_doubleClicked(const QModelIndex& index);
@@ -92,12 +90,17 @@ class FileSelectorWidget : public QWidget
 	void on_FilesEdit_returnPressed();
 	void on_FilterCombo_currentIndexChanged(int index);
 
+	public slots:
+	// Update widgets, e.g. after directory change
+	void updateWidgets();
+
 
 	/*
 	 * Signals
 	 */
 	signals:
 	void selectionMade(bool);
+	void selectionValid(bool);
 };
 
 #endif
