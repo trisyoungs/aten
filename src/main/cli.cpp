@@ -357,7 +357,7 @@ bool Aten::parseCliEarly(int argc, char *argv[])
 					break;
 				// Print version and exit
 				case (Cli::VersionSwitch):
-					printf("Aten version %s, built from %s@%s.\n", ATENVERSION, ATENURL, ATENREVISION);
+					printf("Aten version %s, built from %s.\n", ATENVERSION, ATENURL);
 					return FALSE;
 					break;
 			}

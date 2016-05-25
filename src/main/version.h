@@ -22,9 +22,8 @@
 #ifndef ATEN_VERSION_H
 #define ATEN_VERSION_H
 
-#define ATENVERSION "1.899"
-#define ATENREVISION "1899"
-#define ATENDATE "Thu 28 Jun - 13:36"
-#define ATENURL "http://aten.googlecode.com/svn/trunk"
+#define ATENVERSION "1.9a"
+#define ATENDATE "the fly"
+#define ATENURL "https://github.com/trisyoungs/aten.git"
 
 #endif

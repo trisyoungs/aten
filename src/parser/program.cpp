@@ -142,6 +142,9 @@ bool Program::finalise()
 			return FALSE;
 		}
 	}
+
+	// Finally, finalise main program itself
+	mainProgram_.finalise();
 	
 	msg.exit("Program::finalise");
 	return TRUE;

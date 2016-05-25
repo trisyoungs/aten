@@ -31,7 +31,7 @@ AtenAbout::AtenAbout(QWidget *parent) : QDialog(parent)
 
 	// Setup label contents
 	Dnchar label;
-	label.sprintf("%s (r%s)", ATENVERSION, ATENREVISION);
+	label.sprintf("%s", ATENVERSION);
 	ui.VersionLabel->setText(label.get());
 	ui.DateLabel->setText(ATENDATE);
 	ui.UrlLabel->setText(ATENURL);
