@@ -1,28 +1,10 @@
 lib_LTLIBRARIES = xyz.la 
 
-AM_DEFAULT_SOURCE_EXT = .cpp
-AM_LDFLAGS = -module
+.h.cpp:
+	${QTMOC} -o $*.cpp ${AM_CPPFLAGS} $<
 
-.PHONY: convenience-link clean-convenience-link
-
-convenience-link: $(lib_LTLIBRARIES)
-	@for soname in `echo | $(EGREP) "^dlname=" $^ | $(SED) -e "s|^dlname='\(.*\)'|\1|"`; do  \
-	  echo "$$soname: copying plugin from $(abs_builddir)/.libs to $(top_builddir)/data/plugins"; \
-	  rm -f $(top_builddir)/$$soname ; \
-	  test -e $(abs_builddir)/.libs/$$soname && \
-	  cd $(top_builddir) && \
-	  cp $(abs_builddir)/.libs/$$soname data/plugins/$$soname || true;\
-	done 
-
-clean-convenience-link:
-	@for soname in `echo | $(EGREP) "^dlname=" $(lib_LTLIBRARIES) | $(SED) -e "s|^dlname='\(.*\)'|\1|"`; do  \
-	  echo "$$soname: cleaning plugins from data/plugins..."; \
-	  test -L $(top_builddir)/data/plugins/$$soname && rm -f $(top_builddir)/data/plugins/$$soname || true; \
-	done 
-
-all-local:: convenience-link
-
-clean-local:: clean-convenience-link
+xyz_la_SOURCES = xyz_funcs.cpp xyz.cpp
+xyz_la_LDFLAGS = -module
 
 noinst_HEADERS = xyz.h 
 

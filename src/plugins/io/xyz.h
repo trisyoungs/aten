@@ -24,8 +24,6 @@
 
 #include "plugins/interfaces/io.h"
 
-ATEN_BEGIN_NAMESPACE
-
 // Forward Declarations
 /* none */
 
@@ -34,7 +32,7 @@ class XYZModelPlugin : public QObject, public IOPluginInterface
 {
 	Q_OBJECT
 	Q_PLUGIN_METADATA(IID "com.projectaten.Aten.IOPluginInterface.v1")
-	Q_INTERFACES(IOPluginInterface)
+	Q_INTERFACES(AtenSpace::IOPluginInterface)
 
 
 	/*
@@ -57,12 +55,14 @@ class XYZModelPlugin : public QObject, public IOPluginInterface
 	 * File Handling
 	 */
 	public:
+	// Return whether this plugin can load data
+	bool canLoad();
 	// Load data from the specified file
 	bool load(QString filename);
+	// Return whether this plugin can save data
+	bool canSave();
 	// Save data to the specified file
 	bool save(QString filename);
 };
-
-ATEN_END_NAMESPACE
 
 #endif

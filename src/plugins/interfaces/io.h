@@ -82,8 +82,12 @@ class IOPluginInterface
 	public:
 	// Return whether this plugin can load the specified file
 	bool probe(QString filename);
+	// Return whether this plugin can load data
+	virtual bool canLoad() = 0;
 	// Load data from the specified file
 	virtual bool load(QString filename) = 0;
+	// Return whether this plugin can save data
+	virtual bool canSave() = 0;
 	// Save data to the specified file
 	virtual bool save(QString filename) = 0;
 };
@@ -92,6 +96,6 @@ ATEN_END_NAMESPACE
 
 #define IOPluginInterface_iid "com.projectaten.Aten.IOPluginInterface.v1"
 
-Q_DECLARE_INTERFACE(IOPluginInterface, IOPluginInterface_iid)
+Q_DECLARE_INTERFACE(AtenSpace::IOPluginInterface, IOPluginInterface_iid)
 
 #endif

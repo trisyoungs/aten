@@ -26,21 +26,46 @@
  */
 
 // Name of plugin
-QString name()
+QString XYZModelPlugin::name()
 {
 }
-// Nickname of plugin
-QString nickName();
-// Description (long name) of plugin
-QString description();
-// Related file extensions
-QStringList extensions();
-// Exact names
-QStringList exactNames();
 
-// Return whether this plugin can load the specified filename
-bool canLoad(QString filename);
+// Nickname of plugin
+QString XYZModelPlugin::nickName()
+{
+}
+
+// Description (long name) of plugin
+QString XYZModelPlugin::description()
+{
+}
+
+// Related file extensions
+QStringList XYZModelPlugin::extensions()
+{
+}
+
+// Exact names
+QStringList XYZModelPlugin::exactNames()
+{
+}
+
+// Return whether this plugin can load data
+bool XYZModelPlugin::canLoad()
+{
+}
+
 // Load data from the specified file
-bool load(QString filename);
+bool XYZModelPlugin::load(QString filename)
+{
+}
+
+// Return whether this plugin can save data
+bool XYZModelPlugin::canSave()
+{
+}
+
 // Save data to the specified file
-bool save(QString filename);
+bool XYZModelPlugin::save(QString filename)
+{
+}
