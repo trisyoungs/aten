@@ -2,18 +2,16 @@
 # Process this file with autoconf to produce a configure script.
 AC_PREREQ(2.60)
 
-# Set program name, version, bug-address and source directory
+
+# Set program name, version and source directory
 m4_define([ATEN_VERSION],[2.0.0])
-AC_INIT(aten,ATEN_VERSION,tris@projectaten.net)
-AC_CONFIG_SRCDIR([src/main.cpp])
-
-# Check system type and set defines
-# Specify a single file in the source tree so we can check that --srcdir points to the right place
+AC_INIT([aten], ATEN_VERSION)
 AC_CONFIG_AUX_DIR(config)
-AC_CONFIG_HEADER(config.h)
 AC_CANONICAL_TARGET
+AC_CONFIG_SRCDIR([src/main.cpp])
+AC_CONFIG_HEADER(config.h)
+AM_INIT_AUTOMAKE
 
-AM_INIT_AUTOMAKE(aten,ATEN_VERSION)
 
 # Checks for programs.
 AC_PROG_CXX
@@ -103,11 +101,15 @@ if test "x$with_qt" = "x"; then
   PKG_CHECK_MODULES(QTWIDGETS, Qt5Widgets >= 5.0.0)
 fi
 ATEN_LDLIBS="$FTGL_LIBS $FREETYPE_LIBS $QTGUI_LIBS $QTOPENGL_LIBS -lreadline -lGL -lfreetype"
-ATEN_CFLAGS="-fPIC $FREETYPE_CFLAGS $QTGUI_CFLAGS $QTWIDGETS_CFLAGS -I$RLINCDIR $CHECK_CFLAGS"
+ATEN_LDFLAGS=""
+ATEN_CFLAGS="-fPIC $CHECK_CFLAGS $CXXFLAGS"
+ATEN_INCLUDES=" $FREETYPE_CFLAGS $QTGUI_CFLAGS $QTWIDGETS_CFLAGS -I$RLINCDIR"
 
 # Perform Makefile substitutions
 AC_SUBST(ATEN_LDLIBS)
+AC_SUBST(ATEN_LDFLAGS)
 AC_SUBST(ATEN_CFLAGS)
+AC_SUBST(ATEN_INCLUDES)
 AC_SUBST(QTMOC)
 AC_SUBST(QTUIC)
 AC_SUBST(QTRCC)
@@ -142,8 +144,7 @@ src/parser/Makefile
 src/model/Makefile
 src/render/Makefile
 src/plugins/Makefile
-src/plugins/io/Makefile
-src/plugins/interfaces/Makefile
+src/plugins/io_xyz/Makefile
 src/sg/Makefile
 src/templates/Makefile
 )

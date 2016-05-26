@@ -1,6 +1,6 @@
 /*
-        *** XYZ Plugin
-        *** src/plugins/io/xyz.cpp
+        *** XYZ Plugin Functions
+        *** src/plugins/io_xyz/xyz_funcs.cpp
         Copyright T. Youngs 2016-2016
 
         This file is part of Aten.
@@ -19,53 +19,68 @@
         along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "plugins/io/xyz.h"
+#include "plugins/io_xyz/xyz.h"
 
 /*
  * XYZ Model Import / Export Plugin
  */
 
-// Name of plugin
-QString XYZModelPlugin::name()
+// Return type of plugin
+PluginTypes::PluginType XYZModelPlugin::type() const
 {
+	return PluginTypes::IOModelPlugin;
+}
+	
+// Name of plugin
+QString XYZModelPlugin::name() const
+{
+	return QString("XYZ Files (XMol Style)");
 }
 
 // Nickname of plugin
-QString XYZModelPlugin::nickName()
+QString XYZModelPlugin::nickName() const
 {
+	return QString("xyz");
 }
 
 // Description (long name) of plugin
-QString XYZModelPlugin::description()
+QString XYZModelPlugin::description() const
 {
+	return QString("Import/export for XMol-style XYZ coordinate files");
 }
 
 // Related file extensions
-QStringList XYZModelPlugin::extensions()
+QStringList XYZModelPlugin::extensions() const
 {
+	return QStringList() << "xyz";
 }
 
 // Exact names
-QStringList XYZModelPlugin::exactNames()
+QStringList XYZModelPlugin::exactNames() const
 {
+	return QStringList();
 }
 
 // Return whether this plugin can load data
 bool XYZModelPlugin::canLoad()
 {
+	return true;
 }
 
 // Load data from the specified file
 bool XYZModelPlugin::load(QString filename)
 {
+	return true;
 }
 
 // Return whether this plugin can save data
 bool XYZModelPlugin::canSave()
 {
+	return true;
 }
 
 // Save data to the specified file
 bool XYZModelPlugin::save(QString filename)
 {
+	return true;
 }

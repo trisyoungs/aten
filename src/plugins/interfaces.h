@@ -1,6 +1,6 @@
 /*
-        *** I/O Plugin Interface Definition
-        *** src/plugins/interface/io.h
+        *** Plugin Interfaces
+        *** src/plugins/interfaces.h
         Copyright T. Youngs 2007-2016
 
         This file is part of Aten.
@@ -93,6 +93,8 @@ class IOPluginInterface
 };
 
 ATEN_END_NAMESPACE
+
+ATEN_USING_NAMESPACE
 
 #define IOPluginInterface_iid "com.projectaten.Aten.IOPluginInterface.v1"
 

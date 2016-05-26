@@ -5,17 +5,17 @@ SUFFIXES: .ui .hui .qrc
 .ui.o:
 	$(QTUIC) -o ui_$*.h $<
 	$(QTMOC) -o moc_$*.cpp $(top_srcdir)/src/gui/$*.h
-	${CXX} -I$(top_srcdir)/src -I../ -I./ $(CXXFLAGS) $(ATEN_CFLAGS) -c moc_$*.cpp -o $@
+	${CXX} -I$(top_srcdir)/src -I../ -I./ ${AM_CPPFLAGS} -c moc_$*.cpp -o $@
 	rm moc_$*.cpp
 
 .hui.o:
 	$(QTMOC) -o $*.cpp -f$< $<
-	$(CXX) 	-I$(top_srcdir)/src -I../ -I./ $(CXXFLAGS) $(ATEN_CFLAGS) -c $*.cpp -o $@
+	$(CXX) 	-I$(top_srcdir)/src -I../ -I./ ${AM_CPPFLAGS} -c $*.cpp -o $@
 	rm $*.cpp
 
 .qrc.o:
 	$(QTRCC) -o $*.cpp -name $* $<
-	$(CXX) -I$(top_srcdir)/src -I../ -I./ $(CXXFLAGS) $(ATEN_CFLAGS) -c -o $@ $*.cpp
+	$(CXX) -I$(top_srcdir)/src -I../ -I./ ${AM_CPPFLAGS} -c -o $@ $*.cpp
 	rm $*.cpp
 
 clean-local:
@@ -53,4 +53,4 @@ noinst_HEADERS = disorderoptions.h disorderwizard.h exportfilm.h exportimage.h f
 noinst_HEADERS += popupbuildaddatom.h popupbuildaddh.h popupbuildclear.h popupbuildfragments.h popupbuildgrow.h popupbuildrebond.h popupbuildtransmute.h popupcellangles.h popupcelllengths.h popupcellmatrix.h popupcellmiller.h popupcellreplicate.h popupcellscale.h popupcellspacegroup.h popupcolour.h popupelementtable.h popupfileaten.h popupfileimage.h popupfileopen.h popupfilesave.h popupfilesession.h popupforcefieldsassign.h popupforcefieldsminimise.h popupforcefieldsopen.h popupforcefieldstest.h popupgridmatrix.h popupgridorigin.h popupgridset.h popupgridshift.h popupgridstyle.h popupgridsopen.h popupmeasureangle.h popupmeasureclear.h popupmeasuredistance.h popupmeasuretorsion.h popupporesdrill.h popupporesscheme.h popupscriptsopen.h popuptransformangle.h popuptransformcentre.h popuptransformconvert.h popuptransformdistance.h popuptransformflip.h popuptransformmultiply.h popuptransformreposition.h popuptransformrotate.h popuptransformshift.h popuptransformtorsion.h popuptransformtranslate.h popupviewcolourscheme.h popupviewreset.h popupviewstyle.h
 
 
-INCLUDES = -I$(top_srcdir)/src -I../ -I./ @ATEN_CFLAGS@
+AM_CPPFLAGS = -I$(top_srcdir)/src -I../ -I./ @ATEN_INCLUDES@ @ATEN_CFLAGS@

@@ -4,4 +4,4 @@ libmain_a_SOURCES = aten.cpp cli.cpp clipboards.cpp commands.cpp current.cpp enc
 
 noinst_HEADERS = aten.h cli.h version.h
 
-INCLUDES = -I$(top_srcdir)/src -I../ -I$(top_srcdir)/src/gui @ATEN_CFLAGS@
+AM_CPPFLAGS = -I$(top_srcdir)/src -I../ -I$(top_srcdir)/src/gui @ATEN_INCLUDES@ @ATEN_CFLAGS@

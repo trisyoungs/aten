@@ -11,5 +11,5 @@ librender_a_SOURCES += fontinstance.cpp linestipple.cpp linestyle.cpp primitive.
 
 noinst_HEADERS = fontinstance.h linestipple.h linestyle.h primitive.h primitiveinstance.h primitiveset.h rendergroup.h renderlist.h renderoccurrence.h renderoccurrencechunk.h textformat.h textfragment.h textprimitive.h textprimitivelist.h
 
-librender_a_CPPFLAGS = -I$(top_srcdir)/src -I$(top_srcdir)/src/gui @ATEN_CFLAGS@
+librender_a_CPPFLAGS = -I$(top_srcdir)/src -I$(top_srcdir)/src/gui @ATEN_INCLUDES@ @ATEN_CFLAGS@
 

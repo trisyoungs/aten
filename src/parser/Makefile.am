@@ -8,4 +8,4 @@ noinst_HEADERS = accessor.h aten.h atom.h basisprimitive.h basisshell.h bond.h c
 
 CLEANFILES = parser_grammar.hh parser_grammar.cc
 
-INCLUDES = -I$(top_srcdir)/src -I../ -I$(top_srcdir)/src/gui @ATEN_CFLAGS@
+AM_CPPFLAGS = -I$(top_srcdir)/src -I../ -I$(top_srcdir)/src/gui @ATEN_INCLUDES@ @ATEN_CFLAGS@

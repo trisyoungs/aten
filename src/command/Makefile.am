@@ -4,5 +4,5 @@ libcommand_a_SOURCES = analyse.cpp atom.cpp bonds.cpp build.cpp cell.cpp charge.
 
 noinst_HEADERS = commands.h
 
-INCLUDES = -I$(top_srcdir)/src -I../ -I$(top_srcdir)/src/gui @ATEN_CFLAGS@
+AM_CPPFLAGS = -I$(top_srcdir)/src -I../ -I$(top_srcdir)/src/gui @ATEN_INCLUDES@ @ATEN_CFLAGS@
 

@@ -4,4 +4,4 @@ libmodel_a_SOURCES = atom.cpp bond.cpp build.cpp bundle.cpp cell.cpp clipboard.c
 
 noinst_HEADERS = bundle.h clipboard.h fragment.h fragmentgroup.h model.h undoevent.h undostate.h
 
-INCLUDES = -I$(top_srcdir)/src -I../ -I$(top_srcdir)/src/gui @ATEN_CFLAGS@
+AM_CPPFLAGS = -I$(top_srcdir)/src -I../ -I$(top_srcdir)/src/gui @ATEN_INCLUDES@ @ATEN_CFLAGS@

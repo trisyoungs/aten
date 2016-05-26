@@ -1,6 +1,6 @@
 /*
-        *** I/O Plugin Interface Definition
-        *** src/plugins/interface/io.cpp
+        *** Plugin Interfaces
+        *** src/plugins/interfaces.cpp
         Copyright T. Youngs 2007-2016
 
         This file is part of Aten.
@@ -19,7 +19,7 @@
         along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "plugins/interfaces/io.h"
+#include "plugins/interfaces.h"
 #include "parser/commandnode.h"
 #include <QFileInfo>
 

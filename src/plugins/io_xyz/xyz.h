@@ -1,6 +1,6 @@
 /*
         *** XYZ Plugin
-        *** src/plugins/io/xyz.h
+        *** src/plugins/io_xyz/xyz.h
         Copyright T. Youngs 2016-2016
 
         This file is part of Aten.
@@ -22,7 +22,9 @@
 #ifndef ATEN_XYZPLUGIN_H
 #define ATEN_XYZPLUGIN_H
 
-#include "plugins/interfaces/io.h"
+#include "plugins/interfaces.h"
+
+ATEN_BEGIN_NAMESPACE
 
 // Forward Declarations
 /* none */
@@ -39,16 +41,18 @@ class XYZModelPlugin : public QObject, public IOPluginInterface
 	 * Definition
 	 */
 	public:
+	// Return type of plugin
+	PluginTypes::PluginType type() const;
 	// Return name of plugin
-	QString name();
+	QString name() const;
 	// Return nickname of plugin
-	QString nickName();
+	QString nickName() const;
 	// Return description (long name) of plugin
-	QString description();
+	QString description() const;
 	// Return related file extensions
-	QStringList extensions();
+	QStringList extensions() const;
 	// Return exact names
-	QStringList exactNames();
+	QStringList exactNames() const;
 
 
 	/*
@@ -64,5 +68,7 @@ class XYZModelPlugin : public QObject, public IOPluginInterface
 	// Save data to the specified file
 	bool save(QString filename);
 };
+
+ATEN_END_NAMESPACE
 
 #endif

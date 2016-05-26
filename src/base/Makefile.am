@@ -7,7 +7,7 @@ SUFFIXES: .h .hui
 
 .hui.o:
 	$(QTMOC) -o $*.cpp -f$< $<
-	$(CXX) 	-I$(top_srcdir)/src -I../ -I./ $(CXXFLAGS) $(ATEN_CFLAGS) -c $*.cpp -o $@
+	$(CXX) 	-I$(top_srcdir)/src -I../ -I./ ${AM_CPPFLAGS} -c $*.cpp -o $@
 	rm $*.cpp
 
 clean-local:
@@ -25,4 +25,4 @@ noinst_HEADERS = atomaddress.h atom.h basisshell.h bond.h cell.h choice.h colour
 
 CLEANFILES = neta_grammar.h neta_grammar.cc neta_grammar.hh
 
-INCLUDES = -I$(top_srcdir)/src -I../ -I$(top_srcdir)/src/gui @ATEN_CFLAGS@
+AM_CPPFLAGS = -I$(top_srcdir)/src -I../ -I$(top_srcdir)/src/gui @ATEN_INCLUDES@ @ATEN_CFLAGS@

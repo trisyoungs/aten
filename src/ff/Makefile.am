@@ -4,4 +4,4 @@ libff_a_SOURCES = angle.cpp bond.cpp combine.cpp coulomb.cpp energystore.cpp ewa
 
 noinst_HEADERS = combine.h energystore.h forcefield.h forms.h
 
-INCLUDES = -I$(top_srcdir)/src -I../ -I$(top_srcdir)/src/gui @ATEN_CFLAGS@
+AM_CPPFLAGS = -I$(top_srcdir)/src -I../ -I$(top_srcdir)/src/gui @ATEN_INCLUDES@ @ATEN_CFLAGS@
