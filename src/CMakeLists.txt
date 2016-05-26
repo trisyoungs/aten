@@ -9,4 +9,4 @@ add_subdirectory(methods)
 add_subdirectory(model)
 add_subdirectory(main)
 add_subdirectory(render)
-
+add_subdirectory(plugins)
