@@ -23,7 +23,10 @@
 #define ATEN_PLUGINSTORE_H
 
 #include "plugins/plugintypes.h"
+#include "plugins/interfaces.h"
 #include "base/namespace.h"
+
+ATEN_USING_NAMESPACE
 
 ATEN_BEGIN_NAMESPACE
 
@@ -34,17 +37,25 @@ ATEN_BEGIN_NAMESPACE
 class PluginStore
 {
 	public:
-	// Destructor 
-	virtual ~IOPluginInterface() {}
+	// Constructor / Destructor
+	PluginStore();
+	~PluginStore();
 
 
 	/*
 	 * Plugin Data
 	 */
 	private:
+	// List of IO plugin objects (by type)
+	RefList<IOPluginInterface,int> ioPlugins_[PluginTypes::nPluginTypes];
 
 	public:
+	// Register plugin (IOPluginType)
+	bool registerPlugin(IOPluginInterface* plugin);
+	// Empty (delete) all plugins and plugin instances
+	void clearPlugins();
 };
 
 ATEN_END_NAMESPACE
 
+#endif

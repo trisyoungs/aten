@@ -34,6 +34,7 @@
 #include "parser/variablelist.h"
 #include "methods/partitioningscheme.h"
 #include "gui/useractions.h"
+#include "plugins/pluginstore.h"
 #include "base/namespace.h"
 
 // Forward Declarations (Qt)
@@ -554,6 +555,8 @@ class Aten
 	 * Plugins
 	 */
 	private:
+	// Plugin store
+	PluginStore pluginStore_;
 	// How many plugins had errors when loaded
 	int nPluginsFailed_;
 	// Filenames (including paths) of plugins that failed to load

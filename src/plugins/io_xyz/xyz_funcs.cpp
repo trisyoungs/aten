@@ -22,6 +22,16 @@
 #include "plugins/io_xyz/xyz.h"
 
 /*
+ * Core
+ */
+
+// Return a copy of the plugin object
+IOPluginInterface* XYZModelPlugin::duplicate()
+{
+	return new XYZModelPlugin;
+}
+
+/*
  * XYZ Model Import / Export Plugin
  */
 

@@ -36,6 +36,13 @@ class XYZModelPlugin : public QObject, public IOPluginInterface
 	Q_PLUGIN_METADATA(IID "com.projectaten.Aten.IOPluginInterface.v1")
 	Q_INTERFACES(AtenSpace::IOPluginInterface)
 
+	/*
+	 * Core
+	 */
+	public:
+	// Return a copy of the plugin object
+	IOPluginInterface* duplicate();
+
 
 	/*
 	 * Definition

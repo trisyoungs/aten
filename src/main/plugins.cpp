@@ -44,7 +44,7 @@ bool Aten::loadPlugin(QString fileName)
 	IOPluginInterface* ioPlugin = qobject_cast<IOPluginInterface *>(plugin);
 	if (ioPlugin)
 	{
-// 		plugins_.register(ioPlugin);
+		pluginStore_.registerPlugin(ioPlugin);
 // 		addToMenu(plugin, iBrush->brushes(), brushMenu, SLOT(changeBrush()),
 //                   brushActionGroup)
 	}
@@ -89,11 +89,12 @@ int Aten::searchPluginsDir(QDir path)
 		return -1;
 	}
 
-	// Plugins the directory contents - show only files and exclude '.' and '..'
+	// Plugins the directory contents - show only files and exclude '.' and '..', and also the potential README
 	QStringList pluginsList = path.entryList(QDir::Files | QDir::NoDotAndDotDot, QDir::Name);
+	pluginsList.removeOne("README");
 	for (i=0; i< pluginsList.size(); i++)
 	{
-		if (!loadPlugin(path.absoluteFilePath(pluginsList.at(i)))) s += pluginsList.at(i) + "  ";
+		if (loadPlugin(path.absoluteFilePath(pluginsList.at(i)))) s += pluginsList.at(i) + "  ";
 		else ++nFailed;
 	}
 	Messenger::print(s);

@@ -23,10 +23,14 @@
 #define ATEN_IOPLUGIN_H
 
 #include "plugins/plugintypes.h"
+#include "parser/returnvalue.h"
+#include "parser/commandnode.h"
+#include "base/messenger.h"
 #include "base/namespace.h"
 #include "templates/reflist.h"
 #include <QStringList>
 #include <QtPlugin>
+#include <QFileInfo>
 
 ATEN_BEGIN_NAMESPACE
 
@@ -34,11 +38,33 @@ ATEN_BEGIN_NAMESPACE
 class Model;
 
 // IO Plugin Interface
-class IOPluginInterface
+class IOPluginInterface : public ListItem<IOPluginInterface>
 {
 	public:
 	// Destructor 
 	virtual ~IOPluginInterface() {}
+
+
+	/*
+	 * Core
+	 */
+	private:
+	// Object store for plugin instances
+	RefList<IOPluginInterface,int> instances_;
+
+	private:
+	// Return a copy of the plugin object
+	virtual IOPluginInterface* duplicate() = 0;
+
+	public:
+	// Return instance of plugin
+	IOPluginInterface* createInstance()
+	{
+		// Create a copy with duplicate(), and add it to the instances list
+		IOPluginInterface* pluginInstance = duplicate();
+		instances_.add(pluginInstance);
+		return pluginInstance;
+	}
 
 
 	/*
@@ -68,7 +94,12 @@ class IOPluginInterface
 
 	private:
 	// Create new model (in Aten)
-	Model* createModel();
+	Model* createModel()
+	{
+		ReturnValue result = CommandNode::run(Commands::NewModel);
+		Model* newModel = (Model*) result.asPointer(VTypes::ModelData);
+		return newModel;
+	}
 
 
 	/*
@@ -76,12 +107,44 @@ class IOPluginInterface
 	 */
 	private:
 	// Perform secondary checks on whether this plugin can load the specified file
-	virtual bool secondaryProbe(QString filename);
-
+	virtual bool secondaryProbe(QString filename)
+	{
+		return false;
+	}
 
 	public:
 	// Return whether this plugin can load the specified file
-	bool probe(QString filename);
+	bool probe(QString filename)
+	{
+		// Get file information
+		QFileInfo fileInfo(filename);
+		if ((!fileInfo.exists()) || (!fileInfo.isReadable())) return false;
+	
+		// Check filename extensions (if the filename has an extension)
+		if (!fileInfo.suffix().isEmpty()) for (int n=0; n<extensions().count(); ++n)
+		{
+			if (extensions().at(n) == fileInfo.suffix())
+			{
+				Messenger::print(Messenger::Verbose, "IOPluginInterface : Plugin '%s' matches file extension (%s).", qPrintable(name()), qPrintable(fileInfo.suffix()));
+				return true;
+			}
+		}
+	
+		// Check for exact name matches
+		for (int n=0; n<exactNames().count(); ++n)
+		{
+			if (exactNames().at(n) == fileInfo.fileName())
+			{
+				Messenger::print(Messenger::Verbose, "IOPluginInterface : Plugin '%s' matched exact name (%s).", qPrintable(name()), qPrintable(exactNames().at(n)));
+				return true;
+			}
+		}
+	
+		// Perform secondary checks
+		if (secondaryProbe(filename)) return true;
+	
+		return false;
+	}
 	// Return whether this plugin can load data
 	virtual bool canLoad() = 0;
 	// Load data from the specified file
