@@ -31,9 +31,9 @@ ATEN_USING_NAMESPACE
 bool Commands::function_AddReadOption(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	// Get parse option from variable
-	LineParser::ParseOption po = LineParser::parseOption(c->argc(0));
-	if (po != LineParser::nParseOptions) c->parent()->addReadOption(po);
-	return (po != LineParser::nParseOptions);
+	Parser::ParseOption po = Parser::parseOption(c->argc(0));
+	if (po != Parser::nParseOptions) c->parent()->addReadOption(po);
+	return (po != Parser::nParseOptions);
 }
 
 // Check for end of file (or nothing remaining but whitespace)
@@ -385,9 +385,9 @@ bool Commands::function_ReadVariableFormatted(CommandNode* c, Bundle& obj, Retur
 bool Commands::function_RemoveReadOption(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	// Get parse option from variable
-	LineParser::ParseOption po = LineParser::parseOption(c->argc(0));
-	if (po != LineParser::nParseOptions) c->parent()->removeReadOption(po);
-	return (po != LineParser::nParseOptions);
+	Parser::ParseOption po = Parser::parseOption(c->argc(0));
+	if (po != Parser::nParseOptions) c->parent()->removeReadOption(po);
+	return (po != Parser::nParseOptions);
 }
 
 // Go to start of current file

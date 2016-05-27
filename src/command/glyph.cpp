@@ -291,7 +291,7 @@ bool Commands::function_NewGlyph(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	Glyph::GlyphOption gopt;
 	Vec4<double> rgba;
 	LineParser lp, lp2;
-	if (c->hasArg(1)) lp.getArgsDelim(LineParser::UseCurlies, c->argc(1));
+	if (c->hasArg(1)) lp.getArgsDelim(Parser::UseCurlies, c->argc(1));
 	for (int i=1; i < c->nArgs(); i++)
 	{
 		// Split argument into keyword and value

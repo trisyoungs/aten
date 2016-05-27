@@ -641,7 +641,7 @@ bool Commands::function_SaveExpression(CommandNode* c, Bundle& obj, ReturnValue&
 	
 	// Parse the first option so we can get the filter nickname and any filter options
 	LineParser parser;
-	parser.getArgsDelim(LineParser::UseQuotes, c->argc(0));
+	parser.getArgsDelim(Parser::UseQuotes, c->argc(0));
 	
 	// First part of argument is nickname
 	Tree* filter = aten_.findFilter(FilterData::ExpressionExport, parser.argc(0));

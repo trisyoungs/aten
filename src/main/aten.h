@@ -561,8 +561,6 @@ class Aten
 	int nPluginsFailed_;
 	// Filenames (including paths) of plugins that failed to load
 	QStringList failedPlugins_;
-// 	List of data structures that describe all known filters ( IOPluginInterface* newInstance() { return new XYZPlugin; ); }
-// 	RefList<Tree,int> filters_[FilterData::nFilterTypes];
 
 	private:
 	// Search specified directory for plugins
@@ -573,6 +571,8 @@ class Aten
 	public:
 	// Load plugins
 	void loadPlugins();
+	// Return plugin store reference
+	const PluginStore& pluginStore();
 };
 
 ATEN_END_NAMESPACE

@@ -54,6 +54,8 @@ class PluginStore
 	bool registerPlugin(IOPluginInterface* plugin);
 	// Empty (delete) all plugins and plugin instances
 	void clearPlugins();
+	// Return reference to ioPlugin objects of specified type
+	const RefList<IOPluginInterface,int>& ioPlugins(PluginTypes::PluginType type) const;
 };
 
 ATEN_END_NAMESPACE

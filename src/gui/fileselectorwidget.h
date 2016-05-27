@@ -24,6 +24,8 @@
 
 #include "gui/ui_fileselectorwidget.h"
 #include "plugins/plugintypes.h"
+#include "plugins/interfaces.h"
+#include "templates/reflist.h"
 #include "base/namespace.h"
 #include <QDir>
 #include <QFileSystemModel>
@@ -60,8 +62,6 @@ class FileSelectorWidget : public QWidget
 	QFileSystemModel fileSystemModel_;
 	// Mode of operation
 	SelectionMode mode_;
-	// Plugin types to show in dialog
-	PluginTypes::PluginType pluginType_;
 	// Current directory location
 	QDir currentDirectory_;
 	// Current filename selection
@@ -71,7 +71,7 @@ class FileSelectorWidget : public QWidget
 
 	public:
 	// Set mode of file selector
-	void setMode(SelectionMode mode, PluginTypes::PluginType pluginType, QDir startingDir);
+	void setMode(SelectionMode mode, const RefList<IOPluginInterface,int>& ioPlugins, QDir startingDir);
 	// Set current directory of file selector
 	void setCurrentDirectory(QString directory);
 	// Clear selected filenames list
@@ -93,6 +93,8 @@ class FileSelectorWidget : public QWidget
 	public slots:
 	// Update widgets, e.g. after directory change
 	void updateWidgets();
+	// Resize columns of file view
+	void resizeFileView(QString dummy = QString());
 
 
 	/*

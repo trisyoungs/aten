@@ -59,3 +59,24 @@ bool PluginStore::registerPlugin(IOPluginInterface* plugin)
 	}
 	Messenger::print(Messenger::Verbose, "    Targets : %s", qPrintable(targets));
 }
+
+// Empty (delete) all plugins and plugin instances
+void PluginStore::clearPlugins()
+{
+	for (int n=0; n<PluginTypes::nPluginTypes; ++n)
+	{
+		// Loop over stored interfaces and clear any instances we have
+		for (RefListItem<IOPluginInterface,int>* ri = ioPlugins_[n].first(); ri != NULL; ri = ri->next)
+		{
+			ri->item->deleteInstances();
+		}
+
+		ioPlugins_[n].clear();
+	}
+}
+
+// Return reference to ioPlugin objects of specified type
+const RefList<IOPluginInterface,int>& PluginStore::ioPlugins(PluginTypes::PluginType type) const
+{
+	return ioPlugins_[type];
+}

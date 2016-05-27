@@ -147,8 +147,8 @@ void AtenWindow::loadSettings()
 		while (!parser.eofOrBlank())
 		{
 			// Get first part of line - the identifier for the information which follows it
-			if (parser.readNextLine(LineParser::SkipBlanks) == 1) break;
-			if (!parser.getArgDelim(LineParser::SkipBlanks, arg)) break;
+			if (parser.readNextLine(Parser::SkipBlanks) == 1) break;
+			if (!parser.getArgDelim(Parser::SkipBlanks, arg)) break;
 
 			// Get remainder of line, which is the data to store
 			if (!parser.getRestDelim(data)) break;

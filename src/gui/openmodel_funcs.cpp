@@ -24,12 +24,12 @@
 #include <QMessageBox>
 
 // Constructor
-AtenOpenModel::AtenOpenModel(QWidget* parent, QDir startingDirectory) : QDialog(parent)
+AtenOpenModel::AtenOpenModel(QWidget* parent, QDir startingDirectory, const RefList<IOPluginInterface,int>& ioPlugins) : QDialog(parent), ioPlugins_(ioPlugins)
 {
 	ui.setupUi(this);
 
 	// Set the mode of the FileSelectorWidget
-	ui.FileSelector->setMode(FileSelectorWidget::OpenMultipleMode, PluginTypes::IOModelPlugin, startingDirectory);
+	ui.FileSelector->setMode(FileSelectorWidget::OpenMultipleMode, ioPlugins, startingDirectory);
 
 	// Link up some slots
 	connect(ui.FileSelector, SIGNAL(selectionMade(bool)), this, SLOT(on_OpenButton_clicked(bool)));

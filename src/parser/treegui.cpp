@@ -115,7 +115,7 @@ void TreeGuiWidgetEvent::setQualifiers(QString qualifiers)
 {
 	qualifier_ = TreeGuiWidgetEvent::StringQualifier;
 	LineParser parser;
-	parser.getArgsDelim(LineParser::UseQuotes, qualifiers);
+	parser.getArgsDelim(Parser::UseQuotes, qualifiers);
 	for (int n=0; n<parser.nArgs(); ++n) matchS_ << parser.argc(n);
 }
 
@@ -642,7 +642,7 @@ bool TreeGuiWidget::setProperty(TreeGuiWidgetEvent::EventProperty property, Retu
 				comboItems_.clear();
 				// Parse new items list
 				LineParser parser;
-				parser.getArgsDelim(LineParser::UseQuotes, rv.asString());
+				parser.getArgsDelim(Parser::UseQuotes, rv.asString());
 				if (parser.nArgs() == 0) Messenger::print("Dialog Warning: Recreated combo items list is empty.");
 				else
 				{
@@ -793,7 +793,7 @@ TreeGuiWidget* TreeGuiWidget::addCombo(QString name, QString label, QString item
 	
 	// Parse items list
 	LineParser parser;
-	parser.getArgsDelim(LineParser::UseQuotes, items);
+	parser.getArgsDelim(Parser::UseQuotes, items);
 	if (parser.nArgs() == 0) Messenger::print("Warning: Combo box created with no items.");
 	else
 	{

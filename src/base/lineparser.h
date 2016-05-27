@@ -37,6 +37,15 @@ ATEN_BEGIN_NAMESPACE
 // Forward Declarations (Aten)
 class Format;
 
+// Parser Options and Flags
+class Parser
+{
+	public:
+	// Parse Options
+	enum ParseOption { Defaults = 0, StripComments = 1, UseQuotes = 2, SkipBlanks = 4, StripBrackets = 8, NoEscapes = 16, UseCurlies = 32, NormalCommas = 64, nParseOptions = 7 };
+	static ParseOption parseOption(QString s);
+};
+
 // Line Parser
 class LineParser
 {
@@ -44,9 +53,6 @@ class LineParser
 	// Constructors / Destructor
 	LineParser();
 	~LineParser();
-	// Parse Options
-	enum ParseOption { Defaults = 0, StripComments = 1, UseQuotes = 2, SkipBlanks = 4, StripBrackets = 8, NoEscapes = 16, UseCurlies = 32, NormalCommas = 64, nParseOptions = 7 };
-	static ParseOption parseOption(QString s);
 
 
 	/*
@@ -181,7 +187,7 @@ class LineParser
 	double argd(int i);
 	// Returns the specified argument as a bool
 	bool argb(int i);
-	// Returns the specified argument as a float
+	// Returns the specified argument readNextLineas a float
 	float argf(int i);
 	// Returns whether the specified argument exists
 	bool hasArg(int i) const;

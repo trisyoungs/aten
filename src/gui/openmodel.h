@@ -23,6 +23,7 @@
 #define ATEN_OPENMODELWINDOW_H
 
 #include "gui/ui_openmodel.h"
+#include "plugins/interfaces.h"
 #include "base/namespace.h"
 
 // Forward Declarations (Qt)
@@ -45,7 +46,7 @@ class AtenOpenModel : public QDialog
 
 	public:
 	// Constructor
-	AtenOpenModel(QWidget* parent, QDir startingDirectory);
+	AtenOpenModel(QWidget* parent, QDir startingDirectory, const RefList<IOPluginInterface,int>& ioPlugins);
 	// Main form declaration
 	Ui::OpenModelDialog ui;
 
@@ -53,7 +54,9 @@ class AtenOpenModel : public QDialog
 	/*
 	 * Data
 	 */
-
+	private:
+	// Reference to plugin list to use for this file dialog
+	const RefList<IOPluginInterface,int>& ioPlugins_;
 
 
 	/*

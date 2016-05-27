@@ -231,13 +231,13 @@ bool Tree::setAccessibleVariable(QString name, QString value)
 }
 
 // Add read option
-void Tree::addReadOption(LineParser::ParseOption po)
+void Tree::addReadOption(Parser::ParseOption po)
 {
 	if (!(readOptions_&po)) readOptions_ += po;
 }
 
 // Remove read option
-void Tree::removeReadOption(LineParser::ParseOption po)
+void Tree::removeReadOption(Parser::ParseOption po)
 {
 	if (readOptions_&po) readOptions_ -= po;
 }

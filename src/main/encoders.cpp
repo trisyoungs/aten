@@ -48,7 +48,7 @@ void Aten::loadEncoderDefinitions()
 	while (!parser.eofOrBlank())
 	{
 		// Read first argument from file, which is our keyword
-		parser.getArgsDelim(LineParser::SkipBlanks + LineParser::StripComments + LineParser::UseQuotes);
+		parser.getArgsDelim(Parser::SkipBlanks + Parser::StripComments + Parser::UseQuotes);
 		keyword = parser.argc(0);
 		edk = EncoderDefinition::encoderDefinitionKeyword(keyword);
 		if (edk == EncoderDefinition::nEncoderDefinitionKeywords)

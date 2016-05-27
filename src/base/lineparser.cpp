@@ -30,10 +30,10 @@
 ATEN_USING_NAMESPACE
 
 // Parse options
-const char* ParseOptionKeywords[LineParser::nParseOptions] = { "stripcomments", "usequotes", "skipblanks", "stripbrackets", "noescapes", "usecurlies", "normalcommas" };
-LineParser::ParseOption LineParser::parseOption(QString s)
+const char* ParseOptionKeywords[Parser::nParseOptions] = { "stripcomments", "usequotes", "skipblanks", "stripbrackets", "noescapes", "usecurlies", "normalcommas" };
+Parser::ParseOption Parser::parseOption(QString s)
 {
-	return (LineParser::ParseOption) (1 << enumSearch("line parser option", LineParser::nParseOptions, ParseOptionKeywords, s));
+	return (Parser::ParseOption) (1 << enumSearch("line parser option", Parser::nParseOptions, ParseOptionKeywords, s));
 }
 
 // Constructors
@@ -334,10 +334,10 @@ int LineParser::readNextLine(int optionMask)
 		Messenger::print(Messenger::Parse, "Line from file is: [%s]", qPrintable(line_));
 
 		// Remove comments from line
-		if (optionMask&LineParser::StripComments) removeComments(line_);
+		if (optionMask&Parser::StripComments) removeComments(line_);
 		
 		// If we are skipping blank lines, check for a blank line here
-		if (optionMask&LineParser::SkipBlanks)
+		if (optionMask&Parser::SkipBlanks)
 		{
 			// Now, see if our line contains only blanks
 			nSpaces = 0;
@@ -366,6 +366,7 @@ int LineParser::readNextLine(int optionMask)
 		++lastLineNo_;
 	} while (result != 0);
 // 	printf("LineParser Returned line = [%s], length = %i",line_,lineLength_);
+
 	Messenger::exit("LineParser::readNextLine");
 	return result;
 }
@@ -401,7 +402,7 @@ bool LineParser::getNextArg(int optionMask, QString& destArg)
 			// Delimiters
 			// If we encounter one and arg length != 0 this signals the end of the argument.
 			case (','):	// Comma
-				if (optionMask&LineParser::NormalCommas)
+				if (optionMask&Parser::NormalCommas)
 				{
 					destArg += c;
 					break;
@@ -412,10 +413,10 @@ bool LineParser::getNextArg(int optionMask, QString& destArg)
 				else if (!destArg.isEmpty()) done = true;
 				break;
 			// Quote marks
-			// If LineParser::UseQuotes, keep delimiters and other quote marks inside the quoted text.
+			// If Parser::UseQuotes, keep delimiters and other quote marks inside the quoted text.
 			case (34):	// Double quotes
 			case (39):	// Single quotes
-				if (!(optionMask&LineParser::UseQuotes)) break;
+				if (!(optionMask&Parser::UseQuotes)) break;
 				if (quoteChar == '\0') quoteChar = c;
 				else if (quoteChar == c)
 				{
@@ -429,7 +430,7 @@ bool LineParser::getNextArg(int optionMask, QString& destArg)
 			case ('{'):
 			case ('}'):
 				// If explicitly not useing braces, add as normal character
-				if (!(optionMask&LineParser::UseCurlies)) destArg += c;
+				if (!(optionMask&Parser::UseCurlies)) destArg += c;
 				else
 				{
 					// If the quoteChar is a left brace and we have a right brace, stop quoting
@@ -447,7 +448,7 @@ bool LineParser::getNextArg(int optionMask, QString& destArg)
 			// Parentheses
 			case ('('):	// Left parenthesis
 			case (')'):	// Right parenthesis
-				if (optionMask&LineParser::StripBrackets) break;
+				if (optionMask&Parser::StripBrackets) break;
 				destArg += c;
 				break;
 			// Comment markers
@@ -501,7 +502,7 @@ bool LineParser::getNextN(int optionMask, int length, QString& destArg)
 			// Brackets
 			case ('('):	// Left parenthesis
 			case (')'):	// Right parenthesis
-				if (optionMask&LineParser::StripBrackets) break;
+				if (optionMask&Parser::StripBrackets) break;
 				destArg += line_.at(linePos_);
 				break;
 			default:
@@ -566,7 +567,7 @@ int LineParser::getArgsDelim(int optionMask)
 		done = true;
 		// To check for blank lines, do the parsing and then check nargs()
 		getAllArgsDelim(optionMask);
-		if ((optionMask&LineParser::SkipBlanks) && (nArgs() == 0)) done = false;
+		if ((optionMask&Parser::SkipBlanks) && (nArgs() == 0)) done = false;
 	} while (!done);
 
 	Messenger::exit("LineParser::getArgsDelim[ifstream]");
@@ -689,10 +690,10 @@ bool LineParser::getCharsDelim(int optionMask, QString& line, QString& destArg)
 				else if (!destArg.isEmpty()) done = true;
 				break;
 			// Quote marks
-			// If LineParser::UseQuotes, keep delimiters and other quote marks inside the quoted text.
+			// If Parser::UseQuotes, keep delimiters and other quote marks inside the quoted text.
 			case (34):	// Double quotes
 			case (39):	// Single quotes
-				if (!(optionMask&LineParser::UseQuotes)) break;
+				if (!(optionMask&Parser::UseQuotes)) break;
 				if (quoteChar == '\0') quoteChar = c;
 				else if (quoteChar == c)
 				{
@@ -706,7 +707,7 @@ bool LineParser::getCharsDelim(int optionMask, QString& line, QString& destArg)
 			case ('{'):
 			case ('}'):
 				// If not using curlies, just add as a normal character
-				if (!(optionMask&LineParser::UseCurlies)) destArg += c;
+				if (!(optionMask&Parser::UseCurlies)) destArg += c;
 				else
 				{
 					// If the quoteChar is a left brace and we have a right brace, stop quoting
@@ -726,7 +727,7 @@ bool LineParser::getCharsDelim(int optionMask, QString& line, QString& destArg)
 			// Parentheses
 			case ('('):	// Left parenthesis
 			case (')'):	// Right parenthesis
-				if (optionMask&LineParser::StripBrackets) break;
+				if (optionMask&Parser::StripBrackets) break;
 				destArg += c;
 				break;
 			// Comment markers

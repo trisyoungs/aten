@@ -103,3 +103,9 @@ int Aten::searchPluginsDir(QDir path)
 
 	return nFailed;
 }
+
+// Return plugin store reference
+const PluginStore& Aten::pluginStore()
+{
+	return pluginStore_;
+}

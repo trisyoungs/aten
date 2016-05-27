@@ -615,7 +615,7 @@ int Aten::parseCli(int argc, char *argv[])
 					}
 
 					// Parse the first option so we can get the filter nickname and any filter options
-					parser.getArgsDelim(LineParser::UseQuotes, argText);
+					parser.getArgsDelim(Parser::UseQuotes, argText);
 					
 					// First part of argument is nickname
 					filter = findFilter(FilterData::ModelExport, parser.argc(0));
@@ -748,7 +748,7 @@ int Aten::parseCli(int argc, char *argv[])
 					if (!parser.openInput(argText)) return -1;
 					while (!parser.eofOrBlank())
 					{
-						parser.readNextLine(LineParser::StripComments);
+						parser.readNextLine(Parser::StripComments);
 						nTried ++;
 						if (modelFilter != NULL) filter = modelFilter;
 						else filter = probeFile(parser.line(), FilterData::ModelImport);

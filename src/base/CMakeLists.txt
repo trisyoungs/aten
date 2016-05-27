@@ -17,6 +17,7 @@ add_library(base
   elementmap.cpp
   encoderdefinition.cpp
   externalcommand.cpp
+  fileparser.cpp
   forcefieldatom.cpp
   forcefieldbound.cpp
   grid.cpp
@@ -52,6 +53,7 @@ add_library(base
   elementmap.h
   encoderdefinition.h
   externalcommand.h
+  fileparser.h
   forcefieldatom.h
   forcefieldbound.h
   glyph.h

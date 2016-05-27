@@ -272,9 +272,9 @@ class Tree : public ListItem<Tree>
 	// Set widget or global variable value
 	bool setAccessibleVariable(QString name, QString value);
 	// Add read option
-	void addReadOption(LineParser::ParseOption po);
+	void addReadOption(Parser::ParseOption po);
 	// Remove read option
-	void removeReadOption(LineParser::ParseOption po);
+	void removeReadOption(Parser::ParseOption po);
 	// Return read options
 	int readOptions() const;
 	// Return the current LineParser pointer

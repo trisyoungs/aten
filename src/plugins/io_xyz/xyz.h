@@ -63,17 +63,17 @@ class XYZModelPlugin : public QObject, public IOPluginInterface
 
 
 	/*
-	 * File Handling
+	 * Input / Output
 	 */
 	public:
 	// Return whether this plugin can load data
 	bool canLoad();
-	// Load data from the specified file
-	bool load(QString filename);
+	// Load data via the supplied parser
+	bool load(FileParser& parser);
 	// Return whether this plugin can save data
 	bool canSave();
-	// Save data to the specified file
-	bool save(QString filename);
+	// Save data via the supplied parser
+	bool save(FileParser& parser);
 };
 
 ATEN_END_NAMESPACE

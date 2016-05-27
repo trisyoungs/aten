@@ -26,6 +26,7 @@
 #include "parser/returnvalue.h"
 #include "parser/commandnode.h"
 #include "base/messenger.h"
+#include "base/fileparser.h"
 #include "base/namespace.h"
 #include "templates/reflist.h"
 #include <QStringList>
@@ -50,7 +51,7 @@ class IOPluginInterface : public ListItem<IOPluginInterface>
 	 */
 	private:
 	// Object store for plugin instances
-	RefList<IOPluginInterface,int> instances_;
+	List<IOPluginInterface> instances_;
 
 	private:
 	// Return a copy of the plugin object
@@ -62,8 +63,13 @@ class IOPluginInterface : public ListItem<IOPluginInterface>
 	{
 		// Create a copy with duplicate(), and add it to the instances list
 		IOPluginInterface* pluginInstance = duplicate();
-		instances_.add(pluginInstance);
+		instances_.own(pluginInstance);
 		return pluginInstance;
+	}
+	// Delete all instances of plugin
+	void deleteInstances()
+	{
+		instances_.clear();
 	}
 
 
@@ -83,6 +89,17 @@ class IOPluginInterface : public ListItem<IOPluginInterface>
 	virtual QStringList extensions() const = 0;
 	// Return exact names list
 	virtual QStringList exactNames() const = 0;
+	// Return descriptive filter string
+	QString filterString() const
+	{
+		QString exts, exacts, filter = name();
+		if (extensions().count() > 0) exts = "*." + extensions().join(",*.");
+		if (exactNames().count() > 0) exacts = exactNames().join(",");
+		if ((! exts.isEmpty() ) && (! exacts.isEmpty())) filter += " (" + exts + "," + exacts + ")";
+		else if (! exts.isEmpty()) filter += " (" + exts + ")";
+		else if (! exacts.isEmpty()) filter += " (" + exacts + ")";
+		return filter;
+	}
 
 
 	/*
@@ -92,7 +109,7 @@ class IOPluginInterface : public ListItem<IOPluginInterface>
 	// Model objects created on load
 	RefList<Model,int> createdModels_;
 
-	private:
+	protected:
 	// Create new model (in Aten)
 	Model* createModel()
 	{
@@ -103,7 +120,7 @@ class IOPluginInterface : public ListItem<IOPluginInterface>
 
 
 	/*
-	 * File Handling
+	 * Input / Output
 	 */
 	private:
 	// Perform secondary checks on whether this plugin can load the specified file
@@ -147,12 +164,12 @@ class IOPluginInterface : public ListItem<IOPluginInterface>
 	}
 	// Return whether this plugin can load data
 	virtual bool canLoad() = 0;
-	// Load data from the specified file
-	virtual bool load(QString filename) = 0;
+	// Load data via the supplied parser
+	virtual bool load(FileParser& parser) = 0;
 	// Return whether this plugin can save data
 	virtual bool canSave() = 0;
-	// Save data to the specified file
-	virtual bool save(QString filename) = 0;
+	// Save data via the supplied parser
+	virtual bool save(FileParser& parser) = 0;
 };
 
 ATEN_END_NAMESPACE

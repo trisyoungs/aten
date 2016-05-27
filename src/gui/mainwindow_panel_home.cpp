@@ -97,12 +97,12 @@ void AtenWindow::on_HomeFileNewButton_clicked(bool checked)
 
 void AtenWindow::on_HomeFileOpenButton_clicked(bool checked)
 {
-//	static AtenOpenModel openModelDialog(this, aten_.workDir());
+	static AtenOpenModel openModelDialog(this, aten_.workDir(), aten_.pluginStore().ioPlugins(PluginTypes::IOModelPlugin));
 
-//	if (openModelDialog.execute())
-//	{
-//	}
-//	return;
+	if (openModelDialog.execute())
+	{
+	}
+	return;
 
 	AtenLoadModel loadModelDialog(*this);
 	Tree* filter;

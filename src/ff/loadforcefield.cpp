@@ -43,7 +43,7 @@ bool Forcefield::load(QString filename)
 	do
 	{
 		okay = false;
-		success = ffparser.getArgsDelim(LineParser::UseQuotes+LineParser::SkipBlanks);
+		success = ffparser.getArgsDelim(Parser::UseQuotes+Parser::SkipBlanks);
 		if (success == 1)
 		{
 			Messenger::print("Error reading FF directive.");
@@ -164,7 +164,7 @@ bool Forcefield::readDefines()
 	// Format of lines is 'name "neta"'
 	do
 	{
-		success = ffparser.getArgsDelim(LineParser::UseQuotes+ LineParser::SkipBlanks);
+		success = ffparser.getArgsDelim(Parser::UseQuotes+ Parser::SkipBlanks);
 		if (success != 0)
 		{
 			if (success == 1) Messenger::print("File error while reading atom type defines %i.", types_.nItems());
@@ -210,7 +210,7 @@ bool Forcefield::readTypes()
 	// Format of lines is 'ffid typename element description [text]'
 	do
 	{
-		success = ffparser.getArgsDelim(LineParser::UseQuotes+ LineParser::SkipBlanks);
+		success = ffparser.getArgsDelim(Parser::UseQuotes+ Parser::SkipBlanks);
 		if (success != 0)
 		{
 			if (success == 1) Messenger::print("File error while reading atom type description %i.", types_.nItems());
@@ -276,7 +276,7 @@ bool Forcefield::readUnitedAtomTypes()
 	// Format of lines is 'ffid typename element description [text]'
 	do
 	{
-		success = ffparser.getArgsDelim(LineParser::UseQuotes+ LineParser::SkipBlanks);
+		success = ffparser.getArgsDelim(Parser::UseQuotes+ Parser::SkipBlanks);
 		if (success != 0)
 		{
 			if (success == 1) Messenger::print("File error while reading united atom type description %i.", types_.nItems());
@@ -341,7 +341,7 @@ bool Forcefield::readData(QString vars)
 	// First, parse list of data items to get name
 	typeData_.setDefaultValue(VTypes::nDataTypes);
 	LineParser parser;
-	parser.getArgsDelim(LineParser::SkipBlanks, vars);
+	parser.getArgsDelim(Parser::SkipBlanks, vars);
 	int n;
 	for (n=0; n<parser.nArgs(); n += 2)
 	{
@@ -362,7 +362,7 @@ bool Forcefield::readData(QString vars)
 	int nadded = 0, success, index;
 	do
 	{
-		success = ffparser.getArgsDelim(LineParser::UseQuotes+LineParser::SkipBlanks);
+		success = ffparser.getArgsDelim(Parser::UseQuotes+Parser::SkipBlanks);
 		if (success != 0)
 		{
 			if (success == 1) Messenger::print("File error while reading atom type data.");
@@ -427,7 +427,7 @@ bool Forcefield::readFunctions()
 	int success;
 	do
 	{
-		success = ffparser.getArgsDelim(LineParser::SkipBlanks);
+		success = ffparser.getArgsDelim(Parser::SkipBlanks);
 		if (success != 0)
 		{
 			if (success == 1) Messenger::print("File error while reading function block.");
@@ -487,7 +487,7 @@ bool Forcefield::readEquivalents()
 	count = 0;
 	do
 	{
-		success = ffparser.getArgsDelim(LineParser::SkipBlanks);
+		success = ffparser.getArgsDelim(Parser::SkipBlanks);
 		if (success != 0)
 		{
 			if (success == 1) Messenger::print("File error while reading equivalents data for atom %i.", count+1);
@@ -534,7 +534,7 @@ bool Forcefield::readInter()
 	do
 	{
 		// Format of lines is: 'ffid  fftype   charge  data1  data2  ...  dataN'
-		success = ffparser.getArgsDelim(LineParser::SkipBlanks);
+		success = ffparser.getArgsDelim(Parser::SkipBlanks);
 		if (success != 0)
 		{
 			if (success == 1) Messenger::print("File error reading VDW data for atom %i.", count+1);
@@ -585,7 +585,7 @@ bool Forcefield::readBonds()
 	do
 	{
 		// Format of lines is: 'fftype1  fftype2   data1  data2  ...  dataN'
-		success = ffparser.getArgsDelim(LineParser::SkipBlanks);
+		success = ffparser.getArgsDelim(Parser::SkipBlanks);
 		if (success != 0)
 		{
 			if (success == 1) Messenger::print("File error reading bond data %i.", count+1);
@@ -638,7 +638,7 @@ bool Forcefield::readAngles()
 	do
 	{
 		// Format of lines is: 'fftype1  fftype2  fftype3  data1  data2  ...  dataN'
-		success = ffparser.getArgsDelim(LineParser::SkipBlanks);
+		success = ffparser.getArgsDelim(Parser::SkipBlanks);
 		if (success != 0)
 		{
 			if (success == 1) Messenger::print("File error reading angle data %i.",count+1);
@@ -706,7 +706,7 @@ bool Forcefield::readTorsions()
 	do
 	{
 		// Format of lines is: 'fftype1  fftype2  fftype3  fftype4  data1  data2  ...  dataN'
-		success = ffparser.getArgsDelim(LineParser::SkipBlanks);
+		success = ffparser.getArgsDelim(Parser::SkipBlanks);
 		if (success != 0)
 		{
 			if (success == 1) Messenger::print("File error reading torsion data %i.",count+1);
@@ -763,7 +763,7 @@ bool Forcefield::readImpropers()
 	do
 	{
 		// Format of lines is: 'fftype1  fftype2  fftype3  fftype4  data1  data2  ...  dataN'
-		success = ffparser.getArgsDelim(LineParser::SkipBlanks);
+		success = ffparser.getArgsDelim(Parser::SkipBlanks);
 		if (success != 0)
 		{
 			if (success == 1) Messenger::print("File error reading improper torsion data %i.",count+1);
@@ -820,7 +820,7 @@ bool Forcefield::readUreyBradley()
 	do
 	{
 		// Format of lines is: 'fftype1  fftype2  fftype3  data1  data2  ...  dataN'
-		success = ffparser.getArgsDelim(LineParser::SkipBlanks);
+		success = ffparser.getArgsDelim(Parser::SkipBlanks);
 		if (success != 0)
 		{
 			if (success == 1) Messenger::print("File error reading Urey-Bradley data %i.",count+1);

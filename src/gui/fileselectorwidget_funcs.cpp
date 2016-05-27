@@ -21,6 +21,7 @@
 
 #include "gui/fileselectorwidget.h"
 #include "base/lineparser.h"
+#include "templates/variantpointer.h"
 #include <QFileSystemModel>
 
 // Static Singletons
@@ -31,10 +32,15 @@ FileSelectorWidget::FileSelectorWidget(QWidget* parent) : QWidget(parent)
 {
 	ui.setupUi(this);
 
+	// Setup file system model and attach to view
 	fileSystemModel_.setRootPath("");
 	fileSystemModel_.setFilter(QDir::AllDirs | QDir::AllEntries);
+	fileSystemModel_.setNameFilterDisables(false);
 	ui.FileView->setModel(&fileSystemModel_);
 	ui.FileView->hideColumn(2);
+
+	// Connect signals
+	connect(&fileSystemModel_, SIGNAL(directoryLoaded(QString)), this, SLOT(resizeFileView(QString)));
 
 	refreshing_ = false;
 }
@@ -44,14 +50,22 @@ FileSelectorWidget::FileSelectorWidget(QWidget* parent) : QWidget(parent)
  */
 
 // Set mode of file selector
-void FileSelectorWidget::setMode(SelectionMode mode, PluginTypes::PluginType pluginType, QDir startingDir)
+void FileSelectorWidget::setMode(FileSelectorWidget::SelectionMode mode, const RefList<IOPluginInterface,int>& ioPlugins, QDir startingDir)
 {
 	mode_ = mode;
-	pluginType_ = pluginType;
 
 	// Set relevant selection mode for file view
 	if (mode_ == FileSelectorWidget::FileSelectorWidget::OpenMultipleMode) ui.FileView->setSelectionMode(QTableView::ExtendedSelection);
 	else ui.FileView->setSelectionMode(QTableView::SingleSelection);
+
+	// Populate filter combo
+	for (RefListItem<IOPluginInterface,int>* ri = ioPlugins.first(); ri != NULL; ri = ri->next)
+	{
+		IOPluginInterface* interface = ri->item;
+		if (!interface->canLoad()) continue;
+		ui.FilterCombo->addItem(interface->filterString(), VariantPointer<IOPluginInterface>(interface));
+	}
+	ui.FilterCombo->addItem("All Files (*)");
 
 	setCurrentDirectory(startingDir.absolutePath());
 	updateWidgets();
@@ -122,6 +136,12 @@ void FileSelectorWidget::updateWidgets()
 	ui.FilesEdit->setText(files);
 }
 
+// Resize columns of file table
+void FileSelectorWidget::resizeFileView(QString dummy)
+{
+	ui.FileView->resizeColumnsToContents();
+}
+
 void FileSelectorWidget::on_FileView_clicked(const QModelIndex& index)
 {
 	// Get current model selection and reconstruct selected files list
@@ -180,7 +200,7 @@ void FileSelectorWidget::on_FilesEdit_textChanged(QString textChanged)
 {
 	// Split current string into separate arguments
 	LineParser parser;
-	parser.getArgsDelim(LineParser::UseQuotes, ui.FilesEdit->text());
+	parser.getArgsDelim(Parser::UseQuotes, ui.FilesEdit->text());
 
 	selectedFilenames_.clear();
 	for (int n = 0; n < parser.nArgs(); ++n) selectedFilenames_ << parser.argc(n);
@@ -190,4 +210,20 @@ void FileSelectorWidget::on_FilesEdit_textChanged(QString textChanged)
 
 void FileSelectorWidget::on_FilterCombo_currentIndexChanged(int index)
 {
+	// Grab data for selected item
+	IOPluginInterface* interface = (IOPluginInterface*) VariantPointer<IOPluginInterface>(ui.FilterCombo->itemData(index));
+
+	if (!interface)
+	{
+		// Unrecognised interface, or the All Files entry, so remove any filtering from the file system model
+		fileSystemModel_.setNameFilters(QStringList());
+	}
+	else
+	{
+		// Add extensions and exact names to the names filters
+		QStringList nameFilters;
+		for (int n=0; n<interface->extensions().count(); ++n) nameFilters << "*." + interface->extensions().at(n);
+		for (int n=0; n<interface->exactNames().count(); ++n) nameFilters << interface->exactNames().at(n);
+		fileSystemModel_.setNameFilters(nameFilters);
+	}
 }

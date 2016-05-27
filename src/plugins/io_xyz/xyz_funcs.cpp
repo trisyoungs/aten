@@ -20,6 +20,7 @@
 */
 
 #include "plugins/io_xyz/xyz.h"
+#include "model/model.h"
 
 /*
  * Core
@@ -40,7 +41,7 @@ PluginTypes::PluginType XYZModelPlugin::type() const
 {
 	return PluginTypes::IOModelPlugin;
 }
-	
+
 // Name of plugin
 QString XYZModelPlugin::name() const
 {
@@ -71,6 +72,10 @@ QStringList XYZModelPlugin::exactNames() const
 	return QStringList();
 }
 
+/*
+ * Input / Output
+ */
+
 // Return whether this plugin can load data
 bool XYZModelPlugin::canLoad()
 {
@@ -78,19 +83,53 @@ bool XYZModelPlugin::canLoad()
 }
 
 // Load data from the specified file
-bool XYZModelPlugin::load(QString filename)
+bool XYZModelPlugin::load(FileParser& parser)
 {
-	return true;
+	int nAtoms, n;
+	QString e, name;
+	double rx, ry, rz, q;
+	Model* targetModel = NULL;
+
+	// Read data
+	while (!parser.eofOrBlank())
+	{
+		// Read number of atoms from file
+		if (!parser.readLineAsInteger(nAtoms)) return false;
+
+		// Next line is name of model
+		if (!parser.readLine(name)) return false;
+
+		// Create a new model now....
+		targetModel = createModel();
+		targetModel->setName(name);
+
+		// Load atoms for model
+		for (n=0; n<nAtoms; ++n)
+		{
+			if (!parser.parseLine()) break;
+
+			// Create the new atom
+// 			Atom* i = targetModel->addAtom();
+			// How many arguments did we get?
+// 			if (parser.nArgs() == 4) 
+// 			readLine(e,rx,ry,rz,q);
+// 			i = newAtom(e, rx, ry, rz);
+// 			i.q = q;
+		}
+
+		// Rebond the model
+		targetModel->calculateBonding(true);
+	}
 }
 
 // Return whether this plugin can save data
 bool XYZModelPlugin::canSave()
 {
-	return true;
+	return false;
 }
 
 // Save data to the specified file
-bool XYZModelPlugin::save(QString filename)
+bool XYZModelPlugin::save(FileParser& parser)
 {
 	return true;
 }
