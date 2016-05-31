@@ -60,15 +60,14 @@ void Aten::loadPlugins()
 	failedPlugins_.clear();
 
 	// Load main plugins
-	QDir pluginsDir = dataDirectoryFile("plugins");
-	Messenger::print(Messenger::Verbose, "Looking for plugins in '%s'...", qPrintable(pluginsDir.path()));
-	int nFailed = searchPluginsDir(pluginsDir);
+	Messenger::print(Messenger::Verbose, "Looking for plugins in '%s'...", qPrintable(pluginDir_.path()));
+	int nFailed = searchPluginsDir(pluginDir_);
 	if (nFailed > 0) nPluginsFailed_ += nFailed;
 
 	// Try to load user plugins - we don't mind if the directory doesn't exist...
-	pluginsDir = atenDirectoryFile("plugins");
-	Messenger::print(Messenger::Verbose, "Looking for user plugins in '%s'...", qPrintable(pluginsDir.path()));
-	nFailed = searchPluginsDir(pluginsDir);
+	QDir userPluginsDir = atenDirectoryFile("plugins");
+	Messenger::print(Messenger::Verbose, "Looking for user plugins in '%s'...", qPrintable(userPluginsDir.path()));
+	nFailed = searchPluginsDir(userPluginsDir);
 	if (nFailed > 0) nPluginsFailed_ += nFailed;
 
 	Messenger::exit("Aten::loadPlugins");

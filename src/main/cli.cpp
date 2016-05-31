@@ -167,6 +167,9 @@ Cli cliSwitches[] = {
 	{ Cli::PipeSwitch,		'p',"pipe",		0,
 		"",
 		"Read and execute commands from piped input" },
+	{ Cli::PluginDirSwitch,		'\0',"plugindir",	0,
+		"<dir>",
+		"Set the directory to search for plugins" },
 	{ Cli::ProcessSwitch,		'\0',"process",		0,
 		"",
 		"Run any commands supplied with -c or --command on all models (but don't save)" },
@@ -347,7 +350,7 @@ bool Aten::parseCliEarly(int argc, char *argv[])
 				// Set data directory location
 				case (Cli::AtenDataSwitch):
 					dataDir_ = argText;
-					Messenger::print("Will search for data in '%s'.", qPrintable(argText));
+					Messenger::print("Will search for data in '%s'.", qPrintable(dataDir_.path()));
 					break;
 				// Turn on debug messages for calls (or specified output)
 				case (Cli::DebugSwitch):
@@ -397,6 +400,11 @@ bool Aten::parseCliEarly(int argc, char *argv[])
 				// Restrict plugin loading on startup
 				case (Cli::NoPluginsSwitch):
 					prefs.setLoadPlugins(false);
+					break;
+				// Set plugin directory location
+				case (Cli::PluginDirSwitch):
+					pluginDir_ = argText;
+					Messenger::print("Will search for plugins in '%s'.", qPrintable(pluginDir_.path()));
 					break;
 				// Run in silent mode (no CLI output)
 				case (Cli::QuietSwitch):
@@ -554,6 +562,7 @@ int Aten::parseCli(int argc, char *argv[])
 				case (Cli::NoIncludesSwitch):
 				case (Cli::NoInstancesSwitch):
 				case (Cli::NoPartitionsSwitch):
+				case (Cli::NoPluginsSwitch):
 				case (Cli::QuietSwitch):
 				case (Cli::VerboseSwitch):
 				case (Cli::VersionSwitch):

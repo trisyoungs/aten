@@ -321,6 +321,8 @@ class Aten
 	QDir workDir_;
 	// Data directory
 	QDir dataDir_;
+	// Plugin directory
+	QDir pluginDir_;
 	// Name of user's 'aten' directory within their homedir
 	QString atenDirName_;
 
@@ -331,6 +333,8 @@ class Aten
 	QDir workDir() const;
 	// Return the data directory path
 	QDir dataDir() const;
+	// Return the plugin directory path
+	QDir pluginDir() const;
 	// Return full path of file in Aten's data directory
 	QString dataDirectoryFile(QString filename);
 	// Return full path of file in user's Aten directory
