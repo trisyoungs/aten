@@ -58,6 +58,7 @@ bool PluginStore::registerPlugin(IOPluginInterface* plugin)
 		targets += plugin->exactNames().join(", ");
 	}
 	Messenger::print(Messenger::Verbose, "    Targets : %s", qPrintable(targets));
+  return true;
 }
 
 // Empty (delete) all plugins and plugin instances

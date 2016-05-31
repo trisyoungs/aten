@@ -126,6 +126,7 @@ bool XYZModelPlugin::importData(FileParser& parser)
 		// Rebond the model
 		targetModel->calculateBonding(true);
 	}
+  return true;
 }
 
 // Return whether this plugin can export data
