@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>586</width>
-    <height>316</height>
+    <height>322</height>
    </rect>
   </property>
   <property name="font">
@@ -23,8 +23,26 @@
     <normaloff>:/file/icons/file_open.svg</normaloff>:/file/icons/file_open.svg</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
+   <property name="spacing">
+    <number>4</number>
+   </property>
+   <property name="leftMargin">
+    <number>4</number>
+   </property>
+   <property name="topMargin">
+    <number>4</number>
+   </property>
+   <property name="rightMargin">
+    <number>4</number>
+   </property>
+   <property name="bottomMargin">
+    <number>4</number>
+   </property>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <property name="spacing">
+      <number>4</number>
+     </property>
      <item>
       <widget class="FileSelectorWidget" name="FileSelector" native="true">
        <property name="sizePolicy">
@@ -54,6 +72,21 @@
         <string>Options</string>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout">
+        <property name="spacing">
+         <number>4</number>
+        </property>
+        <property name="leftMargin">
+         <number>4</number>
+        </property>
+        <property name="topMargin">
+         <number>4</number>
+        </property>
+        <property name="rightMargin">
+         <number>4</number>
+        </property>
+        <property name="bottomMargin">
+         <number>4</number>
+        </property>
         <item>
          <widget class="QCheckBox" name="PreventRebondingCheck">
           <property name="toolTip">
@@ -169,6 +202,9 @@
    </item>
    <item>
     <layout class="QHBoxLayout" name="horizontalLayout">
+     <property name="spacing">
+      <number>4</number>
+     </property>
      <item>
       <spacer name="horizontalSpacer">
        <property name="orientation">

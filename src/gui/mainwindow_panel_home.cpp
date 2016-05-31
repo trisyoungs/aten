@@ -101,6 +101,10 @@ void AtenWindow::on_HomeFileOpenButton_clicked(bool checked)
 
 	if (openModelDialog.execute())
 	{
+		// Open model(s) selected in dialog
+		QStringList filesToLoad = openModelDialog.selectedFilenames();
+		IOPluginInterface* interface = openModelDialog.selectedPlugin();
+		for (int n=0; n<filesToLoad.count(); ++n) aten_.openModel(filesToLoad.at(n), interface);
 	}
 	return;
 

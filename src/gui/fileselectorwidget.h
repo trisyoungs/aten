@@ -78,6 +78,8 @@ class FileSelectorWidget : public QWidget
 	void clearSelectedFilenames();
 	// Return selected files, including full path
 	QStringList selectedFiles();
+	// Return selected file plugin
+	IOPluginInterface* selectedPlugin();
 
 
 	/*

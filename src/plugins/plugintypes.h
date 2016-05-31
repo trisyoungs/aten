@@ -33,8 +33,10 @@ ATEN_BEGIN_NAMESPACE
 class PluginTypes
 {
 	public:
-	// Plugin type enum
-	enum PluginType { IOModelPlugin, IOTrajectoryPlugin, IOExpressionPlugin, IOGridPlugin, nPluginTypes };
+	// IO plugin category
+	enum IOPluginCategory { IOModelPlugin, IOTrajectoryPlugin, IOExpressionPlugin, IOGridPlugin, nPluginCategories };
+	// IO plugin type
+	enum IOPluginType { ImportPlugin, ExportPlugin };
 };
 
 ATEN_END_NAMESPACE

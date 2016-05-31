@@ -255,3 +255,79 @@ bool Aten::loadModel(QString fileName, Tree* filter)
 
 	return result;
 }
+
+// Open model (if it is not loaded already)
+bool Aten::openModel(QString fileName, IOPluginInterface* plugin)
+{
+	Messenger::enter("Aten::openModel");
+
+	// Check to see if current list of loaded models contains the filename supplied
+	QFileInfo newFileInfo(fileName);
+	for (Model* model = models_.first(); model != NULL; model = model->next)
+	{
+		// If there is no filename for this model, carry on
+		if (model->filename().isEmpty()) continue;
+
+		// Get file info for the model's filename
+		QFileInfo oldFileInfo(model->filename());
+		if (newFileInfo == oldFileInfo)
+		{
+			Messenger::warn("Refusing to load model '%s' since it is already loaded.\n", qPrintable(fileName));
+			setCurrentModel(model);
+			return false;
+		}
+	}
+
+	// If the current model is empty, has no fileName, and has no modifications to it, delete it after we have finished loading...
+	Model* removeAfterLoad = NULL;
+	if (current_.m)
+	{
+		if ((current_.m->nAtoms() == 0) && (current_.m->filename().isEmpty()) && (!current_.m->isModified())) removeAfterLoad = current_.m;
+	}
+
+	// If plugin == NULL then we must probe the file first to try and find out how to load it
+	bool result = false;
+	if (plugin == NULL) pluginStore_.findPlugin(PluginTypes::IOModelPlugin, PluginTypes::ImportPlugin, fileName);
+	if (plugin != NULL)
+	{
+		// Create a LineParser to open the file, and encapsulate it in a FileParser to give to the interface
+		LineParser parser;
+		parser.openInput(fileName);
+		if (!parser.isFileGoodForReading())
+		{
+			Messenger::error("Couldn't open file '%s' for reading.\n", qPrintable(fileName));
+			Messenger::exit("Aten::openModel");
+			return false;
+		}
+
+		IOPluginInterface* interface = plugin->createInstance();
+		FileParser fileParser(parser);
+		if (interface->importData(fileParser))
+		{
+			// Finalise any loaded models
+			RefList<Model,int> createdModels = interface->createdModels();
+// 			for (RefListItem<Model,int>* ri = createdModels.first(); ri != NULL; ri = ri->next) finaliseModel();
+			ReturnValue rv = fileName;
+			atenWindow_->ui.HomeFileOpenButton->callPopupMethod("addRecentFile", rv);
+			result = true;
+		}
+
+		parser.closeFiles();
+	}
+	else
+	{
+		Messenger::error("Couldn't determine a suitable plugin to load the file '%s'.\n", qPrintable(fileName));
+		Messenger::exit("Aten::openModel");
+		return false;
+	}
+
+	// If we loaded something successfully, have we flagged an empty model to delete?
+	if (result)
+	{
+		if (removeAfterLoad) removeModel(removeAfterLoad);
+		atenWindow_->updateWidgets(AtenWindow::AllTarget);
+	}
+
+	Messenger::exit("Aten::openModel");
+	return result;
+}

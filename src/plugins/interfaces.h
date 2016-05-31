@@ -42,7 +42,11 @@ class Model;
 class IOPluginInterface : public ListItem<IOPluginInterface>
 {
 	public:
-	// Destructor 
+	// Constructor
+	IOPluginInterface() : ListItem<IOPluginInterface>()
+	{
+	}
+	// Destructor
 	virtual ~IOPluginInterface() {}
 
 
@@ -77,8 +81,8 @@ class IOPluginInterface : public ListItem<IOPluginInterface>
 	 * Definition
 	 */
 	public:
-	// Return type of plugin
-	virtual PluginTypes::PluginType type() const = 0;
+	// Return category of plugin
+	virtual PluginTypes::IOPluginCategory category() const = 0;
 	// Return name of plugin
 	virtual QString name() const = 0;
 	// Return nickname of plugin
@@ -106,7 +110,7 @@ class IOPluginInterface : public ListItem<IOPluginInterface>
 	 * Object Handling
 	 */
 	private:
-	// Model objects created on load
+	// Model objects created on import
 	RefList<Model,int> createdModels_;
 
 	protected:
@@ -115,7 +119,15 @@ class IOPluginInterface : public ListItem<IOPluginInterface>
 	{
 		ReturnValue result = CommandNode::run(Commands::NewModel);
 		Model* newModel = (Model*) result.asPointer(VTypes::ModelData);
+		createdModels_.add(newModel);
 		return newModel;
+	}
+
+	public:
+	// Return main Model objects created on import
+	RefList<Model,int> createdModels()
+	{
+		return createdModels_;
 	}
 
 
@@ -123,15 +135,15 @@ class IOPluginInterface : public ListItem<IOPluginInterface>
 	 * Input / Output
 	 */
 	private:
-	// Perform secondary checks on whether this plugin can load the specified file
-	virtual bool secondaryProbe(QString filename)
+	// Perform secondary checks on whether this plugin relevant to the specified file(name)
+	virtual bool isRelatedToFileSecondary(QString filename)
 	{
 		return false;
 	}
 
 	public:
-	// Return whether this plugin can load the specified file
-	bool probe(QString filename)
+	// Return whether this plugin is related to the specified file(name)
+	bool isRelatedToFile(QString filename)
 	{
 		// Get file information
 		QFileInfo fileInfo(filename);
@@ -158,18 +170,18 @@ class IOPluginInterface : public ListItem<IOPluginInterface>
 		}
 	
 		// Perform secondary checks
-		if (secondaryProbe(filename)) return true;
+		if (isRelatedToFileSecondary(filename)) return true;
 	
 		return false;
 	}
-	// Return whether this plugin can load data
-	virtual bool canLoad() = 0;
-	// Load data via the supplied parser
-	virtual bool load(FileParser& parser) = 0;
-	// Return whether this plugin can save data
-	virtual bool canSave() = 0;
-	// Save data via the supplied parser
-	virtual bool save(FileParser& parser) = 0;
+	// Return whether this plugin can import data
+	virtual bool canImport() = 0;
+	// Import data via the supplied parser
+	virtual bool importData(FileParser& parser) = 0;
+	// Return whether this plugin can export data
+	virtual bool canExport() = 0;
+	// Export data via the supplied parser
+	virtual bool exportData(FileParser& parser) = 0;
 };
 
 ATEN_END_NAMESPACE

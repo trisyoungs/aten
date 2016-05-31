@@ -69,6 +69,10 @@ class AtenOpenModel : public QDialog
 	public:
 	// Execute dialog
 	bool execute();
+	// Return selected filename(s)
+	QStringList selectedFilenames();
+	// Return selected file plugin
+	IOPluginInterface* selectedPlugin();
 };
 
 #endif

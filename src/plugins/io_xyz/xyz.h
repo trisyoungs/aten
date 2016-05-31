@@ -36,10 +36,15 @@ class XYZModelPlugin : public QObject, public IOPluginInterface
 	Q_PLUGIN_METADATA(IID "com.projectaten.Aten.IOPluginInterface.v1")
 	Q_INTERFACES(AtenSpace::IOPluginInterface)
 
+
 	/*
 	 * Core
 	 */
 	public:
+	// Constructor
+	XYZModelPlugin();
+	// Destructor
+	~XYZModelPlugin();
 	// Return a copy of the plugin object
 	IOPluginInterface* duplicate();
 
@@ -48,8 +53,8 @@ class XYZModelPlugin : public QObject, public IOPluginInterface
 	 * Definition
 	 */
 	public:
-	// Return type of plugin
-	PluginTypes::PluginType type() const;
+	// Return category of plugin
+	PluginTypes::IOPluginCategory category() const;
 	// Return name of plugin
 	QString name() const;
 	// Return nickname of plugin
@@ -66,14 +71,14 @@ class XYZModelPlugin : public QObject, public IOPluginInterface
 	 * Input / Output
 	 */
 	public:
-	// Return whether this plugin can load data
-	bool canLoad();
-	// Load data via the supplied parser
-	bool load(FileParser& parser);
-	// Return whether this plugin can save data
-	bool canSave();
-	// Save data via the supplied parser
-	bool save(FileParser& parser);
+	// Return whether this plugin can import data
+	bool canImport();
+	// Import data via the supplied parser
+	bool importData(FileParser& parser);
+	// Return whether this plugin can export data
+	bool canExport();
+	// Export data via the supplied parser
+	bool exportData(FileParser& parser);
 };
 
 ATEN_END_NAMESPACE

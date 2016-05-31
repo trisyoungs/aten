@@ -46,16 +46,18 @@ class PluginStore
 	 * Plugin Data
 	 */
 	private:
-	// List of IO plugin objects (by type)
-	RefList<IOPluginInterface,int> ioPlugins_[PluginTypes::nPluginTypes];
+	// List of IO plugin objects (by category)
+	RefList<IOPluginInterface,int> ioPlugins_[PluginTypes::nPluginCategories];
 
 	public:
 	// Register plugin (IOPluginType)
 	bool registerPlugin(IOPluginInterface* plugin);
 	// Empty (delete) all plugins and plugin instances
 	void clearPlugins();
-	// Return reference to ioPlugin objects of specified type
-	const RefList<IOPluginInterface,int>& ioPlugins(PluginTypes::PluginType type) const;
+	// Return reference to ioPlugin objects of specified category
+	const RefList<IOPluginInterface,int>& ioPlugins(PluginTypes::IOPluginCategory category) const;
+	// Find plugin interface for specified file
+	IOPluginInterface* findPlugin(PluginTypes::IOPluginCategory category, PluginTypes::IOPluginType type, QString filename);
 };
 
 ATEN_END_NAMESPACE

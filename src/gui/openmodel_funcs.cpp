@@ -76,3 +76,15 @@ bool AtenOpenModel::execute()
 
 	return exec();
 }
+
+// Return selected filename(s)
+QStringList AtenOpenModel::selectedFilenames()
+{
+	return ui.FileSelector->selectedFiles();
+}
+
+// Return selected file plugin
+IOPluginInterface* AtenOpenModel::selectedPlugin()
+{
+	return ui.FileSelector->selectedPlugin();
+}

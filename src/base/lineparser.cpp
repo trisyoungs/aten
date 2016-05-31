@@ -926,7 +926,7 @@ bool LineParser::writeLine(QString s)
 // Write formatted line to file
 bool LineParser::writeLineF(const char* fmt, ...)
 {
-	Messenger::enter("LineParser::writeLine");
+	Messenger::enter("LineParser::writeLineF");
 	if (!directOutput_)
 	{
 		if (cachedFile_ == NULL)

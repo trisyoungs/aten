@@ -62,7 +62,7 @@ void FileSelectorWidget::setMode(FileSelectorWidget::SelectionMode mode, const R
 	for (RefListItem<IOPluginInterface,int>* ri = ioPlugins.first(); ri != NULL; ri = ri->next)
 	{
 		IOPluginInterface* interface = ri->item;
-		if (!interface->canLoad()) continue;
+		if (!interface->canImport()) continue;
 		ui.FilterCombo->addItem(interface->filterString(), VariantPointer<IOPluginInterface>(interface));
 	}
 	ui.FilterCombo->addItem("All Files (*)");
@@ -103,6 +103,14 @@ QStringList FileSelectorWidget::selectedFiles()
 	for (int n=0; n<selectedFilenames_.count(); ++n) fileList << currentDirectory_.absoluteFilePath(selectedFilenames_.at(n));
 
 	return fileList;
+}
+
+// Return selected file plugin
+IOPluginInterface* FileSelectorWidget::selectedPlugin()
+{
+	// Get selected filter from combo box
+	IOPluginInterface* interface = (IOPluginInterface*) VariantPointer<IOPluginInterface>(ui.FilterCombo->itemData(ui.FilterCombo->currentIndex()));
+	return interface;
 }
 
 /*

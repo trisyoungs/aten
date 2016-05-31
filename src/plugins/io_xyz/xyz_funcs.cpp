@@ -22,6 +22,16 @@
 #include "plugins/io_xyz/xyz.h"
 #include "model/model.h"
 
+// Constructor
+XYZModelPlugin::XYZModelPlugin()
+{
+}
+
+// Destructor
+XYZModelPlugin::~XYZModelPlugin()
+{
+}
+
 /*
  * Core
  */
@@ -36,8 +46,8 @@ IOPluginInterface* XYZModelPlugin::duplicate()
  * XYZ Model Import / Export Plugin
  */
 
-// Return type of plugin
-PluginTypes::PluginType XYZModelPlugin::type() const
+// Return category of plugin
+PluginTypes::IOPluginCategory XYZModelPlugin::category() const
 {
 	return PluginTypes::IOModelPlugin;
 }
@@ -76,18 +86,18 @@ QStringList XYZModelPlugin::exactNames() const
  * Input / Output
  */
 
-// Return whether this plugin can load data
-bool XYZModelPlugin::canLoad()
+// Return whether this plugin can import data
+bool XYZModelPlugin::canImport()
 {
 	return true;
 }
 
-// Load data from the specified file
-bool XYZModelPlugin::load(FileParser& parser)
+// Import data from the specified file
+bool XYZModelPlugin::importData(FileParser& parser)
 {
 	int nAtoms, n;
 	QString e, name;
-	double rx, ry, rz, q;
+	Vec3<double> r;
 	Model* targetModel = NULL;
 
 	// Read data
@@ -109,12 +119,8 @@ bool XYZModelPlugin::load(FileParser& parser)
 			if (!parser.parseLine()) break;
 
 			// Create the new atom
-// 			Atom* i = targetModel->addAtom();
-			// How many arguments did we get?
-// 			if (parser.nArgs() == 4) 
-// 			readLine(e,rx,ry,rz,q);
-// 			i = newAtom(e, rx, ry, rz);
-// 			i.q = q;
+			r.set(parser.argd(1), parser.argd(2), parser.argd(3));
+			targetModel->addAtom(parser.argi(0), r);
 		}
 
 		// Rebond the model
@@ -122,14 +128,14 @@ bool XYZModelPlugin::load(FileParser& parser)
 	}
 }
 
-// Return whether this plugin can save data
-bool XYZModelPlugin::canSave()
+// Return whether this plugin can export data
+bool XYZModelPlugin::canExport()
 {
 	return false;
 }
 
-// Save data to the specified file
-bool XYZModelPlugin::save(FileParser& parser)
+// Export data to the specified file
+bool XYZModelPlugin::exportData(FileParser& parser)
 {
-	return true;
+	return false;
 }

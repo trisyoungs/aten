@@ -33,3 +33,112 @@ FileParser::~FileParser()
 {
 }
 
+/*
+ * File Read Functions
+ */
+
+// Read next line from file
+bool FileParser::readLine(QString& variable)
+{
+	int result = parser_.readNextLine(Parser::Defaults);
+	variable = parser_.line();
+	return (result == 0);
+}
+
+// Read next line from file (converted to int)
+bool FileParser::readLineAsInteger(int& variable)
+{
+	int result = parser_.readNextLine(Parser::Defaults);
+	variable = parser_.line().toInt();
+	return (result == 0);
+}
+
+// Read next line from file (converted to double)
+bool FileParser::readLineAsDouble(double& variable)
+{
+	int result = parser_.readNextLine(Parser::Defaults);
+	variable = parser_.line().toDouble();
+	return (result == 0);
+}
+
+// Return whether the end of the input stream has been reached (or only whitespace remains)
+bool FileParser::eofOrBlank() const
+{
+	return parser_.eofOrBlank();
+}
+
+/*
+ * Write Functions
+ */
+
+// Write line to file
+bool FileParser::writeLine(QString line)
+{
+	return parser_.writeLine(line);
+}
+
+// Write formatted line to file
+bool FileParser::writeLineF(const char* fmt, ...)
+{
+	// Construct line
+	va_list arguments;
+	static char s[8096];
+	s[0] = '\0';
+	// Parse the argument list (...) and internally write the output string into s[]
+	va_start(arguments,fmt);
+	vsprintf(s,fmt,arguments);
+	va_end(arguments);
+	return parser_.writeLine(s);
+}
+
+/*
+ * Line Parsing
+ */
+
+// Read and parse next line into delimited arguments
+bool FileParser::parseLine(int parseOptions)
+{
+	return (parser_.getArgsDelim(parseOptions) == 0);
+}
+
+// Returns number of arguments grabbed from last parse
+int FileParser::nArgs() const
+{
+	return parser_.nArgs();
+}
+
+// Returns the specified argument as a character string
+QString FileParser::argc(int i)
+{
+	return parser_.argc(i);
+}
+
+// Returns the specified argument as an integer
+int FileParser::argi(int i)
+{
+	return parser_.argi(i);
+}
+
+// Returns the specified argument as a double
+double FileParser::argd(int i)
+{
+	return parser_.argd(i);
+}
+
+// Returns the specified argument as a bool
+bool FileParser::argb(int i)
+{
+	return parser_.argb(i);
+}
+
+// Returns the specified argument as a float
+float FileParser::argf(int i)
+{
+	return parser_.argf(i);
+}
+
+// Returns whether the specified argument exists
+bool FileParser::hasArg(int i) const
+{
+	return parser_.hasArg(i);
+}

@@ -38,14 +38,14 @@ bool PluginStore::registerPlugin(IOPluginInterface* plugin)
 	if (!plugin) return false;
 
 	// Query the plugin type...
-	if (plugin->type() == PluginTypes::nPluginTypes)
+	if (plugin->category() == PluginTypes::nPluginCategories)
 	{
 		Messenger::error("Plugin has unrecognised type - not registered.\n");
 		return false;
 	}
 
 	// Store the reference to the plugin 
-	ioPlugins_[plugin->type()].add(plugin);
+	ioPlugins_[plugin->category()].add(plugin);
 	Messenger::print(Messenger::Verbose, "Registered new plugin:");
 	Messenger::print(Messenger::Verbose, "       Name : %s", qPrintable(plugin->name()));
 	Messenger::print(Messenger::Verbose, "Description : %s", qPrintable(plugin->description()));
@@ -63,7 +63,7 @@ bool PluginStore::registerPlugin(IOPluginInterface* plugin)
 // Empty (delete) all plugins and plugin instances
 void PluginStore::clearPlugins()
 {
-	for (int n=0; n<PluginTypes::nPluginTypes; ++n)
+	for (int n=0; n<PluginTypes::nPluginCategories; ++n)
 	{
 		// Loop over stored interfaces and clear any instances we have
 		for (RefListItem<IOPluginInterface,int>* ri = ioPlugins_[n].first(); ri != NULL; ri = ri->next)
@@ -75,8 +75,29 @@ void PluginStore::clearPlugins()
 	}
 }
 
-// Return reference to ioPlugin objects of specified type
-const RefList<IOPluginInterface,int>& PluginStore::ioPlugins(PluginTypes::PluginType type) const
+// Return reference to ioPlugin objects of specified category
+const RefList<IOPluginInterface,int>& PluginStore::ioPlugins(PluginTypes::IOPluginCategory category) const
 {
-	return ioPlugins_[type];
+	return ioPlugins_[category];
+}
+
+// Find plugin interface for specified file
+IOPluginInterface* PluginStore::findPlugin(PluginTypes::IOPluginCategory category, PluginTypes::IOPluginType type, QString filename)
+{
+	// Loop over loaded plugins of the specified category
+	for (RefListItem<IOPluginInterface,int>* ri = ioPlugins_[category].first(); ri != NULL; ri = ri->next)
+	{
+		IOPluginInterface* interface = ri->item;
+
+		// If an import plugin was requested, and this plugin can't import anything, continue
+		if ((type == PluginTypes::ImportPlugin) && (!interface->canImport())) continue;
+
+		// If an export plugin was requested, and this plugin can't export anything, continue
+		if ((type == PluginTypes::ExportPlugin) && (!interface->canExport())) continue;
+
+		// Perform checks to see if the plugin is related to this file
+		if (interface->isRelatedToFile(filename)) return interface;
+	}
+
+	return NULL;
 }

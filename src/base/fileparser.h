@@ -56,12 +56,14 @@ class FileParser
 	bool readLineAsInteger(int& variable);
 	// Read next line from file (converted to double)
 	bool readLineAsDouble(double& variable);
-	// Read and parse next line into delimited arguments, returning number of arguments so obtained
-	int parseLine(int parseOptions = Parser::Defaults);
 	// Return whether the end of the input stream has been reached (or only whitespace remains)
 	bool eofOrBlank() const;
 	
 
+	/*
+	 * Write Functions
+	 */
+	public:
 	// Write line to file
 	bool writeLine(QString line);
 	// Write formatted line to file
@@ -72,6 +74,8 @@ class FileParser
 	 * Argument Data
 	 */
 	public:
+	// Read and parse next line into delimited arguments
+	bool parseLine(int parseOptions = Parser::Defaults);
 	// Returns number of arguments grabbed from last parse
 	int nArgs() const;
 	// Returns the specified argument as a character string

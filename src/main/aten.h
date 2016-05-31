@@ -123,6 +123,8 @@ class Aten
 	void globalLogChange(Log::LogType);
 	// Load model (if it is not loaded already)
 	bool loadModel(QString fileName, Tree* filter = NULL);
+	// Open model (if it is not loaded already)
+	bool openModel(QString fileName, IOPluginInterface* plugin = NULL);
 
 
 	/*
