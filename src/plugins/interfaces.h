@@ -25,6 +25,7 @@
 #include "plugins/plugintypes.h"
 #include "parser/returnvalue.h"
 #include "parser/commandnode.h"
+#include "model/model.h"
 #include "base/messenger.h"
 #include "base/fileparser.h"
 #include "base/namespace.h"
@@ -119,6 +120,7 @@ class IOPluginInterface : public ListItem<IOPluginInterface>
 	{
 		ReturnValue result = CommandNode::run(Commands::NewModel);
 		Model* newModel = (Model*) result.asPointer(VTypes::ModelData);
+		newModel->disableUndoRedo();
 		createdModels_.add(newModel);
 		return newModel;
 	}

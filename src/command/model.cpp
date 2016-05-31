@@ -311,6 +311,7 @@ bool Commands::function_NewModel(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	obj.m = aten_.addModel();
 	obj.m->setName(c->argc(0).trimmed());
 	Messenger::print(Messenger::Verbose, "Created model '%s'", qPrintable(obj.m->name()));
+
 	// Check to see whether we are using a filter, enabling undo/redo if not
 	if (!c->parent()->isFilter()) obj.m->enableUndoRedo();
 	rv.set(VTypes::ModelData, obj.m);

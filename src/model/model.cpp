@@ -138,6 +138,18 @@ Tree* Model::filter() const
 	return filter_;
 }
 
+// Sets the plugin used to load the model
+void Model::setPlugin(IOPluginInterface* plugin)
+{
+	plugin_ = plugin;
+}
+
+// Return the plugin used to load the model
+IOPluginInterface* plugin() const
+{
+	return plugin_;
+}
+
 // Sets the name of the model
 void Model::setName(QString name)
 {

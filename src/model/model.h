@@ -22,7 +22,6 @@
 #ifndef ATEN_MODEL_H
 #define ATEN_MODEL_H
 
-#include <QIcon>
 #include "templates/pointerpair.h"
 #include "ff/energystore.h"
 #include "base/cell.h"
@@ -40,6 +39,7 @@
 #include "base/namespace.h"
 #include "render/rendergroup.h"
 #include "base/fourierdata.h"
+#include <QIcon>
 
 ATEN_BEGIN_NAMESPACE
 
@@ -55,6 +55,7 @@ class AtomAddress;
 class Calculable;
 class Measurement;
 class Grid;
+class IOPluginInterface;
 
 // Model
 class Model : public ListItem<Model>
@@ -81,6 +82,8 @@ class Model : public ListItem<Model>
 	QString name_;
 	// Format of model when loaded / last saved
 	Tree* filter_;
+	// Plugin used to load / save the model (if any)
+	IOPluginInterface* plugin_;
 	// Filename of model when loaded / last saved
 	QString filename_;
 	// Parent model (if a trajectory or vibration frame)
@@ -99,6 +102,10 @@ class Model : public ListItem<Model>
 	void setFilter(Tree* f);
 	// Return the stored file filter of the model
 	Tree* filter() const;
+	// Sets the plugin used to load the model
+	void setPlugin(IOPluginInterface* plugin);
+	// Return the plugin used to load the model
+	IOPluginInterface* plugin() const;
 	// Sets the name of the model
 	void setName(QString name);
 	// Return the name of the model

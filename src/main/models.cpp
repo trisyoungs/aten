@@ -306,7 +306,39 @@ bool Aten::openModel(QString fileName, IOPluginInterface* plugin)
 		{
 			// Finalise any loaded models
 			RefList<Model,int> createdModels = interface->createdModels();
-// 			for (RefListItem<Model,int>* ri = createdModels.first(); ri != NULL; ri = ri->next) finaliseModel();
+			for (RefListItem<Model,int>* ri = createdModels.first(); ri != NULL; ri = ri->next)
+			{
+				Model* m = ri->item;
+
+				// Set source filename and plugin interface used
+				m->setFilename(fileName);
+				m->setPlugin(interface);
+
+				// Do various necessary calculations
+				if (prefs.coordsInBohr()) m->bohrToAngstrom();
+				m->renumberAtoms();
+				if (!prefs.keepView()) m->resetView(atenWindow()->ui.MainView->width(), atenWindow()->ui.MainView->height());
+				m->calculateMass();
+				m->selectNone();
+
+				// Print out some useful info on the model that we've just read in
+				Messenger::print(Messenger::Verbose, "Model  : %s", qPrintable(m->name()));
+				Messenger::print(Messenger::Verbose, "Atoms  : %i", m->nAtoms());
+				Messenger::print(Messenger::Verbose, "Cell   : %s", UnitCell::cellType(m->cell().type()));
+				if (m->cell().type() != UnitCell::NoCell) m->cell().print();
+
+				// If a names forcefield was created, add it to Aten's list 
+				if (m->namesForcefield()) ownForcefield(m->namesForcefield());
+
+				// If a trajectory exists for this model, by default we view from trajectory in the GUI
+				if (m->nTrajectoryFrames() > 0) m->setRenderSource(Model::TrajectorySource);
+
+				// Lastly, reset all the log points and start afresh
+				m->enableUndoRedo();
+				m->resetLogs();
+				m->updateSavePoint();
+			}
+
 			ReturnValue rv = fileName;
 			atenWindow_->ui.HomeFileOpenButton->callPopupMethod("addRecentFile", rv);
 			result = true;
