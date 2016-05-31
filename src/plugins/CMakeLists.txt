@@ -1,5 +1,4 @@
 add_library(plugins
-  interfaces.cpp
   pluginstore.cpp
   interfaces.h
   pluginstore.h
