@@ -30,11 +30,11 @@ ATEN_BEGIN_NAMESPACE
 /* none */
 
 // XYZ Model Import / Export Plugin
-class XYZModelPlugin : public QObject, public IOPluginInterface
+class XYZModelPlugin : public QObject, public FilePluginInterface
 {
 	Q_OBJECT
-	Q_PLUGIN_METADATA(IID "com.projectaten.Aten.IOPluginInterface.v1")
-	Q_INTERFACES(AtenSpace::IOPluginInterface)
+	Q_PLUGIN_METADATA(IID "com.projectaten.Aten.FilePluginInterface.v1")
+	Q_INTERFACES(AtenSpace::FilePluginInterface)
 
 
 	/*
@@ -46,7 +46,7 @@ class XYZModelPlugin : public QObject, public IOPluginInterface
 	// Destructor
 	~XYZModelPlugin();
 	// Return a copy of the plugin object
-	IOPluginInterface* duplicate();
+	FilePluginInterface* duplicate();
 
 
 	/*
@@ -54,11 +54,11 @@ class XYZModelPlugin : public QObject, public IOPluginInterface
 	 */
 	public:
 	// Return category of plugin
-	PluginTypes::IOPluginCategory category() const;
+	PluginTypes::FilePluginCategory category() const;
 	// Return name of plugin
 	QString name() const;
 	// Return nickname of plugin
-	QString nickName() const;
+	QString nickname() const;
 	// Return description (long name) of plugin
 	QString description() const;
 	// Return related file extensions

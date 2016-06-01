@@ -40,12 +40,10 @@ Tree::Tree() : ListItem<Tree>()
 {
 	// Private variables
 	parent_ = NULL;
-	parser_ = NULL;
 	acceptedFail_ = Commands::NoFunction;
 	name_ = "unnamed";
 	type_ = Tree::UnknownTree;
 	returnType_ = VTypes::NoData;
-	readOptions_ = 0;
 	localScope_ = NULL;
 	runCount_ = 0;
 	createDefaultDialogFunction_ = NULL;
@@ -230,42 +228,6 @@ bool Tree::setAccessibleVariable(QString name, QString value)
 	return result;
 }
 
-// Add read option
-void Tree::addReadOption(Parser::ParseOption po)
-{
-	if (!(readOptions_&po)) readOptions_ += po;
-}
-
-// Remove read option
-void Tree::removeReadOption(Parser::ParseOption po)
-{
-	if (readOptions_&po) readOptions_ -= po;
-}
-
-// Return read options
-int Tree::readOptions() const
-{
-	return readOptions_;
-}
-
-// Return parser object pointer
-LineParser* Tree::parser()
-{
-	return parser_;
-}
-
-// Return whether the LineParser is ready for file reading
-bool Tree::isFileGoodForReading() const
-{
-	return (parser_ == NULL ? false : parser_->isFileGoodForReading());
-}
-
-// Return whether the LineParser is ready for file writing
-bool Tree::isFileGoodForWriting() const
-{
-	return (parser_ == NULL ? false : parser_->isFileGoodForWriting());
-}
-
 // Clear contents of tree
 void Tree::clear()
 {
@@ -316,32 +278,6 @@ bool Tree::execute(ReturnValue& rv)
 
 	++runCount_;
 
-	// Perform any preparatory commands related to filter trees
-	if (isFilter())
-	{
-		// For all filters, store the current zmapping style in Prefs so we can revert to it later
-		zm = prefs.zMapType();
-		switch (filter.type())
-		{
-			case (FilterData::ExpressionExport):
-				// Turn on export type mapping
-				if (aten_->typeExportMap.nPairs() != 0) aten_->setTypeExportMapping(true);
-
-				// Create expression for model
-				if (!aten_->currentModel()->createExpression(Choice(), Choice(), Choice(), aten_->currentForcefield(), aten_->combinationRules()))
-				{
-					Messenger::exit("Tree::execute");
-					return false;
-				}
-				break;
-			case (FilterData::ModelExport):
-				// Turn on export type mapping
-				if (aten_->typeExportMap.nPairs() != 0) aten_->setTypeExportMapping(true);
-				break;
-			default:
-				break;
-		}
-	}
 	for (RefListItem<TreeNode,int>* ri = statements_.first(); ri != NULL; ri = ri->next)
 	{
 		Messenger::print(Messenger::Commands, "Executing tree statement %p...", ri->item);
@@ -372,122 +308,15 @@ bool Tree::execute(ReturnValue& rv)
 	// Delete any temporary dialogs
 	deleteDialogs();
 	
-	// Perform any finalisation commands related to filter trees
-	if (isFilter())
-	{
-		// For all filters, restore the previous zmapping style
-		prefs.setZMapType(zm);
-		switch (filter.type())
-		{
-			case (FilterData::ExpressionExport):
-			case (FilterData::ModelExport):
-				// Turn off export type mapping
-				aten_->setTypeExportMapping(false);
-				break;
-			default:
-				break;
-		}
-	}
-
 	// Do a couple of things regardless of the type of tree
 	prefs.setAutoConversionUnit(Prefs::nEnergyUnits);
 
 	// Print some final verbose output
-	if (isFilter()) Messenger::print(Messenger::Parse, "Final result from execution of %s filter (id = %i) tree '%s' (in Program '%s') is %s", FilterData::filterType(filter.type()), filter.id(), qPrintable(filter.name()), qPrintable(parent_->name()), qPrintable(rv.info()));
-	else Messenger::print(Messenger::Parse, "Final result from execution of tree '%s' (in Program '%s') is %s", qPrintable(name_), qPrintable(parent_->name()), qPrintable(rv.info()));
+	Messenger::print(Messenger::Parse, "Final result from execution of tree '%s' (in Program '%s') is %s", qPrintable(name_), qPrintable(parent_->name()), qPrintable(rv.info()));
 	if (!result) Messenger::print(Messenger::Parse, "Execution FAILED.");
 
 	Messenger::exit("Tree::execute");
 	return result;
-}
-
-// Execute tree using provided parsing source
-bool Tree::execute(LineParser* parser, ReturnValue& rv)
-{
-	Messenger::enter("Tree::execute[LineParser]");
-
-	// Check LineParser
-	parser_ = parser;
-	if (parser_ == NULL)
-	{
-		Messenger::print("Error: NULL parsing source passed.");
-		Messenger::exit("Tree::execute[LineParser]");
-		return false;
-	}
-
-	// Execute the commands
-	bool result = execute(rv);
-	parser_ = NULL;
-
-	Messenger::exit("Tree::execute[LineParser]");
-	return result;
-}
-
-// Execute, opening specified file as input source (no return value)
-bool Tree::executeRead(QString filename, ReturnValue& rv)
-{
-	Messenger::enter("Tree::executeRead[filename]");
-	// Check for a previous parser pointer
-	if (parser_ != NULL) printf("Warning: LineParser already defined in executeRead.\n");
-	parser_ = new LineParser;
-	parser_->openInput(filename);
-	if (!parser_->isFileGoodForReading())
-	{
-		Messenger::exit("Tree::executeRead[filename]");
-		return false;
-	}
-	// Execute the commands
-	bool result = execute(rv);
-	parser_->closeFiles();
-	delete parser_;
-	parser_ = NULL;
-	Messenger::exit("Tree::executeRead[filename]");
-	return result;
-}
-
-// Execute, with specified filename as data target
-bool Tree::executeWrite(QString filename, ReturnValue& rv)
-{
-	Messenger::enter("Tree::executeWrite[filename]");
-	// Check for a previous parser pointer
-	if (parser_ != NULL) printf("Warning: LineParser already defined in executeWrite.\n");
-	// If we are using directOutput_ open the target file here...
-	parser_ = new LineParser;
-	parser_->openOutput(filename, false);
-	if (!parser_->isFileGoodForWriting())
-	{
-		Messenger::exit("Tree::executeWrite[filename]");
-		return false;
-	}
-	
-	// Execute the commands
-	bool result = execute(rv);
-	
-	// If we were *not* using directOutput_ and the commands were executed successfully, write the cached data here
-	if (result) result = parser_->commitCache();
-	else Messenger::print("Command execution generated errors or was canceled (through a dialog) - cached data not written to file.");
-
-	// Done - tidy up
-	parser_->closeFiles();
-	delete parser_;
-	parser_ = NULL;
-
-	Messenger::exit("Tree::executeWrite[filename]");
-	return result;
-}
-
-// Execute, opening specified file as input source (no return value)
-bool Tree::executeRead(QString filename)
-{
-	ReturnValue rv;
-	return executeRead(filename, rv);
-}
-
-// Execute, with specified filename as data target (no return value)
-bool Tree::executeWrite(QString filename)
-{
-	ReturnValue rv;
-	return executeWrite(filename, rv);
 }
 
 // Return number of times tree has been run
@@ -1138,16 +967,6 @@ bool Tree::addLocalFunctionArguments(TreeNode* argList)
 		vnode->setParent(this);
 	}
 	return true;
-}
-
-/*
- * Filter Properties
- */
-
-// Return whether this tree is a filter
-bool Tree::isFilter() const
-{
-	return (filter.type() != FilterData::nFilterTypes);
 }
 
 /*

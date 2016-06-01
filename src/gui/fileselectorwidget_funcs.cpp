@@ -50,7 +50,7 @@ FileSelectorWidget::FileSelectorWidget(QWidget* parent) : QWidget(parent)
  */
 
 // Set mode of file selector
-void FileSelectorWidget::setMode(FileSelectorWidget::SelectionMode mode, const RefList<IOPluginInterface,int>& ioPlugins, QDir startingDir)
+void FileSelectorWidget::setMode(FileSelectorWidget::SelectionMode mode, const RefList<FilePluginInterface,int>& ioPlugins, QDir startingDir)
 {
 	mode_ = mode;
 
@@ -59,11 +59,11 @@ void FileSelectorWidget::setMode(FileSelectorWidget::SelectionMode mode, const R
 	else ui.FileView->setSelectionMode(QTableView::SingleSelection);
 
 	// Populate filter combo
-	for (RefListItem<IOPluginInterface,int>* ri = ioPlugins.first(); ri != NULL; ri = ri->next)
+	for (RefListItem<FilePluginInterface,int>* ri = ioPlugins.first(); ri != NULL; ri = ri->next)
 	{
-		IOPluginInterface* interface = ri->item;
+		FilePluginInterface* interface = ri->item;
 		if (!interface->canImport()) continue;
-		ui.FilterCombo->addItem(interface->filterString(), VariantPointer<IOPluginInterface>(interface));
+		ui.FilterCombo->addItem(interface->filterString(), VariantPointer<FilePluginInterface>(interface));
 	}
 	ui.FilterCombo->addItem("All Files (*)");
 
@@ -106,10 +106,10 @@ QStringList FileSelectorWidget::selectedFiles()
 }
 
 // Return selected file plugin
-IOPluginInterface* FileSelectorWidget::selectedPlugin()
+FilePluginInterface* FileSelectorWidget::selectedPlugin()
 {
 	// Get selected filter from combo box
-	IOPluginInterface* interface = (IOPluginInterface*) VariantPointer<IOPluginInterface>(ui.FilterCombo->itemData(ui.FilterCombo->currentIndex()));
+	FilePluginInterface* interface = (FilePluginInterface*) VariantPointer<FilePluginInterface>(ui.FilterCombo->itemData(ui.FilterCombo->currentIndex()));
 	return interface;
 }
 
@@ -219,7 +219,7 @@ void FileSelectorWidget::on_FilesEdit_textChanged(QString textChanged)
 void FileSelectorWidget::on_FilterCombo_currentIndexChanged(int index)
 {
 	// Grab data for selected item
-	IOPluginInterface* interface = (IOPluginInterface*) VariantPointer<IOPluginInterface>(ui.FilterCombo->itemData(index));
+	FilePluginInterface* interface = (FilePluginInterface*) VariantPointer<FilePluginInterface>(ui.FilterCombo->itemData(index));
 
 	if (!interface)
 	{

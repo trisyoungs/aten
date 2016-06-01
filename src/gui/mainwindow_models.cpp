@@ -21,7 +21,7 @@
 
 #include "main/aten.h"
 #include "gui/mainwindow.h"
-#include "gui/selectfilter.h"
+// #include "gui/selectfilter.h"
 #include "templates/variantpointer.h"
 #include <QInputDialog>
 #include <QMessageBox>
@@ -179,7 +179,6 @@ void AtenWindow::updateModelsList()
 bool AtenWindow::closeModel(Model* m)
 {
 	QString text;
-	Tree* filter;
 	if (m->isModified())
 	{
 		// Create a modal message dialog
@@ -190,32 +189,12 @@ bool AtenWindow::closeModel(Model* m)
 			// Discard changes
 			case (QMessageBox::Discard):
 				break;
-				// Cancel close
+			// Cancel close
 			case (QMessageBox::Cancel):
 				return false;
-				// Save model before quit
+			// Save model before quit
 			case (QMessageBox::Save):
-				// Temporarily disable undo/redo for the model, save, and re-enable
-				m->disableUndoRedo();
-				// If model has a filter set, just save it
-				filter = m->filter();
-				if (filter != NULL) filter->executeWrite(m->filename());
-				else if (runSaveModelDialog())
-				{
-					m->setFilter(saveModelFilter_);
-					m->setFilename(saveModelFilename_);
-					if (!saveModelFilter_->executeWrite(saveModelFilename_))
-					{
-						Messenger::print("Not saved.");
-						m->enableUndoRedo();
-						return false;
-					}
-				}
-				else
-				{
-					m->enableUndoRedo();
-					return false;
-				}
+				if (!aten_.exportModel(m, m->filename(), m->plugin())) return false;	
 				break;
 		}
 	}
@@ -237,75 +216,4 @@ bool AtenWindow::saveBeforeClose()
 		updateWidgets(AtenWindow::AllTarget);
 	}
 	return true;
-}
-
-// Run SaveModel dialog to get filename and format
-bool AtenWindow::runSaveModelDialog()
-{
-	saveModelFilename_.clear();
-	saveModelFilter_ = NULL;
-	Tree* filter = NULL;
-	static QString selectedFilter(aten_.filters(FilterData::ModelExport) == NULL ? NULL : aten_.filters(FilterData::ModelExport)->item->filter.name());
-	static QDir currentDirectory_(aten_.workDir());
-	QString filename = QFileDialog::getSaveFileName(this, "Save Model", currentDirectory_.path(), aten_.fileDialogFilters(FilterData::ModelExport), &selectedFilter);
-	if (!filename.isEmpty())
-	{
-		// Store path for next use
-		currentDirectory_.setPath(filename);
-		// Grab file extension and search for it in our current lists...
-		QString ext = QFileInfo(filename).suffix();
-		RefList<Tree,int> filters;
-		if (ext.isEmpty())
-		{
-			QFileInfo fileInfo( filename );
-			// Does this filename uniquely identify a specific filter?
-			for (RefListItem<Tree,int>* ri = aten_.filters(FilterData::ModelExport); ri != NULL; ri = ri->next)
-			{
-				if (ri->item->filter.doesNameMatch(qPrintable(fileInfo.fileName()))) filters.add(ri->item);
-			}
-			Messenger::print(Messenger::Verbose, "Exact filename '%s' matches %i filters...", qPrintable(filename), filters.nItems());
-
-			// If only one filter matched the filename extension, use it. Otherwise, ask for confirmation *or* list all filters.
-			AtenSelectFilter selectFilter(*this);
-			if (filters.nItems() != 0) filter = selectFilter.selectFilter("Name matches one or more model export filters.", &filters, aten_.filterList(FilterData::ModelExport));
-			else
-			{
-				filter = selectFilter.selectFilter("Couldn't determine format to save expression in.", NULL, aten_.filterList(FilterData::ModelExport), true);
-				if ((filter != NULL) && selectFilter.appendExtension())
-				{
-					if (filter->filter.extensions().count() != 0) filename += QString(".") + filter->filter.extensions().at(0);
-				}
-			}
-		}
-		else
-		{
-			// Does this extension uniquely identify a specific filter?
-			for (RefListItem<Tree,int>* ri = aten_.filters(FilterData::ModelExport); ri != NULL; ri = ri->next)
-			{
-				if (ri->item->filter.doesExtensionMatch(ext)) filters.add(ri->item);
-			}
-			Messenger::print(Messenger::Verbose, "Extension of filename '%s' matches %i filters...", qPrintable(filename), filters.nItems());
-			// If only one filter matched the filename extension, use it. Otherwise, ask for confirmation *or* list all filters.
-			if (filters.nItems() == 1) filter = filters.first()->item;
-			else if (filters.nItems() > 1)
-			{
-				AtenSelectFilter selectFilter(*this);
-				filter = selectFilter.selectFilter("Extension matches one or more model export filters.", &filters, aten_.filterList(FilterData::ModelExport));
-			}
-			else
-			{
-				AtenSelectFilter selectFilter(*this);
-				filter = selectFilter.selectFilter("Extension doesn't match any in known model export filters.", NULL, aten_.filterList(FilterData::ModelExport), true);
-				if ((filter != NULL) && selectFilter.appendExtension())
-				{
-					if (filter->filter.extensions().count() != 0) filename += QString(".") + filter->filter.extensions().at(0);
-				}
-			}
-		}
-		saveModelFilter_ = filter;
-		saveModelFilename_ = qPrintable(filename);
-		if (filter == NULL) Messenger::print("No filter selected to save file '%s'. Not saved.", qPrintable(saveModelFilename_));
-		return (saveModelFilter_ == NULL ? false : true);
-	}
-	else return false;
 }

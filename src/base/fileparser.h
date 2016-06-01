@@ -27,14 +27,14 @@
 ATEN_BEGIN_NAMESPACE
 
 // Forward Declarations (Aten)
-/* none */
+class Model;
 
 // File Parser
 class FileParser
 {
 	public:
 	// Constructors / Destructor
-	FileParser(LineParser& parser);
+	FileParser(LineParser& parser, Model* targetModel = NULL);
 	~FileParser();
 
 
@@ -63,7 +63,13 @@ class FileParser
 	/*
 	 * Write Functions
 	 */
+	private:
+	// Target model for write (if any)
+	Model* targetModel_;
+
 	public:
+	// Return target model
+	const Model* targetModel() const;
 	// Write line to file
 	bool writeLine(QString line);
 	// Write formatted line to file

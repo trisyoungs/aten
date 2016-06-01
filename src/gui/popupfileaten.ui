@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>204</width>
-    <height>71</height>
+    <width>294</width>
+    <height>74</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -31,14 +31,23 @@
    <string>File Aten Popup</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <property name="margin">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
     <number>0</number>
    </property>
    <property name="spacing">
     <number>2</number>
    </property>
    <item row="0" column="3">
-    <widget class="QToolButton" name="ReloadFiltersButton">
+    <widget class="QToolButton" name="ReloadPluginsButton">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
        <horstretch>0</horstretch>
@@ -61,7 +70,7 @@
       <string>Reload all file filters</string>
      </property>
      <property name="text">
-      <string>Reload Filters</string>
+      <string>Reload Plugins</string>
      </property>
      <property name="icon">
       <iconset resource="icons.qrc">
@@ -137,22 +146,6 @@
      </property>
     </widget>
    </item>
-   <item row="1" column="0" colspan="4">
-    <widget class="QLabel" name="VersionLabel">
-     <property name="sizePolicy">
-      <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
-       <horstretch>0</horstretch>
-       <verstretch>0</verstretch>
-      </sizepolicy>
-     </property>
-     <property name="text">
-      <string>VersionLabel</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-     </property>
-    </widget>
-   </item>
    <item row="0" column="1">
     <widget class="QToolButton" name="StoreStateButton">
      <property name="sizePolicy">
@@ -203,12 +196,78 @@
      </property>
     </widget>
    </item>
+   <item row="0" column="4">
+    <widget class="QToolButton" name="PluginInfoButton">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>56</width>
+       <height>56</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>128</width>
+       <height>56</height>
+      </size>
+     </property>
+     <property name="toolTip">
+      <string>Reload all file filters</string>
+     </property>
+     <property name="text">
+      <string>Plugin Info</string>
+     </property>
+     <property name="icon">
+      <iconset resource="icons.qrc">
+       <normaloff>:/aten/icons/aten_reloadfilters.svg</normaloff>:/aten/icons/aten_reloadfilters.svg</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>30</width>
+       <height>30</height>
+      </size>
+     </property>
+     <property name="checkable">
+      <bool>false</bool>
+     </property>
+     <property name="autoExclusive">
+      <bool>false</bool>
+     </property>
+     <property name="toolButtonStyle">
+      <enum>Qt::ToolButtonTextUnderIcon</enum>
+     </property>
+     <property name="autoRaise">
+      <bool>false</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0" colspan="5">
+    <widget class="QLabel" name="VersionLabel">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="text">
+      <string>VersionLabel</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+   </item>
   </layout>
  </widget>
  <tabstops>
   <tabstop>PreferencesButton</tabstop>
   <tabstop>StoreStateButton</tabstop>
-  <tabstop>ReloadFiltersButton</tabstop>
+  <tabstop>ReloadPluginsButton</tabstop>
  </tabstops>
  <resources>
   <include location="icons.qrc"/>

@@ -49,7 +49,7 @@ QString variableName;
 %token <functionId> FUNCCALL
 %token <tree> USERFUNCCALL
 %token <vtype> VTYPE
-%token ATEN_DO ATEN_WHILE ATEN_FOR ATEN_SWITCH ATEN_CASE ATEN_DEFAULT ATEN_IF ATEN_IIF ATEN_IN ATEN_GLOBAL ATEN_RETURN FILTERBLOCK HELP ATEN_VOID ATEN_CONTINUE ATEN_BREAK ATEN_NEW
+%token ATEN_DO ATEN_WHILE ATEN_FOR ATEN_SWITCH ATEN_CASE ATEN_DEFAULT ATEN_IF ATEN_IIF ATEN_IN ATEN_GLOBAL ATEN_RETURN HELP ATEN_VOID ATEN_CONTINUE ATEN_BREAK ATEN_NEW
 %nonassoc ATEN_ELSE
 
 /* Higher line number == Higher precedence */
@@ -483,9 +483,6 @@ statement:
 	| functiondeclaration				{
 		$$ = NULL;
 		}
-	| filter					{
-		$$ = NULL;
-		}
 	| HELP FUNCCALL					{
 		$$ = CommandParser::tree()->addFunction(Commands::Help, CommandParser::tree()->addConstant($2));
 		}
@@ -620,31 +617,6 @@ caselist:
 		}
 	;
 
-/* ------- */
-/* Filters */
-/* ------- */
-
-/* Filter Options */
-filteroptions:
-	NEWTOKEN savetokenname '=' constant		{
-		if (!CommandParser::setFilterOption(tokenName, $4)) YYABORT;
-		if (!CommandParser::quiet()) Messenger::print(Messenger::Parse,"PARSER : filteroptions : filter option '%s'", qPrintable(tokenName));
-		}
-	| filteroptions ',' NEWTOKEN savetokenname '=' constant {
-		if (!CommandParser::setFilterOption(tokenName, $6)) YYABORT;
-		if (!CommandParser::quiet()) Messenger::print(Messenger::Parse,"PARSER : filteroptions : filter option '%s'", qPrintable(tokenName));
-		}
-	;
-
-/* Filter Definition */
-filter:
-	FILTERBLOCK pushfilter '(' filteroptions ')' block 	{
-		if (($6 != NULL) && (!CommandParser::tree()->addStatement($6))) YYABORT;
-		CommandParser::popTree();
-		if (!CommandParser::quiet()) Messenger::print(Messenger::Parse,"PARSER : completed filter definition");
-		}
-	;
-
 /* -------------------------- */
 /* Semantic Value Subroutines */
 /* -------------------------- */
@@ -678,13 +650,6 @@ pushfunc:
 		if (!CommandParser::quiet()) Messenger::print(Messenger::Parse,"PARSER : pushfunc : function/statement '%s'", qPrintable(CommandParser::lexedName()));
 		$$ = CommandParser::pushFunction(qPrintable(CommandParser::lexedName()), declaredType);
 		/*CommandParser::pushScope();*/
-		}
-	;
-
-pushfilter:
-	/* empty */					{
-		if (!CommandParser::quiet()) Messenger::print(Messenger::Parse,"PARSER : pushfilter : new filter definition");
-		CommandParser::pushFilter();
 		}
 	;
 

@@ -72,7 +72,8 @@ class FileAtenPopup : public TPopupWidget
 	private slots:
 	void on_PreferencesButton_clicked(bool checked);
 	void on_StoreStateButton_clicked(bool checked);
-	void on_ReloadFiltersButton_clicked(bool checked);
+	void on_ReloadPluginsButton_clicked(bool checked);
+	void on_PluginInfoButton_clicked(bool checked);
 };
 
 #endif

@@ -60,7 +60,7 @@ Model::Model() : ListItem<Model>()
 	zMatrixPoint_ = -1;
 
 	// File / Undo
-	filter_ = NULL;
+	plugin_ = NULL;
 	currentUndoState_ = NULL;
 	currentRedoState_ = NULL;
 	recordingState_ = NULL;
@@ -126,26 +126,14 @@ QString Model::filename() const
 	return filename_;
 }
 
-// Sets the file filter of the model
-void Model::setFilter(Tree* f)
-{
-	filter_ = f;
-}
-
-// Return the stored file filter of the model
-Tree* Model::filter() const
-{
-	return filter_;
-}
-
 // Sets the plugin used to load the model
-void Model::setPlugin(IOPluginInterface* plugin)
+void Model::setPlugin(FilePluginInterface* plugin)
 {
 	plugin_ = plugin;
 }
 
 // Return the plugin used to load the model
-IOPluginInterface* plugin() const
+FilePluginInterface* Model::plugin() const
 {
 	return plugin_;
 }

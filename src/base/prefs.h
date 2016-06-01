@@ -594,8 +594,6 @@ class Prefs
 	bool forceRhombohedral_;
 	// Whether to load plugins on startup
 	bool loadPlugins_;
-	// Whether to load filters on startup
-	bool loadFilters_;
 	// Whether to load includes on startup
 	bool loadIncludes_;
 	// Whether to load partitions on startup
@@ -646,10 +644,6 @@ class Prefs
 	bool loadPlugins() const;
 	// Set whether to load plugins on startup
 	void setLoadPlugins(bool b);
-	// Return whether to load filters on startup
-	bool loadFilters() const;
-	// Set whether to load filters on startup
-	void setLoadFilters(bool b);
 	// Return whether to load includes on startup
 	bool loadIncludes() const;
 	// Set whether to load includes on startup

@@ -64,7 +64,7 @@ Cli cliSwitches[] = {
 		"Print out call debug information, or specific information if output type is supplied" },
 	{ Cli::DialogsSwitch,		'\0',"dialogs",		0,
 		"",
-		"Permit script/filter dialogs to be raised even if the main GUI doesn't exist" },
+		"Permit script/plugin dialogs to be raised even if the main GUI doesn't exist" },
 	{ Cli::DoubleSwitch,		'\0',"double",		1,
 		"<var>=<value>",
 		"Pass a floating point <value> into Aten with variable name <var>" },
@@ -77,9 +77,6 @@ Cli cliSwitches[] = {
 	{ Cli::ExpressionSwitch,	'\0',"expression",	1,
 		"<filename>",
 		"Load the specified forcefield expression file" },
-	{ Cli::FilterSwitch,		'\0',"filter",		1,
-		"<filename>",
-		"Load additional filter data from specified filename" },
 	{ Cli::ForcefieldSwitch,	'\0',"ff",		1,
 		"<file>",
 		"Load the specified forcefield file" },
@@ -131,9 +128,6 @@ Cli cliSwitches[] = {
 	{ Cli::NoCentreSwitch,		'\0',"nocentre",	0,
 		"",
 		"Prevent centering of atomic coordinates at zero" },
-	{ Cli::NoFiltersSwitch,	'\0',"nofilters",	0,
-		"",
-		"Prevent loading of filters from standard locations on startup" },
 	{ Cli::NoFoldSwitch,		'\0',"nofold",		0,
 		"",
 		"Prevent folding of atoms in periodic systems" },
@@ -167,7 +161,10 @@ Cli cliSwitches[] = {
 	{ Cli::PipeSwitch,		'p',"pipe",		0,
 		"",
 		"Read and execute commands from piped input" },
-	{ Cli::PluginDirSwitch,		'\0',"plugindir",	0,
+	{ Cli::PluginSwitch,		'\0',"plugin",		1,
+		"<filename>",
+		"Load additional plugin from specified filename" },
+	{ Cli::PluginDirSwitch,		'\0',"plugindir",	1,
 		"<dir>",
 		"Set the directory to search for plugins" },
 	{ Cli::ProcessSwitch,		'\0',"process",		0,
@@ -372,10 +369,6 @@ bool Aten::parseCliEarly(int argc, char *argv[])
 					Messenger::print("OpenGL display lists will be used for rendering instead of VBOs.");
 					PrimitiveInstance::setInstanceType(PrimitiveInstance::ListInstance);
 					break;
-				// Restrict filter loading on startup
-				case (Cli::NoFiltersSwitch):
-					prefs.setLoadFilters(false);
-					break;
 				// Restrict fragment loading on startup
 				case (Cli::NoFragmentsSwitch):
 					prefs.setLoadFragments(false);
@@ -440,9 +433,9 @@ int Aten::parseCli(int argc, char *argv[])
 	Model* model;
 	Program* script, tempProgram;
 	ReturnValue rv;
-	Tree* filter, *modelFilter = NULL, *trajectoryFilter = NULL;
+	FilePluginInterface* plugin, *modelPlugin = NULL, *trajectoryPlugin = NULL;
 	Program interactiveScript;
-	QStringList items;
+	QStringList pluginOptions, items;
 
 	// Regular expression for long option matching
 	QRegularExpression longRE("--([a-z]+)=*(.*)");
@@ -556,7 +549,6 @@ int Aten::parseCli(int argc, char *argv[])
 				case (Cli::DebugSwitch):
 				case (Cli::HelpSwitch):
 				case (Cli::ListsSwitch):
-				case (Cli::NoFiltersSwitch):
 				case (Cli::NoFragmentsSwitch):
 				case (Cli::NoFragmentIconsSwitch):
 				case (Cli::NoIncludesSwitch):
@@ -627,23 +619,19 @@ int Aten::parseCli(int argc, char *argv[])
 					parser.getArgsDelim(Parser::UseQuotes, argText);
 					
 					// First part of argument is nickname
-					filter = findFilter(FilterData::ModelExport, parser.argc(0));
-					// Check that a suitable format was found
-					if (filter == NULL)
+					plugin = pluginStore_.findFilePluginByNickname(PluginTypes::ModelFilePlugin, PluginTypes::ExportPlugin, parser.argc(0));
+					if (plugin == NULL)
 					{
 						// Print list of valid filter nicknames
-						printValidNicknames(FilterData::ModelExport);
+						pluginStore_.showFilePluginNicknames(PluginTypes::ModelFilePlugin, PluginTypes::ExportPlugin);
 						return -1;
 					}
 
 					// Loop over remaining arguments which are widget/global variable assignments
-					for (i = 1; i < parser.nArgs(); ++i)
-					{
-						items = parser.argc(i).split('=');
-						if (!filter->setAccessibleVariable(items.at(0), items.at(1))) return -1;
-					}
+					pluginOptions.clear();
+					for (i = 1; i < parser.nArgs(); ++i) pluginOptions << parser.argc(i);
+					setExportPlugin(plugin, pluginOptions);
 
-					setExportFilter(filter);
 					if (programMode_ == Aten::BatchMode) programMode_ = Aten::BatchExportMode;
 					else programMode_ = Aten::ExportMode;
 					break;
@@ -659,18 +647,12 @@ int Aten::parseCli(int argc, char *argv[])
 							Messenger::print("Mangled exportmap value found: '%s'.", qPrintable(parser.argc(n)));
 							return -1;
 						}
-						typeExportMap.add(items.at(0), items.at(1));
+						typeExportMap_.add(items.at(0), items.at(1));
 					}
 					break;
 				// Load expression
 				case (Cli::ExpressionSwitch):
-					filter = probeFile(argText, FilterData::ExpressionImport);
-					if (filter == NULL) return -1;
-					else if (!filter->executeRead(argText)) return -1;
-					break;
-				// Load additional filter data from specified filename
-				case (Cli::FilterSwitch):
-					if (!loadFilter(argText)) return -1;
+					if (!importExpression(argText)) return -1;
 					break;
 				// Force folding (MIM'ing) of atoms in periodic systems on load
 				case (Cli::FoldSwitch):
@@ -683,19 +665,17 @@ int Aten::parseCli(int argc, char *argv[])
 					break;
 				// Set forced model load format
 				case (Cli::FormatSwitch):
-					modelFilter = findFilter(FilterData::ModelImport, argText);
-					if (modelFilter == NULL)
+					modelPlugin = pluginStore_.findFilePluginByNickname(PluginTypes::ModelFilePlugin, PluginTypes::ImportPlugin, argText);
+					if (modelPlugin== NULL)
 					{
 						// Print list of valid filter nicknames
-						printValidNicknames(FilterData::ModelImport);
+						pluginStore_.showFilePluginNicknames(PluginTypes::ModelFilePlugin, PluginTypes::ImportPlugin);
 						return -1;
 					}
 					break;
 				// Load surface
 				case (Cli::GridSwitch):
-					filter = probeFile(argText, FilterData::GridImport);
-					if (filter == NULL) return -1;
-					else if (!filter->executeRead(argText)) return -1;
+					if (!importGrid(argText)) return -1;
 					break;
 				// Pass value
 				case (Cli::DoubleSwitch):
@@ -759,10 +739,7 @@ int Aten::parseCli(int argc, char *argv[])
 					{
 						parser.readNextLine(Parser::StripComments);
 						nTried ++;
-						if (modelFilter != NULL) filter = modelFilter;
-						else filter = probeFile(parser.line(), FilterData::ModelImport);
-						if (filter != NULL) filter->executeRead(parser.line());
-						else return -1;
+						if (!importModel(parser.line(), modelPlugin)) return -1;
 					}
 					break;
 				// Set type mappings
@@ -793,10 +770,7 @@ int Aten::parseCli(int argc, char *argv[])
 					break;
 				// Display filter nicknames and quit
 				case (Cli::NicknamesSwitch):
-					for (int ftype=0; ftype<FilterData::nFilterTypes; ++ftype)
-					{
-						printValidNicknames( (FilterData::FilterType) ftype );
-					}
+					pluginStore_.showAllFilePluginNicknames();
 					return -1;
 					break;
 				// Prohibit bonding calculation of atoms on load
@@ -826,6 +800,10 @@ int Aten::parseCli(int argc, char *argv[])
 				// Read and execute commads from pipe
 				case (Cli::PipeSwitch):
 					prefs.setReadPipe(true);
+					break;
+				// Load additional plugin from specified filename
+				case (Cli::PluginSwitch):
+					if (!loadPlugin(argText)) return -1;
 					break;
 				// Enable processing mode
 				case (Cli::ProcessSwitch):
@@ -869,20 +847,15 @@ int Aten::parseCli(int argc, char *argv[])
 						Messenger::print("There is no current model to associate a trajectory to.");
 						return -1;
 					}
-					else
-					{
-						Tree* filter = (trajectoryFilter ? trajectoryFilter : probeFile(argText, FilterData::TrajectoryImport));
-						if (filter == NULL) return -1;
-						if (!current_.m->initialiseTrajectory(argText,filter)) return -1;
-					}
+					else if (!importTrajectory(argText, trajectoryPlugin)) return -1;
 					break;
 				// Set forced trajectory load format
 				case (Cli::TrajectoryFormatSwitch):
-					trajectoryFilter = findFilter(FilterData::TrajectoryImport, argText);
-					if (trajectoryFilter == NULL)
+					trajectoryPlugin = pluginStore_.findFilePluginByNickname(PluginTypes::TrajectoryFilePlugin, PluginTypes::ImportPlugin, argText);
+					if (trajectoryPlugin == NULL)
 					{
 						// Print list of valid filter nicknames
-						printValidNicknames(FilterData::TrajectoryImport);
+						pluginStore_.showFilePluginNicknames(PluginTypes::TrajectoryFilePlugin, PluginTypes::ImportPlugin);
 						return -1;
 					}
 					break;
@@ -906,7 +879,7 @@ int Aten::parseCli(int argc, char *argv[])
 		{
 			// Not a CLI switch, so try to load it as a model
 			++nTried;
-			if (!loadModel(argv[argn], modelFilter)) return -1;
+			if (!importModel(argv[argn], modelPlugin)) return -1;
 		}
 	}
 

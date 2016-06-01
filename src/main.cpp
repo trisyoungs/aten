@@ -86,9 +86,6 @@ int main(int argc, char* argv[])
 	/* Load includes */
 	if (prefs.loadIncludes()) MrAten.loadIncludes();
 
-	/* Load filters */
-	if (prefs.loadFilters()) MrAten.loadFilters();
-
 	/* Load fragments */
 	if (prefs.loadFragments()) MrAten.loadFragments();
 	

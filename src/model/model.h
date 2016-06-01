@@ -55,7 +55,7 @@ class AtomAddress;
 class Calculable;
 class Measurement;
 class Grid;
-class IOPluginInterface;
+class FilePluginInterface;
 
 // Model
 class Model : public ListItem<Model>
@@ -80,10 +80,8 @@ class Model : public ListItem<Model>
 	private:
 	// Name of model
 	QString name_;
-	// Format of model when loaded / last saved
-	Tree* filter_;
 	// Plugin used to load / save the model (if any)
-	IOPluginInterface* plugin_;
+	FilePluginInterface* plugin_;
 	// Filename of model when loaded / last saved
 	QString filename_;
 	// Parent model (if a trajectory or vibration frame)
@@ -98,14 +96,10 @@ class Model : public ListItem<Model>
 	void setFilename(QString filename);
 	// Return the stored filename of the model
 	QString filename() const;
-	// Sets the file filter of the model
-	void setFilter(Tree* f);
-	// Return the stored file filter of the model
-	Tree* filter() const;
 	// Sets the plugin used to load the model
-	void setPlugin(IOPluginInterface* plugin);
+	void setPlugin(FilePluginInterface* plugin);
 	// Return the plugin used to load the model
-	IOPluginInterface* plugin() const;
+	FilePluginInterface* plugin() const;
 	// Sets the name of the model
 	void setName(QString name);
 	// Return the name of the model

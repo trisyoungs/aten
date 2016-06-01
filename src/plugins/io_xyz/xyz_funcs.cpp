@@ -37,7 +37,7 @@ XYZModelPlugin::~XYZModelPlugin()
  */
 
 // Return a copy of the plugin object
-IOPluginInterface* XYZModelPlugin::duplicate()
+FilePluginInterface* XYZModelPlugin::duplicate()
 {
 	return new XYZModelPlugin;
 }
@@ -47,9 +47,9 @@ IOPluginInterface* XYZModelPlugin::duplicate()
  */
 
 // Return category of plugin
-PluginTypes::IOPluginCategory XYZModelPlugin::category() const
+PluginTypes::FilePluginCategory XYZModelPlugin::category() const
 {
-	return PluginTypes::IOModelPlugin;
+	return PluginTypes::ModelFilePlugin;
 }
 
 // Name of plugin
@@ -59,7 +59,7 @@ QString XYZModelPlugin::name() const
 }
 
 // Nickname of plugin
-QString XYZModelPlugin::nickName() const
+QString XYZModelPlugin::nickname() const
 {
 	return QString("xyz");
 }

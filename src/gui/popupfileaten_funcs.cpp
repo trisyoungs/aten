@@ -99,14 +99,29 @@ void FileAtenPopup::on_PreferencesButton_clicked(bool checked)
 	done();
 }
 
-void FileAtenPopup::on_ReloadFiltersButton_clicked(bool checked)
+// ATEN2 TODO ENDOFFILTERS
+void FileAtenPopup::on_ReloadPluginsButton_clicked(bool checked)
 {
-	parent_.aten().reloadFilters();
+// 	parent_.aten().reloadFilters();
 	
-	if (parent_.aten().failedFilters().count() > 0)
-	{
-		QMessageBox::warning(this, "Aten", "Errors encountered while reloading filters - see message box for details.", QMessageBox::Ok);
-	}
+// 	if (parent_.aten().failedFilters().count() > 0)
+// 	{
+// 		QMessageBox::warning(this, "Aten", "Errors encountered while reloading filters - see message box for details.", QMessageBox::Ok);
+// 	}
+
+	// Hide popup
+	done();
+}
+
+// ATEN2 TODO ENDOFFILTERS
+void FileAtenPopup::on_PluginInfoButton_clicked(bool checked)
+{
+// 	parent_.aten().reloadFilters();
+	
+// 	if (parent_.aten().failedFilters().count() > 0)
+// 	{
+// 		QMessageBox::warning(this, "Aten", "Errors encountered while reloading filters - see message box for details.", QMessageBox::Ok);
+// 	}
 
 	// Hide popup
 	done();

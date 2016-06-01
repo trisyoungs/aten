@@ -71,7 +71,7 @@ class FileSelectorWidget : public QWidget
 
 	public:
 	// Set mode of file selector
-	void setMode(SelectionMode mode, const RefList<IOPluginInterface,int>& ioPlugins, QDir startingDir);
+	void setMode(SelectionMode mode, const RefList<FilePluginInterface,int>& ioPlugins, QDir startingDir);
 	// Set current directory of file selector
 	void setCurrentDirectory(QString directory);
 	// Clear selected filenames list
@@ -79,7 +79,7 @@ class FileSelectorWidget : public QWidget
 	// Return selected files, including full path
 	QStringList selectedFiles();
 	// Return selected file plugin
-	IOPluginInterface* selectedPlugin();
+	FilePluginInterface* selectedPlugin();
 
 
 	/*

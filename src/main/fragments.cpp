@@ -103,7 +103,6 @@ void Aten::loadFragments()
 	Messenger::exit("Aten::loadFragments");
 }
 
-
 // Parse fragment directory
 bool Aten::searchFragmentDir(QDir path, QString groupName)
 {
@@ -129,9 +128,7 @@ bool Aten::searchFragmentDir(QDir path, QString groupName)
 	{
 		// Construct full filepath
 		QString filename = path.filePath(fragmentList.at(i));
-		t = probeFile(qPrintable(filename), FilterData::ModelImport);
-		if (t == NULL) continue;
-		if (!t->executeRead(qPrintable(filename))) continue;
+		if (!importModel(filename)) continue;
 
 		// Does the named fragment group already exist? If not, create new one
 		fg = findFragmentGroup(groupName);

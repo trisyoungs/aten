@@ -41,12 +41,10 @@ bool Aten::loadPlugin(QString fileName)
 	}
 
 	// Determine which type of plugin this is by attempting to cast it to the available types
-	IOPluginInterface* ioPlugin = qobject_cast<IOPluginInterface *>(plugin);
-	if (ioPlugin)
+	FilePluginInterface* filePlugin = qobject_cast<FilePluginInterface *>(plugin);
+	if (filePlugin)
 	{
-		pluginStore_.registerPlugin(ioPlugin);
-// 		addToMenu(plugin, iBrush->brushes(), brushMenu, SLOT(changeBrush()),
-//                   brushActionGroup)
+		pluginStore_.registerFilePlugin(filePlugin);
 	}
 	return true;
 }

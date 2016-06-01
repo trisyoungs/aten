@@ -46,7 +46,7 @@ class AtenOpenModel : public QDialog
 
 	public:
 	// Constructor
-	AtenOpenModel(QWidget* parent, QDir startingDirectory, const RefList<IOPluginInterface,int>& ioPlugins);
+	AtenOpenModel(QWidget* parent, QDir startingDirectory, const RefList<FilePluginInterface,int>& ioPlugins);
 	// Main form declaration
 	Ui::OpenModelDialog ui;
 
@@ -56,7 +56,7 @@ class AtenOpenModel : public QDialog
 	 */
 	private:
 	// Reference to plugin list to use for this file dialog
-	const RefList<IOPluginInterface,int>& ioPlugins_;
+	const RefList<FilePluginInterface,int>& ioPlugins_;
 
 
 	/*
@@ -72,7 +72,7 @@ class AtenOpenModel : public QDialog
 	// Return selected filename(s)
 	QStringList selectedFilenames();
 	// Return selected file plugin
-	IOPluginInterface* selectedPlugin();
+	FilePluginInterface* selectedPlugin();
 };
 
 #endif

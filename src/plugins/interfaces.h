@@ -19,13 +19,14 @@
         along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_IOPLUGIN_H
-#define ATEN_IOPLUGIN_H
+#ifndef ATEN_PLUGININTERFACES_H
+#define ATEN_PLUGININTERFACES_H
 
 #include "plugins/plugintypes.h"
 #include "parser/returnvalue.h"
 #include "parser/commandnode.h"
 #include "model/model.h"
+#include "base/grid.h"
 #include "base/messenger.h"
 #include "base/fileparser.h"
 #include "base/namespace.h"
@@ -39,16 +40,16 @@ ATEN_BEGIN_NAMESPACE
 // Forward Declarations
 class Model;
 
-// IO Plugin Interface
-class IOPluginInterface : public ListItem<IOPluginInterface>
+// File Plugin Interface
+class FilePluginInterface : public ListItem<FilePluginInterface>
 {
 	public:
 	// Constructor
-	IOPluginInterface() : ListItem<IOPluginInterface>()
+	FilePluginInterface() : ListItem<FilePluginInterface>()
 	{
 	}
 	// Destructor
-	virtual ~IOPluginInterface() {}
+	virtual ~FilePluginInterface() {}
 
 
 	/*
@@ -56,18 +57,18 @@ class IOPluginInterface : public ListItem<IOPluginInterface>
 	 */
 	private:
 	// Object store for plugin instances
-	List<IOPluginInterface> instances_;
+	List<FilePluginInterface> instances_;
 
 	private:
 	// Return a copy of the plugin object
-	virtual IOPluginInterface* duplicate() = 0;
+	virtual FilePluginInterface* duplicate() = 0;
 
 	public:
 	// Return instance of plugin
-	IOPluginInterface* createInstance()
+	FilePluginInterface* createInstance()
 	{
 		// Create a copy with duplicate(), and add it to the instances list
-		IOPluginInterface* pluginInstance = duplicate();
+		FilePluginInterface* pluginInstance = duplicate();
 		instances_.own(pluginInstance);
 		return pluginInstance;
 	}
@@ -83,11 +84,11 @@ class IOPluginInterface : public ListItem<IOPluginInterface>
 	 */
 	public:
 	// Return category of plugin
-	virtual PluginTypes::IOPluginCategory category() const = 0;
+	virtual PluginTypes::FilePluginCategory category() const = 0;
 	// Return name of plugin
 	virtual QString name() const = 0;
 	// Return nickname of plugin
-	virtual QString nickName() const = 0;
+	virtual QString nickname() const = 0;
 	// Return description (long name) of plugin
 	virtual QString description() const = 0;
 	// Return related file extensions
@@ -113,6 +114,8 @@ class IOPluginInterface : public ListItem<IOPluginInterface>
 	private:
 	// Model objects created on import
 	RefList<Model,int> createdModels_;
+	// Grid objects created on import
+	RefList<Grid,int> createdGrids_;
 
 	protected:
 	// Create new model (in Aten)
@@ -124,12 +127,25 @@ class IOPluginInterface : public ListItem<IOPluginInterface>
 		createdModels_.add(newModel);
 		return newModel;
 	}
+	// Create new grid (in target model)
+	Grid* createGrid()
+	{
+		ReturnValue result = CommandNode::run(Commands::NewGrid);
+		Grid* newGrid = (Grid*) result.asPointer(VTypes::GridData);
+		createdGrids_.add(newGrid);
+		return newGrid;
+	}
 
 	public:
 	// Return main Model objects created on import
 	RefList<Model,int> createdModels()
 	{
 		return createdModels_;
+	}
+	// Return Grid objects created on import
+	RefList<Grid,int> createdGrids()
+	{
+		return createdGrids_;
 	}
 
 
@@ -156,7 +172,7 @@ class IOPluginInterface : public ListItem<IOPluginInterface>
 		{
 			if (extensions().at(n) == fileInfo.suffix())
 			{
-				Messenger::print(Messenger::Verbose, "IOPluginInterface : Plugin '%s' matches file extension (%s).", qPrintable(name()), qPrintable(fileInfo.suffix()));
+				Messenger::print(Messenger::Verbose, "FilePluginInterface : Plugin '%s' matches file extension (%s).", qPrintable(name()), qPrintable(fileInfo.suffix()));
 				return true;
 			}
 		}
@@ -166,7 +182,7 @@ class IOPluginInterface : public ListItem<IOPluginInterface>
 		{
 			if (exactNames().at(n) == fileInfo.fileName())
 			{
-				Messenger::print(Messenger::Verbose, "IOPluginInterface : Plugin '%s' matched exact name (%s).", qPrintable(name()), qPrintable(exactNames().at(n)));
+				Messenger::print(Messenger::Verbose, "FilePluginInterface : Plugin '%s' matched exact name (%s).", qPrintable(name()), qPrintable(exactNames().at(n)));
 				return true;
 			}
 		}
@@ -190,8 +206,8 @@ ATEN_END_NAMESPACE
 
 ATEN_USING_NAMESPACE
 
-#define IOPluginInterface_iid "com.projectaten.Aten.IOPluginInterface.v1"
+#define FilePluginInterface_iid "com.projectaten.Aten.FilePluginInterface.v1"
 
-Q_DECLARE_INTERFACE(AtenSpace::IOPluginInterface, IOPluginInterface_iid)
+Q_DECLARE_INTERFACE(AtenSpace::FilePluginInterface, FilePluginInterface_iid)
 
 #endif

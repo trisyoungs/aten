@@ -41,7 +41,8 @@ void FileSavePopup::updateControls()
 	// Get current model
 	Model* currentModel = parent_.aten().currentModelOrFrame();
 
-	ui.OptionsButton->setEnabled(currentModel && currentModel->filter() && (currentModel->filter()->defaultDialog().nWidgets() != 0));
+	// ATEN2 TODO ENDOFFILTERS
+// 	ui.OptionsButton->setEnabled(currentModel && currentModel->plugin() && (currentModel->plugin()->defaultDialog().nWidgets() != 0));
 	
 	refreshing_ = false;
 }
@@ -76,6 +77,7 @@ void FileSavePopup::on_OptionsButton_clicked(bool checked)
 	Model* currentModel = parent_.aten().currentModelOrFrame();
 	if (!currentModel) return;
 
-	if (currentModel->filter() == NULL) Messenger::print("No filter currently assigned to model '%s', so there are no export options.", qPrintable(currentModel->name()));
-	else currentModel->filter()->defaultDialog().execute();
+	if (currentModel->plugin() == NULL) Messenger::print("No plugin currently assigned to model '%s', so there are no export options.", qPrintable(currentModel->name()));
+	// ATEN2 TODO ENDOFFILTERS
+// 	else currentModel->plugin()->defaultDialog().execute();
 }

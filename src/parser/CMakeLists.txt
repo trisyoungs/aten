@@ -18,7 +18,6 @@ double.h
 eigenvector.h
 element.h
 energystore.h
-filterdata.h
 forcefieldatom.h
 forcefieldbound.h
 forcefield.h
@@ -70,7 +69,6 @@ double.cpp
 eigenvector.cpp
 element.cpp
 energystore.cpp
-filterdata.cpp
 forcefieldatom.cpp
 forcefieldbound.cpp
 forcefield.cpp

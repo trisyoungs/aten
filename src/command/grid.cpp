@@ -78,24 +78,6 @@ bool Commands::function_CurrentGrid(CommandNode* c, Bundle& obj, ReturnValue& rv
 	return true;
 }
 
-// Finalise current grid
-bool Commands::function_FinaliseGrid(CommandNode* c, Bundle& obj, ReturnValue& rv)
-{
-	if (obj.notifyNull(Bundle::GridPointer)) return false;
-
-	// If this command is being run from a filter, set the output filter in the model.
-	if (c->parent()->isFilter())
-	{
-		Tree* t = c->parent();
-		obj.g->setFilename(c->parent()->parser()->inputFilename());
-	}
-
-	if (prefs.coordsInBohr()) obj.g->bohrToAngstrom();
-
-	rv.reset();
-	return true;
-}
-
 // Return nth grid of model
 bool Commands::function_GetGrid(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
@@ -363,8 +345,7 @@ bool Commands::function_LoadGrid(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	Grid* g = NULL;
-	Tree* filter = aten_.probeFile(c->argc(0), FilterData::GridImport);
-	if (filter != NULL) if (filter->executeRead(c->argc(0))) g = obj.g;
+	if (aten_.importGrid(c->argc(0))) g = obj.g;
 	rv.set(VTypes::GridData, g);
 	return true;
 }

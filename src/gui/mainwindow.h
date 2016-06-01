@@ -462,8 +462,6 @@ class AtenWindow : public QMainWindow
 	bool closeModel(Model* m);
 	// Save before close
 	bool saveBeforeClose();
-	// Run SaveModel dialog to get filename and format
-	bool runSaveModelDialog();
 
 
 	/*
@@ -576,10 +574,6 @@ class AtenWindow : public QMainWindow
 	private:
 	// Text labels for model information and UI messages in status bar
 	QLabel* cellInfoLabel_, *massLabel_, *densityLabel_, *selectionLabel_, *modelLabel_, *atomsLabel_, *messageLabel_;
-	// Filter set from save model dialog
-	Tree* saveModelFilter_;
-	// Filename set from save model dialog
-	QString saveModelFilename_;
 
 	protected:
 	// Timer event

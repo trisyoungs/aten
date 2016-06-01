@@ -94,19 +94,20 @@ bool Commands::function_MopacMinimise(CommandNode* c, Bundle& obj, ReturnValue& 
 	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	rv.reset();
 
-	// Grab pointers to MOPAC import and export filters
-	Tree* mopacexport = aten_.findFilter(FilterData::ModelExport, "mopac");
-	if (mopacexport == NULL)
-	{
-		Messenger::print("Error: Couldn't find MOPAC export filter.");
-		return false;
-	}
-	Tree* mopacimport = aten_.findFilter(FilterData::ModelImport, "mopacarc");
-	if (mopacimport == NULL)
-	{
-		Messenger::print("Error: Couldn't find MOPAC arc import filter.");
-		return false;
-	}
+	// ATEN2 TODO ENDOFFILTERS
+// 	// Grab pointers to MOPAC import and export filters
+// 	Tree* mopacexport = aten_.findFilter(FilterData::ModelExport, "mopac");
+// 	if (mopacexport == NULL)
+// 	{
+// 		Messenger::print("Error: Couldn't find MOPAC export filter.");
+// 		return false;
+// 	}
+// 	Tree* mopacimport = aten_.findFilter(FilterData::ModelImport, "mopacarc");
+// 	if (mopacimport == NULL)
+// 	{
+// 		Messenger::print("Error: Couldn't find MOPAC arc import filter.");
+// 		return false;
+// 	}
 
 	// Check that defined MOPAC exe exists
 	QFileInfo fileInfo(prefs.mopacExe());

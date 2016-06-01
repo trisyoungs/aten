@@ -91,17 +91,16 @@ bool Commands::function_AxisRotate(CommandNode* c, Bundle& obj, ReturnValue& rv)
 bool Commands::function_Centre(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return false;
-	if (c->parent()->parser() == NULL)
-	{
-		Vec3<double> centre = c->arg3d(0);
-		Vec3<int> lock(0,0,0);
-		if (c->hasArg(5)) lock = c->arg3i(3);
-		obj.rs()->beginUndoState("Centre %i atom(s) at %f %f %f", obj.rs()->nSelected(), centre.x, centre.y, centre.z);
-		obj.rs()->centre(centre, lock.x, lock.y, lock.z);
-		obj.rs()->endUndoState();
-	}
-	else if (prefs.centreOnLoad() != Choice::No) obj.rs()->centre(c->arg3d(0));
+
+	Vec3<double> centre = c->arg3d(0);
+	Vec3<int> lock(0,0,0);
+	if (c->hasArg(5)) lock = c->arg3i(3);
+	obj.rs()->beginUndoState("Centre %i atom(s) at %f %f %f", obj.rs()->nSelected(), centre.x, centre.y, centre.z);
+	obj.rs()->centre(centre, lock.x, lock.y, lock.z);
+	obj.rs()->endUndoState();
+
 	rv.reset();
+
 	return true;
 }
 

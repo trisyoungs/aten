@@ -9,8 +9,8 @@ add_library(main
   current.cpp
   encoders.cpp
   ff.cpp
-  filters.cpp
   fragments.cpp
+  importexport.cpp
   includes.cpp
   locations.cpp
   models.cpp
@@ -18,7 +18,6 @@ add_library(main
   partitions.cpp
   plugins.cpp
   prefs.cpp
-  probe.cpp
   scripts.cpp
   session.cpp
 )

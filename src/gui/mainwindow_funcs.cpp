@@ -108,7 +108,6 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportFilmD
 	TMenuButton::setAtenWindow(this);
 
 	// Private variables
-	saveModelFilter_ = NULL;
 	contextAtom_ = NULL;
 	messageDisplay_ = MessagesUnderScene;
 	refreshing_ = false;

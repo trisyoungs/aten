@@ -20,12 +20,14 @@
 */
 
 #include "base/fileparser.h"
+#include "base/messenger.h"
 
 ATEN_USING_NAMESPACE
 
 // Constructors
-FileParser::FileParser(LineParser& parser) : parser_(parser)
+FileParser::FileParser(LineParser& parser, Model* targetModel) : parser_(parser)
 {
+	targetModel_ = targetModel;
 }
 
 // Destructor
@@ -70,6 +72,13 @@ bool FileParser::eofOrBlank() const
 /*
  * Write Functions
  */
+
+// Return target model
+const Model* FileParser::targetModel() const
+{
+	if (targetModel_ == NULL) Messenger::print("Warning: Returning targetModel_, but it is NULL.\n");
+	return targetModel_;
+}
 
 // Write line to file
 bool FileParser::writeLine(QString line)

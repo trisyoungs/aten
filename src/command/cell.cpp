@@ -68,6 +68,7 @@ bool Commands::function_Cell(CommandNode* c, Bundle& obj, ReturnValue& rv)
 bool Commands::function_CellAxes(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return false;
+
 	Matrix mat;
 	mat.setColumn(0, c->arg3d(0), 0.0);
 	mat.setColumn(1, c->arg3d(3), 0.0);
@@ -75,7 +76,9 @@ bool Commands::function_CellAxes(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	obj.rs()->beginUndoState("Set cell");
 	obj.rs()->setCell(mat);
 	obj.rs()->endUndoState();
+
 	rv.reset();
+
 	return true;
 }
 
@@ -83,14 +86,13 @@ bool Commands::function_CellAxes(CommandNode* c, Bundle& obj, ReturnValue& rv)
 bool Commands::function_Fold(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return false;
-	if (c->parent()->parser() == NULL)
-	{
-		obj.rs()->beginUndoState("Fold Atoms");
-		obj.rs()->foldAllAtoms();
-		obj.rs()->endUndoState();
-	}
-	else if (prefs.foldOnLoad() != Choice::No) obj.rs()->foldAllAtoms();
+
+	obj.rs()->beginUndoState("Fold Atoms");
+	obj.rs()->foldAllAtoms();
+	obj.rs()->endUndoState();
+
 	rv.reset();
+
 	return true;
 }
 
@@ -143,15 +145,14 @@ bool Commands::function_NoCell(CommandNode* c, Bundle& obj, ReturnValue& rv)
 bool Commands::function_Pack(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return false;
-	if (!c->parent()->isFilter())
-	{
-		obj.rs()->beginUndoState("Pack Cell");
-		obj.rs()->pack();
-		obj.rs()->foldAllAtoms();
-		obj.rs()->endUndoState();
-	}
-	else if (prefs.packOnLoad() != Choice::No) obj.rs()->pack();
+
+	obj.rs()->beginUndoState("Pack Cell");
+	obj.rs()->pack();
+	obj.rs()->foldAllAtoms();
+	obj.rs()->endUndoState();
+
 	rv.reset();
+
 	return true;
 }
 

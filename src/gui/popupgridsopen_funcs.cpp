@@ -85,8 +85,7 @@ bool GridsOpenPopup::callMethod(QString methodName, ReturnValue& rv)
 
 void GridsOpenPopup::loadGrid(QString filename)
 {
-	Tree* filter = parent_.aten().probeFile(qPrintable(filename), FilterData::GridImport);
-	if (filter != NULL) filter->executeRead(qPrintable(filename));
+	parent_.aten().importGrid(filename);
 
 	parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::GridsPanelTarget);
 

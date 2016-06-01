@@ -23,8 +23,10 @@ Intelligent Select: prepended '+' is interpreted as NETA.
 Progress indicator jobs in GUI appear to be created even if they are short and not 'ready' to be shown yet.
 Speedup Disorder Builder??
 Implement 'factory' for common objects such as Atom & Bond, to save new'ing all the time (esp. for large systems).
-Panel for User tools, essentially loaded from scripts in a user's tools/X directory.
+Panel for User tools, essentially loaded from scripts (plugins?) in a user's tools/X directory.
 Visualise toolbar, containing Glyph management, polyhedra etc.
+Add About::plugins() window.
+Clash with --plugindir Qt option on CLI?
 
 Graphics TODO
 =============
@@ -69,3 +71,4 @@ More descriptions / examples for Disorder Builder options.
 --noplugins and --plugindir CLI switch.
 ATENPLUGINS environment switch.
 Whole plugin thing, really!  And make filters section defunct.
+Removed FinaliseModel/Grid commands, and all read/write commands related to files.

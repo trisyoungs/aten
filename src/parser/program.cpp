@@ -36,7 +36,6 @@ Program::Program() : ListItem<Program>()
 {
 	// Private variables
 	name_ = "NewProgram";
-	fromFilterFile_ = false;
 	initialPushTree_ = false;
 	mainProgram_.setParent(this);
 	generatedSuccessfully_ = false;
@@ -51,7 +50,6 @@ Program::~Program()
 void Program::clear()
 {
 	functions_.clear();
-	filters_.clear();
 	mainProgram_.reset();
 
 	generatedSuccessfully_ = false;
@@ -88,57 +86,6 @@ bool Program::finalise(Aten* aten)
 		return false;
 	}
 
-	// Cycle over generated filters
-	for (Tree* filter = filters_.first(); filter != NULL; filter = filter->next)
-	{
-		// Register file filters with the master
-		if (filter->isFilter())
-		{
-			aten->registerFilter(filter, filter->filter.type());
-			// For trajectory import filters, we expect to find the two functions readHeader and readFrame, both returning integers
-			if (filter->filter.type() == FilterData::TrajectoryImport)
-			{
-				// Search for 'int readHeader()' function
-				Tree* func = filter->findLocalFunction("readHeader");
-				if (func != NULL)
-				{
-					// Does the function have the correct return type?
-					if (func->returnType() != VTypes::IntegerData)
-					{
-						Messenger::print("Error: 'readHeader' function returns %s when it should return an int (importtrajectory filter '%s').", VTypes::aDataType(func->returnType()), qPrintable(filter->filter.name()));
-						Messenger::exit("Program::finalise");
-						return false;
-					}
-				}
-				else Messenger::print("Warning: 'readHeader' function has not been defined in the importtrajectory filter '%s'.", qPrintable(filter->filter.name()));
-				filter->filter.setTrajectoryHeaderFunction(func);
-
-				// Search for 'int readFrame()' function
-				func = filter->findLocalFunction("readFrame");
-				if (func != NULL)
-				{
-					// Does the function have the correct return type?
-					if (func->returnType() != VTypes::IntegerData)
-					{
-						Messenger::print("Error: 'readFrame' function returns %s when it should return an int (importtrajectory filter '%s').", VTypes::aDataType(func->returnType()), qPrintable(filter->filter.name()));
-						Messenger::exit("Program::finalise");
-						return false;
-					}
-				}
-				else Messenger::print("Warning: 'readFrame' function has not been defined in the importtrajectory filter '%s'.", qPrintable(filter->filter.name()));
-				filter->filter.setTrajectoryFrameFunction(func);
-			}
-			
-			// Finalise the tree
-			if (!filter->finalise())
-			{
-				Messenger::print("Error finalising filter '%s'.", qPrintable(filter->filter.name()));
-				Messenger::exit("Program::finalise");
-				return false;
-			}
-		}
-	}
-
 	// Cycle over defined local functions and finalise
 	for (Tree* func = functions_.first(); func != NULL; func = func->next)
 	{
@@ -160,22 +107,12 @@ Tree* Program::mainProgram()
 	return &mainProgram_;
 }
 
-// Create a new filter
-Tree* Program::addFilter()
-{
-	Tree* tree = filters_.add();
-	tree->setParent(this);
-	tree->setType(Tree::FilterTree);
-	return tree;
-}
-
 // Generate Program from string 
 bool Program::generateFromString(QString line, QString name, QString sourceInfo, bool pushTree, bool clearExisting, bool quiet)
 {
 	Messenger::enter("Program::generateFromString");
 
 	name_ = name;
-	fromFilterFile_ = false;
 	initialPushTree_ = pushTree;
 	generatedSuccessfully_ = CommandParser::generateFromString(this, line, sourceInfo, initialPushTree_, clearExisting, quiet);
 	if (generatedSuccessfully_) generatedSuccessfully_ = finalise(CommandParser::aten());
@@ -190,7 +127,6 @@ bool Program::generateFromStringList(QStringList stringList, QString name, QStri
 	Messenger::enter("Program::generateFromStringList");
 
 	name_ = name;
-	fromFilterFile_ = false;
 	initialPushTree_ = pushTree;
 	generatedSuccessfully_ = CommandParser::generateFromStringList(this, stringList, sourceInfo, initialPushTree_, clearExisting, quiet);
 	if (generatedSuccessfully_) generatedSuccessfully_ = finalise(CommandParser::aten());
@@ -200,7 +136,7 @@ bool Program::generateFromStringList(QStringList stringList, QString name, QStri
 }
 
 // Generate Program from input file
-bool Program::generateFromFile(QString filename, QString name, bool pushTree, bool clearExisting, bool quiet, bool isFilterFile)
+bool Program::generateFromFile(QString filename, QString name, bool pushTree, bool clearExisting, bool quiet)
 {
 	Messenger::enter("Program::generateFromFile");
 	
@@ -208,7 +144,6 @@ bool Program::generateFromFile(QString filename, QString name, bool pushTree, bo
 	filename_ = fileInfo.absoluteFilePath();
 	if (name != NULL) name_ = name;
 	else name_ = filename;
-	fromFilterFile_ = isFilterFile;
 	initialPushTree_ = pushTree;
 	generatedSuccessfully_ = CommandParser::generateFromFile(this, filename, initialPushTree_, clearExisting, quiet);
 	if (generatedSuccessfully_) generatedSuccessfully_ = finalise(CommandParser::aten());
@@ -239,16 +174,10 @@ bool Program::reload()
 void Program::deleteTree(Tree* t)
 {
 	if (t == NULL) return;
-	// Search for the specified tree...
-	if (filters_.contains(t)) filters_.remove(t);
-	else if (functions_.contains(t)) functions_.remove(t);
-	else printf("Internal Error: Tree to be deleted is not owned by the current parent structure.\n");
-}
 
-// Return whether the Program is being generated from a filterfile
-bool Program::isFromFilterFile()
-{
-	return fromFilterFile_;
+	// Search for the specified tree...
+	if (functions_.contains(t)) functions_.remove(t);
+	else printf("Internal Error: Tree to be deleted is not owned by the current parent structure.\n");
 }
 
 // Execute all trees in Program
@@ -263,9 +192,7 @@ bool Program::execute(ReturnValue& rv)
 // Print Program information
 void Program::print()
 {
-	printf("Program '%s':\nContains: %i filters and %i functions.\n", qPrintable(name_), filters_.nItems(), functions_.nItems());
-	if (filters_.nItems() > 0) printf("  Trees:\n");
-	for (int n=0; n<filters_.nItems(); ++n) printf("     %-3i  %s\n", n+1, qPrintable(filters_[n]->name()));
+	printf("Program '%s':\nContains: %i functions.\n", qPrintable(name_), functions_.nItems());
 	if (functions_.nItems() > 0) printf("  Functions:\n");
 	for (int n=0; n<functions_.nItems(); ++n) printf("     %-3i  %s\n", n+1, qPrintable(functions_[n]->name()));
 }

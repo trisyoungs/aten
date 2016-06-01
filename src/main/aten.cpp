@@ -60,7 +60,7 @@ Aten::Aten() : commands_(*this)
 	gridClipboard_ = NULL;
 
 	// Single-shot mode variables
-	exportFilter_ = NULL;
+	exportPlugin_ = NULL;
 
 	// Fragments
 	fragmentModelId_ = 0;
@@ -81,9 +81,6 @@ Aten::~Aten()
 	models_.clear();
 	forcefields_.clear();
 	scripts_.clear();
-
-	// Filters
-	for (int i=0; i<FilterData::nFilterTypes; i++) filters_[i].clear();
 
 	// Clipboards
 	userClipboard->clear();

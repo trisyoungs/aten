@@ -294,7 +294,6 @@ Prefs::Prefs()
 	forceRhombohedral_ = false;
 	augmentAfterRebond_ = true;
 	loadPlugins_ = true;
-	loadFilters_ = true;
 	loadIncludes_ = true;
 	loadPartitions_ = true;
 	loadFragments_ = true;
@@ -1253,18 +1252,6 @@ bool Prefs::loadPlugins() const
 void Prefs::setLoadPlugins(bool b)
 {
 	loadPlugins_ = b;
-}
-
-// Whether to load filters on startup
-bool Prefs::loadFilters() const
-{
-	return loadFilters_;
-}
-
-// Set whether to load filters on startup
-void Prefs::setLoadFilters(bool b)
-{
-	loadFilters_ = b;
 }
 
 // Whether to load includes on startup

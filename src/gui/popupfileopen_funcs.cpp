@@ -86,7 +86,7 @@ bool FileOpenPopup::callMethod(QString methodName, ReturnValue& rv)
 void FileOpenPopup::loadFile(QString fileName)
 {
 	// Load model
-	if (parent_.aten().loadModel(fileName)) parent_.aten().setSingleModelVisible(parent_.aten().currentModel());
+	if (parent_.aten().importModel(fileName)) parent_.aten().setSingleModelVisible(parent_.aten().currentModel());
 
 	// Update main window
 	parent_.updateWidgets(AtenWindow::AllTarget);

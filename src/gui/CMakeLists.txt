@@ -10,7 +10,6 @@ SET(gui_MOC_HDRS
   fileselectorwidget.h
   glyphs.h
   layoutlist.h
-  loadmodel.h
   mainwindow.h
   openmodel.h
   popupbuildaddatom.h
@@ -67,7 +66,6 @@ SET(gui_MOC_HDRS
   popupviewstyle.h
   prefs.h
   progress.h
-  selectfilter.h
   selectpattern.h
   selectvariable.h
   vibrations.h
@@ -104,7 +102,6 @@ SET(gui_UIS
   exportimage.ui
   ffeditor.ui
   glyphs.ui
-  loadmodel.ui
   mainwindow.ui
   openmodel.ui
   popupbuildaddatom.ui
@@ -161,7 +158,6 @@ SET(gui_UIS
   popupviewstyle.ui
   prefs.ui
   progress.ui
-  selectfilter.ui
   selectpattern.ui
   selectvariable.ui
   fileselectorwidget.ui
@@ -189,7 +185,6 @@ set(gui_SRCS
   fileselectorwidget_funcs.cpp
   glyphs_funcs.cpp
   layoutlist.cpp
-  loadmodel_funcs.cpp
   mainwindow_atoms.cpp
   mainwindow_context.cpp
   mainwindow_film.cpp
@@ -268,7 +263,6 @@ set(gui_SRCS
   popupviewstyle_funcs.cpp
   prefs_funcs.cpp
   progress_funcs.cpp
-  selectfilter_funcs.cpp
   selectpattern_funcs.cpp
   selectvariable_funcs.cpp
   settings.cpp

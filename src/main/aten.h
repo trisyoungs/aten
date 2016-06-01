@@ -121,71 +121,7 @@ class Aten
 	Model* visibleModel(int id);
 	// Log specified change(s) in all models
 	void globalLogChange(Log::LogType);
-	// Load model (if it is not loaded already)
-	bool loadModel(QString fileName, Tree* filter = NULL);
-	// Open model (if it is not loaded already)
-	bool openModel(QString fileName, IOPluginInterface* plugin = NULL);
-
-
-	/*
-	 * Filters
-	 */
-	private:
-	// Filenames (including paths) of filters that failed to load
-	QStringList failedFilters_;
-	// Set export partners for import filters
-	void partnerFilters();
-	// List of Filter programs
-	List<Program> filterPrograms_;
-	// RefLists of file filters of different types
-	RefList<Tree,int> filters_[FilterData::nFilterTypes];
-	// Filter strings for filter file dialogs
-	QString fileDialogFilters_[FilterData::nFilterTypes];
-	// Filter strings for bitmap file dialogs
-	QString bitmapFileDialogFilters_;
-
-	private:
-	// Search specified directory for filters
-	int searchFilterDir(QDir path);
-
-	public:
-	// Load filters
-	void loadFilters();
-	// Load filter from specified filename
-	bool loadFilter(QString filename);
-	// Create filter strings for file dialogs
-	void createFileDialogFilters();
-	// Register a filter of a given type
-	void registerFilter(Tree* filter, FilterData::FilterType filterType);
-	// Return current number of filter programs
-	int nFilterPrograms() const;
-	// Return first item in failed filter list
-	QStringList failedFilters() const;
-	// Reload filters
-	int reloadFilters();
-	// Probe file for its format
-	Tree* probeFile(QString filename, FilterData::FilterType filterType);
-	// Find filter of specified type with nickname provided
-	Tree* findFilter(FilterData::FilterType filterType, QString nickname) const;
-	// Find filter by description
-	Tree* findFilterByDescription(FilterData::FilterType filterType, QString description) const;
-	// Find filter by id
-	Tree* findFilterByID(FilterData::FilterType filterType, int id) const;
-	// Return first filter in list (of a given type)
-	RefListItem<Tree,int>* filters(FilterData::FilterType filterType) const;
-	// Return nth filter in list (of a given type)
-	RefListItem<Tree,int>* filter(FilterData::FilterType filterType, int index);
-	// Return number of filters of a given type
-	int nFilters(FilterData::FilterType filterType) const;
-	// Return pointer to list of filters of given type
-	RefList<Tree,int>* filterList(FilterData::FilterType filterType);
-	// Print list of valid filter nicknames
-	void printValidNicknames(FilterData::FilterType filterType);
-	// Return filter strings for file dialogs
-	const QString& fileDialogFilters(FilterData::FilterType filterType) const;
-	// Return filter strings for bitmap file dialogs
-	const QString& bitmapFileDialogFilters() const;
-
+	
 
 	/*
 	 * Global Function Includes
@@ -407,18 +343,22 @@ class Aten
 	private:
 	// Current mode of program operation
 	ProgramMode programMode_;
-	// Model format in which to export models
-	Tree* exportFilter_;
+	// Model plugin to use to export models
+	FilePluginInterface* exportPlugin_;
+	// List of optiont to pass to export plugin (if any)
+	QStringList exportPluginOptions_;
 	// Cached commands to use in batch processing mode
 	List<Program> batchCommands_;
+	// Type map name conversions to apply on save
+	KVMap typeExportMap_;
 	// Whether type export conversion is enabled
 	bool typeExportMapping_;
 
 	public:
 	// Return the current program mode
 	ProgramMode programMode() const;
-	// Set format to use in export
-	void setExportFilter(Tree* f);
+	// Set plugin to use in export
+	void setExportPlugin(FilePluginInterface* plugin, QStringList pluginOptions = QStringList());
 	// Export all currently loaded models in the referenced format
 	void exportModels();
 	// Add set of batch commands
@@ -427,8 +367,12 @@ class Aten
 	void processModels();
 	// Save all models under their original names
 	void saveModels();
-	// Type map name conversions to apply on save
-	KVMap typeExportMap;
+	// Clear type export map
+	void clearTypeExportMap();
+	// Add key/value to type export map
+	void addTypeExportMapping(QString key, QString value);
+	// Return number of defined type export mappings
+	int nTypeExportMappings();
 	// Set whether type export conversion is enabled
 	void setTypeExportMapping(bool b);
 	// Return whether type export conversion is enabled
@@ -579,6 +523,24 @@ class Aten
 	void loadPlugins();
 	// Return plugin store reference
 	const PluginStore& pluginStore();
+
+
+	/*
+	 * Import / Export
+	 */
+	public:
+	// Import model (if it is not loaded already)
+	bool importModel(QString fileName, FilePluginInterface* plugin = NULL, QStringList pluginOptions = QStringList());
+	// Export model
+	bool exportModel(Model* model, QString filename, FilePluginInterface* plugin, QStringList pluginOptions = QStringList());
+	// Import grid
+	bool importGrid(QString fileName, FilePluginInterface* plugin = NULL, QStringList pluginOptions = QStringList());
+	// Import trajectory to current model
+	bool importTrajectory(QString fileName, FilePluginInterface* plugin = NULL, QStringList pluginOptions = QStringList());
+	// Import expression
+	bool importExpression(QString fileName, FilePluginInterface* plugin = NULL, QStringList pluginOptions = QStringList());
+	// Export expression
+	bool exportExpression(Model* model, QString filename, FilePluginInterface* plugin, QStringList pluginOptions = QStringList());
 };
 
 ATEN_END_NAMESPACE

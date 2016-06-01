@@ -57,18 +57,19 @@ bool Commands::function_AngleDef(CommandNode* c, Bundle& obj, ReturnValue& rv)
 bool Commands::function_AutoConversionUnit(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	// Check that a valid file source/destination exists.
-	if (!c->parent()->isFilter())
-	{
-		Messenger::print("The 'autoconversionunit' command can only be used from within a Filter.");
-		return false;
-	}
-	if (c->hasArg(0))
-	{
-		Prefs::EnergyUnit eu = Prefs::energyUnit(c->argc(0), true);
-		if (eu == Prefs::nEnergyUnits) return false;
-		else prefs.setAutoConversionUnit(eu);
-	}
-	else prefs.setAutoConversionUnit(Prefs::nEnergyUnits);
+	// ATEN2 TODO ENDOFFILTERS
+// 	if (!c->parent()->isFilter())
+// 	{
+// 		Messenger::print("The 'autoconversionunit' command can only be used from within a Filter.");
+// 		return false;
+// 	}
+// 	if (c->hasArg(0))
+// 	{
+// 		Prefs::EnergyUnit eu = Prefs::energyUnit(c->argc(0), true);
+// 		if (eu == Prefs::nEnergyUnits) return false;
+// 		else prefs.setAutoConversionUnit(eu);
+// 	}
+// 	else prefs.setAutoConversionUnit(Prefs::nEnergyUnits);
 	return true;
 }
 
@@ -99,7 +100,7 @@ bool Commands::function_BondDef(CommandNode* c, Bundle& obj, ReturnValue& rv)
 // Clear manual export type mapping list ('clearexportmap')
 bool Commands::function_ClearExportMap(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	aten_.typeExportMap.clear();
+	aten_.clearTypeExportMap();
 	rv.reset();
 	return true;
 }
@@ -251,7 +252,7 @@ bool Commands::function_ExportMap(CommandNode* c, Bundle& obj, ReturnValue& rv)
 
 			// Split into value/argument
 			QStringList items = parser.argc(n).split('=');
-			aten_.typeExportMap.add(items.at(0), items.at(1));
+			aten_.addTypeExportMapping(items.at(0), items.at(1));
 		}
 	}
 	rv.reset();
@@ -637,35 +638,29 @@ bool Commands::function_RecreateExpression(CommandNode* c, Bundle& obj, ReturnVa
 bool Commands::function_SaveExpression(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return false;
-	
-	
+
 	// Parse the first option so we can get the filter nickname and any filter options
 	LineParser parser;
 	parser.getArgsDelim(Parser::UseQuotes, c->argc(0));
 	
 	// First part of argument is nickname
-	Tree* filter = aten_.findFilter(FilterData::ExpressionExport, parser.argc(0));
+	FilePluginInterface* plugin = aten_.pluginStore().findFilePluginByNickname(PluginTypes::ExpressionFilePlugin, PluginTypes::ExportPlugin, parser.argc(0));
+
 	// Check that a suitable format was found
-	if (filter == NULL)
+	if (plugin == NULL)
 	{
-		// Print list of valid filter nicknames
-		aten_.printValidNicknames(FilterData::ExpressionExport);
+		// Print list of valid plugin nicknames
+		aten_.pluginStore().showFilePluginNicknames(PluginTypes::ExpressionFilePlugin, PluginTypes::ExportPlugin);
 		Messenger::print("Not saved.");
 		return false;
 	}
 
 	// Loop over remaining arguments which are widget/global variable assignments
-	for (int n = 1; n < parser.nArgs(); ++n)
-	{
-		QStringList items = parser.argc(n).split('=');
-		if (!filter->setAccessibleVariable(items.at(0), items.at(1))) return false;
-	}
+	QStringList pluginOptions;
+	for (int n = 1; n < parser.nArgs(); ++n) pluginOptions << parser.argc(n);
 
-	// Temporarily disable undo/redo for the model, save, and re-enable
-	obj.rs()->disableUndoRedo();
-	bool result = filter->executeWrite(c->argc(1));
-	obj.rs()->enableUndoRedo();
-	if (result) Messenger::print("Expression for model '%s' saved to file '%s' (%s)", qPrintable(obj.rs()->name()), qPrintable(c->argc(1)), qPrintable(filter->filter.name()));
+	bool result = aten_.exportExpression(obj.m, c->argc(1), plugin, pluginOptions);
+	if (result) Messenger::print("Expression for model '%s' saved to file '%s' (%s)", qPrintable(obj.rs()->name()), qPrintable(c->argc(1)), qPrintable(plugin->name()));
 	else Messenger::print("Failed to save expression for model '%s'.", qPrintable(obj.rs()->name()));
 	return result;
 }

@@ -1,6 +1,6 @@
 /*
         *** Plugin Types
-        *** src/plugins/plugintypes.h
+        *** src/plugins/plugintypes.cpp
         Copyright T. Youngs 2007-2016
 
         This file is part of Aten.
@@ -19,30 +19,24 @@
         along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_PLUGINTYPES_H
-#define ATEN_PLUGINTYPES_H
+#include "plugins/plugintypes.h"
 
-#include "base/namespace.h"
+ATEN_USING_NAMESPACE
 
-ATEN_BEGIN_NAMESPACE
+// File plugin categories
+const char* FilePluginCategories[] = { "model", "trajectory", "expression", "grid" };
 
-// Forward Declarations
-/* none */
-
-// Plugin Types
-class PluginTypes
+// Return single-word name of file plugin category
+const char* PluginTypes::filePluginCategory(PluginTypes::FilePluginCategory category)
 {
-	public:
-	// File plugin category
-	enum FilePluginCategory { ModelFilePlugin, TrajectoryFilePlugin, ExpressionFilePlugin, GridFilePlugin, nFilePluginCategories };
-	// Return single-word name of file plugin category
-	static const char* filePluginCategory(FilePluginCategory category);
-	// File plugin type
-	enum FilePluginType { ImportPlugin, ExportPlugin };
-	// Return single-word name of file plugin type
-	static const char* filePluginType(FilePluginType type);
-};
+	return FilePluginCategories[category];
+}
 
-ATEN_END_NAMESPACE
+// File plugin type
+const char* FilePluginTypes[] = { "import", "export" };
 
-#endif
+// Return single-word name of file plugin type
+const char* PluginTypes::filePluginType(PluginTypes::FilePluginType type)
+{
+	return FilePluginTypes[type];
+}

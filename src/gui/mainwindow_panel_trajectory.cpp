@@ -39,7 +39,7 @@ void AtenWindow::updateTrajectoryPanel(Model* sourceModel)
 	}
 
 	// Enable / disable controls
-	ui.TrajectoryManageOpenButton->setEnabled(!aten_.fileDialogFilters(FilterData::TrajectoryImport).isEmpty());
+	ui.TrajectoryManageOpenButton->setEnabled(aten_.pluginStore().nFilePlugins(PluginTypes::TrajectoryFilePlugin, PluginTypes::ImportPlugin) > 0);
 	ui.TrajectoryManageRemoveButton->setEnabled(parentModel && hasTraj);
 	ui.TrajectoryManageFramesButton->setEnabled(parentModel && hasTraj);
 	ui.TrajectoryControlFirstButton->setEnabled(parentModel && hasTraj && trajSource);
@@ -89,26 +89,28 @@ void AtenWindow::on_TrajectoryManageOpenButton_clicked(bool checked)
 	Model* currentModel = aten_.currentModel();
 	if (!currentModel) return;
 
-	Tree* filter;
-	static QDir currentDirectory_(aten_.workDir());
-	QString selFilter;
-	QString filename = QFileDialog::getOpenFileName(this, "Open Trajectory", currentDirectory_.path(), aten_.fileDialogFilters(FilterData::TrajectoryImport), &selFilter);
-	if (!filename.isEmpty())
-	{
-		// Store path for next use
-		currentDirectory_.setPath(filename);
-		
-		// Find the filter that was selected
-		filter = aten_.findFilterByDescription(FilterData::TrajectoryImport, qPrintable(selFilter));
+	// ATEN2 TODO ENDOFFILTERS
 
-		// If filter == NULL then we didn't match a filter, i.e. the 'All files' filter was selected, and we must probe the file first.
-		if (filter == NULL) filter = aten_.probeFile(qPrintable(filename), FilterData::TrajectoryImport);
-		if (filter != NULL)
-		{
-			currentModel->initialiseTrajectory(qPrintable(filename), filter);
-		}
-		else Messenger::print("Couldn't determine trajectory file format.");
-	}
+// 	Tree* filter;
+// 	static QDir currentDirectory_(aten_.workDir());
+// 	QString selFilter;
+// 	QString filename = QFileDialog::getOpenFileName(this, "Open Trajectory", currentDirectory_.path(), aten_.fileDialogFilters(FilterData::TrajectoryImport), &selFilter);
+// 	if (!filename.isEmpty())
+// 	{
+// 		// Store path for next use
+// 		currentDirectory_.setPath(filename);
+// 		
+// 		// Find the filter that was selected
+// 		filter = aten_.findFilterByDescription(FilterData::TrajectoryImport, qPrintable(selFilter));
+// 
+// 		// If filter == NULL then we didn't match a filter, i.e. the 'All files' filter was selected, and we must probe the file first.
+// 		if (filter == NULL) filter = aten_.probeFile(qPrintable(filename), FilterData::TrajectoryImport);
+// 		if (filter != NULL)
+// 		{
+// 			currentModel->initialiseTrajectory(qPrintable(filename), filter);
+// 		}
+// 		else Messenger::print("Couldn't determine trajectory file format.");
+// 	}
 
 	updateWidgets(AtenWindow::AllTarget);
 }

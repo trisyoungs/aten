@@ -266,13 +266,6 @@ int CommandParser::lex()
 				return n;
 			}
 
-			// Is this the start of a filter or a function?
-			if (token == "filter")
-			{
-				Messenger::print(Messenger::Parse, "LEXER (%p): ...which marks the start of a filter (->FILTERBLOCK)",tree_);
-				return FILTERBLOCK;
-			}
-
 			// Is it an existing variable in scope?
 			Variable* v;
 			if (tree_ != NULL)

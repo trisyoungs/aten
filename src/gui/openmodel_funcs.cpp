@@ -24,7 +24,7 @@
 #include <QMessageBox>
 
 // Constructor
-AtenOpenModel::AtenOpenModel(QWidget* parent, QDir startingDirectory, const RefList<IOPluginInterface,int>& ioPlugins) : QDialog(parent), ioPlugins_(ioPlugins)
+AtenOpenModel::AtenOpenModel(QWidget* parent, QDir startingDirectory, const RefList<FilePluginInterface,int>& ioPlugins) : QDialog(parent), ioPlugins_(ioPlugins)
 {
 	ui.setupUi(this);
 
@@ -84,7 +84,7 @@ QStringList AtenOpenModel::selectedFilenames()
 }
 
 // Return selected file plugin
-IOPluginInterface* AtenOpenModel::selectedPlugin()
+FilePluginInterface* AtenOpenModel::selectedPlugin()
 {
 	return ui.FileSelector->selectedPlugin();
 }

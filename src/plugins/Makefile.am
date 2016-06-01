@@ -2,7 +2,7 @@ SUBDIRS = io_xyz
 
 noinst_LIBRARIES = libplugins.a
 
-libplugins_a_SOURCES = pluginstore.cpp
+libplugins_a_SOURCES = pluginstore.cpp plugintypes.cpp
 
 noinst_HEADERS = interfaces.h pluginstore.h plugintypes.h
 

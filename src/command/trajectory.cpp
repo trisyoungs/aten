@@ -69,7 +69,6 @@ bool Commands::function_FinaliseFrame(CommandNode* c, Bundle& obj, ReturnValue& 
 	obj.rs()->selectNone();
 	obj.rs()->resetLogs();
 	obj.rs()->updateSavePoint();
-	obj.rs()->setFilter(NULL);
 	obj.rs()->setFilename("frame");
 	obj.rs()->enableUndoRedo();
 	//if (frame->cell().type() != Cell::NoCell) frame->cell()->print();
@@ -109,9 +108,12 @@ bool Commands::function_LastFrame(CommandNode* c, Bundle& obj, ReturnValue& rv)
 bool Commands::function_LoadTrajectory(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return false;
-	Tree* filter = aten_.probeFile(c->argc(0), FilterData::TrajectoryImport);
-	if (filter == NULL) return false;
-	bool result = obj.m->initialiseTrajectory(c->argc(0), filter);
+
+	bool result = aten_.importTrajectory(c->argc(0));
+
+	// ATEN2 TODO ENDOFFILTERS
+// 	if (result) result = obj.m->initialiseTrajectory(c->argc(0), );
+
 	rv.set(result);
 	return true;
 }

@@ -118,109 +118,110 @@ bool Model::initialiseTrajectory(QString filename, Tree* filter)
 	// Associate the file with the trajectory, and grab header and frame read functions
 	trajectoryFilename_ = filename;
 	trajectoryFilter_ = filter;
-	trajectoryHeaderFunction_ = filter->filter.trajectoryHeaderFunction();
-	trajectoryFrameFunction_ = filter->filter.trajectoryFrameFunction();
-	if (trajectoryHeaderFunction_ == NULL)
-	{
-		Messenger::print("Error initialising trajectory: Filter '%s' contains no 'int readHeader()' function.", qPrintable(trajectoryFilter_->filter.name()));
-		clearTrajectory();
-		Messenger::exit("Model::initialiseTrajectory");
-		return false;
-	}
-	if (trajectoryFrameFunction_ == NULL)
-	{
-		Messenger::print("Error initialising trajectory: Filter '%s' contains no 'int readFrame()' function.", qPrintable(trajectoryFilter_->filter.name()));
-		clearTrajectory();
-		Messenger::exit("Model::initialiseTrajectory");
-		return false;
-	}
-	ReturnValue rv;
-	
-	// Execute main filter program (in case there are dialog options etc.)
-	if (!filter->execute(rv))
-	{
-		Messenger::exit("Model::initialiseTrajectory");
-		return false;
-	}
-
-	// Read header
-	if (!trajectoryHeaderFunction_->execute(&trajectoryParser_, rv) || (rv.asInteger() != 1))
-	{
-		Messenger::print("Error reading header of trajectory file.");
-		clearTrajectory();
-		Messenger::exit("Model::initialiseTrajectory");
-		return false;
-	}
-	
-	// Store this file position, since it should represent the start of the frame data
-	std::streampos firstFramePos = trajectoryParser_.tellg();
-
-	// Determine frame size and number of frames in file
-	Messenger::print(Messenger::Verbose, "Testing trajectory frame read...");
-	//printf("Initialised config\n");
-	Model* newFrame = addTrajectoryFrame();
-	setRenderSource(Model::TrajectorySource);
-
-	// Read first frame
-	if (!trajectoryFrameFunction_->execute(&trajectoryParser_, rv) || (rv.asInteger() != 1))
-	{
-		Messenger::print("Error testing frame read from trajectory.");
-		clearTrajectory();
-		setRenderSource(Model::ModelSource);
-		Messenger::exit("Model::initialiseTrajectory");
-		return false;
-	}
-	newFrame->enableUndoRedo();
-	std::streampos secondFramePos = trajectoryParser_.tellg();
-	trajectoryFrameSize_ = secondFramePos - firstFramePos;
-	if ((trajectoryFrameSize_/1024) < 10) Messenger::print("Single frame is %i bytes.", trajectoryFrameSize_);
-	else Messenger::print("Single frame is (approximately) %i kb.", trajectoryFrameSize_/1024);
-	trajectoryParser_.seekg(0, std::ios::end);
-	std::streampos endOfFilePos = trajectoryParser_.tellg();
-	nTrajectoryFileFrames_ = (endOfFilePos - firstFramePos) / trajectoryFrameSize_;
-
-	// Skip back to end of first frame ready to read in next frame...
-	trajectoryParser_.seekg(secondFramePos);
-
-	// Pre-Cache frame(s)
-	Messenger::print("Successfully associated trajectory."); 
-	Messenger::print("Number of frames in file : %i", nTrajectoryFileFrames_);
-	trajectoryFrameIndex_ = 0;
-
-	// If we are caching the trajectory, read in all remaining frames here. Otherwise, we're happy with just the first
-	Messenger::print("Estimated trajectory size is %i kb, cache limit = %i kb", nTrajectoryFileFrames_ * trajectoryFrameSize_/1024, prefs.cacheLimit());
-	if ((nTrajectoryFileFrames_ * trajectoryFrameSize_)/1024 < prefs.cacheLimit())
-	{
-		Messenger::print("Caching all frames from trajectory...");
- 		Task* task = Messenger::initialiseTask("Caching Frames", nTrajectoryFileFrames_);
-		// Read all frames from trajectory file
-		for (int n=1; n<nTrajectoryFileFrames_; n++)
-		{
-			newFrame = addTrajectoryFrame();
-			success = trajectoryFrameFunction_->execute(&trajectoryParser_, rv);
-			if ((!success) || (rv.asInteger() != 1))
-			{
-				removeTrajectoryFrame(newFrame);
-				Messenger::print("Error during read of frame %i.", n);
-				break;
-			}
-			newFrame->enableUndoRedo();
- 			if (!Messenger::updateTaskProgress(task, n)) break;
-		}
- 		Messenger::terminateTask(task);
-		nTrajectoryFileFrames_ = 0;
-		trajectoryFramesAreCached_ = true;
-		trajectoryParser_.closeFiles();
-		Messenger::print("Cached %i frames from file.", nTrajectoryFrames());
-	}
-	else
-	{
-		Messenger::print("Trajectory will not be cached in memory.");
-		trajectoryOffsets_ = new std::streampos[nTrajectoryFileFrames_+10];
-		trajectoryOffsets_[0] = firstFramePos;
-		trajectoryOffsets_[1] = secondFramePos;
-		trajectoryHighestFrameOffset_ = 1;
-	}
+	// ATEN2 TODO ENDOFFILTERS
+// 	trajectoryHeaderFunction_ = filter->filter.trajectoryHeaderFunction();
+// 	trajectoryFrameFunction_ = filter->filter.trajectoryFrameFunction();
+// 	if (trajectoryHeaderFunction_ == NULL)
+// 	{
+// 		Messenger::print("Error initialising trajectory: Filter '%s' contains no 'int readHeader()' function.", qPrintable(trajectoryFilter_->filter.name()));
+// 		clearTrajectory();
+// 		Messenger::exit("Model::initialiseTrajectory");
+// 		return false;
+// 	}
+// 	if (trajectoryFrameFunction_ == NULL)
+// 	{
+// 		Messenger::print("Error initialising trajectory: Filter '%s' contains no 'int readFrame()' function.", qPrintable(trajectoryFilter_->filter.name()));
+// 		clearTrajectory();
+// 		Messenger::exit("Model::initialiseTrajectory");
+// 		return false;
+// 	}
+// 	ReturnValue rv;
+// 	
+// 	// Execute main filter program (in case there are dialog options etc.)
+// 	if (!filter->execute(rv))
+// 	{
+// 		Messenger::exit("Model::initialiseTrajectory");
+// 		return false;
+// 	}
+// 
+// 	// Read header
+// 	if (!trajectoryHeaderFunction_->execute(&trajectoryParser_, rv) || (rv.asInteger() != 1))
+// 	{
+// 		Messenger::print("Error reading header of trajectory file.");
+// 		clearTrajectory();
+// 		Messenger::exit("Model::initialiseTrajectory");
+// 		return false;
+// 	}
+// 	
+// 	// Store this file position, since it should represent the start of the frame data
+// 	std::streampos firstFramePos = trajectoryParser_.tellg();
+// 
+// 	// Determine frame size and number of frames in file
+// 	Messenger::print(Messenger::Verbose, "Testing trajectory frame read...");
+// 	//printf("Initialised config\n");
+// 	Model* newFrame = addTrajectoryFrame();
+// 	setRenderSource(Model::TrajectorySource);
+// 
+// 	// Read first frame
+// 	if (!trajectoryFrameFunction_->execute(&trajectoryParser_, rv) || (rv.asInteger() != 1))
+// 	{
+// 		Messenger::print("Error testing frame read from trajectory.");
+// 		clearTrajectory();
+// 		setRenderSource(Model::ModelSource);
+// 		Messenger::exit("Model::initialiseTrajectory");
+// 		return false;
+// 	}
+// 	newFrame->enableUndoRedo();
+// 	std::streampos secondFramePos = trajectoryParser_.tellg();
+// 	trajectoryFrameSize_ = secondFramePos - firstFramePos;
+// 	if ((trajectoryFrameSize_/1024) < 10) Messenger::print("Single frame is %i bytes.", trajectoryFrameSize_);
+// 	else Messenger::print("Single frame is (approximately) %i kb.", trajectoryFrameSize_/1024);
+// 	trajectoryParser_.seekg(0, std::ios::end);
+// 	std::streampos endOfFilePos = trajectoryParser_.tellg();
+// 	nTrajectoryFileFrames_ = (endOfFilePos - firstFramePos) / trajectoryFrameSize_;
+// 
+// 	// Skip back to end of first frame ready to read in next frame...
+// 	trajectoryParser_.seekg(secondFramePos);
+// 
+// 	// Pre-Cache frame(s)
+// 	Messenger::print("Successfully associated trajectory."); 
+// 	Messenger::print("Number of frames in file : %i", nTrajectoryFileFrames_);
+// 	trajectoryFrameIndex_ = 0;
+// 
+// 	// If we are caching the trajectory, read in all remaining frames here. Otherwise, we're happy with just the first
+// 	Messenger::print("Estimated trajectory size is %i kb, cache limit = %i kb", nTrajectoryFileFrames_ * trajectoryFrameSize_/1024, prefs.cacheLimit());
+// 	if ((nTrajectoryFileFrames_ * trajectoryFrameSize_)/1024 < prefs.cacheLimit())
+// 	{
+// 		Messenger::print("Caching all frames from trajectory...");
+//  		Task* task = Messenger::initialiseTask("Caching Frames", nTrajectoryFileFrames_);
+// 		// Read all frames from trajectory file
+// 		for (int n=1; n<nTrajectoryFileFrames_; n++)
+// 		{
+// 			newFrame = addTrajectoryFrame();
+// 			success = trajectoryFrameFunction_->execute(&trajectoryParser_, rv);
+// 			if ((!success) || (rv.asInteger() != 1))
+// 			{
+// 				removeTrajectoryFrame(newFrame);
+// 				Messenger::print("Error during read of frame %i.", n);
+// 				break;
+// 			}
+// 			newFrame->enableUndoRedo();
+//  			if (!Messenger::updateTaskProgress(task, n)) break;
+// 		}
+//  		Messenger::terminateTask(task);
+// 		nTrajectoryFileFrames_ = 0;
+// 		trajectoryFramesAreCached_ = true;
+// 		trajectoryParser_.closeFiles();
+// 		Messenger::print("Cached %i frames from file.", nTrajectoryFrames());
+// 	}
+// 	else
+// 	{
+// 		Messenger::print("Trajectory will not be cached in memory.");
+// 		trajectoryOffsets_ = new std::streampos[nTrajectoryFileFrames_+10];
+// 		trajectoryOffsets_[0] = firstFramePos;
+// 		trajectoryOffsets_[1] = secondFramePos;
+// 		trajectoryHighestFrameOffset_ = 1;
+// 	}
 	Messenger::exit("Model::initialiseTrajectory");
 	return true;
 }
@@ -362,8 +363,8 @@ void Model::seekLastTrajectoryFrame()
 // Seek to specified frame
 void Model::seekTrajectoryFrame(int frameno, bool quiet)
 {
-	// Seek to the previous frame in the trajectory
 	Messenger::enter("Model::seekTrajectoryFrame");
+
 	// Check that a trajectory exists!
 	if (nTrajectoryFrames() == 0)
 	{
@@ -386,54 +387,56 @@ void Model::seekTrajectoryFrame(int frameno, bool quiet)
 	if (trajectoryFramesAreCached_) trajectoryCurrentFrame_ = trajectoryFrames_[frameno];
 	else
 	{
-		// Seek to specified frame in file
-		// If the desired frame is less than (or equal to) the highest stored offset, just seek to and read it.
-		// Otherwise we need to read up to the specified frame number, storing offsets as we go.
-		bool success;
-		ReturnValue rv;
-		if (frameno <= trajectoryHighestFrameOffset_)
-		{
-			trajectoryCurrentFrame_->clear();
-			trajectoryParser_.seekg(trajectoryOffsets_[frameno]);
-			success = trajectoryFrameFunction_->execute(&trajectoryParser_, rv);
-			if ((!success) || (rv.asInteger() != 1))
-			{
-				Messenger::print("Failed to seek to frame %i.", frameno+1);
-				Messenger::exit("Model::seekTrajectoryFrame");
-				return;
-			}
-			// If this was the highest offset stored, the file position now corresponds to the next frame
-			if ((frameno == trajectoryHighestFrameOffset_) && (trajectoryHighestFrameOffset_ < nTrajectoryFileFrames_))
-			{
-				trajectoryOffsets_[frameno+1] = trajectoryParser_.tellg();
-				trajectoryHighestFrameOffset_ ++;
-			}
-		}
-		else
-		{
-			// Seek to last frame position stored
-			trajectoryParser_.seekg(trajectoryOffsets_[trajectoryHighestFrameOffset_]);
-			// Skip consecutive frames until we get to the desired point, storing pointers as we go.
-			for (trajectoryFrameIndex_ = trajectoryHighestFrameOffset_; trajectoryFrameIndex_ <= frameno; trajectoryFrameIndex_++)
-			{
-				trajectoryCurrentFrame_->clear();
-				// Read a frame, and store its stream position
-				ReturnValue rv;
-				success = trajectoryFrameFunction_->execute(&trajectoryParser_, rv);
-				if ((!success) || (rv.asInteger() != 1))
-				{
-					Messenger::print("Failed to read frame %i in trajectory.",trajectoryFrameIndex_+1);
-					Messenger::exit("Model::seekTrajectoryFrame");
-					return;
-				}
-				// Apply styling from parent (if required)
-				if (trajectoryPropagateParentStyle_) trajectoryCurrentFrame_->copyAtomStyle(parent_);
-				// Store new frame offset
-				trajectoryHighestFrameOffset_++;
-				trajectoryOffsets_[trajectoryHighestFrameOffset_] = trajectoryParser_.tellg();
-			}
-		}
-		trajectoryCurrentFrame_->logChange(Log::Structure);
+		// ATEN2 TODO ENDOFFILTERS
+
+// 		// Seek to specified frame in file
+// 		// If the desired frame is less than (or equal to) the highest stored offset, just seek to and read it.
+// 		// Otherwise we need to read up to the specified frame number, storing offsets as we go.
+// 		bool success;
+// 		ReturnValue rv;
+// 		if (frameno <= trajectoryHighestFrameOffset_)
+// 		{
+// 			trajectoryCurrentFrame_->clear();
+// 			trajectoryParser_.seekg(trajectoryOffsets_[frameno]);
+// 			success = trajectoryFrameFunction_->execute(&trajectoryParser_, rv);
+// 			if ((!success) || (rv.asInteger() != 1))
+// 			{
+// 				Messenger::print("Failed to seek to frame %i.", frameno+1);
+// 				Messenger::exit("Model::seekTrajectoryFrame");
+// 				return;
+// 			}
+// 			// If this was the highest offset stored, the file position now corresponds to the next frame
+// 			if ((frameno == trajectoryHighestFrameOffset_) && (trajectoryHighestFrameOffset_ < nTrajectoryFileFrames_))
+// 			{
+// 				trajectoryOffsets_[frameno+1] = trajectoryParser_.tellg();
+// 				trajectoryHighestFrameOffset_ ++;
+// 			}
+// 		}
+// 		else
+// 		{
+// 			// Seek to last frame position stored
+// 			trajectoryParser_.seekg(trajectoryOffsets_[trajectoryHighestFrameOffset_]);
+// 			// Skip consecutive frames until we get to the desired point, storing pointers as we go.
+// 			for (trajectoryFrameIndex_ = trajectoryHighestFrameOffset_; trajectoryFrameIndex_ <= frameno; trajectoryFrameIndex_++)
+// 			{
+// 				trajectoryCurrentFrame_->clear();
+// 				// Read a frame, and store its stream position
+// 				ReturnValue rv;
+// 				success = trajectoryFrameFunction_->execute(&trajectoryParser_, rv);
+// 				if ((!success) || (rv.asInteger() != 1))
+// 				{
+// 					Messenger::print("Failed to read frame %i in trajectory.",trajectoryFrameIndex_+1);
+// 					Messenger::exit("Model::seekTrajectoryFrame");
+// 					return;
+// 				}
+// 				// Apply styling from parent (if required)
+// 				if (trajectoryPropagateParentStyle_) trajectoryCurrentFrame_->copyAtomStyle(parent_);
+// 				// Store new frame offset
+// 				trajectoryHighestFrameOffset_++;
+// 				trajectoryOffsets_[trajectoryHighestFrameOffset_] = trajectoryParser_.tellg();
+// 			}
+// 		}
+// 		trajectoryCurrentFrame_->logChange(Log::Structure);
 	}
 	trajectoryFrameIndex_ = frameno;
 	if (!quiet) Messenger::print("Seek to frame %i", trajectoryFrameIndex_+1);
