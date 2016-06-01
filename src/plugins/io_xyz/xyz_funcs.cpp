@@ -126,17 +126,32 @@ bool XYZModelPlugin::importData(FileParser& parser)
 		// Rebond the model
 		targetModel->calculateBonding(true);
 	}
-  return true;
+	return true;
 }
 
 // Return whether this plugin can export data
 bool XYZModelPlugin::canExport()
 {
-	return false;
+	return true;
 }
 
 // Export data to the specified file
 bool XYZModelPlugin::exportData(FileParser& parser)
 {
-	return false;
+	// Get the current model pointer containing the data we are to export
+	const Model* targetModel = parser.targetModel();
+
+	// Write number atoms line
+	parser.writeLineF("%i\n", targetModel->nAtoms());
+
+	// Write title line
+	parser.writeLine(targetModel->name());
+
+	// Write atom information
+	for (Atom* i = targetModel->atoms(); i != NULL; i = i->next)
+	{
+		parser.writeLineF("%-8s  %12.6f %12.6f %12.6f %12.6f\n", ElementMap().symbol(i->element()), i->r().x, i->r().y, i->r().z, i->charge());
+	}
+
+	return true;
 }

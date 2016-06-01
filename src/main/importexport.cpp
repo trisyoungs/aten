@@ -114,7 +114,7 @@ bool Aten::importModel(QString fileName, FilePluginInterface* plugin, QStringLis
 
 		parser.closeFiles();
 	}
-	else Messenger::error("Couldn't determine a suitable plugin to load the file '%s'.\n", qPrintable(fileName));
+	else Messenger::error("Couldn't determine a suitable plugin to load the file '%s'.", qPrintable(fileName));
 
 	// If we loaded something successfully, have we flagged an empty model to delete?
 	if (result)
@@ -332,7 +332,7 @@ bool Aten::importGrid(QString fileName, FilePluginInterface* plugin, QStringList
 
 		parser.closeFiles();
 	}
-	else Messenger::error("Couldn't determine a suitable plugin to load the file '%s'.\n", qPrintable(fileName));
+	else Messenger::error("Couldn't determine a suitable plugin to load the file '%s'.", qPrintable(fileName));
 
 	Messenger::exit("Aten::importGrid");
 	return result;
@@ -373,7 +373,7 @@ bool Aten::importExpression(QString fileName, FilePluginInterface* plugin, QStri
 
 		parser.closeFiles();
 	}
-	else Messenger::error("Couldn't determine a suitable plugin to load the file '%s'.\n", qPrintable(fileName));
+	else Messenger::error("Couldn't determine a suitable plugin to load the file '%s'.", qPrintable(fileName));
 
 	Messenger::exit("Aten::importExpression");
 	return result;

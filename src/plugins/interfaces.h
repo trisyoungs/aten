@@ -56,6 +56,8 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 	 * Core
 	 */
 	private:
+	// Original filename for plugin
+	QString filename_;
 	// Object store for plugin instances
 	List<FilePluginInterface> instances_;
 
@@ -64,6 +66,16 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 	virtual FilePluginInterface* duplicate() = 0;
 
 	public:
+	// Set filename for plugin
+	void setFilanem(QString filename)
+	{
+		filename_ = filename;
+	}
+	// Return filanem for plugin
+	QString filename() const
+	{
+		return filename_;
+	}
 	// Return instance of plugin
 	FilePluginInterface* createInstance()
 	{

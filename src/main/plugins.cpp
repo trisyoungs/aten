@@ -91,6 +91,9 @@ int Aten::searchPluginsDir(QDir path)
 	pluginsList.removeOne("README");
 	for (i=0; i< pluginsList.size(); i++)
 	{
+		QFileInfo fileInfo(pluginsList.at(i));
+		if ((fileInfo.suffix() != "so") && (fileInfo.suffix() != "dll")) continue;
+
 		if (loadPlugin(path.absoluteFilePath(pluginsList.at(i)))) s += pluginsList.at(i) + "  ";
 		else ++nFailed;
 	}
