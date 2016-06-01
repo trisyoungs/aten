@@ -33,7 +33,7 @@ void Aten::dumpElementInfo(LineParser& parser)
 	QString line;
 
 	// Loop over all element data, comparing it to the stored default values
-	parser.writeLine("\n// Element Data\n");
+	parser.writeLine("// Element Data");
 	for (int n=0; n<Elements().nElements(); ++n)
 	{
 		// Ambient Colour
@@ -41,14 +41,14 @@ void Aten::dumpElementInfo(LineParser& parser)
 		{
 			double colour[4];
 			Elements().copyColour(n, colour);
-			line.sprintf("aten.elements[%s].colour = { %f, %f, %f, %f };\n", Elements().symbol(n), colour[0], colour[1], colour[2], colour[3]);
+			line.sprintf("aten.elements[%s].colour = { %f, %f, %f, %f };", Elements().symbol(n), colour[0], colour[1], colour[2], colour[3]);
 			parser.writeLine(line);
 		}
 
 		// Atomic radius
 		if (Elements().radiusHasChanged(n))
 		{
-			line.sprintf("aten.elements[%s].radius = %f;\n", Elements().symbol(n), Elements().atomicRadius(n));
+			line.sprintf("aten.elements[%s].radius = %f;", Elements().symbol(n), Elements().atomicRadius(n));
 			parser.writeLine(line);
 		}
 	}
@@ -62,7 +62,7 @@ void Aten::dumpPreferences(LineParser& parser)
 	QString line;
 
 	// For each accessor in PreferencesVariable compare the results to our local Prefs copy
-	parser.writeLine("// Program Preferences\n");
+	parser.writeLine("// Program Preferences");
 	Prefs defaults;
 	ReturnValue rv;
 	QString newValue, defaultValue;
@@ -79,10 +79,10 @@ void Aten::dumpPreferences(LineParser& parser)
 				if (prefs.colourScale[n] == defaults.colourScale[n]) continue;
 
 				// Write out colourscale creation data
-				parser.writeLineF("aten.prefs.colourScales[%i].clear();\n", n);
+				parser.writeLineF("aten.prefs.colourScales[%i].clear();", n);
 				for (ColourScalePoint* csp = prefs.colourScale[n].firstPoint(); csp != NULL; csp = csp->next)
 				{
-					parser.writeLineF("aten.prefs.colourScales[%i].addPoint(%f, %f, %f, %f);\n", n, csp->value(), csp->colour()[0], csp->colour()[1], csp->colour()[2], csp->colour()[3]);
+					parser.writeLineF("aten.prefs.colourScales[%i].addPoint(%f, %f, %f, %f);", n, csp->value(), csp->colour()[0], csp->colour()[1], csp->colour()[2], csp->colour()[3]);
 				}
 			}
 		}
@@ -101,8 +101,8 @@ void Aten::dumpPreferences(LineParser& parser)
 			// Compare the two strings - if different, write the prefs value to the file....
 // 				printf("acc = %i [%s], default = '%s', new = '%s'\n", i, qPrintable(PreferencesVariable::accessorData[i].name), qPrintable(defaultValue), qPrintable(newValue));
 			if (defaultValue == newValue) continue;
-			if ((PreferencesVariable::accessorData[i].returnType == VTypes::StringData) && (PreferencesVariable::accessorData[i].arraySize == 0)) line.sprintf("aten.prefs.%s = \"%s\";\n", qPrintable(PreferencesVariable::accessorData[i].name), qPrintable(newValue));
-			else line.sprintf("aten.prefs.%s = %s;\n", qPrintable(PreferencesVariable::accessorData[i].name), qPrintable(newValue));
+			if ((PreferencesVariable::accessorData[i].returnType == VTypes::StringData) && (PreferencesVariable::accessorData[i].arraySize == 0)) line.sprintf("aten.prefs.%s = \"%s\";", qPrintable(PreferencesVariable::accessorData[i].name), qPrintable(newValue));
+			else line.sprintf("aten.prefs.%s = %s;", qPrintable(PreferencesVariable::accessorData[i].name), qPrintable(newValue));
 			parser.writeLine(line);
 		}
 	}

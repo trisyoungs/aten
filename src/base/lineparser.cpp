@@ -898,10 +898,10 @@ int LineParser::getDoubleArray(double* array, int count)
 	return 0;
 }
 
-// Write line to file
-bool LineParser::writeLine(QString s)
+// Write partial line to file
+bool LineParser::write(QString line)
 {
-	Messenger::enter("LineParser::writeLine");
+	Messenger::enter("LineParser::write");
 	if (!directOutput_)
 	{
 		if (cachedFile_ == NULL)
@@ -910,7 +910,7 @@ bool LineParser::writeLine(QString s)
 			Messenger::exit("LineParser::writeLine");
 			return false;
 		}
-		else *cachedFile_ << qPrintable(s);
+		else *cachedFile_ << qPrintable(line);
 	}
 	else if (outputFile_ == NULL)
 	{
@@ -918,9 +918,76 @@ bool LineParser::writeLine(QString s)
 		Messenger::exit("LineParser::writeLine");
 		return false;
 	}
-	else *outputFile_ << qPrintable(s);
-	Messenger::exit("LineParser::writeLine");
+	else *outputFile_ << qPrintable(line);
+	Messenger::exit("LineParser::write");
 	return true;
+}
+
+// Write formatted partial line to file
+bool LineParser::writeF(const char* fmt, ...)
+{
+	Messenger::enter("LineParser::writeF");
+	if (!directOutput_)
+	{
+		if (cachedFile_ == NULL)
+		{
+			Messenger::print("Unable to delayed-writeF - destination cache is not open.");
+			Messenger::exit("LineParser::writeF");
+			return false;
+		}
+	}
+	else if (outputFile_ == NULL)
+	{
+		Messenger::print("Unable to direct-writeF - destination file is not open.");
+		Messenger::exit("LineParser::writeF");
+		return false;
+	}
+	
+	// Construct line
+	va_list arguments;
+	static char s[8096];
+	s[0] = '\0';
+
+	// Parse the argument list (...) and internally write the output string into s[]
+	va_start(arguments,fmt);
+	vsprintf(s,fmt,arguments);
+	va_end(arguments);
+	if (directOutput_) *outputFile_ << s;
+	else *cachedFile_ << s;
+
+	Messenger::exit("LineParser::writeF");
+	return true;
+}
+
+// Write empty line to file
+bool LineParser::writeLine()
+{
+	Messenger::enter("LineParser::write");
+	if (!directOutput_)
+	{
+		if (cachedFile_ == NULL)
+		{
+			Messenger::print("Unable to delayed-writeLine - destination cache is not open.");
+			Messenger::exit("LineParser::writeLine");
+			return false;
+		}
+		else *cachedFile_ << "\n";
+	}
+	else if (outputFile_ == NULL)
+	{
+		Messenger::print("Unable to direct-writeLine - destination file is not open.");
+		Messenger::exit("LineParser::writeLine");
+		return false;
+	}
+	else *outputFile_ << "\n";
+	Messenger::exit("LineParser::write");
+	return true;
+}
+
+// Write whole line to file (appending CR/LF automatically)
+bool LineParser::writeLine(QString s)
+{
+	return write(s + "\n");
 }
 
 // Write formatted line to file
@@ -947,12 +1014,14 @@ bool LineParser::writeLineF(const char* fmt, ...)
 	va_list arguments;
 	static char s[8096];
 	s[0] = '\0';
+
 	// Parse the argument list (...) and internally write the output string into s[]
 	va_start(arguments,fmt);
 	vsprintf(s,fmt,arguments);
 	va_end(arguments);
-	if (directOutput_) *outputFile_ << s;
-	else *cachedFile_ << s;
+	if (directOutput_) *outputFile_ << s << "\n";
+	else *cachedFile_ << s << "\n";
+
 	Messenger::exit("LineParser::writeLineF");
 	return true;
 }

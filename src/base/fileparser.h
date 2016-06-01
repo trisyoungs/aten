@@ -23,6 +23,7 @@
 #define ATEN_FILEPARSER_H
 
 #include "base/lineparser.h"
+#include "templates/vector3.h"
 
 ATEN_BEGIN_NAMESPACE
 
@@ -70,9 +71,15 @@ class FileParser
 	public:
 	// Return target model
 	const Model* targetModel() const;
-	// Write line to file
+	// Write partial line to file
+	bool write(QString line);
+	// Write formatted partial line to file
+	bool writeF(const char* fmt, ...);
+	// Write empty line to file
+	bool writeLine();
+	// Write whole line to file (appending CR/LF automatically)
 	bool writeLine(QString line);
-	// Write formatted line to file
+	// Write formatted line to file (appending CR/LF automatically)
 	bool writeLineF(const char* fmt, ...);
 
 
@@ -94,6 +101,8 @@ class FileParser
 	bool argb(int i);
 	// Returns the specified argument as a float
 	float argf(int i);
+	// Returns the specified argument (+1, and +2) as a Vec3<double>
+	Vec3<double> arg3d(int i);
 	// Returns whether the specified argument exists
 	bool hasArg(int i) const;
 };

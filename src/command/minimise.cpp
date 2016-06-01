@@ -138,21 +138,21 @@ bool Commands::function_MopacMinimise(CommandNode* c, Bundle& obj, ReturnValue& 
 	LineParser parser;
 	parser.openOutput(mopacInput, true);
 	int opt;
-	if (c->hasArg(0)) parser.writeLineF("MOZYME BFGS %s\n", qPrintable(c->argc(0)));
-	else parser.writeLine("MOZYME BFGS PM6 RHF SINGLET\n");
-	parser.writeLineF("Temporary MOPAC Job Input  : %s\n", qPrintable(mopacInput));
-	parser.writeLineF("Temporary MOPAC Job Output : %s\n", qPrintable(mopacArc));	
+	if (c->hasArg(0)) parser.writeLineF("MOZYME BFGS %s", qPrintable(c->argc(0)));
+	else parser.writeLine("MOZYME BFGS PM6 RHF SINGLET");
+	parser.writeLineF("Temporary MOPAC Job Input  : %s", qPrintable(mopacInput));
+	parser.writeLineF("Temporary MOPAC Job Output : %s", qPrintable(mopacArc));	
 	for (Atom* i = aten_.currentModelOrFrame()->atoms(); i != NULL; i = i->next)
 	{
 		opt = 1 - i->isPositionFixed();
-		parser.writeLineF("%3s %12.6f %1i %12.6f %1i %12.6f %1i\n", Elements().symbol(i), i->r().x, opt, i->r().y, opt, i->r().z, opt);
+		parser.writeLineF("%3s %12.6f %1i %12.6f %1i %12.6f %1i", Elements().symbol(i), i->r().x, opt, i->r().y, opt, i->r().z, opt);
 	}
 	if (aten_.currentModelOrFrame()->cell().type() != UnitCell::NoCell)
 	{
 		Matrix mat = aten_.currentModelOrFrame()->cell().axes();
-		parser.writeLineF("Tv  %12.6f 0 %12.6f 0 %12.6f 0\n",mat[0], mat[1], mat[2]);
-		parser.writeLineF("Tv  %12.6f 0 %12.6f 0 %12.6f 0\n",mat[4], mat[5], mat[6]);
-		parser.writeLineF("Tv  %12.6f 0 %12.6f 0 %12.6f 0\n",mat[8], mat[9], mat[10]);
+		parser.writeLineF("Tv  %12.6f 0 %12.6f 0 %12.6f 0",mat[0], mat[1], mat[2]);
+		parser.writeLineF("Tv  %12.6f 0 %12.6f 0 %12.6f 0",mat[4], mat[5], mat[6]);
+		parser.writeLineF("Tv  %12.6f 0 %12.6f 0 %12.6f 0",mat[8], mat[9], mat[10]);
 	}
 	parser.closeFiles();
 	

@@ -55,7 +55,7 @@ bool Aten::importModel(QString fileName, FilePluginInterface* plugin, QStringLis
 
 	// If plugin == NULL then we must probe the file first to try and find out how to load it
 	bool result = false;
-	if (plugin == NULL) pluginStore_.findFilePlugin(PluginTypes::ModelFilePlugin, PluginTypes::ImportPlugin, fileName);
+	if (plugin == NULL) plugin = pluginStore_.findFilePlugin(PluginTypes::ModelFilePlugin, PluginTypes::ImportPlugin, fileName);
 	if (plugin != NULL)
 	{
 		// Create a LineParser to open the file, and encapsulate it in a FileParser to give to the interface
@@ -63,7 +63,7 @@ bool Aten::importModel(QString fileName, FilePluginInterface* plugin, QStringLis
 		parser.openInput(fileName);
 		if (!parser.isFileGoodForReading())
 		{
-			Messenger::error("Couldn't open file '%s' for reading.\n", qPrintable(fileName));
+			Messenger::error("Couldn't open file '%s' for reading.", qPrintable(fileName));
 			Messenger::exit("Aten::importModel");
 			return false;
 		}
@@ -351,7 +351,7 @@ bool Aten::importExpression(QString fileName, FilePluginInterface* plugin, QStri
 
 	// If plugin == NULL then we must probe the file first to try and find out how to load it
 	bool result = false;
-	if (plugin == NULL) pluginStore_.findFilePlugin(PluginTypes::ExpressionFilePlugin, PluginTypes::ImportPlugin, fileName);
+	if (plugin == NULL) plugin = pluginStore_.findFilePlugin(PluginTypes::ExpressionFilePlugin, PluginTypes::ImportPlugin, fileName);
 	if (plugin != NULL)
 	{
 		// Create a LineParser to open the file, and encapsulate it in a FileParser to give to the interface

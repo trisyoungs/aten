@@ -120,7 +120,7 @@ bool XYZModelPlugin::importData(FileParser& parser)
 
 			// Create the new atom
 			r.set(parser.argd(1), parser.argd(2), parser.argd(3));
-			targetModel->addAtom(parser.argi(0), r);
+			targetModel->addAtom(ElementMap().find(parser.argc(0)), r);
 		}
 
 		// Rebond the model
@@ -142,7 +142,7 @@ bool XYZModelPlugin::exportData(FileParser& parser)
 	const Model* targetModel = parser.targetModel();
 
 	// Write number atoms line
-	parser.writeLineF("%i\n", targetModel->nAtoms());
+	parser.writeLineF("%i", targetModel->nAtoms());
 
 	// Write title line
 	parser.writeLine(targetModel->name());
@@ -150,7 +150,7 @@ bool XYZModelPlugin::exportData(FileParser& parser)
 	// Write atom information
 	for (Atom* i = targetModel->atoms(); i != NULL; i = i->next)
 	{
-		parser.writeLineF("%-8s  %12.6f %12.6f %12.6f %12.6f\n", ElementMap().symbol(i->element()), i->r().x, i->r().y, i->r().z, i->charge());
+		parser.writeLineF("%-8s  %12.6f %12.6f %12.6f %12.6f", ElementMap().symbol(i->element()), i->r().x, i->r().y, i->r().z, i->charge());
 	}
 
 	return true;

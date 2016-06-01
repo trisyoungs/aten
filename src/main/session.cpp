@@ -76,7 +76,7 @@ bool Aten::saveSession(QString filename)
 	if (!parser.openOutput(sessionFilename_, true)) return false;
 
 	// Write header information
-	parser.writeLineF("// Session file saved from Aten version %s on %s\n", ATENVERSION, qPrintable(QDateTime::currentDateTime().toString()));
+	parser.writeLineF("// Session file saved from Aten version %s on %s", ATENVERSION, qPrintable(QDateTime::currentDateTime().toString()));
 
 	// Preferences
 	dumpPreferences(parser);
@@ -95,20 +95,21 @@ bool Aten::saveSession(QString filename)
 		QString modelVar = QString("model%1").arg(modelId, 3, 10, QChar('0'));
 	
 		// Write header
-		parser.writeLineF("\n// Model '%s'\n", qPrintable(m->name()));
-		parser.writeLineF("// Original Filename: '%s'\n", qPrintable(m->filename()));
+		parser.writeLine();
+		parser.writeLineF("// Model '%s'", qPrintable(m->name()));
+		parser.writeLineF("// Original Filename: '%s'", qPrintable(m->filename()));
 
 		// Write atom and bond information
-		parser.writeLineF("Model %s = newModel('%s');\n", qPrintable(modelVar), qPrintable(m->name()));
-		for (Atom* i = m->atoms(); i != NULL; i = i->next) parser.writeLineF("%s.newAtom(%s,%f,%f,%f);\n", qPrintable(modelVar), Elements().symbol(i->element()), i->r().x, i->r().y, i->r().z);
-		for (Bond* b = m->bonds(); b != NULL; b = b->next) parser.writeLineF("%s.newBond(%i,%i,'%s');\n", qPrintable(modelVar), b->atomI()->id()+1, b->atomJ()->id()+1, Bond::bondType(b->type()));
+		parser.writeLineF("Model %s = newModel('%s');", qPrintable(modelVar), qPrintable(m->name()));
+		for (Atom* i = m->atoms(); i != NULL; i = i->next) parser.writeLineF("%s.newAtom(%s,%f,%f,%f);", qPrintable(modelVar), Elements().symbol(i->element()), i->r().x, i->r().y, i->r().z);
+		for (Bond* b = m->bonds(); b != NULL; b = b->next) parser.writeLineF("%s.newBond(%i,%i,'%s');", qPrintable(modelVar), b->atomI()->id()+1, b->atomJ()->id()+1, Bond::bondType(b->type()));
 
 		// Atom selection
-		for (RefListItem<Atom,int>* ri = m->selection(); ri != NULL; ri = ri->next) parser.writeLineF("%s.select(%i);\n", qPrintable(modelVar), ri->item->id()+1);
+		for (RefListItem<Atom,int>* ri = m->selection(); ri != NULL; ri = ri->next) parser.writeLineF("%s.select(%i);", qPrintable(modelVar), ri->item->id()+1);
 		
 		// Done - Finalise it
 		// ATEN2 TODO ENDOFFILTERS CHECK
-		parser.writeLineF("finaliseModel();\n");
+		parser.writeLineF("finaliseModel();");
 
 		// Grid data
 		for (Grid* g = m->grids(); g != NULL; g = g->next, ++gridId)
@@ -119,30 +120,30 @@ bool Aten::saveSession(QString filename)
 			// Write basic grid info or filename
 			if (!g->filename().isEmpty())
 			{
-				parser.writeLineF("Grid %s = loadGrid('%s');\n", qPrintable(gridVar), qPrintable(g->filename()));
+				parser.writeLineF("Grid %s = loadGrid('%s');", qPrintable(gridVar), qPrintable(g->filename()));
 			}
-			parser.writeLineF("%s.name = '%s';\n", qPrintable(gridVar), qPrintable(g->name()));
+			parser.writeLineF("%s.name = '%s';", qPrintable(gridVar), qPrintable(g->name()));
 			// Write axes, offset, and cutoff information
 			double* axes = g->axes().matrix();
-			parser.writeLineF("%s.axes = { %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f};\n", qPrintable(gridVar), axes[0], axes[1], axes[2], axes[3], axes[4], axes[5], axes[6], axes[7], axes[8], axes[9], axes[10], axes[11], axes[12], axes[13], axes[14], axes[15]);
-			parser.writeLineF("%s.origin = { %f, %f, %f };\n", qPrintable(gridVar), g->origin().x, g->origin().y, g->origin().z);
-			parser.writeLineF("%s.cutoff = %f;\n", qPrintable(gridVar), g->lowerPrimaryCutoff());
-			parser.writeLineF("%s.upperCutoff = %f;\n", qPrintable(gridVar), g->upperPrimaryCutoff());
-			parser.writeLineF("%s.secondaryCutoff = %f;\n", qPrintable(gridVar), g->lowerSecondaryCutoff());
-			parser.writeLineF("%s.secondaryUpperCutoff = %f;\n", qPrintable(gridVar), g->upperSecondaryCutoff());
+			parser.writeLineF("%s.axes = { %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f, %f};", qPrintable(gridVar), axes[0], axes[1], axes[2], axes[3], axes[4], axes[5], axes[6], axes[7], axes[8], axes[9], axes[10], axes[11], axes[12], axes[13], axes[14], axes[15]);
+			parser.writeLineF("%s.origin = { %f, %f, %f };", qPrintable(gridVar), g->origin().x, g->origin().y, g->origin().z);
+			parser.writeLineF("%s.cutoff = %f;", qPrintable(gridVar), g->lowerPrimaryCutoff());
+			parser.writeLineF("%s.upperCutoff = %f;", qPrintable(gridVar), g->upperPrimaryCutoff());
+			parser.writeLineF("%s.secondaryCutoff = %f;", qPrintable(gridVar), g->lowerSecondaryCutoff());
+			parser.writeLineF("%s.secondaryUpperCutoff = %f;", qPrintable(gridVar), g->upperSecondaryCutoff());
 			// Style information
-			parser.writeLineF("%s.colour = { %f, %f, %f, %f };\n", qPrintable(gridVar), g->primaryColour()[0], g->primaryColour()[1], g->primaryColour()[2], g->primaryColour()[3]);
-			parser.writeLineF("%s.style = '%s';\n", qPrintable(gridVar), Grid::surfaceStyle(g->primaryStyle()));
-			parser.writeLineF("%s.secondaryColour = { %f, %f, %f, %f };\n", qPrintable(gridVar), g->secondaryColour()[0], g->secondaryColour()[1], g->secondaryColour()[2], g->secondaryColour()[3]);
-			parser.writeLineF("%s.secondaryStyle = '%s';\n", qPrintable(gridVar), Grid::surfaceStyle(g->secondaryStyle()));
-			parser.writeLineF("%s.visible = %i;\n", qPrintable(gridVar), g->isVisible());
-			parser.writeLineF("%s.outlineVolume = %i;\n", qPrintable(gridVar), g->outlineVolume());
-			parser.writeLineF("%s.periodic = %i;\n", qPrintable(gridVar), g->periodic());
+			parser.writeLineF("%s.colour = { %f, %f, %f, %f };", qPrintable(gridVar), g->primaryColour()[0], g->primaryColour()[1], g->primaryColour()[2], g->primaryColour()[3]);
+			parser.writeLineF("%s.style = '%s';", qPrintable(gridVar), Grid::surfaceStyle(g->primaryStyle()));
+			parser.writeLineF("%s.secondaryColour = { %f, %f, %f, %f };", qPrintable(gridVar), g->secondaryColour()[0], g->secondaryColour()[1], g->secondaryColour()[2], g->secondaryColour()[3]);
+			parser.writeLineF("%s.secondaryStyle = '%s';", qPrintable(gridVar), Grid::surfaceStyle(g->secondaryStyle()));
+			parser.writeLineF("%s.visible = %i;", qPrintable(gridVar), g->isVisible());
+			parser.writeLineF("%s.outlineVolume = %i;", qPrintable(gridVar), g->outlineVolume());
+			parser.writeLineF("%s.periodic = %i;", qPrintable(gridVar), g->periodic());
 		}
 
 		// View
 		Matrix view = m->modelViewMatrix();
-		parser.writeLineF("setView(%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f);\n", view[0], view[1], view[2], view[4], view[5], view[6], view[8], view[9], view[10], view[12], view[13], view[14]);
+		parser.writeLineF("setView(%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f,%f);", view[0], view[1], view[2], view[4], view[5], view[6], view[8], view[9], view[10], view[12], view[13], view[14]);
 	}
 
 	parser.closeFiles();

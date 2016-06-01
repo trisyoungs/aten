@@ -80,7 +80,34 @@ const Model* FileParser::targetModel() const
 	return targetModel_;
 }
 
-// Write line to file
+// Write partial line to file
+bool FileParser::write(QString line)
+{
+	return parser_.write(line);
+}
+
+// Write formatted partial line to file
+bool FileParser::writeF(const char* fmt, ...)
+{
+	// Construct line
+	va_list arguments;
+	static char s[8096];
+	s[0] = '\0';
+
+	// Parse the argument list (...) and internally write the output string into s[]
+	va_start(arguments,fmt);
+	vsprintf(s,fmt,arguments);
+	va_end(arguments);
+	return parser_.write(s);
+}
+
+// Write empty line to file
+bool FileParser::writeLine()
+{
+	return parser_.writeLine();
+}
+
+// Write whole line to file (appending CR/LF automatically)
 bool FileParser::writeLine(QString line)
 {
 	return parser_.writeLine(line);
@@ -93,6 +120,7 @@ bool FileParser::writeLineF(const char* fmt, ...)
 	va_list arguments;
 	static char s[8096];
 	s[0] = '\0';
+
 	// Parse the argument list (...) and internally write the output string into s[]
 	va_start(arguments,fmt);
 	vsprintf(s,fmt,arguments);
@@ -144,6 +172,12 @@ bool FileParser::argb(int i)
 float FileParser::argf(int i)
 {
 	return parser_.argf(i);
+}
+
+// Returns the specified argument (+1, and +2) as a Vec3<double>
+Vec3<double> FileParser::arg3d(int i)
+{
+	return Vec3<double>(parser_.argd(i), parser_.argd(i+1), parser_.argd(i+2));
 }
 
 // Returns whether the specified argument exists

@@ -131,9 +131,9 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 
 	protected:
 	// Create new model (in Aten)
-	Model* createModel()
+	Model* createModel(QString name = QString())
 	{
-		ReturnValue result = CommandNode::run(Commands::NewModel);
+		ReturnValue result = CommandNode::run(Commands::NewModel, "c", qPrintable(name));
 		Model* newModel = (Model*) result.asPointer(VTypes::ModelData);
 		newModel->disableUndoRedo();
 		createdModels_.add(newModel);
