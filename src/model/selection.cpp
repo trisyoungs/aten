@@ -417,7 +417,7 @@ void Model::reorderSelectedAtoms()
 }
 
 // Get empirical formula of selection
-QString Model::selectionEmpirical(bool markOnly, bool addSpaces) const
+QString Model::selectionEmpirical(bool markOnly, bool addSpaces, bool useSubScripts) const
 {
 	Messenger::enter("Model::selectionEmpirical");
 
@@ -441,7 +441,11 @@ QString Model::selectionEmpirical(bool markOnly, bool addSpaces) const
 		{
 			if ((!result.isEmpty()) & addSpaces) result += QString(" ") + Elements().symbol(n);
 			else result += Elements().symbol(n);
-			if (elcount[n] > 1) result += QString::number(elcount[n]);
+			if (elcount[n] > 1)
+			{
+				if (useSubScripts) result += "<sub>" + QString::number(elcount[n]) + "</sub>";
+				else result += QString::number(elcount[n]);
+			}
 		}
 	}
 

@@ -58,7 +58,7 @@ void AtenWindow::updateMainWindow()
 
 		// Selection
 		if (currentModel->nSelected() == 0) selectionText = "0 / --";
-		else selectionText = QString::number(currentModel->nSelected()) + " / " + currentModel->selectionEmpirical();
+		else selectionText = QString::number(currentModel->nSelected()) + " / " + currentModel->selectionEmpirical(false, false, true);
 
 		// Cell information
 		UnitCell::CellType ct = currentModel->cell().type();
