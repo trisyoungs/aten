@@ -1226,6 +1226,13 @@
              </layout>
             </widget>
            </item>
+           <item>
+            <widget class="QCheckBox" name="ColoursUseWidgetForegroundBackgroundCheck">
+             <property name="text">
+              <string>Use Qt widget foreground / background for main view</string>
+             </property>
+            </widget>
+           </item>
           </layout>
          </widget>
          <widget class="QWidget" name="RenderingSubTab">

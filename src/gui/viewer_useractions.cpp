@@ -35,7 +35,7 @@ void Viewer::renderActiveModes(Model* currentModel)
 	int i, skip, n;
 	double dx, halfw;
 
-	prefs.copyColour(Prefs::ForegroundColour, colour);
+	prefs.copyColour(prefs.currentForegroundColour(), colour);
 	glColor4fv(colour);
 	switch (atenWindow_->activeMode())
 	{
@@ -109,7 +109,7 @@ void Viewer::renderUserActions(Model* source)
 	QString text;
 
 	// Draw on the selection highlights (for atoms in the canvas' pickedAtoms list)
-	prefs.copyColour(Prefs::ForegroundColour, colour_i);
+	prefs.copyColour(prefs.currentForegroundColour(), colour_i);
 	glColor4f(colour_i.x, colour_i.y, colour_i.z, colour_i.w);
 	glEnable(GL_DEPTH_TEST);
 	for (RefListItem<Atom,int>* ri = atenWindow_->pickedAtoms(); ri != NULL; ri = ri->next)
@@ -254,7 +254,7 @@ void Viewer::renderUserActions(Model* source)
 				if (m != NULL) renderGroup_.createAtomsAndBonds(primitives_[primitiveSet_], m, A);
 				else
 				{
-					prefs.copyColour(Prefs::ForegroundColour, colour_i);
+					prefs.copyColour(prefs.currentForegroundColour(), colour_i);
 					renderGroup_.addLines(primitives_[primitiveSet_].crossedCube(), A, colour_i, true);
 				}
 			}

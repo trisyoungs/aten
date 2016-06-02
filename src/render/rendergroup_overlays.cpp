@@ -40,7 +40,7 @@ void RenderGroup::createOverlays(Model* source, Matrix baseTransform)
 	ForcefieldAtom* ffa;
 	QStringList labelStrings;
 	Prefs::DrawStyle style, globalstyle = prefs.renderStyle();
-	prefs.copyColour(Prefs::ForegroundColour, colour);
+	prefs.copyColour(prefs.currentForegroundColour(), colour);
 
 	// Atom labels
 	atoms = source->atomArray();

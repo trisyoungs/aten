@@ -221,7 +221,7 @@ void RenderGroup::sendToGL(Matrix& modelTransformationMatrix)
 	glEnable(GL_MULTISAMPLE);
 	glEnable(GL_BLEND);
 	GLfloat colour[4];
-	prefs.copyColour(Prefs::ForegroundColour, colour);
+	prefs.copyColour(prefs.currentForegroundColour(), colour);
 	glColor4fv(colour);
 	if (FontInstance::fontOK())
 	{
@@ -247,7 +247,7 @@ void RenderGroup::sendToGL(Matrix& modelTransformationMatrix)
 	// Overlay Text
 	glEnable(GL_MULTISAMPLE);
 	glEnable(GL_BLEND);
-	prefs.copyColour(Prefs::ForegroundColour, colour);
+	prefs.copyColour(prefs.currentForegroundColour(), colour);
 	glColor4fv(colour);
 	if (FontInstance::fontOK())
 	{

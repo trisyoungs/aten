@@ -88,7 +88,7 @@ void Viewer::setupGL()
 	if (prefs.depthCue())
 	{
 		glFogi(GL_FOG_MODE, GL_LINEAR);
-		prefs.copyColour(Prefs::BackgroundColour, col);
+		prefs.copyColour(prefs.currentBackgroundColour(), col);
 		glFogfv(GL_FOG_COLOR, col);
 		glFogf(GL_FOG_DENSITY, 0.35f);
 		glHint(GL_FOG_HINT, GL_NICEST);
@@ -297,7 +297,7 @@ void Viewer::paintGL()
 
 	// Setup GL and clear view
 	GLfloat col[4];
-	prefs.copyColour(Prefs::BackgroundColour, col);
+	prefs.copyColour(prefs.currentBackgroundColour(), col);
 	glClearColor(col[0], col[1], col[2], col[3]);
 
 	glViewport(0, 0, contextWidth_, contextHeight_);

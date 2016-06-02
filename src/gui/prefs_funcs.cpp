@@ -192,9 +192,8 @@ void AtenPrefs::on_PrefsOkButton_clicked(bool checked)
 	// Recalculate forcefield energy terms if the glboal energy unit was changed
 	if (prefsBackup_.energyUnit() != prefs.energyUnit()) for (Forcefield* ff = parent_.aten().forcefields(); ff != NULL; ff = ff->next) ff->convertParameters();
 
-	// Copy old preferences values back into main structure, update view and close window
-	parent_.aten().globalLogChange(Log::Style);
-	parent_.updateWidgets(AtenWindow::MainViewTarget);
+	updateAfterViewPrefs();
+
 	accept();
 }
 
@@ -243,9 +242,8 @@ void AtenPrefs::on_ElementRadiusSpin_valueChanged(double value)
 	int el = ui.ElementList->currentRow();
 	if (el == -1) return;
 	Elements().setAtomicRadius(el, value);
-	// Re-draw models
-	parent_.aten().currentModel()->logChange(Log::Style);
-	parent_.updateWidgets(AtenWindow::MainViewTarget);
+
+	updateAfterViewPrefs();
 }
 
 void AtenPrefs::elementColourChanged()
@@ -260,10 +258,7 @@ void AtenPrefs::elementColourChanged()
 	ui.ElementColourButton->callPopupMethod("currentColour", rv);
 	Elements().setColour(el, rv.asDouble(0, success), rv.asDouble(1, success), rv.asDouble(2, success), rv.asDouble(3, success));
 
-	// Re-set atom colours in models
-	parent_.aten().globalLogChange(Log::Style);
-
-	parent_.updateWidgets(AtenWindow::MainViewTarget);
+	updateAfterViewPrefs();
 }
 
 /*
@@ -445,6 +440,13 @@ void AtenPrefs::on_ColoursTable_cellDoubleClicked(int row, int column)
 	// Update display
 	parent_.aten().globalLogChange(Log::Style);
 	parent_.updateWidgets(AtenWindow::MainViewTarget);
+}
+
+void AtenPrefs::on_ColoursUseWidgetForegroundBackgroundCheck_clicked(bool checked)
+{
+	if (refreshing_) return;
+	prefs.setUseWidgetForegroundBackground(checked);
+	updateAfterViewPrefs();
 }
 
 /*

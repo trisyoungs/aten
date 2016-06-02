@@ -145,7 +145,7 @@ void Model::setPlugin(IOPluginInterface* plugin)
 }
 
 // Return the plugin used to load the model
-IOPluginInterface* plugin() const
+IOPluginInterface* Model::plugin() const
 {
 	return plugin_;
 }

@@ -80,7 +80,7 @@ void Viewer::renderExtras(Model* sourceModel)
 		r2 = rv.asVector();
 		iNeg.set(ceil(r1.x), ceil(r1.y), ceil(r1.z));
 		iPos.set(floor(r2.x), floor(r2.y), floor(r2.z));
-		prefs.copyColour(Prefs::ForegroundColour, colour);
+		prefs.copyColour(prefs.currentForegroundColour(), colour);
 		Matrix A = sourceModel->modelViewMatrix() * sourceModel->cell().axes(), B;
 		glMultMatrixd(A.matrix());
 		for (int i = iNeg.x-1; i<=iPos.x; ++i)
@@ -186,7 +186,7 @@ void Viewer::renderExtras(Model* sourceModel)
 
 		// Add triangle / quad
 		Vec4<GLfloat> colour;
-		prefs.copyColour(Prefs::ForegroundColour, colour);
+		prefs.copyColour(prefs.currentForegroundColour(), colour);
 		colour.w = 0.3;
 		if (ncoords == 3)
 		{

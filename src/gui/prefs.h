@@ -143,6 +143,7 @@ class AtenPrefs : public QDialog
 	void on_StickLineSelectedWidthSpin_valueChanged(double value);
 	// Colours page
 	void on_ColoursTable_cellDoubleClicked(int row, int column);
+	void on_ColoursUseWidgetForegroundBackgroundCheck_clicked(bool checked);
 	// Rendering / Quality page
 	void on_PrimitiveQualitySpin_valueChanged(int value);
 	void on_PrimitiveQualitySlider_valueChanged(int value);

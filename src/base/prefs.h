@@ -60,7 +60,7 @@ class Prefs
 	static KeyAction keyAction(QString s, bool reportError = false);
 	static const char* keyAction(KeyAction ka);
 	// Property/Object Colours
-	enum ObjectColour { AromaticRingColour, BackgroundColour, FixedAtomColour, ForegroundColour, GlyphDefaultColour, HydrogenBondColour, SpecularColour, VibrationArrowColour, nObjectColours };
+	enum ObjectColour { AromaticRingColour, BackgroundColour, FixedAtomColour, ForegroundColour, GlyphDefaultColour, HydrogenBondColour, SpecularColour, VibrationArrowColour, WidgetBackgroundColour, WidgetForegroundColour, nObjectColours };
 	static const char* objectColour(ObjectColour oc);
 	static const char* objectColourName(ObjectColour oc);
 	static ObjectColour objectColour(QString s, bool reportError = false);
@@ -278,10 +278,6 @@ class Prefs
 	void setLabelSize(double size);
 	// Return the current label pointsize
 	double labelSize() const;
-	// Set usage of pixelbuffers in image saving
-	void setUsePixelBuffers(bool checked);
-	// Return whether to use pixelbuffers for image saving
-	bool usePixelBuffers() const;
 	// Return whether to use solid or dashed circles for aromatic ring rendering
 	bool renderDashedAromatics();
 	// Set  whether to use solid or dashed circles for aromatic ring rendering
@@ -386,6 +382,8 @@ class Prefs
 	private:
 	// RGB colour values
 	double colours_[Prefs::nObjectColours][4];
+	// Whether to use widget foreground and background colours instead of user-defined values
+	bool useWidgetForegroundBackground_;
 
 	public:
 	// Set the specified colour to the integer RGBA values supplied
@@ -400,6 +398,14 @@ class Prefs
 	double* colour(ObjectColour c);
 	// User-definable colour scales
 	ColourScale colourScale[10];
+	// Set whether to use widget foreground and background colours instead of user-defined values
+	void setUseWidgetForegroundBackground(bool b);
+	// Return whether to use widget foreground and background colours instead of user-defined values
+	bool useWidgetForegroundBackground();
+	// Return background colour to use
+	Prefs::ObjectColour currentBackgroundColour();
+	// Return foreground colour to use
+	Prefs::ObjectColour currentForegroundColour();
 
 
 	/*

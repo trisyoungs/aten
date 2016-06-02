@@ -38,7 +38,7 @@ void RenderGroup::createGlyphs(PrimitiveSet& primitiveSet, Model* source)
 	double arrowBodyLength = 0.8, arrowHeadLength = 1.0-arrowBodyLength;
 
 	// Copy foreground colour (for highlighting selected glyphs)
-	prefs.copyColour(Prefs::ForegroundColour, textColour);
+	prefs.copyColour(prefs.currentForegroundColour(), textColour);
 	
 	for (Glyph* g = source->glyphs(); g != NULL; g = g->next)
 	{

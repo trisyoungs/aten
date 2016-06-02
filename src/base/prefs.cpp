@@ -111,8 +111,8 @@ const char* Prefs::keyAction(Prefs::KeyAction i)
 }
 
 // Colours
-const char* ObjectColourKeywords[Prefs::nObjectColours] = { "ring", "bg", "fixedatom", "fg", "glyph", "hbond", "specular", "vibrationarrow" };
-const char* ObjectColourNames[Prefs::nObjectColours] = { "Aromatic Ring", "Background", "Foreground", "Fixed Atom", "Glyph Default", "Hydrogen Bond", "Specular", "Vibration Arrow" };
+const char* ObjectColourKeywords[Prefs::nObjectColours] = { "ring", "bg", "fixedatom", "fg", "glyph", "hbond", "specular", "vibrationarrow", "_widgetbg", "_widgetfg" };
+const char* ObjectColourNames[Prefs::nObjectColours] = { "Aromatic Ring", "Background", "Fixed Atom", "Foreground", "Glyph Default", "Hydrogen Bond", "Specular", "Vibration Arrow", "Widget Background (Private)", "Widget Foreground (Private)" };
 Prefs::ObjectColour Prefs::objectColour(QString s, bool reportError)
 {
 	Prefs::ObjectColour pc = (Prefs::ObjectColour) enumSearch("colour", Prefs::nObjectColours, ObjectColourKeywords, s);
@@ -272,6 +272,7 @@ Prefs::Prefs()
 	setColour(Prefs::HydrogenBondColour, 0.7, 0.7, 0.7, 1.0);
 	setColour(Prefs::SpecularColour, 0.9, 0.9, 0.9, 1.0);
 	setColour(Prefs::VibrationArrowColour, 0.8, 0.4, 0.4, 1.0);
+	useWidgetForegroundBackground_ = false;
 
 	// Colour scales
 	colourScale[0].setName("Charge");
@@ -765,12 +766,6 @@ GLint Prefs::shininess() const
  * Colours
  */
 
-// Return the specified colour
-double* Prefs::colour(ObjectColour c)
-{
-	return colours_[c];
-}
-
 // Copy the specified colour
 void Prefs::copyColour(ObjectColour c, GLfloat* target) const
 {
@@ -803,6 +798,37 @@ void Prefs::setColour(ObjectColour c, int i, double value)
 {
 	if ((i < 0) || (i > 3)) printf("Colour element index out of range (%i)\n", i);
 	else colours_[c][i] = value;
+}
+
+
+// Return the specified colour
+double* Prefs::colour(ObjectColour c)
+{
+	return colours_[c];
+}
+
+// Set whether to use widget foreground and background colours instead of user-defined values
+void Prefs::setUseWidgetForegroundBackground(bool b)
+{
+	useWidgetForegroundBackground_ = b;
+}
+
+// Return whether to use widget foreground and background colours instead of user-defined values
+bool Prefs::useWidgetForegroundBackground()
+{
+	return useWidgetForegroundBackground_;
+}
+
+// Return background colour to use
+Prefs::ObjectColour Prefs::currentBackgroundColour()
+{
+	return (useWidgetForegroundBackground_ ? Prefs::WidgetBackgroundColour : Prefs::BackgroundColour);
+}
+
+// Return foreground colour to use
+Prefs::ObjectColour Prefs::currentForegroundColour()
+{
+	return (useWidgetForegroundBackground_ ? Prefs::WidgetForegroundColour : Prefs::ForegroundColour);
 }
 
 /*

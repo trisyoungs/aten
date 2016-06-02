@@ -119,6 +119,7 @@ Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
 	{ "stickNormalWidth",		VTypes::DoubleData,		4, false },
 	{ "stickSelectedWidth",		VTypes::DoubleData,		4, false },
 	{ "tempDir",			VTypes::StringData,		0, false },
+	{ "useWidgetForegroundBackground", VTypes::IntegerData,		0, false },
 	{ "vdwCutoff",			VTypes::DoubleData,		0, false },
 	{ "vibrationArrowColour",	VTypes::DoubleData,		4, false },
 	{ "viewerFontFilename",		VTypes::StringData,		0, false },
@@ -460,6 +461,9 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArray
 			break;
 		case (PreferencesVariable::TempDir):
 			rv.set( ptr->tempDir().path() );
+			break;
+		case (PreferencesVariable::UseWidgetForegroundBackground):
+			rv.set( ptr->useWidgetForegroundBackground() );
 			break;
 		case (PreferencesVariable::VdwCutoff):
 			rv.set( ptr->vdwCutoff() );
@@ -839,6 +843,9 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue&
 			break;
 		case (PreferencesVariable::TempDir):
 			ptr->setTempDir( newValue.asString(result) );
+			break;
+		case (PreferencesVariable::UseWidgetForegroundBackground):
+			ptr->setUseWidgetForegroundBackground( newValue.asBool() );
 			break;
 		case (PreferencesVariable::VdwCutoff):
 			ptr->setVdwCutoff( newValue.asDouble(result) );

@@ -442,9 +442,14 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportFilmD
 	// Refresh everything
 	updateWidgets(AtenWindow::AllTarget);
 
-	// Set some preferences back to their default values
+	// Set some preferences back to their default values, and set the widget colours
 	prefs.setZMapType(ElementMap::AutoZMap);
 	prefs.setKeepView(false);
+	QColor colour;
+	colour = palette().background().color();
+	prefs.setColour(Prefs::WidgetBackgroundColour, colour.redF(), colour.greenF(), colour.blueF(), colour.alphaF());
+	colour = palette().foreground().color();
+	prefs.setColour(Prefs::WidgetForegroundColour, colour.redF(), colour.greenF(), colour.blueF(), colour.alphaF());	
 
 	Messenger::exit("AtenWindow::AtenWindow()");
 }
