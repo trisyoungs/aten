@@ -31,7 +31,6 @@ Graphics TODO
 Optimise basic primitives to use vertex/index arrays instead of just vertices (also check end caps of spheres).
 Optimise primitive drawing / generation by allowing use of GL_TRIANGLE_STRIP?
 Reimplement drawing of grid (volume) axes.
-Make main view background and text/overlay colour aware of Qt widget colouring style.
 Frame individual model areas when displaying multiple models OR light checkerboard background?
 Automatically adjust grid size for number of visible models, based on current aspect ratio and context size etc.
 Multiple bonds (double, definitely) are not drawn correctly, becoming squashed as the bond length increases.

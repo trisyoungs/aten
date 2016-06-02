@@ -41,6 +41,9 @@ Cli cliSwitches[] = {
 	{ Cli::AtenDataSwitch,		'\0',"atendata",	1,
 		"<dir>",
 		"Set the data location to the supplied directory (and don't read $ATENDATA)" },
+	{ Cli::AtenPluginsSwitch,	'\0',"atenplugins",	1,
+		"<dir>",
+		"Set the directory to search for plugins" },
 	{ Cli::BatchSwitch,		'\0',"batch",		0,
 		"",
 		"Run any commands supplied with -c or --command on all models and save in the original format" },
@@ -146,7 +149,7 @@ Cli cliSwitches[] = {
 	{ Cli::NoIncludesSwitch,	'\0',"noincludes",	0,
 		"",
 		"Prevent loading of includes on startup" },
-	{ Cli::NoInstancesSwitch,	'\0',"noinstances",		0,
+	{ Cli::NoInstancesSwitch,	'\0',"noinstances",	0,
 		"",
 		"Disable use of both OpenGL display lists and VBOs" },
 	{ Cli::NoPackSwitch,		'\0',"nopack",		0,
@@ -167,9 +170,6 @@ Cli cliSwitches[] = {
 	{ Cli::PipeSwitch,		'p',"pipe",		0,
 		"",
 		"Read and execute commands from piped input" },
-	{ Cli::PluginDirSwitch,		'\0',"plugindir",	0,
-		"<dir>",
-		"Set the directory to search for plugins" },
 	{ Cli::ProcessSwitch,		'\0',"process",		0,
 		"",
 		"Run any commands supplied with -c or --command on all models (but don't save)" },
@@ -352,6 +352,11 @@ bool Aten::parseCliEarly(int argc, char *argv[])
 					dataDir_ = argText;
 					Messenger::print("Will search for data in '%s'.", qPrintable(dataDir_.path()));
 					break;
+				// Set plugin directory location
+				case (Cli::AtenPluginsSwitch):
+					pluginDir_ = argText;
+					Messenger::print("Will search for plugins in '%s'.", qPrintable(pluginDir_.path()));
+					break;
 				// Turn on debug messages for calls (or specified output)
 				case (Cli::DebugSwitch):
 					if (!hasArg) Messenger::addOutputType(Messenger::Calls);
@@ -400,11 +405,6 @@ bool Aten::parseCliEarly(int argc, char *argv[])
 				// Restrict plugin loading on startup
 				case (Cli::NoPluginsSwitch):
 					prefs.setLoadPlugins(false);
-					break;
-				// Set plugin directory location
-				case (Cli::PluginDirSwitch):
-					pluginDir_ = argText;
-					Messenger::print("Will search for plugins in '%s'.", qPrintable(pluginDir_.path()));
 					break;
 				// Run in silent mode (no CLI output)
 				case (Cli::QuietSwitch):
@@ -553,6 +553,7 @@ int Aten::parseCli(int argc, char *argv[])
 			{
 				// All of the following switches were dealt with in parseCliEarly(), so ignore them
 				case (Cli::AtenDataSwitch):
+				case (Cli::AtenPluginsSwitch):
 				case (Cli::DebugSwitch):
 				case (Cli::HelpSwitch):
 				case (Cli::ListsSwitch):
