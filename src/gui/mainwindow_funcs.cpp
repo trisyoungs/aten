@@ -21,7 +21,6 @@
 
 #include "main/aten.h"
 #include "gui/mainwindow.h"
-#include "gui/loadmodel.h"
 #include "gui/ffeditor.h"
 #include "gui/selectpattern.h"
 #include "gui/tdoublespindelegate.hui"
