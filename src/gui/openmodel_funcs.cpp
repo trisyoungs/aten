@@ -24,12 +24,12 @@
 #include <QMessageBox>
 
 // Constructor
-AtenOpenModel::AtenOpenModel(QWidget* parent, QDir startingDirectory, const RefList<FilePluginInterface,int>& ioPlugins) : QDialog(parent), ioPlugins_(ioPlugins)
+AtenOpenModel::AtenOpenModel(QWidget* parent, QDir startingDirectory, const RefList<FilePluginInterface,int>& filePlugins) : QDialog(parent), filePlugins_(filePlugins)
 {
 	ui.setupUi(this);
 
 	// Set the mode of the FileSelectorWidget
-	ui.FileSelector->setMode(FileSelectorWidget::OpenMultipleMode, ioPlugins, startingDirectory);
+	ui.FileSelector->setMode(FileSelectorWidget::OpenMultipleMode, filePlugins, startingDirectory);
 
 	// Link up some slots
 	connect(ui.FileSelector, SIGNAL(selectionMade(bool)), this, SLOT(on_OpenButton_clicked(bool)));
@@ -87,4 +87,13 @@ QStringList AtenOpenModel::selectedFilenames()
 FilePluginInterface* AtenOpenModel::selectedPlugin()
 {
 	return ui.FileSelector->selectedPlugin();
+}
+
+// Return map of standard options from dialog
+KVMap AtenOpenModel::standardOptions()
+{
+	KVMap options;
+	options.add("preventRebonding", ui.PreventRebondingCheck->isChecked() ? "true" : "false");
+	options.add("preventFolding", ui.PreventFoldingCheck->isChecked() ? "true" : "false");
+	options.add("preventPacking", ui.PreventPackingCheck->isChecked() ? "true" : "false");
 }

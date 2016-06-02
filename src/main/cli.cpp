@@ -749,7 +749,7 @@ int Aten::parseCli(int argc, char *argv[])
 					break;
 				// Prohibit bonding calculation of atoms on load
 				case (Cli::NoBondSwitch):
-					importStandardOptions_.add("preventBonding", "true");
+					importStandardOptions_.add("preventRebonding", "true");
 					break;
 				// Prohibit folding (MIM'ing) of atoms in periodic systems on load
 				case (Cli::NoFoldSwitch):
