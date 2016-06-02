@@ -305,10 +305,6 @@ Prefs::Prefs()
 	allowDialogs_ = false;
 	
 	// File
-	bondOnLoad_ = Choice::Default;
-	foldOnLoad_ = Choice::Default;
-	centreOnLoad_ = Choice::Default;
-	packOnLoad_ = Choice::Default;
 	cacheLimit_ = 512000;
 	zMapType_ = ElementMap::AutoZMap;
 	coordsInBohr_ = false;
@@ -979,54 +975,6 @@ const Matrix& Prefs::commonViewMatrix()
 /*
  * File Preferences
  */
-
-// Sets whether to calculate bonding on model load
-void Prefs::setBondOnLoad(Choice s)
-{
-	bondOnLoad_ = s;
-}
-
-// Whether bonding should be recalculated on model load
-Choice Prefs::bondOnLoad() const
-{
-	return bondOnLoad_;
-}
-
-// Sets whether to centre molecule on load
-void Prefs::setCentreOnLoad(Choice s)
-{
-	centreOnLoad_ = s;
-}
-
-// Whether molecule should be centred on model load
-Choice Prefs::centreOnLoad() const
-{
-	return centreOnLoad_;
-}
-
-// Sets whether to fold atomic positions after model load
-void Prefs::setFoldOnLoad(Choice s)
-{
-	foldOnLoad_ = s;
-}
-
-// Whether atoms should be folded after model load
-Choice Prefs::foldOnLoad() const
-{
-	return foldOnLoad_;
-}
-
-// Sets whether to apply symmetry operators (pack) on load
-void Prefs::setPackOnLoad(Choice s)
-{
-	packOnLoad_ = s;
-}
-
-// Whether atoms should be packed (with symmetry operations) after model load
-Choice Prefs::packOnLoad() const
-{
-	return packOnLoad_;
-}
 
 // Set the cache limit (in kb) for trajectory files
 void Prefs::setCacheLimit(int i)

@@ -47,15 +47,9 @@ Cli cliSwitches[] = {
 	{ Cli::BohrSwitch,		'b',"bohr",		0,
 		"",
 		"Converts model/grid atomic positions from Bohr to Angstrom" },
-	{ Cli::BondSwitch,		'\0',"bond",		0,
-		"",
-		"Force (re)calculation of bonding in the model" },
 	{ Cli::CacheSwitch,		'\0',"cachelimit",	1,
 		"<limit>",
 		"Set the trajectory cache limit to <limit> kb"},
-	{ Cli::CentreSwitch,		'\0',"centre",		0,
-		"",
-		"Force centering of atomic coordinates at zero" },
 	{ Cli::CommandSwitch,		'c',"command",		1,
 		"<commands>",
 		"Execute supplied commands before main program execution" },
@@ -80,9 +74,6 @@ Cli cliSwitches[] = {
 	{ Cli::ForcefieldSwitch,	'\0',"ff",		1,
 		"<file>",
 		"Load the specified forcefield file" },
-	{ Cli::FoldSwitch,		'\0',"fold",		0,
-		"",
-		"Force folding of atoms in periodic systems" },
 	{ Cli::FormatSwitch,		'f',"format",		1,
 		"<format>",
 		"Load models from command-line assuming specified <format>" },
@@ -125,9 +116,6 @@ Cli cliSwitches[] = {
 	{ Cli::NoBondSwitch,		'\0',"nobond",		0,
 		"",
 		"Prevent (re)calculation of bonding in the model" },
-	{ Cli::NoCentreSwitch,		'\0',"nocentre",	0,
-		"",
-		"Prevent centering of atomic coordinates at zero" },
 	{ Cli::NoFoldSwitch,		'\0',"nofold",		0,
 		"",
 		"Prevent folding of atoms in periodic systems" },
@@ -155,9 +143,6 @@ Cli cliSwitches[] = {
 	{ Cli::NoQtSettingsSwitch,	'\0',"noqtsettings",	0,
 		"",
 		"Don't load in Qt window/toolbar settings on startup" },
-	{ Cli::PackSwitch,		'\0',"pack",		0,
-		"",
-		"Force generation of symmetry-equivalent atoms from spacegroup information" },
 	{ Cli::PipeSwitch,		'p',"pipe",		0,
 		"",
 		"Read and execute commands from piped input" },
@@ -435,7 +420,8 @@ int Aten::parseCli(int argc, char *argv[])
 	ReturnValue rv;
 	FilePluginInterface* plugin, *modelPlugin = NULL, *trajectoryPlugin = NULL;
 	Program interactiveScript;
-	QStringList pluginOptions, items;
+	QStringList items;
+	KVMap pluginOptions;
 
 	// Regular expression for long option matching
 	QRegularExpression longRE("--([a-z]+)=*(.*)");
@@ -573,17 +559,9 @@ int Aten::parseCli(int argc, char *argv[])
 				case (Cli::BohrSwitch):
 					prefs.setCoordsInBohr(true);
 					break;
-				// Force bonding calculation of atoms on load
-				case (Cli::BondSwitch):
-					prefs.setBondOnLoad(Choice::Yes);
-					break;
 				// Set trajectory cache limit
 				case (Cli::CacheSwitch):
 					prefs.setCacheLimit(argText.toInt());
-					break;
-				// Force model centering on load (for non-periodic systems)
-				case (Cli::CentreSwitch):
-					prefs.setCentreOnLoad(Choice::Yes);
 					break;
 				// Read commands from passed string and execute them
 				case (Cli::CommandSwitch):
@@ -629,7 +607,7 @@ int Aten::parseCli(int argc, char *argv[])
 
 					// Loop over remaining arguments which are widget/global variable assignments
 					pluginOptions.clear();
-					for (i = 1; i < parser.nArgs(); ++i) pluginOptions << parser.argc(i);
+					for (i = 1; i < parser.nArgs(); ++i) pluginOptions.add(parser.argc(i));
 					setExportPlugin(plugin, pluginOptions);
 
 					if (programMode_ == Aten::BatchMode) programMode_ = Aten::BatchExportMode;
@@ -653,10 +631,6 @@ int Aten::parseCli(int argc, char *argv[])
 				// Load expression
 				case (Cli::ExpressionSwitch):
 					if (!importExpression(argText)) return -1;
-					break;
-				// Force folding (MIM'ing) of atoms in periodic systems on load
-				case (Cli::FoldSwitch):
-					prefs.setFoldOnLoad(Choice::Yes);
 					break;
 				// Load the specified forcefield
 				case (Cli::ForcefieldSwitch):
@@ -775,27 +749,19 @@ int Aten::parseCli(int argc, char *argv[])
 					break;
 				// Prohibit bonding calculation of atoms on load
 				case (Cli::NoBondSwitch):
-					prefs.setBondOnLoad(Choice::No);
-					break;
-				// Prohibit model centering on load (for non-periodic systems)
-				case (Cli::NoCentreSwitch):
-					prefs.setCentreOnLoad(Choice::No);
+					importStandardOptions_.add("preventBonding", "true");
 					break;
 				// Prohibit folding (MIM'ing) of atoms in periodic systems on load
 				case (Cli::NoFoldSwitch):
-					prefs.setFoldOnLoad(Choice::No);
+					importStandardOptions_.add("preventFolding", "true");
 					break;
 				// Force packing (application of symmetry operators) on load
 				case (Cli::NoPackSwitch):
-					prefs.setPackOnLoad(Choice::No);
+					importStandardOptions_.add("preventPacking", "true");
 					break;
 				// Don't load Qt window/toolbar settings on startup
 				case (Cli::NoQtSettingsSwitch):
 					prefs.setLoadQtSettings(false);
-					break;
-				// Prohibit packing (application of symmetry operators) on load
-				case (Cli::PackSwitch):
-					prefs.setPackOnLoad(Choice::Yes);
 					break;
 				// Read and execute commads from pipe
 				case (Cli::PipeSwitch):
@@ -879,7 +845,7 @@ int Aten::parseCli(int argc, char *argv[])
 		{
 			// Not a CLI switch, so try to load it as a model
 			++nTried;
-			if (!importModel(argv[argn], modelPlugin)) return -1;
+			if (!importModel(argv[argn], modelPlugin, importStandardOptions_)) return -1;
 		}
 	}
 

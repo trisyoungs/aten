@@ -20,7 +20,7 @@
 */
 
 #include "base/kvmap.h"
-#include <string.h>
+#include <QStringList>
 
 ATEN_USING_NAMESPACE
 
@@ -87,6 +87,14 @@ void KVMap::add(QString key, QString value)
 		pairs_.own(kvp);
 	}
 	else kvp->setValue(value);
+}
+
+// Set (existing) key/value pair from 'option=value' string
+void KVMap::add(QString optionEqualsValue)
+{
+	QStringList parts = optionEqualsValue.split("=");
+	if (parts.count() == 2) add(parts.at(0), parts.at(1));
+	else printf("Failed to parse 'option=value' string '%s'.\n", qPrintable(optionEqualsValue));
 }
 
 // Search map for specified key

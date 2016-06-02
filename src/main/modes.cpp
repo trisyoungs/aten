@@ -35,7 +35,7 @@ Aten::ProgramMode Aten::programMode() const
  */
 
 // Set plugin to use in export
-void Aten::setExportPlugin(FilePluginInterface* plugin, QStringList pluginOptions)
+void Aten::setExportPlugin(FilePluginInterface* plugin, KVMap pluginOptions)
 {
 	exportPlugin_ = plugin;
 	exportPluginOptions_ = pluginOptions;
@@ -65,7 +65,7 @@ void Aten::exportModels()
 			continue;
 		}
 
-		if (exportModel(m, filename, exportPlugin_, exportPluginOptions_)) Messenger::print("Model '%s' saved to file '%s' (%s)", qPrintable(m->name()), qPrintable(filename), qPrintable(exportPlugin_->name()));
+		if (exportModel(m, filename, exportPlugin_, KVMap(), exportPluginOptions_)) Messenger::print("Model '%s' saved to file '%s' (%s)", qPrintable(m->name()), qPrintable(filename), qPrintable(exportPlugin_->name()));
 		else Messenger::print("Failed to save model '%s'.", qPrintable(m->name()));
 		m->enableUndoRedo();
 	}

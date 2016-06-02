@@ -342,10 +342,10 @@ bool Commands::function_SaveModel(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	}
 
 	// Loop over remaining arguments which are option assignments
-	QStringList options;
-	for (int n = 1; n < parser.nArgs(); ++n) options << parser.argc(n);
+	KVMap pluginOptions;
+	for (int n = 1; n < parser.nArgs(); ++n) pluginOptions.add(parser.argc(n));
 
-	bool result = aten_.exportModel(obj.m, c->argc(1), plugin, options);
+	bool result = aten_.exportModel(obj.m, c->argc(1), plugin, KVMap(), pluginOptions);
 	
 	rv.set(result);
 

@@ -68,7 +68,8 @@ TestSelect command.
 Setting of filter options when using --batch CLI mode (in 03.cli/batch).
 Switch / Case.
 More descriptions / examples for Disorder Builder options.
---noplugins and --plugindir CLI switch.
+--noplugins and --atenplugins CLI switch.
+Removed --pack, --bond, --centre, and --fold CLI switches.
 ATENPLUGINS environment switch.
 Whole plugin thing, really!  And make filters section defunct.
 Removed FinaliseModel/Grid commands, and all read/write commands related to files.

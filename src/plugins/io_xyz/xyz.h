@@ -74,11 +74,11 @@ class XYZModelPlugin : public QObject, public FilePluginInterface
 	// Return whether this plugin can import data
 	bool canImport();
 	// Import data via the supplied parser
-	bool importData(FileParser& parser);
+	bool importData(FileParser& parser, const KVMap standardOptions = KVMap());
 	// Return whether this plugin can export data
 	bool canExport();
 	// Export data via the supplied parser
-	bool exportData(FileParser& parser);
+	bool exportData(FileParser& parser, const KVMap standardOptions = KVMap());
 };
 
 ATEN_END_NAMESPACE

@@ -406,16 +406,6 @@ class Prefs
 	 * File Preferences
 	 */
 	private:
-	// Recalculate bonding when model has loaded
-	Choice bondOnLoad_;
-	// Centre non-periodic models on load
-	Choice centreOnLoad_;
-	// Fold atomic positions after model load
-	Choice foldOnLoad_;
-	// Whether to apply symmetry operators to get crystal packing on load
-	Choice packOnLoad_;
-	// Whether to load in all coordinate sets from a file
-	bool loadAllCoords_;
 	// Convert coordinates from Bohr to Angstrom on load
 	bool coordsInBohr_;
 	// Size limit (kbytes) for caching trajectory frames
@@ -430,22 +420,6 @@ class Prefs
 	bool keepView_;
 
 	public:
-	// Sets whether to calculate bonding on model load
-	void setBondOnLoad(Choice s);
-	// Whether bonding should be recalculated on model load
-	Choice bondOnLoad() const;
-	// Sets whether to centre molecule on load
-	void setCentreOnLoad(Choice s);
-	// Whether molecule should be centred on model load
-	Choice centreOnLoad() const;
-	// Sets whether to fold atomic positions after model load
-	void setFoldOnLoad(Choice s);
-	// Whether atoms should be folded after model load
-	Choice foldOnLoad() const;
-	// Sets whether to apply symmetry operators (pack) on load
-	void setPackOnLoad(Choice s);
-	// Whether atoms should be packed (with symmetry operations) after model load
-	Choice packOnLoad() const;
 	// Set the cache limit (in kb) for trajectory files
 	void setCacheLimit(int i);
 	// Return the cache limit for trajectory files

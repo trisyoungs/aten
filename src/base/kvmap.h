@@ -74,6 +74,8 @@ class KVMap
 	int nPairs() const;
 	// Set (existing) key/value pair
 	void add(QString key, QString value);
+	// Set (existing) key/value pair from 'option=value' string
+	void add(QString optionEqualsValue);
 	// Search to see if specific key is in the table
 	KVPair* search(QString key) const;
 	// Retrieve value associated to key

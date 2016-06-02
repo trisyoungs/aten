@@ -656,10 +656,10 @@ bool Commands::function_SaveExpression(CommandNode* c, Bundle& obj, ReturnValue&
 	}
 
 	// Loop over remaining arguments which are widget/global variable assignments
-	QStringList pluginOptions;
-	for (int n = 1; n < parser.nArgs(); ++n) pluginOptions << parser.argc(n);
+	KVMap pluginOptions;
+	for (int n = 1; n < parser.nArgs(); ++n) pluginOptions.add(parser.argc(n));
 
-	bool result = aten_.exportExpression(obj.m, c->argc(1), plugin, pluginOptions);
+	bool result = aten_.exportExpression(obj.m, c->argc(1), plugin, KVMap(), pluginOptions);
 	if (result) Messenger::print("Expression for model '%s' saved to file '%s' (%s)", qPrintable(obj.rs()->name()), qPrintable(c->argc(1)), qPrintable(plugin->name()));
 	else Messenger::print("Failed to save expression for model '%s'.", qPrintable(obj.rs()->name()));
 	return result;

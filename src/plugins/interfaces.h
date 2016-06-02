@@ -27,6 +27,7 @@
 #include "parser/commandnode.h"
 #include "model/model.h"
 #include "base/grid.h"
+#include "base/kvmap.h"
 #include "base/messenger.h"
 #include "base/fileparser.h"
 #include "base/namespace.h"
@@ -162,6 +163,35 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 
 
 	/*
+	 * Interface / Standard Options
+	 */
+	private:
+	// Standard options passed to interface
+	KVMap standardOptions_;
+		
+	public:
+	// Set options for plugin
+	virtual bool setOptions(KVMap options)
+	{
+		return false;
+	}
+	// Return whether standard option is set (to value specified if provided)
+	bool standardOptionSet(QString optionName, QString value)
+	{
+		KVPair* pair = standardOptions_.search(optionName); 
+		if (!pair) return false;
+		else if (value.isEmpty()) return (pair != NULL);
+		else return (pair->value() == value);
+	}
+	// Return value of standard option (if set)
+	QString standardOptionValue(QString optionName)
+	{
+		KVPair* pair = standardOptions_.search(optionName);
+		return (pair ? pair->value() : QString());
+	}
+
+
+	/*
 	 * Input / Output
 	 */
 	private:
@@ -207,11 +237,11 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 	// Return whether this plugin can import data
 	virtual bool canImport() = 0;
 	// Import data via the supplied parser
-	virtual bool importData(FileParser& parser) = 0;
+	virtual bool importData(FileParser& parser, const KVMap standardOptions = KVMap()) = 0;
 	// Return whether this plugin can export data
 	virtual bool canExport() = 0;
 	// Export data via the supplied parser
-	virtual bool exportData(FileParser& parser) = 0;
+	virtual bool exportData(FileParser& parser, const KVMap standardOptions = KVMap()) = 0;
 };
 
 ATEN_END_NAMESPACE

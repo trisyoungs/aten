@@ -93,7 +93,7 @@ bool XYZModelPlugin::canImport()
 }
 
 // Import data from the specified file
-bool XYZModelPlugin::importData(FileParser& parser)
+bool XYZModelPlugin::importData(FileParser& parser, const KVMap standardOptions)
 {
 	int nAtoms, n;
 	QString e, name;
@@ -136,7 +136,7 @@ bool XYZModelPlugin::canExport()
 }
 
 // Export data to the specified file
-bool XYZModelPlugin::exportData(FileParser& parser)
+bool XYZModelPlugin::exportData(FileParser& parser, const KVMap standardOptions)
 {
 	// Get the current model pointer containing the data we are to export
 	const Model* targetModel = parser.targetModel();

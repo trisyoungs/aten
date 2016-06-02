@@ -25,7 +25,7 @@
 ATEN_USING_NAMESPACE
 
 // Import model (if it is not loaded already)
-bool Aten::importModel(QString fileName, FilePluginInterface* plugin, QStringList pluginOptions)
+bool Aten::importModel(QString fileName, FilePluginInterface* plugin, KVMap standardOptions, KVMap pluginOptions)
 {
 	Messenger::enter("Aten::importModel");
 
@@ -69,8 +69,9 @@ bool Aten::importModel(QString fileName, FilePluginInterface* plugin, QStringLis
 		}
 
 		FilePluginInterface* interface = plugin->createInstance();
+		interface->setOptions(pluginOptions);
 		FileParser fileParser(parser);
-		if (interface->importData(fileParser))
+		if (interface->importData(fileParser, standardOptions))
 		{
 			// Finalise any loaded models
 			RefList<Model,int> createdModels = interface->createdModels();
@@ -128,7 +129,7 @@ bool Aten::importModel(QString fileName, FilePluginInterface* plugin, QStringLis
 }
 
 // Export model
-bool Aten::exportModel(Model* model, QString filename, FilePluginInterface* plugin, QStringList pluginOptions)
+bool Aten::exportModel(Model* model, QString filename, FilePluginInterface* plugin, KVMap standardOptions, KVMap pluginOptions)
 {
 	Messenger::enter("Aten::exportModel");
 
@@ -222,6 +223,7 @@ bool Aten::exportModel(Model* model, QString filename, FilePluginInterface* plug
 
 		// Create an instance of the plugin, and make a FileParser object to give to it
 		FilePluginInterface* interface = plugin->createInstance();
+		interface->setOptions(pluginOptions);
 		FileParser fileParser(parser, model);
 		if (interface->exportData(fileParser))
 		{
@@ -264,7 +266,7 @@ bool Aten::exportModel(Model* model, QString filename, FilePluginInterface* plug
 }
 
 // Import grid
-bool Aten::importGrid(QString fileName, FilePluginInterface* plugin, QStringList pluginOptions)
+bool Aten::importGrid(QString fileName, FilePluginInterface* plugin, KVMap standardOptions, KVMap pluginOptions)
 {
 	Messenger::enter("Aten::importGrid");
 
@@ -287,6 +289,7 @@ bool Aten::importGrid(QString fileName, FilePluginInterface* plugin, QStringList
 		Model* m = currentModelOrFrame();
 
 		FilePluginInterface* interface = plugin->createInstance();
+		interface->setOptions(pluginOptions);
 		FileParser fileParser(parser, m);
 		if (interface->importData(fileParser))
 		{
@@ -339,13 +342,13 @@ bool Aten::importGrid(QString fileName, FilePluginInterface* plugin, QStringList
 }
 
 // Import trajectory to current model
-bool Aten::importTrajectory(QString fileName, FilePluginInterface* plugin, QStringList pluginOptions)
+bool Aten::importTrajectory(QString fileName, FilePluginInterface* plugin, KVMap standardOptions, KVMap pluginOptions)
 {
 	// ATEN2 TODO ENDOFFILTERS
 }
 
 // Import expression
-bool Aten::importExpression(QString fileName, FilePluginInterface* plugin, QStringList pluginOptions)
+bool Aten::importExpression(QString fileName, FilePluginInterface* plugin, KVMap standardOptions, KVMap pluginOptions)
 {
 	Messenger::enter("Aten::importExpression");
 
@@ -365,6 +368,7 @@ bool Aten::importExpression(QString fileName, FilePluginInterface* plugin, QStri
 		}
 
 		FilePluginInterface* interface = plugin->createInstance();
+		interface->setOptions(pluginOptions);
 		FileParser fileParser(parser);
 		if (interface->importData(fileParser))
 		{
@@ -380,7 +384,7 @@ bool Aten::importExpression(QString fileName, FilePluginInterface* plugin, QStri
 }
 
 // Export expression
-bool Aten::exportExpression(Model* model, QString filename, FilePluginInterface* plugin, QStringList pluginOptions)
+bool Aten::exportExpression(Model* model, QString filename, FilePluginInterface* plugin, KVMap standardOptions, KVMap pluginOptions)
 {
 	// ATEN2 TODO ENDOFFILTERS
 }

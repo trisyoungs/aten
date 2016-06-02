@@ -32,7 +32,7 @@ class Cli
 {
 	public:
 	// Command line switches
-	enum CliSwitch { AtenDataSwitch, BatchSwitch, BohrSwitch, BondSwitch, CacheSwitch, CentreSwitch, CommandSwitch, DebugSwitch, DialogsSwitch, DoubleSwitch, ExportSwitch, ExportMapSwitch, ExpressionSwitch, ForcefieldSwitch, FoldSwitch, FormatSwitch, GridSwitch, HelpSwitch, IntSwitch, InteractiveSwitch, KeepNamesSwitch, KeepTypesSwitch, KeepViewSwitch, ListsSwitch, LoadFromListSwitch, MapSwitch, NewModelSwitch, NicknamesSwitch, NoBondSwitch, NoCentreSwitch, NoFoldSwitch, NoFragmentsSwitch, NoFragmentIconsSwitch, NoIncludesSwitch, NoInstancesSwitch, NoPackSwitch, NoPartitionsSwitch, NoPluginsSwitch, NoQtSettingsSwitch, PackSwitch, PipeSwitch, PluginSwitch, PluginDirSwitch, ProcessSwitch, QuietSwitch, ScriptSwitch, SessionSwitch, StringSwitch, TrajectorySwitch, TrajectoryFormatSwitch, UndoLevelSwitch, VerboseSwitch, VersionSwitch, ZmapSwitch, nSwitchItems };
+	enum CliSwitch { AtenDataSwitch, BatchSwitch, BohrSwitch, CacheSwitch, CommandSwitch, DebugSwitch, DialogsSwitch, DoubleSwitch, ExportSwitch, ExportMapSwitch, ExpressionSwitch, ForcefieldSwitch, FormatSwitch, GridSwitch, HelpSwitch, IntSwitch, InteractiveSwitch, KeepNamesSwitch, KeepTypesSwitch, KeepViewSwitch, ListsSwitch, LoadFromListSwitch, MapSwitch, NewModelSwitch, NicknamesSwitch, NoBondSwitch, NoFoldSwitch, NoFragmentsSwitch, NoFragmentIconsSwitch, NoIncludesSwitch, NoInstancesSwitch, NoPackSwitch, NoPartitionsSwitch, NoPluginsSwitch, NoQtSettingsSwitch, PipeSwitch, PluginSwitch, PluginDirSwitch, ProcessSwitch, QuietSwitch, ScriptSwitch, SessionSwitch, StringSwitch, TrajectorySwitch, TrajectoryFormatSwitch, UndoLevelSwitch, VerboseSwitch, VersionSwitch, ZmapSwitch, nSwitchItems };
 
 
 	/*
