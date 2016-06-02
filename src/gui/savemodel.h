@@ -1,6 +1,6 @@
 /*
-	*** Open Model Dialog
-	*** src/gui/openmodel.h
+	*** Save Model Dialog
+	*** src/gui/savemodel.h
 	Copyright T. Youngs 2007-2016
 
 	This file is part of Aten.
@@ -19,10 +19,10 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_OPENMODELDIALOG_H
-#define ATEN_OPENMODELDIALOG_H
+#ifndef ATEN_SAVEMODELDIALOG_H
+#define ATEN_SAVEMODELDIALOG_H
 
-#include "gui/ui_openmodel.h"
+#include "gui/ui_savemodel.h"
 #include "plugins/interfaces.h"
 #include "base/namespace.h"
 
@@ -38,17 +38,17 @@ ATEN_END_NAMESPACE
 
 ATEN_USING_NAMESPACE
 
-// Open Model Dialog
-class AtenOpenModel : public QDialog
+// Save Model Dialog
+class AtenSaveModel : public QDialog
 {
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
 
 	public:
 	// Constructor
-	AtenOpenModel(QWidget* parent, QDir startingDirectory, const RefList<FilePluginInterface,int>& filePlugins);
+	AtenSaveModel(QWidget* parent, QDir startingDirectory, const RefList<FilePluginInterface,int>& filePlugins);
 	// Main form declaration
-	Ui::OpenModelDialog ui;
+	Ui::SaveModelDialog ui;
 
 
 	/*
@@ -63,14 +63,14 @@ class AtenOpenModel : public QDialog
 	 * Widget Functions
 	 */
 	private slots:
-	void on_OpenButton_clicked(bool checked);
+	void on_SaveButton_clicked(bool checked);
 	void on_CancelButton_clicked(bool checked);
 
 	public:
 	// Execute dialog
 	bool execute();
-	// Return selected filename(s)
-	QStringList selectedFilenames();
+	// Return selected filename
+	QString selectedFilename();
 	// Return selected file plugin
 	FilePluginInterface* selectedPlugin();
 	// Return map of standard options from dialog

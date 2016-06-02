@@ -25,7 +25,7 @@ libtreegui_a_SOURCES = treegui.ui treegui_funcs.cpp
 
 libgui_a_SOURCES = icons.qrc disorderoptions.ui disorderwizard.ui exportfilm.ui exportimage.ui ffeditor.ui fileselectorwidget.ui prefs.ui progress.ui selectpattern.ui selectvariable.ui zmatrix.ui mainwindow.ui
 
-libgui_a_SOURCES += openmodel.ui
+libgui_a_SOURCES += openmodel.ui savemodel.ui
 
 libgui_a_SOURCES += popupbuildaddatom.ui popupbuildaddh.ui popupbuildclear.ui popupbuildfragments.ui popupbuildgrow.ui popupbuildrebond.ui popupbuildtransmute.ui popupcellangles.ui popupcelllengths.ui popupcellmatrix.ui popupcellmiller.ui popupcellreplicate.ui popupcellscale.ui popupcellspacegroup.ui popupcolour.ui popupelementtable.ui popupfileaten.ui popupfileimage.ui popupfileopen.ui popupfilesave.ui popupfilesession.ui popupforcefieldsassign.ui popupforcefieldsminimise.ui popupforcefieldsopen.ui popupforcefieldstest.ui popupgridmatrix.ui popupgridorigin.ui popupgridset.ui popupgridshift.ui popupgridstyle.ui popupgridsopen.ui popupmeasureangle.ui popupmeasureclear.ui popupmeasuredistance.ui popupmeasuretorsion.ui popupporesdrill.ui popupporesscheme.ui popupscriptsopen.ui popuptransformangle.ui popuptransformcentre.ui popuptransformconvert.ui popuptransformdistance.ui popuptransformflip.ui popuptransformrotate.ui popuptransformmultiply.ui popuptransformreposition.ui popuptransformshift.ui popuptransformtorsion.ui popuptransformtranslate.ui popupviewcolourscheme.ui popupviewreset.ui popupviewstyle.ui
 
@@ -37,7 +37,7 @@ libgui_a_SOURCES += disorderoptions_funcs.cpp disorderwizard_funcs.cpp exportfil
 
 libgui_a_SOURCES += popupbuildaddatom_funcs.cpp popupbuildaddh_funcs.cpp popupbuildclear_funcs.cpp popupbuildfragments_funcs.cpp popupbuildgrow_funcs.cpp popupbuildrebond_funcs.cpp popupbuildtransmute_funcs.cpp popupcellangles_funcs.cpp popupcelllengths_funcs.cpp popupcellmatrix_funcs.cpp popupcellmiller_funcs.cpp popupcellreplicate_funcs.cpp popupcellscale_funcs.cpp popupcellspacegroup_funcs.cpp popupcolour_funcs.cpp popupelementtable_funcs.cpp popupfileaten_funcs.cpp popupfileimage_funcs.cpp popupfileopen_funcs.cpp popupfilesave_funcs.cpp popupfilesession_funcs.cpp popupforcefieldsassign_funcs.cpp popupforcefieldsminimise_funcs.cpp popupforcefieldsopen_funcs.cpp popupforcefieldstest_funcs.cpp popupgridmatrix_funcs.cpp popupgridorigin_funcs.cpp popupgridset_funcs.cpp popupgridshift_funcs.cpp popupgridstyle_funcs.cpp popupgridsopen_funcs.cpp popupmeasureangle_funcs.cpp popupmeasureclear_funcs.cpp popupmeasuredistance_funcs.cpp popupmeasuretorsion_funcs.cpp popupporesdrill_funcs.cpp popupporesscheme_funcs.cpp popupscriptsopen_funcs.cpp popuptransformangle_funcs.cpp popuptransformcentre_funcs.cpp popuptransformconvert_funcs.cpp popuptransformdistance_funcs.cpp popuptransformflip_funcs.cpp popuptransformmultiply_funcs.cpp popuptransformreposition_funcs.cpp popuptransformrotate_funcs.cpp popuptransformshift_funcs.cpp popuptransformtorsion_funcs.cpp popuptransformtranslate_funcs.cpp popupviewcolourscheme_funcs.cpp popupviewreset_funcs.cpp popupviewstyle_funcs.cpp
 
-libgui_a_SOURCES += openmodel_funcs.cpp
+libgui_a_SOURCES += openmodel_funcs.cpp savemodel_funcs.cpp
 
 libgui_a_SOURCES += tcolourwheel.hui tdoublespindelegate.hui texponentialspin.hui tintegerspindelegate.hui tmenubutton.hui tpopupwidget.hui trecentfiles.hui ttablewidget.hui ttabwidget.hui ttreewidget.hui viewer.hui
 
@@ -49,7 +49,7 @@ libgui_a_SOURCES += glyphs_funcs.cpp vibrations_funcs.cpp viewbasis_funcs.cpp vi
 
 libgui_a_SOURCES += useractions.cpp
 
-noinst_HEADERS = disorderoptions.h disorderwizard.h exportfilm.h exportimage.h ffeditor.h fileselectorwidget.h glyphs.h layoutlist.h mainwindow.h prefs.h progress.h selectpattern.h selectvariable.h textratreewidgetitem.h tmenubuttongroup.h treegui.h useractions.h vibrations.h viewbasis.h vieweigenvector.h zmatrix.h
+noinst_HEADERS = disorderoptions.h disorderwizard.h exportfilm.h exportimage.h ffeditor.h fileselectorwidget.h glyphs.h layoutlist.h mainwindow.h openmodel.h prefs.h progress.h savemodel.h selectpattern.h selectvariable.h textratreewidgetitem.h tmenubuttongroup.h treegui.h useractions.h vibrations.h viewbasis.h vieweigenvector.h zmatrix.h
 noinst_HEADERS += popupbuildaddatom.h popupbuildaddh.h popupbuildclear.h popupbuildfragments.h popupbuildgrow.h popupbuildrebond.h popupbuildtransmute.h popupcellangles.h popupcelllengths.h popupcellmatrix.h popupcellmiller.h popupcellreplicate.h popupcellscale.h popupcellspacegroup.h popupcolour.h popupelementtable.h popupfileaten.h popupfileimage.h popupfileopen.h popupfilesave.h popupfilesession.h popupforcefieldsassign.h popupforcefieldsminimise.h popupforcefieldsopen.h popupforcefieldstest.h popupgridmatrix.h popupgridorigin.h popupgridset.h popupgridshift.h popupgridstyle.h popupgridsopen.h popupmeasureangle.h popupmeasureclear.h popupmeasuredistance.h popupmeasuretorsion.h popupporesdrill.h popupporesscheme.h popupscriptsopen.h popuptransformangle.h popuptransformcentre.h popuptransformconvert.h popuptransformdistance.h popuptransformflip.h popuptransformmultiply.h popuptransformreposition.h popuptransformrotate.h popuptransformshift.h popuptransformtorsion.h popuptransformtranslate.h popupviewcolourscheme.h popupviewreset.h popupviewstyle.h
 
 

@@ -50,7 +50,7 @@ FileSelectorWidget::FileSelectorWidget(QWidget* parent) : QWidget(parent)
  */
 
 // Set mode of file selector
-void FileSelectorWidget::setMode(FileSelectorWidget::SelectionMode mode, const RefList<FilePluginInterface,int>& ioPlugins, QDir startingDir)
+void FileSelectorWidget::setMode(FileSelectorWidget::SelectionMode mode, const RefList<FilePluginInterface,int>& filePlugins, QDir startingDir)
 {
 	mode_ = mode;
 
@@ -59,7 +59,7 @@ void FileSelectorWidget::setMode(FileSelectorWidget::SelectionMode mode, const R
 	else ui.FileView->setSelectionMode(QTableView::SingleSelection);
 
 	// Populate filter combo
-	for (RefListItem<FilePluginInterface,int>* ri = ioPlugins.first(); ri != NULL; ri = ri->next)
+	for (RefListItem<FilePluginInterface,int>* ri = filePlugins.first(); ri != NULL; ri = ri->next)
 	{
 		FilePluginInterface* interface = ri->item;
 		if (!interface->canImport()) continue;

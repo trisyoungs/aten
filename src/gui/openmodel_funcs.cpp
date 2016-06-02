@@ -44,7 +44,7 @@ void AtenOpenModel::on_OpenButton_clicked(bool checked)
 {
 	// Get current filename selection and check that the files exist
 	QStringList selectedFiles = ui.FileSelector->selectedFiles();
-	if (selectedFiles.count() == 0) reject();
+	if (selectedFiles.count() == 0) return;
 
 	QStringList missingFiles;
 	for (int n=0; n<selectedFiles.count(); ++n)
@@ -93,7 +93,10 @@ FilePluginInterface* AtenOpenModel::selectedPlugin()
 KVMap AtenOpenModel::standardOptions()
 {
 	KVMap options;
+
 	options.add("preventRebonding", ui.PreventRebondingCheck->isChecked() ? "true" : "false");
 	options.add("preventFolding", ui.PreventFoldingCheck->isChecked() ? "true" : "false");
 	options.add("preventPacking", ui.PreventPackingCheck->isChecked() ? "true" : "false");
+
+	return options;
 }

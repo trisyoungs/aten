@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>OpenModelDialog</class>
- <widget class="QDialog" name="OpenModelDialog">
+ <class>SaveModelDialog</class>
+ <widget class="QDialog" name="SaveModelDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -16,11 +16,11 @@
    </font>
   </property>
   <property name="windowTitle">
-   <string>Open Model File(s)</string>
+   <string>Save Model File(s)</string>
   </property>
   <property name="windowIcon">
    <iconset resource="icons.qrc">
-    <normaloff>:/file/icons/file_open.svg</normaloff>:/file/icons/file_open.svg</iconset>
+    <normaloff>:/program/icons/aten.png</normaloff>:/program/icons/aten.png</iconset>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_2">
    <property name="spacing">
@@ -88,87 +88,6 @@
          <number>4</number>
         </property>
         <item>
-         <widget class="QCheckBox" name="PreventRebondingCheck">
-          <property name="toolTip">
-           <string>Recalculation of bonds between atoms will be prevented (explicit bond addition will still be allowed)</string>
-          </property>
-          <property name="text">
-           <string>Prevent rebonding</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QCheckBox" name="PreventFoldingCheck">
-          <property name="toolTip">
-           <string>Prevent folding of atoms into the unit cell</string>
-          </property>
-          <property name="text">
-           <string>Prevent folding</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QCheckBox" name="PreventPackingCheck">
-          <property name="toolTip">
-           <string>Prevent packing of atoms via spacegroup definitions</string>
-          </property>
-          <property name="text">
-           <string>Prevent packing</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="Line" name="line_3">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QCheckBox" name="BohrCheck">
-          <property name="toolTip">
-           <string>Assume coordinates in the model file are in Bohr, and convert to Angstrom</string>
-          </property>
-          <property name="text">
-           <string>Coordinates in Bohr</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="Line" name="line_4">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QCheckBox" name="KeepTypesCheck">
-          <property name="toolTip">
-           <string>Keep and fix types on atoms</string>
-          </property>
-          <property name="text">
-           <string>Keep original types</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QCheckBox" name="KeepNamesCheck">
-          <property name="toolTip">
-           <string>Create a basic forcefield containing names of the original atoms (before conversion)</string>
-          </property>
-          <property name="text">
-           <string>Keep original names</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="Line" name="line_5">
-          <property name="orientation">
-           <enum>Qt::Horizontal</enum>
-          </property>
-         </widget>
-        </item>
-        <item>
          <widget class="QPushButton" name="PluginOptionsButton">
           <property name="text">
            <string>Plugin Options</string>
@@ -226,7 +145,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="OpenButton">
+      <widget class="QPushButton" name="SaveButton">
        <property name="font">
         <font>
          <weight>75</weight>
@@ -234,7 +153,7 @@
         </font>
        </property>
        <property name="text">
-        <string>Open</string>
+        <string>Save</string>
        </property>
       </widget>
      </item>

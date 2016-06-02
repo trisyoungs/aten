@@ -66,6 +66,7 @@ SET(gui_MOC_HDRS
   popupviewstyle.h
   prefs.h
   progress.h
+  savemodel.h
   selectpattern.h
   selectvariable.h
   vibrations.h
@@ -158,6 +159,7 @@ SET(gui_UIS
   popupviewstyle.ui
   prefs.ui
   progress.ui
+  savemodel.ui
   selectpattern.ui
   selectvariable.ui
   fileselectorwidget.ui
@@ -263,6 +265,7 @@ set(gui_SRCS
   popupviewstyle_funcs.cpp
   prefs_funcs.cpp
   progress_funcs.cpp
+  savemodel_funcs.cpp
   selectpattern_funcs.cpp
   selectvariable_funcs.cpp
   settings.cpp
