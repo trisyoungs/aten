@@ -130,7 +130,7 @@ bool Aten::loadPrefs()
 	}
 	else Messenger::print("User preferences file not found.");
 
-	// Program preferences
+	// User preferences
 	found = false;
 	filename = atenDirectoryFile("user.dat");
 	fileInfo.setFile(filename);
