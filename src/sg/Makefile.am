@@ -1,6 +1,6 @@
-noinst_LIBRARIES = libsg.a
+noinst_LTLIBRARIES = libsg.la
 
-libsg_a_SOURCES = generator.cpp sgclib.c sgfind.c sghkl.c sgio.c sgsi.c spacegroup.cpp
+libsg_la_SOURCES = generator.cpp sgclib.c sgfind.c sghkl.c sgio.c sgsi.c spacegroup.cpp
 
 noinst_HEADERS = generator.h sginfo.h spacegroup.h
 
