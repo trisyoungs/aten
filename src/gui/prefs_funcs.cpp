@@ -203,6 +203,7 @@ void AtenPrefs::on_PrefsCancelButton_clicked(bool checked)
 	// Copy old preferences values back into main structure, update view and close window
 	prefs = prefsBackup_;
 	Elements().restoreData();
+	Message::setNormalMessageColour(prefs.useWidgetForegroundBackground() ? prefs.colour(Prefs::WidgetForegroundColour) : prefs.colour(Prefs::ForegroundColour));
 
 	parent_.aten().globalLogChange(Log::Style);
 	parent_.updateWidgets(AtenWindow::MainViewTarget);

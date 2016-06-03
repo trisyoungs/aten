@@ -20,6 +20,7 @@
 */
 
 #include "base/message.h"
+#include "base/prefs.h"
 
 ATEN_USING_NAMESPACE
 
@@ -28,6 +29,15 @@ QColor MessageTypeColours[] = { QColor(0, 0, 0), QColor(200, 120, 0), QColor(200
 QColor Message::messageColour(Message::MessageType mt)
 {
 	return MessageTypeColours[mt];
+}
+void Message::setNormalMessageColour(double colour[4])
+{
+	QColor newColour;
+	newColour.setRedF(colour[0]);
+	newColour.setGreenF(colour[1]);
+	newColour.setBlueF(colour[2]);
+	newColour.setAlphaF(colour[3]);
+	MessageTypeColours[Message::NormalMessage] = newColour;
 }
 
 // Constructor
@@ -55,3 +65,4 @@ QColor Message::colour() const
 {
 	return messageColour(type_);
 }
+

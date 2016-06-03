@@ -39,6 +39,8 @@ class Message
 	enum MessageType { NormalMessage, WarningMessage, ErrorMessage, nMessageTypes };
 	// Return colour associated to message type
 	static QColor messageColour(MessageType type);
+	// Set normal message colour
+	static void setNormalMessageColour(double colour[4]);
 	// Constructor
 	Message(QString text, Message::MessageType = Message::NormalMessage);
 

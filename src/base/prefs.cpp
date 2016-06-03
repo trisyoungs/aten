@@ -811,6 +811,7 @@ double* Prefs::colour(ObjectColour c)
 void Prefs::setUseWidgetForegroundBackground(bool b)
 {
 	useWidgetForegroundBackground_ = b;
+	Message::setNormalMessageColour(useWidgetForegroundBackground_ ? colour(Prefs::WidgetForegroundColour) : colour(Prefs::ForegroundColour));
 }
 
 // Return whether to use widget foreground and background colours instead of user-defined values
