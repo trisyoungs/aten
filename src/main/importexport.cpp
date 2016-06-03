@@ -21,6 +21,7 @@
 
 #include "main/aten.h"
 #include "gui/mainwindow.h"
+#include "gui/savemodel.h"
 
 ATEN_USING_NAMESPACE
 
@@ -136,6 +137,21 @@ bool Aten::exportModel(Model* model, QString filename, FilePluginInterface* plug
 	if (filename.isEmpty() || (plugin == NULL) || (plugin->category() != PluginTypes::ModelFilePlugin) || (plugin->canExport()))
 	{
 		// Need to raise a save file dialog to get a valid name and/or plugin
+		static AtenSaveModel saveModelDialog(atenWindow_, workDir_, pluginStore().filePlugins(PluginTypes::ModelFilePlugin));
+
+		if (saveModelDialog.execute(pluginStore_.logPoint(), filename, plugin))
+		{
+			filename = saveModelDialog.selectedFilename();
+			plugin = saveModelDialog.selectedPlugin();
+			if (plugin == NULL) plugin = pluginStore_.findFilePlugin(PluginTypes::ModelFilePlugin, PluginTypes::ImportPlugin, filename);
+		}
+		else
+		{
+			Messenger::exit("Aten::exportModel");
+			return false;
+		}
+	}
+
 	// ATEN2 TODO ENDOFFILTERS
 // 	static QString selectedFilter(aten_.filters(FilterData::ModelExport) == NULL ? NULL : aten_.filters(FilterData::ModelExport)->item->filter.name());
 // 	static QDir currentDirectory_(aten_.workDir());
@@ -200,7 +216,6 @@ bool Aten::exportModel(Model* model, QString filename, FilePluginInterface* plug
 // 		return (saveModelFilter_ == NULL ? false : true);
 // 	}
 // 	else return false;
-	}
 
 	// Now do we have a valid filename and plugin?
 	if ((!filename.isEmpty()) && (plugin) && (plugin->category() == PluginTypes::ModelFilePlugin) && (plugin->canExport()))

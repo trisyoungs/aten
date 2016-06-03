@@ -98,7 +98,7 @@ void AtenWindow::on_HomeFileOpenButton_clicked(bool checked)
 {
 	static AtenOpenModel openModelDialog(this, aten_.workDir(), aten_.pluginStore().filePlugins(PluginTypes::ModelFilePlugin));
 
-	if (openModelDialog.execute())
+	if (openModelDialog.execute(aten_.pluginStore().logPoint()))
 	{
 		// Open model(s) selected in dialog
 		QStringList filesToLoad = openModelDialog.selectedFilenames();

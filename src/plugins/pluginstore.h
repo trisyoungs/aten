@@ -41,6 +41,17 @@ class PluginStore
 	PluginStore();
 	~PluginStore();
 
+	/*
+	 * Internal Data
+	 */
+	private:
+	// Logpoint of plugin store
+	int logPoint_;
+
+	public:
+	// return current logpoint of plugin store
+	int logPoint() const;
+
 
 	/*
 	 * File Import/Export Plugins

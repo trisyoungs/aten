@@ -50,25 +50,36 @@ FileSelectorWidget::FileSelectorWidget(QWidget* parent) : QWidget(parent)
  */
 
 // Set mode of file selector
-void FileSelectorWidget::setMode(FileSelectorWidget::SelectionMode mode, const RefList<FilePluginInterface,int>& filePlugins, QDir startingDir)
+void FileSelectorWidget::setMode(FileSelectorWidget::SelectionMode mode, QDir startingDir)
 {
 	mode_ = mode;
 
 	// Set relevant selection mode for file view
-	if (mode_ == FileSelectorWidget::FileSelectorWidget::OpenMultipleMode) ui.FileView->setSelectionMode(QTableView::ExtendedSelection);
+	if (mode_ == FileSelectorWidget::OpenMultipleMode) ui.FileView->setSelectionMode(QTableView::ExtendedSelection);
 	else ui.FileView->setSelectionMode(QTableView::SingleSelection);
-
-	// Populate filter combo
-	for (RefListItem<FilePluginInterface,int>* ri = filePlugins.first(); ri != NULL; ri = ri->next)
-	{
-		FilePluginInterface* interface = ri->item;
-		if (!interface->canImport()) continue;
-		ui.FilterCombo->addItem(interface->filterString(), VariantPointer<FilePluginInterface>(interface));
-	}
-	ui.FilterCombo->addItem("All Files (*)");
 
 	setCurrentDirectory(startingDir.absolutePath());
 	updateWidgets();
+}
+
+// Refresh plugins (filters) combo
+void FileSelectorWidget::refreshPlugins(const RefList<FilePluginInterface,int>& filePlugins)
+{
+	ui.FilterCombo->clear();
+
+	for (RefListItem<FilePluginInterface,int>* ri = filePlugins.first(); ri != NULL; ri = ri->next)
+	{
+		FilePluginInterface* interface = ri->item;
+
+		// The mode_ of the file selector determines which type of plugin we display
+		if (mode_ == FileSelectorWidget::SaveSingleMode)
+		{
+			if (!interface->canExport()) continue;
+		}
+		else if (!interface->canImport()) continue;
+		ui.FilterCombo->addItem(interface->filterString(), VariantPointer<FilePluginInterface>(interface));
+	}
+	ui.FilterCombo->addItem("All Files (*)");
 }
 
 // Set current directory of file selector
@@ -94,6 +105,33 @@ void FileSelectorWidget::setCurrentDirectory(QString directory)
 void FileSelectorWidget::clearSelectedFilenames()
 {
 	selectedFilenames_.clear();
+}
+
+// Set current filename selection
+void FileSelectorWidget::setSelectedFilename(QString filename)
+{
+	selectedFilenames_.clear();
+	selectedFilenames_ << filename;
+
+	// Check to see if the filename exists in the current dir
+	QModelIndex index = fileSystemModel_.index(currentDirectory_.filePath(filename));
+	if (index.isValid()) ui.FileView->selectRow(index.row());
+}
+
+// Set current plugin selection
+void FileSelectorWidget::setSelectedPlugin(FilePluginInterface* plugin)
+{
+	for (int n=0; n<ui.FilterCombo->count(); ++n)
+	{
+		FilePluginInterface* filterPlugin = (FilePluginInterface*) VariantPointer<FilePluginInterface>(ui.FilterCombo->itemData(n));
+		if (filterPlugin == plugin)
+		{
+			ui.FilterCombo->setCurrentIndex(n);
+			return;
+		}
+	}
+
+	printf("Plugin provided did not match any in the FileSelectorWidget.\n");
 }
 
 // Return selected files, including full path

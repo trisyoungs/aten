@@ -28,8 +28,10 @@ AtenSaveModel::AtenSaveModel(QWidget* parent, QDir startingDirectory, const RefL
 {
 	ui.setupUi(this);
 
+	pluginsLogPoint_ = -1;
+
 	// Set the mode of the FileSelectorWidget
-	ui.FileSelector->setMode(FileSelectorWidget::SaveSingleMode, filePlugins, startingDirectory);
+	ui.FileSelector->setMode(FileSelectorWidget::SaveSingleMode, startingDirectory);
 
 	// Link up some slots
 	connect(ui.FileSelector, SIGNAL(selectionMade(bool)), this, SLOT(on_SaveButton_clicked(bool)));
@@ -66,10 +68,16 @@ void AtenSaveModel::on_CancelButton_clicked(bool checked)
 }
 
 // Execute dialog
-bool AtenSaveModel::execute()
+bool AtenSaveModel::execute(int currentPluginsLogPoint, QString currentFileName, FilePluginInterface* plugin)
 {
 	// Make sure the file selector is up to date
-	ui.FileSelector->clearSelectedFilenames();
+	if (currentPluginsLogPoint != pluginsLogPoint_)
+	{
+		ui.FileSelector->refreshPlugins(filePlugins_);
+		pluginsLogPoint_ = currentPluginsLogPoint;
+	}
+	ui.FileSelector->setSelectedFilename(currentFileName);
+	ui.FileSelector->setSelectedPlugin(plugin);
 	ui.FileSelector->updateWidgets();
 
 	return exec();

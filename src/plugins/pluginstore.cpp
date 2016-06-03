@@ -25,11 +25,22 @@
 // Constructor
 PluginStore::PluginStore()
 {
+	logPoint_ = 0;
 }
 
 // Destructor
 PluginStore::~PluginStore()
 {
+}
+
+/*
+ * Internal Data
+ */
+
+// return current logpoint of plugin store
+int PluginStore::logPoint() const
+{
+	return logPoint_;
 }
 
 // Register file plugin
@@ -59,6 +70,8 @@ bool PluginStore::registerFilePlugin(FilePluginInterface* plugin)
 	}
 	Messenger::print(Messenger::Verbose, "    Targets : %s", qPrintable(targets));
 
+	++logPoint_;
+
 	return true;
 }
 
@@ -75,6 +88,8 @@ void PluginStore::clearFilePlugins()
 
 		filePlugins_[n].clear();
 	}
+
+	++logPoint_;
 }
 
 // Return reference list of file plugins of specified category
@@ -135,6 +150,11 @@ void PluginStore::showFilePluginNicknames(PluginTypes::FilePluginCategory catego
 // Show all file plugins, by category, and their nicknames
 void PluginStore::showAllFilePluginNicknames() const
 {
+	for (int n=0; n<PluginTypes::nFilePluginCategories; ++n)
+	{
+		showFilePluginNicknames((PluginTypes::FilePluginCategory) n, PluginTypes::ImportPlugin);
+		showFilePluginNicknames((PluginTypes::FilePluginCategory) n, PluginTypes::ExportPlugin);
+	}	
 }
 
 // Find plugin interface for specified file

@@ -46,7 +46,7 @@ class AtenSaveModel : public QDialog
 
 	public:
 	// Constructor
-	AtenSaveModel(QWidget* parent, QDir startingDirectory, const RefList<FilePluginInterface,int>& filePlugins);
+	AtenSaveModel(QWidget* parent, QDir startingDirectory, const RefList< FilePluginInterface, int >& filePlugins);
 	// Main form declaration
 	Ui::SaveModelDialog ui;
 
@@ -57,6 +57,8 @@ class AtenSaveModel : public QDialog
 	private:
 	// Reference to plugin list to use for this file dialog
 	const RefList<FilePluginInterface,int>& filePlugins_;
+	// PluginStore logpoint at which plugins were added to the file selector
+	int pluginsLogPoint_;
 
 
 	/*
@@ -68,7 +70,7 @@ class AtenSaveModel : public QDialog
 
 	public:
 	// Execute dialog
-	bool execute();
+	bool execute(int currentPluginsLogPoint, QString currentFileName = QString(), FilePluginInterface* plugin = NULL);
 	// Return selected filename
 	QString selectedFilename();
 	// Return selected file plugin

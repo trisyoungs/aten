@@ -57,6 +57,8 @@ class AtenOpenModel : public QDialog
 	private:
 	// Reference to plugin list to use for this file dialog
 	const RefList<FilePluginInterface,int>& filePlugins_;
+	// PluginStore logpoint at which plugins were added to the file selector
+	int pluginsLogPoint_;
 
 
 	/*
@@ -68,7 +70,7 @@ class AtenOpenModel : public QDialog
 
 	public:
 	// Execute dialog
-	bool execute();
+	bool execute(int currentPluginsLogPoint);
 	// Return selected filename(s)
 	QStringList selectedFilenames();
 	// Return selected file plugin
