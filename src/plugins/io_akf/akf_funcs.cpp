@@ -357,3 +357,15 @@ bool AKFModelPlugin::exportData(FileParser& parser, const KVMap standardOptions)
 
 	return true;
 }
+
+// Import next partial data chunk
+bool AKFModelPlugin::importNextPart(FileParser& parser, const KVMap standardOptions)
+{
+	return false;
+}
+
+// Skip next partial data chunk
+bool AKFModelPlugin::skipNextPart(FileParser& parser, const KVMap standardOptions)
+{
+	return false;
+}

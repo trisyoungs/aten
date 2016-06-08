@@ -124,7 +124,7 @@ bool XYZModelPlugin::importData(FileParser& parser, const KVMap standardOptions)
 		}
 
 		// Rebond the model
-		targetModel->calculateBonding(true);
+		if (standardOptions.isSet("preventRebonding", "false")) targetModel->calculateBonding(true);
 	}
 	return true;
 }
@@ -154,4 +154,16 @@ bool XYZModelPlugin::exportData(FileParser& parser, const KVMap standardOptions)
 	}
 
 	return true;
+}
+
+// Import next partial data chunk
+bool XYZModelPlugin::importNextPart(FileParser& parser, const KVMap standardOptions)
+{
+	return false;
+}
+
+// Skip next partial data chunk
+bool XYZModelPlugin::skipNextPart(FileParser& parser, const KVMap standardOptions)
+{
+	return false;
 }

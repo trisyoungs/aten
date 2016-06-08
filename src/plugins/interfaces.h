@@ -165,29 +165,11 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 	/*
 	 * Interface / Standard Options
 	 */
-	private:
-	// Standard options passed to interface
-	KVMap standardOptions_;
-		
 	public:
 	// Set options for plugin
 	virtual bool setOptions(KVMap options)
 	{
 		return false;
-	}
-	// Return whether standard option is set (to value specified if provided)
-	bool standardOptionSet(QString optionName, QString value)
-	{
-		KVPair* pair = standardOptions_.search(optionName); 
-		if (!pair) return false;
-		else if (value.isEmpty()) return (pair != NULL);
-		else return (pair->value() == value);
-	}
-	// Return value of standard option (if set)
-	QString standardOptionValue(QString optionName)
-	{
-		KVPair* pair = standardOptions_.search(optionName);
-		return (pair ? pair->value() : QString());
 	}
 
 
@@ -200,6 +182,8 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 	{
 		return false;
 	}
+	// File offsets for partial datum
+	Array<std::streampos> partialDataOffsets_;
 
 	public:
 	// Return whether this plugin is related to the specified file(name)
@@ -242,6 +226,75 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 	virtual bool canExport() = 0;
 	// Export data via the supplied parser
 	virtual bool exportData(FileParser& parser, const KVMap standardOptions = KVMap()) = 0;
+	// Import next partial data chunk
+	virtual bool importNextPart(FileParser& parser, const KVMap standardOptions = KVMap()) = 0;
+	// Skip next partial data chunk
+	virtual bool skipNextPart(FileParser& parser, const KVMap standardOptions = KVMap()) = 0;
+	// Import partial data chunk specified
+	bool importPart(int partId, FileParser& parser, const KVMap standardOptions = KVMap())
+	{
+		// First check (sanity) - are there any file positions stored in the array?
+		if (partialDataOffsets_.nItems() == 0)
+		{
+			// If the requested partId is the first part (0) then store the current file position and read it in
+			if (partId == 0)
+			{
+				partialDataOffsets_.add(parser.tellg());
+				bool result = importNextPart(parser, standardOptions);
+				if (result) partialDataOffsets_.add(parser.tellg());
+				return result;
+			}
+			else
+			{
+				Messenger::error("Can't import part - no data positions stored in plugin.");
+				return false;
+			}
+		}
+
+		// So, we have some file positions - is the requested partId within the stored range?
+		if ((partId >= 0) && (partId < partialDataOffsets_.nItems()))
+		{
+			Messenger::print(Messenger::Verbose, "Requested partId is within stored range.");
+
+			// Seek to the stored file position and read the data
+			parser.seekg(partialDataOffsets_.value(partId));
+			return importNextPart(parser, standardOptions);
+		}
+
+		// Requested partId not in file seek table, so go to last known position and try to find it
+		int currentId = partialDataOffsets_.nItems() - 1;
+		parser.seekg(partialDataOffsets_.last());
+		do
+		{
+			bool result = skipNextPart(parser, standardOptions);
+			if (result)
+			{
+				// Successfully skipped the data, so store the file position
+				partialDataOffsets_.add(parser.tellg());
+			}
+			else
+			{
+				Messenger::print("Failed to skip to specified part (%i).", partId);
+				Messenger::print("Last good data read was id %i.", currentId);
+				return false;
+			}
+			++currentId;
+		} while (currentId < partId);
+
+		// Now at correct file position, so read data proper
+		bool result = importNextPart(parser, standardOptions);
+		if (result)
+		{
+			// Now at start of next data, so store the file position
+			partialDataOffsets_.add(parser.tellg());
+		}
+		else
+		{
+			Messenger::print("Failed to read part '%s' from file.", partId);
+		}
+
+		return result;
+	}
 };
 
 ATEN_END_NAMESPACE

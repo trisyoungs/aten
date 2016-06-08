@@ -46,6 +46,18 @@ QString FileParser::filename()
 	return (parser_.inputFilename().isEmpty() ? parser_.outputFilename() : parser_.inputFilename());
 }
 
+// Tell current position of input stream
+std::streampos FileParser::tellg() const
+{
+	return parser_.tellg();
+}
+
+// Seek position in input stream
+void FileParser::seekg(std::streampos pos)
+{
+	parser_.seekg(pos);
+}
+
 /*
  * File Read Functions
  */

@@ -79,6 +79,10 @@ class XYZModelPlugin : public QObject, public FilePluginInterface
 	bool canExport();
 	// Export data via the supplied parser
 	bool exportData(FileParser& parser, const KVMap standardOptions = KVMap());
+	// Import next partial data chunk
+	bool importNextPart(FileParser& parser, const KVMap standardOptions = KVMap());
+	// Skip next partial data chunk
+	bool skipNextPart(FileParser& parser, const KVMap standardOptions = KVMap());
 };
 
 ATEN_END_NAMESPACE

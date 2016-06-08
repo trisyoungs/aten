@@ -85,6 +85,8 @@ class KVMap
 	KVPair* search(QString key) const;
 	// Retrieve value associated to key
 	QString value(QString key);
+	// Return whether the specified key is set (to value specified if provided)
+	bool isSet(QString key, QString value = QString()) const;
 	// Return first key in list
 	KVPair* pairs();
 };

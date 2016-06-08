@@ -125,6 +125,15 @@ QString KVMap::value(QString key)
 	return NULL;
 }
 
+// Return whether standard option is set (to value specified if provided)
+bool KVMap::isSet(QString key, QString value) const
+{
+	KVPair* pair = search(key); 
+	if (!pair) return false;
+
+	return (value.isEmpty() ? true : (pair->value() == value));
+}
+
 // Return first key in list
 KVPair* KVMap::pairs()
 {

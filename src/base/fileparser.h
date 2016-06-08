@@ -49,6 +49,10 @@ class FileParser
 	public:
 	// Return current read/write filename
 	QString filename();
+	// Tell current position of input stream
+	std::streampos tellg() const;
+	// Seek position in input stream
+	void seekg(std::streampos pos);
 
 
 	/*
