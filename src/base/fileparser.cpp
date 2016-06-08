@@ -21,6 +21,7 @@
 
 #include "base/fileparser.h"
 #include "base/messenger.h"
+#include "parser/format.h"
 
 ATEN_USING_NAMESPACE
 
@@ -33,6 +34,16 @@ FileParser::FileParser(LineParser& parser, Model* targetModel) : parser_(parser)
 // Destructor
 FileParser::~FileParser()
 {
+}
+
+/*
+ * LineParser Object
+ */
+
+// Return current read/write filename
+QString FileParser::filename()
+{
+	return (parser_.inputFilename().isEmpty() ? parser_.outputFilename() : parser_.inputFilename());
 }
 
 /*
@@ -74,7 +85,7 @@ bool FileParser::eofOrBlank() const
  */
 
 // Return target model
-const Model* FileParser::targetModel() const
+Model* FileParser::targetModel()
 {
 	if (targetModel_ == NULL) Messenger::print("Warning: Returning targetModel_, but it is NULL.\n");
 	return targetModel_;
@@ -172,6 +183,12 @@ bool FileParser::argb(int i)
 float FileParser::argf(int i)
 {
 	return parser_.argf(i);
+}
+
+// Returns the specified argument (+1, and +2) as a Vec3<int>
+Vec3<int> FileParser::arg3i(int i)
+{
+	return Vec3<int>(parser_.argi(i), parser_.argi(i+1), parser_.argi(i+2));
 }
 
 // Returns the specified argument (+1, and +2) as a Vec3<double>

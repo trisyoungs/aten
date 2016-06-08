@@ -46,6 +46,10 @@ class FileParser
 	// Associated LineParser object
 	LineParser& parser_;
 
+	public:
+	// Return current read/write filename
+	QString filename();
+
 
 	/*
 	 * File Read Functions
@@ -70,7 +74,7 @@ class FileParser
 
 	public:
 	// Return target model
-	const Model* targetModel() const;
+	Model* targetModel();
 	// Write partial line to file
 	bool write(QString line);
 	// Write formatted partial line to file
@@ -101,6 +105,8 @@ class FileParser
 	bool argb(int i);
 	// Returns the specified argument as a float
 	float argf(int i);
+	// Returns the specified argument (+1, and +2) as a Vec3<int>
+	Vec3<int> arg3i(int i);
 	// Returns the specified argument (+1, and +2) as a Vec3<double>
 	Vec3<double> arg3d(int i);
 	// Returns whether the specified argument exists

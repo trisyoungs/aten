@@ -14,4 +14,7 @@ target_include_directories(plugins PRIVATE
 
 target_link_libraries(plugins)
 
-add_subdirectory(io_xyz)
+add_subdirectory(
+  io_-akf
+  io_xyz
+)

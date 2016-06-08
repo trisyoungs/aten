@@ -605,7 +605,10 @@ template <class T> T** List<T>::array()
 	
 	// Delete old atom list (if there is one)
 	if (items_ != NULL) delete[] items_;
-	
+	items_ = NULL;
+
+	if (nItems_ == 0) return items_;
+
 	// Create new list
 	items_ = new T*[nItems_];
 	
@@ -860,6 +863,7 @@ template <class T> void List<T>::operator=(const List<T>& source)
 		newitem->next = NULL;
 		own(newitem);
 	}
+
 	// Don't deep-copy the static list, just flag that it must be regenerated if required.
 	regenerate_ = 1;
 }

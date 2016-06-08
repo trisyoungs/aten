@@ -44,7 +44,7 @@ class Grid : public ListItem<Grid>, ObjectStore<Grid>
 	~Grid();
 	// Grid type
 	enum GridType { NoData, RegularXYData, RegularXYZData, FreeXYZData, nGridTypes };
-	static GridType gridType(QString s, bool reportError);
+	static GridType gridType(QString s, bool reportError = false);
 	static const char* gridType(Grid::GridType gt);
 	// Surface rendering styles
 	enum SurfaceStyle { PointSurface, MeshSurface, SolidSurface, nSurfaceStyles };

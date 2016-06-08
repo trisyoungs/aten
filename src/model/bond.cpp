@@ -28,7 +28,7 @@
 ATEN_USING_NAMESPACE
 
 // Return first bond in the model
-Bond* Model::bonds()
+Bond* Model::bonds() const
 {
 	return bonds_.first();
 }

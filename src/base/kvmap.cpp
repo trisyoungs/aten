@@ -63,6 +63,18 @@ KVMap::KVMap()
 {
 }
 
+// Assignment Operator
+void KVMap::operator=(const KVMap& source)
+{
+	pairs_ = source.pairs_;
+}
+
+// Copy Constructor
+KVMap::KVMap(const KVMap& source)
+{
+	(*this) = source;
+}
+
 // Clear pairs
 void KVMap::clear()
 {

@@ -259,7 +259,7 @@ class Model : public ListItem<Model>
 	Vec3<double> reassembleFragment(Atom* i, Vec3<double> referencePos, int referenceBit, int& count, bool centreOfMass = false);
 
 	public:
-	// Return pointer to unit cell structure
+	// Return unit cell structure
 	UnitCell& cell();
 	// Set cell (vectors)
 	void setCell(Vec3<double> lengths, Vec3<double> angles);
@@ -320,7 +320,7 @@ class Model : public ListItem<Model>
 
 	public:
 	// Return first bond in the model
-	Bond* bonds();
+	Bond* bonds() const;
 	// Return number of bonds in the model
 	int nBonds() const;
 	// Return the nth bond in the model
