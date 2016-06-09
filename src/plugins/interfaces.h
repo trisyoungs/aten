@@ -68,7 +68,7 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 
 	public:
 	// Set filename for plugin
-	void setFilanem(QString filename)
+	void setFilename(QString filename)
 	{
 		filename_ = filename;
 	}
@@ -159,17 +159,6 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 	RefList<Grid,int> createdGrids()
 	{
 		return createdGrids_;
-	}
-
-
-	/*
-	 * Interface / Standard Options
-	 */
-	public:
-	// Set options for plugin
-	virtual bool setOptions(KVMap options)
-	{
-		return false;
 	}
 
 
@@ -292,6 +281,36 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 		{
 			Messenger::print("Failed to read part '%s' from file.", partId);
 		}
+
+		return result;
+	}
+
+
+	/*
+	 * Additional Functions / Data
+	 */
+	protected:
+	// Plugin Option Keywords
+	QStringList pluginOptionKeywords_;
+
+	protected:
+	// Return enum'd plugin option from supplied keyword
+	virtual int pluginOption(QString optionName) = 0;
+	// Return conversion of supplied QString to bool
+	bool toBool(QString string)
+	{
+		if ((string.toInt() == 1) || (string.toLower() == "false")) return false;
+		return true;
+	}
+
+	public:
+	// Set option in plugin
+	virtual bool setOption(QString optionName, QString optionValue) = 0;
+	// Set options for plugin
+	bool setOptions(KVMap options)
+	{
+		bool result = true;
+		for (KVPair* pair = options.pairs(); pair != NULL; pair = pair->next) if (!setOption(pair->key(), pair->value())) result = false;
 
 		return result;
 	}

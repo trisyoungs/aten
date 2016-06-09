@@ -25,6 +25,11 @@
 // Constructor
 XYZModelPlugin::XYZModelPlugin()
 {
+	// Setup option keywords
+	pluginOptionKeywords_ = QStringList() << "readMultipleAsTrajectory";
+
+	// Default values for local variables
+	readMultipleAsTrajectory_ = false;
 }
 
 // Destructor
@@ -95,36 +100,14 @@ bool XYZModelPlugin::canImport()
 // Import data from the specified file
 bool XYZModelPlugin::importData(FileParser& parser, const KVMap standardOptions)
 {
-	int nAtoms, n;
-	QString e, name;
-	Vec3<double> r;
+	int nModels = 0;
+	bool result, readAsTrajectory = false;
 	Model* targetModel = NULL;
 
-	// Read data
+	// Read data - first model in file is always the parent (regardless of whether we're reading it as a trajectory)
 	while (!parser.eofOrBlank())
 	{
-		// Read number of atoms from file
-		if (!parser.readLineAsInteger(nAtoms)) return false;
-
-		// Next line is name of model
-		if (!parser.readLine(name)) return false;
-
-		// Create a new model now....
-		targetModel = createModel();
-		targetModel->setName(name);
-
-		// Load atoms for model
-		for (n=0; n<nAtoms; ++n)
-		{
-			if (!parser.parseLine()) break;
-
-			// Create the new atom
-			r.set(parser.argd(1), parser.argd(2), parser.argd(3));
-			targetModel->addAtom(ElementMap().find(parser.argc(0)), r);
-		}
-
-		// Rebond the model
-		if (standardOptions.isSet("preventRebonding", "false")) targetModel->calculateBonding(true);
+		Model* model = readXYZModel(parser, standardOptions, NULL);
 	}
 	return true;
 }
@@ -166,4 +149,60 @@ bool XYZModelPlugin::importNextPart(FileParser& parser, const KVMap standardOpti
 bool XYZModelPlugin::skipNextPart(FileParser& parser, const KVMap standardOptions)
 {
 	return false;
+}
+
+/*
+ * Local Functions / Data
+ */
+
+// Return enum'd plugin option from supplied keyword
+int XYZModelPlugin::pluginOption(QString optionName)
+{
+	for (int n=0; n<pluginOptionKeywords_.count(); ++n) if (pluginOptionKeywords_.at(n) == optionName) return n;
+
+	return nPluginOptions;
+}
+
+// Set option for plugin
+bool XYZModelPlugin::setOption(QString optionName, QString optionValue)
+{
+	int option = pluginOption(optionName);
+
+	switch (option)
+	{
+		case (XYZModelPlugin::ReadMultipleAsTrajectoryOption):
+			readMultipleAsTrajectory_ = toBool(optionValue);
+			break;
+	}
+}
+
+// Read single XYZ model from file
+Model* XYZModelPlugin::readXYZModel(FileParser& parser, const KVMap standardOptions, Model* targetModel)
+{
+	int nAtoms, n;
+	QString e, name;
+
+	// Read number of atoms from file
+	if (!parser.readLineAsInteger(nAtoms)) return NULL;
+
+	// Next line is name of model
+	if (!parser.readLine(name)) return NULL;
+
+	// Check target model - if NULL create a new one here...
+	if (targetModel == NULL) targetModel = createModel();
+	targetModel->setName(name);
+
+	// Load atoms for model
+	for (n=0; n<nAtoms; ++n)
+	{
+		if (!parser.parseLine()) break;
+
+		// Create the new atom
+		targetModel->addAtom(ElementMap().find(parser.argc(0)), parser.arg3d(1));
+	}
+
+	// Rebond the model
+	if (standardOptions.isSet("preventRebonding", "false")) targetModel->calculateBonding(true);
+
+	return targetModel;
 }

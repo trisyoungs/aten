@@ -369,3 +369,22 @@ bool AKFModelPlugin::skipNextPart(FileParser& parser, const KVMap standardOption
 {
 	return false;
 }
+
+/*
+ * Local Functions / Data
+ */
+
+// Return enum'd plugin option from supplied keyword
+int AKFModelPlugin::pluginOption(QString optionName)
+{
+	for (int n=0; n<pluginOptionKeywords_.count(); ++n) if (pluginOptionKeywords_.at(n) == optionName) return n;
+
+	return nPluginOptions;
+}
+
+// Set option for plugin
+bool AKFModelPlugin::setOption(QString optionName, QString optionValue)
+{
+	// No Options
+	return false;
+}

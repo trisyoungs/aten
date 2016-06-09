@@ -95,6 +95,20 @@ class AKFModelPlugin : public QObject, public FilePluginInterface
 	bool importNextPart(FileParser& parser, const KVMap standardOptions = KVMap());
 	// Skip next partial data chunk
 	bool skipNextPart(FileParser& parser, const KVMap standardOptions = KVMap());
+
+
+	/*
+	 * Additional Functions / Data
+	 */
+	private:
+	// Options Enum
+	enum PluginOption { nPluginOptions };
+	// Return enum'd plugin option from supplied keyword
+	int pluginOption(QString optionName);
+
+	public:
+	// Set option for plugin
+	bool setOption(QString optionName, QString optionValue);
 };
 
 ATEN_END_NAMESPACE
