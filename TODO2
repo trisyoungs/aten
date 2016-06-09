@@ -26,7 +26,7 @@ Implement 'factory' for common objects such as Atom & Bond, to save new'ing all 
 Panel for User tools, essentially loaded from scripts (plugins?) in a user's tools/X directory.
 Visualise toolbar, containing Glyph management, polyhedra etc.
 Add About::plugins() window.
-Clash with --plugindir Qt option on CLI?
+Change function of --cache switch to turn on trajectory caching, rather than specifying a limit.
 
 Graphics TODO
 =============

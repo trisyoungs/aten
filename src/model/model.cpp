@@ -67,15 +67,8 @@ Model::Model() : ListItem<Model>()
 	undoRedoEnabled_ = false;
 
 	// Trajectory
-	trajectoryFilter_ = NULL;
-	trajectoryHeaderFunction_ = NULL;
-	trajectoryFrameFunction_ = NULL;
-	trajectoryOffsets_ = NULL;
-	trajectoryHighestFrameOffset_ = 0;
-	trajectoryFrameSize_ = 0;
-	nTrajectoryFileFrames_ = 0;
+	trajectoryPlugin_ = NULL;
 	trajectoryFramesAreCached_ = false;
-	trajectoryFrameIndex_ = -1;
 	trajectoryPlaying_ = false;
 	trajectoryCurrentFrame_ = NULL;
 	trajectoryPropagateParentStyle_ = false;

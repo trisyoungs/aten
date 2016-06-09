@@ -21,24 +21,24 @@
 
 #include "model/model.h"
 #include "parser/tree.h"
+#include "plugins/interfaces.h"
 
 ATEN_USING_NAMESPACE
 
-// Set the format of the trajectory
-void Model::setTrajectoryFilter(Tree* filter)
+// Set the plugin for the trajectory
+void Model::setTrajectoryPlugiun(FilePluginInterface* plugin)
 {
-	trajectoryFilter_ = filter;
+	trajectoryPlugin_ = plugin;
 }
 
 // Return whether a trajectory for this model exists
 bool Model::hasTrajectory() const
 {
-	if (trajectoryFramesAreCached_) return (trajectoryFrames_.nItems() != 0);
-	else return (nTrajectoryFileFrames_ != 0);
+	return (trajectoryFrames_.nItems() != 0);
 }
 
 // Return whether the trajectory is cached (if there is one)
-bool Model::trajectoryIsCached() const
+bool Model::isTrajectoryCached() const
 {
 	return trajectoryFramesAreCached_;
 }
@@ -65,13 +65,15 @@ Model* Model::trajectoryFrame(int n)
 // Return the total number of frames in the trajectory (file or cached)
 int Model::nTrajectoryFrames() const
 {
-	return (trajectoryFramesAreCached_ ? trajectoryFrames_.nItems() : nTrajectoryFileFrames_);
+	if (trajectoryFramesAreCached_) return trajectoryFrames_.nItems();
+	else if (trajectoryPlugin_) return trajectoryPlugin_->nPartialData();
+	else return 0;
 }
 
 // Return the current integer frame position
 int Model::trajectoryFrameIndex() const
 {
-	return trajectoryFrameIndex_;
+	return (trajectoryPlugin_ ? trajectoryPlugin_->lastPartialDataRead() : trajectoryCachedFrameIndex_);
 }
 
 // Clear trajectory
@@ -79,20 +81,17 @@ void Model::clearTrajectory()
 {
 	Messenger::enter("Model::clearTrajectory");
 	trajectoryFrames_.clear();
-	// Close file in parser
-	trajectoryParser_.closeFiles();
-	if (trajectoryOffsets_ != NULL) delete[] trajectoryOffsets_;
-	trajectoryOffsets_ = NULL;
-	trajectoryHighestFrameOffset_ = -1;
-	trajectoryFilename_ = "Unnamed";
-	nTrajectoryFileFrames_ = 0;
-	trajectoryFrameIndex_ = -1;
+
+	trajectoryCachedFrameIndex_ = -1;
 	trajectoryFramesAreCached_ = false;
-	trajectoryFilter_ = NULL;
+	trajectoryPlugin_ = NULL;
 	trajectoryCurrentFrame_ = NULL;
-	trajectoryHeaderFunction_ = NULL;
-	trajectoryFrameFunction_ = NULL;
 	trajectoryPlaying_ = false;
+
+	// Delete trajectory plugin   ATEN2 TODO endoffilters
+	delete trajectoryPlugin_;
+	trajectoryPlugin_ = NULL;
+
 	Messenger::exit("Model::clearTrajectory");
 }
 
@@ -232,6 +231,7 @@ Model* Model::addTrajectoryFrame()
 	Messenger::enter("Model::addFrame");	
 	Model* newFrame = trajectoryFrames_.add();
 	newFrame->setType(Model::TrajectoryFrameType);
+
 	// Set trajectoryCurrentFrame_ here (always points to the last added frame)
 	trajectoryCurrentFrame_ = newFrame;
 	newFrame->setParent(this);

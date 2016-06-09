@@ -48,6 +48,9 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 	// Constructor
 	FilePluginInterface() : ListItem<FilePluginInterface>()
 	{
+		nPartialData_ = 0;
+		nPartialDataEstimated_ = false;
+		lastPartialDataRead_ = -1;
 	}
 	// Destructor
 	virtual ~FilePluginInterface() {}
@@ -173,6 +176,12 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 	}
 	// File offsets for partial datum
 	Array<std::streampos> partialDataOffsets_;
+	// Number of partial data present in file
+	int nPartialData_;
+	// Whether the number of partial data present in the file is estimated
+	bool nPartialDataEstimated_;
+	// Index of last partial data read in
+	int lastPartialDataRead_;
 
 	public:
 	// Return whether this plugin is related to the specified file(name)
@@ -230,7 +239,24 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 			{
 				partialDataOffsets_.add(parser.tellg());
 				bool result = importNextPart(parser, standardOptions);
-				if (result) partialDataOffsets_.add(parser.tellg());
+				if (result)
+				{
+					// Add offset for the second datum
+					partialDataOffsets_.add(parser.tellg());
+
+					// Estimate total number of parts
+					// First, get data size from difference between file positions for zeroth and first parts
+					long int partSize = partialDataOffsets_.last() - partialDataOffsets_.first();
+					if ((partSize/1024) < 10) Messenger::print("Single data is %i bytes.", partSize);
+					else Messenger::print("Single data is (approximately) %i kb.", partSize/1024);
+
+					// Now, skip to end of file to get file size, and estimate number of parts
+					parser.seekg(0, std::ios::end);
+					std::streampos endOfFilePos = parser.tellg();
+					nPartialData_ = (endOfFilePos - partialDataOffsets_.first()) / partSize;
+					nPartialDataEstimated_ = true;
+					parser.seekg(partialDataOffsets_.last());
+				}
 				return result;
 			}
 			else
@@ -265,6 +291,10 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 			{
 				Messenger::print("Failed to skip to specified part (%i).", partId);
 				Messenger::print("Last good data read was id %i.", currentId);
+
+				// Update the number of stored parts
+				nPartialData_ = currentId;
+				nPartialDataEstimated_ = false;
 				return false;
 			}
 			++currentId;
@@ -284,7 +314,21 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 
 		return result;
 	}
-
+	// Return number of partial data present in file
+	int nPartialData()
+	{
+		return nPartialData_;
+	}
+	// Return whether the number of partial data present in the file is estimated
+	bool isNPartialDataEstimated()
+	{
+		return nPartialDataEstimated_;
+	}
+	// Return index of last partial data read in
+	int lastPartialDataRead()
+	{
+		return lastPartialDataRead_;
+	}
 
 	/*
 	 * Additional Functions / Data

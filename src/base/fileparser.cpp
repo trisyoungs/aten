@@ -58,6 +58,18 @@ void FileParser::seekg(std::streampos pos)
 	parser_.seekg(pos);
 }
 
+// Seek n bytes in specified direction in input stream
+void FileParser::seekg(std::streamoff off, std::ios_base::seekdir dir)
+{
+	parser_.seekg(off, dir);
+}
+
+// Rewind input stream to start
+void FileParser::rewind()
+{
+	parser_.rewind();
+}
+
 /*
  * File Read Functions
  */

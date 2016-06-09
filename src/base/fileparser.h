@@ -53,6 +53,10 @@ class FileParser
 	std::streampos tellg() const;
 	// Seek position in input stream
 	void seekg(std::streampos pos);
+	// Seek n bytes in specified direction in input stream
+	void seekg(std::streamoff off, std::ios_base::seekdir dir);
+	// Rewind input stream to start
+	void rewind();
 
 
 	/*

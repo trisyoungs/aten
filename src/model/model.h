@@ -832,38 +832,22 @@ class Model : public ListItem<Model>
 	 * Trajectory Frames
 	 */
 	private:
-	// Name associated with trajectory file
-	QString trajectoryName_;
-	// Filename of file
-	QString trajectoryFilename_;
-	// Filter for trajectory file
-	Tree* trajectoryFilter_;
-	// Header and frame read functions from filter
-	Tree* trajectoryHeaderFunction_, *trajectoryFrameFunction_;
-	// Trajectory file parser
-	LineParser trajectoryParser_;
-	// File offsets for frames
-	std::streampos* trajectoryOffsets_;
-	// Number of highest frame file offset stored
-	int trajectoryHighestFrameOffset_;
-	// Size of one frame
-	long int trajectoryFrameSize_;
+	// Plugin for trajectory read
+	FilePluginInterface* trajectoryPlugin_;
 	// Frame list
 	List<Model> trajectoryFrames_;
+	// Current trajectory frame to be drawn
+	Model* trajectoryCurrentFrame_;
 	// Remove frame from trajectory
 	void removeTrajectoryFrame(Model*);
-	// Total number of frames available in file (if an uncached trajectory)
-	int nTrajectoryFileFrames_;
 	// Whether this is a cached trajectory (true) or just one frame (false)
 	bool trajectoryFramesAreCached_;
-	// Current frame position counter
-	int trajectoryFrameIndex_;
 	// Whether the trajectory is currently being 'played'
 	bool trajectoryPlaying_;
-	// Current trajectory frame (Model*) to be drawn
-	Model* trajectoryCurrentFrame_;
 	// Whether to propagate atom styles and colours from parent model to trajectory frames
 	bool trajectoryPropagateParentStyle_;
+	// Current frame position (if cached trajectory)
+        int trajectoryCachedFrameIndex_;
 
 	public:
 	// Add frame to trajectory
@@ -871,22 +855,20 @@ class Model : public ListItem<Model>
 	// Return whether a trajectory for this model exists
 	bool hasTrajectory() const;
 	// Return whether the trajectory is cached (if there is one)
-	bool trajectoryIsCached() const;
+	bool isTrajectoryCached() const;
 	// Initialise trajectory from file specified
 	bool initialiseTrajectory(QString filename, Tree* filter);
 	// Reinitialise (clear) the associated trajectory
 	void clearTrajectory();
-	// Set the filter for the trajectory
-	void setTrajectoryFilter(Tree* filter);
-	// Return the trajectory file pointer
-	std::ifstream *trajectoryFile();
+	// Set the plugin for the trajectory
+	void setTrajectoryPlugiun(FilePluginInterface* plugin);
 	// Return the current frame pointer
 	Model* trajectoryCurrentFrame() const;
 	// Return pointer to specified frame number
 	Model* trajectoryFrame(int n);
 	// Return the total number of frames in the trajectory (file or cached)
 	int nTrajectoryFrames() const;
-	// Return the current integer frame position
+	// Return the current integer frame position (file or cached)
 	int trajectoryFrameIndex() const;
 	// Seek to first frame
 	void seekFirstTrajectoryFrame();
