@@ -345,7 +345,7 @@ bool Commands::function_LoadGrid(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	Grid* g = NULL;
-	if (aten_.importGrid(c->argc(0))) g = obj.g;
+	if (aten_.importGrid(obj.rs(), c->argc(0))) g = obj.g;
 	rv.set(VTypes::GridData, g);
 	return true;
 }

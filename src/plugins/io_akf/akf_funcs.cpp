@@ -1,5 +1,5 @@
 /*
-        *** AKF Plugin Functions
+        *** AKF Model Plugin Functions
         *** src/plugins/io_akf/akf_funcs.cpp
         Copyright T. Youngs 2016-2016
 
@@ -19,9 +19,8 @@
         along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "plugins/io_akf/akf.h"
+#include "plugins/io_akf/akf.hui"
 #include "model/model.h"
-#include "base/sysfunc.h"
 
 // Keyword Enum
 QStringList AKFKeywords = QStringList() << "angle" << "atom" << "bond" << "cell" << "cellmatrix" << "distance" << "glyph" << "grid" << "title" << "torsion";
@@ -136,7 +135,7 @@ bool AKFModelPlugin::canImport()
 }
 
 // Import data from the specified file
-bool AKFModelPlugin::importData(FileParser& parser, const KVMap standardOptions)
+bool AKFModelPlugin::importData(const KVMap standardOptions)
 {
 	int n, nData;
 	double data;
@@ -147,106 +146,106 @@ bool AKFModelPlugin::importData(FileParser& parser, const KVMap standardOptions)
 	Atom* i;
 	Glyph* glyph;
 	Grid* grid;
-	Model* targetModel = createModel(parser.filename());
+	Model* targetModel = createModel(fileParser_.filename());
 
 	// Read file we run out of data
-	while (!parser.eofOrBlank())
+	while (!fileParser_.eofOrBlank())
 	{
 		// Parse line into keyword and 'rest of line'
-		if (!parser.parseLine(Parser::SkipBlanks)) break;
+		if (!fileParser_.parseLine(Parser::SkipBlanks)) break;
 
 		// First argument is the keyword
-		keyword = AKFModelPlugin::akfKeyword(parser.argc(0));
+		keyword = AKFModelPlugin::akfKeyword(fileParser_.argc(0));
 		switch (keyword)
 		{
 			case (AKFModelPlugin::AngleKeyword):
-				targetModel->addAngleMeasurement(parser.argi(1)-1, parser.argi(2)-1, parser.argi(3)-1, true);
+				targetModel->addAngleMeasurement(fileParser_.argi(1)-1, fileParser_.argi(2)-1, fileParser_.argi(3)-1, true);
 				break;
 			case (AKFModelPlugin::AtomKeyword):
-				i = targetModel->addAtom(Elements().find(parser.argc(2)), parser.arg3d(3));
-				i->setCharge(parser.argd(6));
-				if (parser.hasArg(7)) i->setStyle(Prefs::drawStyle(parser.argc(7)));
-				if (parser.hasArg(11)) i->setColour(parser.argd(8), parser.argd(9), parser.argd(10), parser.argd(11));
-				if (parser.hasArg(12)) i->setPositionFixed(parser.argb(12));
+				i = targetModel->addAtom(Elements().find(fileParser_.argc(2)), fileParser_.arg3d(3));
+				i->setCharge(fileParser_.argd(6));
+				if (fileParser_.hasArg(7)) i->setStyle(Prefs::drawStyle(fileParser_.argc(7)));
+				if (fileParser_.hasArg(11)) i->setColour(fileParser_.argd(8), fileParser_.argd(9), fileParser_.argd(10), fileParser_.argd(11));
+				if (fileParser_.hasArg(12)) i->setPositionFixed(fileParser_.argb(12));
 				break;
 			case (AKFModelPlugin::BondKeyword):
-				targetModel->bondAtoms(parser.argi(1)-1, parser.argi(2)-1, Bond::bondType(parser.argc(3)));
+				targetModel->bondAtoms(fileParser_.argi(1)-1, fileParser_.argi(2)-1, Bond::bondType(fileParser_.argc(3)));
 				break;
 			case (AKFModelPlugin::CellKeyword):
-				targetModel->setCell(parser.arg3d(1), parser.arg3d(4));
+				targetModel->setCell(fileParser_.arg3d(1), fileParser_.arg3d(4));
 				break;
 			case (AKFModelPlugin::CellMatrixKeyword):
-				matrix.setColumn(0, parser.arg3d(1), 0.0);
-				matrix.setColumn(1, parser.arg3d(4), 0.0);
-				matrix.setColumn(2, parser.arg3d(7), 0.0);
+				matrix.setColumn(0, fileParser_.arg3d(1), 0.0);
+				matrix.setColumn(1, fileParser_.arg3d(4), 0.0);
+				matrix.setColumn(2, fileParser_.arg3d(7), 0.0);
 				targetModel->setCell(matrix);
 				break;
 			case (AKFModelPlugin::DistanceKeyword):
-				targetModel->addDistanceMeasurement(parser.argi(1)-1, parser.argi(2)-1, true);
+				targetModel->addDistanceMeasurement(fileParser_.argi(1)-1, fileParser_.argi(2)-1, true);
 				break;
 			case (AKFModelPlugin::GlyphKeyword):
-				glyph = targetModel->addGlyph(Glyph::glyphType(parser.argc(1)));
+				glyph = targetModel->addGlyph(Glyph::glyphType(fileParser_.argc(1)));
 				// First 'n' lines (specified in argument 2) are the 'n' data points for the glyph
 				// Format:   <DataNo> <AtomID or 0 for vector> <AtomData Type> <vx> <vy> <vz> <r> <g> <b> <a>
-				nData = parser.argi(2);
+				nData = fileParser_.argi(2);
 				for (n=0; n<nData; ++n)
 				{
-					if (!parser.parseLine()) break;
-					if (parser.argi(1) == 0) glyph->data(n)->setVector(parser.arg3d(3));
-					else glyph->data(n)->setAtom(targetModel->atom(parser.argi(1) - 1));
-					glyph->data(n)->setAtomData( (GlyphData::GlyphDataType) parser.argi(2));
+					if (!fileParser_.parseLine()) break;
+					if (fileParser_.argi(1) == 0) glyph->data(n)->setVector(fileParser_.arg3d(3));
+					else glyph->data(n)->setAtom(targetModel->atom(fileParser_.argi(1) - 1));
+					glyph->data(n)->setAtomData( (GlyphData::GlyphDataType) fileParser_.argi(2));
 				}
 				// Additional data now...
 				do
 				{
-					if (!parser.parseLine()) break;
-					glyphKeyword = AKFModelPlugin::akfGlyphKeyword(parser.argc(0));
+					if (!fileParser_.parseLine()) break;
+					glyphKeyword = AKFModelPlugin::akfGlyphKeyword(fileParser_.argc(0));
 					switch (glyphKeyword)
 					{
 						case (AKFModelPlugin::RotationKeyword):
 							matrix.setIdentity();
-							matrix.setColumn(0, parser.arg3d(1), 0.0);
-							matrix.setColumn(1, parser.arg3d(4), 0.0);
-							matrix.setColumn(2, parser.arg3d(7), 0.0);
+							matrix.setColumn(0, fileParser_.arg3d(1), 0.0);
+							matrix.setColumn(1, fileParser_.arg3d(4), 0.0);
+							matrix.setColumn(2, fileParser_.arg3d(7), 0.0);
 							glyph->setRotation(matrix);
 							break;
 						case (AKFModelPlugin::InvisibleKeyword):
 							glyph->setVisible(false);
 							break;
 						case (AKFModelPlugin::TextKeyword):
-							glyph->setText(parser.argc(1));
+							glyph->setText(fileParser_.argc(1));
 							break;
 						case (AKFModelPlugin::WireFrameKeyword):
 							glyph->setSolid(true);
 							break;
 						default:
-							if (glyphKeyword != AKFModelPlugin::EndGlyphKeyword) Messenger::print("Unrecognised glyph property '" + parser.argc(0) + "' - ignored...");
+							if (glyphKeyword != AKFModelPlugin::EndGlyphKeyword) Messenger::print("Unrecognised glyph property '" + fileParser_.argc(0) + "' - ignored...");
 					}
 				} while (glyphKeyword != AKFModelPlugin::EndGlyphKeyword);
 				break;
 			case (AKFModelPlugin::GridKeyword):
 				grid = targetModel->addGrid();
-				grid->initialise(Grid::gridType(parser.argc(1)), parser.arg3i(2));
+				grid->initialise(Grid::gridType(fileParser_.argc(1)), fileParser_.arg3i(2));
 				do
 				{
-					if (!parser.parseLine()) break;
-					gridKeyword = AKFModelPlugin::akfGridKeyword(parser.argc(0));
+					if (!fileParser_.parseLine()) break;
+					gridKeyword = AKFModelPlugin::akfGridKeyword(fileParser_.argc(0));
 					switch (gridKeyword)
 					{
 						case (AKFModelPlugin::AxesKeyword):
 							matrix.setIdentity();
-							matrix.setColumn(0, parser.arg3d(1), 0.0);
-							matrix.setColumn(1, parser.arg3d(4), 0.0);
-							matrix.setColumn(2, parser.arg3d(7), 0.0);
+							matrix.setColumn(0, fileParser_.arg3d(1), 0.0);
+							matrix.setColumn(1, fileParser_.arg3d(4), 0.0);
+							matrix.setColumn(2, fileParser_.arg3d(7), 0.0);
 							grid->setAxes(matrix);
 							break;
 						case (AKFModelPlugin::OriginKeyword):
-							grid->setOrigin(parser.arg3d(1));
+							grid->setOrigin(fileParser_.arg3d(1));
 							break;
 						case (AKFModelPlugin::DataKeyword):
 							for (n=0; n<grid->nPoints(); ++n)
 							{
-								if (!parser.readLineAsDouble(data))
+								if (!fileParser_.readLineAsDouble(data))
 								{
 									Messenger::error("Couldn't read point %i from file.\n", n+1);
 									break;
@@ -255,19 +254,19 @@ bool AKFModelPlugin::importData(FileParser& parser, const KVMap standardOptions)
 							}
 							break;
 						default:
-							if (gridKeyword != AKFModelPlugin::EndGridKeyword) Messenger::print("Unrecognised grid property '" + parser.argc(0) + "' - ignored...");
+							if (gridKeyword != AKFModelPlugin::EndGridKeyword) Messenger::print("Unrecognised grid property '" + fileParser_.argc(0) + "' - ignored...");
 							break;
 					}
 				} while (gridKeyword != AKFModelPlugin::EndGridKeyword);
 				break;
 			case (AKFModelPlugin::TitleKeyword):
-				targetModel->setName(parser.argc(1));
+				targetModel->setName(fileParser_.argc(1));
 				break;
 			case (AKFModelPlugin::TorsionKeyword):
-				targetModel->addTorsionMeasurement(parser.argi(1)-1, parser.argi(2)-1, parser.argi(3)-1, parser.argi(4)-1, true);
+				targetModel->addTorsionMeasurement(fileParser_.argi(1)-1, fileParser_.argi(2)-1, fileParser_.argi(3)-1, fileParser_.argi(4)-1, true);
 				break;
 			default:
-				Messenger::print("Unrecognised keyword in akf file '" + parser.filename() + "'. Ignoring it...");
+				Messenger::print("Unrecognised keyword in akf file '" + fileParser_.filename() + "'. Ignoring it...");
 				break;
 		}
 	}
@@ -284,88 +283,91 @@ bool AKFModelPlugin::canExport()
 }
 
 // Export data to the specified file
-bool AKFModelPlugin::exportData(FileParser& parser, const KVMap standardOptions)
+bool AKFModelPlugin::exportData(const KVMap standardOptions)
 {
 	// Get the current model pointer containing the data we are to export
-	Model* targetModel = parser.targetModel();
+	Model* sourceModel = targetModel();
 
 	// Title
-	parser.writeLine("title  '" + targetModel->name() + "'");
+	if (!fileParser_.writeLine("title  '" + sourceModel->name() + "'")) return false;
 
 	// Atom data
-	for (Atom* i = targetModel->atoms(); i != NULL; i = i->next) parser.writeLineF("atom   %i %s %f %f %f %f %s %f %f %f %f %i", i->id()+1, Elements().symbol(i->element()), i->r().x, i->r().y, i->r().z, i->charge(), Prefs::drawStyle(i->style()), i->colour()[0], i->colour()[1], i->colour()[2], i->colour()[3], i->isPositionFixed() );
+	for (Atom* i = sourceModel->atoms(); i != NULL; i = i->next) if (!fileParser_.writeLineF("atom   %i %s %f %f %f %f %s %f %f %f %f %i", i->id()+1, Elements().symbol(i->element()), i->r().x, i->r().y, i->r().z, i->charge(), Prefs::drawStyle(i->style()), i->colour()[0], i->colour()[1], i->colour()[2], i->colour()[3], i->isPositionFixed() )) return false;
 
 	// Bond data
-	for (Bond* b = targetModel->bonds(); b != NULL; b = b->next) parser.writeLineF("bond   %i %i %s", b->atomI()->id()+1, b->atomJ()->id()+1, Bond::bondType(b->type()));
+	for (Bond* b = sourceModel->bonds(); b != NULL; b = b->next) if (!fileParser_.writeLineF("bond   %i %i %s", b->atomI()->id()+1, b->atomJ()->id()+1, Bond::bondType(b->type()))) return false;
 
 	// Cell data
-	if (targetModel->isPeriodic())
+	if (sourceModel->isPeriodic())
 	{
-		Matrix axes = targetModel->cell().axes();
-		parser.writeLineF("cellmatrix   %f %f %f %f %f %f %f %f %f",  axes[0], axes[1], axes[2], axes[4], axes[5], axes[6], axes[8], axes[9], axes[10]);
+		Matrix axes = sourceModel->cell().axes();
+		if (!fileParser_.writeLineF("cellmatrix   %f %f %f %f %f %f %f %f %f",  axes[0], axes[1], axes[2], axes[4], axes[5], axes[6], axes[8], axes[9], axes[10])) return false;
 	}
 
 	// Measurements
-	for (Measurement* m = targetModel->distanceMeasurements(); m != NULL; m = m->next) parser.writeLineF("distance %i %i\t# %f", m->atom(0)->id()+1, m->atom(1)->id()+1,  m->value());
-	for (Measurement* m = targetModel->angleMeasurements(); m != NULL; m = m->next) parser.writeLineF("angle %i %i %i\t# %f", m->atom(0)->id()+1, m->atom(1)->id()+1, m->atom(2)->id()+1, m->value());
-	for (Measurement* m = targetModel->torsionMeasurements(); m != NULL; m = m->next) parser.writeLineF("torsion %i %i %i %i\t# %f", m->atom(0)->id()+1, m->atom(1)->id()+1, m->atom(2)->id()+1, m->atom(3)->id()+1, m->value());
+	for (Measurement* m = sourceModel->distanceMeasurements(); m != NULL; m = m->next) if (!fileParser_.writeLineF("distance %i %i\t# %f", m->atom(0)->id()+1, m->atom(1)->id()+1,  m->value())) return false;
+	for (Measurement* m = sourceModel->angleMeasurements(); m != NULL; m = m->next) if (!fileParser_.writeLineF("angle %i %i %i\t# %f", m->atom(0)->id()+1, m->atom(1)->id()+1, m->atom(2)->id()+1, m->value())) return false;
+	for (Measurement* m = sourceModel->torsionMeasurements(); m != NULL; m = m->next) if (!fileParser_.writeLineF("torsion %i %i %i %i\t# %f", m->atom(0)->id()+1, m->atom(1)->id()+1, m->atom(2)->id()+1, m->atom(3)->id()+1, m->value())) return false;
 
 	// Glyphs
-	for (Glyph* g = targetModel->glyphs(); g != NULL; g = g->next)
+	for (Glyph* g = sourceModel->glyphs(); g != NULL; g = g->next)
 	{
-		parser.writeLineF("glyph  %s  %i", Glyph::glyphType(g->type()), g->nData());
+		if (!fileParser_.writeLineF("glyph  %s  %i", Glyph::glyphType(g->type()), g->nData())) return false;
 		// First 'n' lines are the 'n' data points for the glyph
 		for (int n=0; n<g->nData(); ++n)
 		{
-			if (g->data(n)->atom()) parser.writeLineF("  %i  %i  %i  0.0 0.0 0.0  %f %f %f %f", n, g->data(n)->atom()->id()+1, g->data(n)->atomData(), g->data(n)->colour()[0], g->data(n)->colour()[1], g->data(n)->colour()[2], g->data(n)->colour()[3]);
-			else parser.writeLineF("  %i  -1  -1  %f %f %f  %f %f %f %f", n, g->data(n)->vector().x, g->data(n)->vector().y, g->data(n)->vector().z, g->data(n)->colour()[0], g->data(n)->colour()[1], g->data(n)->colour()[2], g->data(n)->colour()[3]);
+			if (g->data(n)->atom())
+			{
+				if (!fileParser_.writeLineF("  %i  %i  %i  0.0 0.0 0.0  %f %f %f %f", n, g->data(n)->atom()->id()+1, g->data(n)->atomData(), g->data(n)->colour()[0], g->data(n)->colour()[1], g->data(n)->colour()[2], g->data(n)->colour()[3])) return false;
+			}
+			else if (!fileParser_.writeLineF("  %i  -1  -1  %f %f %f  %f %f %f %f", n, g->data(n)->vector().x, g->data(n)->vector().y, g->data(n)->vector().z, g->data(n)->colour()[0], g->data(n)->colour()[1], g->data(n)->colour()[2], g->data(n)->colour()[3])) return false;
 		}
 		// Additional data now...
 		if (g->isRotated())
 		{
 			Matrix matrix = g->rotation();
-			parser.writeLineF("  rotation  %f %f %f %f %f %f %f %f %f", matrix[0], matrix[1], matrix[2], matrix[4], matrix[5], matrix[6], matrix[8], matrix[9], matrix[10]);
+			if (!fileParser_.writeLineF("  rotation  %f %f %f %f %f %f %f %f %f", matrix[0], matrix[1], matrix[2], matrix[4], matrix[5], matrix[6], matrix[8], matrix[9], matrix[10])) return false;
 		}
-		if (!g->isVisible()) parser.writeLineF("  invisible");
-		if (!g->text().isEmpty()) parser.writeLine("  text  '" + g->text() + "'");
-		if (!g->isSolid()) parser.writeLineF("  wireframe");
-		parser.writeLineF("endglyph");
+		if (!g->isVisible()) if (!fileParser_.writeLineF("  invisible")) return false;
+		if (!g->text().isEmpty()) if (!fileParser_.writeLine("  text  '" + g->text() + "'")) return false;
+		if (!g->isSolid()) if (!fileParser_.writeLineF("  wireframe")) return false;
+		if (!fileParser_.writeLineF("endglyph")) return false;
 	}
 
 	// Grids
-	for (Grid* g = targetModel->grids(); g != NULL; g = g->next)
+	for (Grid* g = sourceModel->grids(); g != NULL; g = g->next)
 	{
-		parser.writeLineF("grid  %s  %i  %i  %i", Grid::gridType(g->type()), g->nXYZ().x, g->nXYZ().y, g->nXYZ().z);
+		if (!fileParser_.writeLineF("grid  %s  %i  %i  %i", Grid::gridType(g->type()), g->nXYZ().x, g->nXYZ().y, g->nXYZ().z)) return false;
 		Matrix axes = g->axes();
-		parser.writeLineF("  axes       %f  %f  %f  %f  %f  %f  %f  %f  %f", axes[0], axes[1], axes[2], axes[4], axes[5], axes[6], axes[8], axes[9], axes[10]);
-		parser.writeLineF("  origin     %f  %f  %f", g->origin().x, g->origin().y, g->origin().z);
-		parser.writeLineF("  data");
+		if (!fileParser_.writeLineF("  axes       %f  %f  %f  %f  %f  %f  %f  %f  %f", axes[0], axes[1], axes[2], axes[4], axes[5], axes[6], axes[8], axes[9], axes[10])) return false;
+		if (!fileParser_.writeLineF("  origin     %f  %f  %f", g->origin().x, g->origin().y, g->origin().z)) return false;
+		if (!fileParser_.writeLineF("  data")) return false;
 		int x, y, z;
 		if (g->type() == Grid::RegularXYData)
 		{
 			for (x=0; x<g->nXYZ().x; ++x)
-				for (y=0; y<g->nXYZ().y; ++y) parser.writeLineF("    %f", g->data2d()[x][y]);
+				for (y=0; y<g->nXYZ().y; ++y) if (!fileParser_.writeLineF("    %f", g->data2d()[x][y])) return false;
 		}
 		else if (g->type() == Grid::RegularXYZData)
 		{
 			for (x=0; x<g->nXYZ().x; ++x)
 				for (y=0; y<g->nXYZ().y; ++y)
-					for (z=0; z<g->nXYZ().z; ++z) parser.writeLineF("    %f", g->data3d()[x][y][z]);
+					for (z=0; z<g->nXYZ().z; ++z) if (!fileParser_.writeLineF("    %f", g->data3d()[x][y][z])) return false;
 		}
-		parser.writeLineF("endgrid");
+		if (!fileParser_.writeLineF("endgrid")) return false;
 	}
 
 	return true;
 }
 
 // Import next partial data chunk
-bool AKFModelPlugin::importNextPart(FileParser& parser, const KVMap standardOptions)
+bool AKFModelPlugin::importNextPart(const KVMap standardOptions)
 {
 	return false;
 }
 
 // Skip next partial data chunk
-bool AKFModelPlugin::skipNextPart(FileParser& parser, const KVMap standardOptions)
+bool AKFModelPlugin::skipNextPart(const KVMap standardOptions)
 {
 	return false;
 }

@@ -134,6 +134,10 @@ template <class T> class List
 	void own(T* item);
 	// Disown the item, but do not delete it
 	void disown(T* item);
+	// Take the first item out of the list
+	T* takeFirst();
+	// Take the last item out of the list
+	T* takeLast();
 	// Remove an item from the list
 	void remove(T* item);
 	// Remove first item from the list
@@ -397,6 +401,28 @@ template <class T> void List<T>::disown(T* xItem)
 
 	--nItems_;
 	regenerate_ = 1;
+}
+
+// Take the first item out of the list
+template <class T> T* List<T>::takeFirst()
+{
+	if (listHead_ == NULL) return NULL;
+
+	T* item = listHead_;
+	disown(item);
+
+	return item;
+}
+
+// Take the last item out of the list
+template <class T> T* List<T>::takeLast()
+{
+	if (listTail_ == NULL) return NULL;
+
+	T* item = listTail_;
+	disown(item);
+
+	return item;
 }
 
 /*!

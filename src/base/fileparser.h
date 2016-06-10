@@ -23,6 +23,7 @@
 #define ATEN_FILEPARSER_H
 
 #include "base/lineparser.h"
+#include "base/elementmap.h"
 #include "templates/vector3.h"
 
 ATEN_BEGIN_NAMESPACE
@@ -35,7 +36,7 @@ class FileParser
 {
 	public:
 	// Constructors / Destructor
-	FileParser(LineParser& parser, Model* targetModel = NULL);
+	FileParser(LineParser& parser);
 	~FileParser();
 
 
@@ -60,7 +61,7 @@ class FileParser
 
 
 	/*
-	 * File Read Functions
+	 * Read Functions
 	 */
 	public:
 	// Read next line from file
@@ -76,13 +77,7 @@ class FileParser
 	/*
 	 * Write Functions
 	 */
-	private:
-	// Target model for write (if any)
-	Model* targetModel_;
-
 	public:
-	// Return target model
-	Model* targetModel();
 	// Write partial line to file
 	bool write(QString line);
 	// Write formatted partial line to file

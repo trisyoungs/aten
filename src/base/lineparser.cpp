@@ -185,6 +185,8 @@ void LineParser::closeFiles()
 	}
 	if (outputFile_ != NULL)
 	{
+		// Commit any cached content...
+		if (!directOutput_) commitCache();
 		outputFile_->close();
 		delete outputFile_;
 	}

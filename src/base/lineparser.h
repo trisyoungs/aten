@@ -96,7 +96,7 @@ class LineParser
 	// Open new file for reading
 	bool openInput(QString filename);
 	// Open new stream for writing
-	bool openOutput(QString filename, bool directOutput);
+	bool openOutput(QString filename, bool directOutput = true);
 	// Close file(s)
 	void closeFiles();
 	// Return whether current file source is good for reading

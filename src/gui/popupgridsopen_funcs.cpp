@@ -85,7 +85,10 @@ bool GridsOpenPopup::callMethod(QString methodName, ReturnValue& rv)
 
 void GridsOpenPopup::loadGrid(QString filename)
 {
-	parent_.aten().importGrid(filename);
+	Model* targetModel = parent_.aten().currentModelOrFrame();
+	if (!targetModel) return;
+
+	parent_.aten().importGrid(targetModel, filename);
 
 	parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::GridsPanelTarget);
 

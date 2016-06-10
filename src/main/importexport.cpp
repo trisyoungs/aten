@@ -26,12 +26,12 @@
 ATEN_USING_NAMESPACE
 
 // Import model (if it is not loaded already)
-bool Aten::importModel(QString fileName, FilePluginInterface* plugin, KVMap standardOptions, KVMap pluginOptions)
+bool Aten::importModel(QString filename, FilePluginInterface* plugin, KVMap standardOptions, KVMap pluginOptions)
 {
 	Messenger::enter("Aten::importModel");
 
 	// Check to see if current list of loaded models contains the filename supplied
-	QFileInfo newFileInfo(fileName);
+	QFileInfo newFileInfo(filename);
 	for (Model* model = models_.first(); model != NULL; model = model->next)
 	{
 		// If there is no filename for this model, carry on
@@ -41,8 +41,10 @@ bool Aten::importModel(QString fileName, FilePluginInterface* plugin, KVMap stan
 		QFileInfo oldFileInfo(model->filename());
 		if (newFileInfo == oldFileInfo)
 		{
-			Messenger::warn("Refusing to load model '%s' since it is already loaded.\n", qPrintable(fileName));
+			Messenger::warn("Refusing to load model '%s' since it is already loaded.\n", qPrintable(filename));
 			setCurrentModel(model);
+
+			Messenger::exit("Aten::importModel");
 			return false;
 		}
 	}
@@ -56,32 +58,29 @@ bool Aten::importModel(QString fileName, FilePluginInterface* plugin, KVMap stan
 
 	// If plugin == NULL then we must probe the file first to try and find out how to load it
 	bool result = false;
-	if (plugin == NULL) plugin = pluginStore_.findFilePlugin(PluginTypes::ModelFilePlugin, PluginTypes::ImportPlugin, fileName);
+	if (plugin == NULL) plugin = pluginStore_.findFilePlugin(PluginTypes::ModelFilePlugin, PluginTypes::ImportPlugin, filename);
 	if (plugin != NULL)
 	{
-		// Create a LineParser to open the file, and encapsulate it in a FileParser to give to the interface
-		LineParser parser;
-		parser.openInput(fileName);
-		if (!parser.isFileGoodForReading())
+		// Create an instance of the plugin, and open an input file and set options
+		FilePluginInterface* interface = plugin->createInstance();
+		interface->setOptions(pluginOptions);
+		if (interface->openInput(filename))
 		{
-			Messenger::error("Couldn't open file '%s' for reading.", qPrintable(fileName));
 			Messenger::exit("Aten::importModel");
 			return false;
 		}
 
-		FilePluginInterface* interface = plugin->createInstance();
-		interface->setOptions(pluginOptions);
-		FileParser fileParser(parser);
-		if (interface->importData(fileParser, standardOptions))
+		if (interface->importData(standardOptions))
 		{
 			// Finalise any loaded models
-			RefList<Model,int> createdModels = interface->createdModels();
-			for (RefListItem<Model,int>* ri = createdModels.first(); ri != NULL; ri = ri->next)
+			while (interface->createdModels().first())
 			{
-				Model* m = ri->item;
+				Model* m = interface->createdModels().takeFirst();
+				models_.own(m);
+				m->setType(Model::ParentModelType);
 
 				// Set source filename and plugin interface used
-				m->setFilename(fileName);
+				m->setFilename(filename);
 				m->setPlugin(interface);
 
 				// Do various necessary calculations
@@ -101,7 +100,7 @@ bool Aten::importModel(QString fileName, FilePluginInterface* plugin, KVMap stan
 				if (m->namesForcefield()) ownForcefield(m->namesForcefield());
 
 				// If a trajectory exists for this model, by default we view from trajectory in the GUI
-				if (m->nTrajectoryFrames() > 0) m->setRenderSource(Model::TrajectorySource);
+				if (m->hasTrajectory()) m->setRenderSource(Model::TrajectorySource);
 
 				// Lastly, reset all the log points and start afresh
 				m->enableUndoRedo();
@@ -109,14 +108,14 @@ bool Aten::importModel(QString fileName, FilePluginInterface* plugin, KVMap stan
 				m->updateSavePoint();
 			}
 
-			ReturnValue rv = fileName;
+			ReturnValue rv = filename;
 			atenWindow_->ui.HomeFileOpenButton->callPopupMethod("addRecentFile", rv);
 			result = true;
 		}
 
-		parser.closeFiles();
+		interface->closeFiles();
 	}
-	else Messenger::error("Couldn't determine a suitable plugin to load the file '%s'.", qPrintable(fileName));
+	else Messenger::error("Couldn't determine a suitable plugin to load the file '%s'.", qPrintable(filename));
 
 	// If we loaded something successfully, have we flagged an empty model to delete?
 	if (result)
@@ -130,7 +129,7 @@ bool Aten::importModel(QString fileName, FilePluginInterface* plugin, KVMap stan
 }
 
 // Export model
-bool Aten::exportModel(Model* model, QString filename, FilePluginInterface* plugin, KVMap standardOptions, KVMap pluginOptions)
+bool Aten::exportModel(Model* sourceModel, QString filename, FilePluginInterface* plugin, KVMap standardOptions, KVMap pluginOptions)
 {
 	Messenger::enter("Aten::exportModel");
 
@@ -155,57 +154,48 @@ bool Aten::exportModel(Model* model, QString filename, FilePluginInterface* plug
 	// Now do we have a valid filename and plugin?
 	if ((!filename.isEmpty()) && (plugin) && (plugin->category() == PluginTypes::ModelFilePlugin) && (plugin->canExport()))
 	{
-		// Construct a LineParser with the relevant information
-		LineParser parser;
-		parser.openOutput(filename, false);
-		if (!parser.isFileGoodForWriting())
-		{
-			Messenger::print("Failed to open file '%s' for writing.\n", qPrintable(filename));
-			Messenger::exit("Aten::exportModel");
-			return false;
-		}
-
-		// Temporarily disable undo/redo for the model, save, and re-enable
-		model->disableUndoRedo();
+		// Temporarily disable undo/redo for the model
+		sourceModel->disableUndoRedo();
 
 		// Turn on export type mapping
 		if (nTypeExportMappings() > 0) typeExportMapping_ = true;
 
-		// Create an instance of the plugin, and make a FileParser object to give to it
+		// Create an instance of the plugin, and set options and the output file
 		FilePluginInterface* interface = plugin->createInstance();
-		interface->setOptions(pluginOptions);
-		FileParser fileParser(parser, model);
-		if (interface->exportData(fileParser))
+		if (!interface->openOutput(filename))
 		{
-			// Flush the cache (in case we were using indirect output)
-			parser.commitCache();
-
+			Messenger::exit("Aten::exportModel");
+			return false;
+		}
+		interface->setOptions(pluginOptions);
+		if (interface->exportData(standardOptions))
+		{
 			// Set the model's (potentially new) filename and plugin
-			model->setFilename(filename);
-			model->setPlugin(plugin);
-			model->updateSavePoint();
+			sourceModel->setFilename(filename);
+			sourceModel->setPlugin(plugin);
+			sourceModel->updateSavePoint();
 
 			// Done - tidy up
-			parser.closeFiles();
+			interface->closeFiles();
 
-			Messenger::print("Model '%s' saved to file '%s' (%s)", qPrintable(model->name()), qPrintable(filename), qPrintable(plugin->name()));
+			Messenger::print("Model '%s' saved to file '%s' (%s)", qPrintable(sourceModel->name()), qPrintable(filename), qPrintable(plugin->name()));
 		}
 		else
 		{
-			model->enableUndoRedo();
+			sourceModel->enableUndoRedo();
 
-			Messenger::print("Failed to save model '%s'.", qPrintable(model->name()));
+			Messenger::print("Failed to save model '%s'.", qPrintable(sourceModel->name()));
 			Messenger::exit("Aten::exportModel");
 			return false;
 		}
 
 		typeExportMapping_ = false;
 
-		model->enableUndoRedo();
+		sourceModel->enableUndoRedo();
 	}
 	else
 	{
-		Messenger::print("Model '%s' not saved.\n", qPrintable(model->name()));
+		Messenger::print("Model '%s' not saved.\n", qPrintable(sourceModel->name()));
 		Messenger::exit("Aten::exportModel");
 		return false;
 	}
@@ -216,7 +206,7 @@ bool Aten::exportModel(Model* model, QString filename, FilePluginInterface* plug
 }
 
 // Import grid
-bool Aten::importGrid(QString fileName, FilePluginInterface* plugin, KVMap standardOptions, KVMap pluginOptions)
+bool Aten::importGrid(Model* targetModel, QString fileName, FilePluginInterface* plugin, KVMap standardOptions, KVMap pluginOptions)
 {
 	Messenger::enter("Aten::importGrid");
 
@@ -225,65 +215,33 @@ bool Aten::importGrid(QString fileName, FilePluginInterface* plugin, KVMap stand
 	if (plugin == NULL) pluginStore_.findFilePlugin(PluginTypes::GridFilePlugin, PluginTypes::ImportPlugin, fileName);
 	if (plugin != NULL)
 	{
-		// Create a LineParser to open the file, and encapsulate it in a FileParser to give to the interface
-		LineParser parser;
-		parser.openInput(fileName);
-		if (!parser.isFileGoodForReading())
+		FilePluginInterface* interface = plugin->createInstance();
+		if (!interface->openInput(fileName))
 		{
-			Messenger::error("Couldn't open file '%s' for reading.\n", qPrintable(fileName));
 			Messenger::exit("Aten::importGrid");
 			return false;
 		}
-
-		// Loaded grids will be associated to the current model, so grab it
-		Model* m = currentModelOrFrame();
-
-		FilePluginInterface* interface = plugin->createInstance();
 		interface->setOptions(pluginOptions);
-		FileParser fileParser(parser, m);
-		if (interface->importData(fileParser))
+		interface->setTargetModel(targetModel);
+		if (interface->importData(standardOptions))
 		{
-			// Finalise any loaded grids???
-			RefList<Model,int> createdModels = interface->createdModels();
-			for (RefListItem<Model,int>* ri = createdModels.first(); ri != NULL; ri = ri->next)
+			// Finalise any loaded grids
+			RefList<Grid,int> createdGrids = interface->createdGrids();
+			for (RefListItem<Grid,int>* ri = createdGrids.first(); ri != NULL; ri = ri->next)
 			{
-				Model* m = ri->item;
+				Grid* g = ri->item;
 
 				// Set source filename and plugin interface used
-				m->setFilename(fileName);
-				m->setPlugin(interface);
-
-				// Do various necessary calculations
-				if (prefs.coordsInBohr()) m->bohrToAngstrom();
-				m->renumberAtoms();
-				if (!prefs.keepView()) m->resetView(atenWindow()->ui.MainView->width(), atenWindow()->ui.MainView->height());
-				m->calculateMass();
-				m->selectNone();
-
-				// Print out some useful info on the model that we've just read in
-				Messenger::print(Messenger::Verbose, "Model  : %s", qPrintable(m->name()));
-				Messenger::print(Messenger::Verbose, "Atoms  : %i", m->nAtoms());
-				Messenger::print(Messenger::Verbose, "Cell   : %s", UnitCell::cellType(m->cell().type()));
-				if (m->cell().type() != UnitCell::NoCell) m->cell().print();
-
-				// If a names forcefield was created, add it to Aten's list 
-				if (m->namesForcefield()) ownForcefield(m->namesForcefield());
-
-				// If a trajectory exists for this model, by default we view from trajectory in the GUI
-				if (m->nTrajectoryFrames() > 0) m->setRenderSource(Model::TrajectorySource);
-
-				// Lastly, reset all the log points and start afresh
-				m->enableUndoRedo();
-				m->resetLogs();
-				m->updateSavePoint();
+				g->setFilename(fileName);
+				g->setPlugin(interface);
 			}
 
 			ReturnValue rv = fileName;
-			atenWindow_->ui.HomeFileOpenButton->callPopupMethod("addRecentFile", rv);
+			atenWindow_->ui.GridsManageOpenButton->callPopupMethod("addRecentFile", rv);
 			result = true;
 		}
 
-		parser.closeFiles();
+		interface->closeFiles();
 	}
 	else Messenger::error("Couldn't determine a suitable plugin to load the file '%s'.", qPrintable(fileName));
 
@@ -291,10 +249,62 @@ bool Aten::importGrid(QString fileName, FilePluginInterface* plugin, KVMap stand
 	return result;
 }
 
-// Import trajectory to current model
-bool Aten::importTrajectory(QString fileName, FilePluginInterface* plugin, KVMap standardOptions, KVMap pluginOptions)
+// Import trajectory
+bool Aten::importTrajectory(Model* targetModel, QString fileName, FilePluginInterface* plugin, KVMap standardOptions, KVMap pluginOptions)
 {
-	// ATEN2 TODO ENDOFFILTERS
+	Messenger::enter("Aten::importTrajectory");
+
+	// Clear existing trajectory, if there is one
+	targetModel->clearTrajectory();
+
+	// If plugin == NULL then we must probe the file first to try and find out how to load it
+	bool result = true;
+	if (plugin == NULL) plugin = pluginStore_.findFilePlugin(PluginTypes::TrajectoryFilePlugin, PluginTypes::ImportPlugin, fileName);
+	if (plugin != NULL)
+	{
+		// Create a LineParser to open the file, and encapsulate it in a FileParser to give to the interface
+		LineParser parser;
+		parser.openInput(fileName);
+		if (!parser.isFileGoodForReading())
+		{
+			Messenger::error("Couldn't open file '%s' for reading.\n", qPrintable(fileName));
+			Messenger::exit("Aten::importTrajectory");
+			return false;
+		}
+
+		FilePluginInterface* interface = plugin->createInstance();
+		interface->setOptions(pluginOptions);
+		FileParser fileParser(parser);
+
+		// Call the importData() function of the interface - this will read any header information present in the file before the first frame
+		if (!interface->importData(standardOptions))
+		{
+			targetModel->clearTrajectory();
+			Messenger::error("Failed to import trajectory.");
+			result = false;
+		}
+
+		// If successful, now read / cache frame data
+		if (result)
+		{
+			// Always read in first frame
+			Model* frame = targetModel->addTrajectoryFrame();
+			//fileParser.
+			if (standardOptions.value("cacheFrames") == "true")
+			{
+				
+			}
+			else
+			{
+			}
+		}
+
+		parser.closeFiles();
+	}
+	else Messenger::error("Couldn't determine a suitable plugin to load the file '%s'.", qPrintable(fileName));
+
+	Messenger::exit("Aten::importTrajectory");
+	return result;
 }
 
 // Import expression
@@ -320,7 +330,7 @@ bool Aten::importExpression(QString fileName, FilePluginInterface* plugin, KVMap
 		FilePluginInterface* interface = plugin->createInstance();
 		interface->setOptions(pluginOptions);
 		FileParser fileParser(parser);
-		if (interface->importData(fileParser))
+		if (interface->importData(standardOptions))
 		{
 			result = true;
 		}
@@ -334,7 +344,7 @@ bool Aten::importExpression(QString fileName, FilePluginInterface* plugin, KVMap
 }
 
 // Export expression
-bool Aten::exportExpression(Model* model, QString filename, FilePluginInterface* plugin, KVMap standardOptions, KVMap pluginOptions)
+bool Aten::exportExpression(Model* targetModel, QString filename, FilePluginInterface* plugin, KVMap standardOptions, KVMap pluginOptions)
 {
 	// ATEN2 TODO ENDOFFILTERS
 }

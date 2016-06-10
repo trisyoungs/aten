@@ -46,8 +46,9 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 {
 	public:
 	// Constructor
-	FilePluginInterface() : ListItem<FilePluginInterface>()
+	FilePluginInterface() : ListItem<FilePluginInterface>(), fileParser_(lineParser_)
 	{
+		// Import / Export
 		nPartialData_ = 0;
 		nPartialDataEstimated_ = false;
 		lastPartialDataRead_ = -1;
@@ -61,24 +62,30 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 	 */
 	private:
 	// Original filename for plugin
-	QString filename_;
+	QString pluginFilename_;
 	// Object store for plugin instances
 	List<FilePluginInterface> instances_;
+	// Core LineParser object
+	LineParser lineParser_;
 
 	private:
 	// Return a copy of the plugin object
 	virtual FilePluginInterface* duplicate() = 0;
 
+	protected:
+	// File parser object, associated to LineParser
+	FileParser fileParser_;
+
 	public:
 	// Set filename for plugin
-	void setFilename(QString filename)
+	void setPluginFilename(QString filename)
 	{
-		filename_ = filename;
+		pluginFilename_ = filename;
 	}
 	// Return filanem for plugin
-	QString filename() const
+	QString pluginFilename() const
 	{
-		return filename_;
+		return pluginFilename_;
 	}
 	// Return instance of plugin
 	FilePluginInterface* createInstance()
@@ -92,6 +99,33 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 	void deleteInstances()
 	{
 		instances_.clear();
+	}
+	// Open specified file for input
+	bool openInput(QString filename)
+	{
+		lineParser_.openInput(filename);
+		if (!lineParser_.isFileGoodForReading())
+		{
+			Messenger::error("Couldn't open file '" + filename + "' for reading.");
+			return false;
+		}
+		return true;
+	}
+	// Open specified file for output
+	bool openOutput(QString filename)
+	{
+		lineParser_.openOutput(filename);
+		if (!lineParser_.isFileGoodForWriting())
+		{
+			Messenger::error("Couldn't open file '" + filename + "' for writing.");
+			return false;
+		}
+		return true;
+	}
+	// Close file(s)
+	void closeFiles()
+	{
+		lineParser_.closeFiles();
 	}
 
 
@@ -128,20 +162,33 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 	 * Object Handling
 	 */
 	private:
-	// Model objects created on import
-	RefList<Model,int> createdModels_;
+	// Parent model objects created on import
+	List<Model> createdModels_;
 	// Grid objects created on import
 	RefList<Grid,int> createdGrids_;
+	// Target model for read/write, if any
+	Model* targetModel_;
+	// Target frame for read/write, if any
+	Model* targetFrame_;
 
 	protected:
-	// Create new model (in Aten)
+	// Create new model
 	Model* createModel(QString name = QString())
 	{
-		ReturnValue result = CommandNode::run(Commands::NewModel, "c", qPrintable(name));
-		Model* newModel = (Model*) result.asPointer(VTypes::ModelData);
-		newModel->disableUndoRedo();
-		createdModels_.add(newModel);
+		Model* newModel = createdModels_.add();
+		if (!name.isEmpty()) newModel->setName(name);
 		return newModel;
+	}
+	// Discard created model
+	bool discardModel(Model* model)
+	{
+		if (createdModels_.contains(model))
+		{
+			createdModels_.remove(model);
+			return true;
+		}
+		Messenger::error("Can't discard model - not owned by the interface.");
+		return false;
 	}
 	// Create new grid (in target model)
 	Grid* createGrid()
@@ -153,8 +200,8 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 	}
 
 	public:
-	// Return main Model objects created on import
-	RefList<Model,int> createdModels()
+	// Return parent Model objects created on import
+	List<Model>& createdModels()
 	{
 		return createdModels_;
 	}
@@ -162,6 +209,26 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 	RefList<Grid,int> createdGrids()
 	{
 		return createdGrids_;
+	}
+	// Set target model
+	void setTargetModel(Model* model)
+	{
+		targetModel_ = model;
+	}
+	// Return target model
+	Model* targetModel()
+	{
+		return targetModel_;
+	}
+	// Set target frame
+	void setTargetFrame(Model* frame)
+	{
+		targetFrame_ = frame;
+	}
+	// Return target frame
+	Model* targetFrame()
+	{
+		return targetFrame_;
 	}
 
 
@@ -219,17 +286,17 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 	// Return whether this plugin can import data
 	virtual bool canImport() = 0;
 	// Import data via the supplied parser
-	virtual bool importData(FileParser& parser, const KVMap standardOptions = KVMap()) = 0;
+	virtual bool importData(const KVMap standardOptions = KVMap()) = 0;
 	// Return whether this plugin can export data
 	virtual bool canExport() = 0;
 	// Export data via the supplied parser
-	virtual bool exportData(FileParser& parser, const KVMap standardOptions = KVMap()) = 0;
+	virtual bool exportData(const KVMap standardOptions = KVMap()) = 0;
 	// Import next partial data chunk
-	virtual bool importNextPart(FileParser& parser, const KVMap standardOptions = KVMap()) = 0;
+	virtual bool importNextPart(const KVMap standardOptions = KVMap()) = 0;
 	// Skip next partial data chunk
-	virtual bool skipNextPart(FileParser& parser, const KVMap standardOptions = KVMap()) = 0;
+	virtual bool skipNextPart(const KVMap standardOptions = KVMap()) = 0;
 	// Import partial data chunk specified
-	bool importPart(int partId, FileParser& parser, const KVMap standardOptions = KVMap())
+	bool importPart(int partId, const KVMap standardOptions = KVMap())
 	{
 		// First check (sanity) - are there any file positions stored in the array?
 		if (partialDataOffsets_.nItems() == 0)
@@ -237,12 +304,12 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 			// If the requested partId is the first part (0) then store the current file position and read it in
 			if (partId == 0)
 			{
-				partialDataOffsets_.add(parser.tellg());
-				bool result = importNextPart(parser, standardOptions);
+				partialDataOffsets_.add(lineParser_.tellg());
+				bool result = importNextPart(standardOptions);
 				if (result)
 				{
 					// Add offset for the second datum
-					partialDataOffsets_.add(parser.tellg());
+					partialDataOffsets_.add(lineParser_.tellg());
 
 					// Estimate total number of parts
 					// First, get data size from difference between file positions for zeroth and first parts
@@ -251,11 +318,11 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 					else Messenger::print("Single data is (approximately) %i kb.", partSize/1024);
 
 					// Now, skip to end of file to get file size, and estimate number of parts
-					parser.seekg(0, std::ios::end);
-					std::streampos endOfFilePos = parser.tellg();
+					lineParser_.seekg(0, std::ios::end);
+					std::streampos endOfFilePos = lineParser_.tellg();
 					nPartialData_ = (endOfFilePos - partialDataOffsets_.first()) / partSize;
 					nPartialDataEstimated_ = true;
-					parser.seekg(partialDataOffsets_.last());
+					lineParser_.seekg(partialDataOffsets_.last());
 				}
 				return result;
 			}
@@ -272,20 +339,20 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 			Messenger::print(Messenger::Verbose, "Requested partId is within stored range.");
 
 			// Seek to the stored file position and read the data
-			parser.seekg(partialDataOffsets_.value(partId));
-			return importNextPart(parser, standardOptions);
+			lineParser_.seekg(partialDataOffsets_.value(partId));
+			return importNextPart(standardOptions);
 		}
 
 		// Requested partId not in file seek table, so go to last known position and try to find it
 		int currentId = partialDataOffsets_.nItems() - 1;
-		parser.seekg(partialDataOffsets_.last());
+		lineParser_.seekg(partialDataOffsets_.last());
 		do
 		{
-			bool result = skipNextPart(parser, standardOptions);
+			bool result = skipNextPart(standardOptions);
 			if (result)
 			{
 				// Successfully skipped the data, so store the file position
-				partialDataOffsets_.add(parser.tellg());
+				partialDataOffsets_.add(lineParser_.tellg());
 			}
 			else
 			{
@@ -301,11 +368,11 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 		} while (currentId < partId);
 
 		// Now at correct file position, so read data proper
-		bool result = importNextPart(parser, standardOptions);
+		bool result = importNextPart(standardOptions);
 		if (result)
 		{
 			// Now at start of next data, so store the file position
-			partialDataOffsets_.add(parser.tellg());
+			partialDataOffsets_.add(lineParser_.tellg());
 		}
 		else
 		{
@@ -329,6 +396,7 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 	{
 		return lastPartialDataRead_;
 	}
+
 
 	/*
 	 * Additional Functions / Data

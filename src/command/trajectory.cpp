@@ -109,10 +109,7 @@ bool Commands::function_LoadTrajectory(CommandNode* c, Bundle& obj, ReturnValue&
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 
-	bool result = aten_.importTrajectory(c->argc(0));
-
-	// ATEN2 TODO ENDOFFILTERS
-// 	if (result) result = obj.m->initialiseTrajectory(c->argc(0), );
+	bool result = aten_.importTrajectory(obj.m, c->argc(0));
 
 	rv.set(result);
 	return true;

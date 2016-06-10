@@ -12,11 +12,14 @@ AM_CPPFLAGS = -I${top_srcdir}/src @ATEN_INCLUDES@ @ATEN_CFLAGS@
 
 deploy-plugins: $(SUBDIRS)
 	@for dir in $^; do \
-	  for soname in `echo | $(EGREP) "^dlname=" $$dir/*la | $(SED) -e "s|^dlname='\(.*\)'|\1|"`; do  \
-	    echo "$$soname: deploying plugin from from $(abs_builddir)/$$dir/.libs to $(top_builddir)/data/plugins"; \
-	    rm -f $(top_builddir)/data/plugins/$$soname ; \
-	    test -e $(abs_builddir)/$$dir/.libs/$$soname && \
-	    cp $(abs_builddir)/$$dir/.libs/$$soname ${top_builddir}/data/plugins/$$soname || true; \
+	  for laname in $$dir/*la; do \
+	    for soname in `echo | $(EGREP) "^dlname=" $$laname | $(SED) -e "s|^dlname='\(.*\)'|\1|"`; do  \
+	      if [ -e $(abs_builddir)/$$dir/.libs/$$soname ]; then \
+	        echo "$$soname: deploying $$soname plugin from from $(abs_builddir)/$$dir/.libs to $(top_builddir)/data/plugins"; \
+	        rm -f $(top_builddir)/data/plugins/$$soname; \
+	        cp $(abs_builddir)/$$dir/.libs/$$soname ${top_builddir}/data/plugins/$$soname || true; \
+	      fi \
+	    done \
 	  done \
 	done 
 

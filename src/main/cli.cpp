@@ -649,7 +649,7 @@ int Aten::parseCli(int argc, char *argv[])
 					break;
 				// Load surface
 				case (Cli::GridSwitch):
-					if (!importGrid(argText)) return -1;
+					if (!importGrid(currentModelOrFrame(), argText)) return -1;
 					break;
 				// Pass value
 				case (Cli::DoubleSwitch):
@@ -813,7 +813,7 @@ int Aten::parseCli(int argc, char *argv[])
 						Messenger::print("There is no current model to associate a trajectory to.");
 						return -1;
 					}
-					else if (!importTrajectory(argText, trajectoryPlugin)) return -1;
+					else if (!importTrajectory(currentModel(), argText, trajectoryPlugin)) return -1;
 					break;
 				// Set forced trajectory load format
 				case (Cli::TrajectoryFormatSwitch):

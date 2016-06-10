@@ -73,7 +73,7 @@ int Model::nTrajectoryFrames() const
 // Return the current integer frame position
 int Model::trajectoryFrameIndex() const
 {
-	return (trajectoryPlugin_ ? trajectoryPlugin_->lastPartialDataRead() : trajectoryCachedFrameIndex_);
+	return (trajectoryPlugin_ ? trajectoryPlugin_->lastPartialDataRead() : trajectoryFrameIndex_);
 }
 
 // Clear trajectory
@@ -82,7 +82,7 @@ void Model::clearTrajectory()
 	Messenger::enter("Model::clearTrajectory");
 	trajectoryFrames_.clear();
 
-	trajectoryCachedFrameIndex_ = -1;
+	trajectoryFrameIndex_ = -1;
 	trajectoryFramesAreCached_ = false;
 	trajectoryPlugin_ = NULL;
 	trajectoryCurrentFrame_ = NULL;
@@ -105,36 +105,8 @@ bool Model::initialiseTrajectory(QString filename, Tree* filter)
 	// Delete old frames and unset old file
 	clearTrajectory();
 	
-	// Open the specified file
-	if (!trajectoryParser_.openInput(filename))
-	{
-		Messenger::print("Trajectory file '%s' couldn't be opened.", qPrintable(filename));
-		clearTrajectory();
-		Messenger::exit("Model::initialiseTrajectory");
-		return false;
-	}
-	
-	// Associate the file with the trajectory, and grab header and frame read functions
-	trajectoryFilename_ = filename;
-	trajectoryFilter_ = filter;
 	// ATEN2 TODO ENDOFFILTERS
-// 	trajectoryHeaderFunction_ = filter->filter.trajectoryHeaderFunction();
-// 	trajectoryFrameFunction_ = filter->filter.trajectoryFrameFunction();
-// 	if (trajectoryHeaderFunction_ == NULL)
-// 	{
-// 		Messenger::print("Error initialising trajectory: Filter '%s' contains no 'int readHeader()' function.", qPrintable(trajectoryFilter_->filter.name()));
-// 		clearTrajectory();
-// 		Messenger::exit("Model::initialiseTrajectory");
-// 		return false;
-// 	}
-// 	if (trajectoryFrameFunction_ == NULL)
-// 	{
-// 		Messenger::print("Error initialising trajectory: Filter '%s' contains no 'int readFrame()' function.", qPrintable(trajectoryFilter_->filter.name()));
-// 		clearTrajectory();
-// 		Messenger::exit("Model::initialiseTrajectory");
-// 		return false;
-// 	}
-// 	ReturnValue rv;
+
 // 	
 // 	// Execute main filter program (in case there are dialog options etc.)
 // 	if (!filter->execute(rv))
@@ -242,12 +214,12 @@ Model* Model::addTrajectoryFrame()
 }
 
 // Delete cached frame from trajectory
-void Model::removeTrajectoryFrame(Model* xframe)
+void Model::removeTrajectoryFrame(Model* frame)
 {
 	// Delete the specified frame from the trajectory structure
 	Messenger::enter("Model::removeTrajectoryFrame");
-	if (xframe == trajectoryCurrentFrame_) trajectoryCurrentFrame_ = (xframe->next == NULL ? xframe->prev : xframe->next);
-	trajectoryFrames_.remove(xframe);
+	if (frame == trajectoryCurrentFrame_) trajectoryCurrentFrame_ = (frame->next == NULL ? frame->prev : frame->next);
+	trajectoryFrames_.remove(frame);
 	Messenger::exit("Model::removeTrajectoryFrame");
 }
 
@@ -263,14 +235,10 @@ void Model::seekFirstTrajectoryFrame()
 		Messenger::exit("Model::seekFirstTrajectoryFrame");
 		return;
 	}
-	if (trajectoryFrameIndex_ == 0)
-	{
-		Messenger::print("Already at start of trajectory.");
-		Messenger::exit("Model::seekFirstTrajectoryFrame");
-		return;
-	}
+
 	if (trajectoryFramesAreCached_)
 	{
+		if (trajectoryFrameIndex_ == 0) Messenger::print("Already at start of trajectory.");
 		trajectoryCurrentFrame_ = trajectoryFrames_.first();
 		trajectoryFrameIndex_ = 0;
 	}
@@ -290,15 +258,11 @@ void Model::seekNextTrajectoryFrame()
 		Messenger::exit("Model::seekNextTrajectoryFrame");
 		return;
 	}
-	if (trajectoryFrameIndex_ == nTrajectoryFrames()-1)
-	{
-		Messenger::print("Already at end of trajectory (frame %i).", trajectoryFrameIndex_+1);
-		Messenger::exit("Model::seekNextTrajectoryFrame");
-		return;
-	}
+
 	if (trajectoryFramesAreCached_)
 	{
-		trajectoryFrameIndex_++;
+		if (trajectoryFrameIndex_ == nTrajectoryFrames()-1) Messenger::print("Already at end of trajectory (frame %i).", trajectoryFrameIndex_+1);
+		++trajectoryFrameIndex_;
 		trajectoryCurrentFrame_ = trajectoryCurrentFrame_->next;
 	}
 	else seekTrajectoryFrame(trajectoryFrameIndex_+1);

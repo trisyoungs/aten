@@ -400,7 +400,7 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex,
 			break;
 		case (ModelVariable::Frames):
 			// Only works for a cached trajectory
-			if (!ptr->trajectoryIsCached())
+			if (!ptr->isTrajectoryCached())
 			{
 				Messenger::print("Trajectory for model '%s' is not cached - individual frame pointers not available.", qPrintable(ptr->name()));
 				result = false;

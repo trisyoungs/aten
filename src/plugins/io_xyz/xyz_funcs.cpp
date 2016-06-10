@@ -19,7 +19,8 @@
         along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "plugins/io_xyz/xyz.h"
+#include "plugins/io_xyz/xyz.hui"
+#include "plugins/io_xyz/common.h"
 #include "model/model.h"
 
 // Constructor
@@ -98,17 +99,60 @@ bool XYZModelPlugin::canImport()
 }
 
 // Import data from the specified file
-bool XYZModelPlugin::importData(FileParser& parser, const KVMap standardOptions)
+bool XYZModelPlugin::importData(const KVMap standardOptions)
 {
 	int nModels = 0;
 	bool result, readAsTrajectory = false;
+	Model* parentModel = NULL;
 	Model* targetModel = NULL;
 
-	// Read data - first model in file is always the parent (regardless of whether we're reading it as a trajectory)
-	while (!parser.eofOrBlank())
+	// Read data - first model in file is always the parent (regardless of whether we're reading it as a trajectory or not)
+	do
 	{
-		Model* model = readXYZModel(parser, standardOptions, NULL);
-	}
+		// Do we need to switch to reading the file as a trajectory?
+		if ((nModels == 1) && readMultipleAsTrajectory_)
+		{
+			readAsTrajectory = true;
+
+			// Copy the parent model into the first frame of the trajectory
+			targetModel = parentModel->addTrajectoryFrame();
+			targetModel->copy(parentModel);
+		}
+
+		// Prepare new model
+		if (readAsTrajectory)
+		{
+			// Check parent model pointer
+			if (!parentModel)
+			{
+				Messenger::error("Error in XYZ plugin - parentModel pointer is NULL.");
+				return false;
+			}
+			targetModel = parentModel->addTrajectoryFrame();
+		}
+		else
+		{
+			// Reading as individual models, so just create a new one
+			// Make a copy of it in 'parentModel', in case we switch to trajectory creation
+			targetModel = createModel();
+			parentModel = targetModel;
+		}
+
+		// Read in model data
+		result = XYZFilePluginCommon::readXYZModel(fileParser_, standardOptions, targetModel);
+
+		if (!result)
+		{
+			// Failed, so remove model (or frame)
+			if (readAsTrajectory) parentModel->removeTrajectoryFrame(targetModel);
+			else discardModel(parentModel);
+
+			return false;
+		}
+
+		// Increase number of models
+		++nModels;
+	} while (!fileParser_.eofOrBlank());
 	return true;
 }
 
@@ -119,34 +163,19 @@ bool XYZModelPlugin::canExport()
 }
 
 // Export data to the specified file
-bool XYZModelPlugin::exportData(FileParser& parser, const KVMap standardOptions)
+bool XYZModelPlugin::exportData(const KVMap standardOptions)
 {
-	// Get the current model pointer containing the data we are to export
-	const Model* targetModel = parser.targetModel();
-
-	// Write number atoms line
-	parser.writeLineF("%i", targetModel->nAtoms());
-
-	// Write title line
-	parser.writeLine(targetModel->name());
-
-	// Write atom information
-	for (Atom* i = targetModel->atoms(); i != NULL; i = i->next)
-	{
-		parser.writeLineF("%-8s  %12.6f %12.6f %12.6f %12.6f", ElementMap().symbol(i->element()), i->r().x, i->r().y, i->r().z, i->charge());
-	}
-
-	return true;
+	return XYZFilePluginCommon::writeXYZModel(fileParser_, standardOptions, targetModel());
 }
 
 // Import next partial data chunk
-bool XYZModelPlugin::importNextPart(FileParser& parser, const KVMap standardOptions)
+bool XYZModelPlugin::importNextPart(const KVMap standardOptions)
 {
 	return false;
 }
 
 // Skip next partial data chunk
-bool XYZModelPlugin::skipNextPart(FileParser& parser, const KVMap standardOptions)
+bool XYZModelPlugin::skipNextPart(const KVMap standardOptions)
 {
 	return false;
 }
@@ -174,35 +203,4 @@ bool XYZModelPlugin::setOption(QString optionName, QString optionValue)
 			readMultipleAsTrajectory_ = toBool(optionValue);
 			break;
 	}
-}
-
-// Read single XYZ model from file
-Model* XYZModelPlugin::readXYZModel(FileParser& parser, const KVMap standardOptions, Model* targetModel)
-{
-	int nAtoms, n;
-	QString e, name;
-
-	// Read number of atoms from file
-	if (!parser.readLineAsInteger(nAtoms)) return NULL;
-
-	// Next line is name of model
-	if (!parser.readLine(name)) return NULL;
-
-	// Check target model - if NULL create a new one here...
-	if (targetModel == NULL) targetModel = createModel();
-	targetModel->setName(name);
-
-	// Load atoms for model
-	for (n=0; n<nAtoms; ++n)
-	{
-		if (!parser.parseLine()) break;
-
-		// Create the new atom
-		targetModel->addAtom(ElementMap().find(parser.argc(0)), parser.arg3d(1));
-	}
-
-	// Rebond the model
-	if (standardOptions.isSet("preventRebonding", "false")) targetModel->calculateBonding(true);
-
-	return targetModel;
 }

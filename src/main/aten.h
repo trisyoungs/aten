@@ -142,7 +142,7 @@ class Aten
 	// Load global include functions
 	void loadIncludes();
 	// Load include from specified filename
-	bool loadInclude(QString fileName, QString name);
+	bool loadInclude(QString filename, QString name);
 	// Whether includes loaded succesfully on startup
 	int nIncludesFailed() const;
 	// Return first item in failed includes list
@@ -172,7 +172,7 @@ class Aten
 	// Load global partition functions
 	void loadPartitions();
 	// Load partition from specified filename
-	bool loadPartition(QString fileName, QString name);
+	bool loadPartition(QString filename, QString name);
 	// Whether partitions loaded succesfully on startup
 	int nPartitioningSchemesFailed() const;
 	// Return first item in failed partitions list
@@ -500,7 +500,7 @@ class Aten
 	// Load user preferences file
 	bool loadPrefs();
 	// Save user preferences file
-	bool savePrefs(QString fileName);
+	bool savePrefs(QString filename);
 
 
 	/*
@@ -518,7 +518,7 @@ class Aten
 	// Search specified directory for plugins
 	int searchPluginsDir(QDir path);
 	// Load specified plugin and register its functions
-	bool loadPlugin(QString fileName);
+	bool loadPlugin(QString filename);
 
 	public:
 	// Load plugins
@@ -532,17 +532,17 @@ class Aten
 	 */
 	public:
 	// Import model (if it is not loaded already)
-	bool importModel(QString fileName, FilePluginInterface* plugin = NULL, KVMap standardOptions = KVMap(), KVMap pluginOptions = KVMap());
+	bool importModel(QString filename, FilePluginInterface* plugin = NULL, KVMap standardOptions = KVMap(), KVMap pluginOptions = KVMap());
 	// Export model
-	bool exportModel(Model* model, QString filename, FilePluginInterface* plugin, KVMap standardOptions = KVMap(), KVMap pluginOptions = KVMap());
+	bool exportModel(Model* sourceModel, QString filename, FilePluginInterface* plugin, KVMap standardOptions = KVMap(), KVMap pluginOptions = KVMap());
 	// Import grid
-	bool importGrid(QString fileName, FilePluginInterface* plugin = NULL, KVMap standardOptions = KVMap(), KVMap pluginOptions = KVMap());
-	// Import trajectory to current model
-	bool importTrajectory(QString fileName, FilePluginInterface* plugin = NULL, KVMap standardOptions = KVMap(), KVMap pluginOptions = KVMap());
+	bool importGrid(Model* targetModel, QString filename, FilePluginInterface* plugin = NULL, KVMap standardOptions = KVMap(), KVMap pluginOptions = KVMap());
+	// Import trajectory
+	bool importTrajectory(Model* targetModel, QString filename, FilePluginInterface* plugin = NULL, KVMap standardOptions = KVMap(), KVMap pluginOptions = KVMap());
 	// Import expression
-	bool importExpression(QString fileName, FilePluginInterface* plugin = NULL, KVMap standardOptions = KVMap(), KVMap pluginOptions = KVMap());
+	bool importExpression(QString filename, FilePluginInterface* plugin = NULL, KVMap standardOptions = KVMap(), KVMap pluginOptions = KVMap());
 	// Export expression
-	bool exportExpression(Model* model, QString filename, FilePluginInterface* plugin, KVMap standardOptions = KVMap(), KVMap pluginOptions = KVMap());
+	bool exportExpression(Model* sourceModel, QString filename, FilePluginInterface* plugin, KVMap standardOptions = KVMap(), KVMap pluginOptions = KVMap());
 };
 
 ATEN_END_NAMESPACE

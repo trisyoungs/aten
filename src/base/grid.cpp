@@ -25,6 +25,7 @@
 #include "base/sysfunc.h"
 #include "math/constants.h"
 #include "model/model.h"
+#include "plugins/interfaces.h"
 #include "render/primitiveset.h"
 #ifdef _MAC
 #include <OpenGL/gl.h>
@@ -210,6 +211,18 @@ void Grid::setFilename(QString filename)
 QString Grid::filename() const
 {
 	return filename_;
+}
+
+// Set plugin used to load the grid data
+void Grid::setPlugin(FilePluginInterface* plugin)
+{
+	plugin_ = plugin;
+}
+
+// Return plugin used to load the grid data
+FilePluginInterface* Grid::plugin()
+{
+	return plugin_;
 }
 
 // Set name of Grid data

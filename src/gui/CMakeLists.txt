@@ -11,7 +11,9 @@ SET(gui_MOC_HDRS
   glyphs.h
   layoutlist.h
   mainwindow.h
+  opengrid.h
   openmodel.h
+  opentrajectory.h
   popupbuildaddatom.h
   popupbuildaddh.h
   popupbuildclear.h
@@ -104,7 +106,9 @@ SET(gui_UIS
   ffeditor.ui
   glyphs.ui
   mainwindow.ui
+  opengrid.ui
   openmodel.ui
+  opentrajectory.ui
   popupbuildaddatom.ui
   popupbuildaddh.ui
   popupbuildclear.ui
@@ -210,7 +214,9 @@ set(gui_SRCS
   mainwindow_quickcommand.cpp
   mainwindow_session.cpp
   mainwindow_update.cpp
+  opengridfuncs.cpp
   openmodel_funcs.cpp
+  opentrajectory_funcs.cpp
   popupbuildaddatom_funcs.cpp
   popupbuildaddh_funcs.cpp
   popupbuildclear_funcs.cpp

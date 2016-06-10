@@ -838,20 +838,20 @@ class Model : public ListItem<Model>
 	List<Model> trajectoryFrames_;
 	// Current trajectory frame to be drawn
 	Model* trajectoryCurrentFrame_;
-	// Remove frame from trajectory
-	void removeTrajectoryFrame(Model*);
-	// Whether this is a cached trajectory (true) or just one frame (false)
+	// Whether this is a cached trajectory (true) or is being read sequentially from disk (false)
 	bool trajectoryFramesAreCached_;
 	// Whether the trajectory is currently being 'played'
 	bool trajectoryPlaying_;
 	// Whether to propagate atom styles and colours from parent model to trajectory frames
 	bool trajectoryPropagateParentStyle_;
-	// Current frame position (if cached trajectory)
-        int trajectoryCachedFrameIndex_;
+	// Current frame position
+        int trajectoryFrameIndex_;
 
 	public:
 	// Add frame to trajectory
 	Model* addTrajectoryFrame();
+	// Remove frame from trajectory
+	void removeTrajectoryFrame(Model* frame);
 	// Return whether a trajectory for this model exists
 	bool hasTrajectory() const;
 	// Return whether the trajectory is cached (if there is one)

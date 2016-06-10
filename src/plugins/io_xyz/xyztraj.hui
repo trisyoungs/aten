@@ -1,6 +1,6 @@
 /*
-        *** AKF (Aten Keyword Forma) Plugin
-        *** src/plugins/io_akf/akf.h
+        *** XYZ Trajectory Plugin
+        *** src/plugins/io_xyz/xyztraj.hui
         Copyright T. Youngs 2016-2016
 
         This file is part of Aten.
@@ -19,8 +19,8 @@
         along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_AKFPLUGIN_H
-#define ATEN_AKFPLUGIN_H
+#ifndef ATEN_XYZTRAJECTORYPLUGIN_H
+#define ATEN_XYZTRAJECTORYPLUGIN_H
 
 #include "plugins/interfaces.h"
 
@@ -29,8 +29,8 @@ ATEN_BEGIN_NAMESPACE
 // Forward Declarations
 /* none */
 
-// AKF Model Import / Export Plugin
-class AKFModelPlugin : public QObject, public FilePluginInterface
+// XYZ Model Import / Export Plugin
+class XYZTrajectoryPlugin : public QObject, public FilePluginInterface
 {
 	Q_OBJECT
 	Q_PLUGIN_METADATA(IID "com.projectaten.Aten.FilePluginInterface.v1")
@@ -42,23 +42,11 @@ class AKFModelPlugin : public QObject, public FilePluginInterface
 	 */
 	public:
 	// Constructor
-	AKFModelPlugin();
+	XYZTrajectoryPlugin();
 	// Destructor
-	~AKFModelPlugin();
+	~XYZTrajectoryPlugin();
 	// Return a copy of the plugin object
 	FilePluginInterface* duplicate();
-	// Keyword Enum
-	enum AKFKeyword { AngleKeyword, AtomKeyword, BondKeyword, CellKeyword, CellMatrixKeyword, DistanceKeyword, GlyphKeyword, GridKeyword, TitleKeyword, TorsionKeyword, nKeywords };
-	static AKFKeyword akfKeyword(QString s);
-	static QString akfKeyword(AKFKeyword keyword);
-	// Glyph Keyword Enum
-	enum AKFGlyphKeyword { EndGlyphKeyword, InvisibleKeyword, RotationKeyword, TextKeyword, WireFrameKeyword, nGlyphKeywords };
-	static AKFGlyphKeyword akfGlyphKeyword(QString s);
-	static QString akfGlyphKeyword(AKFGlyphKeyword keyword);
-	// Grid Keyword Enum
-	enum AKFGridKeyword { AxesKeyword, DataKeyword, EndGridKeyword, OriginKeyword, nGridKeywords };
-	static AKFGridKeyword akfGridKeyword(QString s);
-	static QString akfGridKeyword(AKFGridKeyword keyword);
 
 
 	/*
@@ -86,15 +74,15 @@ class AKFModelPlugin : public QObject, public FilePluginInterface
 	// Return whether this plugin can import data
 	bool canImport();
 	// Import data via the supplied parser
-	bool importData(FileParser& parser, const KVMap standardOptions = KVMap());
+	bool importData(const KVMap standardOptions = KVMap());
 	// Return whether this plugin can export data
 	bool canExport();
 	// Export data via the supplied parser
-	bool exportData(FileParser& parser, const KVMap standardOptions = KVMap());
+	bool exportData(const KVMap standardOptions = KVMap());
 	// Import next partial data chunk
-	bool importNextPart(FileParser& parser, const KVMap standardOptions = KVMap());
+	bool importNextPart(const KVMap standardOptions = KVMap());
 	// Skip next partial data chunk
-	bool skipNextPart(FileParser& parser, const KVMap standardOptions = KVMap());
+	bool skipNextPart(const KVMap standardOptions = KVMap());
 
 
 	/*

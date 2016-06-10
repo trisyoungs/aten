@@ -26,9 +26,8 @@
 ATEN_USING_NAMESPACE
 
 // Constructors
-FileParser::FileParser(LineParser& parser, Model* targetModel) : parser_(parser)
+FileParser::FileParser(LineParser& parser) : parser_(parser)
 {
-	targetModel_ = targetModel;
 }
 
 // Destructor
@@ -107,13 +106,6 @@ bool FileParser::eofOrBlank() const
 /*
  * Write Functions
  */
-
-// Return target model
-Model* FileParser::targetModel()
-{
-	if (targetModel_ == NULL) Messenger::print("Warning: Returning targetModel_, but it is NULL.\n");
-	return targetModel_;
-}
 
 // Write partial line to file
 bool FileParser::write(QString line)

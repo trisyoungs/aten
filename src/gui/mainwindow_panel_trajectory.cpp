@@ -52,7 +52,7 @@ void AtenWindow::updateTrajectoryPanel(Model* sourceModel)
 	ui.TrajectoryControlDelaySpin->setEnabled(parentModel && hasTraj && trajSource);
 	ui.TrajectoryStyleInheritButton->setEnabled(parentModel && hasTraj);
 	ui.TrajectoryStylePromoteButton->setEnabled(parentModel && hasTraj);
-	ui.TrajectoryStylePropagateButton->setEnabled(parentModel && parentModel->trajectoryIsCached());
+	ui.TrajectoryStylePropagateButton->setEnabled(parentModel && parentModel->isTrajectoryCached());
 
 	if (hasTraj)
 	{
@@ -89,6 +89,7 @@ void AtenWindow::on_TrajectoryManageOpenButton_clicked(bool checked)
 	Model* currentModel = aten_.currentModel();
 	if (!currentModel) return;
 
+// 	AtenOpenTrajectory openTrajectoryDialog;
 	// ATEN2 TODO ENDOFFILTERS
 
 // 	Tree* filter;
