@@ -27,6 +27,7 @@ Panel for User tools, essentially loaded from scripts (plugins?) in a user's too
 Visualise toolbar, containing Glyph management, polyhedra etc.
 Add About::plugins() window.
 Change function of --cache switch to turn on trajectory caching, rather than specifying a limit.
+Remove Prefs options for coordsInBohr, KeepTypes, and keepNames since these are all handled by standardOptions to plugins.
 
 Graphics TODO
 =============

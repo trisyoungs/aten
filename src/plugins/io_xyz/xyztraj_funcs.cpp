@@ -20,6 +20,7 @@
 */
 
 #include "plugins/io_xyz/xyztraj.hui"
+#include "plugins/io_xyz/common.h"
 #include "model/model.h"
 
 // Constructor
@@ -54,7 +55,7 @@ FilePluginInterface* XYZTrajectoryPlugin::duplicate()
 // Return category of plugin
 PluginTypes::FilePluginCategory XYZTrajectoryPlugin::category() const
 {
-	return PluginTypes::ModelFilePlugin;
+	return PluginTypes::TrajectoryFilePlugin;
 }
 
 // Name of plugin
@@ -72,7 +73,7 @@ QString XYZTrajectoryPlugin::nickname() const
 // Description (long name) of plugin
 QString XYZTrajectoryPlugin::description() const
 {
-	return QString("Import/export for XMol-style XYZ coordinate files");
+	return QString("Import/export for XMol-style XYZ multiple coordinate files");
 }
 
 // Related file extensions
@@ -100,21 +101,13 @@ bool XYZTrajectoryPlugin::canImport()
 // Import data from the specified file
 bool XYZTrajectoryPlugin::importData(const KVMap standardOptions)
 {
-	int nModels = 0;
-	bool result;
-	Model* targetModel = NULL;
-
 	// Read header information from trajectory file, if there is any
 	/* none */
 
-	// The model where we should put the trajectory frame information will have been set in the FileParser
-
-// 	targetModel = fileParser_.targetModel();
-// 	while (!fileParser_.eofOrBlank())
-// 	{
-// 		Model* model = XYZ readXYZModel(fileParser_, standardOptions, NULL);
-// 	}
-	return true;
+	// Read the first trajectory frame.
+	// The model where we should put the frame data will have been set in the FileParser (in targetModel()).
+	// Calling FilePluginInterface::importPart(0) will set the file positions we need, and read in the first frame.
+	return importPart(0, standardOptions);
 }
 
 // Return whether this plugin can export data
@@ -132,13 +125,13 @@ bool XYZTrajectoryPlugin::exportData(const KVMap standardOptions)
 // Import next partial data chunk
 bool XYZTrajectoryPlugin::importNextPart(const KVMap standardOptions)
 {
-	return false;
+	return XYZFilePluginCommon::readXYZModel(fileParser_, standardOptions, targetModel());
 }
 
 // Skip next partial data chunk
 bool XYZTrajectoryPlugin::skipNextPart(const KVMap standardOptions)
 {
-	return false;
+	return XYZFilePluginCommon::skipXYZModel(fileParser_, standardOptions);
 }
 
 /*

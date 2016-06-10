@@ -58,7 +58,7 @@ class Aten
 	// Program mode enum
 	enum ProgramMode { CommandMode, InteractiveMode, GuiMode, ExportMode, BatchMode, ProcessMode, BatchExportMode, NoMode };
 	// Target list for model creation
-	enum TargetModelList { MainModelList, FragmentLibraryList, WorkingModelList };
+	enum TargetModelList { MainModelList, FragmentLibraryList };
 
 	private:
 	// Pointer to AtenWindow
@@ -79,18 +79,12 @@ class Aten
 	int modelId_;
 	// List of models
 	List<Model> models_;
-	// Temporary, working model list
-	List<Model> workingModels_;
 	// Current target list for new generation of models
 	Aten::TargetModelList targetModelList_;
 	// RefList of visible models
 	RefList<Model,int> visibleModels_;
 	
 	public:
-	// Set usage of working model list
-	void setUseWorkingList(bool b);
-	// Return list of working models
-	Model* workingModels() const;
 	// Return first item in the model list
 	Model* models() const;
 	// Return nth item in the model list
@@ -105,6 +99,8 @@ class Aten
 	int nModels() const;
 	// Add a new model to the workspace
 	Model* addModel();
+	// Own supplied model
+	void ownModel(Model* model);
 	// Remove specified model from the list
 	void removeModel(Model* xmodel);
 	// Find model by name
@@ -329,9 +325,9 @@ class Aten
 	bool addPassedValue(VTypes::DataType dt, QString name, QString value);
 
 	public:
-	// Parse early command line options, before filter / prefs load
+	// Parse early command line options, before load of external data
 	bool parseCliEarly(int, char**);
-	// Parse command line options (after filter / prefs load
+	// Parse main command line options
 	int parseCli(int, char**);
 	// Find passed value
 	Variable* findPassedValue(QString name) const;
@@ -343,12 +339,12 @@ class Aten
 	private:
 	// Current mode of program operation
 	ProgramMode programMode_;
-	// Model plugin to use to export models
-	FilePluginInterface* exportPlugin_;
+	// Model plugin to use when exporting models
+	FilePluginInterface* exportModelPlugin_;
 	// List of standard options to pass to import plugins (if any)
-	KVMap importStandardOptions_;
+	KVMap importStandardOptions_[PluginTypes::nFilePluginCategories];
 	// List of options to pass to export plugin (if any)
-	KVMap exportPluginOptions_;
+	KVMap exportStandardOptions_[PluginTypes::nFilePluginCategories];
 	// Cached commands to use in batch processing mode
 	List<Program> batchCommands_;
 	// Type map name conversions to apply on save
@@ -359,8 +355,8 @@ class Aten
 	public:
 	// Return the current program mode
 	ProgramMode programMode() const;
-	// Set plugin to use in export
-	void setExportPlugin(FilePluginInterface* plugin, KVMap pluginOptions);
+	// Set plugin to use in model export
+	void setExportModelPlugin(FilePluginInterface* plugin, KVMap pluginOptions);
 	// Export all currently loaded models in the referenced format
 	void exportModels();
 	// Add set of batch commands

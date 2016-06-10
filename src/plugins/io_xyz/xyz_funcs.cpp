@@ -153,6 +153,7 @@ bool XYZModelPlugin::importData(const KVMap standardOptions)
 		// Increase number of models
 		++nModels;
 	} while (!fileParser_.eofOrBlank());
+
 	return true;
 }
 

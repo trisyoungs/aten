@@ -9,8 +9,10 @@ pluginexec_LTLIBRARIES = xyz.la xyztraj.la
 
 libcommon_la_SOURCES = common.cpp
 xyz_la_SOURCES = xyz_funcs.cpp xyz.hui
+xyz_la_LIBADD = libcommon.la
 xyz_la_LDFLAGS = -module -shared -avoid-version
 xyztraj_la_SOURCES = xyztraj_funcs.cpp xyztraj.hui
+xyztraj_la_LIBADD = libcommon.la
 xyztraj_la_LDFLAGS = -module -shared -avoid-version
 
 noinst_HEADERS = common.h

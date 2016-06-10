@@ -60,7 +60,7 @@ Aten::Aten() : commands_(*this)
 	gridClipboard_ = NULL;
 
 	// Single-shot mode variables
-	exportPlugin_ = NULL;
+	exportModelPlugin_ = NULL;
 
 	// Fragments
 	fragmentModelId_ = 0;
@@ -69,6 +69,18 @@ Aten::Aten() : commands_(*this)
 
 	// Partitioning schemes
 	poresPartitioningScheme_.initialiseAbsolute("Generated Scheme", "Scheme generated from model pores");
+
+	// Standard options for file import (should mirror those in the associated OpenDialogs...)
+	importStandardOptions_[PluginTypes::ModelFilePlugin].add("preventRebonding", "false");
+	importStandardOptions_[PluginTypes::ModelFilePlugin].add("preventFolding", "false");
+	importStandardOptions_[PluginTypes::ModelFilePlugin].add("preventPacking", "false");
+	importStandardOptions_[PluginTypes::ModelFilePlugin].add("coordinatesInBohr", "false");
+	importStandardOptions_[PluginTypes::ModelFilePlugin].add("keepTypes", "false");
+	importStandardOptions_[PluginTypes::ModelFilePlugin].add("keepNames", "false");
+	importStandardOptions_[PluginTypes::TrajectoryFilePlugin].add("preventRebonding", "false");
+	importStandardOptions_[PluginTypes::TrajectoryFilePlugin].add("preventFolding", "false");
+	importStandardOptions_[PluginTypes::TrajectoryFilePlugin].add("preventPacking", "false");
+	importStandardOptions_[PluginTypes::TrajectoryFilePlugin].add("coordinatesInBohr", "false");
 
 	// Pointer to AtenWindow
 	atenWindow_ = NULL;

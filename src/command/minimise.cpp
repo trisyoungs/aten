@@ -180,16 +180,17 @@ bool Commands::function_MopacMinimise(CommandNode* c, Bundle& obj, ReturnValue& 
 	}
 
 	// Time to load in the results
-	aten_.setUseWorkingList(true);
+	// ATEN2 TODO
+// 	aten_.setUseWorkingList(true);
 	ReturnValue result = CommandNode::run(Commands::LoadModel, "c", qPrintable(mopacArc));
 
 	// There should now be a model in the working model list (our results)
-	Model* m = aten_.workingModels();
-	if (m == NULL)
-	{
-		Messenger::print("Error: No results model found.");
-		return false;
-	}
+// 	Model* m = aten_.workingModels();
+// 	if (m == NULL)
+// 	{
+// 		Messenger::print("Error: No results model found.");
+// 		return false;
+// 	}
 
 	// Cleanup
 	QFile::remove(qPrintable(mopacArc));
@@ -198,8 +199,8 @@ bool Commands::function_MopacMinimise(CommandNode* c, Bundle& obj, ReturnValue& 
 
 	// Copy the atoms into a temporary model
 	Model tempmodel;
-	tempmodel.copy(m);
-	aten_.setUseWorkingList(false);
+// 	tempmodel.copy(m);
+// 	aten_.setUseWorkingList(false);   ATEN2 TODO
 
 	// Start a new undostate in the original model
 	//printf("Target for new coords = %p\n", obj.rs);

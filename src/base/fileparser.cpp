@@ -103,6 +103,12 @@ bool FileParser::eofOrBlank() const
 	return parser_.eofOrBlank();
 }
 
+// Skip n lines from file
+bool FileParser::skipLines(int nLines)
+{
+	return (parser_.skipLines(nLines) == 0);
+}
+
 /*
  * Write Functions
  */

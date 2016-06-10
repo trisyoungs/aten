@@ -608,7 +608,7 @@ int Aten::parseCli(int argc, char *argv[])
 					// Loop over remaining arguments which are widget/global variable assignments
 					pluginOptions.clear();
 					for (i = 1; i < parser.nArgs(); ++i) pluginOptions.add(parser.argc(i));
-					setExportPlugin(plugin, pluginOptions);
+					setExportModelPlugin(plugin, pluginOptions);
 
 					if (programMode_ == Aten::BatchMode) programMode_ = Aten::BatchExportMode;
 					else programMode_ = Aten::ExportMode;
@@ -749,15 +749,18 @@ int Aten::parseCli(int argc, char *argv[])
 					break;
 				// Prohibit bonding calculation of atoms on load
 				case (Cli::NoBondSwitch):
-					importStandardOptions_.add("preventRebonding", "true");
+					importStandardOptions_[PluginTypes::ModelFilePlugin].add("preventRebonding", "true");
+					importStandardOptions_[PluginTypes::TrajectoryFilePlugin].add("preventRebonding", "true");
 					break;
 				// Prohibit folding (MIM'ing) of atoms in periodic systems on load
 				case (Cli::NoFoldSwitch):
-					importStandardOptions_.add("preventFolding", "true");
+					importStandardOptions_[PluginTypes::ModelFilePlugin].add("preventFolding", "true");
+					importStandardOptions_[PluginTypes::TrajectoryFilePlugin].add("preventFolding", "true");
 					break;
 				// Force packing (application of symmetry operators) on load
 				case (Cli::NoPackSwitch):
-					importStandardOptions_.add("preventPacking", "true");
+					importStandardOptions_[PluginTypes::ModelFilePlugin].add("preventPacking", "true");
+					importStandardOptions_[PluginTypes::TrajectoryFilePlugin].add("preventPacking", "true");
 					break;
 				// Don't load Qt window/toolbar settings on startup
 				case (Cli::NoQtSettingsSwitch):
@@ -845,7 +848,7 @@ int Aten::parseCli(int argc, char *argv[])
 		{
 			// Not a CLI switch, so try to load it as a model
 			++nTried;
-			if (!importModel(argv[argn], modelPlugin, importStandardOptions_)) return -1;
+			if (!importModel(argv[argn], modelPlugin, importStandardOptions_[PluginTypes::ModelFilePlugin])) return -1;
 		}
 	}
 

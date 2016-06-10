@@ -64,7 +64,7 @@ bool Aten::importModel(QString filename, FilePluginInterface* plugin, KVMap stan
 		// Create an instance of the plugin, and open an input file and set options
 		FilePluginInterface* interface = plugin->createInstance();
 		interface->setOptions(pluginOptions);
-		if (interface->openInput(filename))
+		if (!interface->openInput(filename))
 		{
 			Messenger::exit("Aten::importModel");
 			return false;
@@ -76,7 +76,6 @@ bool Aten::importModel(QString filename, FilePluginInterface* plugin, KVMap stan
 			while (interface->createdModels().first())
 			{
 				Model* m = interface->createdModels().takeFirst();
-				models_.own(m);
 				m->setType(Model::ParentModelType);
 
 				// Set source filename and plugin interface used
@@ -106,6 +105,9 @@ bool Aten::importModel(QString filename, FilePluginInterface* plugin, KVMap stan
 				m->enableUndoRedo();
 				m->resetLogs();
 				m->updateSavePoint();
+
+				// Pass the model pointer to Aten 
+				ownModel(m);
 			}
 
 			ReturnValue rv = filename;

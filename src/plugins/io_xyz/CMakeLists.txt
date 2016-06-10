@@ -1,11 +1,12 @@
 # Meta-Objects
 set(xyz_MOC_HDRS
-  xyz.h
+  xyz.hui
 )
 QT5_WRAP_CPP(xyz_MOC_SRCS ${xyz_MOC_HDRS} OPTIONS -I${PROJECT_SOURCE_DIR}/src)
 
 add_library(xyz MODULE
   xyz_funcs.cpp
+  common.cpp
   ${xyz_MOC_SRCS}
 )
 set_target_properties(xyz PROPERTIES
@@ -16,12 +17,13 @@ set_target_properties(xyz PROPERTIES
 
 # Meta-Objects
 set(xyztraj_MOC_HDRS
-  xyztraj.h
+  xyztraj.hui
 )
 QT5_WRAP_CPP(xyztraj_MOC_SRCS ${xyztraj_MOC_HDRS} OPTIONS -I${PROJECT_SOURCE_DIR}/src)
 
 add_library(xyztraj MODULE
   xyztraj_funcs.cpp
+  common.cpp
   ${xyztraj_MOC_SRCS}
 )
 set_target_properties(xyztraj PROPERTIES

@@ -72,6 +72,8 @@ class FileParser
 	bool readLineAsDouble(double& variable);
 	// Return whether the end of the input stream has been reached (or only whitespace remains)
 	bool eofOrBlank() const;
+	// Skip n lines from file
+	bool skipLines(int nLines = 1);
 	
 
 	/*

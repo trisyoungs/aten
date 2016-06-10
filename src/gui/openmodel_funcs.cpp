@@ -104,6 +104,9 @@ KVMap AtenOpenModel::standardOptions()
 	options.add("preventRebonding", ui.PreventRebondingCheck->isChecked() ? "true" : "false");
 	options.add("preventFolding", ui.PreventFoldingCheck->isChecked() ? "true" : "false");
 	options.add("preventPacking", ui.PreventPackingCheck->isChecked() ? "true" : "false");
+	options.add("coordinatesInBohr", ui.BohrCheck->isChecked() ? "true" : "false");
+	options.add("keepTypes", ui.KeepTypesCheck->isChecked() ? "true" : "false");
+	options.add("keepNames", ui.KeepNamesCheck->isChecked() ? "true" : "false");
 
 	return options;
 }

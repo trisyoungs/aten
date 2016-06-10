@@ -35,10 +35,10 @@ Aten::ProgramMode Aten::programMode() const
  */
 
 // Set plugin to use in export
-void Aten::setExportPlugin(FilePluginInterface* plugin, KVMap pluginOptions)
+void Aten::setExportModelPlugin(FilePluginInterface* plugin, KVMap pluginOptions)
 {
-	exportPlugin_ = plugin;
-	exportPluginOptions_ = pluginOptions;
+	exportModelPlugin_ = plugin;
+	for (KVPair* pair = pluginOptions.pairs(); pair != NULL; pair = pair->next) exportStandardOptions_[PluginTypes::ModelFilePlugin].add(pair->key(), pair->value());
 }
 
 // Export all currently loaded models in the referenced format
@@ -56,7 +56,7 @@ void Aten::exportModels()
 
 		// Generate new filename for model, with new suffix
 		fileInfo.setFile(m->filename());
-		filename = fileInfo.absolutePath() + fileInfo.baseName() + "." + exportPlugin_->extensions().first();
+		filename = fileInfo.absolutePath() + fileInfo.baseName() + "." + exportModelPlugin_->extensions().first();
 
 		// Make sure that the new filename is not the same as the old filename
 		if (filename == m->filename())
@@ -65,7 +65,7 @@ void Aten::exportModels()
 			continue;
 		}
 
-		if (exportModel(m, filename, exportPlugin_, KVMap(), exportPluginOptions_)) Messenger::print("Model '%s' saved to file '%s' (%s)", qPrintable(m->name()), qPrintable(filename), qPrintable(exportPlugin_->name()));
+		if (exportModel(m, filename, exportModelPlugin_, KVMap(), exportStandardOptions_[PluginTypes::ModelFilePlugin])) Messenger::print("Model '%s' saved to file '%s' (%s)", qPrintable(m->name()), qPrintable(filename), qPrintable(exportModelPlugin_->name()));
 		else Messenger::print("Failed to save model '%s'.", qPrintable(m->name()));
 		m->enableUndoRedo();
 	}

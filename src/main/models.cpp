@@ -24,29 +24,6 @@
 
 ATEN_USING_NAMESPACE
 
-// Set usage of working model list
-void Aten::setUseWorkingList(bool b)
-{
-	static Bundle originalBundle;
-	if (b)
-	{
-		originalBundle = current_;
-		targetModelList_ = Aten::WorkingModelList;
-	}
-	else 
-	{
-		current_ = originalBundle;
-		workingModels_.clear();
-		targetModelList_ = Aten::MainModelList;
-	}
-}
-
-// Return list of working models
-Model* Aten::workingModels() const
-{
-	return workingModels_.first();
-}
-
 // Return first item in the model list
 Model* Aten::models() const
 {
@@ -89,37 +66,35 @@ Model* Aten::addModel()
 	Messenger::enter("Aten::addModel");
 
 	// Check current list target for model creation
-	Model* m = NULL;
-	switch (targetModelList_)
-	{
-		case (Aten::MainModelList):
-			m = models_.add();
-			m->setType(Model::ParentModelType);
-			m->setName(QString("Unnamed%1").arg(++modelId_, 3, 10, QChar('0')));
-			m->resetLogs();
-			setSingleModelVisible(m);
-			break;
-		case (Aten::FragmentLibraryList):
-			m = fragments_.add();
-			m->setType(Model::ParentModelType);
-			m->setName(QString("Fragment%1").arg(++fragmentModelId_, 3, 10, QChar('0')));
-			m->resetLogs();
-			m->disableUndoRedo();
-			break;
-		case (Aten::WorkingModelList):
-			m = workingModels_.add();
-			m->setType(Model::ParentModelType);
-			m->setName(QString("TempModel%1").arg(workingModels_.nItems(), 3, 10, QChar('0')));
-			m->resetLogs();
-			m->disableUndoRedo();
-			break;
-		default:
-			printf("Internal Error: No target list set for model creation.\n");
-			break;
-	}
+	Model* newModel = (targetModelList_ == Aten::MainModelList ? models_.add() : fragments_.add());
+	if (targetModelList_ == Aten::MainModelList) newModel->setName(QString("Unnamed%1").arg(++modelId_, 3, 10, QChar('0')));
+	else newModel->setName(QString("Fragment%1").arg(++fragmentModelId_, 3, 10, QChar('0')));
+
+	// Disable undo/redo if its a fragment
+	if (targetModelList_ == Aten::FragmentLibraryList) newModel->disableUndoRedo();
+
+	// If the main model list, set this new model to be the only one visible
+	if (targetModelList_ == Aten::MainModelList) setSingleModelVisible(newModel);
 
 	Messenger::exit("Aten::addModel");
-	return m;
+	return newModel;
+}
+
+// Own supplied model
+void Aten::ownModel(Model* model)
+{
+	Messenger::enter("Aten::ownModel");
+
+	if (targetModelList_ == Aten::MainModelList) models_.own(model);
+	else fragments_.own(model);
+
+	// Disable undo/redo if its a fragment
+	if (targetModelList_ == Aten::FragmentLibraryList) model->disableUndoRedo();
+
+	// If the main model list, set this new model to be the only one visible
+	if (targetModelList_ == Aten::MainModelList) setSingleModelVisible(model);
+
+	Messenger::exit("Aten::ownModel");
 }
 
 // Remove model

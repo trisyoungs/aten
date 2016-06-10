@@ -36,6 +36,8 @@ class XYZFilePluginCommon
 	public:
 	// Read single XYZ model from file
 	static bool readXYZModel(FileParser& parser, const KVMap standardOptions, Model* targetModel);
+	// Skip single XYZ model in file
+	static bool skipXYZModel(FileParser& parser, const KVMap standardOptions);
 	// Write single XYZ model to file
 	static bool writeXYZModel(FileParser& parser, const KVMap standardOptions, Model* sourceModel);
 };

@@ -35,6 +35,7 @@ Model::Model() : ListItem<Model>()
 	// Private variables
 	parent_ = NULL;
 	visible_ = false;
+	type_ = Model::ParentModelType;
 
 	// Camera / View / render
 	modelViewMatrix_.setIdentity();

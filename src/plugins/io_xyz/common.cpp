@@ -61,6 +61,23 @@ bool XYZFilePluginCommon::readXYZModel(FileParser& parser, const KVMap standardO
 	return targetModel;
 }
 
+// Skip single XYZ model in file
+bool XYZFilePluginCommon::skipXYZModel(FileParser& parser, const KVMap standardOptions)
+{
+	int nAtoms;
+
+	// Read number of atoms from file
+	if (!parser.readLineAsInteger(nAtoms)) return false;
+	
+	// Next line is name of model
+	if (!parser.skipLines(1)) return false;
+	
+	// Now atoms...
+	if (!parser.skipLines(nAtoms)) return false;
+
+	return true;
+}
+
 // Write single XYZ model to file
 bool XYZFilePluginCommon::writeXYZModel(FileParser& parser, const KVMap standardOptions, Model* sourceModel)
 {
