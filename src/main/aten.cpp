@@ -21,6 +21,9 @@
 
 #include "main/aten.h"
 #include "gui/mainwindow.h"
+#include "gui/opengrid.h"
+#include "gui/openmodel.h"
+#include "gui/opentrajectory.h"
 #include "model/model.h"
 #include "model/clipboard.h"
 #include "ff/forcefield.h"
@@ -70,17 +73,10 @@ Aten::Aten() : commands_(*this)
 	// Partitioning schemes
 	poresPartitioningScheme_.initialiseAbsolute("Generated Scheme", "Scheme generated from model pores");
 
-	// Standard options for file import (should mirror those in the associated OpenDialogs...)
-	importStandardOptions_[PluginTypes::ModelFilePlugin].add("preventRebonding", "false");
-	importStandardOptions_[PluginTypes::ModelFilePlugin].add("preventFolding", "false");
-	importStandardOptions_[PluginTypes::ModelFilePlugin].add("preventPacking", "false");
-	importStandardOptions_[PluginTypes::ModelFilePlugin].add("coordinatesInBohr", "false");
-	importStandardOptions_[PluginTypes::ModelFilePlugin].add("keepTypes", "false");
-	importStandardOptions_[PluginTypes::ModelFilePlugin].add("keepNames", "false");
-	importStandardOptions_[PluginTypes::TrajectoryFilePlugin].add("preventRebonding", "false");
-	importStandardOptions_[PluginTypes::TrajectoryFilePlugin].add("preventFolding", "false");
-	importStandardOptions_[PluginTypes::TrajectoryFilePlugin].add("preventPacking", "false");
-	importStandardOptions_[PluginTypes::TrajectoryFilePlugin].add("coordinatesInBohr", "false");
+	// Standard options for file import (taken from associated file dialogs)
+	importStandardOptions_[PluginTypes::GridFilePlugin] = AtenOpenGrid::defaultOptions();
+	importStandardOptions_[PluginTypes::ModelFilePlugin] = AtenOpenModel::defaultOptions();
+	importStandardOptions_[PluginTypes::TrajectoryFilePlugin] = AtenOpenTrajectory::defaultOptions();
 
 	// Pointer to AtenWindow
 	atenWindow_ = NULL;

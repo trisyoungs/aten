@@ -87,3 +87,16 @@ KVMap AtenOpenTrajectory::standardOptions()
 
 	return options;
 }
+
+// Return map of default options from dialog
+KVMap AtenOpenTrajectory::defaultOptions()
+{
+	KVMap defaultOptions;
+
+	defaultOptions.add("preventRebonding", "false");
+	defaultOptions.add("preventFolding", "false");
+	defaultOptions.add("preventPacking", "false");
+	defaultOptions.add("coordinatesInBohr", "false");
+
+	return defaultOptions;
+}

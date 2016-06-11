@@ -89,3 +89,18 @@ KVMap AtenOpenModel::standardOptions()
 
 	return options;
 }
+
+// Return map of default options from dialog
+KVMap AtenOpenModel::defaultOptions()
+{
+	KVMap defaultOptions;
+
+	defaultOptions.add("preventRebonding", "false");
+	defaultOptions.add("preventFolding", "false");
+	defaultOptions.add("preventPacking", "false");
+	defaultOptions.add("coordinatesInBohr", "false");
+	defaultOptions.add("keepTypes", "false");
+	defaultOptions.add("keepNames", "false");
+
+	return defaultOptions;
+}

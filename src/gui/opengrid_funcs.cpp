@@ -84,3 +84,13 @@ KVMap AtenOpenGrid::standardOptions()
 
 	return options;
 }
+
+// Return map of default options from dialog
+KVMap AtenOpenGrid::defaultOptions()
+{
+	KVMap defaultOptions;
+
+	defaultOptions.add("coordinatesInBohr", "false");
+
+	return defaultOptions;
+}
