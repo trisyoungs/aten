@@ -41,6 +41,14 @@ void Aten::setExportModelPlugin(FilePluginInterface* plugin, KVMap pluginOptions
 	for (KVPair* pair = pluginOptions.pairs(); pair != NULL; pair = pair->next) exportStandardOptions_[PluginTypes::ModelFilePlugin].add(pair->key(), pair->value());
 }
 
+// Set standard option (for all file plugin categories)
+void Aten::setStandardOption(PluginTypes::FilePluginType type, FilePluginInterface::StandardOption option, QString value)
+{
+	KVMap* optionsArrays = (type == PluginTypes::ImportPlugin ? importStandardOptions_ : exportStandardOptions_);
+
+	for (int n=0; n<PluginTypes::nFilePluginCategories; ++n) optionsArrays[n].add(FilePluginInterface::standardOption(option), value);
+}
+
 // Export all currently loaded models in the referenced format
 void Aten::exportModels()
 {

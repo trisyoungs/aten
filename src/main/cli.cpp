@@ -555,9 +555,9 @@ int Aten::parseCli(int argc, char *argv[])
 					else if (programMode_ == Aten::ExportMode) programMode_ = Aten::BatchExportMode;
 					else programMode_ = Aten::BatchMode;
 					break;
-				// Convert coordinates from Bohr to Angstrom
+				// Convert coordinates from Bohr to Angstrom on import
 				case (Cli::BohrSwitch):
-					prefs.setCoordsInBohr(true);
+					setStandardOption(PluginTypes::ImportPlugin, FilePluginInterface::CoordinatesInBohrOption, "true");
 					break;
 				// Set trajectory cache limit
 				case (Cli::CacheSwitch):
@@ -749,18 +749,18 @@ int Aten::parseCli(int argc, char *argv[])
 					break;
 				// Prohibit bonding calculation of atoms on load
 				case (Cli::NoBondSwitch):
-					importStandardOptions_[PluginTypes::ModelFilePlugin].add("preventRebonding", "true");
-					importStandardOptions_[PluginTypes::TrajectoryFilePlugin].add("preventRebonding", "true");
+					importStandardOptions_[PluginTypes::ModelFilePlugin].add(FilePluginInterface::standardOption(FilePluginInterface::PreventRebondingOption), "true");
+					importStandardOptions_[PluginTypes::TrajectoryFilePlugin].add(FilePluginInterface::standardOption(FilePluginInterface::PreventRebondingOption), "true");
 					break;
 				// Prohibit folding (MIM'ing) of atoms in periodic systems on load
 				case (Cli::NoFoldSwitch):
-					importStandardOptions_[PluginTypes::ModelFilePlugin].add("preventFolding", "true");
-					importStandardOptions_[PluginTypes::TrajectoryFilePlugin].add("preventFolding", "true");
+					importStandardOptions_[PluginTypes::ModelFilePlugin].add(FilePluginInterface::standardOption(FilePluginInterface::PreventFoldingOption), "true");
+					importStandardOptions_[PluginTypes::TrajectoryFilePlugin].add(FilePluginInterface::standardOption(FilePluginInterface::PreventFoldingOption), "true");
 					break;
 				// Force packing (application of symmetry operators) on load
 				case (Cli::NoPackSwitch):
-					importStandardOptions_[PluginTypes::ModelFilePlugin].add("preventPacking", "true");
-					importStandardOptions_[PluginTypes::TrajectoryFilePlugin].add("preventPacking", "true");
+					importStandardOptions_[PluginTypes::ModelFilePlugin].add(FilePluginInterface::standardOption(FilePluginInterface::PreventPackingOption), "true");
+					importStandardOptions_[PluginTypes::TrajectoryFilePlugin].add(FilePluginInterface::standardOption(FilePluginInterface::PreventPackingOption), "true");
 					break;
 				// Don't load Qt window/toolbar settings on startup
 				case (Cli::NoQtSettingsSwitch):

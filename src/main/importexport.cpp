@@ -83,7 +83,7 @@ bool Aten::importModel(QString filename, FilePluginInterface* plugin, KVMap stan
 				m->setPlugin(interface);
 
 				// Do various necessary calculations
-				if (prefs.coordsInBohr()) m->bohrToAngstrom();
+				if (standardOptions.value(FilePluginInterface::standardOption(FilePluginInterface::CoordinatesInBohrOption)) == "true") m->bohrToAngstrom();
 				m->renumberAtoms();
 				if (!prefs.keepView()) m->resetView(atenWindow()->ui.MainView->width(), atenWindow()->ui.MainView->height());
 				m->calculateMass();

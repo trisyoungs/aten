@@ -359,6 +359,8 @@ class Aten
 	void setExportModelPlugin(FilePluginInterface* plugin, KVMap pluginOptions);
 	// Export all currently loaded models in the referenced format
 	void exportModels();
+	// Set standard option (for all file plugin categories)
+	void setStandardOption(PluginTypes::FilePluginType type, FilePluginInterface::StandardOption option, QString value);
 	// Add set of batch commands
 	Program* addBatchCommand();
 	// Run all stored commands on all loaded models

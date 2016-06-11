@@ -406,8 +406,6 @@ class Prefs
 	 * File Preferences
 	 */
 	private:
-	// Convert coordinates from Bohr to Angstrom on load
-	bool coordsInBohr_;
 	// Size limit (kbytes) for caching trajectory frames
 	int cacheLimit_;
 	// Type of name->Z mapping to use
@@ -428,10 +426,6 @@ class Prefs
 	void setZMapType(ElementMap::ZMapType zmt);
 	// Return the style of element conversion in use
 	ElementMap::ZMapType zMapType() const;
-	// Sets whether to convert coords from Bohr to Angstrom on load
-	void setCoordsInBohr(bool b);
-	// Whether coordinates should be converted from Bohr to Angstrom
-	bool coordsInBohr() const;
 	// Set whether to keep file type names on load
 	void setKeepNames(bool b);
 	// Return whether to keep file type names on load

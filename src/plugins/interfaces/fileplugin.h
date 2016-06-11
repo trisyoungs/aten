@@ -55,6 +55,14 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 	}
 	// Destructor
 	virtual ~FilePluginInterface() {}
+	// Standard Options Enum
+	enum StandardOption { CacheAllOption, CoordinatesInBohrOption, KeepNamesOption, KeepTypesOption, PreventFoldingOption, PreventPackingOption, PreventRebondingOption, nStandardOptions };
+	// Return standard option keyword
+	static QString standardOption(StandardOption option)
+	{
+		static QStringList StandardOptionKeywords = QStringList() << "cacheAll" << "coordinatesInBohr" << "keepNames" << "keepTypes" << "preventFolding" << "preventPacking" << "preventRebonding";
+		return StandardOptionKeywords[option];
+	}
 
 
 	/*

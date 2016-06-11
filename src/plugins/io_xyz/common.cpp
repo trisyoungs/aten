@@ -19,6 +19,7 @@
         along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "plugins/interfaces/fileplugin.h"
 #include "plugins/io_xyz/common.h"
 #include "model/model.h"
 #include "base/fileparser.h"
@@ -56,7 +57,7 @@ bool XYZFilePluginCommon::readXYZModel(FileParser& parser, const KVMap standardO
 	}
 	
 	// Rebond the model
-	if (standardOptions.isSet("preventRebonding", "false")) targetModel->calculateBonding(true);
+	if (standardOptions.isSet(FilePluginInterface::standardOption(FilePluginInterface::PreventRebondingOption), "false")) targetModel->calculateBonding(true);
 	
 	return targetModel;
 }

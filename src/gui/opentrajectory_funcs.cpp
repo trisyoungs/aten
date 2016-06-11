@@ -80,10 +80,10 @@ KVMap AtenOpenTrajectory::standardOptions()
 {
 	KVMap options;
 
-	options.add("preventRebonding", ui.PreventRebondingCheck->isChecked() ? "true" : "false");
-	options.add("preventFolding", ui.PreventFoldingCheck->isChecked() ? "true" : "false");
-	options.add("preventPacking", ui.PreventPackingCheck->isChecked() ? "true" : "false");
-	options.add("coordinatesInBohr", ui.BohrCheck->isChecked() ? "true" : "false");
+	options.add(FilePluginInterface::standardOption(FilePluginInterface::PreventRebondingOption), ui.PreventRebondingCheck->isChecked() ? "true" : "false");
+	options.add(FilePluginInterface::standardOption(FilePluginInterface::PreventFoldingOption), ui.PreventFoldingCheck->isChecked() ? "true" : "false");
+	options.add(FilePluginInterface::standardOption(FilePluginInterface::PreventPackingOption), ui.PreventPackingCheck->isChecked() ? "true" : "false");
+	options.add(FilePluginInterface::standardOption(FilePluginInterface::CoordinatesInBohrOption), ui.BohrCheck->isChecked() ? "true" : "false");
 
 	return options;
 }
@@ -93,10 +93,10 @@ KVMap AtenOpenTrajectory::defaultOptions()
 {
 	KVMap defaultOptions;
 
-	defaultOptions.add("preventRebonding", "false");
-	defaultOptions.add("preventFolding", "false");
-	defaultOptions.add("preventPacking", "false");
-	defaultOptions.add("coordinatesInBohr", "false");
+	defaultOptions.add(FilePluginInterface::standardOption(FilePluginInterface::PreventRebondingOption), "false");
+	defaultOptions.add(FilePluginInterface::standardOption(FilePluginInterface::PreventFoldingOption), "false");
+	defaultOptions.add(FilePluginInterface::standardOption(FilePluginInterface::PreventPackingOption), "false");
+	defaultOptions.add(FilePluginInterface::standardOption(FilePluginInterface::CoordinatesInBohrOption), "false");
 
 	return defaultOptions;
 }

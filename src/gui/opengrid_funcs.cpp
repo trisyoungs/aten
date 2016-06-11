@@ -80,7 +80,7 @@ KVMap AtenOpenGrid::standardOptions()
 {
 	KVMap options;
 
-	options.add("coordinatesInBohr", ui.BohrCheck->isChecked() ? "true" : "false");
+	options.add(FilePluginInterface::standardOption(FilePluginInterface::CoordinatesInBohrOption), ui.BohrCheck->isChecked() ? "true" : "false");
 
 	return options;
 }
@@ -90,7 +90,7 @@ KVMap AtenOpenGrid::defaultOptions()
 {
 	KVMap defaultOptions;
 
-	defaultOptions.add("coordinatesInBohr", "false");
+	defaultOptions.add(FilePluginInterface::standardOption(FilePluginInterface::CoordinatesInBohrOption), "false");
 
 	return defaultOptions;
 }

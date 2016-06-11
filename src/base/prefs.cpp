@@ -307,7 +307,6 @@ Prefs::Prefs()
 	// File
 	cacheLimit_ = 512000;
 	zMapType_ = ElementMap::AutoZMap;
-	coordsInBohr_ = false;
 	keepNames_ = false;
 	keepTypes_ = false;
 	keepView_ = false;
@@ -999,18 +998,6 @@ void Prefs::setZMapType(ElementMap::ZMapType zmt)
 ElementMap::ZMapType Prefs::zMapType() const
 {
 	return zMapType_;
-}
-
-// Sets whether to convert coords from Bohr to Angstrom on load
-void Prefs::setCoordsInBohr(bool b)
-{
-	coordsInBohr_ = b;
-}
-
-// Whether coordinates should be converted from Bohr to Angstrom
-bool Prefs::coordsInBohr() const
-{
-	return coordsInBohr_;
 }
 
 // Set whether to keep file type names on load

@@ -80,12 +80,12 @@ KVMap AtenOpenModel::standardOptions()
 {
 	KVMap options;
 
-	options.add("preventRebonding", ui.PreventRebondingCheck->isChecked() ? "true" : "false");
-	options.add("preventFolding", ui.PreventFoldingCheck->isChecked() ? "true" : "false");
-	options.add("preventPacking", ui.PreventPackingCheck->isChecked() ? "true" : "false");
-	options.add("coordinatesInBohr", ui.BohrCheck->isChecked() ? "true" : "false");
-	options.add("keepTypes", ui.KeepTypesCheck->isChecked() ? "true" : "false");
-	options.add("keepNames", ui.KeepNamesCheck->isChecked() ? "true" : "false");
+	options.add(FilePluginInterface::standardOption(FilePluginInterface::PreventRebondingOption), ui.PreventRebondingCheck->isChecked() ? "true" : "false");
+	options.add(FilePluginInterface::standardOption(FilePluginInterface::PreventFoldingOption), ui.PreventFoldingCheck->isChecked() ? "true" : "false");
+	options.add(FilePluginInterface::standardOption(FilePluginInterface::PreventPackingOption), ui.PreventPackingCheck->isChecked() ? "true" : "false");
+	options.add(FilePluginInterface::standardOption(FilePluginInterface::CoordinatesInBohrOption), ui.BohrCheck->isChecked() ? "true" : "false");
+	options.add(FilePluginInterface::standardOption(FilePluginInterface::KeepTypesOption), ui.KeepTypesCheck->isChecked() ? "true" : "false");
+	options.add(FilePluginInterface::standardOption(FilePluginInterface::KeepNamesOption), ui.KeepNamesCheck->isChecked() ? "true" : "false");
 
 	return options;
 }
@@ -95,12 +95,12 @@ KVMap AtenOpenModel::defaultOptions()
 {
 	KVMap defaultOptions;
 
-	defaultOptions.add("preventRebonding", "false");
-	defaultOptions.add("preventFolding", "false");
-	defaultOptions.add("preventPacking", "false");
-	defaultOptions.add("coordinatesInBohr", "false");
-	defaultOptions.add("keepTypes", "false");
-	defaultOptions.add("keepNames", "false");
+	defaultOptions.add(FilePluginInterface::standardOption(FilePluginInterface::PreventRebondingOption), "false");
+	defaultOptions.add(FilePluginInterface::standardOption(FilePluginInterface::PreventFoldingOption), "false");
+	defaultOptions.add(FilePluginInterface::standardOption(FilePluginInterface::PreventPackingOption), "false");
+	defaultOptions.add(FilePluginInterface::standardOption(FilePluginInterface::CoordinatesInBohrOption), "false");
+	defaultOptions.add(FilePluginInterface::standardOption(FilePluginInterface::KeepTypesOption), "false");
+	defaultOptions.add(FilePluginInterface::standardOption(FilePluginInterface::KeepNamesOption), "false");
 
 	return defaultOptions;
 }
