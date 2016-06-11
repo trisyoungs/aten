@@ -278,7 +278,6 @@ class Commands
 		ExportMap,
 		FFModel,
 		FFPattern,
-		FinaliseFF,
 		FixType,
 		FreeType,
 		GenerateAngle,
@@ -519,7 +518,6 @@ class Commands
 		// Trajectory Commands
 		AddFrame,
 		ClearTrajectory,
-		FinaliseFrame,
 		FirstFrame,
 		LastFrame,
 		LoadTrajectory,
@@ -736,7 +734,6 @@ class Commands
 	bool function_ExportMap(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_FFModel(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_FFPattern(CommandNode* c, Bundle& obj, ReturnValue& rv);
-	bool function_FinaliseFF(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_FixType(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_FreeType(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_GenerateAngle(CommandNode* c, Bundle& obj, ReturnValue& rv);
@@ -959,7 +956,6 @@ class Commands
 	// Trajectory Commands
 	bool function_AddFrame(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_ClearTrajectory(CommandNode* c, Bundle& obj, ReturnValue& rv);
-	bool function_FinaliseFrame(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_FirstFrame(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_LastFrame(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_LoadTrajectory(CommandNode* c, Bundle& obj, ReturnValue& rv);

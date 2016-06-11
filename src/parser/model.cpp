@@ -124,7 +124,6 @@ FunctionAccessor ModelVariable::functionData[ModelVariable::nFunctions] = {
 	{ "deselect",		VTypes::NoData,		aten_->commandArguments(Commands::DeSelect),		aten_->commandArgText(Commands::DeSelect) },
 	{ "elecEnergy",		VTypes::DoubleData,	"",							"" },
 	{ "expand",		VTypes::NoData,		aten_->commandArguments(Commands::Expand),		aten_->commandArgText(Commands::Expand) },
-	{ "finalise",		VTypes::NoData,		aten_->commandArguments(Commands::Finalise),		aten_->commandArgText(Commands::Finalise) },
 	{ "flipSelectionX",	VTypes::NoData,		aten_->commandArguments(Commands::FlipX),		aten_->commandArgText(Commands::FlipX) },
 	{ "flipSelectionY",	VTypes::NoData,		aten_->commandArguments(Commands::FlipY),		aten_->commandArgText(Commands::FlipY) },
 	{ "flipSelectionZ",	VTypes::NoData,		aten_->commandArguments(Commands::FlipZ),		aten_->commandArgText(Commands::FlipZ) },
@@ -716,9 +715,6 @@ bool ModelVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 			break;
  		case (ModelVariable::Expand):
 			result = aten_->callCommand(Commands::Expand, node, rv, bundle);
-			break;
- 		case (ModelVariable::Finalise):
-			result = aten_->callCommand(Commands::Finalise, node, rv, bundle);
 			break;
 		case (ModelVariable::FlipSelectionX):
 			result = aten_->callCommand(Commands::FlipX, node, rv, bundle);

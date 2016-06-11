@@ -52,30 +52,6 @@ bool Commands::function_ClearTrajectory(CommandNode* c, Bundle& obj, ReturnValue
 	return true;
 }
 
-// Finalise current trajectory frame
-bool Commands::function_FinaliseFrame(CommandNode* c, Bundle& obj, ReturnValue& rv)
-{
-	if (obj.notifyNull(Bundle::ModelPointer)) return false;
-	if (obj.rs() == obj.m)
-	{
-		Messenger::print("Current model does not appear to be a trajectory frame.");
-		return false;
-	}
-	// Do various necessary calculations
-	if (prefs.coordsInBohr()) obj.rs()->bohrToAngstrom();
-	obj.rs()->renumberAtoms();
-	if (!prefs.keepView()) obj.rs()->resetView(aten_.atenWindow()->ui.MainView->contextWidth(), aten_.atenWindow()->ui.MainView->contextHeight());
-	obj.rs()->calculateMass();
-	obj.rs()->selectNone();
-	obj.rs()->resetLogs();
-	obj.rs()->updateSavePoint();
-	obj.rs()->setFilename("frame");
-	obj.rs()->enableUndoRedo();
-	//if (frame->cell().type() != Cell::NoCell) frame->cell()->print();
-	rv.reset();
-	return true;
-}
-
 // Skip to first frame ('firstframe')
 bool Commands::function_FirstFrame(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {

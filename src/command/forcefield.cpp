@@ -305,26 +305,6 @@ bool Commands::function_FFPattern(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	return true;
 }
 
-// Finalise current forcefield
-bool Commands::function_FinaliseFF(CommandNode* c, Bundle& obj, ReturnValue& rv)
-{
-	if (obj.notifyNull(Bundle::ForcefieldPointer)) return false;
-	// Print some information about the terms read in from the forcefield
-	Messenger::print("Forcefield now contains:");
-	Messenger::print("\t%i type descriptions", obj.ff->nTypes() - 1);
-	Messenger::print("\t%i bond definitions", obj.ff->nBonds());
-	Messenger::print("\t%i angle definitions", obj.ff->nAngles());
-	Messenger::print("\t%i torsion definitions", obj.ff->nTorsions());
-	// Check that some forcefield types were defined...
-	if (obj.ff->nTypes() <= 1) Messenger::print("Warning - no types are defined in this forcefield.");
-	// Link forcefield type references (&N) to their actual forcefield types
-	for (ForcefieldAtom* ffa = obj.ff->types(); ffa != NULL; ffa = ffa->next) ffa->neta()->linkReferenceTypes();
-	// Convert energetic units in the forcefield to the internal units of the program
-	obj.ff->convertParameters();
-	rv.reset();
-	return true;
-}
-
 // Fix atom types
 bool Commands::function_FixType(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {

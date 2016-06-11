@@ -237,7 +237,6 @@ void Commands::initPointers()
 	pointers_[ExportMap] = &AtenSpace::Commands::function_ExportMap;
 	pointers_[FFModel] = &AtenSpace::Commands::function_FFModel;
 	pointers_[FFPattern] = &AtenSpace::Commands::function_FFPattern;
-	pointers_[FinaliseFF] = &AtenSpace::Commands::function_FinaliseFF;
 	pointers_[FixType] = &AtenSpace::Commands::function_FixType;
 	pointers_[FreeType] = &AtenSpace::Commands::function_FreeType;
 	pointers_[GenerateAngle] = &AtenSpace::Commands::function_GenerateAngle;
@@ -478,7 +477,6 @@ void Commands::initPointers()
 	// Trajectory Commands
 	pointers_[AddFrame] = &AtenSpace::Commands::function_AddFrame;
 	pointers_[ClearTrajectory] = &AtenSpace::Commands::function_ClearTrajectory;
-	pointers_[FinaliseFrame] = &AtenSpace::Commands::function_FinaliseFrame;
 	pointers_[FirstFrame] = &AtenSpace::Commands::function_FirstFrame;
 	pointers_[LastFrame] = &AtenSpace::Commands::function_LastFrame;
 	pointers_[LoadTrajectory] = &AtenSpace::Commands::function_LoadTrajectory;

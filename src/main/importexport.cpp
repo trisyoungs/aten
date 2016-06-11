@@ -289,16 +289,15 @@ bool Aten::importTrajectory(Model* targetModel, QString fileName, FilePluginInte
 		// If successful, now read / cache frame data
 		if (result)
 		{
-			// Always read in first frame
-			Model* frame = targetModel->addTrajectoryFrame();
-			//fileParser.
-			if (standardOptions.value("cacheFrames") == "true")
-			{
-				
-			}
-			else
-			{
-			}
+// 			if (prefs.coordsInBohr()) obj.rs()->bohrToAngstrom();
+// 			obj.rs()->renumberAtoms();
+// 			if (!prefs.keepView()) obj.rs()->resetView(aten_.atenWindow()->ui.MainView->contextWidth(), aten_.atenWindow()->ui.MainView->contextHeight());
+// 			obj.rs()->calculateMass();
+// 			obj.rs()->selectNone();
+// 			obj.rs()->resetLogs();
+// 			obj.rs()->updateSavePoint();
+// 			obj.rs()->setFilename("frame");
+// 			obj.rs()->enableUndoRedo();
 		}
 
 		parser.closeFiles();
