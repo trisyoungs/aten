@@ -24,14 +24,11 @@
 #include <QMessageBox>
 
 // Constructor
-AtenOpenModel::AtenOpenModel(QWidget* parent, QDir startingDirectory, const RefList<FilePluginInterface,int>& filePlugins) : QDialog(parent), filePlugins_(filePlugins)
+AtenOpenModel::AtenOpenModel(QWidget* parent, QDir startingDirectory, FileSelectorWidget::SelectionMode mode, const RefList<FilePluginInterface,int>& filePlugins) : QDialog(parent), AtenOpenDialog(filePlugins)
 {
 	ui.setupUi(this);
 
-	pluginsLogPoint_ = -1;
-
-	// Set the mode of the FileSelectorWidget
-	ui.FileSelector->setMode(FileSelectorWidget::OpenMultipleMode, startingDirectory);
+	setFileSelectorWidget(ui.FileSelector, startingDirectory, mode);
 
 	// Link up some slots
 	connect(ui.FileSelector, SIGNAL(selectionMade(bool)), this, SLOT(on_OpenButton_clicked(bool)));
@@ -72,28 +69,10 @@ void AtenOpenModel::on_CancelButton_clicked(bool checked)
 // Execute dialog
 bool AtenOpenModel::execute(int currentPluginsLogPoint)
 {
-	// Make sure the file selector is up to date
-	if (currentPluginsLogPoint != pluginsLogPoint_)
-	{
-		ui.FileSelector->refreshPlugins(filePlugins_);
-		pluginsLogPoint_ = currentPluginsLogPoint;
-	}
-	ui.FileSelector->clearSelectedFilenames();
-	ui.FileSelector->updateWidgets();
+	// Make sure file selector is up to date
+	updateFileSelector(currentPluginsLogPoint);
 
 	return exec();
-}
-
-// Return selected filename(s)
-QStringList AtenOpenModel::selectedFilenames()
-{
-	return ui.FileSelector->selectedFiles();
-}
-
-// Return selected file plugin
-FilePluginInterface* AtenOpenModel::selectedPlugin()
-{
-	return ui.FileSelector->selectedPlugin();
 }
 
 // Return map of standard options from dialog

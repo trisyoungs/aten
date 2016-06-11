@@ -23,7 +23,7 @@
 #define ATEN_OPENMODELDIALOG_H
 
 #include "gui/ui_openmodel.h"
-#include "plugins/interfaces/fileplugin.h"
+#include "gui/opendialog.h"
 #include "base/namespace.h"
 
 // Forward Declarations (Qt)
@@ -39,26 +39,16 @@ ATEN_END_NAMESPACE
 ATEN_USING_NAMESPACE
 
 // Open Model Dialog
-class AtenOpenModel : public QDialog
+class AtenOpenModel : public QDialog, public AtenOpenDialog
 {
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
 
 	public:
 	// Constructor
-	AtenOpenModel(QWidget* parent, QDir startingDirectory, const RefList<FilePluginInterface,int>& filePlugins);
+	AtenOpenModel(QWidget* parent, QDir startingDirectory, FileSelectorWidget::SelectionMode mode, const RefList<FilePluginInterface,int>& filePlugins);
 	// Main form declaration
 	Ui::OpenModelDialog ui;
-
-
-	/*
-	 * Data
-	 */
-	private:
-	// Reference to plugin list to use for this file dialog
-	const RefList<FilePluginInterface,int>& filePlugins_;
-	// PluginStore logpoint at which plugins were added to the file selector
-	int pluginsLogPoint_;
 
 
 	/*
@@ -71,12 +61,10 @@ class AtenOpenModel : public QDialog
 	public:
 	// Execute dialog
 	bool execute(int currentPluginsLogPoint);
-	// Return selected filename(s)
-	QStringList selectedFilenames();
-	// Return selected file plugin
-	FilePluginInterface* selectedPlugin();
 	// Return map of standard options from dialog
 	KVMap standardOptions();
+	// Return map of default options from dialog
+	static KVMap defaultOptions();
 };
 
 #endif

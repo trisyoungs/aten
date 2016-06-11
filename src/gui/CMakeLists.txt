@@ -11,6 +11,7 @@ SET(gui_MOC_HDRS
   glyphs.h
   layoutlist.h
   mainwindow.h
+  opendialog.h
   opengrid.h
   openmodel.h
   opentrajectory.h
@@ -214,7 +215,8 @@ set(gui_SRCS
   mainwindow_quickcommand.cpp
   mainwindow_session.cpp
   mainwindow_update.cpp
-  opengridfuncs.cpp
+  opendialog_funcs.cpp
+  opengrid_funcs.cpp
   openmodel_funcs.cpp
   opentrajectory_funcs.cpp
   popupbuildaddatom_funcs.cpp

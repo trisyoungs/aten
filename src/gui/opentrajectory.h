@@ -23,6 +23,7 @@
 #define ATEN_OPENTRAJECTORYDIALOG_H
 
 #include "gui/ui_opentrajectory.h"
+#include "gui/opendialog.h"
 #include "plugins/interfaces/fileplugin.h"
 #include "base/namespace.h"
 
@@ -39,26 +40,16 @@ ATEN_END_NAMESPACE
 ATEN_USING_NAMESPACE
 
 // Open Trajectory Dialog
-class AtenOpenTrajectory : public QDialog
+class AtenOpenTrajectory : public QDialog, public AtenOpenDialog
 {
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
 
 	public:
 	// Constructor
-	AtenOpenTrajectory(QWidget* parent, QDir startingDirectory, const RefList<FilePluginInterface,int>& filePlugins);
+	AtenOpenTrajectory(QWidget* parent, QDir startingDirectory, FileSelectorWidget::SelectionMode mode, const RefList<FilePluginInterface,int>& filePlugins);
 	// Main form declaration
 	Ui::OpenTrajectoryDialog ui;
-
-
-	/*
-	 * Data
-	 */
-	private:
-	// Reference to plugin list to use for this file dialog
-	const RefList<FilePluginInterface,int>& filePlugins_;
-	// PluginStore logpoint at which plugins were added to the file selector
-	int pluginsLogPoint_;
 
 
 	/*
@@ -71,10 +62,6 @@ class AtenOpenTrajectory : public QDialog
 	public:
 	// Execute dialog
 	bool execute(int currentPluginsLogPoint);
-	// Return selected filename(s)
-	QStringList selectedFilenames();
-	// Return selected file plugin
-	FilePluginInterface* selectedPlugin();
 	// Return map of standard options from dialog
 	KVMap standardOptions();
 };
