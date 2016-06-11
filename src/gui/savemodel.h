@@ -23,7 +23,7 @@
 #define ATEN_SAVEMODELDIALOG_H
 
 #include "gui/ui_savemodel.h"
-#include "plugins/interfaces.h"
+#include "plugins/interfaces/fileplugin.h"
 #include "base/namespace.h"
 
 // Forward Declarations (Qt)

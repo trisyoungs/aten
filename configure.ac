@@ -144,6 +144,7 @@ src/parser/Makefile
 src/model/Makefile
 src/render/Makefile
 src/plugins/Makefile
+src/plugins/interfaces/Makefile
 src/plugins/io_xyz/Makefile
 src/plugins/io_akf/Makefile
 src/sg/Makefile

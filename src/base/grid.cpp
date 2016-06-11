@@ -25,7 +25,7 @@
 #include "base/sysfunc.h"
 #include "math/constants.h"
 #include "model/model.h"
-#include "plugins/interfaces.h"
+#include "plugins/interfaces/fileplugin.h"
 #include "render/primitiveset.h"
 #ifdef _MAC
 #include <OpenGL/gl.h>

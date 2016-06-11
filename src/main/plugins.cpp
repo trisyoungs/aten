@@ -20,7 +20,7 @@
 */
 
 #include "main/aten.h"
-#include "plugins/interfaces.h"
+#include "plugins/interfaces/fileplugin.h"
 #include <QDir>
 #include <QPluginLoader>
 

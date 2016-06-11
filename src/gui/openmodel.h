@@ -23,7 +23,7 @@
 #define ATEN_OPENMODELDIALOG_H
 
 #include "gui/ui_openmodel.h"
-#include "plugins/interfaces.h"
+#include "plugins/interfaces/fileplugin.h"
 #include "base/namespace.h"
 
 // Forward Declarations (Qt)

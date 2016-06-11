@@ -22,7 +22,7 @@
 #ifndef ATEN_XYZPLUGIN_H
 #define ATEN_XYZPLUGIN_H
 
-#include "plugins/interfaces.h"
+#include "plugins/interfaces/fileplugin.h"
 
 ATEN_BEGIN_NAMESPACE
 

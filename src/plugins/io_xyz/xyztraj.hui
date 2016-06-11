@@ -22,7 +22,7 @@
 #ifndef ATEN_XYZTRAJECTORYPLUGIN_H
 #define ATEN_XYZTRAJECTORYPLUGIN_H
 
-#include "plugins/interfaces.h"
+#include "plugins/interfaces/fileplugin.h"
 
 ATEN_BEGIN_NAMESPACE
 

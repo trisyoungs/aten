@@ -1,6 +1,6 @@
 /*
-        *** Plugin Interfaces
-        *** src/plugins/interfaces.h
+        *** File Plugin Interface
+        *** src/plugins/interfaces/fileplugin.h
         Copyright T. Youngs 2007-2016
 
         This file is part of Aten.
@@ -19,8 +19,8 @@
         along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_PLUGININTERFACES_H
-#define ATEN_PLUGININTERFACES_H
+#ifndef ATEN_FILEPLUGININTERFACE_H
+#define ATEN_FILEPLUGININTERFACE_H
 
 #include "plugins/plugintypes.h"
 #include "parser/returnvalue.h"

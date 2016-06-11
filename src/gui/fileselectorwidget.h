@@ -24,7 +24,7 @@
 
 #include "gui/ui_fileselectorwidget.h"
 #include "plugins/plugintypes.h"
-#include "plugins/interfaces.h"
+#include "plugins/interfaces/fileplugin.h"
 #include "templates/reflist.h"
 #include "base/namespace.h"
 #include <QDir>

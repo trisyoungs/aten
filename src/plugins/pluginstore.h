@@ -23,7 +23,7 @@
 #define ATEN_PLUGINSTORE_H
 
 #include "plugins/plugintypes.h"
-#include "plugins/interfaces.h"
+#include "plugins/interfaces/fileplugin.h"
 #include "base/namespace.h"
 
 ATEN_USING_NAMESPACE

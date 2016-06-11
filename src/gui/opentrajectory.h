@@ -23,7 +23,7 @@
 #define ATEN_OPENTRAJECTORYDIALOG_H
 
 #include "gui/ui_opentrajectory.h"
-#include "plugins/interfaces.h"
+#include "plugins/interfaces/fileplugin.h"
 #include "base/namespace.h"
 
 // Forward Declarations (Qt)

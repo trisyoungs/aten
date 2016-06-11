@@ -21,7 +21,7 @@
 
 #include "model/model.h"
 #include "parser/tree.h"
-#include "plugins/interfaces.h"
+#include "plugins/interfaces/fileplugin.h"
 
 ATEN_USING_NAMESPACE
 

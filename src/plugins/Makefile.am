@@ -4,7 +4,7 @@ noinst_LTLIBRARIES = libplugins.la
 
 libplugins_la_SOURCES = pluginstore.cpp plugintypes.cpp
 
-noinst_HEADERS = interfaces.h pluginstore.h plugintypes.h
+noinst_HEADERS = pluginstore.h plugintypes.h
 
 AM_CPPFLAGS = -I${top_srcdir}/src @ATEN_INCLUDES@ @ATEN_CFLAGS@
 

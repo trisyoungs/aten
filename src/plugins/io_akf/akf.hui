@@ -22,7 +22,7 @@
 #ifndef ATEN_AKFMODELPLUGIN_H
 #define ATEN_AKFMODELPLUGIN_H
 
-#include "plugins/interfaces.h"
+#include "plugins/interfaces/fileplugin.h"
 
 ATEN_BEGIN_NAMESPACE
 
