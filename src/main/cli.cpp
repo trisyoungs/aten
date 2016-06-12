@@ -561,7 +561,7 @@ int Aten::parseCli(int argc, char *argv[])
 					break;
 				// Set trajectory cache limit
 				case (Cli::CacheSwitch):
-					prefs.setCacheLimit(argText.toInt());
+					setStandardOption(PluginTypes::ImportPlugin, FilePluginInterface::CacheAllOption, "true");
 					break;
 				// Read commands from passed string and execute them
 				case (Cli::CommandSwitch):

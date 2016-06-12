@@ -406,16 +406,10 @@ class Prefs
 	 * File Preferences
 	 */
 	private:
-	// Size limit (kbytes) for caching trajectory frames
-	int cacheLimit_;
 	// Type of name->Z mapping to use
 	ElementMap::ZMapType zMapType_;
 
 	public:
-	// Set the cache limit (in kb) for trajectory files
-	void setCacheLimit(int i);
-	// Return the cache limit for trajectory files
-	int cacheLimit() const;
 	// Sets the style of element conversion to use
 	void setZMapType(ElementMap::ZMapType zmt);
 	// Return the style of element conversion in use

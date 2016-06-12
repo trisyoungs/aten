@@ -57,7 +57,6 @@ Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
 	{ "backgroundColour",		VTypes::DoubleData,		4, false },
 	{ "bondStyleRadius",		VTypes::DoubleData,		Prefs::nDrawStyles, false },
 	{ "bondTolerance",		VTypes::DoubleData,		0, false },
-	{ "cacheLimit",			VTypes::IntegerData,		0, false },
 	{ "calculateIntra",		VTypes::IntegerData,		0, false },
 	{ "calculateVdw",		VTypes::IntegerData,		0, false },
 	{ "chargelabelFormat",		VTypes::StringData,		0, false },
@@ -262,9 +261,6 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArray
 			break;
 		case (PreferencesVariable::BondTolerance):
 			rv.set(ptr->bondTolerance());
-			break;
-		case (PreferencesVariable::CacheLimit):
-			rv.set(ptr->cacheLimit());
 			break;
 		case (PreferencesVariable::CalculateIntra):
 			rv.set(ptr->calculateIntra());
@@ -566,9 +562,6 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue&
 			break;
 		case (PreferencesVariable::BondTolerance):
 			ptr->setBondTolerance( newValue.asDouble(result) );
-			break;
-		case (PreferencesVariable::CacheLimit):
-			ptr->setCacheLimit( newValue.asInteger(result) );
 			break;
 		case (PreferencesVariable::CalculateIntra):
 			ptr->setCalculateIntra( newValue.asBool() );

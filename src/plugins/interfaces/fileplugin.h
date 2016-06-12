@@ -440,6 +440,8 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 	bool keepTypes_;
 	// Whether view should not be reset when GUI starts
 	bool keepView_;
+	// Whether all trajectory frames are to be cached
+	bool cacheAll_;
 
 	protected:
 	// Return enum'd plugin option from supplied keyword
@@ -455,9 +457,15 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 	// Parse standard options, taking notice of anything that needs doing
 	void parseStandardOptions(const KVMap& standardOptions)
 	{
+		cacheAll_ = (standardOptions.value("cacheAll") == "true");
 		keepTypes_ = (standardOptions.value("keepTypes") == "true");
 		keepNames_ = (standardOptions.value("keepNames") == "true");
 		keepView_ = (standardOptions.value("keepView") == "true");
+	}
+	// Return whether all trajectory frames are to be cached
+	bool cacheAll()
+	{
+		return cacheAll_;
 	}
 	// Return whether original atom type names in file should be kept in a names forcefield associated to the model
 	bool keepNames()

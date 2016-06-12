@@ -305,7 +305,6 @@ Prefs::Prefs()
 	allowDialogs_ = false;
 	
 	// File
-	cacheLimit_ = 512000;
 	zMapType_ = ElementMap::AutoZMap;
 
 	// Energy unit conversion factors to J
@@ -971,18 +970,6 @@ const Matrix& Prefs::commonViewMatrix()
 /*
  * File Preferences
  */
-
-// Set the cache limit (in kb) for trajectory files
-void Prefs::setCacheLimit(int i)
-{
-	cacheLimit_ = i;
-}
-
-// Return the cache limit for trajectory files
-int Prefs::cacheLimit() const
-{
-	return cacheLimit_;
-}
 
 // Sets the style of element conversion to use
 void Prefs::setZMapType(ElementMap::ZMapType zmt)
