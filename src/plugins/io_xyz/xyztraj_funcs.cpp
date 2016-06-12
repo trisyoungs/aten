@@ -107,7 +107,32 @@ bool XYZTrajectoryPlugin::importData(const KVMap standardOptions)
 	// Read the first trajectory frame.
 	// The model where we should put the frame data will have been set in the FileParser (in targetModel()).
 	// Calling FilePluginInterface::importPart(0) will set the file positions we need, and read in the first frame.
-	return importPart(0, standardOptions);
+	if (importPart(0, standardOptions)) return false;
+
+	if (standardOption(FilePluginInterface::CacheAllOption) == "true")
+	{
+		Messenger::print("Caching all frames from XYZ trajectory (%i %s)...", nDataParts(), isNPartialDataEstimated() ? "estimated" : "actual");
+		int count = 0;
+		bool frameResult;
+		do
+		{
+			// Add a new trajectory frame
+			Model* frame = targetModel()->addTrajectoryFrame();
+			setTargetFrame(frame);
+
+			// Attempt to read in the next data part in the file
+			frameResult = importPart(count, standardOptions);
+			if (frameResult) ++count;
+			else
+			{
+				// Delete unused frame
+				targetModel()->removeTrajectoryFrame(frame);
+			}
+			
+		} while (frameResult);
+	}
+
+	return true;
 }
 
 // Return whether this plugin can export data
@@ -125,7 +150,7 @@ bool XYZTrajectoryPlugin::exportData(const KVMap standardOptions)
 // Import next partial data chunk
 bool XYZTrajectoryPlugin::importNextPart(const KVMap standardOptions)
 {
-	return XYZFilePluginCommon::readXYZModel(fileParser_, standardOptions, targetModel());
+	return XYZFilePluginCommon::readXYZModel(fileParser_, standardOptions, targetFrame());
 }
 
 // Skip next partial data chunk

@@ -63,6 +63,7 @@ bool Aten::importModel(QString filename, FilePluginInterface* plugin, KVMap stan
 	{
 		// Create an instance of the plugin, and open an input file and set options
 		FilePluginInterface* interface = plugin->createInstance();
+		interface->parseStandardOptions(standardOptions);
 		interface->setOptions(pluginOptions);
 		if (!interface->openInput(filename))
 		{
@@ -169,6 +170,7 @@ bool Aten::exportModel(Model* sourceModel, QString filename, FilePluginInterface
 			Messenger::exit("Aten::exportModel");
 			return false;
 		}
+		interface->parseStandardOptions(standardOptions);
 		interface->setOptions(pluginOptions);
 		if (interface->exportData(standardOptions))
 		{
@@ -223,6 +225,7 @@ bool Aten::importGrid(Model* targetModel, QString fileName, FilePluginInterface*
 			Messenger::exit("Aten::importGrid");
 			return false;
 		}
+		interface->parseStandardOptions(standardOptions);
 		interface->setOptions(pluginOptions);
 		interface->setTargetModel(targetModel);
 		if (interface->importData(standardOptions))
@@ -264,19 +267,16 @@ bool Aten::importTrajectory(Model* targetModel, QString fileName, FilePluginInte
 	if (plugin == NULL) plugin = pluginStore_.findFilePlugin(PluginTypes::TrajectoryFilePlugin, PluginTypes::ImportPlugin, fileName);
 	if (plugin != NULL)
 	{
-		// Create a LineParser to open the file, and encapsulate it in a FileParser to give to the interface
-		LineParser parser;
-		parser.openInput(fileName);
-		if (!parser.isFileGoodForReading())
+		FilePluginInterface* interface = plugin->createInstance();
+		if (!interface->openInput(fileName))
 		{
-			Messenger::error("Couldn't open file '%s' for reading.\n", qPrintable(fileName));
 			Messenger::exit("Aten::importTrajectory");
 			return false;
 		}
-
-		FilePluginInterface* interface = plugin->createInstance();
+		interface->parseStandardOptions(standardOptions);
 		interface->setOptions(pluginOptions);
-		FileParser fileParser(parser);
+		interface->setTargetModel(targetModel);
+		interface->setTargetFrame(targetModel->addTrajectoryFrame());
 
 		// Call the importData() function of the interface - this will read any header information present in the file before the first frame
 		if (!interface->importData(standardOptions))
@@ -285,11 +285,11 @@ bool Aten::importTrajectory(Model* targetModel, QString fileName, FilePluginInte
 			Messenger::error("Failed to import trajectory.");
 			result = false;
 		}
-
-		// If successful, now read / cache frame data
-		if (result)
+		else
 		{
-// 			if (prefs.coordsInBohr()) obj.rs()->bohrToAngstrom();
+			for (Model* frame = targetModel->trajectoryFrames(); frame != NULL; frame = frame->next)
+			{
+			}
 // 			obj.rs()->renumberAtoms();
 // 			if (!prefs.keepView()) obj.rs()->resetView(aten_.atenWindow()->ui.MainView->contextWidth(), aten_.atenWindow()->ui.MainView->contextHeight());
 // 			obj.rs()->calculateMass();
@@ -300,7 +300,7 @@ bool Aten::importTrajectory(Model* targetModel, QString fileName, FilePluginInte
 // 			obj.rs()->enableUndoRedo();
 		}
 
-		parser.closeFiles();
+		interface->closeFiles();
 	}
 	else Messenger::error("Couldn't determine a suitable plugin to load the file '%s'.", qPrintable(fileName));
 

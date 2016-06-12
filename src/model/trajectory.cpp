@@ -49,6 +49,12 @@ Model* Model::trajectoryCurrentFrame() const
 	return trajectoryCurrentFrame_;
 }
 
+// Return pointer to trajectory frames
+Model* Model::trajectoryFrames() const
+{
+	return trajectoryFrames_.first();
+}
+
 // Return pointer to specified frame number
 Model* Model::trajectoryFrame(int n)
 {
@@ -66,7 +72,7 @@ Model* Model::trajectoryFrame(int n)
 int Model::nTrajectoryFrames() const
 {
 	if (trajectoryFramesAreCached_) return trajectoryFrames_.nItems();
-	else if (trajectoryPlugin_) return trajectoryPlugin_->nPartialData();
+	else if (trajectoryPlugin_) return trajectoryPlugin_->nDataParts();
 	else return 0;
 }
 

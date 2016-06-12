@@ -864,6 +864,8 @@ class Model : public ListItem<Model>
 	void setTrajectoryPlugiun(FilePluginInterface* plugin);
 	// Return the current frame pointer
 	Model* trajectoryCurrentFrame() const;
+	// Return pointer to trajectory frames
+	Model* trajectoryFrames() const;
 	// Return pointer to specified frame number
 	Model* trajectoryFrame(int n);
 	// Return the total number of frames in the trajectory (file or cached)

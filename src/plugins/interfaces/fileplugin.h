@@ -50,9 +50,9 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 	FilePluginInterface() : ListItem<FilePluginInterface>(), fileParser_(lineParser_)
 	{
 		// Import / Export
-		nPartialData_ = 0;
-		nPartialDataEstimated_ = false;
-		lastPartialDataRead_ = -1;
+		nDataParts_ = 0;
+		nDataPartsEstimated_ = false;
+		lastDataPartRead_ = -1;
 
 		// Options
 		cacheAll_ = false;
@@ -279,13 +279,13 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 		return false;
 	}
 	// File offsets for partial datum
-	Array<std::streampos> partialDataOffsets_;
+	Array<std::streampos> dataPartOffsets_;
 	// Number of partial data present in file
-	int nPartialData_;
+	int nDataParts_;
 	// Whether the number of partial data present in the file is estimated
-	bool nPartialDataEstimated_;
+	bool nDataPartsEstimated_;
 	// Index of last partial data read in
-	int lastPartialDataRead_;
+	int lastDataPartRead_;
 
 	public:
 	// Return whether this plugin is related to the specified file(name)
@@ -336,30 +336,30 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 	bool importPart(int partId, const KVMap standardOptions = KVMap())
 	{
 		// First check (sanity) - are there any file positions stored in the array?
-		if (partialDataOffsets_.nItems() == 0)
+		if ( dataPartOffsets_.nItems() == 0)
 		{
 			// If the requested partId is the first part (0) then store the current file position and read it in
 			if (partId == 0)
 			{
-				partialDataOffsets_.add(lineParser_.tellg());
+				dataPartOffsets_.add(lineParser_.tellg());
 				bool result = importNextPart(standardOptions);
 				if (result)
 				{
 					// Add offset for the second datum
-					partialDataOffsets_.add(lineParser_.tellg());
+					dataPartOffsets_.add(lineParser_.tellg());
 
 					// Estimate total number of parts
 					// First, get data size from difference between file positions for zeroth and first parts
-					long int partSize = partialDataOffsets_.last() - partialDataOffsets_.first();
+					long int partSize = dataPartOffsets_.last() - dataPartOffsets_.first();
 					if ((partSize/1024) < 10) Messenger::print("Single data is %i bytes.", partSize);
 					else Messenger::print("Single data is (approximately) %i kb.", partSize/1024);
 
 					// Now, skip to end of file to get file size, and estimate number of parts
 					lineParser_.seekg(0, std::ios::end);
 					std::streampos endOfFilePos = lineParser_.tellg();
-					nPartialData_ = (endOfFilePos - partialDataOffsets_.first()) / partSize;
-					nPartialDataEstimated_ = true;
-					lineParser_.seekg(partialDataOffsets_.last());
+					nDataParts_ = (endOfFilePos - dataPartOffsets_.first()) / partSize;
+					nDataPartsEstimated_ = true;
+					lineParser_.seekg( dataPartOffsets_.last());
 				}
 				return result;
 			}
@@ -371,25 +371,25 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 		}
 
 		// So, we have some file positions - is the requested partId within the stored range?
-		if ((partId >= 0) && (partId < partialDataOffsets_.nItems()))
+		if ((partId >= 0) && (partId < dataPartOffsets_.nItems()))
 		{
 			Messenger::print(Messenger::Verbose, "Requested partId is within stored range.");
 
 			// Seek to the stored file position and read the data
-			lineParser_.seekg(partialDataOffsets_.value(partId));
+			lineParser_.seekg( dataPartOffsets_.value(partId));
 			return importNextPart(standardOptions);
 		}
 
 		// Requested partId not in file seek table, so go to last known position and try to find it
-		int currentId = partialDataOffsets_.nItems() - 1;
-		lineParser_.seekg(partialDataOffsets_.last());
+		int currentId = dataPartOffsets_.nItems() - 1;
+		lineParser_.seekg( dataPartOffsets_.last());
 		do
 		{
 			bool result = skipNextPart(standardOptions);
 			if (result)
 			{
 				// Successfully skipped the data, so store the file position
-				partialDataOffsets_.add(lineParser_.tellg());
+				dataPartOffsets_.add(lineParser_.tellg());
 			}
 			else
 			{
@@ -397,8 +397,8 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 				Messenger::print("Last good data read was id %i.", currentId);
 
 				// Update the number of stored parts
-				nPartialData_ = currentId;
-				nPartialDataEstimated_ = false;
+				nDataParts_ = currentId;
+				nDataPartsEstimated_ = false;
 				return false;
 			}
 			++currentId;
@@ -409,7 +409,7 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 		if (result)
 		{
 			// Now at start of next data, so store the file position
-			partialDataOffsets_.add(lineParser_.tellg());
+			dataPartOffsets_.add(lineParser_.tellg());
 		}
 		else
 		{
@@ -418,20 +418,20 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 
 		return result;
 	}
-	// Return number of partial data present in file
-	int nPartialData()
+	// Return number of data parts present in file
+	int nDataParts()
 	{
-		return nPartialData_;
+		return nDataParts_;
 	}
 	// Return whether the number of partial data present in the file is estimated
 	bool isNPartialDataEstimated()
 	{
-		return nPartialDataEstimated_;
+		return nDataPartsEstimated_;
 	}
 	// Return index of last partial data read in
 	int lastPartialDataRead()
 	{
-		return lastPartialDataRead_;
+		return lastDataPartRead_;
 	}
 
 
