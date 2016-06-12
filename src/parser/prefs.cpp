@@ -123,7 +123,6 @@ Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
 	{ "viewerFontFilename",		VTypes::StringData,		0, false },
 	{ "viewLock",			VTypes::StringData,		0, false },
 	{ "viewRotationGlobe",		VTypes::IntegerData,		0, false },
-	{ "zMap",			VTypes::StringData,		0, false },
 	{ "zoomThrottle",		VTypes::DoubleData,		0, false }
 };
 
@@ -473,9 +472,6 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArray
 		case (PreferencesVariable::ViewRotationGlobe):
 			rv.set( ptr->viewRotationGlobe() );
 			break;
-		case (PreferencesVariable::ZMapping):
-			rv.set( ElementMap::zMapType( ptr->zMapType()) );
-			break;
 		case (PreferencesVariable::ZoomThrottle):
 			rv.set( ptr->zoomThrottle() );
 			break;
@@ -526,7 +522,6 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue&
 	Prefs::MouseAction ma;
 	Prefs::DrawStyle ds;
 	Prefs::ViewLock vl;
-	ElementMap::ZMapType zm;
 	if (result) switch (acc)
 	{
 		case (PreferencesVariable::AllowDialogs):
@@ -852,11 +847,6 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue&
 			break;
 		case (PreferencesVariable::ViewRotationGlobe):
 			ptr->setViewRotationGlobe( newValue.asBool() );
-			break;
-		case (PreferencesVariable::ZMapping):
-			zm = ElementMap::zMapType( newValue.asString(result), true );
-			if (zm != ElementMap::nZMapTypes) ptr->setZMapType(zm);
-			else result = false;
 			break;
 		case (PreferencesVariable::ZoomThrottle):
 			ptr->setZoomThrottle( newValue.asDouble(result) );

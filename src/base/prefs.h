@@ -403,20 +403,6 @@ class Prefs
 
 
 	/*
-	 * File Preferences
-	 */
-	private:
-	// Type of name->Z mapping to use
-	ElementMap::ZMapType zMapType_;
-
-	public:
-	// Sets the style of element conversion to use
-	void setZMapType(ElementMap::ZMapType zmt);
-	// Return the style of element conversion in use
-	ElementMap::ZMapType zMapType() const;
-
-
-	/*
 	 * Editing Preferences
 	 */
 	private:

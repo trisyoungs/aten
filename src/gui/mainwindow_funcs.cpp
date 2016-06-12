@@ -444,9 +444,6 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportFilmD
 	// Refresh everything
 	updateWidgets(AtenWindow::AllTarget);
 
-	// Set some preferences back to their default values
-	prefs.setZMapType(ElementMap::AutoZMap);
-
 	Messenger::exit("AtenWindow::AtenWindow()");
 }
 

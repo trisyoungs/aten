@@ -53,15 +53,22 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 		nPartialData_ = 0;
 		nPartialDataEstimated_ = false;
 		lastPartialDataRead_ = -1;
+
+		// Options
+		cacheAll_ = false;
+		keepNames_ = false;
+		keepTypes_ = false;
+		keepView_ = false;
+		zMappingType_ = ElementMap::AutoZMap;
 	}
 	// Destructor
 	virtual ~FilePluginInterface() {}
 	// Standard Options Enum
-	enum StandardOption { CacheAllOption, CoordinatesInBohrOption, KeepNamesOption, KeepTypesOption, KeepViewOption, PreventFoldingOption, PreventPackingOption, PreventRebondingOption, nStandardOptions };
+	enum StandardOption { CacheAllOption, CoordinatesInBohrOption, KeepNamesOption, KeepTypesOption, KeepViewOption, PreventFoldingOption, PreventPackingOption, PreventRebondingOption, ZMappingOption, nStandardOptions };
 	// Return standard option keyword
 	static QString standardOption(StandardOption option)
 	{
-		static QStringList StandardOptionKeywords = QStringList() << "cacheAll" << "coordinatesInBohr" << "keepNames" << "keepTypes" << "keepView" << "preventFolding" << "preventPacking" << "preventRebonding";
+		static QStringList StandardOptionKeywords = QStringList() << "cacheAll" << "coordinatesInBohr" << "keepNames" << "keepTypes" << "keepView" << "preventFolding" << "preventPacking" << "preventRebonding" << "zMapping";
 		return StandardOptionKeywords[option];
 	}
 
@@ -192,7 +199,7 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 	Atom* createAtom(Model* model, QString name, Vec3<double> r = Vec3<double>())
 	{
 		// Find element in elements map
-		int el = Elements().find(name);
+		int el = Elements().find(name, zMappingType_);
 
 		// Add atom
 		Atom* i = model->addAtom(el, r);
@@ -434,14 +441,16 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 	protected:
 	// Plugin Option Keywords
 	QStringList pluginOptionKeywords_;
+	// Whether all trajectory frames are to be cached
+	bool cacheAll_;
 	// Whether original atom type names in file should be kept in a names forcefield associated to the model
 	bool keepNames_;
 	// Whether original atom type names should be converted into forcefield types and fixed to atoms
 	bool keepTypes_;
 	// Whether view should not be reset when GUI starts
 	bool keepView_;
-	// Whether all trajectory frames are to be cached
-	bool cacheAll_;
+	// Z-mapping to use in atom name conversion
+	ElementMap::ZMapType zMappingType_;
 
 	protected:
 	// Return enum'd plugin option from supplied keyword
@@ -461,6 +470,7 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 		keepTypes_ = (standardOptions.value("keepTypes") == "true");
 		keepNames_ = (standardOptions.value("keepNames") == "true");
 		keepView_ = (standardOptions.value("keepView") == "true");
+		zMappingType_ = ElementMap::zMapType(standardOptions.value("zMapping"));
 	}
 	// Return whether all trajectory frames are to be cached
 	bool cacheAll()

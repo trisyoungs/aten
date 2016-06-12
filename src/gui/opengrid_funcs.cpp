@@ -81,6 +81,7 @@ KVMap AtenOpenGrid::standardOptions()
 	KVMap options;
 
 	options.add(FilePluginInterface::standardOption(FilePluginInterface::CoordinatesInBohrOption), ui.BohrCheck->isChecked() ? "true" : "false");
+	options.add(FilePluginInterface::standardOption(FilePluginInterface::ZMappingOption), ElementMap::zMapType( (ElementMap::ZMapType) ui.ZMappingCombo->currentIndex()));
 
 	return options;
 }
@@ -91,6 +92,7 @@ KVMap AtenOpenGrid::defaultOptions()
 	KVMap defaultOptions;
 
 	defaultOptions.add(FilePluginInterface::standardOption(FilePluginInterface::CoordinatesInBohrOption), "false");
+	defaultOptions.add(FilePluginInterface::standardOption(FilePluginInterface::ZMappingOption), "auto");
 
 	return defaultOptions;
 }

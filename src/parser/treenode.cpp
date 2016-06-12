@@ -659,7 +659,7 @@ short int TreeNode::argz(int i)
 			result = (short int) floor(rv.asDouble() + 0.15);
 			break;
 		case (VTypes::StringData):
-			result = Elements().find(rv.asString(), prefs.zMapType());
+			result = Elements().find(rv.asString());
 			break;
 		case (VTypes::AtomData):
 			atm = (Atom*) rv.asPointer(VTypes::AtomData);

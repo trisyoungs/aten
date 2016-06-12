@@ -304,9 +304,6 @@ Prefs::Prefs()
 	readPipe_ = false;
 	allowDialogs_ = false;
 	
-	// File
-	zMapType_ = ElementMap::AutoZMap;
-
 	// Energy unit conversion factors to J
 	energyConversions_[Prefs::Joules] = 1.0;
 	energyConversions_[Prefs::KiloJoules] = 1000.0;
@@ -965,23 +962,6 @@ void Prefs::setCommonViewMatrix(Matrix mat)
 const Matrix& Prefs::commonViewMatrix()
 {
 	return commonViewMatrix_;
-}
-
-/*
- * File Preferences
- */
-
-// Sets the style of element conversion to use
-void Prefs::setZMapType(ElementMap::ZMapType zmt)
-{
-	zMapType_ = zmt;
-	Messenger::print(Messenger::Verbose, "ZMapping type is now %s", ElementMap::zMapType(zMapType_));
-}
-
-// Return the style of element conversion in use
-ElementMap::ZMapType Prefs::zMapType() const
-{
-	return zMapType_;
 }
 
 /*

@@ -182,8 +182,8 @@ Cli cliSwitches[] = {
 	{ Cli::VersionSwitch,		'\0',"version",		0,
 		"",
 		"Print program version and exit" },
-	{ Cli::ZmapSwitch,		'z',"zmap",		1,
-		"<mapstyle>",	"Override filter element mapping style" }
+	{ Cli::ZMapSwitch,		'z',"zmap",		1,
+		"<mapstyle>",	"Set zmapping style to use on import" }
 };
 
 /*
@@ -833,9 +833,9 @@ int Aten::parseCli(int argc, char *argv[])
 					prefs.setMaxUndoLevels(argText.toInt());
 					break;
 				// Set the type of element (Z) mapping to use in name conversion
-				case (Cli::ZmapSwitch):
+				case (Cli::ZMapSwitch):
 					zm = ElementMap::zMapType(argText, true);
-					if (zm != ElementMap::nZMapTypes) prefs.setZMapType(zm);
+					if (zm != ElementMap::nZMapTypes) setStandardOption(PluginTypes::ImportPlugin, FilePluginInterface::ZMappingOption, ElementMap::zMapType(zm));
 					else return -1;
 					break;
 				// Undefined option

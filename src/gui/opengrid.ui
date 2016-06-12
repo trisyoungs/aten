@@ -88,6 +88,62 @@
          <number>4</number>
         </property>
         <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_3">
+          <item>
+           <widget class="QLabel" name="label">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>Z-Mapping</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="ZMappingCombo">
+            <item>
+             <property name="text">
+              <string>Alpha</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>First Alpha</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Single Alpha</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Name</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Numeric</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Forcefield</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Auto</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
          <widget class="QCheckBox" name="BohrCheck">
           <property name="toolTip">
            <string>Assume coordinates in the model file are in Bohr, and convert to Angstrom</string>

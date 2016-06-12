@@ -84,6 +84,7 @@ KVMap AtenOpenTrajectory::standardOptions()
 	options.add(FilePluginInterface::standardOption(FilePluginInterface::PreventFoldingOption), ui.PreventFoldingCheck->isChecked() ? "true" : "false");
 	options.add(FilePluginInterface::standardOption(FilePluginInterface::PreventPackingOption), ui.PreventPackingCheck->isChecked() ? "true" : "false");
 	options.add(FilePluginInterface::standardOption(FilePluginInterface::CoordinatesInBohrOption), ui.BohrCheck->isChecked() ? "true" : "false");
+	options.add(FilePluginInterface::standardOption(FilePluginInterface::ZMappingOption), ElementMap::zMapType( (ElementMap::ZMapType) ui.ZMappingCombo->currentIndex()));
 
 	return options;
 }
@@ -97,6 +98,7 @@ KVMap AtenOpenTrajectory::defaultOptions()
 	defaultOptions.add(FilePluginInterface::standardOption(FilePluginInterface::PreventFoldingOption), "false");
 	defaultOptions.add(FilePluginInterface::standardOption(FilePluginInterface::PreventPackingOption), "false");
 	defaultOptions.add(FilePluginInterface::standardOption(FilePluginInterface::CoordinatesInBohrOption), "false");
+	defaultOptions.add(FilePluginInterface::standardOption(FilePluginInterface::ZMappingOption), "auto");
 
 	return defaultOptions;
 }
