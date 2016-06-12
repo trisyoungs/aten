@@ -307,9 +307,6 @@ Prefs::Prefs()
 	// File
 	cacheLimit_ = 512000;
 	zMapType_ = ElementMap::AutoZMap;
-	keepNames_ = false;
-	keepTypes_ = false;
-	keepView_ = false;
 
 	// Energy unit conversion factors to J
 	energyConversions_[Prefs::Joules] = 1.0;
@@ -998,42 +995,6 @@ void Prefs::setZMapType(ElementMap::ZMapType zmt)
 ElementMap::ZMapType Prefs::zMapType() const
 {
 	return zMapType_;
-}
-
-// Set whether to keep file type names on load
-void Prefs::setKeepNames(bool b)
-{
-	keepNames_ = b;
-}
-
-// Return whether to keep file type names on load
-bool Prefs::keepNames() const
-{
-	return keepNames_;
-}
-
-// Set whether to assign and fix type names on load
-void Prefs::setKeepTypes(bool b)
-{
-	keepTypes_ = b;
-}
-
-// Return whether to assign and fix type names on load
-bool Prefs::keepTypes() const
-{
-	return keepTypes_;
-}
-
-// Set whether to keep view on GUI start
-void Prefs::setKeepView(bool b)
-{
-	keepView_ = b;
-}
-
-// Return whether to keep view on GUI start
-bool Prefs::keepView() const
-{
-	return keepView_;
 }
 
 /*

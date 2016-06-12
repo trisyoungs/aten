@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>586</width>
-    <height>322</height>
+    <width>700</width>
+    <height>450</height>
    </rect>
   </property>
   <property name="font">
@@ -158,6 +158,16 @@
           </property>
           <property name="text">
            <string>Keep original names</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="KeepViewCheck">
+          <property name="toolTip">
+           <string>Do not reset view for the model (keep any set in the file)</string>
+          </property>
+          <property name="text">
+           <string>Keep view</string>
           </property>
          </widget>
         </item>

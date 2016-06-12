@@ -162,7 +162,7 @@ bool AKFModelPlugin::importData(const KVMap standardOptions)
 				targetModel->addAngleMeasurement(fileParser_.argi(1)-1, fileParser_.argi(2)-1, fileParser_.argi(3)-1, true);
 				break;
 			case (AKFModelPlugin::AtomKeyword):
-				i = targetModel->addAtom(Elements().find(fileParser_.argc(2)), fileParser_.arg3d(3));
+				i = createAtom(targetModel, fileParser_.argc(2), fileParser_.arg3d(3));
 				i->setCharge(fileParser_.argd(6));
 				if (fileParser_.hasArg(7)) i->setStyle(Prefs::drawStyle(fileParser_.argc(7)));
 				if (fileParser_.hasArg(11)) i->setColour(fileParser_.argd(8), fileParser_.argd(9), fileParser_.argd(10), fileParser_.argd(11));

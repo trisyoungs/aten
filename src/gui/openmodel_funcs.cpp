@@ -84,8 +84,9 @@ KVMap AtenOpenModel::standardOptions()
 	options.add(FilePluginInterface::standardOption(FilePluginInterface::PreventFoldingOption), ui.PreventFoldingCheck->isChecked() ? "true" : "false");
 	options.add(FilePluginInterface::standardOption(FilePluginInterface::PreventPackingOption), ui.PreventPackingCheck->isChecked() ? "true" : "false");
 	options.add(FilePluginInterface::standardOption(FilePluginInterface::CoordinatesInBohrOption), ui.BohrCheck->isChecked() ? "true" : "false");
-	options.add(FilePluginInterface::standardOption(FilePluginInterface::KeepTypesOption), ui.KeepTypesCheck->isChecked() ? "true" : "false");
 	options.add(FilePluginInterface::standardOption(FilePluginInterface::KeepNamesOption), ui.KeepNamesCheck->isChecked() ? "true" : "false");
+	options.add(FilePluginInterface::standardOption(FilePluginInterface::KeepTypesOption), ui.KeepTypesCheck->isChecked() ? "true" : "false");
+	options.add(FilePluginInterface::standardOption(FilePluginInterface::KeepViewOption), ui.KeepViewCheck->isChecked() ? "true" : "false");
 
 	return options;
 }
@@ -99,8 +100,9 @@ KVMap AtenOpenModel::defaultOptions()
 	defaultOptions.add(FilePluginInterface::standardOption(FilePluginInterface::PreventFoldingOption), "false");
 	defaultOptions.add(FilePluginInterface::standardOption(FilePluginInterface::PreventPackingOption), "false");
 	defaultOptions.add(FilePluginInterface::standardOption(FilePluginInterface::CoordinatesInBohrOption), "false");
-	defaultOptions.add(FilePluginInterface::standardOption(FilePluginInterface::KeepTypesOption), "false");
 	defaultOptions.add(FilePluginInterface::standardOption(FilePluginInterface::KeepNamesOption), "false");
+	defaultOptions.add(FilePluginInterface::standardOption(FilePluginInterface::KeepTypesOption), "false");
+	defaultOptions.add(FilePluginInterface::standardOption(FilePluginInterface::KeepViewOption), "false");
 
 	return defaultOptions;
 }

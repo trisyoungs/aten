@@ -579,6 +579,18 @@ int ElementMap::find(QString query, ElementMap::ZMapType zmt) const
 	return ((result == -1) ? 0 : result);
 }
 
+// Return first forcefield atom type matching supplied name
+ForcefieldAtom* ElementMap::forcefieldAtom(QString name)
+{
+	ForcefieldAtom* ffa;
+	for (Forcefield* ff = aten_->forcefields(); ff != NULL; ff = ff->next)
+	{
+		ffa = ff->findType(name);
+		if (ffa != NULL) return ffa;
+	}
+	return NULL;
+}
+
 /*
  * Data by Z
  */

@@ -410,12 +410,6 @@ class Prefs
 	int cacheLimit_;
 	// Type of name->Z mapping to use
 	ElementMap::ZMapType zMapType_;
-	// Whether to retain file atom type names on load (in a new forcefield)
-	bool keepNames_;
-	// Whether to retain and fix atom types on load (when converting names using forcefield types)
-	bool keepTypes_;
-	// Whether to retain view when GUI starts (i.e. don't reset it)
-	bool keepView_;
 
 	public:
 	// Set the cache limit (in kb) for trajectory files
@@ -426,18 +420,6 @@ class Prefs
 	void setZMapType(ElementMap::ZMapType zmt);
 	// Return the style of element conversion in use
 	ElementMap::ZMapType zMapType() const;
-	// Set whether to keep file type names on load
-	void setKeepNames(bool b);
-	// Return whether to keep file type names on load
-	bool keepNames() const;
-	// Set whether to assign and fix type names on load
-	void setKeepTypes(bool b);
-	// Return whether to assign and fix type names on load
-	bool keepTypes() const;
-	// Set whether to keep view on GUI start
-	void setKeepView(bool b);
-	// Return whether to keep view on GUI start
-	bool keepView() const;
 
 
 	/*

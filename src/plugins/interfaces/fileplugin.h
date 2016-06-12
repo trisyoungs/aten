@@ -28,6 +28,7 @@
 #include "model/model.h"
 #include "base/grid.h"
 #include "base/kvmap.h"
+#include "base/forcefieldatom.h"
 #include "base/messenger.h"
 #include "base/fileparser.h"
 #include "base/namespace.h"
@@ -56,11 +57,11 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 	// Destructor
 	virtual ~FilePluginInterface() {}
 	// Standard Options Enum
-	enum StandardOption { CacheAllOption, CoordinatesInBohrOption, KeepNamesOption, KeepTypesOption, PreventFoldingOption, PreventPackingOption, PreventRebondingOption, nStandardOptions };
+	enum StandardOption { CacheAllOption, CoordinatesInBohrOption, KeepNamesOption, KeepTypesOption, KeepViewOption, PreventFoldingOption, PreventPackingOption, PreventRebondingOption, nStandardOptions };
 	// Return standard option keyword
 	static QString standardOption(StandardOption option)
 	{
-		static QStringList StandardOptionKeywords = QStringList() << "cacheAll" << "coordinatesInBohr" << "keepNames" << "keepTypes" << "preventFolding" << "preventPacking" << "preventRebonding";
+		static QStringList StandardOptionKeywords = QStringList() << "cacheAll" << "coordinatesInBohr" << "keepNames" << "keepTypes" << "keepView" << "preventFolding" << "preventPacking" << "preventRebonding";
 		return StandardOptionKeywords[option];
 	}
 
@@ -186,6 +187,27 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 		Model* newModel = createdModels_.add();
 		if (!name.isEmpty()) newModel->setName(name);
 		return newModel;
+	}
+	// Create new atom in specified model
+	Atom* createAtom(Model* model, QString name, Vec3<double> r = Vec3<double>())
+	{
+		// Find element in elements map
+		int el = Elements().find(name);
+
+		// Add atom
+		Atom* i = model->addAtom(el, r);
+
+		// KeepNames and KeepTypes standard options
+		ForcefieldAtom* ffa = NULL;
+		if (keepNames_) ffa = model->addAtomName(el, name);
+		else if (keepTypes_) ffa = Elements().forcefieldAtom(name);
+		if (ffa != NULL)
+		{
+			i->setType(ffa);
+			if (ffa != NULL) i->setTypeFixed(true);
+		}
+
+		return i;
 	}
 	// Discard created model
 	bool discardModel(Model* model)
@@ -412,6 +434,12 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 	protected:
 	// Plugin Option Keywords
 	QStringList pluginOptionKeywords_;
+	// Whether original atom type names in file should be kept in a names forcefield associated to the model
+	bool keepNames_;
+	// Whether original atom type names should be converted into forcefield types and fixed to atoms
+	bool keepTypes_;
+	// Whether view should not be reset when GUI starts
+	bool keepView_;
 
 	protected:
 	// Return enum'd plugin option from supplied keyword
@@ -424,6 +452,28 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 	}
 
 	public:
+	// Parse standard options, taking notice of anything that needs doing
+	void parseStandardOptions(const KVMap& standardOptions)
+	{
+		keepTypes_ = (standardOptions.value("keepTypes") == "true");
+		keepNames_ = (standardOptions.value("keepNames") == "true");
+		keepView_ = (standardOptions.value("keepView") == "true");
+	}
+	// Return whether original atom type names in file should be kept in a names forcefield associated to the model
+	bool keepNames()
+	{
+		return keepNames_;
+	}
+	// Return whether original atom type names should be converted into forcefield types and fixed to atoms
+	bool keepTypes()
+	{
+		return keepTypes_;
+	}
+	// Return whether view should not be reset when GUI starts
+	bool keepView()
+	{
+		return keepView_;
+	}
 	// Set option in plugin
 	virtual bool setOption(QString optionName, QString optionValue) = 0;
 	// Set options for plugin

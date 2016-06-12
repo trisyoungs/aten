@@ -39,6 +39,7 @@ ATEN_BEGIN_NAMESPACE
 // Forward Declarations (Aten)
 class Atom;
 class Aten;
+class ForcefieldAtom;
 
 // Element map
 class ElementMap
@@ -109,6 +110,8 @@ class ElementMap
 	int ffToZ(QString s) const;
 	// Return atomic number of element in string using supplied method (if specified)
 	int find(QString query, ElementMap::ZMapType zmt = ElementMap::AutoZMap) const;
+	// Return first forcefield atom type matching supplied name
+	ForcefieldAtom* forcefieldAtom(QString name);
 
 
 	/*
@@ -169,7 +172,7 @@ class ElementMap
 	double* colour(Atom* i);
 };
 
-extern ElementMap &Elements();
+extern ElementMap& Elements();
 
 ATEN_END_NAMESPACE
 

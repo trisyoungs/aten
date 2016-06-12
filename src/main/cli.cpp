@@ -685,26 +685,26 @@ int Aten::parseCli(int argc, char *argv[])
 				// Keep atom names in file
 				case (Cli::KeepNamesSwitch):
 					// Mutually exclusive with keeptypes
-					if  (prefs.keepTypes())
+					if  (importStandardOptions_[PluginTypes::ModelFilePlugin].value(FilePluginInterface::standardOption(FilePluginInterface::KeepTypesOption)) == "true")
 					{
 						Messenger::print("Error: --keepnames and --keeptypes are mutually exclusive.");
 						return -1;
 					}
-					prefs.setKeepNames(true);
+					setStandardOption(PluginTypes::ImportPlugin, FilePluginInterface::KeepNamesOption, "true");
 					break;
 				// Keep atom type names in file
 				case (Cli::KeepTypesSwitch):
 					// Mutually exclusive with keepnames
-					if  (prefs.keepNames())
+					if  (importStandardOptions_[PluginTypes::ModelFilePlugin].value(FilePluginInterface::standardOption(FilePluginInterface::KeepNamesOption)) == "true")
 					{
 						Messenger::print("Error: --keepnames and --keeptypes are mutually exclusive.");
 						return -1;
 					}
-					prefs.setKeepTypes(true);
+					setStandardOption(PluginTypes::ImportPlugin, FilePluginInterface::KeepTypesOption, "true");
 					break;
 				// Keep (don't reset) view when GUI starts
 				case (Cli::KeepViewSwitch):
-					prefs.setKeepView(true);
+					setStandardOption(PluginTypes::ImportPlugin, FilePluginInterface::KeepViewOption, "true");
 					break;
 				// Load models from list in file
 				case (Cli::LoadFromListSwitch):

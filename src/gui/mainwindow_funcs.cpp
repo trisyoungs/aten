@@ -434,15 +434,18 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportFilmD
 	// Load Qt Settings
 	loadSettings();
 
-	// Reset view of all loaded models
-	for (Model* m = aten.models(); m != NULL; m = m->next) if (!prefs.keepView()) m->resetView(ui.MainView->contextWidth(), ui.MainView->contextHeight());
+	// Reset view of all loaded models (unless KeepView option was set)
+	for (Model* m = aten.models(); m != NULL; m = m->next)
+	{
+		if (!m->plugin()) continue;
+		if (!m->plugin()->keepView()) m->resetView(ui.MainView->contextWidth(), ui.MainView->contextHeight());
+	}
 
 	// Refresh everything
 	updateWidgets(AtenWindow::AllTarget);
 
 	// Set some preferences back to their default values
 	prefs.setZMapType(ElementMap::AutoZMap);
-	prefs.setKeepView(false);
 
 	Messenger::exit("AtenWindow::AtenWindow()");
 }

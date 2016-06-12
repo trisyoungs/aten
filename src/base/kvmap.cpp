@@ -118,7 +118,7 @@ KVPair* KVMap::search(QString key) const
 }
 
 // Retrieve value associated to key
-QString KVMap::value(QString key)
+QString KVMap::value(QString key) const
 {
 	// Search for existing value...
 	for (KVPair* kvp = pairs_.first(); kvp != NULL; kvp = kvp->next) if (kvp->key() == key) return kvp->value();

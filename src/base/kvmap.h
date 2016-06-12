@@ -84,7 +84,7 @@ class KVMap
 	// Search to see if specific key is in the table
 	KVPair* search(QString key) const;
 	// Retrieve value associated to key
-	QString value(QString key);
+	QString value(QString key) const;
 	// Return whether the specified key is set (to value specified if provided)
 	bool isSet(QString key, QString value = QString()) const;
 	// Return first key in list
