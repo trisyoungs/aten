@@ -24,6 +24,7 @@
 #include "main/aten.h"
 #include "model/model.h"
 #include "gui/mainwindow.h"
+#include "gui/opentrajectory.h"
 
 ATEN_USING_NAMESPACE
 
@@ -85,7 +86,7 @@ bool Commands::function_LoadTrajectory(CommandNode* c, Bundle& obj, ReturnValue&
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 
-	bool result = aten_.importTrajectory(obj.m, c->argc(0));
+	bool result = aten_.importTrajectory(obj.m, c->argc(0), NULL, AtenOpenTrajectory::defaultOptions());
 
 	rv.set(result);
 	return true;

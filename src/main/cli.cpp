@@ -47,9 +47,9 @@ Cli cliSwitches[] = {
 	{ Cli::BohrSwitch,		'b',"bohr",		0,
 		"",
 		"Converts model/grid atomic positions from Bohr to Angstrom" },
-	{ Cli::CacheSwitch,		'\0',"cachelimit",	1,
-		"<limit>",
-		"Set the trajectory cache limit to <limit> kb"},
+	{ Cli::CacheAllSwitch,		'\0',"cacheall",	0,
+		"",
+		"Cache all frames from trajectories"},
 	{ Cli::CommandSwitch,		'c',"command",		1,
 		"<commands>",
 		"Execute supplied commands before main program execution" },
@@ -559,8 +559,8 @@ int Aten::parseCli(int argc, char *argv[])
 				case (Cli::BohrSwitch):
 					setStandardOption(PluginTypes::ImportPlugin, FilePluginInterface::CoordinatesInBohrOption, "true");
 					break;
-				// Set trajectory cache limit
-				case (Cli::CacheSwitch):
+				// Flag to cache all frames from trajectories
+				case (Cli::CacheAllSwitch):
 					setStandardOption(PluginTypes::ImportPlugin, FilePluginInterface::CacheAllOption, "true");
 					break;
 				// Read commands from passed string and execute them
@@ -816,7 +816,7 @@ int Aten::parseCli(int argc, char *argv[])
 						Messenger::print("There is no current model to associate a trajectory to.");
 						return -1;
 					}
-					else if (!importTrajectory(currentModel(), argText, trajectoryPlugin)) return -1;
+					else if (!importTrajectory(currentModel(), argText, trajectoryPlugin, importStandardOptions_[PluginTypes::TrajectoryFilePlugin])) return -1;
 					break;
 				// Set forced trajectory load format
 				case (Cli::TrajectoryFormatSwitch):

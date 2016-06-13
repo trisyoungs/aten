@@ -260,6 +260,7 @@ bool Aten::importTrajectory(Model* targetModel, QString fileName, FilePluginInte
 	Messenger::enter("Aten::importTrajectory");
 
 	// Clear existing trajectory, if there is one
+	targetModel->setRenderSource(Model::ModelSource);
 	targetModel->clearTrajectory();
 
 	// If plugin == NULL then we must probe the file first to try and find out how to load it
@@ -281,6 +282,7 @@ bool Aten::importTrajectory(Model* targetModel, QString fileName, FilePluginInte
 		// Call the importData() function of the interface - this will read any header information present in the file before the first frame
 		if (!interface->importData(standardOptions))
 		{
+			targetModel->setRenderSource(Model::ModelSource);
 			targetModel->clearTrajectory();
 			Messenger::error("Failed to import trajectory.");
 			result = false;
@@ -289,18 +291,17 @@ bool Aten::importTrajectory(Model* targetModel, QString fileName, FilePluginInte
 		{
 			for (Model* frame = targetModel->trajectoryFrames(); frame != NULL; frame = frame->next)
 			{
+				frame->renumberAtoms();
+				frame->calculateMass();
+				frame->selectNone();
+				frame->resetLogs();
+				frame->updateSavePoint();
+				frame->enableUndoRedo();
 			}
-// 			obj.rs()->renumberAtoms();
-// 			if (!prefs.keepView()) obj.rs()->resetView(aten_.atenWindow()->ui.MainView->contextWidth(), aten_.atenWindow()->ui.MainView->contextHeight());
-// 			obj.rs()->calculateMass();
-// 			obj.rs()->selectNone();
-// 			obj.rs()->resetLogs();
-// 			obj.rs()->updateSavePoint();
-// 			obj.rs()->setFilename("frame");
-// 			obj.rs()->enableUndoRedo();
-		}
 
-		interface->closeFiles();
+			targetModel->setRenderSource(Model::TrajectorySource);
+			targetModel->setTrajectoryPlugin(interface);
+		}
 	}
 	else Messenger::error("Couldn't determine a suitable plugin to load the file '%s'.", qPrintable(fileName));
 

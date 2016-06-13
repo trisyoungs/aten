@@ -336,7 +336,7 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 	bool importPart(int partId, const KVMap standardOptions = KVMap())
 	{
 		// First check (sanity) - are there any file positions stored in the array?
-		if ( dataPartOffsets_.nItems() == 0)
+		if (dataPartOffsets_.nItems() == 0)
 		{
 			// If the requested partId is the first part (0) then store the current file position and read it in
 			if (partId == 0)
@@ -413,7 +413,7 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 		}
 		else
 		{
-			Messenger::print("Failed to read part '%s' from file.", partId);
+			Messenger::print("Failed to read part '%i' from file.", partId);
 		}
 
 		return result;

@@ -856,12 +856,10 @@ class Model : public ListItem<Model>
 	bool hasTrajectory() const;
 	// Return whether the trajectory is cached (if there is one)
 	bool isTrajectoryCached() const;
-	// Initialise trajectory from file specified
-	bool initialiseTrajectory(QString filename, Tree* filter);
 	// Reinitialise (clear) the associated trajectory
 	void clearTrajectory();
 	// Set the plugin for the trajectory
-	void setTrajectoryPlugiun(FilePluginInterface* plugin);
+	void setTrajectoryPlugin(FilePluginInterface* plugin);
 	// Return the current frame pointer
 	Model* trajectoryCurrentFrame() const;
 	// Return pointer to trajectory frames

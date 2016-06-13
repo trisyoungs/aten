@@ -107,9 +107,9 @@ bool XYZTrajectoryPlugin::importData(const KVMap standardOptions)
 	// Read the first trajectory frame.
 	// The model where we should put the frame data will have been set in the FileParser (in targetModel()).
 	// Calling FilePluginInterface::importPart(0) will set the file positions we need, and read in the first frame.
-	if (importPart(0, standardOptions)) return false;
+	if (!importPart(0, standardOptions)) return false;
 
-	if (standardOption(FilePluginInterface::CacheAllOption) == "true")
+	if (standardOptions.value(standardOption(FilePluginInterface::CacheAllOption)) == "true")
 	{
 		Messenger::print("Caching all frames from XYZ trajectory (%i %s)...", nDataParts(), isNPartialDataEstimated() ? "estimated" : "actual");
 		int count = 0;
@@ -129,7 +129,9 @@ bool XYZTrajectoryPlugin::importData(const KVMap standardOptions)
 				targetModel()->removeTrajectoryFrame(frame);
 			}
 			
-		} while (frameResult);
+		} while (frameResult && (!fileParser_.eofOrBlank()));
+
+		closeFiles();
 	}
 
 	return true;

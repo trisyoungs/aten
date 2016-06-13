@@ -95,7 +95,7 @@ void KVMap::add(QString key, QString value)
 	for (kvp = pairs_.first(); kvp != NULL; kvp = kvp->next) if (kvp->key() == key) break;
 	if (kvp == NULL)
 	{
-		kvp = new KVPair(key,value);
+		kvp = new KVPair(key, value);
 		pairs_.own(kvp);
 	}
 	else kvp->setValue(value);
