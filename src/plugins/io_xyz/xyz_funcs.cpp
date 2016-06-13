@@ -99,7 +99,7 @@ bool XYZModelPlugin::canImport()
 }
 
 // Import data from the specified file
-bool XYZModelPlugin::importData(const KVMap standardOptions)
+bool XYZModelPlugin::importData()
 {
 	int nModels = 0;
 	bool result, readAsTrajectory = false;
@@ -139,7 +139,7 @@ bool XYZModelPlugin::importData(const KVMap standardOptions)
 		}
 
 		// Read in model data
-		result = XYZFilePluginCommon::readXYZModel(fileParser_, standardOptions, targetModel);
+		result = XYZFilePluginCommon::readXYZModel(fileParser_, standardOptions_, targetModel);
 
 		if (!result)
 		{
@@ -164,19 +164,19 @@ bool XYZModelPlugin::canExport()
 }
 
 // Export data to the specified file
-bool XYZModelPlugin::exportData(const KVMap standardOptions)
+bool XYZModelPlugin::exportData()
 {
-	return XYZFilePluginCommon::writeXYZModel(fileParser_, standardOptions, targetModel());
+	return XYZFilePluginCommon::writeXYZModel(fileParser_, standardOptions_, targetModel());
 }
 
 // Import next partial data chunk
-bool XYZModelPlugin::importNextPart(const KVMap standardOptions)
+bool XYZModelPlugin::importNextPart()
 {
 	return false;
 }
 
 // Skip next partial data chunk
-bool XYZModelPlugin::skipNextPart(const KVMap standardOptions)
+bool XYZModelPlugin::skipNextPart()
 {
 	return false;
 }

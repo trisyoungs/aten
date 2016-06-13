@@ -438,7 +438,7 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportFilmD
 	for (Model* m = aten.models(); m != NULL; m = m->next)
 	{
 		if (!m->plugin()) continue;
-		if (!m->plugin()->keepView()) m->resetView(ui.MainView->contextWidth(), ui.MainView->contextHeight());
+		if (!m->plugin()->standardOptions().keepView()) m->resetView(ui.MainView->contextWidth(), ui.MainView->contextHeight());
 	}
 
 	// Refresh everything

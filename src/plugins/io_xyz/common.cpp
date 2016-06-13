@@ -27,7 +27,7 @@
 ATEN_USING_NAMESPACE
 
 // Read single XYZ model from file
-bool XYZFilePluginCommon::readXYZModel(FileParser& parser, const KVMap standardOptions, Model* targetModel)
+bool XYZFilePluginCommon::readXYZModel(FileParser& parser, const FilePluginStandardImportOptions standardOptions, Model* targetModel)
 {
 	int nAtoms, n;
 	QString e, name;
@@ -57,13 +57,13 @@ bool XYZFilePluginCommon::readXYZModel(FileParser& parser, const KVMap standardO
 	}
 	
 	// Rebond the model
-	if (standardOptions.isSet(FilePluginInterface::standardOption(FilePluginInterface::PreventRebondingOption), "false")) targetModel->calculateBonding(true);
+	if (!standardOptions.preventRebonding()) targetModel->calculateBonding(true);
 	
 	return targetModel;
 }
 
 // Skip single XYZ model in file
-bool XYZFilePluginCommon::skipXYZModel(FileParser& parser, const KVMap standardOptions)
+bool XYZFilePluginCommon::skipXYZModel(FileParser& parser, const FilePluginStandardImportOptions standardOptions)
 {
 	int nAtoms;
 
@@ -80,7 +80,7 @@ bool XYZFilePluginCommon::skipXYZModel(FileParser& parser, const KVMap standardO
 }
 
 // Write single XYZ model to file
-bool XYZFilePluginCommon::writeXYZModel(FileParser& parser, const KVMap standardOptions, Model* sourceModel)
+bool XYZFilePluginCommon::writeXYZModel(FileParser& parser, const FilePluginStandardImportOptions standardOptions, Model* sourceModel)
 {
 	// Write number atoms line
 	if (!parser.writeLineF("%i", sourceModel->nAtoms())) return false;

@@ -76,35 +76,19 @@ bool AtenOpenModel::execute(int currentPluginsLogPoint)
 }
 
 // Return map of standard options from dialog
-KVMap AtenOpenModel::standardOptions()
+FilePluginStandardImportOptions AtenOpenModel::standardOptions()
 {
-	KVMap options;
+	FilePluginStandardImportOptions options;
 
-	options.add(FilePluginInterface::standardOption(FilePluginInterface::CoordinatesInBohrOption), ui.BohrCheck->isChecked() ? "true" : "false");
-	options.add(FilePluginInterface::standardOption(FilePluginInterface::KeepNamesOption), ui.KeepNamesCheck->isChecked() ? "true" : "false");
-	options.add(FilePluginInterface::standardOption(FilePluginInterface::KeepTypesOption), ui.KeepTypesCheck->isChecked() ? "true" : "false");
-	options.add(FilePluginInterface::standardOption(FilePluginInterface::KeepViewOption), ui.KeepViewCheck->isChecked() ? "true" : "false");
-	options.add(FilePluginInterface::standardOption(FilePluginInterface::PreventRebondingOption), ui.PreventRebondingCheck->isChecked() ? "true" : "false");
-	options.add(FilePluginInterface::standardOption(FilePluginInterface::PreventFoldingOption), ui.PreventFoldingCheck->isChecked() ? "true" : "false");
-	options.add(FilePluginInterface::standardOption(FilePluginInterface::PreventPackingOption), ui.PreventPackingCheck->isChecked() ? "true" : "false");
-	options.add(FilePluginInterface::standardOption(FilePluginInterface::ZMappingOption), ElementMap::zMapType( (ElementMap::ZMapType) ui.ZMappingCombo->currentIndex()));
+	options.setCoordinatesInBohr(ui.BohrCheck->isChecked());
+	options.setKeepNames(ui.KeepNamesCheck->isChecked());
+	options.setKeepTypes(ui.KeepTypesCheck->isChecked());
+	options.setKeepView(ui.KeepViewCheck->isChecked());
+	options.setPreventRebonding(ui.PreventRebondingCheck->isChecked());
+	options.setPreventFolding(ui.PreventFoldingCheck->isChecked());
+	options.setPreventPacking(ui.PreventPackingCheck->isChecked());
+	options.setZMappingType( (ElementMap::ZMapType) ui.ZMappingCombo->currentIndex());
 
 	return options;
 }
 
-// Return map of default options from dialog
-KVMap AtenOpenModel::defaultOptions()
-{
-	KVMap defaultOptions;
-
-	defaultOptions.add(FilePluginInterface::standardOption(FilePluginInterface::CoordinatesInBohrOption), "false");
-	defaultOptions.add(FilePluginInterface::standardOption(FilePluginInterface::KeepNamesOption), "false");
-	defaultOptions.add(FilePluginInterface::standardOption(FilePluginInterface::KeepTypesOption), "false");
-	defaultOptions.add(FilePluginInterface::standardOption(FilePluginInterface::KeepViewOption), "false");
-	defaultOptions.add(FilePluginInterface::standardOption(FilePluginInterface::PreventRebondingOption), "false");
-	defaultOptions.add(FilePluginInterface::standardOption(FilePluginInterface::PreventFoldingOption), "false");
-	defaultOptions.add(FilePluginInterface::standardOption(FilePluginInterface::PreventPackingOption), "false");
-	defaultOptions.add(FilePluginInterface::standardOption(FilePluginInterface::ZMappingOption), "auto");
-
-	return defaultOptions;
-}

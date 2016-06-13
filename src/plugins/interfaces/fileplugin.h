@@ -42,6 +42,137 @@ ATEN_BEGIN_NAMESPACE
 // Forward Declarations
 class Model;
 
+// File Plugin Standard Import Options
+class FilePluginStandardImportOptions
+{
+	public:
+	// Constructor
+	FilePluginStandardImportOptions()
+	{
+		cacheAll_ = false;
+		coordinatesInBohr_ = false;
+		keepNames_ = false;
+		keepTypes_ = false;
+		keepView_ = false;
+		preventFolding_ = false;
+		preventPacking_ = false;
+		preventRebonding_ = false;
+		zMappingType_ = ElementMap::AutoZMap;
+	}
+
+	private:
+	// Whether all trajectory frames are to be cached
+	bool cacheAll_;
+	// Whether coordinates in file are in Bohr rather than Angstroms
+	bool coordinatesInBohr_;
+	// Whether original atom type names in file should be kept in a names forcefield associated to the model
+	bool keepNames_;
+	// Whether original atom type names should be converted into forcefield types and fixed to atoms
+	bool keepTypes_;
+	// Whether view should not be reset when GUI starts
+	bool keepView_;
+	// Whether folding should be prevented
+	bool preventFolding_;
+	// Whether packing should be prevented
+	bool preventPacking_;
+	// Whether rebonding should be prevented
+	bool preventRebonding_;
+	// Z-mapping to use in atom name conversion
+	ElementMap::ZMapType zMappingType_;
+
+	public:
+	// Set whether all trajectory frames are to be cached
+	bool setCacheAll(bool value)
+	{
+		cacheAll_ = value;
+	}
+	// Return whether all trajectory frames are to be cached
+	bool cacheAll() const
+	{
+		return cacheAll_;
+	}
+	// Whether coordinates in file are in Bohr rather than Angstroms
+	void setCoordinatesInBohr(bool value)
+	{
+		coordinatesInBohr_ = value;
+	}
+	// Whether coordinates in file are in Bohr rather than Angstroms
+	bool coordinatesInBohr()
+	{
+		return coordinatesInBohr_;
+	}
+	// Set whether original atom type names in file should be kept in a names forcefield associated to the model
+	bool setKeepNames(bool value)
+	{
+		keepNames_ = value;
+	}
+	// Return whether original atom type names in file should be kept in a names forcefield associated to the model
+	bool keepNames() const
+	{
+		return keepNames_;
+	}
+	// Set whether original atom type names should be converted into forcefield types and fixed to atoms
+	bool setKeepTypes(bool value)
+	{
+		keepTypes_ = value;
+	}
+	// Return whether original atom type names should be converted into forcefield types and fixed to atoms
+	bool keepTypes() const
+	{
+		return keepTypes_;
+	}
+	// Set whether view should not be reset when GUI starts
+	bool setKeepView(bool value)
+	{
+		keepView_ = value;
+	}
+	// Return whether view should not be reset when GUI starts
+	bool keepView() const
+	{
+		return keepView_;
+	}
+	// Set whether folding should be prevented
+	void setPreventFolding(bool value)
+	{
+		preventFolding_ = value;
+	}
+	// Return whether folding should be prevented
+	bool preventFolding() const
+	{
+		return preventFolding_;
+	}
+	// Set whether packing should be prevented
+	void setPreventPacking(bool value)
+	{
+		preventPacking_ = value;
+	}
+	// Return whether packing should be prevented
+	bool preventPacking() const
+	{
+		return preventPacking_;
+	}
+	// Set whether rebonding should be prevented
+	void setPreventRebonding(bool value)
+	{
+		preventRebonding_ = value;
+	}
+	// Return whether rebonding should be prevented
+	bool preventRebonding() const
+	{
+		return preventRebonding_;
+	}
+	// Set Z-mapping to use in atom name conversion
+	void setZMappingType(ElementMap::ZMapType zMapType)
+	{
+		zMappingType_ = zMapType;
+	}
+	// Return Z-mapping to use in atom name conversion
+	ElementMap::ZMapType zMappingType() const
+	{
+		return zMappingType_;
+	}
+};
+
 // File Plugin Interface
 class FilePluginInterface : public ListItem<FilePluginInterface>
 {
@@ -53,24 +184,9 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 		nDataParts_ = 0;
 		nDataPartsEstimated_ = false;
 		lastDataPartRead_ = -1;
-
-		// Options
-		cacheAll_ = false;
-		keepNames_ = false;
-		keepTypes_ = false;
-		keepView_ = false;
-		zMappingType_ = ElementMap::AutoZMap;
 	}
 	// Destructor
 	virtual ~FilePluginInterface() {}
-	// Standard Options Enum
-	enum StandardOption { CacheAllOption, CoordinatesInBohrOption, KeepNamesOption, KeepTypesOption, KeepViewOption, PreventFoldingOption, PreventPackingOption, PreventRebondingOption, ZMappingOption, nStandardOptions };
-	// Return standard option keyword
-	static QString standardOption(StandardOption option)
-	{
-		static QStringList StandardOptionKeywords = QStringList() << "cacheAll" << "coordinatesInBohr" << "keepNames" << "keepTypes" << "keepView" << "preventFolding" << "preventPacking" << "preventRebonding" << "zMapping";
-		return StandardOptionKeywords[option];
-	}
 
 
 	/*
@@ -199,15 +315,15 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 	Atom* createAtom(Model* model, QString name, Vec3<double> r = Vec3<double>())
 	{
 		// Find element in elements map
-		int el = Elements().find(name, zMappingType_);
+		int el = Elements().find(name, standardOptions_.zMappingType());
 
 		// Add atom
 		Atom* i = model->addAtom(el, r);
 
 		// KeepNames and KeepTypes standard options
 		ForcefieldAtom* ffa = NULL;
-		if (keepNames_) ffa = model->addAtomName(el, name);
-		else if (keepTypes_) ffa = Elements().forcefieldAtom(name);
+		if (standardOptions_.keepNames()) ffa = model->addAtomName(el, name);
+		else if (standardOptions_.keepTypes()) ffa = Elements().forcefieldAtom(name);
 		if (ffa != NULL)
 		{
 			i->setType(ffa);
@@ -253,7 +369,7 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 		targetModel_ = model;
 	}
 	// Return target model
-	Model* targetModel()
+	Model* targetModel() const
 	{
 		return targetModel_;
 	}
@@ -263,7 +379,7 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 		targetFrame_ = frame;
 	}
 	// Return target frame
-	Model* targetFrame()
+	Model* targetFrame() const
 	{
 		return targetFrame_;
 	}
@@ -323,17 +439,17 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 	// Return whether this plugin can import data
 	virtual bool canImport() = 0;
 	// Import data via the supplied parser
-	virtual bool importData(const KVMap standardOptions = KVMap()) = 0;
+	virtual bool importData() = 0;
 	// Return whether this plugin can export data
 	virtual bool canExport() = 0;
 	// Export data via the supplied parser
-	virtual bool exportData(const KVMap standardOptions = KVMap()) = 0;
+	virtual bool exportData() = 0;
 	// Import next partial data chunk
-	virtual bool importNextPart(const KVMap standardOptions = KVMap()) = 0;
+	virtual bool importNextPart() = 0;
 	// Skip next partial data chunk
-	virtual bool skipNextPart(const KVMap standardOptions = KVMap()) = 0;
+	virtual bool skipNextPart() = 0;
 	// Import partial data chunk specified
-	bool importPart(int partId, const KVMap standardOptions = KVMap())
+	bool importPart(int partId)
 	{
 		// First check (sanity) - are there any file positions stored in the array?
 		if (dataPartOffsets_.nItems() == 0)
@@ -342,7 +458,7 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 			if (partId == 0)
 			{
 				dataPartOffsets_.add(lineParser_.tellg());
-				bool result = importNextPart(standardOptions);
+				bool result = importNextPart();
 				if (result)
 				{
 					// Add offset for the second datum
@@ -377,7 +493,7 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 
 			// Seek to the stored file position and read the data
 			lineParser_.seekg( dataPartOffsets_.value(partId));
-			return importNextPart(standardOptions);
+			return importNextPart();
 		}
 
 		// Requested partId not in file seek table, so go to last known position and try to find it
@@ -385,7 +501,7 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 		lineParser_.seekg( dataPartOffsets_.last());
 		do
 		{
-			bool result = skipNextPart(standardOptions);
+			bool result = skipNextPart();
 			if (result)
 			{
 				// Successfully skipped the data, so store the file position
@@ -405,7 +521,7 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 		} while (currentId < partId);
 
 		// Now at correct file position, so read data proper
-		bool result = importNextPart(standardOptions);
+		bool result = importNextPart();
 		if (result)
 		{
 			// Now at start of next data, so store the file position
@@ -419,17 +535,17 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 		return result;
 	}
 	// Return number of data parts present in file
-	int nDataParts()
+	int nDataParts() const
 	{
 		return nDataParts_;
 	}
 	// Return whether the number of partial data present in the file is estimated
-	bool isNPartialDataEstimated()
+	bool isNPartialDataEstimated() const
 	{
 		return nDataPartsEstimated_;
 	}
 	// Return index of last partial data read in
-	int lastPartialDataRead()
+	int lastPartialDataRead() const
 	{
 		return lastDataPartRead_;
 	}
@@ -439,18 +555,10 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 	 * Additional Functions / Data
 	 */
 	protected:
+	// Standard options
+	FilePluginStandardImportOptions standardOptions_;
 	// Plugin Option Keywords
 	QStringList pluginOptionKeywords_;
-	// Whether all trajectory frames are to be cached
-	bool cacheAll_;
-	// Whether original atom type names in file should be kept in a names forcefield associated to the model
-	bool keepNames_;
-	// Whether original atom type names should be converted into forcefield types and fixed to atoms
-	bool keepTypes_;
-	// Whether view should not be reset when GUI starts
-	bool keepView_;
-	// Z-mapping to use in atom name conversion
-	ElementMap::ZMapType zMappingType_;
 
 	protected:
 	// Return enum'd plugin option from supplied keyword
@@ -463,34 +571,15 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 	}
 
 	public:
-	// Parse standard options, taking notice of anything that needs doing
-	void parseStandardOptions(const KVMap& standardOptions)
+	// Set standard options
+	void setStandardOptions(const FilePluginStandardImportOptions& standardOptions)
 	{
-		cacheAll_ = (standardOptions.value("cacheAll") == "true");
-		keepTypes_ = (standardOptions.value("keepTypes") == "true");
-		keepNames_ = (standardOptions.value("keepNames") == "true");
-		keepView_ = (standardOptions.value("keepView") == "true");
-		zMappingType_ = ElementMap::zMapType(standardOptions.value("zMapping"));
+		standardOptions_ = standardOptions;
 	}
-	// Return whether all trajectory frames are to be cached
-	bool cacheAll()
+	// Return standard options for plugin
+	const FilePluginStandardImportOptions standardOptions() const
 	{
-		return cacheAll_;
-	}
-	// Return whether original atom type names in file should be kept in a names forcefield associated to the model
-	bool keepNames()
-	{
-		return keepNames_;
-	}
-	// Return whether original atom type names should be converted into forcefield types and fixed to atoms
-	bool keepTypes()
-	{
-		return keepTypes_;
-	}
-	// Return whether view should not be reset when GUI starts
-	bool keepView()
-	{
-		return keepView_;
+		return standardOptions_;
 	}
 	// Set option in plugin
 	virtual bool setOption(QString optionName, QString optionValue) = 0;

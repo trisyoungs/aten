@@ -66,7 +66,7 @@ class AtenOpenDialog
 	// Return selected file plugin
 	FilePluginInterface* selectedPlugin();
 	// Return map of standard options from dialog
-	virtual KVMap standardOptions() = 0;
+	virtual FilePluginStandardImportOptions standardOptions() = 0;
 };
 
 ATEN_END_NAMESPACE

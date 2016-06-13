@@ -76,29 +76,16 @@ bool AtenOpenTrajectory::execute(int currentPluginsLogPoint)
 }
 
 // Return map of standard options from dialog
-KVMap AtenOpenTrajectory::standardOptions()
+FilePluginStandardImportOptions AtenOpenTrajectory::standardOptions()
 {
-	KVMap options;
+	FilePluginStandardImportOptions options;
 
-	options.add(FilePluginInterface::standardOption(FilePluginInterface::PreventRebondingOption), ui.PreventRebondingCheck->isChecked() ? "true" : "false");
-	options.add(FilePluginInterface::standardOption(FilePluginInterface::PreventFoldingOption), ui.PreventFoldingCheck->isChecked() ? "true" : "false");
-	options.add(FilePluginInterface::standardOption(FilePluginInterface::PreventPackingOption), ui.PreventPackingCheck->isChecked() ? "true" : "false");
-	options.add(FilePluginInterface::standardOption(FilePluginInterface::CoordinatesInBohrOption), ui.BohrCheck->isChecked() ? "true" : "false");
-	options.add(FilePluginInterface::standardOption(FilePluginInterface::ZMappingOption), ElementMap::zMapType( (ElementMap::ZMapType) ui.ZMappingCombo->currentIndex()));
-
+	options.setCoordinatesInBohr(ui.BohrCheck->isChecked());
+	options.setPreventRebonding(ui.PreventRebondingCheck->isChecked());
+	options.setPreventFolding(ui.PreventFoldingCheck->isChecked());
+	options.setPreventPacking(ui.PreventPackingCheck->isChecked());
+	options.setZMappingType( (ElementMap::ZMapType) ui.ZMappingCombo->currentIndex());
+	
 	return options;
 }
 
-// Return map of default options from dialog
-KVMap AtenOpenTrajectory::defaultOptions()
-{
-	KVMap defaultOptions;
-
-	defaultOptions.add(FilePluginInterface::standardOption(FilePluginInterface::PreventRebondingOption), "false");
-	defaultOptions.add(FilePluginInterface::standardOption(FilePluginInterface::PreventFoldingOption), "false");
-	defaultOptions.add(FilePluginInterface::standardOption(FilePluginInterface::PreventPackingOption), "false");
-	defaultOptions.add(FilePluginInterface::standardOption(FilePluginInterface::CoordinatesInBohrOption), "false");
-	defaultOptions.add(FilePluginInterface::standardOption(FilePluginInterface::ZMappingOption), "auto");
-
-	return defaultOptions;
-}

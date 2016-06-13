@@ -73,11 +73,6 @@ Aten::Aten() : commands_(*this)
 	// Partitioning schemes
 	poresPartitioningScheme_.initialiseAbsolute("Generated Scheme", "Scheme generated from model pores");
 
-	// Standard options for file import (taken from associated file dialogs)
-	importStandardOptions_[PluginTypes::GridFilePlugin] = AtenOpenGrid::defaultOptions();
-	importStandardOptions_[PluginTypes::ModelFilePlugin] = AtenOpenModel::defaultOptions();
-	importStandardOptions_[PluginTypes::TrajectoryFilePlugin] = AtenOpenTrajectory::defaultOptions();
-
 	// Pointer to AtenWindow
 	atenWindow_ = NULL;
 }

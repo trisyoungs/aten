@@ -128,7 +128,7 @@ bool Aten::searchFragmentDir(QDir path, QString groupName)
 	{
 		// Construct full filepath
 		QString filename = path.filePath(fragmentList.at(i));
-		if (!importModel(filename, NULL, importStandardOptions_[PluginTypes::ModelFilePlugin])) continue;
+		if (!importModel(filename, NULL)) continue;
 
 		// Does the named fragment group already exist? If not, create new one
 		fg = findFragmentGroup(groupName);

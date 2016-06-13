@@ -557,11 +557,11 @@ int Aten::parseCli(int argc, char *argv[])
 					break;
 				// Convert coordinates from Bohr to Angstrom on import
 				case (Cli::BohrSwitch):
-					setStandardOption(PluginTypes::ImportPlugin, FilePluginInterface::CoordinatesInBohrOption, "true");
+					standardImportOptions_.setCoordinatesInBohr(true);
 					break;
 				// Flag to cache all frames from trajectories
 				case (Cli::CacheAllSwitch):
-					setStandardOption(PluginTypes::ImportPlugin, FilePluginInterface::CacheAllOption, "true");
+					standardImportOptions_.setCacheAll(true);
 					break;
 				// Read commands from passed string and execute them
 				case (Cli::CommandSwitch):
@@ -685,26 +685,26 @@ int Aten::parseCli(int argc, char *argv[])
 				// Keep atom names in file
 				case (Cli::KeepNamesSwitch):
 					// Mutually exclusive with keeptypes
-					if  (importStandardOptions_[PluginTypes::ModelFilePlugin].value(FilePluginInterface::standardOption(FilePluginInterface::KeepTypesOption)) == "true")
+					if (standardImportOptions_.keepTypes())
 					{
 						Messenger::print("Error: --keepnames and --keeptypes are mutually exclusive.");
 						return -1;
 					}
-					setStandardOption(PluginTypes::ImportPlugin, FilePluginInterface::KeepNamesOption, "true");
+					standardImportOptions_.setKeepNames(true);
 					break;
 				// Keep atom type names in file
 				case (Cli::KeepTypesSwitch):
 					// Mutually exclusive with keepnames
-					if  (importStandardOptions_[PluginTypes::ModelFilePlugin].value(FilePluginInterface::standardOption(FilePluginInterface::KeepNamesOption)) == "true")
+					if (standardImportOptions_.keepNames())
 					{
 						Messenger::print("Error: --keepnames and --keeptypes are mutually exclusive.");
 						return -1;
 					}
-					setStandardOption(PluginTypes::ImportPlugin, FilePluginInterface::KeepTypesOption, "true");
+					standardImportOptions_.setKeepTypes(true);
 					break;
 				// Keep (don't reset) view when GUI starts
 				case (Cli::KeepViewSwitch):
-					setStandardOption(PluginTypes::ImportPlugin, FilePluginInterface::KeepViewOption, "true");
+					standardImportOptions_.setKeepView(true);
 					break;
 				// Load models from list in file
 				case (Cli::LoadFromListSwitch):
@@ -749,18 +749,15 @@ int Aten::parseCli(int argc, char *argv[])
 					break;
 				// Prohibit bonding calculation of atoms on load
 				case (Cli::NoBondSwitch):
-					importStandardOptions_[PluginTypes::ModelFilePlugin].add(FilePluginInterface::standardOption(FilePluginInterface::PreventRebondingOption), "true");
-					importStandardOptions_[PluginTypes::TrajectoryFilePlugin].add(FilePluginInterface::standardOption(FilePluginInterface::PreventRebondingOption), "true");
+					standardImportOptions_.setPreventRebonding(true);
 					break;
 				// Prohibit folding (MIM'ing) of atoms in periodic systems on load
 				case (Cli::NoFoldSwitch):
-					importStandardOptions_[PluginTypes::ModelFilePlugin].add(FilePluginInterface::standardOption(FilePluginInterface::PreventFoldingOption), "true");
-					importStandardOptions_[PluginTypes::TrajectoryFilePlugin].add(FilePluginInterface::standardOption(FilePluginInterface::PreventFoldingOption), "true");
+					standardImportOptions_.setPreventFolding(true);
 					break;
 				// Force packing (application of symmetry operators) on load
 				case (Cli::NoPackSwitch):
-					importStandardOptions_[PluginTypes::ModelFilePlugin].add(FilePluginInterface::standardOption(FilePluginInterface::PreventPackingOption), "true");
-					importStandardOptions_[PluginTypes::TrajectoryFilePlugin].add(FilePluginInterface::standardOption(FilePluginInterface::PreventPackingOption), "true");
+					standardImportOptions_.setPreventPacking(true);
 					break;
 				// Don't load Qt window/toolbar settings on startup
 				case (Cli::NoQtSettingsSwitch):
@@ -816,7 +813,7 @@ int Aten::parseCli(int argc, char *argv[])
 						Messenger::print("There is no current model to associate a trajectory to.");
 						return -1;
 					}
-					else if (!importTrajectory(currentModel(), argText, trajectoryPlugin, importStandardOptions_[PluginTypes::TrajectoryFilePlugin])) return -1;
+					else if (!importTrajectory(currentModel(), argText, trajectoryPlugin, standardImportOptions_)) return -1;
 					break;
 				// Set forced trajectory load format
 				case (Cli::TrajectoryFormatSwitch):
@@ -835,7 +832,7 @@ int Aten::parseCli(int argc, char *argv[])
 				// Set the type of element (Z) mapping to use in name conversion
 				case (Cli::ZMapSwitch):
 					zm = ElementMap::zMapType(argText, true);
-					if (zm != ElementMap::nZMapTypes) setStandardOption(PluginTypes::ImportPlugin, FilePluginInterface::ZMappingOption, ElementMap::zMapType(zm));
+					if (zm != ElementMap::nZMapTypes) standardImportOptions_.setZMappingType(zm);
 					else return -1;
 					break;
 				// Undefined option
@@ -848,7 +845,7 @@ int Aten::parseCli(int argc, char *argv[])
 		{
 			// Not a CLI switch, so try to load it as a model
 			++nTried;
-			if (!importModel(argv[argn], modelPlugin, importStandardOptions_[PluginTypes::ModelFilePlugin])) return -1;
+			if (!importModel(argv[argn], modelPlugin, standardImportOptions_)) return -1;
 		}
 	}
 

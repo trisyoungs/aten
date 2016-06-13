@@ -135,7 +135,7 @@ bool AKFModelPlugin::canImport()
 }
 
 // Import data from the specified file
-bool AKFModelPlugin::importData(const KVMap standardOptions)
+bool AKFModelPlugin::importData()
 {
 	int n, nData;
 	double data;
@@ -283,7 +283,7 @@ bool AKFModelPlugin::canExport()
 }
 
 // Export data to the specified file
-bool AKFModelPlugin::exportData(const KVMap standardOptions)
+bool AKFModelPlugin::exportData()
 {
 	// Get the current model pointer containing the data we are to export
 	Model* sourceModel = targetModel();
@@ -361,13 +361,13 @@ bool AKFModelPlugin::exportData(const KVMap standardOptions)
 }
 
 // Import next partial data chunk
-bool AKFModelPlugin::importNextPart(const KVMap standardOptions)
+bool AKFModelPlugin::importNextPart()
 {
 	return false;
 }
 
 // Skip next partial data chunk
-bool AKFModelPlugin::skipNextPart(const KVMap standardOptions)
+bool AKFModelPlugin::skipNextPart()
 {
 	return false;
 }

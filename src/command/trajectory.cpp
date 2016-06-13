@@ -86,7 +86,7 @@ bool Commands::function_LoadTrajectory(CommandNode* c, Bundle& obj, ReturnValue&
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 
-	bool result = aten_.importTrajectory(obj.m, c->argc(0), NULL, AtenOpenTrajectory::defaultOptions());
+	bool result = aten_.importTrajectory(obj.m, c->argc(0), NULL, FilePluginStandardImportOptions());
 
 	rv.set(result);
 	return true;

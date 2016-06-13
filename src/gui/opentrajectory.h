@@ -62,10 +62,8 @@ class AtenOpenTrajectory : public QDialog, public AtenOpenDialog
 	public:
 	// Execute dialog
 	bool execute(int currentPluginsLogPoint);
-	// Return map of standard options from dialog
-	KVMap standardOptions();
-	// Return map of default options from dialog
-	static KVMap defaultOptions();
+	// Return standard import options from dialog
+	FilePluginStandardImportOptions standardOptions();
 };
 
 #endif

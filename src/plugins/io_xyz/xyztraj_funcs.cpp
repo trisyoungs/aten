@@ -99,7 +99,7 @@ bool XYZTrajectoryPlugin::canImport()
 }
 
 // Import data from the specified file
-bool XYZTrajectoryPlugin::importData(const KVMap standardOptions)
+bool XYZTrajectoryPlugin::importData()
 {
 	// Read header information from trajectory file, if there is any
 	/* none */
@@ -107,9 +107,9 @@ bool XYZTrajectoryPlugin::importData(const KVMap standardOptions)
 	// Read the first trajectory frame.
 	// The model where we should put the frame data will have been set in the FileParser (in targetModel()).
 	// Calling FilePluginInterface::importPart(0) will set the file positions we need, and read in the first frame.
-	if (!importPart(0, standardOptions)) return false;
+	if (!importPart(0)) return false;
 
-	if (standardOptions.value(standardOption(FilePluginInterface::CacheAllOption)) == "true")
+	if (standardOptions_.cacheAll())
 	{
 		Messenger::print("Caching all frames from XYZ trajectory (%i %s)...", nDataParts(), isNPartialDataEstimated() ? "estimated" : "actual");
 		int count = 0;
@@ -121,7 +121,7 @@ bool XYZTrajectoryPlugin::importData(const KVMap standardOptions)
 			setTargetFrame(frame);
 
 			// Attempt to read in the next data part in the file
-			frameResult = importPart(count, standardOptions);
+			frameResult = importPart(count);
 			if (frameResult) ++count;
 			else
 			{
@@ -144,21 +144,21 @@ bool XYZTrajectoryPlugin::canExport()
 }
 
 // Export data to the specified file
-bool XYZTrajectoryPlugin::exportData(const KVMap standardOptions)
+bool XYZTrajectoryPlugin::exportData()
 {
 	return false;
 }
 
 // Import next partial data chunk
-bool XYZTrajectoryPlugin::importNextPart(const KVMap standardOptions)
+bool XYZTrajectoryPlugin::importNextPart()
 {
-	return XYZFilePluginCommon::readXYZModel(fileParser_, standardOptions, targetFrame());
+	return XYZFilePluginCommon::readXYZModel(fileParser_, standardOptions_, targetFrame());
 }
 
 // Skip next partial data chunk
-bool XYZTrajectoryPlugin::skipNextPart(const KVMap standardOptions)
+bool XYZTrajectoryPlugin::skipNextPart()
 {
-	return XYZFilePluginCommon::skipXYZModel(fileParser_, standardOptions);
+	return XYZFilePluginCommon::skipXYZModel(fileParser_, standardOptions_);
 }
 
 /*

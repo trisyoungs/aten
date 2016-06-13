@@ -86,15 +86,15 @@ class AKFModelPlugin : public QObject, public FilePluginInterface
 	// Return whether this plugin can import data
 	bool canImport();
 	// Import data via the supplied parser
-	bool importData(const KVMap standardOptions = KVMap());
+	bool importData();
 	// Return whether this plugin can export data
 	bool canExport();
 	// Export data via the supplied parser
-	bool exportData(const KVMap standardOptions = KVMap());
+	bool exportData();
 	// Import next partial data chunk
-	bool importNextPart(const KVMap standardOptions = KVMap());
+	bool importNextPart();
 	// Skip next partial data chunk
-	bool skipNextPart(const KVMap standardOptions = KVMap());
+	bool skipNextPart();
 
 
 	/*

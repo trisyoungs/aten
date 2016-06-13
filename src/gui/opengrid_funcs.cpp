@@ -76,23 +76,12 @@ bool AtenOpenGrid::execute(int currentPluginsLogPoint)
 }
 
 // Return map of standard options from dialog
-KVMap AtenOpenGrid::standardOptions()
+FilePluginStandardImportOptions AtenOpenGrid::standardOptions()
 {
-	KVMap options;
+	FilePluginStandardImportOptions options;
 
-	options.add(FilePluginInterface::standardOption(FilePluginInterface::CoordinatesInBohrOption), ui.BohrCheck->isChecked() ? "true" : "false");
-	options.add(FilePluginInterface::standardOption(FilePluginInterface::ZMappingOption), ElementMap::zMapType( (ElementMap::ZMapType) ui.ZMappingCombo->currentIndex()));
-
+	options.setCoordinatesInBohr(ui.BohrCheck->isChecked());
+	options.setZMappingType( (ElementMap::ZMapType) ui.ZMappingCombo->currentIndex());
+	
 	return options;
-}
-
-// Return map of default options from dialog
-KVMap AtenOpenGrid::defaultOptions()
-{
-	KVMap defaultOptions;
-
-	defaultOptions.add(FilePluginInterface::standardOption(FilePluginInterface::CoordinatesInBohrOption), "false");
-	defaultOptions.add(FilePluginInterface::standardOption(FilePluginInterface::ZMappingOption), "auto");
-
-	return defaultOptions;
 }

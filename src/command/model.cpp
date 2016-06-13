@@ -345,7 +345,7 @@ bool Commands::function_SaveModel(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	KVMap pluginOptions;
 	for (int n = 1; n < parser.nArgs(); ++n) pluginOptions.add(parser.argc(n));
 
-	bool result = aten_.exportModel(obj.m, c->argc(1), plugin, KVMap(), pluginOptions);
+	bool result = aten_.exportModel(obj.m, c->argc(1), plugin, FilePluginStandardImportOptions(), pluginOptions);
 	
 	rv.set(result);
 
