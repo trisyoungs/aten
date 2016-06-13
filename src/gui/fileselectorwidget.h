@@ -92,6 +92,9 @@ class FileSelectorWidget : public QWidget
 	 * Widget Functions
 	 */
 	private slots:
+	void on_DirectoryEdit_returnPressed();
+	void on_DirectoryUpButton_clicked(bool checked);
+	void on_DirectoryCreateButton_clicked(bool checked);
 	void on_FileView_clicked(const QModelIndex& index);
 	void on_FileView_doubleClicked(const QModelIndex& index);
 	void on_FilesEdit_textChanged(QString textChanged);

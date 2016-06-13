@@ -27,7 +27,7 @@
 ATEN_USING_NAMESPACE
 
 // Read single XYZ model from file
-bool XYZFilePluginCommon::readXYZModel(FileParser& parser, const FilePluginStandardImportOptions standardOptions, Model* targetModel)
+bool XYZFilePluginCommon::readXYZModel(FilePluginInterface* interface, FileParser& parser, const FilePluginStandardImportOptions standardOptions, Model* targetModel)
 {
 	int nAtoms, n;
 	QString e, name;
@@ -53,7 +53,7 @@ bool XYZFilePluginCommon::readXYZModel(FileParser& parser, const FilePluginStand
 		if (!parser.parseLine()) break;
 		
 		// Create the new atom
-		targetModel->addAtom(ElementMap().find(parser.argc(0)), parser.arg3d(1));
+		interface->createAtom(targetModel, parser.argc(0), parser.arg3d(1));
 	}
 	
 	// Rebond the model

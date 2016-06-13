@@ -303,13 +303,29 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 	// Target frame for read/write, if any
 	Model* targetFrame_;
 
-	protected:
+	public:
 	// Create new model
 	Model* createModel(QString name = QString())
 	{
 		Model* newModel = createdModels_.add();
 		if (!name.isEmpty()) newModel->setName(name);
 		return newModel;
+	}
+	// Discard created model
+	bool discardModel(Model* model)
+	{
+		if (createdModels_.contains(model))
+		{
+			createdModels_.remove(model);
+			return true;
+		}
+		Messenger::error("Can't discard model - not owned by the interface.");
+		return false;
+	}
+	// Return parent Model objects created on import
+	List<Model>& createdModels()
+	{
+		return createdModels_;
 	}
 	// Create new atom in specified model
 	Atom* createAtom(Model* model, QString name, Vec3<double> r = Vec3<double>())
@@ -332,31 +348,12 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 
 		return i;
 	}
-	// Discard created model
-	bool discardModel(Model* model)
-	{
-		if (createdModels_.contains(model))
-		{
-			createdModels_.remove(model);
-			return true;
-		}
-		Messenger::error("Can't discard model - not owned by the interface.");
-		return false;
-	}
 	// Create new grid (in target model)
-	Grid* createGrid()
+	Grid* createGrid(Model* model)
 	{
-		ReturnValue result = CommandNode::run(Commands::NewGrid);
-		Grid* newGrid = (Grid*) result.asPointer(VTypes::GridData);
+		Grid* newGrid = model->addGrid();
 		createdGrids_.add(newGrid);
 		return newGrid;
-	}
-
-	public:
-	// Return parent Model objects created on import
-	List<Model>& createdModels()
-	{
-		return createdModels_;
 	}
 	// Return Grid objects created on import
 	RefList<Grid,int> createdGrids()

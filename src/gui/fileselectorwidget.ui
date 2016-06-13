@@ -62,18 +62,53 @@
       </widget>
      </item>
      <item>
-      <widget class="QLineEdit" name="DirectoryEdit"/>
-     </item>
-     <item>
-      <widget class="QPushButton" name="DirectoryBrowseButton">
+      <widget class="QLineEdit" name="DirectoryEdit">
        <property name="sizePolicy">
-        <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
          <horstretch>0</horstretch>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="DirectoryUpButton">
        <property name="text">
-        <string>...</string>
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset resource="icons.qrc">
+         <normaloff>:/arrows/icons/arrow_up.svg</normaloff>:/arrows/icons/arrow_up.svg</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>20</width>
+         <height>20</height>
+        </size>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="Line" name="line">
+       <property name="orientation">
+        <enum>Qt::Vertical</enum>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="DirectoryCreateButton">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="icon">
+        <iconset resource="icons.qrc">
+         <normaloff>:/file/icons/file_newdir.svg</normaloff>:/file/icons/file_newdir.svg</iconset>
+       </property>
+       <property name="iconSize">
+        <size>
+         <width>20</width>
+         <height>20</height>
+        </size>
        </property>
       </widget>
      </item>
@@ -209,6 +244,8 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="icons.qrc"/>
+ </resources>
  <connections/>
 </ui>

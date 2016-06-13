@@ -23,6 +23,7 @@
 #include "base/lineparser.h"
 #include "templates/variantpointer.h"
 #include <QFileSystemModel>
+#include <QInputDialog>
 
 // Static Singletons
 QStringList FileSelectorWidget::favourites_;
@@ -34,7 +35,7 @@ FileSelectorWidget::FileSelectorWidget(QWidget* parent) : QWidget(parent)
 
 	// Setup file system model and attach to view
 	fileSystemModel_.setRootPath("");
-	fileSystemModel_.setFilter(QDir::AllDirs | QDir::AllEntries);
+	fileSystemModel_.setFilter(QDir::AllDirs | QDir::NoDotAndDotDot | QDir::AllEntries);
 	fileSystemModel_.setNameFilterDisables(false);
 	ui.FileView->setModel(&fileSystemModel_);
 	ui.FileView->hideColumn(2);
@@ -186,6 +187,33 @@ void FileSelectorWidget::updateWidgets()
 void FileSelectorWidget::resizeFileView(QString dummy)
 {
 	ui.FileView->resizeColumnsToContents();
+}
+
+void FileSelectorWidget::on_DirectoryEdit_returnPressed()
+{
+	if (refreshing_) return;
+
+	// Try to convert the text to a proper directory
+	QDir newDirectory;
+	newDirectory.setPath(ui.DirectoryEdit->text());
+
+	setCurrentDirectory(newDirectory.absolutePath());
+}
+
+void FileSelectorWidget::on_DirectoryUpButton_clicked(bool checked)
+{
+	if (currentDirectory_.cdUp()) setCurrentDirectory(currentDirectory_.absolutePath());
+}
+
+void FileSelectorWidget::on_DirectoryCreateButton_clicked(bool checked)
+{
+	// Get the new name of the directory to create
+	bool ok;
+	QString newDirectory = QInputDialog::getText(this, "Create Directory", "Enter new directory name:", QLineEdit::Normal, QString(), &ok);
+	if (ok)
+	{
+		currentDirectory_.mkdir(newDirectory);
+	}
 }
 
 void FileSelectorWidget::on_FileView_clicked(const QModelIndex& index)

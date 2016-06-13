@@ -152,7 +152,7 @@ bool XYZTrajectoryPlugin::exportData()
 // Import next partial data chunk
 bool XYZTrajectoryPlugin::importNextPart()
 {
-	return XYZFilePluginCommon::readXYZModel(fileParser_, standardOptions_, targetFrame());
+	return XYZFilePluginCommon::readXYZModel(this, fileParser_, standardOptions_, targetFrame());
 }
 
 // Skip next partial data chunk

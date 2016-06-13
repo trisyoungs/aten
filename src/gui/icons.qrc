@@ -160,6 +160,7 @@
   </qresource>
   <qresource prefix="/file">
     <file>icons/file_savefilm.svg</file>
+    <file>icons/file_newdir.svg</file>
     <file>icons/file_close.svg</file>
     <file>icons/file_session.svg</file>
     <file>icons/file_new.svg</file>

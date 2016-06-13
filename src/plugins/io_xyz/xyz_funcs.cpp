@@ -106,6 +106,7 @@ bool XYZModelPlugin::importData()
 	Model* parentModel = NULL;
 	Model* targetModel = NULL;
 
+	printf("ZMAP = %i\n", standardOptions_.zMappingType());
 	// Read data - first model in file is always the parent (regardless of whether we're reading it as a trajectory or not)
 	do
 	{
@@ -139,7 +140,7 @@ bool XYZModelPlugin::importData()
 		}
 
 		// Read in model data
-		result = XYZFilePluginCommon::readXYZModel(fileParser_, standardOptions_, targetModel);
+		result = XYZFilePluginCommon::readXYZModel(this, fileParser_, standardOptions_, targetModel);
 
 		if (!result)
 		{

@@ -104,6 +104,9 @@
           </item>
           <item>
            <widget class="QComboBox" name="ZMappingCombo">
+            <property name="currentIndex">
+             <number>6</number>
+            </property>
             <item>
              <property name="text">
               <string>Alpha</string>
