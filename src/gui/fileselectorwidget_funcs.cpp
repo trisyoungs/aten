@@ -291,6 +291,7 @@ void FileSelectorWidget::on_FilterCombo_currentIndexChanged(int index)
 	{
 		// Unrecognised interface, or the All Files entry, so remove any filtering from the file system model
 		fileSystemModel_.setNameFilters(QStringList());
+		emit(pluginOptionsAvailable(false));
 	}
 	else
 	{
@@ -299,5 +300,8 @@ void FileSelectorWidget::on_FilterCombo_currentIndexChanged(int index)
 		for (int n=0; n<interface->extensions().count(); ++n) nameFilters << "*." + interface->extensions().at(n);
 		for (int n=0; n<interface->exactNames().count(); ++n) nameFilters << interface->exactNames().at(n);
 		fileSystemModel_.setNameFilters(nameFilters);
+
+		if (mode_ == FileSelectorWidget::SaveSingleMode) emit(pluginOptionsAvailable(interface->hasExportOptions()));
+		else emit(pluginOptionsAvailable(interface->hasImportOptions()));
 	}
 }

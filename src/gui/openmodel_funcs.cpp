@@ -33,11 +33,20 @@ AtenOpenModel::AtenOpenModel(QWidget* parent, QDir startingDirectory, FileSelect
 	// Link up some slots
 	connect(ui.FileSelector, SIGNAL(selectionMade(bool)), this, SLOT(on_OpenButton_clicked(bool)));
 	connect(ui.FileSelector, SIGNAL(selectionValid(bool)), ui.OpenButton, SLOT(setEnabled(bool)));
+	connect(ui.FileSelector, SIGNAL(pluginOptionsAvailable(bool)), ui.PluginOptionsButton, SLOT(setEnabled(bool)));
 }
 
 /*
  * Widget Functions
  */
+
+void AtenOpenModel::on_PluginOptionsButton_clicked(bool checked)
+{
+	// Get current interface selected in FileSelector
+	FilePluginInterface* interface = ui.FileSelector->selectedPlugin();
+	if (!interface) return;
+	if (interface->hasImportOptions()) interface->showImportOptionsDialog();
+}
 
 void AtenOpenModel::on_OpenButton_clicked(bool checked)
 {

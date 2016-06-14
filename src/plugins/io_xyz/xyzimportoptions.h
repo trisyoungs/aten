@@ -1,6 +1,6 @@
 /*
-	*** Open Grid Dialog
-	*** src/gui/opengrid.h
+	*** XYZ Import Options Dialog
+	*** src/plugins/io_xyz/xyzimportoptions.h
 	Copyright T. Youngs 2007-2016
 
 	This file is part of Aten.
@@ -19,52 +19,49 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_OPENGRIDDIALOG_H
-#define ATEN_OPENGRIDDIALOG_H
+#ifndef ATEN_XYZIMPORTOPTIONS_H
+#define ATEN_XYZIMPORTOPTIONS_H
 
-#include "gui/ui_opengrid.h"
-#include "gui/opendialog.h"
-#include "plugins/interfaces/fileplugin.h"
-#include "base/namespace.h"
+#include "base/kvmap.h"
+#include "plugins/io_xyz/ui_xyzimportoptions.h"
 
-// Forward Declarations (Qt)
-/* none */
-
-ATEN_BEGIN_NAMESPACE
+ATEN_USING_NAMESPACE
 
 // Forward Declarations (Aten)
 /* none */
 
-ATEN_END_NAMESPACE
-
-ATEN_USING_NAMESPACE
-
-// Open Grid Dialog
-class AtenOpenGrid : public QDialog, public AtenOpenDialog
+// XYZ Import Options Dialog
+class XYZImportOptionsDialog : public QDialog
 {
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
 
 	public:
 	// Constructor
-	AtenOpenGrid(QWidget* parent, QDir startingDirectory, FileSelectorWidget::SelectionMode mode, const RefList<FilePluginInterface,int>& filePlugins);
+	XYZImportOptionsDialog(KVMap& pluginOptions);
+
+	private:
 	// Main form declaration
-	Ui::OpenGridDialog ui;
+	Ui::XYZImportOptionsDialog ui;
+	// Reference to KVMap of plugin options stored in plugin
+	KVMap& pluginOptions_;
 
 
 	/*
 	 * Widget Functions
 	 */
 	private slots:
-	void on_PluginOptionsButton_clicked(bool checked);
-	void on_OpenButton_clicked(bool checked);
+	// Cancel / OK buttons
 	void on_CancelButton_clicked(bool checked);
+	void on_OKButton_clicked(bool checked);
 
+
+	/*
+	 * Show Function
+	 */
 	public:
-	// Execute dialog
-	bool execute(int currentPluginsLogPoint);
-	// Return standard import options from dialog
-	FilePluginStandardImportOptions standardOptions();
+	// Update and show dialog (setting controls from pluginOptions_ if necessary)
+	int updateAndExecute();
 };
 
 #endif

@@ -46,7 +46,7 @@ class XYZModelPlugin : public QObject, public FilePluginInterface
 	// Destructor
 	~XYZModelPlugin();
 	// Return a copy of the plugin object
-	FilePluginInterface* duplicate();
+	FilePluginInterface* makeCopy();
 
 
 	/*
@@ -86,19 +86,17 @@ class XYZModelPlugin : public QObject, public FilePluginInterface
 
 
 	/*
-	 * Additional Functions / Data
+	 * Options
 	 */
-	private:
-	// Whether to read in multiple-xyz files as a trajectory instead of individual models
-	bool readMultipleAsTrajectory_;
-	// Options Enum
-	enum PluginOption { ReadMultipleAsTrajectoryOption, nPluginOptions };
-	// Return enum'd plugin option from supplied keyword
-	int pluginOption(QString optionName);
-
 	public:
-	// Set option for plugin
-	bool setOption(QString optionName, QString optionValue);
+	// Return whether the plugin has import options
+	bool hasImportOptions();
+	// Show import options dialog
+	bool showImportOptionsDialog();
+	// Return whether the plugin has export options
+	bool hasExportOptions();
+	// Show export options dialog
+	bool showExportOptionsDialog();
 };
 
 ATEN_END_NAMESPACE

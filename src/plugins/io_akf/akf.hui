@@ -46,7 +46,7 @@ class AKFModelPlugin : public QObject, public FilePluginInterface
 	// Destructor
 	~AKFModelPlugin();
 	// Return a copy of the plugin object
-	FilePluginInterface* duplicate();
+	FilePluginInterface* makeCopy();
 	// Keyword Enum
 	enum AKFKeyword { AngleKeyword, AtomKeyword, BondKeyword, CellKeyword, CellMatrixKeyword, DistanceKeyword, GlyphKeyword, GridKeyword, TitleKeyword, TorsionKeyword, nKeywords };
 	static AKFKeyword akfKeyword(QString s);
@@ -98,17 +98,17 @@ class AKFModelPlugin : public QObject, public FilePluginInterface
 
 
 	/*
-	 * Additional Functions / Data
+	 * Options
 	 */
-	private:
-	// Options Enum
-	enum PluginOption { nPluginOptions };
-	// Return enum'd plugin option from supplied keyword
-	int pluginOption(QString optionName);
-
 	public:
-	// Set option for plugin
-	bool setOption(QString optionName, QString optionValue);
+	// Return whether the plugin has import options
+	bool hasImportOptions();
+	// Show import options dialog
+	bool showImportOptionsDialog();
+	// Return whether the plugin has export options
+	bool hasExportOptions();
+	// Show export options dialog
+	bool showExportOptionsDialog();
 };
 
 ATEN_END_NAMESPACE

@@ -22,15 +22,13 @@
 #include "plugins/io_xyz/xyz.hui"
 #include "plugins/io_xyz/common.h"
 #include "model/model.h"
+#include "plugins/io_xyz/xyzimportoptions.h"
 
 // Constructor
 XYZModelPlugin::XYZModelPlugin()
 {
-	// Setup option keywords
-	pluginOptionKeywords_ = QStringList() << "readMultipleAsTrajectory";
-
-	// Default values for local variables
-	readMultipleAsTrajectory_ = false;
+	// Setup plugin options
+	pluginOptions_.add("readMultipleAsTrajectory", "false");
 }
 
 // Destructor
@@ -43,7 +41,7 @@ XYZModelPlugin::~XYZModelPlugin()
  */
 
 // Return a copy of the plugin object
-FilePluginInterface* XYZModelPlugin::duplicate()
+FilePluginInterface* XYZModelPlugin::makeCopy()
 {
 	return new XYZModelPlugin;
 }
@@ -106,12 +104,11 @@ bool XYZModelPlugin::importData()
 	Model* parentModel = NULL;
 	Model* targetModel = NULL;
 
-	printf("ZMAP = %i\n", standardOptions_.zMappingType());
 	// Read data - first model in file is always the parent (regardless of whether we're reading it as a trajectory or not)
 	do
 	{
 		// Do we need to switch to reading the file as a trajectory?
-		if ((nModels == 1) && readMultipleAsTrajectory_)
+		if ((nModels == 1) && (pluginOptions_.value("readMultipleAsTrajectory") == "true"))
 		{
 			readAsTrajectory = true;
 
@@ -183,26 +180,31 @@ bool XYZModelPlugin::skipNextPart()
 }
 
 /*
- * Local Functions / Data
+ * Options
  */
 
-// Return enum'd plugin option from supplied keyword
-int XYZModelPlugin::pluginOption(QString optionName)
+// Return whether the plugin has import options
+bool XYZModelPlugin::hasImportOptions()
 {
-	for (int n=0; n<pluginOptionKeywords_.count(); ++n) if (pluginOptionKeywords_.at(n) == optionName) return n;
-
-	return nPluginOptions;
+	return true;
 }
 
-// Set option for plugin
-bool XYZModelPlugin::setOption(QString optionName, QString optionValue)
+// Show import options dialog
+bool XYZModelPlugin::showImportOptionsDialog()
 {
-	int option = pluginOption(optionName);
+	XYZImportOptionsDialog optionsDialog(pluginOptions_);
 
-	switch (option)
-	{
-		case (XYZModelPlugin::ReadMultipleAsTrajectoryOption):
-			readMultipleAsTrajectory_ = toBool(optionValue);
-			break;
-	}
+	return (optionsDialog.updateAndExecute() == QDialog::Accepted);
+}
+
+// Return whether the plugin has export options
+bool XYZModelPlugin::hasExportOptions()
+{
+	return false;
+}
+
+// Show export options dialog
+bool XYZModelPlugin::showExportOptionsDialog()
+{
+	return false;
 }

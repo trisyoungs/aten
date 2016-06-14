@@ -101,6 +101,18 @@ void KVMap::add(QString key, QString value)
 	else kvp->setValue(value);
 }
 
+// Return comma-separated list of keys
+QString KVMap::keys()
+{
+	QString result;
+	for (KVPair* kvp = pairs_.first(); kvp != NULL; kvp = kvp->next)
+	{
+		if (kvp != pairs_.first()) result += ", " + kvp->key();
+		else result += kvp->key();
+	}
+	return result;
+}
+
 // Set (existing) key/value pair from 'option=value' string
 void KVMap::add(QString optionEqualsValue)
 {

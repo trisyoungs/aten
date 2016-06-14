@@ -79,7 +79,7 @@ AKFModelPlugin::~AKFModelPlugin()
  */
 
 // Return a copy of the plugin object
-FilePluginInterface* AKFModelPlugin::duplicate()
+FilePluginInterface* AKFModelPlugin::makeCopy()
 {
 	return new AKFModelPlugin;
 }
@@ -373,20 +373,31 @@ bool AKFModelPlugin::skipNextPart()
 }
 
 /*
- * Local Functions / Data
+ * Options
  */
 
-// Return enum'd plugin option from supplied keyword
-int AKFModelPlugin::pluginOption(QString optionName)
+// Return whether the plugin has import options
+bool AKFModelPlugin::hasImportOptions()
 {
-	for (int n=0; n<pluginOptionKeywords_.count(); ++n) if (pluginOptionKeywords_.at(n) == optionName) return n;
-
-	return nPluginOptions;
-}
-
-// Set option for plugin
-bool AKFModelPlugin::setOption(QString optionName, QString optionValue)
-{
-	// No Options
 	return false;
 }
+
+// Show import options dialog
+bool AKFModelPlugin::showImportOptionsDialog()
+{
+	return false;
+}
+
+// Return whether the plugin has export options
+bool AKFModelPlugin::hasExportOptions()
+{
+	return false;
+}
+
+// Show export options dialog
+bool AKFModelPlugin::showExportOptionsDialog()
+{
+	return false;
+}
+
+ 

@@ -65,6 +65,7 @@ class AtenSaveModel : public QDialog
 	 * Widget Functions
 	 */
 	private slots:
+	void on_PluginOptionsButton_clicked(bool checked);
 	void on_SaveButton_clicked(bool checked);
 	void on_CancelButton_clicked(bool checked);
 

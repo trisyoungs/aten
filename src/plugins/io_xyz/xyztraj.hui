@@ -46,7 +46,7 @@ class XYZTrajectoryPlugin : public QObject, public FilePluginInterface
 	// Destructor
 	~XYZTrajectoryPlugin();
 	// Return a copy of the plugin object
-	FilePluginInterface* duplicate();
+	FilePluginInterface* makeCopy();
 
 
 	/*
@@ -88,15 +88,15 @@ class XYZTrajectoryPlugin : public QObject, public FilePluginInterface
 	/*
 	 * Additional Functions / Data
 	 */
-	private:
-	// Options Enum
-	enum PluginOption { nPluginOptions };
-	// Return enum'd plugin option from supplied keyword
-	int pluginOption(QString optionName);
-
 	public:
-	// Set option for plugin
-	bool setOption(QString optionName, QString optionValue);
+	// Return whether the plugin has import options
+	bool hasImportOptions();
+	// Show import options dialog
+	bool showImportOptionsDialog();
+	// Return whether the plugin has export options
+	bool hasExportOptions();
+	// Show export options dialog
+	bool showExportOptionsDialog();
 };
 
 ATEN_END_NAMESPACE

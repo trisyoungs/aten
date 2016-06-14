@@ -114,6 +114,7 @@ class FileSelectorWidget : public QWidget
 	signals:
 	void selectionMade(bool);
 	void selectionValid(bool);
+	void pluginOptionsAvailable(bool);
 };
 
 #endif

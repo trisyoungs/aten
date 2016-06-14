@@ -27,9 +27,6 @@
 XYZTrajectoryPlugin::XYZTrajectoryPlugin()
 {
 	// Setup option keywords
-	pluginOptionKeywords_ = QStringList();
-
-	// Default values for local variables
 	/* none */
 }
 
@@ -43,7 +40,7 @@ XYZTrajectoryPlugin::~XYZTrajectoryPlugin()
  */
 
 // Return a copy of the plugin object
-FilePluginInterface* XYZTrajectoryPlugin::duplicate()
+FilePluginInterface* XYZTrajectoryPlugin::makeCopy()
 {
 	return new XYZTrajectoryPlugin;
 }
@@ -162,30 +159,29 @@ bool XYZTrajectoryPlugin::skipNextPart()
 }
 
 /*
- * Local Functions / Data
+ * Options
  */
 
-// Return enum'd plugin option from supplied keyword
-int XYZTrajectoryPlugin::pluginOption(QString optionName)
+// Return whether the plugin has import options
+bool XYZTrajectoryPlugin::hasImportOptions()
 {
-	for (int n=0; n<pluginOptionKeywords_.count(); ++n) if (pluginOptionKeywords_.at(n) == optionName) return n;
-
-	return nPluginOptions;
+	return false;
 }
 
-// Set option for plugin
-bool XYZTrajectoryPlugin::setOption(QString optionName, QString optionValue)
+// Show import options dialog
+bool XYZTrajectoryPlugin::showImportOptionsDialog()
 {
-	int option = pluginOption(optionName);
-
-	switch (option)
-	{
-		default:
-			Messenger::error("Unrecognised plugin option '" + optionName + "'");
-			return false;
-			break;
-	}
-
-	return true;
+	return false;
 }
 
+// Return whether the plugin has export options
+bool XYZTrajectoryPlugin::hasExportOptions()
+{
+	return false;
+}
+
+// Show export options dialog
+bool XYZTrajectoryPlugin::showExportOptionsDialog()
+{
+	return false;
+}

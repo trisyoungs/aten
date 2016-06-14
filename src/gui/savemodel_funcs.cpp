@@ -36,11 +36,20 @@ AtenSaveModel::AtenSaveModel(QWidget* parent, QDir startingDirectory, const RefL
 	// Link up some slots
 	connect(ui.FileSelector, SIGNAL(selectionMade(bool)), this, SLOT(on_SaveButton_clicked(bool)));
 	connect(ui.FileSelector, SIGNAL(selectionValid(bool)), ui.SaveButton, SLOT(setEnabled(bool)));
+	connect(ui.FileSelector, SIGNAL(pluginOptionsAvailable(bool)), ui.PluginOptionsButton, SLOT(setEnabled(bool)));
 }
 
 /*
  * Widget Functions
  */
+
+void AtenSaveModel::on_PluginOptionsButton_clicked(bool checked)
+{
+	// Get current interface selected in FileSelector
+	FilePluginInterface* interface = ui.FileSelector->selectedPlugin();
+	if (!interface) return;
+	if (interface->hasExportOptions()) interface->showExportOptionsDialog();
+}
 
 void AtenSaveModel::on_SaveButton_clicked(bool checked)
 {

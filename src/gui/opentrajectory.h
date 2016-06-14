@@ -56,6 +56,7 @@ class AtenOpenTrajectory : public QDialog, public AtenOpenDialog
 	 * Widget Functions
 	 */
 	private slots:
+	void on_PluginOptionsButton_clicked(bool checked);
 	void on_OpenButton_clicked(bool checked);
 	void on_CancelButton_clicked(bool checked);
 

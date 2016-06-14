@@ -82,7 +82,7 @@ class FilePluginStandardImportOptions
 
 	public:
 	// Set whether all trajectory frames are to be cached
-	bool setCacheAll(bool value)
+	void setCacheAll(bool value)
 	{
 		cacheAll_ = value;
 	}
@@ -102,7 +102,7 @@ class FilePluginStandardImportOptions
 		return coordinatesInBohr_;
 	}
 	// Set whether original atom type names in file should be kept in a names forcefield associated to the model
-	bool setKeepNames(bool value)
+	void setKeepNames(bool value)
 	{
 		keepNames_ = value;
 	}
@@ -112,7 +112,7 @@ class FilePluginStandardImportOptions
 		return keepNames_;
 	}
 	// Set whether original atom type names should be converted into forcefield types and fixed to atoms
-	bool setKeepTypes(bool value)
+	void setKeepTypes(bool value)
 	{
 		keepTypes_ = value;
 	}
@@ -122,7 +122,7 @@ class FilePluginStandardImportOptions
 		return keepTypes_;
 	}
 	// Set whether view should not be reset when GUI starts
-	bool setKeepView(bool value)
+	void setKeepView(bool value)
 	{
 		keepView_ = value;
 	}
@@ -202,7 +202,16 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 
 	private:
 	// Return a copy of the plugin object
-	virtual FilePluginInterface* duplicate() = 0;
+	virtual FilePluginInterface* makeCopy() = 0;
+	// Return a duplicate of the plugin object, including options etc.
+	virtual FilePluginInterface* duplicate()
+	{
+		FilePluginInterface* copy = makeCopy();
+		copy->setStandardOptions(standardOptions_);
+		copy->setOptions(pluginOptions_);
+		return copy;
+	}
+
 
 	protected:
 	// File parser object, associated to LineParser
@@ -549,17 +558,15 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 
 
 	/*
-	 * Additional Functions / Data
+	 * Options
 	 */
 	protected:
 	// Standard options
 	FilePluginStandardImportOptions standardOptions_;
-	// Plugin Option Keywords
-	QStringList pluginOptionKeywords_;
+	// Options specific to this plugin
+	KVMap pluginOptions_;
 
 	protected:
-	// Return enum'd plugin option from supplied keyword
-	virtual int pluginOption(QString optionName) = 0;
 	// Return conversion of supplied QString to bool
 	bool toBool(QString string)
 	{
@@ -568,6 +575,14 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 	}
 
 	public:
+	// Return whether the plugin has import options
+	virtual bool hasImportOptions() = 0;
+	// Show import options dialog
+	virtual bool showImportOptionsDialog() = 0;
+	// Return whether the plugin has export options
+	virtual bool hasExportOptions() = 0;
+	// Show export options dialog
+	virtual bool showExportOptionsDialog() = 0;
 	// Set standard options
 	void setStandardOptions(const FilePluginStandardImportOptions& standardOptions)
 	{
@@ -578,9 +593,21 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 	{
 		return standardOptions_;
 	}
-	// Set option in plugin
-	virtual bool setOption(QString optionName, QString optionValue) = 0;
-	// Set options for plugin
+	// Set plugin option
+	bool setOption(QString optionName, QString optionValue)
+	{
+		// Search for this option in pluginOptions_
+		KVPair* pair = pluginOptions_.search(optionName);
+		if (pair) pair->setValue(optionValue);
+		else
+		{
+			Messenger::error("Option '" + optionName + "' is not recognised by this plugin.");
+			Messenger::error("Available options are: " + pluginOptions_.keys());
+			return false;
+		}
+		return true;
+	}
+	// Set plugin options
 	bool setOptions(KVMap options)
 	{
 		bool result = true;
