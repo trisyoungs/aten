@@ -1,6 +1,6 @@
 /*
-	*** Open Dialog Common Functions
-	*** src/gui/opendialog_funcs.cpp
+	*** File Dialog Common Functions
+	*** src/gui/filedialog_funcs.cpp
 	Copyright T. Youngs 2007-2016
 
 	This file is part of Aten.
@@ -19,17 +19,17 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "gui/opendialog.h"
+#include "gui/filedialog.h"
 #include "plugins/plugintypes.h"
 
 // Constructor
-AtenOpenDialog::AtenOpenDialog(const RefList<FilePluginInterface,int>& filePlugins) : filePlugins_(filePlugins)
+AtenFileDialog::AtenFileDialog(const RefList<FilePluginInterface,int>& filePlugins) : filePlugins_(filePlugins)
 {
 	pluginsLogPoint_ = -1;
 }
 
 // Set pointer to associated FileSelector widget
-void AtenOpenDialog::setFileSelectorWidget(FileSelectorWidget* widget, QDir startingDirectory, FileSelectorWidget::SelectionMode mode)
+void AtenFileDialog::setFileSelectorWidget(FileSelectorWidget* widget, QDir startingDirectory, FileSelectorWidget::SelectionMode mode)
 {
 	fileSelectorWidget_ = widget;
 
@@ -38,7 +38,7 @@ void AtenOpenDialog::setFileSelectorWidget(FileSelectorWidget* widget, QDir star
 }
 
 // Make sure file selector is up to date
-void AtenOpenDialog::updateFileSelector(int currentPluginsLogPoint)
+void AtenFileDialog::updateFileSelector(int currentPluginsLogPoint, QString currentFilename, FilePluginInterface* currentPlugin)
 {
 	// Make sure the file selector is up to date
 	if (currentPluginsLogPoint != pluginsLogPoint_)
@@ -46,18 +46,25 @@ void AtenOpenDialog::updateFileSelector(int currentPluginsLogPoint)
 		fileSelectorWidget_->refreshPlugins(filePlugins_);
 		pluginsLogPoint_ = currentPluginsLogPoint;
 	}
-	fileSelectorWidget_->clearSelectedFilenames();
+
+	// Set / clear filename
+	if (currentFilename.isEmpty()) fileSelectorWidget_->clearSelectedFilenames();
+	else fileSelectorWidget_->setSelectedFilename(currentFilename);
+
+	// Set plugin (if specified)
+	if (currentPlugin) fileSelectorWidget_->setSelectedPlugin(currentPlugin);
+
 	fileSelectorWidget_->updateWidgets();
 }
 
 // Return selected filename(s)
-QStringList AtenOpenDialog::selectedFilenames()
+QStringList AtenFileDialog::selectedFilenames()
 {
 	return fileSelectorWidget_->selectedFiles();
 }
 
 // Return selected file plugin
-FilePluginInterface* AtenOpenDialog::selectedPlugin()
+FilePluginInterface* AtenFileDialog::selectedPlugin()
 {
 	return fileSelectorWidget_->selectedPlugin();
 }

@@ -26,16 +26,7 @@
    <property name="spacing">
     <number>4</number>
    </property>
-   <property name="leftMargin">
-    <number>4</number>
-   </property>
-   <property name="topMargin">
-    <number>4</number>
-   </property>
-   <property name="rightMargin">
-    <number>4</number>
-   </property>
-   <property name="bottomMargin">
+   <property name="margin">
     <number>4</number>
    </property>
    <item>
@@ -51,6 +42,7 @@
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
+       <zorder>OpenButton</zorder>
       </widget>
      </item>
      <item>
@@ -75,16 +67,7 @@
         <property name="spacing">
          <number>4</number>
         </property>
-        <property name="leftMargin">
-         <number>4</number>
-        </property>
-        <property name="topMargin">
-         <number>4</number>
-        </property>
-        <property name="rightMargin">
-         <number>4</number>
-        </property>
-        <property name="bottomMargin">
+        <property name="margin">
          <number>4</number>
         </property>
         <item>
@@ -240,7 +223,17 @@
         <item>
          <widget class="QPushButton" name="PluginOptionsButton">
           <property name="text">
-           <string>Plugin Options</string>
+           <string>&amp;Plugin Options</string>
+          </property>
+          <property name="icon">
+           <iconset resource="icons.qrc">
+            <normaloff>:/aten/icons/aten_preferences.svg</normaloff>:/aten/icons/aten_preferences.svg</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>16</width>
+            <height>16</height>
+           </size>
           </property>
           <property name="autoDefault">
            <bool>false</bool>
@@ -293,7 +286,7 @@
      <item>
       <widget class="QPushButton" name="CancelButton">
        <property name="text">
-        <string>Cancel</string>
+        <string>&amp;Cancel</string>
        </property>
        <property name="autoDefault">
         <bool>false</bool>
@@ -309,7 +302,7 @@
         </font>
        </property>
        <property name="text">
-        <string>Open</string>
+        <string>&amp;Open</string>
        </property>
        <property name="autoDefault">
         <bool>false</bool>

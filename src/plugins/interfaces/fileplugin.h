@@ -173,6 +173,16 @@ class FilePluginStandardImportOptions
 	}
 };
 
+// File Plugin Standard Export Options
+class FilePluginStandardExportOptions
+{
+	public:
+	// Constructor
+	FilePluginStandardExportOptions()
+	{
+	}
+};
+
 // File Plugin Interface
 class FilePluginInterface : public ListItem<FilePluginInterface>
 {

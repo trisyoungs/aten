@@ -23,7 +23,7 @@
 #define ATEN_OPENMODELDIALOG_H
 
 #include "gui/ui_openmodel.h"
-#include "gui/opendialog.h"
+#include "gui/filedialog.h"
 #include "base/namespace.h"
 
 // Forward Declarations (Qt)
@@ -39,7 +39,7 @@ ATEN_END_NAMESPACE
 ATEN_USING_NAMESPACE
 
 // Open Model Dialog
-class AtenOpenModel : public QDialog, public AtenOpenDialog
+class AtenOpenModel : public QDialog, public AtenFileDialog
 {
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
@@ -61,9 +61,11 @@ class AtenOpenModel : public QDialog, public AtenOpenDialog
 
 	public:
 	// Execute dialog
-	bool execute(int currentPluginsLogPoint);
+	bool execute(int currentPluginsLogPoint, QString currentFilename = QString(), FilePluginInterface* currentPlugin = NULL);
 	// Return standard import options from dialog
-	FilePluginStandardImportOptions standardOptions();
+	FilePluginStandardImportOptions standardImportOptions();
+	// Return standard export options from dialog
+	FilePluginStandardExportOptions standardExportOptions();
 };
 
 #endif

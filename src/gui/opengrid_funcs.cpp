@@ -24,7 +24,7 @@
 #include <QMessageBox>
 
 // Constructor
-AtenOpenGrid::AtenOpenGrid(QWidget* parent, QDir startingDirectory, FileSelectorWidget::SelectionMode mode, const RefList<FilePluginInterface,int>& filePlugins) : QDialog(parent), AtenOpenDialog(filePlugins_)
+AtenOpenGrid::AtenOpenGrid(QWidget* parent, QDir startingDirectory, FileSelectorWidget::SelectionMode mode, const RefList<FilePluginInterface,int>& filePlugins) : QDialog(parent), AtenFileDialog(filePlugins_)
 {
 	ui.setupUi(this);
 
@@ -76,7 +76,7 @@ void AtenOpenGrid::on_CancelButton_clicked(bool checked)
 }
 
 // Execute dialog
-bool AtenOpenGrid::execute(int currentPluginsLogPoint)
+bool AtenOpenGrid::execute(int currentPluginsLogPoint, QString currentFilename, FilePluginInterface* currentPlugin)
 {
 	// Make sure the file selector is up to date
 	updateFileSelector(currentPluginsLogPoint);
@@ -84,13 +84,21 @@ bool AtenOpenGrid::execute(int currentPluginsLogPoint)
 	return exec();
 }
 
-// Return map of standard options from dialog
-FilePluginStandardImportOptions AtenOpenGrid::standardOptions()
+// Return standard import options from dialog
+FilePluginStandardImportOptions AtenOpenGrid::standardImportOptions()
 {
 	FilePluginStandardImportOptions options;
 
 	options.setCoordinatesInBohr(ui.BohrCheck->isChecked());
 	options.setZMappingType( (ElementMap::ZMapType) ui.ZMappingCombo->currentIndex());
 	
+	return options;
+}
+
+// Return standard export options from dialog
+FilePluginStandardExportOptions AtenOpenGrid::standardExportOptions()
+{
+	FilePluginStandardExportOptions options;
+
 	return options;
 }

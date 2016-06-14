@@ -143,7 +143,7 @@ bool Aten::exportModel(Model* sourceModel, QString filename, FilePluginInterface
 
 		if (saveModelDialog.execute(pluginStore_.logPoint(), filename, plugin))
 		{
-			filename = saveModelDialog.selectedFilename();
+			filename = saveModelDialog.selectedFilenames().at(0);
 			plugin = saveModelDialog.selectedPlugin();
 			if (plugin == NULL) plugin = pluginStore_.findFilePlugin(PluginTypes::ModelFilePlugin, PluginTypes::ImportPlugin, filename);
 		}

@@ -23,6 +23,7 @@
 #define ATEN_SAVEMODELDIALOG_H
 
 #include "gui/ui_savemodel.h"
+#include "gui/filedialog.h"
 #include "plugins/interfaces/fileplugin.h"
 #include "base/namespace.h"
 
@@ -39,26 +40,16 @@ ATEN_END_NAMESPACE
 ATEN_USING_NAMESPACE
 
 // Save Model Dialog
-class AtenSaveModel : public QDialog
+class AtenSaveModel : public QDialog, public AtenFileDialog
 {
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
 
 	public:
 	// Constructor
-	AtenSaveModel(QWidget* parent, QDir startingDirectory, const RefList< FilePluginInterface, int >& filePlugins);
+	AtenSaveModel(QWidget* parent, QDir startingDirectory, const RefList<FilePluginInterface,int>& filePlugins);
 	// Main form declaration
 	Ui::SaveModelDialog ui;
-
-
-	/*
-	 * Data
-	 */
-	private:
-	// Reference to plugin list to use for this file dialog
-	const RefList<FilePluginInterface,int>& filePlugins_;
-	// PluginStore logpoint at which plugins were added to the file selector
-	int pluginsLogPoint_;
 
 
 	/*
@@ -72,12 +63,10 @@ class AtenSaveModel : public QDialog
 	public:
 	// Execute dialog
 	bool execute(int currentPluginsLogPoint, QString currentFileName = QString(), FilePluginInterface* plugin = NULL);
-	// Return selected filename
-	QString selectedFilename();
-	// Return selected file plugin
-	FilePluginInterface* selectedPlugin();
-	// Return map of standard options from dialog
-	KVMap standardOptions();
+	// Return standard import options from dialog
+	FilePluginStandardImportOptions standardImportOptions();
+	// Return standard export options from dialog
+	FilePluginStandardExportOptions standardExportOptions();
 };
 
 #endif

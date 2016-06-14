@@ -24,14 +24,11 @@
 #include <QMessageBox>
 
 // Constructor
-AtenSaveModel::AtenSaveModel(QWidget* parent, QDir startingDirectory, const RefList<FilePluginInterface,int>& filePlugins) : QDialog(parent), filePlugins_(filePlugins)
+AtenSaveModel::AtenSaveModel(QWidget* parent, QDir startingDirectory, const RefList<FilePluginInterface,int>& filePlugins) : QDialog(parent), AtenFileDialog(filePlugins)
 {
 	ui.setupUi(this);
 
-	pluginsLogPoint_ = -1;
-
-	// Set the mode of the FileSelectorWidget
-	ui.FileSelector->setMode(FileSelectorWidget::SaveSingleMode, startingDirectory);
+	setFileSelectorWidget(ui.FileSelector, startingDirectory, FileSelectorWidget::SaveSingleMode);
 
 	// Link up some slots
 	connect(ui.FileSelector, SIGNAL(selectionMade(bool)), this, SLOT(on_SaveButton_clicked(bool)));
@@ -80,36 +77,23 @@ void AtenSaveModel::on_CancelButton_clicked(bool checked)
 bool AtenSaveModel::execute(int currentPluginsLogPoint, QString currentFileName, FilePluginInterface* plugin)
 {
 	// Make sure the file selector is up to date
-	if (currentPluginsLogPoint != pluginsLogPoint_)
-	{
-		ui.FileSelector->refreshPlugins(filePlugins_);
-		pluginsLogPoint_ = currentPluginsLogPoint;
-	}
-	ui.FileSelector->setSelectedFilename(currentFileName);
-	ui.FileSelector->setSelectedPlugin(plugin);
-	ui.FileSelector->updateWidgets();
+	updateFileSelector(currentPluginsLogPoint, currentFileName, plugin);
 
 	return exec();
 }
 
-// Return selected filename
-QString AtenSaveModel::selectedFilename()
+// Return standard import options from dialog
+FilePluginStandardImportOptions AtenSaveModel::standardImportOptions()
 {
-	if (ui.FileSelector->selectedFiles().count() == 1) return ui.FileSelector->selectedFiles().at(0);
+	FilePluginStandardImportOptions options;
 
-	return QString();
+	return options;
 }
 
-// Return selected file plugin
-FilePluginInterface* AtenSaveModel::selectedPlugin()
+// Return standard export options from dialog
+FilePluginStandardExportOptions AtenSaveModel::standardExportOptions()
 {
-	return ui.FileSelector->selectedPlugin();
-}
-
-// Return map of standard options from dialog
-KVMap AtenSaveModel::standardOptions()
-{
-	KVMap options;
+	FilePluginStandardExportOptions options;
 
 	return options;
 }

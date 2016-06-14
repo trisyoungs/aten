@@ -1,6 +1,6 @@
 /*
-	*** Open Dialog Common Functions
-	*** src/gui/opendialog.h
+	*** File Dialog Common Functions
+	*** src/gui/filedialog.h
 	Copyright T. Youngs 2007-2016
 
 	This file is part of Aten.
@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_OPENDIALOG_H
-#define ATEN_OPENDIALOG_H
+#ifndef ATEN_FILEDIALOG_H
+#define ATEN_FILEDIALOG_H
 
 #include "plugins/interfaces/fileplugin.h"
 #include "gui/fileselectorwidget.h"
@@ -34,13 +34,13 @@ ATEN_BEGIN_NAMESPACE
 // Forward Declarations (Aten)
 /* none */
 
-// Open Dialog Common Functions
-class AtenOpenDialog
+// File Dialog Common Functions
+class AtenFileDialog
 {
 
 	public:
 	// Constructor
-	AtenOpenDialog(const RefList<FilePluginInterface,int>& filePlugins);
+	AtenFileDialog(const RefList<FilePluginInterface,int>& filePlugins);
 
 
 	/*
@@ -58,15 +58,17 @@ class AtenOpenDialog
 	// Set pointer to associated FileSelector widget
 	void setFileSelectorWidget(FileSelectorWidget* widget, QDir startingDirectory, FileSelectorWidget::SelectionMode mode);
 	// Make sure file selector is up to date
-	void updateFileSelector(int currentPluginsLogPoint);
+	void updateFileSelector(int currentPluginsLogPoint, QString currentFilename = QString(), FilePluginInterface* currentPlugin = NULL);
 	// Execute dialog
-	virtual bool execute(int currentPluginsLogPoint) = 0;
+	virtual bool execute(int currentPluginsLogPoint, QString currentFilename = QString(), FilePluginInterface* currentPlugin = NULL) = 0;
 	// Return selected filename(s)
 	QStringList selectedFilenames();
 	// Return selected file plugin
 	FilePluginInterface* selectedPlugin();
-	// Return map of standard options from dialog
-	virtual FilePluginStandardImportOptions standardOptions() = 0;
+	// Return map of standard import options from dialog
+	virtual FilePluginStandardImportOptions standardImportOptions() = 0;
+	// Return map of standard export options from dialog
+	virtual FilePluginStandardExportOptions standardExportOptions() = 0;
 };
 
 ATEN_END_NAMESPACE

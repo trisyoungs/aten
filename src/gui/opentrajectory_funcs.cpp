@@ -24,7 +24,7 @@
 #include <QMessageBox>
 
 // Constructor
-AtenOpenTrajectory::AtenOpenTrajectory(QWidget* parent, QDir startingDirectory, FileSelectorWidget::SelectionMode mode, const RefList<FilePluginInterface,int>& filePlugins) : QDialog(parent), AtenOpenDialog(filePlugins_)
+AtenOpenTrajectory::AtenOpenTrajectory(QWidget* parent, QDir startingDirectory, FileSelectorWidget::SelectionMode mode, const RefList<FilePluginInterface,int>& filePlugins) : QDialog(parent), AtenFileDialog(filePlugins_)
 {
 	ui.setupUi(this);
 
@@ -76,7 +76,7 @@ void AtenOpenTrajectory::on_CancelButton_clicked(bool checked)
 }
 
 // Execute dialog
-bool AtenOpenTrajectory::execute(int currentPluginsLogPoint)
+bool AtenOpenTrajectory::execute(int currentPluginsLogPoint, QString currentFilename, FilePluginInterface* currentPlugin)
 {
 	// Make sure the file selector is up to date
 	updateFileSelector(currentPluginsLogPoint);
@@ -84,8 +84,8 @@ bool AtenOpenTrajectory::execute(int currentPluginsLogPoint)
 	return exec();
 }
 
-// Return map of standard options from dialog
-FilePluginStandardImportOptions AtenOpenTrajectory::standardOptions()
+// Return standard import options from dialog
+FilePluginStandardImportOptions AtenOpenTrajectory::standardImportOptions()
 {
 	FilePluginStandardImportOptions options;
 
@@ -98,3 +98,10 @@ FilePluginStandardImportOptions AtenOpenTrajectory::standardOptions()
 	return options;
 }
 
+// Return standard export options from dialog
+FilePluginStandardExportOptions AtenOpenTrajectory::standardExportOptions()
+{
+	FilePluginStandardExportOptions options;
+
+	return options;
+}

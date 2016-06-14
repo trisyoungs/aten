@@ -7,11 +7,11 @@ SET(gui_MOC_HDRS
   exportfilm.h
   exportimage.h
   ffeditor.h
+  filedialog.h
   fileselectorwidget.h
   glyphs.h
   layoutlist.h
   mainwindow.h
-  opendialog.h
   opengrid.h
   openmodel.h
   opentrajectory.h
@@ -189,6 +189,7 @@ set(gui_SRCS
   exportfilm_funcs.cpp
   exportimage_funcs.cpp
   ffeditor_funcs.cpp
+  filedialog_funcs.cpp
   fileselectorwidget_funcs.cpp
   glyphs_funcs.cpp
   layoutlist.cpp
@@ -215,7 +216,6 @@ set(gui_SRCS
   mainwindow_quickcommand.cpp
   mainwindow_session.cpp
   mainwindow_update.cpp
-  opendialog_funcs.cpp
   opengrid_funcs.cpp
   openmodel_funcs.cpp
   opentrajectory_funcs.cpp

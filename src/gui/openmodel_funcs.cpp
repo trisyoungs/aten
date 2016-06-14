@@ -24,7 +24,7 @@
 #include <QMessageBox>
 
 // Constructor
-AtenOpenModel::AtenOpenModel(QWidget* parent, QDir startingDirectory, FileSelectorWidget::SelectionMode mode, const RefList<FilePluginInterface,int>& filePlugins) : QDialog(parent), AtenOpenDialog(filePlugins)
+AtenOpenModel::AtenOpenModel(QWidget* parent, QDir startingDirectory, FileSelectorWidget::SelectionMode mode, const RefList<FilePluginInterface,int>& filePlugins) : QDialog(parent), AtenFileDialog(filePlugins)
 {
 	ui.setupUi(this);
 
@@ -76,16 +76,16 @@ void AtenOpenModel::on_CancelButton_clicked(bool checked)
 }
 
 // Execute dialog
-bool AtenOpenModel::execute(int currentPluginsLogPoint)
+bool AtenOpenModel::execute(int currentPluginsLogPoint, QString currentFilename, FilePluginInterface* currentPlugin)
 {
 	// Make sure file selector is up to date
-	updateFileSelector(currentPluginsLogPoint);
+	updateFileSelector(currentPluginsLogPoint, currentFilename, currentPlugin);
 
 	return exec();
 }
 
-// Return map of standard options from dialog
-FilePluginStandardImportOptions AtenOpenModel::standardOptions()
+// Return standard import options from dialog
+FilePluginStandardImportOptions AtenOpenModel::standardImportOptions()
 {
 	FilePluginStandardImportOptions options;
 
@@ -101,3 +101,10 @@ FilePluginStandardImportOptions AtenOpenModel::standardOptions()
 	return options;
 }
 
+// Return standard export options from dialog
+FilePluginStandardExportOptions AtenOpenModel::standardExportOptions()
+{
+	FilePluginStandardExportOptions options;
+
+	return options;
+}

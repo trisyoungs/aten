@@ -26,16 +26,7 @@
    <property name="spacing">
     <number>4</number>
    </property>
-   <property name="leftMargin">
-    <number>4</number>
-   </property>
-   <property name="topMargin">
-    <number>4</number>
-   </property>
-   <property name="rightMargin">
-    <number>4</number>
-   </property>
-   <property name="bottomMargin">
+   <property name="margin">
     <number>4</number>
    </property>
    <item>
@@ -75,16 +66,7 @@
         <property name="spacing">
          <number>4</number>
         </property>
-        <property name="leftMargin">
-         <number>4</number>
-        </property>
-        <property name="topMargin">
-         <number>4</number>
-        </property>
-        <property name="rightMargin">
-         <number>4</number>
-        </property>
-        <property name="bottomMargin">
+        <property name="margin">
          <number>4</number>
         </property>
         <item>
@@ -163,7 +145,7 @@
         <item>
          <widget class="QPushButton" name="PluginOptionsButton">
           <property name="text">
-           <string>Plugin Options</string>
+           <string>&amp;Plugin Options</string>
           </property>
          </widget>
         </item>
@@ -213,7 +195,7 @@
      <item>
       <widget class="QPushButton" name="CancelButton">
        <property name="text">
-        <string>Cancel</string>
+        <string>&amp;Cancel</string>
        </property>
       </widget>
      </item>
@@ -226,7 +208,7 @@
         </font>
        </property>
        <property name="text">
-        <string>Open</string>
+        <string>&amp;Open</string>
        </property>
       </widget>
      </item>
