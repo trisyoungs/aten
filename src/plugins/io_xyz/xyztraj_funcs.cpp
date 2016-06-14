@@ -102,9 +102,14 @@ bool XYZTrajectoryPlugin::importData()
 	/* none */
 
 	// Read the first trajectory frame.
-	// The model where we should put the frame data will have been set in the FileParser (in targetModel()).
+	// The model where we should put the frame data will have been set in the FileParser (in parentModel()).
 	// Calling FilePluginInterface::importPart(0) will set the file positions we need, and read in the first frame.
-	if (!importPart(0)) return false;
+	Model* frame = createFrame();
+	if (!importPart(0))
+	{
+		discardFrame(frame);
+		return false;
+	}
 
 	if (standardOptions_.cacheAll())
 	{
@@ -114,16 +119,11 @@ bool XYZTrajectoryPlugin::importData()
 		do
 		{
 			// Add a new trajectory frame
-			Model* frame = targetModel()->addTrajectoryFrame();
-			setTargetFrame(frame);
+			Model* frame = createFrame();
 
 			// Attempt to read in the next data part in the file
 			frameResult = importPart(++count);
-			if (!frameResult)
-			{
-				// Delete unused frame
-				targetModel()->removeTrajectoryFrame(frame);
-			}
+			if (!frameResult) discardFrame(frame);
 			
 		} while (frameResult && (!fileParser_.eofOrBlank()));
 
@@ -148,7 +148,7 @@ bool XYZTrajectoryPlugin::exportData()
 // Import next partial data chunk
 bool XYZTrajectoryPlugin::importNextPart()
 {
-	return XYZFilePluginCommon::readXYZModel(this, fileParser_, standardOptions_, targetFrame());
+	return XYZFilePluginCommon::readXYZModel(this, fileParser_, standardOptions_, targetModel());
 }
 
 // Skip next partial data chunk

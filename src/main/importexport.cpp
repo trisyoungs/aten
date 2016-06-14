@@ -25,6 +25,75 @@
 
 ATEN_USING_NAMESPACE
 
+// Process objects created on import
+void Aten::processImportedObjects(FilePluginInterface* interface, QString filename)
+{
+	// Parent Models
+	while (interface->createdModels().first())
+	{
+		Model* m = interface->createdModels().takeFirst();
+		m->setType(Model::ParentModelType);
+
+		// Set source filename and plugin interface used
+		m->setFilename(filename);
+		m->setPlugin(interface);
+
+		// Do various necessary calculations
+		if (interface->standardOptions().coordinatesInBohr()) m->bohrToAngstrom();
+		m->renumberAtoms();
+		if (!interface->standardOptions().keepView()) m->resetView(atenWindow()->ui.MainView->width(), atenWindow()->ui.MainView->height());
+		m->calculateMass();
+		m->selectNone();
+
+		// Print out some useful info on the model that we've just read in
+		Messenger::print(Messenger::Verbose, "Model  : %s", qPrintable(m->name()));
+		Messenger::print(Messenger::Verbose, "Atoms  : %i", m->nAtoms());
+		Messenger::print(Messenger::Verbose, "Cell   : %s", UnitCell::cellType(m->cell().type()));
+		if (m->cell().type() != UnitCell::NoCell) m->cell().print();
+
+		// If a names forcefield was created, add it to Aten's list 
+		if (m->namesForcefield()) ownForcefield(m->namesForcefield());
+
+		// If a trajectory exists for this model, by default we view from trajectory in the GUI
+		if (m->hasTrajectory()) m->setRenderSource(Model::TrajectorySource);
+
+		// Lastly, reset all the log points and start afresh
+		m->enableUndoRedo();
+		m->resetLogs();
+		m->updateSavePoint();
+
+		// Pass the model pointer to Aten 
+		ownModel(m);
+	}
+
+	// Trajectory frames
+	RefList<Model,int> createdFrames = interface->createdFrames();
+	for (RefListItem<Model,int>* ri = createdFrames.first(); ri != NULL; ri = ri->next)
+	{
+		Model* frame = ri->item;
+		if (!frame) continue;
+
+		frame->renumberAtoms();
+		frame->calculateMass();
+		frame->selectNone();
+		frame->resetLogs();
+		frame->updateSavePoint();
+		frame->enableUndoRedo();
+	}
+
+	// Grids
+	RefList<Grid,int> createdGrids = interface->createdGrids();
+	for (RefListItem<Grid,int>* ri = createdGrids.first(); ri != NULL; ri = ri->next)
+	{
+		Grid* g = ri->item;
+
+		// Set source filename and plugin interface used
+		g->setFilename(filename);
+		g->setPlugin(interface);
+	}
+
+}
+
 // Import model (if it is not loaded already)
 bool Aten::importModel(QString filename, FilePluginInterface* plugin, FilePluginStandardImportOptions standardOptions, KVMap pluginOptions)
 {
@@ -73,43 +142,7 @@ bool Aten::importModel(QString filename, FilePluginInterface* plugin, FilePlugin
 
 		if (interface->importData())
 		{
-			// Finalise any loaded models
-			while (interface->createdModels().first())
-			{
-				Model* m = interface->createdModels().takeFirst();
-				m->setType(Model::ParentModelType);
-
-				// Set source filename and plugin interface used
-				m->setFilename(filename);
-				m->setPlugin(interface);
-
-				// Do various necessary calculations
-				if (standardOptions.coordinatesInBohr()) m->bohrToAngstrom();
-				m->renumberAtoms();
-				if (!standardOptions.keepView()) m->resetView(atenWindow()->ui.MainView->width(), atenWindow()->ui.MainView->height());
-				m->calculateMass();
-				m->selectNone();
-
-				// Print out some useful info on the model that we've just read in
-				Messenger::print(Messenger::Verbose, "Model  : %s", qPrintable(m->name()));
-				Messenger::print(Messenger::Verbose, "Atoms  : %i", m->nAtoms());
-				Messenger::print(Messenger::Verbose, "Cell   : %s", UnitCell::cellType(m->cell().type()));
-				if (m->cell().type() != UnitCell::NoCell) m->cell().print();
-
-				// If a names forcefield was created, add it to Aten's list 
-				if (m->namesForcefield()) ownForcefield(m->namesForcefield());
-
-				// If a trajectory exists for this model, by default we view from trajectory in the GUI
-				if (m->hasTrajectory()) m->setRenderSource(Model::TrajectorySource);
-
-				// Lastly, reset all the log points and start afresh
-				m->enableUndoRedo();
-				m->resetLogs();
-				m->updateSavePoint();
-
-				// Pass the model pointer to Aten 
-				ownModel(m);
-			}
+			processImportedObjects(interface, filename);
 
 			ReturnValue rv = filename;
 			atenWindow_->ui.HomeFileOpenButton->callPopupMethod("addRecentFile", rv);
@@ -208,17 +241,17 @@ bool Aten::exportModel(Model* sourceModel, QString filename, FilePluginInterface
 }
 
 // Import grid
-bool Aten::importGrid(Model* targetModel, QString fileName, FilePluginInterface* plugin, FilePluginStandardImportOptions standardOptions, KVMap pluginOptions)
+bool Aten::importGrid(Model* targetModel, QString filename, FilePluginInterface* plugin, FilePluginStandardImportOptions standardOptions, KVMap pluginOptions)
 {
 	Messenger::enter("Aten::importGrid");
 
 	// If plugin == NULL then we must probe the file first to try and find out how to load it
 	bool result = false;
-	if (plugin == NULL) pluginStore_.findFilePlugin(PluginTypes::GridFilePlugin, PluginTypes::ImportPlugin, fileName);
+	if (plugin == NULL) pluginStore_.findFilePlugin(PluginTypes::GridFilePlugin, PluginTypes::ImportPlugin, filename);
 	if (plugin != NULL)
 	{
 		FilePluginInterface* interface = plugin->createInstance();
-		if (!interface->openInput(fileName))
+		if (!interface->openInput(filename))
 		{
 			Messenger::exit("Aten::importGrid");
 			return false;
@@ -228,32 +261,23 @@ bool Aten::importGrid(Model* targetModel, QString fileName, FilePluginInterface*
 		interface->setTargetModel(targetModel);
 		if (interface->importData())
 		{
-			// Finalise any loaded grids
-			RefList<Grid,int> createdGrids = interface->createdGrids();
-			for (RefListItem<Grid,int>* ri = createdGrids.first(); ri != NULL; ri = ri->next)
-			{
-				Grid* g = ri->item;
+			processImportedObjects(interface, filename);
 
-				// Set source filename and plugin interface used
-				g->setFilename(fileName);
-				g->setPlugin(interface);
-			}
-
-			ReturnValue rv = fileName;
+			ReturnValue rv = filename;
 			atenWindow_->ui.GridsManageOpenButton->callPopupMethod("addRecentFile", rv);
 			result = true;
 		}
 
 		interface->closeFiles();
 	}
-	else Messenger::error("Couldn't determine a suitable plugin to load the file '%s'.", qPrintable(fileName));
+	else Messenger::error("Couldn't determine a suitable plugin to load the file '%s'.", qPrintable(filename));
 
 	Messenger::exit("Aten::importGrid");
 	return result;
 }
 
 // Import trajectory
-bool Aten::importTrajectory(Model* targetModel, QString fileName, FilePluginInterface* plugin, FilePluginStandardImportOptions standardOptions, KVMap pluginOptions)
+bool Aten::importTrajectory(Model* targetModel, QString filename, FilePluginInterface* plugin, FilePluginStandardImportOptions standardOptions, KVMap pluginOptions)
 {
 	Messenger::enter("Aten::importTrajectory");
 
@@ -262,20 +286,19 @@ bool Aten::importTrajectory(Model* targetModel, QString fileName, FilePluginInte
 	targetModel->clearTrajectory();
 
 	// If plugin == NULL then we must probe the file first to try and find out how to load it
-	bool result = true;
-	if (plugin == NULL) plugin = pluginStore_.findFilePlugin(PluginTypes::TrajectoryFilePlugin, PluginTypes::ImportPlugin, fileName);
+	bool result = false;
+	if (plugin == NULL) plugin = pluginStore_.findFilePlugin(PluginTypes::TrajectoryFilePlugin, PluginTypes::ImportPlugin, filename);
 	if (plugin != NULL)
 	{
 		FilePluginInterface* interface = plugin->createInstance();
-		if (!interface->openInput(fileName))
+		if (!interface->openInput(filename))
 		{
 			Messenger::exit("Aten::importTrajectory");
 			return false;
 		}
 		interface->setStandardOptions(standardOptions);
 		interface->setOptions(pluginOptions);
-		interface->setTargetModel(targetModel);
-		interface->setTargetFrame(targetModel->addTrajectoryFrame());
+		interface->setParentModel(targetModel);
 
 		// Call the importData() function of the interface - this will read any header information present in the file before the first frame
 		if (!interface->importData())
@@ -283,25 +306,18 @@ bool Aten::importTrajectory(Model* targetModel, QString fileName, FilePluginInte
 			targetModel->setRenderSource(Model::ModelSource);
 			targetModel->clearTrajectory();
 			Messenger::error("Failed to import trajectory.");
-			result = false;
 		}
 		else
 		{
-			for (Model* frame = targetModel->trajectoryFrames(); frame != NULL; frame = frame->next)
-			{
-				frame->renumberAtoms();
-				frame->calculateMass();
-				frame->selectNone();
-				frame->resetLogs();
-				frame->updateSavePoint();
-				frame->enableUndoRedo();
-			}
+			processImportedObjects(interface, filename);
 
 			targetModel->setRenderSource(Model::TrajectorySource);
 			targetModel->setTrajectoryPlugin(interface);
+
+			result = true;
 		}
 	}
-	else Messenger::error("Couldn't determine a suitable plugin to load the file '%s'.", qPrintable(fileName));
+	else Messenger::error("Couldn't determine a suitable plugin to load the file '%s'.", qPrintable(filename));
 
 	Messenger::exit("Aten::importTrajectory");
 	return result;
@@ -348,5 +364,5 @@ bool Aten::importExpression(QString fileName, FilePluginInterface* plugin, FileP
 bool Aten::exportExpression(Model* targetModel, QString filename, FilePluginInterface* plugin, FilePluginStandardImportOptions standardOptions, KVMap pluginOptions)
 {
 	// ATEN2 TODO ENDOFFILTERS
-  return true;
+	return true;
 }

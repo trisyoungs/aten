@@ -239,8 +239,8 @@ void Model::seekTrajectoryFrame(int frameno, bool quiet)
 
 		// Clear the current trajectory frame (should be the only one we have) and use the importPart() function of the plugin.
 		trajectoryCurrentFrame_->clear();
-		trajectoryPlugin_->setTargetModel(this);
-		trajectoryPlugin_->setTargetFrame(trajectoryCurrentFrame_);
+		trajectoryPlugin_->setParentModel(this);
+		trajectoryPlugin_->setTargetModel(trajectoryCurrentFrame_);
 		trajectoryPlugin_->importPart(frameno);
 
 		trajectoryCurrentFrame_->logChange(Log::Structure);

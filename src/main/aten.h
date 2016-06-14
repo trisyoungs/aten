@@ -526,6 +526,10 @@ class Aten
 	/*
 	 * Import / Export
 	 */
+	private:
+	// Process objects created on import
+	void processImportedObjects( FilePluginInterface* interface, QString filename );
+
 	public:
 	// Import model (if it is not loaded already)
 	bool importModel(QString filename, FilePluginInterface* plugin = NULL, FilePluginStandardImportOptions standardOptions = FilePluginStandardImportOptions(), KVMap pluginOptions = KVMap());

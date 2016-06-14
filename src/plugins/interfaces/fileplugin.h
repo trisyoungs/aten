@@ -97,7 +97,7 @@ class FilePluginStandardImportOptions
 		coordinatesInBohr_ = value;
 	}
 	// Whether coordinates in file are in Bohr rather than Angstroms
-	bool coordinatesInBohr()
+	bool coordinatesInBohr() const
 	{
 		return coordinatesInBohr_;
 	}
@@ -314,19 +314,23 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 	private:
 	// Parent model objects created on import
 	List<Model> createdModels_;
+	// Trajectory frames created on import
+	RefList<Model,int> createdFrames_;
 	// Grid objects created on import
 	RefList<Grid,int> createdGrids_;
+	// Parent model for read/write, if any
+	Model* parentModel_;
 	// Target model for read/write, if any
 	Model* targetModel_;
-	// Target frame for read/write, if any
-	Model* targetFrame_;
 
 	public:
-	// Create new model
+	// Create new parent model
 	Model* createModel(QString name = QString())
 	{
 		Model* newModel = createdModels_.add();
 		if (!name.isEmpty()) newModel->setName(name);
+		parentModel_ = newModel;
+		targetModel_ = parentModel_;
 		return newModel;
 	}
 	// Discard created model
@@ -334,6 +338,8 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 	{
 		if (createdModels_.contains(model))
 		{
+			if ((targetModel_ == model) || (parentModel_ == model)) targetModel_ = NULL;
+			if (parentModel_ == model) parentModel_ = NULL;
 			createdModels_.remove(model);
 			return true;
 		}
@@ -344,6 +350,32 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 	List<Model>& createdModels()
 	{
 		return createdModels_;
+	}
+	// Create frame in parent model
+	Model* createFrame()
+	{
+		Model* frame = parentModel()->addTrajectoryFrame();
+		createdFrames_.add(frame);
+		targetModel_ = frame;
+		return frame;
+	}
+	// Discard created frame
+	bool discardFrame(Model* frame)
+	{
+		if (createdFrames_.contains(frame))
+		{
+			if (targetModel_ == frame) targetModel_ = parentModel_;
+			parentModel_->removeTrajectoryFrame(frame);
+			createdFrames_.remove(frame);
+			return true;
+		}
+		Messenger::error("Can't discard frame - not owned by the interface.");
+		return false;
+	}
+	// Return created frames
+	RefList<Model,int>& createdFrames()
+	{
+		return createdFrames_;
 	}
 	// Create new atom in specified model
 	Atom* createAtom(Model* model, QString name, Vec3<double> r = Vec3<double>())
@@ -366,7 +398,7 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 
 		return i;
 	}
-	// Create new grid (in target model)
+	// Create new grid (in specified model)
 	Grid* createGrid(Model* model)
 	{
 		Grid* newGrid = model->addGrid();
@@ -378,6 +410,16 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 	{
 		return createdGrids_;
 	}
+	// Set parent model
+	void setParentModel(Model* model)
+	{
+		parentModel_ = model;
+	}
+	// Return parent model
+	Model* parentModel() const
+	{
+		return parentModel_;
+	}
 	// Set target model
 	void setTargetModel(Model* model)
 	{
@@ -387,16 +429,6 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 	Model* targetModel() const
 	{
 		return targetModel_;
-	}
-	// Set target frame
-	void setTargetFrame(Model* frame)
-	{
-		targetFrame_ = frame;
-	}
-	// Return target frame
-	Model* targetFrame() const
-	{
-		return targetFrame_;
 	}
 
 
