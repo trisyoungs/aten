@@ -193,7 +193,6 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 		// Import / Export
 		nDataParts_ = 0;
 		nDataPartsEstimated_ = false;
-		lastDataPartRead_ = -1;
 	}
 	// Destructor
 	virtual ~FilePluginInterface() {}
@@ -416,8 +415,6 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 	int nDataParts_;
 	// Whether the number of partial data present in the file is estimated
 	bool nDataPartsEstimated_;
-	// Index of last partial data read in
-	int lastDataPartRead_;
 
 	public:
 	// Return whether this plugin is related to the specified file(name)
@@ -467,9 +464,12 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 	// Import partial data chunk specified
 	bool importPart(int partId)
 	{
+		Messenger::print(Messenger::Verbose, "FilePluginInterface::importPart() - trying to import part %i from file.", partId);
+
 		// First check (sanity) - are there any file positions stored in the array?
 		if (dataPartOffsets_.nItems() == 0)
 		{
+			Messenger::print(Messenger::Verbose, "FilePluginInterface::importPart() - no part offset currently stored...");
 			// If the requested partId is the first part (0) then store the current file position and read it in
 			if (partId == 0)
 			{
@@ -493,6 +493,9 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 					nDataPartsEstimated_ = true;
 					lineParser_.seekg( dataPartOffsets_.last());
 				}
+
+				Messenger::print(Messenger::Verbose, "FilePluginInterface::importPart() - result of initial part read was %i, nOffsets now %i.", result, dataPartOffsets_.nItems());
+
 				return result;
 			}
 			else
@@ -505,17 +508,22 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 		// So, we have some file positions - is the requested partId within the stored range?
 		if ((partId >= 0) && (partId < dataPartOffsets_.nItems()))
 		{
-			Messenger::print(Messenger::Verbose, "Requested partId is within stored range.");
+			Messenger::print(Messenger::Verbose, "FilePluginInterface::importPart() - requested part (%i) is within stored offset range (%i total).", partId, dataPartOffsets_.nItems());
 
 			// Seek to the stored file position and read the data
-			lineParser_.seekg( dataPartOffsets_.value(partId));
-			return importNextPart();
+			lineParser_.seekg(dataPartOffsets_.value(partId));
+			bool result = importNextPart();
+
+			// If successful, add the offset for the next part if this was the last offset we had
+			if (result && ((partId+1) == dataPartOffsets_.nItems())) dataPartOffsets_.add(lineParser_.tellg());
+			return result;
 		}
 
-		// Requested partId not in file seek table, so go to last known position and try to find it
+		// Requested partId not in file seek table, so go to last known position and step towards it
+		Messenger::print(Messenger::Verbose, "FilePluginInterface::importPart() - requested part (%i) is not within stored offset range (%i total).", partId, dataPartOffsets_.nItems());
 		int currentId = dataPartOffsets_.nItems() - 1;
-		lineParser_.seekg( dataPartOffsets_.last());
-		do
+		lineParser_.seekg(dataPartOffsets_.last());
+		while (currentId < partId)
 		{
 			bool result = skipNextPart();
 			if (result)
@@ -534,8 +542,9 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 				return false;
 			}
 			++currentId;
-		} while (currentId < partId);
+		}
 
+		Messenger::print(Messenger::Verbose, "Now at position %i.", currentId);
 		// Now at correct file position, so read data proper
 		bool result = importNextPart();
 		if (result)
@@ -559,11 +568,6 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 	bool isNPartialDataEstimated() const
 	{
 		return nDataPartsEstimated_;
-	}
-	// Return index of last partial data read in
-	int lastPartialDataRead() const
-	{
-		return lastDataPartRead_;
 	}
 
 

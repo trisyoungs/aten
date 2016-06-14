@@ -1278,8 +1278,8 @@ bool Pattern::ringSearch(Atom* i, Ring *currentpath)
 	lastra = currentpath->lastAtom();
 	if (currentpath->addAtom(i))
 	{
-		Messenger::print(Messenger::Verbose, " --- Atom i added to path :  ");
-		currentpath->print();
+// 		Messenger::print(Messenger::Verbose, " --- Atom i added to path :  ");
+// 		currentpath->print();
 		// Adding the atom did not exceed the requested ring size, and is not a duplicate
 		// Go through the list of atoms bound to 'i' and then:
 		//  -- If nAtoms_<=requestedsize && 'i' is bound to the first atom in the path, store the ring.
@@ -1300,7 +1300,7 @@ bool Pattern::ringSearch(Atom* i, Ring *currentpath)
 					// Check to see if this ring already exists in the rings_ list...
 					if (!isRingInList(currentpath))
 					{
-						Messenger::print(Messenger::Verbose, " --- Storing current ring.");
+// 						Messenger::print(Messenger::Verbose, " --- Storing current ring.");
 						if (rings_.nItems() == prefs.maxRings()) maxreached = true;
 						else
 						{
@@ -1323,7 +1323,7 @@ bool Pattern::ringSearch(Atom* i, Ring *currentpath)
 			if (done || maxreached) break;
 		}
 		// Return the list to its original state
-		Messenger::print(Messenger::Verbose, " --- Removing atom %s[%p] from current path...",Elements().symbol(i),i);
+// 		Messenger::print(Messenger::Verbose, " --- Removing atom %s[%p] from current path...", Elements().symbol(i), i);
 		currentpath->removeAtom(currentpath->lastAtom());
 	}
 // 	else printf(" --- Atom is already in list, or adding it exceeds specified ringsize.\n");

@@ -26,6 +26,7 @@
 AtenFileDialog::AtenFileDialog(const RefList<FilePluginInterface,int>& filePlugins) : filePlugins_(filePlugins)
 {
 	pluginsLogPoint_ = -1;
+	fileSelectorWidget_ = NULL;
 }
 
 // Set pointer to associated FileSelector widget

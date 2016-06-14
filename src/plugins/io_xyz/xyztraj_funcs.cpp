@@ -118,9 +118,8 @@ bool XYZTrajectoryPlugin::importData()
 			setTargetFrame(frame);
 
 			// Attempt to read in the next data part in the file
-			frameResult = importPart(count);
-			if (frameResult) ++count;
-			else
+			frameResult = importPart(++count);
+			if (!frameResult)
 			{
 				// Delete unused frame
 				targetModel()->removeTrajectoryFrame(frame);

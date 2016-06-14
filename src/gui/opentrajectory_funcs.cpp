@@ -24,7 +24,7 @@
 #include <QMessageBox>
 
 // Constructor
-AtenOpenTrajectory::AtenOpenTrajectory(QWidget* parent, QDir startingDirectory, FileSelectorWidget::SelectionMode mode, const RefList<FilePluginInterface,int>& filePlugins) : QDialog(parent), AtenFileDialog(filePlugins_)
+AtenOpenTrajectory::AtenOpenTrajectory(QWidget* parent, QDir startingDirectory, FileSelectorWidget::SelectionMode mode, const RefList<FilePluginInterface,int>& filePlugins) : QDialog(parent), AtenFileDialog(filePlugins)
 {
 	ui.setupUi(this);
 
@@ -90,6 +90,7 @@ FilePluginStandardImportOptions AtenOpenTrajectory::standardImportOptions()
 	FilePluginStandardImportOptions options;
 
 	options.setCoordinatesInBohr(ui.BohrCheck->isChecked());
+	options.setCacheAll(ui.CacheFramesCheck->isChecked());
 	options.setPreventRebonding(ui.PreventRebondingCheck->isChecked());
 	options.setPreventFolding(ui.PreventFoldingCheck->isChecked());
 	options.setPreventPacking(ui.PreventPackingCheck->isChecked());

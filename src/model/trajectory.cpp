@@ -86,11 +86,15 @@ int Model::trajectoryFrameIndex() const
 void Model::clearTrajectory()
 {
 	Messenger::enter("Model::clearTrajectory");
+
+	renderSource_ = Model::ModelSource;
+
+	if (trajectoryPlugin_ && (!trajectoryFramesAreCached_)) trajectoryPlugin_->closeFiles();
+
 	trajectoryFrames_.clear();
 
 	trajectoryFrameIndex_ = -1;
 	trajectoryFramesAreCached_ = false;
-	trajectoryPlugin_ = NULL;
 	trajectoryCurrentFrame_ = NULL;
 	trajectoryPlaying_ = false;
 	trajectoryPlugin_ = NULL;
@@ -133,20 +137,14 @@ void Model::seekFirstTrajectoryFrame()
 	Messenger::enter("Model::seekFirstTrajectoryFrame");
 
 	// Check that a trajectory exists!
-	if (nTrajectoryFrames() == 0)
+	if (hasTrajectory() == 0)
 	{
 		Messenger::print("No trajectory is available.");
 		Messenger::exit("Model::seekFirstTrajectoryFrame");
 		return;
 	}
 
-	if (trajectoryFramesAreCached_)
-	{
-		if (trajectoryFrameIndex_ == 0) Messenger::print("Already at start of trajectory.");
-		trajectoryCurrentFrame_ = trajectoryFrames_.first();
-		trajectoryFrameIndex_ = 0;
-	}
-	else seekTrajectoryFrame(0);
+	seekTrajectoryFrame(0);
 
 	Messenger::exit("Model::seekFirstTrajectoryFrame");
 }
@@ -157,20 +155,14 @@ void Model::seekNextTrajectoryFrame()
 	Messenger::enter("Model::seekNextTrajectoryFrame");
 
 	// Check that a trajectory exists!
-	if (nTrajectoryFrames() == 0)
+	if (hasTrajectory() == 0)
 	{
 		Messenger::print("No trajectory is available.");
 		Messenger::exit("Model::seekNextTrajectoryFrame");
 		return;
 	}
 
-	if (trajectoryFramesAreCached_)
-	{
-		if (trajectoryFrameIndex_ == nTrajectoryFrames()-1) Messenger::print("Already at end of trajectory (frame %i).", trajectoryFrameIndex_+1);
-		++trajectoryFrameIndex_;
-		trajectoryCurrentFrame_ = trajectoryCurrentFrame_->next;
-	}
-	else seekTrajectoryFrame(trajectoryFrameIndex_+1);
+	seekTrajectoryFrame(trajectoryFrameIndex_+1);
 
 	Messenger::exit("Model::seekNextTrajectoryFrame");
 }
@@ -181,24 +173,14 @@ void Model::seekPreviousTrajectoryFrame()
 	Messenger::enter("Model::seekPreviousTrajectoryFrame");
 
 	// Check that a trajectory exists!
-	if (nTrajectoryFrames() == 0)
+	if (hasTrajectory() == 0)
 	{
 		Messenger::print("No trajectory is available.");
 		Messenger::exit("Model::seekPreviousTrajectoryFrame");
 		return;
 	}
-	if (trajectoryFrameIndex_ == 0)
-	{
-		Messenger::print("Already at start of trajectory.");
-		Messenger::exit("Model::seekPreviousTrajectoryFrame");
-		return;
-	}
-	if (trajectoryFramesAreCached_)
-	{
-		trajectoryFrameIndex_--;
-		trajectoryCurrentFrame_ = trajectoryCurrentFrame_->prev;
-	}
-	else seekTrajectoryFrame(trajectoryFrameIndex_-1);
+
+	seekTrajectoryFrame(trajectoryFrameIndex_-1);
 
 	Messenger::exit("Model::seekPreviousTrajectoryFrame");
 }
@@ -209,24 +191,14 @@ void Model::seekLastTrajectoryFrame()
 	Messenger::enter("Model::seekLastTrajectoryFrame");
 
 	// Check that a trajectory exists!
-	if (nTrajectoryFrames() == 0)
+	if (hasTrajectory() == 0)
 	{
 		Messenger::print("No trajectory is available.");
 		Messenger::exit("Model::seekLastTrajectoryFrame");
 		return;
 	}
-	if (trajectoryFrameIndex_ == nTrajectoryFrames()-1)
-	{
-		Messenger::print("Already at end of trajectory (frame %i).", trajectoryFrameIndex_+1);
-		Messenger::exit("Model::seekNextTrajectoryFrame");
-		return;
-	}
-	if (trajectoryFramesAreCached_)
-	{
-		trajectoryCurrentFrame_ = trajectoryFrames_.last();
-		trajectoryFrameIndex_ = nTrajectoryFrames()-1;
-	}
-	else seekTrajectoryFrame(nTrajectoryFrames()-1);
+
+	seekTrajectoryFrame(nTrajectoryFrames()-1);
 
 	Messenger::exit("Model::seekLastTrajectoryFrame");
 }
@@ -237,7 +209,7 @@ void Model::seekTrajectoryFrame(int frameno, bool quiet)
 	Messenger::enter("Model::seekTrajectoryFrame");
 
 	// Check that a trajectory exists!
-	if (nTrajectoryFrames() == 0)
+	if (hasTrajectory() == 0)
 	{
 		Messenger::print("No trajectory is available.");
 		Messenger::exit("Model::seekTrajectoryFrame");

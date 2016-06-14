@@ -7,7 +7,6 @@ Rename commands for consistency - e.g. newFF to newForcefield?
 Ato export format is incorrect if nrestraints == 0 (i.e. for single atoms) since newline is not printed.
 Plugin Implementation
 o DL_POLY trajectory cannot be properly loaded without a model containing the correct atoms - add the ability to create a local, temporary model in the filter, and store atom information in this in the readHeader() function. Then could update modelTemplate to take a model pointer as an optional argument. Does this mean we should rewrite the language to properly use pointer specifications?
-o Better detection of correct format - i.e. search function broken (e.g. in GAMESS filter).
 Trajectory handling:
 o Inherit generates a crash when at first frame??
 Intelligent Select - add support for selection by type name (e.g. O*, OW etc.).
