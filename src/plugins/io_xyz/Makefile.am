@@ -25,7 +25,7 @@ libcommon_la_SOURCES = common.cpp
 noinst_HEADERS = common.h
 
 # XYZ Model Plugin
-xyz_la_SOURCES = xyz_funcs.cpp xyz.hui xyzimportoptions.ui xyzimportoptions_funcs.cpp
+xyz_la_SOURCES = xyzimportoptions.ui xyzimportoptions_funcs.cpp xyz_funcs.cpp xyz.hui 
 xyz_la_LIBADD = libcommon.la
 xyz_la_LDFLAGS = -module -shared -avoid-version
 

@@ -1,6 +1,6 @@
 # Meta-Objects
 set(akf_MOC_HDRS
-  akf.h
+  akf.hui
 )
 QT5_WRAP_CPP(akf_MOC_SRCS ${akf_MOC_HDRS} OPTIONS -I${PROJECT_SOURCE_DIR}/src)
 

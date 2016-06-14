@@ -348,4 +348,5 @@ bool Aten::importExpression(QString fileName, FilePluginInterface* plugin, FileP
 bool Aten::exportExpression(Model* targetModel, QString filename, FilePluginInterface* plugin, FilePluginStandardImportOptions standardOptions, KVMap pluginOptions)
 {
 	// ATEN2 TODO ENDOFFILTERS
+  return true;
 }

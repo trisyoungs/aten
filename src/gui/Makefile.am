@@ -23,9 +23,7 @@ clean-local:
 
 libtreegui_la_SOURCES = treegui.ui treegui_funcs.cpp
 
-libgui_la_SOURCES = icons.qrc disorderoptions.ui disorderwizard.ui exportfilm.ui exportimage.ui ffeditor.ui fileselectorwidget.ui prefs.ui progress.ui selectpattern.ui selectvariable.ui zmatrix.ui mainwindow.ui
-
-libgui_la_SOURCES += opengrid.ui openmodel.ui opentrajectory.ui savemodel.ui
+libgui_la_SOURCES = icons.qrc disorderoptions.ui disorderwizard.ui exportfilm.ui exportimage.ui ffeditor.ui fileselectorwidget.ui opengrid.ui openmodel.ui opentrajectory.ui prefs.ui progress.ui savemodel.ui selectpattern.ui selectvariable.ui zmatrix.ui mainwindow.ui
 
 libgui_la_SOURCES += popupbuildaddatom.ui popupbuildaddh.ui popupbuildclear.ui popupbuildfragments.ui popupbuildgrow.ui popupbuildrebond.ui popupbuildtransmute.ui popupcellangles.ui popupcelllengths.ui popupcellmatrix.ui popupcellmiller.ui popupcellreplicate.ui popupcellscale.ui popupcellspacegroup.ui popupcolour.ui popupelementtable.ui popupfileaten.ui popupfileimage.ui popupfileopen.ui popupfilesave.ui popupfilesession.ui popupforcefieldsassign.ui popupforcefieldsminimise.ui popupforcefieldsopen.ui popupforcefieldstest.ui popupgridmatrix.ui popupgridorigin.ui popupgridset.ui popupgridshift.ui popupgridstyle.ui popupgridsopen.ui popupmeasureangle.ui popupmeasureclear.ui popupmeasuredistance.ui popupmeasuretorsion.ui popupporesdrill.ui popupporesscheme.ui popupscriptsopen.ui popuptransformangle.ui popuptransformcentre.ui popuptransformconvert.ui popuptransformdistance.ui popuptransformflip.ui popuptransformrotate.ui popuptransformmultiply.ui popuptransformreposition.ui popuptransformshift.ui popuptransformtorsion.ui popuptransformtranslate.ui popupviewcolourscheme.ui popupviewreset.ui popupviewstyle.ui
 
