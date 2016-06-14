@@ -95,6 +95,41 @@ bool PDensGridPlugin::canImport()
 // Import data from the specified file
 bool PDensGridPlugin::importData()
 {
+	// Variable declarations
+// 	QString order;
+// 	int n, nx,ny,nz,npoints;
+// 	vector origin, a, b, c;
+// 	double data;
+
+	// Create new grid in the target model
+// 	createGrid(targetModel());
+// 	newGrid(filterFilename());
+
+// 	# First line contains number of gridpoints in each direction x,y,z
+// 	readLine(nx, ny, nz);
+// 	printf("GridXYZ from file = %i %i %i\n", nx, ny, nz);
+// 	initGrid("regularxyz",nx,ny,nz);
+// 
+// 	# Second line contains axis system
+// 	readLine(a.x, a.y, a.z, b.x, b.y, b.z, c.x, c.y, c.z);
+// 	gridAxes(a.x, a.y, a.z, b.x, b.y, b.z, c.x, c.y, c.z);
+// 
+// 	# Third line contains grid origin (lower left-hand corner)
+// 	readLine(origin.x, origin.y, origin.z);
+// 	gridOrigin(origin.x, origin.y, origin.z);
+// 
+// 	# Fourth line is loop order
+// 	readLine(order);
+// 	gridLoopOrder(order);
+// 
+// 	# Read in grid data
+// 	npoints = nx*ny*nz;
+// 	for (n=1; n<=npoints; ++n)
+// 	{
+// 		readLine(data);
+// 		addNextGridPoint(data);
+// 	}
+// 	finaliseGrid();
 	return true;
 }
 
