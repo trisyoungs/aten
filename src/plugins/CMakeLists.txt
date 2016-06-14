@@ -15,5 +15,6 @@ target_link_libraries(plugins)
 
 add_subdirectory(
   io_akf
+  io_pdens
   io_xyz
 )

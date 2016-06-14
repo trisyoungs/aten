@@ -1,4 +1,4 @@
-SUBDIRS = io_xyz io_akf
+SUBDIRS = io_akf io_pdens io_xyz
 
 noinst_LTLIBRARIES = libplugins.la
 
