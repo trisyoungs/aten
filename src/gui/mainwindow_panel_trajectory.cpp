@@ -83,21 +83,19 @@ void AtenWindow::stopTrajectoryPlayback()
 
 void AtenWindow::on_TrajectoryManageOpenButton_clicked(bool checked)
 {
-	// Stop playback, and set view to be the parent model before we do anything
+	// Stop playback before we do anything
 	stopTrajectoryPlayback();
 
 	// Get current model
 	Model* currentModel = aten_.currentModel();
 	if (!currentModel) return;
 
-	static AtenOpenTrajectory openTrajectoryDialog(this, aten_.workDir(), FileSelectorWidget::OpenSingleMode, aten_.pluginStore().filePlugins(PluginTypes::TrajectoryFilePlugin));
-
-	if (openTrajectoryDialog.execute(aten_.pluginStore().logPoint()))
+	if (openTrajectoryDialog_.execute(aten_.pluginStore().logPoint()))
 	{
 		// Open model(s) selected in dialog
-		QStringList filesToLoad = openTrajectoryDialog.selectedFilenames();
-		FilePluginInterface* interface = openTrajectoryDialog.selectedPlugin();
-		aten_.importTrajectory(currentModel, filesToLoad.at(0), interface, openTrajectoryDialog.standardImportOptions());
+		QStringList filesToLoad = openTrajectoryDialog_.selectedFilenames();
+		FilePluginInterface* interface = openTrajectoryDialog_.selectedPlugin();
+		aten_.importTrajectory(currentModel, filesToLoad.at(0), interface, openTrajectoryDialog_.standardImportOptions());
 
 		updateWidgets(AtenWindow::AllTarget);
 	}
@@ -105,7 +103,7 @@ void AtenWindow::on_TrajectoryManageOpenButton_clicked(bool checked)
 
 void AtenWindow::on_TrajectoryManageRemoveButton_clicked(bool checked)
 {
-	// Stop playback, and set view to be the parent model before we do anything
+	// Stop playbac before we do anything
 	stopTrajectoryPlayback();
 
 	// Get current model

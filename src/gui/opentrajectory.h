@@ -47,7 +47,7 @@ class AtenOpenTrajectory : public QDialog, public AtenFileDialog
 
 	public:
 	// Constructor
-	AtenOpenTrajectory(QWidget* parent, QDir startingDirectory, FileSelectorWidget::SelectionMode mode, const RefList<FilePluginInterface,int>& filePlugins);
+	AtenOpenTrajectory(QWidget* parent, QDir startingDirectory, const RefList<FilePluginInterface,int>& filePlugins);
 	// Main form declaration
 	Ui::OpenTrajectoryDialog ui;
 

@@ -91,7 +91,11 @@
 #include "gui/vibrations.h"
 
 // Constructor
-AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportFilmDialog_(*this), exportImageDialog_(*this), disorderWizard_(*this), progressDialog_(*this), zMatrixDialog_(*this)
+AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportFilmDialog_(*this), exportImageDialog_(*this), disorderWizard_(*this), progressDialog_(*this), zMatrixDialog_(*this),
+	openGridDialog_(this, aten_.workDir(), aten_.pluginStore().filePlugins(PluginTypes::GridFilePlugin)),
+	openModelDialog_(this, aten_.workDir(), aten_.pluginStore().filePlugins(PluginTypes::ModelFilePlugin)),
+	openTrajectoryDialog_(this, aten_.workDir(), aten_.pluginStore().filePlugins(PluginTypes::TrajectoryFilePlugin)),
+	saveModelDialog_(this, aten_.workDir(), aten_.pluginStore().filePlugins(PluginTypes::ModelFilePlugin))
 {
 	Messenger::enter("AtenWindow::AtenWindow()");
 
@@ -481,6 +485,16 @@ void AtenWindow::resizeEvent(QResizeEvent* event)
 {
 	// Update row information in AtomsTable
 	atomsTableRecalculateRowSize();
+}
+
+/*
+ * File Dialogs
+ */
+
+// Return model export dialog
+AtenSaveModel& AtenWindow::saveModelDialog()
+{
+	return saveModelDialog_;
 }
 
 /*

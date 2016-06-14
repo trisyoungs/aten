@@ -138,13 +138,11 @@ bool Aten::exportModel(Model* sourceModel, QString filename, FilePluginInterface
 
 	if (filename.isEmpty() || (plugin == NULL) || (plugin->category() != PluginTypes::ModelFilePlugin) || (plugin->canExport()))
 	{
-		// Need to raise a save file dialog to get a valid name and/or plugin
-		static AtenSaveModel saveModelDialog(atenWindow_, workDir_, pluginStore().filePlugins(PluginTypes::ModelFilePlugin));
-
-		if (saveModelDialog.execute(pluginStore_.logPoint(), filename, plugin))
+		// Need to raise the save model dialog to get a valid name and/or plugin
+		if (atenWindow_->saveModelDialog().execute(pluginStore_.logPoint(), filename, plugin))
 		{
-			filename = saveModelDialog.selectedFilenames().at(0);
-			plugin = saveModelDialog.selectedPlugin();
+			filename = atenWindow_->saveModelDialog().selectedFilenames().at(0);
+			plugin = atenWindow_->saveModelDialog().selectedPlugin();
 			if (plugin == NULL) plugin = pluginStore_.findFilePlugin(PluginTypes::ModelFilePlugin, PluginTypes::ImportPlugin, filename);
 		}
 		else

@@ -96,14 +96,12 @@ void AtenWindow::on_HomeFileNewButton_clicked(bool checked)
 
 void AtenWindow::on_HomeFileOpenButton_clicked(bool checked)
 {
-	static AtenOpenModel openModelDialog(this, aten_.workDir(), FileSelectorWidget::OpenMultipleMode, aten_.pluginStore().filePlugins(PluginTypes::ModelFilePlugin));
-
-	if (openModelDialog.execute(aten_.pluginStore().logPoint()))
+	if (openModelDialog_.execute(aten_.pluginStore().logPoint()))
 	{
 		// Open model(s) selected in dialog
-		QStringList filesToLoad = openModelDialog.selectedFilenames();
-		FilePluginInterface* interface = openModelDialog.selectedPlugin();
-		for (int n=0; n<filesToLoad.count(); ++n) aten_.importModel(filesToLoad.at(n), interface, openModelDialog.standardImportOptions());
+		QStringList filesToLoad = openModelDialog_.selectedFilenames();
+		FilePluginInterface* interface = openModelDialog_.selectedPlugin();
+		for (int n=0; n<filesToLoad.count(); ++n) aten_.importModel(filesToLoad.at(n), interface, openModelDialog_.standardImportOptions());
 
 		aten().setSingleModelVisible(aten().currentModel());
 

@@ -47,7 +47,7 @@ class AtenOpenGrid : public QDialog, public AtenFileDialog
 
 	public:
 	// Constructor
-	AtenOpenGrid(QWidget* parent, QDir startingDirectory, FileSelectorWidget::SelectionMode mode, const RefList<FilePluginInterface,int>& filePlugins);
+	AtenOpenGrid(QWidget* parent, QDir startingDirectory, const RefList<FilePluginInterface,int>& filePlugins);
 	// Main form declaration
 	Ui::OpenGridDialog ui;
 
