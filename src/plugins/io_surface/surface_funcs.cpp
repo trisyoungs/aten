@@ -23,12 +23,12 @@
 #include "model/model.h"
 
 // Constructor
-SurfaceModelPlugin::SurfaceModelPlugin()
+SurfaceGridPlugin::SurfaceGridPlugin()
 {
 }
 
 // Destructor
-SurfaceModelPlugin::~SurfaceModelPlugin()
+SurfaceGridPlugin::~SurfaceGridPlugin()
 {
 }
 
@@ -37,9 +37,9 @@ SurfaceModelPlugin::~SurfaceModelPlugin()
  */
 
 // Return a copy of the plugin object
-FilePluginInterface* SurfaceModelPlugin::makeCopy()
+FilePluginInterface* SurfaceGridPlugin::makeCopy()
 {
-	return new SurfaceModelPlugin;
+	return new SurfaceGridPlugin;
 }
 
 /*
@@ -47,37 +47,37 @@ FilePluginInterface* SurfaceModelPlugin::makeCopy()
  */
 
 // Return category of plugin
-PluginTypes::FilePluginCategory SurfaceModelPlugin::category() const
+PluginTypes::FilePluginCategory SurfaceGridPlugin::category() const
 {
-	return PluginTypes::ModelFilePlugin;
+	return PluginTypes::GridFilePlugin;
 }
 
 // Name of plugin
-QString SurfaceModelPlugin::name() const
+QString SurfaceGridPlugin::name() const
 {
-	return QString("Surface (dlputils) 3D probability density");
+	return QString("Surface (dlputils) 2D grid data");
 }
 
 // Nickname of plugin
-QString SurfaceModelPlugin::nickname() const
+QString SurfaceGridPlugin::nickname() const
 {
-	return QString("surface");
+	return QString("dlpsurf");
 }
 
 // Description (long name) of plugin
-QString SurfaceModelPlugin::description() const
+QString SurfaceGridPlugin::description() const
 {
-	return QString("Import/export for dlputils Surface files");
+	return QString("Import for dlputils 2D surface files");
 }
 
 // Related file extensions
-QStringList SurfaceModelPlugin::extensions() const
+QStringList SurfaceGridPlugin::extensions() const
 {
-	return QStringList() << "surface";
+	return QStringList() << "surf";
 }
 
 // Exact names
-QStringList SurfaceModelPlugin::exactNames() const
+QStringList SurfaceGridPlugin::exactNames() const
 {
 	return QStringList();
 }
@@ -87,72 +87,74 @@ QStringList SurfaceModelPlugin::exactNames() const
  */
 
 // Return whether this plugin can import data
-bool SurfaceModelPlugin::canImport()
+bool SurfaceGridPlugin::canImport()
 {
 	return true;
 }
 
 // Import data from the spesurfaceied file
-bool SurfaceModelPlugin::importData()
+bool SurfaceGridPlugin::importData()
 {
-//	# Variable declarations
-//	int n,nx,ny,nz,npoints;
-//	vector origin, vx, vy;
-//	double data;
-//	string order;
-//
-//	# Create new grid
-//	Grid g = newGrid(filterFilename());
-//
-//	# First line contains number of gridpoints in each direction x,y
-//	readLine(nx,ny);
-//	initGrid("regularxy",nx,ny,0);
-//
-//	# Second line contains vectors between gridpoints
-//	readLine(vx.x, vx.y, vx.z, vy.x, vy.y, vy.z);
-//	gridAxes(vx.x, vx.y, vx.z, vy.x, vy.y, vy.z, 0, 0, 1);
-//
-//	# Third line contains grid origin (lower left-hand corner) and optional data minima and maxima
-//	readLine(g.origin.x, g.origin.y, g.origin.z, g.dataMinimum.x, g.dataMinimum.y, g.dataMinimum.z, g.dataMaximum.x, g.dataMaximum.y, g.dataMaximum.z);
-//	g.axisPositionX = { 0.0, g.dataMinimum.y, g.dataMinimum.z };
-//	g.axisPositionY = { g.dataMinimum.x, 0.0, g.dataMinimum.z };
-//	g.axisPositionZ = { g.dataMinimum.x, g.dataMinimum.y, 0.0 };
-//
-//	# Fourth line contains loop order
-//	readLine(order);
-//	gridLoopOrder(order);
-//
-//	# Read in grid data
-//	npoints = nx*ny;
-//	for (n=0; n<npoints; ++n)
-//	{
-//		if (!readLine(data)) error("Couldn't read point %i from file.\n", n+1);
-//		addNextGridPoint(data);
-//	}
-//	finaliseGrid();
+	// Create new grid in the target model
+	Grid* grid = createGrid(targetModel());
+	grid->setName(fileParser_.filename());
+
+	// First line contains number of gridpoints in each direction x,y,z
+	if (!fileParser_.parseLine(Parser::SkipBlanks)) return false;
+	Messenger::print("GridXY from file = %i %i\n", fileParser_.argi(0), fileParser_.argi(1));
+ 	grid->initialise(Grid::RegularXYData, Vec3<int>(fileParser_.argi(0),fileParser_.argi(1),0));
+
+	// Second line contains axis system
+	if (!fileParser_.parseLine(Parser::SkipBlanks)) return false;
+	Matrix axes;
+	axes.setColumn(0, fileParser_.arg3d(0), 0.0);
+	axes.setColumn(1, fileParser_.arg3d(3), 0.0);
+	grid->setAxes(axes);
+ 
+	// Third line contains grid origin (lower left-hand corner)
+	if (!fileParser_.parseLine(Parser::SkipBlanks)) return false;
+	grid->setOrigin(fileParser_.arg3d(0));
+ 
+	// Fourth line is loop order
+	if (!fileParser_.parseLine(Parser::SkipBlanks)) return false;
+	grid->setLoopOrder(fileParser_.argc(0));
+
+	// Read in grid data
+	int nPoints = grid->nPoints();
+	for (int n=0; n<nPoints; n++)
+	{
+		if (!fileParser_.parseLine(Parser::SkipBlanks))
+		{
+			Messenger::error("Failed to read grid data at point %i\n", n);
+			break;
+		}
+
+		grid->setNextData(fileParser_.argd(0));
+	}
+
 	return true;
 }
 
 // Return whether this plugin can export data
-bool SurfaceModelPlugin::canExport()
+bool SurfaceGridPlugin::canExport()
 {
 	return false;
 }
 
 // Export data to the spesurfaceied file
-bool SurfaceModelPlugin::exportData()
+bool SurfaceGridPlugin::exportData()
 {
 	return false;
 }
 
 // Import next partial data chunk
-bool SurfaceModelPlugin::importNextPart()
+bool SurfaceGridPlugin::importNextPart()
 {
 	return false;
 }
 
 // Skip next partial data chunk
-bool SurfaceModelPlugin::skipNextPart()
+bool SurfaceGridPlugin::skipNextPart()
 {
 	return false;
 }
@@ -162,25 +164,25 @@ bool SurfaceModelPlugin::skipNextPart()
  */
 
 // Return whether the plugin has import options
-bool SurfaceModelPlugin::hasImportOptions()
+bool SurfaceGridPlugin::hasImportOptions()
 {
 	return false;
 }
 
 // Show import options dialog
-bool SurfaceModelPlugin::showImportOptionsDialog()
+bool SurfaceGridPlugin::showImportOptionsDialog()
 {
 	return false;
 }
 
 // Return whether the plugin has export options
-bool SurfaceModelPlugin::hasExportOptions()
+bool SurfaceGridPlugin::hasExportOptions()
 {
 	return false;
 }
 
 // Show export options dialog
-bool SurfaceModelPlugin::showExportOptionsDialog()
+bool SurfaceGridPlugin::showExportOptionsDialog()
 {
 	return false;
 }

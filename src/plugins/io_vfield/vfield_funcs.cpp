@@ -1,5 +1,5 @@
 /*
-        *** VField Model Plugin Functions
+        *** Vector Field Model Plugin Functions
         *** src/plugins/io_vfield/vfield_funcs.cpp
         Copyright T. Youngs 2016-2016
 
@@ -55,7 +55,7 @@ PluginTypes::FilePluginCategory VFieldModelPlugin::category() const
 // Name of plugin
 QString VFieldModelPlugin::name() const
 {
-	return QString("VField (dlputils) 3D probability density");
+	return QString("Vector Field (6-column: x,y,z,vx,vy,vz)");
 }
 
 // Nickname of plugin
@@ -67,7 +67,7 @@ QString VFieldModelPlugin::nickname() const
 // Description (long name) of plugin
 QString VFieldModelPlugin::description() const
 {
-	return QString("Import/export for dlputils VField files");
+	return QString("Import for vector fields");
 }
 
 // Related file extensions
@@ -95,24 +95,17 @@ bool VFieldModelPlugin::canImport()
 // Import data from the spevfieldied file
 bool VFieldModelPlugin::importData()
 {
-//filter(type="importmodel", name="Vector Field", nickname="vf", extension="vf", glob="*.vf",id=10)
-//{
-//	# Variable declaration
-//	int n,i,j,k,nx,ny,nz;
-//	vector r, v;
-//
-//	newModel(filterFilename());
-//
-//	# Read vector data
-//	while (!eof())
-//	{
-//		readLine(r.x,r.y,r.z,v.x,v.y,v.z);
-//		newGlyph("vector");
-//		glyphData(1,r.x,r.y,r.z);
-//		glyphData(2,v.x,v.y,v.z);
-//	}
-//	finaliseModel();
-//}
+	Model* model = createModel(fileParser_.filename());
+
+	// Read vector data
+	Glyph* glyph;
+	while (fileParser_.parseLine())
+	{
+		glyph = model->addGlyph(Glyph::VectorGlyph);
+		glyph->data(0)->setVector(fileParser_.arg3d(0));
+		glyph->data(1)->setVector(fileParser_.arg3d(3));
+	}
+
 	return true;
 }
 
