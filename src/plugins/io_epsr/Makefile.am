@@ -1,6 +1,6 @@
 # Set plugin installation dir and define plugin targets
 pluginexecdir = ${pkglibdir}/plugins
-pluginexec_LTLIBRARIES = cif.la
+pluginexec_LTLIBRARIES = epsrato.la epsrmol.la
 
 # Rules
 .ui.lo:
@@ -16,10 +16,15 @@ pluginexec_LTLIBRARIES = cif.la
 
 # Local clean (temporary files generated from rules)
 clean-local:
-	-rm -f cif.cpp
+	-rm -f ato.cpp mol.cpp
 
-# AKF Model plugin
-cif_la_SOURCES = cif_funcs.cpp cif.hui
-cif_la_LDFLAGS = -module -shared -avoid-version
+# Ato Model Plugin
+epsrato_la_SOURCES = ato_funcs.cpp ato.hui 
+#epsrato_la_SOURCES += atoimportoptions.ui atoimportoptions_funcs.cpp
+epsrato_la_LDFLAGS = -module -shared -avoid-version
+
+# Molfile Model Plugin
+epsrmol_la_SOURCES = mol_funcs.cpp mol.hui
+epsrmol_la_LDFLAGS = -module -shared -avoid-version
 
 AM_CPPFLAGS = -I${top_srcdir}/src @ATEN_INCLUDES@ @ATEN_CFLAGS@

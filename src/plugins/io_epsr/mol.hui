@@ -1,6 +1,6 @@
 /*
-        *** CIF Model File Plugin
-        *** src/plugins/io_cif/cif.hui
+        *** EPSRMol Model File Plugin
+        *** src/plugins/io_epsr/mol.hui
         Copyright T. Youngs 2016-2016
 
         This file is part of Aten.
@@ -19,8 +19,8 @@
         along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_CIFMODELPLUGIN_H
-#define ATEN_CIFMODELPLUGIN_H
+#ifndef ATEN_EPSRMOLMODELPLUGIN_H
+#define ATEN_EPSRMOLMODELPLUGIN_H
 
 #include "plugins/interfaces/fileplugin.h"
 
@@ -29,8 +29,8 @@ ATEN_BEGIN_NAMESPACE
 // Forward Declarations
 /* none */
 
-// CIF Model Plugin
-class CIFModelPlugin : public QObject, public FilePluginInterface
+// EPSRMol Model Plugin
+class EPSRMolModelPlugin : public QObject, public FilePluginInterface
 {
 	Q_OBJECT
 	Q_PLUGIN_METADATA(IID "com.projectaten.Aten.FilePluginInterface.v1")
@@ -42,9 +42,9 @@ class CIFModelPlugin : public QObject, public FilePluginInterface
 	 */
 	public:
 	// Constructor
-	CIFModelPlugin();
+	EPSRMolModelPlugin();
 	// Destructor
-	~CIFModelPlugin();
+	~EPSRMolModelPlugin();
 	// Return a copy of the plugin object
 	FilePluginInterface* makeCopy();
 
