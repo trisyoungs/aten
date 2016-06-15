@@ -156,12 +156,12 @@ src/plugins/io_ff/Makefile
 src/plugins/io_gamess/Makefile
 src/plugins/io_gaussian/Makefile
 src/plugins/io_gromacs/Makefile
-src/plugins/io_mol/Makefile
-src/plugins/io_mol2/Makefile
+src/plugins/io_mdlmol/Makefile
 src/plugins/io_mopac/Makefile
 src/plugins/io_msi/Makefile
 src/plugins/io_pdb/Makefile
 src/plugins/io_siesta/Makefile
+src/plugins/io_sybylmol2/Makefile
 src/plugins/io_vfield/Makefile
 src/plugins/io_xyz/Makefile
 src/sg/Makefile
