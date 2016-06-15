@@ -1,13 +1,20 @@
 # Meta-Objects
 set(xyz_MOC_HDRS
   xyz.hui
+  xyzimportoptions.h
 )
 QT5_WRAP_CPP(xyz_MOC_SRCS ${xyz_MOC_HDRS} OPTIONS -I${PROJECT_SOURCE_DIR}/src)
+
+SET(xyz_UIS
+ xyzimportoptions.ui 
+)
+QT5_WRAP_UI(xyz_UIS_H ${xyz_UIS})
 
 add_library(xyz MODULE
   xyz_funcs.cpp
   common.cpp
   ${xyz_MOC_SRCS}
+  ${xyz_UIS_H}
 )
 set_target_properties(xyz PROPERTIES
    LIBRARY_OUTPUT_DIRECTORY ${Aten_BINARY_DIR}/data/plugins
@@ -33,7 +40,6 @@ set_target_properties(xyztraj PROPERTIES
 )
 
 # Install Targets
-
 if(UNIX AND NOT APPLE)
 install(TARGETS xyz xyztraj
     RUNTIME DESTINATION ${CMAKE_INSTALL_LIBDIR}/aten/plugins COMPONENT RuntimePlugins
@@ -42,7 +48,6 @@ install(TARGETS xyz xyztraj
 endif(UNIX AND NOT APPLE)
 
 # Includes
-
 target_include_directories(xyz PRIVATE
   ${PROJECT_SOURCE_DIR}/src
   ${PROJECT_BINARY_DIR}/src
