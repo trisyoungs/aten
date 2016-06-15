@@ -149,6 +149,7 @@ src/plugins/io_akf/Makefile
 src/plugins/io_cif/Makefile
 src/plugins/io_csd/Makefile
 src/plugins/io_cube/Makefile
+src/plugins/io_dlputils/Makefile
 src/plugins/io_epsr/Makefile
 src/plugins/io_espresso/Makefile
 src/plugins/io_ff/Makefile
@@ -160,9 +161,7 @@ src/plugins/io_mol2/Makefile
 src/plugins/io_mopac/Makefile
 src/plugins/io_msi/Makefile
 src/plugins/io_pdb/Makefile
-src/plugins/io_pdens/Makefile
 src/plugins/io_siesta/Makefile
-src/plugins/io_surface/Makefile
 src/plugins/io_vfield/Makefile
 src/plugins/io_xyz/Makefile
 src/sg/Makefile

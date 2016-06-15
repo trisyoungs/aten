@@ -1,6 +1,6 @@
 # Set plugin installation dir and define plugin targets
 pluginexecdir = ${pkglibdir}/plugins
-pluginexec_LTLIBRARIES = pdens.la
+pluginexec_LTLIBRARIES = dlputilspdens.la dlputilssurface.la
 
 # Rules
 .ui.lo:
@@ -16,10 +16,14 @@ pluginexec_LTLIBRARIES = pdens.la
 
 # Local clean (temporary files generated from rules)
 clean-local:
-	-rm -f pdens.cpp
+	-rm -f pdens.cpp surface.cpp
 
-# AKF Model plugin
-pdens_la_SOURCES = pdens_funcs.cpp pdens.hui
-pdens_la_LDFLAGS = -module -shared -avoid-version
+# PDens Grid Plugin
+dlputilspdens_la_SOURCES = pdens_funcs.cpp pdens.hui 
+dlputilspdens_la_LDFLAGS = -module -shared -avoid-version
+
+# Surface Grid Plugin
+dlputilssurface_la_SOURCES = surface_funcs.cpp surface.hui
+dlputilssurface_la_LDFLAGS = -module -shared -avoid-version
 
 AM_CPPFLAGS = -I${top_srcdir}/src @ATEN_INCLUDES@ @ATEN_CFLAGS@

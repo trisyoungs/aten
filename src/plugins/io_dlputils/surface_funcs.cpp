@@ -1,6 +1,6 @@
 /*
-        *** PDens (dlputils) Grid Plugin Functions
-        *** src/plugins/io_pdens/pdens_funcs.cpp
+        *** Surface (dlputils)Grid Plugin Functions
+        *** src/plugins/io_dlputils/surface_funcs.cpp
         Copyright T. Youngs 2016-2016
 
         This file is part of Aten.
@@ -19,16 +19,16 @@
         along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "plugins/io_pdens/pdens.hui"
+#include "plugins/io_dlputils/surface.hui"
 #include "model/model.h"
 
 // Constructor
-PDensGridPlugin::PDensGridPlugin()
+SurfaceGridPlugin::SurfaceGridPlugin()
 {
 }
 
 // Destructor
-PDensGridPlugin::~PDensGridPlugin()
+SurfaceGridPlugin::~SurfaceGridPlugin()
 {
 }
 
@@ -37,9 +37,9 @@ PDensGridPlugin::~PDensGridPlugin()
  */
 
 // Return a copy of the plugin object
-FilePluginInterface* PDensGridPlugin::makeCopy()
+FilePluginInterface* SurfaceGridPlugin::makeCopy()
 {
-	return new PDensGridPlugin;
+	return new SurfaceGridPlugin;
 }
 
 /*
@@ -47,37 +47,37 @@ FilePluginInterface* PDensGridPlugin::makeCopy()
  */
 
 // Return category of plugin
-PluginTypes::FilePluginCategory PDensGridPlugin::category() const
+PluginTypes::FilePluginCategory SurfaceGridPlugin::category() const
 {
 	return PluginTypes::GridFilePlugin;
 }
 
 // Name of plugin
-QString PDensGridPlugin::name() const
+QString SurfaceGridPlugin::name() const
 {
-	return QString("PDens (dlputils) 3D probability density");
+	return QString("Surface (dlputils) 2D grid data");
 }
 
 // Nickname of plugin
-QString PDensGridPlugin::nickname() const
+QString SurfaceGridPlugin::nickname() const
 {
-	return QString("pdens");
+	return QString("dlpsurf");
 }
 
 // Description (long name) of plugin
-QString PDensGridPlugin::description() const
+QString SurfaceGridPlugin::description() const
 {
-	return QString("Import/export for dlputils PDens files");
+	return QString("Import for dlputils 2D surface files");
 }
 
 // Related file extensions
-QStringList PDensGridPlugin::extensions() const
+QStringList SurfaceGridPlugin::extensions() const
 {
-	return QStringList() << "pdens";
+	return QStringList() << "surf";
 }
 
 // Exact names
-QStringList PDensGridPlugin::exactNames() const
+QStringList SurfaceGridPlugin::exactNames() const
 {
 	return QStringList();
 }
@@ -87,13 +87,13 @@ QStringList PDensGridPlugin::exactNames() const
  */
 
 // Return whether this plugin can import data
-bool PDensGridPlugin::canImport()
+bool SurfaceGridPlugin::canImport()
 {
 	return true;
 }
 
-// Import data from the specified file
-bool PDensGridPlugin::importData()
+// Import data from the spesurfaceied file
+bool SurfaceGridPlugin::importData()
 {
 	// Create new grid in the target model
 	Grid* grid = createGrid(targetModel());
@@ -101,15 +101,14 @@ bool PDensGridPlugin::importData()
 
 	// First line contains number of gridpoints in each direction x,y,z
 	if (!fileParser_.parseLine(Parser::SkipBlanks)) return false;
-	Messenger::print("GridXYZ from file = %i %i %i\n", fileParser_.argi(0), fileParser_.argi(1), fileParser_.argi(2));
- 	grid->initialise(Grid::RegularXYZData, fileParser_.arg3i(0));
+	Messenger::print("GridXY from file = %i %i\n", fileParser_.argi(0), fileParser_.argi(1));
+ 	grid->initialise(Grid::RegularXYData, Vec3<int>(fileParser_.argi(0),fileParser_.argi(1),0));
 
 	// Second line contains axis system
 	if (!fileParser_.parseLine(Parser::SkipBlanks)) return false;
 	Matrix axes;
 	axes.setColumn(0, fileParser_.arg3d(0), 0.0);
 	axes.setColumn(1, fileParser_.arg3d(3), 0.0);
-	axes.setColumn(2, fileParser_.arg3d(6), 0.0);
 	grid->setAxes(axes);
  
 	// Third line contains grid origin (lower left-hand corner)
@@ -137,25 +136,25 @@ bool PDensGridPlugin::importData()
 }
 
 // Return whether this plugin can export data
-bool PDensGridPlugin::canExport()
+bool SurfaceGridPlugin::canExport()
 {
 	return false;
 }
 
-// Export data to the specified file
-bool PDensGridPlugin::exportData()
+// Export data to the spesurfaceied file
+bool SurfaceGridPlugin::exportData()
 {
 	return false;
 }
 
 // Import next partial data chunk
-bool PDensGridPlugin::importNextPart()
+bool SurfaceGridPlugin::importNextPart()
 {
 	return false;
 }
 
 // Skip next partial data chunk
-bool PDensGridPlugin::skipNextPart()
+bool SurfaceGridPlugin::skipNextPart()
 {
 	return false;
 }
@@ -165,25 +164,25 @@ bool PDensGridPlugin::skipNextPart()
  */
 
 // Return whether the plugin has import options
-bool PDensGridPlugin::hasImportOptions()
+bool SurfaceGridPlugin::hasImportOptions()
 {
 	return false;
 }
 
 // Show import options dialog
-bool PDensGridPlugin::showImportOptionsDialog()
+bool SurfaceGridPlugin::showImportOptionsDialog()
 {
 	return false;
 }
 
 // Return whether the plugin has export options
-bool PDensGridPlugin::hasExportOptions()
+bool SurfaceGridPlugin::hasExportOptions()
 {
 	return false;
 }
 
 // Show export options dialog
-bool PDensGridPlugin::showExportOptionsDialog()
+bool SurfaceGridPlugin::showExportOptionsDialog()
 {
 	return false;
 }

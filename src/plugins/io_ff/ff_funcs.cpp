@@ -23,12 +23,12 @@
 #include "model/model.h"
 
 // Constructor
-AtenForcefieldModelPlugin::AtenForcefieldModelPlugin()
+AtenExpressionPlugin::AtenExpressionPlugin()
 {
 }
 
 // Destructor
-AtenForcefieldModelPlugin::~AtenForcefieldModelPlugin()
+AtenExpressionPlugin::~AtenExpressionPlugin()
 {
 }
 
@@ -37,9 +37,9 @@ AtenForcefieldModelPlugin::~AtenForcefieldModelPlugin()
  */
 
 // Return a copy of the plugin object
-FilePluginInterface* AtenForcefieldModelPlugin::makeCopy()
+FilePluginInterface* AtenExpressionPlugin::makeCopy()
 {
-	return new AtenForcefieldModelPlugin;
+	return new AtenExpressionPlugin;
 }
 
 /*
@@ -47,37 +47,37 @@ FilePluginInterface* AtenForcefieldModelPlugin::makeCopy()
  */
 
 // Return category of plugin
-PluginTypes::FilePluginCategory AtenForcefieldModelPlugin::category() const
+PluginTypes::FilePluginCategory AtenExpressionPlugin::category() const
 {
 	return PluginTypes::ModelFilePlugin;
 }
 
 // Name of plugin
-QString AtenForcefieldModelPlugin::name() const
+QString AtenExpressionPlugin::name() const
 {
 	return QString("AtenForcefield (dlputils) 3D probability density");
 }
 
 // Nickname of plugin
-QString AtenForcefieldModelPlugin::nickname() const
+QString AtenExpressionPlugin::nickname() const
 {
 	return QString("ff");
 }
 
 // Description (long name) of plugin
-QString AtenForcefieldModelPlugin::description() const
+QString AtenExpressionPlugin::description() const
 {
 	return QString("Import/export for dlputils AtenForcefield files");
 }
 
 // Related file extensions
-QStringList AtenForcefieldModelPlugin::extensions() const
+QStringList AtenExpressionPlugin::extensions() const
 {
 	return QStringList() << "ff";
 }
 
 // Exact names
-QStringList AtenForcefieldModelPlugin::exactNames() const
+QStringList AtenExpressionPlugin::exactNames() const
 {
 	return QStringList();
 }
@@ -87,13 +87,13 @@ QStringList AtenForcefieldModelPlugin::exactNames() const
  */
 
 // Return whether this plugin can import data
-bool AtenForcefieldModelPlugin::canImport()
+bool AtenExpressionPlugin::canImport()
 {
 	return true;
 }
 
 // Import data from the specified file
-bool AtenForcefieldModelPlugin::importData()
+bool AtenExpressionPlugin::importData()
 {
 //filter(type="importexpression",name="Aten Forcefield Format", extension="ff", glob="*.ff", nickname="ff")
 //{
@@ -224,25 +224,25 @@ bool AtenForcefieldModelPlugin::importData()
 }
 
 // Return whether this plugin can export data
-bool AtenForcefieldModelPlugin::canExport()
+bool AtenExpressionPlugin::canExport()
 {
 	return false;
 }
 
 // Export data to the speffied file
-bool AtenForcefieldModelPlugin::exportData()
+bool AtenExpressionPlugin::exportData()
 {
 	return false;
 }
 
 // Import next partial data chunk
-bool AtenForcefieldModelPlugin::importNextPart()
+bool AtenExpressionPlugin::importNextPart()
 {
 	return false;
 }
 
 // Skip next partial data chunk
-bool AtenForcefieldModelPlugin::skipNextPart()
+bool AtenExpressionPlugin::skipNextPart()
 {
 	return false;
 }
@@ -252,25 +252,25 @@ bool AtenForcefieldModelPlugin::skipNextPart()
  */
 
 // Return whether the plugin has import options
-bool AtenForcefieldModelPlugin::hasImportOptions()
+bool AtenExpressionPlugin::hasImportOptions()
 {
 	return false;
 }
 
 // Show import options dialog
-bool AtenForcefieldModelPlugin::showImportOptionsDialog()
+bool AtenExpressionPlugin::showImportOptionsDialog()
 {
 	return false;
 }
 
 // Return whether the plugin has export options
-bool AtenForcefieldModelPlugin::hasExportOptions()
+bool AtenExpressionPlugin::hasExportOptions()
 {
 	return false;
 }
 
 // Show export options dialog
-bool AtenForcefieldModelPlugin::showExportOptionsDialog()
+bool AtenExpressionPlugin::showExportOptionsDialog()
 {
 	return false;
 }
