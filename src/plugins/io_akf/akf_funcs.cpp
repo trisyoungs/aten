@@ -85,7 +85,7 @@ FilePluginInterface* AKFModelPlugin::makeCopy()
 }
 
 /*
- * AKF Model Import / Export Plugin
+ * Definition
  */
 
 // Return category of plugin

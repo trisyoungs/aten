@@ -247,7 +247,7 @@ bool Aten::importGrid(Model* targetModel, QString filename, FilePluginInterface*
 
 	// If plugin == NULL then we must probe the file first to try and find out how to load it
 	bool result = false;
-	if (plugin == NULL) pluginStore_.findFilePlugin(PluginTypes::GridFilePlugin, PluginTypes::ImportPlugin, filename);
+	if (plugin == NULL) plugin = pluginStore_.findFilePlugin(PluginTypes::GridFilePlugin, PluginTypes::ImportPlugin, filename);
 	if (plugin != NULL)
 	{
 		FilePluginInterface* interface = plugin->createInstance();
@@ -258,6 +258,7 @@ bool Aten::importGrid(Model* targetModel, QString filename, FilePluginInterface*
 		}
 		interface->setStandardOptions(standardOptions);
 		interface->setOptions(pluginOptions);
+		interface->setParentModel(targetModel->parent() ? targetModel->parent() : targetModel);
 		interface->setTargetModel(targetModel);
 		if (interface->importData())
 		{

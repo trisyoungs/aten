@@ -47,7 +47,7 @@ FilePluginInterface* XYZModelPlugin::makeCopy()
 }
 
 /*
- * XYZ Model Import / Export Plugin
+ * Definition
  */
 
 // Return category of plugin

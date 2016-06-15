@@ -193,36 +193,12 @@ bool Commands::function_GridLoopOrder(CommandNode* c, Bundle& obj, ReturnValue& 
 	if (obj.notifyNull(Bundle::GridPointer)) return false;
 	if (c->argc(0).length() != 3)
 	{
-		Messenger::print("A string of three characters must be passed to 'gridlooporder' (got '%s').", qPrintable(c->argc(0)));
+		Messenger::print("A string of three characters must be passed to 'gridLoopOrder' (got '%s').", qPrintable(c->argc(0)));
 		return false;
 	}
-	char ch;
-	for (int n=0; n<3; n++)
-	{
-		ch = c->argc(0).at(n).toLatin1();
-		switch (ch)
-		{
-			case ('X'):
-			case ('x'):
-			case ('1'):
-				obj.g->setLoopOrder(n,0);
-				break;
-			case ('Y'):
-			case ('y'):
-			case ('2'):
-				obj.g->setLoopOrder(n,1);
-				break;
-			case ('Z'):
-			case ('z'):
-			case ('3'):
-				obj.g->setLoopOrder(n,2);
-				break;
-			default:
-				Messenger::print("Unrecognised character (%c) given to 'setgridlooporder' - default value used.", ch);
-				obj.g->setLoopOrder(n,n);
-				break;
-		}
-	}
+
+	obj.g->setLoopOrder(c->argc(0));
+
 	rv.reset();
 	return true;
 }

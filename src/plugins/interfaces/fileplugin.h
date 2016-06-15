@@ -329,8 +329,7 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 	{
 		Model* newModel = createdModels_.add();
 		if (!name.isEmpty()) newModel->setName(name);
-		parentModel_ = newModel;
-		targetModel_ = parentModel_;
+		setParentModel(newModel);
 		return newModel;
 	}
 	// Discard created model
@@ -414,6 +413,7 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 	void setParentModel(Model* model)
 	{
 		parentModel_ = model;
+		targetModel_ = parentModel_;
 	}
 	// Return parent model
 	Model* parentModel() const

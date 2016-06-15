@@ -43,7 +43,7 @@ FilePluginInterface* PDensGridPlugin::makeCopy()
 }
 
 /*
- * AKF Model Import / Export Plugin
+ * Definition
  */
 
 // Return category of plugin
@@ -95,41 +95,44 @@ bool PDensGridPlugin::canImport()
 // Import data from the specified file
 bool PDensGridPlugin::importData()
 {
-	// Variable declarations
-// 	QString order;
-// 	int n, nx,ny,nz,npoints;
-// 	vector origin, a, b, c;
-// 	double data;
-
 	// Create new grid in the target model
-// 	createGrid(targetModel());
-// 	newGrid(filterFilename());
+	Grid* grid = createGrid(targetModel());
+	grid->setName(fileParser_.filename());
 
-// 	# First line contains number of gridpoints in each direction x,y,z
-// 	readLine(nx, ny, nz);
-// 	printf("GridXYZ from file = %i %i %i\n", nx, ny, nz);
-// 	initGrid("regularxyz",nx,ny,nz);
-// 
-// 	# Second line contains axis system
-// 	readLine(a.x, a.y, a.z, b.x, b.y, b.z, c.x, c.y, c.z);
-// 	gridAxes(a.x, a.y, a.z, b.x, b.y, b.z, c.x, c.y, c.z);
-// 
-// 	# Third line contains grid origin (lower left-hand corner)
-// 	readLine(origin.x, origin.y, origin.z);
-// 	gridOrigin(origin.x, origin.y, origin.z);
-// 
-// 	# Fourth line is loop order
-// 	readLine(order);
-// 	gridLoopOrder(order);
-// 
-// 	# Read in grid data
-// 	npoints = nx*ny*nz;
-// 	for (n=1; n<=npoints; ++n)
-// 	{
-// 		readLine(data);
-// 		addNextGridPoint(data);
-// 	}
-// 	finaliseGrid();
+	// First line contains number of gridpoints in each direction x,y,z
+	if (!fileParser_.parseLine(Parser::SkipBlanks)) return false;
+	Messenger::print("GridXYZ from file = %i %i %i\n", fileParser_.argi(0), fileParser_.argi(1), fileParser_.argi(2));
+ 	grid->initialise(Grid::RegularXYZData, fileParser_.arg3i(0));
+
+	// Second line contains axis system
+	if (!fileParser_.parseLine(Parser::SkipBlanks)) return false;
+	Matrix axes;
+	axes.setColumn(0, fileParser_.arg3d(0), 0.0);
+	axes.setColumn(1, fileParser_.arg3d(3), 0.0);
+	axes.setColumn(2, fileParser_.arg3d(6), 0.0);
+	grid->setAxes(axes);
+ 
+	// Third line contains grid origin (lower left-hand corner)
+	if (!fileParser_.parseLine(Parser::SkipBlanks)) return false;
+	grid->setOrigin(fileParser_.arg3d(0));
+ 
+	// Fourth line is loop order
+	if (!fileParser_.parseLine(Parser::SkipBlanks)) return false;
+	grid->setLoopOrder(fileParser_.argc(0));
+
+	// Read in grid data
+	int nPoints = grid->nPoints();
+	for (int n=0; n<nPoints; n++)
+	{
+		if (!fileParser_.parseLine(Parser::SkipBlanks))
+		{
+			Messenger::error("Failed to read grid data at point %i\n", n);
+			break;
+		}
+
+		grid->setNextData(fileParser_.argd(0));
+	}
+
 	return true;
 }
 

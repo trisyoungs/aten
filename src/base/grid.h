@@ -243,7 +243,9 @@ class Grid : public ListItem<Grid>, ObjectStore<Grid>
 	double** data2d();
 	// Return head of gridpoints array
 	GridPoint* gridPoints();
-	// Set loop ordering
+	// Set loop ordering (from string)
+	void setLoopOrder(QString loopOrder);
+	// Set loop ordering element
 	void setLoopOrder(int n, int xyz);
 	// Return loop ordering 
 	Vec3<int> loopOrder();

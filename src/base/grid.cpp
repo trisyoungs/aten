@@ -962,6 +962,38 @@ GridPoint* Grid::gridPoints()
 	return gridPoints_.first();
 }
 
+// Set loop ordering (from string)
+void Grid::setLoopOrder(QString loopOrder)
+{
+	char ch;
+	for (int n=0; n<3; ++n)
+	{
+		ch = loopOrder.at(n).toLatin1();
+		switch (ch)
+		{
+			case ('X'):
+			case ('x'):
+			case ('1'):
+				setLoopOrder(n,0);
+				break;
+			case ('Y'):
+			case ('y'):
+			case ('2'):
+				setLoopOrder(n,1);
+				break;
+			case ('Z'):
+			case ('z'):
+			case ('3'):
+				setLoopOrder(n,2);
+				break;
+			default:
+				Messenger::print("Unrecognised character (%c) given to 'Grid::setLoopOrder()' - default value used.", ch);
+				setLoopOrder(n,n);
+				break;
+		}
+	}
+}
+
 // Set loop ordering
 void Grid::setLoopOrder(int n, int xyz)
 {
