@@ -14,6 +14,17 @@ target_include_directories(plugins PRIVATE
 target_link_libraries(plugins)
 
 add_subdirectory(io_akf)
+add_subdirectory(io_cif)
+add_subdirectory(io_csd)
+add_subdirectory(io_cube)
+add_subdirectory(io_epsr)
+add_subdirectory(io_gamess)
+add_subdirectory(io_gaussian)
+add_subdirectory(io_gromacs)
+add_subdirectory(io_mol)
+add_subdirectory(io_mol2)
+add_subdirectory(io_mopac)
+add_subdirectory(io_msi)
+add_subdirectory(io_pdb)
 add_subdirectory(io_pdens)
 add_subdirectory(io_xyz)
-

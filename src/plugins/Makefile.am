@@ -1,4 +1,4 @@
-SUBDIRS = io_akf io_pdens io_xyz
+SUBDIRS = io_akf io_cif io_csd io_cube io_epsr io_gamess io_gaussian io_gromacs io_mol io_mol2 io_mopac io_msi io_pdb io_pdens io_xyz
 
 noinst_LTLIBRARIES = libplugins.la
 
