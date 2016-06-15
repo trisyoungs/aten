@@ -4,24 +4,24 @@ set(mol2_MOC_HDRS
 )
 QT5_WRAP_CPP(mol2_MOC_SRCS ${mol2_MOC_HDRS} OPTIONS -I${PROJECT_SOURCE_DIR}/src)
 
-add_library(mol2 MODULE
+add_library(sybylmol2 MODULE
   mol2_funcs.cpp
   ${mol2_MOC_SRCS}
 )
-set_target_properties(mol2 PROPERTIES
+set_target_properties(sybylmol2 PROPERTIES
    LIBRARY_OUTPUT_DIRECTORY ${Aten_BINARY_DIR}/data/plugins
    COMPILE_DEFINITIONS "QT_PLUGIN"
    PREFIX ""
 )
 
 if(UNIX AND NOT APPLE)
-install(TARGETS mol2
+install(TARGETS sybylmol2
     RUNTIME DESTINATION ${CMAKE_INSTALL_LIBDIR}/aten/plugins COMPONENT RuntimePlugins
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}/aten/plugins COMPONENT RuntimePlugins
 )
 endif(UNIX AND NOT APPLE)
 
-target_include_directories(mol2 PRIVATE
+target_include_directories(sybylmol2 PRIVATE
   ${PROJECT_SOURCE_DIR}/src
   ${PROJECT_BINARY_DIR}/src
   ${Qt5Core_INCLUDE_DIRS}

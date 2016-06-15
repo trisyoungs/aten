@@ -1,6 +1,6 @@
 # Set plugin installation dir and define plugin targets
 pluginexecdir = ${pkglibdir}/plugins
-pluginexec_LTLIBRARIES = mol2.la
+pluginexec_LTLIBRARIES = sybylmol2.la
 
 # Rules
 .ui.lo:
@@ -19,7 +19,7 @@ clean-local:
 	-rm -f mol2.cpp
 
 # AKF Model plugin
-mol2_la_SOURCES = mol2_funcs.cpp mol2.hui
-mol2_la_LDFLAGS = -module -shared -avoid-version
+sybylmol2_la_SOURCES = mol2_funcs.cpp mol2.hui
+sybylmol2_la_LDFLAGS = -module -shared -avoid-version
 
 AM_CPPFLAGS = -I${top_srcdir}/src @ATEN_INCLUDES@ @ATEN_CFLAGS@
