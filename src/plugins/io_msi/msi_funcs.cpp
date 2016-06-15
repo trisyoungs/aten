@@ -92,7 +92,7 @@ bool MSIModelPlugin::canImport()
 	return true;
 }
 
-// Import data from the spemsiied file
+// Import data from the specified file
 bool MSIModelPlugin::importData()
 {
 //filter(type="importmodel", name="MSI Datafile v3.8", nickname="msi", extension="msi", glob="*.msi", id=12)
@@ -212,7 +212,7 @@ bool MSIModelPlugin::canExport()
 	return false;
 }
 
-// Export data to the spemsiied file
+// Export data to the specified file
 bool MSIModelPlugin::exportData()
 {
 	return false;

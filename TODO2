@@ -73,3 +73,4 @@ Whole plugin thing, really!  And make filters section defunct.
 Removed FinaliseModel/Grid commands, and all read/write commands related to files.
 Removed model.finalise(), FinaliseFF, and FinaliseFrame commands.
 Removed all Prefs accessors related to file import (keepNames, zMapType etc.)
+Added optional "forceRhombohedral" argument to "spacegroup" command.

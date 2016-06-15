@@ -92,7 +92,7 @@ bool GaussianModelPlugin::canImport()
 	return true;
 }
 
-// Import data from the spegaussianied file
+// Import data from the specified file
 bool GaussianModelPlugin::importData()
 {
 //filter(type="exportmodel", name="Gaussian Input", nickname="gaussinp", extension="gjf", glob="*.gjf", id=17)
@@ -420,7 +420,7 @@ bool GaussianModelPlugin::canExport()
 	return false;
 }
 
-// Export data to the spegaussianied file
+// Export data to the specified file
 bool GaussianModelPlugin::exportData()
 {
 	return false;

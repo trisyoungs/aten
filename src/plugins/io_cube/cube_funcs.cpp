@@ -92,7 +92,7 @@ bool CUBEModelPlugin::canImport()
 	return true;
 }
 
-// Import data from the specubeied file
+// Import data from the specified file
 bool CUBEModelPlugin::importData()
 {
 //filter(type="importmodel", name="Gaussian CUBE", nickname="cube", extension="cube", glob="*.cube", zmap="numeric")
@@ -206,7 +206,7 @@ bool CUBEModelPlugin::canExport()
 	return false;
 }
 
-// Export data to the specubeied file
+// Export data to the specified file
 bool CUBEModelPlugin::exportData()
 {
 	return false;

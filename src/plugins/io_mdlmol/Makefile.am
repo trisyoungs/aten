@@ -1,6 +1,6 @@
 # Set plugin installation dir and define plugin targets
 pluginexecdir = ${pkglibdir}/plugins
-pluginexec_LTLIBRARIES = mol.la
+pluginexec_LTLIBRARIES = mdlmol.la
 
 # Rules
 .ui.lo:
@@ -16,10 +16,10 @@ pluginexec_LTLIBRARIES = mol.la
 
 # Local clean (temporary files generated from rules)
 clean-local:
-	-rm -f mol.cpp
+	-rm -f mdlmol.cpp
 
 # AKF Model plugin
-mol_la_SOURCES = mol_funcs.cpp mol.hui
-mol_la_LDFLAGS = -module -shared -avoid-version
+mdlmol_la_SOURCES = mdlmol_funcs.cpp mdlmol.hui
+mdlmol_la_LDFLAGS = -module -shared -avoid-version
 
 AM_CPPFLAGS = -I${top_srcdir}/src @ATEN_INCLUDES@ @ATEN_CFLAGS@

@@ -291,8 +291,6 @@ Prefs::Prefs()
 	maxRingSize_ = 6;
 	maxRings_ = 100;
 	maxCuboids_ = 100;
-	forceRhombohedral_ = false;
-	augmentAfterRebond_ = true;
 	loadPlugins_ = true;
 	loadIncludes_ = true;
 	loadPartitions_ = true;
@@ -1079,30 +1077,6 @@ int Prefs::maxCuboids() const
 void Prefs::setMaxCuboids(int i)
 {
 	maxCuboids_ = i;
-}
-
-// Return whether to augment when rebonding
-bool Prefs::augmentAfterRebond() const
-{
-	return augmentAfterRebond_;
-}
-
-// Set whether to augment when rebonding
-void Prefs::setAugmentAfterRebond(bool b)
-{
-	augmentAfterRebond_ = b;
-}
-
-// Set whether rhombohedral (over hexagonal) spacegroup basis is to be forced
-void Prefs::setForceRhombohedral(bool b)
-{
-	forceRhombohedral_ = b;
-}
-
-// Return whether rhombohedral (over hexagonal) spacegroup basis is to be forced
-bool Prefs::forceRhombohedral() const
-{
-	return forceRhombohedral_;
 }
 
 // Return whether to load plugins on startup

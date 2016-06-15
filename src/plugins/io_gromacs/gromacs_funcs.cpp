@@ -92,7 +92,7 @@ bool GROMACSModelPlugin::canImport()
 	return true;
 }
 
-// Import data from the spegromacsied file
+// Import data from the specified file
 bool GROMACSModelPlugin::importData()
 {
 //filter(type="importmodel",name="GROMACS coordinates", nickname="gro", extension="gro", glob="*.gro", id=14)
@@ -487,7 +487,7 @@ bool GROMACSModelPlugin::canExport()
 	return false;
 }
 
-// Export data to the spegromacsied file
+// Export data to the specified file
 bool GROMACSModelPlugin::exportData()
 {
 	return false;

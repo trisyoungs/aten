@@ -92,7 +92,7 @@ bool MOPACModelPlugin::canImport()
 	return true;
 }
 
-// Import data from the spemopacied file
+// Import data from the specified file
 bool MOPACModelPlugin::importData()
 {
 //filter(type="importmodel", name="Mopac Control File", nickname="mopac", extension="mop", glob="*.mop", id=4)
@@ -265,7 +265,7 @@ bool MOPACModelPlugin::canExport()
 	return false;
 }
 
-// Export data to the spemopacied file
+// Export data to the specified file
 bool MOPACModelPlugin::exportData()
 {
 	return false;

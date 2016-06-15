@@ -311,7 +311,7 @@ bool CellVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newVal
 			else ptr->setParameter( (UnitCell::CellParameter) ((arrayIndex-1) + UnitCell::CellAX), newValue.asDouble());
 			break;
 		case (CellVariable::SpacegroupId):
-			ptr->setSpacegroup( qPrintable(newValue.asString()), prefs.forceRhombohedral() );
+			ptr->setSpacegroup( qPrintable(newValue.asString()), false );
 			break;
 		default:
 			printf("CellVariable::setAccessor doesn't know how to use member '%s'.\n", qPrintable(accessorData[acc].name));

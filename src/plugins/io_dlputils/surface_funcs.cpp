@@ -92,7 +92,7 @@ bool SurfaceGridPlugin::canImport()
 	return true;
 }
 
-// Import data from the spesurfaceied file
+// Import data from the specified file
 bool SurfaceGridPlugin::importData()
 {
 	// Create new grid in the target model
@@ -141,7 +141,7 @@ bool SurfaceGridPlugin::canExport()
 	return false;
 }
 
-// Export data to the spesurfaceied file
+// Export data to the specified file
 bool SurfaceGridPlugin::exportData()
 {
 	return false;

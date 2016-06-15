@@ -92,7 +92,7 @@ bool SiestaModelPlugin::canImport()
 	return true;
 }
 
-// Import data from the spesiestaied file
+// Import data from the specified file
 bool SiestaModelPlugin::importData()
 {
 //filter(type="importmodel", name="Siesta FDF", nickname="siesta", extension="fdf", glob="*.fdf", id=9)
@@ -325,7 +325,7 @@ bool SiestaModelPlugin::canExport()
 	return false;
 }
 
-// Export data to the spesiestaied file
+// Export data to the specified file
 bool SiestaModelPlugin::exportData()
 {
 	return false;

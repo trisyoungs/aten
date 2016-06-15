@@ -243,13 +243,13 @@ CommandData Commands::data_[Commands::nCommands] = {
 		"Atom|int i, Atom|int j, string|int|double bondtype = 1",
 		"Create a bond between the two atoms specified" },
 	{ "rebond",		"b",		VTypes::NoData,
-		"bool augment = aten_.prefs.augmentAfterRebond",
+		"bool augment = true",
 		"Calculate bonding in the current model" },
 	{ "rebondPatterns",	"b",		VTypes::NoData,
-		"bool augment = aten_.prefs.augmentAfterRebond",
+		"bool augment = true",
 		"Calculate bonds between atoms, restricted to atoms in pattern molecules" },
 	{ "rebondSelection",	"b",		VTypes::NoData,
-		"bool augment = aten_.prefs.augmentAfterRebond",
+		"bool augment = true",
 		"Calculate bonds between atoms in the current selection" },
 
 	// Build commands
@@ -372,8 +372,8 @@ CommandData Commands::data_[Commands::nCommands] = {
 	{ "sgInfo",		"C",		VTypes::IntegerData,
 		"string|int spacegroup",
 		"Invoke SGInfo, search for the spacegroup name/id provided, and print out its details" },
-	{ "spacegroup",		"S",		VTypes::NoData,
-		"string|int spacegroup",
+	{ "spacegroup",		"Sb",		VTypes::NoData,
+		"string|int spacegroup, bool forceRhombohedral = false",
 		"Set the spacegroup for the current model" },
 	
 	// Charge commands

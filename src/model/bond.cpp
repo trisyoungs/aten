@@ -555,28 +555,6 @@ void Model::selectionCalculateBonding(bool augment)
 	Messenger::exit("Model::selectionCalculateBonding");
 }
 
-// Bond all atoms in current selection
-void Model::selectionBondAll()
-{
-	// Add bonds between all atoms in current selection
-	Messenger::enter("Model::selectionBondAll");
-	Atom* i, *j;
-	for (i = atoms_.first(); i != NULL; i = i->next)
-	{
-		if (i->isSelected())
-		{
-			for (j = i->next; j != NULL; j = j->next)
-			{
-				if (j->isSelected())
-					if (i->findBond(j) == NULL) bondAtoms(i,j,Bond::Single);
-			}
-		}
-	}
-	// Augment?
-	if (prefs.augmentAfterRebond()) augmentBonding();
-	Messenger::exit("Model::selectionBondAll");
-}
-
 // Clear Bonding in current selection
 void Model::selectionClearBonding()
 {

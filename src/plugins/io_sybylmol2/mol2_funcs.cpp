@@ -1,6 +1,6 @@
 /*
         *** MOL2 Model Plugin Functions
-        *** src/plugins/io_mol2/mol2_funcs.cpp
+        *** src/plugins/io_sybylmol2/mol2_funcs.cpp
         Copyright T. Youngs 2016-2016
 
         This file is part of Aten.
@@ -19,16 +19,16 @@
         along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "plugins/io_mol2/mol2.hui"
+#include "plugins/io_sybylmol2/mol2.hui"
 #include "model/model.h"
 
 // Constructor
-MOL2ModelPlugin::MOL2ModelPlugin()
+Mol2ModelPlugin::Mol2ModelPlugin()
 {
 }
 
 // Destructor
-MOL2ModelPlugin::~MOL2ModelPlugin()
+Mol2ModelPlugin::~Mol2ModelPlugin()
 {
 }
 
@@ -37,9 +37,9 @@ MOL2ModelPlugin::~MOL2ModelPlugin()
  */
 
 // Return a copy of the plugin object
-FilePluginInterface* MOL2ModelPlugin::makeCopy()
+FilePluginInterface* Mol2ModelPlugin::makeCopy()
 {
-	return new MOL2ModelPlugin;
+	return new Mol2ModelPlugin;
 }
 
 /*
@@ -47,37 +47,37 @@ FilePluginInterface* MOL2ModelPlugin::makeCopy()
  */
 
 // Return category of plugin
-PluginTypes::FilePluginCategory MOL2ModelPlugin::category() const
+PluginTypes::FilePluginCategory Mol2ModelPlugin::category() const
 {
 	return PluginTypes::ModelFilePlugin;
 }
 
 // Name of plugin
-QString MOL2ModelPlugin::name() const
+QString Mol2ModelPlugin::name() const
 {
 	return QString("Tripos (Sybyl) MOL2 model");
 }
 
 // Nickname of plugin
-QString MOL2ModelPlugin::nickname() const
+QString Mol2ModelPlugin::nickname() const
 {
 	return QString("mol2");
 }
 
 // Description (long name) of plugin
-QString MOL2ModelPlugin::description() const
+QString Mol2ModelPlugin::description() const
 {
 	return QString("Import/export for Tripos (Sybyl) Mol2 files");
 }
 
 // Related file extensions
-QStringList MOL2ModelPlugin::extensions() const
+QStringList Mol2ModelPlugin::extensions() const
 {
 	return QStringList() << "mol2";
 }
 
 // Exact names
-QStringList MOL2ModelPlugin::exactNames() const
+QStringList Mol2ModelPlugin::exactNames() const
 {
 	return QStringList();
 }
@@ -87,129 +87,124 @@ QStringList MOL2ModelPlugin::exactNames() const
  */
 
 // Return whether this plugin can import data
-bool MOL2ModelPlugin::canImport()
+bool Mol2ModelPlugin::canImport()
 {
 	return true;
 }
 
-// Import data from the spemol2ied file
-bool MOL2ModelPlugin::importData()
+// Import data from the specified file
+bool Mol2ModelPlugin::importData()
 {
-//
-//filter(type="importmodel", name="Tripos (Sybyl) Mol2", nickname="mol2", extension="mol2", glob="*.mol2", id=6)
-//{
-//	# Variable declaration
-//	int n,natoms,nbonds,id,ii,jj,spgrp,setting;
-//	string tripos,keywd,e,bondtype,title,discard;
-//	double rx,ry,rz,ca,cb,cc,alpha,beta,gamma;
-//
-//	# Read in lines, looking for the sections we're interested in.
-//	# All sections begin with '@<TRIPOS>', e.g. '@<TRIPOS>MOLECULE'
-//	# Read a line and parse it into '@<TRIPOS>' and keyword parts
-//	while (!eof())
-//	{
-//		readLineF("%9s%s",tripos,keywd);
-//		if (keywd == "MOLECULE")
-//		{
-//			# Molecule information
-//			getLine(title);
-//			newModel(title);
-//			readLine(natoms,nbonds);
-//			# Skip the next four lines, which are type of molecule, charges used, and user comment
-//			skipLine(4);
-//		}
-//		else if (keywd == "ATOM")
-//		{
-//			for (n=0; n<natoms; ++n)
-//			{
-//				readLine(id,e,rx,ry,rz);
-//				newAtom(e,rx,ry,rz);
-//			}
-//		}
-//		else if (keywd == "BOND")
-//		{
-//			for (n=0; n<nbonds; ++n)
-//			{
-//				readLine(discard,ii,jj,bondtype);
-//				newBond(ii,jj,bondtype);
-//			}
-//		}
-//		else if (keywd == "CRYSIN")
-//		{
-//			# Crystal cell information
-//			# Single line, format is ' a b c alpha beta gamma spgrp spgrp_setting'
-//			readLine(ca,cb,cc,alpha,beta,gamma,spgrp,setting);
-//			cell(ca,cb,cc,alpha,beta,gamma);
-//			spacegroup(spgrp);
-//		}
-//	}
-//
-//	# Perform post-load operations
-//	pack();
-//	fold();
-//	finaliseModel();
-//}
-//
-//filter(type="exportmodel", name="Tripos (Sybyl) Mol2", nickname="mol2", extension="mol2", glob="*.mol2", id=6)
-//{
-//	# Variables
-//	atom i;
-//	bond b;
-//	int n;
-//	model m = aten.frame;
-//
-//	# Write title section
-//	writeLine("@<TRIPOS>MOLECULE");
-//	writeLine(m.name);
-//	writeLineF("%i   %i\n", m.nAtoms, m.nBonds);
-//	writeLine("SMALL");
-//	writeLine("NO_CHARGES");
-//	writeLine("Coordinates churned out by Aten");
-//	writeLine("");
-//	
-//	# Write atoms section
-//	writeLine("@<TRIPOS>ATOM");
-//	for (i = m.atoms; i != 0; ++i) writeLineF("%6i  %5s  %10.5f  %10.5f  %10.5f  %5s\n",i.id,i.symbol,i.rx,i.ry,i.rz, i.symbol);
-//
-//	# Write bonds section
-//	if (m.nBonds > 0)
-//	{
-//		writeLine("@<TRIPOS>BOND");
-//		n = 0;
-//		for (b=m.bonds; b != 0; ++b) writeLineF("%5i  %5i  %5i  %s\n", ++n, b.i.id, b.j.id, b.type);
-//	}
-//
-//	# Write cell section (if the model has one)
-//	if (m.cell.type <> "none")
-//	{
-//		writeLine("@<TRIPOS>CRYSIN");
-//		writeLine(m.cell.a,m.cell.b,m.cell.c,m.cell.alpha,m.cell.beta,m.cell.gamma,m.cell.sgId,0);
-//	}
-//}
-//
+	// Read in lines, looking for the sections we're interested in.
+	// All sections begin with '@<TRIPOS>', e.g. '@<TRIPOS>MOLECULE'
+	// Read a line and parse it into '@<TRIPOS>' and keyword parts
+	int nAtoms = 0, nBonds = 0;
+	while (!fileParser_.eofOrBlank())
+	{
+		if (!fileParser_.parseLine()) return false;
+
+		if (fileParser_.argc(0) == "@<TRIPOS>MOLECULE")
+		{
+			// Molecule information
+			QString title;
+			if (!fileParser_.readLine(title)) return false;
+			createModel(title);
+			if (!fileParser_.parseLine()) return false;
+			nAtoms = fileParser_.argi(0);
+			nBonds = fileParser_.argi(1);
+
+			// Skip the next four lines, which are type of molecule, charges used, and user comment
+			fileParser_.skipLines(4);
+		}
+		else if (fileParser_.argc(0) == "@<TRIPOS>ATOM")
+		{
+			for (int n=0; n<nAtoms; ++n)
+			{
+				if (!fileParser_.parseLine()) return false;
+				createAtom(targetModel(), fileParser_.argc(1), fileParser_.arg3d(2));
+			}
+		}
+		else if (fileParser_.argc(0) == "@<TRIPOS>BOND")
+		{
+			for (int n=0; n<nBonds; ++n)
+			{
+				if (!fileParser_.parseLine()) return false;
+				targetModel()->bondAtoms(fileParser_.argi(1)-1, fileParser_.argi(2)-1, (Bond::BondType) fileParser_.argi(3));
+			}
+		}
+		else if (fileParser_.argc(0) == "@<TRIPOS>CRYSIN")
+		{
+			// Crystal cell information
+			// Single line, format is ' a b c alpha beta gamma spgrp spgrp_setting'
+			if (!fileParser_.parseLine()) return false;
+			targetModel()->setCell(fileParser_.arg3d(0), fileParser_.arg3d(3));
+			targetModel()->cell().setSpacegroup(fileParser_.argc(6), standardOptions_.forceRhombohedral());
+		}
+	}
+
+	// Perform post-load operations
+	if (!standardOptions_.preventPacking() && (targetModel()->cell().spacegroupId() != 0)) targetModel()->pack();
+	if (!standardOptions_.preventFolding() && targetModel()->isPeriodic()) targetModel()->foldAllAtoms();
+
 	return true;
 }
 
 // Return whether this plugin can export data
-bool MOL2ModelPlugin::canExport()
+bool Mol2ModelPlugin::canExport()
 {
-	return false;
+	return true;
 }
 
-// Export data to the spemol2ied file
-bool MOL2ModelPlugin::exportData()
+// Export data to the specified file
+bool Mol2ModelPlugin::exportData()
 {
-	return false;
+	// Write title section
+	if (!fileParser_.writeLine("@<TRIPOS>MOLECULE")) return false;
+	if (!fileParser_.writeLine(targetModel()->name())) return false;
+	if (!fileParser_.writeLineF("%i   %i\n", targetModel()->nAtoms(), targetModel()->nBonds())) return false;
+	if (!fileParser_.writeLine("SMALL")) return false;
+	if (!fileParser_.writeLine("NO_CHARGES")) return false;
+	if (!fileParser_.writeLine("Coordinates churned out by Aten")) return false;
+	if (!fileParser_.writeLine()) return false;
+
+	// Write atoms section
+	if (!fileParser_.writeLine("@<TRIPOS>ATOM")) return false;
+	for (Atom* i = targetModel()->atoms(); i != NULL; i - i->next)
+	{
+		if (!fileParser_.writeLineF("%6i  %5s  %10.5f  %10.5f  %10.5f  %5s\n", i->id()+1, ElementMap().symbol(i), i->r().x, i->r().y, i->r().z, ElementMap().symbol(i))) return false;
+	}
+
+	// Write bonds section
+	if (targetModel()->nBonds() > 0)
+	{
+		if (!fileParser_.writeLine("@<TRIPOS>BOND")) return false;
+		int n = 0;
+		for (Bond* b = targetModel()->bonds(); b != NULL; b = b->next)
+		{
+			if (!fileParser_.writeLineF("%5i  %5i  %5i  %s\n", ++n, b->atomI()->id()+1, b->atomJ()->id()+1, b->type())) return false;
+		}
+	}
+
+	// Write cell section (if the model has one)
+	if (targetModel()->isPeriodic())
+	{
+		if (!fileParser_.writeLine("@<TRIPOS>CRYSIN")) return false;
+		Vec3<double> lengths = targetModel()->cell().lengths();
+		Vec3<double> angles = targetModel()->cell().angles();
+		if (!fileParser_.writeLineF("%10.4f   %10.4f   %10.4f    %10.4f   %10.4f   %10.4f    %i  %i", lengths.x, lengths.y, lengths.x, angles.x, angles.y, angles.z, targetModel()->cell().spacegroupId(), 0)) return false;
+	}
+
+	return true;
 }
 
 // Import next partial data chunk
-bool MOL2ModelPlugin::importNextPart()
+bool Mol2ModelPlugin::importNextPart()
 {
 	return false;
 }
 
 // Skip next partial data chunk
-bool MOL2ModelPlugin::skipNextPart()
+bool Mol2ModelPlugin::skipNextPart()
 {
 	return false;
 }
@@ -219,25 +214,25 @@ bool MOL2ModelPlugin::skipNextPart()
  */
 
 // Return whether the plugin has import options
-bool MOL2ModelPlugin::hasImportOptions()
+bool Mol2ModelPlugin::hasImportOptions()
 {
 	return false;
 }
 
 // Show import options dialog
-bool MOL2ModelPlugin::showImportOptionsDialog()
+bool Mol2ModelPlugin::showImportOptionsDialog()
 {
 	return false;
 }
 
 // Return whether the plugin has export options
-bool MOL2ModelPlugin::hasExportOptions()
+bool Mol2ModelPlugin::hasExportOptions()
 {
 	return false;
 }
 
 // Show export options dialog
-bool MOL2ModelPlugin::showExportOptionsDialog()
+bool Mol2ModelPlugin::showExportOptionsDialog()
 {
 	return false;
 }

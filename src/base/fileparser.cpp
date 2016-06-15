@@ -146,7 +146,7 @@ bool FileParser::writeLine(QString line)
 	return parser_.writeLine(line);
 }
 
-// Write formatted line to file
+// Write formatted line to file (appending CR/LF automatically)
 bool FileParser::writeLineF(const char* fmt, ...)
 {
 	// Construct line

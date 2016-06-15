@@ -294,9 +294,11 @@ bool Commands::function_SGInfo(CommandNode* c, Bundle& obj, ReturnValue& rv)
 bool Commands::function_Spacegroup(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return false;
-	// If argument passed is an integer, set by integer. If a character, search by spacegroup name
-	obj.rs()->cell().setSpacegroup(c->argc(0), prefs.forceRhombohedral());
+
+	obj.rs()->cell().setSpacegroup(c->argc(0), c->hasArg(1) ? c->argb(1) : false);
+
 	rv.reset();
+
 	return true;
 }
 

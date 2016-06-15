@@ -79,7 +79,6 @@ Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
 	{ "ewaldKMax",			VTypes::IntegerData,		3, false },
 	{ "ewaldPrecision",		VTypes::DoubleData,		0, false },
 	{ "fontFileName",		VTypes::StringData,		0, false },
-	{ "forceRhombohedral",		VTypes::IntegerData,		0, false },
 	{ "foregroundColour",		VTypes::DoubleData,		4, false },
 	{ "globeSize",			VTypes::IntegerData,		0, false },
 	{ "glyphColour",		VTypes::DoubleData,		4, false },
@@ -328,9 +327,6 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArray
 			break;
 		case (PreferencesVariable::FontFileName):
 			rv.set( ptr->viewerFontFileName() );
-			break;
-		case (PreferencesVariable::ForceRhombohedral):
-			rv.set( ptr->forceRhombohedral() );
 			break;
 		case (PreferencesVariable::ForegroundColour):
 			if (hasArrayIndex) rv.set( ptr->colour(Prefs::ForegroundColour)[arrayIndex-1] );
@@ -646,9 +642,6 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue&
 		case (PreferencesVariable::FontFileName):
 			ptr->setViewerFontFileName( newValue.asString() );
 			FontInstance::setup(ptr->viewerFontFileName());
-			break;
-		case (PreferencesVariable::ForceRhombohedral):
-			ptr->setForceRhombohedral( newValue.asBool() );
 			break;
 		case (PreferencesVariable::ForegroundColour):
 			if (newValue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->setColour(Prefs::ForegroundColour, n, newValue.asVector(result)[n]);

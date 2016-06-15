@@ -92,7 +92,7 @@ bool PDBModelPlugin::canImport()
 	return true;
 }
 
-// Import data from the spepdbied file
+// Import data from the specified file
 bool PDBModelPlugin::importData()
 {
 //filter(type="importmodel", name="Protein Databank PDB", nickname="pdb", extension="pdb", glob="*.pdb", zmap="firstalpha", id=13)
@@ -317,7 +317,7 @@ bool PDBModelPlugin::canExport()
 	return false;
 }
 
-// Export data to the spepdbied file
+// Export data to the specified file
 bool PDBModelPlugin::exportData()
 {
 	return false;

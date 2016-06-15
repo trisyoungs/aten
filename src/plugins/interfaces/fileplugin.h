@@ -51,6 +51,7 @@ class FilePluginStandardImportOptions
 	{
 		cacheAll_ = false;
 		coordinatesInBohr_ = false;
+		forceRhombohedral_ = false;
 		keepNames_ = false;
 		keepTypes_ = false;
 		keepView_ = false;
@@ -65,6 +66,8 @@ class FilePluginStandardImportOptions
 	bool cacheAll_;
 	// Whether coordinates in file are in Bohr rather than Angstroms
 	bool coordinatesInBohr_;
+	// Whether rhombohedral (over hexagonal) spacegroup basis is to be forced
+	bool forceRhombohedral_;
 	// Whether original atom type names in file should be kept in a names forcefield associated to the model
 	bool keepNames_;
 	// Whether original atom type names should be converted into forcefield types and fixed to atoms
@@ -100,6 +103,16 @@ class FilePluginStandardImportOptions
 	bool coordinatesInBohr() const
 	{
 		return coordinatesInBohr_;
+	}
+	// Set whether rhombohedral (over hexagonal) spacegroup basis is to be forced
+	void setForceRhombohedral(bool b)
+	{
+		forceRhombohedral_ = b;
+	}
+	// Return whether rhombohedral (over hexagonal) spacegroup basis is to be forced
+	bool forceRhombohedral() const
+	{
+		return forceRhombohedral_;
 	}
 	// Set whether original atom type names in file should be kept in a names forcefield associated to the model
 	void setKeepNames(bool value)

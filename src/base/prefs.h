@@ -518,10 +518,6 @@ class Prefs
 	bool loadQtSettings_;
 	// Maximum distance allowed between consecutive improper torsion atoms
 	double maxImproperDist_;
-	// Whether to augment when rebonding
-	bool augmentAfterRebond_;
-	// Force spacegroups that are in hexagonal basis to be in rhombohedral basis
-	bool forceRhombohedral_;
 	// Whether to load plugins on startup
 	bool loadPlugins_;
 	// Whether to load includes on startup
@@ -562,14 +558,6 @@ class Prefs
 	double maxImproperDist() const;
 	// Set maximum distance allowed between consecutive improper torsion atoms
 	void setMaxImproperDist(double r);
-	// Return whether to augment when rebonding
-	bool augmentAfterRebond() const;
-	// Set whether to augment when rebonding
-	void setAugmentAfterRebond(bool b);
-	// Return whether rhombohedral (over hexagonal) spacegroup basis is to be forced
-	bool forceRhombohedral() const;
-	// Set whether rhombohedral (over hexagonal) spacegroup basis is to be forced
-	void setForceRhombohedral(bool b);
 	// Return whether to load plugins on startup
 	bool loadPlugins() const;
 	// Set whether to load plugins on startup

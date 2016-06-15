@@ -107,7 +107,7 @@ bool Commands::function_ReBond(CommandNode* c, Bundle& obj, ReturnValue& rv)
 
 	obj.rs()->beginUndoState("Calculate Bonding");
 	obj.rs()->clearBonding();
-	obj.rs()->calculateBonding( c->hasArg(0) ? c->argb(0) : prefs.augmentAfterRebond() );
+	obj.rs()->calculateBonding( c->hasArg(0) ? c->argb(0) : true );
 	obj.rs()->endUndoState();
 
 	rv.reset();
@@ -120,7 +120,7 @@ bool Commands::function_ReBondPatterns(CommandNode* c, Bundle& obj, ReturnValue&
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	obj.rs()->beginUndoState("Calculate Bonding (Patterns)");
-	obj.rs()->patternCalculateBonding( c->hasArg(0) ? c->argb(0) : prefs.augmentAfterRebond() );
+	obj.rs()->patternCalculateBonding( c->hasArg(0) ? c->argb(0) : true );
 	obj.rs()->endUndoState();
 	rv.reset();
 	return true;
@@ -131,7 +131,7 @@ bool Commands::function_ReBondSelection(CommandNode* c, Bundle& obj, ReturnValue
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	obj.rs()->beginUndoState("Calculate Bonding (Selection)");
-	obj.rs()->selectionCalculateBonding( c->hasArg(0) ? c->argb(0) : prefs.augmentAfterRebond() );
+	obj.rs()->selectionCalculateBonding( c->hasArg(0) ? c->argb(0) : true );
 	obj.rs()->endUndoState();
 	rv.reset();
 	return true;

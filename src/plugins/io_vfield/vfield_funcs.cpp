@@ -92,7 +92,7 @@ bool VFieldModelPlugin::canImport()
 	return true;
 }
 
-// Import data from the spevfieldied file
+// Import data from the specified file
 bool VFieldModelPlugin::importData()
 {
 	Model* model = createModel(fileParser_.filename());
@@ -115,7 +115,7 @@ bool VFieldModelPlugin::canExport()
 	return false;
 }
 
-// Export data to the spevfieldied file
+// Export data to the specified file
 bool VFieldModelPlugin::exportData()
 {
 	return false;

@@ -92,7 +92,7 @@ bool QuantumEspressoModelPlugin::canImport()
 	return true;
 }
 
-// Import data from the speespressoied file
+// Import data from the specified file
 bool QuantumEspressoModelPlugin::importData()
 {
 //filter(type="exportmodel", name="Quantum Espresso Input", nickname="qe", extension="in", glob="*.in", id=15)
@@ -492,7 +492,7 @@ bool QuantumEspressoModelPlugin::canExport()
 	return false;
 }
 
-// Export data to the speespressoied file
+// Export data to the specified file
 bool QuantumEspressoModelPlugin::exportData()
 {
 	return false;

@@ -1,6 +1,6 @@
 /*
-        *** MOL Model Plugin Functions
-        *** src/plugins/io_mol/mol_funcs.cpp
+        *** MDL Model Plugin Functions
+        *** src/plugins/io_mdlmol/mdlmol_funcs.cpp
         Copyright T. Youngs 2016-2016
 
         This file is part of Aten.
@@ -19,7 +19,7 @@
         along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "plugins/io_mol/mol.hui"
+#include "plugins/io_mdlmol/mdlmol.hui"
 #include "model/model.h"
 
 // Constructor
@@ -67,7 +67,7 @@ QString MOLModelPlugin::nickname() const
 // Description (long name) of plugin
 QString MOLModelPlugin::description() const
 {
-	return QString("Import/export for MDL Mol files");
+	return QString("Import for MDL Mol files");
 }
 
 // Related file extensions
@@ -92,36 +92,36 @@ bool MOLModelPlugin::canImport()
 	return true;
 }
 
-// Import data from the spemolied file
+// Import data from the specified file
 bool MOLModelPlugin::importData()
 {
-//	# Variable declaration
-//	string line,e,title;
-//	int n,natoms,nbonds,ii,jj,bondtype;
-//	double rx,ry,rz;
-//	
-//	# Create default model
-//	getLine(title);
-//	newModel(title);
-//	
-//	skipLine(2);
-//	
-//	readLine(natoms,nbonds);
-//	
-//	for (n=0; n<natoms; ++n)
-//	{
-//		readLine(rx,ry,rz,e);
-//		newAtom(e,rx,ry,rz);
-//	}
-//	
-//	for (n=0; n<nbonds; ++n)
-//	{
-//		readLine(ii,jj,bondtype);
-//		newBond(ii,jj,bondtype);
-//	}
-//	
-//	finaliseModel();
-//}
+	// Read title line and create model
+	QString title;
+	if (!fileParser_.readLine(title)) return false;
+	Model* model = createModel(title);
+
+	// Skip two lines (???)
+	if (!fileParser_.skipLines(2)) return false;
+
+	// Read number of atoms and number of bonds
+	if (!fileParser_.parseLine()) return false;
+	int nAtoms = fileParser_.argi(0);
+	int nBonds = fileParser_.argi(1);
+
+	// Read in atoms
+	for (int n=0; n<nAtoms; ++n)
+	{
+		if (!fileParser_.parseLine()) return false;
+		createAtom(model, fileParser_.argc(3), fileParser_.arg3d(0));
+	}
+
+	// Read in bonds
+	for (int n=0; n<nBonds; ++n)
+	{
+		if (!fileParser_.parseLine()) return false;
+		model->bondAtoms(fileParser_.argi(0)-1, fileParser_.argi(1)-1, (Bond::BondType) fileParser_.argi(2));
+	}
+
 	return true;
 }
 
@@ -131,7 +131,7 @@ bool MOLModelPlugin::canExport()
 	return false;
 }
 
-// Export data to the spemolied file
+// Export data to the specified file
 bool MOLModelPlugin::exportData()
 {
 	return false;

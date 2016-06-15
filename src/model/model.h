@@ -343,8 +343,6 @@ class Model : public ListItem<Model>
 	void augmentBonding();
 	// Calculate bonding in current atom selection
 	void selectionCalculateBonding(bool augment);
-	// Bond all atom pairs in current atom selection
-	void selectionBondAll();
 	// Clear bonding in current atom selection
 	void selectionClearBonding();
 

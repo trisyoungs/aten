@@ -90,6 +90,7 @@ FilePluginStandardImportOptions AtenOpenModel::standardImportOptions()
 	FilePluginStandardImportOptions options;
 
 	options.setCoordinatesInBohr(ui.BohrCheck->isChecked());
+	options.setForceRhombohedral(ui.ForceRhombohedralCheck->isChecked());
 	options.setKeepNames(ui.KeepNamesCheck->isChecked());
 	options.setKeepTypes(ui.KeepTypesCheck->isChecked());
 	options.setKeepView(ui.KeepViewCheck->isChecked());

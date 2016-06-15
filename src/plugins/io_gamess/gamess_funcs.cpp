@@ -92,7 +92,7 @@ bool GAMESSModelPlugin::canImport()
 	return true;
 }
 
-// Import data from the spegamessied file
+// Import data from the specified file
 bool GAMESSModelPlugin::importData()
 {
 //filter(type="importtrajectory", name="GAMESS-US Trj File", nickname="gamustrj", extension="trj", glob="*.trj", zmap="name", search="GAMESS VERSION", id=11)
@@ -728,7 +728,7 @@ bool GAMESSModelPlugin::canExport()
 	return false;
 }
 
-// Export data to the spegamessied file
+// Export data to the specified file
 bool GAMESSModelPlugin::exportData()
 {
 	return false;
