@@ -55,25 +55,25 @@ PluginTypes::FilePluginCategory EPSRMolModelPlugin::category() const
 // Name of plugin
 QString EPSRMolModelPlugin::name() const
 {
-	return QString("EPSRMol (dlputils) 3D probability density");
+	return QString("EPSR Molfiles");
 }
 
 // Nickname of plugin
 QString EPSRMolModelPlugin::nickname() const
 {
-	return QString("cif");
+	return QString("epsrmol");
 }
 
 // Description (long name) of plugin
 QString EPSRMolModelPlugin::description() const
 {
-	return QString("Import/export for dlputils EPSRMol files");
+	return QString("Import/export for Empirical Potential Structure Refinement (EPSR) mol models");
 }
 
 // Related file extensions
 QStringList EPSRMolModelPlugin::extensions() const
 {
-	return QStringList() << "cif";
+	return QStringList() << "mol";
 }
 
 // Exact names

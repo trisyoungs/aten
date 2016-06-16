@@ -97,6 +97,20 @@ class CIFModelPlugin : public QObject, public FilePluginInterface
 	bool hasExportOptions();
 	// Show export options dialog
 	bool showExportOptionsDialog();
+
+
+	/*
+	 * CIF Dictionary
+	 */
+	private:
+	// CIF Dictionary Keywords
+	enum DictionaryKeyword { CIFLoop, ChemicalNameCommon, ChemCompName, CellLengthA, CellLengthB, CellLengthC, CellAngleAlpha, CellAngleBeta, CellAngleGamma, SymmetrySpacegroupNameHM, SymmetrySpacegroupNameHMAlt, nDictionaryKeywords };
+	// Return CIF dictionary keyword from string
+	DictionaryKeyword dictionaryKeyword(QString s);
+	// CIF Loop Keywords
+	enum LoopKeyword { AtomSiteTypeSymbol, AtomSiteLabel, AtomSiteFractX, AtomSiteFractY, AtomSiteFractZ, AtomSiteCartnX, AtomSiteCartnY, AtomSiteCartnZ, SymmetryEquivPosAsXyz, nLoopKeywords };
+	// Return CIF loop keyword from string
+	LoopKeyword loopKeyword(QString s);
 };
 
 ATEN_END_NAMESPACE

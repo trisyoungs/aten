@@ -55,25 +55,25 @@ PluginTypes::FilePluginCategory EPSRAtoModelPlugin::category() const
 // Name of plugin
 QString EPSRAtoModelPlugin::name() const
 {
-	return QString("EPSRAto (dlputils) 3D probability density");
+	return QString("EPSR Ato file");
 }
 
 // Nickname of plugin
 QString EPSRAtoModelPlugin::nickname() const
 {
-	return QString("cif");
+	return QString("epsrato");
 }
 
 // Description (long name) of plugin
 QString EPSRAtoModelPlugin::description() const
 {
-	return QString("Import/export for dlputils EPSRAto files");
+	return QString("Import/export for Empirical Potential Structure Refinement (EPSR) Ato models");
 }
 
 // Related file extensions
 QStringList EPSRAtoModelPlugin::extensions() const
 {
-	return QStringList() << "cif";
+	return QStringList() << "ato";
 }
 
 // Exact names

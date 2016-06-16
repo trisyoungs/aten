@@ -55,7 +55,7 @@ PluginTypes::FilePluginCategory CIFModelPlugin::category() const
 // Name of plugin
 QString CIFModelPlugin::name() const
 {
-	return QString("CIF (dlputils) 3D probability density");
+	return QString("Crystallographic Information Format (CIF)");
 }
 
 // Nickname of plugin
@@ -67,7 +67,7 @@ QString CIFModelPlugin::nickname() const
 // Description (long name) of plugin
 QString CIFModelPlugin::description() const
 {
-	return QString("Import/export for dlputils CIF files");
+	return QString("Import for Crystallographic Information Format models");
 }
 
 // Related file extensions
@@ -95,45 +95,86 @@ bool CIFModelPlugin::canImport()
 // Import data from the specified file
 bool CIFModelPlugin::importData()
 {
-//	# CIF files are dictionary-based, so we can recognise keywords as we find them.
-//	# Loops are a little more complicated. For these we will build up a custom format string
-//	# and then use it to read in the data once the loop definitions are finished.
-//
-//	# Variables
-//	string discard,data1,data2,data3,keywd,line,char,looptype,args[50],keywdstripped, el;
-//	int n,arg,cellspec,id_r[3],id_ts,id_lbl,id_gen,nread,inloop,nloopdata,fractional = TRUE;
-//	double length[3],cellangle[3];
-//
-//	# Recognise quoting, skip blanks, and don't split arguments when commas are encountered
-//	addReadOption("skipblanks");
-//	addReadOption("usequotes");
-//	addReadOption("normalcommas");
-//
-//	model m = newModel("CifModel");
-//	cellspec = 0;
-//
-//	inloop = 0;
-//
-//	while (!eof())
-//	{
-//		# Read an entire line
-//		if (getLine(line) == -1) break;
-//
-//		# Check the first item as a keyword
-//		readVar(line, keywd, data1);
-//		if (keywd == "") continue;
-//		readVarF(keywd, "%1s", char);
-//		keywd = lowerCase(keywd);
-//		if ((keywd == "_chemical_name_common") || (keywd == "_chem_comp.name")) { setName(data1); inloop = 0; continue; }
-//		else if (keywd == "_cell_length_a") { length[1] = atof(data1); cellspec++; inloop = 0; continue; }
-//		else if (keywd == "_cell_length_b") { length[2] = atof(data1); cellspec++; inloop = 0; continue; }
-//		else if (keywd == "_cell_length_c") { length[3] = atof(data1); cellspec++; inloop = 0; continue; }
-//		else if (keywd == "_cell_angle_alpha") { cellangle[1] = atof(data1); cellspec++; inloop = 0; continue; }
-//		else if (keywd == "_cell_angle_beta") { cellangle[2] = atof(data1); cellspec++; inloop = 0; continue; }
-//		else if (keywd == "_cell_angle_gamma") { cellangle[3] = atof(data1); cellspec++; inloop = 0; continue; }
-//		# Spacegroup name - strip spaces which are sometimes be inserted by other programs
-//		else if (keywd == "_symmetry_space_group_name_H-M") { spacegroup(data1); inloop = 0; continue; }
-//		else if (keywd == "_space_group_name_H-M_alt") { spacegroup(data1); inloop = 0; continue; }
+	// Set options for file parser
+	int parseOptions = Parser::UseQuotes+Parser::NormalCommas;
+
+	createModel("CifModel");
+
+	// Step through file look for dictionary keywords that we care about.
+	// If we find CIFLoop ("loop_") then construct a list of LoopKeywords that we care about, and as soon
+	// as the loop_ definition ends (first line that doesn't have a keyword starting with '_') read in loop data until a blank line is encountered.
+
+	bool inLoop = false;
+	QList<int> loopItems;
+	Vec3<double> cellAngles, cellLengths;
+	while (!fileParser_.eofOrBlank())
+	{
+		if (!fileParser_.parseLine(parseOptions)) return false;
+
+		// If we are currently constructing a loop, need to check whether we should start reading in data based on that loop
+		if (inLoop && (fileParser_.argc(0).at(0) != QChar('_')))
+		{
+			// Before we start, need to work out what sort of loop we have..
+			printf("LoopItems = ");for (int n=0; n<loopItems.count(); ++n) printf("%i ", loopItems.at(n)); printf("\n");
+			
+			do
+			{
+				// Loop over our stored (enumerated) loop keyword values
+				// Parse next line...
+				fileParser_.parseLine(parseOptions);
+			} while (fileParser_.nArgs() > 0);
+
+			// Continue with the main loop
+			inLoop = false;
+			loopItems.clear();
+			continue;
+		}
+
+		// If this is a blank line, continue...
+		if (fileParser_.nArgs() == 0) continue;
+
+		// Try to convert first argument to a keyword - if we are already in a loop, convert it to a loopkeyword
+		if (inLoop)
+		{
+			// Store the result, even if its unrecognised 'nLoopKeywords', since we need to know which parser data items to skip
+			LoopKeyword keyword = loopKeyword(fileParser_.argc(0));
+			printf("LOOPKWD = %s\n", qPrintable(fileParser_.argc(0)));
+			loopItems << keyword;
+		}
+		else
+		{
+			DictionaryKeyword keyword = dictionaryKeyword(fileParser_.argc(0));
+			printf("DICTIONARYKWD = %s\n", qPrintable(fileParser_.argc(0)));
+			switch (keyword)
+			{
+				case (CIFModelPlugin::CIFLoop):
+					// Sanity check - are we already in a loop?
+					if (inLoop) Messenger::warn("CIF read error - found a loop_ while already parsing another...");
+					inLoop = true;
+					loopItems.clear();
+					break;
+				case (CIFModelPlugin::ChemicalNameCommon):
+				case (CIFModelPlugin::ChemCompName):
+					targetModel()->setName(fileParser_.argc(1));
+					break;
+				case (CIFModelPlugin::CellLengthA):
+				case (CIFModelPlugin::CellLengthB):
+				case (CIFModelPlugin::CellLengthC):
+					cellLengths[keyword-CIFModelPlugin::CellLengthA] = fileParser_.argd(1);
+					break;
+				case (CIFModelPlugin::CellAngleAlpha):
+				case (CIFModelPlugin::CellAngleBeta):
+				case (CIFModelPlugin::CellAngleGamma):
+					cellLengths[keyword-CIFModelPlugin::CellAngleAlpha] = fileParser_.argd(1);
+					break;
+				case (CIFModelPlugin::SymmetrySpacegroupNameHM):
+				case (CIFModelPlugin::SymmetrySpacegroupNameHMAlt):
+					targetModel()->cell().setSpacegroup(fileParser_.argc(1), standardOptions_.forceRhombohedral());
+					break;
+			}
+		}
+	}
+
 //		# Loops
 //		else if (keywd == "loop_") { inloop = 1; nloopdata = 0; looptype = "none"; continue; }
 //		# End of loop data items (if first char is a '_')
@@ -185,7 +226,14 @@ bool CIFModelPlugin::importData()
 //				if (m.cell.sgId <> 0)
 //				{
 //					printf("Generator data ignored - spacegroup is already set.\n");
-//					inloop = 0;
+//									if (keywd == "_atom_site_type_symbol") id_ts = nloopdata;
+//				else if (keywd == "_atom_site_label") id_lbl = nloopdata;
+//				else if (keywd == "_atom_site_fract_x") id_r[1] = nloopdata;
+//				else if (keywd == "_atom_site_fract_y") id_r[2] = nloopdata;
+//				else if (keywd == "_atom_site_fract_z") id_r[3] = nloopdata;
+//				else if (keywd == "_atom_site_cartn_x") { id_r[1] = nloopdata; fractional = FALSE; }
+//				else if (keywd == "_atom_site_cartn_y") { id_r[2] = nloopdata; fractional = FALSE; }
+//				else if (keywd == "_atom_site_cartn_z") { id_r[3] = nloopdata; fractional = FALSE; }inloop = 0;
 //					continue;
 //				}
 //				looptype = "gen";
@@ -303,4 +351,25 @@ bool CIFModelPlugin::showExportOptionsDialog()
 {
 	return false;
 }
- 
+
+/*
+ * Dictionary
+ */
+
+// Return CIF dictionary keyword from string
+CIFModelPlugin::DictionaryKeyword CIFModelPlugin::dictionaryKeyword(QString s)
+{
+	static QStringList CIFDictionaryKeywords = QStringList() << "loop_" << "_chemical_name_common" << "_chem_comp.name" << "_cell_length_a" << "_cell_length_b" << "_cell_length_c" << "_cell_angle_alpha" << "_cell_angle_beta" << "_cell_angle_gamma" << "_symmetry_space_group_name_H-M" << "_space_group_name_H-M_alt";
+
+	for (int n=0; n<CIFModelPlugin::nDictionaryKeywords; ++n) if (CIFDictionaryKeywords.at(n) == s) return (CIFModelPlugin::DictionaryKeyword) n;
+	return CIFModelPlugin::nDictionaryKeywords;
+}
+
+// Return CIF loop keyword from string
+CIFModelPlugin::LoopKeyword CIFModelPlugin::loopKeyword(QString s)
+{
+	static QStringList CIFLoopKeywords = QStringList() << "_atom_site_type_symbol" << "_atom_site_label" << "_atom_site_fract_x" << "_atom_site_fract_y" << "_atom_site_fract_z" << "_atom_site_cartn_x" << "_atom_site_cartn_y" << "_atom_site_cartn_z" << "_symmetry_equiv_pos_as_xyz";
+
+	for (int n=0; n<CIFModelPlugin::nLoopKeywords; ++n) if (CIFLoopKeywords.at(n) == s) return (CIFModelPlugin::LoopKeyword) n;
+	return CIFModelPlugin::nLoopKeywords;
+}
