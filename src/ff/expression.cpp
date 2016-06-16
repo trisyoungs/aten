@@ -117,7 +117,7 @@ bool Pattern::createExpression(bool vdwOnly, bool allowDummy, Forcefield* defaul
 		}
 		if (ai->type() == NULL)
 		{
-			Messenger::print("!!! No FF type definition for atom %i (%s).", n+1, Elements().symbol(ai));
+			Messenger::print("!!! No FF type definition for atom %i (%s).", n+1, ElementMap::symbol(ai));
 			incomplete_ = true;
 			iatoms ++;
 		}
@@ -128,7 +128,7 @@ bool Pattern::createExpression(bool vdwOnly, bool allowDummy, Forcefield* defaul
 		// Make another check to see that we now have vdw parameters
 		if (ai->type()->vdwForm() ==  VdwFunctions::None)
 		{
-			Messenger::print("!!! No FF type definition for atom %i (%s).", n+1, Elements().symbol(ai));
+			Messenger::print("!!! No FF type definition for atom %i (%s).", n+1, ElementMap::symbol(ai));
 			incomplete_ = true;
 			iatoms ++;
 		}

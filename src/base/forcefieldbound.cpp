@@ -65,14 +65,14 @@ QString ForcefieldBound::formText() const
 	{
 		case (ForcefieldBound::BondInteraction):
 		case (ForcefieldBound::UreyBradleyInteraction):
-			return BondFunctions::BondFunctions[bondForm()].keyword;
+			return BondFunctions::functionData[bondForm()].keyword;
 			break;
 		case (ForcefieldBound::AngleInteraction):
-			return AngleFunctions::AngleFunctions[angleForm()].keyword;
+			return AngleFunctions::functionData[angleForm()].keyword;
 			break;
 		case (ForcefieldBound::TorsionInteraction):
 		case (ForcefieldBound::ImproperInteraction):
-			return TorsionFunctions::TorsionFunctions[torsionForm()].keyword;
+			return TorsionFunctions::functionData[torsionForm()].keyword;
 			break;
 		default:
 			return "No Bound type defined.";
@@ -103,7 +103,7 @@ void ForcefieldBound::setBondForm(BondFunctions::BondFunction bf)
 {
 	form_ = bf;
 	// Copy default parameters to structure
-	for (int i=0; i<MAXFFPARAMDATA; i++) params_[i] = BondFunctions::BondFunctions[bf].defaultValues[i];
+	for (int i=0; i<MAXFFPARAMDATA; i++) params_[i] = BondFunctions::functionData[bf].defaultValues[i];
 }
 
 // Set the angle functional form
@@ -111,7 +111,7 @@ void ForcefieldBound::setAngleForm(AngleFunctions::AngleFunction af)
 {
 	form_ = af;
 	// Copy default parameters to structure
-	for (int i=0; i<MAXFFPARAMDATA; i++) params_[i] = AngleFunctions::AngleFunctions[af].defaultValues[i];
+	for (int i=0; i<MAXFFPARAMDATA; i++) params_[i] = AngleFunctions::functionData[af].defaultValues[i];
 }
 
 // Set the torsion functional form
@@ -119,7 +119,7 @@ void ForcefieldBound::setTorsionForm(TorsionFunctions::TorsionFunction tf)
 {
 	form_ = tf;
 	// Copy default parameters to structure
-	for (int i=0; i<MAXFFPARAMDATA; i++) params_[i] = TorsionFunctions::TorsionFunctions[tf].defaultValues[i];
+	for (int i=0; i<MAXFFPARAMDATA; i++) params_[i] = TorsionFunctions::functionData[tf].defaultValues[i];
 }
 
 // Set the functional form by name, without changing any existing parameters

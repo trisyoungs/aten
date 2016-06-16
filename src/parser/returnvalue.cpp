@@ -659,12 +659,12 @@ void *ReturnValue::asPointer(VTypes::DataType ptrtype, bool& success)
 			if ((type_ == VTypes::IntegerData) && (ptrtype == VTypes::ElementData))
 			{
 				int el = asInteger();
-				if ((el < 0) || (el > Elements().nElements()))
+				if ((el < 0) || (el > ElementMap::nElements()))
 				{
 					Messenger::print("Warning: Conversion of integer value %i does not correspond to a defined element. Returning '0' (undefined element 'XX').", el);
 					el = 0;
 				}
-				return Elements().element(el);
+				return ElementMap::element(el);
 			}
 			else if (arraySize_ == -1)
 			{

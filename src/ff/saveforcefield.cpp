@@ -73,8 +73,8 @@ bool Forcefield::save()
 		{
 			// Skip UATypes in this pass...
 			if (ffa->isUnitedAtom()) continue;
-			if (ffa->description().isEmpty()) parser.writeLineF("%i\t%s\t%s\t\"%s\"", ffa->typeId(), qPrintable(ffa->name()), Elements().symbol(ffa->element()), qPrintable(ffa->netaString()));
-			else parser.writeLineF("%i\t%s\t%s\t\"%s\"\t\"%s\"", ffa->typeId(), qPrintable(ffa->name()), Elements().symbol(ffa->element()), qPrintable(ffa->netaString()), qPrintable(ffa->description()));
+			if (ffa->description().isEmpty()) parser.writeLineF("%i\t%s\t%s\t\"%s\"", ffa->typeId(), qPrintable(ffa->name()), ElementMap::symbol(ffa->element()), qPrintable(ffa->netaString()));
+			else parser.writeLineF("%i\t%s\t%s\t\"%s\"\t\"%s\"", ffa->typeId(), qPrintable(ffa->name()), ElementMap::symbol(ffa->element()), qPrintable(ffa->netaString()), qPrintable(ffa->description()));
 		}
 		parser.writeLine("end");
 		parser.writeLine();
@@ -87,8 +87,8 @@ bool Forcefield::save()
 			// Skip normal types in this pass...
 			if (!ffa->isUnitedAtom()) continue;
 				
-			if (ffa->description().isEmpty()) parser.writeLineF("%i\t%s\t%s\t%f\t\"%s\"", ffa->typeId(), qPrintable(ffa->name()), Elements().symbol(ffa->element()), ffa->elementMass(), qPrintable(ffa->netaString()));
-			else parser.writeLineF("%i\t%s\t%s\t\"%s\"\t\"%s\"", ffa->typeId(), qPrintable(ffa->name()), Elements().symbol(ffa->element()), qPrintable(ffa->netaString()), qPrintable(ffa->description()));
+			if (ffa->description().isEmpty()) parser.writeLineF("%i\t%s\t%s\t%f\t\"%s\"", ffa->typeId(), qPrintable(ffa->name()), ElementMap::symbol(ffa->element()), ffa->elementMass(), qPrintable(ffa->netaString()));
+			else parser.writeLineF("%i\t%s\t%s\t\"%s\"\t\"%s\"", ffa->typeId(), qPrintable(ffa->name()), ElementMap::symbol(ffa->element()), qPrintable(ffa->netaString()), qPrintable(ffa->description()));
 		}
 		parser.writeLine("end");
 		parser.writeLine();
@@ -213,12 +213,12 @@ bool Forcefield::save()
 		// Now, write blocks for each form (if necessary)
 		for (n = 0; n < VdwFunctions::nVdwFunctions; ++n) if (count[n] != 0)
 		{
-			parser.writeLineF("inter %s", VdwFunctions::VdwFunctions[n].keyword);
+			parser.writeLineF("inter %s", VdwFunctions::functionData[n].keyword);
 			for (ForcefieldAtom* ffa = types_.second(); ffa != NULL; ffa = ffa->next)
 			{
 				if (ffa->vdwForm() != n) continue;
 				parser.writeF("%i\t%s\t%f", ffa->typeId(), qPrintable(ffa->name()), ffa->charge());
-				for (m=0; m<VdwFunctions::VdwFunctions[n].nParameters; ++m) parser.writeF("\t%f", ffa->parameter(m));
+				for (m=0; m<VdwFunctions::functionData[n].nParameters; ++m) parser.writeF("\t%f", ffa->parameter(m));
 				parser.writeLine("");
 			}
 			parser.writeLine("end");
@@ -237,12 +237,12 @@ bool Forcefield::save()
 		// Now, write blocks for each form (if necessary)
 		for (n = 0; n < BondFunctions::nBondFunctions; ++n) if (count[n] != 0)
 		{
-			parser.writeLineF("bonds %s", BondFunctions::BondFunctions[n].keyword);
+			parser.writeLineF("bonds %s", BondFunctions::functionData[n].keyword);
 			for (ForcefieldBound* ffb = bonds_.first(); ffb != NULL; ffb = ffb->next)
 			{
 				if (ffb->bondForm() != n) continue;
 				parser.writeF("%s\t%s", qPrintable(ffb->typeName(0)), qPrintable(ffb->typeName(1)));
-				for (m=0; m<BondFunctions::BondFunctions[n].nParameters; ++m) parser.writeF("\t%f", ffb->parameter(m));
+				for (m=0; m<BondFunctions::functionData[n].nParameters; ++m) parser.writeF("\t%f", ffb->parameter(m));
 				parser.writeLineF("");
 			}
 			parser.writeLine("end");
@@ -261,12 +261,12 @@ bool Forcefield::save()
 		// Now, write blocks for each form (if necessary)
 		for (n = 0; n < AngleFunctions::nAngleFunctions; ++n) if (count[n] != 0)
 		{
-			parser.writeLineF("angles %s", AngleFunctions::AngleFunctions[n].keyword);
+			parser.writeLineF("angles %s", AngleFunctions::functionData[n].keyword);
 			for (ForcefieldBound* ffb = angles_.first(); ffb != NULL; ffb = ffb->next)
 			{
 				if (ffb->angleForm() != n) continue;
 				parser.writeF("%s\t%s\t%s", qPrintable(ffb->typeName(0)), qPrintable(ffb->typeName(1)), qPrintable(ffb->typeName(2)));
-				for (m=0; m<AngleFunctions::AngleFunctions[n].nParameters; ++m) parser.writeF("\t%f", ffb->parameter(m));
+				for (m=0; m<AngleFunctions::functionData[n].nParameters; ++m) parser.writeF("\t%f", ffb->parameter(m));
 				parser.writeLineF("");
 			}
 			parser.writeLine("end");
@@ -286,12 +286,12 @@ bool Forcefield::save()
 		// Now, write blocks for each form (if necessary)
 		for (n = 0; n < TorsionFunctions::nTorsionFunctions; ++n) if (count[n] != 0)
 		{
-			parser.writeLineF("torsions %s", TorsionFunctions::TorsionFunctions[n].keyword);
+			parser.writeLineF("torsions %s", TorsionFunctions::functionData[n].keyword);
 			for (ForcefieldBound* ffb = torsions_.first(); ffb != NULL; ffb = ffb->next)
 			{
 				if (ffb->torsionForm() != n) continue;
 				parser.writeF("%s\t%s\t%s\t%s", qPrintable(ffb->typeName(0)), qPrintable(ffb->typeName(1)), qPrintable(ffb->typeName(2)), qPrintable(ffb->typeName(3)));
-				for (m=0; m<TorsionFunctions::TorsionFunctions[n].nParameters; ++m) parser.writeF("\t%f", ffb->parameter(m));
+				for (m=0; m<TorsionFunctions::functionData[n].nParameters; ++m) parser.writeF("\t%f", ffb->parameter(m));
 				parser.writeLine("");
 			}
 			parser.writeLine("end");
@@ -310,12 +310,12 @@ bool Forcefield::save()
 		// Now, write blocks for each form (if necessary)
 		for (n = 0; n < TorsionFunctions::nTorsionFunctions; ++n) if (count[n] != 0)
 		{
-			parser.writeLineF("impropers %s", TorsionFunctions::TorsionFunctions[n].keyword);
+			parser.writeLineF("impropers %s", TorsionFunctions::functionData[n].keyword);
 			for (ForcefieldBound* ffb = impropers_.first(); ffb != NULL; ffb = ffb->next)
 			{
 				if (ffb->torsionForm() != n) continue;
 				parser.writeF("%s\t%s\t%s\t%s", qPrintable(ffb->typeName(0)), qPrintable(ffb->typeName(1)), qPrintable(ffb->typeName(2)), qPrintable(ffb->typeName(3)));
-				for (m=0; m<TorsionFunctions::TorsionFunctions[n].nParameters; ++m) parser.writeF("\t%f", ffb->parameter(m));
+				for (m=0; m<TorsionFunctions::functionData[n].nParameters; ++m) parser.writeF("\t%f", ffb->parameter(m));
 				parser.writeLine("");
 			}
 			parser.writeLine("end");
@@ -334,12 +334,12 @@ bool Forcefield::save()
 		// Now, write blocks for each form (if necessary)
 		for (n = 0; n < BondFunctions::nBondFunctions; ++n) if (count[n] != 0)
 		{
-			parser.writeLineF("ureybradleys %s", BondFunctions::BondFunctions[n].keyword);
+			parser.writeLineF("ureybradleys %s", BondFunctions::functionData[n].keyword);
 			for (ForcefieldBound* ffb = ureyBradleys_.first(); ffb != NULL; ffb = ffb->next)
 			{
 				if (ffb->bondForm() != n) continue;
 				parser.writeF("%s\t%s", qPrintable(ffb->typeName(0)), qPrintable(ffb->typeName(1)));
-				for (int n=0; n<BondFunctions::BondFunctions[n].nParameters; ++n) parser.writeF("\t%f", ffb->parameter(n));
+				for (int n=0; n<BondFunctions::functionData[n].nParameters; ++n) parser.writeF("\t%f", ffb->parameter(n));
 				parser.writeLine("");
 			}
 			parser.writeLine("end");

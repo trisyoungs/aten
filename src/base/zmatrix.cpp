@@ -343,13 +343,13 @@ void ZMatrix::print()
 				l = zel->atom(3);
 				if (l != NULL)
 				{
-					printf("%-4s %-4i %-6s %-4i %-6s %-4i %-6s\n", Elements().symbol(i), j->id()+1, qPrintable(zel->distanceVariable()->name()), k->id()+1, qPrintable(zel->angleVariable()->name()), l->id()+1, qPrintable(zel->torsionVariable()->name()));
+					printf("%-4s %-4i %-6s %-4i %-6s %-4i %-6s\n", ElementMap::symbol(i), j->id()+1, qPrintable(zel->distanceVariable()->name()), k->id()+1, qPrintable(zel->angleVariable()->name()), l->id()+1, qPrintable(zel->torsionVariable()->name()));
 				}
-				else printf("%-4s %-4i %-6s %-4i %-6s\n", Elements().symbol(i), j->id()+1, qPrintable(zel->distanceVariable()->name()), k->id()+1, qPrintable(zel->angleVariable()->name()));
+				else printf("%-4s %-4i %-6s %-4i %-6s\n", ElementMap::symbol(i), j->id()+1, qPrintable(zel->distanceVariable()->name()), k->id()+1, qPrintable(zel->angleVariable()->name()));
 			}
-			else printf("%-4s %-4i %-6s\n", Elements().symbol(i), j->id()+1, qPrintable(zel->distanceVariable()->name()));
+			else printf("%-4s %-4i %-6s\n", ElementMap::symbol(i), j->id()+1, qPrintable(zel->distanceVariable()->name()));
 		}
-		else printf("%-4s\n", Elements().symbol(i));
+		else printf("%-4s\n", ElementMap::symbol(i));
 	}
 	printf("\n");
 

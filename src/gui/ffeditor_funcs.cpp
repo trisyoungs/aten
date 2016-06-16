@@ -67,7 +67,7 @@ AtenForcefieldEditor::AtenForcefieldEditor(QWidget* parent) : QDialog(parent)
 	
 	// Set item delegates for columns
 	int n;
-	ui.FFEditorTypesTable->setItemDelegateForColumn(TypeColumn::Id, new TIntegerSpinDelegate(this, 1, Elements().nElements(), 1));
+	ui.FFEditorTypesTable->setItemDelegateForColumn(TypeColumn::Id, new TIntegerSpinDelegate(this, 1, ElementMap::nElements(), 1));
 	ui.FFEditorAtomsTable->setItemDelegateForColumn(AtomColumn::Charge, new TDoubleSpinDelegate(this));
 	for (n=AtomColumn::Data1; n<=AtomColumn::Data10; ++n) ui.FFEditorAtomsTable->setItemDelegateForColumn(n, new TDoubleSpinDelegate(this));
 	for (n=BondColumn::Data1; n<=BondColumn::Data10; ++n) ui.FFEditorBondsTable->setItemDelegateForColumn(n, new TDoubleSpinDelegate(this));
@@ -115,7 +115,7 @@ void AtenForcefieldEditor::populate(Forcefield* ff)
 	{
 		item = new QTableWidgetItem(QString::number(ffa->typeId()));
 		ui.FFEditorTypesTable->setItem(count, TypeColumn::Id, item);
-		item = new QTableWidgetItem(Elements().symbol(ffa->neta()->characterElement()));
+		item = new QTableWidgetItem(ElementMap::symbol(ffa->neta()->characterElement()));
 		ui.FFEditorTypesTable->setItem(count, TypeColumn::Element, item);
 		item = new QTableWidgetItem(ffa->name());
 		ui.FFEditorTypesTable->setItem(count, TypeColumn::Name, item);
@@ -134,7 +134,7 @@ void AtenForcefieldEditor::populate(Forcefield* ff)
 	ui.FFEditorAtomsTable->setRowCount(ff->nTypes()-1);
 	ui.FFEditorAtomsTable->setHorizontalHeaderLabels(QStringList() << "TypeID" << "Name" << "Charge" << "Form" << "Data 1" << "Data 2" << "Data 3" << "Data 4" << "Data 5" << "Data 6" << "Data 7" << "Data 8" << "Data 9" << "Data 10" );
 	slist.clear();
-	for (n=0; n<VdwFunctions::nVdwFunctions; n++) slist << VdwFunctions::VdwFunctions[n].keyword;
+	for (n=0; n<VdwFunctions::nVdwFunctions; n++) slist << VdwFunctions::functionData[n].keyword;
 	for (ForcefieldAtom* ffa = ff->types()->next; ffa != NULL; ffa = ffa->next)
 	{
 		params = ffa->parameters();
@@ -169,7 +169,7 @@ void AtenForcefieldEditor::populate(Forcefield* ff)
 	ui.FFEditorBondsTable->setRowCount(ff->nBonds());
 	ui.FFEditorBondsTable->setHorizontalHeaderLabels(QStringList() << "Type 1" << "Type 2" << "Form" << "Data 1" << "Data 2" << "Data 3" << "Data 4" << "Data 5" << "Data 6" << "Data 7" << "Data 8" << "Data 9" << "Data 10");
 	slist.clear();
-	for (n=0; n<BondFunctions::nBondFunctions; n++) slist << BondFunctions::BondFunctions[n].keyword;
+	for (n=0; n<BondFunctions::nBondFunctions; n++) slist << BondFunctions::functionData[n].keyword;
 	for (ForcefieldBound* ffb = ff->bonds(); ffb != NULL; ffb = ffb->next)
 	{
 		params = ffb->parameters();
@@ -200,7 +200,7 @@ void AtenForcefieldEditor::populate(Forcefield* ff)
 	ui.FFEditorAnglesTable->setRowCount(ff->nAngles());
 	ui.FFEditorAnglesTable->setHorizontalHeaderLabels(QStringList() << "Type 1" << "Type 2" << "Type 3" << "Form" << "Data 1" << "Data 2" << "Data 3" << "Data 4" << "Data 5" << "Data 6" << "Data 7" << "Data 8" << "Data 9" << "Data 10");
 	slist.clear();
-	for (n=0; n<AngleFunctions::nAngleFunctions; n++) slist << AngleFunctions::AngleFunctions[n].keyword;
+	for (n=0; n<AngleFunctions::nAngleFunctions; n++) slist << AngleFunctions::functionData[n].keyword;
 	for (ForcefieldBound* ffb = ff->angles(); ffb != NULL; ffb = ffb->next)
 	{
 		params = ffb->parameters();
@@ -233,7 +233,7 @@ void AtenForcefieldEditor::populate(Forcefield* ff)
 	ui.FFEditorTorsionsTable->setRowCount(ff->nTorsions());
 	ui.FFEditorTorsionsTable->setHorizontalHeaderLabels(QStringList() << "Type 1" << "Type 2" << "Type 3" << "Type 4" << "Form" << "EScale" << "VScale" << "Data 1" << "Data 2" << "Data 3" << "Data 4" << "Data 5" << "Data 6" << "Data 7" << "Data 8" << "Data 9" << "Data 10");
 	slist.clear();
-	for (n=0; n<TorsionFunctions::nTorsionFunctions; n++) slist << TorsionFunctions::TorsionFunctions[n].keyword;
+	for (n=0; n<TorsionFunctions::nTorsionFunctions; n++) slist << TorsionFunctions::functionData[n].keyword;
 	for (ForcefieldBound* ffb = ff->torsions(); ffb != NULL; ffb = ffb->next)
 	{
 		params = ffb->parameters();
@@ -272,7 +272,7 @@ void AtenForcefieldEditor::populate(Forcefield* ff)
 	ui.FFEditorImpropersTable->setRowCount(ff->nImpropers());
 	ui.FFEditorImpropersTable->setHorizontalHeaderLabels(QStringList() << "Type 1" << "Type 2" << "Type 3" << "Type 4" << "Form" << "EScale" << "VScale" << "Data 1" << "Data 2" << "Data 3" << "Data 4" << "Data 5" << "Data 6" << "Data 7" << "Data 8" << "Data 9" << "Data 10");
 	slist.clear();
-	for (n=0; n<TorsionFunctions::nTorsionFunctions; n++) slist << TorsionFunctions::TorsionFunctions[n].keyword;
+	for (n=0; n<TorsionFunctions::nTorsionFunctions; n++) slist << TorsionFunctions::functionData[n].keyword;
 	for (ForcefieldBound* ffb = ff->impropers(); ffb != NULL; ffb = ffb->next)
 	{
 		params = ffb->parameters();
@@ -311,7 +311,7 @@ void AtenForcefieldEditor::populate(Forcefield* ff)
 	ui.FFEditorUreyBradleysTable->setRowCount(ff->nUreyBradleys());
 	ui.FFEditorUreyBradleysTable->setHorizontalHeaderLabels(QStringList() << "Type 1" << "Type 2" << "Type 3" << "Form" << "Data 1" << "Data 2" << "Data 3" << "Data 4" << "Data 5" << "Data 6" << "Data 7" << "Data 8" << "Data 9" << "Data 10");
 	slist.clear();
-	for (n=0; n<BondFunctions::nBondFunctions; n++) slist << BondFunctions::BondFunctions[n].keyword;
+	for (n=0; n<BondFunctions::nBondFunctions; n++) slist << BondFunctions::functionData[n].keyword;
 	for (ForcefieldBound* ffb = ff->ureyBradleys(); ffb != NULL; ffb = ffb->next)
 	{
 		params = ffb->parameters();
@@ -472,14 +472,14 @@ void AtenForcefieldEditor::updateVdwLabels(ForcefieldAtom* ffa)
 
 	// Construct labels
 	QString text;
-	text.sprintf("%s (%s)", VdwFunctions::VdwFunctions[vf].name, VdwFunctions::VdwFunctions[vf].keyword);
+	text.sprintf("%s (%s)", VdwFunctions::functionData[vf].name, VdwFunctions::functionData[vf].keyword);
 	ui.FFEditorAtomFormLabel->setText(text);
 	text.clear();
-	for (int n=0; n<VdwFunctions::VdwFunctions[vf].nParameters; ++n)
+	for (int n=0; n<VdwFunctions::functionData[vf].nParameters; ++n)
 	{
 		if (n != 0) text += ", ";
-		if (VdwFunctions::VdwFunctions[vf].isEnergyParameter[n]) text += VdwFunctions::VdwFunctions[vf].parameterKeywords[n];
-		else text += VdwFunctions::VdwFunctions[vf].parameterKeywords[n];
+		if (VdwFunctions::functionData[vf].isEnergyParameter[n]) text += VdwFunctions::functionData[vf].parameterKeywords[n];
+		else text += VdwFunctions::functionData[vf].parameterKeywords[n];
 	}
 	ui.FFEditorAtomParametersLabel->setText(text);
 }
@@ -574,14 +574,14 @@ void AtenForcefieldEditor::updateBondsLabels(ForcefieldBound* ffb)
 	BondFunctions::BondFunction bf = ffb->bondForm();
 	// Construct labels
 	QString text;
-	text.sprintf("%s (%s)", BondFunctions::BondFunctions[bf].name, BondFunctions::BondFunctions[bf].keyword);
+	text.sprintf("%s (%s)", BondFunctions::functionData[bf].name, BondFunctions::functionData[bf].keyword);
 	ui.FFEditorBondFormLabel->setText(text);
 	text.clear();
-	for (int n=0; n<BondFunctions::BondFunctions[bf].nParameters; ++n)
+	for (int n=0; n<BondFunctions::functionData[bf].nParameters; ++n)
 	{
 		if (n != 0) text += ", ";
-		if (BondFunctions::BondFunctions[bf].isEnergyParameter[n]) text += "<b>" + QString(BondFunctions::BondFunctions[bf].parameterKeywords[n]) + "</b>";
-		else text += BondFunctions::BondFunctions[bf].parameterKeywords[n];
+		if (BondFunctions::functionData[bf].isEnergyParameter[n]) text += "<b>" + QString(BondFunctions::functionData[bf].parameterKeywords[n]) + "</b>";
+		else text += BondFunctions::functionData[bf].parameterKeywords[n];
 	}
 	ui.FFEditorBondParametersLabel->setText(text);
 }
@@ -657,14 +657,14 @@ void AtenForcefieldEditor::updateAnglesLabels(ForcefieldBound* ffb)
 	AngleFunctions::AngleFunction bf = ffb->angleForm();
 	// Construct labels
 	QString text;
-	text.sprintf("%s (%s)", AngleFunctions::AngleFunctions[bf].name, AngleFunctions::AngleFunctions[bf].keyword);
+	text.sprintf("%s (%s)", AngleFunctions::functionData[bf].name, AngleFunctions::functionData[bf].keyword);
 	ui.FFEditorAngleFormLabel->setText(text);
 	text.clear();
-	for (int n=0; n<AngleFunctions::AngleFunctions[bf].nParameters; ++n)
+	for (int n=0; n<AngleFunctions::functionData[bf].nParameters; ++n)
 	{
 		if (n != 0) text += ", ";
-		if (AngleFunctions::AngleFunctions[bf].isEnergyParameter[n]) text += "<b>" + QString(AngleFunctions::AngleFunctions[bf].parameterKeywords[n]) + "</b>";
-		else text += AngleFunctions::AngleFunctions[bf].parameterKeywords[n];
+		if (AngleFunctions::functionData[bf].isEnergyParameter[n]) text += "<b>" + QString(AngleFunctions::functionData[bf].parameterKeywords[n]) + "</b>";
+		else text += AngleFunctions::functionData[bf].parameterKeywords[n];
 	}
 	ui.FFEditorAngleParametersLabel->setText(text);
 }
@@ -741,14 +741,14 @@ void AtenForcefieldEditor::updateTorsionsLabels(ForcefieldBound* ffb)
 	TorsionFunctions::TorsionFunction bf = ffb->torsionForm();
 	// Construct labels
 	QString text;
-	text.sprintf("%s (%s)", TorsionFunctions::TorsionFunctions[bf].name, TorsionFunctions::TorsionFunctions[bf].keyword);
+	text.sprintf("%s (%s)", TorsionFunctions::functionData[bf].name, TorsionFunctions::functionData[bf].keyword);
 	ui.FFEditorTorsionFormLabel->setText(text);
 	text.clear();
-	for (int n=0; n<TorsionFunctions::TorsionFunctions[bf].nParameters; ++n)
+	for (int n=0; n<TorsionFunctions::functionData[bf].nParameters; ++n)
 	{
 		if (n != 0) text += ", ";
-		if (TorsionFunctions::TorsionFunctions[bf].isEnergyParameter[n]) text += "<b>" + QString(TorsionFunctions::TorsionFunctions[bf].parameterKeywords[n]) + "</b>";
-		else text += TorsionFunctions::TorsionFunctions[bf].parameterKeywords[n];
+		if (TorsionFunctions::functionData[bf].isEnergyParameter[n]) text += "<b>" + QString(TorsionFunctions::functionData[bf].parameterKeywords[n]) + "</b>";
+		else text += TorsionFunctions::functionData[bf].parameterKeywords[n];
 	}
 	ui.FFEditorTorsionParametersLabel->setText(text);
 }
@@ -834,14 +834,14 @@ void AtenForcefieldEditor::updateImpropersLabels(ForcefieldBound* ffb)
 	TorsionFunctions::TorsionFunction bf = ffb->torsionForm();
 	// Construct labels
 	QString text;
-	text.sprintf("%s (%s)", TorsionFunctions::TorsionFunctions[bf].name, TorsionFunctions::TorsionFunctions[bf].keyword);
+	text.sprintf("%s (%s)", TorsionFunctions::functionData[bf].name, TorsionFunctions::functionData[bf].keyword);
 	ui.FFEditorImproperFormLabel->setText(text);
 	text.clear();
-	for (int n=0; n<TorsionFunctions::TorsionFunctions[bf].nParameters; ++n)
+	for (int n=0; n<TorsionFunctions::functionData[bf].nParameters; ++n)
 	{
 		if (n != 0) text += ", ";
-		if (TorsionFunctions::TorsionFunctions[bf].isEnergyParameter[n]) text += "<b>" + QString(TorsionFunctions::TorsionFunctions[bf].parameterKeywords[n]) + "</b>";
-		else text += TorsionFunctions::TorsionFunctions[bf].parameterKeywords[n];
+		if (TorsionFunctions::functionData[bf].isEnergyParameter[n]) text += "<b>" + QString(TorsionFunctions::functionData[bf].parameterKeywords[n]) + "</b>";
+		else text += TorsionFunctions::functionData[bf].parameterKeywords[n];
 	}
 	ui.FFEditorImproperParametersLabel->setText(text);
 }
@@ -913,14 +913,14 @@ void AtenForcefieldEditor::updateUreyBradleysLabels(ForcefieldBound* ffb)
 	BondFunctions::BondFunction bf = ffb->bondForm();
 	// Construct labels
 	QString text;
-	text.sprintf("%s (%s)", BondFunctions::BondFunctions[bf].name, BondFunctions::BondFunctions[bf].keyword);
+	text.sprintf("%s (%s)", BondFunctions::functionData[bf].name, BondFunctions::functionData[bf].keyword);
 	ui.FFEditorUreyBradleyFormLabel->setText(text);
 	text.clear();
-	for (int n=0; n<BondFunctions::BondFunctions[bf].nParameters; ++n)
+	for (int n=0; n<BondFunctions::functionData[bf].nParameters; ++n)
 	{
 		if (n != 0) text += ", ";
-		if (BondFunctions::BondFunctions[bf].isEnergyParameter[n]) text += "<b>" + QString(BondFunctions::BondFunctions[bf].parameterKeywords[n]) + "</b>";
-		else text += BondFunctions::BondFunctions[bf].parameterKeywords[n];
+		if (BondFunctions::functionData[bf].isEnergyParameter[n]) text += "<b>" + QString(BondFunctions::functionData[bf].parameterKeywords[n]) + "</b>";
+		else text += BondFunctions::functionData[bf].parameterKeywords[n];
 	}
 	ui.FFEditorUreyBradleyParametersLabel->setText(text);
 }

@@ -436,7 +436,7 @@ double Prefs::styleRadius(Prefs::DrawStyle ds, int el) const
 {
 	Prefs::DrawStyle dstyle;
 	renderStyle_ == Prefs::OwnStyle ? dstyle = ds : dstyle = renderStyle_;
-	return (dstyle == Prefs::ScaledStyle) ? (Elements().atomicRadius(el) * atomStyleRadius_[Prefs::ScaledStyle]) : atomStyleRadius_[dstyle];
+	return (dstyle == Prefs::ScaledStyle) ? (ElementMap::atomicRadius(el) * atomStyleRadius_[Prefs::ScaledStyle]) : atomStyleRadius_[dstyle];
 }
 
 /*

@@ -268,13 +268,13 @@ bool DisorderData::modelOverlaps(Model* other, UnitCell& globalCell)
 		// Disregard current selected molecule, if 'other == sourceModel_'
 		if ((other == &targetModel_) && (i >= moleculeId_*sourceModel_.nAtoms()) && (i < (moleculeId_+1)*sourceModel_.nAtoms())) continue;
 		
-		ri = scaleFactor_*Elements().atomicRadius(ii[i]);
+		ri = scaleFactor_*ElementMap::atomicRadius(ii[i]);
 		for (j = 0; j < sourceModel_.nAtoms(); ++j)
 		{
 			// Determine distance using supplied cell conditions
 			rij = globalCell.distance(ii[i], jj[j], true);
 			// Simple penalty function - subtract off some multiple of the atomic radius of each atom...
-			rij -= ri + scaleFactor_*Elements().atomicRadius(jj[j]);
+			rij -= ri + scaleFactor_*ElementMap::atomicRadius(jj[j]);
 			if (rij < 0.0) return true;
 		}
 	}

@@ -45,9 +45,6 @@ class ForcefieldAtom;
 class ElementMap
 {
 	public:
-	// Constructor / Destructor
-	ElementMap();
-	~ElementMap();
 	// Name->Z mapping methods
 	enum ZMapType { AlphaZMap, FirstAlphaZMap, SingleAlphaZMap, NameZMap, NumericZMap, ForcefieldZMap, AutoZMap, nZMapTypes };
 	static ElementMap::ZMapType zMapType(QString s, bool reportError = false);
@@ -59,11 +56,7 @@ class ElementMap
 	 */
 	private:
 	// Pointer to main Aten object
-	Aten* aten_;
-
-	public:
-	// Set pointer to main Aten object
-	void setAten(Aten* aten);
+	static Aten* aten_;
 
 
 	/*
@@ -73,45 +66,49 @@ class ElementMap
 	// Default element data
 	static const Element defaultElements_[];
 	// Current element data array
-	Element* elements_;
+	static Element* elements_;
 	// Number of defined elements
-	int nElements_;
+	static int nElements_;
 	// Storage for copy of element data
-	Element* backupElements_;
+	static Element* backupElements_;
 	// Element map name conversions to apply
-	NameMapList<int> mappings_;
+	static NameMapList<int> mappings_;
 
 	public:
+	// Initialise data before first use
+	static void initialise(Aten* aten);
+	// Delete data after final use
+	static void finalise();
 	// Backup current data
-	void backupData();
+	static void backupData();
 	// Restore default element values
-	void restoreData();
+	static void restoreData();
 	// Return number of defined elements
-	int nElements() const;
+	static int nElements();
 	// Return pointer to specified element
-	Element* element(int z);
+	static Element* element(int z);
 	// Clear all name mappings
-	void clearMappings();
+	static void clearMappings();
 	// Add name mapping
-	void addMapping(int element, QString names);
+	static void addMapping(int element, QString names);
 	// Return Z of specified element symbol
-	int z(QString symbol) const;
+	static int z(QString symbol);
 	// Convert string from Z to element number
-	int numberToZ(QString number) const;
+	static int numberToZ(QString number);
 	// Convert string from alpha to element number
-	int alphaToZ(QString alpha) const;
+	static int alphaToZ(QString alpha);
 	// Convert string from alpha (up to non-AZ inc 09) to element number
-	int firstAlphaToZ(QString alpha) const;
+	static int firstAlphaToZ(QString alpha);
 	// Convert string from first alpha (up to non-AZ inc 09) to element number
-	int singleAlphaToZ(QString alpha) const;
+	static int singleAlphaToZ(QString alpha);
 	// Convert string from name to element number
-	int nameToZ(QString name) const;
+	static int nameToZ(QString name);
 	// Convert string from fftype to element number
-	int ffToZ(QString s) const;
+	static int ffToZ(QString s);
 	// Return atomic number of element in string using supplied method (if specified)
-	int find(QString query, ElementMap::ZMapType zmt = ElementMap::AutoZMap) const;
+	static int find(QString query, ElementMap::ZMapType zmt = ElementMap::AutoZMap);
 	// Return first forcefield atom type matching supplied name
-	ForcefieldAtom* forcefieldAtom(QString name);
+	static ForcefieldAtom* forcefieldAtom(QString name);
 
 
 	/*
@@ -119,37 +116,37 @@ class ElementMap
 	 */
 	public:
 	// Return periodic table group number
-	int group(int z) const;
+	static int group(int z);
 	// Return atomic mass of atomic number 'z'
-	double atomicMass(int z) const;
+	static double atomicMass(int z);
 	// Return name of atomic number 'z'
-	const char* name(int z) const;
+	static const char* name(int z);
 	// Return symbol of atomic number 'z'
-	const char* symbol(int z) const;
+	static const char* symbol(int z);
 	// Set radius of atomic number 'z'
-	void setAtomicRadius(int z, double r);
+	static void setAtomicRadius(int z, double r);
 	// Return effective radius of atomic number 'z'
-	double atomicRadius(int z) const;
-	// Return whether radius has changed for ztomic number 'z'
-	bool radiusHasChanged(int z) const;
+	static double atomicRadius(int z);
+	// Return whether radius has changed for atomic number 'z'
+	static bool radiusHasChanged(int z);
 	// Return bond order penalty for TBO 'bo' of atomic number 'z'
-	int bondOrderPenalty(int z, int bo) const;
+	static int bondOrderPenalty(int z, int bo);
 	// Return the colour of the element
-	double* colour(int z);
+	static double* colour(int z);
 	// Set colour component of element
-	void setColour(int z, int rgba, double value);
+	static void setColour(int z, int rgba, double value);
 	// Set colour of element
-	void setColour(int z, double r, double g, double b, double a);
+	static void setColour(int z, double r, double g, double b, double a);
 	// Copy the colour of the element into the GLfloat array provided
-	void copyColour(int z, GLfloat* v) const;
+	static void copyColour(int z, GLfloat* v);
 	// Copy the colour of the element into the double array provided
-	void copyColour(int z, double* v) const;
+	static void copyColour(int z, double* v);
 	// Copy the colour of the element into the Vec4 provided
-	void copyColour(int z, Vec4<GLfloat>& v) const;
+	static void copyColour(int z, Vec4<GLfloat>& v);
 	// Return whether colour of specified element has changed from the default
-	bool colourHasChanged(int z) const;
+	static bool colourHasChanged(int z);
 	// Return QIcon for the given element
-	QIcon icon(int z) const;
+	static QIcon icon(int z);
 
 
 	/*
@@ -157,22 +154,20 @@ class ElementMap
 	 */
 	public:
 	// Return periodic table group number
-	int group(Atom* i);
+	static int group(Atom* i);
 	// Return atomic mass of atomic number 'i'
-	double atomicMass(Atom* i);
+	static double atomicMass(Atom* i);
 	// Return name of atomic number 'i'
-	const char* name(Atom* i);
+	static const char* name(Atom* i);
 	// Return symbol of atomic number 'i'
-	const char* symbol(Atom* i);
+	static const char* symbol(Atom* i);
 	// Return effective radius of atomic number 'i'
-	double atomicRadius(Atom* i);
+	static double atomicRadius(Atom* i);
 	// Return bond order penalty for TBO 'bo' of atomic number 'i'
-	int bondOrderPenalty(Atom* i, int bo);
+	static int bondOrderPenalty(Atom* i, int bo);
 	// Return the colour of the element
-	double* colour(Atom* i);
+	static double* colour(Atom* i);
 };
-
-extern ElementMap& Elements();
 
 ATEN_END_NAMESPACE
 

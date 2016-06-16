@@ -728,13 +728,13 @@ int Aten::parseCli(int argc, char *argv[])
 							Messenger::print("Mangled map value found: '%s'.", qPrintable(parser.argc(n)));
 							return -1;
 						}
-						el = Elements().z(items.at(1));
+						el = ElementMap::z(items.at(1));
 						if (el == 0)
 						{
 							Messenger::print("Unrecognised element '%s' in type map.", qPrintable(items.at(1)));
 							return -1;
 						}
-						else Elements().addMapping(el, items.at(0));
+						else ElementMap::addMapping(el, items.at(0));
 					}
 					break;
 				// Create a new model

@@ -145,7 +145,7 @@ bool Commands::function_MopacMinimise(CommandNode* c, Bundle& obj, ReturnValue& 
 	for (Atom* i = aten_.currentModelOrFrame()->atoms(); i != NULL; i = i->next)
 	{
 		opt = 1 - i->isPositionFixed();
-		parser.writeLineF("%3s %12.6f %1i %12.6f %1i %12.6f %1i", Elements().symbol(i), i->r().x, opt, i->r().y, opt, i->r().z, opt);
+		parser.writeLineF("%3s %12.6f %1i %12.6f %1i %12.6f %1i", ElementMap::symbol(i), i->r().x, opt, i->r().y, opt, i->r().z, opt);
 	}
 	if (aten_.currentModelOrFrame()->cell().type() != UnitCell::NoCell)
 	{

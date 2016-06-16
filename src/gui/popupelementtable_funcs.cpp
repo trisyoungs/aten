@@ -42,15 +42,15 @@ ElementTablePopup::ElementTablePopup(AtenWindow& parent, TMenuButton* buttonPare
 	QPushButton* button;
 	QPalette palette = this->palette();
 	QColor background, foreground;
-	for (n=0; n<Elements().nElements(); ++n)
+	for (n=0; n<ElementMap::nElements(); ++n)
 	{
 		button = new QPushButton(this);
 		elementButtons_ << button;
-		button->setText(Elements().symbol(n));
+		button->setText(ElementMap::symbol(n));
 		button->setMinimumSize(24,24);
 		button->setMaximumSize(24,24);
-		button->setToolTip(QString("%1 (%2)").arg(Elements().name(n), Elements().symbol(n)));
-		colour = Elements().colour(n);
+		button->setToolTip(QString("%1 (%2)").arg(ElementMap::name(n), ElementMap::symbol(n)));
+		colour = ElementMap::colour(n);
 		background.setRgbF(colour[0], colour[1], colour[2], colour[3]);
 		foreground = ( ((background.saturation() > 30) || (background.value() < 50)) ? Qt::white : Qt::black);
 		palette.setColor(QPalette::Window, background);
@@ -161,7 +161,7 @@ bool ElementTablePopup::callMethod(QString methodName, ReturnValue& rv)
 		currentElement_ = rv.asInteger();
 
 		// Set icon on parent button
-		parentMenuButton()->setIcon(Elements().icon(currentElement_));
+		parentMenuButton()->setIcon(ElementMap::icon(currentElement_));
 
 		return true;
 	}
@@ -193,10 +193,10 @@ void ElementTablePopup::ElementButton_clicked(bool checked)
 		done();
         }
 
-	currentElement_ = Elements().find(button->text());
+	currentElement_ = ElementMap::find(button->text());
 
 	// Set icon on parent button
-	parentMenuButton()->setIcon(Elements().icon(currentElement_));
+	parentMenuButton()->setIcon(ElementMap::icon(currentElement_));
 
 	done();
 }

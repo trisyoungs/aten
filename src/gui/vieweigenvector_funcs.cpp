@@ -62,7 +62,7 @@ void AtenViewEigenvector::showWindow(Model* m, int id)
 		{
 			// Atom column
 			tabitem = new QTableWidgetItem();
-			text.sprintf("%i (%s)\n", bas->atomId()+1, m->atom(bas->atomId()) != NULL ? Elements().symbol(m->atom(bas->atomId())) : "NULL");
+			text.sprintf("%i (%s)\n", bas->atomId()+1, m->atom(bas->atomId()) != NULL ? ElementMap::symbol(m->atom(bas->atomId())) : "NULL");
 			tabitem->setText(text);
 			ui.EigenvectorTable->setItem(row, AtenViewEigenvector::AtomColumn, tabitem);
 			// Add in shell data
@@ -86,7 +86,7 @@ void AtenViewEigenvector::showWindow(Model* m, int id)
 		{
 			// Atom column
 			tabitem = new QTableWidgetItem();
-			text.sprintf("%i (%s)\n", bas->atomId()+1, m->atom(bas->atomId()) != NULL ? Elements().symbol(m->atom(bas->atomId())) : "NULL");
+			text.sprintf("%i (%s)\n", bas->atomId()+1, m->atom(bas->atomId()) != NULL ? ElementMap::symbol(m->atom(bas->atomId())) : "NULL");
 			tabitem->setText(text);
 			ui.EigenvectorTable->setItem(row, AtenViewEigenvector::AtomColumn, tabitem);
 			// Add in shell data

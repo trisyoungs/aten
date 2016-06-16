@@ -117,7 +117,7 @@ bool Commands::function_ClearExpression(CommandNode* c, Bundle& obj, ReturnValue
 // Clear manual type mapping list ('clearmap')
 bool Commands::function_ClearMap(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	Elements().clearMappings();
+	ElementMap::clearMappings();
 	rv.reset();
 	return true;
 }
@@ -467,9 +467,9 @@ bool Commands::function_GetCombinationRule(CommandNode* c, Bundle& obj, ReturnVa
 	if (form == VdwFunctions::nVdwFunctions) return false;
 	// Next, get functional form parameter
 	int param = VdwFunctions::vdwParameter(form, c->argc(1), true);
-	if (param == VdwFunctions::VdwFunctions[form].nParameters) return false;
+	if (param == VdwFunctions::functionData[form].nParameters) return false;
 	// Everything OK, so return combination rule in use
-	rv.set(CombinationRules::combinationRule( VdwFunctions::VdwFunctions[form].combinationRules[param] ));
+	rv.set(CombinationRules::combinationRule( VdwFunctions::functionData[form].combinationRules[param] ));
 	return true;
 }
 
@@ -553,9 +553,9 @@ bool Commands::function_Map(CommandNode* c, Bundle& obj, ReturnValue& rv)
 
 			// Split into value/argument
 			QStringList items = parser.argc(n).split('=');
-			el = Elements().z(items.at(1));
+			el = ElementMap::z(items.at(1));
 			if (el == 0) Messenger::print("Unrecognised element '%s' in type map.", qPrintable(items.at(1)));
-			else Elements().addMapping(el, items.at(0));
+			else ElementMap::addMapping(el, items.at(0));
 		}
 	}
 	rv.reset();
@@ -656,14 +656,14 @@ bool Commands::function_SetCombinationRule(CommandNode* c, Bundle& obj, ReturnVa
 	
 	// Next, get functional form parameter
 	int param = VdwFunctions::vdwParameter(form, c->argc(1), true);
-	if (param == VdwFunctions::VdwFunctions[form].nParameters) return false;
+	if (param == VdwFunctions::functionData[form].nParameters) return false;
 	
 	// Finally, search combination rule
 	CombinationRules::CombinationRule cr = CombinationRules::combinationRule(c->argc(2), true);
 	if (cr == CombinationRules::nCombinationRules) return false;
 	
 	// Everything OK, so set data
-	VdwFunctions::VdwFunctions[form].combinationRules[param] = cr;
+	VdwFunctions::functionData[form].combinationRules[param] = cr;
 	return true;
 }
 

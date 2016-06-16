@@ -35,7 +35,7 @@ PrimitiveSet::PrimitiveSet()
 {
 	// Adjustments
 	sphereAtomAdjustment_ = 1.0;
-	scaledAtomAdjustments_.createEmpty(Elements().nElements());
+	scaledAtomAdjustments_.createEmpty(ElementMap::nElements());
 
 	// Primitives
 	creationPoint_ = -1;
@@ -72,9 +72,9 @@ void PrimitiveSet::calculateAdjustments()
 	// Scaled Style
 	theta = asin(bondradius / atomradius);
 	sphereAtomAdjustment_ = atomradius - atomradius*cos(theta);
-	for (i = 0; i<Elements().nElements(); ++i)
+	for (i = 0; i<ElementMap::nElements(); ++i)
 	{
-		atomradius = prefs.atomStyleRadius(Prefs::ScaledStyle) * Elements().atomicRadius(i);
+		atomradius = prefs.atomStyleRadius(Prefs::ScaledStyle) * ElementMap::atomicRadius(i);
 		theta = asin(bondradius / atomradius);
 		scaledAtomAdjustments_[i] = (atomradius - atomradius*cos(theta));
 	}

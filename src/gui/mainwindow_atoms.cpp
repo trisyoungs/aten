@@ -203,7 +203,7 @@ void AtenWindow::atomsTableUpdateRow(int row)
 				item->setText(QString::number(i->id()+1));
 				break;
 			case (AtenWindow::AtomElementItem):
-				item->setText(Elements().symbol(i));
+				item->setText(ElementMap::symbol(i));
 				break;
 			case (AtenWindow::AtomTypeItem):
 				item->setText((i->type() == NULL ? "" : i->type()->name()));

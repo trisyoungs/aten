@@ -29,12 +29,12 @@
 
 ATEN_BEGIN_NAMESPACE
 
-// Class return function
-ElementMap& Elements()
-{
-	static ElementMap elementMap_;
-	return elementMap_;
-}
+// Static Members
+Aten* ElementMap::aten_ = NULL;
+Element* ElementMap::elements_ = NULL;
+int ElementMap::nElements_ = 0;
+Element* ElementMap::backupElements_ = NULL;
+NameMapList<int> ElementMap::mappings_;
 
 ATEN_END_NAMESPACE
 
@@ -310,15 +310,19 @@ const Element ElementMap::defaultElements_[] = {
 		{ 32,32,32,32,32,32,32,32,32 },	{ 0,0,0,0,0,0,0,0,0 } }
 };
 
-// Constructor
-ElementMap::ElementMap()
+/*
+ * Element Data
+ */
+
+// Initialise data before first use
+void ElementMap::initialise(Aten* aten)
 {
 	// Private variables
 	aten_ = NULL;
 
-	// Determine number of defined elements, and double-check against MAXELEMENTS constant
+	// Determine number of defined elements, and double-check against MAXELEMENTSant
 	nElements_ = sizeof(defaultElements_) / sizeof(defaultElements_[0]);
-	if (nElements_ > MAXELEMENTS) printf("Warning - Number of internally-defined elements exceeds MAXELEMENTS constant.\n");
+	if (nElements_ > MAXELEMENTS) printf("Warning - Number of internally-defined elements exceeds MAXELEMENTSant.\n");
 
 	// Copy default element data to current element array
 	elements_ = new Element[nElements_];
@@ -331,26 +335,12 @@ ElementMap::ElementMap()
 	mappings_.setDefaultValue(-1);
 }
 
-// Destructor
-ElementMap::~ElementMap()
+// Delete data after final use
+void ElementMap::finalise()
 {
 	delete[] backupElements_;
 	delete[] elements_;
 }
-
-/*
- * Pointer to Aten
- */
-
-// Set pointer to main Aten object
-void ElementMap::setAten(Aten* aten)
-{
-	aten_ = aten;
-}
-
-/*
- * Element Data
- */
 
 // Copy current element data to backup structure
 void ElementMap::backupData()
@@ -364,9 +354,8 @@ void ElementMap::restoreData()
 	for (int n=0; n <nElements_; ++n) elements_[n] = backupElements_[n];
 }
 
-
 // Return number of defined elements
-int ElementMap::nElements() const
+int ElementMap::nElements()
 {
 	return nElements_;
 }
@@ -395,7 +384,7 @@ void ElementMap::addMapping(int element, QString name)
 }
 
 // Return Z of specified element symbol
-int ElementMap::z(QString symbol) const
+int ElementMap::z(QString symbol)
 {
 	QString ucase = symbol.toUpper();
 	for (int n=0; n<nElements_; ++n) if (ucase == elements_[n].ucSymbol) return n;
@@ -403,7 +392,7 @@ int ElementMap::z(QString symbol) const
 }
 
 // Convert string from Z to element number
-int ElementMap::numberToZ(QString number) const
+int ElementMap::numberToZ(QString number)
 {
 	// Check that the string is entirely numerical
 	bool isNumber = true;
@@ -430,7 +419,7 @@ int ElementMap::numberToZ(QString number) const
 }
 
 // Convert string from alpha to element number
-int ElementMap::alphaToZ(QString alpha) const
+int ElementMap::alphaToZ(QString alpha)
 {
 	// Ignore numbers. Convert up to non-alpha character.
 	QString stripped;
@@ -447,7 +436,7 @@ int ElementMap::alphaToZ(QString alpha) const
 }
 
 // Convert string from first alpha part to element number
-int ElementMap::firstAlphaToZ(QString alpha) const
+int ElementMap::firstAlphaToZ(QString alpha)
 {
 	// Convert up to non-alpha character.
 	QString stripped;
@@ -464,7 +453,7 @@ int ElementMap::firstAlphaToZ(QString alpha) const
 }
 
 // Convert string from first alpha character to element number
-int ElementMap::singleAlphaToZ(QString alpha) const
+int ElementMap::singleAlphaToZ(QString alpha)
 {
 	// Convert first alpha character.
 	QString stripped;
@@ -481,7 +470,7 @@ int ElementMap::singleAlphaToZ(QString alpha) const
 }
 
 // Convert string from name to element number
-int ElementMap::nameToZ(QString alpha) const
+int ElementMap::nameToZ(QString alpha)
 {
 	// Ignore numbers. Convert up to non-alpha character.
 	QString stripped;
@@ -497,7 +486,7 @@ int ElementMap::nameToZ(QString alpha) const
 }
 
 // Convert string from fftype to element number
-int ElementMap::ffToZ(QString s) const
+int ElementMap::ffToZ(QString s)
 {
 	if (!aten_) return -1;
 	ForcefieldAtom* ffa;
@@ -513,7 +502,7 @@ int ElementMap::ffToZ(QString s) const
 }
 
 // Search for element named 'query' in the list of known elements
-int ElementMap::find(QString query, ElementMap::ZMapType zmt) const
+int ElementMap::find(QString query, ElementMap::ZMapType zmt)
 {
 	// Get the element number from the element name provided.
 	Messenger::enter("ElementMap::find");
@@ -596,7 +585,7 @@ ForcefieldAtom* ElementMap::forcefieldAtom(QString name)
  */
 
 // Return group number of atomic number 'z'
-int ElementMap::group(int z) const
+int ElementMap::group(int z)
 {
 	if ((z < 0) || (z > nElements_))
 	{
@@ -607,7 +596,7 @@ int ElementMap::group(int z) const
 }
 
 // Return atomic mass of atomic number 'z'
-double ElementMap::atomicMass(int z) const
+double ElementMap::atomicMass(int z)
 {
 	if ((z < 0) || (z > nElements_))
 	{
@@ -618,7 +607,7 @@ double ElementMap::atomicMass(int z) const
 }
 
 // Return name of atomic number 'z'
-const char* ElementMap::name(int z) const
+const char* ElementMap::name(int z)
 {
 	if ((z < 0) || (z > nElements_))
 	{
@@ -629,7 +618,7 @@ const char* ElementMap::name(int z) const
 }
 
 // Return symbol of atomic number 'z'
-const char* ElementMap::symbol(int z) const
+const char* ElementMap::symbol(int z)
 {
 	if ((z < 0) || (z > nElements_))
 	{
@@ -651,7 +640,7 @@ void ElementMap::setAtomicRadius(int z, double r)
 }
 
 // Return effective radius of atomic number 'z'
-double ElementMap::atomicRadius(int z) const
+double ElementMap::atomicRadius(int z)
 {
 	if ((z < 0) || (z > nElements_))
 	{
@@ -662,7 +651,7 @@ double ElementMap::atomicRadius(int z) const
 }
 
 // Return whether radius has changed for ztomic number 'z'
-bool ElementMap::radiusHasChanged(int z) const
+bool ElementMap::radiusHasChanged(int z)
 {
 	if ((z < 0) || (z > nElements_))
 	{
@@ -673,7 +662,7 @@ bool ElementMap::radiusHasChanged(int z) const
 }
 
 // Return bond order penalty for TBO 'bo' of atomic number 'z'
-int ElementMap::bondOrderPenalty(int z, int bo) const
+int ElementMap::bondOrderPenalty(int z, int bo)
 {
 	if ((z < 0) || (z > nElements_))
 	{
@@ -718,7 +707,7 @@ void ElementMap::setColour(int z, double r, double g, double b, double a)
 }
 
 // Copy the colour of the element into the GLfloat array provided
-void ElementMap::copyColour(int z, GLfloat* v) const
+void ElementMap::copyColour(int z, GLfloat* v)
 {
 	if ((z < 0) || (z > nElements_))
 	{
@@ -729,7 +718,7 @@ void ElementMap::copyColour(int z, GLfloat* v) const
 }
 
 // Copy the colour of the element into the double array provided
-void ElementMap::copyColour(int z, double* v) const
+void ElementMap::copyColour(int z, double* v)
 {
 	if ((z < 0) || (z > nElements_))
 	{
@@ -740,7 +729,7 @@ void ElementMap::copyColour(int z, double* v) const
 }
 
 // Copy the colour of the element into the Vec4 provided
-void ElementMap::copyColour(int z, Vec4<GLfloat>& v) const
+void ElementMap::copyColour(int z, Vec4<GLfloat>& v)
 {
 	if ((z < 0) || (z > nElements_))
 	{
@@ -751,7 +740,7 @@ void ElementMap::copyColour(int z, Vec4<GLfloat>& v) const
 }
 
 // Return whether colour of specified element has changed from the default
-bool ElementMap::colourHasChanged(int z) const
+bool ElementMap::colourHasChanged(int z)
 {
 	if ((z < 0) || (z > nElements_))
 	{
@@ -763,7 +752,7 @@ bool ElementMap::colourHasChanged(int z) const
 }
 
 // Return QIcon for the given element
-QIcon ElementMap::icon(int z) const
+QIcon ElementMap::icon(int z)
 {
 	if ((z < 0) || (z > nElements_))
 	{

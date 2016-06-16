@@ -113,7 +113,7 @@ void VibrationsWidget::refreshDisplacements()
 	{
 		if (i == NULL) Messenger::print("Warning - More displacements defined in Vibration than there are atoms in the parent model.");
 		item = new QTableWidgetItem();
-		item->setText(i == NULL ? "NULL" : Elements().symbol(i));
+		item->setText(i == NULL ? "NULL" : ElementMap::symbol(i));
 		ui.DisplacementsTable->setItem(n, 0, item);
 		item = new QTableWidgetItem();
 		item->setText(QString::number(displacements[n].x));

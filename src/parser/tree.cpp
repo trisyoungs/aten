@@ -615,8 +615,8 @@ TreeNode* Tree::addConstant(QString s)
 TreeNode* Tree::addElementConstant(int el)
 {
 	ElementVariable* var;
-	if ((el < 1) || (el > Elements().nElements())) var = new ElementVariable(NULL,true);
-	else var = new ElementVariable(Elements().element(el), true);
+	if ((el < 1) || (el > ElementMap::nElements())) var = new ElementVariable(NULL,true);
+	else var = new ElementVariable(ElementMap::element(el), true);
 	nodes_.own(var);
 	return var;
 }

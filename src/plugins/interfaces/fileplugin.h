@@ -393,7 +393,7 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 	Atom* createAtom(Model* model, QString name, Vec3<double> r = Vec3<double>())
 	{
 		// Find element in elements map
-		int el = Elements().find(name, standardOptions_.zMappingType());
+		int el = ElementMap::find(name, standardOptions_.zMappingType());
 
 		// Add atom
 		Atom* i = model->addAtom(el, r);
@@ -401,7 +401,7 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 		// KeepNames and KeepTypes standard options
 		ForcefieldAtom* ffa = NULL;
 		if (standardOptions_.keepNames()) ffa = model->addAtomName(el, name);
-		else if (standardOptions_.keepTypes()) ffa = Elements().forcefieldAtom(name);
+		else if (standardOptions_.keepTypes()) ffa = ElementMap::forcefieldAtom(name);
 		if (ffa != NULL)
 		{
 			i->setType(ffa);

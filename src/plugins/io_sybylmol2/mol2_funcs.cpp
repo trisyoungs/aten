@@ -97,7 +97,7 @@ bool Mol2ModelPlugin::importData()
 {
 	// Read in lines, looking for the sections we're interested in.
 	// All sections begin with '@<TRIPOS>', e.g. '@<TRIPOS>MOLECULE'
-	// Read a line and parse it into '@<TRIPOS>' and keyword parts
+
 	int nAtoms = 0, nBonds = 0;
 	while (!fileParser_.eofOrBlank())
 	{

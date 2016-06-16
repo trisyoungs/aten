@@ -34,21 +34,21 @@ void Aten::dumpElementInfo(LineParser& parser)
 
 	// Loop over all element data, comparing it to the stored default values
 	parser.writeLine("// Element Data");
-	for (int n=0; n<Elements().nElements(); ++n)
+	for (int n=0; n<ElementMap::nElements(); ++n)
 	{
 		// Ambient Colour
-		if (Elements().colourHasChanged(n))
+		if (ElementMap::colourHasChanged(n))
 		{
 			double colour[4];
-			Elements().copyColour(n, colour);
-			line.sprintf("aten.elements[%s].colour = { %f, %f, %f, %f };", Elements().symbol(n), colour[0], colour[1], colour[2], colour[3]);
+			ElementMap::copyColour(n, colour);
+			line.sprintf("aten.elements[%s].colour = { %f, %f, %f, %f };", ElementMap::symbol(n), colour[0], colour[1], colour[2], colour[3]);
 			parser.writeLine(line);
 		}
 
 		// Atomic radius
-		if (Elements().radiusHasChanged(n))
+		if (ElementMap::radiusHasChanged(n))
 		{
-			line.sprintf("aten.elements[%s].radius = %f;", Elements().symbol(n), Elements().atomicRadius(n));
+			line.sprintf("aten.elements[%s].radius = %f;", ElementMap::symbol(n), ElementMap::atomicRadius(n));
 			parser.writeLine(line);
 		}
 	}

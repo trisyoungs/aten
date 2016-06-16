@@ -51,56 +51,80 @@ class FunctionData
 };
 
 // VDW Potential Functions
-namespace VdwFunctions
+class VdwFunctions
 {
+	public:
+	// Functional Form enum
 	enum VdwFunction { None, InversePower, Lj, LjGeometric, LjAB, Buckingham, Morse, nVdwFunctions };
-	extern FunctionData VdwFunctions[];
-	VdwFunction vdwFunction(QString s, bool reportError = false);
-	int vdwParameter(VdwFunction, QString s, bool reportError = false);
-	void printValid();
+	static VdwFunction vdwFunction(QString s, bool reportError = false);
+	static int vdwParameter(VdwFunction, QString s, bool reportError = false);
+	static void printValid();
+
+	// Function data array
+	static FunctionData functionData[];
+
+	// Function data parameter enums
 	enum LjParameter { LjEpsilon, LjSigma };
 	enum LjABParameter { LjA, LjB };
 	enum BuckinghamParameter { BuckinghamA, BuckinghamB, BuckinghamC };
 	enum InversePowerParameter { InversePowerEpsilon, InversePowerR, InversePowerN  };
 	enum MorseParameter { MorseD, MorseK, MorseEq };
-}
+};
 
 // Bond Potential Functions
-namespace BondFunctions
+class BondFunctions
 {
+	public:
+	// Functional Form enum
 	enum BondFunction { None, Ignore, Constraint, Harmonic, Morse, nBondFunctions };
-	extern FunctionData BondFunctions[];
-	BondFunction bondFunction(QString s, bool reportError = false);
-	int bondParameter(BondFunction, QString s, bool reportError = false);
-	void printValid();
+	static BondFunction bondFunction(QString s, bool reportError = false);
+	static int bondParameter(BondFunction, QString s, bool reportError = false);
+	static void printValid();
+
+	// Function data array
+	static FunctionData functionData[];
+
+	// Function data parameter enums
 	enum HarmonicParameter { HarmonicK, HarmonicEq };
 	enum ConstraintParameter { ConstraintK, ConstraintEq };
 	enum MorseParameter { MorseD, MorseK, MorseEq };
-}
+};
 
 // Angle potential forms
-namespace AngleFunctions
+class AngleFunctions
 {
+	public:
+	// Functional Form enum
 	enum AngleFunction { None, Ignore, Harmonic, Cosine, Cos2, HarmonicCosine, BondConstraint, nAngleFunctions };
-	extern FunctionData AngleFunctions[];
-	AngleFunction angleFunction(QString s, bool reportError = false);
-	int angleParameter(AngleFunction, QString s, bool reportError = false);
-	void printValid();
+	static AngleFunction angleFunction(QString s, bool reportError = false);
+	static int angleParameter(AngleFunction, QString s, bool reportError = false);
+	static void printValid();
+
+	// Function data array
+	static FunctionData functionData[];
+
+	// Function data parameter enums
 	enum HarmonicParameter { HarmonicK, HarmonicEq };
 	enum CosineParameter { CosineK, CosineN, CosineEq, CosineS };
 	enum Cos2Parameter { Cos2K, Cos2C0, Cos2C1, Cos2C2 };
 	enum HarmonicCosineParameter { HarmonicCosineK, HarmonicCosineEq };
 	enum BondConstraintParameter { BondConstraintK, BondConstraintEq };
-}
+};
 
 // Torsion potential forms
-namespace TorsionFunctions
+class TorsionFunctions
 {
+	public:
+	// Functional Form enum
 	enum TorsionFunction { None, Ignore, Cosine, Cos3, Cos4, Cos3C, CosCos, Dreiding, Pol9, nTorsionFunctions };
-	extern FunctionData TorsionFunctions[];
-	TorsionFunction torsionFunction(QString s, bool reportError = false);
-	int torsionParameter(TorsionFunction, QString s, bool reportError = false);
-	void printValid();
+	static TorsionFunction torsionFunction(QString s, bool reportError = false);
+	static int torsionParameter(TorsionFunction, QString s, bool reportError = false);
+	static void printValid();
+
+	// Function data array
+	static FunctionData functionData[];
+
+	// Function data parameter enums
 	enum CosineParameter { CosineK, CosineN, CosineEq, CosineS };
 	enum Cos3Parameter { Cos3K1, Cos3K2, Cos3K3 };
 	enum Cos4Parameter { Cos4K1, Cos4K2, Cos4K3, Cos4K4 };
@@ -108,7 +132,7 @@ namespace TorsionFunctions
 	enum CosCosParameter { CosCosK, CosCosN, CosCosEq };
 	enum DreidingParameter { DreidingK, DreidingN, DreidingEq };
 	enum Pol9Parameter { Pol9K1, Pol9K2, Pol9K3, Pol9K4, Pol9K5, Pol9K6, Pol9K7, Pol9K8, Pol9K9 };
-}
+};
 
 // Electostatic calculation methods
 namespace Electrostatics

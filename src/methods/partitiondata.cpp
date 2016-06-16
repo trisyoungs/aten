@@ -150,8 +150,8 @@ void PartitionData::resetReducedMass()
 // Adjust partition density based on supplied model
 void PartitionData::adjustReducedMass(Atom* i, bool subtract)
 {
-	if (subtract) reducedMass_ -= Elements().atomicMass(i) / AVOGADRO;
-	else reducedMass_ += Elements().atomicMass(i) / AVOGADRO;
+	if (subtract) reducedMass_ -= ElementMap::atomicMass(i) / AVOGADRO;
+	else reducedMass_ += ElementMap::atomicMass(i) / AVOGADRO;
 }
 
 // Adjust partition density based on supplied model

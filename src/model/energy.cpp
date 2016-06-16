@@ -513,7 +513,7 @@ void Model::printForces() const
 {
 	for (Atom* i = atoms_.first(); i != NULL; i = i->next)
 	{
-		printf("%4i %3s  %14.6e  %14.6e  %14.6e\n", i->id(), Elements().symbol(i), i->f().x, i->f().y, i->f().z);
+		printf("%4i %3s  %14.6e  %14.6e  %14.6e\n", i->id(), ElementMap::symbol(i), i->f().x, i->f().y, i->f().z);
 	}
 }
 

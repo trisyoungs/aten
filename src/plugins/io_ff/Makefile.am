@@ -1,6 +1,6 @@
 # Set plugin installation dir and define plugin targets
 pluginexecdir = ${pkglibdir}/plugins
-pluginexec_LTLIBRARIES = ff.la
+pluginexec_LTLIBRARIES = atenff.la
 
 # Rules
 .ui.lo:
@@ -19,7 +19,7 @@ clean-local:
 	-rm -f ff.cpp
 
 # Aten Expression (ff) plugin
-ff_la_SOURCES = ff_funcs.cpp ff.hui
-ff_la_LDFLAGS = -module -shared -avoid-version
+atenff_la_SOURCES = ff_funcs.cpp ff.hui
+atenff_la_LDFLAGS = -module -shared -avoid-version
 
 AM_CPPFLAGS = -I${top_srcdir}/src @ATEN_INCLUDES@ @ATEN_CFLAGS@

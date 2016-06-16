@@ -168,9 +168,9 @@ void ForcefieldsTestPopup::on_TestButton_clicked(bool checked)
 				if (ri->item->element() == at->characterElement())
 				{
 					matchscore = at->matchAtom(ri->item, p->ringList(), m);
-					Messenger::print("Atom %i (%s) matched type with score %i.", ri->item->id()+1, Elements().symbol(ri->item), matchscore);
+					Messenger::print("Atom %i (%s) matched type with score %i.", ri->item->id()+1, ElementMap::symbol(ri->item), matchscore);
 				}
-				else Messenger::print("Atom %i (%s) is the wrong element for this type.", ri->item->id()+1, Elements().symbol(ri->item));
+				else Messenger::print("Atom %i (%s) is the wrong element for this type.", ri->item->id()+1, ElementMap::symbol(ri->item));
 			}
 		}
 	}

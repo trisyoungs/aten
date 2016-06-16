@@ -101,7 +101,7 @@ bool Aten::saveSession(QString filename)
 
 		// Write atom and bond information
 		parser.writeLineF("Model %s = newModel('%s');", qPrintable(modelVar), qPrintable(m->name()));
-		for (Atom* i = m->atoms(); i != NULL; i = i->next) parser.writeLineF("%s.newAtom(%s,%f,%f,%f);", qPrintable(modelVar), Elements().symbol(i->element()), i->r().x, i->r().y, i->r().z);
+		for (Atom* i = m->atoms(); i != NULL; i = i->next) parser.writeLineF("%s.newAtom(%s,%f,%f,%f);", qPrintable(modelVar), ElementMap::symbol(i->element()), i->r().x, i->r().y, i->r().z);
 		for (Bond* b = m->bonds(); b != NULL; b = b->next) parser.writeLineF("%s.newBond(%i,%i,'%s');", qPrintable(modelVar), b->atomI()->id()+1, b->atomJ()->id()+1, Bond::bondType(b->type()));
 
 		// Atom selection

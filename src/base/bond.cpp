@@ -166,16 +166,16 @@ Bond::BondType Bond::augmented() const
 	eli = atomI_->element();
 	elj = atomJ_->element();
 	// Get current penalty associated with the two bound elements - if its zero, there is nothing more to be done
-	penalty[0] = Elements().bondOrderPenalty(eli, tbi) + Elements().bondOrderPenalty(elj, tbj);
-//	printf("Total bond orders of IDs %i (%s) and %i (%s) are %i and %i - connection is %ibond with penalty %i\n", atomI_->id()+1, Elements().symbol(atomI_), atomJ_->id()+1, Elements().symbol(atomJ_), tbi, tbj, type_, penalty[0]);
+	penalty[0] = ElementMap::bondOrderPenalty(eli, tbi) + ElementMap::bondOrderPenalty(elj, tbj);
+//	printf("Total bond orders of IDs %i (%s) and %i (%s) are %i and %i - connection is %ibond with penalty %i\n", atomI_->id()+1, ElementMap::symbol(atomI_), atomJ_->id()+1, ElementMap::symbol(atomJ_), tbi, tbj, type_, penalty[0]);
 	if (penalty[0] == 0)
 	{
 		Messenger::exit("Bond::augmented");
 		return type_;
 	}
 	// Get penalties associated with single, double, and triple bonds
-	for (n=1; n<4; n++) penalty[n] = Elements().bondOrderPenalty(eli, tbi - type_ + n) + Elements().bondOrderPenalty(elj, tbj - type_ + n);
-//	for (n=1; n<4; n++) printf(" -- Conversion to %ibond has penalty %i - %i (%s) + %i (%s)\n", n, penalty[n], Elements().bondOrderPenalty(eli, tbi - type_ + n), Elements().symbol(atomI_), Elements().bondOrderPenalty(elj, tbj - type_ + n), Elements().symbol(atomJ_));
+	for (n=1; n<4; n++) penalty[n] = ElementMap::bondOrderPenalty(eli, tbi - type_ + n) + ElementMap::bondOrderPenalty(elj, tbj - type_ + n);
+//	for (n=1; n<4; n++) printf(" -- Conversion to %ibond has penalty %i - %i (%s) + %i (%s)\n", n, penalty[n], ElementMap::bondOrderPenalty(eli, tbi - type_ + n), ElementMap::symbol(atomI_), ElementMap::bondOrderPenalty(elj, tbj - type_ + n), ElementMap::symbol(atomJ_));
 	// Find lowest penalty value
 	lowest = 0;
 	for (n=1; n<4; n++) if (penalty[n] < penalty[lowest]) lowest = n;

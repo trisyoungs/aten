@@ -152,8 +152,8 @@ int NetaParser::lex()
 			Messenger::print(Messenger::Typing, "NETA : ...which is the any element symbol (Any)");
 			return ELEMENT;
 		}
-		for (n=0; n<Elements().nElements(); ++n) if (token == Elements().symbol(n)) break;
-		if (n < Elements().nElements())
+		for (n=0; n<ElementMap::nElements(); ++n) if (token == ElementMap::symbol(n)) break;
+		if (n < ElementMap::nElements())
 		{
 			NetaParser_lval.intConst = n;
 			Messenger::print(Messenger::Typing, "NETA : ...which is a an element symbol (%i)",n);

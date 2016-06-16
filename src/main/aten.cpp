@@ -46,7 +46,7 @@ Aten::Aten() : commands_(*this)
 	CommandParser::setAten(this);
 	Variable::setAten(this);
 	Tree::setAten(this);
-	Elements().setAten(this);
+	ElementMap::initialise(this);
 
 	// Models
 	modelId_ = 0;
@@ -89,6 +89,9 @@ Aten::~Aten()
 	userClipboard->clear();
 	delete userClipboard;
 	if (gridClipboard_ != NULL) delete gridClipboard_;
+
+	// Element map
+	ElementMap::finalise();
 }
 
 // Set pointer to AtenWindow

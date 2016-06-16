@@ -386,7 +386,7 @@ void RenderGroup::createAtomsAndBonds(PrimitiveSet& primitiveSet, Model* source,
 		else switch (scheme)
 		{
 			case (Prefs::ElementScheme):
-				Elements().copyColour(i->element(), colour_i);
+				ElementMap::copyColour(i->element(), colour_i);
 				break;
 			case (Prefs::ChargeScheme):
 				prefs.colourScale[0].colour(i->charge(), colour_i);
@@ -422,7 +422,7 @@ void RenderGroup::createAtomsAndBonds(PrimitiveSet& primitiveSet, Model* source,
 		else
 		{
 			radius_i = aradius[style_i];
-			if (style_i == Prefs::ScaledStyle) radius_i *= Elements().atomicRadius(i->element());
+			if (style_i == Prefs::ScaledStyle) radius_i *= ElementMap::atomicRadius(i->element());
 			A = atomTransform;
 			A.applyScaling(radius_i, radius_i, radius_i);
 			addTriangles(primitiveSet.atom(), A, colour_i);
@@ -447,7 +447,7 @@ void RenderGroup::createAtomsAndBonds(PrimitiveSet& primitiveSet, Model* source,
 			else switch (scheme)
 			{
 				case (Prefs::ElementScheme):
-					Elements().copyColour(j->element(), colour_j);
+					ElementMap::copyColour(j->element(), colour_j);
 					break;
 				case (Prefs::ChargeScheme):
 					prefs.colourScale[0].colour(j->charge(), colour_j);
@@ -613,7 +613,7 @@ void RenderGroup::createAtomsAndBonds(PrimitiveSet& primitiveSet, Model* source,
 				
 				// Element check
 				el_j = j->element();
-				if ((el_j != 7) && (el_j != 8) && (el_j != 8) && (Elements().group(el_j) != 17)) continue;
+				if ((el_j != 7) && (el_j != 8) && (el_j != 8) && (ElementMap::group(el_j) != 17)) continue;
 				
 				// Get (any) bond partner of atom j
 				l = j->nBonds() == 0 ? NULL : j->bonds()->item->partner(j);

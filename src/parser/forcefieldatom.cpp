@@ -188,7 +188,7 @@ bool ForcefieldAtomVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasAr
 			{
 				rv.set(ptr->parameter(arrayIndex-1));
 				// Autoconversion of energy parameters?
-				if ((prefs.autoConversionUnit() != Prefs::nEnergyUnits) && VdwFunctions::VdwFunctions[ptr->vdwForm()].isEnergyParameter[arrayIndex-1]) rv.set( prefs.convertEnergy(rv.asDouble(), prefs.energyUnit(), prefs.autoConversionUnit()) );
+				if ((prefs.autoConversionUnit() != Prefs::nEnergyUnits) && VdwFunctions::functionData[ptr->vdwForm()].isEnergyParameter[arrayIndex-1]) rv.set( prefs.convertEnergy(rv.asDouble(), prefs.energyUnit(), prefs.autoConversionUnit()) );
 			}
 			else
 			{
@@ -196,7 +196,7 @@ bool ForcefieldAtomVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasAr
 				// Autoconversion of energy parameters?
 				if (prefs.autoConversionUnit() != Prefs::nEnergyUnits)
 				{
-					for (n = 0; n<MAXFFPARAMDATA; ++n) if (VdwFunctions::VdwFunctions[ptr->vdwForm()].isEnergyParameter[n])
+					for (n = 0; n<MAXFFPARAMDATA; ++n) if (VdwFunctions::functionData[ptr->vdwForm()].isEnergyParameter[n])
 						rv.setElement(n, prefs.convertEnergy(ptr->parameter(n), prefs.energyUnit(), prefs.autoConversionUnit()) );
 				}
 			}
@@ -211,7 +211,7 @@ bool ForcefieldAtomVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasAr
 				Messenger::print("Accessor 'datakeyword' must have an array index.");
 				result = false;
 			}
-			else rv.set(VdwFunctions::VdwFunctions[ptr->vdwForm()].parameterKeywords[arrayIndex-1]);
+			else rv.set(VdwFunctions::functionData[ptr->vdwForm()].parameterKeywords[arrayIndex-1]);
 			break;
 		case (ForcefieldAtomVariable::DataName):
 			// Must have an array index here...
@@ -220,7 +220,7 @@ bool ForcefieldAtomVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasAr
 				Messenger::print("Accessor 'dataname' must have an array index.");
 				result = false;
 			}
-			else rv.set(VdwFunctions::VdwFunctions[ptr->vdwForm()].parameters[arrayIndex-1]);
+			else rv.set(VdwFunctions::functionData[ptr->vdwForm()].parameters[arrayIndex-1]);
 			break;
 		case (ForcefieldAtomVariable::Equivalent):
 			if (aten_->typeExportMapping()) rv.set(aten_->typeExportConvert(ptr->equivalent()));
@@ -230,7 +230,7 @@ bool ForcefieldAtomVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasAr
 			rv.set(VTypes::ForcefieldData, ptr->parent());
 			break;
 		case (ForcefieldAtomVariable::Form):
-			rv.set(VdwFunctions::VdwFunctions[ptr->vdwForm()].keyword);
+			rv.set(VdwFunctions::functionData[ptr->vdwForm()].keyword);
 			break;
 		case (ForcefieldAtomVariable::Id):
 			rv.set(ptr->typeId());
@@ -246,7 +246,7 @@ bool ForcefieldAtomVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasAr
 			rv.set(ptr->netaString());
 			break;
 		case (ForcefieldAtomVariable::NParams):
-			rv.set(VdwFunctions::VdwFunctions[ptr->vdwForm()].nParameters);
+			rv.set(VdwFunctions::functionData[ptr->vdwForm()].nParameters);
 			break;
 		case (ForcefieldAtomVariable::Z):
 			rv.set(ptr->neta()->characterElement());
@@ -365,19 +365,19 @@ bool ForcefieldAtomVariable::performFunction(int i, ReturnValue& rv, TreeNode* n
 			if (ptr->vdwForm() != at2->vdwForm())
 			{
 				result = false;
-				Messenger::print("Error: ForcefieldAtom passed to 'combine' function has differing functional form ('%s' cf. '%s').", VdwFunctions::VdwFunctions[ptr->vdwForm()].name, VdwFunctions::VdwFunctions[at2->vdwForm()].name);
+				Messenger::print("Error: ForcefieldAtom passed to 'combine' function has differing functional form ('%s' cf. '%s').", VdwFunctions::functionData[ptr->vdwForm()].name, VdwFunctions::functionData[at2->vdwForm()].name);
 				break;
 			}
 			// Check parameter ID
 			param = node->argi(1)-1;
-			if ((param < 0) || (param >= VdwFunctions::VdwFunctions[ptr->vdwForm()].nParameters))
+			if ((param < 0) || (param >= VdwFunctions::functionData[ptr->vdwForm()].nParameters))
 			{
 				result = false;
-				Messenger::print("Error: Parameter ID is out of range for VDW functional form - asked for %i, valid parameter range is 1 - %i.", param, VdwFunctions::VdwFunctions[ptr->vdwForm()].nParameters);
+				Messenger::print("Error: Parameter ID is out of range for VDW functional form - asked for %i, valid parameter range is 1 - %i.", param, VdwFunctions::functionData[ptr->vdwForm()].nParameters);
 				break;
 			}
 			// Combine parameters
-			rv.set(aten_->combinationRules().combine(VdwFunctions::VdwFunctions[ptr->vdwForm()].combinationRules[param], ptr->parameter(param), at2->parameter(param)));
+			rv.set(aten_->combinationRules().combine(VdwFunctions::functionData[ptr->vdwForm()].combinationRules[param], ptr->parameter(param), at2->parameter(param)));
 			break;
 		case (ForcefieldAtomVariable::DataD):
 		case (ForcefieldAtomVariable::DataI):
@@ -398,11 +398,11 @@ bool ForcefieldAtomVariable::performFunction(int i, ReturnValue& rv, TreeNode* n
 			break;
 		case (ForcefieldAtomVariable::Parameter):
 			id = VdwFunctions::vdwParameter(ptr->vdwForm(), node->argc(0), true);
-			if (id == VdwFunctions::VdwFunctions[ptr->vdwForm()].nParameters) result = false;
+			if (id == VdwFunctions::functionData[ptr->vdwForm()].nParameters) result = false;
 			else
 			{
 				// Autoconversion of energy parameters?
-				if ((prefs.autoConversionUnit() != Prefs::nEnergyUnits) && VdwFunctions::VdwFunctions[ptr->vdwForm()].isEnergyParameter[id]) rv.set( prefs.convertEnergy(ptr->parameter(id), prefs.energyUnit(), prefs.autoConversionUnit()) );
+				if ((prefs.autoConversionUnit() != Prefs::nEnergyUnits) && VdwFunctions::functionData[ptr->vdwForm()].isEnergyParameter[id]) rv.set( prefs.convertEnergy(ptr->parameter(id), prefs.energyUnit(), prefs.autoConversionUnit()) );
 				else rv.set(ptr->parameter(id));
 			}
 			break;

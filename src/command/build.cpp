@@ -395,7 +395,7 @@ bool Commands::function_SelectionGrowAtom(CommandNode* c, Bundle& obj, ReturnVal
 	for (RefListItem<Atom,int>* ri = obj.rs()->selection(); ri != NULL; ri = ri->next)
 	{
 		// Set distance if no general distance was provided
-		if (!c->hasArg(2)) distance = (Elements().atomicRadius(ri->item) + Elements().atomicRadius(el));
+		if (!c->hasArg(2)) distance = (ElementMap::atomicRadius(ri->item) + ElementMap::atomicRadius(el));
 		obj.rs()->growAtom(ri->item, el, distance, ag, true);
 	}
 	obj.rs()->endUndoState();
