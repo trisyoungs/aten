@@ -28,7 +28,7 @@ set(epsrmol_MOC_HDRS
 QT5_WRAP_CPP(epsrmol_MOC_SRCS ${epsrmol_MOC_HDRS} OPTIONS -I${PROJECT_SOURCE_DIR}/src)
 
 add_library(epsrmol MODULE
-  epsrmol_funcs.cpp
+  mol_funcs.cpp
   ${epsrmol_MOC_SRCS}
 )
 set_target_properties(epsrmol PROPERTIES
