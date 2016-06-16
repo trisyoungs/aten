@@ -108,7 +108,7 @@ class CIFModelPlugin : public QObject, public FilePluginInterface
 	// Return CIF dictionary keyword from string
 	DictionaryKeyword dictionaryKeyword(QString s);
 	// CIF Loop Keywords
-	enum LoopKeyword { AtomSiteTypeSymbol, AtomSiteLabel, AtomSiteFractX, AtomSiteFractY, AtomSiteFractZ, AtomSiteCartnX, AtomSiteCartnY, AtomSiteCartnZ, SymmetryEquivPosAsXyz, nLoopKeywords };
+	enum LoopKeyword { AtomSiteTypeSymbol, AtomSiteLabel, AtomSiteFractX, AtomSiteFractY, AtomSiteFractZ, AtomSiteCartnX, AtomSiteCartnY, AtomSiteCartnZ, ChemCompAtomTypeSymbol, ChemCompAtomModelCartnX, ChemCompAtomModelCartnY, ChemCompAtomModelCartnZ, SymmetryEquivPosAsXyz, nLoopKeywords };
 	// Return CIF loop keyword from string
 	LoopKeyword loopKeyword(QString s);
 };

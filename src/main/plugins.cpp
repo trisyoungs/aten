@@ -89,7 +89,7 @@ int Aten::searchPluginsDir(QDir path)
 	// Plugins the directory contents - show only files and exclude '.' and '..', and also the potential README
 	QStringList pluginsList = path.entryList(QDir::Files | QDir::NoDotAndDotDot, QDir::Name);
 	pluginsList.removeOne("README");
-	for (i=0; i< pluginsList.size(); i++)
+	for (i=0; i< pluginsList.size(); ++i)
 	{
 		QFileInfo fileInfo(pluginsList.at(i));
 		if ((fileInfo.suffix() != "so") && (fileInfo.suffix() != "dll")) continue;

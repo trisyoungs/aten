@@ -390,7 +390,7 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 		return createdFrames_;
 	}
 	// Create new atom in specified model
-	Atom* createAtom(Model* model, QString name, Vec3<double> r = Vec3<double>())
+	Atom* createAtom(Model* model, QString name = "XX", Vec3<double> r = Vec3<double>())
 	{
 		// Find element in elements map
 		int el = ElementMap::find(name, standardOptions_.zMappingType());
