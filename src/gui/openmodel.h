@@ -19,11 +19,11 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_OPENMODELWINDOW_H
-#define ATEN_OPENMODELWINDOW_H
+#ifndef ATEN_OPENMODELDIALOG_H
+#define ATEN_OPENMODELDIALOG_H
 
 #include "gui/ui_openmodel.h"
-#include "plugins/interfaces.h"
+#include "gui/filedialog.h"
 #include "base/namespace.h"
 
 // Forward Declarations (Qt)
@@ -39,40 +39,33 @@ ATEN_END_NAMESPACE
 ATEN_USING_NAMESPACE
 
 // Open Model Dialog
-class AtenOpenModel : public QDialog
+class AtenOpenModel : public QDialog, public AtenFileDialog
 {
 	// All Qt declarations derived from QObject must include this macro
 	Q_OBJECT
 
 	public:
 	// Constructor
-	AtenOpenModel(QWidget* parent, QDir startingDirectory, const RefList<IOPluginInterface,int>& ioPlugins);
+	AtenOpenModel(QWidget* parent, QDir startingDirectory, const RefList<FilePluginInterface,int>& filePlugins);
 	// Main form declaration
 	Ui::OpenModelDialog ui;
-
-
-	/*
-	 * Data
-	 */
-	private:
-	// Reference to plugin list to use for this file dialog
-	const RefList<IOPluginInterface,int>& ioPlugins_;
 
 
 	/*
 	 * Widget Functions
 	 */
 	private slots:
+	void on_PluginOptionsButton_clicked(bool checked);
 	void on_OpenButton_clicked(bool checked);
 	void on_CancelButton_clicked(bool checked);
 
 	public:
 	// Execute dialog
-	bool execute();
-	// Return selected filename(s)
-	QStringList selectedFilenames();
-	// Return selected file plugin
-	IOPluginInterface* selectedPlugin();
+	bool execute(int currentPluginsLogPoint, QString currentFilename = QString(), FilePluginInterface* currentPlugin = NULL);
+	// Return standard import options from dialog
+	FilePluginStandardImportOptions standardImportOptions();
+	// Return standard export options from dialog
+	FilePluginStandardExportOptions standardExportOptions();
 };
 
 #endif

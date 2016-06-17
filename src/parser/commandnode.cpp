@@ -80,8 +80,6 @@ bool CommandNode::prepFunction()
 		case (Commands::Error):
 		case (Commands::Printf):
 		case (Commands::Verbose):
-		case (Commands::ReadLineFormatted):
-		case (Commands::WriteLineFormatted):
 		case (Commands::ToA):
 			if (!args_.first()->item->readOnly()) break;
 			result = createFormat(0,1);

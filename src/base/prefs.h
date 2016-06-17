@@ -409,76 +409,6 @@ class Prefs
 
 
 	/*
-	 * File Preferences
-	 */
-	private:
-	// Recalculate bonding when model has loaded
-	Choice bondOnLoad_;
-	// Centre non-periodic models on load
-	Choice centreOnLoad_;
-	// Fold atomic positions after model load
-	Choice foldOnLoad_;
-	// Whether to apply symmetry operators to get crystal packing on load
-	Choice packOnLoad_;
-	// Whether to load in all coordinate sets from a file
-	bool loadAllCoords_;
-	// Convert coordinates from Bohr to Angstrom on load
-	bool coordsInBohr_;
-	// Size limit (kbytes) for caching trajectory frames
-	int cacheLimit_;
-	// Type of name->Z mapping to use
-	ElementMap::ZMapType zMapType_;
-	// Whether to retain file atom type names on load (in a new forcefield)
-	bool keepNames_;
-	// Whether to retain and fix atom types on load (when converting names using forcefield types)
-	bool keepTypes_;
-	// Whether to retain view when GUI starts (i.e. don't reset it)
-	bool keepView_;
-
-	public:
-	// Sets whether to calculate bonding on model load
-	void setBondOnLoad(Choice s);
-	// Whether bonding should be recalculated on model load
-	Choice bondOnLoad() const;
-	// Sets whether to centre molecule on load
-	void setCentreOnLoad(Choice s);
-	// Whether molecule should be centred on model load
-	Choice centreOnLoad() const;
-	// Sets whether to fold atomic positions after model load
-	void setFoldOnLoad(Choice s);
-	// Whether atoms should be folded after model load
-	Choice foldOnLoad() const;
-	// Sets whether to apply symmetry operators (pack) on load
-	void setPackOnLoad(Choice s);
-	// Whether atoms should be packed (with symmetry operations) after model load
-	Choice packOnLoad() const;
-	// Set the cache limit (in kb) for trajectory files
-	void setCacheLimit(int i);
-	// Return the cache limit for trajectory files
-	int cacheLimit() const;
-	// Sets the style of element conversion to use
-	void setZMapType(ElementMap::ZMapType zmt);
-	// Return the style of element conversion in use
-	ElementMap::ZMapType zMapType() const;
-	// Sets whether to convert coords from Bohr to Angstrom on load
-	void setCoordsInBohr(bool b);
-	// Whether coordinates should be converted from Bohr to Angstrom
-	bool coordsInBohr() const;
-	// Set whether to keep file type names on load
-	void setKeepNames(bool b);
-	// Return whether to keep file type names on load
-	bool keepNames() const;
-	// Set whether to assign and fix type names on load
-	void setKeepTypes(bool b);
-	// Return whether to assign and fix type names on load
-	bool keepTypes() const;
-	// Set whether to keep view on GUI start
-	void setKeepView(bool b);
-	// Return whether to keep view on GUI start
-	bool keepView() const;
-
-
-	/*
 	 * Editing Preferences
 	 */
 	private:
@@ -594,14 +524,8 @@ class Prefs
 	bool loadQtSettings_;
 	// Maximum distance allowed between consecutive improper torsion atoms
 	double maxImproperDist_;
-	// Whether to augment when rebonding
-	bool augmentAfterRebond_;
-	// Force spacegroups that are in hexagonal basis to be in rhombohedral basis
-	bool forceRhombohedral_;
 	// Whether to load plugins on startup
 	bool loadPlugins_;
-	// Whether to load filters on startup
-	bool loadFilters_;
 	// Whether to load includes on startup
 	bool loadIncludes_;
 	// Whether to load partitions on startup
@@ -640,22 +564,10 @@ class Prefs
 	double maxImproperDist() const;
 	// Set maximum distance allowed between consecutive improper torsion atoms
 	void setMaxImproperDist(double r);
-	// Return whether to augment when rebonding
-	bool augmentAfterRebond() const;
-	// Set whether to augment when rebonding
-	void setAugmentAfterRebond(bool b);
-	// Return whether rhombohedral (over hexagonal) spacegroup basis is to be forced
-	bool forceRhombohedral() const;
-	// Set whether rhombohedral (over hexagonal) spacegroup basis is to be forced
-	void setForceRhombohedral(bool b);
 	// Return whether to load plugins on startup
 	bool loadPlugins() const;
 	// Set whether to load plugins on startup
 	void setLoadPlugins(bool b);
-	// Return whether to load filters on startup
-	bool loadFilters() const;
-	// Set whether to load filters on startup
-	void setLoadFilters(bool b);
 	// Return whether to load includes on startup
 	bool loadIncludes() const;
 	// Set whether to load includes on startup

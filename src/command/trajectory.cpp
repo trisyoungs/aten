@@ -24,6 +24,7 @@
 #include "main/aten.h"
 #include "model/model.h"
 #include "gui/mainwindow.h"
+#include "gui/opentrajectory.h"
 
 ATEN_USING_NAMESPACE
 
@@ -48,31 +49,6 @@ bool Commands::function_ClearTrajectory(CommandNode* c, Bundle& obj, ReturnValue
 		obj.m->setRenderSource(Model::ModelSource);
 	}
 	obj.m->clearTrajectory();
-	rv.reset();
-	return true;
-}
-
-// Finalise current trajectory frame
-bool Commands::function_FinaliseFrame(CommandNode* c, Bundle& obj, ReturnValue& rv)
-{
-	if (obj.notifyNull(Bundle::ModelPointer)) return false;
-	if (obj.rs() == obj.m)
-	{
-		Messenger::print("Current model does not appear to be a trajectory frame.");
-		return false;
-	}
-	// Do various necessary calculations
-	if (prefs.coordsInBohr()) obj.rs()->bohrToAngstrom();
-	obj.rs()->renumberAtoms();
-	if (!prefs.keepView()) obj.rs()->resetView(aten_.atenWindow()->ui.MainView->contextWidth(), aten_.atenWindow()->ui.MainView->contextHeight());
-	obj.rs()->calculateMass();
-	obj.rs()->selectNone();
-	obj.rs()->resetLogs();
-	obj.rs()->updateSavePoint();
-	obj.rs()->setFilter(NULL);
-	obj.rs()->setFilename("frame");
-	obj.rs()->enableUndoRedo();
-	//if (frame->cell().type() != Cell::NoCell) frame->cell()->print();
 	rv.reset();
 	return true;
 }
@@ -109,9 +85,9 @@ bool Commands::function_LastFrame(CommandNode* c, Bundle& obj, ReturnValue& rv)
 bool Commands::function_LoadTrajectory(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return false;
-	Tree* filter = aten_.probeFile(c->argc(0), FilterData::TrajectoryImport);
-	if (filter == NULL) return false;
-	bool result = obj.m->initialiseTrajectory(c->argc(0), filter);
+
+	bool result = aten_.importTrajectory(obj.m, c->argc(0), NULL, FilePluginStandardImportOptions());
+
 	rv.set(result);
 	return true;
 }

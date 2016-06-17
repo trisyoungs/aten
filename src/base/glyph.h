@@ -147,6 +147,8 @@ class Glyph : public ListItem<Glyph>
 	GlyphData* data(int i);
 	// Set colour of all datapoints
 	void setColour(double r, double g, double b, double a = 1.0f);
+	// Set rotation matrix
+	void setRotation(Matrix& m);
 	// Apply stored rotation matrix to supplied matrix, if it has been modified
 	bool applyRotation(Matrix& A);
 	// Return stored rotation matrix
@@ -166,7 +168,7 @@ class Glyph : public ListItem<Glyph>
 	// Rotate about Z axis
 	void rotateZ(double angle);
 	// Return whether rotation matrix has been modified
-	bool rotated() const;
+	bool isRotated() const;
 
 
 	/*

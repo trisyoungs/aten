@@ -21,6 +21,7 @@
 
 #include "gui/mainwindow.h"
 #include "main/aten.h"
+#include "gui/opentrajectory.h"
 #include <QFileDialog>
 #include <QMessageBox>
 
@@ -39,7 +40,7 @@ void AtenWindow::updateTrajectoryPanel(Model* sourceModel)
 	}
 
 	// Enable / disable controls
-	ui.TrajectoryManageOpenButton->setEnabled(!aten_.fileDialogFilters(FilterData::TrajectoryImport).isEmpty());
+	ui.TrajectoryManageOpenButton->setEnabled(aten_.pluginStore().nFilePlugins(PluginTypes::TrajectoryFilePlugin, PluginTypes::ImportPlugin) > 0);
 	ui.TrajectoryManageRemoveButton->setEnabled(parentModel && hasTraj);
 	ui.TrajectoryManageFramesButton->setEnabled(parentModel && hasTraj);
 	ui.TrajectoryControlFirstButton->setEnabled(parentModel && hasTraj && trajSource);
@@ -52,7 +53,7 @@ void AtenWindow::updateTrajectoryPanel(Model* sourceModel)
 	ui.TrajectoryControlDelaySpin->setEnabled(parentModel && hasTraj && trajSource);
 	ui.TrajectoryStyleInheritButton->setEnabled(parentModel && hasTraj);
 	ui.TrajectoryStylePromoteButton->setEnabled(parentModel && hasTraj);
-	ui.TrajectoryStylePropagateButton->setEnabled(parentModel && parentModel->trajectoryIsCached());
+	ui.TrajectoryStylePropagateButton->setEnabled(parentModel && parentModel->isTrajectoryCached());
 
 	if (hasTraj)
 	{
@@ -82,40 +83,27 @@ void AtenWindow::stopTrajectoryPlayback()
 
 void AtenWindow::on_TrajectoryManageOpenButton_clicked(bool checked)
 {
-	// Stop playback, and set view to be the parent model before we do anything
+	// Stop playback before we do anything
 	stopTrajectoryPlayback();
 
 	// Get current model
 	Model* currentModel = aten_.currentModel();
 	if (!currentModel) return;
 
-	Tree* filter;
-	static QDir currentDirectory_(aten_.workDir());
-	QString selFilter;
-	QString filename = QFileDialog::getOpenFileName(this, "Open Trajectory", currentDirectory_.path(), aten_.fileDialogFilters(FilterData::TrajectoryImport), &selFilter);
-	if (!filename.isEmpty())
+	if (openTrajectoryDialog_.execute(aten_.pluginStore().logPoint()))
 	{
-		// Store path for next use
-		currentDirectory_.setPath(filename);
-		
-		// Find the filter that was selected
-		filter = aten_.findFilterByDescription(FilterData::TrajectoryImport, qPrintable(selFilter));
+		// Open model(s) selected in dialog
+		QStringList filesToLoad = openTrajectoryDialog_.selectedFilenames();
+		FilePluginInterface* interface = openTrajectoryDialog_.selectedPlugin();
+		aten_.importTrajectory(currentModel, filesToLoad.at(0), interface, openTrajectoryDialog_.standardImportOptions());
 
-		// If filter == NULL then we didn't match a filter, i.e. the 'All files' filter was selected, and we must probe the file first.
-		if (filter == NULL) filter = aten_.probeFile(qPrintable(filename), FilterData::TrajectoryImport);
-		if (filter != NULL)
-		{
-			currentModel->initialiseTrajectory(qPrintable(filename), filter);
-		}
-		else Messenger::print("Couldn't determine trajectory file format.");
+		updateWidgets(AtenWindow::AllTarget);
 	}
-
-	updateWidgets(AtenWindow::AllTarget);
 }
 
 void AtenWindow::on_TrajectoryManageRemoveButton_clicked(bool checked)
 {
-	// Stop playback, and set view to be the parent model before we do anything
+	// Stop playbac before we do anything
 	stopTrajectoryPlayback();
 
 	// Get current model

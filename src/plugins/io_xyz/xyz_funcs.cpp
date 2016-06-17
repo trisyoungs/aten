@@ -19,12 +19,16 @@
         along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "plugins/io_xyz/xyz.h"
+#include "plugins/io_xyz/xyz.hui"
+#include "plugins/io_xyz/common.h"
 #include "model/model.h"
+#include "plugins/io_xyz/xyzimportoptions.h"
 
 // Constructor
 XYZModelPlugin::XYZModelPlugin()
 {
+	// Setup plugin options
+	pluginOptions_.add("readMultipleAsTrajectory", "false");
 }
 
 // Destructor
@@ -37,19 +41,19 @@ XYZModelPlugin::~XYZModelPlugin()
  */
 
 // Return a copy of the plugin object
-IOPluginInterface* XYZModelPlugin::duplicate()
+FilePluginInterface* XYZModelPlugin::makeCopy()
 {
 	return new XYZModelPlugin;
 }
 
 /*
- * XYZ Model Import / Export Plugin
+ * Definition
  */
 
 // Return category of plugin
-PluginTypes::IOPluginCategory XYZModelPlugin::category() const
+PluginTypes::FilePluginCategory XYZModelPlugin::category() const
 {
-	return PluginTypes::IOModelPlugin;
+	return PluginTypes::ModelFilePlugin;
 }
 
 // Name of plugin
@@ -59,7 +63,7 @@ QString XYZModelPlugin::name() const
 }
 
 // Nickname of plugin
-QString XYZModelPlugin::nickName() const
+QString XYZModelPlugin::nickname() const
 {
 	return QString("xyz");
 }
@@ -93,50 +97,114 @@ bool XYZModelPlugin::canImport()
 }
 
 // Import data from the specified file
-bool XYZModelPlugin::importData(FileParser& parser)
+bool XYZModelPlugin::importData()
 {
-	int nAtoms, n;
-	QString e, name;
-	Vec3<double> r;
+	int nModels = 0;
+	bool result, readAsTrajectory = false;
+	Model* parentModel = NULL;
 	Model* targetModel = NULL;
 
-	// Read data
-	while (!parser.eofOrBlank())
+	// Read data - first model in file is always the parent (regardless of whether we're reading it as a trajectory or not)
+	do
 	{
-		// Read number of atoms from file
-		if (!parser.readLineAsInteger(nAtoms)) return false;
-
-		// Next line is name of model
-		if (!parser.readLine(name)) return false;
-
-		// Create a new model now....
-		targetModel = createModel();
-		targetModel->setName(name);
-
-		// Load atoms for model
-		for (n=0; n<nAtoms; ++n)
+		// Do we need to switch to reading the file as a trajectory?
+		if ((nModels == 1) && (pluginOptions_.value("readMultipleAsTrajectory") == "true"))
 		{
-			if (!parser.parseLine()) break;
+			readAsTrajectory = true;
 
-			// Create the new atom
-			r.set(parser.argd(1), parser.argd(2), parser.argd(3));
-			targetModel->addAtom(parser.argi(0), r);
+			// Copy the parent model into the first frame of the trajectory
+			targetModel = parentModel->addTrajectoryFrame();
+			targetModel->copy(parentModel);
 		}
 
-		// Rebond the model
-		targetModel->calculateBonding(true);
-	}
-  return true;
+		// Prepare new model
+		if (readAsTrajectory)
+		{
+			// Check parent model pointer
+			if (!parentModel)
+			{
+				Messenger::error("Error in XYZ plugin - parentModel pointer is NULL.");
+				return false;
+			}
+			targetModel = parentModel->addTrajectoryFrame();
+		}
+		else
+		{
+			// Reading as individual models, so just create a new one
+			// Make a copy of it in 'parentModel', in case we switch to trajectory creation
+			targetModel = createModel();
+			parentModel = targetModel;
+		}
+
+		// Read in model data
+		result = XYZFilePluginCommon::readXYZModel(this, fileParser_, standardOptions_, targetModel);
+
+		if (!result)
+		{
+			// Failed, so remove model (or frame)
+			if (readAsTrajectory) parentModel->removeTrajectoryFrame(targetModel);
+			else discardModel(parentModel);
+
+			return false;
+		}
+
+		// Increase number of models
+		++nModels;
+	} while (!fileParser_.eofOrBlank());
+
+	return true;
 }
 
 // Return whether this plugin can export data
 bool XYZModelPlugin::canExport()
 {
-	return false;
+	return true;
 }
 
 // Export data to the specified file
-bool XYZModelPlugin::exportData(FileParser& parser)
+bool XYZModelPlugin::exportData()
+{
+	return XYZFilePluginCommon::writeXYZModel(fileParser_, standardOptions_, targetModel());
+}
+
+// Import next partial data chunk
+bool XYZModelPlugin::importNextPart()
+{
+	return false;
+}
+
+// Skip next partial data chunk
+bool XYZModelPlugin::skipNextPart()
+{
+	return false;
+}
+
+/*
+ * Options
+ */
+
+// Return whether the plugin has import options
+bool XYZModelPlugin::hasImportOptions()
+{
+	return true;
+}
+
+// Show import options dialog
+bool XYZModelPlugin::showImportOptionsDialog()
+{
+	XYZImportOptionsDialog optionsDialog(pluginOptions_);
+
+	return (optionsDialog.updateAndExecute() == QDialog::Accepted);
+}
+
+// Return whether the plugin has export options
+bool XYZModelPlugin::hasExportOptions()
+{
+	return false;
+}
+
+// Show export options dialog
+bool XYZModelPlugin::showExportOptionsDialog()
 {
 	return false;
 }

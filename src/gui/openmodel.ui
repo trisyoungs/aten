@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>586</width>
-    <height>322</height>
+    <width>700</width>
+    <height>450</height>
    </rect>
   </property>
   <property name="font">
@@ -88,6 +88,65 @@
          <number>4</number>
         </property>
         <item>
+         <layout class="QHBoxLayout" name="horizontalLayout_3">
+          <item>
+           <widget class="QLabel" name="label">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="text">
+             <string>Z-Mapping</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QComboBox" name="ZMappingCombo">
+            <property name="currentIndex">
+             <number>6</number>
+            </property>
+            <item>
+             <property name="text">
+              <string>Alpha</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>First Alpha</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Single Alpha</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Name</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Numeric</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Forcefield</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Auto</string>
+             </property>
+            </item>
+           </widget>
+          </item>
+         </layout>
+        </item>
+        <item>
          <widget class="QCheckBox" name="PreventRebondingCheck">
           <property name="toolTip">
            <string>Recalculation of bonds between atoms will be prevented (explicit bond addition will still be allowed)</string>
@@ -114,6 +173,16 @@
           </property>
           <property name="text">
            <string>Prevent packing</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="ForceRhombohedralCheck">
+          <property name="toolTip">
+           <string>If applying hexagonal spacegroups to models, try to force rhombohedral basis</string>
+          </property>
+          <property name="text">
+           <string>Force rhombohedral</string>
           </property>
          </widget>
         </item>
@@ -162,6 +231,16 @@
          </widget>
         </item>
         <item>
+         <widget class="QCheckBox" name="KeepViewCheck">
+          <property name="toolTip">
+           <string>Do not reset view for the model (keep any set in the file)</string>
+          </property>
+          <property name="text">
+           <string>Keep view</string>
+          </property>
+         </widget>
+        </item>
+        <item>
          <widget class="Line" name="line_5">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
@@ -169,9 +248,22 @@
          </widget>
         </item>
         <item>
-         <widget class="QPushButton" name="pushButton">
+         <widget class="QPushButton" name="PluginOptionsButton">
           <property name="text">
-           <string>Plugin Options</string>
+           <string>&amp;Plugin Options</string>
+          </property>
+          <property name="icon">
+           <iconset resource="icons.qrc">
+            <normaloff>:/aten/icons/aten_preferences.svg</normaloff>:/aten/icons/aten_preferences.svg</iconset>
+          </property>
+          <property name="iconSize">
+           <size>
+            <width>16</width>
+            <height>16</height>
+           </size>
+          </property>
+          <property name="autoDefault">
+           <bool>false</bool>
           </property>
          </widget>
         </item>
@@ -221,7 +313,10 @@
      <item>
       <widget class="QPushButton" name="CancelButton">
        <property name="text">
-        <string>Cancel</string>
+        <string>&amp;Cancel</string>
+       </property>
+       <property name="autoDefault">
+        <bool>false</bool>
        </property>
       </widget>
      </item>
@@ -234,7 +329,13 @@
         </font>
        </property>
        <property name="text">
-        <string>Open</string>
+        <string>&amp;Open</string>
+       </property>
+       <property name="autoDefault">
+        <bool>false</bool>
+       </property>
+       <property name="default">
+        <bool>true</bool>
        </property>
       </widget>
      </item>

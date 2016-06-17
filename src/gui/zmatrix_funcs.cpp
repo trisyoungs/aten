@@ -63,7 +63,7 @@ void AtenZMatrix::refresh(bool forceupdate)
 	{
 		// First atom (the creation target)
 		i = zel->atom(0);
-		item = new QTableWidgetItem(Elements().symbol(i));
+		item = new QTableWidgetItem(ElementMap::symbol(i));
 		ui.ZMatrixTable->setItem(count, AtenZMatrix::SymbolColumn, item);
 		// Second atom (distance specifier)
 		i = zel->atom(1);

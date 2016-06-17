@@ -316,7 +316,7 @@ bool Neta::createBasic(Atom* i, bool explicitBondType, double torsionTolerance)
 		else if (b->type() == Bond::Single) bondType = '-';
 		else if (b->type() == Bond::Double) bondType = '=';
 		else bondType = '~';
-		bit.sprintf(",%c%s(nbonds=%i", bondType, Elements().symbol(j->element()), j->nBonds());
+		bit.sprintf(",%c%s(nbonds=%i", bondType, ElementMap::symbol(j->element()), j->nBonds());
 		typeDesc += bit;
 
 		// Loop over secondary atoms
@@ -330,7 +330,7 @@ bool Neta::createBasic(Atom* i, bool explicitBondType, double torsionTolerance)
 			else if (b2->type() == Bond::Single) bondType = '-';
 			else if (b2->type() == Bond::Double) bondType = '=';
 			else bondType = '~';
-			bit.sprintf(",%c%s(nbonds=%i)", bondType, Elements().symbol(k->element()), k->nBonds());
+			bit.sprintf(",%c%s(nbonds=%i)", bondType, ElementMap::symbol(k->element()), k->nBonds());
 			typeDesc += bit;
 
 			if ((torsionTolerance > 0.0) && i->parent())
@@ -341,7 +341,7 @@ bool Neta::createBasic(Atom* i, bool explicitBondType, double torsionTolerance)
 					l = b3->partner(k);
 					if (l == j) continue;
 // 					if (l->element() == 1) continue;
-					bit.sprintf(",geometry(%f,%f,~%s,~%s,~%s)", i->parent()->torsion(i, j, k, l), torsionTolerance, Elements().symbol(j), Elements().symbol(k), Elements().symbol(l));
+					bit.sprintf(",geometry(%f,%f,~%s,~%s,~%s)", i->parent()->torsion(i, j, k, l), torsionTolerance, ElementMap::symbol(j), ElementMap::symbol(k), ElementMap::symbol(l));
 					torsionDesc += bit;
 				}
 			}
@@ -639,7 +639,7 @@ void NetaBoundNode::nodePrint(int offset, const char* prefix)
 	for (RefListItem<ForcefieldAtom,int>* ri = allowedElementsAndTypes_.first(); ri != NULL; ri = ri->next)
 	{
 		if (ri->data == 0) printf("Any ");
-		else if (ri->data > 0) printf("%s ", Elements().symbol(ri->data));
+		else if (ri->data > 0) printf("%s ", ElementMap::symbol(ri->data));
 		else printf("&%i ", -ri->data);
 	}
 	printf("\n");
@@ -784,7 +784,7 @@ QString NetaBoundNode::elementsAndTypesString()
 			s += QString::number(abs(ri->data));
 		}
 		else if (ri->data == 0) s += "Any";
-		else s += Elements().symbol(ri->data);
+		else s += ElementMap::symbol(ri->data);
 	}
 	if (allowedElementsAndTypes_.nItems() != 1) s += ']';
 	Messenger::exit("NetaBoundNode::elementsAndTypesString");

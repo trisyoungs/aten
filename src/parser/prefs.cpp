@@ -57,7 +57,6 @@ Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
 	{ "backgroundColour",		VTypes::DoubleData,		4, false },
 	{ "bondStyleRadius",		VTypes::DoubleData,		Prefs::nDrawStyles, false },
 	{ "bondTolerance",		VTypes::DoubleData,		0, false },
-	{ "cacheLimit",			VTypes::IntegerData,		0, false },
 	{ "calculateIntra",		VTypes::IntegerData,		0, false },
 	{ "calculateVdw",		VTypes::IntegerData,		0, false },
 	{ "chargelabelFormat",		VTypes::StringData,		0, false },
@@ -80,7 +79,6 @@ Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
 	{ "ewaldKMax",			VTypes::IntegerData,		3, false },
 	{ "ewaldPrecision",		VTypes::DoubleData,		0, false },
 	{ "fontFileName",		VTypes::StringData,		0, false },
-	{ "forceRhombohedral",		VTypes::IntegerData,		0, false },
 	{ "foregroundColour",		VTypes::DoubleData,		4, false },
 	{ "globeSize",			VTypes::IntegerData,		0, false },
 	{ "glyphColour",		VTypes::DoubleData,		4, false },
@@ -125,7 +123,6 @@ Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
 	{ "viewerFontFilename",		VTypes::StringData,		0, false },
 	{ "viewLock",			VTypes::StringData,		0, false },
 	{ "viewRotationGlobe",		VTypes::IntegerData,		0, false },
-	{ "zMap",			VTypes::StringData,		0, false },
 	{ "zoomThrottle",		VTypes::DoubleData,		0, false }
 };
 
@@ -264,9 +261,6 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArray
 		case (PreferencesVariable::BondTolerance):
 			rv.set(ptr->bondTolerance());
 			break;
-		case (PreferencesVariable::CacheLimit):
-			rv.set(ptr->cacheLimit());
-			break;
 		case (PreferencesVariable::CalculateIntra):
 			rv.set(ptr->calculateIntra());
 			break;
@@ -334,9 +328,6 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArray
 			break;
 		case (PreferencesVariable::FontFileName):
 			rv.set( ptr->viewerFontFileName() );
-			break;
-		case (PreferencesVariable::ForceRhombohedral):
-			rv.set( ptr->forceRhombohedral() );
 			break;
 		case (PreferencesVariable::ForegroundColour):
 			if (hasArrayIndex) rv.set( ptr->colour(Prefs::ForegroundColour)[arrayIndex-1] );
@@ -481,9 +472,6 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArray
 		case (PreferencesVariable::ViewRotationGlobe):
 			rv.set( ptr->viewRotationGlobe() );
 			break;
-		case (PreferencesVariable::ZMapping):
-			rv.set( ElementMap::zMapType( ptr->zMapType()) );
-			break;
 		case (PreferencesVariable::ZoomThrottle):
 			rv.set( ptr->zoomThrottle() );
 			break;
@@ -534,7 +522,6 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue&
 	Prefs::MouseAction ma;
 	Prefs::DrawStyle ds;
 	Prefs::ViewLock vl;
-	ElementMap::ZMapType zm;
 	if (result) switch (acc)
 	{
 		case (PreferencesVariable::AllowDialogs):
@@ -570,9 +557,6 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue&
 			break;
 		case (PreferencesVariable::BondTolerance):
 			ptr->setBondTolerance( newValue.asDouble(result) );
-			break;
-		case (PreferencesVariable::CacheLimit):
-			ptr->setCacheLimit( newValue.asInteger(result) );
 			break;
 		case (PreferencesVariable::CalculateIntra):
 			ptr->setCalculateIntra( newValue.asBool() );
@@ -662,9 +646,6 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue&
 		case (PreferencesVariable::FontFileName):
 			ptr->setViewerFontFileName( newValue.asString() );
 			FontInstance::setup(ptr->viewerFontFileName());
-			break;
-		case (PreferencesVariable::ForceRhombohedral):
-			ptr->setForceRhombohedral( newValue.asBool() );
 			break;
 		case (PreferencesVariable::ForegroundColour):
 			if (newValue.type() == VTypes::VectorData) for (n=0; n<3; ++n) ptr->setColour(Prefs::ForegroundColour, n, newValue.asVector(result)[n]);
@@ -866,11 +847,6 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue&
 			break;
 		case (PreferencesVariable::ViewRotationGlobe):
 			ptr->setViewRotationGlobe( newValue.asBool() );
-			break;
-		case (PreferencesVariable::ZMapping):
-			zm = ElementMap::zMapType( newValue.asString(result), true );
-			if (zm != ElementMap::nZMapTypes) ptr->setZMapType(zm);
-			else result = false;
 			break;
 		case (PreferencesVariable::ZoomThrottle):
 			ptr->setZoomThrottle( newValue.asDouble(result) );

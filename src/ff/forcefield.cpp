@@ -798,7 +798,7 @@ void Forcefield::convertParameters()
 	{
 		if (ffa->vdwForm() != VdwFunctions::None)
 		{
-			for (n=0; n<MAXFFPARAMDATA; n++) if (VdwFunctions::VdwFunctions[ffa->vdwForm()].isEnergyParameter[n]) ffa->setParameter(n,prefs.convertEnergy(ffa->parameter(n), energyUnit_));
+			for (n=0; n<MAXFFPARAMDATA; n++) if (VdwFunctions::functionData[ffa->vdwForm()].isEnergyParameter[n]) ffa->setParameter(n,prefs.convertEnergy(ffa->parameter(n), energyUnit_));
 		}
 		// Only convert those parameters which are contained in the energyData_ list
 		for (n=0; n<energyData_.count(); ++n)
@@ -819,21 +819,21 @@ void Forcefield::convertParameters()
 	for (ffb = bonds_.first(); ffb != NULL; ffb = ffb->next)
 	{
 		if (ffb->bondForm() == BondFunctions::None) continue;
-		for (n=0; n<MAXFFPARAMDATA; n++) if (BondFunctions::BondFunctions[ffb->bondForm()].isEnergyParameter[n]) ffb->setParameter(n, prefs.convertEnergy(ffb->parameter(n), energyUnit_));
+		for (n=0; n<MAXFFPARAMDATA; n++) if (BondFunctions::functionData[ffb->bondForm()].isEnergyParameter[n]) ffb->setParameter(n, prefs.convertEnergy(ffb->parameter(n), energyUnit_));
 	}
 
 	// Angles
 	for (ffb = angles_.first(); ffb != NULL; ffb = ffb->next)
 	{
 		if (ffb->angleForm() == AngleFunctions::None) continue;
-		for (n=0; n<MAXFFPARAMDATA; n++) if (AngleFunctions::AngleFunctions[ffb->angleForm()].isEnergyParameter[n]) ffb->setParameter(n, prefs.convertEnergy(ffb->parameter(n), energyUnit_));
+		for (n=0; n<MAXFFPARAMDATA; n++) if (AngleFunctions::functionData[ffb->angleForm()].isEnergyParameter[n]) ffb->setParameter(n, prefs.convertEnergy(ffb->parameter(n), energyUnit_));
 	}
 
 	// Torsions
 	for (ffb = torsions_.first(); ffb != NULL; ffb = ffb->next)
 	{
 		if (ffb->torsionForm() == TorsionFunctions::None) continue;
-		for (n=0; n<MAXFFPARAMDATA-2; n++) if (TorsionFunctions::TorsionFunctions[ffb->torsionForm()].isEnergyParameter[n]) ffb->setParameter(n, prefs.convertEnergy(ffb->parameter(n), energyUnit_));
+		for (n=0; n<MAXFFPARAMDATA-2; n++) if (TorsionFunctions::functionData[ffb->torsionForm()].isEnergyParameter[n]) ffb->setParameter(n, prefs.convertEnergy(ffb->parameter(n), energyUnit_));
 	}
 
 	// Set new energy unit of the forcefield to the programs internal unit

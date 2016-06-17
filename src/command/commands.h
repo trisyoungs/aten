@@ -278,7 +278,6 @@ class Commands
 		ExportMap,
 		FFModel,
 		FFPattern,
-		FinaliseFF,
 		FixType,
 		FreeType,
 		GenerateAngle,
@@ -323,7 +322,6 @@ class Commands
 		AddGridPoint,
 		AddNextGridPoint,
 		CurrentGrid,
-		FinaliseGrid,
 		GetGrid,
 		GridAlpha,
 		GridAxes,
@@ -405,7 +403,6 @@ class Commands
 		CreateAtoms,
 		CurrentModel,
 		DeleteModel,
-		FinaliseModel,
 		FirstModel,
 		GetModel,
 		Info,
@@ -445,31 +442,8 @@ class Commands
 		Terminate,
 
 		// Read / Write Commands
-		AddReadOption,
-		Eof,
-		FilterFileName,
-		Find,
-		GetLine,
-		NextArg,
-		NextVariableArg,
-		PeekChar,
-		PeekCharI,
-		ReadChars,
-		ReadDouble,
-		ReadDoubleArray,
-		ReadInteger,
-		ReadIntegerArray,
-		ReadLine,
-		ReadLineFormatted,
-		ReadNext,
 		ReadVariable,
 		ReadVariableFormatted,
-		RemoveReadOption,
-		Rewind,
-		SkipChars,
-		SkipLine,
-		WriteLine,
-		WriteLineFormatted,
 		WriteVariable,
 		WriteVariableFormatted,
 
@@ -544,7 +518,6 @@ class Commands
 		// Trajectory Commands
 		AddFrame,
 		ClearTrajectory,
-		FinaliseFrame,
 		FirstFrame,
 		LastFrame,
 		LoadTrajectory,
@@ -761,7 +734,6 @@ class Commands
 	bool function_ExportMap(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_FFModel(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_FFPattern(CommandNode* c, Bundle& obj, ReturnValue& rv);
-	bool function_FinaliseFF(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_FixType(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_FreeType(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_GenerateAngle(CommandNode* c, Bundle& obj, ReturnValue& rv);
@@ -804,7 +776,6 @@ class Commands
 	bool function_AddFreePoint(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_AddNextGridPoint(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_CurrentGrid(CommandNode* c, Bundle& obj, ReturnValue& rv);
-	bool function_FinaliseGrid(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_GetGrid(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_GridAlpha(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_GridAxes(CommandNode* c, Bundle& obj, ReturnValue& rv);
@@ -880,7 +851,6 @@ class Commands
 	bool function_CreateAtoms(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_CurrentModel(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_DeleteModel(CommandNode* c, Bundle& obj, ReturnValue& rv);
-	bool function_FinaliseModel(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_FirstModel(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_GetModel(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_Info(CommandNode* c, Bundle& obj, ReturnValue& rv);
@@ -916,31 +886,8 @@ class Commands
 	bool function_SelectPores(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_Terminate(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	// Read / Write Commands
-	bool function_AddReadOption(CommandNode* c, Bundle& obj, ReturnValue& rv);
-	bool function_FilterFileName(CommandNode* c, Bundle& obj, ReturnValue& rv);
-	bool function_Eof(CommandNode* c, Bundle& obj, ReturnValue& rv);
-	bool function_Find(CommandNode* c, Bundle& obj, ReturnValue& rv);
-	bool function_GetLine(CommandNode* c, Bundle& obj, ReturnValue& rv);
-	bool function_NextArg(CommandNode* c, Bundle& obj, ReturnValue& rv);
-	bool function_NextVariableArg(CommandNode* c, Bundle& obj, ReturnValue& rv);
-	bool function_PeekChar(CommandNode* c, Bundle& obj, ReturnValue& rv);
-	bool function_PeekCharI(CommandNode* c, Bundle& obj, ReturnValue& rv);
-	bool function_ReadChars(CommandNode* c, Bundle& obj, ReturnValue& rv);
-	bool function_ReadDouble(CommandNode* c, Bundle& obj, ReturnValue& rv);
-	bool function_ReadDoubleArray(CommandNode* c, Bundle& obj, ReturnValue& rv);
-	bool function_ReadInteger(CommandNode* c, Bundle& obj, ReturnValue& rv);
-	bool function_ReadIntegerArray(CommandNode* c, Bundle& obj, ReturnValue& rv);
-	bool function_ReadLine(CommandNode* c, Bundle& obj, ReturnValue& rv);
-	bool function_ReadLineFormatted(CommandNode* c, Bundle& obj, ReturnValue& rv);
-	bool function_ReadNext(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_ReadVariable(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_ReadVariableFormatted(CommandNode* c, Bundle& obj, ReturnValue& rv);
-	bool function_RemoveReadOption(CommandNode* c, Bundle& obj, ReturnValue& rv);
-	bool function_Rewind(CommandNode* c, Bundle& obj, ReturnValue& rv);
-	bool function_SkipChars(CommandNode* c, Bundle& obj, ReturnValue& rv);
-	bool function_SkipLine(CommandNode* c, Bundle& obj, ReturnValue& rv);
-	bool function_WriteLine(CommandNode* c, Bundle& obj, ReturnValue& rv);
-	bool function_WriteLineFormatted(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_WriteVariable(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_WriteVariableFormatted(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	// Script Commands
@@ -1009,7 +956,6 @@ class Commands
 	// Trajectory Commands
 	bool function_AddFrame(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_ClearTrajectory(CommandNode* c, Bundle& obj, ReturnValue& rv);
-	bool function_FinaliseFrame(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_FirstFrame(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_LastFrame(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_LoadTrajectory(CommandNode* c, Bundle& obj, ReturnValue& rv);

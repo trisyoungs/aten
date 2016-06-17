@@ -93,7 +93,7 @@ void Pattern::angleEnergy(Model* srcmodel, EnergyStore* estore, int molecule)
 					energy += 0.5 * forcek * rij * rij;
 					break;
 				default:
-					Messenger::print("No equation coded for angle energy of type '%s'.", AngleFunctions::AngleFunctions[pb->data()->angleForm()].name);
+					Messenger::print("No equation coded for angle energy of type '%s'.", AngleFunctions::functionData[pb->data()->angleForm()].name);
 					break;
 
 			}
@@ -180,7 +180,7 @@ void Pattern::angleForces(Model* srcmodel)
 					du_dtheta = -forcek * (rij - eq);
 					break;
 				default:
-					Messenger::print("No equation coded for angle force of type '%s'.", AngleFunctions::AngleFunctions[pb->data()->angleForm()].name);
+					Messenger::print("No equation coded for angle force of type '%s'.", AngleFunctions::functionData[pb->data()->angleForm()].name);
 					break;
 			}
 

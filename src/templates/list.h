@@ -134,6 +134,10 @@ template <class T> class List
 	void own(T* item);
 	// Disown the item, but do not delete it
 	void disown(T* item);
+	// Take the first item out of the list
+	T* takeFirst();
+	// Take the last item out of the list
+	T* takeLast();
 	// Remove an item from the list
 	void remove(T* item);
 	// Remove first item from the list
@@ -399,6 +403,28 @@ template <class T> void List<T>::disown(T* xItem)
 	regenerate_ = 1;
 }
 
+// Take the first item out of the list
+template <class T> T* List<T>::takeFirst()
+{
+	if (listHead_ == NULL) return NULL;
+
+	T* item = listHead_;
+	disown(item);
+
+	return item;
+}
+
+// Take the last item out of the list
+template <class T> T* List<T>::takeLast()
+{
+	if (listTail_ == NULL) return NULL;
+
+	T* item = listTail_;
+	disown(item);
+
+	return item;
+}
+
 /*!
  * \brief Remove the specified item from the list
  */
@@ -605,7 +631,10 @@ template <class T> T** List<T>::array()
 	
 	// Delete old atom list (if there is one)
 	if (items_ != NULL) delete[] items_;
-	
+	items_ = NULL;
+
+	if (nItems_ == 0) return items_;
+
 	// Create new list
 	items_ = new T*[nItems_];
 	
@@ -860,6 +889,7 @@ template <class T> void List<T>::operator=(const List<T>& source)
 		newitem->next = NULL;
 		own(newitem);
 	}
+
 	// Don't deep-copy the static list, just flag that it must be regenerated if required.
 	regenerate_ = 1;
 }

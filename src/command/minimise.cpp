@@ -94,19 +94,20 @@ bool Commands::function_MopacMinimise(CommandNode* c, Bundle& obj, ReturnValue& 
 	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	rv.reset();
 
-	// Grab pointers to MOPAC import and export filters
-	Tree* mopacexport = aten_.findFilter(FilterData::ModelExport, "mopac");
-	if (mopacexport == NULL)
-	{
-		Messenger::print("Error: Couldn't find MOPAC export filter.");
-		return false;
-	}
-	Tree* mopacimport = aten_.findFilter(FilterData::ModelImport, "mopacarc");
-	if (mopacimport == NULL)
-	{
-		Messenger::print("Error: Couldn't find MOPAC arc import filter.");
-		return false;
-	}
+	// ATEN2 TODO ENDOFFILTERS
+// 	// Grab pointers to MOPAC import and export filters
+// 	Tree* mopacexport = aten_.findFilter(FilterData::ModelExport, "mopac");
+// 	if (mopacexport == NULL)
+// 	{
+// 		Messenger::print("Error: Couldn't find MOPAC export filter.");
+// 		return false;
+// 	}
+// 	Tree* mopacimport = aten_.findFilter(FilterData::ModelImport, "mopacarc");
+// 	if (mopacimport == NULL)
+// 	{
+// 		Messenger::print("Error: Couldn't find MOPAC arc import filter.");
+// 		return false;
+// 	}
 
 	// Check that defined MOPAC exe exists
 	QFileInfo fileInfo(prefs.mopacExe());
@@ -137,21 +138,21 @@ bool Commands::function_MopacMinimise(CommandNode* c, Bundle& obj, ReturnValue& 
 	LineParser parser;
 	parser.openOutput(mopacInput, true);
 	int opt;
-	if (c->hasArg(0)) parser.writeLineF("MOZYME BFGS %s\n", qPrintable(c->argc(0)));
-	else parser.writeLine("MOZYME BFGS PM6 RHF SINGLET\n");
-	parser.writeLineF("Temporary MOPAC Job Input  : %s\n", qPrintable(mopacInput));
-	parser.writeLineF("Temporary MOPAC Job Output : %s\n", qPrintable(mopacArc));	
+	if (c->hasArg(0)) parser.writeLineF("MOZYME BFGS %s", qPrintable(c->argc(0)));
+	else parser.writeLine("MOZYME BFGS PM6 RHF SINGLET");
+	parser.writeLineF("Temporary MOPAC Job Input  : %s", qPrintable(mopacInput));
+	parser.writeLineF("Temporary MOPAC Job Output : %s", qPrintable(mopacArc));	
 	for (Atom* i = aten_.currentModelOrFrame()->atoms(); i != NULL; i = i->next)
 	{
 		opt = 1 - i->isPositionFixed();
-		parser.writeLineF("%3s %12.6f %1i %12.6f %1i %12.6f %1i\n", Elements().symbol(i), i->r().x, opt, i->r().y, opt, i->r().z, opt);
+		parser.writeLineF("%3s %12.6f %1i %12.6f %1i %12.6f %1i", ElementMap::symbol(i), i->r().x, opt, i->r().y, opt, i->r().z, opt);
 	}
 	if (aten_.currentModelOrFrame()->cell().type() != UnitCell::NoCell)
 	{
 		Matrix mat = aten_.currentModelOrFrame()->cell().axes();
-		parser.writeLineF("Tv  %12.6f 0 %12.6f 0 %12.6f 0\n",mat[0], mat[1], mat[2]);
-		parser.writeLineF("Tv  %12.6f 0 %12.6f 0 %12.6f 0\n",mat[4], mat[5], mat[6]);
-		parser.writeLineF("Tv  %12.6f 0 %12.6f 0 %12.6f 0\n",mat[8], mat[9], mat[10]);
+		parser.writeLineF("Tv  %12.6f 0 %12.6f 0 %12.6f 0",mat[0], mat[1], mat[2]);
+		parser.writeLineF("Tv  %12.6f 0 %12.6f 0 %12.6f 0",mat[4], mat[5], mat[6]);
+		parser.writeLineF("Tv  %12.6f 0 %12.6f 0 %12.6f 0",mat[8], mat[9], mat[10]);
 	}
 	parser.closeFiles();
 	
@@ -179,16 +180,17 @@ bool Commands::function_MopacMinimise(CommandNode* c, Bundle& obj, ReturnValue& 
 	}
 
 	// Time to load in the results
-	aten_.setUseWorkingList(true);
+	// ATEN2 TODO
+// 	aten_.setUseWorkingList(true);
 	ReturnValue result = CommandNode::run(Commands::LoadModel, "c", qPrintable(mopacArc));
 
 	// There should now be a model in the working model list (our results)
-	Model* m = aten_.workingModels();
-	if (m == NULL)
-	{
-		Messenger::print("Error: No results model found.");
-		return false;
-	}
+// 	Model* m = aten_.workingModels();
+// 	if (m == NULL)
+// 	{
+// 		Messenger::print("Error: No results model found.");
+// 		return false;
+// 	}
 
 	// Cleanup
 	QFile::remove(qPrintable(mopacArc));
@@ -197,8 +199,8 @@ bool Commands::function_MopacMinimise(CommandNode* c, Bundle& obj, ReturnValue& 
 
 	// Copy the atoms into a temporary model
 	Model tempmodel;
-	tempmodel.copy(m);
-	aten_.setUseWorkingList(false);
+// 	tempmodel.copy(m);
+// 	aten_.setUseWorkingList(false);   ATEN2 TODO
 
 	// Start a new undostate in the original model
 	//printf("Target for new coords = %p\n", obj.rs);

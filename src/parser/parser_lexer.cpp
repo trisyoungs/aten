@@ -234,8 +234,8 @@ int CommandParser::lex()
 			}
 
 			// Element symbol?
-			for (n=0; n<Elements().nElements(); ++n) if (token == Elements().symbol(n)) break;
-			if (n < Elements().nElements())
+			for (n=0; n<ElementMap::nElements(); ++n) if (token == ElementMap::symbol(n)) break;
+			if (n < ElementMap::nElements())
 			{
 				CommandParser_lval.intConst = n;
 				Messenger::print(Messenger::Parse, "LEXER (%p): ...which is a an element symbol (%i)", tree_, n);
@@ -264,13 +264,6 @@ int CommandParser::lex()
 			{
 				Messenger::print(Messenger::Parse, "LEXER (%p): ...which is a high-level keyword (%i)",tree_,n);
 				return n;
-			}
-
-			// Is this the start of a filter or a function?
-			if (token == "filter")
-			{
-				Messenger::print(Messenger::Parse, "LEXER (%p): ...which marks the start of a filter (->FILTERBLOCK)",tree_);
-				return FILTERBLOCK;
 			}
 
 			// Is it an existing variable in scope?

@@ -222,25 +222,6 @@ bool Commands::function_InsertAtom(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	Vec3<double> pos = (c->hasArg(4) ? c->arg3d(2) : obj.rs()->penPosition());
 	aten_.current().i = obj.rs()->addAtomWithId(el, pos, id-1);
 
-	// Add the name to the model's namesForcefield, if requested and it exists
-	if (prefs.keepNames())
-	{
-		ForcefieldAtom* ffa = obj.rs()->addAtomName(el, c->argc(0));
-		aten_.current().i->setType(ffa);
-		if (ffa != NULL) aten_.current().i->setTypeFixed(true);
-	}
-	if (prefs.keepTypes())
-	{
-		ForcefieldAtom* ffa = NULL;
-		for (Forcefield* ff = aten_.forcefields(); ff != NULL; ff = ff->next)
-		{
-			ffa = ff->findType(c->argc(0));
-			if (ffa != NULL) break;
-		}
-		aten_.current().i->setType(ffa);
-		if (ffa != NULL) aten_.current().i->setTypeFixed(true);
-	}
-
 	// End undostate
 	obj.rs()->endUndoState();
 	rv.set(VTypes::AtomData, aten_.current().i);
@@ -298,24 +279,6 @@ bool Commands::function_NewAtom(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	else if (c->hasArg(3)) aten_.current().i = obj.rs()->addAtom(el, c->arg3d(1));
 	else aten_.current().i = obj.rs()->addAtomAtPen(el);
 
-	// Add the name to the model's namesForcefield, if requested and it exists
- 	if (prefs.keepNames())
- 	{
-		ForcefieldAtom* ffa = obj.rs()->addAtomName(el, c->argc(0));
- 		aten_.current().i->setType(ffa);
- 		if (ffa != NULL) aten_.current().i->setTypeFixed(true);
- 	}
- 	if (prefs.keepTypes())
-	{
-		ForcefieldAtom* ffa;
-		for (Forcefield* ff = aten_.forcefields(); ff != NULL; ff = ff->next)
-		{
-			ffa = ff->findType(c->argc(0));
-			if (ffa != NULL) break;
-		}
-		aten_.current().i->setType(ffa);
-		if (ffa != NULL) aten_.current().i->setTypeFixed(true);
-	}
 	obj.rs()->endUndoState();
 	rv.set(VTypes::AtomData, aten_.current().i);
 
@@ -343,24 +306,6 @@ bool Commands::function_NewAtomFrac(CommandNode* c, Bundle& obj, ReturnValue& rv
 	else if (c->hasArg(6)) aten_.current().i = obj.rs()->addAtom(el, r, c->arg3d(4));
 	else aten_.current().i = obj.rs()->addAtom(el, r);
 
-	// Add the name to the model's namesForcefield, if requested and it exists
-	if (prefs.keepNames())
-	{
-		ForcefieldAtom* ffa = obj.rs()->addAtomName(el, c->argc(0));
-		aten_.current().i->setType(ffa);
-		if (ffa != NULL) aten_.current().i->setTypeFixed(true);
-	}
-	if (prefs.keepTypes())
-	{
-		ForcefieldAtom* ffa;
-		for (Forcefield* ff = aten_.forcefields(); ff != NULL; ff = ff->next)
-		{
-			ffa = ff->findType(c->argc(0));
-			if (ffa != NULL) break;
-		}
-		aten_.current().i->setType(ffa);
-		if (ffa != NULL) aten_.current().i->setTypeFixed(true);
-	}
 	obj.rs()->endUndoState();
 
 	rv.set(VTypes::AtomData, aten_.current().i);
@@ -446,12 +391,11 @@ bool Commands::function_SelectionGrowAtom(CommandNode* c, Bundle& obj, ReturnVal
 	bool bond = true;
 	if (c->hasArg(3)) bond = c->argb(3);
 
-
 	obj.rs()->beginUndoState("Selection Grow Atom");
 	for (RefListItem<Atom,int>* ri = obj.rs()->selection(); ri != NULL; ri = ri->next)
 	{
 		// Set distance if no general distance was provided
-		if (!c->hasArg(2)) distance = (Elements().atomicRadius(ri->item) + Elements().atomicRadius(el));
+		if (!c->hasArg(2)) distance = (ElementMap::atomicRadius(ri->item) + ElementMap::atomicRadius(el));
 		obj.rs()->growAtom(ri->item, el, distance, ag, true);
 	}
 	obj.rs()->endUndoState();

@@ -237,7 +237,6 @@ void Commands::initPointers()
 	pointers_[ExportMap] = &AtenSpace::Commands::function_ExportMap;
 	pointers_[FFModel] = &AtenSpace::Commands::function_FFModel;
 	pointers_[FFPattern] = &AtenSpace::Commands::function_FFPattern;
-	pointers_[FinaliseFF] = &AtenSpace::Commands::function_FinaliseFF;
 	pointers_[FixType] = &AtenSpace::Commands::function_FixType;
 	pointers_[FreeType] = &AtenSpace::Commands::function_FreeType;
 	pointers_[GenerateAngle] = &AtenSpace::Commands::function_GenerateAngle;
@@ -282,7 +281,6 @@ void Commands::initPointers()
 	pointers_[AddGridPoint] = &AtenSpace::Commands::function_AddGridPoint;
 	pointers_[AddNextGridPoint] = &AtenSpace::Commands::function_AddNextGridPoint;
 	pointers_[CurrentGrid] = &AtenSpace::Commands::function_CurrentGrid;
-	pointers_[FinaliseGrid] = &AtenSpace::Commands::function_FinaliseGrid;
 	pointers_[GetGrid] = &AtenSpace::Commands::function_GetGrid;
 	pointers_[GridAlpha] = &AtenSpace::Commands::function_GridAlpha;
 	pointers_[GridAxes] = &AtenSpace::Commands::function_GridAxes;
@@ -364,7 +362,6 @@ void Commands::initPointers()
 	pointers_[CreateAtoms] = &AtenSpace::Commands::function_CreateAtoms;
 	pointers_[CurrentModel] = &AtenSpace::Commands::function_CurrentModel;
 	pointers_[DeleteModel] = &AtenSpace::Commands::function_DeleteModel;
-	pointers_[FinaliseModel] = &AtenSpace::Commands::function_FinaliseModel;
 	pointers_[FirstModel] = &AtenSpace::Commands::function_FirstModel;
 	pointers_[GetModel] = &AtenSpace::Commands::function_GetModel;
 	pointers_[LastModel] = &AtenSpace::Commands::function_LastModel;
@@ -398,31 +395,8 @@ void Commands::initPointers()
 	pointers_[NewPattern] = &AtenSpace::Commands::function_NewPattern;
 
 	// Read / Write Commands
-	pointers_[AddReadOption] = &AtenSpace::Commands::function_AddReadOption;
-	pointers_[FilterFileName] = &AtenSpace::Commands::function_FilterFileName;
-	pointers_[Eof] = &AtenSpace::Commands::function_Eof;
-	pointers_[Find] = &AtenSpace::Commands::function_Find;
-	pointers_[GetLine] = &AtenSpace::Commands::function_GetLine;
-	pointers_[NextArg] = &AtenSpace::Commands::function_NextArg;
-	pointers_[NextVariableArg] = &AtenSpace::Commands::function_NextVariableArg;
-	pointers_[PeekChar] = &AtenSpace::Commands::function_PeekChar;
-	pointers_[PeekCharI] = &AtenSpace::Commands::function_PeekCharI;
-	pointers_[ReadChars] = &AtenSpace::Commands::function_ReadChars;
-	pointers_[ReadDouble] = &AtenSpace::Commands::function_ReadDouble;
-	pointers_[ReadDoubleArray] = &AtenSpace::Commands::function_ReadDoubleArray;
-	pointers_[ReadInteger] = &AtenSpace::Commands::function_ReadInteger;
-	pointers_[ReadIntegerArray] = &AtenSpace::Commands::function_ReadIntegerArray;
-	pointers_[ReadLine] = &AtenSpace::Commands::function_ReadLine;
-	pointers_[ReadLineFormatted] = &AtenSpace::Commands::function_ReadLineFormatted;
-	pointers_[ReadNext] = &AtenSpace::Commands::function_ReadNext;
 	pointers_[ReadVariable] = &AtenSpace::Commands::function_ReadVariable;
 	pointers_[ReadVariableFormatted] = &AtenSpace::Commands::function_ReadVariableFormatted;
-	pointers_[RemoveReadOption] = &AtenSpace::Commands::function_RemoveReadOption;
-	pointers_[Rewind] = &AtenSpace::Commands::function_Rewind;
-	pointers_[SkipChars] = &AtenSpace::Commands::function_SkipChars;
-	pointers_[SkipLine] = &AtenSpace::Commands::function_SkipLine;
-	pointers_[WriteLine] = &AtenSpace::Commands::function_WriteLine;
-	pointers_[WriteLineFormatted] = &AtenSpace::Commands::function_WriteLineFormatted;
 	pointers_[WriteVariable] = &AtenSpace::Commands::function_WriteVariable;
 	pointers_[WriteVariableFormatted] = &AtenSpace::Commands::function_WriteVariableFormatted;
 
@@ -503,7 +477,6 @@ void Commands::initPointers()
 	// Trajectory Commands
 	pointers_[AddFrame] = &AtenSpace::Commands::function_AddFrame;
 	pointers_[ClearTrajectory] = &AtenSpace::Commands::function_ClearTrajectory;
-	pointers_[FinaliseFrame] = &AtenSpace::Commands::function_FinaliseFrame;
 	pointers_[FirstFrame] = &AtenSpace::Commands::function_FirstFrame;
 	pointers_[LastFrame] = &AtenSpace::Commands::function_LastFrame;
 	pointers_[LoadTrajectory] = &AtenSpace::Commands::function_LoadTrajectory;

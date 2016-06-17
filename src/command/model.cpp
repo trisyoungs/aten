@@ -116,48 +116,6 @@ bool Commands::function_DeleteModel(CommandNode* c, Bundle& obj, ReturnValue& rv
 	}
 }
 
-// Finalise current model
-bool Commands::function_FinaliseModel(CommandNode* c, Bundle& obj, ReturnValue& rv)
-{
-	if (obj.notifyNull(Bundle::ModelPointer)) return false;
-
-	// If this command is being run from a filter, set the output filter in the model.
-	if (c->parent()->isFilter())
-	{
-		Tree* t = c->parent();
-// 		if (f->partner() != NULL) obj.m->setFilename(c->parent()->filename());
-		obj.m->setFilename(c->parent()->parser()->inputFilename());
-		obj.m->setFilter(t->filter.partner());
-	}
-
-	// Do various necessary calculations
-	if (prefs.coordsInBohr()) obj.m->bohrToAngstrom();
-	obj.m->renumberAtoms();
-	if (!prefs.keepView()) obj.m->resetView(aten_.atenWindow()->ui.MainView->width(), aten_.atenWindow()->ui.MainView->height());
-	obj.m->calculateMass();
-	obj.m->selectNone();
-
-	// Print out some useful info on the model that we've just read in
-	Messenger::print(Messenger::Verbose, "Model  : %s", qPrintable(obj.m->name()));
-	Messenger::print(Messenger::Verbose, "Atoms  : %i", obj.m->nAtoms());
-	Messenger::print(Messenger::Verbose, "Cell   : %s", UnitCell::cellType(obj.m->cell().type()));
-	if (obj.m->cell().type() != UnitCell::NoCell) obj.m->cell().print();
-
-	// If a names forcefield was created, add it to Aten's list 
-	if (obj.m->namesForcefield()) aten_.ownForcefield(obj.m->namesForcefield());
-
-	// If a trajectory exists for this model, by default we view from trajectory in the GUI
-	if (obj.m->nTrajectoryFrames() > 0) obj.m->setRenderSource(Model::TrajectorySource);
-
-	// Lastly, reset all the log points and start afresh
-	obj.m->enableUndoRedo();
-	obj.m->resetLogs();
-	obj.m->updateSavePoint();
-	rv.reset();
-
-	return true;
-}
-
 // Set current model to be first loaded/created model
 bool Commands::function_FirstModel(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
@@ -238,40 +196,41 @@ bool Commands::function_LoadModel(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	Tree* filter;
 	
 	// Was a specific filter nickname provided?
-	if (c->hasArg(1))
-	{
-		LineParser parser;
-		parser.getArgsDelim(0, c->argc(1));
-		// First part of argument is nickname
-		filter = aten_.findFilter(FilterData::ModelImport, parser.argc(0));
-		// Check that a suitable format was found
-		if (filter == NULL)
-		{
-			// Print list of valid filter nicknames
-			aten_.printValidNicknames(FilterData::ModelImport);
-			Messenger::print("Not loaded.");
-			return false;
-		}
-		
-		// Loop over remaining arguments which are widget/global variable assignments
-		QStringList items;
-		for (int n = 1; n < parser.nArgs(); ++n)
-		{
-			items = parser.argc(n).split('=');
-			if (!filter->setAccessibleVariable(items.at(0), items.at(1))) return false;
-		}
-	}
-	else filter = aten_.probeFile(c->argc(0), FilterData::ModelImport);
-	rv.set(0);
-	if (filter == NULL) return false;
-	int oldnmodels = aten_.nModels();
-	if (filter->executeRead(c->argc(0)))
-	{
-		Model* m = aten_.currentModel();
-		obj.i = m->atoms();
-		rv.set(VTypes::ModelData, m);
-	}
-	else return false;
+	// ATEN2 TODO ENDOFFILTERS
+// 	if (c->hasArg(1))
+// 	{
+// 		LineParser parser;
+// 		parser.getArgsDelim(0, c->argc(1));
+// 		// First part of argument is nickname
+// 		filter = aten_.findFilter(FilterData::ModelImport, parser.argc(0));
+// 		// Check that a suitable format was found
+// 		if (filter == NULL)
+// 		{
+// 			// Print list of valid filter nicknames
+// 			aten_.printValidNicknames(FilterData::ModelImport);
+// 			Messenger::print("Not loaded.");
+// 			return false;
+// 		}
+// 		
+// 		// Loop over remaining arguments which are widget/global variable assignments
+// 		QStringList items;
+// 		for (int n = 1; n < parser.nArgs(); ++n)
+// 		{
+// 			items = parser.argc(n).split('=');
+// 			if (!filter->setAccessibleVariable(items.at(0), items.at(1))) return false;
+// 		}
+// 	}
+// 	else filter = aten_.probeFile(c->argc(0), FilterData::ModelImport);
+// 	rv.set(0);
+// 	if (filter == NULL) return false;
+// 	int oldnmodels = aten_.nModels();
+// 	if (filter->executeRead(c->argc(0)))
+// 	{
+// 		Model* m = aten_.currentModel();
+// 		obj.i = m->atoms();
+// 		rv.set(VTypes::ModelData, m);
+// 	}
+// 	else return false;
 	return true;
 }
 
@@ -312,8 +271,8 @@ bool Commands::function_NewModel(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	obj.m->setName(c->argc(0).trimmed());
 	Messenger::print(Messenger::Verbose, "Created model '%s'", qPrintable(obj.m->name()));
 
-	// Check to see whether we are using a filter, enabling undo/redo if not
-	if (!c->parent()->isFilter()) obj.m->enableUndoRedo();
+	obj.m->enableUndoRedo();
+
 	rv.set(VTypes::ModelData, obj.m);
 	return true;
 }
@@ -361,7 +320,7 @@ bool Commands::function_PrevModel(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	return true;
 }
 
-// Save current model ('savemodel <format> <filename>')
+// Save current model
 bool Commands::function_SaveModel(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return false;
@@ -369,40 +328,27 @@ bool Commands::function_SaveModel(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	// Parse the first option so we can get the filter nickname and any filter options
 	LineParser parser;
 	parser.getArgsDelim(Parser::UseQuotes, c->argc(0));
+
+	// First part of argument zero is nickname (followed by options)
+	FilePluginInterface* plugin = aten_.pluginStore().findFilePluginByNickname(PluginTypes::ModelFilePlugin, PluginTypes::ExportPlugin, parser.argc(0));
 	
-	// First part of argument is nickname
-	Tree* filter = aten_.findFilter(FilterData::ModelExport, parser.argc(0));
-	// Check that a suitable format was found
-	if (filter == NULL)
+	// Check that a suitable plugin was found
+	if (plugin == NULL)
 	{
-		// Print list of valid filter nicknames
-		aten_.printValidNicknames(FilterData::ModelExport);
+		// Print list of valid plugin nicknames
+		aten_.pluginStore().showFilePluginNicknames(PluginTypes::ModelFilePlugin, PluginTypes::ExportPlugin);
 		Messenger::print("Not saved.");
 		return false;
 	}
 
-	// Loop over remaining arguments which are widget/global variable assignments
-	QStringList items;
-	for (int n = 1; n < parser.nArgs(); ++n)
-	{
-		items = parser.argc(n).split('=');
-		if (!filter->setAccessibleVariable(items.at(0), items.at(1))) return false;
-	}
-	
-	obj.rs()->setFilter(filter);
-	obj.rs()->setFilename(c->argc(1));
+	// Loop over remaining arguments which are option assignments
+	KVMap pluginOptions;
+	for (int n = 1; n < parser.nArgs(); ++n) pluginOptions.add(parser.argc(n));
 
-	// Temporarily disable undo/redo for the model, save, and re-enable
-	obj.rs()->disableUndoRedo();
-	bool result = filter->executeWrite(obj.rs()->filename());
-	if (result)
-	{
-		obj.rs()->updateSavePoint();
-		Messenger::print("Model '%s' saved to file '%s' (%s)", qPrintable(obj.rs()->name()), qPrintable(obj.rs()->filename()), qPrintable(filter->filter.name()));
-	}
-	else Messenger::print("Failed to save model '%s'.", qPrintable(obj.rs()->name()));
-	obj.rs()->enableUndoRedo();
+	bool result = aten_.exportModel(obj.m, c->argc(1), plugin, FilePluginStandardImportOptions(), pluginOptions);
+	
 	rv.set(result);
+
 	return true;
 }
 
@@ -411,15 +357,18 @@ bool Commands::function_SaveSelection(CommandNode* c, Bundle& obj, ReturnValue& 
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 
-	// Find filter with a nickname matching that given in argc(0)
-	Tree* filter = aten_.findFilter(FilterData::ModelExport, c->argc(0));
+	// Parse the first option so we can get the filter nickname and any filter options
+	LineParser parser;
+	parser.getArgsDelim(Parser::UseQuotes, c->argc(0));
 
-	// Check that a suitable format was found
-	if (filter == NULL)
+	// First part of argument is nickname
+	FilePluginInterface* plugin = aten_.pluginStore().findFilePluginByNickname(PluginTypes::ModelFilePlugin, PluginTypes::ExportPlugin, parser.argc(0));
+	
+	// Check that a suitable plugin was found
+	if (plugin == NULL)
 	{
-		Messenger::print("Valid model export nicknames are:");
-		for (RefListItem<Tree,int>* ri = aten_.filters(FilterData::ModelExport); ri != NULL; ri = ri->next)
-			Messenger::print("  %-15s %s", qPrintable(ri->item->filter.nickname()), qPrintable(ri->item->filter.name()));
+		// Print list of valid plugin nicknames
+		aten_.pluginStore().showFilePluginNicknames(PluginTypes::ModelFilePlugin, PluginTypes::ExportPlugin);
 		Messenger::print("Not saved.");
 		return false;
 	}
@@ -436,22 +385,13 @@ bool Commands::function_SaveSelection(CommandNode* c, Bundle& obj, ReturnValue& 
 	Model m;
 	Clipboard clip;
 	m.setCell(obj.rs()->cell());
-	m.setFilter(filter);
-	m.setFilename(c->argc(1));
 	clip.copySelection(obj.rs());
 	clip.pasteToModel(&m, false);
-	Bundle oldbundle = obj;
-	obj.m = &m;
 
-	// Temporarily disable undo/redo for the model, save, and re-enable
-	obj.rs()->disableUndoRedo();
-	bool result = filter->executeWrite(m.filename());
-	obj.rs()->enableUndoRedo();
-	obj = oldbundle;
-	if (result) Messenger::print("Selection from model '%s' saved to file '%s' (%s)", qPrintable(m.name()), qPrintable(m.filename()), qPrintable(filter->filter.name()));
-	else Messenger::print("Failed to save selection from model '%s'.", qPrintable(m.name()));
+	bool result = aten_.exportModel(&m, c->argc(1), plugin);
 
 	rv.set(result);
+
 	return true;
 }
 

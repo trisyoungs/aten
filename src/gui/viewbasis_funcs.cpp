@@ -71,7 +71,7 @@ void AtenViewBasis::showWindow(Model* m)
 		{
 			lastid = bas->atomId();
 			tabitem = new QTableWidgetItem();
-			text.sprintf("%i (%s)\n", lastid+1, m->atom(lastid) != NULL ? Elements().symbol(m->atom(lastid)) : "NULL");
+			text.sprintf("%i (%s)\n", lastid+1, m->atom(lastid) != NULL ? ElementMap::symbol(m->atom(lastid)) : "NULL");
 			tabitem->setText(text);
 			ui.BasisTable->setItem(row, AtenViewBasis::AtomIdColumn, tabitem);
 		}

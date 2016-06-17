@@ -59,7 +59,8 @@ void AtenWindow::updateGridsPanel(Model* sourceModel)
 
 	updateGridInformation(currentGrid);
 
-	ui.GridsManageOpenButton->setEnabled(!aten_.fileDialogFilters(FilterData::GridImport).isEmpty());
+	// ATEN2 TODO ENDOFFILTERS
+// 	ui.GridsManageOpenButton->setEnabled(!aten_.fileDialogFilters(FilterData::GridImport).isEmpty());
 	ui.GridsManageRemoveButton->setEnabled(ui.GridsList->currentRow() != -1);
 
 	Messenger::exit("AtenWindow::updateGridPanel");
@@ -122,26 +123,27 @@ void AtenWindow::updateGridInformation(Grid* sourceGrid)
 
 void AtenWindow::on_GridsManageOpenButton_clicked(bool checked)
 {
-	Tree* filter;
-	static QDir currentDirectory_(aten_.workDir());
-	QString selFilter;
-	QStringList filenames = QFileDialog::getOpenFileNames(this, "Open Grid", currentDirectory_.path(), aten_.fileDialogFilters(FilterData::GridImport), &selFilter);
-	for (int n=0; n<filenames.count(); ++n)
-	{
-		QString filename = filenames.at(n);
-
-		// Store path for next use
-		currentDirectory_.setPath(filename);
-		
-		// Find the filter that was selected
-		filter = aten().findFilterByDescription(FilterData::GridImport, qPrintable(selFilter));
-		if (filter == NULL) filter = aten_.probeFile(qPrintable(filename), FilterData::GridImport);
-		if (filter != NULL)
-		{
-			// Run any import options in the filter
-			if (!filter->executeRead(qPrintable(filename))) return;
-		}
-	}
+	// ATEN2 TODO ENDOFFILTERS
+// 	Tree* filter;
+// 	static QDir currentDirectory_(aten_.workDir());
+// 	QString selFilter;
+// 	QStringList filenames = QFileDialog::getOpenFileNames(this, "Open Grid", currentDirectory_.path(), aten_.fileDialogFilters(FilterData::GridImport), &selFilter);
+// 	for (int n=0; n<filenames.count(); ++n)
+// 	{
+// 		QString filename = filenames.at(n);
+// 
+// 		// Store path for next use
+// 		currentDirectory_.setPath(filename);
+// 		
+// 		// Find the filter that was selected
+// 		filter = aten().findFilterByDescription(FilterData::GridImport, qPrintable(selFilter));
+// 		if (filter == NULL) filter = aten_.probeFile(qPrintable(filename), FilterData::GridImport);
+// 		if (filter != NULL)
+// 		{
+// 			// Run any import options in the filter
+// 			if (!filter->executeRead(qPrintable(filename))) return;
+// 		}
+// 	}
 
 	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::GridsPanelTarget);
 }

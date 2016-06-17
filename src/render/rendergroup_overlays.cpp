@@ -62,7 +62,7 @@ void RenderGroup::createOverlays(Model* source, Matrix baseTransform)
 		// Now add on all parts of the label that are required
 		labelStrings.clear();
 		if (labels&(1 << Atom::IdLabel)) labelStrings << QString::number(i->id()+1);
-		if (labels&(1 << Atom::ElementLabel)) labelStrings << QString(Elements().symbol(i));
+		if (labels&(1 << Atom::ElementLabel)) labelStrings << QString(ElementMap::symbol(i));
 		if (labels&(1 << Atom::TypeLabel))
 		{
 			if (ffa == NULL) labelStrings << "[None]";
@@ -73,7 +73,7 @@ void RenderGroup::createOverlays(Model* source, Matrix baseTransform)
 
 		// Add text object
 		style = (globalstyle == Prefs::OwnStyle ? i->style() : globalstyle);
-		atomSize = (style == Prefs::ScaledStyle ? prefs.atomStyleRadius(style) * Elements().atomicRadius(i->element()) : prefs.atomStyleRadius(style)) * 1.05;
+		atomSize = (style == Prefs::ScaledStyle ? prefs.atomStyleRadius(style) * ElementMap::atomicRadius(i->element()) : prefs.atomStyleRadius(style)) * 1.05;
 		addText(labelStrings.join(" "), i->r(), 0.25, TextPrimitive::CentralAnchor, Vec3<double>(0.0, 0.0, atomSize), true);
 	}
 

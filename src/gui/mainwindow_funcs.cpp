@@ -21,7 +21,6 @@
 
 #include "main/aten.h"
 #include "gui/mainwindow.h"
-#include "gui/loadmodel.h"
 #include "gui/ffeditor.h"
 #include "gui/selectpattern.h"
 #include "gui/tdoublespindelegate.hui"
@@ -92,7 +91,11 @@
 #include "gui/vibrations.h"
 
 // Constructor
-AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportFilmDialog_(*this), exportImageDialog_(*this), disorderWizard_(*this), progressDialog_(*this), zMatrixDialog_(*this)
+AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportFilmDialog_(*this), exportImageDialog_(*this), disorderWizard_(*this), progressDialog_(*this), zMatrixDialog_(*this),
+	openGridDialog_(this, aten_.workDir(), aten_.pluginStore().filePlugins(PluginTypes::GridFilePlugin)),
+	openModelDialog_(this, aten_.workDir(), aten_.pluginStore().filePlugins(PluginTypes::ModelFilePlugin)),
+	openTrajectoryDialog_(this, aten_.workDir(), aten_.pluginStore().filePlugins(PluginTypes::TrajectoryFilePlugin)),
+	saveModelDialog_(this, aten_.workDir(), aten_.pluginStore().filePlugins(PluginTypes::ModelFilePlugin))
 {
 	Messenger::enter("AtenWindow::AtenWindow()");
 
@@ -108,7 +111,6 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportFilmD
 	TMenuButton::setAtenWindow(this);
 
 	// Private variables
-	saveModelFilter_ = NULL;
 	contextAtom_ = NULL;
 	messageDisplay_ = MessagesUnderScene;
 	refreshing_ = false;
@@ -436,15 +438,17 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportFilmD
 	// Load Qt Settings
 	loadSettings();
 
-	// Reset view of all loaded models
-	for (Model* m = aten.models(); m != NULL; m = m->next) if (!prefs.keepView()) m->resetView(ui.MainView->contextWidth(), ui.MainView->contextHeight());
+	// Reset view of all loaded models (unless KeepView option was set)
+	for (Model* m = aten.models(); m != NULL; m = m->next)
+	{
+		if (!m->plugin()) continue;
+		if (!m->plugin()->standardOptions().keepView()) m->resetView(ui.MainView->contextWidth(), ui.MainView->contextHeight());
+	}
 
 	// Refresh everything
 	updateWidgets(AtenWindow::AllTarget);
 
-	// Set some preferences back to their default values, and set the widget colours
-	prefs.setZMapType(ElementMap::AutoZMap);
-	prefs.setKeepView(false);
+	// Set the widget colours in prefs
 	QColor colour;
 	colour = palette().background().color();
 	prefs.setColour(Prefs::WidgetBackgroundColour, colour.redF(), colour.greenF(), colour.blueF(), colour.alphaF());
@@ -488,6 +492,16 @@ void AtenWindow::resizeEvent(QResizeEvent* event)
 {
 	// Update row information in AtomsTable
 	atomsTableRecalculateRowSize();
+}
+
+/*
+ * File Dialogs
+ */
+
+// Return model export dialog
+AtenSaveModel& AtenWindow::saveModelDialog()
+{
+	return saveModelDialog_;
 }
 
 /*

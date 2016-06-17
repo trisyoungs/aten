@@ -320,18 +320,18 @@ bool PatternBoundVariable::performFunction(int i, ReturnValue& rv, TreeNode* nod
 				case (ForcefieldBound::BondInteraction):
 				case (ForcefieldBound::UreyBradleyInteraction):
 					id = BondFunctions::bondParameter(ptr->data()->bondForm(), node->argc(0), true);
-					if (id == BondFunctions::BondFunctions[ptr->data()->bondForm()].nParameters) result = false;
+					if (id == BondFunctions::functionData[ptr->data()->bondForm()].nParameters) result = false;
 					else rv.set(ptr->data()->parameter(id));
 					break;
 				case (ForcefieldBound::AngleInteraction):
 					id = AngleFunctions::angleParameter(ptr->data()->angleForm(), node->argc(0), true);
-					if (id == AngleFunctions::AngleFunctions[ptr->data()->angleForm()].nParameters) result = false;
+					if (id == AngleFunctions::functionData[ptr->data()->angleForm()].nParameters) result = false;
 					else rv.set(ptr->data()->parameter(id));
 					break;
 				case (ForcefieldBound::TorsionInteraction):
 				case (ForcefieldBound::ImproperInteraction):
 					id = TorsionFunctions::torsionParameter(ptr->data()->torsionForm(), node->argc(0), true);
-					if (id == TorsionFunctions::TorsionFunctions[ptr->data()->torsionForm()].nParameters) result = false;
+					if (id == TorsionFunctions::functionData[ptr->data()->torsionForm()].nParameters) result = false;
 					else rv.set(ptr->data()->parameter(id));
 					break;
 			}

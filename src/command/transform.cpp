@@ -91,17 +91,16 @@ bool Commands::function_AxisRotate(CommandNode* c, Bundle& obj, ReturnValue& rv)
 bool Commands::function_Centre(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return false;
-	if (c->parent()->parser() == NULL)
-	{
-		Vec3<double> centre = c->arg3d(0);
-		Vec3<int> lock(0,0,0);
-		if (c->hasArg(5)) lock = c->arg3i(3);
-		obj.rs()->beginUndoState("Centre %i atom(s) at %f %f %f", obj.rs()->nSelected(), centre.x, centre.y, centre.z);
-		obj.rs()->centre(centre, lock.x, lock.y, lock.z);
-		obj.rs()->endUndoState();
-	}
-	else if (prefs.centreOnLoad() != Choice::No) obj.rs()->centre(c->arg3d(0));
+
+	Vec3<double> centre = c->arg3d(0);
+	Vec3<int> lock(0,0,0);
+	if (c->hasArg(5)) lock = c->arg3i(3);
+	obj.rs()->beginUndoState("Centre %i atom(s) at %f %f %f", obj.rs()->nSelected(), centre.x, centre.y, centre.z);
+	obj.rs()->centre(centre, lock.x, lock.y, lock.z);
+	obj.rs()->endUndoState();
+
 	rv.reset();
+
 	return true;
 }
 
@@ -446,11 +445,11 @@ bool Commands::function_SetAngles(CommandNode* c, Bundle& obj, ReturnValue& rv)
 						break;
 					// Lightest element
 					case (2):
-						order[0] = (Elements().atomicMass(i) < Elements().atomicMass(k) ? i : k);
+						order[0] = (ElementMap::atomicMass(i) < ElementMap::atomicMass(k) ? i : k);
 						break;
 					// Heaviest element
 					case (3):
-						order[0] = (Elements().atomicMass(i) > Elements().atomicMass(k) ? i : k);
+						order[0] = (ElementMap::atomicMass(i) > ElementMap::atomicMass(k) ? i : k);
 						break;
 					default:
 						order[0] = i;
@@ -596,11 +595,11 @@ bool Commands::function_SetDistances(CommandNode* c, Bundle& obj, ReturnValue& r
 					break;
 				// Lightest element
 				case (2):
-					order[0] = (Elements().atomicMass(i) < Elements().atomicMass(j) ? i : j);
+					order[0] = (ElementMap::atomicMass(i) < ElementMap::atomicMass(j) ? i : j);
 					break;
 				// Heaviest element
 				case (3):
-					order[0] = (Elements().atomicMass(i) > Elements().atomicMass(j) ? i : j);
+					order[0] = (ElementMap::atomicMass(i) > ElementMap::atomicMass(j) ? i : j);
 					break;
 				default:
 					order[0] = i;
@@ -779,11 +778,11 @@ bool Commands::function_SetTorsions(CommandNode* c, Bundle& obj, ReturnValue& rv
 							break;
 						// Lightest element
 						case (2):
-							order[0] = (Elements().atomicMass(i) < Elements().atomicMass(l) ? i : l);
+							order[0] = (ElementMap::atomicMass(i) < ElementMap::atomicMass(l) ? i : l);
 							break;
 						// Heaviest element
 						case (3):
-							order[0] = (Elements().atomicMass(i) > Elements().atomicMass(l) ? i : l);
+							order[0] = (ElementMap::atomicMass(i) > ElementMap::atomicMass(l) ? i : l);
 							break;
 						default:
 							order[0] = i;

@@ -1,22 +1,26 @@
-SUBDIRS = io_xyz
+SUBDIRS = io_akf io_cif io_csd io_cube io_dlputils io_epsr io_espresso io_ff io_gamess io_gaussian io_gromacs io_mdlmol io_mopac io_msi io_pdb io_siesta io_sybylmol2 io_vfield io_xyz
 
-noinst_LIBRARIES = libplugins.a
+noinst_LTLIBRARIES = libplugins.la
 
-libplugins_a_SOURCES = pluginstore.cpp
+libplugins_la_SOURCES = pluginstore.cpp plugintypes.cpp
 
-noinst_HEADERS = interfaces.h pluginstore.h plugintypes.h
+noinst_HEADERS = pluginstore.h plugintypes.h
 
 AM_CPPFLAGS = -I${top_srcdir}/src @ATEN_INCLUDES@ @ATEN_CFLAGS@
 
 .PHONY: deploy-plugins undeploy-plugins
 
 deploy-plugins: $(SUBDIRS)
-	@for soname in `echo | $(EGREP) "^dlname=" $^/*la | $(SED) -e "s|^dlname='\(.*\)'|\1|"`; do  \
-	  echo "$$soname: deploying plugin from from $(abs_builddir)/$^/.libs to $(top_builddir)/data/plugins"; \
-	  rm -f $(top_builddir)/data/plugins/$$soname ; \
-	  test -e $(abs_builddir)/$^/.libs/$$soname && \
-	  cd $(top_builddir) && \
-	  cp $(abs_builddir)/$^/.libs/$$soname data/plugins/$$soname || true;\
+	@for dir in $^; do \
+	  for laname in $$dir/*la; do \
+	    for soname in `echo | $(EGREP) "^dlname=" $$laname | $(SED) -e "s|^dlname='\(.*\)'|\1|"`; do  \
+	      if [ -e $(abs_builddir)/$$dir/.libs/$$soname ]; then \
+	        echo "$$soname: deploying $$soname plugin from from $(abs_builddir)/$$dir/.libs to $(top_builddir)/data/plugins"; \
+	        rm -f $(top_builddir)/data/plugins/$$soname; \
+	        cp $(abs_builddir)/$$dir/.libs/$$soname ${top_builddir}/data/plugins/$$soname || true; \
+	      fi \
+	    done \
+	  done \
 	done 
 
 undeploy-plugins:

@@ -296,6 +296,13 @@ GlyphData* Glyph::data(int i)
 	return NULL;
 }
 
+// Set rotation matrix
+void Glyph::setRotation(Matrix& m)
+{
+	rotation_ = m;
+	rotated_ = true;
+}
+
 // Set colour
 void Glyph::setColour(double r, double g, double b, double a)
 {
@@ -365,7 +372,7 @@ void Glyph::rotate(double x, double y, double z, double angle)
 }
 
 // Return whether rotation matrix has been modified
-bool Glyph::rotated() const
+bool Glyph::isRotated() const
 {
 	return rotated_;
 }

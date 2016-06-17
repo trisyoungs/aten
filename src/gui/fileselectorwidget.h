@@ -24,7 +24,7 @@
 
 #include "gui/ui_fileselectorwidget.h"
 #include "plugins/plugintypes.h"
-#include "plugins/interfaces.h"
+#include "plugins/interfaces/fileplugin.h"
 #include "templates/reflist.h"
 #include "base/namespace.h"
 #include <QDir>
@@ -71,21 +71,30 @@ class FileSelectorWidget : public QWidget
 
 	public:
 	// Set mode of file selector
-	void setMode(SelectionMode mode, const RefList<IOPluginInterface,int>& ioPlugins, QDir startingDir);
+	void setMode(SelectionMode mode, QDir startingDir);
+	// Refresh plugins (filters) combo
+	void refreshPlugins(const RefList<FilePluginInterface,int>& filePlugins);
 	// Set current directory of file selector
 	void setCurrentDirectory(QString directory);
 	// Clear selected filenames list
 	void clearSelectedFilenames();
+	// Set current filename selection
+	void setSelectedFilename(QString filename);
+	// Set current plugin selection
+	void setSelectedPlugin(FilePluginInterface* plugin);
 	// Return selected files, including full path
 	QStringList selectedFiles();
 	// Return selected file plugin
-	IOPluginInterface* selectedPlugin();
+	FilePluginInterface* selectedPlugin();
 
 
 	/*
 	 * Widget Functions
 	 */
 	private slots:
+	void on_DirectoryEdit_returnPressed();
+	void on_DirectoryUpButton_clicked(bool checked);
+	void on_DirectoryCreateButton_clicked(bool checked);
 	void on_FileView_clicked(const QModelIndex& index);
 	void on_FileView_doubleClicked(const QModelIndex& index);
 	void on_FilesEdit_textChanged(QString textChanged);
@@ -105,6 +114,7 @@ class FileSelectorWidget : public QWidget
 	signals:
 	void selectionMade(bool);
 	void selectionValid(bool);
+	void pluginOptionsAvailable(bool);
 };
 
 #endif

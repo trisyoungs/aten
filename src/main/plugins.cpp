@@ -20,7 +20,7 @@
 */
 
 #include "main/aten.h"
-#include "plugins/interfaces.h"
+#include "plugins/interfaces/fileplugin.h"
 #include <QDir>
 #include <QPluginLoader>
 
@@ -41,12 +41,10 @@ bool Aten::loadPlugin(QString fileName)
 	}
 
 	// Determine which type of plugin this is by attempting to cast it to the available types
-	IOPluginInterface* ioPlugin = qobject_cast<IOPluginInterface *>(plugin);
-	if (ioPlugin)
+	FilePluginInterface* filePlugin = qobject_cast<FilePluginInterface *>(plugin);
+	if (filePlugin)
 	{
-		pluginStore_.registerPlugin(ioPlugin);
-// 		addToMenu(plugin, iBrush->brushes(), brushMenu, SLOT(changeBrush()),
-//                   brushActionGroup)
+		pluginStore_.registerFilePlugin(filePlugin);
 	}
 	return true;
 }
@@ -91,8 +89,11 @@ int Aten::searchPluginsDir(QDir path)
 	// Plugins the directory contents - show only files and exclude '.' and '..', and also the potential README
 	QStringList pluginsList = path.entryList(QDir::Files | QDir::NoDotAndDotDot, QDir::Name);
 	pluginsList.removeOne("README");
-	for (i=0; i< pluginsList.size(); i++)
+	for (i=0; i< pluginsList.size(); ++i)
 	{
+		QFileInfo fileInfo(pluginsList.at(i));
+		if ((fileInfo.suffix() != "so") && (fileInfo.suffix() != "dll")) continue;
+
 		if (loadPlugin(path.absoluteFilePath(pluginsList.at(i)))) s += pluginsList.at(i) + "  ";
 		else ++nFailed;
 	}

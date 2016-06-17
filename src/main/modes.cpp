@@ -34,10 +34,11 @@ Aten::ProgramMode Aten::programMode() const
  * BatchExport
  */
 
-// Set format to use in export
-void Aten::setExportFilter(Tree* filter)
+// Set plugin to use in export
+void Aten::setExportModelPlugin(FilePluginInterface* plugin, KVMap pluginOptions)
 {
-	exportFilter_ = filter;
+	exportModelPlugin_ = plugin;
+	for (KVPair* pair = pluginOptions.pairs(); pair != NULL; pair = pair->next) exportModelPluginOptions_.add(pair->key(), pair->value());
 }
 
 // Export all currently loaded models in the referenced format
@@ -55,7 +56,7 @@ void Aten::exportModels()
 
 		// Generate new filename for model, with new suffix
 		fileInfo.setFile(m->filename());
-		filename = fileInfo.absolutePath() + fileInfo.baseName() + "." + exportFilter_->filter.extensions().first();
+		filename = fileInfo.absolutePath() + fileInfo.baseName() + "." + exportModelPlugin_->extensions().first();
 
 		// Make sure that the new filename is not the same as the old filename
 		if (filename == m->filename())
@@ -63,12 +64,8 @@ void Aten::exportModels()
 			Messenger::print("Export filename generated is identical to the original (%s) - not converted.", qPrintable(filename));
 			continue;
 		}
-		m->setFilter(exportFilter_);
-		m->setFilename(filename);
-		
-		// Temporarily disable undo/redo for the model, save, and re-enable
-		m->disableUndoRedo();
-		if (exportFilter_->executeWrite(filename)) Messenger::print("Model '%s' saved to file '%s' (%s)", qPrintable(m->name()), qPrintable(filename), qPrintable(exportFilter_->filter.name()));
+
+		if (exportModel(m, filename, exportModelPlugin_, FilePluginStandardImportOptions(), exportModelPluginOptions_)) Messenger::print("Model '%s' saved to file '%s' (%s)", qPrintable(m->name()), qPrintable(filename), qPrintable(exportModelPlugin_->name()));
 		else Messenger::print("Failed to save model '%s'.", qPrintable(m->name()));
 		m->enableUndoRedo();
 	}
@@ -76,7 +73,7 @@ void Aten::exportModels()
 }
 
 // Add set of batch commands
-Program  *Aten::addBatchCommand()
+Program* Aten::addBatchCommand()
 {
 	return batchCommands_.add();
 }
@@ -104,21 +101,46 @@ void Aten::saveModels()
 	for (Model* m = models_.first(); m != NULL; m = m->next)
 	{
 		setCurrentModel(m);
+
 		// Check model's filter - it will be the import filter, so try to get the partner
-		Tree* filter = m->filter();
-		if (filter == NULL)
+		FilePluginInterface* plugin = m->plugin();
+		if (plugin == NULL)
 		{
-			Messenger::print("No export filter available for model '%s'. Not saved.", qPrintable(m->name()));
+			Messenger::print("No plugin available for model '%s'. Not saved.", qPrintable(m->name()));
 			continue;
 		}
-		if (filter->filter.type() != FilterData::ModelExport)
+		if (! plugin->canExport())
 		{
-			Messenger::print("No export filter for model '%s' (format '%s'). Not saved.", qPrintable(m->name()), qPrintable(filter->filter.nickname()));
+			Messenger::print("Plugin for model '%s' has no export capability (format '%s'). Not saved.", qPrintable(m->name()), qPrintable(plugin->name()));
 			continue;
 		}
-		
-		if (!m->filename().isEmpty()) filter->executeWrite(m->filename());
+		if (m->filename().isEmpty())
+		{
+			Messenger::print("Model '%s' has no filename set. Not saved.", qPrintable(m->name()));
+			continue;
+		}
+
+		// Save the model
+		exportModel(m, m->filename(), m->plugin());
 	}
+}
+
+// Clear type export map
+void Aten::clearTypeExportMap()
+{
+	typeExportMap_.clear();
+}
+
+// Add key/value to type export map
+void Aten::addTypeExportMapping(QString key, QString value)
+{
+	typeExportMap_.add(key, value);
+}
+
+// Return number of defined type export mappings
+int Aten::nTypeExportMappings()
+{
+	return typeExportMap_.nPairs();
 }
 
 // Set whether type export conversion is enabled
@@ -137,6 +159,6 @@ bool Aten::typeExportMapping() const
 QString Aten::typeExportConvert(QString oldName) const
 {
 	if (!typeExportMapping_) return oldName;
-	KVPair* kvp = typeExportMap.search(oldName);
+	KVPair* kvp = typeExportMap_.search(oldName);
 	return (kvp == NULL ? oldName : kvp->value());
 }

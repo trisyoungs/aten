@@ -25,6 +25,7 @@
 #include "base/sysfunc.h"
 #include "math/constants.h"
 #include "model/model.h"
+#include "plugins/interfaces/fileplugin.h"
 #include "render/primitiveset.h"
 #ifdef _MAC
 #include <OpenGL/gl.h>
@@ -210,6 +211,18 @@ void Grid::setFilename(QString filename)
 QString Grid::filename() const
 {
 	return filename_;
+}
+
+// Set plugin used to load the grid data
+void Grid::setPlugin(FilePluginInterface* plugin)
+{
+	plugin_ = plugin;
+}
+
+// Return plugin used to load the grid data
+FilePluginInterface* Grid::plugin()
+{
+	return plugin_;
 }
 
 // Set name of Grid data
@@ -947,6 +960,38 @@ double** Grid::data2d()
 GridPoint* Grid::gridPoints()
 {
 	return gridPoints_.first();
+}
+
+// Set loop ordering (from string)
+void Grid::setLoopOrder(QString loopOrder)
+{
+	char ch;
+	for (int n=0; n<3; ++n)
+	{
+		ch = loopOrder.at(n).toLatin1();
+		switch (ch)
+		{
+			case ('X'):
+			case ('x'):
+			case ('1'):
+				setLoopOrder(n,0);
+				break;
+			case ('Y'):
+			case ('y'):
+			case ('2'):
+				setLoopOrder(n,1);
+				break;
+			case ('Z'):
+			case ('z'):
+			case ('3'):
+				setLoopOrder(n,2);
+				break;
+			default:
+				Messenger::print("Unrecognised character (%c) given to 'Grid::setLoopOrder()' - default value used.", ch);
+				setLoopOrder(n,n);
+				break;
+		}
+	}
 }
 
 // Set loop ordering

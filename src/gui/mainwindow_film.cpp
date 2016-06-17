@@ -212,7 +212,7 @@ bool AtenWindow::exportFilm()
 			cleanupFilmExport(frameImages, QString());
 			return false;
 		}
-		for (int n=0; n<frameImages.count(); ++n) parser.writeLineF("%s\n", qPrintable(frameImages.at(n)));
+		for (int n=0; n<frameImages.count(); ++n) parser.writeLineF("%s", qPrintable(frameImages.at(n)));
 		parser.closeFiles();
 
 		// Loop over steps defined in encoder definition

@@ -94,7 +94,7 @@ double Model::eigenvectorDensityAt(int id, Vec3<double> v)
 		// Cycle over primitives
 // 		for (n = 0; n < bas->nCartesianFunctions(); ++n)
 // 		{
-// 			text.print("%i (%s)\n", bas->atomId()+1, m->atom(bas->atomId()) != NULL ? Elements().symbol(m->atom(bas->atomId())) : "NULL");
+// 			text.print("%i (%s)\n", bas->atomId()+1, m->atom(bas->atomId()) != NULL ? ElementMap::symbol(m->atom(bas->atomId())) : "NULL");
 // 			i++;
 // 		}
 	}

@@ -50,17 +50,13 @@ class Program : public ListItem<Program>
 	QString filename_;
 	// Main program
 	Tree mainProgram_;
-	// List of filters belonging to this program
-	List<Tree> filters_;
-	// Whether this program is being populated from a filter file
-	bool fromFilterFile_;
 	// Whether or not a tree was pushed initially
 	bool initialPushTree_;
 	// Whether the program was successfully created by the last generate*() call
 	bool generatedSuccessfully_;
 	
 	public:
-	// Clear contents of program, including filters and functions
+	// Clear contents of program and any functions
 	void clear();
 	// Set name of program
 	void setName(QString name);
@@ -73,19 +69,15 @@ class Program : public ListItem<Program>
 	// Generate program from string list
 	bool generateFromStringList(QStringList stringList, QString name, QString sourceInfo, bool pushTree = true, bool clearExisting = true, bool quiet = false);
 	// Generate program from input file
-	bool generateFromFile(QString filename, QString name, bool pushTree = true, bool clearExisting = true, bool quiet = false, bool isFilterFile = false);
+	bool generateFromFile(QString filename, QString name, bool pushTree = true, bool clearExisting = true, bool quiet = false);
 	// Reload program (provided it was from a file...)
 	bool reload();
 	// Finalise program
 	bool finalise(Aten* aten);
 	// Return main program
 	Tree* mainProgram();
-	// Add a filter tree
-	Tree* addFilter();
 	// Delete specified tree
 	void deleteTree(Tree* t);
-	// Return whether the Program is being generated from a filter file
-	bool isFromFilterFile();
 	// Execute main program, including GUI options if specified
 	bool execute(ReturnValue& rv);
 	// Print program information

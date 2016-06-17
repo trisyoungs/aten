@@ -149,7 +149,7 @@ class UnitCell
 	// Set spacegroup from supplied spacegroup name
 	bool setSpacegroup(QString name, bool forceRhombohedral);
 	// Return SgInfo spacegroup structure (if it exists)
-	T_SgInfo *spacegroup();
+	T_SgInfo* spacegroup();
 	// Return spacegroup name in defined SgInfo structure
 	const char* spacegroupName() const;
 	// Return the spacegroup of the model

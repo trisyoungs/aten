@@ -181,7 +181,7 @@ void Ring::removeAtom(RefListItem<Atom,int>* ri)
 int Ring::totalBondOrderPenalty()
 {
 	int result = 0;
-	for (RefListItem<Atom,int>* ri = atoms_.first(); ri != NULL; ri = ri->next) result += Elements().bondOrderPenalty(ri->item, ri->item->totalBondOrder()/2);
+	for (RefListItem<Atom,int>* ri = atoms_.first(); ri != NULL; ri = ri->next) result += ElementMap::bondOrderPenalty(ri->item, ri->item->totalBondOrder()/2);
 	return result;
 }
 
@@ -248,7 +248,7 @@ void Ring::detectType()
 		// For rings with an odd number of atoms, adjacent single bonds may use a medial heteroatom to grant aromaticity
 		for (RefListItem<Atom,int>* ra = atoms_.first(); ra != NULL; ra = ra->next)
 		{
-			group = Elements().group(ra->item);
+			group = ElementMap::group(ra->item);
 			// If its a heteroatom there's a chance. If not, we're done
 			if ((group == 15) || (group == 16))
 			{
@@ -346,7 +346,7 @@ void Ring::print() const
 	// Print out the data of the ring.
 	Messenger::print(Messenger::Verbose, "Ring has %i atoms: ",atoms_.nItems());
 	for (RefListItem<Atom,int>* ra = atoms_.first(); ra != NULL; ra = ra->next)
-		Messenger::print(Messenger::Verbose, "%s(%i),", Elements().symbol(ra->item),ra->data);
+		Messenger::print(Messenger::Verbose, "%s(%i),", ElementMap::symbol(ra->item),ra->data);
 	Messenger::print(Messenger::Verbose, "");
 }
 

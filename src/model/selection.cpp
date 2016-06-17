@@ -177,8 +177,8 @@ Vec3<double> Model::selectionCentreOfMass() const
 			}
 			else
 			{
-				massnorm += Elements().atomicMass(i);
-				result += cell_.mim(i, selection_.first()->item) * Elements().atomicMass(i);
+				massnorm += ElementMap::atomicMass(i);
+				result += cell_.mim(i, selection_.first()->item) * ElementMap::atomicMass(i);
 			}
 		}
 		result /= massnorm;
@@ -439,8 +439,8 @@ QString Model::selectionEmpirical(bool markOnly, bool addSpaces, bool useSubScri
 	{
 		if (elcount[n] != 0)
 		{
-			if ((!result.isEmpty()) & addSpaces) result += QString(" ") + Elements().symbol(n);
-			else result += Elements().symbol(n);
+			if ((!result.isEmpty()) & addSpaces) result += QString(" ") + ElementMap::symbol(n);
+			else result += ElementMap::symbol(n);
 			if (elcount[n] > 1)
 			{
 				if (useSubScripts) result += "<sub>" + QString::number(elcount[n]) + "</sub>";
@@ -476,7 +476,7 @@ QString Model::selectionAtomFingerprint()
 		if (newel == lastel) count ++;
 		else
 		{
-			result += Elements().symbol(i);
+			result += ElementMap::symbol(i);
 			result += QString::number(count);
 			lastel = newel;
 			count = 0;
@@ -486,7 +486,7 @@ QString Model::selectionAtomFingerprint()
 	// Check for last element chunk
 	if (count != 0)
 	{
-		result += Elements().symbol(lastel);
+		result += ElementMap::symbol(lastel);
 		result += QString::number(count);
 	}
 

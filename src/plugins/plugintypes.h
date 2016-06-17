@@ -33,10 +33,14 @@ ATEN_BEGIN_NAMESPACE
 class PluginTypes
 {
 	public:
-	// IO plugin category
-	enum IOPluginCategory { IOModelPlugin, IOTrajectoryPlugin, IOExpressionPlugin, IOGridPlugin, nPluginCategories };
-	// IO plugin type
-	enum IOPluginType { ImportPlugin, ExportPlugin };
+	// File plugin category
+	enum FilePluginCategory { ModelFilePlugin, TrajectoryFilePlugin, ExpressionFilePlugin, GridFilePlugin, nFilePluginCategories };
+	// Return single-word name of file plugin category
+	static const char* filePluginCategory(FilePluginCategory category);
+	// File plugin type
+	enum FilePluginType { ImportPlugin, ExportPlugin };
+	// Return single-word name of file plugin type
+	static const char* filePluginType(FilePluginType type);
 };
 
 ATEN_END_NAMESPACE

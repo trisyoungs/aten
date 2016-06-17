@@ -55,7 +55,7 @@ class AtomAddress;
 class Calculable;
 class Measurement;
 class Grid;
-class IOPluginInterface;
+class FilePluginInterface;
 
 // Model
 class Model : public ListItem<Model>
@@ -80,10 +80,8 @@ class Model : public ListItem<Model>
 	private:
 	// Name of model
 	QString name_;
-	// Format of model when loaded / last saved
-	Tree* filter_;
 	// Plugin used to load / save the model (if any)
-	IOPluginInterface* plugin_;
+	FilePluginInterface* plugin_;
 	// Filename of model when loaded / last saved
 	QString filename_;
 	// Parent model (if a trajectory or vibration frame)
@@ -98,14 +96,10 @@ class Model : public ListItem<Model>
 	void setFilename(QString filename);
 	// Return the stored filename of the model
 	QString filename() const;
-	// Sets the file filter of the model
-	void setFilter(Tree* f);
-	// Return the stored file filter of the model
-	Tree* filter() const;
 	// Sets the plugin used to load the model
-	void setPlugin(IOPluginInterface* plugin);
+	void setPlugin(FilePluginInterface* plugin);
 	// Return the plugin used to load the model
-	IOPluginInterface* plugin() const;
+	FilePluginInterface* plugin() const;
 	// Sets the name of the model
 	void setName(QString name);
 	// Return the name of the model
@@ -265,7 +259,7 @@ class Model : public ListItem<Model>
 	Vec3<double> reassembleFragment(Atom* i, Vec3<double> referencePos, int referenceBit, int& count, bool centreOfMass = false);
 
 	public:
-	// Return pointer to unit cell structure
+	// Return unit cell structure
 	UnitCell& cell();
 	// Set cell (vectors)
 	void setCell(Vec3<double> lengths, Vec3<double> angles);
@@ -326,7 +320,7 @@ class Model : public ListItem<Model>
 
 	public:
 	// Return first bond in the model
-	Bond* bonds();
+	Bond* bonds() const;
 	// Return number of bonds in the model
 	int nBonds() const;
 	// Return the nth bond in the model
@@ -349,8 +343,6 @@ class Model : public ListItem<Model>
 	void augmentBonding();
 	// Calculate bonding in current atom selection
 	void selectionCalculateBonding(bool augment);
-	// Bond all atom pairs in current atom selection
-	void selectionBondAll();
 	// Clear bonding in current atom selection
 	void selectionClearBonding();
 
@@ -838,61 +830,43 @@ class Model : public ListItem<Model>
 	 * Trajectory Frames
 	 */
 	private:
-	// Name associated with trajectory file
-	QString trajectoryName_;
-	// Filename of file
-	QString trajectoryFilename_;
-	// Filter for trajectory file
-	Tree* trajectoryFilter_;
-	// Header and frame read functions from filter
-	Tree* trajectoryHeaderFunction_, *trajectoryFrameFunction_;
-	// Trajectory file parser
-	LineParser trajectoryParser_;
-	// File offsets for frames
-	std::streampos* trajectoryOffsets_;
-	// Number of highest frame file offset stored
-	int trajectoryHighestFrameOffset_;
-	// Size of one frame
-	long int trajectoryFrameSize_;
+	// Plugin for trajectory read
+	FilePluginInterface* trajectoryPlugin_;
 	// Frame list
 	List<Model> trajectoryFrames_;
-	// Remove frame from trajectory
-	void removeTrajectoryFrame(Model*);
-	// Total number of frames available in file (if an uncached trajectory)
-	int nTrajectoryFileFrames_;
-	// Whether this is a cached trajectory (true) or just one frame (false)
+	// Current trajectory frame to be drawn
+	Model* trajectoryCurrentFrame_;
+	// Whether this is a cached trajectory (true) or is being read sequentially from disk (false)
 	bool trajectoryFramesAreCached_;
-	// Current frame position counter
-	int trajectoryFrameIndex_;
 	// Whether the trajectory is currently being 'played'
 	bool trajectoryPlaying_;
-	// Current trajectory frame (Model*) to be drawn
-	Model* trajectoryCurrentFrame_;
 	// Whether to propagate atom styles and colours from parent model to trajectory frames
 	bool trajectoryPropagateParentStyle_;
+	// Current frame position
+        int trajectoryFrameIndex_;
 
 	public:
 	// Add frame to trajectory
 	Model* addTrajectoryFrame();
+	// Remove frame from trajectory
+	void removeTrajectoryFrame(Model* frame);
 	// Return whether a trajectory for this model exists
 	bool hasTrajectory() const;
 	// Return whether the trajectory is cached (if there is one)
-	bool trajectoryIsCached() const;
-	// Initialise trajectory from file specified
-	bool initialiseTrajectory(QString filename, Tree* filter);
+	bool isTrajectoryCached() const;
 	// Reinitialise (clear) the associated trajectory
 	void clearTrajectory();
-	// Set the filter for the trajectory
-	void setTrajectoryFilter(Tree* filter);
-	// Return the trajectory file pointer
-	std::ifstream *trajectoryFile();
+	// Set the plugin for the trajectory
+	void setTrajectoryPlugin(FilePluginInterface* plugin);
 	// Return the current frame pointer
 	Model* trajectoryCurrentFrame() const;
+	// Return pointer to trajectory frames
+	Model* trajectoryFrames() const;
 	// Return pointer to specified frame number
 	Model* trajectoryFrame(int n);
 	// Return the total number of frames in the trajectory (file or cached)
 	int nTrajectoryFrames() const;
-	// Return the current integer frame position
+	// Return the current integer frame position (file or cached)
 	int trajectoryFrameIndex() const;
 	// Seek to first frame
 	void seekFirstTrajectoryFrame();

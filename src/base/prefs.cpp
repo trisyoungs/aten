@@ -292,10 +292,7 @@ Prefs::Prefs()
 	maxRingSize_ = 6;
 	maxRings_ = 100;
 	maxCuboids_ = 100;
-	forceRhombohedral_ = false;
-	augmentAfterRebond_ = true;
 	loadPlugins_ = true;
-	loadFilters_ = true;
 	loadIncludes_ = true;
 	loadPartitions_ = true;
 	loadFragments_ = true;
@@ -306,18 +303,6 @@ Prefs::Prefs()
 	readPipe_ = false;
 	allowDialogs_ = false;
 	
-	// File
-	bondOnLoad_ = Choice::Default;
-	foldOnLoad_ = Choice::Default;
-	centreOnLoad_ = Choice::Default;
-	packOnLoad_ = Choice::Default;
-	cacheLimit_ = 512000;
-	zMapType_ = ElementMap::AutoZMap;
-	coordsInBohr_ = false;
-	keepNames_ = false;
-	keepTypes_ = false;
-	keepView_ = false;
-
 	// Energy unit conversion factors to J
 	energyConversions_[Prefs::Joules] = 1.0;
 	energyConversions_[Prefs::KiloJoules] = 1000.0;
@@ -452,7 +437,7 @@ double Prefs::styleRadius(Prefs::DrawStyle ds, int el) const
 {
 	Prefs::DrawStyle dstyle;
 	renderStyle_ == Prefs::OwnStyle ? dstyle = ds : dstyle = renderStyle_;
-	return (dstyle == Prefs::ScaledStyle) ? (Elements().atomicRadius(el) * atomStyleRadius_[Prefs::ScaledStyle]) : atomStyleRadius_[dstyle];
+	return (dstyle == Prefs::ScaledStyle) ? (ElementMap::atomicRadius(el) * atomStyleRadius_[Prefs::ScaledStyle]) : atomStyleRadius_[dstyle];
 }
 
 /*
@@ -1005,131 +990,6 @@ const Matrix& Prefs::commonViewMatrix()
 }
 
 /*
- * File Preferences
- */
-
-// Sets whether to calculate bonding on model load
-void Prefs::setBondOnLoad(Choice s)
-{
-	bondOnLoad_ = s;
-}
-
-// Whether bonding should be recalculated on model load
-Choice Prefs::bondOnLoad() const
-{
-	return bondOnLoad_;
-}
-
-// Sets whether to centre molecule on load
-void Prefs::setCentreOnLoad(Choice s)
-{
-	centreOnLoad_ = s;
-}
-
-// Whether molecule should be centred on model load
-Choice Prefs::centreOnLoad() const
-{
-	return centreOnLoad_;
-}
-
-// Sets whether to fold atomic positions after model load
-void Prefs::setFoldOnLoad(Choice s)
-{
-	foldOnLoad_ = s;
-}
-
-// Whether atoms should be folded after model load
-Choice Prefs::foldOnLoad() const
-{
-	return foldOnLoad_;
-}
-
-// Sets whether to apply symmetry operators (pack) on load
-void Prefs::setPackOnLoad(Choice s)
-{
-	packOnLoad_ = s;
-}
-
-// Whether atoms should be packed (with symmetry operations) after model load
-Choice Prefs::packOnLoad() const
-{
-	return packOnLoad_;
-}
-
-// Set the cache limit (in kb) for trajectory files
-void Prefs::setCacheLimit(int i)
-{
-	cacheLimit_ = i;
-}
-
-// Return the cache limit for trajectory files
-int Prefs::cacheLimit() const
-{
-	return cacheLimit_;
-}
-
-// Sets the style of element conversion to use
-void Prefs::setZMapType(ElementMap::ZMapType zmt)
-{
-	zMapType_ = zmt;
-	Messenger::print(Messenger::Verbose, "ZMapping type is now %s", ElementMap::zMapType(zMapType_));
-}
-
-// Return the style of element conversion in use
-ElementMap::ZMapType Prefs::zMapType() const
-{
-	return zMapType_;
-}
-
-// Sets whether to convert coords from Bohr to Angstrom on load
-void Prefs::setCoordsInBohr(bool b)
-{
-	coordsInBohr_ = b;
-}
-
-// Whether coordinates should be converted from Bohr to Angstrom
-bool Prefs::coordsInBohr() const
-{
-	return coordsInBohr_;
-}
-
-// Set whether to keep file type names on load
-void Prefs::setKeepNames(bool b)
-{
-	keepNames_ = b;
-}
-
-// Return whether to keep file type names on load
-bool Prefs::keepNames() const
-{
-	return keepNames_;
-}
-
-// Set whether to assign and fix type names on load
-void Prefs::setKeepTypes(bool b)
-{
-	keepTypes_ = b;
-}
-
-// Return whether to assign and fix type names on load
-bool Prefs::keepTypes() const
-{
-	return keepTypes_;
-}
-
-// Set whether to keep view on GUI start
-void Prefs::setKeepView(bool b)
-{
-	keepView_ = b;
-}
-
-// Return whether to keep view on GUI start
-bool Prefs::keepView() const
-{
-	return keepView_;
-}
-
-/*
  * Units and Conversion
  */
 
@@ -1246,30 +1106,6 @@ void Prefs::setMaxCuboids(int i)
 	maxCuboids_ = i;
 }
 
-// Return whether to augment when rebonding
-bool Prefs::augmentAfterRebond() const
-{
-	return augmentAfterRebond_;
-}
-
-// Set whether to augment when rebonding
-void Prefs::setAugmentAfterRebond(bool b)
-{
-	augmentAfterRebond_ = b;
-}
-
-// Set whether rhombohedral (over hexagonal) spacegroup basis is to be forced
-void Prefs::setForceRhombohedral(bool b)
-{
-	forceRhombohedral_ = b;
-}
-
-// Return whether rhombohedral (over hexagonal) spacegroup basis is to be forced
-bool Prefs::forceRhombohedral() const
-{
-	return forceRhombohedral_;
-}
-
 // Return whether to load plugins on startup
 bool Prefs::loadPlugins() const
 {
@@ -1280,18 +1116,6 @@ bool Prefs::loadPlugins() const
 void Prefs::setLoadPlugins(bool b)
 {
 	loadPlugins_ = b;
-}
-
-// Whether to load filters on startup
-bool Prefs::loadFilters() const
-{
-	return loadFilters_;
-}
-
-// Set whether to load filters on startup
-void Prefs::setLoadFilters(bool b)
-{
-	loadFilters_ = b;
 }
 
 // Whether to load includes on startup

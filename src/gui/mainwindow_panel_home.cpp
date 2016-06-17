@@ -21,8 +21,7 @@
 
 #include "gui/mainwindow.h"
 #include "main/aten.h"
-#include "gui/selectfilter.h"
-#include "gui/loadmodel.h"
+// #include "gui/selectfilter.h"
 #include "gui/exportfilm.h"
 #include "gui/exportimage.h"
 #include "gui/openmodel.h"
@@ -38,9 +37,9 @@ void AtenWindow::updateHomePanel(Model* sourceModel)
 	Messenger::enter("AtenWindow::updateHomePanel");
 
 	// File
-	ui.HomeFileOpenButton->setEnabled(!aten_.fileDialogFilters(FilterData::ModelImport).isEmpty());
-	ui.HomeFileSaveButton->setEnabled((!aten_.fileDialogFilters(FilterData::ModelExport).isEmpty()) && sourceModel && sourceModel->isModified());
-	ui.HomeFileSaveAsButton->setEnabled(!aten_.fileDialogFilters(FilterData::ModelExport).isEmpty());
+	ui.HomeFileOpenButton->setEnabled(aten_.pluginStore().nFilePlugins(PluginTypes::ModelFilePlugin, PluginTypes::ImportPlugin) > 0);
+	ui.HomeFileSaveButton->setEnabled((aten_.pluginStore().nFilePlugins(PluginTypes::ModelFilePlugin, PluginTypes::ExportPlugin) > 0) && sourceModel && sourceModel->isModified());
+	ui.HomeFileSaveAsButton->setEnabled(aten_.pluginStore().nFilePlugins(PluginTypes::ModelFilePlugin, PluginTypes::ImportPlugin) > 0);
 
 	// Edit
 	ui.HomeEditPasteButton->setEnabled( sourceModel && aten_.userClipboard->nAtoms() != 0);
@@ -97,97 +96,35 @@ void AtenWindow::on_HomeFileNewButton_clicked(bool checked)
 
 void AtenWindow::on_HomeFileOpenButton_clicked(bool checked)
 {
-	static AtenOpenModel openModelDialog(this, aten_.workDir(), aten_.pluginStore().ioPlugins(PluginTypes::IOModelPlugin));
-
-	if (openModelDialog.execute())
+	if (openModelDialog_.execute(aten_.pluginStore().logPoint()))
 	{
 		// Open model(s) selected in dialog
-		QStringList filesToLoad = openModelDialog.selectedFilenames();
-		IOPluginInterface* interface = openModelDialog.selectedPlugin();
-		for (int n=0; n<filesToLoad.count(); ++n) aten_.openModel(filesToLoad.at(n), interface);
-	}
-	return;
+		QStringList filesToLoad = openModelDialog_.selectedFilenames();
+		FilePluginInterface* interface = openModelDialog_.selectedPlugin();
+		for (int n=0; n<filesToLoad.count(); ++n) aten_.importModel(filesToLoad.at(n), interface, openModelDialog_.standardImportOptions());
 
-	AtenLoadModel loadModelDialog(*this);
-	Tree* filter;
+		aten().setSingleModelVisible(aten().currentModel());
 
-	if (loadModelDialog.updateAndExec() == 1)
-	{
-		bool result = aten_.loadModel(loadModelDialog.selectedFilename(), loadModelDialog.selectedFormat());
-		if (result)
-		{
-			aten().setSingleModelVisible(aten().currentModel());
-
-			updateWidgets(AtenWindow::AllTarget);
-		}
+		updateWidgets(AtenWindow::AllTarget);
 	}
 }
 
 void AtenWindow::on_HomeFileSaveButton_clicked(bool checked)
 {
-	// Check the filter of the current model
-	// If there isn't one, or it can't export, raise the file dialog.
-	// Similarly, if no filename has been set, raise the file dialog.
 	Model* m = aten_.currentModelOrFrame();
-	Tree* t = m->filter();
-	if ((t != NULL) && (t->filter.type() != FilterData::ModelExport)) t = NULL;
-	QString filename;
-	filename = m->filename();
-	if (filename.isEmpty() || (t == NULL))
-	{
-		if (runSaveModelDialog())
-		{
-			m->setFilter(saveModelFilter_);
-			m->setFilename(saveModelFilename_);
-			// Temporarily disable undo/redo for the model, save, and re-enable
-			m->disableUndoRedo();
-			if (saveModelFilter_->executeWrite(saveModelFilename_))
-			{
-				m->updateSavePoint();
-				Messenger::print("Model '%s' saved to file '%s' (%s)", qPrintable(m->name()), qPrintable(saveModelFilename_), qPrintable(saveModelFilter_->filter.name()));
-			}
-			else Messenger::print("Failed to save model '%s'.", qPrintable(m->name()));
-			m->enableUndoRedo();
-		}
-	}
-	else
-	{
-		// Temporarily disable undo/redo for the model, save, and re-enable
-		m->disableUndoRedo();
-		t->executeWrite(filename);
-		m->updateSavePoint();
-		m->enableUndoRedo();
-	}
+
+	aten_.exportModel(m, m->filename(), m->plugin());
 
 	updateWidgets();
 }
 
 void AtenWindow::on_HomeFileSaveAsButton_clicked(bool checked)
 {
-	Model* m;
-	if (runSaveModelDialog())
-	{
-		m = aten_.currentModelOrFrame();
-		if (m == NULL)
-		{
-			printf("Internal Error: Model pointer is NULL in AtenWindow::on_actionFileSaveAs_triggered.\n");
-			return;
-		}
-		m->setFilter(saveModelFilter_);
-		m->setFilename(saveModelFilename_);
+	Model* m = aten_.currentModelOrFrame();
 
-		// Temporarily disable undo/redo for the model, save, and re-enable
-		m->disableUndoRedo();
-		
-		if (saveModelFilter_->executeWrite(saveModelFilename_))
-		{
-			m->updateSavePoint();
-			Messenger::print("Model '%s' saved to file '%s' (%s)", qPrintable(m->name()), qPrintable(saveModelFilename_), qPrintable(saveModelFilter_->filter.name()));
-		}
-		else Messenger::print("Failed to save model '%s'.", qPrintable(m->name()));
-		m->enableUndoRedo();
-		updateWidgets();
-	}
+	aten_.exportModel(m, m->filename(), NULL);
+
+	updateWidgets();
 }
 
 void AtenWindow::on_HomeFileCloseButton_clicked(bool checked)

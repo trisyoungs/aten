@@ -50,15 +50,9 @@ Cli cliSwitches[] = {
 	{ Cli::BohrSwitch,		'b',"bohr",		0,
 		"",
 		"Converts model/grid atomic positions from Bohr to Angstrom" },
-	{ Cli::BondSwitch,		'\0',"bond",		0,
+	{ Cli::CacheAllSwitch,		'\0',"cacheall",	0,
 		"",
-		"Force (re)calculation of bonding in the model" },
-	{ Cli::CacheSwitch,		'\0',"cachelimit",	1,
-		"<limit>",
-		"Set the trajectory cache limit to <limit> kb"},
-	{ Cli::CentreSwitch,		'\0',"centre",		0,
-		"",
-		"Force centering of atomic coordinates at zero" },
+		"Cache all frames from trajectories"},
 	{ Cli::CommandSwitch,		'c',"command",		1,
 		"<commands>",
 		"Execute supplied commands before main program execution" },
@@ -67,7 +61,7 @@ Cli cliSwitches[] = {
 		"Print out call debug information, or specific information if output type is supplied" },
 	{ Cli::DialogsSwitch,		'\0',"dialogs",		0,
 		"",
-		"Permit script/filter dialogs to be raised even if the main GUI doesn't exist" },
+		"Permit script/plugin dialogs to be raised even if the main GUI doesn't exist" },
 	{ Cli::DoubleSwitch,		'\0',"double",		1,
 		"<var>=<value>",
 		"Pass a floating point <value> into Aten with variable name <var>" },
@@ -80,15 +74,9 @@ Cli cliSwitches[] = {
 	{ Cli::ExpressionSwitch,	'\0',"expression",	1,
 		"<filename>",
 		"Load the specified forcefield expression file" },
-	{ Cli::FilterSwitch,		'\0',"filter",		1,
-		"<filename>",
-		"Load additional filter data from specified filename" },
 	{ Cli::ForcefieldSwitch,	'\0',"ff",		1,
 		"<file>",
 		"Load the specified forcefield file" },
-	{ Cli::FoldSwitch,		'\0',"fold",		0,
-		"",
-		"Force folding of atoms in periodic systems" },
 	{ Cli::FormatSwitch,		'f',"format",		1,
 		"<format>",
 		"Load models from command-line assuming specified <format>" },
@@ -131,12 +119,6 @@ Cli cliSwitches[] = {
 	{ Cli::NoBondSwitch,		'\0',"nobond",		0,
 		"",
 		"Prevent (re)calculation of bonding in the model" },
-	{ Cli::NoCentreSwitch,		'\0',"nocentre",	0,
-		"",
-		"Prevent centering of atomic coordinates at zero" },
-	{ Cli::NoFiltersSwitch,	'\0',"nofilters",	0,
-		"",
-		"Prevent loading of filters from standard locations on startup" },
 	{ Cli::NoFoldSwitch,		'\0',"nofold",		0,
 		"",
 		"Prevent folding of atoms in periodic systems" },
@@ -164,12 +146,12 @@ Cli cliSwitches[] = {
 	{ Cli::NoQtSettingsSwitch,	'\0',"noqtsettings",	0,
 		"",
 		"Don't load in Qt window/toolbar settings on startup" },
-	{ Cli::PackSwitch,		'\0',"pack",		0,
-		"",
-		"Force generation of symmetry-equivalent atoms from spacegroup information" },
 	{ Cli::PipeSwitch,		'p',"pipe",		0,
 		"",
 		"Read and execute commands from piped input" },
+	{ Cli::PluginSwitch,		'\0',"plugin",		1,
+		"<filename>",
+		"Load additional plugin from specified filename" },
 	{ Cli::ProcessSwitch,		'\0',"process",		0,
 		"",
 		"Run any commands supplied with -c or --command on all models (but don't save)" },
@@ -200,8 +182,8 @@ Cli cliSwitches[] = {
 	{ Cli::VersionSwitch,		'\0',"version",		0,
 		"",
 		"Print program version and exit" },
-	{ Cli::ZmapSwitch,		'z',"zmap",		1,
-		"<mapstyle>",	"Override filter element mapping style" }
+	{ Cli::ZMapSwitch,		'z',"zmap",		1,
+		"<mapstyle>",	"Set zmapping style to use on import" }
 };
 
 /*
@@ -377,10 +359,6 @@ bool Aten::parseCliEarly(int argc, char *argv[])
 					Messenger::print("OpenGL display lists will be used for rendering instead of VBOs.");
 					PrimitiveInstance::setInstanceType(PrimitiveInstance::ListInstance);
 					break;
-				// Restrict filter loading on startup
-				case (Cli::NoFiltersSwitch):
-					prefs.setLoadFilters(false);
-					break;
 				// Restrict fragment loading on startup
 				case (Cli::NoFragmentsSwitch):
 					prefs.setLoadFragments(false);
@@ -440,9 +418,10 @@ int Aten::parseCli(int argc, char *argv[])
 	Model* model;
 	Program* script, tempProgram;
 	ReturnValue rv;
-	Tree* filter, *modelFilter = NULL, *trajectoryFilter = NULL;
+	FilePluginInterface* plugin, *modelPlugin = NULL, *trajectoryPlugin = NULL;
 	Program interactiveScript;
 	QStringList items;
+	KVMap pluginOptions;
 
 	// Regular expression for long option matching
 	QRegularExpression longRE("--([a-z]+)=*(.*)");
@@ -557,7 +536,6 @@ int Aten::parseCli(int argc, char *argv[])
 				case (Cli::DebugSwitch):
 				case (Cli::HelpSwitch):
 				case (Cli::ListsSwitch):
-				case (Cli::NoFiltersSwitch):
 				case (Cli::NoFragmentsSwitch):
 				case (Cli::NoFragmentIconsSwitch):
 				case (Cli::NoIncludesSwitch):
@@ -578,21 +556,13 @@ int Aten::parseCli(int argc, char *argv[])
 					else if (programMode_ == Aten::ExportMode) programMode_ = Aten::BatchExportMode;
 					else programMode_ = Aten::BatchMode;
 					break;
-				// Convert coordinates from Bohr to Angstrom
+				// Convert coordinates from Bohr to Angstrom on import
 				case (Cli::BohrSwitch):
-					prefs.setCoordsInBohr(true);
+					standardImportOptions_.setCoordinatesInBohr(true);
 					break;
-				// Force bonding calculation of atoms on load
-				case (Cli::BondSwitch):
-					prefs.setBondOnLoad(Choice::Yes);
-					break;
-				// Set trajectory cache limit
-				case (Cli::CacheSwitch):
-					prefs.setCacheLimit(argText.toInt());
-					break;
-				// Force model centering on load (for non-periodic systems)
-				case (Cli::CentreSwitch):
-					prefs.setCentreOnLoad(Choice::Yes);
+				// Flag to cache all frames from trajectories
+				case (Cli::CacheAllSwitch):
+					standardImportOptions_.setCacheAll(true);
 					break;
 				// Read commands from passed string and execute them
 				case (Cli::CommandSwitch):
@@ -628,23 +598,19 @@ int Aten::parseCli(int argc, char *argv[])
 					parser.getArgsDelim(Parser::UseQuotes, argText);
 					
 					// First part of argument is nickname
-					filter = findFilter(FilterData::ModelExport, parser.argc(0));
-					// Check that a suitable format was found
-					if (filter == NULL)
+					plugin = pluginStore_.findFilePluginByNickname(PluginTypes::ModelFilePlugin, PluginTypes::ExportPlugin, parser.argc(0));
+					if (plugin == NULL)
 					{
 						// Print list of valid filter nicknames
-						printValidNicknames(FilterData::ModelExport);
+						pluginStore_.showFilePluginNicknames(PluginTypes::ModelFilePlugin, PluginTypes::ExportPlugin);
 						return -1;
 					}
 
 					// Loop over remaining arguments which are widget/global variable assignments
-					for (i = 1; i < parser.nArgs(); ++i)
-					{
-						items = parser.argc(i).split('=');
-						if (!filter->setAccessibleVariable(items.at(0), items.at(1))) return -1;
-					}
+					pluginOptions.clear();
+					for (i = 1; i < parser.nArgs(); ++i) pluginOptions.add(parser.argc(i));
+					setExportModelPlugin(plugin, pluginOptions);
 
-					setExportFilter(filter);
 					if (programMode_ == Aten::BatchMode) programMode_ = Aten::BatchExportMode;
 					else programMode_ = Aten::ExportMode;
 					break;
@@ -660,22 +626,12 @@ int Aten::parseCli(int argc, char *argv[])
 							Messenger::print("Mangled exportmap value found: '%s'.", qPrintable(parser.argc(n)));
 							return -1;
 						}
-						typeExportMap.add(items.at(0), items.at(1));
+						typeExportMap_.add(items.at(0), items.at(1));
 					}
 					break;
 				// Load expression
 				case (Cli::ExpressionSwitch):
-					filter = probeFile(argText, FilterData::ExpressionImport);
-					if (filter == NULL) return -1;
-					else if (!filter->executeRead(argText)) return -1;
-					break;
-				// Load additional filter data from specified filename
-				case (Cli::FilterSwitch):
-					if (!loadFilter(argText)) return -1;
-					break;
-				// Force folding (MIM'ing) of atoms in periodic systems on load
-				case (Cli::FoldSwitch):
-					prefs.setFoldOnLoad(Choice::Yes);
+					if (!importExpression(argText)) return -1;
 					break;
 				// Load the specified forcefield
 				case (Cli::ForcefieldSwitch):
@@ -684,19 +640,17 @@ int Aten::parseCli(int argc, char *argv[])
 					break;
 				// Set forced model load format
 				case (Cli::FormatSwitch):
-					modelFilter = findFilter(FilterData::ModelImport, argText);
-					if (modelFilter == NULL)
+					modelPlugin = pluginStore_.findFilePluginByNickname(PluginTypes::ModelFilePlugin, PluginTypes::ImportPlugin, argText);
+					if (modelPlugin== NULL)
 					{
 						// Print list of valid filter nicknames
-						printValidNicknames(FilterData::ModelImport);
+						pluginStore_.showFilePluginNicknames(PluginTypes::ModelFilePlugin, PluginTypes::ImportPlugin);
 						return -1;
 					}
 					break;
 				// Load surface
 				case (Cli::GridSwitch):
-					filter = probeFile(argText, FilterData::GridImport);
-					if (filter == NULL) return -1;
-					else if (!filter->executeRead(argText)) return -1;
+					if (!importGrid(currentModelOrFrame(), argText)) return -1;
 					break;
 				// Pass value
 				case (Cli::DoubleSwitch):
@@ -732,26 +686,26 @@ int Aten::parseCli(int argc, char *argv[])
 				// Keep atom names in file
 				case (Cli::KeepNamesSwitch):
 					// Mutually exclusive with keeptypes
-					if  (prefs.keepTypes())
+					if (standardImportOptions_.keepTypes())
 					{
 						Messenger::print("Error: --keepnames and --keeptypes are mutually exclusive.");
 						return -1;
 					}
-					prefs.setKeepNames(true);
+					standardImportOptions_.setKeepNames(true);
 					break;
 				// Keep atom type names in file
 				case (Cli::KeepTypesSwitch):
 					// Mutually exclusive with keepnames
-					if  (prefs.keepNames())
+					if (standardImportOptions_.keepNames())
 					{
 						Messenger::print("Error: --keepnames and --keeptypes are mutually exclusive.");
 						return -1;
 					}
-					prefs.setKeepTypes(true);
+					standardImportOptions_.setKeepTypes(true);
 					break;
 				// Keep (don't reset) view when GUI starts
 				case (Cli::KeepViewSwitch):
-					prefs.setKeepView(true);
+					standardImportOptions_.setKeepView(true);
 					break;
 				// Load models from list in file
 				case (Cli::LoadFromListSwitch):
@@ -760,10 +714,7 @@ int Aten::parseCli(int argc, char *argv[])
 					{
 						parser.readNextLine(Parser::StripComments);
 						nTried ++;
-						if (modelFilter != NULL) filter = modelFilter;
-						else filter = probeFile(parser.line(), FilterData::ModelImport);
-						if (filter != NULL) filter->executeRead(parser.line());
-						else return -1;
+						if (!importModel(parser.line(), modelPlugin)) return -1;
 					}
 					break;
 				// Set type mappings
@@ -778,13 +729,13 @@ int Aten::parseCli(int argc, char *argv[])
 							Messenger::print("Mangled map value found: '%s'.", qPrintable(parser.argc(n)));
 							return -1;
 						}
-						el = Elements().z(items.at(1));
+						el = ElementMap::z(items.at(1));
 						if (el == 0)
 						{
 							Messenger::print("Unrecognised element '%s' in type map.", qPrintable(items.at(1)));
 							return -1;
 						}
-						else Elements().addMapping(el, items.at(0));
+						else ElementMap::addMapping(el, items.at(0));
 					}
 					break;
 				// Create a new model
@@ -794,39 +745,32 @@ int Aten::parseCli(int argc, char *argv[])
 					break;
 				// Display filter nicknames and quit
 				case (Cli::NicknamesSwitch):
-					for (int ftype=0; ftype<FilterData::nFilterTypes; ++ftype)
-					{
-						printValidNicknames( (FilterData::FilterType) ftype );
-					}
+					pluginStore_.showAllFilePluginNicknames();
 					return -1;
 					break;
 				// Prohibit bonding calculation of atoms on load
 				case (Cli::NoBondSwitch):
-					prefs.setBondOnLoad(Choice::No);
-					break;
-				// Prohibit model centering on load (for non-periodic systems)
-				case (Cli::NoCentreSwitch):
-					prefs.setCentreOnLoad(Choice::No);
+					standardImportOptions_.setPreventRebonding(true);
 					break;
 				// Prohibit folding (MIM'ing) of atoms in periodic systems on load
 				case (Cli::NoFoldSwitch):
-					prefs.setFoldOnLoad(Choice::No);
+					standardImportOptions_.setPreventFolding(true);
 					break;
 				// Force packing (application of symmetry operators) on load
 				case (Cli::NoPackSwitch):
-					prefs.setPackOnLoad(Choice::No);
+					standardImportOptions_.setPreventPacking(true);
 					break;
 				// Don't load Qt window/toolbar settings on startup
 				case (Cli::NoQtSettingsSwitch):
 					prefs.setLoadQtSettings(false);
 					break;
-				// Prohibit packing (application of symmetry operators) on load
-				case (Cli::PackSwitch):
-					prefs.setPackOnLoad(Choice::Yes);
-					break;
 				// Read and execute commads from pipe
 				case (Cli::PipeSwitch):
 					prefs.setReadPipe(true);
+					break;
+				// Load additional plugin from specified filename
+				case (Cli::PluginSwitch):
+					if (!loadPlugin(argText)) return -1;
 					break;
 				// Enable processing mode
 				case (Cli::ProcessSwitch):
@@ -870,20 +814,15 @@ int Aten::parseCli(int argc, char *argv[])
 						Messenger::print("There is no current model to associate a trajectory to.");
 						return -1;
 					}
-					else
-					{
-						Tree* filter = (trajectoryFilter ? trajectoryFilter : probeFile(argText, FilterData::TrajectoryImport));
-						if (filter == NULL) return -1;
-						if (!current_.m->initialiseTrajectory(argText,filter)) return -1;
-					}
+					else if (!importTrajectory(currentModel(), argText, trajectoryPlugin, standardImportOptions_)) return -1;
 					break;
 				// Set forced trajectory load format
 				case (Cli::TrajectoryFormatSwitch):
-					trajectoryFilter = findFilter(FilterData::TrajectoryImport, argText);
-					if (trajectoryFilter == NULL)
+					trajectoryPlugin = pluginStore_.findFilePluginByNickname(PluginTypes::TrajectoryFilePlugin, PluginTypes::ImportPlugin, argText);
+					if (trajectoryPlugin == NULL)
 					{
 						// Print list of valid filter nicknames
-						printValidNicknames(FilterData::TrajectoryImport);
+						pluginStore_.showFilePluginNicknames(PluginTypes::TrajectoryFilePlugin, PluginTypes::ImportPlugin);
 						return -1;
 					}
 					break;
@@ -892,9 +831,9 @@ int Aten::parseCli(int argc, char *argv[])
 					prefs.setMaxUndoLevels(argText.toInt());
 					break;
 				// Set the type of element (Z) mapping to use in name conversion
-				case (Cli::ZmapSwitch):
+				case (Cli::ZMapSwitch):
 					zm = ElementMap::zMapType(argText, true);
-					if (zm != ElementMap::nZMapTypes) prefs.setZMapType(zm);
+					if (zm != ElementMap::nZMapTypes) standardImportOptions_.setZMappingType(zm);
 					else return -1;
 					break;
 				// Undefined option
@@ -907,7 +846,7 @@ int Aten::parseCli(int argc, char *argv[])
 		{
 			// Not a CLI switch, so try to load it as a model
 			++nTried;
-			if (!loadModel(argv[argn], modelFilter)) return -1;
+			if (!importModel(argv[argn], modelPlugin, standardImportOptions_)) return -1;
 		}
 	}
 

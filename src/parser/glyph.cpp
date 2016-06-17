@@ -180,7 +180,7 @@ bool GlyphVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex,
 			rv.set( Glyph::nGlyphData(ptr->type()) );
 			break;
 		case (GlyphVariable::Rotated):
-			rv.set( ptr->rotated() );
+			rv.set( ptr->isRotated() );
 			break;
 		case (GlyphVariable::Rotation):
 			if ((arrayIndex < 1) || (arrayIndex > 9))

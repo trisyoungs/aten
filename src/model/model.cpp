@@ -35,6 +35,7 @@ Model::Model() : ListItem<Model>()
 	// Private variables
 	parent_ = NULL;
 	visible_ = false;
+	type_ = Model::ParentModelType;
 
 	// Camera / View / render
 	modelViewMatrix_.setIdentity();
@@ -60,22 +61,15 @@ Model::Model() : ListItem<Model>()
 	zMatrixPoint_ = -1;
 
 	// File / Undo
-	filter_ = NULL;
+	plugin_ = NULL;
 	currentUndoState_ = NULL;
 	currentRedoState_ = NULL;
 	recordingState_ = NULL;
 	undoRedoEnabled_ = false;
 
 	// Trajectory
-	trajectoryFilter_ = NULL;
-	trajectoryHeaderFunction_ = NULL;
-	trajectoryFrameFunction_ = NULL;
-	trajectoryOffsets_ = NULL;
-	trajectoryHighestFrameOffset_ = 0;
-	trajectoryFrameSize_ = 0;
-	nTrajectoryFileFrames_ = 0;
+	trajectoryPlugin_ = NULL;
 	trajectoryFramesAreCached_ = false;
-	trajectoryFrameIndex_ = -1;
 	trajectoryPlaying_ = false;
 	trajectoryCurrentFrame_ = NULL;
 	trajectoryPropagateParentStyle_ = false;
@@ -126,26 +120,14 @@ QString Model::filename() const
 	return filename_;
 }
 
-// Sets the file filter of the model
-void Model::setFilter(Tree* f)
-{
-	filter_ = f;
-}
-
-// Return the stored file filter of the model
-Tree* Model::filter() const
-{
-	return filter_;
-}
-
 // Sets the plugin used to load the model
-void Model::setPlugin(IOPluginInterface* plugin)
+void Model::setPlugin(FilePluginInterface* plugin)
 {
 	plugin_ = plugin;
 }
 
 // Return the plugin used to load the model
-IOPluginInterface* Model::plugin() const
+FilePluginInterface* Model::plugin() const
 {
 	return plugin_;
 }

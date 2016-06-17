@@ -296,7 +296,7 @@ void Fragment::pasteAnchoredModel(Atom* anchorpoint, bool replace, int& replaceb
 	{
 		Vec3<double> delta = linkPartner->r() - anchorpoint->r();
 		double original = delta.magAndNormalise();
-		delta *= (Elements().atomicRadius(linkPartner) + Elements().atomicRadius(anchorpoint)) - original;
+		delta *= (ElementMap::atomicRadius(linkPartner) + ElementMap::atomicRadius(anchorpoint)) - original;
 		clip.translate(delta);
 	}
 	clip.pasteToModel(target, false);

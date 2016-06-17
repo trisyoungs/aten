@@ -23,7 +23,6 @@
 #define ATEN_TREE_H
 
 #include <iostream>
-#include "parser/filterdata.h"
 #include "parser/variablelist.h"
 #include "parser/treegui.h"
 #include "parser/scopenode.h"
@@ -224,16 +223,6 @@ class Tree : public ListItem<Tree>
 
 
 	/*
-	 * Filter Properties
-	 */
-	public:
-	// Filter data
-	FilterData filter;
-	// Return whether this tree is a filter
-	bool isFilter() const;
-
-
-	/*
 	 * Qt/CLI GUI Definition
 	 */
 	private:
@@ -259,10 +248,6 @@ class Tree : public ListItem<Tree>
 	 * Execution
 	 */
 	private:
-	// Read options for parser
-	int readOptions_;
-	// Current input stream target, in the form of a LineParser
-	LineParser* parser_;
 	// Flag to indicate that recent failure of this token is known and we should continue
 	Commands::Function acceptedFail_;
 	// Number of times tree has been run
@@ -271,34 +256,12 @@ class Tree : public ListItem<Tree>
 	public:
 	// Set widget or global variable value
 	bool setAccessibleVariable(QString name, QString value);
-	// Add read option
-	void addReadOption(Parser::ParseOption po);
-	// Remove read option
-	void removeReadOption(Parser::ParseOption po);
-	// Return read options
-	int readOptions() const;
-	// Return the current LineParser pointer
-	LineParser* parser();
-	// Return whether the LineParser is ready for file reading
-	bool isFileGoodForReading() const;
-	// Return whether the LineParser is ready for file writing
-	bool isFileGoodForWriting() const;
 	// Set function for accepted fail
 	void setAcceptedFail(Commands::Function func);
 	// Return function for accepted fail
 	Commands::Function acceptedFail() const;
 	// Execute
 	bool execute(ReturnValue& rv);
-	// Execute, using specified parser as input/output source
-	bool execute(LineParser* parser, ReturnValue& rv);
-	// Execute, opening specified file as input source
-	bool executeRead(QString filename, ReturnValue& rv);
-	// Execute, with specified filename as data target
-	bool executeWrite(QString filename, ReturnValue& rv);
-	// Execute, opening specified file as input source (no return value)
-	bool executeRead(QString filename);
-	// Execute, with specified filename as data target (no return value)
-	bool executeWrite(QString filename);
 	// Return number of times tree has been run
 	int runCount();
 };

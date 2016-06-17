@@ -279,18 +279,18 @@ bool Model::createExpression(Choice vdwOnly, Choice allowDummy, Choice assignCha
 			// Check for compatible interaction types between atoms
 			if (ffa->vdwForm() != ffb->vdwForm())
 			{
-				Messenger::print("Conflicting van der Waals functional forms for atom types '%s' and '%s'.", VdwFunctions::VdwFunctions[ffa->vdwForm()].name, VdwFunctions::VdwFunctions[ffb->vdwForm()].name);
+				Messenger::print("Conflicting van der Waals functional forms for atom types '%s' and '%s'.", VdwFunctions::functionData[ffa->vdwForm()].name, VdwFunctions::functionData[ffb->vdwForm()].name);
 				Messenger::print("Expression for model cannot be completed.");
 				Messenger::exit("Model::createExpression");
 				return false;
 			}
 
 			// Create item in table
-			pp = combinationTable_.add(ffa, ffb, VdwFunctions::VdwFunctions[ffa->vdwForm()].nParameters);
+			pp = combinationTable_.add(ffa, ffb, VdwFunctions::functionData[ffa->vdwForm()].nParameters);
 
 			// Combine parameters
-			crflags = VdwFunctions::VdwFunctions[ffa->vdwForm()].combinationRules;
-			for (i=0; i<VdwFunctions::VdwFunctions[ffa->vdwForm()].nParameters; ++i)
+			crflags = VdwFunctions::functionData[ffa->vdwForm()].combinationRules;
+			for (i=0; i<VdwFunctions::functionData[ffa->vdwForm()].nParameters; ++i)
 			{
 				pp->setData(i, combine.combine( crflags[i], ffa->parameter(i), ffb->parameter(i) ) );
 // 				printf("combined Parameter is %f, original = %f,%f\n", CombinationRules::combine( crflags[i], ffa->parameter(i), ffb->parameter(i)), ffa->parameter(i), ffb->parameter(i));

@@ -120,7 +120,7 @@ void Viewer::renderUserActions(Model* source)
 		// Get radius information
 		style_i = (prefs.renderStyle() == Prefs::OwnStyle ? i->style() : prefs.renderStyle());
 		radius_i = prefs.atomStyleRadius(style_i);
-		if (style_i == Prefs::ScaledStyle) radius_i *= Elements().atomicRadius(i->element());
+		if (style_i == Prefs::ScaledStyle) radius_i *= ElementMap::atomicRadius(i->element());
 
 		// Create matrix
 		A.createTranslation(i->r());
@@ -170,7 +170,7 @@ void Viewer::renderUserActions(Model* source)
 			else switch (prefs.colourScheme())
 			{
 				case (Prefs::ElementScheme):
-					Elements().copyColour(clickedAtom->element(), colour_i);
+					ElementMap::copyColour(clickedAtom->element(), colour_i);
 					break;
 				case (Prefs::ChargeScheme):
 					prefs.colourScale[0].colour(clickedAtom->charge(), colour_i);
@@ -187,7 +187,7 @@ void Viewer::renderUserActions(Model* source)
 				default:
 					break;
 			}
-			Elements().copyColour(atenWindow_->currentBuildElement(), colour_j);
+			ElementMap::copyColour(atenWindow_->currentBuildElement(), colour_j);
 			
 			// Construct transformation matrix to centre on original (first) atom
 			A.createTranslation(pos);

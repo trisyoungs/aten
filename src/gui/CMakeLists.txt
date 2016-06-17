@@ -7,12 +7,14 @@ SET(gui_MOC_HDRS
   exportfilm.h
   exportimage.h
   ffeditor.h
+  filedialog.h
   fileselectorwidget.h
   glyphs.h
   layoutlist.h
-  loadmodel.h
   mainwindow.h
+  opengrid.h
   openmodel.h
+  opentrajectory.h
   popupbuildaddatom.h
   popupbuildaddh.h
   popupbuildclear.h
@@ -67,7 +69,7 @@ SET(gui_MOC_HDRS
   popupviewstyle.h
   prefs.h
   progress.h
-  selectfilter.h
+  savemodel.h
   selectpattern.h
   selectvariable.h
   vibrations.h
@@ -104,9 +106,10 @@ SET(gui_UIS
   exportimage.ui
   ffeditor.ui
   glyphs.ui
-  loadmodel.ui
   mainwindow.ui
+  opengrid.ui
   openmodel.ui
+  opentrajectory.ui
   popupbuildaddatom.ui
   popupbuildaddh.ui
   popupbuildclear.ui
@@ -161,7 +164,7 @@ SET(gui_UIS
   popupviewstyle.ui
   prefs.ui
   progress.ui
-  selectfilter.ui
+  savemodel.ui
   selectpattern.ui
   selectvariable.ui
   fileselectorwidget.ui
@@ -186,10 +189,10 @@ set(gui_SRCS
   exportfilm_funcs.cpp
   exportimage_funcs.cpp
   ffeditor_funcs.cpp
+  filedialog_funcs.cpp
   fileselectorwidget_funcs.cpp
   glyphs_funcs.cpp
   layoutlist.cpp
-  loadmodel_funcs.cpp
   mainwindow_atoms.cpp
   mainwindow_context.cpp
   mainwindow_film.cpp
@@ -213,7 +216,9 @@ set(gui_SRCS
   mainwindow_quickcommand.cpp
   mainwindow_session.cpp
   mainwindow_update.cpp
+  opengrid_funcs.cpp
   openmodel_funcs.cpp
+  opentrajectory_funcs.cpp
   popupbuildaddatom_funcs.cpp
   popupbuildaddh_funcs.cpp
   popupbuildclear_funcs.cpp
@@ -268,7 +273,7 @@ set(gui_SRCS
   popupviewstyle_funcs.cpp
   prefs_funcs.cpp
   progress_funcs.cpp
-  selectfilter_funcs.cpp
+  savemodel_funcs.cpp
   selectpattern_funcs.cpp
   selectvariable_funcs.cpp
   settings.cpp

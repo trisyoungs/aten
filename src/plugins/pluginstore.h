@@ -23,7 +23,7 @@
 #define ATEN_PLUGINSTORE_H
 
 #include "plugins/plugintypes.h"
-#include "plugins/interfaces.h"
+#include "plugins/interfaces/fileplugin.h"
 #include "base/namespace.h"
 
 ATEN_USING_NAMESPACE
@@ -41,23 +41,42 @@ class PluginStore
 	PluginStore();
 	~PluginStore();
 
+	/*
+	 * Internal Data
+	 */
+	private:
+	// Logpoint of plugin store
+	int logPoint_;
+
+	public:
+	// return current logpoint of plugin store
+	int logPoint() const;
+
 
 	/*
-	 * Plugin Data
+	 * File Import/Export Plugins
 	 */
 	private:
 	// List of IO plugin objects (by category)
-	RefList<IOPluginInterface,int> ioPlugins_[PluginTypes::nPluginCategories];
+	RefList<FilePluginInterface,int> filePlugins_[PluginTypes::nFilePluginCategories];
 
 	public:
-	// Register plugin (IOPluginType)
-	bool registerPlugin(IOPluginInterface* plugin);
+	// Register file plugin
+	bool registerFilePlugin(FilePluginInterface* plugin);
 	// Empty (delete) all plugins and plugin instances
-	void clearPlugins();
-	// Return reference to ioPlugin objects of specified category
-	const RefList<IOPluginInterface,int>& ioPlugins(PluginTypes::IOPluginCategory category) const;
+	void clearFilePlugins();
+	// Return reference list of file plugins of specified category
+	const RefList<FilePluginInterface,int>& filePlugins(PluginTypes::FilePluginCategory category) const;
+	// Return number of plugins of specified category and type
+	int nFilePlugins(PluginTypes::FilePluginCategory category, PluginTypes::FilePluginType type) const;
+	// Show list of valid plugin nicknames
+	void showFilePluginNicknames(PluginTypes::FilePluginCategory category, PluginTypes::FilePluginType type) const;
+	// Show all file plugins, by category, and their nicknames
+	void showAllFilePluginNicknames() const;
 	// Find plugin interface for specified file
-	IOPluginInterface* findPlugin(PluginTypes::IOPluginCategory category, PluginTypes::IOPluginType type, QString filename);
+	FilePluginInterface* findFilePlugin(PluginTypes::FilePluginCategory category, PluginTypes::FilePluginType type, QString filename) const;
+	// Find plugin interface by nickname
+	FilePluginInterface* findFilePluginByNickname(PluginTypes::FilePluginCategory category, PluginTypes::FilePluginType type, QString nickname) const;
 };
 
 ATEN_END_NAMESPACE

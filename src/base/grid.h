@@ -33,7 +33,7 @@
 ATEN_BEGIN_NAMESPACE
 
 // Forward Declarations
-/* none */
+class FilePluginInterface;
 
 // Grid Data
 class Grid : public ListItem<Grid>, ObjectStore<Grid>
@@ -44,7 +44,7 @@ class Grid : public ListItem<Grid>, ObjectStore<Grid>
 	~Grid();
 	// Grid type
 	enum GridType { NoData, RegularXYData, RegularXYZData, FreeXYZData, nGridTypes };
-	static GridType gridType(QString s, bool reportError);
+	static GridType gridType(QString s, bool reportError = false);
 	static const char* gridType(Grid::GridType gt);
 	// Surface rendering styles
 	enum SurfaceStyle { PointSurface, MeshSurface, SolidSurface, nSurfaceStyles };
@@ -62,6 +62,8 @@ class Grid : public ListItem<Grid>, ObjectStore<Grid>
 	Model* parent_;
 	// Filename from which the grid data was loaded
 	QString filename_;
+	// Plugin used to load the grid data
+	FilePluginInterface* plugin_;
 	// Name of the Grid data
 	QString name_;
 	// Type of data contained in the class
@@ -72,6 +74,10 @@ class Grid : public ListItem<Grid>, ObjectStore<Grid>
 	void setFilename(QString filename);
 	// Return filename of grid data
 	QString filename() const;
+	// Set plugin used to load the grid data
+	void setPlugin(FilePluginInterface* plugin);
+	// Return plugin used to load the grid data
+	FilePluginInterface* plugin();
 	// Set name of Grid data
 	void setName(QString name);
 	// Return name of Grid data
@@ -237,7 +243,9 @@ class Grid : public ListItem<Grid>, ObjectStore<Grid>
 	double** data2d();
 	// Return head of gridpoints array
 	GridPoint* gridPoints();
-	// Set loop ordering
+	// Set loop ordering (from string)
+	void setLoopOrder(QString loopOrder);
+	// Set loop ordering element
 	void setLoopOrder(int n, int xyz);
 	// Return loop ordering 
 	Vec3<int> loopOrder();

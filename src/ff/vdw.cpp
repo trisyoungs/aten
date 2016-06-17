@@ -83,7 +83,7 @@ double VdwEnergy(VdwFunctions::VdwFunction type, double rij, double* params, int
 			U = d * ( expo*expo - 1.0);
 			break;
 		default:
-			Messenger::print("Internal Error: Energy calculation for VDW form '%s' not present.", VdwFunctions::VdwFunctions[type].keyword);
+			Messenger::print("Internal Error: Energy calculation for VDW form '%s' not present.", VdwFunctions::functionData[type].keyword);
 			break;
 	}
 	return U;
@@ -145,7 +145,7 @@ Vec3<double> VdwForces(VdwFunctions::VdwFunction type, Vec3<double> vecij, doubl
 			du_dr = 2.0 * forcek * d * (1.0 - expo) * expo;
 			break;
 		default:
-			Messenger::print("Internal Error: Force calculation for VDW form '%s' not present.", VdwFunctions::VdwFunctions[type].keyword);
+			Messenger::print("Internal Error: Force calculation for VDW form '%s' not present.", VdwFunctions::functionData[type].keyword);
 			break;
 	}
 	// Calculate final forces (vecij contains dx, dy, dz between target atoms)
@@ -458,7 +458,7 @@ bool Pattern::vdwCorrectEnergy(UnitCell& cell, EnergyStore* estore)
 				{
 					j++;
 					paramsj = paj->data()->parameters();
-// 					CombinationRules::CombinationRule *crflags = VdwFunctions::VdwFunctions[p2->atoms_[j]->data()->vdwForm()].combinationRules;
+// 					CombinationRules::CombinationRule *crflags = VdwFunctions::functionData[p2->atoms_[j]->data()->vdwForm()].combinationRules;
 					switch (p2->atoms_[j]->data()->vdwForm())
 					{
 						case (VdwFunctions::None):
@@ -482,7 +482,7 @@ bool Pattern::vdwCorrectEnergy(UnitCell& cell, EnergyStore* estore)
 							du_dr *= (sigma * sigma * sigma);
 							break;
 						default:
-							Messenger::print("VDW tail correction not implemented for %s VDW interactions.", VdwFunctions::VdwFunctions[p1->atoms_[i]->data()->vdwForm()].name);
+							Messenger::print("VDW tail correction not implemented for %s VDW interactions.", VdwFunctions::functionData[p1->atoms_[i]->data()->vdwForm()].name);
 							break;
 					}
 					energy += 2.0 * PI * rho * du_dr;

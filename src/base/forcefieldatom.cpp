@@ -65,7 +65,7 @@ void ForcefieldAtom::setVdwForm(VdwFunctions::VdwFunction vf)
 {
 	vdwForm_ = vf;
 	// Copy default parameters to structure
-	for (int i=0; i<MAXFFPARAMDATA; i++) params_[i] = VdwFunctions::VdwFunctions[vf].defaultValues[i];
+	for (int i=0; i<MAXFFPARAMDATA; i++) params_[i] = VdwFunctions::functionData[vf].defaultValues[i];
 }
 
 // Returns the funcional VDW form
@@ -201,7 +201,7 @@ void ForcefieldAtom::setElementMass(double d)
 // Custom 'element' mass (or natural element mass)
 double ForcefieldAtom::elementMass() const
 {
-	return (elementMass_ < 0.0 ? Elements().atomicMass(element_) : elementMass_);
+	return (elementMass_ < 0.0 ? ElementMap::atomicMass(element_) : elementMass_);
 }
 
 // Return whether this is a united-atom type (i.e. has had its mass set explicitly)

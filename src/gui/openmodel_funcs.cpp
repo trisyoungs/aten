@@ -24,27 +24,35 @@
 #include <QMessageBox>
 
 // Constructor
-AtenOpenModel::AtenOpenModel(QWidget* parent, QDir startingDirectory, const RefList<IOPluginInterface,int>& ioPlugins) : QDialog(parent), ioPlugins_(ioPlugins)
+AtenOpenModel::AtenOpenModel(QWidget* parent, QDir startingDirectory, const RefList<FilePluginInterface,int>& filePlugins) : QDialog(parent), AtenFileDialog(filePlugins)
 {
 	ui.setupUi(this);
 
-	// Set the mode of the FileSelectorWidget
-	ui.FileSelector->setMode(FileSelectorWidget::OpenMultipleMode, ioPlugins, startingDirectory);
+	setFileSelectorWidget(ui.FileSelector, startingDirectory, FileSelectorWidget::OpenMultipleMode);
 
 	// Link up some slots
 	connect(ui.FileSelector, SIGNAL(selectionMade(bool)), this, SLOT(on_OpenButton_clicked(bool)));
 	connect(ui.FileSelector, SIGNAL(selectionValid(bool)), ui.OpenButton, SLOT(setEnabled(bool)));
+	connect(ui.FileSelector, SIGNAL(pluginOptionsAvailable(bool)), ui.PluginOptionsButton, SLOT(setEnabled(bool)));
 }
 
 /*
  * Widget Functions
  */
 
+void AtenOpenModel::on_PluginOptionsButton_clicked(bool checked)
+{
+	// Get current interface selected in FileSelector
+	FilePluginInterface* interface = ui.FileSelector->selectedPlugin();
+	if (!interface) return;
+	if (interface->hasImportOptions()) interface->showImportOptionsDialog();
+}
+
 void AtenOpenModel::on_OpenButton_clicked(bool checked)
 {
 	// Get current filename selection and check that the files exist
 	QStringList selectedFiles = ui.FileSelector->selectedFiles();
-	if (selectedFiles.count() == 0) reject();
+	if (selectedFiles.count() == 0) return;
 
 	QStringList missingFiles;
 	for (int n=0; n<selectedFiles.count(); ++n)
@@ -68,23 +76,36 @@ void AtenOpenModel::on_CancelButton_clicked(bool checked)
 }
 
 // Execute dialog
-bool AtenOpenModel::execute()
+bool AtenOpenModel::execute(int currentPluginsLogPoint, QString currentFilename, FilePluginInterface* currentPlugin)
 {
-	// Make sure the file selector is up to date
-	ui.FileSelector->clearSelectedFilenames();
-	ui.FileSelector->updateWidgets();
+	// Make sure file selector is up to date
+	updateFileSelector(currentPluginsLogPoint, currentFilename, currentPlugin);
 
 	return exec();
 }
 
-// Return selected filename(s)
-QStringList AtenOpenModel::selectedFilenames()
+// Return standard import options from dialog
+FilePluginStandardImportOptions AtenOpenModel::standardImportOptions()
 {
-	return ui.FileSelector->selectedFiles();
+	FilePluginStandardImportOptions options;
+
+	options.setCoordinatesInBohr(ui.BohrCheck->isChecked());
+	options.setForceRhombohedral(ui.ForceRhombohedralCheck->isChecked());
+	options.setKeepNames(ui.KeepNamesCheck->isChecked());
+	options.setKeepTypes(ui.KeepTypesCheck->isChecked());
+	options.setKeepView(ui.KeepViewCheck->isChecked());
+	options.setPreventRebonding(ui.PreventRebondingCheck->isChecked());
+	options.setPreventFolding(ui.PreventFoldingCheck->isChecked());
+	options.setPreventPacking(ui.PreventPackingCheck->isChecked());
+	options.setZMappingType( (ElementMap::ZMapType) ui.ZMappingCombo->currentIndex());
+
+	return options;
 }
 
-// Return selected file plugin
-IOPluginInterface* AtenOpenModel::selectedPlugin()
+// Return standard export options from dialog
+FilePluginStandardExportOptions AtenOpenModel::standardExportOptions()
 {
-	return ui.FileSelector->selectedPlugin();
+	FilePluginStandardExportOptions options;
+
+	return options;
 }

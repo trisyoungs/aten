@@ -106,22 +106,23 @@ void AtenWindow::initialUpdateAndShow()
 {
 	Messenger::enter("AtenWindow::initialUpdateAndShow");
 
+	// ATEN2 TODO ENDOFFILTERS
 	// Display message box warning if there was a filter load error
-	if (aten_.nFilterPrograms() == 0)
-	{
-		QMessageBox::warning(NULL, "Aten", "Filters could not be found.\nNo import/export will be possible.\nSet the environment variable ATENDATA to point to Aten's data directory (e.g. 'export ATENDATA=/usr/local/aten/data'), or run with --atendata <dir>.\n", QMessageBox::Ok, QMessageBox::Ok);
-	}
-	else if (aten_.failedFilters().count() > 0)
-	{
-		// Construct the messagebox text
-		QString text("One or more filters could not be loaded properly on startup.\nCheck shell output or run Settings->Reload Filters to diagnose the problem.\nFilters with errors were:\n");
-		for (int n=0; n<aten_.failedFilters().count(); ++n)
-		{
-			text += "\t";
-			text += aten_.failedFilters().at(n) + "\n";
-		}
-		QMessageBox::warning(NULL, "Aten", text, QMessageBox::Ok, QMessageBox::Ok);
-	}
+// 	if (aten_.nFilterPrograms() == 0)
+// 	{
+// 		QMessageBox::warning(NULL, "Aten", "Filters could not be found.\nNo import/export will be possible.\nSet the environment variable ATENDATA to point to Aten's data directory (e.g. 'export ATENDATA=/usr/local/aten/data'), or run with --atendata <dir>.\n", QMessageBox::Ok, QMessageBox::Ok);
+// 	}
+// 	else if (aten_.failedFilters().count() > 0)
+// 	{
+// 		// Construct the messagebox text
+// 		QString text("One or more filters could not be loaded properly on startup.\nCheck shell output or run Settings->Reload Filters to diagnose the problem.\nFilters with errors were:\n");
+// 		for (int n=0; n<aten_.failedFilters().count(); ++n)
+// 		{
+// 			text += "\t";
+// 			text += aten_.failedFilters().at(n) + "\n";
+// 		}
+// 		QMessageBox::warning(NULL, "Aten", text, QMessageBox::Ok, QMessageBox::Ok);
+// 	}
 
 	// Show the window
 	show();

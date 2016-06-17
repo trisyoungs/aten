@@ -92,7 +92,7 @@ void AtenVariable::nodePrint(int offset, const char* prefix)
 
 // Accessor data
 Accessor AtenVariable::accessorData[AtenVariable::nAccessors] = {
-	{ "elements",	VTypes::ElementData,		Elements().nElements(), true },
+	{ "elements",	VTypes::ElementData,		ElementMap::nElements(), true },
 	{ "frame",	VTypes::ModelData,		0, true },
 	{ "mc",		VTypes::MonteCarloData,		0, true },
 	{ "model",	VTypes::ModelData,		0, true },
@@ -208,15 +208,15 @@ bool AtenVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex, 
 		case (AtenVariable::ElementsMap):
 			if (hasArrayIndex)
 			{
-				if ((arrayIndex < 0) || (arrayIndex > Elements().nElements()))
+				if ((arrayIndex < 0) || (arrayIndex > ElementMap::nElements()))
 				{
 					Messenger::print("Array index [%i] is out of range for 'elements' member.", arrayIndex);
 					result = false;
 				}
-				else rv.set(VTypes::ElementData, Elements().element(arrayIndex));
+				else rv.set(VTypes::ElementData, ElementMap::element(arrayIndex));
 				// Note: array index is not decreased by 1, since element 0 is 'XX'
 			}
-			else rv.set(VTypes::ElementData, Elements().element(1));
+			else rv.set(VTypes::ElementData, ElementMap::element(1));
 			break;
 		case (AtenVariable::Frame):
 			if (aten_->currentModel() == NULL) rv.set(VTypes::ModelData, NULL);
@@ -243,7 +243,7 @@ bool AtenVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex, 
 			rv.set(VTypes::ModelData, m);
 			break;
 		case (AtenVariable::NElements):
-			rv.set(Elements().nElements());
+			rv.set(ElementMap::nElements());
 			break;
 		case (AtenVariable::NModels):
 			rv.set(aten_->nModels());
@@ -320,8 +320,8 @@ bool AtenVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 			else rv.set( prefs.convertEnergy(node->argd(0), eu) );
 			break;
 		case (AtenVariable::FindElement):
-			el = Elements().find(node->argc(0));
-			if (el != 0) rv.set(VTypes::ElementData, Elements().element(el));
+			el = ElementMap::find(node->argc(0));
+			if (el != 0) rv.set(VTypes::ElementData, ElementMap::element(el));
 			else rv.set(VTypes::ElementData, NULL);
 			break;
 		default:

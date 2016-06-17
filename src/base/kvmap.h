@@ -59,7 +59,12 @@ class KVMap
 	public:
 	// Constructor / Destructor
 	KVMap();
+	// Assignment Operator
+	void operator=(const KVMap& source);
+	// Copy Constructor
+	KVMap(const KVMap& source);
 
+	
 	/*
 	 * Data
 	 */
@@ -74,10 +79,16 @@ class KVMap
 	int nPairs() const;
 	// Set (existing) key/value pair
 	void add(QString key, QString value);
+	// Set (existing) key/value pair from 'option=value' string
+	void add(QString optionEqualsValue);
+	// Return comma-separated list of keys
+	QString keys();
 	// Search to see if specific key is in the table
 	KVPair* search(QString key) const;
 	// Retrieve value associated to key
-	QString value(QString key);
+	QString value(QString key) const;
+	// Return whether the specified key is set (to value specified if provided)
+	bool isSet(QString key, QString value = QString()) const;
 	// Return first key in list
 	KVPair* pairs();
 };

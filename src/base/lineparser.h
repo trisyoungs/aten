@@ -96,7 +96,7 @@ class LineParser
 	// Open new file for reading
 	bool openInput(QString filename);
 	// Open new stream for writing
-	bool openOutput(QString filename, bool directOutput);
+	bool openOutput(QString filename, bool directOutput = true);
 	// Close file(s)
 	void closeFiles();
 	// Return whether current file source is good for reading
@@ -159,9 +159,15 @@ class LineParser
 	double getDouble(int nbytes = 0);
 	// Fill an array of double values from reading of an (unformatted) input file
 	int getDoubleArray(double* array, int count);
-	// Write line to file
+	// Write partial line to file
+	bool write(QString line);
+	// Write formatted partial line to file
+	bool writeF(const char* fmt, ...);
+	// Write empty line to file
+	bool writeLine();
+	// Write whole line to file (appending CR/LF automatically)
 	bool writeLine(QString line);
-	// Write formatted line to file
+	// Write formatted line to file (appending CR/LF automatically)
 	bool writeLineF(const char* fmt, ...);
 	// Commit cached output stream to actual output file
 	bool commitCache();

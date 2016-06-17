@@ -79,7 +79,7 @@ void Pattern::bondEnergy(Model* srcmodel, EnergyStore* estore, int molecule)
 					energy = d * ( expo*expo );
 					break;
 				default:
-					Messenger::print("No equation coded for bond energy of type '%s'.", BondFunctions::BondFunctions[pb->data()->bondForm()].name);
+					Messenger::print("No equation coded for bond energy of type '%s'.", BondFunctions::functionData[pb->data()->bondForm()].name);
 					energy = 0.0;
 					break;
 			}
@@ -146,7 +146,7 @@ void Pattern::bondForces(Model* srcmodel)
 					du_dr = 2.0 * beta * d * (1.0 - expo) * expo;
 					break;
 				default:
-					Messenger::print("No equation coded for bond forces of type '%s'.", BondFunctions::BondFunctions[pb->data()->bondForm()].name);;
+					Messenger::print("No equation coded for bond forces of type '%s'.", BondFunctions::functionData[pb->data()->bondForm()].name);;
 					break;
 			}
 			// Calculate forces

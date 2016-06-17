@@ -20,6 +20,8 @@
 */
 
 #include "base/fileparser.h"
+#include "base/messenger.h"
+#include "parser/format.h"
 
 ATEN_USING_NAMESPACE
 
@@ -31,6 +33,40 @@ FileParser::FileParser(LineParser& parser) : parser_(parser)
 // Destructor
 FileParser::~FileParser()
 {
+}
+
+/*
+ * LineParser Object
+ */
+
+// Return current read/write filename
+QString FileParser::filename()
+{
+	return (parser_.inputFilename().isEmpty() ? parser_.outputFilename() : parser_.inputFilename());
+}
+
+// Tell current position of input stream
+std::streampos FileParser::tellg() const
+{
+	return parser_.tellg();
+}
+
+// Seek position in input stream
+void FileParser::seekg(std::streampos pos)
+{
+	parser_.seekg(pos);
+}
+
+// Seek n bytes in specified direction in input stream
+void FileParser::seekg(std::streamoff off, std::ios_base::seekdir dir)
+{
+	parser_.seekg(off, dir);
+}
+
+// Rewind input stream to start
+void FileParser::rewind()
+{
+	parser_.rewind();
 }
 
 /*
@@ -67,23 +103,57 @@ bool FileParser::eofOrBlank() const
 	return parser_.eofOrBlank();
 }
 
+// Skip n lines from file
+bool FileParser::skipLines(int nLines)
+{
+	return (parser_.skipLines(nLines) == 0);
+}
+
 /*
  * Write Functions
  */
 
-// Write line to file
+// Write partial line to file
+bool FileParser::write(QString line)
+{
+	return parser_.write(line);
+}
+
+// Write formatted partial line to file
+bool FileParser::writeF(const char* fmt, ...)
+{
+	// Construct line
+	va_list arguments;
+	static char s[8096];
+	s[0] = '\0';
+
+	// Parse the argument list (...) and internally write the output string into s[]
+	va_start(arguments,fmt);
+	vsprintf(s,fmt,arguments);
+	va_end(arguments);
+	return parser_.write(s);
+}
+
+// Write empty line to file
+bool FileParser::writeLine()
+{
+	return parser_.writeLine();
+}
+
+// Write whole line to file (appending CR/LF automatically)
 bool FileParser::writeLine(QString line)
 {
 	return parser_.writeLine(line);
 }
 
-// Write formatted line to file
+// Write formatted line to file (appending CR/LF automatically)
 bool FileParser::writeLineF(const char* fmt, ...)
 {
 	// Construct line
 	va_list arguments;
 	static char s[8096];
 	s[0] = '\0';
+
 	// Parse the argument list (...) and internally write the output string into s[]
 	va_start(arguments,fmt);
 	vsprintf(s,fmt,arguments);
@@ -135,6 +205,18 @@ bool FileParser::argb(int i)
 float FileParser::argf(int i)
 {
 	return parser_.argf(i);
+}
+
+// Returns the specified argument (+1, and +2) as a Vec3<int>
+Vec3<int> FileParser::arg3i(int i)
+{
+	return Vec3<int>(parser_.argi(i), parser_.argi(i+1), parser_.argi(i+2));
+}
+
+// Returns the specified argument (+1, and +2) as a Vec3<double>
+Vec3<double> FileParser::arg3d(int i)
+{
+	return Vec3<double>(parser_.argd(i), parser_.argd(i+1), parser_.argd(i+2));
 }
 
 // Returns whether the specified argument exists

@@ -28,7 +28,7 @@
 ATEN_USING_NAMESPACE
 
 // Return first bond in the model
-Bond* Model::bonds()
+Bond* Model::bonds() const
 {
 	return bonds_.first();
 }
@@ -293,7 +293,7 @@ void Model::addAtomToCuboid(Atom* i)
 		cell_.foldFrac(r);
 	}
 	r -= extentMin_;
-	double radius = Elements().atomicRadius(i->element());
+	double radius = ElementMap::atomicRadius(i->element());
 	x = int(r.x / cuboidSize_.x);
 	y = int(r.y / cuboidSize_.y);
 	z = int(r.z / cuboidSize_.z);
@@ -474,7 +474,7 @@ void Model::calculateBonding(bool augment)
 // 			if (i == j) continue;
 // 			if (j->element() == 0) continue;
 // 			dist = cell_.distance(i,j);
-// 			radsum = Elements().atomicRadius(i) + Elements().atomicRadius(j);
+// 			radsum = ElementMap::atomicRadius(i) + ElementMap::atomicRadius(j);
 // 	printf("radsum*tol = %f, dist = %f\n",radsum*tolerance,dist);
 // 			if (dist < radsum*tolerance) bondAtoms(i,j,Bond::Single);
 // 		}
@@ -509,7 +509,7 @@ void Model::patternCalculateBonding(bool augment)
 					i = i->next;
 					continue;
 				}
-				radius_i = Elements().atomicRadius(el);
+				radius_i = ElementMap::atomicRadius(el);
 				// Start loop over second atom in molecule
 				j = i->next;
 				for (jj = ii+1; jj < p->nAtoms(); jj ++)
@@ -522,7 +522,7 @@ void Model::patternCalculateBonding(bool augment)
 					}
 					dist = cell_.distance(i,j);
 				//printf("i %i j %i dist %8.3f\n",i->id(),j->id(),dist);
-					radsum = radius_i + Elements().atomicRadius(el);
+					radsum = radius_i + ElementMap::atomicRadius(el);
 					if (dist < radsum*tolerance) bondAtoms(i,j,Bond::Single);
 					j = j->next;
 				}
@@ -553,28 +553,6 @@ void Model::selectionCalculateBonding(bool augment)
 	// Augment?
 	if (augment) augmentBonding();
 	Messenger::exit("Model::selectionCalculateBonding");
-}
-
-// Bond all atoms in current selection
-void Model::selectionBondAll()
-{
-	// Add bonds between all atoms in current selection
-	Messenger::enter("Model::selectionBondAll");
-	Atom* i, *j;
-	for (i = atoms_.first(); i != NULL; i = i->next)
-	{
-		if (i->isSelected())
-		{
-			for (j = i->next; j != NULL; j = j->next)
-			{
-				if (j->isSelected())
-					if (i->findBond(j) == NULL) bondAtoms(i,j,Bond::Single);
-			}
-		}
-	}
-	// Augment?
-	if (prefs.augmentAfterRebond()) augmentBonding();
-	Messenger::exit("Model::selectionBondAll");
 }
 
 // Clear Bonding in current selection

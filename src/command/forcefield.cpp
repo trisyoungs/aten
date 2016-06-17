@@ -57,18 +57,19 @@ bool Commands::function_AngleDef(CommandNode* c, Bundle& obj, ReturnValue& rv)
 bool Commands::function_AutoConversionUnit(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	// Check that a valid file source/destination exists.
-	if (!c->parent()->isFilter())
-	{
-		Messenger::print("The 'autoconversionunit' command can only be used from within a Filter.");
-		return false;
-	}
-	if (c->hasArg(0))
-	{
-		Prefs::EnergyUnit eu = Prefs::energyUnit(c->argc(0), true);
-		if (eu == Prefs::nEnergyUnits) return false;
-		else prefs.setAutoConversionUnit(eu);
-	}
-	else prefs.setAutoConversionUnit(Prefs::nEnergyUnits);
+	// ATEN2 TODO ENDOFFILTERS
+// 	if (!c->parent()->isFilter())
+// 	{
+// 		Messenger::print("The 'autoconversionunit' command can only be used from within a Filter.");
+// 		return false;
+// 	}
+// 	if (c->hasArg(0))
+// 	{
+// 		Prefs::EnergyUnit eu = Prefs::energyUnit(c->argc(0), true);
+// 		if (eu == Prefs::nEnergyUnits) return false;
+// 		else prefs.setAutoConversionUnit(eu);
+// 	}
+// 	else prefs.setAutoConversionUnit(Prefs::nEnergyUnits);
 	return true;
 }
 
@@ -99,7 +100,7 @@ bool Commands::function_BondDef(CommandNode* c, Bundle& obj, ReturnValue& rv)
 // Clear manual export type mapping list ('clearexportmap')
 bool Commands::function_ClearExportMap(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	aten_.typeExportMap.clear();
+	aten_.clearTypeExportMap();
 	rv.reset();
 	return true;
 }
@@ -116,7 +117,7 @@ bool Commands::function_ClearExpression(CommandNode* c, Bundle& obj, ReturnValue
 // Clear manual type mapping list ('clearmap')
 bool Commands::function_ClearMap(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	Elements().clearMappings();
+	ElementMap::clearMappings();
 	rv.reset();
 	return true;
 }
@@ -251,7 +252,7 @@ bool Commands::function_ExportMap(CommandNode* c, Bundle& obj, ReturnValue& rv)
 
 			// Split into value/argument
 			QStringList items = parser.argc(n).split('=');
-			aten_.typeExportMap.add(items.at(0), items.at(1));
+			aten_.addTypeExportMapping(items.at(0), items.at(1));
 		}
 	}
 	rv.reset();
@@ -300,26 +301,6 @@ bool Commands::function_FFPattern(CommandNode* c, Bundle& obj, ReturnValue& rv)
 		}
 		p->setForcefield(obj.ff);
 	}
-	rv.reset();
-	return true;
-}
-
-// Finalise current forcefield
-bool Commands::function_FinaliseFF(CommandNode* c, Bundle& obj, ReturnValue& rv)
-{
-	if (obj.notifyNull(Bundle::ForcefieldPointer)) return false;
-	// Print some information about the terms read in from the forcefield
-	Messenger::print("Forcefield now contains:");
-	Messenger::print("\t%i type descriptions", obj.ff->nTypes() - 1);
-	Messenger::print("\t%i bond definitions", obj.ff->nBonds());
-	Messenger::print("\t%i angle definitions", obj.ff->nAngles());
-	Messenger::print("\t%i torsion definitions", obj.ff->nTorsions());
-	// Check that some forcefield types were defined...
-	if (obj.ff->nTypes() <= 1) Messenger::print("Warning - no types are defined in this forcefield.");
-	// Link forcefield type references (&N) to their actual forcefield types
-	for (ForcefieldAtom* ffa = obj.ff->types(); ffa != NULL; ffa = ffa->next) ffa->neta()->linkReferenceTypes();
-	// Convert energetic units in the forcefield to the internal units of the program
-	obj.ff->convertParameters();
 	rv.reset();
 	return true;
 }
@@ -486,9 +467,9 @@ bool Commands::function_GetCombinationRule(CommandNode* c, Bundle& obj, ReturnVa
 	if (form == VdwFunctions::nVdwFunctions) return false;
 	// Next, get functional form parameter
 	int param = VdwFunctions::vdwParameter(form, c->argc(1), true);
-	if (param == VdwFunctions::VdwFunctions[form].nParameters) return false;
+	if (param == VdwFunctions::functionData[form].nParameters) return false;
 	// Everything OK, so return combination rule in use
-	rv.set(CombinationRules::combinationRule( VdwFunctions::VdwFunctions[form].combinationRules[param] ));
+	rv.set(CombinationRules::combinationRule( VdwFunctions::functionData[form].combinationRules[param] ));
 	return true;
 }
 
@@ -572,9 +553,9 @@ bool Commands::function_Map(CommandNode* c, Bundle& obj, ReturnValue& rv)
 
 			// Split into value/argument
 			QStringList items = parser.argc(n).split('=');
-			el = Elements().z(items.at(1));
+			el = ElementMap::z(items.at(1));
 			if (el == 0) Messenger::print("Unrecognised element '%s' in type map.", qPrintable(items.at(1)));
-			else Elements().addMapping(el, items.at(0));
+			else ElementMap::addMapping(el, items.at(0));
 		}
 	}
 	rv.reset();
@@ -637,35 +618,29 @@ bool Commands::function_RecreateExpression(CommandNode* c, Bundle& obj, ReturnVa
 bool Commands::function_SaveExpression(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return false;
-	
-	
+
 	// Parse the first option so we can get the filter nickname and any filter options
 	LineParser parser;
 	parser.getArgsDelim(Parser::UseQuotes, c->argc(0));
 	
 	// First part of argument is nickname
-	Tree* filter = aten_.findFilter(FilterData::ExpressionExport, parser.argc(0));
+	FilePluginInterface* plugin = aten_.pluginStore().findFilePluginByNickname(PluginTypes::ExpressionFilePlugin, PluginTypes::ExportPlugin, parser.argc(0));
+
 	// Check that a suitable format was found
-	if (filter == NULL)
+	if (plugin == NULL)
 	{
-		// Print list of valid filter nicknames
-		aten_.printValidNicknames(FilterData::ExpressionExport);
+		// Print list of valid plugin nicknames
+		aten_.pluginStore().showFilePluginNicknames(PluginTypes::ExpressionFilePlugin, PluginTypes::ExportPlugin);
 		Messenger::print("Not saved.");
 		return false;
 	}
 
 	// Loop over remaining arguments which are widget/global variable assignments
-	for (int n = 1; n < parser.nArgs(); ++n)
-	{
-		QStringList items = parser.argc(n).split('=');
-		if (!filter->setAccessibleVariable(items.at(0), items.at(1))) return false;
-	}
+	KVMap pluginOptions;
+	for (int n = 1; n < parser.nArgs(); ++n) pluginOptions.add(parser.argc(n));
 
-	// Temporarily disable undo/redo for the model, save, and re-enable
-	obj.rs()->disableUndoRedo();
-	bool result = filter->executeWrite(c->argc(1));
-	obj.rs()->enableUndoRedo();
-	if (result) Messenger::print("Expression for model '%s' saved to file '%s' (%s)", qPrintable(obj.rs()->name()), qPrintable(c->argc(1)), qPrintable(filter->filter.name()));
+	bool result = aten_.exportExpression(obj.m, c->argc(1), plugin, FilePluginStandardImportOptions(), pluginOptions);
+	if (result) Messenger::print("Expression for model '%s' saved to file '%s' (%s)", qPrintable(obj.rs()->name()), qPrintable(c->argc(1)), qPrintable(plugin->name()));
 	else Messenger::print("Failed to save expression for model '%s'.", qPrintable(obj.rs()->name()));
 	return result;
 }
@@ -681,14 +656,14 @@ bool Commands::function_SetCombinationRule(CommandNode* c, Bundle& obj, ReturnVa
 	
 	// Next, get functional form parameter
 	int param = VdwFunctions::vdwParameter(form, c->argc(1), true);
-	if (param == VdwFunctions::VdwFunctions[form].nParameters) return false;
+	if (param == VdwFunctions::functionData[form].nParameters) return false;
 	
 	// Finally, search combination rule
 	CombinationRules::CombinationRule cr = CombinationRules::combinationRule(c->argc(2), true);
 	if (cr == CombinationRules::nCombinationRules) return false;
 	
 	// Everything OK, so set data
-	VdwFunctions::VdwFunctions[form].combinationRules[param] = cr;
+	VdwFunctions::functionData[form].combinationRules[param] = cr;
 	return true;
 }
 

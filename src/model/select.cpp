@@ -130,7 +130,7 @@ bool Model::selectAtoms(TreeNode* node, bool deselect, bool testQuietly)
 				}
 				else
 				{
-					i = Elements().find(from, ElementMap::AlphaZMap);
+					i = ElementMap::find(from, ElementMap::AlphaZMap);
 					if (i == 0)
 					{
 						if (!testQuietly) Messenger::print("Unrecognised element (%s) in select.", qPrintable(from));
@@ -141,7 +141,7 @@ bool Model::selectAtoms(TreeNode* node, bool deselect, bool testQuietly)
 					{
 						if (plus == 0) (deselect ? deselectElement(i) : selectElement(i));
 						else if (plus == -1) for (n=1; n <= i; n++) (deselect ? deselectElement(n) : selectElement(n));
-						else if (plus == 1) for (n=i; n <= Elements().nElements(); n++) (deselect ? deselectElement(n) : selectElement(n));
+						else if (plus == 1) for (n=i; n <= ElementMap::nElements(); n++) (deselect ? deselectElement(n) : selectElement(n));
 					}
 				}
 			}
@@ -156,13 +156,13 @@ bool Model::selectAtoms(TreeNode* node, bool deselect, bool testQuietly)
 				}
 				else
 				{
-					i = Elements().find(from, ElementMap::AlphaZMap);
+					i = ElementMap::find(from, ElementMap::AlphaZMap);
 					if (i == 0)
 					{
 						if (!testQuietly) Messenger::print("Unrecognised element (%s) on left-hand side of range.", qPrintable(from));
 						return false;
 					}
-					j = Elements().find(to, ElementMap::AlphaZMap);
+					j = ElementMap::find(to, ElementMap::AlphaZMap);
 					if (j == 0)
 					{
 						if (!testQuietly) Messenger::print("Unrecognised element (%s) on right-hand side of range.", qPrintable(to));
@@ -772,7 +772,7 @@ void Model::selectOverlaps(double tolerance, bool markonly)
 						dist = cell_.distance(i,j);
 						if (dist < tolerance)
 						{
-							Messenger::print(Messenger::Verbose, "Atom %i (%s) is %f from atom %i (%s).", j->id()+1, Elements().symbol(j), dist, i->id()+1, Elements().symbol(i));
+							Messenger::print(Messenger::Verbose, "Atom %i (%s) is %f from atom %i (%s).", j->id()+1, ElementMap::symbol(j), dist, i->id()+1, ElementMap::symbol(i));
 							selectAtom(j, markonly);
 							++count;
 						}

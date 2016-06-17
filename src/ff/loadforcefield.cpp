@@ -242,7 +242,7 @@ bool Forcefield::readTypes()
 			return false;
 		}
 		ffa->setName(ffparser.argc(1));
-		int el = Elements().find(ffparser.argc(2), ElementMap::AlphaZMap);
+		int el = ElementMap::find(ffparser.argc(2), ElementMap::AlphaZMap);
 		if (el == 0)
 		{
 			Messenger::print("Error: Unrecognised element '%s' found for forcefield type '%s' (%i).", qPrintable(ffparser.argc(2)), qPrintable(ffa->name()), ffa->typeId());
@@ -307,7 +307,7 @@ bool Forcefield::readUnitedAtomTypes()
 		}
 		ffa->setName(ffparser.argc(1));
 		ffa->setEquivalent(ffparser.argc(1));
-		int el = Elements().find(ffparser.argc(2), ElementMap::AlphaZMap);
+		int el = ElementMap::find(ffparser.argc(2), ElementMap::AlphaZMap);
 		if (el == 0)
 		{
 			Messenger::print("Error: Unrecognised element '%s' found for forcefield type '%s' (%i).", qPrintable(ffparser.argc(2)), qPrintable(ffa->name()), ffa->typeId());
@@ -316,7 +316,7 @@ bool Forcefield::readUnitedAtomTypes()
 		}
 		ffa->setElement(el);
 		ffa->setElementMass(ffparser.argd(3));
-		ffa->neta()->setCharacterElement(Elements().find(ffparser.argc(2), ElementMap::AlphaZMap));
+		ffa->neta()->setCharacterElement(ElementMap::find(ffparser.argc(2), ElementMap::AlphaZMap));
 		if (!ffa->setNeta(ffparser.argc(4), this))
 		{
 			Messenger::exit("Forcefield::readUnitedAtomTypes");
@@ -560,7 +560,7 @@ bool Forcefield::readInter()
 			count ++;
 		}
 	} while (!done);
-	Messenger::print("\t: Read in %i atomic VDW parameters (%s)", count, VdwFunctions::VdwFunctions[vdwstyle].name);
+	Messenger::print("\t: Read in %i atomic VDW parameters (%s)", count, VdwFunctions::functionData[vdwstyle].name);
 
 	Messenger::exit("Forcefield::readInter");
 	return true;
@@ -614,7 +614,7 @@ bool Forcefield::readBonds()
 			count ++;
 		}
 	} while (!done);
-	Messenger::print("\t: Read in %i bond definitions (%s)", count, BondFunctions::BondFunctions[bondstyle].name);
+	Messenger::print("\t: Read in %i bond definitions (%s)", count, BondFunctions::functionData[bondstyle].name);
 	Messenger::exit("Forcefield::readBonds");
 	return true;
 }
@@ -668,7 +668,7 @@ bool Forcefield::readAngles()
 			count ++;
 		}
 	} while (!done);
-	Messenger::print("\t: Read in %i angle definitions (%s)", count, AngleFunctions::AngleFunctions[anglestyle].name);
+	Messenger::print("\t: Read in %i angle definitions (%s)", count, AngleFunctions::functionData[anglestyle].name);
 	Messenger::exit("Forcefield::readAngles");
 	return true;
 }
@@ -738,7 +738,7 @@ bool Forcefield::readTorsions()
 			count ++;
 		}
 	} while (!done);
-	Messenger::print("\t: Read in %i torsion definitions (%s)", count, TorsionFunctions::TorsionFunctions[torsionstyle].name);
+	Messenger::print("\t: Read in %i torsion definitions (%s)", count, TorsionFunctions::functionData[torsionstyle].name);
 	Messenger::exit("Forcefield::readTorsions");
 	return true;
 }
@@ -795,7 +795,7 @@ bool Forcefield::readImpropers()
 			count ++;
 		}
 	} while (!done);
-	Messenger::print("\t: Read in %i improper torsion definitions (%s)", count, TorsionFunctions::TorsionFunctions[torsionstyle].name);
+	Messenger::print("\t: Read in %i improper torsion definitions (%s)", count, TorsionFunctions::functionData[torsionstyle].name);
 	Messenger::exit("Forcefield::readImpropers");
 	return true;
 }
@@ -850,7 +850,7 @@ bool Forcefield::readUreyBradley()
 			count ++;
 		}
 	} while (!done);
-	Messenger::print("\t: Read in %i Urey-Bradley definitions (%s)", count, BondFunctions::BondFunctions[bondstyle].name);
+	Messenger::print("\t: Read in %i Urey-Bradley definitions (%s)", count, BondFunctions::functionData[bondstyle].name);
 
 	Messenger::exit("Forcefield::readUreyBradley");
 	return true;

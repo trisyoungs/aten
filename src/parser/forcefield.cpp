@@ -22,6 +22,7 @@
 #include "parser/forcefield.h"
 #include "parser/stepnode.h"
 #include "ff/forcefield.h"
+#include "base/forcefieldatom.h"
 #include "main/aten.h"
 
 ATEN_USING_NAMESPACE
@@ -307,7 +308,21 @@ bool ForcefieldVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 			result = aten_->callCommand(Commands::TypeDef, node, rv, bundle);
 			break;
 		case (ForcefieldVariable::Finalise):
-			result = aten_->callCommand(Commands::FinaliseFF, node, rv, bundle);
+			// Print some information about the terms read in from the forcefield
+			Messenger::print("Forcefield contains:");
+			Messenger::print("\t%i type descriptions", ptr->nTypes() - 1);
+			Messenger::print("\t%i bond definitions", ptr->nBonds());
+			Messenger::print("\t%i angle definitions", ptr->nAngles());
+			Messenger::print("\t%i torsion definitions", ptr->nTorsions());
+
+			// Check that some forcefield types were defined...
+			if (ptr->nTypes() <= 1) Messenger::print("Warning - no types are defined in this forcefield.");
+
+			// Link forcefield type references (&N) to their actual forcefield types
+			for (ForcefieldAtom* ffa = ptr->types(); ffa != NULL; ffa = ffa->next) ffa->neta()->linkReferenceTypes();
+
+			// Convert energetic units in the forcefield to the internal units of the program
+			ptr->convertParameters();
 			break;
 		case (ForcefieldVariable::FindAngle):
 			rv.set(VTypes::ForcefieldBoundData, ptr->findAngle(node->argc(0), node->argc(1), node->argc(2)));

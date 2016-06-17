@@ -23,6 +23,7 @@
 #include "base/lineparser.h"
 #include "templates/variantpointer.h"
 #include <QFileSystemModel>
+#include <QInputDialog>
 
 // Static Singletons
 QStringList FileSelectorWidget::favourites_;
@@ -34,7 +35,7 @@ FileSelectorWidget::FileSelectorWidget(QWidget* parent) : QWidget(parent)
 
 	// Setup file system model and attach to view
 	fileSystemModel_.setRootPath("");
-	fileSystemModel_.setFilter(QDir::AllDirs | QDir::AllEntries);
+	fileSystemModel_.setFilter(QDir::AllDirs | QDir::NoDotAndDotDot | QDir::AllEntries);
 	fileSystemModel_.setNameFilterDisables(false);
 	ui.FileView->setModel(&fileSystemModel_);
 	ui.FileView->hideColumn(2);
@@ -50,25 +51,36 @@ FileSelectorWidget::FileSelectorWidget(QWidget* parent) : QWidget(parent)
  */
 
 // Set mode of file selector
-void FileSelectorWidget::setMode(FileSelectorWidget::SelectionMode mode, const RefList<IOPluginInterface,int>& ioPlugins, QDir startingDir)
+void FileSelectorWidget::setMode(FileSelectorWidget::SelectionMode mode, QDir startingDir)
 {
 	mode_ = mode;
 
 	// Set relevant selection mode for file view
-	if (mode_ == FileSelectorWidget::FileSelectorWidget::OpenMultipleMode) ui.FileView->setSelectionMode(QTableView::ExtendedSelection);
+	if (mode_ == FileSelectorWidget::OpenMultipleMode) ui.FileView->setSelectionMode(QTableView::ExtendedSelection);
 	else ui.FileView->setSelectionMode(QTableView::SingleSelection);
-
-	// Populate filter combo
-	for (RefListItem<IOPluginInterface,int>* ri = ioPlugins.first(); ri != NULL; ri = ri->next)
-	{
-		IOPluginInterface* interface = ri->item;
-		if (!interface->canImport()) continue;
-		ui.FilterCombo->addItem(interface->filterString(), VariantPointer<IOPluginInterface>(interface));
-	}
-	ui.FilterCombo->addItem("All Files (*)");
 
 	setCurrentDirectory(startingDir.absolutePath());
 	updateWidgets();
+}
+
+// Refresh plugins (filters) combo
+void FileSelectorWidget::refreshPlugins(const RefList<FilePluginInterface,int>& filePlugins)
+{
+	ui.FilterCombo->clear();
+
+	for (RefListItem<FilePluginInterface,int>* ri = filePlugins.first(); ri != NULL; ri = ri->next)
+	{
+		FilePluginInterface* interface = ri->item;
+
+		// The mode_ of the file selector determines which type of plugin we display
+		if (mode_ == FileSelectorWidget::SaveSingleMode)
+		{
+			if (!interface->canExport()) continue;
+		}
+		else if (!interface->canImport()) continue;
+		ui.FilterCombo->addItem(interface->filterString(), VariantPointer<FilePluginInterface>(interface));
+	}
+	ui.FilterCombo->addItem("All Files (*)");
 }
 
 // Set current directory of file selector
@@ -96,6 +108,33 @@ void FileSelectorWidget::clearSelectedFilenames()
 	selectedFilenames_.clear();
 }
 
+// Set current filename selection
+void FileSelectorWidget::setSelectedFilename(QString filename)
+{
+	selectedFilenames_.clear();
+	selectedFilenames_ << filename;
+
+	// Check to see if the filename exists in the current dir
+	QModelIndex index = fileSystemModel_.index(currentDirectory_.filePath(filename));
+	if (index.isValid()) ui.FileView->selectRow(index.row());
+}
+
+// Set current plugin selection
+void FileSelectorWidget::setSelectedPlugin(FilePluginInterface* plugin)
+{
+	for (int n=0; n<ui.FilterCombo->count(); ++n)
+	{
+		FilePluginInterface* filterPlugin = (FilePluginInterface*) VariantPointer<FilePluginInterface>(ui.FilterCombo->itemData(n));
+		if (filterPlugin == plugin)
+		{
+			ui.FilterCombo->setCurrentIndex(n);
+			return;
+		}
+	}
+
+	printf("Plugin provided did not match any in the FileSelectorWidget.\n");
+}
+
 // Return selected files, including full path
 QStringList FileSelectorWidget::selectedFiles()
 {
@@ -106,10 +145,10 @@ QStringList FileSelectorWidget::selectedFiles()
 }
 
 // Return selected file plugin
-IOPluginInterface* FileSelectorWidget::selectedPlugin()
+FilePluginInterface* FileSelectorWidget::selectedPlugin()
 {
 	// Get selected filter from combo box
-	IOPluginInterface* interface = (IOPluginInterface*) VariantPointer<IOPluginInterface>(ui.FilterCombo->itemData(ui.FilterCombo->currentIndex()));
+	FilePluginInterface* interface = (FilePluginInterface*) VariantPointer<FilePluginInterface>(ui.FilterCombo->itemData(ui.FilterCombo->currentIndex()));
 	return interface;
 }
 
@@ -148,6 +187,33 @@ void FileSelectorWidget::updateWidgets()
 void FileSelectorWidget::resizeFileView(QString dummy)
 {
 	ui.FileView->resizeColumnsToContents();
+}
+
+void FileSelectorWidget::on_DirectoryEdit_returnPressed()
+{
+	if (refreshing_) return;
+
+	// Try to convert the text to a proper directory
+	QDir newDirectory;
+	newDirectory.setPath(ui.DirectoryEdit->text());
+
+	setCurrentDirectory(newDirectory.absolutePath());
+}
+
+void FileSelectorWidget::on_DirectoryUpButton_clicked(bool checked)
+{
+	if (currentDirectory_.cdUp()) setCurrentDirectory(currentDirectory_.absolutePath());
+}
+
+void FileSelectorWidget::on_DirectoryCreateButton_clicked(bool checked)
+{
+	// Get the new name of the directory to create
+	bool ok;
+	QString newDirectory = QInputDialog::getText(this, "Create Directory", "Enter new directory name:", QLineEdit::Normal, QString(), &ok);
+	if (ok)
+	{
+		currentDirectory_.mkdir(newDirectory);
+	}
 }
 
 void FileSelectorWidget::on_FileView_clicked(const QModelIndex& index)
@@ -219,12 +285,13 @@ void FileSelectorWidget::on_FilesEdit_textChanged(QString textChanged)
 void FileSelectorWidget::on_FilterCombo_currentIndexChanged(int index)
 {
 	// Grab data for selected item
-	IOPluginInterface* interface = (IOPluginInterface*) VariantPointer<IOPluginInterface>(ui.FilterCombo->itemData(index));
+	FilePluginInterface* interface = (FilePluginInterface*) VariantPointer<FilePluginInterface>(ui.FilterCombo->itemData(index));
 
 	if (!interface)
 	{
 		// Unrecognised interface, or the All Files entry, so remove any filtering from the file system model
 		fileSystemModel_.setNameFilters(QStringList());
+		emit(pluginOptionsAvailable(false));
 	}
 	else
 	{
@@ -233,5 +300,8 @@ void FileSelectorWidget::on_FilterCombo_currentIndexChanged(int index)
 		for (int n=0; n<interface->extensions().count(); ++n) nameFilters << "*." + interface->extensions().at(n);
 		for (int n=0; n<interface->exactNames().count(); ++n) nameFilters << interface->exactNames().at(n);
 		fileSystemModel_.setNameFilters(nameFilters);
+
+		if (mode_ == FileSelectorWidget::SaveSingleMode) emit(pluginOptionsAvailable(interface->hasExportOptions()));
+		else emit(pluginOptionsAvailable(interface->hasImportOptions()));
 	}
 }

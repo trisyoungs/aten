@@ -142,22 +142,12 @@ class CommandParser
 	static bool quiet();
 	// Return current Tree target, raising warning and setting fail flag if no tree is defined...
 	static Tree* tree();
-	// Push filter
-	static void pushFilter();
 	// Push function
 	static Tree* pushFunction(QString name, VTypes::DataType returntype);
 	// Pop tree (or function) from stack
 	static void popTree();
 	// Discard current tree and its contents
 	static void deleteCurrentTree();
-
-
-	/*
-	 * Filters / GUI
-	 */
-	public:
-	// Set filter option
-	static bool setFilterOption(QString name, TreeNode* value);
 };
 
 ATEN_END_NAMESPACE

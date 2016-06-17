@@ -86,8 +86,9 @@ bool ForcefieldsOpenPopup::callMethod(QString methodName, ReturnValue& rv)
 void ForcefieldsOpenPopup::loadForcefield(QString fileName)
 {
 	// Load forcefield
-	Tree* filter = parent_.aten().probeFile(qPrintable(fileName), FilterData::ExpressionImport);
-	if (filter) filter->executeRead(qPrintable(fileName));
+	FilePluginInterface* plugin = parent_.aten().pluginStore().findFilePlugin(PluginTypes::ExpressionFilePlugin, PluginTypes::ImportPlugin, fileName);
+	// ATEN2 TODO ENDOFFILTERS
+// 	if (plugin) plugin->importData(qPrintable(fileName));
 
 	parent_.updateWidgets(AtenWindow::MainViewTarget + AtenWindow::ForcefieldsPanelTarget);
 

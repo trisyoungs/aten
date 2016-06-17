@@ -93,7 +93,7 @@ Atom* Model::growAtom(Atom* i, short int element, double distance, Atom::AtomGeo
 	}
 	
 	// Check distance - if negative, work out new distance based on radii of elements involved
-	if (distance < 0.0) distance = Elements().atomicRadius(i) + Elements().atomicRadius(element);
+	if (distance < 0.0) distance = ElementMap::atomicRadius(i) + ElementMap::atomicRadius(element);
 	newVec *= distance;
 	Atom* newAtom = addAtom(element, i->r() + newVec);
 

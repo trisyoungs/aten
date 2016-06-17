@@ -392,7 +392,6 @@ bool CommandParser::quiet()
 // Return current tree target, raising warning and setting fail flag if no tree is defined...
 Tree* CommandParser::tree()
 {
-// 	static Tree dummyTree;
 	if (tree_ == NULL)
 	{
 		failed_ = true;
@@ -400,14 +399,6 @@ Tree* CommandParser::tree()
 		return NULL;
 	}
 	else return tree_;
-}
-
-// Push filter
-void CommandParser::pushFilter()
-{
-	tree_ = program_->addFilter();
-	stack_.add(tree_, true);
-	Messenger::print(Messenger::Parse, "New filter stacked - %p", tree_);
 }
 
 // Push function (into topmost tree)
@@ -427,18 +418,15 @@ Tree* CommandParser::pushFunction(QString name, VTypes::DataType returntype)
 void CommandParser::popTree()
 {
 	Messenger::enter("CommandParser::popTree");
-	// If the tree to be popped is a Filter, check that a filter type has been defined
+
 	RefListItem<Tree,bool>* ri = stack_.last();
-	if (ri->data)
-	{
-		// Can use the 'isFilter' member function to check for the lack of a proper type
-		if (!ri->item->isFilter()) Messenger::print("WARNING - Filter '%s' has not been provided a filter type.", qPrintable(ri->item->filter.name()));
-	}
 	Messenger::print(Messenger::Parse, "Removing tree %p from stack (%i remain).", ri->item, stack_.nItems()-1);
 	stack_.remove( stack_.last() );
+
 	// Set current tree target to the top tree now on the stack
 	ri = stack_.last();
 	tree_ = ri == NULL ? NULL : ri->item;
+
 	Messenger::exit("CommandParser::popTree");
 }
 
@@ -448,14 +436,4 @@ void CommandParser::deleteCurrentTree()
 	// Delete the current tree from its parent Program
 	program_->deleteTree(tree_);
 	popTree();
-}
-
-/*
- * Filters / GUI
- */
-
-// Set filter option
-bool CommandParser::setFilterOption(QString name, TreeNode* value)
-{
-	return tree()->filter.setOption(name, value);	
 }

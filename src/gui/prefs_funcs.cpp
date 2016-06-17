@@ -50,10 +50,10 @@ AtenPrefs::AtenPrefs(AtenWindow& parent) : QDialog(&parent), parent_(parent)
 
 	// Add elements to element list and select first item
 	QListWidgetItem* item;
-	for (int i=0; i<Elements().nElements(); ++i)
+	for (int i=0; i<ElementMap::nElements(); ++i)
 	{
 		item = new QListWidgetItem(ui.ElementList);
-		item->setText(Elements().name(i));
+		item->setText(ElementMap::name(i));
 	}
 
 	refreshing_ = true;
@@ -171,7 +171,7 @@ AtenPrefs::AtenPrefs(AtenWindow& parent) : QDialog(&parent), parent_(parent)
 	for (int n=0; n<VdwFunctions::nVdwFunctions; ++n)
 	{
 		listitem = new QListWidgetItem(ui.FunctionalFormList);
-		listitem->setText(VdwFunctions::VdwFunctions[n].name);
+		listitem->setText(VdwFunctions::functionData[n].name);
 	}
 	ui.FunctionalFormList->setCurrentRow(0);
 
@@ -181,7 +181,7 @@ AtenPrefs::AtenPrefs(AtenWindow& parent) : QDialog(&parent), parent_(parent)
 
 	// Store current values in the Prefs structure...
 	prefsBackup_ = prefs;
-	Elements().backupData();
+	ElementMap::backupData();
 
 	refreshing_ = false;
 }
@@ -202,7 +202,7 @@ void AtenPrefs::on_PrefsCancelButton_clicked(bool checked)
 {
 	// Copy old preferences values back into main structure, update view and close window
 	prefs = prefsBackup_;
-	Elements().restoreData();
+	ElementMap::restoreData();
 	Message::setNormalMessageColour(prefs.useWidgetForegroundBackground() ? prefs.colour(Prefs::WidgetForegroundColour) : prefs.colour(Prefs::ForegroundColour));
 
 	parent_.aten().globalLogChange(Log::Style);
@@ -226,13 +226,13 @@ void AtenPrefs::on_PrefsSaveAsDefaultButton_clicked(bool checked)
 void AtenPrefs::on_ElementList_currentRowChanged(int row)
 {
 	// Update the info for the current element
-	ui.ElementNameLabel->setText(Elements().name(row));
-	ui.ElementSymbolLabel->setText(Elements().symbol(row));
-	ui.ElementMassLabel->setText(QString::number(Elements().atomicMass(row)));
-	ui.ElementRadiusSpin->setValue(Elements().atomicRadius(row));
+	ui.ElementNameLabel->setText(ElementMap::name(row));
+	ui.ElementSymbolLabel->setText(ElementMap::symbol(row));
+	ui.ElementMassLabel->setText(QString::number(ElementMap::atomicMass(row)));
+	ui.ElementRadiusSpin->setValue(ElementMap::atomicRadius(row));
 
 	ReturnValue rv;
-	rv.setArray(VTypes::DoubleData, Elements().colour(row), 4);
+	rv.setArray(VTypes::DoubleData, ElementMap::colour(row), 4);
 	ui.ElementColourButton->callPopupMethod("setCurrentColour", rv);
 }
 
@@ -242,7 +242,7 @@ void AtenPrefs::on_ElementRadiusSpin_valueChanged(double value)
 	// Get current row
 	int el = ui.ElementList->currentRow();
 	if (el == -1) return;
-	Elements().setAtomicRadius(el, value);
+	ElementMap::setAtomicRadius(el, value);
 
 	updateAfterViewPrefs();
 }
@@ -257,7 +257,7 @@ void AtenPrefs::elementColourChanged()
 	ReturnValue rv;
 	bool success;
 	ui.ElementColourButton->callPopupMethod("currentColour", rv);
-	Elements().setColour(el, rv.asDouble(0, success), rv.asDouble(1, success), rv.asDouble(2, success), rv.asDouble(3, success));
+	ElementMap::setColour(el, rv.asDouble(0, success), rv.asDouble(1, success), rv.asDouble(2, success), rv.asDouble(3, success));
 
 	updateAfterViewPrefs();
 }
@@ -908,16 +908,16 @@ void AtenPrefs::updateParameterTable()
 	QTableWidgetItem *item;
 	for (n=0; n<CombinationRules::nCombinationRules; ++n) combrules << CombinationRules::combinationRuleName( (CombinationRules::CombinationRule) n);
 	ui.ParameterTable->setColumnCount(2);
-	ui.ParameterTable->setRowCount(VdwFunctions::VdwFunctions[row].nParameters);
-	for (n=0; n<VdwFunctions::VdwFunctions[row].nParameters; ++n)
+	ui.ParameterTable->setRowCount(VdwFunctions::functionData[row].nParameters);
+	for (n=0; n<VdwFunctions::functionData[row].nParameters; ++n)
 	{
-		item = new QTableWidgetItem(VdwFunctions::VdwFunctions[row].parameters[n]);
+		item = new QTableWidgetItem(VdwFunctions::functionData[row].parameters[n]);
 		ui.ParameterTable->setItem(n, 0, item);
 		combo = new QComboBox(this);
 		combo->setMinimumSize(78,24);
 		combo->addItems(combrules);
 		combo->setItemData(0, n);
-		combo->setCurrentIndex(VdwFunctions::VdwFunctions[row].combinationRules[n]);
+		combo->setCurrentIndex(VdwFunctions::functionData[row].combinationRules[n]);
 		ui.ParameterTable->setCellWidget(n, 1, combo);
 		QObject::connect(combo, SIGNAL(activated(int)), this, SLOT(ParameterRuleChanged(int)));
 	}
@@ -1013,7 +1013,7 @@ void AtenPrefs::ParameterRuleChanged(int id)
 		Messenger::exit("AtenPrefs::ParameterRuleChanged");
 		return;
 	}
-	VdwFunctions::VdwFunctions[row].combinationRules[combo->itemData(0).toInt()] = (CombinationRules::CombinationRule) id;
+	VdwFunctions::functionData[row].combinationRules[combo->itemData(0).toInt()] = (CombinationRules::CombinationRule) id;
 // 	printf("SET %i %i %i\n", row, combo->integer(), id);
 	Messenger::exit("AtenPrefs::ParameterRuleChanged");
 }

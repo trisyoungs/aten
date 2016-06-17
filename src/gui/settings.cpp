@@ -275,21 +275,21 @@ void AtenWindow::saveSettings()
 		// Scripts
 		for (Program* prog = aten_.scripts(); prog != NULL; prog = prog->next)
 		{
-			line.sprintf("%s  %s\n", Prefs::historyType(Prefs::ScriptHistory), qPrintable(prog->filename()));
+			line.sprintf("%s  %s", Prefs::historyType(Prefs::ScriptHistory), qPrintable(prog->filename()));
 			historyFile.writeLine(line);
 		}
 
 		// Quick command history
 		for (n=0; n < ui.QuickCommandCombo->count(); ++n)
 		{
-			line.sprintf("%s  %s\n", Prefs::historyType(Prefs::CommandHistory), qPrintable(ui.QuickCommandCombo->itemText(n)));
+			line.sprintf("%s  %s", Prefs::historyType(Prefs::CommandHistory), qPrintable(ui.QuickCommandCombo->itemText(n)));
 			historyFile.writeLine(line);
 		}
 		
 		// Intelligent Selection history
 		for (n=0; n < ui.SelectIntelligentTargetCombo->count(); ++n)
 		{
-			line.sprintf("%s  %s\n", Prefs::historyType(Prefs::SelectHistory), qPrintable(ui.SelectIntelligentTargetCombo->itemText(n)));
+			line.sprintf("%s  %s", Prefs::historyType(Prefs::SelectHistory), qPrintable(ui.SelectIntelligentTargetCombo->itemText(n)));
 			historyFile.writeLine(line);
 		}
 	}

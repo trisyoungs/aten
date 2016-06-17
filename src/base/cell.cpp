@@ -392,7 +392,7 @@ bool UnitCell::setSpacegroup(QString name, bool forceRhombohedral)
 			tsgn = FindTabSgNameEntry(qPrintable(newName), 'A');
 			if (tsgn == NULL)
 			{
-				Messenger::print("Unable to find spacegroup '%s'.", qPrintable(name));
+				Messenger::print("Unable to find spacegroup '%s' in rhombohedral basis.", qPrintable(name));
 				Messenger::exit("UnitCell::setSpacegroup");
 				return false;
 			}

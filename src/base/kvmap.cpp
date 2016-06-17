@@ -20,7 +20,7 @@
 */
 
 #include "base/kvmap.h"
-#include <string.h>
+#include <QStringList>
 
 ATEN_USING_NAMESPACE
 
@@ -63,6 +63,18 @@ KVMap::KVMap()
 {
 }
 
+// Assignment Operator
+void KVMap::operator=(const KVMap& source)
+{
+	pairs_ = source.pairs_;
+}
+
+// Copy Constructor
+KVMap::KVMap(const KVMap& source)
+{
+	(*this) = source;
+}
+
 // Clear pairs
 void KVMap::clear()
 {
@@ -83,10 +95,30 @@ void KVMap::add(QString key, QString value)
 	for (kvp = pairs_.first(); kvp != NULL; kvp = kvp->next) if (kvp->key() == key) break;
 	if (kvp == NULL)
 	{
-		kvp = new KVPair(key,value);
+		kvp = new KVPair(key, value);
 		pairs_.own(kvp);
 	}
 	else kvp->setValue(value);
+}
+
+// Return comma-separated list of keys
+QString KVMap::keys()
+{
+	QString result;
+	for (KVPair* kvp = pairs_.first(); kvp != NULL; kvp = kvp->next)
+	{
+		if (kvp != pairs_.first()) result += ", " + kvp->key();
+		else result += kvp->key();
+	}
+	return result;
+}
+
+// Set (existing) key/value pair from 'option=value' string
+void KVMap::add(QString optionEqualsValue)
+{
+	QStringList parts = optionEqualsValue.split("=");
+	if (parts.count() == 2) add(parts.at(0), parts.at(1));
+	else printf("Failed to parse 'option=value' string '%s'.\n", qPrintable(optionEqualsValue));
 }
 
 // Search map for specified key
@@ -98,11 +130,20 @@ KVPair* KVMap::search(QString key) const
 }
 
 // Retrieve value associated to key
-QString KVMap::value(QString key)
+QString KVMap::value(QString key) const
 {
 	// Search for existing value...
 	for (KVPair* kvp = pairs_.first(); kvp != NULL; kvp = kvp->next) if (kvp->key() == key) return kvp->value();
 	return NULL;
+}
+
+// Return whether standard option is set (to value specified if provided)
+bool KVMap::isSet(QString key, QString value) const
+{
+	KVPair* pair = search(key); 
+	if (!pair) return false;
+
+	return (value.isEmpty() ? true : (pair->value() == value));
 }
 
 // Return first key in list

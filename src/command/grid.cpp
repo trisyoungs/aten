@@ -78,24 +78,6 @@ bool Commands::function_CurrentGrid(CommandNode* c, Bundle& obj, ReturnValue& rv
 	return true;
 }
 
-// Finalise current grid
-bool Commands::function_FinaliseGrid(CommandNode* c, Bundle& obj, ReturnValue& rv)
-{
-	if (obj.notifyNull(Bundle::GridPointer)) return false;
-
-	// If this command is being run from a filter, set the output filter in the model.
-	if (c->parent()->isFilter())
-	{
-		Tree* t = c->parent();
-		obj.g->setFilename(c->parent()->parser()->inputFilename());
-	}
-
-	if (prefs.coordsInBohr()) obj.g->bohrToAngstrom();
-
-	rv.reset();
-	return true;
-}
-
 // Return nth grid of model
 bool Commands::function_GetGrid(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
@@ -211,36 +193,12 @@ bool Commands::function_GridLoopOrder(CommandNode* c, Bundle& obj, ReturnValue& 
 	if (obj.notifyNull(Bundle::GridPointer)) return false;
 	if (c->argc(0).length() != 3)
 	{
-		Messenger::print("A string of three characters must be passed to 'gridlooporder' (got '%s').", qPrintable(c->argc(0)));
+		Messenger::print("A string of three characters must be passed to 'gridLoopOrder' (got '%s').", qPrintable(c->argc(0)));
 		return false;
 	}
-	char ch;
-	for (int n=0; n<3; n++)
-	{
-		ch = c->argc(0).at(n).toLatin1();
-		switch (ch)
-		{
-			case ('X'):
-			case ('x'):
-			case ('1'):
-				obj.g->setLoopOrder(n,0);
-				break;
-			case ('Y'):
-			case ('y'):
-			case ('2'):
-				obj.g->setLoopOrder(n,1);
-				break;
-			case ('Z'):
-			case ('z'):
-			case ('3'):
-				obj.g->setLoopOrder(n,2);
-				break;
-			default:
-				Messenger::print("Unrecognised character (%c) given to 'setgridlooporder' - default value used.", ch);
-				obj.g->setLoopOrder(n,n);
-				break;
-		}
-	}
+
+	obj.g->setLoopOrder(c->argc(0));
+
 	rv.reset();
 	return true;
 }
@@ -363,8 +321,7 @@ bool Commands::function_LoadGrid(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 	Grid* g = NULL;
-	Tree* filter = aten_.probeFile(c->argc(0), FilterData::GridImport);
-	if (filter != NULL) if (filter->executeRead(c->argc(0))) g = obj.g;
+	if (aten_.importGrid(obj.rs(), c->argc(0))) g = obj.g;
 	rv.set(VTypes::GridData, g);
 	return true;
 }

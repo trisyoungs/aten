@@ -34,7 +34,11 @@
 #include "gui/disorderwizard.h"
 #include "gui/exportfilm.h"
 #include "gui/exportimage.h"
+#include "gui/opengrid.h"
+#include "gui/openmodel.h"
+#include "gui/opentrajectory.h"
 #include "gui/progress.h"
+#include "gui/savemodel.h"
 #include "gui/zmatrix.h"
 #include "templates/reflist.h"
 #include "base/glyph.h"
@@ -118,7 +122,25 @@ class AtenWindow : public QMainWindow
 	// Refreshes specified (or all) dock widgets
 	void updateWidgets(int targets = AtenWindow::DefaultTarget);
 
-	
+
+	/*
+	 * File Dialogs
+	 */
+	private:
+	// Grid import dialog
+	AtenOpenGrid openGridDialog_;
+	// Model import dialog
+	AtenOpenModel openModelDialog_;
+	// Trajectory import dialog
+	AtenOpenTrajectory openTrajectoryDialog_;
+	// Model export dialog
+	AtenSaveModel saveModelDialog_;
+
+	public:
+	// Return model export dialog
+	AtenSaveModel& saveModelDialog();
+
+
 	/*
 	 * Context Menu
 	 */
@@ -462,8 +484,6 @@ class AtenWindow : public QMainWindow
 	bool closeModel(Model* m);
 	// Save before close
 	bool saveBeforeClose();
-	// Run SaveModel dialog to get filename and format
-	bool runSaveModelDialog();
 
 
 	/*
@@ -576,10 +596,6 @@ class AtenWindow : public QMainWindow
 	private:
 	// Text labels for model information and UI messages in status bar
 	QLabel* cellInfoLabel_, *massLabel_, *densityLabel_, *selectionLabel_, *modelLabel_, *atomsLabel_, *messageLabel_;
-	// Filter set from save model dialog
-	Tree* saveModelFilter_;
-	// Filename set from save model dialog
-	QString saveModelFilename_;
 
 	protected:
 	// Timer event
