@@ -21,6 +21,7 @@
 
 #include "plugins/io_cif/cif.hui"
 #include "model/model.h"
+#include <QRegularExpression>
 
 // Constructor
 CIFModelPlugin::CIFModelPlugin()
@@ -110,6 +111,12 @@ bool CIFModelPlugin::importData()
 	LoopType loopType = NoLoop;
 	const int FractionalBit = 1;
 	Atom* i = NULL;
+
+	// Set up a regular expression to remove bracketed errors from numeric strings
+	QRegularExpression numberRE("([\\d.\\-eE]+)\\(*.*\\)*");
+	QRegularExpressionMatch numberMatch;
+
+	// Parse file
 	while (!fileParser_.eofOrBlank())
 	{
 		if (!fileParser_.parseLine(parseOptions)) return false;
@@ -145,18 +152,21 @@ bool CIFModelPlugin::importData()
 						case (CIFModelPlugin::AtomSiteFractX):
 						case (CIFModelPlugin::AtomSiteFractY):
 						case (CIFModelPlugin::AtomSiteFractZ):
-							i->r()[keyword-CIFModelPlugin::AtomSiteFractX] = fileParser_.argd(n);
+							numberMatch = numberRE.match(fileParser_.argc(n));
+							i->r()[keyword-CIFModelPlugin::AtomSiteFractX] = numberMatch.captured(1).toDouble();
 							i->addBit(FractionalBit);
 							break;
 						case (CIFModelPlugin::AtomSiteCartnX):
 						case (CIFModelPlugin::AtomSiteCartnY):
 						case (CIFModelPlugin::AtomSiteCartnZ):
-							i->r()[keyword-CIFModelPlugin::AtomSiteCartnX] = fileParser_.argd(n);
+							numberMatch = numberRE.match(fileParser_.argc(n));
+							i->r()[keyword-CIFModelPlugin::AtomSiteCartnX] = numberMatch.captured(1).toDouble();
 							break;
 						case (CIFModelPlugin::ChemCompAtomModelCartnX):
 						case (CIFModelPlugin::ChemCompAtomModelCartnY):
 						case (CIFModelPlugin::ChemCompAtomModelCartnZ):
-							i->r()[keyword-CIFModelPlugin::ChemCompAtomModelCartnX] = fileParser_.argd(n);
+							numberMatch = numberRE.match(fileParser_.argc(n));
+							i->r()[keyword-CIFModelPlugin::ChemCompAtomModelCartnX] = numberMatch.captured(1).toDouble();
 							break;
 						case (CIFModelPlugin::SymmetryEquivPosAsXyz):
 							targetModel()->cell().addGenerator()->set(fileParser_.argc(n));
@@ -205,12 +215,14 @@ bool CIFModelPlugin::importData()
 				case (CIFModelPlugin::CellLengthA):
 				case (CIFModelPlugin::CellLengthB):
 				case (CIFModelPlugin::CellLengthC):
-					cellLengths[keyword-CIFModelPlugin::CellLengthA] = fileParser_.argd(1);
+					numberMatch = numberRE.match(fileParser_.argc(1));
+					cellLengths[keyword-CIFModelPlugin::CellLengthA] = numberMatch.captured(1).toDouble();
 					break;
 				case (CIFModelPlugin::CellAngleAlpha):
 				case (CIFModelPlugin::CellAngleBeta):
 				case (CIFModelPlugin::CellAngleGamma):
-					cellAngles[keyword-CIFModelPlugin::CellAngleAlpha] = fileParser_.argd(1);
+					numberMatch = numberRE.match(fileParser_.argc(1));
+					cellAngles[keyword-CIFModelPlugin::CellAngleAlpha] = numberMatch.captured(1).toDouble();
 					break;
 				case (CIFModelPlugin::SymmetrySpacegroupNameHM):
 				case (CIFModelPlugin::SymmetrySpacegroupNameHMAlt):
@@ -225,24 +237,17 @@ bool CIFModelPlugin::importData()
 	targetModel()->cell().setAngles(cellAngles);
 
 	// Convert any atoms with fractional coordinates
-//
-//	# Were we given a full cell spec?
-//	if (cellspec == 6)
-//	{
-//		cell(length[1],length[2],length[3],cellangle[1],cellangle[2],cellangle[3]);
-//		if (fractional) fracToReal();
-//		# Pack according to spacegroup
-//		pack();
-//	}
-//	else
-//	{
-//		printf("Warning: Full cell specification was not found in file.\n");
-//		if (fractional) printf("Warning: Atom coordinates are still fractional.\n");
-//	}
-//
-//	rebond();
-//	finaliseModel();
-//}
+	for (Atom* i = targetModel()->atoms(); i != NULL; i = i->next)
+	{
+		if (i->hasBit(FractionalBit)) i->r() = targetModel()->cell().fracToReal(i->r());
+	}
+
+	// Pack model
+	if (!standardOptions_.preventPacking()) targetModel()->pack();
+
+	// Rebond model
+	if (!standardOptions_.preventRebonding()) targetModel()->calculateBonding(true);
+
 	return true;
 }
 
