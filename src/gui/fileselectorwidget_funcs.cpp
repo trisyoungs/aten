@@ -304,4 +304,6 @@ void FileSelectorWidget::on_FilterCombo_currentIndexChanged(int index)
 		if (mode_ == FileSelectorWidget::SaveSingleMode) emit(pluginOptionsAvailable(interface->hasExportOptions()));
 		else emit(pluginOptionsAvailable(interface->hasImportOptions()));
 	}
+
+	emit(pluginSelectionChanged());
 }

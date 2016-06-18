@@ -97,9 +97,11 @@ bool Commands::function_DeSelectCode(CommandNode* c, Bundle& obj, ReturnValue& r
 bool Commands::function_DeSelectFormatted(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
 	if (obj.notifyNull(Bundle::ModelPointer)) return false;
+
 	// Store current number of selected atoms
 	int nselected = obj.rs()->nSelected();
 	bool result = true;
+
 	// Write formatted string, then pass this to select()
 	Format* format = c->createFormat(0,1);
 	if (!format->writeToString())
@@ -107,6 +109,7 @@ bool Commands::function_DeSelectFormatted(CommandNode* c, Bundle& obj, ReturnVal
 		Messenger::print("Failed to format string for output.");
 		return false;
 	}
+
 	LineParser parser;
 	parser.getArgsDelim(0, format->string());
 	for (int i=0; i<parser.nArgs(); i++)
@@ -114,7 +117,9 @@ bool Commands::function_DeSelectFormatted(CommandNode* c, Bundle& obj, ReturnVal
 		StringVariable stringvar(parser.argc(i));
 		if (!obj.rs()->selectAtoms(&stringvar, true)) { result = false; break; }
 	}
+
 	rv.set(nselected - obj.rs()->nSelected());
+
 	return result;
 }
 

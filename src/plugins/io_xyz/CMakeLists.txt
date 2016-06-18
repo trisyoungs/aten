@@ -12,6 +12,7 @@ QT5_WRAP_UI(xyz_UIS_H ${xyz_UIS})
 
 add_library(xyz MODULE
   xyz_funcs.cpp
+  xyzimportoptions_funcs.cpp
   common.cpp
   ${xyz_MOC_SRCS}
   ${xyz_UIS_H}

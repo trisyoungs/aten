@@ -36,6 +36,7 @@ ATEN_BEGIN_NAMESPACE
 
 // Forward Declarations (Aten)
 class Format;
+class ParseFormat;
 
 // Parser Options and Flags
 class Parser
@@ -133,10 +134,14 @@ class LineParser
 	bool getNextN(int optionMask, int length, QString& destArg);
 	// Read line from file and do delimited parse
 	int getArgsDelim(int optionMask);
+	// Get rest of line
+	bool getRest(QString& destArg);
 	// Get rest of line starting at next delimited part
 	bool getRestDelim(QString& destArg);
 	// Set line and parse using delimiters
 	void getArgsDelim(int optionMask, QString line);
+	// Get next line (if requested) and arguments according to specified format
+	bool getArgsFormatted(ParseFormat& format, int optionMask, bool readLine = true);
 	// Get next delimited chunk from file (not line)
 	bool getCharsDelim(QString& destArg);
 	// Get next delimited chunk from string, removing grabbed part

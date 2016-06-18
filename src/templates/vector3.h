@@ -106,6 +106,8 @@ template <class T> class Vec3
 	T absMin() const;
 	// Returns the index of the minimum absolute-valued element in the vector
 	int absMinElement() const;
+	// Return sum of vector elements
+	T sum() const;
 	// Dot product between this and supplied vector
 	double dp(const Vec3<T>& v) const;
 	// Normalise and return original magnitude
@@ -420,6 +422,12 @@ template <class T> int Vec3<T>::absMinElement() const
 	if ((fabs(x) <= fabs(y)) && (fabs(x) <= fabs(z))) return 0;
 	if ((fabs(y) <= fabs(x)) && (fabs(y) <= fabs(z))) return 1;
 	return 2;
+}
+
+// Return sum of vector elements
+template <class T> T Vec3<T>::sum() const
+{
+	return x+y+z;
 }
 
 // Dot product

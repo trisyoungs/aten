@@ -161,6 +161,7 @@ Format* CommandNode::createFormat(int fmtArgId, int firstArgId)
 		{
 			// Delete old format
 			delete format_;
+
 			// Create new format
 			format_ = fmtArgId == -1 ? new Format(firstarg) : new Format(argc(fmtArgId), firstarg);
 			if (!format_->isValid())

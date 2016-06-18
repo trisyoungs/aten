@@ -66,6 +66,14 @@ class AtenOpenModel : public QDialog, public AtenFileDialog
 	FilePluginStandardImportOptions standardImportOptions();
 	// Return standard export options from dialog
 	FilePluginStandardExportOptions standardExportOptions();
+
+
+	/*
+	 * Signals / Slots
+	 */
+	private slots:
+	// Update standard options from plugin's local options
+	void updateStandardOptionsFromPlugin();
 };
 
 #endif

@@ -98,6 +98,12 @@ class FileParser
 	public:
 	// Read and parse next line into delimited arguments
 	bool parseLine(int parseOptions = Parser::Defaults);
+	// Read and parse supplied line into delimited arguments
+	int parseLine(QString line, int parseOptions = Parser::Defaults);
+	// Read and parse next line according to specified format
+	bool parseFormatted(ParseFormat& format, int parseOptions = Parser::Defaults);
+	// Read and parse specified line according to specified format
+	bool parseFormatted(QString line, ParseFormat& format, int parseOptions = Parser::Defaults);
 	// Returns number of arguments grabbed from last parse
 	int nArgs() const;
 	// Returns the specified argument as a character string

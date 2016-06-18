@@ -1,5 +1,5 @@
 /*
-	*** String formatter
+	*** String Formatter
 	*** src/parser/format.cpp
 	Copyright T. Youngs 2007-2016
 
@@ -498,4 +498,156 @@ int Format::read(LineParser* parser, int optionMask)
 
 	Messenger::exit("Format::read[file]");
 	return result;
+}
+
+/*
+ * Parse Chunk (Simplified Format Chunk)
+ */
+
+// Constructor
+ParseChunk::ParseChunk(ChunkType type, QString cFormat)
+{
+	// Private variables
+	type_ = type;
+	cFormat_ = cFormat;
+	formatLength_ = 0;
+	Messenger::print(Messenger::Parse, "...created ParseChunk for string '%s'", qPrintable(cFormat_));
+
+	// Find length specifier in format (if there is one)
+	if (cFormat_.length() > 1)
+	{
+		QRegularExpression re("[-\\d]+");
+		QRegularExpressionMatch match = re.match(cFormat);
+		if (match.hasMatch()) formatLength_ = match.captured(0).toInt();
+	}
+}
+
+// Return chunktype
+ParseChunk::ChunkType ParseChunk::type()
+{
+	return type_;
+}
+
+// Return C-style format string *or* plain text data if chunktype is PlainTextChunk
+QString ParseChunk::cFormat()
+{
+	return cFormat_;
+}
+
+// Return length of formatted chunk
+int ParseChunk::formatLength()
+{
+	return formatLength_;
+}
+
+/*
+ * Parse Format (Simplified Format)
+ */
+
+// Constructor
+ParseFormat::ParseFormat(QString cFormat)
+{
+	// Step through formatting string, looking for '%' symbols (terminated by a non-alpha)
+	int pos = 0;
+	QChar prevChar, prevPrevChar;
+	QString plainText;
+	bool isFormatter = false;
+	ParseChunk::ChunkType chunkType;
+	Messenger::print(Messenger::Parse, "Creating Format object from string '%s' (and any supplied arguments)...", qPrintable(cFormat));
+	do
+	{
+		// If we find a '%' store any previous characters as a plain-text chunk and begin a formatted chunk
+		if ((cFormat[pos] == '%') && (cFormat[pos+1] == '%'))
+		{
+			// Consecutive '%' indicates just a plain '%' - skip on one char and continue
+			pos += 2;
+			plainText += '%';
+			prevChar = '%';
+			continue;
+		}
+		else if (cFormat[pos] == '%')
+		{
+			// Check for a previous format, in which case this one is mangled
+			if (isFormatter)
+			{
+				Messenger::print("Found an unterminated format specifier (%) in format string '%s'.", qPrintable(cFormat));
+				return;
+			}
+			
+			if (!plainText.isEmpty())
+			{
+				// Store previous chunk, and start a new one
+				addChunk(ParseChunk::PlainTextChunk, plainText);
+				plainText.clear();
+			}
+			isFormatter = true;
+			plainText = '%';
+			++pos;
+		}
+
+		// Increment character position...
+		plainText += cFormat.at(pos);
+		prevChar = cFormat.at(pos);
+		++pos;
+
+		// If we're currently in the middle of a formatter, it's terminated by an alpha character or '*'
+		if (isFormatter && (prevChar.isLetter() || (prevChar == '*')))
+		{
+			// If the current character is 'l', 'h', or 'L' don't terminate yet
+			if ((prevChar == 'l') || (prevChar == 'h') || (prevChar == 'L')) continue;
+
+			Messenger::print(Messenger::Parse, "Detected format bit [%s]", qPrintable(plainText));
+
+			chunkType = ParseChunk::FormattedChunk;
+			prevPrevChar = plainText.at(plainText.length()-2);
+			if (!prevPrevChar.isLetter()) prevPrevChar = '\0';
+			switch (prevChar.toLatin1())
+			{
+				// Special - rest-of-line
+				case ('r'):
+					chunkType = ParseChunk::GreedyDelimitedChunk;
+					break;
+				// Special - discard identifier
+				case ('*'):
+					chunkType = ParseChunk::DiscardChunk;
+					break;
+				// Integer types
+				case ('i'):
+				case ('d'):
+				case ('x'):
+				case ('u'):
+				// Floating-point types
+				case ('e'):
+				case ('f'):
+				case ('g'):
+				// String types
+				case ('s'):
+					break;
+				default:
+					Messenger::print("Unsupported format '%s'.", qPrintable(plainText));
+					return;
+			}
+
+			// Add chunk
+			addChunk(chunkType, plainText);
+			plainText.clear();
+			isFormatter = false;
+		}
+	} while (pos < cFormat.count());
+
+	// Do we have some text left over?
+	if (!plainText.isEmpty()) addChunk(ParseChunk::PlainTextChunk, plainText);
+}
+
+// Add new chunk
+void ParseFormat::addChunk(ParseChunk::ChunkType type, QString data)
+{
+	ParseChunk* chunk = new ParseChunk(type, data);
+	chunks_.own(chunk);
+}
+
+// Return first chunk
+ParseChunk* ParseFormat::chunks()
+{
+	return chunks_.first();
 }

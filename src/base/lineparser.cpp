@@ -23,6 +23,7 @@
 #include "base/sysfunc.h"
 #include "math/mathfunc.h"
 #include "math/constants.h"
+#include "parser/format.h"
 #include "base/messenger.h"
 #include <string.h>
 #include <stdarg.h>
@@ -576,6 +577,32 @@ int LineParser::getArgsDelim(int optionMask)
 	return 0;
 }
 
+// Get rest of line
+bool LineParser::getRest(QString& destArg)
+{
+	Messenger::enter("LineParser::getRest");
+
+	// Clear destination string
+	destArg.clear();
+
+	if (lineLength_ == 0)
+	{
+		Messenger::exit("LineParser::getRest");
+		return false;
+	}
+
+	int n, length = lineLength_ - linePos_;
+	char c;
+	for (n=0; n<length; ++n)
+	{
+		destArg += line_.at(linePos_).toLatin1();
+		++linePos_;
+	}
+
+	Messenger::exit("LineParser::getRest");
+	return true;
+}
+
 // Get rest of current line starting at next delimited part (and put into destination argument if supplied)
 bool LineParser::getRestDelim(QString& destArg)
 {
@@ -606,7 +633,7 @@ bool LineParser::getRestDelim(QString& destArg)
 				destArg += c;
 				break;
 		}
-		linePos_ ++;
+		++linePos_;
 	}
 
 	// Strip whitespace from start and end of destArg if there is any...
@@ -635,6 +662,62 @@ void LineParser::getArgsDelim(int optionMask, QString line)
 	lineLength_ = line_.length();
 	linePos_ = 0;
 	getAllArgsDelim(optionMask);
+}
+
+// Get arguments according to specified format
+bool LineParser::getArgsFormatted(ParseFormat& format, int optionMask, bool readLine)
+{
+	Messenger::enter("LineParser::getArgsFormatted");
+	bool done = false;
+	int result;
+
+	arguments_.clear();
+
+	// Get line from file?
+	if (readLine)
+	{
+		// Returns : 0=ok, 1=error, -1=eof
+		result = readNextLine(optionMask);
+		
+		if (result != 0)
+		{
+			Messenger::exit("LineParser::getArgsFormatted");
+			return result;
+		}
+	}
+
+	// Loop over chunks in format
+	QString arg;
+	bool failed = false;
+	for (ParseChunk* chunk = format.chunks(); chunk != NULL; chunk = chunk->next)
+	{
+		switch (chunk->type())
+		{
+			case (ParseChunk::DelimitedChunk):
+				if (getNextArg(optionMask, arg)) arguments_ << arg;
+				else failed = true;
+				break;
+			case (ParseChunk::FormattedChunk):
+				if (getNextN(optionMask, chunk->formatLength(), arg)) arguments_ << arg;
+				else failed = true;
+				break;
+			case (ParseChunk::DiscardChunk):
+				if (!getNextN(optionMask, chunk->formatLength(), arg)) failed = true;
+				break;
+			case (ParseChunk::PlainTextChunk):
+				if (!getNextN(optionMask, chunk->cFormat().length(), arg)) failed = true;
+				break;
+			case (ParseChunk::GreedyDelimitedChunk):
+				if (getRest(arg)) arguments_ << arg;
+				else failed = true;
+				break;
+		}
+
+		if (failed) break;
+	}
+
+	Messenger::exit("LineParser::getArgsFormatted");
+	return 0;
 }
 
 // Get next delimited chunk from input stream (not line)

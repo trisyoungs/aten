@@ -1,6 +1,6 @@
 /*
-	*** XYZ Import Options Functions
-	*** src/gui/io_xyz/xyzimportoptions_funcs.cpp
+	*** PDB Import Options Functions
+	*** src/gui/io_pdb/pdbimportoptions_funcs.cpp
 	Copyright T. Youngs 2007-2016
 
 	This file is part of Aten.
@@ -19,10 +19,10 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "plugins/io_xyz/xyzimportoptions.h"
+#include "plugins/io_pdb/pdbimportoptions.h"
 
 // Constructor
-XYZImportOptionsDialog::XYZImportOptionsDialog(KVMap& pluginOptions) : QDialog(NULL), pluginOptions_(pluginOptions)
+PDBImportOptionsDialog::PDBImportOptionsDialog(KVMap& pluginOptions) : QDialog(NULL), pluginOptions_(pluginOptions)
 {
 	ui.setupUi(this);
 }
@@ -31,16 +31,16 @@ XYZImportOptionsDialog::XYZImportOptionsDialog(KVMap& pluginOptions) : QDialog(N
  * Widget Functions
  */
 
-void XYZImportOptionsDialog::on_CancelButton_clicked(bool checked)
+void PDBImportOptionsDialog::on_CancelButton_clicked(bool checked)
 {
 	// Don't modify the stored pluginOptions_, just reject() the dialog
 	reject(); 
 }
 
-void XYZImportOptionsDialog::on_OKButton_clicked(bool checked)
+void PDBImportOptionsDialog::on_OKButton_clicked(bool checked)
 {
 	// Set options before we accept() the dialog.
-	pluginOptions_.add("readMultipleAsTrajectory", ui.MultipleAsTrajectoryCheck->isChecked() ? "true" : "false");
+	pluginOptions_.add("strictFormat", ui.StrictFormatCheck->isChecked() ? "true" : "false");
 	
 	accept();
 }
@@ -50,10 +50,10 @@ void XYZImportOptionsDialog::on_OKButton_clicked(bool checked)
  */
 
 // Update and show dialog, setting controls from pluginOptions
-int XYZImportOptionsDialog::updateAndExecute()
+int PDBImportOptionsDialog::updateAndExecute()
 {
 	// Set controls to reflect current pluginOptions_
-	ui.MultipleAsTrajectoryCheck->setChecked(pluginOptions_.value("readMultipleAsTrajectory") == "true");
+	ui.StrictFormatCheck->setChecked(pluginOptions_.value("strictFormat") == "true");
 
 	// Execute the dialog - option setting will be handled in the OK button slot
 	return exec();

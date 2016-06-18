@@ -69,6 +69,14 @@ class AtenFileDialog
 	virtual FilePluginStandardImportOptions standardImportOptions() = 0;
 	// Return map of standard export options from dialog
 	virtual FilePluginStandardExportOptions standardExportOptions() = 0;
+
+
+	/*
+	 * Signals / Slots
+	 */
+	private slots:
+	// Update standard options from plugin's local options
+	virtual void updateStandardOptionsFromPlugin() = 0;
 };
 
 ATEN_END_NAMESPACE

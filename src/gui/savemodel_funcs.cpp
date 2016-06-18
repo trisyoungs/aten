@@ -34,6 +34,7 @@ AtenSaveModel::AtenSaveModel(QWidget* parent, QDir startingDirectory, const RefL
 	connect(ui.FileSelector, SIGNAL(selectionMade(bool)), this, SLOT(on_SaveButton_clicked(bool)));
 	connect(ui.FileSelector, SIGNAL(selectionValid(bool)), ui.SaveButton, SLOT(setEnabled(bool)));
 	connect(ui.FileSelector, SIGNAL(pluginOptionsAvailable(bool)), ui.PluginOptionsButton, SLOT(setEnabled(bool)));
+	connect(ui.FileSelector, SIGNAL(pluginSelectionChanged()), this, SLOT(updateStandardOptionsFromPlugin()));
 }
 
 /*
@@ -96,4 +97,16 @@ FilePluginStandardExportOptions AtenSaveModel::standardExportOptions()
 	FilePluginStandardExportOptions options;
 
 	return options;
+}
+
+/*
+ * Signals / Slots
+ */
+
+// Update standard options from plugin's local options
+void AtenSaveModel::updateStandardOptionsFromPlugin()
+{
+	// Get current plugin
+	FilePluginInterface* interface = ui.FileSelector->selectedPlugin();
+	if (!interface) return;
 }

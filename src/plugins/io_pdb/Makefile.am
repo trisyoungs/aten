@@ -19,7 +19,9 @@ clean-local:
 	-rm -f pdb.cpp
 
 # AKF Model plugin
-pdb_la_SOURCES = pdb_funcs.cpp pdb.hui
+pdb_la_SOURCES = pdbimportoptions.ui pdbimportoptions_funcs.cpp pdb_funcs.cpp pdb.hui
 pdb_la_LDFLAGS = -module -shared -avoid-version
+
+noinst_HEADERS = pdbimportoptions.h
 
 AM_CPPFLAGS = -I${top_srcdir}/src @ATEN_INCLUDES@ @ATEN_CFLAGS@

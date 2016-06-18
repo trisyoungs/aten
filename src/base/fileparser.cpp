@@ -171,6 +171,30 @@ bool FileParser::parseLine(int parseOptions)
 	return (parser_.getArgsDelim(parseOptions) == 0);
 }
 
+// Read and parse supplied line into delimited arguments
+int FileParser::parseLine(QString line, int parseOptions)
+{
+	parser_.getArgsDelim(parseOptions, line);
+	return parser_.nArgs();
+}
+
+// Read and parse next line according to specified format
+bool FileParser::parseFormatted(ParseFormat& format, int parseOptions)
+{
+	return (parser_.getArgsFormatted(format, parseOptions) == 0);
+}
+
+// Read and parse specified line according to specified format
+bool FileParser::parseFormatted(QString line, ParseFormat& format, int parseOptions)
+{
+	parser_.setLine(line);
+	return (parser_.getArgsFormatted(format, parseOptions, false) == 0);
+}
+
+/*
+ * Arguments
+ */
+
 // Returns number of arguments grabbed from last parse
 int FileParser::nArgs() const
 {

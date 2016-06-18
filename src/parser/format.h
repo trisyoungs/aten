@@ -127,6 +127,60 @@ class Format
 	int read(LineParser* parser, int optionMask);
 };
 
+// Parse Chunk (Simplified Format Chunk)
+class ParseChunk : public ListItem<ParseChunk>
+{
+	public:
+	// Node types
+	enum ChunkType { PlainTextChunk, FormattedChunk, DelimitedChunk, GreedyDelimitedChunk, DiscardChunk, nChunkTypes };
+	// Constructors
+	ParseChunk(ChunkType type, QString cFormat);
+
+
+	/*
+	 * Chunk Data
+	 */
+	private:
+	// Type of chunk
+	ChunkType type_;
+	// C-style format relevant to chunk *or* plain text data if PlainTextChunk
+	QString cFormat_;
+	// Length of formatted argument (if one was supplied)
+	int formatLength_;
+
+	public:
+	// Return chunktype
+	ChunkType type();
+	// Return C-style format string *or* plain text data if chunktype is PlainTextChunk
+	QString cFormat();
+	// Return length of formatted chunk
+	int formatLength();
+};
+
+// Parse Format (Simplified Format)
+class ParseFormat
+{
+	public:
+	// Constructor
+	ParseFormat(QString cFormat);
+
+
+	/*
+	 * Chunk Data
+	 */
+	private:
+	// Chunk list
+	List<ParseChunk> chunks_;
+
+	private:
+	// Add new chunk
+	void addChunk(ParseChunk::ChunkType type, QString data);
+
+	public:
+	// Return first chunk
+	ParseChunk* chunks();
+};
+
 ATEN_END_NAMESPACE
 
 #endif

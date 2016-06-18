@@ -34,6 +34,7 @@ AtenOpenModel::AtenOpenModel(QWidget* parent, QDir startingDirectory, const RefL
 	connect(ui.FileSelector, SIGNAL(selectionMade(bool)), this, SLOT(on_OpenButton_clicked(bool)));
 	connect(ui.FileSelector, SIGNAL(selectionValid(bool)), ui.OpenButton, SLOT(setEnabled(bool)));
 	connect(ui.FileSelector, SIGNAL(pluginOptionsAvailable(bool)), ui.PluginOptionsButton, SLOT(setEnabled(bool)));
+	connect(ui.FileSelector, SIGNAL(pluginSelectionChanged()), this, SLOT(updateStandardOptionsFromPlugin()));
 }
 
 /*
@@ -108,4 +109,19 @@ FilePluginStandardExportOptions AtenOpenModel::standardExportOptions()
 	FilePluginStandardExportOptions options;
 
 	return options;
+}
+
+/*
+ * Signals / Slots
+ */
+
+// Update standard options from plugin's local options
+void AtenOpenModel::updateStandardOptionsFromPlugin()
+{
+	// Get current plugin
+	FilePluginInterface* interface = ui.FileSelector->selectedPlugin();
+	if (!interface) return;
+
+	// Set zmapping combo
+	ui.ZMappingCombo->setCurrentIndex(interface->standardOptions().zMappingType());
 }

@@ -1,12 +1,20 @@
 # Meta-Objects
 set(pdb_MOC_HDRS
   pdb.hui
+  pdbimportoptions.h
 )
 QT5_WRAP_CPP(pdb_MOC_SRCS ${pdb_MOC_HDRS} OPTIONS -I${PROJECT_SOURCE_DIR}/src)
 
+SET(xyz_UIS
+ xyzimportoptions.ui 
+)
+QT5_WRAP_UI(xyz_UIS_H ${xyz_UIS})
+
 add_library(pdb MODULE
   pdb_funcs.cpp
+  pdbimportoptions_funcs.cpp
   ${pdb_MOC_SRCS}
+  ${pdb_UIS_H}
 )
 set_target_properties(pdb PROPERTIES
    LIBRARY_OUTPUT_DIRECTORY ${Aten_BINARY_DIR}/data/plugins

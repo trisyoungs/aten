@@ -193,45 +193,29 @@ bool Commands::function_ListModels(CommandNode* c, Bundle& obj, ReturnValue& rv)
 // Load model from file
 bool Commands::function_LoadModel(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	Tree* filter;
+	// Parse the first option so we can get the filter nickname and any filter options
+	LineParser parser;
+	parser.getArgsDelim(Parser::UseQuotes, c->argc(0));
 	
-	// Was a specific filter nickname provided?
-	// ATEN2 TODO ENDOFFILTERS
-// 	if (c->hasArg(1))
-// 	{
-// 		LineParser parser;
-// 		parser.getArgsDelim(0, c->argc(1));
-// 		// First part of argument is nickname
-// 		filter = aten_.findFilter(FilterData::ModelImport, parser.argc(0));
-// 		// Check that a suitable format was found
-// 		if (filter == NULL)
-// 		{
-// 			// Print list of valid filter nicknames
-// 			aten_.printValidNicknames(FilterData::ModelImport);
-// 			Messenger::print("Not loaded.");
-// 			return false;
-// 		}
-// 		
-// 		// Loop over remaining arguments which are widget/global variable assignments
-// 		QStringList items;
-// 		for (int n = 1; n < parser.nArgs(); ++n)
-// 		{
-// 			items = parser.argc(n).split('=');
-// 			if (!filter->setAccessibleVariable(items.at(0), items.at(1))) return false;
-// 		}
-// 	}
-// 	else filter = aten_.probeFile(c->argc(0), FilterData::ModelImport);
-// 	rv.set(0);
-// 	if (filter == NULL) return false;
-// 	int oldnmodels = aten_.nModels();
-// 	if (filter->executeRead(c->argc(0)))
-// 	{
-// 		Model* m = aten_.currentModel();
-// 		obj.i = m->atoms();
-// 		rv.set(VTypes::ModelData, m);
-// 	}
-// 	else return false;
-	return true;
+	// First part of argument is nickname
+	FilePluginInterface* plugin = aten_.pluginStore().findFilePluginByNickname(PluginTypes::ModelFilePlugin, PluginTypes::ImportPlugin, parser.argc(0));
+
+	// Check that a suitable format was found
+	if (plugin == NULL)
+	{
+		// Print list of valid plugin nicknames
+		aten_.pluginStore().showFilePluginNicknames(PluginTypes::ModelFilePlugin, PluginTypes::ImportPlugin);
+		Messenger::print("Not loaded.");
+		return false;
+	}
+
+	// Loop over remaining arguments which are widget/global variable assignments
+	KVMap pluginOptions;
+	for (int n = 1; n < parser.nArgs(); ++n) pluginOptions.add(parser.argc(n));
+
+	bool result = aten_.importModel(c->argc(1), plugin, FilePluginStandardImportOptions(), pluginOptions);
+
+	return result;
 }
 
 // Print log information for model ('loginfo')
