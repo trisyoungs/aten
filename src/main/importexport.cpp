@@ -203,6 +203,7 @@ bool Aten::exportModel(Model* sourceModel, QString filename, FilePluginInterface
 		}
 		interface->setStandardOptions(standardOptions);
 		interface->setOptions(pluginOptions);
+		interface->setParentModel(sourceModel);
 		if (interface->exportData())
 		{
 			// Set the model's (potentially new) filename and plugin

@@ -268,7 +268,7 @@ bool PDBModelPlugin::exportData()
 			for (n = 0; n < p->nAtoms(); ++n)
 			{
 				s = QString("%1%2").arg(ElementMap::symbol(i)).arg(n);
-				if (!fileParser_.writeLineF("ATOM  %-5i %-4s MOL  %-4i    %8.3f%8.3f%8.3f%6.2f%6.2f          %2s\n", i->id()+1, qPrintable(s), molId, i->r().x, i->r().y, i->r().z, 1.0, 1.0, ElementMap::symbol(i))) return false;
+				if (!fileParser_.writeLineF("ATOM  %-5i %-4s MOL  %-4i    %8.3f%8.3f%8.3f%6.2f%6.2f          %2s", i->id()+1, qPrintable(s), molId, i->r().x, i->r().y, i->r().z, 1.0, 1.0, ElementMap::symbol(i))) return false;
 				i = i->next;
 			}
 		}

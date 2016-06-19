@@ -59,7 +59,7 @@ bool XYZFilePluginCommon::readXYZModel(FilePluginInterface* interface, FileParse
 	// Rebond the model
 	if (!standardOptions.preventRebonding()) targetModel->calculateBonding(true);
 	
-	return targetModel;
+	return true;
 }
 
 // Skip single XYZ model in file
