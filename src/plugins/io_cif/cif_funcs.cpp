@@ -68,7 +68,7 @@ QString CIFModelPlugin::nickname() const
 // Description (long name) of plugin
 QString CIFModelPlugin::description() const
 {
-	return QString("Import for Crystallographic Information Format models");
+	return QString("Basic import for Crystallographic Information Format models");
 }
 
 // Related file extensions

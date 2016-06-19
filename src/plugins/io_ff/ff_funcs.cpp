@@ -68,7 +68,7 @@ QString AtenExpressionPlugin::nickname() const
 // Description (long name) of plugin
 QString AtenExpressionPlugin::description() const
 {
-	return QString("Import Aten format forcefield files");
+	return QString("Import for Aten format forcefield files");
 }
 
 // Related file extensions

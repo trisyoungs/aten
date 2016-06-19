@@ -75,7 +75,7 @@ QString PDBModelPlugin::nickname() const
 // Description (long name) of plugin
 QString PDBModelPlugin::description() const
 {
-	return QString("Import/export for Protein Databank model files");
+	return QString("Basic import/export for Protein Databank model files");
 }
 
 // Related file extensions

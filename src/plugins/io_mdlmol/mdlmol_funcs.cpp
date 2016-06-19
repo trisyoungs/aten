@@ -67,7 +67,7 @@ QString MOLModelPlugin::nickname() const
 // Description (long name) of plugin
 QString MOLModelPlugin::description() const
 {
-	return QString("Import for MDL Mol files");
+	return QString("Basic import for MDL Mol files");
 }
 
 // Related file extensions

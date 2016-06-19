@@ -1,5 +1,5 @@
 /*
-        *** Surface (dlputils)Grid Plugin Functions
+        *** Surface (dlputils) Grid Plugin Functions
         *** src/plugins/io_dlputils/surface_funcs.cpp
         Copyright T. Youngs 2016-2016
 

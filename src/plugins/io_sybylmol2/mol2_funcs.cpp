@@ -67,7 +67,7 @@ QString Mol2ModelPlugin::nickname() const
 // Description (long name) of plugin
 QString Mol2ModelPlugin::description() const
 {
-	return QString("Import/export for Tripos (Sybyl) Mol2 files");
+	return QString("Basic import/export for Tripos (Sybyl) Mol2 files");
 }
 
 // Related file extensions
