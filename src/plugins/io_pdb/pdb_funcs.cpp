@@ -122,7 +122,7 @@ bool PDBModelPlugin::importData()
 	while (!fileParser_.eofOrBlank())
 	{
 		// Read in line, split into keyword and 'rest of line'
-		if (!fileParser_.parseFormatted(generalFormat, Parser::Defaults)) return false;
+		if (!fileParser_.parseLine(generalFormat, Parser::Defaults)) return false;
 		keyword = fileParser_.argc(0);
 		data = fileParser_.argc(1);
 		if (keyword == "HEADER") Messenger::print("HEADER entry: " + data);
@@ -130,8 +130,8 @@ bool PDBModelPlugin::importData()
 		else if (keyword == "CRYST1")
 		{
 			// Crystal information is contained in 'data'
-			if (strict) fileParser_.parseFormatted(data, crystFormat);
-			else fileParser_.parseLine(data);
+			if (strict) fileParser_.parseString(data, crystFormat);
+			else fileParser_.parseString(data);
 			targetModel()->cell().setLengths(fileParser_.arg3d(0));
 			targetModel()->cell().setAngles(fileParser_.arg3d(3));
 		}
@@ -140,35 +140,35 @@ bool PDBModelPlugin::importData()
 			// Try to convert element string (last two characters of line) if present, before resorting to the atom name
 			if (strict)
 			{
-				fileParser_.parseFormatted(data, atomFormat);  //"%5i %4s              %8f%8f%8f%22*%2s", id, name, rx, ry, rz, e);
+				fileParser_.parseString(data, atomFormat);  //"%5i %4s              %8f%8f%8f%22*%2s", id, name, rx, ry, rz, e);
 				if (fileParser_.hasArg(5) && (!fileParser_.argc(5).isEmpty())) createAtom(targetModel(), fileParser_.argc(5), fileParser_.arg3d(2));
 				else createAtom(targetModel(), fileParser_.argc(1), fileParser_.arg3d(2));
 			}
 			else
 			{
-				fileParser_.parseLine(data); // readVar(line, id, name, discard, discard, discard, discard, discard, discard, discard, discard, rx, ry, rz, e);
+				fileParser_.parseString(data); // readVar(line, id, name, discard, discard, discard, discard, discard, discard, discard, discard, rx, ry, rz, e);
 				if (fileParser_.hasArg(13)) createAtom(targetModel(), fileParser_.argc(13), fileParser_.arg3d(10));
 				else createAtom(targetModel(), fileParser_.argc(1), fileParser_.arg3d(10));
 			}
 		}
 		else if (keyword == "CONECT")
 		{
-			fileParser_.parseLine(data);
+			fileParser_.parseString(data);
 			ii = fileParser_.argi(0) - 1;
 			for (n = 1; n<fileParser_.nArgs(); ++n) targetModel()->bondAtoms(ii, fileParser_.argi(n)-1, Bond::Single);
 		}
 		else if (keyword.startsWith("SCALE"))
 		{
-			if (strict) fileParser_.parseFormatted(data, scaleOriginFormat);
-			else fileParser_.parseLine(data);
+			if (strict) fileParser_.parseString(data, scaleOriginFormat);
+			else fileParser_.parseString(data);
 			int scaleIndex = keyword.right(1).toInt() - 1;
 			scaleMatrix.setColumn(scaleIndex, fileParser_.arg3d(0), 0.0);
 			scaleFlags.set(scaleIndex, 1);
 		}
 		else if (keyword.startsWith("ORIGX"))
 		{
-			if (strict) fileParser_.parseFormatted(data, scaleOriginFormat);
-			else fileParser_.parseLine(data);
+			if (strict) fileParser_.parseString(data, scaleOriginFormat);
+			else fileParser_.parseString(data);
 			int originIndex = keyword.right(1).toInt() - 1;
 			originMatrix.setColumn(originIndex, fileParser_.arg3d(0), 0.0);
 			originFlags.set(originIndex, 1);

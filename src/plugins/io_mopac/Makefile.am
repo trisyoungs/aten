@@ -1,6 +1,6 @@
 # Set plugin installation dir and define plugin targets
 pluginexecdir = ${pkglibdir}/plugins
-pluginexec_LTLIBRARIES = mopac.la
+pluginexec_LTLIBRARIES = mopacarc.la mopaccontrol.la
 
 # Rules
 .ui.lo:
@@ -16,10 +16,22 @@ pluginexec_LTLIBRARIES = mopac.la
 
 # Local clean (temporary files generated from rules)
 clean-local:
-	-rm -f mopac.cpp
+	-rm -f mopacarc.cpp mopaccontrol.cpp
 
-# AKF Model plugin
-mopac_la_SOURCES = mopac_funcs.cpp mopac.hui
-mopac_la_LDFLAGS = -module -shared -avoid-version
+# Common functions between plugins
+noinst_LTLIBRARIES = libcommon.la
+libcommon_la_SOURCES = common.cpp
+
+# MOPAC Control File Model plugin
+mopaccontrol_la_SOURCES = controlexportoptions.ui controlexportoptions_funcs.cpp mopaccontrol_funcs.cpp mopaccontrol.hui
+mopaccontrol_la_LIBADD = libcommon.la
+mopaccontrol_la_LDFLAGS = -module -shared -avoid-version
+
+# MOPAC Archive File Model plugin
+mopacarc_la_SOURCES = mopacarc_funcs.cpp mopacarc.hui
+mopacarc_la_LIBADD = libcommon.la
+mopacarc_la_LDFLAGS = -module -shared -avoid-version
 
 AM_CPPFLAGS = -I${top_srcdir}/src @ATEN_INCLUDES@ @ATEN_CFLAGS@
+
+noinst_HEADERS = common.h controlexportoptions.h

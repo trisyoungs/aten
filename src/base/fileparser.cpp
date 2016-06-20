@@ -109,6 +109,29 @@ bool FileParser::skipLines(int nLines)
 	return (parser_.skipLines(nLines) == 0);
 }
 
+// Find next line containing supplied string
+bool FileParser::find(QString string)
+{
+	// Store current stream position in case the string is not found
+	std::streampos previouspos = tellg();
+
+	QString line;
+	bool found = false;
+	while (!eofOrBlank())
+	{
+		// Get line from file
+		if (!readLine(line)) break;
+
+		// Check for string
+		if (line.contains(string)) return true;
+	}
+
+	// Rewind file to previous position if not found
+	seekg(previouspos);
+
+	return false;
+}
+
 /*
  * Write Functions
  */
@@ -171,21 +194,21 @@ bool FileParser::parseLine(int parseOptions)
 	return (parser_.getArgsDelim(parseOptions) == 0);
 }
 
-// Read and parse supplied line into delimited arguments
-int FileParser::parseLine(QString line, int parseOptions)
+// Read and parse next line according to specified format
+bool FileParser::parseLine(ParseFormat& format, int parseOptions)
+{
+	return (parser_.getArgsFormatted(format, parseOptions) == 0);
+}
+
+// Parse string into delimited arguments
+int FileParser::parseString(QString line, int parseOptions)
 {
 	parser_.getArgsDelim(parseOptions, line);
 	return parser_.nArgs();
 }
 
-// Read and parse next line according to specified format
-bool FileParser::parseFormatted(ParseFormat& format, int parseOptions)
-{
-	return (parser_.getArgsFormatted(format, parseOptions) == 0);
-}
-
-// Read and parse specified line according to specified format
-bool FileParser::parseFormatted(QString line, ParseFormat& format, int parseOptions)
+// Parse string according to specified format
+bool FileParser::parseString(QString line, ParseFormat& format, int parseOptions)
 {
 	parser_.setLine(line);
 	return (parser_.getArgsFormatted(format, parseOptions, false) == 0);
