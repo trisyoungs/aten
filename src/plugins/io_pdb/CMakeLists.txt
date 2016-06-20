@@ -5,10 +5,10 @@ set(pdb_MOC_HDRS
 )
 QT5_WRAP_CPP(pdb_MOC_SRCS ${pdb_MOC_HDRS} OPTIONS -I${PROJECT_SOURCE_DIR}/src)
 
-SET(xyz_UIS
- xyzimportoptions.ui 
+SET(pdb_UIS
+ pdbimportoptions.ui 
 )
-QT5_WRAP_UI(xyz_UIS_H ${xyz_UIS})
+QT5_WRAP_UI(pdb_UIS_H ${pdb_UIS})
 
 add_library(pdb MODULE
   pdb_funcs.cpp
