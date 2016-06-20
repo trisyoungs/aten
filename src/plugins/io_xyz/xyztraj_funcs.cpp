@@ -148,13 +148,13 @@ bool XYZTrajectoryPlugin::exportData()
 // Import next partial data chunk
 bool XYZTrajectoryPlugin::importNextPart()
 {
-	return XYZFilePluginCommon::readXYZModel(this, fileParser_, standardOptions_, targetModel());
+	return XYZFilePluginCommon::readXYZModel(this, fileParser_, targetModel());
 }
 
 // Skip next partial data chunk
 bool XYZTrajectoryPlugin::skipNextPart()
 {
-	return XYZFilePluginCommon::skipXYZModel(fileParser_, standardOptions_);
+	return XYZFilePluginCommon::skipXYZModel(this, fileParser_);
 }
 
 /*

@@ -21,14 +21,16 @@
 
 #include "plugins/io_xyz/xyz.hui"
 #include "plugins/io_xyz/common.h"
-#include "model/model.h"
+#include "plugins/io_xyz/xyzexportoptions.h"
 #include "plugins/io_xyz/xyzimportoptions.h"
+#include "model/model.h"
 
 // Constructor
 XYZModelPlugin::XYZModelPlugin()
 {
 	// Setup plugin options
 	pluginOptions_.add("readMultipleAsTrajectory", "false");
+	pluginOptions_.add("useTypeNames", "false");
 }
 
 // Destructor
@@ -137,7 +139,7 @@ bool XYZModelPlugin::importData()
 		}
 
 		// Read in model data
-		result = XYZFilePluginCommon::readXYZModel(this, fileParser_, standardOptions_, targetModel);
+		result = XYZFilePluginCommon::readXYZModel(this, fileParser_, targetModel);
 
 		if (!result)
 		{
@@ -164,7 +166,7 @@ bool XYZModelPlugin::canExport()
 // Export data to the specified file
 bool XYZModelPlugin::exportData()
 {
-	return XYZFilePluginCommon::writeXYZModel(fileParser_, standardOptions_, targetModel());
+	return XYZFilePluginCommon::writeXYZModel(this, fileParser_, targetModel());
 }
 
 // Import next partial data chunk
@@ -200,11 +202,13 @@ bool XYZModelPlugin::showImportOptionsDialog()
 // Return whether the plugin has export options
 bool XYZModelPlugin::hasExportOptions()
 {
-	return false;
+	return true;
 }
 
 // Show export options dialog
 bool XYZModelPlugin::showExportOptionsDialog()
 {
-	return false;
+	XYZExportOptionsDialog optionsDialog(pluginOptions_);
+
+	return (optionsDialog.updateAndExecute() == QDialog::Accepted);
 }

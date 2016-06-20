@@ -2,17 +2,20 @@
 set(xyz_MOC_HDRS
   xyz.hui
   xyzimportoptions.h
+  xyzexportoptions.h
 )
 QT5_WRAP_CPP(xyz_MOC_SRCS ${xyz_MOC_HDRS} OPTIONS -I${PROJECT_SOURCE_DIR}/src)
 
 SET(xyz_UIS
  xyzimportoptions.ui 
+ xyzexportoptions.ui 
 )
 QT5_WRAP_UI(xyz_UIS_H ${xyz_UIS})
 
 add_library(xyz MODULE
   xyz_funcs.cpp
   xyzimportoptions_funcs.cpp
+  xyzexportoptions_funcs.cpp
   common.cpp
   ${xyz_MOC_SRCS}
   ${xyz_UIS_H}

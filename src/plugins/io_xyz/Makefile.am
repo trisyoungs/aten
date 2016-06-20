@@ -22,10 +22,8 @@ clean-local:
 noinst_LTLIBRARIES = libcommon.la
 libcommon_la_SOURCES = common.cpp
 
-noinst_HEADERS = common.h
-
 # XYZ Model Plugin
-xyz_la_SOURCES = xyzimportoptions.ui xyzimportoptions_funcs.cpp xyz_funcs.cpp xyz.hui 
+xyz_la_SOURCES = xyzimportoptions.ui xyzimportoptions_funcs.cpp xyzexportoptions.ui xyzexportoptions_funcs.cpp xyz_funcs.cpp xyz.hui 
 xyz_la_LIBADD = libcommon.la
 xyz_la_LDFLAGS = -module -shared -avoid-version
 
@@ -35,3 +33,6 @@ xyztraj_la_LIBADD = libcommon.la
 xyztraj_la_LDFLAGS = -module -shared -avoid-version
 
 AM_CPPFLAGS = -I${top_srcdir}/src @ATEN_INCLUDES@ @ATEN_CFLAGS@
+
+noinst_HEADERS = common.h xyzimportoptions.h xyzexportoptions.h
+

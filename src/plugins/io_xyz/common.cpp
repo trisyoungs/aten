@@ -27,7 +27,7 @@
 ATEN_USING_NAMESPACE
 
 // Read single XYZ model from file
-bool XYZFilePluginCommon::readXYZModel(FilePluginInterface* interface, FileParser& parser, const FilePluginStandardImportOptions standardOptions, Model* targetModel)
+bool XYZFilePluginCommon::readXYZModel(FilePluginInterface* interface, FileParser& parser, Model* targetModel)
 {
 	int nAtoms, n;
 	QString e, name;
@@ -57,13 +57,13 @@ bool XYZFilePluginCommon::readXYZModel(FilePluginInterface* interface, FileParse
 	}
 	
 	// Rebond the model
-	if (!standardOptions.preventRebonding()) targetModel->calculateBonding(true);
+	if (!interface->standardOptions().preventRebonding()) targetModel->calculateBonding(true);
 	
 	return true;
 }
 
 // Skip single XYZ model in file
-bool XYZFilePluginCommon::skipXYZModel(FileParser& parser, const FilePluginStandardImportOptions standardOptions)
+bool XYZFilePluginCommon::skipXYZModel(FilePluginInterface* interface, FileParser& parser)
 {
 	int nAtoms;
 
@@ -80,7 +80,7 @@ bool XYZFilePluginCommon::skipXYZModel(FileParser& parser, const FilePluginStand
 }
 
 // Write single XYZ model to file
-bool XYZFilePluginCommon::writeXYZModel(FileParser& parser, const FilePluginStandardImportOptions standardOptions, Model* sourceModel)
+bool XYZFilePluginCommon::writeXYZModel(FilePluginInterface* interface, FileParser& parser, Model* sourceModel)
 {
 	// Write number atoms line
 	if (!parser.writeLineF("%i", sourceModel->nAtoms())) return false;
@@ -89,9 +89,14 @@ bool XYZFilePluginCommon::writeXYZModel(FileParser& parser, const FilePluginStan
 	if (!parser.writeLine(sourceModel->name())) return false;
 
 	// Write atom information
+	bool useTypeNames = interface->pluginOptions().value("useTypeNames") == "true";
 	for (Atom* i = sourceModel->atoms(); i != NULL; i = i->next)
 	{
-		if (!parser.writeLineF("%-8s  %12.6f %12.6f %12.6f %12.6f", ElementMap().symbol(i->element()), i->r().x, i->r().y, i->r().z, i->charge())) return false;
+		if (useTypeNames && i->type())
+		{
+			if (!parser.writeLineF("%-8s  %12.6f %12.6f %12.6f %12.6f", qPrintable(i->type()->name()), i->r().x, i->r().y, i->r().z, i->charge())) return false;
+		}
+		else if (!parser.writeLineF("%-8s  %12.6f %12.6f %12.6f %12.6f", ElementMap().symbol(i->element()), i->r().x, i->r().y, i->r().z, i->charge())) return false;
 	}
 
 	return true;

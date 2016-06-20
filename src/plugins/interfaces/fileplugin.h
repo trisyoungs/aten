@@ -674,6 +674,11 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 
 		return result;
 	}
+	// Return options specific to this plugin (read-only)
+	const KVMap& pluginOptions()
+	{
+		return pluginOptions_;
+	}
 };
 
 ATEN_END_NAMESPACE

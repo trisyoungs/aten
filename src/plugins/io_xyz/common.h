@@ -35,11 +35,11 @@ class XYZFilePluginCommon
 {
 	public:
 	// Read single XYZ model from file
-	static bool readXYZModel(FilePluginInterface* interface, FileParser& parser, const FilePluginStandardImportOptions standardOptions, Model* targetModel);
+	static bool readXYZModel(FilePluginInterface* interface, FileParser& parser, Model* targetModel);
 	// Skip single XYZ model in file
-	static bool skipXYZModel(FileParser& parser, const FilePluginStandardImportOptions standardOptions);
+	static bool skipXYZModel(FilePluginInterface* interface, FileParser& parser);
 	// Write single XYZ model to file
-	static bool writeXYZModel(FileParser& parser, const FilePluginStandardImportOptions standardOptions, Model* sourceModel);
+	static bool writeXYZModel(FilePluginInterface* interface, FileParser& parser, Model* sourceModel);
 };
 
 ATEN_END_NAMESPACE
