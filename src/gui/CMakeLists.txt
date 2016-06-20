@@ -7,7 +7,6 @@ SET(gui_MOC_HDRS
   exportfilm.h
   exportimage.h
   ffeditor.h
-  filedialog.h
   fileselectorwidget.h
   glyphs.h
   layoutlist.h
