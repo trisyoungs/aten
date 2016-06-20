@@ -23,8 +23,9 @@
 #include "main/aten.h"
 #include "main/version.h"
 #include "gui/mainwindow.h"
-#include "base/namespace.h"
 #include "gui/prefs.h"
+#include "gui/aboutplugins.h"
+#include "base/namespace.h"
 #include <QMessageBox>
 
 ATEN_USING_NAMESPACE
@@ -113,15 +114,11 @@ void FileAtenPopup::on_ReloadPluginsButton_clicked(bool checked)
 	done();
 }
 
-// ATEN2 TODO ENDOFFILTERS
 void FileAtenPopup::on_PluginInfoButton_clicked(bool checked)
 {
-// 	parent_.aten().reloadFilters();
+	AtenAboutPlugins aboutPlugins(parent_);
 	
-// 	if (parent_.aten().failedFilters().count() > 0)
-// 	{
-// 		QMessageBox::warning(this, "Aten", "Errors encountered while reloading filters - see message box for details.", QMessageBox::Ok);
-// 	}
+	aboutPlugins.exec();
 
 	// Hide popup
 	done();

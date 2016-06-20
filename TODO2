@@ -24,7 +24,6 @@ Speedup Disorder Builder??
 Implement 'factory' for common objects such as Atom & Bond, to save new'ing all the time (esp. for large systems).
 Panel for User tools, essentially loaded from scripts (plugins?) in a user's tools/X directory.
 Visualise toolbar, containing Glyph management, polyhedra etc.
-Add About::plugins() window.
 
 Graphics TODO
 =============

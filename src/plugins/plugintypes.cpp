@@ -20,16 +20,32 @@
 */
 
 #include "plugins/plugintypes.h"
+#include <QString>
 
 ATEN_USING_NAMESPACE
 
+// Plugin type
+const char* PluginTypeStrings[] = { "File (Import/Export)" };
+
+// Return name of file type
+const char* PluginTypes::pluginType(PluginTypes::PluginType type)
+{
+	return PluginTypeStrings[type];
+}
+
 // File plugin categories
-const char* FilePluginCategories[] = { "model", "trajectory", "expression", "grid" };
+const char* FilePluginCategories[] = { "Model", "Trajectory", "Expression", "Grid" };
+
+// Return capitalised single-word name of file plugin category
+const char* PluginTypes::niceFilePluginCategory(PluginTypes::FilePluginCategory category)
+{
+	return FilePluginCategories[category];
+}
 
 // Return single-word name of file plugin category
 const char* PluginTypes::filePluginCategory(PluginTypes::FilePluginCategory category)
 {
-	return FilePluginCategories[category];
+	return qPrintable(QString(FilePluginCategories[category]).toLower());
 }
 
 // File plugin type

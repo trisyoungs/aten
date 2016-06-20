@@ -33,8 +33,14 @@ ATEN_BEGIN_NAMESPACE
 class PluginTypes
 {
 	public:
+	// Plugin types
+	enum PluginType { FilePlugin, nPluginTypes };
+	// Return single-word name of plugin type
+	static const char* pluginType(PluginType type);
 	// File plugin category
 	enum FilePluginCategory { ModelFilePlugin, TrajectoryFilePlugin, ExpressionFilePlugin, GridFilePlugin, nFilePluginCategories };
+	// Return capitalised single-word name of file plugin category
+	static const char* niceFilePluginCategory(FilePluginCategory category);
 	// Return single-word name of file plugin category
 	static const char* filePluginCategory(FilePluginCategory category);
 	// File plugin type

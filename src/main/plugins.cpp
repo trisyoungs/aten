@@ -32,7 +32,7 @@ bool Aten::loadPlugin(QString fileName)
 	// Create a pluginloader for the filename provided
 	QPluginLoader loader(fileName);
 
-	QObject *plugin = loader.instance();
+	QObject* plugin = loader.instance();
 	if (!plugin)
 	{
 		Messenger::error("File '%s' does not appear to be a valid plugin.", qPrintable(fileName));
@@ -41,11 +41,13 @@ bool Aten::loadPlugin(QString fileName)
 	}
 
 	// Determine which type of plugin this is by attempting to cast it to the available types
-	FilePluginInterface* filePlugin = qobject_cast<FilePluginInterface *>(plugin);
+	FilePluginInterface* filePlugin = qobject_cast<FilePluginInterface*>(plugin);
 	if (filePlugin)
 	{
+		filePlugin->setPluginFilename(fileName);
 		pluginStore_.registerFilePlugin(filePlugin);
 	}
+
 	return true;
 }
 

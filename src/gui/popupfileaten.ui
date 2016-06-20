@@ -74,7 +74,7 @@
      </property>
      <property name="icon">
       <iconset resource="icons.qrc">
-       <normaloff>:/aten/icons/aten_reloadfilters.svg</normaloff>:/aten/icons/aten_reloadfilters.svg</iconset>
+       <normaloff>:/aten/icons/aten_reloadplugins.svg</normaloff>:/aten/icons/aten_reloadplugins.svg</iconset>
      </property>
      <property name="iconSize">
       <size>
@@ -224,7 +224,7 @@
      </property>
      <property name="icon">
       <iconset resource="icons.qrc">
-       <normaloff>:/aten/icons/aten_reloadfilters.svg</normaloff>:/aten/icons/aten_reloadfilters.svg</iconset>
+       <normaloff>:/aten/icons/aten_aboutplugins.svg</normaloff>:/aten/icons/aten_aboutplugins.svg</iconset>
      </property>
      <property name="iconSize">
       <size>

@@ -2,6 +2,7 @@
 # the UI file won't be wrapped!
 # Meta-Objects
 SET(gui_MOC_HDRS
+  aboutplugins.h
   disorderoptions.h
   disorderwizard.h
   exportfilm.h
@@ -99,6 +100,7 @@ QT5_WRAP_CPP(treegui_MOC_SRCS ${treegui_MOC_HDRS})
 
 # User Interface Files
 SET(gui_UIS
+  aboutplugins.ui
   disorderoptions.ui
   disorderwizard.ui
   exportfilm.ui
@@ -183,6 +185,7 @@ QT5_WRAP_UI(treegui_UIS_H ${treegui_UIS})
 set(gui_SRCS
   useractions.h
   useractions.cpp
+  aboutplugins_funcs.cpp
   disorderoptions_funcs.cpp
   disorderwizard_funcs.cpp
   exportfilm_funcs.cpp
