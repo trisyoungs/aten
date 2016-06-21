@@ -72,20 +72,20 @@ void AtenAboutPlugins::updateTree(int type)
 			groupItem->setText(0, PluginTypes::niceFilePluginCategory(category));
 			for (RefListItem<FilePluginInterface,int>* ri = pluginStore_.filePlugins(category).first(); ri != NULL; ri = ri->next)
 			{
-				FilePluginInterface* interface = ri->item;
+				FilePluginInterface* plugin = ri->item;
 
 				item = new QTreeWidgetItem(groupItem);
-				item->setText(0, interface->name() + " (" + interface->pluginFilename() + ")");
+				item->setText(0, plugin->name() + " (" + plugin->pluginFilename() + ")");
 
 				// Add plugin information
 				subItem = new QTreeWidgetItem(item);
-				subItem->setText(0, "Description: " + interface->description());
+				subItem->setText(0, "Description: " + plugin->description());
 				subItem = new QTreeWidgetItem(item);
-				subItem->setText(0, "Matches: " + interface->filterString());
+				subItem->setText(0, "Matches: " + plugin->filterString());
 				subItem = new QTreeWidgetItem(item);
-				subItem->setText(0, "Import: " + QString(interface->canImport() ? "Yes" : "No") + ((interface->canImport() && interface->hasImportOptions()) ? " (With Options)" : ""));
+				subItem->setText(0, "Import: " + QString(plugin->canImport() ? "Yes" : "No") + ((plugin->canImport() && plugin->hasImportOptions()) ? " (With Options)" : ""));
 				subItem = new QTreeWidgetItem(item);
-				subItem->setText(0, "Export: " + QString(interface->canExport() ? "Yes" : "No") + ((interface->canExport() && interface->hasExportOptions()) ? " (With Options)" : ""));
+				subItem->setText(0, "Export: " + QString(plugin->canExport() ? "Yes" : "No") + ((plugin->canExport() && plugin->hasExportOptions()) ? " (With Options)" : ""));
 			}
 		}
 	}

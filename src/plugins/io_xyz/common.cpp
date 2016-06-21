@@ -27,7 +27,7 @@
 ATEN_USING_NAMESPACE
 
 // Read single XYZ model from file
-bool XYZFilePluginCommon::readXYZModel(FilePluginInterface* interface, FileParser& parser, Model* targetModel)
+bool XYZFilePluginCommon::readXYZModel(FilePluginInterface* plugin, FileParser& parser, Model* targetModel)
 {
 	int nAtoms, n;
 	QString e, name;
@@ -53,17 +53,17 @@ bool XYZFilePluginCommon::readXYZModel(FilePluginInterface* interface, FileParse
 		if (!parser.parseLine()) break;
 		
 		// Create the new atom
-		interface->createAtom(targetModel, parser.argc(0), parser.arg3d(1));
+		plugin->createAtom(targetModel, parser.argc(0), parser.arg3d(1));
 	}
 	
 	// Rebond the model
-	if (!interface->standardOptions().preventRebonding()) targetModel->calculateBonding(true);
+	if (!plugin->standardOptions().preventRebonding()) targetModel->calculateBonding(true);
 	
 	return true;
 }
 
 // Skip single XYZ model in file
-bool XYZFilePluginCommon::skipXYZModel(FilePluginInterface* interface, FileParser& parser)
+bool XYZFilePluginCommon::skipXYZModel(FilePluginInterface* plugin1, FileParser& parser)
 {
 	int nAtoms;
 
@@ -80,7 +80,7 @@ bool XYZFilePluginCommon::skipXYZModel(FilePluginInterface* interface, FileParse
 }
 
 // Write single XYZ model to file
-bool XYZFilePluginCommon::writeXYZModel(FilePluginInterface* interface, FileParser& parser, Model* sourceModel)
+bool XYZFilePluginCommon::writeXYZModel(FilePluginInterface* plugin, FileParser& parser, Model* sourceModel)
 {
 	// Write number atoms line
 	if (!parser.writeLineF("%i", sourceModel->nAtoms())) return false;
@@ -89,7 +89,7 @@ bool XYZFilePluginCommon::writeXYZModel(FilePluginInterface* interface, FilePars
 	if (!parser.writeLine(sourceModel->name())) return false;
 
 	// Write atom information
-	bool useTypeNames = interface->pluginOptions().value("useTypeNames") == "true";
+	bool useTypeNames = plugin->pluginOptions().value("useTypeNames") == "true";
 	for (Atom* i = sourceModel->atoms(); i != NULL; i = i->next)
 	{
 		if (useTypeNames && i->type())

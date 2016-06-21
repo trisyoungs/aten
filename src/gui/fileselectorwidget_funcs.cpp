@@ -70,15 +70,15 @@ void FileSelectorWidget::refreshPlugins(const RefList<FilePluginInterface,int>& 
 
 	for (RefListItem<FilePluginInterface,int>* ri = filePlugins.first(); ri != NULL; ri = ri->next)
 	{
-		FilePluginInterface* interface = ri->item;
+		FilePluginInterface* plugin = ri->item;
 
 		// The mode_ of the file selector determines which type of plugin we display
 		if (mode_ == FileSelectorWidget::SaveSingleMode)
 		{
-			if (!interface->canExport()) continue;
+			if (!plugin->canExport()) continue;
 		}
-		else if (!interface->canImport()) continue;
-		ui.FilterCombo->addItem(interface->filterString(), VariantPointer<FilePluginInterface>(interface));
+		else if (!plugin->canImport()) continue;
+		ui.FilterCombo->addItem(plugin->filterString(), VariantPointer<FilePluginInterface>(plugin));
 	}
 	ui.FilterCombo->addItem("All Files (*)");
 }
@@ -148,8 +148,8 @@ QStringList FileSelectorWidget::selectedFiles()
 FilePluginInterface* FileSelectorWidget::selectedPlugin()
 {
 	// Get selected filter from combo box
-	FilePluginInterface* interface = (FilePluginInterface*) VariantPointer<FilePluginInterface>(ui.FilterCombo->itemData(ui.FilterCombo->currentIndex()));
-	return interface;
+	FilePluginInterface* plugin = (FilePluginInterface*) VariantPointer<FilePluginInterface>(ui.FilterCombo->itemData(ui.FilterCombo->currentIndex()));
+	return plugin;
 }
 
 /*
@@ -285,9 +285,9 @@ void FileSelectorWidget::on_FilesEdit_textChanged(QString textChanged)
 void FileSelectorWidget::on_FilterCombo_currentIndexChanged(int index)
 {
 	// Grab data for selected item
-	FilePluginInterface* interface = (FilePluginInterface*) VariantPointer<FilePluginInterface>(ui.FilterCombo->itemData(index));
+	FilePluginInterface* plugin = (FilePluginInterface*) VariantPointer<FilePluginInterface>(ui.FilterCombo->itemData(index));
 
-	if (!interface)
+	if (!plugin)
 	{
 		// Unrecognised interface, or the All Files entry, so remove any filtering from the file system model
 		fileSystemModel_.setNameFilters(QStringList());
@@ -297,12 +297,12 @@ void FileSelectorWidget::on_FilterCombo_currentIndexChanged(int index)
 	{
 		// Add extensions and exact names to the names filters
 		QStringList nameFilters;
-		for (int n=0; n<interface->extensions().count(); ++n) nameFilters << "*." + interface->extensions().at(n);
-		for (int n=0; n<interface->exactNames().count(); ++n) nameFilters << interface->exactNames().at(n);
+		for (int n=0; n< plugin->extensions().count(); ++n) nameFilters << "*." + plugin->extensions().at(n);
+		for (int n=0; n< plugin->exactNames().count(); ++n) nameFilters << plugin->exactNames().at(n);
 		fileSystemModel_.setNameFilters(nameFilters);
 
-		if (mode_ == FileSelectorWidget::SaveSingleMode) emit(pluginOptionsAvailable(interface->hasExportOptions()));
-		else emit(pluginOptionsAvailable(interface->hasImportOptions()));
+		if (mode_ == FileSelectorWidget::SaveSingleMode) emit(pluginOptionsAvailable(plugin->hasExportOptions()));
+		else emit(pluginOptionsAvailable(plugin->hasImportOptions()));
 	}
 
 	emit(pluginSelectionChanged());

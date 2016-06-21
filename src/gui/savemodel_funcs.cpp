@@ -44,9 +44,9 @@ AtenSaveModel::AtenSaveModel(QWidget* parent, QDir startingDirectory, const RefL
 void AtenSaveModel::on_PluginOptionsButton_clicked(bool checked)
 {
 	// Get current interface selected in FileSelector
-	FilePluginInterface* interface = ui.FileSelector->selectedPlugin();
-	if (!interface) return;
-	if (interface->hasExportOptions()) interface->showExportOptionsDialog();
+	FilePluginInterface* plugin = ui.FileSelector->selectedPlugin();
+	if (!plugin) return;
+	if (plugin->hasExportOptions()) plugin->showExportOptionsDialog();
 }
 
 void AtenSaveModel::on_SaveButton_clicked(bool checked)
@@ -107,6 +107,6 @@ FilePluginStandardExportOptions AtenSaveModel::standardExportOptions()
 void AtenSaveModel::updateStandardOptionsFromPlugin()
 {
 	// Get current plugin
-	FilePluginInterface* interface = ui.FileSelector->selectedPlugin();
-	if (!interface) return;
+	FilePluginInterface* plugin = ui.FileSelector->selectedPlugin();
+	if (!plugin) return;
 }

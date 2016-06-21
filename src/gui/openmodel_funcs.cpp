@@ -44,9 +44,9 @@ AtenOpenModel::AtenOpenModel(QWidget* parent, QDir startingDirectory, const RefL
 void AtenOpenModel::on_PluginOptionsButton_clicked(bool checked)
 {
 	// Get current interface selected in FileSelector
-	FilePluginInterface* interface = ui.FileSelector->selectedPlugin();
-	if (!interface) return;
-	if (interface->hasImportOptions()) interface->showImportOptionsDialog();
+	FilePluginInterface* plugin = ui.FileSelector->selectedPlugin();
+	if (!plugin) return;
+	if (plugin->hasImportOptions()) plugin->showImportOptionsDialog();
 }
 
 void AtenOpenModel::on_OpenButton_clicked(bool checked)
@@ -119,9 +119,9 @@ FilePluginStandardExportOptions AtenOpenModel::standardExportOptions()
 void AtenOpenModel::updateStandardOptionsFromPlugin()
 {
 	// Get current plugin
-	FilePluginInterface* interface = ui.FileSelector->selectedPlugin();
-	if (!interface) return;
+	FilePluginInterface* plugin = ui.FileSelector->selectedPlugin();
+	if (!plugin) return;
 
 	// Set zmapping combo
-	ui.ZMappingCombo->setCurrentIndex(interface->standardOptions().zMappingType());
+	ui.ZMappingCombo->setCurrentIndex(plugin->standardOptions().zMappingType());
 }

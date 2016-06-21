@@ -528,7 +528,7 @@ class Aten
 	 */
 	private:
 	// Process objects created on import
-	void processImportedObjects( FilePluginInterface* interface, QString filename );
+	void processImportedObjects(FilePluginInterface* plugin, QString filename);
 
 	public:
 	// Import model (if it is not loaded already)

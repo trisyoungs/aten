@@ -35,7 +35,7 @@ class MOPACFilePluginCommon
 {
 	public:
 	// Read single MOPAC model from file
-	static bool readMOPACModel(FilePluginInterface* interface, FileParser& parser, const FilePluginStandardImportOptions standardOptions, Model* targetModel);
+	static bool readMOPACModel(FilePluginInterface* plugin, FileParser& parser, const FilePluginStandardImportOptions standardOptions, Model* targetModel);
 };
 
 ATEN_END_NAMESPACE

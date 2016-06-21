@@ -27,7 +27,7 @@
 ATEN_USING_NAMESPACE
 
 // Read single XYZ model from file
-bool MOPACFilePluginCommon::readMOPACModel(FilePluginInterface* interface, FileParser& parser, const FilePluginStandardImportOptions standardOptions, Model* targetModel)
+bool MOPACFilePluginCommon::readMOPACModel(FilePluginInterface* plugin, FileParser& parser, const FilePluginStandardImportOptions standardOptions, Model* targetModel)
 {
 	// Discard keyword lines.
 	// A '+' in a line indicates that another line of keywords will follow.
@@ -77,7 +77,7 @@ bool MOPACFilePluginCommon::readMOPACModel(FilePluginInterface* interface, FileP
 		}
 		else
 		{
-			i = interface->createAtom(targetModel, parser.argc(0), parser.arg3d(1));
+			i = plugin->createAtom(targetModel, parser.argc(0), parser.arg3d(1));
 			i->setCharge(parser.argd(4));
 		}
 	}

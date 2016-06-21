@@ -48,6 +48,9 @@ Aten::Aten() : commands_(*this)
 	Tree::setAten(this);
 	ElementMap::initialise(this);
 
+	// Adjust number of accessible array elements for ElementsMap of AtenVariable (wasn't available until now)
+	AtenVariable::accessorData[AtenVariable::ElementsMap].arraySize = ElementMap::nElements();
+
 	// Models
 	modelId_ = 0;
 	targetModelList_ = Aten::MainModelList;

@@ -26,22 +26,22 @@
 ATEN_USING_NAMESPACE
 
 // Process objects created on import
-void Aten::processImportedObjects(FilePluginInterface* interface, QString filename)
+void Aten::processImportedObjects(FilePluginInterface* plugin, QString filename)
 {
 	// Parent Models
-	while (interface->createdModels().first())
+	while (plugin->createdModels().first())
 	{
-		Model* m = interface->createdModels().takeFirst();
+		Model* m = plugin->createdModels().takeFirst();
 		m->setType(Model::ParentModelType);
 
 		// Set source filename and plugin interface used
 		m->setFilename(filename);
-		m->setPlugin(interface);
+		m->setPlugin(plugin);
 
 		// Do various necessary calculations
-		if (interface->standardOptions().coordinatesInBohr()) m->bohrToAngstrom();
+		if (plugin->standardOptions().coordinatesInBohr()) m->bohrToAngstrom();
 		m->renumberAtoms();
-		if (!interface->standardOptions().keepView()) m->resetView(atenWindow()->ui.MainView->width(), atenWindow()->ui.MainView->height());
+		if (!plugin->standardOptions().keepView()) m->resetView(atenWindow()->ui.MainView->width(), atenWindow()->ui.MainView->height());
 		m->calculateMass();
 		m->selectNone();
 
@@ -67,7 +67,7 @@ void Aten::processImportedObjects(FilePluginInterface* interface, QString filena
 	}
 
 	// Trajectory frames
-	RefList<Model,int> createdFrames = interface->createdFrames();
+	RefList<Model,int> createdFrames = plugin->createdFrames();
 	for (RefListItem<Model,int>* ri = createdFrames.first(); ri != NULL; ri = ri->next)
 	{
 		Model* frame = ri->item;
@@ -82,15 +82,15 @@ void Aten::processImportedObjects(FilePluginInterface* interface, QString filena
 	}
 
 	// Grids
-	RefList<Grid,int> createdGrids = interface->createdGrids();
+	RefList<Grid,int> createdGrids = plugin->createdGrids();
 	for (RefListItem<Grid,int>* ri = createdGrids.first(); ri != NULL; ri = ri->next)
 	{
 		Grid* g = ri->item;
 
 		// Set source filename and plugin interface used
-		if (interface->standardOptions().coordinatesInBohr()) g->bohrToAngstrom();
+		if (plugin->standardOptions().coordinatesInBohr()) g->bohrToAngstrom();
 		g->setFilename(filename);
-		g->setPlugin(interface);
+		g->setPlugin(plugin);
 	}
 
 }
@@ -132,25 +132,25 @@ bool Aten::importModel(QString filename, FilePluginInterface* plugin, FilePlugin
 	if (plugin != NULL)
 	{
 		// Create an instance of the plugin, and open an input file and set options
-		FilePluginInterface* interface = plugin->createInstance();
-		interface->setStandardOptions(standardOptions);
-		interface->setOptions(pluginOptions);
-		if (!interface->openInput(filename))
+		FilePluginInterface* pluginInterface = plugin->createInstance();
+		pluginInterface->setStandardOptions(standardOptions);
+		pluginInterface->setOptions(pluginOptions);
+		if (!pluginInterface->openInput(filename))
 		{
 			Messenger::exit("Aten::importModel");
 			return false;
 		}
 
-		if (interface->importData())
+		if (pluginInterface->importData())
 		{
-			processImportedObjects(interface, filename);
+			processImportedObjects(pluginInterface, filename);
 
 			ReturnValue rv = filename;
 			atenWindow_->ui.HomeFileOpenButton->callPopupMethod("addRecentFile", rv);
 			result = true;
 		}
 
-		interface->closeFiles();
+		pluginInterface->closeFiles();
 	}
 	else Messenger::error("Couldn't determine a suitable plugin to load the file '%s'.", qPrintable(filename));
 
@@ -196,26 +196,26 @@ bool Aten::exportModel(Model* sourceModel, QString filename, FilePluginInterface
 		if (nTypeExportMappings() > 0) typeExportMapping_ = true;
 
 		// Create an instance of the plugin, and set options and the output file
-		FilePluginInterface* interface = plugin->createInstance();
-		if (!interface->openOutput(filename))
+		FilePluginInterface* pluginInterface = plugin->createInstance();
+		if (!pluginInterface->openOutput(filename))
 		{
 			Messenger::exit("Aten::exportModel");
 			return false;
 		}
-		interface->setStandardOptions(standardOptions);
-		interface->setOptions(pluginOptions);
-		interface->setParentModel(sourceModel);
-		if (interface->exportData())
+		pluginInterface->setStandardOptions(standardOptions);
+		pluginInterface->setOptions(pluginOptions);
+		pluginInterface->setParentModel(sourceModel);
+		if (pluginInterface->exportData())
 		{
 			// Set the model's (potentially new) filename and plugin
 			sourceModel->setFilename(filename);
-			sourceModel->setPlugin(plugin);
+			sourceModel->setPlugin(pluginInterface);
 			sourceModel->updateSavePoint();
 
 			// Done - tidy up
-			interface->closeFiles();
+			pluginInterface->closeFiles();
 
-			Messenger::print("Model '%s' saved to file '%s' (%s)", qPrintable(sourceModel->name()), qPrintable(filename), qPrintable(plugin->name()));
+			Messenger::print("Model '%s' saved to file '%s' (%s)", qPrintable(sourceModel->name()), qPrintable(filename), qPrintable(pluginInterface->name()));
 		}
 		else
 		{
@@ -252,26 +252,26 @@ bool Aten::importGrid(Model* targetModel, QString filename, FilePluginInterface*
 	if (plugin == NULL) plugin = pluginStore_.findFilePlugin(PluginTypes::GridFilePlugin, PluginTypes::ImportPlugin, filename);
 	if (plugin != NULL)
 	{
-		FilePluginInterface* interface = plugin->createInstance();
-		if (!interface->openInput(filename))
+		FilePluginInterface* pluginInterface = plugin->createInstance();
+		if (!pluginInterface->openInput(filename))
 		{
 			Messenger::exit("Aten::importGrid");
 			return false;
 		}
-		interface->setStandardOptions(standardOptions);
-		interface->setOptions(pluginOptions);
-		interface->setParentModel(targetModel->parent() ? targetModel->parent() : targetModel);
-		interface->setTargetModel(targetModel);
-		if (interface->importData())
+		pluginInterface->setStandardOptions(standardOptions);
+		pluginInterface->setOptions(pluginOptions);
+		pluginInterface->setParentModel(targetModel->parent() ? targetModel->parent() : targetModel);
+		pluginInterface->setTargetModel(targetModel);
+		if (pluginInterface->importData())
 		{
-			processImportedObjects(interface, filename);
+			processImportedObjects(pluginInterface, filename);
 
 			ReturnValue rv = filename;
 			atenWindow_->ui.GridsManageOpenButton->callPopupMethod("addRecentFile", rv);
 			result = true;
 		}
 
-		interface->closeFiles();
+		pluginInterface->closeFiles();
 	}
 	else Messenger::error("Couldn't determine a suitable plugin to load the file '%s'.", qPrintable(filename));
 
@@ -293,18 +293,18 @@ bool Aten::importTrajectory(Model* targetModel, QString filename, FilePluginInte
 	if (plugin == NULL) plugin = pluginStore_.findFilePlugin(PluginTypes::TrajectoryFilePlugin, PluginTypes::ImportPlugin, filename);
 	if (plugin != NULL)
 	{
-		FilePluginInterface* interface = plugin->createInstance();
-		if (!interface->openInput(filename))
+		FilePluginInterface* pluginInterface = plugin->createInstance();
+		if (!pluginInterface->openInput(filename))
 		{
 			Messenger::exit("Aten::importTrajectory");
 			return false;
 		}
-		interface->setStandardOptions(standardOptions);
-		interface->setOptions(pluginOptions);
-		interface->setParentModel(targetModel);
+		pluginInterface->setStandardOptions(standardOptions);
+		pluginInterface->setOptions(pluginOptions);
+		pluginInterface->setParentModel(targetModel);
 
 		// Call the importData() function of the interface - this will read any header information present in the file before the first frame
-		if (!interface->importData())
+		if (!pluginInterface->importData())
 		{
 			targetModel->setRenderSource(Model::ModelSource);
 			targetModel->clearTrajectory();
@@ -312,10 +312,10 @@ bool Aten::importTrajectory(Model* targetModel, QString filename, FilePluginInte
 		}
 		else
 		{
-			processImportedObjects(interface, filename);
+			processImportedObjects(pluginInterface, filename);
 
 			targetModel->setRenderSource(Model::TrajectorySource);
-			targetModel->setTrajectoryPlugin(interface);
+			targetModel->setTrajectoryPlugin(pluginInterface);
 
 			result = true;
 		}
@@ -346,11 +346,11 @@ bool Aten::importExpression(QString fileName, FilePluginInterface* plugin, FileP
 			return false;
 		}
 
-		FilePluginInterface* interface = plugin->createInstance();
-		interface->setStandardOptions(standardOptions);
-		interface->setOptions(pluginOptions);
+		FilePluginInterface* pluginInterface = plugin->createInstance();
+		pluginInterface->setStandardOptions(standardOptions);
+		pluginInterface->setOptions(pluginOptions);
 		FileParser fileParser(parser);
-		if (interface->importData())
+		if (pluginInterface->importData())
 		{
 			result = true;
 		}

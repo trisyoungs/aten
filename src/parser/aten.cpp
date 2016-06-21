@@ -92,7 +92,7 @@ void AtenVariable::nodePrint(int offset, const char* prefix)
 
 // Accessor data
 Accessor AtenVariable::accessorData[AtenVariable::nAccessors] = {
-	{ "elements",	VTypes::ElementData,		ElementMap::nElements(), true },
+	{ "elements",	VTypes::ElementData,		0, true },  /* Actual nElements will be set once ElementMap is initialised */
 	{ "frame",	VTypes::ModelData,		0, true },
 	{ "mc",		VTypes::MonteCarloData,		0, true },
 	{ "model",	VTypes::ModelData,		0, true },
