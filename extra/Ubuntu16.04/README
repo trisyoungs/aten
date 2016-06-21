@@ -1,0 +1,13 @@
+Notes for building on Ubuntu 16.04
+==================================
+
+Building
+--------
+Check out / unpack the source to a directory of your choice, and descend into that directory.
+The package build files are stored in extra/Ubuntu16.04, so create a symbolic link to this directory:
+
+bob@pc:~> ln -s extra/Ubuntu16.04 ./debian
+
+Now run debuild:
+
+bob@pc:~> debuild -uc -us -b
