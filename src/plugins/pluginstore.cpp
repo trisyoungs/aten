@@ -163,16 +163,16 @@ FilePluginInterface* PluginStore::findFilePlugin(PluginTypes::FilePluginCategory
 	// Loop over loaded plugins of the specified category
 	for (RefListItem<FilePluginInterface,int>* ri = filePlugins_[category].first(); ri != NULL; ri = ri->next)
 	{
-		FilePluginInterface* interface = ri->item;
+		FilePluginInterface* plugin = ri->item;
 
 		// If an import plugin was requested, and this plugin can't import anything, continue
-		if ((type == PluginTypes::ImportPlugin) && (!interface->canImport())) continue;
+		if ((type == PluginTypes::ImportPlugin) && (!plugin->canImport())) continue;
 
 		// If an export plugin was requested, and this plugin can't export anything, continue
-		if ((type == PluginTypes::ExportPlugin) && (!interface->canExport())) continue;
+		if ((type == PluginTypes::ExportPlugin) && (!plugin->canExport())) continue;
 
 		// Perform checks to see if the plugin is related to this file
-		if (interface->isRelatedToFile(filename)) return interface;
+		if (plugin->isRelatedToFile(filename)) return plugin;
 	}
 
 	return NULL;
@@ -185,16 +185,16 @@ FilePluginInterface* PluginStore::findFilePluginByNickname(PluginTypes::FilePlug
 	// Loop over loaded plugins of the specified category
 	for (RefListItem<FilePluginInterface,int>* ri = filePlugins_[category].first(); ri != NULL; ri = ri->next)
 	{
-		FilePluginInterface* interface = ri->item;
+		FilePluginInterface* plugin = ri->item;
 
 		// If an import plugin was requested, and this plugin can't import anything, continue
-		if ((type == PluginTypes::ImportPlugin) && (!interface->canImport())) continue;
+		if ((type == PluginTypes::ImportPlugin) && (!plugin->canImport())) continue;
 
 		// If an export plugin was requested, and this plugin can't export anything, continue
-		if ((type == PluginTypes::ExportPlugin) && (!interface->canExport())) continue;
+		if ((type == PluginTypes::ExportPlugin) && (!plugin->canExport())) continue;
 
 		// Perform checks to see if the plugin is related to this file
-		if (interface->nickname() == nickname) return interface;
+		if (plugin->nickname() == nickname) return plugin;
 	}
 
 	return NULL;

@@ -88,6 +88,7 @@ void Aten::processImportedObjects(FilePluginInterface* interface, QString filena
 		Grid* g = ri->item;
 
 		// Set source filename and plugin interface used
+		if (interface->standardOptions().coordinatesInBohr()) g->bohrToAngstrom();
 		g->setFilename(filename);
 		g->setPlugin(interface);
 	}
