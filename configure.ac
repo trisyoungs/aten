@@ -45,6 +45,10 @@ if test "$with_checks" = "yes"; then
   CHECK_CFLAGS="-DCHECKS"
 fi
 
+# Local deployment of plugins (to data/plugins)
+AC_ARG_WITH([localdeploy], [AC_HELP_STRING([--with-localdeploy], [Enable local deployment of plugins [default="no"]])], [with_localdeploy="yes"], [with_localdeploy="no"])
+AM_CONDITIONAL([LOCALDEPLOY], [test "$with_localdeploy" = "yes"])
+
 # Readline include dir
 RLINCDIR=""
 AC_ARG_WITH([readline-includes],[AC_HELP_STRING([--with-readline-includes=<dir>],

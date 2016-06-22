@@ -8,6 +8,8 @@ noinst_HEADERS = pluginstore.h plugintypes.h
 
 AM_CPPFLAGS = -I${top_srcdir}/src @ATEN_INCLUDES@ @ATEN_CFLAGS@
 
+if LOCALDEPLOY
+
 .PHONY: deploy-plugins undeploy-plugins
 
 deploy-plugins: $(SUBDIRS)
@@ -32,3 +34,5 @@ undeploy-plugins:
 all-local:: deploy-plugins
 
 clean-local:: undeploy-plugins
+
+endif

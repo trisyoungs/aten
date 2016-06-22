@@ -5,8 +5,6 @@ Undo/Redo:
   * Add Grid-related undo/redo (e.g. title changes, colour etc.)
 Rename commands for consistency - e.g. newFF to newForcefield?
 Ato export format is incorrect if nrestraints == 0 (i.e. for single atoms) since newline is not printed.
-Plugin Implementation
-o DL_POLY trajectory cannot be properly loaded without a model containing the correct atoms - add the ability to create a local, temporary model in the filter, and store atom information in this in the readHeader() function. Then could update modelTemplate to take a model pointer as an optional argument. Does this mean we should rewrite the language to properly use pointer specifications?
 Trajectory handling:
 o Inherit generates a crash when at first frame??
 Intelligent Select - add support for selection by type name (e.g. O*, OW etc.).
@@ -39,7 +37,7 @@ GUI TODO
 Need to shrink used button space when window is not large enough to display all widgets in panel.
 Sort out remaining icons!
 Colour Selector:
-o Need widget that is ebeddable as a QMenuAction* (for atom context menu)
+o Need widget that is embeddable as a QMenuAction* (for atom context menu)
 o Need simple button class (essentially a specific TMenuButton for ColourPopup) for Glyphs popup etc.
 Button to calculate / show total charge in selection.
 Add Calculate tool to work out centre of geometry/mass.
