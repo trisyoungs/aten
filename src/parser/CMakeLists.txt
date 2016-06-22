@@ -118,4 +118,4 @@ target_include_directories(parser PRIVATE
   ${FREETYPE_INCLUDE_DIRS}
 )
 
-target_link_libraries(parser gui) 
+target_link_libraries(parser treegui) 
