@@ -57,6 +57,10 @@ if(WIN32)
     ${GLEXT_INCLUDE_DIRS}
   )
 
+  # Request dynamic lookup of symbols in shared library objects
+  set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -undefined dynamic_lookup")
+  set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -undefined dynamic_lookup")
+
   # Add global NOMINMAX define for Windows systems, and inhibit console creation
   ADD_DEFINITIONS("-DNOMINMAX")
   SET(GUI_TYPE WIN32)
