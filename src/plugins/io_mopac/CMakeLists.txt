@@ -5,12 +5,13 @@ set(mopaccontrol_MOC_HDRS
 QT5_WRAP_CPP(mopaccontrol_MOC_SRCS ${mopaccontrol_MOC_HDRS} OPTIONS -I${PROJECT_SOURCE_DIR}/src)
 
 SET(mopaccontrol_UIS
- controlimportoptions.ui 
+  controlexportoptions.ui 
 )
-QT5_WRAP_UI(mopaccontrol_UIS_H ${xyz_UIS})
+QT5_WRAP_UI(mopaccontrol_UIS_H ${mopaccontrol_UIS})
 
 add_library(mopaccontrol MODULE
   mopaccontrol_funcs.cpp
+  controlexportoptions_funcs.cpp
   common.cpp
   ${mopaccontrol_MOC_SRCS}
   ${mopaccontrol_UIS_H}
