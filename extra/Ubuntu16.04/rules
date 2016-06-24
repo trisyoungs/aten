@@ -23,7 +23,7 @@ build-stamp:
 	./autogen.sh
 
 	# Configure the build
-	./configure
+	./configure --with-qtmoc="moc" --with-qtuic="uic" --with-qtrcc="rcc"
 	
 	# Make the binary
 	$(MAKE)

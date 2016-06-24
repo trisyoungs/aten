@@ -103,8 +103,6 @@ bool XYZModelPlugin::importData()
 {
 	int nModels = 0;
 	bool result, readAsTrajectory = false;
-	Model* parentModel = NULL;
-	Model* targetModel = NULL;
 
 	// Read data - first model in file is always the parent (regardless of whether we're reading it as a trajectory or not)
 	do
@@ -115,37 +113,36 @@ bool XYZModelPlugin::importData()
 			readAsTrajectory = true;
 
 			// Copy the parent model into the first frame of the trajectory
-			targetModel = parentModel->addTrajectoryFrame();
-			targetModel->copy(parentModel);
+			createFrame();
+			targetModel()->copy(parentModel());
 		}
 
 		// Prepare new model
 		if (readAsTrajectory)
 		{
 			// Check parent model pointer
-			if (!parentModel)
+			if (!parentModel())
 			{
 				Messenger::error("Error in XYZ plugin - parentModel pointer is NULL.");
 				return false;
 			}
-			targetModel = parentModel->addTrajectoryFrame();
+			createFrame();
 		}
 		else
 		{
 			// Reading as individual models, so just create a new one
 			// Make a copy of it in 'parentModel', in case we switch to trajectory creation
-			targetModel = createModel();
-			parentModel = targetModel;
+			createModel();
 		}
 
 		// Read in model data
-		result = XYZFilePluginCommon::readXYZModel(this, fileParser_, targetModel);
+		result = XYZFilePluginCommon::readXYZModel(this, fileParser_, targetModel());
 
 		if (!result)
 		{
 			// Failed, so remove model (or frame)
-			if (readAsTrajectory) parentModel->removeTrajectoryFrame(targetModel);
-			else discardModel(parentModel);
+			if (readAsTrajectory) discardFrame(targetModel());
+			else discardModel(parentModel());
 
 			return false;
 		}

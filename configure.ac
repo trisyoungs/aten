@@ -105,7 +105,6 @@ if test "x$with_qt" = "x"; then
   PKG_CHECK_MODULES(QTWIDGETS, Qt5Widgets >= 5.0.0)
 fi
 ATEN_LDLIBS="$FTGL_LIBS $FREETYPE_LIBS $QTGUI_LIBS $QTOPENGL_LIBS -lreadline -lGL -lfreetype"
-ATEN_LDFLAGS="-rdynamic"
 ATEN_CFLAGS="-fPIC $CHECK_CFLAGS $CXXFLAGS"
 ATEN_INCLUDES=" $FREETYPE_CFLAGS $QTGUI_CFLAGS $QTWIDGETS_CFLAGS -I$RLINCDIR"
 
@@ -164,6 +163,7 @@ src/plugins/io_mdlmol/Makefile
 src/plugins/io_mopac/Makefile
 src/plugins/io_msi/Makefile
 src/plugins/io_pdb/Makefile
+src/plugins/io_rmcprofile/Makefile
 src/plugins/io_siesta/Makefile
 src/plugins/io_sybylmol2/Makefile
 src/plugins/io_vfield/Makefile
