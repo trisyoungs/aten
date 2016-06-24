@@ -60,8 +60,8 @@ rm -rf $RPM_BUILD_ROOT
 /usr/share/pixmaps/aten.png
 /usr/bin/aten
 /usr/share/aten/
-%{_libexecdir}/plugins/*.so
-%exclude %{_libexecdir}/plugins/*.la
+%{_libdir}/aten/plugins/*.so
+%exclude %{_libdir}/aten/plugins/*.la
 
 %changelog
 * Wed Apr 02 2008 Tristan Youngs <tris@projectaten.net> 
