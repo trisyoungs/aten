@@ -59,8 +59,7 @@ void AtenWindow::updateGridsPanel(Model* sourceModel)
 
 	updateGridInformation(currentGrid);
 
-	// ATEN2 TODO ENDOFFILTERS
-// 	ui.GridsManageOpenButton->setEnabled(!aten_.fileDialogFilters(FilterData::GridImport).isEmpty());
+	ui.GridsManageOpenButton->setEnabled(aten_.pluginStore().nFilePlugins(PluginTypes::GridFilePlugin, PluginTypes::ImportPlugin) > 0);
 	ui.GridsManageRemoveButton->setEnabled(ui.GridsList->currentRow() != -1);
 
 	Messenger::exit("AtenWindow::updateGridPanel");
@@ -128,7 +127,7 @@ void AtenWindow::on_GridsManageOpenButton_clicked(bool checked)
 		// Open model(s) selected in dialog
 		QStringList filesToLoad = openGridDialog_.selectedFilenames();
 		FilePluginInterface* plugin = openGridDialog_.selectedPlugin();
-		for (int n=0; n<filesToLoad.count(); ++n) aten_.importModel(filesToLoad.at(n), plugin, openGridDialog_.standardImportOptions());
+		for (int n=0; n<filesToLoad.count(); ++n) aten_.importGrid(aten_.currentModelOrFrame(), filesToLoad.at(n), plugin, openGridDialog_.standardImportOptions());
 
 		updateWidgets(AtenWindow::AllTarget);
 	}

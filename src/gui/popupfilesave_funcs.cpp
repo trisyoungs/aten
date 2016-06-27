@@ -41,8 +41,7 @@ void FileSavePopup::updateControls()
 	// Get current model
 	Model* currentModel = parent_.aten().currentModelOrFrame();
 
-	// ATEN2 TODO ENDOFFILTERS
-// 	ui.OptionsButton->setEnabled(currentModel && currentModel->plugin() && (currentModel->plugin()->defaultDialog().nWidgets() != 0));
+	ui.OptionsButton->setEnabled(currentModel && currentModel->plugin() && (currentModel->plugin()->hasExportOptions()));
 	
 	refreshing_ = false;
 }
@@ -78,6 +77,5 @@ void FileSavePopup::on_OptionsButton_clicked(bool checked)
 	if (!currentModel) return;
 
 	if (currentModel->plugin() == NULL) Messenger::print("No plugin currently assigned to model '%s', so there are no export options.", qPrintable(currentModel->name()));
-	// ATEN2 TODO ENDOFFILTERS
-// 	else currentModel->plugin()->defaultDialog().execute();
+	else currentModel->plugin()->showExportOptionsDialog();
 }

@@ -104,11 +104,6 @@ void FileAtenPopup::on_PreferencesButton_clicked(bool checked)
 void FileAtenPopup::on_ReloadPluginsButton_clicked(bool checked)
 {
 // 	parent_.aten().reloadFilters();
-	
-// 	if (parent_.aten().failedFilters().count() > 0)
-// 	{
-// 		QMessageBox::warning(this, "Aten", "Errors encountered while reloading filters - see message box for details.", QMessageBox::Ok);
-// 	}
 
 	// Hide popup
 	done();

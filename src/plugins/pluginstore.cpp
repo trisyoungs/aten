@@ -111,6 +111,18 @@ int PluginStore::nFilePlugins(PluginTypes::FilePluginCategory category, PluginTy
 	return count;
 }
 
+// Return total number of file plugins available
+int PluginStore::nFilePlugins() const
+{
+	int count = 0;
+	for (int n=0; n<PluginTypes::nFilePluginCategories; ++n)
+	{
+		count += nFilePlugins((PluginTypes::FilePluginCategory) n, PluginTypes::ImportPlugin);
+		count += nFilePlugins((PluginTypes::FilePluginCategory) n, PluginTypes::ExportPlugin);
+	}
+	return count;
+}
+
 // Show list of valid plugin nicknames
 void PluginStore::showFilePluginNicknames(PluginTypes::FilePluginCategory category, PluginTypes::FilePluginType type) const
 {

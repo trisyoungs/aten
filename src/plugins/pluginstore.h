@@ -69,6 +69,8 @@ class PluginStore
 	const RefList<FilePluginInterface,int>& filePlugins(PluginTypes::FilePluginCategory category) const;
 	// Return number of plugins of specified category and type
 	int nFilePlugins(PluginTypes::FilePluginCategory category, PluginTypes::FilePluginType type) const;
+	// Return total number of file plugins available
+	int nFilePlugins() const;
 	// Show list of valid plugin nicknames
 	void showFilePluginNicknames(PluginTypes::FilePluginCategory category, PluginTypes::FilePluginType type) const;
 	// Show all file plugins, by category, and their nicknames

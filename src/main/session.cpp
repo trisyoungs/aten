@@ -106,10 +106,6 @@ bool Aten::saveSession(QString filename)
 
 		// Atom selection
 		for (RefListItem<Atom,int>* ri = m->selection(); ri != NULL; ri = ri->next) parser.writeLineF("%s.select(%i);", qPrintable(modelVar), ri->item->id()+1);
-		
-		// Done - Finalise it
-		// ATEN2 TODO ENDOFFILTERS CHECK
-		parser.writeLineF("finaliseModel();");
 
 		// Grid data
 		for (Grid* g = m->grids(); g != NULL; g = g->next, ++gridId)
