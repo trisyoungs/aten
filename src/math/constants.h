@@ -68,6 +68,6 @@
 #define MAXGLYPHDATA 4
 
 // Maximum number of elements in periodic table
-#define MAXELEMENTS 120
+#define MAXELEMENTS 130
 
 #endif

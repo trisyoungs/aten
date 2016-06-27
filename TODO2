@@ -16,7 +16,6 @@ Add 'Reload' options to Grid context menu.
 Add context menu "Copy" and "Set" to TColourButtons.
 Add 'Relative' view lock option, alongside 'None' and 'Lock' (Follow)?
 Miller selection.
-Intelligent Select: prepended '+' is interpreted as NETA.
 Progress indicator jobs in GUI appear to be created even if they are short and not 'ready' to be shown yet.
 Speedup Disorder Builder??
 Implement 'factory' for common objects such as Atom & Bond, to save new'ing all the time (esp. for large systems).

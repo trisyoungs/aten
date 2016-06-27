@@ -228,25 +228,27 @@ int NetaParser::lex()
 		return c;
 	}
 	token += c;
+
 	// Similarly, if the next character is a bracket or double quotes, return immediately
 	char c2 = peekChar();
 	if ((c2 == '(') || (c2 == ')') || (c2 == ';') || (c2 == '{') || (c2 == '}') || (c2 == '"')) return c;
+
 	// If it is 'punctuation', add this second character to our operator and search for it
 	if (ispunct(c2))
 	{
 		c = getChar();
 		token += c;
-		Messenger::print(Messenger::Typing, "NETA : found symbol [%s]", qPrintable(token));
-		NetaSymbolToken st = (NetaSymbolToken) enumSearch("", nNetaSymbolTokens, NetaSymbolTokenKeywords, token);
+		if (!NetaParser::quiet()) Messenger::print(Messenger::Typing, "NETA : found symbol [%s]", qPrintable(token));
+		NetaSymbolToken st = (NetaSymbolToken) enumSearch("", nNetaSymbolTokens, NetaSymbolTokenKeywords, token, !NetaParser::quiet());
 		if (st != nNetaSymbolTokens) return NetaSymbolTokenValues[st];
-		else Messenger::print("Error: Unrecognised symbol found in input (%s).", qPrintable(token));
+		else if (!NetaParser::quiet()) Messenger::print("Error: Unrecognised symbol found in input (%s).", qPrintable(token));
  	}
 	else
 	{
 		// Make sure that this is a known symbol
 		if ((c == '$') || (c == '%') || (c == '&') || (c == '@') || (c == '?') || (c == ':'))
 		{
-			Messenger::print("Error: Unrecognised symbol found in input (%c).", c);
+			if (!NetaParser::quiet()) Messenger::print("Error: Unrecognised symbol found in input (%c).", c);
 		}
 		else return c;
 	}

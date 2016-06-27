@@ -117,7 +117,7 @@ void AtenWindow::on_SelectIntelligentTargetCombo_currentTextChanged(const QStrin
 		// First, try code (since it is the most complicated)
 		valid = true;
 		if (program.generateFromString(QString("Atom i; %1").arg(text), "SelectionCode", "Selection Code", true, true, true)) lastSelectionType_ = AtenWindow::LoopSelectType;
-		else if (NetaParser::createNeta(&neta, text, NULL, true)) lastSelectionType_ = AtenWindow::NETASelectType;
+		else if (NetaParser::createNeta(&neta, text, NULL, true) && neta.description()->innerNeta()) lastSelectionType_ = AtenWindow::NETASelectType;
 		else if (CommandNode::run(Commands::TestSelect, "c", qPrintable(text)).asBool()) lastSelectionType_ = AtenWindow::RangeSelectType;
 		else
 		{
