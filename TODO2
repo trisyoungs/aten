@@ -22,7 +22,18 @@ Speedup Disorder Builder??
 Implement 'factory' for common objects such as Atom & Bond, to save new'ing all the time (esp. for large systems).
 Panel for User tools, essentially loaded from scripts (plugins?) in a user's tools/X directory.
 Visualise toolbar, containing Glyph management, polyhedra etc.
-Add in RMCProfile plugins.
+Polymer builder.
+Colour by coordination number
+Vacancy atom (element)?
+Collapse cell tool.
+Tool to calculate / show total charge in selection.
+Calculate tool to work out centre of geometry/mass.
+
+Plugin TODO
+===========
+RMCProfile plugins.
+EPSR ato and mol plugins.
+POVray export.
 
 Graphics TODO
 =============
@@ -40,8 +51,6 @@ Sort out remaining icons!
 Colour Selector:
 o Need widget that is embeddable as a QMenuAction* (for atom context menu)
 o Need simple button class (essentially a specific TMenuButton for ColourPopup) for Glyphs popup etc.
-Button to calculate / show total charge in selection.
-Add Calculate tool to work out centre of geometry/mass.
 Add option to display ColourScale selector (e.g. for Grid colour buttons)
 Add Plot Orbital to Tools page (raising dialog from old GridsWidget)
 Add manual typing popup.

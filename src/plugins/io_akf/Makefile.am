@@ -1,6 +1,6 @@
 # Set plugin installation dir and define plugin targets
-pluginexecdir = ${pkglibdir}/plugins
-pluginexec_LTLIBRARIES = akf.la
+plugindir = @ATEN_PLUGINLIBDIR@
+plugin_LTLIBRARIES = akf.la
 
 # Rules
 .ui.lo:

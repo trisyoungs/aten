@@ -66,16 +66,15 @@ BUILDDIR="$with_build_dir"
 # Install Directory (used when packaging - should be '$PREFIX - $BUILDDIR')
 INSTALLDIR="/usr/local"
 AC_ARG_WITH([install-dir],[AC_HELP_STRING([--with-install-dir=<dir>],
-    [Specify 'clean' instal dir prefix, i.e. without any BUILDDIR [default="/usr/local"]])], ,
+    [Specify 'clean' install dir prefix, i.e. without any BUILDDIR [default="/usr/local"]])], ,
     [with_install_dir="/usr/local"])
 # If --prefix has been give, use this value by default
 if test "$prefix" != "NONE"; then
   INSTALLDIR="$prefix"
 fi
 
-if test "$with_install_dir" != "/usr/local"; then
-  INSTALLDIR="$with_install_dir"
-fi
+# Plugin Install Directory (libdir)
+ATEN_PLUGINLIBDIR="${libdir}/aten/plugins"
 
 # Freetype and FTGL
 PKG_CHECK_MODULES(FREETYPE, freetype2 >= 2.0)
@@ -111,6 +110,7 @@ ATEN_INCLUDES=" $FREETYPE_CFLAGS $QTGUI_CFLAGS $QTWIDGETS_CFLAGS -I$RLINCDIR"
 # Perform Makefile substitutions
 AC_SUBST(ATEN_LDLIBS)
 AC_SUBST(ATEN_LDFLAGS)
+AC_SUBST(ATEN_PLUGINLIBDIR)
 AC_SUBST(ATEN_CFLAGS)
 AC_SUBST(ATEN_INCLUDES)
 AC_SUBST(QTMOC)

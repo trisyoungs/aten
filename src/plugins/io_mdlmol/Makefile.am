@@ -1,5 +1,5 @@
 # Set plugin installation dir and define plugin targets
-pluginexecdir = ${pkglibdir}/plugins
+pluginexecdir = @ATEN_PLUGINLIBDIR@
 pluginexec_LTLIBRARIES = mdlmol.la
 
 # Rules

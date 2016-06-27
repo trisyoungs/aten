@@ -36,8 +36,8 @@ target_include_directories(rmcp3 PRIVATE
 # Meta-Objects
 set(rmcp6_MOC_HDRS
   rmcp6.hui
-  rmcp6importoptions.h
-  rmcp6exportoptions.h
+#  rmcp6importoptions.h
+#  rmcp6exportoptions.h
 )
 QT5_WRAP_CPP(rmcp6_MOC_SRCS ${rmcp6_MOC_HDRS} OPTIONS -I${PROJECT_SOURCE_DIR}/src)
 
