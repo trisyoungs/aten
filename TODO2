@@ -24,7 +24,6 @@ Panel for User tools, essentially loaded from scripts (plugins?) in a user's too
 Visualise toolbar, containing Glyph management, polyhedra etc.
 Polymer builder.
 Colour by coordination number
-Vacancy atom (element)?
 Collapse cell tool.
 Tool to calculate / show total charge in selection.
 Calculate tool to work out centre of geometry/mass.

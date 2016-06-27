@@ -49,6 +49,10 @@ fi
 AC_ARG_WITH([localdeploy], [AC_HELP_STRING([--with-localdeploy], [Enable local deployment of plugins [default="no"]])], [with_localdeploy="yes"], [with_localdeploy="no"])
 AM_CONDITIONAL([LOCALDEPLOY], [test "$with_localdeploy" = "yes"])
 
+# Turn off use of -rdynamic at link stage (occasionally required on OSX?)
+AC_ARG_WITH([nordynamic], [AC_HELP_STRING([--with-nordynamic], [Disable passing of -rdynamic at link time [default="no"]])], [with_nordynamic="yes"], [with_nordynamic="no"])
+AM_CONDITIONAL([NORDYNAMIC], [test "$with_nordynamic" = "yes"])
+
 # Readline include dir
 RLINCDIR=""
 AC_ARG_WITH([readline-includes],[AC_HELP_STRING([--with-readline-includes=<dir>],
@@ -103,8 +107,14 @@ if test "x$with_qt" = "x"; then
   PKG_CHECK_MODULES(QTOPENGL, Qt5OpenGL >= 5.0.0)
   PKG_CHECK_MODULES(QTWIDGETS, Qt5Widgets >= 5.0.0)
 fi
+
+# Finalise substitution strings
 ATEN_LDLIBS="$FTGL_LIBS $FREETYPE_LIBS $QTGUI_LIBS $QTOPENGL_LIBS -lreadline -lGL -lfreetype"
 ATEN_CFLAGS="-fPIC $CHECK_CFLAGS $CXXFLAGS"
+ATEN_LDFLAGS="$LDFLAGS"
+if test "$with_nordynamic" = "no"; then
+  ATEN_LDFLAGS+=" -rdynamic "
+fi
 ATEN_INCLUDES=" $FREETYPE_CFLAGS $QTGUI_CFLAGS $QTWIDGETS_CFLAGS -I$RLINCDIR"
 
 # Perform Makefile substitutions
