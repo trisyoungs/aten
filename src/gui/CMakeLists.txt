@@ -86,6 +86,7 @@ SET(gui_MOC_HDRS
   tmenubuttongroup.h
   tpopupwidget.hui
   trecentfiles.hui
+  tspacesaver.hui
   ttablewidget.hui
   ttabwidget.hui
   ttreewidget.hui
@@ -291,6 +292,7 @@ set(gui_SRCS
   tmenubutton_funcs.cpp
   tmenubuttongroup.cpp
   tpopupwidget_funcs.cpp
+  tspacesaver_funcs.cpp
   tdoublespindelegate_funcs.cpp
   texponentialspin_funcs.cpp
   tintegerspindelegate_funcs.cpp
