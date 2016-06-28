@@ -1,6 +1,6 @@
 /*
-	*** TSpaceSaver - Collapsible widget manager
-	*** src/gui/tspacesaver.hui
+	*** TDynamicLayout - Dynamic layout manager
+	*** src/gui/tdynamiclayout.hui
 	Copyright T. Youngs 2016-2016
 
 	This file is part of Aten.
@@ -19,41 +19,36 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_TSPACESAVER_H
-#define ATEN_TSPACESAVER_H
+#ifndef ATEN_TDYNAMICLAYOUT_H
+#define ATEN_TDYNAMICLAYOUT_H
 
-#include <QWidget>
+#include <QGridLayout>
 #include "templates/reflist.h"
 
 // Forward Declarations (Qt)
-class QResizeEvent;
+/* none */
 
-// Space saver widget
-class TSpaceSaver : public QWidget
+// Dynamic Layout
+class TDynamicLayout : public QGridLayout
 {
 	Q_OBJECT
 
 	public:
 	// Constructor
-	TSpaceSaver(QWidget* parent = 0);
+	TDynamicLayout(QWidget* parent = 0);
 
 
 	/*
 	 * Virtual Reimplementations
 	 */
-	protected:
-	void resizeEvent(QResizeEvent* event);
+
 
 	/*
 	 * Internal Data
 	 */
 	private:
-	// Reference list of all TSpaceSavers
-	static RefList<TSpaceSaver,int> spaceSavers_;
 
 	public:
-	// Begin monitoring and adjusting widgets according to available space
-	static void beginSpaceSaving();
 };
 
 #endif

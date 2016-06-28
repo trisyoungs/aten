@@ -1,0 +1,60 @@
+/*
+	*** TDynamicWidget - Collapsible widget manager
+	*** src/gui/tdynamicwidget.hui
+	Copyright T. Youngs 2016-2016
+
+	This file is part of Aten.
+
+	Aten is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	Aten is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#ifndef ATEN_TDYNAMICWIDGET_H
+#define ATEN_TDYNAMICWIDGET_H
+
+#include <QWidget>
+#include "templates/reflist.h"
+
+// Forward Declarations (Qt)
+class QResizeEvent;
+
+// Space saver widget
+class TDynamicWidget : public QWidget
+{
+	Q_OBJECT
+
+	public:
+	// Constructor
+	TDynamicWidget(QWidget* parent = 0);
+
+
+	/*
+	 * Virtual Reimplementations
+	 */
+	protected:
+	void resizeEvent(QResizeEvent* event);
+
+	/*
+	 * Internal Data
+	 */
+	private:
+	// Reference list of all TDynamicWidgets
+	static RefList<TDynamicWidget,int> dynamicWidgets_;
+
+	public:
+	// Begin monitoring and adjusting widgets according to available space
+	static void beginSpaceSaving();
+};
+
+#endif
+

@@ -7900,7 +7900,7 @@
           </item>
           <item row="0" column="0">
            <widget class="TSpaceSaver" name="widget" native="true">
-            <layout class="QGridLayout" name="gridLayout_2">
+            <layout class="QGridLayout" name="MrSpaceLayout">
              <property name="leftMargin">
               <number>0</number>
              </property>

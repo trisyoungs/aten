@@ -19,7 +19,7 @@ SUFFIXES: .ui .hui .qrc
 	rm $*.cpp
 
 clean-local:
-	-rm -f ui_* *.o icons.cpp tdoublespindelegate.cpp tintegerspindelegate.cpp tmenubutton.cpp tpopupwidget.cpp trecentfiles.cpp tspacesaver.cpp ttablewidget.cpp ttabwidget.cpp ttreewidget.cpp viewer.cpp moc_*.cpp
+	-rm -f ui_* *.o icons.cpp tdoublespindelegate.cpp tdynamiclayout.cpp tdynamicwidget.cpp tintegerspindelegate.cpp tmenubutton.cpp tpopupwidget.cpp trecentfiles.cpp ttablewidget.cpp ttabwidget.cpp ttreewidget.cpp viewer.cpp moc_*.cpp
 
 libtreegui_la_SOURCES = treegui.ui treegui_funcs.cpp
 
@@ -37,9 +37,9 @@ libgui_la_SOURCES += popupbuildaddatom_funcs.cpp popupbuildaddh_funcs.cpp popupb
 
 libgui_la_SOURCES += filedialog_funcs.cpp opengrid_funcs.cpp openmodel_funcs.cpp opentrajectory_funcs.cpp savemodel_funcs.cpp
 
-libgui_la_SOURCES += tcolourwheel.hui tdoublespindelegate.hui texponentialspin.hui tintegerspindelegate.hui tmenubutton.hui tpopupwidget.hui trecentfiles.hui tspacesaver.hui ttablewidget.hui ttabwidget.hui ttreewidget.hui viewer.hui
+libgui_la_SOURCES += tcolourwheel.hui tdoublespindelegate.hui tdynamiclayout.hui tdynamicwidget.hui texponentialspin.hui tintegerspindelegate.hui tmenubutton.hui tpopupwidget.hui trecentfiles.hui ttablewidget.hui ttabwidget.hui ttreewidget.hui viewer.hui
 
-libgui_la_SOURCES += viewer_extras.cpp viewer_funcs.cpp viewer_key.cpp viewer_model.cpp viewer_mouse.cpp viewer_offscreen.cpp viewer_scene.cpp viewer_useractions.cpp tdoublespindelegate_funcs.cpp tcolourwheel_funcs.cpp texponentialspin_funcs.cpp textratreewidgetitem_funcs.cpp tintegerspindelegate_funcs.cpp tmenubutton_funcs.cpp tmenubuttongroup.cpp tpopupwidget_funcs.cpp tspacesaver_funcs.cpp trecentfiles_funcs.cpp ttabwidget_funcs.cpp
+libgui_la_SOURCES += viewer_extras.cpp viewer_funcs.cpp viewer_key.cpp viewer_model.cpp viewer_mouse.cpp viewer_offscreen.cpp viewer_scene.cpp viewer_useractions.cpp tcolourwheel_funcs.cpp tdoublespindelegate_funcs.cpp tdynamiclayout_funcs.cpp tdynamicwidget_funcs.cpp texponentialspin_funcs.cpp textratreewidgetitem_funcs.cpp tintegerspindelegate_funcs.cpp tmenubutton_funcs.cpp tmenubuttongroup.cpp tpopupwidget_funcs.cpp trecentfiles_funcs.cpp ttabwidget_funcs.cpp
 
 #OLD FILES FOR UPDATING BEGIN HERE
 libgui_la_SOURCES += glyphs_funcs.cpp vibrations_funcs.cpp viewbasis_funcs.cpp vieweigenvector_funcs.cpp
