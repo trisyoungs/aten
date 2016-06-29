@@ -85,7 +85,11 @@ void Aten::ownModel(Model* model)
 {
 	Messenger::enter("Aten::ownModel");
 
-	if (targetModelList_ == Aten::MainModelList) models_.own(model);
+	if (targetModelList_ == Aten::MainModelList)
+	{
+		models_.own(model);
+		current_.m = model;
+	}
 	else fragments_.own(model);
 
 	// Disable undo/redo if its a fragment

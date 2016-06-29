@@ -85,12 +85,16 @@ void Aten::processImportedObjects(FilePluginInterface* plugin, QString filename)
 	RefList<Grid,int> createdGrids = plugin->createdGrids();
 	for (RefListItem<Grid,int>* ri = createdGrids.first(); ri != NULL; ri = ri->next)
 	{
-		Grid* g = ri->item;
+		Grid* grid = ri->item;
+		if (!grid) continue;
 
 		// Set source filename and plugin interface used
-		if (plugin->standardOptions().coordinatesInBohr()) g->bohrToAngstrom();
-		g->setFilename(filename);
-		g->setPlugin(plugin);
+		if (plugin->standardOptions().coordinatesInBohr()) grid->bohrToAngstrom();
+		grid->setFilename(filename);
+		grid->setPlugin(plugin);
+
+		// Set current object
+		current_.g = grid;
 	}
 
 }
@@ -124,6 +128,13 @@ bool Aten::importModel(QString filename, FilePluginInterface* plugin, FilePlugin
 	if (current_.m)
 	{
 		if ((current_.m->nAtoms() == 0) && (current_.m->filename().isEmpty()) && (!current_.m->isModified())) removeAfterLoad = current_.m;
+	}
+
+	// Does the file actually exist?
+	if (!QFile::exists(filename))
+	{
+		Messenger::error("Specified file '" + filename + "' does not exist.");
+		return false;
 	}
 
 	// If plugin == NULL then we must probe the file first to try and find out how to load it
@@ -247,6 +258,13 @@ bool Aten::importGrid(Model* targetModel, QString filename, FilePluginInterface*
 {
 	Messenger::enter("Aten::importGrid");
 
+	// Does the file actually exist?
+	if (!QFile::exists(filename))
+	{
+		Messenger::error("Specified file '" + filename + "' does not exist.");
+		return false;
+	}
+
 	// If plugin == NULL then we must probe the file first to try and find out how to load it
 	bool result = false;
 	if (plugin == NULL) plugin = pluginStore_.findFilePlugin(PluginTypes::GridFilePlugin, PluginTypes::ImportPlugin, filename);
@@ -283,6 +301,13 @@ bool Aten::importGrid(Model* targetModel, QString filename, FilePluginInterface*
 bool Aten::importTrajectory(Model* targetModel, QString filename, FilePluginInterface* plugin, FilePluginStandardImportOptions standardOptions, KVMap pluginOptions)
 {
 	Messenger::enter("Aten::importTrajectory");
+
+	// Does the file actually exist?
+	if (!QFile::exists(filename))
+	{
+		Messenger::error("Specified file '" + filename + "' does not exist.");
+		return false;
+	}
 
 	// Clear existing trajectory, if there is one
 	targetModel->setRenderSource(Model::ModelSource);
@@ -327,21 +352,28 @@ bool Aten::importTrajectory(Model* targetModel, QString filename, FilePluginInte
 }
 
 // Import expression
-bool Aten::importExpression(QString fileName, FilePluginInterface* plugin, FilePluginStandardImportOptions standardOptions, KVMap pluginOptions)
+bool Aten::importExpression(QString filename, FilePluginInterface* plugin, FilePluginStandardImportOptions standardOptions, KVMap pluginOptions)
 {
 	Messenger::enter("Aten::importExpression");
 
+	// Does the file actually exist?
+	if (!QFile::exists(filename))
+	{
+		Messenger::error("Specified file '" + filename + "' does not exist.");
+		return false;
+	}
+
 	// If plugin == NULL then we must probe the file first to try and find out how to load it
 	bool result = false;
-	if (plugin == NULL) plugin = pluginStore_.findFilePlugin(PluginTypes::ExpressionFilePlugin, PluginTypes::ImportPlugin, fileName);
+	if (plugin == NULL) plugin = pluginStore_.findFilePlugin(PluginTypes::ExpressionFilePlugin, PluginTypes::ImportPlugin, filename);
 	if (plugin != NULL)
 	{
 		// Create a LineParser to open the file, and encapsulate it in a FileParser to give to the interface
 		LineParser parser;
-		parser.openInput(fileName);
+		parser.openInput(filename);
 		if (!parser.isFileGoodForReading())
 		{
-			Messenger::error("Couldn't open file '%s' for reading.\n", qPrintable(fileName));
+			Messenger::error("Couldn't open file '%s' for reading.\n", qPrintable(filename));
 			Messenger::exit("Aten::importExpression");
 			return false;
 		}
@@ -357,7 +389,7 @@ bool Aten::importExpression(QString fileName, FilePluginInterface* plugin, FileP
 
 		parser.closeFiles();
 	}
-	else Messenger::error("Couldn't determine a suitable plugin to load the file '%s'.", qPrintable(fileName));
+	else Messenger::error("Couldn't determine a suitable plugin to load the file '%s'.", qPrintable(filename));
 
 	Messenger::exit("Aten::importExpression");
 	return result;
