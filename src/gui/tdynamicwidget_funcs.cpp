@@ -20,6 +20,7 @@
 */
 
 #include "gui/tdynamicwidget.hui"
+#include "gui/tdynamiclayout.hui"
 #include "gui/tmenubutton.hui"
 #include "base/messenger.h"
 #include <QLayout>
@@ -61,18 +62,18 @@ void TDynamicWidget::beginSpaceSaving()
 			continue;
 		}
 
+		// Create new dynamic layout for this widget
+		TDynamicLayout* dynamicLayout = new TDynamicLayout(layout->margin(), layout->spacing(), layout->spacing());
+
 		printf("Layout = %p  %s\n", layout, qPrintable(layout->objectName()));
 		printf("Layout has %i items\n", layout->count());
 
-		for (int n=0; n<layout->count(); ++n)
-		{
-			QLayoutItem* item = layout->itemAt(n);
-			printf("Child %i %p\n", n, item);
+		// Transfer widgets to new dynamic layout
+		QLayoutItem* item;
+		while (item = layout->takeAt(0)) dynamicLayout->addItem(item);
 
-			// Attempt to cast the child into a TMenuButton
-			TMenuButton* button = qobject_cast<TMenuButton*> (item->widget());
-			if (button) printf("Found TMenuButton '%s'\n", qPrintable(button->text()));
-		}
-		
+		// Delete the old layout, and apply the new one
+		delete layout;
+		dynamicWidget->setLayout(dynamicLayout);
 	}
 }

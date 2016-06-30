@@ -22,33 +22,71 @@
 #ifndef ATEN_TDYNAMICLAYOUT_H
 #define ATEN_TDYNAMICLAYOUT_H
 
-#include <QGridLayout>
+#include <QLayout>
 #include "templates/reflist.h"
 
 // Forward Declarations (Qt)
 /* none */
 
 // Dynamic Layout
-class TDynamicLayout : public QGridLayout
+class TDynamicLayout : public QLayout
 {
 	Q_OBJECT
 
 	public:
-	// Constructor
-	TDynamicLayout(QWidget* parent = 0);
+	// Constructors
+	TDynamicLayout(QWidget* parent, int margin = -1, int hSpacing = -1, int vSpacing = -1);
+	TDynamicLayout(int margin = -1, int hSpacing = -1, int vSpacing = -1);
+	// Destructor
+	~TDynamicLayout();
 
 
 	/*
 	 * Virtual Reimplementations
 	 */
+	public:
+	// Add item to layout
+	void addItem(QLayoutItem* item);
+	// Return number of items in layout
+	int count() const;
+	// Return nth item of layout
+	QLayoutItem* itemAt(int index) const;
+	// Take nth item of layout
+	QLayoutItem* takeAt(int index);
+	// Return expanding directions
+	Qt::Orientations expandingDirections() const;
+	// Return minimum possible size for layout
+	QSize minimumSize() const;
+	// Set new geometry for the layout
+	void setGeometry(const QRect &rect);
+	// Return size hint
+	QSize sizeHint() const;
+   
+
+	/*
+	 * Layout Design Constants
+	 */
+	private:
+	// TMenuButton Icon Sizes
+	static int menuButtonIconSizeNormal_, menuButtonIconSizeSmall_, menuButtonIconSizeSmallest_;
 
 
 	/*
 	 * Internal Data
 	 */
 	private:
+	// List of widgets owned by the layout
+	QList<QLayoutItem*> items_;
+	// Horizontal spacing between items
+	int horizontalSpacing_;
+	// Vertical spacing between items
+	int verticalSpacing_;
+	// Preferred size of layout (updated when adding items)
+	QSize preferredSize_;
 
-	public:
+	private:
+	// Layout widgets
+	bool layoutWidgets(QRect area, bool calculateOnly = false);
 };
 
 #endif

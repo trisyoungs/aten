@@ -7899,7 +7899,7 @@
            </widget>
           </item>
           <item row="0" column="0">
-           <widget class="TSpaceSaver" name="widget" native="true">
+           <widget class="TDynamicWidget" name="widget" native="true">
             <layout class="QGridLayout" name="MrSpaceLayout">
              <property name="leftMargin">
               <number>0</number>
@@ -11044,9 +11044,9 @@
    <header>ttablewidget.hui</header>
   </customwidget>
   <customwidget>
-   <class>TSpaceSaver</class>
+   <class>TDynamicWidget</class>
    <extends>QWidget</extends>
-   <header>gui/tspacesaver.hui</header>
+   <header>gui/tdynamicwidget.hui</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
