@@ -46,8 +46,14 @@ FilePluginInterface* MSIModelPlugin::makeCopy()
  * Definition
  */
 
+// Return type of plugin
+PluginTypes::PluginType MSIModelPlugin::type() const
+{
+	return PluginTypes::FilePlugin;
+}
+
 // Return category of plugin
-PluginTypes::FilePluginCategory MSIModelPlugin::category() const
+int MSIModelPlugin::category() const
 {
 	return PluginTypes::ModelFilePlugin;
 }

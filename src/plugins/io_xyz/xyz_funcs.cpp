@@ -52,8 +52,14 @@ FilePluginInterface* XYZModelPlugin::makeCopy()
  * Definition
  */
 
+// Return type of plugin
+PluginTypes::PluginType XYZModelPlugin::type() const
+{
+	return PluginTypes::FilePlugin;
+}
+
 // Return category of plugin
-PluginTypes::FilePluginCategory XYZModelPlugin::category() const
+int XYZModelPlugin::category() const
 {
 	return PluginTypes::ModelFilePlugin;
 }

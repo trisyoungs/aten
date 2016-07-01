@@ -49,8 +49,14 @@ FilePluginInterface* RMCProfile3ModelPlugin::makeCopy()
  * XYZ Model Import / Export Plugin
  */
 
+// Return type of plugin
+PluginTypes::PluginType RMCProfile3ModelPlugin::type() const
+{
+	return PluginTypes::FilePlugin;
+}
+
 // Return category of plugin
-PluginTypes::FilePluginCategory RMCProfile3ModelPlugin::category() const
+int RMCProfile3ModelPlugin::category() const
 {
 	return PluginTypes::ModelFilePlugin;
 }

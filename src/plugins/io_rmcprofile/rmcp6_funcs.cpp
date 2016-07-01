@@ -51,8 +51,14 @@ FilePluginInterface* RMCProfile6ModelPlugin::makeCopy()
  * Definition
  */
 
+// Return type of plugin
+PluginTypes::PluginType RMCProfile6ModelPlugin::type() const
+{
+	return PluginTypes::FilePlugin;
+}
+
 // Return category of plugin
-PluginTypes::FilePluginCategory RMCProfile6ModelPlugin::category() const
+int RMCProfile6ModelPlugin::category() const
 {
 	return PluginTypes::ModelFilePlugin;
 }

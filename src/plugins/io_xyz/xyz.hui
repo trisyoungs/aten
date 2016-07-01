@@ -53,8 +53,10 @@ class XYZModelPlugin : public QObject, public FilePluginInterface
 	 * Definition
 	 */
 	public:
-	// Return category of plugin
-	PluginTypes::FilePluginCategory category() const;
+	// Return type of plugin
+	PluginTypes::PluginType type() const;
+ 	// Return category of plugin
+	int category() const;
 	// Return name of plugin
 	QString name() const;
 	// Return nickname of plugin

@@ -49,8 +49,14 @@ FilePluginInterface* XYZTrajectoryPlugin::makeCopy()
  * XYZ Model Import / Export Plugin
  */
 
+// Return type of plugin
+PluginTypes::PluginType XYZTrajectoryPlugin::type() const
+{
+	return PluginTypes::FilePlugin;
+}
+
 // Return category of plugin
-PluginTypes::FilePluginCategory XYZTrajectoryPlugin::category() const
+int XYZTrajectoryPlugin::category() const
 {
 	return PluginTypes::TrajectoryFilePlugin;
 }

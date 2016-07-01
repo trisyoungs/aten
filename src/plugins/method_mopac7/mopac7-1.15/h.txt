@@ -1,0 +1,2 @@
+libmopac7.h
+mopac7f2c.h

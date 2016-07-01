@@ -1,0 +1,502 @@
+      SUBROUTINE NLLSQ(X,N)
+      IMPLICIT DOUBLE PRECISION (A-H,O-Z)
+      INCLUDE 'SIZES'
+      COMMON /KEYWRD/ KEYWRD
+      CHARACTER*241 KEYWRD
+      DIMENSION X(*)
+      COMMON /MESAGE/ IFLEPO,IITER
+************************************************************************
+*
+*  NLLSQ IS A NON-DERIVATIVE, NONLINEAR LEAST-SQUARES MINIMIZER. IT USES
+*        BARTEL'S PROCEDURE TO MINIMIZE A FUNCTION WHICH IS A SUM OF
+*        SQUARES.
+*
+*    ON INPUT N    = NUMBER OF UNKNOWNS
+*             X    = PARAMETERS OF FUNCTION TO BE MINIMIZED.
+*
+*    ON EXIT  X    = OPTIMIZED PARAMETERS.
+*
+*    THE FUNCTION TO BE MINIMIZED IS "COMPFG". COMPFG MUST HAVE THE
+*    CALLING SEQUENCE
+*                  CALL COMPFG(XPARAM,.TRUE.,ESCF,.TRUE.,EFS,.TRUE.)
+*                  SSQ=DOT(EFS,EFS,N)
+*    WHERE   EFS  IS A VECTOR WHICH  COMPFG  FILLS WITH THE N INDIVIDUAL
+*                 COMPONENTS OF THE ERROR FUNCTION AT THE POINT X
+*            SSQ IS THE VALUE OF THE SUM OF THE  EFS  SQUARED.
+*    IN THIS FORMULATION OF NLLSQ M AND N ARE THE SAME.
+*    THE PRECISE DEFINITIONS OF THESE TWO QUANTITIES IS:
+*
+*     N = NUMBER OF PARAMETERS TO BE OPTIMIZED.
+*     M = NUMBER OF REFERENCE FUNCTIONS. M MUST BE GREATER THEN, OR
+*         EQUAL TO, N
+************************************************************************
+C     Q = ORTHOGONAL MATRIX   (M BY M)
+C     R = RIGHT-TRIANGULAR MATRIX   (M BY N)
+C     MXCNT(1) = MAX ALLOW OVERALL FUN EVALS
+C     MXCNT(2) = MAX ALLOW NO OF FNC EVALS PER LIN SEARCH
+C     TOLS1 = RELATIVE TOLERANCE ON X OVERALL
+C     TOLS2 = ABSOLUTE TOLERANCE ON X OVERALL
+C     TOLS5 = RELATIVE TOLERANCE ON X FOR LINEAR SEARCHES
+C     TOLS6 = ABSOLUTE TOLERANCE ON X FOR LINEAR SEARCHES
+C     NRST = NUMBER OF CYCLES BETWEEN SIDESTEPS
+C     **********
+C ***** Modified by Jiro Toyoda at 1994-05-25 *****
+C     COMMON /TIME  / TIME0
+      COMMON /TIMEC / TIME0
+C ***************************** at 1994-05-25 *****
+      COMMON /NLLSQI/ NCOUNT
+      COMMON /NUMSCF/ NSCF
+      DIMENSION Y(MAXPAR), EFS(MAXPAR), P(MAXPAR)
+      COMMON /LAST  / LAST
+      COMMON /TIMDMP/ TLEFT, TDUMP
+      COMMON /NLLCOM/ Q(MAXPAR,MAXPAR),R(MAXPAR,MAXPAR*2)
+      COMMON /NLLCO2/ DDDUM(6),EFSLST(MAXPAR),XLAST(MAXPAR),IIIUM(7)
+      LOGICAL MIDDLE, RESFIL, MINPRT, LOG
+      SAVE IXSO
+      EQUIVALENCE ( IIIUM(2), ICYC),(IIIUM(3), IRST),
+     1(IIIUM(4),JRST),
+     2(DDDUM(2),ALF), (DDDUM(3),SSQ),(DDDUM(4), PN)
+      DATA IXSO/0/
+      MIDDLE=(INDEX(KEYWRD,'RESTART') .NE. 0)
+      LOG=(INDEX(KEYWRD,'NOLOG') .EQ. 0)
+      IFLEPO=10
+C*
+      M=N
+C*
+      TOL2=4.D-1
+      IF(INDEX(KEYWRD,'GNORM') .NE. 0) THEN
+         TOL2=READA(KEYWRD,INDEX(KEYWRD,'GNORM'))
+         IF(TOL2.LT.0.01D0.AND.INDEX(KEYWRD,' LET').EQ.0)THEN
+            WRITE(6,'(/,A)')'  GNORM HAS BEEN SET TOO LOW, RESET TO 0
+     1.01'
+            TOL2=0.01D0
+         ENDIF
+      ENDIF
+      LAST=0
+      TOLS1=1.D-12
+      TOLS2=1.D-10
+      TOLS5=1.D-6
+      TOLS6=1.D-3
+      NRST=4
+      TLAST=TLEFT
+      MINPRT=.TRUE.
+      RESFIL=.FALSE.
+      TLEFT=TLEFT-SECOND()+TIME0
+C     **********
+C     SET UP COUNTERS AND SWITCHES
+C     **********
+      NTO=N/6
+      IFRTL=0
+      NSST=0
+      IF(IXSO.EQ.0) IXSO=N
+      NP1 = N+1
+      NP2 = N+2
+      ICYC = 0
+      IRST = 0
+      JRST = 1
+      EPS =TOLS5
+      T = TOLS6
+C     **********
+C     GET STARTING-POINT FUNCTION VALUE
+C     SET UP ESTIMATE OF INITIAL LINE STEP
+C     **********
+      IF(MIDDLE) THEN
+         CALL PARSAV(0,N,M)
+         NSCF=IIIUM(1)
+         CLOSE(13)
+         NCOUNT=IIIUM(5)
+         DO 10 I=1,N
+   10    X(I)=XLAST(I)
+         TIME1=SECOND()
+         IF(INDEX(KEYWRD,'1SCF') .NE. 0) THEN
+            IFLEPO=13
+            LAST=1
+            RETURN
+         ENDIF
+         GOTO 60
+      ENDIF
+      CALL COMPFG(X,.TRUE.,ESCF,.TRUE.,EFSLST,.TRUE.)
+      SSQ=DOT(EFSLST,EFSLST,N)
+      NCOUNT = 1
+   20 CONTINUE
+      DO 40 I=1,M
+         DO 30 J=1,N
+            R(I,J) = 0.0D0
+            IF (I .EQ. J)  R(I,J)=1.0D0
+   30    CONTINUE
+         DO 40 J=I,M
+            Q(I,J) = 0.0D0
+            Q(J,I) = 0.0D0
+            IF (I .EQ. J)  Q(I,I)=1.0D0
+   40 CONTINUE
+      TEMP = 0.0D0
+      DO 50 I=1,N
+   50 TEMP = TEMP+X(I)**2
+      ALF = 100.0D0*(EPS*SQRT(TEMP)+T)
+C     **********
+C     MAIN LOOP
+C     **********
+      TIME1=SECOND()
+   60 CONTINUE
+C     **********
+C     UPDATE COUNTERS AND TEST FOR PRINTING THIS CYCLE
+C     **********
+      IFRTL=IFRTL+1
+      ICYC = ICYC+1
+      IRST = IRST+1
+C     **********
+C     SET  PRT,  THE LEVENBERG-MARQUARDT PARAMETER.
+C     **********
+      PRT = SQRT(SSQ)
+C     **********
+C     IF A SIDESTEP IS TO BE TAKEN, GO TO 31
+C     **********
+      IF (IRST .GE. NRST)  GO TO 210
+C     **********
+C     SOLVE THE SYSTEM    Q*R*P = -EFSLST    IN THE LEAST-SQUARES SENSE
+C     **********
+      NSST=0
+      DO 80 I=1,M
+         TEMP = 0.0D0
+         DO 70 J=1,M
+   70    TEMP = TEMP-Q(J,I)*EFSLST(J)
+   80 EFS(I) = TEMP
+      DO 90 J=1,N
+         JJ = NP1-J
+         DO 90 I=1,J
+            II = NP2-I
+   90 R(II,JJ) = R(I,J)
+      DO 160 I=1,N
+         I1 = I+1
+         Y(I) = PRT
+         EFSSS=0.0D0
+         IF (I .GE. N)  GO TO 110
+         DO 100 J=I1,N
+  100    Y(J) = 0.0D0
+  110    CONTINUE
+         DO 150 J=I,N
+            II = NP2-J
+            JJ = NP1-J
+            IF (ABS(Y(J)) .LT. ABS(R(II,JJ)))  GO TO 120
+            TEMP = Y(J)*SQRT(1.0D0+(R(II,JJ)/Y(J))**2)
+            GO TO 130
+  120       TEMP = R(II,JJ)*SQRT(1.0D0+(Y(J)/R(II,JJ))**2)
+  130       CONTINUE
+            SIN = R(II,JJ)/TEMP
+            COS = Y(J)/TEMP
+            R(II,JJ) = TEMP
+            TEMP = EFS(J)
+            EFS(J)=SIN*TEMP+COS*EFSSS
+            EFSSS=SIN*EFSSS-COS*TEMP
+            IF (J .GE. N)  GO TO 160
+            J1 = J+1
+            DO 140 K=J1,N
+               JJ = NP1-K
+               TEMP = R(II,JJ)
+               R(II,JJ) = SIN*TEMP+COS*Y(K)
+  140       Y(K) = SIN*Y(K)-COS*TEMP
+  150    CONTINUE
+  160 CONTINUE
+      P(N) = EFS(N)/R(2,1)
+      I = N
+  170 I = I-1
+      IF (I)  200,200,180
+  180 TEMP = EFS(I)
+      K = I+1
+      II = NP2-I
+      DO 190 J=K,N
+         JJ = NP1-J
+  190 TEMP = TEMP-R(II,JJ)*P(J)
+      JJ = NP1-I
+      P(I) = TEMP/R(II,JJ)
+      GO TO 170
+  200 CONTINUE
+      GO TO 230
+C     **********
+C     SIDESTEP SECTION
+C     **********
+  210 JRST = JRST+1
+      NSST=NSST+1
+      IF(NSST.GE.IXSO) GO TO 670
+      IF (JRST .GT. N)  JRST=2
+      IRST = 0
+C     **********
+C     PRODUCTION OF A VECTOR ORTHOGONAL TO THE LAST P-VECTOR
+C     **********
+      WORK = PN*(ABS(P(1))+PN)
+      TEMP = P(JRST)
+      P(1) = TEMP*(P(1)+SIGN(PN,P(1)))
+      DO 220 I=2,N
+  220 P(I) = TEMP*P(I)
+      P(JRST) = P(JRST)-WORK
+C     **********
+C     COMPUTE NORM AND NORM-SQUARE OF THE P-VECTOR
+C     **********
+  230 PNLAST = PN
+      PN=0.D0
+      PN2 = 0.0D0
+      DO 240 I=1,N
+         PN=PN+ABS(P(I))
+  240 PN2 = PN2+P(I)**2
+      IF(PN.LT.1.D-20) THEN
+         WRITE(6,'('' SYSTEM DOES NOT APPEAR TO BE OPTIMIZABLE.'',/
+     1,'' THIS CAN HAPPEN IF (A) IT WAS OPTIMIZED TO BEGIN WITH'',/
+     2,'' OR                 (B) IT IS NEITHER A GROUND NOR A'',
+     3'' TRANSITION STATE'')')
+         CALL GEOUT(1)
+         STOP
+      ENDIF
+      IF(PN2.LT.1.D-20)PN2=1.D-20
+      PN = SQRT(PN2)
+      IF(ALF.GT.1.D20)ALF=1.D20
+      IF(ICYC .GT. 1) THEN
+         ALF=ALF*1.D-20*PNLAST/PN
+         IF(ALF.GT.1.D10)        ALF=1.D10
+         ALF=ALF*1.D20
+      ENDIF
+      TTMP=ALF*PN
+      IF(TTMP.LT.0.0001D0) ALF=0.001D0/PN
+C     **********
+C     PRINTING SECTION
+C     **********
+C#      WRITE(6,501)TLEFT,ICYC,SSQ
+      DO 250 I=1,N
+         EFS(I)=X(I)
+  250 CONTINUE
+C     **********
+C     PERFORM LINE-MINIMIZATION FROM POINT X IN DIRECTION P OR -P
+C     **********
+      SSQLST = SSQ
+      DO 260 I=1,N
+         EFS(I)=0.D0
+  260 XLAST(I)=X(I)
+      CALL LOCMIN(M,X,N,P,SSQ,ALF,EFS,IERR,ESCF)
+      IF(SSQLST .LT. SSQ ) THEN
+         IF(IERR .EQ. 0)      SSQ=SSQLST
+         DO 270 I=1,N
+  270    X(I)=XLAST(I)
+         IRST=NRST
+         PN=PNLAST
+         TIME2=TIME1
+         TIME1=SECOND()
+         TCYCLE=TIME1-TIME2
+         TLEFT=TLEFT-TCYCLE
+         IF(TLEFT .GT. TCYCLE*2) GO TO 60
+         GOTO 630
+      ENDIF
+C     **********
+C     PRODUCE THE VECTOR   R*P
+C     **********
+      DO 290 I=1,N
+         TEMP = 0.0D0
+         DO 280 J=I,N
+  280    TEMP = TEMP+R(I,J)*P(J)
+  290 Y(I) = TEMP
+C     **********
+C     PRODUCE THE VECTOR ...
+C                  Y  =    (EFS-EFSLST-ALF*Q*R*P)/(ALF*(NORMSQUARE(P))
+C     COMPUTE NORM OF THIS VECTOR AS WELL
+C     **********
+      WORK = ALF*PN2
+      YN = 0.0D0
+      DO 310 I=1,M
+         TEMP = 0.0D0
+         DO 300 J=1,N
+  300    TEMP = TEMP+Q(I,J)*Y(J)
+         TEMP = (EFS(I)-EFSLST(I)-ALF*TEMP)
+         EFSLST(I) = EFS(I)
+         YN = YN+TEMP**2
+  310 EFS(I) = TEMP/WORK
+      YN = SQRT(YN)/WORK
+C     **********
+C     THE BROYDEN UPDATE   NEW MATRIX = OLD MATRIX + Y*(P-TRANS)
+C     HAS BEEN FORMED.  IT IS NOW NECESSARY TO UPDATE THE  QR DECOMP.
+C     FIRST LET    Y = (Q-TRANS)*Y.
+C     **********
+      DO 330 I=1,M
+         TEMP = 0.0D0
+         DO 320 J=1,M
+  320    TEMP = TEMP+Q(J,I)*EFS(J)
+  330 Y(I) = TEMP
+C     **********
+C     REDUCE THE VECTOR Y TO A MULTIPLE OF THE FIRST UNIT VECTOR USING
+C     A HOUSEHOLDER TRANSFORMATION FOR COMPONENTS N+1 THROUGH M AND
+C     ELEMENTARY ROTATIONS FOR THE FIRST N+1 COMPONENTS.  APPLY ALL
+C     TRANSFORMATIONS TRANSPOSED ON THE RIGHT TO THE MATRIX Q, AND
+C     APPLY THE ROTATIONS ON THE LEFT TO THE MATRIX R.
+C     THIS GIVES    (Q*(V-TRANS))*((V*R) + (V*Y)*(P-TRANS)),    WHERE
+C     V IS THE COMPOSITE OF THE TRANSFORMATIONS.  THE MATRIX
+C     ((V*R) + (V*Y)*(P-TRANS))    IS UPPER HESSENBERG.
+C     **********
+      IF (M .LE. NP1)  GO TO 390
+C
+C THE NEXT THREE LINES WERE INSERTED TO TRY TO GET ROUND OVERFLOW BUGS.
+C
+      CONST=1.D-12
+      DO 340 I=NP1,M
+  340 CONST=MAX(ABS(Y(NP1)),CONST)
+      YTAIL = 0.0D0
+      DO 350 I=NP1,M
+  350 YTAIL = YTAIL+(Y(I)/CONST)**2
+      YTAIL = SQRT(YTAIL)*CONST
+      BET = (1.0D25/YTAIL)/(YTAIL+ABS(Y(NP1)))
+      Y(NP1) = SIGN (YTAIL+ABS(Y(NP1)),Y(NP1))
+      DO 380 I=1,M
+         TMP = 0.0D0
+         DO 360 J=NP1,M
+  360    TMP = TMP+Q(I,J)*Y(J)*1.D-25
+         TMP = BET*TMP
+         DO 370 J=NP1,M
+  370    Q(I,J) = Q(I,J)-TMP*Y(J)
+  380 CONTINUE
+      Y(NP1) = YTAIL
+      I = NP1
+      GO TO 400
+  390 CONTINUE
+      I = M
+  400 CONTINUE
+  410 J = I
+      I = I-1
+      IF (I)  480,480,420
+  420 IF (Y(J))  430,410,430
+  430 IF (ABS(Y(I)) .LT. ABS(Y(J)))  GO TO 440
+      TEMP = ABS(Y(I))*SQRT(1.0D0+(Y(J)/Y(I))**2)
+      GO TO 450
+  440 TEMP = ABS(Y(J))*SQRT(1.0D0+(Y(I)/Y(J))**2)
+  450 COS = Y(I)/TEMP
+      SIN = Y(J)/TEMP
+      Y(I) = TEMP
+      DO 460 K=1,M
+         TEMP = COS*Q(K,I)+SIN*Q(K,J)
+         WORK = -SIN*Q(K,I)+COS*Q(K,J)
+         Q(K,I) = TEMP
+  460 Q(K,J) = WORK
+      IF (I .GT. N)  GO TO 410
+      R(J,I) = -SIN*R(I,I)
+      R(I,I) = COS*R(I,I)
+      IF (J .GT. N)  GO TO 410
+      DO 470 K=J,N
+         TEMP = COS*R(I,K)+SIN*R(J,K)
+         WORK = -SIN*R(I,K)+COS*R(J,K)
+         R(I,K) = TEMP
+  470 R(J,K) = WORK
+      GO TO 410
+  480 CONTINUE
+C     **********
+C     REDUCE THE UPPER-HESSENBERG MATRIX TO UPPER-TRIANGULAR FORM
+C     USING ELEMENTARY ROTATIONS.  APPLY THE SAME ROTATIONS, TRANSPOSED,
+C     ON THE RIGHT TO THE MATRIX  Q.
+C     **********
+      DO 490 K=1,N
+  490 R(1,K) = R(1,K)+YN*P(K)
+      JEND = NP1
+      IF (M .EQ. N)  JEND=N
+      DO 560 J=2,JEND
+         I = J-1
+         IF (R(J,I))  500,560,500
+  500    IF (ABS(R(I,I)) .LT. ABS(R(J,I)))  GO TO 510
+         TEMP = ABS(R(I,I))*SQRT(1.0D0+(R(J,I)/R(I,I))**2)
+         GO TO 520
+  510    TEMP = ABS(R(J,I))*SQRT(1.0D0+(R(I,I)/R(J,I))**2)
+  520    COS = R(I,I)/TEMP
+         SIN = R(J,I)/TEMP
+         R(I,I) = TEMP
+         IF (J .GT. N)  GO TO 540
+         DO 530 K=J,N
+            TEMP = COS*R(I,K)+SIN*R(J,K)
+            WORK = -SIN*R(I,K)+COS*R(J,K)
+            R(I,K) = TEMP
+  530    R(J,K) = WORK
+  540    DO 550 K=1,M
+            TEMP = COS*Q(K,I)+SIN*Q(K,J)
+            WORK = -SIN*Q(K,I)+COS*Q(K,J)
+            Q(K,I) = TEMP
+  550    Q(K,J) = WORK
+  560 CONTINUE
+C     **********
+C     CHECK THE STOPPING CRITERIA
+C     **********
+      TEMP = 0.0D0
+      DO 570 I=1,N
+  570 TEMP = TEMP+X(I)**2
+      TOLX = TOLS1*SQRT(TEMP)+TOLS2
+      IF (SQRT(ALF*PN2) .LE. TOLX)  GO TO 650
+      IF(SSQ.GE.2.D0*N) GO TO 590
+      DO 580 I=1,N
+C*****
+C     The stopping criterion is that no individual gradient be
+C         greater than TOL2
+C*****
+         IF(ABS(EFSLST(I)).GE.TOL2) GO TO 590
+  580 CONTINUE
+C#      WRITE(6,730) SSQ
+      GO TO 660
+  590 CONTINUE
+      TIME2=TIME1
+      TIME1=SECOND()
+      TCYCLE=TIME1-TIME2
+      TLEFT=TLEFT-TCYCLE
+      IF(RESFIL)THEN
+         WRITE(6,600)TLEFT,SQRT(SSQ),ESCF
+  600    FORMAT('  RESTART FILE WRITTEN,  TIME LEFT:',F9.1,
+     1' GRAD.:',F10.3,' HEAT:',G14.7)
+         RESFIL=.FALSE.
+      ELSE
+         IF(MINPRT) WRITE(6,610)ICYC,MIN(TCYCLE,9999.99D0),
+     1MIN(TLEFT,9999999.9D0),MIN(SQRT(SSQ),999999.999D0),ESCF
+         IF(LOG) WRITE(11,610)ICYC,MIN(TCYCLE,9999.99D0),
+     1MIN(TLEFT,9999999.9D0),MIN(SQRT(SSQ),999999.999D0),ESCF
+  610    FORMAT(' CYCLE:',I5,' TIME:',F6.1,' TIME LEFT:',F9.1,
+     1' GRAD.:',F10.3,' HEAT:',G14.7)
+      ENDIF
+      IF(TLAST-TLEFT.GT.TDUMP)THEN
+         TLAST=TLEFT
+         RESFIL=.TRUE.
+         DO 620 I=1,N
+  620    XLAST(I)=X(I)
+         IIIUM(1)=NSCF
+         CALL PARSAV(2,N,M)
+      ENDIF
+      IF(TLEFT .GT. TCYCLE*2) GO TO 60
+  630 IIIUM(5)=NCOUNT
+      DO 640 I=1,N
+  640 XLAST(I)=X(I)
+      IIIUM(1)=NSCF
+      CALL PARSAV(1,N,M)
+      IFLEPO=-1
+      RETURN
+  650 WRITE (6,760)  NCOUNT
+      GOTO 870
+  660 WRITE (6,770)  NCOUNT
+      GOTO 870
+  670 CONTINUE
+      WRITE(6,680) IXSO
+  680 FORMAT(1H ,5X,'ATTEMPT TO GO DOWNHILL IS UNSUCCESSFUL AFTER',I5,5X
+     1,'ORTHOGONAL SEARCHES')
+      GOTO 870
+C#  730 FORMAT(1H ,'FINAL GRADIENT =',F15.7)
+  690 FORMAT(1H ,3X,'ALF =',E12.4)
+  700 FORMAT(1H ,3X,'NCOUNT =',I5)
+  710 FORMAT(3X,'TIME LEFT:',F7.1,' CYCLE',I5,3X,'GNORM SQUARED IS'
+     1,F13.5)
+  720 FORMAT(4(5X,'X(',I2,') = ',E15.8))
+  730 FORMAT(4(5X,'P(',I2,') = ',E15.8))
+  740 FORMAT(5X,'R-MATRIX DIAGONAL ENTRIES ...')
+  750 FORMAT(6E13.3)
+  760 FORMAT('0TEST ON X SATISFIED, NUMBER OF FUNCTION CALLS = ',I5)
+  770 FORMAT('0TEST ON SSQ SATISFIED, NUMBER OF FUNCTION CALLS = ',I5)
+  780 FORMAT(' ///// NEXT CYCLE IS A SIDE-STEP ALONG THE ',I2,
+     1  '-TH NORMAL TO P')
+  790 FORMAT('0ALLOWED NUMBER OF FUNCTION CALLS EXCEEDED.'/
+     1  ' NUMBER OF FUNCTION CALLS WAS ',I5)
+  800 FORMAT('  L.-M. PARAMETER = ',E15.7,
+     1  '   SUMSQUARES CHANGE = ',E15.7)
+  810 FORMAT(1H )
+  820 FORMAT(1H )
+  830 FORMAT(1H ,3X,'I',7X,I2,9(10X,I2))
+  840 FORMAT(1H ,1X,'X(I)',1X,F10.5,2X,9(F10.5,2X))
+  850 FORMAT(1H ,1X,'G(I)',1X,F10.5,2X,9(F10.5,2X))
+  860 FORMAT(1H ,1X,'P(I)',1X,F10.5,2X,9(F10.5,2X))
+  870 LAST=1
+      RETURN
+      END

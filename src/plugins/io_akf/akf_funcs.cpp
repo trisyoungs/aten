@@ -88,8 +88,14 @@ FilePluginInterface* AKFModelPlugin::makeCopy()
  * Definition
  */
 
+// Return type of plugin
+PluginTypes::PluginType AKFModelPlugin::type() const
+{
+	return PluginTypes::FilePlugin;
+}
+
 // Return category of plugin
-PluginTypes::FilePluginCategory AKFModelPlugin::category() const
+int AKFModelPlugin::category() const
 {
 	return PluginTypes::ModelFilePlugin;
 }

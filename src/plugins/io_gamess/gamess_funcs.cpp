@@ -46,8 +46,14 @@ FilePluginInterface* GAMESSModelPlugin::makeCopy()
  * Definition
  */
 
+// Return type of plugin
+PluginTypes::PluginType GAMESSModelPlugin::type() const
+{
+	return PluginTypes::FilePlugin;
+}
+
 // Return category of plugin
-PluginTypes::FilePluginCategory GAMESSModelPlugin::category() const
+int GAMESSModelPlugin::category() const
 {
 	return PluginTypes::ModelFilePlugin;
 }

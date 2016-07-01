@@ -46,8 +46,14 @@ FilePluginInterface* SurfaceGridPlugin::makeCopy()
  * Definition
  */
 
+// Return type of plugin
+PluginTypes::PluginType SurfaceGridPlugin::type() const
+{
+	return PluginTypes::FilePlugin;
+}
+
 // Return category of plugin
-PluginTypes::FilePluginCategory SurfaceGridPlugin::category() const
+int SurfaceGridPlugin::category() const
 {
 	return PluginTypes::GridFilePlugin;
 }

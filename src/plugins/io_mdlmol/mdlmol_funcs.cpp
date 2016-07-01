@@ -46,8 +46,14 @@ FilePluginInterface* MOLModelPlugin::makeCopy()
  * Definition
  */
 
+// Return type of plugin
+PluginTypes::PluginType MOLModelPlugin::type() const
+{
+	return PluginTypes::FilePlugin;
+}
+
 // Return category of plugin
-PluginTypes::FilePluginCategory MOLModelPlugin::category() const
+int MOLModelPlugin::category() const
 {
 	return PluginTypes::ModelFilePlugin;
 }

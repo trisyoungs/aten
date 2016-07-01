@@ -46,8 +46,14 @@ FilePluginInterface* GaussianModelPlugin::makeCopy()
  * Definition
  */
 
+// Return type of plugin
+PluginTypes::PluginType GaussianModelPlugin::type() const
+{
+	return PluginTypes::FilePlugin;
+}
+
 // Return category of plugin
-PluginTypes::FilePluginCategory GaussianModelPlugin::category() const
+int GaussianModelPlugin::category() const
 {
 	return PluginTypes::ModelFilePlugin;
 }

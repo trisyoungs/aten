@@ -46,8 +46,14 @@ FilePluginInterface* SiestaModelPlugin::makeCopy()
  * Definition
  */
 
+// Return type of plugin
+PluginTypes::PluginType SiestaModelPlugin::type() const
+{
+	return PluginTypes::FilePlugin;
+}
+
 // Return category of plugin
-PluginTypes::FilePluginCategory SiestaModelPlugin::category() const
+int SiestaModelPlugin::category() const
 {
 	return PluginTypes::ModelFilePlugin;
 }

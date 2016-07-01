@@ -54,8 +54,14 @@ FilePluginInterface* PDBModelPlugin::makeCopy()
  * Definition
  */
 
+// Return type of plugin
+PluginTypes::PluginType PDBModelPlugin::type() const
+{
+	return PluginTypes::FilePlugin;
+}
+
 // Return category of plugin
-PluginTypes::FilePluginCategory PDBModelPlugin::category() const
+int PDBModelPlugin::category() const
 {
 	return PluginTypes::ModelFilePlugin;
 }

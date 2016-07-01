@@ -46,8 +46,14 @@ FilePluginInterface* GROMACSModelPlugin::makeCopy()
  * Definition
  */
 
+// Return type of plugin
+PluginTypes::PluginType GROMACSModelPlugin::type() const
+{
+	return PluginTypes::FilePlugin;
+}
+
 // Return category of plugin
-PluginTypes::FilePluginCategory GROMACSModelPlugin::category() const
+int GROMACSModelPlugin::category() const
 {
 	return PluginTypes::ModelFilePlugin;
 }

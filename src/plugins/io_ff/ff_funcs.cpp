@@ -47,8 +47,14 @@ FilePluginInterface* AtenExpressionPlugin::makeCopy()
  * Definition
  */
 
+// Return type of plugin
+PluginTypes::PluginType AtenExpressionPlugin::type() const
+{
+	return PluginTypes::FilePlugin;
+}
+
 // Return category of plugin
-PluginTypes::FilePluginCategory AtenExpressionPlugin::category() const
+int AtenExpressionPlugin::category() const
 {
 	return PluginTypes::ModelFilePlugin;
 }

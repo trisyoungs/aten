@@ -46,8 +46,14 @@ FilePluginInterface* QuantumEspressoModelPlugin::makeCopy()
  * Definition
  */
 
+// Return type of plugin
+PluginTypes::PluginType QuantumEspressoModelPlugin::type() const
+{
+	return PluginTypes::FilePlugin;
+}
+
 // Return category of plugin
-PluginTypes::FilePluginCategory QuantumEspressoModelPlugin::category() const
+int QuantumEspressoModelPlugin::category() const
 {
 	return PluginTypes::ModelFilePlugin;
 }

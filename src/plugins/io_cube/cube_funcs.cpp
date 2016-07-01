@@ -46,8 +46,14 @@ FilePluginInterface* CUBEModelPlugin::makeCopy()
  * Definition
  */
 
+// Return type of plugin
+PluginTypes::PluginType CUBEModelPlugin::type() const
+{
+	return PluginTypes::FilePlugin;
+}
+
 // Return category of plugin
-PluginTypes::FilePluginCategory CUBEModelPlugin::category() const
+int CUBEModelPlugin::category() const
 {
 	return PluginTypes::ModelFilePlugin;
 }

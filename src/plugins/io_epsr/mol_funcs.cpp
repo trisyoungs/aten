@@ -46,8 +46,14 @@ FilePluginInterface* EPSRMolModelPlugin::makeCopy()
  * Definition
  */
 
+// Return type of plugin
+PluginTypes::PluginType EPSRMolModelPlugin::type() const
+{
+	return PluginTypes::FilePlugin;
+}
+
 // Return category of plugin
-PluginTypes::FilePluginCategory EPSRMolModelPlugin::category() const
+int EPSRMolModelPlugin::category() const
 {
 	return PluginTypes::ModelFilePlugin;
 }

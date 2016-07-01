@@ -1,0 +1,98 @@
+      SUBROUTINE DLASWP( N, A, LDA, K1, K2, IPIV, INCX )
+*
+*  -- LAPACK AUXILIARY ROUTINE (VERSION 1.0B) --
+*     UNIV. OF TENNESSEE, UNIV. OF CALIFORNIA BERKELEY, NAG LTD.,
+*     COURANT INSTITUTE, ARGONNE NATIONAL LAB, AND RICE UNIVERSITY
+*     OCTOBER 31, 1992
+*
+*     .. SCALAR ARGUMENTS ..
+      INTEGER            INCX, K1, K2, LDA, N
+*     ..
+*     .. ARRAY ARGUMENTS ..
+      INTEGER            IPIV( * )
+      DOUBLE PRECISION   A( LDA, * )
+*     ..
+*
+*  PURPOSE
+*  =======
+*
+*  DLASWP PERFORMS A SERIES OF ROW INTERCHANGES ON THE MATRIX A.
+*  ONE ROW INTERCHANGE IS INITIATED FOR EACH OF ROWS K1 THROUGH K2 OF A.
+*
+*  ARGUMENTS
+*  =========
+*
+*  N       (INPUT) INTEGER
+*          THE NUMBER OF COLUMNS OF THE MATRIX A.
+*
+*  A       (INPUT/OUTPUT) DOUBLE PRECISION ARRAY, DIMENSION (LDA,N)
+*          ON ENTRY, THE MATRIX OF COLUMN DIMENSION N TO WHICH THE ROW
+*          INTERCHANGES WILL BE APPLIED.
+*          ON EXIT, THE PERMUTED MATRIX.
+*
+*  LDA     (INPUT) INTEGER
+*          THE LEADING DIMENSION OF THE ARRAY A.
+*
+*  K1      (INPUT) INTEGER
+*          THE FIRST ELEMENT OF IPIV FOR WHICH A ROW INTERCHANGE WILL
+*          BE DONE.
+*
+*  K2      (INPUT) INTEGER
+*          THE LAST ELEMENT OF IPIV FOR WHICH A ROW INTERCHANGE WILL
+*          BE DONE.
+*
+*  IPIV    (INPUT) INTEGER ARRAY, DIMENSION (M*ABS(INCX))
+*          THE VECTOR OF PIVOT INDICES.  ONLY THE ELEMENTS IN POSITIONS
+*          K1 THROUGH K2 OF IPIV ARE ACCESSED.
+*          IPIV(K) = L IMPLIES ROWS K AND L ARE TO BE INTERCHANGED.
+*
+*  INCX    (INPUT) INTEGER
+*          THE INCREMENT BETWEEN SUCCESSIVE VALUES OF IPIV.  IF IPIV
+*          IS NEGATIVE, THE PIVOTS ARE APPLIED IN REVERSE ORDER.
+*
+* =====================================================================
+*
+*     .. LOCAL SCALARS ..
+      INTEGER            I, IP, IX
+*     ..
+*     .. EXTERNAL SUBROUTINES ..
+      EXTERNAL           DSWAP
+*     ..
+*     .. EXECUTABLE STATEMENTS ..
+*
+*     INTERCHANGE ROW I WITH ROW IPIV(I) FOR EACH OF ROWS K1 THROUGH K2.
+*
+      IF( INCX.EQ.0 )
+     $   RETURN
+      IF( INCX.GT.0 ) THEN
+         IX = K1
+      ELSE
+         IX = 1 + ( 1-K2 )*INCX
+      END IF
+      IF( INCX.EQ.1 ) THEN
+         DO 10 I = K1, K2
+            IP = IPIV( I )
+            IF( IP.NE.I )
+     $         CALL DSWAP( N, A( I, 1 ), LDA, A( IP, 1 ), LDA )
+   10    CONTINUE
+      ELSE IF( INCX.GT.1 ) THEN
+         DO 20 I = K1, K2
+            IP = IPIV( IX )
+            IF( IP.NE.I )
+     $         CALL DSWAP( N, A( I, 1 ), LDA, A( IP, 1 ), LDA )
+            IX = IX + INCX
+   20    CONTINUE
+      ELSE IF( INCX.LT.0 ) THEN
+         DO 30 I = K2, K1, -1
+            IP = IPIV( IX )
+            IF( IP.NE.I )
+     $         CALL DSWAP( N, A( I, 1 ), LDA, A( IP, 1 ), LDA )
+            IX = IX + INCX
+   30    CONTINUE
+      END IF
+*
+      RETURN
+*
+*     END OF DLASWP
+*
+      END

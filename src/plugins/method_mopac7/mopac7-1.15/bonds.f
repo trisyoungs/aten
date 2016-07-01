@@ -1,0 +1,244 @@
+      SUBROUTINE BONDS(P)
+      IMPLICIT DOUBLE PRECISION (A-H,O-Z)
+      INCLUDE 'SIZES'
+      PARAMETER (NATMS2=MAXPAR*MAXPAR-MAXORB*MAXORB)
+      DIMENSION P(*)
+      COMMON/MOLKST/NUMAT,NAT(NUMATM),NFIRST(NUMATM),NMIDLE(NUMATM),
+     1              NLAST(NUMATM),NORBS,NELECS,NALPHA,NBETA,
+     2              NCLOSE,NOPEN,NDUMY,FRACT
+      COMMON/SCRACH/B(MAXORB,MAXORB),BONDAB(NATMS2)
+      COMMON/CORE/CORE(107)
+      COMMON/VECTOR/C(MORB2),EIGS(MAXORB),CBETA(MORB2),EIGB(MAXORB)
+      COMMON/KEYWRD/KEYWRD
+      COMMON/DENSTY/PDUMMY(MPACK),PA(MPACK),PB(MPACK)
+      COMMON/DROHF/SDM(MPACK)
+C*********************************************************************
+C   CALCULATES AND PRINTS THE BOND INDICES AND VALENCIES OF ATOMS
+C   FOR REFERENCE, SEE "BOND INDICES AND VALENCY", J.C.S.DALTON,
+C   ARMSTRONG,D.R., PERKINS,P.G. AND STEWART,J.J.P., 838 (1973)
+C
+C  ON INPUT
+C           P = DENSITY MATRIX, LOWER HALF TRIANGLE, PACKED.
+C               P IS NOT ALTERED BY BONDS
+C
+C*********************************************************************
+      DIMENSION PS(MAXORB,MAXORB),SPINAB(NATMS2),SPNA(NUMATM)
+      DIMENSION V(NUMATM),FV(NUMATM),SQ(NUMATM),AQ(NUMATM),TQ(NUMATM),
+     1PM(NUMATM),SP(NUMATM),SD(NUMATM),AUX(NUMATM,NUMATM),PSPIN(MPACK)
+     2,SPSA(NUMATM),SPSQ(NUMATM)
+C     DIMENSION DENW(MAXORB,MAXORB)
+      LOGICAL CI,NCI,KCI
+      CHARACTER*241 KEYWRD
+C
+      CI=(INDEX(KEYWRD,'C.I.')+INDEX(KEYWRD,'MECI').NE.0)
+      KCI=(INDEX(KEYWRD,'MICROS').EQ.0)
+      NCI=(INDEX(KEYWRD,'ROOT')+INDEX(KEYWRD,'OPEN').EQ.0)
+      NOPN=NOPEN-NCLOSE
+      NELECS=NCLOSE+NCLOSE+NOPN
+      WRITE(6,'(2x,''nelecs nclose nopen nopn'',4I5)') NELECS,NCLOSE,
+     1NOPEN,NOPN
+C*****   CALCULATE THE DEGREE OF BONDING   ************
+C
+      K=0
+      DO 20 I=1,NORBS
+         DO 20 J=1,I
+            K=K+1
+            B(I,J)=P(K)
+   20 B(J,I)=P(K)
+C
+C *******  CALCULATE KAPPA FACTOR FOR UHF OR ROHF  ******************
+C
+      IF(INDEX(KEYWRD,'UHF').NE.0) THEN
+C****** UHF CASE
+        ZKAPPA=0.D0
+        DO 23 N=1,NALPHA
+        DO 23 M=1,NBETA
+           SUM=0.D0
+           DO 27 MU=1,NORBS
+           L=MU+NORBS*(N-1)
+           K=MU+NORBS*(M-1)
+   27      SUM=SUM+C(L)*CBETA(K)
+   23   ZKAPPA=ZKAPPA+SUM**2
+        ZKAPPA=1.D0/(ZKAPPA/DBLE(NALPHA+NBETA)+0.5D0)
+        ELSE
+         IF(.NOT.CI.AND.NOPN.EQ.0.AND.NCI.AND.KCI) THEN
+         ZKAPPA=1.0D0
+        ELSE
+C****** ROHF CASE
+        ZKAPPA=1.D0/(1.D0-(DBLE(NOPN)/DBLE(NELECS))/2.D0)
+        WRITE(6,'(10X,''ROHF ZKAPPA='',F10.5,2I5)') ZKAPPA,nopen,nclose
+        ENDIF
+        ENDIF
+        IJ=0
+        DO 60 I=1,NUMAT
+         A=0.0D00
+         L=NFIRST(I)
+         LL=NLAST(I)
+         DO 40 J=1,I
+            IJ=IJ+1
+            K=NFIRST(J)
+            KK=NLAST(J)
+            X=0.0D0
+            DO 30 IL=L,LL
+               DO 30 IH=K,KK
+   30       X=X+B(IL,IH)*B(IL,IH)
+   40    BONDAB(IJ)=X
+         X=-BONDAB(IJ)
+         DO 50 J=L,LL
+         A=A+B(J,J)
+   50 X=X+2.D0*B(J,J)
+      V(I)=X
+      SD(I)=A
+   60 CONTINUE
+C
+C
+C *****  CALCULATE ACTIVE CHARGE (AQ), SELF CHARGE (SQ), FREE VALENCE(FV)
+C          TOTAL CHARGE (TQ), MULLIKEN TYPE PROMOTION (PM) AND STATISTICAL
+C          PROMOTION (SP)  ********************************************
+C
+      K=0
+      DO 65 I=1, NUMAT
+         DO 65 J=1,I
+             K=K+1
+             BONDAB(K)=BONDAB(K)*ZKAPPA
+             AUX(I,J)=BONDAB(K)
+   65 AUX(J,I)=BONDAB(K)
+      DO 70 I=1,NUMAT
+       DA=0.0D0
+         DO 80 J=1,NUMAT
+  80    IF(J.NE.I) DA=DA+AUX(I,J)
+      AQ(I)=DA
+      SQ(I)=(AUX(I,I)-DA)/2.D00
+      FV(I)=V(I)-AQ(I)
+      TQ(I)=AQ(I)+SQ(I)
+      PM(I)=SD(I)-CORE(NAT(I))
+   70 SP(I)=TQ(I)-CORE(NAT(I))
+C
+C
+C  ********   OUTPUT    *****************
+C
+C
+      WRITE(6,'(//)')
+      WRITE(6,'(1X,10X,51(''* ''),//1X, 10X,''* '',9X,''STATISTICAL POP
+     +ULATION ANALYSIS'',9X,''* '',//1X,10X,51(''* ''))')
+      WRITE(6,'(1X//20X,''DEGREES OF BONDING''/)')
+      CALL VECPRT(BONDAB,NUMAT)
+      WRITE(6,'(///)')
+      WRITE(6,'(1X,5X,''SELF-Q'',4X,''ACTIV-Q'',3X,''TOTAL-Q'',3X,''VALE
+     +NCE'',3X,''FREE-VA'',1X,''STAT.PROM'',1X,''MULL.PROM''//)')
+      WRITE(6,'(1X,I2,7F10.5/)') (I,SQ(I),AQ(I),TQ(I),V(I),FV(I),SP(I),
+     +PM(I),I=1,numat)
+C****** PERFORM SPIN POPULATION STATISTICAL ANALYSIS
+      LINEAR=NORBS*(NORBS+1)/2
+      IF(INDEX(KEYWRD,'UHF').NE.0) GO TO 1000
+         IF(.NOT.CI.AND.NOPN.EQ.0.AND.NCI.AND.KCI) THEN
+        WRITE(6,'(1X,''CLOSED SHELL''//)')
+        RETURN
+        ELSE
+	CALL DOPEN(C,NORBS,NORBS,NCLOSE,NOPEN,FRACT)
+          DO 91 J=1,LINEAR
+   91      PSPIN(J)=SDM(J)
+C       WRITE(6,'(1X,''SDM'',10E12.3)')(SDM(J),J=1,LINEAR)
+         WRITE(6,'(1X,''ROHF''//)')
+        GO TO 1002
+         END IF
+ 1000    WRITE(6,'(1X,''UHF ''//)')
+        DO 90  I=1,LINEAR
+   90  PSPIN(I)=PA(I)-PB(I)
+      SUM=0.D0
+      L=0
+      DO 100 I=1,NORBS
+      DO 100 J=1,I
+      AA=2.D0
+      IF(I.EQ.J) AA=1.D0
+      L=L+1
+  100 SUM=SUM+AA*(PSPIN(L)*P(L))
+      WRITE(6,'(//)')
+      WRITE(6,'(10X,''NALPHA-NBETA= '',F10.5,//)') SUM
+1002   WRITE(6,'(1X,''OPEN SHELL& UHF CASE''//)')
+      KK=0
+      DO 110 I=1,NORBS
+      DO 110 J=1,I
+       KK=KK+1
+       PS(I,J)=PSPIN(KK)
+  110  PS(J,I)=PSPIN(KK)
+      WRITE(6,'(1X,10X,51(''* '')//1X,10X,''* '',9X,''STATISTICAL SPIN 
+     + POPULATION ANALYSIS'',9X,''* '',//1X,10X,51(''* ''))')
+C EVALUATE  THE CORRESPONDING INACTIVE ATOMIC AND BOND SPIN POPULATIONS
+      IJ=0
+      DO 120 I=1,NUMAT
+      L=NFIRST(I)
+      LL=NLAST(I)
+      DO 130 J=1,I
+      IJ=IJ+1
+      K=NFIRST(J)
+      KK=NLAST(J)
+      X=0.D0
+      DO 140 IL=L,LL
+      DO 140 IH=K,KK
+  140 X=X+B(IL,IH)*PS(IL,IH)
+  130 SPINAB(IJ)=X
+  120 CONTINUE
+C EVALUATE THE TOTAL ATOMIC SPIN POPULATIONS
+      K=0
+      DO 150 I=1,NUMAT
+      DO 150 J=1,I
+      K=K+1
+      AUX(I,J)=SPINAB(K)
+  150 AUX(J,I)=SPINAB(K)
+      DO 160 I=1,NUMAT
+      DA=0.D0
+      DO 170 J=1,NUMAT
+  170 IF(J.NE.I) DA=DA+AUX(I,J)
+      SPSA(I)=DA
+      SPSQ(I)=AUX(I,I)
+  160 SPNA(I)=DA+AUX(I,I)
+      WRITE(6,'(1X//20X,''SELF UNPAIRED AND BOND SPIN POPULATIONS ''/)')
+      CALL VECPRT(SPINAB,NUMAT)
+      WRITE(6,'(//)')
+      WRITE(6,'(10X,'' TOTAL ATOMIC SPIN POPULATIONS''/)')
+      WRITE(6,'(1X,''ATOM    SELF UNCPLD SPIN    SHARED UNCPLD SPIN  
+     + TOTAL UNCPLD SPIN ''///(1X,I3,3F20.5))')(I,SPSQ(I),SPSA(I),
+     1SPNA(I),I=1,NUMAT)
+      RETURN
+      END
+      SUBROUTINE DOPEN(C,MDIM,NORBS,NDUBL,NSINGL,FRACT)
+      IMPLICIT DOUBLE PRECISION (A-H,O-Z)
+      INCLUDE 'SIZES'
+      DIMENSION C(MDIM,*)
+      COMMON/DROHF/SDM(MPACK)
+C**********************************************************************
+C
+C  DOPEN COMPUTES THE DENSITY MATRIX OF OPEN SHELL ROHF STATE FUNCTIONS
+C  FROM THE EIGENVECTOR MATRIX AND THE M.O'S OCCUPANCIES
+C
+C  INPUT:   C      = SQUARE EIGENVECTOR MATRIX C
+C           NORBS  = NUMBER OF ORBITALS
+C           NDUBL  = NUMBER OF DOUBLY OCCUPIED M.O'S (=0 IF UHF)
+C           NSINGL = NUMBER OF SINGLY OR FRACTIONALLY OCCUPIED M.O'S
+C
+C  EXIT:    SDM    = ROHF OPEN SHELL DENSITY MATRIX
+C
+C**********************************************************************
+C
+C  SET UP LIMITS FOR SUMS
+C    NL1 = BEGINNING OF ONE ELECTRON SUM
+C    NU1 = END OF THE SAME
+C
+      N2=(NORBS*(NORBS+1))/2
+         FRAC=FRACT
+         NL1=NDUBL+1
+         NU1=NSINGL
+      L=0
+      DO 40 I=1,NORBS
+         DO 30 J=1,I
+            L=L+1
+            SUM1=0.D0
+            DO 20 K=NL1,NU1
+   20 SUM1=SUM1+C(I,K)*C(J,K)
+   30    SDM(L)=SUM1*FRAC
+   40 CONTINUE
+      RETURN
+      END
+
+

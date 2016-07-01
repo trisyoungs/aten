@@ -1,0 +1,7 @@
+MOPAC7 originally is a work of James J. P. Stewart and co-workers.
+The MOPAC7 package used as a base for this work was obtained from
+
+	ftp://esca.atomki.hu/mopac7/LINUX/mopac-7.01-4.tar.gz
+
+Changes made by Tommi Hassinen, University of Kuopio, Finland, April 2001.
+email <thassine@messi.uku.fi>

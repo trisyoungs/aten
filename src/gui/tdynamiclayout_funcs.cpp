@@ -75,8 +75,8 @@ void TDynamicLayout::addItem(QLayoutItem *item)
 	if (items_.count() == 1)
 	{
 		preferredSize_ += button->minimumSize();
-		twoPerRowHeight_ = (button->minimumHeight() - verticalSpacing_) / 2;
-		threePerRowHeight_ = (button->minimumHeight() - 2*verticalSpacing_) / 3;
+// 		twoPerRowHeight_ = (button->minimumHeight() - verticalSpacing_) / 2;
+// 		threePerRowHeight_ = (button->minimumHeight() - 2*verticalSpacing_) / 3;
 	}
 	else preferredSize_ += QSize(button->minimumWidth() + horizontalSpacing_, 0);
 	printf("Preferred size now %i,%i\n", preferredSize_.width(), preferredSize_.height());
@@ -110,7 +110,7 @@ QSize TDynamicLayout::minimumSize() const
 	// Calculate minimum space required by the TMenuButtons
 	QSize size;
 	// TEST
-	return QSize(preferredSize_;
+// 	return QSize(preferredSize_;
 }
 
 // Set new geometry for the layout

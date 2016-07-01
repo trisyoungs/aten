@@ -22,7 +22,7 @@
 #ifndef ATEN_FILEPLUGININTERFACE_H
 #define ATEN_FILEPLUGININTERFACE_H
 
-#include "plugins/plugintypes.h"
+#include "plugins/interfaces/baseplugin.h"
 #include "parser/returnvalue.h"
 #include "parser/commandnode.h"
 #include "model/model.h"
@@ -197,7 +197,7 @@ class FilePluginStandardExportOptions
 };
 
 // File Plugin Interface
-class FilePluginInterface : public ListItem<FilePluginInterface>
+class FilePluginInterface : public BasePluginInterface, public ListItem<FilePluginInterface>
 {
 	public:
 	// Constructor
@@ -293,17 +293,9 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 
 
 	/*
-	 * Definition
+	 * Additional Definition
 	 */
 	public:
-	// Return category of plugin
-	virtual PluginTypes::FilePluginCategory category() const = 0;
-	// Return name of plugin
-	virtual QString name() const = 0;
-	// Return nickname of plugin
-	virtual QString nickname() const = 0;
-	// Return description (long name) of plugin
-	virtual QString description() const = 0;
 	// Return related file extensions
 	virtual QStringList extensions() const = 0;
 	// Return exact names list
@@ -322,73 +314,9 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 
 
 	/*
-	 * Object Handling
+	 * Additional Object Handling
 	 */
-	private:
-	// Parent model objects created on import
-	List<Model> createdModels_;
-	// Trajectory frames created on import
-	RefList<Model,int> createdFrames_;
-	// Grid objects created on import
-	RefList<Grid,int> createdGrids_;
-	// Parent model for read/write, if any
-	Model* parentModel_;
-	// Target model for read/write, if any
-	Model* targetModel_;
-
 	public:
-	// Create new parent model
-	Model* createModel(QString name = QString())
-	{
-		Model* newModel = createdModels_.add();
-		if (!name.isEmpty()) newModel->setName(name);
-		setParentModel(newModel);
-		return newModel;
-	}
-	// Discard created model
-	bool discardModel(Model* model)
-	{
-		if (createdModels_.contains(model))
-		{
-			if ((targetModel_ == model) || (parentModel_ == model)) targetModel_ = NULL;
-			if (parentModel_ == model) parentModel_ = NULL;
-			createdModels_.remove(model);
-			return true;
-		}
-		Messenger::error("Can't discard model - not owned by the interface.");
-		return false;
-	}
-	// Return parent Model objects created on import
-	List<Model>& createdModels()
-	{
-		return createdModels_;
-	}
-	// Create frame in parent model
-	Model* createFrame()
-	{
-		Model* frame = parentModel()->addTrajectoryFrame();
-		createdFrames_.add(frame);
-		targetModel_ = frame;
-		return frame;
-	}
-	// Discard created frame
-	bool discardFrame(Model* frame)
-	{
-		if (createdFrames_.contains(frame))
-		{
-			if (targetModel_ == frame) targetModel_ = parentModel_;
-			parentModel_->removeTrajectoryFrame(frame);
-			createdFrames_.remove(frame);
-			return true;
-		}
-		Messenger::error("Can't discard frame - not owned by the interface.");
-		return false;
-	}
-	// Return created frames
-	RefList<Model,int>& createdFrames()
-	{
-		return createdFrames_;
-	}
 	// Create new atom in specified model
 	Atom* createAtom(Model* model, QString name = "XX", Vec3<double> r = Vec3<double>())
 	{
@@ -409,39 +337,6 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 		}
 
 		return i;
-	}
-	// Create new grid (in specified model)
-	Grid* createGrid(Model* model)
-	{
-		Grid* newGrid = model->addGrid();
-		createdGrids_.add(newGrid);
-		return newGrid;
-	}
-	// Return Grid objects created on import
-	RefList<Grid,int> createdGrids()
-	{
-		return createdGrids_;
-	}
-	// Set parent model
-	void setParentModel(Model* model)
-	{
-		parentModel_ = model;
-		targetModel_ = parentModel_;
-	}
-	// Return parent model
-	Model* parentModel() const
-	{
-		return parentModel_;
-	}
-	// Set target model
-	void setTargetModel(Model* model)
-	{
-		targetModel_ = model;
-	}
-	// Return target model
-	Model* targetModel() const
-	{
-		return targetModel_;
 	}
 
 
@@ -622,16 +517,6 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 	protected:
 	// Standard options
 	FilePluginStandardImportOptions standardOptions_;
-	// Options specific to this plugin
-	KVMap pluginOptions_;
-
-	protected:
-	// Return conversion of supplied QString to bool
-	bool toBool(QString string)
-	{
-		if ((string.toInt() == 1) || (string.toLower() == "false")) return false;
-		return true;
-	}
 
 	public:
 	// Return whether the plugin has import options
@@ -651,33 +536,6 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 	const FilePluginStandardImportOptions standardOptions() const
 	{
 		return standardOptions_;
-	}
-	// Set plugin option
-	bool setOption(QString optionName, QString optionValue)
-	{
-		// Search for this option in pluginOptions_
-		KVPair* pair = pluginOptions_.search(optionName);
-		if (pair) pair->setValue(optionValue);
-		else
-		{
-			Messenger::error("Option '" + optionName + "' is not recognised by this plugin.");
-			Messenger::error("Available options are: " + pluginOptions_.keys());
-			return false;
-		}
-		return true;
-	}
-	// Set plugin options
-	bool setOptions(KVMap options)
-	{
-		bool result = true;
-		for (KVPair* pair = options.pairs(); pair != NULL; pair = pair->next) if (!setOption(pair->key(), pair->value())) result = false;
-
-		return result;
-	}
-	// Return options specific to this plugin (read-only)
-	const KVMap& pluginOptions()
-	{
-		return pluginOptions_;
 	}
 };
 

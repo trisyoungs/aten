@@ -46,8 +46,14 @@ FilePluginInterface* EPSRAtoModelPlugin::makeCopy()
  * Definition
  */
 
+// Return type of plugin
+PluginTypes::PluginType EPSRAtoModelPlugin::type() const
+{
+	return PluginTypes::FilePlugin;
+}
+
 // Return category of plugin
-PluginTypes::FilePluginCategory EPSRAtoModelPlugin::category() const
+int EPSRAtoModelPlugin::category() const
 {
 	return PluginTypes::ModelFilePlugin;
 }

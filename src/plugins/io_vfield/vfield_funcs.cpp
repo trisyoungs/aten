@@ -46,8 +46,14 @@ FilePluginInterface* VFieldModelPlugin::makeCopy()
  * Definition
  */
 
+// Return type of plugin
+PluginTypes::PluginType VFieldModelPlugin::type() const
+{
+	return PluginTypes::FilePlugin;
+}
+
 // Return category of plugin
-PluginTypes::FilePluginCategory VFieldModelPlugin::category() const
+int VFieldModelPlugin::category() const
 {
 	return PluginTypes::ModelFilePlugin;
 }

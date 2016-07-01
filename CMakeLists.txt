@@ -46,6 +46,13 @@ set(CMAKE_AUTOMOC OFF)
 # Set policy for automatic linkage of Qt libs to project
 CMAKE_POLICY(SET CMP0020 NEW)
 
+# Options
+# -- MOPAC7 Plugin (requires Fortran)
+option(MOPACPLUGIN "Enable compilation of MOPAC7 method plugin" ON)
+if(MOPACPLUGIN)
+  enable_language(Fortran)
+endif(MOPACPLUGIN)
+
 # Perform system-specific setup
 # -- Windows
 if(WIN32)

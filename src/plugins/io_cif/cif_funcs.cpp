@@ -47,8 +47,14 @@ FilePluginInterface* CIFModelPlugin::makeCopy()
  * Definition
  */
 
+// Return type of plugin
+PluginTypes::PluginType CIFModelPlugin::type() const
+{
+	return PluginTypes::FilePlugin;
+}
+
 // Return category of plugin
-PluginTypes::FilePluginCategory CIFModelPlugin::category() const
+int CIFModelPlugin::category() const
 {
 	return PluginTypes::ModelFilePlugin;
 }

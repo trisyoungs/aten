@@ -47,8 +47,14 @@ FilePluginInterface* MOPACArcModelPlugin::makeCopy()
  * Definition
  */
 
+// Return type of plugin
+PluginTypes::PluginType MOPACArcModelPlugin::type() const
+{
+	return PluginTypes::FilePlugin;
+}
+
 // Return category of plugin
-PluginTypes::FilePluginCategory MOPACArcModelPlugin::category() const
+int MOPACArcModelPlugin::category() const
 {
 	return PluginTypes::ModelFilePlugin;
 }

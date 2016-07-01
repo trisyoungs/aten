@@ -47,7 +47,7 @@ FilePluginInterface* XYZModelPlugin::duplicate()
  */
 
 // Return category of plugin
-PluginTypes::FilePluginCategory XYZModelPlugin::category() const
+int XYZModelPlugin::category() const
 {
 	return PluginTypes::ModelFilePlugin;
 }
