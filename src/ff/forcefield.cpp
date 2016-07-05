@@ -106,11 +106,18 @@ int Forcefield::nTypes()
 }
 
 // Add a new type to the forcefield
-ForcefieldAtom* Forcefield::addType()
+ForcefieldAtom* Forcefield::addType(int id, QString name, QString equivalent, int element, QString neta, QString description)
 {
 	ForcefieldAtom* ffa = types_.add();
 	ffa->setParent(this);
-	ffa->setTypeId(types_.nItems()-1);
+	ffa->setTypeId(id == -1 ? types_.nItems()-1 : id);
+	ffa->setName(name);
+	ffa->setEquivalent(equivalent);
+	ffa->setElement(element);
+	ffa->neta()->setCharacterElement(element);
+	ffa->setNeta(neta, this);
+	ffa->setDescription(description);
+
 	return ffa;
 }
 
@@ -198,11 +205,14 @@ bool Forcefield::containsType(ForcefieldAtom* type)
  */
 
 // Add bond term to the forcefield
-ForcefieldBound* Forcefield::addBond(BondFunctions::BondFunction form)
+ForcefieldBound* Forcefield::addBond(BondFunctions::BondFunction form, QString type1, QString type2)
 {
 	ForcefieldBound* ffb = bonds_.add();
 	ffb->setType(ForcefieldBound::BondInteraction);
 	ffb->setBondForm(form);
+	ffb->setTypeName(0, type1);
+	ffb->setTypeName(1, type2);
+
 	return ffb;
 }
 
@@ -296,11 +306,14 @@ ForcefieldBound* Forcefield::findBond(QString typei, QString typej)
  */
 
 // Add angle term to the forcefield
-ForcefieldBound* Forcefield::addAngle(AngleFunctions::AngleFunction form)
+ForcefieldBound* Forcefield::addAngle(AngleFunctions::AngleFunction form, QString type1, QString type2, QString type3)
 {
 	ForcefieldBound* ffb = angles_.add();
 	ffb->setType(ForcefieldBound::AngleInteraction);
 	ffb->setAngleForm(form);
+	ffb->setTypeName(0, type1);
+	ffb->setTypeName(1, type2);
+	ffb->setTypeName(2, type3);
 	return ffb;
 }
 
@@ -412,11 +425,15 @@ ForcefieldBound* Forcefield::findAngle(QString typei, QString typej, QString typ
  */
 
 // Add torsions term to the forcefield
-ForcefieldBound* Forcefield::addTorsion(TorsionFunctions::TorsionFunction form)
+ForcefieldBound* Forcefield::addTorsion(TorsionFunctions::TorsionFunction form, QString type1, QString type2, QString type3, QString type4)
 {
 	ForcefieldBound* ffb = torsions_.add();
 	ffb->setType(ForcefieldBound::TorsionInteraction);
 	ffb->setTorsionForm(form);
+	ffb->setTypeName(0, type1);
+	ffb->setTypeName(1, type2);
+	ffb->setTypeName(2, type3);
+	ffb->setTypeName(3, type4);
 	return ffb;
 }
 
@@ -798,7 +815,7 @@ void Forcefield::convertParameters()
 	{
 		if (ffa->vdwForm() != VdwFunctions::None)
 		{
-			for (n=0; n<MAXFFPARAMDATA; n++) if (VdwFunctions::functionData[ffa->vdwForm()].isEnergyParameter[n]) ffa->setParameter(n,prefs.convertEnergy(ffa->parameter(n), energyUnit_));
+			for (n=0; n<MAXFFPARAMDATA; n++) if (VdwFunctions::functionData[ffa->vdwForm()].isEnergyParameter[n]) ffa->setParameter(n,prefs.convertEnergyFrom(ffa->parameter(n), energyUnit_));
 		}
 		// Only convert those parameters which are contained in the energyData_ list
 		for (n=0; n<energyData_.count(); ++n)
@@ -810,7 +827,7 @@ void Forcefield::convertParameters()
 				continue;
 			}
 			v->execute(oldvalue);
-			newvalue.set(prefs.convertEnergy(oldvalue.asDouble(), energyUnit_));
+			newvalue.set(prefs.convertEnergyFrom(oldvalue.asDouble(), energyUnit_));
 			v->set(newvalue);
 		}
 	}
@@ -819,21 +836,28 @@ void Forcefield::convertParameters()
 	for (ffb = bonds_.first(); ffb != NULL; ffb = ffb->next)
 	{
 		if (ffb->bondForm() == BondFunctions::None) continue;
-		for (n=0; n<MAXFFPARAMDATA; n++) if (BondFunctions::functionData[ffb->bondForm()].isEnergyParameter[n]) ffb->setParameter(n, prefs.convertEnergy(ffb->parameter(n), energyUnit_));
+		for (n=0; n<MAXFFPARAMDATA; n++) if (BondFunctions::functionData[ffb->bondForm()].isEnergyParameter[n]) ffb->setParameter(n, prefs.convertEnergyFrom(ffb->parameter(n), energyUnit_));
 	}
 
 	// Angles
 	for (ffb = angles_.first(); ffb != NULL; ffb = ffb->next)
 	{
 		if (ffb->angleForm() == AngleFunctions::None) continue;
-		for (n=0; n<MAXFFPARAMDATA; n++) if (AngleFunctions::functionData[ffb->angleForm()].isEnergyParameter[n]) ffb->setParameter(n, prefs.convertEnergy(ffb->parameter(n), energyUnit_));
+		for (n=0; n<MAXFFPARAMDATA; n++) if (AngleFunctions::functionData[ffb->angleForm()].isEnergyParameter[n]) ffb->setParameter(n, prefs.convertEnergyFrom(ffb->parameter(n), energyUnit_));
 	}
 
 	// Torsions
 	for (ffb = torsions_.first(); ffb != NULL; ffb = ffb->next)
 	{
 		if (ffb->torsionForm() == TorsionFunctions::None) continue;
-		for (n=0; n<MAXFFPARAMDATA-2; n++) if (TorsionFunctions::functionData[ffb->torsionForm()].isEnergyParameter[n]) ffb->setParameter(n, prefs.convertEnergy(ffb->parameter(n), energyUnit_));
+		for (n=0; n<MAXFFPARAMDATA-2; n++) if (TorsionFunctions::functionData[ffb->torsionForm()].isEnergyParameter[n]) ffb->setParameter(n, prefs.convertEnergyFrom(ffb->parameter(n), energyUnit_));
+	}
+
+	// Urey-Bradleys
+	for (ffb = ureyBradleys_.first(); ffb != NULL; ffb = ffb->next)
+	{
+		if (ffb->bondForm() == BondFunctions::None) continue;
+		for (n=0; n<MAXFFPARAMDATA-2; n++) if (BondFunctions::functionData[ffb->bondForm()].isEnergyParameter[n]) ffb->setParameter(n, prefs.convertEnergyFrom(ffb->parameter(n), energyUnit_));
 	}
 
 	// Set new energy unit of the forcefield to the programs internal unit

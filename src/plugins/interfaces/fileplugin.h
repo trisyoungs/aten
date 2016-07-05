@@ -625,14 +625,6 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 	// Options specific to this plugin
 	KVMap pluginOptions_;
 
-	protected:
-	// Return conversion of supplied QString to bool
-	bool toBool(QString string)
-	{
-		if ((string.toInt() == 1) || (string.toLower() == "false")) return false;
-		return true;
-	}
-
 	public:
 	// Return whether the plugin has import options
 	virtual bool hasImportOptions() = 0;
@@ -678,6 +670,12 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 	const KVMap& pluginOptions()
 	{
 		return pluginOptions_;
+	}
+	// Return conversion of supplied QString to bool
+	static bool toBool(QString string)
+	{
+		if ((string.toInt() == 1) || (string.toLower() == "false")) return false;
+		return true;
 	}
 };
 

@@ -223,7 +223,6 @@ void Commands::initPointers()
 
 	// Forcefield Commands
         pointers_[AngleDef] = &AtenSpace::Commands::function_AngleDef;
-	pointers_[AutoConversionUnit] = &AtenSpace::Commands::function_AutoConversionUnit;
 	pointers_[BondDef] = &AtenSpace::Commands::function_BondDef;
 	pointers_[ClearExportMap] = &AtenSpace::Commands::function_ClearExportMap;
 	pointers_[ClearExpression] = &AtenSpace::Commands::function_ClearExpression;

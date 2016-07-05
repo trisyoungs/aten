@@ -1011,12 +1011,14 @@ void Prefs::setEnergyUnit(EnergyUnit eu)
 	// Store old, and set new energy unit
 	Prefs::EnergyUnit oldunit = energyUnit_;
 	energyUnit_ = eu;
+	
 	// Convert MC acceptance values to new units
-	mc.setAcceptanceEnergy(MonteCarlo::Translate, convertEnergy(mc.acceptanceEnergy(MonteCarlo::Translate), oldunit));
-	mc.setAcceptanceEnergy(MonteCarlo::Rotate, convertEnergy(mc.acceptanceEnergy(MonteCarlo::Rotate), oldunit));
-	mc.setAcceptanceEnergy(MonteCarlo::ZMatrix, convertEnergy(mc.acceptanceEnergy(MonteCarlo::ZMatrix), oldunit));
-	mc.setAcceptanceEnergy(MonteCarlo::Insert, convertEnergy(mc.acceptanceEnergy(MonteCarlo::Insert), oldunit));
-	mc.setAcceptanceEnergy(MonteCarlo::Delete, convertEnergy(mc.acceptanceEnergy(MonteCarlo::Delete), oldunit));
+	mc.setAcceptanceEnergy(MonteCarlo::Translate, convertEnergyFrom(mc.acceptanceEnergy(MonteCarlo::Translate), oldunit));
+	mc.setAcceptanceEnergy(MonteCarlo::Rotate, convertEnergyFrom(mc.acceptanceEnergy(MonteCarlo::Rotate), oldunit));
+	mc.setAcceptanceEnergy(MonteCarlo::ZMatrix, convertEnergyFrom(mc.acceptanceEnergy(MonteCarlo::ZMatrix), oldunit));
+	mc.setAcceptanceEnergy(MonteCarlo::Insert, convertEnergyFrom(mc.acceptanceEnergy(MonteCarlo::Insert), oldunit));
+	mc.setAcceptanceEnergy(MonteCarlo::Delete, convertEnergyFrom(mc.acceptanceEnergy(MonteCarlo::Delete), oldunit));
+
 	// Calculate Electrostatic conversion factor
 	// COULCONVERT is stored in J/mol. Use this to calculate new elec_convert
 	elecConvert_ = COULCONVERT / energyConversions_[energyUnit_];
@@ -1027,20 +1029,6 @@ Prefs::EnergyUnit Prefs::energyUnit() const
 {
 	return energyUnit_;
 }
-
-
-// Set energy unit to use for automatic conversion of forcefield parameters when accessed through filters
-void Prefs::setAutoConversionUnit(Prefs::EnergyUnit eu)
-{
-	autoConversionUnit_ = eu;
-}
-
-// Return energy unit to use for automatic conversion of forcefield parameters when accessed through filters
-Prefs::EnergyUnit Prefs::autoConversionUnit() const
-{
-	return autoConversionUnit_;
-}
-
 
 // Return the electrostastic energy conversion factor
 double Prefs::elecConvert() const
@@ -1054,14 +1042,31 @@ double Prefs::gasConstant() const
 	return 8.314472 / energyConversions_[energyUnit_];
 }
 
-// Convert energy from specified unit to current internal unit
-double Prefs::convertEnergy(double energy, EnergyUnit fromUnit, EnergyUnit toUnit) const
+// Convert the energy given into the current internal units
+double Prefs::convertEnergyFrom(double energy, EnergyUnit fromUnit) const
 {
 	double result;
+
 	// Convert supplied value to units of J/mol
 	result = energy * energyConversions_[fromUnit];
+
 	// Then, convert to internal units
-	result /= energyConversions_[toUnit == Prefs::nEnergyUnits ? energyUnit_ : toUnit];
+	result /= energyConversions_[energyUnit_];
+
+	return result;
+}
+
+// Convert the energy given from the current internal units into the specified units
+double Prefs::convertEnergyTo(double energy, EnergyUnit toUnit) const
+{
+	double result;
+
+	// Convert supplied value (which should be in units of internal energy) to units of J/mol
+	result = energy * energyConversions_[energyUnit_];
+
+	// Then, convert to specified units
+	result /= energyConversions_[toUnit];
+
 	return result;
 }
 

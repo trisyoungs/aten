@@ -30,7 +30,8 @@ Calculate tool to work out centre of geometry/mass.
 Plugin TODO
 ===========
 RMCProfile plugins.
-EPSR ato and mol plugins.
+EPSR ato import/export.
+Forcefield import (move code from Forcefield to plugin).
 POVray export.
 
 Graphics TODO
@@ -79,3 +80,4 @@ Removed FinaliseModel/Grid commands, and all read/write commands related to file
 Removed model.finalise(), FinaliseFF, and FinaliseFrame commands.
 Removed all Prefs accessors related to file import (keepNames, zMapType etc.)
 Added optional "forceRhombohedral" argument to "spacegroup" command.
+Remove 'autoConversionUnit' command.

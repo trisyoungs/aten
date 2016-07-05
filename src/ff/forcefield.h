@@ -92,7 +92,7 @@ class Forcefield : public ListItem<Forcefield>
 	// Returns the number of atom types specified in the Forcefield
 	int nTypes();
 	// Adds a new type to the forcefield
-	ForcefieldAtom* addType();
+	ForcefieldAtom* addType(int id = -1, QString name = QString(), QString equivalent = QString(), int element = 0, QString neta = QString(), QString description = QString());
 	// Returns the head of tha atomtype list
 	ForcefieldAtom* types();
 	// Returns the n'th type in the list
@@ -122,7 +122,7 @@ class Forcefield : public ListItem<Forcefield>
 
 	public:
 	// Add bond term to the forcefield
-	ForcefieldBound* addBond(BondFunctions::BondFunction form);
+	ForcefieldBound* addBond(BondFunctions::BondFunction form, QString type1 = QString(), QString type2 = QString());
 	// Return number of terms defined in bonds list
 	int nBonds();
 	// Returns the bond list
@@ -144,7 +144,7 @@ class Forcefield : public ListItem<Forcefield>
 
 	public:
 	// Add angle term to the forcefield
-	ForcefieldBound* addAngle(AngleFunctions::AngleFunction form);
+	ForcefieldBound* addAngle(AngleFunctions::AngleFunction form, QString type1 = QString(), QString type2 = QString(), QString type3 = QString());
 	// Return number of terms defined in angles list
 	int nAngles();
 	// Returns the angle list
@@ -166,7 +166,7 @@ class Forcefield : public ListItem<Forcefield>
 
 	public:
 	// Add torsion term to the forcefield
-	ForcefieldBound* addTorsion(TorsionFunctions::TorsionFunction form);
+	ForcefieldBound* addTorsion(TorsionFunctions::TorsionFunction form, QString type1 = QString(), QString type2 = QString(), QString type3 = QString(), QString type4 = QString());
 	// Return number of terms defined in torsions list
 	int nTorsions();
 	// Returns the torsion list

@@ -307,9 +307,6 @@ bool Tree::execute(ReturnValue& rv)
 
 	// Delete any temporary dialogs
 	deleteDialogs();
-	
-	// Do a couple of things regardless of the type of tree
-	prefs.setAutoConversionUnit(Prefs::nEnergyUnits);
 
 	// Print some final verbose output
 	Messenger::print(Messenger::Parse, "Final result from execution of tree '%s' (in Program '%s') is %s", qPrintable(name_), qPrintable(parent_->name()), qPrintable(rv.info()));

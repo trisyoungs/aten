@@ -317,7 +317,7 @@ bool AtenVariable::performFunction(int i, ReturnValue& rv, TreeNode* node)
 		case (AtenVariable::ConvertEnergy):
 			eu = Prefs::energyUnit(node->argc(1), true);
 			if (eu == Prefs::nEnergyUnits) result = false;
-			else rv.set( prefs.convertEnergy(node->argd(0), eu) );
+			else rv.set( prefs.convertEnergyFrom(node->argd(0), eu) );
 			break;
 		case (AtenVariable::FindElement):
 			el = ElementMap::find(node->argc(0));

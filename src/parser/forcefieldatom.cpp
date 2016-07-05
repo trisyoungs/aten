@@ -184,22 +184,8 @@ bool ForcefieldAtomVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasAr
 			rv.set(ptr->charge());
 			break;
 		case (ForcefieldAtomVariable::Data):
-			if (hasArrayIndex)
-			{
-				rv.set(ptr->parameter(arrayIndex-1));
-				// Autoconversion of energy parameters?
-				if ((prefs.autoConversionUnit() != Prefs::nEnergyUnits) && VdwFunctions::functionData[ptr->vdwForm()].isEnergyParameter[arrayIndex-1]) rv.set( prefs.convertEnergy(rv.asDouble(), prefs.energyUnit(), prefs.autoConversionUnit()) );
-			}
-			else
-			{
-				rv.setArray(VTypes::DoubleData, ptr->parameters(), MAXFFPARAMDATA);
-				// Autoconversion of energy parameters?
-				if (prefs.autoConversionUnit() != Prefs::nEnergyUnits)
-				{
-					for (n = 0; n<MAXFFPARAMDATA; ++n) if (VdwFunctions::functionData[ptr->vdwForm()].isEnergyParameter[n])
-						rv.setElement(n, prefs.convertEnergy(ptr->parameter(n), prefs.energyUnit(), prefs.autoConversionUnit()) );
-				}
-			}
+			if (hasArrayIndex) rv.set(ptr->parameter(arrayIndex-1));
+			else rv.setArray(VTypes::DoubleData, ptr->parameters(), MAXFFPARAMDATA);
 			break;
 		case (ForcefieldAtomVariable::Description):
 			rv.set(ptr->description());
@@ -399,12 +385,7 @@ bool ForcefieldAtomVariable::performFunction(int i, ReturnValue& rv, TreeNode* n
 		case (ForcefieldAtomVariable::Parameter):
 			id = VdwFunctions::vdwParameter(ptr->vdwForm(), node->argc(0), true);
 			if (id == VdwFunctions::functionData[ptr->vdwForm()].nParameters) result = false;
-			else
-			{
-				// Autoconversion of energy parameters?
-				if ((prefs.autoConversionUnit() != Prefs::nEnergyUnits) && VdwFunctions::functionData[ptr->vdwForm()].isEnergyParameter[id]) rv.set( prefs.convertEnergy(ptr->parameter(id), prefs.energyUnit(), prefs.autoConversionUnit()) );
-				else rv.set(ptr->parameter(id));
-			}
+			else rv.set(ptr->parameter(id));
 			break;
 		default:
 			printf("Internal Error: Access to function '%s' has not been defined in ForcefieldAtomVariable.\n", qPrintable(functionData[i].name));

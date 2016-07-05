@@ -27,9 +27,16 @@ set(epsrmol_MOC_HDRS
 )
 QT5_WRAP_CPP(epsrmol_MOC_SRCS ${epsrmol_MOC_HDRS} OPTIONS -I${PROJECT_SOURCE_DIR}/src)
 
+SET(epsrmol_UIS
+  molexportoptions.ui 
+)
+QT5_WRAP_UI(epsrato_UIS_H ${epsrato_UIS})
+
 add_library(epsrmol MODULE
   mol_funcs.cpp
+  molexportoptions_funcs.cpp
   ${epsrmol_MOC_SRCS}
+  ${epsrmol_UIS_H}
 )
 set_target_properties(epsrmol PROPERTIES
    LIBRARY_OUTPUT_DIRECTORY ${Aten_BINARY_DIR}/data/plugins

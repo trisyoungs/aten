@@ -422,6 +422,8 @@ class Pattern : public ListItem<Pattern>
 	Ring *rings();
 	// Returns whether atom id i is in a ring, or both atoms i and j are in the same ring
 	bool atomsInRing(int i, int j = -1);
+	// Returns whether atom id i is in a ring, or both atoms i and j are in the same ring
+	bool atomsInRing(Atom* i, Atom* j = NULL);
 	// Reset the atom environment flags
 	void clearEnvironments();
 	// Set atom environments

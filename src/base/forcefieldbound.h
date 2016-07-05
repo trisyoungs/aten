@@ -75,12 +75,12 @@ class ForcefieldBound : public ListItem<ForcefieldBound>
 	bool setForm(QString form);
 	// Set the parameter data specified
 	void setParameter(int i, double d);
-	// Return parameter data specified
+	// Return parameter data specifiedz
 	double parameter(int i) const;
 	// Return pointer to parameter array
 	double* parameters();
 	// Return the atom type 'n'
-	QString typeName( int n ) const;
+	QString typeName(int n) const;
 	// Return the atom type array
 	QString* typeNames();
 	// Set the atom type 'n'

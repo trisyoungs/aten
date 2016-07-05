@@ -377,6 +377,8 @@ class Model : public ListItem<Model>
 	int nSelected() const;
 	// Return the number of marked atoms
 	int nMarked() const;
+	// Return list of selected (marked) atoms
+	const RefList<Atom,int> selectedAtoms(bool markOnly = false) const;
 	// Mark all atoms
 	void markAll();
 	// Match marked atoms to current selection

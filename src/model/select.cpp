@@ -194,6 +194,12 @@ int Model::nMarked() const
 	return marked_.nItems();
 }
 
+// Return list of selected (marked) atoms
+const RefList<Atom,int> Model::selectedAtoms(bool markOnly) const
+{
+	return (markOnly ? marked_ : selection_);
+}
+
 // Mark all atoms in model
 void Model::markAll()
 {

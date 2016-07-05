@@ -618,12 +618,10 @@ class Prefs
 	void setDensityUnit(Prefs::DensityUnit du);
 	// Return the current density units to use
 	DensityUnit densityUnit() const;
-	// Set energy unit to use for automatic conversion of forcefield parameters when accessed through filters
-	void setAutoConversionUnit(Prefs::EnergyUnit eu);
-	// Return energy unit to use for automatic conversion of forcefield parameters when accessed through filters
-	EnergyUnit autoConversionUnit() const;
-	// Convert the units of the given quantity to the specified unit (default is current internal unit)
-	double convertEnergy(double energy, Prefs::EnergyUnit fromUnit, Prefs::EnergyUnit toUnit = Prefs::nEnergyUnits) const;
+	// Convert the energy given into the current internal units
+	double convertEnergyFrom(double energy, Prefs::EnergyUnit fromUnit) const;
+	// Convert the energy given from the current internal units into the specified units
+	double convertEnergyTo(double energy, Prefs::EnergyUnit toUnit) const;
 	// Return the electrostastic energy conversion factor
 	double elecConvert() const;
 	// Return the gas constant in the current unit of energy

@@ -591,6 +591,20 @@ bool Pattern::atomsInRing(int id_i, int id_j)
 	return false;
 }
 
+// Returns whether atom id i is in a ring, or both atoms i and j are in the same ring
+bool Pattern::atomsInRing(Atom* i, Atom* j)
+{
+	if (j == NULL)
+	{
+		for (Ring *r = rings_.first(); r != NULL; r = r->next) if (r->containsAtom(i)) return true;
+	}
+	else
+	{
+		for (Ring *r = rings_.first(); r != NULL; r = r->next) if ((r->containsAtom(i)) && (r->containsAtom(j))) return true;
+	}
+	return false;
+}
+
 // Initialise
 void Pattern::initialise(int patid, int start, int mols, int atomsmol)
 {
@@ -618,14 +632,7 @@ void Pattern::initialise(int patid, int start, int mols, int atomsmol)
 		Messenger::print("Initial atom in pattern is past end of model's atom list (%i).",endAtom_);
 		firstAtom_ = NULL;
 	}
-	else
-	{
-		// Get the first atom in the list
-		Atom* i = parent_->atoms();
-		// Skip past atoms until we get to startAtom_ (ranges from 0 upwards)
-		for (int n=0; n<startAtom_; n++) i = i->next;
-		firstAtom_ = i;
-	}
+	else firstAtom_ = parent_->atom(startAtom_);
 	Messenger::print(Messenger::Verbose, "New pattern node : start=%i, nMols=%i, nAtoms/mol=%i, totalAtoms=%i, name=%s", startAtom_+1, nMolecules_, nAtoms_, totalAtoms_, qPrintable(name_));
 
 	Messenger::exit("Pattern::initialise");

@@ -181,14 +181,14 @@ bool Aten::exportModel(Model* sourceModel, QString filename, FilePluginInterface
 {
 	Messenger::enter("Aten::exportModel");
 
-	if (filename.isEmpty() || (plugin == NULL) || (plugin->category() != PluginTypes::ModelFilePlugin) || (plugin->canExport()))
+	if (filename.isEmpty() || (plugin == NULL) || (plugin->category() != PluginTypes::ModelFilePlugin) || (!plugin->canExport()))
 	{
 		// Need to raise the save model dialog to get a valid name and/or plugin
 		if (atenWindow_->saveModelDialog().execute(pluginStore_.logPoint(), filename, plugin))
 		{
 			filename = atenWindow_->saveModelDialog().selectedFilenames().at(0);
 			plugin = atenWindow_->saveModelDialog().selectedPlugin();
-			if (plugin == NULL) plugin = pluginStore_.findFilePlugin(PluginTypes::ModelFilePlugin, PluginTypes::ImportPlugin, filename);
+			if (plugin == NULL) plugin = pluginStore_.findFilePlugin(PluginTypes::ModelFilePlugin, PluginTypes::ExportPlugin, filename);
 		}
 		else
 		{
@@ -198,7 +198,7 @@ bool Aten::exportModel(Model* sourceModel, QString filename, FilePluginInterface
 	}
 
 	// Now do we have a valid filename and plugin?
-	if ((!filename.isEmpty()) && (plugin) && (plugin->category() == PluginTypes::ModelFilePlugin) && (plugin->canExport()))
+	if ((!filename.isEmpty()) && (plugin) && (plugin->category() == PluginTypes::ModelFilePlugin) && (!plugin->canExport()))
 	{
 		// Temporarily disable undo/redo for the model
 		sourceModel->disableUndoRedo();

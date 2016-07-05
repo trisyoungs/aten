@@ -151,7 +151,7 @@ void PluginStore::showFilePluginNicknames(PluginTypes::FilePluginCategory catego
 		Messenger::print("  <None Available>");
 		return;
 	}
-	else for (RefListItem<FilePluginInterface,int>* ri = filePlugins_[category].first(); ri != NULL; ri = ri->next)
+	else for (RefListItem<FilePluginInterface,int>* ri = plugins.first(); ri != NULL; ri = ri->next)
 	{
 		FilePluginInterface* plugin = ri->item;
 

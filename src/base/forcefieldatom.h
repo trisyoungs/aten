@@ -74,10 +74,6 @@ class ForcefieldAtom : public ListItem<ForcefieldAtom>
 	// Variable list of data items
 	VariableList data_;
 
-
-	/*
-	 * Set / Get
-	 */
 	public:
 	// Set parent forcefield
 	void setParent(Forcefield* ff);

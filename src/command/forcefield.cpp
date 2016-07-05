@@ -53,26 +53,6 @@ bool Commands::function_AngleDef(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	return true;
 }
 
-// Cet current autoconversion unit
-bool Commands::function_AutoConversionUnit(CommandNode* c, Bundle& obj, ReturnValue& rv)
-{
-	// Check that a valid file source/destination exists.
-	// ATEN2 TODO ENDOFFILTERS
-// 	if (!c->parent()->isFilter())
-// 	{
-// 		Messenger::print("The 'autoconversionunit' command can only be used from within a Filter.");
-// 		return false;
-// 	}
-// 	if (c->hasArg(0))
-// 	{
-// 		Prefs::EnergyUnit eu = Prefs::energyUnit(c->argc(0), true);
-// 		if (eu == Prefs::nEnergyUnits) return false;
-// 		else prefs.setAutoConversionUnit(eu);
-// 	}
-// 	else prefs.setAutoConversionUnit(Prefs::nEnergyUnits);
-	return true;
-}
-
 // Add a new bond definition to the current forcefield
 bool Commands::function_BondDef(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {

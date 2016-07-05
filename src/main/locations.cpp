@@ -89,12 +89,12 @@ void Aten::setDirectories()
 	QStringList dataDirPaths;
 	if (dataDir_ != QDir()) dataDirPaths << dataDir_.path();
 	else if (getenv("ATENDATA") != '\0') dataDirPaths << getenv("ATENDATA");
-	dataDirPaths << "/usr/share/aten";
-	dataDirPaths << "/usr/local/share/aten";
-	dataDirPaths << "../share/aten";
 	dataDirPaths << QApplication::applicationDirPath() + "/../share/aten";
 	dataDirPaths << QApplication::applicationDirPath() + "/../SharedSupport";
 	dataDirPaths << QApplication::applicationDirPath() + "/..";
+	dataDirPaths << "/usr/share/aten";
+	dataDirPaths << "/usr/local/share/aten";
+	dataDirPaths << "../share/aten";
 
 	// Check each one until we find one that exists
 	dataDir_ = QDir();
@@ -115,14 +115,14 @@ void Aten::setDirectories()
 	QStringList pluginDirPaths;
 	if (pluginDir_ != QDir()) pluginDirPaths << pluginDir_.path();
 	else if (getenv("ATENPLUGINS") != '\0') pluginDirPaths << getenv("ATENPLUGINS");
+	pluginDirPaths << QApplication::applicationDirPath() + "/../share/aten/plugins";
+	pluginDirPaths << QApplication::applicationDirPath() + "/../SharedSupport/plugins";
+	pluginDirPaths << QApplication::applicationDirPath() + "/../plugins";
 	pluginDirPaths << "/usr/lib64/aten/plugins";
 	pluginDirPaths << "/usr/lib/aten/plugins";
 	pluginDirPaths << "/usr/local/lib64/aten/plugins";
 	pluginDirPaths << "/usr/local/lib/aten/plugins";
 	pluginDirPaths << "../share/aten/plugins";
-	pluginDirPaths << QApplication::applicationDirPath() + "/../share/aten/plugins";
-	pluginDirPaths << QApplication::applicationDirPath() + "/../SharedSupport/plugins";
-	pluginDirPaths << QApplication::applicationDirPath() + "/../plugins";
 	pluginDirPaths << dataDirectoryFile("plugins");
 
 	// Check each one until we find one that exists

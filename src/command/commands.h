@@ -264,7 +264,6 @@ class Commands
 	
 		// Forcefield/Expression Commands
 		AngleDef,
-		AutoConversionUnit,
 		BondDef,
 		ClearExportMap,
 		ClearExpression,
@@ -720,7 +719,6 @@ class Commands
 	bool function_PrintForces(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	// Forcefield Commands
 	bool function_AngleDef(CommandNode* c, Bundle& obj, ReturnValue& rv);
-	bool function_AutoConversionUnit(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_BondDef(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_ClearExportMap(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_ClearExpression(CommandNode* c, Bundle& obj, ReturnValue& rv);

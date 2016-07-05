@@ -171,22 +171,8 @@ bool ForcefieldBoundVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasA
 	if (result) switch (acc)
 	{
 		case (ForcefieldBoundVariable::Data):
-			if (hasArrayIndex)
-			{
-				rv.set(ptr->parameter(arrayIndex-1));
-				// Autoconversion of energy parameters?
-				if ((prefs.autoConversionUnit() != Prefs::nEnergyUnits) && BondFunctions::functionData[ptr->bondForm()].isEnergyParameter[arrayIndex-1]) rv.set( prefs.convertEnergy(rv.asDouble(), prefs.energyUnit(), prefs.autoConversionUnit()) );
-			}
-			else
-			{
-				rv.setArray(VTypes::DoubleData, ptr->parameters(), MAXFFPARAMDATA);
-				// Autoconversion of energy parameters?
-				if (prefs.autoConversionUnit() != Prefs::nEnergyUnits)
-				{
-					for (n = 0; n<MAXFFPARAMDATA; ++n) if (BondFunctions::functionData[ptr->bondForm()].isEnergyParameter[n])
-						rv.setElement(n, prefs.convertEnergy(ptr->parameter(n), prefs.energyUnit(), prefs.autoConversionUnit()) );
-				}
-			}
+			if (hasArrayIndex) rv.set(ptr->parameter(arrayIndex-1));
+			else rv.setArray(VTypes::DoubleData, ptr->parameters(), MAXFFPARAMDATA);
 			break;
 		case (ForcefieldBoundVariable::DataKeyword):
 			// Must have an array index here...
@@ -384,33 +370,18 @@ bool ForcefieldBoundVariable::performFunction(int i, ReturnValue& rv, TreeNode* 
 				case (ForcefieldBound::UreyBradleyInteraction):
 					id = BondFunctions::bondParameter(ptr->bondForm(), node->argc(0), true);
 					if (id == BondFunctions::functionData[ptr->bondForm()].nParameters) result = false;
-					else
-					{
-						// Autoconversion of energy parameters?
-						if ((prefs.autoConversionUnit() != Prefs::nEnergyUnits) && BondFunctions::functionData[ptr->bondForm()].isEnergyParameter[id]) rv.set( prefs.convertEnergy(ptr->parameter(id), prefs.energyUnit(), prefs.autoConversionUnit()) );
-						else rv.set(ptr->parameter(id));
-					}
+					else rv.set(ptr->parameter(id));
 					break;
 				case (ForcefieldBound::AngleInteraction):
 					id = AngleFunctions::angleParameter(ptr->angleForm(), node->argc(0), true);
 					if (id == AngleFunctions::functionData[ptr->angleForm()].nParameters) result = false;
-					else
-					{
-						// Autoconversion of energy parameters?
-						if ((prefs.autoConversionUnit() != Prefs::nEnergyUnits) && AngleFunctions::functionData[ptr->angleForm()].isEnergyParameter[id]) rv.set( prefs.convertEnergy(ptr->parameter(id), prefs.energyUnit(), prefs.autoConversionUnit()) );
-						else rv.set(ptr->parameter(id));
-					}
+					else rv.set(ptr->parameter(id));
 					break;
 				case (ForcefieldBound::TorsionInteraction):
 				case (ForcefieldBound::ImproperInteraction):
 					id = TorsionFunctions::torsionParameter(ptr->torsionForm(), node->argc(0), true);
 					if (id == TorsionFunctions::functionData[ptr->torsionForm()].nParameters) result = false;
-					else
-					{
-						// Autoconversion of energy parameters?
-						if ((prefs.autoConversionUnit() != Prefs::nEnergyUnits) && TorsionFunctions::functionData[ptr->torsionForm()].isEnergyParameter[id]) rv.set( prefs.convertEnergy(ptr->parameter(id), prefs.energyUnit(), prefs.autoConversionUnit()) );
-						else rv.set(ptr->parameter(id));
-					}
+					else rv.set(ptr->parameter(id));
 					break;
 			}
 			break;
