@@ -1,6 +1,6 @@
 /*
-        *** QuantumEspresso Model Plugin Functions
-        *** src/plugins/io_espresso/espresso_funcs.cpp
+        *** QuantumEspresso Input Export Plugin Functions
+        *** src/plugins/io_espresso/espressoin_funcs.cpp
         Copyright T. Youngs 2016-2016
 
         This file is part of Aten.
@@ -19,16 +19,16 @@
         along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "plugins/io_espresso/espresso.hui"
+#include "plugins/io_espresso/espressoin.hui"
 #include "model/model.h"
 
 // Constructor
-QuantumEspressoModelPlugin::QuantumEspressoModelPlugin()
+QEInModelPlugin::QEInModelPlugin()
 {
 }
 
 // Destructor
-QuantumEspressoModelPlugin::~QuantumEspressoModelPlugin()
+QEInModelPlugin::~QEInModelPlugin()
 {
 }
 
@@ -37,9 +37,9 @@ QuantumEspressoModelPlugin::~QuantumEspressoModelPlugin()
  */
 
 // Return a copy of the plugin object
-FilePluginInterface* QuantumEspressoModelPlugin::makeCopy()
+FilePluginInterface* QEInModelPlugin::makeCopy()
 {
-	return new QuantumEspressoModelPlugin;
+	return new QEInModelPlugin;
 }
 
 /*
@@ -47,37 +47,37 @@ FilePluginInterface* QuantumEspressoModelPlugin::makeCopy()
  */
 
 // Return category of plugin
-PluginTypes::FilePluginCategory QuantumEspressoModelPlugin::category() const
+PluginTypes::FilePluginCategory QEInModelPlugin::category() const
 {
 	return PluginTypes::ModelFilePlugin;
 }
 
 // Name of plugin
-QString QuantumEspressoModelPlugin::name() const
+QString QEInModelPlugin::name() const
 {
-	return QString("QuantumEspresso (dlputils) 3D probability density");
+	return QString("QuantumEspresso input file");
 }
 
 // Nickname of plugin
-QString QuantumEspressoModelPlugin::nickname() const
+QString QEInModelPlugin::nickname() const
 {
 	return QString("espresso");
 }
 
 // Description (long name) of plugin
-QString QuantumEspressoModelPlugin::description() const
+QString QEInModelPlugin::description() const
 {
-	return QString("Import/export for dlputils QuantumEspresso files");
+	return QString("Export for QuantumEspresso input files");
 }
 
 // Related file extensions
-QStringList QuantumEspressoModelPlugin::extensions() const
+QStringList QEInModelPlugin::extensions() const
 {
-	return QStringList() << "espresso";
+	return QStringList() << "in";
 }
 
 // Exact names
-QStringList QuantumEspressoModelPlugin::exactNames() const
+QStringList QEInModelPlugin::exactNames() const
 {
 	return QStringList();
 }
@@ -87,14 +87,17 @@ QStringList QuantumEspressoModelPlugin::exactNames() const
  */
 
 // Return whether this plugin can import data
-bool QuantumEspressoModelPlugin::canImport()
+bool QEInModelPlugin::canImport()
 {
-	return true;
+	return false;
 }
 
 // Import data from the specified file
-bool QuantumEspressoModelPlugin::importData()
+bool QEInModelPlugin::importData()
 {
+	return false;
+}
+
 //filter(type="exportmodel", name="Quantum Espresso Input", nickname="qe", extension="in", glob="*.in", id=15)
 //{
 //	# Pseudopotential Data (Basic set from supplied pseudos)
@@ -169,7 +172,86 @@ bool QuantumEspressoModelPlugin::importData()
 //	group.addCombo("ion_positions", "Ion Positions", "'default', 'from_input'", 1, 1, 1);
 //	# -- Widget relationships
 //	w = ui.widget("control_calculation");
-//	w.onInteger(4, 7, "sendbool", "iongroup", "enabled");
+//	w.onInteger(4, 7, "sendbool"//filter(type="importmodel", name="Quantum Espresso Output (PWSCF)", nickname="qepwscf", extension="out", glob="*.out", search="PWSCF")
+//{
+//	# Variable declaration
+//	int nAtoms, nConfigs = 1, atomForces = FALSE;
+//	string keywd, discard, line, alatKeywd, el;
+//	UnitCell ucell = new UnitCell;
+//	double alat, x, y, z;
+//	removeReadOption("skipblanks");
+//
+//	# Locate lattice coordinate and number of atoms
+//	if (find("lattice parameter", line))
+//	{
+//		addReadOption("stripbrackets");
+//		readVar(line, discard, discard, alatKeywd, discard, alat);
+//		removeReadOption("stripbrackets");
+//		alat *= 0.52917720859;
+//		printf("Lattice parameter (%s) is %f Angstroms\n", alatKeywd, alat);
+//	}
+//	else printf("Failed to find lattice parameter.\n");
+//
+//	# Find number of atoms per basic cell
+//	if (find("number of atoms/cell", line))
+//	{
+//		readVar(line,discard,discard,discard,discard,nAtoms);
+//		printf("Number of atoms in cell = %i\n", nAtoms); 
+//	}
+//	else error("Failed to find number of atoms in cell.");
+//
+//	# Read initial cell and coordinates
+//	if (!readPWCell(ucell, alat, alatKeywd)) error("Failed to find any cell parameters");
+//	Model m = newModel(filterFilename());
+//	m.cell.copy(ucell);
+//	if (!readPWAtoms(m, nAtoms, alat, alatKeywd)) error("No atomic coordinates found.");
+//	rebond();
+//	# Atomic forces?
+//	atomForces = readPWForces(m);
+//
+//	# Any other configurations, e.g. from geometry optimisation or MD?
+//	while (!eof())
+//	{
+//		# Attempt to find new cell information
+//		if (readPWCellFrame(ucell, alat, alatKeywd))
+//		{
+//			++nConfigs;
+//			m = addFrame(toa("Frame %i",nConfigs));
+//			m.cell.copy(ucell);
+//			if (!readPWAtomsFrame(m, nAtoms))
+//			{
+//				printf("Failed to find atom coordinates for frame %i\n", nConfigs);
+//				finaliseFrame();
+//				break;
+//			}
+//			# Atomic forces?
+//			if (atomForces) readPWForces(m);
+//		}
+//		else if (find("ATOMIC_POSITIONS", line))
+//		{
+//			m = addFrame(toa("Frame %i",nConfigs));
+//			m.cell.copy(ucell);
+//
+//			// Parse 'line' to find how the coordinates are specified
+//			readVar(line, discard, keywd);
+//			for (int n=0; n<nAtoms; ++n)
+//			{
+//				readLine(el, x, y, z);
+//				if (keywd == "(crystal)") newAtomFrac(el, x, y, z);
+//				else
+//				{
+//					printf("Unrecognised coordinate system in ATOMIC_POSITIONS : %s\n", keywd);
+//					newAtom(el, x, y, z);
+//				}
+//			}
+//		}
+//		else break;
+//
+//		// Rebond and finalise frame
+//		rebond();
+//		finaliseFrame();
+//	}
+//	finaliseModel();
 //	w.onInteger(4, 4, "set", "cell_dynamics", "items", "'bfgs', 'damp'");
 //	w.onInteger(5, 5, "set", "cell_dynamics", "items", "'verlet', 'langevin'");
 //	w.onInteger(6, 6, "set", "cell_dynamics", "items", "'bfgs', 'damp'");
@@ -401,111 +483,27 @@ bool QuantumEspressoModelPlugin::importData()
 //	return 1;
 //}
 //
-//filter(type="importmodel", name="Quantum Espresso Output (PWSCF)", nickname="qepwscf", extension="out", glob="*.out", search="PWSCF")
-//{
-//	# Variable declaration
-//	int nAtoms, nConfigs = 1, atomForces = FALSE;
-//	string keywd, discard, line, alatKeywd, el;
-//	UnitCell ucell = new UnitCell;
-//	double alat, x, y, z;
-//	removeReadOption("skipblanks");
-//
-//	# Locate lattice coordinate and number of atoms
-//	if (find("lattice parameter", line))
-//	{
-//		addReadOption("stripbrackets");
-//		readVar(line, discard, discard, alatKeywd, discard, alat);
-//		removeReadOption("stripbrackets");
-//		alat *= 0.52917720859;
-//		printf("Lattice parameter (%s) is %f Angstroms\n", alatKeywd, alat);
-//	}
-//	else printf("Failed to find lattice parameter.\n");
-//
-//	# Find number of atoms per basic cell
-//	if (find("number of atoms/cell", line))
-//	{
-//		readVar(line,discard,discard,discard,discard,nAtoms);
-//		printf("Number of atoms in cell = %i\n", nAtoms); 
-//	}
-//	else error("Failed to find number of atoms in cell.");
-//
-//	# Read initial cell and coordinates
-//	if (!readPWCell(ucell, alat, alatKeywd)) error("Failed to find any cell parameters");
-//	Model m = newModel(filterFilename());
-//	m.cell.copy(ucell);
-//	if (!readPWAtoms(m, nAtoms, alat, alatKeywd)) error("No atomic coordinates found.");
-//	rebond();
-//	# Atomic forces?
-//	atomForces = readPWForces(m);
-//
-//	# Any other configurations, e.g. from geometry optimisation or MD?
-//	while (!eof())
-//	{
-//		# Attempt to find new cell information
-//		if (readPWCellFrame(ucell, alat, alatKeywd))
-//		{
-//			++nConfigs;
-//			m = addFrame(toa("Frame %i",nConfigs));
-//			m.cell.copy(ucell);
-//			if (!readPWAtomsFrame(m, nAtoms))
-//			{
-//				printf("Failed to find atom coordinates for frame %i\n", nConfigs);
-//				finaliseFrame();
-//				break;
-//			}
-//			# Atomic forces?
-//			if (atomForces) readPWForces(m);
-//		}
-//		else if (find("ATOMIC_POSITIONS", line))
-//		{
-//			m = addFrame(toa("Frame %i",nConfigs));
-//			m.cell.copy(ucell);
-//
-//			// Parse 'line' to find how the coordinates are specified
-//			readVar(line, discard, keywd);
-//			for (int n=0; n<nAtoms; ++n)
-//			{
-//				readLine(el, x, y, z);
-//				if (keywd == "(crystal)") newAtomFrac(el, x, y, z);
-//				else
-//				{
-//					printf("Unrecognised coordinate system in ATOMIC_POSITIONS : %s\n", keywd);
-//					newAtom(el, x, y, z);
-//				}
-//			}
-//		}
-//		else break;
-//
-//		// Rebond and finalise frame
-//		rebond();
-//		finaliseFrame();
-//	}
-//	finaliseModel();
-//}
-
-	return true;
-}
 
 // Return whether this plugin can export data
-bool QuantumEspressoModelPlugin::canExport()
+bool QEInModelPlugin::canExport()
 {
 	return false;
 }
 
 // Export data to the specified file
-bool QuantumEspressoModelPlugin::exportData()
+bool QEInModelPlugin::exportData()
 {
 	return false;
 }
 
 // Import next partial data chunk
-bool QuantumEspressoModelPlugin::importNextPart()
+bool QEInModelPlugin::importNextPart()
 {
 	return false;
 }
 
 // Skip next partial data chunk
-bool QuantumEspressoModelPlugin::skipNextPart()
+bool QEInModelPlugin::skipNextPart()
 {
 	return false;
 }
@@ -515,25 +513,25 @@ bool QuantumEspressoModelPlugin::skipNextPart()
  */
 
 // Return whether the plugin has import options
-bool QuantumEspressoModelPlugin::hasImportOptions()
+bool QEInModelPlugin::hasImportOptions()
 {
 	return false;
 }
 
 // Show import options dialog
-bool QuantumEspressoModelPlugin::showImportOptionsDialog()
+bool QEInModelPlugin::showImportOptionsDialog()
 {
 	return false;
 }
 
 // Return whether the plugin has export options
-bool QuantumEspressoModelPlugin::hasExportOptions()
+bool QEInModelPlugin::hasExportOptions()
 {
 	return false;
 }
 
 // Show export options dialog
-bool QuantumEspressoModelPlugin::showExportOptionsDialog()
+bool QEInModelPlugin::showExportOptionsDialog()
 {
 	return false;
 }
