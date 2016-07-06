@@ -31,6 +31,7 @@
 // Forward Declarations (Qt)
 class TPopupWidget;
 class AtenWindow;
+class QStyleOption;
 
 ATEN_USING_NAMESPACE
 
@@ -97,6 +98,7 @@ class TMenuButton : public QToolButton
 
 	protected:
 	void paintEvent(QPaintEvent* event);
+	void drawEllipsis(QStyleOption& style, QPainter& painter);
 
 	private slots:
 	// Mouse button was pressed on the button

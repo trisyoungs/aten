@@ -25,26 +25,21 @@
 #include <QLayout>
 #include <QStyle>
 
-// Static Members
-// -- TMenuButton Icon Sizes
-int TDynamicLayout::menuButtonIconSizeNormal_ = 30;
-int TDynamicLayout::menuButtonIconSizeSmall_ = 18;
-int TDynamicLayout::menuButtonIconSizeSmallest_ = 10;
-
 // Constructors
 TDynamicLayout::TDynamicLayout(QWidget *parent, int margin, int hSpacing, int vSpacing) : QLayout(parent)
 {
 	setContentsMargins(margin, margin, margin, margin);
-	horizontalSpacing_ = hSpacing;
-	verticalSpacing_ = vSpacing;
-	preferredSize_= QSize(2*margin, 2*margin);
+	horizontalSpacing_ = (hSpacing == -1 ? 4 : hSpacing);
+	verticalSpacing_ = (vSpacing == -1 ? 4 : vSpacing);
+	currentLayoutStyle_ = TDynamicLayout::FullSizeHorizontalLayout;
 }
 
 TDynamicLayout::TDynamicLayout(int margin, int hSpacing, int vSpacing) : QLayout(NULL)
 {
 	setContentsMargins(margin, margin, margin, margin);
-	horizontalSpacing_ = hSpacing;
-	verticalSpacing_ = vSpacing;
+	horizontalSpacing_ = (hSpacing == -1 ? 4 : hSpacing);
+	verticalSpacing_ = (vSpacing == -1 ? 4 : vSpacing);
+	currentLayoutStyle_ = TDynamicLayout::FullSizeHorizontalLayout;
 }
 
 // Destructor
@@ -70,16 +65,6 @@ void TDynamicLayout::addItem(QLayoutItem *item)
 		printf("Internal Error: TDynamicLayout was given a widget of an unsuitable type.\n");
 		return;
 	}
-
-	// First item? If so, work out a few other constants from it
-	if (items_.count() == 1)
-	{
-		preferredSize_ += button->minimumSize();
-		twoPerRowHeight_ = (button->minimumHeight() - verticalSpacing_) / 2;
-		threePerRowHeight_ = (button->minimumHeight() - 2*verticalSpacing_) / 3;
-	}
-	else preferredSize_ += QSize(button->minimumWidth() + horizontalSpacing_, 0);
-	printf("Preferred size now %i,%i\n", preferredSize_.width(), preferredSize_.height());
 }
 
 int TDynamicLayout::count() const
@@ -107,59 +92,177 @@ Qt::Orientations TDynamicLayout::expandingDirections() const
 // Return minimum possible size for layout
 QSize TDynamicLayout::minimumSize() const
 {
-	// Calculate minimum space required by the TMenuButtons
-	QSize size;
-	// TEST
-	return QSize(preferredSize_;
+	return sizeHints_[TDynamicLayout::IconStackLayout];
 }
 
 // Set new geometry for the layout
 void TDynamicLayout::setGeometry(const QRect &rect)
 {
 	QLayout::setGeometry(rect);
-	layoutWidgets(rect);
+	printf("SETGEOMETRY was called: available width = %i, available height = %i, right = %i\n", rect.width(), rect.height(), rect.right());
+
+	QSize usedSize;
+	// Let us see what will fit!
+	// Is the supplied rect (in particular the width) big enough to fulfil the sizeHint()
+	if (rect.width() >= sizeHints_[TDynamicLayout::FullSizeHorizontalLayout].width())
+	{
+		// Layout buttons at full size
+		usedSize = layoutWidgets(TDynamicLayout::FullSizeHorizontalLayout);
+		currentLayoutStyle_ = TDynamicLayout::FullSizeHorizontalLayout;
+	}
+	else
+	{
+		// First try the stacked approach. If this is still too wide, go for single icon stack
+		usedSize = layoutWidgets(TDynamicLayout::ButtonStackLayout);
+		currentLayoutStyle_ = TDynamicLayout::ButtonStackLayout;
+		if (usedSize.width() > rect.width())
+		{
+			usedSize = layoutWidgets(TDynamicLayout::IconStackLayout);
+			currentLayoutStyle_ = TDynamicLayout::IconStackLayout;
+		}
+	}
+
+	// Store new size for current layout
+	sizeHints_[currentLayoutStyle_] = usedSize;
+	// Set geometry of parent to ideal size
+// 	parentWidget()->setGeometry(parentWidget()->x(), parentWidget()->y(), usedSize.width(), usedSize.height());
 }
 
 // Return size hint
 QSize TDynamicLayout::sizeHint() const
 {
-	return preferredSize_;
+	// If we already have a valid size for the current layout, return that?
+	if (sizeHints_[TDynamicLayout::FullSizeHorizontalLayout].isValid())
+	{
+		printf("sizehint is returning %ix%i\n", sizeHints_[FullSizeHorizontalLayout].width(), sizeHints_[FullSizeHorizontalLayout].height());
+		return sizeHints_[FullSizeHorizontalLayout];
+	}
+
+	// Otherwise, work out maximum size based on current widget geometries
+	QSize size;
+	for (int n=0; n<count(); ++n)
+	{
+		if (n == 0) size = itemAt(n)->sizeHint();
+		else size += QSize(itemAt(n)->sizeHint().width() + horizontalSpacing_, 0);
+	}
+	printf("sizehint calculated and returned %ix%i\n", size.width(), size.height());
+	return size;
 }
 
 /*
  * Internal Data
  */
 
-// Layout widgets
-bool TDynamicLayout::layoutWidgets(QRect area, bool calculateOnly)
+// Layout widgets to the specified style, returning the size used
+QSize TDynamicLayout::layoutWidgets(LayoutStyle layoutStyle)
 {
+	// Get margins and adjust available area
 	int left, top, right, bottom;
 	getContentsMargins(&left, &top, &right, &bottom);
-	QRect effectiveRect = area.adjusted(+left, +top, -right, -bottom);
-	int x = effectiveRect.x();
-	int y = effectiveRect.y();
-	int lineHeight = 0;
+	printf("contents margins = %i %i %i %i\n", left, top, right, bottom);
+	int w = 0;
+	int h = 0;
+
+	// Construct our list of TMenuButtons for convenience
 	QLayoutItem *item;
-	foreach (item, items_) {
-	QWidget *wid = item->widget();
-	int spaceX = horizontalSpacing_;
-	if (spaceX == -1) spaceX = wid->style()->layoutSpacing(QSizePolicy::PushButton, QSizePolicy::PushButton, Qt::Horizontal);
-	int spaceY = verticalSpacing_;
-	if (spaceY == -1) spaceY = wid->style()->layoutSpacing(QSizePolicy::PushButton, QSizePolicy::PushButton, Qt::Vertical);
-	int nextX = x + item->sizeHint().width() + spaceX;
-	if (nextX - spaceX > effectiveRect.right() && lineHeight > 0)
+	RefList<TMenuButton,int> buttons;
+	foreach (item, items_)
 	{
-		x = effectiveRect.x();
-		y = y + lineHeight + spaceY;
-		nextX = x + item->sizeHint().width() + spaceX;
-		lineHeight = 0;
+		// Grab the widget and cast it into a TMenuButton
+		QWidget *wid = item->widget();
+		TMenuButton* button = qobject_cast<TMenuButton*>(wid);
+		if (!button)
+		{
+			printf("Internal Error: Couldn't cast TDynamicLayout child widget into a TMenuButton.\n");
+			return QSize();
+		}
+		buttons.add(button);
 	}
 
-	if (!calculateOnly)
-		item->setGeometry(QRect(QPoint(x, y), item->sizeHint()));
+	int requiredWidth = 0, fixedHeight = (66-2*verticalSpacing_)/3;
+	switch (layoutStyle)
+	{
+		// Full-size (normal) buttons
+		case (TDynamicLayout::FullSizeHorizontalLayout):
+			for (RefListItem<TMenuButton,int>* ri = buttons.first(); ri != NULL; ri = ri->next)
+			{
+				TMenuButton* button = ri->item;
 
-	x = nextX;
-	lineHeight = qMax(lineHeight, item->sizeHint().height());
+				// Set button style: ToolButtonTextUnderIcon, height = 66px, preferred width
+				button->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
+				button->setMinimumSize(24, 66);
+				button->setMaximumSize(256, 66);
+				button->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Maximum);
+
+				button->setGeometry(QRect(QPoint(left+w, top), button->sizeHint()));
+
+				w += button->sizeHint().width() + horizontalSpacing_;
+				h = 66;
+			}
+			break;
+		case (TDynamicLayout::ButtonStackLayout):
+			// First, set button style and get maximum hinted width over all buttons
+			requiredWidth = 0;
+			for (RefListItem<TMenuButton,int>* ri = buttons.first(); ri != NULL; ri = ri->next)
+			{
+				TMenuButton* button = ri->item;
+				button->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
+				if (button->sizeHint().width() > requiredWidth) requiredWidth = button->sizeHint().width();
+			}
+
+			// Now set button geometries
+			for (RefListItem<TMenuButton,int>* ri = buttons.first(); ri != NULL; ri = ri->next)
+			{
+				TMenuButton* button = ri->item;
+
+				// Set button style: ToolButtonTextBesideIcon, fixed height, horizontal width to maximum required for buttons
+				button->setMinimumSize(requiredWidth, fixedHeight);
+				button->setMaximumSize(requiredWidth, fixedHeight);
+				button->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Preferred);
+
+				button->setGeometry(QRect(left, top+h, requiredWidth, fixedHeight));
+
+				h += fixedHeight + verticalSpacing_;
+				w = requiredWidth;
+			}
+			break;
+		case (TDynamicLayout::IconStackLayout):
+			for (RefListItem<TMenuButton,int>* ri = buttons.first(); ri != NULL; ri = ri->next)
+			{
+				TMenuButton* button = ri->item;
+
+				// Set button style: ToolButtonIconOnly, fixed height == fixed width
+				button->setToolButtonStyle(Qt::ToolButtonIconOnly);
+				button->setMaximumHeight(fixedHeight);
+				button->setMaximumWidth(fixedHeight);
+				button->setSizePolicy(QSizePolicy::Maximum, QSizePolicy::Maximum);
+
+				button->setGeometry(QRect(left, top+h, fixedHeight, fixedHeight));
+
+				h += fixedHeight + verticalSpacing_;
+				w = fixedHeight;
+			}
+			break;
 	}
-    return y + lineHeight - area.y() + bottom;
+// 		printf("Item %p, x = %i, itemWidth = %i\n", item, left+w, item->sizeHint().width());
+// 
+// 		// Set geometry of item (actually, just position), and get position of next widget
+// 		if (layoutStyle == TDynamicLayout::FullSizeHorizontalLayout)
+// 		{
+// 			item->setGeometry(QRect(QPoint(left+w, top), item->sizeHint()));
+// 
+// 			w += item->sizeHint().width() + horizontalSpacing_;
+// 			h = top + item->sizeHint().height();
+// 		}
+// 		else
+// 		{
+// 			item->setGeometry(QRect(left, top+h, 64, 20));
+// 
+// 			h += item->sizeHint().height() + verticalSpacing_;
+// 			if (item->sizeHint().width() > w) w = item->sizeHint().width();
+// 		}
+// 	}
+
+	// Return total size used by layout (including any contents margin)
+	return QSize(w+left+right, h+top+bottom);
 }

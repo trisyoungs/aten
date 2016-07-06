@@ -203,7 +203,7 @@ void TMenuButton::paintEvent(QPaintEvent* event)
 	}
 	else
 	{
-		if (inner.toolButtonStyle != Qt::ToolButtonIconOnly)
+		if (inner.toolButtonStyle == Qt::ToolButtonTextUnderIcon)
 		{
 			// Draw arrow (if there is an associated popupwidget)
 			QRect arrowRect = rect.translated(0, -2);
@@ -215,48 +215,7 @@ void TMenuButton::paintEvent(QPaintEvent* event)
 				arrowOpt.rect = arrowRect;
 				arrowOpt.palette = inner.palette;
 				arrowOpt.state = inner.state;
-				if (!instantPopup_)
-				{
-					if (!(inner.state & QStyle::State_Enabled))
-					{
-						painter.translate(1, 1);
-						painter.setBrush(arrowOpt.palette.light().color());
-						painter.setPen(arrowOpt.palette.light().color());
-						painter.drawEllipse(arrowRect.center(), 2, 2);
-						painter.drawEllipse(arrowRect.center()-QPoint(arrowRect.width()/6,0), 2, 2);
-						painter.drawEllipse(arrowRect.center()+QPoint(arrowRect.width()/6,0), 2, 2);
-						painter.translate(-1, -1);
-						painter.setBrush(arrowOpt.palette.mid().color());
-						painter.setPen(arrowOpt.palette.mid().color());
-					}
-					else if (inner.state & QStyle::State_MouseOver)
-					{
-						painter.translate(1, 1);
-						painter.setBrush(arrowOpt.palette.mid().color());
-						painter.setPen(arrowOpt.palette.mid().color());
-						painter.drawEllipse(arrowRect.center(), 2, 2);
-						painter.drawEllipse(arrowRect.center()-QPoint(arrowRect.width()/6,0), 2, 2);
-						painter.drawEllipse(arrowRect.center()+QPoint(arrowRect.width()/6,0), 2, 2);
-						painter.translate(-1, -1);
-						painter.setBrush(arrowOpt.palette.buttonText().color());
-						painter.setPen(arrowOpt.palette.buttonText().color());
-					}
-					else
-					{
-						painter.translate(1, 1);
-						painter.setBrush(arrowOpt.palette.light().color());
-						painter.setPen(arrowOpt.palette.light().color());
-						painter.drawEllipse(arrowRect.center(), 2, 2);
-						painter.drawEllipse(arrowRect.center()-QPoint(arrowRect.width()/6,0), 2, 2);
-						painter.drawEllipse(arrowRect.center()+QPoint(arrowRect.width()/6,0), 2, 2);
-						painter.translate(-1, -1);
-						painter.setBrush(arrowOpt.palette.mid().color());
-						painter.setPen(arrowOpt.palette.mid().color());
-					}
-					painter.drawEllipse(arrowRect.center(), 2, 2);
-					painter.drawEllipse(arrowRect.center()-QPoint(arrowRect.width()/6,0), 2, 2);
-					painter.drawEllipse(arrowRect.center()+QPoint(arrowRect.width()/6,0), 2, 2);
-				}
+				if (!instantPopup_) drawEllipsis(arrowOpt, painter);
 				else style()->drawPrimitive(QStyle::PE_IndicatorArrowDown, &arrowOpt, &painter, this);
 			}
 
@@ -284,10 +243,38 @@ void TMenuButton::paintEvent(QPaintEvent* event)
 			pixmapSize = pm.size() / pm.devicePixelRatio();
 			style()->drawItemPixmap(&painter, iconRect, Qt::AlignCenter, pm);
 		}
-		else if (!inner.icon.isNull())
+		else if (inner.toolButtonStyle == Qt::ToolButtonTextBesideIcon)
+		{
+			// Draw icon on the left-hand side of the button
+			QRect iconRect(0, rect.top(), rect.height(), rect.height());
+			iconRect = iconRect.adjusted(2,2,-2,-2);
+// 			iconRect.setTop(rect.top()+8);
+// 			iconRect.setLeft(rect.left() + (rect.width()-iconRect.height())/2);
+// 			iconRect.setWidth(iconRect.height());
+			QSize pixmapSize(iconRect.width(), iconRect.height());
+			QIcon::State state = inner.state & QStyle::State_On ? QIcon::On : QIcon::Off;
+			QIcon::Mode mode;
+			if (!(inner.state & QStyle::State_Enabled)) mode = QIcon::Disabled;
+			else if ((inner.state & QStyle::State_MouseOver) && (inner.state & QStyle::State_AutoRaise)) mode = QIcon::Active;
+			else mode = QIcon::Normal;
+			QPixmap pm = inner.icon.pixmap(pixmapSize, mode, state);
+			pixmapSize = pm.size() / pm.devicePixelRatio();
+			style()->drawItemPixmap(&painter, iconRect, Qt::AlignCenter, pm);
+
+			// Draw text
+			int alignment = Qt::AlignLeft | Qt::TextShowMnemonic;
+			if (!style()->styleHint(QStyle::SH_UnderlineShortcut, &inner, this)) alignment |= Qt::TextHideMnemonic;
+			QRect textRect = rect.adjusted(iconRect.width(), 0, 0, 0);
+// 			textRect.setTop(textRect.bottom()-1);
+			textRect = style()->itemTextRect(inner.fontMetrics, textRect, alignment, inner.state & QStyle::State_Enabled, inner.text);
+			painter.setFont(inner.font);
+			style()->drawItemText(&painter, textRect, alignment, inner.palette, inner.state & QStyle::State_Enabled, inner.text, QPalette::ButtonText);
+		}
+		else if ((inner.toolButtonStyle == Qt::ToolButtonIconOnly) && (!inner.icon.isNull()))
 		{
 			// Button type is icon only - don't draw any arrow indicating the presence of a popup widget
 			rect.translate(shiftX, shiftY);
+
 			// Generate pixmap for button
 			QPixmap pm;
 			QSize pmSize(inner.iconSize.width(), inner.iconSize.height());
@@ -303,6 +290,49 @@ void TMenuButton::paintEvent(QPaintEvent* event)
 			style()->drawItemPixmap(&painter, rect, Qt::AlignCenter, pm);
 		}
 	}
+}
+
+void TMenuButton::drawEllipsis(QStyleOption& styleOption, QPainter& painter)
+{
+	if (!(styleOption.state & QStyle::State_Enabled))
+	{
+		painter.translate(1, 1);
+		painter.setBrush(styleOption.palette.light().color());
+		painter.setPen(styleOption.palette.light().color());
+		painter.drawEllipse(styleOption.rect.center(), 2, 2);
+		painter.drawEllipse(styleOption.rect.center()-QPoint(styleOption.rect.width()/6,0), 2, 2);
+		painter.drawEllipse(styleOption.rect.center()+QPoint(styleOption.rect.width()/6,0), 2, 2);
+		painter.translate(-1, -1);
+		painter.setBrush(styleOption.palette.mid().color());
+		painter.setPen(styleOption.palette.mid().color());
+	}
+	else if (styleOption.state & QStyle::State_MouseOver)
+	{
+		painter.translate(1, 1);
+		painter.setBrush(styleOption.palette.mid().color());
+		painter.setPen(styleOption.palette.mid().color());
+		painter.drawEllipse(styleOption.rect.center(), 2, 2);
+		painter.drawEllipse(styleOption.rect.center()-QPoint(styleOption.rect.width()/6,0), 2, 2);
+		painter.drawEllipse(styleOption.rect.center()+QPoint(styleOption.rect.width()/6,0), 2, 2);
+		painter.translate(-1, -1);
+		painter.setBrush(styleOption.palette.buttonText().color());
+		painter.setPen(styleOption.palette.buttonText().color());
+	}
+	else
+	{
+		painter.translate(1, 1);
+		painter.setBrush(styleOption.palette.light().color());
+		painter.setPen(styleOption.palette.light().color());
+		painter.drawEllipse(styleOption.rect.center(), 2, 2);
+		painter.drawEllipse(styleOption.rect.center()-QPoint(styleOption.rect.width()/6,0), 2, 2);
+		painter.drawEllipse(styleOption.rect.center()+QPoint(styleOption.rect.width()/6,0), 2, 2);
+		painter.translate(-1, -1);
+		painter.setBrush(styleOption.palette.mid().color());
+		painter.setPen(styleOption.palette.mid().color());
+	}
+	painter.drawEllipse(styleOption.rect.center(), 2, 2);
+	painter.drawEllipse(styleOption.rect.center()-QPoint(styleOption.rect.width()/6,0), 2, 2);
+	painter.drawEllipse(styleOption.rect.center()+QPoint(styleOption.rect.width()/6,0), 2, 2);
 }
 
 // Call the popup widget
