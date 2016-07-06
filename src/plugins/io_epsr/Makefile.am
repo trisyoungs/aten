@@ -28,4 +28,6 @@ epsrmol_la_SOURCES = mol_funcs.cpp mol.hui
 epsrmol_la_SOURCES += molexportoptions.ui molexportoptions_funcs.cpp
 epsrmol_la_LDFLAGS = -module -shared -avoid-version
 
+noinst_HEADERS = molexportoptions.h
+
 AM_CPPFLAGS = -I${top_srcdir}/src @ATEN_INCLUDES@ @ATEN_CFLAGS@
