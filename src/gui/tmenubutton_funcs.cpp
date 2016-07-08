@@ -262,7 +262,7 @@ void TMenuButton::paintEvent(QPaintEvent* event)
 			style()->drawItemPixmap(&painter, iconRect, Qt::AlignCenter, pm);
 
 			// Draw text
-			int alignment = Qt::AlignLeft | Qt::TextShowMnemonic;
+			int alignment = Qt::AlignLeft | Qt::AlignVCenter | Qt::TextShowMnemonic;
 			if (!style()->styleHint(QStyle::SH_UnderlineShortcut, &inner, this)) alignment |= Qt::TextHideMnemonic;
 			QRect textRect = rect.adjusted(iconRect.width(), 0, 0, 0);
 // 			textRect.setTop(textRect.bottom()-1);

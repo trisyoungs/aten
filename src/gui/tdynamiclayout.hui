@@ -75,8 +75,8 @@ class TDynamicLayout : public QLayout
 	int horizontalSpacing_;
 	// Vertical spacing between items
 	int verticalSpacing_;
-	// Size hints for layout types (if calculated)
-	QSize sizeHints_[TDynamicLayout::nLayoutStyles];
+	// Size hints for full layout
+	QSize fullSizeHint_;
 	// Current layout style
 	TDynamicLayout::LayoutStyle currentLayoutStyle_;
 
