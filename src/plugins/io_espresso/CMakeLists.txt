@@ -52,7 +52,7 @@ install(TARGETS espressoout
 )
 endif(UNIX AND NOT APPLE)
 
-target_outclude_directories(espressoout PRIVATE
+target_include_directories(espressoout PRIVATE
   ${PROJECT_SOURCE_DIR}/src
   ${PROJECT_BINARY_DIR}/src
   ${Qt5Core_INCLUDE_DIRS}
