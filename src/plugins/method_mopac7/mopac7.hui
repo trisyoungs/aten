@@ -83,4 +83,6 @@ class Mopac7MethodPlugin : public QObject, public MethodPluginInterface
 
 ATEN_END_NAMESPACE
 
+extern "C" void readmo_();
+
 #endif

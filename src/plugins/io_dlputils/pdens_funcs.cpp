@@ -46,6 +46,12 @@ FilePluginInterface* PDensGridPlugin::makeCopy()
  * Definition
  */
 
+// Return type of plugin
+PluginTypes::PluginType PDensGridPlugin::type() const
+{
+	return PluginTypes::FilePlugin;
+}
+
 // Return category of plugin
 int PDensGridPlugin::category() const
 {

@@ -21,6 +21,7 @@
 
 #include "main/aten.h"
 #include "plugins/interfaces/fileplugin.h"
+#include "plugins/interfaces/methodplugin.h"
 #include <QDir>
 #include <QPluginLoader>
 
@@ -41,14 +42,26 @@ bool Aten::loadPlugin(QString fileName)
 	}
 
 	// Determine which type of plugin this is by attempting to cast it to the available types
+
+	// -- FilePluginInterface
 	FilePluginInterface* filePlugin = qobject_cast<FilePluginInterface*>(plugin);
 	if (filePlugin)
 	{
 		filePlugin->setPluginFilename(fileName);
 		pluginStore_.registerFilePlugin(filePlugin);
+		return true;
 	}
 
-	return true;
+	// -- MethodPluginInterface
+	MethodPluginInterface* methodPlugin = qobject_cast<MethodPluginInterface*>(plugin);
+	if (methodPlugin)
+	{
+		methodPlugin->setPluginFilename(fileName);
+		pluginStore_.registerMethodPlugin(methodPlugin);
+		return true;
+	}
+
+	return false;
 }
 
 // Load plugins
@@ -97,7 +110,11 @@ int Aten::searchPluginsDir(QDir path)
 		if ((fileInfo.suffix() != "so") && (fileInfo.suffix() != "dll")) continue;
 
 		if (loadPlugin(path.absoluteFilePath(pluginsList.at(i)))) s += pluginsList.at(i) + "  ";
-		else ++nFailed;
+		else
+		{
+			Messenger::error("Failed to load/register plugin from file '" + pluginsList.at(i) + ";");
+			++nFailed;
+		}
 	}
 	Messenger::print(s);
 

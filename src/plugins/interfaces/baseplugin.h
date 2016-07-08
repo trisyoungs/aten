@@ -47,7 +47,21 @@ class BasePluginInterface
 	/*
 	 * Basic Definition
 	 */
+	private:
+	// Original filename for plugin
+	QString pluginFilename_;
+
 	public:
+	// Set filename for plugin
+	void setPluginFilename(QString filename)
+	{
+		pluginFilename_ = filename;
+	}
+	// Return filanem for plugin
+	QString pluginFilename() const
+	{
+		return pluginFilename_;
+	}
 	// Return type of plugin
 	virtual PluginTypes::PluginType type() const = 0;
 	// Return category of plugin

@@ -4,7 +4,7 @@ SUBDIRS = mopac7-1.15
 
 # Set plugin installation dir and define plugin targets
 pluginexecdir = @ATEN_PLUGINLIBDIR@
-pluginexec_LTLIBRARIES = mopac7plugin.la
+pluginexec_LTLIBRARIES = mopac7method.la
 
 # Rules
 .ui.lo:
@@ -23,9 +23,9 @@ clean-local:
 	-rm -f mopac7.cpp
 
 # Mopac7 Method Plugin
-mopac7plugin_la_SOURCES = mopac7_funcs.cpp mopac7.hui
-mopac7plugin_la_LIBADD = mopac7-1.15/libmopac7115.la
-mopac7plugin_la_LDFLAGS = -module -shared -avoid-version
+mopac7method_la_SOURCES = mopac7_funcs.cpp mopac7.hui
+mopac7method_la_LIBADD = mopac7-1.15/libmopac7115.la
+mopac7method_la_LDFLAGS = -module -shared -avoid-version -lgfortran
 
 AM_CPPFLAGS = -I${top_srcdir}/src @ATEN_INCLUDES@ @ATEN_CFLAGS@
 

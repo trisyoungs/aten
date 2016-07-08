@@ -1,5 +1,5 @@
-      SUBROUTINE READMO
-      IMPLICIT DOUBLE PRECISION (A-H, O-Z)
+      LOGICAL FUNCTION READMO()
+      IMPLICIT DOUBLE PRECISION (A-H,O-Z)
       INCLUDE 'SIZES'
 C
 C MODULE TO READ IN GEOMETRY FILE, OUTPUT IT TO THE USER,
@@ -82,6 +82,7 @@ C
 !     +,numcal,1 
       CONVTR=2.D0*ASIN(1.D0)/180.D0
       AIGEO=.FALSE.
+      READMO=.TRUE.
    10 CONTINUE
 C
       CALL GETTXT
@@ -175,13 +176,17 @@ C
                   WRITE(6,'(//,A)')'   GAUSSIAN INPUT REQUIRES STAND-ALO
      1NE JOB'
                   WRITE(6,'(/,A)')'   OR KEYWORD "AIGIN"'
-                  STOP
+                  READMO = .FALSE.
+                  RETURN
                ENDIF
                AIGEO=.TRUE.
                GOTO 10
             ENDIF
          ENDIF
-         IF(NATOMS.EQ.0)STOP
+         IF(NATOMS.EQ.0) THEN
+           READMO = .FALSE.
+           RETURN
+         ENDIF
       ELSE
       DEGREE=90.D0/ASIN(1.D0)
       IF(NA(1).EQ.99)THEN
@@ -207,7 +212,8 @@ C
       IF(LABELS(I).EQ.99)THEN
       WRITE(6,'(A)')' NO DUMMY ATOMS ALLOWED BEFORE TRANSLATION'
       WRITE(6,'(A)')' ATOM IN A FORCE CALCULATION'
-      STOP
+      READMO = .FALSE.
+      RETURN
       ENDIF
   131 CONTINUE
       ENDIF
@@ -265,17 +271,22 @@ C
                NATOMS=I-1
                CALL GEOUT(6)
             ENDIF
-            STOP
+            READMO = .FALSE.
+            RETURN
          ENDIF
          IF (  NA(I).GE.I.OR. NB(I).GE.I.OR. NC(I).GE.I
      1  .OR. (NA(I).EQ.NB(I))   .AND. I.GT.1
      2  .OR. (NA(I).EQ.NC(I).OR.NB(I).EQ.NC(I))  .AND. I.GT.2
      3  .OR.  NA(I)*NB(I)*NC(I).EQ.0  .AND. I.GT.3) THEN
             WRITE(6,'('' ATOM NUMBER '',I3,'' IS ILL-DEFINED'')') I
-            IF(I.EQ.1)STOP
+            IF(I.EQ.1) THEN
+              READMO = .FALSE.
+              RETURN
+            ENDIF
             WRITE(6,'(/,''  GEOMETRY READ IN'',/)')
             CALL GEOUT(6)
-            STOP
+            READMO = .FALSE.
+            RETURN
          ENDIF
   150 CONTINUE
 C
@@ -313,7 +324,8 @@ C    FLAG FOR PATH
                   ELSE
                      WRITE(6,'('' ONLY ONE REACTION COORDINATE PERMITTED
      1'')')
-                     STOP
+                     READMO = .FALSE.
+                     RETURN
                   ENDIF
                ENDIF
                LATOM  = I
@@ -335,12 +347,14 @@ C READ IN PATH VALUES
       IF(INDEX(KEYWRD,'NLLSQ').NE.0)THEN
          WRITE(6,'(A)')' NLLSQ USED WITH REACTION PATH; '//
      1'THIS OPTION IS NOT ALLOWED'
-         STOP
+         READMO = .FALSE.
+         RETURN
       ENDIF
       IF(INDEX(KEYWRD,'SIGMA').NE.0)THEN
          WRITE(6,'(A)')' SIGMA USED WITH REACTION PATH; '//
      1'THIS OPTION IS NOT ALLOWED'
-         STOP
+         READMO = .FALSE.
+         RETURN
       ENDIF
       IF(INDEX(KEYWRD,'STEP')+INDEX(KEYWRD,'POINTS').NE.0)THEN
          STEP=READA(KEYWRD,INDEX(KEYWRD,'STEP=')+5)
@@ -348,12 +362,14 @@ C READ IN PATH VALUES
          IF(NPTS.GT.200)THEN
             WRITE(6,'(///,''    ONLY TWO HUNDRED POINTS ALLOWED IN REACT
      1'',''ION COORDINATE'')')
-            STOP
+            READMO = .FALSE.
+            RETURN
          ENDIF
          IF(LPARAM.EQ.1.AND.STEP.LE.0)THEN
             WRITE(6,'(///,''    STEP FOR BOND LENGTH SHOULD BE SET POSIT
      1IVE '',''TO PREVENT TWO ATOMS COLLAPSE'')')
-            STOP
+            READMO = .FALSE.
+            RETURN
          ENDIF
          GO TO 220
       ENDIF
@@ -365,7 +381,8 @@ C READ IN PATH VALUES
          IF(IJ.GT.200)THEN
             WRITE(6,'(///,''    ONLY TWO HUNDRED POINTS ALLOWED IN REACT
      1ION'','' COORDINATE'')')
-            STOP
+            READMO = .FALSE.
+            RETURN
          ENDIF
          REACT(IJ)=VALUE(I)*CONVRT
          IF(ABS(REACT(IJ)-REACT(IJ-1)).LT.1.D-5)THEN
@@ -374,7 +391,8 @@ C READ IN PATH VALUES
             WRITE(6,'(///,'' TWO ADJACENT POINTS ARE IDENTICAL:  '',
      1 F7.3,2X,F7.3,/,'' THIS IS NOT ALLOWED IN A PATH CALCULATION'')')
      2 DUM1,DUM2
-            STOP
+            READMO = .FALSE.
+            RETURN
          ENDIF
   200 CONTINUE
       IREACT=IREACT+NREACT
@@ -386,7 +404,8 @@ C READ IN PATH VALUES
          WRITE(6,'(//10X,'' NO POINTS SUPPLIED FOR REACTION PATH'')')
          WRITE(6,'(//10X,'' GEOMETRY AS READ IN IS AS FOLLOWS'')')
          CALL GEOUT(1)
-         STOP
+         READMO = .FALSE.
+         RETURN
       ELSE
          WRITE(6,'(//10X,'' POINTS ON REACTION COORDINATE'')')
          WRITE(6,'(10X,8F8.2)')(REACT(I)*DEGREE,I=1,IREACT)
@@ -454,7 +473,8 @@ C
      3/10X,''BUT NOT ALL COORDINATES MARKED FOR OPTIMISATION'')')
             WRITE(6,'(//10X,'' THIS INVOLVES A LOGICALLLY ABSURD CHOICE'
      1',/10X,'' SO THE CALCULATION IS TERMINATED AT THIS POINT'')')
-            STOP
+            READMO = .FALSE.
+            RETURN
          ENDIF
          SUMX=0.D0
          SUMY=0.D0
@@ -509,7 +529,8 @@ C
             WRITE(6,'(10X,''YOUR CURRENT CHOICE OF KEY-WORDS INVOLVES''
      1,'' A LOGICALLLY'',/10X,''ABSURD CHOICE SO THE CALCULATION IS'',
      2'' TERMINATED AT THIS POINT'')')
-            STOP
+            READMO = .FALSE.
+            RETURN
          ENDIF
       ENDIF
       RETURN

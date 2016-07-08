@@ -60,7 +60,7 @@ class PluginTypes
 	 */
 	public:
 	// Method plugin category
-	enum MethodPluginCategory { MinimiserMethodPlugin, nMethodPluginCategories };
+	enum MethodPluginCategory { OptimisationMethodPlugin, nMethodPluginCategories };
 	// Return capitalised single-word name of method plugin category
 	static const char* niceMethodPluginCategory(MethodPluginCategory category);
 	// Return single-word name of method plugin category

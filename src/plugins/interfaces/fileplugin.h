@@ -215,8 +215,6 @@ class FilePluginInterface : public BasePluginInterface, public ListItem<FilePlug
 	 * Core
 	 */
 	private:
-	// Original filename for plugin
-	QString pluginFilename_;
 	// Object store for plugin instances
 	List<FilePluginInterface> instances_;
 	// Core LineParser object
@@ -240,16 +238,6 @@ class FilePluginInterface : public BasePluginInterface, public ListItem<FilePlug
 	FileParser fileParser_;
 
 	public:
-	// Set filename for plugin
-	void setPluginFilename(QString filename)
-	{
-		pluginFilename_ = filename;
-	}
-	// Return filanem for plugin
-	QString pluginFilename() const
-	{
-		return pluginFilename_;
-	}
 	// Return instance of plugin
 	FilePluginInterface* createInstance()
 	{

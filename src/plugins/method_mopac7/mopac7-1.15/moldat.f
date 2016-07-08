@@ -1,4 +1,4 @@
-      SUBROUTINE MOLDAT(MODE)
+      LOGICAL FUNCTION MOLDAT(MODE)
       IMPLICIT DOUBLE PRECISION (A-H,O-Z)
       INCLUDE 'SIZES'
       COMMON /GEOKST/ NATOMS,LABELS(NUMATM),
@@ -57,6 +57,7 @@
       CHARACTER*241 KEYWRD, OLDE(20)*6, ALLREF*80
       LOGICAL DEBUG, UHF,EXCI, TRIP, MINDO3, BIRAD, AM1, LPM3,
      1LMNDO, HALFE, SLOW
+      MOLDAT=.TRUE.
       DATA ESTORE(1)/0.D0/
       IF(ESTORE(1).EQ.0.D0)THEN
       DO 9 I=1,107
@@ -241,7 +242,8 @@ C$DOIT ASIS
       IF(USS(1) .GT. -1.D0) THEN
          WRITE(6,'(''  THE HAMILTONIAN REQUESTED IS NOT AVAILABLE IN''
      1,'' THIS PROGRAM'')')
-         STOP
+         MOLDAT=.FALSE.
+         RETURN
       ENDIF
       IA=1
       IB=0
@@ -282,7 +284,8 @@ C$DOIT ASIS
          IF(INDEX(KEYWRD,'FORCE').NE.0)THEN
             WRITE(6,'(///,A)')'      A SINGLE ATOM HAS NO VIBRATIONAL MO
      1DES'
-            STOP
+            MOLDAT=.FALSE.
+            RETURN
          ENDIF
       ENDIF
       IF(MODE.NE.1)CALL REFER
@@ -292,7 +295,8 @@ C$DOIT ASIS
          WRITE(6,'(//10X,''**** MAX. NUMBER OF ORBITALS:'',I4,/
      1            10X,''NUMBER OF ORBITALS IN SYSTEM:'',I4)')
      2MAXORB,NORBS
-         STOP
+         MOLDAT=.FALSE.
+         RETURN
       ENDIF
       NLIGHT=NUMAT-NHEAVY
       N2EL=50*NHEAVY*(NHEAVY-1)+10*NHEAVY*NLIGHT+(NLIGHT*(NLIGHT-1))/2
@@ -302,7 +306,8 @@ C$DOIT ASIS
      2            10X,''NUMBER OF TWO ELECTRON INTEGRALS IN SYSTEM:'',
      3I8)')
      4N2ELEC,N2EL
-         STOP
+         MOLDAT=.FALSE.
+         RETURN
       ENDIF
 C
 C   NOW TO CALCULATE THE NUMBER OF LEVELS OCCUPIED
@@ -311,7 +316,8 @@ C   NOW TO CALCULATE THE NUMBER OF LEVELS OCCUPIED
       BIRAD=(EXCI.OR.INDEX(KEYWRD,'BIRAD').NE.0)
       IF(INDEX(KEYWRD,'C.I.') .NE. 0 .AND. UHF ) THEN
          WRITE(6,'(//10X,''C.I. NOT ALLOWED WITH UHF '')')
-         STOP
+         MOLDAT=.FALSE.
+         RETURN
       ENDIF
 C
 C NOW TO WORK OUT HOW MANY ELECTRONS ARE IN EACH TYPE OF SHELL
@@ -332,7 +338,8 @@ C
             IF(NBETA*2 .NE. NELECS) THEN
                WRITE(6,'(//10X,''TRIPLET SPECIFIED WITH ODD NUMBER'',
      1            '' OF ELECTRONS, CORRECT FAULT '')')
-               STOP
+               MOLDAT=.FALSE.
+               RETURN
             ELSE
                IF(MODE.NE.1)
      1WRITE(6,'(//'' TRIPLET STATE CALCULATION'')')
@@ -343,7 +350,8 @@ C
             IF(NBETA*2 .EQ. NELECS) THEN
                WRITE(6,'(//10X,''QUARTET SPECIFIED WITH EVEN NUMBER'',
      1            '' OF ELECTRONS, CORRECT FAULT '')')
-               STOP
+               MOLDAT=.FALSE.
+               RETURN
             ELSE
                IF(MODE.NE.1)
      1WRITE(6,'(//'' QUARTET STATE CALCULATION'')')
@@ -354,7 +362,8 @@ C
             IF(NBETA*2 .NE. NELECS) THEN
                WRITE(6,'(//10X,''QUINTET SPECIFIED WITH ODD NUMBER'',
      1            '' OF ELECTRONS, CORRECT FAULT '')')
-               STOP
+               MOLDAT=.FALSE.
+               RETURN
             ELSE
                IF(MODE.NE.1)
      1WRITE(6,'(//'' QUINTET STATE CALCULATION'')')
@@ -365,7 +374,8 @@ C
             IF(NBETA*2 .EQ. NELECS) THEN
                WRITE(6,'(//10X,''SEXTET SPECIFIED WITH EVEN NUMBER'',
      1            '' OF ELECTRONS, CORRECT FAULT '')')
-               STOP
+               MOLDAT=.FALSE.
+               RETURN
             ELSE
                IF(MODE.NE.1)WRITE(6,'(//'' SEXTET STATE CALCULATION'')')
                NBETA=NBETA-2
@@ -385,7 +395,8 @@ C
             IF( (NELECS/2)*2 .NE. NELECS) THEN
                WRITE(6,'(//10X,''SYSTEM SPECIFIED WITH ODD NUMBER'',
      1            '' OF ELECTRONS, CORRECT FAULT '')')
-               STOP
+               MOLDAT=.FALSE.
+               RETURN
             ENDIF
             IF(MODE.NE.1) THEN
                IF(BIRAD)WRITE(6,'(//'' SYSTEM IS A BIRADICAL'')')
@@ -425,7 +436,8 @@ C
      1                  (IELEC/2)*2.EQ.IELEC) THEN
                WRITE(6,'('' IMPOSSIBLE NUMBER OF OPEN SHELL ELECTR
      1ONS'')')
-               STOP
+               MOLDAT=.FALSE.
+               RETURN
             ENDIF
             NCLOSE=NCLOSE-IELEC/2
             NOPEN=ILEVEL
@@ -433,7 +445,8 @@ C
                WRITE(6,'(A)')' NUMBER OF DOUBLY FILLED PLUS PARTLY FILLE
      1D LEVELS'
                WRITE(6,'(A)')' GREATER THAN TOTAL NUMBER OF ORBITALS.'
-               STOP
+               MOLDAT=.FALSE.
+               RETURN
             ENDIF
             FRACT=IELEC*1.D0/ILEVEL
             IF(MODE.NE.1)
@@ -453,7 +466,8 @@ C
                WRITE(6,'(//,'' NUMBER OF OPEN-SHELLS ALLOWED IN C.I. IS
      1LESS ''            /''    THAN THAT SPECIFIED BY OTHER KEYWORDS'')
      2')
-               STOP
+               MOLDAT=.FALSE.
+               RETURN
             ENDIF
          ENDIF
          IF(INDEX(KEYWRD,'C.I.').NE.0.AND.NOPEN.EQ.0)THEN
@@ -502,7 +516,8 @@ C
          IF(NUPP*NDOWN.LT.0.OR.NUPP.GT.NMOS.OR.NDOWN.GT.NMOS)THEN
             WRITE(6,'(A)')
      1' SPECIFIED SPIN COMPONENT NOT SPANNED BY ACTIVE SPACE'
-            STOP
+            MOLDAT=.FALSE.
+            RETURN
          ENDIF
       ENDIF
 C#      WRITE(6,'(''  NOPEN,NCLOSE,NALPHA,NBETA,FRACT'',4I4,F12.5)')
@@ -521,7 +536,8 @@ C
          WRITE(6,'(A)')' KEYWORD ''ANALYT'' CANNOT BE USED HERE: ',
      1' ANALYICAL C.I. DERIVATIVES MUST USE FINITE DIFFERENCES',
      2' TO CORRECT, REMOVE KEYWORD ''ANALYT'' OR ADD ''NOANCI'''
-         STOP
+         MOLDAT=.FALSE.
+         RETURN
       ENDIF
       YY=FLOAT(KHARGE)/(NORBS+1.D-10)
       L=0
@@ -628,7 +644,8 @@ C
             WRITE(6,'(A)')' THIS SYSTEM CONTAINS -HNCO- GROUPS.'
             WRITE(6,'(A)')' YOU MUST SPECIFY "NOMM" OR "MMOK" REGARDING
      1MOLECULAR MECHANICS CORRECTION'
-            STOP
+            MOLDAT=.FALSE.
+            RETURN
          ENDIF
       ENDIF
       IF(MODE.NE.1.AND.INDEX(KEYWRD,'NOINTER') .EQ. 0) THEN
@@ -639,7 +656,8 @@ C
          WRITE(6,230)IMINR,JMINR,RMIN
   230    FORMAT(//,'   ATOMS',I3,' AND',I3,' ARE SEPARATED BY',F8.4,
      1' ANGSTROMS.',/'   TO CONTINUE CALCULATION SPECIFY "GEO-OK"')
-         STOP
+         MOLDAT=.FALSE.
+         RETURN
       ENDIF
       IF(.NOT. DEBUG) RETURN
       WRITE(6,240)NUMAT,NORBS,NDORBS,NATOMS
@@ -654,5 +672,6 @@ C
       RETURN
   270 WRITE(6,'(//10X,'' MAXIMUM NUMBER OF ATOMIC ORBITALS EXCEEDED'')')
       WRITE(6,'(  10X,'' MAXIMUM ALLOWED ='',I4)')MAXORB
-      STOP
+      MOLDAT=.FALSE.
+      RETURN
       END

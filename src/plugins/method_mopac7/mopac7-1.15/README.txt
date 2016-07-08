@@ -1,14 +1,15 @@
+Modified 2016 by TGAY:
+
+* Converted subroutines containing STOP statements into logical functions, so MOPAC7 can truly be called as a function from a program without unnecessarily terminating the main program.
+*** WORK IN PROGRESS ***
+
+**********************************************************************
+
 Modified 20 Oct 2015 by AKS to compile under Gfortran to produce a standalone executable:-
 
 1) Removed all calls to C routines. Only one was actually used and could easily be replaced with calls to Gfortran intrinsics.
 2) Attempted to correct some compile-time warnings - the full impact of these is unknown, but most likely there are other coding mismatches (e.g. complex arguments being posted to a subroutine expecting real arguments, etc.) that may go unnoticed due to the way the program is structured.
 3) Removed call to libmopac7 - this was giving grief on OS X Yosemite and later due to bugs in the linker not connecting the common blocks in the main file with those in the library.
-
-The current version can be built with the commands (in buildmopac7.sh):-
- make clean
- make
-
-Executable mopac7 is placed in the current folder.
 
 **********************************************************************
 

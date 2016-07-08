@@ -10,5 +10,6 @@ libaten_la_LIBADD = base/libmessenger.la gui/libgui.la parser/libparser.la gui/l
 libaten_la_LDFLAGS = -static
 
 aten_LDADD = libaten.la @ATEN_LDLIBS@ @ATEN_LDFLAGS@
+#aten_LDFLAGS = -lgfortran
 
 AM_CPPFLAGS = @ATEN_INCLUDES@ @ATEN_CFLAGS@

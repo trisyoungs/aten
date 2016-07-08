@@ -1,7 +1,7 @@
 /*
         *** Plugin Store
         *** src/plugins/pluginstore.cpp
-        Copyright T. Youngs 2007-2016
+        Copyright T. Youngs 2016-2016
 
         This file is part of Aten.
     
@@ -20,6 +20,7 @@
 */
 
 #include "plugins/pluginstore.h"
+#include "interfaces/methodplugin.h"
 #include "base/messenger.h"
 
 // Constructor
@@ -48,10 +49,16 @@ bool PluginStore::registerFilePlugin(FilePluginInterface* plugin)
 {
 	if (!plugin) return false;
 
-	// Query the plugin type...
+	// Query the plugin type and category...
+	if (plugin->type() != PluginTypes::FilePlugin)
+	{
+		Messenger::error("Refused to register plugin '" + plugin->name() + "' as a file plugin since it presents itself as a different type.");
+		return false;
+	}
+	
 	if (plugin->category() == PluginTypes::nFilePluginCategories)
 	{
-		Messenger::error("Plugin has unrecognised type - not registered.\n");
+		Messenger::error("Plugin has unrecognised category - not registered.\n");
 		return false;
 	}
 
@@ -166,7 +173,7 @@ void PluginStore::showAllFilePluginNicknames() const
 	{
 		showFilePluginNicknames((PluginTypes::FilePluginCategory) n, PluginTypes::ImportPlugin);
 		showFilePluginNicknames((PluginTypes::FilePluginCategory) n, PluginTypes::ExportPlugin);
-	}	
+	}
 }
 
 // Find plugin interface for specified file
@@ -206,6 +213,117 @@ FilePluginInterface* PluginStore::findFilePluginByNickname(PluginTypes::FilePlug
 		if ((type == PluginTypes::ExportPlugin) && (!plugin->canExport())) continue;
 
 		// Perform checks to see if the plugin is related to this file
+		if (plugin->nickname() == nickname) return plugin;
+	}
+
+	return NULL;
+}
+
+
+/*
+ * Method Plugins
+ */
+
+// Register method plugin
+bool PluginStore::registerMethodPlugin(MethodPluginInterface* plugin)
+{
+	if (!plugin) return false;
+
+	// Query the plugin type and category...
+	if (plugin->type() != PluginTypes::MethodPlugin)
+	{
+		Messenger::error("Refused to register plugin '" + plugin->name() + "' as a method plugin since it presents itself as a different type.");
+		return false;
+	}
+	
+	if (plugin->category() == PluginTypes::nMethodPluginCategories)
+	{
+		Messenger::error("Plugin has unrecognised category - not registered.\n");
+		return false;
+	}
+
+	// Store the reference to the plugin 
+	methodPlugins_[plugin->category()].add(plugin);
+	Messenger::print(Messenger::Verbose, "Registered new method plugin:");
+	Messenger::print(Messenger::Verbose, "       Name : %s", qPrintable(plugin->name()));
+	Messenger::print(Messenger::Verbose, "Description : %s", qPrintable(plugin->description()));
+
+// 	plugin->runMethod();
+
+	++logPoint_;
+
+	return true;
+}
+
+// Empty (delete) all method plugins
+void PluginStore::clearMethodPlugins()
+{
+	for (int n=0; n<PluginTypes::nMethodPluginCategories; ++n) methodPlugins_[n].clear();
+
+	++logPoint_;
+}
+
+// Return reference list of file plugins of specified category
+const RefList<MethodPluginInterface,int>& PluginStore::methodPlugins(PluginTypes::MethodPluginCategory category) const
+{
+	return methodPlugins_[category];
+}
+
+// Return number of method plugins of specified category
+int PluginStore::nMethodPlugins(PluginTypes::MethodPluginCategory category) const
+{
+	return methodPlugins_[category].nItems();
+}
+
+// Return total number of file plugins available
+int PluginStore::nMethodPlugins() const
+{
+	int count = 0;
+	for (int n=0; n<PluginTypes::nMethodPluginCategories; ++n) count += methodPlugins_[n].nItems();
+}
+
+// Show list of valid method plugin nicknames
+void PluginStore::showMethodPluginNicknames(PluginTypes::MethodPluginCategory category) const
+{
+	Messenger::print("Available method plugins for %s:", PluginTypes::methodPluginCategory(category));
+
+	// Determine longest nickname of all the plugins of the specified category and type, and make a reflist of them while we're at it
+	int maxLength = 0;
+	for (RefListItem<MethodPluginInterface,int>* ri = methodPlugins_[category].first(); ri != NULL; ri = ri->next)
+	{
+		MethodPluginInterface* plugin = ri->item;
+
+		if (plugin->nickname().length() > maxLength) maxLength = plugin->nickname().length();
+	}
+
+	// Output list (or special case if no plugins of the specified type were found...
+	if (methodPlugins_[category].nItems() == 0)
+	{
+		Messenger::print("  <None Available>");
+		return;
+	}
+	else for (RefListItem<MethodPluginInterface,int>* ri = methodPlugins_[category].first(); ri != NULL; ri = ri->next)
+	{
+		MethodPluginInterface* plugin = ri->item;
+
+		Messenger::print(QString("\t%1    %2").arg(plugin->nickname(), maxLength).arg(plugin->name()));
+	}
+}
+
+// Show all method plugins, by category, and their nicknames
+void PluginStore::showAllMethodPluginNicknames() const
+{
+	for (int n=0; n<PluginTypes::nMethodPluginCategories; ++n) showMethodPluginNicknames((PluginTypes::MethodPluginCategory) n);
+}
+
+// Find plugin interface by nickname
+MethodPluginInterface* PluginStore::findMethodPluginByNickname(PluginTypes::MethodPluginCategory category, QString nickname) const
+{
+	// Loop over loaded method plugins of the specified category
+	for (RefListItem<MethodPluginInterface,int>* ri = methodPlugins_[category].first(); ri != NULL; ri = ri->next)
+	{
+		MethodPluginInterface* plugin = ri->item;
+
 		if (plugin->nickname() == nickname) return plugin;
 	}
 

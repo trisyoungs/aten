@@ -25,13 +25,17 @@
 ATEN_USING_NAMESPACE
 
 // Plugin type
-const char* PluginTypeStrings[] = { "File (Import/Export)" };
+const char* PluginTypeStrings[] = { "File (Import/Export)", "Method (Calculations etc.)" };
 
 // Return name of file type
 const char* PluginTypes::pluginType(PluginTypes::PluginType type)
 {
 	return PluginTypeStrings[type];
 }
+
+/*
+ * File Plugins
+ */
 
 // File plugin categories
 const char* FilePluginCategories[] = { "Model", "Trajectory", "Expression", "Grid" };
@@ -56,3 +60,23 @@ const char* PluginTypes::filePluginType(PluginTypes::FilePluginType type)
 {
 	return FilePluginTypes[type];
 }
+
+/*
+ * Method Plugins
+ */
+
+// Method plugin categories
+const char* MethodPluginCategories[] = { "Optimisation" };
+
+// Return capitalised single-word name of method plugin category
+const char* PluginTypes::niceMethodPluginCategory(MethodPluginCategory category)
+{
+	return MethodPluginCategories[category];
+}
+
+// Return single-word name of method plugin category
+const char* PluginTypes::methodPluginCategory(MethodPluginCategory category)
+{
+	return qPrintable(QString(MethodPluginCategories[category]).toLower());
+}
+	

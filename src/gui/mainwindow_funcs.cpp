@@ -436,7 +436,7 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportFilmD
 	lablayout->addLayout(infolayout,0);
 
 	// Turn on space-saving
-	TDynamicWidget::beginSpaceSaving();
+	//TDynamicWidget::beginSpaceSaving();
 
 	// Load Qt Settings
 	loadSettings();

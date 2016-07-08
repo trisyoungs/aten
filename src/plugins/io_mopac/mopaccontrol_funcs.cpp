@@ -59,6 +59,12 @@ FilePluginInterface* MOPACControlModelPlugin::makeCopy()
  * Definition
  */
 
+// Return type of plugin
+PluginTypes::PluginType MOPACControlModelPlugin::type() const
+{
+	return PluginTypes::FilePlugin;
+}
+
 // Return category of plugin
 int MOPACControlModelPlugin::category() const
 {
