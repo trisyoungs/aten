@@ -1,4 +1,4 @@
-# Meta-Objects
+# EPSR ATO file
 set(epsrato_MOC_HDRS
   ato.hui
   #atoimportoptions.h
@@ -21,7 +21,7 @@ set_target_properties(epsrato PROPERTIES
    PREFIX ""
 )
 
-# Meta-Objects
+# EPSR Molfile
 set(epsrmol_MOC_HDRS
   mol.hui
 )
@@ -30,7 +30,7 @@ QT5_WRAP_CPP(epsrmol_MOC_SRCS ${epsrmol_MOC_HDRS} OPTIONS -I${PROJECT_SOURCE_DIR
 SET(epsrmol_UIS
   molexportoptions.ui 
 )
-QT5_WRAP_UI(epsrato_UIS_H ${epsrato_UIS})
+QT5_WRAP_UI(epsrmol_UIS_H ${epsrmol_UIS})
 
 add_library(epsrmol MODULE
   mol_funcs.cpp
