@@ -70,7 +70,7 @@ class TMenuButton : public QToolButton
 
 
 	/*
-	 * Widget for popup
+	 * Definition
 	 */
 	private:
 	// Popup widget
@@ -96,9 +96,16 @@ class TMenuButton : public QToolButton
 	// Notify button that a widget on the popup has been changed
 	void popupWidgetChanged(int data);
 
+
+	/*
+	 * Widget Functions
+	 */
 	protected:
 	void paintEvent(QPaintEvent* event);
 	void drawEllipsis(QStyleOption& style, QPainter& painter);
+
+	public:
+	QSize sizeHint() const;
 
 	private slots:
 	// Mouse button was pressed on the button

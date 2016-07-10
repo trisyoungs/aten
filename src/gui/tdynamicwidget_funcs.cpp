@@ -62,9 +62,6 @@ void TDynamicWidget::beginSpaceSaving()
 			continue;
 		}
 
-		// TEST
-		if ((qobject_cast<TMenuButton*>(layout->itemAt(0)->widget()))->text() != "Export Image") continue;
-
 		// Create new dynamic layout for this widget
 		TDynamicLayout* dynamicLayout = new TDynamicLayout(layout->margin(), layout->spacing(), layout->spacing());
 
