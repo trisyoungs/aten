@@ -92,7 +92,7 @@ Qt::Orientations TDynamicLayout::expandingDirections() const
 // Return minimum possible size for layout
 QSize TDynamicLayout::minimumSize() const
 {
-	if (sizeHints_[TDynamicLayout::FullSizeHorizontalLayout].isValid()) return QSize(30,sizeHints_[TDynamicLayout::FullSizeHorizontalLayout].height());
+	if (sizeHints_[TDynamicLayout::IconStackLayout].isValid()) return sizeHints_[TDynamicLayout::IconStackLayout];
 	else return QSize(30,66);
 }
 
@@ -105,8 +105,6 @@ void TDynamicLayout::setGeometry(const QRect &rect)
 	int left, top, right, bottom;
 	getContentsMargins(&left, &top, &right, &bottom);
 	rect.adjusted(left, top, -right, -bottom);
-	int w = 0;
-	int h = 0;
 
 	// Construct a list of TMenuButtons for convenience
 	RefList<TMenuButton,int> buttons;
@@ -124,12 +122,15 @@ void TDynamicLayout::setGeometry(const QRect &rect)
 		buttons.add(button);
 	}
 
-	QSize usedSize;
+	int buttonHeight = (rect.height() - verticalSpacing_) / 2;
+	int nColumns = buttons.nItems()/2;
+	if (buttons.nItems()%2 == 1) ++nColumns;
 	// Let us see what will fit!
 	// Is the supplied rect (specifically the width) big enough to fulfil the sizeHint()
 	if (rect.width() >= sizeHints_[TDynamicLayout::FullSizeHorizontalLayout].width())
 	{
 		// Draw buttons at full size.
+		int x = 0;
 		for (RefListItem<TMenuButton,int>* ri = buttons.first(); ri != NULL; ri = ri->next)
 		{
 			TMenuButton* button = ri->item;
@@ -141,20 +142,22 @@ void TDynamicLayout::setGeometry(const QRect &rect)
 			button->setMaximumSize(256, rect.height());
 			button->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Maximum);
 
-			button->setGeometry(QRect(QPoint(left+w, top), button->sizeHint()));
+			button->setGeometry(QRect(QPoint(left+x, top), button->sizeHint()));
 
-			w += button->sizeHint().width() + horizontalSpacing_;
+			x += button->sizeHint().width() + horizontalSpacing_;
 		}
 		currentLayoutStyle_ = TDynamicLayout::FullSizeHorizontalLayout;
 
 		// Update the full size hint while we are here.
-		sizeHints_[TDynamicLayout::FullSizeHorizontalLayout] = QSize(w,rect.height()+top+bottom);
+		sizeHints_[TDynamicLayout::FullSizeHorizontalLayout] = QSize(x, rect.height()+top+bottom);
 	}
 	else if (rect.width() >= sizeHints_[TDynamicLayout::ButtonStackLayout].width())
 	{
 		// Draw widgets as a stack of buttons (text beside icon)
-		int requiredWidth = 0;
-		int buttonHeight = (rect.height() - (buttons.nItems()-1)*verticalSpacing_) / buttons.nItems();
+		// Draw each pair of widgets as a stack, dividing any extra space in the given rect() between each stack
+		// We'll use the refitem->data member to store the width of the column the button is in
+
+		// Set styles of menu buttons to text beside icon, and put required widths in data members
 		for (RefListItem<TMenuButton,int>* ri = buttons.first(); ri != NULL; ri = ri->next)
 		{
 			TMenuButton* button = ri->item;
@@ -165,27 +168,66 @@ void TDynamicLayout::setGeometry(const QRect &rect)
 			button->setMinimumSize(20, buttonHeight);
 			button->setMaximumSize(rect.width(), buttonHeight);
 			button->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
-			if (button->sizeHint().width() > requiredWidth) requiredWidth = button->sizeHint().width();
+			ri->data = button->sizeHint().width();
 		}
-		for (RefListItem<TMenuButton,int>* ri = buttons.first(); ri != NULL; ri = ri->next)
+
+		// Now, set column (pair widths) and calculate maximum width required
+		int usedWidth = 0;
+		for (int n=0; n<buttons.nItems(); n+=2)
 		{
-			TMenuButton* button = ri->item;
-			button->setGeometry(QRect(left, top+h, rect.width(), buttonHeight));
-			h += buttonHeight + verticalSpacing_;
+			// Is there a second button in this pair?
+			if ((n+1) < buttons.nItems())
+			{
+				if (buttons[n]->data > buttons[n+1]->data) buttons[n+1]->data = buttons[n]->data;
+				else buttons[n]->data = buttons[n+1]->data;
+			}
+
+			usedWidth += buttons[n]->data;
+			if (n > 0) usedWidth += horizontalSpacing_;
 		}
+
+		// Distribute extra space between columns
+		int extraWidth = (rect.width() - usedWidth) / nColumns;
+		if (extraWidth < 0) extraWidth = 0;
+
+		// OK - all done - set geometries of the buttons
+		int x = 0, y = 0;
+		int minimumWidth = (nColumns-1) * horizontalSpacing_;
+		TMenuButton* button;
+		for (int n=0; n<buttons.nItems(); n+=2)
+		{
+			// First button
+			button = buttons[n]->item;
+			button->setGeometry(QRect(left+x, top+y, buttons[n]->data + extraWidth, buttonHeight));
+			y += buttonHeight + verticalSpacing_;
+			minimumWidth += buttons[n]->data;
+
+			// Second button (if there is one)
+			if ((n+1) < buttons.nItems())
+			{
+				button = buttons[n+1]->item;
+				button->setGeometry(QRect(left+x, top+y, buttons[n+1]->data + extraWidth, buttonHeight));
+				x += buttons[n+1]->data + extraWidth;
+				if (n > 0) x += horizontalSpacing_;
+				y = 0;
+			}
+		}
+
 		currentLayoutStyle_ = TDynamicLayout::ButtonStackLayout;
 
-		// Update the full size hint while we are here.
-		sizeHints_[TDynamicLayout::ButtonStackLayout] = QSize(requiredWidth, rect.height()+top+bottom);
+		// Update the size hint
+		sizeHints_[TDynamicLayout::ButtonStackLayout] = QSize(minimumWidth, rect.height()+top+bottom);
 
 		// If the required width for these buttons is more than that available to the layout, re-layout the widgets
-		if (requiredWidth > rect.width()) setGeometry(rect);
+		if (minimumWidth > rect.width()) setGeometry(rect);
 	}
 	else if (rect.width() >= sizeHints_[TDynamicLayout::IconStackLayout].width())
 	{
-		// Draw widgets as a stack of buttons (text beside icon)
-		int requiredWidth = 0;
-		int buttonHeight = (rect.height() - (buttons.nItems()-1)*verticalSpacing_) / buttons.nItems();
+		// Draw widgets as stacks of icon-only buttons
+		// All buttons will have the same width
+		int buttonWidth = (rect.width() - (nColumns-1)*horizontalSpacing_) / nColumns;
+
+		// Set button styles
 		for (RefListItem<TMenuButton,int>* ri = buttons.first(); ri != NULL; ri = ri->next)
 		{
 			TMenuButton* button = ri->item;
@@ -196,18 +238,35 @@ void TDynamicLayout::setGeometry(const QRect &rect)
 			button->setMinimumSize(20, buttonHeight);
 			button->setMaximumSize(rect.width(), buttonHeight);
 			button->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
-			if (button->sizeHint().width() > requiredWidth) requiredWidth = button->sizeHint().width();
 		}
-		for (RefListItem<TMenuButton,int>* ri = buttons.first(); ri != NULL; ri = ri->next)
+
+		// OK - all done - set geometries of the buttons
+		int x = 0, y = 0;
+		int minimumWidth = (nColumns-1) * horizontalSpacing_;
+		TMenuButton* button;
+		for (int n=0; n<buttons.nItems(); n+=2)
 		{
-			TMenuButton* button = ri->item;
-			button->setGeometry(QRect(left, top+h, rect.width(), buttonHeight));
-			h += buttonHeight + verticalSpacing_;
+			// First button
+			button = buttons[n]->item;
+			button->setGeometry(QRect(left+x, top+y, buttonWidth, buttonHeight));
+			y += buttonHeight + verticalSpacing_;
+			minimumWidth += button->sizeHint().width();
+
+			// Second button (if there is one)
+			if ((n+1) < buttons.nItems())
+			{
+				button = buttons[n+1]->item;
+				button->setGeometry(QRect(left+x, top+y, buttonWidth, buttonHeight));
+				x += buttonWidth;
+				if (n > 0) x += horizontalSpacing_;
+				y = 0;
+			}
 		}
+
 		currentLayoutStyle_ = TDynamicLayout::IconStackLayout;
 
-		// Update the full size hint while we are here.
-		sizeHints_[TDynamicLayout::IconStackLayout] = QSize(requiredWidth, rect.height()+top+bottom);
+		// Update the size hint
+		sizeHints_[TDynamicLayout::IconStackLayout] = QSize(minimumWidth, rect.height()+top+bottom);
 	}
 }
 

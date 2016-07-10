@@ -65,9 +65,6 @@ void TDynamicWidget::beginSpaceSaving()
 		// Create new dynamic layout for this widget
 		TDynamicLayout* dynamicLayout = new TDynamicLayout(layout->margin(), layout->spacing(), layout->spacing());
 
-		printf("Layout = %p  %s\n", layout, qPrintable(layout->objectName()));
-		printf("Layout has %i items\n", layout->count());
-
 		// Transfer widgets to new dynamic layout
 		QLayoutItem* item;
 		while (item = layout->takeAt(0)) dynamicLayout->addItem(item);

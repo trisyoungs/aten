@@ -397,7 +397,6 @@ QSize TMenuButton::sizeHint() const
 		h += iconSize().height();
 	}
 
-	if (text() == "Save") printf("Sizehint being returned for 'Save' is %i x %i\n", w, h);
 	return QSize(w,h);
 }
 
