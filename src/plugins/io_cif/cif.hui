@@ -100,7 +100,7 @@ class CIFModelPlugin : public QObject, public FilePluginInterface
 
 
 	/*
-	 * CIF Dictionary
+	 * CIF Functions
 	 */
 	private:
 	// CIF Dictionary Keywords
@@ -111,6 +111,10 @@ class CIFModelPlugin : public QObject, public FilePluginInterface
 	enum LoopKeyword { AtomSiteTypeSymbol, AtomSiteLabel, AtomSiteFractX, AtomSiteFractY, AtomSiteFractZ, AtomSiteCartnX, AtomSiteCartnY, AtomSiteCartnZ, ChemCompAtomTypeSymbol, ChemCompAtomModelCartnX, ChemCompAtomModelCartnY, ChemCompAtomModelCartnZ, SymmetryEquivPosAsXyz, nLoopKeywords };
 	// Return CIF loop keyword from string
 	LoopKeyword loopKeyword(QString s);
+
+	private:
+	// Try to read in semicolon-bounded text immediately following the current file position
+	QString readSemicolonText();
 };
 
 ATEN_END_NAMESPACE

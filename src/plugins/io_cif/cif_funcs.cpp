@@ -175,14 +175,15 @@ bool CIFModelPlugin::importData()
 							break;
 					}
 				}
+
 				// Parse next line...
+				// If it is empty (convenient) or we find another keyword (inconvenient) then stop the loop, but break out into the keyword check below
 				fileParser_.parseLine(parseOptions);
-			} while (fileParser_.nArgs() > 0);
+			} while ((fileParser_.nArgs() > 0) && (!fileParser_.argc(0).contains('_')));
 
 			// Continue with the main loop
 			loopType = NoLoop;
 			loopItems.clear();
-			continue;
 		}
 
 		// If this is a blank line, continue...
@@ -210,7 +211,8 @@ bool CIFModelPlugin::importData()
 					break;
 				case (CIFModelPlugin::ChemicalNameCommon):
 				case (CIFModelPlugin::ChemCompName):
-					targetModel()->setName(fileParser_.argc(1));
+					if (fileParser_.hasArg(1)) targetModel()->setName(fileParser_.argc(1));
+					else targetModel()->setName(readSemicolonText());
 					break;
 				case (CIFModelPlugin::CellLengthA):
 				case (CIFModelPlugin::CellLengthB):
@@ -244,6 +246,9 @@ bool CIFModelPlugin::importData()
 
 	// Pack model
 	if (!standardOptions_.preventPacking()) targetModel()->pack();
+
+	// Fold model
+	if (!standardOptions_.preventFolding()) targetModel()->foldAllMolecules();
 
 	// Rebond model
 	if (!standardOptions_.preventRebonding()) targetModel()->calculateBonding(true);
@@ -304,7 +309,7 @@ bool CIFModelPlugin::showExportOptionsDialog()
 }
 
 /*
- * Dictionary
+ * CIF Functions
  */
 
 // Return CIF dictionary keyword from string
@@ -323,4 +328,29 @@ CIFModelPlugin::LoopKeyword CIFModelPlugin::loopKeyword(QString s)
 
 	for (int n=0; n<CIFModelPlugin::nLoopKeywords; ++n) if (CIFLoopKeywords.at(n) == s) return (CIFModelPlugin::LoopKeyword) n;
 	return CIFModelPlugin::nLoopKeywords;
+}
+
+// Try to read in semicolon-bounded text immediately following the current file position
+QString CIFModelPlugin::readSemicolonText()
+{
+	// Store current file position in case we need to go back
+	std::streampos currentPos = fileParser_.tellg();
+
+	bool success = false;
+	// Read the next line
+	QString text, line;
+	fileParser_.readLine(line);
+	if (line.trimmed() == ";")
+	{
+		// Good, one or more following lines are the text we want
+		do
+		{
+			if (!fileParser_.readLine(line)) break;
+			if (line.trimmed() == ";") break;
+			text += line;
+		} while (!fileParser_.eofOrBlank());
+	}
+
+	if (!success) fileParser_.seekg(currentPos);
+	return text;
 }
