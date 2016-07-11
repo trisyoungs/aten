@@ -530,7 +530,6 @@ class AtenWindow : public QMainWindow
 	private slots:
 	void on_AtomsTableToggleButton_clicked(bool checked);
 	void on_AtomsTableScrollBar_valueChanged(int value);
-	void on_AtomsViewByPatternCheck_clicked(bool checked);
 	void on_AtomsShiftUpButton_clicked(bool checked);
 	void on_AtomsShiftDownButton_clicked(bool checked);
 	void on_AtomsMoveToStartButton_clicked(bool checked);

@@ -301,16 +301,6 @@ void AtenWindow::on_AtomsTableScrollBar_valueChanged(int value)
 	updateWidgets(AtenWindow::AtomsTableTarget);
 }
 
-void AtenWindow::on_AtomsViewByPatternCheck_clicked(bool checked)
-{
-	atomsTableViewingByPattern_ = checked;
-
-	atomsTableSelectionPoint_ = -1;
-	atomsTableStructurePoint_ = -1;
-
-	updateWidgets(AtenWindow::AtomsTableTarget);
-}
-
 void AtenWindow::on_AtomsViewElementCheck_clicked(bool checked)
 {
 	atomsTableSelectionPoint_ = -1;

@@ -10290,13 +10290,6 @@
                 </attribute>
                </widget>
               </item>
-              <item>
-               <widget class="QCheckBox" name="AtomsViewByPatternCheck">
-                <property name="text">
-                 <string>View by pattern</string>
-                </property>
-               </widget>
-              </item>
              </layout>
             </item>
             <item>
