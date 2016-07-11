@@ -1,4 +1,4 @@
-      LOGICAL FUNCTION READMO()
+      LOGICAL FUNCTION READMO(DATAFILE)
       IMPLICIT DOUBLE PRECISION (A-H,O-Z)
       INCLUDE 'SIZES'
 C
@@ -6,7 +6,8 @@ C MODULE TO READ IN GEOMETRY FILE, OUTPUT IT TO THE USER,
 C AND CHECK THE DATA TO SEE IF IT IS REASONABLE.
 C EXIT IF NECESSARY.
 C
-C
+C MODIFIED 07/2016 BY TGAY TO READ FROM INTERNAL FILE SOURCE
+C CONVERTED 07/2016 BY TGAY FROM SUBROUTINE TO LOGICAL FUNCTION
 C
 C  ON EXIT NATOMS    = NUMBER OF ATOMS PLUS DUMMY ATOMS (IF ANY).
 C          KEYWRD    = KEYWORDS TO CONTROL CALCULATION
@@ -52,7 +53,7 @@ C
       CHARACTER KEYWRD*241, KOMENT*81, TITLE*81, LINE*80, BANNER*80
       CHARACTER KEYS(80)*1, SPACE*1, SPACE2*2, CH*1, CH2*2
       CHARACTER ELEMNT*2, IDATE*30, GETNAM*80, NAME*4, NAMO*4, ISTA*4
-      character mydate*8, mytime*10
+      CHARACTER mydate*8, mytime*10
       COMMON /KEYWRD/ KEYWRD
       COMMON /TITLES/ KOMENT,TITLE
       COMMON /GEOVAR/ NVAR, LOC(2,MAXPAR), IDUMY, XPARAM(MAXPAR)
@@ -78,30 +79,41 @@ C
       DIMENSION COORD(3,NUMATM),VALUE(40),C(1)
       EQUIVALENCE (KEYS(1),KEYWRD)
       DATA SPACE, SPACE2/' ','  '/
-!	  write(6,'(a,3(1x,i10))') "aks> readmo> "
-!     +,numcal,1 
+c ******* ADDED BY TGAY 07/2016
+      COMMON /DATFIL/ IREC,NUMREC
+      CHARACTER DATAFILE(NUMREC)*80
+      LOGICAL GETTXT
+c *******
+
       CONVTR=2.D0*ASIN(1.D0)/180.D0
       AIGEO=.FALSE.
       READMO=.TRUE.
    10 CONTINUE
 C
-      CALL GETTXT
-      IF(INDEX(KEYWRD,'ECHO').NE.0)THEN
-         REWIND 5
-         ISOK=.FALSE.
-         DO 50 I=1,1000
-            READ(5,'(A)',END=60)KEYWRD
-            DO 20 J=80,2,-1
-   20       IF(KEYWRD(J:J).NE.' ')GOTO 30
-            J=1
-   30       DO 40 K=1,J
-   40       IF(ICHAR(KEYWRD(K:K)).LT.32)KEYWRD(K:K)='*'
-            WRITE(6,'(1X,A)')KEYWRD(1:J)
-   50    CONTINUE
-   60    CONTINUE
-         REWIND 5
-         CALL GETTXT
+      IF (.NOT.GETTXT(DATAFILE)) THEN
+        READMO=.FALSE.
+        RETURN
       ENDIF
+!       IF(INDEX(KEYWRD,'ECHO').NE.0)THEN
+!          IREC=0
+!          ISOK=.FALSE.
+!          DO 50 I=1,1000
+!             READ(5,'(A)',END=60)KEYWRD
+!             DO 20 J=80,2,-1
+!    20       IF(KEYWRD(J:J).NE.' ')GOTO 30
+!             J=1
+!    30       DO 40 K=1,J
+!    40       IF(ICHAR(KEYWRD(K:K)).LT.32)KEYWRD(K:K)='*'
+!             WRITE(6,'(1X,A)')KEYWRD(1:J)
+!    50    CONTINUE
+!    60    CONTINUE
+!          REWIND 5
+!         IF (.NOT.GETTXT(DATAFILE)) THEN
+!           READMO=.FALSE.
+!           RETURN
+!         ENDIF
+!       ENDIF
+      write(0,*) "NOW HERE1"
       IF(INDEX(KEYWRD,'ECHO').NE.0)WRITE(6,'(''1'')')
       IF(KEYWRD(1:1) .NE. SPACE) THEN
          CH=KEYWRD(1:1)
@@ -120,6 +132,7 @@ C
          KEYWRD(241:241)=CH2
    80    CONTINUE
       ENDIF
+      write(0,*) "NOW HERE2"
       IF(KOMENT(1:1) .NE. SPACE) THEN
          CH=KOMENT(1:1)
          KOMENT(1:1)=SPACE
@@ -137,6 +150,8 @@ C
          KOMENT(81:81)=CH2
   100    CONTINUE
       ENDIF
+      write(0,*) "NOW HERE3"
+
       IF(TITLE(1:1) .NE. SPACE) THEN
          CH=TITLE(1:1)
          TITLE(1:1)=SPACE
@@ -154,6 +169,8 @@ C
          TITLE(81:81)=CH2
   120    CONTINUE
       ENDIF
+      write(0,*) "NOW HERE4"
+
       DO 121 I=1,200
   121 REACT(I)=0.D0
       LATOM=0
@@ -162,14 +179,18 @@ C
          NVAR=0
          NDEP=0
          IF(AIGEO.OR.INDEX(KEYWRD,'AIGIN').NE.0)THEN
-            CALL GETGEG(5,LABELS,GEO,     NA,NB,NC,AMS,NATOMS,INT)
+         write(0,*) "READING GEO1"
+            CALL GETGEG(DATAFILE,LABELS,GEO,NA,NB,NC,AMS,NATOMS,
+     1INT)
          IF(NVAR.EQ.0)THEN
          DO 122 J=1,3
          DO 122 I=1,NATOMS
   122    LOPT(J,I)=0
          ENDIF
          ELSE
-            CALL GETGEO(5,LABELS,GEO,LOPT,NA,NB,NC,AMS,NATOMS,INT)
+         write(0,*) "READING GEO2"
+            CALL GETGEO(DATAFILE,LABELS,GEO,LOPT,NA,NB,NC,AMS,
+     1NATOMS,INT)
             IF(NATOMS.LT.0)THEN
                REWIND 5
                IF(NUMCAL.NE.1)THEN
@@ -188,6 +209,7 @@ C
            RETURN
          ENDIF
       ELSE
+      write(0,*) "NOW HERE5"
       DEGREE=90.D0/ASIN(1.D0)
       IF(NA(1).EQ.99)THEN
       DO 128 I=1,NATOMS
@@ -232,8 +254,8 @@ C    WRITE HEADER
 C
 C     CHANGE THE FOLLOWING LINE TO SUIT LOCAL ENVIRONMENT, IF DESIRED
 C
-      BANNER=' ** MOPAC FOR LINUX (PUBLIC DOMAIN VERSION) '//
-     1' MTA ATOMKI, Debrecen, 95-JUN-21  **'
+      BANNER=' **  OpenMOPAC v7.15 (PUBLIC DOMAIN VERSION) '//
+     1' PLUGIN FOR ATEN, TGAY, 07-2016  **'
       WRITE(6,'(A)')BANNER
 C
 C    THE BANNER DOES NOT APPEAR ANYWHERE ELSE.

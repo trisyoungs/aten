@@ -25,6 +25,8 @@
 // Constructor
 Mopac7MethodPlugin::Mopac7MethodPlugin()
 {
+	// Plugin options
+// 	pluginOptions_.add("GEO-OK", 
 }
 
 // Destructor
@@ -73,7 +75,14 @@ QString Mopac7MethodPlugin::description() const
 // Run method on the current target model
 bool Mopac7MethodPlugin::runMethod()
 {
-	readmo_();
+	// Create character array of input lines
+	QString inputFile = QString("%1").arg("PM3 GEO-OK", -80, QChar(' ')) + QString("%1").arg("Water", 80, QChar(' '))
+		+ QString("%1").arg("Coordinates churned out by Aten.", -80, QChar(' '))
+		+ QString("%1").arg("  O    -0.000000 1     0.000000 1    -0.000000 1", -80, QChar(' '))
+		+ QString("%1").arg("  H     0.742176 1     0.021779 1     0.590470 1", -80, QChar(' '))
+		+ QString("%1").arg("  H    -0.786228 1     0.006122 1     0.530414 1", -80, QChar(' '));
+	if (!om7setup_(qPrintable(inputFile), inputFile.length())) printf("Balls\n");
+	else printf("Woohoo!\n");
 }
 
 /*

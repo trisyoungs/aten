@@ -248,7 +248,7 @@ bool PluginStore::registerMethodPlugin(MethodPluginInterface* plugin)
 	Messenger::print(Messenger::Verbose, "       Name : %s", qPrintable(plugin->name()));
 	Messenger::print(Messenger::Verbose, "Description : %s", qPrintable(plugin->description()));
 
-// 	plugin->runMethod();
+	plugin->runMethod();
 
 	++logPoint_;
 

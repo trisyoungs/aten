@@ -114,8 +114,7 @@ mecih.f
 mecip.f
 moldat.f
 molval.f
-mopac7app.f
-mopac7lib.f
+mopac7iface.f
 mullik.f
 mult.f
 nllsq.f

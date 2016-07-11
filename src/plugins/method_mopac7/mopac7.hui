@@ -83,6 +83,7 @@ class Mopac7MethodPlugin : public QObject, public MethodPluginInterface
 
 ATEN_END_NAMESPACE
 
-extern "C" void readmo_();
+// Declare external interface to MOPAC7
+extern "C" bool om7setup_(const char* datafile, int arrayLength);
 
 #endif
