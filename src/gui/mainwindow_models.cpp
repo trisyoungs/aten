@@ -21,7 +21,6 @@
 
 #include "main/aten.h"
 #include "gui/mainwindow.h"
-// #include "gui/selectfilter.h"
 #include "templates/variantpointer.h"
 #include <QInputDialog>
 #include <QMessageBox>
@@ -39,7 +38,8 @@ void AtenWindow::modelsListContextMenuRequested(const QPoint& point)
 
 	// Build the context menu to display
 	QMenu contextMenu;
-	QAction* renameAction = contextMenu.addAction("Rename...");
+	QAction* renameAction = contextMenu.addAction("&Rename...");
+	QAction* deleteAction = contextMenu.addAction("&Delete");
 
 	// Show it
 	QPoint menuPosition = ui.ModelsList->mapToGlobal(point);
@@ -56,6 +56,10 @@ void AtenWindow::modelsListContextMenuRequested(const QPoint& point)
 
 			updateWidgets(AtenWindow::ModelsListTarget);
 		}
+	}
+	else if (menuResult == deleteAction)
+	{
+		if (closeModel(model)) updateWidgets(AtenWindow::AllTarget);
 	}
 }
 

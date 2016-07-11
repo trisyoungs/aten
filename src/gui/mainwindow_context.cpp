@@ -44,7 +44,7 @@ void AtenWindow::createContextMenu()
 	menu = contextMenu_.addMenu("&Label");
 	for (int n=0; n<Atom::nLabelTypes; ++n)
 	{
-		action = menu->addAction(Atom::atomLabel( (Atom::AtomLabel) n ));
+		action = menu->addAction(Atom::atomLabelNice( (Atom::AtomLabel) n ));
 		connect(action, SIGNAL(triggered(bool)), this, SLOT(contextMenuSetAtomLabel(bool)));
 	}
 	menu->addSeparator();
@@ -65,8 +65,15 @@ void AtenWindow::createContextMenu()
 	action = menu->addAction("Reorder");
 	connect(action, SIGNAL(triggered(bool)), ui.ToolsAtomsReorderButton, SLOT(click()));
 
-	// Appearance
+	// Create selection submenu
+	menu = contextMenu_.addMenu("Selec&t");
+	action = menu->addAction("Similar &elements");
+	connect(action, SIGNAL(triggered(bool)), this, SLOT(contextMenuSelectElement(bool)));
+	action = menu->addAction("&Fragment");
+	connect(action, SIGNAL(triggered(bool)), this, SLOT(contextMenuSelectFragment(bool)));
 	contextMenu_.addSeparator();
+
+	// Appearance
 // 	menu = contextMenu_.addMenu("Set Colour...");
 // 	menu->addAction(new ColourPopup(*this, NULL));
 // 	connect(action, SIGNAL(triggered(bool)), ui.SelectionLabelClearButton, SLOT(click()));
@@ -202,6 +209,22 @@ void AtenWindow::contextMenuCreateFragment(bool checked)
 	updateWidgets(AtenWindow::BuildPanelTarget);
 	ReturnValue rv;
 	ui.BuildDrawFragmentButton->callPopupMethod("updateFragments", rv);
+}
+
+// Select all elements similar to target atom
+void AtenWindow::contextMenuSelectElement(bool checked)
+{
+	CommandNode::run(Commands::Select, "c", ElementMap::symbol(contextAtom_));
+
+	updateWidgets(AtenWindow::MainViewTarget);
+}
+
+// Select fragment to which target atom belongs
+void AtenWindow::contextMenuSelectFragment(bool checked)
+{
+	CommandNode::run(Commands::SelectTree, "i", contextAtom_->id()+1);
+
+	updateWidgets(AtenWindow::MainViewTarget);
 }
 
 void AtenWindow::createGlyph()

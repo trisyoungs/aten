@@ -52,6 +52,7 @@ class Atom : public ListItem<Atom>
 	enum AtomLabel { IdLabel, ElementLabel, TypeLabel, EquivalentLabel, ChargeLabel, nLabelTypes };
 	static AtomLabel atomLabel(QString s, bool reportError = false);
 	static const char* atomLabel(Atom::AtomLabel al);
+	static const char* atomLabelNice(Atom::AtomLabel al);
 	// Atom structure data
 	enum AtomData { AllData=0, PositionData=1, ForceData=2, VelocityData=4, ChargeData=8, FixedData=16, ElementData=32 };
 	// Atom environment

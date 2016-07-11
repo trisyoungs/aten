@@ -425,7 +425,7 @@ void Model::printPatterns() const
 		Messenger::print("  ID  NMols  StartId EndId   Name              Forcefield");
 		while (p != NULL)
 		{
-			Messenger::print("  %2i  %-5i  %-6i  %-6i  %-16s  %s", p->id(), p->nMolecules(), p->startAtom(), p->endAtom(), qPrintable(p->name()), p->forcefield() ? qPrintable(p->forcefield()->name()) : "< Inherited >");
+			Messenger::print("  %2i  %-5i  %-6i  %-6i  %-16s  %s", p->id(), p->nMolecules(), p->startAtom()+1, p->endAtom()+1, qPrintable(p->name()), p->forcefield() ? qPrintable(p->forcefield()->name()) : "< Inherited >");
 			p = p->next;
 		}
 	}

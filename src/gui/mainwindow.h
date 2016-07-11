@@ -163,6 +163,8 @@ class AtenWindow : public QMainWindow
 	void contextMenuSetAtomLabel(bool checked);
 	void contextMenuProbeAtom(bool checked);
 	void contextMenuCreateFragment(bool checked);
+	void contextMenuSelectElement(bool checked);
+	void contextMenuSelectFragment(bool checked);
 	void createGlyph();
 
 	public:

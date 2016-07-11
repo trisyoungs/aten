@@ -31,6 +31,7 @@ ATEN_USING_NAMESPACE
 
 // Atom labels
 const char* AtomLabelKeywords[Atom::nLabelTypes] = { "id", "element", "type", "ffequiv", "charge" };
+const char* AtomLabelNiceKeywords[Atom::nLabelTypes] = { "ID", "Element", "Type", "FF Equiv", "Charge" };
 Atom::AtomLabel Atom::atomLabel(QString s, bool reportError)
 {
 	Atom::AtomLabel al = (Atom::AtomLabel) enumSearch("atom label", Atom::nLabelTypes, AtomLabelKeywords, s, reportError);
@@ -40,6 +41,10 @@ Atom::AtomLabel Atom::atomLabel(QString s, bool reportError)
 const char* Atom::atomLabel(Atom::AtomLabel al)
 {
 	return AtomLabelKeywords[al];
+}
+const char* Atom::atomLabelNice(Atom::AtomLabel al)
+{
+	return AtomLabelNiceKeywords[al];
 }
 
 // Atom environment

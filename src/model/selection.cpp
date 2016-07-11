@@ -333,8 +333,8 @@ void Model::reorderSelectedAtoms()
 			Messenger::print("Internal Error: Atom type for reference fragment atom %i failed to detect it.", referenceId);
 			return;
 		}
-		else if (nMatched == 1) Messenger::print("Typing for reference fragment atom %i tested successfully.");
-		else Messenger::print("Typing for reference fragment atom %i is not unique - reordering of symmetric subgroups may not be exact.");
+		else if (nMatched == 1) Messenger::print("Typing for reference fragment atom %i tested successfully.", rk->item->id());
+		else Messenger::print("Typing for reference fragment atom %i is not unique - reordering of symmetric subgroups may not be exact.", rk->item->id());
 	}
 
 	// We will create a pattern here to allow us to get a connectivity matrix easily
