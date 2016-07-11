@@ -131,7 +131,7 @@ void ForcefieldsTestPopup::on_SetButton_clicked(bool checked)
 		m->selectionSetType(ffa, true);
 		Messenger::print("Manually set types of %i atoms.", parent_.aten().currentModel()->nSelected());
 	}
-	parent_.updateWidgets(AtenWindow::MainViewTarget);
+	parent_.updateWidgets();
 }
 
 // Clear type definitions from the selected atoms
@@ -139,7 +139,7 @@ void ForcefieldsTestPopup::on_ClearButton_clicked(bool checked)
 {
 	parent_.aten().currentModel()->selectionSetType(NULL, false);
 	Messenger::print("Cleared types of %i atoms.", parent_.aten().currentModel()->nSelected());
-	parent_.updateWidgets(AtenWindow::MainViewTarget);
+	parent_.updateWidgets();
 }
 
 // Test selected atom type on current atom selection

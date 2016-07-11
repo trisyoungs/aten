@@ -69,7 +69,7 @@ void AddHPopup::on_AddHSelectionButton_clicked(bool checked)
 	CommandNode::run(Commands::SelectionAddHydrogen, "");
 
 	// Update display
-	parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
+	parent_.updateWidgets(AtenWindow::AtomsTableTarget);
 
 	// Hide popup
 	done();
@@ -81,7 +81,7 @@ void AddHPopup::on_AddHModelButton_clicked(bool checked)
 	CommandNode::run(Commands::AddHydrogen, "");
 
 	// Update display
-	parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
+	parent_.updateWidgets(AtenWindow::AtomsTableTarget);
 
 	// Hide popup
 	done();

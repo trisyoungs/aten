@@ -99,7 +99,7 @@ void PoresSchemePopup::on_GenerateSchemeButton_clicked(bool checked)
 	ui.PartitionVolumePercentLabel->setText( QString::number(100.0*volume/m->cell().volume(), 'f', 2) + "%" );
 
 	// Update the main window
-	parent_.updateWidgets(AtenWindow::MainViewTarget);
+	parent_.updateWidgets();
 }
 
 void PoresSchemePopup::on_CopySchemeButton_clicked(bool checked)
@@ -119,5 +119,5 @@ void PoresSchemePopup::on_CopySchemeButton_clicked(bool checked)
 	double minSizePcnt = ui.MinimumPartitionSizeSpin->value();
 	int atomExtent = ui.AtomExtentSpin->value();
 	CommandNode::run(Commands::CreateScheme, "ciiidii", qPrintable(name), npoints.x, npoints.y, npoints.z, minSizePcnt, atomExtent, 1);
-	parent_.updateWidgets(AtenWindow::MainViewTarget);
+	parent_.updateWidgets();
 }

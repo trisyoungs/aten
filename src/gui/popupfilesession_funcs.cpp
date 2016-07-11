@@ -72,7 +72,7 @@ void FileSessionPopup::on_ClearButton_clicked(bool checked)
 	
 		parent_.aten().addModel();
 
-		parent_.updateWidgets(AtenWindow::AllTarget);
+		parent_.updateWidgets(AtenWindow::AllTargets);
 	}
 
 	// Hide popup
@@ -96,7 +96,7 @@ void FileSessionPopup::on_LoadButton_clicked(bool checked)
 				QMessageBox::warning(this, "Error loading session file", "The session file could not be loaded.\nAt this point I would blame the developer.");
 			}
 
-			parent_.updateWidgets(AtenWindow::AllTarget);
+			parent_.updateWidgets(AtenWindow::AllTargets);
 		}
 	}
 

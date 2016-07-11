@@ -74,7 +74,7 @@ void AddAtomPopup::on_AddButton_clicked(bool checked)
 	else CommandNode::run(Commands::NewAtom, "iddd", parent_.currentBuildElement(), ui.XSpin->value(), ui.YSpin->value(), ui.ZSpin->value());
 
 	// Update display
-	parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
+	parent_.updateWidgets(AtenWindow::AtomsTableTarget);
 
 	// Hide popup
 	done(false, UserAction::DrawAddHydrogenAction);
@@ -87,7 +87,7 @@ void AddAtomPopup::on_AddAgainButton_clicked(bool checked)
 	else CommandNode::run(Commands::NewAtom, "iddd", parent_.currentBuildElement(), ui.XSpin->value(), ui.YSpin->value(), ui.ZSpin->value());
 
 	// Update display
-	parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
+	parent_.updateWidgets(AtenWindow::AtomsTableTarget);
 
 	// Don't hide popup, but set focus back to X coordinate
 	ui.XSpin->setFocus();

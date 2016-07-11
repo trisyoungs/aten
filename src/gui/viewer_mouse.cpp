@@ -53,7 +53,7 @@ void Viewer::mousePressEvent(QMouseEvent* event)
 	if (m != aten_->currentModel())
 	{
 		aten_->setCurrentModel(m);
-		atenWindow_->updateWidgets(AtenWindow::AllTarget-AtenWindow::MainViewTarget);
+		atenWindow_->updateWidgets(AtenWindow::AllTargets);
 	}
 	
 	// Get current active model
@@ -229,7 +229,7 @@ void Viewer::wheelEvent(QWheelEvent* event)
 		if (source != aten_->currentModel())
 		{
 			aten_->setCurrentModel(source);
-			atenWindow_->updateWidgets(AtenWindow::AllTarget);
+			atenWindow_->updateWidgets(AtenWindow::AllTargets);
 		}
 
 		// Now get target model to work with...

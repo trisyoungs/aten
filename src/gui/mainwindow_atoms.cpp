@@ -383,7 +383,7 @@ void AtenWindow::on_AtomsShiftUpButton_clicked(bool checked)
 	CommandNode::run(Commands::ShiftUp, "i", 1);
 	atomsTableUpdateSelection();
 
-	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
+	updateWidgets(AtenWindow::AtomsTableTarget);
 }
 
 void AtenWindow::on_AtomsShiftDownButton_clicked(bool checked)
@@ -391,7 +391,7 @@ void AtenWindow::on_AtomsShiftDownButton_clicked(bool checked)
 	CommandNode::run(Commands::ShiftDown, "i", 1);
 	atomsTableUpdateSelection();
 
-	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
+	updateWidgets(AtenWindow::AtomsTableTarget);
 }
 
 void AtenWindow::on_AtomsMoveToStartButton_clicked(bool checked)
@@ -399,7 +399,7 @@ void AtenWindow::on_AtomsMoveToStartButton_clicked(bool checked)
 	CommandNode::run(Commands::MoveToStart, "");
 	atomsTableUpdateSelection();
 
-	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
+	updateWidgets(AtenWindow::AtomsTableTarget);
 }
 
 void AtenWindow::on_AtomsMoveToEndButton_clicked(bool checked)
@@ -407,7 +407,7 @@ void AtenWindow::on_AtomsMoveToEndButton_clicked(bool checked)
 	CommandNode::run(Commands::MoveToEnd, "");
 	atomsTableUpdateSelection();
 	
-	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
+	updateWidgets(AtenWindow::AtomsTableTarget);
 }
 
 void AtenWindow::atomsTableMousePressEvent(QMouseEvent* event)
@@ -468,7 +468,7 @@ void AtenWindow::atomsTableMouseReleaseEvent(QMouseEvent* event)
 	atomsTableLastHovered_ = NULL;
 	if (atomsTableLastModel_->recordingUndoState()) atomsTableLastModel_->endUndoState();
 	
-	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
+	updateWidgets(AtenWindow::AtomsTableTarget);
 }
 
 void AtenWindow::atomsTableMouseMoveEvent(QMouseEvent* event)
@@ -547,7 +547,7 @@ void AtenWindow::atomsTableMouseMoveEvent(QMouseEvent* event)
 		// If not NULL, and the current hovered item is not the same as the previous one, toggle the item
 		atomsTableToggleItem(i);
 		atomsTableLastHovered_ = i;
-		updateWidgets(AtenWindow::MainViewTarget);
+		updateWidgets();
 	}
 }
 
@@ -620,7 +620,7 @@ void AtenWindow::atomsTableItemChanged(QTableWidgetItem* item)
 			break;
 	}
 
-	updateWidgets(AtenWindow::MainViewTarget);
+	updateWidgets();
 }
 
 void AtenWindow::atomsTableMouseWheelEvent(QWheelEvent* event)

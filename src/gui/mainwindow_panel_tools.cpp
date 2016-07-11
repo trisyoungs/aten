@@ -114,7 +114,7 @@ void AtenWindow::on_ToolsScriptsOpenButton_clicked(bool checked)
 		currentDirectory_.setPath(filename);
 	}
 
-	updateWidgets(AtenWindow::MainViewTarget);
+	updateWidgets();
 }
 
 void AtenWindow::on_ToolsScriptsRemoveButton_clicked(bool checked)
@@ -128,7 +128,7 @@ void AtenWindow::on_ToolsScriptsRemoveButton_clicked(bool checked)
 
 	aten_.removeScript(script);
 
-	updateWidgets(AtenWindow::MainViewTarget + AtenWindow::ToolsPanelTarget);
+	updateWidgets(AtenWindow::ToolsPanelTarget);
 }
 
 void AtenWindow::on_ToolsScriptsReloadButton_clicked(bool checked)
@@ -142,7 +142,7 @@ void AtenWindow::on_ToolsScriptsReloadButton_clicked(bool checked)
 
 	script->reload();
 
-	updateWidgets(AtenWindow::MainViewTarget + AtenWindow::ToolsPanelTarget);
+	updateWidgets(AtenWindow::ToolsPanelTarget);
 }
 
 void AtenWindow::on_ToolsScriptsRunButton_clicked(bool checked)
@@ -158,7 +158,7 @@ void AtenWindow::on_ToolsScriptsRunButton_clicked(bool checked)
 	ReturnValue rv;
 	if (!script->execute(rv)) Messenger::print("Script execution failed.");
 
-	updateWidgets(AtenWindow::AllTarget);
+	updateWidgets(AtenWindow::AllTargets);
 }
 
 /*
@@ -169,7 +169,7 @@ void AtenWindow::on_ToolsAtomsReorderButton_clicked(bool checked)
 {
 	CommandNode::run(Commands::ReOrder, "");
 
-	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
+	updateWidgets(AtenWindow::AtomsTableTarget);
 }
 
 void AtenWindow::on_ToolsAtomsZMatrixButton_clicked(bool checked)
@@ -205,5 +205,5 @@ void AtenWindow::on_ToolsSurfaceTerminateButton_clicked(bool checked)
 	CommandNode::run(Commands::Terminate, "");
 
 	// Update the main window
-	updateWidgets(AtenWindow::MainViewTarget);
+	updateWidgets();
 }

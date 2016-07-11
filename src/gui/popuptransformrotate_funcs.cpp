@@ -127,7 +127,7 @@ void TransformRotatePopup::on_RotateClockwiseButton_clicked(bool checked)
 	CommandNode::run(Commands::AxisRotate, "ddddddd", v.x, v.y, v.z, ui.AngleSpin->value(), o.x, o.y, o.z);
 
 	// Update
-	parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
+	parent_.updateWidgets(AtenWindow::AtomsTableTarget);
 }
 
 void TransformRotatePopup::on_RotateAnticlockwiseButton_clicked(bool checked)
@@ -145,5 +145,5 @@ void TransformRotatePopup::on_RotateAnticlockwiseButton_clicked(bool checked)
 	CommandNode::run(Commands::AxisRotate, "ddddddd", v.x, v.y, v.z, -ui.AngleSpin->value(), o.x, o.y, o.z);
 
 	// Update
-	parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
+	parent_.updateWidgets(AtenWindow::AtomsTableTarget);
 }

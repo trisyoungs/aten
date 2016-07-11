@@ -64,7 +64,7 @@ void AtenWindow::on_CellDefinePeriodicButton_clicked(bool checked)
 	else CommandNode::run(Commands::NoCell, "");
 
 	// Update display
-	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::CellPanelTarget);
+	updateWidgets(AtenWindow::CellPanelTarget);
 }
 
 /*
@@ -76,7 +76,7 @@ void AtenWindow::on_CellTransformReplicateButton_clicked(bool checked)
 	ReturnValue rv;
 	ui.CellTransformReplicateButton->callPopupMethod("replicate", rv);
 
-	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
+	updateWidgets(AtenWindow::AtomsTableTarget);
 }
 
 void AtenWindow::on_CellTransformScaleButton_clicked(bool checked)
@@ -84,7 +84,7 @@ void AtenWindow::on_CellTransformScaleButton_clicked(bool checked)
 	ReturnValue rv;
 	ui.CellTransformScaleButton->callPopupMethod("scale", rv);
 
-	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
+	updateWidgets(AtenWindow::AtomsTableTarget);
 }
 
 /*
@@ -104,12 +104,12 @@ void AtenWindow::on_CellFoldAtomsButton_clicked(bool checked)
 {
 	CommandNode::run(Commands::Fold, "");
 
-	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
+	updateWidgets(AtenWindow::AtomsTableTarget);
 }
 
 void AtenWindow::on_CellFoldMoleculesButton_clicked(bool checked)
 {
 	CommandNode::run(Commands::FoldMolecules, "");
 
-	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
+	updateWidgets(AtenWindow::AtomsTableTarget);
 }

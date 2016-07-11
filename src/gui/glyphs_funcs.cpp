@@ -204,7 +204,7 @@ void GlyphsWidget::on_GlyphList_currentRowChanged(int row)
 		g = (Glyph*) VariantPointer<Glyph>(((QListWidgetItem*) ui.GlyphList->item(i))->data(Qt::UserRole));
 		g->setSelected(ui.GlyphList->item(i)->isSelected());
 	}
-	parent_.updateWidgets(AtenWindow::MainViewTarget);
+	parent_.updateWidgets();
 }
 
 void GlyphsWidget::on_GlyphList_itemSelectionChanged()
@@ -224,7 +224,7 @@ void GlyphsWidget::on_GlyphList_itemSelectionChanged()
 		g = (Glyph*) VariantPointer<Glyph>(((QListWidgetItem*) ui.GlyphList->item(i))->data(Qt::UserRole));
 		g->setSelected(ui.GlyphList->item(i)->isSelected());
 	}
-	parent_.updateWidgets(AtenWindow::MainViewTarget);
+	parent_.updateWidgets();
 }
 
 void GlyphsWidget::on_GlyphAddButton_clicked(bool checked)
@@ -243,7 +243,7 @@ void GlyphsWidget::on_GlyphAddButton_clicked(bool checked)
 	updateData(g);
 	updateControls(g);
 	refreshing_ = false;
-	parent_.updateWidgets(AtenWindow::MainViewTarget);
+	parent_.updateWidgets();
 }
 
 void GlyphsWidget::on_GlyphDeleteSelectedButton_clicked(bool checked)
@@ -262,7 +262,7 @@ void GlyphsWidget::on_GlyphDeleteSelectedButton_clicked(bool checked)
 	refresh();
 	// Reselect item now at the previous selection position
 	ui.GlyphList->setCurrentRow(row < ui.GlyphList->count() ? row : ui.GlyphList->count()-1);
-	parent_.updateWidgets(AtenWindow::MainViewTarget);
+	parent_.updateWidgets();
 }
 
 void GlyphsWidget::on_GlyphSelectAllButton_clicked(bool checked)
@@ -277,7 +277,7 @@ void GlyphsWidget::on_GlyphSelectAllButton_clicked(bool checked)
 		g->setSelected(true);
 	}
 	refreshing_ = false;
-	parent_.updateWidgets(AtenWindow::MainViewTarget);
+	parent_.updateWidgets();
 }
 
 void GlyphsWidget::on_GlyphSelectNoneButton_clicked(bool checked)
@@ -293,7 +293,7 @@ void GlyphsWidget::on_GlyphSelectNoneButton_clicked(bool checked)
 		g = g->next;
 	}
 	refreshing_ = false;
-	parent_.updateWidgets(AtenWindow::MainViewTarget);
+	parent_.updateWidgets();
 }
 
 void GlyphsWidget::on_GlyphInvertSelectionButton_clicked(bool checked)
@@ -307,21 +307,21 @@ void GlyphsWidget::on_GlyphInvertSelectionButton_clicked(bool checked)
 		g->setSelected( ui.GlyphList->item(i)->isSelected());
 	}
 	refreshing_ = false;
-	parent_.updateWidgets(AtenWindow::MainViewTarget);
+	parent_.updateWidgets();
 }
 
 void GlyphsWidget::on_GlyphHideAllButton_clicked(bool checked)
 {
 	Model* m = parent_.aten().currentModelOrFrame();
 	for (Glyph* g = m->glyphs(); g != NULL; g = g->next) g->setVisible(false);
-	parent_.updateWidgets(AtenWindow::MainViewTarget);
+	parent_.updateWidgets();
 }
 
 void GlyphsWidget::on_GlyphHideNoneButton_clicked(bool checked)
 {
 	Model* m = parent_.aten().currentModelOrFrame();
 	for (Glyph* g = m->glyphs(); g != NULL; g = g->next) g->setVisible(true);
-	parent_.updateWidgets(AtenWindow::MainViewTarget);
+	parent_.updateWidgets();
 }
 
 void GlyphsWidget::on_GlyphHideSelectedButton_clicked(bool checked)
@@ -332,7 +332,7 @@ void GlyphsWidget::on_GlyphHideSelectedButton_clicked(bool checked)
 		g = (Glyph*) VariantPointer<Glyph>(((QListWidgetItem*) ui.GlyphList->item(i))->data(Qt::UserRole));
 		g->setVisible(false);
 	}
-	parent_.updateWidgets(AtenWindow::MainViewTarget);
+	parent_.updateWidgets();
 }
 
 void GlyphsWidget::on_GlyphTypeCombo_currentIndexChanged(int row)
@@ -355,7 +355,7 @@ void GlyphsWidget::on_GlyphTypeCombo_currentIndexChanged(int row)
 		item->setText(s);
 	}
 	parent_.aten().currentModelOrFrame()->logChange(Log::Glyphs);
-	parent_.updateWidgets(AtenWindow::MainViewTarget);
+	parent_.updateWidgets();
 }
 
 void GlyphsWidget::on_GlyphLineEdit_returnPressed()
@@ -370,7 +370,7 @@ void GlyphsWidget::on_GlyphLineEdit_returnPressed()
 		g->setText(ui.GlyphLineEdit->text());
 	}
 	parent_.aten().currentModelOrFrame()->logChange(Log::Glyphs);
-	parent_.updateWidgets(AtenWindow::MainViewTarget);
+	parent_.updateWidgets();
 }
 
 void GlyphsWidget::on_GlyphVisibleCheck_clicked(bool checked)
@@ -385,7 +385,7 @@ void GlyphsWidget::on_GlyphVisibleCheck_clicked(bool checked)
 		g->setVisible(checked);
 	}
 	parent_.aten().currentModelOrFrame()->logChange(Log::Glyphs);
-	parent_.updateWidgets(AtenWindow::MainViewTarget);
+	parent_.updateWidgets();
 }
 
 void GlyphsWidget::on_Data1AtomIdSpin_valueChanged(int i)
@@ -573,7 +573,7 @@ void GlyphsWidget::dataAtomIdChanged(int id, int value)
 		else g->data(id)->setAtom( g->parent()->atom(value) );
 	}
 	parent_.aten().currentModelOrFrame()->logChange(Log::Glyphs);
-	parent_.updateWidgets(AtenWindow::MainViewTarget);
+	parent_.updateWidgets();
 }
 
 void GlyphsWidget::dataValueChanged(int id, int component, double value)
@@ -589,7 +589,7 @@ void GlyphsWidget::dataValueChanged(int id, int component, double value)
 		else g->data(id)->setVector(component, value);
 	}
 	parent_.aten().currentModelOrFrame()->logChange(Log::Glyphs);
-	parent_.updateWidgets(AtenWindow::MainViewTarget);
+	parent_.updateWidgets();
 }
 
 void GlyphsWidget::dataValueChanged(int id, double x, double y, double z)
@@ -605,7 +605,7 @@ void GlyphsWidget::dataValueChanged(int id, double x, double y, double z)
 		else g->data(id)->setVector(x, y, z);
 	}
 	parent_.aten().currentModelOrFrame()->logChange(Log::Glyphs);
-	parent_.updateWidgets(AtenWindow::MainViewTarget);
+	parent_.updateWidgets();
 }
 
 void GlyphsWidget::dataColourChanged(int id)
@@ -632,7 +632,7 @@ void GlyphsWidget::dataColourChanged(int id)
 		else gl->data(id)->setColour(newcol.redF(), newcol.greenF(), newcol.blueF(), newcol.alphaF());
 	}
 	parent_.aten().currentModelOrFrame()->logChange(Log::Glyphs);
-	parent_.updateWidgets(AtenWindow::MainViewTarget);
+	parent_.updateWidgets();
 }
 
 void GlyphsWidget::closeEvent(QCloseEvent* event)

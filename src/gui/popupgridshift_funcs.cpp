@@ -97,7 +97,7 @@ void GridShiftPopup::gridShiftChanged()
 	}
 
 	// Update
-	parent_.updateWidgets(AtenWindow::MainViewTarget);
+	parent_.updateWidgets();
 }
 
 void GridShiftPopup::on_PositiveXButton_clicked(bool checked)

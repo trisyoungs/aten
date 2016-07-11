@@ -169,7 +169,7 @@ bool Aten::importModel(QString filename, FilePluginInterface* plugin, FilePlugin
 	if (result)
 	{
 		if (removeAfterLoad) removeModel(removeAfterLoad);
-		atenWindow_->updateWidgets(AtenWindow::AllTarget);
+		atenWindow_->updateWidgets(AtenWindow::AllTargets);
 	}
 
 	Messenger::exit("Aten::importModel");

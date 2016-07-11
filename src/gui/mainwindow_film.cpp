@@ -314,7 +314,7 @@ bool AtenWindow::exportFilm()
 // 		obj.rs()->setVibrationFrameIndex(n);
 // 		
 // 		basename = prefs.tempDir().filePath("aten-movie-%1-%2-%3.png").arg(QApplication::applicationPid(), runid).arg(n, 9, 10, QChar('0'));
-// // 		parent_.updateWidgets(AtenWindow::MainViewTarget);
+// // 		parent_.updateWidgets();
 // 
 // 		pixmap = aten_.atenWindow()->scenePixmap(width, height);
 // 		pixmap.save(basename, "png", -1);

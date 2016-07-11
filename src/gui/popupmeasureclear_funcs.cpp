@@ -69,7 +69,7 @@ void MeasureClearPopup::on_SelectionButton_clicked(bool checked)
 	CommandNode::run(Commands::ClearMeasurements);
 
 	// Update display
-	parent_.updateWidgets(AtenWindow::MainViewTarget);
+	parent_.updateWidgets();
 
 	// Hide popup
 	done();

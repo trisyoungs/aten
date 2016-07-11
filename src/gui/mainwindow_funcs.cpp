@@ -446,7 +446,7 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportFilmD
 	}
 
 	// Refresh everything
-	updateWidgets(AtenWindow::AllTarget);
+	updateWidgets(AtenWindow::AllTargets);
 
 	// Set the widget colours in prefs
 	QColor colour;
@@ -540,7 +540,7 @@ void AtenWindow::timerEvent(QTimerEvent* event)
 			{
 				currentModel->seekNextTrajectoryFrame();
 				if (currentModel->trajectoryFrameIndex() == currentModel->nTrajectoryFrames()-1) ui.TrajectoryControlPlayButton->click();
-				updateWidgets(AtenWindow::MainViewTarget+AtenWindow::TrajectoryPanelTarget);
+				updateWidgets(AtenWindow::TrajectoryPanelTarget);
 			}
 			trajectoryDrawFlag = false;
 		}

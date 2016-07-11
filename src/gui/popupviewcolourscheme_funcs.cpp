@@ -129,7 +129,7 @@ void ViewColourSchemePopup::on_ElementButton_clicked(bool checked)
 
 	parent_.aten().globalLogChange(Log::Style);
 
-	parent_.updateWidgets(AtenWindow::MainViewTarget);
+	parent_.updateWidgets();
 
 	// Hide popup
 	done();
@@ -146,7 +146,7 @@ void ViewColourSchemePopup::on_ChargeButton_clicked(bool checked)
 
 	parent_.aten().globalLogChange(Log::Style);
 
-	parent_.updateWidgets(AtenWindow::MainViewTarget);
+	parent_.updateWidgets();
 
 	// Hide popup
 	done();
@@ -163,7 +163,7 @@ void ViewColourSchemePopup::on_ForceButton_clicked(bool checked)
 
 	parent_.aten().globalLogChange(Log::Style);
 
-	parent_.updateWidgets(AtenWindow::MainViewTarget);
+	parent_.updateWidgets();
 
 	// Hide popup
 	done();
@@ -180,7 +180,7 @@ void ViewColourSchemePopup::on_VelocityButton_clicked(bool checked)
 
 	parent_.aten().globalLogChange(Log::Style);
 
-	parent_.updateWidgets(AtenWindow::MainViewTarget);
+	parent_.updateWidgets();
 
 	// Hide popup
 	done();
@@ -197,7 +197,7 @@ void ViewColourSchemePopup::on_OwnButton_clicked(bool checked)
 
 	parent_.aten().globalLogChange(Log::Style);
 
-	parent_.updateWidgets(AtenWindow::MainViewTarget);
+	parent_.updateWidgets();
 
 	// Hide popup
 	done();

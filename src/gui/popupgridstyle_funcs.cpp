@@ -116,7 +116,7 @@ void GridStylePopup::on_PointsButton_clicked(bool checked)
 	callMethodSimple("updateButtonIcon", Grid::surfaceStyle(Grid::PointSurface));
 
 	// Update display
-	parent_.updateWidgets(AtenWindow::MainViewTarget);
+	parent_.updateWidgets();
 
 	// Hide popup
 	done();
@@ -132,7 +132,7 @@ void GridStylePopup::on_MeshButton_clicked(bool checked)
 	callMethodSimple("updateButtonIcon", Grid::surfaceStyle(Grid::MeshSurface));
 
 	// Update display
-	parent_.updateWidgets(AtenWindow::MainViewTarget);
+	parent_.updateWidgets();
 
 	// Hide popup
 	done();
@@ -148,7 +148,7 @@ void GridStylePopup::on_SolidButton_clicked(bool checked)
 	callMethodSimple("updateButtonIcon", Grid::surfaceStyle(Grid::SolidSurface));
 
 	// Update display
-	parent_.updateWidgets(AtenWindow::MainViewTarget);
+	parent_.updateWidgets();
 
 	// Hide popup
 	done();

@@ -101,8 +101,8 @@ class AtenWindow : public QMainWindow
 	 * Update Functions
 	 */
 	public:
-	// Update Targets
-	enum UpdateTarget { DefaultTarget = 0, AtomsTableTarget = 1, CalculatePanelTarget = 2, ForcefieldsPanelTarget = 4, GlyphsTarget = 8, GridsPanelTarget = 16, ToolsPanelTarget = 32, MainViewTarget = 64, StatusBarTarget = 128, SelectionPanelTarget = 256, VibrationsTarget = 512, SelectPanelTarget = 1024, TrajectoryPanelTarget = 2048, BuildPanelTarget = 4096, CellPanelTarget = 8192, TransformPanelTarget = 16384, ModelsListTarget = 32768, AllTarget = 65535 };
+	// Update Targets 
+	enum UpdateTarget { DefaultTarget = 0, AtomsTableTarget = 1, ModelsListTarget = 2, StatusBarTarget = 4, BuildPanelTarget = 8, CalculatePanelTarget = 16, CellPanelTarget = 32, ForcefieldsPanelTarget = 64, GlyphsTarget = 128, GridsPanelTarget = 256, SelectionPanelTarget = 512, SelectPanelTarget = 1024, TrajectoryPanelTarget = 2048, TransformPanelTarget = 4096, ToolsPanelTarget = 8192, VibrationsTarget = 16384,   DummyTarget = 32768, AllTargets = 65535 };
 
 	private:
 	// Whether window is currently refreshing

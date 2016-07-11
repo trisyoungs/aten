@@ -91,7 +91,7 @@ void AtenWindow::on_HomeFileNewButton_clicked(bool checked)
 	// Update GUI
 	aten_.setCurrentModel(m);
 
-	updateWidgets(AtenWindow::AllTarget);
+	updateWidgets(AtenWindow::AllTargets);
 }
 
 void AtenWindow::on_HomeFileOpenButton_clicked(bool checked)
@@ -105,7 +105,7 @@ void AtenWindow::on_HomeFileOpenButton_clicked(bool checked)
 
 		aten().setSingleModelVisible(aten().currentModel());
 
-		updateWidgets(AtenWindow::AllTarget);
+		updateWidgets(AtenWindow::AllTargets);
 	}
 }
 
@@ -138,7 +138,7 @@ void AtenWindow::on_HomeFileCloseButton_clicked(bool checked)
 	}
 
 	// Update GUI
-	updateWidgets(AtenWindow::AllTarget);
+	updateWidgets(AtenWindow::AllTargets);
 }
 
 void AtenWindow::on_HomeFileImageButton_clicked(bool checked)
@@ -170,42 +170,42 @@ void AtenWindow::on_HomeEditCopyButton_clicked(bool checked)
 {
 	CommandNode::run(Commands::Copy, "");
 
-	updateWidgets(AtenWindow::MainViewTarget);
+	updateWidgets();
 }
 
 void AtenWindow::on_HomeEditCutButton_clicked(bool checked)
 {
 	CommandNode::run(Commands::Cut, "");
 
-	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget+AtenWindow::SelectPanelTarget);
+	updateWidgets(AtenWindow::AtomsTableTarget+AtenWindow::SelectPanelTarget);
 }
 
 void AtenWindow::on_HomeEditPasteButton_clicked(bool checked)
 {
 	CommandNode::run(Commands::Paste, "");
 
-	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget+AtenWindow::SelectPanelTarget);
+	updateWidgets(AtenWindow::AtomsTableTarget+AtenWindow::SelectPanelTarget);
 }
 
 void AtenWindow::on_HomeEditDeleteButton_clicked(bool checked)
 {
 	CommandNode::run(Commands::Delete, "");
 
-	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget+AtenWindow::SelectPanelTarget);
+	updateWidgets(AtenWindow::AtomsTableTarget+AtenWindow::SelectPanelTarget);
 }
 
 void AtenWindow::on_HomeEditUndoButton_clicked(bool checked)
 {
 	CommandNode::run(Commands::Undo, "");
 
-	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget+AtenWindow::SelectPanelTarget+AtenWindow::GlyphsTarget);
+	updateWidgets(AtenWindow::AtomsTableTarget+AtenWindow::SelectPanelTarget+AtenWindow::GlyphsTarget);
 }
 
 void AtenWindow::on_HomeEditRedoButton_clicked(bool checked)
 {
 	CommandNode::run(Commands::Redo, "");
 
-	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget+AtenWindow::SelectPanelTarget+AtenWindow::GlyphsTarget);
+	updateWidgets(AtenWindow::AtomsTableTarget+AtenWindow::SelectPanelTarget+AtenWindow::GlyphsTarget);
 }
 
 
@@ -216,7 +216,7 @@ void AtenWindow::on_HomeEditRedoButton_clicked(bool checked)
 void AtenWindow::on_HomeViewResetButton_clicked(bool checked)
 {
 	aten_.currentModelOrFrame()->resetView(ui.MainView->contextWidth(), ui.MainView->contextHeight());
-	updateWidgets(AtenWindow::MainViewTarget);
+	updateWidgets();
 }
 
 // Get current view
@@ -234,7 +234,7 @@ void AtenWindow::on_HomeViewSetButton_clicked(bool checked)
 	// Run command
 	CommandNode::run(Commands::SetView, "dddddddddddd", storedView[0], storedView[1], storedView[2], storedView[4], storedView[5], storedView[6], storedView[8], storedView[9], storedView[10], storedView[12], storedView[13], storedView[14]);
 
-	updateWidgets(AtenWindow::MainViewTarget);
+	updateWidgets();
 }
 
 // Toggle detection of H-Bonds
@@ -244,7 +244,7 @@ void AtenWindow::on_HomeViewHBondsButton_clicked(bool checked)
 	
 	prefs.setDrawHydrogenBonds(checked);
 
-	updateWidgets(AtenWindow::MainViewTarget);
+	updateWidgets();
 }
 
 // Toggle automatic correction of (transparent) grid data
@@ -259,7 +259,7 @@ void AtenWindow::on_HomeViewCorrectGridsButton_clicked(bool checked)
 		for (Model* m = aten_.models(); m != NULL; m = m->next) m->updateGridAxisOrdering();
 	}
 
-	updateWidgets(AtenWindow::MainViewTarget);
+	updateWidgets();
 }
 
 void AtenWindow::on_HomeViewLockButton_clicked(bool checked)
@@ -273,7 +273,7 @@ void AtenWindow::on_HomeViewLockButton_clicked(bool checked)
 
 	prefs.setViewLock(checked ? Prefs::FullLock : Prefs::NoLock);
 
-	updateWidgets(AtenWindow::MainViewTarget);
+	updateWidgets();
 }
 
 /*
@@ -287,7 +287,7 @@ void AtenWindow::on_HomeAppearanceLineButton_clicked(bool checked)
 	prefs.setRenderStyle(Prefs::LineStyle);
 	aten_.globalLogChange(Log::Style);
 
-	updateWidgets(AtenWindow::MainViewTarget);
+	updateWidgets();
 }
 
 void AtenWindow::on_HomeAppearanceTubeButton_clicked(bool checked)
@@ -297,7 +297,7 @@ void AtenWindow::on_HomeAppearanceTubeButton_clicked(bool checked)
 	prefs.setRenderStyle(Prefs::TubeStyle);
 	aten_.globalLogChange(Log::Style);
 
-	updateWidgets(AtenWindow::MainViewTarget);
+	updateWidgets();
 }
 
 void AtenWindow::on_HomeAppearanceSphereButton_clicked(bool checked)
@@ -307,7 +307,7 @@ void AtenWindow::on_HomeAppearanceSphereButton_clicked(bool checked)
 	prefs.setRenderStyle(Prefs::SphereStyle);
 	aten_.globalLogChange(Log::Style);
 
-	updateWidgets(AtenWindow::MainViewTarget);
+	updateWidgets();
 }
 
 void AtenWindow::on_HomeAppearanceScaledButton_clicked(bool checked)
@@ -317,7 +317,7 @@ void AtenWindow::on_HomeAppearanceScaledButton_clicked(bool checked)
 	prefs.setRenderStyle(Prefs::ScaledStyle);
 	aten_.globalLogChange(Log::Style);
 
-	updateWidgets(AtenWindow::MainViewTarget);
+	updateWidgets();
 }
 
 void AtenWindow::on_HomeAppearanceOwnStyleButton_clicked(bool checked)
@@ -327,7 +327,7 @@ void AtenWindow::on_HomeAppearanceOwnStyleButton_clicked(bool checked)
 	prefs.setRenderStyle(Prefs::OwnStyle);
 	aten_.globalLogChange(Log::Style);
 
-	updateWidgets(AtenWindow::MainViewTarget);
+	updateWidgets();
 }
 
 void AtenWindow::on_HomeAppearanceElementButton_clicked(bool checked)
@@ -337,7 +337,7 @@ void AtenWindow::on_HomeAppearanceElementButton_clicked(bool checked)
 	prefs.setColourScheme(Prefs::ElementScheme);
 	aten_.globalLogChange(Log::Style);
 
-	updateWidgets(AtenWindow::MainViewTarget);
+	updateWidgets();
 }
 
 void AtenWindow::on_HomeAppearanceChargeButton_clicked(bool checked)
@@ -347,7 +347,7 @@ void AtenWindow::on_HomeAppearanceChargeButton_clicked(bool checked)
 	prefs.setColourScheme(Prefs::ChargeScheme);
 	aten_.globalLogChange(Log::Style);
 
-	updateWidgets(AtenWindow::MainViewTarget);
+	updateWidgets();
 }
 
 void AtenWindow::on_HomeAppearanceForceButton_clicked(bool checked)
@@ -357,7 +357,7 @@ void AtenWindow::on_HomeAppearanceForceButton_clicked(bool checked)
 	prefs.setColourScheme(Prefs::ForceScheme);
 	aten_.globalLogChange(Log::Style);
 
-	updateWidgets(AtenWindow::MainViewTarget);
+	updateWidgets();
 }
 
 void AtenWindow::on_HomeAppearanceVelocityButton_clicked(bool checked)
@@ -367,7 +367,7 @@ void AtenWindow::on_HomeAppearanceVelocityButton_clicked(bool checked)
 	prefs.setColourScheme(Prefs::VelocityScheme);
 	aten_.globalLogChange(Log::Style);
 
-	updateWidgets(AtenWindow::MainViewTarget);
+	updateWidgets();
 }
 
 void AtenWindow::on_HomeAppearanceOwnColourButton_clicked(bool checked)
@@ -377,7 +377,7 @@ void AtenWindow::on_HomeAppearanceOwnColourButton_clicked(bool checked)
 	prefs.setColourScheme(Prefs::OwnScheme);
 	aten_.globalLogChange(Log::Style);
 
-	updateWidgets(AtenWindow::MainViewTarget);
+	updateWidgets();
 }
 
 // Set perspective view
@@ -387,12 +387,12 @@ void AtenWindow::on_HomeAppearancePerspectiveButton_clicked(bool checked)
 
 	prefs.setPerspective(checked);
 
-	updateWidgets(AtenWindow::MainViewTarget);
+	updateWidgets();
 }
 
 void AtenWindow::on_HomeAppearanceShowAllButton_clicked(bool checked)
 {
 	CommandNode::run(Commands::ShowAll, "");
 
-	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
+	updateWidgets(AtenWindow::AtomsTableTarget);
 }

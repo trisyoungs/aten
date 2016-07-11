@@ -104,7 +104,7 @@ void TransformTorsionPopup::on_SetTorsionButton_clicked(bool checked)
 	else if (ui.MoveTypeCombo->currentIndex() == 3) CommandNode::run(Commands::SetTorsions, "dc", ui.NewTorsionSpin->value(), "heavy");
 	else CommandNode::run(Commands::SetTorsions, "dc", ui.NewTorsionSpin->value(), "both");
 
-	parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
+	parent_.updateWidgets(AtenWindow::AtomsTableTarget);
 
 	done();
 }
@@ -117,7 +117,7 @@ void TransformTorsionPopup::on_IncreaseTorsionButton_clicked(bool checked)
 	else if (ui.MoveTypeCombo->currentIndex() == 3) CommandNode::run(Commands::SetTorsions, "dci", ui.DeltaSpin->value(), "heavy", 1);
 	else CommandNode::run(Commands::SetTorsions, "dci", ui.DeltaSpin->value(), "both", 1);
 
-	parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
+	parent_.updateWidgets(AtenWindow::AtomsTableTarget);
 }
 
 void TransformTorsionPopup::on_DecreaseTorsionButton_clicked(bool checked)
@@ -128,5 +128,5 @@ void TransformTorsionPopup::on_DecreaseTorsionButton_clicked(bool checked)
 	else if (ui.MoveTypeCombo->currentIndex() == 3) CommandNode::run(Commands::SetTorsions, "dci", -ui.DeltaSpin->value(), "heavy", 1);
 	else CommandNode::run(Commands::SetTorsions, "dci", -ui.DeltaSpin->value(), "both", 1);
 
-	parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
+	parent_.updateWidgets(AtenWindow::AtomsTableTarget);
 }

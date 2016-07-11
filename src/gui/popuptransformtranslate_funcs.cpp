@@ -105,7 +105,7 @@ void TransformTranslatePopup::translateSelection(int axis, int dir)
 	currentModel->endUndoState();
 
 	// Update
-	parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
+	parent_.updateWidgets(AtenWindow::AtomsTableTarget);
 }
 
 void TransformTranslatePopup::on_PositiveXButton_clicked(bool checked)

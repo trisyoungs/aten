@@ -69,7 +69,7 @@ void TransformFlipPopup::on_FlipXButton_clicked(bool checked)
 	CommandNode::run(Commands::Mirror, "i", 0);
 
 	// Update window
-	parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
+	parent_.updateWidgets(AtenWindow::AtomsTableTarget);
 
 	// Hide popup
 	hide();
@@ -81,7 +81,7 @@ void TransformFlipPopup::on_FlipYButton_clicked(bool checked)
 	CommandNode::run(Commands::Mirror, "i", 1);
 
 	// Update window
-	parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
+	parent_.updateWidgets(AtenWindow::AtomsTableTarget);
 
 	// Hide popup
 	hide();
@@ -93,7 +93,7 @@ void TransformFlipPopup::on_FlipZButton_clicked(bool checked)
 	CommandNode::run(Commands::Mirror, "i", 2);
 
 	// Update window
-	parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
+	parent_.updateWidgets(AtenWindow::AtomsTableTarget);
 
 	// Hide popup
 	hide();

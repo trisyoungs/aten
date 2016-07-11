@@ -89,7 +89,7 @@ void FileOpenPopup::loadFile(QString fileName)
 	if (parent_.aten().importModel(fileName)) parent_.aten().setSingleModelVisible(parent_.aten().currentModel());
 
 	// Update main window
-	parent_.updateWidgets(AtenWindow::AllTarget);
+	parent_.updateWidgets(AtenWindow::AllTargets);
 
 	done();
 }

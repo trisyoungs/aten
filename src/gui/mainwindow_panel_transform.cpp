@@ -75,7 +75,7 @@ void AtenWindow::on_TransformPositionZeroButton_clicked(bool checked)
 	CommandNode::run(Commands::Centre, "ddd", 0.0, 0.0, 0.0);
 
 	// Update display
-	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
+	updateWidgets(AtenWindow::AtomsTableTarget);
 }
 
 /*

@@ -30,7 +30,7 @@ void AtenWindow::on_MessagesCycleButton_clicked(bool checked)
 	else if (messageDisplay_ == AtenWindow::MessagesUnderScene) messageDisplay_ = AtenWindow::NoMessages;
 	else messageDisplay_ = AtenWindow::FullMessages;
 
-	updateWidgets(AtenWindow::MainViewTarget);
+	updateWidgets();
 }
 
 void AtenWindow::on_MessagesCopyButton_clicked(bool checked)
@@ -49,7 +49,7 @@ void AtenWindow::on_MessagesClearButton_clicked(bool checked)
 {
 	Messenger::clearMessageBuffer();
 
-	updateWidgets(AtenWindow::MainViewTarget);
+	updateWidgets();
 }
 
 void AtenWindow::on_MessagesFontIncreaseButton_clicked(bool checked)
@@ -60,7 +60,7 @@ void AtenWindow::on_MessagesFontIncreaseButton_clicked(bool checked)
 
 	updateMessagesWidgets();
 
-	updateWidgets(AtenWindow::MainViewTarget);
+	updateWidgets();
 }
 
 void AtenWindow::on_MessagesFontDecreaseButton_clicked(bool checked)
@@ -71,12 +71,12 @@ void AtenWindow::on_MessagesFontDecreaseButton_clicked(bool checked)
 
 	updateMessagesWidgets();
 
-	updateWidgets(AtenWindow::MainViewTarget);
+	updateWidgets();
 }
 
 void AtenWindow::on_MessagesScroll_valueChanged(int value)
 {
-	updateWidgets(AtenWindow::MainViewTarget);
+	updateWidgets();
 }
 
 // Return current message display style

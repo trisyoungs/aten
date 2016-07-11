@@ -63,7 +63,7 @@ bool TransformConvertPopup::callMethod(QString methodName, ReturnValue& rv)
 
 		CommandNode::run(Commands::MatrixConvert, "ddddddddddddddddddddd", source[0], source[1], source[2], source[4], source[5], source[6], source[8], source[9], source[10], target[0], target[1], target[2], target[4], target[5], target[6], target[8], target[9], target[10], v.x, v.y, v.z);
 
-		parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
+		parent_.updateWidgets(AtenWindow::AtomsTableTarget);
 	}
 	else if (methodName == "setSourceXVector")
 	{

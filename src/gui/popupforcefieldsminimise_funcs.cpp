@@ -84,7 +84,7 @@ bool ForcefieldsMinimisePopup::callMethod(QString methodName, ReturnValue& rv)
 		}
 
 		// Update the view
-		parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
+		parent_.updateWidgets(AtenWindow::AtomsTableTarget);
 	}
 	else
 	{

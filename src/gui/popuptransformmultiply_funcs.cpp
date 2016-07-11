@@ -62,7 +62,7 @@ bool TransformMultiplyPopup::callMethod(QString methodName, ReturnValue& rv)
 		v.set(ui.OriginXSpin->value(), ui.OriginYSpin->value(), ui.OriginZSpin->value());
 		CommandNode::run(Commands::MatrixTransform, "dddddddddddd", mat[0], mat[1], mat[2], mat[4], mat[5], mat[6], mat[8], mat[9], mat[10], v.x, v.y, v.z);
 
-		parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
+		parent_.updateWidgets(AtenWindow::AtomsTableTarget);
 	}
 	else if (methodName == "setXVector")
 	{

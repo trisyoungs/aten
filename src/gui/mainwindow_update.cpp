@@ -125,7 +125,7 @@ void AtenWindow::initialUpdateAndShow()
 	ui.BuildDrawFragmentButton->callPopupMethod("updateFragments", rv);
 
 	// Update everything else
-	updateWidgets(AtenWindow::AllTarget);
+	updateWidgets(AtenWindow::AllTargets);
 
 	// Finally, set the progress dialog pointer in Messenger, and tell it to stop printing to stdout
 	Messenger::setAtenProgress(&progressDialog_);
@@ -150,8 +150,8 @@ void AtenWindow::updateWidgets(int targets)
 	// Always update main window bottom-left status info, menu items, and titlebar
 	updateMainWindow();
 
-	// Update main view
-	if (targets&AtenWindow::MainViewTarget) ui.MainView->update();
+	// Update main view (always)
+	ui.MainView->update();
 
 	// Update model list
 	if (targets&AtenWindow::ModelsListTarget) updateModelsList();

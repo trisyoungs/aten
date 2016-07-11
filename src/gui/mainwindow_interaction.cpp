@@ -76,7 +76,7 @@ void AtenWindow::setSelectedMode(UserAction::Action ua)
 	else setCursor(Qt::CrossCursor);
 
 	// Update the necessary targets
-	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::StatusBarTarget);
+	updateWidgets(AtenWindow::StatusBarTarget);
 
 	Messenger::exit("AtenWindow::setSelectedMode");
 }
@@ -303,7 +303,7 @@ void AtenWindow::endMode(Prefs::MouseButton button, bool* keyModifiers)
 				else targetModel->selectAtom(clickedAtom_);
 			}
 			targetModel->endUndoState();
-			updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget+AtenWindow::SelectPanelTarget);
+			updateWidgets(AtenWindow::AtomsTableTarget+AtenWindow::SelectPanelTarget);
 			break;
 		// Other selection operations
 		case (UserAction::SelectBoundAction):
@@ -311,14 +311,14 @@ void AtenWindow::endMode(Prefs::MouseButton button, bool* keyModifiers)
 			if (!modded) targetModel->selectNone();
 			if (clickedAtom_ != NULL) targetModel->selectTree(clickedAtom_, false, ctrled);
 			targetModel->endUndoState();
-			updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget+AtenWindow::SelectPanelTarget);
+			updateWidgets(AtenWindow::AtomsTableTarget+AtenWindow::SelectPanelTarget);
 			break;
 		case (UserAction::SelectElementAction):
 			targetModel->beginUndoState("Select Element");
 			if (!modded) targetModel->selectNone();
 			if (clickedAtom_ != NULL) targetModel->selectElement(clickedAtom_, false, ctrled);
 			targetModel->endUndoState();
-			updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget+AtenWindow::SelectPanelTarget);
+			updateWidgets(AtenWindow::AtomsTableTarget+AtenWindow::SelectPanelTarget);
 			break;
 		case (UserAction::SelectRadialAction):
 			targetModel->beginUndoState("Select Radial");
@@ -331,7 +331,7 @@ void AtenWindow::endMode(Prefs::MouseButton button, bool* keyModifiers)
 				targetModel->selectRadial(clickedAtom_, radius);
 			}
 			targetModel->endUndoState();
-			updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget+AtenWindow::SelectPanelTarget);
+			updateWidgets(AtenWindow::AtomsTableTarget+AtenWindow::SelectPanelTarget);
 			break;
 		// Measurements
 		case (UserAction::MeasureDistanceAction):
@@ -342,7 +342,7 @@ void AtenWindow::endMode(Prefs::MouseButton button, bool* keyModifiers)
 			targetModel->addDistanceMeasurement(atoms[0], atoms[1]);
 			targetModel->endUndoState();
 			pickedAtoms_.clear();
-			updateWidgets(AtenWindow::MainViewTarget);
+			updateWidgets();
 			break;
 		case (UserAction::MeasureAngleAction):
 			// Must be two atoms in subselection to continue
@@ -352,7 +352,7 @@ void AtenWindow::endMode(Prefs::MouseButton button, bool* keyModifiers)
 			targetModel->addAngleMeasurement(atoms[0], atoms[1], atoms[2]);
 			targetModel->endUndoState();
 			pickedAtoms_.clear();
-			updateWidgets(AtenWindow::MainViewTarget);
+			updateWidgets();
 			break;
 		case (UserAction::MeasureTorsionAction):
 			// Must be two atoms in subselection to continue
@@ -362,7 +362,7 @@ void AtenWindow::endMode(Prefs::MouseButton button, bool* keyModifiers)
 			targetModel->addTorsionMeasurement(atoms[0], atoms[1], atoms[2], atoms[3]);
 			targetModel->endUndoState();
 			pickedAtoms_.clear();
-			updateWidgets(AtenWindow::MainViewTarget);
+			updateWidgets();
 			break;
 		// Draw atoms
 		case (UserAction::DrawAtomsAction):
@@ -407,7 +407,7 @@ void AtenWindow::endMode(Prefs::MouseButton button, bool* keyModifiers)
 			}
 
 			targetModel->endUndoState();
-			updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
+			updateWidgets(AtenWindow::AtomsTableTarget);
 			break;
 		// Draw fragments
 		case (UserAction::DrawFragmentsAction):
@@ -432,7 +432,7 @@ void AtenWindow::endMode(Prefs::MouseButton button, bool* keyModifiers)
 				targetModel->centre(0.0, 0.0, 0.0, false, false, false, true);
 			}
 
-			updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
+			updateWidgets(AtenWindow::AtomsTableTarget);
 			break;
 		case (UserAction::DrawTransmuteAction):
 			if (clickedAtom_ == NULL) break;
@@ -445,7 +445,7 @@ void AtenWindow::endMode(Prefs::MouseButton button, bool* keyModifiers)
 			}
 			else targetModel->transmuteAtom(clickedAtom_, currentBuildElement());
 			targetModel->endUndoState();
-			updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
+			updateWidgets(AtenWindow::AtomsTableTarget);
 			break;
 		case (UserAction::DrawDeleteAction):
 			if (clickedAtom_ == NULL) break;
@@ -472,7 +472,7 @@ void AtenWindow::endMode(Prefs::MouseButton button, bool* keyModifiers)
 				targetModel->deleteAtom(clickedAtom_);
 				targetModel->endUndoState();
 			}
-			updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
+			updateWidgets(AtenWindow::AtomsTableTarget);
 			break;
 		case (UserAction::DrawProbeAction):
 			if (clickedAtom_ != NULL) clickedAtom_->print();
@@ -484,7 +484,7 @@ void AtenWindow::endMode(Prefs::MouseButton button, bool* keyModifiers)
 				targetModel->beginUndoState("Add Hydrogen to Atom");
 				targetModel->hydrogenSatisfy(clickedAtom_);
 				targetModel->endUndoState();
-				updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
+				updateWidgets(AtenWindow::AtomsTableTarget);
 			}
 			break;
 		case (UserAction::DrawGrowAtomsAction):
@@ -503,7 +503,7 @@ void AtenWindow::endMode(Prefs::MouseButton button, bool* keyModifiers)
 					targetModel->growAtom(clickedAtom_, currentBuildElement(), distance.asDouble(), buildGeometry_, true);
 				}
 				targetModel->endUndoState();
-				updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
+				updateWidgets(AtenWindow::AtomsTableTarget);
 			}
 			break;
 		// Model transformations
@@ -513,7 +513,7 @@ void AtenWindow::endMode(Prefs::MouseButton button, bool* keyModifiers)
 			// Clear list of oldPositions_ if nothing was moved
 			if (!ui.MainView->mouseHasMoved()) oldPositions_.clear();
 			targetModel->finalizeTransform(oldPositions_, "Transform Selection", noFold);
-			updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
+			updateWidgets(AtenWindow::AtomsTableTarget);
 			break;
 		// Manual picking modes (for axis definitions etc.)
 		case (UserAction::ShiftPickVectorAction):

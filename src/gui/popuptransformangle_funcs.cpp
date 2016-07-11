@@ -101,7 +101,7 @@ void TransformAnglePopup::on_SetAngleButton_clicked(bool checked)
 	else if (ui.MoveTypeCombo->currentIndex() == 3) CommandNode::run(Commands::SetAngles, "dc", ui.NewAngleSpin->value(), "heavy");
 	else CommandNode::run(Commands::SetAngles, "dc", ui.NewAngleSpin->value(), "both");
 
-	parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
+	parent_.updateWidgets(AtenWindow::AtomsTableTarget);
 
 	done();
 }
@@ -114,7 +114,7 @@ void TransformAnglePopup::on_IncreaseAngleButton_clicked(bool checked)
 	else if (ui.MoveTypeCombo->currentIndex() == 3) CommandNode::run(Commands::SetAngles, "dci", ui.DeltaSpin->value(), "heavy", 1);
 	else CommandNode::run(Commands::SetAngles, "dci", ui.DeltaSpin->value(), "both", 1);
 
-	parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
+	parent_.updateWidgets(AtenWindow::AtomsTableTarget);
 }
 
 void TransformAnglePopup::on_DecreaseAngleButton_clicked(bool checked)
@@ -125,5 +125,5 @@ void TransformAnglePopup::on_DecreaseAngleButton_clicked(bool checked)
 	else if (ui.MoveTypeCombo->currentIndex() == 3) CommandNode::run(Commands::SetAngles, "dci", -ui.DeltaSpin->value(), "heavy", 1);
 	else CommandNode::run(Commands::SetAngles, "dci", -ui.DeltaSpin->value(), "both", 1);
 
-	parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
+	parent_.updateWidgets(AtenWindow::AtomsTableTarget);
 }

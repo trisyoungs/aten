@@ -73,7 +73,7 @@ void AtenWindow::stopTrajectoryPlayback()
 	if (ui.TrajectoryControlPlayButton->isChecked())
 	{
 		ui.TrajectoryControlPlayButton->click();
-		updateWidgets(AtenWindow::MainViewTarget+AtenWindow::TrajectoryPanelTarget);
+		updateWidgets(AtenWindow::TrajectoryPanelTarget);
 	}
 }
 
@@ -97,7 +97,7 @@ void AtenWindow::on_TrajectoryManageOpenButton_clicked(bool checked)
 		FilePluginInterface* plugin = openTrajectoryDialog_.selectedPlugin();
 		aten_.importTrajectory(currentModel, filesToLoad.at(0), plugin, openTrajectoryDialog_.standardImportOptions());
 
-		updateWidgets(AtenWindow::AllTarget);
+		updateWidgets(AtenWindow::AllTargets);
 	}
 }
 
@@ -112,7 +112,7 @@ void AtenWindow::on_TrajectoryManageRemoveButton_clicked(bool checked)
 	
 	currentModel->clearTrajectory();
 
-	updateWidgets(AtenWindow::AllTarget);
+	updateWidgets(AtenWindow::AllTargets);
 }
 
 // Switch render focus from the model to the trajectory (or vice versa)
@@ -126,7 +126,7 @@ void AtenWindow::on_TrajectoryManageFramesButton_clicked(bool checked)
 
 	currentModel->setRenderSource(checked ? Model::TrajectorySource : Model::ModelSource);
 
-	updateWidgets(AtenWindow::AllTarget);
+	updateWidgets(AtenWindow::AllTargets);
 }
 
 /*
@@ -141,7 +141,7 @@ void AtenWindow::on_TrajectoryControlFirstButton_clicked(bool checked)
 
 	currentModel->seekFirstTrajectoryFrame();
 
-	updateWidgets(AtenWindow::AllTarget);
+	updateWidgets(AtenWindow::AllTargets);
 }
 
 // Skip to previous frame in trajectory
@@ -152,7 +152,7 @@ void AtenWindow::on_TrajectoryControlPreviousButton_clicked(bool checked)
 
 	currentModel->seekPreviousTrajectoryFrame();
 
-	updateWidgets(AtenWindow::AllTarget);
+	updateWidgets(AtenWindow::AllTargets);
 }
 
 // Play/pause trajectory playback
@@ -170,7 +170,7 @@ void AtenWindow::on_TrajectoryControlPlayButton_clicked(bool checked)
 		trajectoryTimerId_ = -1;
 		editable_ = true;
 	}
-	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::TrajectoryPanelTarget);
+	updateWidgets(AtenWindow::TrajectoryPanelTarget);
 }
 
 // Skip to next frame in trajectory
@@ -181,7 +181,7 @@ void AtenWindow::on_TrajectoryControlNextButton_clicked(bool checked)
 
 	currentModel->seekNextTrajectoryFrame();
 
-	updateWidgets(AtenWindow::AllTarget);
+	updateWidgets(AtenWindow::AllTargets);
 }
 
 // Skip to last frame in trajectory
@@ -192,7 +192,7 @@ void AtenWindow::on_TrajectoryControlLastButton_clicked(bool checked)
 
 	currentModel->seekLastTrajectoryFrame();
 
-	updateWidgets(AtenWindow::AllTarget);
+	updateWidgets(AtenWindow::AllTargets);
 }
 
 void AtenWindow::on_TrajectoryControlFrameSpin_valueChanged(int value)
@@ -205,7 +205,7 @@ void AtenWindow::on_TrajectoryControlFrameSpin_valueChanged(int value)
 	// Slider range is from 1-NFrames, so pass (N-1) to the seekTrajectoryFrame function
 	currentModel->seekTrajectoryFrame(value-1);
 
-	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget+AtenWindow::GridsPanelTarget);
+	updateWidgets(AtenWindow::AtomsTableTarget+AtenWindow::GridsPanelTarget);
 }
 
 void AtenWindow::on_TrajectoryControlFrameSlider_valueChanged(int position)
@@ -218,7 +218,7 @@ void AtenWindow::on_TrajectoryControlFrameSlider_valueChanged(int position)
 	// Slider range is from 1-NFrames, so pass (N-1) to the seekTrajectoryFrame function
 	currentModel->seekTrajectoryFrame(position-1);
 
-	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget+AtenWindow::GridsPanelTarget);
+	updateWidgets(AtenWindow::AtomsTableTarget+AtenWindow::GridsPanelTarget);
 }
 
 /*
@@ -233,7 +233,7 @@ void AtenWindow::on_TrajectoryStyleInheritButton_clicked(bool checked)
 
 	currentModel->trajectoryCopyAtomStyle(currentModel);
 
-	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget+AtenWindow::GridsPanelTarget);
+	updateWidgets(AtenWindow::AtomsTableTarget+AtenWindow::GridsPanelTarget);
 }
 
 void AtenWindow::on_TrajectoryStylePropagateButton_clicked(bool checked)
@@ -246,7 +246,7 @@ void AtenWindow::on_TrajectoryStylePropagateButton_clicked(bool checked)
 
 	currentModel->trajectoryCopyAtomStyle(frame);
 
-	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget+AtenWindow::GridsPanelTarget);
+	updateWidgets(AtenWindow::AtomsTableTarget+AtenWindow::GridsPanelTarget);
 }
 
 void AtenWindow::on_TrajectoryStylePromoteButton_clicked(bool checked)
@@ -259,6 +259,6 @@ void AtenWindow::on_TrajectoryStylePromoteButton_clicked(bool checked)
 
 	currentModel->copyAtomStyle(frame);
 
-	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget+AtenWindow::GridsPanelTarget);
+	updateWidgets(AtenWindow::AtomsTableTarget+AtenWindow::GridsPanelTarget);
 }
 

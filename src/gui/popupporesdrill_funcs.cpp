@@ -76,7 +76,7 @@ void PoresDrillPopup::on_PoreSelectButton_clicked(bool checked)
 		Messenger::print("Can't drill pores in a non-periodic model.");
 
 		// Update the main window
-		parent_.updateWidgets(AtenWindow::MainViewTarget);
+		parent_.updateWidgets();
 
 		return;
 	}
@@ -92,7 +92,7 @@ void PoresDrillPopup::on_PoreSelectButton_clicked(bool checked)
 	CommandNode::run(Commands::SelectPores, "cdiiiddd", qPrintable(geometry), sizeParam, nx, ny, face, v.x, v.y, v.z);
 
 	// Update the main window
-	parent_.updateWidgets(AtenWindow::MainViewTarget);
+	parent_.updateWidgets();
 }
 
 void PoresDrillPopup::on_PoreSelectAndCutButton_clicked(bool checked)
@@ -104,7 +104,7 @@ void PoresDrillPopup::on_PoreSelectAndCutButton_clicked(bool checked)
 		Messenger::print("Can't drill pores in a non-periodic model.");
 
 		// Update the main window
-		parent_.updateWidgets(AtenWindow::MainViewTarget);
+		parent_.updateWidgets();
 
 		return;
 	}
@@ -120,5 +120,5 @@ void PoresDrillPopup::on_PoreSelectAndCutButton_clicked(bool checked)
 	CommandNode::run(Commands::DrillPores, "cdiiiddd", qPrintable(geometry), sizeParam, nx, ny, face, v.x, v.y, v.z);
 
 	// Update the main window
-	parent_.updateWidgets(AtenWindow::MainViewTarget);
+	parent_.updateWidgets();
 }

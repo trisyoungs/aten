@@ -61,7 +61,7 @@ bool TransformRepositionPopup::callMethod(QString methodName, ReturnValue& rv)
 		currentModel->translateSelectionLocal(v);
 		currentModel->endUndoState();
 
-		parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
+		parent_.updateWidgets(AtenWindow::AtomsTableTarget);
 	}
 	else if (methodName == "hideEvent")
 	{

@@ -162,7 +162,7 @@ void DisorderWizard::pageChanged(int id)
 			if (newModel_ != NULL)
 			{
 				parent_.aten().removeModel(newModel_);
-				parent_.updateWidgets(AtenWindow::AllTarget);
+				parent_.updateWidgets(AtenWindow::AllTargets);
 				newModel_ = NULL;
 			}
 			existingModel_ = NULL;
@@ -177,7 +177,7 @@ void DisorderWizard::pageChanged(int id)
 				newModel_->setName("Disorder Model");
 				if (targetType_ == DisorderWizard::NewTarget) setCellAbsolute(0.0);
 				else setCellRelative(0.0);
-				parent_.updateWidgets(AtenWindow::AllTarget);
+				parent_.updateWidgets(AtenWindow::AllTargets);
 			}
 			
 			// Set correct stack page to show...
@@ -303,7 +303,7 @@ void DisorderWizard::rejected()
 		newModel_ = NULL;
 	}
 	existingModel_ = NULL;
-	parent_.updateWidgets(AtenWindow::AllTarget);
+	parent_.updateWidgets(AtenWindow::AllTargets);
 }
 
 void DisorderWizard::accepted()
@@ -317,7 +317,7 @@ void DisorderWizard::accepted()
 	// Clean up
 	newModel_ = NULL;
 	existingModel_ = NULL;
-	parent_.updateWidgets(AtenWindow::AllTarget);
+	parent_.updateWidgets(AtenWindow::AllTargets);
 }
 
 /*
@@ -350,7 +350,7 @@ void DisorderWizard::on_ExistingModelTree_currentItemChanged(QTreeWidgetItem* cu
 	if (existingModel_ == NULL) return;
 	existingModel_ = existingModel_->renderSourceModel();
 	parent_.aten().setCurrentModel(existingModel_);
-	parent_.updateWidgets(AtenWindow::AllTarget);
+	parent_.updateWidgets(AtenWindow::AllTargets);
 }
 
 void DisorderWizard::on_ExistingModelTree_itemSelectionChanged()
@@ -369,7 +369,7 @@ void DisorderWizard::setCellAbsolute(double value)
 	{
 		newModel_->cell().setLengths(Vec3<double>(ui.CellLengthASpin->value(), ui.CellLengthBSpin->value(), ui.CellLengthCSpin->value()));
 		newModel_->cell().setAngles(Vec3<double>(ui.CellAngleASpin->value(), ui.CellAngleBSpin->value(), ui.CellAngleCSpin->value()));
-		parent_.updateWidgets(AtenWindow::MainViewTarget);
+		parent_.updateWidgets();
 	}
 	else printf("Internal Error: No newModel_ pointer defined to set UnitCell in.\n");
 }
@@ -381,7 +381,7 @@ void DisorderWizard::setCellRelative(double value)
 	{
 		newModel_->cell().setLengths(Vec3<double>(ui.CellRelativeASpin->value(), ui.CellRelativeBSpin->value(), ui.CellRelativeCSpin->value()));
 		newModel_->cell().setAngles(Vec3<double>(ui.CellRelativeAngleASpin->value(), ui.CellRelativeAngleBSpin->value(), ui.CellRelativeAngleCSpin->value()));
-		parent_.updateWidgets(AtenWindow::MainViewTarget);
+		parent_.updateWidgets();
 	}
 	else printf("Internal Error: No newModel_ pointer defined to set UnitCell in.\n");
 }
@@ -405,7 +405,7 @@ void DisorderWizard::on_PartitionTree_currentItemChanged(QTreeWidgetItem* curren
 	RefListItem<QTreeWidgetItem, PartitioningScheme*>* ri = partitioningSchemeItems_.contains(current);
 	if (ri == NULL) return;
 	partitioningScheme_ = ri->data;
-	parent_.updateWidgets(AtenWindow::MainViewTarget);
+	parent_.updateWidgets();
 	// Enable/disable options button based on presence of custom dialog widgets...
 	ui.PartitionSchemeOptionsButton->setEnabled(partitioningScheme_->hasOptions());
 }
@@ -421,7 +421,7 @@ void DisorderWizard::on_PartitionSchemeOptionsButton_clicked(bool checked)
 	if (ri == NULL) return;
 	setPartitionData(ri->item, ri->data);
 	partitioningScheme_ = ri->data;
-	parent_.updateWidgets(AtenWindow::MainViewTarget);
+	parent_.updateWidgets();
 }
 
 // Step 4 / 5 - Select component models

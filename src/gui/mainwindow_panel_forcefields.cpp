@@ -87,7 +87,7 @@ void AtenWindow::on_ForcefieldsManageOpenButton_clicked(bool checked)
 // 		currentDirectory_.setPath(filename);
 // 	}
 
-	updateWidgets(AtenWindow::MainViewTarget);
+	updateWidgets();
 }
 
 void AtenWindow::on_ForcefieldsManageRemoveButton_clicked(bool checked)
@@ -128,7 +128,7 @@ void AtenWindow::on_ForcefieldsCalculateEnergyButton_clicked(bool checked)
 	// Print energy
 	aten_.currentModel()->renderSourceModel()->energy.print();
 
-	updateWidgets(AtenWindow::MainViewTarget);
+	updateWidgets();
 }
 
 void AtenWindow::on_ForcefieldsCalculateForcesButton_clicked(bool checked)
@@ -137,7 +137,7 @@ void AtenWindow::on_ForcefieldsCalculateForcesButton_clicked(bool checked)
 	if (aten_.current().rs() == aten_.currentModel()) result = CommandNode::run(Commands::ModelForces, "");
 	else result = CommandNode::run(Commands::FrameForces, "");
 
-	updateWidgets(AtenWindow::MainViewTarget);
+	updateWidgets();
 }
 
 /*
@@ -149,28 +149,28 @@ void AtenWindow::on_ForcefieldsPatternsCreateButton_clicked(bool checked)
 	CommandNode::run(Commands::CreatePatterns, "");
 	CommandNode::run(Commands::ListPatterns, "");
 
-	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
+	updateWidgets(AtenWindow::AtomsTableTarget);
 }
 
 void AtenWindow::on_ForcefieldsPatternsClearButton_clicked(bool checked)
 {
 	CommandNode::run(Commands::ClearPatterns, "");
 
-	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
+	updateWidgets(AtenWindow::AtomsTableTarget);
 }
 
 void AtenWindow::on_ForcefieldsPatternsListButton_clicked(bool checked)
 {
 	CommandNode::run(Commands::ListPatterns, "");
 
-	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
+	updateWidgets(AtenWindow::AtomsTableTarget);
 }
 
 void AtenWindow::on_ForcefieldsPatternsDefaultButton_clicked(bool checked)
 {
 	aten_.currentModelOrFrame()->createDefaultPattern(); // ATEN2 TODO Make this into a command?
 
-	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
+	updateWidgets(AtenWindow::AtomsTableTarget);
 }
 
 /*
@@ -184,7 +184,7 @@ void AtenWindow::on_ForcefieldsExpressionTypeButton_clicked(bool checked)
 
 	currentModel->typeAll(aten_.currentForcefield());
 
-	updateWidgets(AtenWindow::MainViewTarget);
+	updateWidgets();
 }
 
 void AtenWindow::on_ForcefieldsExpressionDescribeButton_clicked(bool checked)
@@ -194,7 +194,7 @@ void AtenWindow::on_ForcefieldsExpressionDescribeButton_clicked(bool checked)
 
 	currentModel->createExpression(Choice::Default, Choice::Default, ui.ForcefieldsExpressionChargesButton->isChecked() ? Choice::Yes : Choice::No, aten_.currentForcefield(), aten_.combinationRules());
 
-	updateWidgets(AtenWindow::MainViewTarget);
+	updateWidgets();
 }
 
 void AtenWindow::on_ForcefieldsExpressionSaveButton_clicked(bool checked)
@@ -272,7 +272,7 @@ void AtenWindow::on_ForcefieldsExpressionSaveButton_clicked(bool checked)
 // 		}
 // 	}
 
-	updateWidgets(AtenWindow::MainViewTarget);
+	updateWidgets();
 }
 
 void AtenWindow::on_ForcefieldsExpressionRemoveButton_clicked(bool checked)
@@ -283,5 +283,5 @@ void AtenWindow::on_ForcefieldsExpressionRemoveButton_clicked(bool checked)
 	currentModel->clearExpression();
 	currentModel->removeTyping();
 
-	updateWidgets(AtenWindow::MainViewTarget);
+	updateWidgets();
 }

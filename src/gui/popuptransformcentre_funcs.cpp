@@ -56,7 +56,7 @@ bool TransformCentrePopup::callMethod(QString methodName, ReturnValue& rv)
 		// Run command
 		CommandNode::run(Commands::Centre, "dddiii", centre.x, centre.y, centre.z, lock.x, lock.y, lock.z);
 
-		parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
+		parent_.updateWidgets(AtenWindow::AtomsTableTarget);
 	}
 	else if (methodName == "hideEvent")
 	{

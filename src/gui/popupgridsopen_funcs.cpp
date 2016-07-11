@@ -90,7 +90,7 @@ void GridsOpenPopup::loadGrid(QString filename)
 
 	parent_.aten().importGrid(targetModel, filename);
 
-	parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::GridsPanelTarget);
+	parent_.updateWidgets(AtenWindow::GridsPanelTarget);
 
 	done();
 }

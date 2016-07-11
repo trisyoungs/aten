@@ -470,7 +470,7 @@ bool MonteCarlo::minimise(Model* srcmodel, double econ, double fcon)
 			lastPrintedEnergy = currentEnergy;
 		}
 		
-// 		if (prefs.shouldUpdateModel(cycle+1)) updateWidgets(AtenWindow::MainViewTarget);  ATEN2 TODO
+// 		if (prefs.shouldUpdateModel(cycle+1)) updateWidgets();  ATEN2 TODO
 
 	} // Loop over MC cycles
 	Messenger::terminateTask(task);

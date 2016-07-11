@@ -127,7 +127,7 @@ void CellSpacegroupPopup::on_PackButton_clicked(bool checked)
 	CommandNode::run(Commands::Pack, "");
 
 	// Update display
-	parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
+	parent_.updateWidgets(AtenWindow::AtomsTableTarget);
 
 	// Hide popup
 	done();

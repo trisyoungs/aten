@@ -67,15 +67,15 @@ bool CellMillerPopup::callMethod(QString methodName, ReturnValue& rv)
 
 void CellMillerPopup::on_HSpin_valueChanged(int value)
 {
-	parent_.updateWidgets(AtenWindow::MainViewTarget);
+	parent_.updateWidgets();
 }
 
 void CellMillerPopup::on_KSpin_valueChanged(int value)
 {
-	parent_.updateWidgets(AtenWindow::MainViewTarget);
+	parent_.updateWidgets();
 }
 
 void CellMillerPopup::on_LSpin_valueChanged(int value)
 {
-	parent_.updateWidgets(AtenWindow::MainViewTarget);
+	parent_.updateWidgets();
 }

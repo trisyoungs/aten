@@ -90,7 +90,7 @@ void ScriptsOpenPopup::loadScript(QString filename)
 	{
 		Messenger::print("Successfully loaded script.");
 
-		parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::ToolsPanelTarget);
+		parent_.updateWidgets(AtenWindow::ToolsPanelTarget);
 	}
 	else parent_.aten().removeScript(script);
 

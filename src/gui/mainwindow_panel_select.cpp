@@ -65,7 +65,7 @@ void AtenWindow::on_SelectBasicAllButton_clicked(bool checked)
 	// Run command
 	CommandNode::run(Commands::SelectAll, "");
 
-	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
+	updateWidgets(AtenWindow::AtomsTableTarget);
 }
 
 void AtenWindow::on_SelectBasicNoneButton_clicked(bool checked)
@@ -73,7 +73,7 @@ void AtenWindow::on_SelectBasicNoneButton_clicked(bool checked)
 	// Run command
 	CommandNode::run(Commands::SelectNone, "");
 
-	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
+	updateWidgets(AtenWindow::AtomsTableTarget);
 }
 
 void AtenWindow::on_SelectBasicInvertButton_clicked(bool checked)
@@ -81,7 +81,7 @@ void AtenWindow::on_SelectBasicInvertButton_clicked(bool checked)
 	// Run command
 	CommandNode::run(Commands::Invert, "");
 
-	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
+	updateWidgets(AtenWindow::AtomsTableTarget);
 }
 
 void AtenWindow::on_SelectBasicExpandButton_clicked(bool checked)
@@ -89,7 +89,7 @@ void AtenWindow::on_SelectBasicExpandButton_clicked(bool checked)
 	// Run command
 	CommandNode::run(Commands::Expand, "");
 
-	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
+	updateWidgets(AtenWindow::AtomsTableTarget);
 }
 
 /*
@@ -180,7 +180,7 @@ void AtenWindow::on_SelectIntelligentAddButton_clicked(bool checked)
 			break;
 	}
 
-	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
+	updateWidgets(AtenWindow::AtomsTableTarget);
 }
 
 void AtenWindow::on_SelectIntelligentRemoveButton_clicked(bool checked)
@@ -207,5 +207,5 @@ void AtenWindow::on_SelectIntelligentRemoveButton_clicked(bool checked)
 			break;
 	}
 
-	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
+	updateWidgets(AtenWindow::AtomsTableTarget);
 }

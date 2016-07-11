@@ -69,7 +69,7 @@ void ClearPopup::on_ClearWithinSelectionButton_clicked(bool checked)
 	CommandNode::run(Commands::ClearSelectedBonds, "");
 
 	// Update display
-	parent_.updateWidgets(AtenWindow::MainViewTarget);
+	parent_.updateWidgets();
 
 	// Hide popup
 	done();

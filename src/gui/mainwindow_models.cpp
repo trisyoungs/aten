@@ -59,7 +59,7 @@ void AtenWindow::modelsListContextMenuRequested(const QPoint& point)
 	}
 	else if (menuResult == deleteAction)
 	{
-		if (closeModel(model)) updateWidgets(AtenWindow::AllTarget);
+		if (closeModel(model)) updateWidgets(AtenWindow::AllTargets);
 	}
 }
 
@@ -97,7 +97,7 @@ void AtenWindow::on_ModelsList_itemSelectionChanged()
 	// Need to set the (a) current model
 	aten_.setCurrentModel(currentModel);
 
-	updateWidgets(AtenWindow::AllTarget);
+	updateWidgets(AtenWindow::AllTargets);
 }
 
 // Move to next model in list
@@ -106,7 +106,7 @@ void AtenWindow::on_ModelsNextButton_clicked(bool checked)
 	Model* m = aten_.currentModel();
 	aten_.setSingleModelVisible(m->next == NULL ? aten_.models() : m->next);
 
-	updateWidgets(AtenWindow::AllTarget);
+	updateWidgets(AtenWindow::AllTargets);
 }
 
 // Move to previous model in list
@@ -115,7 +115,7 @@ void AtenWindow::on_ModelsPreviousButton_clicked(bool checked)
 	Model* m = aten_.currentModel();
 	aten_.setSingleModelVisible(m->prev == NULL ? aten_.model(aten_.nModels()-1) : m->prev);
 
-	updateWidgets(AtenWindow::AllTarget);
+	updateWidgets(AtenWindow::AllTargets);
 }
 
 // Refresh model list
@@ -217,7 +217,7 @@ bool AtenWindow::saveBeforeClose()
 		if (!closeModel(aten_.models())) return false;
 
 		// Update GUI
-		updateWidgets(AtenWindow::AllTarget);
+		updateWidgets(AtenWindow::AllTargets);
 	}
 	return true;
 }

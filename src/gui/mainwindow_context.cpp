@@ -137,7 +137,7 @@ void AtenWindow::callContextMenu(Atom* atomUnderMouse, int x, int y)
 		viewTarget->selectAtom(contextAtom_);
 		viewTarget->endUndoState();
 
-		updateWidgets(AtenWindow::MainViewTarget);
+		updateWidgets();
 	}
 
 	// Call the context menu
@@ -153,7 +153,7 @@ void AtenWindow::contextMenuSetAtomStyle(bool checked)
 
 	CommandNode::run(Commands::AtomStyle, "c", qPrintable(action->text()));
 
-	updateWidgets(AtenWindow::MainViewTarget);
+	updateWidgets();
 }
 
 // Set atom label
@@ -165,7 +165,7 @@ void AtenWindow::contextMenuSetAtomLabel(bool checked)
 
 	CommandNode::run(Commands::Label, "c", qPrintable(action->text()));
 
-	updateWidgets(AtenWindow::MainViewTarget);
+	updateWidgets();
 }
 
 // Probe atom information
@@ -196,7 +196,7 @@ void AtenWindow::on_actionAtomColourSet_triggered(bool checked)
 	if (prefs.colourScheme() != Prefs::OwnScheme) TMenuButton::setGroupButtonChecked("Colourschemes", "Own");
 	Messenger::print("Colouring scheme changed to 'own'.");
 
-	updateWidgets(AtenWindow::MainViewTarget);
+	updateWidgets();
 }*/
 
 // Create fragment from current selection
@@ -216,7 +216,7 @@ void AtenWindow::contextMenuSelectElement(bool checked)
 {
 	CommandNode::run(Commands::Select, "c", ElementMap::symbol(contextAtom_));
 
-	updateWidgets(AtenWindow::MainViewTarget);
+	updateWidgets();
 }
 
 // Select fragment to which target atom belongs
@@ -224,7 +224,7 @@ void AtenWindow::contextMenuSelectFragment(bool checked)
 {
 	CommandNode::run(Commands::SelectTree, "i", contextAtom_->id()+1);
 
-	updateWidgets(AtenWindow::MainViewTarget);
+	updateWidgets();
 }
 
 void AtenWindow::createGlyph()
@@ -255,6 +255,6 @@ void AtenWindow::createGlyph()
 		CommandNode::run(Commands::GlyphAtomR, "ii", n, ri->item->id()+1);
 		n++;
 	}
-	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::GlyphsTarget);
+	updateWidgets(AtenWindow::GlyphsTarget);
 }
 

@@ -92,7 +92,7 @@ void AtenWindow::on_BuildBondingRebondButton_clicked(bool checked)
 	CommandNode::run(Commands::ReBond, "");
 
 	// Update
-	updateWidgets(AtenWindow::MainViewTarget);
+	updateWidgets();
 }
 
 void AtenWindow::on_BuildBondingAugmentButton_clicked(bool checked)
@@ -101,7 +101,7 @@ void AtenWindow::on_BuildBondingAugmentButton_clicked(bool checked)
 	CommandNode::run(Commands::Augment, "");
 
 	// Update
-	updateWidgets(AtenWindow::MainViewTarget);
+	updateWidgets();
 }
 
 void AtenWindow::on_BuildBondingClearButton_clicked(bool checked)
@@ -110,7 +110,7 @@ void AtenWindow::on_BuildBondingClearButton_clicked(bool checked)
 	CommandNode::run(Commands::ClearBonds, "");
 
 	// Update
-	updateWidgets(AtenWindow::MainViewTarget);
+	updateWidgets();
 }
 
 /*

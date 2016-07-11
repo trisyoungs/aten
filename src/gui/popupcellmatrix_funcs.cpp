@@ -111,7 +111,7 @@ void CellMatrixPopup::on_AxisAXSpin_valueChanged(double value)
 	setCurrentMatrix();
 
 	// Update display
-	parent_.updateWidgets(AtenWindow::MainViewTarget);
+	parent_.updateWidgets();
 }
 
 void CellMatrixPopup::on_AxisAYSpin_valueChanged(double value)
@@ -122,7 +122,7 @@ void CellMatrixPopup::on_AxisAYSpin_valueChanged(double value)
 	setCurrentMatrix();
 
 	// Update display
-	parent_.updateWidgets(AtenWindow::MainViewTarget);
+	parent_.updateWidgets();
 }
 
 void CellMatrixPopup::on_AxisAZSpin_valueChanged(double value)
@@ -133,7 +133,7 @@ void CellMatrixPopup::on_AxisAZSpin_valueChanged(double value)
 	setCurrentMatrix();
 
 	// Update display
-	parent_.updateWidgets(AtenWindow::MainViewTarget);
+	parent_.updateWidgets();
 }
 
 void CellMatrixPopup::on_AxisBXSpin_valueChanged(double value)
@@ -144,7 +144,7 @@ void CellMatrixPopup::on_AxisBXSpin_valueChanged(double value)
 	setCurrentMatrix();
 
 	// Update display
-	parent_.updateWidgets(AtenWindow::MainViewTarget);
+	parent_.updateWidgets();
 }
 
 void CellMatrixPopup::on_AxisBYSpin_valueChanged(double value)
@@ -155,7 +155,7 @@ void CellMatrixPopup::on_AxisBYSpin_valueChanged(double value)
 	setCurrentMatrix();
 
 	// Update display
-	parent_.updateWidgets(AtenWindow::MainViewTarget);
+	parent_.updateWidgets();
 }
 
 void CellMatrixPopup::on_AxisBZSpin_valueChanged(double value)
@@ -166,7 +166,7 @@ void CellMatrixPopup::on_AxisBZSpin_valueChanged(double value)
 	setCurrentMatrix();
 
 	// Update display
-	parent_.updateWidgets(AtenWindow::MainViewTarget);
+	parent_.updateWidgets();
 }
 
 void CellMatrixPopup::on_AxisCXSpin_valueChanged(double value)
@@ -177,7 +177,7 @@ void CellMatrixPopup::on_AxisCXSpin_valueChanged(double value)
 	setCurrentMatrix();
 
 	// Update display
-	parent_.updateWidgets(AtenWindow::MainViewTarget);
+	parent_.updateWidgets();
 }
 
 void CellMatrixPopup::on_AxisCYSpin_valueChanged(double value)
@@ -188,7 +188,7 @@ void CellMatrixPopup::on_AxisCYSpin_valueChanged(double value)
 	setCurrentMatrix();
 
 	// Update display
-	parent_.updateWidgets(AtenWindow::MainViewTarget);
+	parent_.updateWidgets();
 }
 
 void CellMatrixPopup::on_AxisCZSpin_valueChanged(double value)
@@ -199,5 +199,5 @@ void CellMatrixPopup::on_AxisCZSpin_valueChanged(double value)
 	setCurrentMatrix();
 
 	// Update display
-	parent_.updateWidgets(AtenWindow::MainViewTarget);
+	parent_.updateWidgets();
 }

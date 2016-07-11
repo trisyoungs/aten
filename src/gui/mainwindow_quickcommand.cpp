@@ -41,5 +41,5 @@ void AtenWindow::quickCommandRun()
 	{
 	}
 
-	updateWidgets(AtenWindow::AllTarget);
+	updateWidgets(AtenWindow::AllTargets);
 }

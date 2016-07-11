@@ -108,7 +108,7 @@ void Viewer::keyPressEvent(QKeyEvent* event)
 				n = (prefs.renderStyle() + 1)%Prefs::nDrawStyles;
 				prefs.setRenderStyle((Prefs::DrawStyle) n);
 			}
-			atenWindow_->updateWidgets(AtenWindow::MainViewTarget);
+			atenWindow_->updateWidgets();
 			ignore = false;
 		default:
 			break;

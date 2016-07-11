@@ -90,7 +90,7 @@ void ForcefieldsOpenPopup::loadForcefield(QString fileName)
 	// ATEN2 TODO ENDOFFILTERS
 // 	if (plugin) plugin->importData(qPrintable(fileName));
 
-	parent_.updateWidgets(AtenWindow::MainViewTarget + AtenWindow::ForcefieldsPanelTarget);
+	parent_.updateWidgets(AtenWindow::ForcefieldsPanelTarget);
 
 	done();
 }

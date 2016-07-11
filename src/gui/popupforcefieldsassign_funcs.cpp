@@ -72,7 +72,7 @@ void ForcefieldsAssignPopup::on_PatternButton_clicked(bool checked)
 	if (p != NULL) p->setForcefield(parent_.aten().currentForcefield());
 
 	// Update window
-	parent_.updateWidgets(AtenWindow::MainViewTarget);
+	parent_.updateWidgets();
 
 	// Hide popup
 	hide();
@@ -84,7 +84,7 @@ void ForcefieldsAssignPopup::on_AllModelsButton_clicked(bool checked)
 	for (Model* m = parent_.aten().models(); m != NULL; m = m->next) m->setForcefield(parent_.aten().currentForcefield());
 
 	// Update window
-	parent_.updateWidgets(AtenWindow::MainViewTarget);
+	parent_.updateWidgets();
 
 	// Hide popup
 	hide();

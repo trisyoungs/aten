@@ -43,7 +43,7 @@ void AtenWindow::on_SelectionAppearanceStyleButton_clicked(bool checked)
 	// Apply the selected style to the current atom selection
 	CommandNode::run(Commands::AtomStyle, "c", qPrintable(rv.asString()));
 
-	updateWidgets(AtenWindow::MainViewTarget);
+	updateWidgets();
 }
 
 void AtenWindow::on_SelectionAppearanceColourButton_clicked(bool checked)
@@ -57,21 +57,21 @@ void AtenWindow::on_SelectionAppearanceColourButton_clicked(bool checked)
 	CommandNode::run(Commands::ColourAtoms, "dddd", rv.asDouble(0, success), rv.asDouble(1, success), rv.asDouble(2, success), rv.asDouble(3, success));
 	if (prefs.colourScheme() != Prefs::OwnScheme) ui.HomeAppearanceOwnColourButton->click();
 
-	updateWidgets(AtenWindow::MainViewTarget);
+	updateWidgets();
 }
 
 void AtenWindow::on_SelectionAppearanceResetToElementButton_clicked(bool checked)
 {
 	CommandNode::run(Commands::RecolourAtoms, "");
 
-	updateWidgets(AtenWindow::MainViewTarget);
+	updateWidgets();
 }
 
 void AtenWindow::on_SelectionAppearanceHideButton_clicked(bool checked)
 {
 	CommandNode::run(Commands::Hide, "");
 
-	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::AtomsTableTarget);
+	updateWidgets(AtenWindow::AtomsTableTarget);
 }
 
 /*
@@ -82,42 +82,42 @@ void AtenWindow::on_SelectionLabelIDButton_clicked(bool checked)
 {
 	CommandNode::run(Commands::Label, "c", Atom::atomLabel(Atom::IdLabel));
 
-	updateWidgets(AtenWindow::MainViewTarget);
+	updateWidgets();
 }
 
 void AtenWindow::on_SelectionLabelElementButton_clicked(bool checked)
 {
 	CommandNode::run(Commands::Label, "c", Atom::atomLabel(Atom::ElementLabel));
 
-	updateWidgets(AtenWindow::MainViewTarget);
+	updateWidgets();
 }
 
 void AtenWindow::on_SelectionLabelChargeButton_clicked(bool checked)
 {
 	CommandNode::run(Commands::Label, "c", Atom::atomLabel(Atom::ChargeLabel));
 
-	updateWidgets(AtenWindow::MainViewTarget);
+	updateWidgets();
 }
 
 void AtenWindow::on_SelectionLabelTypeButton_clicked(bool checked)
 {
 	CommandNode::run(Commands::Label, "c", Atom::atomLabel(Atom::TypeLabel));
 
-	updateWidgets(AtenWindow::MainViewTarget);
+	updateWidgets();
 }
 
 void AtenWindow::on_SelectionLabelEquivalentButton_clicked(bool checked)
 {
 	CommandNode::run(Commands::Label, "c", Atom::atomLabel(Atom::EquivalentLabel));
 
-	updateWidgets(AtenWindow::MainViewTarget);
+	updateWidgets();
 }
 
 void AtenWindow::on_SelectionLabelClearButton_clicked(bool checked)
 {
 	CommandNode::run(Commands::RemoveLabels, "");
 
-	updateWidgets(AtenWindow::MainViewTarget);
+	updateWidgets();
 }
 
 /*
@@ -128,12 +128,12 @@ void AtenWindow::on_SelectionPositionFixButton_clicked(bool checked)
 {
 	CommandNode::run(Commands::Fix, "");
 
-	updateWidgets(AtenWindow::MainViewTarget);
+	updateWidgets();
 }
 
 void AtenWindow::on_SelectionPositionFreeButton_clicked(bool checked)
 {
 	CommandNode::run(Commands::Free, "");
 
-	updateWidgets(AtenWindow::MainViewTarget);
+	updateWidgets();
 }

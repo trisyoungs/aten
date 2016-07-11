@@ -93,7 +93,7 @@ void GridSetPopup::on_SetDensityMultipleButton_clicked(bool checked)
 	else CommandNode::run(Commands::GridCutoffSecondary, "d", ui.NumberDensitySpin->value()*ui.MultipleSpin->value());
 
 	// Update display
-	parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::GridsPanelTarget);
+	parent_.updateWidgets(AtenWindow::GridsPanelTarget);
 }
 
 void GridSetPopup::on_ViewPercentageSpin_valueChanged(double value)
@@ -111,6 +111,6 @@ void GridSetPopup::on_ViewPercentageSpin_valueChanged(double value)
 		updateControls();
 
 		// Update display
-		parent_.updateWidgets(AtenWindow::MainViewTarget+AtenWindow::GridsPanelTarget);
+		parent_.updateWidgets(AtenWindow::GridsPanelTarget);
 	}
 }

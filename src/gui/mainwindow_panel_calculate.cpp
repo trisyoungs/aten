@@ -55,7 +55,7 @@ void AtenWindow::on_CalculateMeasureClearButton_clicked(bool checked)
 	CommandNode::run(Commands::ClearMeasurements);
 
 	// Update display
-	updateWidgets(AtenWindow::MainViewTarget);
+	updateWidgets();
 }
 
 void AtenWindow::on_CalculateMeasureListButton_clicked(bool checked)
@@ -66,5 +66,5 @@ void AtenWindow::on_CalculateMeasureListButton_clicked(bool checked)
 	currentModel->listMeasurements();
 
 	// Update display
-	updateWidgets(AtenWindow::MainViewTarget);
+	updateWidgets();
 }

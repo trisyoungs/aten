@@ -129,7 +129,7 @@ void AtenWindow::on_GridsManageOpenButton_clicked(bool checked)
 		FilePluginInterface* plugin = openGridDialog_.selectedPlugin();
 		for (int n=0; n<filesToLoad.count(); ++n) aten_.importGrid(aten_.currentModelOrFrame(), filesToLoad.at(n), plugin, openGridDialog_.standardImportOptions());
 
-		updateWidgets(AtenWindow::AllTarget);
+		updateWidgets(AtenWindow::AllTargets);
 	}
 }
 
@@ -152,7 +152,7 @@ void AtenWindow::on_GridsManageRemoveButton_clicked(bool checked)
 		parentModel->removeGrid(grid);
 	}
 
-	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::GridsPanelTarget);
+	updateWidgets(AtenWindow::GridsPanelTarget);
 }
 
 void AtenWindow::on_GridsList_currentRowChanged(int row)
@@ -196,7 +196,7 @@ void AtenWindow::on_GridsList_itemChanged(QListWidgetItem* item)
 	bool checked = item->checkState() == Qt::Checked;
 	if (checked != grid->isVisible()) grid->setVisible(checked);
 
-	updateWidgets(AtenWindow::MainViewTarget);
+	updateWidgets();
 }
 
 // Context menu requested for GridsList
@@ -250,7 +250,7 @@ void AtenWindow::gridsListContextMenuRequested(const QPoint& point)
 		aten().copyGrid(currentGrid);
 		aten_.setCurrentGrid(currentGrid->next ? currentGrid->next : currentGrid->prev);
 		parentModel->removeGrid(currentGrid);
-		updateWidgets(AtenWindow::MainViewTarget+AtenWindow::GridsPanelTarget);
+		updateWidgets(AtenWindow::GridsPanelTarget);
 	}
 	else if (menuResult == deleteAction)
 	{
@@ -258,7 +258,7 @@ void AtenWindow::gridsListContextMenuRequested(const QPoint& point)
 		if (!parentModel) return;
 		aten_.setCurrentGrid(currentGrid->next ? currentGrid->next : currentGrid->prev);
 		parentModel->removeGrid(currentGrid);
-		updateWidgets(AtenWindow::MainViewTarget+AtenWindow::GridsPanelTarget);
+		updateWidgets(AtenWindow::GridsPanelTarget);
 	}
 	else if (menuResult == pasteAction)
 	{
@@ -268,7 +268,7 @@ void AtenWindow::gridsListContextMenuRequested(const QPoint& point)
 		if (!clipGrid) return;
 		Grid* newGrid = parentModel->addGrid();
 		*newGrid = *clipGrid;
-		updateWidgets(AtenWindow::MainViewTarget+AtenWindow::GridsPanelTarget);
+		updateWidgets(AtenWindow::GridsPanelTarget);
 	}
 	else if (menuResult == duplicateAction)
 	{
@@ -276,7 +276,7 @@ void AtenWindow::gridsListContextMenuRequested(const QPoint& point)
 		if (!parentModel) return;
 		Grid* newGrid = parentModel->addGrid();
 		*newGrid = *currentGrid;
-		updateWidgets(AtenWindow::MainViewTarget+AtenWindow::GridsPanelTarget);
+		updateWidgets(AtenWindow::GridsPanelTarget);
 	}
 }
 
@@ -288,7 +288,7 @@ void AtenWindow::recreateGridsForView()
 		m->updateGridAxisOrdering();
 	}
 
-	updateWidgets(AtenWindow::MainViewTarget);
+	updateWidgets();
 }
 
 /*
@@ -305,7 +305,7 @@ void AtenWindow::on_GridsPrimaryLowerCutoffSpin_valueChanged(double value)
 
 	CommandNode::run(Commands::GridCutoff, "d", value);
 
-	updateWidgets(AtenWindow::MainViewTarget);
+	updateWidgets();
 }
 
 void AtenWindow::on_GridsPrimaryUpperCutoffSpin_valueChanged(double value)
@@ -318,7 +318,7 @@ void AtenWindow::on_GridsPrimaryUpperCutoffSpin_valueChanged(double value)
 
 	CommandNode::run(Commands::GridCutoff, "dd", ui.GridsPrimaryLowerCutoffSpin->value(), value);
 
-	updateWidgets(AtenWindow::MainViewTarget);
+	updateWidgets();
 }
 
 void AtenWindow::on_GridsPrimaryColourButton_popupChanged()
@@ -334,7 +334,7 @@ void AtenWindow::on_GridsPrimaryColourButton_popupChanged()
 	if (!ui.GridsPrimaryColourButton->callPopupMethod("currentColour", rv)) return;
 	CommandNode::run(Commands::GridColour, "dddd", rv.asDouble(0, success), rv.asDouble(1, success), rv.asDouble(2, success), rv.asDouble(3, success));
 
-	updateWidgets(AtenWindow::MainViewTarget);
+	updateWidgets();
 }
 
 /*
@@ -352,7 +352,7 @@ void AtenWindow::on_GridsSecondaryActiveButton_clicked(bool checked)
 
 	CommandNode::run(Commands::GridSecondary, "i", checked);
 
-	updateWidgets(AtenWindow::MainViewTarget+AtenWindow::GridsPanelTarget);
+	updateWidgets(AtenWindow::GridsPanelTarget);
 }
 
 void AtenWindow::on_GridsSecondaryLowerCutoffSpin_valueChanged(double value)
@@ -365,7 +365,7 @@ void AtenWindow::on_GridsSecondaryLowerCutoffSpin_valueChanged(double value)
 
 	CommandNode::run(Commands::GridCutoffSecondary, "d", value);
 
-	updateWidgets(AtenWindow::MainViewTarget);
+	updateWidgets();
 }
 
 void AtenWindow::on_GridsSecondaryUpperCutoffSpin_valueChanged(double value)
@@ -378,7 +378,7 @@ void AtenWindow::on_GridsSecondaryUpperCutoffSpin_valueChanged(double value)
 
 	CommandNode::run(Commands::GridCutoffSecondary, "dd", ui.GridsSecondaryLowerCutoffSpin->value(), value);
 
-	updateWidgets(AtenWindow::MainViewTarget);
+	updateWidgets();
 }
 
 void AtenWindow::on_GridsSecondaryColourButton_popupChanged()
@@ -394,7 +394,7 @@ void AtenWindow::on_GridsSecondaryColourButton_popupChanged()
 	if (!ui.GridsSecondaryColourButton->callPopupMethod("currentColour", rv)) return;
 	CommandNode::run(Commands::GridColourSecondary, "dddd", rv.asDouble(0, success), rv.asDouble(1, success), rv.asDouble(2, success), rv.asDouble(3, success));
 
-	updateWidgets(AtenWindow::MainViewTarget);
+	updateWidgets();
 }
 
 /*
@@ -413,7 +413,7 @@ void AtenWindow::on_GridsOptionsOutlineButton_clicked(bool checked)
 	CommandNode::run(Commands::GridOutline, "i", checked);
 
 	// Update
-	updateWidgets(AtenWindow::MainViewTarget);
+	updateWidgets();
 }
 
 void AtenWindow::on_GridsOptionsPeriodicButton_clicked(bool checked)
@@ -428,5 +428,5 @@ void AtenWindow::on_GridsOptionsPeriodicButton_clicked(bool checked)
 	CommandNode::run(Commands::GridPeriodic, "i", checked);
 
 	// Update
-	updateWidgets(AtenWindow::MainViewTarget);
+	updateWidgets();
 }

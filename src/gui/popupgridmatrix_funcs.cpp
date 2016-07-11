@@ -101,7 +101,7 @@ void GridMatrixPopup::on_AxisAXSpin_valueChanged(double value)
 	setCurrentMatrix();
 
 	// Update display
-	parent_.updateWidgets(AtenWindow::MainViewTarget);
+	parent_.updateWidgets();
 }
 
 void GridMatrixPopup::on_AxisAYSpin_valueChanged(double value)
@@ -112,7 +112,7 @@ void GridMatrixPopup::on_AxisAYSpin_valueChanged(double value)
 	setCurrentMatrix();
 
 	// Update display
-	parent_.updateWidgets(AtenWindow::MainViewTarget);
+	parent_.updateWidgets();
 }
 
 void GridMatrixPopup::on_AxisAZSpin_valueChanged(double value)
@@ -123,7 +123,7 @@ void GridMatrixPopup::on_AxisAZSpin_valueChanged(double value)
 	setCurrentMatrix();
 
 	// Update display
-	parent_.updateWidgets(AtenWindow::MainViewTarget);
+	parent_.updateWidgets();
 }
 
 void GridMatrixPopup::on_AxisBXSpin_valueChanged(double value)
@@ -134,7 +134,7 @@ void GridMatrixPopup::on_AxisBXSpin_valueChanged(double value)
 	setCurrentMatrix();
 
 	// Update display
-	parent_.updateWidgets(AtenWindow::MainViewTarget);
+	parent_.updateWidgets();
 }
 
 void GridMatrixPopup::on_AxisBYSpin_valueChanged(double value)
@@ -145,7 +145,7 @@ void GridMatrixPopup::on_AxisBYSpin_valueChanged(double value)
 	setCurrentMatrix();
 
 	// Update display
-	parent_.updateWidgets(AtenWindow::MainViewTarget);
+	parent_.updateWidgets();
 }
 
 void GridMatrixPopup::on_AxisBZSpin_valueChanged(double value)
@@ -156,7 +156,7 @@ void GridMatrixPopup::on_AxisBZSpin_valueChanged(double value)
 	setCurrentMatrix();
 
 	// Update display
-	parent_.updateWidgets(AtenWindow::MainViewTarget);
+	parent_.updateWidgets();
 }
 
 void GridMatrixPopup::on_AxisCXSpin_valueChanged(double value)
@@ -167,7 +167,7 @@ void GridMatrixPopup::on_AxisCXSpin_valueChanged(double value)
 	setCurrentMatrix();
 
 	// Update display
-	parent_.updateWidgets(AtenWindow::MainViewTarget);
+	parent_.updateWidgets();
 }
 
 void GridMatrixPopup::on_AxisCYSpin_valueChanged(double value)
@@ -178,7 +178,7 @@ void GridMatrixPopup::on_AxisCYSpin_valueChanged(double value)
 	setCurrentMatrix();
 
 	// Update display
-	parent_.updateWidgets(AtenWindow::MainViewTarget);
+	parent_.updateWidgets();
 }
 
 void GridMatrixPopup::on_AxisCZSpin_valueChanged(double value)
@@ -189,5 +189,5 @@ void GridMatrixPopup::on_AxisCZSpin_valueChanged(double value)
 	setCurrentMatrix();
 
 	// Update display
-	parent_.updateWidgets(AtenWindow::MainViewTarget);
+	parent_.updateWidgets();
 }

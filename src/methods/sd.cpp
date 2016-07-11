@@ -139,7 +139,7 @@ double SDMinimiser::minimise(Model* sourceModel, double eConverge, double fConve
 			lastPrintedEnergy = currentEnergy;
 		}
 
-// 		if (prefs.shouldUpdateModel(cycle+1)) parent_.updateWidgets(AtenWindow::MainViewTarget); ATEN2 TODO
+// 		if (prefs.shouldUpdateModel(cycle+1)) parent_.updateWidgets(); ATEN2 TODO
 
 		if (lineDone || converged) break;
 	}

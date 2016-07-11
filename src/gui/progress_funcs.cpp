@@ -134,7 +134,7 @@ void AtenProgress::updateAndShow()
 		if (delta >= (100/divisor))
 		{
 			lastUpdatePercentage_ = mainCompletion;
-			parent_.updateWidgets(AtenWindow::MainViewTarget);
+			parent_.updateWidgets();
 		}
 	}
 	

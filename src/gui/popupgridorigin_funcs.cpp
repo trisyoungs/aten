@@ -96,7 +96,7 @@ void GridOriginPopup::on_XSpin_valueChanged(double value)
 	setCurrentOrigin();
 
 	// Update display
-	parent_.updateWidgets(AtenWindow::MainViewTarget);
+	parent_.updateWidgets();
 }
 
 void GridOriginPopup::on_YSpin_valueChanged(double value)
@@ -107,7 +107,7 @@ void GridOriginPopup::on_YSpin_valueChanged(double value)
 	setCurrentOrigin();
 
 	// Update display
-	parent_.updateWidgets(AtenWindow::MainViewTarget);
+	parent_.updateWidgets();
 }
 
 void GridOriginPopup::on_ZSpin_valueChanged(double value)
@@ -118,5 +118,5 @@ void GridOriginPopup::on_ZSpin_valueChanged(double value)
 	setCurrentOrigin();
 
 	// Update display
-	parent_.updateWidgets(AtenWindow::MainViewTarget);
+	parent_.updateWidgets();
 }
