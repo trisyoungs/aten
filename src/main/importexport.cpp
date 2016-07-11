@@ -198,7 +198,7 @@ bool Aten::exportModel(Model* sourceModel, QString filename, FilePluginInterface
 	}
 
 	// Now do we have a valid filename and plugin?
-	if ((!filename.isEmpty()) && (plugin) && (plugin->category() == PluginTypes::ModelFilePlugin) && (!plugin->canExport()))
+	if ((!filename.isEmpty()) && (plugin) && (plugin->category() == PluginTypes::ModelFilePlugin) && (plugin->canExport()))
 	{
 		// Temporarily disable undo/redo for the model
 		sourceModel->disableUndoRedo();

@@ -330,11 +330,11 @@ void Model::reorderSelectedAtoms()
 		Messenger::print(Messenger::Verbose, "Testing constructed NETA for atom index %i : nMatched = %i", rk->item->id(), nMatched);
 		if (nMatched == 0)
 		{
-			Messenger::print("Internal Error: Atom type for reference fragment atom %i failed to detect it.", referenceId);
+			Messenger::print("Internal Error: Atom type for reference fragment atom %i failed to detect it.", referenceId+1);
 			return;
 		}
-		else if (nMatched == 1) Messenger::print("Typing for reference fragment atom %i tested successfully.", rk->item->id());
-		else Messenger::print("Typing for reference fragment atom %i is not unique - reordering of symmetric subgroups may not be exact.", rk->item->id());
+		else if (nMatched == 1) Messenger::print("Typing for reference fragment atom %i tested successfully.", rk->item->id()+1);
+		else Messenger::print("Typing for reference fragment atom %i is not unique - reordering of symmetric subgroups may not be exact.", rk->item->id()+1);
 	}
 
 	// We will create a pattern here to allow us to get a connectivity matrix easily

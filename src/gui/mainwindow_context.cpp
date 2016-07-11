@@ -77,37 +77,37 @@ void AtenWindow::createContextMenu()
 // 	menu = contextMenu_.addMenu("Set Colour...");
 // 	menu->addAction(new ColourPopup(*this, NULL));
 // 	connect(action, SIGNAL(triggered(bool)), ui.SelectionLabelClearButton, SLOT(click()));
-	action = contextMenu_.addAction("Reset Colour to Element");
+	action = contextMenu_.addAction("&Reset Colour to Element");
 	connect(action, SIGNAL(triggered(bool)), ui.SelectionAppearanceResetToElementButton, SLOT(click()));
-	action = contextMenu_.addAction("Hide");
+	action = contextMenu_.addAction("&Hide");
 	connect(action, SIGNAL(triggered(bool)), ui.SelectionAppearanceHideButton, SLOT(click()));
 
 	// Position
 	contextMenu_.addSeparator();
-	action = contextMenu_.addAction("Fix Position");
+	action = contextMenu_.addAction("Fi&x Position");
 	connect(action, SIGNAL(triggered(bool)), ui.SelectionPositionFixButton, SLOT(click()));
-	action = contextMenu_.addAction("Free Position");
+	action = contextMenu_.addAction("Fr&ee Position");
 	connect(action, SIGNAL(triggered(bool)), ui.SelectionPositionFreeButton, SLOT(click()));
 
 	// Edit
 	contextMenu_.addSeparator();
-	action = contextMenu_.addAction("Cut");
+	action = contextMenu_.addAction("&Cut");
 	connect(action, SIGNAL(triggered(bool)), ui.HomeEditCutButton, SLOT(click()));
-	action = contextMenu_.addAction("Copy");
+	action = contextMenu_.addAction("Cop&y");
 	connect(action, SIGNAL(triggered(bool)), ui.HomeEditCopyButton, SLOT(click()));
-	action = contextMenu_.addAction("Paste");
+	action = contextMenu_.addAction("&Paste");
 	connect(action, SIGNAL(triggered(bool)), ui.HomeEditPasteButton, SLOT(click()));
-	action = contextMenu_.addAction("Delete");
+	action = contextMenu_.addAction("&Delete");
 	connect(action, SIGNAL(triggered(bool)), ui.HomeEditDeleteButton, SLOT(click()));
 
 	// Probe
 	contextMenu_.addSeparator();
-	action = contextMenu_.addAction("Probe");
+	action = contextMenu_.addAction("Pro&be");
 	connect(action, SIGNAL(triggered(bool)), this, SLOT(contextMenuProbeAtom(bool)));
 
 	// Create
 	contextMenu_.addSeparator();
-	action = contextMenu_.addAction("Create Fragment");
+	action = contextMenu_.addAction("Create &Fragment");
 	connect(action, SIGNAL(triggered(bool)), this, SLOT(contextMenuCreateFragment(bool)));
 
 // 	// (De)Activate glyph menu items based on number of atoms selected
