@@ -26,7 +26,7 @@
 #include "templates/reflist.h"
 
 // Forward Declarations (Qt)
-/* none */
+class QToolButton;
 
 // Dynamic Layout for TMenuButtons
 class TDynamicLayout : public QLayout
@@ -40,7 +40,7 @@ class TDynamicLayout : public QLayout
 	// Destructor
 	~TDynamicLayout();
 	// Layout types
-	enum LayoutStyle { FullSizeHorizontalLayout, ButtonStackLayout, IconStackLayout, nLayoutStyles };
+	enum LayoutStyle { IconStackLayout, ButtonStackLayout, FullSizeHorizontalLayout, nLayoutStyles };
 
 
 	/*
@@ -71,12 +71,16 @@ class TDynamicLayout : public QLayout
 	private:
 	// List of widgets owned by the layout
 	QList<QLayoutItem*> items_;
+	// List of QToolButtons contained in the layout
+	RefList<QToolButton,int> buttons_;
 	// Horizontal spacing between items
 	int horizontalSpacing_;
 	// Vertical spacing between items
 	int verticalSpacing_;
 	// Size hints for layout types
 	QSize sizeHints_[TDynamicLayout::nLayoutStyles];
+	// Upper limit for button styles
+	TDynamicLayout::LayoutStyle upperLayoutStyle_;
 	// Current layout style
 	TDynamicLayout::LayoutStyle currentLayoutStyle_;
 };
