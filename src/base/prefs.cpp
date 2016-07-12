@@ -302,6 +302,7 @@ Prefs::Prefs()
 	maxImproperDist_ = 5.0;
 	readPipe_ = false;
 	allowDialogs_ = false;
+	dynamicPanels_ = true;
 	
 	// Energy unit conversion factors to J
 	energyConversions_[Prefs::Joules] = 1.0;
@@ -1229,6 +1230,18 @@ double Prefs::maxImproperDist() const
 void Prefs::setMaxImproperDist(double r)
 {
 	maxImproperDist_ = r;
+}
+
+// Return whether dynamic layout management of panel buttons is enabled
+bool Prefs::dynamicPanels()
+{
+	return dynamicPanels_;
+}
+
+// Set whether dynamic layout management of panel buttons is enabled
+void Prefs::setDynamicPanels(bool b)
+{
+	dynamicPanels_ = b;
 }
 
 /*
