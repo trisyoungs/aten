@@ -44,7 +44,6 @@ Multiple bonds (double, definitely) are not drawn correctly, becoming squashed a
 
 GUI TODO
 ========
-Need to shrink used button space when window is not large enough to display all widgets in panel.
 Sort out remaining icons!
 Colour Selector:
 o Need widget that is embeddable as a QMenuAction* (for atom context menu)
@@ -79,3 +78,4 @@ Removed FinaliseModel/Grid commands, and all read/write commands related to file
 Removed model.finalise(), FinaliseFF, and FinaliseFrame commands.
 Removed all Prefs accessors related to file import (keepNames, zMapType etc.)
 Added optional "forceRhombohedral" argument to "spacegroup" command.
+Add --nodynamicpanels option and prefs accessor.

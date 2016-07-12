@@ -435,8 +435,8 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportFilmD
 	infolayout->addWidget(densityLabel_, 1, 2);
 	lablayout->addLayout(infolayout,0);
 
-	// Turn on space-saving
-	TDynamicWidget::beginSpaceSaving();
+	// Turn on space-saving in panels
+	if (prefs.dynamicPanels()) TDynamicWidget::beginSpaceSaving();
 
 	// Load Qt Settings
 	loadSettings();

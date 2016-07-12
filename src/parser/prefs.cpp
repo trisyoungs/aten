@@ -72,6 +72,7 @@ Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
 	{ "depthFar",			VTypes::IntegerData,		0, false },
 	{ "depthNear",			VTypes::IntegerData,		0, false },
 	{ "distanceLabelFormat",	VTypes::StringData,		0, false },
+	{ "dynamicPanels",		VTypes::IntegerData,		0, false },
 	{ "elecCutoff",			VTypes::DoubleData,		0, false },
 	{ "elecMethod",			VTypes::StringData,		0, false },
 	{ "energyUnit",			VTypes::StringData,		0, false },
@@ -306,6 +307,9 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArray
 			break;
 		case (PreferencesVariable::DistanceLabelFormat):
 			rv.set(prefs.distanceLabelFormat());
+			break;
+		case (PreferencesVariable::DynamicPanels):
+			rv.set( ptr->dynamicPanels() );
 			break;
 		case (PreferencesVariable::ElecCutoff):
 			rv.set( ptr->elecCutoff() );
@@ -613,6 +617,9 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue&
 			break;
 		case (PreferencesVariable::DistanceLabelFormat):
 			ptr->setDistanceLabelFormat(newValue.asString());
+			break;
+		case (PreferencesVariable::DynamicPanels):
+			ptr->setDynamicPanels( newValue.asBool() );
 			break;
 		case (PreferencesVariable::ElecCutoff):
 			ptr->setElecCutoff( newValue.asDouble(result) );
