@@ -120,9 +120,10 @@ void TMenuButton::popupWidgetChanged(int data)
 	emit(popupChanged(data));
 }
 
-// Protected functions
+/*
+ * Widget Functions
+ */
 
-// Draw the button
 void TMenuButton::paintEvent(QPaintEvent* event)
 {
 	// Initialise a stylepainter and the style option
@@ -158,7 +159,6 @@ void TMenuButton::paintEvent(QPaintEvent* event)
 			tool.rect = buttonRect;
 			tool.state = bflags;
 			painter.drawPrimitive(QStyle::PE_PanelButtonTool, opt);
-// 				style()->drawPrimitive(QStyle::PE_PanelButtonTool, &tool, &painter, this);
 		}
 	}
 
@@ -180,15 +180,29 @@ void TMenuButton::paintEvent(QPaintEvent* event)
 	int fw = style()->pixelMetric(QStyle::PM_DefaultFrameWidth, &opt, this);
 	inner.rect = buttonRect.adjusted(fw, fw, -fw, -fw);
 
-	// Define inner rectangle for elements
+	// Add in padding around edge of button
 	QRect rect = inner.rect;
-	int shiftX = 0;
-	int shiftY = 0;
+	rect.adjust(2, 2, -2, -2);
+
+	// Translate rectangle if button state demands it
 	if (inner.state & (QStyle::State_Sunken | QStyle::State_On))
 	{
-		shiftX = style()->pixelMetric(QStyle::PM_ButtonShiftHorizontal, &inner, this);
-		shiftY = style()->pixelMetric(QStyle::PM_ButtonShiftVertical, &inner, this);
+		int shiftX = style()->pixelMetric(QStyle::PM_ButtonShiftHorizontal, &inner, this);
+		int shiftY = style()->pixelMetric(QStyle::PM_ButtonShiftVertical, &inner, this);
+		rect.translate(shiftX, shiftY);
 	}
+
+	// Grab some values for the icon state and mode
+	QIcon::State state = inner.state & QStyle::State_On ? QIcon::On : QIcon::Off;
+	QIcon::Mode mode;
+	if (!(inner.state & QStyle::State_Enabled)) mode = QIcon::Disabled;
+	else if ((inner.state & QStyle::State_MouseOver) && (inner.state & QStyle::State_AutoRaise)) mode = QIcon::Active;
+	else mode = QIcon::Normal;
+
+	// Get suitable pixmap for icon
+	QSize pixmapSize(iconSize().width(), iconSize().height());
+	QPixmap pm = inner.icon.pixmap(pixmapSize, mode, state);
+	pixmapSize = pm.size() / pm.devicePixelRatio();
 
 	// Arrow type always overrules and is always shown
 	bool hasArrow = inner.features & QStyleOptionToolButton::Arrow;
@@ -197,141 +211,193 @@ void TMenuButton::paintEvent(QPaintEvent* event)
 		int alignment = Qt::AlignCenter | Qt::TextShowMnemonic;
 		if (!style()->styleHint(QStyle::SH_UnderlineShortcut, &inner, this))
 		alignment |= Qt::TextHideMnemonic;
-		rect.translate(shiftX, shiftY);
 		painter.setFont(inner.font);
 		style()->drawItemText(&painter, rect, alignment, inner.palette, inner.state & QStyle::State_Enabled, inner.text, QPalette::ButtonText);
 	}
 	else
 	{
-		if (inner.toolButtonStyle != Qt::ToolButtonIconOnly)
+		if (inner.toolButtonStyle == Qt::ToolButtonTextUnderIcon)
 		{
+			// Text Under Icon Style:
+			//    ________________
+			//   |                |
+			//   |                |
+			//   |     ICON       |  = Icon (remaining height)
+			//   |                |
+			//   |________________|
+			//   |----------------|  = 2 px spacing
+			//   |     TEXT       |  = Text (height determined by font)
+			//   |________________|  
+			//   |----------------|  = 2 px spacing?????
+			//   |________________|  = 6 px for arrow or ellipsis if required
+			
 			// Draw arrow (if there is an associated popupwidget)
-			QRect arrowRect = rect.translated(0, -2);
-			arrowRect.translate(shiftX, shiftY);
-			arrowRect.setTop(arrowRect.bottom() - 6);
 			if (popupWidget_)
 			{
+				QRect arrowRect = rect;
+				arrowRect.setTop(arrowRect.bottom() - 6);
 				QStyleOption arrowOpt;
 				arrowOpt.rect = arrowRect;
 				arrowOpt.palette = inner.palette;
 				arrowOpt.state = inner.state;
-				if (!instantPopup_)
-				{
-					if (!(inner.state & QStyle::State_Enabled))
-					{
-						painter.translate(1, 1);
-						painter.setBrush(arrowOpt.palette.light().color());
-						painter.setPen(arrowOpt.palette.light().color());
-						painter.drawEllipse(arrowRect.center(), 2, 2);
-						painter.drawEllipse(arrowRect.center()-QPoint(arrowRect.width()/6,0), 2, 2);
-						painter.drawEllipse(arrowRect.center()+QPoint(arrowRect.width()/6,0), 2, 2);
-						painter.translate(-1, -1);
-						painter.setBrush(arrowOpt.palette.mid().color());
-						painter.setPen(arrowOpt.palette.mid().color());
-					}
-					else if (inner.state & QStyle::State_MouseOver)
-					{
-						painter.translate(1, 1);
-						painter.setBrush(arrowOpt.palette.mid().color());
-						painter.setPen(arrowOpt.palette.mid().color());
-						painter.drawEllipse(arrowRect.center(), 2, 2);
-						painter.drawEllipse(arrowRect.center()-QPoint(arrowRect.width()/6,0), 2, 2);
-						painter.drawEllipse(arrowRect.center()+QPoint(arrowRect.width()/6,0), 2, 2);
-						painter.translate(-1, -1);
-						painter.setBrush(arrowOpt.palette.buttonText().color());
-						painter.setPen(arrowOpt.palette.buttonText().color());
-					}
-					else
-					{
-						painter.translate(1, 1);
-						painter.setBrush(arrowOpt.palette.light().color());
-						painter.setPen(arrowOpt.palette.light().color());
-						painter.drawEllipse(arrowRect.center(), 2, 2);
-						painter.drawEllipse(arrowRect.center()-QPoint(arrowRect.width()/6,0), 2, 2);
-						painter.drawEllipse(arrowRect.center()+QPoint(arrowRect.width()/6,0), 2, 2);
-						painter.translate(-1, -1);
-						painter.setBrush(arrowOpt.palette.mid().color());
-						painter.setPen(arrowOpt.palette.mid().color());
-					}
-					painter.drawEllipse(arrowRect.center(), 2, 2);
-					painter.drawEllipse(arrowRect.center()-QPoint(arrowRect.width()/6,0), 2, 2);
-					painter.drawEllipse(arrowRect.center()+QPoint(arrowRect.width()/6,0), 2, 2);
-				}
+				if (!instantPopup_) drawEllipsis(arrowOpt, painter);
 				else style()->drawPrimitive(QStyle::PE_IndicatorArrowDown, &arrowOpt, &painter, this);
 			}
+			rect.setHeight(rect.height() - 8);
 
 			// Draw text
 			int alignment = Qt::AlignCenter | Qt::TextShowMnemonic | Qt::AlignBottom;
 			if (!style()->styleHint(QStyle::SH_UnderlineShortcut, &inner, this)) alignment |= Qt::TextHideMnemonic;
-			QRect textRect = arrowRect.translated(0, -8);
+			QRect textRect = rect;
 			textRect.setTop(textRect.bottom()-1);
 			textRect = style()->itemTextRect(inner.fontMetrics, textRect, alignment, inner.state & QStyle::State_Enabled, inner.text);
 			painter.setFont(inner.font);
 			style()->drawItemText(&painter, textRect, alignment, inner.palette, inner.state & QStyle::State_Enabled, inner.text, QPalette::ButtonText);
+			// -- Adjust available rect now by subtracting text height plus spacing
+			rect.setHeight(rect.height() - textRect.height() - 2);
 
-			// Draw icon (filling remaining space in button)
-			QRect iconRect(0,rect.top(),1,textRect.top() - rect.top() - 4);
-			iconRect.setTop(rect.top()+8);
-			iconRect.setLeft(rect.left() + (rect.width()-iconRect.height())/2);
-			iconRect.setWidth(iconRect.height());
-			QSize pixmapSize(iconRect.width(), iconRect.height());
-			QIcon::State state = inner.state & QStyle::State_On ? QIcon::On : QIcon::Off;
-			QIcon::Mode mode;
-			if (!(inner.state & QStyle::State_Enabled)) mode = QIcon::Disabled;
-			else if ((inner.state & QStyle::State_MouseOver) && (inner.state & QStyle::State_AutoRaise)) mode = QIcon::Active;
-			else mode = QIcon::Normal;
-			QPixmap pm = inner.icon.pixmap(pixmapSize, mode, state);
-			pixmapSize = pm.size() / pm.devicePixelRatio();
-			style()->drawItemPixmap(&painter, iconRect, Qt::AlignCenter, pm);
-		}
-		else if (!inner.icon.isNull())
-		{
-			// Button type is icon only - don't draw any arrow indicating the presence of a popup widget
-			rect.translate(shiftX, shiftY);
-			// Generate pixmap for button
-			QPixmap pm;
-			QSize pmSize(inner.iconSize.width(), inner.iconSize.height());
-			
-			QIcon::State state = inner.state & QStyle::State_On ? QIcon::On : QIcon::Off;
-			QIcon::Mode mode;
-			if (!(inner.state & QStyle::State_Enabled)) mode = QIcon::Disabled;
-			else if ((inner.state & QStyle::State_MouseOver) && (inner.state & QStyle::State_AutoRaise)) mode = QIcon::Active;
-			else mode = QIcon::Normal;
-			pm = inner.icon.pixmap(inner.rect.size().boundedTo(inner.iconSize), mode, state);
-			pmSize = pm.size() / pm.devicePixelRatio();
-
+			// Draw icon (centred in remaining space in button)
 			style()->drawItemPixmap(&painter, rect, Qt::AlignCenter, pm);
 		}
+		else if (inner.toolButtonStyle == Qt::ToolButtonTextBesideIcon)
+		{
+			// Draw arrow (if there is an associated popupwidget)
+			if (popupWidget_)
+			{
+				QRect arrowRect = rect;
+				arrowRect.setTop(arrowRect.bottom() - 6);
+				QStyleOption arrowOpt;
+				arrowOpt.rect = arrowRect;
+				arrowOpt.palette = inner.palette;
+				arrowOpt.state = inner.state;
+				if (!instantPopup_) drawEllipsis(arrowOpt, painter);
+				else style()->drawPrimitive(QStyle::PE_IndicatorArrowDown, &arrowOpt, &painter, this);
+			}
+			rect.setHeight(rect.height() - 8);
+
+			// Draw icon on the left-hand side of the button
+			QRect iconRect = rect;
+			style()->drawItemPixmap(&painter, iconRect, Qt::AlignLeft | Qt::AlignVCenter, pm);
+
+			// Draw text
+			int alignment = Qt::AlignLeft | Qt::AlignVCenter | Qt::TextShowMnemonic;
+			if (!style()->styleHint(QStyle::SH_UnderlineShortcut, &inner, this)) alignment |= Qt::TextHideMnemonic;
+			QRect textRect = rect.adjusted(iconSize().width()+2, 0, 0, 0);
+			textRect = style()->itemTextRect(inner.fontMetrics, textRect, alignment, inner.state & QStyle::State_Enabled, inner.text);
+			painter.setFont(inner.font);
+			style()->drawItemText(&painter, textRect, alignment, inner.palette, inner.state & QStyle::State_Enabled, inner.text, QPalette::ButtonText);
+		}
+		else if ((inner.toolButtonStyle == Qt::ToolButtonIconOnly) && (!inner.icon.isNull()))
+		{
+			// Draw arrow (if there is an associated popupwidget)
+			if (popupWidget_)
+			{
+				QRect arrowRect = rect;
+				arrowRect.setTop(arrowRect.bottom() - 6);
+				QStyleOption arrowOpt;
+				arrowOpt.rect = arrowRect;
+				arrowOpt.palette = inner.palette;
+				arrowOpt.state = inner.state;
+				if (!instantPopup_) drawEllipsis(arrowOpt, painter);
+				else style()->drawPrimitive(QStyle::PE_IndicatorArrowDown, &arrowOpt, &painter, this);
+			}
+			rect.setHeight(rect.height() - 6);
+
+			// Draw icon
+			style()->drawItemPixmap(&painter, rect, Qt::AlignCenter | Qt::AlignVCenter, pm);
+		}
 	}
 }
 
-// Call the popup widget
-void TMenuButton::popup()
+void TMenuButton::drawEllipsis(QStyleOption& styleOption, QPainter& painter)
 {
-	if (!popupWidget_) return;
-
-// 	printf("POPUP signalled (wasChecked = %i, down = %i).\n", checkedBeforePressed_, popupWidget_->shown());
-
-	// Show the popup widget - call the widget's popup() method, so controls are set correctly
-	popupWidget_->popup();
-
-	// 	printf("Cursor = %i %i\n", QCursor::pos().x(), QCursor::pos().y());
-	if (!parentWidget())
+	// Set up colours and deltas for circles
+	QColor colour1, colour2;
+	if (!(styleOption.state & QStyle::State_Enabled))
 	{
-		printf("No parent widget in TMenuButton - can't position popupWidget_.\n");
-		return;
+		colour1 = styleOption.palette.light().color();
+		colour2 = styleOption.palette.mid().color();
 	}
+	else if (styleOption.state & QStyle::State_MouseOver)
+	{
+		colour1 = styleOption.palette.mid().color();
+		colour2 = styleOption.palette.buttonText().color();
+	}
+	else
+	{
+		colour1 = styleOption.palette.light().color();
+		colour2 = styleOption.palette.mid().color();
+	}
+	// For the deltas, just need to work out in which dir the delta is
+	QPoint delta;
+	if (styleOption.rect.width() > styleOption.rect.height()) delta = QPoint(6,0);
+	else delta = QPoint(0,6);
 
-	// Reposition popup widget to sit flush left with the tool button, and immediately underneath it
-	QPoint toolPos = parentWidget()->mapToGlobal(pos()+QPoint(0,height()));
-	popupWidget_->move(toolPos);
+	// Draw the first circles (offset by 1px down and right)
+	painter.translate(1, 1);
+	painter.setBrush(colour1);
+	painter.setPen(colour1);
+	painter.drawEllipse(styleOption.rect.center(), 2, 2);
+	painter.drawEllipse(styleOption.rect.center()-delta, 2, 2);
+	painter.drawEllipse(styleOption.rect.center()+delta, 2, 2);
+
+	// Draw second set of circles (without offset)
+	painter.translate(-1, -1);
+	painter.setBrush(colour2);
+	painter.setPen(colour2);
+	painter.drawEllipse(styleOption.rect.center(), 2, 2);
+	painter.drawEllipse(styleOption.rect.center()-delta, 2, 2);
+	painter.drawEllipse(styleOption.rect.center()+delta, 2, 2);
 }
 
-// Return whether popup (if there is one) is visible
-bool TMenuButton::popupVisible()
+QSize TMenuButton::sizeHint() const
 {
-	if (popupWidget_) return popupWidget_->isVisible();
-	else return false;
+	// Framewidth and padding around button (all styles)
+	QStyleOptionToolButton opt;
+	int fw = style()->pixelMetric(QStyle::PM_DefaultFrameWidth, &opt, this);
+	int padding = 2;
+	int w = padding*2 + fw*2;
+	int h = padding*2 + fw*2;
+
+	if (toolButtonStyle() == Qt::ToolButtonTextUnderIcon)
+	{
+		// Arrow / ellipsis footer
+		h += 8;
+
+		// Get text rect
+		QRect textRect = style()->itemTextRect(fontMetrics(), textRect, 0, true, text());
+
+		// Set width from larger of icon size and text width
+		w += iconSize().width() > textRect.width() ? iconSize().width() : textRect.width();
+
+		// Add on height from icon and text
+		h += textRect.height() + 2 + iconSize().height();
+	}
+	else if (toolButtonStyle() == Qt::ToolButtonTextBesideIcon)
+	{
+		// Arrow / ellipsis footer
+		h += 8;
+
+		// Get text rect
+		QRect textRect = style()->itemTextRect(fontMetrics(), textRect, 0, true, text());
+
+		// Add on larger of iconSize().height() and textRect.height()...
+		h += iconSize().height() > textRect.height() ? iconSize().height() : textRect.height();
+
+		// Set final width
+		w += iconSize().width() + 2 + textRect.width();
+	}
+	else if ((toolButtonStyle() == Qt::ToolButtonIconOnly) && (!icon().isNull()))
+	{
+		// Arrow / ellipsis footer
+		h += 8;
+
+		// Adjust for size of icon
+		w += iconSize().width();
+		h += iconSize().height();
+	}
+
+	return QSize(w,h);
 }
 
 // Mouse button was pressed on the button
@@ -368,6 +434,35 @@ void TMenuButton::buttonReleased()
 		// Signal the group of this button (if there is one) that the button has been properly clicked
 		if (group_) group_->setCurrentButton(this);
 	}
+}
+
+// Call the popup widget
+void TMenuButton::popup()
+{
+	if (!popupWidget_) return;
+
+// 	printf("POPUP signalled (wasChecked = %i, down = %i).\n", checkedBeforePressed_, popupWidget_->shown());
+
+	// Show the popup widget - call the widget's popup() method, so controls are set correctly
+	popupWidget_->popup();
+
+	// 	printf("Cursor = %i %i\n", QCursor::pos().x(), QCursor::pos().y());
+	if (!parentWidget())
+	{
+		printf("No parent widget in TMenuButton - can't position popupWidget_.\n");
+		return;
+	}
+
+	// Reposition popup widget to sit flush left with the tool button, and immediately underneath it
+	QPoint toolPos = parentWidget()->mapToGlobal(pos()+QPoint(0,height()));
+	popupWidget_->move(toolPos);
+}
+
+// Return whether popup (if there is one) is visible
+bool TMenuButton::popupVisible()
+{
+	if (popupWidget_) return popupWidget_->isVisible();
+	else return false;
 }
 
 /*

@@ -538,7 +538,9 @@ class Prefs
 	bool readPipe_;
 	// Whether to allow dialogs to be shown if the GUI is not yet active
 	bool allowDialogs_;
-	
+	// Whether dynamic layout management of panel buttons is enabled
+	bool dynamicPanels_;
+
 	public:
 	// Return the maximum ring size allowed
 	int maxRingSize() const;
@@ -592,6 +594,10 @@ class Prefs
 	bool allowDialogs();
 	// Set whether to allow dialogs to be shown if the GUI is not yet active
 	void setAllowDialogs(bool b);
+	// Return whether dynamic layout management of panel buttons is enabled
+	bool dynamicPanels();
+	// Set whether dynamic layout management of panel buttons is enabled
+	void setDynamicPanels(bool b);
 
 
 	/*

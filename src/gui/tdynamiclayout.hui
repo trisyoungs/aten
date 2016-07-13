@@ -1,0 +1,89 @@
+/*
+	*** TDynamicLayout - Dynamic layout manager
+	*** src/gui/tdynamiclayout.hui
+	Copyright T. Youngs 2016-2016
+
+	This file is part of Aten.
+
+	Aten is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
+
+	Aten is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
+
+	You should have received a copy of the GNU General Public License
+	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+#ifndef ATEN_TDYNAMICLAYOUT_H
+#define ATEN_TDYNAMICLAYOUT_H
+
+#include <QLayout>
+#include "templates/reflist.h"
+
+// Forward Declarations (Qt)
+class QToolButton;
+
+// Dynamic Layout for TMenuButtons
+class TDynamicLayout : public QLayout
+{
+	Q_OBJECT
+
+	public:
+	// Constructors
+	TDynamicLayout(QWidget* parent, int margin = -1, int hSpacing = -1, int vSpacing = -1);
+	TDynamicLayout(int margin = -1, int hSpacing = -1, int vSpacing = -1);
+	// Destructor
+	~TDynamicLayout();
+	// Layout types
+	enum LayoutStyle { IconStackLayout, ButtonStackLayout, FullSizeHorizontalLayout, nLayoutStyles };
+
+
+	/*
+	 * Virtual Reimplementations
+	 */
+	public:
+	// Add item to layout
+	void addItem(QLayoutItem* item);
+	// Return number of items in layout
+	int count() const;
+	// Return nth item of layout
+	QLayoutItem* itemAt(int index) const;
+	// Take nth item of layout
+	QLayoutItem* takeAt(int index);
+	// Return expanding directions
+	Qt::Orientations expandingDirections() const;
+	// Return minimum possible size for layout
+	QSize minimumSize() const;
+	// Set new geometry for the layout
+	void setGeometry(const QRect &rect);
+	// Return size hint
+	QSize sizeHint() const;
+   
+
+	/*
+	 * Internal Data
+	 */
+	private:
+	// List of widgets owned by the layout
+	QList<QLayoutItem*> items_;
+	// List of QToolButtons contained in the layout
+	RefList<QToolButton,int> buttons_;
+	// Horizontal spacing between items
+	int horizontalSpacing_;
+	// Vertical spacing between items
+	int verticalSpacing_;
+	// Size hints for layout types
+	QSize sizeHints_[TDynamicLayout::nLayoutStyles];
+	// Upper limit for button styles
+	TDynamicLayout::LayoutStyle upperLayoutStyle_;
+	// Current layout style
+	TDynamicLayout::LayoutStyle currentLayoutStyle_;
+};
+
+#endif
+

@@ -119,6 +119,9 @@ Cli cliSwitches[] = {
 	{ Cli::NoBondSwitch,		'\0',"nobond",		0,
 		"",
 		"Prevent (re)calculation of bonding in the model" },
+	{ Cli::NoDynamicPanelsSwitch,	'\0',"nodynamicpanels",	0,
+		"",
+		"Turn off dynamic management (space-saving) of panel buttons" },
 	{ Cli::NoFoldSwitch,		'\0',"nofold",		0,
 		"",
 		"Prevent folding of atoms in periodic systems" },
@@ -359,6 +362,10 @@ bool Aten::parseCliEarly(int argc, char *argv[])
 					Messenger::print("OpenGL display lists will be used for rendering instead of VBOs.");
 					PrimitiveInstance::setInstanceType(PrimitiveInstance::ListInstance);
 					break;
+				// Disable dynamic panel layouts
+				case (Cli::NoDynamicPanelsSwitch):
+					prefs.setDynamicPanels(false);
+					break;
 				// Restrict fragment loading on startup
 				case (Cli::NoFragmentsSwitch):
 					prefs.setLoadFragments(false);
@@ -536,6 +543,7 @@ int Aten::parseCli(int argc, char *argv[])
 				case (Cli::DebugSwitch):
 				case (Cli::HelpSwitch):
 				case (Cli::ListsSwitch):
+				case (Cli::NoDynamicPanelsSwitch):
 				case (Cli::NoFragmentsSwitch):
 				case (Cli::NoFragmentIconsSwitch):
 				case (Cli::NoIncludesSwitch):

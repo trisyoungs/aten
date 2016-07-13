@@ -78,9 +78,10 @@ SET(gui_MOC_HDRS
   zmatrix.h
   tcolourwheel.hui
   tdoublespindelegate.hui
+  tdynamiclayout.hui
+  tdynamicwidget.hui
   texponentialspin.hui
   textratreewidgetitem.h
-  fileselectorwidget.h
   tintegerspindelegate.hui
   tmenubutton.hui
   tmenubuttongroup.h
@@ -288,6 +289,8 @@ set(gui_SRCS
   viewer_scene.cpp
   viewer_useractions.cpp
   tcolourwheel_funcs.cpp
+  tdynamiclayout_funcs.cpp
+  tdynamicwidget_funcs.cpp
   tmenubutton_funcs.cpp
   tmenubuttongroup.cpp
   tpopupwidget_funcs.cpp
