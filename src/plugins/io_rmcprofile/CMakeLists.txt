@@ -62,9 +62,31 @@ set_target_properties(rmcp6 PROPERTIES
    PREFIX ""
 )
 
+#----------------------------
+# RMC Profile V6 Bonds Plugin
+#----------------------------
+
+# Meta-Objects
+set(rmcp6bonds_MOC_HDRS
+  rmcp6bonds.hui
+)
+QT5_WRAP_CPP(rmcp6bonds_MOC_SRCS ${rmcp6bonds_MOC_HDRS} OPTIONS -I${PROJECT_SOURCE_DIR}/src)
+
+# Main plugin library
+add_library(rmcp6bonds MODULE
+  rmcp6bonds_funcs.cpp
+  common.cpp
+  ${rmcp6bonds_MOC_SRCS}
+)
+set_target_properties(rmcp6bonds PROPERTIES
+   LIBRARY_OUTPUT_DIRECTORY ${Aten_BINARY_DIR}/data/plugins
+   COMPILE_DEFINITIONS "QT_PLUGIN"
+   PREFIX ""
+)
+
 # Install Targets
 if(UNIX AND NOT APPLE)
-install(TARGETS rmcp6 rmcp6
+install(TARGETS rmcp6 rmcp6bonds rmcp3
     RUNTIME DESTINATION ${CMAKE_INSTALL_LIBDIR}/aten/plugins COMPONENT RuntimePlugins
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}/aten/plugins COMPONENT RuntimePlugins
 )

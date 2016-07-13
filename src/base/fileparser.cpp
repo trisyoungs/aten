@@ -81,6 +81,15 @@ bool FileParser::readLine(QString& variable)
 	return (result == 0);
 }
 
+// Read next line from file into the variable supplied, and parse it as well
+bool FileParser::readAndParseLine(QString& variable)
+{
+	int result = parser_.readNextLine(Parser::Defaults);
+	variable = parser_.line();
+	parseLine();
+	return (result == 0);
+}
+
 // Read next line from file (converted to int)
 bool FileParser::readLineAsInteger(int& variable)
 {
