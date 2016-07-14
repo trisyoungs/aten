@@ -66,6 +66,8 @@ class FileParser
 	public:
 	// Read next line from file
 	bool readLine(QString& variable);
+	// Read next line from file into the variable supplied, and parse it as well
+	bool readAndParseLine(QString& variable);
 	// Read next line from file (converted to int)
 	bool readLineAsInteger(int& variable);
 	// Read next line from file (converted to double)

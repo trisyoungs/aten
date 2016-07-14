@@ -97,7 +97,6 @@ void Aten::processImportedObjects(FilePluginInterface* plugin, QString filename)
 		// Set current object
 		current_.g = grid;
 	}
-
 }
 
 // Import model (if it is not loaded already)
@@ -147,6 +146,8 @@ bool Aten::importModel(QString filename, FilePluginInterface* plugin, FilePlugin
 		FilePluginInterface* pluginInterface = plugin->createInstance();
 		pluginInterface->setStandardOptions(standardOptions);
 		pluginInterface->setOptions(pluginOptions);
+		pluginInterface->setParentModel(current_.m);
+		pluginInterface->setTargetModel(current_.rs());
 		if (!pluginInterface->openInput(filename))
 		{
 			Messenger::exit("Aten::importModel");
@@ -169,8 +170,12 @@ bool Aten::importModel(QString filename, FilePluginInterface* plugin, FilePlugin
 	// If we loaded something successfully, have we flagged an empty model to delete?
 	if (result)
 	{
-		if (removeAfterLoad) removeModel(removeAfterLoad);
-		atenWindow_->updateWidgets(AtenWindow::AllTargets);
+		if (removeAfterLoad)
+		{
+			// Just check that nothing has happened to the model (might have been modified...)
+			if ((!removeAfterLoad->atoms()) && (!removeAfterLoad->glyphs()) && (!removeAfterLoad->grids())) removeModel(removeAfterLoad);
+		}
+		atenWindow_->updateWidgets(AtenWindow::AllTarget);
 	}
 
 	Messenger::exit("Aten::importModel");

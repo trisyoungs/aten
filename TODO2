@@ -48,7 +48,6 @@ GUI TODO
 Sort out remaining icons!
 Colour Selector:
 o Need widget that is embeddable as a QMenuAction* (for atom context menu)
-o Need simple button class (essentially a specific TMenuButton for ColourPopup) for Glyphs popup etc.
 Add option to display ColourScale selector (e.g. for Grid colour buttons)
 Add Plot Orbital to Tools page (raising dialog from old GridsWidget)
 Add manual typing popup.
