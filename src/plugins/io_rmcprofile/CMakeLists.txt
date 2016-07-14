@@ -62,6 +62,14 @@ set_target_properties(rmcp6 PROPERTIES
    PREFIX ""
 )
 
+# Includes for target
+target_include_directories(rmcp6 PRIVATE
+  ${PROJECT_SOURCE_DIR}/src
+  ${PROJECT_BINARY_DIR}/src
+  ${Qt5Core_INCLUDE_DIRS}
+  ${Qt5Gui_INCLUDE_DIRS}
+)
+
 #----------------------------
 # RMC Profile V6 Bonds Plugin
 #----------------------------
@@ -93,7 +101,7 @@ install(TARGETS rmcp6 rmcp6bonds rmcp3
 endif(UNIX AND NOT APPLE)
 
 # Includes for target
-target_include_directories(rmcp6 PRIVATE
+target_include_directories(rmcp6bonds PRIVATE
   ${PROJECT_SOURCE_DIR}/src
   ${PROJECT_BINARY_DIR}/src
   ${Qt5Core_INCLUDE_DIRS}
