@@ -25,6 +25,7 @@ set_target_properties(epsrato PROPERTIES
 # EPSR Molfile
 set(epsrmol_MOC_HDRS
   mol.hui
+  molexportoptions.h
 )
 QT5_WRAP_CPP(epsrmol_MOC_SRCS ${epsrmol_MOC_HDRS} OPTIONS -I${PROJECT_SOURCE_DIR}/src)
 

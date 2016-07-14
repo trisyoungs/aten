@@ -1,6 +1,7 @@
 # MOPAC Control file
 set(mopaccontrol_MOC_HDRS
   mopaccontrol.hui
+  controlexportoptions.h
 )
 QT5_WRAP_CPP(mopaccontrol_MOC_SRCS ${mopaccontrol_MOC_HDRS} OPTIONS -I${PROJECT_SOURCE_DIR}/src)
 
