@@ -89,7 +89,7 @@ QStringList GAMESSModelPlugin::exactNames() const
 // Return whether this plugin can import data
 bool GAMESSModelPlugin::canImport()
 {
-	return true;
+	return false;
 }
 
 // Import data from the specified file
@@ -719,7 +719,7 @@ bool GAMESSModelPlugin::importData()
 //	else writeZMatrix(aten.frame);
 //	writeLine(" $END");
 //}
-	return true;
+	return false;
 }
 
 // Return whether this plugin can export data

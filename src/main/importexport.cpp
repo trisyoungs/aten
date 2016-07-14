@@ -175,7 +175,7 @@ bool Aten::importModel(QString filename, FilePluginInterface* plugin, FilePlugin
 			// Just check that nothing has happened to the model (might have been modified...)
 			if ((!removeAfterLoad->atoms()) && (!removeAfterLoad->glyphs()) && (!removeAfterLoad->grids())) removeModel(removeAfterLoad);
 		}
-		atenWindow_->updateWidgets(AtenWindow::AllTarget);
+		atenWindow_->updateWidgets(AtenWindow::AllTargets);
 	}
 
 	Messenger::exit("Aten::importModel");

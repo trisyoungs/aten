@@ -89,7 +89,7 @@ QStringList GROMACSModelPlugin::exactNames() const
 // Return whether this plugin can import data
 bool GROMACSModelPlugin::canImport()
 {
-	return true;
+	return false;
 }
 
 // Import data from the specified file
@@ -478,7 +478,7 @@ bool GROMACSModelPlugin::importData()
 //          }
 //}
 //
-	return true;
+	return false;
 }
 
 // Return whether this plugin can export data

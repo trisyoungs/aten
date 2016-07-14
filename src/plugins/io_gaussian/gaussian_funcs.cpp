@@ -89,7 +89,7 @@ QStringList GaussianModelPlugin::exactNames() const
 // Return whether this plugin can import data
 bool GaussianModelPlugin::canImport()
 {
-	return true;
+	return false;
 }
 
 // Import data from the specified file
@@ -411,7 +411,7 @@ bool GaussianModelPlugin::importData()
 //	finaliseModel();
 //}
 
-	return true;
+	return false;
 }
 
 // Return whether this plugin can export data

@@ -98,6 +98,11 @@ bool RMCProfile6BondsModelPlugin::canImport()
 bool RMCProfile6BondsModelPlugin::importData()
 {
 	// Don't create a new model - instead, we'll use the current targetModel();
+	if (!targetModel())
+	{
+		Messenger::print("No current model available. Can't proceed with import.");
+		return false;
+	}
 
 	int nAtoms = -1;
 
@@ -111,15 +116,14 @@ bool RMCProfile6BondsModelPlugin::importData()
 		if (line.startsWith("Number of atoms = "))
 		{
 			nAtoms = fileParser_.argi(4);
-			Messenger::print("Number of atoms specified in file = %i\n", nAtoms);
+			Messenger::print("Number of atoms specified in file = %i", nAtoms);
 			if (nAtoms != targetModel()->nAtoms())
 			{
-				Messenger::error("NUmber of atoms in file (%i) differs from that in the current model (%i).", nAtoms, targetModel()->nAtoms());
+				Messenger::error("Number of atoms in file (%i) differs from that in the current model (%i).", nAtoms, targetModel()->nAtoms());
 				return false;
 			}
 		}
 		else if (line.startsWith("...")) break;
-		
 	} while (!fileParser_.eofOrBlank());
 
 	// Clear current bonding in the model
@@ -155,7 +159,7 @@ bool RMCProfile6BondsModelPlugin::importData()
 		{
 			int indexJ = fileParser_.argi(4+n*3) - 1;
 			Atom* j = targetModel()->atom(indexJ);
-			QString nameJ = fileParser_.argc(4+n*3) == "D" ? "H" : fileParser_.argc(4+n*3);
+			QString nameJ = fileParser_.argc(5+n*3) == "D" ? "H" : fileParser_.argc(5+n*3);
 
 			if (j->element() != ElementMap::find(nameJ, ElementMap::AlphaZMap))
 			{
