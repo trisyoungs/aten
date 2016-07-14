@@ -1,17 +1,18 @@
 # EPSR ATO file
 set(epsrato_MOC_HDRS
   ato.hui
-  #atoimportoptions.h
+  atoexportoptions.h
 )
 QT5_WRAP_CPP(epsrato_MOC_SRCS ${epsrato_MOC_HDRS} OPTIONS -I${PROJECT_SOURCE_DIR}/src)
 
 SET(epsrato_UIS
- #atoimportoptions.ui 
+  atoexportoptions.ui 
 )
 QT5_WRAP_UI(epsrato_UIS_H ${epsrato_UIS})
 
 add_library(epsrato MODULE
   ato_funcs.cpp
+  atoexportoptions_funcs.cpp
   ${epsrato_MOC_SRCS}
   ${epsrato_UIS_H}
 )

@@ -67,7 +67,8 @@ class AtenSaveModel : public QDialog, public AtenFileDialog
 	FilePluginStandardImportOptions standardImportOptions();
 	// Return standard export options from dialog
 	FilePluginStandardExportOptions standardExportOptions();
-
+	// Return whether extension by type is selected
+	bool extensionDeterminesType();
 
 	/*
 	 * Signals / Slots

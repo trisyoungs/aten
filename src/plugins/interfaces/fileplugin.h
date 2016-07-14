@@ -405,7 +405,7 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 		if (ffa != NULL)
 		{
 			i->setType(ffa);
-			if (ffa != NULL) i->setTypeFixed(true);
+			i->setTypeFixed(true);
 		}
 
 		return i;

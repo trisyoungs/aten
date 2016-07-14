@@ -99,6 +99,12 @@ FilePluginStandardExportOptions AtenSaveModel::standardExportOptions()
 	return options;
 }
 
+// Return whether extension by type is selected
+bool AtenSaveModel::extensionDeterminesType()
+{
+	return ui.ExtensionDeterminesTypeCheck->isChecked();
+}
+
 /*
  * Signals / Slots
  */

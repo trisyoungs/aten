@@ -66,6 +66,8 @@ void AtenWindow::on_ForcefieldsList_currentRowChanged(int row)
 
 	// Set the new default forcefield in the master and refresh the forcefields page
 	aten_.setCurrentForcefield(row);
+
+	updateWidgets(AtenWindow::ForcefieldsPanelTarget);
 }
 
 void AtenWindow::on_ForcefieldsManageOpenButton_clicked(bool checked)
@@ -101,7 +103,7 @@ void AtenWindow::on_ForcefieldsManageEditButton_clicked(bool checked)
 {
 	AtenForcefieldEditor ffEditor(this);
 	ffEditor.populate(aten_.currentForcefield());
-	ffEditor.show();
+	ffEditor.exec();
 }
 
 void AtenWindow::on_ForcefieldsManageAssignButton_clicked(bool checked)

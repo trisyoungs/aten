@@ -19,8 +19,8 @@ clean-local:
 	-rm -f ato.cpp mol.cpp
 
 # Ato Model Plugin
-#epsrato_la_SOURCES = atoimportoptions.ui atoimportoptions_funcs.cpp
-epsrato_la_SOURCES = ato_funcs.cpp ato.hui 
+epsrato_la_SOURCES = atoexportoptions.ui atoexportoptions_funcs.cpp
+epsrato_la_SOURCES += ato_funcs.cpp ato.hui 
 epsrato_la_LDFLAGS = -module -shared -avoid-version
 
 # Molfile Model Plugin
@@ -28,6 +28,6 @@ epsrmol_la_SOURCES = molexportoptions.ui molexportoptions_funcs.cpp
 epsrmol_la_SOURCES += mol_funcs.cpp mol.hui
 epsrmol_la_LDFLAGS = -module -shared -avoid-version
 
-noinst_HEADERS = molexportoptions.h
+noinst_HEADERS = atoexportoptions.h molexportoptions.h
 
 AM_CPPFLAGS = -I${top_srcdir}/src @ATEN_INCLUDES@ @ATEN_CFLAGS@

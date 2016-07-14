@@ -987,6 +987,7 @@ void AtenForcefieldEditor::on_FFEditorUreyBradleysTable_itemSelectionChanged()
 
 void AtenForcefieldEditor::on_CloseButton_clicked(bool checked)
 {
+	accept();
 }
 
 void AtenForcefieldEditor::on_SaveButton_clicked(bool checked)

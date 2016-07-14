@@ -97,6 +97,16 @@ class EPSRAtoModelPlugin : public QObject, public FilePluginInterface
 	bool hasExportOptions();
 	// Show export options dialog
 	bool showExportOptionsDialog();
+
+
+	/*
+	 * Ato Functions
+	 */
+	private:
+	// Return restraint distance for supplied atoms
+	double restraintDistance(Atom* i, Atom* j);
+	// Return restraint angle for supplied atoms
+	double restraintAngle(Atom* i, Atom* j, Atom* k);
 };
 
 ATEN_END_NAMESPACE

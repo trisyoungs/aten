@@ -23,15 +23,16 @@
 #define ATEN_DATAPAIR_H
 
 #include "base/namespace.h"
+#include "templates/list.h"
 
 ATEN_BEGIN_NAMESPACE
 
 // Data pair class
-template <class D1, class D2> class DataPair
+template <class D1, class D2> class DataPair : public ListItem< DataPair<D1,D2> >
 {
 	public:
 	// Constructor
-	DataPair<D1,D2>(D1 data1 = D1(), D2 data2 = D2())
+	DataPair<D1,D2>(D1 data1 = D1(), D2 data2 = D2()) : ListItem< DataPair<D1,D2> >()
 	{
 		data1_ = data1;
 		data2_ = data2;
@@ -48,6 +49,12 @@ template <class D1, class D2> class DataPair
 	D2 data2_;
 
 	public:
+	// Set both data items
+	void set(D1 data1, D2 data2)
+	{
+		data1_ = data1;
+		data2_ = data2;
+	}
 	// Return first datum
 	D1& data1()
 	{

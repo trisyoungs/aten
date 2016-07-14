@@ -22,6 +22,7 @@
 #include "main/aten.h"
 #include "gui/mainwindow.h"
 #include "gui/savemodel.h"
+#include <QMessageBox>
 
 ATEN_USING_NAMESPACE
 
@@ -184,16 +185,21 @@ bool Aten::exportModel(Model* sourceModel, QString filename, FilePluginInterface
 	if (filename.isEmpty() || (plugin == NULL) || (plugin->category() != PluginTypes::ModelFilePlugin) || (!plugin->canExport()))
 	{
 		// Need to raise the save model dialog to get a valid name and/or plugin
-		if (atenWindow_->saveModelDialog().execute(pluginStore_.logPoint(), filename, plugin))
+		if (atenWindow_->shown() && atenWindow_->saveModelDialog().execute(pluginStore_.logPoint(), filename, plugin))
 		{
 			filename = atenWindow_->saveModelDialog().selectedFilenames().at(0);
-			plugin = atenWindow_->saveModelDialog().selectedPlugin();
-			if (plugin == NULL) plugin = pluginStore_.findFilePlugin(PluginTypes::ModelFilePlugin, PluginTypes::ExportPlugin, filename);
-		}
-		else
-		{
-			Messenger::exit("Aten::exportModel");
-			return false;
+
+			// Filetype to save in is determined from either the selected plugin (filter) in the dialog, or the file extension
+			if (atenWindow_->saveModelDialog().extensionDeterminesType()) plugin = pluginStore_.findFilePlugin(PluginTypes::ModelFilePlugin, PluginTypes::ExportPlugin, filename);
+			else plugin = atenWindow_->saveModelDialog().selectedPlugin();
+
+			if (!plugin)
+			{
+				QMessageBox::critical(atenWindow_, "Export Failed", "Export format could not be determined.\nCheck the file extension, or explicitly select a type.");
+				Messenger::print("Model '%s' not saved.\n", qPrintable(sourceModel->name()));
+				Messenger::exit("Aten::exportModel");
+				return false;
+			}
 		}
 	}
 
