@@ -106,6 +106,8 @@ class Matrix
 	void setColumn(int col, Vec3<double> vec, double w);
 	// Set specified column from supplied Vec4
 	void setColumn(int col, Vec4<double> vec);
+	// Set specified column from supplied triplet of values
+	void setColumn(int col, double x, double y, double z);
 	// Adjust specified column from supplied values
 	void adjustColumn(int col, double a, double b, double c, double d);
 	// Adjust specified column from supplied Vec3

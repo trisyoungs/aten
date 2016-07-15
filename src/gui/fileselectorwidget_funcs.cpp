@@ -176,6 +176,7 @@ void FileSelectorWidget::updateWidgets()
 
 	// File table
 	ui.FileView->resizeColumnsToContents();
+	ui.FileView->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
 
 	// Files edit
 	QString files;
@@ -191,6 +192,7 @@ void FileSelectorWidget::updateWidgets()
 void FileSelectorWidget::resizeFileView(QString dummy)
 {
 	ui.FileView->resizeColumnsToContents();
+	ui.FileView->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
 }
 
 void FileSelectorWidget::on_DirectoryEdit_returnPressed()

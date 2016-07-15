@@ -41,7 +41,7 @@ int Model::nAtoms() const
 }
 
 // Add atom
-Atom* Model::addAtom(short int newel, Vec3<double> r, Vec3<double> f, Vec3<double> v)
+Atom* Model::addAtom(short int newel, Vec3<double> r, Vec3<double> v, Vec3<double> f)
 {
 	Messenger::enter("Model::addAtom");
 	Atom* newatom = atoms_.add();
@@ -50,8 +50,8 @@ Atom* Model::addAtom(short int newel, Vec3<double> r, Vec3<double> f, Vec3<doubl
 	newatom->setColourFromElement();
 	newatom->setId(atoms_.nItems() - 1);
 	newatom->r() = r;
-	newatom->v() = f;
-	newatom->f() = v;
+	newatom->v() = v;
+	newatom->f() = f;
 	increaseMass(newel);
 	logChange(Log::Structure);
 	// Add the change to the undo state (if there is one)

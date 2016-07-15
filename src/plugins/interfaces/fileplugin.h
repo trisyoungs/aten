@@ -390,13 +390,13 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 		return createdFrames_;
 	}
 	// Create new atom in specified model
-	Atom* createAtom(Model* model, QString name = "XX", Vec3<double> r = Vec3<double>())
+	Atom* createAtom(Model* model, QString name = "XX", Vec3<double> r = Vec3<double>(), Vec3<double> v = Vec3<double>(), Vec3<double> f = Vec3<double>())
 	{
 		// Find element in elements map
 		int el = ElementMap::find(name, standardOptions_.zMappingType());
 
 		// Add atom
-		Atom* i = model->addAtom(el, r);
+		Atom* i = model->addAtom(el, r, v, f);
 
 		// KeepNames and KeepTypes standard options
 		ForcefieldAtom* ffa = NULL;

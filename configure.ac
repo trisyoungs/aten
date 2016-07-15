@@ -162,6 +162,7 @@ src/plugins/io_akf/Makefile
 src/plugins/io_cif/Makefile
 src/plugins/io_csd/Makefile
 src/plugins/io_cube/Makefile
+src/plugins/io_dlpoly/Makefile
 src/plugins/io_dlputils/Makefile
 src/plugins/io_epsr/Makefile
 src/plugins/io_espresso/Makefile

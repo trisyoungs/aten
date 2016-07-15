@@ -178,7 +178,7 @@ class Model : public ListItem<Model>
 	
 	public:
 	// Create a new atom
-	Atom* addAtom(short int el = 0, Vec3<double> r = Vec3<double>(), Vec3<double> f = Vec3<double>(), Vec3<double> v = Vec3<double>());
+	Atom* addAtom(short int el = 0, Vec3<double> r = Vec3<double>(), Vec3<double> v = Vec3<double>(), Vec3<double> f = Vec3<double>());
 	// Create a new atom with specified id
 	Atom* addAtomWithId(short int el, Vec3<double> r, int atomid);
 	// Create a new atom at the Model's current pen position

@@ -364,6 +364,14 @@ void Matrix::setRow(int row, double x, double y, double z, double w)
 }
 
 // Set specified column from supplied values
+void Matrix::setColumn(int col, double x, double y, double z)
+{
+	matrix_[col*4]   = x;
+	matrix_[col*4+1] = y;
+	matrix_[col*4+2] = z;
+}
+
+// Set specified column from supplied values
 void Matrix::setColumn(int col, double a, double b, double c, double d)
 {
 	matrix_[col*4] = a;
