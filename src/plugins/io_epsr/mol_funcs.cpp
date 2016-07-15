@@ -154,8 +154,9 @@ bool EPSRMolModelPlugin::exportData()
 			ffa->setCharge(i->charge());
 			if (i->type())
 			{
-				if (i->type()->vdwForm() != VdwFunctions::Lj) Messenger::warn("Can't use currently-assigned atom type to get Lennard-Jones parameters for atom %i since it is not of the correct form (%s).", i->id()+1, VdwFunctions::functionData[i->type()->vdwForm()].name);
-				else for (int n=0; n<VdwFunctions::functionData[VdwFunctions::Lj].nParameters; ++n) ffa->setParameter(n, i->type()->parameter(n));
+				if (i->type()->vdwForm() == VdwFunctions::Lj) for (int n=0; n<VdwFunctions::functionData[VdwFunctions::Lj].nParameters; ++n) ffa->setParameter(n, i->type()->parameter(n));
+				else if (i->type()->vdwForm() == VdwFunctions::LjGeometric) for (int n=0; n<VdwFunctions::functionData[VdwFunctions::LjGeometric].nParameters; ++n) ffa->setParameter(n, i->type()->parameter(n));
+				else Messenger::warn("Can't use currently-assigned atom type to get interaction parameters for atom %i since it is not of the correct form (%s).", i->id()+1, VdwFunctions::functionData[i->type()->vdwForm()].name);
 			}
 			Messenger::print("Potential data for atom %i : %s %8.4f %8.4f %8.4f", i->id()+1, qPrintable(ffa->name()), ffa->parameter(0), ffa->parameter(1), ffa->charge());
 		}

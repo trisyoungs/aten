@@ -467,7 +467,6 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 	{
 		// Get file information
 		QFileInfo fileInfo(filename);
-		if ((!fileInfo.exists()) || (!fileInfo.isReadable())) return false;
 	
 		// Check filename extensions (if the filename has an extension)
 		if (!fileInfo.suffix().isEmpty()) for (int n=0; n<extensions().count(); ++n)

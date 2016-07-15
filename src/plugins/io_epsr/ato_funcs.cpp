@@ -35,8 +35,8 @@ EPSRAtoModelPlugin::EPSRAtoModelPlugin()
 	pluginOptions_.add("vibTemp", "65.0");
 	pluginOptions_.add("angTemp", "3.0");
 	pluginOptions_.add("dihTemp", "10.0");
-// 	pluginOptions_.add("eCore", "0.0");
-// 	pluginOptions_.add("dCore", "0.0");
+	pluginOptions_.add("eCore", "0.0");
+	pluginOptions_.add("dCore", "0.0");
 	pluginOptions_.add("modelGeometry", "false");
 	pluginOptions_.add("individualGeometry", "false");
 	pluginOptions_.add("restraintLevel", "2");
@@ -291,7 +291,7 @@ bool EPSRAtoModelPlugin::exportData()
 	// Setup
 	// -----
 	// -- Must have some sort of valid pattern description
-	targetModel()->createPatterns();
+	if (!targetModel()->createPatterns()) targetModel()->createDefaultPattern();
 	// -- Determine total number of molecules
 	int nMols = 0;      
 	for (Pattern* p = targetModel()->patterns(); p != NULL; p = p->next) nMols += p->nMolecules();
@@ -299,28 +299,51 @@ bool EPSRAtoModelPlugin::exportData()
 	// Line 1 : nmols, box dimension, temperature OR nmols, temperature depending on cell type
 	if (!targetModel()->isPeriodic())
 	{
-		if (!fileParser_.writeLineF("  %4i %13.6e  %13.6e", nMols, 20.0, pluginOptions_.value("temp").toDouble())) return false;
+		if (!fileParser_.writeLineF(" %7i %14.8e  %14.8e", nMols, 20.0, pluginOptions_.value("temp").toDouble())) return false;
 	}
 	else if (targetModel()->cell().type() == UnitCell::CubicCell)
 	{
-		if (!fileParser_.writeLineF("  %4i %13.6e  %13.6e", nMols, targetModel()->cell().lengths().x, pluginOptions_.value("temp").toDouble())) return false;
+		if (!fileParser_.writeLineF(" %7i %14.8e  %14.8e", nMols, targetModel()->cell().lengths().x, pluginOptions_.value("temp").toDouble())) return false;
 	}
 	else
 	{
 		Vec3<double> lengths = targetModel()->cell().lengths();
 		Vec3<double> angles = targetModel()->cell().angles();
 
-		if (!fileParser_.writeLineF("  %4i   %13.6e", nMols, pluginOptions_.value("temp").toDouble())) return false;
+		if (!fileParser_.writeLineF(" %7i %14.8e", nMols, pluginOptions_.value("temp").toDouble())) return false;
 		if (!fileParser_.writeLineF(" %12.6e  %12.6e  %12.6e", lengths.x, lengths.y, lengths.z)) return false;
-		// Angles must be determined:
-		// thetac = angle deviation from cartesian z (== 90-beta)  ?? CHECK
-		// phic = angle deviation from cartesian z (== 90-alpha)  ?? CHECK
-		if (!fileParser_.writeLineF(" %12.6e  %12.6e  %12.6e", angles.z, 90-angles.y, 90.0-angles.x)) return false;
+		double phib, thetac, phic;
+		// Converts crystallographic alpha, beta, gamma values to spherical polar coordinates used in EPSR
+		// The a vector is assumed to lie along the x-axis, and the b vector is in the x-y plane.
+
+		// phib = angle between a/b vectors = gamma (angles.z)
+		phib = angles.z;
+
+		// Initialise thetac and phic to zero to begin with
+		thetac = 0.0;
+		phic = 0.0;
+
+		// Calculate components of b and c vectors in x and y
+		double bx = cos(angles.z/DEGRAD);
+		double by = sin(angles.z/DEGRAD);
+		double cx = cos(angles.y/DEGRAD);
+		double cy = (cos(angles.x/DEGRAD) - bx*cx) / by;
+
+		// If the angle between a and c is not 90 degrees (cx == 0.0), calculate thetac and phic
+		if (fabs(cx) > 1.0e-4)
+		{
+			phic = atan2(cy,cx) * DEGRAD;
+
+			// Determine angle out of z
+			thetac = asin(sqrt(cx*cx + cy*cy)) * DEGRAD;
+		}
+
+		if (!fileParser_.writeLineF(" %12.6e  %12.6e  %12.6e", phib, thetac, phic)) return false;
 	}
 
 	// Line 2 : Tol, step sizes (intra trans, headgroup rot, mol rot, mol trans), vibrational temp
 	// We will just write some sensible defaults here
-	if (!fileParser_.writeLineF(" %12.5e %12.5e %12.5e %12.5e %12.5e %12.5e %12.5e %12.5e %12.5e %12.5e", 0.0, 0.1, 0.3, 0.3, 1.0, 65.0, 3.0, 0.1, 0.0, 0.0)) return false;
+	if (!fileParser_.writeLineF(" %12.5e %12.5e %12.5e %12.5e %12.5e %12.5e %12.5e %12.5e %12.5e %12.5e", 0.0, 0.1, 0.3, 0.3, 1.0, pluginOptions_.value("vibTemp").toDouble(), pluginOptions_.value("angTemp").toDouble(), pluginOptions_.value("dihTemp").toDouble(), 0.0, 0.0)) return false;
 
 	// Molecule Section
 	int nRestraints, molIndex = 1;
@@ -345,7 +368,7 @@ bool EPSRAtoModelPlugin::exportData()
 		{
 			// Write centre of mass
 			Vec3<double> com = p->calculateCom(mol);
-			if (!fileParser_.writeLineF("   %-2i %12.5e %12.5e %12.5e %12.5e %12.5e %12.5e F      %5i %5i", p->nAtoms(), com.x, com.y, com.z, 0.0, 0.0, 0.0, 0, mol)) return false;
+			if (!fileParser_.writeLineF("   %-2i %12.5e %12.5e %12.5e %12.5e %12.5e %12.5e F      %5i %5i", p->nAtoms(), com.x, com.y, com.z, 0.0, 0.0, 0.0, 0, molIndex)) return false;
 
 			// Loop over atoms in molecule
 			for (int n=0; n<p->nAtoms(); ++n)
@@ -409,11 +432,21 @@ bool EPSRAtoModelPlugin::exportData()
 				}
 
 				// Write beginning of restraint information
-				if (!fileParser_.writeF(" %3i ", restraints[n].nItems())) return false;
-				for (int resId=0; resId <restraints[n].nItems(); ++resId)
+				if (restraints[n].nItems() == 0)
 				{
-					if (!fileParser_.writeF("%4i %9.3e ", restraints[n][resId]->data1()+1, restraints[n][resId]->data2())) return false;
-					if ((resId > 0) && ((resId %5 == 0) || (resId == restraints[n].nItems()-1))) if (!fileParser_.writeLine()) return false;
+					if (!fileParser_.writeLineF(" %4i", 0)) return false;
+				}
+				else
+				{
+					if (!fileParser_.writeF(" %4i", restraints[n].nItems())) return false;
+					int count = 0;
+					for (int resId=0; resId <restraints[n].nItems(); ++resId)
+					{
+	// 					if (!fileParser_.writeF(" %4i %9.3e ", restraints[n][resId]->data1()+1, restraints[n][resId]->data2())) return false;
+						if (!fileParser_.writeF(" %4i %9.3e", restraints[n][resId]->data1()+1, 1.0)) return false;
+						++count;
+						if ((count%5 == 0) || (resId == restraints[n].nItems()-1)) if (!fileParser_.writeLine()) return false;
+					}
 				}
 
 				i = i->next;
@@ -463,7 +496,7 @@ bool EPSRAtoModelPlugin::exportData()
 			}
 
 			// Write rotational groups
-			if (!fileParser_.writeLine(QString::number(rotationalGroups.count()))) return false;
+			if (!fileParser_.writeLine(QString(" %1").arg(rotationalGroups.count(),4))) return false;
 			for (int n=0; n<rotationalGroups.count(); ++n) if (!fileParser_.writeLine(rotationalGroups.at(n))) return false;
 
 			++molIndex;
@@ -471,31 +504,61 @@ bool EPSRAtoModelPlugin::exportData()
 		}
 	}
 
-//	// Write the forcefield info
-//        // Energy unit must be kj/mol, so set automatic conversion of ff energy parameters to kj
-//        autoConversionUnit("kj");
-//	for (ffatom ffa in srcmodel.ffTypes)
-//	{
-//		if ((ffa.form != "lj") && (ffa.form != "ljgeom")) error("Error: Atom type '%s' contains short-range parameters of an incompatible type with EPSR (%s).\n", ffa.name, ffa.form);
-//		if (ffa.z == 1) writeLineF(" %-3s %-3s %1i\n", ffa.name, aten.elements[ffa.z].symbol, 1);
-//		else writeLineF(" %-3s %-3s %1i\n", ffa.name, aten.elements[ffa.z].symbol, 0);
-//
-//		// Masses - for H atoms, write deuterium mass instead
-//		if (ffa.z == 1) mass = 2.0;
-//		else mass = aten.elements[ffa.z].mass;
-//		writeLineF(" %10.4e  %10.4e  %10.4e  %10.4e  %10.4e\n", ffa.parameter("epsilon"), ffa.parameter("sigma"), mass, ffa.charge, 0.0);
-//	}
-//	
-//	// Extra data
-//
-//	// Used by fmole to keep non-bonded atoms apart
-//	writeLineF(" %10.4e  %10.4e\n", 1.0, 1.0);
-//
-//	// Random numbers for restart purposes
-//	for (n=0; n<15; ++n) writeLineF(" %i", randomI());
-//	writeLineF("\n");
-//	
-//}
+	// Create and write the forcefield info (in kJ/mol)
+	Forcefield typesFF;
+	for (Pattern* p = targetModel()->patterns(); p != NULL; p = p->next)
+	{
+		// Get first atom pointer and its index
+		Atom* i = p->firstAtom();
+		for (int n=0; n<p->nAtoms(); ++n, i=i->next)
+		{
+			// Grab type name or, if there isn't one, the element symbol
+			ForcefieldAtom* ffi = i->type();
+			typeName = ffi ? ffi->name() : ElementMap::symbol(i);
+
+			// Add a new type to our temporary forcefield (if we haven't already for this type)
+			if (!typesFF.findType(typeName))
+			{
+				ForcefieldAtom* ffa = typesFF.addType(-1, typeName, typeName, i->element(), "", "");
+
+				// Setup van der Waals for type as best we can
+				ffa->setVdwForm(VdwFunctions::Lj);
+				ffa->setCharge(i->charge());
+				if (i->type())
+				{
+					if (i->type()->vdwForm() == VdwFunctions::Lj) for (int n=0; n<VdwFunctions::functionData[VdwFunctions::Lj].nParameters; ++n) ffa->setParameter(n, i->type()->parameter(n));
+					else if (i->type()->vdwForm() == VdwFunctions::LjGeometric) for (int n=0; n<VdwFunctions::functionData[VdwFunctions::LjGeometric].nParameters; ++n) ffa->setParameter(n, i->type()->parameter(n));
+					else Messenger::warn("Can't use currently-assigned atom type to get interaction parameters for atom %i since it is not of the correct form (%s).", i->id()+1, VdwFunctions::functionData[i->type()->vdwForm()].name);
+				}
+				Messenger::print("Potential data for atom %i : %s %8.4f %8.4f %8.4f", i->id()+1, qPrintable(ffa->name()), ffa->parameter(0), ffa->parameter(1), ffa->charge());
+			}
+		}
+	}
+	
+	for (ForcefieldAtom* ffa = typesFF.types()->next; ffa != NULL; ffa = ffa->next)
+	{
+
+		if (!fileParser_.writeLineF(" %-3s %-3s %1i", qPrintable(ffa->name()), ElementMap::symbol(ffa->element()), 0)) return false;
+
+		// Masses - for H atoms, write deuterium mass instead
+		double mass = (ffa->element() == 1 ? 2.0 : ffa->elementMass());
+		if (!fileParser_.writeLineF(" %10.4e  %10.4e  %10.4e  %10.4e  %10.4e", prefs.convertEnergyTo(ffa->parameter(VdwFunctions::LjEpsilon), Prefs::KiloJoules), ffa->parameter(VdwFunctions::LjSigma), mass, ffa->charge(), 0.0)) return false;
+	}
+
+	// Intramolecular lennard jones factors (ecore / dcore)
+	if (!fileParser_.writeLineF(" %10.4e  %10.4e", pluginOptions_.value("eCore").toDouble(), pluginOptions_.value("dCore").toDouble())) return false;
+
+	// Random numbers for restart purposes
+	for (int n=0; n<15; ++n) if (!fileParser_.writeF(" %i", AtenMath::randomimax())) return false;
+	if (!fileParser_.writeLine("")) return false;
+
+	// List of mol files (in our case, pattern names etc.)
+	int count = 1;
+	for (Pattern* p = targetModel()->patterns(); p != NULL; p = p->next)
+	{
+		if (!fileParser_.writeLineF(" %3i %s %13.6e %13.6e %13.6e %13.6e", count, qPrintable(p->name()), 0.0, 0.0, 0.0, 0.0)) return false;
+		++count;
+	}
 
 	return true;
 }

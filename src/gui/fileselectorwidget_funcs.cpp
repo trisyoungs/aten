@@ -112,7 +112,11 @@ void FileSelectorWidget::clearSelectedFilenames()
 void FileSelectorWidget::setSelectedFilename(QString filename)
 {
 	selectedFilenames_.clear();
-	selectedFilenames_ << filename;
+
+	// Set current directory to match that of the filename
+	QFileInfo fileInfo(filename);
+	setCurrentDirectory(fileInfo.absolutePath());
+	selectedFilenames_ << fileInfo.fileName();
 
 	// Check to see if the filename exists in the current dir
 	QModelIndex index = fileSystemModel_.index(currentDirectory_.filePath(filename));

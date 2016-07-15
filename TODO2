@@ -4,7 +4,6 @@ Undo/Redo:
   * Rework UndoEvent to use an enum and stored data rather than an individual class for each event type.
   * Add Grid-related undo/redo (e.g. title changes, colour etc.)
 Rename commands for consistency - e.g. newFF to newForcefield?
-Ato export format is incorrect if nrestraints == 0 (i.e. for single atoms) since newline is not printed.
 Trajectory handling:
 o Inherit generates a crash when at first frame??
 Intelligent Select - add support for selection by type name (e.g. O*, OW etc.).
@@ -29,9 +28,6 @@ Calculate tool to work out centre of geometry/mass.
 
 Plugin TODO
 ===========
-RMCProfile plugins.
-EPSR ato import/export.
-Forcefield import (move code from Forcefield to plugin).
 POVray export.
 
 Graphics TODO

@@ -257,21 +257,27 @@ bool PDBModelPlugin::exportData()
 	}
 	else if (!fileParser_.writeLineF("CRYST1%9.3f%9.3f%9.3f%7.2f%7.2f%7.2f %11s%4i\n", 1.0, 1.0, 1.0, 90.0, 90.0, 90.0, "P 1", 1)) return false;
 
-	// Loop over patterns (molecule types) and write atom information
-	targetModel()->createPatterns();
-	molId = 0;
-	i = targetModel()->atoms();
-	for (Pattern* p = targetModel()->patterns(); p != NULL; p = p->next, ++molId)
+	// Write atom information (using patterns if possible)
+	if (targetModel()->createPatterns())
 	{
-		for (m = 0; m<p->nMolecules(); ++m)
+		molId = 0;
+		i = targetModel()->atoms();
+		for (Pattern* p = targetModel()->patterns(); p != NULL; p = p->next, ++molId)
 		{
-			for (n = 0; n < p->nAtoms(); ++n)
+			for (m = 0; m<p->nMolecules(); ++m)
 			{
-				s = QString("%1%2").arg(ElementMap::symbol(i)).arg(n);
-				if (!fileParser_.writeLineF("ATOM  %-5i %-4s MOL  %-4i    %8.3f%8.3f%8.3f%6.2f%6.2f          %2s", i->id()+1, qPrintable(s), molId, i->r().x, i->r().y, i->r().z, 1.0, 1.0, ElementMap::symbol(i))) return false;
-				i = i->next;
+				for (n = 0; n < p->nAtoms(); ++n)
+				{
+					s = QString("%1%2").arg(ElementMap::symbol(i)).arg(n);
+					if (!fileParser_.writeLineF("ATOM  %-5i %-4s MOL  %-4i    %8.3f%8.3f%8.3f%6.2f%6.2f          %2s", i->id()+1, qPrintable(s), molId, i->r().x, i->r().y, i->r().z, 1.0, 1.0, ElementMap::symbol(i))) return false;
+					i = i->next;
+				}
 			}
 		}
+	}
+	else for (i = targetModel()->atoms(); i != NULL; i = i->next)
+	{
+		if (!fileParser_.writeLineF("ATOM  %-5i %-4s MOL  %-4i    %8.3f%8.3f%8.3f%6.2f%6.2f          %2s", i->id()+1, ElementMap::symbol(i), molId, i->r().x, i->r().y, i->r().z, 1.0, 1.0, ElementMap::symbol(i))) return false;
 	}
 
 	// Loop over atoms and write bond information

@@ -41,8 +41,8 @@ void EPSRAtoExportOptionsDialog::on_CancelButton_clicked(bool checked)
 void EPSRAtoExportOptionsDialog::on_OKButton_clicked(bool checked)
 {
 	// Set options before we accept() the dialog.
-// 	pluginOptions_.add("eCore", QString::number(ui.ECoreSpin->value()));
-// 	pluginOptions_.add("dCore", QString::number(ui.DCoreSpin->value()));
+	pluginOptions_.add("eCore", QString::number(ui.ECoreSpin->value()));
+	pluginOptions_.add("dCore", QString::number(ui.DCoreSpin->value()));
 	pluginOptions_.add("temp", QString::number(ui.TempSpin->value()));
 	pluginOptions_.add("vibTemp", QString::number(ui.VibTempSpin->value()));
 	pluginOptions_.add("angTemp", QString::number(ui.AngTempSpin->value()));
@@ -64,8 +64,8 @@ void EPSRAtoExportOptionsDialog::on_OKButton_clicked(bool checked)
 int EPSRAtoExportOptionsDialog::updateAndExecute()
 {
 	// Set controls to reflect current pluginOptions_
-// 	ui.ECoreSpin->setValue(pluginOptions_.value("eCore").toDouble());
-// 	ui.DCoreSpin->setValue(pluginOptions_.value("dCore").toDouble());
+	ui.ECoreSpin->setValue(pluginOptions_.value("eCore").toDouble());
+	ui.DCoreSpin->setValue(pluginOptions_.value("dCore").toDouble());
 	ui.TempSpin->setValue(pluginOptions_.value("temp").toDouble());
 	ui.VibTempSpin->setValue(pluginOptions_.value("vibTemp").toDouble());
 	ui.AngTempSpin->setValue(pluginOptions_.value("angTemp").toDouble());
