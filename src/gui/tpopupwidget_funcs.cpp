@@ -100,7 +100,7 @@ void TPopupWidget::enterEvent(QEvent* event)
 
 void TPopupWidget::leaveEvent(QEvent* event)
 {
-	if (mouseEntered_) close();
+	//if (mouseEntered_) close();
 }
 
 void TPopupWidget::hideEvent(QHideEvent* event)

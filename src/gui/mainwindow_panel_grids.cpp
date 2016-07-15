@@ -60,7 +60,8 @@ void AtenWindow::updateGridsPanel(Model* sourceModel)
 	updateGridInformation(currentGrid);
 
 	ui.GridsManageOpenButton->setEnabled(aten_.pluginStore().nFilePlugins(PluginTypes::GridFilePlugin, PluginTypes::ImportPlugin) > 0);
-	ui.GridsManageRemoveButton->setEnabled(ui.GridsList->currentRow() != -1);
+	ui.GridsManageRemoveButton->setEnabled(currentGrid);
+	ui.GridsTransformTranslateButton->setEnabled(currentGrid);
 
 	Messenger::exit("AtenWindow::updateGridPanel");
 }
