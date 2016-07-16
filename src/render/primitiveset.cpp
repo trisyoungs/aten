@@ -313,7 +313,7 @@ void PrimitiveSet::recreatePrimitives()
 	nSlices = std::max(3, (int) (currentQuality_*1.5));
 	
 	// Atom Styles (Prefs::LineStyle, Prefs::TubeStyle, and Prefs::SphereStyle)
-	atom_.initialise(GL_TRIANGLES, false);
+	atom_.initialise(GL_TRIANGLE_STRIP, false);
 	atom_.plotSphere(1.0, nStacks, nSlices);
 	selectedAtom_.initialise(GL_LINES, false);
 	selectedAtom_.plotLineSphere(selScale, nStacks, nSlices);
@@ -420,7 +420,7 @@ void PrimitiveSet::recreatePrimitives()
 	originCube_.plotCube(1.0, 2, 0.0, 0.0, 0.0);
 	Messenger::incrementTaskProgress(task);
 
-	sphere_.initialise(GL_TRIANGLES, false);
+	sphere_.initialise(GL_TRIANGLE_STRIP, false);
 	sphere_.plotSphere(1.0, nStacks, nSlices);
 	Messenger::incrementTaskProgress(task);
 
@@ -465,7 +465,7 @@ void PrimitiveSet::recreatePrimitives()
 	cellAxes_.plotCylinder(0.0f, 0.0f, 0.65f, 0.0f, 0.0f, 0.35f, 0.2f, 0.0f, nStacks, nSlices, true, false, true, Vec4<GLfloat>(0.0f, 0.0f, 1.0f, 1.0f));
 	Messenger::incrementTaskProgress(task);
 
-	rotationGlobe_.initialise(GL_TRIANGLES, true);
+	rotationGlobe_.initialise(GL_TRIANGLE_STRIP, true);
 	rotationGlobe_.plotSphere(0.75, 8, 24, true, Vec4<GLfloat>(1.0f, 1.0f, 1.0f, 0.6f));
 	Messenger::incrementTaskProgress(task);
 

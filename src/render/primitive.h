@@ -62,8 +62,6 @@ class Primitive : public ListItem<Primitive>
 	Array<GLuint> indexData_;
 	// GL primitive type (GL_TRIANGLES, GL_LINES etc.)
 	GLenum type_;
-	// Number of vertices per primitive type
-	int verticesPerType_;
 	// Number of data points per vertex
 	int dataPerVertex_;
 	// Whether vertex data array also contains colour information

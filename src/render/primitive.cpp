@@ -57,10 +57,6 @@ void Primitive::initialise(GLenum type, bool colourData)
 
 	// Set data per vertex based on the primitive type, and whether we have individual colour data or not
 	dataPerVertex_ = (colouredVertexData_ ? 10 : 6);
-	if (type_ == GL_TRIANGLES) verticesPerType_ = 3;
-	else if ((type_ == GL_LINES) || (type_ == GL_LINE_LOOP) || (type_ == GL_LINE_STRIP)) verticesPerType_ = 2;
-	else if (type_ == GL_POINTS) verticesPerType_ = 1;
-	else printf("Warning - Invalid GLenum type given to VertexChunk::initialise (%i)\n", type_);
 
 	forgetAll();
 }
@@ -480,66 +476,32 @@ void Primitive::line(Vec3<double> v1, Vec3<double> v2, Vec4<GLfloat> colour)
 // Create vertices of sphere with specified radius and quality
 void Primitive::plotSphere(double radius, int nStacks, int nSlices, bool colourData, Vec4<GLfloat> colour)
 {
-	int i, j, count;
-	double stack0, stack1, z0, zr0, z1, zr1, slice0, slice1, x0, y0, x1, y1;
-	
-	count = 0;
-	for (i = 1; i <= nStacks; ++i)
+	double stack, z, zr, slice, x, y;
+
+	int index = -1;
+	for (int i = 0; i <= nStacks; ++i)
 	{
-		stack0 = PI * (-0.5 + (double) (i-1) / nStacks );
-		z0  = sin(stack0);
-		zr0 = cos(stack0);
-		
-		stack1 = PI * (-0.5 + (double) i / nStacks );
-		z1 = sin(stack1);
-		zr1 = cos(stack1);
-		
-		for (j = 1; j <= nSlices; ++j)
+		stack = PI * (-0.5 + (double) i / nStacks );
+		z  = sin(stack);
+		zr = cos(stack);
+
+		for (int j = 0; j < nSlices; ++j)
 		{
-			slice0 = 2 * PI * (double) (j-1) / nSlices;
-			x0 = cos(slice0);
-			y0 = sin(slice0);
-			
-			slice1 = 2 * PI * (double) j / nSlices;
-			x1 = cos(slice1);
-			y1 = sin(slice1);
-			
-			// First triangle - {x0,y0,z0},{x0,y0,z1},{x1,y1,z0}
-			// N.B Don't plot if i == 1, to avoid overlapping with subsequent vertices in this pass
-			if (i > 1)
-			{
-				if (colourData)
-				{
-					defineVertex(x0 * zr0 * radius, y0 * zr0 * radius, z0 * radius, x0 * zr0, y0 * zr0, z0, colour);
-					defineVertex(x0 * zr1 * radius, y0 * zr1 * radius, z1 * radius, x0 * zr1, y0 * zr1, z1, colour);
-					defineVertex(x1 * zr0 * radius, y1 * zr0 * radius, z0 * radius, x1 * zr0, y1 * zr0, z0, colour);
-				}
-				else
-				{
-					defineVertex(x0 * zr0 * radius, y0 * zr0 * radius, z0 * radius, x0 * zr0, y0 * zr0, z0);
-					defineVertex(x0 * zr1 * radius, y0 * zr1 * radius, z1 * radius, x0 * zr1, y0 * zr1, z1);
-					defineVertex(x1 * zr0 * radius, y1 * zr0 * radius, z0 * radius, x1 * zr0, y1 * zr0, z0);
-				}
-			}
-			
-			// Second triangle - {x0,y0,z0},{x0,y0,z1},{x1,y1,z0}
-			// N.B. Don't plot if i == nstacks, to avoid overlapping with previous vertices in this pass
-			if (i < nStacks )
-			{
-				if (colourData)
-				{
-					defineVertex(x0 * zr1 * radius, y0 * zr1 * radius, z1 * radius, x0 * zr1, y0 * zr1, z1, colour);
-					defineVertex(x1 * zr0 * radius, y1 * zr0 * radius, z0 * radius, x1 * zr0, y1 * zr0, z0, colour);
-					defineVertex(x1 * zr1 * radius, y1 * zr1 * radius, z1 * radius, x1 * zr1, y1 * zr1, z1, colour);
-				}
-				else
-				{
-					defineVertex(x0 * zr1 * radius, y0 * zr1 * radius, z1 * radius, x0 * zr1, y0 * zr1, z1);
-					defineVertex(x1 * zr0 * radius, y1 * zr0 * radius, z0 * radius, x1 * zr0, y1 * zr0, z0);
-					defineVertex(x1 * zr1 * radius, y1 * zr1 * radius, z1 * radius, x1 * zr1, y1 * zr1, z1);
-				}
-			}
+			slice = 2 * PI * (double) j / nSlices;
+			x = cos(slice);
+			y = sin(slice);
+
+			// Plot vertex and add index information if relevant
+			if (colourData) defineVertex(x * zr * radius, y * zr * radius, z * radius, x * zr, y * zr, z, colour);
+			else defineVertex(x * zr * radius, y * zr * radius, z * radius, x * zr, y * zr, z);
+			++index;
+
+			if (i > 0) defineIndices(index-nSlices, index);
 		}
+
+		// Finalise current slice and add degenerate triangles ready for next slice
+		if (i > 0) defineIndices((index-nSlices*2)+1, (index-nSlices)+1);
+		if (i < nStacks) defineIndices((index-nSlices)+1, index+1);
 	}
 }
 
@@ -1080,7 +1042,8 @@ void Primitive::sendVBOWithIndices()
 // Draw primitive (as VBO, with indices)
 void Primitive::sendVBO()
 {
-	glDrawArrays(type_, 0, nDefinedVertices_);
+	if (indexData_.nItems() != 0) glDrawElements(type_, indexData_.nItems(), GL_UNSIGNED_INT, 0);
+	else glDrawArrays(type_, 0, nDefinedVertices_);
 }
 
 // Finalise after GL rendering
@@ -1144,7 +1107,7 @@ void Primitive::sendToGL(const QOpenGLContext* context)
 			glDisableClientState(GL_COLOR_ARRAY);
 			if (indexData_.nItems() != 0) glDisableClientState(GL_INDEX_ARRAY);
 		}
-		else if (PrimitiveInstance::instanceType() == PrimitiveInstance::VBOInstance)
+		else if (PrimitiveInstance::instanceType() == PrimitiveInstance::ListInstance)
 		{
 			if (pi->listObject() != 0) glCallList(pi->listObject());
 		}

@@ -116,6 +116,7 @@ bool Commands::function_SpeedTest(CommandNode* c, Bundle& obj, ReturnValue& rv)
 			Messenger::print("100 render average = %6.1f fps", 1000.0 / msec);
 		}
 		obj.rs()->rotateView(5.0,0.0);
+		aten_.atenWindow()->ui.MainView->update();
 	}
 	msec = total.elapsed();
 	Messenger::print("Performed %i renders over %8.2f seconds (%8.2f/sec).", nrenders, msec/1000.0, nrenders/(msec/1000.0));
