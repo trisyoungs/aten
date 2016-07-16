@@ -90,3 +90,43 @@ target_include_directories(dlp4 PRIVATE
   ${Qt5Gui_INCLUDE_DIRS}
 )
 
+# -------------
+# DL_POLY FIELD
+# -------------
+set(field_MOC_HDRS
+  field.hui
+)
+QT5_WRAP_CPP(field_MOC_SRCS ${field_MOC_HDRS} OPTIONS -I${PROJECT_SOURCE_DIR}/src)
+
+#SET(field_UIS
+#)
+#QT5_WRAP_UI(field_UIS_H ${field_UIS})
+
+add_library(field MODULE
+  field_funcs.cpp
+  common.cpp
+  ${field_MOC_SRCS}
+#  ${field_UIS_H}
+)
+set_target_properties(field PROPERTIES
+   LIBRARY_OUTPUT_DIRECTORY ${Aten_BINARY_DIR}/data/plugins
+   COMPILE_DEFINITIONS "QT_PLUGIN"
+   PREFIX ""
+)
+
+# Install Targets
+if(UNIX AND NOT APPLE)
+install(TARGETS field
+    RUNTIME DESTINATION ${CMAKE_INSTALL_LIBDIR}/aten/plugins COMPONENT RuntimePlugins
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}/aten/plugins COMPONENT RuntimePlugins
+)
+endif(UNIX AND NOT APPLE)
+
+# Includes
+target_include_directories(field PRIVATE
+  ${PROJECT_SOURCE_DIR}/src
+  ${PROJECT_BINARY_DIR}/src
+  ${Qt5Core_INCLUDE_DIRS}
+  ${Qt5Gui_INCLUDE_DIRS}
+)
+
