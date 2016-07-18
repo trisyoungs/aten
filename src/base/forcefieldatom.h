@@ -113,6 +113,10 @@ class ForcefieldAtom : public ListItem<ForcefieldAtom>
 	void setParameter(int i, double d);
 	// Return parameter data specified
 	double parameter(int i) const;
+	// Return parameter data specified, converted into specified units (if it is an energetic parameter)
+	double convertedParameter(int i, Prefs::EnergyUnit units) const;
+	// Return parameter data specified, combined with stored rule set, and converted into specified units (if it is an energetic parameter)
+	double combinedAndConvertedParameter(int i, ForcefieldAtom* other, Prefs::EnergyUnit units) const;
 	// Returns parameter array pointer
 	double* parameters();
 	// Set the element that the type relates to, or -1 for custom element name / mass (for, e.g., UA forcefields)

@@ -283,7 +283,6 @@ class Commands
 		GenerateBond,
 		GenerateTorsion,
 		GenerateVdw,
-		GetCombinationRule,
 		GetFF,
 		InterDef,
 		LoadFF,
@@ -293,7 +292,6 @@ class Commands
 		PrintType,
 		RecreateExpression,
 		SaveExpression,
-		SetCombinationRule,
 		TorsionDef,
 		TypeDef,
 		TypeModel,
@@ -738,7 +736,6 @@ class Commands
 	bool function_GenerateBond(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_GenerateTorsion(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_GenerateVdw(CommandNode* c, Bundle& obj, ReturnValue& rv);
-	bool function_GetCombinationRule(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_GetFF(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_InterDef(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_LoadFF(CommandNode* c, Bundle& obj, ReturnValue& rv);
@@ -748,7 +745,6 @@ class Commands
 	bool function_PrintType(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_RecreateExpression(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_SaveExpression(CommandNode* c, Bundle& obj, ReturnValue& rv);
-	bool function_SetCombinationRule(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_TorsionDef(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_TypeDef(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_TypeModel(CommandNode* c, Bundle& obj, ReturnValue& rv);

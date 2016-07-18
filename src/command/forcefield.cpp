@@ -120,7 +120,7 @@ bool Commands::function_CreateExpression(CommandNode* c, Bundle& obj, ReturnValu
 	if (c->hasArg(0)) vdwOnly = c->argb(0) ? Choice::Yes : Choice::No;
 	if (c->hasArg(1)) allowDummy = c->argb(1) ? Choice::Yes : Choice::No;
 	if (c->hasArg(2)) assignCharges = c->argb(2) ? Choice::Yes : Choice::No;
-	bool result = obj.m->createExpression(vdwOnly, allowDummy, assignCharges, aten_.currentForcefield(), aten_.combinationRules());
+	bool result = obj.m->createExpression(vdwOnly, allowDummy, assignCharges, aten_.currentForcefield());
 	rv.set(result);
 	return true;
 }
@@ -438,21 +438,6 @@ bool Commands::function_GenerateVdw(CommandNode* c, Bundle& obj, ReturnValue& rv
 	return true;
 }
 
-// Get combination rule in use for VDW parameter
-bool Commands::function_GetCombinationRule(CommandNode* c, Bundle& obj, ReturnValue& rv)
-{
-	rv.reset();
-	// First, get functional form
-	VdwFunctions::VdwFunction form = VdwFunctions::vdwFunction(c->argc(0), true);
-	if (form == VdwFunctions::nVdwFunctions) return false;
-	// Next, get functional form parameter
-	int param = VdwFunctions::vdwParameter(form, c->argc(1), true);
-	if (param == VdwFunctions::functionData[form].nParameters) return false;
-	// Everything OK, so return combination rule in use
-	rv.set(CombinationRules::combinationRule( VdwFunctions::functionData[form].combinationRules[param] ));
-	return true;
-}
-
 // Retrieve forcefield
 bool Commands::function_GetFF(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
@@ -589,7 +574,7 @@ bool Commands::function_RecreateExpression(CommandNode* c, Bundle& obj, ReturnVa
 	if (c->hasArg(0)) vdwOnly = c->argb(0) ? Choice::Yes : Choice::No;
 	if (c->hasArg(1)) allowDummy = c->argb(1) ? Choice::Yes : Choice::No;
 	if (c->hasArg(2)) assignCharges = c->argb(2) ? Choice::Yes : Choice::No;
-	if (!obj.m->createExpression(vdwOnly, allowDummy, assignCharges, aten_.currentForcefield(), aten_.combinationRules())) return false;
+	if (!obj.m->createExpression(vdwOnly, allowDummy, assignCharges, aten_.currentForcefield())) return false;
 	rv.reset();
 	return true;
 }
@@ -623,28 +608,6 @@ bool Commands::function_SaveExpression(CommandNode* c, Bundle& obj, ReturnValue&
 	if (result) Messenger::print("Expression for model '%s' saved to file '%s' (%s)", qPrintable(obj.rs()->name()), qPrintable(c->argc(1)), qPrintable(plugin->name()));
 	else Messenger::print("Failed to save expression for model '%s'.", qPrintable(obj.rs()->name()));
 	return result;
-}
-
-// Set combination rule in use for VDW parameter
-bool Commands::function_SetCombinationRule(CommandNode* c, Bundle& obj, ReturnValue& rv)
-{
-	rv.reset();
-	
-	// First, get functional form
-	VdwFunctions::VdwFunction form = VdwFunctions::vdwFunction(c->argc(0), true);
-	if (form == VdwFunctions::nVdwFunctions) return false;
-	
-	// Next, get functional form parameter
-	int param = VdwFunctions::vdwParameter(form, c->argc(1), true);
-	if (param == VdwFunctions::functionData[form].nParameters) return false;
-	
-	// Finally, search combination rule
-	CombinationRules::CombinationRule cr = CombinationRules::combinationRule(c->argc(2), true);
-	if (cr == CombinationRules::nCombinationRules) return false;
-	
-	// Everything OK, so set data
-	VdwFunctions::functionData[form].combinationRules[param] = cr;
-	return true;
 }
 
 // Add a new torsion definition to the current forcefield

@@ -37,7 +37,7 @@ bool Commands::function_CGMinimise(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 
 	// Ensure we have a valid expression
-	if (!obj.rs()->createExpression(Choice(), Choice(), Choice(), aten_.currentForcefield(), aten_.combinationRules()))
+	if (!obj.rs()->createExpression(Choice(), Choice(), Choice(), aten_.currentForcefield()))
 	{
 		Messenger::print("Failed to create expression - minimisation can't be performed.");
 		return false;
@@ -222,7 +222,7 @@ bool Commands::function_SDMinimise(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	if (obj.notifyNull(Bundle::ModelPointer)) return false;
 
 	// Ensure we have a valid expression
-	if (!obj.rs()->createExpression(Choice(), Choice(), Choice(), aten_.currentForcefield(), aten_.combinationRules()))
+	if (!obj.rs()->createExpression(Choice(), Choice(), Choice(), aten_.currentForcefield()))
 	{
 		Messenger::print("Failed to create expression - minimisation can't be performed.");
 		return false;

@@ -24,6 +24,7 @@
 
 #include "ff/forms.h"
 #include "math/doubleexp.h"
+#include "math/matrix.h"
 #include "base/elementmap.h"
 #include "base/colourscale.h"
 #include "base/choice.h"
@@ -656,8 +657,6 @@ class Prefs
 	double vdwCutoff_, elecCutoff_;
 	// Whether the automatic Ewald setup is valid
 	bool validEwaldAuto_;
-	// Combination rule equations
-	QString combinationRules_[CombinationRules::nCombinationRules];
 	// Grid size for PartitioningSchemes
 	Vec3<int> partitionGridSize_;
 
@@ -702,12 +701,6 @@ class Prefs
 	void setElecCutoff(double d);
 	// Return the electrostatic cutoff radius
 	double elecCutoff() const;
-	// Set combination rule equation
-	void setCombinationRule(CombinationRules::CombinationRule cr, QString equation);
-	// Return combination rule equation
-	QString combinationRule(CombinationRules::CombinationRule cr) const;
-	// Return array of combination rule equations
-	QString* combinationRules();
 	// Set grid size for PartitioningSchemes
 	void setPartitionGridSize(Vec3<int> newSize);
 	// Set grid size for PartitioningSchemes (element)

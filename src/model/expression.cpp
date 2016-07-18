@@ -141,7 +141,7 @@ void Model::setForcefield(Forcefield* newff)
 }
 
 // Create full forcefield expression for model
-bool Model::createExpression(Choice vdwOnly, Choice allowDummy, Choice assignCharges, Forcefield* defaultForcefield, CombinationRules& combine)
+bool Model::createExpression(Choice vdwOnly, Choice allowDummy, Choice assignCharges, Forcefield* defaultForcefield)
 {
 	// This routine should be called before any operation (or series of operations) requiring calculation of energy / forces. Here, we check the validity / existence of an energy expression for the specified model, and create / recreate if necessary.
 	Messenger::enter("Model::createExpression");
@@ -292,7 +292,7 @@ bool Model::createExpression(Choice vdwOnly, Choice allowDummy, Choice assignCha
 			crflags = VdwFunctions::functionData[ffa->vdwForm()].combinationRules;
 			for (i=0; i<VdwFunctions::functionData[ffa->vdwForm()].nParameters; ++i)
 			{
-				pp->setData(i, combine.combine( crflags[i], ffa->parameter(i), ffb->parameter(i) ) );
+				pp->setData(i, CombinationRules::combine( crflags[i], ffa->parameter(i), ffb->parameter(i) ) );
 // 				printf("combined Parameter is %f, original = %f,%f\n", CombinationRules::combine( crflags[i], ffa->parameter(i), ffb->parameter(i)), ffa->parameter(i), ffb->parameter(i));
 			}
 

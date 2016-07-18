@@ -622,7 +622,7 @@ class Model : public ListItem<Model>
 	// Return the unique type specified
 	RefListItem<ForcefieldAtom,int>* uniqueForcefieldType(int i);
 	// Create total energy function shell for the model
-	bool createExpression(Choice vdwOnly, Choice allowDummy, Choice assignCharges, Forcefield* defaultForcefield, CombinationRules& combine);
+	bool createExpression(Choice vdwOnly, Choice allowDummy, Choice assignCharges, Forcefield* defaultForcefield);
 	// Return whether the expression is valid
 	bool isExpressionValid() const;
 	// Clear the current expression

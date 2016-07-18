@@ -327,11 +327,6 @@ Prefs::Prefs()
 	vdwCutoff_ = 50.0;
 	elecCutoff_ = 50.0;
 	validEwaldAuto_ = false;
-	combinationRules_[CombinationRules::ArithmeticRule] = "c = (a+b)*0.5";
-	combinationRules_[CombinationRules::GeometricRule] = "c = sqrt(a*b)";
-	combinationRules_[CombinationRules::CustomRule1] = "c = a+b";
-	combinationRules_[CombinationRules::CustomRule2] = "c = a+b";
-	combinationRules_[CombinationRules::CustomRule3] = "c = a+b";
 	partitionGridSize_.set(50,50,50);
 
 	// Rendering Options
@@ -1356,24 +1351,6 @@ void Prefs::setElecCutoff(double d)
 double Prefs::elecCutoff() const
 {
 	return elecCutoff_;
-}
-
-// Set combination rule equation
-void Prefs::setCombinationRule(CombinationRules::CombinationRule cr, QString rule)
-{
-	combinationRules_[cr] = rule;
-}
-
-// Return combination rule equation
-QString Prefs::combinationRule(CombinationRules::CombinationRule cr) const
-{
-	return combinationRules_[cr];
-}
-
-// Return array of combination rule equations
-QString* Prefs::combinationRules()
-{
-	return combinationRules_;
 }
 
 // Set grid size for PartitioningSchemes

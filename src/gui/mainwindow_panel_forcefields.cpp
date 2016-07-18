@@ -194,7 +194,7 @@ void AtenWindow::on_ForcefieldsExpressionDescribeButton_clicked(bool checked)
 	Model* currentModel = aten_.currentModelOrFrame();
 	if (!currentModel) return;
 
-	currentModel->createExpression(Choice::Default, Choice::Default, ui.ForcefieldsExpressionChargesButton->isChecked() ? Choice::Yes : Choice::No, aten_.currentForcefield(), aten_.combinationRules());
+	currentModel->createExpression(Choice::Default, Choice::Default, ui.ForcefieldsExpressionChargesButton->isChecked() ? Choice::Yes : Choice::No, aten_.currentForcefield());
 
 	updateWidgets();
 }

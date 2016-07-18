@@ -22,31 +22,26 @@
 #ifndef ATEN_COMBINE_H
 #define ATEN_COMBINE_H
 
-#include "parser/program.h"
 #include "base/namespace.h"
 
 ATEN_BEGIN_NAMESPACE
 
-// Combination Rule Data
+// Combination Rule 
 class CombinationRules
 {
 	public:
 	// Combination rules
-	enum CombinationRule { ArithmeticRule, GeometricRule, CustomRule1, CustomRule2, CustomRule3, nCombinationRules };
-	static CombinationRule combinationRule(QString s, bool reportError = false);
+	enum CombinationRule { ArithmeticRule, GeometricRule, nCombinationRules };
 	static const char* combinationRule(CombinationRule cr);
 	static const char* combinationRuleName(CombinationRule cr);
+
 
 	/*
 	 * Functions
 	 */
 	public:
-	// Regenerate combination rule function trees
-	bool regenerateEquations();
 	// Execute combination rule with parameters specified
-	double combine(CombinationRule cr, double a, double b);
-	// Function trees for combination rule equations
-	Program combinationRules_;
+	static double combine(CombinationRule cr, double a, double b);
 };
 
 ATEN_END_NAMESPACE

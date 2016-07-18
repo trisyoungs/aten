@@ -38,6 +38,7 @@
 #include "gui/openmodel.h"
 #include "gui/opentrajectory.h"
 #include "gui/progress.h"
+#include "gui/saveexpression.h"
 #include "gui/savemodel.h"
 #include "gui/zmatrix.h"
 #include "templates/reflist.h"
@@ -135,10 +136,14 @@ class AtenWindow : public QMainWindow
 	AtenOpenTrajectory openTrajectoryDialog_;
 	// Model export dialog
 	AtenSaveModel saveModelDialog_;
+	// Expression export dialog
+	AtenSaveExpression saveExpressionDialog_;
 
 	public:
 	// Return model export dialog
 	AtenSaveModel& saveModelDialog();
+	// Return expression export dialog
+	AtenSaveExpression& saveExpressionDialog();
 
 
 	/*

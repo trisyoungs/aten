@@ -95,6 +95,7 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportFilmD
 	openGridDialog_(this, aten_.workDir(), aten_.pluginStore().filePlugins(PluginTypes::GridFilePlugin)),
 	openModelDialog_(this, aten_.workDir(), aten_.pluginStore().filePlugins(PluginTypes::ModelFilePlugin)),
 	openTrajectoryDialog_(this, aten_.workDir(), aten_.pluginStore().filePlugins(PluginTypes::TrajectoryFilePlugin)),
+	saveExpressionDialog_(this, aten_.workDir(), aten_.pluginStore().filePlugins(PluginTypes::ExpressionFilePlugin)),
 	saveModelDialog_(this, aten_.workDir(), aten_.pluginStore().filePlugins(PluginTypes::ModelFilePlugin))
 {
 	Messenger::enter("AtenWindow::AtenWindow()");
@@ -505,6 +506,12 @@ void AtenWindow::resizeEvent(QResizeEvent* event)
 AtenSaveModel& AtenWindow::saveModelDialog()
 {
 	return saveModelDialog_;
+}
+
+// Return expression export dialog
+AtenSaveExpression& AtenWindow::saveExpressionDialog()
+{
+	return saveExpressionDialog_;
 }
 
 /*

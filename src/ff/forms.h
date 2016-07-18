@@ -25,6 +25,7 @@
 #include "math/constants.h"
 #include "base/namespace.h"
 #include "ff/combine.h"
+#include <QString>
 
 ATEN_BEGIN_NAMESPACE
 

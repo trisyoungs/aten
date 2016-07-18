@@ -174,6 +174,33 @@ double ForcefieldAtom::parameter(int i) const
 	return 0.0;
 }
 
+// Return parameter data specified, converted into specified units (if it is an energetic parameter)
+double ForcefieldAtom::convertedParameter(int i, Prefs::EnergyUnit units) const
+{
+	if ((i < 0) || (i >= MAXFFPARAMDATA))
+	{
+		printf("Data Id in ForcefieldAtom::convertedParameter (%i) is out of bounds.\n", i);
+		return 0.0;
+	}
+	
+	if (VdwFunctions::functionData[vdwForm_].isEnergyParameter[i]) return prefs.convertEnergyTo(params_[i], units);
+	return params_[i];
+}
+
+// Return parameter data specified, combined with stored rule set, and converted into specified units (if it is an energetic parameter)
+double ForcefieldAtom::combinedAndConvertedParameter(int i, ForcefieldAtom* other, Prefs::EnergyUnit units) const
+{
+	if ((i < 0) || (i >= MAXFFPARAMDATA))
+	{
+		printf("Data Id in ForcefieldAtom::combinedAndConvertedParameter (%i) is out of bounds.\n", i);
+		return 0.0;
+	}
+	
+	double combined = CombinationRules::combine(VdwFunctions::functionData[vdwForm_].combinationRules[i], params_[i], other->params_[i]);
+	if (VdwFunctions::functionData[vdwForm_].isEnergyParameter[i]) return prefs.convertEnergyTo(combined, units);
+	return combined;
+}
+
 // Returns parameter array pointer
 double* ForcefieldAtom::parameters()
 {

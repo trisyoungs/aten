@@ -127,7 +127,7 @@ bool DLPExpressionPlugin::exportData()
 		int nConstraints = 0;
 
 		// Write pattern name and number of molecules
-		if (!fileParser_.writeLine(p.name)) return false;
+		if (!fileParser_.writeLine(p->name())) return false;
 		if (!fileParser_.writeLineF("nummols %i", p->nMolecules())) return false;
 
 		// Write atoms - just loop over those in the first molecule of the pattern
@@ -150,129 +150,141 @@ bool DLPExpressionPlugin::exportData()
 		// determine the number of constraints and subtract this from the number of actual bonds
 		int nc = 0;
 		for (PatternBound* pb = p->bonds(); pb != NULL; pb = pb->next) if (pb->data()->bondForm() == BondFunctions::Constraint) ++nc;
-		if (!fileParser_.writeLineF("bonds ", p->nBonds() - nc)) return false;
+		if (!fileParser_.writeLineF("bonds %i", p->nBonds() - nc)) return false;
 		for (PatternBound* pb = p->bonds(); pb != NULL; pb = pb->next)
 		{
 			// Convert functional form to be recognised by DL_POLY
 			switch (pb->data()->bondForm())
 			{
 				case (BondFunctions::Harmonic):
-					if (!fileParser_.writeLineF("harm     %5i %5i %10.4f %10.4f", pb->atomId(0)+1, pb->atomId(1)+1, Prefs::convertEnergyTo(pb->data(BondFunctions::HarmonicK), energyUnit), pb->data(BondFunctions::HarmonicEq))) return false;
+					if (!fileParser_.writeLineF("harm     %5i %5i %10.4f %10.4f", pb->atomId(0)+1, pb->atomId(1)+1, pb->data()->convertedParameter(BondFunctions::HarmonicK, energyUnit), pb->data()->parameter(BondFunctions::HarmonicEq))) return false;
 					break;
 				case (BondFunctions::Morse):
-					if (!fileParser_.writeLineF("morse    %5i %5i %10.4f %10.4f %10.4f", pb->atomId(0)+1, pb->atomId(1)+1, Prefs::convertEnergyTo(pb->data(BondFunctions::MorseD), energyUnit), pb->data(BondFunctions::MorseEq), pb->data(BondFunctions::MorseK))) return false;
+					if (!fileParser_.writeLineF("morse    %5i %5i %10.4f %10.4f %10.4f", pb->atomId(0)+1, pb->atomId(1)+1, pb->data()->convertedParameter(BondFunctions::MorseD, energyUnit), pb->data()->parameter(BondFunctions::MorseEq), pb->data()->parameter(BondFunctions::MorseK))) return false;
 					break;
 				case (BondFunctions::Constraint):
 					++nConstraints;
 					break;
 				default:
-					Messenger::warn("Functional form of bond term (%s) not convertible to DL_POLY.", BondFunctions::bondFunction(pb->data()->bondForm()));
-					if (!fileParser_.writeLineF("X%s  %5i %5i %10.4f %10.4f %10.4f %10.4f", BondFunctions::bondFunction(pb->data()->bondForm()), pb->atomId(0)+1, pb->atomId(1)+1, pb->data(0), pb->data(1), pb->data(2), pb->data(3))) return false;
+					Messenger::warn("Functional form of bond term (%s) not convertible to DL_POLY.", BondFunctions::functionData[pb->data()->bondForm()].name);
+					if (!fileParser_.writeLineF("X%s  %5i %5i %10.4f %10.4f %10.4f %10.4f", BondFunctions::functionData[pb->data()->bondForm()].name, pb->atomId(0)+1, pb->atomId(1)+1, pb->data()->convertedParameter(0, energyUnit), pb->data()->convertedParameter(1, energyUnit), pb->data()->convertedParameter(2, energyUnit), pb->data()->convertedParameter(3, energyUnit))) return false;
 			}
 		}
 
 		// Angles in pattern
 		nc = 0;
 		for (PatternBound* pb = p->angles(); pb != NULL; pb = pb->next) if (pb->data()->angleForm() == AngleFunctions::BondConstraint) ++nc;
-		if (!fileParser_.writeLineF("angles ", p->nAngles() - nc)) return false;
+		if (!fileParser_.writeLineF("angles %i", p->nAngles() - nc)) return false;
 		for (PatternBound* pb = p->angles(); pb != NULL; pb = pb->next)
 		{
 			// Convert functional form to be recognised by DL_POLY
 			switch (pb->data()->angleForm())
 			{
 				case (AngleFunctions::Harmonic):
-					if (!fileParser_.writeLineF("harm     %5i %5i %5i %10.4f %10.4f", pb->atomId(0)+1, pb->atomId(1)+1, pb->atomId(2)+1, Prefs::convertEnergyTo(pb->data(AngleFunctions::HarmonicK), energyUnit), pb->data(AngleFunctions::HarmonicEq))) return false;
+					if (!fileParser_.writeLineF("harm     %5i %5i %5i %10.4f %10.4f", pb->atomId(0)+1, pb->atomId(1)+1, pb->atomId(2)+1, pb->data()->convertedParameter(AngleFunctions::HarmonicK, energyUnit), pb->data()->parameter(AngleFunctions::HarmonicEq))) return false;
 					break;
 				case (AngleFunctions::Cosine):
-					if (!fileParser_.writeLineF("cos      %5i %5i %5i %10.4f %10.4f %10.4f", pb->atomId(0)+1, pb->atomId(1)+1, pb->atomId(2)+1, Prefs::convertEnergyTo(pb->data(AngleFunctions::CosineK), energyUnit), pb->data(AngleFunctions::CosineEq), pb->data(AngleFunctions::CosineN))) return false;
+					if (!fileParser_.writeLineF("cos      %5i %5i %5i %10.4f %10.4f %10.4f", pb->atomId(0)+1, pb->atomId(1)+1, pb->atomId(2)+1, pb->data()->convertedParameter(AngleFunctions::CosineK, energyUnit), pb->data()->parameter(AngleFunctions::CosineEq), pb->data()->parameter(AngleFunctions::CosineN))) return false;
 					break;
 				case (AngleFunctions::HarmonicCosine):
-					if (!fileParser_.writeLineF("hcos     %5i %5i %5i %10.4f %10.4f", pb->atomId(0)+1, pb->atomId(1)+1, pb->atomId(2)+1, Prefs::convertEnergyTo(pb->data(AngleFunctions::HarmonicCosineK), energyUnit), pb->data(AngleFunctions::HarmonicCosineEq))) return false;
+					if (!fileParser_.writeLineF("hcos     %5i %5i %5i %10.4f %10.4f", pb->atomId(0)+1, pb->atomId(1)+1, pb->atomId(2)+1, pb->data()->convertedParameter(AngleFunctions::HarmonicCosineK, energyUnit), pb->data()->parameter(AngleFunctions::HarmonicCosineEq))) return false;
 					break;
 				case (AngleFunctions::BondConstraint):
 					++nConstraints;
 					break;
 				default:
-					Messenger::warn("Functional form of angle term (%s) not convertible to DL_POLY.", AngleFunctions::angleFunction(pb->data()->angleForm()));
-					if (!fileParser_.writeLineF("X%s  %5i %5i %5i %10.4f %10.4f %10.4f %10.4f", AngleFunctions::angleFunction(pb->data()->angleForm()), pb->atomId(0)+1, pb->atomId(1)+1, pb->atomId(2)+1, pb->data(0), pb->data(1), pb->data(2), pb->data(3))) return false;
+					Messenger::warn("Functional form of angle term (%s) not convertible to DL_POLY.", AngleFunctions::functionData[pb->data()->angleForm()].name);
+					if (!fileParser_.writeLineF("X%s  %5i %5i %5i %10.4f %10.4f %10.4f %10.4f", AngleFunctions::functionData[pb->data()->angleForm()].name, pb->atomId(0)+1, pb->atomId(1)+1, pb->atomId(2)+1, pb->data()->convertedParameter(0, energyUnit), pb->data()->convertedParameter(1, energyUnit), pb->data()->convertedParameter(2, energyUnit), pb->data()->convertedParameter(3, energyUnit))) return false;
 			}
 		}
 
 		// Torsions in pattern
-		if (!fileParser_.writeLineF("dihedrals ", p->nTorsions())) return false;
+		if (!fileParser_.writeLineF("dihedrals %i", p->nTorsions())) return false;
 		for (PatternBound* pb = p->torsions(); pb != NULL; pb = pb->next)
 		{
 			// Convert functional form to be recognised by DL_POLY
 			switch (pb->data()->torsionForm())
 			{
 				case (TorsionFunctions::Cosine):
-					if (!fileParser_.writeLineF("cos      %5i %5i %5i %5i %10.4f %10.4f %10.4f %10.4f %10.4f", pb->atomId(0)+1, pb->atomId(1)+1, pb->atomId(2)+1, pb->atomId(3)+1, Prefs::convertEnergyFrom(pb->data(TorsionFunctions::CosineK), energyUnit), pb->data(TorsionFunctions::CosineEq), pb->data(TorsionFunctions::CosineN), pb->data()->elecScale(), pb->data()->vdwScale())) return false;
+					if (!fileParser_.writeLineF("cos      %5i %5i %5i %5i %10.4f %10.4f %10.4f %10.4f %10.4f", pb->atomId(0)+1, pb->atomId(1)+1, pb->atomId(2)+1, pb->atomId(3)+1, pb->data()->convertedParameter(TorsionFunctions::CosineK, energyUnit), pb->data()->parameter(TorsionFunctions::CosineEq), pb->data()->parameter(TorsionFunctions::CosineN), pb->data()->elecScale(), pb->data()->vdwScale())) return false;
 					break;
 				case (TorsionFunctions::Cos3):
-					if (!fileParser_.writeLineF("cos3     %5i %5i %5i %5i %10.4f %10.4f %10.4f %10.4f %10.4f", pb->atomId(0)+1, pb->atomId(1)+1, pb->atomId(2)+1, pb->atomId(3)+1, Prefs::convertEnergyFrom(pb->data(TorsionFunctions::Cos3K1), energyUnit), Prefs::convertEnergyFrom(pb->data(TorsionFunctions::Cos3K2), energyUnit), Prefs::convertEnergyFrom(pb->data(TorsionFunctions::Cos3K3), energyUnit), pb->data()->elecScale(), pb->data()->vdwScale())) return false;
+					if (!fileParser_.writeLineF("cos3     %5i %5i %5i %5i %10.4f %10.4f %10.4f %10.4f %10.4f", pb->atomId(0)+1, pb->atomId(1)+1, pb->atomId(2)+1, pb->atomId(3)+1, pb->data()->convertedParameter(TorsionFunctions::Cos3K1, energyUnit), pb->data()->convertedParameter(TorsionFunctions::Cos3K2, energyUnit), pb->data()->convertedParameter(TorsionFunctions::Cos3K3, energyUnit), pb->data()->elecScale(), pb->data()->vdwScale())) return false;
 					break;
 				case (TorsionFunctions::Cos3C):
-					if (!fileParser_.writeLineF("opls     %5i %5i %5i %5i %10.4f %10.4f %10.4f %10.4f %10.4f", pb->atomId(0)+1, pb->atomId(1)+1, pb->atomId(2)+1, pb->atomId(3)+1, Prefs::convertEnergyFrom(pb->data(TorsionFunctions::Cos3CK0), energyUnit), Prefs::convertEnergyFrom(pb->data(TorsionFunctions::Cos3CK1), energyUnit), Prefs::convertEnergyFrom(pb->data(TorsionFunctions::Cos3CK2), energyUnit), Prefs::convertEnergyFrom(pb->data(TorsionFunctions::Cos3CK3), energyUnit), pb->data()->elecScale())) return false;
+					if (!fileParser_.writeLineF("opls     %5i %5i %5i %5i %10.4f %10.4f %10.4f %10.4f %10.4f", pb->atomId(0)+1, pb->atomId(1)+1, pb->atomId(2)+1, pb->atomId(3)+1, pb->data()->convertedParameter(TorsionFunctions::Cos3CK0, energyUnit), pb->data()->convertedParameter(TorsionFunctions::Cos3CK1, energyUnit), pb->data()->convertedParameter(TorsionFunctions::Cos3CK2, energyUnit), pb->data()->convertedParameter(TorsionFunctions::Cos3CK3, energyUnit), pb->data()->elecScale())) return false;
 					break;
 				default:
-					Messenger::warn("Functional form of torsion term (%s) not convertible to DL_POLY.", TorsionFunctions::torsionFunction(pb->data()->torsionForm()));
-					if (!fileParser_.writeLineF("X%s  %5i %5i %5i %5i %10.4f %10.4f %10.4f %10.4f", TorsionFunctions::torsionFunction(pb->data()->torsionForm()), pb->atomId(0)+1, pb->atomId(1)+1, pb->atomId(2)+1, pb->atomId(2)+1, pb->data(0), pb->data(1), pb->data(2), pb->data(3))) return false;
+					Messenger::warn("Functional form of torsion term (%s) not convertible to DL_POLY.", TorsionFunctions::functionData[pb->data()->torsionForm()].name);
+					if (!fileParser_.writeLineF("X%s  %5i %5i %5i %5i %10.4f %10.4f %10.4f %10.4f", TorsionFunctions::functionData[pb->data()->torsionForm()].name, pb->atomId(0)+1, pb->atomId(1)+1, pb->atomId(2)+1, pb->atomId(2)+1, pb->data()->convertedParameter(0, energyUnit), pb->data()->convertedParameter(1, energyUnit), pb->data()->convertedParameter(2, energyUnit), pb->data()->elecScale(), pb->data()->vdwScale())) return false;
 			}
 		}
 
 		// Constraint terms
-		if (nconstraints > 0)
+		if (nConstraints > 0)
 		{
-			writeLine("constraints",nconstraints);
-			# ...proper bond constraints first
-			for (b=p.bonds; b; ++b)
+			if (!fileParser_.writeLineF("constraints %i", nConstraints)) return false;
+
+			// ...proper bond constraints first
+			for (PatternBound* pb = p->bonds(); pb != NULL; pb = pb->next)
 			{
-				if (b.form == "constraint") if (!fileParser_.writeLineF("    %5i %5i  %10.4f",b.id[1],b.id[2],b.data[2])) return false;
+				if (pb->data()->bondForm() == BondFunctions::Constraint) if (!fileParser_.writeLineF("    %5i %5i  %10.4f", pb->atomId(0)+1, pb->atomId(1)+1, pb->data()->parameter(BondFunctions::ConstraintEq))) return false;
 			}
-			# ...and now angles that are of type 'bondconstraint'
-			for (b=p.angles; b; ++b)
+
+			// ...and now angles that are of type 'bondconstraint'
+			for (PatternBound* pb = p->angles(); pb != NULL; pb = pb->next)
 			{
-				if (b.form == "bondconstraint") if (!fileParser_.writeLineF("    %5i %5i  %10.4f",b.id[1],b.id[3],b.data[2])) return false;
+				if (pb->data()->angleForm() == AngleFunctions::BondConstraint) if (!fileParser_.writeLineF("    %5i %5i  %10.4f", pb->atomId(0)+1, pb->atomId(2)+1, pb->data()->parameter(AngleFunctions::BondConstraintEq))) return false;
 			}
 		}
 
-		# Terminating line
-		writeLine("finish");
+		// Terminating line
+		if (!fileParser_.writeLine("finish")) return false;
 	}
 
-	# VDW Specification
-	# Get total number of pair terms to write
-	nvdw = 0;
-	for (n=1; n<=m.nFFTypes; ++n) nvdw += n;
-	writeLine("vdw",nvdw);
-	for (n=1; n<=m.nFFTypes; ++n)
+	// VDW Specification
+	// -- Get total number of pair terms to write
+	int nVdw = 0;
+	for (int n=1; n<=targetModel()->nUniqueForcefieldTypes(); ++n) nVdw += n;
+	if (!fileParser_.writeLineF("vdw %i", nVdw)) return false;
+
+	// -- Now write pair information
+	for (RefListItem<ForcefieldAtom,int>* ri = targetModel()->uniqueForcefieldTypes(); ri != NULL; ri = ri->next)
 	{
-		at1 = m.ffTypes[n];
-		for (n2=1; n2<=n; ++n2)
+		ForcefieldAtom* ffi = ri->item;
+
+		for (RefListItem<ForcefieldAtom,int>* rj = ri; rj != NULL; rj = rj->next)
 		{
-			at2 = m.ffTypes[n2];
-			# Check functional forms of each atomtype
-			if (at1.form != at2.form)
+			ForcefieldAtom* ffj = rj->item;
+
+			// Check functional forms of each atomtype
+			if (ffi->vdwForm() != ffj->vdwForm())
 			{
-				printf("Functional forms of ffTypes '%s' and '%s' differ - raw data written to output...",at1.name,at2.name); 
-				writeLineF("%-8s  %-8s   %12.6f  %12.6f  %12.6f  %12.6f  %12.6f %12.6f",at1.name,at2.name,at1.data[1],at1.data[2],at1.data[3],at1.data[4],at1.data[5],at1.data[6]);
+				Messenger::warn("Functional forms of ffTypes '%s' (%s) and '%s' (%s) differ - raw data written to FIELD file...", qPrintable(ffi->name()), VdwFunctions::functionData[ffi->vdwForm()].name, qPrintable(ffj->name()), VdwFunctions::functionData[ffj->vdwForm()].name); 
+				if (!fileParser_.writeLineF("%-8s  %-8s   %12.6f  %12.6f  %12.6f  %12.6f  %12.6f  %12.6f", qPrintable(ffi->name()), qPrintable(ffj->name()),  ffi->convertedParameter(0, energyUnit), ffi->convertedParameter(1, energyUnit), ffi->convertedParameter(2, energyUnit), ffj->convertedParameter(0, energyUnit), ffj->convertedParameter(1, energyUnit), ffj->convertedParameter(2, energyUnit))) return false;
+
+				continue;
 			}
-			else if (at1.form == "lj") if (!fileParser_.writeLineF("%-8s %-8s  lj  %12.6f  %12.6f",at1.name,at2.name,at1.combine(at2,1),at1.combine(at2,2))) return false;
-			else if (at1.form == "ljgeom") if (!fileParser_.writeLineF("%-8s %-8s  lj  %12.6f  %12.6f",at1.name,at2.name,at1.combine(at2,1),at1.combine(at2,2))) return false;
-			else if (at1.form == "buck") error("Buckingham potential not included in FIELD file export yet.");
-			else printf("Functional form of VDW term (%s) not accounted for in export filter.",at1.form);
+
+			switch (ffi->vdwForm())
+			{
+				case (VdwFunctions::Lj):
+				case (VdwFunctions::LjGeometric):
+					if (!fileParser_.writeLineF("%-8s %-8s  lj  %12.6f  %12.6f", qPrintable(ffi->name()), qPrintable(ffj->name()), ffi->combinedAndConvertedParameter(VdwFunctions::LjEpsilon, ffj, energyUnit), ffi->combinedAndConvertedParameter(VdwFunctions::LjSigma, ffj, energyUnit))) return false;
+					break;
+				case (VdwFunctions::Buckingham):
+					Messenger::warn("Buckingham potential not included in FIELD file export yet. Raw data written.");
+					break;
+				default:
+					Messenger::error("Functional form of VDW term (%s) not accounted for in FIELD plugin.", VdwFunctions::functionData[ffi->vdwForm()].name);
+			}
 		}
 	}
-	writeLine("close");
-}
 
-# Function definitions
-int elementByMass(double mass, double masstol)
-{
-	for (int n=1; 1<=aten.nElements; ++n) if (abs(mass-aten.elements[n].mass) < masstol) return n;
-	return 0;
-}
+	// Final line
+	if (!fileParser_.writeLine("close")) return false;
 
+	return true;
 }
 
 // Import next partial data chunk

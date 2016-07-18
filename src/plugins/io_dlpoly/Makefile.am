@@ -1,6 +1,6 @@
 # Set plugin installation dir and define plugin targets
 pluginexecdir = @ATEN_PLUGINLIBDIR@
-pluginexec_LTLIBRARIES = dlp2.la dlp4.la #field.la
+pluginexec_LTLIBRARIES = dlp2.la dlp4.la field.la
 
 # Rules
 .ui.lo:

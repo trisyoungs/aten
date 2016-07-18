@@ -407,8 +407,83 @@ bool Aten::importExpression(QString filename, FilePluginInterface* plugin, FileP
 }
 
 // Export expression
-bool Aten::exportExpression(Model* targetModel, QString filename, FilePluginInterface* plugin, FilePluginStandardImportOptions standardOptions, KVMap pluginOptions)
+bool Aten::exportExpression(Model* sourceModel, QString filename, FilePluginInterface* plugin, FilePluginStandardImportOptions standardOptions, KVMap pluginOptions)
 {
-	// ATEN2 TODO ENDOFFILTERS
+	Messenger::enter("Aten::exportExpression");
+
+	if (filename.isEmpty() || (plugin == NULL) || (plugin->category() != PluginTypes::ExpressionFilePlugin) || (!plugin->canExport()))
+	{
+		// Need to raise the save model dialog to get a valid name and/or plugin
+		if (atenWindow_->shown() && atenWindow_->saveExpressionDialog().execute(pluginStore_.logPoint(), filename, plugin))
+		{
+			filename = atenWindow_->saveExpressionDialog().selectedFilenames().at(0);
+
+			// Filetype to save in is determined from either the selected plugin (filter) in the dialog, or the file extension
+			if (atenWindow_->saveExpressionDialog().extensionDeterminesType()) plugin = pluginStore_.findFilePlugin(PluginTypes::ExpressionFilePlugin, PluginTypes::ExportPlugin, filename);
+			else plugin = atenWindow_->saveExpressionDialog().selectedPlugin();
+
+			if (!plugin)
+			{
+				QMessageBox::critical(atenWindow_, "Export Failed", "Export format could not be determined.\nCheck the file extension, or explicitly select a type.");
+				Messenger::print("Expression for model '%s' not saved.\n", qPrintable(sourceModel->name()));
+				Messenger::exit("Aten::exportExpression");
+				return false;
+			}
+		}
+	}
+
+	// Now do we have a valid filename and plugin?
+	if ((!filename.isEmpty()) && (plugin) && (plugin->category() == PluginTypes::ExpressionFilePlugin) && (plugin->canExport()))
+	{
+		// Temporarily disable undo/redo for the model
+		sourceModel->disableUndoRedo();
+
+		// Turn on export type mapping
+		if (nTypeExportMappings() > 0) typeExportMapping_ = true;
+
+		// Create an instance of the plugin, and set options and the output file
+		FilePluginInterface* pluginInterface = plugin->createInstance();
+		if (!pluginInterface->openOutput(filename))
+		{
+			Messenger::exit("Aten::exportExpression");
+			return false;
+		}
+		pluginInterface->setStandardOptions(standardOptions);
+		pluginInterface->setOptions(pluginOptions);
+		pluginInterface->setParentModel(sourceModel);
+		if (pluginInterface->exportData())
+		{
+			// Set the model's (potentially new) filename and plugin
+			sourceModel->setFilename(filename);
+			sourceModel->setPlugin(pluginInterface);
+			sourceModel->updateSavePoint();
+
+			// Done - tidy up
+			pluginInterface->closeFiles();
+
+			Messenger::print("Model '%s' saved to file '%s' (%s)", qPrintable(sourceModel->name()), qPrintable(filename), qPrintable(pluginInterface->name()));
+		}
+		else
+		{
+			sourceModel->enableUndoRedo();
+
+			Messenger::print("Failed to save model '%s'.", qPrintable(sourceModel->name()));
+			Messenger::exit("Aten::exportExpression");
+			return false;
+		}
+
+		typeExportMapping_ = false;
+
+		sourceModel->enableUndoRedo();
+	}
+	else
+	{
+		Messenger::print("Model '%s' not saved.\n", qPrintable(sourceModel->name()));
+		Messenger::exit("Aten::exportExpression");
+		return false;
+	}
+	
+	Messenger::exit("Aten::exportExpression");
+
 	return true;
 }

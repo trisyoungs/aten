@@ -205,9 +205,3 @@ void Aten::dereferenceForcefield(Forcefield* xff)
 	}
 	Messenger::exit("Aten::dereferenceForcefield");
 }
-
-// Return combination rules
-CombinationRules& Aten::combinationRules()
-{
-	return combinationRules_;
-}

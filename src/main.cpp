@@ -98,9 +98,6 @@ int main(int argc, char* argv[])
 	/* Load in program and user preferences */
 	if (!MrAten.loadPrefs()) return -1;
 
-	/* Reconstruct combination rule functions */
-	MrAten.combinationRules().regenerateEquations();
-	
 	/* Parse program arguments - returns -1 for failure, 0 for quit, or 1 for success */
 	if (MrAten.parseCli(argc,argv) != 1) return -1;
 

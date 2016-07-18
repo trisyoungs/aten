@@ -64,7 +64,6 @@ Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
 	{ "clipNear",			VTypes::DoubleData,		0, false },
 	{ "colourScales",		VTypes::ColourScaleData,	10, true },
 	{ "colourScheme",		VTypes::StringData,		0, false },
-	{ "combinationRule",		VTypes::StringData,		CombinationRules::nCombinationRules, false },
 	{ "correctTransparentGrids",	VTypes::IntegerData,		0, false },
 	{ "dashedAromatics",		VTypes::IntegerData,		0, false },
 	{ "densityUnit",		VTypes::StringData,		0, false },
@@ -282,10 +281,6 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArray
 			break;
 		case (PreferencesVariable::ColourScheme):
 			rv.set(Prefs::colouringScheme(ptr->colourScheme()));
-			break;
-		case (PreferencesVariable::CombinationRule):
-			if (hasArrayIndex) rv.set( ptr->combinationRule( (CombinationRules::CombinationRule) (arrayIndex-1)) );
-			else rv.setArray( VTypes::StringData, ptr->combinationRules(), CombinationRules::nCombinationRules);
 			break;
 		case (PreferencesVariable::CorrectTransparentGrids):
 			rv.set(ptr->correctTransparentGrids());
@@ -581,19 +576,6 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue&
 			cs = Prefs::colouringScheme( newValue.asString(result), true );
 			if (cs != Prefs::nColouringSchemes) ptr->setColourScheme(cs);
 			else result = false;
-			break;
-		case (PreferencesVariable::CombinationRule):
-			if (newValue.arraySize() == CombinationRules::nCombinationRules) for (n=0; n<CombinationRules::nCombinationRules; ++n)
-			{
-				ptr->setCombinationRule( (CombinationRules::CombinationRule) n, newValue.asString(n, result));
-			}
-			else if (hasArrayIndex)
-			{
-				ptr->setCombinationRule( (CombinationRules::CombinationRule) (arrayIndex-1), newValue.asString(result));
-			}
-			else for (n=0; n<CombinationRules::nCombinationRules; ++n) ptr->setCombinationRule((CombinationRules::CombinationRule) n, newValue.asString(result));
-			// Regenerate equations to check
-			if (!aten_->combinationRules().regenerateEquations()) result = false;
 			break;
 		case (PreferencesVariable::CorrectTransparentGrids):
 			ptr->setCorrectTransparentGrids(newValue.asBool());

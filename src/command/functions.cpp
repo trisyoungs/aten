@@ -242,7 +242,6 @@ void Commands::initPointers()
 	pointers_[GenerateBond] = &AtenSpace::Commands::function_GenerateBond;
 	pointers_[GenerateTorsion] = &AtenSpace::Commands::function_GenerateTorsion;
 	pointers_[GenerateVdw] = &AtenSpace::Commands::function_GenerateVdw;
-	pointers_[GetCombinationRule] = &AtenSpace::Commands::function_GetCombinationRule;
 	pointers_[GetFF] = &AtenSpace::Commands::function_GetFF;
 	pointers_[InterDef] = &AtenSpace::Commands::function_InterDef;
 	pointers_[LoadFF] = &AtenSpace::Commands::function_LoadFF;
@@ -252,7 +251,6 @@ void Commands::initPointers()
 	pointers_[PrintType] = &AtenSpace::Commands::function_PrintType;
 	pointers_[RecreateExpression] = &AtenSpace::Commands::function_RecreateExpression;
 	pointers_[SaveExpression] = &AtenSpace::Commands::function_SaveExpression;
-	pointers_[SetCombinationRule] = &AtenSpace::Commands::function_SetCombinationRule;
 	pointers_[TorsionDef] = &AtenSpace::Commands::function_TorsionDef;
 	pointers_[TypeDef] = &AtenSpace::Commands::function_TypeDef;
 	pointers_[TypeModel] = &AtenSpace::Commands::function_TypeModel;

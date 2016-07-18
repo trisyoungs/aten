@@ -76,3 +76,5 @@ Removed all Prefs accessors related to file import (keepNames, zMapType etc.)
 Added optional "forceRhombohedral" argument to "spacegroup" command.
 Remove 'autoConversionUnit' command.
 Add --nodynamicpanels option and prefs accessor.
+Remove "combinationRules" Prefs accessor.
+Removed 'setCombinationRule' and '

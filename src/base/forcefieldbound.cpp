@@ -145,7 +145,7 @@ bool ForcefieldBound::setForm(QString form)
 			newform = TorsionFunctions::torsionFunction(form);
 			if (newform == TorsionFunctions::nTorsionFunctions) Messenger::print("Unrecognised functional form (%s) for %s interaction.", qPrintable(form), ForcefieldBoundKeywords[type_]);
 			else setTorsionForm((TorsionFunctions::TorsionFunction) newform);
-		break;
+			break;
 		default:
 			printf("Internal Error - No bound type defined in ForcefieldBound structure.\n");
 			break;
@@ -163,9 +163,35 @@ void ForcefieldBound::setParameter(int i, double d)
 // Return parameter data specified
 double ForcefieldBound::parameter(int i) const
 {
-	if ((i < 0) || (i >= MAXFFPARAMDATA)) printf("Data Id in ForcefieldAtom::parameter (%i) is out of bounds.\n", i);
+	if ((i < 0) || (i >= MAXFFPARAMDATA)) printf("Data Id in ForcefieldBound::parameter (%i) is out of bounds.\n", i);
 	else return params_[i];
 	return 0.0;
+}
+
+// Return parameter data specified, converted into specified units (if it is an energetic parameter)
+double ForcefieldBound::convertedParameter(int i, Prefs::EnergyUnit units) const
+{
+	if ((i < 0) || (i >= MAXFFPARAMDATA))
+	{
+		printf("Data Id in ForcefieldBound::convertParameter (%i) is out of bounds.\n", i);
+		return 0.0;
+	}
+
+	switch (type_)
+	{
+		case (ForcefieldBound::BondInteraction):
+		case (ForcefieldBound::UreyBradleyInteraction):
+			if (BondFunctions::functionData[form_].isEnergyParameter[i]) return prefs.convertEnergyTo(params_[i], units);
+			break;
+		case (ForcefieldBound::AngleInteraction):
+			if (AngleFunctions::functionData[form_].isEnergyParameter[i]) return prefs.convertEnergyTo(params_[i], units);
+			break;
+		case (ForcefieldBound::TorsionInteraction):
+		case (ForcefieldBound::ImproperInteraction):
+			if (TorsionFunctions::functionData[form_].isEnergyParameter[i]) return prefs.convertEnergyTo(params_[i], units);
+			break;
+	}
+	return params_[i];
 }
 
 // Returns parameter array pointer
