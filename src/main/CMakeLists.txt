@@ -30,4 +30,4 @@ target_include_directories(main PRIVATE
   ${READLINE_INCLUDE_DIRS}
   ${PROJECT_SOURCE_DIR}/src/gui
 )
-#target_link_libraries(main gui) 
+target_link_libraries(main gui) 

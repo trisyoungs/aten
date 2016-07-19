@@ -48,4 +48,4 @@ target_include_directories(command PRIVATE
   ${PROJECT_SOURCE_DIR}/src/gui
 )
 
-#target_link_libraries(command gui) 
+target_link_libraries(command gui) 

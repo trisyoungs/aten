@@ -340,4 +340,4 @@ target_include_directories(treegui PRIVATE
   ${PROJECT_BINARY_DIR}/src
   ${Qt5Widgets_INCLUDE_DIRS}
 )
-#target_link_libraries(treegui plugins gui)
+target_link_libraries(treegui plugins gui)

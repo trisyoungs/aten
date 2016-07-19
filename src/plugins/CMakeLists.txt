@@ -11,7 +11,7 @@ target_include_directories(plugins PRIVATE
   ${Qt5Gui_INCLUDE_DIRS}
 )
 
-#target_link_libraries(plugins)
+target_link_libraries(plugins)
 
 add_subdirectory(io_akf)
 add_subdirectory(io_cif)

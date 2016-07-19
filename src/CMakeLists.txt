@@ -13,7 +13,7 @@ add_subdirectory(plugins)
 
 file(WRITE empty.cpp "")
 add_library(mraten SHARED empty.cpp)
-target_link_libraries(mraten
+target_link_libraries(mraten PRIVATE
 	"-Wl,--whole-archive"
 	messenger
 	fourierdata
@@ -31,7 +31,7 @@ target_link_libraries(mraten
 	render
 	plugins
 	"-Wl,--no-whole-archive"
-    Qt5::Widgets
+	Qt5::Widgets
 	Qt5::Core
 	${FTGL_LIBRARIES}
 	${OPENGL_LIBRARIES}
