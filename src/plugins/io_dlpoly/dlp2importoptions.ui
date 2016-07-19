@@ -37,7 +37,7 @@
    <item>
     <widget class="QCheckBox" name="ShiftCellCentreCheck">
      <property name="text">
-      <string>Shift cell centre from (0.5,0.5,0.5) to (0,0,0)</string>
+      <string>Shift cell centre from (0,0,0) to (0.5,0.5,0.5)</string>
      </property>
     </widget>
    </item>

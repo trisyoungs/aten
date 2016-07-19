@@ -90,6 +90,15 @@ bool DLPOLYPluginCommon::readCONFIGModel ( FilePluginInterface* interface, FileP
     n++;
   } while ( !parser.eofOrBlank() );
 
+  // Shift atoms by half-cell
+  bool shift = FilePluginInterface::toBool(interface->pluginOptions().value("shiftCell"));
+  if (shift && targetModel->isPeriodic())
+  {
+	  targetModel->selectAll(true);
+	  targetModel->translateSelectionLocal(targetModel->cell().centre(), true);
+	  targetModel->selectNone(true);
+  }
+
   // Rebond the model
   if ( !interface->standardOptions().preventRebonding() ) {
     targetModel->calculateBonding ( true );

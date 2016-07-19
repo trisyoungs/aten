@@ -44,7 +44,7 @@ DLPExpressionPlugin::~DLPExpressionPlugin()
 // Return a copy of the plugin object
 FilePluginInterface* DLPExpressionPlugin::makeCopy()
 {
-    return new DLPExpressionPlugin;
+	return new DLPExpressionPlugin;
 }
 
 /*
@@ -54,37 +54,37 @@ FilePluginInterface* DLPExpressionPlugin::makeCopy()
 // Return category of plugin
 PluginTypes::FilePluginCategory DLPExpressionPlugin::category() const
 {
-    return PluginTypes::ModelFilePlugin;
+	return PluginTypes::ExpressionFilePlugin;
 }
 
 // Name of plugin
 QString DLPExpressionPlugin::name() const
 {
-    return QString("DL_POLY FIELD File" );
+	return QString("DL_POLY FIELD File" );
 }
 
 // Nickname of plugin
 QString DLPExpressionPlugin::nickname() const
 {
-    return QString("field");
+	return QString("field");
 }
 
 // Description (long name) of plugin
 QString DLPExpressionPlugin::description() const
 {
-    return QString("Import/export for DL_POLY FIELD files");
+	return QString("Import/export for DL_POLY FIELD files");
 }
 
 // Related file extensions
 QStringList DLPExpressionPlugin::extensions() const
 {
-    return QStringList() << "FIELD";
+	return QStringList() << "FIELD";
 }
 
 // Exact names
 QStringList DLPExpressionPlugin::exactNames() const
 {
-    return QStringList() << "FIELD";
+	return QStringList() << "FIELD";
 }
 
 /*
@@ -100,6 +100,195 @@ bool DLPExpressionPlugin::canImport()
 // Import data from the specified file
 bool DLPExpressionPlugin::importData()
 {
+// 	# Variable declaration
+// 	Forcefield ff;
+// 	FFBound ffb;
+// 	FFAtom at1, at2;
+// 	int i, j, k, l, m, n, natoms, nmols, mol, nrepeat, nbound, nvdw;
+// 	double mass, charge, qdiff, data[10];
+// 	string discard, s, keyword, form, name, names[100];
+// 
+// 	# Main dialog creation function
+// 	void createDefaultDialog(Dialog ui)
+// 	{
+// 		ui.title = "DL_POLY FIELD Import Options";
+// 		widget group, w;
+// 		ui.verticalFill = TRUE;
+// 		ui.addCheck("assumeua", "Assume United Atom", 0);
+// 		ui.addCheck("reducetypes", "Reduce Types", 1);
+// 		ui.addDoubleSpin("masstol", "Mass Tolerance", 0.0, 1.0, 0.01, 0.01);
+// 		ui.addDoubleSpin("qtol", "Charge Tolerance", 0.0, 1.0, 0.01, 0.01);
+// 	}
+// 	# Execute dialog and grab values
+// 	if (!showDefaultDialog()) error("Options dialog canceled.\n");
+// 	Dialog ui = defaultDialog();
+// 	int assumeua = ui.asInteger("assumeua"); 
+// 	int reducetypes = ui.asInteger("reducetypes");
+// 	double masstol = ui.asDouble("masstol");
+// 	double qtol = ui.asDouble("qtol");
+// 
+// 	# First line is header information - use as FF name
+// 	getLine(s);
+// 	ff = newFF(s);
+// 
+// 	# Next line is energy unit
+// 	readLine(discard, s);
+// 	if ((lowerCase(s) != "kj") && (lowerCase(s) != "kcal") && (lowerCase(s) != "ev")) error("FIELD file energy unit (%s) is not compatible with Aten.\n", s);
+// 	units(s);
+// 
+// 	# Next is number of molecules specified in the 
+// 	readLine(s, nmols);
+// 	if (lowerCase(s) != "molecules") error("Didn't find 'molecules' directive where expected.");
+// 	else printf("Number of molecule types specified in FIELD file : %i\n", nmols);
+// 
+// 	# Loop over molecule types
+// 	for (mol=1; mol<=nmols; ++mol)
+// 	{
+// 		# First line is pattern name, next is number of molecules (neither of which we care about)
+// 		getLine(s);
+// 		skipLine();
+// 
+// 		# Number of atoms per molecule of this type we need...
+// 		readLine(keyword,natoms);
+// 		printf(" -- %i atoms in molecule '%s'\n", natoms, s);
+// 		n = 0;
+// 		do
+// 		{
+// 			readLine(name, mass, charge, nrepeat);
+// 			if (nrepeat == 0) nrepeat = 1;
+// 			# if 'reducetypes == TRUE' check previous atomtype definitions for ones with same name and charge (within tolerance)
+// 			if (reducetypes)
+// 			{
+// 				for (at1 in ff.atomTypes)
+// 				{
+// 					qdiff = abs(charge - at1.charge);
+// 					if ((at1.name == name) && (qdiff < qtol)) break;
+// 				}
+// 			}
+// 			else null(at1);
+// 			# if 'at1 != NULL' this type already exists and we should move on....Otherwise, create a new type
+// 			if (at1 == NULL)
+// 			{
+// 				at1 = typeDef(ff.nAtomTypes,name,name,elementByMass(mass, masstol),"");
+// 				at1.charge = charge;
+// 			}
+// 			# Increase atom counter and store names for upcoming bound definitions
+// 			for (m=0; m<nrepeat; ++m) names[++n] = name;
+// 		} while (n < natoms);
+// 
+// 		# Next sections are optional, and terminated by 'end' keyword
+// 		while (1)
+// 		{
+// 			readLine(keyword, nbound);
+// 			keyword = lowerCase(keyword);
+// 			if (keyword == "bonds")
+// 			{
+// 				printf("Found 'bonds' block...\n");
+// 				for (n=1; n<=nbound; ++n)
+// 				{
+// 					readLine(form, i, j, data[1], data[2], data[3], data[4]);
+// 					form = lowerCase(form);
+// 					# Does a bond definition between atom names i and j already exist?
+// 					if (ff.findBond(names[i], names[j]))
+// 					{
+// 						printf("Bond %s-%s has already been created in the forcefield. Skipped...\n", names[i], names[j]);
+// 						continue;
+// 					}
+// 					// Create new definition
+// 					if (form == "harm") bondDef("harmonic", names[i], names[j], data[1], data[2]);
+// 					else if (form == "morse") bondDef("morse", names[i], names[j], data[1], data[3], data[2]);
+// 					else printf("Functional form of bond term (%s) is not present in Aten.\n", form);
+// 				}
+// 			}
+// 			else if (keyword == "constraints")
+// 			{
+// 				printf("Found 'constraints' block...\n");
+// 				for (n=1; n<=nbound; ++n)
+// 				{
+// 					readLine(i, j, data[1]);
+// 					# Does a constraint bond definition between atom names i, and j already exist?
+// 					if (ff.findBond(names[i], names[j]))
+// 					{
+// 						printf("Constraint bond %s-%s has already been created in the forcefield. Skipped...\n", names[i], names[j]);
+// 						continue;
+// 					}
+// 					// Create new definition
+// 					bondDef("constraint", names[i], names[j], 1000.0, data[1]);
+// 				}
+// 			}
+// 			else if (keyword == "angles")
+// 			{
+// 				printf("Found 'angles' block...\n");
+// 				for (n=1; n<=nbound; ++n)
+// 				{
+// 					readLine(form, i, j, k, data[1], data[2], data[3], data[4]);
+// 					form = lowerCase(form);
+// 					# Does an angle definition between atom names i, j, and k already exist?
+// 					if (ff.findAngle(names[i], names[j], names[k]))
+// 					{
+// 						printf("Angle %s-%s-%s has already been created in the forcefield. Skipped...\n", names[i], names[j], names[k]);
+// 						continue;
+// 					}
+// 					// Create new definition
+// 					if (form == "harm") angleDef("harmonic", names[i], names[j], names[k], data[1], data[2]);
+// 					else if (form == "cos") angleDef("cos", names[i], names[j], names[k], data[1], data[3], data[2]);
+// 					else if (form == "hcos") angleDef("harmcos", names[i], names[j], names[k], data[1], data[2]);
+// 					else printf("Functional form of angle term (%s) is not present in Aten.\n", form);
+// 				}
+// 			}
+// 			else if (keyword == "dihedrals")
+// 			{
+// 				printf("Found 'dihedrals' block...\n");
+// 				for (n=1; n<=nbound; ++n)
+// 				{
+// 					readLine(form, i, j, k, l, data[1], data[2], data[3], data[4], data[5]);
+// 					form = lowerCase(form);
+// 					# Does a torsion definition between atom names i, j, k, and l already exist?
+// 					if (ff.findTorsion(names[i], names[j], names[k], names[l]))
+// 					{
+// 						printf("Torsion %s-%s-%s-%s has already been created in the forcefield. Skipped...\n", names[i], names[j], names[k], names[l]);
+// 						continue;
+// 					}
+// 					// Create new definition
+// 					null(ffb);
+// 					if (form == "cos") ffb = torsionDef("cos", names[i], names[j], names[k], names[l], data[1], data[3], data[2]);
+// 					else if (form == "cos3") ffb = torsionDef("cos3", names[i], names[j], names[k], names[l], data[1], data[2], data[3]);
+// 					else if (form == "opls") ffb = torsionDef("cos3c", names[i], names[j], names[k], names[l], data[1], data[2], data[3], data[4]);
+// 					else printf("Functional form of torsion term (%s) is not present in Aten.\n", form);
+// 					if (ffb != NULL) { ffb.eScale = data[4]; ffb.vScale = data[5]; }
+// 				}
+// 			}
+// 			else if (keyword == "finish") break;
+// 			else printf("Unrecognised keyword in FIELD file - '%s'\n", keyword);
+// 		}
+// 	}
+// 
+// 	# VDW Specification
+// 	readLine(keyword, nvdw);
+// 	if (lowerCase(keyword) != "vdw") printf("Didn't find 'vdw' section where expected. VDW information not converted.");
+// 	else
+// 	{
+// 		printf("Found 'vdw' block...\n");
+// 		for (n=0; n<nvdw; ++n)
+// 		{
+// 			# Read in each line of data, searching for those where the first atomtype is equal to the second
+// 			readLine(names[1], names[2], form, data[1], data[2], data[3], data[4], data[5]);
+// 			if (names[1] != names[2]) continue;
+// 			# We may have added multiple types of the same name earlier, so search the whole list explicitly
+// 			for (at1 in ff.atomTypes)
+// 			{
+// 				if (at1.name != names[1]) continue;
+// 				# Check form
+// 				if (form == "lj") interDef("lj", at1.id, at1.charge, data[1], data[2]);
+// #				else if (form == "buck") error("Buckingham potential not included in FIELD file export yet.\n");
+// 				else printf("Functional form of VDW term (%s) is not present in Aten.\n",form);
+// 			}
+// 		}
+// 	}
+// 
+// 	# Perform necessary tasks
+// 	finaliseFF();
+
 	return false;
 }
 
