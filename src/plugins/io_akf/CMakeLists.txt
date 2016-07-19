@@ -10,6 +10,8 @@ add_library(akf MODULE
 )
 target_link_libraries(akf
   mraten
+  Qt5::Widgets
+  Qt5::Core
 )
 set_target_properties(akf PROPERTIES
    LIBRARY_OUTPUT_DIRECTORY ${Aten_BINARY_DIR}/data/plugins

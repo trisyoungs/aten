@@ -10,6 +10,8 @@ add_library(csd MODULE
 )
 target_link_libraries(csd
   mraten
+  Qt5::Widgets
+  Qt5::Core
 )
 set_target_properties(csd PROPERTIES
    LIBRARY_OUTPUT_DIRECTORY ${Aten_BINARY_DIR}/data/plugins

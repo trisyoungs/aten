@@ -10,6 +10,8 @@ add_library(mdlmol MODULE
 )
 target_link_libraries(mdlmol
   mraten
+  Qt5::Widgets
+  Qt5::Core
 )
 set_target_properties(mdlmol PROPERTIES
    LIBRARY_OUTPUT_DIRECTORY ${Aten_BINARY_DIR}/data/plugins

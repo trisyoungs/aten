@@ -10,6 +10,8 @@ add_library(atenff MODULE
 )
 target_link_libraries(atenff
   mraten
+  Qt5::Widgets
+  Qt5::Core
 )
 set_target_properties(atenff PROPERTIES
    LIBRARY_OUTPUT_DIRECTORY ${Aten_BINARY_DIR}/data/plugins

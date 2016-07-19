@@ -22,6 +22,8 @@ add_library(xyz MODULE
 )
 target_link_libraries(xyz
   mraten
+  Qt5::Widgets
+  Qt5::Core
 )
 set_target_properties(xyz PROPERTIES
    LIBRARY_OUTPUT_DIRECTORY ${Aten_BINARY_DIR}/data/plugins
@@ -42,6 +44,8 @@ add_library(xyztraj MODULE
 )
 target_link_libraries(xyztraj
   mraten
+  Qt5::Widgets
+  Qt5::Core
 )
 set_target_properties(xyztraj PROPERTIES
    LIBRARY_OUTPUT_DIRECTORY ${Aten_BINARY_DIR}/data/plugins

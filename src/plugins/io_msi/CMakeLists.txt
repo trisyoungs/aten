@@ -10,6 +10,8 @@ add_library(msi MODULE
 )
 target_link_libraries(msi
   mraten
+  Qt5::Widgets
+  Qt5::Core
 )
 set_target_properties(msi PROPERTIES
    LIBRARY_OUTPUT_DIRECTORY ${Aten_BINARY_DIR}/data/plugins

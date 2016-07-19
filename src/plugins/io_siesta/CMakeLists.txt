@@ -10,6 +10,8 @@ add_library(siesta MODULE
 )
 target_link_libraries(siesta
   mraten
+  Qt5::Widgets
+  Qt5::Core
 )
 set_target_properties(siesta PROPERTIES
    LIBRARY_OUTPUT_DIRECTORY ${Aten_BINARY_DIR}/data/plugins

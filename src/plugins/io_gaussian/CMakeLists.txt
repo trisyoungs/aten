@@ -10,6 +10,8 @@ add_library(gaussian MODULE
 )
 target_link_libraries(gaussian
   mraten
+  Qt5::Widgets
+  Qt5::Core
 )
 set_target_properties(gaussian PROPERTIES
    LIBRARY_OUTPUT_DIRECTORY ${Aten_BINARY_DIR}/data/plugins

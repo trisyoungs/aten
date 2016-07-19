@@ -17,6 +17,8 @@ add_library(rmcp3 MODULE
 )
 target_link_libraries(rmcp3
   mraten
+  Qt5::Widgets
+  Qt5::Core
 )
 set_target_properties(rmcp3 PROPERTIES
    LIBRARY_OUTPUT_DIRECTORY ${Aten_BINARY_DIR}/data/plugins
@@ -61,6 +63,8 @@ add_library(rmcp6 MODULE
 )
 target_link_libraries(rmcp6
   mraten
+  Qt5::Widgets
+  Qt5::Core
 )
 set_target_properties(rmcp6 PROPERTIES
    LIBRARY_OUTPUT_DIRECTORY ${Aten_BINARY_DIR}/data/plugins
@@ -94,6 +98,8 @@ add_library(rmcp6bonds MODULE
 )
 target_link_libraries(rmcp6bonds
   mraten
+  Qt5::Widgets
+  Qt5::Core
 )
 set_target_properties(rmcp6bonds PROPERTIES
    LIBRARY_OUTPUT_DIRECTORY ${Aten_BINARY_DIR}/data/plugins

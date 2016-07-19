@@ -10,6 +10,8 @@ add_library(dlputilspdens MODULE
 )
 target_link_libraries(dlputilspdens
   mraten
+  Qt5::Widgets
+  Qt5::Core
 )
 set_target_properties(dlputilspdens PROPERTIES
    LIBRARY_OUTPUT_DIRECTORY ${Aten_BINARY_DIR}/data/plugins
@@ -29,6 +31,8 @@ add_library(dlputilssurface MODULE
 )
 target_link_libraries(dlputilssurface
   mraten
+  Qt5::Widgets
+  Qt5::Core
 )
 set_target_properties(dlputilssurface PROPERTIES
    LIBRARY_OUTPUT_DIRECTORY ${Aten_BINARY_DIR}/data/plugins
