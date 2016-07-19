@@ -22,6 +22,9 @@ add_library(dlp2 MODULE
   ${dlp2_MOC_SRCS}
   ${dlp2_UIS_H}
 )
+target_link_libraries(dlp2
+  mraten
+)
 set_target_properties(dlp2 PROPERTIES
    LIBRARY_OUTPUT_DIRECTORY ${Aten_BINARY_DIR}/data/plugins
    COMPILE_DEFINITIONS "QT_PLUGIN"
@@ -68,6 +71,9 @@ add_library(dlp4 MODULE
   ${dlp4_MOC_SRCS}
   ${dlp4_UIS_H}
 )
+target_link_libraries(dlp4
+  mraten
+)
 set_target_properties(dlp4 PROPERTIES
    LIBRARY_OUTPUT_DIRECTORY ${Aten_BINARY_DIR}/data/plugins
    COMPILE_DEFINITIONS "QT_PLUGIN"
@@ -107,6 +113,9 @@ add_library(field MODULE
   common.cpp
   ${field_MOC_SRCS}
 #  ${field_UIS_H}
+)
+target_link_libraries(field
+  mraten
 )
 set_target_properties(field PROPERTIES
    LIBRARY_OUTPUT_DIRECTORY ${Aten_BINARY_DIR}/data/plugins

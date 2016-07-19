@@ -8,6 +8,9 @@ add_library(gaussian MODULE
   gaussian_funcs.cpp
   ${gaussian_MOC_SRCS}
 )
+target_link_libraries(gaussian
+  mraten
+)
 set_target_properties(gaussian PROPERTIES
    LIBRARY_OUTPUT_DIRECTORY ${Aten_BINARY_DIR}/data/plugins
    COMPILE_DEFINITIONS "QT_PLUGIN"

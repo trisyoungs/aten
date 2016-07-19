@@ -8,6 +8,9 @@ add_library(gamess MODULE
   gamess_funcs.cpp
   ${gamess_MOC_SRCS}
 )
+target_link_libraries(gamess
+  mraten
+)
 set_target_properties(gamess PROPERTIES
    LIBRARY_OUTPUT_DIRECTORY ${Aten_BINARY_DIR}/data/plugins
    COMPILE_DEFINITIONS "QT_PLUGIN"

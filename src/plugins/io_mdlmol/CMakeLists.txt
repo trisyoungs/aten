@@ -8,6 +8,9 @@ add_library(mdlmol MODULE
   mdlmol_funcs.cpp
   ${mdlmol_MOC_SRCS}
 )
+target_link_libraries(mdlmol
+  mraten
+)
 set_target_properties(mdlmol PROPERTIES
    LIBRARY_OUTPUT_DIRECTORY ${Aten_BINARY_DIR}/data/plugins
    COMPILE_DEFINITIONS "QT_PLUGIN"

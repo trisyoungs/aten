@@ -8,12 +8,14 @@ add_library(akf MODULE
   akf_funcs.cpp
   ${akf_MOC_SRCS}
 )
+target_link_libraries(akf
+  mraten
+)
 set_target_properties(akf PROPERTIES
    LIBRARY_OUTPUT_DIRECTORY ${Aten_BINARY_DIR}/data/plugins
    COMPILE_DEFINITIONS "QT_PLUGIN"
    PREFIX ""
 )
-
 if(UNIX AND NOT APPLE)
 install(TARGETS akf
     RUNTIME DESTINATION ${CMAKE_INSTALL_LIBDIR}/aten/plugins COMPONENT RuntimePlugins

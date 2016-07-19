@@ -17,6 +17,9 @@ add_library(mopaccontrol MODULE
   ${mopaccontrol_MOC_SRCS}
   ${mopaccontrol_UIS_H}
 )
+target_link_libraries(mopaccontrol
+  mraten
+)
 set_target_properties(mopaccontrol PROPERTIES
    LIBRARY_OUTPUT_DIRECTORY ${Aten_BINARY_DIR}/data/plugins
    COMPILE_DEFINITIONS "QT_PLUGIN"
@@ -33,6 +36,9 @@ add_library(mopacarc MODULE
   mopacarc_funcs.cpp
   common.cpp
   ${mopacarc_MOC_SRCS}
+)
+target_link_libraries(mopacarc
+  mraten
 )
 set_target_properties(mopacarc PROPERTIES
    LIBRARY_OUTPUT_DIRECTORY ${Aten_BINARY_DIR}/data/plugins

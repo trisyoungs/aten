@@ -8,6 +8,9 @@ add_library(siesta MODULE
   siesta_funcs.cpp
   ${siesta_MOC_SRCS}
 )
+target_link_libraries(siesta
+  mraten
+)
 set_target_properties(siesta PROPERTIES
    LIBRARY_OUTPUT_DIRECTORY ${Aten_BINARY_DIR}/data/plugins
    COMPILE_DEFINITIONS "QT_PLUGIN"

@@ -20,6 +20,9 @@ add_library(xyz MODULE
   ${xyz_MOC_SRCS}
   ${xyz_UIS_H}
 )
+target_link_libraries(xyz
+  mraten
+)
 set_target_properties(xyz PROPERTIES
    LIBRARY_OUTPUT_DIRECTORY ${Aten_BINARY_DIR}/data/plugins
    COMPILE_DEFINITIONS "QT_PLUGIN"
@@ -36,6 +39,9 @@ add_library(xyztraj MODULE
   xyztraj_funcs.cpp
   common.cpp
   ${xyztraj_MOC_SRCS}
+)
+target_link_libraries(xyztraj
+  mraten
 )
 set_target_properties(xyztraj PROPERTIES
    LIBRARY_OUTPUT_DIRECTORY ${Aten_BINARY_DIR}/data/plugins

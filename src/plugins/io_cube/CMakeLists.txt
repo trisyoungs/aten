@@ -8,6 +8,9 @@ add_library(cube MODULE
   cube_funcs.cpp
   ${cube_MOC_SRCS}
 )
+target_link_libraries(cube
+  mraten
+)
 set_target_properties(cube PROPERTIES
    LIBRARY_OUTPUT_DIRECTORY ${Aten_BINARY_DIR}/data/plugins
    COMPILE_DEFINITIONS "QT_PLUGIN"

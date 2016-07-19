@@ -8,6 +8,9 @@ add_library(cif MODULE
   cif_funcs.cpp
   ${cif_MOC_SRCS}
 )
+target_link_libraries(cif
+  mraten
+)
 set_target_properties(cif PROPERTIES
    LIBRARY_OUTPUT_DIRECTORY ${Aten_BINARY_DIR}/data/plugins
    COMPILE_DEFINITIONS "QT_PLUGIN"

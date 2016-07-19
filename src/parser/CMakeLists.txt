@@ -1,6 +1,6 @@
 BISON_TARGET(CommandParser parser_grammar.yy ${CMAKE_CURRENT_BINARY_DIR}/parser_grammar.cc)
 
-add_library(parser
+add_library(parser STATIC
 ${BISON_CommandParser_OUTPUTS}
 accessor.h
 aten.h
@@ -118,4 +118,4 @@ target_include_directories(parser PRIVATE
   ${FREETYPE_INCLUDE_DIRS}
 )
 
-target_link_libraries(parser treegui) 
+# target_link_libraries(parser treegui) 

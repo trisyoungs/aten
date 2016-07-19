@@ -16,6 +16,9 @@ add_library(epsrato MODULE
   ${epsrato_MOC_SRCS}
   ${epsrato_UIS_H}
 )
+target_link_libraries(epsrato
+  mraten
+)
 set_target_properties(epsrato PROPERTIES
    LIBRARY_OUTPUT_DIRECTORY ${Aten_BINARY_DIR}/data/plugins
    COMPILE_DEFINITIONS "QT_PLUGIN"
@@ -39,6 +42,9 @@ add_library(epsrmol MODULE
   molexportoptions_funcs.cpp
   ${epsrmol_MOC_SRCS}
   ${epsrmol_UIS_H}
+)
+target_link_libraries(epsrmol
+  mraten
 )
 set_target_properties(epsrmol PROPERTIES
    LIBRARY_OUTPUT_DIRECTORY ${Aten_BINARY_DIR}/data/plugins

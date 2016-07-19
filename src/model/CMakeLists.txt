@@ -1,4 +1,4 @@
-add_library(model
+add_library(model STATIC
   bundle.h
   clipboard.h
   fragment.h
@@ -44,5 +44,5 @@ target_include_directories(model PRIVATE
   ${PROJECT_SOURCE_DIR}/src
   ${Qt5Gui_INCLUDE_DIRS}
 )
-target_link_libraries(model render)
+#target_link_libraries(model render)
 
