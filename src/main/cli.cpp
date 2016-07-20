@@ -918,10 +918,10 @@ void Aten::printUsage() const
 		}
 		else
 		{
-			if (cliSwitches[n].shortOpt != '\0') Messenger::print("\t-%c %s, --%s %s", cliSwitches[n].shortOpt, cliSwitches[n].argText, cliSwitches[n].longOpt, cliSwitches[n].argText);
-			else Messenger::print("\t--%s %s", cliSwitches[n].longOpt, cliSwitches[n].argText);
+			if (cliSwitches[n].shortOpt != '\0') Messenger::print("\t-%c %s, --%s=%s", cliSwitches[n].shortOpt, cliSwitches[n].argText, cliSwitches[n].longOpt, cliSwitches[n].argText);
+			else Messenger::print("\t--%s=%s", cliSwitches[n].longOpt, cliSwitches[n].argText);
 		}
-		Messenger::print("\t\t%s",cliSwitches[n].description);
+		Messenger::print("\t\t%s", cliSwitches[n].description);
 	}
 }
 

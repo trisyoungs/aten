@@ -229,7 +229,7 @@ void TMenuButton::paintEvent(QPaintEvent* event)
 			//   |     TEXT       |  = Text (height determined by font)
 			//   |________________|  
 			//   |----------------|  = 2 px spacing?????
-			//   |________________|  = 6 px for arrow or ellipsis if required
+			//   |________________|  = 6 px for arrow or ellipsis if required 
 			
 			// Draw arrow (if there is an associated popupwidget)
 			if (popupWidget_)
@@ -289,7 +289,8 @@ void TMenuButton::paintEvent(QPaintEvent* event)
 		}
 		else if ((inner.toolButtonStyle == Qt::ToolButtonIconOnly) && (!inner.icon.isNull()))
 		{
-			// Draw arrow (if there is an associated popupwidget)
+			// Draw arrow / ellipsis (if there is an associated popupwidget)
+			// Don't leave free space if for would-be arrow/ellipsis if it is a checkable button
 			if (popupWidget_)
 			{
 				QRect arrowRect = rect;
@@ -301,7 +302,7 @@ void TMenuButton::paintEvent(QPaintEvent* event)
 				if (!instantPopup_) drawEllipsis(arrowOpt, painter);
 				else style()->drawPrimitive(QStyle::PE_IndicatorArrowDown, &arrowOpt, &painter, this);
 			}
-			rect.setHeight(rect.height() - 6);
+			if (!isCheckable()) rect.setHeight(rect.height() - 6);
 
 			// Draw icon
 			style()->drawItemPixmap(&painter, rect, Qt::AlignCenter | Qt::AlignVCenter, pm);

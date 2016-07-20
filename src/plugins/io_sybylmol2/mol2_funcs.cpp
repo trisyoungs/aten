@@ -169,7 +169,7 @@ bool Mol2ModelPlugin::exportData()
 
 	// Write atoms section
 	if (!fileParser_.writeLine("@<TRIPOS>ATOM")) return false;
-	for (Atom* i = targetModel()->atoms(); i != NULL; i - i->next)
+	for (Atom* i = targetModel()->atoms(); i != NULL; i = i->next)
 	{
 		if (!fileParser_.writeLineF("%6i  %5s  %10.5f  %10.5f  %10.5f  %5s\n", i->id()+1, ElementMap().symbol(i), i->r().x, i->r().y, i->r().z, ElementMap().symbol(i))) return false;
 	}

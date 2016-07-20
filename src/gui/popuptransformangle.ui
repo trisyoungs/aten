@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>157</width>
+    <width>158</width>
     <height>271</height>
    </rect>
   </property>
@@ -25,7 +25,16 @@
    <string>Transform Angle Popup</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <property name="margin">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
     <number>0</number>
    </property>
    <property name="spacing">
@@ -94,8 +103,8 @@
       <string>Set</string>
      </property>
      <property name="icon">
-      <iconset>
-       <normaloff>:/bond/icons/bond_calc.svg</normaloff>:/bond/icons/bond_calc.svg</iconset>
+      <iconset resource="icons.qrc">
+       <normaloff>:/transform/icons/transform_angle.svg</normaloff>:/transform/icons/transform_angle.svg</iconset>
      </property>
      <property name="iconSize">
       <size>

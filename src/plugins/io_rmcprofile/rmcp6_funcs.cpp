@@ -234,6 +234,7 @@ bool RMCProfile6ModelPlugin::showImportOptionsDialog()
 // 	RMCProfile6ImportOptionsDialog optionsDialog(pluginOptions_);
 
 // 	return (optionsDialog.updateAndExecute() == QDialog::Accepted);
+	return false;
 }
 
 // Return whether the plugin has export options
@@ -248,61 +249,5 @@ bool RMCProfile6ModelPlugin::showExportOptionsDialog()
 // 	RMCProfile6ExportOptionsDialog optionsDialog(pluginOptions_);
 
 // 	return (optionsDialog.updateAndExecute() == QDialog::Accepted);
+	return false;
 }
-
-// filter(type="importmodel",name="RMCProfile bonds", nickname="rmcbonds", extension="bonds", glob="*.bonds", id=20)
-// {
-// 	# Variable declaration
-// 	int nAtoms, idiscard, nArgs, nBonds, n, ii, jj;
-// 	string s, el, args[50], remainder;
-// 	double rx,ry,rz;
-// 	Atom i, j;
-// 
-// 	# Grab current model
-// 	Model m = aten.model;
-// 	if (!m) error("No current model defined to apply bonding to!");
-// 
-// 	# Find number of atoms in file, and check against model
-// 	if (!find("Number of atoms = ", s)) error("Couldn't find number of atoms line in file.\n");
-// 	readVarF(s, "Number of atoms = %i", nAtoms);
-// 	printf("NAtoms from file = %i\n", nAtoms);
-// 	if (m.nAtoms != nAtoms) error("Bonds file specifies %i atoms in system, but current model has %i. Nothing will be done.\n", nAtoms, m.nAtoms);
-// 
-// 	# Clear current bonding in the model
-// 	clearBonds();
-// 
-// 	# Find start of bond data
-// 	if (!find("..............")) error("Couldn't find bond data.\n");
-// 	while (!eof())
-// 	{
-// 		readLine(ii, el, idiscard, s);
-// 		#printf("Atom index 1 is %i\n", ii);
-// 		i = m.atoms[ii];
-// 		nArgs = 0;
-// 		while (readNext(s))
-// 		{
-// 			if (s == ";") continue;
-// 			args[++nArgs] = s;
-// 		}
-// 		#printf("N = %i\n", nArgs);
-// 		nBonds = atoi(args[nArgs]);
-// 		if (nBonds*2 != (nArgs-1))
-// 		{
-// 			printf("Mis-read bond information for atom %i : nBonds = %i, nArgs-1 = %i\n", ii, nBonds, nArgs-1);
-// 			continue;
-// 		}
-// 
-// 		# Create specified bonds
-// 		for (n=0; n<nBonds*2; n += 2)
-// 		{
-// 			jj = atoi(args[n+1]);
-// 			j = m.atoms[jj];
-// 			# Sneaky conversion of D to H...
-// 			el = (args[n+2] == "D" ? "H" : args[n+2]);
-// 			# Check element type
-// 			if (j.element.symbol != el) printf("Warning: Element type '%s' in bond information does not match that of atom %i (%s).\n", el, jj, j.element.symbol);
-// 			else newBond(i, j);
-// 		}
-// 	}
-// }
-// 

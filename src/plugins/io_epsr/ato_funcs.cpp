@@ -359,7 +359,7 @@ bool EPSRAtoModelPlugin::exportData()
 		int atomOffset = i->id();
 
 		// Setup the molecule information arrays/lists here
-		List< DataPair<int, double> > restraints[p->nAtoms()];
+		List< DataPair<int, double> >* restraints = new List< DataPair<int, double> >[p->nAtoms()];
 		RefList<Bond,int> uniqueBonds;
 		QStringList rotationalGroups;
 
@@ -501,6 +501,9 @@ bool EPSRAtoModelPlugin::exportData()
 
 			++molIndex;
 			atomOffset += p->nAtoms();
+	
+			// Cleanup
+			delete[] restraints;
 		}
 	}
 
