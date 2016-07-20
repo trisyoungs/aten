@@ -316,7 +316,7 @@ set(gui_RES_QRC
 QT5_ADD_RESOURCES(gui_RES ${gui_RES_QRC})
 
 # Target 'gui'
-add_library(gui
+add_library(gui STATIC
   ${gui_RES}
   ${gui_UIS_H}
   ${gui_SRCS}
@@ -330,7 +330,7 @@ target_include_directories(gui PRIVATE
 )
 
 # Target 'treegui'
-add_library(treegui
+add_library(treegui STATIC
   ${treegui_UIS_H}
   ${treegui_MOC_SRCS}
   treegui_funcs.cpp

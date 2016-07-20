@@ -1,4 +1,4 @@
-add_library(model
+add_library(model STATIC
   bundle.h
   clipboard.h
   fragment.h

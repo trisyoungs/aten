@@ -57,9 +57,12 @@ if(WIN32)
     ${GLEXT_INCLUDE_DIRS}
   )
 
-  # Request dynamic lookup of symbols in shared library objects
-  set(CMAKE_SHARED_LINKER_FLAGS "${CMAKE_SHARED_LINKER_FLAGS} -undefined dynamic_lookup")
-  set(CMAKE_MODULE_LINKER_FLAGS "${CMAKE_MODULE_LINKER_FLAGS} -undefined dynamic_lookup")
+  # Set plugin link libraries
+  SET(PLUGIN_LINK_LIBS
+    aten
+    Qt5::Widgets
+    Qt5::Core
+  )
 
   # Add global NOMINMAX define for Windows systems, and inhibit console creation
   ADD_DEFINITIONS("-DNOMINMAX")
@@ -118,11 +121,16 @@ target_include_directories(${target_name} PRIVATE
 )
 
 # Perform final link
-set(ATEN_LINK_LIBS Qt5::Widgets Qt5::Core ${FTGL_LIBRARIES} ${OPENGL_LIBRARIES} ${FREETYPE_LIBRARIES} ${READLINE_LIBRARIES})
-target_link_libraries( ${target_name}
+if(WIN32)
+  set(ATEN_LINK_LIBS
+    aten
+    Qt5::Widgets Qt5::Core ${FTGL_LIBRARIES} ${OPENGL_LIBRARIES} ${FREETYPE_LIBRARIES} ${READLINE_LIBRARIES})
+else(WIN32)
+  set(ATEN_LINK_LIBS
     messenger gui parser treegui command methods render model math main fourierdata ff base sg
-    ${ATEN_LINK_LIBS}
-    )
+    Qt5::Widgets Qt5::Core ${FTGL_LIBRARIES} ${OPENGL_LIBRARIES} ${FREETYPE_LIBRARIES} ${READLINE_LIBRARIES})
+endif(WIN32)
+target_link_libraries( ${target_name} ${ATEN_LINK_LIBS})
 
 # Install target for unix
 if(UNIX AND NOT APPLE)

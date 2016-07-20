@@ -52,7 +52,7 @@ QString AKFModelPlugin::akfGlyphKeyword(AKFGlyphKeyword keyword)
 
 // Grid Keyword Enum
 QStringList AKFGridKeywords = QStringList() << "axes" << "data" << "endgrid" << "origin";
-AKFModelPlugin::AKFGridKeyword akfGridKeyword(QString s)
+AKFModelPlugin::AKFGridKeyword AKFModelPlugin::akfGridKeyword(QString s)
 {
 	QString lowerQuery = s.toLower();
 	for (int i=0; i< AKFGridKeywords.count(); ++i) if (lowerQuery == AKFGridKeywords.at(i)) return (AKFModelPlugin::AKFGridKeyword) i;

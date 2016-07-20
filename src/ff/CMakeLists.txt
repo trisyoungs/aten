@@ -1,4 +1,4 @@
-add_library(ff
+add_library(ff STATIC
   combine.h
   energystore.h
   forcefield.h

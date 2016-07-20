@@ -1,4 +1,4 @@
-add_library(sg
+add_library(sg STATIC
   generator.h
   spacegroup.h
   sginfo.h

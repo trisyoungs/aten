@@ -1,6 +1,6 @@
 BISON_TARGET(NetaParser neta_grammar.yy ${CMAKE_CURRENT_BINARY_DIR}/neta_grammar.cc)
 
-add_library(base
+add_library(base STATIC
   ${BISON_NetaParser_OUTPUTS}
   atomaddress.cpp
   atom.cpp
@@ -82,7 +82,7 @@ target_include_directories(base PRIVATE
   ${Qt5Gui_INCLUDE_DIRS}
 )
 
-add_library(fourierdata
+add_library(fourierdata STATIC
   fourierdata.cpp
   fourierdata.h
 )
@@ -101,7 +101,7 @@ set(messenger_MOC_HDRS
 )
 QT5_WRAP_CPP(messenger_MOC_SRCS ${messenger_MOC_HDRS})
 
-add_library(messenger
+add_library(messenger STATIC
   message.cpp
   messenger.cpp
   message.h

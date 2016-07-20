@@ -8,6 +8,9 @@ add_library(espressoin MODULE
   espressoin_funcs.cpp
   ${espressoin_MOC_SRCS}
 )
+target_link_libraries(espressoin
+  ${PLUGIN_LINK_LIBS}
+)
 set_target_properties(espressoin PROPERTIES
    LIBRARY_OUTPUT_DIRECTORY ${Aten_BINARY_DIR}/data/plugins
    COMPILE_DEFINITIONS "QT_PLUGIN"
@@ -38,6 +41,9 @@ QT5_WRAP_CPP(espressoout_MOC_SRCS ${espresso_MOC_HDRS} OPTIONS -I${PROJECT_SOURC
 add_library(espressoout MODULE
   espressoout_funcs.cpp
   ${espressoout_MOC_SRCS}
+)
+target_link_libraries(espressoout
+  ${PLUGIN_LINK_LIBS}
 )
 set_target_properties(espressoout PROPERTIES
    LIBRARY_OUTPUT_DIRECTORY ${Aten_BINARY_DIR}/data/plugins

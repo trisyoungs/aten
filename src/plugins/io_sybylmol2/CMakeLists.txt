@@ -8,6 +8,9 @@ add_library(sybylmol2 MODULE
   mol2_funcs.cpp
   ${mol2_MOC_SRCS}
 )
+target_link_libraries(sybylmol2
+  ${PLUGIN_LINK_LIBS}
+)
 set_target_properties(sybylmol2 PROPERTIES
    LIBRARY_OUTPUT_DIRECTORY ${Aten_BINARY_DIR}/data/plugins
    COMPILE_DEFINITIONS "QT_PLUGIN"

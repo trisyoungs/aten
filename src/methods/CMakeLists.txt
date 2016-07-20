@@ -1,4 +1,4 @@
-add_library(methods
+add_library(methods STATIC
   calculable.h 
   cg.h 
   delaunay.h

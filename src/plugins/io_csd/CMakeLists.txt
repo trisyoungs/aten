@@ -8,6 +8,9 @@ add_library(csd MODULE
   csd_funcs.cpp
   ${csd_MOC_SRCS}
 )
+target_link_libraries(csd
+  ${PLUGIN_LINK_LIBS}
+)
 set_target_properties(csd PROPERTIES
    LIBRARY_OUTPUT_DIRECTORY ${Aten_BINARY_DIR}/data/plugins
    COMPILE_DEFINITIONS "QT_PLUGIN"
