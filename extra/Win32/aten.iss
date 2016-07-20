@@ -2,7 +2,7 @@
 ; SEE THE DOCUMENTATION FOR DETAILS ON CREATING INNO SETUP SCRIPT FILES!
 
 #define MyAppName "Aten"
-#define MyAppVersion "2.0.1"
+#define MyAppVersion "2.1.0"
 #define MyAppPublisher "Tristan Youngs"
 #define MyAppURL "http://www.projectaten.net/"
 #define MyAppExeName "Aten.exe"
@@ -28,7 +28,7 @@ DefaultDirName={pf}\Aten2
 DefaultGroupName={#MyAppName}
 LicenseFile=..\..\COPYING
 OutputDir=..\..\
-OutputBaseFilename=Aten-2.0.1
+OutputBaseFilename=Aten-2.1.0
 SetupIconFile=Aten.ico
 Compression=lzma
 SolidCompression=yes
