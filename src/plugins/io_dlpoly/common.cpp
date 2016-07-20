@@ -27,7 +27,7 @@
 ATEN_USING_NAMESPACE
 
 // Read single CONFIG model from file
-bool DLPOLYPluginCommon::readCONFIGModel ( FilePluginInterface* interface, FileParser& parser, Model* targetModel, DLPOLYPluginCommon::DLPOLYVersion version )
+bool DLPOLYPluginCommon::readCONFIGModel ( FilePluginInterface* plugin, FileParser& parser, Model* targetModel, DLPOLYPluginCommon::DLPOLYVersion version )
 {
   QString name;
 
@@ -86,12 +86,12 @@ bool DLPOLYPluginCommon::readCONFIGModel ( FilePluginInterface* interface, FileP
       f=parser.arg3d ( 0 );
     }
 
-    interface->createAtom ( targetModel, el, r, v, f );
+    plugin->createAtom ( targetModel, el, r, v, f );
     n++;
   } while ( !parser.eofOrBlank() );
 
   // Shift atoms by half-cell
-  bool shift = FilePluginInterface::toBool(interface->pluginOptions().value("shiftCell"));
+  bool shift = FilePluginInterface::toBool(plugin->pluginOptions().value("shiftCell"));
   if (shift && targetModel->isPeriodic())
   {
 	  targetModel->selectAll(true);
@@ -100,7 +100,7 @@ bool DLPOLYPluginCommon::readCONFIGModel ( FilePluginInterface* interface, FileP
   }
 
   // Rebond the model
-  if ( !interface->standardOptions().preventRebonding() ) {
+  if ( !plugin->standardOptions().preventRebonding() ) {
     targetModel->calculateBonding ( true );
   }
   
