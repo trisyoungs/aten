@@ -9,9 +9,7 @@ add_library(gromacs MODULE
   ${gromacs_MOC_SRCS}
 )
 target_link_libraries(gromacs
-  mraten
-  Qt5::Widgets
-  Qt5::Core
+  ${PLUGIN_LINK_LIBS}
 )
 set_target_properties(gromacs PROPERTIES
    LIBRARY_OUTPUT_DIRECTORY ${Aten_BINARY_DIR}/data/plugins

@@ -11,6 +11,7 @@ add_subdirectory(main)
 add_subdirectory(render)
 add_subdirectory(plugins)
 
+if(WIN32)
 file(WRITE empty.cpp "")
 add_library(mraten SHARED empty.cpp)
 target_link_libraries(mraten PRIVATE
@@ -38,3 +39,4 @@ target_link_libraries(mraten PRIVATE
 	${FREETYPE_LIBRARIES}
 	${READLINE_LIBRARIES}
 )
+endif(WIN32)

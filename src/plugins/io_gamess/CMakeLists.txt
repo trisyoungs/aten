@@ -9,9 +9,7 @@ add_library(gamess MODULE
   ${gamess_MOC_SRCS}
 )
 target_link_libraries(gamess
-  mraten
-  Qt5::Widgets
-  Qt5::Core
+  ${PLUGIN_LINK_LIBS}
 )
 set_target_properties(gamess PROPERTIES
    LIBRARY_OUTPUT_DIRECTORY ${Aten_BINARY_DIR}/data/plugins

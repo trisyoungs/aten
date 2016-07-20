@@ -9,9 +9,7 @@ add_library(akf MODULE
   ${akf_MOC_SRCS}
 )
 target_link_libraries(akf
-  mraten
-  Qt5::Widgets
-  Qt5::Core
+  ${PLUGIN_LINK_LIBS}
 )
 set_target_properties(akf PROPERTIES
    LIBRARY_OUTPUT_DIRECTORY ${Aten_BINARY_DIR}/data/plugins

@@ -18,9 +18,7 @@ add_library(mopaccontrol MODULE
   ${mopaccontrol_UIS_H}
 )
 target_link_libraries(mopaccontrol
-  mraten
-  Qt5::Widgets
-  Qt5::Core
+  ${PLUGIN_LINK_LIBS}
 )
 set_target_properties(mopaccontrol PROPERTIES
    LIBRARY_OUTPUT_DIRECTORY ${Aten_BINARY_DIR}/data/plugins
@@ -40,9 +38,7 @@ add_library(mopacarc MODULE
   ${mopacarc_MOC_SRCS}
 )
 target_link_libraries(mopacarc
-  mraten
-  Qt5::Widgets
-  Qt5::Core
+  ${PLUGIN_LINK_LIBS}
 )
 set_target_properties(mopacarc PROPERTIES
    LIBRARY_OUTPUT_DIRECTORY ${Aten_BINARY_DIR}/data/plugins

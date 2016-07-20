@@ -9,9 +9,7 @@ add_library(dlputilspdens MODULE
   ${pdens_MOC_SRCS}
 )
 target_link_libraries(dlputilspdens
-  mraten
-  Qt5::Widgets
-  Qt5::Core
+  ${PLUGIN_LINK_LIBS}
 )
 set_target_properties(dlputilspdens PROPERTIES
    LIBRARY_OUTPUT_DIRECTORY ${Aten_BINARY_DIR}/data/plugins
@@ -30,9 +28,7 @@ add_library(dlputilssurface MODULE
   ${surface_MOC_SRCS}
 )
 target_link_libraries(dlputilssurface
-  mraten
-  Qt5::Widgets
-  Qt5::Core
+  ${PLUGIN_LINK_LIBS}
 )
 set_target_properties(dlputilssurface PROPERTIES
    LIBRARY_OUTPUT_DIRECTORY ${Aten_BINARY_DIR}/data/plugins

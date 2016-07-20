@@ -21,9 +21,7 @@ add_library(xyz MODULE
   ${xyz_UIS_H}
 )
 target_link_libraries(xyz
-  mraten
-  Qt5::Widgets
-  Qt5::Core
+  ${PLUGIN_LINK_LIBS}
 )
 set_target_properties(xyz PROPERTIES
    LIBRARY_OUTPUT_DIRECTORY ${Aten_BINARY_DIR}/data/plugins
@@ -43,9 +41,7 @@ add_library(xyztraj MODULE
   ${xyztraj_MOC_SRCS}
 )
 target_link_libraries(xyztraj
-  mraten
-  Qt5::Widgets
-  Qt5::Core
+  ${PLUGIN_LINK_LIBS}
 )
 set_target_properties(xyztraj PROPERTIES
    LIBRARY_OUTPUT_DIRECTORY ${Aten_BINARY_DIR}/data/plugins

@@ -23,9 +23,7 @@ add_library(dlp2 MODULE
   ${dlp2_UIS_H}
 )
 target_link_libraries(dlp2
-  mraten
-  Qt5::Widgets
-  Qt5::Core
+  ${PLUGIN_LINK_LIBS}
 )
 set_target_properties(dlp2 PROPERTIES
    LIBRARY_OUTPUT_DIRECTORY ${Aten_BINARY_DIR}/data/plugins
@@ -74,9 +72,7 @@ add_library(dlp4 MODULE
   ${dlp4_UIS_H}
 )
 target_link_libraries(dlp4
-  mraten
-  Qt5::Widgets
-  Qt5::Core
+  ${PLUGIN_LINK_LIBS}
 )
 set_target_properties(dlp4 PROPERTIES
    LIBRARY_OUTPUT_DIRECTORY ${Aten_BINARY_DIR}/data/plugins
@@ -119,9 +115,7 @@ add_library(field MODULE
 #  ${field_UIS_H}
 )
 target_link_libraries(field
-  mraten
-  Qt5::Widgets
-  Qt5::Core
+  ${PLUGIN_LINK_LIBS}
 )
 set_target_properties(field PROPERTIES
    LIBRARY_OUTPUT_DIRECTORY ${Aten_BINARY_DIR}/data/plugins

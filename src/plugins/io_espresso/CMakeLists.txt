@@ -9,8 +9,7 @@ add_library(espressoin MODULE
   ${espressoin_MOC_SRCS}
 )
 target_link_libraries(espressoin
-  mraten
-  Qt5::Core
+  ${PLUGIN_LINK_LIBS}
 )
 set_target_properties(espressoin PROPERTIES
    LIBRARY_OUTPUT_DIRECTORY ${Aten_BINARY_DIR}/data/plugins
@@ -44,9 +43,7 @@ add_library(espressoout MODULE
   ${espressoout_MOC_SRCS}
 )
 target_link_libraries(espressoout
-  mraten
-  Qt5::Widgets
-  Qt5::Core
+  ${PLUGIN_LINK_LIBS}
 )
 set_target_properties(espressoout PROPERTIES
    LIBRARY_OUTPUT_DIRECTORY ${Aten_BINARY_DIR}/data/plugins

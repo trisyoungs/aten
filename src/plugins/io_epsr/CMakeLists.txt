@@ -17,9 +17,7 @@ add_library(epsrato MODULE
   ${epsrato_UIS_H}
 )
 target_link_libraries(epsrato
-  mraten
-  Qt5::Widgets
-  Qt5::Core
+  ${PLUGIN_LINK_LIBS}
 )
 set_target_properties(epsrato PROPERTIES
    LIBRARY_OUTPUT_DIRECTORY ${Aten_BINARY_DIR}/data/plugins
@@ -46,9 +44,7 @@ add_library(epsrmol MODULE
   ${epsrmol_UIS_H}
 )
 target_link_libraries(epsrmol
-  mraten
-  Qt5::Widgets
-  Qt5::Core
+  ${PLUGIN_LINK_LIBS}
 )
 set_target_properties(epsrmol PROPERTIES
    LIBRARY_OUTPUT_DIRECTORY ${Aten_BINARY_DIR}/data/plugins
