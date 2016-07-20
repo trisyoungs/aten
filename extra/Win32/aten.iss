@@ -8,7 +8,7 @@
 #define MyAppExeName "Aten.exe"
 
 ; Locations of bin directories of Qt, GnuWin(32), and MinGW(32)
-#define QtDir "C:\Qt\5.4.1\qtbase"
+#define QtDir "C:\Qt\5.6.0\qtbase"
 #define GnuWinDir "C:\GnuWin32"
 #define MinGWDir "C:\MinGW32"
 
@@ -43,6 +43,7 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 Source: "..\..\build\bin\Aten.exe"; DestDir: "{app}\bin"; Flags: ignoreversion
 Source: "..\..\data\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "..\..\build\data\plugins\*"; DestDir: "{app}\data\plugins"; Flags: ignoreversion
+Source: "..\..\build\lib\libaten.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
 Source: "Aten.ico"; DestDir: "{app}\bin"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 Source: "{#GnuWinDir}\bin\freetype6.dll"; DestDir: "{app}\bin"
