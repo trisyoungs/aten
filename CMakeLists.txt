@@ -59,7 +59,7 @@ if(WIN32)
 
   # Set plugin link libraries
   SET(PLUGIN_LINK_LIBS
-    mraten
+    aten
     Qt5::Widgets
     Qt5::Core
   )
@@ -123,7 +123,7 @@ target_include_directories(${target_name} PRIVATE
 # Perform final link
 if(WIN32)
   set(ATEN_LINK_LIBS
-    mraten
+    aten
     Qt5::Widgets Qt5::Core ${FTGL_LIBRARIES} ${OPENGL_LIBRARIES} ${FREETYPE_LIBRARIES} ${READLINE_LIBRARIES})
 else(WIN32)
   set(ATEN_LINK_LIBS

@@ -12,9 +12,8 @@ add_subdirectory(render)
 add_subdirectory(plugins)
 
 if(WIN32)
-file(WRITE empty.cpp "")
-add_library(mraten SHARED empty.cpp)
-target_link_libraries(mraten PRIVATE
+add_library(aten SHARED libaten.cpp)
+target_link_libraries(aten PRIVATE
 	"-Wl,--whole-archive"
 	messenger
 	fourierdata
