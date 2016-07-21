@@ -101,13 +101,17 @@ class ColourScale : public ListItem<ColourScale>
 	// Add new point to colourscale
 	ColourScalePoint* addPoint(int position, double value, double r, double g, double b, double a = 1.0f);
 	// Add new point to end of colourscale
-	ColourScalePoint* addPointAtEnd(double value, double r, double g, double b, double a = 1.0f);
+	ColourScalePoint* appendPoint(double value, double r, double g, double b, double a = 1.0f);
 	// Set colour and value data for point
 	void setPoint(int position, double value, double r, double g, double b, double a = 1.0f, bool setval = true, bool setcol = true);
-	// Set only value for point
-	void setPointValue(int position, double value);
-	// Set only colour for point
-	void setPointColour(int position, double r, double g, double b, double a = 1.0f);
+	// Set value for point
+	void setValue(int position, double value);
+	// Set value for point
+	void setValue(ColourScalePoint* point, double value);
+	// Set colour for point
+	void setColour(int position, double r, double g, double b, double a = 1.0f);
+	// Set colour for point
+	void setColour(ColourScalePoint* point, QColor colour);
 	// Remove old point from colourscale
 	void removePoint(int position);
 	// Get colour associated with value supplied

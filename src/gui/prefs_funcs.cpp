@@ -728,13 +728,18 @@ void AtenPrefs::updateScalePointsList()
 		ui.ScalePointsTable->setItem(count, 1, item);
 		++count;
 	}
+
 	// Select first item in list
 	ui.ScalePointsTable->setCurrentItem(0);
+
+	// Update Gradient Editor widget
+	ui.ScaleEditor->setColourScale(prefs.colourScale[scale]);
 }
 
 void AtenPrefs::on_ScaleList_currentRowChanged(int id)
 {
 	if (refreshing_ || (id == -1)) return;
+
 	// Scale selection has changed, so update points list
 	updateScalePointsList();
 }
@@ -752,7 +757,7 @@ void AtenPrefs::on_ScalePointsTable_cellChanged(int row, int col)
 		QTableWidgetItem* item = ui.ScalePointsTable->item(row, col);
 
 		// Set value in colourscale
-		prefs.colourScale[scale].setPointValue(row, item->text().toDouble());
+		prefs.colourScale[scale].setValue(row, item->text().toDouble());
 
 		// Update display
 		parent_.aten().currentModel()->logChange(Log::Style);
@@ -784,7 +789,7 @@ void AtenPrefs::on_ScalePointsTable_cellDoubleClicked(int row, int column)
 		if (!ok) return;
 
 		// Store new colour
-		prefs.colourScale[scale].setPointColour(row, newcol.redF(), newcol.greenF(), newcol.blueF(), newcol.alphaF());
+		prefs.colourScale[scale].setColour(row, newcol.redF(), newcol.greenF(), newcol.blueF(), newcol.alphaF());
 		ui.ScalePointsTable->item(row, 1)->setBackgroundColor(newcol);
 
 		// Update display
@@ -798,9 +803,10 @@ void AtenPrefs::on_AddPointButton_clicked(bool checked)
 	// Get the id of the currently selected scale
 	int scale = ui.ScaleList->currentRow();
 	if (scale == -1) return;
+
 	// Add a new point to the end of the scale and refresh the list
 	double value = (prefs.colourScale[scale].nPoints() == 0 ? 0.0 : prefs.colourScale[scale].lastPoint()->value() + 1.0);
-	prefs.colourScale[scale].addPointAtEnd(value, 0.5f, 0.5f, 0.5f);
+	prefs.colourScale[scale].appendPoint(value, 0.5f, 0.5f, 0.5f);
 	updateScalePointsList();
 }
 

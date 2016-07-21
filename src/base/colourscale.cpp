@@ -96,6 +96,7 @@ bool ColourScale::interpolated() const
 void ColourScale::calculateDeltas()
 {
 	Messenger::enter("ColourScale::calculateDeltas");
+
 	// Clear old list of deltas
 	deltas_.clear();
 	ColourScaleDelta* delta;
@@ -104,6 +105,7 @@ void ColourScale::calculateDeltas()
 		delta = deltas_.add();
 		delta->set(csp, csp->next);
 	}
+
 	Messenger::exit("ColourScale::calculateDeltas");
 }
 
@@ -111,6 +113,7 @@ void ColourScale::calculateDeltas()
 ColourScalePoint* ColourScale::addPoint(int position, double value, double r, double g, double b, double a)
 {
 	Messenger::enter("ColourScale::addPoint");
+
 	// Check position supplied - if it is 0 add point at start. If npoints then add at end.
 	if (position < 0) position = 0;
 	else if (position > points_.nItems()) position = points_.nItems();
@@ -118,20 +121,24 @@ ColourScalePoint* ColourScale::addPoint(int position, double value, double r, do
 	if (position == 0) csp = points_.prepend();
 	else if (position == points_.nItems()) csp = points_.add();
 	else csp = points_.insertAfter( points_[position-1] );
+
 	// Now, set data in new point
 	csp->setParent(this);
 	csp->setColour(r, g, b, a);
 	csp->setValue(value);
+
 	// Recalculate colour deltas
 	calculateDeltas();
+
 	// Refresh linked objects
 	refreshObjects();
+
 	Messenger::exit("ColourScale::addPoint");
 	return csp;
 }
 
 // Add new point to end of colourscale
-ColourScalePoint* ColourScale::addPointAtEnd(double value, double r, double g, double b, double a)
+ColourScalePoint* ColourScale::appendPoint(double value, double r, double g, double b, double a)
 {
 	return addPoint(points_.nItems(), value, r, g, b, a);
 }
@@ -140,6 +147,7 @@ ColourScalePoint* ColourScale::addPointAtEnd(double value, double r, double g, d
 void ColourScale::setPoint(int position, double value, double r, double g, double b, double a, bool setval, bool setcol)
 {
 	Messenger::enter("ColourScale::setPoint");
+
 	// Check position supplied
 	if ((position < 0) || (position >= points_.nItems()))
 	{
@@ -149,23 +157,40 @@ void ColourScale::setPoint(int position, double value, double r, double g, doubl
 	}
 	if (setval) points_[position]->setValue(value);
 	if (setcol) points_[position]->setColour(r, g, b, a);
+
 	// Recalculate colour deltas
 	calculateDeltas();
+
 	// Refresh linked objects
 	refreshObjects();
+
 	Messenger::exit("ColourScale::setPoint");
 }
 
 // Set only value for point
-void ColourScale::setPointValue(int position, double value)
+void ColourScale::setValue(int position, double value)
 {
 	setPoint(position, value, 0.0f, 0.0f, 0.0f, 0.0f, true, false);
 }
 
-// Set only colour for point
-void ColourScale::setPointColour(int position, double r, double g, double b, double a)
+// Set value for point
+void ColourScale::setValue(ColourScalePoint* point, double value)
+{
+	int position = points_.indexOf(point);
+	if (position != -1) setPoint(position, value, 0.0f, 0.0f, 0.0f, 0.0f, true, false);
+}
+
+// Set colour for point
+void ColourScale::setColour(int position, double r, double g, double b, double a)
 {
 	setPoint(position, 0.0f, r, g, b, a, false, true);
+}
+
+// Set colour for point
+void ColourScale::setColour(ColourScalePoint* point, QColor colour)
+{
+	int position = points_.indexOf(point);
+	if (position != -1) setPoint(position, 0.0, colour.redF(), colour.greenF(), colour.blueF(), colour.alphaF());
 }
 
 // Remove old point from colourscale
@@ -205,12 +230,14 @@ void ColourScale::colour(double v, GLfloat* target)
 		return;
 	}
 	ColourScalePoint* csp = points_.first();
+
 	// Is supplied value less than the value at the first point?
 	if (v < csp->value())
 	{
 		csp->copyColour(target);
 		return;
 	}
+
 	// Find the correct delta to use
 	for (ColourScaleDelta* delta = deltas_.first(); delta != NULL; delta = delta->next)
 	{
@@ -220,6 +247,7 @@ void ColourScale::colour(double v, GLfloat* target)
 			return;
 		}
 	}
+
 	// If we get to here then the supplied value is outside the range of all values, so take colour from the endpoint
 	points_.last()->copyColour(target);
 }
@@ -235,7 +263,14 @@ void ColourScale::colour(double value, Vec4<GLfloat>& target)
 // Adjust range of scale to encompass point supplied
 void ColourScale::adjustRange(double value)
 {
-	// TODO
+	if (points_.nItems() == 0) addPoint(0, value, 1.0, 0.0, 0.0, 1.0);
+	else if (value < points_.first()->value()) setValue(0, value);
+	else if (value > points_.last()->value())
+	{
+		// If there is only one point, add another one. If not, adjust the last point in the scale
+		if (points_.nItems() == 1) addPoint(1, value, 0.0, 0.0, 1.0, 1.0);
+		else setValue(points_.nItems()-1, value);
+	}
 }
 
 // Return number of points in colourscale
