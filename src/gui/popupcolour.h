@@ -49,56 +49,32 @@ class ColourPopup : public TPopupWidget
 	private:
 	// Reference to main window
 	AtenWindow& parent_;
-	// Options passed to constructor (summed from Options enum)
-	int options_;
 
 	public:
 	// Constructor / Destructor
-	ColourPopup(AtenWindow& parent, TMenuButton* buttonParent, int options = 0);
+	ColourPopup(AtenWindow& parent, TMenuButton* buttonParent, int colourWidgetOptions = 0);
 	// Main form declaration
 	Ui::ColourPopup ui;
 	// Update controls (before show()) (virtual)
 	void updateControls();
 	// Call named method associated to popup
 	bool callMethod(QString methodName, ReturnValue& rv);
-	// Options
-	enum Options
-	{
-		NoAlphaOption = 1
-	};
 
 
 	/*
 	 * Qt Functions
 	 */
 	private slots:
-	void on_RedSlider_valueChanged(int value);
-	void on_RedSpin_valueChanged(int value);
-	void on_GreenSlider_valueChanged(int value);
-	void on_GreenSpin_valueChanged(int value);
-	void on_BlueSlider_valueChanged(int value);
-	void on_BlueSpin_valueChanged(int value);
-	void on_HueSlider_valueChanged(int value);
-	void on_HueSpin_valueChanged(int value);
-	void on_SaturationSlider_valueChanged(int value);
-	void on_SaturationSpin_valueChanged(int value);
-	void on_ValueSlider_valueChanged(int value);
-	void on_ValueSpin_valueChanged(int value);
-	void on_AlphaSlider_valueChanged(int value);
-	void on_AlphaSpin_valueChanged(int value);
-	void on_Wheel_colourChanged(const QColor& colour);
+	// Colour in selection widget has changed
+	void colourChanged(const QColor colour);
 
 
 	/*
-	 * Local variables
+	 * Local Functions
 	 */
 	private:
-	// Selected colour
-	QColor currentColour_;
-
-	private:
 	// Update parent button's icon
-	void updateParentButtonIcon();
+	void updateParentButtonIcon( QColor colour );
 
 	public:
 	// Set current colour

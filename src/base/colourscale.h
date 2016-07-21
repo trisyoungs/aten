@@ -99,9 +99,9 @@ class ColourScale : public ListItem<ColourScale>
 	// Calculate colour deltas for current list of points
 	void calculateDeltas();
 	// Add new point to colourscale
-	ColourScalePoint* addPoint(int position, double value, double r, double g, double b, double a = 1.0f);
-	// Add new point to end of colourscale
-	ColourScalePoint* appendPoint(double value, double r, double g, double b, double a = 1.0f);
+	ColourScalePoint* addPoint(double value, double r, double g, double b, double a = 1.0f);
+	// Add new point to colourscale
+	ColourScalePoint* addPoint(double value, QColor colour);
 	// Set colour and value data for point
 	void setPoint(int position, double value, double r, double g, double b, double a = 1.0f, bool setval = true, bool setcol = true);
 	// Set value for point
@@ -118,6 +118,8 @@ class ColourScale : public ListItem<ColourScale>
 	void colour(double value, GLfloat* target);
 	// Get colour associated with value supplied
 	void colour(double value, Vec4<GLfloat>& target);
+	// Get colour as QColor
+	QColor colourAsQColor(double value);
 	// Adjust range of scale to encompass point supplied
 	void adjustRange(double value);
 

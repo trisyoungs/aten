@@ -39,11 +39,11 @@ AtenPrefs::AtenPrefs(AtenWindow& parent) : QDialog(&parent), parent_(parent)
 	// Add colour popups to buttons
 	ui.ElementColourButton->setPopupWidget(new ColourPopup(parent_, ui.ElementColourButton), true);
 	connect(ui.ElementColourButton->popupWidget(), SIGNAL(popupDone()), this, SLOT(elementColourChanged()));
-	ui.SpotlightAmbientColourButton->setPopupWidget(new ColourPopup(parent_, ui.SpotlightAmbientColourButton, ColourPopup::NoAlphaOption), true);
+	ui.SpotlightAmbientColourButton->setPopupWidget(new ColourPopup(parent_, ui.SpotlightAmbientColourButton, TColourWidget::NoAlphaOption), true);
 	connect(ui.SpotlightAmbientColourButton->popupWidget(), SIGNAL(popupDone()), this, SLOT(spotlightAmbientChanged()));
-	ui.SpotlightDiffuseColourButton->setPopupWidget(new ColourPopup(parent_, ui.SpotlightDiffuseColourButton, ColourPopup::NoAlphaOption), true);
+	ui.SpotlightDiffuseColourButton->setPopupWidget(new ColourPopup(parent_, ui.SpotlightDiffuseColourButton, TColourWidget::NoAlphaOption), true);
 	connect(ui.SpotlightDiffuseColourButton->popupWidget(), SIGNAL(popupDone()), this, SLOT(spotlightDiffuseChanged()));
-	ui.SpotlightSpecularColourButton->setPopupWidget(new ColourPopup(parent_, ui.SpotlightSpecularColourButton, ColourPopup::NoAlphaOption), true);
+	ui.SpotlightSpecularColourButton->setPopupWidget(new ColourPopup(parent_, ui.SpotlightSpecularColourButton, TColourWidget::NoAlphaOption), true);
 	connect(ui.SpotlightSpecularColourButton->popupWidget(), SIGNAL(popupDone()), this, SLOT(spotlightSpecularChanged()));
 
 	refreshing_ = false;
@@ -806,7 +806,7 @@ void AtenPrefs::on_AddPointButton_clicked(bool checked)
 
 	// Add a new point to the end of the scale and refresh the list
 	double value = (prefs.colourScale[scale].nPoints() == 0 ? 0.0 : prefs.colourScale[scale].lastPoint()->value() + 1.0);
-	prefs.colourScale[scale].appendPoint(value, 0.5f, 0.5f, 0.5f);
+	prefs.colourScale[scale].addPoint(value, 0.5f, 0.5f, 0.5f);
 	updateScalePointsList();
 }
 

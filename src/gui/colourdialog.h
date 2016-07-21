@@ -60,12 +60,8 @@ class ColourDialog : public QDialog
 	public:
 	// Execute dialog
 	bool execute(QColor startingColour);
-
-
-	/*
-	 * Signals / Slots
-	 */
-	private slots:
+	// Return colour chosen in dialog
+	QColor selectedColour();
 };
 
 #endif

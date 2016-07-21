@@ -29,6 +29,7 @@
 class AtenWindow;
 class QSpinBox;
 class QSlider;
+class QFrame;
 class TColourWheel;
 
 ATEN_BEGIN_NAMESPACE
@@ -57,11 +58,13 @@ class TColourWidget : public QWidget
 	TColourWidget(QWidget* parent);
 	// Update controls (before show()) (virtual)
 	void updateControls();
-	// Options
+	// Options Enum
 	enum Options
 	{
 		NoAlphaOption = 1
 	};
+	// Set options
+	void setOptions(int options);
 
 
 	/*
@@ -70,36 +73,36 @@ class TColourWidget : public QWidget
 	private:
 	QSpinBox* redSpin_, *greenSpin_, *blueSpin_, *hueSpin_, *saturationSpin_, *valueSpin_, *alphaSpin_;
 	QSlider* redSlider_, *greenSlider_, *blueSlider_, *hueSlider_, *saturationSlider_, *valueSlider_, *alphaSlider_;
+	QFrame* alphaLine_;
 	TColourWheel* colourWheel_;
 
 	private slots:
-	void on_RedSlider_valueChanged(int value);
-	void on_RedSpin_valueChanged(int value);
-	void on_GreenSlider_valueChanged(int value);
-	void on_GreenSpin_valueChanged(int value);
-	void on_BlueSlider_valueChanged(int value);
-	void on_BlueSpin_valueChanged(int value);
-	void on_HueSlider_valueChanged(int value);
-	void on_HueSpin_valueChanged(int value);
-	void on_SaturationSlider_valueChanged(int value);
-	void on_SaturationSpin_valueChanged(int value);
-	void on_ValueSlider_valueChanged(int value);
-	void on_ValueSpin_valueChanged(int value);
-	void on_AlphaSlider_valueChanged(int value);
-	void on_AlphaSpin_valueChanged(int value);
-	void on_Wheel_colourChanged(const QColor& colour);
+	void updateColourFromRgbSpin(int);
+	void updateColourFromRgbSlider(int);
+	void updateColourFromHsvSpin(int);
+	void updateColourFromHsvSlider(int);
+	void updateColourFromWheel(const QColor colour);
 
 
 	/*
 	 * Local variables
 	 */
 	private:
-	// Selected colour
+	// Current colour
 	QColor currentColour_;
 
 	public:
+	// Return current colour
+	QColor currentColour();
 	// Set current colour
 	void setCurrentColour(QColor color);
+
+
+	/*
+	 * Signals
+	 */
+	signals:
+	void colourChanged(const QColor colour);
 };
 
 #endif

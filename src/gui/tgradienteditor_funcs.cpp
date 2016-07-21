@@ -1,6 +1,6 @@
 /*
 	*** Gradient Editor
-	*** src/gui/tgradienteditor.cpp
+	*** src/gui/tgradienteditor_funcs.cpp
 	Copyright T. Youngs 2016-2016
 
 	This file is part of Aten.
@@ -73,6 +73,32 @@ ColourScalePoint* TGradientEditor::handleUnderMouse(QPoint pos)
 	return NULL;
 }
 
+// Update QGradient for display
+void TGradientEditor::updateGradient()
+{
+	// Setup QGradient - in ObjectBoundingMode, 0.0 = top of rectangle, and 1.0 is bottom
+	gradient_ = QLinearGradient(0.0, 1.0, 0.0, 0.0);
+	gradient_.setCoordinateMode(QGradient::ObjectBoundingMode);
+
+	// Add points
+	if (colourScale_.nPoints() == 0)
+	{
+		gradient_.setColorAt(0.0, QColor(0,0,0));
+		gradient_.setColorAt(1.0, QColor(0,0,0));
+	}
+	else if (colourScale_.nPoints() == 1)
+	{
+		gradient_.setColorAt(0.0, colourScale_.firstPoint()->colourAsQColor());
+		gradient_.setColorAt(1.0, colourScale_.firstPoint()->colourAsQColor());
+	}
+	else
+	{
+		double zero = colourScale_.firstPoint()->value();
+		double span = colourScale_.lastPoint()->value() - zero;
+		for (ColourScalePoint* csp = colourScale_.firstPoint(); csp != NULL; csp = csp->next) gradient_.setColorAt((csp->value() - zero) / span, csp->colourAsQColor());
+	}
+}
+
 // Set local colourscale
 void TGradientEditor::setColourScale(const ColourScale& colourScale)
 {
@@ -96,27 +122,7 @@ void TGradientEditor::setColourScale(const ColourScale& colourScale)
 // 	else colourScale_ = colourScale;
 	colourScale_ = colourScale;
 
-	// Setup QGradient - in ObjectBoundingMode, 0.0 = top of rectangle, and 1.0 is bottom
-	gradient_ = QLinearGradient(0.0, 1.0, 0.0, 0.0);
-	gradient_.setCoordinateMode(QGradient::ObjectBoundingMode);
-
-	// Add points
-	if (colourScale_.nPoints() == 0)
-	{
-		gradient_.setColorAt(0.0, QColor(0,0,0));
-		gradient_.setColorAt(1.0, QColor(0,0,0));
-	}
-	else if (colourScale_.nPoints() == 1)
-	{
-		gradient_.setColorAt(0.0, colourScale_.firstPoint()->colourAsQColor());
-		gradient_.setColorAt(1.0, colourScale_.firstPoint()->colourAsQColor());
-	}
-	else
-	{
-		double zero = colourScale_.firstPoint()->value();
-		double span = colourScale_.lastPoint()->value() - zero;
-		for (ColourScalePoint* csp = colourScale_.firstPoint(); csp != NULL; csp = csp->next) gradient_.setColorAt((csp->value() - zero) / span, csp->colourAsQColor());
-	}
+	updateGradient();
 
 	repaint();
 }
@@ -285,7 +291,10 @@ void TGradientEditor::mouseMoveEvent(QMouseEvent* event)
 		// Move the colourscale point
 		printf("New value for colourscale point = %f\n", gradientBarValue(lastPos_));
 		colourScale_.setValue(currentColourScalePoint_, gradientBarValue(lastPos_));
-		update();
+
+		updateGradient();
+
+		repaint();
 	}
 }
 
@@ -305,7 +314,10 @@ void TGradientEditor::mouseDoubleClickEvent(QMouseEvent* event)
 	// Check mouse position
 	if (gradientBarRegion_.contains(lastPos_))
 	{
-		gradientBarValue(lastPos_);
+		// Gradient bar was double-clicked, so add a new point at this position
+		double clickedValue = gradientBarValue(lastPos_);
+		QColor clickedColour = colourScale_.colourAsQColor(clickedValue);
+		colourScale_.addPoint(clickedValue, clickedColour);
 	}
 	else if (handleRegion_.contains(lastPos_))
 	{
@@ -316,9 +328,12 @@ void TGradientEditor::mouseDoubleClickEvent(QMouseEvent* event)
 			ColourDialog colourDialog(this);
 			if (colourDialog.execute(currentColourScalePoint_->colourAsQColor()))
 			{
-// 				colourScale_.setPointC
+				colourScale_.setColour(currentColourScalePoint_, colourDialog.selectedColour());
+
+				updateGradient();
+
+				repaint();
 			}
-// 			if (colourPopup.ex
 		}
 	}
 

@@ -110,22 +110,38 @@ void ColourScale::calculateDeltas()
 }
 
 // Add point to scale
-ColourScalePoint* ColourScale::addPoint(int position, double value, double r, double g, double b, double a)
+ColourScalePoint* ColourScale::addPoint(double value, double r, double g, double b, double a)
 {
 	Messenger::enter("ColourScale::addPoint");
 
-	// Check position supplied - if it is 0 add point at start. If npoints then add at end.
-	if (position < 0) position = 0;
-	else if (position > points_.nItems()) position = points_.nItems();
-	ColourScalePoint* csp;
-	if (position == 0) csp = points_.prepend();
-	else if (position == points_.nItems()) csp = points_.add();
-	else csp = points_.insertAfter( points_[position-1] );
+	// Find position to insert new point at
+	ColourScalePoint* newPoint = NULL;
+	if (points_.nItems() == 0) newPoint = points_.add();
+	else if (value < points_.first()->value()) newPoint = points_.prepend();
+	else if (value > points_.last()->value()) newPoint = points_.add();
+	else
+	{
+		for (ColourScalePoint* point = points_.first()->next; point != NULL; point = point->next)
+		{
+			if (value < point->value())
+			{
+				newPoint = points_.insertBefore(point);
+				break;
+			}
+		}
+	}
+
+	// Double-check we have a new point
+	if (!newPoint)
+	{
+		printf("Internal Error: ColourScale::addPoint() failed to add a point.\n");
+		return NULL;
+	}
 
 	// Now, set data in new point
-	csp->setParent(this);
-	csp->setColour(r, g, b, a);
-	csp->setValue(value);
+	newPoint->setParent(this);
+	newPoint->setColour(r, g, b, a);
+	newPoint->setValue(value);
 
 	// Recalculate colour deltas
 	calculateDeltas();
@@ -134,15 +150,15 @@ ColourScalePoint* ColourScale::addPoint(int position, double value, double r, do
 	refreshObjects();
 
 	Messenger::exit("ColourScale::addPoint");
-	return csp;
+	return newPoint;
 }
 
-// Add new point to end of colourscale
-ColourScalePoint* ColourScale::appendPoint(double value, double r, double g, double b, double a)
+// Add new point to colourscale
+ColourScalePoint* ColourScale::addPoint(double value, QColor colour)
 {
-	return addPoint(points_.nItems(), value, r, g, b, a);
+	return addPoint(value, colour.redF(), colour.greenF(), colour.blueF(), colour.alphaF());
 }
-
+	
 // Set colour and value data for point
 void ColourScale::setPoint(int position, double value, double r, double g, double b, double a, bool setval, bool setcol)
 {
@@ -190,7 +206,7 @@ void ColourScale::setColour(int position, double r, double g, double b, double a
 void ColourScale::setColour(ColourScalePoint* point, QColor colour)
 {
 	int position = points_.indexOf(point);
-	if (position != -1) setPoint(position, 0.0, colour.redF(), colour.greenF(), colour.blueF(), colour.alphaF());
+	if (position != -1) setPoint(position, 0.0, colour.redF(), colour.greenF(), colour.blueF(), colour.alphaF(), false, true);
 }
 
 // Remove old point from colourscale
@@ -260,15 +276,25 @@ void ColourScale::colour(double value, Vec4<GLfloat>& target)
 	target.set(col[0], col[1], col[2], col[3]);
 }
 
+// Get colour as QColor
+QColor ColourScale::colourAsQColor(double value)
+{
+	static GLfloat col[4];
+	colour(value, col);
+	QColor qcol;
+	qcol.setRgbF(col[0], col[1], col[2], col[3]);
+	return qcol;
+}
+
 // Adjust range of scale to encompass point supplied
 void ColourScale::adjustRange(double value)
 {
-	if (points_.nItems() == 0) addPoint(0, value, 1.0, 0.0, 0.0, 1.0);
+	if (points_.nItems() == 0) addPoint(value, 1.0, 0.0, 0.0, 1.0);
 	else if (value < points_.first()->value()) setValue(0, value);
 	else if (value > points_.last()->value())
 	{
 		// If there is only one point, add another one. If not, adjust the last point in the scale
-		if (points_.nItems() == 1) addPoint(1, value, 0.0, 0.0, 1.0, 1.0);
+		if (points_.nItems() == 1) addPoint(value, 0.0, 0.0, 1.0, 1.0);
 		else setValue(points_.nItems()-1, value);
 	}
 }

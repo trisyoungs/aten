@@ -36,7 +36,7 @@ bool Commands::function_AddPoint(CommandNode* c, Bundle& obj, ReturnValue& rv)
 		Messenger::print("Colour scale %i is out of range.",id+1);
 		return false;
 	}
-	prefs.colourScale[id].appendPoint(c->argd(1), c->argGLf(2), c->argGLf(3), c->argGLf(4), c->hasArg(5) ? c->argGLf(5) : 1.0f);
+	prefs.colourScale[id].addPoint(c->argd(1), c->argGLf(2), c->argGLf(3), c->argGLf(4), c->hasArg(5) ? c->argGLf(5) : 1.0f);
 	rv.reset();
 	return true;
 }

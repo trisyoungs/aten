@@ -48,7 +48,8 @@ bool ColourDialog::execute(QColor startingColour)
 	return exec();
 }
 
-/*
- * Signals / Slots
- */
-
+// Return colour chosen in dialog
+QColor ColourDialog::selectedColour()
+{
+	return ui.ColourWidget->currentColour();
+}

@@ -70,6 +70,8 @@ class TGradientEditor : public QWidget
 	double gradientBarValue(QPoint pos);
 	// Return ColourScalePoint corresponding to handle under mouse (if any)
 	ColourScalePoint* handleUnderMouse(QPoint pos);
+	// Update QGradient for display
+	void updateGradient();
 
 	public:
 	// Set colourscale to display
