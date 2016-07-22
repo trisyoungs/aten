@@ -170,6 +170,7 @@ class AtenWindow : public QMainWindow
 	void contextMenuCreateFragment(bool checked);
 	void contextMenuSelectElement(bool checked);
 	void contextMenuSelectFragment(bool checked);
+	void contextMenuReMap(bool checked);
 	void contextMenuColourChanged(QColor colour);
 	void createGlyph();
 

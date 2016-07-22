@@ -15,7 +15,6 @@ Add context menu "Copy" and "Set" to TColourButtons.
 Add 'Relative' view lock option, alongside 'None' and 'Lock' (Follow)?
 Miller selection.
 Progress indicator jobs in GUI appear to be created even if they are short and not 'ready' to be shown yet.
-Speedup Disorder Builder??
 Implement 'factory' for common objects such as Atom & Bond, to save new'ing all the time (esp. for large systems).
 Panel for User tools, essentially loaded from scripts (plugins?) in a user's tools/X directory.
 Visualise toolbar, containing Glyph management, polyhedra etc.
@@ -76,4 +75,5 @@ Added optional "forceRhombohedral" argument to "spacegroup" command.
 Remove 'autoConversionUnit' command.
 Add --nodynamicpanels option and prefs accessor.
 Remove "combinationRules" Prefs accessor.
-Removed 'setCombinationRule' and '
+Removed 'setCombinationRule' and 'combinationRule' commands.
+Added 'reMap' command to re-do name->element mapping for the current selection. 

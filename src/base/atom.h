@@ -247,7 +247,7 @@ class Atom : public ListItem<Atom>
 	// ID number of atom
 	int id_;
 	// Data attached to atom (if any)
-	char *data_;
+	char* data_;
 	// Temporary integer bitmask
 	int tempBit_;
 
@@ -261,7 +261,7 @@ class Atom : public ListItem<Atom>
 	// Return data set for atom
 	const char* data();
 	// Set data for atom
-	void setData(const char* s);
+	void setData(const char* data);
 	// Clear temporary integer
 	void clearBit();
 	// Add bit to temporary integer

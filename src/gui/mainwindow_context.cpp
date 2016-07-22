@@ -67,7 +67,7 @@ void AtenWindow::createContextMenu()
 	connect(action, SIGNAL(triggered(bool)), ui.ToolsAtomsReorderButton, SLOT(click()));
 
 	// Create selection submenu
-	menu = contextMenu_.addMenu("Selec&t");
+	menu = contextMenu_.addMenu("Selec&t...");
 	action = menu->addAction("Similar &elements");
 	connect(action, SIGNAL(triggered(bool)), this, SLOT(contextMenuSelectElement(bool)));
 	action = menu->addAction("&Fragment");
@@ -85,6 +85,13 @@ void AtenWindow::createContextMenu()
 	connect(action, SIGNAL(triggered(bool)),  ui.SelectionAppearanceResetToElementButton, SLOT(click()));
 	action = contextMenu_.addAction("&Hide");
 	connect(action, SIGNAL(triggered(bool)), ui.SelectionAppearanceHideButton, SLOT(click()));
+	// -- Re-map submenu
+	menu = contextMenu_.addMenu("Re-&map elements...");
+	for (int n=0; n<ElementMap::nZMapTypes; ++n)
+	{
+		action = menu->addAction(ElementMap::zMapType( (ElementMap::ZMapType) n ));
+		connect(action, SIGNAL(triggered(bool)), this, SLOT(contextMenuReMap(bool)));
+	}
 
 	// Position
 	contextMenu_.addSeparator();
@@ -231,6 +238,28 @@ void AtenWindow::contextMenuSelectFragment(bool checked)
 	updateWidgets();
 }
 
+// Re-map atom selection according to specified type
+void AtenWindow::contextMenuReMap(bool checked)
+{
+	// Cast sending QAction
+	QAction *action = qobject_cast<QAction*> (sender());
+	if (!action)
+	{
+		printf("AtenWindow::contextMenuReMap - Sender was not a QAction.\n");
+		return;
+	}
+
+	// Get element mapping style from action text
+	ElementMap::ZMapType zm = ElementMap::zMapType(action->text());
+	if (zm != ElementMap::nZMapTypes)
+	{
+		CommandNode::run(Commands::ReMap, "c", qPrintable(action->text()));
+
+		updateWidgets();
+	}
+}
+
+// Change custom colour of selected atoms
 void AtenWindow::contextMenuColourChanged(QColor colour)
 {
 	CommandNode::run(Commands::ColourAtoms, "dddd", colour.redF(), colour.greenF(), colour.blueF(), colour.alphaF());
@@ -246,7 +275,7 @@ void AtenWindow::createGlyph()
 	QAction *action = qobject_cast<QAction*> (sender());
 	if (!action)
 	{
-		printf("AtenWindow::loadRecent - Sender was not a QAction.\n");
+		printf("AtenWindow::createGlyph() - Sender was not a QAction.\n");
 		return;
 	}
 	// Which action was it?

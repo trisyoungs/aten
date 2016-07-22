@@ -397,6 +397,7 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 
 		// Add atom
 		Atom* i = model->addAtom(el, r, v, f);
+		i->setData(qPrintable(name));
 
 		// KeepNames and KeepTypes standard options
 		ForcefieldAtom* ffa = NULL;

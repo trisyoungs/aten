@@ -81,6 +81,7 @@ void Commands::initPointers()
 	pointers_[GetAtom] = &AtenSpace::Commands::function_GetAtom;
 	pointers_[Hide] = &AtenSpace::Commands::function_Hide;
 	pointers_[RecolourAtoms] = &AtenSpace::Commands::function_RecolourAtoms;
+	pointers_[ReMap] = &AtenSpace::Commands::function_ReMap;
 	pointers_[SetCoords] = &AtenSpace::Commands::function_SetCoords;
 	pointers_[SetCharge] = &AtenSpace::Commands::function_SetCharge;
 	pointers_[SetElement] = &AtenSpace::Commands::function_SetElement;

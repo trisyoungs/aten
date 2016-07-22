@@ -129,6 +129,7 @@ class Commands
 		GetAtom,
 		Hide,
 		RecolourAtoms,
+		ReMap,
 		SetCharge,
 		SetCoords,
 		SetElement,
@@ -593,6 +594,7 @@ class Commands
 	bool function_GetAtom(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_Hide(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_RecolourAtoms(CommandNode* c, Bundle& obj, ReturnValue& rv);
+	bool function_ReMap(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_SetCoords(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_SetCharge(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_SetElement(CommandNode* c, Bundle& obj, ReturnValue& rv);
