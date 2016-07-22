@@ -32,7 +32,7 @@ DLP2ModelPlugin::DLP2ModelPlugin()
 	// Setup plugin options
 	pluginOptions_.add("shiftCell", "true");
 	pluginOptions_.add("levcfg", "0");
-	pluginOptions_.add("useTypeNames", "false");
+	pluginOptions_.add("useTypeNames", "true");
 }
 
 // Destructor

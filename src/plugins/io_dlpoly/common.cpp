@@ -162,7 +162,7 @@ bool DLPOLYPluginCommon::writeCONFIGModel (FilePluginInterface* plugin, FilePars
 
   // Write atom information
   int k=0;
-	bool useTypeNames = plugin->pluginOptions().value("useTypeNames") == "true";
+	bool useTypeNames = FilePluginInterface::toBool(plugin->pluginOptions().value("useTypeNames"));
   for ( Atom* i = sourceModel->atoms(); i != NULL; i = i->next ) {
     if (levcfg>=0){
 		if (useTypeNames && i->type()){
