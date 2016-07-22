@@ -108,7 +108,7 @@ bool MOPACControlModelPlugin::canImport()
 // Import data from the specified file
 bool MOPACControlModelPlugin::importData()
 {
-	if (!MOPACFilePluginCommon::readMOPACModel(this, fileParser_, standardOptions_, createModel())) return false;
+	return MOPACFilePluginCommon::readMOPACModel(this, fileParser_, standardOptions_, createModel());
 }
 
 // Return whether this plugin can export data
