@@ -86,6 +86,12 @@ class FileSelectorWidget : public QWidget
 	QStringList selectedFiles();
 	// Return selected file plugin
 	FilePluginInterface* selectedPlugin();
+	// Clear favourite places list
+	static void clearFavourites();
+	// Add favourite place to list
+	static void addFavourite(QString place);
+	// Return favourite places list
+	static const QStringList favourites();
 
 
 	/*
@@ -100,12 +106,15 @@ class FileSelectorWidget : public QWidget
 	void on_FilesEdit_textChanged(QString textChanged);
 	void on_FilesEdit_returnPressed();
 	void on_FilterCombo_currentIndexChanged(int index);
+	void on_FavouritesTable_currentItemChanged(QTableWidgetItem* current, QTableWidgetItem* previous);
 
 	public slots:
 	// Update widgets, e.g. after directory change
 	void updateWidgets();
 	// Resize columns of file view
 	void resizeFileView(QString dummy = QString());
+	// Custom context menu requested for favourites list
+	void favouritesContextMenuRequested(const QPoint& point);
 
 
 	/*

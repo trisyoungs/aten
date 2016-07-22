@@ -19,11 +19,11 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <QFileInfo>
 #include "base/sysfunc.h"
 #include "gui/mainwindow.h"
 #include "main/aten.h"
 #include <QSettings>
+#include <QFileInfo>
 
 // Load Qt Settings
 void AtenWindow::loadSettings()
@@ -111,8 +111,25 @@ void AtenWindow::loadSettings()
 			}
 			settings.endGroup();
 		}
-
-
+		// -- Favourite Places
+		FileSelectorWidget::clearFavourites();
+		if (settings.contains("FavouritePlaces"))
+		{
+			settings.beginGroup("FavouritePlaces");
+			n = 0;
+			while (settings.contains(QString::number(n)))
+			{
+				FileSelectorWidget::addFavourite(settings.value(QString::number(n++)).toString());
+			}
+			settings.endGroup();
+		}
+		else
+		{
+			// Add on default favourites
+			FileSelectorWidget::addFavourite(QDir::rootPath());
+			FileSelectorWidget::addFavourite(QDir::homePath());
+			FileSelectorWidget::addFavourite(aten_.dataDir().absolutePath());
+		}
 	}
 
 	// Check for old command history information, read it, and then remove it
@@ -226,43 +243,51 @@ void AtenWindow::saveSettings()
 	}
 	// -- Recent Forcefields
 	settings.remove("RecentForcefields");
-	if (ui.HomeFileOpenButton->callPopupMethod("nRecentFiles", nItems))
+	if (ui.ForcefieldsManageOpenButton->callPopupMethod("nRecentFiles", nItems))
 	{
 		int count = 0;
 		settings.beginGroup("RecentForcefields");
 		for (int n = 0; n < nItems.asInteger(); ++n)
 		{
-			if (!ui.HomeFileOpenButton->callPopupMethod("recentFile", recentFile = n)) continue;
+			if (!ui.ForcefieldsManageOpenButton->callPopupMethod("recentFile", recentFile = n)) continue;
 			settings.setValue(QString::number(count++), recentFile.asString());
 		}
 		settings.endGroup();
 	}
 	// -- Recent Grids
 	settings.remove("RecentGrids");
-	if (ui.HomeFileOpenButton->callPopupMethod("nRecentFiles", nItems))
+	if (ui.GridsManageOpenButton->callPopupMethod("nRecentFiles", nItems))
 	{
 		int count = 0;
 		settings.beginGroup("RecentGrids");
 		for (int n = 0; n < nItems.asInteger(); ++n)
 		{
-			if (!ui.HomeFileOpenButton->callPopupMethod("recentFile", recentFile = n)) continue;
+			if (!ui.GridsManageOpenButton->callPopupMethod("recentFile", recentFile = n)) continue;
 			settings.setValue(QString::number(count++), recentFile.asString());
 		}
 		settings.endGroup();
 	}
 	// -- Recent Scripts
 	settings.remove("RecentScripts");
-	if (ui.HomeFileOpenButton->callPopupMethod("nRecentFiles", nItems))
+	if (ui.ToolsScriptsOpenButton->callPopupMethod("nRecentFiles", nItems))
 	{
 		int count = 0;
 		settings.beginGroup("RecentScripts");
 		for (int n = 0; n < nItems.asInteger(); ++n)
 		{
-			if (!ui.HomeFileOpenButton->callPopupMethod("recentFile", recentFile = n)) continue;
+			if (!ui.ToolsScriptsOpenButton->callPopupMethod("recentFile", recentFile = n)) continue;
 			settings.setValue(QString::number(count++), recentFile.asString());
 		}
 		settings.endGroup();
 	}
+	// -- FileSelectorWidget Favourite Places
+	settings.remove("FavouritePlaces");
+	settings.beginGroup("FavouritePlaces");
+	for (int n = 0; n < FileSelectorWidget::favourites().count(); ++n)
+	{
+		settings.setValue(QString::number(n), FileSelectorWidget::favourites().at(n));
+	}
+	settings.endGroup();
 
 	// History file
 	LineParser historyFile;
@@ -297,4 +322,3 @@ void AtenWindow::saveSettings()
 	historyFile.closeFiles();
 	Messenger::print("Done.");
 }
-
