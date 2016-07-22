@@ -1,6 +1,6 @@
 /*
-	*** Gradient Editor
-	*** src/gui/tgradienteditor_funcs.cpp
+	*** ColourScale Editor
+	*** src/gui/tcolourscaleeditor_funcs.cpp
 	Copyright T. Youngs 2016-2016
 
 	This file is part of Aten.
@@ -19,7 +19,7 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "gui/tgradienteditor.hui"
+#include "gui/tcolourscaleeditor.hui"
 #include "gui/texponentialspin.hui"
 #include "gui/colourdialog.h"
 #include <QPainter>
@@ -33,10 +33,10 @@ int gradientBarWidth_ = 32;
 int handleRadius_ = 4;
 
 // Constructor
-TGradientEditor::TGradientEditor(QWidget* parent) : QWidget(parent)
+TColourScaleEditor::TColourScaleEditor(QWidget* parent) : QWidget(parent)
 {
 	// Private variables
-	currentRegion_ = TGradientEditor::NoRegion;
+	currentRegion_ = TColourScaleEditor::NoRegion;
 	hoverColourScalePoint_ = NULL;
 	currentColourScalePoint_ = NULL;
 
@@ -44,7 +44,7 @@ TGradientEditor::TGradientEditor(QWidget* parent) : QWidget(parent)
 }
 
 // Convert gradient bar position to colourscale value
-double TGradientEditor::gradientBarValue(QPoint pos)
+double TColourScaleEditor::gradientBarValue(QPoint pos)
 {
 	if (colourScale_.nPoints() == 0) return 0.0;
 	double frac = 1.0 - (pos.y() - gradientBarRegion_.boundingRect().top()) / double(gradientBarRegion_.boundingRect().height());
@@ -53,7 +53,7 @@ double TGradientEditor::gradientBarValue(QPoint pos)
 }
 
 // Return ColourScalePoint corresponding to handle under mouse (if any)
-ColourScalePoint* TGradientEditor::handleUnderMouse(QPoint pos)
+ColourScalePoint* TColourScaleEditor::handleUnderMouse(QPoint pos)
 {
 	// Did we hit a handle?
 	if (colourScale_.nPoints() > 0)
@@ -77,7 +77,7 @@ ColourScalePoint* TGradientEditor::handleUnderMouse(QPoint pos)
 }
 
 // Return ColourScalePoint corresponding to label under mouse (if any)
-ColourScalePoint* TGradientEditor::labelUnderMouse(QPoint pos)
+ColourScalePoint* TColourScaleEditor::labelUnderMouse(QPoint pos)
 {
 	// Get the size of the textrect we need
 	QRect masterTextRect = style()->itemTextRect(fontMetrics(), QRect(), Qt::AlignRight | Qt::AlignVCenter, true, QString::number(-0.123456, 'e', 6));
@@ -105,7 +105,7 @@ ColourScalePoint* TGradientEditor::labelUnderMouse(QPoint pos)
 }
 
 // Update QGradient for display
-void TGradientEditor::updateGradient()
+void TColourScaleEditor::updateGradient()
 {
 	// Setup QGradient - in ObjectBoundingMode, 0.0 = top of rectangle, and 1.0 is bottom
 	gradient_ = QLinearGradient(0.0, 1.0, 0.0, 0.0);
@@ -131,7 +131,7 @@ void TGradientEditor::updateGradient()
 }
 
 // Set local colourscale
-void TGradientEditor::setColourScale(const ColourScale& colourScale)
+void TColourScaleEditor::setColourScale(const ColourScale& colourScale)
 {
 	// If the source colourscale uses deltaHSV_, we must construct an interpolated gradient manually since QGradient doesn't support HSV interpolation
 // 	if (colourScale.useHSV())
@@ -159,7 +159,7 @@ void TGradientEditor::setColourScale(const ColourScale& colourScale)
 }
 
 // Return local colourscale
-ColourScale TGradientEditor::colourScale()
+ColourScale TColourScaleEditor::colourScale()
 {
 	return colourScale_;
 }
@@ -177,7 +177,7 @@ ColourScale TGradientEditor::colourScale()
  */
 
 // Paint event callback
-void TGradientEditor::paintEvent(QPaintEvent *event)
+void TColourScaleEditor::paintEvent(QPaintEvent *event)
 {
 	QPainter painter(this);
 
@@ -237,7 +237,7 @@ void TGradientEditor::paintEvent(QPaintEvent *event)
 	painter.end();
 }
 
-void TGradientEditor::drawHandle(QStyleOption& styleOption, QPainter& painter)
+void TColourScaleEditor::drawHandle(QStyleOption& styleOption, QPainter& painter)
 {
 	// Set up colours and deltas for circles
 	QColor colour1, colour2;
@@ -271,7 +271,7 @@ void TGradientEditor::drawHandle(QStyleOption& styleOption, QPainter& painter)
 }
 
 // Size hint
-QSize TGradientEditor::sizeHint() const
+QSize TColourScaleEditor::sizeHint() const
 {
 	QRect masterTextRect = style()->itemTextRect(fontMetrics(), QRect(), Qt::AlignRight | Qt::AlignVCenter, true, QString::number(-0.123456, 'e', 6));
 	int margin = masterTextRect.height()*0.5;
@@ -280,7 +280,7 @@ QSize TGradientEditor::sizeHint() const
 }
 
 // Minimum size hint
-QSize TGradientEditor::minimumSizeHint() const
+QSize TColourScaleEditor::minimumSizeHint() const
 {
 	QRect masterTextRect = style()->itemTextRect(fontMetrics(), QRect(), Qt::AlignRight | Qt::AlignVCenter, true, QString::number(-0.123456, 'e', 6));
 	int margin = masterTextRect.height()*0.5;
@@ -290,7 +290,7 @@ QSize TGradientEditor::minimumSizeHint() const
 
 
 // Mouse pressed
-void TGradientEditor::mousePressEvent(QMouseEvent* event)
+void TColourScaleEditor::mousePressEvent(QMouseEvent* event)
 {
 	// Store position
 	lastPos_ = event->pos();
@@ -298,14 +298,14 @@ void TGradientEditor::mousePressEvent(QMouseEvent* event)
 	// Check mouse position
 	if (gradientBarRegion_.contains(lastPos_))
 	{
-		currentRegion_ = TGradientEditor::GradientRegion;
+		currentRegion_ = TColourScaleEditor::GradientRegion;
 	}
 	else if (handleRegion_.contains(lastPos_))
 	{
-		currentRegion_ = TGradientEditor::HandleRegion;
+		currentRegion_ = TColourScaleEditor::HandleRegion;
 		currentColourScalePoint_ = handleUnderMouse(lastPos_);
 	}
-	else currentRegion_ = TGradientEditor::NoRegion;
+	else currentRegion_ = TColourScaleEditor::NoRegion;
 
 	mouseDown_ = true;
 
@@ -313,7 +313,7 @@ void TGradientEditor::mousePressEvent(QMouseEvent* event)
 }
 
 // Mouse moved
-void TGradientEditor::mouseMoveEvent(QMouseEvent* event)
+void TColourScaleEditor::mouseMoveEvent(QMouseEvent* event)
 {
 	// Store mouse position
 	lastPos_ = event->pos();
@@ -322,7 +322,7 @@ void TGradientEditor::mouseMoveEvent(QMouseEvent* event)
 	if (!mouseDown_ ) return;
 
 	// Check mouse position
-	if (gradientBarRegion_.contains(lastPos_) && (currentRegion_ == TGradientEditor::GradientRegion))
+	if (gradientBarRegion_.contains(lastPos_) && (currentRegion_ == TColourScaleEditor::GradientRegion))
 	{
 // 		gradientBarValue(lastPos_);
 	}
@@ -338,22 +338,22 @@ void TGradientEditor::mouseMoveEvent(QMouseEvent* event)
 }
 
 // Mouse released
-void TGradientEditor::mouseReleaseEvent(QMouseEvent* event)
+void TColourScaleEditor::mouseReleaseEvent(QMouseEvent* event)
 {
 	mouseDown_ = false;
 
 	// Perform final actions
-	if (currentColourScalePoint_ && (currentRegion_ == TGradientEditor::HandleRegion))
+	if (currentColourScalePoint_ && (currentRegion_ == TColourScaleEditor::HandleRegion))
 	{
 		// Handle may have been dragged, so emit the signal
 		emit(colourScaleChanged());
 	}
 
-	currentRegion_ = TGradientEditor::NoRegion;
+	currentRegion_ = TColourScaleEditor::NoRegion;
 	currentColourScalePoint_ = NULL;
 }
 
-void TGradientEditor::mouseDoubleClickEvent(QMouseEvent* event)
+void TColourScaleEditor::mouseDoubleClickEvent(QMouseEvent* event)
 {
 	// Store mouse position
 	lastPos_ = event->pos();
@@ -412,7 +412,7 @@ void TGradientEditor::mouseDoubleClickEvent(QMouseEvent* event)
 	currentColourScalePoint_ = NULL;
 }
 
-void TGradientEditor::contextMenuRequested(const QPoint& point)
+void TColourScaleEditor::contextMenuRequested(const QPoint& point)
 {
 	// Get handle at clicked point
 	ColourScalePoint* clickedPoint = handleUnderMouse(point);

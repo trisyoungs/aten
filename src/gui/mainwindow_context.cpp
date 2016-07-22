@@ -24,6 +24,7 @@
 #include "gui/popupcolour.h"
 #include "model/model.h"
 #include "parser/commandnode.h"
+#include <QWidgetAction>
 
 // Create context menu and setup actions
 void AtenWindow::createContextMenu()
@@ -74,11 +75,14 @@ void AtenWindow::createContextMenu()
 	contextMenu_.addSeparator();
 
 	// Appearance
-// 	menu = contextMenu_.addMenu("Set Colour...");
-// 	menu->addAction(new ColourPopup(*this, NULL));
-// 	connect(action, SIGNAL(triggered(bool)), ui.SelectionLabelClearButton, SLOT(click()));
+	menu = contextMenu_.addMenu("Set Colour...");
+	TColourWidget* colourWidget = new TColourWidget(menu);
+	QWidgetAction* colourWidgetAction = new QWidgetAction(menu);
+	colourWidgetAction->setDefaultWidget(colourWidget);
+	menu->addAction(colourWidgetAction);
+	connect(colourWidget, SIGNAL(colourChanged(QColor)), this, SLOT(contextMenuColourChanged(QColor)));
 	action = contextMenu_.addAction("&Reset Colour to Element");
-	connect(action, SIGNAL(triggered(bool)), ui.SelectionAppearanceResetToElementButton, SLOT(click()));
+	connect(action, SIGNAL(triggered(bool)),  ui.SelectionAppearanceResetToElementButton, SLOT(click()));
 	action = contextMenu_.addAction("&Hide");
 	connect(action, SIGNAL(triggered(bool)), ui.SelectionAppearanceHideButton, SLOT(click()));
 
@@ -223,6 +227,15 @@ void AtenWindow::contextMenuSelectElement(bool checked)
 void AtenWindow::contextMenuSelectFragment(bool checked)
 {
 	CommandNode::run(Commands::SelectTree, "i", contextAtom_->id()+1);
+
+	updateWidgets();
+}
+
+void AtenWindow::contextMenuColourChanged(QColor colour)
+{
+	CommandNode::run(Commands::ColourAtoms, "dddd", colour.redF(), colour.greenF(), colour.blueF(), colour.alphaF());
+
+	ui.HomeAppearanceOwnColourButton->click();
 
 	updateWidgets();
 }

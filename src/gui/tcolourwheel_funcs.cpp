@@ -336,7 +336,6 @@ void TColourWheel::hueChanged(const int hue)
 		updateSquare(hue);
 		updateComposite();
 
-// 		repaint();
 		update();
 	}
 
@@ -353,7 +352,6 @@ void TColourWheel::svChanged(const QColor newcolor)
 	if (isVisible())
 	{
 		updateComposite();
-// 		repaint();
 		update();
 	}
 
@@ -375,8 +373,8 @@ void TColourWheel::setColour(const QColor colour)
 {
 	if (colour == currentColour_) return;
 
-	// Update hue and sv if necessaey
-	if (colour.hue() != currentColour_.hue()) hueChanged(colour.hue());
+	// Update hue and sv if necessary
+	if ((colour.hue() != -1) && (colour.hue() != currentColour_.hue())) hueChanged(colour.hue());
 	if (colour.saturation() != currentColour_.saturation() || colour.value() != currentColour_.value()) svChanged(colour);
 
 	// Copy alpha value of source colour, since it will not be correct

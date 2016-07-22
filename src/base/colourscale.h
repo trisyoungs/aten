@@ -44,8 +44,12 @@ class ColourScale : public ListItem<ColourScale>
 	public:
 	// Constructor
 	ColourScale();
-	// Operator==
-	bool operator==(const ColourScale& other);
+	// Copy Constructor
+	ColourScale(const ColourScale& source);
+	// Assignment Operator
+	bool operator=(const ColourScale& source);
+	// Equivalence Operator
+	bool operator==(const ColourScale& source);
 
 
 	/*
@@ -103,7 +107,9 @@ class ColourScale : public ListItem<ColourScale>
 	// Add new point to colourscale
 	ColourScalePoint* addPoint(double value, QColor colour);
 	// Set colour and value data for point
-	void setPoint(int position, double value, double r, double g, double b, double a = 1.0f, bool setval = true, bool setcol = true);
+	void setPoint(int position, double value, double r = 0.0, double g = 0.0, double b = 0.0, double a = 0.0, bool modifyValue = true, bool modifyColour = false);
+	// Set colour and value data for point
+	void setPoint(ColourScalePoint* point, double value, double r = 0.0, double g = 0.0, double b = 0.0, double a = 0.0, bool modifyValue = true, bool modifyColour = false);
 	// Set value for point
 	void setValue(int position, double value);
 	// Set value for point

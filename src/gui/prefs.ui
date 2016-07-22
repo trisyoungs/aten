@@ -2553,7 +2553,7 @@
         <widget class="QListWidget" name="ScaleList">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
-           <horstretch>1</horstretch>
+           <horstretch>0</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
@@ -2574,7 +2574,7 @@
        <item>
         <widget class="QGroupBox" name="ScaleGroup">
          <property name="sizePolicy">
-          <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+          <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
            <horstretch>2</horstretch>
            <verstretch>0</verstretch>
           </sizepolicy>
@@ -2599,7 +2599,7 @@
            <number>4</number>
           </property>
           <item>
-           <widget class="TGradientEditor" name="ScaleEditor" native="true">
+           <widget class="TColourScaleEditor" name="ScaleEditor" native="true">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
               <horstretch>0</horstretch>
@@ -3131,9 +3131,9 @@
    <header>gui/tmenubutton.hui</header>
   </customwidget>
   <customwidget>
-   <class>TGradientEditor</class>
+   <class>TColourScaleEditor</class>
    <extends>QWidget</extends>
-   <header>gui/tgradienteditor.hui</header>
+   <header>gui/tcolourscaleeditor.hui</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

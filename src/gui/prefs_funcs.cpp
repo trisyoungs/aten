@@ -736,6 +736,17 @@ void AtenPrefs::on_ScaleList_itemDoubleClicked(QListWidgetItem* item)
 	}
 }
 
+void AtenPrefs::colourScaleChanged()
+{
+	int row = ui.ScaleList->currentRow();
+	if (row == -1) return;
+
+	// Update local colourscale in prefs
+	prefs.colourScale[row] = ui.ScaleEditor->colourScale();
+
+	parent_.updateWidgets();
+}
+
 /*
  * Program Page
  */

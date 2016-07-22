@@ -1,6 +1,6 @@
 /*
-	*** Gradient Editor
-	*** src/gui/gradienteditor.hui
+	*** ColourScale Editor
+	*** src/gui/tcolourscaleeditor.hui
 	Copyright T. Youngs 2016-2016
 
 	This file is part of Aten.
@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_GRADIENTEDITOR_H
-#define ATEN_GRADIENTEDITOR_H
+#ifndef ATEN_COLOURSCALEEDITOR_H
+#define ATEN_COLOURSCALEEDITOR_H
 
 #include "base/colourscale.h"
 #include <QWidget>
@@ -28,14 +28,14 @@
 // Forward declarations
 class QStyleOption;
 
-// Gradient Editor
-class TGradientEditor : public QWidget
+// ColourScale Editor
+class TColourScaleEditor : public QWidget
 {
 	Q_OBJECT
 
 	public:
 	// Constructor
-	TGradientEditor(QWidget* parent);
+	TColourScaleEditor(QWidget* parent);
 
 
 	/*
@@ -57,7 +57,7 @@ class TGradientEditor : public QWidget
 	 */
 	private:
 	// Local mouse regions
-	enum TGradientEditorRegion { NoRegion, GradientRegion, HandleRegion };
+	enum TColourScaleEditorRegion { NoRegion, GradientRegion, HandleRegion };
 	// Local QGradient, constructed from ColourScale
 	QLinearGradient gradient_;
 	// Whether mouse button is currently down on the widget
@@ -65,7 +65,7 @@ class TGradientEditor : public QWidget
 	// Last position of mouse over widget
 	QPoint lastPos_;
 	// Current region that the mouse is over
-	TGradientEditorRegion currentRegion_;
+	TColourScaleEditorRegion currentRegion_;
 	// Defined gradient bar region
 	QRegion gradientBarRegion_;
 	// Defined handle region

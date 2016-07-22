@@ -78,6 +78,7 @@ SET(gui_MOC_HDRS
   viewbasis.h
   vieweigenvector.h
   zmatrix.h
+  tcolourscaleeditor.hui
   tcolourwheel.hui
   tcolourwidget.hui
   tdoublespindelegate.hui
@@ -85,7 +86,6 @@ SET(gui_MOC_HDRS
   tdynamicwidget.hui
   texponentialspin.hui
   textratreewidgetitem.h
-  tgradienteditor.hui
   tintegerspindelegate.hui
   tmenubutton.hui
   tmenubuttongroup.h
@@ -296,13 +296,13 @@ set(gui_SRCS
   viewer_offscreen.cpp
   viewer_scene.cpp
   viewer_useractions.cpp
+  tcolourscaleeditor_funcs.cpp
   tcolourwheel_funcs.cpp
   tcolourwidget_funcs.cpp
   tdynamiclayout_funcs.cpp
   tdynamicwidget_funcs.cpp
   tdoublespindelegate_funcs.cpp
   texponentialspin_funcs.cpp
-  tgradienteditor_funcs.cpp
   tintegerspindelegate_funcs.cpp
   tmenubutton_funcs.cpp
   tmenubuttongroup.cpp

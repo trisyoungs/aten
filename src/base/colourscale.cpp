@@ -32,14 +32,35 @@ ColourScale::ColourScale() : ListItem<ColourScale>()
 	interpolated_ = true;
 }
 
-// Operator==
-bool ColourScale::operator==(const ColourScale& other)
+// Copy Constructor
+ColourScale::ColourScale(const ColourScale& source)
 {
-	if (name_ != other.name_) return false;
-	if (interpolated_ != other.interpolated_) return false;
+	(*this) = source;
+}
 
-	if (points_.nItems() != other.points_.nItems()) return false;
-	ColourScalePoint* othercsp = other.points_.first();
+// Assignment Operator
+bool ColourScale::operator=(const ColourScale& source)
+{
+	name_ = source.name_;
+	interpolated_ = source.interpolated_;
+	visible_ = source.visible_;
+
+	// Copy points and deltas
+	points_ = source.points_;
+	calculateDeltas();
+
+	// Copy reference objects
+	grids_ = source.grids_;
+}
+
+// Equivalence Operator
+bool ColourScale::operator==(const ColourScale& source)
+{
+	if (name_ != source.name_) return false;
+	if (interpolated_ != source.interpolated_) return false;
+
+	if (points_.nItems() != source.points_.nItems()) return false;
+	ColourScalePoint* othercsp = source.points_.first();
 	for (ColourScalePoint* csp = points_.first(); csp != NULL; csp = csp->next, othercsp = othercsp->next)
 	{
 		if ((*csp) != (*othercsp)) return false;
@@ -160,19 +181,47 @@ ColourScalePoint* ColourScale::addPoint(double value, QColor colour)
 }
 	
 // Set colour and value data for point
-void ColourScale::setPoint(int position, double value, double r, double g, double b, double a, bool setval, bool setcol)
+void ColourScale::setPoint(int position, double value, double r, double g, double b, double a, bool modifyValue, bool modifyColour)
 {
-	Messenger::enter("ColourScale::setPoint");
-
-	// Check position supplied
+	// Get ColourScalePoint for supplied position
 	if ((position < 0) || (position >= points_.nItems()))
 	{
 		Messenger::print("Scale point position to set (%i) is invalid - nItems = %i.", position, points_.nItems());
 		Messenger::exit("ColourScale::setPoint");
 		return;
 	}
-	if (setval) points_[position]->setValue(value);
-	if (setcol) points_[position]->setColour(r, g, b, a);
+
+	ColourScalePoint* point = points_[position];
+
+	setPoint(point, value, r, g, b, a, modifyValue, modifyColour);
+}
+
+// Set colour and value data for point
+void ColourScale::setPoint(ColourScalePoint* point, double value, double r, double g, double b, double a, bool modifyValue, bool modifyColour)
+{
+	Messenger::enter("ColourScale::setPoint");
+
+	// Set value
+	if (modifyValue)
+	{
+		// Set the new value, then adjust position of point as necessary
+		point->setValue(value);
+		// -- Shuffle up (towards head = lower values)
+		while (point->prev)
+		{
+			if (value < point->prev->value()) points_.shiftUp(point);
+			else break;
+		}
+		// -- Shuffle down (towards tail = higher values)
+		while (point->next)
+		{
+			if (value > point->next->value()) points_.shiftDown(point);
+			else break;
+		}
+	}
+
+	// Set colour
+	if (modifyColour) point->setColour(r, g, b, a);
 
 	// Recalculate colour deltas
 	calculateDeltas();

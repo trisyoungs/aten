@@ -24,6 +24,7 @@ Colour by coordination number
 Collapse cell tool.
 Tool to calculate / show total charge in selection.
 Calculate tool to work out centre of geometry/mass.
+Favourites in FileSelector.
 
 Plugin TODO
 ===========
@@ -37,6 +38,7 @@ Reimplement drawing of grid (volume) axes.
 Frame individual model areas when displaying multiple models OR light checkerboard background?
 Automatically adjust grid size for number of visible models, based on current aspect ratio and context size etc.
 Multiple bonds (double, definitely) are not drawn correctly, becoming squashed as the bond length increases.
+Scaling factor for labels etc. (popup slider in gui)
 
 GUI TODO
 ========
