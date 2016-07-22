@@ -42,7 +42,7 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 [Files]
 Source: "..\..\build\bin\Aten.exe"; DestDir: "{app}\bin"; Flags: ignoreversion
 Source: "..\..\data\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "..\..\build\data\plugins\*"; DestDir: "{app}\data\plugins"; Flags: ignoreversion
+Source: "..\..\build\data\plugins\*"; DestDir: "{app}\plugins"; Flags: ignoreversion
 Source: "..\..\build\lib\libaten.dll"; DestDir: "{app}\bin"; Flags: ignoreversion
 Source: "Aten.ico"; DestDir: "{app}\bin"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
