@@ -112,8 +112,10 @@ class ColourScale : public ListItem<ColourScale>
 	void setColour(int position, double r, double g, double b, double a = 1.0f);
 	// Set colour for point
 	void setColour(ColourScalePoint* point, QColor colour);
-	// Remove old point from colourscale
+	// Remove point from colourscale
 	void removePoint(int position);
+	// Remove point from colourscale
+	void removePoint(ColourScalePoint* point);
 	// Get colour associated with value supplied
 	void colour(double value, GLfloat* target);
 	// Get colour associated with value supplied

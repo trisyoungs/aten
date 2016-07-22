@@ -232,6 +232,13 @@ void ColourScale::removePoint(int position)
 	Messenger::exit("ColourScale::removePoint");
 }
 
+// Remove point from colourscale
+void ColourScale::removePoint(ColourScalePoint* point)
+{
+	int position = points_.indexOf(point);
+	if (position != -1) removePoint(position);
+}
+
 // Return colour associated with value provided
 void ColourScale::colour(double v, GLfloat* target)
 {

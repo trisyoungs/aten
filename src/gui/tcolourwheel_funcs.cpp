@@ -249,13 +249,13 @@ void TColourWheel::updateWheel(const QSize widgetSize)
 
 	// -- Small circle (background colour)
 	painter.setBrush(background);
-	painter.drawEllipse(QPoint(0,0), outerRadius_ -wheelWidth_, outerRadius_ -wheelWidth_);
+	painter.drawEllipse(QPoint(0,0), outerRadius_-wheelWidth_, outerRadius_-wheelWidth_);
 
 	// Setup region for wheel
-	wheelRegion_ = QRegion(centre_.x(), centre_.y(), outerRadius_*2, outerRadius_*2, QRegion::Ellipse);
-	wheelRegion_.translate(-centre_.x(), -centre_.y());
-	QRegion subRe = QRegion(centre_.x()+wheelWidth_, centre_.y()+wheelWidth_, (outerRadius_-wheelWidth_)*2, (outerRadius_-wheelWidth_)*2, QRegion::Ellipse);
-	subRe.translate(-centre_.x(), -centre_.y());
+	wheelRegion_ = QRegion(-outerRadius_, -outerRadius_, outerRadius_*2, outerRadius_*2, QRegion::Ellipse);
+	wheelRegion_.translate(centre_.x(), centre_.y());
+	QRegion subRe = QRegion(-(outerRadius_-wheelWidth_), -(outerRadius_-wheelWidth_), (outerRadius_-wheelWidth_)*2, (outerRadius_-wheelWidth_)*2, QRegion::Ellipse);
+	subRe.translate(centre_.x(), centre_.y());
 	wheelRegion_ -= subRe;
 }
 

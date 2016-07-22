@@ -26,8 +26,6 @@
 #include <QWidget>
 
 // Forward declarations
-class TExponentialSpin;
-class QResizeEvent;
 class QStyleOption;
 
 // Gradient Editor
@@ -44,10 +42,22 @@ class TGradientEditor : public QWidget
 	 * Data
 	 */
 	private:
+	// Local ColourScale to display / edit
+	ColourScale colourScale_;
+
+	public:
+	// Set colourscale to display
+	void setColourScale(const ColourScale& colourScale);
+	// Return local colourscale
+	ColourScale colourScale();
+
+
+	/*
+	 * Widget Functions
+	 */
+	private:
 	// Local mouse regions
 	enum TGradientEditorRegion { NoRegion, GradientRegion, HandleRegion };
-	// Local ColourScale to display
-	ColourScale colourScale_;
 	// Local QGradient, constructed from ColourScale
 	QLinearGradient gradient_;
 	// Whether mouse button is currently down on the widget
@@ -60,6 +70,8 @@ class TGradientEditor : public QWidget
 	QRegion gradientBarRegion_;
 	// Defined handle region
 	QRegion handleRegion_;
+	// Defined label region
+	QRegion labelRegion_;
 	// Current colourscale point being hovered over (if any)
 	ColourScalePoint* hoverColourScalePoint_;
 	// Current colourscale point that is the subject of interaction
@@ -70,12 +82,10 @@ class TGradientEditor : public QWidget
 	double gradientBarValue(QPoint pos);
 	// Return ColourScalePoint corresponding to handle under mouse (if any)
 	ColourScalePoint* handleUnderMouse(QPoint pos);
+	// Return ColourScalePoint corresponding to label under mouse (if any)
+	ColourScalePoint* labelUnderMouse(QPoint pos);
 	// Update QGradient for display
 	void updateGradient();
-
-	public:
-	// Set colourscale to display
-	void setColourScale(const ColourScale& colourScale);
 
 	protected:
 	// Handle drawing
@@ -91,6 +101,13 @@ class TGradientEditor : public QWidget
 	void mouseMoveEvent(QMouseEvent* event);
 	void mouseReleaseEvent(QMouseEvent* event);
 	void mouseDoubleClickEvent(QMouseEvent* event);
+
+	private slots:
+	// Context menu
+	void contextMenuRequested(const QPoint& point);
+
+	signals:
+	void colourScaleChanged();
 };
 
 #endif

@@ -131,7 +131,7 @@ TColourWidget::TColourWidget(QWidget* parent) : QWidget(parent)
 
 	// Colour Wheel
 	colourWheel_ = new TColourWheel(this);
-	gridLayout->addWidget(colourWheel_, 0, 3, 8, 1);
+	gridLayout->addWidget(colourWheel_, 0, 3, 9, 1);
 	connect(colourWheel_, SIGNAL(colourChanged(QColor)), this, SLOT(updateColourFromWheel(QColor)));
 
 	// Set basic default colour

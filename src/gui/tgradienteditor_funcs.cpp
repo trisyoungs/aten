@@ -26,6 +26,8 @@
 #include <QStyle>
 #include <QStyleOption>
 #include <QMouseEvent>
+#include <QMenu>
+#include <QInputDialog>
 
 int gradientBarWidth_ = 32;
 int handleRadius_ = 4;
@@ -37,6 +39,8 @@ TGradientEditor::TGradientEditor(QWidget* parent) : QWidget(parent)
 	currentRegion_ = TGradientEditor::NoRegion;
 	hoverColourScalePoint_ = NULL;
 	currentColourScalePoint_ = NULL;
+
+	connect(this, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(contextMenuRequested(QPoint)));
 }
 
 // Convert gradient bar position to colourscale value
@@ -65,8 +69,35 @@ ColourScalePoint* TGradientEditor::handleUnderMouse(QPoint pos)
 			// Work out fractional position of colourscale value and get centre coordinates of handle
 			double fracy = (1.0 - (csp->value() - zero) / span);
 			int y = fracy * gradientBarRegion_.boundingRect().height() + gradientBarRegion_.boundingRect().top();
-			printf("Current y = %i, handle %p y = %i\n", lastPos_.y(), csp, y);
 			if (abs(y - pos.y()) <= handleRadius_) return csp;
+		}
+	}
+
+	return NULL;
+}
+
+// Return ColourScalePoint corresponding to label under mouse (if any)
+ColourScalePoint* TGradientEditor::labelUnderMouse(QPoint pos)
+{
+	// Get the size of the textrect we need
+	QRect masterTextRect = style()->itemTextRect(fontMetrics(), QRect(), Qt::AlignRight | Qt::AlignVCenter, true, QString::number(-0.123456, 'e', 6));
+	int margin = masterTextRect.height()*0.5;
+	masterTextRect.setLeft(margin);
+	masterTextRect.setRight(width() - gradientBarWidth_ - 3*margin - handleRadius_*2);
+
+	// Draw text and line elements
+	if (colourScale_.nPoints() > 0)
+	{
+		double zero = colourScale_.firstPoint()->value();
+		double span = colourScale_.lastPoint()->value() - zero;
+		for (ColourScalePoint* csp = colourScale_.firstPoint(); csp != NULL; csp = csp->next)
+		{
+			int y = (1.0 - (csp->value() - zero) / span) * (height() - 2*margin) + margin;
+			QString numberText = QString::number(csp->value(), 'e', 6);
+			masterTextRect.moveBottom(y + 0.5*masterTextRect.height());
+
+			QRect textRect = style()->itemTextRect(fontMetrics(), masterTextRect, Qt::AlignRight | Qt::AlignVCenter, true, numberText);
+			if (textRect.contains(pos)) return csp;
 		}
 	}
 
@@ -127,6 +158,16 @@ void TGradientEditor::setColourScale(const ColourScale& colourScale)
 	repaint();
 }
 
+// Return local colourscale
+ColourScale TGradientEditor::colourScale()
+{
+	return colourScale_;
+}
+
+/*
+ * Widget Functions
+ */
+
 /*
  * Layout of widget is as follows:
  *   ___________________________
@@ -166,8 +207,9 @@ void TGradientEditor::paintEvent(QPaintEvent *event)
 
 	// Define regions
 	gradientBarRegion_ = QRegion(gradientRect);
-	// -- Handle region spans top to bottom of the widget (i.e. excluding margins)
+	// -- Handle and label region spans top to bottom of the widget (i.e. excluding margins)
 	handleRegion_ = QRegion(QRect(width() - margin - 2*handleRadius_, 0, 2*handleRadius_, height()));
+	labelRegion_ = QRegion(QRect(0, 0, width() - gradientRect.right() - margin, height()));
 
 	// Draw text and line elements
 	if (colourScale_.nPoints() > 0)
@@ -257,13 +299,11 @@ void TGradientEditor::mousePressEvent(QMouseEvent* event)
 	if (gradientBarRegion_.contains(lastPos_))
 	{
 		currentRegion_ = TGradientEditor::GradientRegion;
-		printf("Gradient region pressed.\n");
 	}
 	else if (handleRegion_.contains(lastPos_))
 	{
 		currentRegion_ = TGradientEditor::HandleRegion;
 		currentColourScalePoint_ = handleUnderMouse(lastPos_);
-		printf("Handle region pressed.\n");
 	}
 	else currentRegion_ = TGradientEditor::NoRegion;
 
@@ -284,12 +324,11 @@ void TGradientEditor::mouseMoveEvent(QMouseEvent* event)
 	// Check mouse position
 	if (gradientBarRegion_.contains(lastPos_) && (currentRegion_ == TGradientEditor::GradientRegion))
 	{
-		gradientBarValue(lastPos_);
+// 		gradientBarValue(lastPos_);
 	}
 	else if (currentColourScalePoint_)
 	{
 		// Move the colourscale point
-		printf("New value for colourscale point = %f\n", gradientBarValue(lastPos_));
 		colourScale_.setValue(currentColourScalePoint_, gradientBarValue(lastPos_));
 
 		updateGradient();
@@ -302,6 +341,14 @@ void TGradientEditor::mouseMoveEvent(QMouseEvent* event)
 void TGradientEditor::mouseReleaseEvent(QMouseEvent* event)
 {
 	mouseDown_ = false;
+
+	// Perform final actions
+	if (currentColourScalePoint_ && (currentRegion_ == TGradientEditor::HandleRegion))
+	{
+		// Handle may have been dragged, so emit the signal
+		emit(colourScaleChanged());
+	}
+
 	currentRegion_ = TGradientEditor::NoRegion;
 	currentColourScalePoint_ = NULL;
 }
@@ -318,11 +365,16 @@ void TGradientEditor::mouseDoubleClickEvent(QMouseEvent* event)
 		double clickedValue = gradientBarValue(lastPos_);
 		QColor clickedColour = colourScale_.colourAsQColor(clickedValue);
 		colourScale_.addPoint(clickedValue, clickedColour);
+
+		updateGradient();
+		repaint();
+
+		emit(colourScaleChanged());
 	}
 	else if (handleRegion_.contains(lastPos_))
 	{
 		currentColourScalePoint_ = handleUnderMouse(lastPos_);
-		printf("Double clicked a handle.\n");
+		
 		if (currentColourScalePoint_)
 		{
 			ColourDialog colourDialog(this);
@@ -331,11 +383,86 @@ void TGradientEditor::mouseDoubleClickEvent(QMouseEvent* event)
 				colourScale_.setColour(currentColourScalePoint_, colourDialog.selectedColour());
 
 				updateGradient();
-
 				repaint();
+
+				emit(colourScaleChanged());
+			}
+		}
+	}
+	else if (labelRegion_.contains(lastPos_))
+	{
+		currentColourScalePoint_ = labelUnderMouse(lastPos_);
+
+		if (currentColourScalePoint_)
+		{
+			bool ok;
+			double newValue = QInputDialog::getDouble(this, "Set point value", "New value: ", currentColourScalePoint_->value(), -1.0e7, 1.0e7, 6, &ok);
+			if (ok)
+			{
+				colourScale_.setValue(currentColourScalePoint_, newValue);
+
+				updateGradient();
+				repaint();
+
+				emit(colourScaleChanged());
 			}
 		}
 	}
 
 	currentColourScalePoint_ = NULL;
+}
+
+void TGradientEditor::contextMenuRequested(const QPoint& point)
+{
+	// Get handle at clicked point
+	ColourScalePoint* clickedPoint = handleUnderMouse(point);
+	if (!clickedPoint) return;
+
+	// Build the context menu to display
+	QMenu contextMenu;
+	QAction* valueAction = contextMenu.addAction("&Set value...");
+	QAction* deleteAction = contextMenu.addAction("&Delete");
+	QAction* spaceAction = contextMenu.addAction("&Set to midpoint");
+	if ((!clickedPoint->prev) || (!clickedPoint->next)) spaceAction->setEnabled(false);
+
+	// Show it
+	QPoint menuPosition = mapToGlobal(point);
+	QAction* menuResult = contextMenu.exec(menuPosition);
+
+	// What was clicked?
+	if (menuResult == valueAction)
+	{
+		bool ok;
+		double newValue = QInputDialog::getDouble(this, "Set point value", "New value: ", clickedPoint->value(), -1.0e7, 1.0e7, 6, &ok);
+		if (ok)
+		{
+			colourScale_.setValue(clickedPoint, newValue);
+
+			updateGradient();
+			repaint();
+
+			emit(colourScaleChanged());
+		}
+	}
+	else if (menuResult == deleteAction)
+	{
+		colourScale_.removePoint(clickedPoint);
+		
+		updateGradient();
+		repaint();
+
+		emit(colourScaleChanged());
+	}
+	else if (menuResult == spaceAction)
+	{
+		// Get average values of next and previous points
+		double averageValue = (clickedPoint->next->value() + clickedPoint->prev->value()) * 0.5;
+
+		colourScale_.setValue(clickedPoint, averageValue);
+
+		updateGradient();
+		repaint();
+
+		emit(colourScaleChanged());
+	}
 }
