@@ -242,7 +242,7 @@ bool ColourScaleVariable::performFunction(int i, ReturnValue& rv, TreeNode* node
 	if (result) switch (i)
 	{
 		case (ColourScaleVariable::AddPoint):
-			rv.set(VTypes::ColourScalePointData, ptr->addPointAtEnd(node->argd(0), node->argd(1), node->argd(2), node->argd(3), node->hasArg(4) ? node->argd(4) : 1.0f));
+			rv.set(VTypes::ColourScalePointData, ptr->addPoint(node->argd(0), node->argd(1), node->argd(2), node->argd(3), node->hasArg(4) ? node->argd(4) : 1.0f));
 			break;
 		case (ColourScaleVariable::Clear):
 			ptr->clear();

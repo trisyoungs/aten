@@ -276,17 +276,17 @@ Prefs::Prefs()
 
 	// Colour scales
 	colourScale[0].setName("Charge");
-	colourScale[0].addPoint(0, -1.0, 1.0f, 0.0f, 0.0f);
-	colourScale[0].addPoint(1, 0.0, 1.0f, 1.0f, 1.0f);
-	colourScale[0].addPoint(2, 1.0, 0.0f, 0.0f, 1.0f);
+	colourScale[0].addPoint( -1.0, 1.0f, 0.0f, 0.0f);
+	colourScale[0].addPoint(0.0, 1.0f, 1.0f, 1.0f);
+	colourScale[0].addPoint(1.0, 0.0f, 0.0f, 1.0f);
 	colourScale[1].setName("Velocity");
-	colourScale[1].addPoint(0, -100.0, 1.0f, 0.0f, 0.0f);
-	colourScale[1].addPoint(1, 0.0, 1.0f, 1.0f, 1.0f);
-	colourScale[1].addPoint(2, 100.0, 1.0f, 0.0f, 0.0f);
+	colourScale[1].addPoint(-100.0, 1.0f, 0.0f, 0.0f);
+	colourScale[1].addPoint(0.0, 1.0f, 1.0f, 1.0f);
+	colourScale[1].addPoint(100.0, 1.0f, 0.0f, 0.0f);
 	colourScale[2].setName("Force");
-	colourScale[2].addPoint(0, -1000.0, 1.0f, 0.0f, 0.0f);
-	colourScale[2].addPoint(1, 0.0, 1.0f, 1.0f, 1.0f);
-	colourScale[2].addPoint(2, 1000.0, 1.0f, 0.0f, 0.0f);
+	colourScale[2].addPoint(-1000.0, 1.0f, 0.0f, 0.0f);
+	colourScale[2].addPoint(0.0, 1.0f, 1.0f, 1.0f);
+	colourScale[2].addPoint(1000.0, 1.0f, 0.0f, 0.0f);
 
 	// General Prefs / Methods
 	maxRingSize_ = 6;

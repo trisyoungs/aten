@@ -93,6 +93,14 @@ double* ColourScalePoint::colour()
 	return colour_;
 }
 
+// Return colour as QColor
+QColor ColourScalePoint::colourAsQColor()
+{
+	QColor color;
+	color.setRgbF(colour_[0], colour_[1], colour_[2], colour_[3]);
+	return color;
+}
+
 /*
  * Colour scale delta
  */

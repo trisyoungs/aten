@@ -249,13 +249,13 @@ void TColourWheel::updateWheel(const QSize widgetSize)
 
 	// -- Small circle (background colour)
 	painter.setBrush(background);
-	painter.drawEllipse(QPoint(0,0), outerRadius_ -wheelWidth_, outerRadius_ -wheelWidth_);
+	painter.drawEllipse(QPoint(0,0), outerRadius_-wheelWidth_, outerRadius_-wheelWidth_);
 
 	// Setup region for wheel
-	wheelRegion_ = QRegion(centre_.x(), centre_.y(), outerRadius_*2, outerRadius_*2, QRegion::Ellipse);
-	wheelRegion_.translate(-centre_.x(), -centre_.y());
-	QRegion subRe = QRegion(centre_.x()+wheelWidth_, centre_.y()+wheelWidth_, (outerRadius_-wheelWidth_)*2, (outerRadius_-wheelWidth_)*2, QRegion::Ellipse);
-	subRe.translate(-centre_.x(), -centre_.y());
+	wheelRegion_ = QRegion(-outerRadius_, -outerRadius_, outerRadius_*2, outerRadius_*2, QRegion::Ellipse);
+	wheelRegion_.translate(centre_.x(), centre_.y());
+	QRegion subRe = QRegion(-(outerRadius_-wheelWidth_), -(outerRadius_-wheelWidth_), (outerRadius_-wheelWidth_)*2, (outerRadius_-wheelWidth_)*2, QRegion::Ellipse);
+	subRe.translate(centre_.x(), centre_.y());
 	wheelRegion_ -= subRe;
 }
 
@@ -336,7 +336,6 @@ void TColourWheel::hueChanged(const int hue)
 		updateSquare(hue);
 		updateComposite();
 
-// 		repaint();
 		update();
 	}
 
@@ -353,7 +352,6 @@ void TColourWheel::svChanged(const QColor newcolor)
 	if (isVisible())
 	{
 		updateComposite();
-// 		repaint();
 		update();
 	}
 
@@ -375,8 +373,8 @@ void TColourWheel::setColour(const QColor colour)
 {
 	if (colour == currentColour_) return;
 
-	// Update hue and sv if necessaey
-	if (colour.hue() != currentColour_.hue()) hueChanged(colour.hue());
+	// Update hue and sv if necessary
+	if ((colour.hue() != -1) && (colour.hue() != currentColour_.hue())) hueChanged(colour.hue());
 	if (colour.saturation() != currentColour_.saturation() || colour.value() != currentColour_.value()) svChanged(colour);
 
 	// Copy alpha value of source colour, since it will not be correct

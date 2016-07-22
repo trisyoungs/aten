@@ -26,29 +26,23 @@
 #include <QPainter>
 
 // Constructor
-ColourPopup::ColourPopup(AtenWindow& parent, TMenuButton* buttonParent, int options) : TPopupWidget(buttonParent), parent_(parent), options_(options)
+ColourPopup::ColourPopup(AtenWindow& parent, TMenuButton* buttonParent, int colourWidgetOptions) : TPopupWidget(buttonParent), parent_(parent)
 {
 	ui.setupUi(this);
 
-	setCurrentColour(Qt::blue);
-	updateParentButtonIcon();
+	connect(ui.ColourWidget, SIGNAL(colourChanged(QColor)), this, SLOT(colourChanged(QColor)));
 
-	// Tweak based on options
-	if (options_&NoAlphaOption)
-	{
-		ui.AlphaLine->setVisible(false);
-		ui.AlphaSlider->setVisible(false);
-		ui.AlphaSpin->setVisible(false);
-		ui.AlphaSpin->setValue(255);
-	}
+	ui.ColourWidget->setOptions(colourWidgetOptions);
+
+	setCurrentColour(Qt::blue);
+
+	updateParentButtonIcon(Qt::blue);
 }
 
 // Update controls (before show()) (virtual)
 void ColourPopup::updateControls()
 {
 	refreshing_ = true;
-
-	setCurrentColour(currentColour_);
 
 	refreshing_ = false;
 }
@@ -60,37 +54,37 @@ bool ColourPopup::callMethod(QString methodName, ReturnValue& rv)
 	if (methodName == "TEST") return true;
 	else if (methodName == "currentColour")
 	{
+		QColor newColor = ui.ColourWidget->currentColour();
 		double colour[4];
-		colour[0] = currentColour_.redF();
-		colour[1] = currentColour_.greenF();
-		colour[2] = currentColour_.blueF();
-		colour[3] = currentColour_.alphaF();
+		colour[0] = newColor.redF();
+		colour[1] = newColor.greenF();
+		colour[2] = newColor.blueF();
+		colour[3] = newColor.alphaF();
 		rv.setArray(VTypes::DoubleData, colour, 4);
 		return true;
 	}
 	else if (methodName == "setCurrentColour")
 	{
 		bool success;
-		double colour[4];
-		colour[0] = rv.asDouble(0, success);
-		if (success) colour[1] = rv.asDouble(1, success);
-		if (success) colour[2] = rv.asDouble(2, success);
-		if (success) colour[3] = rv.asDouble(3, success);
+		QColor newColour;
+		newColour.setRedF(rv.asDouble(0, success));
+		if (success) newColour.setGreenF(rv.asDouble(1, success));
+		if (success) newColour.setBlueF(rv.asDouble(2, success));
+		if (success) newColour.setAlphaF(rv.asDouble(3, success));
 		if (!success)
 		{
 			printf("Failed to get colour information from supplied ReturnValue.\n");
 			return false;
 		}
-		currentColour_.setRgbF(colour[0], colour[1], colour[2], colour[3]);
-		setCurrentColour(currentColour_);
+		setCurrentColour(newColour);
 
-		updateParentButtonIcon();
+		updateParentButtonIcon(newColour);
 
 		return true;
 	}
 	else if (methodName == "hideEvent")
 	{
-		updateParentButtonIcon();
+		updateParentButtonIcon(ui.ColourWidget->currentColour());
 		return true;
 	}
 	else
@@ -105,167 +99,10 @@ bool ColourPopup::callMethod(QString methodName, ReturnValue& rv)
  * Widget Functions
  */
 
-void ColourPopup::on_RedSlider_valueChanged(int value)
+// Colour in selection widget has changed
+void ColourPopup::colourChanged(const QColor colour)
 {
-	if (refreshing_) return;
-
-	QColor newColour;
-	newColour.setRgb(value, ui.GreenSlider->value(), ui.BlueSlider->value(), ui.AlphaSlider->value());
-	setCurrentColour(newColour);
-}
-
-void ColourPopup::on_RedSpin_valueChanged(int value)
-{
-	if (refreshing_) return;
-
-	QColor newColour;
-	newColour.setRgb(value, ui.GreenSlider->value(), ui.BlueSlider->value(), ui.AlphaSlider->value());
-	setCurrentColour(newColour);
-
-	popupChanged();
-}
-
-void ColourPopup::on_GreenSlider_valueChanged(int value)
-{
-	if (refreshing_) return;
-
-	QColor newColour;
-	newColour.setRgb(ui.RedSlider->value(), value, ui.BlueSlider->value(), ui.AlphaSlider->value());
-	setCurrentColour(newColour);
-
-	popupChanged();
-}
-
-void ColourPopup::on_GreenSpin_valueChanged(int value)
-{
-	if (refreshing_) return;
-
-	QColor newColour;
-	newColour.setRgb(ui.RedSlider->value(), value, ui.BlueSlider->value(), ui.AlphaSlider->value());
-	setCurrentColour(newColour);
-
-	popupChanged();
-}
-
-void ColourPopup::on_BlueSlider_valueChanged(int value)
-{
-	if (refreshing_) return;
-
-	QColor newColour;
-	newColour.setRgb(ui.RedSlider->value(), ui.GreenSlider->value(), value, ui.AlphaSlider->value());
-	setCurrentColour(newColour);
-
-	popupChanged();
-}
-
-void ColourPopup::on_BlueSpin_valueChanged(int value)
-{
-	if (refreshing_) return;
-
-	QColor newColour;
-	newColour.setRgb(ui.RedSlider->value(), ui.GreenSlider->value(), value, ui.AlphaSlider->value());
-	setCurrentColour(newColour);
-
-	popupChanged();
-}
-
-void ColourPopup::on_HueSlider_valueChanged(int value)
-{
-	if (refreshing_) return;
-
-	QColor newColour;
-	newColour.setHsv(value, ui.SaturationSlider->value(), ui.ValueSlider->value(), ui.AlphaSlider->value());
-	setCurrentColour(newColour);
-
-	popupChanged();
-}
-
-void ColourPopup::on_HueSpin_valueChanged(int value)
-{
-	if (refreshing_) return;
-
-	QColor newColour;
-	newColour.setHsv(value, ui.SaturationSlider->value(), ui.ValueSlider->value(), ui.AlphaSlider->value());
-	setCurrentColour(newColour);
-
-	popupChanged();
-}
-
-void ColourPopup::on_SaturationSlider_valueChanged(int value)
-{
-	if (refreshing_) return;
-
-	QColor newColour;
-	newColour.setHsv(ui.HueSlider->value(), value, ui.ValueSlider->value(), ui.AlphaSlider->value());
-	setCurrentColour(newColour);
-
-	popupChanged();
-}
-
-void ColourPopup::on_SaturationSpin_valueChanged(int value)
-{
-	if (refreshing_) return;
-
-	QColor newColour;
-	newColour.setHsv(ui.HueSlider->value(), value, ui.ValueSlider->value(), ui.AlphaSlider->value());
-	setCurrentColour(newColour);
-
-	popupChanged();
-}
-
-void ColourPopup::on_ValueSlider_valueChanged(int value)
-{
-	if (refreshing_) return;
-
-	QColor newColour;
-	newColour.setHsv(ui.HueSlider->value(), ui.SaturationSlider->value(), value, ui.AlphaSlider->value());
-	setCurrentColour(newColour);
-
-	popupChanged();
-}
-
-void ColourPopup::on_ValueSpin_valueChanged(int value)
-{
-	if (refreshing_) return;
-
-	QColor newColour;
-	newColour.setHsv(ui.HueSlider->value(), ui.SaturationSlider->value(), value, ui.AlphaSlider->value());
-	setCurrentColour(newColour);
-
-	popupChanged();
-}
-
-void ColourPopup::on_AlphaSlider_valueChanged(int value)
-{
-	if (refreshing_) return;
-
-	QColor newColour;
-	newColour.setRgb(ui.RedSlider->value(), ui.GreenSlider->value(), ui.BlueSlider->value(), value);
-	setCurrentColour(newColour);
-
-	popupChanged();
-}
-
-void ColourPopup::on_AlphaSpin_valueChanged(int value)
-{
-	if (refreshing_) return;
-
-	QColor newColour;
-	newColour.setRgb(ui.RedSlider->value(), ui.GreenSlider->value(), ui.BlueSlider->value(), value);
-	setCurrentColour(newColour);
-
-	popupChanged();
-}
-
-void ColourPopup::on_Wheel_colourChanged(const QColor& colour)
-{
-	if (refreshing_) return;
-
-	setCurrentColour(colour);
-
-	updateParentButtonIcon();
-
-	popupChanged();
+	updateParentButtonIcon(colour);
 }
 
 /*
@@ -273,7 +110,7 @@ void ColourPopup::on_Wheel_colourChanged(const QColor& colour)
  */
 
 // Update parent button's icon
-void ColourPopup::updateParentButtonIcon()
+void ColourPopup::updateParentButtonIcon(QColor colour)
 {
 	if (!parentMenuButton())
 	{
@@ -286,15 +123,16 @@ void ColourPopup::updateParentButtonIcon()
 	QPainter painter(&pixmap);
 	QPen pen;
 
-	// Clear pixmap with current button background colour
-	painter.setBrush(parentMenuButton()->palette().background());
+	// Clear pixmap with white background colour (so that transparent colours are displayed correctly)
+// 	painter.setBrush(parentMenuButton()->palette().background());
+	painter.setBrush(Qt::white);
 	painter.setPen(Qt::NoPen);
 	painter.drawRect(-1, -1, 32, 32);
 
 	// Setup gradient - the top-left corner will be the actual opaque colour, and the bottom-right the alpha valued colour
 	QLinearGradient linearGrad(QPointF(0, 0), QPointF(16, 16));
-	linearGrad.setColorAt(0, QColor(currentColour_.red(), currentColour_.green(), currentColour_.blue(), 255));
-	linearGrad.setColorAt(1, currentColour_);
+	linearGrad.setColorAt(0, QColor(colour.red(), colour.green(), colour.blue(), 255));
+	linearGrad.setColorAt(1, colour);
 	painter.setBrush(linearGrad);
 
 	// Draw circle
@@ -311,28 +149,5 @@ void ColourPopup::updateParentButtonIcon()
 // Set current colour
 void ColourPopup::setCurrentColour(QColor color)
 {
-	refreshing_ = true;
-
-	currentColour_ = color;
-
-	// Set slider and spin controls
-	ui.RedSlider->setValue(color.red());
-	ui.RedSpin->setValue(color.red());
-	ui.GreenSlider->setValue(color.green());
-	ui.GreenSpin->setValue(color.green());
-	ui.BlueSlider->setValue(color.blue());
-	ui.BlueSpin->setValue(color.blue());
-	ui.HueSlider->setValue(color.hsvHue());
-	ui.HueSpin->setValue(color.hsvHue());
-	ui.SaturationSlider->setValue(color.hsvSaturation());
-	ui.SaturationSpin->setValue(color.hsvSaturation());
-	ui.ValueSlider->setValue(color.value());
-	ui.ValueSpin->setValue(color.value());
-	ui.AlphaSlider->setValue(color.alpha());
-	ui.AlphaSpin->setValue(color.alpha());
-
-	// Update wheel
-	ui.Wheel->setColour(color);
-
-	refreshing_ = false;
+	ui.ColourWidget->setCurrentColour(color);
 }

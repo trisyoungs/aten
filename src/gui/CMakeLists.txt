@@ -3,6 +3,7 @@
 # Meta-Objects
 SET(gui_MOC_HDRS
   aboutplugins.h
+  colourdialog.h
   disorderoptions.h
   disorderwizard.h
   exportfilm.h
@@ -77,7 +78,9 @@ SET(gui_MOC_HDRS
   viewbasis.h
   vieweigenvector.h
   zmatrix.h
+  tcolourscaleeditor.hui
   tcolourwheel.hui
+  tcolourwidget.hui
   tdoublespindelegate.hui
   tdynamiclayout.hui
   tdynamicwidget.hui
@@ -103,6 +106,7 @@ QT5_WRAP_CPP(treegui_MOC_SRCS ${treegui_MOC_HDRS})
 # User Interface Files
 SET(gui_UIS
   aboutplugins.ui
+  colourdialog.ui
   disorderoptions.ui
   disorderwizard.ui
   exportfilm.ui
@@ -189,6 +193,7 @@ set(gui_SRCS
   useractions.h
   useractions.cpp
   aboutplugins_funcs.cpp
+  colourdialog_funcs.cpp
   disorderoptions_funcs.cpp
   disorderwizard_funcs.cpp
   exportfilm_funcs.cpp
@@ -291,15 +296,17 @@ set(gui_SRCS
   viewer_offscreen.cpp
   viewer_scene.cpp
   viewer_useractions.cpp
+  tcolourscaleeditor_funcs.cpp
   tcolourwheel_funcs.cpp
+  tcolourwidget_funcs.cpp
   tdynamiclayout_funcs.cpp
   tdynamicwidget_funcs.cpp
-  tmenubutton_funcs.cpp
-  tmenubuttongroup.cpp
-  tpopupwidget_funcs.cpp
   tdoublespindelegate_funcs.cpp
   texponentialspin_funcs.cpp
   tintegerspindelegate_funcs.cpp
+  tmenubutton_funcs.cpp
+  tmenubuttongroup.cpp
+  tpopupwidget_funcs.cpp
   ttabwidget_funcs.cpp
   trecentfiles_funcs.cpp
   textratreewidgetitem_funcs.cpp

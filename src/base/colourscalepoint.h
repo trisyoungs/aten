@@ -71,6 +71,8 @@ class ColourScalePoint : public ListItem<ColourScalePoint>
 	void copyColour(GLfloat* target) const;
 	// Return pointer to colour array
 	double* colour();
+	// Return colour as QColor
+	QColor colourAsQColor();
 };
 
 // Colour scale delta

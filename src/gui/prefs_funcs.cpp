@@ -39,11 +39,11 @@ AtenPrefs::AtenPrefs(AtenWindow& parent) : QDialog(&parent), parent_(parent)
 	// Add colour popups to buttons
 	ui.ElementColourButton->setPopupWidget(new ColourPopup(parent_, ui.ElementColourButton), true);
 	connect(ui.ElementColourButton->popupWidget(), SIGNAL(popupDone()), this, SLOT(elementColourChanged()));
-	ui.SpotlightAmbientColourButton->setPopupWidget(new ColourPopup(parent_, ui.SpotlightAmbientColourButton, ColourPopup::NoAlphaOption), true);
+	ui.SpotlightAmbientColourButton->setPopupWidget(new ColourPopup(parent_, ui.SpotlightAmbientColourButton, TColourWidget::NoAlphaOption), true);
 	connect(ui.SpotlightAmbientColourButton->popupWidget(), SIGNAL(popupDone()), this, SLOT(spotlightAmbientChanged()));
-	ui.SpotlightDiffuseColourButton->setPopupWidget(new ColourPopup(parent_, ui.SpotlightDiffuseColourButton, ColourPopup::NoAlphaOption), true);
+	ui.SpotlightDiffuseColourButton->setPopupWidget(new ColourPopup(parent_, ui.SpotlightDiffuseColourButton, TColourWidget::NoAlphaOption), true);
 	connect(ui.SpotlightDiffuseColourButton->popupWidget(), SIGNAL(popupDone()), this, SLOT(spotlightDiffuseChanged()));
-	ui.SpotlightSpecularColourButton->setPopupWidget(new ColourPopup(parent_, ui.SpotlightSpecularColourButton, ColourPopup::NoAlphaOption), true);
+	ui.SpotlightSpecularColourButton->setPopupWidget(new ColourPopup(parent_, ui.SpotlightSpecularColourButton, TColourWidget::NoAlphaOption), true);
 	connect(ui.SpotlightSpecularColourButton->popupWidget(), SIGNAL(popupDone()), this, SLOT(spotlightSpecularChanged()));
 
 	refreshing_ = false;
@@ -148,11 +148,13 @@ AtenPrefs::AtenPrefs(AtenWindow& parent) : QDialog(&parent), parent_(parent)
 	// Set pen colours and colourscale names and checks
 	for (int n=0; n<10; n++)
 	{
-		QListWidgetItem* item = ui.ScaleList->item(n);
-		item->setText(QString::number(n+1) + ". " + prefs.colourScale[n].name());
+		QListWidgetItem* item = new QListWidgetItem(QString::number(n+1) + ". " + prefs.colourScale[n].name());
 		item->setCheckState( prefs.colourScale[n].visible() ? Qt::Checked : Qt::Unchecked);
+		ui.ScaleList->addItem(item);
 	}
-	updateScalePointsList();
+	ui.ScaleList->setCurrentRow(0);
+	ui.ScaleEditor->setColourScale(prefs.colourScale[0]);
+	connect(ui.ScaleEditor, SIGNAL(colourScaleChanged()), this, SLOT(colourScaleChanged()));
 
 	// Set controls in Energy/FF page
 	ui.CalculateIntraCheck->setChecked(prefs.calculateIntra());
@@ -699,122 +701,15 @@ void AtenPrefs::on_MouseMoveFilterSpin_valueChanged(int value)
 }
 
 /*
- * Colours Page
+ * ColourScales Page
  */
-
-void AtenPrefs::updateScalePointsList()
-{
-	// Clear current list items
-	ui.ScalePointsTable->clear();
-
-	// Get the id of the currently selected point and scale
-	int scale = ui.ScaleList->currentRow();
-	if (scale == -1) return;
-	// Cycle over scale points and add the items
-	GLfloat colour[4];
-	QColor qcol;
-	ui.ScalePointsTable->setRowCount(prefs.colourScale[scale].nPoints());
-	QTableWidgetItem *item;
-	int count = 0;
-	for (ColourScalePoint* csp = prefs.colourScale[scale].firstPoint(); csp != NULL; csp = csp->next)
-	{
-
-		item = new QTableWidgetItem(QString::number(csp->value()));
-		ui.ScalePointsTable->setItem(count, 0, item);
-		item = new QTableWidgetItem();
-		csp->copyColour(colour);
-		qcol.setRgbF( colour[0], colour[1], colour[2], colour[3] );
-		item->setBackgroundColor(qcol);
-		ui.ScalePointsTable->setItem(count, 1, item);
-		++count;
-	}
-	// Select first item in list
-	ui.ScalePointsTable->setCurrentItem(0);
-}
 
 void AtenPrefs::on_ScaleList_currentRowChanged(int id)
 {
 	if (refreshing_ || (id == -1)) return;
-	// Scale selection has changed, so update points list
-	updateScalePointsList();
-}
 
-void AtenPrefs::on_ScalePointsTable_cellChanged(int row, int col)
-{
-	// Column 0 - Value
-	if (col == 0)
-	{
-		// Get the id of the currently selected point and scale
-		int scale = ui.ScaleList->currentRow();
-		if (scale == -1) return;
-		if (row == -1) return;
-		
-		QTableWidgetItem* item = ui.ScalePointsTable->item(row, col);
-
-		// Set value in colourscale
-		prefs.colourScale[scale].setPointValue(row, item->text().toDouble());
-
-		// Update display
-		parent_.aten().currentModel()->logChange(Log::Style);
-		parent_.updateWidgets();
-	}
-}
-
-void AtenPrefs::on_ScalePointsTable_cellDoubleClicked(int row, int column)
-{
-	// Get clicked item in table
-	if (row == -1) return;
-
-	// Column 1 - Colour
-	if (column == 1)
-	{
-		// Get active ColourScale
-		int scale = ui.ScaleList->currentRow();
-		if (scale == -1) return;
-
-		// Get new colour
-		ColourScalePoint* csp = prefs.colourScale[scale].point(row);
-		double* col = csp->colour();
-		QColor oldcol, newcol;
-		oldcol.setRgbF( col[0], col[1], col[2], col[3] );
-
-		// Request a colour dialog
-		bool ok = false;
-		newcol.setRgba(QColorDialog::getRgba(oldcol.rgba(), &ok, this));
-		if (!ok) return;
-
-		// Store new colour
-		prefs.colourScale[scale].setPointColour(row, newcol.redF(), newcol.greenF(), newcol.blueF(), newcol.alphaF());
-		ui.ScalePointsTable->item(row, 1)->setBackgroundColor(newcol);
-
-		// Update display
-		parent_.aten().currentModel()->logChange(Log::Style);
-		parent_.updateWidgets();
-	}
-}
-
-void AtenPrefs::on_AddPointButton_clicked(bool checked)
-{
-	// Get the id of the currently selected scale
-	int scale = ui.ScaleList->currentRow();
-	if (scale == -1) return;
-	// Add a new point to the end of the scale and refresh the list
-	double value = (prefs.colourScale[scale].nPoints() == 0 ? 0.0 : prefs.colourScale[scale].lastPoint()->value() + 1.0);
-	prefs.colourScale[scale].addPointAtEnd(value, 0.5f, 0.5f, 0.5f);
-	updateScalePointsList();
-}
-
-void AtenPrefs::on_RemovePointButton_clicked(bool checked)
-{
-	// Get the id of the currently selected scale and point
-	int scale = ui.ScaleList->currentRow();
-	if (scale == -1) return;
-	int id = ui.ScalePointsTable->currentRow();
-	if (id == -1) return;
-
-	// Remove selected point
-	prefs.colourScale[scale].removePoint(id);
-	updateScalePointsList();
+	// Update Gradient Editor widget
+	ui.ScaleEditor->setColourScale(prefs.colourScale[id]);
 }
 
 void AtenPrefs::on_ScaleList_itemClicked(QListWidgetItem* item)
@@ -836,9 +731,20 @@ void AtenPrefs::on_ScaleList_itemDoubleClicked(QListWidgetItem* item)
 	QString text = QInputDialog::getText(this, tr("Rename Colourscale: ") + (row+1), tr("New name:"), QLineEdit::Normal, prefs.colourScale[row].name(), &ok);
 	if (ok && !text.isEmpty())
 	{
-		prefs.colourScale[row].setName( qPrintable(text) );
+		prefs.colourScale[row].setName(text);
 		parent_.updateWidgets();
 	}
+}
+
+void AtenPrefs::colourScaleChanged()
+{
+	int row = ui.ScaleList->currentRow();
+	if (row == -1) return;
+
+	// Update local colourscale in prefs
+	prefs.colourScale[row] = ui.ScaleEditor->colourScale();
+
+	parent_.updateWidgets();
 }
 
 /*
