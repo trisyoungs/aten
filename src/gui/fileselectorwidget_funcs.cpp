@@ -24,6 +24,7 @@
 #include "templates/variantpointer.h"
 #include <QFileSystemModel>
 #include <QInputDialog>
+#include <QMenu>
 
 // Static Singletons
 QStringList FileSelectorWidget::favourites_;
@@ -42,6 +43,7 @@ FileSelectorWidget::FileSelectorWidget(QWidget* parent) : QWidget(parent)
 
 	// Connect signals
 	connect(&fileSystemModel_, SIGNAL(directoryLoaded(QString)), this, SLOT(resizeFileView(QString)));
+	connect(ui.FavouritesTable, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(favouritesContextMenuRequested(QPoint)));
 
 	refreshing_ = false;
 }
@@ -156,6 +158,24 @@ FilePluginInterface* FileSelectorWidget::selectedPlugin()
 	return plugin;
 }
 
+// Add favourite place to list
+void FileSelectorWidget::addFavourite(QString place)
+{
+	favourites_ << place;
+}
+
+// Clear favourite places list
+void FileSelectorWidget::clearFavourites()
+{
+	favourites_.clear();
+}
+
+// Return favourite places list
+const QStringList FileSelectorWidget::favourites()
+{
+	return favourites_;
+}
+
 /*
  * Widget Functions
 */
@@ -163,6 +183,8 @@ FilePluginInterface* FileSelectorWidget::selectedPlugin()
 // Update widgets, e.g. after directory change
 void FileSelectorWidget::updateWidgets()
 {
+	refreshing_ = true;
+
 	// Favourites list
 	ui.FavouritesTable->clear();
 	ui.FavouritesTable->setColumnCount(1);
@@ -170,7 +192,16 @@ void FileSelectorWidget::updateWidgets()
 	ui.FavouritesTable->setRowCount(favourites_.count());
 	for (int n=0; n<favourites_.count(); ++n)
 	{
-		QTableWidgetItem* item = new QTableWidgetItem(favourites_.at(n));
+		QDir favourite(favourites_.at(n));
+		QTableWidgetItem* item = new QTableWidgetItem(favourite.dirName());
+		if (item->text().isEmpty()) item->setText(favourites_.at(n));
+		item->setData(Qt::UserRole, n);
+		item->setToolTip(favourites_.at(n));
+
+		// Set icon, depending on what the item is...
+		if (favourite == QDir::home()) item->setIcon(style()->standardIcon(QStyle::SP_DirHomeIcon));
+		else if (favourite.isRoot()) item->setIcon(style()->standardIcon(QStyle::SP_DriveHDIcon));
+		else item->setIcon(style()->standardIcon(QStyle::SP_DirIcon));
 		ui.FavouritesTable->setItem(0, n, item);
 	}
 
@@ -186,6 +217,8 @@ void FileSelectorWidget::updateWidgets()
 		files += """" + selectedFilenames_.at(n) + """";
 	}
 	ui.FilesEdit->setText(files);
+
+	refreshing_ = false;
 }
 
 // Resize columns of file table
@@ -193,6 +226,40 @@ void FileSelectorWidget::resizeFileView(QString dummy)
 {
 	ui.FileView->resizeColumnsToContents();
 	ui.FileView->horizontalHeader()->setSectionResizeMode(0, QHeaderView::Stretch);
+}
+
+// Custom context menu requested for favourites list
+void FileSelectorWidget::favouritesContextMenuRequested(const QPoint& point)
+{
+	// Get item at point
+	QTableWidgetItem* item = ui.FavouritesTable->itemAt(point);
+
+	// Build the context menu to display
+	QMenu contextMenu;
+	QAction* addCurrentAction = contextMenu.addAction("&Add current directory");
+	QAction* removeAction = contextMenu.addAction("&Remove");
+
+	// Disable items if required
+	if (!item) removeAction->setEnabled(false);
+ 	for (int n=0; n<favourites_.count(); ++n) if (currentDirectory_ == QDir(favourites_.at(n))) addCurrentAction->setEnabled(false);
+
+	// Show it
+	QPoint menuPosition = ui.FavouritesTable->mapToGlobal(point);
+	QAction* menuResult = contextMenu.exec(menuPosition);
+
+	// What was clicked?
+	if (menuResult == addCurrentAction)
+	{
+		favourites_ << currentDirectory_.absolutePath();
+		updateWidgets();
+	}
+	else if (menuResult == removeAction)
+	{
+		// Get directory string from item
+		int index = item->data(Qt::UserRole).toInt();
+		favourites_.removeAt(index);
+		updateWidgets();
+	}
 }
 
 void FileSelectorWidget::on_DirectoryEdit_returnPressed()
@@ -278,6 +345,8 @@ void FileSelectorWidget::on_FilesEdit_returnPressed()
 
 void FileSelectorWidget::on_FilesEdit_textChanged(QString textChanged)
 {
+	if (refreshing_) return;
+
 	// Split current string into separate arguments
 	LineParser parser;
 	parser.getArgsDelim(Parser::UseQuotes, ui.FilesEdit->text());
@@ -290,6 +359,8 @@ void FileSelectorWidget::on_FilesEdit_textChanged(QString textChanged)
 
 void FileSelectorWidget::on_FilterCombo_currentIndexChanged(int index)
 {
+	if (refreshing_) return;
+
 	// Grab data for selected item
 	FilePluginInterface* plugin = (FilePluginInterface*) VariantPointer<FilePluginInterface>(ui.FilterCombo->itemData(index));
 
@@ -312,4 +383,14 @@ void FileSelectorWidget::on_FilterCombo_currentIndexChanged(int index)
 	}
 
 	emit(pluginSelectionChanged());
+}
+
+void FileSelectorWidget::on_FavouritesTable_currentItemChanged(QTableWidgetItem* current, QTableWidgetItem* previous)
+{
+	if (refreshing_ || (!current)) return;
+
+	// Set current directory
+	setCurrentDirectory(favourites_.at(current->data(Qt::UserRole).toInt()));
+
+	updateWidgets();
 }
