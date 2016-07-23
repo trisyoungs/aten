@@ -38,6 +38,7 @@ ViewColourSchemePopup::ViewColourSchemePopup(AtenWindow& parent, TMenuButton* bu
 	ui.ChargeButton->setGroup("Colourschemes");
 	ui.ForceButton->setGroup("Colourschemes");
 	ui.VelocityButton->setGroup("Colourschemes");
+	ui.BondsButton->setGroup("Colourschemes");
 	ui.OwnButton->setGroup("Colourschemes");
 }
 
@@ -59,6 +60,9 @@ void ViewColourSchemePopup::updateControls()
 			break;
 		case (Prefs::VelocityScheme):
 			ui.VelocityButton->setChecked(true);
+			break;
+		case (Prefs::BondsScheme):
+			ui.BondsButton->setChecked(true);
 			break;
 		case (Prefs::OwnScheme):
 			ui.OwnButton->setChecked(true);
@@ -93,6 +97,9 @@ bool ViewColourSchemePopup::callMethod(QString methodName, ReturnValue& rv)
 				break;
 			case (Prefs::VelocityScheme):
 				parentMenuButton()->setIcon(QIcon(":/colourscheme/icons/colourscheme_velocity.png"));
+				break;
+			case (Prefs::BondsScheme):
+				parentMenuButton()->setIcon(QIcon(":/colourscheme/icons/colourscheme_bonds.png"));
 				break;
 			case (Prefs::OwnScheme):
 				parentMenuButton()->setIcon(QIcon(":/colourscheme/icons/colourscheme_own.png"));
@@ -177,6 +184,23 @@ void ViewColourSchemePopup::on_VelocityButton_clicked(bool checked)
 
 	// Set icon in button
 	callMethodSimple("updateButtonIcon", Prefs::colouringScheme(Prefs::VelocityScheme));
+
+	parent_.aten().globalLogChange(Log::Style);
+
+	parent_.updateWidgets();
+
+	// Hide popup
+	done();
+}
+
+void ViewColourSchemePopup::on_BondsButton_clicked(bool checked)
+{
+	if (!checked) return;
+
+	prefs.setColourScheme(Prefs::BondsScheme);
+
+	// Set icon in button
+	callMethodSimple("updateButtonIcon", Prefs::colouringScheme(Prefs::BondsScheme));
 
 	parent_.aten().globalLogChange(Log::Style);
 

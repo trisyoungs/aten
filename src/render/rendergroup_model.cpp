@@ -397,6 +397,9 @@ void RenderGroup::createAtomsAndBonds(PrimitiveSet& primitiveSet, Model* source,
 			case (Prefs::ForceScheme):
 				prefs.colourScale[2].colour(i->f().magnitude(), colour_i);
 				break;
+			case (Prefs::BondsScheme):
+				prefs.colourScale[3].colour(i->nBonds(), colour_i);
+				break;
 			case (Prefs::OwnScheme):
 				i->copyColour(colour_i);
 				break;
@@ -457,6 +460,9 @@ void RenderGroup::createAtomsAndBonds(PrimitiveSet& primitiveSet, Model* source,
 					break;
 				case (Prefs::ForceScheme):
 					prefs.colourScale[2].colour(j->f().magnitude(), colour_j);
+					break;
+				case (Prefs::BondsScheme):
+					prefs.colourScale[3].colour(j->nBonds(), colour_j);
 					break;
 				case (Prefs::OwnScheme):
 					j->copyColour(colour_j);

@@ -181,6 +181,9 @@ void Viewer::renderUserActions(Model* source)
 				case (Prefs::ForceScheme):
 					prefs.colourScale[2].colour(clickedAtom->f().magnitude(), colour_i);
 					break;
+				case (Prefs::BondsScheme):
+					prefs.colourScale[3].colour(clickedAtom->nBonds(), colour_i);
+					break;
 				case (Prefs::OwnScheme):
 					clickedAtom->copyColour(colour_i);
 					break;

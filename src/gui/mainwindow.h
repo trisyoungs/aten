@@ -212,6 +212,7 @@ class AtenWindow : public QMainWindow
 	void on_HomeAppearanceChargeButton_clicked(bool checked);
 	void on_HomeAppearanceForceButton_clicked(bool checked);
 	void on_HomeAppearanceVelocityButton_clicked(bool checked);
+	void on_HomeAppearanceBondsButton_clicked(bool checked);
 	void on_HomeAppearanceOwnColourButton_clicked(bool checked);
 	void on_HomeAppearancePerspectiveButton_clicked(bool checked);
 	void on_HomeAppearanceShowAllButton_clicked(bool checked);

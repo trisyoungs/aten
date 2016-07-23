@@ -92,6 +92,7 @@
     <file>icons/colourscheme_element.png</file>
     <file>icons/colourscheme_force.png</file>
     <file>icons/colourscheme_own.png</file>
+    <file>icons/colourscheme_bonds.png</file>
     <file>icons/colourscheme_velocity.png</file>
   </qresource>
   <qresource prefix="/atomgeometry">

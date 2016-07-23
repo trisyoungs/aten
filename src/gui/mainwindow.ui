@@ -1616,7 +1616,7 @@
            </widget>
           </item>
           <item row="1" column="4">
-           <widget class="TMenuButton" name="HomeAppearanceOwnColourButton">
+           <widget class="TMenuButton" name="HomeAppearanceBondsButton">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
               <horstretch>0</horstretch>
@@ -1648,7 +1648,7 @@
             </property>
             <property name="icon">
              <iconset resource="icons.qrc">
-              <normaloff>:/colourscheme/icons/colourscheme_own.png</normaloff>:/colourscheme/icons/colourscheme_own.png</iconset>
+              <normaloff>:/colourscheme/icons/colourscheme_bonds.png</normaloff>:/colourscheme/icons/colourscheme_bonds.png</iconset>
             </property>
             <property name="iconSize">
              <size>
@@ -1673,7 +1673,7 @@
             </property>
            </widget>
           </item>
-          <item row="2" column="0" colspan="6">
+          <item row="2" column="0" colspan="7">
            <widget class="QLabel" name="label_70">
             <property name="text">
              <string>Appearance</string>
@@ -1683,7 +1683,7 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="5" rowspan="2">
+          <item row="0" column="6" rowspan="2">
            <widget class="TDynamicWidget" name="HomeAppearanceDynamicWidget" native="true">
             <layout class="QVBoxLayout" name="verticalLayout_5">
              <property name="spacing">
@@ -1793,6 +1793,64 @@
               </widget>
              </item>
             </layout>
+           </widget>
+          </item>
+          <item row="1" column="5">
+           <widget class="TMenuButton" name="HomeAppearanceOwnColourButton">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>28</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>28</width>
+              <height>30</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>8</pointsize>
+             </font>
+            </property>
+            <property name="toolTip">
+             <string notr="true">Colour atoms according to their own defined colours (Ctrl-F5)</string>
+            </property>
+            <property name="text">
+             <string>Own</string>
+            </property>
+            <property name="icon">
+             <iconset resource="icons.qrc">
+              <normaloff>:/colourscheme/icons/colourscheme_own.png</normaloff>:/colourscheme/icons/colourscheme_own.png</iconset>
+            </property>
+            <property name="iconSize">
+             <size>
+              <width>20</width>
+              <height>20</height>
+             </size>
+            </property>
+            <property name="checkable">
+             <bool>true</bool>
+            </property>
+            <property name="checked">
+             <bool>false</bool>
+            </property>
+            <property name="autoExclusive">
+             <bool>false</bool>
+            </property>
+            <property name="toolButtonStyle">
+             <enum>Qt::ToolButtonIconOnly</enum>
+            </property>
+            <property name="autoRaise">
+             <bool>true</bool>
+            </property>
            </widget>
           </item>
          </layout>

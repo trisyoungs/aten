@@ -78,7 +78,7 @@ class Prefs
 	static DrawStyle drawStyle(QString s, bool reportError = false);
 	static const char* drawStyle(DrawStyle);	
 	// Atom colouring scheme
-	enum ColouringScheme { ChargeScheme, ElementScheme, ForceScheme, VelocityScheme, OwnScheme, nColouringSchemes };
+	enum ColouringScheme { ChargeScheme, ElementScheme, ForceScheme, VelocityScheme, BondsScheme, OwnScheme, nColouringSchemes };
 	static ColouringScheme colouringScheme(QString s, bool reportError = false);
 	static const char* colouringScheme(ColouringScheme cs);
 	// Drawing guide geometry

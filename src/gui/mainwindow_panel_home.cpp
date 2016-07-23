@@ -370,6 +370,16 @@ void AtenWindow::on_HomeAppearanceVelocityButton_clicked(bool checked)
 	updateWidgets();
 }
 
+void AtenWindow::on_HomeAppearanceBondsButton_clicked(bool checked)
+{
+	if (!checked) return;
+
+	prefs.setColourScheme(Prefs::BondsScheme);
+	aten_.globalLogChange(Log::Style);
+
+	updateWidgets();
+}
+
 void AtenWindow::on_HomeAppearanceOwnColourButton_clicked(bool checked)
 {
 	if (!checked) return;

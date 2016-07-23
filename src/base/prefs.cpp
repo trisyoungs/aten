@@ -46,7 +46,7 @@ const char* Prefs::drawStyle(Prefs::DrawStyle i)
 }
 
 // Colour Schemes
-const char* ColouringSchemeKeywords[Prefs::nColouringSchemes] = { "Charge", "Element", "Force", "Velocity", "Custom" };
+const char* ColouringSchemeKeywords[Prefs::nColouringSchemes] = { "Charge", "Element", "Force", "Velocity", "Bonds", "Custom" };
 Prefs::ColouringScheme Prefs::colouringScheme(QString s, bool reportError)
 {
 	Prefs::ColouringScheme cs = (Prefs::ColouringScheme) enumSearch("colour scheme",Prefs::nColouringSchemes,ColouringSchemeKeywords,s);
@@ -287,6 +287,16 @@ Prefs::Prefs()
 	colourScale[2].addPoint(-1000.0, 1.0f, 0.0f, 0.0f);
 	colourScale[2].addPoint(0.0, 1.0f, 1.0f, 1.0f);
 	colourScale[2].addPoint(1000.0, 1.0f, 0.0f, 0.0f);
+	colourScale[3].setName("Connectivity");
+	colourScale[3].addPoint(0.0, 1.0f, 1.0f, 1.0f);
+	colourScale[3].addPoint(1.0, 1.0f, 0.0f, 0.0f);
+	colourScale[3].addPoint(2.0, 0.0f, 1.0f, 0.0f);
+	colourScale[3].addPoint(3.0, 0.0f, 0.0f, 1.0f);
+	colourScale[3].addPoint(4.0, 0.0f, 1.0f, 1.0f);
+	colourScale[3].addPoint(5.0, 1.0f, 0.0f, 1.0f);
+	colourScale[3].addPoint(6.0, 1.0f, 1.0f, 0.0f);
+	colourScale[3].addPoint(7.0, 0.5f, 0.5f, 0.5f);
+	colourScale[3].addPoint(8.0, 0.0f, 0.0f, 0.0f);
 
 	// General Prefs / Methods
 	maxRingSize_ = 6;

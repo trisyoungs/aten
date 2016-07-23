@@ -45,7 +45,8 @@ header_class: alt
 | Ctrl-F2 | Charge Colouring | Set main [colouring scheme](/aten/docs/enums/colourscheme) to colour based on charge |
 | Ctrl-F3 | Force Colouring | Set main [colouring scheme](/aten/docs/enums/colourscheme) to colour based on force |
 | Ctrl-F4 | Velocity Colouring | Set main [colouring scheme](/aten/docs/enums/colourscheme) to colour based on velocity |
-| Ctrl-F5 | Custom Colouring | Set main [colouring scheme](/aten/docs/enums/colourscheme) to use custom (per-element) colours |
+| Ctrl-F5 | Bond Count Colouring | Set main [colouring scheme](/aten/docs/enums/colourscheme) to colour based on number of bonds to the atom |
+| Ctrl-F6 | Custom Colouring | Set main [colouring scheme](/aten/docs/enums/colourscheme) to use custom (per-element) colours |
 | Ctrl-- | Zoom Out | Zoom out |
 | Ctrl-+ | Zoom In | Zoom in |
 | Left | Rotate Left | Rotate the current model counter-clockwise about the screen Y-axis |
