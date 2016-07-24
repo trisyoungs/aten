@@ -454,6 +454,7 @@ class Commands
 		DeSelect,
 		DeSelectCode,
 		DeSelectFormatted,
+		DeSelectName,
 		DeSelectType,
 		Expand,
 		Invert,
@@ -468,6 +469,7 @@ class Commands
 		SelectLine,
 		SelectMiller,
 		SelectMolecule,
+		SelectName,
 		SelectNone,
 		SelectOverlaps,
 		SelectOutsideCell,
@@ -894,6 +896,7 @@ class Commands
 	bool function_DeSelect(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_DeSelectCode(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_DeSelectFormatted(CommandNode* c, Bundle& obj, ReturnValue& rv);
+	bool function_DeSelectName(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_DeSelectType(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_Expand(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_Invert(CommandNode* c, Bundle& obj, ReturnValue& rv);
@@ -909,6 +912,7 @@ class Commands
 	bool function_SelectNone(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_SelectMiller(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_SelectMolecule(CommandNode* c, Bundle& obj, ReturnValue& rv);
+	bool function_SelectName(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_SelectOutsideCell(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_SelectOverlaps(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_SelectPattern(CommandNode* c, Bundle& obj, ReturnValue& rv);

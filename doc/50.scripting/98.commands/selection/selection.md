@@ -90,6 +90,24 @@ deselects atom ids 10 to 20 inclusive.
 
 ---
 
+## deSelectName <a id="deselectname"></a>
+
+_Syntax:_
+
+**int** **deSelectName** ( **string** _name_ )
+
+Deselect all atoms in the current model whose assigned type names (not equivalent names) match the supplied string. The string may contain wildcards ('*').
+
+For example:
+
+```aten
+deSelectName("O*");
+```
+
+will deselect all atoms whose assigned type names begin with 'O'.
+
+---
+
 ## deSelectType <a id="deselecttype"></a>
 
 _Syntax:_
@@ -322,6 +340,24 @@ selectMolecule(5);
 ```
 
 selects the bound fragment in which atom number 5 exists.
+
+---
+
+## selectName <a id="selectname"></a>
+
+_Syntax:_
+
+**int** **selectName** ( **string** _name_ )
+
+Selects all atoms in the current model whose assigned type names (not equivalent names) match the supplied string. The string may contain wildcards ('*').
+
+For example:
+
+```aten
+selectName("O*");
+```
+
+will select all atoms whose assigned type names begin with 'O'.
 
 ---
 

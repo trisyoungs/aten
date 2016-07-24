@@ -123,6 +123,27 @@ bool Commands::function_DeSelectFormatted(CommandNode* c, Bundle& obj, ReturnVal
 	return result;
 }
 
+// Select atoms by type name
+bool Commands::function_DeSelectName(CommandNode* c, Bundle& obj, ReturnValue& rv)
+{
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
+	int nselected = obj.rs()->nSelected();
+
+	QRegExp re(c->argc(0));
+	re.setPatternSyntax(QRegExp::Wildcard);
+
+	obj.rs()->beginUndoState("Deselect atoms by typename");
+	for (Atom* i = obj.rs()->atoms(); i != NULL; i = i->next)
+	{
+		if (!i->type()) continue;
+		if (re.exactMatch(i->type()->name())) obj.rs()->deselectAtom(i);
+	}
+	obj.rs()->endUndoState();
+
+	rv.set(obj.rs()->nSelected() - nselected);
+	return true;
+}
+
 // Deselect by supplied atom type description ('deselecttype <el> <typedesc>')
 bool Commands::function_DeSelectType(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
@@ -352,6 +373,27 @@ bool Commands::function_SelectMolecule(CommandNode* c, Bundle& obj, ReturnValue&
 	obj.rs()->beginUndoState("Select bound fragment/molecule");
 	obj.rs()->selectTree(i);
 	obj.rs()->endUndoState();
+	rv.set(obj.rs()->nSelected() - nselected);
+	return true;
+}
+
+// Select atoms by type name
+bool Commands::function_SelectName(CommandNode* c, Bundle& obj, ReturnValue& rv)
+{
+	if (obj.notifyNull(Bundle::ModelPointer)) return false;
+	int nselected = obj.rs()->nSelected();
+
+	QRegExp re(c->argc(0));
+	re.setPatternSyntax(QRegExp::Wildcard);
+
+	obj.rs()->beginUndoState("Select atoms by typename");
+	for (Atom* i = obj.rs()->atoms(); i != NULL; i = i->next)
+	{
+		if (!i->type()) continue;
+		if (re.exactMatch(i->type()->name())) obj.rs()->selectAtom(i);
+	}
+	obj.rs()->endUndoState();
+
 	rv.set(obj.rs()->nSelected() - nselected);
 	return true;
 }

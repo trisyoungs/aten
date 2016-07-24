@@ -49,6 +49,7 @@ void AtenWindow::updateSelectPanel(Model* sourceModel)
 	items << "Range Selection (1-10, C-Ag, 4+, +21, etc.)";
 	items << "NETA Description";
 	items << "Code Loop Selection";
+	items << "Type Name Selection";
 	ui.SelectIntelligentTypeCombo->clear();
 	ui.SelectIntelligentTypeCombo->addItems(items);
 	ui.SelectIntelligentTypeCombo->setCurrentIndex(previousIndex);
@@ -127,17 +128,21 @@ void AtenWindow::on_SelectIntelligentTargetCombo_currentTextChanged(const QStrin
 	}
 	else if (ui.SelectIntelligentTypeCombo->currentIndex() == AtenWindow::RangeSelectType)
 	{
-		if (CommandNode::run(Commands::TestSelect, "c", qPrintable(text)).asBool()) valid = true;
+		valid = CommandNode::run(Commands::TestSelect, "c", qPrintable(text)).asBool();
 	}
 	else if (ui.SelectIntelligentTypeCombo->currentIndex() == AtenWindow::NETASelectType)
 	{
 		Neta neta;
-		if (NetaParser::createNeta(&neta, text, NULL, true)) valid = true;
+		valid = NetaParser::createNeta(&neta, text, NULL, true);
 	}
 	else if (ui.SelectIntelligentTypeCombo->currentIndex() == AtenWindow::LoopSelectType)
 	{
 		Program program;
-		if (program.generateFromString("Atom i; " + text, "SelectionCode", "Selection Code")) valid = true;
+		valid = program.generateFromString("Atom i; " + text, "SelectionCode", "Selection Code");
+	}
+	else if (ui.SelectIntelligentTypeCombo->currentIndex() == AtenWindow::NameSelectType)
+	{
+		valid = true;
 	}
 
 	// Change color of text to red if an unrecognised target
@@ -177,6 +182,9 @@ void AtenWindow::on_SelectIntelligentAddButton_clicked(bool checked)
 			break;
 		case (AtenWindow::LoopSelectType):
 			CommandNode::run(Commands::SelectCode, "c", qPrintable(ui.SelectIntelligentTargetCombo->currentText()));
+			break;
+		case (AtenWindow::NameSelectType):
+			CommandNode::run(Commands::SelectName, "c", qPrintable(ui.SelectIntelligentTargetCombo->currentText()));
 			break;
 	}
 

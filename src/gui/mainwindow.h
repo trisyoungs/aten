@@ -413,7 +413,7 @@ class AtenWindow : public QMainWindow
 	// Update select panel
 	void updateSelectPanel(Model* sourceModel);
 	// Enum for selection auto target type
-	enum SelectTargetType { AutoSelectType, RangeSelectType, NETASelectType, LoopSelectType, nSelectTargetTypes };
+	enum SelectTargetType { AutoSelectType, RangeSelectType, NETASelectType, LoopSelectType, NameSelectType, nSelectTargetTypes };
 	// Last auto-determined selection type
 	SelectTargetType lastSelectionType_;
 

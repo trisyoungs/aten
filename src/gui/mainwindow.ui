@@ -7,7 +7,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1133</width>
+    <width>1147</width>
     <height>716</height>
    </rect>
   </property>
@@ -8930,7 +8930,7 @@
              <string>Specify elements or atom IDs (e.g. C, He-Ar, or 1-10). Use '+' to indicate 'up to' or 'and after' (e.g. +N, 100+)</string>
             </property>
             <property name="editable">
-             <bool>true</bool>
+             <bool>false</bool>
             </property>
             <item>
              <property name="text">
@@ -8950,6 +8950,11 @@
             <item>
              <property name="text">
               <string>Code Loop Selection</string>
+             </property>
+            </item>
+            <item>
+             <property name="text">
+              <string>Type Name Selection</string>
              </property>
             </item>
            </widget>

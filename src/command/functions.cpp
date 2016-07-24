@@ -413,6 +413,7 @@ void Commands::initPointers()
 	pointers_[DeSelect] = &AtenSpace::Commands::function_DeSelect;
 	pointers_[DeSelectCode] = &AtenSpace::Commands::function_DeSelectCode;
 	pointers_[DeSelectFormatted] = &AtenSpace::Commands::function_DeSelectFormatted;
+	pointers_[DeSelectName] = &AtenSpace::Commands::function_DeSelectName;
 	pointers_[DeSelectType] = &AtenSpace::Commands::function_DeSelectType;
 	pointers_[Expand] = &AtenSpace::Commands::function_Expand;
 	pointers_[Invert] = &AtenSpace::Commands::function_Invert;
@@ -427,6 +428,7 @@ void Commands::initPointers()
 	pointers_[SelectLine] = &AtenSpace::Commands::function_SelectLine;
 	pointers_[SelectMiller] = &AtenSpace::Commands::function_SelectMiller;
 	pointers_[SelectMolecule] = &AtenSpace::Commands::function_SelectMolecule;
+	pointers_[SelectName] = &AtenSpace::Commands::function_SelectName;
 	pointers_[SelectNone] = &AtenSpace::Commands::function_SelectNone;
 	pointers_[SelectOverlaps] = &AtenSpace::Commands::function_SelectOverlaps;
 	pointers_[SelectOutsideCell] = &AtenSpace::Commands::function_SelectOutsideCell;

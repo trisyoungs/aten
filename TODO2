@@ -3,7 +3,6 @@ TODO
 Undo/Redo:
   * Rework UndoEvent to use an enum and stored data rather than an individual class for each event type.
   * Add Grid-related undo/redo (e.g. title changes, colour etc.)
-Rename commands for consistency - e.g. newFF to newForcefield?
 Trajectory handling:
 o Inherit generates a crash when at first frame??
 Intelligent Select - add support for selection by type name (e.g. O*, OW etc.).
