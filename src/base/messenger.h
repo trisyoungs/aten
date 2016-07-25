@@ -27,7 +27,6 @@
 #include "base/message.h"
 #include "templates/reflist.h"
 #include <QDateTime>
-#include <QProcess>
 
 // Forward Declarations (Aten)
 class AtenProgress;

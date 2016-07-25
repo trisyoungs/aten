@@ -70,22 +70,22 @@ C#      CALL TIMER('AFTER READ')
 C *** text outputs and jumps in code are removed here...
 C      IF(NATOMS.EQ.0) GOTO 50
 C      IF(INDEX(KEYWRD,'AUTHOR') .NE. 0) THEN
-C         WRITE(6,'(10X,'' MOPAC - A GENERAL MOLECULAR ORBITAL PACKAGE'',
+C         WRITE(WU,'(10X,'' MOPAC - A GENERAL MOLECULAR ORBITAL PACKAGE'',
 C     1/         ,10X,''   ORIGINAL VERSION WRITTEN IN 1983'')')
-C         WRITE(6,'(10X,''     BY JAMES J. P. STEWART AT THE'',/
+C         WRITE(WU,'(10X,''     BY JAMES J. P. STEWART AT THE'',/
 C     1         ,10X,''     UNIVERSITY OF TEXAS AT AUSTIN'',/
 C     2         ,10X,''          AUSTIN, TEXAS, 78712'')')
-C         WRITE(6,'(10X,''  MODIFIED TO DO ESP CALCULATIONS BY''
+C         WRITE(WU,'(10X,''  MODIFIED TO DO ESP CALCULATIONS BY''
 C     1          ,10X,''    BRENT H. BESLER AND K. M. MERZ JR. 1989'')')
 C      ENDIF
 C
 C INITIALIZE CALCULATION AND WRITE CALCULATION INDEPENDENT INFO
 C
 C      IF(INDEX(KEYWRD,'0SCF') .NE. 0) THEN
-C         WRITE(6,'(A)')' GEOMETRY IN MOPAC Z-MATRIX FORMAT'
+C         WRITE(WU,'(A)')' GEOMETRY IN MOPAC Z-MATRIX FORMAT'
       CALL GEOUT(6)
 C         IF(INDEX(KEYWRD,' AIGOUT').NE.0)THEN
-C            WRITE(6,'(//,A)')'  GEOMETRY IN GAUSSIAN Z-MATRIX FORMAT'
+C            WRITE(WU,'(//,A)')'  GEOMETRY IN GAUSSIAN Z-MATRIX FORMAT'
 C            CALL WRTTXT(6)
 C            CALL GEOUTG(6)
 C         ENDIF
@@ -141,8 +141,8 @@ C          CALL ESP
 C      ENDIF
    50 TIM=SECOND()-TIME0
       LIMSCF=.FALSE.
-      WRITE(6,'(///,'' TOTAL CPU TIME: '',F16.2,'' SECONDS'')') TIM
-      WRITE(6,'(/,'' == MOPAC DONE =='')')
+      WRITE(WU,'(///,'' TOTAL CPU TIME: '',F16.2,'' SECONDS'')') TIM
+      WRITE(WU,'(/,'' == MOPAC DONE =='')')
 C      IF(ISOK) GOTO 10
       END
       SUBROUTINE GETDAT
@@ -156,7 +156,7 @@ C      IF(ISOK) GOTO 10
 ************************************************************************
       SAVE I
       DATA I/0/
-C#      WRITE(6,*)GETNAM('FOR005')
+C#      WRITE(WU,*)GETNAM('FOR005')
       OPEN(UNIT=2,FILE=GETNAM('FOR005'),STATUS='UNKNOWN')
 C
 C  CLOSE UNIT 5 IN CASE IT WAS ALREADY PRE-ASSIGNED.
@@ -171,7 +171,7 @@ C
       GOTO 10
    20 REWIND 5
       IF(I.LT.3)THEN
-         WRITE(6,'(A)')' INPUT FILE MISSING OR EMPTY'
+         WRITE(WU,'(A)')' INPUT FILE MISSING OR EMPTY'
          STOP
       ENDIF
       CLOSE (2)

@@ -8,6 +8,8 @@ C     WRITTEN BY K.M.MERZ FEB. 1989 AT UCSF
 C
 C***********************************************************************
       COMMON /KEYWRD/ KEYWRD
+      COMMON /OUTFIL/ WU
+      INTEGER WU
       CHARACTER*241 KEYWRD
 C
 C     SET STANDARD PARAMETERS FOR THE SURFACE GENERATION
@@ -56,7 +58,7 @@ C
 C     END OF CALCULATION
 C
       TIME1=SECOND()-TIME1
-      WRITE(6,20) 'TIME TO CALCULATE ESP:',TIME1,' SECONDS'
+      WRITE(WU,20) 'TIME TO CALCULATE ESP:',TIME1,' SECONDS'
    20 FORMAT(/9X,A,F8.2,A)
       RETURN
       END
@@ -74,6 +76,8 @@ C
       COMMON /ABC/    CO(3,NUMATM),IAN(NUMATM),NATOM
       COMMON /WORK1/  POTPT(3,MESP),WORK1D(4*MESP)
       COMMON /POTESP/ XC,YC,ZC,ESPNUC,ESPELE,NESP
+      COMMON /OUTFIL/ WU
+      INTEGER WU
 C
       DATA VDERW/53*0.0D0/
       VDERW(1)=2.4D0
@@ -115,8 +119,8 @@ C
    30 CONTINUE
       GO TO 50
    40 CONTINUE
-      WRITE(6,*) 'VAN DER WAALS'' RADIUS NOT DEFINED FOR ATOM',I
-      WRITE(6,*) 'IN WILLIAMS SURFACE ROUTINE PDGRID!'
+      WRITE(WU,*) 'VAN DER WAALS'' RADIUS NOT DEFINED FOR ATOM',I
+      WRITE(WU,*) 'IN WILLIAMS SURFACE ROUTINE PDGRID!'
       STOP
 C     NOW CREATE LIMITS FOR A BOX
    50 DO 100 IX = 1,3
@@ -206,6 +210,8 @@ C
       COMMON /ABC/    CO(3,NUMATM),IAN(NUMATM),NATOM
       COMMON /WORK1/  POTPT(3,MESP),PAD1(2*MESP),RAD(MESP),RIAS(MESP)
       COMMON /POTESP/ XC,YC,ZC,ESPNUC,ESPELE,NESP
+      COMMON /OUTFIL/ WU
+      INTEGER WU
 C
       CHARACTER*241 KEYWRD
 C
@@ -290,7 +296,7 @@ C
          IPOINT = IAN(I)
          RAD(I) = VANDER(IPOINT)*SCALE
          IF (RAD(I) .LT. 0.01D0) THEN
-            WRITE(6,'(T2,''VAN DER WAALS'''' RADIUS FOR ATOM '',I3,
+            WRITE(WU,'(T2,''VAN DER WAALS'''' RADIUS FOR ATOM '',I3,
      1         '' IS ZERO, SUPPLY A VALUE IN SUBROUTINE SURFAC)''
      2         )')
          ENDIF
@@ -324,7 +330,7 @@ C     TRANSFER ATOM COORDINATES, RADIUS AND SURFACE REQUEST NUMBER
 C
             NNBR = NNBR + 1
             IF (NNBR .GT. 200)THEN
-               WRITE (6,'(''ERROR'',2X,''TOO MANY NEIGHBORS:'',I5)')NNBR
+               WRITE(WU,'(''ERROR'',2X,''TOO MANY NEIGHBORS:'',I5)')NNBR
                STOP
             ENDIF
             INBR(NNBR) = JATOM
@@ -344,7 +350,7 @@ C
 C     THIS CALL MAY DECREASE NCON SOMEWHAT
 C
          IF ( NCON .EQ. 0) THEN
-            WRITE(6,'(T2,''VECTOR LENGTH OF ZERO IN SURFAC'')')
+            WRITE(WU,'(T2,''VECTOR LENGTH OF ZERO IN SURFAC'')')
             STOP
          ENDIF
          CALL GENUN(CON,NCON)
@@ -369,9 +375,9 @@ C     STORE POINT IN POTPT AND INCREMENT NESP
 C
             NESP = NESP + 1
             IF (NESP .GT. MESP) THEN
-               WRITE(6,90)
+               WRITE(WU,90)
    90          FORMAT(/'ERROR - TO MANY POINTS GENERATED IN SURFAC')
-               WRITE(6,'(''    REDUCE NSURF, SCALE, DEN, OR SCINCR'')')
+               WRITE(WU,'(''    REDUCE NSURF, SCALE, DEN, OR SCINCR'')')
                STOP
             ENDIF
             POTPT(1,NESP) = TEMP0(1)
@@ -495,6 +501,8 @@ C***********************************************************************
       COMMON /DIPSTO/ UX,UY,UZ,CH(NUMATM)
       COMMON /ESPF/  AL((NUMATM+4)**2),A(NUMATM,NUMATM),B(NUMATM),
      1Q(NUMATM+4),QSC(NUMATM+4),CF, ESPFD(MAXORB**2-NUMATM-5)
+      COMMON /OUTFIL/ WU
+      INTEGER WU
       CHARACTER*241 KEYWRD
       CHARACTER *2  ELEMNT
       LOGICAL DEBUG,WRTESP,CEQUIV(NUMATM,NUMATM)
@@ -509,7 +517,7 @@ C
 C
 C     NOW FIT THE ELECTROSTATIC POTENTIAL
 C
-      WRITE(6,'(//12X,''ELECTROSTATIC POTENTIAL CHARGES'',/)')
+      WRITE(WU,'(//12X,''ELECTROSTATIC POTENTIAL CHARGES'',/)')
       IZ=0
       IF(INDEX(KEYWRD,'CHARGE=') .NE. 0) IZ=READA(KEYWRD,INDEX(KEYWRD,
      1'CHARGE='))
@@ -520,14 +528,14 @@ C
          IDIP = 1
          IF(IZ .NE. 0)THEN
             IDIP = 0
-            WRITE(6,'(/12X,''  DIPOLE CONSTRAINTS NOT USED'')')
-            WRITE(6,'(12X,''        CHARGED MOLECULE'',/)')
+            WRITE(WU,'(/12X,''  DIPOLE CONSTRAINTS NOT USED'')')
+            WRITE(WU,'(12X,''        CHARGED MOLECULE'',/)')
          ENDIF
       ELSE
          IDIP = 0
       ENDIF
       IF (IDIP .EQ. 1) THEN
-         WRITE(6,'(/12X,''DIPOLE CONSTRAINTS WILL BE USED'',/)')
+         WRITE(WU,'(/12X,''DIPOLE CONSTRAINTS WILL BE USED'',/)')
       ENDIF
 C
 C     GET X,Y,Z DIPOLE COMPONENTS IF DESIRED
@@ -558,9 +566,9 @@ C
       IF((INDEX(KEYWRD,'AM1') .NE. 0) .OR.
      1(INDEX(KEYWRD,'MINDO') .NE. 0) .OR.
      2(INDEX(KEYWRD,'PM3') .NE. 0))THEN
-         WRITE(6,'(15X,''ATOM NO.    TYPE    CHARGE'')')
+         WRITE(WU,'(15X,''ATOM NO.    TYPE    CHARGE'')')
          DO 10 I=1,NATOM
-            WRITE(6,'(17X,I2,9X,A2,1X,F10.4)')I,ELEMNT(IAN(I)),Q(I)
+            WRITE(WU,'(17X,I2,9X,A2,1X,F10.4)')I,ELEMNT(IAN(I)),Q(I)
    10    CONTINUE
       ELSE
 C
@@ -574,22 +582,22 @@ C
          DO 20 I=1,NATOM
             QSC(I) = SLOPE*Q(I)
    20    CONTINUE
-         WRITE(6,'(7X,''ATOM NO.    TYPE    CHARGE   SCALED CHARGE'')')
+         WRITE(WU,'(7X,''ATOM NO.    TYPE    CHARGE   SCALED CHARGE'')')
          DO 30 I=1,NATOM
-            WRITE(6,'(9X,I2,9X,A2,1X,F10.4,2X,F10.4)')I,ELEMNT(IAN(I
+            WRITE(WU,'(9X,I2,9X,A2,1X,F10.4,2X,F10.4)')I,ELEMNT(IAN(I
      1)),   Q(I),QSC(I)
    30    CONTINUE
       ENDIF
-      WRITE(6,'(/12X,A,4X,I6)') 'THE NUMBER OF POINTS IS:',NESP
-      WRITE(6,'(12X,A,4X,F9.4)') 'THE RMS DEVIATION IS:',RMS
-      WRITE(6,'(12X,A,3X,F9.4)') 'THE RRMS DEVIATION IS:',RRMS
+      WRITE(WU,'(/12X,A,4X,I6)') 'THE NUMBER OF POINTS IS:',NESP
+      WRITE(WU,'(12X,A,4X,F9.4)') 'THE RMS DEVIATION IS:',RMS
+      WRITE(WU,'(12X,A,3X,F9.4)') 'THE RRMS DEVIATION IS:',RRMS
 C
 C     CALCULATE DIPOLE MOMENT IF NEUTRAL MOLECULE
 C
       IF (IZ .NE. 0) THEN
          GO TO 60
       ELSE
-         WRITE(6,40)
+         WRITE(WU,40)
    40    FORMAT (//5X,'DIPOLE MOMENT EVALUATED FROM '
      1,'THE POINT CHARGES',/)
          DO 50 I=1,NATOM
@@ -598,8 +606,8 @@ C
             DIPZ=DIPZ+CO(3,I)*Q(I)/BOHR
    50    CONTINUE
          DIP=SQRT(DIPX**2+DIPY**2+DIPZ**2)
-         WRITE(6,'(12X,'' X        Y        Z       TOTAL'')')
-         WRITE(6,'(8X,4F9.4)')DIPX*CF,DIPY*CF,DIPZ*CF,DIP*CF
+         WRITE(WU,'(12X,'' X        Y        Z       TOTAL'')')
+         WRITE(WU,'(8X,4F9.4)')DIPX*CF,DIPY*CF,DIPZ*CF,DIP*CF
       ENDIF
    60 CONTINUE
 C     DETERMINE WHICH CHARGES SHOULD BE EQUIVALENT BY SYMMETRY AND
@@ -622,23 +630,23 @@ C     AVERAGE THEM IF DESIRED
    80       CONTINUE
             CH(I)=Q(I)/ABS(Q(I))*QSC(I)/IEQ
    90    CONTINUE
-         WRITE(6,*) ' '
-         WRITE(6,*)'   ELECTROSTATIC POTENTIAL CHARGES AVERAGED FOR'
-         WRITE(6,*)'   SYMMETRY EQUIVALENT ATOMS'
-         WRITE(6,*) ' '
+         WRITE(WU,*) ' '
+         WRITE(WU,*)'   ELECTROSTATIC POTENTIAL CHARGES AVERAGED FOR'
+         WRITE(WU,*)'   SYMMETRY EQUIVALENT ATOMS'
+         WRITE(WU,*) ' '
          IF((INDEX(KEYWRD,'AM1') .NE. 0) .OR.
      1(INDEX(KEYWRD,'MINDO') .NE. 0) .OR.
      2(INDEX(KEYWRD,'PM3') .NE. 0))THEN
-            WRITE(6,'(7X,''ATOM NO.    TYPE    CHARGE'')')
+            WRITE(WU,'(7X,''ATOM NO.    TYPE    CHARGE'')')
             DO 100 I=1,NATOM
-               WRITE(6,'(9X,I2,9X,A2,1X,F10.4)')I,ELEMNT(IAN(I)),
+               WRITE(WU,'(9X,I2,9X,A2,1X,F10.4)')I,ELEMNT(IAN(I)),
      1   CH(I)
   100       CONTINUE
          ELSE
-            WRITE(6,'(7X,''ATOM NO.    TYPE    CHARGE   SCALED CHARGE'')
+           WRITE(WU,'(7X,''ATOM NO.    TYPE    CHARGE   SCALED CHARGE'')
      1')
             DO 110 I=1,NATOM
-               WRITE(6,'(9X,I2,9X,A2,1X,F10.4,2X,F10.4)')I,ELEMNT(IA
+               WRITE(WU,'(9X,I2,9X,A2,1X,F10.4,2X,F10.4)')I,ELEMNT(IA
      1N(I)),   CH(I),CH(I)*SLOPE
   110       CONTINUE
          ENDIF
@@ -681,6 +689,8 @@ C***********************************************************************
 *  END OF MINDO/3 COMMON BLOCKS
 *
       COMMON /INDX/   INDC(MAXORB)
+      COMMON /OUTFIL/ WU
+      INTEGER WU
       DIMENSION CESPM2(MAXORB,MAXORB),SLA(10)
       DIMENSION CESPML(MAXORB*MAXORB),CESP(MAXORB*MAXORB)
       DATA BOHR/0.529167D0/
@@ -1481,7 +1491,7 @@ C
 C     CALCULATE DISTANCE ARRAYS
 C
 C *** it seems that this is not necessary...
-C      WRITE(6,*)
+C      WRITE(WU,*)
       PI=4.D0*ATAN(1.D0)
       IPX2=2*IPX
 C     IF THIS IS A RESTART RUN, READ IN RESTART INFO
@@ -1637,7 +1647,7 @@ C            WRITE(15) ES(I)
 C  190    CONTINUE
 C         CLOSE(15)
 C
-C         WRITE(6,'(A,F6.2,A)')
+C         WRITE(WU,'(A,F6.2,A)')
 C     1'NAICAS DUMPED: ',100.D0/ISC*IC,' PERCENT COMPLETE'
   200 CONTINUE
       RETURN
@@ -1695,7 +1705,7 @@ C     SET NUMBER OF EQUALLY SPACED DUMPS
 C
       IDC=0
 C *** it seems that this is not necessary...
-C      WRITE(6,*)
+C      WRITE(WU,*)
       IPX2=2*IPX
       PI=4.D0*ATAN(1.D0)
       NP=IS+1
@@ -1919,7 +1929,7 @@ C               WRITE(15) ES(I)
 C  240       CONTINUE
 C            CLOSE(15)
 C            IDC=IDC+1
-C            WRITE(6,'(A,F6.2,A)')
+C            WRITE(WU,'(A,F6.2,A)')
 C     1'NAICAP DUMPED: ',100.D0/IDN*IDC,' PERCENT COMPLETE'
 C         ENDIF
   250 CONTINUE
@@ -2022,6 +2032,8 @@ C *** an additional common block that carries variables for plotting routines.
       COMMON /PLOTS/  CESPM2(MAXORB,MAXORB),SLA(10),
      1                CESPML(MAXORB*MAXORB),CESP(MAXORB*MAXORB),
      2                INC(MAXPR),NC,NPR,IS,IP,IPC,ISC,ICD,IORB
+      COMMON /OUTFIL/ WU
+      INTEGER WU
 C *** old arrays that are no longer needed are here, commented out.
 C     DIMENSION CESPM2(MAXORB,MAXORB),SLA(10)
 C     DIMENSION CESPML(MAXORB*MAXORB),CESP(MAXORB*MAXORB)

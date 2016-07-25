@@ -25,6 +25,8 @@ C COSMO change
       LOGICAL ISEPS, USEPS , UPDA
       COMMON /ISEPS/  ISEPS, USEPS, UPDA
 C end of COSMO change
+      COMMON /OUTFIL/ WU
+      INTEGER WU
       CHARACTER*241 KEYWRD
       DIMENSION PDI(171),PADI(171),PBDI(171),
      1CDI(3,2),NDI(2),LSTOR1(6), LSTOR2(6), ENG(3)
@@ -173,7 +175,7 @@ C analytic calculation of the gradient of the dielectric energy A.Klamt
 C     DO 170 I=1,6
 C 170 LSTOR1(I)=LSTOR2(I)
       IF (  .NOT. DEBUG) RETURN
-      IW = 6
+      IW = WU
       WRITE(IW,'(//10X,''CARTESIAN COORDINATE DERIVATIVES'',//3X,
      1''NUMBER  ATOM '',5X,''X'',12X,''Y'',12X,''Z'',/)')
       IF(NCELLS.EQ.1)THEN
@@ -191,16 +193,16 @@ C 170 LSTOR1(I)=LSTOR2(I)
       IF (ANADER) REWIND IROT
 C end of COSMO (A. Klamt) changes
       IF (  .NOT. DEBUG) RETURN
-      WRITE(6,'(//10X,''CARTESIAN COORDINATE DERIVATIVES'',//3X,
+      WRITE(WU,'(//10X,''CARTESIAN COORDINATE DERIVATIVES'',//3X,
      1''NUMBER  ATOM '',5X,''X'',12X,''Y'',12X,''Z'',/)')
       IF(NCELLS.EQ.1)THEN
-         WRITE(6,'(2I6,F13.6,2F13.6)')
+         WRITE(WU,'(2I6,F13.6,2F13.6)')
      1 (I,NAT(I),(DXYZ(J,I),J=1,3),I=1,NUMTOT)
       ELSEIF(LARGE)THEN
-         WRITE(6,'(2I6,F13.6,2F13.6)')
+         WRITE(WU,'(2I6,F13.6,2F13.6)')
      1 (I,NAT((I-1)/NCELLS+1),(DXYZ(J,I),J=1,3),I=1,NUMTOT)
       ELSE
-         WRITE(6,'(2I6,F13.6,2F13.6)')
+         WRITE(WU,'(2I6,F13.6,2F13.6)')
      1 (I,NAT((I-1)/NCELLS+1),(DXYZ(J,I)+DXYZ(J,I+1)+DXYZ(J,I+2)
      2,J=1,3),I=1,NUMTOT,3)
       ENDIF

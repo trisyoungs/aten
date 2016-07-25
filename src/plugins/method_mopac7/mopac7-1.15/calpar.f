@@ -15,6 +15,8 @@
      3,GSSM(107),GSPM(107),GPPM(107),GP2M(107),HSPM(107), POLVOM(107)
       COMMON /KEYWRD/ KEYWRD
       COMMON/MULTIP/ DD(107),QQ(107),AM(107),AD(107),AQ(107)
+      COMMON /OUTFIL/ WU
+      INTEGER WU
       DIMENSION NSPQN(107)
       CHARACTER KEYWRD*241
       DIMENSION USSC(107), UPPC(107), GSSC(107), GSPC(107), HSPC(107),
@@ -173,71 +175,71 @@ C     DEBUG PRINTING.
 C     THIS IS FORMATTED FOR DIRECT INSERTION INTO 'PARAM'
 C
       IF(INDEX(KEYWRD,'DEP').EQ.0) RETURN
-      WRITE(6,50)
+      WRITE(WU,50)
       DO 60 I=1,107
          IF(ZS(I).EQ.0) GOTO 60
-         WRITE(6,'(''C'',20X,''DATA FOR ELEMENT'',I3)')I
-         WRITE(6,'(6X,''DATA USSPM3('',I3,'')/'',F16.7,''D0/'')')
+         WRITE(WU,'(''C'',20X,''DATA FOR ELEMENT'',I3)')I
+         WRITE(WU,'(6X,''DATA USSPM3('',I3,'')/'',F16.7,''D0/'')')
      1                    I,USS(I)
          IF(UPP(I) .NE. 0.D0)
-     1WRITE(6,'(6X,''DATA UPPPM3('',I3,'')/'',F16.7,''D0/'')')I,UPP(I)
+     1WRITE(WU,'(6X,''DATA UPPPM3('',I3,'')/'',F16.7,''D0/'')')I,UPP(I)
          IF(UDD(I) .NE. 0.D0)
-     1WRITE(6,'(6X,''DATA UDDPM3('',I3,'')/'',F16.7,''D0/'')')I,UDD(I)
+     1WRITE(WU,'(6X,''DATA UDDPM3('',I3,'')/'',F16.7,''D0/'')')I,UDD(I)
          IF(BETAS(I) .NE. 0.D0)
-     1WRITE(6,'(6X,''DATA BETASP('',I3,'')/'',F16.7,''D0/'')')
+     1WRITE(WU,'(6X,''DATA BETASP('',I3,'')/'',F16.7,''D0/'')')
      2I,BETAS(I)
          IF(BETAP(I) .NE. 0.D0)
-     1WRITE(6,'(6X,''DATA BETAPP('',I3,'')/'',F16.7,''D0/'')')
+     1WRITE(WU,'(6X,''DATA BETAPP('',I3,'')/'',F16.7,''D0/'')')
      2I,BETAP(I)
          IF(BETAD(I) .NE. 0.D0)
-     1WRITE(6,'(6X,''DATA BETADP('',I3,'')/'',F16.7,''D0/'')')
+     1WRITE(WU,'(6X,''DATA BETADP('',I3,'')/'',F16.7,''D0/'')')
      2I,BETAD(I)
-         WRITE(6,'(6X,''DATA ZSPM3 ('',I3,'')/'',F16.7,''D0/'')')
+         WRITE(WU,'(6X,''DATA ZSPM3 ('',I3,'')/'',F16.7,''D0/'')')
      1I,ZS(I)
          IF(ZP(I) .NE. 0.D0)
-     1WRITE(6,'(6X,''DATA ZPPM3 ('',I3,'')/'',F16.7,''D0/'')')I,ZP(I)
+     1WRITE(WU,'(6X,''DATA ZPPM3 ('',I3,'')/'',F16.7,''D0/'')')I,ZP(I)
          IF(ZD(I) .NE. 0.D0)
-     1WRITE(6,'(6X,''DATA ZDPM3 ('',I3,'')/'',F16.7,''D0/'')')I,ZD(I)
-         WRITE(6,'(6X,''DATA ALPPM3('',I3,'')/'',F16.7,''D0/'')')
+     1WRITE(WU,'(6X,''DATA ZDPM3 ('',I3,'')/'',F16.7,''D0/'')')I,ZD(I)
+         WRITE(WU,'(6X,''DATA ALPPM3('',I3,'')/'',F16.7,''D0/'')')
      1I,ALP(I)
-         WRITE(6,'(6X,''DATA EISOLP('',I3,'')/'',F16.7,''D0/'')')
+         WRITE(WU,'(6X,''DATA EISOLP('',I3,'')/'',F16.7,''D0/'')')
      1I,EISOL(I)
          IF(GSS(I) .NE. 0.D0)
-     1WRITE(6,'(6X,''DATA GSSPM3('',I3,'')/'',F16.7,''D0/'')')
+     1WRITE(WU,'(6X,''DATA GSSPM3('',I3,'')/'',F16.7,''D0/'')')
      2I,GSS(I)
          IF(GSP(I) .NE. 0.D0)
-     1WRITE(6,'(6X,''DATA GSPPM3('',I3,'')/'',F16.7,''D0/'')')
+     1WRITE(WU,'(6X,''DATA GSPPM3('',I3,'')/'',F16.7,''D0/'')')
      2I,GSP(I)
          IF(GPP(I) .NE. 0.D0)
-     1WRITE(6,'(6X,''DATA GPPPM3('',I3,'')/'',F16.7,''D0/'')')
+     1WRITE(WU,'(6X,''DATA GPPPM3('',I3,'')/'',F16.7,''D0/'')')
      2I,GPP(I)
          IF(GP2(I) .NE. 0.D0)
-     1WRITE(6,'(6X,''DATA GP2PM3('',I3,'')/'',F16.7,''D0/'')')
+     1WRITE(WU,'(6X,''DATA GP2PM3('',I3,'')/'',F16.7,''D0/'')')
      2I,GP2(I)
          IF(HSP(I) .NE. 0.D0)
-     1WRITE(6,'(6X,''DATA HSPPM3('',I3,'')/'',F16.7,''D0/'')')
+     1WRITE(WU,'(6X,''DATA HSPPM3('',I3,'')/'',F16.7,''D0/'')')
      2I,HSP(I)
          IF(DD(I) .NE. 0.D0)
-     1WRITE(6,'(6X,''DATA DDPM3 ('',I3,'')/'',F16.7,''D0/'')')I,DD(I)
+     1WRITE(WU,'(6X,''DATA DDPM3 ('',I3,'')/'',F16.7,''D0/'')')I,DD(I)
          IF(QQ(I) .NE. 0.D0)
-     1WRITE(6,'(6X,''DATA QQPM3 ('',I3,'')/'',F16.7,''D0/'')')I,QQ(I)
-         WRITE(6,'(6X,''DATA AMPM3 ('',I3,'')/'',F16.7,''D0/'')')
+     1WRITE(WU,'(6X,''DATA QQPM3 ('',I3,'')/'',F16.7,''D0/'')')I,QQ(I)
+         WRITE(WU,'(6X,''DATA AMPM3 ('',I3,'')/'',F16.7,''D0/'')')
      1I,AM(I)
          IF(AD(I) .NE. 0.D0)
-     1WRITE(6,'(6X,''DATA ADPM3 ('',I3,'')/'',F16.7,''D0/'')')I,AD(I)
+     1WRITE(WU,'(6X,''DATA ADPM3 ('',I3,'')/'',F16.7,''D0/'')')I,AD(I)
          IF(AQ(I) .NE. 0.D0)
-     1WRITE(6,'(6X,''DATA AQPM3 ('',I3,'')/'',F16.7,''D0/'')')I,AQ(I)
+     1WRITE(WU,'(6X,''DATA AQPM3 ('',I3,'')/'',F16.7,''D0/'')')I,AQ(I)
          IF(FN1(I) .NE. 0.D0)
-     1WRITE(6,'(6X,''DATA FN1PM3('',I3,'')/'',F16.7,''D0/'')')I,FN1(I)
+     1WRITE(WU,'(6X,''DATA FN1PM3('',I3,'')/'',F16.7,''D0/'')')I,FN1(I)
          IF(FN2(I) .NE. 0.D0)
-     1WRITE(6,'(6X,''DATA FN2PM3('',I3,'')/'',F16.7,''D0/'')')I,FN2(I)
+     1WRITE(WU,'(6X,''DATA FN2PM3('',I3,'')/'',F16.7,''D0/'')')I,FN2(I)
          DO 40 J=1,10
             IF(GUESS1(I,J) .EQ.0.D0) GOTO 40
-            WRITE(6,'(6X,''DATA GUESP1('',I3,'','',I1,'')/'',
+            WRITE(WU,'(6X,''DATA GUESP1('',I3,'','',I1,'')/'',
      1F16.7,''D0/'')')I,J,GUESS1(I,J)
-            WRITE(6,'(6X,''DATA GUESP2('',I3,'','',I1,'')/'',
+            WRITE(WU,'(6X,''DATA GUESP2('',I3,'','',I1,'')/'',
      1F16.7,''D0/'')')I,J,GUESS2(I,J)
-            WRITE(6,'(6X,''DATA GUESP3('',I3,'','',I1,'')/'',
+            WRITE(WU,'(6X,''DATA GUESP3('',I3,'','',I1,'')/'',
      1F16.7,''D0/'')')I,J,GUESS3(I,J)
    40    CONTINUE
    50    FORMAT(1H ,1X,'OUTPUT INCLUDES DEBUG INFORMATION',//)

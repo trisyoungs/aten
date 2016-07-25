@@ -26,6 +26,8 @@
      1                NLAST(NUMATM), NORBS, NELECS,NALPHA,NBETA,
      2                NCLOSE,NOPEN,NDUMY,XRACT
       COMMON /NUMCAL/ NUMCAL
+      COMMON /OUTFIL/ WU
+      INTEGER WU
       DIMENSION  IEL1(3), GG(3)
       CHARACTER KEYWRD*241,KOMENT*81,TITLE*81, ALPHA*2, ELEMNT*2
       SAVE PRTKEY, PRTKOM, PRTITL, I, DRC
@@ -62,10 +64,10 @@
       ENDIF
       IF(JLOOP.EQ.0.OR.(JLOOP/IPRINT)*IPRINT.EQ.JLOOP) THEN
          IF(DRC) THEN
-            WRITE(6,'(//,'' FEMTOSECONDS  POINT  POTENTIAL +''
+            WRITE(WU,'(//,'' FEMTOSECONDS  POINT  POTENTIAL +''
      1,'' KINETIC  =  TOTAL     ERROR    REF%   MOVEMENT'')')
          ELSE
-            WRITE(6,'(//,''     POINT   POTENTIAL  +  ''
+            WRITE(WU,'(//,''     POINT   POTENTIAL  +  ''
      1,''ENERGY LOST   =   TOTAL      ERROR    REF%   MOVEMENT'')')
          ENDIF
       ENDIF
@@ -79,38 +81,38 @@ C#      GTOT=GTOT3(1)+GTOT3(2)*FRACT+GTOT3(3)*FRACT**2
       ERRR=MIN(9999.99999D0,MAX(-999.99999D0,ESCF+EKIN-ETOT))
       IF(II.NE.0)THEN
          IF(DRC) THEN
-            WRITE(6,'(F10.3,I8,F12.5,F11.5,F11.5,
+            WRITE(WU,'(F10.3,I8,F12.5,F11.5,F11.5,
      1F10.5,'' '',I5,3X,''%'',A,A,I3)')TIME, ILOOP-2, ESCF, EKIN,
      2 ESCF+EKIN,ERRR,JLOOP,TEXT1,TEXT2,II
-            WRITE(6,'(9X,A,F9.4,A)')' MOVEMENT FROM START =',XTOT,' ANGS
+            WRITE(WU,'(9X,A,F9.4,A)')' MOVEMENT FROM START =',XTOT,' ANGS
      1TROMS'
          ELSE
-            WRITE(6,'(I8,F14.5,F13.5,F17.5,
+            WRITE(WU,'(I8,F14.5,F13.5,F17.5,
      1F10.5,'' '',I5,3X,''%'',A,A,I3)') ILOOP-2, ESCF, EKIN,
      2 ESCF+EKIN,ERRR,JLOOP,TEXT1,TEXT2,II
-C#      WRITE(6,'(24X,'' INTEGRATED GRADIENT ERROR ='',G10.3,
+C#      WRITE(WU,'(24X,'' INTEGRATED GRADIENT ERROR ='',G10.3,
 C#     1'' KCALS/ANGSTROM'')')GTOT
-            WRITE(6,'(9X,A,F9.4,A)')' MOVEMENT FROM START =',XTOT,' ANGS
+            WRITE(WU,'(9X,A,F9.4,A)')' MOVEMENT FROM START =',XTOT,' ANGS
      1TROMS'
          ENDIF
       ELSE
          IF(DRC) THEN
             IF(TEXT1.EQ.' '.AND.TEXT2.EQ.' ')THEN
-               WRITE(6,'(F10.3,I8,F12.5,F11.5,F11.5,
+               WRITE(WU,'(F10.3,I8,F12.5,F11.5,F11.5,
      1F10.5,'' '',I5,3X,''%'',F8.4)')TIME, ILOOP-2, ESCF, EKIN,
      2 ESCF+EKIN,ERRR,JLOOP,XTOT
             ELSE
-               WRITE(6,'(F10.3,I8,F12.5,F11.5,F11.5,
+               WRITE(WU,'(F10.3,I8,F12.5,F11.5,F11.5,
      1F10.5,'' '',I5,3X,''%'',A,A,I3)')TIME, ILOOP-2, ESCF, EKIN,
      2 ESCF+EKIN,ERRR,JLOOP,TEXT1,TEXT2
             ENDIF
          ELSE
             IF(TEXT1.EQ.' '.AND.TEXT2.EQ.' ')THEN
-               WRITE(6,'(I8,F14.5,F13.5,F17.5,
+               WRITE(WU,'(I8,F14.5,F13.5,F17.5,
      1F10.5,'' '',I5,3X,''%'',F8.4)') ILOOP-2, ESCF, EKIN,
      2 ESCF+EKIN,ERRR,JLOOP,XTOT
             ELSE
-               WRITE(6,'(I8,F14.5,F13.5,F17.5,
+               WRITE(WU,'(I8,F14.5,F13.5,F17.5,
      1F10.5,'' '',I5,3X,''%'',A,A,I3)') ILOOP-2, ESCF, EKIN,
      2 ESCF+EKIN,ERRR,JLOOP,TEXT1,TEXT2
             ENDIF
@@ -125,13 +127,13 @@ C#     1'' KCALS/ANGSTROM'')')GTOT
    70    XYZ(J,I)=XYZ3(1,L)+XYZ3(2,L)*FRACT+XYZ3(3,L)*FRACT**2
    80 CONTINUE
       IF(LARGE.AND.(JLOOP/IPRINT)*IPRINT.EQ.JLOOP)THEN
-         WRITE(6,*)'                CARTESIAN GEOMETRY           '
+         WRITE(WU,*)'                CARTESIAN GEOMETRY           '
      1//'VELOCITY (IN CM/SEC)'
-         WRITE(6,*)'  ATOM        X          Y          Z'
+         WRITE(WU,*)'  ATOM        X          Y          Z'
      1      //'                X          Y          Z'
          DO 90 I=1,NUMAT
             LL=(I-1)*3+1
-            WRITE(6,'(I4,3X,A2,3F11.5,2X,3F11.1)')
+            WRITE(WU,'(I4,3X,A2,3F11.5,2X,3F11.1)')
      1I, ELEMNT(NAT(I)),(XYZ(J,I),J=1,3),(VEL(J,I),J=1,3)
    90    CONTINUE
       ENDIF
@@ -139,9 +141,9 @@ C#     1'' KCALS/ANGSTROM'')')GTOT
          IVAR=1
          NA(1)=0
          L=0
-         WRITE(6,'(//10X,''FINAL GEOMETRY OBTAINED'',33X,''CHARGE'')'
+         WRITE(WU,'(//10X,''FINAL GEOMETRY OBTAINED'',33X,''CHARGE'')'
      1)
-         WRITE(6,'(A)')KEYWRD(:PRTKEY),KOMENT(:PRTKOM),TITLE(:PRTITL)
+         WRITE(WU,'(A)')KEYWRD(:PRTKEY),KOMENT(:PRTKOM),TITLE(:PRTITL)
          L=0
          DO 120 I=1,NUMAT
             J=I/26
@@ -174,11 +176,11 @@ C$DOIT ASIS
      1CT**2
                GG(3)=GEO3(1,I*3  )+GEO3(2,I*3  )*FRACT+GEO3(3,I*3  )*FRA
      1CT**2
-               WRITE(6,'(2X,A2,3(F12.6,I3),I4,2I3,F13.4,I5,A)')
+               WRITE(WU,'(2X,A2,3(F12.6,I3),I4,2I3,F13.4,I5,A)')
      1    ELEMNT(LABELS(I)),(GG(K),IEL1(K),K=1,3),
      2    NA(I),NB(I),NC(I),CHARGE(L),JLOOP,ALPHA//'*'
             ELSE
-               WRITE(6,'(2X,A2,3(F12.6,I3),I4,2I3,13X,I5,A)')
+               WRITE(WU,'(2X,A2,3(F12.6,I3),I4,2I3,13X,I5,A)')
      1    ELEMNT(LABELS(I)),(GG(K),IEL1(K),K=1,3),
      2NA(I),NB(I),NC(I),JLOOP,ALPHA//'%'
             ENDIF

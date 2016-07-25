@@ -19,6 +19,8 @@ C ***** Modified by Jiro Toyoda at 1994-05-25 *****
 C     COMMON /TIME  / TIME0
       COMMON /TIMEC / TIME0
 C ***************************** at 1994-05-25 *****
+      COMMON /OUTFIL/ WU
+      INTEGER WU
       LOGICAL FULSCF, RAND, LIMSCF
       DOUBLE PRECISION WJ, WK
 C***********************************************************************
@@ -248,12 +250,12 @@ C
          I=INDEX(KEYWRD,'SCFCRT')
          IF(I.NE.0) THEN
             SCFCRT=READA(KEYWRD,I)
-            WRITE(6,'(''  SCF CRITERION ='',G14.4)')SCFCRT
+            WRITE(WU,'(''  SCF CRITERION ='',G14.4)')SCFCRT
             IF(SCFCRT.LT.1.D-12)
-     1 WRITE(6,'(//2X,'' THERE IS A RISK OF INFINITE LOOPING WITH'',
+     1 WRITE(WU,'(//2X,'' THERE IS A RISK OF INFINITE LOOPING WITH'',
      2'' THE SCFCRT LESS THAN 1.D-12'')')
          ELSE
-            IF(DEBUG)WRITE(6,'(''  SCF CRITERION ='',G14.4)')SCFCRT
+            IF(DEBUG)WRITE(WU,'(''  SCF CRITERION ='',G14.4)')SCFCRT
          ENDIF
          IF(.NOT.SCF1)LAST=0
 C
@@ -299,10 +301,10 @@ C  IN WHICH CASE PAY LESS ATTENTION TO DENSITY MATRIX
 C
       IF(NALPHA.NE.NBETA.AND.UHF)PLTEST=0.001D0
       IF(DEBUG)THEN
-         WRITE(6,'(''  SELCON, PLTEST'',3G16.7)')SELCON, PLTEST
+         WRITE(WU,'(''  SELCON, PLTEST'',3G16.7)')SELCON, PLTEST
       ENDIF
       IF(PRT1EL) THEN
-         WRITE(6,'(//10X,''ONE-ELECTRON MATRIX AT ENTRANCE TO ITER'')')
+         WRITE(WU,'(//10X,''ONE-ELECTRON MATRIX AT ENTRANCE TO ITER'')')
          CALL VECPRT(H,NORBS)
       ENDIF
       IREDY=1
@@ -328,8 +330,8 @@ C
       IF(INCITR)NITER=NITER+1
       IF(TIMITR)THEN
          TITER=SECOND()
-         WRITE(6,*)
-         WRITE(6,'(A,F7.2)')'     TIME FOR ITERATION:', TITER-TITER0
+         WRITE(WU,*)
+         WRITE(WU,'(A,F7.2)')'     TIME FOR ITERATION:', TITER-TITER0
          TITER0=TITER
       ENDIF
       IF(NITER.GT.ITRMAX-10.AND..NOT.ALLCON) THEN
@@ -338,7 +340,7 @@ C
 *                   SWITCH ON ALL CONVERGERS                           *
 *                                                                      *
 ************************************************************************
-         WRITE(6,'(//,'' ALL CONVERGERS ARE NOW FORCED ON'',/
+         WRITE(WU,'(//,'' ALL CONVERGERS ARE NOW FORCED ON'',/
      1          '' SHIFT=10, PULAY ON, CAMP-KING ON'',/
      2          '' AND ITERATION COUNTER RESET'',//)')
          ALLCON=.TRUE.
@@ -442,7 +444,7 @@ C
   160 CONTINUE
       IF(TIMITR)THEN
          T0=SECOND()
-         WRITE(6,'(A,F7.2)')' LOAD FOCK MAT. INTEGRAL',T0-TITER0
+         WRITE(WU,'(A,F7.2)')' LOAD FOCK MAT. INTEGRAL',T0-TITER0
       ENDIF
 C#      CALL TIMER('BEFORE FOCK2')
       CALL FOCK2(F,P,PA,W, WJ, WK,NUMAT,NAT,NFIRST,NMIDLE,NLAST)
@@ -453,7 +455,7 @@ C#      CALL TIMER('AFTER FOCK1')
       IF(TIMITR)THEN
          T0=SECOND()
          TF1=TF1+T0-T1
-         WRITE(6,'(2(A,F7.2))')'  FOCK1:',T0-T1,'INTEGRAL:',T0-TITER0
+         WRITE(WU,'(2(A,F7.2))')'  FOCK1:',T0-T1,'INTEGRAL:',T0-TITER0
       ENDIF
 ************************************************************************
 *                                                                      *
@@ -482,7 +484,7 @@ C#      CALL TIMER('AFTER FOCK1')
       ENDIF
       IF( .NOT. FULSCF) GOTO 380
       IF(PRTFOK) THEN
-         WRITE(6,210)NITER
+         WRITE(WU,210)NITER
   210    FORMAT('   FOCK MATRIX ON ITERATION',I3)
          CALL VECPRT (F,NORBS)
       ENDIF
@@ -503,14 +505,14 @@ C
 ************************************************************************
       IF (NITER .GE. ITRMAX) THEN
          IF(DIFF.LT.1.D-3.AND.PL.LT.1.D-4.AND..NOT.FORCE)THEN
-            WRITE(6,'('' """""""""""""""UNABLE TO ACHIEVE SELF-CONSISTEN
+            WRITE(WU,'('' """""""""""""""UNABLE TO ACHIEVE SELF-CONSISTEN
      1CE, JOB CONTINUING'')')
             GOTO 380
          ENDIF
-         IF(MINPRT)WRITE (6,230)
+         IF(MINPRT)WRITE(WU,230)
   230    FORMAT (//10X,'"""""""""""""UNABLE TO ACHIEVE SELF-CONSISTENCE'
      1,/)
-         WRITE (6,240) DIFF,PL
+         WRITE(WU,240) DIFF,PL
   240    FORMAT (//,10X,'DELTAE= ',E12.4,5X,'DELTAP= ',E12.4,///)
 C *** here we failed to calculate a valid energy, but we don't want to close the whole program either.
 C *** instead of calling STOP, continue like in the above case where GOTO 380 is called...
@@ -593,7 +595,7 @@ C
 C
 C IS GOOD ENOUGH -- RAPID EXIT
 C
-                  IF(DEBUG) WRITE(6,*)
+                  IF(DEBUG) WRITE(WU,*)
      1' RAPID EXIT BECAUSE ENERGY IS CONSISTENTLY LOWER'
                   GOTO 250
                ENDIF
@@ -621,7 +623,7 @@ C
 C
 C IS GOOD ENOUGH -- RAPID EXIT
 C
-                  IF(DEBUG) WRITE(6,*)
+                  IF(DEBUG) WRITE(WU,*)
      1' RAPID EXIT BECAUSE ENERGY IS CONSISTENTLY HIGHER'
                   GOTO 250
                ENDIF
@@ -635,7 +637,7 @@ C
          IF(ABS(ESCF).GT.99999.D0) ESCF=SIGN(9999.D0,ESCF)
          IF(ABS(DIFF).GT.9999.D0)DIFF=0.D0
          IF(INCITR)
-     1    WRITE(6,'('' ITERATION'',I3,'' PLS='',2E10.3,'' ENERGY  '',
+     1    WRITE(WU,'('' ITERATION'',I3,'' PLS='',2E10.3,'' ENERGY  '',
      2F14.7,'' DELTAE'',F13.7)')NITER,PL,PLB,ESCF,DIFF
       close (6)
 C ***** Modified by Jiro Toyoda at 1994-05-25 *****
@@ -662,7 +664,7 @@ C ***************************** at 1994-05-25 *****
       MAKEB=.TRUE.
       IF(TIMITR)THEN
          T0=SECOND()
-         WRITE(6,'(2(A,F7.2))')' ADJUST DAMPER  INTEGRAL',T0-TITER0
+         WRITE(WU,'(2(A,F7.2))')' ADJUST DAMPER  INTEGRAL',T0-TITER0
       ENDIF
       IF( NEWDG ) THEN
 ************************************************************************
@@ -691,19 +693,19 @@ C#      CALL TIMER('BEFORE HQRII')
 C#      CALL TIMER('AFTER HQRII')
          IF(TIMITR)THEN
             T1=SECOND()
-            WRITE(6,'(2(A,F7.2))')'  HQRII:',T1-T0,' INTEGRAL',T1-TITER0
+            WRITE(WU,'(2(A,F7.2))')'  HQRII:',T1-T0,' INTEGRAL',T1-TITER0
          ENDIF
       ENDIF
       J=1
       IF(PRTVEC) THEN
          J=1
          IF(UHF)J=2
-         WRITE(6,'(//10X,A,
+         WRITE(WU,'(//10X,A,
      1'' EIGENVECTORS AND EIGENVALUES ON ITERATION'',I3)')
      2   ABPRT(J),NITER
          CALL MATOUT(C,EIGS,NORBS,NORBS,NORBS)
       ELSE
-         IF (PRTEIG) WRITE(6,330)ABPRT(J),NITER,(EIGS(I),I=1,NORBS)
+         IF (PRTEIG) WRITE(WU,330)ABPRT(J),NITER,(EIGS(I),I=1,NORBS)
       ENDIF
   330 FORMAT(10X,A,'  EIGENVALUES ON ITERATION',I3,/10(6G13.6,/))
   340 IF(IFILL.NE.0)CALL SWAP(C,NORBS,NORBS,NA2EL,IFILL)
@@ -767,11 +769,11 @@ C#      CALL TIMER('AFTER CNVG')
             CALL HQRII(FB,NORBS,NORBS,EIGB,CBETA)
          ENDIF
          IF(PRTVEC) THEN
-            WRITE(6,'(//10X,A,'' EIGENVECTORS AND EIGENVALUES ON '',
+            WRITE(WU,'(//10X,A,'' EIGENVECTORS AND EIGENVALUES ON '',
      1''ITERATION'',I3)')ABPRT(3),NITER
             CALL MATOUT(CBETA,EIGB,NORBS,NORBS,NORBS)
          ELSE
-            IF (PRTEIG) WRITE(6,330)ABPRT(3),NITER,(EIGB(I),I=1,NORBS)
+            IF (PRTEIG) WRITE(WU,330)ABPRT(3),NITER,(EIGB(I),I=1,NORBS)
          ENDIF
 ************************************************************************
 *                                                                      *
@@ -796,7 +798,7 @@ C#      CALL TIMER('AFTER CNVG')
   370    PB(I)=PA(I)
       ENDIF
       IF(PRTDEN) THEN
-         WRITE(6,'('' DENSITY MATRIX ON ITERATION'',I4)')NITER
+         WRITE(WU,'('' DENSITY MATRIX ON ITERATION'',I4)')NITER
          CALL VECPRT (P,NORBS)
       ENDIF
       OKNEWD=(PL.LT.SELLIM .OR. OKNEWD)
@@ -849,12 +851,12 @@ C#        CALL TIMER('AFTER MECI')
             EE=EE+SUM
             IF(PRTPL)THEN
                ESCF=(EE+ENUCLR)*23.061D0+ATHEAT
-               WRITE(6,'(27X,''AFTER MECI, ENERGY  '',F14.7)')ESCF
+               WRITE(WU,'(27X,''AFTER MECI, ENERGY  '',F14.7)')ESCF
             ENDIF
          ENDIF
       ENDIF
       NSCF=NSCF+1
-      IF(DEBUG)WRITE(6,'('' NO. OF ITERATIONS ='',I6)')NITER
+      IF(DEBUG)WRITE(WU,'('' NO. OF ITERATIONS ='',I6)')NITER
 C            IF(FORCE)  SCFCRT=1.D-5
       IF(ALLCON.AND.ABS(BSHIFT-4.44D0).LT.1.D-7)THEN
          CAMKIN=.FALSE.

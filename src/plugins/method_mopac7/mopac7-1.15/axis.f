@@ -13,6 +13,8 @@
 ************************************************************************
       COMMON /NUMCAL/ NUMCAL
       COMMON /ATMASS/ ATMASS(NUMATM)
+      INTEGER WU
+      COMMON /OUTFIL/ WU
       DIMENSION T(6), X(NUMATM), Y(NUMATM),
      1          Z(NUMATM), ROT(3), XYZMOM(3), EIG(3), EVEC(3,3)
       LOGICAL FIRST
@@ -67,7 +69,7 @@ C
       ENDIF
 C
       IF(MASS.GT.0.AND.FIRST)
-     1 WRITE(6,'(/10X,''MOLECULAR WEIGHT ='',F8.2,/)')
+     1 WRITE(WU,'(/10X,''MOLECULAR WEIGHT ='',F8.2,/)')
      2MIN(99999.99D0,SUMW)
       SUMWX=SUMWX/SUMW
       SUMWY=SUMWY/SUMW
@@ -112,7 +114,7 @@ C
 C
       CALL RSP(T,3,3,EIG,EVEC)
       IF(MASS.GT.0.AND. FIRST.AND.INDEX(KEYWRD,'RC=').EQ.0) THEN
-         WRITE(6,'(//10X,'' PRINCIPAL MOMENTS OF INERTIA IN CM(-1)'',/)'
+        WRITE(WU,'(//10X,'' PRINCIPAL MOMENTS OF INERTIA IN CM(-1)'',/)'
      1)
 C$DOIT ASIS
          DO 70 I=1,3
@@ -123,12 +125,12 @@ C$DOIT ASIS
                ROT(I)=CONST2/EIG(I)
             ENDIF
    70    XYZMOM(I)=EIG(I)*CONST1
-         WRITE(6,'(10X,''A ='',F12.6,''   B ='',F12.6,
+         WRITE(WU,'(10X,''A ='',F12.6,''   B ='',F12.6,
      1''   C ='',F12.6,/)')(ROT(I),I=1,3)
          IF(INDEX(KEYWRD,'RC=').EQ.0)
-     1WRITE(6,'(//10X,'' PRINCIPAL MOMENTS OF INERTIA IN '',
+     1WRITE(WU,'(//10X,'' PRINCIPAL MOMENTS OF INERTIA IN '',
      2''UNITS OF 10**(-40)*GRAM-CM**2'',/)')
-         WRITE(6,'(10X,''A ='',F12.6,''   B ='',F12.6,
+         WRITE(WU,'(10X,''A ='',F12.6,''   B ='',F12.6,
      1''   C ='',F12.6,/)')(XYZMOM(I),I=1,3)
          C=ROT(1)
          B=ROT(2)

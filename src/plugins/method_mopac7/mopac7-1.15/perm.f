@@ -1,4 +1,6 @@
       SUBROUTINE PERM(IPERM,NELS,NMOS,MAXMOS,NPERMS)
+      COMMON /OUTFIL/ WU
+      INTEGER WU
       DIMENSION IPERM(MAXMOS,60), IADD(20), NEL(20)
 ************************************************************************
 *
@@ -15,7 +17,7 @@
 *
 ************************************************************************
       IF(NELS.GT.NMOS)THEN
-         WRITE(6,'('' NUMBER OF PARTICLES,'',I3,'' GREATER THAN NO. '',
+         WRITE(WU,'('' NUMBER OF PARTICLES,'',I3,'' GREATER THAN NO. '',
      1''OF STATES,'',I3)')NELS,NMOS
          NPERMS=0
          RETURN
@@ -55,7 +57,7 @@
    40                                     IPERM(IADD(J),NPERMS)=1
                                           NPERMS=NPERMS+1
                                           IF(NPERMS.GT.61)THEN
-                                             WRITE(6,'('' NUMBER OF PERM
+                                             WRITE(WU,'('' NUMBER OF PERM
      1UTATIONS TOO GREAT, LIMIT 60'')')
                                              GOTO 60
                                           ENDIF

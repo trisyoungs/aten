@@ -9,6 +9,8 @@
       COMMON /ELEMTS/ ELEMNT(107)
       LOGICAL VIB1, VIB2, VIB3, VIB4
       COMMON /FOKMAT/ F(MPACK*2)
+      COMMON /OUTFIL/ WU
+      INTEGER WU
       CHARACTER*2 ELEMNT
       DIMENSION VANRAD(107), IJF(10), FIJ(10)
       SAVE VANRAD
@@ -39,7 +41,7 @@ C
 C
 C     ANALYSE VIBRATIONS
 C
-      WRITE(6,'(''1'',//10X,''DESCRIPTION OF VIBRATIONS'',/)')
+      WRITE(WU,'(''1'',//10X,''DESCRIPTION OF VIBRATIONS'',/)')
       ILINE=0
       DO 120 K=1,N3
          IF(ABS(EIGS(K)).LT.50) GOTO 120
@@ -100,7 +102,7 @@ C
             FIJ(I)=SUM
             F(JJ)=-1.D-5
             IJF(I)=JJ
-C#      WRITE(6,*)FIJ(I),IJF(I)
+C#      WRITE(WU,*)FIJ(I),IJF(I)
    90    CONTINUE
          I=10
   100    LINEAR=I
@@ -133,49 +135,49 @@ C#            IF(ABS(E).GT.110)GOTO 120
                RADIAL=((X*(XI-XJ)+Y*(YI-YJ)+Z*(ZI-ZJ))
      1                  /(SHIFT*RIJ(IJF(IJ))))**2*100.D0
                IF (VIB1) THEN
-                  WRITE(6,'(/,'' VIBRATION'',I4,''            ATOM PAIR
+                  WRITE(WU,'(/,'' VIBRATION'',I4,''            ATOM PAIR
      1 '',''    ENERGY CONTRIBUTION              RADIAL'')')K
                   ANS=100.D0*SQRT(FIJ(IJ)*1.D5*6.023D23)/(2.998D10*3.141
      159D0*2.D0)/EIGS(K)
                   ANS=MIN(999.9D0,MAX(-99.9D0,ANS))
-                  WRITE(6,'('' FREQ.   '',F9.2,6X,1A2,I2,
+                  WRITE(WU,'('' FREQ.   '',F9.2,6X,1A2,I2,
      1'' -- '',A2,I2, ''         '',F6.1,''% ('',F5.1,''%)'',F18.1
      2,''%'')')
      3EIGS(K),ELEMNT(NAT(I)),I,ELEMNT(NAT(J)),J,E,ANS,RADIAL
-C#      WRITE(6,*)ANS
+C#      WRITE(WU,*)ANS
                   VIB1=.FALSE.
                ELSEIF (VIB2) THEN
                   VIB2=.FALSE.
-                  WRITE(6,'('' T-DIPOLE'',F9.4,6X,1A2,I2,
+                  WRITE(WU,'('' T-DIPOLE'',F9.4,6X,1A2,I2,
      1'' -- '',A2,I2, ''         '',F6.1,''%'',F27.1,''%'')')
      2DIPT(K),ELEMNT(NAT(I)),I,ELEMNT(NAT(J)),J,E,RADIAL
                ELSEIF (VIB3) THEN
                   VIB3=.FALSE.
-                  WRITE(6,'('' TRAVEL  '',F9.4,6X,1A2,I2,
+                  WRITE(WU,'('' TRAVEL  '',F9.4,6X,1A2,I2,
      1'' -- '',A2,I2, ''         '',F6.1,''%'',F27.1,''%'')')
      2TRAVEL(K),ELEMNT(NAT(I)),I,ELEMNT(NAT(J)),J,E,RADIAL
                ELSEIF (VIB4) THEN
                   VIB4=.FALSE.
-                  WRITE(6,'('' RED. MASS'',F8.4,6X,1A2,I2,
+                  WRITE(WU,'('' RED. MASS'',F8.4,6X,1A2,I2,
      1'' -- '',A2,I2, ''         '',F6.1,''%'',F27.1,''%'')')
      2REDMAS(K),ELEMNT(NAT(I)),I,ELEMNT(NAT(J)),J,E,RADIAL
                ELSE
                   ILINE=ILINE+1
-                  WRITE(6,'(''                        '',1A2,I2,
+                  WRITE(WU,'(''                        '',1A2,I2,
      1'' -- '',A2,I2, ''         '',F6.1,''%'',F27.1,''%'')')
      2ELEMNT(NAT(I)),I,ELEMNT(NAT(J)),J,E,RADIAL
                ENDIF
             ENDIF
   110    CONTINUE
          ILINE=ILINE+6
-         IF(VIB1)WRITE(6,'(/,'' VIBRATION'',I4)')K
-         IF(VIB1)WRITE(6,'(  '' FREQ.    '',F8.2)')EIGS(K)
-         IF(VIB2)WRITE(6,'(  '' T-DIPOLE '',F8.4)')DIPT(K)
-         IF(VIB3)WRITE(6,'(  '' TRAVEL   '',F8.4)')TRAVEL(K)
-         IF(VIB4)WRITE(6,'(  '' RED. MASS'',F8.4)')REDMAS(K)
+         IF(VIB1)WRITE(WU,'(/,'' VIBRATION'',I4)')K
+         IF(VIB1)WRITE(WU,'(  '' FREQ.    '',F8.2)')EIGS(K)
+         IF(VIB2)WRITE(WU,'(  '' T-DIPOLE '',F8.4)')DIPT(K)
+         IF(VIB3)WRITE(WU,'(  '' TRAVEL   '',F8.4)')TRAVEL(K)
+         IF(VIB4)WRITE(WU,'(  '' RED. MASS'',F8.4)')REDMAS(K)
          IF(ILINE.GT.52)THEN
             ILINE=0
-            WRITE(6,'(''1'')')
+            WRITE(WU,'(''1'')')
          ENDIF
   120 CONTINUE
       RETURN

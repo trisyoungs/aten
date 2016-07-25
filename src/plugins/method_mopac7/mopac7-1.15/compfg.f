@@ -25,6 +25,8 @@
      1       /MOLKST/ NUMAT,NAT(NUMATM),NFIRST(NUMATM),NMIDLE(NUMATM),
      2                NLAST(NUMATM), NORBS, NELECS,NALPHA,NBETA,
      3                NCLOSE,NOPEN,NDUMY,FRACT
+      COMMON /OUTFIL/ WU
+      INTEGER WU
 C COSMO change A. Klamt
       LOGICAL ISEPS, USEPS , UPDA
       COMMON /ISEPS/  ISEPS, USEPS, UPDA
@@ -113,7 +115,7 @@ C      NOW COMPUTE THE ATOMIC COORDINATES.
          ELSE
             K=MIN(5,NATOMS)
          ENDIF
-         WRITE(6,FMT='('' INTERNAL COORDS'',/100(/,3F12.6))')
+         WRITE(WU,FMT='('' INTERNAL COORDS'',/100(/,3F12.6))')
      1            ((GEO(J,I)*DEGREE(J),J=1,3),I=1,K)
       END IF
       CALL GMETRY(GEO,COORD)
@@ -123,7 +125,7 @@ C      NOW COMPUTE THE ATOMIC COORDINATES.
          ELSE
             K=MIN(5,NUMAT)
          ENDIF
-         WRITE(6,FMT='('' CARTESIAN COORDS'',/100(/,3F16.9))')
+         WRITE(WU,FMT='('' CARTESIAN COORDS'',/100(/,3F16.9))')
      1            ((COORD(J,I),J=1,3),I=1,K)
       ENDIF
       IF(INT.AND.ANALYT)REWIND 2
@@ -198,9 +200,9 @@ C
    70    ESCF=ESCF+(XPARAM(I)-XPAREF(I))*AICORR(I)
       ENDIF
       IF(INT.AND.PRINT)
-     1WRITE(6,'(/10X,'' HEAT OF FORMATION'',G30.17)')ESCF
+     1WRITE(WU,'(/10X,'' HEAT OF FORMATION'',G30.17)')ESCF
       IF(PRINT.AND.LGRAD)
-     1   WRITE(6,FMT='('' GRADIENT       '',8F8.2,(/10F8.2))')
+     1   WRITE(WU,FMT='('' GRADIENT       '',8F8.2,(/10F8.2))')
      2                (GRAD(I),I=1,NVAR)
 C
 C REFORM DENSITY MATRIX, IF A C.I. DONE AND EITHER THE LAST SCF OR A

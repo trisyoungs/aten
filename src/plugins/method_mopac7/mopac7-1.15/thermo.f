@@ -5,6 +5,8 @@
       CHARACTER KEYWRD*241, KOMENT*81, TITLE*81, TMPKEY*241
       COMMON /KEYWRD/ KEYWRD
       COMMON /TITLES/ KOMENT,TITLE
+      COMMON /OUTFIL/ WU
+      INTEGER WU
 C
 C
 C   THERMO CALCULATES THE VARIOUS THERMODYNAMIC QUANTITIES FOR A
@@ -61,7 +63,7 @@ C
          TMPKEY(INDEX(TMPKEY,')'):)=' '
          IT1=READA(TMPKEY,I)
          IF(IT1.LT.100) THEN
-            WRITE(6,'(//10X,''TEMPERATURE RANGE STARTS TOO LOW,'',
+            WRITE(WU,'(//10X,''TEMPERATURE RANGE STARTS TOO LOW,'',
      1'' LOWER BOUND IS RESET TO 30K'')')
             IT1=100
          ENDIF
@@ -94,23 +96,23 @@ C
          ENDIF
       ENDIF
    10 CONTINUE
-      WRITE(6,'(//,A)')TITLE
-      WRITE(6,'(A)')KOMENT
+      WRITE(WU,'(//,A)')TITLE
+      WRITE(WU,'(A)')KOMENT
       IF(LINEAR) THEN
-         WRITE(6,'(//10X,''MOLECULE IS LINEAR'')')
+         WRITE(WU,'(//10X,''MOLECULE IS LINEAR'')')
       ELSE
-         WRITE(6,'(//10X,''MOLECULE IS NOT LINEAR'')')
+         WRITE(WU,'(//10X,''MOLECULE IS NOT LINEAR'')')
       ENDIF
-      WRITE(6,'(/10X,''THERE ARE'',I3,'' GENUINE VIBRATIONS IN THIS '',
+      WRITE(WU,'(/10X,''THERE ARE'',I3,'' GENUINE VIBRATIONS IN THIS '',
      1''SYSTEM'')')NVIBS
-      WRITE(6,20)
+      WRITE(WU,20)
    20 FORMAT(10X,'THIS THERMODYNAMICS CALCULATION IS LIMITED TO',/
      110X,'MOLECULES WHICH HAVE NO INTERNAL ROTATIONS'//)
-      WRITE(6,'(//20X,''CALCULATED THERMODYNAMIC PROPERTIES'')')
-      WRITE(6,'(42X,''*'')')
-      WRITE(6,'(''   TEMP. (K)   PARTITION FUNCTION   H.O.F.'',
+      WRITE(WU,'(//20X,''CALCULATED THERMODYNAMIC PROPERTIES'')')
+      WRITE(WU,'(42X,''*'')')
+      WRITE(WU,'(''   TEMP. (K)   PARTITION FUNCTION   H.O.F.'',
      1''    ENTHALPY   HEAT CAPACITY  ENTROPY'')')
-      WRITE(6,'(  ''                                    KCAL/MOL'',
+      WRITE(WU,'(  ''                                    KCAL/MOL'',
      1''   CAL/MOLE    CAL/K/MOL   CAL/K/MOL'',/)')
       DO 30 I=1,NVIBS
    30 VIBS(I)=ABS(VIBS(I))
@@ -176,19 +178,19 @@ C   ***   OUTPUT SECTION   ***
          IF(IR.EQ.1)THEN
             H298=HTOT
          ELSE
-            WRITE(6,'(/,I7,''  VIB.'',G18.4
+            WRITE(WU,'(/,I7,''  VIB.'',G18.4
      1           ,13X,3F11.5        )')ITEMP,QV,  HV,  CPV,  SV
-            WRITE(6,'(7X,''  ROT.'',G13.3
+            WRITE(WU,'(7X,''  ROT.'',G13.3
      1           ,16X,3F11.3        )')      QR,  HR,  CPR,  SR
-            WRITE(6,'(7X,''  INT.'',G13.3
+            WRITE(WU,'(7X,''  INT.'',G13.3
      1           ,16X,3F11.3        )')      QINT,HINT,CPINT,SINT
-            WRITE(6,'(7X,''  TRA.'',G13.3
+            WRITE(WU,'(7X,''  TRA.'',G13.3
      1           ,16X,3F11.3)')
      2                                      QTR, HTR, CPTR, STR
-            WRITE(6,'(7X,''  TOT.'',13X,F17.3,F11.4,2F11.4)')
+            WRITE(WU,'(7X,''  TOT.'',13X,F17.3,F11.4,2F11.4)')
      1                     ESCF+(HTOT-H298)/1000.D0,HTOT,CPTOT,STOT
          ENDIF
    80 CONTINUE
-      WRITE(6,'(/3X,'' * NOTE: HEATS OF FORMATION ARE RELATIVE TO THE'',
-     1/12X,'' ELEMENTS IN THEIR STANDARD STATE AT 298K'')')
+      WRITE(WU,'(/3X,'' * NOTE: HEATS OF FORMATION ARE RELATIVE TO THE''
+     1,/12X,'' ELEMENTS IN THEIR STANDARD STATE AT 298K'')')
       END

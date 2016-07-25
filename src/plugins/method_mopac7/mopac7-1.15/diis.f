@@ -42,6 +42,8 @@
 *                                                                      *
 ************************************************************************
       COMMON /KEYWRD/ KEYWRD
+      COMMON /OUTFIL/ WU
+      INTEGER WU
       PARAMETER (MRESET=15, M2=(MRESET+1)*(MRESET+1))
       DIMENSION  XSET(MRESET*MAXPAR),GSET(MRESET*MAXPAR), ESET(MRESET)
       DIMENSION DX(MAXPAR),GSAVE(MAXPAR),
@@ -51,7 +53,7 @@
       DEBUG=.FALSE.
       PRINT=(INDEX(KEYWRD,' DIIS').NE.0)
       IF (PRINT) DEBUG=(INDEX(KEYWRD,'DEBUG').NE.0)
-      IF (PRINT)  WRITE(6,'(/,''      ***** BEGIN GDIIS ***** '')')
+      IF (PRINT)  WRITE(WU,'(/,''      ***** BEGIN GDIIS ***** '')')
 C
 C  SPACE SIMPLY LOADS THE CURRENT VALUES OF XPARAM AND GNORM INTO
 C  THE ARRAYS XSET AND GSET
@@ -200,17 +202,17 @@ C
   220 DX(K) = XPARAM(K) - XP(K)
       XNORM = SQRT(DOT(DX,DX,NVAR))
       IF (PRINT) THEN
-         WRITE (6,'(/10X,''DEVIATION IN X '',F7.4,8X,''DETERMINANT '',
+         WRITE(WU,'(/10X,''DEVIATION IN X '',F7.4,8X,''DETERMINANT '',
      1 G9.3)') XNORM,DET
-         WRITE(6,'(10X,''GDIIS COEFFICIENTS'')')
-         WRITE(6,'(10X,5F12.5)') (B(MPLUS*MSET+I),I=1,MSET)
+         WRITE(WU,'(10X,''GDIIS COEFFICIENTS'')')
+         WRITE(WU,'(10X,5F12.5)') (B(MPLUS*MSET+I),I=1,MSET)
       ENDIF
 C
 C     THE FOLLOWING TOLERENCES FOR XNORM AND DET ARE SOMEWHAT ARBITRARY!
 C
       THRES = MAX(10.D0**(-NVAR), 1.D-25)
       IF (XNORM.GT.2.D0 .OR. DABS(DET).LT. THRES) THEN
-         IF (PRINT) WRITE(6,'(10X,''THE DIIS MATRIX IS ILL CONDITIONED''
+        IF (PRINT) WRITE(WU,'(10X,''THE DIIS MATRIX IS ILL CONDITIONED''
      1, /10X,'' - PROBABLY, VECTORS ARE LINEARLY DEPENDENT - '',
      2 /10X,''THE DIIS STEP WILL BE REPEATED WITH A SMALLER SPACE'')')
          DO 230 K=1,MM
@@ -223,7 +225,7 @@ C
   240    GP(K) = GRAD(K)
 C
       ENDIF
-      IF (PRINT)  WRITE(6,'(/,''      ***** END GDIIS ***** '',/)')
+      IF (PRINT)  WRITE(WU,'(/,''      ***** END GDIIS ***** '',/)')
 C
       RETURN
       END

@@ -17,6 +17,8 @@ C COSMO change
       LOGICAL ISEPS, USEPS, UPDA
       COMMON /ISEPS/  ISEPS, USEPS, UPDA
 C end of COSMO change
+      COMMON /OUTFIL/ WU
+      INTEGER WU
 ************************************************************************
 C
 C   HCORE GENERATES THE ONE-ELECTRON MATRIX AND TWO ELECTRON INTEGRALS
@@ -67,8 +69,8 @@ C
          TMPKEY(I:I)=' '
          ZF=READA(TMPKEY,I)
     5    CONTINUE
-         WRITE(6,'(/10X,''THE ELECTRIC FIELD IS'',3F10.5)')XF,YF,ZF
-         WRITE(6,'(10X,''IN 8*A.U. (8*27.21/0.529 VOLTS/ANGSTROM)'',/)')
+         WRITE(WU,'(/10X,''THE ELECTRIC FIELD IS'',3F10.5)')XF,YF,ZF
+        WRITE(WU,'(10X,''IN 8*A.U. (8*27.21/0.529 VOLTS/ANGSTROM)'',/)')
     6    CONTINUE
          EFIELD(1)=XF
          EFIELD(2)=YF
@@ -202,17 +204,17 @@ C interaction is added to ENUCLR
       ENDIF
 C end of COSMO change
       IF( .NOT. DEBUG) RETURN
-      WRITE(6,'(//10X,''ONE-ELECTRON MATRIX FROM HCORE'')')
+      WRITE(WU,'(//10X,''ONE-ELECTRON MATRIX FROM HCORE'')')
       CALL VECPRT(H,NORBS)
       J=MIN(400,KR)
       IF(ID.EQ.0) THEN
-         WRITE(6,'(//10X,''TWO-ELECTRON MATRIX IN HCORE''/)')
-         WRITE(6,120)(W(I),I=1,J)
+         WRITE(WU,'(//10X,''TWO-ELECTRON MATRIX IN HCORE''/)')
+         WRITE(WU,120)(W(I),I=1,J)
       ELSE
-         WRITE(6,'(//10X,''TWO-ELECTRON J MATRIX IN HCORE''/)')
-         WRITE(6,120)(WJ(I),I=1,J)
-         WRITE(6,'(//10X,''TWO-ELECTRON K MATRIX IN HCORE''/)')
-         WRITE(6,120)(WK(I),I=1,J)
+         WRITE(WU,'(//10X,''TWO-ELECTRON J MATRIX IN HCORE''/)')
+         WRITE(WU,120)(WJ(I),I=1,J)
+         WRITE(WU,'(//10X,''TWO-ELECTRON K MATRIX IN HCORE''/)')
+         WRITE(WU,120)(WK(I),I=1,J)
       ENDIF
   120 FORMAT(10F8.4)
       RETURN

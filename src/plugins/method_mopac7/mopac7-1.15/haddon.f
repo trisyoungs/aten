@@ -1,5 +1,7 @@
       SUBROUTINE HADDON (W,L,M,LOC,A)
       IMPLICIT DOUBLE PRECISION (A-H,O-Z)
+      COMMON /OUTFIL/ WU
+      INTEGER WU
       DIMENSION A(3,*)
 C**********************************************************************
 C
@@ -13,7 +15,7 @@ C            L   = 1 (FOR BOND LENGTH), 2 (ANGLE), OR 3 (DIHEDRAL)
 C**********************************************************************
       PI = 3.1415926536D00
       IF (M.GT.18 .OR. M.LT.1) THEN
-         WRITE(6,'(///10X,''UNDEFINED SYMMETRY FUNCTION USED'')')
+         WRITE(WU,'(///10X,''UNDEFINED SYMMETRY FUNCTION USED'')')
          STOP
       ENDIF
       I=LOC

@@ -20,6 +20,8 @@
      2                NLAST(NUMATM), NORBS, NELECS,NALPHA,NBETA,
      3                NCLOSE,NOPEN,NDUMY,FRACT
       COMMON /REACTN/ STEP, GEOA, GEOVEC,CALCST
+      COMMON /OUTFIL/ WU
+      INTEGER WU
       LOGICAL GRADNT, FINISH, XYZ, INT, GOK(2)
       SAVE GRADNT, FINISH, XYZ,INT, GOK
 ************************************************************************
@@ -72,27 +74,27 @@ C
          DO 10 I=1,NATOMS
             IF(IDUM1(I).NE.NA(I))THEN
                L=L+1
-               IF(L.EQ.1)WRITE(6,'(10X,''ERRORS DETECTED IN CONNECTIVITY
+               IF(L.EQ.1)WRITE(WU,'(10X,''ERRORS DETECTED IN CONNECTIVITY
      1'')')
-               WRITE(6,'(A,I3,A,I3,A,I3,A)')' FOR ATOM',I,' THE BOND LAB
+               WRITE(WU,'(A,I3,A,I3,A,I3,A)')' FOR ATOM',I,' THE BOND LAB
      1ELS ARE DIFFERENT:      ',IDUM1(I),' AND',NA(I)
             ENDIF
             IF(IDUM2(I).NE.NB(I))THEN
                L=L+1
-               IF(L.EQ.1)WRITE(6,'(10X,''ERRORS DETECTED IN CONNECTIVITY
+               IF(L.EQ.1)WRITE(WU,'(10X,''ERRORS DETECTED IN CONNECTIVITY
      1'')')
-               WRITE(6,'(A,I3,A,I3,A,I3,A)')' FOR ATOM',I,' THE BOND ANG
+               WRITE(WU,'(A,I3,A,I3,A,I3,A)')' FOR ATOM',I,' THE BOND ANG
      1LE LABELS ARE DIFFERENT:',IDUM2(I),' AND',NB(I)
             ENDIF
             IF(IDUM3(I).NE.NC(I))THEN
                L=L+1
-               IF(L.EQ.1)WRITE(6,'(10X,''ERRORS DETECTED IN CONNECTIVITY
+               IF(L.EQ.1)WRITE(WU,'(10X,''ERRORS DETECTED IN CONNECTIVITY
      1'')')
-               WRITE(6,'(A,I3,A,I3,A,I3,A)')' FOR ATOM',I,' THE DIHEDRAL
+               WRITE(WU,'(A,I3,A,I3,A,I3,A)')' FOR ATOM',I,' THE DIHEDRAL
      1 LABELS ARE DIFFERENT:  ',IDUM3(I),' AND',NC(I)
             ENDIF
    10    CONTINUE
-         IF(L.NE.0)WRITE(6,'(10X,A)')' CORRECT BEFORE RESUBMISSION'
+         IF(L.NE.0)WRITE(WU,'(10X,A)')' CORRECT BEFORE RESUBMISSION'
          IF(L.NE.0)STOP
       ENDIF
       TIME0= SECOND()
@@ -114,13 +116,13 @@ C
          GEO(3,I)=X
    20 CONTINUE
       IF(NUMAT2.NE.NUMAT) THEN
-         WRITE(6,'(//10X,'' NUMBER OF ATOMS IN SECOND SYSTEM IS '',
+         WRITE(WU,'(//10X,'' NUMBER OF ATOMS IN SECOND SYSTEM IS '',
      1''INCORRECT'',/)')
-         WRITE(6,'('' NUMBER OF ATOMS IN FIRST  SYSTEM ='',I4)')NUMAT
-         WRITE(6,'('' NUMBER OF ATOMS IN SECOND SYSTEM ='',I4)')NUMAT2
+         WRITE(WU,'('' NUMBER OF ATOMS IN FIRST  SYSTEM ='',I4)')NUMAT
+         WRITE(WU,'('' NUMBER OF ATOMS IN SECOND SYSTEM ='',I4)')NUMAT2
          GOTO 280
       ENDIF
-      WRITE(6,'(//10X,'' GEOMETRY OF SECOND SYSTEM'',/)')
+      WRITE(WU,'(//10X,'' GEOMETRY OF SECOND SYSTEM'',/)')
       IF(NDEP.NE.0) CALL SYMTRY
       CALL GEOUT(1)
 C
@@ -142,8 +144,8 @@ C
             GEO(1,J)=COORD(1,J)-SUMX
             GEO(2,J)=COORD(2,J)-SUMY
    40    GEO(3,J)=COORD(3,J)-SUMZ
-         WRITE(6,'(//,''  CARTESIAN GEOMETRY OF FIRST SYSTEM'',//)')
-         WRITE(6,'(3F14.5)')((GEO(J,I),J=1,3),I=1,NUMAT)
+         WRITE(WU,'(//,''  CARTESIAN GEOMETRY OF FIRST SYSTEM'',//)')
+         WRITE(WU,'(3F14.5)')((GEO(J,I),J=1,3),I=1,NUMAT)
          SUMX=0.D0
          SUMY=0.D0
          SUMZ=0.D0
@@ -197,11 +199,11 @@ C
    90          SUM=SUMM
   100       CONTINUE
   110    CONTINUE
-         WRITE(6,'(//,''  CARTESIAN GEOMETRY OF SECOND SYSTEM'',//)')
-         WRITE(6,'(3F14.5)')((GEOA(J,I),J=1,3),I=1,NUMAT)
-         WRITE(6,'(//,''   "DISTANCE":'',F13.6)')SUM
-         WRITE(6,'(//,''  REACTION COORDINATE VECTOR'',//)')
-         WRITE(6,'(3F14.5)')((GEOA(J,I)-GEO(J,I),J=1,3),I=1,NUMAT)
+         WRITE(WU,'(//,''  CARTESIAN GEOMETRY OF SECOND SYSTEM'',//)')
+         WRITE(WU,'(3F14.5)')((GEOA(J,I),J=1,3),I=1,NUMAT)
+         WRITE(WU,'(//,''   "DISTANCE":'',F13.6)')SUM
+         WRITE(WU,'(//,''  REACTION COORDINATE VECTOR'',//)')
+         WRITE(WU,'(3F14.5)')((GEOA(J,I)-GEO(J,I),J=1,3),I=1,NUMAT)
          NA(1)=99
          J=0
          NVAR=0
@@ -222,7 +224,7 @@ C   XPARAM HOLDS THE VARIABLE PARAMETERS FOR GEOMETRY IN GEO
 C   XOLD   HOLDS THE VARIABLE PARAMETERS FOR GEOMETRY IN GEOA
 C
       IF(NVAR.EQ.0)THEN
-         WRITE(6,'(///10X,''THERE ARE NO VARIABLES IN THE SADDLE'',
+         WRITE(WU,'(///10X,''THERE ARE NO VARIABLES IN THE SADDLE'',
      1'' CALCULATION!'')')
          STOP
       ENDIF
@@ -234,7 +236,7 @@ C
   140 SUM=SUM+(XPARAM(I)-XOLD(I))**2
       STEP0=SQRT(SUM)
       IF(STEP0.LT.1.D-5)THEN
-         WRITE(6,'(//,3(5X,A,/))')' BOTH GEOMETRIES ARE IDENTICAL',
+         WRITE(WU,'(//,3(5X,A,/))')' BOTH GEOMETRIES ARE IDENTICAL',
      1' A SADDLE CALCULATION INVOLVES A REACTANT AND A PRODUCT',
      2' THESE MUST BE DIFFERENT GEOMETRIES'
          STOP
@@ -245,7 +247,7 @@ C
       TIME1=SECOND()
       SWAP=0
       DO 240 ILOOP=1,MAXSTP
-         WRITE(6,'('' '',40(''*+''))')
+         WRITE(WU,'('' '',40(''*+''))')
 C
 C   THIS METHOD OF CALCULATING 'STEP' IS QUITE ARBITARY, AND NEEDS
 C   TO BE IMPROVED BY INTELLIGENT GUESSWORK!
@@ -255,7 +257,7 @@ C
          STEP=MIN(0.2D0,STEP/STEP0)*STEP0
          SWAP=SWAP+1.D0
          DELL=DELL+0.1D0
-         WRITE(6,'(''  BAR SHORTENED BY'',F12.7,'' PERCENT'')')
+         WRITE(WU,'(''  BAR SHORTENED BY'',F12.7,'' PERCENT'')')
      1STEP/STEP0*100.D0
          STEP0=STEP0-STEP
          IF(STEP0.LT.0.01D0) GOTO 250
@@ -272,13 +274,13 @@ C
          DO 170 I=1,NVAR
   170    XPARAM(I)=GEO(LOC(2,I),LOC(1,I))
          IF(IFLAG.EQ.1)THEN
-            WRITE(6,'(//10X,''FOR POINT'',I3,'' SECOND STRUCTURE'')')ILO
+            WRITE(WU,'(//10X,''FOR POINT'',I3,'' SECOND STRUCTURE'')')ILO
      1OP
          ELSE
-            WRITE(6,'(//10X,''FOR POINT'',I3,'' FIRST  STRUCTURE'')')ILO
+            WRITE(WU,'(//10X,''FOR POINT'',I3,'' FIRST  STRUCTURE'')')ILO
      1OP
          ENDIF
-         WRITE(6,'('' DISTANCE A - B  '',F12.6)')STEP
+         WRITE(WU,'('' DISTANCE A - B  '',F12.6)')STEP
 C
 C   NOW TO CALCULATE THE "CORRECT" GRADIENTS, SWITCH OFF 'STEP'.
 C
@@ -289,14 +291,14 @@ C
          DO 190 I=1,NVAR
   190    GROLD(I)=GRAD(I)
          IF (GRADNT) THEN
-            WRITE(6,'(''  ACTUAL GRADIENTS OF THIS POINT'')')
-            WRITE(6,'(8F10.4)')(GRAD(I),I=1,NVAR)
+            WRITE(WU,'(''  ACTUAL GRADIENTS OF THIS POINT'')')
+            WRITE(WU,'(8F10.4)')(GRAD(I),I=1,NVAR)
          ENDIF
-         WRITE(6,'('' HEAT            '',F12.6)')FUNCT1
+         WRITE(WU,'('' HEAT            '',F12.6)')FUNCT1
          GNORM=SQRT(DOT(GRAD,GRAD,NVAR))
-         WRITE(6,'('' GRADIENT NORM   '',F12.6)')GNORM
+         WRITE(WU,'('' GRADIENT NORM   '',F12.6)')GNORM
          COSINE=COSINE*ONE
-         WRITE(6,'('' DIRECTION COSINE'',F12.6)')COSINE
+         WRITE(WU,'('' DIRECTION COSINE'',F12.6)')COSINE
          CALL GEOUT(6)
          IF(SWAP.GT.2.9D0 .OR. ILOOP .GT. 3 .AND. COSINE .LT. 0.D0
      1  .OR. ESCF .GT. EOLD)
@@ -311,20 +313,20 @@ C   SWAP REACTANT AND PRODUCT AROUND
 C
             FINISH=(GOK(1).AND.GOK(2) .AND. COSINE .LT. 0.D0)
             IF(FINISH) THEN
-               WRITE(6,'(//10X,'' BOTH SYSTEMS ARE ON THE SAME SIDE OF T
+               WRITE(WU,'(//10X,'' BOTH SYSTEMS ARE ON THE SAME SIDE OF T
      1HE '',''TRANSITION STATE -'',/10X,'' GEOMETRIES OF THE SYSTEMS'',
      2'' ON EACH SIDE OF THE T.S. ARE AS FOLLOWS'')')
                DO 200 I=1,NVAR
   200          XPARAM(I)=XSTORE(I)
                CALL COMPFG (XPARAM, .TRUE., FUNCT1,.TRUE.,GRAD,.TRUE.)
-               WRITE(6,'(//10X,'' GEOMETRY ON ONE SIDE OF THE TRANSITION
+               WRITE(WU,'(//10X,'' GEOMETRY ON ONE SIDE OF THE TRANSITION
      1'','' STATE'')')
                CALL WRITMO(TIME0,FUNCT1)
             ENDIF
             TIME2=SECOND()
-            WRITE(6,'('' TIME='',F9.2)')TIME2-TIME1
+            WRITE(WU,'('' TIME='',F9.2)')TIME2-TIME1
             TIME1=TIME2
-            WRITE(6,'(''  REACTANTS AND PRODUCTS SWAPPED AROUND'')')
+            WRITE(WU,'(''  REACTANTS AND PRODUCTS SWAPPED AROUND'')')
             IFLAG=1-IFLAG
             ONE=-1.D0
             EOLD=ESCF
@@ -361,7 +363,7 @@ C
          ENDIF
   240 CONTINUE
   250 CONTINUE
-      WRITE(6,'('' AT END OF REACTION'')')
+      WRITE(WU,'('' AT END OF REACTION'')')
       GOLD=SQRT(DOT(GRAD,GRAD,NVAR))
       CALL COMPFG (XPARAM, .TRUE., FUNCT1,.TRUE.,GRAD,.TRUE.)
       GNORM=SQRT(DOT(GRAD,GRAD,NVAR))
@@ -376,8 +378,8 @@ C
 *
       C1=GOLD/(GOLD+GNORM)
       C2=1.D0-C1
-      WRITE(6,'('' BEST ESTIMATE GEOMETRY OF THE TRANSITION STATE'')')
-      WRITE(6,'(//10X,'' C1='',F8.3,''C2='',F8.3)')C1,C2
+      WRITE(WU,'('' BEST ESTIMATE GEOMETRY OF THE TRANSITION STATE'')')
+      WRITE(WU,'(//10X,'' C1='',F8.3,''C2='',F8.3)')C1,C2
       DO 270 I=1,NVAR
   270 XPARAM(I)=C1*GROLD(I)+C2*XOLD(I)
       STEP=0.D0

@@ -12,6 +12,8 @@
       COMMON/KEYWRD/KEYWRD
       COMMON/DENSTY/PDUMMY(MPACK),PA(MPACK),PB(MPACK)
       COMMON/DROHF/SDM(MPACK)
+      COMMON /OUTFIL/ WU
+
 C*********************************************************************
 C   CALCULATES AND PRINTS THE BOND INDICES AND VALENCIES OF ATOMS
 C   FOR REFERENCE, SEE "BOND INDICES AND VALENCY", J.C.S.DALTON,
@@ -22,6 +24,7 @@ C           P = DENSITY MATRIX, LOWER HALF TRIANGLE, PACKED.
 C               P IS NOT ALTERED BY BONDS
 C
 C*********************************************************************
+      INTEGER WU
       DIMENSION PS(MAXORB,MAXORB),SPINAB(NATMS2),SPNA(NUMATM)
       DIMENSION V(NUMATM),FV(NUMATM),SQ(NUMATM),AQ(NUMATM),TQ(NUMATM),
      1PM(NUMATM),SP(NUMATM),SD(NUMATM),AUX(NUMATM,NUMATM),PSPIN(MPACK)
@@ -35,7 +38,7 @@ C
       NCI=(INDEX(KEYWRD,'ROOT')+INDEX(KEYWRD,'OPEN').EQ.0)
       NOPN=NOPEN-NCLOSE
       NELECS=NCLOSE+NCLOSE+NOPN
-      WRITE(6,'(2x,''nelecs nclose nopen nopn'',4I5)') NELECS,NCLOSE,
+      WRITE(WU,'(2x,''nelecs nclose nopen nopn'',4I5)') NELECS,NCLOSE,
      1NOPEN,NOPN
 C*****   CALCULATE THE DEGREE OF BONDING   ************
 C
@@ -66,7 +69,7 @@ C****** UHF CASE
         ELSE
 C****** ROHF CASE
         ZKAPPA=1.D0/(1.D0-(DBLE(NOPN)/DBLE(NELECS))/2.D0)
-        WRITE(6,'(10X,''ROHF ZKAPPA='',F10.5,2I5)') ZKAPPA,nopen,nclose
+        WRITE(WU,'(10X,''ROHF ZKAPPA='',F10.5,2I5)') ZKAPPA,nopen,nclose
         ENDIF
         ENDIF
         IJ=0
@@ -118,31 +121,31 @@ C
 C  ********   OUTPUT    *****************
 C
 C
-      WRITE(6,'(//)')
-      WRITE(6,'(1X,10X,51(''* ''),//1X, 10X,''* '',9X,''STATISTICAL POP
+      WRITE(WU,'(//)')
+      WRITE(WU,'(1X,10X,51(''* ''),//1X, 10X,''* '',9X,''STATISTICAL POP
      +ULATION ANALYSIS'',9X,''* '',//1X,10X,51(''* ''))')
-      WRITE(6,'(1X//20X,''DEGREES OF BONDING''/)')
+      WRITE(WU,'(1X//20X,''DEGREES OF BONDING''/)')
       CALL VECPRT(BONDAB,NUMAT)
-      WRITE(6,'(///)')
-      WRITE(6,'(1X,5X,''SELF-Q'',4X,''ACTIV-Q'',3X,''TOTAL-Q'',3X,''VALE
+      WRITE(WU,'(///)')
+      WRITE(WU,'(1X,5X,''SELF-Q'',4X,''ACTIV-Q'',3X,''TOTAL-Q'',3X,''VALE
      +NCE'',3X,''FREE-VA'',1X,''STAT.PROM'',1X,''MULL.PROM''//)')
-      WRITE(6,'(1X,I2,7F10.5/)') (I,SQ(I),AQ(I),TQ(I),V(I),FV(I),SP(I),
+      WRITE(WU,'(1X,I2,7F10.5/)') (I,SQ(I),AQ(I),TQ(I),V(I),FV(I),SP(I),
      +PM(I),I=1,numat)
 C****** PERFORM SPIN POPULATION STATISTICAL ANALYSIS
       LINEAR=NORBS*(NORBS+1)/2
       IF(INDEX(KEYWRD,'UHF').NE.0) GO TO 1000
          IF(.NOT.CI.AND.NOPN.EQ.0.AND.NCI.AND.KCI) THEN
-        WRITE(6,'(1X,''CLOSED SHELL''//)')
+        WRITE(WU,'(1X,''CLOSED SHELL''//)')
         RETURN
         ELSE
 	CALL DOPEN(C,NORBS,NORBS,NCLOSE,NOPEN,FRACT)
           DO 91 J=1,LINEAR
    91      PSPIN(J)=SDM(J)
-C       WRITE(6,'(1X,''SDM'',10E12.3)')(SDM(J),J=1,LINEAR)
-         WRITE(6,'(1X,''ROHF''//)')
+C       WRITE(WU,'(1X,''SDM'',10E12.3)')(SDM(J),J=1,LINEAR)
+         WRITE(WU,'(1X,''ROHF''//)')
         GO TO 1002
          END IF
- 1000    WRITE(6,'(1X,''UHF ''//)')
+ 1000    WRITE(WU,'(1X,''UHF ''//)')
         DO 90  I=1,LINEAR
    90  PSPIN(I)=PA(I)-PB(I)
       SUM=0.D0
@@ -153,16 +156,16 @@ C       WRITE(6,'(1X,''SDM'',10E12.3)')(SDM(J),J=1,LINEAR)
       IF(I.EQ.J) AA=1.D0
       L=L+1
   100 SUM=SUM+AA*(PSPIN(L)*P(L))
-      WRITE(6,'(//)')
-      WRITE(6,'(10X,''NALPHA-NBETA= '',F10.5,//)') SUM
-1002   WRITE(6,'(1X,''OPEN SHELL& UHF CASE''//)')
+      WRITE(WU,'(//)')
+      WRITE(WU,'(10X,''NALPHA-NBETA= '',F10.5,//)') SUM
+1002   WRITE(WU,'(1X,''OPEN SHELL& UHF CASE''//)')
       KK=0
       DO 110 I=1,NORBS
       DO 110 J=1,I
        KK=KK+1
        PS(I,J)=PSPIN(KK)
   110  PS(J,I)=PSPIN(KK)
-      WRITE(6,'(1X,10X,51(''* '')//1X,10X,''* '',9X,''STATISTICAL SPIN 
+      WRITE(WU,'(1X,10X,51(''* '')//1X,10X,''* '',9X,''STATISTICAL SPIN 
      + POPULATION ANALYSIS'',9X,''* '',//1X,10X,51(''* ''))')
 C EVALUATE  THE CORRESPONDING INACTIVE ATOMIC AND BOND SPIN POPULATIONS
       IJ=0
@@ -193,11 +196,11 @@ C EVALUATE THE TOTAL ATOMIC SPIN POPULATIONS
       SPSA(I)=DA
       SPSQ(I)=AUX(I,I)
   160 SPNA(I)=DA+AUX(I,I)
-      WRITE(6,'(1X//20X,''SELF UNPAIRED AND BOND SPIN POPULATIONS ''/)')
+      WRITE(WU,'(1X//20X,''SELF UNPAIRED AND BOND SPIN POPULATIONS''/)')
       CALL VECPRT(SPINAB,NUMAT)
-      WRITE(6,'(//)')
-      WRITE(6,'(10X,'' TOTAL ATOMIC SPIN POPULATIONS''/)')
-      WRITE(6,'(1X,''ATOM    SELF UNCPLD SPIN    SHARED UNCPLD SPIN  
+      WRITE(WU,'(//)')
+      WRITE(WU,'(10X,'' TOTAL ATOMIC SPIN POPULATIONS''/)')
+      WRITE(WU,'(1X,''ATOM    SELF UNCPLD SPIN    SHARED UNCPLD SPIN  
      + TOTAL UNCPLD SPIN ''///(1X,I3,3F20.5))')(I,SPSQ(I),SPSA(I),
      1SPNA(I),I=1,NUMAT)
       RETURN

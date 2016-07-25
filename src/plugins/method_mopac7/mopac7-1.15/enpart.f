@@ -47,6 +47,8 @@ C***********************************************************************
       PARAMETER (MDUMY=MAXPAR*MAXPAR-NUMATM*3-NATMS2*4)
       COMMON /SCRACH/ EA(NUMATM,2),EAT(NUMATM), E(NATMS2,4),
      1XDUMY(MDUMY)
+      COMMON /OUTFIL/ WU
+      INTEGER WU
       MINDO3=(INDEX(KEYWRD,'MINDO').NE.0)
 C *** RECALCULATE THE DENSITY MATRICES IN THE UHF SCHEME
 C
@@ -109,15 +111,15 @@ C *** ONE-CENTER ENERGIES
    40 CONTINUE
       AM1=(INDEX(KEYWRD,'AM1')+INDEX(KEYWRD,'PM3').NE.0)
       IF(MINDO3) THEN
-         WRITE(6,'(///,10X,''TOTAL ENERGY PARTITIONING IN MINDO/3'')')
+         WRITE(WU,'(///,10X,''TOTAL ENERGY PARTITIONING IN MINDO/3'')')
       ELSEIF( INDEX(KEYWRD,'PM3').NE.0 ) THEN
-         WRITE(6,'(///,10X,''TOTAL ENERGY PARTITIONING IN PM3'')')
+         WRITE(WU,'(///,10X,''TOTAL ENERGY PARTITIONING IN PM3'')')
       ELSEIF( INDEX(KEYWRD,'AM1').NE.0 ) THEN
-         WRITE(6,'(///,10X,''TOTAL ENERGY PARTITIONING IN AM1'')')
+         WRITE(WU,'(///,10X,''TOTAL ENERGY PARTITIONING IN AM1'')')
       ELSE
-         WRITE(6,'(///,10X,''TOTAL ENERGY PARTITIONING IN MNDO'')')
+         WRITE(WU,'(///,10X,''TOTAL ENERGY PARTITIONING IN MNDO'')')
       ENDIF
-      WRITE(6,'(/10X,''ALL ENERGIES ARE IN ELECTRON VOLTS'')')
+      WRITE(WU,'(/10X,''ALL ENERGIES ARE IN ELECTRON VOLTS'')')
       KL=0
    50 K=KL+1
       KL=KL+10
@@ -322,15 +324,15 @@ C     E(I,3):     ELECTRON-NUCLEAR ATTRACTION ENERGY
 C     E(I,4):     ELECTRON-ELECTRON REPULSION ENERGY
 C     EX(I,1):    EXCHANGE  ENERGY
 C     EX(I,2):    EXCHANGE + RESONANCE ENERGY
-C#      WRITE(6,'(//,''       ONE AND TWO CENTER ENERGIES (EV) '')')
+C#      WRITE(WU,'(//,''       ONE AND TWO CENTER ENERGIES (EV) '')')
 C
-C#      WRITE(6,'(/,''  [RESONANCE TERM] (EV)'')')
+C#      WRITE(WU,'(/,''  [RESONANCE TERM] (EV)'')')
 C#      CALL VECPRT(E,NUMAT)
 C
-C#      WRITE(6,'(/,''  [EXCHANGE TERM] (EV)'')')
+C#      WRITE(WU,'(/,''  [EXCHANGE TERM] (EV)'')')
 C#      CALL VECPRT(EX,NUMAT)
 C
-C#      WRITE(6,'(/,''  [RESONANCE + EXCHANGE] (EV)'')')
+C#      WRITE(WU,'(/,''  [RESONANCE + EXCHANGE] (EV)'')')
       DO 290 N=1,NUMAT1
   290 EX(N,2) =E(N,1) + EX(N,1)
 C
@@ -340,64 +342,64 @@ C
   300 EX((I*(I+1))/2,2)=EA(I,2)
 C#      CALL VECPRT(EX(1,2),NUMAT)
 C
-C#      WRITE(6,'(/,''  [ELECTRON - ELECTRON REPULSION] (EV)'')')
+C#      WRITE(WU,'(/,''  [ELECTRON - ELECTRON REPULSION] (EV)'')')
 C#      CALL VECPRT(E(1,4),NUMAT)
 C
-C#      WRITE(6,'(/,''  [ELECTRON-NUCLEAR ATTRACTION] (EV)'')')
+C#      WRITE(WU,'(/,''  [ELECTRON-NUCLEAR ATTRACTION] (EV)'')')
       DO 310 I=1,NUMAT
   310 E((I*(I+1))/2,3)=EA(I,1)
 C#      CALL VECPRT(E(1,3),NUMAT)
 C
-C#      WRITE(6,'(/,''  [NUCLEAR-NUCLEAR REPULSION] (EV)'')')
+C#      WRITE(WU,'(/,''  [NUCLEAR-NUCLEAR REPULSION] (EV)'')')
 C#      CALL VECPRT(E(1,2),NUMAT)
 C
       DO 320 N=1,NUMAT1
   320 EX(N,3) =E(N,4) + E(N,3) + E(N,2)
 C     PRINT OUT OF TOTAL COULOMB TERM
-C#      WRITE(6,'(/,''  [TOTAL COULOMB TERM (E-E, E-N, AND N-N)] (EV)'')
+C#      WRITE(WU,'(/,''  [TOTAL COULOMB TERM (E-E, E-N, AND N-N)] (EV)'')
 C#      CALL VECPRT(EX(1,3),NUMAT)
 C     PRINT OUT OF TWO-CENTER SUM(OFF-DIAGONAL) +
 C                  ONE-CENTER SUM(DIAGONAL).
-C#      WRITE(6,'(/,''  [TWO-CENTER SUM (OFF-DIAGONAL), AND  '',
+C#      WRITE(WU,'(/,''  [TWO-CENTER SUM (OFF-DIAGONAL), AND  '',
 C#     1''ONE-CENTER SUM (DIAGONAL)] (EV)'')')
 C#      DO 340 N=1,NUMAT1
 C#  340 EX(N,3)=EX(N,3)+EX(N,2)
 C#      CALL VECPRT(EX(1,3),NUMAT)
-      WRITE(6,'(/,8(10X,A,/))')
+      WRITE(WU,'(/,8(10X,A,/))')
      1'  ONE-CENTER TERMS',' ',
      2'E-E:  ELECTRON-ELECTRON REPULSION',
      3'E-N:  ELECTRON-NUCLEAR ATTRACTION'
-      WRITE(6,'(/,''   ATOM     E-E       E-N    (E-E + E-N)'')')
+      WRITE(WU,'(/,''   ATOM     E-E       E-N    (E-E + E-N)'')')
       DO 330 I=1,NUMAT
          J=(I*(I+1))/2
-         WRITE(6,'(2X,A2,I3,1X,2F10.4,F10.4)')
+         WRITE(WU,'(2X,A2,I3,1X,2F10.4,F10.4)')
      1ELEMNT(NAT(I)),I, EX(J,2), E(J,3), EX(J,2)+E(J,3)
   330 CONTINUE
-      WRITE(6,'(/,8(10X,A,/))')
+      WRITE(WU,'(/,8(10X,A,/))')
      1'    TWO-CENTER TERMS',' ',
      2'J:   RESONANCE ENERGY          E-E: ELECTRON-ELECTRON REPULSION',
      3'K:   EXCHANGE ENERGY           E-N: ELECTRON-NUCLEAR ATTRACTION',
      4'                               N-N: NUCLEAR-NUCLEAR REPULSION',
      5'C:   COULOMBIC INTERACTION = E-E + E-N + N-N',
      6'EE:  TOTAL OF ELECTRONIC AND NUCLEAR ENERGIES'
-      WRITE(6,'(/,''   ATOM          J        K       E-'',
+      WRITE(WU,'(/,''   ATOM          J        K       E-'',
      1''E       E-N      N-N      C        EE'')')
-      WRITE(6,'(''   PAIR'')')
+      WRITE(WU,'(''   PAIR'')')
       IJ=0
       DO 340 I=1,NUMAT
          DO 340 J=1,I
             IJ=IJ+1
             IF(I.NE.J) THEN
-               WRITE(6,'(1X,A2,I3,1X,A2,I3,1X,2F9.4,F9.4,F10.4,F9.4,F8.4
+              WRITE(WU,'(1X,A2,I3,1X,A2,I3,1X,2F9.4,F9.4,F10.4,F9.4,F8.4
      1,F9.4)')ELEMNT(NAT(I)),I,ELEMNT(NAT(J)),J, E(IJ,1), EX(IJ,1),
      2E(IJ,4), E(IJ,3), E(IJ,2), EX(IJ,3), EX(IJ,2)+EX(IJ,3)
             ELSE
                IF(I.LT.6.OR.I.EQ.NUMAT)THEN
-                  WRITE(6,*)
+                  WRITE(WU,*)
                ELSE
-                  WRITE(6,'(/,''   ATOM          J        K       E-'',
+                  WRITE(WU,'(/,''   ATOM          J        K       E-'',
      1''E       E-N      N-N      C        EE'')')
-                  WRITE(6,'(''   PAIR'')')
+                  WRITE(WU,'(''   PAIR'')')
                ENDIF
             ENDIF
   340 CONTINUE
@@ -423,37 +425,37 @@ C
       TTWO=EABRX+EABE
       ET=TONE+TTWO
 C@ ***************************************************************
-      WRITE(6,370)
+      WRITE(WU,370)
   370 FORMAT(///,'***  SUMMARY OF ENERGY PARTITION  ***')
-      WRITE(6,380)
+      WRITE(WU,380)
   380 FORMAT(1H ,'---------------------------------------')
-      WRITE(6,'(''     ONE-CENTER TERMS'')')
-      WRITE(6,390) EAU
+      WRITE(WU,'(''     ONE-CENTER TERMS'')')
+      WRITE(WU,390) EAU
   390 FORMAT(/,' ELECTRON-NUCLEAR  (ONE-ELECTRON) ',F17.4,' EV')
-      WRITE(6,400) EAE
+      WRITE(WU,400) EAE
   400 FORMAT(' ELECTRON-ELECTRON (TWO-ELECTRON) ',F17.4,' EV')
-      WRITE(6,410) TONE
+      WRITE(WU,410) TONE
   410 FORMAT(/,' TOTAL OF ONE-CENTER TERMS        ',18X,F15.4,' EV')
-      WRITE(6,380)
-      WRITE(6,'(''     TWO-CENTER TERMS'')')
-      WRITE(6,420) EABR
+      WRITE(WU,380)
+      WRITE(WU,'(''     TWO-CENTER TERMS'')')
+      WRITE(WU,420) EABR
   420 FORMAT(/,' RESONANCE ENERGY',8X,F15.4,' EV')
-      WRITE(6,430) EABX
+      WRITE(WU,430) EABX
   430 FORMAT(' EXCHANGE ENERGY ',8X,F15.4,' EV')
-      WRITE(6,440) EABRX
+      WRITE(WU,440) EABRX
   440 FORMAT(/,' EXCHANGE + RESONANCE ENERGY:       ',F15.4,' EV')
-      WRITE(6,450) EABEE
+      WRITE(WU,450) EABEE
   450 FORMAT(/,' ELECTRON-ELECTRON REPULSION',F12.4,' EV')
-      WRITE(6,460) EABEN
+      WRITE(WU,460) EABEN
   460 FORMAT(  ' ELECTRON-NUCLEAR ATTRACTION',F12.4,' EV')
-      WRITE(6,470) EABNN
+      WRITE(WU,470) EABNN
   470 FORMAT(  ' NUCLEAR-NUCLEAR REPULSION  ',F12.4,' EV')
-      WRITE(6,480) EABE
+      WRITE(WU,480) EABE
   480 FORMAT(/,' TOTAL ELECTROSTATIC INTERACTION    ',F15.4,' EV',/)
-      WRITE(6,490) TTWO
+      WRITE(WU,490) TTWO
   490 FORMAT(' GRAND TOTAL OF TWO-CENTER TERMS   ',17X,F15.4,' EV')
-      WRITE(6,380)
-      WRITE(6,500) ET
+      WRITE(WU,380)
+      WRITE(WU,500) ET
   500 FORMAT(' ETOT (EONE + ETWO)   ',30X,F15.4,' EV'//)
       RETURN
       END

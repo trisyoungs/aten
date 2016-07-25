@@ -164,7 +164,7 @@ C
      1*(ALPH1*EXP1 + ALPH2*EXP2)
                PART3=-C1*RIJ*(RIJ**2+C2)**(-1.5D0)
                TERMNC=PART1+PART2+PART3
-C#            WRITE(6,'(4F13.6)')PART1,PART2,PART3,TERMNC
+C#            WRITE(WU,'(4F13.6)')PART1,PART2,PART3,TERMNC
             ELSE
                TERMNC=-C1*(1.D0/RIJ**2 - RIJ*(RIJ**2+C2)**(-1.5D0) +
      1ALPHA/RIJ - ALPHA/SQRT(RIJ**2+C2)) * EXP(-ALPHA*RIJ) -
@@ -202,7 +202,7 @@ C
                PART3=DG(1)*(EXP(-ALPA(NI)*RIJ)+EXP(-ALPA(NJ)*RIJ))*ABS(C
      11)
                DD=PART1+PART2+PART3
-C#            WRITE(6,'(4F13.6)')PART1,PART2,PART3,DD
+C#            WRITE(WU,'(4F13.6)')PART1,PART2,PART3,DD
 C#            ELSE
 C
 C   THE GENERAL CASE
@@ -369,7 +369,7 @@ C           END OF MNDO AND AM1 SPECIFIC CODE
          EAB(IX)=EAB(IX)+TERMAB
          ENUC(IX)=ENUC(IX)+TERMNC
   150 CONTINUE
-C#            WRITE(6,*)EAA,EAB,ENUC,NAT(1),NAT(2)
+C#            WRITE(WU,*)EAA,EAB,ENUC,NAT(1),NAT(2)
   160 CONTINUE
   170 CONTINUE
       DO 180 J=1,3

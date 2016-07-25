@@ -6,6 +6,8 @@ C   SECOND, ON EXIT, CONTAINS THE NUMBER OF CPU SECONDS
 C   SINCE THE START OF THE CALCULATION.
 C
 C******************************************************
+      COMMON /OUTFIL/ WU
+      INTEGER WU
       LOGICAL SETOK
       CHARACTER*1 X, GETNAM*80
       DIMENSION A(2)
@@ -32,7 +34,7 @@ C   IF YOU ARE NOT USING A VAX OR A UNIX COMPUTER, REMOVE THE NEXT LINE
 *
       SHUT=1.D6
       IF( SETOK) THEN
-         WRITE(6,'(///10X,''****   JOB STOPPED BY OPERATOR   ****'')')
+         WRITE(WU,'(///10X,''****   JOB STOPPED BY OPERATOR   ****'')')
          SETOK=.FALSE.
       ENDIF
    10 CONTINUE

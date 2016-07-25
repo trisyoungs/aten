@@ -37,6 +37,8 @@ C ***************************** at 1994-05-25 *****
      2                NCLOSE,NOPEN,NDUMY,FRACT
       COMMON /COORD / COORD(3,NUMATM)
       COMMON /NLLCOM/ EVECS(MAXPAR*MAXPAR),BMAT(MAXPAR,MAXPAR*2)
+      COMMON /OUTFIL/ WU
+      INTEGER WU
       DIMENSION GRAD(MAXPAR),
      1GROLD(MAXPAR), COORDL(MAXPAR), Q(NUMATM), DEL2(3), G2OLD(MAXPAR)
      2, EIGS(MAXPAR), G2RAD(MAXPAR),
@@ -89,8 +91,8 @@ C
       IF(INDEX(KEYWRD,'NLLSQ') .NE. 0) RESTRT=.FALSE.
       DEBUG =(INDEX(KEYWRD,'FMAT') .NE. 0)
       BIG    =(INDEX(KEYWRD,'LARGE') .NE. 0 .AND. DEBUG)
-      IF(PRNT)WRITE(6,'(//4X,''FIRST DERIVATIVES WILL BE USED IN THE''
-     1,'' CALCULATION OF SECOND DERIVATIVES'')')
+      IF(PRNT)WRITE(WU,'(//4X,''FIRST DERIVATIVES WILL BE USED IN''
+     1,'' THE CALCULATION OF SECOND DERIVATIVES'')')
       TLAST=TLEFT
       RESFIL=.FALSE.
       IF(RESTRT) THEN
@@ -116,12 +118,12 @@ C CALCULATE FMATRX
          IF (PRECIS) ESTIME=ESTIME*2.D0
       ENDIF
       IF(TSCF.GT.0)
-     1WRITE(6,'(/10X,''ESTIMATED TIME TO COMPLETE CALCULATION =''
+     1WRITE(WU,'(/10X,''ESTIMATED TIME TO COMPLETE CALCULATION =''
      2,F9.2,'' SECONDS'')')ESTIME
       IF(RESTRT) THEN
          IF(ISTART.LE.NVAR)
-     1    WRITE(6,'(/10X,''STARTING AGAIN AT LINE'',18X,I4)')ISTART
-         WRITE(6,'(/10X,''TIME USED UP TO RESTART ='',F22.2)')TOTIME
+     1    WRITE(WU,'(/10X,''STARTING AGAIN AT LINE'',18X,I4)')ISTART
+         WRITE(WU,'(/10X,''TIME USED UP TO RESTART ='',F22.2)')TOTIME
       ENDIF
       LU=KOUNTF
       NUMAT=NVAR/3
@@ -142,7 +144,7 @@ C
             CALL SYMPOP(FMATRX, J, ISKIP, DELDIP)
          ENDIF
          IF(ISKIP.GT.0) THEN
-            WRITE(6,'('' STEP:'',I4,''       '',9X,  ''       INTEGRAL =
+            WRITE(WU,'('' STEP:'',I4,''       '',9X,  ''       INTEGRAL =
      1'',F10.2,'' TIME LEFT:'',F10.2)')I,TOTIME,TLEFT
             ISKIP=ISKIP-1
             LU=LU+I
@@ -163,27 +165,27 @@ C
 C   CONSTRAIN DELTA TO A 'REASONABLE' VALUE
 C
             DELTA=MIN(0.05D0,MAX(0.005D0,DELTA))
-            IF(DEBUG)WRITE(6,'(A,I3,A,F12.5)')' STEP:',I,' DELTA :',DELT
+            IF(DEBUG)WRITE(WU,'(A,I3,A,F12.5)')' STEP:',I,' DELTA :',DELT
      1A
             G2OLD(1)=100.D0
             COORDL(I)=COORDL(I)+DELTA
             CALL COMPFG(COORDL, .TRUE., ESCF, .TRUE., G2OLD, .TRUE.)
-            IF(DEBUG)WRITE(6,'(A,F12.5)')' GNORM +1.0*DELTA',
+            IF(DEBUG)WRITE(WU,'(A,F12.5)')' GNORM +1.0*DELTA',
      1SQRT(DOT(G2OLD,G2OLD,NVAR))
             COORDL(I)=COORDL(I)-DELTA*2.D0
             G2RAD(1)=100.D0
             CALL COMPFG(COORDL, .TRUE., HEATAA, .TRUE., G2RAD, .TRUE.)
             COORDL(I)=COORDL(I)+DELTA
-            IF(DEBUG)WRITE(6,'(A,F12.5)')' GNORM -1.0*DELTA',
+            IF(DEBUG)WRITE(WU,'(A,F12.5)')' GNORM -1.0*DELTA',
      1SQRT(DOT(G2RAD,G2RAD,NVAR))
          ELSE
-            IF(DEBUG)WRITE(6,'(A,I3,A,F12.5)')' STEP:',I,' DELTA :',DELT
+            IF(DEBUG)WRITE(WU,'(A,I3,A,F12.5)')' STEP:',I,' DELTA :',DELT
      1A
          ENDIF
          COORDL(I)=COORDL(I)+0.5D0*DELTA
          GROLD(1)=100.D0
          CALL COMPFG(COORDL, .TRUE., ESCF, .TRUE., GROLD, .TRUE.)
-         IF(DEBUG)WRITE(6,'(A,F12.5)')' GNORM +0.5*DELTA',
+         IF(DEBUG)WRITE(WU,'(A,F12.5)')' GNORM +0.5*DELTA',
      1SQRT(DOT(GROLD,GROLD,NVAR))
          CALL CHRGE(P,Q)
          DO 50 II=1,NUMAT
@@ -192,7 +194,7 @@ C
          COORDL(I)=COORDL(I)-DELTA
          GRAD(1)=100.D0
          CALL COMPFG(COORDL, .TRUE., HEATAA, .TRUE., GRAD, .TRUE.)
-         IF(DEBUG)WRITE(6,'(A,F12.5)')' GNORM -0.5*DELTA',
+         IF(DEBUG)WRITE(WU,'(A,F12.5)')' GNORM -0.5*DELTA',
      1SQRT(DOT(GRAD,GRAD,NVAR))
          CALL CHRGE(P,Q)
          DO 60 II=1,NUMAT
@@ -255,10 +257,10 @@ C#             DUMY(L)=DUMY(L)-SIGN(CORR,DUMY(L))
   100       CONTINUE
          ENDIF
          IF(BIG)THEN
-            WRITE(6,'(A)')' CONTRIBUTIONS TO F-MATRIX'
-            WRITE(6,'(A)')' ELEMENT  +1.0*DELTA  +0.5*DELTA  -0.5*DEL'
+           WRITE(WU,'(A)')' CONTRIBUTIONS TO F-MATRIX'
+           WRITE(WU,'(A)')' ELEMENT  +1.0*DELTA  +0.5*DELTA  -0.5*DEL'
      1//'TA  -1.0*DELTA   2''ND ORDER 4TH ORDER'
-            WRITE(6,'(I7,6F12.6)')(L,G2OLD(L),GROLD(L),GRAD(L),G2RAD(L),
+           WRITE(WU,'(I7,6F12.6)')(L,G2OLD(L),GROLD(L),GRAD(L),G2RAD(L),
      1DUMY(L),EIGS(L),L=1,NVAR)
          ENDIF
          TIME3 = SECOND()
@@ -267,13 +269,13 @@ C#             DUMY(L)=DUMY(L)-SIGN(CORR,DUMY(L))
          IF(TSTEP.GT.1.D6)TSTEP=TSTEP-1.D6
          TOTIME= TOTIME+TSTEP
          IF(RESFIL)THEN
-            WRITE(6,'('' STEP:'',I4,'' RESTART FILE WRITTEN, INTEGRAL ='
+           WRITE(WU,'('' STEP:'',I4,'' RESTART FILE WRITTEN, INTEGRAL ='
      1',F10.2,'' TIME LEFT:'',F10.2)')I,TOTIME,TLEFT
             IF(LOG)WRITE(11,'('' STEP:'',I4,'' RESTART FILE WRITTEN, '',
      1''INTEGRAL ='',F10.2,'' TIME LEFT:'',F10.2)')I,TOTIME,TLEFT
             RESFIL=.FALSE.
          ELSE
-            WRITE(6,'('' STEP:'',I4,'' TIME ='',F9.2,'' SECS, INTEGRAL =
+           WRITE(WU,'('' STEP:'',I4,'' TIME ='',F9.2,'' SECS, INTEGRAL =
      1'',F10.2,'' TIME LEFT:'',F10.2)')I,TSTEP,TOTIME,TLEFT
             IF(LOG) WRITE(11,'('' STEP:'',I4,'' TIME ='',F9.2,'' SECS, '
      1',''INTEGRAL ='',F10.2,'' TIME LEFT:'',F10.2)')I,TSTEP,TOTIME,TLEF
@@ -289,17 +291,17 @@ C#             DUMY(L)=DUMY(L)-SIGN(CORR,DUMY(L))
      1                EVECS,JSTART,FCONST)
          ENDIF
          IF(I.NE.NVAR.AND.TLEFT-10.D0 .LT. ESTIM) THEN
-            WRITE(6,'(//10X,''- - - - - - - TIME UP - - - - - - -'',//)'
+           WRITE(WU,'(//10X,''- - - - - - - TIME UP - - - - - - -'',//)'
      1)
-            WRITE(6,'(/10X,'' POINT REACHED ='',I4)')I
-            WRITE(6,'(/10X,'' RESTART USING KEY-WORD "RESTART"'')')
-            WRITE(6,'(10X,''ESTIMATED TIME FOR THE NEXT STEP ='',F8.2,
+            WRITE(WU,'(/10X,'' POINT REACHED ='',I4)')I
+            WRITE(WU,'(/10X,'' RESTART USING KEY-WORD "RESTART"'')')
+            WRITE(WU,'(10X,''ESTIMATED TIME FOR THE NEXT STEP ='',F8.2,
      1'' SECONDS'')')ESTIM
             JSTART=1
             II=I
             CALL FORSAV(TOTIME,DELDIP,II,FMATRX, COORD,NVAR,HEAT,
      1                EVECS,JSTART,FCONST)
-            WRITE(6,'(//10X,''FORCE MATRIX WRITTEN TO DISK'')')
+            WRITE(WU,'(//10X,''FORCE MATRIX WRITTEN TO DISK'')')
             NREAL=-1
             RETURN
          ENDIF
@@ -308,9 +310,9 @@ C#             DUMY(L)=DUMY(L)-SIGN(CORR,DUMY(L))
          IF(ATMASS(I).LT.1.D-20.AND.LABELS(I).LT.99)THEN
             CALL FORSAV(TOTIME,DELDIP,NVAR,FMATRX, COORD,NVAR,HEAT,
      1                EVECS,ILOOP,FCONST)
-            WRITE(6,'(A)')' AT LEAST ONE ATOM HAS A ZERO MASS. A RESTART
+            WRITE(WU,'(A)')' AT LEAST ONE ATOM HAS A ZERO MASS. A RESTART
      1'
-            WRITE(6,'(A)')' FILE HAS BEEN WRITTEN AND THE JOB STOPPED'
+            WRITE(WU,'(A)')' FILE HAS BEEN WRITTEN AND THE JOB STOPPED'
             STOP
          ENDIF
   120 CONTINUE

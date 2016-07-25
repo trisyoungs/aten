@@ -30,6 +30,8 @@
       COMMON /FMATRX/ ALLXYZ(3,MAXPAR),ALLVEL(3,MAXPAR),PARREF(MAXPAR),
      1XYZ3(3,MAXPAR),VEL3(3,MAXPAR), ALLGEO(3,MAXPAR), GEO3(3,MAXPAR),
      2 DUMMY(MAXPAR**2+1-16*MAXPAR), IDUMY(4)
+      COMMON /OUTFIL/ WU
+      INTEGER WU
       DIMENSION ESCF3(3),EKIN3(3), GTOT3(3), CHARGE(NUMATM), XOLD3(3),
      1GEO(3*NUMATM), VREF(MAXPAR), VREF0(MAXPAR), TSTEPS(100), ETOT3(3),
      2XTOT3(3)
@@ -71,7 +73,7 @@ C
                STEPT=0.1D0
             ENDIF
             TREF=-1.D-6
-            WRITE(6,'(/,'' TIME PRIORITY, INTERVAL ='',F4.1,
+            WRITE(WU,'(/,'' TIME PRIORITY, INTERVAL ='',F4.1,
      1'' FEMTOSECONDS'',/)')STEPT
          ELSEIF(INDEX(KEYWRD,' H-PRIO').NE.0)THEN
             IF(INDEX(KEYWRD,' H-PRIORITY=').NE.0)THEN
@@ -79,7 +81,7 @@ C
             ELSE
                STEPH=0.1D0
             ENDIF
-            WRITE(6,'(/,'' KINETIC ENERGY PRIORITY, STEP ='',F5.2,
+            WRITE(WU,'(/,'' KINETIC ENERGY PRIORITY, STEP ='',F5.2,
      1'' KCAL/MOLE'',/)')STEPH
          ELSEIF(INDEX(KEYWRD,' X-PRIO').NE.0)THEN
             IF(INDEX(KEYWRD,' X-PRIORITY=').NE.0)THEN
@@ -87,7 +89,7 @@ C
             ELSE
                STEPX=0.05D0
             ENDIF
-            WRITE(6,'(/,'' GEOMETRY PRIORITY, STEP ='',F5.2,
+            WRITE(WU,'(/,'' GEOMETRY PRIORITY, STEP ='',F5.2,
      1'' ANGSTROMS'',/)')STEPX
          ENDIF
          IF(INDEX(KEYWRD,' RESTART').NE.0.AND.INDEX(KEYWRD,'IRC=').EQ.0)
@@ -353,14 +355,14 @@ C
                TEXT2=COTYPE(J)
                IF(N.EQ.0)THEN
                   N=N+1
-                  WRITE(6,'(/,20(''****''))')
+                  WRITE(WU,'(/,20(''****''))')
                ENDIF
                TIME=TOTIME+FRACT
                CALL DRCOUT(XYZ3,GEO3,VEL3,NVAR,TIME,ESCF3,EKIN3,
      1GTOT3,ETOT3,XTOT3,ILOOP,CHARGE,FRACT,TEXT1,TEXT2,K,JLOOP)
             ENDIF
   140    CONTINUE
-         IF(N.NE.0)WRITE(6,'(/,20(''****''))')
+         IF(N.NE.0)WRITE(WU,'(/,20(''****''))')
          IF(ABS(ESCF3(3)).GT.1.D-20)FRACT=-ESCF3(2)/(ESCF3(3)*2.D0)
          IF(.NOT.GOTURN.AND.FRACT.GT.0.D0.AND.FRACT.LT.TOLD2*1.04D0
      1.AND. PARMAX) THEN
@@ -374,11 +376,11 @@ C
                   SUM1=DOT(VELO0,VREF0,NVAR)**2/(DOT(VELO0,VELO0,NVAR)*
      1DOT(VREF0,VREF0,NVAR)+1.D-10)
                   IF(SUM1.GT.0.1D0.AND.ABS(SUM1-1.D0).GT.1.D-6)
-     1WRITE(6,'(/,A,F8.5,A,F8.5,A,G12.3,A)')' COEF. OF V(0)
+     1WRITE(WU,'(/,A,F8.5,A,F8.5,A,G12.3,A)')' COEF. OF V(0)
      2=',SUM1,'   LAST V(0)',SUM,'   HALF-LIFE =',
      3-0.6931472D0*TIME/LOG(SUM1),' FEMTOSECS'
                ENDIF
-               WRITE(6,'(//,A,F11.3,A)')' HALF-CYCLE TIME ='
+               WRITE(WU,'(//,A,F11.3,A)')' HALF-CYCLE TIME ='
      1,TIME-TLAST,' FEMTOSECONDS'
                TLAST=TIME
                DO 150 I=1,NVAR
@@ -396,7 +398,7 @@ C
             TIME=TOTIME+TSTEPS(I)
             TEXT1=' '
             TEXT2=' '
-C#           WRITE(6,'(A,4F12.4)')' KINETIC ENERGY, POINT',EKIN3,TSTEPS(
+C#           WRITE(WU,'(A,4F12.4)')' KINETIC ENERGY, POINT',EKIN3,TSTEPS(
             CALL DRCOUT(XYZ3,GEO3,VEL3,NVAR,TIME,ESCF3,EKIN3,
      1GTOT3,ETOT3,XTOT3,ILOOP,CHARGE,TSTEPS(I),TEXT1,TEXT2,0,JLOOP)
   160    CONTINUE

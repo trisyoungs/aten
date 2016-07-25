@@ -38,6 +38,8 @@
       COMMON /WORK3 / WORK2(4*MPACK)
       COMMON /GENRAL/ COORD(3,NUMATM), COLD(3,NUMATM*3), GOLD(MAXPAR),
      1 XPARAM(MAXPAR)
+      COMMON /OUTFIL/ WU
+      INTEGER WU
       CHARACTER*241 KEYWRD, LINE*80, GETNAM*80
       DIMENSION CHANGE(3), XJUC(3), AIDREF(MAXPAR)
       SAVE SCF1, HALFE, IDELTA, SLOW
@@ -76,12 +78,12 @@ C
    20          CONTINUE
 ************************************************************************
    30       IF(INDEX(LINE,'AIDER').NE.0)GOTO 60
-   40       WRITE(6,'(//,A)')' KEYWORD "AIDER" SPECIFIED, BUT NOT'
-            WRITE(6,'(A)')' PRESENT AFTER Z-MATRIX.  JOB STOPPED'
+   40       WRITE(WU,'(//,A)')' KEYWORD "AIDER" SPECIFIED, BUT NOT'
+            WRITE(WU,'(A)')' PRESENT AFTER Z-MATRIX.  JOB STOPPED'
             STOP
-   50       WRITE(6,'(//,A)')'  FAULT IN READ OF AB INITIO DERIVATIVES'
-            WRITE(6,'(A)')'  DERIVATIVES READ IN ARE AS FOLLOWS'
-            WRITE(6,'(6F12.6)')(AIDREF(J),J=1,I)
+   50       WRITE(WU,'(//,A)')'  FAULT IN READ OF AB INITIO DERIVATIVES'
+            WRITE(WU,'(A)')'  DERIVATIVES READ IN ARE AS FOLLOWS'
+            WRITE(WU,'(6F12.6)')(AIDREF(J),J=1,I)
             STOP
    60       CONTINUE
             IF(NATOMS.GT.2)THEN
@@ -90,9 +92,9 @@ C
                J=1
             ENDIF
             READ(5,*,END=50,ERR=50)(AIDREF(I),I=1,J)
-            WRITE(6,'(/,A,/)')
+            WRITE(WU,'(/,A,/)')
      1' AB-INITIO DERIVATIVES IN KCAL/MOL/(ANGSTROM OR RADIAN)'
-            WRITE(6,'(5F12.6)')(AIDREF(I),I=1,J)
+            WRITE(WU,'(5F12.6)')(AIDREF(I),I=1,J)
             DO 70 I=1,NVAR
                IF(LOC(1,I).GT.3)THEN
                   J=3*LOC(1,I)+LOC(2,I)-9
@@ -102,9 +104,9 @@ C
                   J=1
                ENDIF
    70       AIDREF(I)=AIDREF(J)
-            WRITE(6,'(/,A,/)')
+            WRITE(WU,'(/,A,/)')
      1' AB-INITIO DERIVATIVES FOR VARIABLES'
-            WRITE(6,'(5F12.6)')(AIDREF(I),I=1,NVAR)
+            WRITE(WU,'(5F12.6)')(AIDREF(I),I=1,NVAR)
             IF(NDEP.NE.0)THEN
                DO 90 I=1,NVAR
                   SUM=AIDREF(I)
@@ -113,9 +115,9 @@ C
      1.OR.LOC(2,I).EQ.3.AND.IDEPFN(J).EQ.14)) AIDREF(I)=AIDREF(I)+SUM
    80             CONTINUE
    90          CONTINUE
-               WRITE(6,'(/,A,/)')
+               WRITE(WU,'(/,A,/)')
      1' AB-INITIO DERIVATIVES AFTER SYMMETRY WEIGHTING'
-               WRITE(6,'(5F12.6)')(AIDREF(J),J=1,NVAR)
+               WRITE(WU,'(5F12.6)')(AIDREF(J),J=1,NVAR)
             ENDIF
          ENDIF
          ICALCN=NUMCAL
@@ -148,8 +150,8 @@ C
       ENDIF
       IF(NVAR.EQ.0) RETURN
       IF(DEBUG)THEN
-         WRITE(6,'('' GEO AT START OF DERIV'')')
-         WRITE(6,'(F19.5,2F12.5)')((GEO(J,I),J=1,3),I=1,NATOMS)
+         WRITE(WU,'('' GEO AT START OF DERIV'')')
+         WRITE(WU,'(F19.5,2F12.5)')((GEO(J,I),J=1,3),I=1,NATOMS)
       ENDIF
       GNORM=0.D0
       DO 110 I=1,NVAR
@@ -169,10 +171,10 @@ C
 C  COORD NOW HOLDS THE CARTESIAN COORDINATES
 C
       IF(HALFE.AND..NOT.NOANCI) THEN
-         IF(DEBUG)WRITE(6,*) 'DOING ANALYTICAL C.I. DERIVATIVES'
+         IF(DEBUG)WRITE(WU,*) 'DOING ANALYTICAL C.I. DERIVATIVES'
          CALL DERNVO(COORD,DXYZ)
       ELSE
-         IF(DEBUG)WRITE(6,*) 'DOING VARIATIONALLY OPIMIZED DERIVATIVES'
+         IF(DEBUG)WRITE(WU,*) 'DOING VARIATIONALLY OPIMIZED DERIVATIVES'
          CALL DCART(COORD,DXYZ)
       ENDIF
       IJ=0
@@ -222,12 +224,12 @@ C
 C
 C  ERROR LOCATED, BUT CANNOT CORRECT IN THIS RUN
 C
-                  WRITE(6,'(//,3(A,/),I3,A)')
+                  WRITE(WU,'(//,3(A,/),I3,A)')
      1' INTERNAL COORDINATE DERIVATIVES DO NOT REFLECT',
      2' CARTESIAN COORDINATE DERIVATIVES',
      3' TO CORRECT ERROR, INCREASE DIHEDRAL OF ATOM',LOC(1,I),
      4' BY 90 DEGREES'
-                  WRITE(6,'(//,A)')'     CURRENT GEOMETRY'
+                  WRITE(WU,'(//,A)')'     CURRENT GEOMETRY'
                   CALL GEOUT(6)
                   STOP
                ENDIF
@@ -237,7 +239,7 @@ C
 C
 C  THIS CODE IS ONLY USED IF THE KEYWORD NOANCI IS SPECIFIED
       IF(SLOW)THEN
-         IF(DEBUG)WRITE(6,*) 'DOING FULL SCF DERIVATIVES'
+         IF(DEBUG)WRITE(WU,*) 'DOING FULL SCF DERIVATIVES'
          CALL DERITR(ERRFN,GEO)
 C
 C THE ARRAY ERRFN HOLDS THE EXACT DERIVATIVES MINUS THE APPROXIMATE
@@ -255,20 +257,20 @@ C DERIVATIVES
             DO 200 I=1,NVAR
   200       AICORR(I)=-AIDREF(I)-GRAD(I)
          ENDIF
-C#         WRITE(6,'('' GRADIENTS BEFORE AI CORRECTION'')')
-C#         WRITE(6,'(10F8.3)')(GRAD(I),I=1,NVAR)
+C#         WRITE(WU,'('' GRADIENTS BEFORE AI CORRECTION'')')
+C#         WRITE(WU,'(10F8.3)')(GRAD(I),I=1,NVAR)
          DO 210 I=1,NVAR
   210    GRAD(I)=GRAD(I)+AICORR(I)
       ENDIF
   220 IF(DEBUG) THEN
-         WRITE(6,'('' GRADIENTS'')')
-         WRITE(6,'(10F8.3)')(GRAD(I),I=1,NVAR)
+         WRITE(WU,'('' GRADIENTS'')')
+         WRITE(WU,'(10F8.3)')(GRAD(I),I=1,NVAR)
          IF(SLOW)THEN
-            WRITE(6,'('' ERROR FUNCTION'')')
-            WRITE(6,'(10F8.3)')(ERRFN(I),I=1,NVAR)
+            WRITE(WU,'('' ERROR FUNCTION'')')
+            WRITE(WU,'(10F8.3)')(ERRFN(I),I=1,NVAR)
          ENDIF
       ENDIF
       IF(DEBUG)
-     1WRITE(6,'('' COSINE OF SEARCH DIRECTION ='',F30.6)')COSINE
+     1WRITE(WU,'('' COSINE OF SEARCH DIRECTION ='',F30.6)')COSINE
       RETURN
       END

@@ -21,13 +21,15 @@ C         SUBROUTINE DOES NOT CONTAIN ANY ERRORS!
 C***********************************************************************
       COMMON /KEYWRD/ KEYWRD
       COMMON /NUMCAL/ NUMCAL
+      COMMON /OUTFIL/ WU
+      INTEGER WU
       SAVE FACT
       CHARACTER*241 KEYWRD
       DATA ICALCN/0/
       IF (ICALCN.NE.NUMCAL) THEN
          ICALCN=NUMCAL
          FACT=READA(KEYWRD,INDEX(KEYWRD,'DEPVAR'))
-         WRITE(6,'(''  UNIT CELL LENGTH ='',F14.7,
+         WRITE(WU,'(''  UNIT CELL LENGTH ='',F14.7,
      1'' TIMES BOND LENGTH'')')FACT
       ENDIF
       W=A(1,I)*FACT

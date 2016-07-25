@@ -62,6 +62,8 @@ C
       COMMON /NVOMAT/ DIAG(MPACK/2)
       COMMON /WORK1 / FMOOFF(NPULAY*4), FMOON(NPULAY*4),
      1WORK2(9*NPULAY), WORK3(4*NPULAY)
+      COMMON /OUTFIL/ WU
+      INTEGER WU
       DIMENSION FBWO(5*MAXPAR)
       CHARACTER KEYWRD*241, BLANK*60
       DIMENSION DXYZR(MAXPAR), EIGBB(6*MAXPAR)
@@ -135,36 +137,36 @@ C#      CALL TIMER('AFTER DERI1')
    40 CONTINUE
       IF(DEBUG)THEN
          IF(IFIRST.EQ.1.AND.LARGE)THEN
-            WRITE(6,*)' CONTENTS OF FMOOFF '
-            WRITE(6,*)' OPEN-CLOSED'
-            WRITE(6,'(7X,I3,5I12)')(J,J=NCLOSE+1,NOPEN)
+            WRITE(WU,*)' CONTENTS OF FMOOFF '
+            WRITE(WU,*)' OPEN-CLOSED'
+            WRITE(WU,'(7X,I3,5I12)')(J,J=NCLOSE+1,NOPEN)
             DO 50 I=1,NCLOSE
-   50       WRITE(6,'(I3,6F12.6)')I,(FMOOFF(J),J=(I-1)*NBO(2)+1,I*NBO(2)
-     1)
+   50       WRITE(WU,'(I3,6F12.6)')I,(FMOOFF(J),J=(I-1)*NBO(2)+1,
+     1I*NBO(2))
 C
 C
-            WRITE(6,*)' VIRTUAL-CLOSED'
+            WRITE(WU,*)' VIRTUAL-CLOSED'
             K=NCLOSE*NBO(2)
-            WRITE(6,'(7X,I3,5I12)')(J,J=NOPEN+1,MIN(NOPEN+6,NORBS))
+            WRITE(WU,'(7X,I3,5I12)')(J,J=NOPEN+1,MIN(NOPEN+6,NORBS))
             DO 60 I=1,NCLOSE
-   60       WRITE(6,'(I3,6F12.6)')I,
+   60       WRITE(WU,'(I3,6F12.6)')I,
      1   (FMOOFF(J+K),J=(I-1)*NBO(3)+1,MIN(6+(I-1)*NBO(3),I*NBO(3)))
             K=NCLOSE*NBO(2)+NBO(3)*NCLOSE
 C
 C
-            WRITE(6,*)' VIRTUAL-OPEN'
-            WRITE(6,'(7X,I3,4I12)')(J,J=NCLOSE+1,NOPEN)
+            WRITE(WU,*)' VIRTUAL-OPEN'
+            WRITE(WU,'(7X,I3,4I12)')(J,J=NCLOSE+1,NOPEN)
             DO 70 I=1,MIN(6,NBO(3))
-   70       WRITE(6,'(I3,6F12.6)')I+NOPEN,
+   70       WRITE(WU,'(I3,6F12.6)')I+NOPEN,
      1   (FMOOFF(J+K),J=(I-1)*NBO(2)+1,MIN((I-1)*NBO(2)+6,I*NBO(2)))
-            WRITE(6,*)' CONTENTS OF FMOON (ACTIVE-SPACE -- ACTIVE SPACE)
+            WRITE(WU,*)' CONTENTS OF FMOON (ACTIVE-SPACE -- ACTIVE SPACE)
      1'
             K=(NMOS*(NMOS-1))/2
             LL=1
             BLANK=' '
             DO 80 I=1,NMOS
                L=LL+NMOS-I-1
-               WRITE(6,'(A,5F12.6)')BLANK(:12*I),(FMOON(J),J=LL,L),FMOON
+               WRITE(WU,'(A,5F12.6)')BLANK(:12*I),(FMOON(J),J=LL,L),FMOON
      1(K+I)
    80       LL=L+1
          ENDIF
@@ -192,13 +194,13 @@ C#      CALL TIMER('AFTER DERI2')
             SUMX=SUMX+DXYZ(I*3-2)
             SUMY=SUMY+DXYZ(I*3-1)
    90    SUMZ=SUMZ+DXYZ(I*3)
-         WRITE(6,*)' CARTESIAN DERIVATIVES DUE TO FROZEN CORE'
-         WRITE(6,'('' ATOM    X           Y           Z'')')
+         WRITE(WU,*)' CARTESIAN DERIVATIVES DUE TO FROZEN CORE'
+         WRITE(WU,'('' ATOM    X           Y           Z'')')
          DO 100 I=1,NUMAT
-  100    WRITE(6,'(I4,3F12.7)')I,DXYZ(I*3-2),DXYZ(I*3-1),DXYZ(I*3)
-         WRITE(6,'(/10X,''RESIDUAL ERROR'')')
-         WRITE(6,'(4X,3F12.7)')SUMX,SUMY,SUMZ
-         WRITE(6,*)
+  100    WRITE(WU,'(I4,3F12.7)')I,DXYZ(I*3-2),DXYZ(I*3-1),DXYZ(I*3)
+         WRITE(WU,'(/10X,''RESIDUAL ERROR'')')
+         WRITE(WU,'(4X,3F12.7)')SUMX,SUMY,SUMZ
+         WRITE(WU,*)
          SUMX=0.D0
          SUMY=0.D0
          SUMZ=0.D0
@@ -206,13 +208,13 @@ C#      CALL TIMER('AFTER DERI2')
             SUMX=SUMX+DXYZR(I*3-2)
             SUMY=SUMY+DXYZR(I*3-1)
   110    SUMZ=SUMZ+DXYZR(I*3)
-         WRITE(6,*)' CARTESIAN DERIVATIVES DUE TO RELAXING CORE'
-         WRITE(6,'('' ATOM    X           Y           Z'')')
+         WRITE(WU,*)' CARTESIAN DERIVATIVES DUE TO RELAXING CORE'
+         WRITE(WU,'('' ATOM    X           Y           Z'')')
          DO 120 I=1,NUMAT
-  120    WRITE(6,'(I4,3F12.7)')I,DXYZR(I*3-2),DXYZR(I*3-1),DXYZR(I*3)
-         WRITE(6,'(/10X,''RESIDUAL ERROR'')')
-         WRITE(6,'(4X,3F12.7)')SUMX,SUMY,SUMZ
-         WRITE(6,*)
+  120    WRITE(WU,'(I4,3F12.7)')I,DXYZR(I*3-2),DXYZR(I*3-1),DXYZR(I*3)
+         WRITE(WU,'(/10X,''RESIDUAL ERROR'')')
+         WRITE(WU,'(4X,3F12.7)')SUMX,SUMY,SUMZ
+         WRITE(WU,*)
       ENDIF
       DO 130 I=1,NVAX
   130 DXYZ(I)=DXYZ(I)+DXYZR(I)
@@ -236,14 +238,14 @@ C
      1 THROLD=THROLD*SQRT(GNORM/(SUM*100.D0))
       THROLD=MIN(2.D0,MAX(0.002D0,THROLD))
       IF(DEBUG)THEN
-         WRITE(6,*)'CARTESIAN DERIVATIVES FROM ANALYTICAL C.I. CALCULATI
+         WRITE(WU,*)'CARTESIAN DERIVATIVES FROM ANALYTICAL C.I. CALCULATI
      1ON'
-         WRITE(6,'('' ATOM    X           Y           Z'')')
+         WRITE(WU,'('' ATOM    X           Y           Z'')')
          DO 160 I=1,NUMAT
-  160    WRITE(6,'(I4,3F12.7)')I,DXYZ(I*3-2),DXYZ(I*3-1),DXYZ(I*3)
-         WRITE(6,'(/10X,''RESIDUAL ERROR'')')
-         WRITE(6,'(4X,3F12.7)')SUMX,SUMY,SUMZ
-         WRITE(6,*)
+  160    WRITE(WU,'(I4,3F12.7)')I,DXYZ(I*3-2),DXYZ(I*3-1),DXYZ(I*3)
+         WRITE(WU,'(/10X,''RESIDUAL ERROR'')')
+         WRITE(WU,'(4X,3F12.7)')SUMX,SUMY,SUMZ
+         WRITE(WU,*)
       ENDIF
       RETURN
       END

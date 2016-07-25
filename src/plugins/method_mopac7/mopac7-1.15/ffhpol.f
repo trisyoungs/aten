@@ -22,6 +22,8 @@ C***********************************************************************
       COMMON /KEYWRD/ KEYWRD
       COMMON /FIELD / EFIELD(3)
       COMMON /EULER / TVEC(3,3),IDTVEC
+      COMMON /OUTFIL/ WU
+      INTEGER WU
       CHARACTER*241 KEYWRD
 C
 C
@@ -63,10 +65,10 @@ C
 C modification for variable field strength
       IF(INDEX(KEYWRD,'POLAR=').NE.0)
      1EFVAL=READA(KEYWRD,INDEX(KEYWRD,'POLAR='))
-      WRITE (6,10) EFVAL
+      WRITE(WU,10) EFVAL
    10 FORMAT (//' APPLIED ELECTRIC FIELD MAGNITUDE: ',F15.5)
       SFE = 1.D00/EFVAL
-      WRITE (6,20) 6.74834D0*ATPOL
+      WRITE(WU,20) 6.74834D0*ATPOL
    20 FORMAT (//' ATOMIC CONTRIBUTION TO THE POLARIZABILITY: ',F15.6,/,
      1          '  (IT IS ONLY APPLIED TO THE E4 RESULT)')
 C.......................................................................
@@ -76,7 +78,7 @@ C  ORIENTATION AND MAY NOT BE THE TRUE PRINCIPLE AXES.)
 C.......................................................................
       DO 150 ID = 1,3
          IF (DEBUG) THEN
-            WRITE (6,30) AXIS(ID)
+            WRITE(WU,30) AXIS(ID)
    30       FORMAT (//,' ****** FIELD IN ',A1,' DIRECTION *****',/)
          ENDIF
 C
@@ -119,9 +121,9 @@ C
          HEAT2M = HEAT2M - HNUC*2.D00
 C
          IF (DEBUG) THEN
-            WRITE (6,60)
+            WRITE(WU,60)
    60       FORMAT (' FIELDS OF: ',5X,'F',21X,'2F')
-            WRITE (6,70) HEAT1P,HEAT2P,HEAT1M,HEAT2M,
+            WRITE(WU,70) HEAT1P,HEAT2P,HEAT1M,HEAT2M,
      1                DIP1P(ID),DIP2P(ID),DIP1M(ID),DIP2M(ID)
    70       FORMAT ('  ENERGY:'/,
      1           '   + ',2(F20.10,3X),/,'   - ',2(F20.10,3X),/,
@@ -222,9 +224,9 @@ C
             HMM = HMM - HNUC - HNUCJ
             HMP = HMP - HNUC + HNUCJ
             IF (DEBUG) THEN
-               WRITE (6,110)
+               WRITE(WU,110)
   110          FORMAT (/,' ',12X,'+,+',15X,'+,-',15X,'-,+',15X,'-,-')
-               WRITE (6,120) HPP,HPM,HMP,HMM
+               WRITE(WU,120) HPP,HPM,HMP,HMM
   120          FORMAT ('  E ',4F15.6)
             ENDIF
 C
@@ -244,7 +246,7 @@ C
             H2MM = H2MM - 2.0D00*(HNUC + HNUCJ)
             H2MP = H2MP - 2.0D00*(HNUC - HNUCJ)
             IF (DEBUG) THEN
-               WRITE (6,130) H2PP,H2PM,H2MP,H2MM
+               WRITE(WU,130) H2PP,H2PM,H2MP,H2MM
   130          FORMAT (' 2E ',4F15.6)
             ENDIF
 C
@@ -278,7 +280,7 @@ C
 C-----------------------------------------------------------------------
 C  SUMMARIZE THE RESULTS
 C-----------------------------------------------------------------------
-      WRITE (6,160)
+      WRITE(WU,160)
   160 FORMAT (//,' ',30('*'),' DIPOLE ',30('*'),//)
       DIPE4T = SQRT(DIPE4(1)*DIPE4(1) + DIPE4(2)*DIPE4(2)
      1              + DIPE4(3)*DIPE4(3))
@@ -286,20 +288,20 @@ C-----------------------------------------------------------------------
       DIPDPT = SQRT(DIPDP(1)*DIPDP(1) + DIPDP(2)*DIPDP(2)
      1              + DIPDP(3)*DIPDP(3))
       DIPDPD = DIPDPT*AUTODB
-      WRITE (6,170)
+      WRITE(WU,170)
   170 FORMAT (21X,'E4',13X,'DIP',/)
-      WRITE (6,180) 'X',DIPE4(1),DIPDP(1)
-      WRITE (6,180) 'Y',DIPE4(2),DIPDP(2)
-      WRITE (6,180) 'Z',DIPE4(3),DIPDP(3)
+      WRITE(WU,180) 'X',DIPE4(1),DIPDP(1)
+      WRITE(WU,180) 'Y',DIPE4(2),DIPDP(2)
+      WRITE(WU,180) 'Z',DIPE4(3),DIPDP(3)
   180 FORMAT (5X,A1,7X,2F15.6)
-      WRITE (6,190) DIPE4T,DIPDPT,
+      WRITE(WU,190) DIPE4T,DIPDPT,
      1               DIPE4D,DIPDPD
   190 FORMAT (//' MAGNITUDE:  ',2F15.6,'  (A.U.)',/,
      1          ' ',12X,2F15.6,'  (DEBYE)')
 C
 C FIND EIGENVALUES AND EIGENVECTORS OF POLARIZATION MATRIX.
 C
-      WRITE (6,200)
+      WRITE(WU,200)
   200 FORMAT (//,' ',22('*'),' POLARIZABILITY (ALPHA)',21('*'),//)
       AVGPE4 = (APOLE4(1)+APOLE4(3)+APOLE4(6))/3.0D00
       AVGA3 = AVGPE4*0.14818D00
@@ -307,16 +309,16 @@ C
       AVGPDP = (APOLDP(1)+APOLDP(3)+APOLDP(6))/3.0D00
       AVGA3D = AVGPDP*0.14818D00
       AVGESD = AVGPDP*0.296352D-24
-      WRITE (6,210)
+      WRITE(WU,210)
   210 FORMAT ('  COMPONENT',12X,'E4',13X,'DIP',/)
-      WRITE (6,220) 'XX',APOLE4(1),APOLDP(1),
+      WRITE(WU,220) 'XX',APOLE4(1),APOLDP(1),
      1              'YY',APOLE4(3),APOLDP(3),
      2              'ZZ',APOLE4(6),APOLDP(6),
      3              'XY',APOLE4(2),APOLDP(2),
      4              'XZ',APOLE4(4),APOLDP(4),
      5              'YZ',APOLE4(5),APOLDP(5)
   220 FORMAT (' ',5X,A4,5X,2F15.6)
-      WRITE (6,230) AVGPE4,AVGPDP,AVGA3,AVGA3D,AVGESU,AVGESD
+      WRITE(WU,230) AVGPE4,AVGPDP,AVGA3,AVGA3D,AVGESU,AVGESD
   230 FORMAT (//,' AVERAGE POLARIZABILITY:',8X,'E4',13X,'DIP',/,
      1           ' ',24X,2F15.6,'  A.U.',/,
      2           ' ',24X,2F15.6,'  ANG.**3',/,
@@ -325,7 +327,7 @@ C
 C  CALCULATE "EXPERIMENTAL" HYPERPOLARIZABILITIES
 C
 C   8.65710D-33 is a.u. to e.s.u. conversion
-      WRITE (6,240)
+      WRITE(WU,240)
   240 FORMAT (//,' ',30('*'),' SECOND-ORDER (BETA)',25('*'),//)
       BX4 = 0.6D00*(BETAE4(1) + BETAE4(4) + BETAE4(6))
       BY4 = 0.6D00*(BETAE4(2) + BETAE4(5) + BETAE4(8))
@@ -338,33 +340,33 @@ C   8.65710D-33 is a.u. to e.s.u. conversion
       BDMU = (BXD*DIPDP(1) + BYD*DIPDP(2) + BZD*DIPDP(3))/DIPDPT
       BDESU = BDMU*8.65710D-03
 C
-      WRITE(6,'(29X,A2,25X,A6)')'1X','(1/2)X'
-      WRITE (6,250)
+      WRITE(WU,'(29X,A2,25X,A6)')'1X','(1/2)X'
+      WRITE(WU,250)
   250 FORMAT ('  COMPONENT',2(12X,'E4',10X,'DIP',2X),/)
-      WRITE (6,260) 'XXX',BETAE4(1),BETADP(1),BETAE4(1)/2,BETADP(1)/2
-      WRITE (6,260) 'XYY',BETAE4(4),BETADP(4),BETAE4(4)/2,BETADP(4)/2
-      WRITE (6,260) 'XZZ',BETAE4(6),BETADP(6),BETAE4(6)/2,BETADP(6)/2
-      WRITE (6,260) 'YYY',BETAE4(2),BETADP(2),BETAE4(2)/2,BETADP(2)/2
-      WRITE (6,260) 'YXX',BETAE4(5),BETADP(5),BETAE4(5)/2,BETADP(5)/2
-      WRITE (6,260) 'YZZ',BETAE4(8),BETADP(8),BETAE4(8)/2,BETADP(8)/2
-      WRITE (6,260) 'ZZZ',BETAE4(3),BETADP(3),BETAE4(3)/2,BETADP(3)/2
-      WRITE (6,260) 'ZXX',BETAE4(7),BETADP(7),BETAE4(7)/2,BETADP(7)/2
-      WRITE (6,260) 'ZYY',BETAE4(9),BETADP(9),BETAE4(9)/2,BETADP(9)/2
+      WRITE(WU,260) 'XXX',BETAE4(1),BETADP(1),BETAE4(1)/2,BETADP(1)/2
+      WRITE(WU,260) 'XYY',BETAE4(4),BETADP(4),BETAE4(4)/2,BETADP(4)/2
+      WRITE(WU,260) 'XZZ',BETAE4(6),BETADP(6),BETAE4(6)/2,BETADP(6)/2
+      WRITE(WU,260) 'YYY',BETAE4(2),BETADP(2),BETAE4(2)/2,BETADP(2)/2
+      WRITE(WU,260) 'YXX',BETAE4(5),BETADP(5),BETAE4(5)/2,BETADP(5)/2
+      WRITE(WU,260) 'YZZ',BETAE4(8),BETADP(8),BETAE4(8)/2,BETADP(8)/2
+      WRITE(WU,260) 'ZZZ',BETAE4(3),BETADP(3),BETAE4(3)/2,BETADP(3)/2
+      WRITE(WU,260) 'ZXX',BETAE4(7),BETADP(7),BETAE4(7)/2,BETADP(7)/2
+      WRITE(WU,260) 'ZYY',BETAE4(9),BETADP(9),BETAE4(9)/2,BETADP(9)/2
   260 FORMAT (' ',5X,A4,2(5X,2F12.3))
-      WRITE (6,270)
+      WRITE(WU,270)
   270 FORMAT (//,' VECTOR COMPONENTS GIVEN BY:',/,
      1          '      BI = (2/5)*(BI11+BI22+BI33)'/)
-      WRITE (6,280) 'BX',BX4,BXD,BX4/2,BXD/2
-      WRITE (6,280) 'BY',BY4,BYD,BY4/2,BYD/2
-      WRITE (6,280) 'BZ',BZ4,BZD,BZ4/2,BZD/2
+      WRITE(WU,280) 'BX',BX4,BXD,BX4/2,BXD/2
+      WRITE(WU,280) 'BY',BY4,BYD,BY4/2,BYD/2
+      WRITE(WU,280) 'BZ',BZ4,BZD,BZ4/2,BZD/2
   280 FORMAT (' ',6X,A2,2(6X,2F12.3))
-      WRITE (6,290)
+      WRITE(WU,290)
   290 FORMAT (//'  VALUE OF BETA ALONG THE DIPOLE MOMENT:'/)
-      WRITE (6,300) B4MU,BDMU,B4MU/2,BDMU/2,B4ESU,BDESU,B4ESU/2,BDESU/2
+      WRITE(WU,300) B4MU,BDMU,B4MU/2,BDMU/2,B4ESU,BDESU,B4ESU/2,BDESU/2
   300 FORMAT (' ',4X,'B(AU)',2(5X,2F12.3,2X),/,
      1        ' ',4X,'B(ESU)',4X,2F12.3,7X,2F12.3,' (X10-30)')
 C
-      WRITE (6,310)
+      WRITE(WU,310)
   310 FORMAT (//' ',24('*'),' THIRD-ORDER (GAMMA)',24('*'),//)
       GAMVAL = (GAMME4(1) + GAMME4(2) + GAMME4(3))
       GAMVAL = GAMVAL + 2.0D00*(GAMME4(4) + GAMME4(5) + GAMME4(6))
@@ -375,21 +377,21 @@ C  5.05116D-40 is the a.u. to e.s.u. conversion
       GAMDIP = GAMDIP + 2.0D00*(GAMMDP(4) + GAMMDP(5) + GAMMDP(6))
       GAMDIP = GAMDIP/5.0D00
       GAMDES = GAMDIP*5.05116D-04
-      WRITE(6,'(23X,A2,25X,A6)')'1X','(1/6)X'
-      WRITE (6,320)
+      WRITE(WU,'(23X,A2,25X,A6)')'1X','(1/6)X'
+      WRITE(WU,320)
   320 FORMAT (' ',17X,'E4',8X,'DIP',16X,'E4',8X,'DIP',/)
-      WRITE (6,330) 'XXXX',GAMME4(1),GAMMDP(1),GAMME4(1)/6,GAMMDP(1)/6
-      WRITE (6,330) 'YYYY',GAMME4(2),GAMMDP(2),GAMME4(2)/6,GAMMDP(2)/6
-      WRITE (6,330) 'ZZZZ',GAMME4(3),GAMMDP(3),GAMME4(3)/6,GAMMDP(3)/6
-      WRITE (6,330) 'XXYY',GAMME4(4),GAMMDP(4),GAMME4(4)/6,GAMMDP(4)/6
-      WRITE (6,330) 'XXZZ',GAMME4(5),GAMMDP(5),GAMME4(5)/6,GAMMDP(5)/6
-      WRITE (6,330) 'YYZZ',GAMME4(6),GAMMDP(6),GAMME4(6)/6,GAMMDP(6)/6
+      WRITE(WU,330) 'XXXX',GAMME4(1),GAMMDP(1),GAMME4(1)/6,GAMMDP(1)/6
+      WRITE(WU,330) 'YYYY',GAMME4(2),GAMMDP(2),GAMME4(2)/6,GAMMDP(2)/6
+      WRITE(WU,330) 'ZZZZ',GAMME4(3),GAMMDP(3),GAMME4(3)/6,GAMMDP(3)/6
+      WRITE(WU,330) 'XXYY',GAMME4(4),GAMMDP(4),GAMME4(4)/6,GAMMDP(4)/6
+      WRITE(WU,330) 'XXZZ',GAMME4(5),GAMMDP(5),GAMME4(5)/6,GAMMDP(5)/6
+      WRITE(WU,330) 'YYZZ',GAMME4(6),GAMMDP(6),GAMME4(6)/6,GAMMDP(6)/6
   330 FORMAT (5X,A4,2F12.3,5X,2F12.3)
-      WRITE (6,340)
+      WRITE(WU,340)
   340 FORMAT (//' AVERAGE GAMMA GIVEN BY:',/,
      1 '    (1/5)*[GXXX + GYYY + GZZZ + 2.0*(GXXYY + GXXZZ + GYYZZ)]')
-      WRITE(6,'(/,20X,A2,22X,A6)')'1X','(1/6)X'
-      WRITE (6,350) GAMVAL,GAMDIP,GAMVAL/6,GAMDIP/6,
+      WRITE(WU,'(/,20X,A2,22X,A6)')'1X','(1/6)X'
+      WRITE(WU,350) GAMVAL,GAMDIP,GAMVAL/6,GAMDIP/6,
      1              GAMESU,GAMDES,GAMESU/6,GAMDES/6
   350 FORMAT (/' <GAMMA> ',1PD12.5,1PD12.5,5X,1PD12.5,1PD12.5,'  A.U.'/,
      1       ' ',8X,1PD12.5,1PD12.5,5X,1PD12.5,1PD12.5,'  ESU (X10-36)')

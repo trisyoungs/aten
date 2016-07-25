@@ -1,6 +1,8 @@
       SUBROUTINE HQRII(A,N,M,E,V)
       IMPLICIT DOUBLE PRECISION (A-H,O-Z)
       INCLUDE 'SIZES'
+      COMMON /OUTFIL/ WU
+      INTEGER WU
       DIMENSION A(*), E(N), V(N,M)
 *************************************************************
 *
@@ -25,7 +27,7 @@
             V(1,1)=1.D0
             RETURN
          ENDIF
-         WRITE(6,'(////10X,''IN HQRII, N ='',I4,'' M ='',I4)')N,M
+         WRITE(WU,'(////10X,''IN HQRII, N ='',I4,'' M ='',I4)')N,M
          STOP
       ENDIF
 *

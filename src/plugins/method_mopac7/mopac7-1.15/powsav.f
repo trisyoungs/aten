@@ -36,6 +36,8 @@
      1                NLAST(NUMATM), NORBS, NELECS,NALPHA,NBETA,
      2                NCLOSE,NOPEN,NDUMY,FRACT
       COMMON /PATH  / LATOM,LPARAM,REACT(200)
+      COMMON /OUTFIL/ WU
+      INTEGER WU
 !      OPEN(UNIT=9,FILE=GETNAM('FOR009'),
 !     +     STATUS='UNKNOWN',FORM='UNFORMATTED')
       REWIND 9
@@ -45,18 +47,18 @@
       IR=9
       IF(IPOW(9) .NE. 0) THEN
          IF(IPOW(9) .EQ. 1) THEN
-            WRITE(6,'(//10X,''- - - - - - - TIME UP - - - - - - -'',//)'
+           WRITE(WU,'(//10X,''- - - - - - - TIME UP - - - - - - -'',//)'
      1)
-            WRITE(6,'(//10X,'' - THE CALCULATION IS BEING DUMPED TO DISK
+           WRITE(WU,'(//10X,'' - THE CALCULATION IS BEING DUMPED TO DISK
      1'',/10X,''   RESTART IT USING THE KEY-WORD "RESTART"'')')
             FUNCT1=SQRT(DOT(GRAD,GRAD,NVAR))
-            WRITE(6,'(//10X,''CURRENT VALUE OF GRADIENT NORM =''
+            WRITE(WU,'(//10X,''CURRENT VALUE OF GRADIENT NORM =''
      1  ,F12.6)')FUNCT1
             DO 10 I=1,NVAR
                K=LOC(1,I)
                L=LOC(2,I)
    10       GEO(L,K)=XPARAM(I)
-            WRITE(6,'(/10X,''CURRENT VALUE OF GEOMETRY'',/)')
+            WRITE(WU,'(/10X,''CURRENT VALUE OF GEOMETRY'',/)')
             IF(NA(1) .EQ. 99) THEN
 C
 C  CONVERT FROM CARTESIAN COORDINATES TO INTERNAL
@@ -87,14 +89,14 @@ C
 !         CLOSE (10)
          RETURN
       ELSE
-         WRITE(6,'(//10X,'' RESTORING DATA FROM DISK''/)')
+         WRITE(WU,'(//10X,'' RESTORING DATA FROM DISK''/)')
          READ(IR)IPOW,ILOOP
          READ(IR)(XPARAM(I),I=1,NVAR)
          READ(IR)(  GRAD(I),I=1,NVAR)
          READ(IR)((HESS(J,I),J=1,NVAR),I=1,NVAR)
          READ(IR)((BMAT(J,I),J=1,NVAR),I=1,NVAR)
          FUNCT1=SQRT(DOT(GRAD,GRAD,NVAR))
-         WRITE(6,'(10X,''FUNCTION ='',F13.6//)')FUNCT1
+         WRITE(WU,'(10X,''FUNCTION ='',F13.6//)')FUNCT1
          LINEAR=(NVAR*(NVAR+1))/2
          READ(IR)(PMAT(I),I=1,LINEAR)
          IF(INDEX(KEYWRD,'AIDER').NE.0) READ(IR)(AICORR(I),I=1,NVAR)

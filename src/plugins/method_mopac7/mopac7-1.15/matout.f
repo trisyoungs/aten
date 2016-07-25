@@ -6,6 +6,8 @@
      1                NLAST(NUMATM), NORBS, NELECS,NALPHA,NBETA,
      2                NCLOSE,NOPEN,NDUMY,FRACT
       COMMON /ELEMTS/ ELEMNT(107)
+      COMMON /OUTFIL/ WU
+      INTEGER WU
 C**********************************************************************
 C
 C      MATOUT PRINTS A SQUARE MATRIX OF EIGENVECTORS AND EIGENVALUES
@@ -51,25 +53,25 @@ C***********************************************************************
       KA=1
       KC=6
    60 KB=MIN0(KC,NC)
-      WRITE (6,100) (I,I=KA,KB)
-      IF(B(1).NE.0.D0)WRITE (6,110) (B(I),I=KA,KB)
-      WRITE (6,120)
+      WRITE(WU,100) (I,I=KA,KB)
+      IF(B(1).NE.0.D0)WRITE(WU,110) (B(I),I=KA,KB)
+      WRITE(WU,120)
       LA=1
       LC=40
    70 LB=MIN0(LC,NR)
       DO 80 I=LA,LB
-         IF(ITEXT(I).EQ.' S')WRITE(6,120)
-         WRITE (6,130) ITEXT(I),JTEXT(I),NATOM(I),(A(I,J),J=KA,KB)
+         IF(ITEXT(I).EQ.' S')WRITE(WU,120)
+         WRITE(WU,130) ITEXT(I),JTEXT(I),NATOM(I),(A(I,J),J=KA,KB)
    80 CONTINUE
       IF (LB.EQ.NR) GO TO 90
       LA=LC+1
       LC=LC+40
-      WRITE (6,140)
+      WRITE(WU,140)
       GO TO 70
    90 IF (KB.EQ.NC) RETURN
       KA=KC+1
       KC=KC+6
-      IF (NR.GT.25) WRITE (6,140)
+      IF (NR.GT.25) WRITE(WU,140)
       GO TO 60
 C
   100 FORMAT (////,3X,9H ROOT NO.,I5,9I12)

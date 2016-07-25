@@ -26,6 +26,8 @@
      1NA(NUMATM),NB(NUMATM),NC(NUMATM)
       COMMON /GEOSYM/ NDEP, LOCPAR(MAXPAR), IDEPFN(MAXPAR),
      1                      LOCDEP(MAXPAR)
+      COMMON /OUTFIL/ WU
+      INTEGER WU
          IOFF=0
          MERS=READA(KEYWRD,INDEX(KEYWRD,' MERS'))
          DO 270 I=1,NATOMS
@@ -67,7 +69,7 @@ C
                NC(NATOMS+1)=NA(NATOMS-2)
             ENDIF
 C#            DO 320 J=1,NATOMS-2
-C#  320       WRITE(6,'(3I5,3F12.5,3I4)')I,J,LABELS(IFF+J),
+C#  320       WRITE(WU,'(3I5,3F12.5,3I4)')I,J,LABELS(IFF+J),
 C#     1(COORD(K,IOFF+J),K=1,3),
 C#     2NA(IOFF+J), NB(IOFF+J), NC(IOFF+J)
   330    CONTINUE
@@ -156,11 +158,11 @@ C
          NATOMS=LAST
          XPARAM(NVAR+7)=GEO(1,NATOMS)
          NVAR=NVAR+7
-         WRITE(6,160)(I,(TVEC(J,I),J=1,3),I=1,ID)
+         WRITE(WU,160)(I,(TVEC(J,I),J=1,3),I=1,ID)
   150    FORMAT(/,'       EXPANDED UNIT CELL TRANSLATION VECTORS',/
      1/,'              X              Y              Z')
   160    FORMAT('    T',I1,' = ',F11.7,'    ',F11.7,'    ',F11.7)
-         WRITE(6,'(/,10X,A)')' EXPANDED POLYMER UNIT CELL'
+         WRITE(WU,'(/,10X,A)')' EXPANDED POLYMER UNIT CELL'
          CALL GEOUT(1)
          RETURN
          END

@@ -34,6 +34,8 @@
       COMMON /SURF  / SURF
       COMMON /KEYWRD/ KEYWRD
       COMMON /TITLES/ KOMENT, TITLE
+      COMMON /OUTFIL/ WU
+      INTEGER WU
       CHARACTER KEYWRD*241, KOMENT*81, TITLE*81, GETNAM*80
       LOGICAL RESTRT
       DIMENSION GD(MAXPAR),XLAST(MAXPAR),MDFP(20),XDFP(20)
@@ -142,9 +144,9 @@ C
             JLP=JLP+1
             IJLP=IJLP+1
             SURF(IJLP)=ESCF
-            WRITE(6,'(/''       FIRST VARIABLE   SECOND VARIABLE
+            WRITE(WU,'(/''       FIRST VARIABLE   SECOND VARIABLE
      1 FUNCTION'')')
-            WRITE(6,'('' :'',F16.5,F16.5,F16.6)')GEO(LPARA1,LATOM1)*C1,
+            WRITE(WU,'('' :'',F16.5,F16.5,F16.6)')GEO(LPARA1,LATOM1)*C1,
      1        GEO(LPARA2,LATOM2)*C2,ESCF
             CALL GEOUT(6)
             GEO(LPARA2,LATOM2)=GEO(LPARA2,LATOM2)+STEP2*IONE
@@ -154,9 +156,9 @@ C
          ILP=ILP+1
          JLP=1
    30 CONTINUE
-      WRITE(6,'(/10X,''HORIZONTAL: VARYING SECOND PARAMETER,'',
+      WRITE(WU,'(/10X,''HORIZONTAL: VARYING SECOND PARAMETER,'',
      1          /10X,''VERTICAL:   VARYING FIRST PARAMETER'')')
-      WRITE(6,'(/10X,''WHOLE OF GRID, SUITABLE FOR PLOTTING'',//)')
+      WRITE(WU,'(/10X,''WHOLE OF GRID, SUITABLE FOR PLOTTING'',//)')
 C
 C  ARCHIVE
 !      OPEN(UNIT=12,FILE=GETNAM('FOR012'),STATUS='UNKNOWN')
@@ -194,7 +196,7 @@ C
             DO 80 J=1,NPTS2
                N=N+1
    80       UMPZ(N)=SURFAC(J,I)
-            WRITE(6,'(11F7.2)')(SURFAC(J,I),J=1,NPTS2)
+            WRITE(WU,'(11F7.2)')(SURFAC(J,I),J=1,NPTS2)
    90    WRITE(12,'(11F7.2)')(SURFAC(J,I),J=1,NPTS2)
       ENDIF
       IF(STEP1.LT.0.0.AND.STEP2.GT.0.0) THEN
@@ -202,7 +204,7 @@ C
             DO 100 J=1,NPTS2
                N=N+1
   100       UMPZ(N)=SURFAC(J,I)
-            WRITE(6,'(11F7.2)')(SURFAC(J,I),J=1,NPTS2)
+            WRITE(WU,'(11F7.2)')(SURFAC(J,I),J=1,NPTS2)
   110    WRITE(12,'(11F7.2)')(SURFAC(J,I),J=1,NPTS2)
       ENDIF
       IF(STEP1.GT.0.0.AND.STEP2.LT.0.0) THEN
@@ -210,7 +212,7 @@ C
             DO 120 J=NPTS2,1,-1
                N=N+1
   120       UMPZ(N)=SURFAC(J,I)
-            WRITE(6,'(11F7.2)')(SURFAC(J,I),J=NPTS2,1,-1)
+            WRITE(WU,'(11F7.2)')(SURFAC(J,I),J=NPTS2,1,-1)
   130    WRITE(12,'(11F7.2)')(SURFAC(J,I),J=NPTS2,1,-1)
       ENDIF
       IF(STEP1.LT.0.0.AND.STEP2.LT.0.0) THEN
@@ -218,7 +220,7 @@ C
             DO 140 J=NPTS2,1,-1
                N=N+1
   140       UMPZ(N)=SURFAC(J,I)
-            WRITE(6,'(11F7.2)')(SURFAC(J,I),J=NPTS2,1,-1)
+            WRITE(WU,'(11F7.2)')(SURFAC(J,I),J=NPTS2,1,-1)
   150    WRITE(12,'(11F7.2)')(SURFAC(J,I),J=NPTS2,1,-1)
       ENDIF
       DO 160 I=0,NPTS1-1

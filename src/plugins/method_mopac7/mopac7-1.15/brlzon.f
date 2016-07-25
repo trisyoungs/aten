@@ -28,6 +28,8 @@
 *
 ***********************************************************************
       COMMON /KEYWRD/ KEYWRD
+      COMMON /OUTFIL/ WU
+      INTEGER WU
       CHARACTER KEYWRD*241
       REAL EIGS(MAXPAR)
       COMPLEX PHASE
@@ -94,18 +96,18 @@ C
             BOTTOM=MIN(BOTTOM,B(I,J))
    80 TOP=MAX(TOP,B(I,J))
       IF(MODE.EQ.1)THEN
-         WRITE(6,'(//,A,F6.3,/)')
+         WRITE(WU,'(//,A,F6.3,/)')
      1' FREQUENCIES IN CM(-1) FOR PHONON SPECTRUM ACROSS BRILLOUIN ZONE'
          DO 90 I=1,MONO3
-            WRITE(6,'(/,A,I4,/)')'  BAND:',I
-   90    WRITE(6,'(6(F6.3,F7.1))')((J-1)*STEP,B(I,J),J=1,M)
+            WRITE(WU,'(/,A,I4,/)')'  BAND:',I
+   90    WRITE(WU,'(6(F6.3,F7.1))')((J-1)*STEP,B(I,J),J=1,M)
          STOP
       ELSE
-         WRITE(6,'(//,A,F6.3,/)')
+         WRITE(WU,'(//,A,F6.3,/)')
      1' ENERGIES (IN EV) OF ELECTRONIC BANDS IN BAND STRUCTURE'
          DO 100 I=1,MONO3
-            WRITE(6,'(A,/,A,I4,/,A)')'  .','  CURVE',I,'CURVE DATA ARE'
-  100    WRITE(6,'(6(F6.3,F7.2))')((J-1)*STEP,B(I,J),J=1,M)
+            WRITE(WU,'(A,/,A,I4,/,A)')'  .','  CURVE',I,'CURVE DATA ARE'
+  100    WRITE(WU,'(6(F6.3,F7.2))')((J-1)*STEP,B(I,J),J=1,M)
       ENDIF
       CALL DOFS(B,MONO3,M,FMAT2D,500,BOTTOM,TOP)
       RETURN

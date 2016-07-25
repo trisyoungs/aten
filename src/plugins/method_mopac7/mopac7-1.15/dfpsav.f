@@ -45,6 +45,8 @@ C ***************************** at 1994-05-25 *****
       COMMON /FMATRX/ HESINV(MAXPAR**2+MAXPAR*3+1), IDUMY2(4)
       COMMON /ERRFN / ERRFN(MAXPAR), AICORR(MAXPAR)
       COMMON /NUMCAL/ NUMCAL
+      COMMON /OUTFIL/ WU
+      INTEGER WU
       DIMENSION COORD(3,NUMATM)
       DIMENSION PROFIL(200)
       DIMENSION SURF(23*23)
@@ -62,13 +64,13 @@ C ***************************** at 1994-05-25 *****
       IR=9
       IF(MDFP(9) .NE. 0) THEN
          IF(MDFP(9) .EQ. 1) THEN
-            WRITE(6,'(//10X,''- - - - - - - TIME UP - - - - - - -'',//)'
+           WRITE(WU,'(//10X,''- - - - - - - TIME UP - - - - - - -'',//)'
      1)
             IF(INDEX(KEYWRD,'SADDLE') .NE. 0) THEN
-               WRITE(6,'(//10X,'' NO RESTART EXISTS FOR SADDLE'',//
+               WRITE(WU,'(//10X,'' NO RESTART EXISTS FOR SADDLE'',//
      1  10X,'' HERE IS A DATA-FILE FILES THAT MIGHT BE SUITABLE'',/
      2  10X,'' FOR RESTARTING THE CALCULATION'',///)')
-               WRITE(6,'(A)')KEYWRD,KOMENT,TITLE
+               WRITE(WU,'(A)')KEYWRD,KOMENT,TITLE
                INTXYZ=(NA(1).EQ.0)
                DO 30 ILOOP=1,2
                   IF(INTXYZ)THEN
@@ -90,12 +92,12 @@ C ***************************** at 1994-05-25 *****
    20             GEO(J,I)=GEOA(J,I)
                   NA(1)=99
    30          CONTINUE
-               WRITE(6,'(///10X,''CALCULATION TERMINATED HERE'')')
+               WRITE(WU,'(///10X,''CALCULATION TERMINATED HERE'')')
                STOP
             ENDIF
-            WRITE(6,'(//10X,'' - THE CALCULATION IS BEING DUMPED TO DISK
+            WRITE(WU,'(//10X,'' - THE CALCULATION IS BEING DUMPED TO DISK
      1'',  /10X,''   RESTART IT USING THE MAGIC WORD "RESTART"'')')
-            WRITE(6,'(//10X,''CURRENT VALUE OF HEAT OF FORMATION =''
+            WRITE(WU,'(//10X,''CURRENT VALUE OF HEAT OF FORMATION =''
      1  ,F12.6)')FUNCT1
          ENDIF
          IF(MDFP(9) .EQ. 1)THEN
@@ -144,9 +146,9 @@ C
 !         CLOSE (9)
 !         CLOSE (10)
       ELSE
-         IF (FIRST) WRITE(6,'(//10X,'' RESTORING DATA FROM DISK''/)')
+         IF (FIRST) WRITE(WU,'(//10X,'' RESTORING DATA FROM DISK''/)')
          READ(IR,END=60,ERR=60)MDFP,XDFP,TOTIME,FUNCT1
-         IF (FIRST) WRITE(6,'(10X,''FUNCTION ='',F13.6//)')FUNCT1
+         IF (FIRST) WRITE(WU,'(10X,''FUNCTION ='',F13.6//)')FUNCT1
          READ(IR)(XPARAM(I),I=1,NVAR),(GD(I),I=1,NVAR)
          READ(IR)(XLAST(I),I=1,NVAR),(GRAD(I),I=1,NVAR)
          LINEAR=(NVAR*(NVAR+1))/2
@@ -172,7 +174,7 @@ C
          READ(IR)(ERRFN(I),I=1,NVAR)
    50    FIRST=.FALSE.
          RETURN
-   60    WRITE(6,'(//10X,''NO RESTART FILE EXISTS!'')')
+   60    WRITE(WU,'(//10X,''NO RESTART FILE EXISTS!'')')
          STOP
       ENDIF
       END

@@ -6,6 +6,8 @@
      1                NLAST(NUMATM), NORBS, NELECS,NALPHA,NBETA,
      2                NCLOSE,NOPEN,NDUMY,FRACT
       COMMON /ELEMTS/ ELEMNT(107)
+      COMMON /OUTFIL/ WU
+      INTEGER WU
 C**********************************************************************
 C
 C  VECPRT PRINTS A LOWER-HALF TRIANGLE OF A SQUARE MATRIX, THE
@@ -71,27 +73,27 @@ C
       M=MIN0((NUMB+1-NA),6)
       MA=2*M+1
       M=NA+M-1
-      WRITE(6,100)(ITEXT(I),JTEXT(I),NATOM(I),I=NA,M)
-      WRITE (6,110) (LINE(K),K=1,MA)
+      WRITE(WU,100)(ITEXT(I),JTEXT(I),NATOM(I),I=NA,M)
+      WRITE(WU,110) (LINE(K),K=1,MA)
       DO 80 I=NA,NUMB
          LL=LL+1
          K=(I*(I-1))/2
          L=MIN0((K+M),(K+I))
          K=K+NA
          IF ((KK+LL).LE.50) GO TO 70
-         WRITE (6,120)
-         WRITE (6,100) (ITEXT(N),JTEXT(N),NATOM(N),N=NA,M)
-         WRITE (6,110) (LINE(N),N=1,MA)
+         WRITE(WU,120)
+         WRITE(WU,100) (ITEXT(N),JTEXT(N),NATOM(N),N=NA,M)
+         WRITE(WU,110) (LINE(N),N=1,MA)
          KK=4
          LL=0
-   70    WRITE (6,130) ITEXT(I),JTEXT(I),NATOM(I),(A(N),N=K,L)
+   70    WRITE(WU,130) ITEXT(I),JTEXT(I),NATOM(I),(A(N),N=K,L)
    80 CONTINUE
       IF (L.GE.LIMIT) GO TO 90
       KK=KK+LL+4
       NA=M+1
       IF ((KK+NUMB+1-NA).LE.50) GO TO 60
       KK=4
-      WRITE (6,120)
+      WRITE(WU,120)
       GO TO 60
    90 RETURN
 C

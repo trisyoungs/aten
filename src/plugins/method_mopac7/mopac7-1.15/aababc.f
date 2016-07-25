@@ -75,7 +75,7 @@ C
          L=M
       ENDIF
       XR=XY(I,J,K,L)
-C#      WRITE(6,'(4I5,F12.6)')I,J,K,L,XR
+C#      WRITE(WU,'(4I5,F12.6)')I,J,K,L,XR
 C
 C   NOW UNTANGLE THE MICROSTATES
 C

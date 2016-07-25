@@ -48,6 +48,8 @@ C ***************************** at 1994-05-25 *****
       COMMON /NLLCOM/ HESS(MAXPAR,MAXPAR),BMAT(MAXPAR,MAXPAR),
      1PMAT(MAXPAR*MAXPAR)
       COMMON /SCRACH/ PVEC
+      COMMON /OUTFIL/ WU
+      INTEGER WU
       DIMENSION IPOW(9), SIG(MAXPAR),
      1          E1(MAXPAR), E2(MAXPAR),
      2          P(MAXPAR), WORK(MAXPAR),
@@ -76,7 +78,7 @@ C ***************************** at 1994-05-25 *****
          IF(INDEX(KEYWRD,'GNORM') .NE. 0) THEN
             TOL2=READA(KEYWRD,INDEX(KEYWRD,'GNORM'))
             IF(TOL2.LT.0.01.AND.INDEX(KEYWRD,' LET').EQ.0)THEN
-               WRITE(6,'(/,A)')'  GNORM HAS BEEN SET TOO LOW, RESET TO 0
+               WRITE(WU,'(/,A)')'  GNORM HAS BEEN SET TOO LOW, RESET TO 0
      1.01'
                TOL2=0.01D0
             ENDIF
@@ -93,12 +95,12 @@ C
             DO 10 I=1,NVAR
                GRAD(I)=GMIN1(I)
    10       GNEXT1(I)=GMIN1(I)
-            WRITE(6,'('' XPARAM'',6F10.6)')(XPARAM(I),I=1,NVAR)
+            WRITE(WU,'('' XPARAM'',6F10.6)')(XPARAM(I),I=1,NVAR)
             IF(ILOOP .GT. 0) THEN
 C#               ILOOP=ILOOP+1
-               WRITE(6,'(//10X,'' RESTARTING AT POINT'',I3)')ILOOP
+               WRITE(WU,'(//10X,'' RESTARTING AT POINT'',I3)')ILOOP
             ELSE
-               WRITE(6,'(//10X,''RESTARTING IN OPTIMISATION'',
+               WRITE(WU,'(//10X,''RESTARTING IN OPTIMISATION'',
      1         '' ROUTINES'')')
             ENDIF
          ENDIF
@@ -108,8 +110,8 @@ C#               ILOOP=ILOOP+1
       ENDIF
       NVAR=ABS(NVAR)
       IF(DEBUG) THEN
-         WRITE(6,'('' XPARAM'')')
-         WRITE(6,'(5(2I3,F10.4))')(LOC(1,I),LOC(2,I),XPARAM(I),I=1,NVAR)
+        WRITE(WU,'('' XPARAM'')')
+        WRITE(WU,'(5(2I3,F10.4))')(LOC(1,I),LOC(2,I),XPARAM(I),I=1,NVAR)
       ENDIF
       IF( .NOT. RESTRT) THEN
          DO 20 I=1,NVAR
@@ -117,8 +119,8 @@ C#               ILOOP=ILOOP+1
          CALL COMPFG(XPARAM, .TRUE., FUNCT, .TRUE., GRAD, .TRUE.)
       ENDIF
       IF(DEBUG) THEN
-         WRITE(6,'('' STARTING GRADIENTS'')')
-         WRITE(6,'(3X,8F9.4)')(GRAD(I),I=1,NVAR)
+         WRITE(WU,'('' STARTING GRADIENTS'')')
+         WRITE(WU,'(3X,8F9.4)')(GRAD(I),I=1,NVAR)
       ENDIF
       GMIN=SQRT(DOT(GRAD,GRAD,NVAR))
       DO 30 I=1,NVAR
@@ -138,7 +140,7 @@ C
          XPARAM(ILOOP)=XPARAM(ILOOP) + XINC
          CALL COMPFG(XPARAM, .TRUE., FUNCT, .TRUE., GRAD, .TRUE.)
          IF(SCF1) GOTO 390
-         IF(DEBUG)WRITE(6,'(I3,12(8F9.4,/3X))')
+         IF(DEBUG)WRITE(WU,'(I3,12(8F9.4,/3X))')
      1    ILOOP,(GRAD(IF),IF=1,NVAR)
          GRAD(ILOOP)=GRAD(ILOOP)+1.D-5
          XPARAM(ILOOP)=XPARAM(ILOOP) - XINC
@@ -146,7 +148,7 @@ C
    40    HESS(ILOOP,J)=-(GRAD(J)-GNEXT1(J))/XINC
          TIME2=SECOND()
          TSTEP=TIME2-TIME1
-         IF(TIMES)WRITE(6,'('' TIME FOR STEP:'',F8.2,'' LEFT'',F8.2)')
+         IF(TIMES)WRITE(WU,'('' TIME FOR STEP:'',F8.2,'' LEFT'',F8.2)')
      1    TSTEP, TLEFT
          IF(TLAST-TLEFT.GT.TDUMP)THEN
             TLAST=TLEFT
@@ -169,9 +171,9 @@ C
    50 CONTINUE
 C        *****  SCALE -HESSIAN- MATRIX                           *****
       IF( DEBUG) THEN
-         WRITE(6,'(//10X,''UN-NORMALIZED HESSIAN MATRIX'')')
+         WRITE(WU,'(//10X,''UN-NORMALIZED HESSIAN MATRIX'')')
          DO 60 I=1,NVAR
-   60    WRITE(6,'(8F10.4)')(HESS(J,I),J=1,NVAR)
+   60    WRITE(WU,'(8F10.4)')(HESS(J,I),J=1,NVAR)
       ENDIF
       DO 80 I=1,NVAR
          SUM = 0.0D0
@@ -182,9 +184,9 @@ C        *****  SCALE -HESSIAN- MATRIX                           *****
          DO 90 J=1,NVAR
    90 HESS(I,J) = HESS(I,J)*WORK(I)
       IF( DEBUG) THEN
-         WRITE(6,'(//10X,''HESSIAN MATRIX'')')
+         WRITE(WU,'(//10X,''HESSIAN MATRIX'')')
          DO 100 I=1,NVAR
-  100    WRITE(6,'(8F10.4)')(HESS(J,I),J=1,NVAR)
+  100    WRITE(WU,'(8F10.4)')(HESS(J,I),J=1,NVAR)
       ENDIF
 C        *****  INITIALIZE B MATIRX                        *****
       DO 120 I=1,NVAR
@@ -235,13 +237,13 @@ C        *****  FORM-A- DAGGER-A- IN PA SLONG WITH -P-     *****
   180 P(I) = -SUM
       L=0
       IF(DEBUG) THEN
-         WRITE(6,'(/10X,''P MATRIX IN POWSQ'')')
+         WRITE(WU,'(/10X,''P MATRIX IN POWSQ'')')
          CALL VECPRT(PMAT,NVAR)
       ENDIF
       CALL RSP(PMAT,NVAR,NVAR,EIG,PVEC)
 C        *****  CHECK FOR ZERO EIGENVALUE                  *****
-C#      WRITE(6,'(''  EIGS IN POWSQ:'')')
-C#      WRITE(6,'(6F13.8)')(EIG(I),I=1,NVAR)
+C#      WRITE(WU,'(''  EIGS IN POWSQ:'')')
+C#      WRITE(WU,'(6F13.8)')(EIG(I),I=1,NVAR)
       IF(EIG(1).LT.RHO2) GO TO 240
 C        *****  IF MATRIX IS NOT SINGULAR FORM INVERSE     *****
 C        *****  BY BACK TRANSFORMING THE EIGENVECTORS      *****
@@ -281,8 +283,8 @@ C        *****  FIND SEARCH DIRECTION                      *****
   270 SIG(I) = SIG(I) + Q(J)*BMAT(I,J)
 C        *****  DO A ONE DIMENSIONAL SEARCH                *****
       IF (DEBUG) THEN
-         WRITE(6,'('' SEARCH VECTOR'')')
-         WRITE(6,'(8F10.5)')(SIG(I),I=1,NVAR)
+         WRITE(WU,'('' SEARCH VECTOR'')')
+         WRITE(WU,'(8F10.5)')(SIG(I),I=1,NVAR)
       ENDIF
       CALL SEARCH(XPARAM, ALPHA, SIG, NVAR, GMIN, OKF, FUNCT)
       IF( NVAR .EQ. 1) GOTO 390
@@ -330,7 +332,7 @@ C        *****  REPLACE STARTING POINT                     *****
       TSTEP=TIME2-TIME1
       ICYC=ICYC+1
       IF(RESFIL)THEN
-         WRITE(6,370)MIN(TLEFT,9999999.9D0),
+         WRITE(WU,370)MIN(TLEFT,9999999.9D0),
      1MIN(GMIN,999999.999D0),FUNCT
          IF(LOG)WRITE(11,370)MIN(TLEFT,9999999.9D0),
      1MIN(GMIN,999999.999D0),FUNCT
@@ -338,14 +340,14 @@ C        *****  REPLACE STARTING POINT                     *****
      1' GRAD.:',F10.3,' HEAT:',G14.7)
          RESFIL=.FALSE.
       ELSE
-         WRITE(6,380)ICYC,MIN(TSTEP,9999.99D0),
+         WRITE(WU,380)ICYC,MIN(TSTEP,9999.99D0),
      1MIN(TLEFT,9999999.9D0),MIN(GMIN,999999.999D0),FUNCT
          IF(LOG)WRITE(11,380)ICYC,MIN(TSTEP,9999.99D0),
      1MIN(TLEFT,9999999.9D0),MIN(GMIN,999999.999D0),FUNCT
   380    FORMAT(' CYCLE:',I5,' TIME:',F6.1,' TIME LEFT:',F9.1,
      1' GRAD.:',F10.3,' HEAT:',G14.7)
       ENDIF
-      IF(TIMES)WRITE(6,'('' TIME FOR STEP:'',F8.2,'' LEFT'',F8.2)')
+      IF(TIMES)WRITE(WU,'('' TIME FOR STEP:'',F8.2,'' LEFT'',F8.2)')
      1TSTEP, TLEFT
       GO TO 130
   390 CONTINUE

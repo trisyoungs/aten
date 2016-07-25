@@ -23,6 +23,8 @@
       COMMON /GEOSYM/ NDEP,LOCPAR(MAXPAR),IDEPFN(MAXPAR),
      1                     LOCDEP(MAXPAR)
       COMMON /ELEMTS/ ELEMNT(107)
+      COMMON /OUTFIL/ WU
+      INTEGER WU
       DIMENSION COORD(3,NUMATM), Q2(NUMATM), LOCTMP(2,MAXPAR)
       CHARACTER Q(3)*2, ELEMNT*2, FLAG1*2, FLAG0*2, FLAGN*2, TXTATM*8
       CHARACTER KEYWRD*241, KOMENT*81, TITLE*81, BLANK*80, LTXT*1
@@ -32,7 +34,7 @@
          FLAG1=' *'
          FLAG0='  '
          FLAGN=' +'
-         IPRT=6
+         IPRT=WU
       ELSE
          FLAG1=' 1'
          FLAG0=' 0'
@@ -73,7 +75,7 @@ C$DOUT VBEST
       MAXTXT=ICHAR(LTXT)
       BLANK=' '
       IF(MODE.EQ.1)THEN
-         WRITE (6,40)BLANK(:MAX(2,MAXTXT-4)),
+         WRITE(WU,40)BLANK(:MAX(2,MAXTXT-4)),
      1               BLANK(:MAX(4,MAXTXT-2)),
      2               BLANK(:MAX(18,MAXTXT+12))
    40    FORMAT (/4X,'ATOM',3X,'CHEMICAL',A ,'BOND LENGTH',4X,'BOND ANGL
@@ -140,17 +142,17 @@ C
      2NA(I),NB(I),NC(I)
                ENDIF
             ELSEIF(I.GT.3)THEN
-               WRITE (6,'(3X,I4 ,5X,A,F9.5,1X,A2,F14.5,1X,A2,F11.5,1X,
+               WRITE(WU,'(3X,I4 ,5X,A,F9.5,1X,A2,F14.5,1X,A2,F11.5,1X,
      1A2,I4,2I5)') I,BLANK(:J),COORD(1,I),Q(1),W,Q(2),X,Q(3),
      2NA(I),NB(I),NC(I)
             ELSEIF(I.EQ.3)THEN
-               WRITE (6,'(''      3'',5X,A,F9.5,1X,A2,F14.5,1X,A2,13X,
+               WRITE(WU,'(''      3'',5X,A,F9.5,1X,A2,F14.5,1X,A2,13X,
      12I5)') BLANK(:J),COORD(1,3),Q(1),W,Q(2),NA(3),NB(3)
             ELSEIF(I.EQ.2)THEN
-               WRITE (6,'(''      2'',5X,A,F9.5,1X,A2,30X,I5)')
+               WRITE(WU,'(''      2'',5X,A,F9.5,1X,A2,30X,I5)')
      1 BLANK(:J),COORD(1,2),Q(1),NA(2)
             ELSE
-               WRITE (6,'(''      1'',5X,A)') BLANK(:J)
+               WRITE(WU,'(''      1'',5X,A)') BLANK(:J)
             ENDIF
          ENDIF
    80 CONTINUE

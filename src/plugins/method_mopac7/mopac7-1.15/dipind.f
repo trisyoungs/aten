@@ -140,7 +140,7 @@ C$DOIT ASIS
       DIPVEC(1)= -DIP(1,3)
       DIPVEC(2)= -DIP(2,3)
       DIPVEC(3)= -DIP(3,3)
-C      WRITE (6,60) ((DIP(I,J),I=1,4),J=1,3)
+C      WRITE(WU,60) ((DIP(I,J),I=1,4),J=1,3)
 C   60 FORMAT (3(4F10.3))
       RETURN
 C

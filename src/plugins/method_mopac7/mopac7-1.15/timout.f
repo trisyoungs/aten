@@ -52,6 +52,8 @@ C
      1                NLAST(NUMATM), NORBS, NELECS,NALPHA,NBETA,
      2                NCLOSE,NOPEN,NDUMY,FRACT
       COMMON /CORE/ CORE(107)
+      COMMON /OUTFIL/ WU
+      INTEGER WU
       DIMENSION C(MORB2),POP(NUMATM),CHRG(NUMATM)
       WRITE(16,'(I4,5X'' MULLIKEN POPULATION AND CHARGE'')',ERR=40)ICOK
 C
@@ -79,14 +81,14 @@ C
             POP(I) = SUM
             CHRG(I) = CORE(K) - POP(I)
    20    CONTINUE
-         WRITE(6,'(///10X,''MULLIKEN POPULATIONS AND CHARGES'')')
+         WRITE(WU,'(///10X,''MULLIKEN POPULATIONS AND CHARGES'')')
          DO 30 J = 1,NUMAT
-            WRITE(6,60) J, POP(J), CHRG(J)
+            WRITE(WU,60) J, POP(J), CHRG(J)
             WRITE(16,70,ERR=40) POP(J), CHRG(J)
    30    CONTINUE
       ENDIF
       RETURN
-   40 WRITE(6,'(A)') 'Error writing SYBYL Mulliken population output'
+   40 WRITE(WU,'(A)') 'Error writing SYBYL Mulliken population output'
       RETURN
    50 FORMAT(//,5X,'ATOM',8X,'POPULATION',6X,'CHARGE')
    60 FORMAT(5X,I4,4X,F11.6,6X,F11.6)
@@ -100,6 +102,8 @@ C
      1                       ,EIONIS,KCHRGE,DIP)
       IMPLICIT DOUBLE PRECISION (A-H,O-Z)
       INCLUDE 'SIZES'
+      COMMON /OUTFIL/ WU
+      INTEGER WU
       DIMENSION COORD(3, NUMAT), CHR(NUMAT),EIGS(MAXORB)
 C  Write out the charge flag and number of atoms
       WRITE(16,'(2I4)', ERR=30) ICOK,NUMAT
@@ -125,6 +129,6 @@ C
       WRITE(16, '(I4,F10.3,''  Charge,Dipole Moment'')', ERR=30)
      1KCHRGE, DIP
       RETURN
-   30 WRITE(6,'(A)') 'Error writing SYBYL MOPAC output'
+   30 WRITE(WU,'(A)') 'Error writing SYBYL MOPAC output'
       RETURN
       END

@@ -57,6 +57,8 @@ C ***** Modified by Jiro Toyoda at 1994-05-25 *****
 C     COMMON/FLUSH/NFLUSH
       COMMON/FLUSHC/NFLUSH
 C ***************************** at 1994-05-25 *****
+      COMMON /OUTFIL/ WU
+      INTEGER WU
 
       DIMENSION IPOW(9), EIGVAL(MAXPAR),TVEC(MAXPAR),SVEC(MAXPAR),
      1FX(MAXPAR),HESSC(MAXHES),UC(MAXPAR**2),oldfx(maxpar),
@@ -130,11 +132,11 @@ c     store various things for possibly omin rejection
          IF (IHESS.GT.0) CALL UPDHES(SVEC,TVEC,NVAR,IUPD)
          IF(IPRNT.GE.2) call geout(6)
          IF(IPRNT.GE.2) THEN
-            WRITE(6,'('' XPARAM '')')
-            WRITE(6,'(5(2I3,F10.4))')(LOC(1,I),LOC(2,I),XPARAM(I),I=1,NV
+            WRITE(WU,'('' XPARAM '')')
+            WRITE(WU,'(5(2I3,F10.4))')(LOC(1,I),LOC(2,I),XPARAM(I),I=1,NV
      1AR)
-            WRITE(6,'('' GRADIENTS'')')
-            WRITE(6,'(3X,8F9.3)')(GRAD(I),I=1,NVAR)
+            WRITE(WU,'('' GRADIENTS'')')
+            WRITE(WU,'(3X,8F9.3)')(GRAD(I),I=1,NVAR)
          ENDIF
 C
 C        PRINT RESULTS IN CYCLE
@@ -148,7 +150,7 @@ C        PRINT RESULTS IN CYCLE
       itime=itime+1
       IF (TLEFT .LT. TSTEP*TWO) GOTO 280
          IF(LDUMP.EQ.0)THEN
-            WRITE(6,40)NSTEP+1,MIN(TSTEP,9999.99D0),
+            WRITE(WU,40)NSTEP+1,MIN(TSTEP,9999.99D0),
      1MIN(TLEFT,9999999.9D0),MIN(GNFINA,999999.999D0),FUNCT
             IF(LOG)WRITE(11,40)NSTEP+1,MIN(TSTEP,9999.99D0),
      1MIN(TLEFT,9999999.9D0),MIN(GNFINA,999999.999D0),FUNCT
@@ -161,7 +163,7 @@ C        PRINT RESULTS IN CYCLE
                ENDIF
             ENDIF
          ELSE
-            WRITE(6,50)MIN(TLEFT,9999999.9D0),
+            WRITE(WU,50)MIN(TLEFT,9999999.9D0),
      1MIN(GNFINA,999999.999D0),FUNCT
             IF(LOG)WRITE(11,50)MIN(TLEFT,9999999.9D0),
      1MIN(GNFINA,999999.999D0),FUNCT
@@ -222,7 +224,7 @@ CONVEX      CALL HQRII(HESSC,NVAR,NVAR,EIGVAL,UC)
       DO 100 I=1,NVAR                                                           
          IF (EIGVAL(I) .LT. ZERO)NEG=NEG+1                                     
   100 CONTINUE                                                                  
-      IF (IPRNT.GE.1)WRITE(6,110)NEG,(eigval(i),i=1,neg)
+      IF (IPRNT.GE.1)WRITE(WU,110)NEG,(eigval(i),i=1,neg)
   110 FORMAT(/,10X,'HESSIAN HAS',I3,' NEGATIVE EIGENVALUE(S)',6f7.1,/)
 c     if an eigenvalue has been zero out it is probably one of the T,R modes
 c     in a cartesian optimization. zero corresponding fx to allow formation
@@ -303,7 +305,7 @@ C
       if(gnmin)gntest=sqrt(dot(grad,grad,nvar))
       DEACT = FUNCT-OLDE
       RATIO = DEACT/DEPRE
-      if(iprnt.ge.1)WRITE(6,170)DEACT,DEPRE,RATIO       
+      if(iprnt.ge.1)WRITE(WU,170)DEACT,DEPRE,RATIO       
   170 FORMAT(5X,'ACTUAL, PREDICTED ENERGY CHANGE, RATIO',2F10.3,F10.5)
 
       lrjk=.false.
@@ -339,11 +341,11 @@ C     if this is a minimum search, don't allow the energy to raise
          if (dmax.lt.dmin) goto 230
 	 goto 130
       endif
-      IF(IPRNT.GE.1)WRITE(6,210)DD
+      IF(IPRNT.GE.1)WRITE(WU,210)DD
   210 FORMAT(5X,'STEPSIZE USED IS',F9.5)
       IF(IPRNT.GE.2) THEN
-         WRITE(6,'('' CALCULATED STEP'')')
-         WRITE(6,'(3X,8F9.5)')(D(I),I=1,NVAR)
+         WRITE(WU,'('' CALCULATED STEP'')')
+         WRITE(WU,'(3X,8F9.5)')(D(I),I=1,NVAR)
       ENDIF
 C
 C     POSSIBLE USE DYNAMICAL TRUST RADIUS
@@ -374,7 +376,7 @@ c     than demin and gradient is less than gmin
       IF (LUPD .and. RMX.lt.gmin .and.
      $   (abs(depre).lt.demin .and. abs(deact).lt.demin) )
      $    dmax=max(dmax,tmone)
-      if(iprnt.ge.1)WRITE(6,220)DMAX
+      if(iprnt.ge.1)WRITE(WU,220)DMAX
  220  FORMAT(5X,'CURRENT TRUST RADIUS = ',F7.5)                  
 230   if (dmax.lt.dmin) then
 	 write(6,240)dmin
@@ -404,7 +406,7 @@ C
 C     ****** OPTIMIZATION TERMINATION ******
 C
   250 CONTINUE
-      WRITE(6,260)RMX,TOL2
+      WRITE(WU,260)RMX,TOL2
   260 FORMAT(/,5X,'RMS GRADIENT =',F9.5,'  IS LESS THAN CUTOFF =',
      1F9.5,//)
   270 IFLEPO=15
@@ -420,11 +422,11 @@ C     CALL COMPFG TO CALCULATE ENERGY FOR FIXING MO-VECTOR BUG
   280 CONTINUE
 C     WE RAN OUT OF TIME or too many iterations. DUMP RESULTS
       IF (TLEFT .LT. TSTEP*TWO) THEN
-         WRITE(6,290)
+         WRITE(WU,290)
   290    FORMAT(/,5X,'NOT ENOUGH TIME FOR ANOTHER CYCLE')
       ENDIF
       IF (nstep.ge.mxstep) THEN
-         WRITE(6,300)
+         WRITE(WU,300)
   300    FORMAT(/,5X,'EXCESS NUMBER OF OPTIMIZATION CYCLES')
       ENDIF
       IPOW(9)=1
@@ -475,6 +477,8 @@ C     WE RAN OUT OF TIME or too many iterations. DUMP RESULTS
      1                NLAST(NUMATM), NORBS, NELECS,NALPHA,NBETA,
      2                NCLOSE,NOPEN,NDUMY,FRACT
       COMMON /PATH  / LATOM,LPARAM,REACT(200)
+      COMMON /OUTFIL/ WU
+      INTEGER WU
       OPEN(UNIT=9,FILE='FOR009',STATUS='UNKNOWN',FORM='UNFORMATTED')
       REWIND 9
       OPEN(UNIT=10,FILE='FOR010',STATUS='UNKNOWN',FORM='UNFORMATTED')
@@ -483,9 +487,9 @@ C     WE RAN OUT OF TIME or too many iterations. DUMP RESULTS
       IF(IPOW(9) .EQ. 1 .OR. IPOW(9) .EQ. 2) THEN
          FUNCT1=SQRT(DOT(GRAD,GRAD,NVAR))
          IF(IPOW(9).EQ.1)THEN
-            WRITE(6,'(//10X,''CURRENT VALUE OF GRADIENT NORM =''
+            WRITE(WU,'(//10X,''CURRENT VALUE OF GRADIENT NORM =''
      1  ,F12.6)')FUNCT1
-            WRITE(6,'(/10X,''CURRENT VALUE OF GEOMETRY'',/)')
+            WRITE(WU,'(/10X,''CURRENT VALUE OF GEOMETRY'',/)')
             CALL GEOUT(6)
          ENDIF
 C
@@ -512,14 +516,14 @@ C
 !         CLOSE(10)
          RETURN
       ELSE
-C#         WRITE(6,'(//10X,'' READING DATA FROM DISK''/)')
+C#         WRITE(WU,'(//10X,'' READING DATA FROM DISK''/)')
          READ(IR,END=10,ERR=10)IPOW,IL,JL,FUNCT,TT0
          NSCF=IPOW(8)
          I=TT0/1000000
          TT0=TT0-I*1000000
-         WRITE(6,'(//10X,''TOTAL TIME USED SO FAR:'',
+         WRITE(WU,'(//10X,''TOTAL TIME USED SO FAR:'',
      1    F13.2,'' SECONDS'')')TT0
-         WRITE(6,'(  10X,''              FUNCTION:'',F17.6)')FUNCT
+         WRITE(WU,'(  10X,''              FUNCTION:'',F17.6)')FUNCT
          READ(IR)(XPARAM(I),I=1,NVAR)
          READ(IR)(  GRAD(I),I=1,NVAR)
          READ(IR)((HESS(J,I),J=1,NVAR),I=1,NVAR)
@@ -540,7 +544,7 @@ C        READ DENSITY MATRIX
 !         CLOSE(9)
 !         CLOSE(10)
          RETURN
-   10    WRITE(6,'(//10X,''NO RESTART FILE EXISTS!'')')
+   10    WRITE(WU,'(//10X,''NO RESTART FILE EXISTS!'')')
          STOP
       ENDIF
       END
@@ -566,6 +570,8 @@ C
       COMMON/OPTEF/OLDF(MAXPAR),D(MAXPAR),VMODE(MAXPAR),
      $U(MAXPAR,MAXPAR),DD,rmin,rmax,omin,xlamd,xlamd0,skal,
      $MODE,NSTEP,NEGREQ,IPRNT
+      COMMON /OUTFIL/ WU
+      INTEGER WU
       DIMENSION IPOW(9)               
       LOGICAL RESTRT,SCF1,LDUM,LUPD,log,rrscal,donr,gnmin 
 C ***** Added    by Jiro Toyoda at 1994-05-25 *****
@@ -648,7 +654,7 @@ C----------------------------------------------------
          I=INDEX(KEYWRD,' GNORM=')
          IF(I.NE.0) TOL2=READA(KEYWRD,I)
          IF(INDEX(KEYWRD,' LET').EQ.0.AND.TOL2.LT.0.01D0)THEN
-            WRITE(6,'(/,A)')'  GNORM HAS BEEN SET TOO LOW, RESET TO 0
+           WRITE(WU,'(/,A)')'  GNORM HAS BEEN SET TOO LOW, RESET TO 0
      1.01. SPECIFY LET AS KEYWORD TO ALLOW GNORM LESS THAN 0.01'
             TOL2=0.01D0
          ENDIF
@@ -664,23 +670,23 @@ C----------------------------------------------------
          TIME2=TIME1
 C   DONE WITH ALL INITIALIZING STUFF.
 C   CHECK THAT OPTIONS REQUESTED ARE RESONABLE
-         IF(NVAR.GT.(3*NUMAT-6) .and. numat.ge.3)WRITE(6,25)
+         IF(NVAR.GT.(3*NUMAT-6) .and. numat.ge.3)WRITE(WU,25)
    25    FORMAT(/,'*** WARNING! MORE VARIABLES THAN DEGREES OF FREEDOM',
      1/)
          IF((ITS.NE.0).AND.(IUPD.EQ.2))THEN
-            WRITE(6,*)' TS SEARCH AND BFGS UPDATE WILL NOT WORK'
+            WRITE(WU,*)' TS SEARCH AND BFGS UPDATE WILL NOT WORK'
             STOP
          ENDIF
          IF((ITS.NE.0).AND.(IGTHES.EQ.0))THEN
-            WRITE(6,*)' TS SEARCH REQUIRE BETTER THAN DIAGONAL HESSIAN'
+            WRITE(WU,*)' TS SEARCH REQUIRE BETTER THAN DIAGONAL HESSIAN'
             STOP
          ENDIF
          IF((IGTHES.LT.0).OR.(IGTHES.GT.3))THEN
-            WRITE(6,*)' UNRECOGNIZED HESS OPTION',IGTHES
+            WRITE(WU,*)' UNRECOGNIZED HESS OPTION',IGTHES
             STOP
          ENDIF
          IF((OMIN.LT.0.d0).OR.(OMIN.GT.1.d0))THEN
-            WRITE(6,*)' OMIN MUST BE BETWEEN 0 AND 1',OMIN
+            WRITE(WU,*)' OMIN MUST BE BETWEEN 0 AND 1',OMIN
             STOP
          ENDIF
          IF (RESTRT) THEN
@@ -698,18 +704,18 @@ C
             TIME0=TIME0-TT0+K*1000000.D0
             ILOOP=I
             IF (I .GT. 0) THEN
-               IGTHES=4
-               NSTEP=J
-               WRITE(6,'(10X,''RESTARTING HESSIAN AT POINT'',I4)')ILOOP
-               IF(NSTEP.NE.0)WRITE(6,'(10X,''IN OPTIMIZATION STEP'',I4)'
+              IGTHES=4
+              NSTEP=J
+              WRITE(WU,'(10X,''RESTARTING HESSIAN AT POINT'',I4)')ILOOP
+              IF(NSTEP.NE.0)WRITE(WU,'(10X,''IN OPTIMIZATION STEP'',I4)'
      1)NSTEP
             ELSE
-               NSTEP=J
-               WRITE(6,'(//10X,''RESTARTING OPTIMIZATION AT STEP'',I4)')
+              NSTEP=J
+              WRITE(WU,'(//10X,''RESTARTING OPTIMIZATION AT STEP'',I4)')
      1NSTEP
-               DO 26 I=1,NVAR
-   26          GRAD(I)=ZZERO
-               CALL COMPFG(XPARAM, .TRUE., FUNCT, .TRUE., GRAD, .TRUE.)
+              DO 26 I=1,NVAR
+   26         GRAD(I)=ZZERO
+              CALL COMPFG(XPARAM, .TRUE., FUNCT, .TRUE., GRAD, .TRUE.)
             ENDIF
          ELSE
 C   NOT A RESTART, WE NEED TO GET THE GRADIENTS
@@ -731,6 +737,8 @@ C     algorithm, under the condition that the steplength is less than dmax
       COMMON/OPTEF/OLDF(MAXPAR),D(MAXPAR),VMODE(MAXPAR),
      $U(MAXPAR,MAXPAR),DD,rmin,rmax,omin,xlamd,xlamd0,skal,
      $MODE,NSTEP,NEGREQ,IPRNT
+      COMMON /OUTFIL/ WU
+      INTEGER WU
       DATA ZERO/0.0D0/, HALF/0.5D0/, TWO/2.0D+00/, TOLL/1.0D-8/         
       DATA STEP/5.0D-02/, TEN/1.0D+1/, ONE/1.0D+0/, BIG/1.0D+3/         
       DATA FOUR/4.0D+00/
@@ -749,7 +757,7 @@ C
 C                                                                               
 C  ON RETURN FROM OVERLP, NEWMOD IS THE TS MODE
 C                                                                               
-      IF(NEWMOD.NE.MODE .and. iprnt.ge.1) WRITE(6,1000) MODE,NEWMOD
+      IF(NEWMOD.NE.MODE .and. iprnt.ge.1) WRITE(WU,1000) MODE,NEWMOD
 1000  FORMAT(5X,'WARNING! MODE SWITCHING. WAS FOLLOWING MODE ',I3,             
      $       ' NOW FOLLOWING MODE ',I3)                                         
       MODE=NEWMOD                                                               
@@ -759,8 +767,8 @@ C
       ENDIF
       eigit=eigval(it)
       IF (IPRNT.GE.1) THEN                                                      
-         WRITE(6,900)IT,EIGIT
-         WRITE(6,910)(U(I,IT),I=1,NVAR)                                         
+         WRITE(WU,900)IT,EIGIT
+         WRITE(WU,910)(U(I,IT),I=1,NVAR)                                         
 900      FORMAT(/,5X,'TS MODE IS NUMBER',I3,' WITH EIGENVALUE',F9.1,/,          
      *5X,'AND COMPONENTS',/)                                                    
 910      FORMAT(5X,8F9.4)                                                       
@@ -800,7 +808,7 @@ C
 5     if (ts) then
 	 lamda0=eigval(it)+sqrt(eigval(it)**2+four*fx(it)**2)
 	 lamda0=lamda0*half
-         if (iprnt.ge.1)WRITE(6,1030) LAMDA0 
+         if (iprnt.ge.1)WRITE(WU,1030) LAMDA0 
       endif
 	 SSTEP = STEP                                                          
          IF(EONE.LE.ZERO) LAMDA=EONE-SSTEP                              
@@ -831,7 +839,7 @@ c668     format(6f20.15)
 	    frodo2=.true.
          endif
          IF (frodo1.and.frodo2) THEN              
-            WRITE(6,*)'NUMERICAL PROBLEMS IN BRACKETING LAMDA',
+            WRITE(WU,*)'NUMERICAL PROBLEMS IN BRACKETING LAMDA',
      $                    EONE,BL,BU,FL,FU
 	    write(6,*)' going for fixed step size....'                       
 	    goto 450                                                           
@@ -860,7 +868,7 @@ c        write(6,668)bl,bu,lamda,fl,fu,fm
          IF (ABS(XLAMDA-LAMDA).LT.sstoll) GOTO 776
          NCNT = NCNT + 1                                                
          IF (NCNT.GT.1000) THEN                                         
-            WRITE(6,*)'TOO MANY ITERATIONS IN LAMDA BISECT',
+            WRITE(WU,*)'TOO MANY ITERATIONS IN LAMDA BISECT',
      $                    BL,BU,LAMDA,FL,FU
             STOP                                                        
          ENDIF                                                          
@@ -869,7 +877,7 @@ c        write(6,668)bl,bu,lamda,fl,fu,fm
          IF (FM*FL.LT.ZERO) BU = LAMDA                                  
          GOTO 50                                                        
 C                                                                       
-776   if (iprnt.ge.1) WRITE(6,1031) LAMDA 
+776   if (iprnt.ge.1) WRITE(WU,1031) LAMDA 
 C                                                                       
 C  CALCULATE THE STEP                                                   
 C                                                                       
@@ -909,7 +917,7 @@ C
             D(I)=D(I)*SKAL
 160      CONTINUE
 	 DD=SQRT(DOT(D,D,NVAR))
-         IF(IPRNT.GE.1)WRITE(6,170)SKAL
+         IF(IPRNT.GE.1)WRITE(WU,170)SKAL
 170      FORMAT(5X,'CALCULATED STEP SIZE TOO LARGE, SCALED WITH',F9.5)
          xlamd=lamda
 	 xlamd0=lamda0
@@ -952,7 +960,7 @@ c        write(6,668)bl,bu,fl,fu
 	    frodo2=.true.
          endif
          IF (frodo1.and.frodo2) THEN              
-            WRITE(6,*)'NUMERICAL PROBLEMS IN BRACKETING LAMDA',
+            WRITE(WU,*)'NUMERICAL PROBLEMS IN BRACKETING LAMDA',
      $                    EONE,BL,BU,FL,FU
 	    write(6,*)' going for fixed level shifted NR step...'
 c           both lamda searches failed, go for fixed level shifted nr    
@@ -991,7 +999,7 @@ c        write(6,668)bl,bu,lamda,fl,fu,fm
          IF (ABS(XLAMDA-LAMDA).LT.sstoll) GOTO 570                        
          NCNT = NCNT + 1                                                
          IF (NCNT.GT.1000) THEN                                         
-            WRITE(6,*)'TOO MANY ITERATIONS IN LAMDA BISECT',
+            WRITE(WU,*)'TOO MANY ITERATIONS IN LAMDA BISECT',
      $                    BL,BU,LAMDA,FL,FU
             STOP                                                        
          ENDIF                                                          
@@ -1038,6 +1046,8 @@ C          ALREADY DONE AT THIS POINT)
       COMMON/OPTEF/OLDF(MAXPAR),D(MAXPAR),VMODE(MAXPAR),
      $U(MAXPAR,MAXPAR),DD,rmin,rmax,omin,xlamd,xlamd0,skal,
      $MODE,NSTEP,NEGREQ,IPRNT
+      COMMON /OUTFIL/ WU
+      INTEGER WU
       DIMENSION IPOW(9), EIGVAL(MAXPAR),TVEC(MAXPAR),SVEC(MAXPAR),              
      *FX(MAXPAR),HESSC(MAXHES),UC(MAXPAR**2)                                    
       DIMENSION XPARAM(*),tmp(150,150)
@@ -1055,7 +1065,7 @@ C     XINC IS STEPSIZE FOR HESSIAN CALCULATION. TESTS SHOWS THAT IT SHOULD
 C     BE IN THE RANGE 10(-2) TO 10(-4). 10(-3) APPEARS TO BE 
 C     A REASONABLE COMPROMISE BETWEEN ACCURACY AND NUMERICAL PROBLEMS
       IF (IGTHES.EQ.0) THEN
-         WRITE(6,60)
+         WRITE(WU,60)
    60    FORMAT(/,10X,'DIAGONAL MATRIX USED AS START HESSIAN',/)
          DO 70 I=1,NVAR
             DO 70 J=1,NVAR
@@ -1076,7 +1086,7 @@ C     A REASONABLE COMPROMISE BETWEEN ACCURACY AND NUMERICAL PROBLEMS
       ENDIF
 C
       IF (IGTHES.EQ.2) THEN
-         WRITE(6,100)
+         WRITE(WU,100)
   100    FORMAT(/,10X,'HESSIAN READ FROM DISK',/)
          IPOW(9)=0
 C        USE DUMMY ARRAY FOR CALL EXCEPT FOR HESSIAN
@@ -1096,24 +1106,24 @@ C        CURRENTLY ON RESTART FILE
 C       IF IGTHES IS .EQ. 4, THEN THIS IS A HESSIAN RESTART.
 C       USE GNEXT1 AND DUMMY FOR CALLS TO COMPFG DURING HESSIAN
 C       CALCULATION
-         IF (IGTHES.EQ.1)WRITE(6,190)
+         IF (IGTHES.EQ.1)WRITE(WU,190)
   190    FORMAT(/,10X,'HESSIAN CALCULATED NUMERICALLY',/)
-         IF (IGTHES.EQ.3)WRITE(6,191)
+         IF (IGTHES.EQ.3)WRITE(WU,191)
   191    FORMAT(/,10X,'HESSIAN CALCULATED DOUBLE NUMERICALLY',/)
-            IF(IPRNT.GE.5)WRITE(6,'(I3,12(8F9.4,/3X))')
+            IF(IPRNT.GE.5)WRITE(WU,'(I3,12(8F9.4,/3X))')
      1    0,(Grad(IF),IF=1,NVAR)
          TIME1=SECOND()
          TSTORE=TIME1
          DO 210 I=ILOOP,NVAR
             XPARAM(I)=XPARAM(I) + XINC
             CALL COMPFG(XPARAM, .TRUE., DUMMY, .TRUE., GNEXT1, .TRUE.)
-            IF(IPRNT.GE.5)WRITE(6,'(I3,12(8F9.4,/3X))')
+            IF(IPRNT.GE.5)WRITE(WU,'(I3,12(8F9.4,/3X))')
      1    I,(GNEXT1(IF),IF=1,NVAR)
             XPARAM(I)=XPARAM(I) - XINC
 	    if (igthes.eq.3) then
             XPARAM(I)=XPARAM(I) - XINC
             CALL COMPFG(XPARAM, .TRUE., DUMMY, .TRUE., GMIN1, .TRUE.)
-            IF(IPRNT.GE.5)WRITE(6,'(I3,12(8F9.4,/3X))')
+            IF(IPRNT.GE.5)WRITE(WU,'(I3,12(8F9.4,/3X))')
      1    -I,(GMIN1(IF),IF=1,NVAR)
             XPARAM(I)=XPARAM(I) + XINC
             DO 199 J=1,NVAR
@@ -1130,8 +1140,8 @@ C       CALCULATION
 C
 C  STORE PARTIAL HESSIAN PATRIX
 C  STORE GRADIENTS FOR GEOMETRY AND ILOOP AS POSITIVE
-               WRITE(6,'(A)')' NOT ENOUGH TIME TO COMPLETE HESSIAN'
-               WRITE(6,'(A,I4)')' STOPPING IN HESSIAN AT COORDINATE:',I
+               WRITE(WU,'(A)')' NOT ENOUGH TIME TO COMPLETE HESSIAN'
+               WRITE(WU,'(A,I4)')' STOPPING IN HESSIAN AT COORDINATE:',I
                IPOW(9)=1
                TT0=SECOND()-TIME0
                CALL EFSAV(TT0,HESS,FUNCT,GRAD,XPARAM,PMAT,I,NSTEP,BMAT,
@@ -1203,6 +1213,8 @@ C
       COMMON/OPTEF/OLDF(MAXPAR),D(MAXPAR),VMODE(MAXPAR),
      $U(MAXPAR,MAXPAR),DD,rmin,rmax,omin,xlamd,xlamd0,skal,
      $MODE,NSTEP,NEGREQ,IPRNT
+      COMMON /OUTFIL/ WU
+      INTEGER WU
       dimension xo(maxpar)
       logical lorjk,first
       data first/.true./
@@ -1213,11 +1225,11 @@ c     IF(NSTEP.EQ.1) THEN
       IF(first) THEN
 	 first=.false.
          IF(MODE.GT.NVAR)THEN
-            WRITE(6,*)'ERROR!! MODE IS LARGER THAN NVAR',MODE
+            WRITE(WU,*)'ERROR!! MODE IS LARGER THAN NVAR',MODE
             STOP
          ENDIF
          IT=MODE
-         if (iprnt.ge.1) WRITE(6,40) MODE
+         if (iprnt.ge.1) WRITE(WU,40) MODE
    40 FORMAT(5X,'HESSIAN MODE FOLLOWING SWITCHED ON'/
      1     '     FOLLOWING MODE ',I3)
 C
@@ -1253,7 +1265,7 @@ C
          enddo
          endif
 
-         if(iprnt.ge.1)WRITE(6,30) IT,TOVLP
+         if(iprnt.ge.1)WRITE(WU,30) IT,TOVLP
 	 if (tovlp.lt.omin) then
 	    if (dmax.gt.osmin) then
 	    lorjk=.true.
@@ -1302,6 +1314,8 @@ C   RM: INVERSION OF SQUARE ROOT OF MASS
 C   P, COF: BUFFER                                                      
 C                                                                       
       COMMON /ATMASS/ ATMASS(NUMATM)
+      COMMON /OUTFIL/ WU
+      INTEGER WU
       DIMENSION X(MAXPAR),RM(MAXPAR),F(MAXPAR,MAXPAR),                  
      *          P(MAXPAR,MAXPAR),COF(MAXPAR,MAXPAR)                     
       DIMENSION TENS(3,3,3),ROT(3,3),SCR(3,3),ISCR(6),CMASS(3)          
@@ -1360,13 +1374,13 @@ C     FIND CMS AND CALCULATED MASS WEIGHTED COORDINATES
              L=L+1                                                      
              X(L)=TMP*(COORD(J,I)-CMASS(J))                             
 8     CONTINUE                                                          
-c     WRITE(6,9020)                                                     
+c     WRITE(WU,9020)                                                     
 c     CALL prsq(f,nc1,nc1,maxpar,1)                                          
 c9020 FORMAT(/1X,'ENTER THE SUBROUTINE <PRJFC>'//                       
 c    *        1X,'UNPROJECTED FORCE CONSTANT MATRIX (HARTREE/BOHR**2)') 
-c     WRITE(6,*)' MASS-WEIGHTED COORDINATES AND CORRESPONDING GRADIENT' 
+c     WRITE(WU,*)' MASS-WEIGHTED COORDINATES AND CORRESPONDING GRADIENT' 
 c     DO 9 I=1,NC1                                                      
-c9       WRITE(6,*)X(I),DX(I)                                           
+c9       WRITE(WU,*)X(I),DX(I)                                           
 C                                                                       
 C 2. COMPUTE INERTIA TENSOR.                                            
       DO 10 I=1,3                                                       
@@ -1387,7 +1401,7 @@ C
 CHECK THE INERTIA TENSOR.                                               
       CHK=ROT(1,1)*ROT(2,2)*ROT(3,3)                                    
       IF(ABS(CHK).GT.CUT8) GO TO 21                                     
-c     WRITE(6,23)                                                       
+c     WRITE(WU,23)                                                       
 c  23 FORMAT(/1X,'MATRIX OF INERTIA MOMENT')                            
 c     CALL PRSQ(ROT,3,3,3,3)                                              
       IF(ABS(ROT(1,1)).GT.CUT8) GO TO 11                                
@@ -1395,7 +1409,7 @@ C X=0
       IF(ABS(ROT(2,2)).GT.CUT8) GO TO 12                                
 C X,Y=0                                                                 
       IF(ABS(ROT(3,3)).GT.CUT8) GO TO 13                                
-      WRITE(6,14) ROT(1,1),ROT(2,2),ROT(3,3)                            
+      WRITE(WU,14) ROT(1,1),ROT(2,2),ROT(3,3)                            
    14 FORMAT(1X,'EVERY DIAGONAL ELEMENTS ARE ZERO ?',3F20.10)           
       RETURN                                                            
 C                                                                       
@@ -1455,7 +1469,7 @@ C     IF(JRNK.LT.3) STOP 1
       CALL DGEDI(ROT,3,3,ISCR,DETX,SCR,1)                                
 C                                                                       
    22 CONTINUE                                                          
-c     WRITE (6,702)                                                     
+c     WRITE(WU,702)                                                     
 c 702 FORMAT(/1X,'INVERSE MATRIX OF MOMENT OF INERTIA.')                
 c     CALL PRSQ(ROT,3,3,3,3)                                              
 C                                                                       
@@ -1504,7 +1518,7 @@ C 8. NEGLECT SMALLER VALUES THAN 10**-8.
   120   CONTINUE                                                        
 C                                                                       
 C.DEBUG.                                                                
-c     WRITE(6,703)                                                      
+c     WRITE(WU,703)                                                      
 c 703 FORMAT(/1X,'PROJECTION MATRIX')                                   
 c     CALL PRSQ(P,NC1,NC1,NC1)                                          
 c     CALL PRSQ(P,NC1,NC1,maxpar,3)                                       
@@ -1526,7 +1540,7 @@ C 11. COMPUTE P*F*P.
   190    SUM=SUM+P(I,K)*COF(K,J)                                        
   200   F(I,J)=SUM                                                      
 C                                                                       
-c     WRITE(6,9030)                                                     
+c     WRITE(WU,9030)                                                     
 c     CALL prsq(f,nc1,nc1,maxpar,1)                                          
 c9030 FORMAT(/1X,'LEAVE THE SUBROUTINE <PRJFC>'//                       
 c    *        1X,'PROJECTED FORCE CONSTANT MATRIX (HARTREE/BOHR**2)')   
@@ -1540,30 +1554,32 @@ c    *        1X,'PROJECTED FORCE CONSTANT MATRIX (HARTREE/BOHR**2)')
       COMMON/OPTEF/OLDF(MAXPAR),D(MAXPAR),VMODE(MAXPAR),                        
      $U(MAXPAR,MAXPAR),DD,rmin,rmax,omin,xlamd,xlamd0,skal,
      $MODE,NSTEP,NEGREQ,IPRNT
+      COMMON /OUTFIL/ WU
+      INTEGER WU
       DIMENSION EIGVAL(MAXPAR)
          IF (IPRNT.GE.4) THEN                                                   
-         WRITE(6,*)' '                                                          
-         WRITE(6,*)'              HESSIAN MATRIX'                               
+         WRITE(WU,*)' '                                                          
+         WRITE(WU,*)'              HESSIAN MATRIX'                               
          LOW=1                                                                  
          NUP=8                                                                  
 540      NUP=MIN(NUP,NVAR)                                                      
-         WRITE(6,1000) (I,I=LOW,NUP)                                            
+         WRITE(WU,1000) (I,I=LOW,NUP)                                            
          DO 550 I=1,NVAR                                                        
-         WRITE(6,1010) I,(HESS(I,J),J=LOW,NUP)                                  
+         WRITE(WU,1010) I,(HESS(I,J),J=LOW,NUP)                                  
 550      CONTINUE                                                               
          NUP=NUP+8                                                              
          LOW=LOW+8                                                              
          IF(LOW.LE.NVAR) GOTO 540                                               
          ENDIF                                                                  
-         WRITE(6,*)' '                                                          
-         WRITE(6,*)'              HESSIAN EIGENVALUES AND -VECTORS'             
+         WRITE(WU,*)' '                                                          
+         WRITE(WU,*)'              HESSIAN EIGENVALUES AND -VECTORS'             
          LOW=1                                                                  
          NUP=8                                                                  
 560      NUP=MIN(NUP,NVAR)                                                      
-         WRITE(6,1000) (I,I=LOW,NUP)                                            
-         WRITE(6,1020) (EIGVAL(I),I=LOW,NUP)                                    
+         WRITE(WU,1000) (I,I=LOW,NUP)                                            
+         WRITE(WU,1020) (EIGVAL(I),I=LOW,NUP)                                    
          DO 570 I=1,NVAR                                                        
-         WRITE(6,1030) I,(U(I,J),J=LOW,NUP)                                     
+         WRITE(WU,1030) I,(U(I,J),J=LOW,NUP)                                     
 570      CONTINUE                                                               
          NUP=NUP+8                                                              
          LOW=LOW+8                                                              
@@ -1586,6 +1602,8 @@ CONVEX      COMMON /NLLCOM/ HESS(MAXPAR,MAXPAR*3)
       COMMON /NLLCOM/ HESS(MAXPAR,MAXPAR), BMAT(MAXPAR,MAXPAR),
      .                PMAT(MAXPAR**2)
       COMMON /GRADNT/ GRAD(MAXPAR),GNFINA
+      COMMON /OUTFIL/ WU
+      INTEGER WU
 C
       DATA ZERO/0.0D0/
 C
@@ -1613,9 +1631,9 @@ C
       IF (.NOT. FIRST) THEN
          FIRST=.TRUE.
          IF(IPRNT.GE.2) THEN
-            IF (IUPD.EQ.0)WRITE(6,90)
-            IF (IUPD.EQ.1)WRITE(6,80)
-            IF (IUPD.EQ.2)WRITE(6,120)
+            IF (IUPD.EQ.0)WRITE(WU,90)
+            IF (IUPD.EQ.1)WRITE(WU,80)
+            IF (IUPD.EQ.2)WRITE(WU,120)
          ENDIF
       ENDIF
       IF(IUPD.EQ.0) RETURN
@@ -1681,8 +1699,8 @@ cfrj With the current level shift technique I think the Hessian should
 cfrj be allowed to aquire negative eigenvalues. Without updating the
 cfrj optimization has the potential of stalling
 cfrj     IF(DDS.LT.ZERO) THEN
-cfrj        WRITE(6,100)
-cfrj        WRITE(6,110)
+cfrj        WRITE(WU,100)
+cfrj        WRITE(WU,110)
 cfrj        RETURN
 cfrj     ENDIF
 C

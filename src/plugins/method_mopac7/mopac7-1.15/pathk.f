@@ -22,6 +22,8 @@ C     COMMON /PROFIL/ PROFIL
       COMMON /PROFIC/ PROFIL
 C ***************************** at 1994-05-25 *****
       COMMON /KEYWRD/ KEYWRD
+      COMMON /OUTFIL/ WU
+      INTEGER WU
       DIMENSION GD(MAXPAR),XLAST(MAXPAR),MDFP(20),XDFP(20)
       DIMENSION PROFIL(200)
       CHARACTER KEYWRD*241, GETNAM*80
@@ -49,7 +51,7 @@ C
       IF (INDEX(KEYWRD,'RESTART').NE.0) THEN
          MDFP(9)=0
          CALL DFPSAV(CPUTOT,XPARAM,GD,XLAST,ESCF,MDFP,XDFP)
-         WRITE(6,'(//10X,'' RESTARTING AT POINT '',I3)') KLOOP
+         WRITE(WU,'(//10X,'' RESTARTING AT POINT '',I3)') KLOOP
       ENDIF
 C
       GEO(LPARAM,LATOM)=CURRT
@@ -62,14 +64,14 @@ C
          CPU3=CPU2-CPU1
          CPUTOT=CPUTOT+CPU3
          PROFIL(ILOOP)=ESCF
-         WRITE(6,'(/''          VARIABLE        FUNCTION'')')
-         WRITE(6,'('' :'',F16.5,F16.6)')GEO(LPARAM,LATOM)*C1,ESCF
+         WRITE(WU,'(/''          VARIABLE        FUNCTION'')')
+         WRITE(WU,'('' :'',F16.5,F16.6)')GEO(LPARAM,LATOM)*C1,ESCF
          CALL GEOUT(6)
          GEO(LPARAM,LATOM)=GEO(LPARAM,LATOM)+STEP
    10 CONTINUE
       DO 20 I=2,NPTS
    20 REACT(I)=REACT(I-1)+STEP*C1
-      WRITE(6,'(/16X,''POINTS ON REACTION PATH '',
+      WRITE(WU,'(/16X,''POINTS ON REACTION PATH '',
      1          /16X,''AND CORRESPONDING HEATS'',//)')
 !      OPEN(UNIT=12,FILE=GETNAM('FOR012'),STATUS='UNKNOWN')
       WRITE(12,30)
@@ -82,13 +84,13 @@ C
       M=NPTS - L*8
       IF (L.LT.1) GO TO 50
       DO 40 K=0,L-1
-         WRITE(6,'(8F7.2)') (REACT(I),I=K*8+1,K*8+8)
-         WRITE(6,'(8F7.2,/)') (PROFIL(I),I=K*8+1,K*8+8)
+         WRITE(WU,'(8F7.2)') (REACT(I),I=K*8+1,K*8+8)
+         WRITE(WU,'(8F7.2,/)') (PROFIL(I),I=K*8+1,K*8+8)
          WRITE(12,'(8F7.2)') (REACT(I),I=K*8+1,K*8+8)
    40 WRITE(12,'(8F7.2,/)') (PROFIL(I),I=K*8+1,K*8+8)
    50 IF (M.GT.0) THEN
-         WRITE(6,'(8F7.2)') (REACT(I),I=L*8+1,L*8+M)
-         WRITE(6,'(8F7.2,/)') (PROFIL(I),I=L*8+1,L*8+M)
+         WRITE(WU,'(8F7.2)') (REACT(I),I=L*8+1,L*8+M)
+         WRITE(WU,'(8F7.2,/)') (PROFIL(I),I=L*8+1,L*8+M)
          WRITE(12,'(8F7.2)') (REACT(I),I=L*8+1,L*8+M)
          WRITE(12,'(8F7.2,/)') (PROFIL(I),I=L*8+1,L*8+M)
       ENDIF

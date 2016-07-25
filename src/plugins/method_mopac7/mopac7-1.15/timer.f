@@ -1,5 +1,7 @@
       SUBROUTINE TIMER(A)
       IMPLICIT DOUBLE PRECISION (A-H,O-Z)
+      COMMON /OUTFIL/ WU
+      INTEGER WU
       CHARACTER*(*) A
       LOGICAL FIRST
       DATA FIRST/.TRUE./
@@ -17,10 +19,10 @@ C
       T0=T0+0.026D0
       T2=SECOND()
       IF(INDEX(A,'BEF').EQ.0.AND.A.NE.' ')THEN
-         WRITE(6,'(2X,A,A,F7.2,A,F8.2)')
+         WRITE(WU,'(2X,A,A,F7.2,A,F8.2)')
      1A,' INTERVAL:',T2-T1,' INTEGRAL:',T2-T0
       ELSE
-         WRITE(6,'(40X,''TIME LOST:'',F7.2)')T2-T1
+         WRITE(WU,'(40X,''TIME LOST:'',F7.2)')T2-T1
       ENDIF
       T1=T2+0.026D0
       RETURN

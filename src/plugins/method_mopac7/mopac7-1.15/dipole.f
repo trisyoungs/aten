@@ -10,6 +10,8 @@
       COMMON /ISTOPE/ AMS(107)
       COMMON /MULTIP/ DD(107), QQ(107), AM(107), AD(107), AQ(107)
       COMMON /NUMCAL/ NUMCAL
+      COMMON /OUTFIL/ WU
+      INTEGER WU
       DIMENSION P(*),Q(*),COORD(3,*),DIPVEC(3), CENTER(3)
       CHARACTER*241 KEYWRD
 C***********************************************************************
@@ -116,7 +118,7 @@ C
          DIPVEC(2)=DIP(2,3)
          DIPVEC(3)=DIP(3,3)
       ENDIF
-      IF(MODE.EQ.1)WRITE (6,130) ((DIP(I,J),I=1,4),J=1,3)
+      IF(MODE.EQ.1)WRITE(WU,130) ((DIP(I,J),I=1,4),J=1,3)
 C     STORE DIPOLE MOMENT COMPONENTS IN UX,UY,UZ FOR USE IN
 C     ASSIGNING CHARGES DETERMINED FROM THE ESP. BHB
       UX=DIP(1,3)

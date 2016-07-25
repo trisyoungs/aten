@@ -3,6 +3,8 @@
       INCLUDE 'SIZES'
       COMMON /GEOSYM/ NDEP, LOCPAR(MAXPAR), IDEPFN(MAXPAR),
      1                LOCDEP(MAXPAR)
+      COMMON /OUTFIL/ WU
+
 C***********************************************************************
 C
 C   GETSYM READS IN THE SYMMETRY DEPENDENCE RELATIONSHIPS.
@@ -21,6 +23,7 @@ C     OF LOCDEP
 C     IDEPFN POINTS TO THE PARTICULAR FUNCTION TO BE USED (SEE NDDO)
 C
 C***********************************************************************
+      INTEGER WU
       DIMENSION IVALUE(40),VALUE(40)
       CHARACTER  TEXT(18)*60, LINE*80
       SAVE TEXT
@@ -45,7 +48,7 @@ C***********************************************************************
      9' THE USER HAS TO SUPPLY THIS FUNCTION IN DEPVAR             '/
 C
 C TITLE OUTPUT
-      WRITE (6,10)
+      WRITE(WU,10)
    10 FORMAT (///5X,25HPARAMETER DEPENDENCE DATA//
      1'        REFERENCE ATOM      FUNCTION NO.    DEPENDENT ATOM(S)')
 C
@@ -67,20 +70,20 @@ C   FILL THE LOCDEP ARRAY
          IDEPFN(NDEP)=IVALUE(2)
    40 CONTINUE
    50 LL=I-1
-      WRITE(6,60)IVALUE(1),IVALUE(2),(IVALUE(J),J=3,LL)
+      WRITE(WU,60)IVALUE(1),IVALUE(2),(IVALUE(J),J=3,LL)
    60 FORMAT(I13,I19,I14,11I3,10(/,43X,12I3))
       GO TO 20
 C
 C CLEAN UP
    70 CONTINUE
-      WRITE(6,80)
+      WRITE(WU,80)
    80 FORMAT(/10X,'   DESCRIPTIONS OF THE FUNCTIONS USED',/)
       DO 120 J=1,18
          DO 90 I=1,NDEP
             IF(IDEPFN(I).EQ.J) GOTO 100
    90    CONTINUE
          GOTO 120
-  100    WRITE(6,110)J,TEXT(J)
+  100    WRITE(WU,110)J,TEXT(J)
   110    FORMAT(I4,5X,A)
   120 CONTINUE
       RETURN

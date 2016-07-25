@@ -15,6 +15,8 @@ C ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
       COMMON /ELEMTS/ ELEMNT(107)
       COMMON/SYMRES/ TRANS,RTR,SIG,NAME,NAMO(MXDIM),JNDEX(MXDIM),ISTA(2)
       COMMON /KEYWRD/ KEYWRD
+      COMMON /OUTFIL/ WU
+      INTEGER WU
       CHARACTER*241 KEYWRD, NAME*4, NAMO*4, ISTA*4
       LOGICAL ALLPRT
 C**********************************************************************
@@ -93,23 +95,23 @@ C      -------------------------------------------------
       IF(IFLAG.EQ.2.AND.NORBS.GT.16) KC=KA+7
  1989 CONTINUE
    60 KB=MIN0(KC,NC)
-      WRITE (6,100) (I,I=KA,KB)
+      WRITE(WU,100) (I,I=KA,KB)
       IF  (IFLAG.EQ.2.OR.IFLAG.EQ.5)
-     *   WRITE (6,150) (JNDEX(I),NAMO(I),I=KA,KB)
+     *   WRITE(WU,150) (JNDEX(I),NAMO(I),I=KA,KB)
       IF(B(1).NE.0.D0) THEN
       IF(IFLAG.EQ.5) THEN
-      WRITE(6,111) (B(I),I=KA,KB)
+      WRITE(WU,111) (B(I),I=KA,KB)
       ELSE
-      WRITE (6,110) (B(I),I=KA,KB)
+      WRITE(WU,110) (B(I),I=KA,KB)
       ENDIF
       ENDIF
-      WRITE (6,120)
+      WRITE(WU,120)
       LA=1
       LC=40
    70 LB=MIN0(LC,NR)
       DO 80 I=LA,LB
-         IF(ITEXT(I).EQ.' S')WRITE(6,120)
-         WRITE (6,130) ITEXT(I),JTEXT(I),NATOM(I),(A(I,J),J=KA,KB)
+         IF(ITEXT(I).EQ.' S')WRITE(WU,120)
+         WRITE(WU,130) ITEXT(I),JTEXT(I),NATOM(I),(A(I,J),J=KA,KB)
    80 CONTINUE
       IF (LB.EQ.NR) GO TO 90
       LA=LC+1

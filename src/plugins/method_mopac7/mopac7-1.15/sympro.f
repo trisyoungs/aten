@@ -85,6 +85,8 @@ C
      2                NCLOSE,NOPEN,NDUMY,FRACT
       COMMON /COORD / COORD(3,NUMATM)
       COMMON /KEYWRD/ KEYWRD
+      COMMON /OUTFIL/ WU
+      INTEGER WU
       CHARACTER KEYWRD*241
       CHARACTER*80 LINE
       LOGICAL LEADSP, PROB, ALLINT
@@ -135,9 +137,9 @@ C
          COORD(2,I) = -YA + COORD(2,I)
          COORD(3,I) = -ZA + COORD(3,I)
    20 CONTINUE
-      WRITE(6,'(/''   SYMMETRY OPERATIONS USED FOR SYMMETRIZING'',
+      WRITE(WU,'(/''   SYMMETRY OPERATIONS USED FOR SYMMETRIZING'',
      1'' THE HESSIAN'')')
-      WRITE(6,'(/,'' OPERATOR  TYPE     AXIS DEFINITION '')')
+      WRITE(WU,'(/,'' OPERATOR  TYPE     AXIS DEFINITION '')')
 C
       NENT = 1
       NSYM = 0
@@ -156,7 +158,7 @@ C
    40 CONTINUE
       IF (NVALUE.EQ.0) GOTO 120
       IF (NVALUE.EQ.1) THEN
-        WRITE(6,200)
+        WRITE(WU,200)
  200    FORMAT(' NOT A VALID LINE. ONLY HAS ONE ENTRY')
         PROB = .TRUE.
         GOTO 120
@@ -169,10 +171,10 @@ C
      +    ALLINT=.FALSE.
    50 CONTINUE
       IF (ALLINT) THEN
-        WRITE(6,210)ISYMT(1+NENT),(ITEMP(I),I=1,NVALUE-1)
+        WRITE(WU,210)ISYMT(1+NENT),(ITEMP(I),I=1,NVALUE-1)
  210  FORMAT(X,A10,I7,8I7)
       ELSE
-        WRITE(6,220)ISYMT(1+NENT),ITEMP(1),(TEMP(I),I=2,NVALUE-1)
+        WRITE(WU,220)ISYMT(1+NENT),ITEMP(1),(TEMP(I),I=2,NVALUE-1)
  220  FORMAT(X,A10,I7,8F7.3)
       ENDIF
       SIGMA = 1
@@ -180,7 +182,7 @@ C
       TEMP(1) = ABS( TEMP(1))
       ITEMP(1)= ABS(ITEMP(1))
       IF (ABS(ITEMP(1)-TEMP(1)) .GE. TOL) THEN
-        WRITE(6,230)
+        WRITE(WU,230)
  230    FORMAT(' THE SYMMETRY FUNCTION MUST BE INTEGER')
         PROB = .TRUE.
         GOTO 120
@@ -202,7 +204,7 @@ C  WITH ANYTHING ELSE, THE AXIS MUST BE DETERMINED.  IF NO AXIS IS DEFINED
 C    FLAG IT AS A PROBLEM
       IF (NVALUE .EQ. 2) THEN
         PROB = .TRUE.
-        WRITE(6,240) NSYM
+        WRITE(WU,240) NSYM
  240    FORMAT(' NO AXIS INFORMATION WAS ENTERED FOR FUNCTION',I2)
         GOTO 120
       ENDIF
@@ -220,7 +222,7 @@ C  IT APPEARS TO BE XYZ INPUT
 C  APPEARS TO BE ATOM NUMBER INPUT
         IF (.NOT. ALLINT) THEN
           PROB = .TRUE.
-          WRITE(6,250)
+          WRITE(WU,250)
  250      FORMAT(' YOU MUST HAVE ALL INTEGER INPUT WHEN NOT',
      +     ' USING XYZ INPUT')
           GOTO 120
@@ -230,7 +232,7 @@ C  APPEARS TO BE ATOM NUMBER INPUT
         Z = 0.D0
         DO 60 I = 2, NVALUE-1
           IF ((ABS(ITEMP(I)).LT.1).OR.(ABS(ITEMP(I)).GT.NUMAT)) THEN
-            WRITE(6,260)ITEMP(I)
+            WRITE(WU,260)ITEMP(I)
  260        FORMAT(' ATOM NUMBER',I3,' IS OUT OF RANGE')
             PROB=.TRUE.
           ENDIF
@@ -243,7 +245,7 @@ C
 C  TIME TO DECIPHER THE SYMMETRY FUNCTION
 C
       IF (ITEMP(1) .GT. 10) THEN
-        WRITE(6,270)
+        WRITE(WU,270)
  270    FORMAT(' A C-10 AXIS IS THE HIGHEST THAT CAN BE SPECIFIED')
         PROB = .TRUE.
         GOTO 120
@@ -256,7 +258,7 @@ C  First, construct the matrix defining the rotation axis
       RA=SQRT(XY+Z**2)
       IF (RA.LT. TOL) THEN
         PROB = .TRUE.
-        WRITE(6,280)
+        WRITE(WU,280)
   280   FORMAT('  YOUR VECTOR AXIS MUST HAVE A NON-ZERO LENGTH ')
         GOTO 120
       ENDIF
@@ -318,7 +320,7 @@ C
   90  CONTINUE
       IF (RES .LT. TOL) THEN
 C  THIS IS NOT VALID FUNCTION
-        WRITE(6,290)
+        WRITE(WU,290)
  290    FORMAT(' THIS FUNCTION IS IDENTICAL TO AN EARLIER ONE')
         GOTO 120
       ENDIF
@@ -338,7 +340,7 @@ C  Perform R on each atomic center and determine where it maps to.
             IF (IPO(I,N) .EQ. 0) THEN
               IPO(I,N) = J
             ELSE
-              WRITE(6,300)
+              WRITE(WU,300)
               PROB = .TRUE.
               GOTO 120
   300         FORMAT('  ONE ATOM MAPS ONTO TWO DIFFERENT ATOMIC C',
@@ -347,7 +349,7 @@ C  Perform R on each atomic center and determine where it maps to.
           ENDIF
   100   CONTINUE
         IF (IPO(I,N) .EQ. 0)  THEN
-          WRITE(6,310)
+          WRITE(WU,310)
   310     FORMAT('  ONE ATOM MAPS ONTO NO OTHER ATOM ')
           PROB = .TRUE.
           GOTO 120
@@ -358,9 +360,9 @@ C  IF THIS POINT IS REACHED, THE FUNCTION IS VALID
 C  CHECK IF THE R MATRIX SHOULD BE PRINTED
 C
       IF (INDEX(KEYWRD,' RMAT') .NE. 0) THEN
-        WRITE(6,320)(R(I,N),I=1,3)
-        WRITE(6,330)N,(R(I,N),I=4,6)
-        WRITE(6,340)(R(I,N),I=7,9)
+        WRITE(WU,320)(R(I,N),I=1,3)
+        WRITE(WU,330)N,(R(I,N),I=4,6)
+        WRITE(WU,340)(R(I,N),I=7,9)
   320   FORMAT(/,10X,'| ',3F10.6,' |')
   330   FORMAT(I5,' =   | ',3F10.6,' |')
   340   FORMAT(10X,'| ',3F10.6,' |',/)
@@ -575,6 +577,8 @@ C
       COMMON /MOLKST/ NUMAT,NAT(NUMATM),NFIRST(NUMATM),NMIDLE(NUMATM),
      1                NLAST(NUMATM), NORBS, NELECS,NALPHA,NBETA,
      2                NCLOSE,NOPEN,NDUMY,FRACT
+      COMMON /OUTFIL/ WU
+      INTEGER WU
       CHARACTER KEYWRD*241
 C
       TOL=1.D-3
@@ -603,8 +607,8 @@ C
                T2(K+1,N) = T2(K+1,N) + T1(I)*V(I+K*NVAR)
    20    CONTINUE
    30 CONTINUE
-      WRITE(6,100)
-      WRITE(6,'(''                    '',7A9)')(ISYMT(I),I=1,NENT)
+      WRITE(WU,100)
+      WRITE(WU,'(''                    '',7A9)')(ISYMT(I),I=1,NENT)
   100 FORMAT('  FREQ.',/,'  NO.   FREQ.         CHARACTER TABLE ')
       I=1
       J=I+1
@@ -617,14 +621,14 @@ C
          J = J+1
       ELSE
          E(I)=E(I)/FLOAT(J-I)
-         WRITE(6,130)I,E(I),(T2(I,K),K=1,NENT)
+         WRITE(WU,130)I,E(I),(T2(I,K),K=1,NENT)
          I=J
          J=J+1
          EREF=E(I)
       ENDIF
       IF (J .LE. NVAR) GOTO 110
       E(I)=E(I)/FLOAT(J-I)
-      WRITE(6,130)I,E(I),(T2(I,K),K=1,NENT)
+      WRITE(WU,130)I,E(I),(T2(I,K),K=1,NENT)
   130 FORMAT(I4,F9.3,3X,7F9.4)
       END
       SUBROUTINE SYMT(H, DELDIP)
@@ -848,6 +852,8 @@ C
      2                NCLOSE,NOPEN,NDUMY,FRACT
       COMMON /COORD / COORD(3,NUMATM)
       COMMON /KEYWRD/ KEYWRD
+      COMMON /OUTFIL/ WU
+      INTEGER WU
       CHARACTER KEYWRD*241
 C  THE NEXT PARAMETERS ARE THE MAX NUMBER OF SYMM FUNCTIONS, THE 
 C     MAX NUMBER OF SYMM FUNCTIONS TO READ IN, AND THE
@@ -875,7 +881,7 @@ C
 C
 C  IF MORE INFORMATION IS WANTED, PRINT HEADDER.
 C
-      IF (INDEX(KEYWRD,' RMAT') .NE. 0)WRITE(6,100)
+      IF (INDEX(KEYWRD,' RMAT') .NE. 0)WRITE(WU,100)
  100  FORMAT(/,' ENTERING THE SYMMETRY GENERATING ROUTINE ',
      +/,'    NUMBER  SYMM. OPER.   * ',
      +   '   NUMBER  SYMM. OPER.   = ',
@@ -921,12 +927,12 @@ C     ALL DONE ADDING THE NEW FUNCTION.  GO TRY TO FIND A NEW ONE.
 C     BUT FIRST, SEE IF WE NEED TO PRINT THIS.
 C
       IF (INDEX(KEYWRD,' RMAT') .NE. 0) 
-     +   WRITE(6,110)I,OPER(R(1,I)),J,OPER(R(1,J)),NSYM,OPER(R(1,NSYM))
+     +   WRITE(WU,110)I,OPER(R(1,I)),J,OPER(R(1,J)),NSYM,OPER(R(1,NSYM))
  110  FORMAT(8X,I3,6X,A5,4X,'*',8X,I3,6X,A5,4X,'=',8X,I3,6X,A5)
       IF (INDEX(KEYWRD,' RMAT') .NE. 0) THEN
-        WRITE(6,120)(R(K,I),K=1,3),(R(K,J),K=1,3),(R(K,NSYM),K=1,3)
-        WRITE(6,130)(R(K,I),K=4,6),(R(K,J),K=4,6),(R(K,NSYM),K=4,6)
-        WRITE(6,140)(R(K,I),K=7,9),(R(K,J),K=7,9),(R(K,NSYM),K=7,9)
+        WRITE(WU,120)(R(K,I),K=1,3),(R(K,J),K=1,3),(R(K,NSYM),K=1,3)
+        WRITE(WU,130)(R(K,I),K=4,6),(R(K,J),K=4,6),(R(K,NSYM),K=4,6)
+        WRITE(WU,140)(R(K,I),K=7,9),(R(K,J),K=7,9),(R(K,NSYM),K=7,9)
  120    FORMAT(' |',3F7.3,' |   |',3F7.3,' |   |',3F7.3,' |')
  130    FORMAT(' |',3F7.3,' | * |',3F7.3,' | = |',3F7.3,' |')
  140    FORMAT(' |',3F7.3,' |   |',3F7.3,' |   |',3F7.3,' |',/)
@@ -939,24 +945,24 @@ C
 C
 C  NOW, TO DO FINAL WRAPUP
 C
-      WRITE(6,150)NSYM
+      WRITE(WU,150)NSYM
  150  FORMAT(/,' THERE ARE ',I3,' UNIQUE SYMMETRY FUNCTIONS.',/)
 C
 C  PRINT THE IPO MATRIX IF ASKED FOR.
 C
       IF(INDEX(KEYWRD,' IPO') .NE. 0) THEN
-        WRITE(6,160)
+        WRITE(WU,160)
  160  FORMAT(/,20X,'THE PERMUTATION MATRIX')
         I = 1
         J = MIN(12,NSYM)
-  60    WRITE(6,170)(K,K=I,J)
+  60    WRITE(WU,170)(K,K=I,J)
  170  FORMAT(/,/,5X,'OPER. NO. ',12I5)
-        WRITE(6,175)(OPER(R(1,K)),K=I,J)
+        WRITE(WU,175)(OPER(R(1,K)),K=I,J)
  175  FORMAT(5X,'SYMM. OPER. ',12A5)
-        WRITE(6,180)
+        WRITE(WU,180)
  180  FORMAT(5X,'ATOM NO.')
         DO 70 K = 1, NUMAT
-  70    WRITE(6,190)K,(IPO(K,L),L=I,J)
+  70    WRITE(WU,190)K,(IPO(K,L),L=I,J)
  190  FORMAT(I10,5X,12I5)
         IF (J .LT. NSYM) THEN
           I = J+1

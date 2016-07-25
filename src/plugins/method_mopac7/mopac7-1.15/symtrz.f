@@ -73,8 +73,10 @@ C***************************************************************
       COMMON/SYMRES/ TRANS,RTR,SIG,NAME,NAMO(MXDIM),INDEX(MXDIM),ISTA(2)
       CHARACTER*4  IFRA, NAME, ISTA, NAMO, NIMM
       COMMON /SYMINF/ IBASE(2,12),NBASE,IVIBRO(2,12),IVIB
+      COMMON /OUTFIL/ WU
+      INTEGER WU
       DATA IFRA / '????'  /
-      WRITE(6,'('' == symtrz.f SYMAN1 =='')')
+c      WRITE(WU,'('' == symtrz.f SYMAN1 =='')')
       IF(NUM1.LT.2) GOTO 12
       IF(NUM2.LT.2) GOTO 12
       IF(NUM1.GT.MXDIM) GOTO 12
@@ -96,7 +98,7 @@ C **  MOLECULAR SYMMETRY
  3    INDEX(I)=LINEAR(I)
       RETURN
  12   IERROR=1
-      WRITE(6,600)NUM1,NUM2
+      WRITE(WU,600)NUM1,NUM2
       RETURN
  600  FORMAT(' ILLEGAL SYMA - ARGUMENTS: NUM1 = ',I10,' NUM2 = ',I10)
       END
@@ -114,8 +116,10 @@ C
       COMMON/SYMRES/ TRANS,RTR,SIG,NAME,NAMO(MXDIM),INDEX(MXDIM),ISTA(2)
       CHARACTER*4  IFRA, NAME, ISTA, NAMO, NIMM
       COMMON /SYMINF/ IBASE(2,12),NBASE,IVIBRO(2,12),IVIB
+      COMMON /OUTFIL/ WU
+      INTEGER WU
       DATA IFRA / '????'  /
-      WRITE(6,'('' == symtrz.f SYMAN2 =='')')
+c      WRITE(WU,'('' == symtrz.f SYMAN2 =='')')
       IF(NUM1.LT.2) GOTO 12
       IF(NUM2.LT.2) GOTO 12
       IF(NUM1.GT.MXDIM) GOTO 12
@@ -157,7 +161,7 @@ C **  ORBITAL SYMMETRY
  10   NIMM(2,I)=NAMO(I)
       RETURN
  12   IERROR=1
-      WRITE(6,600)NUM1,NUM2
+      WRITE(WU,600)NUM1,NUM2
       RETURN
  600  FORMAT(' ILLEGAL SYMA - ARGUMENTS: NUM1 = ',I10,' NUM2 = ',I10)
       END
@@ -179,7 +183,7 @@ C
       DIMENSION RHELP(3,3)
       DIMENSION ICYC(6)
       DATA TOLER,BIG/ 0.1D0,1.D35 /
-      WRITE(6,'('' == symtrz.f R00001 =='')')
+c      WRITE(WU,'('' == symtrz.f R00001 =='')')
       DO 2 I=1,3
       DO 1 J=1,3
  1    CUB(I,J)=0.D0
@@ -341,7 +345,7 @@ C
       COMMON /S00002/ NUMAT,NORBS,NADIM,NCDIM,IQUAL,NDORBS,IERROR
       COMMON /S00004/ SHIFT(3),R(3,3),VECT(2,MXDIM)
       DIMENSION COORD(3,NUMATM)
-      WRITE(6,'('' == symtrz.f R00002 =='')')
+c      WRITE(WU,'('' == symtrz.f R00002 =='')')
       CALL R00005(COORD,-1)
       DO 1 K=1,3
       BUFF=-SINA*R(K,I)+COSA*R(K,J)
@@ -363,7 +367,7 @@ C
       DIMENSION COORD(3,NUMATM),NAT(NUMATM),WINK(2)
       DATA BIG,TOLER / 1.D35,0.1/
       DATA WINK(1),WINK(2)/ 0.955316618125D0, 0.6523581398D0        /
-      WRITE(6,'('' == symtrz.f R00003 =='')')
+c      WRITE(WU,'('' == symtrz.f R00003 =='')')
       GOTO (1,5),JUMP
  1    IELEM(19)=1
       INDEX=0
@@ -446,7 +450,7 @@ C
       INCLUDE 'SIZES'
       COMMON /S00003/ IELEM(20),ELEM(3,3,20),CUB(3,3),JELEM(20,NUMATM)
       DIMENSION HELP(3,3),FMAT(3,3)
-      WRITE(6,'('' == symtrz.f R00004 =='')')
+c      WRITE(WU,'('' == symtrz.f R00004 =='')')
       DO 1 I=1,3
       DO 1 J=1,3
       HELP(I,J)=0.D0
@@ -468,7 +472,7 @@ C
       COMMON /S00002/ NUMAT,NORBS,NADIM,NCDIM,IQUAL,NDORBS,IERROR
       COMMON /S00004/ SHIFT(3),R(3,3),VECT(2,MXDIM)
       DIMENSION COORD(3,NUMATM),HELP(3)
-      WRITE(6,'('' == symtrz.f R00005 =='')')
+c      WRITE(WU,'('' == symtrz.f R00005 =='')')
       IF(JUMP.LT.0) GOTO 3
       DO 2 I=1,NUMAT
       DO 1 J=1,3
@@ -516,7 +520,7 @@ C
       DATA J(1,19),J(2,19),J(3,19) /       5   ,    0   ,   -1     /
       DATA J(1,20),J(2,20),J(3,20) /       0   ,    0   ,   -1     /
       DATA TWOPI / 6.283185308D0 /
-      WRITE(6,'('' == symtrz.f R00006 =='')')
+c      WRITE(WU,'('' == symtrz.f R00006 =='')')
       DO 2 I=1,3
       DO 1 K=1,3
  1    ELEM(I,K,IPLACE)=0.
@@ -544,7 +548,7 @@ C
       COMMON /S00002/ NUMAT,NORBS,NADIM,NCDIM,IQUAL,NDORBS,IERROR
       COMMON /S00003/ IELEM(20),ELEM(3,3,20),CUB(3,3),JELEM(20,NUMATM)
       DATA TOLER / 0.01 D0/
-      WRITE(6,'('' == symtrz.f R00007 =='')')
+c      WRITE(WU,'('' == symtrz.f R00007 =='')')
       IRESUL=1
       IQUAL=0
       DO 2 I=1,NUMAT
@@ -942,7 +946,7 @@ C
      .3HSIU ,         1        ,         1        ,        -1          ,
      .3HPIU ,         2        ,         0        ,        -2          ,
      .3HDEU ,         2        ,        -2        ,        -2          /
-      WRITE(6,'('' == symtrz.f R00008 =='')')
+c      WRITE(WU,'('' == symtrz.f R00008 =='')')
       SIG=1.D0
       I=IGROUP
       IF(NCODE.LT.0) GOTO 2
@@ -1003,7 +1007,7 @@ C
       COMMON /S00003/ IELEM(20),ELEM(3,3,20),CUB(3,3),JELEM(20,NUMATM)
       COMMON /S00004/ SHIFT(3),R(3,3),VECT(2,MXDIM)
       DIMENSION HELP(3,3),NAT(NUMATM),COORD(3,NUMATM)
-      WRITE(6,'('' == symtrz.f R00009 =='')')
+c      WRITE(WU,'('' == symtrz.f R00009 =='')')
       DO 1 I=1,3
       DO 1 J=1,NUMAT
  1    COORD(I,J)=COORD(I,J)-SHIFT(I)
@@ -1060,7 +1064,7 @@ C ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
       INTEGER NAMES
       DATA TOLER,IFRA / 0.1, 0 /
 C
-      WRITE(6,'('' == symtrz.f R00010 =='')')
+c      WRITE(WU,'('' == symtrz.f R00010 =='')')
       NDORBS=0
       DO 1 I=1,I1
  1    ICOUNT(I)=0
@@ -1111,7 +1115,7 @@ C
       DIMENSION NTYPE(MXDIM),COEFF(NCDUM,NCDUM),E(3,3,20)
       DIMENSION H(5),P(3),D(5),IP(2,3),ID(2,5),LOC(2,50)
       EQUIVALENCE (ELEM(1,1,1),E(1,1,1))
-      WRITE(6,'('' == symtrz.f R00011 =='')')
+c      WRITE(WU,'('' == symtrz.f R00011 =='')')
       R00011=1.D0
       IF(IOPER.EQ.1) RETURN
       DO 1 I=1,NORBS
@@ -1223,7 +1227,7 @@ C
       COMMON /S00004/ SHIFT(3),R(3,3),VECT(2,MXDIM)
       DIMENSION D(5),H(5),T1(5,5,12),S(3,3)
       CHARACTER JX*4
-      WRITE(6,'('' == symtrz.f R00012 =='')')
+c      WRITE(WU,'('' == symtrz.f R00012 =='')')
       IF(NDORBS.GT.0) GOTO 4
       NDORBS=1
       DO 1 I=1,3
@@ -1255,7 +1259,7 @@ C
       LOGICAL RIGHT
       DATA PI,TOL,S12 / 3.1415926536D0 ,0.001D0,3.46410161513D0 /
       DATA S3,ONE     / 1.73205080756D0 , 1.D0 /
-      WRITE(6,'('' == symtrz.f R00013 =='')')
+c      WRITE(WU,'('' == symtrz.f R00013 =='')')
       R1=R(2,1)*R(3,2)-R(3,1)*R(2,2)
       R2=R(3,1)*R(1,2)-R(1,1)*R(3,2)
       R3=R(1,1)*R(2,2)-R(2,1)*R(1,2)
@@ -1349,7 +1353,7 @@ C
       IMPLICIT DOUBLE PRECISION (A-H,O-Z)
       DIMENSION F(6),A(3,3),V(3,3),EW(3)
       DATA TOLER /1.E-6 /
-      WRITE(6,'('' == symtrz.f R00015 =='')')
+c      WRITE(WU,'('' == symtrz.f R00015 =='')')
       N=3
       IJ=0
       DO 2 J=1,N
@@ -1448,7 +1452,7 @@ C
       COMMON /SYMINF/ IBASE(2,12),NBASE,IVIBRO(2,12),IVIB
       COMMON/SYMRES/TRANS,RTR,SIG,NAME,NAMO(MXDIM),INDEX(MXDIM),ISTA(2)
       DIMENSION CHAR(12),COEFF(12)
-      WRITE(6,'('' == symtrz.f R00016 =='')')
+c      WRITE(WU,'('' == symtrz.f R00016 =='')')
       IVIBRA=3*NUMAT-6
       IF(LINA.GT.0) GOTO 8
       CHAR(1)=IVIBRA

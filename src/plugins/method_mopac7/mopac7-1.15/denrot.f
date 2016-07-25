@@ -8,12 +8,15 @@
      2                NCLOSE,NOPEN,NDUMY,FRACT
       COMMON /ELEMTS/ ELEMNT(107)
       COMMON /SCRACH/ B(MAXORB*MAXORB), BONDAB(MAXPAR**2-MAXORB*MAXORB)
+      COMMON /OUTFIL/ WU
+
 ************************************************************************
 *
 * DENROT PRINTS THE DENSITY MATRIX AS (S-SIGMA, P-SIGMA, P-PI) RATHER
 *        THAN (S, PX, PY, PZ).
 *
 ************************************************************************
+      INTEGER WU
       DIMENSION AROT(9,9), C(3,5,5), PAB(9,9), VECT(9,9)
       DIMENSION NATOM(MAXORB)
       DIMENSION XYZ(3,NUMATM), IROT(5,35), ISP(9)
@@ -137,22 +140,22 @@ C
       M=MIN0((IPRT+1-NA),6)
       MA=2*M+1
       M=NA+M-1
-      WRITE(6,'(/16X,10(1X,A7,3X))')(ITEXT(I),I=NA,M)
-      WRITE(6,'(15X,10(2X,A2,I3,4X))')(JTEXT(I),NATOM(I),I=NA,M)
-      WRITE (6,'(20A6)') (LINE(K),K=1,MA)
+      WRITE(WU,'(/16X,10(1X,A7,3X))')(ITEXT(I),I=NA,M)
+      WRITE(WU,'(15X,10(2X,A2,I3,4X))')(JTEXT(I),NATOM(I),I=NA,M)
+      WRITE(WU,'(20A6)') (LINE(K),K=1,MA)
       DO 200 I=NA,IPRT
          LL=LL+1
          K=(I*(I-1))/2
          L=MIN0((K+M),(K+I))
          K=K+NA
          IF ((KK+LL).LE.50) GO TO 190
-         WRITE (6,'(''1'')')
-         WRITE(6,'(/17X,10(1X,A7,3X))')(ITEXT(N),N=NA,M)
-         WRITE(6,'( 17X,10(2X,A2,I3,4X))')(JTEXT(N),NATOM(N),N=NA,M)
-         WRITE (6,'(20A6)') (LINE(N),N=1,MA)
+         WRITE(WU,'(''1'')')
+         WRITE(WU,'(/17X,10(1X,A7,3X))')(ITEXT(N),N=NA,M)
+         WRITE(WU,'( 17X,10(2X,A2,I3,4X))')(JTEXT(N),NATOM(N),N=NA,M)
+         WRITE(WU,'(20A6)') (LINE(N),N=1,MA)
          KK=4
          LL=0
-  190    WRITE (6,'(1X,A7,1X,A2,I3,10F11.6)')
+  190    WRITE(WU,'(1X,A7,1X,A2,I3,10F11.6)')
      1   ITEXT(I),JTEXT(I),NATOM(I),(B(N),N=K,L)
   200 CONTINUE
       IF (L.GE.LIMIT) GO TO 210
@@ -160,7 +163,7 @@ C
       NA=M+1
       IF ((KK+IPRT+1-NA).LE.50) GO TO 180
       KK=4
-      WRITE (6,'(''1'')')
+      WRITE(WU,'(''1'')')
       GO TO 180
   210 RETURN
       END

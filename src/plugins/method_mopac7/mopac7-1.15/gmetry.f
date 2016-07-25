@@ -7,6 +7,8 @@
       COMMON /REACTN/ STEP, GEOA(3,NUMATM), GEOVEC(3,NUMATM),COLCST
       COMMON /GEOOK/ IGEOOK
       COMMON /NUMCAL/ NUMCAL
+      COMMON /OUTFIL/ WU
+      INTEGER WU
       DIMENSION GEO(3,*),COORD(3,*)
       CHARACTER *15 NDIMEN(4)
       LOGICAL GEOOK
@@ -91,9 +93,9 @@ C                                     OPTION (C)
 C
 C     TWO ATOMS ARE COINCIDENT.  A FATAL ERROR.
 C
-            WRITE(6,'(A,I4,A,I4,A)')' ATOMS',MB,' AND',MC,' ARE COINCIDE
+            WRITE(WU,'(A,I4,A,I4,A)')' ATOMS',MB,' AND',MC,' ARE COINCIDE
      1NT'
-            WRITE(6,'(A)')' THIS IS A FATAL ERROR, RUN STOPPED IN GMETRY
+            WRITE(WU,'(A)')' THIS IS A FATAL ERROR, RUN STOPPED IN GMETRY
      1'
             STOP
          ELSE
@@ -134,21 +136,21 @@ C
          YZA=SQRT(YPA**2+ZQA**2)
          IF(YZA.LT.1.D-4)GOTO 60
          IF(YZA.LT.2.D-2 .AND. .NOT.GEOOK)THEN
-            WRITE(6,'(//20X,'' CALCULATION ABANDONED AT THIS POINT'')')
-            WRITE(6,'(//10X,'' THREE ATOMS BEING USED TO DEFINE THE'',/
+            WRITE(WU,'(//20X,'' CALCULATION ABANDONED AT THIS POINT'')')
+            WRITE(WU,'(//10X,'' THREE ATOMS BEING USED TO DEFINE THE'',/
      110X,'' COORDINATES OF A FOURTH ATOM, WHOSE BOND-ANGLE IS'')')
-            WRITE(6,'(10X,'' NOT ZERO OR 180 DEGREEES, ARE '',
+            WRITE(WU,'(10X,'' NOT ZERO OR 180 DEGREEES, ARE '',
      1''IN AN ALMOST STRAIGHT'')')
-            WRITE(6,'(10X,'' LINE.  THERE IS A HIGH PROBABILITY THAT THE
+            WRITE(WU,'(10X,'' LINE.  THERE IS A HIGH PROBABILITY THAT THE
      1'',/10X,'' COORDINATES OF THE ATOM WILL BE INCORRECT.'')')
-            WRITE(6,'(//20X,''THE FAULTY ATOM IS ATOM NUMBER'',I4)')I
+            WRITE(WU,'(//20X,''THE FAULTY ATOM IS ATOM NUMBER'',I4)')I
             CALL GEOUT(1)
-            WRITE(6,'(//20X,''CARTESIAN COORDINATES UP TO FAULTY ATOM'')
+           WRITE(WU,'(//20X,''CARTESIAN COORDINATES UP TO FAULTY ATOM'')
      1')
-            WRITE(6,'(//5X,''I'',12X,''X'',12X,''Y'',12X,''Z'')')
+            WRITE(WU,'(//5X,''I'',12X,''X'',12X,''Y'',12X,''Z'')')
             DO 50 J=1,I
-   50       WRITE(6,'(I6,F16.5,2F13.5)')J,(COORD(K,J),K=1,3)
-            WRITE(6,'(//6X,'' ATOMS'',I3,'','',I3,'', AND'',I3,
+   50       WRITE(WU,'(I6,F16.5,2F13.5)')J,(COORD(K,J),K=1,3)
+            WRITE(WU,'(//6X,'' ATOMS'',I3,'','',I3,'', AND'',I3,
      1'' ARE WITHIN'',F7.4,'' ANGSTROMS OF A STRAIGHT LINE'')')
      2MC,MB,MA,YZA
             STOP
@@ -215,11 +217,11 @@ C
       ID=L
       IF (ICALCN.NE.NUMCAL) THEN
          ICALCN=NUMCAL
-         WRITE(6,140)NDIMEN(ID+1)
+         WRITE(WU,140)NDIMEN(ID+1)
   140    FORMAT(/10X,'    THE SYSTEM IS A ',A15,/)
          IF(ID.EQ.0) GOTO 170
-         WRITE(6,150)
-         WRITE(6,160)(I,(TVEC(J,I),J=1,3),I=1,ID)
+         WRITE(WU,150)
+         WRITE(WU,160)(I,(TVEC(J,I),J=1,3),I=1,ID)
   150    FORMAT(/,'                UNIT CELL TRANSLATION VECTORS',/
      1/,'              X              Y              Z')
   160    FORMAT('    T',I1,' = ',F11.7,'    ',F11.7,'    ',F11.7)

@@ -74,6 +74,8 @@ C
      1NA(NUMATM),NB(NUMATM),NC(NUMATM)
       COMMON /GEOSYM/ NDEP, LOCPAR(MAXPAR), IDEPFN(MAXPAR),
      1                      LOCDEP(MAXPAR)
+      COMMON /OUTFIL/ WU
+      INTEGER WU
       LOGICAL INT, AIGEO, ISOK
       SAVE SPACE, SPACE2, IREACT, INT
       DIMENSION COORD(3,NUMATM),VALUE(40),C(1)
@@ -104,7 +106,7 @@ C
 !             J=1
 !    30       DO 40 K=1,J
 !    40       IF(ICHAR(KEYWRD(K:K)).LT.32)KEYWRD(K:K)='*'
-!             WRITE(6,'(1X,A)')KEYWRD(1:J)
+!             WRITE(WU,'(1X,A)')KEYWRD(1:J)
 !    50    CONTINUE
 !    60    CONTINUE
 !          REWIND 5
@@ -114,7 +116,7 @@ C
 !         ENDIF
 !       ENDIF
       write(0,*) "NOW HERE1"
-      IF(INDEX(KEYWRD,'ECHO').NE.0)WRITE(6,'(''1'')')
+      IF(INDEX(KEYWRD,'ECHO').NE.0)WRITE(WU,'(''1'')')
       IF(KEYWRD(1:1) .NE. SPACE) THEN
          CH=KEYWRD(1:1)
          KEYWRD(1:1)=SPACE
@@ -194,9 +196,9 @@ C
             IF(NATOMS.LT.0)THEN
                REWIND 5
                IF(NUMCAL.NE.1)THEN
-                  WRITE(6,'(//,A)')'   GAUSSIAN INPUT REQUIRES STAND-ALO
+                  WRITE(WU,'(//,A)')'   GAUSSIAN INPUT REQUIRES STAND-ALO
      1NE JOB'
-                  WRITE(6,'(/,A)')'   OR KEYWORD "AIGIN"'
+                  WRITE(WU,'(/,A)')'   OR KEYWORD "AIGIN"'
                   READMO = .FALSE.
                   RETURN
                ENDIF
@@ -232,8 +234,8 @@ C
       IF(INDEX(KEYWRD,'FORCE').NE.0 .AND. LABELS(NATOMS).EQ.107) THEN
       DO 131 I=1,NA(NATOMS)
       IF(LABELS(I).EQ.99)THEN
-      WRITE(6,'(A)')' NO DUMMY ATOMS ALLOWED BEFORE TRANSLATION'
-      WRITE(6,'(A)')' ATOM IN A FORCE CALCULATION'
+      WRITE(WU,'(A)')' NO DUMMY ATOMS ALLOWED BEFORE TRANSLATION'
+      WRITE(WU,'(A)')' ATOM IN A FORCE CALCULATION'
       READMO = .FALSE.
       RETURN
       ENDIF
@@ -250,24 +252,24 @@ C    WRITE HEADER
       write(idate,'("at: ",a,":",a,":",a," on ",a,"-",a,"-",a)') 
      +mytime(1:2),mytime(3:4),mytime(5:10)
      +,mydate(7:8),mydate(5:6),mydate(1:4)
-      WRITE(6,'(1X,15(''*****''),''****'')')
+      WRITE(WU,'(1X,15(''*****''),''****'')')
 C
 C     CHANGE THE FOLLOWING LINE TO SUIT LOCAL ENVIRONMENT, IF DESIRED
 C
       BANNER=' **  OpenMOPAC v7.15 (PUBLIC DOMAIN VERSION) '//
      1' PLUGIN FOR ATEN, TGAY, 07-2016  **'
-      WRITE(6,'(A)')BANNER
+      WRITE(WU,'(A)')BANNER
 C
 C    THE BANNER DOES NOT APPEAR ANYWHERE ELSE.
 C
-      WRITE(6,'(1X,79(''*''))')
+      WRITE(WU,'(1X,79(''*''))')
       LINE='   MNDO'
       IF(INDEX(KEYWRD,'MINDO') .NE. 0) LINE='MINDO/3'
       IF(INDEX(KEYWRD,'AM1')   .NE. 0) LINE='    AM1'
       IF(INDEX(KEYWRD,'PM3')   .NE. 0) LINE='    PM3'
-      WRITE(6,'(/29X,A,'' CALCULATION RESULTS'',28X,///1X,15(''*****'')
+      WRITE(WU,'(/29X,A,'' CALCULATION RESULTS'',28X,///1X,15(''*****'')
      1,''****'' )')LINE(:7)
-      WRITE(6,'('' *'',6X,''MOPAC:  VERSION '',F5.2,
+      WRITE(WU,'('' *'',6X,''MOPAC:  VERSION '',F5.2,
      113X,''CALC''''D. '',A)') VERSON, IDATE
 C
 C CONVERT ANGLES TO RADIANS
@@ -284,11 +286,11 @@ C
       NC(1)=0
       DO 150 I=1,NATOMS
          IF (LABELS(I) .LE. 0 ) THEN
-            WRITE(6,'('' ATOMIC NUMBER OF '',I3,'' ?'')') LABELS(I)
+            WRITE(WU,'('' ATOMIC NUMBER OF '',I3,'' ?'')') LABELS(I)
             IF(I.EQ.1) THEN
-               WRITE(6,'(A)')' THIS WAS THE FIRST ATOM'
+               WRITE(WU,'(A)')' THIS WAS THE FIRST ATOM'
             ELSE
-               WRITE(6,'(A)')'    GEOMETRY UP TO, BUT NOT INCLUDING, THE
+               WRITE(WU,'(A)')'    GEOMETRY UP TO, BUT NOT INCLUDING, THE
      1'//' FAULTY ATOM'
                NATOMS=I-1
                CALL GEOUT(6)
@@ -300,12 +302,12 @@ C
      1  .OR. (NA(I).EQ.NB(I))   .AND. I.GT.1
      2  .OR. (NA(I).EQ.NC(I).OR.NB(I).EQ.NC(I))  .AND. I.GT.2
      3  .OR.  NA(I)*NB(I)*NC(I).EQ.0  .AND. I.GT.3) THEN
-            WRITE(6,'('' ATOM NUMBER '',I3,'' IS ILL-DEFINED'')') I
+            WRITE(WU,'('' ATOM NUMBER '',I3,'' IS ILL-DEFINED'')') I
             IF(I.EQ.1) THEN
               READMO = .FALSE.
               RETURN
             ENDIF
-            WRITE(6,'(/,''  GEOMETRY READ IN'',/)')
+            WRITE(WU,'(/,''  GEOMETRY READ IN'',/)')
             CALL GEOUT(6)
             READMO = .FALSE.
             RETURN
@@ -314,7 +316,7 @@ C
 C
 C WRITE KEYWORDS BACK TO USER AS FEEDBACK
       CALL WRTKEY(KEYWRD)
-      WRITE(6,'(1X,14(''*****''),''*'',I3.3,''BY'',I3.3)')MAXHEV,MAXLIT
+      WRITE(WU,'(1X,14(''*****''),''*'',I3.3,''BY'',I3.3)')MAXHEV,MAXLIT
 C
 C FILL IN GEO MATRIX IF NEEDED
       IF(INDEX(KEYWRD,'OLDGEO').EQ.0.AND.INDEX(KEYWRD,'SYM') .NE. 0
@@ -344,7 +346,7 @@ C    FLAG FOR PATH
                      IFLAG=0
                      GOTO 180
                   ELSE
-                     WRITE(6,'('' ONLY ONE REACTION COORDINATE PERMITTED
+                     WRITE(WU,'('' ONLY ONE REACTION COORDINATE PERMITTED
      1'')')
                      READMO = .FALSE.
                      RETURN
@@ -367,13 +369,13 @@ C    FLAG FOR OPTIMIZE
 C READ IN PATH VALUES
       IF(IFLAG.EQ.0) GO TO 220
       IF(INDEX(KEYWRD,'NLLSQ').NE.0)THEN
-         WRITE(6,'(A)')' NLLSQ USED WITH REACTION PATH; '//
+         WRITE(WU,'(A)')' NLLSQ USED WITH REACTION PATH; '//
      1'THIS OPTION IS NOT ALLOWED'
          READMO = .FALSE.
          RETURN
       ENDIF
       IF(INDEX(KEYWRD,'SIGMA').NE.0)THEN
-         WRITE(6,'(A)')' SIGMA USED WITH REACTION PATH; '//
+         WRITE(WU,'(A)')' SIGMA USED WITH REACTION PATH; '//
      1'THIS OPTION IS NOT ALLOWED'
          READMO = .FALSE.
          RETURN
@@ -382,13 +384,13 @@ C READ IN PATH VALUES
          STEP=READA(KEYWRD,INDEX(KEYWRD,'STEP=')+5)
          NPTS=READA(KEYWRD,INDEX(KEYWRD,'POINT=')+6)
          IF(NPTS.GT.200)THEN
-            WRITE(6,'(///,''    ONLY TWO HUNDRED POINTS ALLOWED IN REACT
+            WRITE(WU,'(///,''    ONLY TWO HUNDRED POINTS ALLOWED IN REACT
      1'',''ION COORDINATE'')')
             READMO = .FALSE.
             RETURN
          ENDIF
          IF(LPARAM.EQ.1.AND.STEP.LE.0)THEN
-            WRITE(6,'(///,''    STEP FOR BOND LENGTH SHOULD BE SET POSIT
+            WRITE(WU,'(///,''    STEP FOR BOND LENGTH SHOULD BE SET POSIT
      1IVE '',''TO PREVENT TWO ATOMS COLLAPSE'')')
             READMO = .FALSE.
             RETURN
@@ -401,7 +403,7 @@ C READ IN PATH VALUES
       DO 200 I=1,NREACT
          IJ=IREACT+I
          IF(IJ.GT.200)THEN
-            WRITE(6,'(///,''    ONLY TWO HUNDRED POINTS ALLOWED IN REACT
+           WRITE(WU,'(///,''    ONLY TWO HUNDRED POINTS ALLOWED IN REACT
      1ION'','' COORDINATE'')')
             READMO = .FALSE.
             RETURN
@@ -410,7 +412,7 @@ C READ IN PATH VALUES
          IF(ABS(REACT(IJ)-REACT(IJ-1)).LT.1.D-5)THEN
             DUM1 = REACT(IJ)/CONVRT
             DUM2 = REACT(IJ-1)/CONVRT
-            WRITE(6,'(///,'' TWO ADJACENT POINTS ARE IDENTICAL:  '',
+            WRITE(WU,'(///,'' TWO ADJACENT POINTS ARE IDENTICAL:  '',
      1 F7.3,2X,F7.3,/,'' THIS IS NOT ALLOWED IN A PATH CALCULATION'')')
      2 DUM1,DUM2
             READMO = .FALSE.
@@ -423,21 +425,21 @@ C READ IN PATH VALUES
       DEGREE=1.D0
       IF(LPARAM.GT.1)DEGREE=90.D0/ASIN(1.D0)
       IF(IREACT.LE.1) THEN
-         WRITE(6,'(//10X,'' NO POINTS SUPPLIED FOR REACTION PATH'')')
-         WRITE(6,'(//10X,'' GEOMETRY AS READ IN IS AS FOLLOWS'')')
+         WRITE(WU,'(//10X,'' NO POINTS SUPPLIED FOR REACTION PATH'')')
+         WRITE(WU,'(//10X,'' GEOMETRY AS READ IN IS AS FOLLOWS'')')
          CALL GEOUT(1)
          READMO = .FALSE.
          RETURN
       ELSE
-         WRITE(6,'(//10X,'' POINTS ON REACTION COORDINATE'')')
-         WRITE(6,'(10X,8F8.2)')(REACT(I)*DEGREE,I=1,IREACT)
+         WRITE(WU,'(//10X,'' POINTS ON REACTION COORDINATE'')')
+         WRITE(WU,'(10X,8F8.2)')(REACT(I)*DEGREE,I=1,IREACT)
       ENDIF
       IEND=IREACT+1
       REACT(IEND)=-1.D12
 C
 C OUTPUT GEOMETRY AS FEEDBACK
 C
-  220 CALL WRTTXT(6)
+  220 CALL WRTTXT(WU)
       IF(INDEX(KEYWRD,'NOLOG').EQ.0)THEN
 !         OPEN(UNIT=11, FORM='FORMATTED', STATUS='UNKNOWN',
 !     +FILE=GETNAM('FOR011'))
@@ -454,25 +456,25 @@ C
 C
 C  WRITE OUT CARTESIAN COORDINATES FOR USE AS A DATA-SET
 C
-            WRITE(6,'(A)')'   GEOMETRY IN CARTESIAN COORDINATE FORMAT'
-            CALL WRTTXT(6)
+            WRITE(WU,'(A)')'   GEOMETRY IN CARTESIAN COORDINATE FORMAT'
+            CALL WRTTXT(WU)
             J=0
             DO 230 I=1,NATOMS
                IF(LABELS(I).NE.99)THEN
                   J=J+1
-                  WRITE(6,'(2X,A,3(F19.13,I3))')
+                  WRITE(WU,'(2X,A,3(F19.13,I3))')
      1    ELEMNT(LABELS(I)),(COORD(K,J),1,K=1,3)
                ENDIF
   230       CONTINUE
          ELSE
-            WRITE(6,'(//10X,''CARTESIAN COORDINATES '',/)')
-            WRITE(6,'(4X,''NO.'',7X,''ATOM'',9X,''X'',
+            WRITE(WU,'(//10X,''CARTESIAN COORDINATES '',/)')
+            WRITE(WU,'(4X,''NO.'',7X,''ATOM'',9X,''X'',
      1  9X,''Y'',9X,''Z'',/)')
             L=0
             DO 240 I=1,NATOMS
                IF(LABELS(I) .EQ. 99.OR.LABELS(I).EQ.107) GOTO 240
                L=L+1
-               WRITE(6,'(I6,8X,A2,4X,3F10.4)')
+               WRITE(WU,'(I6,8X,A2,4X,3F10.4)')
      1  L,ELEMNT(LABELS(I)),(COORD(J,L),J=1,3)
   240       CONTINUE
          ENDIF
@@ -481,19 +483,19 @@ C
 C    C is not actually used in this call.
 C
       CALL SYMTRZ(COORD,C,NORBS,NORBS,.FALSE.,.FALSE.)
-      WRITE(6,'(//''     MOLECULAR POINT GROUP   :   '',A4)') NAME
+      WRITE(WU,'(//''     MOLECULAR POINT GROUP   :   '',A4)') NAME
       IF(   INDEX(KEYWRD,' XYZ') .NE. 0 )THEN
          IF( NVAR .NE. 0 .AND.
      1 INT.AND.(NDEP .NE. 0 .OR.  NVAR.LT.3*NUMAT-6)) THEN
             IF(NDEP.NE.0)
-     1WRITE(6,'(//10X,'' INTERNAL COORDINATES READ IN, AND SYMMETRY''
+     1WRITE(WU,'(//10X,'' INTERNAL COORDINATES READ IN, AND SYMMETRY''
      2,/10X,'' SPECIFIED, BUT CALCULATION TO BE RUN IN CARTESIAN ''
      3,''COORDINATES'')')
             IF(NVAR.LT.3*NUMAT-6)
-     1WRITE(6,'(//10X,'' INTERNAL COORDINATES READ IN, AND'',
+     1WRITE(WU,'(//10X,'' INTERNAL COORDINATES READ IN, AND'',
      2'' CALCULATION '',/10X,''TO BE RUN IN CARTESIAN COORDINATES, '',
      3/10X,''BUT NOT ALL COORDINATES MARKED FOR OPTIMISATION'')')
-            WRITE(6,'(//10X,'' THIS INVOLVES A LOGICALLLY ABSURD CHOICE'
+           WRITE(WU,'(//10X,'' THIS INVOLVES A LOGICALLLY ABSURD CHOICE'
      1',/10X,'' SO THE CALCULATION IS TERMINATED AT THIS POINT'')')
             READMO = .FALSE.
             RETURN
@@ -538,17 +540,17 @@ C
          IF(NVAR.EQ.0) RETURN
          IF( .NOT. INT.AND.(NDEP .NE. 0 .OR.  NVAR.LT.3*NUMAT-6)) THEN
             IF(NDEP.NE.0)
-     1WRITE(6,'(//10X,'' CARTESIAN COORDINATES READ IN, AND SYMMETRY''
+     1WRITE(WU,'(//10X,'' CARTESIAN COORDINATES READ IN, AND SYMMETRY''
      2,/10X,'' SPECIFIED, BUT CALCULATION TO BE RUN IN INTERNAL ''
      3,''COORDINATES'')')
             IF(NVAR.LT.3*NUMAT-6)
-     1WRITE(6,'(//10X,'' CARTESIAN COORDINATES READ IN, AND'',
+     1WRITE(WU,'(//10X,'' CARTESIAN COORDINATES READ IN, AND'',
      2'' CALCULATION '',/10X,''TO BE RUN IN INTERNAL COORDINATES, '',
      3/10X,''BUT NOT ALL COORDINATES MARKED FOR OPTIMISATION'')')
-            WRITE(6,'(//10X,''MOPAC, BY DEFAULT, USES INTERNAL COORDINAT
+            WRITE(WU,'(//10X,''MOPAC, BY DEFAULT, USES INTERNAL COORDINAT
      1ES'',/10X,''TO SPECIFY CARTESIAN COORDINATES USE KEY-WORD :XYZ:'')
      2')
-            WRITE(6,'(10X,''YOUR CURRENT CHOICE OF KEY-WORDS INVOLVES''
+            WRITE(WU,'(10X,''YOUR CURRENT CHOICE OF KEY-WORDS INVOLVES''
      1,'' A LOGICALLLY'',/10X,''ABSURD CHOICE SO THE CALCULATION IS'',
      2'' TERMINATED AT THIS POINT'')')
             READMO = .FALSE.

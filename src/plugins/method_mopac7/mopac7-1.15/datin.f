@@ -10,6 +10,8 @@
      3                NCLOSE,NOPEN,NDUMY,FRACT
       COMMON /ATOMIC/ EISOL(107),EHEAT(107)
       COMMON /KEYWRD/ KEYWRD
+      COMMON /OUTFIL/ WU
+      INTEGER WU
       DIMENSION  IJPARS(5,1000), PARSIJ(1000)
       SAVE NUMBRS, PARTYP, ELEMNT
       DATA NUMBRS/' ','1','2','3','4','5','6','7','8','9'/
@@ -32,7 +34,7 @@
       I=INDEX(KEYWRD,'EXTERNAL=')+9
       J=INDEX(KEYWRD(I:),' ')+I-1
       FILES=GETNAM(KEYWRD(I:J))
-      WRITE(6,'(//5X,'' PARAMETER TYPE      ELEMENT    PARAMETER'')')
+      WRITE(WU,'(//5X,'' PARAMETER TYPE      ELEMENT    PARAMETER'')')
       OPEN(14,STATUS='UNKNOWN',FILE=FILES)
       I=0
       NPARAS=0
@@ -60,9 +62,9 @@
          ENDIF
          IF(INDEX(TEXT,PARTYP(J)) .NE. 0) GOTO 40
    30 CONTINUE
-      WRITE(6,'(''  FAULTY LINE:'',A)')TXTNEW
-      WRITE(6,'(''  FAULTY LINE:'',A)')TEXT
-      WRITE(6,'(''   NAME NOT FOUND'')')
+      WRITE(WU,'(''  FAULTY LINE:'',A)')TXTNEW
+      WRITE(WU,'(''  FAULTY LINE:'',A)')TEXT
+      WRITE(WU,'(''   NAME NOT FOUND'')')
       STOP
    40 IPARAM=J
       IF(IPARAM.GT.21) THEN
@@ -77,8 +79,8 @@
       TEXT=DUMMY
       DO 50 J=1,107
    50 IF(INDEX(TEXT,' '//ELEMNT(J)) .NE. 0) GOTO 60
-      WRITE(6,'('' ELEMENT NOT FOUND '')')
-      WRITE(6,*)' FAULTY LINE: "'//TEXT//'"'
+      WRITE(WU,'('' ELEMENT NOT FOUND '')')
+      WRITE(WU,*)' FAULTY LINE: "'//TEXT//'"'
       STOP
    60 IELMNT=J
       PARAM=READA(TEXT,INDEX(TEXT,ELEMNT(J)))
@@ -95,7 +97,7 @@
       GOTO 10
    90 CONTINUE
       IF(NPARAS.EQ.0)THEN
-         WRITE(6,'(//10X,A)')' EXTERNAL PARAMETERS FILE MISSING OR EMPTY
+         WRITE(WU,'(//10X,A)')' EXTERNAL PARAMETERS FILE MISSING OR EMPTY
      1'
          STOP
       ENDIF
@@ -110,11 +112,11 @@
                IF(IELMNT.NE.J) GOTO 100
                PARAM=PARSIJ(I)
                IF(KFN.NE.0)THEN
-                  WRITE(6,'(10X,A6,11X,A2,F17.6)')
+                  WRITE(WU,'(10X,A6,11X,A2,F17.6)')
      1PARTYP(IPARAM)(:3)//NUMBRS(KFN)//'  ',
      2ELEMNT(IELMNT),PARAM
                ELSE
-                  WRITE(6,'(10X,A6,11X,A2,F17.6)')
+                  WRITE(WU,'(10X,A6,11X,A2,F17.6)')
      1PARTYP(IPARAM)//NUMBRS(KFN),
      2ELEMNT(IELMNT),PARAM
                ENDIF

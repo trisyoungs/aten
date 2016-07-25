@@ -78,7 +78,7 @@ C
       ENDIF
       SUM1=SUM0
       IF(SUM2.GT.1.D-3.AND.ABS(SUM-1.D0).GT.1.D-5)THEN
-C#      WRITE(6,'(6F12.6)')(P((I*(I+1))/2),I=1,NORBS)
+C#      WRITE(WU,'(6F12.6)')(P((I*(I+1))/2),I=1,NORBS)
          SUM2=0.D0
          DO 70 I=1,NORBS
             J=(I*(I+1))/2
