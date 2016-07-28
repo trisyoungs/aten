@@ -33,6 +33,7 @@ TExponentialSpin::TExponentialSpin(QWidget* parent) : QAbstractSpinBox(parent)
 	valueStep_ = 1.0;
 	limitMinValue_ = false;
 	limitMaxValue_ = false;
+	textChanged_ = false;
 
 	// Set validator
 	QRegExp regExp("[-+]?[0-9]*[.]?[0-9]+([eE][-+]?[0-9]+)?");
@@ -73,7 +74,7 @@ void TExponentialSpin::updateText(int precision)
 {
 // 	printf("Here we are in updateText, setting [%s].\n", qPrintable(value_.text(precision)));
 	lineEdit()->setText(value_.text(precision));
-	textChanged_ = true;
+	textChanged_ = false;
 }
 
 // Return double value
