@@ -99,25 +99,25 @@ target_include_directories(dlp4 PRIVATE
 # -------------
 # DL_POLY FIELD
 # -------------
-set(field_MOC_HDRS
+set(dlpfield_MOC_HDRS
   field.hui
 )
-QT5_WRAP_CPP(field_MOC_SRCS ${field_MOC_HDRS} OPTIONS -I${PROJECT_SOURCE_DIR}/src)
+QT5_WRAP_CPP(dlpfield_MOC_SRCS ${dlpfield_MOC_HDRS} OPTIONS -I${PROJECT_SOURCE_DIR}/src)
 
-#SET(field_UIS
+#SET(dlpfield_UIS
 #)
-#QT5_WRAP_UI(field_UIS_H ${field_UIS})
+#QT5_WRAP_UI(dlpfield_UIS_H ${dlpfield_UIS})
 
-add_library(field MODULE
+add_library(dlpfield MODULE
   field_funcs.cpp
   common.cpp
-  ${field_MOC_SRCS}
-#  ${field_UIS_H}
+  ${dlpfield_MOC_SRCS}
+#  ${dlpfield_UIS_H}
 )
-target_link_libraries(field
+target_link_libraries(dlpfield
   ${PLUGIN_LINK_LIBS}
 )
-set_target_properties(field PROPERTIES
+set_target_properties(dlpfield PROPERTIES
    LIBRARY_OUTPUT_DIRECTORY ${Aten_BINARY_DIR}/data/plugins
    COMPILE_DEFINITIONS "QT_PLUGIN"
    PREFIX ""
@@ -125,17 +125,53 @@ set_target_properties(field PROPERTIES
 
 # Install Targets
 if(UNIX AND NOT APPLE)
-install(TARGETS field
+install(TARGETS dlpfield
     RUNTIME DESTINATION ${CMAKE_INSTALL_LIBDIR}/aten/plugins COMPONENT RuntimePlugins
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}/aten/plugins COMPONENT RuntimePlugins
 )
 endif(UNIX AND NOT APPLE)
 
 # Includes
-target_include_directories(field PRIVATE
+target_include_directories(dlpfield PRIVATE
   ${PROJECT_SOURCE_DIR}/src
   ${PROJECT_BINARY_DIR}/src
   ${Qt5Core_INCLUDE_DIRS}
   ${Qt5Gui_INCLUDE_DIRS}
 )
 
+# -------------
+# DL_POLY_4 HISTORY
+# -------------
+set(history4_MOC_HDRS
+  history4.hui
+)
+QT5_WRAP_CPP(history4_MOC_SRCS ${history4_MOC_HDRS} OPTIONS -I${PROJECT_SOURCE_DIR}/src)
+
+add_library(dlp4history MODULE
+  history4_funcs.cpp
+  common.cpp
+  ${history4_MOC_SRCS}
+)
+target_link_libraries(dlp4history
+  ${PLUGIN_LINK_LIBS}
+)
+set_target_properties(dlp4history PROPERTIES
+   LIBRARY_OUTPUT_DIRECTORY ${Aten_BINARY_DIR}/data/plugins
+   COMPILE_DEFINITIONS "QT_PLUGIN"
+   PREFIX ""
+)
+
+# Install Targets
+if(UNIX AND NOT APPLE)
+install(TARGETS dlp4history
+    RUNTIME DESTINATION ${CMAKE_INSTALL_LIBDIR}/aten/plugins COMPONENT RuntimePlugins
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}/aten/plugins COMPONENT RuntimePlugins
+)
+endif(UNIX AND NOT APPLE)
+# Includes
+target_include_directories(dlp4history PRIVATE
+  ${PROJECT_SOURCE_DIR}/src
+  ${PROJECT_BINARY_DIR}/src
+  ${Qt5Core_INCLUDE_DIRS}
+  ${Qt5Gui_INCLUDE_DIRS}
+)

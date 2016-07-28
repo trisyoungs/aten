@@ -24,44 +24,82 @@
 #include "plugins/io_dlpoly/common.h"
 #include "model/model.h"
 
+#include <QDebug>
 ATEN_USING_NAMESPACE
 
 // Read single CONFIG model from file
-bool DLPOLYPluginCommon::readCONFIGModel ( FilePluginInterface* plugin, FileParser& parser, Model* targetModel, DLPOLYPluginCommon::DLPOLYVersion version )
+bool DLPOLYPluginCommon::readCONFIGModel ( FilePluginInterface* plugin, FileParser& parser, Model* targetModel, DLPOLYPluginCommon::DLPOLYVersion version, const bool inTraj )
 {
   QString name;
+  int levcfg,imcon,nAtoms;
 
-  // Check target model
-  if ( targetModel == NULL ) {
-    Messenger::error ( "NULL Model pointer passed to DLPOLYPluginCommon::readCONFIGModel." );
-    return false;
-  }
-
-  // First line is name of model
-  if ( !parser.readLine ( name ) ) {
-    return false;
-  }
-  targetModel->setName ( name );
-
-  // Read config level, periodicity and if present number of atoms from file
-  // Need to be careful here, since in DL_POLY2 the third number was NOT number of atoms
-  if ( !parser.parseLine() ) {
-    return false;
-  }
-  int levcfg=parser.argi ( 0 );
-  int imcon=parser.argi ( 1 );
-  int nAtoms = (version == DLPOLYPluginCommon::DLPOLY2 ? 0 : parser.argi ( 2 ));
-  if ( imcon != 0 ) {
-    Matrix cell;
-    for ( int i = 0; i<3; ++i ) {
-      if ( !parser.parseLine() ) {
-        return false;
-      }
-      cell.setColumn ( i, parser.argd ( 0 ),parser.argd ( 1 ),parser.argd ( 2 ));
+  if (inTraj) {
+    if ( !parser.parseLine() ) {
+      return false;
     }
-    targetModel->setCell ( cell );
+    name = parser.argc(1);
+    targetModel->setName ( name );
+    levcfg=parser.argi ( 3 );
+    imcon=parser.argi ( 4 );
+    nAtoms = parser.argi ( 2 );
+
+    if (version == DLPOLYPluginCommon::DLPOLY2) {
+      if ( imcon != 0 ) {
+        Matrix cell;
+        for ( int i = 0; i<3; ++i ) {
+          if ( !parser.parseLine() ) {
+            return false;
+          }
+          cell.setColumn ( i, parser.argd ( 0 ),parser.argd ( 1 ),parser.argd ( 2 ));
+        }
+        targetModel->setCell ( cell );
+      }
+    } else {
+      Matrix cell;
+      for ( int i = 0; i<3; ++i ) {
+        if ( !parser.parseLine() ) {
+          return false;
+        }
+        cell.setColumn ( i, parser.argd ( 0 ),parser.argd ( 1 ),parser.argd ( 2 ));
+      }
+      targetModel->setCell ( cell );
+    }
+
+  }else{
+    // Check target model
+    if ( targetModel == NULL ) {
+      Messenger::error ( "NULL Model pointer passed to DLPOLYPluginCommon::readCONFIGModel." );
+      return false;
+    }
+
+    // First line is name of model
+    if ( !parser.readLine ( name ) ) {
+      return false;
+    }
+    targetModel->setName ( name );
+
+    // Read config level, periodicity and if present number of atoms from file
+    // Need to be careful here, since in DL_POLY2 the third number was NOT number of atoms
+    if ( !parser.parseLine() ) {
+      return false;
+    }
+    levcfg=parser.argi ( 0 );
+    imcon=parser.argi ( 1 );
+    nAtoms = (version == DLPOLYPluginCommon::DLPOLY2 ? 0 : parser.argi ( 2 ));
+
+    if ( imcon != 0 ) {
+      Matrix cell;
+      for ( int i = 0; i<3; ++i ) {
+        if ( !parser.parseLine() ) {
+          return false;
+        }
+        cell.setColumn ( i, parser.argd ( 0 ),parser.argd ( 1 ),parser.argd ( 2 ));
+      }
+      targetModel->setCell ( cell );
+    }
   }
-  int n = 0;
+
+  int n=0;
   do {
     if ( !parser.parseLine() ) {
       break;
@@ -88,47 +126,51 @@ bool DLPOLYPluginCommon::readCONFIGModel ( FilePluginInterface* plugin, FilePars
 
     plugin->createAtom ( targetModel, el, r, v, f );
     n++;
-  } while ( !parser.eofOrBlank() );
+    if (n==nAtoms) break;
+  } while ( (!parser.eofOrBlank()) );
 
   // Shift atoms by half-cell
   bool shift = FilePluginInterface::toBool(plugin->pluginOptions().value("shiftCell"));
   if (shift && targetModel->isPeriodic())
   {
-	  targetModel->selectAll(true);
-	  targetModel->translateSelectionLocal(targetModel->cell().centre(), true);
-	  targetModel->selectNone(true);
+    targetModel->selectAll(true);
+    targetModel->translateSelectionLocal(targetModel->cell().centre(), true);
+    targetModel->selectNone(true);
   }
 
   // Rebond the model
   if ( !plugin->standardOptions().preventRebonding() ) {
     targetModel->calculateBonding ( true );
   }
-  
   // Check the number of atoms we read in 
   if ( ( n==nAtoms ) || ( nAtoms==0 ) ) {
     return true;
   } else {
     return false;
-  }
+  } 
 }
 
 // Skip single Frame in file
-bool DLPOLYPluginCommon::skipFrameModel ( FileParser& parser )
+bool DLPOLYPluginCommon::skipFrameModel ( FilePluginInterface* plugin, FileParser& parser, DLPOLYVersion version )
 {
-  int nAtoms;
 
   // Read number of atoms from file
-  if ( !parser.readLineAsInteger ( nAtoms ) ) {
+  if ( !parser.parseLine() ) {
     return false;
   }
-
-  // Next line is name of model
-  if ( !parser.skipLines ( 1 ) ) {
-    return false;
+  int nAtoms = parser.argi(2);
+  int levcfg = parser.argi(3);
+  int imcon = parser.argi(4);
+  // Next line is the cell/// this is different between 2 and 4 
+  // shall be handled correctly once things work for 4
+  if ( ((version == DLPOLYPluginCommon::DLPOLY2) && (imcon>0)) || (version == DLPOLYPluginCommon::DLPOLY4)) {
+    if ( !parser.skipLines ( 3 ) ) {
+      return false;
+    }
   }
 
-  // Now atoms...
-  if ( !parser.skipLines ( nAtoms ) ) {
+  // Now atoms/velocities and forces if present
+  if ( !parser.skipLines ( (levcfg+2)*nAtoms ) ) {
     return false;
   }
 
@@ -161,16 +203,16 @@ bool DLPOLYPluginCommon::writeCONFIGModel (FilePluginInterface* plugin, FilePars
   } 
 
   // Write atom information
-  int k=0;
-	bool useTypeNames = FilePluginInterface::toBool(plugin->pluginOptions().value("useTypeNames"));
+  int k=1;
+  bool useTypeNames = FilePluginInterface::toBool(plugin->pluginOptions().value("useTypeNames"));
   for ( Atom* i = sourceModel->atoms(); i != NULL; i = i->next ) {
     if (levcfg>=0){
-		if (useTypeNames && i->type()){
-			if (!parser.writeLineF("%-8s%10i%-54s", qPrintable(i->type()->name()), k++," ")) {
-        return false;
+      if (useTypeNames && i->type()){
+        if (!parser.writeLineF("%-8s%10i%-54s", qPrintable(i->type()->name()), k++," ")) {
+          return false;
+        }
       }
-		}
-		else if (!parser.writeLineF("%-8s%10i%-54s", ElementMap().symbol(i->element()), k++," ")) {
+      else if (!parser.writeLineF("%-8s%10i%-54s", ElementMap().symbol(i->element()), k++," ")) {
         return false;
       }
 

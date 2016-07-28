@@ -40,9 +40,9 @@ class DLPOLYPluginCommon
 
 	public:
 	// Read single CONFIG model from file
-	static bool readCONFIGModel(FilePluginInterface* plugin, FileParser& parser, Model* targetModel, DLPOLYVersion version);
+	static bool readCONFIGModel(FilePluginInterface* plugin, FileParser& parser, Model* targetModel, DLPOLYVersion version, const bool inTraj=false);
 	// Skip single frame model in file
-	static bool skipFrameModel(FileParser& parser);
+	static bool skipFrameModel(FilePluginInterface* plugin, FileParser& parser, DLPOLYVersion version);
 	// Write single CONFIG model to file
 	static bool writeCONFIGModel(FilePluginInterface* plugin, FileParser& parser, Model* sourceModel, DLPOLYVersion version);
 };
