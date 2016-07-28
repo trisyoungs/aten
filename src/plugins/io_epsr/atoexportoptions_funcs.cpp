@@ -48,7 +48,7 @@ void EPSRAtoExportOptionsDialog::on_OKButton_clicked(bool checked)
 	pluginOptions_.add("angTemp", QString::number(ui.AngTempSpin->value()));
 	pluginOptions_.add("dihTemp", QString::number(ui.DihTempSpin->value()));
 	pluginOptions_.add("modelGeometry", ui.UseModelGeometryCheck->isChecked() ? "true" : "false");
-	pluginOptions_.add("writeDihedrals", ui.WriteRotationsCheck->isChecked() ? "true" : "false");
+	pluginOptions_.add("writeRotations", ui.WriteRotationsCheck->isChecked() ? "true" : "false");
 	if (ui.RestrainBondsRadio->isChecked()) pluginOptions_.add("restraintLevel", "1");
 	else if (ui.RestrainBondsAnglesRadio->isChecked()) pluginOptions_.add("restraintLevel", "2");
 	else if (ui.RestrainBondsAnglesTorsionsRadio->isChecked()) pluginOptions_.add("restraintLevel", "3");

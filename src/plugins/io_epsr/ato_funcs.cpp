@@ -379,7 +379,7 @@ bool EPSRAtoModelPlugin::exportData()
 
 				// Write atom name, index, and mysterious second integer
 				if (!fileParser_.writeLineF(" %-3s   %4i  %5i", qPrintable(typeName), n+1, 0)) return false;
-				
+
 				// Write atom offset from com
 				if (!fileParser_.writeLineF(" %12.5e %12.5e %12.5e", i->r().x - com.x, i->r().y - com.y, i->r().z - com.z)) return false;
 
@@ -387,6 +387,7 @@ bool EPSRAtoModelPlugin::exportData()
 				// Always work it out for the first molecule of a particular pattern, or if 'individualGeometry' is true
 				if ((mol == 0) || individualGeometry)
 				{
+					Messenger::print(Messenger::Verbose, "Creating restraint information for atom %i, molecule %i of pattern '%s'...", n+1, mol+1, qPrintable(p->name()));
 					nRestraints = 0;
 					restraints[n].clear();
 					// Loop over bonds to atom - we always restrain along bonds
@@ -440,7 +441,7 @@ bool EPSRAtoModelPlugin::exportData()
 				{
 					if (!fileParser_.writeF(" %4i", restraints[n].nItems())) return false;
 					int count = 0;
-					for (int resId=0; resId <restraints[n].nItems(); ++resId)
+					for (int resId=0; resId<restraints[n].nItems(); ++resId)
 					{
 	// 					if (!fileParser_.writeF(" %4i %9.3e ", restraints[n][resId]->data1()+1, restraints[n][resId]->data2())) return false;
 						if (!fileParser_.writeF(" %4i %9.3e", restraints[n][resId]->data1()+1, 1.0)) return false;
@@ -501,10 +502,10 @@ bool EPSRAtoModelPlugin::exportData()
 
 			++molIndex;
 			atomOffset += p->nAtoms();
-	
-			// Cleanup
-			delete[] restraints;
 		}
+
+		// Cleanup
+		delete[] restraints;
 	}
 
 	// Create and write the forcefield info (in kJ/mol)
