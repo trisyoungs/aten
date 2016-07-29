@@ -65,7 +65,7 @@ QString DLP4TrajectoryPlugin::name() const
 // Nickname of plugin
 QString DLP4TrajectoryPlugin::nickname() const
 {
-	return QString("HISTORY");
+	return QString("dlpoly4his");
 }
 
 // Description (long name) of plugin
@@ -77,7 +77,7 @@ QString DLP4TrajectoryPlugin::description() const
 // Related file extensions
 QStringList DLP4TrajectoryPlugin::extensions() const
 {
-	return QStringList() << "HISTORY";
+	return QStringList() << "HISTORY" << "HISu" << "HISf";
 }
 
 // Exact names
