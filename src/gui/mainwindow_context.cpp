@@ -25,6 +25,7 @@
 #include "model/model.h"
 #include "parser/commandnode.h"
 #include <QWidgetAction>
+#include <QInputDialog>
 
 // Create context menu and setup actions
 void AtenWindow::createContextMenu()
@@ -67,11 +68,19 @@ void AtenWindow::createContextMenu()
 	connect(action, SIGNAL(triggered(bool)), ui.ToolsAtomsReorderButton, SLOT(click()));
 
 	// Create selection submenu
-	menu = contextMenu_.addMenu("Selec&t...");
+	menu = contextMenu_.addMenu("S&elect...");
 	action = menu->addAction("Similar &elements");
 	connect(action, SIGNAL(triggered(bool)), this, SLOT(contextMenuSelectElement(bool)));
+	action = menu->addAction("Similar &atoms");
+	connect(action, SIGNAL(triggered(bool)), this, SLOT(contextMenuSelectSimilar(bool)));
 	action = menu->addAction("&Fragment");
 	connect(action, SIGNAL(triggered(bool)), this, SLOT(contextMenuSelectFragment(bool)));
+	contextMenu_.addSeparator();
+
+	// Create typing submenu
+	menu = contextMenu_.addMenu("&Type...");
+	action = menu->addAction("Add/set name type");
+	connect(action, SIGNAL(triggered(bool)), this, SLOT(contextMenuTypeSetName(bool)));
 	contextMenu_.addSeparator();
 
 	// Appearance
@@ -185,31 +194,6 @@ void AtenWindow::contextMenuProbeAtom(bool checked)
 	if (contextAtom_ != NULL) contextAtom_->print();
 }
 
-/*
-// Reset atom custom colour to element colour
-void AtenWindow::on_actionAtomColourSet_triggered(bool checked)
-{
-	QColor oldcol, newcol;
-	// Get colour of clicked atom and convert into a QColor
-	if (contextAtom_ != NULL) oldcol.setRgbF( contextAtom_->colour()[0], contextAtom_->colour()[1], contextAtom_->colour()[2], contextAtom_->colour()[3] );
-	else oldcol.setRgbF(1.0, 1.0, 1.0, 1.0);
-		
-	// Request a colour dialog
-	bool ok = false;
-	newcol.setRgba(QColorDialog::getRgba(oldcol.rgba(), &ok, this));
-	if (!ok) return;
-
-	// Store new colour
-	CommandNode::run(Commands::ColourAtoms, "dddd", newcol.redF(), newcol.greenF(), newcol.blueF(), newcol.alphaF());
-	contextAtom_ = NULL;
-
-	// Set colour scheme menu option automatically if necessary
-	if (prefs.colourScheme() != Prefs::OwnScheme) TMenuButton::setGroupButtonChecked("Colourschemes", "Own");
-	Messenger::print("Colouring scheme changed to 'own'.");
-
-	updateWidgets();
-}*/
-
 // Create fragment from current selection
 void AtenWindow::contextMenuCreateFragment(bool checked)
 {
@@ -230,10 +214,53 @@ void AtenWindow::contextMenuSelectElement(bool checked)
 	updateWidgets();
 }
 
+// Select similar atoms to target atom, based on connectivity
+void AtenWindow::contextMenuSelectSimilar(bool checked)
+{
+	// Create a NETA description for the clicked atom
+	Neta neta;
+	neta.setCharacterElement(contextAtom_->element());
+	neta.createBasic(contextAtom_, true);
+
+	// Extract the description so we can pass it to the SelectType command
+	QString netaString;
+	neta.description()->netaPrint(netaString);
+
+	// Now select by type.
+	CommandNode::run(Commands::SelectType, "ic", contextAtom_->element(), qPrintable(netaString));
+
+	updateWidgets();
+}
+
 // Select fragment to which target atom belongs
 void AtenWindow::contextMenuSelectFragment(bool checked)
 {
 	CommandNode::run(Commands::SelectTree, "i", contextAtom_->id()+1);
+
+	updateWidgets();
+}
+
+void AtenWindow::contextMenuTypeSetName(bool checked)
+{
+	Model* viewTarget = aten_.currentModelOrFrame();
+
+	// Get type name from user
+	bool ok;
+	QString oldName = contextAtom_->type() ? contextAtom_->type()->name() : "";
+	QString name = QInputDialog::getText(this, QString("Add/Set Type Name for %1 atoms").arg(viewTarget->nSelected()), "New name/type for atom:", QLineEdit::Normal, oldName, &ok);
+	if (!ok) return;
+
+	// Get names forcefield for current model
+	Forcefield* namesFF = viewTarget->namesForcefield();
+
+	// Loop over atoms, attempting to add/retrieve a name type for each atom
+	for (RefListItem<Atom,int>* ri = viewTarget->selection(); ri != NULL; ri = ri->next)
+	{
+		Atom* i = ri->item;
+
+		ForcefieldAtom* ffa = viewTarget->addAtomName(i->element(), name);
+		i->setType(ffa);
+	}
 
 	updateWidgets();
 }

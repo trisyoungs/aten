@@ -151,14 +151,18 @@ ForcefieldAtom* Forcefield::findType(int query)
 }
 
 	// Find the named atomtype
-ForcefieldAtom* Forcefield::findType(QString name)
+ForcefieldAtom* Forcefield::findType(QString name, int element)
 {
 	// Search for the atomname specified and return the internal integer id (i.e. position in atomtype list)
 	// We return the first occurrence we find (since there may be more than one - only typeId_ need be unique)
 	// Search both names and equivalents (since aliases may be defined that are not themselves defined as types_)
 	Messenger::enter("Forcefield::findType[char]");
 	ForcefieldAtom* result;
-	for (result = types_.first(); result != NULL; result = result->next) if ((result->name() == name) || (result->equivalent() == name)) break;
+	for (result = types_.first(); result != NULL; result = result->next)
+	{
+		if ((element != -1) && (element != result->element())) continue;
+		if ((result->name() == name) || (result->equivalent() == name)) break;
+	}
 	Messenger::exit("Forcefield::findType[char]");
 	return result;
 }
@@ -167,9 +171,11 @@ ForcefieldAtom* Forcefield::findType(QString name)
 ForcefieldAtom* Forcefield::findByTypeId(int i, ForcefieldAtom* excluding)
 {
 	Messenger::enter("Forcefield::findByTypeId");
+
 	ForcefieldAtom* result = NULL;
 	for (result = types_.first(); result != NULL; result = result->next) if ((result->typeId() == i) && (result != excluding)) break;
-//	if (result == NULL) printf("Forcefield::typeOfId <<<< FFID %i not found in forcefield >>>>\n",i);
+
+	
 	Messenger::exit("Forcefield::findByTypeId");
 	return result;
 }

@@ -37,7 +37,7 @@ void Model::createNamesForcefield()
 	if (namesForcefield_ != NULL) Messenger::print("Warning - an atom names forcefield already exists for model '%s'.", qPrintable(name_));
 	Messenger::print("Creating atom names forcefield for model '%s'.", qPrintable(name_));
 	namesForcefield_ = new Forcefield;
-	namesForcefield_->setName(QString("Names kept from model ")+name_);
+	namesForcefield_->setName(QString("Atom names for model ")+name_);
 }
 
 // Return the forcefield containing original atom names for the model
@@ -50,12 +50,14 @@ Forcefield* Model::namesForcefield() const
 ForcefieldAtom* Model::addAtomName(int el, QString name)
 {
 	if (namesForcefield_ == NULL) createNamesForcefield();
+
 	// Search for this typename in the ff
-	ForcefieldAtom* ffa = namesForcefield_->findType(name);
+	ForcefieldAtom* ffa = namesForcefield_->findType(name, el);
 	if (ffa == NULL)
 	{
 		ffa = namesForcefield_->addType();
 		ffa->setName(name);
+		ffa->setElement(el);
 		ffa->neta()->setCharacterElement(el);
 	}
 	return ffa;
