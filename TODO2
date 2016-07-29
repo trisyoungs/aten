@@ -41,7 +41,7 @@ GUI TODO
 Sort out remaining icons!
 Add option to display ColourScale selector (e.g. for Grid colour buttons)
 Add Plot Orbital to Tools page (raising dialog from old GridsWidget)
-Add manual typing popup.
+Add manual typing popup / context menu?
 
 Possible TODO
 =============

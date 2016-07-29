@@ -13,6 +13,7 @@ SET(gui_MOC_HDRS
   glyphs.h
   layoutlist.h
   mainwindow.h
+  openexpression.h
   opengrid.h
   openmodel.h
   opentrajectory.h
@@ -114,6 +115,7 @@ SET(gui_UIS
   ffeditor.ui
   glyphs.ui
   mainwindow.ui
+  openexpression.ui
   opengrid.ui
   openmodel.ui
   opentrajectory.ui
@@ -226,6 +228,7 @@ set(gui_SRCS
   mainwindow_quickcommand.cpp
   mainwindow_session.cpp
   mainwindow_update.cpp
+  openexpression_funcs.cpp
   opengrid_funcs.cpp
   openmodel_funcs.cpp
   opentrajectory_funcs.cpp

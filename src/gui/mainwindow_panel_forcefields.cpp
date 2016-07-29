@@ -72,22 +72,15 @@ void AtenWindow::on_ForcefieldsList_currentRowChanged(int row)
 
 void AtenWindow::on_ForcefieldsManageOpenButton_clicked(bool checked)
 {
-	// ATEN2 TODO ENDOFFILTERS
-// 	static QDir currentDirectory_(aten_.workDir());
-// 	QString filename = QFileDialog::getOpenFileName(this, "Open Forcefield", currentDirectory_.path(), aten_.fileDialogFilters(FilterData::ExpressionImport));
-// 	if (!filename.isEmpty())
-// 	{
-// 		Tree* filter = aten_.probeFile(qPrintable(filename), FilterData::ExpressionImport);
-// 		if (filter)
-// 		{
-// 			if (!filter->executeRead(qPrintable(filename))) return;
-// 		}
-// 
-// 		updateWidgets(AtenWindow::ForcefieldsPanelTarget);
-// 
-// 		// Store path for next use
-// 		currentDirectory_.setPath(filename);
-// 	}
+	if (openExpressionDialog_.execute(aten_.pluginStore().logPoint()))
+	{
+		// Open model(s) selected in dialog
+		QStringList filesToLoad = openGridDialog_.selectedFilenames();
+		FilePluginInterface* plugin = openGridDialog_.selectedPlugin();
+		for (int n=0; n<filesToLoad.count(); ++n) aten_.importGrid(aten_.currentModelOrFrame(), filesToLoad.at(n), plugin, openGridDialog_.standardImportOptions());
+
+		updateWidgets(AtenWindow::AllTargets);
+	}
 
 	updateWidgets();
 }

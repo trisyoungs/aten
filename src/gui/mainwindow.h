@@ -34,6 +34,7 @@
 #include "gui/disorderwizard.h"
 #include "gui/exportfilm.h"
 #include "gui/exportimage.h"
+#include "gui/openexpression.h"
 #include "gui/opengrid.h"
 #include "gui/openmodel.h"
 #include "gui/opentrajectory.h"
@@ -128,6 +129,8 @@ class AtenWindow : public QMainWindow
 	 * File Dialogs
 	 */
 	private:
+	// Expression import dialog
+	AtenOpenExpression openExpressionDialog_;
 	// Grid import dialog
 	AtenOpenGrid openGridDialog_;
 	// Model import dialog

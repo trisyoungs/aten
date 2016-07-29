@@ -92,6 +92,7 @@
 
 // Constructor
 AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportFilmDialog_(*this), exportImageDialog_(*this), disorderWizard_(*this), progressDialog_(*this), zMatrixDialog_(*this),
+	openExpressionDialog_(this, aten_.workDir(), aten_.pluginStore().filePlugins(PluginTypes::ExpressionFilePlugin)),
 	openGridDialog_(this, aten_.workDir(), aten_.pluginStore().filePlugins(PluginTypes::GridFilePlugin)),
 	openModelDialog_(this, aten_.workDir(), aten_.pluginStore().filePlugins(PluginTypes::ModelFilePlugin)),
 	openTrajectoryDialog_(this, aten_.workDir(), aten_.pluginStore().filePlugins(PluginTypes::TrajectoryFilePlugin)),
