@@ -1,6 +1,6 @@
 # Set plugin installation dir and define plugin targets
 pluginexecdir = @ATEN_PLUGINLIBDIR@
-pluginexec_LTLIBRARIES = dlp2.la dlp4.la field.la
+pluginexec_LTLIBRARIES = dlp2.la dlp4.la dlpfield.la dlp4history.la
 
 # Rules
 .ui.lo:
@@ -16,7 +16,7 @@ pluginexec_LTLIBRARIES = dlp2.la dlp4.la field.la
 
 # Local clean (temporary files generated from rules)
 clean-local:
-	-rm -f dlp2.cpp dlp4.cpp field.cpp
+	-rm -f dlp2.cpp dlp4.cpp field.cpp history.cpp
 
 # Common functions to plugins
 noinst_LTLIBRARIES = libcommon.la
@@ -35,10 +35,15 @@ dlp4_la_LIBADD = libcommon.la
 dlp4_la_LDFLAGS = -module -shared -avoid-version
 
 # DL_POLY FIELD Plugin
-#dlp4_la_SOURCES = dlp4importoptions_funcs.cpp dlp4importoptions.ui
-field_la_SOURCES = field_funcs.cpp field.hui
-field_la_LIBADD = libcommon.la
-field_la_LDFLAGS = -module -shared -avoid-version
+#dlpfield_la_SOURCES = fieldimportoptions_funcs.cpp fieldimportoptions.ui
+dlpfield_la_SOURCES = field_funcs.cpp field.hui
+dlpfield_la_LIBADD = libcommon.la
+dlpfield_la_LDFLAGS = -module -shared -avoid-version
+
+# DL_POLY 4 History Plugin
+dlp4history_la_SOURCES = history4_funcs.cpp history4.hui
+dlp4history_la_LIBADD = libcommon.la
+dlp4history_la_LDFLAGS = -module -shared -avoid-version
 
 AM_CPPFLAGS = -I${top_srcdir}/src @ATEN_INCLUDES@ @ATEN_CFLAGS@
 
