@@ -21,7 +21,7 @@ Polymer builder.
 Collapse cell tool.
 Tool to calculate / show total charge in selection.
 Calculate tool to work out centre of geometry/mass.
-
+Have AKF and FF as static plugins (which will also remove issue with FileParser being stripped from lib because it isn't used anywhere else in the code).
 Plugin TODO
 ===========
 POVray export.

@@ -71,12 +71,9 @@ Cli cliSwitches[] = {
 	{ Cli::ExportMapSwitch,		'\0',"exportmap",	1,
 		"<name=element,...>",
 		"Map forcefield atomtypes to names supplied (for export)" },
-	{ Cli::ExpressionSwitch,	'\0',"expression",	1,
-		"<filename>",
-		"Load the specified forcefield expression file" },
 	{ Cli::ForcefieldSwitch,	'\0',"ff",		1,
 		"<file>",
-		"Load the specified forcefield file" },
+		"Load the specified forcefield /expression file" },
 	{ Cli::FormatSwitch,		'f',"format",		1,
 		"<format>",
 		"Load models from command-line assuming specified <format>" },
@@ -418,7 +415,6 @@ int Aten::parseCli(int argc, char *argv[])
 	bool isShort, hasArg, argIsNext;
 	char* line;
 	QString arg, argText, prompt;
-	Forcefield* ff;
 	LineParser parser;
 	ElementMap::ZMapType zm;
 	NameMap<int>* nmi;
@@ -637,14 +633,9 @@ int Aten::parseCli(int argc, char *argv[])
 						typeExportMap_.add(items.at(0), items.at(1));
 					}
 					break;
-				// Load expression
-				case (Cli::ExpressionSwitch):
-					if (!importExpression(argText)) return -1;
-					break;
 				// Load the specified forcefield
 				case (Cli::ForcefieldSwitch):
-					ff = loadForcefield(argText);
-					if (ff == NULL) return -1;
+					if (!importExpression(argText)) return -1;
 					break;
 				// Set forced model load format
 				case (Cli::FormatSwitch):

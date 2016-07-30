@@ -97,6 +97,19 @@ void Aten::processImportedObjects(FilePluginInterface* plugin, QString filename)
 		// Set current object
 		current_.g = grid;
 	}
+
+	// Forcefields
+	while (plugin->createdForcefields().first())
+	{
+		Forcefield* ff = plugin->createdForcefields().takeFirst();
+
+		// Set source filename and plugin interface used
+		ff->setFilename(filename);
+// 		ff->setPlugin(plugin);
+
+		// Pass the model pointer to Aten 
+		ownForcefield(ff);
+	}
 }
 
 // Import model (if it is not loaded already)
@@ -379,26 +392,25 @@ bool Aten::importExpression(QString filename, FilePluginInterface* plugin, FileP
 	if (plugin == NULL) plugin = pluginStore_.findFilePlugin(PluginTypes::ExpressionFilePlugin, PluginTypes::ImportPlugin, filename);
 	if (plugin != NULL)
 	{
-		// Create a LineParser to open the file, and encapsulate it in a FileParser to give to the interface
-		LineParser parser;
-		parser.openInput(filename);
-		if (!parser.isFileGoodForReading())
+		FilePluginInterface* pluginInterface = plugin->createInstance();
+		if (!pluginInterface->openInput(filename))
 		{
-			Messenger::error("Couldn't open file '%s' for reading.\n", qPrintable(filename));
 			Messenger::exit("Aten::importExpression");
 			return false;
 		}
-
-		FilePluginInterface* pluginInterface = plugin->createInstance();
 		pluginInterface->setStandardOptions(standardOptions);
 		pluginInterface->setOptions(pluginOptions);
-		FileParser fileParser(parser);
-		if (pluginInterface->importData())
+
+		if (!pluginInterface->importData())
 		{
+			result = false;
+			Messenger::error("Failed to import forcefield/expression.");
+		}
+		else
+		{
+			processImportedObjects(pluginInterface, filename);
 			result = true;
 		}
-
-		parser.closeFiles();
 	}
 	else Messenger::error("Couldn't determine a suitable plugin to load the file '%s'.", qPrintable(filename));
 

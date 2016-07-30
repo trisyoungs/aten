@@ -509,6 +509,8 @@ class Aten
 	private:
 	// Search specified directory for plugins
 	int searchPluginsDir(QDir path);
+	// Register supplied plugin
+	bool registerPlugin( QObject* plugin, QString filename );
 	// Load specified plugin and register its functions
 	bool loadPlugin(QString filename);
 

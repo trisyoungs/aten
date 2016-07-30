@@ -22,6 +22,11 @@
 #include "plugins/pluginstore.h"
 #include "base/messenger.h"
 
+// The following objects are here to ensure that FileParser and its functions are not stripped
+// ATEN2 TODO
+LineParser dummyLineParser;
+FileParser dummyFileParser(dummyLineParser);
+
 // Constructor
 PluginStore::PluginStore()
 {

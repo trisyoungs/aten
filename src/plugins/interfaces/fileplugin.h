@@ -26,6 +26,7 @@
 #include "parser/returnvalue.h"
 #include "parser/commandnode.h"
 #include "model/model.h"
+#include "ff/forcefield.h"
 #include "base/grid.h"
 #include "base/kvmap.h"
 #include "base/forcefieldatom.h"
@@ -40,7 +41,7 @@
 ATEN_BEGIN_NAMESPACE
 
 // Forward Declarations
-class Model;
+/* none */
 
 // File Plugin Standard Import Options
 class FilePluginStandardImportOptions
@@ -236,7 +237,7 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 
 
 	protected:
-	// File parser object, associated to LineParser
+	// File parser object
 	FileParser fileParser_;
 
 	public:
@@ -331,10 +332,14 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 	RefList<Model,int> createdFrames_;
 	// Grid objects created on import
 	RefList<Grid,int> createdGrids_;
+	// Forcefield objects create on import
+	List<Forcefield> createdForcefields_;
 	// Parent model for read/write, if any
 	Model* parentModel_;
 	// Target model for read/write, if any
 	Model* targetModel_;
+	// Target forcefield for read/write, if any
+	Forcefield* targetForcefield_;
 
 	public:
 	// Create new parent model
@@ -423,6 +428,30 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 	{
 		return createdGrids_;
 	}
+	// Create new forcefield
+	Forcefield* createForcefield(QString name = QString())
+	{
+		targetForcefield_ = createdForcefields_.add();
+		if (!name.isEmpty()) targetForcefield_->setName(name);
+		return targetForcefield_;
+	}
+	// Discard created forcefield
+	bool discardForcefield(Forcefield* forcefield)
+	{
+		if (createdForcefields_.contains(forcefield))
+		{
+			if (targetForcefield_ == forcefield) targetForcefield_ = NULL;
+			createdForcefields_.remove(forcefield);
+			return true;
+		}
+		Messenger::error("Can't discard forcefield - not owned by the interface.");
+		return false;
+	}
+	// Return parent Forcefield objects created on import
+	List<Forcefield>& createdForcefields()
+	{
+		return createdForcefields_;
+	}
 	// Set parent model
 	void setParentModel(Model* model)
 	{
@@ -443,6 +472,16 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 	Model* targetModel() const
 	{
 		return targetModel_;
+	}
+	// Set target forcefield
+	void setTargetForcefield(Forcefield* ff)
+	{
+		targetForcefield_ = ff;
+	}
+	// Target forcefield for read/write, if any
+	Forcefield* targetForcefield() const
+	{
+		return targetForcefield_;
 	}
 
 

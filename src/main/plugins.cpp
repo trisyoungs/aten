@@ -24,29 +24,38 @@
 #include <QDir>
 #include <QPluginLoader>
 
-// Load specified plugin and register its functions
-bool Aten::loadPlugin(QString fileName)
+// Register supplied plugin
+bool Aten::registerPlugin(QObject* plugin, QString filename)
 {
-	Messenger::print(Messenger::Verbose, "Querying plugin file '%s'...\n", qPrintable(fileName));
-
-	// Create a pluginloader for the filename provided
-	QPluginLoader loader(fileName);
-
-	QObject* plugin = loader.instance();
-	if (!plugin)
-	{
-		Messenger::error("File '%s' does not appear to be a valid plugin.", qPrintable(fileName));
-		Messenger::print(loader.errorString());
-		return false;
-	}
-
 	// Determine which type of plugin this is by attempting to cast it to the available types
 	FilePluginInterface* filePlugin = qobject_cast<FilePluginInterface*>(plugin);
 	if (filePlugin)
 	{
-		filePlugin->setPluginFilename(fileName);
+		filePlugin->setPluginFilename(filename);
 		pluginStore_.registerFilePlugin(filePlugin);
+		return true;
 	}
+
+	return false;
+}
+
+// Load specified plugin and register its functions
+bool Aten::loadPlugin(QString filename)
+{
+	Messenger::print(Messenger::Verbose, "Querying plugin file '%s'...\n", qPrintable(filename));
+
+	// Create a pluginloader for the filename provided
+	QPluginLoader loader(filename);
+
+	QObject* plugin = loader.instance();
+	if (!plugin)
+	{
+		Messenger::error("File '%s' does not appear to be a valid plugin.", qPrintable(filename));
+		Messenger::print(loader.errorString());
+		return false;
+	}
+
+	return registerPlugin(plugin, filename);
 
 	return true;
 }
