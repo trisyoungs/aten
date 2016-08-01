@@ -6,11 +6,12 @@ SUFFIXES: .dt
 	sed -e "s:PREFIX:@INSTALLDIR@:" -e "s:VERSION:@VERSION@:" $< > $@
 
 EXTRA_DIST = src/gui/icons/*.* src/gui/freefont/*
-EXTRA_DIST += data/ff/* data/fftesting/* data/filters/* data/fragments/*/* data/includes/* data/partitions/* data/test/* data/scripts/* data/external/*
+EXTRA_DIST += data/ff/* data/fftesting/* data/filters/* data/fragments/*/* data/partitions/* data/test/* data/scripts/* data/external/*
 EXTRA_DIST += TODO TODO2
 EXTRA_DIST += CMakeLists.txt cmake/* src/CMakeLists.txt src/*/CMakeLists.txt
 EXTRA_DIST += desktop.cmake
 EXTRA_DIST += extra/* 
+#EXTRA_DIST += data/includes/*
 
 atendir = $(datadir)/aten
 aten_DATA = src/gui/icons/aten.png
@@ -18,8 +19,8 @@ aten_DATA = src/gui/icons/aten.png
 filterdir = $(atendir)/filters
 filter_DATA = data/filters/*
 
-includesdir = $(atendir)/includes
-includes_DATA = data/includes/*
+#includesdir = $(atendir)/includes
+#includes_DATA = data/includes/*
 
 testdir = $(atendir)/test
 test_DATA = data/test/*
