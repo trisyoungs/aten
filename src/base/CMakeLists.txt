@@ -17,7 +17,6 @@ add_library(base STATIC
   elementmap.cpp
   encoderdefinition.cpp
   externalcommand.cpp
-  fileparser.cpp
   forcefieldatom.cpp
   forcefieldbound.cpp
   grid.cpp

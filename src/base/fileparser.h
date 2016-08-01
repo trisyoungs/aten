@@ -36,8 +36,12 @@ class FileParser
 {
 	public:
 	// Constructors / Destructor
-	FileParser(LineParser& parser);
-	~FileParser();
+	FileParser(LineParser& parser) : parser_(parser)
+	{
+	}
+	~FileParser()
+	{
+	}
 
 
 	/*
@@ -49,15 +53,30 @@ class FileParser
 
 	public:
 	// Return current read/write filename
-	QString filename();
+	QString filename()
+	{
+		return (parser_.inputFilename().isEmpty() ? parser_.outputFilename() : parser_.inputFilename());
+	}
 	// Tell current position of input stream
-	std::streampos tellg() const;
+	std::streampos tellg() const
+	{
+		return parser_.tellg();
+	}
 	// Seek position in input stream
-	void seekg(std::streampos pos);
+	void seekg(std::streampos pos)
+	{
+		parser_.seekg(pos);
+	}
 	// Seek n bytes in specified direction in input stream
-	void seekg(std::streamoff off, std::ios_base::seekdir dir);
+	void seekg(std::streamoff off, std::ios_base::seekdir dir)
+	{
+		parser_.seekg(off, dir);
+	}
 	// Rewind input stream to start
-	void rewind();
+	void rewind()
+	{
+		parser_.rewind();
+	}
 
 
 	/*
@@ -65,35 +84,114 @@ class FileParser
 	 */
 	public:
 	// Read next line from file
-	bool readLine(QString& variable);
+	bool readLine(QString& variable)
+	{
+		int result = parser_.readNextLine(Parser::Defaults);
+		variable = parser_.line();
+		return (result == 0);
+	}
 	// Read next line from file into the variable supplied, and parse it as well
-	bool readAndParseLine(QString& variable);
+	bool readAndParseLine(QString& variable)
+	{
+		bool result = parseLine(Parser::Defaults);
+		variable = parser_.line();
+		return result;
+	}
 	// Read next line from file (converted to int)
-	bool readLineAsInteger(int& variable);
+	bool readLineAsInteger(int& variable)
+	{
+		int result = parser_.readNextLine(Parser::Defaults);
+		variable = parser_.line().toInt();
+		return (result == 0);
+	}
 	// Read next line from file (converted to double)
-	bool readLineAsDouble(double& variable);
+	bool readLineAsDouble(double& variable)
+	{
+		int result = parser_.readNextLine(Parser::Defaults);
+		variable = parser_.line().toDouble();
+		return (result == 0);
+	}
 	// Return whether the end of the input stream has been reached (or only whitespace remains)
-	bool eofOrBlank() const;
+	bool eofOrBlank() const
+	{
+		return parser_.eofOrBlank();
+	}
 	// Skip n lines from file
-	bool skipLines(int nLines = 1);
+	bool skipLines(int nLines = 1)
+	{
+		return (parser_.skipLines(nLines) == 0);
+	}
 	// Find next line containing supplied string
-	bool find(QString string);
-	
+	bool find(QString string)
+	{
+		// Store current stream position in case the string is not found
+		std::streampos previouspos = tellg();
+
+		QString line;
+		bool found = false;
+		while (!eofOrBlank())
+		{
+			// Get line from file
+			if (!readLine(line)) break;
+
+			// Check for string
+			if (line.contains(string)) return true;
+		}
+
+		// Rewind file to previous position if not found
+		seekg(previouspos);
+
+		return false;
+	}
+
 
 	/*
 	 * Write Functions
 	 */
 	public:
 	// Write partial line to file
-	bool write(QString line);
+	bool write(QString line)
+	{
+		return parser_.write(line);
+	}
 	// Write formatted partial line to file
-	bool writeF(const char* fmt, ...);
+	bool writeF(const char* fmt, ...)
+	{
+		// Construct line
+		va_list arguments;
+		static char s[8096];
+		s[0] = '\0';
+
+		// Parse the argument list (...) and internally write the output string into s[]
+		va_start(arguments,fmt);
+		vsprintf(s,fmt,arguments);
+		va_end(arguments);
+		return parser_.write(s);
+	}
 	// Write empty line to file
-	bool writeLine();
+	bool writeLine()
+	{
+		return parser_.writeLine();
+	}
 	// Write whole line to file (appending CR/LF automatically)
-	bool writeLine(QString line);
+	bool writeLine(QString line)
+	{
+		return parser_.writeLine(line);
+	}
 	// Write formatted line to file (appending CR/LF automatically)
-	bool writeLineF(const char* fmt, ...);
+	bool writeLineF(const char* fmt, ...)
+	{
+		// Construct line
+		va_list arguments;
+		static char s[8096];
+		s[0] = '\0';
+
+		// Parse the argument list (...) and internally write the output string into s[]
+		va_start(arguments,fmt);
+		vsprintf(s,fmt,arguments);
+		va_end(arguments);
+		return parser_.writeLine(s);
+	}
 
 
 	/*
@@ -101,31 +199,72 @@ class FileParser
 	 */
 	public:
 	// Read and parse next line into delimited arguments
-	bool parseLine(int parseOptions = Parser::Defaults);
+	bool parseLine(int parseOptions = Parser::Defaults)
+	{
+		return (parser_.getArgsDelim(parseOptions) == 0);
+	}
 	// Read and parse next line according to specified format
-	bool parseLine(ParseFormat& format, int parseOptions = Parser::Defaults);
+	bool parseLine(ParseFormat& format, int parseOptions = Parser::Defaults)
+	{
+		return (parser_.getArgsFormatted(format, parseOptions) == 0);
+	}
 	// Parse string into delimited arguments
-	int parseString(QString line, int parseOptions = Parser::Defaults);
+	int parseString(QString line, int parseOptions = Parser::Defaults)
+	{
+		parser_.getArgsDelim(parseOptions, line);
+		return parser_.nArgs();
+	}
 	// Parse string according to specified format
-	bool parseString(QString line, ParseFormat& format, int parseOptions = Parser::Defaults);
+	bool parseString(QString line, ParseFormat& format, int parseOptions = Parser::Defaults)
+	{
+		parser_.setLine(line);
+		return (parser_.getArgsFormatted(format, parseOptions, false) == 0);
+	}
 	// Returns number of arguments grabbed from last parse
-	int nArgs() const;
+	int nArgs() const
+	{
+		return parser_.nArgs();
+	}
 	// Returns the specified argument as a character string
-	QString argc(int i);
+	QString argc(int i)
+	{
+		return parser_.argc(i);
+	}
 	// Returns the specified argument as an integer
-	int argi(int i);
+	int argi(int i)
+	{
+		return parser_.argi(i);
+	}
 	// Returns the specified argument as a double
-	double argd(int i);
+	double argd(int i)
+	{
+		return parser_.argd(i);
+	}
 	// Returns the specified argument as a bool
-	bool argb(int i);
+	bool argb(int i)
+	{
+		return parser_.argb(i);
+	}
 	// Returns the specified argument as a float
-	float argf(int i);
+	float argf(int i)
+	{
+		return parser_.argf(i);
+	}
 	// Returns the specified argument (+1, and +2) as a Vec3<int>
-	Vec3<int> arg3i(int i);
+	Vec3<int> arg3i(int i)
+	{
+		return Vec3<int>(parser_.argi(i), parser_.argi(i+1), parser_.argi(i+2));
+	}
 	// Returns the specified argument (+1, and +2) as a Vec3<double>
-	Vec3<double> arg3d(int i);
+	Vec3<double> arg3d(int i)
+	{
+		return Vec3<double>(parser_.argd(i), parser_.argd(i+1), parser_.argd(i+2));
+	}
 	// Returns whether the specified argument exists
-	bool hasArg(int i) const;
+	bool hasArg(int i) const
+	{
+		return parser_.hasArg(i);
+	}
 };
 
 ATEN_END_NAMESPACE

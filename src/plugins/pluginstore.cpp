@@ -1,7 +1,7 @@
 /*
         *** Plugin Store
         *** src/plugins/pluginstore.cpp
-        Copyright T. Youngs 2007-2016
+        Copyright T. Youngs 2016-2016
 
         This file is part of Aten.
     
@@ -21,11 +21,6 @@
 
 #include "plugins/pluginstore.h"
 #include "base/messenger.h"
-
-// The following objects are here to ensure that FileParser and its functions are not stripped
-// ATEN2 TODO
-LineParser dummyLineParser;
-FileParser dummyFileParser(dummyLineParser);
 
 // Constructor
 PluginStore::PluginStore()

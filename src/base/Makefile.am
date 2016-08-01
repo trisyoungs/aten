@@ -15,7 +15,7 @@ clean-local:
 
 AM_YFLAGS = -d
 
-libbase_la_SOURCES = atomaddress.cpp atom.cpp atom_geometry.cpp basisshell.cpp bond.cpp cell.cpp choice.cpp colourscale.cpp colourscalepoint.cpp datastore.cpp eigenvector.cpp element.cpp elementmap.cpp encoderdefinition.cpp externalcommand.cpp fileparser.cpp forcefieldatom.cpp forcefieldbound.cpp glyph.cpp grid.cpp gridpoint.cpp kvmap.cpp lineparser.cpp log.cpp measurement.cpp neta.cpp neta_grammar.yy neta_grammar.hh neta_lexer.cpp neta_parser.cpp pattern.cpp prefs.cpp ring.cpp site.cpp sysfunc.cpp vibration.cpp wrapint.cpp zmatrix.cpp zmatrixelement.cpp
+libbase_la_SOURCES = atomaddress.cpp atom.cpp atom_geometry.cpp basisshell.cpp bond.cpp cell.cpp choice.cpp colourscale.cpp colourscalepoint.cpp datastore.cpp eigenvector.cpp element.cpp elementmap.cpp encoderdefinition.cpp externalcommand.cpp forcefieldatom.cpp forcefieldbound.cpp glyph.cpp grid.cpp gridpoint.cpp kvmap.cpp lineparser.cpp log.cpp measurement.cpp neta.cpp neta_grammar.yy neta_grammar.hh neta_lexer.cpp neta_parser.cpp pattern.cpp prefs.cpp ring.cpp site.cpp sysfunc.cpp vibration.cpp wrapint.cpp zmatrix.cpp zmatrixelement.cpp
 
 libfourierdata_la_SOURCES = fourierdata.cpp
 
