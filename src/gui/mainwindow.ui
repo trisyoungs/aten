@@ -1641,7 +1641,7 @@
              </font>
             </property>
             <property name="toolTip">
-             <string notr="true">Colour atoms according to their own defined colours (Ctrl-F5)</string>
+             <string notr="true">Colour atoms according to the number of bonds (Ctrl-F5)</string>
             </property>
             <property name="text">
              <string>Own</string>
@@ -1821,7 +1821,7 @@
              </font>
             </property>
             <property name="toolTip">
-             <string notr="true">Colour atoms according to their own defined colours (Ctrl-F5)</string>
+             <string notr="true">Colour atoms according to their own defined colours (Ctrl-F6)</string>
             </property>
             <property name="text">
              <string>Own</string>
