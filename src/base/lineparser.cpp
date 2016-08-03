@@ -335,6 +335,7 @@ int LineParser::readNextLine(int optionMask)
 			}
 		}
 		Messenger::print(Messenger::Parse, "Line from file is: [%s]", qPrintable(line_));
+		++lastLineNo_;
 
 		// Remove comments from line
 		if (optionMask&Parser::StripComments) removeComments(line_);
@@ -366,7 +367,6 @@ int LineParser::readNextLine(int optionMask)
 		}
 		lineLength_ = line_.length();
 		linePos_ = 0;
-		++lastLineNo_;
 	} while (result != 0);
 // 	printf("LineParser Returned line = [%s], length = %i",line_,lineLength_);
 

@@ -55,7 +55,7 @@ int CommandParser::lex()
 	// Skip over whitespace
 	while ((c = getChar()) == ' ' || c == '\t' || c == '\r' || c == '\n' );
 
-	if (c == 0) return 0;
+	if (c == 0) return ATEN_EOF;
 
 	// Set this point as the start of our new token (for error reporting)
 	tokenStart_ = stringPos_-1;
