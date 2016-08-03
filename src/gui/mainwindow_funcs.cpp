@@ -59,6 +59,7 @@
 #include "gui/popupforcefieldsassign.h"
 #include "gui/popupforcefieldsminimise.h"
 #include "gui/popupforcefieldsopen.h"
+#include "gui/popupgridcolour.h"
 #include "gui/popupgridmatrix.h"
 #include "gui/popupgridorigin.h"
 #include "gui/popupgridset.h"
@@ -269,11 +270,11 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportFilmD
 	ui.GridsDefineOriginButton->setPopupWidget(new GridOriginPopup(*this, ui.GridsDefineOriginButton), true);
 	// -- Grids Panel (Primary Surface)
 	ui.GridsPrimarySetButton->setPopupWidget(new GridSetPopup(*this, ui.GridsPrimarySetButton, true), true);
-	ui.GridsPrimaryColourButton->setPopupWidget(new ColourPopup(*this, ui.GridsPrimaryColourButton), true);
+	ui.GridsPrimaryColourButton->setPopupWidget(new GridColourPopup(*this, ui.GridsPrimaryColourButton, true), true);
 	ui.GridsPrimaryStyleButton->setPopupWidget(new GridStylePopup(*this, ui.GridsPrimaryStyleButton, true), true);
 	// -- Grids Panel (Secondary Surface)
 	ui.GridsSecondarySetButton->setPopupWidget(new GridSetPopup(*this, ui.GridsSecondarySetButton, false), true);
-	ui.GridsSecondaryColourButton->setPopupWidget(new ColourPopup(*this, ui.GridsSecondaryColourButton), true);
+	ui.GridsSecondaryColourButton->setPopupWidget(new GridColourPopup(*this, ui.GridsSecondaryColourButton, false), true);
 	ui.GridsSecondaryStyleButton->setPopupWidget(new GridStylePopup(*this, ui.GridsSecondaryStyleButton, false), true);
 	// -- Grids Panel (Transform)
 	ui.GridsTransformTranslateButton->setPopupWidget(new GridShiftPopup(*this, ui.GridsTransformTranslateButton), true);

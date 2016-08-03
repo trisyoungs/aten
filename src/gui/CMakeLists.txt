@@ -42,6 +42,7 @@ SET(gui_MOC_HDRS
   popupforcefieldsminimise.h
   popupforcefieldsopen.h
   popupforcefieldstest.h
+  popupgridcolour.h
   popupgridmatrix.h
   popupgridorigin.h
   popupgridset.h
@@ -144,6 +145,7 @@ SET(gui_UIS
   popupforcefieldsminimise.ui
   popupforcefieldsopen.ui
   popupforcefieldstest.ui
+  popupgridcolour.ui
   popupgridmatrix.ui
   popupgridorigin.ui
   popupgridset.ui
@@ -257,6 +259,7 @@ set(gui_SRCS
   popupforcefieldsminimise_funcs.cpp
   popupforcefieldsopen_funcs.cpp
   popupforcefieldstest_funcs.cpp
+  popupgridcolour_funcs.cpp
   popupgridmatrix_funcs.cpp
   popupgridorigin_funcs.cpp
   popupgridset_funcs.cpp

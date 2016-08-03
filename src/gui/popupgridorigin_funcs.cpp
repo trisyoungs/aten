@@ -45,7 +45,7 @@ void GridOriginPopup::updateControls()
 	// Update angles in spin boxes
 	refreshing_ = true;
 
-	// Get current model
+	// Get current grid
 	Grid* grid = parent_.aten().current().g;
 	if (grid)
 	{
