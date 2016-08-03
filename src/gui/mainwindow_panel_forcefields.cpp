@@ -75,9 +75,9 @@ void AtenWindow::on_ForcefieldsManageOpenButton_clicked(bool checked)
 	if (openExpressionDialog_.execute(aten_.pluginStore().logPoint()))
 	{
 		// Open model(s) selected in dialog
-		QStringList filesToLoad = openGridDialog_.selectedFilenames();
-		FilePluginInterface* plugin = openGridDialog_.selectedPlugin();
-		for (int n=0; n<filesToLoad.count(); ++n) aten_.importGrid(aten_.currentModelOrFrame(), filesToLoad.at(n), plugin, openGridDialog_.standardImportOptions());
+		QStringList filesToLoad = openExpressionDialog_.selectedFilenames();
+		FilePluginInterface* plugin = openExpressionDialog_.selectedPlugin();
+		for (int n=0; n<filesToLoad.count(); ++n) aten_.importExpression(filesToLoad.at(n), plugin, openExpressionDialog_.standardImportOptions());
 
 		updateWidgets(AtenWindow::AllTargets);
 	}
