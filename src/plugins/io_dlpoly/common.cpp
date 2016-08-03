@@ -138,6 +138,16 @@ bool DLPOLYPluginCommon::readCONFIGModel ( FilePluginInterface* plugin, FilePars
     targetModel->selectNone(true);
   }
 
+  // Pack model
+	if (!plugin->standardOptions().preventPacking()){
+    targetModel->pack();
+  }
+
+	// Fold model
+	if (!plugin->standardOptions().preventFolding()) {
+    targetModel->foldAllAtoms();
+  }
+
   // Rebond the model
   if ( !plugin->standardOptions().preventRebonding() ) {
     targetModel->calculateBonding ( true );
