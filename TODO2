@@ -25,6 +25,7 @@ Calculate tool to work out centre of geometry/mass.
 Plugin TODO
 ===========
 POVray export.
+Implement partitioning schemes as plugins, and update to use simple equations in tests rather than Grids?
 
 Graphics TODO
 =============
