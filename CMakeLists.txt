@@ -140,7 +140,7 @@ if(UNIX AND NOT APPLE)
         DESTINATION share/aten)
   install(FILES ${PROJECT_BINARY_DIR}/Aten.desktop
         DESTINATION share/applications)
-  foreach(i ff filters fftesting fragments partitions scripts test includes external)
+  foreach(i ff filters fftesting fragments partitions scripts test external)
     install(DIRECTORY ${PROJECT_SOURCE_DIR}/data/${i}
           DESTINATION share/aten)
   endforeach(i)
