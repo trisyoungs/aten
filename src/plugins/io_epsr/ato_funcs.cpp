@@ -443,8 +443,7 @@ bool EPSRAtoModelPlugin::exportData()
 					int count = 0;
 					for (int resId=0; resId<restraints[n].nItems(); ++resId)
 					{
-	// 					if (!fileParser_.writeF(" %4i %9.3e ", restraints[n][resId]->data1()+1, restraints[n][resId]->data2())) return false;
-						if (!fileParser_.writeF(" %4i %9.3e", restraints[n][resId]->data1()+1, 1.0)) return false;
+						if (!fileParser_.writeF(" %4i %9.3e", restraints[n][resId]->data1()+1, restraints[n][resId]->data2())) return false;
 						++count;
 						if ((count%5 == 0) || (resId == restraints[n].nItems()-1)) if (!fileParser_.writeLine()) return false;
 					}
