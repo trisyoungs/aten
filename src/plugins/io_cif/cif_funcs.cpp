@@ -248,7 +248,7 @@ bool CIFModelPlugin::importData()
 	if (!standardOptions_.preventPacking()) targetModel()->pack();
 
 	// Fold model
-	if (!standardOptions_.preventFolding()) targetModel()->foldAllMolecules();
+	if (!standardOptions_.preventFolding()) targetModel()->foldAllAtoms();
 
 	// Rebond model
 	if (!standardOptions_.preventRebonding()) targetModel()->calculateBonding(true);
