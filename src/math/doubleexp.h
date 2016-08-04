@@ -36,7 +36,19 @@ class DoubleExp
 	DoubleExp(double value);
 	DoubleExp(double mantissa, int exponent);
 
-	
+
+	/*
+	 * Operators
+	 */
+	public:
+	// Assignment Operator
+	void operator=(double d);
+	// Equality Operator
+	bool operator==(const double other);
+	// Inequality Operator
+	bool operator!=(const double other);
+
+
 	/*
 	 * Data
 	 */
@@ -75,8 +87,6 @@ class DoubleExp
 	void setExponent(int exponent);
 	// Return exponent
 	int exponent() const;
-	// Operator =
-	void operator=(double d);
 
 
 	/*

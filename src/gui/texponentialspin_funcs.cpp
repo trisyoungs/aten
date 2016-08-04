@@ -42,11 +42,11 @@ TExponentialSpin::TExponentialSpin(QWidget* parent) : QAbstractSpinBox(parent)
 
 	// Connect signals to slots
 	connect(lineEdit(), SIGNAL(textChanged(QString)), this, SLOT(textChanged(QString)));
-	connect(lineEdit(), SIGNAL(editingFinished()), this, SLOT(updateValue()));
-	connect(lineEdit(), SIGNAL(returnPressed()), this, SLOT(updateValue()));
+	connect(lineEdit(), SIGNAL(editingFinished()), this, SLOT(updateValueFromText()));
+	connect(lineEdit(), SIGNAL(returnPressed()), this, SLOT(updateValueFromText()));
 
 	// Update initial text value
-	updateText();
+	updateTextFromValue();
 }
 
 /*
@@ -70,7 +70,7 @@ bool TExponentialSpin::clamp()
 }
 
 // Create text from current value, and display in lineEdit
-void TExponentialSpin::updateText(int precision)
+void TExponentialSpin::updateTextFromValue(int precision)
 {
 // 	printf("Here we are in updateText, setting [%s].\n", qPrintable(value_.text(precision)));
 	lineEdit()->setText(value_.text(precision));
@@ -80,25 +80,24 @@ void TExponentialSpin::updateText(int precision)
 // Return double value
 double TExponentialSpin::value()
 {
-	// If the text has been changed since the value was last retrieved, update it first
-	updateValue();
-	
 	return value_.value();
 }
 
 // Set value
 void TExponentialSpin::setValue(double value)
 {
+	// Is the new value different from the old one?
+	bool different = (value_ != value);
+
 	// Store number, and then clamp it to range
 	value_ = value;
 	clamp();
 
 	// Update text
-	updateText();
+	updateTextFromValue();
 
-	// Emit signal
-	emit(valueChanged(value_.value()));
-	textChanged_ = false;
+	// Emit signal (only if new value is different)
+	if (different) emit(valueChanged(value_.value()));
 }
 
 // Set minimum limit
@@ -107,8 +106,7 @@ void TExponentialSpin::setMinimum(double value)
 	valueMin_ = value;
 	limitMinValue_ = true;
 
-	clamp();
-	updateText();
+	if (clamp()) updateTextFromValue();
 }
 
 // Set minimum limit
@@ -118,7 +116,7 @@ void TExponentialSpin::setMaximum(double value)
 	limitMaxValue_ = true;
 
 	clamp();
-	updateText();
+	updateTextFromValue();
 }
 
 // Set allowable range of value
@@ -135,7 +133,7 @@ void TExponentialSpin::setRange(bool limitMin, double minValue, bool limitMax, d
 	// Clamp current value if necessary
 	if (clamp())
 	{
-		updateText();
+		updateTextFromValue();
 		emit(valueChanged(value_.value()));
 		textChanged_ = false;
 	}
@@ -183,19 +181,20 @@ void TExponentialSpin::setSuffix(QString suffix)
  */
 
 // Update value from current text
-void TExponentialSpin::updateValue()
+void TExponentialSpin::updateValueFromText()
 {
 	if (!textChanged_) return;
 
-	// If the line edit is empty, revert to the previous value
-	if (lineEdit()->text().isEmpty()) updateText();
+	// If the line edit is empty, we will revert to the previous value
+	if (lineEdit()->text().isEmpty()) updateTextFromValue();
 	else
 	{
 		value_.set(lineEdit()->text());
-		if (clamp()) updateText();
+		if (clamp()) updateTextFromValue();
 	}
-	emit(valueChanged(value_.value()));
+
 	textChanged_ = false;
+	emit(valueChanged(value_.value()));
 }
 
 // Flag that the text has been modified since the last emit of valueChanged()
@@ -215,7 +214,7 @@ void TExponentialSpin::stepBy(int nSteps)
 
 	// Check new value and update text
 	clamp();
-	updateText();
+	updateTextFromValue();
 	emit(valueChanged(value_.value()));
 	textChanged_ = false;
 }
