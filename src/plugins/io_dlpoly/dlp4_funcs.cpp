@@ -31,12 +31,11 @@ DLP4ModelPlugin::DLP4ModelPlugin()
 {
 	// Setup plugin options
 	pluginOptions_.add("shiftCell", "true");
-	pluginOptions_.add("levcfg", "0");
-	pluginOptions_.add("useTypeNames", "true");
-	standardOptions_.setZMappingType(ElementMap::FirstAlphaZMap);
-	standardOptions_.setPreventFolding(true);
+	standardOptions_.setZMappingType(ElementMap::SingleAlphaZMap);
+	standardOptions_.setPreventFolding(false);
 	standardOptions_.setPreventPacking(true);
 	standardOptions_.setPreventRebonding(true);
+	standardOptions_.setKeepNames(true);
 }
 
 // Destructor
