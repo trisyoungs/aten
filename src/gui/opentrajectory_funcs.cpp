@@ -119,6 +119,9 @@ void AtenOpenTrajectory::updateStandardOptionsFromPlugin()
 	FilePluginInterface* plugin = ui.FileSelector->selectedPlugin();
 	if (!plugin) return;
 
-	// Set zmapping combo
+	ui.BohrCheck->setChecked(plugin->standardOptions().coordinatesInBohr());
+	ui.PreventRebondingCheck->setChecked(plugin->standardOptions().preventRebonding());
+	ui.PreventFoldingCheck->setChecked(plugin->standardOptions().preventFolding());
+	ui.PreventPackingCheck->setChecked(plugin->standardOptions().preventPacking());
 	ui.ZMappingCombo->setCurrentIndex(plugin->standardOptions().zMappingType());
 }

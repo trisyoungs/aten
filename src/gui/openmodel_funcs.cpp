@@ -122,6 +122,13 @@ void AtenOpenModel::updateStandardOptionsFromPlugin()
 	FilePluginInterface* plugin = ui.FileSelector->selectedPlugin();
 	if (!plugin) return;
 
-	// Set zmapping combo
+	ui.BohrCheck->setChecked(plugin->standardOptions().coordinatesInBohr());
+	ui.ForceRhombohedralCheck->setChecked(plugin->standardOptions().forceRhombohedral());
+	ui.KeepNamesCheck->setChecked(plugin->standardOptions().keepNames());
+	ui.KeepTypesCheck->setChecked(plugin->standardOptions().keepTypes());
+	ui.KeepViewCheck->setChecked(plugin->standardOptions().keepView());
+	ui.PreventRebondingCheck->setChecked(plugin->standardOptions().preventRebonding());
+	ui.PreventFoldingCheck->setChecked(plugin->standardOptions().preventFolding());
+	ui.PreventPackingCheck->setChecked(plugin->standardOptions().preventPacking());
 	ui.ZMappingCombo->setCurrentIndex(plugin->standardOptions().zMappingType());
 }

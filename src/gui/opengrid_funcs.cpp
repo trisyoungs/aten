@@ -116,6 +116,6 @@ void AtenOpenGrid::updateStandardOptionsFromPlugin()
 	FilePluginInterface* plugin = ui.FileSelector->selectedPlugin();
 	if (!plugin) return;
 
-	// Set zmapping combo
+	ui.BohrCheck->setChecked(plugin->standardOptions().coordinatesInBohr());
 	ui.ZMappingCombo->setCurrentIndex(plugin->standardOptions().zMappingType());
 }
