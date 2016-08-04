@@ -1,6 +1,6 @@
 # Set plugin installation dir and define plugin targets
 pluginexecdir = @ATEN_PLUGINLIBDIR@
-pluginexec_LTLIBRARIES = dlp2.la dlp4.la dlpfield.la dlp4history.la
+pluginexec_LTLIBRARIES = dlp2.la dlp4.la dlpfield.la dlp2history.la dlp4history.la
 
 # Rules
 .ui.lo:
@@ -40,8 +40,15 @@ dlpfield_la_SOURCES = field_funcs.cpp field.hui
 dlpfield_la_LIBADD = libcommon.la
 dlpfield_la_LDFLAGS = -module -shared -avoid-version
 
+# DL_POLY 2 History Plugin
+dlp2history_la_SOURCES = dlp2importoptions.ui dlp2importoptions_funcs.cpp
+dlp2history_la_SOURCES += history2_funcs.cpp history2.hui
+dlp2history_la_LIBADD = libcommon.la
+dlp2history_la_LDFLAGS = -module -shared -avoid-version
+
 # DL_POLY 4 History Plugin
-dlp4history_la_SOURCES = history4_funcs.cpp history4.hui
+dlp4history_la_SOURCES = dlp4importoptions.ui dlp4importoptions_funcs.cpp
+dlp4history_la_SOURCES += history4_funcs.cpp history4.hui
 dlp4history_la_LIBADD = libcommon.la
 dlp4history_la_LDFLAGS = -module -shared -avoid-version
 

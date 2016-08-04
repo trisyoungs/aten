@@ -25,6 +25,7 @@
 #include "base/lineparser.h"
 #include "base/elementmap.h"
 #include "templates/vector3.h"
+#include <templates/array.h>
 
 ATEN_BEGIN_NAMESPACE
 
@@ -80,7 +81,7 @@ class FileParser
 
 
 	/*
-	 * Read Functions
+	 * Formatted Read Functions
 	 */
 	public:
 	// Read next line from file
@@ -146,7 +147,45 @@ class FileParser
 
 
 	/*
-	 * Write Functions
+	 * Raw Read Functions
+	 */
+	public:
+	// Read characters
+	QString readChars(int nChars, bool skipEOL = true)
+	{
+		return parser_.getChars(nChars, skipEOL);
+	}
+	// Skip characters
+	void skipChars(int nChars)
+	{
+		parser_.skipChars(nChars);
+	}
+	// Read integer (with specified byte size)
+	bool readRawInteger(int& value, int nBytes = 0)
+	{
+		return parser_.getInteger(value, nBytes);
+	}
+	// Read double (with specified byte size
+	bool readRawDouble(double& value, int nBytes = 0)
+	{
+		return parser_.getDouble(value, nBytes);
+	}
+	// Read integer array
+	bool readRawIntegerArray(Array<int>& array, int nValues)
+	{
+		array.createEmpty(nValues);
+		return (parser_.getIntegerArray(array.array(), nValues) == 0);
+	}
+	// Read double array
+	bool readRawDoubleArray(Array<double>& array, int nValues)
+	{
+		array.createEmpty(nValues);
+		return (parser_.getDoubleArray(array.array(), nValues) == 0);
+	}
+
+
+	/*
+	 * Formatted Write Functions
 	 */
 	public:
 	// Write partial line to file

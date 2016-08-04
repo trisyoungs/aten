@@ -890,36 +890,30 @@ void LineParser::skipChars(int nchars)
 }
 
 // Return an integer value from reading 'n' chars of an (unformatted) input stream
-int LineParser::getInteger(int nbytes)
+bool LineParser::getInteger(int& value, int nbytes)
 {
-	// Use default size if none specified
-	if (nbytes == 0)
-	{
-		int readi;
-		inputFile_->read((char*) &readi, sizeof(int));
-		return readi;
-	}
 	// Try and select a suitable type for the read, based on nbytes
+	if ((nbytes == 0) || (sizeof(int) == nbytes))
+	{
+		inputFile_->read((char*) &value, sizeof(int));
+		return inputFile_->good();
+	}
 	if (sizeof(short int) == nbytes)
 	{
 		short int readi;
 		inputFile_->read((char*) &readi, nbytes);
-		return (int) readi;
-	}
-	else if (sizeof(int) == nbytes)
-	{
-		int readi;
-		inputFile_->read((char*) &readi, nbytes);
-		return readi;
+		value = (int) readi;
+		return inputFile_->good();
 	}
 	else if (sizeof(long int) == nbytes)
 	{
 		long int readi;
 		inputFile_->read((char*) &readi, nbytes);
-		return (int) readi;
+		value = (int) readi;
+		return inputFile_->good();
 	}
-	else Messenger::print("Error: Integer of size %i bytes does not correspond to any internal type.", nbytes);
-	return 0;
+
+	return false;
 }
 
 // Read an array of integer values from an (unformatted) input file
@@ -940,30 +934,23 @@ int LineParser::getIntegerArray(int *array, int count)
 }
 
 // Return a double value from reading 'n' chars of an (unformatted) input file
-double LineParser::getDouble(int nbytes)
+double LineParser::getDouble(double& value, int nbytes)
 {
-	// Use default size if none specified
-	if (nbytes == 0)
-	{
-		double readd;
-		inputFile_->read((char*) &readd, sizeof(double));
-		return readd;
-	}
 	// Try and select a suitable type for the read, based on nbytes
-	if (sizeof(double) == nbytes)
+	if ((nbytes == 0) || (sizeof(double) == nbytes))
 	{
-		double readd;
-		inputFile_->read((char*) &readd, nbytes);
-		return readd;
+		inputFile_->read((char*) &value, sizeof(double));
+		return inputFile_->good();
 	}
 	else if (sizeof(long double) == nbytes)
 	{
 		long double readd;
 		inputFile_->read((char*) &readd, nbytes);
-		return (double) readd;
+		value = (double) readd;
+		return inputFile_->good();
 	}
-	else Messenger::print("Error: Double of size %i bytes does not correspond to any internal type.", nbytes);
-	return 0.0;
+
+	return false;
 }
 
 // Read an array of double values from an (unformatted) input file

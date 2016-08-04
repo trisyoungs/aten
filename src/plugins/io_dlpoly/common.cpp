@@ -1,24 +1,24 @@
 /*
- *** Common functions for DL_POLY_4 plugins
- *** src/plugins/io_dlpoly/common.cpp
- Copyright T. Youngs 2016-2016
- Copyright A. M. Elena 2016-2016
+	*** Common functions for DL_POLY plugins
+	*** src/plugins/io_dlpoly/common.cpp
+	Copyright T. Youngs 2016-2016
+	Copyright A. M. Elena 2016-2016
 
- This file is part of Aten.
+	This file is part of Aten.
 
- Aten is free software: you can redistribute it and/or modify
- it under the terms of the GNU General Public License as published by
- the Free Software Foundation, either version 3 of the License, or
- (at your option) any later version.
+	Aten is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
 
- Aten is distributed in the hope that it will be useful,
- but WITHOUT ANY WARRANTY; without even the implied warranty of
- MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- GNU General Public License for more details.
+	Aten is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
 
- You should have received a copy of the GNU General Public License
- along with Aten.  If not, see <http://www.gnu.org/licenses/>.
- */
+	You should have received a copy of the GNU General Public License
+	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
+*/
 
 #include "plugins/interfaces/fileplugin.h"
 #include "plugins/io_dlpoly/common.h"
@@ -138,11 +138,6 @@ bool DLPOLYPluginCommon::readCONFIGModel ( FilePluginInterface* plugin, FilePars
     targetModel->selectNone(true);
   }
 
-  // Pack model
-	if (!plugin->standardOptions().preventPacking()){
-    targetModel->pack();
-  }
-
 	// Fold model
 	if (!plugin->standardOptions().preventFolding()) {
     targetModel->foldAllAtoms();
@@ -152,6 +147,7 @@ bool DLPOLYPluginCommon::readCONFIGModel ( FilePluginInterface* plugin, FilePars
   if ( !plugin->standardOptions().preventRebonding() ) {
     targetModel->calculateBonding ( true );
   }
+
   // Check the number of atoms we read in 
   if ( ( n==nAtoms ) || ( nAtoms==0 ) ) {
     return true;
@@ -215,6 +211,9 @@ bool DLPOLYPluginCommon::writeCONFIGModel (FilePluginInterface* plugin, FilePars
   // Write atom information
   int k=1;
   bool useTypeNames = FilePluginInterface::toBool(plugin->pluginOptions().value("useTypeNames"));
+  bool shift = (FilePluginInterface::toBool(plugin->pluginOptions().value("shiftCell")) && sourceModel->isPeriodic());
+  Vec3<double> r;
+ 
   for ( Atom* i = sourceModel->atoms(); i != NULL; i = i->next ) {
     if (levcfg>=0){
       if (useTypeNames && i->type()){
@@ -226,7 +225,9 @@ bool DLPOLYPluginCommon::writeCONFIGModel (FilePluginInterface* plugin, FilePars
         return false;
       }
 
-      if (!parser.writeLineF("%20.10f%20.10f%20.10f%-12s",i->r().x,i->r().y,i->r().z," ") ){
+      r = i->r();
+      if (shift) r -= sourceModel->cell().centre();
+      if (!parser.writeLineF("%20.10f%20.10f%20.10f%-12s",r.x,r.y,r.z," ") ){
         return false;
       }
     }
@@ -243,4 +244,80 @@ bool DLPOLYPluginCommon::writeCONFIGModel (FilePluginInterface* plugin, FilePars
   }
 
   return true;
+}
+
+// Determine whether trajectory file is unformatted
+bool DLPOLYPluginCommon::determineHISTORYFormat(FilePluginInterface* plugin, FileParser& parser, bool& isFormatted, bool& hasHeader, DLPOLYPluginCommon::DLPOLYVersion version)
+{
+	// Get unformatted datatype sizes
+	int integerSize = plugin->pluginOptions().value("integerSize").toInt();
+	int realSize = plugin->pluginOptions().value("realSize").toInt();
+	int recordLength;
+
+	/*
+	 * 1) Try an unformatted read to get the Fortran integer record size
+	 *    The result of this will be either 40 or 80 for DL_POLY2, depending on whether the HISTORY file is restarted or not
+	 */
+	if (!parser.readRawInteger(recordLength, integerSize)) return false;
+	if (recordLength == 40)
+	{
+		Messenger::print("DL_POLY HISTORY file appears to be unformatted and does not contain a header.");
+		isFormatted = false;
+		hasHeader = false;
+		parser.rewind();
+		return true;
+	}
+	else if (recordLength == 80)
+	{
+		Messenger::print("DL_POLY HISTORY file appears to be unformatted and contains a header.");
+		isFormatted = false;
+		hasHeader = true;
+		parser.rewind();
+		return true;
+	}
+
+	/*
+	 * 2) Doesn't appear to be unformatted - make sure its formatted...
+	 */
+	QString line;
+	if (!parser.readLine(line)) return false;
+	if (line.startsWith("timestep "))
+	{
+		Messenger::print("DL_POLY HISTORY file appears to be formatted and does not contain a header.");
+		isFormatted = true;
+		hasHeader = false;
+		parser.rewind();
+		return true;
+	}
+	else
+	{
+		// Must skip next line and then check for "timestep" line again
+		if (!parser.skipLines(1)) return false;
+		if (!parser.readLine(line)) return false;
+		if (line.startsWith("timestep "))
+		{
+			Messenger::print("DL_POLY HISTORY file appears to be formatted and contains a header.");
+			isFormatted = true;
+			hasHeader = true;
+			parser.rewind();
+			return true;
+		}
+	}
+
+	Messenger::error("Failed to determine format of DL_POLY HISTORY file.");
+
+	return false;
+}
+
+// Skip single unformatted frame in file
+bool DLPOLYPluginCommon::skipUnformattedFrame(FilePluginInterface* plugin, FileParser& parser, DLPOLYVersion version, int integerSize, int realSize)
+{
+
+  return true;
+}
+
+// Read single unformatted frame from file
+bool DLPOLYPluginCommon::readUnformattedFrame(FilePluginInterface* plugin, FileParser& parser, Model* targetModel, DLPOLYPluginCommon::DLPOLYVersion version, int integerSize, int realSize)
+{
+	return true;
 }

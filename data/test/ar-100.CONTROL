@@ -1,0 +1,37 @@
+DL_POLY CONTROL file 
+
+# System State
+temperature		300.0   # K
+#zero
+#ensemble nvt
+ensemble   nvt hoover   0.1
+#pressure		0.00101325
+#ensemble   npt hoover   0.2  0.1
+
+# Simulation Time
+timestep		5.0E-6  # ps
+steps			100000
+
+# Long-range Interactions
+cut			16.0
+rvdw		16.0
+delr			0.5
+
+##### Change to 5.0E-8 for production runs
+no elec
+##########################################
+
+# Constraint Tolerance
+shake tolerance		1E-8
+
+# Output
+traj    start at: 1 ; save every: 1000 ; save information: 2
+print			10
+stack		1000
+stats			10
+
+# Job Control
+job time		1E8
+close time		1E3
+
+finish

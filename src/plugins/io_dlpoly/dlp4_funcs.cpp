@@ -37,7 +37,6 @@ DLP4ModelPlugin::DLP4ModelPlugin()
 	standardOptions_.setPreventFolding(true);
 	standardOptions_.setPreventPacking(true);
 	standardOptions_.setPreventRebonding(true);
-
 }
 
 // Destructor

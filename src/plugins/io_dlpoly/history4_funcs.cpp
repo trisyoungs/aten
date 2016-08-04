@@ -22,13 +22,18 @@
 
 #include "plugins/io_dlpoly/history4.hui"
 #include "plugins/io_dlpoly/common.h"
+#include "plugins/io_dlpoly/dlp4importoptions.h"
 #include "model/model.h"
 
 // Constructor
 DLP4TrajectoryPlugin::DLP4TrajectoryPlugin()
 {
-	// Setup option keywords
-	/* none */
+	// Setup option keywords and standard options
+	pluginOptions_.add("shiftCell", "true");
+	standardOptions_.setZMappingType(ElementMap::FirstAlphaZMap);
+	standardOptions_.setPreventFolding(true);
+	standardOptions_.setPreventPacking(true);
+	standardOptions_.setPreventRebonding(true);
 }
 
 // Destructor
@@ -59,7 +64,7 @@ PluginTypes::FilePluginCategory DLP4TrajectoryPlugin::category() const
 // Name of plugin
 QString DLP4TrajectoryPlugin::name() const
 {
-	return QString("HISTORY Files (DL_POLY_4 Style)");
+	return QString("DL_POLY HISTORY Files (version 4)");
 }
 
 // Nickname of plugin
@@ -71,7 +76,7 @@ QString DLP4TrajectoryPlugin::nickname() const
 // Description (long name) of plugin
 QString DLP4TrajectoryPlugin::description() const
 {
-	return QString("Import/export for DL_POLY_4 HISTORY files");
+	return QString("Import for DL_POLY_4 HISTORY files");
 }
 
 // Related file extensions
@@ -83,7 +88,7 @@ QStringList DLP4TrajectoryPlugin::extensions() const
 // Exact names
 QStringList DLP4TrajectoryPlugin::exactNames() const
 {
-	return QStringList()<< "HISTORY";
+	return QStringList() << "HISTORY";
 }
 
 /*
@@ -100,14 +105,14 @@ bool DLP4TrajectoryPlugin::canImport()
 bool DLP4TrajectoryPlugin::importData()
 {
 	// Read header information from trajectory file, if there is any
-  QString name;
-  if ( !fileParser_.readLine ( name ) ) {
-    return false;
-  }
-  targetModel()->setName ( name );
-  if ( !fileParser_.skipLines ( 1 ) ) {
-    return false;
-  }
+	QString name;
+	if ( !fileParser_.readLine ( name ) ) {
+		return false;
+	}
+	targetModel()->setName ( name );
+	if ( !fileParser_.skipLines ( 1 ) ) {
+		return false;
+	}
 
 	// Read the first trajectory frame.
 	// The model where we should put the frame data will have been set in the FileParser (in parentModel()).
@@ -156,7 +161,7 @@ bool DLP4TrajectoryPlugin::exportData()
 // Import next partial data chunk
 bool DLP4TrajectoryPlugin::importNextPart()
 {
-	return DLPOLYPluginCommon::readCONFIGModel(this, fileParser_, targetModel(),DLPOLYPluginCommon::DLPOLY4,true);
+	return DLPOLYPluginCommon::readCONFIGModel(this, fileParser_, targetModel(), DLPOLYPluginCommon::DLPOLY4, true);
 }
 
 // Skip next partial data chunk
@@ -172,13 +177,14 @@ bool DLP4TrajectoryPlugin::skipNextPart()
 // Return whether the plugin has import options
 bool DLP4TrajectoryPlugin::hasImportOptions()
 {
-	return false;
+	return true;
 }
 
 // Show import options dialog
 bool DLP4TrajectoryPlugin::showImportOptionsDialog()
 {
-	return false;
+	DLP4ImportOptionsDialog optionsDialog(pluginOptions_);
+	return (optionsDialog.updateAndExecute() == QDialog::Accepted);
 }
 
 // Return whether the plugin has export options

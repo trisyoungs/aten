@@ -1,5 +1,5 @@
 /*
-        *** Common functions for DL_POLY_4 plugins
+        *** Common functions for DL_POLY plugins
         *** src/plugins/io_dlpoly/common.h
         Copyright T. Youngs 2016-2016
         Copyright A. M. Elena 2016-2016
@@ -45,6 +45,12 @@ class DLPOLYPluginCommon
 	static bool skipFrameModel(FilePluginInterface* plugin, FileParser& parser, DLPOLYVersion version);
 	// Write single CONFIG model to file
 	static bool writeCONFIGModel(FilePluginInterface* plugin, FileParser& parser, Model* sourceModel, DLPOLYVersion version);
+	// Determine whether trajectory file is unformatted
+	static bool determineHISTORYFormat(FilePluginInterface* plugin, FileParser& parser, bool& isFormatted, bool& hasHeader, DLPOLYVersion version);
+	// Read single unformatted frame from file
+	static bool readUnformattedFrame(FilePluginInterface* plugin, FileParser& parser, Model* targetModel, DLPOLYVersion version, int integerSize, int realSize);
+	// Skip unformatted frame model in file
+	static bool skipUnformattedFrame(FilePluginInterface* plugin, FileParser& parser, DLPOLYVersion version, int integerSize, int realSize);
 };
 
 ATEN_END_NAMESPACE

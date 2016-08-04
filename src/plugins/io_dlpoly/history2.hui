@@ -1,6 +1,6 @@
 /*
-        *** DL_POLY_4 Trajectory Plugin
-        *** src/plugins/io_dlpoly/history4.hui
+        *** DL_POLY_2 Trajectory Plugin
+        *** src/plugins/io_dlpoly/history2.hui
         Copyright T. Youngs 2016-2016
         Copyright A.M. Elena 2016-2016
 
@@ -20,8 +20,8 @@
         along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_DLP4TRAJECTORYPLUGIN_H
-#define ATEN_DLP4TRAJECTORYPLUGIN_H
+#ifndef ATEN_DLP2TRAJECTORYPLUGIN_H
+#define ATEN_DLP2TRAJECTORYPLUGIN_H
 
 #include "plugins/interfaces/fileplugin.h"
 
@@ -31,7 +31,7 @@ ATEN_BEGIN_NAMESPACE
 /* none */
 
 // DLP4 Trajectory Import Plugin
-class DLP4TrajectoryPlugin : public QObject, public FilePluginInterface
+class DLP2TrajectoryPlugin : public QObject, public FilePluginInterface
 {
 	Q_OBJECT
 	Q_PLUGIN_METADATA(IID "com.projectaten.Aten.FilePluginInterface.v1")
@@ -43,9 +43,9 @@ class DLP4TrajectoryPlugin : public QObject, public FilePluginInterface
 	 */
 	public:
 	// Constructor
-	DLP4TrajectoryPlugin();
+	DLP2TrajectoryPlugin();
 	// Destructor
-	~DLP4TrajectoryPlugin();
+	~DLP2TrajectoryPlugin();
 	// Return a copy of the plugin object
 	FilePluginInterface* makeCopy();
 
@@ -98,6 +98,20 @@ class DLP4TrajectoryPlugin : public QObject, public FilePluginInterface
 	bool hasExportOptions();
 	// Show export options dialog
 	bool showExportOptionsDialog();
+
+
+	/*
+	 * Local Variables
+	 */
+	private:
+	// Whether trajectory is unformatted
+	bool unformatted_;
+	// Whether trajectory has a header
+	bool hasHeader_;
+	// Size of integer (in bytes) for unformatted trajectories
+	int integerSize_;
+	// Size of real (in bytes) for unformatted trajectories
+	int realSize_;
 };
 
 ATEN_END_NAMESPACE

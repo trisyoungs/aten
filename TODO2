@@ -27,6 +27,7 @@ Plugin TODO
 ===========
 POVray export.
 Implement partitioning schemes as plugins, and update to use simple equations in tests rather than Grids?
+GeneralFilePlugin, for exporting anything else that isn't a model, forcefield, grid etc. (CONTROL files, POVray stuff etc.)
 
 Graphics TODO
 =============
