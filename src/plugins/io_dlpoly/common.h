@@ -48,7 +48,7 @@ class DLPOLYPluginCommon
 	// Determine whether trajectory file is unformatted
 	static bool determineHISTORYFormat(FilePluginInterface* plugin, FileParser& parser, bool& isFormatted, bool& hasHeader, DLPOLYVersion version);
 	// Read single unformatted frame from file
-	static bool readUnformattedFrame(FilePluginInterface* plugin, FileParser& parser, Model* targetModel, DLPOLYVersion version, int integerSize, int realSize);
+	static bool readUnformattedFrame(FilePluginInterface* plugin, FileParser& parser, Model* targetModel, DLPOLYVersion version, int integerSize, int realSize, Array<int> unformattedElements);
 	// Skip unformatted frame model in file
 	static bool skipUnformattedFrame(FilePluginInterface* plugin, FileParser& parser, DLPOLYVersion version, int integerSize, int realSize);
 };

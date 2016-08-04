@@ -32,7 +32,7 @@ DLP2TrajectoryPlugin::DLP2TrajectoryPlugin()
 	pluginOptions_.add("shiftCell", "true");
 	pluginOptions_.add("integerSize", "4");
 	pluginOptions_.add("realSize", "8");
-	standardOptions_.setZMappingType(ElementMap::FirstAlphaZMap);
+	standardOptions_.setZMappingType(ElementMap::SingleAlphaZMap);
 	standardOptions_.setPreventFolding(true);
 	standardOptions_.setPreventPacking(true);
 	standardOptions_.setPreventRebonding(true);
@@ -54,7 +54,7 @@ FilePluginInterface* DLP2TrajectoryPlugin::makeCopy()
 }
 
 /*
- * DLPOLY2 Model Import / Export Plugin
+ * DLPOLY2 Model Import Plugin
  */
 
 // Return category of plugin
@@ -118,6 +118,7 @@ bool DLP2TrajectoryPlugin::importData()
 	}
 
 	// Read header information from trajectory file, if there is any
+	unformattedElements_.clear();
 	if (hasHeader_)
 	{
 		if (unformatted_)

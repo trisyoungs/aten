@@ -182,7 +182,11 @@ class FileParser
 		array.createEmpty(nValues);
 		return (parser_.getDoubleArray(array.array(), nValues) == 0);
 	}
-
+	// Read double array
+	bool readRawDoubleArray(double* array, int nValues)
+	{
+		return (parser_.getDoubleArray(array, nValues) == 0);
+	}
 
 	/*
 	 * Formatted Write Functions

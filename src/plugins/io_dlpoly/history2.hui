@@ -112,6 +112,8 @@ class DLP2TrajectoryPlugin : public QObject, public FilePluginInterface
 	int integerSize_;
 	// Size of real (in bytes) for unformatted trajectories
 	int realSize_;
+	// Elements determined from unformatted trejactory header
+	Array<int> unformattedElements_;
 };
 
 ATEN_END_NAMESPACE

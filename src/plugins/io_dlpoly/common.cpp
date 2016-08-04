@@ -309,6 +309,158 @@ bool DLPOLYPluginCommon::determineHISTORYFormat(FilePluginInterface* plugin, Fil
 	return false;
 }
 
+// Read single unformatted frame from file
+bool DLPOLYPluginCommon::readUnformattedFrame(FilePluginInterface* plugin, FileParser& parser, Model* targetModel, DLPOLYPluginCommon::DLPOLYVersion version, int integerSize, int realSize, Array<int> unformattedElements)
+{
+	// Variables
+	double tempDouble, mass, q, timeStep;
+	double axes[9];
+	int recordLength, nAtoms, nStep, keytrj, imcon, n;
+
+	// First data for frame is : nstep, natoms, keytrj, imcon, tstep, all as doubles 
+	if (!parser.readRawInteger(recordLength, integerSize)) return false;
+	if (recordLength != 5*realSize)
+	{
+		Messenger::error("Error reading start of trajectory frame.");
+		return false;
+	}
+	if (!parser.readRawDouble(tempDouble, realSize)) return false;
+	nStep = floor(tempDouble+0.1);
+	if (!parser.readRawDouble(tempDouble, realSize)) return false;
+	nAtoms = floor(tempDouble+0.1);
+	if (!parser.readRawDouble(tempDouble, realSize)) return false;
+	keytrj = floor(tempDouble+0.1);
+	if (!parser.readRawDouble(tempDouble, realSize)) return false;
+	imcon = floor(tempDouble+0.1);
+	if (!parser.readRawDouble(timeStep, realSize)) return false;
+
+	if (!parser.readRawInteger(recordLength, integerSize)) return false;
+
+	Messenger::print(Messenger::Verbose, "nstep = %i, natoms = %i, keytrj = %i, imcon = %i, tstep = %f\n", nStep, nAtoms, keytrj, imcon, timeStep);
+	targetModel->setName(QString("t = %1, n = %2").arg(timeStep).arg(nStep));
+
+	// Create temporary data arrays for reading
+	Array<double> x, y, z;
+
+	// Unit cell
+	if (imcon != 0)
+	{
+		if (!parser.readRawInteger(recordLength, integerSize)) return false;
+		if (recordLength != 9*realSize)
+		{
+			Messenger::print("Error reading cell info from trajectory frame.");
+			return false;
+		}
+		if (!parser.readRawDoubleArray(axes, 9)) return false;
+		if (!parser.readRawInteger(recordLength, integerSize)) return false;
+
+		Matrix mat;
+		mat.setColumn(0, axes[0], axes[1], axes[2]);
+		mat.setColumn(1, axes[3], axes[4], axes[5]);
+		mat.setColumn(2, axes[6], axes[7], axes[8]);
+		targetModel->setCell(mat);
+	}
+
+	// Coordinates
+	if (!parser.readRawInteger(recordLength, integerSize)) return false;
+	if (recordLength != nAtoms*realSize)
+	{
+		Messenger::error("Error reading coordinate info from trajectory frame.");
+		return false;
+	}
+	if (!parser.readRawDoubleArray(x, nAtoms)) return false;
+	if (!parser.readRawInteger(recordLength, integerSize)) return false;
+
+	if (!parser.readRawInteger(recordLength, integerSize)) return false;
+	if (!parser.readRawDoubleArray(y, nAtoms)) return false;
+	if (!parser.readRawInteger(recordLength, integerSize)) return false;
+
+	if (!parser.readRawInteger(recordLength, integerSize)) return false;
+	if (!parser.readRawDoubleArray(z, nAtoms)) return false;
+	if (!parser.readRawInteger(recordLength, integerSize)) return false;
+
+	// Create atoms - if we read in atom information in the header we will have the names and masses
+	// If these arrays are empty, use the parent model. If it doesn't contain enough atoms, create a dummy atom
+	Atom* i = targetModel->parent()->atoms();
+	Vec3<double> r;
+	for (int n = 0; n<nAtoms; ++n)
+	{
+		r.set(x[n], y[n], z[n]);
+		if (cellShift && (imcon != 0)) v += m.cell.fracToReal(0.5, 0.5, 0.5);
+
+		// If possible, use information from header or parent model
+		if (n < unformattedElements.size()) targetModel->addAtom(unformattedElements[n], r);
+		else if (i) targetModel->addAtom(i->element(), r);
+		else targetModel->addAtom(0, r);
+
+		if (i) i = i->next;
+	}
+
+	// Velocities
+	if (keytrj > 0)
+	{
+		if (!parser.readRawInteger(recordLength, integerSize)) return false;
+		if (recordLength != nAtoms*realSize)
+		{
+			Messenger::error("Error reading velocities from trajectory frame.");
+			return false;
+		}
+		if (!parser.readRawDoubleArray(x, nAtoms)) return false;
+		if (!parser.readRawInteger(recordLength, integerSize)) return false;
+
+		if (!parser.readRawInteger(recordLength, integerSize)) return false;
+		if (!parser.readRawDoubleArray(y, nAtoms)) return false;
+		if (!parser.readRawInteger(recordLength, integerSize)) return false;
+
+		if (!parser.readRawInteger(recordLength, integerSize)) return false;
+		if (!parser.readRawDoubleArray(z, nAtoms)) return false;
+		if (!parser.readRawInteger(recordLength, integerSize)) return false;
+
+		int n = 0;
+		Atom* i = targetModel->atoms();
+		while (i)
+		{
+			i->v().set(x[n], y[n], z[n]);
+			i = i->next;
+			++n;
+		}
+	}
+
+	// Forces
+	if (keytrj > 1)
+	{
+		if (!parser.readRawInteger(recordLength, integerSize)) return false;
+		{
+			Messenger::error("Error reading forces from trajectory frame.");
+			return false;
+		}
+		if (!parser.readRawDoubleArray(x, nAtoms)) return false;
+		if (!parser.readRawInteger(recordLength, integerSize)) return false;
+
+		if (!parser.readRawInteger(recordLength, integerSize)) return false;
+		if (!parser.readRawDoubleArray(y, nAtoms)) return false;
+		if (!parser.readRawInteger(recordLength, integerSize)) return false;
+
+		if (!parser.readRawInteger(recordLength, integerSize)) return false;
+		if (!parser.readRawDoubleArray(z, nAtoms)) return false;
+		if (!parser.readRawInteger(recordLength, integerSize)) return false;
+
+		int n = 0;
+		Atom* i = targetModel->atoms();
+		while (i)
+		{
+			i->f().set(x[n], y[n], z[n]);
+			i = i->next;
+			++n;
+		}
+	}
+
+	// Rebond (if requested)
+	if (!plugin->standardOptions().preventRebonding()) targetModel->calculateBonding(true);
+
+	return true;
+}
+
 // Skip single unformatted frame in file
 bool DLPOLYPluginCommon::skipUnformattedFrame(FilePluginInterface* plugin, FileParser& parser, DLPOLYVersion version, int integerSize, int realSize)
 {
@@ -316,8 +468,3 @@ bool DLPOLYPluginCommon::skipUnformattedFrame(FilePluginInterface* plugin, FileP
   return true;
 }
 
-// Read single unformatted frame from file
-bool DLPOLYPluginCommon::readUnformattedFrame(FilePluginInterface* plugin, FileParser& parser, Model* targetModel, DLPOLYPluginCommon::DLPOLYVersion version, int integerSize, int realSize)
-{
-	return true;
-}
