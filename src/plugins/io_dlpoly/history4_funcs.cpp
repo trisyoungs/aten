@@ -23,6 +23,7 @@
 #include "plugins/io_dlpoly/history4.hui"
 #include "plugins/io_dlpoly/common.h"
 #include "model/model.h"
+#include "plugins/io_dlpoly/history4importoptions.h"
 
 // Constructor
 DLP4TrajectoryPlugin::DLP4TrajectoryPlugin()
@@ -34,6 +35,11 @@ DLP4TrajectoryPlugin::DLP4TrajectoryPlugin()
 // Destructor
 DLP4TrajectoryPlugin::~DLP4TrajectoryPlugin()
 {
+	pluginOptions_.add("ioTraj", "false");
+	standardOptions_.setZMappingType(ElementMap::SingleAlphaZMap);
+	standardOptions_.setPreventFolding(false);
+	standardOptions_.setPreventPacking(true);
+	standardOptions_.setPreventRebonding(true);
 }
 
 /*
@@ -172,13 +178,14 @@ bool DLP4TrajectoryPlugin::skipNextPart()
 // Return whether the plugin has import options
 bool DLP4TrajectoryPlugin::hasImportOptions()
 {
-	return false;
+	return true;
 }
 
 // Show import options dialog
 bool DLP4TrajectoryPlugin::showImportOptionsDialog()
 {
-	return false;
+  HISTORY4ImportOptionsDialog optionsDialog ( pluginOptions_ );
+  return ( optionsDialog.updateAndExecute() == QDialog::Accepted );
 }
 
 // Return whether the plugin has export options

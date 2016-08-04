@@ -143,14 +143,22 @@ target_include_directories(dlpfield PRIVATE
 # DL_POLY_4 HISTORY
 # -------------
 set(history4_MOC_HDRS
+  history4importoptions.h 
   history4.hui
 )
 QT5_WRAP_CPP(history4_MOC_SRCS ${history4_MOC_HDRS} OPTIONS -I${PROJECT_SOURCE_DIR}/src)
 
+set(history4_UIS
+  history4importoptions.ui 
+)
+QT5_WRAP_UI(history4_UIS_H ${history4_UIS})
+
 add_library(dlp4history MODULE
   history4_funcs.cpp
   common.cpp
+  history4importoptions_funcs.cpp
   ${history4_MOC_SRCS}
+  ${history4_UIS_H}
 )
 target_link_libraries(dlp4history
   ${PLUGIN_LINK_LIBS}
