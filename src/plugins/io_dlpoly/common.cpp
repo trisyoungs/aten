@@ -247,7 +247,7 @@ bool DLPOLYPluginCommon::writeCONFIGModel (FilePluginInterface* plugin, FilePars
 }
 
 // Determine whether trajectory file is unformatted
-bool DLPOLYPluginCommon::determineHISTORYFormat(FilePluginInterface* plugin, FileParser& parser, bool& isFormatted, bool& hasHeader, DLPOLYPluginCommon::DLPOLYVersion version)
+bool DLPOLYPluginCommon::determineHISTORYFormat(FilePluginInterface* plugin, FileParser& parser, bool& unformatted, bool& hasHeader, DLPOLYPluginCommon::DLPOLYVersion version)
 {
 	// Get unformatted datatype sizes
 	int integerSize = plugin->pluginOptions().value("integerSize").toInt();
@@ -262,7 +262,7 @@ bool DLPOLYPluginCommon::determineHISTORYFormat(FilePluginInterface* plugin, Fil
 	if (recordLength == 40)
 	{
 		Messenger::print("DL_POLY HISTORY file appears to be unformatted and does not contain a header.");
-		isFormatted = false;
+		unformatted = true;
 		hasHeader = false;
 		parser.rewind();
 		return true;
@@ -270,7 +270,7 @@ bool DLPOLYPluginCommon::determineHISTORYFormat(FilePluginInterface* plugin, Fil
 	else if (recordLength == 80)
 	{
 		Messenger::print("DL_POLY HISTORY file appears to be unformatted and contains a header.");
-		isFormatted = false;
+		unformatted = true;
 		hasHeader = true;
 		parser.rewind();
 		return true;
@@ -279,12 +279,13 @@ bool DLPOLYPluginCommon::determineHISTORYFormat(FilePluginInterface* plugin, Fil
 	/*
 	 * 2) Doesn't appear to be unformatted - make sure its formatted...
 	 */
+	parser.rewind();
 	QString line;
 	if (!parser.readLine(line)) return false;
 	if (line.startsWith("timestep "))
 	{
 		Messenger::print("DL_POLY HISTORY file appears to be formatted and does not contain a header.");
-		isFormatted = true;
+		unformatted = false;
 		hasHeader = false;
 		parser.rewind();
 		return true;
@@ -297,7 +298,7 @@ bool DLPOLYPluginCommon::determineHISTORYFormat(FilePluginInterface* plugin, Fil
 		if (line.startsWith("timestep "))
 		{
 			Messenger::print("DL_POLY HISTORY file appears to be formatted and contains a header.");
-			isFormatted = true;
+			unformatted = false;
 			hasHeader = true;
 			parser.rewind();
 			return true;
@@ -306,16 +307,17 @@ bool DLPOLYPluginCommon::determineHISTORYFormat(FilePluginInterface* plugin, Fil
 
 	Messenger::error("Failed to determine format of DL_POLY HISTORY file.");
 
+	parser.rewind();
 	return false;
 }
 
 // Read single unformatted frame from file
-bool DLPOLYPluginCommon::readUnformattedFrame(FilePluginInterface* plugin, FileParser& parser, Model* targetModel, DLPOLYPluginCommon::DLPOLYVersion version, int integerSize, int realSize, Array<int> unformattedElements)
+bool DLPOLYPluginCommon::readUnformattedFrame(FilePluginInterface* plugin, FileParser& parser, Model* targetModel, DLPOLYPluginCommon::DLPOLYVersion version, int integerSize, int realSize, QStringList unformattedAtomNames, Array<double> unformattedCharges)
 {
 	// Variables
-	double tempDouble, mass, q, timeStep;
+	double tempDouble, timeStep;
 	double axes[9];
-	int recordLength, nAtoms, nStep, keytrj, imcon, n;
+	int recordLength, nAtoms, nStep, keytrj, imcon;
 
 	// First data for frame is : nstep, natoms, keytrj, imcon, tstep, all as doubles 
 	if (!parser.readRawInteger(recordLength, integerSize)) return false;
@@ -381,16 +383,25 @@ bool DLPOLYPluginCommon::readUnformattedFrame(FilePluginInterface* plugin, FileP
 
 	// Create atoms - if we read in atom information in the header we will have the names and masses
 	// If these arrays are empty, use the parent model. If it doesn't contain enough atoms, create a dummy atom
-	Atom* i = targetModel->parent()->atoms();
+	Atom* i = targetModel->parent()->atoms(), *j;
+	bool shiftCell = FilePluginInterface::toBool(plugin->pluginOptions().value("shiftCell"));
 	Vec3<double> r;
 	for (int n = 0; n<nAtoms; ++n)
 	{
 		r.set(x[n], y[n], z[n]);
-		if (cellShift && (imcon != 0)) v += m.cell.fracToReal(0.5, 0.5, 0.5);
+		if (shiftCell && (imcon != 0)) r += targetModel->cell().centre();
 
 		// If possible, use information from header or parent model
-		if (n < unformattedElements.size()) targetModel->addAtom(unformattedElements[n], r);
-		else if (i) targetModel->addAtom(i->element(), r);
+		if (n < unformattedAtomNames.size())
+		{
+			j = plugin->createAtom(targetModel, unformattedAtomNames.at(n), r);
+			j->setCharge(unformattedCharges[n]);
+		}
+		else if (i)
+		{
+			j = targetModel->addAtom(i->element(), r);
+			j->copyStyle(i);
+		}
 		else targetModel->addAtom(0, r);
 
 		if (i) i = i->next;
@@ -430,6 +441,7 @@ bool DLPOLYPluginCommon::readUnformattedFrame(FilePluginInterface* plugin, FileP
 	if (keytrj > 1)
 	{
 		if (!parser.readRawInteger(recordLength, integerSize)) return false;
+		if (recordLength != nAtoms*realSize)
 		{
 			Messenger::error("Error reading forces from trajectory frame.");
 			return false;
@@ -464,7 +476,102 @@ bool DLPOLYPluginCommon::readUnformattedFrame(FilePluginInterface* plugin, FileP
 // Skip single unformatted frame in file
 bool DLPOLYPluginCommon::skipUnformattedFrame(FilePluginInterface* plugin, FileParser& parser, DLPOLYVersion version, int integerSize, int realSize)
 {
+	// Variables
+	double tempDouble, timeStep;
+	int recordLength, nAtoms, nStep, keytrj, imcon;
 
-  return true;
+	// First data for frame is : nstep, natoms, keytrj, imcon, tstep, all as doubles 
+	if (!parser.readRawInteger(recordLength, integerSize)) return false;
+	if (recordLength != 5*realSize)
+	{
+		Messenger::error("Error reading start of trajectory frame.");
+		return false;
+	}
+	if (!parser.readRawDouble(tempDouble, realSize)) return false;
+	nStep = floor(tempDouble+0.1);
+	if (!parser.readRawDouble(tempDouble, realSize)) return false;
+	nAtoms = floor(tempDouble+0.1);
+	if (!parser.readRawDouble(tempDouble, realSize)) return false;
+	keytrj = floor(tempDouble+0.1);
+	if (!parser.readRawDouble(tempDouble, realSize)) return false;
+	imcon = floor(tempDouble+0.1);
+	if (!parser.readRawDouble(timeStep, realSize)) return false;
+
+	if (!parser.readRawInteger(recordLength, integerSize)) return false;
+
+	// Unit cell
+	if (imcon != 0)
+	{
+		if (!parser.readRawInteger(recordLength, integerSize)) return false;
+		if (recordLength != 9*realSize)
+		{
+			Messenger::print("Error reading cell info from trajectory frame.");
+			return false;
+		}
+		parser.skipChars(recordLength);
+		if (!parser.readRawInteger(recordLength, integerSize)) return false;
+	}
+
+	// Coordinates
+	if (!parser.readRawInteger(recordLength, integerSize)) return false;
+	if (recordLength != nAtoms*realSize)
+	{
+		Messenger::error("Error reading coordinate info from trajectory frame.");
+		return false;
+	}
+	parser.skipChars(recordLength);
+	if (!parser.readRawInteger(recordLength, integerSize)) return false;
+
+	if (!parser.readRawInteger(recordLength, integerSize)) return false;
+	parser.skipChars(recordLength);
+	if (!parser.readRawInteger(recordLength, integerSize)) return false;
+
+	if (!parser.readRawInteger(recordLength, integerSize)) return false;
+	parser.skipChars(recordLength);
+	if (!parser.readRawInteger(recordLength, integerSize)) return false;
+
+	// Velocities
+	if (keytrj > 0)
+	{
+		if (!parser.readRawInteger(recordLength, integerSize)) return false;
+		if (recordLength != nAtoms*realSize)
+		{
+			Messenger::error("Error reading velocities from trajectory frame.");
+			return false;
+		}
+		parser.skipChars(recordLength);
+		if (!parser.readRawInteger(recordLength, integerSize)) return false;
+
+		if (!parser.readRawInteger(recordLength, integerSize)) return false;
+		parser.skipChars(recordLength);
+		if (!parser.readRawInteger(recordLength, integerSize)) return false;
+
+		if (!parser.readRawInteger(recordLength, integerSize)) return false;
+		parser.skipChars(recordLength);
+		if (!parser.readRawInteger(recordLength, integerSize)) return false;
+	}
+
+	// Forces
+	if (keytrj > 1)
+	{
+		if (!parser.readRawInteger(recordLength, integerSize)) return false;
+		if (recordLength != nAtoms*realSize)
+		{
+			Messenger::error("Error reading forces from trajectory frame.");
+			return false;
+		}
+		parser.skipChars(recordLength);
+		if (!parser.readRawInteger(recordLength, integerSize)) return false;
+
+		if (!parser.readRawInteger(recordLength, integerSize)) return false;
+		parser.skipChars(recordLength);
+		if (!parser.readRawInteger(recordLength, integerSize)) return false;
+
+		if (!parser.readRawInteger(recordLength, integerSize)) return false;
+		parser.skipChars(recordLength);
+		if (!parser.readRawInteger(recordLength, integerSize)) return false;
+	}
+
+	return true;
 }
 

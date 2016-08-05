@@ -24,6 +24,7 @@
 #define ATEN_DLPOLYPLUGINCOMMON_H
 
 #include "base/kvmap.h"
+#include <QStringList>
 
 ATEN_BEGIN_NAMESPACE
 
@@ -48,7 +49,7 @@ class DLPOLYPluginCommon
 	// Determine whether trajectory file is unformatted
 	static bool determineHISTORYFormat(FilePluginInterface* plugin, FileParser& parser, bool& isFormatted, bool& hasHeader, DLPOLYVersion version);
 	// Read single unformatted frame from file
-	static bool readUnformattedFrame(FilePluginInterface* plugin, FileParser& parser, Model* targetModel, DLPOLYVersion version, int integerSize, int realSize, Array<int> unformattedElements);
+	static bool readUnformattedFrame(AtenSpace::FilePluginInterface* plugin, AtenSpace::FileParser& parser, AtenSpace::Model* targetModel, AtenSpace::DLPOLYPluginCommon::DLPOLYVersion version, int integerSize, int realSize, QStringList unformattedAtomNames, AtenSpace::Array< double > unformattedCharges);
 	// Skip unformatted frame model in file
 	static bool skipUnformattedFrame(FilePluginInterface* plugin, FileParser& parser, DLPOLYVersion version, int integerSize, int realSize);
 };

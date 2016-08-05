@@ -24,6 +24,7 @@
 #define ATEN_DLP2TRAJECTORYPLUGIN_H
 
 #include "plugins/interfaces/fileplugin.h"
+#include <QStringList>
 
 ATEN_BEGIN_NAMESPACE
 
@@ -112,8 +113,10 @@ class DLP2TrajectoryPlugin : public QObject, public FilePluginInterface
 	int integerSize_;
 	// Size of real (in bytes) for unformatted trajectories
 	int realSize_;
-	// Elements determined from unformatted trejactory header
-	Array<int> unformattedElements_;
+	// Atom names read from unformatted trajectory header
+	QStringList unformattedAtomNames_;
+	// Atom charges read from unformatted trajectory header
+	Array<double> unformattedCharges_;
 };
 
 ATEN_END_NAMESPACE

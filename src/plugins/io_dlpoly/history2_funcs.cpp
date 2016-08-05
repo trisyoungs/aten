@@ -118,7 +118,7 @@ bool DLP2TrajectoryPlugin::importData()
 	}
 
 	// Read header information from trajectory file, if there is any
-	unformattedElements_.clear();
+	unformattedAtomNames_.clear();
 	if (hasHeader_)
 	{
 		if (unformatted_)
@@ -138,9 +138,10 @@ bool DLP2TrajectoryPlugin::importData()
 			int nAtoms = int(realNAtoms);
 			if (!fileParser_.readRawInteger(recordLength, integerSize_)) return false;
 
-			// Atom names
+			// Atom names - store for later use
 			if (!fileParser_.readRawInteger(recordLength, integerSize_)) return false;
-			fileParser_.skipChars(recordLength);
+			QString atomName;
+			for (int n=0; n<nAtoms; ++n) unformattedAtomNames_ << fileParser_.readChars(recordLength/nAtoms);
 			if (!fileParser_.readRawInteger(recordLength, integerSize_)) return false;
 
 			// Atomic masses
@@ -150,7 +151,7 @@ bool DLP2TrajectoryPlugin::importData()
 
 			// Atom charges
 			if (!fileParser_.readRawInteger(recordLength, integerSize_)) return false;
-			fileParser_.skipChars(recordLength);
+			if (!fileParser_.readRawDoubleArray(unformattedCharges_, nAtoms)) return false;
 			if (!fileParser_.readRawInteger(recordLength, integerSize_)) return false;
 		}
 		else
@@ -212,7 +213,7 @@ bool DLP2TrajectoryPlugin::exportData()
 // Import next partial data chunk
 bool DLP2TrajectoryPlugin::importNextPart()
 {
-	if (unformatted_) return DLPOLYPluginCommon::readUnformattedFrame(this, fileParser_, targetModel(), DLPOLYPluginCommon::DLPOLY2, integerSize_, realSize_);
+	if (unformatted_) return DLPOLYPluginCommon::readUnformattedFrame(this, fileParser_, targetModel(), DLPOLYPluginCommon::DLPOLY2, integerSize_, realSize_, unformattedAtomNames_, unformattedCharges_);
 	else return DLPOLYPluginCommon::readCONFIGModel(this, fileParser_, targetModel(), DLPOLYPluginCommon::DLPOLY2, true);
 }
 
