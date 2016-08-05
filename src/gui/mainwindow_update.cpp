@@ -109,7 +109,7 @@ void AtenWindow::initialUpdateAndShow()
 	// Display message box warning if there are no plugins
 	if (aten_.pluginStore().nFilePlugins() == 0)
 	{
-		QMessageBox::warning(NULL, "Aten", "Plugins could not be found.\nNo import/export will be possible.\nSet the environment variable ATENDATA to point to Aten's data directory (e.g. 'export ATENDATA=/usr/local/aten/data'), or run with --atendata=<dir>.\n", QMessageBox::Ok, QMessageBox::Ok);
+		QMessageBox::warning(NULL, "Aten", "Plugins could not be found.\nNo import/export will be possible.\nSet either the ATENDATA or ATENPLUGINS environment variable to point to the location where the plugins are stored, or use the --atendata or --atenplugins CLI switches.", QMessageBox::Ok, QMessageBox::Ok);
 	}
 
 	// Show the window
