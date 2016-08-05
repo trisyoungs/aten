@@ -342,7 +342,7 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 	Atom* createAtom(Model* model, QString name = "XX", Vec3<double> r = Vec3<double>(), Vec3<double> v = Vec3<double>(), Vec3<double> f = Vec3<double>())
 	{
 		// Find element in elements map
-		int el = ElementMap::find(name, standardOptions_.zMappingType());
+		int el = ElementMap::find(name, standardOptions_.zMappingType() != ElementMap::nZMapTypes ? standardOptions_.zMappingType() : ElementMap::AutoZMap);
 
 		// Add atom
 		Atom* i = model->addAtom(el, r, v, f);

@@ -66,7 +66,7 @@ QString DLPExpressionPlugin::name() const
 // Nickname of plugin
 QString DLPExpressionPlugin::nickname() const
 {
-	return QString("field");
+	return QString("dlpolyfield");
 }
 
 // Description (long name) of plugin

@@ -38,6 +38,6 @@ finaliseFF();
 mcMinimise(100);
 #cgminimise(30);
 
-saveModel("dlpoly", "chloroform.CONFIG");
-saveExpression("dlpoly", "chloroform.FIELD");
+saveModel("dlpoly2", "chloroform.CONFIG");
+saveExpression("dlpolyfield", "chloroform.FIELD");
 quit();

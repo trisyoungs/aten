@@ -33,5 +33,5 @@ foldMolecules();
 # Load UFF so we can save an expression
 loadFF("uff.ff");
 ffModel();
-saveModel("dlpoly", "gaswater.CONFIG");
-saveExpression("dlpoly", "gaswater.FIELD");
+saveModel("dlpoly2", "gaswater.CONFIG");
+saveExpression("dlpolyfield", "gaswater.FIELD");

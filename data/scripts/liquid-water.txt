@@ -32,7 +32,7 @@ disorder("None", FALSE);
 
 mcMinimise(100);
 
-saveExpression("dlpoly", "water.FIELD");
-saveModel("dlpoly", "water.CONFIG");
+saveExpression("dlpolyfield", "water.FIELD");
+saveModel("dlpoly2", "water.CONFIG");
 
 quit();

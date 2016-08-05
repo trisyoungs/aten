@@ -50,7 +50,7 @@ disorder("None", FALSE);
 #elec none
 
 # Save out the current model (will be 'box', since it was the last created) as a DL_POLY config file
-saveModel("dlpoly", "dmimcl.CONFIG");
+saveModel("dlpoly2", "dmimcl.CONFIG");
 saveModel("mopac", "dmimcl.mop");
 
 # Done.
