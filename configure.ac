@@ -4,7 +4,7 @@ AC_PREREQ(2.60)
 
 
 # Set program name, version and source directory
-m4_define([ATEN_VERSION],[2.1.1])
+m4_define([ATEN_VERSION],[2.1.2])
 AC_INIT([aten], ATEN_VERSION)
 AC_CONFIG_AUX_DIR(config)
 AC_CANONICAL_TARGET
