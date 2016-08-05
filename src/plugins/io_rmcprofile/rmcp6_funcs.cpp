@@ -189,7 +189,7 @@ bool RMCProfile6ModelPlugin::importData()
 	targetModel()->fracToReal();
 
 	// Recalculate bonding
-	if (!standardOptions_.preventRebonding()) targetModel()->calculateBonding(true);
+	if (!standardOptions_.isSetAndOn(FilePluginStandardImportOptions::PreventRebondingSwitch)) targetModel()->calculateBonding(true);
 
 	return true;
 }

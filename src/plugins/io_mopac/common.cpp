@@ -86,7 +86,7 @@ bool MOPACFilePluginCommon::readMOPACModel(FilePluginInterface* plugin, FilePars
 	if (cellCount == 3) targetModel->cell().set(cell);
 
 	// Rebond atoms
-	if (!standardOptions.preventRebonding()) targetModel->calculateBonding(true);
+	if (!standardOptions.isSetAndOn(FilePluginStandardImportOptions::PreventRebondingSwitch)) targetModel->calculateBonding(true);
 
 	return true;
 }

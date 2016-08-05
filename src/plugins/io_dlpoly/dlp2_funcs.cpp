@@ -34,9 +34,10 @@ DLP2ModelPlugin::DLP2ModelPlugin()
 	pluginOptions_.add("levcfg", "0");
 	pluginOptions_.add("useTypeNames", "true");
 	standardOptions_.setZMappingType(ElementMap::FirstAlphaZMap);
-	standardOptions_.setPreventFolding(true);
-	standardOptions_.setPreventPacking(true);
-	standardOptions_.setPreventRebonding(true);
+	standardOptions_.setSwitch(FilePluginStandardImportOptions::PreventFoldingSwitch, true);
+	standardOptions_.setSwitch(FilePluginStandardImportOptions::PreventPackingSwitch, true);
+	standardOptions_.setSwitch(FilePluginStandardImportOptions::PreventRebondingSwitch, true);
+	standardOptions_.setSwitch(FilePluginStandardImportOptions::KeepNamesSwitch, true);
 }
 
 // Destructor

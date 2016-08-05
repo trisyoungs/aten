@@ -32,10 +32,10 @@ DLP4ModelPlugin::DLP4ModelPlugin()
 	// Setup plugin options
 	pluginOptions_.add("shiftCell", "true");
 	standardOptions_.setZMappingType(ElementMap::SingleAlphaZMap);
-	standardOptions_.setPreventFolding(false);
-	standardOptions_.setPreventPacking(true);
-	standardOptions_.setPreventRebonding(true);
-	standardOptions_.setKeepNames(true);
+	standardOptions_.setSwitch(FilePluginStandardImportOptions::PreventFoldingSwitch, true);
+	standardOptions_.setSwitch(FilePluginStandardImportOptions::PreventPackingSwitch, true);
+	standardOptions_.setSwitch(FilePluginStandardImportOptions::PreventRebondingSwitch, true);
+	standardOptions_.setSwitch(FilePluginStandardImportOptions::KeepNamesSwitch, true);
 }
 
 // Destructor

@@ -31,9 +31,9 @@ DLP4TrajectoryPlugin::DLP4TrajectoryPlugin()
 	// Setup option keywords and standard options
 	pluginOptions_.add("shiftCell", "true");
 	standardOptions_.setZMappingType(ElementMap::FirstAlphaZMap);
-	standardOptions_.setPreventFolding(true);
-	standardOptions_.setPreventPacking(true);
-	standardOptions_.setPreventRebonding(true);
+	standardOptions_.setSwitch(FilePluginStandardImportOptions::PreventFoldingSwitch, true);
+	standardOptions_.setSwitch(FilePluginStandardImportOptions::PreventPackingSwitch, true);
+	standardOptions_.setSwitch(FilePluginStandardImportOptions::PreventRebondingSwitch, true);
 }
 
 // Destructor
@@ -124,7 +124,7 @@ bool DLP4TrajectoryPlugin::importData()
 		return false;
 	}
 
-	if (standardOptions_.cacheAll())
+	if (standardOptions_.isSetAndOn(FilePluginStandardImportOptions::CacheAllSwitch))
 	{
 		Messenger::print("Caching all frames from HISTORY file (%i %s)...", nDataParts(), isNPartialDataEstimated() ? "estimated" : "actual");
 		int count = 0;

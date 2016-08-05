@@ -111,7 +111,7 @@ bool XYZTrajectoryPlugin::importData()
 		return false;
 	}
 
-	if (standardOptions_.cacheAll())
+	if (standardOptions_.isSetAndOn(FilePluginStandardImportOptions::CacheAllSwitch))
 	{
 		Messenger::print("Caching all frames from XYZ trajectory (%i %s)...", nDataParts(), isNPartialDataEstimated() ? "estimated" : "actual");
 		int count = 0;

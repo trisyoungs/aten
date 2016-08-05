@@ -90,11 +90,11 @@ FilePluginStandardImportOptions AtenOpenTrajectory::standardImportOptions()
 {
 	FilePluginStandardImportOptions options;
 
-	options.setCoordinatesInBohr(ui.BohrCheck->isChecked());
-	options.setCacheAll(ui.CacheFramesCheck->isChecked());
-	options.setPreventRebonding(ui.PreventRebondingCheck->isChecked());
-	options.setPreventFolding(ui.PreventFoldingCheck->isChecked());
-	options.setPreventPacking(ui.PreventPackingCheck->isChecked());
+	options.setSwitch(FilePluginStandardImportOptions::CoordinatesInBohrSwitch, ui.BohrCheck->isChecked());
+	options.setSwitch(FilePluginStandardImportOptions::CacheAllSwitch, ui.CacheFramesCheck->isChecked());
+	options.setSwitch(FilePluginStandardImportOptions::PreventRebondingSwitch, ui.PreventRebondingCheck->isChecked());
+	options.setSwitch(FilePluginStandardImportOptions::PreventFoldingSwitch, ui.PreventFoldingCheck->isChecked());
+	options.setSwitch(FilePluginStandardImportOptions::PreventPackingSwitch, ui.PreventPackingCheck->isChecked());
 	options.setZMappingType( (ElementMap::ZMapType) ui.ZMappingCombo->currentIndex());
 	
 	return options;
@@ -119,9 +119,9 @@ void AtenOpenTrajectory::updateStandardOptionsFromPlugin()
 	FilePluginInterface* plugin = ui.FileSelector->selectedPlugin();
 	if (!plugin) return;
 
-	ui.BohrCheck->setChecked(plugin->standardOptions().coordinatesInBohr());
-	ui.PreventRebondingCheck->setChecked(plugin->standardOptions().preventRebonding());
-	ui.PreventFoldingCheck->setChecked(plugin->standardOptions().preventFolding());
-	ui.PreventPackingCheck->setChecked(plugin->standardOptions().preventPacking());
-	ui.ZMappingCombo->setCurrentIndex(plugin->standardOptions().zMappingType());
+	ui.BohrCheck->setChecked(plugin->standardOptions().isSetAndOn(FilePluginStandardImportOptions::CoordinatesInBohrSwitch));
+	ui.PreventRebondingCheck->setChecked(plugin->standardOptions().isSetAndOn(FilePluginStandardImportOptions::PreventRebondingSwitch));
+	ui.PreventFoldingCheck->setChecked(plugin->standardOptions().isSetAndOn(FilePluginStandardImportOptions::PreventFoldingSwitch));
+	ui.PreventPackingCheck->setChecked(plugin->standardOptions().isSetAndOn(FilePluginStandardImportOptions::PreventPackingSwitch));
+	if (plugin->standardOptions().zMappingType() != ElementMap::nZMapTypes) ui.ZMappingCombo->setCurrentIndex(plugin->standardOptions().zMappingType());
 }

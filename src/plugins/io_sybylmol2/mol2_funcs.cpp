@@ -138,13 +138,13 @@ bool Mol2ModelPlugin::importData()
 			// Single line, format is ' a b c alpha beta gamma spgrp spgrp_setting'
 			if (!fileParser_.parseLine()) return false;
 			targetModel()->setCell(fileParser_.arg3d(0), fileParser_.arg3d(3));
-			targetModel()->cell().setSpacegroup(fileParser_.argc(6), standardOptions_.forceRhombohedral());
+			targetModel()->cell().setSpacegroup(fileParser_.argc(6), standardOptions_.isSetAndOn(FilePluginStandardImportOptions::ForceRhombohedralSwitch));
 		}
 	}
 
 	// Perform post-load operations
-	if (!standardOptions_.preventPacking() && (targetModel()->cell().spacegroupId() != 0)) targetModel()->pack();
-	if (!standardOptions_.preventFolding() && targetModel()->isPeriodic()) targetModel()->foldAllAtoms();
+	if ((!standardOptions_.isSetAndOn(FilePluginStandardImportOptions::PreventPackingSwitch)) && (targetModel()->cell().spacegroupId() != 0)) targetModel()->pack();
+	if ((!standardOptions_.isSetAndOn(FilePluginStandardImportOptions::PreventFoldingSwitch)) && targetModel()->isPeriodic()) targetModel()->foldAllAtoms();
 
 	return true;
 }

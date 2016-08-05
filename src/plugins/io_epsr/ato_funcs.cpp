@@ -30,6 +30,9 @@
 // Constructor
 EPSRAtoModelPlugin::EPSRAtoModelPlugin()
 {
+	// Standard Options
+	standardOptions_.setSwitch(FilePluginStandardImportOptions::KeepNamesSwitch, true);
+
 	// Plugin options
 	pluginOptions_.add("temp", "300.0");
 	pluginOptions_.add("vibTemp", "65.0");
@@ -111,9 +114,6 @@ bool EPSRAtoModelPlugin::canImport()
 // Import data from the specified file
 bool EPSRAtoModelPlugin::importData()
 {
-	// Ensure that keepNames_ is on
-	standardOptions_.setKeepNames(true);
-
 	// File header:
 	// Either  1   : nmols, box length, temperature   (for cubic systems)
 	//    or   2   : nmols,   temperature             (for non-cubic systems)

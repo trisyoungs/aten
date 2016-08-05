@@ -562,11 +562,11 @@ int Aten::parseCli(int argc, char *argv[])
 					break;
 				// Convert coordinates from Bohr to Angstrom on import
 				case (Cli::BohrSwitch):
-					standardImportOptions_.setCoordinatesInBohr(true);
+					standardImportOptions_.setSwitch(FilePluginStandardImportOptions::CoordinatesInBohrSwitch, true);
 					break;
 				// Flag to cache all frames from trajectories
 				case (Cli::CacheAllSwitch):
-					standardImportOptions_.setCacheAll(true);
+					standardImportOptions_.setSwitch(FilePluginStandardImportOptions::CacheAllSwitch, true);
 					break;
 				// Read commands from passed string and execute them
 				case (Cli::CommandSwitch):
@@ -685,26 +685,26 @@ int Aten::parseCli(int argc, char *argv[])
 				// Keep atom names in file
 				case (Cli::KeepNamesSwitch):
 					// Mutually exclusive with keeptypes
-					if (standardImportOptions_.keepTypes())
+					if (standardImportOptions_.isSetAndOn(FilePluginStandardImportOptions::KeepTypesSwitch))
 					{
 						Messenger::print("Error: --keepnames and --keeptypes are mutually exclusive.");
 						return -1;
 					}
-					standardImportOptions_.setKeepNames(true);
+					standardImportOptions_.setSwitch(FilePluginStandardImportOptions::KeepNamesSwitch, true);
 					break;
 				// Keep atom type names in file
 				case (Cli::KeepTypesSwitch):
 					// Mutually exclusive with keepnames
-					if (standardImportOptions_.keepNames())
+					if (standardImportOptions_.isSetAndOn(FilePluginStandardImportOptions::KeepNamesSwitch))
 					{
 						Messenger::print("Error: --keepnames and --keeptypes are mutually exclusive.");
 						return -1;
 					}
-					standardImportOptions_.setKeepTypes(true);
+					standardImportOptions_.setSwitch(FilePluginStandardImportOptions::KeepTypesSwitch, true);
 					break;
 				// Keep (don't reset) view when GUI starts
 				case (Cli::KeepViewSwitch):
-					standardImportOptions_.setKeepView(true);
+					standardImportOptions_.setSwitch(FilePluginStandardImportOptions::KeepViewSwitch, true);
 					break;
 				// Load models from list in file
 				case (Cli::LoadFromListSwitch):
@@ -749,15 +749,15 @@ int Aten::parseCli(int argc, char *argv[])
 					break;
 				// Prohibit bonding calculation of atoms on load
 				case (Cli::NoBondSwitch):
-					standardImportOptions_.setPreventRebonding(true);
+					standardImportOptions_.setSwitch(FilePluginStandardImportOptions::PreventRebondingSwitch, true);
 					break;
 				// Prohibit folding (MIM'ing) of atoms in periodic systems on load
 				case (Cli::NoFoldSwitch):
-					standardImportOptions_.setPreventFolding(true);
+					standardImportOptions_.setSwitch(FilePluginStandardImportOptions::PreventFoldingSwitch, true);
 					break;
 				// Force packing (application of symmetry operators) on load
 				case (Cli::NoPackSwitch):
-					standardImportOptions_.setPreventPacking(true);
+					standardImportOptions_.setSwitch(FilePluginStandardImportOptions::PreventPackingSwitch, true);
 					break;
 				// Don't load Qt window/toolbar settings on startup
 				case (Cli::NoQtSettingsSwitch):

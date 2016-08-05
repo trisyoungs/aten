@@ -90,7 +90,7 @@ FilePluginStandardImportOptions AtenOpenGrid::standardImportOptions()
 {
 	FilePluginStandardImportOptions options;
 
-	options.setCoordinatesInBohr(ui.BohrCheck->isChecked());
+	options.setSwitch(FilePluginStandardImportOptions::CoordinatesInBohrSwitch, ui.BohrCheck->isChecked());
 	options.setZMappingType( (ElementMap::ZMapType) ui.ZMappingCombo->currentIndex());
 	
 	return options;
@@ -116,6 +116,6 @@ void AtenOpenGrid::updateStandardOptionsFromPlugin()
 	FilePluginInterface* plugin = ui.FileSelector->selectedPlugin();
 	if (!plugin) return;
 
-	ui.BohrCheck->setChecked(plugin->standardOptions().coordinatesInBohr());
-	ui.ZMappingCombo->setCurrentIndex(plugin->standardOptions().zMappingType());
+	ui.BohrCheck->setChecked(plugin->standardOptions().isSetAndOn(FilePluginStandardImportOptions::CoordinatesInBohrSwitch));
+	if (plugin->standardOptions().zMappingType() != ElementMap::nZMapTypes) ui.ZMappingCombo->setCurrentIndex(plugin->standardOptions().zMappingType());
 }

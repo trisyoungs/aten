@@ -40,9 +40,9 @@ void Aten::processImportedObjects(FilePluginInterface* plugin, QString filename)
 		m->setPlugin(plugin);
 
 		// Do various necessary calculations
-		if (plugin->standardOptions().coordinatesInBohr()) m->bohrToAngstrom();
+		if (plugin->standardOptions().isSetAndOn(FilePluginStandardImportOptions::CoordinatesInBohrSwitch)) m->bohrToAngstrom();
 		m->renumberAtoms();
-		if (!plugin->standardOptions().keepView()) m->resetView(atenWindow()->ui.MainView->width(), atenWindow()->ui.MainView->height());
+		if (!plugin->standardOptions().isSetAndOn(FilePluginStandardImportOptions::KeepViewSwitch)) m->resetView(atenWindow()->ui.MainView->width(), atenWindow()->ui.MainView->height());
 		m->calculateMass();
 		m->selectNone();
 
@@ -90,7 +90,7 @@ void Aten::processImportedObjects(FilePluginInterface* plugin, QString filename)
 		if (!grid) continue;
 
 		// Set source filename and plugin interface used
-		if (plugin->standardOptions().coordinatesInBohr()) grid->bohrToAngstrom();
+		if (plugin->standardOptions().isSetAndOn(FilePluginStandardImportOptions::CoordinatesInBohrSwitch)) grid->bohrToAngstrom();
 		grid->setFilename(filename);
 		grid->setPlugin(plugin);
 
@@ -157,7 +157,7 @@ bool Aten::importModel(QString filename, FilePluginInterface* plugin, FilePlugin
 	{
 		// Create an instance of the plugin, and open an input file and set options
 		FilePluginInterface* pluginInterface = plugin->createInstance();
-		pluginInterface->setStandardOptions(standardOptions);
+		pluginInterface->applyStandardOptions(standardOptions);
 		pluginInterface->setOptions(pluginOptions);
 		pluginInterface->setParentModel(current_.m);
 		pluginInterface->setTargetModel(current_.rs());
@@ -237,7 +237,7 @@ bool Aten::exportModel(Model* sourceModel, QString filename, FilePluginInterface
 			Messenger::exit("Aten::exportModel");
 			return false;
 		}
-		pluginInterface->setStandardOptions(standardOptions);
+		pluginInterface->applyStandardOptions(standardOptions);
 		pluginInterface->setOptions(pluginOptions);
 		pluginInterface->setParentModel(sourceModel);
 		if (pluginInterface->exportData())
@@ -300,7 +300,7 @@ bool Aten::importGrid(Model* targetModel, QString filename, FilePluginInterface*
 			Messenger::exit("Aten::importGrid");
 			return false;
 		}
-		pluginInterface->setStandardOptions(standardOptions);
+		pluginInterface->applyStandardOptions(standardOptions);
 		pluginInterface->setOptions(pluginOptions);
 		pluginInterface->setParentModel(targetModel->parent() ? targetModel->parent() : targetModel);
 		pluginInterface->setTargetModel(targetModel);
@@ -348,7 +348,7 @@ bool Aten::importTrajectory(Model* targetModel, QString filename, FilePluginInte
 			Messenger::exit("Aten::importTrajectory");
 			return false;
 		}
-		pluginInterface->setStandardOptions(standardOptions);
+		pluginInterface->applyStandardOptions(standardOptions);
 		pluginInterface->setOptions(pluginOptions);
 		pluginInterface->setParentModel(targetModel);
 
@@ -398,7 +398,7 @@ bool Aten::importExpression(QString filename, FilePluginInterface* plugin, FileP
 			Messenger::exit("Aten::importExpression");
 			return false;
 		}
-		pluginInterface->setStandardOptions(standardOptions);
+		pluginInterface->applyStandardOptions(standardOptions);
 		pluginInterface->setOptions(pluginOptions);
 
 		if (!pluginInterface->importData())
@@ -460,7 +460,7 @@ bool Aten::exportExpression(Model* sourceModel, QString filename, FilePluginInte
 			Messenger::exit("Aten::exportExpression");
 			return false;
 		}
-		pluginInterface->setStandardOptions(standardOptions);
+		pluginInterface->applyStandardOptions(standardOptions);
 		pluginInterface->setOptions(pluginOptions);
 		pluginInterface->setParentModel(sourceModel);
 		if (pluginInterface->exportData())

@@ -139,12 +139,12 @@ bool DLPOLYPluginCommon::readCONFIGModel ( FilePluginInterface* plugin, FilePars
   }
 
 	// Fold model
-	if (!plugin->standardOptions().preventFolding()) {
+	if (!plugin->standardOptions().isSetAndOn(FilePluginStandardImportOptions::PreventFoldingSwitch)) {
     targetModel->foldAllAtoms();
   }
 
   // Rebond the model
-  if ( !plugin->standardOptions().preventRebonding() ) {
+  if ( !plugin->standardOptions().isSetAndOn(FilePluginStandardImportOptions::PreventRebondingSwitch) ) {
     targetModel->calculateBonding ( true );
   }
 
@@ -468,7 +468,7 @@ bool DLPOLYPluginCommon::readUnformattedFrame(FilePluginInterface* plugin, FileP
 	}
 
 	// Rebond (if requested)
-	if (!plugin->standardOptions().preventRebonding()) targetModel->calculateBonding(true);
+	if (!plugin->standardOptions().isSetAndOn(FilePluginStandardImportOptions::PreventRebondingSwitch)) targetModel->calculateBonding(true);
 
 	return true;
 }

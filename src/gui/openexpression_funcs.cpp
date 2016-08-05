@@ -90,7 +90,7 @@ FilePluginStandardImportOptions AtenOpenExpression::standardImportOptions()
 {
 	FilePluginStandardImportOptions options;
 
-	options.setCoordinatesInBohr(ui.BohrCheck->isChecked());
+	options.setSwitch(FilePluginStandardImportOptions::CoordinatesInBohrSwitch, ui.BohrCheck->isChecked());
 	options.setZMappingType( (ElementMap::ZMapType) ui.ZMappingCombo->currentIndex());
 	
 	return options;
@@ -117,5 +117,5 @@ void AtenOpenExpression::updateStandardOptionsFromPlugin()
 	if (!plugin) return;
 
 	// Set zmapping combo
-	ui.ZMappingCombo->setCurrentIndex(plugin->standardOptions().zMappingType());
+	if (plugin->standardOptions().zMappingType() != ElementMap::nZMapTypes) ui.ZMappingCombo->setCurrentIndex(plugin->standardOptions().zMappingType());
 }
