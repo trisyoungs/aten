@@ -1,9 +1,7 @@
 TODO
 ====
 Undo/Redo:
-  * Rework UndoEvent to use an enum and stored data rather than an individual class for each event type?
   * Add Grid-related undo/redo (e.g. title changes, colour etc.)
-  * Add undo/redo for atom colour setting
 Trajectory handling:
 o Inherit generates a crash when at first frame??
 Add set members to Matrix class allowing axes to be set from atoms in models.

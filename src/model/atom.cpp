@@ -62,6 +62,7 @@ Atom* Model::addAtom(short int newel, Vec3<double> r, Vec3<double> v, Vec3<doubl
 	newatom->f() = f;
 	increaseMass(newel);
 	logChange(Log::Structure);
+
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
@@ -86,6 +87,7 @@ Atom* Model::addAtomWithId(short int newel, Vec3<double> pos, int targetid)
 	newatom->r() = pos;
 	increaseMass(newel);
 	logChange(Log::Structure);
+
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
@@ -154,15 +156,18 @@ Atom* Model::addCopy(Atom* afterthis, Atom* source)
 void Model::removeAtom(Atom* xatom, bool noupdate)
 {
 	Messenger::enter("Model::removeAtom");
-	// Delete a specific atom (passed as xatom)
+
+	// Adjust the atomic mass of the model
 	reduceMass(xatom->element());
-// 	if (!noupdate) calculateDensity();
+
 	// Renumber the ids of all atoms in the list after this one
 	if (!noupdate) for (Atom* i = xatom->next; i != NULL; i = i->next) i->decreaseId();
+
 	// Deselect and unmark if necessary
 	if (xatom->isSelected()) deselectAtom(xatom);
 	if (xatom->isSelected(true)) deselectAtom(xatom, true);
 	logChange(Log::Structure);
+
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
@@ -180,12 +185,13 @@ void Model::deleteAtom(Atom* xatom, bool noupdate)
 {
 	Messenger::enter("Model::deleteAtom");
 	// The atom may be present in other, unassociated lists (e.g. measurements), so we must
-	// also check those lists for this atom and remove it.
+	// also check those lists for this atom before removing it.
 	if (xatom == NULL) Messenger::print("No atom to delete.");
 	else
 	{
 		// Remove measurements
 		removeMeasurements(xatom);
+
 		// Delete All Bonds To Specific Atom
 		RefListItem<Bond,int>* bref = xatom->bonds();
 		while (bref != NULL)
@@ -196,6 +202,7 @@ void Model::deleteAtom(Atom* xatom, bool noupdate)
 			unbondAtoms(xatom,j,b);
 			bref = xatom->bonds();
 		}
+
 		// For all glyphs involving this atom, set the current coordinates
 		int i;
 		for (Glyph* g = glyphs_.first(); g != NULL; g = g->next)
@@ -223,6 +230,7 @@ void Model::transmuteAtom(Atom* i, short int el)
 			i->setElement(el);
 			increaseMass(i->element());
 			logChange(Log::Structure);
+
 			// Add the change to the undo state (if there is one)
 			if (recordingState_ != NULL)
 			{
@@ -319,6 +327,7 @@ void Model::atomSetFixed(Atom* i, bool fixed)
 	{
 		i->setPositionFixed(fixed);
 		logChange(Log::Style);
+
 		// Add the change to the undo state (if there is one)
 		if (recordingState_ != NULL)
 		{
@@ -335,6 +344,7 @@ void Model::atomSetCharge(Atom* target, double q)
 	double oldcharge = target->charge();
 	target->setCharge(q);
 	logChange(Log::Coordinates);
+
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
@@ -355,6 +365,7 @@ void Model::atomSetColour(Atom* i, double r, double g, double b, double a)
 		newchange->set(i->id(), oldcol[0], oldcol[1], oldcol[2], oldcol[3], r, g, b, a);
 		recordingState_->addEvent(newchange);
 	}
+
 	// Now set the colour....
 	i->setColour(r, g, b, a);
 	logChange(Log::Style);
@@ -490,7 +501,7 @@ double Model::forcefieldMass() const
 void Model::reduceMass(int element)
 {
 	mass_ -= ElementMap::atomicMass(element);
-	if (mass_ < 0.0) mass_ = 0.0;
+	if (fabs(mass_) < 1.0e-5) mass_ = 0.0;
 	if (element == 0) --nUnknownAtoms_;
 }
 
