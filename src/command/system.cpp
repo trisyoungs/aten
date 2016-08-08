@@ -44,7 +44,7 @@ bool Commands::function_Debug(CommandNode* c, Bundle& obj, ReturnValue& rv)
 // Retrieve environment variable
 bool Commands::function_Getenv(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (getenv(qPrintable(c->argc(0))) != '\0') rv.set(getenv(qPrintable(c->argc(0))));
+	if (getenv(qPrintable(c->argc(0))) != NULL) rv.set(getenv(qPrintable(c->argc(0))));
 	else rv.set("");
 	return true;
 }
@@ -52,7 +52,7 @@ bool Commands::function_Getenv(CommandNode* c, Bundle& obj, ReturnValue& rv)
 // Retrieve environment variable as a floating point value
 bool Commands::function_Getenvf(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (getenv(qPrintable(c->argc(0))) != '\0')
+	if (getenv(qPrintable(c->argc(0))) != NULL)
 	{
 		QString s = getenv(qPrintable(c->argc(0)));
 		rv.set(s.toDouble());
@@ -64,7 +64,7 @@ bool Commands::function_Getenvf(CommandNode* c, Bundle& obj, ReturnValue& rv)
 // Retrieve environment variable as an integer value
 bool Commands::function_Getenvi(CommandNode* c, Bundle& obj, ReturnValue& rv)
 {
-	if (getenv(qPrintable(c->argc(0))) != '\0')
+	if (getenv(qPrintable(c->argc(0))) != NULL)
 	{
 		QString s = getenv(qPrintable(c->argc(0)));
 		rv.set(s.toInt());
