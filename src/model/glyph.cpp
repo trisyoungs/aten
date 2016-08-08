@@ -20,8 +20,8 @@
 */
 
 #include "model/model.h"
-#include "model/undoevent.h"
-#include "model/undostate.h"
+#include "undo/undoevent.h"
+#include "undo/undostate.h"
 
 ATEN_USING_NAMESPACE
 

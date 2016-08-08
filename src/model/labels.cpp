@@ -20,8 +20,8 @@
 */
 
 #include "model/model.h"
-#include "model/undoevent.h"
-#include "model/undostate.h"
+#include "undo/undostate.h"
+#include "undo/atom_label.h"
 
 ATEN_USING_NAMESPACE
 
@@ -33,7 +33,7 @@ void Model::addLabel(Atom* i, Atom::AtomLabel al)
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
-		LabelEvent* newChange = new LabelEvent;
+		AtomLabelEvent* newChange = new AtomLabelEvent;
 		newChange->set(i->id(), oldlabels, i->labels());
 		recordingState_->addEvent(newChange);
 	}
@@ -48,7 +48,7 @@ void Model::removeLabel(Atom* i, Atom::AtomLabel al)
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
-		LabelEvent* newChange = new LabelEvent;
+		AtomLabelEvent* newChange = new AtomLabelEvent;
 		newChange->set(i->id(), oldlabels, i->labels());
 		recordingState_->addEvent(newChange);
 	}
@@ -63,7 +63,7 @@ void Model::clearLabels(Atom* i)
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
-		LabelEvent* newChange = new LabelEvent;
+		AtomLabelEvent* newChange = new AtomLabelEvent;
 		newChange->set(i->id(), oldlabels, 0);
 		recordingState_->addEvent(newChange);
 	}

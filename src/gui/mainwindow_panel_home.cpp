@@ -21,11 +21,10 @@
 
 #include "gui/mainwindow.h"
 #include "main/aten.h"
-// #include "gui/selectfilter.h"
 #include "gui/exportfilm.h"
 #include "gui/exportimage.h"
 #include "gui/openmodel.h"
-#include "model/undostate.h"
+#include "undo/undostate.h"
 #include <QFileDialog>
 
 // Static local variables

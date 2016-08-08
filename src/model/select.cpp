@@ -20,8 +20,8 @@
 */
 
 #include "model/model.h"
-#include "model/undoevent.h"
-#include "model/undostate.h"
+#include "undo/atom_select.h"
+#include "undo/undostate.h"
 #include "base/neta_parser.h"
 #include "base/pattern.h"
 
@@ -271,7 +271,7 @@ void Model::selectAtom(Atom* i, bool markonly)
 			// Add the change to the undo state (if there is one)
 			if (recordingState_ != NULL)
 			{
-				SelectEvent* newchange = new SelectEvent;
+				AtomSelectEvent* newchange = new AtomSelectEvent;
 				newchange->set(true, i->id());
 				recordingState_->addEvent(newchange);
 			}
@@ -308,7 +308,7 @@ void Model::deselectAtom(Atom* i, bool markonly)
 			// Add the change to the undo state (if there is one)
 			if (recordingState_ != NULL)
 			{
-				SelectEvent* newchange = new SelectEvent;
+				AtomSelectEvent* newchange = new AtomSelectEvent;
 				newchange->set(false, i->id());
 				recordingState_->addEvent(newchange);
 			}
@@ -427,7 +427,7 @@ void Model::selectAll(bool markonly)
 				// Add the change to the undo state (if there is one)
 				if (recordingState_ != NULL)
 				{
-					SelectEvent* newchange = new SelectEvent;
+					AtomSelectEvent* newchange = new AtomSelectEvent;
 					newchange->set(true, i->id());
 					recordingState_->addEvent(newchange);
 				}
@@ -462,7 +462,7 @@ void Model::selectNone(bool markonly)
 				// Add the change to the undo state (if there is one)
 				if (recordingState_ != NULL)
 				{
-					SelectEvent* newchange = new SelectEvent;
+					AtomSelectEvent* newchange = new AtomSelectEvent;
 					newchange->set(false, i->id());
 					recordingState_->addEvent(newchange);
 				}
