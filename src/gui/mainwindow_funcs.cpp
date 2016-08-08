@@ -301,11 +301,12 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportFilmD
 
 	// Setup Shortcuts
 	QShortcut* shortcut;
-	// -- Model List
-	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_Up), this, 0, 0, Qt::ApplicationShortcut);
+	// Model List
+	shortcut = new QShortcut(QKeySequence(Qt::Key_PageUp), this, 0, 0, Qt::ApplicationShortcut);
 	connect(shortcut, SIGNAL(activated()), ui.ModelsPreviousButton, SLOT(click()));
-	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_Down), this, 0, 0, Qt::ApplicationShortcut);
+	shortcut = new QShortcut(QKeySequence(Qt::Key_PageDown), this, 0, 0, Qt::ApplicationShortcut);
 	connect(shortcut, SIGNAL(activated()), ui.ModelsNextButton, SLOT(click()));
+
 	// Home Panel (File)
 	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_N), this, 0, 0, Qt::ApplicationShortcut);
 	connect(shortcut, SIGNAL(activated()), ui.HomeFileNewButton, SLOT(click()));
@@ -317,6 +318,7 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportFilmD
 	connect(shortcut, SIGNAL(activated()), ui.HomeFileSaveAsButton, SLOT(click()));
 	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_W), this, 0, 0, Qt::ApplicationShortcut);
 	connect(shortcut, SIGNAL(activated()), ui.HomeFileCloseButton, SLOT(click()));
+
 	// Home Panel (Edit)
 	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_C), this, 0, 0, Qt::ApplicationShortcut);
 	connect(shortcut, SIGNAL(activated()), ui.HomeEditCopyButton, SLOT(click()));
@@ -330,6 +332,7 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportFilmD
 	connect(shortcut, SIGNAL(activated()), ui.HomeEditUndoButton, SLOT(click()));
 	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_Z), this, 0, 0, Qt::ApplicationShortcut);
 	connect(shortcut, SIGNAL(activated()), ui.HomeEditRedoButton, SLOT(click()));
+
 	// Home Panel (Style)
 	shortcut = new QShortcut(QKeySequence(Qt::Key_F1), this, 0, 0, Qt::ApplicationShortcut);
 	connect(shortcut, SIGNAL(activated()), ui.HomeAppearanceLineButton, SLOT(click()));
@@ -355,16 +358,49 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportFilmD
 	connect(shortcut, SIGNAL(activated()), ui.HomeAppearanceOwnColourButton, SLOT(click()));
 	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_H), this, 0, 0, Qt::ApplicationShortcut);
 	connect(shortcut, SIGNAL(activated()), ui.HomeAppearanceShowAllButton, SLOT(click()));
+	shortcut = new QShortcut(QKeySequence(Qt::Key_V), this, 0, 0, Qt::ApplicationShortcut);
+	connect(shortcut, SIGNAL(activated()), ui.HomeAppearancePerspectiveButton, SLOT(click()));
+
 	// Home Panel (View)
 	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_R), this, 0, 0, Qt::ApplicationShortcut);
 	connect(shortcut, SIGNAL(activated()), ui.HomeViewResetButton, SLOT(click()));
 	shortcut = new QShortcut(QKeySequence(Qt::Key_F8), this, 0, 0, Qt::ApplicationShortcut);
 	connect(shortcut, SIGNAL(activated()), ui.HomeViewHBondsButton, SLOT(click()));
+
+	// Build Panel (Select)
+	shortcut = new QShortcut(QKeySequence(Qt::Key_F), this, 0, 0, Qt::ApplicationShortcut);
+	connect(shortcut, SIGNAL(activated()), ui.BuildSelectBoundButton, SLOT(click()));
+	shortcut = new QShortcut(QKeySequence(Qt::Key_E), this, 0, 0, Qt::ApplicationShortcut);
+	connect(shortcut, SIGNAL(activated()), ui.BuildSelectElementButton, SLOT(click()));
+
+	// Build Panel (Draw)
+	shortcut = new QShortcut(QKeySequence(Qt::Key_D), this, 0, 0, Qt::ApplicationShortcut);
+	connect(shortcut, SIGNAL(activated()), ui.BuildDrawDrawButton, SLOT(click()));
+	shortcut = new QShortcut(QKeySequence(Qt::Key_L), this, 0, 0, Qt::ApplicationShortcut);
+	connect(shortcut, SIGNAL(activated()), ui.BuildDrawDeleteButton, SLOT(click()));
+	shortcut = new QShortcut(QKeySequence(Qt::Key_T), this, 0, 0, Qt::ApplicationShortcut);
+	connect(shortcut, SIGNAL(activated()), ui.BuildDrawTransmuteButton, SLOT(click()));
+	shortcut = new QShortcut(QKeySequence(Qt::Key_H), this, 0, 0, Qt::ApplicationShortcut);
+	connect(shortcut, SIGNAL(activated()), ui.BuildDrawAddHButton, SLOT(click()));
+
+	// Cell Panel (Define)
+	shortcut = new QShortcut(QKeySequence(Qt::Key_P), this, 0, 0, Qt::ApplicationShortcut);
+	connect(shortcut, SIGNAL(activated()), ui.CellDefinePeriodicButton, SLOT(click()));
+
 	// Cell Panel (Fold)
 	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_F), this, 0, 0, Qt::ApplicationShortcut);
 	connect(shortcut, SIGNAL(activated()), ui.CellFoldAtomsButton, SLOT(click()));
 	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_F), this, 0, 0, Qt::ApplicationShortcut);
 	connect(shortcut, SIGNAL(activated()), ui.CellFoldMoleculesButton, SLOT(click()));
+
+	// Calculate Panel (Measure)
+	shortcut = new QShortcut(QKeySequence(Qt::Key_2), this, 0, 0, Qt::ApplicationShortcut);
+	connect(shortcut, SIGNAL(activated()), ui.CalculateMeasureDistanceButton, SLOT(click()));
+	shortcut = new QShortcut(QKeySequence(Qt::Key_3), this, 0, 0, Qt::ApplicationShortcut);
+	connect(shortcut, SIGNAL(activated()), ui.CalculateMeasureAngleButton, SLOT(click()));
+	shortcut = new QShortcut(QKeySequence(Qt::Key_4), this, 0, 0, Qt::ApplicationShortcut);
+	connect(shortcut, SIGNAL(activated()), ui.CalculateMeasureTorsionButton, SLOT(click()));
+
 	// Select Panel
 	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_A), this, 0, 0, Qt::ApplicationShortcut);
 	connect(shortcut, SIGNAL(activated()), ui.SelectBasicAllButton, SLOT(click()));
@@ -372,12 +408,15 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportFilmD
 	connect(shortcut, SIGNAL(activated()), ui.SelectBasicInvertButton, SLOT(click()));
 	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_E), this, 0, 0, Qt::ApplicationShortcut);
 	connect(shortcut, SIGNAL(activated()), ui.SelectBasicExpandButton, SLOT(click()));
+
 	// Selection Panel
 	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_H), this, 0, 0, Qt::ApplicationShortcut);
 	connect(shortcut, SIGNAL(activated()), ui.SelectionAppearanceHideButton, SLOT(click()));
+
 	// Transform Panel
 	shortcut = new QShortcut(QKeySequence(Qt::CTRL + Qt::Key_0), this, 0, 0, Qt::ApplicationShortcut);
 	connect(shortcut, SIGNAL(activated()), ui.TransformPositionZeroButton, SLOT(click()));
+
 	// Main Window
 	shortcut = new QShortcut(QKeySequence(Qt::Key_F10), this, 0, 0, Qt::ApplicationShortcut);
 	connect(shortcut, SIGNAL(activated()), ui.QuickCommandToggleButton, SLOT(click()));

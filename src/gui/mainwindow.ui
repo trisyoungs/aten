@@ -462,7 +462,7 @@
              </font>
             </property>
             <property name="toolTip">
-             <string>Close the current model</string>
+             <string>Load / Save Sessions</string>
             </property>
             <property name="text">
              <string>Session</string>
@@ -1722,7 +1722,7 @@
                 </size>
                </property>
                <property name="toolTip">
-                <string>Toggle perspective view</string>
+                <string>Toggle perspective view (P)</string>
                </property>
                <property name="text">
                 <string>Perspective</string>
@@ -2307,7 +2307,7 @@
                 </size>
                </property>
                <property name="toolTip">
-                <string>Select atoms in bound fragments</string>
+                <string>Select atoms in bound fragments (F)</string>
                </property>
                <property name="text">
                 <string>Bound</string>
@@ -2357,7 +2357,7 @@
                 </size>
                </property>
                <property name="toolTip">
-                <string>Select atoms by element</string>
+                <string>Select atoms by element (E)</string>
                </property>
                <property name="text">
                 <string>Element</string>
@@ -2584,7 +2584,7 @@
                 </size>
                </property>
                <property name="toolTip">
-                <string>Draw atoms, chains, and individual bonds</string>
+                <string>Draw atoms, chains, and individual bonds (D)</string>
                </property>
                <property name="text">
                 <string>Draw</string>
@@ -2684,7 +2684,7 @@
                 </size>
                </property>
                <property name="toolTip">
-                <string>Delete atoms and bonds</string>
+                <string>Delete atoms and bonds (L)</string>
                </property>
                <property name="text">
                 <string>Delete</string>
@@ -2737,7 +2737,7 @@
                 </size>
                </property>
                <property name="toolTip">
-                <string>Transmute atoms to other elements</string>
+                <string>Transmute atoms to other elements (T)</string>
                </property>
                <property name="text">
                 <string>Transmute</string>
@@ -2787,7 +2787,7 @@
                 </size>
                </property>
                <property name="toolTip">
-                <string>Add hydrogens to individual atoms</string>
+                <string>Add hydrogens to individual atoms (H)</string>
                </property>
                <property name="text">
                 <string>Add H</string>
@@ -3302,7 +3302,7 @@
              </font>
             </property>
             <property name="toolTip">
-             <string>Toggle whether model is periodic</string>
+             <string>Toggle whether model is periodic (P)</string>
             </property>
             <property name="text">
              <string>Periodic</string>
@@ -4186,7 +4186,7 @@
              </size>
             </property>
             <property name="toolTip">
-             <string>Measure bond distances of clicked atoms</string>
+             <string>Measure bond distances between atoms (2</string>
             </property>
             <property name="text">
              <string>Distance</string>
@@ -4246,7 +4246,7 @@
              </size>
             </property>
             <property name="toolTip">
-             <string>Measure torsion angles of clicked atoms</string>
+             <string>Measure torsion angles between atoms (4)</string>
             </property>
             <property name="text">
              <string>Torsion</string>
@@ -4299,7 +4299,7 @@
              </size>
             </property>
             <property name="toolTip">
-             <string>Measure bond angles of clicked atoms</string>
+             <string>Measure bond angles between atoms (3)</string>
             </property>
             <property name="text">
              <string>Angle</string>
