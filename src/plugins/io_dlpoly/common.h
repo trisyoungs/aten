@@ -52,6 +52,10 @@ class DLPOLYPluginCommon
 	static bool readUnformattedFrame(AtenSpace::FilePluginInterface* plugin, AtenSpace::FileParser& parser, AtenSpace::Model* targetModel, AtenSpace::DLPOLYPluginCommon::DLPOLYVersion version, int integerSize, int realSize, QStringList unformattedAtomNames, AtenSpace::Array< double > unformattedCharges);
 	// Skip unformatted frame model in file
 	static bool skipUnformattedFrame(FilePluginInterface* plugin, FileParser& parser, DLPOLYVersion version, int integerSize, int realSize);
+	// Read single DEFECTS model from file
+	static bool readDEFECTSModel(FilePluginInterface* plugin, FileParser& parser, Model* targetModel);
+	// Skip single frame fects in file
+	static bool skipFrameDefects(FilePluginInterface* plugin, FileParser& parser);
 };
 
 ATEN_END_NAMESPACE

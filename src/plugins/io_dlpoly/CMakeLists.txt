@@ -228,3 +228,48 @@ target_include_directories(dlp4history PRIVATE
   ${Qt5Core_INCLUDE_DIRS}
   ${Qt5Gui_INCLUDE_DIRS}
 )
+
+# -------------
+# DL_POLY_4 DEFECTS
+# -------------
+set(defects4_MOC_HDRS
+  defects4.hui
+  dlp4importoptions.h
+)
+QT5_WRAP_CPP(defects4_MOC_SRCS ${defects4_MOC_HDRS} OPTIONS -I${PROJECT_SOURCE_DIR}/src)
+
+SET(defects4_UIS
+  dlp4importoptions.ui 
+)
+QT5_WRAP_UI(defects4_UIS_H ${defects4_UIS})
+
+add_library(dlp4defects MODULE
+  defects4_funcs.cpp
+  dlp4importoptions_funcs.cpp
+  common.cpp
+  ${defects4_MOC_SRCS}
+  ${defects4_UIS}
+)
+target_link_libraries(dlp4defects
+  ${PLUGIN_LINK_LIBS}
+)
+set_target_properties(dlp4defects PROPERTIES
+   LIBRARY_OUTPUT_DIRECTORY ${Aten_BINARY_DIR}/data/plugins
+   COMPILE_DEFINITIONS "QT_PLUGIN"
+   PREFIX ""
+)
+
+# Install Targets
+if(UNIX AND NOT APPLE)
+install(TARGETS dlp4defects
+    RUNTIME DESTINATION ${CMAKE_INSTALL_LIBDIR}/aten/plugins COMPONENT RuntimePlugins
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}/aten/plugins COMPONENT RuntimePlugins
+)
+endif(UNIX AND NOT APPLE)
+# Includes
+target_include_directories(dlp4defects PRIVATE
+  ${PROJECT_SOURCE_DIR}/src
+  ${PROJECT_BINARY_DIR}/src
+  ${Qt5Core_INCLUDE_DIRS}
+  ${Qt5Gui_INCLUDE_DIRS}
+)
