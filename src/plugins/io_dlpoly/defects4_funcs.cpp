@@ -22,7 +22,7 @@
 
 #include "plugins/io_dlpoly/defects4.hui"
 #include "plugins/io_dlpoly/common.h"
-#include "plugins/io_dlpoly/dlp4importoptions.h"
+#include "plugins/io_dlpoly/defects4importoptions.h"
 #include "model/model.h"
 
 // Constructor
@@ -30,6 +30,8 @@ DLP4DefectsPlugin::DLP4DefectsPlugin()
 {
 	// Setup option keywords and standard options
 	pluginOptions_.add("shiftCell", "true");
+	pluginOptions_.add("vacancy", "true");
+	pluginOptions_.add("interstitial", "true");
 	standardOptions_.setZMappingType(ElementMap::FirstAlphaZMap);
 	standardOptions_.setSwitch(FilePluginStandardImportOptions::PreventFoldingSwitch, true);
 	standardOptions_.setSwitch(FilePluginStandardImportOptions::PreventPackingSwitch, true);
@@ -110,9 +112,10 @@ bool DLP4DefectsPlugin::importData()
 		return false;
 	}
 	targetModel()->setName ( name );
-	if ( !fileParser_.skipLines ( 1 ) ) {
-		return false;
-	}
+  if ( !fileParser_.parseLine() ) {
+    return false;
+  }
+  setNDataParts(fileParser_.argi(1));
 
 	// Read the first trajectory frame.
 	// The model where we should put the frame data will have been set in the FileParser (in parentModel()).
@@ -183,7 +186,7 @@ bool DLP4DefectsPlugin::hasImportOptions()
 // Show import options dialog
 bool DLP4DefectsPlugin::showImportOptionsDialog()
 {
-	DLP4ImportOptionsDialog optionsDialog(pluginOptions_);
+	DLP4DefImportOptionsDialog optionsDialog(pluginOptions_);
 	return (optionsDialog.updateAndExecute() == QDialog::Accepted);
 }
 

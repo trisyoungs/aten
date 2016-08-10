@@ -597,6 +597,8 @@ bool DLPOLYPluginCommon::readDEFECTSModel ( FilePluginInterface* plugin, FilePar
     return false;
   }
   int nDef=parser.argi(1);
+  int nInter=parser.argi(3);
+  int nVac=parser.argi(5);
 
   Matrix cell;
   for ( int i = 0; i<3; ++i ) {
@@ -608,21 +610,53 @@ bool DLPOLYPluginCommon::readDEFECTSModel ( FilePluginInterface* plugin, FilePar
   targetModel->setCell ( cell );
   int n=0;
   if (nDef>0){
-    do {
-      if ( !parser.parseLine() ) {
-        break;
-      }
-      QString el = parser.argc ( 0 );
-      if ( !parser.parseLine() ) {
-        break;
-      }
-      // Create the new atom
-      Vec3<double> r = parser.arg3d ( 0 );
 
-      plugin->createAtom ( targetModel, el, r);
-      n++;
-      if (n==nDef) break;
-    } while ( (!parser.eofOrBlank()) );
+    if (nInter>0){
+      int readInter=FilePluginInterface::toBool(plugin->pluginOptions().value("interstitial"));  
+      if (readInter){
+        do {
+          if ( !parser.parseLine() ) {
+            break;
+          }
+          QString el = parser.argc ( 0 );
+          if ( !parser.parseLine() ) {
+            break;
+          }
+          // Create the new atom
+          Vec3<double> r = parser.arg3d ( 0 );
+          plugin->createAtom ( targetModel, el, r);
+          n++;
+          if (n==nInter) break;
+        } while ( (!parser.eofOrBlank()) );
+      } else {
+        if (!parser.skipLines(2*nInter)) return false;
+        n=nInter;
+      }
+    }
+
+    if (nVac>0) {
+      int readVac=FilePluginInterface::toBool(plugin->pluginOptions().value("vacancy"));  
+      if (readVac){
+        do {
+          if ( !parser.parseLine() ) {
+            break;
+          }
+          QString el = parser.argc ( 0 );
+          if ( !parser.parseLine() ) {
+            break;
+          }
+          // Create the new atom
+          Vec3<double> r = parser.arg3d ( 0 );
+          plugin->createAtom ( targetModel, el, r);
+          n++;
+          if (n==nVac+nInter) break;
+        } while ( (!parser.eofOrBlank()) );
+      }else{
+        if (!parser.skipLines(2*nVac)) return false;
+        n=nInter+nVac;
+      }
+    }
+
     // Shift atoms by half-cell
     bool shift = FilePluginInterface::toBool(plugin->pluginOptions().value("shiftCell"));
     if (shift && targetModel->isPeriodic())
