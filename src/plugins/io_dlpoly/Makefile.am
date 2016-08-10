@@ -1,6 +1,6 @@
 # Set plugin installation dir and define plugin targets
 pluginexecdir = @ATEN_PLUGINLIBDIR@
-pluginexec_LTLIBRARIES = dlp2.la dlp4.la dlpfield.la dlp2history.la dlp4history.la
+pluginexec_LTLIBRARIES = dlp2.la dlp4.la dlpfield.la dlp2history.la dlp4history.la dlp4defects.la
 
 # Rules
 .ui.lo:
@@ -51,6 +51,12 @@ dlp4history_la_SOURCES = dlp4importoptions.ui dlp4importoptions_funcs.cpp
 dlp4history_la_SOURCES += history4_funcs.cpp history4.hui
 dlp4history_la_LIBADD = libcommon.la
 dlp4history_la_LDFLAGS = -module -shared -avoid-version
+
+# DL_POLY 4 Defects Plugin
+dlp4defects_la_SOURCES = dlp4importoptions.ui dlp4importoptions_funcs.cpp
+dlp4defects_la_SOURCES += defects4_funcs.cpp defects4.hui
+dlp4defects_la_LIBADD = libcommon.la
+dlp4defects_la_LDFLAGS = -module -shared -avoid-version
 
 AM_CPPFLAGS = -I${top_srcdir}/src @ATEN_INCLUDES@ @ATEN_CFLAGS@
 

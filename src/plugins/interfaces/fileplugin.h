@@ -489,6 +489,13 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 	virtual bool importNextPart() = 0;
 	// Skip next partial data chunk
 	virtual bool skipNextPart() = 0;
+	// Set the number of data parts in the file explicityl
+	void setNDataParts(int nParts)
+	{
+		if (nDataParts_ > 0) Messenger::warn("Number of data parts already set / estimated.");
+		nDataParts_ = nParts;
+		nDataPartsEstimated_ = false;
+	}
 	// Import partial data chunk specified
 	bool importPart(int partId)
 	{
@@ -508,18 +515,21 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 					// Add offset for the second datum
 					dataPartOffsets_.add(lineParser_.tellg());
 
-					// Estimate total number of parts
-					// First, get data size from difference between file positions for zeroth and first parts
-					long int partSize = dataPartOffsets_.last() - dataPartOffsets_.first();
-					if ((partSize/1024) < 10) Messenger::print("Single data is %i bytes.", partSize);
-					else Messenger::print("Single data is (approximately) %i kb.", partSize/1024);
+					// Estimate total number of parts if we have not already been told the number to expect
+					if (nDataParts_ == 0)
+					{
+						// First, get data size from difference between file positions for zeroth and first parts
+						long int partSize = dataPartOffsets_.last() - dataPartOffsets_.first();
+						if ((partSize/1024) < 10) Messenger::print("Single data is %i bytes.", partSize);
+						else Messenger::print("Single data is (approximately) %i kb.", partSize/1024);
 
-					// Now, skip to end of file to get file size, and estimate number of parts
-					lineParser_.seekg(0, std::ios::end);
-					std::streampos endOfFilePos = lineParser_.tellg();
-					nDataParts_ = (endOfFilePos - dataPartOffsets_.first()) / partSize;
-					nDataPartsEstimated_ = true;
-					lineParser_.seekg( dataPartOffsets_.last());
+						// Now, skip to end of file to get file size, and estimate number of parts
+						lineParser_.seekg(0, std::ios::end);
+						std::streampos endOfFilePos = lineParser_.tellg();
+						nDataParts_ = (endOfFilePos - dataPartOffsets_.first()) / partSize;
+						nDataPartsEstimated_ = true;
+						lineParser_.seekg( dataPartOffsets_.last());
+					}
 				}
 
 				Messenger::print(Messenger::Verbose, "FilePluginInterface::importPart() - result of initial part read was %i, nOffsets now %i.", result, dataPartOffsets_.nItems());
@@ -564,7 +574,7 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 				Messenger::print("Failed to skip to specified part (%i).", partId);
 				Messenger::print("Last good data read was id %i.", currentId);
 
-				// Update the number of stored parts
+				// Update the number of stored parts to reflect the read error (early termination of the file perhaps?)
 				nDataParts_ = currentId;
 				nDataPartsEstimated_ = false;
 				return false;
