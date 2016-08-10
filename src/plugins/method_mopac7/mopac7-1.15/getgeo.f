@@ -69,13 +69,15 @@ c *******
       ISERR=0
       GETGEO=.TRUE.
 
+      write(0,*) "Here we are at the start of GETGEO"
       DO 10 I=1,MAXPAR
    10 SIMBOL(I)= '---'
    20 IREC=IREC+1
       IF (IREC.GT.NUMREC) GOTO 130
-      READ(DATAFILE(IREC:IREC),'(A)',END=130,ERR=230)LINE
+      READ(DATAFILE(IREC:IREC),'(A)',END=130,ERR=230) LINE
       IF(LINE.EQ.' ') GO TO 130
       NATOMS=NATOMS+1
+      write(0,*) "NATOMS", NATOMS
 C
 C   SEE IF TEXT IS ASSOCIATED WITH THIS ELEMENT
 C
@@ -179,7 +181,8 @@ C
       IF(NATOMS.GT.NUMATM)THEN
          WRITE(WU,'(//10X,''****  MAX. NUMBER OF ATOMS ALLOWED:'',I4)')
      1NUMATM
-         STOP
+         GETGEO=.FALSE.
+         RETURN
       ENDIF
       LABELS(NATOMS)   =LABEL
       GEO(1,NATOMS)    =READA(LINE,ISTART(2))
@@ -236,6 +239,7 @@ C
       ENDIF
       IF(LOPT(1,NATOMS).GT.1.OR.LOPT(2,NATOMS).GT.1.OR.
      1LOPT(3,NATOMS).GT.1)ISERR=1
+
       IF(ISERR.EQ.1) THEN
 C
 C  MUST BE GAUSSIAN GEOMETRY INPUT
@@ -254,6 +258,7 @@ C
                      GEO(2,L)=GEO(2,L)*CONST
   100             GEO(3,L)=GEO(3,L)*CONST
                   CALL GEOUT(6)
+
                   GETGEO=.FALSE.
                   RETURN
                ENDIF
@@ -265,8 +270,10 @@ C
 *
 * ALL DATA READ IN, CLEAN UP AND RETURN
 *
+      write(0,*) "Yo 1"
   120 NATOMS=NATOMS-1
   130 NA(2)=1
+
       LTXT=CHAR(MAXTXT)
       IF(NATOMS.GT.3)THEN
          INT=(NA(4).NE.0)
@@ -284,7 +291,8 @@ C
          IF(INT)THEN
            WRITE(WU,'(A)')' COORDINATES MUST BE CARTESIAN WHEN VELOCITY'
      1//' VECTOR IS USED.'
-            STOP
+            GETGEO=.FALSE.
+            RETURN
          ENDIF
 C#      WRITE(WU,'(/10X,A)')'INITIAL VELOCITY VECTOR FOR DRC'
          DO 150 I=1,NATOMS
@@ -299,12 +307,14 @@ C#      WRITE(WU,'(/10X,A)')'INITIAL VELOCITY VECTOR FOR DRC'
             IF(NDMY.NE.3)THEN
                WRITE(WU,'(/10X,A)')
      1'  THERE MUST BE EXACTLY THREE VELOCITY DATA PER LINE'
-               STOP
+              GETGEO=.FALSE.
+              RETURN
             ENDIF
             DO 140 J=1,3
   140       REACT(J,I+2)=VALUE(J)
 C#      WRITE(WU,'(2X,A2,2X,3F13.5)')ELEMNT(LABELS(I)),(VALUE(J),J=1,3)
   150    CONTINUE
+
          DO 160 I=1,3
             DO 160 J=1,2
   160    REACT(I,J)=GEO(I,J+1)-GEO(I,1)
@@ -397,6 +407,7 @@ C
          NB(3)=1
          NA(3)=2
       ENDIF
+      write(0,*) "HELLO?"
       RETURN
 * ERROR CONDITIONS
   230 IF(IREAD.EQ.5) THEN
@@ -412,5 +423,6 @@ C
      1NA(K),NB(K),NC(K)
   260 FORMAT(I4,2X,3(F10.5,2X,I2,2X),3(I2,1X))
       GETGEO=.FALSE.
+      write(0,*) "AT END"
       RETURN
       END

@@ -52,7 +52,8 @@ C     S.P.MCGLYNN, ET AL: APPLIED QUANTUM CHEMISTRY
 C
       DIMENSION DIP(4,3)
       DIMENSION HYF(107,2)
-      SAVE FIRST, HYF, DIP, WTMOL, CHARGD, FORCE
+C     TGAY - ADDED KTYPE TO SAVE LIST
+      SAVE FIRST, HYF, DIP, WTMOL, CHARGD, FORCE, KTYPE
       LOGICAL FIRST, FORCE, CHARGD
       DATA HYF(1,1)     / 0.0D00           /
       DATA   HYF(1,2) /0.0D0     /
@@ -66,9 +67,11 @@ C
       DATA   HYF(16,2)/6.345552D0/
       DATA   HYF(17,2)/2.522964D0/
       DATA ICALCN/0/
+      write(0,*) "DIPOLE 111"
       FIRST=(ICALCN.NE.NUMCAL)
       ICALCN=NUMCAL
       IF (FIRST) THEN
+         write(0,*) "THIS IS THE FIRST DIPOLE CALL"
          DO 10 I=2,107
    10    HYF(I,1)= 5.0832D0*DD(I)
          WTMOL=0.D0
@@ -81,6 +84,7 @@ C
          KTYPE=1
          IF(ITYPE.EQ.4)KTYPE=2
       ENDIF
+      write(0,*) "DIPOLE 222"
       IF(.NOT.FORCE.AND.CHARGD)THEN
 C
 C   NEED TO RESET ION'S POSITION SO THAT THE CENTER OF MASS IS AT THE
@@ -97,15 +101,26 @@ C
             DO 60 J=1,NUMAT
    60    COORD(I,J)=COORD(I,J)-CENTER(I)
       ENDIF
+      write(0,*) "DIPOLE 333"
+
       DO 70 I=1,4
          DO 70 J=1,3
    70 DIP(I,J)=0.0D00
       DO 90 I=1,NUMAT
+      write(0,*) "DIPOLE 333 - ", I
+
          NI=NAT(I)
+      write(0,*) "DIPOLE 333 - ", NI
          IA=NFIRST(I)
+      write(0,*) "DIPOLE 333 - IA", IA
          L=NLAST(I)-IA
+      write(0,*) "DIPOLE 333 - L", L
          DO 80 J=1,L
+      write(0,*) "DIPOLE 333 - 80LOOP", J
+
             K=((IA+J)*(IA+J-1))/2+IA
+      write(0,*) "DIPOLE 333 - 80LOOP K", K
+
    80    DIP(J,2)=DIP(J,2)-HYF(NI,KTYPE)*P(K)
          DO 90 J=1,3
    90 DIP(J,1)=DIP(J,1)+4.803D00*Q(I)*COORD(J,I)
@@ -118,6 +133,8 @@ C
          DIPVEC(2)=DIP(2,3)
          DIPVEC(3)=DIP(3,3)
       ENDIF
+      write(0,*) "DIPOLE 335"
+
       IF(MODE.EQ.1)WRITE(WU,130) ((DIP(I,J),I=1,4),J=1,3)
 C     STORE DIPOLE MOMENT COMPONENTS IN UX,UY,UZ FOR USE IN
 C     ASSIGNING CHARGES DETERMINED FROM THE ESP. BHB
@@ -127,6 +144,8 @@ C     ASSIGNING CHARGES DETERMINED FROM THE ESP. BHB
 C
 C     STORE CHARGES Q IN ARRAY CH FOR USE IN ASSIGNING SYMMETRY TO
 C     CHARGES. BHB
+      write(0,*) "DIPOLE 444"
+
       DO 120 I=1,NUMAT
   120 CH(I)=Q(I)
       DIPOLE = DIP(4,3)

@@ -440,11 +440,11 @@ C
 C OUTPUT GEOMETRY AS FEEDBACK
 C
   220 CALL WRTTXT(WU)
-      IF(INDEX(KEYWRD,'NOLOG').EQ.0)THEN
+!      IF(INDEX(KEYWRD,'NOLOG').EQ.0)THEN
 !         OPEN(UNIT=11, FORM='FORMATTED', STATUS='UNKNOWN',
 !     +FILE=GETNAM('FOR011'))
-         CALL WRTTXT(11)
-      ENDIF
+!         CALL WRTTXT(11)
+!      ENDIF
       CALL GEOUT(1)
       CALL GMETRY(GEO,COORD)
 C
@@ -482,6 +482,7 @@ C
 C
 C    C is not actually used in this call.
 C
+
       CALL SYMTRZ(COORD,C,NORBS,NORBS,.FALSE.,.FALSE.)
       WRITE(WU,'(//''     MOLECULAR POINT GROUP   :   '',A4)') NAME
       IF(   INDEX(KEYWRD,' XYZ') .NE. 0 )THEN
@@ -557,5 +558,7 @@ C
             RETURN
          ENDIF
       ENDIF
+      write(0,*) "Boosss!", READMO
+
       RETURN
       END

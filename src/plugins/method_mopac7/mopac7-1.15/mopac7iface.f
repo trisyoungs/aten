@@ -86,18 +86,18 @@ C determine number of lines in input file
 
       ISOK=.TRUE.
       OM7SETUP=.TRUE.
+
    10 NUMCAL=1
 
-      TIME0=SECOND()
-
 C READ AND CHECK INPUT FILE, EXIT IF NECESSARY.
-C     WRITE INPUT FILE TO UNIT 6 AS FEEDBACK TO USER
-C
+      IREC=0
       IF (.NOT.READMO(DATAFILE)) THEN
         write(0,*) "READMO FAILED"
         OM7SETUP=.FALSE.
         RETURN
       ENDIF
+
+      TIME0=SECOND()
 
       EMIN=0.D0
       CALL TIMER('AFTER READ')
