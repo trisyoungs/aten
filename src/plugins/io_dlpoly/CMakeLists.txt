@@ -234,18 +234,18 @@ target_include_directories(dlp4history PRIVATE
 # -------------
 set(defects4_MOC_HDRS
   defects4.hui
-  dlp4importoptions.h
+  defects4importoptions.h
 )
 QT5_WRAP_CPP(defects4_MOC_SRCS ${defects4_MOC_HDRS} OPTIONS -I${PROJECT_SOURCE_DIR}/src)
 
 SET(defects4_UIS
-  dlp4importoptions.ui 
+  defects4importoptions.ui 
 )
 QT5_WRAP_UI(defects4_UIS_H ${defects4_UIS})
 
 add_library(dlp4defects MODULE
   defects4_funcs.cpp
-  dlp4importoptions_funcs.cpp
+  defects4importoptions_funcs.cpp
   common.cpp
   ${defects4_MOC_SRCS}
   ${defects4_UIS}
