@@ -37,6 +37,43 @@ C PASS INPUT DECK TO OpenMOPAC
       LOGICAL FUNCTION OM7SETUP(DATAFILE)
       IMPLICIT DOUBLE PRECISION (A-H,O-Z)
       INCLUDE 'SIZES'
+      COMMON /NUMCAL/ NUMCAL
+      DATA NUMCAL /0/
+C ****** Internal Input File / External Output Unit
+      CHARACTER(*) DATAFILE
+      INTEGER IREC,NUMREC
+      INTEGER WU
+      COMMON /DATFIL/ IREC,NUMREC
+      COMMON /OUTFIL/ WU
+C function declarations
+      LOGICAL READMO
+
+C determine number of lines in input file
+      NUMREC=LEN(DATAFILE)/80
+      IF (MOD(LEN(DATAFILE),80).NE.0) THEN
+        write(0,*) "WARNING"
+      ENDIF
+      WRITE(WU,*) "Number of records in internal file is ", NUMREC
+      IREC=0
+
+      OM7SETUP=.TRUE.
+
+   10 NUMCAL=1
+
+C READ AND CHECK INPUT FILE, EXIT IF NECESSARY.
+      IREC=0
+      IF (.NOT.READMO(DATAFILE)) THEN
+        write(0,*) "READMO FAILED"
+        OM7SETUP=.FALSE.
+        RETURN
+      ENDIF
+
+      END FUNCTION OM7SETUP
+
+C Perform calcuation with OpenMOPAC
+      LOGICAL FUNCTION OM7CALC()
+      IMPLICIT DOUBLE PRECISION (A-H,O-Z)
+      INCLUDE 'SIZES'
       COMMON /SCFTYP/ EMIN, LIMSCF
       COMMON /KEYWRD/ KEYWRD
       COMMON /OKMANY/ ISOK
@@ -68,7 +105,6 @@ C end of COSMO change
       DATA NUMCAL /0/
       DATA ISOK /.TRUE./
 C ****** Internal Input File / External Output Unit
-      CHARACTER(*) DATAFILE
       INTEGER IREC,NUMREC
       INTEGER WU
       COMMON /DATFIL/ IREC,NUMREC
@@ -76,26 +112,9 @@ C ****** Internal Input File / External Output Unit
 C function declarations
       LOGICAL READMO
 
-C determine number of lines in input file
-      NUMREC=LEN(DATAFILE)/80
-      IF (MOD(LEN(DATAFILE),80).NE.0) THEN
-        write(0,*) "WARNING"
-      ENDIF
-      WRITE(WU,*) "Number of records in internal file is ", NUMREC
-      IREC=0
-
-      ISOK=.TRUE.
-      OM7SETUP=.TRUE.
+      OM7CALC = .TRUE.
 
    10 NUMCAL=1
-
-C READ AND CHECK INPUT FILE, EXIT IF NECESSARY.
-      IREC=0
-      IF (.NOT.READMO(DATAFILE)) THEN
-        write(0,*) "READMO FAILED"
-        OM7SETUP=.FALSE.
-        RETURN
-      ENDIF
 
       TIME0=SECOND()
 
@@ -115,7 +134,7 @@ C INITIALIZE CALCULATION AND WRITE CALCULATION INDEPENDENT INFO
 C
 C      IF(INDEX(KEYWRD,'0SCF') .NE. 0) THEN
 C         WRITE(WU,'(A)')' GEOMETRY IN MOPAC Z-MATRIX FORMAT'
-      CALL GEOUT(6)
+C      CALL GEOUT(6)
 C         IF(INDEX(KEYWRD,' AIGOUT').NE.0)THEN
 C            WRITE(WU,'(//,A)')'  GEOMETRY IN GAUSSIAN Z-MATRIX FORMAT'
 C            CALL WRTTXT(6)
@@ -123,7 +142,9 @@ C            CALL GEOUTG(6)
 C         ENDIF
 C         GOTO 50
 C      ENDIF
+      write(0,*) "BEFORE MOLDAT"
       CALL MOLDAT(0)
+      write(0,*) "AFTER MOLDAT"
 C *** ok, initialization is now done, and we can stop here...
 
 C COSMO change
@@ -153,6 +174,7 @@ C
    30    EAT   =EAT   +EISOL(NI)
          ATHEAT=ATHEAT-EAT*23.061D0
       ENDIF
+
       IF (INDEX(KEYWRD,'RESTART').EQ.0)THEN
          IF (INDEX(KEYWRD,'1SCF').NE.0) THEN
             IF(LATOM.NE.0)THEN
@@ -171,6 +193,7 @@ C
             GOTO 40
          ENDIF
       ENDIF
+
 C
 C CALCULATE DYNAMIC REACTION COORDINATE.
 C
@@ -247,7 +270,10 @@ C#      CALL TIMER('BEFORE FLEPO')
 C COSMO change 1/9/92 SJC
       UPDA = .FALSE.
 C end of COSMO change
+	write(0,*) "888888888888888*"
       CALL FLEPO(XPARAM, NVAR, ESCF)
+	write(0,*) "888888888888888*"
+
    40 LAST=1
       IF(IFLEPO.GE.0)CALL WRITMO(TIME0, ESCF)
       IF(INDEX(KEYWRD,'POLAR') .NE. 0) THEN
@@ -263,10 +289,16 @@ C  MNDO, AND RELINK.
       LIMSCF=.FALSE.
       WRITE(WU,'(///,'' TOTAL CPU TIME: '',F16.2,'' SECONDS'')') TIM
       WRITE(WU,'(/,'' == MOPAC DONE =='')')
-      IF(ISOK) GOTO 10
+
+C Done if only 1SCF was requested
+      IF(INDEX(KEYWRD,'1SCF') .NE. 0) THEN
+        RETURN
+      ENDIF
+
+      IF (ISOK) GOTO 10
 
       RETURN
-      END
+      END FUNCTION OM7CALC
 
 
 C TIDY UP OpenMOPAC (close output target)
@@ -285,57 +317,3 @@ c If unit specified is 6 (stdout) no need to close an output file
 10    OM7FINALISE=.FALSE.
       END FUNCTION OM7FINALISE
 
-
-
-      SUBROUTINE LM7STOP()
-C *** this is the end part of the original MOPAC main program.
-C *** this is a subroutine that will run the mopac down...
-      IMPLICIT DOUBLE PRECISION (A-H,O-Z)
-      INCLUDE 'SIZES'
-      COMMON /SCFTYP/ EMIN, LIMSCF
-      COMMON /KEYWRD/ KEYWRD
-      COMMON /OKMANY/ ISOK
-      COMMON /GEOVAR/ NVAR,LOC(2,MAXPAR), IDUMY, XPARAM(MAXPAR)
-      COMMON /MESAGE/ IFLEPO,ISCF
-      COMMON /GEOSYM/ NDEP,LOCPAR(MAXPAR),IDEPFN(MAXPAR),LOCDEP(MAXPAR)
-      COMMON /GEOKST/ NATOMS,LABELS(NUMATM),
-     1NA(NUMATM),NB(NUMATM),NC(NUMATM)
-      COMMON /GEOM  / GEO(3,NUMATM), XCOORD(3,NUMATM)
-      COMMON /GRADNT/ GRAD(MAXPAR),GNORM
-      COMMON /MOLKST/ NUMAT,NAT(NUMATM),NFIRST(NUMATM),NMIDLE(NUMATM),
-     1                NLAST(NUMATM), NORBS, NELECS,NALPHA,NBETA,
-     2                NCLOSE,NOPEN,NDUMY,FRACT
-      COMMON /ATHEAT/ ATHEAT
-      COMMON /LAST  / LAST
-      COMMON /ATOMIC/ EISOL(107),EHEAT(107)
-      COMMON /NUMCAL/ NUMCAL
-C ***** Modified by Jiro Toyoda at 1994-05-25 *****
-C     COMMON /TIME  / TIME0
-      COMMON /TIMEC / TIME0
-C ***************************** at 1994-05-25 *****
-      COMMON /PATH  / LATOM,LPARAM,REACT(200)
-C COSMO change
-      LOGICAL ISEPS, USEPS , UPDA
-      COMMON /ISEPS/  ISEPS, USEPS, UPDA
-C end of COSMO change
-      COMMON /OUTFIL/ WU
-      INTEGER WU
-      CHARACTER*241 KEYWRD, GETNAM*80
-      LOGICAL ISOK, LIMSCF
-   40 LAST=1
-C      IF(IFLEPO.GE.0)CALL WRITMO(TIME0, ESCF)
-C      IF(INDEX(KEYWRD,'POLAR') .NE. 0) THEN
-C         CALL POLAR
-C      ENDIF
-C      IF(INDEX(KEYWRD,' ESP') .NE. 0)THEN
-C  IF YOU WANT TO USE THE ESP PROGRAM, UNCOMMENT THE LINE
-C  "C#      CALL ESP", ADD "ESP, " TO MOPAC.OPT, THEN COMPILE ESP AND
-C  MNDO, AND RELINK.
-C          CALL ESP
-C      ENDIF
-   50 TIM=SECOND()-TIME0
-      LIMSCF=.FALSE.
-      WRITE(WU,'(///,'' TOTAL CPU TIME: '',F16.2,'' SECONDS'')') TIM
-      WRITE(WU,'(/,'' == MOPAC DONE =='')')
-C      IF(ISOK) GOTO 10
-      END

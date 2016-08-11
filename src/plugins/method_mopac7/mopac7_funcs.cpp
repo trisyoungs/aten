@@ -78,7 +78,7 @@ bool Mopac7MethodPlugin::runMethod()
 	// We will redirect all output from the fortran code to a temporary file (from stdout)
 	// All write() statements that were unit 6 will reference the unit number we provide here.
 	QString outputFile("/home/tris/src/aten/output.txt");
-	int unit = 66;
+	int unit = 6;
 	if (!om7prep_(&unit, qPrintable(outputFile), outputFile.length()))
 	{
 		Messenger::error("Failed to prepare OpenMOPAC7 for calculation.");
@@ -86,14 +86,28 @@ bool Mopac7MethodPlugin::runMethod()
 	}
 
 	// Create character array of input lines
-	QString inputFile = QString("%1").arg("PM3 GEO-OK 1SCF", -80, QChar(' ')) + QString("%1").arg("Water", 80, QChar(' '))
+	QString inputFile = QString("%1").arg("PM3 GEO-OK", -80, QChar(' '))
+		+ QString("%1").arg("Water", -80, QChar(' '))
 		+ QString("%1").arg("Coordinates churned out by Aten.", -80, QChar(' '))
-		+ QString("%1").arg("  O    -0.000000 1     0.000000 1    -0.000000 1", -80, QChar(' '))
-		+ QString("%1").arg("  H     0.742176 1     0.021779 1     0.790470 1", -80, QChar(' '))
-		+ QString("%1").arg("  H    -0.786228 1     0.006122 1     0.730414 1", -80, QChar(' '));
-	if (!om7setup_(qPrintable(inputFile), inputFile.length())) printf("Balls\n");
-	else printf("Woohoo!\n");
+// 		+ QString("%1").arg("  O     0.000000", -80, QChar(' '))
+// 		+ QString("%1").arg("  H     1.0  1", -80, QChar(' '))
+// 		+ QString("%1").arg("  H     1.0  1  108.0  2", -80, QChar(' '));
+		+ QString("%1").arg("  O     0.000000 0     0.000000 0     0.000000 0  0  0  0", -80, QChar(' '))
+		+ QString("%1").arg("  H     1.000000 1     0.000000 0     0.000000 0  1  0  0", -80, QChar(' '))
+		+ QString("%1").arg("  H     1.000000 1   108.000000 1     0.000000 0  1  2  0", -80, QChar(' '));
 
+	// Setup MOPAC calculation - pass input deck
+	if (!om7setup_(qPrintable(inputFile), inputFile.length()))
+	{
+		Messenger::error("Failed to setup MOPAC7 calculation.");
+		return false;
+	}
+
+	// Perform MOPAC calculation
+	bool result = om7calc_();
+	if (!result) Messenger::error("MOPAC7 calculation failed - see output for details.");
+
+	// Finalise MOPAC7
 	om7finalise_(&unit);
 	
 	// Dump output file to Messenger...
@@ -106,7 +120,7 @@ bool Mopac7MethodPlugin::runMethod()
 	}
 	else Messenger::error("Couldn't retrieve OpenMOPAC output for display.");
 
-	return true;
+	return result;
 }
 
 /*

@@ -194,7 +194,8 @@ C
             CALL GETGEO(DATAFILE,LABELS,GEO,LOPT,NA,NB,NC,AMS,
      1NATOMS,INT)
             IF(NATOMS.LT.0)THEN
-               REWIND 5
+c                REWIND 5
+               IREC=0
                IF(NUMCAL.NE.1)THEN
                   WRITE(WU,'(//,A)')'   GAUSSIAN INPUT REQUIRES STAND-ALO
      1NE JOB'

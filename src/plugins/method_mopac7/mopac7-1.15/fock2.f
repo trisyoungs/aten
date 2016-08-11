@@ -62,6 +62,7 @@ C
                      LJ=J+L-JL
                      KINDEX(M)= IFACT(LJ) +JL + 10*( IFACT(KI) +IK) -10
    20    JINDEX(M)=(IFACT(JI) + IJ)*10 + IFACT(LK) + KL - 10
+
          L=0
          DO 30 I=1,4
             I1=(I-1)*4
@@ -136,6 +137,7 @@ C  COULOMB TERMS
 C
                   CALL JAB(IA,JA,LLPERM,JINDEX, JJNDEX, PJA,PJB,W(KK+1),
      1F)
+
 C
 C  EXCHANGE TERMS
 C
@@ -220,11 +222,14 @@ C  EXTRACT INTERSECTION OF ATOMS II AND JJ IN THE SPIN DENSITY MATRIX
 C
                   K=IFACT(IA)+JA
                   J=0
+           write(0,*) "JINDEX2 = ", (JINDEX(JJJ),JJJ=1,4)
                   DO 160 I=K,K+3
                      SUM=0.D0
                      DO 150 L=K,K+3
                         J=J+1
+            write(0,*) "LJK", KK, J, JINDEX(J), KK+JINDEX(J)
   150                SUM=SUM+P(L)*W(KK+JINDEX(J))
+            write(0,*) "HHHHH"
   160             F(I)=F(I)-SUM
                   KK=KK+10
                ELSEIF(JB.EQ.JA.AND.IA.EQ.IB)THEN
