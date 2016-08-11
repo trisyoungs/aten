@@ -1,6 +1,6 @@
 if MOPACPLUGIN
 
-SUBDIRS = mopac7-1.15
+SUBDIRS = mopac7.1
 
 # Set plugin installation dir and define plugin targets
 pluginexecdir = @ATEN_PLUGINLIBDIR@
@@ -24,7 +24,7 @@ clean-local:
 
 # Mopac7 Method Plugin
 mopac7method_la_SOURCES = mopac7_funcs.cpp mopac7.hui
-mopac7method_la_LIBADD = mopac7-1.15/libmopac7115.la
+mopac7method_la_LIBADD = mopac7.1/libmopac71f90.la
 mopac7method_la_LDFLAGS = -module -shared -avoid-version -lgfortran
 
 AM_CPPFLAGS = -I${top_srcdir}/src @ATEN_INCLUDES@ @ATEN_CFLAGS@

@@ -57,7 +57,7 @@ AM_CONDITIONAL([NORDYNAMIC], [test "$with_nordynamic" = "yes"])
 AC_ARG_WITH([nomopacplugin], [AC_HELP_STRING([--with-nomopacplugin], [Disable compilation of MOPAC7 plugin [default="no"]])], [with_nomopacplugin="yes"], [with_nomopacplugin="no"])
 AM_CONDITIONAL([MOPACPLUGIN], [test "$with_nomopacplugin" = "no"])
 if test "$with_nomopacplugin" = "no"; then
-  AC_PROG_F77
+  AC_PROG_F90
 fi
 
 # Readline include dir
@@ -186,7 +186,7 @@ src/plugins/io_sybylmol2/Makefile
 src/plugins/io_vfield/Makefile
 src/plugins/io_xyz/Makefile
 src/plugins/method_mopac7/Makefile
-src/plugins/method_mopac7/mopac7-1.15/Makefile
+src/plugins/method_mopac7/mopac7.1/Makefile
 src/sg/Makefile
 src/templates/Makefile
 )

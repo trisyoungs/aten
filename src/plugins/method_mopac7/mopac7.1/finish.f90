@@ -1,0 +1,7 @@
+      SUBROUTINE FINISH
+!
+!   MOPEND SHUTS ALL FILES WHICH MAY HAVE BEEN OPENED
+!        AND THEN STARTS A RAPID RETURN TO THE MAIN SEGMENT
+!                                      
+      stop
+      END
