@@ -81,7 +81,7 @@ void TDynamicWidget::beginSpaceSaving()
 					dynamicLayout->addItem(gridLayout->takeAt(itemIndex));
 				}
 		}
-		else while (item = layout->takeAt(0)) dynamicLayout->addItem(item);
+		else while ((item = layout->takeAt(0))) dynamicLayout->addItem(item);
 
 		// Delete the old layout, and apply the new one
 		delete layout;
