@@ -75,50 +75,41 @@ QString Mopac7MethodPlugin::description() const
 // Run method on the current target model
 bool Mopac7MethodPlugin::runMethod()
 {
-	// We will redirect all output from the fortran code to a temporary file (from stdout)
-	// All write() statements that were unit 6 will reference the unit number we provide here.
-	QString outputFile("/home/tris/src/aten/output.txt");
-	int unit = 6;
-	if (!om7prep_(&unit, qPrintable(outputFile), outputFile.length()))
+	// Get the name of a temporary file prefix - this will let us delete all MOPAC-generated files afterwards
+	QString jobBaseName = addTemporaryFilePrefix("AtenMopac7MethodPlugin");
+	int jobBaseNameLength = jobBaseName.length();
+
+	// Open the input file...
+	QFile inputFile(jobBaseName + ".mop");
+	if (!inputFile.open(QIODevice::WriteOnly))
 	{
-		Messenger::error("Failed to prepare OpenMOPAC7 for calculation.");
+		Messenger::error("Failed to open temporary file for MOPAC input");
 		return false;
 	}
 
-	// Create character array of input lines
-	QString inputFile = QString("%1").arg("PM3 GEO-OK", -80, QChar(' '))
-		+ QString("%1").arg("Water", -80, QChar(' '))
-		+ QString("%1").arg("Coordinates churned out by Aten.", -80, QChar(' '))
-// 		+ QString("%1").arg("  O     0.000000", -80, QChar(' '))
-// 		+ QString("%1").arg("  H     1.0  1", -80, QChar(' '))
-// 		+ QString("%1").arg("  H     1.0  1  108.0  2", -80, QChar(' '));
-		+ QString("%1").arg("  O     0.000000 0     0.000000 0     0.000000 0  0  0  0", -80, QChar(' '))
-		+ QString("%1").arg("  H     1.000000 1     0.000000 0     0.000000 0  1  0  0", -80, QChar(' '))
-		+ QString("%1").arg("  H     1.000000 1   108.000000 1     0.000000 0  1  2  0", -80, QChar(' '));
+	// Create input deck
+	QTextStream textStream(&inputFile);
+	textStream << QString("%1").arg("PM3 GEO-OK", -80, QChar(' ')) << endl;
+	textStream << QString("%1").arg("Water", -80, QChar(' ')) << endl;
+	textStream << QString("%1").arg("Coordinates churned out by Aten.", -80, QChar(' ')) << endl;
+	textStream << QString("%1").arg("  O     0.000000 0     0.000000 0     0.000000 0  0  0  0", -80, QChar(' ')) << endl;
+	textStream << QString("%1").arg("  H     1.000000 1     0.000000 0     0.000000 0  1  0  0", -80, QChar(' ')) << endl;
+	textStream << QString("%1").arg("  H     1.000000 1   108.000000 1     0.000000 0  1  2  0", -80, QChar(' ')) << endl;
+	inputFile.close();
 
-	// Setup MOPAC calculation - pass input deck
-	if (!om7setup_(qPrintable(inputFile), inputFile.length()))
-	{
-		Messenger::error("Failed to setup MOPAC7 calculation.");
-		return false;
-	}
+	// Run MOPAC
+	bool result = runmopac71_(qPrintable(jobBaseName), jobBaseNameLength);
+	if (!result) Messenger::error("Failed to perform MOPAC calculation.");
 
-	// Perform MOPAC calculation
-	bool result = om7calc_();
-	if (!result) Messenger::error("MOPAC7 calculation failed - see output for details.");
-
-	// Finalise MOPAC7
-	om7finalise_(&unit);
-	
 	// Dump output file to Messenger...
-	QFile file(outputFile);
+	QFile file(jobBaseName + ".out");
 	if (file.open(QIODevice::ReadOnly))
 	{
 		QTextStream stream(&file);
 		while (!stream.atEnd()) Messenger::print(stream.readLine());
 		file.close();
 	}
-	else Messenger::error("Couldn't retrieve OpenMOPAC output for display.");
+	else Messenger::error("Couldn't retrieve MOAPC output for display.");
 
 	return result;
 }

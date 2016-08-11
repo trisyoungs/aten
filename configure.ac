@@ -57,7 +57,7 @@ AM_CONDITIONAL([NORDYNAMIC], [test "$with_nordynamic" = "yes"])
 AC_ARG_WITH([nomopacplugin], [AC_HELP_STRING([--with-nomopacplugin], [Disable compilation of MOPAC7 plugin [default="no"]])], [with_nomopacplugin="yes"], [with_nomopacplugin="no"])
 AM_CONDITIONAL([MOPACPLUGIN], [test "$with_nomopacplugin" = "no"])
 if test "$with_nomopacplugin" = "no"; then
-  AC_PROG_F90
+  AC_PROG_FC
 fi
 
 # Readline include dir

@@ -19,8 +19,8 @@
       integer :: i 
       logical :: exists 
       character :: line*80 
-      external getarg
-      integer, external :: iargc
+!       external getarg                          !--REMOVED TGAY 08/2016 - Satisfied by intrinsic function
+!       integer, external :: iargc               !--REMOVED TGAY 08/2016 - Satisfied by intrinsic function
       save i 
 !-----------------------------------------------
 !
@@ -59,15 +59,18 @@
 !  The UNIT number is contained in IFILES.  If you want to change the
 !  UNIT number, modify IFILES in this subroutine AFTER the line "C====="
 !
-!********************************************************************  
-      if (iargc() == 0) then 
-        jobnam = 'test' 
-      else 
-        call getarg (1, jobnam) 
-      endif
-!
+!******************************************************************** 
+
+!--REMOVED TGAY 08/2016 - JOBNAM passed to main function
+!       if (iargc() == 0) then 
+!         jobnam = 'test' 
+!       else 
+!         call getarg (1, jobnam) 
+!       endif
+
 ! Check for the data set in the order: <file>.mop, <file>.dat, <file>
       line = jobnam(:len_trim(jobnam))//'.mop'
+      write(0,*) "LINE1", line
       inquire(file=line, exist=exists)
       if ( .not. exists) then
         line = jobnam(:len_trim(jobnam))//'.dat'
