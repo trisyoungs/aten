@@ -53,7 +53,7 @@ dlp4history_la_LIBADD = libcommon.la
 dlp4history_la_LDFLAGS = -module -shared -avoid-version
 
 # DL_POLY 4 Defects Plugin
-dlp4defects_la_SOURCES = dlp4importoptions.ui dlp4importoptions_funcs.cpp
+dlp4defects_la_SOURCES = defects4importoptions.ui defects4importoptions_funcs.cpp
 dlp4defects_la_SOURCES += defects4_funcs.cpp defects4.hui
 dlp4defects_la_LIBADD = libcommon.la
 dlp4defects_la_LDFLAGS = -module -shared -avoid-version
