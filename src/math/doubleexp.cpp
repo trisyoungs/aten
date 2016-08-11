@@ -51,9 +51,11 @@ DoubleExp::DoubleExp(double mantissa, int exponent)
  */
 
 // Assignment operator
-void DoubleExp::operator=(double d)
+DoubleExp& DoubleExp::operator=(double d)
 {
 	set(d);
+
+	return *this;
 }
 
 // Equality Operator

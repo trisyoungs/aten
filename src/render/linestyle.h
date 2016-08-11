@@ -38,7 +38,7 @@ class LineStyle
 	// Copy constructor
 	LineStyle(const LineStyle& source);
 	// Assignment operator
-	void operator=(const LineStyle& source);
+	LineStyle& operator=(const LineStyle& source);
 
 
 	/*

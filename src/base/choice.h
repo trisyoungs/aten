@@ -54,7 +54,7 @@ class Choice
 	 */
 	public:
 	// Assignment
-	void operator=(Choice::ChoiceType ct);
+	Choice& operator=(AtenSpace::Choice::ChoiceType ct);
 	// Equality
 	bool operator==(Choice::ChoiceType ct);
 	// Inequality

@@ -98,7 +98,7 @@ class Glyph : public ListItem<Glyph>
 	// Constructor
 	Glyph();
 	// Operator =
-	void operator=(Glyph &source);
+	Glyph& operator=(Glyph& source);
 	// Glyph style
 	enum GlyphType { ArrowGlyph, CubeGlyph, EllipsoidGlyph, EllipsoidXYZGlyph, LineGlyph, QuadGlyph, SenseVectorGlyph, SphereGlyph, TetrahedronGlyph, TextGlyph, Text3DGlyph, TriangleGlyph, TubeArrowGlyph, TubeVectorGlyph, VectorGlyph, nGlyphTypes };
 	static const char* glyphType(GlyphType gt);

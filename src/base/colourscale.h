@@ -47,7 +47,7 @@ class ColourScale : public ListItem<ColourScale>
 	// Copy Constructor
 	ColourScale(const ColourScale& source);
 	// Assignment Operator
-	bool operator=(const ColourScale& source);
+	ColourScale& operator=(const ColourScale& source);
 	// Equivalence Operator
 	bool operator==(const ColourScale& source);
 

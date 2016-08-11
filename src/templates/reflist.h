@@ -127,7 +127,7 @@ template <class T, class D> class RefList
 	// Remove the last item in the list
 	void removeLast();
 	// Operator =
-	void operator=(const RefList<T,D> &source);
+	RefList<T,D>& operator=(const RefList<T,D> &source);
 	// Element access operator
 	RefListItem<T,D>* operator[](int);
 	// Item access operator
@@ -206,11 +206,13 @@ template <class T, class D> RefList<T,D>::RefList(const RefList<T,D> &source)
 /*!
  * \brief Assignment operator =
  */
-template <class T, class D> void RefList<T,D>::operator=(const RefList<T,D> &source)
+template <class T, class D> RefList<T,D>& RefList<T,D>::operator=(const RefList<T,D> &source)
 {
 	// Clear any current data...
 	clear();
 	for (RefListItem<T,D>* ri = source.first(); ri != NULL; ri = ri->next) add(ri->item, ri->data);
+
+	return *this;
 }
 
 /*!

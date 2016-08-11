@@ -204,7 +204,7 @@ Glyph::Glyph() : ListItem<Glyph>()
 }
 
 // Assignment operator
-void Glyph::operator=(Glyph &source)
+Glyph& Glyph::operator=(Glyph &source)
 {
 	// Simple data first
 	type_ = source.type_;
@@ -217,6 +217,8 @@ void Glyph::operator=(Glyph &source)
 	data_.clear();
 	data_.createEmpty( Glyph::nGlyphData(type_) );
 	for (int n=0; n<Glyph::nGlyphData(type_); ++n) *data_[n] =  *(source.data_[n]);
+
+	return *this;
 }	
 
 /*

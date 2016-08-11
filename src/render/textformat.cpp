@@ -42,12 +42,14 @@ TextFormat::TextFormat(const TextFormat& source)
 }
 
 // Assignment operator
-void TextFormat::operator=(const TextFormat& source)
+TextFormat& TextFormat::operator=(const TextFormat& source)
 {
 	y_ = source.y_;
 	scale_ = source.scale_;
 	italic_ = source.italic_;
 	bold_ = source.bold_;
+
+	return *this;
 }
 
 // Set vertical (bottom-edge) position

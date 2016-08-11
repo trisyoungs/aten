@@ -67,12 +67,14 @@ template <class A> class Array : public ListItem< Array<A> >
 		for (int n=0; n<nItems_; ++n) array_[n] = source.array_[n];
 	}
 	// Assignment Operator
-	void operator=(const Array<A>& source)
+	Array<A>& operator=(const Array<A>& source)
 	{
 		clear();
 		resize(source.size_);
 		nItems_ = source.nItems_;
 		for (int n=0; n<nItems_; ++n) array_[n] = source.array_[n];
+
+		return *this;
 	}
 	// Conversion operator (to standard array)
 	operator A*()
@@ -220,8 +222,8 @@ template <class A> class Array : public ListItem< Array<A> >
 		return array_[n];
 	}
 	// Operator= (set all)
-	void operator=(const double value) { for (int n=0; n<nItems_; ++n) array_[n] = value; }
-	void operator=(const int value) { for (int n=0; n<nItems_; ++n) array_[n] = value; }
+	Array<A>& operator=(const double value) { for (int n=0; n<nItems_; ++n) array_[n] = value; return *this; }
+	Array<A>& operator=(const int value) { for (int n=0; n<nItems_; ++n) array_[n] = value; return *this; }
 	// Operator+= (add to all)
 	void operator+=(const double value) { for (int n=0; n<nItems_; ++n) array_[n] += value; }
 	void operator+=(const int value) { for (int n=0; n<nItems_; ++n) array_[n] += value; }
@@ -318,7 +320,7 @@ template <class A> class Array2D : public ListItem< Array2D<A> >
 		(*this) = source;
 	}
 	// Assignment Operator
-	void operator=(const A value)
+	Array2D& operator=(const A value)
 	{
 		// Copy source data elements
 		for (int row=0; row<nRows_; ++row)
@@ -326,9 +328,11 @@ template <class A> class Array2D : public ListItem< Array2D<A> >
 			if (half_) for (int column=row; column<nColumns_; ++column) array_[rowOffsets_[row] + column - row] = value;
 			else for (int column=0; column<nColumns_; ++column) array_[rowOffsets_[row] + column] = value;
 		}
+
+		return *this;
 	}
 	// Assignment Operator
-	void operator=(const Array2D<A>& source)
+	Array2D& operator=(const Array2D<A>& source)
 	{
 		// Clear any existing data and reinitialise the array
 		clear();
@@ -340,6 +344,8 @@ template <class A> class Array2D : public ListItem< Array2D<A> >
 			if (half_) for (int column=row; column<nColumns_; ++column) array_[rowOffsets_[row] + column - row] = source.array_[rowOffsets_[row] + column - row];
 			else for (int column=0; column<nColumns_; ++column) array_[rowOffsets_[row] + column] = source.array_[rowOffsets_[row] + column];
 		}
+
+		return *this;
 	}
 
 

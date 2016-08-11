@@ -45,7 +45,7 @@ class UnitCell
 	// Copy Constructor
 	UnitCell(const UnitCell& source);
 	// Assignment operator
-	void operator=(const UnitCell& source);
+	UnitCell& operator=(const UnitCell& source);
 	// Cell types
 	enum CellType { NoCell, CubicCell, OrthorhombicCell, ParallelepipedCell, nCellTypes };
 	static const char* cellType(CellType);

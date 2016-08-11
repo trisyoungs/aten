@@ -39,7 +39,7 @@ ColourScale::ColourScale(const ColourScale& source)
 }
 
 // Assignment Operator
-bool ColourScale::operator=(const ColourScale& source)
+ColourScale& ColourScale::operator=(const ColourScale& source)
 {
 	name_ = source.name_;
 	interpolated_ = source.interpolated_;
@@ -51,6 +51,8 @@ bool ColourScale::operator=(const ColourScale& source)
 
 	// Copy reference objects
 	grids_ = source.grids_;
+ 
+	return *this;
 }
 
 // Equivalence Operator

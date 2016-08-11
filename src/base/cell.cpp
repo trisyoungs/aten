@@ -86,7 +86,7 @@ UnitCell::UnitCell(const UnitCell& source)
 }
 
 // Assignment operator
-void UnitCell::operator=(const UnitCell& source)
+UnitCell& UnitCell::operator=(const UnitCell& source)
 {
 	type_ = source.type_;
 	axes_ = source.axes_;
@@ -111,6 +111,8 @@ void UnitCell::operator=(const UnitCell& source)
 		spacegroup_.ListSeitzMx[n] = source.spacegroup_.ListSeitzMx[n];
 		spacegroup_.ListRotMxInfo[n] = source.spacegroup_.ListRotMxInfo[n];
 	}
+
+	return *this;
 }
 
 // Set parent model

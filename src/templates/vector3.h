@@ -67,7 +67,7 @@ template <class T> class Vec3
 	 */
 	public:
 	// Operator =
-	void operator=(T);
+	Vec3<T>& operator=(T);
 	// Operators + and +=
 	void operator+=(T);
 	void operator+=(const Vec3<T>&);
@@ -224,11 +224,13 @@ template <class T> T Vec3<T>::get(int index) const
  */
 
 // Assignment from single value
-template <class T> void Vec3<T>::operator=(T a)
+template <class T> Vec3<T>& Vec3<T>::operator=(T a)
 {
 	x = a;
 	y = a;
 	z = a;
+
+	return *this;
 }
 
 // Operator += (T)
