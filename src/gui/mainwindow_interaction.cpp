@@ -326,8 +326,8 @@ void AtenWindow::endMode(Prefs::MouseButton button, bool* keyModifiers)
 			if (clickedAtom_ != NULL)
 			{
 				radius = (rMouseDown-rMouseUp).magnitude();
-				targetModel->modelToWorld(clickedAtom_->r(), &screenr, prefs.styleRadius(clickedAtom_->style(), clickedAtom_->element()));
-				radius /= screenr.w * prefs.styleRadius(clickedAtom_->style(), clickedAtom_->element());
+				targetModel->modelToWorld(clickedAtom_->r(), &screenr, targetModel->styleRadius(clickedAtom_->style(), clickedAtom_->element()));
+				radius /= screenr.w * targetModel->styleRadius(clickedAtom_->style(), clickedAtom_->element());
 				targetModel->selectRadial(clickedAtom_, radius);
 			}
 			targetModel->endUndoState();

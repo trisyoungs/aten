@@ -9,6 +9,7 @@ add_subdirectory(methods)
 add_subdirectory(model)
 add_subdirectory(main)
 add_subdirectory(render)
+add_subdirectory(undo)
 add_subdirectory(plugins)
 
 if(WIN32)
@@ -27,6 +28,7 @@ target_link_libraries(aten PRIVATE
 	ff
 	methods
 	model
+	undo
 	main
 	render
 	plugins

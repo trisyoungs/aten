@@ -1,6 +1,6 @@
 /*
-	*** Undo state storage
-	*** src/model/undostate.cpp
+	*** Undo State
+	*** src/undo/undostate.cpp
 	Copyright T. Youngs 2007-2016
 
 	This file is part of Aten.
@@ -19,8 +19,8 @@
 	along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "model/undostate.h"
-#include "model/undoevent.h"
+#include "undo/undostate.h"
+#include "undo/undoevent.h"
 #include "model/model.h"
 #include "base/messenger.h"
 

@@ -188,8 +188,7 @@ Prefs::ViewLock Prefs::viewLock(QString s, bool reportError)
 Prefs::Prefs()
 {
 	// Rendering - Style
-	renderStyle_ = Prefs::SphereStyle;
-	colourScheme_ = Prefs::ElementScheme;
+	defaultDrawStyle_ = Prefs::SphereStyle;
 	atomStyleRadius_[Prefs::LineStyle] = 0.15;	// Only used as a selection radius
 	atomStyleRadius_[Prefs::TubeStyle] = 0.15;
 	atomStyleRadius_[Prefs::SphereStyle] = 0.35;
@@ -378,18 +377,6 @@ void Prefs::setViewRotationGlobe(bool b)
 	viewRotationGlobe_ = b;
 }
 
-// Set the drawing style of models
-void Prefs::setRenderStyle(Prefs::DrawStyle ds)
-{
-	renderStyle_ = ds;
-}
-
-// Return the current drawing style of models
-Prefs::DrawStyle Prefs::renderStyle() const
-{
-	return renderStyle_;
-}
-
 // Return the current rotation globe size in pixels
 int Prefs::globeSize() const
 {
@@ -438,17 +425,21 @@ int Prefs::imagePrimitiveQuality() const
 	return imagePrimitiveQuality_;
 }
 
-// Return styled radius of specified atom
-double Prefs::styleRadius(Prefs::DrawStyle ds, int el) const
-{
-	Prefs::DrawStyle dstyle;
-	renderStyle_ == Prefs::OwnStyle ? dstyle = ds : dstyle = renderStyle_;
-	return (dstyle == Prefs::ScaledStyle) ? (ElementMap::atomicRadius(el) * atomStyleRadius_[Prefs::ScaledStyle]) : atomStyleRadius_[dstyle];
-}
-
 /*
  * Rendering - Style
  */
+
+// Set default rendering style for models
+void Prefs::setDefaultDrawStyle(Prefs::DrawStyle ds)
+{
+	defaultDrawStyle_ = ds;
+}
+
+// Return default rendering style for models
+Prefs::DrawStyle Prefs::defaultDrawStyle()
+{
+	return defaultDrawStyle_;
+}
 
 // Sets the specified atom size to the given value
 void Prefs::setAtomStyleRadius(Prefs::DrawStyle ds, double radius)
@@ -459,7 +450,7 @@ void Prefs::setAtomStyleRadius(Prefs::DrawStyle ds, double radius)
 // Return the specified atom size
 GLdouble Prefs::atomStyleRadius(Prefs::DrawStyle ds) const
 {
-	return atomStyleRadius_[(int)ds];
+	return atomStyleRadius_[ds];
 }
 
 // Return atom radii array
@@ -590,18 +581,6 @@ void Prefs::copySpotlightPosition(GLfloat* col)
 	col[1] = (GLfloat) spotlightPosition_[1];
 	col[2] = (GLfloat) spotlightPosition_[2];
 	col[3] = (GLfloat) spotlightPosition_[3];
-}
-
-// Set atom colour scheme
-void Prefs::setColourScheme(Prefs::ColouringScheme cs)
-{
-	colourScheme_ = cs;
-}
-
-// Return atom colour scheme
-Prefs::ColouringScheme Prefs::colourScheme() const
-{
-	return colourScheme_;
 }
 
 // Set line width for normal stick atoms

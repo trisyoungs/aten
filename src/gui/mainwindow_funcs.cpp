@@ -26,7 +26,6 @@
 #include "gui/tdoublespindelegate.hui"
 #include "model/model.h"
 #include "model/clipboard.h"
-#include "model/undostate.h"
 #include "parser/commandnode.h"
 #include <QtWidgets/QFileDialog>
 #include <QKeyEvent>

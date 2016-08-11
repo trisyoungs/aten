@@ -118,7 +118,7 @@ void Viewer::renderUserActions(Model* source)
 		Atom* i = ri->item;
 
 		// Get radius information
-		style_i = (prefs.renderStyle() == Prefs::OwnStyle ? i->style() : prefs.renderStyle());
+		style_i = (source->drawStyle() == Prefs::OwnStyle ? i->style() : source->drawStyle());
 		radius_i = prefs.atomStyleRadius(style_i);
 		if (style_i == Prefs::ScaledStyle) radius_i *= ElementMap::atomicRadius(i->element());
 
@@ -140,10 +140,10 @@ void Viewer::renderUserActions(Model* source)
 		case (UserAction::DrawAtomsAction):
 			if (clickedAtom == NULL) break;
 			pos = clickedAtom->r();
-			style_i = (prefs.renderStyle() == Prefs::OwnStyle ? clickedAtom->style() : prefs.renderStyle());
+			style_i = (source->drawStyle() == Prefs::OwnStyle ? clickedAtom->style() : source->drawStyle());
 			if (style_i == Prefs::TubeStyle) radius_i = 0.0;
-			else if (style_i == Prefs::ScaledStyle) radius_i = prefs.styleRadius(Prefs::ScaledStyle, clickedAtom->element()) - primitives_[primitiveSet_].scaledAtomAdjustment(clickedAtom->element());
-			else radius_i = prefs.styleRadius(style_i, clickedAtom->element()) - primitives_[primitiveSet_].sphereAtomAdjustment();
+			else if (style_i == Prefs::ScaledStyle) radius_i = source->styleRadius(Prefs::ScaledStyle, clickedAtom->element()) - primitives_[primitiveSet_].scaledAtomAdjustment(clickedAtom->element());
+			else radius_i = source->styleRadius(style_i, clickedAtom->element()) - primitives_[primitiveSet_].sphereAtomAdjustment();
 
 			// We need to project a point from the mouse position onto the canvas plane, unless the mouse is over an existing atom in which case we snap to its position instead
 			j = source->atomOnScreen(rMouseLast_.x, contextHeight_ - rMouseLast_.y);
@@ -152,22 +152,22 @@ void Viewer::renderUserActions(Model* source)
 				j = &tempj;
 				v = source->screenToModel(rMouseLast_.x, rMouseLast_.y, atenWindow_->currentDrawDepth());
 				j->r() = v;
-				style_j = (prefs.renderStyle() == Prefs::OwnStyle ? Prefs::LineStyle : prefs.renderStyle());
+				style_j = (source->drawStyle() == Prefs::OwnStyle ? Prefs::LineStyle : source->drawStyle());
 				j->setStyle(style_j);
 			}
 			else
 			{
 				v = j->r();
-				style_j = (prefs.renderStyle() == Prefs::OwnStyle ? j->style() : prefs.renderStyle());
+				style_j = (source->drawStyle() == Prefs::OwnStyle ? j->style() : source->drawStyle());
 			}
 			if (style_j == Prefs::TubeStyle) radius_j = 0.0;
-			else if (style_j == Prefs::ScaledStyle) radius_j = prefs.styleRadius(Prefs::ScaledStyle, j->element()) - primitives_[primitiveSet_].scaledAtomAdjustment(atenWindow_->currentBuildElement());
-			else radius_j = prefs.styleRadius(style_j, j->element()) - primitives_[primitiveSet_].sphereAtomAdjustment();
+			else if (style_j == Prefs::ScaledStyle) radius_j = source->styleRadius(Prefs::ScaledStyle, j->element()) - primitives_[primitiveSet_].scaledAtomAdjustment(atenWindow_->currentBuildElement());
+			else radius_j = source->styleRadius(style_j, j->element()) - primitives_[primitiveSet_].sphereAtomAdjustment();
 			v -= pos;
 
 			// Select colour
 			if (clickedAtom->isPositionFixed()) prefs.copyColour(Prefs::FixedAtomColour, colour_i);
-			else switch (prefs.colourScheme())
+			else switch (source->colourScheme())
 			{
 				case (Prefs::ElementScheme):
 					ElementMap::copyColour(clickedAtom->element(), colour_i);
@@ -205,10 +205,10 @@ void Viewer::renderUserActions(Model* source)
 		case (UserAction::DrawDeleteAction):
 			if (clickedAtom == NULL) break;
 			pos = clickedAtom->r();
-			style_i = (prefs.renderStyle() == Prefs::OwnStyle ? clickedAtom->style() : prefs.renderStyle());
+			style_i = (source->drawStyle() == Prefs::OwnStyle ? clickedAtom->style() : source->drawStyle());
 			if (style_i == Prefs::TubeStyle) radius_i = 0.0;
-			else if (style_i == Prefs::ScaledStyle) radius_i = prefs.styleRadius(Prefs::ScaledStyle, clickedAtom->element()) - primitives_[primitiveSet_].scaledAtomAdjustment(clickedAtom->element());
-			else radius_i = prefs.styleRadius(style_i, clickedAtom->element()) - primitives_[primitiveSet_].sphereAtomAdjustment();
+			else if (style_i == Prefs::ScaledStyle) radius_i = source->styleRadius(Prefs::ScaledStyle, clickedAtom->element()) - primitives_[primitiveSet_].scaledAtomAdjustment(clickedAtom->element());
+			else radius_i = source->styleRadius(style_i, clickedAtom->element()) - primitives_[primitiveSet_].sphereAtomAdjustment();
 
 			// If the mouse isn't currently over an atom, don't draw anything
 			// We need to project a point from the mouse position onto the canvas plane, unless the mouse is over an existing atom in which case we snap to its position instead
@@ -220,10 +220,10 @@ void Viewer::renderUserActions(Model* source)
 
 				colour_i.set(0.0, 0.0, 0.0, 1.0);
 				v = j->r();
-				style_j = (prefs.renderStyle() == Prefs::OwnStyle ? j->style() : prefs.renderStyle());
+				style_j = (source->drawStyle() == Prefs::OwnStyle ? j->style() : source->drawStyle());
 				if (style_j == Prefs::TubeStyle) radius_j = 0.0;
-				else if (style_j == Prefs::ScaledStyle) radius_j = prefs.styleRadius(Prefs::ScaledStyle, j->element()) - primitives_[primitiveSet_].scaledAtomAdjustment(atenWindow_->currentBuildElement());
-				else radius_j = prefs.styleRadius(style_j, j->element()) - primitives_[primitiveSet_].sphereAtomAdjustment();
+				else if (style_j == Prefs::ScaledStyle) radius_j = source->styleRadius(Prefs::ScaledStyle, j->element()) - primitives_[primitiveSet_].scaledAtomAdjustment(atenWindow_->currentBuildElement());
+				else radius_j = source->styleRadius(style_j, j->element()) - primitives_[primitiveSet_].sphereAtomAdjustment();
 				v -= pos;
 				
 				// Construct transformation matrix to centre on original (first) atom

@@ -20,8 +20,9 @@
 */
 
 #include "model/model.h"
-#include "model/undostate.h"
-#include "model/undoevent.h"
+#include "undo/undostate.h"
+#include "undo/bond_creation.h"
+#include "undo/bond_change.h"
 #include "base/bond.h"
 #include "base/pattern.h"
 
@@ -68,7 +69,7 @@ void Model::bondAtoms(Atom* i, Atom* j, Bond::BondType bt)
 				// Add the change to the undo state (if there is one)
 				if (recordingState_ != NULL)
 				{
-					BondTypeEvent* newchange = new BondTypeEvent;
+					BondChangeEvent* newchange = new BondChangeEvent;
 					newchange->set(i->id(), j->id(), oldtype, bt);
 					recordingState_->addEvent(newchange);
 				}
@@ -85,7 +86,7 @@ void Model::bondAtoms(Atom* i, Atom* j, Bond::BondType bt)
 			// Add the change to the undo state (if there is one)
 			if (recordingState_ != NULL)
 			{
-				BondEvent* newchange = new BondEvent;
+				BondCreationEvent* newchange = new BondCreationEvent;
 				newchange->set(true, i->id(), j->id(), bt);
 				recordingState_->addEvent(newchange);
 			}
@@ -147,7 +148,7 @@ void Model::unbondAtoms(Atom* i, Atom* j, Bond* bij)
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
-		BondEvent* newchange = new BondEvent;
+		BondCreationEvent* newchange = new BondCreationEvent;
 		newchange->set(false, i->id(), j->id(), bt);
 		recordingState_->addEvent(newchange);
 	}
@@ -584,7 +585,7 @@ void Model::changeBond(Bond* b, Bond::BondType bt)
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
-		BondTypeEvent* newchange = new BondTypeEvent;
+		BondChangeEvent* newchange = new BondChangeEvent;
 		newchange->set(b->atomI()->id(), b->atomJ()->id(), oldorder, bt);
 		recordingState_->addEvent(newchange);
 	}

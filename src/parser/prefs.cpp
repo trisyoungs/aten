@@ -63,9 +63,9 @@ Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
 	{ "clipFar",			VTypes::DoubleData,		0, false },
 	{ "clipNear",			VTypes::DoubleData,		0, false },
 	{ "colourScales",		VTypes::ColourScaleData,	10, true },
-	{ "colourScheme",		VTypes::StringData,		0, false },
 	{ "correctTransparentGrids",	VTypes::IntegerData,		0, false },
 	{ "dashedAromatics",		VTypes::IntegerData,		0, false },
+	{ "defaultDrawStyle",		VTypes::StringData,		0, false },
 	{ "densityUnit",		VTypes::StringData,		0, false },
 	{ "depthCue",			VTypes::IntegerData,		0, false },
 	{ "depthFar",			VTypes::IntegerData,		0, false },
@@ -104,7 +104,6 @@ Accessor PreferencesVariable::accessorData[PreferencesVariable::nAccessors] = {
 	{ "perspectiveFOV",		VTypes::DoubleData,		0, false },
 	{ "polygonAliasing",		VTypes::IntegerData,		0, false },
 	{ "quality"	,		VTypes::IntegerData,		0, false },
-	{ "renderStyle",		VTypes::StringData,		0, false },
 	{ "reuseQuality",		VTypes::IntegerData,		0, false },
 	{ "selectionScale",		VTypes::DoubleData,		0, false },
 	{ "shininess",			VTypes::IntegerData,		0, false },
@@ -279,14 +278,14 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArray
 		case (PreferencesVariable::ColourScales):
 			rv.set(VTypes::ColourScaleData, &ptr->colourScale[arrayIndex-1]);
 			break;
-		case (PreferencesVariable::ColourScheme):
-			rv.set(Prefs::colouringScheme(ptr->colourScheme()));
-			break;
 		case (PreferencesVariable::CorrectTransparentGrids):
 			rv.set(ptr->correctTransparentGrids());
 			break;
 		case (PreferencesVariable::DashedAromatics):
 			rv.set(ptr->renderDashedAromatics());
+			break;
+		case (PreferencesVariable::DefaultDrawStyle):
+			rv.set( Prefs::drawStyle(ptr->defaultDrawStyle()) );
 			break;
 		case (PreferencesVariable::DensityUnit):
 			rv.set(Prefs::densityUnit(ptr->densityUnit()));
@@ -407,9 +406,6 @@ bool PreferencesVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArray
 			break;
 		case (PreferencesVariable::Quality):
 			rv.set( (int) ptr->primitiveQuality() );
-			break;
-		case (PreferencesVariable::RenderStyle):
-			rv.set( Prefs::drawStyle(ptr->renderStyle()) );
 			break;
 		case (PreferencesVariable::ReuseQuality):
 			rv.set( ptr->reusePrimitiveQuality() );
@@ -572,16 +568,16 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue&
 		case (PreferencesVariable::ClipNear):
 			ptr->setClipNear( newValue.asDouble(result) );
 			break;
-		case (PreferencesVariable::ColourScheme):
-			cs = Prefs::colouringScheme( newValue.asString(result), true );
-			if (cs != Prefs::nColouringSchemes) ptr->setColourScheme(cs);
-			else result = false;
-			break;
 		case (PreferencesVariable::CorrectTransparentGrids):
 			ptr->setCorrectTransparentGrids(newValue.asBool());
 			break;
 		case (PreferencesVariable::DashedAromatics):
 			ptr->setRenderDashedAromatics(newValue.asBool());
+			break;
+		case (PreferencesVariable::DefaultDrawStyle):
+			ds = Prefs::drawStyle( newValue.asString(result), true );
+			if ((ds != Prefs::nDrawStyles) && result) ptr->setDefaultDrawStyle(ds);
+			else result = false;
 			break;
 		case (PreferencesVariable::DensityUnit):
 			du = Prefs::densityUnit( newValue.asString(result), true );
@@ -756,11 +752,6 @@ bool PreferencesVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue&
 		case (PreferencesVariable::Quality):
 			ptr->setPrimitiveQuality( newValue.asInteger(result) );
 			updatePrimitives = true;
-			break;
-		case (PreferencesVariable::RenderStyle):
-			ds = Prefs::drawStyle( newValue.asString(result), true );
-			if ((ds != Prefs::nDrawStyles) && result) ptr->setRenderStyle(ds);
-			else result = false;
 			break;
 		case (PreferencesVariable::ReuseQuality):
 			ptr->setReusePrimitiveQuality( newValue.asBool() );

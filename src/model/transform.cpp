@@ -20,8 +20,8 @@
 */
 
 #include "model/model.h"
-#include "model/undoevent.h"
-#include "model/undostate.h"
+#include "undo/atom_translate.h"
+#include "undo/undostate.h"
 
 ATEN_USING_NAMESPACE
 
@@ -71,12 +71,12 @@ void Model::finalizeTransform(RefList< Atom,Vec3<double> >& rOriginal, const cha
 	// Go through list of atoms in 'originalr', work out delta, and store
 	if (recordingState_ != NULL)
 	{
-		TranslateEvent* newchange;
+		AtomTranslateEvent* newchange;
 		Vec3<double> delta;
 		for (RefListItem< Atom,Vec3<double> >* ri = rOriginal.first(); ri != NULL; ri = ri->next)
 		{
 			delta = ri->item->r() - ri->data;
-			newchange = new TranslateEvent;
+			newchange = new AtomTranslateEvent;
 			newchange->set(ri->item->id(), delta);
 			recordingState_->addEvent(newchange);
 		}

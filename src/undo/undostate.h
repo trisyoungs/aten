@@ -1,6 +1,6 @@
 /*
-	*** UndoState
-	*** src/model/undostate.h
+	*** Undo State
+	*** src/undo/undostate.h
 	Copyright T. Youngs 2007-2016
 
 	This file is part of Aten.
@@ -23,14 +23,13 @@
 #define ATEN_UNDOSTATE_H
 
 #include "base/log.h"
-#include "templates/list.h"
 #include "base/namespace.h"
+#include "templates/list.h"
 
 ATEN_BEGIN_NAMESPACE
 
 // Forward Declarations (Aten)
 class Model;
-class Atom;
 class UndoEvent;
 
 // UndoState (series of UndoEvents)
