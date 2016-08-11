@@ -51,10 +51,12 @@ void ModelRenameEvent::undo(Model* m)
 	if (direction_ == UndoEvent::Undo)
 	{
 		Messenger::print(Messenger::Verbose, "Reversing model rename - to %i", qPrintable(oldName_));
+		m->setName(oldName_);
 	}
 	else
 	{
 		Messenger::print(Messenger::Verbose, "Replaying model rename - to %i", qPrintable(newName_));
+		m->setName(newName_);
 	}
 	Messenger::exit("ModelRenameEvent::undo");
 }

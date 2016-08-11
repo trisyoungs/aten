@@ -214,7 +214,7 @@ void Model::resetView(int contextWidth, int contextHeight)
 	// Crude approach - find largest coordinate and zoom out so that {0,0,largest} is visible on screen
 	for (Atom* i = atoms_.first(); i != NULL; i = i->next)
 	{
-		rad = prefs.styleRadius(i->style(), i->element());
+		rad = styleRadius(i->style(), i->element());
 		rabs = i->r().abs();
 		if (rabs.x > extremes.x) extremes.x = rabs.x + rad;
 		if (rabs.y > extremes.y) extremes.y = rabs.y + rad;

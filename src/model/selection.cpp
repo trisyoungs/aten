@@ -204,6 +204,10 @@ void Model::selectionSetFixed(bool fixed)
 void Model::selectionSetColour(double r, double g, double b, double a)
 {
 	for (RefListItem<Atom,int>* ri = selection(); ri != NULL; ri = ri->next) atomSetColour(ri->item, r, g, b, a);
+
+	// Make sure current colourScheme is 'own'
+	setColourScheme(Prefs::OwnScheme);
+	
 	logChange(Log::Style);
 }
 

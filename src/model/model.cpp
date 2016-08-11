@@ -45,6 +45,8 @@ Model::Model() : ListItem<Model>()
 	renderFromVibration_ = false;
 	repeatCellsNegative_.set(0,0,0);
 	repeatCellsPositive_.set(0,0,0);
+	colourScheme_ = Prefs::ElementScheme;
+	drawStyle_ = prefs.defaultDrawStyle();
 
 	// Properties
 	name_ = "NewModel";

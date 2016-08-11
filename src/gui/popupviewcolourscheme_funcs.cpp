@@ -45,9 +45,13 @@ ViewColourSchemePopup::ViewColourSchemePopup(AtenWindow& parent, TMenuButton* bu
 // Update controls (before show()) (virtual)
 void ViewColourSchemePopup::updateControls()
 {
-	refreshing_ = true;
+	Model* model = parent_.aten().currentModelOrFrame();
+	if (model) return;
 
-	switch (prefs.colourScheme())
+	refreshing_ = true;
+	
+
+	switch (model->colourScheme())
 	{
 		case (Prefs::ElementScheme):
 			ui.ElementButton->setChecked(true);
@@ -68,7 +72,7 @@ void ViewColourSchemePopup::updateControls()
 			ui.OwnButton->setChecked(true);
 			break;
 		default:
-			printf("Warning: Prefs has odd render style (%i)\n", prefs.renderStyle());
+			printf("Warning: Model has odd render style (%i)\n", model->colourScheme());
 			break;
 	}
 
@@ -127,14 +131,16 @@ bool ViewColourSchemePopup::callMethod(QString methodName, ReturnValue& rv)
 
 void ViewColourSchemePopup::on_ElementButton_clicked(bool checked)
 {
-	if (!checked) return;
+	Model* model = parent_.aten().currentModelOrFrame();
 
-	prefs.setColourScheme(Prefs::ElementScheme);
+	if ((!model) || (!checked)) return;
+
+	model->beginUndoState("Change model colour scheme");
+	model->setColourScheme(Prefs::ElementScheme);
+	model->endUndoState();
 
 	// Set icon in button
 	callMethodSimple("updateButtonIcon", Prefs::colouringScheme(Prefs::ElementScheme));
-
-	parent_.aten().globalLogChange(Log::Style);
 
 	parent_.updateWidgets();
 
@@ -144,14 +150,16 @@ void ViewColourSchemePopup::on_ElementButton_clicked(bool checked)
 
 void ViewColourSchemePopup::on_ChargeButton_clicked(bool checked)
 {
-	if (!checked) return;
+	Model* model = parent_.aten().currentModelOrFrame();
 
-	prefs.setColourScheme(Prefs::ChargeScheme);
+	if ((!model) || (!checked)) return;
+
+	model->beginUndoState("Change model colour scheme");
+	model->setColourScheme(Prefs::ChargeScheme);
+	model->endUndoState();
 
 	// Set icon in button
 	callMethodSimple("updateButtonIcon", Prefs::colouringScheme(Prefs::ChargeScheme));
-
-	parent_.aten().globalLogChange(Log::Style);
 
 	parent_.updateWidgets();
 
@@ -161,14 +169,16 @@ void ViewColourSchemePopup::on_ChargeButton_clicked(bool checked)
 
 void ViewColourSchemePopup::on_ForceButton_clicked(bool checked)
 {
-	if (!checked) return;
+	Model* model = parent_.aten().currentModelOrFrame();
 
-	prefs.setColourScheme(Prefs::ForceScheme);
+	if ((!model) || (!checked)) return;
+
+	model->beginUndoState("Change model colour scheme");
+	model->setColourScheme(Prefs::ForceScheme);
+	model->endUndoState();
 
 	// Set icon in button
 	callMethodSimple("updateButtonIcon", Prefs::colouringScheme(Prefs::ForceScheme));
-
-	parent_.aten().globalLogChange(Log::Style);
 
 	parent_.updateWidgets();
 
@@ -178,14 +188,16 @@ void ViewColourSchemePopup::on_ForceButton_clicked(bool checked)
 
 void ViewColourSchemePopup::on_VelocityButton_clicked(bool checked)
 {
-	if (!checked) return;
+	Model* model = parent_.aten().currentModelOrFrame();
 
-	prefs.setColourScheme(Prefs::VelocityScheme);
+	if ((!model) || (!checked)) return;
+
+	model->beginUndoState("Change model colour scheme");
+	model->setColourScheme(Prefs::VelocityScheme);
+	model->endUndoState();
 
 	// Set icon in button
 	callMethodSimple("updateButtonIcon", Prefs::colouringScheme(Prefs::VelocityScheme));
-
-	parent_.aten().globalLogChange(Log::Style);
 
 	parent_.updateWidgets();
 
@@ -195,14 +207,16 @@ void ViewColourSchemePopup::on_VelocityButton_clicked(bool checked)
 
 void ViewColourSchemePopup::on_BondsButton_clicked(bool checked)
 {
-	if (!checked) return;
+	Model* model = parent_.aten().currentModelOrFrame();
 
-	prefs.setColourScheme(Prefs::BondsScheme);
+	if ((!model) || (!checked)) return;
+
+	model->beginUndoState("Change model colour scheme");
+	model->setColourScheme(Prefs::BondsScheme);
+	model->endUndoState();
 
 	// Set icon in button
 	callMethodSimple("updateButtonIcon", Prefs::colouringScheme(Prefs::BondsScheme));
-
-	parent_.aten().globalLogChange(Log::Style);
 
 	parent_.updateWidgets();
 
@@ -212,14 +226,16 @@ void ViewColourSchemePopup::on_BondsButton_clicked(bool checked)
 
 void ViewColourSchemePopup::on_OwnButton_clicked(bool checked)
 {
-	if (!checked) return;
+	Model* model = parent_.aten().currentModelOrFrame();
 
-	prefs.setColourScheme(Prefs::OwnScheme);
+	if ((!model) || (!checked)) return;
+
+	model->beginUndoState("Change model colour scheme");
+	model->setColourScheme(Prefs::OwnScheme);
+	model->endUndoState();
 
 	// Set icon in button
 	callMethodSimple("updateButtonIcon", Prefs::colouringScheme(Prefs::OwnScheme));
-
-	parent_.aten().globalLogChange(Log::Style);
 
 	parent_.updateWidgets();
 

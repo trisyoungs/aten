@@ -96,20 +96,6 @@ void Viewer::keyPressEvent(QKeyEvent* event)
 			refresh = true;
 			ignore = false;
 			break;
-		// Cycle render / colour styles
-		case (Qt::Key_F6):
-			if (keyModifier_[Prefs::CtrlKey])
-			{
-				n = (prefs.colourScheme() + 1)%Prefs::nColouringSchemes;
-				prefs.setColourScheme((Prefs::ColouringScheme) n);
-			}
-			else
-			{
-				n = (prefs.renderStyle() + 1)%Prefs::nDrawStyles;
-				prefs.setRenderStyle((Prefs::DrawStyle) n);
-			}
-			atenWindow_->updateWidgets();
-			ignore = false;
 		default:
 			break;
 	}

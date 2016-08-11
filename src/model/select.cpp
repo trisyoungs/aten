@@ -491,7 +491,7 @@ Atom* Model::atomOnScreen(double x1, double y1)
 		if (i->isHidden()) continue;
 
 		// Get draw style for atom - if stick, 
-		wr = -modelToWorld(i->r(), &sr, prefs.styleRadius(i->style(), i->element()));
+		wr = -modelToWorld(i->r(), &sr, styleRadius(i->style(), i->element()));
 		if (wr.z > nclip)
 		{
 			dist = sqrt((sr.x - x1)*(sr.x - x1) + (sr.y - y1)*(sr.y - y1));

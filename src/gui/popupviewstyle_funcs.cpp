@@ -45,9 +45,12 @@ ViewStylePopup::ViewStylePopup(AtenWindow& parent, TMenuButton* buttonParent) : 
 // Update controls (before show()) (virtual)
 void ViewStylePopup::updateControls()
 {
+	Model* model = parent_.aten().currentModelOrFrame();
+	if (!model) return;
+
 	refreshing_ = true;
 
-	switch (prefs.renderStyle())
+	switch (model->drawStyle())
 	{
 		case (Prefs::LineStyle):
 			ui.LineButton->setChecked(true);
@@ -62,7 +65,7 @@ void ViewStylePopup::updateControls()
 			ui.ScaledButton->setChecked(true);
 			break;
 		default:
-			printf("Warning: Prefs has odd render style (%i)\n", prefs.renderStyle());
+			printf("Warning: Prefs has odd render style (%i)\n", model->drawStyle());
 			break;
 	}
 

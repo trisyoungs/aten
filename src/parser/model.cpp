@@ -54,11 +54,13 @@ Accessor ModelVariable::accessorData[ModelVariable::nAccessors] = {
 	{ "atoms",		VTypes::AtomData,		-1, true },
 	{ "bonds",		VTypes::BondData,		-1, true },
 	{ "cell",		VTypes::CellData,		0, false },
+	{ "colourScheme",	VTypes::StringData,		0, false },
 	{ "componentDensity",	VTypes::DoubleData,		0, false },
 	{ "componentPartition",	VTypes::IntegerData,		0, false },
 	{ "componentPolicy",	VTypes::StringData,		0, false },
 	{ "componentPopulation",VTypes::IntegerData,		0, false },
 	{ "distances",		VTypes::MeasurementData,	-1, true },
+	{ "drawStyle",		VTypes::StringData,		0, false },
 	{ "eigenvectors",	VTypes::EigenvectorData,	-1, true },
 	{ "energy",		VTypes::EnergyStoreData,	0, true },
 	{ "ffAngles",		VTypes::ForcefieldBoundData,	-1, true },
@@ -309,6 +311,9 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex,
 		case (ModelVariable::Celldata):
 			rv.set(VTypes::CellData, &ptr->cell());
 			break;
+		case (ModelVariable::ColourScheme):
+			rv.set(Prefs::colouringScheme(ptr->colourScheme()));
+			break;
 		case (ModelVariable::ComponentDensity):
 			rv.set(ptr->componentDensity());
 			break;
@@ -329,6 +334,9 @@ bool ModelVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasArrayIndex,
 				result = false;
 			}
 			else rv.set(VTypes::MeasurementData, ptr->distanceMeasurement(arrayIndex-1));
+			break;
+		case (ModelVariable::DrawStyle):
+			rv.set( Prefs::drawStyle(ptr->drawStyle()) );
 			break;
 		case (ModelVariable::Energy):
 			rv.set(VTypes::EnergyStoreData, &ptr->energy);
@@ -579,6 +587,8 @@ bool ModelVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newVa
 
 	// Get current data from ReturnValue
 	Model::InsertionPolicy inspol;
+	Prefs::DrawStyle ds;
+	Prefs::ColouringScheme cs;
 	Model* ptr = (Model*) sourcerv.asPointer(VTypes::ModelData, result);
 	if ((!result) || (ptr == NULL))
 	{
@@ -590,6 +600,11 @@ bool ModelVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newVa
 	{
 		case (ModelVariable::Celldata):
 			ptr->setCell( ((UnitCell*) newValue.asPointer(VTypes::CellData)) );
+			break;
+		case (ModelVariable::ColourScheme):
+			cs = Prefs::colouringScheme( newValue.asString(result), true );
+			if (cs != Prefs::nColouringSchemes) ptr->setColourScheme(cs);
+			else result = false;
 			break;
 		case (ModelVariable::ComponentDensity):
 			ptr->setComponentDensity( newValue.asDouble() );
@@ -604,6 +619,11 @@ bool ModelVariable::setAccessor(int i, ReturnValue& sourcerv, ReturnValue& newVa
 			break;
 		case (ModelVariable::ComponentPopulation):
 			ptr->setComponentPopulation( newValue.asInteger() );
+			break;
+		case (ModelVariable::DrawStyle):
+			ds = Prefs::drawStyle( newValue.asString(result), true );
+			if ((ds != Prefs::nDrawStyles) && result) ptr->setDrawStyle(ds);
+			else result = false;
 			break;
 		case (ModelVariable::FField):
 			ptr->setForcefield( (Forcefield*) newValue.asPointer(VTypes::ForcefieldData) );

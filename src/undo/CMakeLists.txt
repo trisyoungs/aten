@@ -16,6 +16,8 @@ add_library(undo STATIC
   cell_set.h
   glyph_creation.h
   measurement_creation.h
+  model_colourscheme.h
+  model_drawstyle.h
   model_rename.h
   undoevent.h
   undostate.h
@@ -36,6 +38,8 @@ add_library(undo STATIC
   cell_set.cpp
   glyph_creation.cpp
   measurement_creation.cpp
+  model_colourscheme.cpp
+  model_drawstyle.cpp
   model_rename.cpp
   undoevent.cpp
   undostate.cpp

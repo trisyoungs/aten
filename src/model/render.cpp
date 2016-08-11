@@ -20,8 +20,69 @@
 */
 
 #include "model/model.h"
+#include "undo/undostate.h"
+#include "undo/model_colourscheme.h"
+#include "undo/model_drawstyle.h"
 
 ATEN_USING_NAMESPACE
+
+// Set default rendering style for models
+void Model::setDrawStyle(Prefs::DrawStyle ds)
+{
+	// Nothing to do if the new style is the same as the old one
+	if (ds == drawStyle_) return;
+
+	// Add the change to the undo state (if there is one)
+	if (recordingState_ != NULL)
+	{
+		ModelDrawStyleEvent* newchange = new ModelDrawStyleEvent;
+		newchange->set(drawStyle_, ds);
+		recordingState_->addEvent(newchange);
+	}
+
+	drawStyle_ = ds;
+
+	logChange(Log::Style);
+}
+
+// Return rendering style for model
+Prefs::DrawStyle Model::drawStyle()
+{
+	return drawStyle_;
+}
+
+// Return styled radius of specified atom
+double Model::styleRadius(Prefs::DrawStyle ds, int el) const
+{
+	Prefs::DrawStyle dstyle;
+	drawStyle_ == Prefs::OwnStyle ? dstyle = ds : dstyle = drawStyle_;
+	return (dstyle == Prefs::ScaledStyle) ? (ElementMap::atomicRadius(el) * prefs.atomStyleRadius(Prefs::ScaledStyle)) : prefs.atomStyleRadius(dstyle);
+}
+
+// Set atom colouring style
+void Model::setColourScheme(Prefs::ColouringScheme cs)
+{
+	// Nothing to do if the new scheme is the same as the old one
+	if (cs == colourScheme_) return;
+
+	// Add the change to the undo state (if there is one)
+	if (recordingState_ != NULL)
+	{
+		ModelColourSchemeEvent* newchange = new ModelColourSchemeEvent;
+		newchange->set(colourScheme_, cs);
+		recordingState_->addEvent(newchange);
+	}
+	
+	colourScheme_ = cs;
+
+	logChange(Log::Style);
+}
+
+// Return atom colouring style
+Prefs::ColouringScheme Model::colourScheme()
+{
+	return colourScheme_;
+}
 
 // Set rendering source
 void Model::setRenderSource(Model::RenderSource rs)

@@ -107,8 +107,6 @@ class Prefs
 	bool viewRotationGlobe_;
 	// Size in pixels of the viewport to draw the rotation globe in.
 	int globeSize_;
-	// Rendering style of models
-	Prefs::DrawStyle renderStyle_;
 	// General quality of primitives
 	int primitiveQuality_;
 	// Whether to use separate primitive quality for saved images
@@ -121,12 +119,6 @@ class Prefs
 	bool viewRotationGlobe();
 	// Set whether to draw rotation globe
 	void setViewRotationGlobe(bool b);
-	// Return the styled radius of an atom calculated from the element and draw style
-	double styleRadius(Prefs::DrawStyle ds, int el) const;
-	// Set the drawing style of models
-	void setRenderStyle(Prefs::DrawStyle ds);
-	// Return the current drawing style of models
-	Prefs::DrawStyle renderStyle() const;
 	// Return the current rotation globe size in pixels
 	int globeSize() const;
 	// Set the current rotation globe size in pixels
@@ -149,8 +141,8 @@ class Prefs
 	 * Rendering - Style
 	 */
 	private:
-	// Atom colouring style
-	Prefs::ColouringScheme colourScheme_;
+	// Default rendering style for models
+	Prefs::DrawStyle defaultDrawStyle_;
 	// Atom sizes / radii
 	GLdouble atomStyleRadius_[Prefs::nDrawStyles];
 	// Bond radii
@@ -173,6 +165,10 @@ class Prefs
 	double stickLineSelectedWidth_;
 
 	public:
+	// Set default rendering style for models
+	void setDefaultDrawStyle(Prefs::DrawStyle ds);
+	// Return default rendering style for models
+	Prefs::DrawStyle defaultDrawStyle();
 	// Sets the specified atom size to the given value
 	void setAtomStyleRadius(Prefs::DrawStyle ds, double radius);
 	// Return the specified atom radius
@@ -215,10 +211,6 @@ class Prefs
 	double* spotlightPosition();
 	// Return spotlight position in provided array
 	void copySpotlightPosition(GLfloat* col);
-	// Set atom colour scheme
-	void setColourScheme(Prefs::ColouringScheme sc);
-	// Return atom colour scheme
-	Prefs::ColouringScheme colourScheme() const;
 	// Set number of segments in colour scale
 	void setScaleSegments(int nsegments);
 	// Get number of segments in colour scale

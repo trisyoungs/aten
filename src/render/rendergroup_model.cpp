@@ -354,12 +354,12 @@ void RenderGroup::createAtomsAndBonds(PrimitiveSet& primitiveSet, Model* source,
 	Matrix atomTransform, A, B;
 	RefListItem<Bond,int>* rb;
 	RefListItem<Atom,int>* ra;
-	Prefs::DrawStyle style_i, style_j, globalstyle;
+	Prefs::DrawStyle style_i, style_j, drawStyle;
 	Prefs::ColouringScheme scheme;
 
 	// Grab global style values and atom radii
-	scheme = prefs.colourScheme();
-	globalstyle = prefs.renderStyle();
+	scheme = source->colourScheme();
+	drawStyle = source->drawStyle();
 	selscale = prefs.selectionScale();
 	for (n=0; n<Prefs::nDrawStyles; ++n) aradius[n] = prefs.atomStyleRadius( (Prefs::DrawStyle) n);
 	prefs.copyColour(prefs.currentForegroundColour(), penColour_);
@@ -411,7 +411,7 @@ void RenderGroup::createAtomsAndBonds(PrimitiveSet& primitiveSet, Model* source,
 		alpha_i = colour_i[3];
 		
 		// Get atom style and render associated object
-		style_i = (globalstyle == Prefs::OwnStyle ? i->style() : globalstyle);
+		style_i = (drawStyle == Prefs::OwnStyle ? i->style() : drawStyle);
 		
 		if (style_i == Prefs::LineStyle)
 		{
@@ -436,8 +436,8 @@ void RenderGroup::createAtomsAndBonds(PrimitiveSet& primitiveSet, Model* source,
 		// Grab some useful values from atom i
 		id_i = i->id();
 		if (style_i <= Prefs::TubeStyle) radius_i = 0.0;
-		else if (style_i == Prefs::ScaledStyle) radius_i = prefs.styleRadius(Prefs::ScaledStyle, i->element()) - primitiveSet.scaledAtomAdjustment(i->element());
-		else radius_i = prefs.styleRadius(style_i, i->element()) - primitiveSet.sphereAtomAdjustment();
+		else if (style_i == Prefs::ScaledStyle) radius_i = source->styleRadius(Prefs::ScaledStyle, i->element()) - primitiveSet.scaledAtomAdjustment(i->element());
+		else radius_i = source->styleRadius(style_i, i->element()) - primitiveSet.sphereAtomAdjustment();
 		
 		for (rb = i->bonds(); rb != NULL; rb = rb->next)
 		{
@@ -472,10 +472,10 @@ void RenderGroup::createAtomsAndBonds(PrimitiveSet& primitiveSet, Model* source,
 			}
 			
 			// Get atom style and radius
-			style_j = (globalstyle == Prefs::OwnStyle ? j->style() : globalstyle);
+			style_j = (drawStyle == Prefs::OwnStyle ? j->style() : drawStyle);
 			if (style_j <= Prefs::TubeStyle) radius_j = 0.0;
-			else if (style_j == Prefs::ScaledStyle) radius_j = prefs.styleRadius(Prefs::ScaledStyle, j->element()) - primitiveSet.scaledAtomAdjustment(j->element());
-			else radius_j = prefs.styleRadius(style_j, j->element()) - primitiveSet.sphereAtomAdjustment();
+			else if (style_j == Prefs::ScaledStyle) radius_j = source->styleRadius(Prefs::ScaledStyle, j->element()) - primitiveSet.scaledAtomAdjustment(j->element());
+			else radius_j = source->styleRadius(style_j, j->element()) - primitiveSet.sphereAtomAdjustment();
 			
 			// Calculate vector i->j
 			v = source->cell().mimVector(i, j);
@@ -530,7 +530,7 @@ void RenderGroup::createAtomsAndBonds(PrimitiveSet& primitiveSet, Model* source,
 					{
 						// Grab atom pointer and get minimum image vector with centroid 'v'
 						i = atoms[id_i+ra->item->id()];
-						if (prefs.styleRadius(i->style(), i->element()) > radius_i) radius_i = prefs.styleRadius(i->style(), i->element());
+						if (source->styleRadius(i->style(), i->element()) > radius_i) radius_i = source->styleRadius(i->style(), i->element());
 						v = source->cell().mimVector(pos, i->r());
 						// Accumulate magnitude
 						mag += v.magnitude();
@@ -563,12 +563,12 @@ void RenderGroup::createAtomsAndBonds(PrimitiveSet& primitiveSet, Model* source,
 					// Render ring
 					if (prefs.renderDashedAromatics())
 					{
-						if (globalstyle == Prefs::LineStyle) addLines(primitiveSet.segmentedLineRing(), atomTransform, colour_i);
+						if (drawStyle == Prefs::LineStyle) addLines(primitiveSet.segmentedLineRing(), atomTransform, colour_i);
 						else addTriangles(primitiveSet.segmentedTubeRing(), atomTransform, colour_i);
 					}
 					else
 					{
-						if (globalstyle == Prefs::LineStyle) addLines(primitiveSet.lineRing(), atomTransform, colour_i);
+						if (drawStyle == Prefs::LineStyle) addLines(primitiveSet.lineRing(), atomTransform, colour_i);
 						else addTriangles(primitiveSet.tubeRing(), atomTransform, colour_i);
 					}
 
@@ -601,10 +601,10 @@ void RenderGroup::createAtomsAndBonds(PrimitiveSet& primitiveSet, Model* source,
 
 			// Grab atom coordinate and style
 			pos = i->r();
-			style_i = (globalstyle == Prefs::OwnStyle ? i->style() : globalstyle);
+			style_i = (drawStyle == Prefs::OwnStyle ? i->style() : drawStyle);
 			if (style_i <= Prefs::TubeStyle) radius_i = 0.0;
-			else if (style_i == Prefs::ScaledStyle) radius_i = prefs.styleRadius(Prefs::ScaledStyle, i->element()) - primitiveSet.scaledAtomAdjustment(i->element());
-			else radius_i = prefs.styleRadius(style_i, i->element()) - primitiveSet.sphereAtomAdjustment();
+			else if (style_i == Prefs::ScaledStyle) radius_i = source->styleRadius(Prefs::ScaledStyle, i->element()) - primitiveSet.scaledAtomAdjustment(i->element());
+			else radius_i = source->styleRadius(style_i, i->element()) - primitiveSet.sphereAtomAdjustment();
 			
 			// Loop over other atoms
 			for (m = 0; m<source->nAtoms(); ++m)
@@ -648,10 +648,10 @@ void RenderGroup::createAtomsAndBonds(PrimitiveSet& primitiveSet, Model* source,
 				// If we get here then its a hydrogen bond.
 				// First, determine the 'drawable' region between the two atoms i,j
 				// Adjust for atom radii in current style
-				style_j = (globalstyle == Prefs::OwnStyle ? j->style() : globalstyle);
+				style_j = (drawStyle == Prefs::OwnStyle ? j->style() : drawStyle);
 				if (style_j <= Prefs::TubeStyle) radius_j = 0.0;
-				else if (style_j == Prefs::ScaledStyle) radius_j = prefs.styleRadius(Prefs::ScaledStyle, j->element()) - primitiveSet.scaledAtomAdjustment(j->element());
-				else radius_j = prefs.styleRadius(style_j, j->element()) - primitiveSet.sphereAtomAdjustment();
+				else if (style_j == Prefs::ScaledStyle) radius_j = source->styleRadius(Prefs::ScaledStyle, j->element()) - primitiveSet.scaledAtomAdjustment(j->element());
+				else radius_j = source->styleRadius(style_j, j->element()) - primitiveSet.sphereAtomAdjustment();
 
 				// Get normalised i-j vector
 				r1 = v;

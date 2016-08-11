@@ -1216,8 +1216,22 @@ class Model : public ListItem<Model>
 	RenderGroup renderGroup_;
 	// Logpoint at which renderGroup_ was last created
 	int renderGroupPoint_;
+	// Style to render model in
+	Prefs::DrawStyle drawStyle_;
+	// Atom colouring style
+	Prefs::ColouringScheme colourScheme_;
 
 	public:
+	// Set style to render model in
+	void setDrawStyle(Prefs::DrawStyle ds);
+	// Return style to render model in
+	Prefs::DrawStyle drawStyle();
+	// Return the styled radius of an atom calculated from the element and draw style
+	double styleRadius(Prefs::DrawStyle ds, int el) const;
+	// Set atom colouring style
+	void setColourScheme(Prefs::ColouringScheme cs);
+	// Return atom colouring style
+	Prefs::ColouringScheme colourScheme();
 	// Set rendering source
 	void setRenderSource(RenderSource rs);
 	// Return rendering source
