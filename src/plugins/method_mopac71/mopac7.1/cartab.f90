@@ -16,6 +16,7 @@
 !-----------------------------------------------
       use symdec_I 
       implicit none
+
 !-----------------------------------------------
 !   G l o b a l   P a r a m e t e r s
 !-----------------------------------------------
@@ -33,7 +34,8 @@
       logical :: debug, first, large 
       character, dimension(20) :: class*9 
 
-      save nrep, class, debug, first, icalcn 
+!--TGAY 08/2016 - nope was not saved
+      save nope, nrep, class, debug, first, icalcn 
 !-----------------------------------------------
 !***********************************************************************
 !
@@ -122,6 +124,7 @@
           end do 
         end do 
       endif 
+
 !
 !    Identify the Point Group of the molecule.
 !

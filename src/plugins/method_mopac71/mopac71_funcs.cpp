@@ -1,6 +1,6 @@
 /*
-        *** MOPAC7 Method Plugin Functions
-        *** src/plugins/method_mopac7/mopac7_funcs.cpp
+        *** MOPAC7.1 Method Plugin Functions
+        *** src/plugins/method_mopac71/mopac71_funcs.cpp
         Copyright T. Youngs 2016-2016
 
         This file is part of Aten.
@@ -19,18 +19,18 @@
         along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "plugins/method_mopac7/mopac7.hui"
+#include "plugins/method_mopac71/mopac71.hui"
 #include "model/model.h"
 
 // Constructor
-Mopac7MethodPlugin::Mopac7MethodPlugin()
+Mopac71MethodPlugin::Mopac71MethodPlugin()
 {
 	// Plugin options
 // 	pluginOptions_.add("GEO-OK", 
 }
 
 // Destructor
-Mopac7MethodPlugin::~Mopac7MethodPlugin()
+Mopac71MethodPlugin::~Mopac71MethodPlugin()
 {
 }
 
@@ -39,31 +39,31 @@ Mopac7MethodPlugin::~Mopac7MethodPlugin()
  */
 
 // Return type of plugin
-PluginTypes::PluginType Mopac7MethodPlugin::type() const
+PluginTypes::PluginType Mopac71MethodPlugin::type() const
 {
 	return PluginTypes::MethodPlugin;
 }
 
 // Return category of plugin
-int Mopac7MethodPlugin::category() const
+int Mopac71MethodPlugin::category() const
 {
 	return PluginTypes::OptimisationMethodPlugin;
 }
 
 // Name of plugin
-QString Mopac7MethodPlugin::name() const
+QString Mopac71MethodPlugin::name() const
 {
 	return QString("MOPAC7 Plugin");
 }
 
 // Nickname of plugin
-QString Mopac7MethodPlugin::nickname() const
+QString Mopac71MethodPlugin::nickname() const
 {
-	return QString("mopac7");
+	return QString("mopac71");
 }
 
 // Description (long name) of plugin
-QString Mopac7MethodPlugin::description() const
+QString Mopac71MethodPlugin::description() const
 {
 	return QString("MOPAC7 functionality (v1.15)");
 }
@@ -73,10 +73,10 @@ QString Mopac7MethodPlugin::description() const
  */
 
 // Run method on the current target model
-bool Mopac7MethodPlugin::runMethod()
+bool Mopac71MethodPlugin::runMethod()
 {
 	// Get the name of a temporary file prefix - this will let us delete all MOPAC-generated files afterwards
-	QString jobBaseName = addTemporaryFilePrefix("AtenMopac7MethodPlugin");
+	QString jobBaseName = addTemporaryFilePrefix("AtenMopac71MethodPlugin");
 	int jobBaseNameLength = jobBaseName.length();
 
 	// Open the input file...
@@ -119,13 +119,13 @@ bool Mopac7MethodPlugin::runMethod()
  */
 
 // Return whether the plugin has options
-bool Mopac7MethodPlugin::hasOptions()
+bool Mopac71MethodPlugin::hasOptions()
 {
 	return false;
 }
 
 // Show options dialog
-bool Mopac7MethodPlugin::showOptionsDialog()
+bool Mopac71MethodPlugin::showOptionsDialog()
 {
 	return false;
 }

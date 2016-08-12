@@ -1,6 +1,6 @@
 /*
-        *** MOPAC7 Method Plugin
-        *** src/plugins/method_mopac7/mopac7.hui
+        *** MOPAC7.1 Method Plugin
+        *** src/plugins/method_mopac71/mopac71.hui
         Copyright T. Youngs 2016-2016
 
         This file is part of Aten.
@@ -19,8 +19,8 @@
         along with Aten.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef ATEN_MOPAC7METHODPLUGIN_H
-#define ATEN_MOPAC7METHODPLUGIN_H
+#ifndef ATEN_MOPAC71METHODPLUGIN_H
+#define ATEN_MOPAC71METHODPLUGIN_H
 
 #include "plugins/interfaces/methodplugin.h"
 
@@ -30,7 +30,7 @@ ATEN_BEGIN_NAMESPACE
 /* none */
 
 // MOPAC7 Method Plugin
-class Mopac7MethodPlugin : public QObject, public MethodPluginInterface
+class Mopac71MethodPlugin : public QObject, public MethodPluginInterface
 {
 	Q_OBJECT
 	Q_PLUGIN_METADATA(IID "com.projectaten.Aten.MethodPluginInterface.v1")
@@ -42,9 +42,9 @@ class Mopac7MethodPlugin : public QObject, public MethodPluginInterface
 	 */
 	public:
 	// Constructor
-	Mopac7MethodPlugin();
+	Mopac71MethodPlugin();
 	// Destructor
-	~Mopac7MethodPlugin();
+	~Mopac71MethodPlugin();
 
 
 	/*

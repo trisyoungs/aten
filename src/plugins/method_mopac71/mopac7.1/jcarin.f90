@@ -49,6 +49,8 @@
 !     B(NVAR,NCOL) : JACOBIAN, STEP TIME TOO LARGE.
 !
 !
+      write(0,*) "Dimensions of b INPUT:", iu-il+1, numat*3**(id + 1)
+      write(0,*) "COORD SIZE: ", size(coord, 1), size(coord, 2)
       ncol = 3*numat 
       if (id /= 0) ncol = ncol*(l1u - l1l + 1)*(l2u - l2l + 1)*(l3u - l3l + 1) 
 !
@@ -72,6 +74,7 @@
           do j1 = 1, numat
             do j2 = 1, 3
               j = j + 1
+            write(0,*) "J2J1", j2, j1
               b(jvar, j) = coord(j2, j1)
             end do
           end do
@@ -105,6 +108,7 @@
             do j1 = 1, numat
               do j2 = 1, 3
                 j = j + 1
+        write(0,*) " indices = ", jvar, j
                 b(jvar, j) = b(jvar, j) - coord(j2, j1)
               end do
             end do

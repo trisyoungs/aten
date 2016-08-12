@@ -18,7 +18,8 @@
       USE parameters_C, only : tore, ios, iop, iod, eisol, eheat
       use cosmo_C, only : lenabc, abcmat, nppa, lenab2, srad, iseps, useps, &
       & iatsp, nn, cosurf, nar, xsp, nset, bh, qden 
-      USE funcon_C, only : fpc_9, fpc
+      USE funcon_C, only : fpc_1, fpc_2, a0, ev, fpc_5, fpc_6, fpc_7, fpc_8,&
+      & fpc_9, fpc_10
       use conref_C, only : fpcref 
       USE maps_C, only : latom, react
       USE chanel_C, only : ir, iw, iarc
@@ -62,7 +63,7 @@
 
 !---TGAY ADDED 08/2016-------------------------- 
       write(0,*) JOBBASENAME
-      jobnam=JOBBASENAME
+      jobnam="water"
       tore = ios + iop + iod
       tore(57:71) = 3.d0
       call getdat(ir,iw)
@@ -81,6 +82,7 @@
 ! Set up essential arrays: arrays needed for reading in the data
 !
       if (natoms == 0) stop
+
       call setup_mopac_arrays(natoms, 1)
       maxatoms = natoms
    10 continue 
@@ -92,20 +94,47 @@
 !
 !    Read in all the data for the current job
 !
+      write(0,*) "NVARX2.5 = ", nvar
+
       call readmo 
+      write(0,*) "NVARX3 = ", nvar
+
       if (natoms == 0) stop
       if (moperr) go to 10 
       if (index(keywrd,' OLDFPC') + index(keywrd, ' MNDOD') > 0) then
 !
 ! Use old fundamental physical constants
 !
-        fpc(:) = fpcref(2,:)
+!--TGAY 08/2016- Copied to target vars, and removed fpc() array.
+!--------------- Subroutines that used a0, for instance, and didn't use fpc()
+!--------------- would find a0 zeroed (since it was an equivalent to fpc(3)).
+!--------------- Probably a compiled issue, but easily fixed.
+        fpc_1  = fpcref(2,1)
+        fpc_2  = fpcref(2,2)
+        a0     = fpcref(2,3)
+        ev     = fpcref(2,4)
+        fpc_5  = fpcref(2,5)
+        fpc_6  = fpcref(2,6)
+        fpc_7  = fpcref(2,7)
+        fpc_8  = fpcref(2,8)
+        fpc_9  = fpcref(2,9)
+        fpc_10 = fpcref(2,10)
       else
 !
 ! Use CODATA fundamental physical constants
 !
-        fpc(:) = fpcref(1,:)
+        fpc_1  = fpcref(1,1)
+        fpc_2  = fpcref(1,2)
+        a0     = fpcref(1,3)
+        ev     = fpcref(1,4)
+        fpc_5  = fpcref(1,5)
+        fpc_6  = fpcref(1,6)
+        fpc_7  = fpcref(1,7)
+        fpc_8  = fpcref(1,8)
+        fpc_9  = fpcref(1,9)
+        fpc_10 = fpcref(1,10)
       endif  
+      write(0,*) "CONSTANTS = ", a0, ev
 !
 ! Load in parameters for the method to be used
 !
@@ -113,7 +142,11 @@
 !
 ! Set up all the data for the molecule
 !
-      call moldat (0)      
+      write(0,*) "NVARX4 = ", nvar
+
+      call moldat (0)  
+      write(0,*) "NVARX5 = ", nvar
+    
       if (moperr) goto 100     
       indeps = index(keywrd,' EPS=') 
       if (index(keywrd,' 0SCF')==0 .and. indeps/=0) then 
@@ -152,7 +185,10 @@
 !
 ! Everything is ready - now set up the arrays used by the SCF, etc.
 !
+      write(0,*) "NVAR1 = ", nvar
+
        call setup_mopac_arrays(1,2)
+      write(0,*) "NVAR2 = ", nvar
       if (method_dorbs) then 
         call fbx 
         call fordd 
@@ -169,6 +205,7 @@
 !
 !  CALCULATE THE ATOMIC ENERGY
 !
+      write(0,*) "NVAR3 = ", nvar, a0, ev
       eat = 0.D0 
       atheat = sum(eheat(nat(:numat))) 
       eat = sum(eisol(nat(:numat))) 
@@ -194,6 +231,7 @@
 ! CALCULATE DYNAMIC REACTION COORDINATE.
 !
 !
+      write(0,*) "NVAR4 = ", nvar
       if (index(keywrd,' SADDLE') /= 0) then 
         call react1 () 
         if (moperr) go to 100 
@@ -204,6 +242,7 @@
         if (moperr) go to 100 
         go to 100 
       endif 
+
       if (latom /= 0) then 
 !
 !       DO PATH
@@ -217,19 +256,21 @@
         if (moperr) go to 100 
         go to 100 
       endif 
-      if (index(keywrd,' FORCE')/=0 .or. index(keywrd,' IRC=')/=0 .or. &
-        index(keywrd,' THERM')/=0) then 
+
 !
 ! FORCE CALCULATION IF DESIRED
 !
+      if (index(keywrd,' FORCE')/=0 .or. index(keywrd,' IRC=')/=0 .or. &
+        index(keywrd,' THERM')/=0) then 
         call force () 
         if (moperr) go to 100 
         go to 100 
       endif 
-      if (index(keywrd,' DRC') + index(keywrd,' IRC') /= 0) then 
+
 !
 !   IN THIS CONTEXT, "REACT" HOLDS INITIAL VELOCITY VECTOR COMPONENTS.
 !
+      if (index(keywrd,' DRC') + index(keywrd,' IRC') /= 0) then 
         if (allocated(react)) deallocate(react)  !  warning - shoul this be inside drc?
         allocate(react(3*numat))
         react = 0.d0
@@ -272,7 +313,9 @@
 !
 ! ORDINARY GEOMETRY OPTIMISATION
 !
+      write(0,*) "Before FLEPO"
       call flepo (xparam, nvar, escf) 
+      write(0,*) "After FLEPO"
       if (moperr) go to 100 
  60     continue 
       last = 1 

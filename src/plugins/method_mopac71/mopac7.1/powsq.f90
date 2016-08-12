@@ -502,8 +502,8 @@
       g = dot(gref,grad,nvar) 
       gtot = sqrt(dot(grad,grad,nvar)) 
       if (debug) write (iw, &
-      '('' LOOKS'',I3,'' ALPHA ='',F12.6,'' GRADIENT'',F12.3,  '' G  ='',F16.6)&
-      ') looks, alpha, sqrt(dot(grad,grad,nvar)), g 
+      & '('' LOOKS'',I3,'' ALPHA ='',F12.6,'' GRADIENT'',F12.3,  '' G  ='',F16.6)&
+      & ') looks, alpha, sqrt(dot(grad,grad,nvar)), g 
       if (gtot < gminn) then 
         gminn = gtot 
         if (abs(amin - alpha) > 1.D-2) then 

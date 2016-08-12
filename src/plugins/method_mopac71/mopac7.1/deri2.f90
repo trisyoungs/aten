@@ -317,11 +317,11 @@
             end do 
           endif 
           write (iw, &
-      '('' C.I-ACTIVE FOCK EIGENVALUES '',               ''RELAXATION (eigs.V.)'')&
-      ') 
+      &'('' C.I-ACTIVE FOCK EIGENVALUES '',               ''RELAXATION (eigs.V.)'')&
+      &') 
           write (iw, '(8F10.4)') (bcoef(i),i=nelec + 1,nelec + nmos) 
           write (iw, &
-      '('' 2-ELECTRON INTEGRALS RELAXATION (eigs.V.)'',2/    ''    I    J    K    &
+      &'('' 2-ELECTRON INTEGRALS RELAXATION (eigs.V.)'',2/    ''    I    J    K    &
       &L       d<I(1)J(1)|K(2)L(2)> '',             ''RELAXATION ONLY'')') 
           do i = 1, nmos 
             do j = 1, i 
@@ -351,13 +351,13 @@
         dxyzr(ivar) = dxyzr(ivar) + sum*const/nstate 
         if (.not.debug) cycle  
         write (iw, &
-          '('' RELAXATION OF THE GRADIENT COMPONENT'',F10.4, '' KCAL/MOLE'')') &
-          dot(vectci,work,lab)*const 
+     &     '('' RELAXATION OF THE GRADIENT COMPONENT'',F10.4, '' KCAL/MOLE'')') &
+     &     dot(vectci,work,lab)*const 
 !
 !     THE END .
       end do 
       if (debug) write (iw, &
-      '('' ELAPSED TIME IN C.I-ENERGY RELAXATION'',F15.3,                   '' &
+      &'('' ELAPSED TIME IN C.I-ENERGY RELAXATION'',F15.3,                   '' &
       &SECOND'')') second(1) - time2 
       return  
       end subroutine deri2 

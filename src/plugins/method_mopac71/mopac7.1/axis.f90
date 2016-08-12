@@ -6,7 +6,8 @@
       use molkst_C, only : numcal, keywrd
       use permanent_arrays, only : atmass
       USE chanel_C, only : iw
-      USE funcon_C, only : fpc_6, fpc_8, fpc_9, fpc_10
+!--TGAY 08/2016 - fpc_9 was unused
+      USE funcon_C, only : fpc_6, fpc_8, fpc_10      !fpc_9
 !***********************************************************************
 !DECK MOPAC
 !...Translated by Pacific-Sierra Research 77to90  4.4G  08:18:11  03/15/06  
@@ -153,13 +154,13 @@
         xyzmom = eig*const1 
         write (iw, &
       '(10X,''A ='',F12.6,''   B ='',F12.6,                 ''   C ='',F12.6,/)&
-      ') (rot(i),i=1,3) 
+      &') (rot(i),i=1,3) 
         if (index(keywrd,'RC=') == 0) write (iw, &
       '(2/10X,'' PRINCIPAL MOMENTS OF INERTIA IN '',           ''UNITS OF 10**(&
       &-40)*GRAM-CM**2'',/)') 
         write (iw, &
-      '(10X,''A ='',F12.6,''   B ='',F12.6,                 ''   C ='',F12.6,/)&
-      ') (xyzmom(i),i=1,3) 
+      &'(10X,''A ='',F12.6,''   B ='',F12.6,                 ''   C ='',F12.6,/)&
+      &') (xyzmom(i),i=1,3) 
         c = rot(1) 
         b = rot(2) 
         a = rot(3) 

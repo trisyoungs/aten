@@ -6,7 +6,7 @@
       USE parameters_C, only : tore  
       USE molkst_C, only :numat, efield
       USE funcon_C, only : ev, a0, fpc_9
-      use permanent_arrays, only : nat, p, grad
+      use permanent_arrays, only : nat, p, dxyz
 !***********************************************************************
 !DECK MOPAC
 !...Translated by Pacific-Sierra Research 77to90  4.4G  08:08:38  03/15/06  
@@ -37,11 +37,14 @@
 !
 !   FLDCON=(h/Ao)*(eV to Kcal/mol)
 !
+!--TGAY 08/2016 - Loop below referenced the grad() array (which stores the gradient at each optimisation coordinate)
+!---------------- but the loop calculates the electric field contribution to the cartesian gradient.
+!---------------- CHANGE:  grad => dxyz   (6 replacements)
       fldcon = -ev/a0*fpc_9 
       do i = 1, numat 
-        grad(3*(i-1) + 1) = grad(3*(i-1) + 1) + efield(1)*q2(i)*fldcon 
-        grad(3*(i-1) + 2) = grad(3*(i-1) + 2) + efield(2)*q2(i)*fldcon 
-        grad(3*(i-1) + 3) = grad(3*(i-1) + 3) + efield(3)*q2(i)*fldcon 
+        dxyz(3*(i-1) + 1) = dxyz(3*(i-1) + 1) + efield(1)*q2(i)*fldcon 
+        dxyz(3*(i-1) + 2) = dxyz(3*(i-1) + 2) + efield(2)*q2(i)*fldcon 
+        dxyz(3*(i-1) + 3) = dxyz(3*(i-1) + 3) + efield(3)*q2(i)*fldcon 
       end do 
       return  
       end subroutine dfield 

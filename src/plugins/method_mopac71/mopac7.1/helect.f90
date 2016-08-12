@@ -40,7 +40,7 @@
       do i = 2, nn 
         k = k + 1 
         jj = i - 1 
-        ed = ed + p(k)*(h(k)+f(k)) 
+        ed = ed + p(k)*(h(k)+f(k))
         if (i == nn) cycle  
         if (jj > 0) then 
           ee = ee + sum(p(k+1:jj+k)*(h(k+1:jj+k)+f(k+1:jj+k))) 

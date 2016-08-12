@@ -193,7 +193,7 @@
         i2 = i/2
         value(i2) = real(value_r(i), kind(0.0))
         do j = 1,n
-          vec(j,i2) = cmplx(vecr(j,i), vecr(n + j,i))
+          vec(j,i2) = cmplx(vecr(j,i), vecr(n + j,i), kind=4)
         end do
       end do 
       return  

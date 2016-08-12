@@ -43,7 +43,7 @@
       logical :: fldon, first, debug 
       character :: tmpkey*241 
 
-      save first, debug, icalcn, ione
+      save first, debug, icalcn, ione, c1ref, c2ref
 !***********************************************************************
 !
 !   HCORE GENERATES THE ONE-ELECTRON MATRIX AND TWO ELECTRON INTEGRALS
@@ -57,6 +57,7 @@
 !             ENUCLR = NUCLEAR ENERGY
 !***********************************************************************
       data icalcn/ 0/  
+      write(0,*) "AT BEGINNING OF HCORE + ", a0, ev
       first = icalcn /= numcal 
       icalcn = numcal 
       if (first) then 
@@ -128,6 +129,7 @@
         efield(1) = -xf*const 
         efield(2) = -yf*const 
         efield(3) = -zf*const 
+        write(0,*) "FIELD = ", a0, ev, efield
       endif 
       fldon = .FALSE. 
       if (efield(1)/=0.0D00 .or. efield(2)/=0.0D00 .or. efield(3)/=0.0D00) then 
@@ -170,6 +172,7 @@
         endif 
       endif 
       enuclr = 0.d0
+      write(0,*) "NOW ENUCLR=", enuclr
       h = 0.d0
       kr = 1 
       do i = 1, numat 
@@ -210,12 +213,17 @@
               h(i2) = hterme 
             end do 
             h(i2) = uspd(i1) 
+            write(0,*) i1, ia, ib
+            write(0,*) efield, coord(1,i), fldcon 
             fnuc = -(efield(1)*coord(1,i)+efield(2)*coord(2,i)+efield(3)*coord(&
               3,i))*fldcon 
             h(i2) = h(i2) + fnuc 
           end do 
         endif 
+!       write(0,*) "HERE ENUCLRXXX=", enuclr, fnuc, tore(nat(i))
         if (fldon) enuclr = enuclr - fnuc*tore(nat(i)) 
+
+
 !
 !   FILL THE ATOM-OTHER ATOM ONE-ELECTRON MATRIX<PSI(LAMBDA)|PSI(SIGMA)>
 !
@@ -263,6 +271,8 @@
             wk(kro:kr-1) = wkd(:kr-kro) 
           endif 
           enuclr = enuclr + enuc 
+      write(0,*) "NOW ENUCLR=", enuclr, enuc
+
 !
 !   ADD ON THE ELECTRON-NUCLEAR ATTRACTION TERM FOR ATOM I.
 !

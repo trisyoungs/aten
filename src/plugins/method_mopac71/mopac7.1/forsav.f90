@@ -105,9 +105,9 @@
       write (iw, &
       '(10X,''INSUFFICIENT DATA ON DISK FILES FOR A FORCE '',  ''CALCULATION'',&
       &/10X,''RESTART. PERHAPS THIS STARTED OF AS A '',  ''FORCE CALCULATION '')&
-      ') 
+      &') 
       write (iw, &
-      '(10X,''BUT THE GEOMETRY HAD TO BE OPTIMIZED FIRST, '',  ''IN WHICH CASE &
+      &'(10X,''BUT THE GEOMETRY HAD TO BE OPTIMIZED FIRST, '',  ''IN WHICH CASE &
       &'',/10X,''REMOVE THE KEY-WORD "FORCE".'')') 
       call mopend (&
          'INSUFFICIENT DATA ON DISK FILES FOR A FORCE CALCULATION RESTART') 

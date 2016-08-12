@@ -3,7 +3,8 @@
 !   M o d u l e s 
 !-----------------------------------------------
       USE vast_kind_param, ONLY:  double 
-      use chanel_C, only : iw, ir, iarc
+!--TGAY 08/2016 - Added ilog to use list
+      use chanel_C, only : iw, ir, iarc, ilog
       USE maps_C, ONLY: latom, lparam, lpara1, latom1, lpara2, latom2 
       USE symmetry_C, ONLY: idepfn, locdep, depmul, locpar 
       use molkst_C, only : ndep, numat, numcal, natoms, nvar, keywrd, &
@@ -106,12 +107,15 @@
       data naigin/ 0/  
       data idepco/ 1, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 2, 2, 1, 2, &
         3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3/  
+      write(0,*) "READMO1 = "
       aigeo = .FALSE. 
       nvar = 0 
       ndep = 0 
       if (.not. allocated(lopt)) allocate(lopt(3,maxatoms))
+      write(0,*) "READMO2 = "
    10 continue 
       call gettxt 
+      write(0,*) "READMO3 = "
       if (moperr) then
         natoms = 0
         return  
@@ -202,6 +206,8 @@
 !
 !  Read in a new geometry
 !
+      write(0,*) "READMO4 = ", nvar
+
         nvar = 0 
         ndep = 0 
         if (aigeo .or. index(keywrd,' AIGIN')/=0) then 
@@ -281,6 +287,8 @@
           return  
         end do 
       endif 
+      write(0,*) "READMOEND = ", nvar
+
 !
 !
 ! OUTPUT FILE TO UNIT 6
@@ -380,6 +388,8 @@
       if (ndep /= 0) call symtry 
 !
 ! INITIALIZE FLAGS FOR OPTIMIZE AND PATH
+      write(0,*) "READMO6 = ", nvar
+
       iflag = 0 
       latom = 0 
       numat = 0 
@@ -423,6 +433,8 @@
           end do 
         end do 
       endif 
+      write(0,*) "READMO7 = ", nvar
+
 ! READ IN PATH VALUES
       if (iflag /= 0) then 
         if (index(keywrd,' NLLSQ') /= 0) then 
@@ -481,11 +493,16 @@
         react(iend) = -1.D12 
       endif 
   250 continue 
+      write(0,*) "READMO8 = ", nvar
+
       call wrttxt (iw) 
-      if (index(keywrd,' 0SCF') == 0) then 
+      write(0,*) "READMO9 = ", nvar
+
 !
 ! CHECK DATA
 !
+      if (index(keywrd,' 0SCF') == 0) then 
+
         if (xyz) then 
           if (index(keywrd,' IRC') + index(keywrd,' DRC') + index(keywrd,&
             ' 1SCF') == 0) then 
@@ -522,14 +539,19 @@
           endif 
         endif 
       endif 
+
       if (index(keywrd,' NOLOG') == 0) then 
+
         i = index(jobnam,' ') - 1 
-        open(unit=il, form='FORMATTED', status='UNKNOWN', file=jobnam(:i)//&
+!--TGAY 08/2016 - Unit number used was 'il', which doesn't exist (in chanel_C)
+!---------------- CHANGED:   il => ilog
+        open(unit=ilog, form='FORMATTED', status='UNKNOWN', file=jobnam(:i)//&
           '.log', position='asis') 
         call wrttxt (il) 
       endif  
+
       call geout(1)
-    
+
       call gmetry (geo, coord) 
       if (moperr) return  
       if (index(keywrd,' AUTOSYM') /= 0) call maksym(loc, xparam, xyzt) 
@@ -562,8 +584,8 @@
         else 
            write (iw, '(2/10X,''CARTESIAN COORDINATES '',/)') 
           write (iw, &
-      '(4X,''NO.'',7X,''ATOM'',9X,''X'',                   9X,''Y'',9X,''Z'',/)&
-      ') 
+      &'(4X,''NO.'',7X,''ATOM'',9X,''X'',                   9X,''Y'',9X,''Z'',/)&
+      &') 
           l = 0 
           do i = 1, natoms 
             if (labels(i)==99 .or. labels(i)==107) cycle  

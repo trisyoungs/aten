@@ -29,6 +29,7 @@
 !  SYMDEC  returns a .TRUE. if the system matches point-group N1.
 !
 !*********************************************************************
+
       in1 = n1 
       do i = 1, 20 
         ibin = mod(in1,2) 

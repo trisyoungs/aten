@@ -45,14 +45,14 @@
       real(double), dimension(:), allocatable :: aidref, work2
       real(double) :: coord(3*natoms), gold(3*natoms), xparam(3*natoms)
 
-
       real(double) :: grlim, sum, gnorm, step 
       logical :: scf1, halfe, slow, aifrst, debug, precis, intn, geochk, ci, &
         aic, noanci, field, saddle
       character :: line*80 
 
+!--TGAY 08/2016 - nw2 was not saved
       save change, aidref, scf1, halfe, idelta, slow, icalcn, aifrst, debug, &
-        precis, intn, geochk, ci, aic, grlim, work2
+        precis, intn, geochk, ci, aic, grlim, work2, nw2
 !-----------------------------------------------
 !***********************************************************************
 !
@@ -69,7 +69,7 @@
 !***********************************************************************   
       data icalcn/ 0/  
       if (icalcn /= numcal) then          
-        aidref = 0.d0
+
         aifrst = index(keywrd,' RESTART') == 0 
         saddle = index(keywrd, " SADDLE") /= 0
         debug = index(keywrd,' DERIV') /= 0 
@@ -80,10 +80,17 @@
           nw2 = max(mpack, 9*natoms**2)
         else
           nw2 = max(mpack, 6*natoms)
-        end if
+        end if 
+!--TGAY 08/2016- aidref was zeroed before allocation on first call
+!--------------- work2 was not zeroed after allocation
         if (allocated(aidref)) deallocate(aidref)
         if (allocated(work2))  deallocate(work2)
+
         allocate(aidref(nvar), work2(nw2))
+        aidref = 0.d0
+        work2 = 0.d0
+!------------------------------------------------------------------------
+
 !
 !   GEOCHK is true if the system is a transition state in internal
 !          coordinates with all coordinates marked for optimization.
@@ -186,7 +193,8 @@
 !    FIRST DERIVATIVES. CHANGE(1) IS FOR CHANGE IN BOND LENGTH,
 !    (2) FOR ANGLE, AND (3) FOR DIHEDRAL.
 !
-      endif 
+      endif
+
       if (nvar == 0) return  
       if (debug) then 
         write (iw, '('' GEO AT START OF DERIV'')') 
@@ -223,6 +231,7 @@
 !
       if (field) call dfield () 
       step = change(1) 
+write(0,*) "AAAAAAAAAAARRGGGH", step, nw2, l1u, l2u, l3u
       nstep = nw2/(3*numat*(2*l1u + 1)*(2*l2u + 1)*(2*l3u + 1)) 
       do i = 1, nvar, nstep 
         j = min(i + nstep - 1,nvar) 

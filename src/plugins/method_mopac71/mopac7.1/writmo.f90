@@ -22,7 +22,8 @@
       use parameters_C, only : tore
       use symmetry_C, only : name, state
       use euler_C, only : tvec, id
-      use funcon_C, only : fpc_10, fpc_9
+!--TGAY 08/2016 - fpc_9 was unused
+      use funcon_C, only : fpc_10   ! fpc_9
       use chanel_C, only : iw, iarc, iden, ibrz
 !-----------------------------------------------
       use meci_I 
@@ -189,14 +190,14 @@
         return  
       endif 
       write (iw, &
-      '(4/10X,''FINAL HEAT OF FORMATION ='',F17.5,'' KCAL''  ,'' = '',F12.5,'' &
+      &'(4/10X,''FINAL HEAT OF FORMATION ='',F17.5,'' KCAL''  ,'' = '',F12.5,'' &
       &KJ'')') escf, escf*4.184D0 
       if (index(keywrd,' EPS') /= 0) write (iw, '(10X,A,F14.2,A)') &
         'VAN DER WAALS AREA      =', area, ' SQUARE ANGSTROMS' 
       if (latom == 0) write (iw, '(/)') 
       if (state(1) /= '    ') then 
          write (iw, &
-      '(    10X,''TOTAL ENERGY            ='',F17.5,'' EV'' ,''  STATE:  '',3A4&
+      &'(    10X,''TOTAL ENERGY            ='',F17.5,'' EV'' ,''  STATE:  '',3A4&
       &)') elect + enuclr, (state(i),i=1,3) 
       else 
         staten(1) = ' ' 
@@ -271,11 +272,11 @@
         else 
           if (na(1) /= 99) grtype = ' KCAL/RADIAN  ' 
           write (iw, &
-      '(    10X,''FOR REACTION COORDINATE ='',F17.5              ,'' DEGREES'')&
-      ') xreact*degree 
+      &'(    10X,''FOR REACTION COORDINATE ='',F17.5              ,'' DEGREES'')&
+      &') xreact*degree 
         endif 
         write (iw, '(    10X,''REACTION GRADIENT       ='',F17.5,A14         )'&
-          ) gcoord, grtype 
+      &   ) gcoord, grtype 
       endif 
       eionis = 0.D0 
       if (nalpha > 0) then 

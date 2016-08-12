@@ -57,10 +57,11 @@
       character , dimension(7) :: tspin*8 
       character :: line*80 
 
+!--TGAY 08/2016 - peci was not saved
       save spin, debug, large, lspin1, first1, sing, doub, trip, quar, quin, &
         sext, prnt2, geook, getmic, sept, tspin, icalcn, ndoubl, msdel, j, l, &
         mdim, lroot, smult, ne, xx, lima, limb, eiga, &
-        oscil, nperma, npermb, nfa
+        oscil, nperma, npermb, nfa, peci
 !-----------------------------------------------
 !**********************************************************************
 !
@@ -183,6 +184,8 @@
       endif 
       prnt = debug .or. last==3 .and. prnt2 
       bigprt = prnt .and. large 
+!--TGAY 08/2016 - Added initialisation of meci 
+      meci = 0.D0 
 !
 !    TEST TO SEE IF THE SET OF ENERGY LEVELS USED IN MECI IS COMPLETE,
 !    I.E., ALL COMPONENTS OF DEGENERATE IRREDUCIBLE REPRESENTATIONS

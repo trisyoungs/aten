@@ -201,7 +201,8 @@
             loc(2,nvar) = k 
             xparam(nvar) = sum 
 !fck -384  !  Deliberately use only 10 characters
-            simbol(nvar) = tgeo(k,j)(:10) 
+!--TGAY 08/2016 - simbol() is an array of character*4 entities, so only use first four chars of tgeo()
+            simbol(nvar) = tgeo(k,j)(:4) 
 !fck +384
             if (simbol(nvar)(1:1) == '-') then 
               write (iw, '(A)') &

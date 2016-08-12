@@ -19,8 +19,8 @@
       integer :: i 
       logical :: exists 
       character :: line*80 
-!       external getarg                          !--REMOVED TGAY 08/2016 - Satisfied by intrinsic function
-!       integer, external :: iargc               !--REMOVED TGAY 08/2016 - Satisfied by intrinsic function
+!       external getarg                          !--TGAY 08/2016 - Satisfied by intrinsic function
+!       integer, external :: iargc               !--TGAY 08/2016 - Satisfied by intrinsic function
       save i 
 !-----------------------------------------------
 !
@@ -61,7 +61,7 @@
 !
 !******************************************************************** 
 
-!--REMOVED TGAY 08/2016 - JOBNAM passed to main function
+!--TGAY 08/2016 - JOBNAM passed to main function
 !       if (iargc() == 0) then 
 !         jobnam = 'test' 
 !       else 

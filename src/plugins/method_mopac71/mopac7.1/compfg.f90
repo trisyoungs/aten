@@ -119,6 +119,7 @@
 !
 !       PLACE THE NEW VALUES OF THE VARIABLES IN THE ARRAY GEO.
 !       MAKE CHANGES IN THE GEOMETRY.
+      write(0,*) "COMPFG 01"
       do i = 1, nvar 
         k = loc(1,i) 
         l = loc(2,i) 
@@ -136,6 +137,7 @@
         write (iw, fmt='('' INTERNAL COORDS'',/100(/,3F12.6))') ((geo(j,i)*&
           degree(j),j=1,3),i=1,k) 
       endif 
+      write(0,*) "COMPFG 02"
       call gmetry (geo, coord) 
       if (debug) then 
         if (large) then 
@@ -162,17 +164,23 @@
 !
         if (norbs>0 .and. nelecs>0) then 
           if (times) call timer ('BEFORE ITER') 
+          write(0,*) "Calling ITER..."
           if (int) call iter (elect, fulscf, .TRUE.) 
           if (moperr) return  
           if (times) call timer ('AFTER ITER') 
         else 
           elect = 0.D0 
-        endif 
+        endif
+        write(0,*) "ESCF0 = ", elect, enuclr, fpc_9, atheat
+
         escf = (elect + enuclr)*fpc_9 + atheat 
+        write(0,*) "ESCF1 = ", escf
         if (escf<emin .or. emin==0.D0) emin = escf 
+        write(0,*) "ESCF2 = ", escf
         do i = 1, nnhco 
           call dihed (coord, nhco(1,i), nhco(2,i), nhco(3,i), nhco(4,i), angle) 
           escf = escf + htype*sin(angle)**2 
+
         end do 
       endif 
       if (iseps) then 
@@ -216,7 +224,9 @@
 !
       if (lgrad) then 
         if (times) call timer ('BEFORE DERIV') 
+      write(0,*) "Before DERIV"
         if (nelecs > 0) call deriv (geo, grad) 
+      write(0,*) "After DERIV"
         if (moperr) return  
         if (times) call timer ('AFTER DERIV') 
       endif 

@@ -58,7 +58,8 @@
      & isetup = 27, &
      & lbfgs_it = 28, &
      & idaf = 29, &
-     & is = 0
+!--TGAY 08/2016 - Changed from 0 to 30
+     & is = 30
 
           integer, parameter :: filename_len = 240
 
