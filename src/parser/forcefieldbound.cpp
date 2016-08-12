@@ -250,6 +250,8 @@ bool ForcefieldBoundVariable::retrieveAccessor(int i, ReturnValue& rv, bool hasA
 				case (ForcefieldBound::ImproperInteraction):
 					rv.set(TorsionFunctions::functionData[ptr->torsionForm()].nParameters);
 					break;
+        default:
+          break;  
 			}
 			break;
 		case (ForcefieldBoundVariable::Type):
@@ -383,6 +385,8 @@ bool ForcefieldBoundVariable::performFunction(int i, ReturnValue& rv, TreeNode* 
 					if (id == TorsionFunctions::functionData[ptr->torsionForm()].nParameters) result = false;
 					else rv.set(ptr->parameter(id));
 					break;
+        default:
+          break;  
 			}
 			break;
 		default:

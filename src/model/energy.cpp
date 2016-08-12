@@ -174,6 +174,8 @@ double Model::moleculeEnergy(Model* srcmodel, Pattern* molpattern, int molecule,
 			if (emodel == Electrostatics::EwaldAuto) prefs.estimateEwaldParameters(srcmodel->cell_);
 			fourierData_.prepare(srcmodel,prefs.ewaldKMax());
 			break;
+    default:
+      break;  
 	}
 	
 	// Calculate VDW interactions between 'molecule' in pattern 'molpattern' and molecules in it and other's patterns
@@ -292,6 +294,8 @@ double Model::electrostaticEnergy(Model* config, bool& success)
 			if (emodel == Electrostatics::EwaldAuto) prefs.estimateEwaldParameters(config->cell_);
 			fourierData_.prepare(config,prefs.ewaldKMax());
 			break;
+    default:
+      break;  
 	}
 	
 	// Calculate total torsion energy over all patterns
@@ -450,6 +454,8 @@ bool Model::calculateForces(Model* srcmodel)
 			// Create the fourier space for use in the Ewald sum
 			fourierData_.prepare(srcmodel, prefs.ewaldKMax());
 			break;
+    default:
+      break;  
 	}
 	
 	// Loop over patterns

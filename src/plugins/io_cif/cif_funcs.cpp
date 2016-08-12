@@ -230,6 +230,8 @@ bool CIFModelPlugin::importData()
 				case (CIFModelPlugin::SymmetrySpacegroupNameHMAlt):
 					targetModel()->cell().setSpacegroup(fileParser_.argc(1), standardOptions_.isSetAndOn(FilePluginStandardImportOptions::ForceRhombohedralSwitch));
 					break;
+        default:
+          break;  
 			}
 		}
 	}

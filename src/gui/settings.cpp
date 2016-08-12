@@ -205,6 +205,8 @@ void AtenWindow::loadSettings()
 				case (Prefs::SelectHistory):
 					selectHistory << data;
 					break;
+        default:
+          break;
 			}
 		}
 		parser.closeFiles();

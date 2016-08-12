@@ -112,6 +112,8 @@ bool MonteCarlo::disorder(Model* allModels, Model* destmodel, PartitioningScheme
 					return false;
 				}
 				break;
+      default:
+        break;  
 		}
 		component = (m->componentInsertionPolicy() == Model::RelativePolicy ? components_.prepend() : components_.add());
 		Messenger::print("Initialising component model '%s' for partition '%s'...", qPrintable(m->name()), qPrintable(scheme->partitionName(id)));
@@ -269,6 +271,8 @@ bool MonteCarlo::disorder(Model* allModels, Model* destmodel, PartitioningScheme
 						continue;
 					}
 					break;
+        default:
+          break;  
 			}
 			
 			// Termination condition for this component not satisfied, so more molecules needed!
@@ -387,6 +391,8 @@ bool MonteCarlo::disorder(Model* allModels, Model* destmodel, PartitioningScheme
 					case (Model::RelativePolicy):
 						Messenger::print("%-5i   %-15s %-10s  %-5i (R %-3i)  %8.5f  (%8.5f)  %5.3f", cycle, qPrintable(component->modelName()), qPrintable(component->partitionName()), component->nAdded(), component->requestedPopulation(), component->partitionDensity(), component->requestedDensity(), component->scaleFactor());
 						break;
+          default:
+            break;  
 				}
 			}
 		}
@@ -472,6 +478,8 @@ bool MonteCarlo::disorder(Model* allModels, Model* destmodel, PartitioningScheme
 					case (Model::RelativePolicy):
 						Messenger::print("%-5i   %-15s %-10s  %-5i (R %-3i)  %8.5f  (%8.5f)  %5.3f  %5.3f", cycle, qPrintable(component->modelName()), qPrintable(component->partitionName()), component->nAdded(), component->requestedPopulation(), component->partitionDensity(), component->requestedDensity(), component->scaleFactor(), double(component->count())/component->nAdded());
 						break;
+          default:
+            break;  
 				}
 			}
 		}

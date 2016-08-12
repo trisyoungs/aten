@@ -126,6 +126,8 @@ void DisorderWizard::updateComponentControls()
 		case (Model::RelativePolicy):
 			ui.RelativePolicyRadio->setChecked(true);
 			break;
+    default:
+      break;
 	}
 	ui.ComponentPopulationSpin->setValue(componentTarget_->componentPopulation());
 	ui.ComponentPopulationSpin->setDisabled(componentTarget_->componentInsertionPolicy() == Model::DensityPolicy);
