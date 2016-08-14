@@ -2,8 +2,7 @@
 !   Interface to MOPAC7.1
 !   Based on original mopac.f90
 !   Arguments:
-!       UNITNO     : Integer unit number for output file
-!       OUTFILE    : Name of output file to write
+!       JOBBASENAME : Basename of input / output files (no extension)
 !-----------------------------------------------
 
       logical function runmopac71(JOBBASENAME)
@@ -62,8 +61,7 @@
 !----------------------------------------------- 
 
 !---TGAY ADDED 08/2016-------------------------- 
-      write(0,*) JOBBASENAME
-      jobnam="water"
+      jobnam=JOBBASENAME
       tore = ios + iop + iod
       tore(57:71) = 3.d0
       call getdat(ir,iw)
@@ -94,10 +92,7 @@
 !
 !    Read in all the data for the current job
 !
-      write(0,*) "NVARX2.5 = ", nvar
-
       call readmo 
-      write(0,*) "NVARX3 = ", nvar
 
       if (natoms == 0) stop
       if (moperr) go to 10 
@@ -108,7 +103,7 @@
 !--TGAY 08/2016- Copied to target vars, and removed fpc() array.
 !--------------- Subroutines that used a0, for instance, and didn't use fpc()
 !--------------- would find a0 zeroed (since it was an equivalent to fpc(3)).
-!--------------- Probably a compiled issue, but easily fixed.
+!--------------- Probably a compiler effect, but easily fixed this way.
         fpc_1  = fpcref(2,1)
         fpc_2  = fpcref(2,2)
         a0     = fpcref(2,3)
@@ -134,18 +129,16 @@
         fpc_9  = fpcref(1,9)
         fpc_10 = fpcref(1,10)
       endif  
-      write(0,*) "CONSTANTS = ", a0, ev
-!
+
+      !
 ! Load in parameters for the method to be used
 !
       call switch (0) 
-!
+
+      !
 ! Set up all the data for the molecule
 !
-      write(0,*) "NVARX4 = ", nvar
-
       call moldat (0)  
-      write(0,*) "NVARX5 = ", nvar
     
       if (moperr) goto 100     
       indeps = index(keywrd,' EPS=') 
@@ -182,13 +175,11 @@
         call datin () 
         if (moperr) go to 100 
       endif 
-!
+
+      !
 ! Everything is ready - now set up the arrays used by the SCF, etc.
 !
-      write(0,*) "NVAR1 = ", nvar
-
        call setup_mopac_arrays(1,2)
-      write(0,*) "NVAR2 = ", nvar
       if (method_dorbs) then 
         call fbx 
         call fordd 
@@ -202,10 +193,10 @@
           l = l + ((nlast(i)-nfirst(i)+1)*(nlast(i)-nfirst(i)+2))/2 
         end do 
       endif 
-!
+
+     !
 !  CALCULATE THE ATOMIC ENERGY
 !
-      write(0,*) "NVAR3 = ", nvar, a0, ev
       eat = 0.D0 
       atheat = sum(eheat(nat(:numat))) 
       eat = sum(eisol(nat(:numat))) 
@@ -231,7 +222,6 @@
 ! CALCULATE DYNAMIC REACTION COORDINATE.
 !
 !
-      write(0,*) "NVAR4 = ", nvar
       if (index(keywrd,' SADDLE') /= 0) then 
         call react1 () 
         if (moperr) go to 100 
@@ -293,6 +283,7 @@
         if (moperr) go to 100 
         go to 60 
       endif 
+
 !
 !  EF OPTIMISATION
 !
@@ -310,12 +301,11 @@
         if (moperr) go to 100 
         go to 60 
       endif 
+
 !
 ! ORDINARY GEOMETRY OPTIMISATION
 !
-      write(0,*) "Before FLEPO"
       call flepo (xparam, nvar, escf) 
-      write(0,*) "After FLEPO"
       if (moperr) go to 100 
  60     continue 
       last = 1 

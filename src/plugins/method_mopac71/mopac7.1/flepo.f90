@@ -211,7 +211,6 @@
 !      BUT CAN BE INVOKED BY USING THE KEYWORD 'DFP'
 !
         dfp = index(keywrd,'DFP') /= 0 
-      write(0,*) "In FLEPO 01"
 
 !
 !  ORDER OF PRECISION:   'GNORM' TAKES PRECEDENCE OVER 'FORCE', WHICH
@@ -247,7 +246,6 @@
 !
 !  MINOR BOOK-KEEPING
 !
-      write(0,*) "In FLEPO 02"
 
         tlast = tleft 
         tx2 = second(2) 
@@ -290,7 +288,6 @@
             return  
           endif 
         endif 
-      write(0,*) "In FLEPO 03"
 
 !
 !   END OF ONCE-ONLY SETUP
@@ -299,7 +296,6 @@
 !
 !     FIRST, WE INITIALIZE THE VARIABLES.
 !
-      write(0,*) "In FLEPO 05"
       ireset = 0 
       absmin = 1.D6 
       itry1 = 0 
@@ -334,7 +330,6 @@
 ! CALCULATE THE VALUE OF THE FUNCTION -> FUNCT1, AND GRADIENTS -> GRAD.
 ! NORMAL SET-UP OF FUNCT1 AND GRAD, DONE ONCE ONLY.
 !
-      write(0,*) "In FLEPO 06"
 
       call compfg (xparam, .TRUE., funct1, .TRUE., grad, .TRUE.) 
       if (moperr) return  
@@ -368,7 +363,6 @@
 !     START OF EACH ITERATION CYCLE ...
 !     *
 !
-      write(0,*) "In FLEPO 07"
       gnorm = sqrt(dot(grad,grad,nvar)) 
       if (gnormr < 1.D-10) gnormr = gnorm 
       icyc = jcyc 
@@ -401,9 +395,7 @@
 ! IF THE NEW POINT HAPPENS TO IMPROVE THE RESULT, THEN IT IS KEPT.
 ! OTHERWISE IT IS SCRAPPED, BUT STILL THE SECOND-ORDER MATRIX IS O.K.
 !
-      write(0,*) "In FLEPO 08"
         call compfg (xd, .TRUE., funct2, .TRUE., gd, .TRUE.) 
-      write(0,*) "In FLEPO 08 a"
         if (moperr) return  
         if (.not.geook .and. sqrt(dot(gd,gd,nvar))/gnorm>10.D0 .and. gnorm>20&
            .and. jcyc>2) then 
@@ -500,7 +492,6 @@
 !     UPDATE VARIABLE-METRIC MATRIX
 !     *
 !
-      write(0,*) "In FLEPO 10"
         xvar(:nvar) = xparam(:nvar) - xlast(:nvar) 
         gvar(:nvar) = grad(:nvar) - glast(:nvar) 
         call supdot (gg, hesinv, gvar, nvar) 

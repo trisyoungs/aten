@@ -107,15 +107,12 @@
       data naigin/ 0/  
       data idepco/ 1, 2, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 2, 2, 2, 2, 1, 2, &
         3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3, 1, 2, 3/  
-      write(0,*) "READMO1 = "
       aigeo = .FALSE. 
       nvar = 0 
       ndep = 0 
       if (.not. allocated(lopt)) allocate(lopt(3,maxatoms))
-      write(0,*) "READMO2 = "
    10 continue 
       call gettxt 
-      write(0,*) "READMO3 = "
       if (moperr) then
         natoms = 0
         return  
@@ -199,6 +196,7 @@
       lparam = 0 
       xyz = index(keywrd,' XYZ') + index(keywrd,' IRC') + index(keywrd,' DRC')&
          /= 0 
+
 !
 !   Top level
 !
@@ -206,7 +204,6 @@
 !
 !  Read in a new geometry
 !
-      write(0,*) "READMO4 = ", nvar
 
         nvar = 0 
         ndep = 0 
@@ -287,7 +284,6 @@
           return  
         end do 
       endif 
-      write(0,*) "READMOEND = ", nvar
 
 !
 !
@@ -302,6 +298,7 @@
 !
       banner = &
       ' **  MOPAC: Public Domain Version              Written by James J. P. Stewart **' 
+
       if (1 == 1) then 
         write (iw, '(A)') banner 
 !
@@ -356,6 +353,7 @@
           endif 
           write (iw, '(/,''  GEOMETRY READ IN'',/)') 
           xparam(1) = -1.D0 
+          
           call geout (iw) 
           call mopend ('Error in READMO')  
           return  
@@ -388,7 +386,6 @@
       if (ndep /= 0) call symtry 
 !
 ! INITIALIZE FLAGS FOR OPTIMIZE AND PATH
-      write(0,*) "READMO6 = ", nvar
 
       iflag = 0 
       latom = 0 
@@ -433,7 +430,6 @@
           end do 
         end do 
       endif 
-      write(0,*) "READMO7 = ", nvar
 
 ! READ IN PATH VALUES
       if (iflag /= 0) then 
@@ -493,10 +489,8 @@
         react(iend) = -1.D12 
       endif 
   250 continue 
-      write(0,*) "READMO8 = ", nvar
 
       call wrttxt (iw) 
-      write(0,*) "READMO9 = ", nvar
 
 !
 ! CHECK DATA
@@ -547,7 +541,7 @@
 !---------------- CHANGED:   il => ilog
         open(unit=ilog, form='FORMATTED', status='UNKNOWN', file=jobnam(:i)//&
           '.log', position='asis') 
-        call wrttxt (il) 
+        call wrttxt (ilog) 
       endif  
 
       call geout(1)

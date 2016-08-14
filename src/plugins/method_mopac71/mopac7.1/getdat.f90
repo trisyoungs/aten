@@ -70,7 +70,6 @@
 
 ! Check for the data set in the order: <file>.mop, <file>.dat, <file>
       line = jobnam(:len_trim(jobnam))//'.mop'
-      write(0,*) "LINE1", line
       inquire(file=line, exist=exists)
       if ( .not. exists) then
         line = jobnam(:len_trim(jobnam))//'.dat'

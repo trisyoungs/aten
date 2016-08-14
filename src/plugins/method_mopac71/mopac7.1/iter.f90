@@ -146,7 +146,6 @@
 !
 !  INITIALIZE
 !
-write(0,*) "Hello"
       ifill = 0 
       ihomo = max(1,nclose + nalpha) 
       ihomob = max(1,nclose + nbeta) 
@@ -628,7 +627,6 @@ write(0,*) "Hello"
         return  
       endif 
       ee = helect(norbs,pa,h,f) 
-      write(0,*) "INITIAL EE = ", ee
       if (uhf) then 
         ee = ee + helect(norbs,pb,h,fb) 
       else 

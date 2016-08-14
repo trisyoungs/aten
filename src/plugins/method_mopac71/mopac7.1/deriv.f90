@@ -231,7 +231,6 @@
 !
       if (field) call dfield () 
       step = change(1) 
-write(0,*) "AAAAAAAAAAARRGGGH", step, nw2, l1u, l2u, l3u
       nstep = nw2/(3*numat*(2*l1u + 1)*(2*l2u + 1)*(2*l3u + 1)) 
       do i = 1, nvar, nstep 
         j = min(i + nstep - 1,nvar) 
