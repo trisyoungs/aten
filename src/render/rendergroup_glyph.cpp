@@ -308,6 +308,8 @@ void RenderGroup::createGlyphs(PrimitiveSet& primitiveSet, Model* source)
 				A.applyScaling(0.2, 0.2, rij*arrowHeadLength/arrowBodyLength);
 				addTriangles(primitiveSet.cone(), A, colour[0], GL_LINE);
 				break;
+      default:
+        break;  
 		}
 	}
 

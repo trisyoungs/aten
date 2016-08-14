@@ -190,6 +190,8 @@ double ForcefieldBound::convertedParameter(int i, Prefs::EnergyUnit units) const
 		case (ForcefieldBound::ImproperInteraction):
 			if (TorsionFunctions::functionData[form_].isEnergyParameter[i]) return prefs.convertEnergyTo(params_[i], units);
 			break;
+    default:
+      break;  
 	}
 	return params_[i];
 }

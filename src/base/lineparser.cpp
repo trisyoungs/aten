@@ -711,6 +711,8 @@ bool LineParser::getArgsFormatted(ParseFormat& format, int optionMask, bool read
 				if (getRest(arg)) arguments_ << arg;
 				else failed = true;
 				break;
+      default:
+        break;
 		}
 
 		if (failed) break;

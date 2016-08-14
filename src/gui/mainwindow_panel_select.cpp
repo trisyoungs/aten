@@ -186,6 +186,8 @@ void AtenWindow::on_SelectIntelligentAddButton_clicked(bool checked)
 		case (AtenWindow::NameSelectType):
 			CommandNode::run(Commands::SelectName, "c", qPrintable(ui.SelectIntelligentTargetCombo->currentText()));
 			break;
+    default:
+      break;
 	}
 
 	updateWidgets(AtenWindow::AtomsTableTarget);
@@ -213,6 +215,8 @@ void AtenWindow::on_SelectIntelligentRemoveButton_clicked(bool checked)
 		case (AtenWindow::LoopSelectType):
 			CommandNode::run(Commands::DeSelectCode, "c", qPrintable(ui.SelectIntelligentTargetCombo->currentText()));
 			break;
+    default:
+      break;
 	}
 
 	updateWidgets(AtenWindow::AtomsTableTarget);

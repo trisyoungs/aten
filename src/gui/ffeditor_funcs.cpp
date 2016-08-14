@@ -370,6 +370,8 @@ void AtenForcefieldEditor::boundFunctionChanged(QComboBox* sender, int i, Forcef
 			if (ffb->type() == ForcefieldBound::UreyBradleyInteraction) updateImpropersLabels(ffb);
 			else updateTorsionsLabels(ffb);
 			break;
+    default:
+      break;
 	}
 }
 

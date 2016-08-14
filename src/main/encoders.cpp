@@ -109,6 +109,8 @@ void Aten::loadEncoderDefinitions()
 				}
 				encoder->setNickname(parser.argc(1));
 				break;
+      default:
+        break;  
 		}
 	}
 	parser.closeFiles();

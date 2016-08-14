@@ -134,6 +134,8 @@ void RenderGroup::createSelectedBond(PrimitiveSet& primitiveSet, Matrix A, Vec3<
 				addTriangles(primitiveSet.selectedBond(style_i, bt), A, colour_i, GL_LINE);
 			}
 			break;
+    default:
+      break;  
 	}
 	
 	// Draw second bond half
@@ -179,6 +181,8 @@ void RenderGroup::createSelectedBond(PrimitiveSet& primitiveSet, Matrix A, Vec3<
 				addTriangles(primitiveSet.selectedBond(style_j, bt), B, colour_j, GL_LINE);
 			}
 			break;
+    default:
+      break;  
 	}
 }
 
@@ -286,6 +290,8 @@ void RenderGroup::createBond(PrimitiveSet& primitiveSet, Matrix A, Vec3<double> 
 				addLines(primitiveSet.selectedBond(style_i, bt), A, penColour_);
 			}
 			break;
+    default:
+      break;  
 	}
 	
 	// Draw second bond half
@@ -336,6 +342,8 @@ void RenderGroup::createBond(PrimitiveSet& primitiveSet, Matrix A, Vec3<double> 
 				addLines(primitiveSet.selectedBond(style_j, bt), B, penColour_);
 			}
 			break;
+    default:
+      break;  
 	}
 }
 

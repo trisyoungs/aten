@@ -48,6 +48,8 @@ double CombinationRules::combine(CombinationRules::CombinationRule cr, double a,
 		case (CombinationRules::GeometricRule):
 			return sqrt(a*b);
 			break;
+    default:
+      break;  
 	}
 	return 0.0;
 }

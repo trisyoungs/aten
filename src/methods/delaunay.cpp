@@ -556,6 +556,8 @@ void DelaunaySurface::create(Grid* g)
 		case (Grid::FreeXYZData):
 			create3DMesh(g);
 			break;
+    default:
+      break;  
 	}
 	Messenger::exit("DelaunaySurface::create");
 }
