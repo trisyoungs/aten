@@ -30,11 +30,12 @@ mopac71method_la_LDFLAGS = -module -shared -avoid-version -lgfortran
 # Mopac71 Control (File/IO) Plugin
 mopac71control_la_SOURCES = controlexportoptions.ui controlexportoptions_funcs.cpp
 mopac71control_la_SOURCES += mopac71control_funcs.cpp mopac71control.hui 
-mopac71control_la_LDFLAGS = -module -shared -avoid-version -lgfortran
+mopac71control_la_LDFLAGS = -module -shared -avoid-version
 
-# Mopac71 Optimisation Plugin
+# Mopac71 Geometry Optimisation Plugin
+mopac71opt_la_SOURCES = optoptions.ui optoptions_funcs.cpp
 mopac71opt_la_SOURCES = mopac71opt_funcs.cpp mopac71opt.hui
-mopac71opt_la_LDFLAGS = -module -shared -avoid-version -lgfortran
+mopac71opt_la_LDFLAGS = -module -shared -avoid-version
 
 AM_CPPFLAGS = -I${top_srcdir}/src @ATEN_INCLUDES@ @ATEN_CFLAGS@
 
