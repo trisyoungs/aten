@@ -197,8 +197,7 @@ FilePluginInterface* PluginStore::findFilePlugin(PluginTypes::FilePluginCategory
 	return NULL;
 }
 
-
-// Find plugin interface by nickname provided
+// Find file plugin interface by nickname provided
 FilePluginInterface* PluginStore::findFilePluginByNickname(PluginTypes::FilePluginCategory category, PluginTypes::FilePluginType type, QString nickname) const
 {
 	// Loop over loaded plugins of the specified category
@@ -246,9 +245,8 @@ bool PluginStore::registerMethodPlugin(MethodPluginInterface* plugin)
 	methodPlugins_[plugin->category()].add(plugin);
 	Messenger::print(Messenger::Verbose, "Registered new method plugin:");
 	Messenger::print(Messenger::Verbose, "       Name : %s", qPrintable(plugin->name()));
+	Messenger::print(Messenger::Verbose, "   Category : %s", PluginTypes::niceMethodPluginCategory( (PluginTypes::MethodPluginCategory) plugin->category()));
 	Messenger::print(Messenger::Verbose, "Description : %s", qPrintable(plugin->description()));
-
-	plugin->executeMethod(true);
 
 	++logPoint_;
 
@@ -263,7 +261,7 @@ void PluginStore::clearMethodPlugins()
 	++logPoint_;
 }
 
-// Return reference list of file plugins of specified category
+// Return reference list of method plugins of specified category
 const RefList<MethodPluginInterface,int>& PluginStore::methodPlugins(PluginTypes::MethodPluginCategory category) const
 {
 	return methodPlugins_[category];
@@ -275,7 +273,7 @@ int PluginStore::nMethodPlugins(PluginTypes::MethodPluginCategory category) cons
 	return methodPlugins_[category].nItems();
 }
 
-// Return total number of file plugins available
+// Return total number of method plugins available
 int PluginStore::nMethodPlugins() const
 {
 	int count = 0;
@@ -316,7 +314,7 @@ void PluginStore::showAllMethodPluginNicknames() const
 	for (int n=0; n<PluginTypes::nMethodPluginCategories; ++n) showMethodPluginNicknames((PluginTypes::MethodPluginCategory) n);
 }
 
-// Find plugin interface by nickname
+// Find method plugin interface by nickname
 MethodPluginInterface* PluginStore::findMethodPluginByNickname(PluginTypes::MethodPluginCategory category, QString nickname) const
 {
 	// Loop over loaded method plugins of the specified category

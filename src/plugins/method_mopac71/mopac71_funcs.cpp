@@ -23,14 +23,14 @@
 #include "model/model.h"
 
 // Constructor
-Mopac71MethodPlugin::Mopac71MethodPlugin()
+MOPAC71MethodPlugin::MOPAC71MethodPlugin()
 {
 	// Plugin options
 // 	pluginOptions_.add("GEO-OK", 
 }
 
 // Destructor
-Mopac71MethodPlugin::~Mopac71MethodPlugin()
+MOPAC71MethodPlugin::~MOPAC71MethodPlugin()
 {
 }
 
@@ -39,33 +39,33 @@ Mopac71MethodPlugin::~Mopac71MethodPlugin()
  */
 
 // Return type of plugin
-PluginTypes::PluginType Mopac71MethodPlugin::type() const
+PluginTypes::PluginType MOPAC71MethodPlugin::type() const
 {
 	return PluginTypes::MethodPlugin;
 }
 
 // Return category of plugin
-int Mopac71MethodPlugin::category() const
+int MOPAC71MethodPlugin::category() const
 {
 	return PluginTypes::OptimisationMethodPlugin;
 }
 
 // Name of plugin
-QString Mopac71MethodPlugin::name() const
+QString MOPAC71MethodPlugin::name() const
 {
 	return QString("MOPAC7 Plugin");
 }
 
 // Nickname of plugin
-QString Mopac71MethodPlugin::nickname() const
+QString MOPAC71MethodPlugin::nickname() const
 {
 	return QString("mopac71");
 }
 
 // Description (long name) of plugin
-QString Mopac71MethodPlugin::description() const
+QString MOPAC71MethodPlugin::description() const
 {
-	return QString("MOPAC7 functionality (v1.15)");
+	return QString("MOPAC7 functionality (v7.1 public domain version)");
 }
 
 /*
@@ -73,31 +73,39 @@ QString Mopac71MethodPlugin::description() const
  */
 
 // Run method on the current target model
-bool Mopac71MethodPlugin::runMethod()
+bool MOPAC71MethodPlugin::runMethod()
 {
-	// Get the name of a temporary file prefix - this will let us delete all MOPAC-generated files afterwards
-	QString jobBaseName = addTemporaryFilePrefix("AtenMopac71MethodPlugin");
-	int jobBaseNameLength = jobBaseName.length();
+	Messenger:: error("Don't try to use runMethod() from MOPAC71MethodPlugin.");
+	Messenger:: error("Use it's auxiliary functions instead.");
 
-	// Open the input file...
-	QFile inputFile(jobBaseName + ".mop");
-	if (!inputFile.open(QIODevice::WriteOnly))
-	{
-		Messenger::error("Failed to open temporary file for MOPAC input");
-		return false;
-	}
+	return false;
+}
 
-	// Create input deck
-	QTextStream textStream(&inputFile);
-	textStream << QString("%1").arg("PM3 GEO-OK", -80, QChar(' ')) << endl;
-	textStream << QString("%1").arg("Water", -80, QChar(' ')) << endl;
-	textStream << QString("%1").arg("Coordinates churned out by Aten.", -80, QChar(' ')) << endl;
-	textStream << QString("%1").arg("  O     0.000000 0     0.000000 0     0.000000 0  0  0  0", -80, QChar(' ')) << endl;
-	textStream << QString("%1").arg("  H     1.000000 1     0.000000 0     0.000000 0  1  0  0", -80, QChar(' ')) << endl;
-	textStream << QString("%1").arg("  H     1.000000 1   108.000000 1     0.000000 0  1  2  0", -80, QChar(' ')) << endl;
-	inputFile.close();
+/*
+ * Options
+ */
 
+// Return whether the plugin has options
+bool MOPAC71MethodPlugin::hasOptions()
+{
+	return false;
+}
+
+// Show options dialog
+bool MOPAC71MethodPlugin::showOptionsDialog()
+{
+	return false;
+}
+
+/*
+ * Auxiliary Functions
+ */
+
+// Run MOPAC using the base jobname specified
+bool MOPAC71MethodPlugin::runMopac(QString jobBaseName)
+{
 	// Run MOPAC
+	int jobBaseNameLength = jobBaseName.length();
 	bool result = runmopac71_(qPrintable(jobBaseName), jobBaseNameLength);
 	if (!result) Messenger::error("Failed to perform MOPAC calculation.");
 
@@ -109,23 +117,7 @@ bool Mopac71MethodPlugin::runMethod()
 		while (!stream.atEnd()) Messenger::print(stream.readLine());
 		file.close();
 	}
-	else Messenger::error("Couldn't retrieve MOAPC output for display.");
+	else Messenger::error("Couldn't retrieve MOPAC log '" + file.fileName()+ "' for display.");
 
 	return result;
-}
-
-/*
- * Options
- */
-
-// Return whether the plugin has options
-bool Mopac71MethodPlugin::hasOptions()
-{
-	return false;
-}
-
-// Show options dialog
-bool Mopac71MethodPlugin::showOptionsDialog()
-{
-	return false;
 }

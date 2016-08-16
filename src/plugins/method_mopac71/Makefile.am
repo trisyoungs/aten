@@ -4,7 +4,7 @@ SUBDIRS = mopac7.1
 
 # Set plugin installation dir and define plugin targets
 pluginexecdir = @ATEN_PLUGINLIBDIR@
-pluginexec_LTLIBRARIES = mopac71method.la
+pluginexec_LTLIBRARIES = mopac71method.la mopac71control.la mopac71opt.la
 
 # Rules
 .ui.lo:
@@ -20,12 +20,21 @@ pluginexec_LTLIBRARIES = mopac71method.la
 
 # Local clean (temporary files generated from rules)
 clean-local:
-	-rm -f mopac71.cpp
+	-rm -f mopac71.cpp mopac71control.cpp mopac71opt.cpp
 
-# Mopac71 Method Plugin
+# Mopac71 General Plugin
 mopac71method_la_SOURCES = mopac71_funcs.cpp mopac71.hui
 mopac71method_la_LIBADD = mopac7.1/libmopac71f90.la
 mopac71method_la_LDFLAGS = -module -shared -avoid-version -lgfortran
+
+# Mopac71 Control (File/IO) Plugin
+mopac71control_la_SOURCES = controlexportoptions.ui controlexportoptions_funcs.cpp
+mopac71control_la_SOURCES += mopac71control_funcs.cpp mopac71control.hui 
+mopac71control_la_LDFLAGS = -module -shared -avoid-version -lgfortran
+
+# Mopac71 Optimisation Plugin
+mopac71opt_la_SOURCES = mopac71opt_funcs.cpp mopac71opt.hui
+mopac71opt_la_LDFLAGS = -module -shared -avoid-version -lgfortran
 
 AM_CPPFLAGS = -I${top_srcdir}/src @ATEN_INCLUDES@ @ATEN_CFLAGS@
 
