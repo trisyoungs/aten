@@ -33,11 +33,11 @@ MSIModelPlugin::~MSIModelPlugin()
 }
 
 /*
- * Core
+ * Instance Handling
  */
 
 // Return a copy of the plugin object
-FilePluginInterface* MSIModelPlugin::makeCopy()
+BasePluginInterface* MSIModelPlugin::makeCopy()
 {
 	return new MSIModelPlugin;
 }

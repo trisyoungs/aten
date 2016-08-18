@@ -33,11 +33,11 @@ Mol2ModelPlugin::~Mol2ModelPlugin()
 }
 
 /*
- * Core
+ * Instance Handling
  */
 
 // Return a copy of the plugin object
-FilePluginInterface* Mol2ModelPlugin::makeCopy()
+BasePluginInterface* Mol2ModelPlugin::makeCopy()
 {
 	return new Mol2ModelPlugin;
 }

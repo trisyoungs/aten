@@ -37,14 +37,19 @@ class MOPAC71OptimisationPlugin : public QObject, public MethodPluginInterface
 	Q_INTERFACES(AtenSpace::MethodPluginInterface)
 
 
-	/*
-	 * Core
-	 */
 	public:
 	// Constructor
 	MOPAC71OptimisationPlugin();
 	// Destructor
 	~MOPAC71OptimisationPlugin();
+
+
+	/*
+	 * Instance Handling
+	 */
+	private:
+	// Return a copy of the plugin object
+	BasePluginInterface* makeCopy();
 
 
 	/*

@@ -41,11 +41,11 @@ PDBModelPlugin::~PDBModelPlugin()
 }
 
 /*
- * Core
+ * Instance Handling
  */
 
 // Return a copy of the plugin object
-FilePluginInterface* PDBModelPlugin::makeCopy()
+BasePluginInterface* PDBModelPlugin::makeCopy()
 {
 	return new PDBModelPlugin;
 }

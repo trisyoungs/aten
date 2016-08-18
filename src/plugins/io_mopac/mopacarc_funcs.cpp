@@ -34,11 +34,11 @@ MOPACArcModelPlugin::~MOPACArcModelPlugin()
 }
 
 /*
- * Core
+ * Instance Handling
  */
 
 // Return a copy of the plugin object
-FilePluginInterface* MOPACArcModelPlugin::makeCopy()
+BasePluginInterface* MOPACArcModelPlugin::makeCopy()
 {
 	return new MOPACArcModelPlugin;
 }

@@ -33,11 +33,11 @@ CUBEModelPlugin::~CUBEModelPlugin()
 }
 
 /*
- * Core
+ * Instance Handling
  */
 
 // Return a copy of the plugin object
-FilePluginInterface* CUBEModelPlugin::makeCopy()
+BasePluginInterface* CUBEModelPlugin::makeCopy()
 {
 	return new CUBEModelPlugin;
 }

@@ -33,11 +33,11 @@ GROMACSModelPlugin::~GROMACSModelPlugin()
 }
 
 /*
- * Core
+ * Instance Handling
  */
 
 // Return a copy of the plugin object
-FilePluginInterface* GROMACSModelPlugin::makeCopy()
+BasePluginInterface* GROMACSModelPlugin::makeCopy()
 {
 	return new GROMACSModelPlugin;
 }

@@ -34,7 +34,7 @@ mopac71control_la_LDFLAGS = -module -shared -avoid-version
 
 # Mopac71 Geometry Optimisation Plugin
 mopac71opt_la_SOURCES = optoptions.ui optoptions_funcs.cpp
-mopac71opt_la_SOURCES = mopac71opt_funcs.cpp mopac71opt.hui
+mopac71opt_la_SOURCES += mopac71opt_funcs.cpp mopac71opt.hui
 mopac71opt_la_LDFLAGS = -module -shared -avoid-version
 
 AM_CPPFLAGS = -I${top_srcdir}/src @ATEN_INCLUDES@ @ATEN_CFLAGS@

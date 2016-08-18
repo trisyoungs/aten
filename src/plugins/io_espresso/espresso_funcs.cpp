@@ -33,11 +33,11 @@ QuantumEspressoModelPlugin::~QuantumEspressoModelPlugin()
 }
 
 /*
- * Core
+ * Instance Handling
  */
 
 // Return a copy of the plugin object
-FilePluginInterface* QuantumEspressoModelPlugin::makeCopy()
+BasePluginInterface* QuantumEspressoModelPlugin::makeCopy()
 {
 	return new QuantumEspressoModelPlugin;
 }

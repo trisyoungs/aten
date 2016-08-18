@@ -197,11 +197,11 @@ class FilePluginStandardExportOptions
 };
 
 // File Plugin Interface
-class FilePluginInterface : public BasePluginInterface, public ListItem<FilePluginInterface>
+class FilePluginInterface : public BasePluginInterface
 {
 	public:
 	// Constructor
-	FilePluginInterface() : ListItem<FilePluginInterface>(), fileParser_(lineParser_)
+	FilePluginInterface() : fileParser_(lineParser_)
 	{
 		// Import / Export
 		nDataParts_ = 0;
@@ -212,45 +212,33 @@ class FilePluginInterface : public BasePluginInterface, public ListItem<FilePlug
 
 
 	/*
-	 * Core
+	 * Instance Handling
 	 */
 	private:
-	// Object store for plugin instances
-	List<FilePluginInterface> instances_;
-	// Core LineParser object
-	LineParser lineParser_;
-
-	private:
-	// Return a copy of the plugin object
-	virtual FilePluginInterface* makeCopy() = 0;
+	// Return a copy of the plugin object (provided by main plugin)
+	virtual BasePluginInterface* makeCopy() = 0;
 	// Return a duplicate of the plugin object, including options etc.
-	virtual FilePluginInterface* duplicate()
+	BasePluginInterface* duplicate()
 	{
-		FilePluginInterface* copy = makeCopy();
+		FilePluginInterface* copy = (FilePluginInterface*) makeCopy();
 		copy->setStandardOptions(standardOptions_);
 		copy->setOptions(pluginOptions_);
 		return copy;
 	}
 
 
+	/*
+	 * File Handling
+	 */
+	private:
+	// Core LineParser object
+	LineParser lineParser_;
+
 	protected:
 	// File parser object, associated to LineParser
 	FileParser fileParser_;
 
 	public:
-	// Return instance of plugin
-	FilePluginInterface* createInstance()
-	{
-		// Create a copy with duplicate(), and add it to the instances list
-		FilePluginInterface* pluginInstance = duplicate();
-		instances_.own(pluginInstance);
-		return pluginInstance;
-	}
-	// Delete all instances of plugin
-	void deleteInstances()
-	{
-		instances_.clear();
-	}
 	// Open specified file for input
 	bool openInput(QString filename)
 	{

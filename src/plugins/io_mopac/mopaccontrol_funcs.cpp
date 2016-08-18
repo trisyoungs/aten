@@ -46,11 +46,11 @@ MOPACControlModelPlugin::~MOPACControlModelPlugin()
 }
 
 /*
- * Core
+ * Instance Handling
  */
 
 // Return a copy of the plugin object
-FilePluginInterface* MOPACControlModelPlugin::makeCopy()
+BasePluginInterface* MOPACControlModelPlugin::makeCopy()
 {
 	return new MOPACControlModelPlugin;
 }

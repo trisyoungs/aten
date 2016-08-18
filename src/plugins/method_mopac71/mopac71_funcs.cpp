@@ -35,6 +35,15 @@ MOPAC71MethodPlugin::~MOPAC71MethodPlugin()
 }
 
 /*
+ * Instance Handling
+ */
+// Return a copy of the plugin object
+BasePluginInterface* MOPAC71MethodPlugin::makeCopy()
+{
+	return new MOPAC71MethodPlugin;
+}
+
+/*
  * Definition
  */
 
@@ -47,13 +56,13 @@ PluginTypes::PluginType MOPAC71MethodPlugin::type() const
 // Return category of plugin
 int MOPAC71MethodPlugin::category() const
 {
-	return PluginTypes::OptimisationMethodPlugin;
+	return PluginTypes::GeneralMethodPlugin;
 }
 
 // Name of plugin
 QString MOPAC71MethodPlugin::name() const
 {
-	return QString("MOPAC7 Plugin");
+	return QString("MOPAC7.1 Plugin");
 }
 
 // Nickname of plugin
@@ -65,7 +74,7 @@ QString MOPAC71MethodPlugin::nickname() const
 // Description (long name) of plugin
 QString MOPAC71MethodPlugin::description() const
 {
-	return QString("MOPAC7 functionality (v7.1 public domain version)");
+	return QString("MOPAC functionality (v7.1 public domain version)");
 }
 
 /*

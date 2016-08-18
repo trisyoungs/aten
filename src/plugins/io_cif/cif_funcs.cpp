@@ -34,11 +34,11 @@ CIFModelPlugin::~CIFModelPlugin()
 }
 
 /*
- * Core
+ * Instance Handling
  */
 
 // Return a copy of the plugin object
-FilePluginInterface* CIFModelPlugin::makeCopy()
+BasePluginInterface* CIFModelPlugin::makeCopy()
 {
 	return new CIFModelPlugin;
 }

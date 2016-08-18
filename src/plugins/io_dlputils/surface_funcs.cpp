@@ -33,11 +33,11 @@ SurfaceGridPlugin::~SurfaceGridPlugin()
 }
 
 /*
- * Core
+ * Instance Handling
  */
 
 // Return a copy of the plugin object
-FilePluginInterface* SurfaceGridPlugin::makeCopy()
+BasePluginInterface* SurfaceGridPlugin::makeCopy()
 {
 	return new SurfaceGridPlugin;
 }

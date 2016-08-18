@@ -33,11 +33,11 @@ GaussianModelPlugin::~GaussianModelPlugin()
 }
 
 /*
- * Core
+ * Instance Handling
  */
 
 // Return a copy of the plugin object
-FilePluginInterface* GaussianModelPlugin::makeCopy()
+BasePluginInterface* GaussianModelPlugin::makeCopy()
 {
 	return new GaussianModelPlugin;
 }

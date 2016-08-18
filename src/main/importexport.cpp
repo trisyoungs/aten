@@ -132,7 +132,7 @@ bool Aten::importModel(QString filename, FilePluginInterface* plugin, FilePlugin
 	if (plugin != NULL)
 	{
 		// Create an instance of the plugin, and open an input file and set options
-		FilePluginInterface* pluginInterface = plugin->createInstance();
+		FilePluginInterface* pluginInterface = (FilePluginInterface*) plugin->createInstance();
 		pluginInterface->setStandardOptions(standardOptions);
 		pluginInterface->setOptions(pluginOptions);
 		if (!pluginInterface->openInput(filename))
@@ -196,7 +196,7 @@ bool Aten::exportModel(Model* sourceModel, QString filename, FilePluginInterface
 		if (nTypeExportMappings() > 0) typeExportMapping_ = true;
 
 		// Create an instance of the plugin, and set options and the output file
-		FilePluginInterface* pluginInterface = plugin->createInstance();
+		FilePluginInterface* pluginInterface = (FilePluginInterface*) plugin->createInstance();
 		if (!pluginInterface->openOutput(filename))
 		{
 			Messenger::exit("Aten::exportModel");
@@ -252,7 +252,7 @@ bool Aten::importGrid(Model* targetModel, QString filename, FilePluginInterface*
 	if (plugin == NULL) plugin = pluginStore_.findFilePlugin(PluginTypes::GridFilePlugin, PluginTypes::ImportPlugin, filename);
 	if (plugin != NULL)
 	{
-		FilePluginInterface* pluginInterface = plugin->createInstance();
+		FilePluginInterface* pluginInterface = (FilePluginInterface*) plugin->createInstance();
 		if (!pluginInterface->openInput(filename))
 		{
 			Messenger::exit("Aten::importGrid");
@@ -293,7 +293,7 @@ bool Aten::importTrajectory(Model* targetModel, QString filename, FilePluginInte
 	if (plugin == NULL) plugin = pluginStore_.findFilePlugin(PluginTypes::TrajectoryFilePlugin, PluginTypes::ImportPlugin, filename);
 	if (plugin != NULL)
 	{
-		FilePluginInterface* pluginInterface = plugin->createInstance();
+		FilePluginInterface* pluginInterface = (FilePluginInterface*) plugin->createInstance();
 		if (!pluginInterface->openInput(filename))
 		{
 			Messenger::exit("Aten::importTrajectory");
@@ -346,7 +346,7 @@ bool Aten::importExpression(QString fileName, FilePluginInterface* plugin, FileP
 			return false;
 		}
 
-		FilePluginInterface* pluginInterface = plugin->createInstance();
+		FilePluginInterface* pluginInterface = (FilePluginInterface*) plugin->createInstance();
 		pluginInterface->setStandardOptions(standardOptions);
 		pluginInterface->setOptions(pluginOptions);
 		FileParser fileParser(parser);

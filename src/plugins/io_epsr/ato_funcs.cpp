@@ -33,11 +33,11 @@ EPSRAtoModelPlugin::~EPSRAtoModelPlugin()
 }
 
 /*
- * Core
+ * Instance Handling
  */
 
 // Return a copy of the plugin object
-FilePluginInterface* EPSRAtoModelPlugin::makeCopy()
+BasePluginInterface* EPSRAtoModelPlugin::makeCopy()
 {
 	return new EPSRAtoModelPlugin;
 }

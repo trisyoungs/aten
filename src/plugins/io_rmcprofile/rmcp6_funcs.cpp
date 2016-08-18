@@ -38,11 +38,11 @@ RMCProfile6ModelPlugin::~RMCProfile6ModelPlugin()
 }
 
 /*
- * Core
+ * Instance Handling
  */
 
 // Return a copy of the plugin object
-FilePluginInterface* RMCProfile6ModelPlugin::makeCopy()
+BasePluginInterface* RMCProfile6ModelPlugin::makeCopy()
 {
 	return new RMCProfile6ModelPlugin;
 }

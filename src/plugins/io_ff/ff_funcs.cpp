@@ -34,11 +34,11 @@ AtenExpressionPlugin::~AtenExpressionPlugin()
 }
 
 /*
- * Core
+ * Instance Handling
  */
 
 // Return a copy of the plugin object
-FilePluginInterface* AtenExpressionPlugin::makeCopy()
+BasePluginInterface* AtenExpressionPlugin::makeCopy()
 {
 	return new AtenExpressionPlugin;
 }

@@ -75,11 +75,11 @@ AKFModelPlugin::~AKFModelPlugin()
 }
 
 /*
- * Core
+ * Instance Handling
  */
 
 // Return a copy of the plugin object
-FilePluginInterface* AKFModelPlugin::makeCopy()
+BasePluginInterface* AKFModelPlugin::makeCopy()
 {
 	return new AKFModelPlugin;
 }

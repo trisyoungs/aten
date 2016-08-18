@@ -44,15 +44,30 @@ ATEN_BEGIN_NAMESPACE
 class Model;
 
 // Method Plugin Interface
-class MethodPluginInterface : public BasePluginInterface, public ListItem<MethodPluginInterface>
+class MethodPluginInterface : public BasePluginInterface
 {
 	public:
 	// Constructor
-	MethodPluginInterface() : ListItem<MethodPluginInterface>()
+	MethodPluginInterface()
 	{
 	}
 	// Destructor
 	virtual ~MethodPluginInterface() {}
+
+
+	/*
+	 * Instance Handlind
+	 */
+	private:
+	// Return a copy of the plugin object (provided by main plugin)
+	virtual BasePluginInterface* makeCopy() = 0;
+	// Return a duplicate of the plugin object, including options etc.
+	BasePluginInterface* duplicate()
+	{
+		MethodPluginInterface* copy = (MethodPluginInterface*) makeCopy();
+		copy->setOptions(pluginOptions_);
+		return copy;
+	}
 
 
 	/*

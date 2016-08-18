@@ -25,6 +25,7 @@
 #include "plugins/plugintypes.h"
 #include "model/model.h"
 #include "base/kvmap.h"
+#include "templates/list.h"
 #include <QStringList>
 
 ATEN_BEGIN_NAMESPACE
@@ -33,11 +34,11 @@ ATEN_BEGIN_NAMESPACE
 /* none */
 
 // Base Plugin Interface
-class BasePluginInterface
+class BasePluginInterface : public ListItem<BasePluginInterface>
 {
 	public:
 	// Constructor
-	BasePluginInterface()
+	BasePluginInterface() : ListItem<BasePluginInterface>()
 	{
 	}
 	// Destructor
@@ -45,7 +46,7 @@ class BasePluginInterface
 
 
 	/*
-	 * Basic Definition
+	 * Definition
 	 */
 	private:
 	// Original filename for plugin
@@ -72,6 +73,33 @@ class BasePluginInterface
 	virtual QString description() const = 0;
 	// Return nickname of plugin
 	virtual QString nickname() const = 0;
+
+
+	/*
+	 * Instance Handling
+	 */
+	private:
+	// Object store for plugin instances
+	List<BasePluginInterface> instances_;
+	// Return a copy of the plugin object
+	virtual BasePluginInterface* makeCopy() = 0;
+	// Return a duplicate of the plugin object, including options etc.
+	virtual BasePluginInterface* duplicate() = 0;
+
+	public:
+	// Return instance of plugin
+	BasePluginInterface* createInstance()
+	{
+		// Create a copy with duplicate(), and add it to the instances list
+		BasePluginInterface* pluginInstance = duplicate();
+		instances_.own(pluginInstance);
+		return pluginInstance;
+	}
+	// Delete all instances of plugin
+	void deleteInstances()
+	{
+		instances_.clear();
+	}
 
 
 	/*

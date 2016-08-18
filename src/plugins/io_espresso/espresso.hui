@@ -37,16 +37,19 @@ class QuantumEspressoModelPlugin : public QObject, public FilePluginInterface
 	Q_INTERFACES(AtenSpace::FilePluginInterface)
 
 
-	/*
-	 * Core
-	 */
 	public:
 	// Constructor
 	QuantumEspressoModelPlugin();
 	// Destructor
 	~QuantumEspressoModelPlugin();
+
+
+	/*
+	 * Instance Handling
+	 */
+	private:
 	// Return a copy of the plugin object
-	FilePluginInterface* makeCopy();
+	BasePluginInterface* makeCopy();
 
 
 	/*

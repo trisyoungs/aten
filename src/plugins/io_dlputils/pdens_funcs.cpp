@@ -33,11 +33,11 @@ PDensGridPlugin::~PDensGridPlugin()
 }
 
 /*
- * Core
+ * Instance Handling
  */
 
 // Return a copy of the plugin object
-FilePluginInterface* PDensGridPlugin::makeCopy()
+BasePluginInterface* PDensGridPlugin::makeCopy()
 {
 	return new PDensGridPlugin;
 }

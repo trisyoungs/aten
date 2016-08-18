@@ -37,6 +37,16 @@ MOPAC71OptimisationPlugin::~MOPAC71OptimisationPlugin()
 }
 
 /*
+ * Instance Handling
+ */
+
+// Return a copy of the plugin object
+BasePluginInterface* MOPAC71OptimisationPlugin::makeCopy()
+{
+	return new MOPAC71OptimisationPlugin;
+}
+
+/*
  * Definition
  */
 
@@ -55,7 +65,7 @@ int MOPAC71OptimisationPlugin::category() const
 // Name of plugin
 QString MOPAC71OptimisationPlugin::name() const
 {
-	return QString("MOPAC7.1 Optimisation Plugin");
+	return QString("MOPAC7.1 Optimiser");
 }
 
 // Nickname of plugin
@@ -67,7 +77,7 @@ QString MOPAC71OptimisationPlugin::nickname() const
 // Description (long name) of plugin
 QString MOPAC71OptimisationPlugin::description() const
 {
-	return QString("MOPAC7.1 geometry optimiser (v7.1 public domain version)");
+	return QString("MOPAC geometry ooooptimiser (v7.1 public domain version)");
 }
 
 /*

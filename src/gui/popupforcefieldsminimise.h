@@ -71,7 +71,7 @@ class ForcefieldsMinimisePopup : public TPopupWidget
 	 */
 	public:
 	// Minimisation algorithms
-	enum MinimiserMethod { SimpleSteepestMethod, SteepestMethod, ConjugateMethod, MonteCarloMethod, MopacMethod, nMinimiserMethods };
+	enum MinimiserMethod { SimpleSteepestMethod, SteepestMethod, ConjugateMethod, MonteCarloMethod, nMinimiserMethods };
 
 	private slots:
 };

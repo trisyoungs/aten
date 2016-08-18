@@ -39,11 +39,11 @@ XYZModelPlugin::~XYZModelPlugin()
 }
 
 /*
- * Core
+ * Instance Handling
  */
 
 // Return a copy of the plugin object
-FilePluginInterface* XYZModelPlugin::makeCopy()
+BasePluginInterface* XYZModelPlugin::makeCopy()
 {
 	return new XYZModelPlugin;
 }

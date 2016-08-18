@@ -33,11 +33,11 @@ SiestaModelPlugin::~SiestaModelPlugin()
 }
 
 /*
- * Core
+ * Instance Handling
  */
 
 // Return a copy of the plugin object
-FilePluginInterface* SiestaModelPlugin::makeCopy()
+BasePluginInterface* SiestaModelPlugin::makeCopy()
 {
 	return new SiestaModelPlugin;
 }

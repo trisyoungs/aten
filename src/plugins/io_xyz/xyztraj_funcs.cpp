@@ -36,11 +36,11 @@ XYZTrajectoryPlugin::~XYZTrajectoryPlugin()
 }
 
 /*
- * Core
+ * Instance Handling
  */
 
 // Return a copy of the plugin object
-FilePluginInterface* XYZTrajectoryPlugin::makeCopy()
+BasePluginInterface* XYZTrajectoryPlugin::makeCopy()
 {
 	return new XYZTrajectoryPlugin;
 }

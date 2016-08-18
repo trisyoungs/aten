@@ -24,6 +24,7 @@
 #include "gui/mainwindow.h"
 #include "base/namespace.h"
 #include "command/commands.h"
+#include "templates/variantpointer.h"
 
 ATEN_USING_NAMESPACE
 
@@ -43,9 +44,29 @@ ForcefieldsMinimisePopup::ForcefieldsMinimisePopup(AtenWindow& parent, TMenuButt
 // Update controls (before show()) (virtual)
 void ForcefieldsMinimisePopup::updateControls()
 {
-	refreshing_ = true;
+	// We want the stack page to change when the combo index changes, so don't set the refreshing_ flag
+// 	refreshing_ = true;
 
-	refreshing_ = false;
+	// Get currently-selected method (if any)
+	int currentMethod = ui.MethodCombo->currentIndex();
+
+	// Clear and repopulate the MethodCombo
+	ui.MethodCombo->clear();
+	ui.MethodCombo->addItem("Steepest Descent (Simple)");
+	ui.MethodCombo->addItem("Steepest Descent (Line Minimised)");
+	ui.MethodCombo->addItem("Conjugate Gradient");
+	ui.MethodCombo->addItem("Monte Carlo (Molecular)");
+
+	// Query plugin store to see if there are any optimisation method plugins to add to the list
+	const RefList<MethodPluginInterface,int>& optimisationPlugins = parent_.aten().pluginStore().methodPlugins(PluginTypes::OptimisationMethodPlugin);
+	for (RefListItem<MethodPluginInterface,int>* ri = optimisationPlugins.first(); ri != NULL; ri = ri->next)
+	{
+		MethodPluginInterface* plugin = ri->item;
+
+		ui.MethodCombo->addItem(plugin->name(), VariantPointer<MethodPluginInterface>(plugin));
+	}
+
+// 	refreshing_ = false;
 }
 
 // Call named method associated to popup
@@ -60,7 +81,7 @@ bool ForcefieldsMinimisePopup::callMethod(QString methodName, ReturnValue& rv)
 	else if (methodName == "minimise")
 	{
 		// Perform the minimisation according to the selected method
-		QString mopacOptions;
+		MethodPluginInterface* plugin;
 		switch (ui.MethodCombo->currentIndex())
 		{
 			case (SimpleSteepestMethod):
@@ -75,11 +96,17 @@ bool ForcefieldsMinimisePopup::callMethod(QString methodName, ReturnValue& rv)
 			case (MonteCarloMethod):
 				CommandNode::run(Commands::MCMinimise, "i", ui.MaxCyclesSpin->value());
 				break;
-			case (MopacMethod):
-				// Construct command string from GUI widget options
-				mopacOptions = QString("BFGS %1 %2 %3 CHARGE=%4").arg(ui.MopacHFCombo->currentText(), ui.MopacHamiltonianCombo->currentText(), ui.MopacSpinCombo->currentText()).arg(ui.MopacChargeSpin->value());
-				if (ui.MopacMozymeCheck->isChecked()) mopacOptions += " MOZYME";
-				CommandNode::run(Commands::MopacMinimise, "c", qPrintable(mopacOptions));
+			default:
+				// An optimisation plugin - get the pointer to its class...
+				plugin = VariantPointer<MethodPluginInterface>(ui.MethodCombo->currentData());
+				if (!plugin)
+				{
+					printf("Couldn't cast data into MethodPluginInterface.\n");
+					return false;
+				}
+				plugin = (MethodPluginInterface*) plugin->createInstance();
+				plugin->setTargetModel(parent_.aten().currentModelOrFrame());
+				plugin->executeMethod();
 				break;
 		}
 

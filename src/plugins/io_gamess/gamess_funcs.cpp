@@ -33,11 +33,11 @@ GAMESSModelPlugin::~GAMESSModelPlugin()
 }
 
 /*
- * Core
+ * Instance Handling
  */
 
 // Return a copy of the plugin object
-FilePluginInterface* GAMESSModelPlugin::makeCopy()
+BasePluginInterface* GAMESSModelPlugin::makeCopy()
 {
 	return new GAMESSModelPlugin;
 }

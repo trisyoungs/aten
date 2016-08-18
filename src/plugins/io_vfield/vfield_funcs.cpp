@@ -33,11 +33,11 @@ VFieldModelPlugin::~VFieldModelPlugin()
 }
 
 /*
- * Core
+ * Instance Handling
  */
 
 // Return a copy of the plugin object
-FilePluginInterface* VFieldModelPlugin::makeCopy()
+BasePluginInterface* VFieldModelPlugin::makeCopy()
 {
 	return new VFieldModelPlugin;
 }
