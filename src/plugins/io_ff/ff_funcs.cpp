@@ -38,7 +38,7 @@ AtenExpressionPlugin::~AtenExpressionPlugin()
  */
 
 // Return a copy of the plugin object
-BasePluginInterface* AtenExpressionPlugin::makeCopy()
+BasePluginInterface* AtenExpressionPlugin::makeCopy() const
 {
 	return new AtenExpressionPlugin;
 }
@@ -94,7 +94,7 @@ QStringList AtenExpressionPlugin::exactNames() const
  */
 
 // Return whether this plugin can import data
-bool AtenExpressionPlugin::canImport()
+bool AtenExpressionPlugin::canImport() const
 {
 	return false;
 }
@@ -106,7 +106,7 @@ bool AtenExpressionPlugin::importData()
 }
 
 // Return whether this plugin can export data
-bool AtenExpressionPlugin::canExport()
+bool AtenExpressionPlugin::canExport() const
 {
 	return true;
 }
@@ -285,25 +285,25 @@ bool AtenExpressionPlugin::skipNextPart()
  */
 
 // Return whether the plugin has import options
-bool AtenExpressionPlugin::hasImportOptions()
+bool AtenExpressionPlugin::hasImportOptions() const
 {
 	return false;
 }
 
 // Show import options dialog
-bool AtenExpressionPlugin::showImportOptionsDialog()
+bool AtenExpressionPlugin::showImportOptionsDialog(KVMap& targetOptions) const
 {
 	return false;
 }
 
 // Return whether the plugin has export options
-bool AtenExpressionPlugin::hasExportOptions()
+bool AtenExpressionPlugin::hasExportOptions() const
 {
 	return false;
 }
 
 // Show export options dialog
-bool AtenExpressionPlugin::showExportOptionsDialog()
+bool AtenExpressionPlugin::showExportOptionsDialog(KVMap& targetOptions) const
 {
 	return false;
 }

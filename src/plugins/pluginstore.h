@@ -59,15 +59,13 @@ class PluginStore
 	 */
 	private:
 	// List of file plugin objects (by category)
-	RefList<FilePluginInterface,int> filePlugins_[PluginTypes::nFilePluginCategories];
+	RefList<FilePluginInterface,KVMap> filePlugins_[PluginTypes::nFilePluginCategories];
 
 	public:
 	// Register file plugin
 	bool registerFilePlugin(FilePluginInterface* plugin);
-	// Empty (delete) all plugins and plugin instances
-	void clearFilePlugins();
 	// Return reference list of file plugins of specified category
-	const RefList<FilePluginInterface,int>& filePlugins(PluginTypes::FilePluginCategory category) const;
+	const RefList<FilePluginInterface,KVMap>& filePlugins(PluginTypes::FilePluginCategory category) const;
 	// Return number of plugins of specified category and type
 	int nFilePlugins(PluginTypes::FilePluginCategory category, PluginTypes::FilePluginType type) const;
 	// Return total number of file plugins available
@@ -77,9 +75,9 @@ class PluginStore
 	// Show all file plugins, by category, and their nicknames
 	void showAllFilePluginNicknames() const;
 	// Find plugin interface for specified file
-	FilePluginInterface* findFilePlugin(PluginTypes::FilePluginCategory category, PluginTypes::FilePluginType type, QString filename) const;
+	const FilePluginInterface* findFilePlugin(PluginTypes::FilePluginCategory category, PluginTypes::FilePluginType type, QString filename) const;
 	// Find plugin interface by nickname
-	FilePluginInterface* findFilePluginByNickname(PluginTypes::FilePluginCategory category, PluginTypes::FilePluginType type, QString nickname) const;
+	const FilePluginInterface* findFilePluginByNickname(PluginTypes::FilePluginCategory category, PluginTypes::FilePluginType type, QString nickname) const;
 
 
 	/*
@@ -87,15 +85,13 @@ class PluginStore
 	 */
 	private:
 	// List of method plugin objects (by category)
-	RefList<MethodPluginInterface,int> methodPlugins_[PluginTypes::nMethodPluginCategories];
+	RefList<MethodPluginInterface,KVMap> methodPlugins_[PluginTypes::nMethodPluginCategories];
 
 	public:
 	// Register method plugin
 	bool registerMethodPlugin(MethodPluginInterface* plugin);
-	// Empty (delete) all method plugins
-	void clearMethodPlugins();
 	// Return reference list of file plugins of specified category
-	const RefList<MethodPluginInterface,int>& methodPlugins(PluginTypes::MethodPluginCategory category) const;
+	const RefList<MethodPluginInterface,KVMap>& methodPlugins(PluginTypes::MethodPluginCategory category) const;
 	// Return number of method plugins of specified category
 	int nMethodPlugins(PluginTypes::MethodPluginCategory category) const;
 	// Return total number of file plugins available

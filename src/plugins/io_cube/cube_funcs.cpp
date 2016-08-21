@@ -37,7 +37,7 @@ CUBEModelPlugin::~CUBEModelPlugin()
  */
 
 // Return a copy of the plugin object
-BasePluginInterface* CUBEModelPlugin::makeCopy()
+BasePluginInterface* CUBEModelPlugin::makeCopy() const
 {
 	return new CUBEModelPlugin;
 }
@@ -93,7 +93,7 @@ QStringList CUBEModelPlugin::exactNames() const
  */
 
 // Return whether this plugin can import data
-bool CUBEModelPlugin::canImport()
+bool CUBEModelPlugin::canImport() const
 {
 	return true;
 }
@@ -207,7 +207,7 @@ bool CUBEModelPlugin::importData()
 }
 
 // Return whether this plugin can export data
-bool CUBEModelPlugin::canExport()
+bool CUBEModelPlugin::canExport() const
 {
 	return false;
 }
@@ -235,25 +235,25 @@ bool CUBEModelPlugin::skipNextPart()
  */
 
 // Return whether the plugin has import options
-bool CUBEModelPlugin::hasImportOptions()
+bool CUBEModelPlugin::hasImportOptions() const
 {
 	return false;
 }
 
 // Show import options dialog
-bool CUBEModelPlugin::showImportOptionsDialog()
+bool CUBEModelPlugin::showImportOptionsDialog(KVMap& targetOptions) const
 {
 	return false;
 }
 
 // Return whether the plugin has export options
-bool CUBEModelPlugin::hasExportOptions()
+bool CUBEModelPlugin::hasExportOptions() const
 {
 	return false;
 }
 
 // Show export options dialog
-bool CUBEModelPlugin::showExportOptionsDialog()
+bool CUBEModelPlugin::showExportOptionsDialog(KVMap& targetOptions) const
 {
 	return false;
 }

@@ -49,7 +49,7 @@ class SurfaceGridPlugin : public QObject, public FilePluginInterface
 	 */
 	private:
 	// Return a copy of the plugin object
-	BasePluginInterface* makeCopy();
+	BasePluginInterface* makeCopy() const;
 
 
 	/*
@@ -77,11 +77,11 @@ class SurfaceGridPlugin : public QObject, public FilePluginInterface
 	 */
 	public:
 	// Return whether this plugin can import data
-	bool canImport();
+	bool canImport() const;
 	// Import data via the supplied parser
 	bool importData();
 	// Return whether this plugin can export data
-	bool canExport();
+	bool canExport() const;
 	// Export data via the supplied parser
 	bool exportData();
 	// Import next partial data chunk
@@ -95,13 +95,13 @@ class SurfaceGridPlugin : public QObject, public FilePluginInterface
 	 */
 	public:
 	// Return whether the plugin has import options
-	bool hasImportOptions();
+	bool hasImportOptions() const;
 	// Show import options dialog
-	bool showImportOptionsDialog();
+	bool showImportOptionsDialog(KVMap& targetOptions) const;
 	// Return whether the plugin has export options
-	bool hasExportOptions();
+	bool hasExportOptions() const;
 	// Show export options dialog
-	bool showExportOptionsDialog();
+	bool showExportOptionsDialog(KVMap& targetOptions) const;
 };
 
 ATEN_END_NAMESPACE

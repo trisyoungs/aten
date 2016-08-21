@@ -49,7 +49,7 @@ class MOPAC71MethodPlugin : public QObject, public MethodPluginInterface
 	 */
 	private:
 	// Return a copy of the plugin object
-	BasePluginInterface* makeCopy();
+	BasePluginInterface* makeCopy() const;
 
 
 	/*

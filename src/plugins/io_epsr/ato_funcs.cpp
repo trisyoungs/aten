@@ -37,7 +37,7 @@ EPSRAtoModelPlugin::~EPSRAtoModelPlugin()
  */
 
 // Return a copy of the plugin object
-BasePluginInterface* EPSRAtoModelPlugin::makeCopy()
+BasePluginInterface* EPSRAtoModelPlugin::makeCopy() const
 {
 	return new EPSRAtoModelPlugin;
 }
@@ -93,7 +93,7 @@ QStringList EPSRAtoModelPlugin::exactNames() const
  */
 
 // Return whether this plugin can import data
-bool EPSRAtoModelPlugin::canImport()
+bool EPSRAtoModelPlugin::canImport() const
 {
 	return true;
 }
@@ -545,7 +545,7 @@ bool EPSRAtoModelPlugin::importData()
 }
 
 // Return whether this plugin can export data
-bool EPSRAtoModelPlugin::canExport()
+bool EPSRAtoModelPlugin::canExport() const
 {
 	return false;
 }
@@ -573,25 +573,25 @@ bool EPSRAtoModelPlugin::skipNextPart()
  */
 
 // Return whether the plugin has import options
-bool EPSRAtoModelPlugin::hasImportOptions()
+bool EPSRAtoModelPlugin::hasImportOptions() const
 {
 	return false;
 }
 
 // Show import options dialog
-bool EPSRAtoModelPlugin::showImportOptionsDialog()
+bool EPSRAtoModelPlugin::showImportOptionsDialog(KVMap& targetOptions) const
 {
 	return false;
 }
 
 // Return whether the plugin has export options
-bool EPSRAtoModelPlugin::hasExportOptions()
+bool EPSRAtoModelPlugin::hasExportOptions() const
 {
 	return false;
 }
 
 // Show export options dialog
-bool EPSRAtoModelPlugin::showExportOptionsDialog()
+bool EPSRAtoModelPlugin::showExportOptionsDialog(KVMap& targetOptions) const
 {
 	return false;
 }

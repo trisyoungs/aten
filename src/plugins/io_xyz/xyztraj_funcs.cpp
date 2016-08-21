@@ -40,7 +40,7 @@ XYZTrajectoryPlugin::~XYZTrajectoryPlugin()
  */
 
 // Return a copy of the plugin object
-BasePluginInterface* XYZTrajectoryPlugin::makeCopy()
+BasePluginInterface* XYZTrajectoryPlugin::makeCopy() const
 {
 	return new XYZTrajectoryPlugin;
 }
@@ -96,7 +96,7 @@ QStringList XYZTrajectoryPlugin::exactNames() const
  */
 
 // Return whether this plugin can import data
-bool XYZTrajectoryPlugin::canImport()
+bool XYZTrajectoryPlugin::canImport() const
 {
 	return true;
 }
@@ -140,7 +140,7 @@ bool XYZTrajectoryPlugin::importData()
 }
 
 // Return whether this plugin can export data
-bool XYZTrajectoryPlugin::canExport()
+bool XYZTrajectoryPlugin::canExport() const
 {
 	return false;
 }
@@ -168,25 +168,25 @@ bool XYZTrajectoryPlugin::skipNextPart()
  */
 
 // Return whether the plugin has import options
-bool XYZTrajectoryPlugin::hasImportOptions()
+bool XYZTrajectoryPlugin::hasImportOptions() const
 {
 	return false;
 }
 
 // Show import options dialog
-bool XYZTrajectoryPlugin::showImportOptionsDialog()
+bool XYZTrajectoryPlugin::showImportOptionsDialog(KVMap& targetOptions) const
 {
 	return false;
 }
 
 // Return whether the plugin has export options
-bool XYZTrajectoryPlugin::hasExportOptions()
+bool XYZTrajectoryPlugin::hasExportOptions() const
 {
 	return false;
 }
 
 // Show export options dialog
-bool XYZTrajectoryPlugin::showExportOptionsDialog()
+bool XYZTrajectoryPlugin::showExportOptionsDialog(KVMap& targetOptions) const
 {
 	return false;
 }

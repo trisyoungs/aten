@@ -37,7 +37,7 @@ GAMESSModelPlugin::~GAMESSModelPlugin()
  */
 
 // Return a copy of the plugin object
-BasePluginInterface* GAMESSModelPlugin::makeCopy()
+BasePluginInterface* GAMESSModelPlugin::makeCopy() const
 {
 	return new GAMESSModelPlugin;
 }
@@ -93,7 +93,7 @@ QStringList GAMESSModelPlugin::exactNames() const
  */
 
 // Return whether this plugin can import data
-bool GAMESSModelPlugin::canImport()
+bool GAMESSModelPlugin::canImport() const
 {
 	return true;
 }
@@ -729,7 +729,7 @@ bool GAMESSModelPlugin::importData()
 }
 
 // Return whether this plugin can export data
-bool GAMESSModelPlugin::canExport()
+bool GAMESSModelPlugin::canExport() const
 {
 	return false;
 }
@@ -757,25 +757,25 @@ bool GAMESSModelPlugin::skipNextPart()
  */
 
 // Return whether the plugin has import options
-bool GAMESSModelPlugin::hasImportOptions()
+bool GAMESSModelPlugin::hasImportOptions() const
 {
 	return false;
 }
 
 // Show import options dialog
-bool GAMESSModelPlugin::showImportOptionsDialog()
+bool GAMESSModelPlugin::showImportOptionsDialog(KVMap& targetOptions) const
 {
 	return false;
 }
 
 // Return whether the plugin has export options
-bool GAMESSModelPlugin::hasExportOptions()
+bool GAMESSModelPlugin::hasExportOptions() const
 {
 	return false;
 }
 
 // Show export options dialog
-bool GAMESSModelPlugin::showExportOptionsDialog()
+bool GAMESSModelPlugin::showExportOptionsDialog(KVMap& targetOptions) const
 {
 	return false;
 }

@@ -48,6 +48,7 @@ bool Aten::loadPlugin(QString fileName)
 	if (filePlugin)
 	{
 		filePlugin->setPluginFilename(fileName);
+		filePlugin->setPluginStore(&pluginStore_);
 		pluginStore_.registerFilePlugin(filePlugin);
 		return true;
 	}
@@ -57,6 +58,7 @@ bool Aten::loadPlugin(QString fileName)
 	if (methodPlugin)
 	{
 		methodPlugin->setPluginFilename(fileName);
+		methodPlugin->setPluginStore(&pluginStore_);
 		pluginStore_.registerMethodPlugin(methodPlugin);
 		return true;
 	}

@@ -96,7 +96,7 @@ void Aten::processImportedObjects(FilePluginInterface* plugin, QString filename)
 }
 
 // Import model (if it is not loaded already)
-bool Aten::importModel(QString filename, FilePluginInterface* plugin, FilePluginStandardImportOptions standardOptions, KVMap pluginOptions)
+bool Aten::importModel(QString filename, const FilePluginInterface* plugin, FilePluginStandardImportOptions standardOptions, KVMap pluginOptions)
 {
 	Messenger::enter("Aten::importModel");
 
@@ -132,7 +132,7 @@ bool Aten::importModel(QString filename, FilePluginInterface* plugin, FilePlugin
 	if (plugin != NULL)
 	{
 		// Create an instance of the plugin, and open an input file and set options
-		FilePluginInterface* pluginInterface = (FilePluginInterface*) plugin->createInstance();
+		FilePluginInterface* pluginInterface = (FilePluginInterface*) plugin->duplicate();
 		pluginInterface->setStandardOptions(standardOptions);
 		pluginInterface->setOptions(pluginOptions);
 		if (!pluginInterface->openInput(filename))
@@ -166,7 +166,7 @@ bool Aten::importModel(QString filename, FilePluginInterface* plugin, FilePlugin
 }
 
 // Export model
-bool Aten::exportModel(Model* sourceModel, QString filename, FilePluginInterface* plugin, FilePluginStandardImportOptions standardOptions, KVMap pluginOptions)
+bool Aten::exportModel(Model* sourceModel, QString filename, const FilePluginInterface* plugin, FilePluginStandardImportOptions standardOptions, KVMap pluginOptions)
 {
 	Messenger::enter("Aten::exportModel");
 
@@ -196,7 +196,7 @@ bool Aten::exportModel(Model* sourceModel, QString filename, FilePluginInterface
 		if (nTypeExportMappings() > 0) typeExportMapping_ = true;
 
 		// Create an instance of the plugin, and set options and the output file
-		FilePluginInterface* pluginInterface = (FilePluginInterface*) plugin->createInstance();
+		FilePluginInterface* pluginInterface = (FilePluginInterface*) plugin->duplicate();
 		if (!pluginInterface->openOutput(filename))
 		{
 			Messenger::exit("Aten::exportModel");
@@ -243,7 +243,7 @@ bool Aten::exportModel(Model* sourceModel, QString filename, FilePluginInterface
 }
 
 // Import grid
-bool Aten::importGrid(Model* targetModel, QString filename, FilePluginInterface* plugin, FilePluginStandardImportOptions standardOptions, KVMap pluginOptions)
+bool Aten::importGrid(Model* targetModel, QString filename, const FilePluginInterface* plugin, FilePluginStandardImportOptions standardOptions, KVMap pluginOptions)
 {
 	Messenger::enter("Aten::importGrid");
 
@@ -252,7 +252,7 @@ bool Aten::importGrid(Model* targetModel, QString filename, FilePluginInterface*
 	if (plugin == NULL) plugin = pluginStore_.findFilePlugin(PluginTypes::GridFilePlugin, PluginTypes::ImportPlugin, filename);
 	if (plugin != NULL)
 	{
-		FilePluginInterface* pluginInterface = (FilePluginInterface*) plugin->createInstance();
+		FilePluginInterface* pluginInterface = (FilePluginInterface*) plugin->duplicate();
 		if (!pluginInterface->openInput(filename))
 		{
 			Messenger::exit("Aten::importGrid");
@@ -280,7 +280,7 @@ bool Aten::importGrid(Model* targetModel, QString filename, FilePluginInterface*
 }
 
 // Import trajectory
-bool Aten::importTrajectory(Model* targetModel, QString filename, FilePluginInterface* plugin, FilePluginStandardImportOptions standardOptions, KVMap pluginOptions)
+bool Aten::importTrajectory(Model* targetModel, QString filename, const FilePluginInterface* plugin, FilePluginStandardImportOptions standardOptions, KVMap pluginOptions)
 {
 	Messenger::enter("Aten::importTrajectory");
 
@@ -293,7 +293,7 @@ bool Aten::importTrajectory(Model* targetModel, QString filename, FilePluginInte
 	if (plugin == NULL) plugin = pluginStore_.findFilePlugin(PluginTypes::TrajectoryFilePlugin, PluginTypes::ImportPlugin, filename);
 	if (plugin != NULL)
 	{
-		FilePluginInterface* pluginInterface = (FilePluginInterface*) plugin->createInstance();
+		FilePluginInterface* pluginInterface = (FilePluginInterface*) plugin->duplicate();
 		if (!pluginInterface->openInput(filename))
 		{
 			Messenger::exit("Aten::importTrajectory");
@@ -327,26 +327,26 @@ bool Aten::importTrajectory(Model* targetModel, QString filename, FilePluginInte
 }
 
 // Import expression
-bool Aten::importExpression(QString fileName, FilePluginInterface* plugin, FilePluginStandardImportOptions standardOptions, KVMap pluginOptions)
+bool Aten::importExpression(QString filename, const FilePluginInterface* plugin, FilePluginStandardImportOptions standardOptions, KVMap pluginOptions)
 {
 	Messenger::enter("Aten::importExpression");
 
 	// If plugin == NULL then we must probe the file first to try and find out how to load it
 	bool result = false;
-	if (plugin == NULL) plugin = pluginStore_.findFilePlugin(PluginTypes::ExpressionFilePlugin, PluginTypes::ImportPlugin, fileName);
+	if (plugin == NULL) plugin = pluginStore_.findFilePlugin(PluginTypes::ExpressionFilePlugin, PluginTypes::ImportPlugin, filename);
 	if (plugin != NULL)
 	{
 		// Create a LineParser to open the file, and encapsulate it in a FileParser to give to the interface
 		LineParser parser;
-		parser.openInput(fileName);
+		parser.openInput(filename);
 		if (!parser.isFileGoodForReading())
 		{
-			Messenger::error("Couldn't open file '%s' for reading.\n", qPrintable(fileName));
+			Messenger::error("Couldn't open file '%s' for reading.\n", qPrintable(filename));
 			Messenger::exit("Aten::importExpression");
 			return false;
 		}
 
-		FilePluginInterface* pluginInterface = (FilePluginInterface*) plugin->createInstance();
+		FilePluginInterface* pluginInterface = (FilePluginInterface*) plugin->duplicate();
 		pluginInterface->setStandardOptions(standardOptions);
 		pluginInterface->setOptions(pluginOptions);
 		FileParser fileParser(parser);
@@ -357,14 +357,14 @@ bool Aten::importExpression(QString fileName, FilePluginInterface* plugin, FileP
 
 		parser.closeFiles();
 	}
-	else Messenger::error("Couldn't determine a suitable plugin to load the file '%s'.", qPrintable(fileName));
+	else Messenger::error("Couldn't determine a suitable plugin to load the file '%s'.", qPrintable(filename));
 
 	Messenger::exit("Aten::importExpression");
 	return result;
 }
 
 // Export expression
-bool Aten::exportExpression(Model* targetModel, QString filename, FilePluginInterface* plugin, FilePluginStandardImportOptions standardOptions, KVMap pluginOptions)
+bool Aten::exportExpression(Model* sourceModel, QString filename, const FilePluginInterface* plugin, FilePluginStandardImportOptions standardOptions, KVMap pluginOptions)
 {
 	// ATEN2 TODO ENDOFFILTERS
 	return true;

@@ -11,6 +11,7 @@ set(mopac71_MOC_HDRS
 QT5_WRAP_CPP(mopac71_MOC_SRCS ${mopac71_MOC_HDRS} OPTIONS -I${PROJECT_SOURCE_DIR}/src)
 
 add_library(mopac71method MODULE
+  common.cpp
   mopac71_funcs.cpp
   ${mopac71_MOC_SRCS}
 )
@@ -44,6 +45,7 @@ SET(mopac71control_UIS
 QT5_WRAP_UI(mopac71control_UIS_H ${mopac71control_UIS})
 
 add_library(mopac71control MODULE
+  common.cpp
   mopac71control_funcs.cpp
   controlexportoptions_funcs.cpp
   ${mopac71control_MOC_SRCS}
@@ -80,6 +82,7 @@ SET(mopac71opt_UIS
 QT5_WRAP_UI(mopac71opt_UIS_H ${mopac71opt_UIS})
 
 add_library(mopac71opt MODULE
+  common.cpp
   mopac71opt_funcs.cpp
   optoptions_funcs.cpp
   ${mopac71opt_MOC_SRCS}

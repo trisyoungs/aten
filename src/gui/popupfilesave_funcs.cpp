@@ -77,5 +77,10 @@ void FileSavePopup::on_OptionsButton_clicked(bool checked)
 	if (!currentModel) return;
 
 	if (currentModel->plugin() == NULL) Messenger::print("No plugin currently assigned to model '%s', so there are no export options.", qPrintable(currentModel->name()));
-	else currentModel->plugin()->showExportOptionsDialog();
+	else
+	{
+		// Get the current set of options from the plugin, then modify them using the options dialog in the plugin
+		KVMap pluginOptions = currentModel->plugin()->pluginOptions();
+		if (currentModel->plugin()->showExportOptionsDialog(pluginOptions)) currentModel->plugin()->setOptions(pluginOptions);
+	}
 }

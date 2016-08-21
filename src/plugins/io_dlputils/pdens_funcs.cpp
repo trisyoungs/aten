@@ -37,7 +37,7 @@ PDensGridPlugin::~PDensGridPlugin()
  */
 
 // Return a copy of the plugin object
-BasePluginInterface* PDensGridPlugin::makeCopy()
+BasePluginInterface* PDensGridPlugin::makeCopy() const
 {
 	return new PDensGridPlugin;
 }
@@ -93,7 +93,7 @@ QStringList PDensGridPlugin::exactNames() const
  */
 
 // Return whether this plugin can import data
-bool PDensGridPlugin::canImport()
+bool PDensGridPlugin::canImport() const
 {
 	return true;
 }
@@ -143,7 +143,7 @@ bool PDensGridPlugin::importData()
 }
 
 // Return whether this plugin can export data
-bool PDensGridPlugin::canExport()
+bool PDensGridPlugin::canExport() const
 {
 	return false;
 }
@@ -171,25 +171,25 @@ bool PDensGridPlugin::skipNextPart()
  */
 
 // Return whether the plugin has import options
-bool PDensGridPlugin::hasImportOptions()
+bool PDensGridPlugin::hasImportOptions() const
 {
 	return false;
 }
 
 // Show import options dialog
-bool PDensGridPlugin::showImportOptionsDialog()
+bool PDensGridPlugin::showImportOptionsDialog(KVMap& targetOptions) const
 {
 	return false;
 }
 
 // Return whether the plugin has export options
-bool PDensGridPlugin::hasExportOptions()
+bool PDensGridPlugin::hasExportOptions() const
 {
 	return false;
 }
 
 // Show export options dialog
-bool PDensGridPlugin::showExportOptionsDialog()
+bool PDensGridPlugin::showExportOptionsDialog(KVMap& targetOptions) const
 {
 	return false;
 }

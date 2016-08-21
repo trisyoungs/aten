@@ -60,11 +60,14 @@ class MethodPluginInterface : public BasePluginInterface
 	 */
 	private:
 	// Return a copy of the plugin object (provided by main plugin)
-	virtual BasePluginInterface* makeCopy() = 0;
+	virtual BasePluginInterface* makeCopy() const = 0;
+
+	public:
 	// Return a duplicate of the plugin object, including options etc.
-	BasePluginInterface* duplicate()
+	BasePluginInterface* duplicate() const
 	{
 		MethodPluginInterface* copy = (MethodPluginInterface*) makeCopy();
+		copy->setPluginStore(pluginStore_); 
 		copy->setOptions(pluginOptions_);
 		return copy;
 	}

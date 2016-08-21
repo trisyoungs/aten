@@ -198,7 +198,7 @@ bool Commands::function_LoadModel(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	parser.getArgsDelim(Parser::UseQuotes, c->argc(0));
 	
 	// First part of argument is nickname
-	FilePluginInterface* plugin = aten_.pluginStore().findFilePluginByNickname(PluginTypes::ModelFilePlugin, PluginTypes::ImportPlugin, parser.argc(0));
+	const FilePluginInterface* plugin = aten_.pluginStore().findFilePluginByNickname(PluginTypes::ModelFilePlugin, PluginTypes::ImportPlugin, parser.argc(0));
 
 	// Check that a suitable format was found
 	if (plugin == NULL)
@@ -314,7 +314,7 @@ bool Commands::function_SaveModel(CommandNode* c, Bundle& obj, ReturnValue& rv)
 	parser.getArgsDelim(Parser::UseQuotes, c->argc(0));
 
 	// First part of argument zero is nickname (followed by options)
-	FilePluginInterface* plugin = aten_.pluginStore().findFilePluginByNickname(PluginTypes::ModelFilePlugin, PluginTypes::ExportPlugin, parser.argc(0));
+	const FilePluginInterface* plugin = aten_.pluginStore().findFilePluginByNickname(PluginTypes::ModelFilePlugin, PluginTypes::ExportPlugin, parser.argc(0));
 	
 	// Check that a suitable plugin was found
 	if (plugin == NULL)
@@ -346,7 +346,7 @@ bool Commands::function_SaveSelection(CommandNode* c, Bundle& obj, ReturnValue& 
 	parser.getArgsDelim(Parser::UseQuotes, c->argc(0));
 
 	// First part of argument is nickname
-	FilePluginInterface* plugin = aten_.pluginStore().findFilePluginByNickname(PluginTypes::ModelFilePlugin, PluginTypes::ExportPlugin, parser.argc(0));
+	const FilePluginInterface* plugin = aten_.pluginStore().findFilePluginByNickname(PluginTypes::ModelFilePlugin, PluginTypes::ExportPlugin, parser.argc(0));
 	
 	// Check that a suitable plugin was found
 	if (plugin == NULL)

@@ -42,7 +42,7 @@ RMCProfile6ModelPlugin::~RMCProfile6ModelPlugin()
  */
 
 // Return a copy of the plugin object
-BasePluginInterface* RMCProfile6ModelPlugin::makeCopy()
+BasePluginInterface* RMCProfile6ModelPlugin::makeCopy() const
 {
 	return new RMCProfile6ModelPlugin;
 }
@@ -98,7 +98,7 @@ QStringList RMCProfile6ModelPlugin::exactNames() const
  */
 
 // Return whether this plugin can import data
-bool RMCProfile6ModelPlugin::canImport()
+bool RMCProfile6ModelPlugin::canImport() const
 {
 	return false;
 }
@@ -113,7 +113,7 @@ bool RMCProfile6ModelPlugin::importData()
 }
 
 // Return whether this plugin can export data
-bool RMCProfile6ModelPlugin::canExport()
+bool RMCProfile6ModelPlugin::canExport() const
 {
 	return false;
 }
@@ -141,13 +141,13 @@ bool RMCProfile6ModelPlugin::skipNextPart()
  */
 
 // Return whether the plugin has import options
-bool RMCProfile6ModelPlugin::hasImportOptions()
+bool RMCProfile6ModelPlugin::hasImportOptions() const
 {
 	return false;
 }
 
 // Show import options dialog
-bool RMCProfile6ModelPlugin::showImportOptionsDialog()
+bool RMCProfile6ModelPlugin::showImportOptionsDialog(KVMap& targetOptions) const
 {
 // 	RMCProfile6ImportOptionsDialog optionsDialog(pluginOptions_);
 
@@ -155,13 +155,13 @@ bool RMCProfile6ModelPlugin::showImportOptionsDialog()
 }
 
 // Return whether the plugin has export options
-bool RMCProfile6ModelPlugin::hasExportOptions()
+bool RMCProfile6ModelPlugin::hasExportOptions() const
 {
 	return false;
 }
 
 // Show export options dialog
-bool RMCProfile6ModelPlugin::showExportOptionsDialog()
+bool RMCProfile6ModelPlugin::showExportOptionsDialog(KVMap& targetOptions) const
 {
 // 	RMCProfile6ExportOptionsDialog optionsDialog(pluginOptions_);
 

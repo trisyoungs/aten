@@ -45,7 +45,7 @@ PDBModelPlugin::~PDBModelPlugin()
  */
 
 // Return a copy of the plugin object
-BasePluginInterface* PDBModelPlugin::makeCopy()
+BasePluginInterface* PDBModelPlugin::makeCopy() const
 {
 	return new PDBModelPlugin;
 }
@@ -101,7 +101,7 @@ QStringList PDBModelPlugin::exactNames() const
  */
 
 // Return whether this plugin can import data
-bool PDBModelPlugin::canImport()
+bool PDBModelPlugin::canImport() const
 {
 	return true;
 }
@@ -239,7 +239,7 @@ bool PDBModelPlugin::importData()
 //
 
 // Return whether this plugin can export data
-bool PDBModelPlugin::canExport()
+bool PDBModelPlugin::canExport() const
 {
 	return true;
 }
@@ -337,27 +337,27 @@ bool PDBModelPlugin::skipNextPart()
  */
 
 // Return whether the plugin has import options
-bool PDBModelPlugin::hasImportOptions()
+bool PDBModelPlugin::hasImportOptions() const
 {
 	return true;
 }
 
 // Show import options dialog
-bool PDBModelPlugin::showImportOptionsDialog()
+bool PDBModelPlugin::showImportOptionsDialog(KVMap& targetOptions) const
 {
-	PDBImportOptionsDialog optionsDialog(pluginOptions_);
+	PDBImportOptionsDialog optionsDialog(targetOptions);
 
 	return (optionsDialog.updateAndExecute() == QDialog::Accepted);
 }
 
 // Return whether the plugin has export options
-bool PDBModelPlugin::hasExportOptions()
+bool PDBModelPlugin::hasExportOptions() const
 {
 	return false;
 }
 
 // Show export options dialog
-bool PDBModelPlugin::showExportOptionsDialog()
+bool PDBModelPlugin::showExportOptionsDialog(KVMap& targetOptions) const
 {
 	return false;
 }

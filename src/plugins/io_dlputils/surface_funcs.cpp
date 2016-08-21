@@ -37,7 +37,7 @@ SurfaceGridPlugin::~SurfaceGridPlugin()
  */
 
 // Return a copy of the plugin object
-BasePluginInterface* SurfaceGridPlugin::makeCopy()
+BasePluginInterface* SurfaceGridPlugin::makeCopy() const
 {
 	return new SurfaceGridPlugin;
 }
@@ -93,7 +93,7 @@ QStringList SurfaceGridPlugin::exactNames() const
  */
 
 // Return whether this plugin can import data
-bool SurfaceGridPlugin::canImport()
+bool SurfaceGridPlugin::canImport() const
 {
 	return true;
 }
@@ -142,7 +142,7 @@ bool SurfaceGridPlugin::importData()
 }
 
 // Return whether this plugin can export data
-bool SurfaceGridPlugin::canExport()
+bool SurfaceGridPlugin::canExport() const
 {
 	return false;
 }
@@ -170,25 +170,25 @@ bool SurfaceGridPlugin::skipNextPart()
  */
 
 // Return whether the plugin has import options
-bool SurfaceGridPlugin::hasImportOptions()
+bool SurfaceGridPlugin::hasImportOptions() const
 {
 	return false;
 }
 
 // Show import options dialog
-bool SurfaceGridPlugin::showImportOptionsDialog()
+bool SurfaceGridPlugin::showImportOptionsDialog(KVMap& targetOptions) const
 {
 	return false;
 }
 
 // Return whether the plugin has export options
-bool SurfaceGridPlugin::hasExportOptions()
+bool SurfaceGridPlugin::hasExportOptions() const
 {
 	return false;
 }
 
 // Show export options dialog
-bool SurfaceGridPlugin::showExportOptionsDialog()
+bool SurfaceGridPlugin::showExportOptionsDialog(KVMap& targetOptions) const
 {
 	return false;
 }

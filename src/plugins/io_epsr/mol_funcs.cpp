@@ -37,7 +37,7 @@ EPSRMolModelPlugin::~EPSRMolModelPlugin()
  */
 
 // Return a copy of the plugin object
-BasePluginInterface* EPSRMolModelPlugin::makeCopy()
+BasePluginInterface* EPSRMolModelPlugin::makeCopy() const
 {
 	return new EPSRMolModelPlugin;
 }
@@ -93,7 +93,7 @@ QStringList EPSRMolModelPlugin::exactNames() const
  */
 
 // Return whether this plugin can import data
-bool EPSRMolModelPlugin::canImport()
+bool EPSRMolModelPlugin::canImport() const
 {
 	return true;
 }
@@ -218,7 +218,7 @@ bool EPSRMolModelPlugin::importData()
 }
 
 // Return whether this plugin can export data
-bool EPSRMolModelPlugin::canExport()
+bool EPSRMolModelPlugin::canExport() const
 {
 	return false;
 }
@@ -246,25 +246,25 @@ bool EPSRMolModelPlugin::skipNextPart()
  */
 
 // Return whether the plugin has import options
-bool EPSRMolModelPlugin::hasImportOptions()
+bool EPSRMolModelPlugin::hasImportOptions() const
 {
 	return false;
 }
 
 // Show import options dialog
-bool EPSRMolModelPlugin::showImportOptionsDialog()
+bool EPSRMolModelPlugin::showImportOptionsDialog(KVMap& targetOptions) const
 {
 	return false;
 }
 
 // Return whether the plugin has export options
-bool EPSRMolModelPlugin::hasExportOptions()
+bool EPSRMolModelPlugin::hasExportOptions() const
 {
 	return false;
 }
 
 // Show export options dialog
-bool EPSRMolModelPlugin::showExportOptionsDialog()
+bool EPSRMolModelPlugin::showExportOptionsDialog(KVMap& targetOptions) const
 {
 	return false;
 }

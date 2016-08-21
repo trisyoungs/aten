@@ -70,7 +70,7 @@ void AtenAboutPlugins::updateTree(int type)
 
 			groupItem = new QTreeWidgetItem(parentItem);
 			groupItem->setText(0, PluginTypes::niceFilePluginCategory(category));
-			for (RefListItem<FilePluginInterface,int>* ri = pluginStore_.filePlugins(category).first(); ri != NULL; ri = ri->next)
+			for (RefListItem<FilePluginInterface,KVMap>* ri = pluginStore_.filePlugins(category).first(); ri != NULL; ri = ri->next)
 			{
 				FilePluginInterface* plugin = ri->item;
 

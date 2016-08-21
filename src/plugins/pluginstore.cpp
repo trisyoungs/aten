@@ -82,25 +82,8 @@ bool PluginStore::registerFilePlugin(FilePluginInterface* plugin)
 	return true;
 }
 
-// Empty (delete) all file plugins and plugin instances
-void PluginStore::clearFilePlugins()
-{
-	for (int n=0; n<PluginTypes::nFilePluginCategories; ++n)
-	{
-		// Loop over stored interfaces and clear any instances we have
-		for (RefListItem<FilePluginInterface,int>* ri = filePlugins_[n].first(); ri != NULL; ri = ri->next)
-		{
-			ri->item->deleteInstances();
-		}
-
-		filePlugins_[n].clear();
-	}
-
-	++logPoint_;
-}
-
 // Return reference list of file plugins of specified category
-const RefList<FilePluginInterface,int>& PluginStore::filePlugins(PluginTypes::FilePluginCategory category) const
+const RefList<FilePluginInterface,KVMap>& PluginStore::filePlugins(PluginTypes::FilePluginCategory category) const
 {
 	return filePlugins_[category];
 }
@@ -109,7 +92,7 @@ const RefList<FilePluginInterface,int>& PluginStore::filePlugins(PluginTypes::Fi
 int PluginStore::nFilePlugins(PluginTypes::FilePluginCategory category, PluginTypes::FilePluginType type) const
 {
 	int count = 0;
-	for (RefListItem<FilePluginInterface,int>* ri = filePlugins_[category].first(); ri != NULL; ri = ri->next)
+	for (RefListItem<FilePluginInterface,KVMap>* ri = filePlugins_[category].first(); ri != NULL; ri = ri->next)
 	{
 		FilePluginInterface* plugin = ri->item;
 		if ((type == PluginTypes::ImportPlugin) && (plugin->canImport())) ++count;
@@ -137,8 +120,8 @@ void PluginStore::showFilePluginNicknames(PluginTypes::FilePluginCategory catego
 
 	// Determine longest nickname of all the plugins of the specified category and type, and make a reflist of them while we're at it
 	int maxLength = 0;
-	RefList<FilePluginInterface,int> plugins;
-	for (RefListItem<FilePluginInterface,int>* ri = filePlugins_[category].first(); ri != NULL; ri = ri->next)
+	RefList<FilePluginInterface,KVMap> plugins;
+	for (RefListItem<FilePluginInterface,KVMap>* ri = filePlugins_[category].first(); ri != NULL; ri = ri->next)
 	{
 		FilePluginInterface* plugin = ri->item;
 
@@ -158,7 +141,7 @@ void PluginStore::showFilePluginNicknames(PluginTypes::FilePluginCategory catego
 		Messenger::print("  <None Available>");
 		return;
 	}
-	else for (RefListItem<FilePluginInterface,int>* ri = filePlugins_[category].first(); ri != NULL; ri = ri->next)
+	else for (RefListItem<FilePluginInterface,KVMap>* ri = filePlugins_[category].first(); ri != NULL; ri = ri->next)
 	{
 		FilePluginInterface* plugin = ri->item;
 
@@ -177,10 +160,10 @@ void PluginStore::showAllFilePluginNicknames() const
 }
 
 // Find plugin interface for specified file
-FilePluginInterface* PluginStore::findFilePlugin(PluginTypes::FilePluginCategory category, PluginTypes::FilePluginType type, QString filename) const
+const FilePluginInterface* PluginStore::findFilePlugin(PluginTypes::FilePluginCategory category, PluginTypes::FilePluginType type, QString filename) const
 {
 	// Loop over loaded plugins of the specified category
-	for (RefListItem<FilePluginInterface,int>* ri = filePlugins_[category].first(); ri != NULL; ri = ri->next)
+	for (RefListItem<FilePluginInterface,KVMap>* ri = filePlugins_[category].first(); ri != NULL; ri = ri->next)
 	{
 		FilePluginInterface* plugin = ri->item;
 
@@ -198,10 +181,10 @@ FilePluginInterface* PluginStore::findFilePlugin(PluginTypes::FilePluginCategory
 }
 
 // Find file plugin interface by nickname provided
-FilePluginInterface* PluginStore::findFilePluginByNickname(PluginTypes::FilePluginCategory category, PluginTypes::FilePluginType type, QString nickname) const
+const FilePluginInterface* PluginStore::findFilePluginByNickname(PluginTypes::FilePluginCategory category, PluginTypes::FilePluginType type, QString nickname) const
 {
 	// Loop over loaded plugins of the specified category
-	for (RefListItem<FilePluginInterface,int>* ri = filePlugins_[category].first(); ri != NULL; ri = ri->next)
+	for (RefListItem<FilePluginInterface,KVMap>* ri = filePlugins_[category].first(); ri != NULL; ri = ri->next)
 	{
 		FilePluginInterface* plugin = ri->item;
 
@@ -253,16 +236,8 @@ bool PluginStore::registerMethodPlugin(MethodPluginInterface* plugin)
 	return true;
 }
 
-// Empty (delete) all method plugins
-void PluginStore::clearMethodPlugins()
-{
-	for (int n=0; n<PluginTypes::nMethodPluginCategories; ++n) methodPlugins_[n].clear();
-
-	++logPoint_;
-}
-
 // Return reference list of method plugins of specified category
-const RefList<MethodPluginInterface,int>& PluginStore::methodPlugins(PluginTypes::MethodPluginCategory category) const
+const RefList<MethodPluginInterface,KVMap>& PluginStore::methodPlugins(PluginTypes::MethodPluginCategory category) const
 {
 	return methodPlugins_[category];
 }
@@ -287,7 +262,7 @@ void PluginStore::showMethodPluginNicknames(PluginTypes::MethodPluginCategory ca
 
 	// Determine longest nickname of all the plugins of the specified category and type, and make a reflist of them while we're at it
 	int maxLength = 0;
-	for (RefListItem<MethodPluginInterface,int>* ri = methodPlugins_[category].first(); ri != NULL; ri = ri->next)
+	for (RefListItem<MethodPluginInterface,KVMap>* ri = methodPlugins_[category].first(); ri != NULL; ri = ri->next)
 	{
 		MethodPluginInterface* plugin = ri->item;
 
@@ -300,7 +275,7 @@ void PluginStore::showMethodPluginNicknames(PluginTypes::MethodPluginCategory ca
 		Messenger::print("  <None Available>");
 		return;
 	}
-	else for (RefListItem<MethodPluginInterface,int>* ri = methodPlugins_[category].first(); ri != NULL; ri = ri->next)
+	else for (RefListItem<MethodPluginInterface,KVMap>* ri = methodPlugins_[category].first(); ri != NULL; ri = ri->next)
 	{
 		MethodPluginInterface* plugin = ri->item;
 
@@ -318,7 +293,7 @@ void PluginStore::showAllMethodPluginNicknames() const
 MethodPluginInterface* PluginStore::findMethodPluginByNickname(PluginTypes::MethodPluginCategory category, QString nickname) const
 {
 	// Loop over loaded method plugins of the specified category
-	for (RefListItem<MethodPluginInterface,int>* ri = methodPlugins_[category].first(); ri != NULL; ri = ri->next)
+	for (RefListItem<MethodPluginInterface,KVMap>* ri = methodPlugins_[category].first(); ri != NULL; ri = ri->next)
 	{
 		MethodPluginInterface* plugin = ri->item;
 

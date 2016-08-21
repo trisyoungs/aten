@@ -22,6 +22,7 @@
 #include "plugins/method_mopac71/mopac71opt.hui"
 #include "plugins/method_mopac71/mopac71control.hui"
 #include "plugins/method_mopac71/mopac71.hui"
+#include <plugins/pluginstore.h>
 #include "model/model.h"
 
 // Constructor
@@ -41,7 +42,7 @@ MOPAC71OptimisationPlugin::~MOPAC71OptimisationPlugin()
  */
 
 // Return a copy of the plugin object
-BasePluginInterface* MOPAC71OptimisationPlugin::makeCopy()
+BasePluginInterface* MOPAC71OptimisationPlugin::makeCopy() const
 {
 	return new MOPAC71OptimisationPlugin;
 }
@@ -87,38 +88,23 @@ QString MOPAC71OptimisationPlugin::description() const
 // Run method on the current target model
 bool MOPAC71OptimisationPlugin::runMethod()
 {
-	// Get the name of a temporary file prefix - this will let us delete all MOPAC-generated files afterwards
-	QString jobBaseName = addTemporaryFilePrefix("AtenMOPAC71OptimisationPlugin");
-	int jobBaseNameLength = jobBaseName.length();
-
-	// Save the input file - use MOPAC71ControlMethodPlugin to do it...
-	MOPAC71ControlModelPlugin controlPlugin;
-	QString mopacInput = jobBaseName + ".mop";
-	if (!controlPlugin.openOutput(mopacInput))
+	// Duplicate MOPAC71MethodPlugin ('mopac71') to perform the calculation...
+	// -- First, find the plugin
+	const MethodPluginInterface* methodPluginMaster = pluginStore_->findMethodPluginByNickname(PluginTypes::OptimisationMethodPlugin, "mopac71");
+	if (!methodPluginMaster)
 	{
-		Messenger::error("Couldn't open temporary file '" + mopacInput + "' for MOPAC job.");
+		Messenger::error("Error: MOPAC71OptimisationPlugin also requires the MOPAC71MethodPlugin.");
 		return false;
 	}
-	KVMap mopacOptions;
-// 	mopacOptions.add();
-	controlPlugin.setOptions(mopacOptions);
-	controlPlugin.setParentModel(targetModel());
+	MethodPluginInterface* mopacMethod = (MethodPluginInterface*) methodPluginMaster->duplicate();
 
-	// Run MOPAC
-	MOPAC71MethodPlugin mopacPlugin;
-	bool result = runmopac71_(qPrintable(jobBaseName), jobBaseNameLength);
-	if (!result) Messenger::error("Failed to perform MOPAC calculation.");
+	// Setup options and target model in the method plugin
+	mopacMethod->setTargetModel(targetModel());
+	//mopacMethod->setOption();
 
-	// Dump output file to Messenger...
-	QFile file(jobBaseName + ".out");
-	if (file.open(QIODevice::ReadOnly))
-	{
-		QTextStream stream(&file);
-		while (!stream.atEnd()) Messenger::print(stream.readLine());
-		file.close();
-	}
-	else Messenger::error("Couldn't retrieve MOAPC output '" + file.fileName()+ "' for display.");
-
+	// Run it
+	bool result = mopacMethod->executeMethod();
+	
 	return result;
 }
 

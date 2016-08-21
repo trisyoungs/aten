@@ -23,7 +23,7 @@
 #include "plugins/plugintypes.h"
 
 // Constructor
-AtenFileDialog::AtenFileDialog(const RefList<FilePluginInterface,int>& filePlugins) : filePlugins_(filePlugins)
+AtenFileDialog::AtenFileDialog(const RefList<FilePluginInterface,KVMap>& filePlugins) : filePlugins_(filePlugins)
 {
 	pluginsLogPoint_ = -1;
 	fileSelectorWidget_ = NULL;
@@ -39,7 +39,7 @@ void AtenFileDialog::setFileSelectorWidget(FileSelectorWidget* widget, QDir star
 }
 
 // Make sure file selector is up to date
-void AtenFileDialog::updateFileSelector(int currentPluginsLogPoint, QString currentFilename, FilePluginInterface* currentPlugin)
+void AtenFileDialog::updateFileSelector(int currentPluginsLogPoint, QString currentFilename, const FilePluginInterface* currentPlugin)
 {
 	// Make sure the file selector is up to date
 	if (currentPluginsLogPoint != pluginsLogPoint_)
@@ -65,7 +65,7 @@ QStringList AtenFileDialog::selectedFilenames()
 }
 
 // Return selected file plugin
-FilePluginInterface* AtenFileDialog::selectedPlugin()
+const FilePluginInterface* AtenFileDialog::selectedPlugin()
 {
 	return fileSelectorWidget_->selectedPlugin();
 }

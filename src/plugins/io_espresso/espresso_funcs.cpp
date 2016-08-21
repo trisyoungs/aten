@@ -37,7 +37,7 @@ QuantumEspressoModelPlugin::~QuantumEspressoModelPlugin()
  */
 
 // Return a copy of the plugin object
-BasePluginInterface* QuantumEspressoModelPlugin::makeCopy()
+BasePluginInterface* QuantumEspressoModelPlugin::makeCopy() const
 {
 	return new QuantumEspressoModelPlugin;
 }
@@ -93,7 +93,7 @@ QStringList QuantumEspressoModelPlugin::exactNames() const
  */
 
 // Return whether this plugin can import data
-bool QuantumEspressoModelPlugin::canImport()
+bool QuantumEspressoModelPlugin::canImport() const
 {
 	return true;
 }
@@ -493,7 +493,7 @@ bool QuantumEspressoModelPlugin::importData()
 }
 
 // Return whether this plugin can export data
-bool QuantumEspressoModelPlugin::canExport()
+bool QuantumEspressoModelPlugin::canExport() const
 {
 	return false;
 }
@@ -521,25 +521,25 @@ bool QuantumEspressoModelPlugin::skipNextPart()
  */
 
 // Return whether the plugin has import options
-bool QuantumEspressoModelPlugin::hasImportOptions()
+bool QuantumEspressoModelPlugin::hasImportOptions() const
 {
 	return false;
 }
 
 // Show import options dialog
-bool QuantumEspressoModelPlugin::showImportOptionsDialog()
+bool QuantumEspressoModelPlugin::showImportOptionsDialog(KVMap& targetOptions) const
 {
 	return false;
 }
 
 // Return whether the plugin has export options
-bool QuantumEspressoModelPlugin::hasExportOptions()
+bool QuantumEspressoModelPlugin::hasExportOptions() const
 {
 	return false;
 }
 
 // Show export options dialog
-bool QuantumEspressoModelPlugin::showExportOptionsDialog()
+bool QuantumEspressoModelPlugin::showExportOptionsDialog(KVMap& targetOptions) const
 {
 	return false;
 }

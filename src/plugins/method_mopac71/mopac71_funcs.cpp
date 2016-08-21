@@ -20,13 +20,16 @@
 */
 
 #include "plugins/method_mopac71/mopac71.hui"
+#include "plugins/interfaces/fileplugin.h"
+#include "plugins/method_mopac71/common.h"
+#include "plugins/pluginstore.h"
 #include "model/model.h"
 
 // Constructor
 MOPAC71MethodPlugin::MOPAC71MethodPlugin()
 {
 	// Plugin options
-// 	pluginOptions_.add("GEO-OK", 
+	MOPAC71Common::initialiseOptions(pluginOptions_);
 }
 
 // Destructor
@@ -38,7 +41,7 @@ MOPAC71MethodPlugin::~MOPAC71MethodPlugin()
  * Instance Handling
  */
 // Return a copy of the plugin object
-BasePluginInterface* MOPAC71MethodPlugin::makeCopy()
+BasePluginInterface* MOPAC71MethodPlugin::makeCopy() const
 {
 	return new MOPAC71MethodPlugin;
 }
@@ -84,10 +87,49 @@ QString MOPAC71MethodPlugin::description() const
 // Run method on the current target model
 bool MOPAC71MethodPlugin::runMethod()
 {
-	Messenger:: error("Don't try to use runMethod() from MOPAC71MethodPlugin.");
-	Messenger:: error("Use it's auxiliary functions instead.");
+	// Get the name of a temporary file prefix - this will let us delete all MOPAC-generated files afterwards
+	QString jobBaseName = addTemporaryFilePrefix("AtenMOPAC71Method");
+	int jobBaseNameLength = jobBaseName.length();
 
-	return false;
+	// Save the input file - use MOPAC71ControlModelPlugin ('mopac71control') to do it...
+	// -- First, find the plugin
+	const FilePluginInterface* controlPluginMaster = pluginStore_->findFilePluginByNickname(PluginTypes::ModelFilePlugin, PluginTypes::ExportPlugin, "mopac71control");
+	if (!controlPluginMaster)
+	{
+		Messenger::error("Error: MOPAC71MethodPlugin also requires the MOPAC71ControlModelPlugin.");
+		return false;
+	}
+	// -- Now, save the file. Pass our own pluginOptions_ on to the FilePluginInterface, since they map onto each other
+	FilePluginInterface* plugin = (FilePluginInterface*) controlPluginMaster->duplicate();
+	QString mopacInput = jobBaseName + ".mop";
+	if (!plugin->openOutput(mopacInput))
+	{
+		Messenger::error("Couldn't open temporary file '" + mopacInput + "' for MOPAC job.");
+		return false;
+	}
+	plugin->setParentModel(targetModel());
+	plugin->setOptions(pluginOptions_);
+	if (!plugin->exportData())
+	{
+		Messenger::error("Couldn't export data for MOPAC71 optimisation job.");
+		return false;
+	}
+
+	// Input file is ready, so run MOPAC...
+	bool result = runmopac71_(qPrintable(jobBaseName), jobBaseNameLength);
+	if (!result) Messenger::error("Failed to perform MOPAC calculation.");
+
+	// Dump output file to Messenger...
+	QFile file(jobBaseName + ".out");
+	if (file.open(QIODevice::ReadOnly))
+	{
+		QTextStream stream(&file);
+		while (!stream.atEnd()) Messenger::print(stream.readLine());
+		file.close();
+	}
+	else Messenger::error("Couldn't retrieve MOPAC output '" + file.fileName()+ "' for display.");
+
+	return true;
 }
 
 /*

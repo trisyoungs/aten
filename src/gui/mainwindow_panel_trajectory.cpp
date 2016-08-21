@@ -94,7 +94,7 @@ void AtenWindow::on_TrajectoryManageOpenButton_clicked(bool checked)
 	{
 		// Open model(s) selected in dialog
 		QStringList filesToLoad = openTrajectoryDialog_.selectedFilenames();
-		FilePluginInterface* plugin = openTrajectoryDialog_.selectedPlugin();
+		const FilePluginInterface* plugin = openTrajectoryDialog_.selectedPlugin();
 		aten_.importTrajectory(currentModel, filesToLoad.at(0), plugin, openTrajectoryDialog_.standardImportOptions());
 
 		updateWidgets(AtenWindow::AllTarget);

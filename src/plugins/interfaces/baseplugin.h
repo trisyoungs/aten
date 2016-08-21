@@ -31,7 +31,7 @@
 ATEN_BEGIN_NAMESPACE
 
 // Forward Declarations
-/* none */
+class PluginStore;
 
 // Base Plugin Interface
 class BasePluginInterface : public ListItem<BasePluginInterface>
@@ -40,6 +40,7 @@ class BasePluginInterface : public ListItem<BasePluginInterface>
 	// Constructor
 	BasePluginInterface() : ListItem<BasePluginInterface>()
 	{
+		pluginStore_ = NULL;
 	}
 	// Destructor
 	virtual ~BasePluginInterface() {}
@@ -79,27 +80,12 @@ class BasePluginInterface : public ListItem<BasePluginInterface>
 	 * Instance Handling
 	 */
 	private:
-	// Object store for plugin instances
-	List<BasePluginInterface> instances_;
 	// Return a copy of the plugin object
-	virtual BasePluginInterface* makeCopy() = 0;
-	// Return a duplicate of the plugin object, including options etc.
-	virtual BasePluginInterface* duplicate() = 0;
+	virtual BasePluginInterface* makeCopy() const = 0;
 
 	public:
-	// Return instance of plugin
-	BasePluginInterface* createInstance()
-	{
-		// Create a copy with duplicate(), and add it to the instances list
-		BasePluginInterface* pluginInstance = duplicate();
-		instances_.own(pluginInstance);
-		return pluginInstance;
-	}
-	// Delete all instances of plugin
-	void deleteInstances()
-	{
-		instances_.clear();
-	}
+	// Return a duplicate of the plugin object, including options etc.
+	virtual BasePluginInterface* duplicate() const = 0;
 
 
 	/*
@@ -247,6 +233,27 @@ class BasePluginInterface : public ListItem<BasePluginInterface>
 	const KVMap& pluginOptions()
 	{
 		return pluginOptions_;
+	}
+
+
+	/*
+	 * PluginStore
+	 */
+	protected:
+	// Pointer to main PluginStore
+	PluginStore* pluginStore_;
+
+	public:
+	// Set pointer to main PluginStore
+	void setPluginStore(PluginStore* pluginStore)
+	{
+		if (pluginStore_) printf("BasePluginInterface - Refusing to set pointer to pluginStore again.\n");
+		else pluginStore_ = pluginStore;
+	}
+	// Return pointer to main PluginStore
+	const PluginStore* pluginStore() const
+	{
+		return pluginStore_;
 	}
 };
 

@@ -24,7 +24,7 @@
 #include <QMessageBox>
 
 // Constructor
-AtenOpenTrajectory::AtenOpenTrajectory(QWidget* parent, QDir startingDirectory, const RefList<FilePluginInterface,int>& filePlugins) : QDialog(parent), AtenFileDialog(filePlugins)
+AtenOpenTrajectory::AtenOpenTrajectory(QWidget* parent, QDir startingDirectory, const RefList<FilePluginInterface,KVMap>& filePlugins) : QDialog(parent), AtenFileDialog(filePlugins)
 {
 	ui.setupUi(this);
 
@@ -44,9 +44,11 @@ AtenOpenTrajectory::AtenOpenTrajectory(QWidget* parent, QDir startingDirectory, 
 void AtenOpenTrajectory::on_PluginOptionsButton_clicked(bool checked)
 {
 	// Get current interface selected in FileSelector
-	FilePluginInterface* plugin = ui.FileSelector->selectedPlugin();
+	const FilePluginInterface* plugin = ui.FileSelector->selectedPlugin();
+	KVMap& pluginOptions = ui.FileSelector->selectedPluginOptions();
+
 	if (!plugin) return;
-	if (plugin->hasImportOptions()) plugin->showImportOptionsDialog();
+	if (plugin->hasImportOptions()) plugin->showImportOptionsDialog(pluginOptions);
 }
 
 void AtenOpenTrajectory::on_OpenButton_clicked(bool checked)
@@ -77,7 +79,7 @@ void AtenOpenTrajectory::on_CancelButton_clicked(bool checked)
 }
 
 // Execute dialog
-bool AtenOpenTrajectory::execute(int currentPluginsLogPoint, QString currentFilename, FilePluginInterface* currentPlugin)
+bool AtenOpenTrajectory::execute(int currentPluginsLogPoint, QString currentFilename, const FilePluginInterface* currentPlugin)
 {
 	// Make sure the file selector is up to date
 	updateFileSelector(currentPluginsLogPoint);
@@ -116,7 +118,7 @@ FilePluginStandardExportOptions AtenOpenTrajectory::standardExportOptions()
 void AtenOpenTrajectory::updateStandardOptionsFromPlugin()
 {
 	// Get current plugin
-	FilePluginInterface* plugin = ui.FileSelector->selectedPlugin();
+	const FilePluginInterface* plugin = ui.FileSelector->selectedPlugin();
 	if (!plugin) return;
 
 	// Set zmapping combo

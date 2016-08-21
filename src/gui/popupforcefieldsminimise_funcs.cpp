@@ -58,8 +58,8 @@ void ForcefieldsMinimisePopup::updateControls()
 	ui.MethodCombo->addItem("Monte Carlo (Molecular)");
 
 	// Query plugin store to see if there are any optimisation method plugins to add to the list
-	const RefList<MethodPluginInterface,int>& optimisationPlugins = parent_.aten().pluginStore().methodPlugins(PluginTypes::OptimisationMethodPlugin);
-	for (RefListItem<MethodPluginInterface,int>* ri = optimisationPlugins.first(); ri != NULL; ri = ri->next)
+	const RefList<MethodPluginInterface,KVMap>& optimisationPlugins = parent_.aten().pluginStore().methodPlugins(PluginTypes::OptimisationMethodPlugin);
+	for (RefListItem<MethodPluginInterface,KVMap>* ri = optimisationPlugins.first(); ri != NULL; ri = ri->next)
 	{
 		MethodPluginInterface* plugin = ri->item;
 
@@ -104,7 +104,7 @@ bool ForcefieldsMinimisePopup::callMethod(QString methodName, ReturnValue& rv)
 					printf("Couldn't cast data into MethodPluginInterface.\n");
 					return false;
 				}
-				plugin = (MethodPluginInterface*) plugin->createInstance();
+				plugin = (MethodPluginInterface*) plugin->duplicate();
 				plugin->setTargetModel(parent_.aten().currentModelOrFrame());
 				plugin->executeMethod();
 				break;

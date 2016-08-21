@@ -216,11 +216,14 @@ class FilePluginInterface : public BasePluginInterface
 	 */
 	private:
 	// Return a copy of the plugin object (provided by main plugin)
-	virtual BasePluginInterface* makeCopy() = 0;
+	virtual BasePluginInterface* makeCopy() const = 0;
+
+	public:
 	// Return a duplicate of the plugin object, including options etc.
-	BasePluginInterface* duplicate()
+	BasePluginInterface* duplicate() const
 	{
 		FilePluginInterface* copy = (FilePluginInterface*) makeCopy();
+		copy->setPluginStore(pluginStore_);
 		copy->setStandardOptions(standardOptions_);
 		copy->setOptions(pluginOptions_);
 		return copy;
@@ -366,11 +369,11 @@ class FilePluginInterface : public BasePluginInterface
 		return false;
 	}
 	// Return whether this plugin can import data
-	virtual bool canImport() = 0;
+	virtual bool canImport() const = 0;
 	// Import data via the supplied parser
 	virtual bool importData() = 0;
 	// Return whether this plugin can export data
-	virtual bool canExport() = 0;
+	virtual bool canExport() const = 0;
 	// Export data via the supplied parser
 	virtual bool exportData() = 0;
 	// Import next partial data chunk
@@ -496,13 +499,13 @@ class FilePluginInterface : public BasePluginInterface
 
 	public:
 	// Return whether the plugin has import options
-	virtual bool hasImportOptions() = 0;
-	// Show import options dialog
-	virtual bool showImportOptionsDialog() = 0;
+	virtual bool hasImportOptions() const = 0;
+	// Show import options dialog, setting values in the specified KVMap
+	virtual bool showImportOptionsDialog(KVMap& targetOptions) const = 0;
 	// Return whether the plugin has export options
-	virtual bool hasExportOptions() = 0;
-	// Show export options dialog
-	virtual bool showExportOptionsDialog() = 0;
+	virtual bool hasExportOptions() const = 0;
+	// Show export options dialog, setting values in the specified KVMap
+	virtual bool showExportOptionsDialog(KVMap& targetOptions) const = 0;
 	// Set standard options
 	void setStandardOptions(const FilePluginStandardImportOptions& standardOptions)
 	{

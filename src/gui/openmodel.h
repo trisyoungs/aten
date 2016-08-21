@@ -46,7 +46,7 @@ class AtenOpenModel : public QDialog, public AtenFileDialog
 
 	public:
 	// Constructor
-	AtenOpenModel(QWidget* parent, QDir startingDirectory, const RefList<FilePluginInterface,int>& filePlugins);
+	AtenOpenModel(QWidget* parent, QDir startingDirectory, const RefList<FilePluginInterface,KVMap>& filePlugins);
 	// Main form declaration
 	Ui::OpenModelDialog ui;
 
@@ -61,7 +61,7 @@ class AtenOpenModel : public QDialog, public AtenFileDialog
 
 	public:
 	// Execute dialog
-	bool execute(int currentPluginsLogPoint, QString currentFilename = QString(), FilePluginInterface* currentPlugin = NULL);
+	bool execute(int currentPluginsLogPoint, QString currentFilename = QString(), const FilePluginInterface* currentPlugin = NULL);
 	// Return standard import options from dialog
 	FilePluginStandardImportOptions standardImportOptions();
 	// Return standard export options from dialog

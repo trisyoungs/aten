@@ -37,7 +37,7 @@ MSIModelPlugin::~MSIModelPlugin()
  */
 
 // Return a copy of the plugin object
-BasePluginInterface* MSIModelPlugin::makeCopy()
+BasePluginInterface* MSIModelPlugin::makeCopy() const
 {
 	return new MSIModelPlugin;
 }
@@ -93,7 +93,7 @@ QStringList MSIModelPlugin::exactNames() const
  */
 
 // Return whether this plugin can import data
-bool MSIModelPlugin::canImport()
+bool MSIModelPlugin::canImport() const
 {
 	return true;
 }
@@ -213,7 +213,7 @@ bool MSIModelPlugin::importData()
 }
 
 // Return whether this plugin can export data
-bool MSIModelPlugin::canExport()
+bool MSIModelPlugin::canExport() const
 {
 	return false;
 }
@@ -241,25 +241,25 @@ bool MSIModelPlugin::skipNextPart()
  */
 
 // Return whether the plugin has import options
-bool MSIModelPlugin::hasImportOptions()
+bool MSIModelPlugin::hasImportOptions() const
 {
 	return false;
 }
 
 // Show import options dialog
-bool MSIModelPlugin::showImportOptionsDialog()
+bool MSIModelPlugin::showImportOptionsDialog(KVMap& targetOptions) const
 {
 	return false;
 }
 
 // Return whether the plugin has export options
-bool MSIModelPlugin::hasExportOptions()
+bool MSIModelPlugin::hasExportOptions() const
 {
 	return false;
 }
 
 // Show export options dialog
-bool MSIModelPlugin::showExportOptionsDialog()
+bool MSIModelPlugin::showExportOptionsDialog(KVMap& targetOptions) const
 {
 	return false;
 }

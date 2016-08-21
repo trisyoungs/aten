@@ -21,21 +21,14 @@
 
 #include "plugins/method_mopac71/mopac71control.hui"
 #include "plugins/method_mopac71/controlexportoptions.h"
+#include "plugins/method_mopac71/common.h"
 #include "model/model.h"
 
 // Constructor
 MOPAC71ControlModelPlugin::MOPAC71ControlModelPlugin()
 {
 	// Set plugin options
-	pluginOptions_.add("jobtype", "BFGS");
-	pluginOptions_.add("hamiltonian", "PM6");
-	pluginOptions_.add("scftype", "RHF");
-	pluginOptions_.add("state", "SINGLET");
-	pluginOptions_.add("charge", "0");
-	pluginOptions_.add("internal", "false");
-	pluginOptions_.add("precise", "false");
-	pluginOptions_.add("campking", "false");
-	pluginOptions_.add("extra", "");
+	MOPAC71Common::initialiseOptions(pluginOptions_);
 }
 
 // Destructor
@@ -48,7 +41,7 @@ MOPAC71ControlModelPlugin::~MOPAC71ControlModelPlugin()
  */
 
 // Return a copy of the plugin object
-BasePluginInterface* MOPAC71ControlModelPlugin::makeCopy()
+BasePluginInterface* MOPAC71ControlModelPlugin::makeCopy() const
 {
 	return new MOPAC71ControlModelPlugin;
 }
@@ -104,7 +97,7 @@ QStringList MOPAC71ControlModelPlugin::exactNames() const
  */
 
 // Return whether this plugin can import data
-bool MOPAC71ControlModelPlugin::canImport()
+bool MOPAC71ControlModelPlugin::canImport() const
 {
 	return false;
 }
@@ -116,7 +109,7 @@ bool MOPAC71ControlModelPlugin::importData()
 }
 
 // Return whether this plugin can export data
-bool MOPAC71ControlModelPlugin::canExport()
+bool MOPAC71ControlModelPlugin::canExport() const
 {
 	return true;
 }
@@ -217,27 +210,27 @@ bool MOPAC71ControlModelPlugin::skipNextPart()
  */
 
 // Return whether the plugin has import options
-bool MOPAC71ControlModelPlugin::hasImportOptions()
+bool MOPAC71ControlModelPlugin::hasImportOptions() const
 {
 	return false;
 }
 
 // Show import options dialog
-bool MOPAC71ControlModelPlugin::showImportOptionsDialog()
+bool MOPAC71ControlModelPlugin::showImportOptionsDialog(KVMap& targetOptions) const
 {
 	return false;
 }
 
 // Return whether the plugin has export options
-bool MOPAC71ControlModelPlugin::hasExportOptions()
+bool MOPAC71ControlModelPlugin::hasExportOptions() const
 {
 	return true;
 }
 
 // Show export options dialog
-bool MOPAC71ControlModelPlugin::showExportOptionsDialog()
+bool MOPAC71ControlModelPlugin::showExportOptionsDialog(KVMap& targetOptions) const
 {
-	MOPAC71ControlExportOptionsDialog optionsDialog(pluginOptions_);
+	MOPAC71ControlExportOptionsDialog optionsDialog(targetOptions);
 
 	return (optionsDialog.updateAndExecute() == QDialog::Accepted);
 }

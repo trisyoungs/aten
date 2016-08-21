@@ -50,7 +50,7 @@ MOPACControlModelPlugin::~MOPACControlModelPlugin()
  */
 
 // Return a copy of the plugin object
-BasePluginInterface* MOPACControlModelPlugin::makeCopy()
+BasePluginInterface* MOPACControlModelPlugin::makeCopy() const
 {
 	return new MOPACControlModelPlugin;
 }
@@ -106,7 +106,7 @@ QStringList MOPACControlModelPlugin::exactNames() const
  */
 
 // Return whether this plugin can import data
-bool MOPACControlModelPlugin::canImport()
+bool MOPACControlModelPlugin::canImport() const
 {
 	return true;
 }
@@ -118,7 +118,7 @@ bool MOPACControlModelPlugin::importData()
 }
 
 // Return whether this plugin can export data
-bool MOPACControlModelPlugin::canExport()
+bool MOPACControlModelPlugin::canExport() const
 {
 	return true;
 }
@@ -178,27 +178,27 @@ bool MOPACControlModelPlugin::skipNextPart()
  */
 
 // Return whether the plugin has import options
-bool MOPACControlModelPlugin::hasImportOptions()
+bool MOPACControlModelPlugin::hasImportOptions() const
 {
 	return false;
 }
 
 // Show import options dialog
-bool MOPACControlModelPlugin::showImportOptionsDialog()
+bool MOPACControlModelPlugin::showImportOptionsDialog(KVMap& targetOptions) const
 {
 	return false;
 }
 
 // Return whether the plugin has export options
-bool MOPACControlModelPlugin::hasExportOptions()
+bool MOPACControlModelPlugin::hasExportOptions() const
 {
 	return true;
 }
 
 // Show export options dialog
-bool MOPACControlModelPlugin::showExportOptionsDialog()
+bool MOPACControlModelPlugin::showExportOptionsDialog(KVMap& targetOptions) const
 {
-	MOPACControlExportOptionsDialog optionsDialog(pluginOptions_);
+	MOPACControlExportOptionsDialog optionsDialog(targetOptions);
 
 	return (optionsDialog.updateAndExecute() == QDialog::Accepted);
 }

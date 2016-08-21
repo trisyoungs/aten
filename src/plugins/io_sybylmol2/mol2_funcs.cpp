@@ -37,7 +37,7 @@ Mol2ModelPlugin::~Mol2ModelPlugin()
  */
 
 // Return a copy of the plugin object
-BasePluginInterface* Mol2ModelPlugin::makeCopy()
+BasePluginInterface* Mol2ModelPlugin::makeCopy() const
 {
 	return new Mol2ModelPlugin;
 }
@@ -93,7 +93,7 @@ QStringList Mol2ModelPlugin::exactNames() const
  */
 
 // Return whether this plugin can import data
-bool Mol2ModelPlugin::canImport()
+bool Mol2ModelPlugin::canImport() const
 {
 	return true;
 }
@@ -156,7 +156,7 @@ bool Mol2ModelPlugin::importData()
 }
 
 // Return whether this plugin can export data
-bool Mol2ModelPlugin::canExport()
+bool Mol2ModelPlugin::canExport() const
 {
 	return true;
 }
@@ -220,25 +220,25 @@ bool Mol2ModelPlugin::skipNextPart()
  */
 
 // Return whether the plugin has import options
-bool Mol2ModelPlugin::hasImportOptions()
+bool Mol2ModelPlugin::hasImportOptions() const
 {
 	return false;
 }
 
 // Show import options dialog
-bool Mol2ModelPlugin::showImportOptionsDialog()
+bool Mol2ModelPlugin::showImportOptionsDialog(KVMap& targetOptions) const
 {
 	return false;
 }
 
 // Return whether the plugin has export options
-bool Mol2ModelPlugin::hasExportOptions()
+bool Mol2ModelPlugin::hasExportOptions() const
 {
 	return false;
 }
 
 // Show export options dialog
-bool Mol2ModelPlugin::showExportOptionsDialog()
+bool Mol2ModelPlugin::showExportOptionsDialog(KVMap& targetOptions) const
 {
 	return false;
 }

@@ -38,7 +38,7 @@ MOPACArcModelPlugin::~MOPACArcModelPlugin()
  */
 
 // Return a copy of the plugin object
-BasePluginInterface* MOPACArcModelPlugin::makeCopy()
+BasePluginInterface* MOPACArcModelPlugin::makeCopy() const
 {
 	return new MOPACArcModelPlugin;
 }
@@ -94,7 +94,7 @@ QStringList MOPACArcModelPlugin::exactNames() const
  */
 
 // Return whether this plugin can import data
-bool MOPACArcModelPlugin::canImport()
+bool MOPACArcModelPlugin::canImport() const
 {
 	return true;
 }
@@ -115,7 +115,7 @@ bool MOPACArcModelPlugin::importData()
 }
 
 // Return whether this plugin can export data
-bool MOPACArcModelPlugin::canExport()
+bool MOPACArcModelPlugin::canExport() const
 {
 	return false;
 }
@@ -143,25 +143,25 @@ bool MOPACArcModelPlugin::skipNextPart()
  */
 
 // Return whether the plugin has import options
-bool MOPACArcModelPlugin::hasImportOptions()
+bool MOPACArcModelPlugin::hasImportOptions() const
 {
 	return false;
 }
 
 // Show import options dialog
-bool MOPACArcModelPlugin::showImportOptionsDialog()
+bool MOPACArcModelPlugin::showImportOptionsDialog(KVMap& targetOptions) const
 {
 	return false;
 }
 
 // Return whether the plugin has export options
-bool MOPACArcModelPlugin::hasExportOptions()
+bool MOPACArcModelPlugin::hasExportOptions() const
 {
 	return false;
 }
 
 // Show export options dialog
-bool MOPACArcModelPlugin::showExportOptionsDialog()
+bool MOPACArcModelPlugin::showExportOptionsDialog(KVMap& targetOptions) const
 {
 	return false;
 }
