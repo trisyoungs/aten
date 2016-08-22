@@ -117,16 +117,17 @@ void TDynamicLayout::setGeometry(const QRect &rect)
 	// Get margins and adjust available area
 	int left, top, right, bottom;
 	getContentsMargins(&left, &top, &right, &bottom);
-	rect.adjusted(left, top, -right, -bottom);
+	QRect availableRect = rect;
+	availableRect.adjust(left, top, -right, -bottom);
 
 	// Calculate some basic quantities
-	int buttonHeight = (rect.height() - verticalSpacing_) / 2;
+	int buttonHeight = (availableRect.height() - verticalSpacing_) / 2;
 	int nColumns = buttons_.nItems()/2;
 	if (buttons_.nItems()%2 == 1) ++nColumns;
 
 	// Let us see what will fit!
 	// Is the supplied rect (specifically the width) big enough to fulfil the sizeHint()
-	if ((upperLayoutStyle_ == TDynamicLayout::FullSizeHorizontalLayout) && (rect.width() >= sizeHints_[TDynamicLayout::FullSizeHorizontalLayout].width()))
+	if ((upperLayoutStyle_ == TDynamicLayout::FullSizeHorizontalLayout) && (availableRect.width() >= sizeHints_[TDynamicLayout::FullSizeHorizontalLayout].width()))
 	{
 		// Draw buttons at full size.
 		int x = 0;
@@ -137,8 +138,8 @@ void TDynamicLayout::setGeometry(const QRect &rect)
 			// Set button style: ToolButtonTextUnderIcon, height = 66px, preferred width
 			button->setToolButtonStyle(Qt::ToolButtonTextUnderIcon);
 			button->setIconSize(QSize(30, 30));
-			button->setMinimumSize(24, rect.height());
-			button->setMaximumSize(256, rect.height());
+			button->setMinimumSize(24, availableRect.height());
+			button->setMaximumSize(256, availableRect.height());
 			button->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Maximum);
 
 			button->setGeometry(QRect(QPoint(left+x, top), button->sizeHint()));
@@ -148,9 +149,9 @@ void TDynamicLayout::setGeometry(const QRect &rect)
 		currentLayoutStyle_ = TDynamicLayout::FullSizeHorizontalLayout;
 
 		// Update the full size hint while we are here.
-		sizeHints_[TDynamicLayout::FullSizeHorizontalLayout] = QSize(x, rect.height()+top+bottom);
+		sizeHints_[TDynamicLayout::FullSizeHorizontalLayout] = QSize(x, availableRect.height()+top+bottom);
 	}
-	else if ((upperLayoutStyle_ >= TDynamicLayout::ButtonStackLayout) && (rect.width() >= sizeHints_[TDynamicLayout::ButtonStackLayout].width()))
+	else if ((upperLayoutStyle_ >= TDynamicLayout::ButtonStackLayout) && (availableRect.width() >= sizeHints_[TDynamicLayout::ButtonStackLayout].width()))
 	{
 		// Draw widgets as a stack of buttons (text beside icon)
 		// Draw each pair of widgets as a stack, dividing any extra space in the given rect() between each stack
@@ -165,7 +166,7 @@ void TDynamicLayout::setGeometry(const QRect &rect)
 			button->setIconSize(QSize(14, 14));
 			button->setToolButtonStyle(Qt::ToolButtonTextBesideIcon);
 			button->setMinimumSize(20, buttonHeight);
-			button->setMaximumSize(rect.width(), buttonHeight);
+			button->setMaximumSize(availableRect.width(), buttonHeight);
 			button->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
 			ri->data = button->sizeHint().width();
 		}
@@ -186,7 +187,7 @@ void TDynamicLayout::setGeometry(const QRect &rect)
 		}
 
 		// Distribute extra space between columns
-		int extraWidth = (rect.width() - usedWidth) / nColumns;
+		int extraWidth = (availableRect.width() - usedWidth) / nColumns;
 		if (extraWidth < 0) extraWidth = 0;
 
 		// OK - all done - set geometries of the buttons
@@ -215,16 +216,16 @@ void TDynamicLayout::setGeometry(const QRect &rect)
 		currentLayoutStyle_ = TDynamicLayout::ButtonStackLayout;
 
 		// Update the size hint
-		sizeHints_[TDynamicLayout::ButtonStackLayout] = QSize(minimumWidth, rect.height()+top+bottom);
+		sizeHints_[TDynamicLayout::ButtonStackLayout] = QSize(minimumWidth, availableRect.height()+top+bottom);
 
 		// If the required width for these buttons is more than that available to the layout, re-layout the widgets
-		if (minimumWidth > rect.width()) setGeometry(rect);
+		if (minimumWidth > availableRect.width()) setGeometry(availableRect);
 	}
-	else if ((upperLayoutStyle_ >= TDynamicLayout::IconStackLayout) && (rect.width() >= sizeHints_[TDynamicLayout::IconStackLayout].width()))
+	else if ((upperLayoutStyle_ >= TDynamicLayout::IconStackLayout) && (availableRect.width() >= sizeHints_[TDynamicLayout::IconStackLayout].width()))
 	{
 		// Draw widgets as stacks of icon-only buttons
 		// All buttons will have the same width
-		int buttonWidth = (rect.width() - (nColumns-1)*horizontalSpacing_) / nColumns;
+		int buttonWidth = (availableRect.width() - (nColumns-1)*horizontalSpacing_) / nColumns;
 
 		// Set button styles
 		for (RefListItem<QToolButton,int>* ri = buttons_.first(); ri != NULL; ri = ri->next)
@@ -235,7 +236,7 @@ void TDynamicLayout::setGeometry(const QRect &rect)
 			button->setIconSize(QSize(14, 14));
 			button->setToolButtonStyle(Qt::ToolButtonIconOnly);
 			button->setMinimumSize(20, buttonHeight);
-			button->setMaximumSize(rect.width(), buttonHeight);
+			button->setMaximumSize(availableRect.width(), buttonHeight);
 			button->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Preferred);
 		}
 
@@ -265,7 +266,7 @@ void TDynamicLayout::setGeometry(const QRect &rect)
 		currentLayoutStyle_ = TDynamicLayout::IconStackLayout;
 
 		// Update the size hint
-		sizeHints_[TDynamicLayout::IconStackLayout] = QSize(minimumWidth, rect.height()+top+bottom);
+		sizeHints_[TDynamicLayout::IconStackLayout] = QSize(minimumWidth, availableRect.height()+top+bottom);
 	}
 }
 

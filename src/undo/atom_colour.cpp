@@ -64,7 +64,7 @@ void AtomColourEvent::undo(Model* m)
 	}
 	else
 	{
-		Messenger::print(Messenger::Verbose, "Replaying atom charge change - atom %i, from %f to %f\n", targetId_, oldColour_[0], oldColour_[1], oldColour_[2], oldColour_[3], newColour_[0], newColour_[1], newColour_[2], newColour_[3]);
+		Messenger::print(Messenger::Verbose, "Replaying atom charge change - atom %i, from (%f,%f,%f,%f) to (%f,%f,%f,%f)\n", targetId_, oldColour_[0], oldColour_[1], oldColour_[2], oldColour_[3], newColour_[0], newColour_[1], newColour_[2], newColour_[3]);
 		i->setColour(newColour_[0], newColour_[1], newColour_[2], newColour_[3]);
 	}
 	Messenger::exit("AtomColourEvent::undo");
@@ -74,6 +74,6 @@ void AtomColourEvent::undo(Model* m)
 void AtomColourEvent::print()
 {
 	if (direction_ == UndoEvent::Undo) printf("       Atom charge change - atom %i, from (%f,%f,%f,%f) to (%f,%f,%f,%f)\n", targetId_, newColour_[0], newColour_[1], newColour_[2], newColour_[3], oldColour_[0], oldColour_[1], oldColour_[2], oldColour_[3]);
-	else printf("       Atom charge change - atom %i, from %f to %f\n", targetId_, oldColour_[0], oldColour_[1], oldColour_[2], oldColour_[3], newColour_[0], newColour_[1], newColour_[2], newColour_[3]);
+	else printf("       Atom charge change - atom %i, from (%f,%f,%f,%f) to (%f,%f,%f,%f)\n", targetId_, oldColour_[0], oldColour_[1], oldColour_[2], oldColour_[3], newColour_[0], newColour_[1], newColour_[2], newColour_[3]);
 }
 

@@ -11,7 +11,6 @@ SET(gui_MOC_HDRS
   ffeditor.h
   fileselectorwidget.h
   glyphs.h
-  layoutlist.h
   mainwindow.h
   openexpression.h
   opengrid.h
@@ -87,10 +86,8 @@ SET(gui_MOC_HDRS
   tdynamiclayout.hui
   tdynamicwidget.hui
   texponentialspin.hui
-  textratreewidgetitem.h
   tintegerspindelegate.hui
   tmenubutton.hui
-  tmenubuttongroup.h
   tpopupwidget.hui
   trecentfiles.hui
   ttablewidget.hui
