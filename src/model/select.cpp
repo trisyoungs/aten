@@ -822,7 +822,7 @@ void Model::selectInsideCell(bool moleculecogs, bool markonly)
 			{
 				// Get COG of molecule
 				pos = cell_.realToFrac(p->calculateCog(m));
-				if ((pos.x < 1) && (pos.y < 1) && (pos.z < 1)) for (n=0; n<p->nAtoms(); ++n) selectAtom(id+n, markonly);
+				if ((pos.x >= 0) && (pos.x <= 1) && (pos.y >= 0) && (pos.y <= 1) && (pos.z >= 0) && (pos.z <= 1)) for (n=0; n<p->nAtoms(); ++n) selectAtom(id+n, markonly);
 				id += p->nAtoms();
 			}
 		}
@@ -832,7 +832,7 @@ void Model::selectInsideCell(bool moleculecogs, bool markonly)
 		for (Atom* i = atoms_.first(); i != NULL; i = i->next)
 		{
 			pos = cell_.realToFrac(i->r());
-			if ((pos.x < 1) && (pos.y < 1) && (pos.z < 1)) selectAtom(i, markonly);
+			if ((pos.x >= 0) && (pos.x <= 1) && (pos.y >= 0) && (pos.y <= 1) && (pos.z >= 0) && (pos.z <= 1)) selectAtom(i, markonly);
 		}
 	}
 	Messenger::exit("Model::selectInsideCell");
