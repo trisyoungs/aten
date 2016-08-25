@@ -170,6 +170,7 @@ class AtenWindow : public QMainWindow
 	void contextMenuSetAtomStyle(bool checked);
 	void contextMenuSetAtomLabel(bool checked);
 	void contextMenuProbeAtom(bool checked);
+	void contextMenuSetViewOrigin(bool checked);
 	void contextMenuCreateFragment(bool checked);
 	void contextMenuSelectElement(bool checked);
 	void contextMenuSelectSimilar(bool checked);
@@ -458,6 +459,7 @@ class AtenWindow : public QMainWindow
 	// Position
 	void on_SelectionPositionFixButton_clicked(bool checked);
 	void on_SelectionPositionFreeButton_clicked(bool checked);
+	void on_SelectionPositionSetViewOriginButton_clicked(bool checked);
 
 
 	/*

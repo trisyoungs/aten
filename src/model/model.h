@@ -471,6 +471,8 @@ class Model : public ListItem<Model>
 	Vec3<int> repeatCellsPositive_;
 	// Repeat cells to draw in negative xyz directions
 	Vec3<int> repeatCellsNegative_;
+	// View origin
+	Vec3<double> viewOrigin_;
 
 	private:
 	// Calculate and return inverse of current view matrix
@@ -519,6 +521,10 @@ class Model : public ListItem<Model>
 	Vec3<int> repeatCellsNegative() const;
 	// Set common view matrix to that of this model
 	void setCommonViewMatrixFromLocal();
+	// Set view origin
+	void setViewOrigin(Vec3<double> origin);
+	// Return view origin
+	Vec3<double> viewOrigin();
 
 
 	/*

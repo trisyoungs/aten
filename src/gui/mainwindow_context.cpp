@@ -125,6 +125,11 @@ void AtenWindow::createContextMenu()
 	action = contextMenu_.addAction("Pro&be");
 	connect(action, SIGNAL(triggered(bool)), this, SLOT(contextMenuProbeAtom(bool)));
 
+	// Set view origin
+	contextMenu_.addSeparator();
+	action = contextMenu_.addAction("Set &View Origin");
+	connect(action, SIGNAL(triggered(bool)), this, SLOT(contextMenuSetViewOrigin(bool)));
+
 	// Create
 	contextMenu_.addSeparator();
 	action = contextMenu_.addAction("Create &Fragment");
@@ -192,6 +197,17 @@ void AtenWindow::contextMenuSetAtomLabel(bool checked)
 void AtenWindow::contextMenuProbeAtom(bool checked)
 {
 	if (contextAtom_ != NULL) contextAtom_->print();
+	aten_.currentModelOrFrame()->setViewOrigin(contextAtom_->r());
+}
+
+// Set view origin
+void AtenWindow::contextMenuSetViewOrigin(bool checked)
+{
+	Model* viewTarget = aten_.currentModelOrFrame();
+
+	viewTarget->setViewOrigin(viewTarget->selectionCentreOfGeometry());
+
+	updateWidgets();
 }
 
 // Create fragment from current selection

@@ -200,7 +200,6 @@ void Model::adjustZoom(bool zoomin)
 // Reset View
 void Model::resetView(int contextWidth, int contextHeight)
 {
-	// Reset the modelview matrix and the camera
 	Messenger::enter("Model::resetView");
 	Vec3<double> extremes, rabs, target;
 	Vec4<double> screenr;
@@ -209,6 +208,9 @@ void Model::resetView(int contextWidth, int contextHeight)
 	Matrix mview = modelViewMatrix();
 	mview.setIdentity();
 	mview.setColumn(3,0.0,0.0,0.0,1.0);
+
+	// Reset view origin before we do anything else
+	viewOrigin_.zero();
 
 	// Fit model to screen
 	// Crude approach - find largest coordinate and zoom out so that {0,0,largest} is visible on screen
@@ -319,7 +321,8 @@ Vec3<double>& Model::modelToWorld(Vec3<double>& modelr, Vec4<double>* screenr, d
 
 	// Get the world coordinates of the atom - Multiply by modelview matrix 'view'
 	vmat = modelViewMatrix();
-	vmat.applyTranslation(-cell_.centre().x, -cell_.centre().y, -cell_.centre().z);
+	Vec3<double> translation = -cell_.centre() - viewOrigin_;
+	vmat.applyTranslation(translation);
 	temp = vmat * pos;
 	worldr.set(temp.x, temp.y, temp.z);
 
@@ -357,7 +360,8 @@ Vec3<double>& Model::screenToModel(int x, int y, double z)
 	
 	// Grab transformation matrix, apply cell centre correction, and invert
 	Matrix itransform = modelViewMatrix_;
-	itransform.applyTranslation(-cell_.centre().x, -cell_.centre().y, -cell_.centre().z);
+	Vec3<double> translation = -cell_.centre() - viewOrigin_;
+	itransform.applyTranslation(translation);
 	itransform.invert();
 	
 	// Mirror y-coordinate
@@ -419,5 +423,17 @@ Vec3<int> Model::repeatCellsNegative() const
 void Model::setCommonViewMatrixFromLocal()
 {
 	prefs.setCommonViewMatrix(parent_ == NULL ? modelViewMatrix_ : parent_->modelViewMatrix());
+}
+
+// Set view origin
+void Model::setViewOrigin(Vec3<double> origin)
+{
+	viewOrigin_ = origin;
+}
+
+// Return view origin
+Vec3<double> Model::viewOrigin()
+{
+	return viewOrigin_;
 }
 

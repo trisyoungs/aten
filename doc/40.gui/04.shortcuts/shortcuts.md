@@ -72,6 +72,7 @@ header_class: alt
 | F12 | Snapshot | Snapshot the current view as an image (named "Aten-Snapshot-YYYY-MM-DD_HH-MM-SS.???") in the size and format specified in the Export Image dialog |
 | Ctrl-- | Zoom Out | Zoom out |
 | Ctrl-+ | Zoom In | Zoom in |
+| # | Set View Origin | Set the origin of the main view to be the geometric centre of the current atom selection |
 
 ## General Shortcuts
 
@@ -187,3 +188,4 @@ header_class: alt
 | Key | Action | Description |
 |-----|--------|-------------|
 | Ctrl-H | Hide Selection | Hide all selected atoms |
+| # | Set View Origin | Set the origin of the main view to be the geometric centre of the current atom selection |

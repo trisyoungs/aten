@@ -54,7 +54,7 @@ void Viewer::renderModel(Model* source, int viewPortX, int viewPortY, int viewPo
 
 	// Set initial transformation matrix, including any translation occurring from cell...
 	modelTransformationMatrix_ = source->modelViewMatrix();
-	modelTransformationMatrix_.applyTranslation(-source->cell().centre());
+	modelTransformationMatrix_.applyTranslation(-source->cell().centre() - source->viewOrigin());
 	
 	// Set target matrix mode and reset it, and set colour mode
 	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);

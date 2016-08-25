@@ -423,6 +423,8 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportFilmD
 	connect(shortcut, SIGNAL(activated()), this, SLOT(recreateGridsForView()));
 	shortcut = new QShortcut(QKeySequence(Qt::Key_F12), this, 0, 0, Qt::ApplicationShortcut);
 	connect(shortcut, SIGNAL(activated()), this, SLOT(snapshotCurrentView()));
+	shortcut = new QShortcut(QKeySequence(Qt::Key_NumberSign), this, 0, 0, Qt::ApplicationShortcut);
+	connect(shortcut, SIGNAL(activated()), ui.SelectionPositionSetViewOriginButton, SLOT(click()));
 
 	// Create Context Menu
 	createContextMenu();

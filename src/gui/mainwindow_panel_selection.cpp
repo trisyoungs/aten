@@ -136,3 +136,13 @@ void AtenWindow::on_SelectionPositionFreeButton_clicked(bool checked)
 
 	updateWidgets();
 }
+
+void AtenWindow::on_SelectionPositionSetViewOriginButton_clicked(bool checked)
+{
+	Model* viewTarget = aten_.currentModelOrFrame();
+
+	viewTarget->setViewOrigin(viewTarget->selectionCentreOfGeometry());
+
+	updateWidgets();
+}
+

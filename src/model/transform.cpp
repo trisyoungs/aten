@@ -106,7 +106,7 @@ void Model::rotateSelectionWorld(double dx, double dy)
 		// Rotate this atom's position about the geometric centre of all selected atoms.
 		newr = (rotmat * (modelToWorld(ri->item->r()) - transformationCentre_)) + transformationCentre_;
 		newr = inverse.transform(newr);
-		ri->item->r() = newr + cell_.centre();
+		ri->item->r() = newr + cell_.centre() + viewOrigin_;
 	}
 
 	// Update model measurements
@@ -162,7 +162,7 @@ void Model::rotateSelectionZaxis(double dz)
 		// Rotate this atom's position about the geometric centre of all selected atoms.
 		newr = (rotmat * (modelToWorld(ri->item->r()) - transformationCentre_)) + transformationCentre_;
 		newr = inverse.transform(newr);
-		ri->item->r() = newr + cell_.centre();
+		ri->item->r() = newr + cell_.centre() + viewOrigin_;
 	}
 	
 	// Update model measurements
@@ -185,7 +185,7 @@ void Model::translateSelectionWorld(const Vec3<double>& v, bool markonly)
 	for (RefListItem<Atom,int>* ri = selection(markonly); ri != NULL; ri = ri->next)
 	{
 		newr = modelToWorld(ri->item->r()) + v;
-		newr = inverse * newr + cell_.centre();
+		newr = inverse * newr + cell_.centre() + viewOrigin_;
 		positionAtom(ri->item, newr);
 	}
 
