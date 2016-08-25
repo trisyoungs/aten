@@ -44,9 +44,9 @@ Nickname 'ffmpeg-mp4'
 CommandName 'First Pass'
 Command ffmpeg
 CommandSearchPaths /usr/bin,/usr/local/bin
-CommandArguments "-y -f image2 -pattern_type glob -i '@FRAMEBASENAME@*.@FRAMEFORMAT@' -s @IMAGESIZE@ -c:v mpeg4 -vtag xvid -b:v 5555k -pass 1 -an -f avi /dev/null"
+CommandArguments "-y -f image2 -pattern_type glob -i @FRAMEBASENAME@*.@FRAMEFORMAT@ -s @FRAMESIZE@ -c:v mpeg4 -b:v 5555k -pass 1 -an -f avi /dev/null"
 # -- Second pass
 CommandName 'Second Pass'
 Command ffmpeg
 CommandSearchPaths /usr/bin,/usr/local/bin
-CommandArguments "-y -f image2 -pattern_type glob -i '@FRAMEBASENAME@*.@FRAMEFORMAT@' -s @IMAGESIZE@ -c:v mpeg4 -vtag xvid -b:v 5555k -pass 2 @OUTPUTFILE@"
+CommandArguments "-y -f image2 -pattern_type glob -i @FRAMEBASENAME@*.@FRAMEFORMAT@ -s @FRAMESIZE@ -c:v mpeg4 -b:v 5555k -pass 2 -f mp4 @OUTPUTFILE@"

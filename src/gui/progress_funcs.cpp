@@ -106,7 +106,7 @@ void AtenProgress::updateAndShow()
 	// Update main ETA information (from first task)
 	RefListItem<Task,int>* ri = Messenger::tasks();
 	int mainCompletion = 0;
-	Task* task = ri->item;
+	Task* task = (ri ? ri->item : NULL);
 	if (task)
 	{
 		ui.TitleLabel->setText(task->title());
@@ -146,5 +146,6 @@ void AtenProgress::updateAndShow()
 // Close dialog window
 void AtenProgress::terminate()
 {
+	ui.TaskTable->clear();
 	hide();
 }
