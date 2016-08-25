@@ -48,6 +48,9 @@ int main(int argc, char* argv[])
 	// -- Set high DPI pixmaps
 	app.setAttribute(Qt::AA_UseHighDpiPixmaps, true);
 
+	/* Ensure that the C locale is set, otherwise printf() and friends may not use dot for the radix point */
+	setlocale(LC_NUMERIC,"C");
+
 	/* Tweak the default QSurfaceFormat */
 	QSurfaceFormat surfaceFormat;
 	surfaceFormat.setSamples(2);
