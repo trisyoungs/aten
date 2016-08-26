@@ -60,5 +60,4 @@ dlp4defects_la_LDFLAGS = -module -shared -avoid-version
 
 AM_CPPFLAGS = -I${top_srcdir}/src @ATEN_INCLUDES@ @ATEN_CFLAGS@
 
-noinst_HEADERS = common.h dlp2exportoptions.h dlp2importoptions.h dlp4exportoptions.h dlp4importoptions.h
-
+noinst_HEADERS = common.h defects4importoptions.h dlp2exportoptions.h dlp2importoptions.h dlp4exportoptions.h dlp4importoptions.h

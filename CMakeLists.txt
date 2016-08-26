@@ -51,6 +51,9 @@ CMAKE_POLICY(SET CMP0020 NEW)
 if(WIN32)
   set (target_name Aten)
 
+  # Request C++11 Standard Support (Required for Qt 5.7)
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+
   # Adjust external include directories
   include_directories(
     ${FTGL_INCLUDE_DIRS}
