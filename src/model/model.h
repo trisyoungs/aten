@@ -523,8 +523,8 @@ class Model : public ListItem<Model>
 	void setCommonViewMatrixFromLocal();
 	// Set view origin
 	void setViewOrigin(Vec3<double> origin);
-	// Return view origin
-	Vec3<double> viewOrigin();
+	// Return view origin, or cell origin if no view origin is defined
+	Vec3<double> viewOriginOrCellOrigin();
 
 
 	/*

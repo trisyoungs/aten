@@ -321,7 +321,7 @@ Vec3<double>& Model::modelToWorld(Vec3<double>& modelr, Vec4<double>* screenr, d
 
 	// Get the world coordinates of the atom - Multiply by modelview matrix 'view'
 	vmat = modelViewMatrix();
-	Vec3<double> translation = -cell_.centre() - viewOrigin_;
+	Vec3<double> translation = -viewOriginOrCellOrigin();
 	vmat.applyTranslation(translation);
 	temp = vmat * pos;
 	worldr.set(temp.x, temp.y, temp.z);
@@ -360,7 +360,7 @@ Vec3<double>& Model::screenToModel(int x, int y, double z)
 	
 	// Grab transformation matrix, apply cell centre correction, and invert
 	Matrix itransform = modelViewMatrix_;
-	Vec3<double> translation = -cell_.centre() - viewOrigin_;
+	Vec3<double> translation = -viewOriginOrCellOrigin();
 	itransform.applyTranslation(translation);
 	itransform.invert();
 	
@@ -431,9 +431,10 @@ void Model::setViewOrigin(Vec3<double> origin)
 	viewOrigin_ = origin;
 }
 
-// Return view origin
-Vec3<double> Model::viewOrigin()
+// Return view origin, or cell origin if no view origin is defined
+Vec3<double> Model::viewOriginOrCellOrigin()
 {
-	return viewOrigin_;
+	if (viewOrigin_.magnitude() > 1.0e-4) return viewOrigin_;
+	else return cell_.centre();
 }
 
