@@ -139,8 +139,6 @@ class TMenuButton : public QToolButton
 	// Add this button to the named group
 	void setGroup(QString groupName, int index = -1);
 	// Check specified button in specified group
-	static bool setGroupButtonChecked(QString groupName, QString buttonText);
-	// Check specified button in specified group
 	static bool setGroupButtonChecked(QString groupName, int buttonIndex);
 };
 

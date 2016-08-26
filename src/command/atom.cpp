@@ -38,6 +38,7 @@ bool Commands::function_AtomStyle(CommandNode* c, Bundle& obj, ReturnValue& rv)
 		if (i == NULL) return false;
 		obj.rs()->beginUndoState("Style individual atom");
 		obj.rs()->atomSetStyle(i, ds);
+		obj.rs()->setDrawStyle(Prefs::OwnStyle);
 		obj.rs()->endUndoState();
 	}
 	else

@@ -2,8 +2,6 @@ TODO
 ====
 Undo/Redo:
   * Add Grid-related undo/redo (e.g. title changes, colour etc.)
-Trajectory handling:
-o Inherit generates a crash when at first frame??
 Add set members to Matrix class allowing axes to be set from atoms in models.
 Crash when tree selecting large models (recursion overflow?) - use array-based loop instead.
 Add specific line primitive class that allows chunking (for speedup of stick rendering, because otherwise an enormous array is continually deleted'd/new'd).

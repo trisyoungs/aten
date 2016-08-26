@@ -395,18 +395,19 @@ void Model::atomResetColour(Atom* i)
 // Set style of individual atom
 void Model::atomSetStyle(Atom* i, Prefs::DrawStyle ds)
 {
-	// Sets all atoms currently selected to have the drawing style specified
-	Prefs::DrawStyle oldStyle = i->style();
-	i->setStyle(ds);
-	logChange(Log::Style);
+	// Check current style
+	if (i->style() == ds) return;
 
 	// Add the change to the undo state (if there is one)
 	if (recordingState_ != NULL)
 	{
 		AtomStyleEvent* newchange = new AtomStyleEvent;
-		newchange->set(i->id(), oldStyle, ds);
+		newchange->set(i->id(), i->style(), ds);
 		recordingState_->addEvent(newchange);
 	}
+
+	i->setStyle(ds);
+	logChange(Log::Style);
 }
 
 // Print coordinates of all atoms

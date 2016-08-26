@@ -72,8 +72,8 @@ void AtenWindow::updateHomePanel(Model* sourceModel)
 	ui.HomeViewHBondsButton->setChecked(prefs.drawHydrogenBonds());
 	ui.HomeViewCorrectGridsButton->setChecked(prefs.correctTransparentGrids());
 	ui.HomeViewLockButton->setChecked(prefs.viewLock() == Prefs::FullLock);
-	if (sourceModel) TMenuButton::setGroupButtonChecked("ViewStyles", Prefs::drawStyle(sourceModel->drawStyle()));
-	if (sourceModel) TMenuButton::setGroupButtonChecked("ColourSchemes", Prefs::colouringScheme(sourceModel->colourScheme()));
+	if (sourceModel) TMenuButton::setGroupButtonChecked("ViewStyles", sourceModel->drawStyle());
+	if (sourceModel) TMenuButton::setGroupButtonChecked("ColourSchemes", sourceModel->colourScheme());
 
 	Messenger::exit("AtenWindow::updateHomePanel");
 }

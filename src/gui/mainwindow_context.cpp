@@ -307,8 +307,6 @@ void AtenWindow::contextMenuColourChanged(QColor colour)
 {
 	CommandNode::run(Commands::ColourAtoms, "dddd", colour.redF(), colour.greenF(), colour.blueF(), colour.alphaF());
 
-	ui.HomeAppearanceOwnColourButton->click();
-
 	updateWidgets();
 }
 

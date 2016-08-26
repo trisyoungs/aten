@@ -222,6 +222,9 @@ void Model::selectionResetColour()
 void Model::selectionSetStyle(Prefs::DrawStyle ds)
 {
 	for (RefListItem<Atom,int>* ri = selection_.first(); ri != NULL; ri = ri->next) if (ri->item->isSelected()) atomSetStyle(ri->item, ds);
+
+	// Make sure current drawStyle is 'own'
+	setDrawStyle(Prefs::OwnStyle);
 }
 
 // Select bound and selected atoms from the current atom
