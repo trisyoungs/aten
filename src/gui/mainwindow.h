@@ -686,6 +686,8 @@ class AtenWindow : public QMainWindow
 	void useSelectedMode();
 	// Sets the currently selected interact mode
 	void setSelectedMode(UserAction::Action ua);
+	// Sets the currently selected interact mode, and corrects source button checked status
+	void setSelectedMode(UserAction::Action ua, bool buttonChecked);
 	// Return the currently selected mode
 	UserAction::Action selectedMode() const;
 	// Return the currently active mode
