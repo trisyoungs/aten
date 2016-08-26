@@ -6,7 +6,7 @@ SUFFIXES: .dt
 	sed -e "s:PREFIX:@INSTALLDIR@:" -e "s:VERSION:@VERSION@:" $< > $@
 
 EXTRA_DIST = src/gui/icons/*.* src/gui/freefont/*
-EXTRA_DIST += data/ff/* data/fftesting/* data/filters/* data/fragments/*/* data/partitions/* data/test/*/* data/scripts/* data/external/*
+EXTRA_DIST += data/ff/* data/fftesting/* data/fragments/*/* data/partitions/* data/test/*/* data/scripts/* data/external/*
 EXTRA_DIST += TODO TODO2
 EXTRA_DIST += CMakeLists.txt cmake/* src/CMakeLists.txt src/*/CMakeLists.txt
 EXTRA_DIST += desktop.cmake
@@ -16,14 +16,38 @@ EXTRA_DIST += extra/*
 atendir = $(datadir)/aten
 aten_DATA = src/gui/icons/aten.png
 
-filterdir = $(atendir)/filters
-filter_DATA = data/filters/*
-
 #includesdir = $(atendir)/includes
 #includes_DATA = data/includes/*
 
-testdir = $(atendir)/test
-test_DATA = data/test/*
+testroot = $(atendir)/test
+test01dir = $(testroot)/build
+test01_DATA = $(testroot)/build/*
+test02dir = $(testroot)/ff
+test02_DATA = $(testroot)/ff/*
+test03dir = $(testroot)/forces
+test03_DATA = $(testroot)/forces/*
+test04dir = $(testroot)/io_cif
+test04_DATA = $(testroot)/io_cif/*
+test05dir = $(testroot)/io_csd
+test05_DATA = $(testroot)/io_csd/*
+test06dir = $(testroot)/io_dlputils
+test06_DATA = $(testroot)/io_dlputils/*
+test07dir = $(testroot)/io_epsr
+test07_DATA = $(testroot)/io_epsr/*
+test08dir = $(testroot)/io_gamess
+test08_DATA = $(testroot)/io_gamess/*
+test09dir = $(testroot)/io_msi
+test09_DATA = $(testroot)/io_msi/*
+test10dir = $(testroot)/io_pdb
+test10_DATA = $(testroot)/io_pdb/*
+test11dir = $(testroot)/io_sybylmol2
+test11_DATA = $(testroot)/io_sybylmol2/*
+test12dir = $(testroot)/io_xyz
+test12_DATA = $(testroot)/io_xyz/*
+test13dir = $(testroot)/render
+test13_DATA = $(testroot)/render/*
+test14dir = $(testroot)/typing
+test14_DATA = $(testroot)/typing/*
 
 ffdir = $(atendir)/ff
 ff_DATA = data/ff/*
