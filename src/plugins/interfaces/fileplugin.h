@@ -65,6 +65,7 @@ class FilePluginStandardImportOptions
 		CacheAllSwitch,			// Whether all trajectory frames are to be cached
 		CoordinatesInBohrSwitch,	// Whether coordinates in file are in Bohr rather than Angstroms
 		ForceRhombohedralSwitch,	// Whether rhombohedral (over hexagonal) spacegroup basis is to be forced
+		InheritStyleSwitch,		// Whether to inherit style of parent model (for trajectory frames)
 		KeepNamesSwitch,		// Whether original atom type names in file should be kept in a names forcefield associated to the model
 		KeepTypesSwitch,		// Whether original atom type names should be converted into forcefield types and fixed to atoms
 		KeepViewSwitch,			// Whether view should not be reset when GUI starts
@@ -489,7 +490,7 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 	virtual bool importNextPart() = 0;
 	// Skip next partial data chunk
 	virtual bool skipNextPart() = 0;
-	// Set the number of data parts in the file explicityl
+	// Set the number of data parts in the file explicitly
 	void setNDataParts(int nParts)
 	{
 		if (nDataParts_ > 0) Messenger::warn("Number of data parts already set / estimated.");
@@ -512,6 +513,13 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 				bool result = importNextPart();
 				if (result)
 				{
+					// Copy style if requested
+					if (standardOptions_.isSetAndOn(FilePluginStandardImportOptions::InheritStyleSwitch))
+					{
+						Model* frame = (createdFrames_.last() ? createdFrames_.last()->item : NULL);
+						if (frame) frame->copyAtomStyle(parentModel_);
+					}
+
 					// Add offset for the second datum
 					dataPartOffsets_.add(lineParser_.tellg());
 
@@ -554,6 +562,14 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 
 			// If successful, add the offset for the next part if this was the last offset we had
 			if (result && ((partId+1) == dataPartOffsets_.nItems())) dataPartOffsets_.add(lineParser_.tellg());
+
+			// Copy style if requested
+			if (result && standardOptions_.isSetAndOn(FilePluginStandardImportOptions::InheritStyleSwitch))
+			{
+				Model* frame = (createdFrames_.last() ? createdFrames_.last()->item : NULL);
+				if (frame) frame->copyAtomStyle(parentModel_);
+			}
+
 			return result;
 		}
 
@@ -589,6 +605,13 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 		{
 			// Now at start of next data, so store the file position
 			dataPartOffsets_.add(lineParser_.tellg());
+
+			// Copy style if requested
+			if (standardOptions_.isSetAndOn(FilePluginStandardImportOptions::InheritStyleSwitch))
+			{
+				Model* frame = (createdFrames_.last() ? createdFrames_.last()->item : NULL);
+				if (frame) frame->copyAtomStyle(parentModel_);
+			}
 		}
 		else
 		{
@@ -631,6 +654,11 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 	void applyStandardOptions(const FilePluginStandardImportOptions& standardOptions)
 	{
 		standardOptions_.apply(standardOptions);
+	}
+	// Set a standard option
+	void setStandardOption(FilePluginStandardImportOptions::ImportSwitch iswitch, bool status)
+	{
+		standardOptions_.setSwitch(iswitch, status);
 	}
 	// Return standard options for plugin
 	const FilePluginStandardImportOptions standardOptions() const

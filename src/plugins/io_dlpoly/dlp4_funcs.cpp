@@ -84,7 +84,7 @@ QString DLP4ModelPlugin::description() const
 // Related file extensions
 QStringList DLP4ModelPlugin::extensions() const
 {
-    return QStringList() << "CONFIG";
+    return QStringList() << "CONFIG" << "REVCON";
 }
 
 // Exact names

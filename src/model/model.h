@@ -866,6 +866,8 @@ class Model : public ListItem<Model>
 	void clearTrajectory();
 	// Set the plugin for the trajectory
 	void setTrajectoryPlugin(FilePluginInterface* plugin);
+	// Return the plugin for the trajectory
+	FilePluginInterface* trajectoryPlugin();
 	// Return the current frame pointer
 	Model* trajectoryCurrentFrame() const;
 	// Return pointer to trajectory frames

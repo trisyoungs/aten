@@ -538,21 +538,30 @@ int Model::nUnknownAtoms() const
 void Model::copyAtomStyle(Model* source)
 {
 	Messenger::enter("Model::copyAtomStyle");
+
 	if (source == NULL)
 	{
 		Messenger::print("Internal Error: NULL reference passed to MOdel::copyAtomStyle()");
 		Messenger::exit("Model::copyAtomStyle");
 	}
+
 	// Perform only one check - that the number of atoms is the same
 	if (source->nAtoms() != atoms_.nItems())
 	{
-		Messenger::print("Error: Can't copy parent model's atom style becuase it has a different number of atoms (%i cf. %i)", source->nAtoms(), atoms_.nItems());
-		Messenger::exit("Model::copyParentStyle");
+		Messenger::print("Error: Can't copy parent model's atom style because it has a different number of atoms (%i cf %i)", source->nAtoms(), atoms_.nItems());
+		Messenger::exit("Model::copyAtomStyle");
 	}
+	
 	// Do the loop
 	Atom** ii = source->atomArray(), **jj = atomArray();
 	for (int n=0; n<atoms_.nItems(); ++n) jj[n]->copyStyle(ii[n]);
+
+	// Copy atom style and colour scheme
+	setDrawStyle(source->drawStyle());
+	setColourScheme(source->colourScheme());
+
 	logChange(Log::Style);
+
 	Messenger::exit("Model::copyAtomStyle");
 }
 
