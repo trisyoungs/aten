@@ -452,6 +452,7 @@ class Commands
 
 		// Select Commands
 		DeSelect,
+		DeSelectAll,
 		DeSelectCode,
 		DeSelectFormatted,
 		DeSelectName,
@@ -894,6 +895,7 @@ class Commands
 	bool function_RunScript(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	// Select Commands
 	bool function_DeSelect(CommandNode* c, Bundle& obj, ReturnValue& rv);
+	bool function_DeSelectAll(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_DeSelectCode(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_DeSelectFormatted(CommandNode* c, Bundle& obj, ReturnValue& rv);
 	bool function_DeSelectName(CommandNode* c, Bundle& obj, ReturnValue& rv);

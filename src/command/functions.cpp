@@ -411,6 +411,7 @@ void Commands::initPointers()
 
 	// Select Commands
 	pointers_[DeSelect] = &AtenSpace::Commands::function_DeSelect;
+	pointers_[DeSelectAll] = &AtenSpace::Commands::function_SelectNone;			// Synonym for SelectNone
 	pointers_[DeSelectCode] = &AtenSpace::Commands::function_DeSelectCode;
 	pointers_[DeSelectFormatted] = &AtenSpace::Commands::function_DeSelectFormatted;
 	pointers_[DeSelectName] = &AtenSpace::Commands::function_DeSelectName;

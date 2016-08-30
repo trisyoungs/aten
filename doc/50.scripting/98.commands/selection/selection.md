@@ -54,6 +54,22 @@ deselects the first, second, and fifth atoms, as well as the eighth atom and all
 
 ---
 
+## deSelectAll <a id="deselectall"></a>
+
+_Syntax:_
+
+**void** **deSelectAll** ( )
+
+Deselect all atoms in the current model.
+
+For example:
+
+```aten
+deSelectAll();
+```
+
+---
+
 ## deSelectCode <a id="deselectcode"></a>
 
 _Syntax:_

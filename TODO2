@@ -73,3 +73,4 @@ Add --nodynamicpanels option and prefs accessor.
 Remove "combinationRules" Prefs accessor.
 Removed 'setCombinationRule' and 'combinationRule' commands.
 Added 'reMap' command to re-do name->element mapping for the current selection. 
+Add 'deselectAll' command (direct synonym for selectNone).
