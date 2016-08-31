@@ -276,7 +276,7 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 	// Trajectory frames created on import
 	RefList<Model,int> createdFrames_;
 	// Grid objects created on import
-	RefList<Grid,int> createdGrids_;
+	List<Grid> createdGrids_;
 	// Forcefield objects create on import
 	List<Forcefield> createdForcefields_;
 	// Parent model for read/write, if any
@@ -362,14 +362,14 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 		return i;
 	}
 	// Create new grid (in specified model)
-	Grid* createGrid(Model* model)
+	Grid* createGrid(Model* model = NULL)
 	{
-		Grid* newGrid = model->addGrid();
-		createdGrids_.add(newGrid);
+		Grid* newGrid = createdGrids_.add();
+		newGrid->setParent(model);
 		return newGrid;
 	}
 	// Return Grid objects created on import
-	RefList<Grid,int> createdGrids()
+	List<Grid>& createdGrids()
 	{
 		return createdGrids_;
 	}
@@ -396,6 +396,15 @@ class FilePluginInterface : public ListItem<FilePluginInterface>
 	List<Forcefield>& createdForcefields()
 	{
 		return createdForcefields_;
+	}
+	// Clear any created data
+	void clearCreatedData()
+	{
+		createdModels_.clear();
+		// Don't need to delete individual frame data, since they should have been removed with their parent model
+		createdFrames_.clear();
+		createdGrids_.clear();
+		createdForcefields_.clear();
 	}
 	// Set parent model
 	void setParentModel(Model* model)

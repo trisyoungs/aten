@@ -212,7 +212,8 @@ void AtenWindow::gridsListContextMenuRequested(const QPoint& point)
 	QAction* action;
 	// -- Rename / Reload
 	QAction* renameAction = contextMenu.addAction("&Rename");
-	QAction* reloadAction = contextMenu.addAction("Re&load");	
+	QAction* reloadAction = contextMenu.addAction("Re&load");
+	if (!currentGrid->plugin()) reloadAction->setEnabled(false);
 	// -- Main 'edit' functions
 	contextMenu.addSeparator();
 	QAction* copyAction = contextMenu.addAction("&Copy");
@@ -238,7 +239,28 @@ void AtenWindow::gridsListContextMenuRequested(const QPoint& point)
 	}
 	else if (menuResult == reloadAction)
 	{
-		// TODO
+		// Re-run the plugin import...
+		if (!currentGrid->plugin()->openInput(currentGrid->filename())) Messenger::error("Failed to open grid file '" + currentGrid->filename() + "'.");
+		else if (!currentGrid->plugin()->importData()) Messenger::error("Failed to reload grid data. Current data remains untouched.");
+		else
+		{
+			// We should now find a loaded Grid datum in the plugin...
+			Grid* newGrid = currentGrid->plugin()->createdGrids().first();
+			if (newGrid)
+			{
+				// Set the filename and plugin information before we perform the copy...
+				newGrid->setFilename(currentGrid->filename());
+				newGrid->setPlugin(currentGrid->plugin());
+				(*currentGrid) = (*newGrid);
+
+				// Clear all grid data from the plugin - we don't need it anymore
+				currentGrid->plugin()->clearCreatedData();
+			}
+			else Messenger::error("No Grid data loaded by plugin.");
+		}
+		currentGrid->plugin()->closeFiles();
+
+		updateWidgets(AtenWindow::GridsPanelTarget);
 	}
 	else if (menuResult == copyAction)
 	{

@@ -83,16 +83,19 @@ void Aten::processImportedObjects(FilePluginInterface* plugin, QString filename)
 	}
 
 	// Grids
-	RefList<Grid,int> createdGrids = plugin->createdGrids();
-	for (RefListItem<Grid,int>* ri = createdGrids.first(); ri != NULL; ri = ri->next)
+	while (plugin->createdGrids().first())
 	{
-		Grid* grid = ri->item;
-		if (!grid) continue;
+		Grid* grid = plugin->createdGrids().takeFirst();
 
 		// Set source filename and plugin interface used
 		if (plugin->standardOptions().isSetAndOn(FilePluginStandardImportOptions::CoordinatesInBohrSwitch)) grid->bohrToAngstrom();
 		grid->setFilename(filename);
 		grid->setPlugin(plugin);
+
+		// If the model pointer is set in the Grid, make sure the Model knows about it!
+		// If not, add it to the current model.
+		if (grid->parent()) grid->parent()->ownGrid(grid);
+		else current_.rs()->ownGrid(grid);
 
 		// Set current object
 		current_.g = grid;

@@ -1124,6 +1124,8 @@ class Model : public ListItem<Model>
 	Grid* grid(int id);
 	// Add new surface
 	Grid* addGrid();
+	// Take ownership of existing grid
+	void ownGrid(Grid* grid);
 	// Remove surface
 	void removeGrid(Grid* s);
 	// Update grid axis ordering based on current view

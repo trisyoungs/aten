@@ -5,7 +5,6 @@ Undo/Redo:
 Add set members to Matrix class allowing axes to be set from atoms in models.
 Crash when tree selecting large models (recursion overflow?) - use array-based loop instead.
 Add specific line primitive class that allows chunking (for speedup of stick rendering, because otherwise an enormous array is continually deleted'd/new'd).
-Add 'Reload' options to Grid context menu.
 Add context menu "Copy" and "Set" to TColourButtons.
 Add 'Relative' view lock option, alongside 'None' and 'Lock' (Follow)?
 Miller selection.
