@@ -871,26 +871,32 @@ void Model::selectOutsideCell(bool moleculecogs, bool markonly)
 }
 
 // Perform a Miller 'selection' on the cell contents
-void Model::selectMiller(int h, int k, int l, bool inside, bool markonly)
+void Model::selectMiller(int h, int k, int l, bool inside, bool markOnly)
 {
 	Messenger::enter("Model::selectMiller");
+
 	if (cell_.type() == UnitCell::NoCell)
 	{
 		Messenger::print("Can't use Miller planes on a non-periodic model.");
 		Messenger::exit("Model::selectMiller");
 		return;
 	}
-	double c, d;
-	Vec3<double> hkl(h == 0 ? 0 : 1.0/h, k == 0 ? 0 : 1.0/k, l == 0 ? 0 : 1.0/l), r;
+
+	// Determine the Miller planes for the hkl provided
+	Plane firstPlane, secondPlane;
+	cell_.millerPlanes(h, k, l, firstPlane, secondPlane);
+
+	// The normals for the defined planes always point away from the cell centre.
+	// Grab the centroids of the defining Miller planes, and use the dp of the atom position (relative to the centres)
+	// with the plane normals to decide where the atom is
+	Vec3<double> centroid1 = firstPlane.centroid(), centroid2 = secondPlane.centroid();
+	Vec3<double> normal1 = firstPlane.normal(), normal2 = secondPlane.normal();
 	for (Atom* i = atoms_.first(); i != NULL; i = i->next)
 	{
-		r = cell_.realToFrac(i->r());
-		c = r.dp(hkl);
-		r.set(1-r.x,1-r.y,1-r.z);
-		d = r.dp(hkl);
-		if (inside) { if ((c > 1.0) && (d > 1.0)) selectAtom(i, markonly); }
-		else if ((c < 1.0) || (d < 1.0)) selectAtom(i, markonly);
+		// Test dot product of atom position (minus centre) with normals - if either is positive, select it
+		if (((i->r()-centroid1).dp(normal1) > 0.0) || ((i->r()-centroid2).dp(normal2) > 0.0)) selectAtom(i, markOnly);
 	}
+
 	Messenger::exit("Model::selectMiller");
 }
 

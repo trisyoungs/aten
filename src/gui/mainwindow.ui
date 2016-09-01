@@ -3825,7 +3825,7 @@
               <number>0</number>
              </property>
              <item>
-              <widget class="TMenuButton" name="CellMillerDefineButton">
+              <widget class="TMenuButton" name="CellMillerShowButton">
                <property name="enabled">
                 <bool>true</bool>
                </property>
@@ -3856,7 +3856,7 @@
                 <string>Define miller plane</string>
                </property>
                <property name="text">
-                <string>Define</string>
+                <string>Show</string>
                </property>
                <property name="icon">
                 <iconset resource="icons.qrc">
@@ -3869,7 +3869,7 @@
                 </size>
                </property>
                <property name="checkable">
-                <bool>false</bool>
+                <bool>true</bool>
                </property>
                <property name="checked">
                 <bool>false</bool>
@@ -3914,7 +3914,7 @@
                 </font>
                </property>
                <property name="toolTip">
-                <string>Select based on Miller plane</string>
+                <string>Select atoms that are not between the specified Miller planes</string>
                </property>
                <property name="text">
                 <string>Select</string>
@@ -3949,10 +3949,110 @@
             </layout>
            </widget>
           </item>
-          <item row="1" column="0">
+          <item row="0" column="1">
+           <layout class="QGridLayout" name="gridLayout_19">
+            <property name="spacing">
+             <number>4</number>
+            </property>
+            <item row="0" column="0">
+             <widget class="QLabel" name="CellMillerHLabel">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="font">
+               <font>
+                <weight>75</weight>
+                <bold>true</bold>
+               </font>
+              </property>
+              <property name="text">
+               <string>h</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignBottom|Qt::AlignHCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="1">
+             <widget class="QLabel" name="CellMillerKLabel">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="font">
+               <font>
+                <weight>75</weight>
+                <bold>true</bold>
+               </font>
+              </property>
+              <property name="text">
+               <string>k</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignBottom|Qt::AlignHCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item row="0" column="2">
+             <widget class="QLabel" name="CellMillerLabel">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="font">
+               <font>
+                <weight>75</weight>
+                <bold>true</bold>
+               </font>
+              </property>
+              <property name="text">
+               <string>l</string>
+              </property>
+              <property name="alignment">
+               <set>Qt::AlignBottom|Qt::AlignHCenter</set>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="0">
+             <widget class="QSpinBox" name="CellMillerHSpin">
+              <property name="frame">
+               <bool>true</bool>
+              </property>
+              <property name="maximum">
+               <number>1000</number>
+              </property>
+              <property name="value">
+               <number>1</number>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="1">
+             <widget class="QSpinBox" name="CellMillerKSpin">
+              <property name="maximum">
+               <number>1000</number>
+              </property>
+             </widget>
+            </item>
+            <item row="1" column="2">
+             <widget class="QSpinBox" name="CellMillerLSpin">
+              <property name="maximum">
+               <number>1000</number>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </item>
+          <item row="1" column="0" colspan="2">
            <widget class="QLabel" name="label_18">
             <property name="text">
-             <string>Miller</string>
+             <string>Miller Planes</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignCenter</set>

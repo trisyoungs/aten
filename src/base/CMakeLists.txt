@@ -30,6 +30,7 @@ add_library(base STATIC
   neta_lexer.cpp
   neta_parser.cpp
   pattern.cpp
+  plane.cpp
   prefs.cpp
   ring.cpp
   site.cpp
@@ -65,6 +66,7 @@ add_library(base STATIC
   neta_parser.h
   measurement.h
   pattern.h
+  plane.h
   prefs.h
   ring.h
   site.h

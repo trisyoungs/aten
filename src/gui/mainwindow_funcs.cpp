@@ -45,7 +45,6 @@
 #include "gui/popupcellangles.h"
 #include "gui/popupcelllengths.h"
 #include "gui/popupcellmatrix.h"
-#include "gui/popupcellmiller.h"
 #include "gui/popupcellreplicate.h"
 #include "gui/popupcellscale.h"
 #include "gui/popupcolour.h"
@@ -235,8 +234,6 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportFilmD
 	// -- Cell Panel (Transform)
 	ui.CellTransformReplicateButton->setPopupWidget(new CellReplicatePopup(*this, ui.CellTransformReplicateButton));
 	ui.CellTransformScaleButton->setPopupWidget(new CellScalePopup(*this, ui.CellTransformScaleButton));
-	// -- Cell Panel (Miller)
-	ui.CellMillerDefineButton->setPopupWidget(new CellMillerPopup(*this, ui.CellMillerDefineButton), true);
 
 	// -- Calculate Panel (Measure)
 	ui.CalculateMeasureDistanceButton->setGroup("UserActions", UserAction::MeasureDistanceAction);

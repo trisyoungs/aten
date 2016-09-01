@@ -117,88 +117,34 @@ void Viewer::renderExtras(Model* sourceModel)
 	}
 
 	// Miller Planes
-	if (atenWindow_->ui.CellMillerDefineButton->popupVisible())
+	if (atenWindow_->ui.CellMillerShowButton->isChecked())
 	{
-		int n, anindex = -1, notanindex = -1, ncoords = 0;
-		Vec3<double> coords[4], oneMinusCoords[4], one(1.0,1.0,1.0);
-		Vec3<int> hkl;
-		ReturnValue rv;
-		atenWindow_->ui.CellMillerDefineButton->callPopupMethod("h", rv);
-		hkl.x = rv.asInteger();
-		atenWindow_->ui.CellMillerDefineButton->callPopupMethod("k", rv);
-		hkl.y = rv.asInteger();
-		atenWindow_->ui.CellMillerDefineButton->callPopupMethod("l", rv);
-		hkl.z = rv.asInteger();
+		// Get hkl values
+		int h = atenWindow_->ui.CellMillerHSpin->value();
+		int k = atenWindow_->ui.CellMillerKSpin->value();
+		int l = atenWindow_->ui.CellMillerLSpin->value();
 
-		// Plane Eq : hx + ky + lz = 1    (h, k, and l are reciprocals)
-		for (n=0; n<3; ++n)
-		{
-			if (hkl[n] != 0)
-			{
-				coords[ncoords++].set(n, 1.0 / hkl[n]);
-				anindex = n;
-			}
-			else notanindex = n;
-		}
-		// Generate other coordinates if necessary
-		if (ncoords == 1)
-		{
-			// {100}
-			int i = (anindex+1)%3;
-			int j = (i+1)%3;
-			for (int n=1; n<4; ++n) coords[n] = coords[0];
-			coords[1].set(i, 1.0);
-			coords[2].set(i, 1.0);
-			coords[2].set(j, 1.0);
-			coords[3].set(j, 1.0);
-			ncoords = 4;
-		}
-		else if (ncoords == 2)
-		{
-			// {110}
-			coords[2] = coords[1];
-			coords[2].set(notanindex, 1.0);
-			coords[3] = coords[0];
-			coords[3].set(notanindex, 1.0);
-			ncoords = 4;
-		}
-
-		// Convert coords from fractional into cell coordinates
-		Model* m = aten_->currentModelOrFrame();
-		for (int n=0; n<4; ++n)
-		{
-			oneMinusCoords[n] = m->cell().axes() * (one-coords[n]);
-			coords[n] = m->cell().axes() * coords[n];
-		}
-
-		// Fold triangles outside of cell back into cell
-		Vec3<double> centre = (coords[0] + coords[1] + coords[2]) / 3.0;
-		Vec3<double> delta = centre - m->cell().fold(centre);
-		for (int n=0; n<4; ++n)
-		{
-			coords[n] -= delta;
-			oneMinusCoords[n] += delta;
-		}
-
-		// Calculate normal
-		Vec3<double> normal = (coords[1] - coords[0])*(coords[1] - coords[2]);
-		normal.normalise();
+		// Get Miller planes from model's cell
+		Plane firstPlane, secondPlane;
+		sourceModel->cell().millerPlanes(h, k, l, firstPlane, secondPlane);
 
 		// Add triangle / quad
 		Vec4<GLfloat> colour;
 		prefs.copyColour(prefs.currentForegroundColour(), colour);
 		colour.w = 0.3;
-		if (ncoords == 3)
+		if (firstPlane.nVertices() == 3)
 		{
-			renderGroup_.addExtraSolidTriangle(coords[0], coords[1], coords[2], normal, colour);
-			renderGroup_.addExtraSolidTriangle(oneMinusCoords[0], oneMinusCoords[1], oneMinusCoords[2], normal, colour);
+			// Draw triangle
+			renderGroup_.addExtraSolidTriangle(firstPlane.vertex(0), firstPlane.vertex(1), firstPlane.vertex(2), firstPlane.normal(), colour);
+			renderGroup_.addExtraSolidTriangle(secondPlane.vertex(0), secondPlane.vertex(1), secondPlane.vertex(2), secondPlane.normal(), colour);
 		}
 		else
 		{
-			renderGroup_.addExtraSolidTriangle(coords[0], coords[1], coords[2], normal, colour);
-			renderGroup_.addExtraSolidTriangle(coords[0], coords[2], coords[3], normal, colour);
-			renderGroup_.addExtraSolidTriangle(oneMinusCoords[0], oneMinusCoords[1], oneMinusCoords[2], normal, colour);
-			renderGroup_.addExtraSolidTriangle(oneMinusCoords[0], oneMinusCoords[2], oneMinusCoords[3], normal, colour);
+			// Draw quad
+			renderGroup_.addExtraSolidTriangle(firstPlane.vertex(0), firstPlane.vertex(1), firstPlane.vertex(2), firstPlane.normal(), colour);
+			renderGroup_.addExtraSolidTriangle(firstPlane.vertex(0), firstPlane.vertex(2), firstPlane.vertex(3), firstPlane.normal(), colour);
+			renderGroup_.addExtraSolidTriangle(secondPlane.vertex(0), secondPlane.vertex(1), secondPlane.vertex(2), secondPlane.normal(), colour);
+			renderGroup_.addExtraSolidTriangle(secondPlane.vertex(0), secondPlane.vertex(2), secondPlane.vertex(3), secondPlane.normal(), colour);
 		}
 	}
 

@@ -1,5 +1,5 @@
 /*
-	*** Periodic cell definition
+	*** Periodic Cell Definition
 	*** src/base/cell.cpp
 	Copyright T. Youngs 2007-2016
 
@@ -137,8 +137,23 @@ bool UnitCell::copy(UnitCell* source)
 }
 
 /*
- * Set
+ * Cell Definition
  */
+
+// Generate a random position inside the unit cell
+Vec3<double> UnitCell::randomPos() const
+{
+	return axes_.transform(AtenMath::random(), AtenMath::random(), AtenMath::random());
+}
+
+// Print
+void UnitCell::print()
+{
+	Messenger::print("\t        x        y        z          l");
+	Messenger::print("\t[ A <%8.4f %8.4f %8.4f > %8.4f [alpha=%8.3f]", axes_[0], axes_[1], axes_[2], lengths_.x, angles_.x);
+	Messenger::print("\t[ B <%8.4f %8.4f %8.4f > %8.4f [ beta=%8.3f]", axes_[4], axes_[5], axes_[6], lengths_.y, angles_.y);
+	Messenger::print("\t[ C <%8.4f %8.4f %8.4f > %8.4f [gamma=%8.3f]", axes_[8], axes_[9], axes_[10], lengths_.z, angles_.z);
+}
 
 // Remove the cell definition (i.e. set 'type' to UnitCell::NoCell)
 void UnitCell::reset()
@@ -852,20 +867,97 @@ Vec3<double> UnitCell::fracToReal(const Vec3<double>& v) const
 }
 
 /*
- * Misc
+ * Miller Plane Calculation
  */
 
-// Generate a random position inside the unit cell
-Vec3<double> UnitCell::randomPos() const
+// Calculate miller plane coordinates and normals for supplied hkl
+void UnitCell::millerPlanes(int h, int k, int l, Plane& plane1, Plane& plane2)
 {
-	return axes_.transform(AtenMath::random(), AtenMath::random(), AtenMath::random());
-}
+	// Clear old plane data
+	plane1.clear();
+	plane2.clear();
 
-// Print
-void UnitCell::print()
-{
-	Messenger::print("\t        x        y        z          l");
-	Messenger::print("\t[ A <%8.4f %8.4f %8.4f > %8.4f [alpha=%8.3f]", axes_[0], axes_[1], axes_[2], lengths_.x, angles_.x);
-	Messenger::print("\t[ B <%8.4f %8.4f %8.4f > %8.4f [ beta=%8.3f]", axes_[4], axes_[5], axes_[6], lengths_.y, angles_.y);
-	Messenger::print("\t[ C <%8.4f %8.4f %8.4f > %8.4f [gamma=%8.3f]", axes_[8], axes_[9], axes_[10], lengths_.z, angles_.z);
+	// Initialise some useful variables
+	int hkl[3];
+	int anindex = -1, notanindex = -1, ncoords = 0;
+	Vec3<double> coords[4], oneMinusCoords[4], one(1.0,1.0,1.0);
+	
+	hkl[0] = h;
+	hkl[1] = k;
+	hkl[2] = l;
+	
+	// Plane Eq : hx + ky + lz = 1    (h, k, and l are reciprocals)
+	for (int n=0; n<3; ++n)
+	{
+		if (hkl[n] != 0)
+		{
+			coords[ncoords++].set(n, 1.0 / hkl[n]);
+			anindex = n;
+		}
+		else notanindex = n;
+	}
+
+	// Generate other coordinates as necessary
+	if (ncoords == 1)
+	{
+		// {100}
+		int i = (anindex+1)%3;
+		int j = (i+1)%3;
+		for (int n=1; n<4; ++n) coords[n] = coords[0];
+		coords[1].set(i, 1.0);
+		coords[2].set(i, 1.0);
+		coords[2].set(j, 1.0);
+		coords[3].set(j, 1.0);
+		ncoords = 4;
+	}
+	else if (ncoords == 2)
+	{
+		// {110}
+		coords[2] = coords[1];
+		coords[2].set(notanindex, 1.0);
+		coords[3] = coords[0];
+		coords[3].set(notanindex, 1.0);
+		ncoords = 4;
+	}
+
+	// Convert coords from fractional into cell coordinates
+	for (int n=0; n<4; ++n)
+	{
+		oneMinusCoords[n] = axes_ * (one-coords[n]);
+		coords[n] = axes_ * coords[n];
+	}
+
+	// Fold triangles outside of cell back into cell, and determine second set of vertices
+	Vec3<double> centre = (coords[0] + coords[1] + coords[2]) / 3.0;
+	Vec3<double> delta = centre - fold(centre);
+	for (int n=0; n<4; ++n)
+	{
+		coords[n] -= delta;
+		oneMinusCoords[n] += delta;
+	}
+
+	// Set vertices for planes
+	if (ncoords == 3)
+	{
+		// Triangular planes
+		plane1.setVertices(coords[0], coords[1], coords[2]);
+		plane2.setVertices(oneMinusCoords[0], oneMinusCoords[1], oneMinusCoords[2]);
+	}
+	else
+	{
+		// Quadrilateral planes
+		plane1.setVertices(coords[0], coords[1], coords[2], coords[3]);
+		plane2.setVertices(oneMinusCoords[0], oneMinusCoords[1], oneMinusCoords[2], oneMinusCoords[3]);
+	}
+
+	// Calculate normals
+	// For plane1 the normal always points towards (1,1,1). For plane 2, towards (0,0,0).
+	Vec3<double> normal;
+	// -- Plane1
+	normal = (coords[1] - coords[0])*(coords[1] - coords[2]);
+	normal.normalise();
+	if (normal.dp(centre_) > 0.0) normal = -normal;
+	plane1.setNormal(normal);
+	// -- Plane2
+	plane2.setNormal(-normal);
 }

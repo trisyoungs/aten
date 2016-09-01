@@ -27,6 +27,7 @@
 #include "templates/reflist.h"
 #define SGCOREDEF__
 #include "sg/sginfo.h"
+#include "base/plane.h"
 #include "base/namespace.h"
 
 ATEN_BEGIN_NAMESPACE
@@ -79,7 +80,6 @@ class UnitCell
 	double volume_, reciprocalVolume_;
 	// Density of cell
 	double density_;
-
 
 	public:
 	// Set parent model
@@ -195,7 +195,7 @@ class UnitCell
 
 
 	/*
-	 * Minimum image calculation
+	 * Minimum Image Calculation
 	 */
 	public:
 	// Minimum image vector from r1 to r2
@@ -221,7 +221,7 @@ class UnitCell
 
 
 	/*
-	 * Geometry calculation
+	 * Geometry Calculation
 	 */
 	public:
 	// Calculate distance between supplied coordinates
@@ -236,6 +236,14 @@ class UnitCell
 	double torsion(const Vec3<double>& ri, const Vec3<double>& rj, const Vec3<double>& rk, const Vec3<double>& rl, bool useMim = true) const;
 	// Calculate torsion angle between supplied atoms
 	double torsion(Atom* i, Atom* j, Atom* k, Atom* l, bool useMim = true) const;
+
+
+	/*
+	 * Miller Plane Calculation
+	 */
+	public:
+	// Calculate miller plane coordinates and normals for supplied hkl
+	void millerPlanes(int h, int k, int l, Plane& plane1, Plane& plane2);
 };
 
 ATEN_END_NAMESPACE

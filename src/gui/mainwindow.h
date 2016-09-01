@@ -275,6 +275,10 @@ class AtenWindow : public QMainWindow
 	void on_CellTransformReplicateButton_clicked(bool checked);
 	void on_CellTransformScaleButton_clicked(bool checked);
 	// Miller
+	void on_CellMillerShowButton_clicked(bool checked);
+	void on_CellMillerHSpin_valueChanged(int value);
+	void on_CellMillerKSpin_valueChanged(int value);
+	void on_CellMillerLSpin_valueChanged(int value);
 	void on_CellMillerSelectButton_clicked(bool checked);
 	// Fold
 	void on_CellFoldAtomsButton_clicked(bool checked);

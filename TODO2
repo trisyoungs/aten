@@ -7,7 +7,6 @@ Crash when tree selecting large models (recursion overflow?) - use array-based l
 Add specific line primitive class that allows chunking (for speedup of stick rendering, because otherwise an enormous array is continually deleted'd/new'd).
 Add context menu "Copy" and "Set" to TColourButtons.
 Add 'Relative' view lock option, alongside 'None' and 'Lock' (Follow)?
-Miller selection.
 Progress indicator jobs in GUI appear to be created even if they are short and not 'ready' to be shown yet.
 Implement 'factory' for common objects such as Atom & Bond, to save new'ing all the time (esp. for large systems).
 Panel for User tools, essentially loaded from scripts (plugins?) in a user's tools/X directory.

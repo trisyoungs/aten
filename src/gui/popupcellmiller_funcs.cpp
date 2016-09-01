@@ -49,6 +49,14 @@ bool CellMillerPopup::callMethod(QString methodName, ReturnValue& rv)
 	else if (methodName == "h") rv.set(ui.HSpin->value());
 	else if (methodName == "k") rv.set(ui.KSpin->value());
 	else if (methodName == "l") rv.set(ui.LSpin->value());
+	else if (methodName == "hkl")
+	{
+		int hkl[3];
+		hkl[0] = ui.HSpin->value();
+		hkl[1] = ui.KSpin->value();
+		hkl[2] = ui.LSpin->value();
+		rv.setArray(VTypes::IntegerData, hkl, 3);
+	}
 	else if (methodName == "hideEvent")
 	{
 		return true;
