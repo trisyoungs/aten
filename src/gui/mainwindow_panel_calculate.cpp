@@ -68,3 +68,28 @@ void AtenWindow::on_CalculateMeasureListButton_clicked(bool checked)
 	// Update display
 	updateWidgets();
 }
+
+/*
+ * Charge
+ */
+
+void AtenWindow::on_CalculateChargeTotalButton_clicked(bool checked)
+{
+	Model* currentModel = aten_.currentModelOrFrame();
+	if (!currentModel) return;
+
+	double total = 0.0;
+	if (currentModel->nSelected() == 0)
+	{
+		for (Atom* i = currentModel->atoms(); i != NULL; i = i->next) total += i->charge();
+		Messenger::print("Total charge in model = %f e.", total);
+	}
+	else
+	{
+		for (RefListItem<Atom,int>* ri = currentModel->selection(); ri != NULL; ri = ri->next) total += ri->item->charge();
+		Messenger::print("Total charge in selection (%i atoms) = %f e.", currentModel->nSelected(), total);
+	}
+
+	// Update display
+	updateWidgets();
+}

@@ -13,9 +13,9 @@ Panel for User tools, essentially loaded from scripts (plugins?) in a user's too
 Visualise toolbar, containing Glyph management, polyhedra etc.
 Polymer builder.
 Collapse cell tool.
-Tool to calculate / show total charge in selection.
 Calculate tool to work out centre of geometry/mass.
 WEBSITE - Add missing examples linked to from front page!!
+Calculate Panel - Align Control (in 'Geometry' subpanel, along with centre-of-mass calculation
 
 Plugin TODO
 ===========
@@ -35,7 +35,8 @@ Scaling factor for labels etc. (popup slider in gui)
 
 GUI TODO
 ========
-Sort out remaining icons!
+Sort out remaining icons:
+- Total / Calculate charge (on Calculate panel)
 Add option to display ColourScale selector (e.g. for Grid colour buttons)
 Add Plot Orbital to Tools page (raising dialog from old GridsWidget)
 Add manual typing popup / context menu?

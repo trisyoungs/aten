@@ -299,6 +299,9 @@ class AtenWindow : public QMainWindow
 	void on_CalculateMeasureTorsionButton_clicked(bool checked);
 	void on_CalculateMeasureClearButton_clicked(bool checked);
 	void on_CalculateMeasureListButton_clicked(bool checked);
+	// Charge
+	void on_CalculateChargeTotalButton_clicked(bool checked);
+	// Geometry?
 
 
 	/*
