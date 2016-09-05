@@ -13,9 +13,8 @@ Panel for User tools, essentially loaded from scripts (plugins?) in a user's too
 Visualise toolbar, containing Glyph management, polyhedra etc.
 Polymer builder.
 Collapse cell tool.
-Calculate tool to work out centre of geometry/mass.
 WEBSITE - Add missing examples linked to from front page!!
-Calculate Panel - Align Control (in 'Geometry' subpanel, along with centre-of-mass calculation
+Calculate Panel - Align Control in 'Transform panel, allowing fragments in selections to be aligned in various ways. Is Model::selection_ ordered by ID, or as-selected?
 
 Plugin TODO
 ===========

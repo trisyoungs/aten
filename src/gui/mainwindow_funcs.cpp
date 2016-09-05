@@ -57,6 +57,7 @@
 #include "gui/popupforcefieldsassign.h"
 #include "gui/popupforcefieldsminimise.h"
 #include "gui/popupforcefieldsopen.h"
+#include "gui/popupgeometrycentre.h"
 #include "gui/popupgridcolour.h"
 #include "gui/popupgridmatrix.h"
 #include "gui/popupgridorigin.h"
@@ -243,6 +244,9 @@ AtenWindow::AtenWindow(Aten& aten) : QMainWindow(NULL), aten_(aten), exportFilmD
 	ui.CalculateMeasureTorsionButton->setGroup("UserActions", UserAction::MeasureTorsionAction);
 	ui.CalculateMeasureTorsionButton->setPopupWidget(new MeasureTorsionPopup(*this, ui.CalculateMeasureTorsionButton));
 
+	// -- Calculate Panel (Geometry)
+	ui.CalculateGeometryCentreButton->setPopupWidget(new GeometryCentrePopup(*this, ui.CalculateGeometryCentreButton));
+	
 	// -- Transform Panel (Set)
 	ui.TransformGeometryDistanceButton->setPopupWidget(new TransformDistancePopup(*this, ui.TransformGeometryDistanceButton));
 	ui.TransformGeometryAngleButton->setPopupWidget(new TransformAnglePopup(*this, ui.TransformGeometryAngleButton));

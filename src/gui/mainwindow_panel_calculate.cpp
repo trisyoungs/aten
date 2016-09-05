@@ -93,3 +93,31 @@ void AtenWindow::on_CalculateChargeTotalButton_clicked(bool checked)
 	// Update display
 	updateWidgets();
 }
+
+/*
+ * Geometry
+ */
+
+void AtenWindow::on_CalculateGeometryCentreButton_clicked(bool checked)
+{
+	Model* currentModel = aten_.currentModelOrFrame();
+	if (!currentModel) return;
+
+	// Get the centre of geometry of the current selection and, if the model is periodic, fold it into the unit cell
+	Vec3<double> cog = currentModel->selectionCentreOfGeometry();
+	if (currentModel->isPeriodic()) cog = currentModel->cell().fold(cog);
+	Messenger::print("Geometric centre of current selection (%i atoms) is { %f %f %f }.", currentModel->nSelected(), cog.x, cog.y, cog.z);
+
+	// Create dummy atom at the position?
+	ReturnValue rv;
+	ui.CalculateGeometryCentreButton->callPopupMethod("addDummy", rv);
+	if (rv.asBool())
+	{
+		currentModel->beginUndoState("Add dummy atom at selection's centre of geometry");
+		currentModel->addAtom(0, cog);
+		currentModel->endUndoState();
+	}
+
+	// Update display
+	updateWidgets();
+}
