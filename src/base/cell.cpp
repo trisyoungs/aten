@@ -153,6 +153,9 @@ void UnitCell::print()
 	Messenger::print("\t[ A <%8.4f %8.4f %8.4f > %8.4f [alpha=%8.3f]", axes_[0], axes_[1], axes_[2], lengths_.x, angles_.x);
 	Messenger::print("\t[ B <%8.4f %8.4f %8.4f > %8.4f [ beta=%8.3f]", axes_[4], axes_[5], axes_[6], lengths_.y, angles_.y);
 	Messenger::print("\t[ C <%8.4f %8.4f %8.4f > %8.4f [gamma=%8.3f]", axes_[8], axes_[9], axes_[10], lengths_.z, angles_.z);
+	printf("%14.10f %14.10f %14.10f\n", axes_[0], axes_[1], axes_[2]);
+	printf("%14.10f %14.10f %14.10f\n", axes_[4], axes_[5], axes_[6]);
+	printf("%14.10f %14.10f %14.10f\n", axes_[8], axes_[9], axes_[10]);
 }
 
 // Remove the cell definition (i.e. set 'type' to UnitCell::NoCell)
@@ -544,24 +547,36 @@ void UnitCell::calculateVectors()
 void UnitCell::calculateMatrix()
 {
 	Messenger::enter("UnitCell::calculateMatrix");
-	double temp;
+	Vec3<double> temp;
+
 	// Work in unit vectors. Assume that A lays along x-axis
 	axes_.setColumn(0,1.0,0.0,0.0,0.0);
+
+	// Calculate cosines
+	temp.x = cos(angles_.x/DEGRAD);
+	temp.y = cos(angles_.y/DEGRAD);
+	temp.z = cos(angles_.z/DEGRAD);
+	if (fabs(temp.x) < 1.0e-6) temp.x = 0.0;
+	if (fabs(temp.y) < 1.0e-6) temp.y = 0.0;
+	if (fabs(temp.z) < 1.0e-6) temp.z = 0.0;
+
 	// Assume that B lays in the xy plane. Since A={1,0,0}, cos(gamma) equals 'x' of the B vector.
-	temp = cos(angles_.z/DEGRAD);
-	axes_.setColumn(1,temp,sqrt(1.0 - temp*temp),0.0,0.0);
+	axes_.setColumn(1, temp.z, sqrt(1.0 - temp.z*temp.z), 0.0, 0.0);
+
 	// The C vector can now be determined in parts.
-	// It's x-component is equal to cos(beta) since {1,0,0}{x,y,z} = {1}{x} = cos(beta)
-	axes_.setColumn(2,cos(angles_.y/DEGRAD),0.0,0.0,0.0);
-	// The y-component can be determined by completing the dot product between the B and C vectors
-	axes_[9] = ( cos(angles_.x/DEGRAD) - axes_[4]*axes_[8] ) / axes_[5];
-	// The z-component is simply the remainder of the unit vector...
+	// -- It's x-component is equal to cos(beta) since {1,0,0}{x,y,z} = {1}{x} = cos(beta)
+	axes_.setColumn(2, temp.y, 0.0, 0.0, 0.0);
+	// -- The y-component can be determined by completing the dot product between the B and C vectors
+	axes_[9] = ( temp.x - axes_[4]*axes_[8] ) / axes_[5];
+	// -- The z-component is simply the remainder of the unit vector...
 	axes_[10] = sqrt(1.0 - axes_[8]*axes_[8] - axes_[9]*axes_[9]);
+
 	// Lastly, adjust these unit vectors to give the proper cell lengths
-	axes_.columnMultiply(0,lengths_.x);
-	axes_.columnMultiply(1,lengths_.y);
-	axes_.columnMultiply(2,lengths_.z);
+	axes_.columnMultiply(0, lengths_.x);
+	axes_.columnMultiply(1, lengths_.y);
+	axes_.columnMultiply(2, lengths_.z);
 	axes_.setColumn(3, 0.0, 0.0, 0.0, 1.0);
+
 	Messenger::exit("UnitCell::calculateMatrix");
 }
 
